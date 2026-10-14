@@ -73,3 +73,58 @@
   TABI-R2-4 `poll.log` corroborates the landing order (daemon note visible
   10:52:07, capture note 10:54:22); daemon return-to-baseline = operator
   action (D2).
+- 2026-10-14 — round 3: probation-completing round, recorded by TABI-B4
+  (secondary lane, scribe; plan `plans/round-3.plan.md`). Seats: TABI-R3-1
+  journey, TABI-R3-2 approval table, TABI-R3-3 SKILL integration + anchor
+  re-derivation + smoke replay, TABI-R3-4 no-oral-context executor test;
+  TABI-B1 r3b audit in flight at record time (scratch dir created, empty).
+  Admitted (3, each with a coverage row): `corpus/knowledge/multi-step-journey.md`
+  (296 lines — 4-page loopback journey index→detail→form→confirm, six
+  per-step captures per run, two cold runs byte-identical + two warm;
+  browser-side history witness `typed`/`link`/`form_submit`; state class via
+  raw DOMSnapshot columns with the `-1` empty-value sentinel;
+  wire-304-vs-client-200 boundary measured on both sides; cleanup proven per
+  run), `corpus/knowledge/interaction-approval-table.md` (216 lines — every
+  interaction class → autonomous-now / operator-asleep-blocked /
+  operator-approval-required / never, on rights·rate·consequence with a
+  gate + falsifier per class; 6 required classes + 12 adjacent gates;
+  never-set held under the operator-asleep anti-claim),
+  `corpus/knowledge/executor-test-sufficiency.md` (298 lines — fresh
+  executor with `SKILL.md` alone ran a full loopback capture verbatim,
+  verdict SUFFICIENT, gaps G1–G5 named, errata E1–E5). SKILL.md distillation
+  (+512/−178): sufficiency contract, §Runbook (13 copy-paste steps), call
+  reference, evidence ladder + record envelope + bounded waits,
+  session-material/rights-rate rules, finalized approval table; the
+  executor's errata are applied in the final revision (sha `452bc514d387`,
+  576 lines; three in-round revisions — the notes version-stamp their SKILL
+  refs). Scribe verification — re-run commands, all held: 8-note count +
+  line totals; new-note pins `67447c028e90`/`70ce826303d0`/`1262708864db`
+  and all five prior pins re-matched (also re-derived by TABI-R3-3,
+  `anchors.txt`); approval counts → 6 C-rows / 12 A-rows; journey
+  methodology re-hash (journey.mjs `b52074a33876`, driver.sh `9509c07f49f9`,
+  compare.mjs `ecce1c73dc56` + 6 fixture files) and run1 PNG re-hash = the
+  note's §2 pins; journey compare.tsv verdicts 25 IDENTICAL / 3 expected
+  DIFFER; executor methodology pins re-derived, its compare.tsv 10 yes /
+  3 expected NO, and its det-before `c08947dc…802dc1` equals the round-2 pin
+  (cross-seat, cross-round byte agreement); TABI-R3-3 smoke reproduced the
+  r2 chain a third time; ports 19411/19412/19421/19422 closed, no chromium
+  survivors; daemon pid 3934817 still listening (state change persists,
+  operator stop owed per D2); substrate pins `84a8e69d04c5`/`b811d9c23dfd`
+  unchanged; manifest↔skill `1.11.3`. Spot-check (scribe, non-author):
+  agrees with all three round-3 admits; the standing Brave reject re-ran →
+  `NativeMessagingHosts` only (agree, third consecutive round). Trend
+  verdicts: expansion improved (5→8 notes), quality improved (executor
+  errata applied; no admitted entry false-or-stale-unmarked), discernment
+  improved. Axis moves: depth 5→7 (journey evidence), calibration 4→6
+  (approval table finalized); riders: coverage 3→5, operability 3→5;
+  freshness stays 3 (re-checks still same-day-later). SHONEN.md: all four
+  boxes marked with named verifiers (boxes 1/2/4 TABI-B4 scribe; box 3
+  TABI-R3-4 executor) — promotion itself remains a later, separately
+  reviewed decision. Discipline held: no external sites (loopback only,
+  anti-claim `plans/round-3.plan.md:8`), secrets shape-only
+  (`identity.json`/daemon logs never read), substrates read-only. Known
+  debt (falsifiable next): thirteen `/tmp` evidence groups unarchived —
+  fixture bytes first (executor G1); `corpus/lessons/` still empty —
+  round-1/2/3 gate records owed (`LEARNING.md:61-62`); SKILL.md §Pins
+  quotes the executor note as "297 lines" while `wc -l` → 298 (sha matches;
+  annotation nit for the owning seat — outside this lane's write scope).
