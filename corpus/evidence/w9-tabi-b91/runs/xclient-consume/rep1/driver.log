@@ -1,0 +1,64 @@
+== run xclient-consume rep1 start 2026-10-14T20:02:21Z
+== UID 1000 host plazir27 cwd /tmp/w9-tabi-b91
+== chromium Chromium 152.0.7977.82 Arch Linux | node v24.21.0 | python Python 3.14.7
+== pins: server.py ac0013e03288ed28 journey.mjs cecf3373bceaabdc
+== port precheck (must be empty)
+ports free
+http.pid=1357434
+server ready code: 204
+ledger-before: {"counter": 0, "tokens": {"minted": 0, "consumed": 0, "refused": 0}, "sessions": [], "events": []}
+== curl cross-client phase (no browser; two independent clients)
+curl: curl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.6.4 zlib/1.3.2 brotli/1.2.0 zstd/1.5.7 libidn2/2.3.8 libpsl/0.21.5 libssh2/1.11.1 nghttp2/1.70.0 ngtcp2/1.25.0 nghttp3/1.18.0 mit-krb5/1.22.2
+== client A: form render (mints token T in A's request; A gets session s1)
+A form status=200
+A token shape: len=16 class=lower-hex
+== client B: fresh jar, never rendered the form; presents A's token (same body bytes for all submits)
+B submit status=303
+B submit header Location: /result
+== client B: replays the same request
+B replay status=409
+== client A: replays the same request
+A replay status=409
+== client B: result page
+B result status=200
+B result page data-counter="1"
+== cookie jar shapes (values redacted)
+jar=clientA.jar name=tabi_sid httpOnlyPrefix=yes domain=127.0.0.1 path=/ secure=FALSE expires=0 valueLen=16 valueClass=lower-hex
+jar=clientB.jar name=tabi_sid httpOnlyPrefix=yes domain=127.0.0.1 path=/ secure=FALSE expires=0 valueLen=16 valueClass=lower-hex
+== curl-replay end 2026-10-14T20:02:21Z
+ledger-after: {"counter": 1, "tokens": {"minted": 1, "consumed": 1, "refused": 2}, "sessions": [{"ordinal": "s1", "visits": 0}, {"ordinal": "s2", "visits": 0}], "events": [{"seq": 1, "kind": "session-mint", "sid": 1, "cookie": "absent"}, {"seq": 2, "kind": "token-mint", "sid": 1}, {"seq": 3, "kind": "write-ok", "path": "/form"}, {"seq": 4, "kind": "apply", "sid": null, "bodyBytes": 35, "mode": "pre"}, {"seq": 5, "kind": "write-ok", "path": "/submit"}, {"seq": 6, "kind": "submit-refused", "reason": "token-consumed", "bodyBytes": 35}, {"seq": 7, "kind": "write-ok", "path": "/submit"}, {"seq": 8, "kind": "submit-refused", "reason": "token-consumed", "bodyBytes": 35}, {"seq": 9, "kind": "write-ok", "path": "/submit"}, {"seq": 10, "kind": "session-mint", "sid": 2, "cookie": "absent"}, {"seq": 11, "kind": "write-ok", "path": "/result"}]}
+== http.log (whole)
+127.0.0.1 - - [14/Oct/2026 17:02:21] "GET /form HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 17:02:21] "POST /submit HTTP/1.1" 303 -
+127.0.0.1 - - [14/Oct/2026 17:02:21] "POST /submit HTTP/1.1" 409 -
+127.0.0.1 - - [14/Oct/2026 17:02:21] "POST /submit HTTP/1.1" 409 -
+127.0.0.1 - - [14/Oct/2026 17:02:21] "GET /result HTTP/1.1" 200 -
+== chromium egress-ish log lines (informative)
+grep: /tmp/w9-tabi-b91/runs/xclient-consume/rep1/chromium.log: No such file or directory
+== cleanup (kill by PID from the process table; pgrep never matches itself)
+pgrep chromium pids: none
+== closure verification
+pass: no chromium process for /tmp/w9-tabi-b91/runs/xclient-consume/rep1/profile
+pass: ports 19881/19882 not listening
+curl cdp exit=7
+curl http exit=7
+== request-line counts (server log)
+all instrument lines: 5
+  /submit: 3
+  /submit (query form): 0
+  /result: 1
+  /result (query form): 0
+  /form: 1
+  /form (query form): 0
+  /slow-hop1: 0
+  /slow-hop1 (query form): 0
+  /slow-hop2: 0
+  /slow-hop2 (query form): 0
+  /away: 0
+  /away (query form): 0
+  /echo307: 0
+  /echo307 (query form): 0
+  /echo307-target: 0
+  /echo307-target (query form): 0
+aborted-write markers: 0
+== run xclient-consume rep1 end 2026-10-14T20:02:22Z journey.exit=0

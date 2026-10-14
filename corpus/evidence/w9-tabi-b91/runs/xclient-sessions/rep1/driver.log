@@ -1,0 +1,58 @@
+== run xclient-sessions rep1 start 2026-10-14T20:02:24Z
+== UID 1000 host plazir27 cwd /tmp/w9-tabi-b91
+== chromium Chromium 152.0.7977.82 Arch Linux | node v24.21.0 | python Python 3.14.7
+== pins: server.py ac0013e03288ed28 journey.mjs cecf3373bceaabdc
+== port precheck (must be empty)
+ports free
+http.pid=1357839
+server ready code: 204
+ledger-before: {"counter": 0, "tokens": {"minted": 0, "consumed": 0, "refused": 0}, "sessions": [], "events": []}
+== curl cross-client phase (no browser; two independent clients)
+curl: curl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.6.4 zlib/1.3.2 brotli/1.2.0 zstd/1.5.7 libidn2/2.3.8 libpsl/0.21.5 libssh2/1.11.1 nghttp2/1.70.0 ngtcp2/1.25.0 nghttp3/1.18.0 mit-krb5/1.22.2
+== client A: visit 1
+A visit1 status=200
+A visit1 page data-visits="1"
+== client B: visit 1 (fresh jar; independent client)
+B visit1 status=200
+B visit1 page data-visits="1"
+== client A: visit 2 (same jar)
+A visit2 status=200
+A visit2 page data-visits="2"
+== cookie jar shapes (values redacted)
+jar=clientA.jar name=tabi_sid httpOnlyPrefix=yes domain=127.0.0.1 path=/ secure=FALSE expires=0 valueLen=16 valueClass=lower-hex
+jar=clientB.jar name=tabi_sid httpOnlyPrefix=yes domain=127.0.0.1 path=/ secure=FALSE expires=0 valueLen=16 valueClass=lower-hex
+== curl-replay end 2026-10-14T20:02:24Z
+ledger-after: {"counter": 0, "tokens": {"minted": 0, "consumed": 0, "refused": 0}, "sessions": [{"ordinal": "s1", "visits": 2}, {"ordinal": "s2", "visits": 1}], "events": [{"seq": 1, "kind": "session-mint", "sid": 1, "cookie": "absent"}, {"seq": 2, "kind": "visit", "sid": 1, "cookie": "absent", "visits": 1}, {"seq": 3, "kind": "write-ok", "path": "/"}, {"seq": 4, "kind": "session-mint", "sid": 2, "cookie": "absent"}, {"seq": 5, "kind": "visit", "sid": 2, "cookie": "absent", "visits": 1}, {"seq": 6, "kind": "write-ok", "path": "/"}, {"seq": 7, "kind": "visit", "sid": 1, "cookie": "present", "visits": 2}, {"seq": 8, "kind": "write-ok", "path": "/"}]}
+== http.log (whole)
+127.0.0.1 - - [14/Oct/2026 17:02:24] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 17:02:24] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 17:02:24] "GET / HTTP/1.1" 200 -
+== chromium egress-ish log lines (informative)
+grep: /tmp/w9-tabi-b91/runs/xclient-sessions/rep1/chromium.log: No such file or directory
+== cleanup (kill by PID from the process table; pgrep never matches itself)
+pgrep chromium pids: none
+== closure verification
+pass: no chromium process for /tmp/w9-tabi-b91/runs/xclient-sessions/rep1/profile
+pass: ports 19881/19882 not listening
+curl cdp exit=7
+curl http exit=7
+== request-line counts (server log)
+all instrument lines: 3
+  /submit: 0
+  /submit (query form): 0
+  /result: 0
+  /result (query form): 0
+  /form: 0
+  /form (query form): 0
+  /slow-hop1: 0
+  /slow-hop1 (query form): 0
+  /slow-hop2: 0
+  /slow-hop2 (query form): 0
+  /away: 0
+  /away (query form): 0
+  /echo307: 0
+  /echo307 (query form): 0
+  /echo307-target: 0
+  /echo307-target (query form): 0
+aborted-write markers: 0
+== run xclient-sessions rep1 end 2026-10-14T20:02:25Z journey.exit=0

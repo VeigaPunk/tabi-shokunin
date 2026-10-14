@@ -1187,3 +1187,134 @@ tranche landed this wave. Verify from a group dir before reuse:
   `tokens {minted 1, consumed 1, refused 0}`, `apply(mode=pre, bodyBytes 50)`; (ii)
   `verify-out.txt` prints `ec26a525bc7c6537` / `ab95cdd4b0b002a7` for the two central
   cells — the exact digests the note's §10 SC-3 quotes for rep1/rep2/rep3.
+## Errata — round-10 append (the ten-round index + the arc-synthesis pointer; append-only; never edit above)
+
+Appended 2026-10-14 by lane **B10-4** (round-10 SKILL distillation; assignment:
+the final append — the ten-round table + the synthesis pointer). Nothing above is
+edited; **the append is a pure byte-suffix**: pre-append sha256
+`c07d29c3e8d178da70ad13876ac6a61d338588e9ddf30095b2515c2bcfce1f13`
+(`1189` `wc -l` / `97,231` B, last byte `0a`), re-proved after the write with
+`head -c 97231 SKILL.md | sha256sum`. The post-append hash of the whole file
+necessarily differs — re-derive with `sha256sum`. Method: read-only over the lane
+tree (the note set, `LOG.md`, `SCORECARD.md`, `plans/*`, `reports/*`,
+`corpus/lessons/*`, `corpus/evidence/*`, git) at the write stamp
+(2026-10-14T21:00:49Z); no run launched, no server started, no browser opened, no
+external site, no session material read. Pins below are **as-of-write**, taken
+from disk; later appends move them, and the round-10 record (in flight, then
+committed) supersedes this block. This block records the append; it edits
+nothing.
+
+### The ten rounds at a glance
+
+Lane-local numbering; the fleet commit subjects carry the same rounds as
+"training r(N−1)" (`ad735dd` = "probation round 9 (training r8)"). The branch
+vocabulary (G/D/L) is the post-filing form (r6 onward); rounds 1–4 ran
+loopback-by-construction with no L0 line to answer, and round 5 was the filing
+round itself — the only `tabi` line remains the r5 filing
+(`.ufo/l0-questions.md:25`; file `02c53ec60acf…` / 25 lines, byte-identical at
+every read since). Artifact pins are `sha256` first-12 · `wc -l`; a note a later
+round appended to carries a different pin than its own round stamped — the
+round's record holds the then-pin.
+
+| # | axis move | branch | headline landed artifact(s) — pin · `wc -l` (as-of-write) | commit |
+|---|---|---|---|---|
+| 1 | coverage + calibration | n/a — pre-filing | `webbridge-plugin-anatomy.md` `8d1488ab763e`·290 · `browser-surface-census.md` `a33c22644d64`·265 · `cdp-evidence-patterns.md` `337ff64579e8`·234; SKILL +114/−2 | `7961735` |
+| 2 | depth — evidence ladder | n/a | `live-dynamic-capture.md` `01266495b761`·245 · `webbridge-daemon-disposition.md` `fd5f6861aa3b`·274 | `5d2e95d` |
+| 3 | depth + calibration | n/a | `multi-step-journey.md` `e0367890f1cf`·349 · `interaction-approval-table.md` `b5e29a9a2adf`·246 · `executor-test-sufficiency.md` `32772e343848`·329; SKILL +512/−178 | `094c27a` |
+| 4 | coverage — network rung | n/a | `network-evidence-rung.md` `d1564f38dc14`·609 · `async-step-evidence.md` `05dcda5e60b9`·282 · `hygiene-sweep-r4.md` `87155e12021d`·258 | `282fc6d` |
+| 5 | freshness — filing + archive | n/a — the filing round | `archive-receipt-r5.md` `b41c2f6fb5a4`·180 · `lessons/round-1..4.md` · `operator-approval-request.md` `94dc63f5fb9e`·121 + 1 L0 line | `bc4b7d5` |
+| 6 | freshness + calibration | L (SILENT) | `external-class-fixture-v2.md` `4aa604f1788b`·569 · `webbridge-revival-assessment.md` `a07c8aedc161`·322 | `c0467a6` |
+| 7 | calibration + freshness | L (SILENT) | `layer-routing-synthesis.md` `7725ee421716`·254 · archive completed → 35 groups | `b377007` |
+| 8 | depth — stateful | L (SILENT) | `stateful-fixture-evidence.md` `f04e2e473cf9`·855 · `carried-debt-closure-r8.md` `48dc8db69c57`·149 · `lessons/round-6..7.md` | `6a8861c` |
+| 9 | depth — state-changing | L (SILENT) | `state-changing-matrix-r9.md` `ec540be07ed5`·388 · `lessons/round-8.md` `d974eadc29f6`·256 · `archive-receipt-r8.md` → `de45b805e5a4`·218 | `ad735dd` |
+| 10 | clause F (clause (c) + archive) · clause S (the arc synthesis) | L (SILENT) | `arc-synthesis.md` `f42428bd9af7`·183 · `archive-receipt-r10.md` `c6f4445ebd03`·203 (group `w9-tabi-b91`, 269 files) · `lessons/round-9.md` `07c3039ea5bd`·277 · this block | pending at this write — the round-10 scribe commits after the seats |
+
+Supporting pins (all re-derived at the write stamp): reports r4–r9 —
+`5f44b0f94483`·167 · `d09f1712cbcf`·170 · `9428ddec52b9`·178 ·
+`ea4b16a4a844`·260 · `a191832be152`·181 · `df34bf6c63e1`·174; lessons r1–r8 —
+`bdd46c85b349`·59 · `a862d69cb0b9`·60 · `153a1b9831bb`·69 · `cde3960eb1a9`·87 ·
+`46029f48e27d`·139 · `86da9d2b9419`·150 · `88c8244c2bab`·172 · `d974eadc29f6`·256.
+Round-1's as-stamped pins (at `7961735`) were `49f0735b0594` / `9e4d69dcd658` /
+`034b1e53b004` (`git show 7961735:<path> | sha256sum`; the table carries today's
+values). Per-round detail, verdicts and the debt ledger live in the records the
+commits carry (`LOG.md:5` r1, `:29` r2, `:76` r3, `:131`–`:136` r4–r9;
+`plans/round-{4..10}-record-draft.md`; the arc synthesis below).
+
+### The arc synthesis — the ten rounds' re-derivation entry point
+
+`corpus/knowledge/arc-synthesis.md` — **`f42428bd9af7`** / `183` `wc -l` (lane
+B10-1; the output path is the assignment's — the plan's candidate
+`ten-round-synthesis.md` was never the landed name, r10 record-draft F-8). It was
+still moving at the record's read (three shas inside four minutes:
+`6e46d1bb0a7e` → `1b4b273141ba` → `f42428bd9af7`) and stable from 20:56:19Z to
+this write stamp — **re-derive before citing**. It holds, every row anchored to
+an in-repo source: the evidence ladder as built — 4 rungs + 5 extensions, each
+with its measured boundary (§1); the approval discipline — the arc by round,
+rules with citations, the operator arc measured (packet `94dc63f5fb9e…`, one L0
+line, ask-count 1, silence span 3 h 47 m at its read) (§2); the archive as
+infrastructure — the receipt pattern, the tranche table with read times, the open
+debts (§3); the loopback perimeter and the gate's final state — §4.4 carries
+clause (c) IN FORCE and the revival decision `carried-unasked` (§4); unknowns
+(§5); a provenance-pin table plus its own spot-checks (§6). Use it — not this
+file, and not the LOG prose — for the ten rounds' findings and limits; this file
+keeps the usage rules and the pointer-level index above. Its open items travel
+with it: the `corpus/README.md` coverage row and the SCORECARD refresh are the
+integrating round's (README header still round-3 at this write — "8 notes, 1944
+lines … Lessons: 0" vs actual 22 / 6,824 / 9; named debt, r10 record-draft
+F-4/F-5).
+
+### Pin re-binds — declared by this append (nothing above edited)
+
+Round 10's §Pins pass (`plans/round-10-record-draft.md` §4, in flight at this
+write) matched 26/28 existing assertions + 2 supersessions-with-declared-errata +
+0 unexplained; history pins 5/5, substrate 3/3. The moved citations, re-bound
+here — and the new r10 pins — append-only:
+
+- `archive-receipt-r8.md` — `SKILL.md:963` / `:1024` cite `0587605db913` / 191
+  (committed `b377007`). The committed revision is **`de45b805e5a4…` / 218** (the
+  F1-erratum append in `ad735dd`); the receipt's own appended block declares the
+  pre-append value. (r10 record-draft F-1 — the repair this distillation seat
+  owes.)
+- `stateful-fixture-evidence.md` — `SKILL.md:961` cites `e89bc89bff38` / 773 with
+  its own "untracked, moving" caveat; the committed revision is
+  **`f04e2e473cf9…` / 855** (the value the r9 block already carries). Declared
+  supersession, not drift. (r10 record-draft F-2.)
+- `state-changing-matrix-r9.md` — `SKILL.md:1073` / `:1083`'s "untracked, moving
+  in-wave" caveat is discharged: `ec540be07ed5` / 388 is the committed revision
+  (`ad735dd`); the caveat stands as written. (r10 record-draft F-3.)
+- New this round (first pins): `arc-synthesis.md` `f42428bd9af7…` / 183;
+  `archive-receipt-r10.md` `c6f4445ebd03…` / 203 (the r9 tranche: 269 files /
+  1,065,924 B, checks A–D + SC1–SC7, source-drift re-check 0 diff);
+  `lessons/round-9.md` `07c3039ea5bd…` / 277.
+
+### Clause (c) — final state at this write (the strictly-later-date §Pins pass)
+
+`date -u +%F` → **2026-10-14**; the newest in-repo commit date is
+`2026-10-14T17:47:30-03` (`ad735dd`) — no witness dated ≥ 2026-10-15 exists, so
+the pass stands **IN FORCE** and the round-5 four-clause claim stands **3/4**
+with clause (c) named as structurally time-blocked inside the round's window (the
+UTC date flips 2026-10-15T00:00Z = 21:00 -03; this write stamp is ~3 h before
+it). It closes only with a dated in-repo re-derivation block whose commit date is
+≥ 2026-10-15 (`git show -s --format=%cI` recorded) **plus** the match count — a
+same-day pass never closes it. The same-day pass round 10 did run is recorded
+(`plans/round-10-record-draft.md` §4). The refresh list the closing pass must
+re-derive: the note set as it stands at that gate (22 notes / 6,824 lines at this
+write), `reports/r4..r10` as landed, the 3 substrate pins (`e70aff5c40ff` /
+`84a8e69d04c5` / `b811d9c23dfd`), and this file's then-current revision.
+
+### Residual pointers (named, not repaired here)
+
+- The training chain's length is contested on record: the round-10 plan presumed
+  this was the chain's final lane round; `plans/round-11.plan.md` (lane PREP-B11;
+  counters over prose) measures lane round 11 = training r10 = the closeout. The
+  round-10 record quotes both; this append cites neither as settled.
+- Fleet-level, reported not absorbed (carried from r5): tabi is still absent from
+  the watchdog `LANES` roster — `scripts/shokunin-watchdog.sh:14` →
+  `LANES="protocol aggregator kasegi kengaku kake kumitate kotoba kagi kama"`
+  (re-read at this write).
+- The round-10 integrating work still owed at this write (the scribe/record
+  seats'): the `corpus/README.md` coverage row + header, the SCORECARD r4–r10
+  refresh, `corpus/lessons/round-10.md`, the packet cold-read verdict, the LOG
+  entry and the commit.
+
+This block records the append; it edits nothing.

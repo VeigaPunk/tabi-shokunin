@@ -1,0 +1,67 @@
+== run replay-unknown-token rep2 start 2026-10-14T20:02:00Z
+== UID 1000 host plazir27 cwd /tmp/w9-tabi-b91
+== chromium Chromium 152.0.7977.82 Arch Linux | node v24.21.0 | python Python 3.14.7
+== pins: server.py ac0013e03288ed28 journey.mjs cecf3373bceaabdc
+== port precheck (must be empty)
+ports free
+http.pid=1352671
+server ready code: 204
+ledger-before: {"counter": 0, "tokens": {"minted": 0, "consumed": 0, "refused": 0}, "sessions": [], "events": []}
+== start chromium (fresh profile)
+chromium.launch.pid=1352684
+== listening lines (evidence)
+LISTEN 0      5          127.0.0.1:19881      0.0.0.0:*    users:(("python3",pid=1352671,fd=3))
+LISTEN 0      10         127.0.0.1:19882      0.0.0.0:*    users:(("chromium",pid=1352684,fd=75))
+== chromium process lines (evidence)
+1352684 1352633 /usr/lib/chromium/chromium --ozone-platform=wayland --ozone-platform-hint=wayland --enable-features=TouchpadOverscrollHistoryNavigation --load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url --headless=new --remote-debugging-port=19882 --remote-debugging-address=127.0.0.1 --user-data-dir=/tmp/w9-tabi-b91/runs/replay-unknown-token/rep2/profile --no-first-run --no-default-browser-check --disable-gpu --disable-background-networking --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank
+1352726 1352684 /usr/lib/chromium/chromium --type=zygote --no-zygote-sandbox --headless=new --crashpad-handler-pid=1352720 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w9-tabi-b91/runs/replay-unknown-token/rep2/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+1352727 1352684 /usr/lib/chromium/chromium --type=zygote --headless=new --crashpad-handler-pid=1352720 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w9-tabi-b91/runs/replay-unknown-token/rep2/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+== run journey (replay-unknown-token rep2)
+capture after-unknown: url=http://127.0.0.1:19881/away png=3bbed344a33ead0b shape=807caac6f41ddc0a nodes=18
+journey.exit=0
+ledger-after: {"counter": 0, "tokens": {"minted": 0, "consumed": 0, "refused": 1}, "sessions": [{"ordinal": "s1", "visits": 1}], "events": [{"seq": 1, "kind": "session-mint", "sid": 1, "cookie": "absent"}, {"seq": 2, "kind": "visit", "sid": 1, "cookie": "absent", "visits": 1}, {"seq": 3, "kind": "write-ok", "path": "/"}, {"seq": 4, "kind": "write-ok", "path": "/favicon.ico"}, {"seq": 5, "kind": "write-ok", "path": "/away"}, {"seq": 6, "kind": "submit-refused", "reason": "unknown-token", "bodyBytes": 40}, {"seq": 7, "kind": "write-ok", "path": "/submit"}]}
+== http.log (whole)
+127.0.0.1 - - [14/Oct/2026 17:02:00] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 17:02:00] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Oct/2026 17:02:00] "GET /away HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 17:02:00] "POST /submit HTTP/1.1" 409 -
+== chromium egress-ish log lines (informative)
+egress-ish line count: 0
+== cleanup (kill by PID from the process table; pgrep never matches itself)
+pgrep chromium pids: 1352684
+1352726
+1352727
+1352730
+1352752
+1352754
+1352764
+1352779
+1352789
+1352807
+1352808
+1352835
+== closure verification
+pass: no chromium process for /tmp/w9-tabi-b91/runs/replay-unknown-token/rep2/profile
+pass: ports 19881/19882 not listening
+curl cdp exit=7
+curl http exit=7
+== request-line counts (server log)
+all instrument lines: 4
+  /submit: 1
+  /submit (query form): 0
+  /result: 0
+  /result (query form): 0
+  /form: 0
+  /form (query form): 0
+  /slow-hop1: 0
+  /slow-hop1 (query form): 0
+  /slow-hop2: 0
+  /slow-hop2 (query form): 0
+  /away: 1
+  /away (query form): 0
+  /echo307: 0
+  /echo307 (query form): 0
+  /echo307-target: 0
+  /echo307-target (query form): 0
+aborted-write markers: 0
+== run replay-unknown-token rep2 end 2026-10-14T20:02:03Z journey.exit=0

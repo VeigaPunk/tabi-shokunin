@@ -1,0 +1,61 @@
+== rep-to-rep digest (full event chains + client facts, timings stripped) ==
+replay-guard-skip      IDENTICAL | rep1 digest sha=ec26a525bc7c6537 lines=22 ; rep2 digest sha=ec26a525bc7c6537 lines=22
+replay-consumed-pre    IDENTICAL | rep1 digest sha=ab95cdd4b0b002a7 lines=22 ; rep2 digest sha=ab95cdd4b0b002a7 lines=22
+replay-consumed-post   IDENTICAL | rep1 digest sha=850e4e0915afec05 lines=22 ; rep2 digest sha=850e4e0915afec05 lines=22
+replay-unknown-token   IDENTICAL | rep1 digest sha=778ca2b1c4de4b33 lines=18 ; rep2 digest sha=778ca2b1c4de4b33 lines=18
+replay-terminus        IDENTICAL | rep1 digest sha=98a296c5de708ba5 lines=30 ; rep2 digest sha=98a296c5de708ba5 lines=30
+double-apply-fresh-token IDENTICAL | rep1 digest sha=8c94650d02c33060 lines=27 ; rep2 digest sha=8c94650d02c33060 lines=27
+replay-307             IDENTICAL | rep1 digest sha=1689ec82bb6e1051 lines=18 ; rep2 digest sha=1689ec82bb6e1051 lines=18
+ALL_IDENTICAL
+
+== hop chains per cell (rep1, from journey.json) ==
+### replay-guard-skip
+    GET http://127.0.0.1:19881/ -> wire 200 -> resp 200
+    GET http://127.0.0.1:19881/favicon.ico -> wire 404 -> resp 404
+    GET http://127.0.0.1:19881/form -> wire 200 -> resp 200
+    POST http://127.0.0.1:19881/submit?apply=post&hold=700&guard=1 -> failed net::ERR_ABORTED
+    POST http://127.0.0.1:19881/submit -> wire 303
+    GET http://127.0.0.1:19881/result -> wire 200 -> resp 200
+### replay-consumed-pre
+    GET http://127.0.0.1:19881/ -> wire 200 -> resp 200
+    GET http://127.0.0.1:19881/favicon.ico -> wire 404 -> resp 404
+    GET http://127.0.0.1:19881/form -> wire 200 -> resp 200
+    POST http://127.0.0.1:19881/submit?apply=pre&hold=700 -> failed net::ERR_ABORTED
+    POST http://127.0.0.1:19881/submit -> wire 409 -> resp 409
+### replay-consumed-post
+    GET http://127.0.0.1:19881/ -> wire 200 -> resp 200
+    GET http://127.0.0.1:19881/favicon.ico -> wire 404 -> resp 404
+    GET http://127.0.0.1:19881/form -> resp 200 -> wire 200
+    POST http://127.0.0.1:19881/submit?apply=post&hold=700 -> failed net::ERR_ABORTED
+    POST http://127.0.0.1:19881/submit -> wire 409 -> resp 409
+### replay-unknown-token
+    GET http://127.0.0.1:19881/ -> wire 200 -> resp 200
+    GET http://127.0.0.1:19881/favicon.ico -> wire 404 -> resp 404
+    GET http://127.0.0.1:19881/away -> wire 200 -> resp 200
+    POST http://127.0.0.1:19881/submit -> wire 409 -> resp 409
+### replay-terminus
+    GET http://127.0.0.1:19881/ -> wire 200 -> resp 200
+    GET http://127.0.0.1:19881/favicon.ico -> wire 404 -> resp 404
+    GET http://127.0.0.1:19881/form -> resp 200 -> wire 200
+    POST http://127.0.0.1:19881/submit -> wire 303
+    GET http://127.0.0.1:19881/result -> wire 200 -> resp 200
+    POST http://127.0.0.1:19881/submit -> wire 409 -> resp 409
+    GET http://127.0.0.1:19881/result -> resp 200 -> wire 200
+    GET http://127.0.0.1:19881/result -> wire 200 -> resp 200
+### double-apply-fresh-token
+    GET http://127.0.0.1:19881/ -> wire 200 -> resp 200
+    GET http://127.0.0.1:19881/favicon.ico -> wire 404 -> resp 404
+    GET http://127.0.0.1:19881/form -> wire 200 -> resp 200
+    POST http://127.0.0.1:19881/submit -> wire 303
+    GET http://127.0.0.1:19881/result -> wire 200 -> resp 200
+    GET http://127.0.0.1:19881/form -> wire 200 -> resp 200
+    POST http://127.0.0.1:19881/submit -> wire 303
+    GET http://127.0.0.1:19881/result -> wire 200 -> resp 200
+    GET http://127.0.0.1:19881/result -> resp 200 -> wire 200
+### replay-307
+    GET http://127.0.0.1:19881/ -> wire 200 -> resp 200
+    GET http://127.0.0.1:19881/favicon.ico -> wire 404 -> resp 404
+    POST http://127.0.0.1:19881/echo307
+    POST http://127.0.0.1:19881/echo307-target -> wire 307 -> wire 200 -> resp 200
+    POST http://127.0.0.1:19881/echo307 -> wire 307
+    POST http://127.0.0.1:19881/echo307-target -> wire 200 -> resp 200
