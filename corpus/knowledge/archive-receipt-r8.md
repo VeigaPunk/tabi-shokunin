@@ -189,3 +189,30 @@
   `b41c2f6fb5a4…` (pinned in `plans/round-7-record-draft.md:164`,
   `plans/round-8.plan.md:30`) stays valid. The round-5 receipt's §6 owed items — F3's
   peer groups and F1's erratum pointer — are closed/recorded here instead.
+- **[2026-10-14T20:44Z, F1 erratum — ER-F1]** F1 (§4 :116-122) is now **closed by
+  erratum**: one line, outside the archived group, so the group's file list is unchanged —
+  the archiver's constraint this receipt stated in §6 (:174-176, "adding a file inside
+  `tabi-b1-r3b-journey/` would change a published group's file list") and inherited from
+  `archive-receipt-r5.md` §6 (:170-172, "a one-line erratum pointing at the driver/compare
+  diffs would close it without touching archived bytes"). The erratum is landed as
+  `corpus/knowledge/carried-debt-closure-r8.md` §1.1 (lane B8-2); copied verbatim:
+  > **ER-F1** — In `corpus/evidence/tabi-b1-r3b-journey/`, `methodology-sha.txt` (sha256
+  > `04997cf58c00e61c…`) pins `driver.sh`
+  > `9509c07f49f92113487d906b8c3137486d11a931559bbec850124e064af74b13` and `compare.mjs`
+  > `ecce1c73dc56475034c185e1fac1b5b7d8dcaaae71f19ea6153a54c9f2cd3215`, but the archived bytes
+  > hash `68ceef09e4bfe032e789a16a8ba95afe65f6c9772c9f98fe3f92a1b3d58681c3` (`driver.sh`) and
+  > `cc89210e9fd216e34ad7aa052a8748f277801888acdfacd4e41e2d71451adc7e` (`compare.mjs`) — the
+  > replay edit's `ROOT` path, `HTTP_PORT` 19421→19481 and `CDP_PORT` 19422→19482 in
+  > `driver.sh`, and the `root` constant in `compare.mjs`; `MANIFEST.txt` (83/83
+  > `sha256sum -c OK`) and the owning note's pins (`multi-step-journey.md:26-27`, binding the
+  > `tabi-r3-1-journey` source group) are the authority, no owning-note pin is affected, and
+  > no byte inside the group was changed by this erratum.
+  Re-derived at this append (20:44Z): in the group, `sha256sum -c MANIFEST.txt` → **83/83 OK,
+  exit 0**; `sha256sum -c methodology-sha.txt` → **7 OK / 2 FAILED, exit 1** (exactly
+  `driver.sh`, `compare.mjs`); the group holds **84 files = 83 manifest-listed +
+  `MANIFEST.txt`**, unchanged (no file in it newer than this receipt's 16:06 -03 commit).
+  Independently audited by `reports/r9-aud-b9.md` (round 9, lane AUD-B9 — F1b and F1d both
+  PASS, "it changed nothing inside the group"). Append-only: §6's "deliberately left to the
+  owning lane" bullet stands as the record of where the erratum sat at write; this block
+  records only that the item is now closed. This append moves the file's sha; the published
+  `0587605db9138631` (191 lines, committed `b377007`) stands as the pre-append revision.

@@ -1056,3 +1056,134 @@ re-derive at record time:
 | packet cold-read verdict | `operator-approval-request.md` §6 (`:100`) | `[unknown]` since round 5 |
 | packet note-pin block (9/9 stale) | `packet-readiness-r7.md` §2 (re-bound values) | open — owning record's call |
 | clause (c) strictly-later-date §Pins pass | the §Pins errata block (this file) | **carried** — `date -u +%F` → 2026-10-14; earliest 2026-10-15; the witness is a dated in-repo block whose commit date is ≥ 2026-10-15 |
+## Errata — round-9 append (state-changing matrix usage + archive discipline; append-only; never edit above)
+
+Appended 2026-10-14 by lane **B9-4** (round-9 SKILL distillation; assignment: append the
+state-changing matrix usage + the archive discipline, citing
+`corpus/knowledge/state-changing-matrix-r9.md`). Nothing above is edited; pre-append
+sha256 of this file: `3b79ed2dea6c14578fe3a2043475ddf5e1a149cc4ca6ad1a1a3e09c75a497970`
+(`1057` `wc -l`; 1058 logical — last line unterminated). The post-append hash necessarily
+differs — re-derive with `sha256sum`. This block is additions-only: the file gained two
+sections plus this block at EOF; no pre-existing line's text is altered. Method:
+read-only over `corpus/knowledge/*.md`, `corpus/evidence/`, `plans/round-9.plan.md`, the
+round-9 record draft, and the round-9 lane's scratch `/tmp/w9-tabi-b91/` (two
+spot-checks against its raw artifacts); no run launched, no server started, no browser
+opened, no external site, no session material read. Pins cited here are as-of-write and
+provisional until the archive keeps pace (`cdp-evidence-patterns.md:92`): matrix note
+`ec540be07ed5` (388 `wc -l` / 28,989 B; untracked, moving in-wave — re-derive), round-8
+fixture pin `ac0013e03288ed28…` (12,311 B), stateful note `f04e2e473cf9` (855 `wc -l`),
+carried-debt closure `48dc8db69c57` (149 `wc -l`). This block records the append; it
+edits nothing.
+
+### State-changing matrix — usage (round 9)
+
+§"Layer routing" above routes GET-shaped claims and flags the **state-changing** class as
+unmapped; §"Stateful evidence" (round 8) landed the step class for the loopback class.
+The replay half now has a measured case: `corpus/knowledge/state-changing-matrix-r9.md`
+(**`ec540be07ed5`** / 388 `wc -l`; lane B9-1; **untracked and still moving in-wave —
+re-derive before citing**). It reuses round 8's stateful fixture **byte-identical**
+(`server.py` `ac0013e03288ed28…` / 12,311 B; one revision across all 20 runs), on fresh
+ports 19881/19882, and runs **9 cells × 2 cold reps + 2 rep3 = 20 runs, 0 journey
+errors**, closure proven per run (note §0–§2). It closes the probes round 8 left owed
+(`stateful-fixture-evidence.md` §9.4 item 4 / §11 U2) and round 7's L1d replay item
+(`plans/round-7-record-draft.md` §3 :119-123). Use it whenever a loopback claim turns on
+**a repeated state-changing request** — a replayed POST, a redirect-after-POST terminus,
+a one-time token.
+
+**The token-state decision table (note §3, measured).** One probe: the *same* form-encoded
+POST bytes sent again, same client, after the state in column 1:
+
+| token state at replay | client outcome (fetch) | ledger at replay | counter |
+|---|---|---|---|
+| **unconsumed** (guarded arm skipped the apply, `apply-skipped reason=client-gone`) | `200, redirected: true → /result` | `apply(mode=pre)` | `1` (the replay applied) |
+| **consumed** by apply-before-hold / apply-after-hold / a completed submit+303 | `409, redirected: false` | `submit-refused(token-consumed)` | `1` (unchanged) |
+| **never minted** | `409, redirected: false` | `submit-refused(unknown-token)` | `0` |
+| **fresh** (form re-rendered) | `200, redirected: true → /result` | `apply(mode=pre)` after a second `token-mint` | `2` |
+
+The three consumption paths are **indistinguishable at the replay** (identical 409 +
+refusal event + unchanged counter); the guard arm is the only state whose replay is
+accepted — and that replay is what recovers the abandoned attempt, exactly once
+(**U2 closed**, 3/3 cold reps). The same-request replay therefore **discriminates the
+abort arms for the client**: 409 ⇒ the token had been consumed (applied); 200 ⇒ it had
+survived (skip) and the replay applied.
+
+**Idempotency classes (note §7; r8 rows cited, r9 rows measured).** Define a class by
+(method, redirect, token, state effect), then read the replay outcome off it:
+
+| class | instance | replay of the same bytes | state effect | source |
+|---|---|---|---|---|
+| **S** safe read | GET `/result`, GET `/away` | identical response | none | r8 + r9 (§4 terminus ×2) |
+| **C** counted GET | GET `/` (visits) | not idempotent: `visits 1 → 2` | visits +1 | r8 + r9 (`xclient-sessions`) |
+| **M** method-preserving redirect, no state | POST `/echo307` → 307 → target | identical `{200, POST, 8 B}` | none | r8 + r9 (`replay-307`, twice) |
+| **A** token-gated apply, unconsumed | POST `/submit`, unused token | accepted once: `303 → /result`, `apply` | counter +1, token consumed | r8 + r9 (`replay-guard-skip`) |
+| **R** token-gated apply, consumed | POST `/submit`, used token | refused: `409`, no redirect | none | r8 + r9 (three paths, §3) |
+| **U** unknown token | POST `/submit`, never-minted token | refused: `409`, `unknown-token` | none | r9 |
+| **F** fresh token re-apply | POST `/submit` after a re-render | accepted, applies again | counter +1 per fresh token | r9 |
+| **X** abandoned, applied | POST aborted mid-hold (`apply=pre`/`post`) | replay → **R** (409) | none on replay | r8 + r9 |
+| **X′** abandoned, skipped | POST aborted mid-hold (`guard=1`) | replay → **A** (accepted; applies) | counter +1 (the replay's) | r8 + r9 |
+| **D** duplicate, one token | two parallel identical submits | one winner, one 409 | one apply | r8 (`dup-submit`; event order flips, outcomes stable) |
+
+**Replay contract, as exercised (note §8) — the usage rules.** (1) The **server's token
+table decides**; nothing else does — same bytes + same token state ⇒ same outcome for
+every client identity tested (browser and two independent curl jars). (2) The token is
+**attempt-scoped**: consumed exactly once by the accepted attempt; an abandoned attempt
+consumes it *iff* the server applied; a fresh render mints a new one that applies again
+(guarded **per token, not per resource** — re-entering the step through a fresh render
+double-applies). (3) **Redirect code shapes the replay**: 303 turns the follow-up into a
+GET (terminus replay-stable, its POST not); 307 preserves POST + body and touches no
+state. (4) The token **binds to nothing server-side** — not to the minting session, not
+to the client, not to a run; any client presenting it consumes it, and every later replay
+from *either* client is refused (the `apply` event records `sid: null` when the consumer
+had no session). (5) Capture determinism is **per artifact**: PNG byte-identical across
+cold reps, while a DOM capture of a token-bearing page diverges by exactly one line — the
+hidden `#token` input's value (record it as a shape fact, never a value). (6) Rules
+**M1–M8** with falsifiers are note §9 — use them as the check list, not as prose.
+
+**Boundary — do not over-route.** This table is **loopback-only**. Real-site
+state-changing claims stay behind the C2–C6 gates (§Approval table) and are not routed by
+this note; the refusal **code** 409 is the fixture's choice — a loopback 409 is an
+**instrument, never a real-server datum** (mirroring the 429 rule in §"Fixture v2";
+note U9). Still open after r9: the round-6 wire-class / cache-revalidation matrix
+(`carried-debt-closure-r8.md` §2), E3 third-party-JS-shaped async
+(`external-class-fixture-v2.md` §9), the **cookie lifecycle across a browser restart** and
+the cache × cookie freshness scope (U8), token expiry / table growth (U4), body
+modification under the same token (U5), a simultaneous cross-client replay race (U6), a
+two-browser (non-curl) cross-client pair (U2), the guard race at short holds (U1). And
+**no non-author seat has re-run these cells** (note §10 SC-2 — the r8 VER-B8-1 / AUD-B8
+pattern is owed). Session material stays shape-only throughout: cookie and token
+**values are never printed** — length / charset class / attribute set only (note §0).
+
+### Harness-archive discipline — round-9 update (census unchanged; the round-9 tranche is the obligation)
+
+The discipline is unchanged from §"Harness-archive discipline" (round 7) and its
+round-8 census block. Re-derived at this write (`ls` / `find` / `du -sb`):
+`corpus/evidence/` holds **35 group dirs / 35 `MANIFEST.txt` / 1,451 files /
+9,222,920 B** — **identical to the round-8 census**, so no supersession is needed: no new
+tranche landed this wave. Verify from a group dir before reuse:
+`sha256sum -c MANIFEST.txt`; take harness and fixture bytes **from the archive** when
+`/tmp` is gone instead of re-authoring them.
+
+- **The round-9 tranche is the open obligation.** The matrix note's scratch
+  `/tmp/w9-tabi-b91/` is **unarchived**: re-derived at this write **2,665 files** —
+  **2,396** under `*/profile*` (excluded by rule: shape-only, never read) and **269**
+  non-profile (fixture `server.py`, the runner/driver revisions, `curl-replay.sh`,
+  `verify.py`/`compare.mjs`, `run-all*.log`, `matrix.tsv`, `verify-out.txt`,
+  `compare-out.txt`, and the **20 run dirs** of §11). Archive it into
+  `corpus/evidence/<group>/` with a `MANIFEST.txt` (comment header + `sha256␠␠path`
+  lines); **every hash in the matrix note is provisional until then**
+  (`cdp-evidence-patterns.md:92`). The note's own §11 names the same debt.
+- **Also still unarchived:** the round-8 tranche (`/tmp/w8-tabi-b81/`, `/tmp/w8-ver-b81/`)
+  — carried from the round-8 census block; the round-9 record draft rows it as debt.
+- **Caveats that travel with any group** (unchanged): bytes only — profile dirs excluded
+  by rule, so a reconstituted run makes its own fresh profile per §Hygiene rules and must
+  not look for a stored one; a **timestamped snapshot**, never live `/tmp` (a pinned group
+  can gain bytes later — re-run the receipt check to detect drift); the manifest and the
+  owning note's pins are the authority, an in-group pin file only a convenience (**F1**);
+  `sha256sum -c` still checks every line.
+- **Two mechanical spot-checks this lane ran** against the round-9 scratch (read-only, no
+  run): (i) `runs/replay-consumed-post/rep1/http.log` reproduces the note's §3 fence
+  verbatim (303 → `== ABORTED response write` → replay 409) and
+  `runs/replay-guard-skip/rep1/ledger-after.json` carries `counter 1`,
+  `tokens {minted 1, consumed 1, refused 0}`, `apply(mode=pre, bodyBytes 50)`; (ii)
+  `verify-out.txt` prints `ec26a525bc7c6537` / `ab95cdd4b0b002a7` for the two central
+  cells — the exact digests the note's §10 SC-3 quotes for rep1/rep2/rep3.
