@@ -318,6 +318,16 @@ Markdown extraction adds before hashing). Usage: write these bytes to
 </html>
 ```
 
+### Fixture v2 — external-class edges (usage)
+
+The round-5-deferred **external-class fixture** (round-5 design §4, `282fc6d:plans/round-5.plan.md`; stop-rule-gated then, unlanded — `plans/round-5-record-draft.md:236`) landed round 6: bytes, runs and pins live in `corpus/knowledge/external-class-fixture-v2.md` (`4aa604f1788b`; pin 2026-10-14T17:52Z — the note is append-only and was still being appended in-wave, moving at least 3× over 17:48–17:52Z; re-derive before reuse). It extends the rung §11 fixture with the read-only edge classes a granted third-party run would meet: a 302 → 303 → 307 chain with a cross-path hop and a loopback **origin change** (`127.0.0.1:19541` → `19543`; plus an all-same-origin counterpart so the origin hop is the single differing factor), and four rate/ToS-shaped **instruments** — robots-shaped body, `429` + `Retry-After`, `403`, CAPTCHA-shaped interstitial served as a **200**.
+
+Usage: the fixture bytes are embedded in that note's §3 (they survive `/tmp`; per-file sha pins there — no file ends with a trailing newline, strip the Markdown-added one before hashing). Serve with `python3 server.py <site-dir> <port> [hop-url]` — both origins run the one server (`936f1584bf81`); recorded cell ports `19541` (site-a) / `19543` (site-b), CDP `19542`; runner modes `chain` · `probe-robots` · `probe-429` · `probe-403` · `probe-captcha`, plus the headers-arm variants `probe-429h` / `probe-403h`. The runner scripts and run artifacts are `/tmp`-staged (note §9 archive debt) — archive before citing.
+
+The stop-and-report predicate is mechanical, and a stop is proved from both sides (note §2, §5): first request is `/robots.txt`; an intended cell whose path matches a `Disallow:` prefix is **never issued**; the first `429`/`403` stops the run; a body-shape interstitial marker stops it **regardless of status** (its interstitial is a 200 — a status-only rule cannot see it, note §7 R4); skipped cells read `executed:false` and their paths must not appear in the server request log. Chain rules measured (note §4, §7): the wire carries every hop while the client surfaces only the final one; `redirectCount` is a same-origin-only witness (3 vs 0 across the origin hop); 307 preserves method and body end-to-end; `Network.getResponseBody` returns `-32000` unless the page has consumed the body (retained A/B: **2/2** `-32000` under a headers-only read vs **3/3** success after `response.text()` — mechanism open, its U2).
+
+**The 429 rule, written so it cannot be misread: a loopback 429 is an instrument, never a C6 datum** (note §8) — no real rate/rights surface is measured by it; `Retry-After` is recorded as a shape, never acted on; C6's deciding evidence stays an absence (approval U1); no real-site bytes are mirrored anywhere in the fixture (C3 default-deny holds).
+
 ## Capture-script call reference (what the measured harness sends)
 
 | CDP call | Params used | What you keep |
@@ -536,6 +546,19 @@ at `http://127.0.0.1:10086`
 (`~/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md:4,11`;
 `kimi.plugin.json:5,20`) — **live state, round 4: the daemon is down** (no listener,
 stale pid file; §Approval table's recheck commands, §Hygiene rules).
+
+**Revival assessment (round 6, lane B6-2):** `corpus/knowledge/webbridge-revival-assessment.md`
+(`a07c8aedc161`; pin 2026-10-14T17:48Z) — the restart is local and doc-specified (one
+idempotent `start`, `references/operations.md:11-14`), **assessed, not executed**; the
+extension↔daemon handshake has never been observed up and is **not doc-authorizable
+operator-free** (the substrate routes extension trouble to user actions,
+`operations.md:17-22`); at assessment time the operator's chromium ran with extension
+`2.0.23` installed while the daemon was down — the browser-side precondition for the
+handshake experiment (disposition U2) held for the first time, and executing it stays
+operator-scoped (a revival act). Read that note before any daemon `start`: a revival
+recreates the A4 stop debt (`operations.md:26`) and, with no unit or autostart, does not
+survive a session/OOM event (the r2 instance's death path — note §2, §4).
+
 Tools (`corpus/knowledge/webbridge-plugin-anatomy.md:79-87`;
 args/returns at the substrate `SKILL.md:15-30`): `navigate`, `find_tab`, `snapshot`
 (`@e` refs), `click`, `fill`, `evaluate`, `cdp`, `screenshot`, `network`, `upload`,
@@ -719,6 +742,12 @@ Live-state recheck commands before any reuse: `ss -ltnp | grep 10086`, then
 `/status` refused (`curl` exit 7), `ps -p 3934817` → gone (`hygiene-sweep-r4.md` §4;
 `network-evidence-rung.md` §8); the 8-field sample above is the last live reading, kept
 as record.
+**Field-count finding (round 6, lane B6-2):** the "8-field" reading above is a measured
+**undercount** — the two recorded samples carry **9** keys (mechanical count;
+`webbridge-revival-assessment.md` §6, §7 SC3; sources
+`webbridge-daemon-disposition.md:129-131`, `hygiene-sweep-r4.md:98`). No live re-probe is
+possible (daemon down; A3's iff-condition unmet). Errata on the five affected note lines
+is owed by the owning editors; this line records the finding, not a rewritten history.
 **Supersession (round 2):** the round-1 bullet "the corpus-builder posture leaves
 [start] untouched" is superseded as live posture — start was doc-authorized under the
 round plan and executed; the no-`stop`/`restart`/`uninstall` prohibition stands. Both
@@ -764,3 +793,4 @@ fd5f6861aa3bc97e1e63176099f1615fed3c81184a9b1dd61d546caafec5a3bc  webbridge-daem
 
 - **[2026-10-14, durable mirror — peer lane pointer]** The round-5 B5-1 archive copied the tabi `/tmp` groups into `corpus/evidence/` with per-group `MANIFEST.txt` (`corpus/knowledge/archive-receipt-r5.md`); 25 groups / 1,010 files, self-check 1,010/1,010 OK. The pins above now re-check against archived copies as well as `/tmp` (receipt check C: 107/109 in-group pin lines OK — the 2 failures are the r3b replay pin-file pair, F1, no owning-note pin affected).
 - **[2026-10-14, limit / open item]** This is a same-day-later re-derivation (17:0xZ vs 16:39Z). Round-5 plan clause (c) asks for a strictly-later-date re-derivation — TIME-GATED (earliest 2026-10-15) and still owed as a dated in-repo block + commit; its values to re-check are the post-append pins above. Per-capture artifact pins were not re-hashed in this pass (methodology / fixture / source pins were).
+- **[2026-10-14, round-6 SKILL upgrade — lane B6-4; additions-only]** Pre-edit sha256 of this file: `dcc33f1bf5311fd8893eecfc041cd9aefca31bfae1e82d711c0f7d77822484d4` (765 `wc -l`); the post-edit hash necessarily differs — re-derive with `sha256sum`. This revision is additions-only in content: no pre-existing line's text is altered (`git diff` shows four added hunks; the only non-addition is the file's former final line gaining a line break): (1) §Runbook — the new subsection "Fixture v2 — external-class edges (usage)", distilling `corpus/knowledge/external-class-fixture-v2.md` (`4aa604f1788b` at 17:52Z; lane B6-1; append-only note, moved ≥3× in-wave — re-derive): serving (`server.py <site-dir> <port> [hop-url]`; ports 19541/19543, CDP 19542), the five cell modes plus their headers-arm variants, the mechanical stop-and-report predicate (proved from both sides), and the note's §8 rule — a loopback 429 is an instrument, never a C6 datum; (2) §Webbridge — the revival-assessment pointer to `corpus/knowledge/webbridge-revival-assessment.md` (`a07c8aedc161`; lane B6-2): restart assessed not executed, handshake not doc-authorizable operator-free, A4/OOM conditions; (3) §Approval table — the `/status` field-count finding (the "8-field" shorthand is a measured undercount: 9 keys). Line refs below the §Runbook insertion, and below §Webbridge, shift accordingly; resolve `SKILL.md` pointers by section name + quoted text (standing convention, §Approval table). Pins in this block: fixture note `4aa604f1788b` (17:52Z; moving in-wave), revival note `a07c8aedc161` (17:48Z, unchanged at 17:52Z) — provisional until the archive keeps pace (`cdp-evidence-patterns.md:92`), re-derived at record time. This block records the revision; it edits nothing.
