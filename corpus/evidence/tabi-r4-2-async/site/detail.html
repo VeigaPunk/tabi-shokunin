@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TABI-R3-1 detail</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="frame">
+  <h1 id="page-title">TABI-R3-1 detail</h1>
+  <p>item: <span id="item-name">loading</span></p>
+  <p>region: <span id="item-region">loading</span></p>
+  <p><a id="to-form" href="form.html?id=1">open the travel form</a></p>
+  <p><a id="back" href="index.html">back to index</a></p>
+</div>
+<script>
+(function () {
+  var id = new URLSearchParams(location.search).get('id') || '';
+  var a = document.getElementById('to-form');
+  if (id) a.setAttribute('href', 'form.html?id=' + encodeURIComponent(id));
+  fetch('data.json').then(function (r) { return r.json(); }).then(function (d) {
+    var it = d.items[id] || { name: 'unknown', region: 'unknown' };
+    document.getElementById('item-name').textContent = it.name;
+    document.getElementById('item-region').textContent = it.region;
+  });
+})();
+</script>
+</body>
+</html>

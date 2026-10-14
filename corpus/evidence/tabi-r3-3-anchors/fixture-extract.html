@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TABI-R2-1 fixture</title>
+<style>
+  html, body { margin: 0; padding: 0; overflow: hidden; background: #ffffff; color: #111111;
+               font: 16px/1.5 monospace; }
+  #frame { width: 800px; height: 600px; box-sizing: border-box; padding: 24px; }
+  #btn { font: inherit; padding: 4px 12px; }
+  .confirm { color: #0a5; }
+</style>
+</head>
+<body>
+<div id="frame">
+  <h1>TABI-R2-1 dynamic fixture</h1>
+  <p id="static">static paragraph never mutated</p>
+  <button id="btn">mutate</button>
+  <p>count: <span id="count">0</span></p>
+  <ul id="list"></ul>
+  <div id="confirms"></div>
+  <p>status: <span id="status">booting</span></p>
+  <p>clock: <span id="clock">never</span></p>
+  <p>random: <span id="random">never</span></p>
+</div>
+<script>
+(function () {
+  var nondet = new URLSearchParams(location.search).get('nondet') === 'on';
+
+  setTimeout(function () {
+    document.getElementById('status').textContent = 'hydrated';
+  }, 150);
+
+  if (nondet) {
+    var tick = function () {
+      document.getElementById('clock').textContent = String(Date.now());
+      document.getElementById('random').textContent = Math.random().toString(36).slice(2, 10);
+    };
+    tick();
+    setInterval(tick, 250);
+  }
+
+  var count = 0;
+  document.getElementById('btn').addEventListener('click', function () {
+    count = count + 1;
+    document.getElementById('count').textContent = String(count);
+    var li = document.createElement('li');
+    li.id = 'item-' + count;
+    li.textContent = 'item ' + count;
+    document.getElementById('list').appendChild(li);
+    setTimeout(function () {
+      var d = document.createElement('div');
+      d.className = 'confirm';
+      d.id = 'confirm-' + count;
+      d.textContent = 'confirmed ' + count;
+      document.getElementById('confirms').appendChild(d);
+    }, 120);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+== envelope
+### Record envelope (all classes)
+
+From `corpus/knowledge/cdp-evidence-patterns.md:84-92`:
+
+1. URL + exact navigation input. For `data:` URLs, the whole document string. The
+   as-read-back `url` is as-normalized — record it too (`:139-150`).
+2. Browser provenance in **effective** form — chromium version + the child process
+   line, not the typed command; host launchers inject flags (`:18,30-32,85`).
+3. Session slot: capture time (UTC + local), browser WS endpoint, target `id` +
+   `frameId`; ids are per-launch.
+4. Evidence bytes + hash + the method/params that produced it.
+5. Determinism class per artifact (byte-stable vs time-varying).
+6. Cross-checks: prefer two independent surfaces agreeing (`/json/list` title
+   vs `document.title`; DOM node count via two methods — but define the count first,
+   step 9) — disagreement between *like* measurements is usually staleness, not
+   contradiction.
+7. Name the channel that produced each fact: HTTP `/json/*`, browser-level protocol,
+   page-level protocol, browser log — plus the **process table**, which the runbook
+   itself reads as evidence in steps 6 and 13 (added round 3 per
+   `executor-test-sufficiency.md` E3).
+8. Cleanup proof: pre-kill listening line + post-kill refusal; kill by explicit PID —
+   `pkill -f` self-matched the invoking shell (`:105`).
+9. Archive or it didn't happen: `/tmp` hashes are only verifiable while `/tmp` lives;
+   copy bytes to durable storage before citing (`:92`).
+
+## Bounded waits — state, never time

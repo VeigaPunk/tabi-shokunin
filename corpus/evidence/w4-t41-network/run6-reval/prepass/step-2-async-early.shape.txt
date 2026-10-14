@@ -1,0 +1,67 @@
+#document
+  html
+  HTML[lang=en]
+    HEAD
+      #text="\n"
+      META[charset=utf-8]
+      #text="\n"
+      TITLE
+        #text="TABI-R4-1 async"
+      #text="\n"
+      LINK[rel=stylesheet href=style.css]
+      #text="\n"
+      LINK[rel=stylesheet href=missing.css]
+      #text="\n"
+    #text="\n"
+    BODY
+      #text="\n"
+      DIV[id=frame]
+        #text="\n"
+        H1
+          #text="TABI-R4-1 async page"
+        #text="\n"
+        P
+          #text="state: "
+          SPAN[id=async-state]
+            #text="waiting"
+        #text="\n"
+        P
+          #text="slow: "
+          SPAN[id=payload-slow]
+            #text="none"
+        #text="\n"
+        P
+          #text="quick: "
+          SPAN[id=payload-quick]
+            #text="none"
+        #text="\n"
+        P[id=shown-note]
+          #text="SHOWN-MARKER-2c7f"
+        #text="\n"
+        P[id=hidden-note]
+          #text="HIDDEN-MARKER-7b3e"
+        #text="\n"
+        FORM[id=note-form action=confirm.html method=get]
+          #text="\n  "
+          LABEL
+            #text="note "
+            INPUT[id=note name=note type=text value=]
+          #text="\n  "
+          LABEL
+            INPUT[id=speed-fast name=speed type=radio value=fast]
+            #text=" fast"
+          #text="\n  "
+          LABEL
+            INPUT[id=speed-slow name=speed type=radio value=slow]
+            #text=" slow"
+          #text="\n  "
+          INPUT[type=hidden name=step value=3]
+          #text="\n  "
+          BUTTON[id=submit type=submit]
+            #text="send"
+          #text="\n"
+        #text="\n"
+      #text="\n"
+      SCRIPT
+        #text="\n(function () {\n  var ctl = new AbortController();\n  fetch('slow.json?abort=1', { signal: ctl.signal }).catch(function () {});\n  setTimeout(function () { ctl.abort(); }, 60);\n  var slow = fetch('slow.json').then(function (r) { return r.json(); });\n  var quick = fetch('quick.json').then(function (r) { return r.json(); });\n  Promise.all([slow, quick]).then(function (vals) {\n    document.getElementById('payload-slow').textContent = vals[0].value;\n    document.getElementById('payload-quick').textContent = vals[1].value;\n    document.getElementById('async-state').textContent = 'settled';\n  });\n})();\n"
+      #text="\n\n"

@@ -260,3 +260,7 @@ post-append hash necessarily differs — re-derive with `sha256sum`.
   round-4 groups (`/tmp/tabi-r4-1-network`, `-r4-2-async`, `-r4-3-sweep`); all
   present at 16:22Z — U5 (do they outlive the wave?) not falsified; every group
   still carries the archive obligation (`cdp-evidence-patterns.md:92`).
+
+Appended 2026-10-14 (tabi round 5, lane B5-3 — pin refresh; derivation pass 17:01–17:06Z; scratch `/tmp/w5-tabi-b53/` — volatile). Nothing above is edited. Pre-append sha256 of this file: `a4bbb39edb12fe08a8e5a4922336f486f3c2c35baefb17a582bdd7d5b83e003f`. The post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, pin refresh] VERIFIED — file pin re-derived; history blob held.** This note's hash → `a4bbb39edb12…` (= the §Pins value); round-1 blob still `9e4d69dcd658` (`git show 7961735:corpus/knowledge/browser-surface-census.md | sha256sum`). Capture-scoped live facts (du, mtimes, `Cookies` sizes, pids) stay as-of-capture; no environment re-run in this hash pass. Same-day-later pass — a strictly-later-date re-derivation remains open (round-5 plan clause (c)).

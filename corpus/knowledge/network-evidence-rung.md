@@ -604,3 +604,7 @@ if __name__ == "__main__":
 ## 12. Errata (append-only — never edit above blocks)
 
 *(none yet)*
+
+Appended 2026-10-14 (tabi round 5, lane B5-3 — pin refresh; derivation pass 17:01–17:06Z; scratch `/tmp/w5-tabi-b53/` — volatile). Nothing above is edited. Pre-append sha256 of this file: `4889ccf073a8399716b8347ab45659ea471f4ad808f46c14ebdd140c2241d335`. The post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, pin refresh] VERIFIED — §2 table 13/13 from the live scratch; file pin held.** fixture `9736f2ef9f05` / `1ab7b86f55c7` / `23e39f537f25` / `a984704c5702` / `274e22192d1d` / `3dee70f8b9fd` / `a5ceef29fae5`; harness `46c81f99decf` (475) / `67c94a3a275d` (106) / `9823428b4a40` / `ae5c8fee0d68` / `34b802d04cd9` / `24565a826526` — all match, `/tmp/w4-t41-network/methodology-sha.txt` re-checked. §11's embedded fixture was not byte-diffed in this pass. This note's hash → `4889ccf073a8…` (605). Same-day-later pass — a strictly-later-date re-derivation remains open (round-5 plan clause (c)).

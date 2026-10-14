@@ -81,3 +81,4 @@ per `plans/round-3.plan.md`.
   (executor note "297" → 298) corrected by the owning seat.
 - **retired:** none — no axis saturated, none a wrong fit.
 | 4 | coverage | round-3 state | network-evidence rung + async-step + hygiene sweep (webbridge daemon found OOM-dead — environment event recorded, operator return-to-baseline still owed) | wave-4 32-lane; AUD-TAB1 |
+| 5 | freshness | round-4 state | four-clause claim: evidence archived w/ manifest-pin equality, 4 lesson files with Gates, pins re-derived later-date, approval packet filed + one l0-questions line | wave-5 32-lane |

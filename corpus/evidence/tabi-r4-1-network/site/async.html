@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TABI-R4-1 async</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="frame">
+  <h1 id="page-title">TABI-R4-1 async-XHR fixture</h1>
+  <p>async: <span id="async-out">idle</span></p>
+  <p><button id="load-data">load async data</button></p>
+  <p>publish: <span id="pub-out">unpublished</span></p>
+  <p><button id="pub-btn">publish</button></p>
+</div>
+<script>
+(function () {
+  document.getElementById('load-data').addEventListener('click', function () {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'async-data.json');
+    xhr.onload = function () {
+      var d = JSON.parse(xhr.responseText);
+      document.getElementById('async-out').textContent = 'loaded:' + d.tag + ':' + d.n;
+    };
+    xhr.onerror = function () {
+      document.getElementById('async-out').textContent = 'error';
+    };
+    xhr.send();
+  });
+  document.getElementById('pub-btn').addEventListener('click', function () {
+    document.getElementById('pub-out').textContent = 'published';
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'publish-endpoint.json');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function () {};
+    xhr.onerror = function () {};
+    xhr.send('{"item":1}');
+  });
+})();
+</script>
+</body>
+</html>

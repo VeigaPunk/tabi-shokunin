@@ -740,3 +740,27 @@ line refs sit below those append points and remain valid against the current fil
 (`cdp-evidence-patterns.md:139-150`); one round-4 erratum supersedes the r2
 "launch-window listing non-replayable" downgrade (`cdp-evidence-patterns.md` §8 second
 block); and the daemon's live state moved again — see §Approval table and §Hygiene rules.
+
+## Errata — §Pins refresh (append-only; never edit above)
+
+Appended 2026-10-14 (tabi round 5, lane B5-3 — §Pins pin refresh; derivation pass 17:01–17:06Z, note appends 17:07–17:10Z; scratch `/tmp/w5-tabi-b53/` — volatile). Nothing above is edited. Pre-append sha256 of this file: `1e2f87caddff97eacf2148b3f7151ef17fc551898aaab544ccb1bae0b3758a21`. The post-append hash necessarily differs — re-derive with `sha256sum`; this block supersedes the note pins in §Pins above for post-append use.
+
+- **[2026-10-14, pin refresh] VERIFIED — 15/15 §Pins values re-derived; nothing had moved.** Commands: `sha256sum SKILL.md corpus/knowledge/*.md reports/r4-aud-tab1.md`; `sha256sum` over the three substrate files; `wc -l`; `git show <rev>:<path> | sha256sum` for history pins; per note, `sha256sum` over the `/tmp` group its pin block names. Matches (first 12): notes `6ce6fdd018a7` / `a4bbb39edb12` / `8de2ee008c9c` / `f97c10238907` / `03af1fb0693e` / `d6ad567a610c` / `5f04f6877e1e` / `8925ce6c46c7` / `4889ccf073a8` / `577af06bd9a8` / `4ddc67151b98`; report `5f44b0f94483`; substrate `e70aff5c40ff` / `84a8e69d04c5` (158 lines) / `b811d9c23dfd` (34 lines). Counts re-held (241 / 325 / 345 / 605 / 278 / 254; 158 / 34; 167). History pins re-derive from git: `49f0735b0594` / `9e4d69dcd658` / `034b1e53b004` (`git show 7961735:<path>`), `56224aa88430` (`5d2e95d`), `452bc514d387` / 576 lines (`094c27a:SKILL.md`). Daemon binary `71067480bd99…d35d` (= `webbridge-daemon-disposition.md` §8). §Pins' scratch still exists: `/tmp/w4-t4-4-tabi/pins-r4.txt` `cf8b50bd094c…` — it records SKILL.md as the r3-final `452bc514d387` / 576 because the round-4 SKILL revision landed after its 16:39Z derivation.
+- **[2026-10-14, post-append pins — the refreshed §Pins]** All 11 notes now carry a B5-3 refresh block (pre-append hash + derivation facts); `reports/r4-aud-tab1.md` was not appended to — its pin stands. Post-append `sha256sum corpus/knowledge/*.md` (17:10Z; trailing number = `wc -l`):
+
+```sh
+05dcda5e60b9ae4a58d05bd2a9c447be3bd22bedb9e1706b400859f8a070a0f4  async-step-evidence.md  282
+a33c22644d646a3c08c25d7e65d324f4db2c65d5da6e1ed45740150d0e25d75b  browser-surface-census.md  265
+337ff64579e8ba4bb581859d0286a59f0501a04c3d551b63864d9e362a4f53a2  cdp-evidence-patterns.md  234
+32772e3438486881590eb6f17e2a6982f8797424a62d8ded82569e675286f572  executor-test-sufficiency.md  329
+87155e12021d3ef7349efcb41eba3be4ff29eb719e1365a861c45bac280a791b  hygiene-sweep-r4.md  258
+b5e29a9a2adfdb1f474412c3cc0acce08da351e21cf608f09f1f70a1b5675e86  interaction-approval-table.md  246
+01266495b7614d6c563e5fd007844d9cf10ac8b50f9787844b0bb9d2ff542eac  live-dynamic-capture.md  245
+e0367890f1cfc91081481c2613a481d02aa83a6c320d0fe2fbaf5764c4878923  multi-step-journey.md  349
+d1564f38dc14a261ce31970bdc706c5a63a9abbf9fea811f367525ccf3c60cc7  network-evidence-rung.md  609
+fd5f6861aa3bc97e1e63176099f1615fed3c81184a9b1dd61d546caafec5a3bc  webbridge-daemon-disposition.md  274
+8d1488ab763e4fb1281f445879caacc96298c76f7257b96d4cb25a1f1ab1ef51  webbridge-plugin-anatomy.md  290
+```
+
+- **[2026-10-14, durable mirror — peer lane pointer]** The round-5 B5-1 archive copied the tabi `/tmp` groups into `corpus/evidence/` with per-group `MANIFEST.txt` (`corpus/knowledge/archive-receipt-r5.md`); 25 groups / 1,010 files, self-check 1,010/1,010 OK. The pins above now re-check against archived copies as well as `/tmp` (receipt check C: 107/109 in-group pin lines OK — the 2 failures are the r3b replay pin-file pair, F1, no owning-note pin affected).
+- **[2026-10-14, limit / open item]** This is a same-day-later re-derivation (17:0xZ vs 16:39Z). Round-5 plan clause (c) asks for a strictly-later-date re-derivation — TIME-GATED (earliest 2026-10-15) and still owed as a dated in-repo block + commit; its values to re-check are the post-append pins above. Per-capture artifact pins were not re-hashed in this pass (methodology / fixture / source pins were).

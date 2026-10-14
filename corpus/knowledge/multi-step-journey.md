@@ -344,3 +344,7 @@ edited. Pre-append sha256 of this file: `67febee374d0e47e270139d6545853bfdc46a3c
   equal this note's §1 pins; run1 PNGs re-hash to the §2 full values; run ended
   16:20:19Z with the closure pass lines. All `/tmp`-staged — archive obligation
   stands.
+
+Appended 2026-10-14 (tabi round 5, lane B5-3 — pin refresh; derivation pass 17:01–17:06Z; scratch `/tmp/w5-tabi-b53/` — volatile). Nothing above is edited. Pre-append sha256 of this file: `8925ce6c46c7be2f09468c583e3b01e6e224eefde96dc442055849f1fdef5071`. The post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, pin refresh] VERIFIED — §1/§2 methodology + fixture 9/9; file pin held.** methodology `b52074a33876…` / `9509c07f49f9…` / `ecce1c73dc56…`; site `42d7a35b82be` / `353d8107a072` / `50d811502ef8` / `84b6ea0c17f4` / `6380986105b3` / `bf141027b3ef` — all match §1/§2; `/tmp/tabi-r3-1-journey/` intact at 17:0xZ. This note's hash → `8925ce6c46c7…`. Same-day-later pass — a strictly-later-date re-derivation remains open (round-5 plan clause (c)).

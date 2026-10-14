@@ -229,3 +229,7 @@ edited. Pre-append sha256 of this file: `a024e025fa37006c51be87ce6118bc8407e3ec5
   and cleanup was re-verified afterwards (no survivor, port closed, curl exit
   7). Rule of record unchanged: an unverified kill is an unknown, not a
   cleanup (`:105`), and the pattern must not occur in the invoking command line.
+
+Appended 2026-10-14 (tabi round 5, lane B5-3 — pin refresh; derivation pass 17:01–17:06Z; scratch `/tmp/w5-tabi-b53/` — volatile). Nothing above is edited. Pre-append sha256 of this file: `8de2ee008c9c897c05cac2bd063760d5cf06afc972e61e830ab2fa1b86ce762f`. The post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, pin refresh] VERIFIED — file pin + §4 E9 artifact + stage dir held.** This note's hash → `8de2ee008c9c…` (= the §Pins value); round-1 blob still `034b1e53b004` (`git show 7961735:corpus/knowledge/cdp-evidence-patterns.md | sha256sum`). `/tmp/tabi3-cdp/` intact at 17:0xZ: `cdp-probe.mjs` `e6723611…`, `screenshot.png` `c1ba9588baa833dd33f9378a10f4f0e9a1cb50e06667ddd99b1198fd58c93b6e` (9,074 B — the E9 value holds a further pass), `run1.json` + `cdp-summary.json` present. Same-day-later pass — a strictly-later-date re-derivation remains open (round-5 plan clause (c)).

@@ -240,3 +240,8 @@ post-append hash necessarily differs — re-derive with `sha256sum`.
   disposition row changes; A4's "round-2 daemon still listening" clause in the
   SKILL distillation is now stale (SKILL-side fix owed; recorded here for the
   scribe).
+
+Appended 2026-10-14 (tabi round 5, lane B5-3 — pin refresh; derivation pass 17:01–17:06Z; scratch `/tmp/w5-tabi-b53/` — volatile). Nothing above is edited. Pre-append sha256 of this file: `d6ad567a610cf42fe3691a1549a7743f34d47d3179424c77b6021bc23b293b2b`. The post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, pin refresh] VERIFIED — §6 targets + all 11 scratch transcripts re-derived; file pin held.** The §6 note pins are the round-3 values; as of today those notes re-derive to `6ce6fdd018a7` / `a4bbb39edb12` / `8de2ee008c9c` / `f97c10238907` / `03af1fb0693e` (each moved by the round-4 appends — §Pins carries the current set; §6's "all match the SKILL.md pin block" holds against the 16:39Z snapshot). Substrate 3/3 unchanged (`84a8e69d04c5` / `b811d9c23dfd` / `e70aff5c40ff`); `/tmp/tabi-r3-2-spot/` intact — `spot1-corpus-pins.txt` `fd67e6f1c2df…` … `spot14-checks.txt` `f1794f41fb17…`, 11/11 match §6. This note's hash → `d6ad567a610c…`.
+- **[2026-10-14, read-side] §6's SKILL pin is historical.** `ea7122d92d7b` / 432 lines was a mid-edit revision, not git-preserved — not re-derivable; current `SKILL.md` = `1e2f87caddff…`, 741 lines. The §-name + quoted-string resolution rule stands. Same-day-later pass — a strictly-later-date re-derivation remains open (round-5 plan clause (c)).

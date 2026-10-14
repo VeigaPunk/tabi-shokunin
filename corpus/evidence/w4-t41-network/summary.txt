@@ -1,0 +1,462 @@
+
+========== run1 ==========
+started=2026-10-14T16:31:09.298Z ended=2026-10-14T16:31:10.481Z error=none
+browser=Chrome/152.0.7977.82 protocol=1.3
+captures=6 requests=11
+
+-- captures
+step-1-index	atRelMs=134	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=3
+step-1-index-idem	atRelMs=499	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=0
+step-2-async-early	atRelMs=617	png=2484f8a89f1933e1/18568B	shape=5bddf0eb6512b0a1	nodes=67	url=/async.html	netUpdated=6
+step-2-async-settled	atRelMs=984	png=fc99ccec3461b45c/22229B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=1
+step-3-async-filled	atRelMs=1051	png=cd8e564185d167a3/22825B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=0
+step-4-confirm	atRelMs=1182	png=a49bdc73268c7921/11092B	shape=330fb290f9021adf	nodes=39	url=/confirm.html?note=tabi-r4&speed=slow&step=3	netUpdated=2
+inputs(step-3-async-filled)=[{"id":"note","name":"note","type":"text","inputValue":"tabi-r4","inputChecked":null},{"id":"speed-fast","name":"speed","type":"radio","inputValue":"fast","inputChecked":false},{"id":"speed-slow","name":"speed","type":"radio","inputValue":"slow","inputChecked":true},{"name":"step","type":"hidden","inputValue":"3","inputChecked":null}]
+
+-- requests (event summary)
+#0 987B853C GET Document hops=[/index.html] transition=- wire=[200] respChain=[200] client=200 mime=text/html respEnc=186 finEnc=546 body=360 wireHdrText=186 waitMs=3.2 recvMs=-0.2 totalMs=2.9 timingHdrEnd=2.1
+#1 1474095. GET Stylesheet hops=[/style.css] transition=- wire=[200] respChain=[200] client=200 mime=text/css respEnc=185 finEnc=568 body=383 wireHdrText=185 waitMs=2.7 recvMs=0 totalMs=2.7 timingHdrEnd=0.4
+#2 1474095. GET Other hops=[/favicon.ico] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=185 finEnc=645 body=460 wireHdrText=185 waitMs=1.4 recvMs=0 totalMs=1.4 timingHdrEnd=0.6
+#3 B768BFEE GET Document hops=[/go | 302->/async.html] transition=- wire=[302,200] respChain=[200] client=200 mime=text/html respEnc=187 finEnc=1709 body=1522 wireHdrText=139,187 waitMs=0.7 recvMs=-0.1 totalMs=1.6 timingHdrEnd=0.2
+#4 1474095. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(cacheEvent) mime=text/css respEnc=568 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.4
+#5 1474095. GET Stylesheet hops=[/missing.css] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=185 finEnc=- body=0 wireHdrText=185 waitMs=1.2 recvMs=- totalMs=- timingHdrEnd=0.4 FAILED=net::ERR_ABORTED@1.2ms
+#6 1474095. GET Fetch hops=[/slow.json?abort=1] transition=- wire=[] respChain=[] client=- mime=- respEnc=- finEnc=- body=- wireHdrText= waitMs=- recvMs=- totalMs=- timingHdrEnd=- FAILED=net::ERR_ABORTED@60.3ms
+#7 1474095. GET Fetch hops=[/slow.json] transition=- wire=[200] respChain=[200] client=200 mime=application/json respEnc=192 finEnc=239 body=47 wireHdrText=192 waitMs=401.5 recvMs=-0.1 totalMs=401.4 timingHdrEnd=400.7
+#8 1474095. GET Fetch hops=[/quick.json] transition=- wire=[200] respChain=[200] client=200 mime=application/json respEnc=192 finEnc=241 body=49 wireHdrText=192 waitMs=4.1 recvMs=-2.5 totalMs=1.5 timingHdrEnd=0.4
+#9 599F3302 GET Document hops=[/confirm.html?note=tabi-r4&speed=slow&step=3] transition=- wire=[200] respChain=[200] client=200 mime=text/html respEnc=186 finEnc=838 body=652 wireHdrText=186 waitMs=1.5 recvMs=-0.5 totalMs=1 timingHdrEnd=0.3
+#10 1474095. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(cacheEvent) mime=text/css respEnc=568 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.4
+
+-- per-capture network updates
+step-1-index: 987B853C* req:/index.html reqExtra(14h) wire:200 resp:200 fin:546B
+step-1-index: 1474095.* req:/style.css reqExtra(13h) wire:200 resp:200 fin:568B
+step-1-index: 1474095.* req:/favicon.ico reqExtra(13h) wire:404 resp:404 fin:645B
+step-1-index-idem: (no network change)
+step-2-async-early: B768BFEE* req:/go reqExtra(15h) wire:302 req:/async.html reqExtra(15h) wire:200 resp:200 fin:1709B
+step-2-async-early: 1474095.* req:/style.css cache resp:200 fin:0B
+step-2-async-early: 1474095.* req:/missing.css resp:404 fail:net::ERR_ABORTED reqExtra(13h) wire:404
+step-2-async-early: 1474095.* req:/slow.json?abort=1 reqExtra(13h) fail:net::ERR_ABORTED
+step-2-async-early: 1474095.* req:/slow.json reqExtra(13h)
+step-2-async-early: 1474095.* req:/quick.json reqExtra(13h) wire:200 resp:200 fin:241B
+step-2-async-settled: 1474095.  req:/slow.json reqExtra(13h) wire:200 resp:200 fin:239B
+step-3-async-filled: (no network change)
+step-4-confirm: 599F3302* req:/confirm.html?note=tabi-r4&speed=slow&step=3 resp:200 reqExtra(15h) wire:200 fin:838B
+step-4-confirm: 1474095.* req:/style.css cache resp:200 fin:0B
+
+-- perf entries (last capture)
+perf /style.css type=link start=5ms dur=0ms transfer=0 encBody=383 decBody=383 status=200
+perfNav [{"name":"http://127.0.0.1:19431/confirm.html?note=tabi-r4&speed=slow&step=3","type":"navigate","startTime":0,"duration":6.0999999940395355,"transferSize":952,"encodedBodySize":652,"decodedBodySize":652,"responseStatus":200}]
+
+-- server log: 10 request lines
+server 200 /index.html
+server 200 /style.css
+server 404 /favicon.ico
+server 302 /go
+server 200 /async.html
+server 404 /missing.css
+server 200 /quick.json
+server 200 /slow.json?abort=1
+server 200 /slow.json
+server 200 /confirm.html?note=tabi-r4&speed=slow&step=3
+client-request-hops=12 server-request-lines=10
+count-delta: client-hops=3 server-lines=1 /style.css
+history=blank#auto_toplevel > /index.html#typed > /async.html#link > /confirm.html?note=tabi-r4&speed=slow&step=3#form_submit
+
+========== run2 ==========
+started=2026-10-14T16:31:11.758Z ended=2026-10-14T16:31:12.915Z error=none
+browser=Chrome/152.0.7977.82 protocol=1.3
+captures=6 requests=11
+
+-- captures
+step-1-index	atRelMs=140	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=3
+step-1-index-idem	atRelMs=489	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=0
+step-2-async-early	atRelMs=608	png=2484f8a89f1933e1/18568B	shape=5bddf0eb6512b0a1	nodes=67	url=/async.html	netUpdated=6
+step-2-async-settled	atRelMs=975	png=fc99ccec3461b45c/22229B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=1
+step-3-async-filled	atRelMs=1041	png=cd8e564185d167a3/22825B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=0
+step-4-confirm	atRelMs=1156	png=a49bdc73268c7921/11092B	shape=330fb290f9021adf	nodes=39	url=/confirm.html?note=tabi-r4&speed=slow&step=3	netUpdated=2
+inputs(step-3-async-filled)=[{"id":"note","name":"note","type":"text","inputValue":"tabi-r4","inputChecked":null},{"id":"speed-fast","name":"speed","type":"radio","inputValue":"fast","inputChecked":false},{"id":"speed-slow","name":"speed","type":"radio","inputValue":"slow","inputChecked":true},{"name":"step","type":"hidden","inputValue":"3","inputChecked":null}]
+
+-- requests (event summary)
+#0 5BEC647D GET Document hops=[/index.html] transition=- wire=[200] respChain=[200] client=200 mime=text/html respEnc=186 finEnc=546 body=360 wireHdrText=186 waitMs=2.7 recvMs=-0.1 totalMs=2.5 timingHdrEnd=1.8
+#1 1474602. GET Stylesheet hops=[/style.css] transition=- wire=[200] respChain=[200] client=200 mime=text/css respEnc=185 finEnc=568 body=383 wireHdrText=185 waitMs=2.6 recvMs=-0.1 totalMs=2.6 timingHdrEnd=0.3
+#2 1474602. GET Other hops=[/favicon.ico] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=185 finEnc=645 body=460 wireHdrText=185 waitMs=1.3 recvMs=0 totalMs=1.3 timingHdrEnd=0.7
+#3 6F0E6F14 GET Document hops=[/go | 302->/async.html] transition=- wire=[302,200] respChain=[200] client=200 mime=text/html respEnc=187 finEnc=1709 body=1522 wireHdrText=139,187 waitMs=0.8 recvMs=-0.1 totalMs=1.7 timingHdrEnd=0.3
+#4 1474602. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(cacheEvent) mime=text/css respEnc=568 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.3
+#5 1474602. GET Stylesheet hops=[/missing.css] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=185 finEnc=- body=0 wireHdrText=185 waitMs=1.2 recvMs=- totalMs=- timingHdrEnd=0.5 FAILED=net::ERR_ABORTED@1.2ms
+#6 1474602. GET Fetch hops=[/slow.json?abort=1] transition=- wire=[] respChain=[] client=- mime=- respEnc=- finEnc=- body=- wireHdrText= waitMs=- recvMs=- totalMs=- timingHdrEnd=- FAILED=net::ERR_ABORTED@60.3ms
+#7 1474602. GET Fetch hops=[/slow.json] transition=- wire=[200] respChain=[200] client=200 mime=application/json respEnc=192 finEnc=239 body=47 wireHdrText=192 waitMs=401.7 recvMs=-0.1 totalMs=401.6 timingHdrEnd=400.8
+#8 1474602. GET Fetch hops=[/quick.json] transition=- wire=[200] respChain=[200] client=200 mime=application/json respEnc=192 finEnc=241 body=49 wireHdrText=192 waitMs=4.3 recvMs=-2.7 totalMs=1.6 timingHdrEnd=0.5
+#9 E69442B4 GET Document hops=[/confirm.html?note=tabi-r4&speed=slow&step=3] transition=- wire=[200] respChain=[200] client=200 mime=text/html respEnc=186 finEnc=838 body=652 wireHdrText=186 waitMs=1.5 recvMs=-0.5 totalMs=1 timingHdrEnd=0.3
+#10 1474602. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(cacheEvent) mime=text/css respEnc=568 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.3
+
+-- per-capture network updates
+step-1-index: 5BEC647D* req:/index.html reqExtra(14h) wire:200 resp:200 fin:546B
+step-1-index: 1474602.* req:/style.css reqExtra(13h) wire:200 resp:200 fin:568B
+step-1-index: 1474602.* req:/favicon.ico reqExtra(13h) wire:404 resp:404 fin:645B
+step-1-index-idem: (no network change)
+step-2-async-early: 6F0E6F14* req:/go reqExtra(15h) wire:302 req:/async.html reqExtra(15h) wire:200 resp:200 fin:1709B
+step-2-async-early: 1474602.* req:/style.css cache resp:200 fin:0B
+step-2-async-early: 1474602.* req:/missing.css resp:404 fail:net::ERR_ABORTED reqExtra(13h) wire:404
+step-2-async-early: 1474602.* req:/slow.json?abort=1 reqExtra(13h) fail:net::ERR_ABORTED
+step-2-async-early: 1474602.* req:/slow.json reqExtra(13h)
+step-2-async-early: 1474602.* req:/quick.json reqExtra(13h) wire:200 resp:200 fin:241B
+step-2-async-settled: 1474602.  req:/slow.json reqExtra(13h) wire:200 resp:200 fin:239B
+step-3-async-filled: (no network change)
+step-4-confirm: E69442B4* req:/confirm.html?note=tabi-r4&speed=slow&step=3 resp:200 reqExtra(15h) wire:200 fin:838B
+step-4-confirm: 1474602.* req:/style.css cache resp:200 fin:0B
+
+-- perf entries (last capture)
+perf /style.css type=link start=5ms dur=0ms transfer=0 encBody=383 decBody=383 status=200
+perfNav [{"name":"http://127.0.0.1:19431/confirm.html?note=tabi-r4&speed=slow&step=3","type":"navigate","startTime":0,"duration":6.300000011920929,"transferSize":952,"encodedBodySize":652,"decodedBodySize":652,"responseStatus":200}]
+
+-- server log: 10 request lines
+server 200 /index.html
+server 200 /style.css
+server 404 /favicon.ico
+server 302 /go
+server 200 /async.html
+server 404 /missing.css
+server 200 /quick.json
+server 200 /slow.json?abort=1
+server 200 /slow.json
+server 200 /confirm.html?note=tabi-r4&speed=slow&step=3
+client-request-hops=12 server-request-lines=10
+count-delta: client-hops=3 server-lines=1 /style.css
+history=blank#auto_toplevel > /index.html#typed > /async.html#link > /confirm.html?note=tabi-r4&speed=slow&step=3#form_submit
+
+========== run3 ==========
+started=2026-10-14T16:31:14.189Z ended=2026-10-14T16:31:15.348Z error=none
+browser=Chrome/152.0.7977.82 protocol=1.3
+captures=6 requests=11
+
+-- captures
+step-1-index	atRelMs=142	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=3
+step-1-index-idem	atRelMs=491	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=0
+step-2-async-early	atRelMs=576	png=2484f8a89f1933e1/18568B	shape=5bddf0eb6512b0a1	nodes=67	url=/async.html	netUpdated=6
+step-2-async-settled	atRelMs=976	png=fc99ccec3461b45c/22229B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=1
+step-3-async-filled	atRelMs=1042	png=cd8e564185d167a3/22825B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=0
+step-4-confirm	atRelMs=1157	png=a49bdc73268c7921/11092B	shape=330fb290f9021adf	nodes=39	url=/confirm.html?note=tabi-r4&speed=slow&step=3	netUpdated=2
+inputs(step-3-async-filled)=[{"id":"note","name":"note","type":"text","inputValue":"tabi-r4","inputChecked":null},{"id":"speed-fast","name":"speed","type":"radio","inputValue":"fast","inputChecked":false},{"id":"speed-slow","name":"speed","type":"radio","inputValue":"slow","inputChecked":true},{"name":"step","type":"hidden","inputValue":"3","inputChecked":null}]
+
+-- requests (event summary)
+#0 C0D64A8D GET Document hops=[/index.html] transition=- wire=[200] respChain=[200] client=200 mime=text/html respEnc=186 finEnc=546 body=360 wireHdrText=186 waitMs=3.3 recvMs=-0.2 totalMs=3.1 timingHdrEnd=2.3
+#1 1474975. GET Stylesheet hops=[/style.css] transition=- wire=[200] respChain=[200] client=200 mime=text/css respEnc=185 finEnc=568 body=383 wireHdrText=185 waitMs=2.6 recvMs=0 totalMs=2.6 timingHdrEnd=0.4
+#2 1474975. GET Other hops=[/favicon.ico] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=185 finEnc=645 body=460 wireHdrText=185 waitMs=1.4 recvMs=0 totalMs=1.4 timingHdrEnd=0.6
+#3 BD97FB68 GET Document hops=[/go | 302->/async.html] transition=- wire=[302,200] respChain=[200] client=200 mime=text/html respEnc=187 finEnc=1709 body=1522 wireHdrText=139,187 waitMs=0.7 recvMs=-0.1 totalMs=1.5 timingHdrEnd=0.2
+#4 1474975. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(cacheEvent) mime=text/css respEnc=568 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.4
+#5 1474975. GET Stylesheet hops=[/missing.css] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=185 finEnc=- body=0 wireHdrText=185 waitMs=0.9 recvMs=- totalMs=- timingHdrEnd=0.4 FAILED=net::ERR_ABORTED@0.9ms
+#6 1474975. GET Fetch hops=[/slow.json?abort=1] transition=- wire=[] respChain=[] client=- mime=- respEnc=- finEnc=- body=- wireHdrText= waitMs=- recvMs=- totalMs=- timingHdrEnd=- FAILED=net::ERR_ABORTED@60.3ms
+#7 1474975. GET Fetch hops=[/slow.json] transition=- wire=[200] respChain=[200] client=200 mime=application/json respEnc=192 finEnc=239 body=47 wireHdrText=192 waitMs=401.3 recvMs=0 totalMs=401.3 timingHdrEnd=400.6
+#8 1474975. GET Fetch hops=[/quick.json] transition=- wire=[200] respChain=[200] client=200 mime=application/json respEnc=192 finEnc=241 body=49 wireHdrText=192 waitMs=4.4 recvMs=-3.3 totalMs=1.1 timingHdrEnd=0.4
+#9 41365D6F GET Document hops=[/confirm.html?note=tabi-r4&speed=slow&step=3] transition=- wire=[200] respChain=[200] client=200 mime=text/html respEnc=186 finEnc=838 body=652 wireHdrText=186 waitMs=1.5 recvMs=-0.4 totalMs=1.1 timingHdrEnd=0.4
+#10 1474975. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(cacheEvent) mime=text/css respEnc=568 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.4
+
+-- per-capture network updates
+step-1-index: C0D64A8D* req:/index.html reqExtra(14h) wire:200 resp:200 fin:546B
+step-1-index: 1474975.* req:/style.css reqExtra(13h) resp:200 fin:568B wire:200
+step-1-index: 1474975.* req:/favicon.ico reqExtra(13h) wire:404 resp:404 fin:645B
+step-1-index-idem: (no network change)
+step-2-async-early: BD97FB68* req:/go reqExtra(15h) wire:302 req:/async.html reqExtra(15h) wire:200 resp:200 fin:1709B
+step-2-async-early: 1474975.* req:/style.css cache resp:200 fin:0B
+step-2-async-early: 1474975.* req:/missing.css resp:404 fail:net::ERR_ABORTED reqExtra(13h) wire:404
+step-2-async-early: 1474975.* req:/slow.json?abort=1 reqExtra(13h) fail:net::ERR_ABORTED
+step-2-async-early: 1474975.* req:/slow.json reqExtra(13h)
+step-2-async-early: 1474975.* req:/quick.json reqExtra(13h) wire:200 resp:200 fin:241B
+step-2-async-settled: 1474975.  req:/slow.json reqExtra(13h) wire:200 resp:200 fin:239B
+step-3-async-filled: (no network change)
+step-4-confirm: 41365D6F* req:/confirm.html?note=tabi-r4&speed=slow&step=3 resp:200 reqExtra(15h) wire:200 fin:838B
+step-4-confirm: 1474975.* req:/style.css cache resp:200 fin:0B
+
+-- perf entries (last capture)
+perf /style.css type=link start=5ms dur=0ms transfer=0 encBody=383 decBody=383 status=200
+perfNav [{"name":"http://127.0.0.1:19431/confirm.html?note=tabi-r4&speed=slow&step=3","type":"navigate","startTime":0,"duration":6.200000002980232,"transferSize":952,"encodedBodySize":652,"decodedBodySize":652,"responseStatus":200}]
+
+-- server log: 10 request lines
+server 200 /index.html
+server 200 /style.css
+server 404 /favicon.ico
+server 302 /go
+server 200 /async.html
+server 404 /missing.css
+server 200 /quick.json
+server 200 /slow.json?abort=1
+server 200 /slow.json
+server 200 /confirm.html?note=tabi-r4&speed=slow&step=3
+client-request-hops=12 server-request-lines=10
+count-delta: client-hops=3 server-lines=1 /style.css
+history=blank#auto_toplevel > /index.html#typed > /async.html#link > /confirm.html?note=tabi-r4&speed=slow&step=3#form_submit
+
+========== run4-warm ==========
+started=2026-10-14T16:31:16.628Z ended=2026-10-14T16:31:17.448Z error=none
+browser=Chrome/152.0.7977.82 protocol=1.3
+captures=6 requests=11
+
+-- captures
+step-1-index	atRelMs=136	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=3
+step-1-index-idem	atRelMs=485	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=0
+step-2-async-early	atRelMs=570	png=fc99ccec3461b45c/22229B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=6
+step-2-async-settled	atRelMs=636	png=fc99ccec3461b45c/22229B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=0
+step-3-async-filled	atRelMs=703	png=cd8e564185d167a3/22825B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=0
+step-4-confirm	atRelMs=818	png=a49bdc73268c7921/11092B	shape=330fb290f9021adf	nodes=39	url=/confirm.html?note=tabi-r4&speed=slow&step=3	netUpdated=2
+inputs(step-3-async-filled)=[{"id":"note","name":"note","type":"text","inputValue":"tabi-r4","inputChecked":null},{"id":"speed-fast","name":"speed","type":"radio","inputValue":"fast","inputChecked":false},{"id":"speed-slow","name":"speed","type":"radio","inputValue":"slow","inputChecked":true},{"name":"step","type":"hidden","inputValue":"3","inputChecked":null}]
+
+-- requests (event summary)
+#0 D8076A3D GET Document hops=[/index.html] transition=- wire=[] respChain=[200] client=200(disk) mime=text/html respEnc=0 finEnc=0 body=360 wireHdrText= waitMs=1.1 recvMs=-0.2 totalMs=0.9 timingHdrEnd=0.2
+#1 1475395. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(disk) mime=text/css respEnc=0 finEnc=0 body=383 wireHdrText= waitMs=2.6 recvMs=-0.1 totalMs=2.6 timingHdrEnd=0.1
+#2 1475395. GET Other hops=[/favicon.ico] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=185 finEnc=645 body=460 wireHdrText=185 waitMs=2.4 recvMs=0 totalMs=2.4 timingHdrEnd=1.8
+#3 0BD734B6 GET Document hops=[/go | 302->/async.html] transition=- wire=[302] respChain=[200] client=200(disk) mime=text/html respEnc=0 finEnc=0 body=1522 wireHdrText=139 waitMs=0.6 recvMs=-0.1 totalMs=1.6 timingHdrEnd=0.1
+#4 1475395. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(disk)(cacheEvent) mime=text/css respEnc=0 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.1
+#5 1475395. GET Stylesheet hops=[/missing.css] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=185 finEnc=- body=0 wireHdrText=185 waitMs=0.9 recvMs=- totalMs=- timingHdrEnd=0.4 FAILED=net::ERR_ABORTED@0.9ms
+#6 1475395. GET Fetch hops=[/slow.json?abort=1] transition=- wire=[] respChain=[] client=- mime=- respEnc=- finEnc=- body=- wireHdrText= waitMs=- recvMs=- totalMs=- timingHdrEnd=- FAILED=net::ERR_ABORTED@60.3ms
+#7 1475395. GET Fetch hops=[/slow.json] transition=- wire=[] respChain=[200] client=200(disk) mime=application/json respEnc=0 finEnc=0 body=47 wireHdrText= waitMs=4 recvMs=-3.2 totalMs=0.8 timingHdrEnd=0.2
+#8 1475395. GET Fetch hops=[/quick.json] transition=- wire=[] respChain=[200] client=200(disk) mime=application/json respEnc=0 finEnc=0 body=49 wireHdrText= waitMs=4.2 recvMs=-3.4 totalMs=0.8 timingHdrEnd=0.3
+#9 EB975568 GET Document hops=[/confirm.html?note=tabi-r4&speed=slow&step=3] transition=- wire=[] respChain=[200] client=200(disk) mime=text/html respEnc=0 finEnc=0 body=652 wireHdrText= waitMs=1.5 recvMs=-0.7 totalMs=0.8 timingHdrEnd=0.2
+#10 1475395. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(disk)(cacheEvent) mime=text/css respEnc=0 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.1
+
+-- per-capture network updates
+step-1-index: D8076A3D* req:/index.html resp:200 fin:0B
+step-1-index: 1475395.* req:/style.css resp:200 fin:0B
+step-1-index: 1475395.* req:/favicon.ico reqExtra(13h) wire:404 resp:404 fin:645B
+step-1-index-idem: (no network change)
+step-2-async-early: 0BD734B6* req:/go reqExtra(15h) wire:302 req:/async.html resp:200 fin:0B
+step-2-async-early: 1475395.* req:/style.css cache resp:200 fin:0B
+step-2-async-early: 1475395.* req:/missing.css resp:404 fail:net::ERR_ABORTED reqExtra(13h) wire:404
+step-2-async-early: 1475395.* reqExtra(13h) req:/slow.json?abort=1 fail:net::ERR_ABORTED
+step-2-async-early: 1475395.* req:/slow.json resp:200 fin:0B
+step-2-async-early: 1475395.* req:/quick.json resp:200 fin:0B
+step-2-async-settled: (no network change)
+step-3-async-filled: (no network change)
+step-4-confirm: EB975568* req:/confirm.html?note=tabi-r4&speed=slow&step=3 resp:200 fin:0B
+step-4-confirm: 1475395.* req:/style.css cache resp:200 fin:0B
+
+-- perf entries (last capture)
+perf /style.css type=link start=4ms dur=0ms transfer=0 encBody=383 decBody=383 status=200
+perfNav [{"name":"http://127.0.0.1:19431/confirm.html?note=tabi-r4&speed=slow&step=3","type":"navigate","startTime":0,"duration":6.199999988079071,"transferSize":0,"encodedBodySize":652,"decodedBodySize":652,"responseStatus":200}]
+
+-- server log: 3 request lines
+server 404 /favicon.ico
+server 302 /go
+server 404 /missing.css
+client-request-hops=12 server-request-lines=3
+count-delta: client-hops=1 server-lines=0 /index.html
+count-delta: client-hops=3 server-lines=0 /style.css
+count-delta: client-hops=1 server-lines=0 /async.html
+count-delta: client-hops=1 server-lines=0 /slow.json?abort=1
+count-delta: client-hops=1 server-lines=0 /slow.json
+count-delta: client-hops=1 server-lines=0 /quick.json
+count-delta: client-hops=1 server-lines=0 /confirm.html?note=tabi-r4&speed=slow&step=3
+history=blank#auto_toplevel > /index.html#typed > /async.html#link > /confirm.html?note=tabi-r4&speed=slow&step=3#form_submit
+
+========== run4b-warm ==========
+started=2026-10-14T16:31:24.391Z ended=2026-10-14T16:31:25.198Z error=none
+browser=Chrome/152.0.7977.82 protocol=1.3
+captures=6 requests=11
+
+-- captures
+step-1-index	atRelMs=141	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=3
+step-1-index-idem	atRelMs=490	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=0
+step-2-async-early	atRelMs=575	png=fc99ccec3461b45c/22229B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=6
+step-2-async-settled	atRelMs=625	png=fc99ccec3461b45c/22229B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=0
+step-3-async-filled	atRelMs=692	png=cd8e564185d167a3/22825B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=0
+step-4-confirm	atRelMs=806	png=a49bdc73268c7921/11092B	shape=330fb290f9021adf	nodes=39	url=/confirm.html?note=tabi-r4&speed=slow&step=3	netUpdated=2
+inputs(step-3-async-filled)=[{"id":"note","name":"note","type":"text","inputValue":"tabi-r4","inputChecked":null},{"id":"speed-fast","name":"speed","type":"radio","inputValue":"fast","inputChecked":false},{"id":"speed-slow","name":"speed","type":"radio","inputValue":"slow","inputChecked":true},{"name":"step","type":"hidden","inputValue":"3","inputChecked":null}]
+
+-- requests (event summary)
+#0 95931385 GET Document hops=[/index.html] transition=- wire=[] respChain=[200] client=200(disk) mime=text/html respEnc=0 finEnc=0 body=360 wireHdrText= waitMs=1.2 recvMs=-0.2 totalMs=1.1 timingHdrEnd=0.2
+#1 1476771. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(disk) mime=text/css respEnc=0 finEnc=0 body=383 wireHdrText= waitMs=2.4 recvMs=-0.1 totalMs=2.3 timingHdrEnd=0.1
+#2 1476771. GET Other hops=[/favicon.ico] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=185 finEnc=645 body=460 wireHdrText=185 waitMs=2.4 recvMs=0 totalMs=2.4 timingHdrEnd=1.8
+#3 90D87E3F GET Document hops=[/go | 302->/async.html] transition=- wire=[302] respChain=[200] client=200(disk) mime=text/html respEnc=0 finEnc=0 body=1522 wireHdrText=139 waitMs=0.6 recvMs=-0.1 totalMs=1.7 timingHdrEnd=0.1
+#4 1476771. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(disk)(cacheEvent) mime=text/css respEnc=0 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.1
+#5 1476771. GET Stylesheet hops=[/missing.css] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=185 finEnc=- body=0 wireHdrText=185 waitMs=1.2 recvMs=- totalMs=- timingHdrEnd=0.4 FAILED=net::ERR_ABORTED@1.2ms
+#6 1476771. GET Fetch hops=[/slow.json?abort=1] transition=- wire=[] respChain=[] client=- mime=- respEnc=- finEnc=- body=- wireHdrText= waitMs=- recvMs=- totalMs=- timingHdrEnd=- FAILED=net::ERR_ABORTED@60.3ms
+#7 1476771. GET Fetch hops=[/slow.json] transition=- wire=[] respChain=[200] client=200(disk) mime=application/json respEnc=0 finEnc=0 body=47 wireHdrText= waitMs=4.2 recvMs=-3.3 totalMs=1 timingHdrEnd=0.2
+#8 1476771. GET Fetch hops=[/quick.json] transition=- wire=[] respChain=[200] client=200(disk) mime=application/json respEnc=0 finEnc=0 body=49 wireHdrText= waitMs=4.4 recvMs=-3.4 totalMs=1 timingHdrEnd=0.4
+#9 EC845DE1 GET Document hops=[/confirm.html?note=tabi-r4&speed=slow&step=3] transition=- wire=[] respChain=[200] client=200(disk) mime=text/html respEnc=0 finEnc=0 body=652 wireHdrText= waitMs=1.6 recvMs=-0.7 totalMs=0.9 timingHdrEnd=0.2
+#10 1476771. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(disk)(cacheEvent) mime=text/css respEnc=0 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.1
+
+-- per-capture network updates
+step-1-index: 95931385* req:/index.html resp:200 fin:0B
+step-1-index: 1476771.* req:/style.css resp:200 fin:0B
+step-1-index: 1476771.* req:/favicon.ico reqExtra(13h) wire:404 resp:404 fin:645B
+step-1-index-idem: (no network change)
+step-2-async-early: 90D87E3F* req:/go reqExtra(15h) wire:302 req:/async.html resp:200 fin:0B
+step-2-async-early: 1476771.* req:/style.css cache resp:200 fin:0B
+step-2-async-early: 1476771.* req:/missing.css resp:404 fail:net::ERR_ABORTED reqExtra(13h) wire:404
+step-2-async-early: 1476771.* reqExtra(13h) req:/slow.json?abort=1 fail:net::ERR_ABORTED
+step-2-async-early: 1476771.* req:/slow.json resp:200 fin:0B
+step-2-async-early: 1476771.* req:/quick.json resp:200 fin:0B
+step-2-async-settled: (no network change)
+step-3-async-filled: (no network change)
+step-4-confirm: EC845DE1* req:/confirm.html?note=tabi-r4&speed=slow&step=3 resp:200 fin:0B
+step-4-confirm: 1476771.* req:/style.css cache resp:200 fin:0B
+
+-- perf entries (last capture)
+perf /style.css type=link start=5ms dur=0ms transfer=0 encBody=383 decBody=383 status=200
+perfNav [{"name":"http://127.0.0.1:19431/confirm.html?note=tabi-r4&speed=slow&step=3","type":"navigate","startTime":0,"duration":6.5999999940395355,"transferSize":0,"encodedBodySize":652,"decodedBodySize":652,"responseStatus":200}]
+
+-- server log: 3 request lines
+server 404 /favicon.ico
+server 302 /go
+server 404 /missing.css
+client-request-hops=12 server-request-lines=3
+count-delta: client-hops=1 server-lines=0 /index.html
+count-delta: client-hops=3 server-lines=0 /style.css
+count-delta: client-hops=1 server-lines=0 /async.html
+count-delta: client-hops=1 server-lines=0 /slow.json?abort=1
+count-delta: client-hops=1 server-lines=0 /slow.json
+count-delta: client-hops=1 server-lines=0 /quick.json
+count-delta: client-hops=1 server-lines=0 /confirm.html?note=tabi-r4&speed=slow&step=3
+history=blank#auto_toplevel > /index.html#typed > /async.html#link > /confirm.html?note=tabi-r4&speed=slow&step=3#form_submit
+
+========== run5-warm-nc ==========
+started=2026-10-14T16:31:18.725Z ended=2026-10-14T16:31:19.532Z error=none
+browser=Chrome/152.0.7977.82 protocol=1.3
+captures=6 requests=11
+
+-- captures
+step-1-index	atRelMs=139	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=3
+step-1-index-idem	atRelMs=488	png=f639e10d929e99bf/16094B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=0
+step-2-async-early	atRelMs=573	png=fc99ccec3461b45c/22229B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=6
+step-2-async-settled	atRelMs=622	png=fc99ccec3461b45c/22229B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=0
+step-3-async-filled	atRelMs=689	png=cd8e564185d167a3/22825B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=0
+step-4-confirm	atRelMs=805	png=a49bdc73268c7921/11092B	shape=330fb290f9021adf	nodes=39	url=/confirm.html?note=tabi-r4&speed=slow&step=3	netUpdated=2
+inputs(step-3-async-filled)=[{"id":"note","name":"note","type":"text","inputValue":"tabi-r4","inputChecked":null},{"id":"speed-fast","name":"speed","type":"radio","inputValue":"fast","inputChecked":false},{"id":"speed-slow","name":"speed","type":"radio","inputValue":"slow","inputChecked":true},{"name":"step","type":"hidden","inputValue":"3","inputChecked":null}]
+
+-- requests (event summary)
+#0 65683D31 GET Document hops=[/index.html] transition=- wire=[] respChain=[200] client=200(disk) mime=text/html respEnc=0 finEnc=0 body=360 wireHdrText= waitMs=1.1 recvMs=-0.2 totalMs=0.9 timingHdrEnd=0.2
+#1 1475673. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(disk) mime=text/css respEnc=0 finEnc=0 body=383 wireHdrText= waitMs=2.3 recvMs=-0.2 totalMs=2.2 timingHdrEnd=0.1
+#2 1475673. GET Other hops=[/favicon.ico] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=210 finEnc=670 body=460 wireHdrText=210 waitMs=2.5 recvMs=0 totalMs=2.5 timingHdrEnd=1.9
+#3 B973D0BF GET Document hops=[/go | 302->/async.html] transition=- wire=[302] respChain=[200] client=200(disk) mime=text/html respEnc=0 finEnc=0 body=1522 wireHdrText=164 waitMs=0.6 recvMs=-0.1 totalMs=1.5 timingHdrEnd=0
+#4 1475673. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(disk)(cacheEvent) mime=text/css respEnc=0 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.1
+#5 1475673. GET Stylesheet hops=[/missing.css] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=210 finEnc=- body=0 wireHdrText=210 waitMs=0.9 recvMs=- totalMs=- timingHdrEnd=0.3 FAILED=net::ERR_ABORTED@0.9ms
+#6 1475673. GET Fetch hops=[/slow.json?abort=1] transition=- wire=[] respChain=[] client=- mime=- respEnc=- finEnc=- body=- wireHdrText= waitMs=- recvMs=- totalMs=- timingHdrEnd=- FAILED=net::ERR_ABORTED@60.3ms
+#7 1475673. GET Fetch hops=[/slow.json] transition=- wire=[] respChain=[200] client=200(disk) mime=application/json respEnc=0 finEnc=0 body=47 wireHdrText= waitMs=4 recvMs=-3.2 totalMs=0.8 timingHdrEnd=0.1
+#8 1475673. GET Fetch hops=[/quick.json] transition=- wire=[] respChain=[200] client=200(disk) mime=application/json respEnc=0 finEnc=0 body=49 wireHdrText= waitMs=4 recvMs=-3.2 totalMs=0.8 timingHdrEnd=0.4
+#9 7131BD27 GET Document hops=[/confirm.html?note=tabi-r4&speed=slow&step=3] transition=- wire=[] respChain=[200] client=200(disk) mime=text/html respEnc=0 finEnc=0 body=652 wireHdrText= waitMs=1.4 recvMs=-0.6 totalMs=0.8 timingHdrEnd=0.2
+#10 1475673. GET Stylesheet hops=[/style.css] transition=- wire=[] respChain=[200] client=200(disk)(cacheEvent) mime=text/css respEnc=0 finEnc=0 body=383 wireHdrText= waitMs=0 recvMs=0 totalMs=0 timingHdrEnd=0.1
+
+-- per-capture network updates
+step-1-index: 65683D31* req:/index.html resp:200 fin:0B
+step-1-index: 1475673.* req:/style.css resp:200 fin:0B
+step-1-index: 1475673.* req:/favicon.ico reqExtra(13h) wire:404 resp:404 fin:670B
+step-1-index-idem: (no network change)
+step-2-async-early: B973D0BF* req:/go reqExtra(15h) wire:302 req:/async.html resp:200 fin:0B
+step-2-async-early: 1475673.* req:/style.css cache resp:200 fin:0B
+step-2-async-early: 1475673.* req:/missing.css resp:404 fail:net::ERR_ABORTED reqExtra(13h) wire:404
+step-2-async-early: 1475673.* reqExtra(13h) req:/slow.json?abort=1 fail:net::ERR_ABORTED
+step-2-async-early: 1475673.* req:/slow.json resp:200 fin:0B
+step-2-async-early: 1475673.* req:/quick.json resp:200 fin:0B
+step-2-async-settled: (no network change)
+step-3-async-filled: (no network change)
+step-4-confirm: 7131BD27* req:/confirm.html?note=tabi-r4&speed=slow&step=3 resp:200 fin:0B
+step-4-confirm: 1475673.* req:/style.css cache resp:200 fin:0B
+
+-- perf entries (last capture)
+perf /style.css type=link start=4ms dur=0ms transfer=0 encBody=383 decBody=383 status=200
+perfNav [{"name":"http://127.0.0.1:19431/confirm.html?note=tabi-r4&speed=slow&step=3","type":"navigate","startTime":0,"duration":6,"transferSize":0,"encodedBodySize":652,"decodedBodySize":652,"responseStatus":200}]
+
+-- server log: 3 request lines
+server 404 /favicon.ico
+server 302 /go
+server 404 /missing.css
+client-request-hops=12 server-request-lines=3
+count-delta: client-hops=1 server-lines=0 /index.html
+count-delta: client-hops=3 server-lines=0 /style.css
+count-delta: client-hops=1 server-lines=0 /async.html
+count-delta: client-hops=1 server-lines=0 /slow.json?abort=1
+count-delta: client-hops=1 server-lines=0 /slow.json
+count-delta: client-hops=1 server-lines=0 /quick.json
+count-delta: client-hops=1 server-lines=0 /confirm.html?note=tabi-r4&speed=slow&step=3
+history=blank#auto_toplevel > /index.html#typed > /async.html#link > /confirm.html?note=tabi-r4&speed=slow&step=3#form_submit
+
+========== run6-reval ==========
+started=2026-10-14T16:31:22.002Z ended=2026-10-14T16:31:23.115Z error=none
+browser=Chrome/152.0.7977.82 protocol=1.3
+captures=6 requests=10
+
+-- captures
+step-1-index	atRelMs=95	png=183bf1a04594705d/16343B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=2
+step-1-index-idem	atRelMs=444	png=183bf1a04594705d/16343B	shape=a11cc0081388b3cb	nodes=28	url=/index.html	netUpdated=0
+step-2-async-early	atRelMs=563	png=2484f8a89f1933e1/18568B	shape=5bddf0eb6512b0a1	nodes=67	url=/async.html	netUpdated=6
+step-2-async-settled	atRelMs=913	png=fc99ccec3461b45c/22229B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=1
+step-3-async-filled	atRelMs=979	png=cd8e564185d167a3/22825B	shape=549b9e376ff632ac	nodes=67	url=/async.html	netUpdated=0
+step-4-confirm	atRelMs=1111	png=a49bdc73268c7921/11092B	shape=330fb290f9021adf	nodes=39	url=/confirm.html?note=tabi-r4&speed=slow&step=3	netUpdated=2
+inputs(step-3-async-filled)=[{"id":"note","name":"note","type":"text","inputValue":"tabi-r4","inputChecked":null},{"id":"speed-fast","name":"speed","type":"radio","inputValue":"fast","inputChecked":false},{"id":"speed-slow","name":"speed","type":"radio","inputValue":"slow","inputChecked":true},{"name":"step","type":"hidden","inputValue":"3","inputChecked":null}]
+
+-- requests (event summary)
+#0 BBEFA9AB GET Document hops=[/index.html] transition=- wire=[304] respChain=[200] client=200 mime=text/html respEnc=129 finEnc=129 body=360 wireHdrText=129 waitMs=1.5 recvMs=-0.1 totalMs=1.3 timingHdrEnd=0.6
+#1 1475941. GET Stylesheet hops=[/style.css] transition=- wire=[304] respChain=[200] client=200 mime=text/css respEnc=129 finEnc=129 body=383 wireHdrText=129 waitMs=1.4 recvMs=0 totalMs=1.4 timingHdrEnd=0.6
+#2 DE42107C GET Document hops=[/go | 302->/async.html] transition=- wire=[302,304] respChain=[200] client=200 mime=text/html respEnc=129 finEnc=129 body=1522 wireHdrText=164,129 waitMs=0.8 recvMs=-0.1 totalMs=1.6 timingHdrEnd=0.3
+#3 1475941. GET Stylesheet hops=[/style.css] transition=- wire=[304] respChain=[304] client=304 mime=text/css respEnc=129 finEnc=129 body=383 wireHdrText=129 waitMs=1.7 recvMs=0 totalMs=1.7 timingHdrEnd=1.1
+#4 1475941. GET Stylesheet hops=[/missing.css] transition=- wire=[404] respChain=[404] client=404 mime=text/html respEnc=210 finEnc=- body=0 wireHdrText=210 waitMs=1.5 recvMs=- totalMs=- timingHdrEnd=0.6 FAILED=net::ERR_ABORTED@1.5ms
+#5 1475941. GET Fetch hops=[/slow.json?abort=1] transition=- wire=[] respChain=[] client=- mime=- respEnc=- finEnc=- body=- wireHdrText= waitMs=- recvMs=- totalMs=- timingHdrEnd=- FAILED=net::ERR_ABORTED@60.2ms
+#6 1475941. GET Fetch hops=[/slow.json] transition=- wire=[304] respChain=[200] client=200 mime=application/json respEnc=129 finEnc=129 body=47 wireHdrText=129 waitMs=401.5 recvMs=-0.1 totalMs=401.4 timingHdrEnd=400.8
+#7 1475941. GET Fetch hops=[/quick.json] transition=- wire=[304] respChain=[200] client=200 mime=application/json respEnc=129 finEnc=129 body=49 wireHdrText=129 waitMs=1.3 recvMs=0.3 totalMs=1.6 timingHdrEnd=0.7
+#8 C1F2E2EF GET Document hops=[/confirm.html?note=tabi-r4&speed=slow&step=3] transition=- wire=[304] respChain=[200] client=200 mime=text/html respEnc=129 finEnc=129 body=652 wireHdrText=129 waitMs=1.9 recvMs=-0.6 totalMs=1.3 timingHdrEnd=0.6
+#9 1475941. GET Stylesheet hops=[/style.css] transition=- wire=[304] respChain=[304] client=304 mime=text/css respEnc=129 finEnc=129 body=383 wireHdrText=129 waitMs=1 recvMs=-0.1 totalMs=1 timingHdrEnd=0.4
+
+-- per-capture network updates
+step-1-index: BBEFA9AB* req:/index.html reqExtra(15h) wire:304 resp:200 fin:129B
+step-1-index: 1475941.* req:/style.css resp:200 fin:129B reqExtra(14h) wire:304
+step-1-index-idem: (no network change)
+step-2-async-early: DE42107C* req:/go reqExtra(15h) wire:302 req:/async.html reqExtra(16h) wire:304 resp:200 fin:129B
+step-2-async-early: 1475941.* req:/style.css reqExtra(14h) wire:304 resp:304 fin:129B
+step-2-async-early: 1475941.* req:/missing.css reqExtra(13h) wire:404 resp:404 fail:net::ERR_ABORTED
+step-2-async-early: 1475941.* req:/slow.json?abort=1 reqExtra(13h) fail:net::ERR_ABORTED
+step-2-async-early: 1475941.* req:/slow.json reqExtra(14h)
+step-2-async-early: 1475941.* req:/quick.json reqExtra(14h) wire:304 resp:200 fin:129B
+step-2-async-settled: 1475941.  req:/slow.json reqExtra(14h) wire:304 resp:200 fin:129B
+step-3-async-filled: (no network change)
+step-4-confirm: C1F2E2EF* req:/confirm.html?note=tabi-r4&speed=slow&step=3 resp:200 reqExtra(16h) wire:304 fin:129B
+step-4-confirm: 1475941.* req:/style.css resp:304 fin:129B reqExtra(14h) wire:304
+
+-- perf entries (last capture)
+perf /style.css type=link start=5ms dur=1ms transfer=300 encBody=0 decBody=0 status=200
+perfNav [{"name":"http://127.0.0.1:19431/confirm.html?note=tabi-r4&speed=slow&step=3","type":"navigate","startTime":0,"duration":7.4000000059604645,"transferSize":300,"encodedBodySize":652,"decodedBodySize":652,"responseStatus":200}]
+
+-- server log: 23 request lines
+server 200 /index.html
+server 200 /style.css
+server 404 /favicon.ico
+server 302 /go
+server 200 /async.html
+server 404 /missing.css
+server 304 /style.css
+server 200 /quick.json
+server 200 /slow.json?abort=1
+server 200 /slow.json
+server 200 /confirm.html?note=tabi-r4&speed=slow&step=3
+server 304 /style.css
+server 304 /index.html
+server 304 /style.css
+server 302 /go
+server 304 /async.html
+server 404 /missing.css
+server 304 /style.css
+server 304 /quick.json
+server 200 /slow.json?abort=1
+server 304 /slow.json
+server 304 /confirm.html?note=tabi-r4&speed=slow&step=3
+server 304 /style.css
+client-request-hops=11 server-request-lines=23
+count-delta: client-hops=1 server-lines=2 /index.html
+count-delta: client-hops=3 server-lines=6 /style.css
+count-delta: client-hops=1 server-lines=2 /go
+count-delta: client-hops=1 server-lines=2 /async.html
+count-delta: client-hops=1 server-lines=2 /missing.css
+count-delta: client-hops=1 server-lines=2 /slow.json?abort=1
+count-delta: client-hops=1 server-lines=2 /slow.json
+count-delta: client-hops=1 server-lines=2 /quick.json
+count-delta: client-hops=1 server-lines=2 /confirm.html?note=tabi-r4&speed=slow&step=3
+count-delta: client-hops=0 server-lines=1 /favicon.ico
+history=blank#auto_toplevel > /index.html#typed > /async.html#link > /confirm.html?note=tabi-r4&speed=slow&step=3#form_submit > /index.html#typed > /async.html#link > /confirm.html?note=tabi-r4&speed=slow&step=3#form_submit
+
+========== cross-run timing ranges (ms, as-of-capture) ==========
+GET /index.html: client=200 wire=200//304 waitMs=[3.2,2.7,3.3,1.1,1.2,1.1,1.5] totalMs=[2.9,2.5,3.1,0.9,1.1,0.9,1.3] runs=7
+GET /style.css: client=200/304 wire=200//304 waitMs=[2.7,0,0,2.6,0,0,2.6,0,0,2.6,0,0,2.4,0,0,2.3,0,0,1.4,1.7,1] totalMs=[2.7,0,0,2.6,0,0,2.6,0,0,2.6,0,0,2.3,0,0,2.2,0,0,1.4,1.7,1] runs=21
+GET /favicon.ico: client=404 wire=404 waitMs=[1.4,1.3,1.4,2.4,2.4,2.5] totalMs=[1.4,1.3,1.4,2.4,2.4,2.5] runs=6
+GET /async.html: client=200 wire=302,200/302/302,304 waitMs=[0.7,0.8,0.7,0.6,0.6,0.6,0.8] totalMs=[1.6,1.7,1.5,1.6,1.7,1.5,1.6] runs=7
+GET /missing.css (aborted): client=404 wire=404 waitMs=[1.2,1.2,0.9,0.9,1.2,0.9,1.5] totalMs=[] runs=7
+GET /slow.json?abort=1 (aborted): client=- wire= waitMs=[] totalMs=[] runs=7
+GET /slow.json: client=200 wire=200//304 waitMs=[401.5,401.7,401.3,4,4.2,4,401.5] totalMs=[401.4,401.6,401.3,0.8,1,0.8,401.4] runs=7
+GET /quick.json: client=200 wire=200//304 waitMs=[4.1,4.3,4.4,4.2,4.4,4,1.3] totalMs=[1.5,1.6,1.1,0.8,1,0.8,1.6] runs=7
+GET /confirm.html?note=tabi-r4&speed=slow&step=3: client=200 wire=200//304 waitMs=[1.5,1.5,1.5,1.5,1.6,1.4,1.9] totalMs=[1,1,1.1,0.8,0.9,0.8,1.3] runs=7

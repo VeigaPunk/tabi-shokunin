@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TABI-R4-2 async</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="frame">
+  <h1 id="page-title">TABI-R4-2 async routes</h1>
+  <p>status: <span id="async-status">idle</span></p>
+  <ul id="async-list"></ul>
+  <p><a id="back" href="index.html">back to index</a></p>
+</div>
+<script>
+(function () {
+  var status = document.getElementById('async-status');
+  var list = document.getElementById('async-list');
+  status.textContent = 'pending';
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'routes.json', true);
+  xhr.onload = function () {
+    var d = JSON.parse(xhr.responseText);
+    d.routes.forEach(function (r, i) {
+      var li = document.createElement('li');
+      li.id = 'route-' + (i + 1);
+      li.textContent = r.name + ' - ' + r.length;
+      list.appendChild(li);
+    });
+    status.textContent = 'ready';
+  };
+  xhr.onerror = function () { status.textContent = 'error'; };
+  xhr.send();
+})();
+</script>
+</body>
+</html>

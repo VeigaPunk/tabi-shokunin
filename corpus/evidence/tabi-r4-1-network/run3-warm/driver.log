@@ -1,0 +1,46 @@
+== driver warm run start 2026-10-14T16:10:12Z local 2026-10-14T13:10:12-03:00
+== carry run2 profile cache into /tmp/tabi-r4-1-network/run3-warm/profile (warm cache, not cold)
+== port precheck (must be empty)
+ports free
+== start http.server (loopback only)
+http.pid=1194174
+== start chromium
+chromium.launch.pid=1194175
+== listening lines (evidence)
+LISTEN 0      5          127.0.0.1:19441      0.0.0.0:*    users:(("python3",pid=1194174,fd=3))
+LISTEN 0      10         127.0.0.1:19442      0.0.0.0:*    users:(("chromium",pid=1194175,fd=70))
+chromium pids: 1194175
+1194186
+1194187
+1194189
+1194210
+1194212
+1194224
+1194237
+1194247
+1194248
+1194263
+== run journey (warm)
+capture step-1-index: url=http://127.0.0.1:19441/index.html png=e9d8c83c88015877 shape=af23de0471797ee7 nodes=37 netEvents=3
+capture step-1-index-idem: url=http://127.0.0.1:19441/index.html png=e9d8c83c88015877 shape=af23de0471797ee7 nodes=37 netEvents=0
+capture step-2-detail: url=http://127.0.0.1:19441/detail.html?id=1 png=6d48d45ebecfaa49 shape=f4ecc2771d1af837 nodes=42 netEvents=3
+capture step-3-form: url=http://127.0.0.1:19441/form.html?id=1 png=15a97130785f7562 shape=23aa4e306ec3a449 nodes=53 netEvents=2
+capture step-3-form-filled: url=http://127.0.0.1:19441/form.html?id=1 png=8cc96fdf637a606e shape=23aa4e306ec3a449 nodes=53 netEvents=0
+capture step-4-confirm: url=http://127.0.0.1:19441/confirm.html?traveler=tabi-r3&mode=rail&item=1 png=a12566cd4890fbdd shape=a6a9c3aca7915959 nodes=43 netEvents=2
+capture step-5-async-idle: url=http://127.0.0.1:19441/async.html png=c4b9338a8d5d3195 shape=096ccf13ff4a58dd nodes=42 netEvents=2
+capture step-6-async-race: url=http://127.0.0.1:19441/async.html png=37c20ef96c305d46 shape=fd2841a9d216c58d nodes=42 netEvents=1
+capture step-6-async-loaded: url=http://127.0.0.1:19441/async.html png=37c20ef96c305d46 shape=fd2841a9d216c58d nodes=42 netEvents=0
+capture step-7-pub-optimistic: url=http://127.0.0.1:19441/async.html png=3ddb9249e0b14950 shape=4089948b065693e0 nodes=42 netEvents=1
+== http.log (whole)
+127.0.0.1 - - [14/Oct/2026 13:10:13] code 404, message File not found
+127.0.0.1 - - [14/Oct/2026 13:10:13] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Oct/2026 13:10:14] code 501, message Unsupported method ('POST')
+127.0.0.1 - - [14/Oct/2026 13:10:14] "POST /publish-endpoint.json HTTP/1.1" 501 -
+== cleanup
+no chromium survivors after TERM
+== closure verification
+pass: no chromium process for /tmp/tabi-r4-1-network/run3-warm/profile
+pass: ports 19441/19442 not listening
+curl cdp exit=7
+curl http exit=7
+== driver warm run end 2026-10-14T16:10:15Z

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TABI-R4-1 async</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="missing.css">
+</head>
+<body>
+<div id="frame">
+<h1>TABI-R4-1 async page</h1>
+<p>state: <span id="async-state">waiting</span></p>
+<p>slow: <span id="payload-slow">none</span></p>
+<p>quick: <span id="payload-quick">none</span></p>
+<p id="shown-note">SHOWN-MARKER-2c7f</p>
+<p id="hidden-note">HIDDEN-MARKER-7b3e</p>
+<form id="note-form" action="confirm.html" method="get">
+  <label>note <input id="note" name="note" type="text" value=""></label>
+  <label><input id="speed-fast" name="speed" type="radio" value="fast"> fast</label>
+  <label><input id="speed-slow" name="speed" type="radio" value="slow"> slow</label>
+  <input type="hidden" name="step" value="3">
+  <button id="submit" type="submit">send</button>
+</form>
+</div>
+<script>
+(function () {
+  var ctl = new AbortController();
+  fetch('slow.json?abort=1', { signal: ctl.signal }).catch(function () {});
+  setTimeout(function () { ctl.abort(); }, 60);
+  var slow = fetch('slow.json').then(function (r) { return r.json(); });
+  var quick = fetch('quick.json').then(function (r) { return r.json(); });
+  Promise.all([slow, quick]).then(function (vals) {
+    document.getElementById('payload-slow').textContent = vals[0].value;
+    document.getElementById('payload-quick').textContent = vals[1].value;
+    document.getElementById('async-state').textContent = 'settled';
+  });
+})();
+</script>
+</body>
+</html>

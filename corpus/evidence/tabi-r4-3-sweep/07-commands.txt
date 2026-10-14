@@ -1,0 +1,16 @@
+# tabi R4-3 sweep — command transcript (read-only)
+Run 2026-10-14 16:06-16:09Z (13:06-13:09 -0300), by lane TABI-R4-3.
+
+# 1 live ports: ss -ltnp; per-port: ss -ltn | grep ":$p " else curl -s -o /dev/null -m 1 http://127.0.0.1:$p/ ; echo exit=$?
+#   port set audited: 9232 19333 19411 19412 19421 19422 19441 19471 19472 19481 19482 10086
+#   (ports 1-11 = every listen/debug port cited by rounds 1-3 scratch + corpus notes; 10086 = daemon)
+# 2 processes: ps -eo pid,ppid,comm,args | awk '$3=="chromium"||$3=="chrome"||$3=="node"||$3=="python3"' ;
+#   pgrep -x chromium / node / kimi-webbridge; pgrep -a -x chrome headless_shell chrome_crashpad chromium-browser
+#   fd scan: for p in $(pgrep -u vgpnk); do ls -l /proc/$p/fd; done | grep /tmp/tabi
+# 3 daemon: ps -p 3934817; curl -s http://127.0.0.1:10086/status; stat ~/.kimi-webbridge/{daemon.pid,daemon.addr,identity.json}; ls -la ~/.kimi-webbridge/logs/
+# 4 scratch: ls -ld /tmp/tabi*; per-group find|wc -l + du -sh + stat mtime; port-usage grep over sh/mjs/log/txt/json/tsv
+# 5 repo: git status --short; git log --oneline; git rev-parse HEAD; ls -A corpus/lessons; wc -l corpus/knowledge/*.md
+# 6 spot-checks: sha256sum /tmp/tabi3-cdp/screenshot.png /tmp/tabi-r3-1-journey/{journey.mjs,driver.sh,compare.mjs}
+#   /tmp/tabi-r2-2-baseline.txt /tmp/tabi-r2-2-start.log corpus/knowledge/*.md (pins vs README/SCORECARD/SKILL citations)
+# 7 extra: /tmp landscape ls -lat; find ~/.config/chromium -maxdepth 2 -newermt 2026-10-14; ls -ld /tmp/org.chromium.Chromium.*
+# Discipline: no writes outside /tmp/tabi-r4-3-sweep/ and the receipt file; loopback-only network (10086 read + refused curls).

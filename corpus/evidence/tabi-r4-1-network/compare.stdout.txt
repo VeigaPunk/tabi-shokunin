@@ -1,0 +1,196 @@
+== runs ==
+run1: captures=10 actions=7 netEvents=14 error=none started=2026-10-14T16:09:59.103Z ended=2026-10-14T16:10:00.334Z
+run1: browser=Chrome/152.0.7977.82 proto=1.3 viewport={"innerWidth":800,"innerHeight":600,"devicePixelRatio":1} targetLaunch=34C6E231542742D24C77E26D6293AEC0 targetEnd=34C6E231542742D24C77E26D6293AEC0 same=true
+run1: asyncTiming={"clickToRaceCaptureMs":82,"clickToLoadedStateMs":82}
+run2: captures=10 actions=7 netEvents=14 error=none started=2026-10-14T16:10:07.014Z ended=2026-10-14T16:10:08.184Z
+run2: browser=Chrome/152.0.7977.82 proto=1.3 viewport={"innerWidth":800,"innerHeight":600,"devicePixelRatio":1} targetLaunch=EA41DFC72648AAC1AE56CE8DBACE4AAC targetEnd=EA41DFC72648AAC1AE56CE8DBACE4AAC same=true
+run2: asyncTiming={"clickToRaceCaptureMs":99,"clickToLoadedStateMs":99}
+run3-warm: captures=10 actions=7 netEvents=14 error=none started=2026-10-14T16:10:13.156Z ended=2026-10-14T16:10:14.367Z
+run3-warm: browser=Chrome/152.0.7977.82 proto=1.3 viewport={"innerWidth":800,"innerHeight":600,"devicePixelRatio":1} targetLaunch=B00CF328FE9CCF0CFFA48B98CCABE86E targetEnd=B00CF328FE9CCF0CFFA48B98CCABE86E same=true
+run3-warm: asyncTiming={"clickToRaceCaptureMs":82,"clickToLoadedStateMs":82}
+round3 run1 present: captures=6 (for cross-round continuity)
+
+== A. cold-run artifact identity (run1 vs run2) ==
+
+== B. cross-round continuity: round-4 run1 vs round-3 run1 (same fixture bytes, network rung added) ==
+
+== C. per-step network rows (as captured) ==
+-- run1 --
+  step-1-index  slice@2026-10-14T16:09:59.248Z
+    GET /index.html -> 200 text/html cls=wire cl=459 respEnc=186 data=[1x459] total=645 dur=2.52ms post=0B init=other
+    GET /style.css -> 200 text/css cls=wire cl=286 respEnc=185 data=[2x286] total=471 dur=2.87ms post=0B init=parser
+    GET /favicon.ico -> 404 text/html cls=internal-probe cl=460 respEnc=185 data=[2x460] total=645 dur=1.23ms post=0B init=other
+  step-1-index-idem  slice@2026-10-14T16:09:59.597Z
+  step-2-detail  slice@2026-10-14T16:09:59.732Z
+    GET /detail.html?id=1 -> 200 text/html cls=wire cl=984 respEnc=186 data=[1x984] total=1170 dur=1.2ms post=0B init=other
+    GET /style.css -> 200 text/css cls=cache-served cl=286 respEnc=471 data=[1x286] total=0 dur=0.03ms post=0B init=parser
+    GET /data.json -> 200 application/json cls=wire cl=106 respEnc=193 data=[1x106] total=299 dur=1.21ms post=0B init=script
+  step-3-form  slice@2026-10-14T16:09:59.814Z
+    GET /form.html?id=1 -> 200 text/html cls=wire cl=1014 respEnc=187 data=[1x1014] total=1201 dur=1.25ms post=0B init=other
+    GET /style.css -> 200 text/css cls=cache-served cl=286 respEnc=471 data=[1x286] total=0 dur=0.03ms post=0B init=parser
+  step-3-form-filled  slice@2026-10-14T16:09:59.881Z
+  step-4-confirm  slice@2026-10-14T16:09:59.998Z
+    GET /confirm.html?traveler=tabi-r3&mode=rail&item=1 -> 200 text/html cls=wire cl=770 respEnc=186 data=[1x770] total=956 dur=1.3ms post=0B init=other
+    GET /style.css -> 200 text/css cls=cache-served cl=286 respEnc=471 data=[1x286] total=0 dur=0.03ms post=0B init=parser
+  step-5-async-idle  slice@2026-10-14T16:10:00.064Z
+    GET /async.html -> 200 text/html cls=wire cl=1334 respEnc=187 data=[1x1334] total=1521 dur=1.21ms post=0B init=other
+    GET /style.css -> 200 text/css cls=cache-served cl=286 respEnc=471 data=[1x286] total=0 dur=0.03ms post=0B init=parser
+  step-6-async-race  slice@2026-10-14T16:10:00.147Z
+    GET /async-data.json -> 200 application/json cls=wire cl=25 respEnc=192 data=[2x25] total=217 dur=1.24ms post=0B init=script
+  step-6-async-loaded  slice@2026-10-14T16:10:00.213Z
+  step-7-pub-optimistic  slice@2026-10-14T16:10:00.331Z
+    POST /publish-endpoint.json -> 501 text/html cls=wire cl=482 respEnc=198 data=[2x482] total=680 dur=1.15ms post=10B init=script
+-- run2 --
+  step-1-index  slice@2026-10-14T16:10:07.114Z
+    GET /index.html -> 200 text/html cls=wire cl=459 respEnc=186 data=[1x459] total=645 dur=2.51ms post=0B init=other
+    GET /style.css -> 200 text/css cls=wire cl=286 respEnc=185 data=[2x286] total=471 dur=2.65ms post=0B init=parser
+    GET /favicon.ico -> 404 text/html cls=internal-probe cl=460 respEnc=185 data=[2x460] total=645 dur=1.45ms post=0B init=other
+  step-1-index-idem  slice@2026-10-14T16:10:07.480Z
+  step-2-detail  slice@2026-10-14T16:10:07.598Z
+    GET /detail.html?id=1 -> 200 text/html cls=wire cl=984 respEnc=186 data=[1x984] total=1170 dur=1.13ms post=0B init=other
+    GET /style.css -> 200 text/css cls=cache-served cl=286 respEnc=471 data=[1x286] total=0 dur=0.03ms post=0B init=parser
+    GET /data.json -> 200 application/json cls=wire cl=106 respEnc=193 data=[1x106] total=299 dur=0.89ms post=0B init=script
+  step-3-form  slice@2026-10-14T16:10:07.664Z
+    GET /form.html?id=1 -> 200 text/html cls=wire cl=1014 respEnc=187 data=[1x1014] total=1201 dur=0.95ms post=0B init=other
+    GET /style.css -> 200 text/css cls=cache-served cl=286 respEnc=471 data=[1x286] total=0 dur=0.03ms post=0B init=parser
+  step-3-form-filled  slice@2026-10-14T16:10:07.731Z
+  step-4-confirm  slice@2026-10-14T16:10:07.847Z
+    GET /confirm.html?traveler=tabi-r3&mode=rail&item=1 -> 200 text/html cls=wire cl=770 respEnc=186 data=[1x770] total=956 dur=1.26ms post=0B init=other
+    GET /style.css -> 200 text/css cls=cache-served cl=286 respEnc=471 data=[1x286] total=0 dur=0.03ms post=0B init=parser
+  step-5-async-idle  slice@2026-10-14T16:10:07.914Z
+    GET /async.html -> 200 text/html cls=wire cl=1334 respEnc=187 data=[1x1334] total=1521 dur=1.32ms post=0B init=other
+    GET /style.css -> 200 text/css cls=cache-served cl=286 respEnc=471 data=[1x286] total=0 dur=0.03ms post=0B init=parser
+  step-6-async-race  slice@2026-10-14T16:10:08.015Z
+    GET /async-data.json -> 200 application/json cls=wire cl=25 respEnc=192 data=[2x25] total=217 dur=1.17ms post=0B init=script
+  step-6-async-loaded  slice@2026-10-14T16:10:08.064Z
+  step-7-pub-optimistic  slice@2026-10-14T16:10:08.181Z
+    POST /publish-endpoint.json -> 501 text/html cls=wire cl=482 respEnc=198 data=[2x482] total=680 dur=1.34ms post=10B init=script
+-- run1 vs run2 network-shape tuples (timing excluded) --
+run1 net classes: {"wire":9,"internal-probe":1,"cache-served":4}
+run2 net classes: {"wire":9,"internal-probe":1,"cache-served":4}
+run3-warm net classes: {"cache-served":12,"internal-probe":1,"wire":1}
+
+== D. client-vs-wire reconciliation (server log = wire truth) ==
+  STATUS-SPLIT: GET /index.html wire=200 client=200 extra=undefined cls=wire
+  STATUS-SPLIT: GET /style.css wire=200 client=200 extra=undefined cls=wire
+  STATUS-SPLIT: GET /favicon.ico wire=404 client=404 extra=undefined cls=internal-probe
+  STATUS-SPLIT: GET /detail.html?id=1 wire=200 client=200 extra=undefined cls=wire
+  CLIENT-ONLY: #4 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=false mem=false
+  STATUS-SPLIT: GET /data.json wire=200 client=200 extra=undefined cls=wire
+  STATUS-SPLIT: GET /form.html?id=1 wire=200 client=200 extra=undefined cls=wire
+  CLIENT-ONLY: #7 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=false mem=false
+  STATUS-SPLIT: GET /confirm.html?traveler=tabi-r3&mode=rail&item=1 wire=200 client=200 extra=undefined cls=wire
+  CLIENT-ONLY: #9 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=false mem=false
+  STATUS-SPLIT: GET /async.html wire=200 client=200 extra=undefined cls=wire
+  CLIENT-ONLY: #11 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=false mem=false
+  STATUS-SPLIT: GET /async-data.json wire=200 client=200 extra=undefined cls=wire
+  STATUS-SPLIT: POST /publish-endpoint.json wire=501 client=501 extra=undefined cls=wire
+  run1: wire lines=10 matched=10 wire-only=0 client-only(cache/other)=4 (client events=14)
+  STATUS-SPLIT: GET /index.html wire=200 client=200 extra=undefined cls=wire
+  STATUS-SPLIT: GET /style.css wire=200 client=200 extra=undefined cls=wire
+  STATUS-SPLIT: GET /favicon.ico wire=404 client=404 extra=undefined cls=internal-probe
+  STATUS-SPLIT: GET /detail.html?id=1 wire=200 client=200 extra=undefined cls=wire
+  CLIENT-ONLY: #4 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=false mem=false
+  STATUS-SPLIT: GET /data.json wire=200 client=200 extra=undefined cls=wire
+  STATUS-SPLIT: GET /form.html?id=1 wire=200 client=200 extra=undefined cls=wire
+  CLIENT-ONLY: #7 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=false mem=false
+  STATUS-SPLIT: GET /confirm.html?traveler=tabi-r3&mode=rail&item=1 wire=200 client=200 extra=undefined cls=wire
+  CLIENT-ONLY: #9 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=false mem=false
+  STATUS-SPLIT: GET /async.html wire=200 client=200 extra=undefined cls=wire
+  CLIENT-ONLY: #11 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=false mem=false
+  STATUS-SPLIT: GET /async-data.json wire=200 client=200 extra=undefined cls=wire
+  STATUS-SPLIT: POST /publish-endpoint.json wire=501 client=501 extra=undefined cls=wire
+  run2: wire lines=10 matched=10 wire-only=0 client-only(cache/other)=4 (client events=14)
+  CLIENT-ONLY: #0 GET /index.html client=200 extra=undefined cls=cache-served servedFromCache=false disk=true mem=false
+  CLIENT-ONLY: #1 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=false disk=true mem=false
+  STATUS-SPLIT: GET /favicon.ico wire=404 client=404 extra=undefined cls=internal-probe
+  CLIENT-ONLY: #3 GET /detail.html?id=1 client=200 extra=undefined cls=cache-served servedFromCache=false disk=true mem=false
+  CLIENT-ONLY: #4 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=true mem=false
+  CLIENT-ONLY: #5 GET /data.json client=200 extra=undefined cls=cache-served servedFromCache=false disk=true mem=false
+  CLIENT-ONLY: #6 GET /form.html?id=1 client=200 extra=undefined cls=cache-served servedFromCache=false disk=true mem=false
+  CLIENT-ONLY: #7 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=true mem=false
+  CLIENT-ONLY: #8 GET /confirm.html?traveler=tabi-r3&mode=rail&item=1 client=200 extra=undefined cls=cache-served servedFromCache=false disk=true mem=false
+  CLIENT-ONLY: #9 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=true mem=false
+  CLIENT-ONLY: #10 GET /async.html client=200 extra=undefined cls=cache-served servedFromCache=false disk=true mem=false
+  CLIENT-ONLY: #11 GET /style.css client=200 extra=undefined cls=cache-served servedFromCache=true disk=true mem=false
+  CLIENT-ONLY: #12 GET /async-data.json client=200 extra=undefined cls=cache-served servedFromCache=false disk=true mem=false
+  STATUS-SPLIT: POST /publish-endpoint.json wire=501 client=501 extra=undefined cls=wire
+  run3-warm: wire lines=2 matched=2 wire-only=0 client-only(cache/other)=12 (client events=14)
+
+== E. response body vs authored fixture bytes (Network.getResponseBody) ==
+  run1 GET /index.html: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run1 GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run1 GET /favicon.ico: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=internal-probe
+  run1 GET /detail.html?id=1: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run1 GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run1 GET /data.json: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run1 GET /form.html?id=1: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run1 GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run1 GET /confirm.html?traveler=tabi-r3&mode=rail&item=1: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run1 GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run1 GET /async.html: body bytes=1334 sha=2ea8dd6889550601 fixture=2ea8dd6889550601 MATCH cls=wire cl=1334 total=1521
+  run1 GET /style.css: body bytes=286 sha=6380986105b39bb2 fixture=6380986105b39bb2 MATCH cls=cache-served cl=286 total=0
+  run1 GET /async-data.json: body bytes=25 sha=df2a8a7512449bac fixture=df2a8a7512449bac MATCH cls=wire cl=25 total=217
+  run1 POST /publish-endpoint.json: body bytes=482 sha=0d46d2f0c3029c75 fixture=- (no fixture file) cls=wire cl=482 total=680
+  run2 GET /index.html: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run2 GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run2 GET /favicon.ico: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=internal-probe
+  run2 GET /detail.html?id=1: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run2 GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run2 GET /data.json: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run2 GET /form.html?id=1: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run2 GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run2 GET /confirm.html?traveler=tabi-r3&mode=rail&item=1: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=wire
+  run2 GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run2 GET /async.html: body bytes=1334 sha=2ea8dd6889550601 fixture=2ea8dd6889550601 MATCH cls=wire cl=1334 total=1521
+  run2 GET /style.css: body bytes=286 sha=6380986105b39bb2 fixture=6380986105b39bb2 MATCH cls=cache-served cl=286 total=0
+  run2 GET /async-data.json: body bytes=25 sha=df2a8a7512449bac fixture=df2a8a7512449bac MATCH cls=wire cl=25 total=217
+  run2 POST /publish-endpoint.json: body bytes=482 sha=0d46d2f0c3029c75 fixture=- (no fixture file) cls=wire cl=482 total=680
+  run3-warm GET /index.html: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run3-warm GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run3-warm GET /favicon.ico: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=internal-probe
+  run3-warm GET /detail.html?id=1: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run3-warm GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run3-warm GET /data.json: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run3-warm GET /form.html?id=1: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run3-warm GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run3-warm GET /confirm.html?traveler=tabi-r3&mode=rail&item=1: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run3-warm GET /style.css: body UNAVAILABLE ({"code":-32000,"message":"No resource with given identifier found"}) cls=cache-served
+  run3-warm GET /async.html: body bytes=1334 sha=2ea8dd6889550601 fixture=2ea8dd6889550601 MATCH cls=cache-served cl=1334 total=0
+  run3-warm GET /style.css: body bytes=286 sha=6380986105b39bb2 fixture=6380986105b39bb2 MATCH cls=cache-served cl=286 total=0
+  run3-warm GET /async-data.json: body bytes=25 sha=df2a8a7512449bac fixture=df2a8a7512449bac MATCH cls=cache-served cl=25 total=0
+  run3-warm POST /publish-endpoint.json: body bytes=482 sha=0d46d2f0c3029c75 fixture=- (no fixture file) cls=wire cl=482 total=680
+
+== F. timing detail (run1; as-of-capture, loopback) ==
+  GET /index.html cls=wire dur=2.52ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":33,"wait":1513,"receive":49} respAt=2026-10-14T16:09:59.134Z finAt=2026-10-14T16:09:59.139Z
+  GET /style.css cls=wire dur=2.87ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":29,"wait":393,"receive":37} respAt=2026-10-14T16:09:59.140Z finAt=2026-10-14T16:09:59.140Z
+  GET /favicon.ico cls=internal-probe dur=1.23ms timingMs={"proxy":null,"dns":6,"connect":102,"ssl":null,"send":24,"wait":372,"receive":38} respAt=2026-10-14T16:09:59.148Z finAt=2026-10-14T16:09:59.148Z
+  GET /detail.html?id=1 cls=wire dur=1.2ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":35,"wait":280,"receive":30} respAt=2026-10-14T16:09:59.604Z finAt=2026-10-14T16:09:59.608Z
+  GET /style.css cls=cache-served dur=0.03ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":29,"wait":393,"receive":37} respAt=2026-10-14T16:09:59.608Z finAt=2026-10-14T16:09:59.608Z
+  GET /data.json cls=wire dur=1.21ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":34,"wait":241,"receive":29} respAt=2026-10-14T16:09:59.610Z finAt=2026-10-14T16:09:59.610Z
+  GET /form.html?id=1 cls=wire dur=1.25ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":26,"wait":391,"receive":31} respAt=2026-10-14T16:09:59.737Z finAt=2026-10-14T16:09:59.743Z
+  GET /style.css cls=cache-served dur=0.03ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":29,"wait":393,"receive":37} respAt=2026-10-14T16:09:59.740Z finAt=2026-10-14T16:09:59.740Z
+  GET /confirm.html?traveler=tabi-r3&mode=rail&item=1 cls=wire dur=1.3ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":31,"wait":507,"receive":31} respAt=2026-10-14T16:09:59.896Z finAt=2026-10-14T16:09:59.900Z
+  GET /style.css cls=cache-served dur=0.03ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":29,"wait":393,"receive":37} respAt=2026-10-14T16:09:59.900Z finAt=2026-10-14T16:09:59.900Z
+  GET /async.html cls=wire dur=1.21ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":29,"wait":305,"receive":29} respAt=2026-10-14T16:10:00.000Z finAt=2026-10-14T16:10:00.004Z
+  GET /style.css cls=cache-served dur=0.03ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":29,"wait":393,"receive":37} respAt=2026-10-14T16:10:00.004Z finAt=2026-10-14T16:10:00.004Z
+  GET /async-data.json cls=wire dur=1.24ms timingMs={"proxy":null,"dns":null,"connect":null,"ssl":null,"send":61,"wait":284,"receive":37} respAt=2026-10-14T16:10:00.076Z finAt=2026-10-14T16:10:00.076Z
+  POST /publish-endpoint.json cls=wire dur=1.15ms timingMs={"proxy":null,"dns":8,"connect":79,"ssl":null,"send":23,"wait":314,"receive":18} respAt=2026-10-14T16:10:00.226Z finAt=2026-10-14T16:10:00.226Z
+
+== G. warm run status classes ==
+  GET /index.html wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=false body=unavailable
+  GET /style.css wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=false body=unavailable
+  GET /favicon.ico wire(extra)=404 client=404 cls=internal-probe disk=false mem=false servedFromCache=false body=unavailable
+  GET /detail.html?id=1 wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=false body=unavailable
+  GET /style.css wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=true body=unavailable
+  GET /data.json wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=false body=unavailable
+  GET /form.html?id=1 wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=false body=unavailable
+  GET /style.css wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=true body=unavailable
+  GET /confirm.html?traveler=tabi-r3&mode=rail&item=1 wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=false body=unavailable
+  GET /style.css wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=true body=unavailable
+  GET /async.html wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=false body=ok/1334B
+  GET /style.css wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=true body=ok/286B
+  GET /async-data.json wire(extra)=- client=200 cls=cache-served disk=true mem=false servedFromCache=false body=ok/25B
+  POST /publish-endpoint.json wire(extra)=501 client=501 cls=wire disk=false mem=false servedFromCache=false body=ok/482B
+
+wrote compare.tsv rows=88

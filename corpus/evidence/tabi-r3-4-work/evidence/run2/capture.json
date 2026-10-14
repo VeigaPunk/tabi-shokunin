@@ -1,0 +1,118 @@
+{
+  "steps": [
+    {
+      "step": "setDeviceMetricsOverride",
+      "params": {
+        "width": 800,
+        "height": 600,
+        "deviceScaleFactor": 1,
+        "mobile": false
+      }
+    },
+    {
+      "step": "Page.navigate",
+      "params": {
+        "url": "data:text/html;charset=utf-8,%3C%21doctype%20html%3E%0A%3Chtml%20lang%3D%22en%22%3E%0A%3Chead%3E%0A%3Cmeta%20charset%3D%22utf-8%22%3E%0A%3Ctitle%3Etabi-r3-4%20fixture%20v1%3C%2Ftitle%3E%0A%3Cstyle%3E%0A%20%20html%2Cbody%7Bmargin%3A0%3Bpadding%3A0%3Bbackground%3A%23ffffff%3Bcolor%3A%23000000%3Bfont-family%3Amonospace%3B%7D%0A%20%20%23box%7Bwidth%3A600px%3Bheight%3A200px%3Bbackground%3A%23c8d0e0%3Bborder%3A2px%20solid%20%23203040%3Bpadding%3A8px%3B%7D%0A%20%20%23det%7Bfont-size%3A20px%3B%7D%0A%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%3Cdiv%20id%3D%22box%22%3E%0A%20%20%3Ch1%20id%3D%22title%22%3ETABI%20R3-4%20FIXTURE%20V1%3C%2Fh1%3E%0A%20%20%3Cp%20id%3D%22det%22%3Edeterministic-paragraph-0001%3C%2Fp%3E%0A%20%20%3Cp%20id%3D%22live%22%3Ecounter%3D0%3C%2Fp%3E%0A%20%20%3Cbutton%20id%3D%22mut%22%20type%3D%22button%22%3Emutate%3C%2Fbutton%3E%0A%3C%2Fdiv%3E%0A%3Cscript%3E%0A%20%20document.getElementById%28%27mut%27%29.addEventListener%28%27click%27%2C%20function%20%28%29%20%7B%0A%20%20%20%20document.getElementById%28%27live%27%29.textContent%20%3D%20%27counter%3D1%27%3B%0A%20%20%7D%29%3B%0A%3C%2Fscript%3E%0A%3C%2Fbody%3E%0A%3C%2Fhtml%3E"
+      }
+    },
+    {
+      "step": "wait-on-state",
+      "loadEventMs": 20,
+      "predicateMs": 1,
+      "predicate": "readyState==='complete' && #det present"
+    },
+    {
+      "step": "state probes (Runtime.evaluate location.href/document.title; Page.getFrameTree; Target.getTargetInfo)"
+    },
+    {
+      "step": "cross-check: HTTP /json/list vs page document.title/location.href"
+    },
+    {
+      "step": "capture x2 + idempotence-check",
+      "c1": "ae3f9afa9f48992ee0590949d9ebc2488726ffd8fc79106df7c1c2938e4bbfde",
+      "c2": "ae3f9afa9f48992ee0590949d9ebc2488726ffd8fc79106df7c1c2938e4bbfde",
+      "identical": true
+    },
+    {
+      "step": "DOM.getDocument {depth:-1} + node count; second method getElementsByTagName(\"*\").length",
+      "cdpTreeNodeCount": 21,
+      "jsElementCount": 12,
+      "agree": false
+    },
+    {
+      "step": "action-effect pair",
+      "beforeText": "counter=0",
+      "clickRet": "click-returned",
+      "afterText": "counter=1",
+      "afterMs": 0,
+      "before": "det-before-c1.png",
+      "after": "7cf71ad7989e449727645ff3e2782817672b0ac6b8e82a6a64244e8655160a22",
+      "beforeShaOfPair": "ae3f9afa9f48992ee0590949d9ebc2488726ffd8fc79106df7c1c2938e4bbfde"
+    }
+  ],
+  "artifacts": [
+    {
+      "tag": "det-before-c1",
+      "path": "/tmp/tabi-r3-4-work/evidence/run2/det-before-c1.png",
+      "sha256": "ae3f9afa9f48992ee0590949d9ebc2488726ffd8fc79106df7c1c2938e4bbfde",
+      "bytes": 11992,
+      "params": {
+        "format": "png",
+        "captureBeyondViewport": true
+      },
+      "utc": "2026-10-14T14:44:44.068Z",
+      "local": "2026-10-14T11:44:44.068-03:00"
+    },
+    {
+      "tag": "det-before-c2",
+      "path": "/tmp/tabi-r3-4-work/evidence/run2/det-before-c2.png",
+      "sha256": "ae3f9afa9f48992ee0590949d9ebc2488726ffd8fc79106df7c1c2938e4bbfde",
+      "bytes": 11992,
+      "params": {
+        "format": "png",
+        "captureBeyondViewport": true
+      },
+      "utc": "2026-10-14T14:44:44.451Z",
+      "local": "2026-10-14T11:44:44.451-03:00"
+    },
+    {
+      "tag": "det-after",
+      "path": "/tmp/tabi-r3-4-work/evidence/run2/det-after.png",
+      "sha256": "7cf71ad7989e449727645ff3e2782817672b0ac6b8e82a6a64244e8655160a22",
+      "bytes": 11914,
+      "params": {
+        "format": "png",
+        "captureBeyondViewport": true
+      },
+      "utc": "2026-10-14T14:44:44.518Z",
+      "local": "2026-10-14T11:44:44.518-03:00"
+    }
+  ],
+  "browserVersion": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/152.0.7977.82",
+    "revision": "@d04cdb24d67b081f6cf80200ffc5233f44b61109",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+    "jsVersion": "15.2.124.21"
+  },
+  "state": {
+    "urlAsNormalized_readback": "data:text/html;charset=utf-8,%3C%21doctype%20html%3E%0A%3Chtml%20lang%3D%22en%22%3E%0A%3Chead%3E%0A%3Cmeta%20charset%3D%22utf-8%22%3E%0A%3Ctitle%3Etabi-r3-4%20fixture%20v1%3C%2Ftitle%3E%0A%3Cstyle%3E%0A%20%20html%2Cbody%7Bmargin%3A0%3Bpadding%3A0%3Bbackground%3A%23ffffff%3Bcolor%3A%23000000%3Bfont-family%3Amonospace%3B%7D%0A%20%20%23box%7Bwidth%3A600px%3Bheight%3A200px%3Bbackground%3A%23c8d0e0%3Bborder%3A2px%20solid%20%23203040%3Bpadding%3A8px%3B%7D%0A%20%20%23det%7Bfont-size%3A20px%3B%7D%0A%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%3Cdiv%20id%3D%22box%22%3E%0A%20%20%3Ch1%20id%3D%22title%22%3ETABI%20R3-4%20FIXTURE%20V1%3C%2Fh1%3E%0A%20%20%3Cp%20id%3D%22det%22%3Edeterministic-paragraph-0001%3C%2Fp%3E%0A%20%20%3Cp%20id%3D%22live%22%3Ecounter%3D0%3C%2Fp%3E%0A%20%20%3Cbutton%20id%3D%22mut%22%20type%3D%22button%22%3Emutate%3C%2Fbutton%3E%0A%3C%2Fdiv%3E%0A%3Cscript%3E%0A%20%20document.getElementById%28%27mut%27%29.addEventListener%28%27click%27%2C%20function%20%28%29%20%7B%0A%20%20%20%20document.getElementById%28%27live%27%29.textContent%20%3D%20%27counter%3D1%27%3B%0A%20%20%7D%29%3B%0A%3C%2Fscript%3E%0A%3C%2Fbody%3E%0A%3C%2Fhtml%3E",
+    "urlEqualsNavigatedInput": true,
+    "documentTitle": "tabi-r3-4 fixture v1",
+    "frameId": "F6ED4587771CF134FE81ED303E6AAF77",
+    "targetId": "F6ED4587771CF134FE81ED303E6AAF77",
+    "targetUrl": "data:text/html;charset=utf-8,%3C%21doctype%20html%3E%0A%3Chtml%20lang%3D%22en%22%3E%0A%3Chead%3E%0A%3Cmeta%20charset%3D%22utf-8%22%3E%0A%3Ctitle%3Etabi-r3-4%20fixture%20v1%3C%2Ftitle%3E%0A%3Cstyle%3E%0A%20%20html%2Cbody%7Bmargin%3A0%3Bpadding%3A0%3Bbackground%3A%23ffffff%3Bcolor%3A%23000000%3Bfont-family%3Amonospace%3B%7D%0A%20%20%23box%7Bwidth%3A600px%3Bheight%3A200px%3Bbackground%3A%23c8d0e0%3Bborder%3A2px%20solid%20%23203040%3Bpadding%3A8px%3B%7D%0A%20%20%23det%7Bfont-size%3A20px%3B%7D%0A%3C%2Fstyle%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%3Cdiv%20id%3D%22box%22%3E%0A%20%20%3Ch1%20id%3D%22title%22%3ETABI%20R3-4%20FIXTURE%20V1%3C%2Fh1%3E%0A%20%20%3Cp%20id%3D%22det%22%3Edeterministic-paragraph-0001%3C%2Fp%3E%0A%20%20%3Cp%20id%3D%22live%22%3Ecounter%3D0%3C%2Fp%3E%0A%20%20%3Cbutton%20id%3D%22mut%22%20type%3D%22button%22%3Emutate%3C%2Fbutton%3E%0A%3C%2Fdiv%3E%0A%3Cscript%3E%0A%20%20document.getElementById%28%27mut%27%29.addEventListener%28%27click%27%2C%20function%20%28%29%20%7B%0A%20%20%20%20document.getElementById%28%27live%27%29.textContent%20%3D%20%27counter%3D1%27%3B%0A%20%20%7D%29%3B%0A%3C%2Fscript%3E%0A%3C%2Fbody%3E%0A%3C%2Fhtml%3E",
+    "domNodeCount": 21,
+    "domElementCount_secondMethod": 12,
+    "domCountsAgree": false
+  },
+  "crossCheck_json_list": {
+    "found": true,
+    "jsonListTitle": "tabi-r3-4 fixture v1",
+    "documentTitle": "tabi-r3-4 fixture v1",
+    "titlesAgree": true,
+    "jsonListUrlEqualsReadback": true
+  },
+  "actionPairDiffers": true,
+  "ok": true
+}

@@ -1,0 +1,12 @@
+# TABI-A2 live daemon state re-run
+captured 2026-10-14T14:20:36Z
+--- ss -ltnp | grep 10086
+LISTEN 0      4096       127.0.0.1:10086      0.0.0.0:*    users:(("kimi-webbridge",pid=3934817,fd=5))
+--- pgrep -ax kimi-webbridge
+3934817 /home/vgpnk/.kimi-webbridge/bin/kimi-webbridge run --addr 127.0.0.1:10086
+--- ps -p 3934817 -o pid,ppid,etime,cmd
+    PID    PPID     ELAPSED CMD
+3934817    1573       34:04 /home/vgpnk/.kimi-webbridge/bin/kimi-webbridge run --addr 127.0.0.1:10086
+--- curl -s -m 5 http://127.0.0.1:10086/status (GET only)
+{"extension_connected":false,"extension_id":"","extension_version":"","port":10086,"running":true,"skills":[],"tab_id_arg":true,"uptime_seconds":2041,"version":"v2.0.23"}
+curl_exit=0

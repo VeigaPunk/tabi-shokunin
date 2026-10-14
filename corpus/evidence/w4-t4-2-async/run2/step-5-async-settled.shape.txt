@@ -1,0 +1,44 @@
+#document
+  html
+  HTML[lang=en]
+    HEAD
+      #text="\n"
+      META[charset=utf-8]
+      #text="\n"
+      TITLE
+        #text="TABI-R4-2 async"
+      #text="\n"
+      LINK[rel=stylesheet href=style.css]
+      #text="\n"
+    #text="\n"
+    BODY
+      #text="\n"
+      DIV[id=frame]
+        #text="\n  "
+        H1[id=page-title]
+          #text="TABI-R4-2 async routes"
+        #text="\n  "
+        P
+          #text="status: "
+          SPAN[id=async-status]
+            #text="ready"
+        #text="\n  "
+        UL[id=async-list]
+          LI[id=route-1]
+            ::marker
+            #text="north route - 42 km"
+          LI[id=route-2]
+            ::marker
+            #text="south route - 31 km"
+          LI[id=route-3]
+            ::marker
+            #text="coast route - 58 km"
+        #text="\n  "
+        P
+          A[id=back href=index.html]
+            #text="back to index"
+        #text="\n"
+      #text="\n"
+      SCRIPT
+        #text="\n(function () {\n  var status = document.getElementById('async-status');\n  var list = document.getElementById('async-list');\n  status.textContent = 'pending';\n  var xhr = new XMLHttpRequest();\n  xhr.open('GET', 'routes.json', true);\n  xhr.onload = function () {\n    var d = JSON.parse(xhr.responseText);\n    d.routes.forEach(function (r, i) {\n      var li = document.createElement('li');\n      li.id = 'route-' + (i + 1);\n      li.textContent = r.name + ' - ' + r.length;\n      list.appendChild(li);\n    });\n    status.textContent = 'ready';\n  };\n  xhr.onerror = function () { status.textContent = 'error'; };\n  xhr.send();\n})();\n"
+      #text="\n\n"

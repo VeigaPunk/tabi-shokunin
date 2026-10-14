@@ -253,3 +253,7 @@ pre-append pins.
 - Substrates read-only: plugin files, the kaidoku citation target, and
   all corpus notes were read-only to this lane; nothing outside
   `/tmp/w4-t4-3-sweep/` and this file was written.
+
+Appended 2026-10-14 (tabi round 5, lane B5-3 — pin refresh; derivation pass 17:01–17:06Z; scratch `/tmp/w5-tabi-b53/` — volatile). Nothing above is edited. Pre-append sha256 of this file: `4ddc67151b985048dd5525d13121de60f308a8a5bb3c98b88f2ad4629fb2e224`. The post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, pin refresh] VERIFIED — §8 10/10 + PINS.txt checks re-ran OK; file pin held.** logs `426e3ed7e67a` / `6a9c8d57befb` / `d4835eb773b7` / `1e5f151225ca` / `fe35495e5d2b` / `09eb36591d28`; scripts `54a86d8e9f20` / `6736a5fcc2b9` / `c3d67767d936` / `9bf6bc954d70` (24 / 38 / 27 / 60 lines, as §8); `sha256sum -c /tmp/w4-t4-3-sweep/PINS.txt` → 11/11 OK (it also pins this note's current hash — unchanged since the round-4 write); `/tmp/tabi-r4-3-sweep/PINS.txt` → 8/8 OK. This note's hash → `4ddc67151b98…` (254). Same-day-later pass — a strictly-later-date re-derivation remains open (round-5 plan clause (c)).

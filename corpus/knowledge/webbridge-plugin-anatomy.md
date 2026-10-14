@@ -285,3 +285,7 @@ post-append hash necessarily differs — re-derive with `sha256sum`.
   (daemon note D2/A4); no in-repo record of who executed it. Re-measure before
   citing either state (`webbridge-daemon-disposition.md` §10 carries the same
   row).
+
+Appended 2026-10-14 (tabi round 5, lane B5-3 — pin refresh; derivation pass 17:01–17:06Z; scratch `/tmp/w5-tabi-b53/` — volatile). Nothing above is edited. Pre-append sha256 of this file: `6ce6fdd018a70d0be9ef5b9517565f5245c047199f3123c16badcac2c88cf974`. The post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, pin refresh] VERIFIED — §8 anchors re-ran clean; file pin held.** `wc -l` → 24 / 158 / 34; sha256 first-12 `e70aff5c40ff` / `84a8e69d04c5` / `b811d9c23dfd`; `grep -n '"version"'` → `kimi.plugin.json:4`; `"skills"` → `:16`; `grep -rn 10086` → 10 hits, first at substrate `SKILL.md:11`; substrate mtimes still `2026-10-03 18:06:32 -0300`. This note's hash re-derived 17:01Z → `6ce6fdd018a7…` (= the §Pins value); the round-1 blob still `49f0735b0594` (`git show 7961735:corpus/knowledge/webbridge-plugin-anatomy.md | sha256sum`). Same-day-later pass — a strictly-later-date re-derivation remains open (round-5 plan clause (c)).

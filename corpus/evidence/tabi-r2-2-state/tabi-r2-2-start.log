@@ -1,0 +1,32 @@
+== TABI-R2-2 start attempt 2026-10-14T13:46:31Z ==
+-- pre-start double-check:
+NO-LISTENER-10086 (pre)
+NO-PROCESS (pre)
+-- start --help:
+Start the kimi-webbridge daemon (runs in background)
+
+Usage:
+  kimi-webbridge start [flags]
+
+Flags:
+      --addr string   Listen address for this run only (not saved). Without it the daemon uses "addr" from ~/.kimi-webbridge/config.json, which is also where stop/status look for the daemon — so to move the daemon to another port permanently, edit the config file instead of passing this flag. 0.0.0.0:<port> exposes the daemon on all interfaces (security risk — any client on the network can drive your browser). (default "127.0.0.1:10086")
+      --foreground    run in foreground (for dev/debug)
+  -h, --help          help for start
+exit=0
+-- executing: /home/vgpnk/.kimi-webbridge/bin/kimi-webbridge start  (docs authorization: operations.md:11-13)
+Kimi Browser Extension daemon started (pid 3934817) on 127.0.0.1:10086
+start_exit=0
+-- post-start listener (with pid):
+LISTEN 0      4096       127.0.0.1:10086      0.0.0.0:*    users:(("kimi-webbridge",pid=3934817,fd=5))
+-- post-start process:
+3934817 /home/vgpnk/.kimi-webbridge/bin/kimi-webbridge run --addr 127.0.0.1:10086
+-- daemon.pid content:
+3934817
+
+-- logs shape after start:
+total 24
+drwxr-xr-x 1 vgpnk vgpnk    50 Oct 14 10:46 .
+drwxr-xr-x 1 vgpnk vgpnk    82 Oct 14 10:46 ..
+-rw-r--r-- 1 vgpnk vgpnk  2281 Oct 14 10:46 daemon.log
+-rw-r--r-- 1 vgpnk vgpnk 19532 Oct 11 18:39 daemon.log.prev
+== end start attempt ==

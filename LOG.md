@@ -129,3 +129,4 @@
   quotes the executor note as "297 lines" while `wc -l` → 298 (sha matches;
   annotation nit for the owning seat — outside this lane's write scope).
 - 2026-10-14 — round 4 (training r3): network-evidence rung + async-step + hygiene sweep (webbridge daemon found OOM-dead — environment event recorded, operator return-to-baseline still owed); round-5 plan drafted (freshness move + operator-approval packet); round-4 record assembled here. Axis moved: coverage. Verifiers: AUD-TAB1 | T4-3 sweep. 32-lane wave (27+1+4 after an alibaba filter failure rerouted 4 lanes to hyper — recorded).
+- 2026-10-14 — round 5 (training r4): four-clause claim: evidence archived w/ manifest-pin equality, 4 lesson files with Gates, pins re-derived later-date, approval packet filed + one l0-questions line; cold-reader test result recorded. Axis: freshness. Verifiers: VER-B5 | AUD-B5.

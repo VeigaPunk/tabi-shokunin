@@ -1,0 +1,55 @@
+# ERR-B append proof — post-append verification (2026-10-14T16:2xZ)
+# method: cmp -n <pre-size> pre post → prefix must be byte-identical; appended-sha = tail bytes beyond pre-size
+
+[PREFIX-IDENTICAL] browser-surface-census.md pre=14472 post=16089 (+1617 bytes)
+  pre  sha256 70d1d455ee188f8f…
+  post sha256 a4bbb39edb12fe08…
+[PREFIX-IDENTICAL] cdp-evidence-patterns.md pre=18320 post=19782 (+1462 bytes)
+  pre  sha256 599e7d323c489e43…
+  post sha256 a024e025fa37006c…
+[PREFIX-IDENTICAL] executor-test-sufficiency.md pre=25063 post=27006 (+1943 bytes)
+  pre  sha256 1262708864dbff22…
+  post sha256 5f04f6877e1e2abc…
+[PREFIX-IDENTICAL] interaction-approval-table.md pre=22331 post=23944 (+1613 bytes)
+  pre  sha256 70ce826303d09526…
+  post sha256 d6ad567a610cf42f…
+[PREFIX-IDENTICAL] live-dynamic-capture.md pre=13903 post=15230 (+1327 bytes)
+  pre  sha256 56224aa884300738…
+  post sha256 f97c10238907c0ef…
+[PREFIX-IDENTICAL] multi-step-journey.md pre=20008 post=21694 (+1686 bytes)
+  pre  sha256 67447c028e90c3cb…
+  post sha256 67febee374d0e47e…
+[PREFIX-IDENTICAL] webbridge-daemon-disposition.md pre=13659 post=15349 (+1690 bytes)
+  pre  sha256 9240f1d66a8ca5b5…
+  post sha256 a3abb49b22846246…
+[PREFIX-IDENTICAL] webbridge-plugin-anatomy.md pre=14186 post=15633 (+1447 bytes)
+  pre  sha256 5e0fbe35feea149d…
+  post sha256 6ce6fdd018a70d0b…
+
+# second block — pre-append copies staged at /tmp/w4-erb-b-append-proof/pre2/
+[PREFIX-MISMATCH] cdp-evidence-patterns.md pre=19782 post=21220 (+1438)
+[PREFIX-IDENTICAL] multi-step-journey.md pre=21694 post=23344 (+1650)
+[PREFIX-MISMATCH] webbridge-daemon-disposition.md pre=15349 post=16363 (+1014)
+
+# repair note: two second-block edits initially replaced (not appended after) the tail bullet; detected by this proof (PREFIX-MISMATCH), restored above-line, re-verified below.
+# re-verification 2026-10-14T16:27:22Z
+browser-surface-census.md              vs pre : OK
+cdp-evidence-patterns.md               vs pre : OK | vs pre2: OK
+executor-test-sufficiency.md           vs pre : OK
+interaction-approval-table.md          vs pre : OK
+live-dynamic-capture.md                vs pre : OK
+multi-step-journey.md                  vs pre : OK | vs pre2: OK
+webbridge-daemon-disposition.md        vs pre : OK | vs pre2: OK
+webbridge-plugin-anatomy.md            vs pre : OK
+
+# FINAL — ERR-B post-append sha256 (all files, after repair + second blocks)
+a4bbb39edb12fe08a8e5a4922336f486f3c2c35baefb17a582bdd7d5b83e003f  corpus/knowledge/browser-surface-census.md
+8de2ee008c9c897c05cac2bd063760d5cf06afc972e61e830ab2fa1b86ce762f  corpus/knowledge/cdp-evidence-patterns.md
+5f04f6877e1e2abcb0bf5f7c07bdf59a6ddb43f14409172e0e3dfeffc498af15  corpus/knowledge/executor-test-sufficiency.md
+d6ad567a610cf42fe3691a1549a7743f34d47d3179424c77b6021bc23b293b2b  corpus/knowledge/interaction-approval-table.md
+f97c10238907c0ef5a93db9b68694e5ca430eb47a55d451777226a77441969bb  corpus/knowledge/live-dynamic-capture.md
+8925ce6c46c7be2f09468c583e3b01e6e224eefde96dc442055849f1fdef5071  corpus/knowledge/multi-step-journey.md
+03af1fb0693ed15894554278a2cc750d8a25a191bf1873f4dd3efd832343204c  corpus/knowledge/webbridge-daemon-disposition.md
+6ce6fdd018a70d0be9ef5b9517565f5245c047199f3123c16badcac2c88cf974  corpus/knowledge/webbridge-plugin-anatomy.md
+# sizes +1617/+3614/+1943/+1613/+1327/+3336/+3223/+1447 bytes; wc -l 261/230/325/241/241/345/270/286 (=2199 total, pre 1943)
+# independent convergence: corpus/knowledge/hygiene-sweep-r4.md:185-191 (T4-3) reaches the same 297-vs-298 count-definition reading.

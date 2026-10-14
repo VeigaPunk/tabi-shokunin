@@ -240,3 +240,7 @@ post-append hash necessarily differs — re-derive with `sha256sum`.
   vs GCM) open; item 6 (780×493) still explained-by-bypass only; items 1-5, 8
   unchanged. Scratch remains `/tmp`-staged — archive obligation stands
   (`cdp-evidence-patterns.md:92`).
+
+Appended 2026-10-14 (tabi round 5, lane B5-3 — pin refresh; derivation pass 17:01–17:06Z; scratch `/tmp/w5-tabi-b53/` — volatile). Nothing above is edited. Pre-append sha256 of this file: `f97c10238907c0ef5a93db9b68694e5ca430eb47a55d451777226a77441969bb`. The post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, pin refresh] VERIFIED — §1 methodology 4/4; file pin + r2 blob held.** `/tmp/tabi-r2-1-capture/methodology-sha.txt` re-checked: page.html `21e27aa6…1c99`, capture.mjs `d37d36dd…`, driver.sh `8105bed0…`, compare.mjs `e558bd54…` — all match §1. This note's hash → `f97c10238907…` (= the §Pins value); round-2 blob still `56224aa88430` (`git show 5d2e95d:corpus/knowledge/live-dynamic-capture.md | sha256sum`). Same-day-later pass — a strictly-later-date re-derivation remains open (round-5 plan clause (c)).

@@ -324,3 +324,7 @@ post-append hash necessarily differs — re-derive with `sha256sum`.
   = `in.`), so `Read` shows 298 lines while `wc -l` counts 297. No content
   discrepancy; the annotation slip is in the record, not the pin (LOG/SCORECARD
   correction owed to the owning seat — outside this lane's write scope).
+
+Appended 2026-10-14 (tabi round 5, lane B5-3 — pin refresh; derivation pass 17:01–17:06Z; scratch `/tmp/w5-tabi-b53/` — volatile). Nothing above is edited. Pre-append sha256 of this file: `5f04f6877e1e2abcb0bf5f7c07bdf59a6ddb43f14409172e0e3dfeffc498af15`. The post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, pin refresh] VERIFIED — §2 methodology 4/4 + artifact pins re-hashed; file pin held.** fixture `21e27aa6…1c99`, `runbook-capture.mjs` `1fc758e5b7cf…`, `runbook-driver.sh` `2b38d7c16325…`, `runbook-compare.py` `c2b98e00ac58…`; artifacts from `/tmp/tabi-r3-4-work/evidence-runbook/`: det-before `c08947dc1e02…` ×4, det-after `317310cc6fa1…` ×2, nondet-c1 `59f0e6b8815c…`/`d3f279385ac4…`, nondet-c2 `8f36d72757f7…`/`893e68d8a8d9…` — all as recorded. This note's hash → `5f04f6877e1e…` (`wc -l` 325; E6's count calibration stands). E4 (durable archive) still open; E1–E3 verifiably applied per E6. Same-day-later pass — a strictly-later-date re-derivation remains open (round-5 plan clause (c)).

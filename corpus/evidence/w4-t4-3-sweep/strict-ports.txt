@@ -1,0 +1,47 @@
+# strict port enumeration across r1-3 scratch (all forms) — 2026-10-14T13:23:05-03:00
+tabi3-cdp : 19333 
+tabi-audit2-cdp : 19441 
+tabi-a1-r2b-capture : 19471 19472 
+tabi-a2-r2b-evidence : 10086 
+tabi-b1-r3b-journey : 19481 19482 
+tabi-b1-r3b-scratch : none
+tabi-r2-1-capture : 19411 19412 
+tabi-r2-3-verify : 10086 19333 
+tabi-r2-4-poll : none
+tabi-r3-1-journey : 19421 19422 
+tabi-r3-2-spot : 10086 
+tabi-r3-3-anchors : 10086 
+tabi-r3-3-smoke : 19411 19412 
+tabi-r3-4-work : 9232 19411 19412 
+
+## 9232 context (only real usage forms, driver-ish files)
+2:# TABI-R3-4 executor capture: self-launched chromium + data: fixture + CDP :9232.
+18:{ ss -ltnp 2>/dev/null | grep ':9232' && echo "LISTENING-PRE"; } > "$EV/pre-listening.txt" || echo "port 9232 not listening pre-launch" > "$EV/pre-listening.txt"
+24:  /usr/bin/chromium --headless --remote-debugging-port=9232 --remote-debugging-address=127.0.0.1 \
+32:    if curl -sf --max-time 2 http://127.0.0.1:9232/json/version > "$OUT/json-version.json" 2>/dev/null; then ok=1; break; fi
+37:  curl -s http://127.0.0.1:9232/json/list > "$OUT/json-list.json"
+50:  { sleep 0.3; curl -s --max-time 3 -o /dev/null -w 'http_code=%{http_code}\n' http://127.0.0.1:9232/json/version; echo "curl_exit=$?"; } > "$OUT/post-kill-curl.txt" 2>&1
+51:  { ss -ltnp 2>/dev/null | grep ':9232' && echo "LISTENING-POST"; } > "$OUT/post-kill-listening.txt" || echo "9232 not listening post-kill" > "$OUT/post-kill-listening.txt"
+126:    const list = await (await fetch('http://127.0.0.1:9232/json/list')).json();
+
+## corpus notes mention 9232?
+/home/vgpnk/Projects/shokunin/tabi-shokunin/SKILL.md:476:  fixture only (a `data:` URL; CDP :9232 + `http.server` :8891 in the network-capture
+
+## git-committed executor note line/byte counts (blob @094c27a)
+297
+25063
+
+## working-tree wc -l / wc -c for the 8 notes
+   237 browser-surface-census.md
+   177 cdp-evidence-patterns.md
+   297 executor-test-sufficiency.md
+   216 interaction-approval-table.md
+   220 live-dynamic-capture.md
+   296 multi-step-journey.md
+   236 webbridge-daemon-disposition.md
+   264 webbridge-plugin-anatomy.md
+  1943 total
+25063 /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/executor-test-sufficiency.md
+
+## executor note last byte
+00000000: 2e                                       .

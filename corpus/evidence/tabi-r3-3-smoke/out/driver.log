@@ -1,0 +1,54 @@
+== step2 precheck
+ports free
+== step1 fixture sha
+21e27aa6619a41d2a68228b8fec90661b3b14aceb3d70e923f3400ab00691c99  /tmp/tabi-r3-3-smoke/site/page.html
+== step3 server
+http.pid=406360
+== step4 chromium
+chromium.launch.pid=406361
+== step5 endpoint wait
+== listening lines
+LISTEN 0      10         127.0.0.1:19412      0.0.0.0:*    users:(("chromium",pid=406361,fd=76))
+LISTEN 0      5          127.0.0.1:19411      0.0.0.0:*    users:(("python3",pid=406360,fd=3))
+== step6 child line
+ 406361  406349 /usr/lib/chromium/chromium --ozone-platform=wayland --ozone-platform-hint=wayland --enable-features=TouchpadOverscrollHistoryNavigation --load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url --headless=new --remote-debugging-port=19412 --remote-debugging-address=127.0.0.1 --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --no-first-run --no-default-browser-check --disable-gpu --disable-background-networking --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank
+ 406373  406361 /usr/lib/chromium/chromium --type=zygote --no-zygote-sandbox --headless=new --crashpad-handler-pid=406367 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+ 406374  406361 /usr/lib/chromium/chromium --type=zygote --headless=new --crashpad-handler-pid=406367 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+ 406376  406374 /usr/lib/chromium/chromium --type=zygote --headless=new --crashpad-handler-pid=406367 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+ 406398  406373 /usr/lib/chromium/chromium --type=gpu-process --headless=new --ozone-platform=headless --use-angle=swiftshader-webgl --crashpad-handler-pid=406367 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --change-stack-guard-on-fork=enable --gpu-preferences=YAAAAAAAAAAgAAAEAAAAAAAAAAAAAGAASAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=3,i,11835741591062283619,5252310627091668191,262144 --enable-features=TouchpadOverscrollHistoryNavigation --disable-features=EyeDropper,PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,4335095246468983596,12973451848998876335,4 --trace-process-track-uuid=3190708988185955192
+ 406400  406361 /usr/lib/chromium/chromium --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --use-angle=swiftshader-webgl --crashpad-handler-pid=406367 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11835741591062283619,5252310627091668191,262144 --enable-features=TouchpadOverscrollHistoryNavigation --disable-features=EyeDropper,PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,4335095246468983596,12973451848998876335,4 --trace-process-track-uuid=3190708989122997041
+ 406411  406376 /usr/lib/chromium/chromium --type=utility --utility-sub-type=storage.mojom.StorageService --lang=en-US --service-sandbox-type=utility --use-angle=swiftshader-webgl --crashpad-handler-pid=406367 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11835741591062283619,5252310627091668191,262144 --enable-features=TouchpadOverscrollHistoryNavigation --disable-features=EyeDropper,PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,4335095246468983596,12973451848998876335,4 --trace-process-track-uuid=3190708990060038890
+ 406425  406376 /usr/lib/chromium/chromium --type=renderer --top-chrome-webui --crashpad-handler-pid=406367 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --change-stack-guard-on-fork=enable --remote-debugging-port=19412 --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=5 --launch-time-ticks=89267305715 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11835741591062283619,5252310627091668191,262144 --enable-features=TouchpadOverscrollHistoryNavigation --disable-features=EyeDropper,PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,4335095246468983596,12973451848998876335,4 --trace-process-track-uuid=3190708990997080739
+ 406437  406376 /usr/lib/chromium/chromium --type=renderer --crashpad-handler-pid=406367 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --change-stack-guard-on-fork=enable --remote-debugging-port=19412 --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=6 --launch-time-ticks=89267316317 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11835741591062283619,5252310627091668191,262144 --enable-features=TouchpadOverscrollHistoryNavigation --disable-features=EyeDropper,PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,4335095246468983596,12973451848998876335,4 --trace-process-track-uuid=3190708991934122588
+ 406451  406376 /usr/lib/chromium/chromium --type=renderer --crashpad-handler-pid=406367 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --change-stack-guard-on-fork=enable --remote-debugging-port=19412 --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=8 --launch-time-ticks=89267321822 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11835741591062283619,5252310627091668191,262144 --enable-features=TouchpadOverscrollHistoryNavigation --disable-features=EyeDropper,PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,4335095246468983596,12973451848998876335,4 --trace-process-track-uuid=3190708993808206286
+ 406455  406376 /usr/lib/chromium/chromium --type=renderer --crashpad-handler-pid=406367 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --extension-process --change-stack-guard-on-fork=enable --remote-debugging-port=19412 --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=9 --launch-time-ticks=89267322825 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11835741591062283619,5252310627091668191,262144 --enable-features=TouchpadOverscrollHistoryNavigation --disable-features=EyeDropper,PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,4335095246468983596,12973451848998876335,4 --trace-process-track-uuid=3190708994745248135
+ 406510  406376 /usr/lib/chromium/chromium --type=renderer --crashpad-handler-pid=406367 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/tabi-r3-3-smoke/out/profile --extension-process --change-stack-guard-on-fork=enable --remote-debugging-port=19412 --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=10 --launch-time-ticks=89267352181 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,11835741591062283619,5252310627091668191,262144 --enable-features=TouchpadOverscrollHistoryNavigation --disable-features=EyeDropper,PaintHolding --variations-seed-version --pseudonymization-salt-handle=7,i,4335095246468983596,12973451848998876335,4 --trace-process-track-uuid=3190708995682289984
+chromium pids: 406361
+406373
+406374
+406376
+406398
+406400
+406411
+406425
+406437
+406451
+406455
+406510
+== step9 capture (round-2 measured harness, read-only exec)
+capture det/before png=c08947dc1e02f0ea shape=d85c76fb9d814f93 nodes=55
+capture det/before2 png=c08947dc1e02f0ea shape=d85c76fb9d814f93 nodes=55
+capture det/after png=7488d544ed53e0db shape=ba497530f3884d0d nodes=65
+capture.exit=0
+== artifacts
+c08947dc1e02f0ea551b3beb42b4a3eb9641347d6d5ae65bebcbba01c0802dc1  /tmp/tabi-r3-3-smoke/out/det-before.png
+7488d544ed53e0dbc25f9ae3c65c22b609a58c901c8a7b95aeec82ebde4b42c7  /tmp/tabi-r3-3-smoke/out/det-after.png
+d85c76fb9d814f93ac821138e76418ca84799090493183c3fa2e75f5238dcab0  /tmp/tabi-r3-3-smoke/out/det-before.shape.txt
+ba497530f3884d0d445d2ec8190eb743a04b1bcb8379b6214af42ff134f20714  /tmp/tabi-r3-3-smoke/out/det-after.shape.txt
+== step13 cleanup
+== closure proof
+pass: no chromium
+pass: ports not listening
+curl cdp exit=7
+curl http exit=7
+== smoke done

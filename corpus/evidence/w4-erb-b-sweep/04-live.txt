@@ -1,0 +1,30 @@
+== date
+2026-10-14T16:21:07Z
+== ss listen
+(none of the audited ports listen)
+== all tcp listen (loopback)
+State  Recv-Q Send-Q Local Address:Port Peer Address:Port
+LISTEN 0      4096         0.0.0.0:5355      0.0.0.0:*
+LISTEN 0      4096       127.0.0.1:631       0.0.0.0:*
+LISTEN 0      4096      172.17.0.1:53        0.0.0.0:*
+LISTEN 0      4096      127.0.0.54:53        0.0.0.0:*
+LISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*
+LISTEN 0      4096            [::]:5355         [::]:*
+LISTEN 0      4096           [::1]:631          [::]:*
+== daemon pid
+    PID    PPID     ELAPSED CMD
+pid 3934817 gone
+== pgrep
+1307028 /bin/bash -c cd '/home/vgpnk/Projects/shokunin' && cd /tmp && { echo "== date"; date -u +'%Y-%m-%dT%H:%M:%SZ'; echo "== ss listen"; ss -ltnp 2>/dev/null | grep -E ':(9232|19333|19411|19412|19421|19422|19441|19471|19472|19481|19482|10086)\b' || echo "(none of the audited ports listen)"; echo "== all tcp listen (loopback)"; ss -ltn | head -25; echo "== daemon pid"; ps -p 3934817 -o pid,ppid,etime,cmd 2>/dev/null || echo "pid 3934817 gone"; echo "== pgrep"; pgrep -a -x chromium; pgrep -a -x node; pgrep -a -x python3; pgrep -a -f kimi-webbridge; echo "== daemon files"; ls -la ~/.kimi-webbridge/ 2>/dev/null; echo "== status probe"; curl -s -m 3 http://127.0.0.1:10086/status || echo "status: exit=$?"; } 2>&1 | tee /tmp/w4-erb-b-sweep/04-live.txt
+1307029 /bin/bash -c cd '/home/vgpnk/Projects/shokunin' && cd /tmp && { echo "== date"; date -u +'%Y-%m-%dT%H:%M:%SZ'; echo "== ss listen"; ss -ltnp 2>/dev/null | grep -E ':(9232|19333|19411|19412|19421|19422|19441|19471|19472|19481|19482|10086)\b' || echo "(none of the audited ports listen)"; echo "== all tcp listen (loopback)"; ss -ltn | head -25; echo "== daemon pid"; ps -p 3934817 -o pid,ppid,etime,cmd 2>/dev/null || echo "pid 3934817 gone"; echo "== pgrep"; pgrep -a -x chromium; pgrep -a -x node; pgrep -a -x python3; pgrep -a -f kimi-webbridge; echo "== daemon files"; ls -la ~/.kimi-webbridge/ 2>/dev/null; echo "== status probe"; curl -s -m 3 http://127.0.0.1:10086/status || echo "status: exit=$?"; } 2>&1 | tee /tmp/w4-erb-b-sweep/04-live.txt
+== daemon files
+total 12
+drwxr-xr-x 1 vgpnk vgpnk  82 Oct 14 10:46 .
+drwx------ 1 vgpnk vgpnk 854 Oct 14 04:46 ..
+drwxr-xr-x 1 vgpnk vgpnk  28 Oct 11 10:39 bin
+-rw-r--r-- 1 vgpnk vgpnk  16 Oct 14 10:46 daemon.addr
+-rw-r--r-- 1 vgpnk vgpnk   8 Oct 14 10:46 daemon.pid
+-rw------- 1 vgpnk vgpnk  36 Oct  3 18:06 identity.json
+drwxr-xr-x 1 vgpnk vgpnk  50 Oct 14 10:46 logs
+== status probe
+status: exit=7

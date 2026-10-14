@@ -1,0 +1,23 @@
+== sha
+84a8e69d04c5b810e69695dec8d8e16c1cd9735b96ba81c39433b0c0451bea4b  /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md
+b811d9c23dfdafa0b751b23acef25b02a324490a3389efdd5c17319a646734fc  /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md
+== wc
+  158 /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md
+   34 /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md
+  192 total
+== mtime
+2026-10-03 18:06:32.434624041 -0300 /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md
+2026-10-03 18:06:32.434769953 -0300 /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md
+== SKILL.md:11
+Control the user's real browser (with their login sessions) via a local daemon at `http://127.0.0.1:10086`.
+== operations anchors
+     1	The `kimi-webbridge` binary lives at `~/.kimi-webbridge/bin/kimi-webbridge` (Windows: `%USERPROFILE%\.kimi-webbridge\bin\kimi-webbridge.exe`) and serves a local HTTP daemon on `127.0.0.1:10086`. Status, PID, and logs live under `~/.kimi-webbridge/`.
+     2	1. **Daemon not reachable (connection refused)** → start it yourself, don't ask the user. `start` is idempotent: it no-ops if the daemon is already up, and concurrent starts converge to a single daemon (the OS lets only one process bind port 10086).
+     3	   - macOS / Linux: `~/.kimi-webbridge/bin/kimi-webbridge start`
+     4	   - Windows: `& "$env:USERPROFILE\.kimi-webbridge\bin\kimi-webbridge.exe" start`
+     5	3. **Extension missing or won't connect** → give the user both official installation paths:
+     6	   - Chrome Web Store: https://chromewebstore.google.com/detail/kimi-webbridge/fldmhceldgbpfpkbgopacenieobmligc
+     7	   - Restricted-network fallback: download https://kimi-web-img.moonshot.cn/webbridge/latest/extension/kimi-webbridge-extension.zip, unzip it, open `chrome://extensions`, enable Developer mode, choose **Load unpacked**, and select the extracted folder.
+     8	   - 中文: https://www.kimi.com/zh-cn/features/webbridge
+     9	Never run `stop` / `restart` / `uninstall` on your own. They kill the running daemon; if the user runs the **Kimi Desktop App** (which manages its own daemon), an external stop/restart also fights the app. If a hard restart is genuinely needed, ask the user to do it themselves — reopen the Kimi Desktop App, or run `kimi-webbridge restart` by hand.
+    10	- `running` (bool) — daemon listening on `:10086`

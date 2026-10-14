@@ -1,0 +1,29 @@
+# tabi R4-3 sweep — live port state (2026-10-14T16:08:33Z UTC / 13:08:33-0300 local)
+
+## ss -ltnp (all listeners)
+State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+LISTEN 0      4096         0.0.0.0:5355       0.0.0.0:*   
+LISTEN 0      4096       127.0.0.1:631        0.0.0.0:*   
+LISTEN 0      4096      172.17.0.1:53         0.0.0.0:*   
+LISTEN 0      4096      127.0.0.54:53         0.0.0.0:*   
+LISTEN 0      4096       127.0.0.1:10086      0.0.0.0:*    users:(("kimi-webbridge",pid=3934817,fd=5))
+LISTEN 0      4096   127.0.0.53%lo:53         0.0.0.0:*   
+LISTEN 0      4096            [::]:5355          [::]:*   
+LISTEN 0      4096           [::1]:631           [::]:*   
+
+## closure check (ss + curl exit; exit 7 = connection refused)
+port 19333 : closed (curl exit=7)
+port 19411 : closed (curl exit=7)
+port 19412 : closed (curl exit=7)
+port 19421 : closed (curl exit=7)
+port 19422 : closed (curl exit=7)
+port 19441 : closed (curl exit=7)
+port 19471 : closed (curl exit=7)
+port 19472 : closed (curl exit=7)
+port 19481 : closed (curl exit=7)
+port 19482 : closed (curl exit=7)
+port 9232  : closed (curl exit=7)
+port 10086 : LISTEN 0      4096       127.0.0.1:10086      0.0.0.0:*    users:(("kimi-webbridge",pid=3934817,fd=5))
+
+## 10086 listener line
+LISTEN 0      4096       127.0.0.1:10086      0.0.0.0:*    users:(("kimi-webbridge",pid=3934817,fd=5))

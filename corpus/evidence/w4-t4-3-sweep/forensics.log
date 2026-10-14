@@ -1,0 +1,67 @@
+# daemon-death forensics (2026-10-14T13:21:45-03:00)
+
+## systemd --user manager pid 1573 (round-2 recorded the daemon as its child)
+PID 1573 GONE
+
+## children of 1573 now
+child count: 0
+
+## my own ancestry (bash tool -> ... -> ?)
+1364012 1205136 bash            /bin/bash -c cd '/home/vgpnk/Projects/shokunin' && S=/tmp/w4-t4-3-sweep; { echo "# daemon-death forensics ($(date -Is))" echo echo "## systemd --user manager pid 1573 (round-2 recorded the daemon as its child)" ps -p 1573 -o pid,ppid,lstart,etime,args --no-headers || echo "PID 1573 GONE" echo echo "## children of 1573 now"; ps -eo pid,ppid,comm,args --no-headers | awk '$2==1573{print}' | head -20 echo "child count: $(ps -eo ppid --no-headers | awk '$1==1573' | wc -l)" echo echo "## my own ancestry (bash tool -> ... -> ?)" p=$$; while [ "$p" != 1 ] && [ -n "$p" ]; do ps -p $p -o pid,ppid,comm,args --no-headers; p=$(ps -p $p -o ppid --no-headers | tr -d ' '); done | head -12 echo echo "## loginctl sessions" loginctl list-sessions --no-legend 2>&1 | head -6 echo echo "## wtmp tail (session/restart records)" last -x -n 10 vgpnk 2>&1 | head -12 || true echo echo "## coredumpctl: any kimi/bridge core?" coredumpctl list 2>&1 | grep -iE 'kimi|bridge' || echo "no kimi/webbridge coredump entry" echo echo "## ~/.kimi-webbridge files changed since 13:00" find "$HOME/.kimi-webbridge" -newermt "2026-10-14 13:00" -exec ls -lad {} + 2>&1 || true echo echo "## journal --user 13:09-13:14, lifecycle-ish lines only" journalctl --user --since "2026-10-14 13:09" --until "2026-10-14 13:14" -o short-precise 2>&1 | grep -iE 'kimi|bridge|hypr|session|systemd|termin|compositor' | head -25 echo "(journal grep end)" } 2>&1 | tee "$S/forensics.log"
+1205136 1204398 kimi            kimi
+1204398 1204373 bash            /usr/bin/bash
+1204373 1203316 alacritty       alacritty --working-directory=/home/vgpnk
+1203316 1203305 Hyprland        Hyprland --watchdog-fd 4
+1203305 1203171 start-hyprland  /usr/bin/start-hyprland
+1203171       1 systemd         /usr/lib/systemd/systemd --user
+
+## loginctl sessions
+4 1000 vgpnk seat0 1203167 user    tty2 no -
+5 1000 vgpnk -     1203171 manager -    no -
+
+## wtmp tail (session/restart records)
+vgpnk    tty2                          Wed Oct 14 13:11   still logged in
+vgpnk    tty1                          Tue Oct 13 11:02 - 13:10 (1+02:08)
+vgpnk    pts/11       tmux(243004).%57 Tue Oct 13 09:59 - 10:52  (00:53)
+vgpnk    pts/12       tmux(243004).%56 Tue Oct 13 09:20 - 10:52  (01:32)
+vgpnk    pts/11       tmux(243004).%55 Tue Oct 13 09:20 - 09:59  (00:39)
+vgpnk    pts/11       tmux(243004).%54 Tue Oct 13 09:02 - 09:20  (00:18)
+vgpnk    pts/8        tmux(243004).%53 Tue Oct 13 08:59 - 10:52  (01:53)
+vgpnk    pts/12       tmux(243004).%52 Tue Oct 13 08:59 - 09:20  (00:21)
+vgpnk    pts/8        tmux(243004).%51 Tue Oct 13 08:21 - 08:59  (00:37)
+vgpnk    pts/12       tmux(243004).%50 Tue Oct 13 08:21 - 08:59  (00:37)
+
+wtmp begins Sat Oct  3 17:42:07 2026
+
+## coredumpctl: any kimi/bridge core?
+no kimi/webbridge coredump entry
+
+## ~/.kimi-webbridge files changed since 13:00
+
+## journal --user 13:09-13:14, lifecycle-ish lines only
+Oct 14 13:09:19.610856 plazir27 systemd-coredump[1178853]: Process 1178703 (love) of user 1000 dumped core.
+                                                           #5  0x00007f72dd49a459 __cxa_call_terminate (libstdc++.so.6 + 0x9a459)
+Oct 14 13:09:38.184952 plazir27 systemd-coredump[1185376]: Process 1185103 (love) of user 1000 dumped core.
+                                                           #5  0x00007f1ef609a459 __cxa_call_terminate (libstdc++.so.6 + 0x9a459)
+Oct 14 13:09:55.182232 plazir27 systemd-coredump[1189662]: Process 1189448 (love) of user 1000 dumped core.
+                                                           #5  0x00007fcd7469a459 __cxa_call_terminate (libstdc++.so.6 + 0x9a459)
+Oct 14 13:09:58.952841 plazir27 systemd[1573]: Started app-org.chromium.Chromium-1190456.scope.
+Oct 14 13:10:06.870857 plazir27 systemd[1573]: Started app-org.chromium.Chromium-1192514.scope.
+Oct 14 13:10:13.015821 plazir27 systemd[1573]: Started app-org.chromium.Chromium-1194175.scope.
+Oct 14 13:10:32.258931 plazir27 systemd[1573]: Started app-org.chromium.Chromium-1198002.scope.
+Oct 14 13:10:34.599843 plazir27 systemd[1573]: Started app-org.chromium.Chromium-1198710.scope.
+Oct 14 13:10:49.318715 plazir27 systemd-coredump[1201256]: Process 1201250 (love) of user 1000 dumped core.
+                                                           #5  0x00007fa54b09a459 __cxa_call_terminate (libstdc++.so.6 + 0x9a459)
+Oct 14 13:10:59.345266 plazir27 xdg-desktop-portal-hyprland[1920]: [LOG]  | Got interface: ext_foreign_toplevel_image_capture
+Oct 14 13:11:07.325957 plazir27 systemd-xdg-autostart-generator[1203177]: Failed to create unit file '/run/user/1000/systemd/generator.late/app-gnome\x2dkeyring\x2dpkcs11@autostart.service': File exists
+Oct 14 13:11:07.325965 plazir27 systemd-xdg-autostart-generator[1203177]: Failed to create unit file '/run/user/1000/systemd/generator.late/app-limine\x2dsnapper\x2dnotify@autostart.service': File exists
+Oct 14 13:11:07.325969 plazir27 systemd-xdg-autostart-generator[1203177]: Failed to create unit file '/run/user/1000/systemd/generator.late/app-gnome\x2dkeyring\x2dsecrets@autostart.service': File exists
+Oct 14 13:11:07.325974 plazir27 systemd-xdg-autostart-generator[1203177]: Failed to create unit file '/run/user/1000/systemd/generator.late/app-limine\x2drestore\x2dnotify@autostart.service': File exists
+Oct 14 13:11:07.325978 plazir27 systemd-xdg-autostart-generator[1203177]: Failed to create unit file '/run/user/1000/systemd/generator.late/app-org.gnome.SettingsDaemon.DiskUtilityNotify@autostart.service': File exists
+Oct 14 13:11:07.325982 plazir27 systemd-xdg-autostart-generator[1203177]: Failed to create unit file '/run/user/1000/systemd/generator.late/app-walker@autostart.service': File exists
+Oct 14 13:11:07.325987 plazir27 systemd-xdg-autostart-generator[1203177]: Failed to create unit file '/run/user/1000/systemd/generator.late/app-com.onepassword.OnePassword@autostart.service': File exists
+Oct 14 13:11:07.325991 plazir27 systemd-xdg-autostart-generator[1203177]: Failed to create unit file '/run/user/1000/systemd/generator.late/app-print\x2dapplet@autostart.service': File exists
+Oct 14 13:11:07.371727 plazir27 systemd[1203171]: Queued start job for default target Main User Target.
+Oct 14 13:11:07.382047 plazir27 systemd[1203171]: Created slice User Application Slice.
+Oct 14 13:11:07.382063 plazir27 systemd[1203171]: Started Refresh AI usage cache every 5 minutes.
+(journal grep end)

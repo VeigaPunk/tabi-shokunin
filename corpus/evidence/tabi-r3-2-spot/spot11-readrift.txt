@@ -1,0 +1,44 @@
+== notes drift check (vs spot1) ==
+70d1d455ee188f8f6ff1759bf6585042b5970dcc7d76af8f755fcc7cecbdf57a  corpus/knowledge/browser-surface-census.md
+599e7d323c489e43dc6b00cf481291f8284af9c9c33dd8246de51f406b885154  corpus/knowledge/cdp-evidence-patterns.md
+b838e91b80e85dcede51f3c8a49d1096c78ef27963bc5c17ff73cafe0cd6ae8a  corpus/knowledge/interaction-approval-table.md
+56224aa8843007381d325e900008cb76a9fb85d2b18b52d3d4b5e7c1bd1597de  corpus/knowledge/live-dynamic-capture.md
+9240f1d66a8ca5b5dd7c16c1c7f932f22d3921c3c0dd38483f09aaefd9bf8eec  corpus/knowledge/webbridge-daemon-disposition.md
+5e0fbe35feea149d6eb22a0cc26c4b0f1f0aebbfec0356b1c02d8f476fae4f5b  corpus/knowledge/webbridge-plugin-anatomy.md
+
+== NEW SKILL.md structure ==
+19:## Standing rules
+28:## Pins — sources and staleness rule
+50:## Runbook — loopback capture, start to finish
+190:## Capture-script call reference (what the measured harness sends)
+205:## Evidence ladder — climb to the rung the claim needs
+227:### Claim classes → capture (decision aid)
+249:### Record envelope (all classes)
+271:## Bounded waits — state, never time
+286:## Webbridge — the user's real browser (when the task needs it)
+320:## Determinism boundaries (measured, round 2)
+343:## Session-material discipline (shape-only)
+364:## Rights / rate boundary
+380:## Approval table — finalized (every interaction class mapped)
+420:## Sources pinned (round-2 notes)
+
+== pin block / my-file refs ==
+33:- Round-1 notes: `webbridge-plugin-anatomy.md` `5e0fbe35feea` ·
+34:  `browser-surface-census.md` `70d1d455ee18` · `cdp-evidence-patterns.md` `599e7d323c48`.
+35:- Round-2 notes: `live-dynamic-capture.md` `56224aa88430` ·
+36:  `webbridge-daemon-disposition.md` `9240f1d66a8c`.
+
+== newly added approval section ==
+382:Classes: **autonomous-now** (agent runs it, records evidence) ·
+383:**operator-approval-required** (needs the awake operator before acting) ·
+384:**operator-asleep-blocked** (approval absent ⇒ the action does not run; loopback
+389:| Self-launched loopback capture (scratch fixture server + headless browser on 127.0.0.1) | **autonomous-now** | Run it; the price is the full cleanup+closure proof and the archive obligation | `cdp-evidence-patterns.md:20-34,94-105`; `live-dynamic-capture.md:24-33,175-188` |
+390:| Reads on a browser this task started (`/json/*`, process table, hashes) | **autonomous-now** | Read-only; record channel per fact | `cdp-evidence-patterns.md:38-52,90` |
+391:| Start the webbridge daemon (connection refused) | **autonomous-now** | Authorized by the substrate's own docs; idempotent, local-only, no sudo / systemd unit / config edit | `references/operations.md:11-13`; `webbridge-daemon-disposition.md:38-42,52-55,160` |
+392:| `/status` probe of the daemon | **autonomous-now (iff)** | Only a daemon this task itself started is probed; an empty `extension_id` is "no value present", never session material | `webbridge-daemon-disposition.md:122-139` |
+393:| Driving the user's browser via webbridge | **autonomous-now (condition)** | Condition, not authority: requires `extension_connected:true`; with none attached the daemon cannot drive it; session discipline applies | `webbridge-daemon-disposition.md:133-134,145-150,162`; substrate `SKILL.md:71-74` |
+394:| External-site interaction (navigate/click/fill on real sites) | **operator-approval-required** — with the operator asleep: **operator-asleep-blocked** | Approval absent ⇒ capture stays loopback-only, recorded as the round's anti-claim | `plans/round-2.plan.md:8-9`; `plans/round-3.plan.md:8-9`; `live-dynamic-capture.md:5-7,216-217` |
+395:| Trusted input via the webbridge `cdp` escape hatch (sites checking `isTrusted`) | **operator-approval-required** | Advanced; default is to hand the page back to the user | `~/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md:146` |
+396:| `stop` / `restart` / `uninstall` the daemon | **operator-approval-required (agent never runs it)** | Ask the user to run `~/.kimi-webbridge/bin/kimi-webbridge stop` by hand (or manage it via the Kimi Desktop App) | `references/operations.md:24-26`; `webbridge-daemon-disposition.md:43-45,161` |
+397:| Return an agent-started daemon to baseline | **operator-approval-required** | The docs define no TTL / cleanup / scratch mode for an agent-started daemon; the one started in round 2 (pid 3934817, `127.0.0.1:10086`) is left running and recorded as a state change | `webbridge-daemon-disposition.md:56-62,165-169` |
+398:| Reusing daemon state in a later round | **autonomous-now (recheck first)** | Recheck live state (listener scan + `/status`), then reuse; no unit, no autostart — lifespan bounded by the user session [inference, medium] | `webbridge-daemon-disposition.md:107-112,163` |

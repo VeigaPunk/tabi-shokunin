@@ -277,3 +277,7 @@ Extends r2's rules (live-dynamic-capture.md:151-173) and r3's per-step patterns
 ## 9. Errata (append-only — never edit above blocks)
 
 *(none yet)*
+
+Appended 2026-10-14 (tabi round 5, lane B5-3 — pin refresh; derivation pass 17:01–17:06Z; scratch `/tmp/w5-tabi-b53/` — volatile). Nothing above is edited. Pre-append sha256 of this file: `577af06bd9a8758e4c74e7d1df02e5d2dea78518d2af7801931e8b789a34db48`. The post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, pin refresh] VERIFIED — §1 fixture 8/8 + runner/driver pins; file pin held.** `async.html` `f23dc1099a6c` / `confirm.html` `97ed8bfd06af` / `routes.json` `b283adae1880` + the five r3-equal files `42d7a35b82be` / `353d8107a072` / `50d811502ef8` / `6380986105b3` / `bf141027b3ef`; runner `journey-async.mjs` `06fa6e5ce5bf…`; `journey-r3.mjs` `b52074a33876…` (`/tmp/tabi-r4-2-async/`); re-verification `driver.sh` `8fddda9e…` — all match §1. This note's hash → `577af06bd9a8…` (278). Same-day-later pass — a strictly-later-date re-derivation remains open (round-5 plan clause (c)).

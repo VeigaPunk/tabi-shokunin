@@ -1,0 +1,42 @@
+#document
+  html
+  HTML[lang=en]
+    HEAD
+      #text="\n"
+      META[charset=utf-8]
+      #text="\n"
+      TITLE
+        #text="TABI-R4-1 async"
+      #text="\n"
+      LINK[rel=stylesheet href=style.css]
+      #text="\n"
+    #text="\n"
+    BODY
+      #text="\n"
+      DIV[id=frame]
+        #text="\n  "
+        H1[id=page-title]
+          #text="TABI-R4-1 async-XHR fixture"
+        #text="\n  "
+        P
+          #text="async: "
+          SPAN[id=async-out]
+            #text="loaded:async-ok:41"
+        #text="\n  "
+        P
+          BUTTON[id=load-data]
+            #text="load async data"
+        #text="\n  "
+        P
+          #text="publish: "
+          SPAN[id=pub-out]
+            #text="unpublished"
+        #text="\n  "
+        P
+          BUTTON[id=pub-btn]
+            #text="publish"
+        #text="\n"
+      #text="\n"
+      SCRIPT
+        #text="\n(function () {\n  document.getElementById('load-data').addEventListener('click', function () {\n    var xhr = new XMLHttpRequest();\n    xhr.open('GET', 'async-data.json');\n    xhr.onload = function () {\n      var d = JSON.parse(xhr.responseText);\n      document.getElementById('async-out').textContent = 'loaded:' + d.tag + ':' + d.n;\n    };\n    xhr.onerror = function () {\n      document.getElementById('async-out').textContent = 'error';\n    };\n    xhr.send();\n  });\n  document.getElementById('pub-btn').addEventListener('click', function () {\n    document.getElementById('pub-out').textContent = 'published';\n    var xhr = new XMLHttpRequest();\n    xhr.open('POST', 'publish-endpoint.json');\n    xhr.setRequestHeader('Content-Type', 'application/json');\n    xhr.onload = function () {};\n    xhr.onerror = function () {};\n    xhr.send('{\"item\":1}');\n  });\n})();\n"
+      #text="\n\n"

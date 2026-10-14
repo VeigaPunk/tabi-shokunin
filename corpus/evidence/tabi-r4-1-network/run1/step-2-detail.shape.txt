@@ -1,0 +1,42 @@
+#document
+  html
+  HTML[lang=en]
+    HEAD
+      #text="\n"
+      META[charset=utf-8]
+      #text="\n"
+      TITLE
+        #text="TABI-R3-1 detail"
+      #text="\n"
+      LINK[rel=stylesheet href=style.css]
+      #text="\n"
+    #text="\n"
+    BODY
+      #text="\n"
+      DIV[id=frame]
+        #text="\n  "
+        H1[id=page-title]
+          #text="TABI-R3-1 detail"
+        #text="\n  "
+        P
+          #text="item: "
+          SPAN[id=item-name]
+            #text="north route"
+        #text="\n  "
+        P
+          #text="region: "
+          SPAN[id=item-region]
+            #text="highlands"
+        #text="\n  "
+        P
+          A[id=to-form href=form.html?id=1]
+            #text="open the travel form"
+        #text="\n  "
+        P
+          A[id=back href=index.html]
+            #text="back to index"
+        #text="\n"
+      #text="\n"
+      SCRIPT
+        #text="\n(function () {\n  var id = new URLSearchParams(location.search).get('id') || '';\n  var a = document.getElementById('to-form');\n  if (id) a.setAttribute('href', 'form.html?id=' + encodeURIComponent(id));\n  fetch('data.json').then(function (r) { return r.json(); }).then(function (d) {\n    var it = d.items[id] || { name: 'unknown', region: 'unknown' };\n    document.getElementById('item-name').textContent = it.name;\n    document.getElementById('item-region').textContent = it.region;\n  });\n})();\n"
+      #text="\n\n"

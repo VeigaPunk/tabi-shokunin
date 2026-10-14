@@ -1,0 +1,55 @@
+#document
+  html
+  HTML[lang=en]
+    HEAD
+      #text="\n"
+      META[charset=utf-8]
+      #text="\n"
+      TITLE
+        #text="TABI-R2-1 fixture"
+      #text="\n"
+      STYLE
+        #text="\n  html, body { margin: 0; padding: 0; overflow: hidden; background: #ffffff; color: #111111;\n               font: 16px/1.5 monospace; }\n  #frame { width: 800px; height: 600px; box-sizing: border-box; padding: 24px; }\n  #btn { font: inherit; padding: 4px 12px; }\n  .confirm { color: #0a5; }\n"
+      #text="\n"
+    #text="\n"
+    BODY
+      #text="\n"
+      DIV[id=frame]
+        #text="\n  "
+        H1
+          #text="TABI-R2-1 dynamic fixture"
+        #text="\n  "
+        P[id=static]
+          #text="static paragraph never mutated"
+        #text="\n  "
+        BUTTON[id=btn]
+          #text="mutate"
+        #text="\n  "
+        P
+          #text="count: "
+          SPAN[id=count]
+            #text="0"
+        #text="\n  "
+        UL[id=list]
+        #text="\n  "
+        DIV[id=confirms]
+        #text="\n  "
+        P
+          #text="status: "
+          SPAN[id=status]
+            #text="hydrated"
+        #text="\n  "
+        P
+          #text="clock: "
+          SPAN[id=clock]
+            #text="1791987598950"
+        #text="\n  "
+        P
+          #text="random: "
+          SPAN[id=random]
+            #text="thqrx6ue"
+        #text="\n"
+      #text="\n"
+      SCRIPT
+        #text="\n(function () {\n  var nondet = new URLSearchParams(location.search).get('nondet') === 'on';\n\n  setTimeout(function () {\n    document.getElementById('status').textContent = 'hydrated';\n  }, 150);\n\n  if (nondet) {\n    var tick = function () {\n      document.getElementById('clock').textContent = String(Date.now());\n      document.getElementById('random').textContent = Math.random().toString(36).slice(2, 10);\n    };\n    tick();\n    setInterval(tick, 250);\n  }\n\n  var count = 0;\n  document.getElementById('btn').addEventListener('click', function () {\n    count = count + 1;\n    document.getElementById('count').textContent = String(count);\n    var li = document.createElement('li');\n    li.id = 'item-' + count;\n    li.textContent = 'item ' + count;\n    document.getElementById('list').appendChild(li);\n    setTimeout(function () {\n      var d = document.createElement('div');\n      d.className = 'confirm';\n      d.id = 'confirm-' + count;\n      d.textContent = 'confirmed ' + count;\n      document.getElementById('confirms').appendChild(d);\n    }, 120);\n  });\n})();\n"
+      #text="\n\n"

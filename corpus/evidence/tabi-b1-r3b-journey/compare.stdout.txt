@@ -1,0 +1,47 @@
+comparison	verdict	a(24)	b(24)
+png step-1-index (R1 vs R2)	IDENTICAL	e9d8c83c880158775f8aef00	e9d8c83c880158775f8aef00
+shape step-1-index (R1 vs R2)	IDENTICAL	af23de0471797ee7e39443c4	af23de0471797ee7e39443c4
+struct step-1-index (R1 vs R2)	IDENTICAL	2f77717b0501dd90d51526de	2f77717b0501dd90d51526de
+url step-1-index (R1 vs R2)	IDENTICAL	http://127.0.0.1:19481/i	http://127.0.0.1:19481/i
+png step-1-index-idem (R1 vs R2)	IDENTICAL	e9d8c83c880158775f8aef00	e9d8c83c880158775f8aef00
+shape step-1-index-idem (R1 vs R2)	IDENTICAL	af23de0471797ee7e39443c4	af23de0471797ee7e39443c4
+struct step-1-index-idem (R1 vs R2)	IDENTICAL	2f77717b0501dd90d51526de	2f77717b0501dd90d51526de
+url step-1-index-idem (R1 vs R2)	IDENTICAL	http://127.0.0.1:19481/i	http://127.0.0.1:19481/i
+png step-2-detail (R1 vs R2)	IDENTICAL	6d48d45ebecfaa49d3297b38	6d48d45ebecfaa49d3297b38
+shape step-2-detail (R1 vs R2)	IDENTICAL	f4ecc2771d1af837d5d8a649	f4ecc2771d1af837d5d8a649
+struct step-2-detail (R1 vs R2)	IDENTICAL	d6ba6564883ef2afc902a59c	d6ba6564883ef2afc902a59c
+url step-2-detail (R1 vs R2)	IDENTICAL	http://127.0.0.1:19481/d	http://127.0.0.1:19481/d
+png step-3-form (R1 vs R2)	IDENTICAL	15a97130785f7562f92bd222	15a97130785f7562f92bd222
+shape step-3-form (R1 vs R2)	IDENTICAL	23aa4e306ec3a449ea162ffc	23aa4e306ec3a449ea162ffc
+struct step-3-form (R1 vs R2)	IDENTICAL	0db82bf93c127a13f7cbf3b0	0db82bf93c127a13f7cbf3b0
+url step-3-form (R1 vs R2)	IDENTICAL	http://127.0.0.1:19481/f	http://127.0.0.1:19481/f
+png step-3-form-filled (R1 vs R2)	IDENTICAL	8cc96fdf637a606efde36a24	8cc96fdf637a606efde36a24
+shape step-3-form-filled (R1 vs R2)	IDENTICAL	23aa4e306ec3a449ea162ffc	23aa4e306ec3a449ea162ffc
+struct step-3-form-filled (R1 vs R2)	IDENTICAL	0db82bf93c127a13f7cbf3b0	0db82bf93c127a13f7cbf3b0
+url step-3-form-filled (R1 vs R2)	IDENTICAL	http://127.0.0.1:19481/f	http://127.0.0.1:19481/f
+png step-4-confirm (R1 vs R2)	IDENTICAL	a12566cd4890fbddd0438c4d	a12566cd4890fbddd0438c4d
+shape step-4-confirm (R1 vs R2)	IDENTICAL	a6a9c3aca791595971091703	a6a9c3aca791595971091703
+struct step-4-confirm (R1 vs R2)	IDENTICAL	a346a204ed62474f1bf12f87	a346a204ed62474f1bf12f87
+url step-4-confirm (R1 vs R2)	IDENTICAL	http://127.0.0.1:19481/c	http://127.0.0.1:19481/c
+png step-1-index vs step-1-index-idem (R1, idempotence, expect IDENTICAL)	IDENTICAL	e9d8c83c880158775f8aef00	e9d8c83c880158775f8aef00
+png step-1-index vs step-2-detail (R1, link-follow delta, expect DIFFER)	DIFFER	e9d8c83c880158775f8aef00	6d48d45ebecfaa49d3297b38
+png step-3-form vs step-3-form-filled (R1, fill delta, expect DIFFER)	DIFFER	15a97130785f7562f92bd222	8cc96fdf637a606efde36a24
+png step-3-form-filled vs step-4-confirm (R1, submit delta, expect DIFFER)	DIFFER	8cc96fdf637a606efde36a24	a12566cd4890fbddd0438c4d
+R1	step-1-index	url=http://127.0.0.1:19481/index.html	hist=1/2:typed	net=[GET /index.html 200 | GET /style.css 200 | GET /favicon.ico 404]
+R1	step-1-index-idem	url=http://127.0.0.1:19481/index.html	hist=1/2:typed	net=[]
+R1	step-2-detail	url=http://127.0.0.1:19481/detail.html?id=1	hist=2/3:link	net=[GET /detail.html 200 | GET /style.css 200 | GET /data.json 200]
+R1	step-3-form	url=http://127.0.0.1:19481/form.html?id=1	hist=3/4:link	net=[GET /form.html 200 | GET /style.css 200]
+R1	step-3-form-filled	url=http://127.0.0.1:19481/form.html?id=1	hist=3/4:link	net=[]
+R1	step-4-confirm	url=http://127.0.0.1:19481/confirm.html?traveler=tabi-r3&mode=rail&item=1	hist=4/5:form_submit	net=[GET /confirm.html 200 | GET /style.css 200]
+R1	history	auto_toplevel:blank -> typed:/index.html -> link:/detail.html -> link:/form.html -> form_submit:/confirm.html
+R1	targetEnd	url=http://127.0.0.1:19481/confirm.html?traveler=tabi-r3&mode=rail&item=1	title=TABI-R3-1 confirm
+R1	inputs	step-3-form=[{"id":"traveler","name":"traveler","type":"text","inputValue":null,"inputChecked":null},{"id":"mode-rail","name":"mode","type":"radio","inputValue":"rail","inputChecked":false},{"id":"mode-trail","name":"mode","type":"radio","inputValue":"trail","inputChecked":false},{"id":"item-field","name":"item","type":"hidden","inputValue":"1","inputChecked":null}]	step-3-form-filled=[{"id":"traveler","name":"traveler","type":"text","inputValue":"tabi-r3","inputChecked":null},{"id":"mode-rail","name":"mode","type":"radio","inputValue":"rail","inputChecked":true},{"id":"mode-trail","name":"mode","type":"radio","inputValue":"trail","inputChecked":false},{"id":"item-field","name":"item","type":"hidden","inputValue":"1","inputChecked":null}]
+R2	step-1-index	url=http://127.0.0.1:19481/index.html	hist=1/2:typed	net=[GET /index.html 200 | GET /style.css 200 | GET /favicon.ico 404]
+R2	step-1-index-idem	url=http://127.0.0.1:19481/index.html	hist=1/2:typed	net=[]
+R2	step-2-detail	url=http://127.0.0.1:19481/detail.html?id=1	hist=2/3:link	net=[GET /detail.html 200 | GET /style.css 200 | GET /data.json 200]
+R2	step-3-form	url=http://127.0.0.1:19481/form.html?id=1	hist=3/4:link	net=[GET /form.html 200 | GET /style.css 200]
+R2	step-3-form-filled	url=http://127.0.0.1:19481/form.html?id=1	hist=3/4:link	net=[]
+R2	step-4-confirm	url=http://127.0.0.1:19481/confirm.html?traveler=tabi-r3&mode=rail&item=1	hist=4/5:form_submit	net=[GET /confirm.html 200 | GET /style.css 200]
+R2	history	auto_toplevel:blank -> typed:/index.html -> link:/detail.html -> link:/form.html -> form_submit:/confirm.html
+R2	targetEnd	url=http://127.0.0.1:19481/confirm.html?traveler=tabi-r3&mode=rail&item=1	title=TABI-R3-1 confirm
+R2	inputs	step-3-form=[{"id":"traveler","name":"traveler","type":"text","inputValue":null,"inputChecked":null},{"id":"mode-rail","name":"mode","type":"radio","inputValue":"rail","inputChecked":false},{"id":"mode-trail","name":"mode","type":"radio","inputValue":"trail","inputChecked":false},{"id":"item-field","name":"item","type":"hidden","inputValue":"1","inputChecked":null}]	step-3-form-filled=[{"id":"traveler","name":"traveler","type":"text","inputValue":"tabi-r3","inputChecked":null},{"id":"mode-rail","name":"mode","type":"radio","inputValue":"rail","inputChecked":true},{"id":"mode-trail","name":"mode","type":"radio","inputValue":"trail","inputChecked":false},{"id":"item-field","name":"item","type":"hidden","inputValue":"1","inputChecked":null}]
