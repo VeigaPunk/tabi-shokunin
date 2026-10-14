@@ -1318,3 +1318,142 @@ write), `reports/r4..r10` as landed, the 3 substrate pins (`e70aff5c40ff` /
   entry and the commit.
 
 This block records the append; it edits nothing.
+## Errata — round-11 append (the final pointers; append-only; never edit above)
+
+Appended 2026-10-14T21:36Z by lane **B11-4** (round-11 SKILL final distillation;
+assignment: the final pointers to this file). Nothing above is edited; the append
+is a pure byte-suffix: pre-append sha256
+`453ed25a07f62a083e268b377b53236ac3007bcf758c84d8f190bb2c8219b596` / `1320` `wc -l` /
+`107,005` B, last byte `0a` — re-proved after the write with
+`head -c 107005 SKILL.md | sha256sum`. Method: read-only over the lane tree at the
+write stamp (`sha256sum` first-12 · `wc -l` · `git status` · `ss`/`pgrep` · a
+shape-only substrate census); no run launched, no server, no browser, no external
+site, no session material content-read. Every value below is **as-of-write**; the
+round-11 landings (the closeout, the record refresh) move them — re-derive before
+citing. This block records the append; it edits nothing.
+
+### T1 — Terminal state (as-of-write)
+
+| Surface | Value at this write | Command (re-run verbatim) |
+|---|---|---|
+| this file | `453ed25a07f6` / `1320` / `107,005` B (pre-append) | `sha256sum SKILL.md; wc -lc SKILL.md` |
+| ten-round entry point | `arc-synthesis.md` `f42428bd9af7` / 183 — unchanged since the r10 pin | `sha256sum corpus/knowledge/arc-synthesis.md` |
+| round-11 closeout | **not landed** at this stamp (`ls corpus/knowledge/training-closeout.md` → No such file or directory); the landed path + pin live in the round-11 commit / LOG entry | `git log --oneline -1; git show --stat` |
+| L0 operator surface | `.ufo/l0-questions.md` `02c53ec60acf` / 25 / 21,539 B / mtime `2026-10-14 14:05:52.482908587 -03` / 1 `tabi` line — byte-identical to the r5 filing state | `sha256sum; wc -lc; stat -c %y; grep -c tabi` |
+| daemon | no listener on 10086 (`→ 0`); no `kimi-webbridge` process (`→ 0`); `daemon.pid` 8 B / `daemon.addr` 16 B, mtime `10:46` — revival `carried-unasked`, nothing owed to stop | `ss -ltn | grep -c 10086; pgrep -x kimi-webbridge | wc -l` |
+| corpus | 22 notes / 6,824 lines; lessons 9 / 1,269; reports 7 / 1,341 | `ls corpus/knowledge/*.md | wc -l; wc -l` |
+| evidence archive | 36 groups / 36 `MANIFEST.txt` / 1,721 files / 10,318,947 B | `ls -d corpus/evidence/*/ | wc -l; find corpus/evidence -type f | wc -l; du -sb corpus/evidence` |
+| repo | HEAD `d24b98d` ("probation round 10 (training r9)"); worktree clean at the stamp | `git log --oneline -1; git status --short` |
+| never-set | consequential external acts · session-material content-reads · out-of-province work (`PROVINCE.md:15-19`) — unmoved by any grant | `PROVINCE.md` |
+
+### T2 — The §Pins block (`:37-85`), re-bound finally
+
+The block at `:37-85` is a round-4 as-of-write snapshot; every value below moved by
+*declared* errata appends (each note's own append header carries its pre-append
+hash — spot-verified on four: `webbridge-plugin-anatomy.md:289` declares
+`6ce6fdd018a7…`, `cdp-evidence-patterns.md:233` `8de2ee008c9c…`,
+`live-dynamic-capture.md:244` `f97c10238907…`, `network-evidence-rung.md:608`
+`4889ccf073a8…`). Final values at this write:
+
+| §Pins entry | as cited | final | `wc -l` |
+|---|---|---|---|
+| `webbridge-plugin-anatomy.md` | `6ce6fdd018a7` | `8d1488ab763e` | 290 |
+| `browser-surface-census.md` | `a4bbb39edb12` | `a33c22644d64` | 265 |
+| `cdp-evidence-patterns.md` | `8de2ee008c9c` | `337ff64579e8` | 234 |
+| `live-dynamic-capture.md` | `f97c10238907` | `01266495b761` | 245 |
+| `webbridge-daemon-disposition.md` | `03af1fb0693e` | `fd5f6861aa3b` | 274 |
+| `interaction-approval-table.md` | `d6ad567a610c` | `b5e29a9a2adf` | 246 |
+| `executor-test-sufficiency.md` | `5f04f6877e1e` | `32772e343848` | 329 |
+| `multi-step-journey.md` | `8925ce6c46c7` | `e0367890f1cf` | 349 |
+| `network-evidence-rung.md` | `4889ccf073a8` | `d1564f38dc14` | 609 |
+| `async-step-evidence.md` | `577af06bd9a8` | `05dcda5e60b9` | 282 |
+| `hygiene-sweep-r4.md` | `4ddc67151b98` | `87155e12021d` | 258 |
+| `reports/r4-aud-tab1.md` | `5f44b0f94483` | `5f44b0f94483` (held) | 167 |
+| substrate `kimi.plugin.json` | `e70aff5c40ff` | `e70aff5c40ff` (held) | — |
+| substrate skill file | `84a8e69d04c5` | `84a8e69d04c5` (held; path resolved in T4) | 158 |
+| `references/operations.md` | `b811d9c23dfd` | `b811d9c23dfd` (held; path resolved in T4) | 34 |
+
+The §Pins annotation line-counts are stale with them (approval 241, executor 325,
+journey 345, network 605, async 278, hygiene 254) — the `wc -l` column above is the
+final authority.
+
+Pinned finally (files §Pins never carried; first pins here unless noted):
+`stateful-fixture-evidence.md` `f04e2e473cf9`·855 · `carried-debt-closure-r8.md`
+`48dc8db69c57`·149 · `layer-routing-synthesis.md` `7725ee421716`·254 ·
+`external-class-fixture-v2.md` `4aa604f1788b`·569 · `webbridge-revival-assessment.md`
+`a07c8aedc161`·322 · `state-changing-matrix-r9.md` `ec540be07ed5`·388 ·
+`archive-receipt-r5.md` `b41c2f6fb5a4`·180 · `archive-receipt-r8.md`
+`de45b805e5a4`·218 · `archive-receipt-r10.md` `c6f4445ebd03`·203 ·
+`arc-synthesis.md` `f42428bd9af7`·183 · `packet-readiness-r7.md` `7185642c2e41`·122 ·
+`corpus/handoffs/operator-approval-request.md` `94dc63f5fb9e`·121 · reports r4–r10
+(`5f44b0f94483`·167 · `d09f1712cbcf`·170 · `9428ddec52b9`·178 · `ea4b16a4a844`·260 ·
+`a191832be152`·181 · `df34bf6c63e1`·174 · `11dd09350de7`·211 — the r10 report is new
+here) · lessons r1–r9 (`bdd46c85b349`·59 · `a862d69cb0b9`·60 · `153a1b9831bb`·69 ·
+`cde3960eb1a9`·87 · `46029f48e27d`·139 · `86da9d2b9419`·150 · `88c8244c2bab`·172 ·
+`d974eadc29f6`·256 · `07c3039ea5bd`·277) · `SCORECARD.md` `106377d15dc8`·89 ·
+`corpus/README.md` `e156bb99af2c`·59.
+
+### T3 — Declared-supersession pins (hold; not drift)
+
+- `0587605db913`·191 (`archive-receipt-r8.md`, cited `:963`/`:1024`) — declared
+  pre-append value (the receipt's own block); final `de45b805e5a4`·218 (T2).
+- `e89bc89bff38`·773 (`stateful-fixture-evidence.md`, cited `:961`/`:971`) —
+  declared pre-append (r10 `:1278`); final `f04e2e473cf9`·855.
+- This file's revision chain — each append above declares its own pre-edit hash
+  (r6 `dcc33f1b…`·765, r10 `c07d29c3e8d1…`·1189; this one `453ed25a07f6`·1320);
+  `452bc514d387`·576 (r3) stays historical.
+- Harness/methodology pins resolve to the archived copies — 5 spot-checked
+  byte-equal at this write: `tabi-r2-1-capture/{capture.mjs `d37d36dd92d0`·209,
+  driver.sh `8105bed02840`·85, compare.mjs `e558bd547c58`·47}`,
+  `w4-t41-network/{net-journey.mjs `46c81f99decf`, net-driver.sh `67c94a3a275d`}`
+  (`corpus/evidence/`); the `/tmp` staging is volatile by design
+  (`cdp-evidence-patterns.md:92`).
+
+### T4 — Substrate paths, resolved (shape-only)
+
+The skill file has lived at `~/.kimi-code/plugins/managed/kimi-webbridge/skills/
+kimi-webbridge/SKILL.md` since the install (mtime `2026-10-03 18:06`), not at the
+plugin root; the root path does not resolve (`sha256sum` → ENOENT). Bytes at the
+real paths match §Pins 1:1 (`84a8e69d04c5`·158; `references/operations.md`
+`b811d9c23dfd`·34; `kimi.plugin.json` `e70aff5c40ff`). The install record
+`installed.json` (390 B, mtime `2026-10-03 18:06`) sits at
+`~/.kimi-code/plugins/`, not inside the plugin dir — a path correction for
+`MINT.md:6-7`'s parenthetical. Two dated census files sit at the plugin root, not
+recorded by any note at this write: `03-browser-extension.txt` (2,703 B — a
+chromium process table at 17:40:47Z) and `04-headroom.txt` (338 B — a
+memory/swap/load snapshot at the same stamp). Named, not repaired.
+
+### T5 — Round 11 — the closeout (as-of-write)
+
+- Numbering: lane round 11 = training r10 = the closeout (`plans/round-11.plan.md`
+  `21317a8ad672`·716, header `:11-30`). The move: freshness — clause (c)'s final
+  state (`:422-465`) + clause Z's closeout (`:467-553`).
+- Gate read at this stamp: L0 byte-identical to the filing (`02c53ec60acf…`, above)
+  → the plan's table (`:190-197`) routes SILENT → Branch L
+  [inference from the measured L0 row; the round's own classification governs].
+- Not landed at this stamp: the closeout artifact; `lessons/round-10.md` +
+  `round-11.md` (`ls corpus/lessons` → 9, last `round-9.md`); the README header
+  still reads round 3 — "8 knowledge notes, 1944 lines … Lessons: 0" vs actual
+  22 / 6,824 / 9 (`corpus/README.md:5-9`); the SCORECARD verdict tables r1–r3 only
+  (`SCORECARD.md:18`/`:26`/`:38`), axes table r1-pinned (`:53-62`), move-log rows
+  through r10 (`:64-89`).
+- Open debts this append does not repair (the round's record work): the packet's
+  cold-read verdict — still `[unknown]`
+  (`corpus/handoffs/operator-approval-request.md:100`); the packet's stale
+  note-pin block (`packet-readiness-r7.md` §2, pin `7185642c2e41`); the
+  declared-stale SKILL pins of T2's "as cited" column.
+
+### T6 — Residual pointers (the closeout carries them)
+
+- Fleet-level, reported not absorbed (r5 onward): tabi absent from the watchdog
+  roster — `scripts/shokunin-watchdog.sh:14` →
+  `LANES="protocol aggregator kasegi kengaku kake kumitate kotoba kagi kama"`.
+- What the chain did not establish (each with its recognition surface): zero
+  real-site datum (approval-gated); rate/ToS U1 (`interaction-approval-table.md`
+  §7); the extension↔daemon handshake (`extension_connected:false` throughout);
+  byte-identity environment scoping; real-site POST/redirect/CSRF classes; clause
+  (c) — a strictly-later-date witness ≥ 2026-10-15 (unblock recipe
+  `plans/round-11.plan.md:453-459`); the non-author re-run odometer. Full
+  enumeration: `arc-synthesis.md` §5 + the closeout.
+
+This block records the append; it edits nothing.

@@ -1,19 +1,33 @@
 # tabi-shokunin — Scorecard
 
 Lane axes per AXES.md (six-axis vocabulary; primary verdicts per
-LEARNING.md trends). Probation rounds 1-3 build the initial measurements.
-Axes will be pinned with their counting commands as rounds land.
+LEARNING.md trends). Probation rounds 1–3 built the initial measurements;
+rounds 4–11 extended them. **This is the terminal refresh** (SCR-B11, the
+closeout round — lane round 11 = training r10): the r4–r11 primary-verdict
+tables, the refreshed axes table and the move log placed in order land here;
+the r1–r3 tables are kept as landed. Convention note: no round after 3
+re-pinned a numeric score — the axes trajectory r4–r11 is the move log's
+qualitative before→after, and the axes table's score column keeps each axis's
+**last explicitly measured** value; no scalar is inferred here.
 
-State at writing (2026-10-14, TABI-B4 scribe, round-3 record): repo HEAD
-`5d2e95d` (round-2 integration) with the round-3 work uncommitted in the
-tree — `git status --short` → `M SKILL.md` (+512/−178),
-`?? corpus/knowledge/` (3 new notes), `?? plans/round-3.plan.md`. Every
-score below was measured against that working tree (`5d2e95d` plus the
-uncommitted round-3 files); the integration commit supersedes the pointer,
-not the counts — re-run the commands. `SKILL.md` moved three times inside
-the round (executor-test-sufficiency.md §8) — the round-3 notes stamp
-their SKILL refs by revision sha; the final revision is sha256
-`452bc514d387` (576 lines), re-derived by the scribe.
+State at writing (2026-10-14T21:58Z, SCR-B11, round-11 record): repo HEAD
+`d24b98d` (round-10 integration) with the round-11 work uncommitted in the
+tree — `git status --short` → `M SKILL.md` (`f4d9cf5b1aa5`, +138 → 1,458 `wc -l`),
+`M corpus/knowledge/archive-receipt-r10.md` (§8 final archive sweep append,
+`79255f1e03b8` / 424) plus untracked `corpus/evidence/w10-*/`×4 + `w11-*/`×5
+(9 new groups), `corpus/knowledge/closeout-r11.md` (`2147f3ec2ff2` / 234),
+`corpus/lessons/round-10.md`, and `plans/completion-evidence.md`; the
+integration commit is owed at write time (round-3 pattern). Counts at that
+stamp: knowledge **23** / 7,279 lines; lessons **10** (`round-11.md` still
+owed at write time); reports 7 (r4–r10); evidence **45** groups / 45
+manifests / 1,782 files / 10,720,052 B (36 / 1,721 / 10,318,947 before the
+round's sweep); README `e156bb99af2c` / 59 (header + coverage rows 4–11
+refresh **not landed** at write time — named as owed in the LOG entry);
+L0 `.ufo/l0-questions.md` `02c53ec60acf…` / 25 lines / 21,539 B / **1**
+`tabi` line; daemon down (no listener on 10086, no process); Brave reject →
+`NativeMessagingHosts` only (11th consecutive). Every score was measured
+against that working tree; re-run the commands — the commit supersedes the
+pointer, not the counts.
 
 ## Primary verdicts — round 1 (three trends, `LEARNING.md:23-36`)
 
@@ -50,16 +64,40 @@ per `plans/round-3.plan.md`.
 | quality | improved | No admitted entry false-or-stale-unmarked: TABI-R3-3 re-derived all five prior-note pins + substrate pins (`anchors.txt`; scribe re-matched), and the SKILL.md final revision applies the executor's errata E1–E5 (count definition `:158-159`, two-click delta `:313` — re-read by the scribe in `SKILL.md@452bc514d387`). Cross-seat reproduction: the r2 capture chain byte-reproduced a third time (TABI-R3-3 smoke), and the executor test reproduced r2's det-before `c08947dc…802dc1` across its own two runs. Nit recorded, not silently fixed: SKILL §Pins quotes the executor note as "297 lines", `wc -l` → 298 (sha matches — annotation slip; LOG round-3 entry). |
 | discernment | improved | Outside spot-check by the scribe (non-author of all three notes), per `LEARNING.md:37-43`: agrees with all three round-3 admits after re-running their anchors (journey methodology + run1 PNG shas; approval-table counts 6 C-rows / 12 A-rows; executor methodology pins + compare.tsv 10 yes / 3 expected-NO); re-ran the standing Brave reject → `NativeMessagingHosts` only (agree, third consecutive round). |
 
-## Axes — initial pinning (round 1)
+## Primary verdicts — rounds 4–11 (owed by every prior round's record since r4; landed in this final refresh)
+
+Verdicts use the `LEARNING.md:23-36` vocabulary; each row's evidence is the
+round's own lesson `## Gate` + its audit report + its record draft, re-read at
+this write. For r2–r11 artifacts the rounds' coverage rows were owed at the
+time of their lessons; the README refresh that lands them is named owed in the
+LOG entry at this write (state, not silently assumed).
+
+| Round (training) | Axis move (as logged) | expansion | quality | discernment |
+|---|---|---|---|---|
+| 4 (t3) — `corpus/lessons/round-4.md` §Gate; `reports/r4-aud-tab1.md` | coverage (+depth) | **improved** — 8 → 11 notes, all on uncovered ground (network rung; async step; hygiene sweep) | **improved** — every prior pin re-verified (methodology 12/12, sweep `PINS.txt` 8/8, corpus 8/8, substrate 3/3); wire-variant errata applied; daemon OOM-death supersession recorded; no entry left false-unmarked | **improved** — non-author spot-check (SCR-B + AUD-TAB1 §8) agrees on admits and rejects; the OOM kill mechanism left unmeasured, not asserted |
+| 5 (t4) — `corpus/lessons/round-5.md` §Gate; `reports/r5-aud-b5.md` | freshness | **improved** — the archive tranche (25 groups / 1,010 files / 6,780,293 B) + receipt `archive-receipt-r5.md`; 4 lesson files with Gates | **improved** — manifest-pin equality on every archived file (269/269 OK; 52/52 pin instances MATCH); clause (c) correctly carried, never claimed closed on a same-day witness | **improved** — AUD-B5 + an independent SCR-B6 re-derivation agree; the strictly-later-date impossibility kept as a stated reject |
+| 6 (t5) — `corpus/lessons/round-6.md` §Gate; `reports/r6-aud-b6.md` | freshness + calibration | **improved** — +2 notes (external-class fixture v2; webbridge revival assessment) | **improved** — AUD-B6 re-ran one fixture interaction on both pinned runner revisions (identical trips); 12/12 harness/fixture pins; 269/269 archive lines; three lanes' frozen values agree | **improved** — the revival assessed, not executed (operator-owned; the never-set held); AUD-B6 agree |
+| 7 (t6) — `corpus/lessons/round-7.md` §Gate; `reports/r7-aud-b7.md` | calibration + freshness | **improved** — +2 notes (layer-routing synthesis; packet-readiness) + 7 archive groups (tree 28 → 35, 41 files) | **improved** — AUD-B7 423/423 manifest lines; 48 in-group + 55 owning-note pins MATCH; the plan fingerprint delta kept on record | **improved** — AUD-B7 + SCR-B7 agree; unlanded items named (L1 matrix; state-changing step) |
+| 8 (t7) — `corpus/lessons/round-8.md` §Gate; `reports/r8-aud-b8.md` | depth | **improved** — +3 notes (stateful fixture; carried-debt closure; receipt r8); lessons 6/7 landed | **improved** — AUD-B8 20/20 rows PASS; independent VER-B8-1 re-run 7/7 runs exact; F1 staleness checked from both directions | **improved** — AUD-B8 agree (F7 scope-noted; D5 count erratum); an admit and a non-admit sampled, both agreed |
+| 9 (t8) — `corpus/lessons/round-9.md` §Gate; `reports/r9-aud-b9.md` | depth | **improved** — +1 note (state-changing matrix: 10 idempotency classes, replay contract, token-state table) + the w9 tranche landing | **improved** — F1 closed without touching archived bytes; AUD-B9 M1–M7 PASS; 83/83 manifest; 7/7 harness pins re-derived | **improved** — AUD-B9 agree; its scope limit kept — 8 of 14 cells still un-re-run by any non-author (named, not smoothed) |
+| 10 (t9) — `corpus/lessons/round-10.md` §Gate; `reports/r10-aud-b10.md` | calibration | **improved** — +2 notes (arc synthesis; receipt r10); r9 tranche archived (tree 35 → 36) | **improved** — AUD-B10: 3 claims re-derived PASS (F1/F2 findings kept, not harmonized); 269/269 manifest; copy fidelity 0 diff; rung-1 claim CONFIRMED by archived-byte re-hash | **improved** — AUD-B10 agree (findings riding); the fleet's cell-for-cell verifier confirmations (`494d32a`); `round-10.md`'s own spot-check agrees |
+| 11 (t10) — `corpus/knowledge/closeout-r11.md`; VER-B11 verdict (scratch `/tmp/w11-ver-b11-poll/VERDICT.md`, post-snapshot); `archive-receipt-r10.md` §8 | freshness | **improved** — 22 → 23 notes (the closeout) + the receipt §8 append; the final sweep (9 groups / 52 files / 390,702 B; tree 36 → 45) | **improved** — the §Pins block re-bound finally (12 final values + 29 newly pinned files; declared supersessions held as such — `SKILL.md` §T2/§T3); 491/491 + 52/52 manifest lines OK; 0-diff copy fidelity; clause (c) honestly IN FORCE (claim 3/4 — no same-day closure claim) | **improved** — VER-B11's independent re-derivation agrees throughout (citations in-bounds; §5 pin table 28/28; negative sweeps re-run) while keeping findings F-v1–F-v4; B11-2's check and B11-3's A+B re-runs agree |
+
+Fleet-recorded verdicts (`MANIFEST.json` tabi entries): all five recorded
+axes **improved** for every training round r1–r9; training r10's fleet entry
+lands with the fleet closeout (not yet recorded at this write). No axis
+saturated; nothing retired — the chain ends with the fleet at 10/10 rounds.
+
+## Axes — final state (refresh landed round 11; scores keep the last explicitly measured value)
 
 | Axis | Score | Evidence pointer (counting command) | Last change |
 |---|---|---|---|
-| depth | 7 | **Round-3 move.** The 3-rung ladder now extends to a multi-step journey: 4-page loopback site traversed by real clicks/`insertText`/GET submit, six per-step captures per run, two cold runs byte-identical + two preserved warm runs (compare.tsv 25 IDENTICAL / 3 expected DIFFER), browser-side navigation-history witness (`typed`/`link`/`form_submit` — browser-labeled, not driver-labeled), state class parsed from raw DOMSnapshot columns (`-1` empty sentinel; shape text carries no live values), and both network surfaces kept with the wire-304-vs-client-200 boundary measured on both sides (`multi-step-journey.md:71-197,229-251`). Ceiling: real-site journeys untested (journey §8.6); byte-identity environment-scoped; evidence still `/tmp`-staged. | round 3 |
-| coverage | 5 | Rider of the round-3 moves: 8 notes over PROVINCE's owned surfaces — new: multi-step journey evidence, interaction-approval taxonomy (rights/rate/consequence for 6 classes + 12 gates), no-oral-context sufficiency discipline (`ls corpus/knowledge/*.md \| wc -l` → 8). Site-gotcha and rate/rights records still unmeasured (bounded-runs rule forbids asserting unmeasured); extension↔daemon handshake still open. | round 3 |
-| operability | 5 | Rider: SKILL.md now carries a copy-paste 13-step runbook executed verbatim start-to-finish by a fresh document-only executor, twice, with closure proof (`executor-test-sufficiency.md` §1–§2; compare.tsv 10 yes / 3 expected NO), and a third fresh server+browser pair reproduced the r2 chain (TABI-R3-3 smoke). Every SKILL rule cites a re-run anchor; §Pins re-derived this round. Ceiling: no repo-local gate scripts yet (`ls corpus/*.sh scripts/` → none); the archive step is obstructed by write scope (executor G4). | round 3 |
-| freshness | 3 | Rider: all five prior-note pins re-derived this round by TABI-R3-3 (`anchors.txt`) and re-matched by the scribe; SKILL §Pins refreshed to the round-3 notes; SKILL moved three times in-round and the notes version-stamp their refs (disclosed, not silent). Ceiling: re-checks are same-day-later, not a strictly-later date; thirteen `/tmp` evidence groups unarchived. | round 2 |
-| calibration | 6 | **Round-3 move.** Approval table finalized: every interaction class mapped to autonomous-now / operator-asleep-blocked / operator-approval-required (two tenses, one gate) / never-lane-executed, each with rights·rate·consequence, an unblock gate and a falsifier (6 required classes + 12 adjacent gates — `grep -c '^| \*\*C'` / `'^| \*\*A'` on interaction-approval-table.md → 6 / 12), SKILL.md's table agreed bin-for-bin; the never-set held through an operator-asleep round; new calibration incidents kept (the `-1`-sentinel phantom-value trap, journey §3; wire-vs-client 304/200, journey §5); 22 new unknowns enumerated (journey §8, approval U1–U8, executor §5); SHONEN gates now carry named verifiers — the round-2 ceiling resolved. Ceiling: scores self-assessed; rate/ToS datum still unmeasured (approval U1); wake-state unmeasurable (U2); unarchived hashes provisional (executor G4). | round 3 |
-| adjacency | 5 | Refusal routes pinned (`PROVINCE.md:15-19`); 5 kaidoku precedent citations carried (`grep -c 'kaidoku-shokunin/corpus' SKILL.md` → 5; 2 spot-verified: r10-02:130-131, r10-01:116); sibling `/tmp` state reported, not absorbed (census:102-103). Ceiling: no formal overlap table yet. | round 1 |
+| depth | 7 | r3 move (journey evidence: 4-page loopback site, per-step captures, compare.tsv 25 IDENTICAL / 3 expected DIFFER — `multi-step-journey.md:71-197,229-251`); moves since: **r4** network rung (150 compare rows, 127 IDENTICAL / 23 accounted; closure `finEnc − last-hop header − body = 0` on 7/7 wire resources — `network-evidence-rung.md` §3–§6), **r8** stateful fixture (session/cookie-shaped state, multi-visit, non-idempotent steps; VER-B8-1 re-run 7/7 exact — `stateful-fixture-evidence.md`), **r9** state-changing matrix (10 idempotency classes, replay contract, token-state table — `state-changing-matrix-r9.md`). Ceiling: real-site classes untested (approval-gated); byte-identity environment-scoped. | r9 |
+| coverage | 5 | r3 rider (8 notes over the owned surfaces). Moves since: r4 +3 · r5 +1 (+25-group archive) · r6 +2 · r7 +2 (+7 groups) · r8 +3 · r9 +1 (+w9 group) · r10 +2 · r11 +1 + the final sweep (9 groups) → **23 notes / 45 evidence groups** (`ls corpus/knowledge/*.md \| wc -l`; `ls -d corpus/evidence/*/ \| wc -l`). Ceiling: rate/rights/site-gotcha records still unmeasured (bounded-runs rule); extension↔daemon handshake open. | r11 |
+| operability | 5 | r3 rider (13-step runbook executed verbatim start-to-finish by a document-only executor, twice, with closure proof — `executor-test-sufficiency.md` §1–§2) + the archive mechanism (receipt checks A–D, re-runnable; re-run this round 52/52 OK, 0 diff — `archive-receipt-r10.md` §8.3). Ceiling: no repo-local gate scripts (`ls corpus/*.sh scripts/` → none). | r5 |
+| freshness | 3 | r2 rider (same-day re-verification). Final state: **clause (c) IN FORCE** — the strictly-later-date pass is time-blocked at 2026-10-15T00:00Z; the round-5 four-clause claim stands **3/4**, recipe carried (`closeout-r11.md` O1/§6; `plans/round-11.plan.md:453-459`); the §Pins block re-bound finally (`SKILL.md` §T2 `:1349-1394`) and the round's spot re-hashes 491/491 + 52/52 OK. | r11 |
+| calibration | 6 | r3 move (approval table finalized: 6 C-rows + 12 A-rows, gate + falsifier per class). Moves since: r5 packet filed + one L0 line; r6 revival assessed, not executed; r7 layer-routing synthesis; r9 F1 kept-not-repaired; r10 arc synthesis + AUD-B10 findings riding; r11 the four gate stamps + VER-B11's findings kept (F-v1–F-v4). The never-set held eleven rounds (`closeout-r11.md` §2.2). | r10 |
+| adjacency | 5 | r1 pin (kaidoku precedents `grep -c 'kaidoku-shokunin/corpus' SKILL.md` → 5; refusal routes `PROVINCE.md:15-19`). Moves since: r5+ the fleet watchdog item carried (reported, never absorbed — O14); r8 carried-debt closure; r10 the loopback-perimeter synthesis (`arc-synthesis.md` §4). | r10 |
 
 ## Move log
 
@@ -69,17 +107,6 @@ per `plans/round-3.plan.md`.
 | 2 | depth — evidence ladder | Round-1 state: 9-item record envelope + 3-row claim-class table, all static-capture; byte-determinism proven only on a static `data:` URL (round-1 E9); cdp §7.8 (determinism beyond static content) open; no daemon-lifecycle rules; start-authority reading unresolved (`webbridge-plugin-anatomy.md:136-138`) | 3-rung evidence ladder (static bytes → dynamic capture pair → multi-signal), each rung with a measured anchor; determinism boundary measured on both sides — det-before `c08947dc…802dc1` and det-after `7488d544…4b42c7` byte-identical across two independent server+browser runs after JS mutation + real input, live-page captures differ while DOM-shape struct survives; 7 new capture rules; approval-discipline table (start = doc-authorized self-service, stop/restart/uninstall = operator-only), start executed and left running as a recorded state change (pid 3934817, `127.0.0.1:10086`) | Scribe re-runs 2026-10-14, all held: methodology shas (page `21e27aa6…1c99`, capture.mjs `d37d36dd`, driver.sh `8105bed0`, compare.mjs `e558bd54`; line counts 61/209/85/47); run1↔run2 det PNG + shape hashes identical (`compare.tsv`); ports 19411/19412 closed, no chromium survivors; daemon `ss -ltnp` pid 3934817 + 8-field `/status` shape (`extension_connected:false`); substrate pins `84a8e69d04c5`/`b811d9c23dfd` unchanged |
 | 3 | depth — journey evidence | Round-2 state: the ladder ended at a single-page dynamic pair (JS hydration + one click); multi-step ground open (the r2 note's own §7 blind spot); no per-step record shape, no browser-side action witness, one network surface, state class unreadable from shape text | 4-page loopback journey (index → detail → form → confirm) structured as per-step idle→action→result triplets: 6 captures × 2 cold runs byte-identical (compare.tsv 25 IDENTICAL / 3 expected DIFFER) + 2 preserved warm runs; navigation-history witness (`typed`/`link`/`form_submit` — browser-labeled, independent of the driver); state class parsed from raw DOMSnapshot columns (hollow `{index,value}` encoding, `-1` empty sentinel — shape text carries no live values); both network surfaces kept — wire 304 vs client 200 measured on both sides; 7 journey rules folded into the SKILL envelope | Scribe re-runs 2026-10-14, all held: methodology shas re-hashed from `/tmp/tabi-r3-1-journey/` (journey.mjs `b52074a33876`, driver.sh `9509c07f49f9`, compare.mjs `ecce1c73dc56` + 6 fixture files); run1 step PNGs re-hashed = the note's §2 pins; compare.tsv verdicts re-counted 25/3; ports 19421/19422 closed, no chromium/`http.server` survivors |
 | 3 | calibration — approval table finalized | Round-2 state: the authority table covered daemon start/stop only; the six interaction classes (operator's own sites, third-party read-only, third-party consequential, login-required, rate-limited, loopback) unmapped; rate/rights existed only as "do not assert an unmeasured surface" | Every class mapped to autonomous-now / operator-asleep-blocked / operator-approval-required (two tenses, one gate) / never-lane-executed, each with rights·rate·consequence, an unblock gate and a falsifier; A1–A12 adjacent gates (daemon start/stop/`/status`, trusted-input `cdp` escape hatch, tab borrowing, version mismatch, iframes, Windows request bodies, tab closing); never-set (consequential external acts, session-material content-reads, out-of-province work); SKILL.md's distilled table reconciled bin-for-bin; dispositions exercised under the asleep anti-claim — only C1 executed this round | `grep -c '^| \*\*C'` → 6 and `grep -c '^| \*\*A'` → 12 (re-ran by scribe 2026-10-14); the executor test ran under C1's authority and honored the C3/external block from SKILL.md alone; the standing Brave reject re-ran → agree; live daemon read matches the recorded A1/A2/A4 state (pid 3934817, still listening, operator stop owed) |
-
-## Planned / retired
-
-- **planned** (next axis-move): freshness — archive the thirteen staged
-  `/tmp` evidence groups into durable corpus storage (fixture bytes first,
-  executor G1; `cdp-evidence-patterns.md:92`) and land the round-1/2/3 gate
-  records as `corpus/lessons/round-{1,2,3}.md` (`LEARNING.md:61-62`;
-  `ls -A corpus/lessons \| wc -l` → 0 today), with a strictly-later-date
-  anchor recheck riding the same pass and the SKILL §Pins line-count nit
-  (executor note "297" → 298) corrected by the owning seat.
-- **retired:** none — no axis saturated, none a wrong fit.
 | 4 | coverage | round-3 state | network-evidence rung + async-step + hygiene sweep (webbridge daemon found OOM-dead — environment event recorded, operator return-to-baseline still owed) | wave-4 32-lane; AUD-TAB1 |
 | 5 | freshness | round-4 state | four-clause claim: evidence archived w/ manifest-pin equality, 4 lesson files with Gates, pins re-derived later-date, approval packet filed + one l0-questions line | wave-5 32-lane |
 | 6 | freshness + calibration | round-5 state | external-class fixture v2 (loopback) | wave-6 32-lane (2 lanes rerouted alibaba->hyper) |
@@ -87,3 +114,16 @@ per `plans/round-3.plan.md`.
 | 8 | depth | round-7 state | the stateful-fixture evidence (session/cookie-shaped state, multi-visit, non-idempotent steps) + an independent VER-B8-1 re-run appended (7/7 runs exact) | wave-8 32-lane (2 rerouted alibaba->hyper) |
 | 9 | depth | round-8 state | the state-changing matrix (10 idempotency classes, replay contract, the token-state decision table) | wave-9 32-lane (2 rerouted alibaba->hyper) |
 | 10 | calibration | round-9 state | the arc synthesis (the ladder as built, the loopback-only perimeter) | wave-10 32-lane (1 rerouted alibaba->hyper) |
+| 11 | freshness | round-10 state | clause (c)'s final state (**in force** — the four-clause claim closes 3/4, unblock recipe carried); the final archive sweep (9 groups; tree 36 → 45 / 1,721 → 1,782 files / 10,720,052 B; `archive-receipt-r10.md` §8) + the §Pins block re-bound (`SKILL.md` §T2); the closeout (`closeout-r11.md`, admission admitted, VER-B11 verified) | wave-11 32-lane; B11-1 gate/closeout · B11-2 check · B11-3 sweep · B11-4 pins/skill · PACK-B completion pack · VER-B11 (no AUD-B11 seat observed) |
+
+## Planned / retired
+
+- **planned:** none — the training chain ends at round 11 (fleet counters:
+  `494d32a` "training wave-10 closeout: round 10 — … **all lanes 9/10, one
+  round remains**" → this is the last round; nothing here presumes a round
+  12). The one time-blocked item — clause (c) of the round-5 four-clause
+  claim — ends **in force** with its unblock recipe, handed off in
+  `corpus/knowledge/closeout-r11.md` (O1 / §6) and
+  `plans/completion-evidence.md`; the open-now set (O1–O16) and the residue
+  (R1–R3) are enumerated there with closing surfaces.
+- **retired:** none — no axis saturated, none a wrong fit.

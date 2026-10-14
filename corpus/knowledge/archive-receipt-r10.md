@@ -202,3 +202,224 @@ harness pins; §11 :345-355 archive debt) and the SKILL census block (:1166-1174
   tree did not change after the counts in §1–§2 were taken; no other errata.
   This receipt's own hashes: first write 197 `wc -l` / 14,687 B /
   `a73cd2d9ddfcb558…`; any later append moves the sha by construction.
+
+## 8. Round-11 append — the final archive sweep (round 11, lane B11-3 / training r10)
+
+> Assignment (verbatim): *"B11-3 — the final archive sweep: the round-10/11 scratch tranche
+> archived (per the discipline); append the receipt."* Method: read-only copy of the tabi
+> round-10/11 `/tmp` groups (the w10 and w11 lane scratches) into `corpus/evidence/` with one
+> `MANIFEST.txt` per group (comment header + `sha256␠␠path` lines, sha256 of the archived
+> copy), then the r5/r8/r10 checks — A manifest self-check, B source-vs-archive hash-list
+> equality, C pin equality (audit hash pair, fence extraction, 5 spot re-runs, two sibling pin
+> sets), D corpus-wide pin scan with classification — plus named spot-checks and a
+> remaining-`/tmp` census (every remaining tabi group archived or named with its reason).
+> **Why this append and not a new file:** the assignment says to append; this receipt's own
+> closing line (*"any later append moves the sha by construction"*) anticipates it; and the
+> final sweep closes exactly the items its §5 U1/U2 and §6 left owed. Pre-append revision
+> `c6f4445ebd0358f8fa64ef2742a64768e644d55da6ee324054513b0fa05eb74a` / 203 `wc -l` /
+> 15,197 B (mtime 2026-10-14T21:00:01Z) stands as published; this append moves the sha by
+> construction.
+> Snapshot boundary: scan ≈21:38–21:39Z, snapshot+copy **21:40:00Z**, manifests **21:40:52Z**,
+> verification 21:40:52–21:44:11Z. Write scope: `corpus/evidence/w10-*` and
+> `corpus/evidence/w11-*` (9 new groups) + this append only — the `LOG.md` append
+> (AGENTS.md:3), the corpus/README coverage row + header counts, the SKILL §Harness-archive
+> census update, SCORECARD and the commit are the integrating round's (r2–r10 pattern).
+> Anti-claim: no external site contacted; `/tmp` was read-only (no byte written, moved or
+> deleted there); session material was excluded by path and never opened — **no `*profile*`
+> path component existed in any group copied here** (rule carried, not exercised this pass);
+> no substrate was touched except read-only hashing of the three webbridge plugin files;
+> scratch `/tmp/w11-b11-3-sweep/` (scripts + logs; volatile per namespace rule).
+
+### 8.1 What now exists (observation)
+
+- **9 new groups, 52 evidence files, 390,702 B** under `corpus/evidence/`, each with a
+  `MANIFEST.txt` (9 manifests, 10,403 B — 61 new files / 401,105 B in all); check with
+  `cd corpus/evidence/<group> && sha256sum -c MANIFEST.txt`.
+- **Tree counts move 36 → 45 group dirs, 1,721 → 1,782 files, `du -sb` 10,318,947 →
+  10,720,052 B**; evidence files excluding the manifests: **1,685 → 1,737**; manifests
+  36 → 45.
+- **0 files / 0 bytes excluded** under `*profile*` components in any group copied here (the
+  r5 §1 :13-20 exclusion rule carried, not exercised); no session material was opened, read
+  or copied.
+- **The archive is a timestamped snapshot** — the manifests say what was copied at
+  **21:40:00Z**, never what `/tmp` holds now (§8.6 U1).
+- **Duplicate-hash structure (new set):** 52 files hash to 46 unique values; 6 duplicate
+  instances in 5 pairs — `w11-b11-4-pins/skill_pins.txt` = `w11-ver-b11-poll/skill_pins_bounded.txt`
+  (cross-lane byte identity); `w10-aud-b10-work/source-hashes.txt` = its `archive-hashes.txt`;
+  `w11-ver-b11-poll/b114.norm` = `bounded.norm`; `w10-aud-b10-work/disk-paths.txt` =
+  `manifest-paths.txt`; and a three-way `w10-scrb10/spot-w9-tabib91.txt` =
+  `w10-aud-b10-work/mc-early.txt` = `w11-b11-2-check/manifest-check.txt` (three captures of the
+  one 269-OK w9-manifest check output).
+- **Group naming:** `/tmp` group basenames preserved; `w11-b11-1` is an aggregation of the five
+  loose `/tmp/w11-b11-1-*.txt` files at the `/tmp` root (basenames preserved; the r5 §1 :21-23
+  loose-file precedent).
+- Evidence is not knowledge: the sole knowledge-side write of this seat is this append.
+
+### 8.2 Inventory (observed; archive-side counts)
+
+| group | files | bytes | manifest | scope (lane scratch) |
+|---|---|---|---|---|
+| `w10-b101-arc` | 2 | 9,653 | 7 L / 816 B | B10-1 arc-synthesis pre-write pins + verify log |
+| `w10-tabi-b104` | 5 | 117,916 | 10 L / 1,094 B | B10-4 poll seat (candidate-path watch; CAP-REACHED) + `pre-SKILL.md` |
+| `w10-scrb10` | 7 | 24,453 | 12 L / 1,275 B | SCR-B10 poll + 5 archive-group spot files |
+| `w10-aud-b10-work` | 14 | 152,796 | 19 L / 2,098 B | AUD-B10: source/archive hash pair, fence extraction, arc-bound copy |
+| `w11-b11-1` | 5 | 16,207 | 10 L / 1,076 B | B11-1 loose-file aggregate (measure/final/fleet/last/verify) |
+| `w11-b11-2-check` | 2 | 22,070 | 7 L / 809 B | B11-2: w9-group manifest-check + measure |
+| `w11-b11-4-pins` | 1 | 1,932 | 6 L / 688 B | B11-4 pin table |
+| `w11-scr-b11-poll` | 2 | 7,012 | 7 L / 747 B | SCR-B11 landing watch |
+| `w11-ver-b11-poll` | 14 | 38,663 | 19 L / 1,800 B | VER-B11 live reads (baseline, pins recon, spot sets) |
+| **total** | **52** | **390,702** | **97 L / 10,403 B** | 9 groups |
+
+### 8.3 Verification (mechanical, re-runnable)
+
+- **A — manifest self-check.** `sha256sum -c MANIFEST.txt` in all 9 groups: **52/52 lines
+  OK, 0 FAILED, exit 0 in every group** (21:40:52Z; per group 2/5/7/14/5/2/1/2/14).
+- **B — copy fidelity.** Source snapshot hash list (21:40:00Z, `sha256sum` over the select
+  list) vs the manifest's list: **0 diff lines in all 9 groups** — every archived byte equals
+  its `/tmp` source byte as of the snapshot. Drift re-check at 21:44:11Z (source now vs the
+  snapshot): 7 groups 0; `w11-scr-b11-poll` +2 lines (`poll.log`), `w11-ver-b11-poll` +4 lines
+  (`landings.log`, `poll.log`) — the live round-11 lanes were still writing (§8.6 U1).
+- **C — pin equality (owning notes and sibling records), all read-only:**
+  - **C1** — `w10-aud-b10-work/source-hashes.txt` and `archive-hashes.txt` are content-identical
+    to each other and to the **269-line** hash list of the archived `w9-tabi-b91` manifest
+    (**0 diff lines** after path-sort) — the r10 audit's copy-fidelity proof re-derives.
+  - **C2** — `w10-aud-b10-work/fence.txt` `836169c55b3a54fc…` (12,312 B); `fence-nonl.txt`
+    **12,311 B / `ac0013e03288ed28…` = the archived `w9-tabi-b91/server.py`** — the §2-fence
+    cross-artifact identity of `stateful-fixture-evidence.md:92-369` re-derives on the archive.
+  - **C3** — the five `w10-scrb10/spot-*.txt` files re-run against today's tree; OK counts equal
+    in every case: `w5-tabi-b53` 9/9 · `w6-tabi-b61` 139/139 · `w7-b71-synth` 3/3 ·
+    `tabi-b1-r3b-journey` 83/83 · `w9-tabi-b91` 269/269.
+  - **C4** — `w10-b101-arc/pins.txt` (23 pre-write pins, 20:54:12Z) vs the current repo:
+    **20/23 match; 3 moved, each the record's own later write** — `SKILL.md`
+    `c07d29c3e8d1`→`f4d9cf5b1aa5` (the r10 close revision 1189 L → r11 live edits; intermediate
+    `453ed25a07f6` / 1320 L at 21:31Z), `SCORECARD.md` `2a7b02743265`→`106377d15dc8`,
+    `LOG.md` `bb58f8afc29c`→`0e35e9855e79` (both by the r10 integration commit `d24b98d`).
+  - **C5** — `w11-ver-b11-poll/pins_recon.txt` spot re-derivation against the live repo:
+    `corpus/knowledge/arc-synthesis.md` `f42428bd9af7…` / 183 L ✓ ·
+    `state-changing-matrix-r9.md` `ec540be07ed5…` / 388 L ✓.
+  - **C6** — `w10-tabi-b104/pre-SKILL.md` = **`c07d29c3e8d1…`** — the r10-era SKILL revision
+    (1189 L) held by no committed revision; its bytes are now durable in the archive.
+- **D — corpus-wide pin scan.** 444 distinct ≥12-char hex tokens in `corpus/knowledge/*.md` +
+  `reports/*.md` + `SKILL.md` vs **1,063 unique hashes across 1,737 archived evidence files**:
+  **236 match; 208 do not — and all 208 are classified**: **82 pin current repo files**,
+  **12 name values/files of the still-unarchived tabi scratch** (§8.5), **3 are the substrate
+  pins** (`e70aff5c40ff` / `84a8e69d04c5` / `b811d9c23dfd`), **90 are values internal to
+  archived artifacts**, **7 resolve to committed historical revisions of repo files** (e.g.
+  `f3b7bc3864ee3197` = `LOG.md@b377007`; six manifest revisions at `d24b98d`), **1 is a commit
+  pin** (`6a8861c1385c9b…`), and **13 are the residue, each classified**: 4 audit-derived
+  normalized digests that exist only as script output (`45c1c4d13f124319…`, `4660ead419dc7e8a`,
+  `8559c71ae8028e25`, `5d0884813ccb65da` — the r8/r9 audits' and this receipt's §3 SC3
+  re-derivations; no stored file hashes them) and 9 strings from 5 documented working-tree
+  revisions whose bytes are not preserved (`77c60a5a9d63…`/`dcfd2a4a998a…` = the two in-wave
+  layer-routing-synthesis revisions; `95bcdcd40f34f4c1` = the pre-append
+  `packet-readiness-r7.md` fingerprint; `e3b24db30479d0d2`/`8c6b0a38d7005e6d` = the
+  carried-debt-closure-r8 revision chain; `5066d17d1f89f597` = the stateful note's mid-audit
+  revision). **No unmatched token names a file inside the archived groups.** Newly covered by
+  this sweep: **3 token families** — `836169c55b3a54fc…` (the §2-fence extraction, now a file),
+  `c07d29c3e8d1…` (the r10 SKILL revision, via `pre-SKILL.md`), `f42428bd9af7…` (the synthesis
+  bytes, via `w10-aud-b10-work/arc-bound.md`).
+- **Spot-checks (named).**
+  - **SC1** — C2: the fence / fence-nonl / archived `server.py` byte chain.
+  - **SC2** — C1: the 269-line audit pair vs the w9 manifest.
+  - **SC3** — `w11-b11-2-check/manifest-check.txt` (269/269 OK) re-run = the SCR-B10 and
+    AUD-B10 copies (the three-way byte identity of §8.1).
+  - **SC4** — C5: the two VER-B11 pin re-derivations.
+  - **SC5** — the live census: groups → 45; manifests → 45; evidence files → 1,737.
+
+### 8.4 Findings (observation; inference separated)
+
+- **F1 — the reserved-name trap recurred (the r8 §4 F4 class).** The first sweep attempt used
+  `$GROUPS`, which bash reserves for the caller's group IDs: the loop collapsed to `/tmp/1000`,
+  matched no source, and **wrote nothing anywhere** — caught before any byte or manifest; the
+  list was renamed. Recorded because the same class bit the r8 lane.
+- **F2 — the round-11 groups are live.** Post-snapshot drift (§8.3 B) is exactly the two poll
+  seats' logs; the manifests remain the authority for what was copied, never for what `/tmp`
+  holds now (U1).
+- **F3 — `SKILL.md` moved twice inside the wave window** (1189 → 1320 → 1458 L;
+  `c07d29c3e8d1` → `453ed25a07f6` → `f4d9cf5b1aa5`). The r10 pins citing `c07d29c3e8d1` are
+  superseded; the r11 plan's clause C pin-refresh is the re-binding surface (not this seat's
+  write scope).
+- **F4 — duplicate structure in the new set** (§8.1): 5 pairs / 6 instances, including a
+  cross-lane byte identity (`skill_pins.txt` shared by B11-4 and VER-B11) and the three-way
+  w9-check capture — recorded so a reader does not count them as independent evidence.
+- **F5 — the sweep closed three previously-unmatched token families** (§8.3 D): the fence
+  extraction, the r10 SKILL revision, and the synthesis-bound copy now have durable bytes.
+- **F6 — the remaining-`/tmp` census is named, not absorbed** (§8.5): the r8 tranche (the
+  oldest named debt, r10 §5 U2), the w9 audit/scribe/verifier residuals, and the two
+  archiver-declared volatile scratches stay on disk, each with its reason; their bytes were
+  alive at 21:44:11Z.
+
+### 8.5 Remaining tabi `/tmp` groups (named with reason; read 21:44:11Z)
+
+- **The r8 tranche — the oldest named debt** (r10 §5 U2: still unarchived; the r11 plan:
+  *"settled or explicitly handed off"*): `/tmp/w8-tabi-b81` (**5,105 files / 111,930,667 B**) +
+  `/tmp/w8-ver-b81` (**980 / 21,992,329 B**) — bytes alive at this read; **not absorbed here**
+  (outside this seat's assignment); named so the round's archive or closeout seat can settle it.
+  Its one unrecoverable revision: §8.6 U3.
+- **w8-era siblings, named only** (no owning-note archive debt): `w8-arch-tranche` 44 / 310,490
+  (the r8 archiver's own scratch — declared volatile in the r8 receipt header); `w8-aud-b8`
+  26 / 44,363; `w8-scrb8` 4 / 4,329; `w8-ver-b8-work` 19 / 59,441; `w8-tabi-b84-draft` 2 / 4,920;
+  `w8-tabi-b84-poll` 5 / 41,481; the loose `/tmp/w8-ver-b8-poll.{sh,log}`, `/tmp/w8-f1-all.txt`,
+  `/tmp/w8-f1-man.txt`, `/tmp/w8-b82-manifest.log`, `/tmp/w8-frozen-files.txt`,
+  `/tmp/w8-tracked-files.txt` (≈146,000 B together).
+- **w9 residuals, named only** (r10 §5 U2: *"not named as archive debt by any owning note"*):
+  `w9-aud-b9-f1` 5 / 11,485; `w9-aud-b9-harness` 649 / 13,091,576; `w9-scrb9` 5 / 8,461;
+  `w9-ver-b9-work` 30 / 67,715.
+- **w7 plan-draft scratch, unarchived by design** (r8 §4 F2): `w7-tabi-b72-archive` 22 / 107,726
+  plus nine loose `w7-tabi-b72-*` files (71,789 B together).
+- **Archiver-declared volatile scratches:** `/tmp/w10-tabi-b10-2` (30 / 1,628,004 — the r10
+  archive seat's copy/verify scripts + logs, declared volatile in this receipt's header) and
+  `/tmp/w11-b11-3-sweep` (82 / 92,535 — this seat, namespace-volatile by rule).
+- **Cross-lane AUD-X10, named only:** `/tmp/w10-audx10-ev` 7 / 197,196 + the three loose
+  `w10-audx10-*.{sh,stop}` (1,742 B) — its verdict declares the record scratch-only; it belongs
+  to the cross-lane seat, not this repo.
+- **Still on `/tmp` but already archived (not debt):** `w9-tabi-b91` (the r9 group's source) and
+  the r2–r7 tabi groups archived by receipts r5/r8 — for these, the archive, not `/tmp`, is the
+  authority (r11 plan :623-624).
+- **Out of this lane's province (shape only):** the other provinces' scratch — of 39 `/tmp/w10-*`
+  entries, 5 tabi groups (archived here) + 4 cross-audit entries, 30 others; of 43 `/tmp/w11-*`
+  entries, 10 tabi (5 archived dirs here + 5 loose files), 33 others (mado / tsukuroi / tameshi /
+  pack / cross-audit X11 namespaces). Named only; their own repos' archive seats own them.
+
+### 8.6 Unknowns
+
+- **U1 — later `/tmp` writes.** The tranche is frozen as of 21:40:00Z; the drift re-check found
+  only the two live poll logs (§8.3 B), but a wave write after 21:44:11Z is unmeasured by design.
+  Re-run check B (source list vs manifest) to detect it.
+- **U2 — the r8/r9 remnants' fate.** Whether the round's archive/closeout seats absorb them or the
+  operator keeps them named is not this seat's call (§8.5); the bytes are alive now.
+- **U3 — the r8 note's one unrecoverable revision.** `stateful-fixture-evidence.md` §11 names
+  `e22a967ed69e9f6e…` (the r8 runner) as unrestorable; it is not in git, the swept scratch, or the
+  archive. Named here with its ownership; the bytes remain unrecoverable as far as this sweep measured.
+- **U4 — session material elsewhere.** Carried from r5 U2: whether any non-swept path holds
+  session material is unmeasured by design; none existed in the groups copied here (0 `*profile*`).
+- **U5 — duplicate-hash structure of the whole tree.** Enumerated for the new set only (§8.1);
+  the wider tree's duplicate classes stay as r5 U5 left them.
+- **U6 — the D scan's token set is a mid-edit snapshot of `SKILL.md`** (B11-4 live): tokens added
+  by a later SKILL revision are not covered by §8.3 D.
+
+### 8.7 Owed (outside this lane's write scope)
+
+- `LOG.md` append (AGENTS.md:3), the corpus/README coverage row + header counts, the SKILL
+  §Harness-archive census update (36 → 45 groups; the phase table), the SCORECARD move-log and
+  the commit — the integrating round's, per the r2–r10 pattern.
+- The r8/r9 census decision (archive or hand off, §8.5) — the round's archive/move/closeout seats.
+- The pin re-binds superseded by this append's sha move and by F3 (§8.4).
+
+A post-write A+B + census re-run follows as §8.8 (appended after this write, per the r10 §7
+pattern).
+
+### 8.8 Post-write re-check
+
+- **[2026-10-14T21:46:09Z, post-write]** Full A+B re-run executed after this append landed:
+  **52/52 manifest lines OK, 0 FAILED, exit 0 in all 9 groups; 0 diff lines on every group**;
+  census re-run → **45 groups / 45 manifests / 1,782 files (1,737 evidence) / `du -sb`
+  10,720,052 B** — unchanged from §8.1, so the tree did not move after those counts were
+  taken. Drift re-check (source now vs the 21:40:00Z snapshot): only the two live poll seats —
+  `w11-scr-b11-poll` diff 2 (`poll.log`), `w11-ver-b11-poll` diff 4 (`landings.log`,
+  `poll.log`) — as in §8.3 B. The pass-window `find -newermt` scans over `corpus/evidence`
+  show every file written in the window inside the 9 new groups, and none outside them after
+  this append. This append's own hashes: the pre-append receipt revision (§1–§7, the r10
+  revision) 203 `wc -l` / 15,197 B / `c6f4445ebd03…` — published, stands; the §8.1–§8.7
+  revision this block extends 409 `wc -l` / 30,817 B / `609c2022350f…`; any later append
+  moves the sha by construction — re-derive with `sha256sum corpus/knowledge/archive-receipt-r10.md`.

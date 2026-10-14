@@ -1,0 +1,278 @@
+#!/usr/bin/env python3
+"""TABI lane B8-1 fixture server v3 — stateful loopback fixture (lane-authored bytes).
+
+Server-side state: sessions (cookie-shaped, no real auth), one-time tokens,
+an apply counter, plus an ordered ledger. /__ledger is deterministic (no
+timestamps, no random) so two cold runs of one cell can be byte-compared.
+
+Routes (all loopback; Cache-Control: no-store on every instrument response):
+  GET  /__ready                 quiet 204 readiness probe (never logged)
+  GET  /__ledger                quiet instrument read: JSON server state
+  GET  /                        index; mints a session cookie when absent; counts visits on /
+  GET  /form                    form page; mints one one-time token per render
+  POST /submit                  consumes the token; ?apply=pre|post&hold=MS&guard=1
+                                -> 303 /result
+  GET  /result                  shows counter + session visits
+  POST /echo307                 -> 307 /echo307-target (method/body preservation arm)
+  POST /echo307-target          200 JSON {method, bodyBytes}
+  GET  /slow-hop1?hold=MS       302 -> /slow-hop2 after hold
+  GET  /slow-hop2?hold=MS       302 -> /result after hold
+  GET  /away                    plain page (navigation-abandon target)
+
+Usage: server.py <port>
+"""
+import json
+import re
+import secrets
+import select
+import socket
+import sys
+import threading
+import time
+import urllib.parse
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+PORT = int(sys.argv[1])
+
+LOCK = threading.Lock()
+STATE = {
+    "counter": 0,
+    "tokens": {"minted": 0, "consumed": 0, "refused": 0},
+    "token_table": {},   # token -> {"used": bool}
+    "sessions": {},      # sid -> {"ordinal": int, "visits": int}
+    "sessions_order": [],
+    "events": [],
+}
+SID_RE = re.compile(r"^[0-9a-f]{16}$")
+
+
+def ev(kind, **kw):
+    STATE["events"].append({"seq": len(STATE["events"]) + 1, "kind": kind, **kw})
+
+
+def ledger():
+    return {
+        "counter": STATE["counter"],
+        "tokens": dict(STATE["tokens"]),
+        "sessions": [
+            {"ordinal": "s%d" % (i + 1), "visits": STATE["sessions"][sid]["visits"]}
+            for i, sid in enumerate(STATE["sessions_order"])
+        ],
+        "events": [dict(e) for e in STATE["events"]],
+    }
+
+
+PAGE = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>%s</title>
+<style>html,body{margin:0;padding:0;background:#fff;color:#111;font:16px/1.5 monospace}
+#frame{width:800px;height:600px;box-sizing:border-box;padding:24px}
+#state{background:#eef2ff}</style></head>
+<body><div id="frame">%s</div></body></html>"""
+
+
+class Handler(BaseHTTPRequestHandler):
+    server_version = "tabi-fixture-v3/0.1"
+    protocol_version = "HTTP/1.0"
+
+    def log_message(self, fmt, *args):
+        if getattr(self, "_quiet", False):
+            return
+        sys.stderr.write("%s - - [%s] %s\n" % (self.client_address[0], self.log_date_time_string(), fmt % args))
+
+    # ---- plumbing -------------------------------------------------------
+
+    def _emit(self, code, payload=b"", ctype="text/plain; charset=utf-8", headers=()):
+        try:
+            self.send_response(code)
+            for k, v in headers:
+                self.send_header(k, v)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(payload)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(payload)
+            self.wfile.flush()
+            if not getattr(self, "_quiet", False):
+                with LOCK:
+                    ev("write-ok", path=self.path.split("?", 1)[0])
+        except (BrokenPipeError, ConnectionResetError):
+            if not getattr(self, "_quiet", False):
+                with LOCK:
+                    ev("write-aborted", path=self.path.split("?", 1)[0])
+                sys.stderr.write("== ABORTED response write (client closed): %s\n" % self.path)
+
+    def _redirect(self, code, location):
+        self._emit(code, b"", headers=(("Location", location),))
+
+    def _send(self, code, body="", ctype="text/plain; charset=utf-8", headers=()):
+        self._emit(code, body.encode("utf-8"), ctype=ctype, headers=headers)
+
+    def _sid(self):
+        raw = self.headers.get("Cookie") or ""
+        for part in raw.split(";"):
+            k, _, v = part.strip().partition("=")
+            if k == "tabi_sid" and SID_RE.match(v):
+                return v
+        return None
+
+    def _ensure_session(self, count_visit=False):
+        sid = self._sid()
+        cookie_state = "present" if sid else "absent"
+        minted = False
+        with LOCK:
+            if sid is None or sid not in STATE["sessions"]:
+                sid = secrets.token_hex(8)
+                ordinal = len(STATE["sessions_order"]) + 1
+                STATE["sessions"][sid] = {"ordinal": ordinal, "visits": 0}
+                STATE["sessions_order"].append(sid)
+                ev("session-mint", sid=ordinal, cookie=cookie_state)
+                minted = True
+            rec = STATE["sessions"][sid]
+            if count_visit:
+                rec["visits"] += 1
+                ev("visit", sid=rec["ordinal"], cookie=cookie_state, visits=rec["visits"])
+            ordinal = rec["ordinal"]
+        return sid, ordinal, minted
+
+    def _client_gone(self):
+        """Socket-aware server variant: True when the peer already closed."""
+        try:
+            r, _, _ = select.select([self.connection], [], [], 0)
+            if not r:
+                return False
+            return self.connection.recv(1, socket.MSG_PEEK) == b""
+        except OSError:
+            return True
+
+    # ---- GET ------------------------------------------------------------
+
+    def do_GET(self):
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path
+        q = urllib.parse.parse_qs(parsed.query)
+        if path == "/__ready":
+            self._quiet = True
+            self.send_response(204)
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
+        if path == "/__ledger":
+            self._quiet = True
+            with LOCK:
+                payload = json.dumps(ledger()) + "\n"
+            self._send(200, payload, ctype="application/json")
+            return
+        if path == "/":
+            sid, _, minted = self._ensure_session(count_visit=True)
+            with LOCK:
+                visits = STATE["sessions"][sid]["visits"]
+            headers = (("Set-Cookie", "tabi_sid=%s; Path=/; HttpOnly; SameSite=Lax" % sid),) if minted else ()
+            body = PAGE % ("TABI-R8-1 index",
+                           '<h1>TABI-R8-1 stateful fixture v3</h1>\n'
+                           '<p id="visits" data-visits="%d">visits: %d</p>\n'
+                           '<p><a id="form-link" href="/form">go to the form</a></p>\n'
+                           '<p><a id="slow-link" href="/slow-hop1?hold=700">slow chain</a></p>' % (visits, visits))
+            return self._send(200, body, ctype="text/html; charset=utf-8", headers=headers)
+        if path == "/form":
+            sid, _, minted = self._ensure_session(count_visit=False)
+            token = secrets.token_hex(8)
+            with LOCK:
+                STATE["token_table"][token] = {"used": False}
+                STATE["tokens"]["minted"] += 1
+                ev("token-mint", sid=STATE["sessions"][sid]["ordinal"])
+            headers = (("Set-Cookie", "tabi_sid=%s; Path=/; HttpOnly; SameSite=Lax" % sid),) if minted else ()
+            body = PAGE % ("TABI-R8-1 form",
+                           '<h1>submit</h1>\n'
+                           '<form id="f" method="POST" action="/submit">\n'
+                           '<input type="hidden" id="token" name="token" value="%s">\n'
+                           '<input id="note" name="note" type="text" value="">\n'
+                           '<button id="submit" type="submit">submit</button>\n'
+                           '</form>' % token)
+            return self._send(200, body, ctype="text/html; charset=utf-8", headers=headers)
+        if path == "/result":
+            sid, _, minted = self._ensure_session(count_visit=False)
+            with LOCK:
+                counter = STATE["counter"]
+                visits = STATE["sessions"][sid]["visits"]
+            headers = (("Set-Cookie", "tabi_sid=%s; Path=/; HttpOnly; SameSite=Lax" % sid),) if minted else ()
+            body = PAGE % ("TABI-R8-1 result",
+                           '<h1>result</h1>\n'
+                           '<p id="counter" data-counter="%d">counter: %d</p>\n'
+                           '<p id="visits" data-visits="%d">visits: %d</p>' % (counter, counter, visits, visits))
+            return self._send(200, body, ctype="text/html; charset=utf-8", headers=headers)
+        if path == "/slow-hop1":
+            time.sleep(int((q.get("hold") or ["0"])[0]) / 1000)
+            return self._redirect(302, "/slow-hop2?hold=%s" % (q.get("hold2") or ["0"])[0])
+        if path == "/slow-hop2":
+            time.sleep(int((q.get("hold") or ["0"])[0]) / 1000)
+            return self._redirect(302, "/result")
+        if path == "/away":
+            return self._send(200, PAGE % ("TABI-R8-1 away", '<h1>away</h1>\n<p id="away">navigation moved on</p>'),
+                              ctype="text/html; charset=utf-8")
+        return self._send(404, "fixture endpoints only\n")
+
+    # ---- POST -----------------------------------------------------------
+
+    def do_POST(self):
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path
+        q = urllib.parse.parse_qs(parsed.query)
+        length = int(self.headers.get("Content-Length") or 0)
+        body = self.rfile.read(length) if length else b""
+        if path == "/submit":
+            return self._submit(body, q)
+        if path == "/echo307":
+            return self._redirect(307, "/echo307-target")
+        if path == "/echo307-target":
+            return self._send(200, json.dumps({"method": self.command, "bodyBytes": len(body)}) + "\n",
+                              ctype="application/json")
+        return self._send(405, "fixture endpoints only\n")
+
+    def _submit(self, body, q):
+        fields = urllib.parse.parse_qs(body.decode("utf-8", "replace"))
+        token = (fields.get("token") or [""])[0]
+        apply_mode = (q.get("apply") or ["pre"])[0]
+        hold_ms = int((q.get("hold") or ["0"])[0])
+        guard = (q.get("guard") or ["0"])[0] == "1"
+        sid = self._sid()
+        with LOCK:
+            ordinal = STATE["sessions"][sid]["ordinal"] if sid in STATE["sessions"] else None
+            rec = STATE["token_table"].get(token)
+            if token == "" or rec is None:
+                STATE["tokens"]["refused"] += 1
+                ev("submit-refused", reason="unknown-token", bodyBytes=len(body))
+                ok = False
+            elif rec["used"]:
+                STATE["tokens"]["refused"] += 1
+                ev("submit-refused", reason="token-consumed", bodyBytes=len(body))
+                ok = False
+            else:
+                ok = True
+                if apply_mode == "post":
+                    deferred = True
+                else:
+                    deferred = False
+                    rec["used"] = True
+                    STATE["tokens"]["consumed"] += 1
+                    STATE["counter"] += 1
+                    ev("apply", sid=ordinal, bodyBytes=len(body), mode=apply_mode)
+        if not ok:
+            return self._send(409, "token refused\n")
+        if hold_ms:
+            time.sleep(hold_ms / 1000)
+        if deferred:
+            gone = self._client_gone() if guard else None
+            with LOCK:
+                if guard and gone:
+                    ev("apply-skipped", sid=ordinal, reason="client-gone", bodyBytes=len(body))
+                else:
+                    rec["used"] = True
+                    STATE["tokens"]["consumed"] += 1
+                    STATE["counter"] += 1
+                    ev("apply", sid=ordinal, bodyBytes=len(body), mode=apply_mode,
+                       guard=("gone" if gone else "alive") if guard else "off")
+        self._emit(303, b"redirecting\n", headers=(("Location", "/result"),))
+
+
+if __name__ == "__main__":
+    ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
