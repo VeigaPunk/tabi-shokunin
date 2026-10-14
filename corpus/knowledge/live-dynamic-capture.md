@@ -219,3 +219,24 @@ no-egress claim.
 ## 8. Errata (append-only — never edit above blocks)
 
 *(none yet)*
+
+Appended 2026-10-14 (tabi round 4, lane ERR-B — errata sweep; re-run transcripts
+staged `/tmp/w4-erb-b-sweep/`, byte-prefix proof `/tmp/w4-erb-b-append-proof/`,
+both volatile). Entries below supersede the placeholder above; nothing above is
+edited. Pre-append sha256 of this file:
+`56224aa8843007381d325e900008cb76a9fb85d2b18b52d3d4b5e7c1bd1597de`. The
+post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, fresh re-run] VERIFIED — round-2 methodology pins held a third
+  round.** fixture `21e27aa6619a…1c99` (`page.html`, 1,903 B), `capture.mjs`
+  `d37d36dd92d0…`, `driver.sh` `8105bed02840…`, `compare.mjs` `e558bd547c58…`
+  (`/tmp/tabi-r2-1-capture/`, intact); ports 19411/19412 closed; no
+  chromium/python3 survivors.
+- **[2026-10-14, state change] daemon DOWN 16:21:07Z** (pid 3934817 gone;
+  `/status` exit 7; it answered through 16:08:33Z). No claim above depends on
+  it — all captures were daemon-independent loopback CDP, and no round-3/4
+  scratch carries a 10086 hit (grep). Cause unmeasured.
+- **[2026-10-14, §7 status] no movement.** item 7 (`--disable-background-networking`
+  vs GCM) open; item 6 (780×493) still explained-by-bypass only; items 1-5, 8
+  unchanged. Scratch remains `/tmp`-staged — archive obligation stands
+  (`cdp-evidence-patterns.md:92`).

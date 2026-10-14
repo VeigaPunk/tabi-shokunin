@@ -295,3 +295,52 @@ verifiable while `/tmp` lives — copy bytes to durable storage before citing
 ## 9. Errata (append-only — never edit above blocks)
 
 *(none yet)*
+
+Appended 2026-10-14 (tabi round 4, lane ERR-B — errata sweep; re-run transcripts
+staged `/tmp/w4-erb-b-sweep/`, byte-prefix proof `/tmp/w4-erb-b-append-proof/`,
+both volatile). Entries below supersede the placeholder above; nothing above is
+edited. Pre-append sha256 of this file:
+`67447c028e90c3cbd23fafa371cb745a5a49402634e619c0082dffa0144791dc`. The
+post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, fresh re-run] VERIFIED — §1/§2 pins re-held on disk.**
+  methodology `b52074a33876…` / `9509c07f49f9…` / `ecce1c73dc56…`; site six
+  files `42d7a35b82be` / `353d8107a072` / `50d811502ef8` / `84b6ea0c17f4` /
+  `6380986105b3` / `bf141027b3ef` (bytes 459/984/1,014/770/286/106); all 12 run
+  PNGs re-hash to the §2 full values (run1 ≡ run2 per artifact); ports
+  19421/19422 closed (first-hand `curl` exit 7); no chromium survivors;
+  `/tmp/tabi-r3-1-journey/` intact. Calibration: the fixture table's "lines"
+  column is numbered-lines — `wc -l` differs on the no-trailing-newline file
+  (`data.json` 1 vs 0); same class as the executor note's "298 vs 297".
+- **[2026-10-14, round 4 pointer] supersession pending.** A round-4 seat re-ran
+  this journey with CDP Network-domain capture (`/tmp/tabi-r4-1-network/`, runs
+  ended 16:10:01Z; closure: ports 19441/19442 closed, curls exit 7) and an
+  async-XHR variant (`/tmp/tabi-r4-2-async/`, 16:10:34Z); no corpus note
+  admitted at this sweep (16:22Z). This note remains the round-3 record;
+  row-level cross-refs owed once the round-4 notes land.
+- **[2026-10-14, archive] obligation unchanged** — all bytes incl. this run
+  remain `/tmp`-staged (`cdp-evidence-patterns.md:92`).
+
+Appended 2026-10-14 (tabi round 4, lane ERR-B, second block — same sweep;
+AUD-TAB1 finding routed here per `reports/r4-aud-tab1.md` §5.1; transcript
+`/tmp/w4-erb-b-sweep/`, proof `/tmp/w4-erb-b-append-proof/`). Nothing above is
+edited. Pre-append sha256 of this file: `67febee374d0e47e270139d6545853bfdc46a3cccb71088e5106fae743a2b33e`.
+
+- **[2026-10-14, third-run audit — §5's "no wire line" count CALIBRATED as
+  per-run]** AUD-TAB1 re-ran this journey on fresh ports 19621/19622 (+1:33 h,
+  new browser): all 12 byte pins and the history/labels reproduced (12-row PASS
+  table, `reports/r4-aud-tab1.md` §1), with one **variant**: wire = 8 requests /
+  9 lines and client delta = 2, because step-2's `style.css` repeat went to the
+  wire as `304 -` (client reported 304) — where the r3 cold runs had a pure
+  client re-serve (delta 3, no wire line). §5's "3-event delta … no wire line"
+  sentence is therefore per-run-measured, not stable; the §5 general rule
+  (client status ≠ wire truth; keep both surfaces) is strengthened. Mechanism
+  for the run-to-run difference: **unknown**. Byte-identity now holds across
+  **three** cold runs / three port pairs.
+- **[2026-10-14, first-hand re-hash of the audit's staging]**
+  `/tmp/w4-aud-tab1/harness/`: `journey.mjs` `b52074a33876…` and `compare.mjs`
+  `ecce1c73dc56…` equal the §2 pins; `driver.sh` `c7eddbfce6ac…` = the pinned
+  driver + exactly the 3-line port delta (`driver.diff`); `site/` six files
+  equal this note's §1 pins; run1 PNGs re-hash to the §2 full values; run ended
+  16:20:19Z with the closure pass lines. All `/tmp`-staged — archive obligation
+  stands.

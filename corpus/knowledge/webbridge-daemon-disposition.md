@@ -235,3 +235,37 @@ Check sequence to reproduce: (1) baseline — `ss -ltn | grep :10086`,
   samples).
 - Substrate read-only: plugin files unmodified; the only on-disk changes
   are the daemon's own state files under `~/.kimi-webbridge/` (§6).
+
+Appended 2026-10-14 (tabi round 4, lane ERR-B — errata sweep; re-run transcripts
+staged `/tmp/w4-erb-b-sweep/`, byte-prefix proof `/tmp/w4-erb-b-append-proof/`,
+both volatile). Pre-append sha256 of this file:
+`9240f1d66a8ca5b5dd7c16c1c7f932f22d3921c3c0dd38483f09aaefd9bf8eec`. The
+post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, state change] DOWN — the running state this note recorded is
+  superseded.** Same host/day timeline: 16:08:33Z (sibling read-only sweep)
+  `ss -ltnp` → `127.0.0.1:10086` LISTEN pid 3934817, `/status` → the 8-field
+  shape (`running:true`, `uptime_seconds:8532`, `extension_connected:false`).
+  16:21:07Z (this lane): `ps -p 3934817` → gone; no listener on 10086; `curl
+  /status` → exit 7. Pointer files present, stale (`daemon.pid` 8 B,
+  `daemon.addr` 16 B, mtime 10:46:31 — the U5 pattern for a shutdown that was
+  not followed by a `start`); `logs/` shapes only: `daemon.log` 3,591 B mtime
+  12:46, `.prev` 19,532 B (never content-read). Cause unmeasured — if the
+  operator ran the owed `stop` (D2/A4), that discharges the baseline row; no
+  in-repo record of who or when.
+- **[2026-10-14, fresh re-run] VERIFIED — §8 pins re-held.** 6 files / 173
+  lines; `b255d1f80d59…3902` (baseline), `869fda135000…24e1` (start.log);
+  binary `sha256sum` → `71067480bd99…d35d` (= `:86`). Cross-lane calibration:
+  a sibling sweep's scratch line ("start b869fda1… hmm") transposes this pin;
+  the §8 value is the one on disk.
+- **[2026-10-14, §5 note] `/status` unreachable now** — the iff-condition
+  (daemon this task started) governs; no probe was attempted beyond the single
+  refusal check.
+
+Appended 2026-10-14 (tabi round 4, lane ERR-B, second block — same sweep;
+environment-event context (OOM teardown) routed here; transcript
+`/tmp/w4-erb-b-sweep/17-env-event.txt`, proof `/tmp/w4-erb-b-append-proof/`).
+Nothing above is edited. Pre-append sha256 of this file:
+`a3abb49b22846246e24d163f02828852a39c40163b018cf70fa139c5371c8deb`.
+
+- **[2026-10-14, environment context — refines the "cause unmeasured" line above] OOM-teardown event, first-hand journal read.** Journal window 13:10:59 local (= 16:10:59Z): `user@1000.service: Main process exited, code=killed, status=9/KILL`; `user-1000.slice: The kernel OOM killer killed some processes in this unit`; unit consumed 28.5G memory peak / 34.2G swap peak; sddm session closed (`sddm-helper exited with 9`), session/Hyprland restarted. `coredumpctl` since 13:00 shows a godot/love SIGABRT stream 13:03–13:06 (other lanes' binaries — attribution by name only). Per-process victim list: **unknown** (`journalctl -k | grep -i oom` has no per-process line for this event). The daemon's death is *consistent with* the teardown (alive 13:08:46 → gone by 13:26; SIGKILL leaves no shutdown bytes — matches the stale pid file and unchanged `daemon.log` shape), so victim attribution stays **inference**, not measurement (independently recorded by the round-4 scribe-prep draft, `plans/round-4-record-draft.md` §3 O1–O5/I1). Restart authority unchanged, unexercised; pid file stale again (round-2 pre-state pattern). Transcript: `/tmp/w4-erb-b-sweep/17-env-event.txt`.

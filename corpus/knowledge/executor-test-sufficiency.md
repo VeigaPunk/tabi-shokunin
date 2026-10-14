@@ -296,3 +296,31 @@ window (14:44:34 → 11:50:40 -0300, two different content states). Per the
 document's own staleness rule (`@fdbad5db:41-42`, `@032b2da9:41-42`), every
 citation is version-stamped here; consumers of this note should match by content,
 not by line number, if the file has moved again.
+
+Appended 2026-10-14 (tabi round 4, lane ERR-B — errata sweep; re-run transcripts
+staged `/tmp/w4-erb-b-sweep/`, byte-prefix proof `/tmp/w4-erb-b-append-proof/`,
+both volatile). Pre-append sha256 of this file:
+`1262708864dbff22b22ea997285172fd4cbabcd087889e5ac4e80ea4104ef4be`. The
+post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **E6 (2026-10-14, ERR-B).** `SKILL.md` moved a third time — §8's own
+  prediction ("a third revision would make even this map stale") materialized.
+  Current committed revision `452bc514d387` — 576 lines, 39,069 B, mtime
+  2026-10-14 11:56 (`git show HEAD:SKILL.md | wc -l` → 576; `SKILL.md` §Pins
+  :30-59). The §8 map's `@032b2da9` column is stale as line numbers; resolve by
+  content (E5's rule). Content re-located in the current revision: count
+  definition `:158-159`; "55→65 … **two** clicks" rung `:313`; §Runbook
+  `:61-287`; ladder rungs `:312-314`; §Record envelope `:351-375` — item 7 now
+  names the **process table** (**E3 applied**, `:371-373`); approval table
+  `:485-567`; §Staleness watch `:569-577`. E1/E2/E3 verifiably applied; E4
+  (durable archive of `/tmp/tabi-r3-4-work/`) still open — its evidence bytes
+  re-hashed on disk this sweep and still match §2 (det-before `c08947dc…` ×4,
+  det-after `317310cc…` ×2, nondet pair differs, 55 nodes, struct `8c4f478b…`,
+  text `1a5f41dc…`).
+- **Line-count calibration (record-side correction).** `wc -l` on the committed
+  blob → **297** — exactly §Pins' "297 lines — `wc -l`". The round-3 scribe
+  record "wc -l → 298" (LOG.md:128-130; SCORECARD.md:50) counted numbered
+  lines, not newlines: the file has no trailing newline (last bytes `69 6e 2e`
+  = `in.`), so `Read` shows 298 lines while `wc -l` counts 297. No content
+  discrepancy; the annotation slip is in the record, not the pin (LOG/SCORECARD
+  correction owed to the owning seat — outside this lane's write scope).

@@ -11,12 +11,19 @@ knowledge. Observation / inference / unknown stay separate; errata append-only.
 
 **Sufficiency contract — this file is executable alone.** A fresh agent with only this
 document can: (1) run a loopback evidence capture start-to-finish (§Runbook — commands
-are copy-paste); (2) grade the result against the evidence ladder (§Evidence ladder);
-(3) prove cleanup and closure (§Runbook step 13); (4) route every interaction class
-through the approval table (§Approval table). If a hash in §Pins has moved, every
-citation is stale — re-verify the note before reuse. Round-3 executor test (TABI-R3-4,
-document-only execution): **SUFFICIENT** — every copy-paste command ran unmodified; its
-erratum fixes are applied in this revision (`executor-test-sufficiency.md`, pin in §Pins).
+are copy-paste); (2) grade the result against the evidence ladder (§Evidence ladder —
+four rungs) and wait for a page to settle before a shutter (§Settle-wait discipline);
+(3) prove cleanup and closure (§Runbook step 13) and hold the session hygiene rules
+(§Hygiene rules); (4) route every interaction class through the approval table
+(§Approval table). If a hash in §Pins has moved, every citation is stale — re-verify the
+note before reuse. Round-3 executor test (TABI-R3-4, document-only execution):
+**SUFFICIENT** — every copy-paste command ran unmodified; its erratum fixes are applied
+(`executor-test-sufficiency.md`, pin in §Pins). Round-4 state: the ladder gained its
+**network rung** (rung 4, measured on a 3-navigation loopback journey —
+`network-evidence-rung.md`, pin in §Pins), and the async-step note carries the
+settle-wait record (`async-step-evidence.md`). The runbook below still leads with the
+round-2 capture chain (single-page captures); a rung-4 capture swaps in the round-4
+harness named in its opening paragraph.
 
 ## Standing rules
 
@@ -29,31 +36,50 @@ erratum fixes are applied in this revision (`executor-test-sufficiency.md`, pin 
 
 ## Pins — sources and staleness rule
 
-sha256 first 12, re-derived 2026-10-14 (`sha256sum corpus/knowledge/*.md`; re-run
-TABI-R3-3, output staged `/tmp/tabi-r3-3-anchors/anchors.txt` — volatile):
+sha256 first 12, **re-derived at this revision's write time** (2026-10-14T16:39Z,
+`sha256sum corpus/knowledge/*.md`; scratch `/tmp/w4-t4-4-tabi/pins-r4.txt` — volatile).
+The round-4 wave appended errata to all eight prior notes and admitted three new ones —
+every pin below is post-append; re-derive before citing if the worktree has moved.
 
-- Round-1 notes: `webbridge-plugin-anatomy.md` `5e0fbe35feea` ·
-  `browser-surface-census.md` `70d1d455ee18` · `cdp-evidence-patterns.md` `599e7d323c48`.
-- Round-2 notes: `live-dynamic-capture.md` `56224aa88430` ·
-  `webbridge-daemon-disposition.md` `9240f1d66a8c`.
-- Round-3 notes: `interaction-approval-table.md` `70ce826303d0` (216 lines — `wc -l`;
-  lane TABI-R3-2; the finalized C1–C6 / A1–A12 taxonomy) · `executor-test-sufficiency.md`
-  `1262708864db` (297 lines — `wc -l`; lane TABI-R3-4; the no-oral-context executor test,
-  verdict SUFFICIENT) · `multi-step-journey.md` `67447c028e90` (296 lines — `wc -l`; lane
-  TABI-R3-1; four-page loopback journey, six per-step captures per run). The round-3 notes
-  were still being updated at pin time — re-derive before citing.
+- Round-1 notes: `webbridge-plugin-anatomy.md` `6ce6fdd018a7` ·
+  `browser-surface-census.md` `a4bbb39edb12` · `cdp-evidence-patterns.md` `8de2ee008c9c`.
+- Round-2 notes: `live-dynamic-capture.md` `f97c10238907` ·
+  `webbridge-daemon-disposition.md` `03af1fb0693e` (its §10 erratum records the daemon
+  state change — see §Approval table).
+- Round-3 notes: `interaction-approval-table.md` `d6ad567a610c` (241 lines — `wc -l`; the
+  finalized C1–C6 / A1–A12 taxonomy) · `executor-test-sufficiency.md` `5f04f6877e1e`
+  (325 lines; the no-oral-context executor test, verdict SUFFICIENT) ·
+  `multi-step-journey.md` `8925ce6c46c7` (345 lines; the four-page loopback journey; its
+  §9 errata carry the round-4 audit's per-run wire-class calibration).
+- Round-4 notes: `network-evidence-rung.md` `4889ccf073a8` (605 lines; lane T4-1 — the
+  network rung: per-step CDP Network-domain slices with five correlated surfaces, the D1–D8
+  layer-disagreement cases, the byte-closure equation, fixture + server embedded in §11) ·
+  `async-step-evidence.md` `577af06bd9a8` (278 lines; T4-2 — the held-request pre/post
+  pair across visual/state/network layers; §3 is the settle-wait record) ·
+  `hygiene-sweep-r4.md` `4ddc67151b98` (254 lines; T4-3 — the rounds-1-3 port/process/
+  daemon hygiene sweep, closure-coverage gap closed).
+- Lane report (in-repo, **not** a corpus note — cites for §Hygiene rules only):
+  `reports/r4-aud-tab1.md` `5f44b0f94483` (167 lines; the r3-replay audit — byte-identity
+  across three port pairs, the per-run wire-variant finding, the second self-match incident).
 - Substrate, read-only: plugin `kimi.plugin.json` `e70aff5c40ff`; plugin skill `SKILL.md`
   `84a8e69d04c5` (158 lines); `references/operations.md` `b811d9c23dfd` (34 lines)
-  (`sha256sum` over `~/.kimi-code/plugins/managed/kimi-webbridge/`, 2026-10-14).
+  (`sha256sum` over `~/.kimi-code/plugins/managed/kimi-webbridge/`, re-derived 2026-10-14).
 
 A hash change means the citations below are stale — re-verify against the note before
 reuse. History: the round-1 pins `49f0735b0594`/`9e4d69dcd658`/`034b1e53b004` matched the
 committed round-1 blobs; the round-2 errata are pure appends on top (each errata header
-records its pre-append hash; nothing above an append point was edited). One erratum bites
-directly: `corpus/knowledge/cdp-evidence-patterns.md:139-150` corrects record-envelope
-item 1 — `url` holds the URL **as-normalized**, so record the as-read-back string
-alongside the exact navigation input. Both round-2 notes' evidence bytes are `/tmp`-staged
-(`live-dynamic-capture.md:1`) — the archive obligation stands (`cdp-evidence-patterns.md:92`).
+records its pre-append hash; nothing above an append point was edited); the round-4
+errata (lane ERR-B, 16:24–16:28Z) are appends on top of those, so every round-1/2/3
+line-ref below still resolves against the current bytes. One erratum bites directly:
+`corpus/knowledge/cdp-evidence-patterns.md:139-150` corrects record-envelope item 1 —
+`url` holds the URL **as-normalized**, so record the as-read-back string alongside the
+exact navigation input. All round-1–4 notes' evidence bytes are `/tmp`-staged — the
+archive obligation stands (`cdp-evidence-patterns.md:92`), and the rung note's §11
+embeds its fixture + server bytes so that recipe survives `/tmp`. Count convention:
+"lines" here is `wc -l`; a file whose last line is unterminated reads one lower than its
+logical line count (measured on `executor-test-sufficiency.md` at its round-3 revision —
+`wc -l` → 297, `grep -c ''` → 298; `hygiene-sweep-r4.md` §7 E2 resolves the round-3 nit
+on that convention, not on changed bytes).
 Citation convention: paths are abbreviated after first mention in a section (e.g.
 `substrate SKILL.md`, `anatomy`, `<note>.md` for the corpus notes), and a bare `:line`
 continues the note cited immediately before it.
@@ -62,7 +88,12 @@ continues the note cited immediately before it.
 
 The measured harness this recipe distills: `driver.sh` (85 lines) + `capture.mjs`
 (209 lines) from round 2, staged `/tmp/tabi-r2-1-capture/` (volatile; sha pins
-`live-dynamic-capture.md:52-56`). Ports and paths below are the measured precedent —
+`live-dynamic-capture.md:52-56`). A **network-rung** capture uses the round-4 harness
+instead of the round-2 capture script: `net-journey.mjs` (475 lines, `46c81f99decf`) +
+`net-driver.sh` (106 lines, `67c94a3a275d`), with the fixture and server bytes embedded
+in `network-evidence-rung.md` §2/§11 so that recipe survives `/tmp`; its per-step slice,
+byte-closure and timing rules are §Evidence ladder rung 4 and §Settle-wait discipline.
+Ports and paths below are the measured precedent —
 adapt, don't guess. Every step that produces evidence writes it to a file under the
 run's output dir; `/tmp` bytes need archiving before they count (step 13). This exact
 chain was replayed end-to-end on 2026-10-14 (TABI-R3-3 smoke; staging
@@ -138,7 +169,9 @@ robust wait) (`cdp-evidence-patterns.md:66`; `capture.mjs:156-160`). On dynamic 
 poll the exact expected DOM state next — e.g. `#status === 'hydrated'`, then per click
 `li.length === N && #confirm-N present` (`live-dynamic-capture.md:35-42`;
 `capture.mjs:161-164,184-190`). Two rAF frames settle before every shutter
-(`capture.mjs:70-71`).
+(`capture.mjs:70-71`) — a paint settle; the network side of a settle is §Settle-wait
+discipline. A rung-4 capture adds the per-step Network slice at this point
+(`Network.enable` runs before the first navigation).
 
 **9. Capture (this is one capture; a claim needs the right rung — §Evidence ladder).**
 - `Page.captureScreenshot {format:"png", captureBeyondViewport:true}` → decode base64 →
@@ -303,15 +336,17 @@ time-varying inventory — snapshot at capture time, never census) (`cdp-evidenc
 ## Evidence ladder — climb to the rung the claim needs
 
 Per-claim-class capture mechanics live in the rows below and in §Runbook; this ladder
-orders how strong the evidence under a claim is. Climb to the rung the claim needs — and
+orders how strong the evidence under a claim is. Four rungs since round 4 — climb to the
+rung the claim needs, and
 **never present a lower rung as support for a higher one.** Every rung still carries the
-9-item record envelope.
+10-item record envelope (item 10 added round 4 for network-rung captures).
 
 | Rung | Evidence captured | Supports | Recipe | Measured anchor |
 |---|---|---|---|---|
 | 1 — **static bytes** | sha256-identical artifact, plus a re-capture proving the capture operation idempotent | "the page renders X" when the content is frozen | freeze fixture bytes (step 1) → capture twice while idle (step 9) → re-run the whole harness (fresh server+browser) and re-hash | det-before PNG byte-identical within a run (350 ms apart) and across two independent server+browser processes (`live-dynamic-capture.md:66-67,107-110`); a third fresh server+browser pair (TABI-R3-3 smoke, 2026-10-14; staging `/tmp/tabi-r3-3-smoke/`, volatile) reproduced both fixed-state PNG shas; the executor test reproduced the same det-before sha across its two runs (`executor-test-sufficiency.md` §2); round-1 cross-session re-verification `cdp-evidence-patterns.md:151-157` |
 | 2 — **dynamic capture** | before/after pair under sha-pinned methodology and state-waits; the volatile class captured too | action-effect claims — "clicking X changed Y"; JS-produced states | step 10 (interact + state-wait) around step 9 captures; keep the counterexample (step 12) | det-after PNG byte-identical across runs when the resulting state is fixed, even after JS-driven DOM mutation plus real input; DOM-shape delta 55→65 nodes over **two** clicks (+5 nodes/click) fully accounted (`live-dynamic-capture.md:68,96-101,113-114`; round-3 re-measurement reproduced the 55 baseline and the +5/click rate — `executor-test-sufficiency.md` §2) |
 | 3 — **multi-signal** | two or more independent signals agree (screenshot read back visually, DOM shape, protocol metadata; two full independent runs) | claims where a single channel alone could be wrong or stale | add the cross-checks of step 9; run the harness twice end-to-end | visual read-back matches the authored fixture; every fixed-state artifact agreed across two full runs; shape *struct* survives liveness while shape *text* does not (`live-dynamic-capture.md:60-73,91-94,124-127`) |
+| 4 — **network (wire capture)** | a per-step CDP Network-domain slice with five correlated surfaces: client model (`responseReceived`), wire truth (`responseReceivedExtraInfo` — raw status, status line, header bytes), byte truth (`loadingFinished.encodedDataLength` + `Network.getResponseBody`), the page-side `PerformanceResourceTiming` witness, and the fixture server's own log | "the page fetched X / got Y / got nothing" — and the DOM/screenshot disagreements the wire can arbitrate: abandoned requests, failed subresources, redirects, cache-served repeats with no wire line, wire-304 vs client-200, async races; it **cannot** prove rendering (a 200 body says nothing about the pixels) and is not a HAR | `Network.enable` before the first navigation; mark/advance the request list per step; settle (§Settle-wait discipline) + shutter; `getResponseBody` for every finished request; classify per-request `state` (issued/answered/failed); close the byte equation before quoting bytes | three cold runs byte-identical including per-request fact lines (`compare.tsv` 150 rows — 127 IDENTICAL / 23 accounted DIFFER); closure `finEnc − body − last-hop header text = 0` on all 7 wire resources; timing classes: loopback 0.6–3.3 ms · server-think 401.3–401.7 ms · cache hit ~4 ms · client abort at 60.2–60.3 ms; per-step byte totals 1,759 / 2,189 / 0 / 838 B (`network-evidence-rung.md` §3-§6, §9; netlog ≠ HAR refusal stands) |
 
 Capture rules earned by the ladder (`live-dynamic-capture.md:151-173`): split the page by
 determinism class **before** capturing; wait on state, never on time (the predicates live
@@ -325,6 +360,14 @@ per-step captures — now measured (round 3): a four-page loopback journey
 per-step captures per run (navigate, idempotence re-capture, two links, fill, submit),
 two cold-profile runs byte-compared, and the per-hop rules it adds —
 `multi-step-journey.md` §2 record, §6 rules delta, pin in §Pins.
+Round 4 adds the network-rung rules (`network-evidence-rung.md` §9): separate the status
+surfaces (wire `ExtraInfo` vs client `responseReceived` — they can differ); close the
+byte equation before quoting any byte; call an abort what it is (client `ERR_ABORTED` +
+a server status line + a body-write failure are three surfaces of one event — any one
+alone misleads); timing claims at class granularity (≥1 ms — 38 recorded sub-ms finish-
+before-response pairs are noise); compare client vs server by **counts**, not set
+membership (the cache-served delta hides otherwise); screenshot is the only rendered-state
+layer (DOM shape is blind to `display:none` and `:visited`).
 
 ### Claim classes → capture (decision aid)
 
@@ -332,11 +375,16 @@ two cold-profile runs byte-compared, and the per-hop rules it adds —
 |---|---|---|---|---|
 | **Visual** — "the page renders X" | `screenshot` → file path (never base64); read it back. Raw form: `Page.captureScreenshot {format:"png", captureBeyondViewport:true}` | PNG file + sha256 + byte count + W×H; note that it was read back visually | byte-stable for static content *in this environment*; environment-scoped — do not generalize to real pages or other builds | `corpus/knowledge/webbridge-plugin-anatomy.md:84-85,106-108`; `cdp-evidence-patterns.md:68-73`; determinism cross-ref `kaidoku-shokunin/corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md:130-131` |
 | **State** — "the DOM has X / the value is Y" | webbridge `snapshot` (accessibility tree, `@e` refs) first; `evaluate` only for refs/attrs it lacks. Raw form: `DOM.getDocument {depth:-1}` + `DOMSnapshot.captureSnapshot` | method + params; `strings` table or resolved excerpts (raw node fields are indices, not values); node count; URL + title | stable at capture; target `id` is per-launch — re-identify the target by URL/title | `corpus/knowledge/webbridge-plugin-anatomy.md:81-83,109-111`; `cdp-evidence-patterns.md:52,66,75,77,87` |
-| **Network** — "the page fetched X / got Y" | webbridge `network` (start\|stop\|list\|detail); a real recorded HAR (Playwright `recordHar` precedent); REA connect-mode `capture:{events:["network"], network:{response_body:true}}` | entries + bodies only if explicitly requested (`response_body` defaults false); dropped count; name the producer channel | time-varying — assert as-of-capture with the snapshot attached | `kaidoku-shokunin/corpus/knowledge/2026-10-14-r10-01-queue-ops.md:23-25`; `kaidoku-shokunin/corpus/knowledge/2026-10-14-r11-01-queue-ops.md:29-32`; tool list `corpus/knowledge/webbridge-plugin-anatomy.md:85` |
+| **Network** — "the page fetched X / got Y" | measured loopback recipe: a per-step CDP `Network.enable` slice on the run's own browser — client events + wire `ExtraInfo` + `finEnc` byte totals + optional `getResponseBody`; with `Fetch.enable` (Request stage) when a pre-settle state must be held. Also: webbridge `network` (start\|stop\|list\|detail); a real recorded HAR (Playwright `recordHar` precedent); REA connect-mode `capture:{events:["network"], network:{response_body:true}}` | entries + bodies only if explicitly requested (`response_body` defaults false in REA; captured bodies pin sha256 against the authored fixture — `async-step-evidence.md` §2); per-request `state` (issued/answered/failed); dropped count; **name the producer channel** (client slice vs server log — they can disagree, and either alone can mislead: an abandoned request has a server 200 line no client ever received, D4) | time-varying — assert as-of-capture with the snapshot attached; the wire path of a repeat is per-run measured (client re-serve / wire-304 variants with identical capture bytes — `multi-step-journey.md` §5 + its round-4 errata; `reports/r4-aud-tab1.md` §2) | `network-evidence-rung.md` §1,§4-§6,§9; `async-step-evidence.md` §2-§3; `kaidoku-shokunin/corpus/knowledge/2026-10-14-r10-01-queue-ops.md:23-25`; `kaidoku-shokunin/corpus/knowledge/2026-10-14-r11-01-queue-ops.md:29-32`; tool list `corpus/knowledge/webbridge-plugin-anatomy.md:85` |
 
 Trap on the network row: a `chromium --log-net-log` netlog is **not** a valid HAR —
 typed refusal `"HAR schema validation failed: required."`
 (`kaidoku-shokunin/corpus/knowledge/2026-10-14-r10-01-queue-ops.md:116,133-135,265`).
+Second trap, measured round 4: **name the producer surface** — the fixture server's log
+and the client slice describe different truths. A client-aborted request can leave a
+server `200` status line for a body no client ever received (D4), and cache-served
+repeats appear in the client with no wire line at all (D6); the wire status lives in
+`responseReceivedExtraInfo`, not in the client `status` (D7).
 Action-effect claims ("clicking X changed Y") capture a **before/after pair** of
 whichever class the effect lives in; `click` is synthetic `el.click()` and `fill` is
 clear-and-insert, so the call's success return is not the evidence
@@ -346,7 +394,9 @@ Egress caveat whenever a network claim needs "no traffic": a loopback debug endp
 not a quiet browser — a fresh headless profile still emitted Google GCM egress, and
 `--disable-background-networking` did **not** stop the GCM registration
 attempts/logging (`corpus/knowledge/cdp-evidence-patterns.md:36`;
-`corpus/knowledge/live-dynamic-capture.md:190-200`).
+`corpus/knowledge/live-dynamic-capture.md:190-200`); round 4 measured the same class
+again — 3 GCM lines in one revalidating run, 0 in six others, absence being
+as-of-capture, not a no-egress proof (`network-evidence-rung.md` §7.2).
 
 ### Record envelope (all classes)
 
@@ -372,9 +422,17 @@ From `corpus/knowledge/cdp-evidence-patterns.md:84-92`:
    `pkill -f` self-matched the invoking shell (`:105`).
 9. Archive or it didn't happen: `/tmp` hashes are only verifiable while `/tmp` lives;
    copy bytes to durable storage before citing (`:92`).
+10. **Network rung (round 4): the per-step slice is itself an artifact.** Record each
+    request's `state` (issued / answered / failed), the wire status **labelled** apart
+    from the client status, `finEnc` byte totals (and the closure arithmetic when bytes
+    are claimed), body sha256 where a body was read, and the producer channel named per
+    fact — client slice vs server log (`network-evidence-rung.md` §9; a slice without
+    those labels is a story, not evidence).
 
 ## Bounded waits — state, never time
 
+- **Settle waits are predicates, not durations** — the section below; the cadences here
+  are the harness envelopes those predicates run inside.
 - **Per-capture waits** (seconds): poll predicates at a tight interval with a timeout
   that fails loudly — measured harness: 50 ms interval, 8 s timeout, last value echoed
   on timeout (`capture.mjs:60-69`); endpoint-up wait 50 × 0.2 s = 10 s envelope
@@ -384,16 +442,101 @@ From `corpus/knowledge/cdp-evidence-patterns.md:84-92`:
   967 B; log `/tmp/tabi-r2-4-poll/poll.log`; recorded `LOG.md:73`): log `elapsed=Ns` +
   condition state every 15 s, exit 0 when met, `TIMEOUT` + exit 2 at `elapsed ≥ 900`
   (15-min cap). Observed landing order in that log: first file visible 405 s,
-  both files 540 s. Scope: this is for waiting on other lanes' outputs — capture timing
-  itself is state-waited, never cadence-waited. The harness is scratch-staged (volatile);
-  re-derive from the shape above if gone.
+  both files 540 s. Round-4 instance: the rung-note poll (15 s cadence, 1200 s cap,
+  corpus path first then `/tmp`; log `/tmp/w4-t4-4-tabi/poll-rung.log`, volatile) found
+  the note at elapsed 935 s of 1200 — the cap still had headroom. Scope: this is for
+  waiting on other lanes' outputs — capture timing itself is state-waited, never
+  cadence-waited. The harnesses are scratch-staged (volatile); re-derive from the shape
+  above if gone.
+
+## Settle-wait discipline — predicates, not durations
+
+"Wait on state, never on time" (`live-dynamic-capture.md:160-162`) is the base rule; this
+section is what the journey and async-step rounds added. A **settle is a predicate**: the
+shutter opens when the run's own predicate holds — derived from the payload the page is
+expected to render, never from a fixed sleep.
+
+- **Two witnesses per settle.** The DOM predicate *and* the network state, both recorded:
+  at the settled shutter the awaited request shows a response in its slice (`answered`
+  state, status 200, encoded byte count, finish event) and the wire log has its one line;
+  at the pre-settle shutter the same request shows no response (`issued`,
+  status null) and the wire log has zero lines — so the pre capture is *certified*
+  pre-settle, not a lucky shot (`async-step-evidence.md` §2; `network-evidence-rung.md`
+  D1 measures the same pair with the payload strings in the settled DOM, and §5.3 shows
+  the pair can collapse when the async work wins the race).
+- **rAF settles paint, not network.** Two rAF frames before a shutter stabilize the
+  raster; they say nothing about in-flight fetches (`capture.mjs:70-71`;
+  `multi-step-journey.md:65-66`).
+- **A pre-settle state must be held or kept, never raced.** Measured window: once
+  released, the async request traversed wire → server → drain in 1–2 ms while one capture
+  costs 57–123 ms — a time-based pre-settle capture would compete for a ≤2 ms window (the
+  un-held variant is inference, not a measured failure: `async-step-evidence.md` §3.2,
+  §8.1). Two measured patterns: **hold** — `Fetch.enable` at Request stage makes the
+  pre-settle state an unbounded stable class; release explicitly and record
+  pause → release → response → ready → shutter (`async-step-evidence.md` §3.4);
+  **race pair** — capture immediately after the action with no wait, then wait on the
+  predicate and capture again, recording both timings (rung-4 journey:
+  click → race 82 ms vs click → settled 82 ms on this host —
+  `/tmp/tabi-r4-1-network/run1/journey.json` `asyncTiming`, volatile).
+- **Keep the pair only when the work outruns the capture window.** Fresh-cache runs
+  collapsed the early/settled pair (the answer landed from cache in ~4 ms and both
+  captures equal the settled bytes, 3/3 runs) — verify with the network slice, not with
+  the predicate's success (`network-evidence-rung.md` §5.3, §3; the predicate itself is a
+  bounded wait that fails loud, not a race guaranteed to separate).
+- **The post predicate is payload-derived** — rendered content, not an XHR flag and not
+  "a moment after release"; the waited surface is the page's own state machine, so a
+  response that never renders fails the poll loudly instead of passing silently
+  (`async-step-evidence.md` §3.3-3.5).
+- **Predicates live in the sha-pinned script** — poll 50 ms cadence / 8 s cap, last value
+  echoed, failure records `error` and exits non-zero: "the capture waited correctly" is
+  re-checkable from artifacts alone (`async-step-evidence.md` §3.1; `capture.mjs:60-69`).
+- **Optimistic DOM ≠ wire truth**: a page can look fine while a subresource 404'd and was
+  canceled, or a request was abandoned with no DOM trace (rung-note D3, D4) — pair the
+  settled capture with the wire witness (§Evidence ladder rung 4).
+
+## Hygiene rules — the session leaves no trace but its evidence
+
+- **Namespace from the first write**: `/tmp/<lane>-r<round>-<seat>-*/`; never bare `/tmp`
+  files, never another lane's dir (this revision's own scratch is `/tmp/w4-t4-4-tabi/`).
+- **Kill by explicit PID; scan by `comm` — never let the pattern match your own command
+  line.** Three measured instances of the class: `pkill -f` killed the invoking shell
+  before its verification ran (`cdp-evidence-patterns.md:105`); a `ps|grep` closure check
+  self-matched on *other text in the same command line* (`live-dynamic-capture.md:182-188`);
+  a second `ps|grep` kill selection matched its own shell and died mid-command, cleanup
+  re-verified afterwards (`reports/r4-aud-tab1.md` §4). An unverified kill is an unknown,
+  not a cleanup.
+- **Ports**: loud free-precheck before launch; loopback binds only; per-session closure
+  proof (`ss` no listener + `curl` exit 7), and a later run that re-binds the same ports
+  after its own precheck proves the earlier session's closure a second time
+  (`live-dynamic-capture.md:175-188`; `network-evidence-rung.md` §8).
+- **Profiles**: a fresh throwaway profile per run under the run's own output dir
+  (`rm -rf` at run start, disposition logged); one owned browser per run; never a user
+  profile (`multi-step-journey.md:53-56,246-247`; `async-step-evidence.md` §1). A
+  fresh-cache pass must be populated in-session (prepass), not by editing headers — and
+  it changes the wire class while capture bytes stay identical (`network-evidence-rung.md`
+  §9.7, §6 D7).
+- **Bounded runs**: drivers and probes under an explicit `timeout`; nothing unbounded.
+- **Secrets shape-only**: session material never content-read; daemon state files and
+  logs by size/mtime only (`hygiene-sweep-r4.md` §1, §4; §Session-material discipline).
+- **Evidence discipline**: record the effective child line, not the typed command; `/tmp`
+  is volatile — archive or it didn't happen (§Runbook step 13).
+- **Deliverable polls**: fixed cadence + hard cap, elapsed logged (§Bounded waits).
+- **Round-4 sweep (as-of-capture, `/tmp`-staged)**: every port rounds 1–3 opened answers
+  no listener (19333, 19411/19412, 19421/19422, 19441, 19471/19472, 19481/19482, 9232,
+  8891); no chromium/http.server survivors; the round-2 daemon pid 3934817 is **gone**
+  (an OOM teardown at ~13:10:59 local / 16:10:59Z of the user session it was a child
+  of; journal-visible, per-process victim list unknown) — the D2 "operator stop owed"
+  item is moot and the stale pid file remains (`hygiene-sweep-r4.md` §2-§4; `webbridge-daemon-disposition.md`
+  §10 erratum; `reports/r4-aud-tab1.md` §6 — three independent reads agree).
 
 ## Webbridge — the user's real browser (when the task needs it)
 
 The bridge drives the user's real browser with their login sessions via a local daemon
 at `http://127.0.0.1:10086`
 (`~/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md:4,11`;
-`kimi.plugin.json:5,20`). Tools (`corpus/knowledge/webbridge-plugin-anatomy.md:79-87`;
+`kimi.plugin.json:5,20`) — **live state, round 4: the daemon is down** (no listener,
+stale pid file; §Approval table's recheck commands, §Hygiene rules).
+Tools (`corpus/knowledge/webbridge-plugin-anatomy.md:79-87`;
 args/returns at the substrate `SKILL.md:15-30`): `navigate`, `find_tab`, `snapshot`
 (`@e` refs), `click`, `fill`, `evaluate`, `cdp`, `screenshot`, `network`, `upload`,
 `save_as_pdf`, `list_tabs`, `close_tab`, `close_session`.
@@ -422,7 +565,7 @@ args/returns at the substrate `SKILL.md:15-30`): `navigate`, `find_tab`, `snapsh
   `curl.exe --data-binary`, deleted after return — inline bodies corrupt non-ASCII
   irrecoverably (substrate `SKILL.md:58-65`; anatomy `:97-100`).
 
-## Determinism boundaries (measured, round 2)
+## Determinism boundaries (measured, rounds 2–4)
 
 **Byte-reproducible in this environment** (verified across two full runs —
 `corpus/knowledge/live-dynamic-capture.md:105-120`): fixture bytes; det-before PNG
@@ -444,6 +587,18 @@ host/build (`live-dynamic-capture.md:140-149`; `cdp-evidence-patterns.md:72` cav
 stands). This closes `cdp-evidence-patterns.md:116` (round-1 §7.8) **for fixtures whose
 rendered state is deterministic**, and refutes extending byte-identity to time-varying
 DOM text (`live-dynamic-capture.md:146-149`).
+
+**Round 4 extends both sides** (`network-evidence-rung.md` §7). Byte-reproducible:
+all six capture artifacts (PNG + shape + struct) across three cold runs on the 3-step
+network-rung journey, and across the fresh-cache runs — plus the normalized per-request
+fact lines (`URL|type|wire|client|finEnc|fail`, 11 rows) byte-identical across
+run1/run2/run3. Not byte-reproducible, newly measured: the collapsed early/settled pair
+under a fresh cache (§5.3), the `:visited` PNG difference with byte-identical DOM
+(D8 — 1,033 pixels localized to the link line, cause is session history), the abort race
+(§6 D4 — both outcomes in the record), and sub-ms event deltas (§5.2 — 38 negative
+`finish − response` pairs; timing claims stay at class granularity ≥1 ms). Browser
+background behaviour stays run-variant: 3 GCM log lines in one round-4 run, 0 in six
+others (§7.2) — absence is as-of-capture, never a no-egress claim.
 
 ## Session-material discipline (shape-only)
 
@@ -523,7 +678,7 @@ Adjacent measured gates A1–A12 (note §4; row-level anchors below):
 | A1 | Daemon `start` (connection-refused) | doc-authorized self-service | idempotent, local-only, no sudo/unit/config edit |
 | A2 | Daemon `stop`/`restart`/`uninstall` | operator-only — never agent-run | ask the user or the Kimi Desktop App |
 | A3 | `/status` probe | iff a daemon this task started | 8-field shape; empty `extension_id` = no-value-present |
-| A4 | Return agent-started daemon to baseline | operator action | no TTL/cleanup/scratch mode exists; round-2 daemon still listening |
+| A4 | Return agent-started daemon to baseline | operator action — **row moot as of round 4** | no TTL/cleanup/scratch mode exists; the round-2 daemon is **gone** (OOM teardown ~13:10:59 local / 16:10:59Z, stale pid file remains — `hygiene-sweep-r4.md` §4; `webbridge-daemon-disposition.md` §10 erratum) |
 | A5 | Trusted input via the `cdp` escape hatch | operator-approval-required | "advanced"; default = hand page back |
 | A6 | Borrowing the operator's viewed tab (`find_tab active:true`) | operator-visible action | borrowed in place, not moved; part of C5 |
 | A7 | Version mismatch | tell the user, never reconcile | update-and-retry |
@@ -560,6 +715,10 @@ Live-state recheck commands before any reuse: `ss -ltnp | grep 10086`, then
 (`webbridge-daemon-disposition.md:163`). Observed response has 8 fields —
 `extension_version`, `port`, `skills`, `tab_id_arg` extra over the 5 documented
 (`webbridge-daemon-disposition.md:122-139`; `references/operations.md:28-34`).
+**Round-4 read (2026-10-14):** the recheck comes up empty — no listener on 10086,
+`/status` refused (`curl` exit 7), `ps -p 3934817` → gone (`hygiene-sweep-r4.md` §4;
+`network-evidence-rung.md` §8); the 8-field sample above is the last live reading, kept
+as record.
 **Supersession (round 2):** the round-1 bullet "the corpus-builder posture leaves
 [start] untouched" is superseded as live posture — start was doc-authorized under the
 round plan and executed; the no-`stop`/`restart`/`uninstall` prohibition stands. Both
@@ -568,10 +727,16 @@ readings of the start authority stay on record for the scribe
 
 ## Staleness watch (post-append line refs)
 
-See §Pins — one block covers all rounds; the round-2 notes' evidence bytes, the round-3
-notes' scratch (`/tmp/tabi-r3-2-spot/`, `/tmp/tabi-r3-4-work/`), and the sufficiency smoke
-(`/tmp/tabi-r3-3-smoke/`) are `/tmp`-staged (volatile) — the archive obligation stands
-(`cdp-evidence-patterns.md:92`). Staleness watch: the three round-1 notes carry
-end-appended errata (2026-10-14, lane TABI-R2-3) — the round-1 line refs cited above sit
-below the append points and remain valid against the current file bytes (pins re-derived
-2026-10-14); one erratum bites record-envelope item 1 (`cdp-evidence-patterns.md:139-150`).
+See §Pins — one block covers all rounds; the round-2/3 notes' evidence bytes, the
+round-3/4 scratch (`/tmp/tabi-r3-2-spot/`, `/tmp/tabi-r3-4-work/`, `/tmp/w4-t41-network/`,
+`/tmp/w4-t4-2-async/`, `/tmp/w4-t4-3-sweep/`, `/tmp/w4-aud-tab1/`, `/tmp/w4-t4-4-tabi/`),
+and the sufficiency smoke (`/tmp/tabi-r3-3-smoke/`) are `/tmp`-staged (volatile) — the
+archive obligation stands (`cdp-evidence-patterns.md:92`), the round-4 rung fixture
+excepted (embedded in `network-evidence-rung.md` §11). Staleness watch: the three round-1
+notes carry end-appended errata (2026-10-14, lane TABI-R2-3) and every round-1/2/3 note
+carries round-4 errata (lane ERR-B, 16:24–16:28Z) plus owner-seat appends; all cited
+line refs sit below those append points and remain valid against the current file bytes
+(pins re-derived 2026-10-14T16:39Z, §Pins). One erratum bites record-envelope item 1
+(`cdp-evidence-patterns.md:139-150`); one round-4 erratum supersedes the r2
+"launch-window listing non-replayable" downgrade (`cdp-evidence-patterns.md` §8 second
+block); and the daemon's live state moved again — see §Approval table and §Hygiene rules.

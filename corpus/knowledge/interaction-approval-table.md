@@ -215,3 +215,28 @@ archive obligation stands, `cdp-evidence-patterns.md:92`).
 ## 8. Errata (append-only — never edit above blocks)
 
 *(none yet)*
+
+Appended 2026-10-14 (tabi round 4, lane ERR-B — errata sweep; re-run transcripts
+staged `/tmp/w4-erb-b-sweep/`, byte-prefix proof `/tmp/w4-erb-b-append-proof/`,
+both volatile). Entries below supersede the placeholder above; nothing above is
+edited. Pre-append sha256 of this file:
+`70ce826303d09526dfdb8c6b0be4137cdb7c8f313ded99ff86d7e26ebbb8a092`. The
+post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, U8] RESOLVED — bins agree against the committed SKILL.md.**
+  The committed revision carries its own re-check (`SKILL.md@452bc514d387`
+  :494-498): C1 autonomous-now; C2/C3/C6 asleep-blocked; C4 refused/operator-
+  routed; C5 approval-required; A1–A12 as listed — agreeing with §1a. §1a's
+  clause "the six classes … have no SKILL.md row yet" described the mid-edit
+  revision (`ea7122d92d7b`, 432 L); the committed revision rows C1–C6
+  (`:512-517`) and A1–A12 (`:523-534`), superseding that clause. The §1a
+  agreement sentence itself stands (re-read at the current pin; no divergence
+  to record).
+- **[2026-10-14, counting re-run] Falsifier held.** 6 C-rows / 12 A-rows still
+  mechanical (`grep -c '^| \*\*C[0-9]'` → 6; `'^| \*\*A[0-9]'` → 12).
+- **[2026-10-14, live state] header datum superseded.** The note's `ss -ltnp`
+  reading (14:41:28Z → daemon pid 3934817 on 10086) was true at capture; at
+  16:21:07Z the daemon is down (pid gone, no listener, `/status` exit 7). No
+  disposition row changes; A4's "round-2 daemon still listening" clause in the
+  SKILL distillation is now stale (SKILL-side fix owed; recorded here for the
+  scribe).

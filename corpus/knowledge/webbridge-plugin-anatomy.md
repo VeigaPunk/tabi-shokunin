@@ -263,3 +263,25 @@ necessarily differs — re-derive with `sha256sum` and refresh the pin.
   corpus builders"); the round-2 plan and disposition seat read it as
   agent-authorized under the plan (`webbridge-daemon-disposition.md` §2).
   Both readings remain on record; flagged for the round scribe.
+
+Appended 2026-10-14 (tabi round 4, lane ERR-B — errata sweep; re-run transcripts
+staged `/tmp/w4-erb-b-sweep/`, byte-prefix proof `/tmp/w4-erb-b-append-proof/`,
+both volatile). Nothing above is edited. Pre-append sha256 of this file:
+`5e0fbe35feea149d6eb22a0cc26c4b0f1f0aebbfec0356b1c02d8f476fae4f5b`. The
+post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, fresh re-run] VERIFIED — §8 anchors held a third round.**
+  `wc -l` → 24 / 158 / 34; sha256 first-12 `e70aff5c40ff` / `84a8e69d04c5` /
+  `b811d9c23dfd`; mtimes still 2026-10-03 18:06:32 -0300; `"version"` `:4`,
+  `"skills"` `:16`, `grep -rn 10086` → 10 hits, first at substrate `SKILL.md:11`.
+- **[2026-10-14, state change] daemon DOWN — the live state recorded in the
+  round-2 erratum above is itself superseded.** 16:21:07Z: `ps -p 3934817` →
+  gone; `ss -ltn` → no listener on 10086; `curl -s
+  http://127.0.0.1:10086/status` → exit 7; `daemon.pid`/`daemon.addr` present
+  but stale (mtimes 10:46:31), `logs/` shapes unchanged. A sibling read-only
+  sweep measured it still LISTEN/running with an 8-field `/status` at
+  16:08:33Z (uptime 8,532 s) — the down event falls inside that 13-minute
+  window. Cause unmeasured (unknown): the stop was owed to the operator
+  (daemon note D2/A4); no in-repo record of who executed it. Re-measure before
+  citing either state (`webbridge-daemon-disposition.md` §10 carries the same
+  row).

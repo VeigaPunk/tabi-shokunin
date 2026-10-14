@@ -176,3 +176,56 @@ necessarily differs — re-derive with `sha256sum` and refresh the pin.
   `browser_ui`(2), as did the wave-1 audit; that sighting rests on CLI output
   truncated at 50 lines and never archived — single-source, non-replayable.
   §7 item 1 (why extension targets vanished) stays open.
+
+Appended 2026-10-14 (tabi round 4, lane ERR-B — errata sweep; re-run transcripts
+staged `/tmp/w4-erb-b-sweep/`, byte-prefix proof `/tmp/w4-erb-b-append-proof/`,
+both volatile). Pre-append sha256 of this file:
+`599e7d323c489e43dc6b00cf481291f8284af9c9c33dd8246de51f406b885154`. The
+post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, fresh re-run] VERIFIED — §4 E9 screenshot determinism held a
+  second round-4 time (sibling sweep 16:08Z; this lane 16:22Z).** `sha256sum
+  /tmp/tabi3-cdp/screenshot.png` → `c1ba9588baa833dd33f9378a10f4f0e9a1cb50e06667ddd99b1198fd58c93b6e`,
+  9,074 B, mtime 09:54:26; `file` + IHDR bytes (0,0,3,12 / 0,0,1,237) → 780×493.
+  `/tmp/tabi3-cdp/` intact: `cdp-probe.mjs` `e6723611…`, `run1.json`,
+  `cdp-summary.json`, `chromium.log`. The round-2 corrections above stand as
+  record.
+- **[2026-10-14, state change] daemon DOWN 16:21:07Z** — supersedes the round-2
+  "daemon now running" supersession as live state (the corrections themselves
+  are record, not state). Cause unmeasured; re-measure before reuse.
+- **[2026-10-14, closure re-run] ports/processes clean.** All 12 audited ports
+  closed, plus round-4 ports 19441/19442 (16:10Z) and 19431/19432 (16:10:34Z)
+  — first-hand `curl` exit 7 each; `pgrep -x chromium`/`node`/`python3` empty.
+  The `pkill -f` self-match calibration stands; this lane's `pgrep -f
+  kimi-webbridge` matched only its own shell (same class, kept).
+
+Appended 2026-10-14 (tabi round 4, lane ERR-B, second block — same sweep;
+AUD-TAB1 finding routed here per `reports/r4-aud-tab1.md` §5.2; transcript
+`/tmp/w4-erb-b-sweep/`, proof `/tmp/w4-erb-b-append-proof/`). Nothing above is
+edited. Pre-append sha256 of this file: `a024e025fa37006c51be87ce6118bc8407e3ec5b3aa00a4025678a977779cf03`.
+
+- **[2026-10-14, audit re-run — supersedes the r2 downgrade] the launch-window
+  extension-targets listing is REINSTATED as replayable.** AUD-TAB1's suite B
+  (`/tmp/w4-aud-tab1/cdp/`, port 19631, `cdp-probe.mjs` sha `00daa888…`) staged
+  a fresh listing: `probe-stdout.json` `listBefore` byType
+  `{background_page:1, page:1, browser_ui:2, service_worker:1}` (count 5), and
+  `Target.getTargets` same field names, still 5 ~2 s later
+  (`reports/r4-aud-tab1.md` §3.7). This lane re-read the staged artifact
+  first-hand — the shape matches the r2-downgraded sighting, so that downgrade
+  ("not backed by a staged artifact … non-replayable") stands only as record of
+  its evidence state, superseded by new staged evidence. §7 item 1 (why the
+  targets vanish later) stays open.
+- **[2026-10-14, audit re-run — confirmations]** 4th independent session for
+  the E9 screenshot (`/tmp/w4-aud-tab1/cdp/screenshot.png` re-hashed by this
+  lane → `c1ba9588…93b6e`, 9,074 B); `frameId == target id` 4th sighting;
+  `backendNodeId` varied again (2), confirming the per-capture rule; `data:`
+  URL read-back percent-encoded; DOMSnapshot 11/18/1 — all PASS
+  (`reports/r4-aud-tab1.md` §3).
+- **[2026-10-14, calibration — second instance of the §6 self-match class]**
+  AUD-TAB1's cdp cleanup used `ps … | grep "[c]hromium" | grep
+  "user-data-dir=/tmp/w4-aud-tab1/cdp/profile"` — the second pattern text
+  occurred in its own shell command line, so the selection matched the invoking
+  shell and killed it mid-command; the chromium PIDs in the same list died too,
+  and cleanup was re-verified afterwards (no survivor, port closed, curl exit
+  7). Rule of record unchanged: an unverified kill is an unknown, not a
+  cleanup (`:105`), and the pattern must not occur in the invoking command line.

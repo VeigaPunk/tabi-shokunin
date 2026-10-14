@@ -80,3 +80,4 @@ per `plans/round-3.plan.md`.
   anchor recheck riding the same pass and the SKILL §Pins line-count nit
   (executor note "297" → 298) corrected by the owning seat.
 - **retired:** none — no axis saturated, none a wrong fit.
+| 4 | coverage | round-3 state | network-evidence rung + async-step + hygiene sweep (webbridge daemon found OOM-dead — environment event recorded, operator return-to-baseline still owed) | wave-4 32-lane; AUD-TAB1 |

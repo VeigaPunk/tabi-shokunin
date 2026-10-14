@@ -236,3 +236,27 @@ necessarily differs — re-derive with `sha256sum` and refresh the pin.
   `/tmp/tabi-audit2-cdp/`, and round 2 added `/tmp/tabi-r2-1-capture/`); U5
   (do they outlive the probation wave?) not yet falsified — the /tmp
   exposure remains.
+
+Appended 2026-10-14 (tabi round 4, lane ERR-B — errata sweep; re-run transcripts
+staged `/tmp/w4-erb-b-sweep/`, byte-prefix proof `/tmp/w4-erb-b-append-proof/`,
+both volatile). Pre-append sha256 of this file:
+`70d1d455ee188f8f6ff1759bf6585042b5970dcc7d76af8f755fcc7cecbdf57a`. The
+post-append hash necessarily differs — re-derive with `sha256sum`.
+
+- **[2026-10-14, fresh re-run] VERIFIED — the round-2 re-runs held.** chromium
+  `152.0.7977.82-1` (`pacman -Q` + `--version`); `xdg-settings
+  get default-web-browser` → `chromium.desktop`; `~/.config/chromium-flags.conf`
+  4 lines; Brave dir = `NativeMessagingHosts` only (fourth consecutive hold);
+  `~/.mozilla/` = NMH only; Kimi extension manifest `:36` name `Kimi`, `:45`
+  version `2.0.23`; NMH json `:4` `path`, `:6` `allowed_origins`; `/opt` =
+  `1Password claude-code containerd intel packages spotify`.
+- **[2026-10-14, state change] daemon DOWN (16:21:07Z) — supersedes the
+  round-2 LISTEN supersession recorded above.** pid 3934817 gone, port 10086
+  closed, `/status` exit 7 (it answered `running:true` at a sibling sweep's
+  16:08:33Z probe). Pointer files stale at 10:46:31; cause unmeasured.
+- **[2026-10-14, status] U5 grows, still open.** Scratch census now also
+  includes round-3 groups (`/tmp/tabi-r3-1-journey`, `-r3-2-spot`,
+  `-r3-3-anchors`, `-r3-3-smoke`, `-r3-4-work`, `/tmp/tabi-b1-r3b-*`) and
+  round-4 groups (`/tmp/tabi-r4-1-network`, `-r4-2-async`, `-r4-3-sweep`); all
+  present at 16:22Z — U5 (do they outlive the wave?) not falsified; every group
+  still carries the archive obligation (`cdp-evidence-patterns.md:92`).
