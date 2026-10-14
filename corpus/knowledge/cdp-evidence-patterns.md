@@ -118,3 +118,61 @@ Calibration — **the `pkill -f` self-match**: an earlier cleanup attempt used `
 ## 8. Errata (append-only — never edit above blocks)
 
 *(none yet)*
+
+Appended 2026-10-14 (tabi round 2, lane TABI-R2-3; command transcripts staged
+at `/tmp/tabi-r2-3-verify/`, volatile). Entries below supersede the
+placeholder above; nothing above is edited. Pre-append sha256 of this file:
+`034b1e53b004ed5366530d286cf36deca6681d7f726940ff4a06e16f690cfbb0` (= the
+`SKILL.md:23-27` pin `034b1e53b004` at append time). The post-append hash
+necessarily differs — re-derive with `sha256sum` and refresh the pin.
+
+- **[2026-10-14, TABI-AUDIT2 wave-1 re-run + primary-record diff] CORRECTED —
+  root `backendNodeId` is per-capture, not 2.** §4 E10 (:75) prints the
+  `DOM.getDocument` root as `{nodeId:1, backendNodeId:2, …}`. The staged
+  records disagree within the same session: `run1.json` root `backendNodeId`
+  = 2 (12:54:11Z) vs `cdp-summary.json` = 1 (12:54:26Z); the wave-1 audit
+  (fresh browser, port 19441) measured 1 again
+  (`/tmp/tabi-audit2-cdp/audit-summary.json` → `getDocumentRoot.backendNodeId:
+  1`). Correct reading: `nodeId:1` / `nodeType:9` / `nodeName:"#document"`
+  held in all records; record `backendNodeId` per capture, never key on it.
+  The rest of E10 (root key list, 11-node walk) held.
+- **[2026-10-14, primary-record diff] CORRECTED — §5.1's "the target's `url`
+  field preserves it verbatim" is wrong as stated.** The original capture's
+  `url` / `location.href` read back percent-encoded —
+  `data:text/html;charset=utf-8,%3C!doctype%20html%3E…` (`run1.json`
+  `listAfter.probeTarget.url`) — because the recipe navigated with
+  `'data:text/html;charset=utf-8,' + encodeURIComponent(doc)`
+  (`/tmp/tabi3-cdp/cdp-probe.mjs:5`). The wave-1 audit navigated the raw
+  `data:text/html,<…>` form and read that raw form back
+  (`audit-summary.json` → `urlPreservedVerbatim:true`). Correct rule: `url`
+  holds the URL as navigated **after browser normalization** — record the
+  as-read-back string, and for `data:` URLs the exact navigation input too.
+  The "(E7 …)" cite was also off: E7 is the title cross-check (:52).
+- **[2026-10-14, wave-1 audit] RE-VERIFIED — screenshot determinism held a
+  third time, cross-session.** `sha256sum /tmp/tabi3-cdp/screenshot.png` →
+  `c1ba9588baa833dd33f9378a10f4f0e9a1cb50e06667ddd99b1198fd58c93b6e`
+  (= §4 E9 value), 9,074 B, IHDR 780×493; the wave-1 audit's independent
+  session produced the byte-identical PNG (same 12,100-char base64, same
+  sha256, `screenshotsByteIdentical:true`). The environment-scoped claim
+  (:72) stands.
+- **[2026-10-14, records] §7 item 5 extended — `frameId == target id` now
+  observed three times.** `run1.json` `runtimeCrossCheck.navFrameId` == page
+  target id `38204F3DC6886277C5D400107604A825`; the wave-1 audit re-observed
+  `frameIdEqualsTargetId:true` in a separate session. The "seen once" datum
+  is superseded; still build-scoped (chromium 152.0.7977.82) and the general
+  claim still unproven.
+- **[2026-10-14, wave-2 evidence] §7 item 7 and item 8 narrowed by the
+  round-2 capture note (pointer).** `--disable-background-networking` under
+  the round-2 flags did not stop GCM registration attempts/logs (client-log
+  observation only) — `live-dynamic-capture.md` §6. Byte-determinism beyond
+  static content: demonstrated on an HTTP-served fixture with JS hydration
+  **when the rendered state is deterministic**, refuted for time-varying DOM
+  text (`live-dynamic-capture.md` §3, which also gives a viewport-pin bypass
+  for §7.2). §7.2 itself stays unexplained.
+- **[2026-10-14, evidence review] CALIBRATION — the "earlier launch-window
+  listing" (§2, :50; extension `background_page` + `service_worker` sighting)
+  is not backed by a staged artifact.** Both staged listings
+  (`run1.json` / `cdp-summary.json` `listBefore`) show only `page`(1) +
+  `browser_ui`(2), as did the wave-1 audit; that sighting rests on CLI output
+  truncated at 50 lines and never archived — single-source, non-replayable.
+  §7 item 1 (why extension targets vanished) stays open.

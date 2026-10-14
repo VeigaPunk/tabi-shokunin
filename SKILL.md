@@ -18,13 +18,17 @@ counts. Nothing here is oral knowledge.
   Observation / inference / unknown stay separate.
 - Errata append-only; rejections kept.
 
-## Sources pinned (round-1 notes)
+## Sources pinned (round-1 notes; refreshed 2026-10-14, TABI-SCRIBE, after the round-2 errata appends)
 
 sha256 first 12 (`sha256sum corpus/knowledge/*.md`, 2026-10-14):
-`webbridge-plugin-anatomy.md` `49f0735b0594` ·
-`browser-surface-census.md` `9e4d69dcd658` ·
-`cdp-evidence-patterns.md` `034b1e53b004`. A hash change means the citations
-below are stale — re-verify against the note before reusing.
+`webbridge-plugin-anatomy.md` `5e0fbe35feea` ·
+`browser-surface-census.md` `70d1d455ee18` ·
+`cdp-evidence-patterns.md` `599e7d323c48`. A hash change means the citations
+below are stale — re-verify against the note before reusing. History: the
+round-1 pins `49f0735b0594`/`9e4d69dcd658`/`034b1e53b004` matched the
+committed round-1 blobs — scribe re-derived all three from `7961735` — and the
+round-2 errata are pure appends on top (each errata header records its
+pre-append hash; nothing above an append point was edited).
 
 ## Interaction-evidence decision table
 
@@ -132,3 +136,108 @@ From `corpus/knowledge/cdp-evidence-patterns.md:84-92`:
   `stop`/`restart`/`uninstall`
   (`~/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md:24-26`;
   `corpus/knowledge/webbridge-plugin-anatomy.md:133`).
+
+## Sources pinned (round-2 notes)
+
+sha256 first 12 (`sha256sum corpus/knowledge/*.md`, 2026-10-14):
+`live-dynamic-capture.md` `56224aa88430` · `webbridge-daemon-disposition.md`
+`9240f1d66a8c`. Same staleness rule as the round-1 block: a hash change means
+the citations below are stale — re-verify against the note before reuse. Both
+notes' evidence bytes are `/tmp`-staged (`corpus/knowledge/live-dynamic-capture.md:1`)
+— the archive obligation stands (`corpus/knowledge/cdp-evidence-patterns.md:92`).
+
+Staleness watch — the three round-1 notes carry end-appended errata
+(2026-10-14, lane TABI-R2-3): their `:23-27` pins are stale until the
+integrating round refreshes them; the round-1 line refs still cited below all
+predate the append points. One erratum bites this section directly:
+`corpus/knowledge/cdp-evidence-patterns.md:139-150` corrects record-envelope
+item 1 — `url` holds the URL as-normalized, so record the as-read-back string
+alongside the exact navigation input.
+
+## Page-claim evidence ladder (round 2)
+
+Per-claim-class capture mechanics stay in the decision table above (`:29-48`);
+this ladder orders how strong the evidence under a claim is. Climb to the rung
+the claim needs — and never present a lower rung as support for a higher one.
+Every rung still carries the 9-item record envelope
+(`corpus/knowledge/cdp-evidence-patterns.md:79-92`).
+
+| Rung | Evidence captured | Supports | Measured anchor |
+|---|---|---|---|
+| 1 — **static bytes** | sha256-identical artifact, plus a re-capture proving the capture operation idempotent | "the page renders X" when the content is frozen | det-before PNG byte-identical within a run (350 ms apart) and across two independent server+browser processes — the capture is idempotent on a quiescent page (`corpus/knowledge/live-dynamic-capture.md:66-67,107-110`) |
+| 2 — **dynamic capture** | before/after pair under sha-pinned methodology and state-waits; the volatile class captured too | action-effect claims — "clicking X changed Y"; JS-produced states | det-after PNG byte-identical across runs when the resulting state is fixed, even after JS-driven DOM mutation plus real input; DOM-shape delta 55→65 nodes fully accounted (`corpus/knowledge/live-dynamic-capture.md:68,96-101,113-114`) |
+| 3 — **multi-signal** | two or more independent signals agree (screenshot read back visually, DOM shape, protocol metadata; two full independent runs) | claims where a single channel alone could be wrong or stale | visual read-back matches the authored fixture; every fixed-state artifact agreed across two full runs; shape *struct* survives liveness while shape *text* does not (`corpus/knowledge/live-dynamic-capture.md:60-73,91-94,124-127`) |
+
+Capture rules earned this round (`corpus/knowledge/live-dynamic-capture.md:151-173`):
+
+- Split the page by determinism class before capturing; freeze what can be
+  frozen, but capture the volatile class too — a determinism claim without its
+  counterexample is unfalsifiable (`:156-159`).
+- Wait on state, never on time; the wait predicates live in the sha-pinned
+  script, so "the capture waited correctly" is itself re-checkable (`:160-163`).
+- Pin methodology bytes (fixture + capture script + driver) so "same
+  methodology" is a sha256 verification, not a promise (`:52-56,164-165`); pin
+  the viewport explicitly via `Emulation.setDeviceMetricsOverride` so
+  screenshots carry their own geometry (`:44-50,166-167`); idempotence-check
+  the capture operation (`:167-168`).
+- Keep the differing pair as evidence: document the boundary by measurement on
+  both sides (`:172-173`).
+
+## Determinism boundaries (measured, round 2)
+
+**Byte-reproducible in this environment** (verified across two full runs —
+`corpus/knowledge/live-dynamic-capture.md:105-120`): fixture bytes; det-before
+PNG (within-run and across runs); det-after PNG when the resulting state is
+fixed; DOM-shape (full text for deterministic captures, struct-only for
+*every* capture, including the live page); protocol metadata (Browser
+`Chrome/152.0.7977.82`, Protocol-Version `1.3`).
+
+**Not byte-reproducible** (`corpus/knowledge/live-dynamic-capture.md:122-138`):
+screenshots of a live page (nd1 vs nd2 differ within a run; nd1 differs across
+runs — shape *text* differs, *struct* does not); session slots per launch
+(target ids, browser ws uuids — match targets by URL/type, never id,
+`corpus/knowledge/cdp-evidence-patterns.md:48`); wall-clock stamps; browser
+background behaviour (the two runs' GCM traces differ under identical flags).
+
+**The boundary rests on**: same chromium build, same effective flag set
+(record the child line), same viewport override, same fixture bytes, same
+capture parameters, same wait predicates, same host font rendering —
+environment-scoped; not measured beyond this host/build
+(`corpus/knowledge/live-dynamic-capture.md:140-149`;
+`corpus/knowledge/cdp-evidence-patterns.md:72` caveat stands). This closes
+`corpus/knowledge/cdp-evidence-patterns.md:116` (round-1 §7.8) **for fixtures
+whose rendered state is deterministic**, and refutes extending byte-identity
+to time-varying DOM text (`corpus/knowledge/live-dynamic-capture.md:146-149`).
+
+No-egress claims: `--disable-background-networking` was tested this round and
+did **not** stop the GCM registration machinery from attempting/logging
+traffic — the flag alone is not sufficient for a no-egress claim
+(`corpus/knowledge/live-dynamic-capture.md:190-200`; narrows
+`corpus/knowledge/cdp-evidence-patterns.md:115`).
+
+## Approval discipline — what requires the awake operator
+
+| Action | Authority | Anchor |
+|---|---|---|
+| Start the webbridge daemon (connection refused) | **Self-service — authorized by the substrate's own docs**; idempotent, local-only, no sudo / systemd unit / config edit | `~/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md:11-13`; `corpus/knowledge/webbridge-daemon-disposition.md:38-42,52-55,160` |
+| `stop` / `restart` / `uninstall` the daemon | **Operator only — agent blocked**: never agent-run; ask the user to run `~/.kimi-webbridge/bin/kimi-webbridge stop` by hand (or manage it via the Kimi Desktop App) | `operations.md:24-26`; `corpus/knowledge/webbridge-daemon-disposition.md:43-45,161` |
+| Return an agent-started daemon to baseline | **Operator action** — the docs define no TTL / cleanup / scratch mode for an agent-started daemon; the one started this round (pid 3934817, `127.0.0.1:10086`) is left running and recorded as a state change | `corpus/knowledge/webbridge-daemon-disposition.md:56-62,165-169` |
+| External-site interaction | **Operator approval required**; approval was absent this round (operator asleep), so capture was loopback-only by rule | `plans/round-2.plan.md:8-9`; `corpus/knowledge/live-dynamic-capture.md:5-7,216-217` |
+| Trusted input via the `cdp` escape hatch (sites checking `isTrusted`) | Advanced; operator approval | `~/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md:146` |
+| Driving the user's browser via webbridge | **Condition, not authority**: requires the extension connected (`extension_connected:true`); with none attached the daemon cannot drive the user's browser (no browser main process observed; causal reading [inference]) | `corpus/knowledge/webbridge-daemon-disposition.md:133-134,145-150,162` |
+| Reusing daemon state in a later round | Recheck live state first (listener scan + `/status`), then reuse; no unit, no autostart — lifespan bounded by the user session [inference, medium] | `corpus/knowledge/webbridge-daemon-disposition.md:107-112,163` |
+
+- Live-state recheck commands before any reuse:
+  `ss -ltnp | grep 10086`, then `curl -s http://127.0.0.1:10086/status`
+  (`corpus/knowledge/webbridge-daemon-disposition.md:163`).
+- `/status` probing: only a daemon this task itself started is probed; the
+  observed response has 8 fields — `extension_version`, `port`, `skills`,
+  `tab_id_arg` extra over the 5 documented (`operations.md:28-34`); an empty
+  `extension_id` is "no value present", never session material
+  (`corpus/knowledge/webbridge-daemon-disposition.md:122-139`).
+- **Supersession (round 2):** the round-1 bullet "the corpus-builder posture
+  leaves [start] untouched" (`:129-134` above) is superseded as live posture —
+  start was doc-authorized under the round plan and executed; the
+  no-`stop`/`restart`/`uninstall` prohibition stands. Both readings of the
+  start authority stay on record for the scribe
+  (`corpus/knowledge/webbridge-daemon-disposition.md:63-69`).

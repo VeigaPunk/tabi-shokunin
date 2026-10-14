@@ -222,3 +222,44 @@ failure modes rather than mere ergonomics.
 ## Errata (append-only — never edit above; append dated blocks below)
 
 - (none yet)
+
+Appended 2026-10-14 (tabi round 2, lane TABI-R2-3; command transcripts staged
+at `/tmp/tabi-r2-3-verify/`, volatile). Entries below supersede the
+placeholder above; nothing above is edited. Pre-append sha256 of this file:
+`49f0735b0594c77a2c352d21cf71edc94cb742b16f972202acacaf4f48167b7a` (= the
+`SKILL.md:23-27` pin `49f0735b0594` at append time). The post-append hash
+necessarily differs — re-derive with `sha256sum` and refresh the pin.
+
+- **[2026-10-14, fresh re-run] VERIFIED — §8 anchors + identity table held.**
+  `wc -l` → 24 / 158 / 34 (216 total); sha256 first-12 `e70aff5c40ff` /
+  `84a8e69d04c5` / `b811d9c23dfd`; mtimes still 2026-10-03 18:06:32 -0300;
+  `grep -n '"version"'` → :4; `grep -n '"skills"'` → :16; `grep -rn 10086`
+  → 10 hits, first SKILL.md:11. This records a re-verification date later
+  than capture (the SCORECARD freshness ceiling noted "nothing re-verified on
+  a date later than capture").
+- **[2026-10-14, cross-note] U3 partially RESOLVED.** U3 put extension
+  presence/id/version unverified; the round-1 census measured them:
+  `fldmhceldgbpfpkbgopacenieobmligc` "Kimi" `2.0.23_0` under
+  `~/.config/chromium/Default/Extensions/…`
+  (`browser-surface-census.md:69`); re-checked today — manifest.json:36
+  `"name": "Kimi"`, :45 `"version": "2.0.23"`. The extension→daemon
+  handshake remains unverified (daemon was down at capture; the round-2
+  disposition probe reports `extension_connected:false` —
+  `webbridge-daemon-disposition.md` §5). U3's "and version are unverified"
+  clause is discharged; "presence ↔ live connection" is not.
+- **[2026-10-14, state change] §6 O4 SUPERSEDED AS LIVE STATE — daemon now
+  running.** O4 ("daemon currently not running") was true at capture (09:54).
+  A doc-authorized `start` (`operations.md:11-13`) executed 2026-10-14
+  13:46:31Z → pid 3934817 on `127.0.0.1:10086`, left running; `daemon.pid`
+  rewritten (37800 → 3934817) and `logs/daemon.log` rotated (19,532 B →
+  `.prev`, fresh 2,281 B). Trace and disposition rows:
+  `webbridge-daemon-disposition.md` §4/§6 (its §10 already flags this
+  supersession). §6 stands as-of-capture only; re-measure before citing it
+  as current. New CLI surface observed in the binary's help: `status`,
+  `logs`, `upgrade`, `install-skill`, `run`; the no-agent
+  `stop`/`restart`/`uninstall` rule is unchanged (`operations.md:26`).
+- **[2026-10-14, reading tension — pointer, not reconciled] §5's scope note
+  (:136-138) reads the `start` authorization as operator-scoped ("not for
+  corpus builders"); the round-2 plan and disposition seat read it as
+  agent-authorized under the plan (`webbridge-daemon-disposition.md` §2).
+  Both readings remain on record; flagged for the round scribe.

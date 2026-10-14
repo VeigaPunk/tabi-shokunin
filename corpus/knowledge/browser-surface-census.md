@@ -196,3 +196,43 @@ O1–O8 are the anchored statements in §1–§4 (each row cites path or command
 ## 6. Errata
 
 (Append-only. No corrections yet.)
+
+Appended 2026-10-14 (tabi round 2, lane TABI-R2-3; command transcripts staged
+at `/tmp/tabi-r2-3-verify/`, volatile). Entries below supersede the
+placeholder above; nothing above is edited. Pre-append sha256 of this file:
+`9e4d69dcd65838387bd2077aa5896005c21e5fabfcb635404a4672380df2becc` (= the
+`SKILL.md:23-27` pin `9e4d69dcd658` at append time). The post-append hash
+necessarily differs — re-derive with `sha256sum` and refresh the pin.
+
+- **[2026-10-14, fresh read] CORRECTED — the `operations.md` cite is off by
+  4 lines.** §3.1 (:123-124) and I2 (:178) cite `operations.md:22-23` for the
+  extension install paths / the Web Store URL that carries id
+  `fldmhceldgbpfpkbgopacenieobmligc`. Actual file (34 lines, sha256
+  unchanged): install paths are `:17-19`; the Chrome Web Store URL containing
+  the id is `:18`; `:22` is the 中文 help URL and carries no extension id.
+  The substance (the id appears in the Web Store URL) holds — the anchors
+  were wrong.
+- **[2026-10-14, re-run] RE-VERIFIED.** Anchors re-ran clean: chromium
+  `152.0.7977.82-1` (`pacman -Q chromium` → `local/chromium
+  152.0.7977.82-1`); `xdg-settings get default-web-browser` →
+  `chromium.desktop`; `~/.config/chromium-flags.conf` 4 lines; Brave shell =
+  `NativeMessagingHosts/` only (§1.2/:40 rejection held); `~/.mozilla/` = NMH
+  only, no profile dir; Kimi extension
+  `.../fldmhceldgbpfpkbgopacenieobmligc/2.0.23_0/manifest.json:36` name
+  `Kimi`, `:45` version `2.0.23`; NMH json `:2`/`:4`; `config.toml:1285-1293`
+  rea block; `/opt` = `1Password claude-code containerd intel packages
+  spotify`. As-of-capture figures (du, mtimes, `Cookies` sizes, live pids)
+  were not re-measured and stay capture-scoped.
+- **[2026-10-14, state change] SUPERSEDED AS LIVE STATE — the daemon-down
+  reading (§3.3 :136; `NO-LISTENER-10086`) and §4's live chromium snapshot.**
+  A doc-authorized `start` at 13:46:31Z by the sibling round-2 seat put pid
+  3934817 on `127.0.0.1:10086`, left running
+  (`webbridge-daemon-disposition.md` §4/§6); `ss -ltn` at re-verify time
+  shows `127.0.0.1:10086` LISTEN, and no chromium process survives. The
+  round-1 rows stand as-of-capture; re-measure before reuse (§4's own header
+  says re-check).
+- **[2026-10-14, re-run] U5 partial status.** `/tmp/tabi3-cdp/` and
+  `/tmp/r10-01-chromium-profile/` still exist (the wave-1 audit added
+  `/tmp/tabi-audit2-cdp/`, and round 2 added `/tmp/tabi-r2-1-capture/`); U5
+  (do they outlive the probation wave?) not yet falsified — the /tmp
+  exposure remains.
