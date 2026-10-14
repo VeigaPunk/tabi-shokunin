@@ -944,3 +944,115 @@ Pins cited here are as-of-write and provisional until the archive keeps pace
 (`cdp-evidence-patterns.md:92`): synthesis note `7725ee421716` (254 `wc -l`,
 untracked), audit report `ea4b16a4a844` (260 `wc -l`), archive receipt
 `b41c2f6fb5a4` (180 `wc -l`). This block records the append; it edits nothing.
+
+## Errata — round-8 append (stateful evidence + carried-debt pointers; append-only; never edit above)
+
+Appended 2026-10-14 by lane **B8-4** (round-8 SKILL distillation; assignment:
+append the stateful-evidence pattern + the carried-debt closure pointers, citing
+`corpus/knowledge/stateful-fixture-evidence.md` and
+`corpus/knowledge/carried-debt-closure-r8.md`). Nothing above is edited;
+pre-append sha256 of this file: `8874306672b65d8dcf53b9cb4a237e295ed4834eb9147a19359683ded9c74abd`
+(`945` `wc -l`). The post-append hash necessarily differs — re-derive with
+`sha256sum`. This block is additions-only: the file gained three sections plus
+this block at EOF; no pre-existing line's text is altered. Method: read-only over
+`corpus/knowledge/*.md`, `corpus/evidence/`, `corpus/lessons/`, the round-8 plan
+and record draft, the archive receipts, and `.ufo/l0-questions.md`; no browser
+launched, no server run, no external site, no session material read. Pins cited
+here are as-of-write: stateful note `e89bc89bff38` (773 `wc -l`; untracked,
+moving in-wave — re-derive), carried-debt closure note `48dc8db69c57` (149
+`wc -l`; untracked), archive receipt r8 `0587605db913` (191 `wc -l`; committed
+`b377007`) — provisional until the archive keeps pace
+(`cdp-evidence-patterns.md:92`). This block records the append; it edits nothing.
+
+### Stateful evidence — server-side state and the non-idempotent step under failure (round 8)
+
+The §"Layer routing" section above routes GET-shaped claims and flags the
+state-changing class as unmapped; the loopback class now has a measured case:
+`corpus/knowledge/stateful-fixture-evidence.md` (**`e89bc89bff38`**; lane B8-1;
+§2 embeds its fixture verbatim). It closes round-7's deferred L1a–L1e
+state-changing matrix **for the loopback class** (`plans/round-7-record-draft.md`
+§3 :119-123) and measures round-8's own L1 cells — 14 cells × 2 cold reps, 0
+journey errors, closure proven per run. Distillation (rules R1–R10, each with its
+falsifier, are §10; §6–§9 are the records):
+
+- **Server-side state is the ground truth**; read it through a quiet state
+  surface before/after the cell (a fresh process's empty ledger also proves the
+  after-state is this run's). Multi-visit: page `data-visits` 1→2, wire
+  `cookieHeaderFields` 0→1, ledger `cookie=absent`→`present` (§4).
+- **A cookie census is per-surface and shape-only** — server `Set-Cookie`, CDP
+  store, page JS (HttpOnly: `len 0`), curl jar; cross-surface identity claims
+  need the server's ledger (§5, R2).
+- **Redirect-after-POST**: the client-side status is the terminus (200); the
+  POST's own 303/307 lives at wire + server log; 307 preserves method and body
+  end-to-end (8 B delivered), 303 changes to GET (§6, R3).
+- **One-time token**: consumption is server-decided; a replay is refused with no
+  state change; the client sees only the status (§6, R4).
+- **An abandoned non-idempotent step has no client-side outcome**: three server
+  architectures — apply-before-hold / apply-late / guard-skip — produce identical
+  client observations (abort + nothing) and different server states (`counter 1` /
+  `counter 1` / `counter 0`; token consumed / consumed / unused). Whether it
+  applied is a server fact, not a protocol fact (§7.1, R5/R6) — this extends rung
+  D3/D4.
+- **A client abort stops a redirect chain at the hop in flight**; earlier hops
+  may already have been delivered, and the terminus stays replayable with state
+  unchanged (§7.2, R7/R8).
+- **Client-script aborts cancel; CDP navigation commands at this timing did
+  not** — 10/10 `AbortController` runs abort-marked vs 0/8 `Page.stopLoading` /
+  second-`navigate` runs; negative result kept, mechanism unexamined (U4) (§7.3,
+  R10).
+- **Duplicate submission**: one wins, one is refused; the observable outcome is
+  stable while the server's internal event order flips across cold reps — the
+  matrix's one deliberate non-determinism class (§6, R9).
+- **Replay contract**: fresh state root per run; byte-identity holds on derived
+  facts (ledger 13/14 cells, 20/20 PNGs, normalized logs 14/14, digests 13/13)
+  and does not hold on raw timings or CDP inter-kind event order (§9).
+
+§11 names the unmeasured corners (guard race, replay-after-skip, token reuse
+after a skipped apply, CDP cancel semantics, refusal-code generality — U1–U10)
+and the note's own archive debt: its fixture + 32 run dirs live in
+`/tmp/w8-tabi-b81/` and must be archived before any hash there is durable. **Do
+not route real-site state-changing claims by this note** — loopback only, and the
+never-set / default-deny boundary stands (`PROVINCE.md:15-19`).
+
+### Harness-archive census — round-8 update (supersedes the round-7 block)
+
+`corpus/evidence/` now holds **35 group dirs / 35 `MANIFEST.txt` / 1,416 evidence
+files + 35 manifests = 1,451 files / 9,222,920 B** (`find corpus/evidence
+-maxdepth 1 -mindepth 1 -type d | wc -l`; `find corpus/evidence -type f | wc -l`;
+`du -sb corpus/evidence` — re-derived at this write) — the round-7 28-group census
+plus the round-8 tranche's 7 groups / 41 files / 207,889 B
+(`archive-receipt-r8.md` `0587605db913`, 191 `wc -l`, committed `b377007`):
+`w5-tabi-b53` · `w5-aud-b5-work` · `w5-aud-b5-evidence` · `w6-tabi-b62` ·
+`w7-b71-synth` · `w7-aud-b7-scratch` · `w7-aud-b7-checks`. Receipt checks re-ran
+after landing: manifest self-check **41/41 OK**, copy fidelity **0 diff lines**
+on all seven groups; verify from a group dir with `sha256sum -c MANIFEST.txt`.
+Superseded, append-only: the round-7 census block above ("28 group dirs … 1,375
+non-manifest files / 8,861,433 B") and the §"Harness archive" subsection's "25
+groups / 1,010 files / 6,780,293 B" — the receipt is the citation authority for
+the counts.
+
+Carry-overs: **F1 closed by erratum, not by editing archived bytes** — see
+`carried-debt-closure-r8.md` §1 (ER-F1): the stale in-group `methodology-sha.txt`
+pair and the replay-edit delta; the manifest and the owning note remain the
+authority (83/83 `sha256sum -c` OK). **F3 closed** (the r5 peer groups are
+archived). **U2 open**: plan-draft-only scratch stays unarchived per the
+receipt's stated selection rule — a record-owner's call.
+
+### Carried-debt closure pointers (round 8)
+
+Where each carried debt's status is measured; statuses stamped at this append —
+re-derive at record time:
+
+| carried item | closure surface | status at this append |
+|---|---|---|
+| round-6/7 `/tmp` tranche + receipt | `corpus/evidence/**` + `archive-receipt-r8.md` | **closed** — 7 groups / 41 files; 41/41 manifest OK |
+| F1 — stale in-group pin file | `carried-debt-closure-r8.md` §1 (ER-F1) | **closed by erratum**; archived bytes untouched |
+| round-7 L1 state-changing step | `stateful-fixture-evidence.md` §6–§9 | **closed for the loopback class** (this round) |
+| round-8 L1 non-idempotent step under failure | `stateful-fixture-evidence.md` §7–§10 | **measured**; U1–U10 named |
+| round-6 L1 matrix (wire-class / cache-revalidation) | `carried-debt-closure-r8.md` §2 | **open** at this append (not the stateful note's subject) |
+| README header + coverage rows | `corpus/README.md` | **owed** — header still round-3 (`e156bb99af2c`, 59 lines) |
+| SCORECARD r4–r8 verdicts / axes / move-log | `SCORECARD.md` | **owed** — r1–r3 tables only (`d2e6895264c6`, 86 lines) |
+| lessons (one `## Gate` each) | `corpus/lessons/` | **7 files** (`round-1..7.md`, re-derived at this append) |
+| packet cold-read verdict | `operator-approval-request.md` §6 (`:100`) | `[unknown]` since round 5 |
+| packet note-pin block (9/9 stale) | `packet-readiness-r7.md` §2 (re-bound values) | open — owning record's call |
+| clause (c) strictly-later-date §Pins pass | the §Pins errata block (this file) | **carried** — `date -u +%F` → 2026-10-14; earliest 2026-10-15; the witness is a dated in-repo block whose commit date is ≥ 2026-10-15 |
