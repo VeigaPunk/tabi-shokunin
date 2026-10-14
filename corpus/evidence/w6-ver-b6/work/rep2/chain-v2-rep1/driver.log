@@ -1,0 +1,85 @@
+== run chain-v2-rep1 mode chain start 2026-10-14T17:45:25Z
+== UID 1000 host plazir27 cwd /tmp/w6-ver-b6/work/rep2
+== port precheck (must be empty)
+ports free
+== fresh profile
+== start server A (site-a, port 19841, hop target -> B)
+http-a.pid=2849391
+== start server B (site-b, port 19843)
+http-b.pid=2849393
+server-a ready code: 204
+server-b ready code: 204
+== start chromium (fresh profile)
+chromium.launch.pid=2849542
+== listening lines (evidence)
+LISTEN 0      5          127.0.0.1:19841      0.0.0.0:*    users:(("python3",pid=2849391,fd=3))
+LISTEN 0      5          127.0.0.1:19843      0.0.0.0:*    users:(("python3",pid=2849393,fd=3))
+LISTEN 0      10         127.0.0.1:19842      0.0.0.0:*    users:(("chromium",pid=2849542,fd=77))
+== effective child process line (evidence)
+chromium pids: 2849542
+2849563
+2849564
+2849576
+2849597
+2849599
+2849619
+2849643
+2849658
+2849677
+2849681
+2849717
+2849542 2849380 /usr/lib/chromium/chromium --ozone-platform=wayland --ozone-platform-hint=wayland --enable-features=TouchpadOverscrollHistoryNavigation --load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url --headless=new --remote-debugging-port=19842 --remote-debugging-address=127.0.0.1 --user-data-dir=/tmp/w6-ver-b6/work/rep2/chain-v2-rep1/profile --no-first-run --no-default-browser-check --disable-gpu --disable-background-networking --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank
+2849563 2849542 /usr/lib/chromium/chromium --type=zygote --no-zygote-sandbox --headless=new --crashpad-handler-pid=2849557 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w6-ver-b6/work/rep2/chain-v2-rep1/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+2849564 2849542 /usr/lib/chromium/chromium --type=zygote --headless=new --crashpad-handler-pid=2849557 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w6-ver-b6/work/rep2/chain-v2-rep1/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+== run journey (chain)
+capture step-1-index: url=http://127.0.0.1:19841/index.html png=b0528cebff431d7a shape=87e1477e49a40b91 nodes=32 netUpdated=3
+robots: no disallow match for /m/307 — CONTINUE
+capture post-307: url=http://127.0.0.1:19841/index.html png=b0528cebff431d7a shape=87e1477e49a40b91 nodes=32 netUpdated=2
+capture step-2-landed: url=http://127.0.0.1:19843/chain/landed.html png=ea09f60ce2686c75 shape=8749e45e4a36e33c nodes=24 netUpdated=3
+capture step-3-same-landed: url=http://127.0.0.1:19841/chain/same-landed.html png=c76931d59e4256dd shape=d2a51ca4471a3b64 nodes=24 netUpdated=2
+journey.exit=0
+== http-a.log (whole)
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /style.css HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] code 404, message File not found
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /robots.txt HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "POST /m/307 HTTP/1.1" 307 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "POST /m/echo HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /chain/start HTTP/1.1" 302 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /chain/hop1 HTTP/1.1" 303 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /deep/path/hop2 HTTP/1.1" 307 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /chain/same-start HTTP/1.1" 302 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /chain/same-hop1 HTTP/1.1" 303 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /chain/same-hop2 HTTP/1.1" 307 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /chain/same-landed.html HTTP/1.1" 200 -
+== http-b.log (whole)
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /chain/landed.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /chain/landed.css HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:45:26] code 404, message File not found
+127.0.0.1 - - [14/Oct/2026 14:45:26] "GET /favicon.ico HTTP/1.1" 404 -
+== chromium egress-ish log lines (informative)
+egress-ish line count: 0
+== cleanup (kill by PID from the process table; pgrep never matches itself)
+pgrep chromium pids: 2849542
+2849563
+2849564
+2849576
+2849597
+2849599
+2849619
+2849643
+2849658
+2849677
+2849681
+2849717
+== closure verification
+pass: no chromium process for /tmp/w6-ver-b6/work/rep2/chain-v2-rep1/profile
+pass: ports 19841/19843/19842 not listening
+curl cdp exit=7
+curl http-a exit=7
+curl http-b exit=7
+== stop-rule verification (server log)
+no trip in this run (chain mode)
+server-a request lines: 14
+== run chain-v2-rep1 end 2026-10-14T17:45:28Z journey.exit=0

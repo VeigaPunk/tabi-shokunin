@@ -1,0 +1,68 @@
+== run probe-captcha mode probe-captcha start 2026-10-14T17:49:49Z
+== UID 1000 host plazir27 cwd /tmp/w6-tabi-b61
+== port precheck (must be empty)
+ports free
+== fresh profile
+== start server A (site-a, port 19541, hop target -> B)
+http-a.pid=3087384
+server-a ready code: 204
+== start chromium (fresh profile)
+chromium.launch.pid=3087538
+== listening lines (evidence)
+LISTEN 0      5          127.0.0.1:19541      0.0.0.0:*    users:(("python3",pid=3087384,fd=3))
+LISTEN 0      10         127.0.0.1:19542      0.0.0.0:*    users:(("chromium",pid=3087538,fd=76))
+== effective child process line (evidence)
+chromium pids: 3087538
+3087553
+3087554
+3087559
+3087580
+3087583
+3087614
+3087648
+3087659
+3087676
+3087679
+3087754
+3087538 3087374 /usr/lib/chromium/chromium --ozone-platform=wayland --ozone-platform-hint=wayland --enable-features=TouchpadOverscrollHistoryNavigation --load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url --headless=new --remote-debugging-port=19542 --remote-debugging-address=127.0.0.1 --user-data-dir=/tmp/w6-tabi-b61/probe-captcha/profile --no-first-run --no-default-browser-check --disable-gpu --disable-background-networking --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank
+3087553 3087538 /usr/lib/chromium/chromium --type=zygote --no-zygote-sandbox --headless=new --crashpad-handler-pid=3087545 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w6-tabi-b61/probe-captcha/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+3087554 3087538 /usr/lib/chromium/chromium --type=zygote --headless=new --crashpad-handler-pid=3087545 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w6-tabi-b61/probe-captcha/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+== run journey (probe-captcha)
+capture step-1-index: url=http://127.0.0.1:19541/index.html png=b0528cebff431d7a shape=87e1477e49a40b91 nodes=32 netUpdated=3
+robots: no disallow match for /gate/interstitial — CONTINUE
+capture step-interstitial: url=http://127.0.0.1:19541/gate/interstitial png=1d2b05b915c37951 shape=a26977acd023a8f2 nodes=38 netUpdated=2
+TRIP [interstitial-shape] cell=goto-interstitial matchedOn=marker [data-tabi-gate="interstitial"] at status 200 -> STOP
+journey.exit=0
+== http-a.log (whole)
+127.0.0.1 - - [14/Oct/2026 14:49:49] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:49:49] "GET /style.css HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:49:49] code 404, message File not found
+127.0.0.1 - - [14/Oct/2026 14:49:49] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Oct/2026 14:49:50] "GET /robots.txt HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:49:50] "GET /gate/interstitial HTTP/1.1" 200 -
+== chromium egress-ish log lines (informative)
+egress-ish line count: 0
+== cleanup (kill by PID from the process table; pgrep never matches itself)
+pgrep chromium pids: 3087538
+3087553
+3087554
+3087559
+3087580
+3087583
+3087614
+3087648
+3087659
+3087676
+3087679
+3087754
+== closure verification
+pass: no chromium process for /tmp/w6-tabi-b61/probe-captcha/profile
+pass: ports 19541/19543/19542 not listening
+curl cdp exit=7
+curl http-a exit=7
+== stop-rule verification (server log)
+trip class: interstitial-shape
+not-executed cells: followup-429
+server-a request lines: 6
+requests to the skipped follow-up /rate/429: 0
+== run probe-captcha end 2026-10-14T17:49:52Z journey.exit=0

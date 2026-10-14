@@ -328,6 +328,21 @@ The stop-and-report predicate is mechanical, and a stop is proved from both side
 
 **The 429 rule, written so it cannot be misread: a loopback 429 is an instrument, never a C6 datum** (note §8) — no real rate/rights surface is measured by it; `Retry-After` is recorded as a shape, never acted on; C6's deciding evidence stays an absence (approval U1); no real-site bytes are mirrored anywhere in the fixture (C3 default-deny holds).
 
+### Harness archive — durable harness/fixture bytes (usage)
+
+The pinned `/tmp` groups have a durable copy: `corpus/evidence/<group>/` — 25 groups / 1,010 files / 6,780,293 B, one `MANIFEST.txt` per group (comment header + `sha256␠␠path` lines) — the round-5 B5-1 archive (`corpus/knowledge/archive-receipt-r5.md` `b41c2f6fb5a4`, 180 lines; §1-§2 :5-58 — re-derived at this revision's write time). When `/tmp` is gone, take harness and fixture bytes **from here** instead of re-authoring them, and verify before reuse — from the group dir: `sha256sum -c MANIFEST.txt` (round-5 runs: 1,010/1,010 OK :62-63; copy fidelity 0 diff lines per group :64-68; in-group pin files 107/109 OK :69-77, the 2 failures being F1 below). Group ↔ harness map (each sha256-12 re-measured **from the archived copy** at this revision's write time):
+
+| recipe | group (durable copy) | pinned bytes, re-measured from the archive |
+|---|---|---|
+| round-2 single-page capture (§Runbook lead chain) | `tabi-r2-1-capture` | `driver.sh` 85 lines `8105bed02840` · `capture.mjs` 209 lines `d37d36dd92d0` · `compare.mjs` `e558bd547c58` · `site/page.html` `21e27aa6619a` (= the §Reference-fixture pin) — note pins `live-dynamic-capture.md:232` |
+| round-3 four-page journey | `tabi-r3-1-journey` (replay copies: `tabi-b1-r3b-journey`, `w4-aud-tab1/harness/`) | `journey.mjs` `b52074a33876` · `driver.sh` `9509c07f49f9` · `compare.mjs` `ecce1c73dc56` (`multi-step-journey.md:26-27`); the six site files `index.html` `42d7a35b82be` · `detail.html` `353d8107a072` · `form.html` `50d811502ef8` · `confirm.html` `84b6ea0c17f4` · `data.json` `bf141027b3ef` · `style.css` `6380986105b3` (:350) |
+| round-4 network rung (the recipe §Runbook swaps in for the r2 chain) | `w4-t41-network` (first dispatch `tabi-r4-1-network`) | `net-journey.mjs` 475 lines `46c81f99decf` · `net-driver.sh` 106 lines `67c94a3a275d` · `server.py` `a5ceef29fae5` · `compare.mjs` `9823428b4a40` · `summary.mjs` `ae5c8fee0d68` · `pixel-scan.py` `34b802d04cd9` · `pngdiff.py` `24565a826526` (`network-evidence-rung.md` §2 :71-74) |
+| round-4 async pair + hygiene sweeps | `tabi-r4-2-async` / `w4-t4-2-async` (`journey-async.mjs` `06fa6e5ce5bf` in both) · `tabi-r4-3-sweep` (`PINS.txt` `2a76e40f855c`) · `w4-t4-3-sweep` (`PINS.txt` `57073253ac08`) | `async-step-evidence.md:283`; `hygiene-sweep-r4.md:163-165,215`; receipt §2 :29-58 |
+
+Caveats that travel with the archive: it holds **bytes only** — every `*profile*` path was excluded by rule (5,668 files / 313,772,976 B, shape-only counts, never read; :13-17), so a reconstituted run re-creates its own fresh profile per §Hygiene rules and must not look for a stored one; the tree is a **timestamped snapshot** (copy 17:03Z; verification re-run 17:07:07Z) — the manifest says what was archived, never what `/tmp` holds now, and a pinned group can gain bytes later (U1 :148-150; re-run receipt check B to detect the drift). And **F1 stands** (:106-118): `tabi-b1-r3b-journey/methodology-sha.txt` is stale against its own bytes — it lists the r3 pins `9509c07f49f9`/`ecce1c73dc56` while the archived replay bytes hash `68ceef09e4bf`/`cc89210e9fd2` (the 4-line run-driver / 1-line compare port edit) — so the manifest and the owning note's pins are the authority, the in-group pin file a convenience. 1,010 files hash to 587 unique values (U5 :157-159): duplicate structure is the notes' byte-identity claims made visible, and `sha256sum -c` still checks every line.
+
+**Round-6 harness bytes are not in this archive** (rounds 1–4 groups only): the external-class fixture v2 runner/server and its run artifacts stay `/tmp`-staged (note §9 archive debt; §Runbook "Fixture v2" above) — archive before citing.
+
 ## Capture-script call reference (what the measured harness sends)
 
 | CDP call | Params used | What you keep |
@@ -407,6 +422,25 @@ attempts/logging (`corpus/knowledge/cdp-evidence-patterns.md:36`;
 `corpus/knowledge/live-dynamic-capture.md:190-200`); round 4 measured the same class
 again — 3 GCM lines in one revalidating run, 0 in six others, absence being
 as-of-capture, not a no-egress proof (`network-evidence-rung.md` §7.2).
+
+### Layer routing — which layer decides a claim
+
+The rung note's §6 settles the "both layers measured it" question for GET-shaped journeys: the winner is the layer whose evidence can **falsify** the claim (`network-evidence-rung.md` §6 :239-242). Its D1–D8 cases — each staged in the rung fixture and measured on both sides — distill to this routing table (:332-345):
+
+| claim | winning layer | measured case |
+|---|---|---|
+| which requests/hops/statuses occurred | network client events + wire `ExtraInfo`; the server log for **counts** | D4 (:271-283 — an abort leaves no DOM trace, and the server's 200 line names a body no client received); D6 (:293-302 — client hop count 3 vs server lines 1: compare counts, never set membership) |
+| the wire status | `responseReceivedExtraInfo` (+ the server log) | D7 (:304-318 — wire 304 vs client 200 on five URLs; the client read 304 too on one path) |
+| bytes transferred | `finEnc` with the closure rule; perf `transferSize` as a second, non-equal number | §4 (:147 — closure = 0 on 7 resources; 660 vs 546 on index) |
+| response body bytes | `Network.getResponseBody` (works for cache-served; canceled = 0 B) | D3 (:261-269); §4 |
+| latency class | CDP event deltas + `response.timing`, at ≥1 ms granularity | §5.2 (:216-224 — 38 negative sub-ms pairs are noise) |
+| visible rendered state | screenshot (pixel tools for machine checks) | D2 (:253-259 — hidden text: red band 0 px vs blue 17,079 px); D8 (:320-330 — `:visited`, 1,033 px, DOM byte-identical) |
+| document content incl. invisible | DOMSnapshot / shape | D2 — `HIDDEN-MARKER-7b3e` present in the shape, absent in the pixels |
+| displayed *after* async work | settled DOM + screenshot; the network explains the race | D1 (:244-251); §5.3 (:225-237 — the fresh-cache pair collapse) |
+| page state / input values | DOMSnapshot columns | §3 (:101 — inputs) |
+| "no external contact" | neither layer; browser log + process discipline | §7.2 (:356-364 — egress caveat; absence is as-of-capture) |
+
+Two rules fall out: **name the producer layer per fact** (envelope item 7 below — a fact without its layer is a story), and treat a disagreement between *like* measurements as a finding, not noise (D6's client-vs-server counts; D7's two status surfaces). [unknown] A **state-changing** step — POST body, redirect-after-POST (303 vs 307), token consumption — has no measured D-case: every case above is GET-shaped, so do not route those claims by this table until the class is measured.
 
 ### Record envelope (all classes)
 
@@ -794,3 +828,119 @@ fd5f6861aa3bc97e1e63176099f1615fed3c81184a9b1dd61d546caafec5a3bc  webbridge-daem
 - **[2026-10-14, durable mirror — peer lane pointer]** The round-5 B5-1 archive copied the tabi `/tmp` groups into `corpus/evidence/` with per-group `MANIFEST.txt` (`corpus/knowledge/archive-receipt-r5.md`); 25 groups / 1,010 files, self-check 1,010/1,010 OK. The pins above now re-check against archived copies as well as `/tmp` (receipt check C: 107/109 in-group pin lines OK — the 2 failures are the r3b replay pin-file pair, F1, no owning-note pin affected).
 - **[2026-10-14, limit / open item]** This is a same-day-later re-derivation (17:0xZ vs 16:39Z). Round-5 plan clause (c) asks for a strictly-later-date re-derivation — TIME-GATED (earliest 2026-10-15) and still owed as a dated in-repo block + commit; its values to re-check are the post-append pins above. Per-capture artifact pins were not re-hashed in this pass (methodology / fixture / source pins were).
 - **[2026-10-14, round-6 SKILL upgrade — lane B6-4; additions-only]** Pre-edit sha256 of this file: `dcc33f1bf5311fd8893eecfc041cd9aefca31bfae1e82d711c0f7d77822484d4` (765 `wc -l`); the post-edit hash necessarily differs — re-derive with `sha256sum`. This revision is additions-only in content: no pre-existing line's text is altered (`git diff` shows four added hunks; the only non-addition is the file's former final line gaining a line break): (1) §Runbook — the new subsection "Fixture v2 — external-class edges (usage)", distilling `corpus/knowledge/external-class-fixture-v2.md` (`4aa604f1788b` at 17:52Z; lane B6-1; append-only note, moved ≥3× in-wave — re-derive): serving (`server.py <site-dir> <port> [hop-url]`; ports 19541/19543, CDP 19542), the five cell modes plus their headers-arm variants, the mechanical stop-and-report predicate (proved from both sides), and the note's §8 rule — a loopback 429 is an instrument, never a C6 datum; (2) §Webbridge — the revival-assessment pointer to `corpus/knowledge/webbridge-revival-assessment.md` (`a07c8aedc161`; lane B6-2): restart assessed not executed, handshake not doc-authorizable operator-free, A4/OOM conditions; (3) §Approval table — the `/status` field-count finding (the "8-field" shorthand is a measured undercount: 9 keys). Line refs below the §Runbook insertion, and below §Webbridge, shift accordingly; resolve `SKILL.md` pointers by section name + quoted text (standing convention, §Approval table). Pins in this block: fixture note `4aa604f1788b` (17:52Z; moving in-wave), revival note `a07c8aedc161` (17:48Z, unchanged at 17:52Z) — provisional until the archive keeps pace (`cdp-evidence-patterns.md:92`), re-derived at record time. This block records the revision; it edits nothing.
+
+## Layer-routing table — usage (round 7)
+
+The §"Layer routing — which layer decides a claim" table above is the rung note's
+D1–D8 set (round 4, GET-shaped journeys). The round-7 synthesis widens it to the
+whole corpus: `corpus/knowledge/layer-routing-synthesis.md` (**`7725ee421716`**,
+254 `wc -l`; lane B7-1; **untracked** at this revision — re-derive before citing;
+its §6 pins every source). It measures nothing new — a read-only re-statement,
+with anchors, of routing decisions rounds 4–6 already measured (zero browser
+launches, zero network acts; note header). Rows it assembles rather than quotes are
+marked `[synthesis]` in the note, and its §5 unknowns are **not** claims. Use it
+when a claim spans a surface the D1–D8 table does not name — redirect chains,
+body-read coupling, trip/refusal classes, egress, cleanup.
+
+**Layer inventory (note §1 :43-61).** L1 server log · L2 wire headers
+(`responseReceivedExtraInfo`) · L3 client events / client model · L4 body bytes
+(`getResponseBody` + `loadingFinished.encodedDataLength`) · L5 page-side perf
+(`PerformanceResourceTiming`) · L6 DOM (DOMSnapshot columns + shape) · L7 pixels
+(screenshot + pixel tools) · L8 URL / history · L9 runner record · L10 environment
+(browser log / process table / ports). Each layer is "authoritative for" exactly
+the claims its evidence can **falsify** — the rung note's winner rule
+(`network-evidence-rung.md` :241-242).
+
+**Rows the D1–D8 table lacks (note §2 :69-88, RT1–RT18).** RT1 an abort is a
+*paired* fact — client `ERR_ABORTED` **and** the server's body-write marker; a lone
+server `200` line claims a delivery no client received (rung §6 D4 :271-283) ·
+RT3/RT4 the wire status lives in `ExtraInfo` (+ server log), never the client
+`status`, and a repeated same-URL resource's wire path is **per-run measured**
+(three combinations recorded — `multi-step-journey.md` §5 + its errata;
+`reports/r4-aud-tab1.md` §2) · RT6 the hop chain incl. cross-origin: every leg on
+the wire + per-hop `ExtraInfo`, while `redirectCount` is a **same-origin-only**
+witness (3 vs 0 across the origin hop — `external-class-fixture-v2.md` §4
+:373-408) · RT7 `getResponseBody` is coupled to client consumption (2/2 `-32000`
+under a headers-only read vs 3/3 success after `response.text()` — v2 §5 :429-433)
+· RT13 visible state → pixels, document content → DOM (D2/D8: `display:none`,
+`:visited`) · RT14 inputs → raw DOMSnapshot columns with the `-1` empty sentinel
+guard (`multi-step-journey.md` §3 :148-169) · RT15/RT16 a trip is recorded and
+proved from both sides (wire status + body-shape marker + runner trip record;
+server-log absence for a stop), and a loopback instrument is **never** a C6 datum
+(v2 §8 :508-522) · RT17 egress is log/URL-level and as-of-capture — no page-level
+layer proves it (rung §7.2 :356-364) · RT18 closure routes to PID + port probe +
+`curl` exit 7, verified after (`cdp-evidence-patterns.md` :96-105).
+
+**Routing rules (note §3 :90-132; 13, condensed).** Route by falsifier, splitting
+a claim into the sub-claims each layer can decide · name the producer surface per
+fact (envelope item 7) · status surfaces are never substituted · compare **counts,
+not set membership** · pair surfaces for non-idempotent / abandoned events · body
+reads coupled to consumption, body sha pinned to the fixture · close the byte
+equation `finEnc − last-hop header text − body = 0` before quoting bytes (perf
+`transferSize` is a different number) · timing at ≥1 ms class granularity · async:
+hold at the protocol layer, then verify the pair against the network slice ·
+rendered→pixels / content→DOM / inputs→raw columns · a trip is never retried
+through · egress claims carry the log-level caveat · kill by PID, verify after.
+
+**Do not route by this table (note §4 :134-156, §5 :158-175).** No measured case
+exists for a **state-changing** step (POST body, redirect-after-POST 303/307, token
+consumption — the corpus's own named gap); real-site classes, the bridge-path
+surfaces (webbridge `network`), and the L1 mechanism matrix (wire-class /
+cache-revalidation, still unlanded at this revision) are likewise uncovered. The
+note's eight unknowns — the `transferSize`↔`finEnc` ~114-115 B offset's mechanism,
+why client `status` reads 304 only for the revalidated `style.css`, what decides
+the within-session cache path, the abort race, the `-32000` mechanism, cross-origin
+`redirectCount` generality, packet-level egress truth, byte-identity generality
+beyond this host — stay unknowns; do not convert them to claims without a new
+probe. AUD-B7 re-derived RT2/RT3 (+ half of RT1) from the archived bytes and they
+PASS; RT4–RT18 were **not** re-derived (`reports/r7-aud-b7.md` U5).
+
+## Harness-archive discipline (round-7 update)
+
+The §"Harness archive — durable harness/fixture bytes (usage)" subsection above
+pins the round-5 archive (25 groups). The discipline is unchanged; the census
+moved. At this revision (`ls`/`find`/`sha256sum` at write time): `corpus/evidence/`
+holds **28 group dirs / 28 `MANIFEST.txt`** — the round-5 25 plus the three round-6
+groups `w6-tabi-b61` / `w6-aud-b6-scratch` / `w6-ver-b6` (landed 18:24:53Z, lane
+B7-2) — **1,375 non-manifest files / 8,861,433 B** (round-5's 1,010 / 6,780,293
+re-derives digit-for-digit; the three new groups add 139+39+187 = 365 files /
+2,081,140 B). Verify from the group dir before reuse: `sha256sum -c MANIFEST.txt`
+(the three new groups re-run here → **365/365 OK, exit 0**).
+
+- **The subsection's line "Round-6 harness bytes are not in this archive" is
+  superseded** (append-only: that line stays as written, this block corrects it):
+  the external-class fixture v2 runner/server and its run artifacts are now
+  archived — `w6-tabi-b61` carries the v2 §3 pins **12/12** (`reports/r7-aud-b7.md`
+  A5). Do not re-derive that debt as open.
+- **Audit scope, so the archive is not over-trusted** (`reports/r7-aud-b7.md`
+  `ea4b16a4a844`, 260 `wc -l`): manifest self-check + in-group pins + owning-note
+  pins PASS on the 3 audited groups (423/423, 48/48, 55/55), and the round-5
+  receipt's totals re-derive exactly — but the other 22 round-5 groups were **not**
+  re-hashed (U1), the 3 new groups' source copy fidelity / exclusion counts are
+  **not** audited (U4), RT4–RT18 were not re-derived (U5), and no re-execution ran
+  (U6 — "re-derived" means the archived bytes support the row, not that the
+  measurement reproduces today).
+- **Caveats stand** (round-5 archive): bytes only — profile dirs excluded by rule
+  (shape-only, never read), so a reconstituted run makes its own fresh profile; a
+  **timestamped snapshot**, never live `/tmp` (a pinned group can gain bytes later);
+  **F1** — `tabi-b1-r3b-journey/methodology-sha.txt` is stale against its own bytes,
+  so the owning note's pins and the manifest are the authority, the in-group pin
+  file a convenience; `sha256sum -c` still checks every line.
+
+## Errata — round-7 append (layer-routing usage + harness-archive discipline; append-only; never edit above)
+
+Appended 2026-10-14 by lane **B7-4** (round-7 SKILL distillation; assignment:
+append the layer-routing table usage + the harness-archive discipline, citing
+`corpus/knowledge/layer-routing-synthesis.md`). Nothing above is edited;
+pre-append sha256 of this file: `c0d2629ecbfbc94cb7d343f38b1deee1f79dc5e47c2d449c2d1feb6e830ddf21`
+(829 `wc -l`). The post-append hash necessarily differs — re-derive with
+`sha256sum`. This block is additions-only: the file gained two sections plus this
+block at EOF; no pre-existing line's text is altered. Method: read-only over
+`corpus/knowledge/*.md`, `corpus/evidence/`, `reports/r7-aud-b7.md`, the round-7
+plan / record draft and `LOG.md`; the archive self-check `sha256sum -c` over the
+three round-6 groups (365/365 OK) and the census re-derivation (`ls` / `find` /
+`awk`) are this lane's own; no browser launched, no external site, no secrets read.
+Pins cited here are as-of-write and provisional until the archive keeps pace
+(`cdp-evidence-patterns.md:92`): synthesis note `7725ee421716` (254 `wc -l`,
+untracked), audit report `ea4b16a4a844` (260 `wc -l`), archive receipt
+`b41c2f6fb5a4` (180 `wc -l`). This block records the append; it edits nothing.

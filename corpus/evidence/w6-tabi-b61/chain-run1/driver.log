@@ -1,0 +1,70 @@
+== run chain-run1 mode chain start 2026-10-14T17:41:40Z
+== UID 1000 host plazir27 cwd /tmp/w6-tabi-b61
+== port precheck (must be empty)
+ports free
+== fresh profile
+== start server A (site-a, port 19541, hop target -> B)
+http-a.pid=2738316
+== start server B (site-b, port 19543)
+http-b.pid=2738317
+server-a ready code: 204
+server-b ready code: 204
+== start chromium (fresh profile)
+chromium.launch.pid=2738337
+== listening lines (evidence)
+LISTEN 0      5          127.0.0.1:19541      0.0.0.0:*    users:(("python3",pid=2738316,fd=3))
+LISTEN 0      5          127.0.0.1:19543      0.0.0.0:*    users:(("python3",pid=2738317,fd=3))
+LISTEN 0      10         127.0.0.1:19542      0.0.0.0:*    users:(("chromium",pid=2738337,fd=77))
+== effective child process line (evidence)
+chromium pids: 2738337
+2738349
+2738350
+2738352
+2738374
+2738376
+2738386
+2738400
+2738411
+2738425
+2738427
+2738457
+2738337 2738305 /usr/lib/chromium/chromium --ozone-platform=wayland --ozone-platform-hint=wayland --enable-features=TouchpadOverscrollHistoryNavigation --load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url --headless=new --remote-debugging-port=19542 --remote-debugging-address=127.0.0.1 --user-data-dir=/tmp/w6-tabi-b61/chain-run1/profile --no-first-run --no-default-browser-check --disable-gpu --disable-background-networking --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank
+2738349 2738337 /usr/lib/chromium/chromium --type=zygote --no-zygote-sandbox --headless=new --crashpad-handler-pid=2738343 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w6-tabi-b61/chain-run1/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+2738350 2738337 /usr/lib/chromium/chromium --type=zygote --headless=new --crashpad-handler-pid=2738343 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w6-tabi-b61/chain-run1/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+== run journey (chain)
+capture step-1-index: url=http://127.0.0.1:19541/index.html png=b0528cebff431d7a shape=87e1477e49a40b91 nodes=32 netUpdated=3
+TRIP [robots-disallow] cell=robots-probe matchedOn=Disallow /private/instrument/ matches intended /private/instrument/probe -> STOP
+journey.exit=0
+== http-a.log (whole)
+127.0.0.1 - - [14/Oct/2026 14:41:40] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:41:40] "GET /style.css HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:41:40] code 404, message File not found
+127.0.0.1 - - [14/Oct/2026 14:41:40] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Oct/2026 14:41:40] "GET /robots.txt HTTP/1.1" 200 -
+== http-b.log (whole)
+== chromium egress-ish log lines (informative)
+egress-ish line count: 0
+== cleanup (kill by PID from the process table; pgrep never matches itself)
+pgrep chromium pids: 2738337
+2738349
+2738350
+2738352
+2738374
+2738376
+2738386
+2738400
+2738411
+2738425
+2738427
+2738457
+== closure verification
+pass: no chromium process for /tmp/w6-tabi-b61/chain-run1/profile
+pass: ports 19541/19543/19542 not listening
+curl cdp exit=7
+curl http-a exit=7
+curl http-b exit=7
+== stop-rule verification (server log)
+trip class: robots-disallow
+not-executed cells: post-307,chain-navigate,post-429-probe
+server-a request lines: 5
+== run chain-run1 end 2026-10-14T17:41:42Z journey.exit=0

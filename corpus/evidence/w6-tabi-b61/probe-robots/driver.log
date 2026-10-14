@@ -1,0 +1,65 @@
+== run probe-robots mode probe-robots start 2026-10-14T17:49:38Z
+== UID 1000 host plazir27 cwd /tmp/w6-tabi-b61
+== port precheck (must be empty)
+ports free
+== fresh profile
+== start server A (site-a, port 19541, hop target -> B)
+http-a.pid=3053567
+server-a ready code: 204
+== start chromium (fresh profile)
+chromium.launch.pid=3054299
+== listening lines (evidence)
+LISTEN 0      5          127.0.0.1:19541      0.0.0.0:*    users:(("python3",pid=3053567,fd=3))
+LISTEN 0      10         127.0.0.1:19542      0.0.0.0:*    users:(("chromium",pid=3054299,fd=77))
+== effective child process line (evidence)
+chromium pids: 3054299
+3054398
+3054401
+3054490
+3054517
+3054528
+3054598
+3054685
+3054734
+3054777
+3054782
+3054869
+3054299 3053529 /usr/lib/chromium/chromium --ozone-platform=wayland --ozone-platform-hint=wayland --enable-features=TouchpadOverscrollHistoryNavigation --load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url --headless=new --remote-debugging-port=19542 --remote-debugging-address=127.0.0.1 --user-data-dir=/tmp/w6-tabi-b61/probe-robots/profile --no-first-run --no-default-browser-check --disable-gpu --disable-background-networking --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank
+3054398 3054299 /usr/lib/chromium/chromium --type=zygote --no-zygote-sandbox --headless=new --crashpad-handler-pid=3054381 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w6-tabi-b61/probe-robots/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+3054401 3054299 /usr/lib/chromium/chromium --type=zygote --headless=new --crashpad-handler-pid=3054381 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w6-tabi-b61/probe-robots/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+== run journey (probe-robots)
+capture step-1-index: url=http://127.0.0.1:19541/index.html png=b0528cebff431d7a shape=87e1477e49a40b91 nodes=32 netUpdated=3
+TRIP [robots-disallow] cell=robots-probe matchedOn=Disallow /private/instrument/ matches intended /private/instrument/probe -> STOP
+journey.exit=0
+== http-a.log (whole)
+127.0.0.1 - - [14/Oct/2026 14:49:39] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:49:39] "GET /style.css HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:49:39] code 404, message File not found
+127.0.0.1 - - [14/Oct/2026 14:49:39] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Oct/2026 14:49:39] "GET /robots.txt HTTP/1.1" 200 -
+== chromium egress-ish log lines (informative)
+egress-ish line count: 0
+== cleanup (kill by PID from the process table; pgrep never matches itself)
+pgrep chromium pids: 3054299
+3054398
+3054401
+3054490
+3054517
+3054528
+3054598
+3054685
+3054734
+3054777
+3054782
+3054869
+== closure verification
+pass: no chromium process for /tmp/w6-tabi-b61/probe-robots/profile
+pass: ports 19541/19543/19542 not listening
+curl cdp exit=7
+curl http-a exit=7
+== stop-rule verification (server log)
+trip class: robots-disallow
+not-executed cells: intended-target,followup-429
+server-a request lines: 5
+requests to the disallowed intended path: 0
+== run probe-robots end 2026-10-14T17:49:41Z journey.exit=0

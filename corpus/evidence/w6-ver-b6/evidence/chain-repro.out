@@ -1,0 +1,121 @@
+== VER-B6 chain repro start 2026-10-14T17:43:22Z ports 19741/19743
+== port precheck
+ports free
+server-a pid=2777867 server-b pid=2777868
+server-a ready code: 204
+server-b ready code: 204
+
+== RUN 1 — chain hops, step by step (no redirect following)
+--- r1-start rc=0
+    status: HTTP/1.0 302 Found
+    Location: /chain/hop1
+    Cache-Control: no-store
+    body-sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 body-bytes=0
+--- r1-hop1 rc=0
+    status: HTTP/1.0 303 See Other
+    Location: /deep/path/hop2
+    Cache-Control: no-store
+    body-sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 body-bytes=0
+--- r1-hop2 rc=0
+    status: HTTP/1.0 307 Temporary Redirect
+    Location: http://127.0.0.1:19743/chain/landed.html
+    Cache-Control: no-store
+    body-sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 body-bytes=0
+--- r1-landing rc=0
+    status: HTTP/1.0 200 OK
+    Content-type: text/html
+    body-sha256=cee3607e086e9f14aca7aab1686b996cbf1371cadd7a656da53fe7f37b857c01 body-bytes=308
+    landing title line: <title>TABI-R6-1 landed</title>
+    landing origin note: port 19541 to 19543
+== frozen-vs-repro landing bytes
+    frozen site-b landed.html sha256 = cee3607e086e9f14aca7aab1686b996cbf1371cadd7a656da53fe7f37b857c01
+
+== RUN 1 — redirect-followed chain (curl -L)
+curl_exit=0 final_code=200 url_effective=http://127.0.0.1:19743/chain/landed.html redirects=3
+    followed-body-sha256=cee3607e086e9f14aca7aab1686b996cbf1371cadd7a656da53fe7f37b857c01
+
+== RUN 1 — robots bytes (the stop-rule input)
+--- r1-robots rc=0
+    status: HTTP/1.0 200 OK
+    Content-type: text/plain
+    body-sha256=bc0300dfa93d9486fea9d4ea93260644afab622842447230eec5b18632960df4 body-bytes=44
+    robots frozen sha256 = bc0300dfa93d9486fea9d4ea93260644afab622842447230eec5b18632960df4
+    disallow prefixes: Disallow: /private/instrument/
+
+== RUN 1 — instrument classes
+--- r1-429 rc=0
+    status: HTTP/1.0 429 Too Many Requests
+    Retry-After: 7
+    Content-Type: text/plain; charset=utf-8
+    Cache-Control: no-store
+    body-sha256=48321a1e12becaeb7dcf744f4516770aac8c9ca64fb4e1a6b710e4148a3925f8 body-bytes=84
+--- r1-403 rc=0
+    status: HTTP/1.0 403 Forbidden
+    Content-Type: text/plain; charset=utf-8
+    Cache-Control: no-store
+    body-sha256=538e4a35d396805f37c4c3e5cff792741f14803400842292194443935be847fe body-bytes=43
+--- r1-inter rc=0
+    status: HTTP/1.0 200 OK
+    Content-Type: text/html; charset=utf-8
+    Cache-Control: no-store
+    body-sha256=918b1f6d36ca7a74d4eb745b4b832b90dce53250863d0e23bd7ce121487dced2 body-bytes=775
+    interstitial marker present: 1
+    interstitial title: <title>Security check</title>
+--- r1-m307 rc=0
+    status: HTTP/1.0 307 Temporary Redirect
+    Location: /m/echo
+    Cache-Control: no-store
+    body-sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 body-bytes=0
+--- r1-mecho rc=0
+    status: HTTP/1.0 200 OK
+    Content-Type: text/plain; charset=utf-8
+    Cache-Control: no-store
+    body-sha256=5e4aed62a546f696efbca4fa2ca5bee5bef0acc04173b8b0fa875ba678ae4e37 body-bytes=35
+    m/echo body: {"method": "POST", "bodyBytes": 8}
+
+== RUN 2 — identical cell, HTTP-level determinism
+--- r2-start rc=0
+    status: HTTP/1.0 302 Found
+    Location: /chain/hop1
+    Cache-Control: no-store
+    body-sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 body-bytes=0
+--- r2-landing rc=0
+    status: HTTP/1.0 200 OK
+    Content-type: text/html
+    body-sha256=cee3607e086e9f14aca7aab1686b996cbf1371cadd7a656da53fe7f37b857c01 body-bytes=308
+== RUN1-vs-RUN2 (status+location+body sha)
+  start: IDENTICAL (HTTP/1.0 302 Found; e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855)
+  landing: IDENTICAL (HTTP/1.0 200 OK; cee3607e086e9f14aca7aab1686b996cbf1371cadd7a656da53fe7f37b857c01)
+
+== cleanup (kill by PID)
+server-a gone
+server-b gone
+== closure
+pass: ports 19741/19743 not listening
+curl server-a exit=7 (7 = closed)
+curl server-b exit=7 (7 = closed)
+
+== request-log witness (server-a)</b>
+server-a request lines: 13
+hits on disallowed path /private/instrument/probe: 0
+hits on /chain/start: 3
+hits on /rate/429: 1
+-- server-a log:
+    127.0.0.1 - - [14/Oct/2026 14:43:22] "GET /chain/start HTTP/1.1" 302 -
+    127.0.0.1 - - [14/Oct/2026 14:43:22] "GET /chain/hop1 HTTP/1.1" 303 -
+    127.0.0.1 - - [14/Oct/2026 14:43:22] "GET /deep/path/hop2 HTTP/1.1" 307 -
+    127.0.0.1 - - [14/Oct/2026 14:43:22] "GET /chain/start HTTP/1.1" 302 -
+    127.0.0.1 - - [14/Oct/2026 14:43:22] "GET /chain/hop1 HTTP/1.0" 303 -
+    127.0.0.1 - - [14/Oct/2026 14:43:22] "GET /deep/path/hop2 HTTP/1.0" 307 -
+    127.0.0.1 - - [14/Oct/2026 14:43:22] "GET /robots.txt HTTP/1.1" 200 -
+    127.0.0.1 - - [14/Oct/2026 14:43:23] "GET /rate/429 HTTP/1.1" 429 -
+    127.0.0.1 - - [14/Oct/2026 14:43:23] "GET /rate/403 HTTP/1.1" 403 -
+    127.0.0.1 - - [14/Oct/2026 14:43:23] "GET /gate/interstitial HTTP/1.1" 200 -
+    127.0.0.1 - - [14/Oct/2026 14:43:23] "POST /m/307 HTTP/1.1" 307 -
+    127.0.0.1 - - [14/Oct/2026 14:43:23] "POST /m/echo HTTP/1.1" 200 -
+    127.0.0.1 - - [14/Oct/2026 14:43:23] "GET /chain/start HTTP/1.1" 302 -
+-- server-b log:
+    127.0.0.1 - - [14/Oct/2026 14:43:22] "GET /chain/landed.html HTTP/1.1" 200 -
+    127.0.0.1 - - [14/Oct/2026 14:43:22] "GET /chain/landed.html HTTP/1.0" 200 -
+    127.0.0.1 - - [14/Oct/2026 14:43:23] "GET /chain/landed.html HTTP/1.1" 200 -
+== VER-B6 chain repro end 2026-10-14T17:43:24Z

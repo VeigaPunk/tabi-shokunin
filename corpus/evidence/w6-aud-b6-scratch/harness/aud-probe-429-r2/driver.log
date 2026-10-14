@@ -1,0 +1,67 @@
+== run aud-probe-429-r2 mode probe-429 start 2026-10-14T17:52:06Z
+== UID 1000 host plazir27 cwd /tmp/w6-aud-b6-scratch/harness
+== port precheck (must be empty)
+ports free
+== fresh profile
+== start server A (site-a, port 19671, hop target -> B)
+http-a.pid=3127963
+server-a ready code: 204
+== start chromium (fresh profile)
+chromium.launch.pid=3127990
+== listening lines (evidence)
+LISTEN 0      10         127.0.0.1:19672      0.0.0.0:*    users:(("chromium",pid=3127990,fd=77))
+LISTEN 0      5          127.0.0.1:19671      0.0.0.0:*    users:(("python3",pid=3127963,fd=3))
+== effective child process line (evidence)
+chromium pids: 3127990
+3128001
+3128002
+3128004
+3128026
+3128028
+3128038
+3128052
+3128062
+3128075
+3128081
+3128111
+3127990 3127953 /usr/lib/chromium/chromium --ozone-platform=wayland --ozone-platform-hint=wayland --enable-features=TouchpadOverscrollHistoryNavigation --load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url --headless=new --remote-debugging-port=19672 --remote-debugging-address=127.0.0.1 --user-data-dir=/tmp/w6-aud-b6-scratch/harness/aud-probe-429-r2/profile --no-first-run --no-default-browser-check --disable-gpu --disable-background-networking --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank
+3128001 3127990 /usr/lib/chromium/chromium --type=zygote --no-zygote-sandbox --headless=new --crashpad-handler-pid=3127995 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w6-aud-b6-scratch/harness/aud-probe-429-r2/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+3128002 3127990 /usr/lib/chromium/chromium --type=zygote --headless=new --crashpad-handler-pid=3127995 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/tmp/w6-aud-b6-scratch/harness/aud-probe-429-r2/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+== run journey (probe-429)
+capture step-1-index: url=http://127.0.0.1:19671/index.html png=b0528cebff431d7a shape=87e1477e49a40b91 nodes=32 netUpdated=3
+robots: no disallow match for /rate/429 — CONTINUE
+TRIP [http-429] cell=fetch-/rate/429 matchedOn=status 429 -> STOP
+journey.exit=0
+== http-a.log (whole)
+127.0.0.1 - - [14/Oct/2026 14:52:06] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:52:06] "GET /style.css HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:52:06] code 404, message File not found
+127.0.0.1 - - [14/Oct/2026 14:52:06] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [14/Oct/2026 14:52:06] "GET /robots.txt HTTP/1.1" 200 -
+127.0.0.1 - - [14/Oct/2026 14:52:06] "GET /rate/429 HTTP/1.1" 429 -
+== chromium egress-ish log lines (informative)
+egress-ish line count: 0
+== cleanup (kill by PID from the process table; pgrep never matches itself)
+pgrep chromium pids: 3127990
+3128001
+3128002
+3128004
+3128026
+3128028
+3128038
+3128052
+3128062
+3128075
+3128081
+3128111
+== closure verification
+pass: no chromium process for /tmp/w6-aud-b6-scratch/harness/aud-probe-429-r2/profile
+pass: ports 19671/19673/19672 not listening
+curl cdp exit=7
+curl http-a exit=7
+== stop-rule verification (server log)
+trip class: http-429
+not-executed cells: followup-interstitial
+server-a request lines: 6
+requests to the skipped follow-up /gate/interstitial: 0
+== run aud-probe-429-r2 end 2026-10-14T17:52:09Z journey.exit=0
