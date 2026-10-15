@@ -1573,3 +1573,24 @@ port connect result 111. This remains loopback-only semantic evidence, not
 historical pixel equality or external-site/daemon capability. No outside
 admit/reject spot-check or new SHONEN attestation was performed. A locally
 landed freshness witness does not cure the blocked dispatch or mint a receipt.
+
+### Safety erratum — fixed gate inputs
+
+The first gate shipped in `716dc8ac8982c5b32518c052e6bf8a25f23b8ca2`
+trusted mutable `publicTargets` metadata before file reads. Do not use that
+gate revision: it could hash an arbitrary host file if both metadata and table
+were changed. No real-host-path reproducer was executed.
+
+The corrected gate hardcodes the three exact public identities listed in §T4;
+metadata cannot widen them or redirect the pin table/descriptor. Production
+reads refuse symlinked/non-regular inputs and open files with `O_NOFOLLOW`.
+Alternate repository roots are explicitly labeled `profile=fixture` and map
+those fixed identities only to three fixed files inside the isolated fixture
+repository; self-tests never hash the real public plugin files.
+
+This supersedes the registry's eight-case self-test count: **12** same-CLI
+cases now include injected public targets/table paths and symlinked public
+files/descriptors, with pinned exit/finding pairs. Full corrected captures:
+`gate-selftest-safe.json` and `gate-worktree-safe.json` in the interactive
+evidence directory. The original outputs remain historical, not shipping
+safety evidence; post-commit output identifies the corrected carrying commit.

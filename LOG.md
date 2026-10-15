@@ -239,3 +239,25 @@
   digest bindings. Never invent these or call mission completion. Integrator
   owns global binding/redispatch and shared-ledger closure. Full command
   captures and the post-commit measurement are durable lane-local evidence.
+
+- 2026-10-15 — **same fleet round-1 attempt, gate safety correction.**
+  Motivating evidence: review identified that the first gate in
+  `716dc8ac8982c5b32518c052e6bf8a25f23b8ca2` dereferenced paths selected by
+  mutable `publicTargets`. This could become a host-file hashing oracle,
+  contrary to the shape-only rule. No real-host secret/path reproducer run.
+  Corrected only the lane-owned helper: three fixed exact public identities;
+  fixed descriptor/table locations; isolated-root public fixture mapping;
+  symlink/non-regular rejection with `O_NOFOLLOW`. No external substrate or
+  global configuration changed. Original commit and gate outputs preserved.
+  Same-CLI isolated self-invocation now **12/12**, adding public-target/table
+  injection and public-file/descriptor symlink refusals; expected exit/finding
+  pairs persisted. `FRESHNESS_SELFTEST verdict=clean cases=12`, exit 0;
+  production candidate `FRESHNESS_GATE verdict=clean finding=freshness_worktree matched=34 unique=34 lane=31 public=3 revision=worktree baseline=c24eaea14dfc0c4a3848742d31673db5675f9183 profile=production`,
+  exit 0 (`gate-selftest-safe.json`, `gate-worktree-safe.json` in the
+  interactive evidence directory). These supersede the old helper's shipping
+  safety acceptance; the earlier eight-case result is retained as historical.
+  Actual first witness instant: epoch **1792041191**,
+  **2026-10-15T05:13:11Z**, 34 committed MATCH rows / 34 unique;
+  `.ufo/rounds/fleet-round-1-interactive-20261015/gate-witness.json`.
+  The corrected carrying commit is measured again after creation. Dispatch
+  and applicable-receipt blockers remain; no round increment or saturation.

@@ -162,3 +162,11 @@ The numeric rubric at :114 is not enacted as a complete round or score bump.
 Motivation/evidence: `LOG.md` interactive fleet-round-1 reconciliation entry;
 plan `.ufo/plans/fleet-round-1-interactive-20261015.md` at repo root. A fresh
 authorized session resumes this one actual round only after bindings exist.
+
+Safety correction within this same blocked attempt: the initial helper's
+mutable public-path list was unsafe; its `716dc8a` revision is not the shipping
+gate. Fixed exact public identities, descriptor/table paths and no-symlink
+reads now have **12/12** same-CLI cases, including path-injection and symlink
+refusals. No real host secret was used as a probe. Corrected captures are
+`gate-selftest-safe.json` / `gate-worktree-safe.json` in the interactive
+evidence directory. This is a correction to the gate, not another round.
