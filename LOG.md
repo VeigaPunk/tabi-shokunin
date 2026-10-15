@@ -302,3 +302,12 @@
   `6a91f68af5ac5135b6b753c947b12c72e54794ef`. Counting command is 0 at baseline
   and 2 at that commit. Other axes unchanged. No new public page. No
   consequential external action. Report: `reports/pstack-20261015-r02.md`.
+- 2026-10-15 — pstack-20261015-r03: adjacency 5→6. One `/pstack:swarm` of 32
+  local seats, aggregate PASS 32, no dropout. Admitted four present
+  refusal-route siblings (revenger, kaidoku, kake, kagi) and a loopback CDP
+  page that rendered those names at `http://127.0.0.1:18751/page.html`.
+  Rejected absorbing kaidoku, and rejected the loopback host as a real site.
+  Non-author reviewer-r03 agrees. Work commit
+  `a19c6a90a0fb0e00729fd895c3c136ac4305f877`. Counting command is 0 at
+  baseline and 4 at that commit. Other axes unchanged. No new public page.
+  No consequential external action. Report: `reports/pstack-20261015-r03.md`.
