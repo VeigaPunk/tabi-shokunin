@@ -223,8 +223,9 @@ Historical axis table above stays at its last explicit measurement. These rows a
 |---|---|---|---|---|---|---|
 | baseline `7f506affa55f6fb892d3c8073c75151c998bdf2c` | 7 | 5 | 5 | 3 | 6 | 5 |
 | pstack-20261015-r01 | 7 | 5 | 5 | 4 | 6 | 5 |
+| pstack-20261015-r02 | 7 | 5 | 5 | 5 | 6 | 5 |
 
-Freshness 3→4 is the public-observation count below. The historical freshness cell stays 3.
+Freshness 3→4 is the public-observation count below. The historical freshness cell stays 3. Freshness 4→5 is the two replay receipts in the r02 block.
 
 <!-- pstack-round:pstack-20261015-r01
 axis: freshness
@@ -233,3 +234,12 @@ after: 1
 command: git ls-tree -r --name-only f5c8f3141927ba0794ba5195d7f1a029ba6d7bd8 | grep pstack-20261015-r01/public/capture.json | wc -l
 measured-against: f5c8f3141927ba0794ba5195d7f1a029ba6d7bd8
 -->
+
+<!-- pstack-round:pstack-20261015-r02
+axis: freshness
+before: 0
+after: 2
+command: git ls-tree -r --name-only 6a91f68af5ac5135b6b753c947b12c72e54794ef | grep pstack-20261015-r02/replay- | grep receipt.txt | wc -l
+measured-against: 6a91f68af5ac5135b6b753c947b12c72e54794ef
+-->
+

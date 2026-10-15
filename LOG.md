@@ -293,3 +293,12 @@
   is 0 at baseline `7f506affa55f6fb892d3c8073c75151c998bdf2c` and 1 at that
   commit. Other axes unchanged. No consequential external action. Fan-out was
   two batches (s01–s16, then s17–s32). Report: `reports/pstack-20261015-r01.md`.
+- 2026-10-15 — pstack-20261015-r02: freshness 4→5. One `/pstack:swarm` of 32
+  local seats, aggregate PASS 32, no dropout. Admitted two replay receipts from
+  the shipped r01 loopback driver. Both DOM hashes
+  `af8d1560b0212c1afaa11355e5ef8660e2b1b166fc8c7f0eae7cc723a05857b0`. Rejected
+  both as real sites because the host is `127.0.0.1`. Brave still only
+  `NativeMessagingHosts` (s25). Non-author reviewer-r02 agrees. Work commit
+  `6a91f68af5ac5135b6b753c947b12c72e54794ef`. Counting command is 0 at baseline
+  and 2 at that commit. Other axes unchanged. No new public page. No
+  consequential external action. Report: `reports/pstack-20261015-r02.md`.
