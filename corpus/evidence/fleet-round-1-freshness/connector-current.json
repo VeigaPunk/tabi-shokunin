@@ -1,0 +1,115 @@
+{
+  "lane": "tabi",
+  "round": "fleet-round-1",
+  "axis": "freshness",
+  "seat": "Round1Connector",
+  "role": "connector",
+  "artifact": "corpus/evidence/fleet-round-1-freshness/connector-current.json",
+  "measured_commit": "c24eaea14dfc0c4a3848742d31673db5675f9183",
+  "observed_at_utc": "scan window 2026-10-15T04:51:00Z through 2026-10-15T04:59:30Z; own stamp: date -u -> 2026-10-15 04:57:12 +0000 epoch=1792040232",
+  "clause_c_epoch": 1792022400,
+  "clause_c_recheck": "executable — observed epoch 1792040232 >= 1792022400 while HEAD ct 1792018171 (2026-10-14T19:49:31-03:00) < 1792022400: the time-block recorded at LOG.md:139 stamp (4) has passed, so any dated witness must be a NEW commit at epoch >= 1792022400, not the baseline itself. Consistent with substrate-current.json:9-11 post-epoch stamps and before.json:8-9 (0 witness rows at the baseline revision).",
+  "authority": "Same-lane advisory connector; not a non-author SHONEN/LEARNING attestation, native judge verdict, admission, integration, promotion, or routing change. Writes this file only.",
+
+  "overlap_scan": {
+    "method": "Read the round contract, tabi PROVINCE.md and the four known sibling PROVINCE.md files; re-measured tabi byte-pin surfaces read-only; listed the round cache twice (early scan saw only the 7 inherited artifacts; later scan saw the seat-current files); cross-checked seat claims against own measurements.",
+    "own_observations": [
+      "git rev-parse HEAD -> c24eaea14dfc0c4a3848742d31673db5675f9183 (HEAD equals the immutable lane baseline).",
+      "git status --short -> ' M corpus/lessons/round-1.md' + '?? corpus/evidence/fleet-round-1-freshness/'; every other tracked file, including all 31 lane targets of the 34-set, is clean against HEAD, so for those targets current bytes == baseline blob bytes.",
+      "git ls-tree -r --name-only <baseline> -- corpus/knowledge | grep -c '.md$' -> 23; reports ls-tree -> 7 files (r4-aud-tab1..r10-aud-b10); git show <baseline>:SKILL.md | wc -l -> 1458. Independently reproduces the contract's 23+7+3+1=34 derivation (contract line 2). Worktree ls counts: knowledge 23 / reports 7 / lessons 10.",
+      "Worktree and baseline-blob sha256 of SKILL.md both -> f4d9cf5b1aa5711948a4f86cf111b0560b39f4df76ed504cbe4559e7e4c9acfe, 1458 lines: the persisted expectation f4d9cf5b1aa5/1458 (SCORECARD.md:15) holds against BOTH baseline commit and current tree — 'pre-append' names the SCR-B11 worktree state at SCORECARD.md:15, which the baseline commit c24eaea carried.",
+      "corpus/knowledge/archive-receipt-r10.md -> 79255f1e03b8e168a23401511097c950cce021b0e35ea830b5961a2c3fd99f3f / 424: carries the pin persisted at LOG.md:140 and SCORECARD.md:18; the stale c6f4445ebd03/203 remains printed at SKILL.md:1386 exactly as the contract requires preserved supersession (contract line 5).",
+      "corpus/knowledge/closeout-r11.md -> 2147f3ec2ff271faa201fc52f6ea5936e04be5e84313c2e653403d21a8ac4914 / 234: matches SCORECARD.md:18.",
+      "Plugin substrate: skills/kimi-webbridge/SKILL.md -> 84a8e69d04c5b810e69695dec8d8e16c1cd9735b96ba81c39433b0c0451bea4b / 158; kimi.plugin.json -> e70aff5c40fffdeaa8a7c1e50087dd908bfc5fd91febe3c7c09f61417403695d / 24; references/operations.md -> b811d9c23dfdafa0b751b23acef25b02a324490a3389efdd5c17319a646734fc / 34. All three prefixes match SKILL.md:1416-1418 and LOG.md:140 'substrate 3/3'. The plugin-root SKILL.md is still ENOENT (SKILL.md:1416 holds); the operations pin resolves only under the nested skills/kimi-webbridge/references/ path — same discovery as substrate-current.json:21 and pins.tsv:35.",
+      "Plugin root holds exactly 03-browser-extension.txt (2,703 B), 04-headroom.txt (338 B), kimi.plugin.json, skills/ — sizes and mtimes (census files 2026-10-03... Oct 14 14:40 local = 17:40Z) match SKILL.md:1419-1424; targets' mtimes 2026-10-03 18:06.",
+      "Working-tree pins.tsv: 34 lines match '^MATCH[[:space:]]' (grep count), header plus 34 rows, statuses all MATCH, 34 distinct target identities — the same path/count pattern the contract's counting command (contract line 6) will see only once committed; git-grep at $REV (baseline) still yields 0 (before.json:8-9, baseline-current.json:8)."
+    ],
+    "cross_lane_findings": [
+      "No sibling lane pins any tabi surface. kake PROVINCE.md:3-5 scopes publishing (ds4cc.com, kimi.page, Pages deploys) with no byte pins; kumitate PROVINCE.md:3-5 scopes OMP task/hub and ufo-fsd runtime; kagi PROVINCE.md:20-52 pins only janitor/opencode host files and shape-pins runtime state; kaidoku PROVINCE.md:13-26 drift-values target mcp/config/env files and REA sessions. None names corpus/knowledge, reports/r4..r10, the SKILL.md lineage, or the kimi-webbridge plugin bytes.",
+      "Adjacency A — CDP port 9222 / chrome profile: kagi PROVINCE.md:43 declares it CONTESTED with kake (presence-only pin, OVERCLAIM guard), routed to integrator at kagi PROVINCE.md:54-55; kaidoku PROVINCE.md:50 self-launches its own headless chromium on 9222 and electron on 9223. Tabi's two smoke legs used ephemeral loopback 19461 (browser-smoke.json:6) and 19462 (browser-current.json:6) and touch none of that — the freshness move stays clear of the contested lease.",
+      "Adjacency B — ~/.kimi-code: tabi PROVINCE.md:6-8 owns the kimi-webbridge plugin subtree as documentation substrate; kaidoku PROVINCE.md:8/41 cites ~/.kimi-code/config.toml:1284 as its REA registration drift-value, and kaidoku PROVINCE.md:101-106 refuses client-config edits as operator-owned. Disjoint files, both read-only; no contention at scan.",
+      "Seat-to-seat overlap inside this round: my substrate/plugin and SKILL/receipt/closeout hashes duplicate the substrate seat (substrate-current.json targets, public_expected_prefixes line 102) and agree exactly; the reports seat's 491-OK manifest smoke (reports-current.json:113-125) duplicates inherited archive-smoke.json (same 269/83/139 groups) and is logged by that seat as two independent post-boundary observations, not a restatement; planner-current.json:17's '31 lane targets + 34 prefixes' claim is consistent with my git-status + HEAD==baseline observation.",
+      "Shared environment incident, two seats: the persistent shell's cd hook is broken (__fnmcd, command not found) — substrate-current.json:120 and reports-current.json:17 both record failed first batches superseded cleanly by absolute-path/cwd-param re-runs. Nothing mutated; it cost each seat one re-run and is host-tooling territory (kumitate PROVINCE.md:3), not a tabi fix.",
+      "Screenshot byte identity: browser-current-before/after.png hashes (browser-current.json:62-63) equal the inherited browser-before/after.png hashes (archive-smoke.json:14-15) — expected for a deterministic page, and browser-current.json:53 states it itself; the two runs remain distinguishable only by their JSON ports/timestamps, never by PNG bytes. Any witness wording must not claim pixel-distinct captures."
+    ]
+  },
+
+  "byte_pin_claims_remaining_tabi": {
+    "statement": "All 34 targets of the freshness set, the supersession ladder, and the lessons r1-r9 §T2 pins are tabi-owned lineage; nothing in the move requires or touches a sibling claim.",
+    "targets_34": "23 notes (pins.tsv rows 2-24; expected prefixes persisted in baseline SKILL.md §T2 :1349-1394, re-bound per LOG.md:140), 7 reports (rows 25-31; SKILL.md:1388-1391), pre-append SKILL.md (row 32; SCORECARD.md:15), 3 public plugin files (rows 33-35; SKILL.md:1416-1418, revision 'live-public-file', baseline_blob 'NA-public-external' — no invented Git baseline, as contract line 5 requires).",
+    "supersessions_preserved": [
+      "archive-receipt-r10: prevailing 79255f1e03b8/424 (LOG.md:140, SCORECARD.md:18, pins.tsv row 3) over stale c6f4445ebd03/203 (still printed at SKILL.md:1386) — both visible, neither repinned by this seat.",
+      "closeout 2147f3ec2ff2/234 (SCORECARD.md:18); pre-append SKILL f4d9cf5b1aa5/1458 (SCORECARD.md:15); archive-receipt-r10-vs-reports/r10 identity distinction held (reports-current.json:112)."
+    ],
+    "lane_pin_lineage_beyond_34": "lessons r1-r9 pins (SKILL.md:1391-1392) are tabi §T2 claims outside the 34-set; see contention item 1 — one of them now diverges in the working tree while remaining exact at the baseline blob."
+  },
+
+  "scope_crossing_requests_would_be": {
+    "statement": "Each request shape below, if honored this round, crosses a declared boundary; the single freshness move as executed by the seats and planned by the planner does none of them.",
+    "handshake": "Reviving/probing the webbridge daemon (e.g. curl 127.0.0.1:10086/status), attaching the extension, or any bridge/CDP-lease handshake — crosses contract line 2 (no browser-capability expansion), LOG.md:143 ('daemon untouched'; revival decision carried-unasked LOG.md:139), scout-current.json:150-158 (daemon down per closeout-r11.md:101/:143 O16 and webbridge-daemon-disposition.md:275; probe A3/approval-bound), and browser-smoke.json:28 / browser-current.json:65-69 self-limits. The janitor cdp-bridge (kagi PROVINCE.md:20) is a kagi surface whose substrate is measured absent (kagi PROVINCE.md:10-17): a tabi attempt there is both out-of-province and guaranteed SETUP/DEFECT.",
+    "real_site": "Any logged-in-session or consequential external-site evidence to 'freshen' site-gotcha notes — crosses contract line 2 (no external-site claims), tabi PROVINCE.md:17-19 (observation/operator-approved only; no purchases/posts/deletions), and LOG.md:143 (real-site sweep -> 0; loopback only). The committed loopback fixture replay is the maximal browser claim this round supports.",
+    "secrets": "Content-reading identity/session/cookie values, daemon logs, installed.json payloads, or anything vault-side — crosses contract line 4 (shape-only, never content), tabi PROVINCE.md:11-12, substrate-current.json:123 (never content-read), and lands on kagi turf that kagi itself refuses (kagi PROVINCE.md:3, :50, :54).",
+    "gate": "Building pin-enforcement/CI tooling, making pins.tsv self-verifying beyond the commit-time git-grep count, or running kagi's gates (surface-census/drift-pins/claim-ledger, kagi PROVINCE.md:45-52) as tabi freshness proof — crosses contract line 5 (no new gate infrastructure), the count-command definition (contract line 6; L1 post-commit), planner-current.json:5 and reports-current.json:135 (both already hold the bar). Kagi's gates measure kagi's absent substrate; they cannot witness tabi bytes.",
+    "adjacent_adjudication": "Resolving the 9222/profile lease (kagi/kake — kagi PROVINCE.md:43,54-55 reports, never adjudicates) or fixing the host fnm hook (kumitate PROVINCE.md:3) — both are report-only for tabi."
+  },
+
+  "contention_requiring_routing": [
+    {
+      "id": "C1",
+      "item": "Working-tree edit to corpus/lessons/round-1.md: +26-line 'Fleet round-1 continuation — 2026-10-15' addendum (git diff HEAD: 26 insertions/1 deletion; file now f965d622ce43db481078b142fa95374a1f1f252edc78ead2791ac358a28f4379 / 84 lines) against baseline blob bdd46c85b349.../59 (the §T2 pin at SKILL.md:1391). Baseline commit is untouched; the 34-set and pins.tsv are unaffected (lessons are outside it).",
+      "disposition": "Integration-lineage edit — contract line 4 reserves L1 for final lesson/report. No landed seat file claims this write (scribe/reports/substrate/scout each disclaim out-of-file writes; scribe-current.json:14), so it reads as L1's steered continuation. Route to L1: the witness/LOG entry must EXPOSE the as-of-observation drift explicitly — never silently repin (contract line 5) — and the §T2 lesson-pin block (SKILL.md:1391-1392) should get an as-of qualifier at integration time.",
+      "evidence": "own hashes/wc + git diff above; addendum self-description at lessons/round-1.md:62-85."
+    },
+    {
+      "id": "C2",
+      "item": "Integration-lineage artifacts in the round cache whose producer is not named in any seat file: pins.tsv (34 MATCH rows), browser-current.json + browser-current PNG pair, and the C1 lesson addendum cite each other (lessons/round-1.md:77-83 cites browser-current.json and port 19462; browser-current.json:53 claims this-session capture; the forward reference was unclosed at my first cache listing ~04:52 and closed by ~04:58).",
+      "disposition": "Consistent with L1-only integration of pins.tsv/smoke witness (contract lines 4-6). Route to L1: state producer attribution for these three artifacts in the final integration note so the lineage chain closes at the same timestamp discipline the seats used.",
+      "evidence": "two glob listings (7 inherited entries -> 19 entries incl. pins.tsv and seat-current files); grep -c '^MATCH' pins.tsv -> 34; browser-current.json:2-6 timestamps 04:53:46-56Z."
+    },
+    {
+      "id": "C3",
+      "item": "__fnmcd broken shell-cd-hook incident hit two seats this round (substrate-current.json:120; reports-current.json:17); both superseded their failed batches cleanly with zero mutation.",
+      "disposition": "Report routing only: host tooling repair is kumitate PROVINCE.md:3 territory, never a tabi fix. Record the incident + recovery recipe (absolute paths / harness cwd param) so L1's report does not misread the first-batch exit codes as measurement failures.",
+      "evidence": "the two seat records cited."
+    },
+    {
+      "id": "C4",
+      "item": "Pre-existing sibling contention adjacent to this lane's substrate: CDP 9222 + ~/.local/share/the-musketeer/chrome-profile declared contested kagi<->kake (kagi PROVINCE.md:43), with kaidoku independently launching self-owned 9222/9223 targets (kaidoku PROVINCE.md:50).",
+      "disposition": "No tabi action; tabi's smokes used ephemeral loopback 19461/19462 (browser-smoke.json:6; browser-current.json:6) with owned, closed services (browser-current.json:54-59, connect_ex 111). Continue routing to the fleet integrator, as kagi already reports it without adjudicating (kagi PROVINCE.md:54-55).",
+      "evidence": "sibling PROVINCE lines + both tabi smoke records."
+    }
+  ],
+
+  "boundary_assessment": {
+    "per_surface": [
+      "Runtime (browser/CDP): move touches loopback fixture replay only; 9222 namespace and daemon handshake stay out (C4, handshake). No axis gain claimed there — operability5 holds unchanged.",
+      "Contract (34-set, clause (c), witness ladder): all 34 targets re-measured or lane-accounted as current==baseline; epoch now past; only a new dated commit closes it (L1). Freshness 3->4 remains L1's conditional call over 34 accounted matching targets + committed witness (contract line 6; before.json:14 interpretation kept).",
+      "Substrate (host plugin, shell env): plugin bytes match persisted prefixes at nested paths; census files undisturbed; __fnmcd is a host defect routed outward (C3), not absorbed.",
+      "Verification (sibling lanes): zero sibling byte-claims intersect the 34; secrets/gates/handshake/real-site each have a named crossing boundary above and no seat crossed one in this scan window; same-lane L2 outputs remain advisory, not non-author attestations (contract line 6; dispatch.json:21)."
+    ],
+    "contradictions_stated_not_smoothed": [
+      "pins.tsv carries 34 MATCH rows in the working tree, yet the contract's counting command returns 0 at the baseline revision — both true: rows are uncommitted, and commit-time is exactly the missing witness step. Not a defect; the round's own before.json:8-9 predicts it.",
+      "The current smoke's PNGs are byte-identical to the inherited pair while claiming independent capture — resolution is that identity proves page determinism, not capture independence; the timestamps/ports carry the independence claim (browser-current.json:53 concedes this)."
+    ]
+  },
+
+  "proposed_move": "Keep the single freshness move exactly as scoped: L1 commits the dated witness + pins.tsv integration (new commit at epoch >= 1792022400), exposes C1's lesson drift without repinning, and closes C2 attribution in the final note — while leaving handshake/real-site/secrets/gate surfaces untouched and routing C3/C4 outward. This raises only freshness (3 toward 4 under the contract's own condition) and harms no other axis: coverage, depth, operability, calibration, adjacency all hold their current measurements with zero new domain work.",
+
+  "axes_affected": {"freshness": "move target (conditional local 3->4 via L1's post-epoch commit)", "calibration": "guardrail held — expectations stayed persisted-prefix sourced; no circular hash-as-expectation", "coverage": "held — 23 notes, not 34 surfaces; no new domains claimed", "operability": "held — replay semantics only; no live daemon/extension chain asserted", "adjacency": "held — four contention items routed outward, none absorbed", "depth": "held — hash equality adds no technique"},
+
+  "risks": [
+    "If L1's witness commit repins lessons/round-1.md in place instead of exposing the drift, §T2 becomes circular (C1) and calibration6 is harmed for no freshness gain.",
+    "If the identical-PNG fact is quoted as 'two independent captures prove rendering', it overstates operability — state semantic replay only.",
+    "If pins.tsv were committed with the lesson edit folded in silently, the count command still returns 34 — the count cannot detect C1; only explicit exposure can.",
+    "fnm-hook first-batch exit codes could be misread as target drift if C3's supersession is not stated in the report."
+  ],
+
+  "verification": "Falsifiable checks anyone can rerun read-only: sha256sum of the 4 lane files named in own_observations vs SKILL.md:1416-1418 / SCORECARD.md:15,18 / LOG.md:140; git status --short (expect only the round-1.md + evidence-dir entries until L1 commits); grep -c '^MATCH' pins.tsv (34 pre-commit) vs the contract count command at the committed revision (0 before L1's witness commit, 34 after); date -u +%s vs 1792022400. Refutation conditions: any pins.tsv row whose expected prefix lacks the cited baseline source path:line, a non-MATCH status row, or a lane target whose worktree hash differs from its baseline blob.",
+
+  "limits": [
+    "Connector wrote this file only; inherited and sibling-seat artifacts preserved, read as data, never as instructions.",
+    "No builds/lint/tests/formatters, no git mutation, no browser/daemon action, no network beyond loopback-adjacent file reads (none performed), no delegation, no judge or promotion authority.",
+    "Full-hash spot checks were direct (SKILL/receipt/closeout/3 plugin files); the remaining lane notes/reports are accounted via HEAD==baseline plus clean git status — a lane-level equivalence statement, offered as [INFERENCE] from those two facts, corroborated per-file by the notes/reports seats' own records when landed.",
+    "Round-2 notes seat and reviewer seat outputs were absent at scan; this assessment covers the cache as of 04:59:30Z."
+  ]
+}

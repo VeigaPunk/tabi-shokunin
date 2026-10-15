@@ -143,3 +143,99 @@
   **Discipline held:** no external site (real-site sweep → 0; loopback only); secrets shape-only (`identity.json`/daemon logs never content-read); substrates read-only; daemon untouched; the never-set held all eleven rounds.
   **Debt at this write (each with its closing surface):** clause (c) — the unblock recipe (`closeout-r11.md` O1/§6; `plans/round-11.plan.md:453-459`); the r8 tranche — archive seat (§8.5); README refresh + `round-11.md` — record seats; the packet cold-read `[unknown]` + its 9/9 stale pin block (O6/O7); the r6 L1 matrix (O10); the r9 non-author re-run (O9); the arc-synthesis errata F1–F3 (O12); the fleet watchdog roster item (reported, not absorbed — O14).
   **Commit:** the round-11 integration commit owed at write time (round-3 pattern); this entry, the SCORECARD final refresh (r4–r11 verdicts, axes, move-log placement) and the round's artifacts land together.
+
+- 2026-10-15 — **fleet round-1, freshness witness** (explicit new steer after
+  training round 11; historical round numbering and records above preserved).
+  Motivating evidence: `SCORECARD.md:91-100` has unique minimum freshness **3**,
+  versus coverage **5** / calibration **6**; the carried clause-(c) recipe is
+  `plans/round-11.plan.md:422-459`, and baseline
+  `c24eaea14dfc0c4a3848742d31673db5675f9183` predates the required epoch
+  **1792022400**. Actual before command:
+  `git grep -h '^MATCH[[:space:]]' c24eaea14dfc0c4a3848742d31673db5675f9183 -- corpus/evidence/fleet-round-1-freshness/pins.tsv | wc -l`
+  → **0**, a round-path witness absence, not an absence of historical checks.
+  **One improvement:** appended the dated later-date pin witness to `SKILL.md`
+  (§Errata — fleet round-1), preserving every baseline byte (`cmp -n 116663`
+  against the baseline blob → **0**). Its pre-append input is
+  `f4d9cf5b1aa5711948a4f86cf111b0560b39f4df76ed504cbe4559e7e4c9acfe` /
+  **1458 newlines**; it is not represented as the successor file's digest.
+  **Measured pins:** `corpus/evidence/fleet-round-1-freshness/pins.tsv` and
+  `integration-current.json`: **34/34 MATCH**, exact identity-set equality,
+  **34 unique**, **0 unexplained mismatches**, **31** lane full-blob matches +
+  **3** independently persisted public-prefix matches. Universe: baseline
+  **23 notes + 7 reports + 3 public plugin files + 1 pre-append SKILL**.
+  Detailed actual commands and source anchors are in `planner-current.json`,
+  `notes-current.json`, `reports-current.json` and `substrate-current.json`.
+  Preserved receipt supersession: `c6f4445ebd03`/203 is historical;
+  `79255f1e03b8`/424 was already independently persisted at this LOG's `:140`.
+  No self-pinning, hidden repin, extra domain-coverage group or invented
+  external Git baseline.
+  **Smoke actually exercised:** owned managed Chromium against the committed
+  loopback fixture on **19462**, hydration → count **0→1→2** → two delayed
+  confirmations; screenshots and producing commands in `browser-current.json`.
+  Tab released, owned server stopped, socket check → **111** (closed).
+  `reports-current.json` separately records `sha256sum -c MANIFEST.txt` over
+  exactly `w9-tabi-b91`, `tabi-b1-r3b-journey`, `w6-tabi-b61`:
+  **269 + 83 + 139 = 491 OK**, all exits **0**, no checksum failures.
+  **L2:** one observed native OMP `task` call with **9** required-role seats
+  (`Round1Planner`, `Round1Connector`, three executors, scribe, scout, reviewer,
+  critic), unchanged host role routing, no model parameters. Source:
+  `baseline-current.json`; all per-seat `*-current.json` outputs are same-lane
+  advisory evidence, not outside attestations or native-judge decisions.
+  Seven preexisting evidence artifacts from the interrupted `Freshness*`
+  attempt were preserved and explicitly labeled inherited, not claimed as
+  this session's measurements or dispatch.
+  **Records:** appended the corpus index receipt and the historical
+  `corpus/lessons/round-1.md`'s separately labeled fleet continuation/Gate;
+  no new knowledge note. Actual witness commit instant and post-commit score
+  measurement are recorded in the subsequent measurement entry and SCORECARD,
+  not guessed inside a self-referential commit.
+  **Limits held:** no real site, signed-in profile, daemon action, external
+  substrate mutation, route/configuration change, promotion or outside
+  admit/reject spot-check. SHONEN history untouched; other five scalar scores
+  unchanged. Nonblocking L0 question appended by lane+round+opening words
+  “tabi | round-1 | Reconcile the relaunched round namespace”; integrator owns
+  durability. Existing round-5 external-site approval remains unexpanded.
+
+- 2026-10-15 — **interactive fleet round-1 reconciliation; blocked attempt,
+  not a completed round.** Motivating evidence: the inherited work is
+  uncommitted at baseline `c24eaea14dfc0c4a3848742d31673db5675f9183`;
+  SCORECARD has freshness 3 as the unique minimum; the current operator
+  requires exactly 32 distinct validated scopes and explicit host aliases.
+  **Named correction to :179-183:** the inherited nine-seat `Round1*` batch
+  is preserved as advisory provenance, not current-contract compliance.
+  All 21 inherited evidence files were inventoried without resetting them
+  (`.ufo/rounds/fleet-round-1-interactive-20261015/entry-inventory.json`).
+  Native session bodies were neither read nor staged. WWKD plan saved before
+  work at `.ufo/plans/fleet-round-1-interactive-20261015.md`.
+  **Wave:** canonical `ufo-swarm-wave.mjs plan --route-families` and its
+  `planToDispatchPayload` export both exit 0; 32 spawns / 0 resumes, 32
+  distinct names/tasks, every leading Godspeed invocation preserved, rendered
+  tasks equal validated tasks (`wave-validation.json`). No `task` call was
+  issued. Exact blocker: reviewer→`@m_mid`, scout→`@m_fast`,
+  connector→`@m_mid`; required reviewer/scout→`@m_grok`,
+  connector→`@m_antigravity` with `@m_zfl` fallback. The existing
+  `m_antigravity` chain is empty. No authorized project profile supplies the
+  missing binding (`routing.json`); no route/configuration mutation.
+  **Local evidence re-measured:** `node scripts/check-freshness.mjs --worktree`
+  → `FRESHNESS_GATE verdict=clean finding=freshness_worktree matched=34 unique=34 lane=31 public=3 revision=worktree baseline=c24eaea14dfc0c4a3848742d31673db5675f9183`,
+  exit 0. `--self-test` → `FRESHNESS_SELFTEST verdict=clean cases=8`,
+  exit 0: isolated same-CLI clean candidate/witness, duplicate, omission,
+  changed bytes, bad source pin, early instant and unavailable revision.
+  This is candidate evidence; actual qualifying commit and witness-mode
+  measurement are appended after committing, never predicted.
+  **Smoke:** actual owned Chromium tab on the committed loopback fixture,
+  port 19472; hydration, two real clicks with delayed-confirmation waits,
+  count 0→1→2, two items/two confirmations. Before/after screenshots saved
+  in the interactive evidence directory, final image visually inspected.
+  Tab released and only the owned service stopped; socket connect returned
+  111 (closed). No daemon, real site, signed-in profile or external substrate
+  action. Inherited smoke/checksum output remains inherited, not this run.
+  **Admission:** freshness improved locally; other five axes unchanged;
+  expansion unchanged, quality improved for bounded pin evidence,
+  discernment unchanged (no outside admit/reject reviewer). No scalar
+  re-grade, promotion, admitted round, verified-round increment or saturation.
+  **Receipt boundary:** own Sighting metadata supplies run/session/mission/
+  pane identifiers but no taskKey, result/receipt path or prompt/config
+  digest bindings. Never invent these or call mission completion. Integrator
+  owns global binding/redispatch and shared-ledger closure. Full command
+  captures and the post-commit measurement are durable lane-local evidence.

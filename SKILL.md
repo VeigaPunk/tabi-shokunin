@@ -1457,3 +1457,119 @@ memory/swap/load snapshot at the same stamp). Named, not repaired.
   enumeration: `arc-synthesis.md` §5 + the closeout.
 
 This block records the append; it edits nothing.
+
+## Errata — fleet round-1 later-date pin witness (2026-10-15 UTC)
+
+This append supersedes only the carried clause-(c) status at `:829`, `:1058`,
+`:1290-1303` and `:1455-1456`. Those dated training snapshots remain historical.
+Authority and recipe: `plans/round-11.plan.md:422-459`; closing threshold:
+**2026-10-15T00:00:00Z**, epoch **1792022400**. This is the explicitly steered
+fleet round-1 after training round 11, not a relabeling of either history.
+
+Pre-append revision: baseline
+`c24eaea14dfc0c4a3848742d31673db5675f9183:SKILL.md`,
+SHA256 `f4d9cf5b1aa5711948a4f86cf111b0560b39f4df76ed504cbe4559e7e4c9acfe`,
+**1458 newlines**. The independent expected prefix is persisted at
+`SCORECARD.md:15`. This identifies the measured input, not this appended file's
+necessarily different hash.
+
+### Re-derived target set and result
+
+`corpus/evidence/fleet-round-1-freshness/pins.tsv` records **34 MATCH rows,
+34 distinct target identities, 0 unexplained mismatches**:
+
+- **23** baseline knowledge notes: `git ls-tree -r --name-only
+  c24eaea14dfc0c4a3848742d31673db5675f9183 -- corpus/knowledge`.
+- **7** landed reports r4–r10: the same `git ls-tree` command over `reports`.
+- **3** public plugin files at the resolved T4 paths (`:1412-1418`).
+- **1** pre-append `SKILL.md` revision identified above.
+
+Each row carries its full observed SHA256, newline count, independently
+persisted expected prefix and immutable source location. All **31** lane
+targets also match the full baseline blob hash; external public files have
+**no invented Git baseline**. Detailed actual commands, timestamps and source
+text: `planner-current.json` (`measurements.rows`); disjoint executor receipts:
+`notes-current.json`, `reports-current.json`, `substrate-current.json`, all in
+that evidence directory. Measurements occurred on 2026-10-15 UTC. New review
+artifacts, screenshots and this witness are not extra domain-coverage targets.
+
+Declared supersessions remain visible: `archive-receipt-r8.md`
+`0587605db913`/191 → `de45b805e5a4`/218; `stateful-fixture-evidence.md`
+`e89bc89bff38`/773 → `f04e2e473cf9`/855; `archive-receipt-r10.md`
+`c6f4445ebd03`/203 → **`79255f1e03b8`/424**, independently persisted at
+`LOG.md:140` and `SCORECARD.md:16-17`. The last receipt's first 15,197 bytes
+still reproduce its historical full SHA; no old pin was silently rewritten.
+
+### Recheck and closing predicate
+
+Count this round's committed witness rows, setting `REV` to the actual witness
+commit (recorded after creation in `SCORECARD.md` and the fleet report):
+
+```sh
+git grep -h '^MATCH[[:space:]]' "$REV" -- corpus/evidence/fleet-round-1-freshness/pins.tsv | wc -l
+git grep -h '^MATCH[[:space:]]' "$REV" -- corpus/evidence/fleet-round-1-freshness/pins.tsv | cut -f2 | sort -u | wc -l
+git show -s --format='%H %cI %ct' "$REV"
+```
+
+Both counts must be **34**, with exact target-set equality, not merely equal
+cardinality. Re-derive lane-file hashes using `git show
+c24eaea14dfc0c4a3848742d31673db5675f9183:<target> | sha256sum`; recheck the
+three public files with `sha256sum` at their resolved paths. The preserved
+prefix sources are independent of this measurement. Newline counts use `wc -l`,
+not rendered reader lines. Clause (c) closes only when the commit carrying this
+dated append has `%ct >= 1792022400` and the complete match count is recorded;
+the post-commit receipt supplies that actual hash. `TZ=UTC git show
+--date=iso-strict` retained the original offset in the observed runtime; use
+`date -u -d @<ct>` for an actual UTC rendering.
+
+### Scope of the result
+
+The actual fresh browser replay is `browser-current.json` plus its two
+`browser-current-*.png` captures: lane-authored loopback fixture, hydration,
+count **0 → 1 → 2**, two delayed confirmations, owned tab/server cleanup.
+`reports-current.json` separately records **491/491** checksum successes over
+three named existing archive manifests. Neither result proves every archive,
+historical pixel equality, an attached extension, daemon health, a signed-in
+session, rights/rate behavior, or any real-site capability. No substrate file
+was changed and no daemon action was performed. L2 reviews are same-lane
+advisory evidence, not outside SHONEN/LEARNING attestations or promotion.
+
+## Errata — interactive fleet round-1 reconciliation (2026-10-15)
+
+The preceding fleet-round-1 append was inherited **uncommitted**. Its
+`*-current.json` files describe the stopped headless attempt, not this
+interactive session. The nine-seat `Round1*` batch does not satisfy the current
+operator's exactly-32-seat validated-wave contract. This supersedes any reading
+of `LOG.md:179-183` or `corpus/lessons/round-1.md:106-119` as current-contract
+compliance or a completed round. Existing bytes and errata are preserved.
+
+Current plan: `.ufo/plans/fleet-round-1-interactive-20261015.md`; evidence:
+`.ufo/rounds/fleet-round-1-interactive-20261015/`. Canonical plan/render accepted
+32 distinct scopes (23 note audits, seven report audits, public-plugin audit,
+connector). **No dispatch:** global taxonomy aliases do not provide the
+operator-required `@m_grok` audits or `@m_antigravity` connector with `@m_zfl`
+fallback (`routing.json`, `wave-validation.json`). Named aliases existing in
+`modelRoles` do not bind taxonomy roles. Never bypass this with model pins,
+new overlays, renamed roles or configuration writes.
+
+### Freshness gate registry
+
+| Name | Kind / owner | Entry and verdict map | Self-invocation | Persisted baseline | Write scope |
+|---|---|---|---|---|---|
+| closeout-pin-witness | gate / tabi | `node scripts/check-freshness.mjs --worktree` (candidate only), or `node scripts/check-freshness.mjs --witness REV`; 0 clean, 1 failed, 2 could-not-evaluate | `node scripts/check-freshness.mjs --self-test`; eight isolated CLI cases assert exit and stable finding | `.ufo/rounds/fleet-round-1-interactive-20261015/freshness.expected.json`; immutable baseline `c24eaea14dfc0c4a3848742d31673db5675f9183` supplies full lane blobs and independent prefix citations; `pins.tsv` supplies measured rows, not their own authority | Read-only repo/public allowlist in normal modes; self-test writes/deletes only its owned temporary fixture repository; stdout/stderr evidence captured by L1 |
+
+The gate requires exact target-set equality, unique identities, independent
+baseline source prefixes, full lane-blob equality, newline counts and the
+unchanged pre-append SKILL prefix. Witness mode also requires baseline ancestry
+and the commit instant threshold. Public files have no invented external Git
+baseline. Candidate mode does not close clause (c); post-commit witness output
+and the actual hash/epoch are recorded in SCORECARD and the lane-local report.
+The gate checks pin integrity, not the truth of every historical domain claim.
+
+The interactive browser smoke used the committed local fixture, owned port
+19472, hydration and two settled real clicks: 0→1→2, two confirmations.
+`browser-after.png` was visually inspected; tab released, owned server stopped,
+port connect result 111. This remains loopback-only semantic evidence, not
+historical pixel equality or external-site/daemon capability. No outside
+admit/reject spot-check or new SHONEN attestation was performed. A locally
+landed freshness witness does not cure the blocked dispatch or mint a receipt.

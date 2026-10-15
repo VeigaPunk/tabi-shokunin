@@ -1,0 +1,409 @@
+{
+  "lane": "tabi",
+  "round": "fleet-round-1",
+  "axis": "freshness",
+  "seat": "Round1Notes",
+  "target_class": "all 23 committed corpus/knowledge/*.md notes at the immutable lane baseline",
+  "measured_commit": "c24eaea14dfc0c4a3848742d31673db5675f9183",
+  "head_at_measurement": "c24eaea14dfc0c4a3848742d31673db5675f9183",
+  "worktree_clean_for_scope": true,
+  "worktree_clean_check": "git status --porcelain -- SKILL.md SCORECARD.md LOG.md corpus/knowledge/ -> empty output",
+  "observed_at_utc": "2026-10-15T04:56:47Z",
+  "first_batch_stamp_utc": "2026-10-15T04:54:40Z",
+  "clause_c_recheck_window": "every command below ran 2026-10-15T04:53Z-04:57Z, i.e. after the 2026-10-15T00:00:00Z epoch (1792022400) closure boundary; observation only — the carried Clause (c) re-verification claim is owned by L1's witness, not by this advisory file",
+  "commands": [
+    "git -C /home/vgpnk/Projects/shokunin/tabi-shokunin ls-tree -r c24eaea14dfc0c4a3848742d31673db5675f9183 -- corpus/knowledge/   # baseline enumeration: 23 .md notes, 23 distinct identities",
+    "cd /home/vgpnk/Projects/shokunin/tabi-shokunin && for p in $(git ls-tree -r --name-only c24eaea14dfc0c4a3848742d31673db5675f9183 -- corpus/knowledge/ | grep '\\.md$'); do live_sha=$(sha256sum \"$p\" | cut -d' ' -f1); live_nl=$(wc -l < \"$p\"); base_sha=$(git show c24eaea14dfc0c4a3848742d31673db5675f9183:\"$p\" | sha256sum | cut -d' ' -f1); base_nl=$(git show c24eaea14dfc0c4a3848742d31673db5675f9183:\"$p\" | wc -l); ...; done   # live observed full SHA256 + newline_count vs baseline blob full SHA256, per note; all 23 printed same/present",
+    "git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show c24eaea14dfc0c4a3848742d31673db5675f9183:SKILL.md | grep -nE '<26 pinned prefixes>'   # locate the §T2 pin lines (:1349-1394 block) in the baseline blob",
+    "git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show c24eaea14dfc0c4a3848742d31673db5675f9183:SCORECARD.md | grep -n 'f4d9cf5b1aa5\\|79255f1e03b8\\|2147f3ec2ff2\\|c6f4445ebd03'   # -> :15, :17, :18",
+    "git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show c24eaea14dfc0c4a3848742d31673db5675f9183:LOG.md | grep -n '79255f1e03b8\\|2147f3ec2ff2\\|f4d9cf5b1aa5'   # -> :140, :141",
+    "date -u +%Y-%m-%dT%H:%M:%SZ   # 2026-10-15T04:54:40Z and 2026-10-15T04:56:47Z stamps"
+  ],
+  "method": {
+    "baseline_enumeration": "git ls-tree of corpus/knowledge/ at c24eaea — exactly 23 .md entries, all distinct paths; no note added or dropped versus the SCORECARD round-11 count (knowledge 23)",
+    "observed": "sha256sum + wc -l of the live worktree file (worktree verified clean for scope, so live bytes == baseline bytes for every note; measured independently anyway)",
+    "baseline": "git show c24eaea14dfc0c4a3848742d31673db5675f9183:<path> piped to sha256sum / wc -l — the immutable lane-baseline blob content",
+    "expected_pin": "12-hex prefix + line count sourced independently from the persisted baseline SKILL.md §T2 block (:1349-1394), SCORECARD.md:15-18, and LOG.md:140-141 — never from the current hash; prefix_matches = observed_sha256 starts with expected_prefix",
+    "full_note_contents": "not dumped here; hash + line count only, per assignment"
+  },
+  "corroboration": "SKILL.md:815-825 (round-6 revision block) persists the FULL sha256 of the 11 §Pins-block notes; the observed full hashes for async-step-evidence, browser-surface-census, cdp-evidence-patterns, executor-test-sufficiency, hygiene-sweep-r4, interaction-approval-table, live-dynamic-capture, multi-step-journey, network-evidence-rung, webbridge-daemon-disposition, webbridge-plugin-anatomy equal those persisted full values byte-for-byte, independent of the 12-hex prefix test",
+  "notes": [
+    {
+      "path": "corpus/knowledge/arc-synthesis.md",
+      "observed_sha256": "f42428bd9af738c5dc0ec5361edd56e667acf84b6c96d23459bc5d46ab0a9269",
+      "newline_count": 183,
+      "baseline_blob_sha256": "f42428bd9af738c5dc0ec5361edd56e667acf84b6c96d23459bc5d46ab0a9269",
+      "baseline_blob_matches": true,
+      "expected_prefix": "f42428bd9af7",
+      "expected_line_count": 183,
+      "expected_source": "SKILL.md:1387",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 pinned finally; SKILL.md:1340 (round-11 recheck row) records it unchanged since the r10 pin; in-wave chain 6e46d1bb0a7e -> 1b4b273141ba -> f42428bd9af7 (SKILL.md:1249) resolved before commit — final value holds",
+      "historical_pins": [
+        { "prefix": "6e46d1bb0a7e", "source": "SKILL.md:1249", "classification": "in-wave pre-final value, declared chain; not drift" },
+        { "prefix": "1b4b273141ba", "source": "SKILL.md:1249", "classification": "in-wave pre-final value, declared chain; not drift" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/archive-receipt-r10.md",
+      "observed_sha256": "79255f1e03b8e168a23401511097c950cce021b0e35ea830b5961a2c3fd99f3f",
+      "newline_count": 424,
+      "baseline_blob_sha256": "79255f1e03b8e168a23401511097c950cce021b0e35ea830b5961a2c3fd99f3f",
+      "baseline_blob_matches": true,
+      "expected_prefix": "79255f1e03b8",
+      "expected_line_count": 424,
+      "expected_source": "LOG.md:140",
+      "secondary_expected_source": "SCORECARD.md:17 (§8 final archive sweep append, `79255f1e03b8` / 424)",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "current pin is the §8-append value persisted independently at LOG.md:140 and SCORECARD.md:16-17; the SKILL.md §T2 line for this note still carries the pre-append pin (historical below) — checked against the persisted post-append pin, mismatch against the stale pin is the declared supersession, not drift; per contract this stale c6f4445ebd03/203 is NOT used as the expectation",
+      "historical_pins": [
+        { "prefix": "c6f4445ebd03", "line_count": 203, "source": "SKILL.md:1386", "classification": "superseded by declared §8 append (LOG.md:140, SCORECARD.md:17); retained as historical, does not match committed bytes by design" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/archive-receipt-r5.md",
+      "observed_sha256": "b41c2f6fb5a43483e4e84cdc916f736ceff214e98584bb3aafd923291b4d9f5f",
+      "newline_count": 180,
+      "baseline_blob_sha256": "b41c2f6fb5a43483e4e84cdc916f736ceff214e98584bb3aafd923291b4d9f5f",
+      "baseline_blob_matches": true,
+      "expected_prefix": "b41c2f6fb5a4",
+      "expected_line_count": 180,
+      "expected_source": "SKILL.md:1385",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 pinned finally; earlier persisted cites SKILL.md:333 and :946 carry the same b41c2f6fb5a4/180 — no supersession",
+      "historical_pins": []
+    },
+    {
+      "path": "corpus/knowledge/archive-receipt-r8.md",
+      "observed_sha256": "de45b805e5a4cc49d0dad0ac9cfb4e88753a6e0e4d77b2166b1f0bfdfe5411b0",
+      "newline_count": 218,
+      "baseline_blob_sha256": "de45b805e5a4cc49d0dad0ac9cfb4e88753a6e0e4d77b2166b1f0bfdfe5411b0",
+      "baseline_blob_matches": true,
+      "expected_prefix": "de45b805e5a4",
+      "expected_line_count": 218,
+      "expected_source": "SKILL.md:1386",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final value holds against both the baseline blob and the observed bytes",
+      "historical_pins": [
+        { "prefix": "0587605db913", "line_count": 191, "source": "SKILL.md:1398 (T3 declared-supersession; originally cited SKILL.md:963/:1024)", "classification": "declared pre-append value (receipt's own block); not drift" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/async-step-evidence.md",
+      "observed_sha256": "05dcda5e60b9ae4a58d05bd2a9c447be3bd22bedb9e1706b400859f8a070a0f4",
+      "newline_count": 282,
+      "baseline_blob_sha256": "05dcda5e60b9ae4a58d05bd2a9c447be3bd22bedb9e1706b400859f8a070a0f4",
+      "baseline_blob_matches": true,
+      "expected_prefix": "05dcda5e60b9",
+      "expected_line_count": 282,
+      "expected_source": "SKILL.md:1369",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final row; observed full hash equals the full hash persisted at SKILL.md:815",
+      "historical_pins": [
+        { "prefix": "577af06bd9a8", "source": "SKILL.md:1369 (as-cited column)", "classification": "round-4 §Pins snapshot value, superseded by declared errata append; stale annotation line-count 278 (SKILL.md:1376)" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/browser-surface-census.md",
+      "observed_sha256": "a33c22644d646a3c08c25d7e65d324f4db2c65d5da6e1ed45740150d0e25d75b",
+      "newline_count": 265,
+      "baseline_blob_sha256": "a33c22644d646a3c08c25d7e65d324f4db2c65d5da6e1ed45740150d0e25d75b",
+      "baseline_blob_matches": true,
+      "expected_prefix": "a33c22644d64",
+      "expected_line_count": 265,
+      "expected_source": "SKILL.md:1361",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final row; observed full hash equals the full hash persisted at SKILL.md:816",
+      "historical_pins": [
+        { "prefix": "a4bbb39edb12", "source": "SKILL.md:1361 (as-cited column)", "classification": "round-4 §Pins snapshot value, superseded by declared errata append" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/carried-debt-closure-r8.md",
+      "observed_sha256": "48dc8db69c57a4a426638e0b0b35c3aa9e5f1477f428fc3ae95e31e501b123c4",
+      "newline_count": 149,
+      "baseline_blob_sha256": "48dc8db69c57a4a426638e0b0b35c3aa9e5f1477f428fc3ae95e31e501b123c4",
+      "baseline_blob_matches": true,
+      "expected_prefix": "48dc8db69c57",
+      "expected_line_count": 149,
+      "expected_source": "SKILL.md:1382",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 pinned finally; same value also persisted at SKILL.md:962 and :1075 (append-era and r9 block) — consistent, no supersession",
+      "historical_pins": []
+    },
+    {
+      "path": "corpus/knowledge/cdp-evidence-patterns.md",
+      "observed_sha256": "337ff64579e8ba4bb581859d0286a59f0501a04c3d551b63864d9e362a4f53a2",
+      "newline_count": 234,
+      "baseline_blob_sha256": "337ff64579e8ba4bb581859d0286a59f0501a04c3d551b63864d9e362a4f53a2",
+      "baseline_blob_matches": true,
+      "expected_prefix": "337ff64579e8",
+      "expected_line_count": 234,
+      "expected_source": "SKILL.md:1362",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final row; observed full hash equals the full hash persisted at SKILL.md:817",
+      "historical_pins": [
+        { "prefix": "8de2ee008c9c", "source": "SKILL.md:1362 (as-cited column); declared in cdp-evidence-patterns.md:233 (SKILL.md:1347 spot-verify)", "classification": "round-4 §Pins snapshot value, superseded by declared errata append; not drift" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/closeout-r11.md",
+      "observed_sha256": "2147f3ec2ff271faa201fc52f6ea5936e04be5e84313c2e653403d21a8ac4914",
+      "newline_count": 234,
+      "baseline_blob_sha256": "2147f3ec2ff271faa201fc52f6ea5936e04be5e84313c2e653403d21a8ac4914",
+      "baseline_blob_matches": true,
+      "expected_prefix": "2147f3ec2ff2",
+      "expected_line_count": 234,
+      "expected_source": "SCORECARD.md:18",
+      "secondary_expected_source": "LOG.md:141 (Clause Z — `2147f3ec2ff2…`/234)",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "round-11 deliverable note, first pinned in the SCORECARD/LOG round-11 record (not in the SKILL §T2 block, which precedes it); per contract closeout pin is SCORECARD.md:18",
+      "historical_pins": []
+    },
+    {
+      "path": "corpus/knowledge/executor-test-sufficiency.md",
+      "observed_sha256": "32772e3438486881590eb6f17e2a6982f8797424a62d8ded82569e675286f572",
+      "newline_count": 329,
+      "baseline_blob_sha256": "32772e3438486881590eb6f17e2a6982f8797424a62d8ded82569e675286f572",
+      "baseline_blob_matches": true,
+      "expected_prefix": "32772e343848",
+      "expected_line_count": 329,
+      "expected_source": "SKILL.md:1366",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final row; observed full hash equals the full hash persisted at SKILL.md:818",
+      "historical_pins": [
+        { "prefix": "5f04f6877e1e", "source": "SKILL.md:1366 (as-cited column)", "classification": "round-4 §Pins snapshot value, superseded by declared errata append; stale annotation line-count 325 (SKILL.md:1376)" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/external-class-fixture-v2.md",
+      "observed_sha256": "4aa604f1788b0531f0cb779b81137679829c994d1853658c7a092a729b5b6b2f",
+      "newline_count": 569,
+      "baseline_blob_sha256": "4aa604f1788b0531f0cb779b81137679829c994d1853658c7a092a729b5b6b2f",
+      "baseline_blob_matches": true,
+      "expected_prefix": "4aa604f1788b",
+      "expected_line_count": 569,
+      "expected_source": "SKILL.md:1383",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 pinned finally; the append-era re-derive caveat (SKILL.md:323, moved >=3x in-wave at 17:48-17:52Z) is discharged — the committed value equals the 17:52Z pin 4aa604f1788b and the T2 first-pin at :1383",
+      "historical_pins": []
+    },
+    {
+      "path": "corpus/knowledge/hygiene-sweep-r4.md",
+      "observed_sha256": "87155e12021d3ef7349efcb41eba3be4ff29eb719e1365a861c45bac280a791b",
+      "newline_count": 258,
+      "baseline_blob_sha256": "87155e12021d3ef7349efcb41eba3be4ff29eb719e1365a861c45bac280a791b",
+      "baseline_blob_matches": true,
+      "expected_prefix": "87155e12021d",
+      "expected_line_count": 258,
+      "expected_source": "SKILL.md:1370",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final row; observed full hash equals the full hash persisted at SKILL.md:819",
+      "historical_pins": [
+        { "prefix": "4ddc67151b98", "source": "SKILL.md:1370 (as-cited column)", "classification": "round-4 §Pins snapshot value, superseded by declared errata append; stale annotation line-count 254 (SKILL.md:1376)" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/interaction-approval-table.md",
+      "observed_sha256": "b5e29a9a2adfdb1f474412c3cc0acce08da351e21cf608f09f1f70a1b5675e86",
+      "newline_count": 246,
+      "baseline_blob_sha256": "b5e29a9a2adfdb1f474412c3cc0acce08da351e21cf608f09f1f70a1b5675e86",
+      "baseline_blob_matches": true,
+      "expected_prefix": "b5e29a9a2adf",
+      "expected_line_count": 246,
+      "expected_source": "SKILL.md:1365",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final row; observed full hash equals the full hash persisted at SKILL.md:820",
+      "historical_pins": [
+        { "prefix": "d6ad567a610c", "source": "SKILL.md:1365 (as-cited column)", "classification": "round-4 §Pins snapshot value, superseded by declared errata append; stale annotation line-count 241 (SKILL.md:1376)" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/layer-routing-synthesis.md",
+      "observed_sha256": "7725ee4217168710a556b352fec69bbc0fd78d82abfa91e945bd8c8cdc00b8bf",
+      "newline_count": 254,
+      "baseline_blob_sha256": "7725ee4217168710a556b352fec69bbc0fd78d82abfa91e945bd8c8cdc00b8bf",
+      "baseline_blob_matches": true,
+      "expected_prefix": "7725ee421716",
+      "expected_line_count": 254,
+      "expected_source": "SKILL.md:1382",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 pinned finally; same value persisted at SKILL.md:836 and :944 (254 wc-l) — consistent, no supersession",
+      "historical_pins": []
+    },
+    {
+      "path": "corpus/knowledge/live-dynamic-capture.md",
+      "observed_sha256": "01266495b7614d6c563e5fd007844d9cf10ac8b50f9787844b0bb9d2ff542eac",
+      "newline_count": 245,
+      "baseline_blob_sha256": "01266495b7614d6c563e5fd007844d9cf10ac8b50f9787844b0bb9d2ff542eac",
+      "baseline_blob_matches": true,
+      "expected_prefix": "01266495b761",
+      "expected_line_count": 245,
+      "expected_source": "SKILL.md:1363",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final row; observed full hash equals the full hash persisted at SKILL.md:821",
+      "historical_pins": [
+        { "prefix": "f97c10238907", "source": "SKILL.md:1363 (as-cited column); declared in live-dynamic-capture.md:244 (SKILL.md:1347 spot-verify)", "classification": "round-4 §Pins snapshot value, superseded by declared errata append; not drift" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/multi-step-journey.md",
+      "observed_sha256": "e0367890f1cfc91081481c2613a481d02aa83a6c320d0fe2fbaf5764c4878923",
+      "newline_count": 349,
+      "baseline_blob_sha256": "e0367890f1cfc91081481c2613a481d02aa83a6c320d0fe2fbaf5764c4878923",
+      "baseline_blob_matches": true,
+      "expected_prefix": "e0367890f1cf",
+      "expected_line_count": 349,
+      "expected_source": "SKILL.md:1367",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final row; observed full hash equals the full hash persisted at SKILL.md:822",
+      "historical_pins": [
+        { "prefix": "8925ce6c46c7", "source": "SKILL.md:1367 (as-cited column)", "classification": "round-4 §Pins snapshot value, superseded by declared errata append; stale annotation line-count 345 (SKILL.md:1376)" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/network-evidence-rung.md",
+      "observed_sha256": "d1564f38dc14a261ce31970bdc706c5a63a9abbf9fea811f367525ccf3c60cc7",
+      "newline_count": 609,
+      "baseline_blob_sha256": "d1564f38dc14a261ce31970bdc706c5a63a9abbf9fea811f367525ccf3c60cc7",
+      "baseline_blob_matches": true,
+      "expected_prefix": "d1564f38dc14",
+      "expected_line_count": 609,
+      "expected_source": "SKILL.md:1368",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final row; observed full hash equals the full hash persisted at SKILL.md:823",
+      "historical_pins": [
+        { "prefix": "4889ccf073a8", "source": "SKILL.md:1368 (as-cited column); declared in network-evidence-rung.md:608 (SKILL.md:1347 spot-verify)", "classification": "round-4 §Pins snapshot value, superseded by declared errata append; stale annotation line-count 605 (SKILL.md:1376); not drift" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/packet-readiness-r7.md",
+      "observed_sha256": "7185642c2e41c92b9128bea1fd937ab2a6cc4c5dbba9f981ece2b774eda01d42",
+      "newline_count": 122,
+      "baseline_blob_sha256": "7185642c2e41c92b9128bea1fd937ab2a6cc4c5dbba9f981ece2b774eda01d42",
+      "baseline_blob_matches": true,
+      "expected_prefix": "7185642c2e41",
+      "expected_line_count": 122,
+      "expected_source": "SKILL.md:1387",
+      "secondary_expected_source": "SKILL.md:1443 (note's own §2 note-pin block, pin `7185642c2e41`)",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 pinned finally; corroborated by the note's own persisted §2 pin block reference",
+      "historical_pins": []
+    },
+    {
+      "path": "corpus/knowledge/state-changing-matrix-r9.md",
+      "observed_sha256": "ec540be07ed5a06ce0daea5412e6cd5c0bcd26486e5db596eb6acd316bd2193b",
+      "newline_count": 388,
+      "baseline_blob_sha256": "ec540be07ed5a06ce0daea5412e6cd5c0bcd26486e5db596eb6acd316bd2193b",
+      "baseline_blob_matches": true,
+      "expected_prefix": "ec540be07ed5",
+      "expected_line_count": 388,
+      "expected_source": "SKILL.md:1384",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 pinned finally; the untracked-in-wave caveat (SKILL.md:1083) is discharged by SKILL.md:1283 — ec540be07ed5/388 is the committed revision, and the baseline blob confirms",
+      "historical_pins": []
+    },
+    {
+      "path": "corpus/knowledge/stateful-fixture-evidence.md",
+      "observed_sha256": "f04e2e473cf9888cea085c5dac0d8d2eb8aae46f514ef1dcf969d5f3eb3246a9",
+      "newline_count": 855,
+      "baseline_blob_sha256": "f04e2e473cf9888cea085c5dac0d8d2eb8aae46f514ef1dcf969d5f3eb3246a9",
+      "baseline_blob_matches": true,
+      "expected_prefix": "f04e2e473cf9",
+      "expected_line_count": 855,
+      "expected_source": "SKILL.md:1381",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 pinned finally; same value persisted at SKILL.md:1074",
+      "historical_pins": [
+        { "prefix": "e89bc89bff38", "line_count": 773, "source": "SKILL.md:1400 (T3 declared-supersession; originally cited SKILL.md:961/:971)", "classification": "declared pre-append (r10 :1278); not drift" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/webbridge-daemon-disposition.md",
+      "observed_sha256": "fd5f6861aa3bc97e1e63176099f1615fed3c81184a9b1dd61d546caafec5a3bc",
+      "newline_count": 274,
+      "baseline_blob_sha256": "fd5f6861aa3bc97e1e63176099f1615fed3c81184a9b1dd61d546caafec5a3bc",
+      "baseline_blob_matches": true,
+      "expected_prefix": "fd5f6861aa3b",
+      "expected_line_count": 274,
+      "expected_source": "SKILL.md:1364",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final row; observed full hash equals the full hash persisted at SKILL.md:824",
+      "historical_pins": [
+        { "prefix": "03af1fb0693e", "source": "SKILL.md:1364 (as-cited column)", "classification": "round-4 §Pins snapshot value, superseded by declared errata append" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/webbridge-plugin-anatomy.md",
+      "observed_sha256": "8d1488ab763e4fb1281f445879caacc96298c76f7257b96d4cb25a1f1ab1ef51",
+      "newline_count": 290,
+      "baseline_blob_sha256": "8d1488ab763e4fb1281f445879caacc96298c76f7257b96d4cb25a1f1ab1ef51",
+      "baseline_blob_matches": true,
+      "expected_prefix": "8d1488ab763e",
+      "expected_line_count": 290,
+      "expected_source": "SKILL.md:1360",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 final row; observed full hash equals the full hash persisted at SKILL.md:825",
+      "historical_pins": [
+        { "prefix": "6ce6fdd018a7", "source": "SKILL.md:1360 (as-cited column); declared in webbridge-plugin-anatomy.md:289 (SKILL.md:1347 spot-verify)", "classification": "round-4 §Pins snapshot value, superseded by declared errata append; not drift" }
+      ]
+    },
+    {
+      "path": "corpus/knowledge/webbridge-revival-assessment.md",
+      "observed_sha256": "a07c8aedc1614d23e3049f042d5a30f05c85047d7ef9dc9a4f417d7a673337be",
+      "newline_count": 322,
+      "baseline_blob_sha256": "a07c8aedc1614d23e3049f042d5a30f05c85047d7ef9dc9a4f417d7a673337be",
+      "baseline_blob_matches": true,
+      "expected_prefix": "a07c8aedc161",
+      "expected_line_count": 322,
+      "expected_source": "SKILL.md:1384",
+      "prefix_matches": true,
+      "status": "MATCH",
+      "explanation": "T2 pinned finally; same value persisted at SKILL.md:585 (pin 2026-10-14T17:48Z) — consistent, no supersession",
+      "historical_pins": []
+    }
+  ],
+  "summary": {
+    "distinct_targets": 23,
+    "enumeration": "23 unique paths from git ls-tree at c24eaea; zero duplicates, zero missing (all present in worktree)",
+    "baseline_blob_matches": 23,
+    "prefix_matches": 23,
+    "line_count_matches": 23,
+    "dispositions": { "MATCH": 23, "drift": 0 },
+    "every_note_checked_twice": "each entry passes against BOTH the immutable baseline blob (git show c24eaea:path == observed) and the independently persisted expected prefix (observed_sha256 starts with expected_prefix from SKILL.md §T2 :1349-1394 / SCORECARD.md :15-18 / LOG.md :140-141); no current hash was substituted for an expected pin, and the stale r10 pin mismatch at SKILL.md:1386 is explained as declared supersession, not suppressed",
+    "superseded_pins": "all 17 persisted superseded/declared-pre-append pins retained in historical_pins above (11 §Pins as-cited values, archive-receipt-r10 c6f4445ebd03/203, archive-receipt-r8 0587605db913/191, stateful-fixture e89bc89bff38/773, arc-synthesis 6e46d1bb0a7e + 1b4b273141ba)"
+  },
+  "inherited_evidence_untouched": [
+    "before.json", "dispatch.json", "browser-smoke.json", "archive-smoke.json", "critic.json",
+    "browser-current.json", "baseline-current.json", "browser-before.png", "browser-after.png",
+    "browser-current-before.png", "browser-current-after.png"
+  ],
+  "caveats": [
+    "advisory seat evidence only: not a non-author SHONEN/LEARNING attestation (same-lane subagents do not qualify), not a native judge claim, no promotion authority",
+    "this file covers only the 23 corpus/knowledge notes; reports r4-r10, the three public plugin files, and pre-append SKILL.md are other seats' targets",
+    "no git mutation, no builds/lint/tests/formatters run; only read-only enumeration, hashing, counting",
+    "L1 owns pins.tsv integration — the MATCH rows above are per-note dispositions here, not pins.tsv rows"
+  ]
+}

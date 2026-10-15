@@ -1,0 +1,57 @@
+{
+  "started_at": "2026-10-15T05:10:18.402Z",
+  "finished_at": "2026-10-15T05:10:19.315Z",
+  "fixture": "corpus/evidence/tabi-r2-1-capture/site/page.html",
+  "url": "http://127.0.0.1:19472/page.html",
+  "mode": "owned managed Chromium, app.tern=false, loopback allowlist, no signed-in profile",
+  "before": {
+    "count": "0",
+    "status": "hydrated",
+    "items": 0,
+    "confirmations": 0,
+    "viewport": {
+      "width": 800,
+      "height": 600,
+      "scale": 1.25
+    }
+  },
+  "middle": {
+    "count": "1",
+    "items": 1,
+    "confirmation": "confirmed 1"
+  },
+  "after": {
+    "count": "2",
+    "items": 2,
+    "confirmations": 2,
+    "lastConfirmation": "confirmed 2",
+    "status": "hydrated"
+  },
+  "assertions": "PASS: initial count0/items0/confirmations0/hydrated; settled count1/item1/confirmed1; settled count2/items2/confirmations2/confirmed2/hydrated",
+  "screenshots": [
+    ".ufo/rounds/fleet-round-1-interactive-20261015/browser-before.png",
+    ".ufo/rounds/fleet-round-1-interactive-20261015/browser-after.png"
+  ],
+  "visual_check": "Final screenshot read inline; count2, item1/item2, confirmed1/confirmed2, hydrated visible",
+  "commands": [
+    "python -m http.server 19472 --bind 127.0.0.1 --directory corpus/evidence/tabi-r2-1-capture/site",
+    "browser.open({name:\"tabi-fleet-r1-interactive-smoke\",url:\"http://127.0.0.1:19472/page.html\",app:{tern:false},viewport:{width:800,height:600},allowed_domains:[\"127.0.0.1\"]})",
+    "waitForText(\"hydrated\"); observe; assert initial DOM; screenshot browser-before.png",
+    "click(\"#btn\"); waitForSelector(\"#confirm-1\"); assert count1/item1/confirmed1",
+    "click(\"#btn\"); waitForSelector(\"#confirm-2\"); assert count2/items2/confirmations2/confirmed2/hydrated; screenshot browser-after.png",
+    "browser.close({name:\"tabi-fleet-r1-interactive-smoke\"})",
+    "functions.write proc://tabi-fleet-r1-interactive-fixture-19472/kill; Python socket.connect_ex((\"127.0.0.1\",19472))"
+  ],
+  "cleanup": {
+    "managed_tab": "released",
+    "owned_service": "stopped, exited",
+    "port": 19472,
+    "connect_ex": 111,
+    "port_closed": true
+  },
+  "limits": [
+    "No historical pixel-equality claim",
+    "No real site, external rights/rate evidence, extension/daemon capability or global no-egress proof",
+    "No global configuration or substrate mutation"
+  ]
+}

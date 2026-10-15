@@ -1,0 +1,174 @@
+{
+  "seat": "Round1Scout",
+  "role": "scout",
+  "lane": "tabi",
+  "round": "fleet-round-1",
+  "axis": "freshness",
+  "measured_commit": "c24eaea14dfc0c4a3848742d31673db5675f9183",
+  "observed_at_utc": "2026-10-15T04:54:57Z",
+  "scope": "advisory reconnaissance only; no browser or server started, no session material read, no file outside this one written",
+  "target_question": "identify the best existing lane-authored loopback browser fixture, its selectors and state-based waits, its real source pointers, and a safe bounded replay that L1 can run for the freshness witness",
+
+  "best_fixture": {
+    "id": "tabi-r2-1-capture",
+    "fixture_dir": "corpus/evidence/tabi-r2-1-capture/site",
+    "page": "corpus/evidence/tabi-r2-1-capture/site/page.html",
+    "page_sha256": "21e27aa6619a41d2a68228b8fec90661b3b14aceb3d70e923f3400ab00691c99",
+    "page_bytes": 1903,
+    "page_newlines": 61,
+    "page_ends_with_trailing_newline": false,
+    "byte_pin_source": "SKILL.md:246-249 embeds these exact bytes as the reference fixture (same sha256 21e27aa6...1c99) so a fresh executor replays the pinned methodology instead of authoring a new one",
+    "local_manifest_pin": "corpus/evidence/tabi-r2-1-capture/MANIFEST.txt (line: '21e27aa6...1c99  site/page.html')",
+    "methodology_pin": "corpus/evidence/tabi-r2-1-capture/methodology-sha.txt (fixture + capture.mjs + driver.sh + compare.mjs sha256s)",
+    "why_best_for_this_move": "it is the only committed fixture whose harness performs the exact acceptance assertion: two successive real-input clicks with a per-click state-wait that requires both the appended list item and the delayed confirmation (count 0->1->2, item-1/item-2, confirm-1/confirm-2). Every other candidate is either a state/daemon probe, a copy of the same bytes, or a one-click variant.",
+    "fixture_dir_contents": ["site/page.html"],
+    "no_extra_assets": true,
+    "session_material_excluded": "MANIFEST.txt records that *profile* dirs (366 files / 7,696,307 bytes) were NOT archived; only shape-level artifacts were kept. Do not read profile dirs."
+  },
+
+  "fixture_bytes_duplicates_verified_identical": [
+    "corpus/evidence/tabi-r2-1-capture/site/page.html",
+    "corpus/evidence/tabi-r3-3-smoke/site/page.html",
+    "corpus/evidence/tabi-r3-4-work/site/page.html",
+    "corpus/evidence/tabi-a1-r2b-capture/site/page.html",
+    "corpus/evidence/tabi-r3-3-anchors/fixture-extract-nonl.html"
+  ],
+
+  "harness": {
+    "capture_script": "corpus/evidence/tabi-r2-1-capture/capture.mjs",
+    "capture_script_sha256": "d37d36dd92d0af47e2a5ab5059e1ad0433052c4b20985ae6b76d3b4450e8a7aa",
+    "driver_script": "corpus/evidence/tabi-r2-1-capture/driver.sh",
+    "driver_script_sha256": "8105bed02840ceb233df4e5f7e1d549b6d9c7bab4262e3f4b9e41be90e177bce",
+    "compare_script": "corpus/evidence/tabi-r2-1-capture/compare.mjs",
+    "compare_script_sha256": "e558bd547c58da1995e9da6dfc61c970e1122082e44bc4330028432d090afd35",
+    "node_requirement": ">=21 for the built-in global WebSocket (zero npm deps); host measured node v24.21.0, typeof WebSocket === 'function'",
+    "harness_entrypoints": "capture.mjs --phase=det|nondet --cdp=<port> --url=<fixture-url> --out=<dir>; driver.sh <run-number> (hardcodes ROOT=/tmp/tabi-r2-1-capture and its own ports 19411/19412)"
+  },
+
+  "selectors": {
+    "click_target": "#btn",
+    "counter": "#count",
+    "list_item": "#list li (ids: #item-1, #item-2)",
+    "delayed_confirmation": "#confirms div (ids: #confirm-1, #confirm-2; class .confirm)",
+    "async_status": "#status (booting -> hydrated after a 150 ms setTimeout)",
+    "never_mutated_control": "#static",
+    "nondet_only_volatile": ["#clock (Date.now() every 250 ms)", "#random (Math.random().toString(36).slice(2,10))"],
+    "nondet_toggle": "URL query ?nondet=on vs ?nondet=off",
+    "delay_semantics": "#confirm-N is appended 120 ms after click N; #status becomes 'hydrated' 150 ms after load"
+  },
+
+  "state_based_waits": {
+    "load": "document.title === 'TABI-R2-1 fixture' && document.readyState === 'complete' (capture.mjs:161-164; polling, because the load event raced unreliably)",
+    "hydration": "document.getElementById('status').textContent === 'hydrated' (capture.mjs:165-168; SKILL.md:160-164)",
+    "per_click_loop": "document.querySelectorAll('#list li').length === i+1 && !!document.getElementById('confirm-' + (i+1)) polled until true, i=0 then i=1 (capture.mjs:182-190)",
+    "poll_helper": "pollUntil(fn, label, timeoutMs=8000) with 50 ms interval (capture.mjs:60-68)",
+    "paint_settle": "two requestAnimationFrame frames before each screenshot (capture.mjs:69-70, invoked at :113)",
+    "no_sleep_based_waits_for_assertion": "the 300 ms between det before/before2 and the 1250 ms between nondet nd1/nd2 are idempotence/volatility gaps, not the assertion wait; the 0->1->2 assertion uses the two poll-based state-waits above"
+  },
+
+  "source_pointers": {
+    "fixture_page": "corpus/evidence/tabi-r2-1-capture/site/page.html (whole file; mutation script at the inline IIFE, count/confirm logic)",
+    "fixture_page_embedded_copy": "SKILL.md:246-265 (### Reference fixture (embedded - executor-test G1 fix))",
+    "capture_waits_and_click_loop": "corpus/evidence/tabi-r2-1-capture/capture.mjs:60-70 (pollUntil/settleFrames), :161-168 (load+hydration polls), :175-179 (rect), :180-191 (mouse events + per-click state-wait loop + final capture), :194-197 (nondet branch)",
+    "capture_screenshot_and_shape": "corpus/evidence/tabi-r2-1-capture/capture.mjs:113-119 (PNG + DOMSnapshot), :73-111 (deriveShape), :57-58 (PNG dims)",
+    "driver_lifecycle": "corpus/evidence/tabi-r2-1-capture/driver.sh:15-16 (port precheck), :18-21 (http.server), :23-30 (chromium), :32-36 (bounded CDP endpoint wait), :41-44 (child process line = kill list), :60-86 (cleanup + closure proof)",
+    "runbook": "SKILL.md:87-244 (## Runbook - loopback capture, start to finish; steps 0-13), SKILL.md:34-76 (webbridge / loopback subsections)",
+    "historical_result_record": "corpus/evidence/tabi-r2-1-capture/run1/det.json and run2/det.json (captured states), compare.tsv (cross-run/in-run comparisons)",
+    "inherited_round1_browser_smoke": "corpus/evidence/fleet-round-1-freshness/browser-smoke.json (inherited, not produced by this seat; managed-browser replay on port 19461 with app.tern=false and allowed_domains=127.0.0.1)"
+  },
+
+  "later_fixtures_considered": [
+    {
+      "path": "corpus/evidence/tabi-r3-4-work/scripts/runbook-capture.mjs",
+      "sha256": "1fc758e5b7cffbf299a7fa87a82ff93f1d421388d8ac18d1043bbf24387ac143",
+      "note": "later, more instrumented harness (session-slot record, two-count node cross-check, idempotence pair, nondet volatile pair) but it dispatches exactly ONE click and waits for count==='1' && #confirm-1 (single confirmation). It cannot observe 0->1->2 and is therefore not the acceptance lane, though its extra instrumentation is a useful template for a stronger witness."
+    },
+    {
+      "path": "corpus/evidence/tabi-r3-3-smoke/run-smoke.sh",
+      "note": "replays the SKILL runbook chain end-to-end, but copies the fixture to /tmp and runs only the det phase via the round-2 harness; it confirms the pinned bytes and closure proof without a second click."
+    },
+    {
+      "path": "corpus/evidence/tabi-r4-2-async, corpus/evidence/tabi-r4-1-network, corpus/evidence/tabi-b1-r3b-journey, corpus/evidence/tabi-r3-1-journey",
+      "note": "multi-page loopback journeys with their own index/detail/form/confirm/async pages, aimed at wire-capture and async-settle rungs; heavier than needed for a 0->1->2 freshness witness and not byte-pinned to SKILL.md."
+    },
+    {
+      "path": "corpus/evidence/tabi-r2-2-state, corpus/evidence/tabi-r2-4-poll",
+      "note": "daemon start/status/poll terminal evidence (no browser fixture, no page.html). Not usable as a browser-path witness."
+    }
+  ],
+
+  "historical_measured_states": {
+    "before": {"count": "0", "status": "hydrated", "items": [], "confirms": []},
+    "before2": {"count": "0", "status": "hydrated", "items": [], "confirms": []},
+    "after": {"count": "2", "status": "hydrated", "items": ["item-1", "item-2"], "confirms": ["confirm-1", "confirm-2"]},
+    "source": "corpus/evidence/tabi-r2-1-capture/run1/det.json captures[].volatile; identical structure in run2/det.json",
+    "viewport_dpr_historical": 1,
+    "png_dims_historical": {"width": 800, "height": 600},
+    "historical_png_sha256": {
+      "det-before.png": "c08947dc1e02f0ea551b3beb42b4a3eb9641347d6d5ae65bebcbba01c0802dc1",
+      "det-after.png": "7488d544ed53e0dbc25f9ae3c65c22b609a58c901c8a7b95aeec82ebde4b42c7"
+    },
+    "historical_identity": "compare.tsv: det-before PNG IDENTICAL within-run (before vs before2) and across the two independent server+browser runs (R1 vs R2); det-after PNG IDENTICAL R1 vs R2; det-after DIFFERS from det-before (mutation delta); nondet PNGs DIFFER (volatile counterexample). This is where the historical pixel-equality evidence lives - it is a property of the historical runs at deviceScaleFactor 1, not a requirement of the replay."
+  },
+
+  "replay_semantics_vs_historical_pixels": {
+    "semantics_to_reproduce": "count 0 -> 1 -> 2 with item-1/item-2 appended and confirm-1/confirm-2 appearing after each click's 120 ms delay, status 'hydrated', #static never mutated. This is the LANE-1 witness assertion and is stable across runs.",
+    "pixel_equality_not_claimed": "Do NOT assert the historical PNG shas (det-before c08947dc..., det-after 7488d544...) on a fresh run. The inherited browser-smoke.json already records limits: it observed deviceScaleFactor 1.25 (vs the historical CDP fixture's 1) and explicitly labels itself 'Semantic replay only; no historical pixel equality claim.' Different DPR/viewport produces different PNG bytes for the same semantics.",
+    "how_to_get_pixel_equality_if_wanted": "only by pinning the same viewport as the historical harness: Emulation.setDeviceMetricsOverride {width:800,height:600,deviceScaleFactor:1,mobile:false} (capture.mjs:155) on a headless chromium with no device-scale override. Even then, a fresh witness should record its own hashes as evidence rather than re-assert the historical ones.",
+    "shape_vs_png": "DOM shape struct shas (e.g. before struct 3f4f9240199be05f, after struct c8a8e862afae4071 in compare.tsv; shape-text shas d85c76fb.../ba497530...) are more DPR-robust than PNG shas, but only the state-based DOM assertions above are the acceptance predicate."
+  },
+
+  "safe_bounded_replay": {
+    "preconditions_measured": "ports 19411/19412/19461 now free (ss -ltn shows none listening); node v24.21.0 with global WebSocket; chromium 152.0.7977.82; python3 3.14.7 - all present",
+    "recommended_path": "CDP driver path over the committed harness, serving the pinned fixture directly from the corpus (read-only, no /tmp staging of the fixture)",
+    "steps": [
+      "1. Port precheck: ss -ltn | grep -E ':(19411|19412)\\b' && { echo FATAL ports busy; exit 10; } || echo 'ports free'",
+      "2. Serve the pinned fixture loopback-only: python3 -m http.server 19411 --bind 127.0.0.1 --directory corpus/evidence/tabi-r2-1-capture/site > <out>/http.log 2>&1 &  (capture HTTP_PID=$!)",
+      "3. Launch an owned headless browser on a loopback debug port with its OWN profile: setsid nohup chromium --headless=new --remote-debugging-port=19412 --remote-debugging-address=127.0.0.1 --user-data-dir=<out>/profile --no-first-run --no-default-browser-check --disable-gpu --disable-background-networking about:blank > <out>/chromium.log 2>&1 &",
+      "4. Bounded endpoint wait (10 s envelope): for i in $(seq 1 50); do curl -sf http://127.0.0.1:19412/json/version > <out>/json-version.json && break; sleep 0.2; done; curl -sf ... || exit 11",
+      "5. Discover the kill list by profile match (never pkill -f): CHROMIUM_PIDS=$(ps -eo pid,args | grep '[c]hromium' | grep \"user-data-dir=<out>/profile\" | awk '{print $1}')",
+      "6. Run the pinned harness det phase against the served page: node corpus/evidence/tabi-r2-1-capture/capture.mjs --phase=det --cdp=19412 --url='http://127.0.0.1:19411/page.html?nondet=off' --out=<out>",
+      "7. Read <out>/det.json: expect captures before/before2 count 0 and after count 2 with items [item-1,item-2], confirms [confirm-1,confirm-2], status hydrated; record your own PNG/shape hashes with the run timestamp",
+      "8. Close only what you started: kill $CHROMIUM_PIDS; kill $HTTP_PID; sleep 1; escalate kill -9 only to the discovered PIDs if a survivor remains",
+      "9. Closure proof: ps -eo pid,args | grep '[c]hromium' | grep 'user-data-dir=<out>/profile' (empty); ss -ltn | grep -E ':(19411|19412)\\b' (empty); curl cdp exit=7; curl http exit=7"
+    ],
+    "alternative_inherited_path": "The inherited browser-smoke.json used a managed browser tab on port 19461 with app.tern=false and allowed_domains=127.0.0.1, closing its own tab and server afterwards (archive-smoke.json records the same pattern: managed tab, stop_result exited, connect_ex 111, closed true). Reusing that managed path is fine if the harness owns its tab/server; it is not required.",
+    "bounds_and_guardrails": [
+      "loopback binds only (127.0.0.1); no external sites",
+      "one owned browser with its own --user-data-dir; never the user's real profile and never the webbridge daemon",
+      "close only your own server PID and your own browser PIDs; kill by explicit PID, never pkill -f (it self-matched the invoking shell once, SKILL.md:238-241)",
+      "no session material: do not read any *profile* dir or cookie/session content; shape-only if ever needed",
+      "write new evidence only under corpus/evidence/fleet-round-1-freshness/ (L1 owns integration of shared docs/pins/LOG/SCORECARD)"
+    ],
+    "known_limitations_to_state_with_any_witness": [
+      "loopback is not proof of no egress (a fresh headless profile can still emit background traffic); pair any such claim with the browser log shape",
+      "the fixture proves DOM/state semantics, not rendering fidelity beyond what the screenshot shows",
+      "viewport/DPR differences make historical PNG shas non-transferable (see replay_semantics_vs_historical_pixels)"
+    ]
+  },
+
+  "terminal_only_daemon_checks": {
+    "verdict": "IRRELEVANT to this move",
+    "reasoning": [
+      "The freshness move's decisive evidence is a browser-path loopback witness (count 0->1->2 + delayed confirmations). A daemon probe (e.g. curl http://127.0.0.1:10086/status) exercises the user's real browser bridge and never touches the lane-authored loopback fixture, so it cannot observe any of the acceptance states.",
+      "The webbridge daemon is down: corpus/knowledge/closeout-r11.md:101 ('daemon down - no listener, no process') and closeout-r11.md:143 item O16 ('none current (daemon down; no revived instance)'); webbridge-daemon-disposition.md:275 records no listener on 10086 and states the /status probe stays A3-gated (approval-bound) - the lane must not start a daemon and should not run the probe.",
+      "Terminal-only evidence in this repo about the daemon lives in corpus/evidence/tabi-r2-2-state (start/status/final-state) and corpus/evidence/tabi-r2-4-poll (poll.sh/poll.log); both are process/socket observations, not browser fixtures, and neither observes DOM state.",
+      "The operating contract also forbids reading identity/session/cookie/log content, so even a live daemon would not be a permitted witness surface for this move."
+    ],
+    "conclusion": "No terminal-only daemon check should be substituted for, or added to, the loopback browser replay. If L1 wants a daemon line at all, it belongs to a different (daemon/A4) obligation, not to this freshness witness."
+  },
+
+  "confidence": {
+    "fixture_identity_and_bytes": "observed (sha256 + wc measured this session; matches MANIFEST.txt and SKILL.md:246-249 pin)",
+    "selectors_and_state_waits": "observed (capture.mjs and site/page.html read directly)",
+    "historical_states_and_pixel_identity": "observed (run1/run2 det.json and compare.tsv read directly)",
+    "harness_duplicate_copies_byte_identical": "observed (sha256 of five paths)",
+    "daemon_down_and_irrelevance": "observed for the citations; [INFERENCE] for the general claim that a daemon probe cannot observe DOM state (follows from the probe's target surface)",
+    "replay_will_pass_semantics": "[INFERENCE] high confidence - the harness and fixture are byte-identical to the pinned methodology and the environment (node/chromium/python versions) matches the recorded baseline; not executed by this seat"
+  },
+
+  "residual_unknowns": [
+    "Whether a fresh run reproduces the semantic states on the current host with the current chromium build (this seat started no browser by contract; the inherited browser-smoke.json is same-day evidence that it does).",
+    "Whether L1's managed-browser path or the CDP driver path is preferred for the committed witness (both are viable; the CDP path carries the committed cleanup+closure proof)."
+  ]
+}

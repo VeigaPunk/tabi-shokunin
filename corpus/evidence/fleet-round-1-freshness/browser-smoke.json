@@ -1,0 +1,30 @@
+{
+  "observed_at_utc": "2026-10-15T04:49:13.090Z",
+  "finished_at_utc": "2026-10-15T04:49:31.961Z",
+  "measured_commit": "c24eaea14dfc0c4a3848742d31673db5675f9183",
+  "fixture": "corpus/evidence/tabi-r2-1-capture/site/page.html",
+  "url": "http://127.0.0.1:19461/page.html",
+  "browser": "Chrome/152.0.7977.82",
+  "viewport": {"width": 800, "height": 600, "deviceScaleFactor": 1.25},
+  "actions": [
+    "browser.open with own managed profile, app.tern=false, allowed_domains=127.0.0.1",
+    "waitForText(hydrated)",
+    "observe; record count0; screenshot before",
+    "click #btn; waitForSelector #confirm-1; record count1",
+    "click #btn; waitForSelector #confirm-2; record count2; screenshot after"
+  ],
+  "states": [
+    {"step": "hydrated-before", "count": "0", "status": "hydrated", "items": 0, "confirms": 0},
+    {"step": "first-click-settled", "count": "1", "items": 1, "confirmation": "confirmed 1"},
+    {"step": "second-click-settled", "count": "2", "items": 2, "confirms": 2, "confirmation": "confirmed 2", "status": "hydrated"}
+  ],
+  "assertion": "count0->1->2, two list items and two delayed confirmations",
+  "result": "PASS",
+  "screenshots": ["corpus/evidence/fleet-round-1-freshness/browser-before.png", "corpus/evidence/fleet-round-1-freshness/browser-after.png"],
+  "reproduce": "Serve the committed fixture directory with python -m http.server 19461 --bind 127.0.0.1 --directory corpus/evidence/tabi-r2-1-capture/site; open /page.html in an owned managed browser; perform the listed state-based actions and close the tab/server.",
+  "limits": [
+    "Semantic replay only; no historical pixel equality claim.",
+    "Current deviceScaleFactor1.25 differs from historical CDP fixture scale1.",
+    "Only lane-authored loopback page; no logged-in session, real site, extension/daemon handshake or global no-egress proof."
+  ]
+}

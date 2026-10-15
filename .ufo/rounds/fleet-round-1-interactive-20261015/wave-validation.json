@@ -1,0 +1,79 @@
+{
+  "plan_command": [
+    "node",
+    "scripts/ufo-swarm-wave.mjs",
+    "plan",
+    "--spec",
+    "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/rounds/fleet-round-1-interactive-20261015/wave.spec.json",
+    "--route-families"
+  ],
+  "plan_cwd": "/home/vgpnk/Projects/ufo-fsd-alpha",
+  "plan_exit": 0,
+  "plan_stderr": "",
+  "render_command": [
+    "node",
+    "--input-type=module",
+    "-e",
+    "import {planToDispatchPayload} from './scripts/ufo-swarm-wave.mjs'; let s=''; for await (const c of process.stdin) s+=c; console.log(JSON.stringify(planToDispatchPayload(JSON.parse(s)),null,2));"
+  ],
+  "render_exit": 0,
+  "render_stderr": "",
+  "schema": "ufo-swarm-wave-dispatch-v1",
+  "counts": {
+    "spawn": 32,
+    "resume": 0,
+    "total": 32
+  },
+  "distinct_names": 32,
+  "distinct_tasks": 32,
+  "rendered_tasks_equal_validated_tasks": true,
+  "all_fresh_prefixes": true,
+  "dispatch_calls": 0,
+  "registry_persisted": false,
+  "run_not_invoked": "Dispatch blocked by required taxonomy alias mismatch; canonical planToDispatchPayload export renders without run registry writes in read-only UFO checkout. No claimed spawn/handle.",
+  "route_preflight": {
+    "schema": "ufo-route-preflight-v1",
+    "config": {
+      "path": "/home/vgpnk/.omp/agent/config.yml",
+      "sha256": "08788ddcbbb48180b987e6f54b517af294c85cacceb07bdd594843a53e668dcc"
+    },
+    "concentration": {
+      "families": 2,
+      "largestFamilyLanes": 31,
+      "pinnedLanes": 32,
+      "singleFamily": false
+    },
+    "unpinned": [],
+    "status": "unprobed",
+    "pings": 0,
+    "families": [
+      {
+        "alias": "m_mid",
+        "hops": [
+          "alibaba-token-plan/qwen3.8-flash:high",
+          "charm-hyper/qwen3.8-flash:high"
+        ],
+        "roles": [
+          "connector",
+          "reviewer"
+        ],
+        "lanes": 31,
+        "status": "unprobed"
+      },
+      {
+        "alias": "m_fast",
+        "hops": [
+          "alibaba-token-plan/deepseek-v4.1-flash:max",
+          "opencode-go/deepseek-v4.1-flash:max",
+          "devin/deepseek-v4-1-flash:max",
+          "charm-hyper/deepseek-v4.1-flash:max"
+        ],
+        "roles": [
+          "scout"
+        ],
+        "lanes": 1,
+        "status": "unprobed"
+      }
+    ]
+  }
+}

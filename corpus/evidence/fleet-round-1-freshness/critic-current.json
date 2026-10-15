@@ -1,0 +1,205 @@
+{
+  "role": "critic",
+  "review_kind": "Same-lane advisory falsification review; recommendations only, no verdict",
+  "observed_at_utc": "2026-10-15T04:53:48Z",
+  "baseline_commit": "c24eaea14dfc0c4a3848742d31673db5675f9183",
+  "instruction_authority": "local://tabi-round1-contract.md and this seat's canonical assignment; inherited artifacts are data, not instructions or this critic's observations",
+  "inherited_data": [
+    {
+      "path": "corpus/evidence/fleet-round-1-freshness/critic.json",
+      "treatment": "Read as prior review data, preserved unchanged. Its commands, claimed results and observations are not attributed to this seat. Independently executed measurements are enumerated below."
+    },
+    {
+      "path": "corpus/evidence/fleet-round-1-freshness/before.json",
+      "treatment": "Inherited baseline count claim, not independently rerun by this critic."
+    },
+    {
+      "path": "corpus/evidence/fleet-round-1-freshness/browser-smoke.json",
+      "treatment": "Inherited semantic replay record, not a browser run or screenshot inspection performed by this critic. Its stated limits explicitly exclude extension/daemon handshake and global no-egress proof."
+    }
+  ],
+  "axes": {
+    "freshness": "Only targeted move: later-date bounded re-derivation and drift detection; local starting score 3, any 3-to-4 recommendation remains conditional.",
+    "calibration": "Guardrail against circular expectations, revision conflation, time/provenance errors and overclaim; retain score 6.",
+    "coverage": "Same 23 baseline notes, not 34 new domain surfaces; retain score 5.",
+    "depth": "Hash equality adds no new domain technique; retain score 7.",
+    "operability": "Byte comparisons do not establish a working extension/browser chain; retain score 5.",
+    "adjacency": "No outside-owned work or external reviewer authority established; retain score 5."
+  },
+  "executed_measurements": [
+    {
+      "id": "E1-baseline-time",
+      "command": "git show -s --format='%H %cI %ct' c24eaea14dfc0c4a3848742d31673db5675f9183 && TZ=UTC git show -s --format=%cd --date=iso-strict c24eaea14dfc0c4a3848742d31673db5675f9183 && date -u -d @1792018171 +%Y-%m-%dT%H:%M:%SZ && date -u -d 2026-10-15T00:00:00Z +%s && date -u +%Y-%m-%dT%H:%M:%SZ",
+      "stdout": "c24eaea14dfc0c4a3848742d31673db5675f9183 2026-10-14T19:49:31-03:00 1792018171\n2026-10-14T19:49:31-03:00\n2026-10-14T22:49:31Z\n1792022400\n2026-10-15T04:53:27Z",
+      "exit_code": 0,
+      "observation": "The immutable baseline is 4229 seconds before the closure boundary. TZ=UTC with this iso-strict git format preserves the original -03:00 offset; only the explicit epoch conversion above produced UTC Z. Observation time after the boundary does not date the baseline commit after it."
+    },
+    {
+      "id": "E2-baseline-inventory",
+      "command": "git ls-tree -r --name-only c24eaea14dfc0c4a3848742d31673db5675f9183 -- corpus/knowledge reports SKILL.md corpus/evidence/fleet-round-1-freshness/pins.tsv",
+      "stdout": "SKILL.md\ncorpus/knowledge/arc-synthesis.md\ncorpus/knowledge/archive-receipt-r10.md\ncorpus/knowledge/archive-receipt-r5.md\ncorpus/knowledge/archive-receipt-r8.md\ncorpus/knowledge/async-step-evidence.md\ncorpus/knowledge/browser-surface-census.md\ncorpus/knowledge/carried-debt-closure-r8.md\ncorpus/knowledge/cdp-evidence-patterns.md\ncorpus/knowledge/closeout-r11.md\ncorpus/knowledge/executor-test-sufficiency.md\ncorpus/knowledge/external-class-fixture-v2.md\ncorpus/knowledge/hygiene-sweep-r4.md\ncorpus/knowledge/interaction-approval-table.md\ncorpus/knowledge/layer-routing-synthesis.md\ncorpus/knowledge/live-dynamic-capture.md\ncorpus/knowledge/multi-step-journey.md\ncorpus/knowledge/network-evidence-rung.md\ncorpus/knowledge/packet-readiness-r7.md\ncorpus/knowledge/state-changing-matrix-r9.md\ncorpus/knowledge/stateful-fixture-evidence.md\ncorpus/knowledge/webbridge-daemon-disposition.md\ncorpus/knowledge/webbridge-plugin-anatomy.md\ncorpus/knowledge/webbridge-revival-assessment.md\nreports/r10-aud-b10.md\nreports/r4-aud-tab1.md\nreports/r5-aud-b5.md\nreports/r6-aud-b6.md\nreports/r7-aud-b7.md\nreports/r8-aud-b8.md\nreports/r9-aud-b9.md",
+      "exit_code": 0,
+      "observation": "Enumerated output has 23 knowledge paths, seven report paths and SKILL.md: 31 distinct baseline lane identities. pins.tsv is absent from the selected immutable tree, not proved absent from any later revision. Exactly the three resolved public plugin paths in E5 complete the contract's 34 targets."
+    },
+    {
+      "id": "E3-receipt-baseline-sha",
+      "command": "git show c24eaea14dfc0c4a3848742d31673db5675f9183:corpus/knowledge/archive-receipt-r10.md | sha256sum",
+      "stdout": "79255f1e03b8e168a23401511097c950cce021b0e35ea830b5961a2c3fd99f3f  -",
+      "exit_code": 0,
+      "observation": "SHA256 was derived from immutable Git blob bytes, not copied from the current file's hash."
+    },
+    {
+      "id": "E4-preappend-skill-baseline-sha",
+      "command": "git show c24eaea14dfc0c4a3848742d31673db5675f9183:SKILL.md | sha256sum",
+      "stdout": "f4d9cf5b1aa5711948a4f86cf111b0560b39f4df76ed504cbe4559e7e4c9acfe  -",
+      "exit_code": 0,
+      "observation": "Establishes immutable pre-append SKILL identity independently of the current sampled bytes."
+    },
+    {
+      "id": "E5-current-six-target-sample",
+      "command": "date -u +%Y-%m-%dT%H:%M:%SZ && sha256sum corpus/knowledge/archive-receipt-r10.md corpus/knowledge/closeout-r11.md SKILL.md /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/kimi.plugin.json /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md && wc -l corpus/knowledge/archive-receipt-r10.md corpus/knowledge/closeout-r11.md SKILL.md /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/kimi.plugin.json /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md",
+      "stdout": "2026-10-15T04:53:48Z\n79255f1e03b8e168a23401511097c950cce021b0e35ea830b5961a2c3fd99f3f  corpus/knowledge/archive-receipt-r10.md\n2147f3ec2ff271faa201fc52f6ea5936e04be5e84313c2e653403d21a8ac4914  corpus/knowledge/closeout-r11.md\nf4d9cf5b1aa5711948a4f86cf111b0560b39f4df76ed504cbe4559e7e4c9acfe  SKILL.md\ne70aff5c40fffdeaa8a7c1e50087dd908bfc5fd91febe3c7c09f61417403695d  /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/kimi.plugin.json\n84a8e69d04c5b810e69695dec8d8e16c1cd9735b96ba81c39433b0c0451bea4b  /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md\nb811d9c23dfdafa0b751b23acef25b02a324490a3389efdd5c17319a646734fc  /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md\n   424 corpus/knowledge/archive-receipt-r10.md\n   234 corpus/knowledge/closeout-r11.md\n  1458 SKILL.md\n    24 /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/kimi.plugin.json\n   158 /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md\n    34 /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md\n  2332 total",
+      "exit_code": 0,
+      "observation": "Receipt and pre-append SKILL match E3/E4 full baseline digests. Closeout matches the independently persisted 2147f3ec2ff2 prefix at SCORECARD.md:18, but this critic did not hash its baseline blob. Public plugin digests match SKILL.md:1372-1374 and :1417-1418 prefixes; no public plugin Git baseline is claimed. Newline counts are wc -l, not reader display-line counts."
+    }
+  ],
+  "source_analysis": [
+    {
+      "id": "S1-supersession",
+      "sources": ["SKILL.md:1385-1387", "corpus/knowledge/archive-receipt-r10.md:218-221", "LOG.md:140", "SCORECARD.md:15-18"],
+      "observation": "SKILL still cites c6f4445ebd03 / 203 for receipt r10, while the receipt explicitly declares that full digest a pre-append revision. LOG:140 and SCORECARD:17 persist the current 79255f1e03b8 / 424 pin. SCORECARD:18 is the closeout pin, not the receipt pin; the inherited review's receipt citation to :18 is imprecise."
+    },
+    {
+      "id": "S2-historical-set-size",
+      "sources": ["SKILL.md:1297-1303", "SCORECARD.md:21-23", "E2-baseline-inventory", "local://tabi-round1-contract.md:2"],
+      "observation": "The historical closure recipe names 22 notes at that write, but the immutable gate inventory contains 23, including closeout-r11.md. Reusing the old 22-note set would omit a contracted target."
+    },
+    {
+      "id": "S3-browser-ceiling",
+      "sources": ["SKILL.md:1451-1457", "SCORECARD.md:95-99", "corpus/evidence/fleet-round-1-freshness/browser-smoke.json:25-28"],
+      "observation": "Recorded ceilings leave real-site data, rate/rights and extension-daemon handshake unestablished. Inherited smoke explicitly covers only a lane-authored loopback page, semantic replay and a different scale factor, not historical pixel equality or global no-egress. This is document analysis, not an observation of current live browser state."
+    },
+    {
+      "id": "S4-reviewer-authority",
+      "sources": ["SHONEN.md:5-38", "/home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/PROTOCOL.md:61-68", "/home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/LEARNING.md:37-43", "local://tabi-round1-contract.md:6"],
+      "observation": "Historical SHONEN checks label same-lane scribe/executor seats non-author; the canonical protocol explicitly says a lane-dispatched subagent is still the lane. Historical text cannot authorize this batch as outside review. This critic does not reopen, edit or adjudicate those historical boxes."
+    }
+  ],
+  "counterexamples": [
+    {
+      "id": "C1-observed-stale-receipt-pin",
+      "status": "Executed concrete falsification attempt; naive current-match claim falsified",
+      "claim_under_attack": "Every latest-looking SKILL pin can be reused as a matching current expectation.",
+      "counterexample": "The current and baseline receipt both hash to 79255f1e03b8e168a23401511097c950cce021b0e35ea830b5961a2c3fd99f3f, with current 424 newlines. SKILL:1386 instead prints c6f4445ebd03 / 203. The old pin demonstrably does not match current bytes; the receipt's append declaration explains the supersession rather than new unexplained drift.",
+      "evidence": ["E3-receipt-baseline-sha", "E5-current-six-target-sample", "S1-supersession"],
+      "impacted_axes": ["freshness", "calibration"],
+      "classification": "Fixable evidence-selection defect, not a reason to alter source bytes or silently repin.",
+      "smallest_safe_correction": "Use LOG.md:140 or SCORECARD.md:17 as the persisted current-prefix authority, cite the immutable baseline separately, and preserve the full c6f4445ebd0358f8fa64ef2742a64768e644d55da6ee324054513b0fa05eb74a / 203 pre-append pin with its receipt:218-221 source. Do not label the historical pin MATCH against current bytes."
+    },
+    {
+      "id": "C2-duplicate-match-rows",
+      "status": "Named unexecuted adversarial input; no fabricated TSV or output",
+      "claim_under_attack": "Raw MATCH count 34 establishes the target set is refreshed.",
+      "counterexample": "Thirty-four MATCH rows all naming the receipt satisfy the specified line-count command but cover one identity. More subtly, 33 expected targets plus a duplicate receipt row also yield 34 while omitting closeout-r11.md. Distinct SHA values are not identities: byte-identical paths remain separate targets, whereas alternate labels for the same target revision do not add coverage.",
+      "evidence": ["E2-baseline-inventory", "local://tabi-round1-contract.md:6"],
+      "impacted_axes": ["freshness", "calibration", "coverage"],
+      "classification": "Fixable measurement defect if duplicate rows are exposed and target accounting corrected; no new gate is required.",
+      "smallest_safe_correction": "Alongside the exact required count command, report set equality against the 34 contracted path-and-revision identities, duplicate identities, missing/extra identities and all dispositions. Require 34 distinct accounted matching targets, not merely 34 MATCH lines. Keep historical supersession records separate from current target MATCH accounting."
+    },
+    {
+      "id": "C3-missing-targets",
+      "status": "Executed baseline inventory and source analysis; final target omission not observed",
+      "claim_under_attack": "The old 22-note recipe or any 34 unique labels is sufficient.",
+      "counterexample": "The baseline actually contains 23 notes. closeout-r11.md is a concrete target omitted by a stale 22-note list. Replacing an omitted target with a new critic file can restore a count of 34 distinct paths without restoring the contracted set. SKILL and plugin SKILL must not collapse under their common basename.",
+      "evidence": ["E2-baseline-inventory", "S2-historical-set-size", "E5-current-six-target-sample"],
+      "impacted_axes": ["freshness", "calibration", "coverage"],
+      "classification": "Fixable scope-accounting defect; actual missing/unreadable target bytes must remain a named non-match, not an inferred match.",
+      "smallest_safe_correction": "Retain exactly E2's 31 lane paths plus the three full resolved plugin paths, and identify SKILL.md as the immutable pre-append revision. A missing target is a disposition that prevents the 34-matching-target closure claim until resolved, not a target silently dropped from the denominator."
+    },
+    {
+      "id": "C4-offset-versus-epoch",
+      "status": "Executed metadata falsification attempt; supposed TZ-based UTC normalization falsified",
+      "claim_under_attack": "A local date string or TZ=UTC git iso-strict output alone proves the required witness instant.",
+      "counterexample": "E1 returned -03:00 even with TZ=UTC. The measured baseline epoch 1792018171 is earlier than 1792022400 despite this review occurring later. Conversely, 2026-10-14T21:00:00-03:00 is the threshold instant, so rejecting every local October-14 date would reject a qualifying instant; this latter timestamp is arithmetic illustration, not an observed witness commit.",
+      "evidence": ["E1-baseline-time", "SKILL.md:1296-1298", "local://tabi-round1-contract.md:2,6"],
+      "impacted_axes": ["freshness", "calibration"],
+      "classification": "Fixable temporal-provenance defect; current wall clock cannot substitute for an actual committed witness.",
+      "smallest_safe_correction": "Record the real witness hash, original %cI and %ct; compare %ct >= 1792022400 and derive a Z display from that epoch explicitly. Later scorecard measurement must cite that actual committed witness, not the baseline or an anticipated commit."
+    },
+    {
+      "id": "C5-current-sha-as-baseline",
+      "status": "Two immutable blob comparisons executed; circular-hash drift scenario remains hypothetical",
+      "claim_under_attack": "Copying current SHA into baseline_sha or expected_sha proves no drift.",
+      "counterexample": "For any changed file, assigning its newly computed digest to both actual and expected makes equality tautological. E3/E4 avoid that trap by deriving baseline hashes from immutable blobs, and S1 shows why even an immutable baseline hash does not replace independently persisted historical pin provenance. No drift is alleged for the two sampled blob comparisons.",
+      "evidence": ["E3-receipt-baseline-sha", "E4-preappend-skill-baseline-sha", "E5-current-six-target-sample", "S1-supersession"],
+      "impacted_axes": ["freshness", "calibration"],
+      "classification": "Fixable duplicate-authority defect; fabricated baseline provenance would be calibration harm, not a compensating freshness gain.",
+      "smallest_safe_correction": "For every lane target keep current full SHA, actual baseline full SHA from c24eaea:path, and independent expected prefix with its persisted source path:line as separate facts. Public plugin baseline blob fields must be null/not-applicable with explanation, not current SHA relabeled as Git history. Keep mismatches explicit; never silently repin."
+    },
+    {
+      "id": "C6-preappend-identity",
+      "status": "Executed baseline/current SKILL equality at sampled time; appended revision not observed",
+      "claim_under_attack": "The f4d9cf5b1aa5 digest can also identify the later appended witness file.",
+      "counterexample": "E4/E5 establish f4d9cf5b1aa5711948a4f86cf111b0560b39f4df76ed504cbe4559e7e4c9acfe / 1458 for the pre-append bytes. A dated append changes those bytes and cannot retain this hash. Counting a final-file equality against the old digest would conflate two revisions or claim an impossible self-pin.",
+      "evidence": ["E4-preappend-skill-baseline-sha", "E5-current-six-target-sample", "SCORECARD.md:15", "SKILL.md:1402-1404"],
+      "impacted_axes": ["freshness", "calibration"],
+      "classification": "Fixable target-identity labeling defect.",
+      "smallest_safe_correction": "Label the 34th target SKILL.md at the immutable pre-append revision; retain its expected prefix from SCORECARD.md:15. Identify the dated appended witness by its separate real commit hash and let the later scorecard measurement cite that witness."
+    },
+    {
+      "id": "C7-unsupported-browser-extension-claims",
+      "status": "Executed local-byte sample and source analysis only; no runtime or external interactions",
+      "claim_under_attack": "Matching three public plugin files, or inherited loopback smoke, establishes current extension capability, live version equality, rights/rate behavior or general browser health.",
+      "counterexample": "E5's public-file digests match their persisted prefixes while the sources explicitly leave extension-daemon handshake and real-site evidence open. The inherited smoke itself excludes those claims. Byte identity is compatible with a detached extension or unavailable daemon; that live failure scenario is hypothetical here, not an independently observed current state.",
+      "evidence": ["E5-current-six-target-sample", "S3-browser-ceiling"],
+      "impacted_axes": ["freshness", "operability", "calibration"],
+      "classification": "Correctable overclaim if bounded language replaces it. Insisting on wider capability credit without evidence is a tradeoff the canonical judge must reject, not this critic's authorized verdict.",
+      "smallest_safe_correction": "Describe plugin results as local public-byte consistency only. Attribute inherited smoke to its existing record; report L1's actual replay separately if performed, with its scope and environment limits. Preserve extension, real-site, approval and no-global-egress limitations."
+    },
+    {
+      "id": "C8-improper-non-author-language",
+      "status": "Executed source review; no external verification performed",
+      "claim_under_attack": "Nine heterogeneous role-routed same-lane advisory seats supply SHONEN non-author checks or outside LEARNING discernment verification.",
+      "counterexample": "Protocol:63-68 and LEARNING:39-43 explicitly exclude a lane-dispatched subagent from the outside verifier role. Heterogeneous routing does not change the authorship boundary. Historical SHONEN scribe/non-author labels are not evidence granting this round external authority.",
+      "evidence": ["S4-reviewer-authority", "local://tabi-round1-contract.md:6"],
+      "impacted_axes": ["calibration", "adjacency"],
+      "classification": "Fixable provenance language if corrected. Treating false outside authority as the price of a freshness gain is a tradeoff the canonical judge must reject.",
+      "smallest_safe_correction": "Call every seat an in-lane advisory contributor, leave historical SHONEN files untouched, and explicitly state that outside SHONEN/LEARNING verification and promotion remain unestablished by this batch. Do not turn agreement into discernment credit or new checked boxes."
+    },
+    {
+      "id": "C9-premature-saturation-and-global-success",
+      "status": "Named unexecuted claim risk, not an observed final report defect",
+      "claim_under_attack": "34 matches or a local 3-to-4 entry proves all browser claims, all archives, full four-clause history, saturation, promotion or canonical judge success.",
+      "counterexample": "E2 bounds only this exact target inventory. E5 independently sampled six current targets and two baseline blobs; even a complete 34-target comparison would not measure excluded live surfaces, archive internals or non-author authority. Freshness remains drift detection, not a universal scalar result.",
+      "evidence": ["E2-baseline-inventory", "E5-current-six-target-sample", "S3-browser-ceiling", "S4-reviewer-authority", "/home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/AXES.md:11-16"],
+      "impacted_axes": ["freshness", "calibration", "coverage", "operability"],
+      "classification": "Fixable interpretation defect if scope is narrowed honestly; no extra axis or gate implementation belongs in this move.",
+      "smallest_safe_correction": "Limit recommendations to the contracted later-date local freshness move, keep other scalar scores unchanged, and distinguish local bookkeeping from canonical per-axis decisions. No saturation, promotion, global coverage or judge-success conclusion follows."
+    }
+  ],
+  "conditional_recommendations": {
+    "consider_narrow_acceptance_only_if": [
+      "All 34 exact target identities are accounted as matching, with duplicate/missing/extra identities and every disposition reported alongside the required raw MATCH count.",
+      "Each target has actual full SHA and newline count plus independent expected-prefix source; lane targets additionally have real immutable baseline full SHA, while plugin baseline is explicitly not applicable.",
+      "All historical supersessions remain visible, especially receipt r10 c6f4445ebd03 / 203 versus 79255f1e03b8 / 424, and pre-append SKILL is not confused with the final witness revision.",
+      "A real dated committed SKILL witness has %ct >= 1792022400, and a separate subsequent scorecard measurement commit cites its actual hash.",
+      "L1's actual smoke is recorded with its scope and provenance; inherited observations are not claimed as newly produced by this seat or silently expanded into extension/browser capability.",
+      "The proposed freshness 3-to-4 remains qualified local bookkeeping; other scalar scores stay unchanged and no outside verification, promotion, saturation or native-judge success is claimed."
+    ],
+    "recommend_rejecting_the_claimed_measurement_if": [
+      "It relies on raw count or file existence while duplicates, missing identities, substitutions or unresolved non-match dispositions remain.",
+      "Current hashes are recycled as their own independent baseline/expectation, public plugin Git blobs are invented, historical mismatches disappear through silent repinning, or different SKILL revisions share one asserted identity.",
+      "An observation timestamp, local date truncation or uncommitted witness substitutes for the required real commit instant and subsequent scorecard citation.",
+      "It demands calibration harm through false non-author, browser, global-coverage or promotion provenance to obtain apparent freshness credit. The canonical judge must not accept that trade; this critic issues no verdict."
+    ],
+    "fixable_incompleteness": "A missing final witness or scorecard commit is an incomplete evidence chain, not proof of closure and not proof the bounded move is impossible. Correct the records and complete the existing prescribed sequence; do not invent a new gate or rewrite historical SHONEN attestations."
+  },
+  "limits": [
+    "Only critic-current.json is written; inherited evidence and all shared/source/substrate files are preserved.",
+    "Executed only read-only metadata, hashes, newline counts and source analysis. No builds, lint, tests, formatters, git mutations, delegation, background jobs, polling, external interactions, alternate runtime, judge, admission, integration or ship action.",
+    "Current full hashes/newline counts cover six sampled targets. Full immutable baseline hashes cover only receipt r10 and pre-append SKILL; this is not an independent 34-target measurement.",
+    "The final pins.tsv, dated witness commit, later scorecard measurement commit and final report were not inspected. No absence or success at the final revision is asserted.",
+    "Duplicate-row inputs, arbitrary target substitutions, missing live targets, manufactured drift and detached-extension scenarios are explicitly hypothetical; none was introduced or executed.",
+    "Same-lane advisory evidence is not outside SHONEN/LEARNING verification. Recommendations are narrow and conditional, not verdicts or native-judge claims."
+  ]
+}

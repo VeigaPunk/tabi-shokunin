@@ -57,3 +57,40 @@ several partially resolved by the round-2 errata and the round-3 SKILL fixes):
 
 See `QUALITY.md` (admits only falsifiable, source-cited claims;
 rejection kept as evidence of taste).
+
+## Fleet round-1 freshness receipt — 2026-10-15
+
+The header and Frontier above are historical round-3 snapshots, not current
+inventory totals. This round adds no knowledge note or domain surface.
+`evidence/fleet-round-1-freshness/pins.tsv` re-verifies the fixed training-closeout
+set: 23 notes + seven reports + three public plugin files + pre-append SKILL
+revision, 34 distinct pin witnesses. Derivation, independent expected-prefix
+sources and actual hash/count commands are in `planner-current.json` and the
+three `*-current.json` executor receipts in that directory.
+
+The dated witness is `../SKILL.md` §Errata — fleet round-1; its actual commit and
+before→after counting command are recorded in `../SCORECARD.md`'s fleet round-1
+section. Only the carried time-gated clause is closed by that qualifying commit;
+the other historical debts and unverified surfaces are not recertified.
+Fresh browser smoke: `evidence/fleet-round-1-freshness/browser-current.json`
+and `browser-current-before.png` / `browser-current-after.png`; gate decisions
+and outside-review limit: `lessons/round-1.md`'s fleet continuation.
+The new evidence directory contains review/measurement receipts, not a 46th
+domain-coverage archive group; the historical 45-group coverage claim is not
+increased by this move.
+
+## Interactive reconciliation erratum — 2026-10-15
+
+The preceding fleet-round-1 section and its `*-current.json` references were
+inherited uncommitted from the stopped headless attempt. They are retained
+provenance, not this interactive session's capture or evidence of a completed
+32-seat round. This session's plan and re-measured gate/browser outputs live
+under `../.ufo/plans/fleet-round-1-interactive-20261015.md` and
+`../.ufo/rounds/fleet-round-1-interactive-20261015/`. The gate is
+`../scripts/check-freshness.mjs`; its registry is in `../SKILL.md`.
+
+The qualifying witness hash/instant is recorded in `../SCORECARD.md` after
+creation; this corrects any premature reading of "is closed" at :73. Local
+pin integrity is distinct from round admission: dispatch remains blocked by
+missing global taxonomy alias bindings, with zero current task calls and no
+receipt or completed-round credit. No knowledge note or coverage group added.

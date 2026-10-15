@@ -127,3 +127,46 @@ saturated; nothing retired — the chain ends with the fleet at 10/10 rounds.
   `plans/completion-evidence.md`; the open-now set (O1–O16) and the residue
   (R1–R3) are enumerated there with closing surfaces.
 - **retired:** none — no axis saturated, none a wrong fit.
+
+## Interactive continuation — fleet round-1 attempt (2026-10-15)
+
+This supersedes only the historical "planned: none / chain ends" wording:
+the current operator authorizes continuation, not retirement or re-numbering
+of historical rounds 1–11. Baseline:
+`c24eaea14dfc0c4a3848742d31673db5675f9183`. At session entry, the new fleet
+round-1 work was uncommitted; launch counter 1 is not a verified-round count.
+The inherited nine-seat dispatch cannot satisfy the new 32-seat contract.
+
+**Current primary axis: freshness**, unique lowest last-measured score 3.
+All historical scores remain as-of their original measurements; the inherited
+lesson's conditional 3→4 rubric is not enacted as a round admission.
+
+| Axis | Verdict for landed local evidence, not round admission | Before → candidate / evidence |
+|---|---|---|
+| depth | unchanged | Existing domain notes remain baseline-identical; no new technical surface asserted by a pin check. |
+| coverage | unchanged | Same 23 knowledge notes and seven audit reports; review/witness artifacts are not new domain coverage. |
+| operability | unchanged | Added gate supports this freshness witness only; no new end-to-end browser capability claimed. |
+| freshness | improved | Baseline 0 rows at the round-specific witness path → candidate 34/34 matched unique targets, 31 lane blobs + three public files, independently anchored and prefix-preserving. Candidate gate exit 0; commit-time predicate measured separately below. |
+| calibration | unchanged | Limits/dispatch errata explicitly retained; no outside quality assessment or promotion. |
+| adjacency | unchanged | Global route and receipt prerequisites reported, not absorbed through host changes. |
+
+| Trend | Verdict | Evidence boundary |
+|---|---|---|
+| expansion | unchanged | No new knowledge note or admitted domain frontier. |
+| quality | improved | Bounded later-date pin re-verification; exact set and eight same-CLI behavioral cases. No semantic recertification. |
+| discernment | unchanged | No outside non-author sample of both an admit and a reject. Dispatched predecessors remain this lane. |
+
+Plan: `.ufo/plans/fleet-round-1-interactive-20261015.md`. Canonical validation:
+32 distinct scopes, plan/render exits 0, zero task calls; evidence under
+`.ufo/rounds/fleet-round-1-interactive-20261015/`. Current-contract round
+admission is **blocked**, not improved/accepted by proxy. No new verified
+completed-round credit; eleven historical training records preserved without
+re-auditing them into the current contract. No saturation or lane retirement.
+
+Concrete unblock: operator/integrator supplies the existing global taxonomy
+bindings reviewer/scout→`@m_grok`, connector→`@m_antigravity` with
+`@m_zfl` fallback (and content→`@m_composer` if content seats are used);
+then authorized redispatch of the remaining actual fleet round 1 in a fresh
+interactive session. Authentic applicable receipt bindings and outside
+admit/reject review remain separate prerequisites. The next session must
+re-measure, not re-spawn this L1 or assume a new round number from a launch.

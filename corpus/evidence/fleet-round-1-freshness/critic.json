@@ -1,0 +1,162 @@
+{
+  "role": "critic",
+  "observed_at_utc": "2026-10-15T04:49:26Z",
+  "measured_commit": "c24eaea14dfc0c4a3848742d31673db5675f9183",
+  "commands": [
+    {
+      "command": "git show -s --format='%H %cI %ct' c24eaea14dfc0c4a3848742d31673db5675f9183",
+      "observed_stdout": "c24eaea14dfc0c4a3848742d31673db5675f9183 2026-10-14T19:49:31-03:00 1792018171",
+      "exit_code": 0
+    },
+    {
+      "command": "TZ=UTC git show -s --format=%cd --date=iso-strict c24eaea14dfc0c4a3848742d31673db5675f9183",
+      "observed_stdout": "2026-10-14T19:49:31-03:00",
+      "exit_code": 0
+    },
+    {
+      "command": "date -u -d @1792018171 +%Y-%m-%dT%H:%M:%SZ && date -u -d 2026-10-15T00:00:00Z +%s && date -u +%Y-%m-%dT%H:%M:%SZ",
+      "observed_stdout": "2026-10-14T22:49:31Z\n1792022400\n2026-10-15T04:49:26Z",
+      "exit_code": 0
+    },
+    {
+      "command": "git ls-tree -r --name-only c24eaea14dfc0c4a3848742d31673db5675f9183 -- corpus/knowledge reports SKILL.md",
+      "observation": "Output lists 23 corpus/knowledge Markdown files, seven reports (r4 through r10), and SKILL.md: 31 lane targets. Adding exactly the three public substrate files named at SKILL.md:1412-1418 yields the contracted 34 targets. This does not count new review evidence as domain coverage.",
+      "exit_code": 0
+    },
+    {
+      "command": "git grep -n '^MATCH[[:space:]]' c24eaea14dfc0c4a3848742d31673db5675f9183 -- corpus/evidence/fleet-round-1-freshness/pins.tsv",
+      "observed_stdout": "",
+      "exit_code": 1,
+      "observation": "No MATCH rows at this immutable baseline/path. This is a path-scoped witness absence, not absence of historical re-verification. The contract's count pipeline reports zero; this direct search also exposes grep's exit 1."
+    },
+    {
+      "command": "sha256sum corpus/knowledge/archive-receipt-r10.md corpus/knowledge/closeout-r11.md SKILL.md",
+      "observed_stdout": "79255f1e03b8e168a23401511097c950cce021b0e35ea830b5961a2c3fd99f3f  corpus/knowledge/archive-receipt-r10.md\n2147f3ec2ff271faa201fc52f6ea5936e04be5e84313c2e653403d21a8ac4914  corpus/knowledge/closeout-r11.md\nf4d9cf5b1aa5711948a4f86cf111b0560b39f4df76ed504cbe4559e7e4c9acfe  SKILL.md",
+      "exit_code": 0
+    },
+    {
+      "command": "git show c24eaea14dfc0c4a3848742d31673db5675f9183:corpus/knowledge/archive-receipt-r10.md | sha256sum",
+      "observed_stdout": "79255f1e03b8e168a23401511097c950cce021b0e35ea830b5961a2c3fd99f3f  -",
+      "exit_code": 0
+    },
+    {
+      "command": "wc -l corpus/knowledge/archive-receipt-r10.md corpus/knowledge/closeout-r11.md SKILL.md",
+      "observed_counts": {
+        "corpus/knowledge/archive-receipt-r10.md": 424,
+        "corpus/knowledge/closeout-r11.md": 234,
+        "SKILL.md": 1458,
+        "total": 2116
+      },
+      "exit_code": 0,
+      "observation": "These are newline counts, not the number of display lines presented by a reader."
+    },
+    {
+      "command": "sha256sum /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/kimi.plugin.json /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md",
+      "observed_stdout": "e70aff5c40fffdeaa8a7c1e50087dd908bfc5fd91febe3c7c09f61417403695d  /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/kimi.plugin.json\n84a8e69d04c5b810e69695dec8d8e16c1cd9735b96ba81c39433b0c0451bea4b  /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/SKILL.md\nb811d9c23dfdafa0b751b23acef25b02a324490a3389efdd5c17319a646734fc  /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md",
+      "exit_code": 0,
+      "observation": "All three observed digests match the independently persisted prefixes at SKILL.md:1372-1374 and :1417-1418. Public-file byte consistency only."
+    }
+  ],
+  "results": {
+    "review_kind": "Advisory falsification review; not a judge verdict, admission, integration, promotion, or external verification.",
+    "axes": {
+      "freshness": "Targeted axis, baseline local score 3; potentially improved by a later-date, source-specific re-derivation witness, not by creating a file.",
+      "calibration": "Guardrail: do not inflate provenance, scope, time closure, or scalar meaning; leave score 6 unchanged.",
+      "coverage": "Leave score 5 unchanged: the same 23 notes remain the knowledge surface.",
+      "depth": "Leave score 7 unchanged: no new domain result established by rehashing.",
+      "operability": "Leave score 5 unchanged: no new gate or end-to-end capability follows from hashes.",
+      "adjacency": "Leave score 5 unchanged: no new outside-owned work or routing change."
+    },
+    "strongest_observed_counterexample": {
+      "claim_under_attack": "Blindly reusing every latest-looking SKILL pin is a clean 34/34 re-verification.",
+      "counterexample": "SKILL.md:1386 still carries archive-receipt-r10.md c6f4445ebd03 / 203. Its current digest is 79255f1e03b8e168a23401511097c950cce021b0e35ea830b5961a2c3fd99f3f / 424 newlines, identical to the immutable baseline blob. The receipt itself explicitly preserves the old full digest as its pre-append revision at :218-221; LOG.md:140 and SCORECARD.md:18 independently carry the newer prefix. Thus this is a declared historical supersession, not newly discovered unexplained drift and not an excuse to silently repin.",
+      "evidence": [
+        "SKILL.md:1385-1387",
+        "corpus/knowledge/archive-receipt-r10.md:206-221",
+        "LOG.md:140",
+        "SCORECARD.md:15-18",
+        "commands: sha256sum, git show baseline receipt, wc -l"
+      ],
+      "impacted_axes": ["freshness", "calibration"],
+      "smallest_safe_correction": "Use LOG.md:140's 79255f1e03b8 as the expected current prefix and preserve c6f4445ebd03 / 203 as an explicitly cited superseded revision. Keep both the independent-prefix comparison and immutable-base full-digest comparison; do not label the old assertion a match to current bytes."
+    },
+    "counterexamples_and_conditions": [
+      {
+        "id": "C1-file-and-count-only",
+        "status": "Hypothetical falsifier; not executed or fabricated",
+        "counterexample": "An empty new evidence file, or 34 duplicate MATCH rows for one file, satisfies existence or a raw line count but not the contracted refresh set.",
+        "evidence": ["../AXES.md:14", "../AXES.md:27-30", "SKILL.md:1297-1303", "plans/round-11.plan.md:445-451", "immutable baseline git ls-tree observation"],
+        "impacted_axes": ["freshness", "calibration", "coverage"],
+        "smallest_safe_correction": "Require exactly 34 distinct expected target identities: all 23 baseline notes, seven reports, three resolved public substrate files, and the pre-append SKILL revision. Attach actual commands, full hashes, newline counts, independent expected-prefix sources, and explicit per-target comparison results. Interpret 0->34 only as this round's dated pin witnesses."
+      },
+      {
+        "id": "C2-time-is-a-predicate",
+        "status": "Baseline predates threshold; final witness unobserved",
+        "counterexample": "The old c24eaea commit is 1792018171 = 2026-10-14T22:49:31Z, below the measured threshold 1792022400. Today's observation timestamp cannot turn that old commit or an uncommitted file into the closing witness. Conversely, a future qualifying witness can have a local %cI date of October 14 because the offset matters.",
+        "evidence": ["SKILL.md:1290-1303", "plans/round-11.plan.md:422-459", "commands: git show metadata; UTC epoch conversion"],
+        "impacted_axes": ["freshness", "calibration"],
+        "smallest_safe_correction": "Require the actual new witness commit hash, %cI, and %ct, with %ct >= 1792022400, carrying the dated append and complete match evidence. Record only after that commit exists. The recipe's TZ=UTC git show --date=iso-strict command returned the original -03:00 offset here; do not describe that command as UTC normalization. Convert the actual epoch with date -u -d @<ct> if a Z timestamp is desired."
+      },
+      {
+        "id": "C3-self-hash-revision",
+        "status": "Observed pre-append bytes; later bytes not measured",
+        "counterexample": "SKILL currently hashes to f4d9cf5b1aa5711948a4f86cf111b0560b39f4df76ed504cbe4559e7e4c9acfe with 1458 newlines. An append necessarily changes that hash, so calling this digest the final appended file's hash is false provenance.",
+        "evidence": ["SKILL.md:1323-1333", "SKILL.md:1402-1404", "corpus/knowledge/closeout-r11.md:230-231", "commands: current SKILL hash and wc -l"],
+        "impacted_axes": ["freshness", "calibration"],
+        "smallest_safe_correction": "Label the 34th target the immutable pre-append SKILL revision, cite the base hash and its historical prefix source, and identify the new appended witness by its commit. Do not demand an impossible self-containing final-file digest or silently conflate revisions."
+      },
+      {
+        "id": "C4-source-drift-is-not-erased",
+        "status": "No drift in sampled receipt or three public substrate prefixes; remainder not rehashed by critic",
+        "counterexample": "A current file can match a digest generated from itself while differing from the baseline and persisted expected pin. Such circular equality is not freshness verification. Historical supersessions also cannot be flattened into unexplained drift or ignored.",
+        "evidence": ["plans/round-11.plan.md:445-451", "SKILL.md:1349-1404", "SKILL.md:1412-1418", "corpus/knowledge/archive-receipt-r10.md:218-221"],
+        "impacted_axes": ["freshness", "calibration"],
+        "smallest_safe_correction": "Compare each lane target's current bytes to git show c24eaea14dfc0c4a3848742d31673db5675f9183:path and separately to an independently persisted expected prefix. Substrate baseline_blob_matches is not applicable unless a real independent blob exists; use explicit null/explanation, not invented true. A mismatch must remain named, with an append-only correction or an explicit limitation; unexplained mismatches cannot be counted as MATCH."
+      },
+      {
+        "id": "C5-hashes-are-not-browser-capability",
+        "status": "Directly bounded by recorded open surfaces",
+        "counterexample": "The three public plugin files match their old prefixes, but those matches do not establish extension attachment, daemon health, live version equality, real-site rights/rate behavior, or a currently executable browser workflow.",
+        "evidence": ["SKILL.md:1451-1457", "corpus/knowledge/closeout-r11.md:75-77", "corpus/knowledge/closeout-r11.md:99-105", "SCORECARD.md:95-99"],
+        "impacted_axes": ["freshness", "operability", "calibration"],
+        "smallest_safe_correction": "State that the move re-verifies bounded local byte pins. Report L1's actual browser replay separately as smoke, with its real observations and limitations; never derive broad live-capability or version-equality claims from hashes. Preserve handshake, real-site, and environment-scoping ceilings."
+      },
+      {
+        "id": "C6-dispatch-is-not-outside-review",
+        "status": "Advisory role provenance is explicit",
+        "counterexample": "Many dispatched L2 roles, including this critic, still belong to the lane. Calling their agreement external verification, promotion authorization, or outside LEARNING discernment contradicts the protocol even if their local measurements are useful.",
+        "evidence": ["/home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/LEARNING.md:37-43", "/home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/PROTOCOL.md:61-69", "SHONEN.md:5-38", "LOG.md:120-123"],
+        "impacted_axes": ["calibration", "adjacency"],
+        "smallest_safe_correction": "Describe L2 results as heterogeneous in-lane advisory evidence only. Do not upgrade calibration/discernment, refresh SHONEN checkboxes, or claim promotion. Historical assertions remain untouched; report current limits explicitly."
+      },
+      {
+        "id": "C7-shonen-and-gate-scope-creep",
+        "status": "Unnecessary to the assigned single-axis move",
+        "counterexample": "Rewriting the historical SHONEN checklist to resolve old non-author wording, building a new repository gate to improve the operability ceiling, changing routing, or retiring freshness would substitute another problem for the dated re-derivation.",
+        "evidence": ["../MISSION.md:38-46", "SCORECARD.md:97-100", "SCORECARD.md:119-129", "SHONEN.md:1-40", "plans/round-11.plan.md:453-459"],
+        "impacted_axes": ["freshness", "operability", "calibration", "adjacency"],
+        "smallest_safe_correction": "Use existing hash/count commands and append-only record patterns. Leave SHONEN, gate infrastructure, source files, routing, and non-target scores unchanged. Note the historical provenance limit in the round report instead of rewriting history."
+      },
+      {
+        "id": "C8-score-rubric-is-local",
+        "status": "Necessary interpretation; not a numeric judge result",
+        "counterexample": "A 34/34 local witness does not prove a universal freshness score of 4, all skill claims live-verified, saturation, full four-clause history re-audited, or a fleet/judge acceptance. The canonical freshness definition is drift detection; the numeric increment is this round's conservative bookkeeping rubric.",
+        "evidence": ["../AXES.md:9-16", "SCORECARD.md:8-11", "SCORECARD.md:98", "SCORECARD.md:129", "SKILL.md:1290-1303", "plans/round-11.plan.md:453-459"],
+        "impacted_axes": ["freshness", "calibration"],
+        "smallest_safe_correction": "Allow only L1's explicitly qualified local 3->4 recommendation after the dated committed witness and all 34 targets are accounted. Keep the canonical verdict distinct from scalar bookkeeping. Do not infer saturation or independently recertify the other three historical clauses."
+      }
+    ],
+    "bounded_acceptance_recommendation": "Recommend considering only the narrow local freshness improvement if all 34 unique target rows have reproducible source-specific comparisons, declared supersessions are preserved, any drift is exposed rather than silently repinned, the dated pre-append SKILL witness is durably committed at or after epoch 1792022400, and L1's actual smoke observation is recorded without widening capability claims. A qualified local freshness 3->4 may then describe this one move; all other scores remain unchanged. This is a recommendation, not an acceptance.",
+    "bounded_rejection_recommendation": "Recommend rejecting the claimed 34-match/closure evidence if it relies on file existence, duplicate count inflation, a timestamp without the new witness commit, self-derived expected hashes, hidden source drift, or mismatched SKILL revisions. A missing final commit is a fixable incomplete evidence chain, not proof of a completed move. If apparent freshness gain requires calibration harm through false outside provenance or broad capability claims, it is a tradeoff the canonical judge must reject, not something this critic can authorize. Fix with accurate bounded records, not a new gate or SHONEN rewrite.",
+    "verdict_limits": "No admission, scoring mutation, integration, ship decision, promotion, Rust-judge invocation, alternate runtime, or external spot-check performed. The new committed witness, complete 34-row result, browser smoke outcome, lane identity commit, push and final report were not observed by this critic. Recommendations are conditional on those actual deliverables; no final-round success is asserted."
+  },
+  "limitations": [
+    "Only the assigned critic.json is written. Existing source, documentation, scorecard, probation checklist and historical records are untouched.",
+    "No builds, tests, linters, formatters, daemon actions, external browsing, secret reads, delegation, background jobs, waits, polling, commits, pushes, routing changes or alternate runtime invocation were performed.",
+    "Narrow read-only metadata/hash/count measurements are adversarial evidence gathering, not execution of project verification suites.",
+    "The critic independently rehashed only the receipt, closeout, pre-append SKILL and three public substrate files. Only the receipt was independently compared to a full immutable baseline blob in this review; do not extrapolate that sample to 34 baseline comparisons.",
+    "Missing MATCH rows at the baseline path establish this round's witness baseline only; extensive earlier same-day passes are explicitly recorded in SCORECARD.md:77-84 and LOG.md:140.",
+    "Hypothetical falsifiers are labeled as such and were not executed as mutations or manufactured command outputs.",
+    "The contract permits the stated local scalar rubric, but canonical per-axis/trend decisions remain the responsible judge/integrator's work. This file supplies risks and necessary conditions only."
+  ]
+}

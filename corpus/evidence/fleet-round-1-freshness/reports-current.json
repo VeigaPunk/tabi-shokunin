@@ -1,0 +1,136 @@
+{
+  "lane": "tabi",
+  "round": "fleet-round-1",
+  "axis": "freshness",
+  "seat": "Round1Reports",
+  "role": "executor",
+  "scope": "Seven baseline lane reports reports/r4-aud-tab1.md and reports/r5-aud-b5.md through reports/r10-aud-b10.md, plus read-only sha256sum -c smoke of the three archive MANIFEST.txt groups already named in inherited archive-smoke.json (corpus/evidence/w9-tabi-b91, corpus/evidence/tabi-b1-r3b-journey, corpus/evidence/w6-tabi-b61). Not all-archive proof, not browser proof, not a test suite.",
+  "measured_commit": "c24eaea14dfc0c4a3848742d31673db5675f9183",
+  "measured_commit_is_head": true,
+  "recheck_after_clause_c_boundary": {"boundary_utc": "2026-10-15T00:00:00Z", "epoch": 1792022400, "all_observations_after_boundary": true},
+  "commands": {
+    "report_hashes": "for f in reports/r4-aud-tab1.md reports/r5-aud-b5.md reports/r6-aud-b6.md reports/r7-aud-b7.md reports/r8-aud-b8.md reports/r9-aud-b9.md reports/r10-aud-b10.md; do cur=$(sha256sum \"$f\" | cut -d' ' -f1); base=$(git cat-file blob \"c24eaea14dfc0c4a3848742d31673db5675f9183:$f\" | sha256sum | cut -d' ' -f1); nl=$(wc -l < \"$f\"); echo \"$f|$cur|$base|$nl\"; done  # cwd repo root; completed 2026-10-15T04:54:34.906312247Z",
+    "baseline_pin_lines_confirmed": "git show c24eaea14dfc0c4a3848742d31673db5675f9183:SKILL.md | sed -n '1388,1391p'  # confirms expected prefixes are the committed baseline text; working tree SKILL.md and reports/ report clean under git status --porcelain",
+    "manifest_smoke_per_group": "sha256sum -c MANIFEST.txt >\"$o\" 2>\"$er\"; ok=$(grep -c ': OK$' \"$o\"); fl=$(grep -c ': FAILED' \"$o\")  # run with tool cwd=each group directory; stdout/stderr written to fresh mktemp files, counted, then deleted; no manifest rows or file contents copied here",
+    "manifest_composition": "grep -cE '^[0-9a-f]{64}  ' MANIFEST.txt; grep -c '^#' MANIFEST.txt; grep -c '^$' MANIFEST.txt  # per group, explains the 5-line gap between manifest_lines and status_lines"
+  },
+  "method_note": "First manifest attempt (2026-10-15T04:55:01Z) ran each check inside a subshell `cd`; this persistent shell resolves `cd` to a missing fnm hook (__fnmcd), so all three subshells exited 127 before sha256sum executed — zero checks ran, nothing was mutated, and those exit-127 lines are superseded by, not mixed into, the per-group results below. The superseding runs (2026-10-15T04:55:33Z) used the harness cwd parameter instead of `cd`.",
+  "reports": [
+    {
+      "path": "reports/r4-aud-tab1.md",
+      "observed_sha256_full": "5f44b0f94483cb24db32478ea14603d6896b939a320a4942615ff85eae25b8c8",
+      "observed_newline_count": 167,
+      "baseline_sha256_full": "5f44b0f94483cb24db32478ea14603d6896b939a320a4942615ff85eae25b8c8",
+      "baseline_match": true,
+      "expected_prefix": "5f44b0f94483",
+      "expected_line_count": 167,
+      "expected_source": {"path": "SKILL.md", "lines": "1389-1390", "token": "`5f44b0f94483`\u00b7167", "list": "reports r4\u2013r10 (SKILL.md:1388)"},
+      "prefix_match": true,
+      "newline_match": true,
+      "disposition": "fresh-match"
+    },
+    {
+      "path": "reports/r5-aud-b5.md",
+      "observed_sha256_full": "d09f1712cbcf4079110f37a57988a053d942f158ed56f4587e7a436a9f8ad657",
+      "observed_newline_count": 170,
+      "baseline_sha256_full": "d09f1712cbcf4079110f37a57988a053d942f158ed56f4587e7a436a9f8ad657",
+      "baseline_match": true,
+      "expected_prefix": "d09f1712cbcf",
+      "expected_line_count": 170,
+      "expected_source": {"path": "SKILL.md", "lines": "1389-1390", "token": "`d09f1712cbcf`\u00b7170", "list": "reports r4\u2013r10 (SKILL.md:1388)"},
+      "prefix_match": true,
+      "newline_match": true,
+      "disposition": "fresh-match"
+    },
+    {
+      "path": "reports/r6-aud-b6.md",
+      "observed_sha256_full": "9428ddec52b9ebeed1a1258374cbaf0a119f0478adcfa1ae1434dfcec32380f3",
+      "observed_newline_count": 178,
+      "baseline_sha256_full": "9428ddec52b9ebeed1a1258374cbaf0a119f0478adcfa1ae1434dfcec32380f3",
+      "baseline_match": true,
+      "expected_prefix": "9428ddec52b9",
+      "expected_line_count": 178,
+      "expected_source": {"path": "SKILL.md", "lines": "1389-1390", "token": "`9428ddec52b9`\u00b7178", "list": "reports r4\u2013r10 (SKILL.md:1388)"},
+      "prefix_match": true,
+      "newline_match": true,
+      "disposition": "fresh-match"
+    },
+    {
+      "path": "reports/r7-aud-b7.md",
+      "observed_sha256_full": "ea4b16a4a8443322fc23b3a7952e08a04a544967867fa62f3ef3a217fc324046",
+      "observed_newline_count": 260,
+      "baseline_sha256_full": "ea4b16a4a8443322fc23b3a7952e08a04a544967867fa62f3ef3a217fc324046",
+      "baseline_match": true,
+      "expected_prefix": "ea4b16a4a844",
+      "expected_line_count": 260,
+      "expected_source": {"path": "SKILL.md", "lines": "1389-1390", "token": "`ea4b16a4a844`\u00b7260", "list": "reports r4\u2013r10 (SKILL.md:1388)"},
+      "prefix_match": true,
+      "newline_match": true,
+      "disposition": "fresh-match"
+    },
+    {
+      "path": "reports/r8-aud-b8.md",
+      "observed_sha256_full": "a191832be1522e8c49627c95d1bf3df53feffebe51112820a4f361ac69c9b9c4",
+      "observed_newline_count": 181,
+      "baseline_sha256_full": "a191832be1522e8c49627c95d1bf3df53feffebe51112820a4f361ac69c9b9c4",
+      "baseline_match": true,
+      "expected_prefix": "a191832be152",
+      "expected_line_count": 181,
+      "expected_source": {"path": "SKILL.md", "lines": "1389-1390", "token": "`a191832be152`\u00b7181", "list": "reports r4\u2013r10 (SKILL.md:1388)"},
+      "prefix_match": true,
+      "newline_match": true,
+      "disposition": "fresh-match"
+    },
+    {
+      "path": "reports/r9-aud-b9.md",
+      "observed_sha256_full": "df34bf6c63e1da96a77d5c1b7b18461aec11a63ab1d766920c0a5a58f23863d7",
+      "observed_newline_count": 174,
+      "baseline_sha256_full": "df34bf6c63e1da96a77d5c1b7b18461aec11a63ab1d766920c0a5a58f23863d7",
+      "baseline_match": true,
+      "expected_prefix": "df34bf6c63e1",
+      "expected_line_count": 174,
+      "expected_source": {"path": "SKILL.md", "lines": "1389-1390", "token": "`df34bf6c63e1`\u00b7174", "list": "reports r4\u2013r10 (SKILL.md:1388)"},
+      "prefix_match": true,
+      "newline_match": true,
+      "disposition": "fresh-match"
+    },
+    {
+      "path": "reports/r10-aud-b10.md",
+      "observed_sha256_full": "11dd09350de76b4f65e5a6dc1ec8d466ace0f373165629a35705434ddd1e42f7",
+      "observed_newline_count": 211,
+      "baseline_sha256_full": "11dd09350de76b4f65e5a6dc1ec8d466ace0f373165629a35705434ddd1e42f7",
+      "baseline_match": true,
+      "expected_prefix": "11dd09350de7",
+      "expected_line_count": 211,
+      "expected_source": {"path": "SKILL.md", "lines": "1389-1390", "token": "`11dd09350de7`\u00b7211", "list": "reports r4\u2013r10 (SKILL.md:1388); first pin \u2014 SKILL.md:1390 notes \u201cthe r10 report is new here\u201d"},
+      "prefix_match": true,
+      "newline_match": true,
+      "disposition": "fresh-match"
+    }
+  ],
+  "ordering_confirmation": "SKILL.md:1388-1390 lists seven `prefix`\u00b7`lines` tokens under \u201creports r4\u2013r10\u201d. The r4\u2192r10 file-to-token mapping is not assumed: for each file, the independently recomputed baseline blob prefix (git cat-file blob at c24eaea\u2026) equals the token at the same ordinal position, and the token line count equals the observed wc -l. All seven ordinals align, all seven prefixes are distinct.",
+  "disambiguation_note": "reports/r10-aud-b10.md (11dd09350de7\u00b7211, first pinned at SKILL.md:1390 as \u201cnew here\u201d) is a different target from corpus/knowledge note archive-receipt-r10.md, whose carried pin is 79255f1e03b8\u00b7424 via LOG.md:140 and SCORECARD.md:18, superseding the stale c6f4445ebd03\u00b7203 printed at SKILL.md:1386. Nothing here repins either; the note's pins are owned by the notes seat.",
+  "archive_manifest_smoke": {
+    "command_template": "sha256sum -c MANIFEST.txt",
+    "scope": "Exactly the three committed archive groups already named in inherited archive-smoke.json; measured_manifests_committed_in_baseline = true (git ls-tree at c24eaea lists all three MANIFEST.txt). Not an all-archive claim; full stdout/stderr discarded after counting; no secret material copied.",
+    "observed_at_utc": "2026-10-15T04:55:33Z",
+    "groups": [
+      {"group": "corpus/evidence/w9-tabi-b91", "exit": 0, "ok": 269, "failed": 0, "status_lines": 269, "manifest_lines": 274, "hash_form_lines": 269, "comment_lines": 5, "blank_lines": 0, "stderr_bytes": 0},
+      {"group": "corpus/evidence/tabi-b1-r3b-journey", "exit": 0, "ok": 83, "failed": 0, "status_lines": 83, "manifest_lines": 88, "hash_form_lines": 83, "comment_lines": 5, "blank_lines": 0, "stderr_bytes": 0},
+      {"group": "corpus/evidence/w6-tabi-b61", "exit": 0, "ok": 139, "failed": 0, "status_lines": 139, "manifest_lines": 144, "hash_form_lines": 139, "comment_lines": 5, "blank_lines": 0, "stderr_bytes": 0}
+    ],
+    "total_ok": 491,
+    "total_failed": 0,
+    "composition_note": "Each MANIFEST.txt carries 5 leading '#' header comment lines plus exactly the hash-form rows that sha256sum -c reported OK; every hash-form line accounted, none silently skipped.",
+    "agreement_with_inherited": "Matches the inherited archive-smoke.json group counts (269/83/139, exit 0) recorded earlier this round at 2026-10-15T04:50:17Z; recorded as coincidence of two independent post-boundary observations, not as a restatement."
+  },
+  "accounting": {
+    "distinct_target_identities_owned": 10,
+    "report_identities": 7,
+    "archive_manifest_group_identities": 3,
+    "dispositions": {"fresh-match": 7, "manifest-intact": 3},
+    "mismatches": 0,
+    "repins_performed": 0
+  },
+  "advisory_limits": "Same-lane executor evidence, advisory only: not a non-author SHONEN/LEARNING attestation, not a native judge verdict, no promotion authority, no gate infrastructure added, no file outside this JSON written, no git mutation performed. Freshness 3\u21924 remains L1's conditional call over all 34 targets plus the dated committed witness."
+}

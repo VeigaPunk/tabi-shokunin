@@ -1,0 +1,70 @@
+{
+  "measured_commit": "c24eaea14dfc0c4a3848742d31673db5675f9183",
+  "started_at_utc": "2026-10-15T04:53:46.021Z",
+  "finished_at_utc": "2026-10-15T04:53:56.434Z",
+  "fixture": "corpus/evidence/tabi-r2-1-capture/site/page.html",
+  "url": "http://127.0.0.1:19462/page.html",
+  "actions": [
+    "browser.open in owned managed Chromium, app.tern=false, allowed_domains=127.0.0.1, viewport800x600",
+    "waitForText hydrated; observe count0; screenshot",
+    "click #btn; waitForSelector #confirm-1; observe count1",
+    "click #btn; waitForSelector #confirm-2; assert final state; screenshot",
+    "browser.close own managed tab; stop own service tabi-round1-current-fixture-19462"
+  ],
+  "before": {
+    "count": "0",
+    "status": "hydrated",
+    "items": 0,
+    "confirmations": 0,
+    "browser": "Chrome/152.0.7977.82",
+    "viewport": {
+      "width": 800,
+      "height": 600,
+      "scale": 1.25
+    }
+  },
+  "middle": {
+    "count": "1",
+    "items": 1,
+    "confirmation": "confirmed 1"
+  },
+  "after": {
+    "count": "2",
+    "items": 2,
+    "confirmations": 2,
+    "status": "hydrated",
+    "lastConfirmation": "confirmed 2"
+  },
+  "result": "PASS",
+  "screenshots": [
+    "corpus/evidence/fleet-round-1-freshness/browser-current-before.png",
+    "corpus/evidence/fleet-round-1-freshness/browser-current-after.png"
+  ],
+  "reproduce": "python -m http.server 19462 --bind 127.0.0.1 --directory corpus/evidence/tabi-r2-1-capture/site; open /page.html in an owned browser; perform listed settled clicks; close tab/server",
+  "producer_commands": [
+    "functions.bash service: python -m http.server 19462 --bind 127.0.0.1 --directory corpus/evidence/tabi-r2-1-capture/site",
+    "functions.eval: browser.open({name:'tabi-round1-current-replay',url:'http://127.0.0.1:19462/page.html',app:{tern:false},viewport:{width:800,height:600},allowed_domains:['127.0.0.1']})",
+    "await replayTab.run(async ({page}) => {await page.screenshot({path:'/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/fleet-round-1-freshness/browser-current-before.png'});})",
+    "await replayTab.click('#btn'); await replayTab.waitForSelector('#confirm-1',{timeout:10000}); observe count1",
+    "await replayTab.click('#btn'); await replayTab.waitForSelector('#confirm-2',{timeout:10000}); assert count2/items2/confirmations2/hydrated",
+    "await page.screenshot({path:'/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/fleet-round-1-freshness/browser-current-after.png'}) inside replayTab.run",
+    "await browser.close({name:'tabi-round1-current-replay'}); functions.write proc://tabi-round1-current-fixture-19462/kill; socket.connect_ex(('127.0.0.1',19462)) -> 111"
+  ],
+  "provenance": "Captured in this session, not copied from the inherited pair. Equal hashes on this deterministic page do not themselves establish independent capture or historical pixel equality.",
+  "cleanup": {
+    "managed_tab_close": "Released managed tab tabi-round1-current-replay",
+    "owned_service_stop": "Stopped tabi-round1-current-fixture-19462, exited",
+    "port": 19462,
+    "connect_ex": 111,
+    "port_closed": true
+  },
+  "screenshot_sha256": {
+    "browser-current-before.png": "568b3f12bf0fe137a07f90d055067704b595b6947b65debfe460abf3aefd9d5a",
+    "browser-current-after.png": "0e355e25dc03c832793eac8fc73a36389398ee015bb631b30594dbbf71498f5f"
+  },
+  "limits": [
+    "Semantic local-fixture replay, not historical pixel equality",
+    "Current deviceScaleFactor1.25, not historical1",
+    "No real site, signed-in profile, extension/daemon handshake or global no-egress proof"
+  ]
+}
