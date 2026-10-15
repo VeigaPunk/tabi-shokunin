@@ -170,3 +170,47 @@ then authorized redispatch of the remaining actual fleet round 1 in a fresh
 interactive session. Authentic applicable receipt bindings and outside
 admit/reject review remain separate prerequisites. The next session must
 re-measure, not re-spawn this L1 or assume a new round number from a launch.
+
+### Post-commit measurement — same blocked attempt
+
+Corrected carrying commit:
+`c5e252083ede8ee87e3b498e486f0bc238f1d516`,
+`tabi-shokunin <tabi@shokunin.local>`, epoch **1792041388** =
+**2026-10-15T05:16:28Z** ≥ **1792022400**. Original witness
+`716dc8ac8982c5b32518c052e6bf8a25f23b8ca2` is retained; its initial
+gate revision is superseded for safety, not amended or used for handoff.
+
+Counting command actually executed:
+`git grep -h '^MATCH[[:space:]]' c5e252083ede8ee87e3b498e486f0bc238f1d516 -- corpus/evidence/fleet-round-1-freshness/pins.tsv`
+→ 34 lines, 34 unique second-field identities, exit 0. The same command over
+baseline `c24eaea14dfc0c4a3848742d31673db5675f9183` → no rows, exit 1.
+Exact-set integrity is checked by the gate, not inferred from equal counts.
+
+Full corrected verdict line:
+
+```text
+FRESHNESS_GATE verdict=clean finding=freshness_witness matched=34 unique=34 lane=31 public=3 revision=c5e252083ede8ee87e3b498e486f0bc238f1d516 baseline=c24eaea14dfc0c4a3848742d31673db5675f9183 profile=production
+EXIT_CODE=0
+```
+
+`node scripts/check-freshness.mjs --self-test` →
+`FRESHNESS_SELFTEST verdict=clean cases=12`, exit 0. The four added cases
+prove public-target/table redirection and public-file/descriptor symlink
+refusal using owned fixtures, not real host secrets. This supersedes the
+earlier eight-case helper's shipping acceptance. Full stdout/stderr, exact
+commands, gate/descriptor hashes and commit metadata:
+`.ufo/rounds/fleet-round-1-interactive-20261015/gate-{selftest,worktree,witness}-safe.json`.
+
+**Local clause (c): closed by the corrected dated committed witness.**
+This supersedes only that carried time/pin debt, not real-site, daemon,
+archive-completeness or outside-review debt. All six axis/trend verdicts above
+remain bounded local assessments. **Round admission still blocked; verified
+completed-round increment 0.** No scalar bump, native judgment, applicable
+receipt or Sighting completion. Observed blocked attempts in this interactive
+session: one; a historical consecutive-blocked streak is not established.
+
+**Next actionable work:** authorized global role bindings plus authentic
+receipt binding, then a fresh-session dispatch/admission of this actual
+unfinished fleet round 1. Do not repeat this already-landed witness as a new
+improvement, advance from a launch counter or declare saturation. No in-session
+round loop or arbitrary round/time stop was used.

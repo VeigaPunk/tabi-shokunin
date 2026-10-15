@@ -261,3 +261,24 @@
   `.ufo/rounds/fleet-round-1-interactive-20261015/gate-witness.json`.
   The corrected carrying commit is measured again after creation. Dispatch
   and applicable-receipt blockers remain; no round increment or saturation.
+
+- 2026-10-15 — **post-commit measurement and handoff, same blocked fleet
+  round-1 attempt.** Corrected owned work landed in
+  `c5e252083ede8ee87e3b498e486f0bc238f1d516` under
+  `tabi-shokunin <tabi@shokunin.local>`, epoch **1792041388** =
+  **2026-10-15T05:16:28Z**. Actual committed target count 34, unique 34,
+  counting command and full output in SCORECARD and
+  `.ufo/rounds/fleet-round-1-interactive-20261015/gate-witness-safe.json`.
+  `node scripts/check-freshness.mjs --witness c5e252083ede8ee87e3b498e486f0bc238f1d516`
+  → `FRESHNESS_GATE verdict=clean finding=freshness_witness matched=34 unique=34 lane=31 public=3 revision=c5e252083ede8ee87e3b498e486f0bc238f1d516 baseline=c24eaea14dfc0c4a3848742d31673db5675f9183 profile=production`,
+  exit 0. Corrected gate/descriptor hashes equal those exercised in the
+  12-case self-invocation and candidate run. Local clause (c) now closes;
+  dispatch/receipt admission does not. Six-axis verdicts and three trends
+  stay as recorded above, no scalar or completed-round increment.
+  Report: `.ufo/reports/fleet-round-1-attempt-20261015/tabi.md`;
+  fresh-session handoff: `.ufo/continuation/fleet-round-1-interactive-20261015.md`
+  and matching JSON. These are attempt artifacts, not a driver's successful
+  round marker. No receipt was invented, no mission-complete call, no push,
+  no shared-ledger/config/source mutation. Only the integrator may supply the
+  missing authorized binding and redispatch; this session performs no second
+  round and claims no three-blocked-round stop or saturation.
