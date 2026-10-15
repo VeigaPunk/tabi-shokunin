@@ -214,3 +214,22 @@ receipt binding, then a fresh-session dispatch/admission of this actual
 unfinished fleet round 1. Do not repeat this already-landed witness as a new
 improvement, advance from a launch counter or declare saturation. No in-session
 round loop or arbitrary round/time stop was used.
+
+## Pstack continuation scores (2026-10-15)
+
+Historical axis table above stays at its last explicit measurement. These rows are the continuation scores after each admitted pstack round. A round moves only the axis it names.
+
+| After | depth | coverage | operability | freshness | calibration | adjacency |
+|---|---|---|---|---|---|---|
+| baseline `7f506affa55f6fb892d3c8073c75151c998bdf2c` | 7 | 5 | 5 | 3 | 6 | 5 |
+| pstack-20261015-r01 | 7 | 5 | 5 | 4 | 6 | 5 |
+
+Freshness 3→4 is the public-observation count below. The historical freshness cell stays 3.
+
+<!-- pstack-round:pstack-20261015-r01
+axis: freshness
+before: 0
+after: 1
+command: git ls-tree -r --name-only f5c8f3141927ba0794ba5195d7f1a029ba6d7bd8 | grep pstack-20261015-r01/public/capture.json | wc -l
+measured-against: f5c8f3141927ba0794ba5195d7f1a029ba6d7bd8
+-->

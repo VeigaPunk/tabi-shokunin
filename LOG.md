@@ -282,3 +282,14 @@
   no shared-ledger/config/source mutation. Only the integrator may supply the
   missing authorized binding and redispatch; this session performs no second
   round and claims no three-blocked-round stop or saturation.
+- 2026-10-15 — pstack-20261015-r01: freshness 3→4. One `/pstack:swarm` of 32
+  local seats, aggregate PASS 32, no dropout. Admitted public observation of
+  `https://example.com/` (GET `/` and GET `/s.js` only; DOM
+  `b6f58620a0440586a3c5359b00968b6d97e9cedfb8047d6252e3ec824a48d789`, screenshot
+  `d42808063001eb6699b450a66cdf5511eb2bef6353d5f17205f24dce626b91fd`). Rejected
+  loopback `127.0.0.1` as a real site, and Brave as installed (s25 listed only
+  `NativeMessagingHosts`). Non-author reviewer-r01 agrees. Work commit
+  `f5c8f3141927ba0794ba5195d7f1a029ba6d7bd8`. Counting command in SCORECARD.md
+  is 0 at baseline `7f506affa55f6fb892d3c8073c75151c998bdf2c` and 1 at that
+  commit. Other axes unchanged. No consequential external action. Fan-out was
+  two batches (s01–s16, then s17–s32). Report: `reports/pstack-20261015-r01.md`.
