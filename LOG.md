@@ -436,3 +436,12 @@
   `c6fb0d5334e3011d3b73e323aafe6fc95a6a49c7`. Counting command is 0 at baseline and 1 at that commit. Other axes
   stay at their prior scores. No new public page. No consequential external
   action. Report: `reports/user-20261015-r05.md`.
+- 2026-10-15 — user-20261015-r06: freshness 7→8. One `/user:swarm` wave of 32
+  members, aggregate PASS 32, no dead lane. Admitted the loopback pin replay:
+  PIN_MATCH on the frozen DOM hash, png_bytes 7592, ports closed. Rejected
+  treating that loopback replay as a real site, and Brave as installed (s26
+  listed only `NativeMessagingHosts`). Non-author reviewer-user-r06 agrees.
+  Work commit `1229098dae56c2d193c01203ff93651da2853f6e`. Counting command is 0
+  at baseline and 1 at that commit. Other axes stay at their prior scores. No
+  new public page. No consequential external action. Report:
+  `reports/user-20261015-r06.md`.

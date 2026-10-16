@@ -327,6 +327,7 @@ The pstack continuation table above stays as landed. These rows are the continua
 | user-20261015-r03 | 7 | 7 | 7 | 7 | 8 | 8 |
 | user-20261015-r04 | 7 | 8 | 7 | 7 | 8 | 8 |
 | user-20261015-r05 | 8 | 8 | 7 | 7 | 8 | 8 |
+| user-20261015-r06 | 8 | 8 | 7 | 8 | 8 | 8 |
 
 <!-- user-round:user-20261015-r01
 axis: operability
@@ -367,4 +368,12 @@ before: 0
 after: 1
 command: git ls-tree -r --name-only c6fb0d5334e3011d3b73e323aafe6fc95a6a49c7 | grep user-20261015-r05/depth/paragraph-receipt.txt | wc -l
 measured-against: c6fb0d5334e3011d3b73e323aafe6fc95a6a49c7
+-->
+
+<!-- user-round:user-20261015-r06
+axis: freshness
+before: 0
+after: 1
+command: git ls-tree -r --name-only 1229098dae56c2d193c01203ff93651da2853f6e | grep user-20261015-r06/freshness/replay-receipt.txt | wc -l
+measured-against: 1229098dae56c2d193c01203ff93651da2853f6e
 -->
