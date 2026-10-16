@@ -341,3 +341,14 @@
   `ef51deddbb3c649ae3931f011757e3eb9d340ad9`. Counting command is 0 at baseline
   and 1 at that commit. Other axes unchanged. No new public page. No
   consequential external action. Report: `reports/pstack-20261015-r06.md`.
+- 2026-10-15 — pstack-20261015-r07: adjacency 6→7. One `/pstack:swarm` of 32
+  local seats, aggregate PASS 32, no dropout. Admitted a refusal receipt that
+  lists present for revenger, kaidoku, kake, and kagi without reading their
+  contents. Rejected absorbing kaidoku. Seat s31 replayed the r01 loopback
+  driver. DOM hash
+  `af8d1560b0212c1afaa11355e5ef8660e2b1b166fc8c7f0eae7cc723a05857b0`, screenshot
+  7592 bytes, GET only, ports closed. Rejected the loopback host `127.0.0.1`
+  as a real site. Non-author reviewer-r07 agrees. Work commit
+  `ec5ee4bd51a35fe964fe63b73ab356c27530e464`. Counting command is 0 at baseline
+  and 1 at that commit. Other axes unchanged. No new public page. No
+  consequential external action. Report: `reports/pstack-20261015-r07.md`.
