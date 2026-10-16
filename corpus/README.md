@@ -103,3 +103,11 @@ The historical coverage map above stays a round-3 snapshot. This addition record
 | Note | Holds | Sources |
 |---|---|---|
 | `knowledge/example-domain-observation.md` | Observation-only capture of https://example.com/: empty h1, documentation paragraph, GET `/` and GET `/s.js`, DOM and screenshot hashes. | `corpus/evidence/pstack-20261015-r04/public/capture.json` |
+
+## Pstack coverage addition — loopback-pin-stability (2026-10-15)
+
+The historical coverage map above stays a round-3 snapshot. This addition records one note admitted by pstack-20261015-r09.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/loopback-pin-stability.md` | Four loopback DOM files match the shipped pin, and the example.com DOM hash differs from that pin. | `corpus/evidence/pstack-20261015-r08/calibration/pin-receipt.txt` |
