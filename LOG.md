@@ -386,3 +386,14 @@
   and 1 at that commit. Operability stays 6. Other axes unchanged. No new
   public page. No consequential external action. Report:
   `reports/pstack-20261015-r10.md`.
+- 2026-10-15 — user-20261015-r01: operability 6→7. One `/user:swarm` wave of 32
+  members, aggregate PASS 32, no dead lane. Admitted the shipped user-swarm
+  contract self-test receipt (`verdict=clean cases=4`). Seat s31 replayed the
+  shipped loopback driver. DOM hash
+  `af8d1560b0212c1afaa11355e5ef8660e2b1b166fc8c7f0eae7cc723a05857b0`, screenshot
+  7592 bytes, GET only, ports closed. Rejected the loopback host `127.0.0.1`
+  as a real site, and Brave as installed (s26 listed only
+  `NativeMessagingHosts`). Non-author reviewer-user-r01 agrees. Work commit
+  `95ea5f8b98ae4cf8ee651bf46709570114f50edd`. Counting command is 0 at baseline
+  and 1 at that commit. Other axes stay at 7. No public page. No consequential
+  external action. Report: `reports/user-20261015-r01.md`.

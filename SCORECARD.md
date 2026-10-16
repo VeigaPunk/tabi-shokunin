@@ -315,3 +315,20 @@ command: git ls-tree -r --name-only 4e75a17ebbaa125777ed0d6e745fd150e9c6caf2 | g
 measured-against: 4e75a17ebbaa125777ed0d6e745fd150e9c6caf2
 -->
 
+## User swarm continuation scores (2026-10-15)
+
+The pstack continuation table above stays as landed. These rows are the continuation scores after each admitted `/user:swarm` round. A round moves only the axis it names.
+
+| After | depth | coverage | operability | freshness | calibration | adjacency |
+|---|---|---|---|---|---|---|
+| pstack-20261015-r10 | 7 | 7 | 6 | 7 | 7 | 7 |
+| user-20261015-r01 | 7 | 7 | 7 | 7 | 7 | 7 |
+
+<!-- user-round:user-20261015-r01
+axis: operability
+before: 0
+after: 1
+command: git ls-tree -r --name-only 95ea5f8b98ae4cf8ee651bf46709570114f50edd | grep user-20261015-r01/operability/selftest-receipt.txt | wc -l
+measured-against: 95ea5f8b98ae4cf8ee651bf46709570114f50edd
+-->
+
