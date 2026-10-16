@@ -410,3 +410,12 @@
   and 1 at that commit. Other axes stay at 7. This round is the public
   observation. No consequential external action. Report:
   `reports/user-20261015-r02.md`.
+- 2026-10-15 — user-20261015-r03: calibration 7→8. One `/user:swarm` wave of 32
+  members, aggregate PASS 32, no dead lane. Admitted the pin-compare receipt:
+  public DOM `b6f58620a0440586a3c5359b00968b6d97e9cedfb8047d6252e3ec824a48d789`
+  is not loopback pin `af8d1560b0212c1afaa11355e5ef8660e2b1b166fc8c7f0eae7cc723a05857b0`.
+  Rejected treating those hashes as equal, and Brave as installed (s26 listed
+  only `NativeMessagingHosts`). Non-author reviewer-user-r03 agrees. Work
+  commit `8a869af00665e8e445bc84c50492433097c55866`. Counting command is 0 at baseline and 1 at that commit.
+  Other axes stay at their prior scores. No new public page. No consequential
+  external action. Report: `reports/user-20261015-r03.md`.

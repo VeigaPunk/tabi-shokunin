@@ -324,6 +324,7 @@ The pstack continuation table above stays as landed. These rows are the continua
 | pstack-20261015-r10 | 7 | 7 | 6 | 7 | 7 | 7 |
 | user-20261015-r01 | 7 | 7 | 7 | 7 | 7 | 7 |
 | user-20261015-r02 | 7 | 7 | 7 | 7 | 7 | 8 |
+| user-20261015-r03 | 7 | 7 | 7 | 7 | 8 | 8 |
 
 <!-- user-round:user-20261015-r01
 axis: operability
@@ -341,3 +342,11 @@ command: git ls-tree -r --name-only 59ba8da019400c1a3b14bc2c19746a457f791601 | g
 measured-against: 59ba8da019400c1a3b14bc2c19746a457f791601
 -->
 
+
+<!-- user-round:user-20261015-r03
+axis: calibration
+before: 0
+after: 1
+command: git ls-tree -r --name-only 8a869af00665e8e445bc84c50492433097c55866 | grep user-20261015-r03/calibration/pin-compare.txt | wc -l
+measured-against: 8a869af00665e8e445bc84c50492433097c55866
+-->
