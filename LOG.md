@@ -397,3 +397,16 @@
   `95ea5f8b98ae4cf8ee651bf46709570114f50edd`. Counting command is 0 at baseline
   and 1 at that commit. Other axes stay at 7. No public page. No consequential
   external action. Report: `reports/user-20261015-r01.md`.
+- 2026-10-15 — user-20261015-r02: adjacency 7→8. One `/user:swarm` wave of 32
+  members, aggregate PASS 32, no dead lane. Admitted the boundary refusal
+  receipt listing revenger, kaidoku, kake, and kagi as present and unabsorbed.
+  Seat s31 ran the shipped public driver against `https://example.com/`. DOM
+  hash `b6f58620a0440586a3c5359b00968b6d97e9cedfb8047d6252e3ec824a48d789`,
+  screenshot hash `d42808063001eb6699b450a66cdf5511eb2bef6353d5f17205f24dce626b91fd`,
+  GET only, ports closed. Rejected absorbing sibling lanes, and Brave as
+  installed (s26 listed only `NativeMessagingHosts`). Non-author
+  reviewer-user-r02 agrees. Work commit
+  `59ba8da019400c1a3b14bc2c19746a457f791601`. Counting command is 0 at baseline
+  and 1 at that commit. Other axes stay at 7. This round is the public
+  observation. No consequential external action. Report:
+  `reports/user-20261015-r02.md`.

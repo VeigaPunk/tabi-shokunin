@@ -323,6 +323,7 @@ The pstack continuation table above stays as landed. These rows are the continua
 |---|---|---|---|---|---|---|
 | pstack-20261015-r10 | 7 | 7 | 6 | 7 | 7 | 7 |
 | user-20261015-r01 | 7 | 7 | 7 | 7 | 7 | 7 |
+| user-20261015-r02 | 7 | 7 | 7 | 7 | 7 | 8 |
 
 <!-- user-round:user-20261015-r01
 axis: operability
@@ -330,5 +331,13 @@ before: 0
 after: 1
 command: git ls-tree -r --name-only 95ea5f8b98ae4cf8ee651bf46709570114f50edd | grep user-20261015-r01/operability/selftest-receipt.txt | wc -l
 measured-against: 95ea5f8b98ae4cf8ee651bf46709570114f50edd
+-->
+
+<!-- user-round:user-20261015-r02
+axis: adjacency
+before: 0
+after: 1
+command: git ls-tree -r --name-only 59ba8da019400c1a3b14bc2c19746a457f791601 | grep user-20261015-r02/boundary/refusal-receipt.txt | wc -l
+measured-against: 59ba8da019400c1a3b14bc2c19746a457f791601
 -->
 
