@@ -375,3 +375,14 @@
   `e3c5baea500090d3fd5c5fa0377eac10f2ee6fb2`. Counting command is 0 at baseline
   and 1 at that commit. Other axes unchanged. No new public page. No
   consequential external action. Report: `reports/pstack-20261015-r09.md`.
+- 2026-10-15 — pstack-20261015-r10: freshness 6→7. One `/pstack:swarm` of 32
+  local seats, aggregate PASS 32, no dropout. Admitted one replay receipt from
+  the shipped r01 loopback driver. DOM hash
+  `af8d1560b0212c1afaa11355e5ef8660e2b1b166fc8c7f0eae7cc723a05857b0`, screenshot
+  7592 bytes, GET only, ports closed. Rejected the loopback host `127.0.0.1`
+  as a real site, and Brave as installed (s26 listed only
+  `NativeMessagingHosts`). Non-author reviewer-r10 agrees. Work commit
+  `4e75a17ebbaa125777ed0d6e745fd150e9c6caf2`. Counting command is 0 at baseline
+  and 1 at that commit. Operability stays 6. Other axes unchanged. No new
+  public page. No consequential external action. Report:
+  `reports/pstack-20261015-r10.md`.
