@@ -1,0 +1,6 @@
+{
+  "seat": "s29",
+  "verdict": "PASS",
+  "evidence": "MATCH cdp/capture.mjs\nMATCH loopback/driver.sh\nMATCH loopback/site/page.html\nMATCH loopback/verify-pin.mjs\nMATCH public/driver.sh",
+  "command": "node -e 'const fs=require(\"fs\"); const crypto=require(\"crypto\"); const pins=JSON.parse(fs.readFileSync(\"corpus/evidence/pstack-20261015-r01/loopback/pins.json\",\"utf8\")); let bad=0; for (const [rel, want] of Object.entries(pins.methodology)) { const got=crypto.createHash(\"sha256\").update(fs.readFileSync(\"corpus/evidence/pstack-20261015-r01/\"+rel)).digest(\"hex\"); console.log((got===want?\"MATCH\":\"MISMATCH\")+\" \"+rel); if (got!==want) bad=1; } process.exit(bad);'"
+}
