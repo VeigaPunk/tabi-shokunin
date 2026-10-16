@@ -230,6 +230,7 @@ Historical axis table above stays at its last explicit measurement. These rows a
 | pstack-20261015-r06 | 7 | 6 | 6 | 6 | 6 | 6 |
 | pstack-20261015-r07 | 7 | 6 | 6 | 6 | 6 | 7 |
 | pstack-20261015-r08 | 7 | 6 | 6 | 6 | 7 | 7 |
+| pstack-20261015-r09 | 7 | 7 | 6 | 6 | 7 | 7 |
 
 Freshness 3→4 is the public-observation count below. The historical freshness cell stays 3. Freshness 4→5 is the two replay receipts in the r02 block.
 
@@ -295,5 +296,13 @@ before: 0
 after: 1
 command: git ls-tree -r --name-only 472bfc33de340035be5fa001f4e6685b79be4a64 | grep pstack-20261015-r08/calibration/pin-receipt.txt | wc -l
 measured-against: 472bfc33de340035be5fa001f4e6685b79be4a64
+-->
+
+<!-- pstack-round:pstack-20261015-r09
+axis: coverage
+before: 0
+after: 1
+command: git ls-tree -r --name-only e3c5baea500090d3fd5c5fa0377eac10f2ee6fb2 | grep corpus/knowledge/loopback-pin-stability.md | wc -l
+measured-against: e3c5baea500090d3fd5c5fa0377eac10f2ee6fb2
 -->
 
