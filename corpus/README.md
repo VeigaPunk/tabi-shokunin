@@ -94,3 +94,12 @@ creation; this corrects any premature reading of "is closed" at :73. Local
 pin integrity is distinct from round admission: dispatch remains blocked by
 missing global taxonomy alias bindings, with zero current task calls and no
 receipt or completed-round credit. No knowledge note or coverage group added.
+
+
+## Pstack coverage addition — example-domain-observation (2026-10-15)
+
+The historical coverage map above stays a round-3 snapshot. This addition records one note admitted by pstack-20261015-r04.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/example-domain-observation.md` | Observation-only capture of https://example.com/: empty h1, documentation paragraph, GET `/` and GET `/s.js`, DOM and screenshot hashes. | `corpus/evidence/pstack-20261015-r04/public/capture.json` |

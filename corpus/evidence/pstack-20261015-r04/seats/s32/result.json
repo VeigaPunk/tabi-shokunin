@@ -1,0 +1,6 @@
+{
+  "seat": "s32",
+  "verdict": "PASS",
+  "evidence": "GET https://example.com/ | GET https://example.com/s.js",
+  "command": "node -e 'const c=require(\"./corpus/evidence/pstack-20261015-r01/public/capture.json\"); const bad=c.requests.filter(r=>![\"GET\",\"HEAD\"].includes(String(r.method).toUpperCase())); if(bad.length||c.consequential!==false) process.exit(1); console.log(c.requests.map(r=>r.method+\" \"+r.url).join(\" | \"));'"
+}
