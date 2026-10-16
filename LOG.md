@@ -419,3 +419,12 @@
   commit `8a869af00665e8e445bc84c50492433097c55866`. Counting command is 0 at baseline and 1 at that commit.
   Other axes stay at their prior scores. No new public page. No consequential
   external action. Report: `reports/user-20261015-r03.md`.
+- 2026-10-15 — user-20261015-r04: coverage 7→8. One `/user:swarm` wave of 32
+  members, aggregate PASS 32, no dead lane. Admitted
+  `corpus/knowledge/user-public-observation.md`, which records the r02
+  example.com capture, GET only, and the public DOM hash. Rejected treating a
+  loopback replay as that note, and Brave as installed (s26 listed only
+  `NativeMessagingHosts`). Non-author reviewer-user-r04 agrees. Work commit
+  `982e3b2d53569fe3494d5f589384ce789ea52a20`. Counting command is 0 at baseline and 1 at that commit. Other axes
+  stay at their prior scores. No new public page. No consequential external
+  action. Report: `reports/user-20261015-r04.md`.
