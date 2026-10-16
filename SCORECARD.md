@@ -326,6 +326,7 @@ The pstack continuation table above stays as landed. These rows are the continua
 | user-20261015-r02 | 7 | 7 | 7 | 7 | 7 | 8 |
 | user-20261015-r03 | 7 | 7 | 7 | 7 | 8 | 8 |
 | user-20261015-r04 | 7 | 8 | 7 | 7 | 8 | 8 |
+| user-20261015-r05 | 8 | 8 | 7 | 7 | 8 | 8 |
 
 <!-- user-round:user-20261015-r01
 axis: operability
@@ -358,4 +359,12 @@ before: 0
 after: 1
 command: git ls-tree -r --name-only 982e3b2d53569fe3494d5f589384ce789ea52a20 | grep corpus/knowledge/user-public-observation.md | wc -l
 measured-against: 982e3b2d53569fe3494d5f589384ce789ea52a20
+-->
+
+<!-- user-round:user-20261015-r05
+axis: depth
+before: 0
+after: 1
+command: git ls-tree -r --name-only c6fb0d5334e3011d3b73e323aafe6fc95a6a49c7 | grep user-20261015-r05/depth/paragraph-receipt.txt | wc -l
+measured-against: c6fb0d5334e3011d3b73e323aafe6fc95a6a49c7
 -->

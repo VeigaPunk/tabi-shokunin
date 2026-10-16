@@ -428,3 +428,11 @@
   `982e3b2d53569fe3494d5f589384ce789ea52a20`. Counting command is 0 at baseline and 1 at that commit. Other axes
   stay at their prior scores. No new public page. No consequential external
   action. Report: `reports/user-20261015-r04.md`.
+- 2026-10-15 — user-20261015-r05: depth 7→8. One `/user:swarm` wave of 32
+  members, aggregate PASS 32, no dead lane. Admitted the paragraph receipt:
+  h1 empty, 156 paragraph bytes, title Example Domain. Rejected the claim that
+  example.com has an h1, and Brave as installed (s26 listed only
+  `NativeMessagingHosts`). Non-author reviewer-user-r05 agrees. Work commit
+  `c6fb0d5334e3011d3b73e323aafe6fc95a6a49c7`. Counting command is 0 at baseline and 1 at that commit. Other axes
+  stay at their prior scores. No new public page. No consequential external
+  action. Report: `reports/user-20261015-r05.md`.
