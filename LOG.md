@@ -352,3 +352,15 @@
   `ec5ee4bd51a35fe964fe63b73ab356c27530e464`. Counting command is 0 at baseline
   and 1 at that commit. Other axes unchanged. No new public page. No
   consequential external action. Report: `reports/pstack-20261015-r07.md`.
+- 2026-10-15 — pstack-20261015-r08: calibration 6→7. One `/pstack:swarm` of 32
+  local seats, aggregate PASS 32, no dropout. Admitted a pin receipt: four
+  loopback DOM files match
+  `af8d1560b0212c1afaa11355e5ef8660e2b1b166fc8c7f0eae7cc723a05857b0`. Rejected
+  equating that pin with the r04 public DOM
+  `b6f58620a0440586a3c5359b00968b6d97e9cedfb8047d6252e3ec824a48d789`. Seat s31
+  replayed the r01 loopback driver. Screenshot 7592 bytes, GET only, ports
+  closed. Rejected the loopback host `127.0.0.1` as a real site. Non-author
+  reviewer-r08 agrees. Work commit
+  `472bfc33de340035be5fa001f4e6685b79be4a64`. Counting command is 0 at baseline
+  and 1 at that commit. Other axes unchanged. No new public page. No
+  consequential external action. Report: `reports/pstack-20261015-r08.md`.
