@@ -311,3 +311,12 @@
   `a19c6a90a0fb0e00729fd895c3c136ac4305f877`. Counting command is 0 at
   baseline and 4 at that commit. Other axes unchanged. No new public page.
   No consequential external action. Report: `reports/pstack-20261015-r03.md`.
+- 2026-10-15 — pstack-20261015-r04: coverage 5→6. One `/pstack:swarm` of 32
+  local seats, aggregate PASS 32. Seat s24 was respawned once after a short
+  `wc -l` line. Admitted `corpus/knowledge/example-domain-observation.md` from
+  a fresh observation of `https://example.com/` (GET only; empty h1; DOM
+  `b6f58620a0440586a3c5359b00968b6d97e9cedfb8047d6252e3ec824a48d789`). Rejected
+  an h1 claim and the Brave-installed claim. Non-author reviewer-r04 agrees.
+  Work commit `3e3ba9e90d4bf04d5743652e72a9252f81877122`. Counting command is
+  0 at baseline and 1 at that commit. Other axes unchanged. No consequential
+  external action. Report: `reports/pstack-20261015-r04.md`.

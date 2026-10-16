@@ -225,6 +225,7 @@ Historical axis table above stays at its last explicit measurement. These rows a
 | pstack-20261015-r01 | 7 | 5 | 5 | 4 | 6 | 5 |
 | pstack-20261015-r02 | 7 | 5 | 5 | 5 | 6 | 5 |
 | pstack-20261015-r03 | 7 | 5 | 5 | 5 | 6 | 6 |
+| pstack-20261015-r04 | 7 | 6 | 5 | 5 | 6 | 6 |
 
 Freshness 3→4 is the public-observation count below. The historical freshness cell stays 3. Freshness 4→5 is the two replay receipts in the r02 block.
 
@@ -250,5 +251,13 @@ before: 0
 after: 4
 command: git ls-tree -r --name-only a19c6a90a0fb0e00729fd895c3c136ac4305f877 | grep pstack-20261015-r03/boundary/ | grep '.txt' | wc -l
 measured-against: a19c6a90a0fb0e00729fd895c3c136ac4305f877
+-->
+
+<!-- pstack-round:pstack-20261015-r04
+axis: coverage
+before: 0
+after: 1
+command: git ls-tree -r --name-only 3e3ba9e90d4bf04d5743652e72a9252f81877122 | grep corpus/knowledge/example-domain-observation.md | wc -l
+measured-against: 3e3ba9e90d4bf04d5743652e72a9252f81877122
 -->
 
