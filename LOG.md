@@ -445,3 +445,16 @@
   at baseline and 1 at that commit. Other axes stay at their prior scores. No
   new public page. No consequential external action. Report:
   `reports/user-20261015-r06.md`.
+
+## 2026-10-16 — protocol conformance: SCORECARD contract fields
+
+- 2026-10-16 — operator protocol-conformance rollout per the 2026-10-16 fleet
+  protocol amendment (fleet-root `84bade0`) and the `AXES.md` §SCORECARD.md
+  contract; not a craft round.
+- Contract fields already present as recordable sections: axes (`## Axes —
+  final state` plus the pstack and `/user:swarm` continuation score tables);
+  planned and retired (`## Planned / retired`, both populated).
+- Added by this rollout, purely additive: `## Capabilities` (empty
+  repertoire-table scaffold; no rows) and `## Saturation` (declaration owed by
+  the lane on its next round).
+- No axis claim was made and no score moved; no round was run.
