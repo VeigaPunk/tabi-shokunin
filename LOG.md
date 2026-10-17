@@ -458,3 +458,8 @@
   repertoire-table scaffold; no rows) and `## Saturation` (declaration owed by
   the lane on its next round).
 - No axis claim was made and no score moved; no round was run.
+## 2026-10-17 — root README added
+
+- **Trigger.** Operator request for a repository front door. This checkout had no root `README.md`.
+- **Action.** Added `README.md` from `PROVINCE.md` (旅, kimi-webbridge documentation surface, refusals) and the opening of `SKILL.md` (loopback capture and evidence ladder). `scripts/check-freshness.mjs` public targets are the operator-host plugin paths in that file; the README says to read them before running off that host. Fleet mint note withholds the roster row.
+- **Non-claims.** No Devin wiki URL existed here and none was added. No axis claim, no score change, no browser run. Not a craft round.
