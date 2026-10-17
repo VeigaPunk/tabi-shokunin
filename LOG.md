@@ -458,3 +458,10 @@
   repertoire-table scaffold; no rows) and `## Saturation` (declaration owed by
   the lane on its next round).
 - No axis claim was made and no score moved; no round was run.
+
+## 2026-10-17 — repository README
+
+- **Trigger.** The repository root had no `README.md`.
+- **Evidence.** Surfaces and refusals are `PROVINCE.md`. The loopback-capture sufficiency contract is the opening of `SKILL.md`. Scripts present under `scripts/`: `check-freshness.mjs`, `check-round-contract.mjs`, `check-user-round-contract.mjs`, `pstack-aggregate.mjs`, `pstack-seat.mjs`, `user-aggregate.mjs`, `user-seat.mjs`.
+- **Action.** Added `README.md`. Corpus indexes were not edited. No Devin wiki URL was present.
+- **Outcome.** No axis claim; no score moved.
