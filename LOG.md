@@ -458,3 +458,11 @@
   repertoire-table scaffold; no rows) and `## Saturation` (declaration owed by
   the lane on its next round).
 - No axis claim was made and no score moved; no round was run.
+
+## 2026-10-17 — root README
+
+Motivating evidence: no root `README.md`. The page points at `SKILL.md`
+(runbook, ladder, approval table, pins), `PROVINCE.md` (shape-only
+sessions; no consequential actions), `SHONEN.md` (TABI-B4 / round-3
+executor evidence on the seed boxes), and the scripts present under
+`scripts/`. No Devin wiki URL exists here.
