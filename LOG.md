@@ -458,3 +458,31 @@
   repertoire-table scaffold; no rows) and `## Saturation` (declaration owed by
   the lane on its next round).
 - No axis claim was made and no score moved; no round was run.
+
+## 2026-10-17 — readable front door
+
+Root README was absent. Claims are taken from PROVINCE.md, SHONEN.md (probation checklist; boxes `[x]` by TABI-B4 and TABI-R3-4), and the usage lines in `scripts/pstack-aggregate.mjs` and `scripts/user-aggregate.mjs`. No live-site command was added.
+
+Corpus index: `corpus/README.md` is line-cited (including lines 5-9, 30, and 51) and was not edited. `corpus/knowledge/`, `corpus/lessons/`, evidence, fixtures, and earlier LOG entries were not rewrapped.
+
+Lint fixes (line counts of existing content unchanged):
+- SKILL.md (final newline)
+- plans/completion-evidence.md (final newline)
+- plans/round-4-record-draft.md (final newline)
+- plans/round-5-record-draft.md (final newline)
+- plans/round-6-record-draft.md (final newline)
+- plans/round-7-record-draft.md (final newline)
+- plans/round-8-record-draft.md (final newline)
+- plans/round-9-record-draft.md (final newline)
+
+Lint left in place:
+- plans/round-10-record-draft.md: missing final newline; sha256 pinned in corpus/evidence/w10-tabi-b104/poll.log, corpus/evidence/w11-ver-b11-poll/commitwalk.txt
+- plans/round-10.plan.md: missing final newline; sha256 pinned in corpus/evidence/w11-b11-2-check/measure.txt, corpus/lessons/round-10.md, plans/round-10-record-draft.md
+- plans/round-11.plan.md: missing final newline; sha256 pinned in corpus/evidence/w11-ver-b11-poll/commitwalk.txt
+- plans/round-6.plan.md: missing final newline; sha256 pinned in plans/round-6-record-draft.md
+- plans/round-7.plan.md: missing final newline; sha256 pinned in plans/round-7-record-draft.md
+- plans/round-8.plan.md: missing final newline; sha256 pinned in plans/round-8-record-draft.md
+- plans/round-9.plan.md: missing final newline; sha256 pinned in plans/round-9-record-draft.md
+- SKILL.md:246 heading skip h1->h3 (### Reference fixture); not reheaded because SKILL.md is citation-stable craft text
+
+Devin: a search for `devin.ai` in this repo found no URL to edit. No wiki URL was added.
