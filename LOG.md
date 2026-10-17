@@ -458,3 +458,21 @@
   repertoire-table scaffold; no rows) and `## Saturation` (declaration owed by
   the lane on its next round).
 - No axis claim was made and no score moved; no round was run.
+
+## 2026-10-17 — root README (front door; not a craft round)
+
+Operator request: make every shokunin-repo README amazing, and do not
+alter Devin wiki links. Evidence that motivated this change:
+
+- this repo either had no root `README.md`, or carried the generic
+  "A **shokunin lane** … What's here" template / a thinner front door
+- `PROVINCE.md` and (where present) `SKILL.md` already named the domain,
+  refusals, and in-repo gates; the GitHub front door did not
+- Devin wiki URL pattern is the existing fleet line in
+  `VeigaPunk/shokunin` README (`app.devin.ai/org/veigapunk/wiki/…`)
+  and `VeigaPunk/ufo-fsd-alpha`; the fleet overview link is preserved
+  byte-identical in the fleet-root README
+
+This commit writes or rewrites `README.md` from those sourced files and
+the commands/paths named in it. No axis claim, no score moved, no corpus
+admission, no protocol change.
