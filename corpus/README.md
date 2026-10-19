@@ -119,3 +119,76 @@ The historical coverage map above stays a round-3 snapshot. This addition record
 | Note | Holds | Sources |
 |---|---|---|
 | `knowledge/user-public-observation.md` | Observation-only capture of https://example.com/ from user-20261015-r02: GET only, public DOM hash distinct from a loopback replay. | `corpus/evidence/user-20261015-r02/public/capture.json` |
+
+## Coverage map — reconciliation (kaika fleet round-1, 2026-10-19)
+
+Append-only reconciliation. The round-3 map and its three single-note additions
+above stay as written; this block maps the notes those sections do not.
+
+Counts at base `40a6de87f`, re-derived 2026-10-19, excluding the three round-1
+notes still in flight (`chrome-remote-debugging-profile-boundary.md`,
+`webdriver-bidi-capability-matrix.md`, `web-flake-retry-evidence.md`), whose rows
+the L1 adds:
+
+| Quantity | Value | Command |
+|---|---|---|
+| knowledge notes | 26 | `ls corpus/knowledge/*.md \| wc -l` |
+| lesson files | 26 (`round-1`..`round-10` plus the pstack and user waves) | `ls corpus/lessons/*.md \| wc -l` |
+| evidence groups | 64, of which 45 carry a `MANIFEST.txt` | `ls -d corpus/evidence/*/ \| wc -l`; `find corpus/evidence -name MANIFEST.txt \| wc -l` |
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/arc-synthesis.md` | Ten-round synthesis of the lane's own records: the evidence ladder as built (4 rungs plus 5 measured extensions), the approval discipline, the archive as infrastructure, the loopback-only perimeter. Measures nothing new; every row carries a path:line anchor. | §0 as-of table with one command per row; §6 manifest spot-checks (`sha256sum -c MANIFEST.txt`); in-repo records only (`LOG.md`, `SCORECARD.md`, notes, reports, plans). |
+| `knowledge/archive-receipt-r5.md` | Round-5 archive of the pinned `/tmp` groups: 25 groups, 1,010 files, 6,780,293 B, one `MANIFEST.txt` per group. Records the `*profile*` exclusion (widened from `*/profile/*` for cause) and three mechanical checks: manifest self-check, source-vs-archive hash equality, corpus-wide pin scan. | `corpus/evidence/<group>/MANIFEST.txt` (`sha256sum -c`); §1–§6 counts by command. |
+| `knowledge/archive-receipt-r8.md` | Seven new groups, 41 files, 207,889 B from the round-6/7 tranche; tree moves 28 → 35 groups, 1,403 → 1,451 files. Zero `*profile*` exclusions exercised; `w7-aud-b7-checks` is an aggregation of loose `/tmp` root logs. | Per-group `corpus/evidence/<group>/MANIFEST.txt`; §1 group table with file and byte counts. |
+| `knowledge/archive-receipt-r10.md` | Round-9 tranche: 269 files, 1,065,924 B under `corpus/evidence/w9-tabi-b91/` with a 269-line MANIFEST; 2,396 files excluded under `*profile*` paths, none read. §8 appends the round-11 final sweep (9 groups, 52 files, 390,702 B; tree 36 → 45). | `corpus/evidence/w9-tabi-b91/MANIFEST.txt`; §8.1–§8.5. |
+| `knowledge/async-step-evidence.md` | Async XHR as a held-request pre/post pair: the request is held at the CDP Fetch request stage, so the pre-settle state is a stable class, then released against a payload-derived DOM wait. Six runs, each pair carrying visual, state and network layers. | `/tmp/tabi-r4-2-async` pins; archived as `corpus/evidence/tabi-r4-2-async/` and `w4-t4-2-async/` (102 files each). |
+| `knowledge/carried-debt-closure-r8.md` | Closes the F1 stale-pin erratum for `tabi-b1-r3b-journey` with one append-only line while leaving the group's file list unchanged. Records the round-6 L1 wire-class/cache-revalidation matrix as still open at round 8. | `tabi-b1-r3b-journey/MANIFEST.txt` plus in-group pin self-checks; `diff` against `tabi-r3-1-journey`. |
+| `knowledge/closeout-r11.md` | Round-11 closeout: the arc (the 4-rung ladder with its measured boundaries, the archive as infrastructure, the loopback-only perimeter), the standing asks (L0 packet, daemon revival) and the debt ledger C1–C6 closed, O1–O16 open, R1–R3 residue. | §5 commands (manifest spot `sha256sum -c` ×3 groups, L0 read, daemon read, census); in-repo records only. |
+| `knowledge/external-class-fixture-v2.md` | Loopback fixture v2 with a redirect chain and rate/ToS-shaped endpoints (robots-disallow, 429, 403, interstitial) behind a stop-and-report predicate proved by the runner's own cells. Ten driver runs on two loopback origins; no external site. | `/tmp/w6-tabi-b61` pins §9; archived as `corpus/evidence/w6-tabi-b61/` (139 files plus MANIFEST). |
+| `knowledge/hygiene-sweep-r4.md` | Read-only sweep of rounds 1–3 from live state at four passes: every scratch port closed, no chromium-family browser, no fixture server, daemon state recorded. Nothing was killed, stopped or deleted. | Live `ss`/`ps`/`pgrep` passes at the stated times; scratch `/tmp/tabi-r4-3-sweep` and `/tmp/w4-t4-3-sweep` (archived). |
+| `knowledge/layer-routing-synthesis.md` | Synthesizes the rounds 4–6 network and async evidence into the claim-class → layer-routing table, with the measured disagreement cases as rows. Measures nothing new; unquoted rows are marked [synthesis]. | Anchors to `network-evidence-rung.md` §6, `async-step-evidence.md` §2/§5, `external-class-fixture-v2.md` §4/§5/§7, `reports/r4-aud-tab1.md` §2, `reports/r6-aud-b6.md`; scratch `w7-b71-synth/source-pins-final.txt`. |
+| `knowledge/network-evidence-rung.md` | Defines the network rung: a per-step CDP Network-domain slice (request/response plus ExtraInfo, loading, cache) with four correlated surfaces plus a file-side third party, on a 3-navigation loopback fixture. | `/tmp/w4-t41-network/site/` and methodology pins; archived as `corpus/evidence/w4-t41-network/` (200 files) and `tabi-r4-1-network/` (122 files). |
+| `knowledge/packet-readiness-r7.md` | Audits the operator-approval packet's nine claim classes against landed notes: 9/9 classes backed, 9/9 packet note pins stale, 3/3 substrate pins hold, and the packet's cold-read falsifier never executed. | Packet `corpus/handoffs/operator-approval-request.md`; §1 class-to-note table with re-verified pins; §3 archive mapping. |
+| `knowledge/state-changing-matrix-r9.md` | Lands the replay half of the state-changing matrix on the round-8 fixture: per-token-state replay probes, the 409/replay cells, redirect-code replay, fresh-token double-apply and the cross-client contract. Nine cells × 2 cold reps plus third reps, 20 loopback runs. | `/tmp/w9-tabi-b91` (`matrix.tsv`, `run-all.log`, `verify-out.txt`); archived as `corpus/evidence/w9-tabi-b91/MANIFEST.txt`. |
+| `knowledge/stateful-fixture-evidence.md` | Loopback server-side state fixture (cookie-shaped sessions, no auth, one-time tokens, apply ledger) with 14 cells × 2 cold reps, a curl control arm, the multi-visit evidence pattern and a cookie shape-only census. | Scratch pins in-note; `/tmp/w8-tabi-b81` remains unarchived (`closeout-r11.md` O2), so these pins stay provisional. |
+| `knowledge/webbridge-revival-assessment.md` | Assessment, not a revival: restart is local and doc-specified, the extension↔daemon handshake is not doc-authorizable operator-free, and the operator chromium now runs with the Kimi extension while the daemon is down. | `/tmp/w6-tabi-b62` pins §8; archived as `corpus/evidence/w6-tabi-b62/` (7 files plus MANIFEST); substrate `SKILL.md` and `references/operations.md`. |
+
+These 15 rows plus the 11 `knowledge/` rows already above (eight in the round-3
+map, three in the single-note additions) cover all 26 notes at base
+(`diff <(ls corpus/knowledge | sort) <(grep -o 'knowledge/[a-z0-9-]*\.md' corpus/README.md | sed 's|knowledge/||' | sort -u)` → exit 0, no output).
+
+Round-1 admits (claim C2; each opens with `source:` citing `corpus/SOURCES.md` rows, which is
+now the corpus's curated reading list — registry, study paths, search log, leads). With these
+three rows the same `diff` covers 29/29 notes:
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/chrome-remote-debugging-profile-boundary.md` | Chrome ≥136 refuses `--remote-debugging-port/-pipe` on the default data dir; the Chromium source shows the check is compiled only into Google-branded desktop builds and fails closed, so this host's unbranded Chromium does not enforce it and the runbook's `--user-data-dir=<out>/profile` stays the lane's guard. Documentation and source reading only. | S001–S004 (Chrome blog, CDP viewer, Chrome for Testing, `remote_debugging_server.cc` @main) |
+| `knowledge/webdriver-bidi-capability-matrix.md` | Spec-level map of every CDP evidence surface tabi uses to its WebDriver BiDi command or event in WD 2026-10-08, with gaps; a protocol map, not a support matrix — locally measured: no. Decision rule: choose transport per evidenced feature. | S005–S012 (W3C draft, MDN, Selenium, Chrome blog, chromium-bidi) |
+| `knowledge/web-flake-retry-evidence.md` | Receipt contract that keeps `passed` / `flaky` / `failed` re-derivable (every attempt, order seed, first-retry trace, the awaited state predicate), mapped onto tabi's state-predicate waits; no runner flake was measured locally. | S013–S019 (Playwright 1.64 docs, ICST 2025 paper, KNU record) |
+
+## Frontier — kaika fleet round-1 (2026-10-19)
+
+The `## Frontier` block above is the round-3 text and stays unedited. Each of
+its bullets is restated with the status re-derived from later notes and
+`LOG.md`; `held` = measured and cited, `open` = named and not held,
+`superseded` = the historical wording no longer describes the tree.
+
+| Frontier item | Status | Current pointer |
+|---|---|---|
+| Extension↔daemon link | open — the daemon lifecycle and `/status` shape were already held when the bullet was written; the handshake has never been observed up (four `/status` samples, all `extension_connected:false`) and the docs route extension faults to user actions only. `/command` auth stays unprobed by rule. | `knowledge/webbridge-revival-assessment.md:182-200` and `:12-17`; `knowledge/packet-readiness-r7.md:62`; `knowledge/closeout-r11.md` O16. |
+| Native WebMCP in chromium 152 | open — still unprobed; the only WebMCP surface evidenced on the host is a CDP tool, not `navigator.modelContext`, and no flag carries it. | `knowledge/browser-surface-census.md:145-153` and U3 `:188`. |
+| Rate/ToS surface for site-interaction records | open — the approval table still decides from an absence; round 6 measured loopback 429/403/robots-disallow instruments with a stop-and-report predicate, which is the instrument, not a real surface. | `knowledge/external-class-fixture-v2.md` §4–§5; `knowledge/interaction-approval-table.md` C2–C6; `knowledge/state-changing-matrix-r9.md` (loopback only). |
+| Real-site journeys | open — the only external record is read-only public observation of `https://example.com/` (GET `/` and `/s.js`, no interaction); third-party JS, redirects, POST and CSRF-checked submits remain untested by rule. | `knowledge/example-domain-observation.md`, `knowledge/user-public-observation.md`, `knowledge/loopback-pin-stability.md`; round-3 anti-claim unchanged. |
+| Evidence-byte archival (thirteen `/tmp` groups) | superseded — 64 groups and 45 manifests at base; the 19 later pstack/user/fleet dirs carry per-directory receipts instead of a `MANIFEST.txt`; the r8 tranche (`/tmp/w8-tabi-b81`, `/tmp/w8-ver-b81`) stays named unarchived. | `ls -d corpus/evidence/*/ \| wc -l` → 64; `archive-receipt-r5.md` §1 (25 groups), `archive-receipt-r8.md` §1 (35), `archive-receipt-r10.md` §8.1 (45); `closeout-r11.md` O2. |
+
+New this round (`docs-held` = admitted from opened sources, runtime unmeasured; `open` = rows queued in `corpus/SOURCES.md`, no note):
+
+| Frontier item | Status | Pointer |
+|---|---|---|
+| Chrome ≥136 profile boundary | docs-held — source-level enforcement read; refusal never observed (no branded Chrome on this host) | `knowledge/chrome-remote-debugging-profile-boundary.md` §3, Unknowns 1–5 |
+| WebDriver BiDi | docs-held — spec map only; no BiDi session measured, CDP evidence surfaces unchanged; WPT result data is an unread lead | `knowledge/webdriver-bidi-capability-matrix.md` §2, U1–U5 |
+| Runner flake receipts | docs-held — receipt contract only; no Playwright runner flake measured | `knowledge/web-flake-retry-evidence.md` §2, §4 |
+| Playwright accessible locators / ARIA snapshots | open — S023–S025 opened and queued (`accessible-selectors` path), no note | `corpus/SOURCES.md` §Paths |
+| WebMCP spec | open — S020 opened and queued (CG draft 2026-10-16); native WebMCP in chromium 152 still unprobed | `corpus/SOURCES.md` S020; `knowledge/browser-surface-census.md` U3 |

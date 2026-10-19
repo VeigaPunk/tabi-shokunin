@@ -1594,3 +1594,24 @@ files/descriptors, with pinned exit/finding pairs. Full corrected captures:
 `gate-selftest-safe.json` and `gate-worktree-safe.json` in the interactive
 evidence directory. The original outputs remain historical, not shipping
 safety evidence; post-commit output identifies the corrected carrying commit.
+
+## Errata — kaika fleet round-1 (2026-10-19; append-only; never edit above)
+
+**Where to learn more:** `corpus/SOURCES.md` — opened, scoped-tier rows with study paths
+(`profile-isolation`, `protocol-choice`, `flake-receipts`, `accessible-selectors`), the
+search log and unopened leads. Rows are where to learn, not admitted facts.
+
+| Situation | Rule | Source |
+|---|---|---|
+| Launching any Chrome/Chromium with `--remote-debugging-port/-pipe` | Always the runbook's `--user-data-dir=<out>/profile` (`:129`). Branded Chrome ≥136 refuses the default data dir; this host's unbranded Chromium does **not** — never rely on the browser's refusal as the guard; never debug the user's profile (§Session-material `:660`) | `corpus/knowledge/chrome-remote-debugging-profile-boundary.md` §2–§4 |
+| Tempted to move a capture from CDP to WebDriver BiDi | Choose transport per evidenced feature: claim a BiDi surface only after a pinned browser/binding loopback probe reproduces the CDP evidence contract; the W3C draft is protocol text, not support | `corpus/knowledge/webdriver-bidi-capability-matrix.md` §2–§3 |
+| A browser test fails, then passes on retry | Record it `flaky`, never `passed`: keep every attempt, the order seed, the first-retry trace and the awaited state predicate; no fixed-sleep "fix" | `corpus/knowledge/web-flake-retry-evidence.md` §2, Rejected |
+
+### Sources gate registry
+
+| Name | Kind / owner | Entry and verdict map | Self-invocation | Persisted baseline | Write scope |
+|---|---|---|---|---|---|
+| sources-census | gate / tabi | `node scripts/check-sources.mjs [--file REL] [--since YYYY-MM-DD]`; 0 clean, 1 failed, 2 could-not-evaluate (missing, symlinked or non-regular registry; bad args). FINDING lines carry `fleet=<E/W code>` where the in-flight fleet census defines one | `node scripts/check-sources.mjs --self-test`; 25 isolated CLI cases assert exit + finding id (clean with contract-awk row/tier parity, one per finding, a `supersedes` correction that must stay clean, an `S0010`-vs-`S001` id-boundary case; symlinked, non-regular and missing registry also assert the refusal detail) | Expected exit/finding table inside the script; the registry is a lane artifact (no fleet-artifact dependency); first receipt `corpus/evidence/kaika-fleet-round-1/operability/selftest-receipt.txt` | Read-only over the registry and in-root used-by files (`O_NOFOLLOW`, symlink and `..` escape refused); self-test writes only its own temp dir |
+
+Structural only: the gate cannot see whether a source was opened — that proof is the
+round lesson's `## Gate` (`corpus/lessons/kaika-fleet-round-1.md`).

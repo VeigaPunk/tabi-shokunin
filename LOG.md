@@ -458,3 +458,19 @@
   repertoire-table scaffold; no rows) and `## Saturation` (declaration owed by
   the lane on its next round).
 - No axis claim was made and no score moved; no round was run.
+
+## 2026-10-19 — kaika fleet round-1
+
+- 2026-10-19 — **user-20261015-r07: executed, unadmitted, recorded without credit**
+  (steer pre-action, fleet-ledger `.ufo/waves/kaika/steer.md:32`). One `/user:swarm`
+  wave of 32 seats ran and was committed in `2676cc8` ("Admit user-20261015-r07
+  evidence and gate", 2026-10-17, 37 evidence files + one `.gitignore` line) with no
+  LOG, SCORECARD, report or lesson. Aggregate 32/32 PASS
+  (`corpus/evidence/user-20261015-r07/aggregate.json`). Its only axis receipt,
+  `operability/selftest-receipt.txt` (`USER_ROUND_CONTRACT_SELFTEST verdict=clean
+  cases=4`), is byte-identical to the r01 receipt already credited operability 6→7
+  (`sha256sum` of both → `77374a71…a7e65a`); its 29 hash seats still MATCH the bytes
+  at `40a6de87f` (seats s26/s27/s32 carry no hash). No new capability, no reviewer,
+  no spot-check → no axis move and no round credit; the scores stay at the
+  user-20261015-r06 row. Recorded so the evidence group is no longer orphaned
+  (lesson M6, `corpus/lessons/kaika-fleet-round-1.md`; QUALITY criterion 7).
