@@ -82,3 +82,23 @@ contains the quoted line. Rows touched old→new: none (all 27 rows are new).
 - rejected: S027 (port 9222 on the everyday profile) — refused on branded Chrome ≥136 (S001) and forbidden by the shape-only session rule (SKILL.md:660).
 - rejected: user-20261015-r07 as round credit — executed and committed (`2676cc8`) but its only receipt is byte-identical to r01's already-credited one; recorded in LOG.md, no axis move.
 - spot-check: non-author pending — the orchestrator's post-landing verification (≥1 admit, ≥1 reject, ≥3 rows re-opened) is owed and not claimed here.
+
+## Post-review fixes (orchestrator adjudication, 2026-10-19)
+
+Non-author reviewer: admit with conditions (6/6 spot-checks agree). Critic: C2 verifies;
+C1 and C3 had fixable defects. Fixed, no new claims:
+
+- C1: rows outside `## Registry` were validated file-wide and passed → now
+  `row_outside_registry`; self-test 26 cases clean. Class: gate scope narrower than the
+  contract's section structure — captured-by QUALITY #6 in spirit (refusals asserted by
+  self-test), now with a case.
+- C3: `comm` on locale-inconsistent sort — corrected command in `SCORECARD.md`, 15 → 0.
+- M-1: host-Chromium non-enforcement was stated as observed in `SKILL.md:1606`,
+  `corpus/README.md:167`, `LOG.md:491` and S004's `teaches`. It is source-level
+  inference. Corrections appended to all three; SOURCES rule 2 correction: new row
+  **S028** (`supersedes S004 —`, re-fetched by the L1, sha256 identical). Rows touched
+  old→new in place: none. Class M2 (over-claimed observation) recurred — captured-by
+  QUALITY #3; the slip was in the distillation, not the note.
+- M-2: `SHONEN.md` `[x]` boxes named lane-dispatched verifiers (TABI-B4, TABI-R3-4) —
+  regenerated verbatim from the canonical template, all `[~]` with pointers. The L0
+  promotion premise is withdrawn.

@@ -192,3 +192,8 @@ New this round (`docs-held` = admitted from opened sources, runtime unmeasured; 
 | Runner flake receipts | docs-held — receipt contract only; no Playwright runner flake measured | `knowledge/web-flake-retry-evidence.md` §2, §4 |
 | Playwright accessible locators / ARIA snapshots | open — S023–S025 opened and queued (`accessible-selectors` path), no note | `corpus/SOURCES.md` §Paths |
 | WebMCP spec | open — S020 opened and queued (CG draft 2026-10-16); native WebMCP in chromium 152 still unprobed | `corpus/SOURCES.md` S020; `knowledge/browser-surface-census.md` U3 |
+
+Correction (kaika round-1 post-review, 2026-10-19): the `chrome-remote-debugging-profile-boundary.md`
+row above (line 167) says this host's unbranded Chromium "does not enforce" the ≥136 refusal.
+That is an inference from Chromium source (the note's §3 labels it so; S028 supersedes S004),
+not an observation — no default-profile launch was made. The row's guard rule is unchanged.

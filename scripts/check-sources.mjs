@@ -66,6 +66,7 @@ const selfTestCases = Object.freeze([
   { name: 'missing-section', exit: 1, finding: 'missing_section' },
   { name: 'credential-material', exit: 1, finding: 'credential_material' },
   { name: 'bare-anchor', exit: 1, finding: 'bare_anchor' },
+  { name: 'row-outside-registry', exit: 1, finding: 'row_outside_registry' },
   { name: 'symlinked-registry', exit: 2, finding: 'could_not_evaluate', detail: 'registry_symlink_refused' },
   { name: 'non-regular-registry', exit: 2, finding: 'could_not_evaluate', detail: 'registry_not_regular' },
   { name: 'missing-file', exit: 2, finding: 'could_not_evaluate', detail: 'registry_missing' },
@@ -252,13 +253,24 @@ function evaluate(text, root, since) {
 
   const rows = [];
   let recordCandidates = 0;
-  for (const [index, line] of lines.entries()) {
+  let section = null;
+  for (const line of lines) {
+    if (/^## /.test(line)) {
+      section = line.trim();
+      continue;
+    }
+    const inRegistry = section === '## Registry';
     if (rowPattern.test(line)) {
-      rows.push({ fields: line.split('|').map(cell => cell.trim()) });
+      const fields = line.split('|').map(cell => cell.trim());
+      if (!inRegistry) {
+        addFinding(findings, 'row_outside_registry', fields[1] || '-', `section_${(section ?? 'preamble').replace(/^## /, '').toLowerCase().replace(/[^a-z0-9]+/g, '_')}`);
+        continue;
+      }
+      rows.push({ fields });
       recordCandidates++;
       continue;
     }
-    if (!line.startsWith('|')) continue;
+    if (!inRegistry || !line.startsWith('|')) continue;
     const fields = line.split('|').map(cell => cell.trim());
     const candidateId = fields[1] ?? '';
     const divider = /^:?-{3,}:?$/.test(candidateId);
@@ -387,14 +399,16 @@ function makeRow(overrides = {}) {
   return `| ${value.id} | ${value.source} | ${value.kind} | ${value.tier} | ${value.scope} | ${value.anchor} | ${value.teaches} | ${value.status} | ${value.opened} | ${value.recheck} | ${value.usedBy} |`;
 }
 
-function fixtureText(rows, omitSection = null, extra = '') {
-  const sections = ['## Registry', '## Paths', '## Search log', '## Leads (unopened)'];
+function fixtureText(rows, omitSection = null, extra = '', trailing = []) {
+  const after = ['## Paths', '## Search log', '## Leads (unopened)'].filter(section => section !== omitSection);
   return [
     '# SOURCES — fixture',
-    ...sections.filter(section => section !== omitSection),
+    ...(omitSection === '## Registry' ? [] : ['## Registry']),
     '| id | source | kind | tier | scope | anchor | teaches | status | opened | recheck | used-by |',
     '|---|---|---|---|---|---|---|---|---|---|---|',
     ...rows,
+    ...after,
+    ...trailing,
     extra,
     '',
   ].join('\n');
@@ -433,6 +447,7 @@ function fixtureFor(name, root) {
   if (name === 'missing-section') return { rows: [row], omitSection: '## Search log' };
   if (name === 'credential-material') return { rows: [row], extra: 'ghp_fixtureSecretValue' };
   if (name === 'bare-anchor') return { rows: [makeRow({ anchor: '—' })] };
+  if (name === 'row-outside-registry') return { rows: [row], trailing: [makeRow({ id: 'S002', source: 'Stray — https://example.test/stray' })] };
   if (name === 'clean') {
     const cited = join(root, 'corpus/knowledge/mined.md');
     mkdirSync(dirname(cited), { recursive: true });
@@ -488,7 +503,7 @@ function selfTest() {
         mkdirSync(registry);
       } else if (test.name !== 'missing-file') {
         if (!fixture) throw new Error(`unknown self-test case: ${test.name}`);
-        writeFileSync(registry, fixtureText(fixture.rows, fixture.omitSection, fixture.extra));
+        writeFileSync(registry, fixtureText(fixture.rows, fixture.omitSection, fixture.extra, fixture.trailing));
       }
       const args = ['--root', root, '--file', defaultFile];
       if (fixture?.since) args.push('--since', fixture.since);

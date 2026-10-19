@@ -442,3 +442,15 @@ entered this round, so the window restarts here.
   `Retry-After`) replacing the asserted absence behind approval class C6
   (`grep -rl 'token-bucket' corpus/knowledge/ | wc -l` 0 → 1).
 - retired: none — no axis saturated past usefulness, none a wrong fit.
+
+### Post-review corrections — kaika fleet round-1 (2026-10-19; append-only)
+
+- **C3 note-map command, corrected.** The command in the claim table runs `comm` on
+  input sorted under the session locale, so under `en_US.UTF-8` it prints `comm: file 1
+  is not in sorted order`. Corrected form, with the whole sort+comm pipeline under C:
+  `( export LC_ALL=C; comm -23 <(git ls-tree --name-only <rev> corpus/knowledge/ | xargs -n1 basename | sort) <(git show <rev>:corpus/README.md | grep -o 'knowledge/[a-z0-9-]*\.md' | sed 's|knowledge/||' | sort -u) | wc -l )`
+  → **15** at `40a6de87f`, **0** at `a4115fa`, no warnings. The C3 drift total stays 17 → 0.
+- **C1 gate, corrected.** Row validation scoped to `## Registry`; self-test **26** cases
+  clean (was 25); the C1 counting command is unchanged.
+- **SHONEN.** All four boxes `[~]` (the former `[x]` verifiers were lane-dispatched); the
+  lane's `ROUND_CONTRACT` gate pins `SHONEN.md` and reads red after this change, by order.

@@ -1615,3 +1615,15 @@ search log and unopened leads. Rows are where to learn, not admitted facts.
 
 Structural only: the gate cannot see whether a source was opened — that proof is the
 round lesson's `## Gate` (`corpus/lessons/kaika-fleet-round-1.md`).
+
+### Errata — kaika round-1 post-review (2026-10-19; append-only)
+
+- **Correction to `:1606`.** "this host's unbranded Chromium does **not**" refuse is an
+  **inference from Chromium source** (`remote_debugging_server.cc` @main:169-177, S028
+  supersedes S004), not an observation — no launch against a default data dir was made
+  or will be. The rule in that row stands unchanged: always the runbook's
+  `--user-data-dir`, never rely on the browser's refusal.
+- **Correction to `:1614`.** The sources gate now validates rows only inside
+  `## Registry`; an `S###` row in any other section fails `row_outside_registry`.
+  Self-test: **26** cases (adds `row-outside-registry`). Receipt
+  `corpus/evidence/kaika-fleet-round-1/operability/selftest-receipt-post-review.txt`.

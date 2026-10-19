@@ -505,3 +505,21 @@
   touched, no consequential action; documentation only. Counting commands and before/after
   in `SCORECARD.md` §Kaika fleet round-1; report
   `.ufo/reports/round-1/tabi.md` (fleet ledger, integrator-committed). No push.
+- 2026-10-19 — **kaika fleet round-1 post-review fixes (orchestrator adjudication; no
+  new claims).** (1) C1: `scripts/check-sources.mjs` validated `S###` rows file-wide —
+  a valid row after `## Leads (unopened)` passed. Rows are now scoped to `## Registry`;
+  an outside row fails `row_outside_registry`. Self-test 25 → **26** cases, clean;
+  live registry clean (receipt `corpus/evidence/kaika-fleet-round-1/operability/selftest-receipt-post-review.txt`).
+  (2) C3: the SCORECARD note-map command ran `comm` on input not sorted under the same
+  locale; corrected command (with `LC_ALL=C` exported for the whole pipeline) re-run →
+  15 at `40a6de87f`, 0 at `a4115fa`, no warnings (`SCORECARD.md` post-review block).
+  (3) **Correction to line 491 above:** "unbranded Chromium here does not enforce it" is an
+  inference from Chromium source, not an observation (no default-profile launch made);
+  same correction appended to `SKILL.md` and `corpus/README.md`; `corpus/SOURCES.md` S028
+  supersedes S004's `teaches`. (4) `SHONEN.md` regenerated verbatim from the canonical
+  template with all four boxes `[~]`: the former `[x]` verifiers TABI-B4 and TABI-R3-4
+  were lane-dispatched subagents, so not non-author. The L0 promotion question's premise
+  ("4/4 with named non-author verifiers") is withdrawn. Consequence: `SHONEN.md` is
+  byte-pinned by `scripts/check-round-contract.mjs` / `check-user-round-contract.mjs`,
+  so `ROUND_CONTRACT` reads `history_rewritten` from this commit on — an operator-ordered
+  change to protected history, routed as an L0 re-baseline question.
