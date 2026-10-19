@@ -474,3 +474,34 @@
   no spot-check → no axis move and no round credit; the scores stay at the
   user-20261015-r06 row. Recorded so the evidence group is no longer orphaned
   (lesson M6, `corpus/lessons/kaika-fleet-round-1.md`; QUALITY criterion 7).
+- 2026-10-19 — **kaika fleet round-1: three claims, self-verdicts pending non-author
+  verification.** Work commit `a4115fafce511b7f140ea176bcd0807ebf141fc6` (base
+  `40a6de87f`). One batched L2 swarm of 11 (planner, connector, 4 executors, 2 scribes,
+  scout, reviewer, critic); three executor seats stalled on the provider and were
+  re-dispatched as fresh seats in one batch; a post-landing reviewer + critic pass
+  followed. **C1 operability 7→8:** `scripts/check-sources.mjs`, a structural SOURCES
+  census gate (exit 0/1/2, `O_NOFOLLOW`, symlink/non-regular/escape refusal, fleet E/W
+  code mapping) — `SOURCES_SELFTEST verdict=clean cases=25`, receipt
+  `corpus/evidence/kaika-fleet-round-1/operability/selftest-receipt.txt`; reviewer-found
+  defects (dead `supersedes` regex, substring id match, `;` split) fixed with cases.
+  **C2 coverage 8→9 + capability `sources-registry`:** `corpus/SOURCES.md` 27 opened rows
+  (A21 B4 C2; 19 mined, 6 queued, 2 rejected with flip), 4 study paths, search log;
+  three notes admitted on ground the corpus had zero hits for (`bidi`, `flak`, `ARIA`):
+  `chrome-remote-debugging-profile-boundary.md` (the ≥136 refusal is compiled only into
+  Google-branded builds — unbranded Chromium here does not enforce it),
+  `webdriver-bidi-capability-matrix.md` (spec map, locally measured: no),
+  `web-flake-retry-evidence.md` (Playwright 1.64 `--shuffle` confirmed; receipt contract);
+  census receipt clean; the in-flight fleet census `validate` also read `ok`.
+  **C3 calibration 8→9:** self-description drift 17→0 — 15 unmapped notes mapped
+  (`corpus/README.md` reconciliation + frontier restated), r07 recorded above, the owed
+  training round-11 lesson written as `corpus/lessons/training-round-11.md` (O5 closed);
+  15 mistake classes mined into `corpus/lessons/kaika-fleet-round-1.md`, 7 unlearned
+  classes became QUALITY criteria 6–11, 13 (12 is the contract's source-tier rule).
+  Rejected: S026 fixed-sleep answer, S027 port-9222-on-everyday-profile recipe, r07 as
+  credit. Mistake caught in-round: a lesson append into gate-protected
+  `corpus/lessons/round-1.md` (M13) — reverted before commit; `ROUND_CONTRACT` stays
+  clean. No-harm: freshness 34/34 clean; `USER_ROUND_CONTRACT` red at base and after for
+  the same pre-existing `round_count` (6/10). No browser launched, no external site
+  touched, no consequential action; documentation only. Counting commands and before/after
+  in `SCORECARD.md` §Kaika fleet round-1; report
+  `.ufo/reports/round-1/tabi.md` (fleet ledger, integrator-committed). No push.

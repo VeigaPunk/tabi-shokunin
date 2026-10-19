@@ -389,3 +389,56 @@ Rows enter only through a round that demonstrates the capability running (`AXES.
 ## Saturation
 
 The lane's saturation line + stagnation window N are to be declared by the lane on its next round per `AXES.md` §The stagnation nudge; not asserted by this conformance change.
+
+## Kaika fleet round-1 (2026-10-19)
+
+Steered round `1` (fleet-ledger `.ufo/waves/kaika/steer.md:32`) — distinct from training
+round 1 (2026-10-14) and from the blocked, unadmitted 2026-10-15 fleet round-1 attempt
+above. Base `40a6de87f72b78d90ea627ad89717e55f219001e`; work commit
+`a4115fafce511b7f140ea176bcd0807ebf141fc6`. Pre-action: `user-20261015-r07` recorded as
+executed, unadmitted, no credit (`LOG.md` kaika entry). Scores below are the lane's
+self-verdicts, **pending non-author verification** (orchestrator spot-check of ≥1 admit,
+≥1 reject, ≥3 SOURCES rows re-opened, every command re-run).
+
+| After | depth | coverage | operability | freshness | calibration | adjacency |
+|---|---|---|---|---|---|---|
+| user-20261015-r06 (start) | 8 | 8 | 7 | 8 | 8 | 8 |
+| kaika-fleet-round-1 (claimed) | 8 | 9 | 8 | 8 | 9 | 8 |
+
+| Claim | Axis / type | Before → after (measured) | Counting command | Measured against |
+|---|---|---|---|---|
+| C1 | operability 7→8 (lowest axis) | gate absent, receipt 0 → `SOURCES_SELFTEST verdict=clean cases=25`, receipt 1 | `git ls-tree -r --name-only <rev> \| grep -c '^corpus/evidence/kaika-fleet-round-1/operability/selftest-receipt.txt$'`; `node scripts/check-sources.mjs --self-test \| tail -1` | `40a6de87f` → `a4115fa` |
+| C2 | coverage 8→9 + capability `sources-registry` | notes opening `source: S###` 0 → 3; SOURCES rows 0 → 27 (A21 B4 C2; mined 19 queued 6 rejected 2), contract census clean | `git grep -l '^source: S[0-9]\{3,\}' <rev> -- corpus/knowledge \| wc -l`; contract census, receipt `corpus/evidence/kaika-fleet-round-1/sources/census-receipt.txt` | `40a6de87f` → `a4115fa` |
+| C3 | calibration 8→9 | self-description drift 17 → 0 (unmapped notes 15→0, executed waves absent from LOG 1→0, training rounds without a lesson 1→0); QUALITY criteria citing the mined lesson 0 → 7 | `LC_ALL=C comm -23 <(git ls-tree --name-only <rev> corpus/knowledge/ \| xargs -n1 basename \| sort) <(git show <rev>:corpus/README.md \| grep -o 'knowledge/[a-z0-9-]*\.md' \| sed 's\|knowledge/\|\|' \| sort -u) \| wc -l`; `for id in $(git ls-tree -d --name-only <rev> corpus/evidence/ \| xargs -n1 basename \| grep -E '^(user-2\|pstack-2.*-r)'); do git show <rev>:LOG.md \| grep -qF "$id" \|\| echo $id; done \| wc -l`; `for n in $(seq 1 11); do git ls-tree --name-only <rev> corpus/lessons/ \| xargs -n1 basename \| grep -qE "^(training-)?round-$n\.md$" \|\| echo $n; done \| wc -l`; `git show <rev>:corpus/QUALITY.md \| grep -c 'kaika-fleet-round-1.md#mistakes'` | `40a6de87f` → `a4115fa` |
+
+No-harm readings at `a4115fa` (worktree = commit): `FRESHNESS_GATE verdict=clean
+matched=34 unique=34` (unchanged); `ROUND_CONTRACT verdict=clean rounds=10` (unchanged);
+`USER_ROUND_CONTRACT verdict=failed finding=round_count` (6 of 10 user rounds — red at
+base already, same finding; not this round's defect); all three existing self-tests clean
+(12/4/4). Depth, freshness and adjacency make no claim and stay 8. In-round critic dissent
+on C3 (a mention-count can be gamed; reads as reconciliation, not calibration) is recorded
+in the round report with the content spot-check that answers it; the operator rules.
+
+### Capabilities — kaika fleet round-1
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| sources-registry | Curate where tabi learns: opened, scope-tiered rows with study paths, a search log and kept rejections, checked by the frozen contract census | `corpus/SOURCES.md`; `corpus/evidence/kaika-fleet-round-1/sources/census-receipt.txt` (27 rows, malformed 0, no duplicate/enum/missing findings) | kaika-fleet-round-1 |
+
+### Saturation — declared kaika fleet round-1
+
+Saturation line **8**; stagnation window **N = 3** rounds. Every axis sits at 7–8 and
+operability was the lone 7; at line 8 the nudge fires only after all six axes reach 8
+and three consecutive rounds pass with no new capability row. `sources-registry`
+entered this round, so the window restarts here.
+
+### Planned / retired — kaika fleet round-1
+
+- planned: freshness 8→9 — dated `recheck:` lines on every knowledge note, 5 → 29
+  (`grep -l '^recheck:' corpus/knowledge/*.md | wc -l`), each with a date or cadence and a procedure.
+- planned: coverage 9→10 — Playwright accessible locators / ARIA snapshots entry mined
+  from S023–S025 (`git ls-tree -r --name-only HEAD | grep -c corpus/knowledge/playwright-accessible-locators-and-snapshots.md` 0 → 1).
+- planned: calibration — first measured loopback rate boundary (token bucket → 429 +
+  `Retry-After`) replacing the asserted absence behind approval class C6
+  (`grep -rl 'token-bucket' corpus/knowledge/ | wc -l` 0 → 1).
+- retired: none — no axis saturated past usefulness, none a wrong fit.
