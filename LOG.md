@@ -824,3 +824,40 @@
   (not history_rewritten); final source census exit0. Exact commands and outputs
   in `corpus/evidence/round-14/final-production.json`. No browser, selftest or
   previously passing unaffected fixture suite was rerun at this stage.
+
+## 2026-10-20 — round-15 (hyaku, attempt 1)
+
+- Trigger: `corpus/lessons/round-14-verifier-spotcheck.md` routes metadata
+  mirror enforcement/tamper classification, counter diagnostic precision,
+  Node wording and S029 traceability. Baseline
+  `7054a5e1068538349b4dbb0d291c2fe8643802f2` was clean; its only change
+  after round14 delivery is the non-author verifier artifact, left untouched.
+- Declared C1 operability8 (lowest non-retired tie): one verified USER
+  reason/applicability diagnostic contract0→1. C2 calibration9: one checked
+  cleanup/qualification-mirror and authenticated-snapshot classification
+  contract0→1. Counts are not expertise points; all six scalar scores stay
+  fixed. No new browser execution, capability or knowledge-ground claim.
+- Prior outside review now exists: round14's author-time “pending” entries
+  in LOG/SCORECARD are historical; the verifier at `7054a5e` agrees on both
+  admits and the scoped rejects. This dated entry supersedes a current-state
+  reading of that pending wording, without rewriting any earlier entry.
+- The round15 source audit found a further precision error in that outside
+  review and in the initial author instructions: the launcher and
+  `runtimePinStatus()` omit Node, but the frozen executed spec explicitly
+  asserts `RUNTIME.nodeMajor >= PIN.node.minimumMajor` at
+  `corpus/evidence/round-13/aria/aria-loopback.spec.mjs:269`, invoked in
+  every case at `:924`. SKILL/README/new evidence index distinguish these
+  layers. The spec and outside review remain unchanged; Main acknowledged
+  that closure will verify and file a non-author erratum. This is source
+  precision, not a fresh runtime observation or exact Node equality.
+- S029 was reopened at `cleanup.server.perWorker[0].listeningAfter`;
+  direct source provenance now enters
+  `corpus/evidence/round-15/source-index.json`. Only its registry used-by
+  cell gains `corpus/lessons/round-15.md`; status mined and cadence365d stay
+  fixed. Source-row count remains29, A23/B4/C2 and mined24/queued3/rejected2.
+- The validated build wave has64 distinct seats; L1 is canonical planner.
+  Seats are author-side, not outside certification. Provider failures and
+  misrooted reports remain explicit evidence rather than silently replaced
+  identities. `.ufo/waves/round-15/w1/validation.json` and registry bind the
+  exact one-call dispatch; execution outcomes are recorded below only after
+  actually exercised.

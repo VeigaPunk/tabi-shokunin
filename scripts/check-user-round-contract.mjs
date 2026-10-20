@@ -81,8 +81,28 @@ const PSTACK_PATHS = [
   'SHONEN.md',
 ];
 
-function fail(finding, detail, exit = 1) {
-  throw Object.assign(new Error(detail), { finding, exit });
+// A refusal carries one stable reason id in addition to its finding. Reason ids
+// are a closed vocabulary for the counting contract, so a caller can assert the
+// intended cause (for example unsupported_counting_command) rather than the
+// generic score_mismatch finding that several different causes share. Findings
+// outside the counting contract pass no reason and keep their historical line.
+// The published line is `verdict=... finding=... [reason=...] detail=...`, so a
+// consumer parses reason between finding and detail and never infers it from
+// prose. COUNT_REASONS rejects an unregistered id at construction time.
+const COUNT_REASONS = new Set([
+  'unsupported_counting_command',
+  'counting_revision_mismatch',
+  'counting_command_failed',
+  'score_not_improved',
+  'before_count_mismatch',
+  'after_count_mismatch',
+]);
+
+function fail(finding, detail, exit = 1, reason = null) {
+  if (reason !== null && !COUNT_REASONS.has(reason)) {
+    throw Object.assign(new Error(`Unknown refusal reason: ${reason}`), { finding: 'could_not_evaluate', exit: 2 });
+  }
+  throw Object.assign(new Error(detail), { finding, exit, reason });
 }
 
 function sameRoot(left, right) {
@@ -251,19 +271,21 @@ function pstackDrift(root, baseline, pstackPin, status, path) {
 }
 
 function argumentsOf(argv) {
-  const options = { repo: defaultRoot, baseline: HARD_BASELINE, expect: 10, selfTest: false, pstackPin: null, witness: null, countWitness: null };
+  const options = { repo: defaultRoot, baseline: HARD_BASELINE, expect: 10, selfTest: false, pstackPin: null, witness: null, countWitness: null, diagnosticWitness: false };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
     if (flag === '--self-test') options.selfTest = true;
+    else if (flag === '--diagnostic-witness') options.diagnosticWitness = true;
     else if (flag === '--witness' && argv[i + 1]) options.witness = argv[++i];
     else if (flag === '--count-witness' && argv[i + 1]) options.countWitness = argv[++i];
     else if (flag === '--repo' && argv[i + 1]) options.repo = resolve(argv[++i]);
     else if (flag === '--baseline' && argv[i + 1]) options.baseline = argv[++i];
     else if (flag === '--expect' && argv[i + 1]) options.expect = Number(argv[++i]);
     else if (flag === '--pstack-pin' && argv[i + 1]) options.pstackPin = argv[++i];
-    else fail('usage', 'Use --self-test, --witness REV, --count-witness REV, or --repo PATH --baseline HASH --expect N [--pstack-pin HASH] for an isolated fixture', 2);
+    else fail('usage', 'Use --self-test, --diagnostic-witness, --witness REV, --count-witness REV, or --repo PATH --baseline HASH --expect N [--pstack-pin HASH] for an isolated fixture', 2);
   }
   if (options.selfTest && argv.length !== 1) fail('usage', '--self-test takes no other arguments', 2);
+  if (options.diagnosticWitness && argv.length !== 1) fail('usage', '--diagnostic-witness takes no other arguments', 2);
   if (options.witness !== null && options.countWitness !== null) fail('usage', 'Use one witness mode', 2);
   if (options.witness !== null) {
     if (argv.length !== 2 || !/^[a-f0-9]{7,40}$/.test(options.witness)) fail('usage', '--witness takes one git revision whose gate bytes are the red-before arm', 2);
@@ -388,14 +410,14 @@ function parseScore(scorecard, id) {
   if (!/^[a-f0-9]{40}$/.test(measured)) fail('missing_score', `${id} measured-against is not a commit`);
   const command = field('command');
   const spec = countingCommand(command);
-  if (!spec) fail('score_mismatch', `${id} counting command is not a supported git line count`);
-  if (spec.rev !== measured) fail('score_mismatch', `${id} counting command does not measure its measured-against commit`);
+  if (!spec) fail('score_mismatch', `${id} counting command is not a supported git line count`, 1, 'unsupported_counting_command');
+  if (spec.rev !== measured) fail('score_mismatch', `${id} counting command does not measure its measured-against commit`, 1, 'counting_revision_mismatch');
   return { axis: field('axis'), before: field('before'), after: field('after'), command, measured };
 }
 
 function runCount(root, command, rev = null) {
   const spec = countingCommand(command);
-  if (!spec) fail('score_mismatch', `Unsupported counting command: ${command}`);
+  if (!spec) fail('score_mismatch', `Unsupported counting command: ${command}`, 1, 'unsupported_counting_command');
   const target = rev ?? spec.rev;
   const args = spec.kind === 'tree'
     ? ['ls-tree', '-r', '--name-only', target]
@@ -405,7 +427,7 @@ function runCount(root, command, rev = null) {
   // pipeline counted that as 0 lines, so preserve exactly that one status. Any
   // other failure (missing or malformed revision, spawn error) is explicit.
   const masked = spec.kind === 'grep' && result.status === 1;
-  if (result.error || (result.status !== 0 && !masked)) fail('score_mismatch', `Counting command failed: ${command}`);
+  if (result.error || (result.status !== 0 && !masked)) fail('score_mismatch', `Counting command failed: ${command}`, 1, 'counting_command_failed');
   const stdout = result.stdout || Buffer.alloc(0);
   if (spec.kind === 'grep') {
     let lines = 0;
@@ -591,10 +613,10 @@ function check(options) {
     const swarm = checkSwarm(root, id);
     const score = parseScore(scorecard, id);
     if (score.axis !== gate.axis) fail('missing_score', `${id} axis does not match its lesson`);
-    if (score.before === score.after) fail('score_mismatch', `${id} before and after are the same`);
+    if (score.before === score.after) fail('score_mismatch', `${id} before and after are the same`, 1, 'score_not_improved');
     if (!log.includes(id)) fail('missing_score', `${id} has no LOG entry`);
-    if (runCount(root, score.command, options.baseline) !== score.before) fail('score_mismatch', `${id} before measurement does not match`);
-    if (runCount(root, score.command, score.measured) !== score.after) fail('score_mismatch', `${id} after measurement does not match`);
+    if (runCount(root, score.command, options.baseline) !== score.before) fail('score_mismatch', `${id} before measurement does not match`, 1, 'before_count_mismatch');
+    if (runCount(root, score.command, score.measured) !== score.after) fail('score_mismatch', `${id} after measurement does not match`, 1, 'after_count_mismatch');
     checkReport(root, id, score.measured);
     scanConsequential(root, id);
     sameTree(root, id, score.measured);
@@ -728,6 +750,41 @@ function gateFields(result) {
   };
 }
 
+// The child's own contract record, matched by its anchored line, never by a
+// first-match search across combined output: the ROUND progress line echoes
+// lesson `spot=` prose that a fixture could make look like a finding. A failed
+// record is on stderr; a clean record is the last stdout contract line. An
+// absent reason is evidence that the refusal is outside the counting contract,
+// not that a reason matched.
+function receiptOf(result) {
+  const stdout = result.stdout ?? '';
+  const stderr = result.stderr ?? '';
+  const failureLine = stderr.split('\n').reverse().find(line => line.startsWith('USER_ROUND_CONTRACT ')) ?? '';
+  const cleanLine = stdout.split('\n').reverse().find(line => line.startsWith('USER_ROUND_CONTRACT ')) ?? '';
+  const failure = /^USER_ROUND_CONTRACT verdict=(failed|could-not-evaluate) finding=([a-z_]+)(?: reason=([a-z_]+))? detail=(.*)$/.exec(failureLine);
+  const clean = !failure && /^USER_ROUND_CONTRACT verdict=clean(?: |$)/.test(cleanLine);
+  return {
+    stdout,
+    stderr,
+    exit: result.status,
+    error: result.error ? String(result.error) : null,
+    verdict: failure ? failure[1] : (clean ? 'clean' : null),
+    finding: failure ? failure[2] : (clean ? 'clean' : null),
+    reason: failure?.[3] ?? null,
+    detail: failure?.[4] ?? '',
+  };
+}
+
+// Literal expectation comparator for one child receipt. Every asserted facet
+// is independent: a matching exit and score_mismatch finding cannot satisfy an
+// expectation whose reason or detail belongs to a different cause.
+function receiptMatches(expected, observed) {
+  return observed.exit === expected.exit
+    && observed.finding === expected.finding
+    && (expected.reason === undefined || observed.reason === expected.reason)
+    && (expected.detail === undefined || observed.detail.includes(expected.detail));
+}
+
 function witness(rev) {
   const commitRev = gitOk(defaultRoot, ['rev-parse', '--verify', `${rev}^{commit}`]);
   const codeRevision = gitOk(defaultRoot, ['rev-parse', 'HEAD']);
@@ -786,6 +843,21 @@ const COUNT_WITNESS_MARKER = '.user-round14-count-marker';
 // --self-test runs the differential against it; --count-witness REV accepts any
 // revision whose gate blob equals LEGACY_COUNT_GATE_BLOB.
 const COUNT_WITNESS_REV = 'bebe2efc4565bb068efd905e9ef78011bb6b4efd';
+// Diagnostic baseline: the round-14 delivered USER gate. It refuses an
+// unsupported count and a wrong count with the same finding, so its record
+// cannot distinguish the causes. The exact bytes are pinned so the diagnostic
+// witness compares that source with the reason-bearing worktree over
+// identical fixtures. --diagnostic-witness resolves this revision; the
+// self-test invokes the same comparison.
+const DIAGNOSTIC_BASELINE_REV = '5c7710d7393112f2163dd7efcaa38fccf534dfc2';
+const DIAGNOSTIC_BASELINE_BLOB = '347ae9bbcdc692c3ad55fdfd931fa2cce13fec6d';
+const DIAGNOSTIC_BASELINE_SHA256 = 'bde18c672d79dbe1ebf340f265d013a8956da8f961d85fb3862573b7a6a505f3';
+// One unique source fragment of the closed counting evaluator. The mutant arm
+// flips only this guard, reproducing the historical `wc -l` masking that
+// classified a missing object as a zero count. A missing or duplicated
+// fragment is could-not-evaluate, never a silent no-op.
+const MASK_GUARD = "const masked = spec.kind === 'grep' && result.status === 1;";
+const MASK_MUTANT = 'const masked = true;';
 
 function runCountWitness(rev) {
   const commitRev = gitOk(defaultRoot, ['rev-parse', '--verify', `${rev}^{commit}`]);
@@ -823,19 +895,23 @@ function runCountWitness(rev) {
     const oldMarker = existsSync(join(root, COUNT_WITNESS_MARKER));
     rmSync(join(root, COUNT_WITNESS_MARKER), { force: true });
     const after = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' });
-    const newArm = gateFields(after);
+    const newArm = receiptOf(after);
     const newMarker = existsSync(join(root, COUNT_WITNESS_MARKER));
+    // The same-command red arm must refuse for the intended unsupported-stage
+    // reason, not merely return the score_mismatch finding that a wrong count
+    // also produces.
     const pass = before.status === 0
       && oldArm.verdict === 'clean'
       && oldMarker
       && after.status === 1
       && newArm.finding === 'score_mismatch'
+      && newArm.reason === 'unsupported_counting_command'
       && !newMarker;
     return {
       commitRev, baseline, args, pass, codeRevision, codeSha256, worktreeBlob, headBlob, committed,
       oldExit: before.status, oldVerdict: oldArm.verdict, oldMarker, oldArm,
       oldFinding: oldArm.finding ?? (oldArm.verdict === 'clean' ? 'clean' : 'none'),
-      newExit: after.status, newVerdict: newArm.verdict, newFinding: newArm.finding, newMarker, newArm,
+      newExit: after.status, newVerdict: newArm.verdict, newFinding: newArm.finding, newReason: newArm.reason, newMarker, newArm,
     };
   } finally {
     rmSync(parent, { recursive: true, force: true });
@@ -844,10 +920,130 @@ function runCountWitness(rev) {
 
 function countWitness(rev) {
   const run = runCountWitness(rev);
-  console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS_OLD exit=${run.oldExit} verdict=${run.oldVerdict} finding=${run.oldFinding} marker=${run.oldMarker ? 1 : 0} error=${JSON.stringify(run.oldArm.error)} stdout=${JSON.stringify(run.oldArm.stdout)} stderr=${JSON.stringify(run.oldArm.stderr)}`);
-  console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS_NEW exit=${run.newExit} verdict=${run.newVerdict} finding=${run.newFinding} marker=${run.newMarker ? 1 : 0} error=${JSON.stringify(run.newArm.error)} stdout=${JSON.stringify(run.newArm.stdout)} stderr=${JSON.stringify(run.newArm.stderr)}`);
-  console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS rev=${run.commitRev} baseline=${run.baseline} args=${JSON.stringify(run.args)} measuredRevision=${run.committed ? run.codeRevision : 'uncommitted'} codeRevision=${run.codeRevision} code-sha256=${run.codeSha256} new-sha256=${run.codeSha256} head-blob=${run.headBlob ?? 'none'} worktree-blob=${run.worktreeBlob} committed=${run.committed ? 'yes' : 'no'} marker=${COUNT_WITNESS_MARKER} old_exit=${run.oldExit} old_verdict=${run.oldVerdict} old_finding=${run.oldFinding} old_marker=${run.oldMarker ? 1 : 0} new_exit=${run.newExit} new_verdict=${run.newVerdict} new_finding=${run.newFinding} new_marker=${run.newMarker ? 1 : 0} result=${run.pass ? 'PASS' : 'FAIL'}`);
+  console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS_OLD exit=${run.oldExit} verdict=${run.oldVerdict} finding=${run.oldFinding} marker_applicable=1 marker_outcome=${run.oldMarker ? 'present' : 'absent'} error=${JSON.stringify(run.oldArm.error)} stdout=${JSON.stringify(run.oldArm.stdout)} stderr=${JSON.stringify(run.oldArm.stderr)}`);
+  console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS_NEW exit=${run.newExit} verdict=${run.newVerdict} finding=${run.newFinding} reason=${run.newReason ?? 'none'} marker_applicable=1 marker_outcome=${run.newMarker ? 'present' : 'absent'} error=${JSON.stringify(run.newArm.error)} stdout=${JSON.stringify(run.newArm.stdout)} stderr=${JSON.stringify(run.newArm.stderr)}`);
+  console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS rev=${run.commitRev} baseline=${run.baseline} args=${JSON.stringify(run.args)} measuredRevision=${run.committed ? run.codeRevision : 'uncommitted'} codeRevision=${run.codeRevision} code-sha256=${run.codeSha256} new-sha256=${run.codeSha256} head-blob=${run.headBlob ?? 'none'} worktree-blob=${run.worktreeBlob} committed=${run.committed ? 'yes' : 'no'} marker=${COUNT_WITNESS_MARKER} old_exit=${run.oldExit} old_verdict=${run.oldVerdict} old_finding=${run.oldFinding} old_marker=${run.oldMarker ? 1 : 0} old_marker_applicable=1 old_marker_outcome=${run.oldMarker ? 'present' : 'absent'} new_exit=${run.newExit} new_verdict=${run.newVerdict} new_finding=${run.newFinding} new_reason=${run.newReason ?? 'none'} new_marker=${run.newMarker ? 1 : 0} new_marker_applicable=1 new_marker_outcome=${run.newMarker ? 'present' : 'absent'} result=${run.pass ? 'PASS' : 'FAIL'}`);
   if (!run.pass) fail('witness_failure', `old=${JSON.stringify(run.oldArm)} oldMarker=${run.oldMarker} new=${JSON.stringify(run.newArm)} newMarker=${run.newMarker}`);
+}
+
+// Baseline-versus-repaired diagnostic differential over two actual CLI runs.
+// Arm 1: the pinned round-14 bytes and the reason-bearing worktree evaluate one
+// supported count whose declared after value is wrong. Both return
+// score_mismatch; only the worktree names after_count_mismatch, so a malicious
+// control expecting unsupported_counting_command is rejected by the reason
+// contract even though a finding-only predicate accepts the same receipt.
+// Arm 2: the worktree and a mask-guard mutant evaluate one missing-revision
+// fixture. The worktree reports counting_command_failed; the mutant reports
+// after_count_mismatch for the same bytes and args. A finding-only assertion
+// accepts the mutant for the correct control, the strict reason assertion
+// rejects it, and the mutant's own after reason still matches its decoy.
+function runDiagnosticWitness() {
+  const baselineRev = gitOk(defaultRoot, ['rev-parse', '--verify', `${DIAGNOSTIC_BASELINE_REV}^{commit}`]);
+  const baselineBytes = show(defaultRoot, baselineRev, USER_SCRIPT);
+  const baselineBlob = blob(defaultRoot, baselineRev, USER_SCRIPT);
+  if (!baselineBytes || baselineBlob !== DIAGNOSTIC_BASELINE_BLOB || sha256(baselineBytes) !== DIAGNOSTIC_BASELINE_SHA256) {
+    fail('witness_failure', 'Diagnostic baseline bytes are not the recorded round-14 gate', 2);
+  }
+  const scriptBytes = readFileSync(script);
+  const codeSha256 = sha256(scriptBytes);
+  const worktreeBlob = gitBlobSha1(scriptBytes);
+  const headBlob = blob(defaultRoot, 'HEAD', USER_SCRIPT);
+  const committed = headBlob !== null && headBlob === worktreeBlob;
+  const codeRevision = gitOk(defaultRoot, ['rev-parse', 'HEAD']);
+  const guardParts = scriptBytes.toString('utf8').split(MASK_GUARD);
+  if (guardParts.length !== 2) {
+    fail('could_not_evaluate', `Mask guard appears ${guardParts.length - 1} times in the evaluator source`, 2);
+  }
+  const mutantBytes = Buffer.from(guardParts.join(MASK_MUTANT), 'utf8');
+  const parent = mkdtempSync('/var/tmp/tabi-user-diagnostic-witness-');
+  try {
+    const baselineGate = join(parent, 'baseline-user-gate.mjs');
+    const mutantGate = join(parent, 'masked-user-gate.mjs');
+    writeFileSync(baselineGate, baselineBytes);
+    writeFileSync(mutantGate, mutantBytes);
+
+    // Arm 1: supported count, wrong declared after value.
+    const afterRoot = join(parent, 'wrong-after');
+    mkdirSync(afterRoot, { recursive: true });
+    const afterFixture = writeGoodFixture(afterRoot);
+    const afterPath = join(afterRoot, 'SCORECARD.md');
+    const afterText = readFileSync(afterPath, 'utf8');
+    const afterMeasured = /^measured-against: ([a-f0-9]{40})$/m.exec(afterText)[1];
+    writeFileSync(afterPath, afterText
+      .replace(/^after: .*$/m, 'after: 2')
+      .replace(/^command: .*$/m, `command: git ls-tree -r --name-only ${afterMeasured} | grep round-marker.txt | wc -l`));
+    gitOk(afterRoot, ['add', '--', '.']);
+    commit(afterRoot, 'diagnostic wrong after');
+    const afterArgs = ['--repo', afterRoot, '--baseline', afterFixture.baseline, '--expect', '1', '--pstack-pin', afterFixture.pin];
+    const baseline = receiptOf(spawnSync(process.execPath, [baselineGate, ...afterArgs], { encoding: 'utf8' }));
+    const repaired = receiptOf(spawnSync(process.execPath, [script, ...afterArgs], { encoding: 'utf8' }));
+
+    // Arm 2: missing revision, identical fixture for repaired and mutant.
+    const missingRoot = join(parent, 'missing-revision');
+    mkdirSync(missingRoot, { recursive: true });
+    const missingFixture = writeGoodFixture(missingRoot);
+    const zeros = '0'.repeat(40);
+    const missingPath = join(missingRoot, 'SCORECARD.md');
+    writeFileSync(missingPath, readFileSync(missingPath, 'utf8')
+      .replace(/^command: .*$/m, `command: git ls-tree -r --name-only ${zeros} | grep round-marker.txt | wc -l`)
+      .replace(/^measured-against: .*$/m, `measured-against: ${zeros}`));
+    gitOk(missingRoot, ['add', '--', '.']);
+    commit(missingRoot, 'diagnostic missing revision');
+    const missingArgs = ['--repo', missingRoot, '--baseline', missingFixture.baseline, '--expect', '1', '--pstack-pin', missingFixture.pin];
+    const repairedMissing = receiptOf(spawnSync(process.execPath, [script, ...missingArgs], { encoding: 'utf8' }));
+    const mutantMissing = receiptOf(spawnSync(process.execPath, [mutantGate, ...missingArgs], { encoding: 'utf8' }));
+
+    const unsupported = {
+      exit: 1, finding: 'score_mismatch', reason: 'unsupported_counting_command',
+      detail: 'counting command is not a supported git line count',
+    };
+    const wrongAfter = {
+      exit: 1, finding: 'score_mismatch', reason: 'after_count_mismatch',
+      detail: 'after measurement does not match',
+    };
+    const countFailed = {
+      exit: 1, finding: 'score_mismatch', reason: 'counting_command_failed',
+      detail: 'Counting command failed:',
+    };
+    const baselineFindingOnly = baseline.exit === 1 && baseline.finding === 'score_mismatch';
+    const wrongMatch = receiptMatches(unsupported, repaired);
+    const correctMatch = receiptMatches(wrongAfter, repaired);
+    const mutantCorrectMatch = receiptMatches(countFailed, mutantMissing);
+    const mutantDecoyMatch = receiptMatches(wrongAfter, mutantMissing);
+    const pass = baselineFindingOnly
+      && baseline.reason === null
+      && baseline.detail.includes('after measurement does not match')
+      && repaired.reason === 'after_count_mismatch'
+      && !wrongMatch
+      && correctMatch
+      && repairedMissing.reason === 'counting_command_failed'
+      && receiptMatches(countFailed, repairedMissing)
+      && mutantMissing.reason === 'after_count_mismatch'
+      && !mutantCorrectMatch
+      && mutantDecoyMatch
+      && sha256(readFileSync(mutantGate)) !== codeSha256
+      && readFileSync(mutantGate, 'utf8').includes(MASK_MUTANT);
+    return {
+      baselineRev, codeRevision, codeSha256, worktreeBlob, headBlob, committed,
+      baseline, repaired, repairedMissing, mutantMissing,
+      baselineFindingOnly, wrongMatch, correctMatch, mutantCorrectMatch, mutantDecoyMatch,
+      wrongReason: unsupported.reason, correctReason: wrongAfter.reason,
+      afterArgs, missingArgs, pass,
+    };
+  } finally {
+    rmSync(parent, { recursive: true, force: true });
+  }
+}
+
+function diagnosticWitness() {
+  const run = runDiagnosticWitness();
+  const print = (label, receipt) => console.log(`${label} exit=${receipt.exit} verdict=${receipt.verdict ?? 'none'} finding=${receipt.finding ?? 'none'} reason=${receipt.reason ?? 'none'} marker_applicable=0 marker_outcome=not-applicable detail=${JSON.stringify(receipt.detail)} error=${JSON.stringify(receipt.error)}`);
+  print('USER_ROUND_CONTRACT_DIAGNOSTIC_WITNESS_BASELINE', run.baseline);
+  print('USER_ROUND_CONTRACT_DIAGNOSTIC_WITNESS_REPAIRED', run.repaired);
+  print('USER_ROUND_CONTRACT_DIAGNOSTIC_WITNESS_MISSING_REPAIRED', run.repairedMissing);
+  print('USER_ROUND_CONTRACT_DIAGNOSTIC_WITNESS_MISSING_MUTANT', run.mutantMissing);
+  console.log(`USER_ROUND_CONTRACT_DIAGNOSTIC_WITNESS baseline=${run.baselineRev} args=${JSON.stringify({ wrongAfter: run.afterArgs, missing: run.missingArgs })} measuredRevision=${run.committed ? run.codeRevision : 'uncommitted'} codeRevision=${run.codeRevision} code-sha256=${run.codeSha256} baseline-blob=${DIAGNOSTIC_BASELINE_BLOB} baseline-sha256=${DIAGNOSTIC_BASELINE_SHA256} worktree-blob=${run.worktreeBlob} committed=${run.committed ? 'yes' : 'no'} wrong_reason=${run.wrongReason} expected_outcome=no-match wrong_match=${run.wrongMatch ? 1 : 0} correct_reason=${run.correctReason} correct_match=${run.correctMatch ? 1 : 0} mutant_reason=${run.mutantMissing.reason ?? 'none'} mutant_correct_match=${run.mutantCorrectMatch ? 1 : 0} mutant_decoy_match=${run.mutantDecoyMatch ? 1 : 0} baseline_finding_only_accepts=${run.baselineFindingOnly ? 1 : 0} result=${run.pass ? 'PASS' : 'FAIL'}`);
+  if (!run.pass) fail('witness_failure', `Diagnostic baseline=${JSON.stringify(run.baseline)} repaired=${JSON.stringify(run.repaired)} missingRepaired=${JSON.stringify(run.repairedMissing)} missingMutant=${JSON.stringify(run.mutantMissing)}`);
 }
 
 function selfTest() {
@@ -864,13 +1060,16 @@ function selfTest() {
     { name: 'clean', mutate: () => {}, exit: 0, finding: 'clean' },
     { name: 'count_malicious_tee_refused', mutate: root => rewriteScore(root, {
       command: `git ls-tree -r --name-only MEASURED | grep round-marker.txt | tee ${COUNT_WITNESS_MARKER} | wc -l`,
-    }), exit: 1, finding: 'score_mismatch', noMarker: COUNT_WITNESS_MARKER },
+    }), exit: 1, finding: 'score_mismatch', reason: 'unsupported_counting_command',
+      detail: 'counting command is not a supported git line count', appliesMarker: true, noMarker: COUNT_WITNESS_MARKER },
     { name: 'count_malicious_shell_refused', mutate: root => rewriteScore(root, {
       command: `git ls-tree -r --name-only MEASURED | sh -c 'touch ${COUNT_WITNESS_MARKER}'`,
-    }), exit: 1, finding: 'score_mismatch', noMarker: COUNT_WITNESS_MARKER },
+    }), exit: 1, finding: 'score_mismatch', reason: 'unsupported_counting_command',
+      detail: 'counting command is not a supported git line count', appliesMarker: true, noMarker: COUNT_WITNESS_MARKER },
     { name: 'count_malicious_option_injection_refused', mutate: root => rewriteScore(root, {
       command: `git --git-dir=/var/tmp/other ls-tree -r --name-only MEASURED | grep round-marker.txt | wc -l`,
-    }), exit: 1, finding: 'score_mismatch', noMarker: COUNT_WITNESS_MARKER },
+    }), exit: 1, finding: 'score_mismatch', reason: 'unsupported_counting_command',
+      detail: 'counting command is not a supported git line count', appliesMarker: false },
     { name: 'count_historical_supported', mutate: root => rewriteScore(root, {
       command: 'git ls-tree -r --name-only MEASURED | grep round-marker.txt | wc -l',
     }), exit: 0, finding: 'clean' },
@@ -885,10 +1084,27 @@ function selfTest() {
       rewriteScore(root, { command: `git ls-tree -r --name-only ${zeros} | grep round-marker.txt | wc -l` });
       const path = join(root, 'SCORECARD.md');
       writeFileSync(path, readFileSync(path, 'utf8').replace(/^measured-against: .*$/m, `measured-against: ${zeros}`));
-    }, exit: 1, finding: 'score_mismatch' },
+    }, exit: 1, finding: 'score_mismatch', reason: 'counting_command_failed',
+      detail: 'Counting command failed:', appliesMarker: false },
     { name: 'count_wrong_after_red', mutate: root => rewriteScore(root, {
       command: 'git ls-tree -r --name-only MEASURED | grep round-marker.txt | wc -l', after: 2,
-    }), exit: 1, finding: 'score_mismatch' },
+    }), exit: 1, finding: 'score_mismatch', reason: 'after_count_mismatch',
+      detail: 'after measurement does not match', appliesMarker: false },
+    { name: 'count_revision_mismatch_red', mutate: root => {
+      const frozen = gitOk(root, ['rev-list', '--max-parents=0', 'HEAD']);
+      const path = join(root, 'SCORECARD.md');
+      writeFileSync(path, readFileSync(path, 'utf8')
+        .replace(/^command: .*$/m, `command: git ls-tree -r --name-only ${frozen} | grep round-marker.txt | wc -l`));
+    }, exit: 1, finding: 'score_mismatch', reason: 'counting_revision_mismatch',
+      detail: 'does not measure its measured-against commit', appliesMarker: false },
+    { name: 'count_before_after_equal_red', mutate: root => rewriteScore(root, {
+      command: 'git ls-tree -r --name-only MEASURED | grep round-marker.txt | wc -l', before: 1, after: 1,
+    }), exit: 1, finding: 'score_mismatch', reason: 'score_not_improved',
+      detail: 'before and after are the same', appliesMarker: false },
+    { name: 'count_before_mismatch_red', mutate: root => rewriteScore(root, {
+      command: 'git ls-tree -r --name-only MEASURED | grep round-marker.txt | wc -l', before: 2, after: 1,
+    }), exit: 1, finding: 'score_mismatch', reason: 'before_count_mismatch',
+      detail: 'before measurement does not match', appliesMarker: false },
     { name: 'round_script_rollback_to_cutover', mutate: root => {
       const bytes = show(defaultRoot, '1212207fd7fad4adf1df1b3a2bde549235bd144d', ROUND_SCRIPT);
       if (!bytes || sha256(bytes) !== ROUND_SCRIPT_CUTOVER_SHA256) fail('could_not_evaluate', 'Archived round-13 cutover bytes are unavailable', 2);
@@ -968,6 +1184,7 @@ function selfTest() {
       writeFileSync(join(root, 'scripts/check-round-contract.mjs'), readFileSync(join(defaultRoot, ROUND_SCRIPT)));
     }, exit: 0, finding: 'clean' },
   ];
+  const observedCases = new Map();
   for (const test of cases) {
     const root = mkdtempSync(join('/var/tmp', 'tabi-user-round-contract-'));
     try {
@@ -983,17 +1200,48 @@ function selfTest() {
         commit(root, 'mutation-2');
       }
       const result = spawnSync(process.execPath, [script, '--repo', root, '--baseline', baseline, '--expect', '1', '--pstack-pin', pin], { encoding: 'utf8' });
-      const output = `${result.stdout}${result.stderr}`;
-      const leaked = test.noMarker ? existsSync(join(root, test.noMarker)) : false;
-      const match = result.status === test.exit
-        && output.includes(test.finding === 'clean' ? 'verdict=clean' : `finding=${test.finding}`)
-        && !leaked;
-      console.log(`SELFTEST name=${test.name} expected_exit=${test.exit} actual_exit=${result.status} expected_finding=${test.finding} result=${match ? 'PASS' : 'FAIL'} no_marker=${test.noMarker ? (leaked ? 0 : 1) : 0}`);
-      if (!match) fail('selftest_failure', output);
+      const observed = receiptOf(result);
+      observedCases.set(test.name, observed);
+      const markerApplicable = test.appliesMarker === true;
+      if (markerApplicable && !test.noMarker) fail('could_not_evaluate', `Marker control ${test.name} declares no marker path`, 2);
+      const leaked = markerApplicable ? existsSync(join(root, test.noMarker)) : false;
+      const markerOutcome = markerApplicable ? (leaked ? 'present' : 'absent') : 'not-applicable';
+      // Exit, finding, reason and detail are asserted independently from one
+      // anchored child record. A finding-only match would accept a different
+      // score_mismatch cause; the reason literal makes that impossible.
+      const match = receiptMatches(test, observed) && !leaked;
+      const reasonField = test.reason === undefined ? '' : ` expected_reason=${test.reason}`;
+      // Applicability is whether this control can create the witness marker at
+      // all. no_marker is the outcome only when the check applies: 1 means
+      // applicable and absent, 0 means applicable and leaked. A control with no
+      // marker role reports no_marker=na with applicability=not_applicable, so
+      // "not applicable" and "absent" can never be read as each other.
+      const markerField = markerApplicable
+        ? ` marker_applicable=1 marker_outcome=${markerOutcome} no_marker=${leaked ? 0 : 1}`
+        : ' marker_applicable=0 marker_outcome=not-applicable no_marker=na';
+      console.log(`SELFTEST name=${test.name} expected_exit=${test.exit} actual_exit=${observed.exit} expected_finding=${test.finding}${reasonField} reason=${observed.reason ?? 'none'} applicability=${markerApplicable ? 'applicable' : 'not_applicable'}${markerField} isolation=cli result=${match ? 'PASS' : 'FAIL'}`);
+      if (!match) fail('selftest_failure', `${observed.stdout}${observed.stderr}`);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
   }
+  // Falsifiable wrong-reason control over two actual CLI receipts. The
+  // missing-revision fixture returns score_mismatch for counting_command_failed;
+  // the wrong-after expectation belongs to a different cause. A finding-only
+  // predicate accepts that decoy; the literal reason comparator must reject it,
+  // while the real reason still matches. The control can pass only when reason
+  // is both asserted and discriminating.
+  const wrongCause = observedCases.get('count_missing_revision_red');
+  const maliciousCause = observedCases.get('count_malicious_tee_refused');
+  const decoy = { exit: 1, finding: 'score_mismatch', reason: 'after_count_mismatch', detail: 'after measurement does not match' };
+  const correctCause = { exit: 1, finding: 'score_mismatch', reason: 'counting_command_failed', detail: 'Counting command failed:' };
+  const legacyAccept = wrongCause.exit === 1 && wrongCause.finding === 'score_mismatch';
+  const decoyMatch = receiptMatches(decoy, wrongCause);
+  const correctMatch = receiptMatches(correctCause, wrongCause);
+  const maliciousMatch = receiptMatches(cases.find(test => test.name === 'count_malicious_tee_refused'), maliciousCause);
+  const negativeMatch = legacyAccept && !decoyMatch && correctMatch && maliciousMatch;
+  console.log(`SELFTEST name=reason_negative_control source=count_missing_revision_red source_reason=${wrongCause.reason ?? 'none'} expected_exit=0 actual_exit=0 expected_finding=clean reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na wrong_reason=${decoy.reason} expected_outcome=no-match actual_outcome=${decoyMatch ? 'match' : 'no-match'} correct_reason=${correctCause.reason} correct_match=${correctMatch ? 1 : 0} malicious_reason=unsupported_counting_command malicious_match=${maliciousMatch ? 1 : 0} legacy_finding_only_accepts=${legacyAccept ? 1 : 0} result=${negativeMatch ? 'PASS' : 'FAIL'}`);
+  if (!negativeMatch) fail('selftest_failure', `Reason negative control failed: ${JSON.stringify({ wrongCause, decoyMatch, correctMatch, maliciousMatch })}`);
   const committedIds = roundIds(defaultRoot);
   const committedScorecard = show(defaultRoot, 'HEAD', 'SCORECARD.md').toString('utf8');
   for (const id of committedIds) {
@@ -1001,7 +1249,7 @@ function selfTest() {
     const before = runCount(defaultRoot, score.command, HARD_BASELINE);
     const after = runCount(defaultRoot, score.command, score.measured);
     const match = before === score.before && after === score.after;
-    console.log(`SELFTEST name=count_committed_${id} expected_exit=0 actual_exit=0 expected_finding=clean result=${match ? 'PASS' : 'FAIL'} no_marker=0 before=${before} after=${after} measured=${score.measured}`);
+    console.log(`SELFTEST name=count_committed_${id} expected_exit=0 actual_exit=0 expected_finding=clean reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na isolation=cli result=${match ? 'PASS' : 'FAIL'} before=${before} after=${after} measured=${score.measured}`);
     if (!match) fail('selftest_failure', `Committed count mismatch ${id}: before=${before}/${score.before} after=${after}/${score.after}`);
   }
   const witnessRun = runCountWitness(COUNT_WITNESS_REV);
@@ -1012,9 +1260,18 @@ function selfTest() {
     && witnessRun.oldMarker
     && witnessRun.newExit === 1
     && witnessRun.newFinding === 'score_mismatch'
+    && witnessRun.newReason === 'unsupported_counting_command'
     && !witnessRun.newMarker;
-  console.log(`SELFTEST name=count_witness_comparison countWitness=1 expected_exit=0 actual_exit=${witnessMatch ? 0 : 1} expected_finding=clean no_marker=0 top_exit=${witnessMatch ? 0 : 1} exit=${witnessMatch ? 0 : 1} verdict=${witnessMatch ? 'clean' : 'failed'} old_exit=${witnessRun.oldExit} old_verdict=${witnessRun.oldVerdict} old_finding=${witnessRun.oldFinding} old_marker=${witnessRun.oldMarker ? 1 : 0} new_exit=${witnessRun.newExit} new_verdict=${witnessRun.newVerdict} new_finding=${witnessRun.newFinding} new_marker=${witnessRun.newMarker ? 1 : 0} result=${witnessMatch ? 'PASS' : 'FAIL'}`);
+  console.log(`SELFTEST name=count_witness_comparison countWitness=1 expected_exit=0 actual_exit=${witnessMatch ? 0 : 1} expected_finding=clean reason=none applicability=applicable marker_applicable=1 marker_outcome=${witnessRun.newMarker ? 'present' : 'absent'} no_marker=${witnessRun.newMarker ? 0 : 1} top_exit=${witnessMatch ? 0 : 1} exit=${witnessMatch ? 0 : 1} verdict=${witnessMatch ? 'clean' : 'failed'} old_exit=${witnessRun.oldExit} old_verdict=${witnessRun.oldVerdict} old_finding=${witnessRun.oldFinding} old_marker=${witnessRun.oldMarker ? 1 : 0} old_marker_outcome=${witnessRun.oldMarker ? 'present' : 'absent'} new_exit=${witnessRun.newExit} new_verdict=${witnessRun.newVerdict} new_finding=${witnessRun.newFinding} new_reason=${witnessRun.newReason ?? 'none'} new_marker=${witnessRun.newMarker ? 1 : 0} new_marker_outcome=${witnessRun.newMarker ? 'present' : 'absent'} result=${witnessMatch ? 'PASS' : 'FAIL'}`);
   if (!witnessMatch) fail('selftest_failure', `Count witness mismatch: ${JSON.stringify(witnessRun)}`);
+  const diagnosticRun = runDiagnosticWitness();
+  const diagnosticMatch = diagnosticRun.pass
+    && diagnosticRun.repaired.reason === 'after_count_mismatch'
+    && diagnosticRun.repairedMissing.reason === 'counting_command_failed'
+    && diagnosticRun.mutantMissing.reason === 'after_count_mismatch'
+    && !diagnosticRun.wrongMatch;
+  console.log(`SELFTEST name=diagnostic_witness_comparison diagnosticWitness=1 expected_exit=0 actual_exit=${diagnosticMatch ? 0 : 1} expected_finding=clean reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na wrong_reason=${diagnosticRun.wrongReason} expected_outcome=no-match actual_outcome=${diagnosticRun.wrongMatch ? 'match' : 'no-match'} correct_reason=${diagnosticRun.correctReason} correct_match=${diagnosticRun.correctMatch ? 1 : 0} mutant_reason=${diagnosticRun.mutantMissing.reason ?? 'none'} mutant_correct_match=${diagnosticRun.mutantCorrectMatch ? 1 : 0} baseline_finding_only_accepts=${diagnosticRun.baselineFindingOnly ? 1 : 0} result=${diagnosticMatch ? 'PASS' : 'FAIL'}`);
+  if (!diagnosticMatch) fail('selftest_failure', `Diagnostic witness mismatch: ${JSON.stringify(diagnosticRun)}`);
   const aliasRoot = mkdtempSync(join('/var/tmp', 'tabi-user-alias-'));
   try {
     const alias = join(aliasRoot, 'repo');
@@ -1022,22 +1279,24 @@ function selfTest() {
     const result = spawnSync(process.execPath, [script, '--repo', alias, '--baseline', HARD_BASELINE, '--expect', '1'], { encoding: 'utf8' });
     const output = `${result.stdout}${result.stderr}`;
     const match = result.status === 2 && output.includes('finding=usage');
-    console.log(`SELFTEST name=production_alias_refused expected_exit=2 actual_exit=${result.status} expected_finding=usage result=${match ? 'PASS' : 'FAIL'}`);
+    console.log(`SELFTEST name=production_alias_refused expected_exit=2 actual_exit=${result.status} expected_finding=usage reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na isolation=cli result=${match ? 'PASS' : 'FAIL'}`);
     if (!match) fail('selftest_failure', output);
   } finally {
     rmSync(aliasRoot, { recursive: true, force: true });
   }
-  console.log(`USER_ROUND_CONTRACT_SELFTEST verdict=clean cases=${cases.length + 1} fixtures=${cases.length} alias=1 committedCounts=${committedIds.length} countWitness=1`);
+  console.log(`USER_ROUND_CONTRACT_SELFTEST verdict=clean cases=${cases.length + committedIds.length + 4} fixtures=${cases.length} alias=1 committedCounts=${committedIds.length} countWitness=1 diagnosticWitness=1 reasonControls=1`);
 }
 
 try {
   const options = argumentsOf(process.argv.slice(2));
   if (options.witness !== null) witness(options.witness);
   else if (options.countWitness !== null) countWitness(options.countWitness);
+  else if (options.diagnosticWitness) diagnosticWitness();
   else if (options.selfTest) selfTest();
   else check(options);
 } catch (error) {
   const exit = error.exit ?? 2;
-  console.error(`USER_ROUND_CONTRACT verdict=${exit === 1 ? 'failed' : 'could-not-evaluate'} finding=${error.finding ?? 'could_not_evaluate'} detail=${error.message}`);
+  const reason = error.reason ? ` reason=${error.reason}` : '';
+  console.error(`USER_ROUND_CONTRACT verdict=${exit === 1 ? 'failed' : 'could-not-evaluate'} finding=${error.finding ?? 'could_not_evaluate'}${reason} detail=${error.message}`);
   process.exitCode = exit;
 }
