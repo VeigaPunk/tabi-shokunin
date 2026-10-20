@@ -728,3 +728,47 @@ source-layer correction, not author-side certification.
 - capabilities unchanged; first-working aria capability stays round13.
 - saturation8/window3; position2 after round13, no retirement or hidden waiver.
 - operator wrapped this run after both waves completed; no later round started.
+
+## Round 16 — hyaku, 2026-10-20
+
+Baseline `e38d2599a922cb729186353830fff8e159b4fef0`; measured revision
+`3254740c694e4fc7851ca9d88b39230db3042ba6`. C1 works operability 8, a lowest non-retired
+tie (depth/operability/freshness/adjacency at 8). Round 16 is position 3 of the window
+since the round-13 capability; the waiver would apply under the position reading, but C1
+satisfies the lowest-axis rule regardless. C2 is a capability acquisition.
+
+| Axis | Scalar before → after | Round16 verdict / evidence |
+|---|---|---|
+| depth | 8→8 | unchanged |
+| coverage | 9→9 | improved C2: native-WebMCP held entry 0→1 (one build, loopback, flags); 10 withheld (r12/r13 precedent, real-site ground open) |
+| operability | 8→8 | improved C1: enforced measurement-binding contract 0→1; 9 withheld (USER 6/10 red, no outside execution) |
+| freshness | 8→8 | unchanged; S020 re-opened (revision drift logged, anchor kept) |
+| calibration | 9→9 | unchanged claimed axis; QUALITY 22–25 lesson-backed |
+| adjacency | 8→8 | unchanged; kaidoku CDP-runtime overlap reported as contested |
+
+| Claim | Before → after | Counting command | Measured revision / counter digest / evidence |
+|---|---|---|---|
+| C1 operability | 0→1 | `node .ufo/waves/round-16/measure.mjs REV --claim C1` | e38d259 → 3254740; counter sha256 `c8b4100a9f60dcd530ae752074e04d05074b4938cc05c6f19214add05e2594cb`; `corpus/evidence/round-16/measurements.json` |
+| C2 coverage | 0→1 | `node .ufo/waves/round-16/measure.mjs REV --claim C2` | same revisions and counter digest; receipt `corpus/evidence/round-16/webmcp/receipt.json` |
+
+Binding: `node scripts/check-measurement-binding.mjs --check
+corpus/evidence/round-16/measurement-binding.json --at <delivered HEAD> --reproduce`
+must exit 0 `claims=2 bound=2` (closes round-15 routed defects 1/2). Earlier after-counts
+with earlier counter blobs (C2 0 at `8f7feb3`) are history, not this measurement.
+
+Sources 29→40 (A31/B4/C5; mined33/queued2/rejected5); census validate exit 0 at start
+and end; knowledge notes 32→33.
+
+### Capabilities — round 16
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| webmcp-cdp-observation | Observe page-registered WebMCP tools (declarative and imperative) on flag-enabled Chromium 154 over CDP on loopback fixtures, with flag-off/domain-off controls and a per-run browser pid/argv | `node scripts/webmcp-loopback-round16.mjs --out /tmp/x.json`; `corpus/evidence/round-16/webmcp/receipt.json` (11/11) | round16 |
+
+### Planned / saturation / retired — round16
+
+- planned: freshness — re-verify S001–S019 90d/on-release rows due; operability — bring
+  USER 6/10 or rule it out of scope with the operator; adjacency — integrator ruling on the
+  kaidoku CDP-runtime overlap.
+- saturation 8 / window 3; the round-16 capability restarts the window (round 17 = position 1).
+- retired: none.

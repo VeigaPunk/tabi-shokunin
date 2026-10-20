@@ -88,3 +88,14 @@
     a negative finding. Spec citations back spec text only; implementation-only
     surfaces cite source or receipts. (lesson: corpus/lessons/round-16.md#mistakes;
     census U3 `navigator.modelContext` guess)
+24. Refines 23: a hypothesised API path written into a census, index or README row is
+    checked against the current spec IDL and the build's own IDL in the round that
+    writes it; until checked it carries no negative gloss ("not X", "no flag carries
+    it"), only an explicit unchecked-hypothesis label. (lesson:
+    corpus/lessons/round-16.md#mistakes; wave-2 AttackQuality23 showed 23 alone
+    would pass the census U3 row)
+25. A counter that executes code from the revision it measures never trusts that
+    code's printed receipts alone: it adds counter-owned probes whose expected
+    outputs differ across inputs (a stub dependency that must turn the result red,
+    and input variations with different expected findings). (lesson:
+    corpus/lessons/round-16.md#mistakes; wave-2 AttackC1Liar)

@@ -959,3 +959,47 @@
   Independent current admit/reject agreement and promotion remain external.
   Lane pushes before the real fleet report; no new round or worker starts
   after the operator wrap-up.
+
+## 2026-10-20 — round-16 (hyaku, attempt 1)
+
+Baseline `e38d2599a922cb729186353830fff8e159b4fef0` (clean). Measured revision
+`3254740c694e4fc7851ca9d88b39230db3042ba6`. Motivating evidence: round-15 outside
+spot-check routed defects 1-3 (`corpus/lessons/round-15-verifier-spotcheck.md:120-122`) and
+the frontier row "Native WebMCP in chromium 152 — unprobed (census U3)"
+(`corpus/README.md:35`) on a host now running Chromium 154.0.8037.97.
+
+- C1 operability 8 (lowest tie): `scripts/check-measurement-binding.mjs` +
+  `scripts/selftest-measurement-binding.mjs` (59 cases) bind each claim's counter blob digest,
+  counted inputs and measured revision, and re-run both count arms at the delivered HEAD.
+  Counter `node .ufo/waves/round-16/measure.mjs REV --claim C1`: 0 at baseline → 1 at the
+  measured revision (counter blob sha256 `c8b4100a…94cb`); receipts
+  `corpus/evidence/round-16/measurements.json`, manifest
+  `corpus/evidence/round-16/measurement-binding.json`. Real round-15 history is red:
+  `binding/legacy-r15.json`.
+- C2 coverage 9 + capability `webmcp-cdp-observation`: `scripts/webmcp-loopback-round16.mjs`
+  receipt 11/11 on loopback fixtures (flag-off and domain-disabled controls, declarative,
+  imperative, removal, navigation, issues, location, frames, permissions policy, `data:`
+  divergence); note `corpus/knowledge/webmcp-chromium-loopback-round-16.md`; sources S020
+  re-open, S030–S040. Counter `--claim C2`: 0 → 1 at the measured revision.
+- History kept, not rewritten: pre-commit harness run 8/11 (`receipt-first-run-failed.json`);
+  C2 counted 0 at `8f7feb3` with that counter blob (label-as-path defect,
+  `measure/count-after-c2-first-counter-defect.json`); `8f7feb3`'s 11/11 receipt replaced at
+  `3254740` after wave-2 harness repairs.
+- Wave 1: 84 seats (scout 21, executor 19, reviewer 14, scribe 10, connector 8, critic 5,
+  revenger 4, sentinel 2, simplifier 1); dispatch refused 4× by the 100-job cap, spawned on
+  attempt 5; 6 executor seats died on the m_swe rate limit (no reports). Wave 2: 73 seats
+  (reviewer 42, scout 14, critic 7, mutation-tester 4, sentinel 3, connector 2, revenger 1),
+  all reported. Round total 157.
+- Wave 2 falsified and L1 repaired: self-certifying C1 counter (liars counted 1 → now 0,
+  `measure/c1-liar-probes.json`), 8 surviving gate mutants (selftest +16 cases), dash-path
+  node-option injection, vacuous harness pid/argv/closure proofs, weak location and sandbox
+  predicates, C2 counter forgeries (case→fixture map, README row, summary consistency), S039
+  rejection (superseded by S040), S037 mined, README `:194/:216/:282-285` supersession.
+- No-harm: ROUND_CONTRACT clean 10; USER failed 6/10 (unchanged, pre-existing); freshness
+  `--worktree` clean 34/34; SOURCES gate clean rows=40; census validate exit 0.
+- Author verdicts: C1 operability improved, C2 coverage improved (capability enters); no
+  scalar moves. Expansion improved, quality improved, discernment improved (QUALITY 22–25
+  lesson-backed). Outside admit/reject remains external; SHONEN four `[~]`.
+- Tools installed/updated: none by L1; wave-2 seat AttackC1Before ran `npx -y node@22`
+  (Node 22.23.3, npx cache) for a cross-version probe; wave-1 seat RevCountCmds installed
+  Node 22.23.3 and 20.20.2 via fnm for version testing.

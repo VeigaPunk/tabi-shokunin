@@ -1876,3 +1876,17 @@ failed, 2 could not evaluate; refuses to overwrite differing receipt bytes).
 | Did navigation remove tools? | `navigation-clears-tools`, S036 | No `toolsRemoved` is sent; infer removal from execution-context destruction |
 | Are no tools reported, so the page has none? | `data-url-declarative`, secure-context probe | Absence counts only on a secure context with the page feature on; CDP can announce declarative tools where the page API is absent |
 | May the lane invoke a page tool? | `WebMCP.invokeTool` probe | Loopback fixtures only; never on an external site without operator approval |
+
+### Round 16 wave-2 corrections (append-only; rows above stay)
+
+- Registry row: the drift diff is `git --literal-pathspecs diff measuredRevision REV -- <inputs>`
+  (global option first). Ancestry and `counted_input_changed` are `--check`-only; `--legacy`
+  reports identity and undeclared-input findings only.
+- Gate hardening at `3254740`: dash-led path segments are refused, node is spawned with `--`
+  before the counter path, and relative PATH entries are dropped; selftest 59 cases.
+- Navigation removal: Chromium 154 sends no `WebMCP.toolsRemoved` on navigation. A raw CDP
+  consumer drops a target's tools on `Runtime.executionContextsCleared` (DevTools synthesizes
+  a per-frame removal from it); this rule is source-read, not measured by the receipt.
+- Declarative tools cite S030/S031/S033 and the receipt, never S020.
+- Confinement scope: page-level HTTP(S), beacon and page-WebSocket aborts only; WebRTC,
+  WebTransport and SharedWorker traffic are not confined.
