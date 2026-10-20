@@ -733,3 +733,26 @@
   r07 survivor replay, user-record freezing, IPv6 origin and external-validator
   pin debt remain uncredited. Protocol/non-author closure-tooling debt remains
   outside lane scope. SHONEN stays four asserted[~]; no promotion.
+- C1 code landed `ed69b15`; metadata checker/sidecar landed `f942c62`.
+  Main's first complete exercised sweep at `f942c62580b1af7268645414bab102e6e7dff8d6`
+  passed ROUND selftest32 fixture cases plus alias, USER29 fixtures plus alias
+  plus six committed-count controls and count-witness differential; both
+  same-fixture shell witnesses observed old clean/marker→new score_mismatch/no
+  marker. ROUND production clean10; USER production remained failed6/10.
+  Both historical-policy witness commands exited0; USER now prints the exact
+  committed repaired revision/digest and distinguishes nested child outcomes.
+  Exact command/stdout/stderr/exits and source digests:
+  `corpus/evidence/round-14/gates.json` and `executions/*.json`.
+- The same sweep exposed real metadata-checker failures, retained unchanged in
+  `executions/metadataSelfTest.json`, `metadataWitness.json`,
+  `metadataOriginal.json` and `metadataCorrected.json`. Corrected sidecar
+  failed CLEANUP-COUNT because the checker required nonexistent cleanup.workers;
+  NODE-MINIMUM was marked failed despite observed26≥minimum20 true.
+  No failure is counted as a desired negative control. ReceiptRepair was
+  routed the actual payloads for a targeted repair; original runtime inputs,
+  expected source values and initial failed receipts are not rewritten.
+- Source selftest26 and live gate29 clean; freshness --worktree34/34 clean at
+  the first sweep. The author-side critic also ran bounded read-only historical
+  counting probes mid-flight despite the skip-verification instruction; no seat
+  ran the actual gate/browser suite. Main's exercised receipts are the evidence,
+  not the critic's proposed outcome table.
