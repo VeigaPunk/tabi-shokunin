@@ -624,3 +624,12 @@
 - Pointer expansion for the two abbreviated `knowledge/` paths immediately above:
   `corpus/knowledge/webdriver-bidi-capability-matrix.md` and
   `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`.
+- First exercised verification at code commit `1cf82b8` exposed two real defects,
+  retained in `corpus/evidence/round-13/round-selftest.json` and
+  `aria-execution-initial.json`: the census-deletion self-test tried to commit a
+  deletion of a never-tracked file (exit2), and the equal-template browser case
+  omitted `queue-contain` from its case inputs (TypeError, six tests passed).
+  The gate fixture now first commits the good census before deleting it; no
+  expected failure or verdict was weakened. The runtime repair supplies its
+  missing template without changing matcher expectations. Initial failures
+  remain evidence, not silently replaced by later success.

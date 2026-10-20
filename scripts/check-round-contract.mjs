@@ -639,6 +639,10 @@ function selfTest() {
     }, exit: 1, finding: 'history_rewritten' },
     { name: 'census_deleted', mutate: (root, baseline, extra) => {
       writeCensus(root, baseline);
+      // The census is new at HEAD, so deletion has no tracked delta unless the
+      // good fixture census is committed as a checkpoint first.
+      gitOk(root, ['add', '--', '.']);
+      commit(root, 'census-checkpoint');
       extra.push('--census-sha256', censusSha(root));
       rmSync(join(root, CENSUS_PATH));
     }, exit: 1, finding: 'history_rewritten' },

@@ -57,6 +57,7 @@ Self-test inventory (26 fixture cases plus one production-alias refusal; NOT exe
 - history_rewritten exit 1: census recorded-row mismatch, missing census row with pinned identity, census byte tamper with pinned identity, deleted census with pinned identity, moved census line 1 (baseline hash) with pinned identity, mutation of historical corpus/lessons/round-1.md.
 - New future corpus/lessons/round-2.md added at HEAD stays exit 0 clean.
 - production_alias_refused: `--repo` symlink to defaultRoot plus `--census-sha256` exits 2 finding=usage because realpath resolves the production root.
+- census_deleted now first commits the good fixture census as a real checkpoint (the census is new at HEAD, so deleting an untracked-only file had no staged delta and `Fixture commit failed`); the subsequent commit stages the deletion. The Main-observed failure receipt corpus/evidence/round-13/round-selftest.json is preserved untouched; this seat did not rerun or suppress it.
 
 ## 5. Exact retained evidence (read-only measurements)
 
@@ -64,7 +65,7 @@ Self-test inventory (26 fixture cases plus one production-alias refusal; NOT exe
 - HEAD SHONEN blob: 9dcb2687d3083f696b57032389eed7349e03893e; ends with a single LF, zero CR bytes; its four evidence pointers are blobs at HEAD: SKILL.md, corpus/knowledge/multi-step-journey.md, corpus/knowledge/executor-test-sufficiency.md, PROVINCE.md (and corpus/evidence/user-20261015-r02/boundary/refusal-receipt.txt).
 - Census sha256 b9c8dc3557b825f8bd4b18ff0db03909e16ddd526ef18554cb2bf68da696be9c; blob 672dba3672e8b5a29e89f34624fc37376b89cf4b.
 - Legacy gate at 75e7836: blob b2eb8316f41cd1039330e45f6739c07c5f11eace, sha256 7d403cee003c3b49e865d57e034821ea925252efc231b0b22ded62ac5410c398.
-- Edited gate, frozen working tree: sha256 6f9eddc74f0e10ac5046ed9ecd99650db4f338c004f5d0e349503b6515a6b299; git blob d871e73d303600fd691691bb45be7087e4a3c3a5. Per parent ruling this is provisional: Main records the blob of the committed file at final handoff, not this placeholder; UserGate keeps its clearly-invalid SHA-256 placeholder until Main fills the committed digest.
+- Edited gate, frozen working tree: sha256 8478cd438b22f15bab153901276aad8afc7711d139e86769f4323b5f0affdb4d; git blob 43db9f4bba56a27114ed116c85f27b80227e74bd. Per parent ruling this is provisional: Main records the blob of the committed file at final handoff, not this placeholder; UserGate keeps its clearly-invalid SHA-256 placeholder until Main fills the committed digest.
 
 ## 6. USER cutover without moving PSTACK_PIN
 
