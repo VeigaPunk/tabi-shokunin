@@ -243,3 +243,21 @@ Accessible-selector ground is now runtime-held only for this exact package/brows
 and loopback fixture. Other open frontier ground from round12 is unchanged.
 The complete revision-based note-map command/count is retained in
 `corpus/evidence/round-13/measurements.json`; historical31/31 describes round12.
+
+## Round 14 — bounded metadata correction, not new coverage (2026-10-20)
+
+No new knowledge entry or browser capability is added. The existing round13
+runtime note/receipt stays historical and byte-preserved. S029 records its exact
+worker cleanup and observed/descriptive Node fields; the qualified correction is
+`corpus/evidence/round-14/aria-metadata/corrected.json`, checked by
+`scripts/check-aria-metadata.mjs`. This is calibration of held evidence, not
+another execution, independent signal, newly entered frontier or audit.
+The historical producer and note keep their exact runtime-pinned bytes; replay
+outputs need the documented metadata qualification rather than an unqualified
+aggregate reading. Observed Node26.12.0 differs from descriptive24.21.0/minimum20.
+
+The round14 lesson records source curation, actual red/green controls and all
+prior verifier routed dispositions. Existing frontier rows remain unchanged.
+The source histogram/note-map commands and measured revisions are retained in
+`corpus/evidence/round-14/measurements.json`; the historical round13 map remains
+the last prior map rather than an unqualified current-state count.

@@ -51,3 +51,14 @@
     control; aggregate every executed case after worker restart before admitting
     a capability. (lesson: corpus/lessons/round-13.md#mistakes; missing queue template,
     version-scoped equal-diff format and surviving-worker receipt)
+18. A browser cleanup summary must agree with a complete nonempty set of worker
+    proofs; a negative property such as listeningAfter is not the proposition that
+    every worker stopped. Runtime metadata distinguishes observed, minimum-enforced
+    and descriptive recorded versions. Historical corrections retain input digests,
+    a same-checker red→green witness and an explicit no-new-execution qualifier.
+    (lesson: corpus/lessons/round-14.md#mistakes; outside round13 routed items1/2)
+19. A historical count expression is data, never authority to invoke a shell.
+    Accept only the persisted historical tree-path/content counting forms,
+    evaluate validated Git argv without a shell, and assert legitimate-count equivalence and
+    rejected malicious grammar with no side effect through isolated CLI fixtures.
+    (lesson: corpus/lessons/round-14.md#mistakes; outside round13 routed item4)

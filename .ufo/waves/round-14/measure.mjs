@@ -76,17 +76,26 @@
 // at the commit cited by S029), every recorded perWorker proof independently
 // contradicts the aggregate listeningAfter=true, Node observed 26.12.0 is
 // qualified as not the descriptive recorded 24.21.0 pin, the checker self-test
-// is green with refusal controls, the witness is a named red observation, the
+// is green with refusal controls, the witness is a red->clean transition, the
 // corrected check is green, S029 is mined with used-by corpus/lessons/round-14.md,
 // and that lesson admits the sidecar and cites S029.
 //
+// check-aria-metadata.mjs emits (shipped grammar accepted):
+//   ARIA_METADATA_SELFTEST verdict=clean cases=N
+//   ARIA_METADATA_SELFTEST result=PASS case=<id> expected_exit=<n> exit=<n> finding=<id>
+//   ARIA_METADATA check verdict=clean findings=N failed=0 accepted=true
+//   ARIA_METADATA witness verdict=clean transition=red->clean red_exit=1
+//     red_finding=<id> green_exit=0 accepted=true original_unchanged=true
+// Legacy `SELFTEST name=...` lines and `ARIA_METADATA_CHECK verdict=clean`
+// are also accepted.
+//
 // Sidecar shape read by this probe (aliases in the file):
 //   { schema|kind containing "metadata" and "correct(ion)",
-//     qualified: true,
-//     browserExecuted: false,
-//     original: { receipt: { path, sha256 }, pin: { path, sha256 } },
+//     qualified: true | status: "qualified",
+//     browserExecuted: false | execution.browser: false,
+//     original: { receipt: { path, sha256, bytes? }, pin: { path, sha256, bytes? } },
 //     node: { observed, recorded, exactMatch: false },
-//     corrections: [ { path: "cleanup.server.listeningAfter", to: false } ] }
+//     corrections: [ { path: "cleanup.server.listeningAfter", from: true, to: false } ] }
 //
 // Scalars are unchanged: this probe reports no ordinal score delta.
 
@@ -99,7 +108,6 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 
 const C1_RECEIPT = 'corpus/evidence/round-14/gates.json';
 const C2_RECEIPT = 'corpus/evidence/round-14/aria-metadata/verification.json';
-const C2_EVIDENCE_DIR = 'corpus/evidence/round-14/aria-metadata/';
 const C2_SIDECAR = 'corpus/evidence/round-14/aria-metadata/corrected.json';
 const C2_CHECKER = 'scripts/check-aria-metadata.mjs';
 const C2_SOURCES = 'corpus/SOURCES.md';
@@ -209,7 +217,7 @@ function selftestLines(text) {
 // check-aria-metadata.mjs prints its own stable case grammar:
 //   ARIA_METADATA_SELFTEST result=PASS case=<id> expected_exit=<n> exit=<n> finding=<id>
 function ariaCaseLines(text) {
-  return [...text.matchAll(/^ARIA_METADATA(?:_[A-Z]+)? result=(PASS|FAIL) case=(\S+) expected_exit=(-?\d+) exit=(-?\d+) finding=(\S+)\s*$/gm)]
+  return [...text.matchAll(/^ARIA_METADATA(?:_[A-Z]+)? result=(PASS|FAIL) case=(\S+) expected_exit=(-?\d+) exit=(-?\d+) finding=(\S+)(?:\s+.*)?$/gm)]
     .map(match => ({
       name: match[2],
       expectedExit: Number(match[3]),
@@ -697,10 +705,22 @@ export function countC2(revision, read = reader(revision)) {
   } else if (isObject(witness) && isInt(witness.exit) && typeof witness.stdout === 'string') {
     if (witness.stderr !== undefined && typeof witness.stderr !== 'string') add('checker_witness', 'witness.stderr must be text');
     const text = outputOf(witness);
-    if (witness.exit === 0) add('checker_witness', 'witness is not a red observation');
-    const finding = /finding=([a-z_]+)/.exec(text);
-    if (!finding) add('checker_witness', 'witness has no named finding');
-    else if (finding[1] === 'could_not_evaluate') add('checker_witness', 'witness finding is could_not_evaluate');
+    const shipped = /transition=red->clean\b/.test(text)
+      && /\bred_exit=1\b/.test(text)
+      && /\bred_finding=([^\s]+)/.test(text)
+      && /\bgreen_exit=0\b/.test(text)
+      && /\baccepted=true\b/.test(text)
+      && /verdict=clean\b/.test(text);
+    if (shipped) {
+      const red = /red_finding=([^\s]+)/.exec(text);
+      if (/could_not_evaluate/.test(red[1])) add('checker_witness', 'witness red finding is could_not_evaluate');
+      if (/original_unchanged=false/.test(text)) add('checker_witness', 'witness reports the original receipt changed');
+    } else {
+      if (witness.exit === 0) add('checker_witness', 'witness is not a red observation');
+      const finding = /(?:red_)?finding=([a-z_]+)/.exec(text);
+      if (!finding) add('checker_witness', 'witness has no named finding');
+      else if (finding[1] === 'could_not_evaluate') add('checker_witness', 'witness finding is could_not_evaluate');
+    }
   } else {
     add('checker_witness', 'witness must be {exit,stdout} or {before,after}');
   }
@@ -711,9 +731,11 @@ export function countC2(revision, read = reader(revision)) {
   } else {
     if (check.stderr !== undefined && typeof check.stderr !== 'string') add('checker_check', 'check.stderr must be text');
     if (check.exit !== 0) add('checker_check', `check exit ${check.exit}, expected 0`);
-    if (!/^ARIA_METADATA[_-]?[A-Z]* verdict=clean\b/m.test(outputOf(check))) {
-      add('checker_check', 'check output lacks ARIA_METADATA verdict=clean');
+    const checkText = outputOf(check);
+    if (!ariaCheckClean(checkText)) {
+      add('checker_check', 'check output lacks ARIA_METADATA check verdict=clean');
     }
+    if (/\baccepted=false\b/.test(checkText)) add('checker_check', 'check did not accept the corrected sidecar');
   }
 
   const sidecarRef = receipt.sidecar;
@@ -764,12 +786,17 @@ export function countC2(revision, read = reader(revision)) {
       const browserFalse = sidecar.browserExecuted === false
         || sidecar.executed === false
         || (isObject(sidecar.execution)
-          && (sidecar.execution.browser === false || sidecar.execution.browserExecuted === false));
+          && (sidecar.execution.browser === false
+            || sidecar.execution.browserExecuted === false
+            || sidecar.execution.newBrowserRun === false));
       const browserTrue = sidecar.browserExecuted === true
         || sidecar.executed === true
         || sidecar.newCoverage === true
         || (isObject(sidecar.execution)
-          && (sidecar.execution.browser === true || sidecar.execution.browserExecuted === true || sidecar.execution.newCoverage === true));
+          && (sidecar.execution.browser === true
+            || sidecar.execution.browserExecuted === true
+            || sidecar.execution.newBrowserRun === true
+            || sidecar.execution.newCoverage === true));
       result.browserExecuted = browserTrue ? true : (browserFalse ? false : null);
       if (!browserFalse) add('sidecar_browser', 'sidecar does not state browserExecuted=false');
       if (browserTrue) add('sidecar_browser', 'sidecar claims a new browser execution or coverage');
@@ -788,8 +815,16 @@ export function countC2(revision, read = reader(revision)) {
       if (receiptPins.length && originalReceiptBytes && receiptPins[0].sha256 !== sha256(originalReceiptBytes)) {
         add('sidecar_pin', 'pinned original receipt digest differs from the committed receipt bytes');
       }
+      if (receiptPins.length && originalReceiptBytes && receiptPins[0].bytes !== null
+        && receiptPins[0].bytes !== originalReceiptBytes.length) {
+        add('sidecar_pin', 'pinned original receipt byte count differs from the committed bytes');
+      }
       if (pinPins.length && originalPinBytes && pinPins[0].sha256 !== sha256(originalPinBytes)) {
         add('sidecar_pin', 'pinned original pin digest differs from the committed pin bytes');
+      }
+      if (pinPins.length && originalPinBytes && pinPins[0].bytes !== null
+        && pinPins[0].bytes !== originalPinBytes.length) {
+        add('sidecar_pin', 'pinned original pin byte count differs from the committed bytes');
       }
 
       const node = isObject(sidecar.node) ? sidecar.node

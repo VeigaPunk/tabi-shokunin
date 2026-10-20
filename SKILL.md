@@ -1713,3 +1713,50 @@ Replay in an isolated checkout so the original committed evidence stays frozen.
 `corpus/evidence/round-13/aria-execution-pass.json` is the exercised command receipt;
 the initial failed command/receipt and the second diagnostic-format failure remain
 separate durable evidence. QUALITY17 and lesson `round-13.md` explain the learned rule.
+
+## Round 14 — historical count and cleanup metadata corrections (2026-10-20)
+
+This section supersedes the round13 trust-boundary statement at :1680 only for
+SCORECARD's historical counting path after the measured round14 cutover. Counts
+are not instructions: the gates accept only their historical tree-path filtering
+and fixture content-line counting forms, validate revision/path operands, and
+use argv-based Git reads rather than invoking the authored shell expression.
+Unsupported syntax is a failed count, never an invitation to interpret more shell language.
+This is not certification that arbitrary repositories or Git environments are safe.
+Survivor-replay, unfrozen user records, IPv6 origin classification and the
+external-validator pin remain separate debt.
+
+The USER compatibility witness is supported explicitly:
+`node scripts/check-user-round-contract.mjs --witness 75e7836b6c3090180aee2754e20a5d3cfb186e74`.
+Like ROUND's witness it runs pinned old and repaired gate bytes over one isolated
+fixture. Its top-level success0 means the comparison succeeded; the old child's
+history_rewritten1 and new child's clean0 are nested outcomes. Future receipts
+name repaired-code revision and digest; scratch fixture IDs are not stable pins.
+Round13's USER21 controls mean20 fixture cases plus1 production-alias control.
+The honest production USER6/10 failure remains; expected10 is unchanged.
+
+### Browser evidence metadata decision table
+
+| Situation | Rule | Source / limit |
+|---|---|---|
+| Aggregate listeningAfter contradicts workers | Require a complete nonempty worker set; any worker listening means aggregate true, all false means false; missing proof is unknown/error | S029; `corpus/lessons/round-14.md` Mistakes; no inference from a summary alone |
+| Historical receipt has a metadata defect | Retain original bytes; derive a digest-bound qualified correction from the original worker evidence and check both old failure and corrected success | `scripts/check-aria-metadata.mjs`; no new browser observation |
+| observed Node differs from pin.node.recorded | Report observed version, enforced minimum and descriptive record separately; do not claim exact equality was checked | Original runtime26.12.0, descriptive24.21.0, minimumMajor20 |
+| Need to replay the runtime experiment | Use an isolated checkout/output tree; original corpus/evidence/round-13/aria bytes are immutable evidence | Prior runtime capability stays round13-scoped, not refreshed by this metadata correction |
+
+QUALITY18/19 and the round14 lesson ground these corrections. The corrected
+sidecar and exact exercised checker/gate receipts live under
+`corpus/evidence/round-14/`; the report and SCORECARD supply measured revisions.
+
+### Round 14 metadata gate registry
+
+| Name | Kind / owner | Entry and verdict map | Self-invocation | Persisted pinned values | Write scope |
+|---|---|---|---|---|---|
+| aria-historical-metadata | gate / tabi | `node scripts/check-aria-metadata.mjs --check corpus/evidence/round-14/aria-metadata/corrected.json`; 0 clean, 1 failed, 2 could-not-evaluate | `node scripts/check-aria-metadata.mjs --self-test`; isolated subprocess fixtures assert exit and stable finding; `--witness` compares the same checker on old and corrected evidence | Checker ANCHORS pin original receipt/pin/worker/spec/config/manifest/producer; `corpus/evidence/round-14/aria-metadata/expected-fixtures.json` persists fixture digests and expected exit/finding pairs | Source reads only; self-test creates/removes own temporary fixtures; `--derive RECEIPT PIN --out PATH` writes only a fresh path under corpus/evidence/round-14/aria-metadata |
+
+The no-argument metadata check intentionally reports the original summary
+contradiction as failed; the registered current entry names the qualified
+sidecar. This is not a blanket clean verdict for historical raw metadata.
+The historical runner and note remain pinned unchanged, and the correction
+cannot turn another failed browser run into a pass. Reproduction of that
+runner belongs in an isolated checkout, with this defect qualification kept.

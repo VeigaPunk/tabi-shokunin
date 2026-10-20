@@ -764,3 +764,28 @@
   Original receipt/pin/sidecar/expected fixture bytes and refusal requirements
   stay fixed. Selftest output gains stable parser aliases without changing
   expected findings. Only this affected metadata target is rerun after cutover.
+- Targeted metadata cutover `e570380` now exercises clean16 selftest cases,
+  same-checker witness red→clean with original_unchanged=true, original-input
+  exit1 only R14-ARIA-CLEANUP-LISTENING-AFTER-01, and corrected-input exit0
+  accepted=true/27 findings/zero failures. Derive exited0 identical=true,
+  wrote=false, sidecar digest e156b922…6745 unchanged. The complete exact
+  payloads live in `corpus/evidence/round-14/aria-metadata/verification.json`
+  and its executions directory; no browser was rerun.
+- No-harm review caught that modifying the old runtime-pinned producer or note
+  would break prior source/note digest verification. Both proposed uncommitted
+  changes were removed; new correction evidence/lesson/SKILL carry the learned
+  semantics instead. The outside request permits corrected semantics in new
+  evidence; no future-producer-repair claim remains. The historical runner's
+  raw summary defect is explicit, not silently declared fixed in old bytes.
+- Final frontier census exited0 with the same tabi/ok/path output as start
+  (`corpus/evidence/round-14/census-after.json`); new own-work S029 gives
+  rows28→29, A22→23/B4/C2, mined23→24/queued3/rejected2. No new knowledge or
+  capability; all open frontier areas remain open. Tools installed/updated:
+  none. Existing round5 approval and round1 namespace questions remain open;
+  no new L0 line. Stale-lane: sole tabi mission, no other open tabi mission.
+- Correction sweep over touched SKILL/README/SOURCES/QUALITY/round14 lesson
+  matched only explicit historical qualifications for unsupported on-change,
+  withdrawn producer repair and original USER tally. Initial source cadence
+  on-change was corrected to365d before admission; the registry preamble
+  qualification restricts its original round1-all-rows wording to S001–S028.
+  S029 used-by transitions and the withdrawn note link are recorded in lesson.
