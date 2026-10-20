@@ -799,3 +799,8 @@
   changed or rerun. MeasureClaims is repairing only this consumer grammar,
   retaining expected/actual equality and actual named rejection requirements.
   The frozen round14 lesson is not edited again.
+- The C2 counting repair parses the actual ARIA key=value case tokens by name,
+  checks expected/actual exit and finding equality, and accepts one unambiguous
+  actual structured/listed red finding. This does not redefine checker success
+  or manufacture stdout tokens. C1 parsing is unchanged; only the C2 revision
+  probe is re-executed after committing the corrected consumer.

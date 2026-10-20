@@ -82,10 +82,16 @@
 //
 // check-aria-metadata.mjs emits (shipped grammar accepted):
 //   ARIA_METADATA_SELFTEST verdict=clean cases=N
-//   ARIA_METADATA_SELFTEST result=PASS case=<id> expected_exit=<n> exit=<n> finding=<id>
+//   ARIA_METADATA_SELFTEST result=PASS case=<id> [name=<id>] expected_exit=<n>
+//     actual_exit=<n> expected_finding=<id> finding=<id> exit=<n>
 //   ARIA_METADATA check verdict=clean findings=N failed=0 accepted=true
 //   ARIA_METADATA witness verdict=clean transition=red->clean red_exit=1
-//     red_finding=<id> green_exit=0 accepted=true original_unchanged=true
+//     green_exit=0 accepted=true original_unchanged=true
+//   ARIA_METADATA findings <id>
+// Case fields are parsed as key=value tokens in any order; expected/actual
+// exits and findings must agree. A red witness names its finding through a
+// structured finding/redFinding/findings field or, when the shipped list names
+// exactly one distinct finding, through `ARIA_METADATA findings <id>`.
 // Legacy `SELFTEST name=...` lines and `ARIA_METADATA_CHECK verdict=clean`
 // are also accepted.
 //
@@ -214,22 +220,82 @@ function selftestLines(text) {
     }));
 }
 
-// check-aria-metadata.mjs prints its own stable case grammar:
-//   ARIA_METADATA_SELFTEST result=PASS case=<id> expected_exit=<n> exit=<n> finding=<id>
+// check-aria-metadata.mjs prints its own stable case grammar, with fields in
+// key=value order that may vary:
+//   ARIA_METADATA_SELFTEST result=PASS case=<id> name=<id> expected_exit=<n>
+//     actual_exit=<n> expected_finding=<id> finding=<id> exit=<n>
+// Only the named SELFTEST case lines are parsed; the summary line has no case=.
+function caseTokens(text) {
+  const tokens = new Map();
+  for (const match of text.matchAll(/([A-Za-z_][A-Za-z0-9_]*)=([^\s]+)/g)) {
+    if (!tokens.has(match[1])) tokens.set(match[1], match[2]);
+  }
+  return tokens;
+}
+
 function ariaCaseLines(text) {
-  return [...text.matchAll(/^ARIA_METADATA(?:_[A-Z]+)? result=(PASS|FAIL) case=(\S+) expected_exit=(-?\d+) exit=(-?\d+) finding=(\S+)(?:\s+.*)?$/gm)]
-    .map(match => ({
-      name: match[2],
-      expectedExit: Number(match[3]),
-      actualExit: Number(match[4]),
-      expectedFinding: match[5],
-      result: match[1],
+  const cases = [];
+  for (const raw of text.split('\n')) {
+    const line = raw.trim();
+    if (!/^ARIA_METADATA/.test(line) || !/SELFTEST/.test(line) || !/(?:^|\s)case=/.test(line)) continue;
+    const tokens = caseTokens(line);
+    const result = tokens.get('result');
+    if (result !== 'PASS' && result !== 'FAIL') continue;
+    const name = tokens.get('case') || tokens.get('name');
+    const expectedExit = Number(tokens.get('expected_exit'));
+    const actualExit = Number(tokens.get('actual_exit') ?? tokens.get('exit'));
+    const expectedFinding = tokens.get('expected_finding') ?? tokens.get('finding') ?? 'clean';
+    const actualFinding = tokens.get('finding') ?? null;
+    if (!name || !Number.isInteger(expectedExit) || !Number.isInteger(actualExit)) continue;
+    cases.push({
+      name,
+      expectedExit,
+      actualExit,
+      expectedFinding,
+      actualFinding,
+      result,
       extra: '',
-    }));
+    });
+  }
+  return cases;
 }
 
 function ariaCheckClean(text) {
   return /^ARIA_METADATA(?:\s+check|(?:[_-][A-Za-z]+)*)\s+verdict=clean\b/m.test(text);
+}
+
+// A red arm may name its finding structurally (finding/redFinding/findings) or
+// through shipped stdout. A shipped findings list is accepted only when it
+// names exactly one distinct finding; a multi-finding list is ambiguous.
+function findingTokens(text) {
+  const found = new Set();
+  for (const match of text.matchAll(/(?:^|\s)(?:red_)?finding=([A-Za-z0-9._:-]+)/g)) found.add(match[1]);
+  for (const match of text.matchAll(/^ARIA_METADATA findings\s+([A-Za-z0-9._:-]+)\s*$/gm)) found.add(match[1]);
+  return [...found];
+}
+
+function structuredFinding(stream) {
+  if (!isObject(stream)) return null;
+  for (const key of ['finding', 'redFinding', 'red_finding', 'findings']) {
+    const value = stream[key];
+    if (isText(value)) {
+      const first = value.trim().split(/\s+/)[0];
+      if (first) return first;
+    }
+    if (Array.isArray(value)) {
+      const items = value.filter(isText).map(item => item.trim()).filter(Boolean);
+      if (items.length === 1) return items[0];
+      if (items.length > 1) return null;
+    }
+  }
+  return null;
+}
+
+function namedFinding(stream) {
+  const structured = structuredFinding(stream);
+  if (structured) return structured;
+  const tokens = findingTokens(outputOf(stream));
+  return tokens.length === 1 ? tokens[0] : null;
 }
 
 // Return the top-level function body, ending at the first column-zero closing
@@ -681,6 +747,9 @@ export function countC2(revision, read = reader(revision)) {
       if (line.result === 'PASS' && line.expectedExit !== line.actualExit) {
         add('checker_selftest_red', `case ${line.name} claims PASS with expected_exit ${line.expectedExit}, exit ${line.actualExit}`);
       }
+      if (line.result === 'PASS' && line.actualFinding && line.expectedFinding !== line.actualFinding) {
+        add('checker_selftest_red', `case ${line.name} claims PASS with expected_finding ${line.expectedFinding}, finding ${line.actualFinding}`);
+      }
     }
     const refusals = cases.filter(line => line.result === 'PASS'
       && /malformed|missing|nonboolean|invalid|refus|type/i.test(line.name)
@@ -697,29 +766,28 @@ export function countC2(revision, read = reader(revision)) {
     if (!isInt(before.exit) || typeof before.stdout !== 'string') add('checker_witness', 'witness.before must be {exit,stdout}');
     if (!isInt(after.exit) || typeof after.stdout !== 'string') add('checker_witness', 'witness.after must be {exit,stdout}');
     if (isInt(before.exit) && before.exit === 0) add('checker_witness', 'witness.before is not red');
-    const finding = /finding=([a-z_]+)/.exec(outputOf(before));
-    if (!finding) add('checker_witness', 'witness.before has no named finding');
-    else if (finding[1] === 'could_not_evaluate') add('checker_witness', 'witness.before finding is could_not_evaluate');
+    const finding = namedFinding(before);
+    if (!finding) add('checker_witness', 'witness.before has no unambiguous named finding');
+    else if (/could_not_evaluate/.test(finding)) add('checker_witness', 'witness.before finding is could_not_evaluate');
     if (isInt(after.exit) && after.exit !== 0) add('checker_witness', 'witness.after is not green');
     if (!/verdict=clean\b/.test(outputOf(after))) add('checker_witness', 'witness.after has no clean verdict');
   } else if (isObject(witness) && isInt(witness.exit) && typeof witness.stdout === 'string') {
     if (witness.stderr !== undefined && typeof witness.stderr !== 'string') add('checker_witness', 'witness.stderr must be text');
     const text = outputOf(witness);
+    const named = namedFinding(witness);
     const shipped = /transition=red->clean\b/.test(text)
       && /\bred_exit=1\b/.test(text)
-      && /\bred_finding=([^\s]+)/.test(text)
       && /\bgreen_exit=0\b/.test(text)
-      && /\baccepted=true\b/.test(text)
-      && /verdict=clean\b/.test(text);
+      && (witness.accepted === true || /\baccepted=true\b/.test(text))
+      && /verdict=clean\b/.test(text)
+      && Boolean(named);
     if (shipped) {
-      const red = /red_finding=([^\s]+)/.exec(text);
-      if (/could_not_evaluate/.test(red[1])) add('checker_witness', 'witness red finding is could_not_evaluate');
+      if (/could_not_evaluate/.test(named)) add('checker_witness', 'witness red finding is could_not_evaluate');
       if (/original_unchanged=false/.test(text)) add('checker_witness', 'witness reports the original receipt changed');
     } else {
       if (witness.exit === 0) add('checker_witness', 'witness is not a red observation');
-      const finding = /(?:red_)?finding=([a-z_]+)/.exec(text);
-      if (!finding) add('checker_witness', 'witness has no named finding');
-      else if (finding[1] === 'could_not_evaluate') add('checker_witness', 'witness finding is could_not_evaluate');
+      if (!named) add('checker_witness', 'witness has no unambiguous named finding');
+      else if (/could_not_evaluate/.test(named)) add('checker_witness', 'witness finding is could_not_evaluate');
     }
   } else {
     add('checker_witness', 'witness must be {exit,stdout} or {before,after}');

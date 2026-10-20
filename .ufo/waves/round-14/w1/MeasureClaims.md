@@ -2,13 +2,15 @@
 
 Owner: `TabiR14.MeasureClaims` (leaf). Baseline: `bebe2efc4565bb068efd905e9ef78011bb6b4efd`.
 Implementation file: `.ufo/waves/round-14/measure.mjs` (new, executable), frozen at sha256
-`155f194de2ab8f1178f1c26f60a94d52339eda2acf46f8afdc069574283212a4` (54340 bytes). The only delta
-since `ed69b15` / committed blob `487f61275b3428946dcce755457e1ffb2ecc9988dc3facc8cf8a55b1ac3021c9`
-is C2 shipped-marker alignment (50 insertions, 15 deletions): C2 header docs, ARIA per-case
-trailing-token tolerance, shipped `red->clean` witness, shipped `ARIA_METADATA check` marker,
-`execution.newBrowserRun`, pinned byte counts, and removal of an unused constant. C1 functions
-(`countC1`, `analyzeRunCount`, `countWitnessEvidence`, controls) are byte-identical to the
-committed blob, so C1 before/after results are unaffected; C2 requires the frozen worktree bytes. No other
+`22b6f5e5fa585555923971a0f56c640a2d38ae2d797aa84e4f9cae288cf7cab1` (57183 bytes). Deltas since
+`ed69b15` / committed blob `487f61275b3428946dcce755457e1ffb2ecc9988dc3facc8cf8a55b1ac3021c9`
+are C2-only: shipped-marker alignment, then the targeted repair after the initial failed probe at
+`4a300f6` (key=value ARIA case parsing including `name`/`actual_exit`/`expected_finding`/`finding`
+with expected/actual consistency, and structured-or-unique finding resolution for the witness).
+C1 functions (`countC1`, `analyzeRunCount`, `countWitnessEvidence`, controls) are byte-identical to
+the committed blob, so C1 before/after results are unaffected; C2 requires the frozen worktree
+bytes. The initial failed C2 output at `corpus/evidence/round-14/measure-c2-initial.json` is
+retained unchanged as evidence of the pre-repair probe. No other
 tracked file was edited by this seat. No commit, no build, no test, no lint, no formatter, no
 gate, no census and no probe execution was performed while authoring; the commands below are for
 L1 after all seats land.
@@ -84,14 +86,17 @@ Counts 1 only when every committed check passes:
 2. Checker `selfTest` exits 0, prints `ARIA_METADATA_SELFTEST verdict=clean cases=N` (N >= 4,
    and >= the emitted case lines), has no `result=FAIL`, and at least two passing fail-closed
    controls named `malformed|missing|nonboolean|invalid|refus|type` with `expected_exit != 0`.
-   The shipped per-case grammar is
-   `ARIA_METADATA_SELFTEST result=PASS case=<id> expected_exit=<n> exit=<n> finding=<id>`;
-   legacy `SELFTEST name=…` lines are also accepted.
+   Case lines are parsed as key=value tokens in any order:
+   `ARIA_METADATA_SELFTEST result=PASS case=<id> [name=<id>] expected_exit=<n> actual_exit=<n>
+   expected_finding=<id> finding=<id> exit=<n>`; `expected_exit` must equal `actual_exit` and
+   `expected_finding` must equal `finding` when both are present. Legacy `SELFTEST name=…` lines
+   are also accepted.
 3. `witness` is the shipped red→clean transition
-   (`transition=red->clean`, `red_exit=1`, `red_finding=<id>`, `green_exit=0`,
-   `accepted=true`, `verdict=clean`); a `{before,after}` red→clean pair or a single
-   `{exit != 0, finding=<name>}` observation are also accepted. A red finding of
-   `could_not_evaluate` is rejected.
+   (`transition=red->clean`, `red_exit=1`, `green_exit=0`, `accepted=true`, `verdict=clean`),
+   with the red finding named by a structured `finding`/`redFinding`/`findings` field or by a
+   shipped `ARIA_METADATA findings <id>` line that names exactly one distinct id. A
+   `{before,after}` red→clean pair or a single `{exit != 0, finding=…}` observation are also
+   accepted. A red finding of `could_not_evaluate` or an ambiguous multi-finding list is rejected.
 4. `check` exits 0 and prints `ARIA_METADATA check verdict=clean` (shipped form;
    `ARIA_METADATA_CHECK verdict=clean` also accepted), with no `accepted=false`.
 5. `sidecar.path` resolves to `corpus/evidence/round-14/aria-metadata/corrected.json` (or
@@ -256,6 +261,10 @@ node .ufo/waves/round-14/measure.mjs bebe2efc4565bb068efd905e9ef78011bb6b4efd --
 node .ufo/waves/round-14/measure.mjs <FINAL_REV>
 node .ufo/waves/round-14/measure.mjs <FINAL_REV> --claim C1
 node .ufo/waves/round-14/measure.mjs <FINAL_REV> --claim C2
+# After committing the frozen probe bytes, rerun only the C2 claim against the final evidence
+# revision; keep corpus/evidence/round-14/measure-c2-initial.json (evidence commit 4a300f6)
+# untouched as the initial failed-probe record.
+node .ufo/waves/round-14/measure.mjs <FINAL_REV> --claim C2
 
 # Histogram at the final evidence commit: S029 present/mined at own-work, 29 registry rows,
 # note_map.knowledge_notes = 32, mapped = 32, missing = [].
@@ -311,12 +320,23 @@ node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-14/measure.mjs
 - `S029` worktree row (uncommitted when read): `own-work`, tier `A`, cites
   `committed at 837b33a3988ebeea7f6b4ef5c04698da88909a73`, status `mined`, used-by
   `corpus/lessons/round-14.md`.
+- Initial C2 probe at evidence commit `4a300f6` exited 1 and is retained unchanged at
+  `corpus/evidence/round-14/measure-c2-initial.json`; its errors were
+  `checker_selftest_no_cases`/`checker_selftest_no_refusal` and `witness.before` had no named
+  finding. This is preserved as the pre-repair failure evidence; it is not overwritten by the
+  corrected rerun. The producer's corrected case line is key=value ordered loosely, e.g.
+  `ARIA_METADATA_SELFTEST result=PASS case=nonboolean-listening-after
+  name=nonboolean-listening-after expected_exit=1 actual_exit=1
+  expected_finding=R14-ARIA-CLEANUP-PERWORKER-01 finding=R14-ARIA-CLEANUP-PERWORKER-01 exit=1`.
+  The before receipt names `R14-ARIA-CLEANUP-LISTENING-AFTER-01` in a structured finding field
+  and in an `ARIA_METADATA findings …` line, not in `finding=` stdout.
 - `ReceiptRepair` shipped sidecar (advisory): `corrected.json` sha256
   `e156b922d0f59f6b66c4bba8aebc708bb0484c41cce1141960a0ab82c1a56745` (4308 bytes), pinned originals with
   bytes 97073 / 1154 (both match the committed lengths), checker self-test `cases=16`, refusal
   controls `malformed-receipt`, `missing-server-summary`, `nonboolean-listening-after`,
   `invalid-node-minimum`, clean controls `clean-perworker-listening`, `sidecar-valid-accepted`,
-  witness `red->clean` with `red_finding=R14-ARIA-CLEANUP-LISTENING-AFTER-01`.
+  witness `red->clean` whose red arm names `R14-ARIA-CLEANUP-LISTENING-AFTER-01` via a structured
+  finding field and an `ARIA_METADATA findings` line.
 - `UserCounter` shipped controls (advisory): `count_malicious_{tee,shell,option-injection}_refused`
   with `no_marker=1`, `count_missing_revision_red`, `count_wrong_after_red`,
   `count_{historical,quoted,two_stage}_supported`, six `count_committed_user-20261015-r01..r06`
@@ -341,10 +361,11 @@ node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-14/measure.mjs
    production-exercised USER parser. The six historical USER before/after values are not
    re-measured by this probe.
 2. **Literal selftest grammar.** C1 accepts the exact `SELFTEST name=… expected_exit=…
-   actual_exit=… expected_finding=… result=…` order; C2 accepts the shipped
-   `ARIA_METADATA_SELFTEST result=… case=… expected_exit=… exit=… finding=…` order plus the
-   legacy `SELFTEST name=` form. Marker literals accept `true/false` and `1/0`. A changed field
-   order or renamed control fails closed; align the output or extend the matcher.
+   actual_exit=… expected_finding=… result=…` order. C2 parses ARIA case lines as unordered
+   key=value tokens (`case`/`name`, `expected_exit`/`actual_exit`/`exit`,
+   `expected_finding`/`finding`, `result`) and asserts expected/actual consistency; legacy
+   `SELFTEST name=` lines are accepted. Marker literals accept `true/false` and `1/0`. A changed
+   field name or inconsistent expected/actual value fails closed.
 3. **Static shell scan** rejects any shell call, `shell: true` or `-c` in code, including an
    inline comment after code that contains the call syntax. Line-leading comment lines are
    filtered; intentional fail-closed behavior, not a generic JS parser.
@@ -353,8 +374,9 @@ node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-14/measure.mjs
 5. **C2 key names.** The shipped `corrected.json` keys described above match the probe; only
    the listed aliases are additionally accepted. A renamed key/marker fails closed and must be
    aligned before L1 quotes 1.
-6. **C2 witness shape.** The shipped `red->clean` transition is accepted. A green-only witness
-   still does not count; the red arm must be named and non-`could_not_evaluate`.
+6. **C2 witness shape.** The shipped `red->clean` transition is accepted. The red finding must be
+   a structured field or a unique shipped `ARIA_METADATA findings` entry, and must not be
+   `could_not_evaluate`; a green-only witness or an ambiguous multi-finding list does not count.
 7. **Lesson timing.** `corpus/lessons/round-14.md` is a final evidence-commit artifact; C2 is
    expected 0 with a lesson reason at intermediate revisions and 1 only once admission lands.
 8. **Revision ancestry.** `codeRevision` must be a resolvable 40-hex commit ancestor of `REV`;
