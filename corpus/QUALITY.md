@@ -62,3 +62,16 @@
     evaluate validated Git argv without a shell, and assert legitimate-count equivalence and
     rejected malicious grammar with no side effect through isolated CLI fixtures.
     (lesson: corpus/lessons/round-14.md#mistakes; outside round13 routed item4)
+20. Every emitted cleanup/qualification mirror in a historical browser-evidence
+    correction is compared with authenticated underlying proofs, not trusted
+    because another copy agrees. Independent CLI fixture expectations distinguish
+    a semantic contradiction (failed) from a changed pinned input
+    (`snapshot_tampered`, could-not-evaluate). A deterministic same-function
+    comparison proves determinism only, not independent content correctness.
+    (lesson: corpus/lessons/round-15.md#mistakes; round14 outside routed2/3)
+21. A negative counting control asserts its intended diagnostic reason as well
+    as exit/finding; an unrelated `score_mismatch` must not satisfy it.
+    Side-effect receipt fields distinguish applicable-and-absent from not
+    applicable. Counter safety is scoped to the accepted grammar, not the Git
+    environment, whole repository or a production path that stopped earlier.
+    (lesson: corpus/lessons/round-15.md#mistakes; round14 outside routed4)

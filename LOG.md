@@ -898,3 +898,29 @@
   relayed to live writers and added to wave2 context. Prior external-action
   and namespace L0 questions remain open; non-author Node erratum and frozen
   closure certification remain orchestrator/protocol actions.
+- Actual L1 verification at code revision
+  `27dfd98bd6bbd85fe77fb028d531691ce066031a`: USER selftest exit0/
+  42 aggregate records (32 fixtures, alias, six committed counts, count/
+  diagnostic witnesses and reason control); metadata selftest exit0/
+  36 CLI+4 helper cases. USER production remains exit1 round_count6/10.
+  Exact source-bound command output is in
+  `corpus/evidence/round-15/user-diagnostics.json` and
+  `metadata-differential.json`; no author seat executed these gates.
+- USER diagnostic witness exit0 retains actual broad-finding old/no-reason,
+  repaired after_count_mismatch, missing-revision counting_command_failed
+  and regressed-mask after_count_mismatch child failures. Reason-only
+  decoys match without the reason and reject with it. The metadata original
+  check remains semantic exit1 only LISTENING-AFTER; corrected check exit0
+  and witness exit0. No historical runtime date or original byte changes.
+- The real Python old/new differential exited0: nine previously unchecked
+  single-field variants accepted0→refused1 with exact mirror finding sets;
+  same authenticated spec alteration old failed1→new snapshot_tampered2/
+  could_not_evaluate. Both untampered controls accept and all original
+  digests remain unchanged. This is actual old-code execution, unlike the
+  separately disclosed static legacy arm of --witness-mirrors.
+- Source live gate exited0 rows29 A23/B4/C2 mined24/queued3/rejected2;
+  end census exit0 matches start. Reopened S029's used-by gains only the
+  final lesson; no new row/knowledge/capability. First-added lesson carries
+  Gate/Mistakes, every routed disposition, actual command results and honest
+  external-verifier debt. Sources, QUALITY20/21, SKILL/README qualifications
+  and source-index land together; prior lessons/verifiers remain untouched.

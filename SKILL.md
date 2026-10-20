@@ -1760,3 +1760,70 @@ sidecar. This is not a blanket clean verdict for historical raw metadata.
 The historical runner and note remain pinned unchanged, and the correction
 cannot turn another failed browser run into a pass. Reproduction of that
 runner belongs in an isolated checkout, with this defect qualification kept.
+
+## Round 15 — checked metadata mirrors and diagnostic precision (2026-10-20)
+
+**Named correction to round14's Node table and the frozen sidecar's note:**
+“enforced minimum” has two enforcement layers over one recorded observation: the historical test
+spec's `assertPinnedRuntime()` checks `RUNTIME.nodeMajor >= PIN.node.minimumMajor`
+(`corpus/evidence/round-13/aria/aria-loopback.spec.mjs:262-269`, invoked at
+`:924`), and the retrospective metadata checker re-evaluates that minimum.
+The launcher's `runtime.pinned` summary and the spec's `runtimePinStatus()`
+summary omit Node; the launcher still records `runtime.node`. Those pin
+summaries alone cannot certify minimum enforcement.
+This corrects the round14 outside review's broader non-enforcement wording,
+which overlooked the spec assertion. Recorded24.21.0 remains descriptive,
+observed26.12.0 is not exact equality, and no browser execution is renewed.
+The old sidecar, receipt, spec and producer remain immutable evidence.
+
+| Evidence-contract situation | Required treatment | Boundary / source |
+|---|---|---|
+| Cleanup or qualification contains repeated summary fields | Recompute each emitted mirror from the authenticated complete nonempty worker set; do not accept a false mirror merely because the primary correction matches | S029; QUALITY20; round15 metadata fixtures |
+| A committed source/snapshot digest no longer matches | Stop comparison with `snapshot_tampered`, exit2 could-not-evaluate; semantic disagreement remains exit1 failed | Gate standard; no changed snapshot is treated as an ordinary compared verdict |
+| A malicious count control returns the right broad finding for the wrong reason | Reject the control unless its expected reason also matches; marker absence and marker-not-applicable are separate states | QUALITY21; USER diagnostic fixtures |
+| A source attack predates the checker it purportedly reviews | Call it source reconnaissance only; subsequent falsifiers name the delivered input revision or exact source digest | Round14 outside routed5; wave2 attacks round15 build bytes |
+
+This round adds no browser execution or knowledge ground. Direct source-row
+traceability lives in `corpus/evidence/round-15/source-index.json` (`S029`),
+not an in-place modification of the pinned round13/14 artifacts. The
+round15 lesson records admissions, rejections and actual exercised evidence;
+author-side wave reports are not independent non-author spot-checks.
+
+### Current round15 registry overrides
+
+Run commands from this lane root, not the fleet root. These rows supersede
+only the prior entries' changed selftest/expectation/diagnostic interfaces;
+their historical execution receipts remain unchanged.
+
+| Name | Kind / owner | Entry and verdict map | Self-invocation | Persisted pinned values | Write scope |
+|---|---|---|---|---|---|
+| historical-user-contract | gate / tabi | `node scripts/check-user-round-contract.mjs`; 0 clean, 1 failed, 2 could-not-evaluate; expected10 stays fixed and current production remains failed6/10 | `node scripts/check-user-round-contract.mjs --self-test`; `--diagnostic-witness` compares real pinned round14 and repaired CLI diagnostics plus an isolated masking mutant; `--count-witness bebe2efc4565bb068efd905e9ef78011bb6b4efd` retains the shell-count differential | Same HARD_BASELINE/PSTACK_PIN/ROUND cutover identities; closed COUNT_REASONS and literal per-case reason/detail/marker expectations in the script | Production committed reads; selftest/witness creates/removes isolated temporary fixture repos; no external actions |
+| aria-historical-metadata | gate / tabi | `node scripts/check-aria-metadata.mjs --check corpus/evidence/round-14/aria-metadata/corrected.json`; 0 clean, 1 semantic failed, 2 could-not-evaluate including snapshot_tampered/snapshot_unavailable | `node scripts/check-aria-metadata.mjs --self-test`; isolated CLI cases and separately reported helper checks; `--witness` retains original semantic red→corrected clean comparison | ANCHORS plus new `corpus/evidence/round-15/metadata/expected-fixtures.json` and `mirror-contract.json`; old round14 expectations/sidecar stay frozen | Reads historical sources; selftest creates/removes isolated fixtures and copied snapshot trees; derive writes only its declared evidence output scope, never overwrites a differing historical sidecar |
+
+The metadata `--witness-mirrors` mode has a **static legacy arm**, explicitly
+`legacyExecuted=false`; it is not an execution of the old checker. Round15's
+stronger code-only differential is the durable
+`python3 .ufo/waves/round-15/metadata-witness.py`, which actually invokes both
+committed checker versions against the same isolated input variants.
+That harness is a round evidence probe, not an independent truth authority.
+Free-text notes and unknown top-level extensions are outside the checked
+metadata contract; cleanup/qualification exact fields and types are inside.
+Changing the generated Node note means `--derive` against the old differing
+sidecar refuses overwrite rather than silently replacing historical bytes.
+Authentication in this registry is scoped to the retained **canonical**
+historical receipt/pin/snapshot paths. Noncanonical receipt/pin inputs used
+for fixtures still receive semantic evaluation; their clean result is not
+a certificate that those authored input bytes are the historical snapshot.
+Neither the revision counter nor this round claims that broader guarantee.
+The checked contract is **not every sidecar field**: descriptive `wave`,
+`claim`, `execution.source`, source path/byte labels and other unchecked
+known mirrors do not gain authority from a clean metadata verdict. The
+round15 claim covers the complete cleanup/qualification objects and named
+Node/correction bindings only. The receipt/pin/sidecar identities used in
+this round's measurements are separately pinned by the committed receipts.
+Historical USER selftest/witness commands require a trusted, scrubbed process
+environment: unset inherited `GIT_*`, `BASH_ENV`, `NODE_OPTIONS` and template
+overrides; disable system/global Git config for the isolated run. Their
+legacy arm intentionally executes a pinned historical shell counter, so the
+write-scope row is a fixture-run precondition, not hostile-environment safety.
+Round15 command receipts record the exact minimal environment policy.

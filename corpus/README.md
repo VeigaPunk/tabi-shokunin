@@ -261,3 +261,25 @@ prior verifier routed dispositions. Existing frontier rows remain unchanged.
 The source histogram/note-map commands and measured revisions are retained in
 `corpus/evidence/round-14/measurements.json`; the historical round13 map remains
 the last prior map rather than an unqualified current-state count.
+
+## Round 15 — held-evidence contract repair, no frontier expansion (2026-10-20)
+
+The round14 correction remains the same historical sidecar and input pair.
+The round15 metadata checker tightens the checked cleanup/qualification mirror
+contract and separates changed authenticated inputs from compared semantic
+failures. `corpus/evidence/round-15/source-index.json` directly cites reopened
+S029; the round15 lesson records its registry used-by transition and actual
+positive/negative evidence. No knowledge note or browser capability enters
+through this bookkeeping.
+
+Named qualification to the Node sentence above: the historical test spec
+enforces minimumMajor20 (`aria-loopback.spec.mjs:269`, invoked `:924`) and
+the metadata checker re-evaluates it retrospectively. The launcher's
+`runtime.pinned` summary and the spec's `runtimePinStatus()` summary omit
+Node, while the launcher records `runtime.node`. This corrects the outside review's
+overbroad non-enforcement inference without rewriting it. Observed26.12.0
+versus descriptive24.21.0 is not exact environment reproduction. Runtime
+dates and original pinned bytes stay fixed. Extension↔daemon handshake,
+native WebMCP, real-site rate/rights,
+real-site journeys and WebMCP spec mining remain open; no source-row or
+metadata-fixture count is counted as expansion.
