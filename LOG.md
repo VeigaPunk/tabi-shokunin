@@ -944,3 +944,18 @@
   was spawned; the existing active consumer writer finished. Fleet-root
   misroot glob sweep returned no files for round15/w1 or w2; exact patterns
   and output are in `corpus/evidence/round-15/wrapup-misroot.json`.
+- C2 consumer-only rerun using committed probe
+  `9fd8bca99d60cc1612faeeac633e1436d231bde3` over the sameb7cf044
+  input exited0: enforced_contract1, nine emitted/nine differentials/nine
+  refused, snapshot exit2 snapshot_tampered, canonical_correction1,
+  browser_executed0, no errors. Exact receipt
+  `corpus/evidence/round-15/count-after-c2-repaired.json`. C1 retains its
+  actual0→1 atb7cf044; C1 parser behavior was not changed by the C2 repair.
+  Final dossier and SCORECARD record both measured/probe revisions.
+- Author verdicts: C1 operability improved, C2 calibration improved;
+  depth/coverage/freshness/adjacency unchanged, no scalar increases.
+  Expansion unchanged, quality improved, discernment improved through
+  lesson-backed correction of prior outside routed precision defects.
+  Independent current admit/reject agreement and promotion remain external.
+  Lane pushes before the real fleet report; no new round or worker starts
+  after the operator wrap-up.

@@ -657,3 +657,74 @@ agreement remains pending; no lane-dispatched seat is a non-author verifier.
 - capabilities: unchanged; aria-locator-template-loopback remains first-working13.
 - saturation8/window3 unchanged; round14 is position1 since that round13 capability,
   not a restarted window. No axis retired, no hidden waiver, all scalar deltas0.
+
+## Round 15 — hyaku, 2026-10-20
+
+Baseline `7054a5e1068538349b4dbb0d291c2fe8643802f2`. C1 works
+operability8, a lowest non-retired tie; no stagnation waiver. Two distinct,
+causally separable claims; no exploratory/new coverage/capability claim.
+The earlier planned survivor/user-record and browser-frontier items remain
+open; outside diagnostic/mirror findings motivated this round instead.
+
+| Axis | Scalar before → after | Round15 verdict / evidence |
+|---|---|---|
+| depth | 8→8 | unchanged; precision of held contracts, not broader domain mastery |
+| coverage | 9→9 | unchanged; knowledge/map32/32, no new knowledge or frontier |
+| operability | 8→8 | improved C1; one actual USER reason/applicability contract0→1, production still6/10 failed |
+| freshness | 8→8 | unchanged; no original runtime date/source byte renewed |
+| calibration | 9→9 | improved C2; one enforced cleanup/qualification and canonical snapshot-classification contract0→1 |
+| adjacency | 8→8 | unchanged; browser evidence/own-lane counters only, external domains remain refused |
+
+| Claim | Before → after | Counting command | Measured revision / evidence |
+|---|---|---|---|
+| C1 operability | verified diagnostic contracts0→1 | `node .ufo/waves/round-15/measure.mjs REV --claim C1` | baseline above→`b7cf0446a31014a81b4882857c90c565ebc14210`, both exit0; `corpus/evidence/round-15/count-before-c1.json`, `count-after-c1.json`; probe code27dfd98 |
+| C2 calibration | enforced canonical metadata contracts0→1 | `node .ufo/waves/round-15/measure.mjs REV --claim C2` | same baseline→b7cf0446a31014a81b4882857c90c565ebc14210, both final exit0; `count-before-c2.json`, `count-after-c2-repaired.json`; probe code `9fd8bca99d60cc1612faeeac633e1436d231bde3` |
+
+`corpus/evidence/round-15/measurements.json` carries literal argv, outputs,
+exits and both counter identities. C1/C2 read disjoint receipts. Repaired
+gate code executed at `27dfd98bd6bbd85fe77fb028d531691ce066031a`;
+the gates are byte-identical at measuredb7cf044. C2's initial consumer-only
+failure is retained in `count-after-c2.json`, not relabeled passing. Its
+repair changes actual-status/token parsing only; no successful gate or
+browser/selftest was rerun to manufacture the final count.
+
+USER selftest42 aggregate records =32 fixtures+alias+six committed counts+
+count witness+diagnostic witness+reason control; eight exact-cause assertions
+span six reasons. Metadata selftest36 CLI+4 helpers; nine actual old-accept0→
+new-refuse1 single-field mirror differentials; same spec alteration old1
+SOURCE failure→new2 snapshot_tampered/could_not_evaluate, with both authentic
+controls accepted and originals unchanged. Direct corrected check0, original
+semantic contradiction1, metadata witness0. These are not new browser runs.
+Final committed docs production: ROUND clean10 exit0; USER failed6/10 exit1.
+
+Canonical authenticated file scope is explicit: arbitrary noncanonical
+receipt/pin paths, unchecked known/advisory labels, complete sidecar-byte
+authentication, worker-directory set drift and digest/read races stay
+uncredited. Git environment/hooks/config/PATH, survivor replay/user-record,
+IPv6 and external-validator debt remain open. Shared raw-data derivation
+is distinct from independent literal fixture/aggregate expectations.
+
+Sources29→29, A23/B4/C2, mined24/queued3/rejected2. Census start/end exit0;
+only S029 used-by gains the round15 lesson. Histogram command
+`node .ufo/waves/round-15/measure.mjs REV --histogram`, baseline→b7cf044,
+both exit0;32 knowledge notes/32 mapped/no missing. No source-row inflation
+is called expansion.
+
+Round14's outside admit/reject agreement is now committed at7054a5e;
+its earlier author-time pending wording remains historical. The Node
+source correction distinguishes the launcher's runtime.pinned summary
+from the executed spec's minimum assertion; same recorded observation,
+not independent runtime corroboration. Main owns the non-author erratum.
+Current outside round15 agreement remains external; SHONEN four[~].
+
+Trends: expansion unchanged; quality improved by verified held-contract
+repairs; discernment improved through lesson-backed QUALITY20/21 and
+source-layer correction, not author-side certification.
+
+### Planned / capabilities / saturation / retired — round15
+
+- planned on operator resumption: bounded survivor/user-record evidence
+  debt and one unheld browser frontier surface, without relaxing expected10.
+- capabilities unchanged; first-working aria capability stays round13.
+- saturation8/window3; position2 after round13, no retirement or hidden waiver.
+- operator wrapped this run after both waves completed; no later round started.
