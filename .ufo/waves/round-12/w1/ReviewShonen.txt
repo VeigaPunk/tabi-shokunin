@@ -1,0 +1,76 @@
+ReviewShonen — SHONEN canonical form and author-side vs outside non-author verdicts
+Repo: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Seat: TabiR12.ReviewShonen (lane-dispatched leaf reviewer). This file is same-lane advisory evidence. It is NOT a non-author SHONEN attestation, discernment spot-check, judge verdict, or promotion act.
+Scope: read-only source opening. No verification commands, builds, tests, git commands or gates were run. No promotion, SHONEN.md, LOG, SCORECARD, lesson or report was edited. No other file was written.
+
+Canonical sources (read-only, substrate):
+- PROTOCOL.md: /home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/PROTOCOL.md:63-68 (shonen->shokunin gate), :166-170 (report SHONEN heading), :446 (SHONEN.md file contract), :453-462 (canonical seed), :464-465 (mark rule), :404-410 (snapshot/digest rules).
+- LEARNING.md: /home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/LEARNING.md:40-50 (discernment checked from outside; "a subagent the lane dispatched is still the lane"; one admit and one reject per round).
+- AXES.md: /home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/AXES.md:14 (freshness needs only a LOG re-verification result), :47-49 (exploratory claims need a named non-author reviewer; dispatched subagent does not count).
+- Mint template: /home/vgpnk/Projects/kimi-shokunin/templates/mint/SHONEN.md:1-14.
+
+## Findings by severity
+
+### F1 (High) — 16 historical round reports carry four [x] SHONEN marks with no named non-author verifier
+Evidence: reports/pstack-20261015-r01.md:9-12 through reports/pstack-20261015-r10.md:9-12, and reports/user-20261015-r01.md:9-12 through reports/user-20261015-r06.md:9-12. Each lists `- [x]` on all four boxes with no verifier id and no pointer.
+Canon: PROTOCOL.md:63-68 — `[x]` only with a named non-author verifier; any `[x]` without one counts as `[~]` for the gate. PROTOCOL.md:166-170 — each line is `[x]`/`[ ]`/`[~]` + pointer; `[~]` means asserted-by-author.
+Contradiction: LOG.md:519-525 and corpus/lessons/kaika-fleet-round-1.md:102-104 withdraw the `[x]` premise. The kaika W3 review (.ufo/waves/kaika-w3/tabi-review.md:13, :156-159) flags it as M-2.
+Gate gap: scripts/check-round-contract.mjs:211-214 and check-user-round-contract.mjs:270-273 accept `[x~ ]` and never check verifier naming. The gate passes these reports.
+Status: observation. Historical files are not to be rewritten. Per PROTOCOL.md:166-170, the corrected assessment is re-filed under a SHONEN heading in the next round's report.
+
+### F2 (High) — "non-author" spot-checks in pstack/user gate lessons have unverifiable provenance and likely same-lane authorship
+Evidence:
+- corpus/lessons/pstack-20261015-r01.md:21 — "spot-check: non-author reviewer-r01 agree".
+- corpus/evidence/pstack-20261015-r01/spot-check.json:2-3 — `"reviewer": "reviewer-r01", "role": "non-author"`.
+- corpus/evidence/pstack-20261015-r01/dispatch.json lists exactly 32 subagents s01–s32 under dispatcher `/pstack:swarm`. No entry is reviewer-r01 or any reviewer identity distinct from the lane's own swarm.
+- corpus/evidence/user-20261015-r01/dispatch.json lists Usw01–Usw32 with reviewer seats (s02, s12, s22, s32). corpus/evidence/user-20261015-r01/spot-check.json:1 names `reviewer-user-r01`, which maps to none of them.
+- LOG.md:291, :301 — "Non-author reviewer-r01 agrees" / "reviewer-r02 agrees" for rounds that the LOG itself describes as one `/pstack:swarm` of 32 local seats.
+- Similar gate lines exist for pstack-r02…r10 and user-r01…r06 (corpus/lessons/*.md, Gate sections).
+Canon: LEARNING.md:42-46 and PROTOCOL.md:63-64 — a subagent the lane dispatched is still the lane.
+Mechanical gap: scripts/check-round-contract.mjs:135-138 and check-user-round-contract.mjs:152-155 only regex `^- spot-check: non-author (\S+) (agree|disagree)` and require one. Any token passes. The self-test fixture at check-round-contract.mjs:374 uses the same "non-author reviewer-1" form, so the gate proves shape, not provenance.
+Inference: these reviewers are in-lane. The records do not show otherwise. Unknown: whether reviewer-r01 / reviewer-user-r01 was dispatched by an outside route that is simply not recorded in these directories.
+Status: observation of mismatch; inference on authorship; the labels are not admissible as outside discernment.
+
+### F3 (High for calibration history, no promotion effect) — historical discernment verdicts rest on same-lane scribe checks labelled "non-author"
+Evidence:
+- LOG.md:55 (round 2), LOG.md:113-117 (round 3): "Spot-check (scribe, non-author)" with "discernment improved".
+- SCORECARD.md:38, :50, :65: "Outside spot-check by the scribe (non-author ...)" with discernment improved.
+- corpus/lessons/round-1.md:46 says "Spot-check (non-author — the scribe lane)". The same file at :111 says "Outside spot-check: not performed. Dispatched L2s remain this lane under LEARNING.md:37-43". The file contradicts itself.
+- LOG.md:519-525 corrected only the SHONEN marks. It did not correct these discernment verdicts.
+Canon: LEARNING.md:42-46; the scribe seat is a lane-dispatched subagent (the LOG itself concedes the same kind of seat at LOG.md:519-522).
+Status: observation. The historical text should not be edited (corpus/lessons/round-1.md is gate-protected; check-round-contract.mjs:61). The correction belongs in a new append-only errata file chosen by L1. Routing to L1 / the operator.
+
+### F4 (Medium, positive control) — the one qualifying outside check in this repo is the kaika W3 review
+Evidence: .ufo/waves/kaika-w3/tabi-review.md:3 ("W3ReviewTabi (fresh task dispatched by the orchestrator; not the lane)"). The review re-opened sources (:80-85), reports 6/6 discernment agreement (:107), finds SHONEN `[x]` verifiers invalid (:156-159), and its own report review (:125) found no `[x]` in the kaika SHONEN section.
+Corresponding lesson: corpus/lessons/round-1-verifier-spotcheck.md:8-13 (admit row and reject row, both "agree"). It is written by the integrator and cites the fleet files.
+Canon fit: PROTOCOL.md:63-64 ("a fresh lane or integrator review") and LEARNING.md:42-46.
+Inconsistency to fix in a new file: corpus/lessons/kaika-fleet-round-1.md:84 still reads "spot-check: non-author pending", while :88 says "Non-author reviewer: admit with conditions (6/6 spot-checks agree)". The gate-form line is absent from the kaika lesson, so the check is not machine-recognised. This is a form gap, not a provenance gap.
+Verification gap: I did not re-open the review's sampled rows or check its 6/6 count row by row.
+
+### F5 (Medium) — current SHONEN.md shape conforms to the seed, with one prose deviation and one canon-vs-gate conflict
+Conforms: SHONEN.md:1-12 matches PROTOCOL.md:455-462 in heading, lead line, and the four box texts. Each box has one pointer line. The header is `# tabi-shokunin — Promotion checklist`, which matches the `<name>` substitution. All four marks are `[~]`.
+Pointers resolve: SKILL.md:697 is "## Approval table"; SKILL.md:1598 is the kaika errata heading; PROVINCE.md, corpus/knowledge/multi-step-journey.md (§1 :12, §2 :71, §7 :252), corpus/knowledge/executor-test-sufficiency.md and corpus/evidence/user-20261015-r02/boundary/refusal-receipt.txt exist. Not verified: the content of SKILL.md:1598-1617 rows beyond the heading.
+Deviation: SHONEN.md:6 box-1 pointer carries prose ("not non-author (orchestrator ruling, kaika round 1)"). PROTOCOL.md:446 allows "no other prose". Minor.
+Conflict: PROTOCOL.md:446 says the owning lane regenerates SHONEN.md from the template when gates evolve. scripts/check-round-contract.mjs:68 and check-user-round-contract.mjs:38, :81 pin SHONEN.md as history-protected. LOG.md:522-525 already routes this as an operator L0 re-baseline. No change by this seat.
+
+### F6 (Medium, current round) — author-side framing of C1/C2 must not leak into SHONEN or discernment
+Evidence: .ufo/waves/round-12/w1/spec.json context line: C1 says "independently re-open and re-verify ... (0→3 current-round reviews)". The reviewers are TabiR12 subagents (ReviewC1, ReviewSources, ReviewShonen, etc.), so the word "independently" describes same-lane work.
+Canon: PROTOCOL.md:63-68; AXES.md:14 (freshness is satisfied by a LOG re-verification result, with no non-author requirement); AXES.md:47-49 (only exploratory claims need a non-author reviewer).
+Recommendation: describe C1 as same-lane re-verification. Do not describe any current-round seat as a non-author reviewer, a SHONEN verifier, or a discernment spot-check. Do not write any SHONEN `[x]` this round. C2 is a counted move and needs no non-author reviewer.
+
+## Concrete recommendations for L1 (no edits made here)
+1. Keep SHONEN.md at four `[~]` with pointers. Do not promote.
+2. Record F1–F3 as an append-only errata file under corpus/lessons or .ufo, not as edits to protected history. Name the corrected classification: same-lane spot-checks are advisory; the only qualifying outside check on record is the kaika W3 review.
+3. In the round-12 report, file the SHONEN section under the heading with `[~]` plus pointers (PROTOCOL.md:166-170). Do not carry forward the historical `[x]`.
+4. Raise the gate provenance gap (F2) as an L0 question. The regex cannot distinguish outside from in-lane reviewers.
+5. Route the SHONEN.md protection vs PROTOCOL.md:446 regeneration conflict (F5) to the operator, as LOG.md:522-525 already does.
+
+## Verification gaps and unknowns
+- Not verified: whether reviewer-r01 / reviewer-user-r01 had an outside dispatch record elsewhere (F2 is inference from the local dispatch manifests only).
+- Not verified: row-level content of kaika W3 sampled rows (F4).
+- Not verified: content of SKILL.md:1598-1617 (F5).
+- Not run: any gate, self-test, builds, tests, or git history commands (per assignment).
+- Not checked: PROTOCOL-APPENDIX.md and the kimi-shokunin MANIFEST.json rank entry for tabi.
+
+## Tooling record
+No tools were installed or updated by this seat.

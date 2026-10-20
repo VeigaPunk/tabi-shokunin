@@ -168,3 +168,14 @@ tabi's local fixtures.
    question.
 5. Whether the kaidoku-recorded Playwright 1.64.0 global install (2026-10-13) is still
    present and current; tabi re-ran no version probe this round.
+
+## Round 12 qualification — rolling stable documentation (2026-10-20)
+
+The S013–S016 pages were rechecked as rolling `stable` documentation, not version-pinned
+1.64 API pages. Read “1.64 retry docs/description” above as the stable pages served when
+S017's release-notes head was Version 1.64. Only S017's shuffle announcement has that
+explicit release heading. The quoted categories, worker reset, first-retry trace and
+assertion/actionability distinction were confirmed; no runner was executed. S018/S019
+paper/abstract claims were outside this bounded recheck and retain their earlier dates.
+Evidence and exact disposition: `corpus/evidence/round-12/source-recheck.json` and
+`source-recheck-round-12.md`.

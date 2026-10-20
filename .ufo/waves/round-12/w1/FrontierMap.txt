@@ -1,0 +1,146 @@
+# FrontierMap Scout Report: Corpus Frontier & Accessible-Selector Expansion
+Seat: TabiR12.FrontierMap | Role: scout | Round: 12 (Wave 1)
+Date: 2026-10-20 | Root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Acceptance Target: .ufo/waves/round-12/w1/FrontierMap.txt
+
+================================================================================
+1. GODSPEED AXES POSTURE
+================================================================================
+- Freshness: Pin current round 12 status of external sources S023–S025 and Frontier references.
+- Coverage: Map queued accessible-selector ground, gap analysis, and precise expansion rows needed.
+- Calibration: Distinguish observed repo ground, architectural inferences, new ground vs duplicate knowledge, and unknowns.
+- Adjacency / Integrity: Enforce gate protections, census contracts, and append-only rules without cross-lane or sibling drift.
+
+================================================================================
+2. CURRENT CORPUS FRONTIER STATUS (OBSERVED)
+================================================================================
+The tabi-shokunin corpus documents its Frontier across two primary locations in `corpus/README.md`:
+1. Historical Round-3 Baseline (`corpus/README.md:22-55`):
+   - Enumerates historical unknowns across rounds 1–3 notes (anatomy U1–U4, census U1–U5, cdp items 1–8, etc.).
+   - Explicitly records that it remains a frozen round-3 snapshot.
+2. Fleet Round-1 Reconciliation (`corpus/README.md:171-195`):
+   - Classifies frontier items into `held`, `open`, `superseded`, and `docs-held`.
+   - Lines 188-195 introduce the current external knowledge frontier:
+     * Chrome ≥136 profile boundary: `docs-held` (`knowledge/chrome-remote-debugging-profile-boundary.md`).
+     * WebDriver BiDi: `docs-held` (`knowledge/webdriver-bidi-capability-matrix.md`).
+     * Runner flake receipts: `docs-held` (`knowledge/web-flake-retry-evidence.md`).
+     * Playwright accessible locators / ARIA snapshots: `open — S023–S025 opened and queued (accessible-selectors path), no note | corpus/SOURCES.md §Paths`.
+     * WebMCP spec: `open — S020 opened and queued (CG draft 2026-10-16); native WebMCP in chromium 152 still unprobed`.
+
+Planned Round-12 Claim:
+- `SCORECARD.md:439-440`: "planned: coverage 9→10 — Playwright accessible locators / ARIA snapshots entry mined from S023–S025 (`git ls-tree -r --name-only HEAD | grep -c corpus/knowledge/playwright-accessible-locators-and-snapshots.md` 0 → 1)."
+- `spec.json:3`: Declares Claim C2 Coverage 9→10: "admit accessible locators/ARIA snapshot knowledge on previously queued S023–S025 ground (0→1 entry). No browser runtime support is claimed."
+
+================================================================================
+3. QUEUED ACCESSIBLE-SELECTOR SURFACE (S023–S025 ANALYSIS)
+================================================================================
+The queued ground is specified by three Tier-A rows in `corpus/SOURCES.md:37-39`:
+
+1. S023: `https://playwright.dev/docs/locators` (Playwright Locators)
+   - Scope: Role, label, text selector semantics.
+   - Anchor: §Locate by role, §Locate by label, §Strictness.
+   - Teaches: Role locators reflect user and assistive-technology perception (buttons, checkboxes, headings, links, etc.) following W3C specifications for ARIA role, ARIA attributes, and accessible name.
+   - Critical Invariant 1: Locators are strict by default—operations throw if >1 element matches.
+   - Critical Invariant 2 (Audit Boundary): Role locators are explicitly NOT an accessibility audit or WCAG conformance test; they test page perception for interaction.
+
+2. S024: `https://playwright.dev/docs/aria-snapshots` (Playwright ARIA Snapshots)
+   - Scope: ARIA snapshot representation and matching (`toMatchAriaSnapshot`).
+   - Anchor: §Aria snapshots, §Partial matching.
+   - Teaches: An ARIA snapshot is a YAML-formatted accessibility-tree template. It represents accessible roles, names, and hierarchical structure.
+   - Nature: Structural evidence, not pixel/screenshot diffing and not raw Chromium DOM tree dumps. Supports exact or partial subtree matching.
+
+3. S025: `https://www.w3.org/WAI/ARIA/apg/` (W3C ARIA Authoring Practices Guide)
+   - Scope: Canonical authoring practices, accessible widget patterns, role/name semantics.
+   - Anchor: APG home, widget patterns.
+   - Teaches: Normative grounding for which roles, states, properties, and keyboard patterns an element/widget must expose to assistive technologies before asserting it by role.
+
+Study Path (`corpus/SOURCES.md:49`):
+- `accessible-selectors (queued, not mined) — S025 → S023 → S024`: Semantic roles and names first (S025), then role locators (S023), then ARIA snapshots as structural evidence (S024).
+
+================================================================================
+4. DISTINGUISHING NEW GROUND VS DUPLICATE KNOWLEDGE
+================================================================================
+To prevent redundant documentation and preserve signal, the new admission must strictly distinguish between what the corpus already holds and what S023–S025 uniquely add.
+
+A. Already Held Knowledge (DO NOT DUPLICATE AS NOVELTY):
+1. CDP Columnar DOM Snapshot (`knowledge/cdp-evidence-patterns.md:77`, `knowledge/multi-step-journey.md:148-151`):
+   - Tabi already holds `DOMSnapshot.captureSnapshot` ({computedStyles:[]}), which returns raw Chromium parallel columnar arrays (`attributes`, `backendNodeId`, `isClickable`, `nodeName`, `nodeValue`, `parentIndex`, `strings` table) and parses input values with the `-1` empty sentinel.
+2. WebBridge `@e` Accessibility Refs (`knowledge/webbridge-plugin-anatomy.md:81-83,109-111`):
+   - Tabi already documents Kimi WebBridge's high-level `snapshot` tool, which emits an accessibility tree with ephemeral `@e` reference identifiers (`@e1`, `@e2`), and holds the policy preferring `@e` refs over raw CSS/JS.
+3. Layer-Routing Disagreement Ladder (`knowledge/layer-routing-synthesis.md:57-58,83-84`):
+   - Tabi already separates Rung L6 (DOM: document content incl. invisible nodes via DOMSnapshot) from Rung L7 (Pixels: visible rendered state via screenshot PNG, seeing `display:none` and `:visited`).
+4. Actionability Checks vs Post-Action State Predicates (`knowledge/web-flake-retry-evidence.md:70-79`):
+   - Tabi already mined S015 (Auto-waiting/actionability) and S016 (Auto-retrying assertions) to prove that action prerequisites (visible, stable, enabled) are distinct from test state predicates.
+5. BiDi Node Locator Mapping (`knowledge/webdriver-bidi-capability-matrix.md:64`):
+   - Already mapped CDP `DOMSnapshot` vs BiDi `browsingContext.locateNodes`.
+6. Host Runtime Perimeter:
+   - Tabi runs standalone Chromium directly via raw CDP loopback scripts (`SKILL.md:127-140`). NO Playwright runner, test runner, or browser automation library is installed or run on the host.
+
+B. Genuinely New Ground (THE UNIQUE ADDITION OF C2):
+1. User-Facing Semantic Role/Name Selection:
+   - Moves selector discipline from tag/class/DOM-path or opaque `@e` tokens to standard accessible semantics (`role`, `accessible name`).
+2. YAML ARIA Snapshot Representation as a Distinct Evidence Substrate:
+   - An ARIA snapshot represents the accessible tree as human-readable, machine-matchable YAML templates (`- role "name"`).
+   - It bridges the gap between brittle raw DOM structures (affected by extraneous wrapping divs/styles) and brittle pixel screenshots (affected by fonts/GPU rendering/antialiasing).
+3. Locator Strictness as an Anti-Ambiguity Invariant:
+   - Documents the contract where selectors fail closed if ambiguous (>1 matching target), preventing non-deterministic target interaction.
+4. Formal Demarcation of Semantic Location vs Accessibility Conformance:
+   - Establishes that passing role/name locators or ARIA snapshot matching does NOT constitute an accessibility audit or WCAG conformance proof.
+
+================================================================================
+5. PRECISE EXPANSION ROWS NEEDED
+================================================================================
+When the L1 integrates Claim C2, the following precise rows and updates are required:
+
+1. `corpus/README.md` — Coverage Map Row (Note 30)
+   Location: Append to the reconciliation table (`corpus/README.md:165-170`):
+   ```markdown
+   | `knowledge/playwright-accessible-locators-and-snapshots.md` | Accessible locators and ARIA snapshots: Playwright role/name semantic locator contracts, strictness as an anti-ambiguity invariant, YAML ARIA snapshot structural matching as structural evidence (distinct from pixel screenshots and raw CDP DOM columns), and the strict W3C APG semantic vs accessibility audit boundary; documentation-backed knowledge only, no Playwright runtime runner claimed. | S023–S025 (Playwright locators docs, Playwright ARIA snapshots docs, W3C ARIA APG) |
+   ```
+
+2. `corpus/README.md` — Frontier Table Transition Row
+   Location: In `corpus/README.md:188-195` (Frontier — fleet round-1 / round-12 update):
+   Transition the line for `Playwright accessible locators / ARIA snapshots` from `open` to `docs-held`:
+   ```markdown
+   | Playwright accessible locators / ARIA snapshots | docs-held — role/name selector semantics, strictness invariant, and YAML ARIA snapshot representation mapped from docs; no Playwright browser runtime execution | `knowledge/playwright-accessible-locators-and-snapshots.md`, Unknowns 1–5 |
+   ```
+
+3. `corpus/SOURCES.md` — Registry Transitions (`corpus/SOURCES.md:37-39`)
+   - S023:
+     Old: `| S023 | Locators — Playwright — https://playwright.dev/docs/locators | docs | A | Playwright role/label/text selector semantics | stable docs read 2026-10-19, §Locate by role | Role locators are user-facing semantic selectors and explicitly not an accessibility audit | queued | 2026-10-19 | on-release | — |`
+     New: `| S023 | Locators — Playwright — https://playwright.dev/docs/locators | docs | A | Playwright role/label/text selector semantics | stable docs read 2026-10-19, §Locate by role | Role locators are user-facing semantic selectors and explicitly not an accessibility audit | mined | 2026-10-19 | on-release | corpus/knowledge/playwright-accessible-locators-and-snapshots.md |`
+   - S024:
+     Old: `| S024 | Snapshot testing — Playwright — https://playwright.dev/docs/aria-snapshots | docs | A | Playwright ARIA snapshot representation and matching | stable docs read 2026-10-19, §Aria snapshots | An ARIA snapshot is a YAML accessibility-tree template matched partially or strictly — structural evidence, not pixels | queued | 2026-10-19 | on-release | — |`
+     New: `| S024 | Snapshot testing — Playwright — https://playwright.dev/docs/aria-snapshots | docs | A | Playwright ARIA snapshot representation and matching | stable docs read 2026-10-19, §Aria snapshots | An ARIA snapshot is a YAML accessibility-tree template matched partially or strictly — structural evidence, not pixels | mined | 2026-10-19 | on-release | corpus/knowledge/playwright-accessible-locators-and-snapshots.md |`
+   - S025:
+     Old: `| S025 | ARIA Authoring Practices Guide — https://www.w3.org/WAI/ARIA/apg/ | docs | A | ARIA authoring semantics and widget patterns | APG home, no revision marker, read 2026-10-19 | Which roles, names and keyboard patterns a widget should expose before asserting it by role | queued | 2026-10-19 | 365d | — |`
+     New: `| S025 | ARIA Authoring Practices Guide — https://www.w3.org/WAI/ARIA/apg/ | docs | A | ARIA authoring semantics and widget patterns | APG home, no revision marker, read 2026-10-19 | Which roles, names and keyboard patterns a widget should expose before asserting it by role | mined | 2026-10-19 | 365d | corpus/knowledge/playwright-accessible-locators-and-snapshots.md |`
+
+4. `corpus/SOURCES.md` — Study Path Update (`corpus/SOURCES.md:49`)
+   - Old: `- accessible-selectors (queued, not mined) — S025 → S023 → S024: semantic roles and names first, then role locators, then ARIA snapshots as structural evidence; the planned next-round entry.`
+   - New: `- accessible-selectors — S025 → S023 → S024: semantic roles and names first, then role locators, then ARIA snapshots as structural evidence. Ends at knowledge/playwright-accessible-locators-and-snapshots.md.`
+
+5. `SCORECARD.md` — Coverage Claim Row & Measurement
+   - Claim: C2 Coverage 9 → 10 (29 → 30 knowledge notes).
+   - Counting Command:
+     `git ls-tree -r --name-only HEAD | grep -c corpus/knowledge/playwright-accessible-locators-and-snapshots.md` (0 → 1).
+   - Total Knowledge Notes Command:
+     `ls corpus/knowledge/*.md | wc -l` (29 → 30).
+   - README Coverage Map Sync Command (`SCORECARD.md:451`):
+     `( export LC_ALL=C; comm -23 <(git ls-tree --name-only HEAD corpus/knowledge/ | xargs -n1 basename | sort) <(git show HEAD:corpus/README.md | grep -o 'knowledge/[a-z0-9-]*\.md' | sed 's|knowledge/||' | sort -u) | wc -l )` (evaluates to 0).
+
+================================================================================
+6. INVARIANTS, SEQUENCING & EPISTEMIC UNKNOWNS
+================================================================================
+A. Critical Sequencing & Gate Constraints:
+1. `sources-census.sh validate` rule E11 ("used-by path missing on disk"):
+   - S023–S025 `used-by` fields CANNOT be updated in `corpus/SOURCES.md` until `corpus/knowledge/playwright-accessible-locators-and-snapshots.md` is written to disk. Doing so prematurely triggers exit code 1.
+2. QUALITY #11 ("coverage/index map lists every current note in the same commit as each admit"):
+   - The addition of `knowledge/playwright-accessible-locators-and-snapshots.md` and the updates to `corpus/README.md` must land in the same integration commit.
+3. QUALITY #13 ("protected history is never appended"):
+   - Historical lessons under `corpus/lessons/round-N.md` (rounds 1–10) are frozen by `scripts/check-round-contract.mjs:60-63` (`protectedPath`). Round-12 lessons and reviews must reside in a new, unpinned round file.
+
+B. Epistemic Unknowns (To Be Preserved in the New Note):
+- Unknown 1: How does Chromium's low-level accessibility tree dump (`Accessibility.getFullAXTree` via CDP) map structurally to Playwright's high-level YAML ARIA snapshot format?
+- Unknown 2: Does Playwright's accessible name computation differ from the W3C AccName 1.2 specification in complex DOM compositions (e.g. shadow DOM roots or elements styled with `visibility: hidden`)?
+- Unknown 3: What is the exact offline conversion algorithm required if tabi later implements a zero-dependency CDP-to-YAML ARIA snapshot comparator?

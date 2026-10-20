@@ -1,0 +1,74 @@
+{
+  "contract": "Kaika M2 / post-review M-1: inference-stated-as-observation claim-record discipline",
+  "fixtures": [
+    {
+      "name": "observation_source_only",
+      "file": "fixtures/m2-observation-source-only.jsonl",
+      "sha256": "d0786ce3b2c57b95b522ce53540c2192c86ef4685708ae548c80bc4f3dd87555",
+      "exit": 1,
+      "finding": "observation_without_runtime",
+      "detail": "host_enforcement_source_only"
+    },
+    {
+      "name": "inference_source_scoped",
+      "file": "fixtures/m2-inference-source-scoped.jsonl",
+      "sha256": "5f14beffe67bf767e4429805d9fbe412c3e210285666864ef11ffa86c50cc31f",
+      "exit": 0,
+      "finding": "none"
+    },
+    {
+      "name": "observation_runtime_captured",
+      "file": "fixtures/observation-runtime-captured.jsonl",
+      "sha256": "1d785877cd447f2605427b83dcceb2e310251450e3e90b6c1c9b98c5f3f7a351",
+      "exit": 0,
+      "finding": "none"
+    }
+  ],
+  "selftest": [
+    { "name": "observation_source_only", "fixture": "observation_source_only" },
+    { "name": "inference_source_scoped", "fixture": "inference_source_scoped" },
+    { "name": "observation_runtime_captured", "fixture": "observation_runtime_captured" },
+    {
+      "name": "inference_scope_missing",
+      "file": "fixtures/inference-unscoped.jsonl",
+      "exit": 1,
+      "finding": "inference_scope_missing",
+      "detail": "scope_must_equal_source"
+    },
+    {
+      "name": "inference_without_source",
+      "file": "fixtures/inference-runtime-only.jsonl",
+      "exit": 1,
+      "finding": "inference_scope_mismatch",
+      "detail": "source_evidence_required"
+    },
+    {
+      "name": "missing_input",
+      "file": "fixtures/absent.jsonl",
+      "exit": 2,
+      "finding": "could_not_evaluate",
+      "detail": "input_missing"
+    },
+    {
+      "name": "symlinked_input",
+      "file": "fixtures/symlink.jsonl",
+      "exit": 2,
+      "finding": "could_not_evaluate",
+      "detail": "input_symlink_refused"
+    },
+    {
+      "name": "non_regular_input",
+      "file": "fixtures/not-a-file.jsonl",
+      "exit": 2,
+      "finding": "could_not_evaluate",
+      "detail": "input_not_regular"
+    },
+    {
+      "name": "no_records",
+      "file": "fixtures/empty.jsonl",
+      "exit": 1,
+      "finding": "no_records",
+      "detail": "no_claim_records"
+    }
+  ]
+}

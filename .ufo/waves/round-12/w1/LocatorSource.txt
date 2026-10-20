@@ -1,0 +1,135 @@
+# LocatorSource Scout Report: Playwright Locators (S023)
+
+## Axes
+- Freshness: Re-opened S023 on 2026-10-20; byte sha256 confirmed identical to round-1 baseline.
+- Coverage: Role/name selection, strictness, and label locators thoroughly analyzed from docs and API references.
+- Calibration: Clear separation between observed source text, architectural inferences, and documented overclaims.
+- Adjacency: Interfaces directly with S024 (ARIA snapshots) and S025 (W3C APG) in the accessible-selectors ladder.
+
+---
+
+## 1. Source Identification & Verification (Observed)
+- Source ID: `S023` (corpus/SOURCES.md)
+- URL: `https://playwright.dev/docs/locators`
+- API Reference: `https://playwright.dev/docs/api/class-page#page-get-by-role`, `https://playwright.dev/docs/api/class-page#page-get-by-label`
+- Document Title: "Locators | Playwright"
+- Access Date: `2026-10-20`
+- SHA-256 (canonical URL body): `234a24527d5a96e600e0dc1d832fb56bd8a539283df9f497ba982de21cdbdee6`
+  * Matches round 1 L1 re-open record in `corpus/lessons/kaika-fleet-round-1.md:66`.
+
+---
+
+## 2. Located Quotations (≤25 words each) & Section Anchors (Observed)
+
+1. **Role Locators Perception**
+   - Location: `https://playwright.dev/docs/locators` §Locate by role
+   - Quote: "The page.getByRole() locator reflects how users and assistive technology perceive the page, for example whether some element is a button or a checkbox."
+
+2. **Role & Accessible Name Necessity**
+   - Location: `https://playwright.dev/docs/locators` §Locate by role
+   - Quote: "When locating by role, you should usually pass the accessible name as well, so that the locator pinpoints the exact element."
+
+3. **W3C Specifications Alignment**
+   - Location: `https://playwright.dev/docs/locators` §Locate by role
+   - Quote: "Role locators include buttons, checkboxes, headings, links, lists, tables, and many more and follow W3C specifications for ARIA role, ARIA attributes and accessible name."
+
+4. **Accessibility Audit Boundary**
+   - Location: `https://playwright.dev/docs/locators` §Locate by role
+   - Quote: "Note that role locators do not replace accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines."
+
+5. **Implicit ARIA Roles**
+   - Location: `https://playwright.dev/docs/api/class-page#page-get-by-role` §Details
+   - Quote: "Many html elements have an implicitly defined role that is recognized by the role selector."
+
+6. **Avoiding Redundant ARIA**
+   - Location: `https://playwright.dev/docs/api/class-page#page-get-by-role` §Details
+   - Quote: "ARIA guidelines do not recommend duplicating implicit roles and attributes by setting role and/or aria-* attributes to default values."
+
+7. **Strictness Definition**
+   - Location: `https://playwright.dev/docs/locators` §Strictness
+   - Quote: "Locators are strict. This means that all operations on locators that imply some target DOM element will throw an exception if more than one element matches."
+
+8. **Multiple Element Operations**
+   - Location: `https://playwright.dev/docs/locators` §Strictness
+   - Quote: "On the other hand, Playwright understands when you perform a multiple-element operation, so the following call works perfectly fine when the locator resolves to multiple elements."
+
+9. **Opt-Out Risk from Strictness**
+   - Location: `https://playwright.dev/docs/locators` §Strictness
+   - Quote: "These methods are not recommended because when your page changes, Playwright may click on an element you did not intend."
+
+10. **Locate by Label Target**
+    - Location: `https://playwright.dev/docs/locators` §Locate by label
+    - Quote: "Most form controls usually have dedicated labels that could be conveniently used to interact with the form."
+
+11. **Locate by Label Target Range**
+    - Location: `https://playwright.dev/docs/api/class-page#page-get-by-label`
+    - Quote: "Allows locating input elements by the text of the associated <label> or aria-labelledby element, or by the aria-label attribute."
+
+---
+
+## 3. Core Mechanics Breakdown
+
+### A. Role and Name Selection (`page.getByRole(role, options)`)
+- **Implicit & Explicit Role Resolution**: Playwright maps native HTML tags (`<button>`, `<a href>`, `<input type="checkbox">`, `<h1>`-`<h6>`, `<ul>`, `<li>`, etc.) to standard ARIA roles according to W3C HTML-AAM mapping, as well as explicit `role="..."` attributes.
+- **Name Resolution (`options.name`)**: Matches the element's accessible name computed according to the W3C Accessible Name and Description Computation (AccName) specification.
+  - Substring match by default, case-insensitive.
+  - Supports regular expressions (e.g. `getByRole('button', { name: /submit/i })`).
+  - Supports `exact: true` (case-sensitive, whole-string, but trims leading/trailing whitespace).
+- **Filtering by ARIA State**:
+  - `checked`: boolean (matches `aria-checked` or `<input type="checkbox">` state).
+  - `disabled`: boolean (inherits through DOM hierarchy; matches `aria-disabled` or native `disabled`).
+  - `expanded`: boolean (matches `aria-expanded`).
+  - `level`: number (heading level `<h1>-<h6>` or `aria-level`).
+  - `pressed`: boolean (matches `aria-pressed`).
+  - `selected`: boolean (matches `aria-selected`).
+  - `description`: string | RegExp (matches accessible description via AccName; added in v1.60).
+  - `includeHidden`: boolean (defaults to `false`, adhering to ARIA tree exclusion rules).
+
+### B. Strictness Mechanics
+- **Single-Element Operations Enforce Strictness**: Any interaction or single-element assertion (`click()`, `fill()`, `hover()`, `check()`, `textContent()`, `toBeVisible()`) expects exactly one DOM element matching the locator expression. If `matches.length > 1`, Playwright throws a strict mode violation error immediately rather than picking an arbitrary element.
+- **Multi-Element Operations Permit Multiplicity**: Methods like `.count()`, `.all()`, `.evaluateAll()` explicitly accept zero, one, or multiple matches without error.
+- **Opt-Out Primitives**: `.first()`, `.last()`, `.nth(i)` explicitly bypass the strictness check by indexing into the match set.
+  - **Risk**: Fragile against layout updates and async re-renders. If matching elements shift order, actions execute on an unintended element without warning. Playwright officially marks these as "not recommended" for disambiguation.
+- **Recommended Disambiguation**: Use `.filter({ hasText: ... })`, `.filter({ has: locator })`, or `.and(locator)` / `.within(container)` rather than numeric indexing.
+
+### C. Label Locators (`page.getByLabel(text, options)`)
+- **Scope**: Designed specifically for form fields / inputs.
+- **Resolution Mechanisms**:
+  1. Associated `<label for="id">` matching `<input id="id">`.
+  2. Wrapping `<label>Label Text <input /></label>`.
+  3. `aria-labelledby="labelId"` pointing to element text.
+  4. Explicit `aria-label="Label Text"`.
+- **Options**: `exact: boolean` (case-sensitive, full string match, whitespace-trimmed).
+
+---
+
+## 4. Potential Overclaims & Boundary Hazards (Inferences & Warnings)
+
+1. **Overclaim: Role locators ensure accessibility compliance (False)**
+   - *Evidence*: Playwright documentation explicitly warns that role locators "do not replace accessibility audits and conformance tests".
+   - *Boundary*: A page can pass Playwright `getByRole` selectors while having severe WCAG violations (e.g., poor color contrast, broken tab order, lack of keyboard focus indicators, screen reader traps, or nonsensical role abuse).
+
+2. **Overclaim: Role locators work without accessible names (Hazard)**
+   - *Evidence*: In real applications, multiple buttons, links, or inputs exist on a single view. Omitting `{ name: '...' }` almost invariably triggers strictness violation errors. Locating by bare role alone is only viable for unique landmark roles (`main`, `banner`) or inside strictly scoped subtrees.
+
+3. **Overclaim: Role locators verify visual rendering (False)**
+   - *Evidence*: Role locators query the DOM accessibility tree and computed accessible properties. An element obscured by another transparent element or styled with zero opacity might still exist in the accessible tree unless properly hidden via `aria-hidden="true"`, `display: none`, or `visibility: hidden`.
+
+4. **Overclaim: `first()` or `nth()` is a safe disambiguation strategy (Hazard)**
+   - *Evidence*: Playwright documentation explicitly warns against `.first()`, `.last()`, and `.nth()` as a substitute for proper locators. Ordering in the DOM is unstable across dynamic component updates, leading to silent wrong-element interaction flakiness.
+
+5. **Overclaim: `getByLabel` works for general content (False)**
+   - *Evidence*: `getByLabel` targets form control inputs associated with a label, not general static text, headings, or structural container elements.
+
+---
+
+## 5. Ladder Connections to Queued Sources (Adjacency)
+- **S025 (W3C ARIA APG)**: Supplies the normative standard for which roles, accessible names, and keyboard semantics an interactive component must expose before an automated test attempts to assert it via `getByRole`.
+- **S023 (Playwright Locators)**: Translates user-perceived role and name contracts into executable, auto-waiting, strict single-element automation handles.
+- **S024 (Playwright ARIA Snapshots)**: Advances from single-element locators to hierarchical structural assertions over subtrees using YAML accessibility-tree templates, bridging the gap between isolated locators and full accessibility-tree snapshots without resorting to pixel comparisons.
+
+---
+
+## 6. Remaining Unknowns & Gaps
+- None regarding S023 documentation semantics.
+- Playwright runtime execution is unmeasured in this repo (docs-held knowledge only; no local browser runtime capability claimed).

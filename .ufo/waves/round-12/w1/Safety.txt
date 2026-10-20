@@ -1,0 +1,55 @@
+TabiR12.Safety — sentinel, read-only safety review of the round-12 claim plan + browser-domain boundaries
+Read at 2026-10-20T04:05Z, HEAD f032f2dccc8a99632eea52edafa8220284b5c919. Worktree clean except `?? .ufo/waves/`.
+Writes: this file only (per L1 ruling, Acceptance path wins; no .md duplicate). No browser launched, no profile/session/credential store read, no gate/test run, no tool installs.
+Axes: secret exposure · external writes/consequential acts · browser profile/session boundary · provenance integrity of C1/C2 · write-scope containment.
+
+VERDICT: no blocker. Nothing in the proposals reads secrets, sends an external write, or launches a browser. 2 Medium + 4 Low items are listed below, each with a small fix. Proposed artifacts not yet landed at read time (playwright-accessible-locators-and-snapshots.md, Fresh*.txt, MistakeProbe.txt, w1/mistake/ all absent — `ls` 04:05Z), so post-landing items are stated as falsifiers for L1.
+
+== Baseline digests (sha256 at HEAD f032f2d; receipts must match or explain) ==
+chrome-remote-debugging-profile-boundary.md  bb2d5bffca2403e874a21846deacde46559f1c32788ebb770d4928223d0fa6e8
+webdriver-bidi-capability-matrix.md          bac287881870dae77cc9ec8c928e09bc55e8ed8915cf972fc1a7ecf60748300c
+web-flake-retry-evidence.md                  aaa0908b524b6e27ea6299ccc805cb86540219af8fdfa239bfe71ee81ce8f553
+corpus/SOURCES.md                            000053ccfc4e61f2dae220213ed42f59c25d168d8e0b64a07c28f1770abd5c77
+[observation] If a C1 receipt shows another note digest, either the note changed (FreshProfile/FreshRetry prompts say do not modify the note) or the receipt's pin was never measured.
+
+== F1 MEDIUM — the C1 "independently" label: is it non-author provenance? ==
+Exploit path: FreshProfile/FreshBidi/FreshRetry are executors in the same L1-dispatched lane swarm (spec.json items; swarm-registry members kind=spawn, role executor). The round contract says "Author-side swarm is not independent non-author verification" (spec.json context). If the C1 receipt or LOG calls them "independent" review, a reader will take it as non-author verification. The gate's lesson parser only counts a `- spot-check: non-author …` line (scripts/check-round-contract.mjs:135,138) and cannot tell the difference.
+Impact: freshness 8→9 rests on mislabeled provenance. This is the M2/M-1 over-claim pattern (corpus/lessons/kaika-fleet-round-1.md:17,96-101).
+Fix: word the receipt as "re-verified by a different seat in the same lane (author-side), against re-fetched sources" and name the seat. Keep "non-author" only for a reviewer outside the lane swarm.
+
+== F2 MEDIUM — MistakeProbe write scope contradicts itself, and L1 will execute its code ==
+Evidence: the Target says to author the checker + fixtures "beneath …/w1/mistake/"; the Acceptance says "No other writes" besides MistakeProbe.txt (spec.json item MistakeProbe). The checker will be run by L1 ("L1 will run red-before and green-after").
+Exploit path: whichever reading the seat picks, L1 executes newly authored, unreviewed code. If that code calls the network, spawns a shell, follows a symlink out of the fixture dir, or writes outside mkdtemp, it runs with L1's privileges.
+Fix: before the first run, L1 reads the checker and confirms: (a) no fetch, http, net, or child_process imports; (b) writes only to its own mkdtemp, and rmSync cleanup is limited to that dir; (c) fixtures are regular files read with O_NOFOLLOW, the same pattern as scripts/check-freshness.mjs:28-36 (QUALITY.md:10-12 #6); (d) fixture text is synthetic and contains no host profile paths or their contents. Confirm the mistake/ dir is in scope. If it is not, treat its creation as out of contract.
+Target note: the checker is meant to catch "host enforcement asserted from source reading". The live instance it must reject is the pre-correction wording that host Chromium does not enforce the check (M-1, kaika-fleet-round-1.md:96-98). The current note already scopes that claim as inference (profile note :44, :59-60).
+
+== F3 LOW — the profile-boundary re-check could tempt a default-profile launch ==
+[observation] The note's §3 row 4 ("unbranded Chromium … default … allowed", :51) and §4 (:73-74) are inference only. Its Unknown 1 says the refusal symptom was never observed (:107-109). [inference] A seat trying to turn "unknown" into "confirmed" could launch `chromium --remote-debugging-port` without `--user-data-dir`, which would attach to the user's real profile.
+Boundary text: SKILL.md:1606 ("never debug the user's profile"); SKILL.md:660 §Session-material (shape-only); SKILL.md:127-129 (the recipe always uses `--user-data-dir=<out>/profile`); PROVINCE.md:15-17.
+Coverage: FreshProfile says "no browser launch". FreshBidi says only "No runtime claim". AriaEntry says only "Runtime locally unmeasured". Neither of those two forbids a launch outright.
+Falsifier/fix: every C1/C2 artifact must state "no browser launched". Any receipt row upgrading §3 rows 4–5 or Unknowns 1–4 to "confirmed by observation" is a defect unless a staged artifact proves it. At 04:05Z, `ps` showed 0 chromium processes with --remote-debugging.
+
+== F4 LOW — paywalled or sign-in sources: no credentialed access ==
+S022 needs an IEEE sign-in, and S019's full text is not open access (SOURCES.md:36,33,63). A receipt or note claiming full-text reading of either one implies either credential use (refused: PROVINCE.md:16, AGENTS.md:5) or fabrication.
+Fix: re-checks stay at abstract or record scope, matching each row's `scope`.
+External writes: all proposed source access is GET-only docs (playwright.dev, w3.org, developer.chrome.com, MDN, selenium.dev, raw.githubusercontent.com). S002's `/json/new` "requires PUT" (profile note :68) is something to quote, not to send. No proposal targets a live CDP or BiDi endpoint.
+
+== F5 LOW — wave scratch is untracked and not ignored ==
+Evidence: .gitignore lists only `.ufo/interactive-sessions/`. `.ufo/waves/` shows as `??`.
+Shape scan (count-only grep over assignments-result.txt, dispatch.json, spec.json, swarm-registry.json, census-before.txt): 0 hits for sk-/ghp_/github_pat_/AKIA/Bearer/password=/api_key=/PRIVATE KEY. swarm-registry.json is mode 600, but its key set is only schema/wave/createdAt/updatedAt/reportDir/members.*.{kind,agentId,role}, so no secret fields.
+[inference] Committing it now leaks nothing. The risk is future seat reports pasting fetched page bodies or headers.
+Fix: before integration, run the same shape scan over the landed w1/*.txt and any note, or commit only the receipt paths explicitly (no `git add -A`).
+
+== F6 LOW (process) — report-path ambiguity, .txt vs .md ==
+Evidence: spec.json acceptance for every member says `<Name>.txt`. The harness "Report:" line says `<Name>.md` (dispatch.json and assignments-result.txt each contain both forms for Safety).
+Impact: a collector may miss reports, or seats write two files ("No other writes" is violated either way).
+Fix: L1 states the canonical path per seat (L1 ruled: Acceptance `.txt` wins) and collects `w1/*.{txt,md}` in case another seat wrote the `.md` form. This seat wrote only Safety.txt.
+
+== Checked, clean ==
+- resume_continuity_v1: not exercised. dispatch.json counts are spawn=32, resume=0, resumeSends=[]; registry kinds are spawn=32. The only repo mention is protected history (corpus/evidence/fleet-round-1-freshness/planner-current.json:877, which disclaims any resume). No rejection path exists to mutate.
+- Protected set: the new note path corpus/knowledge/playwright-accessible-locators-and-snapshots.md and the w1/ receipts fall outside protectedPath (check-round-contract.mjs:60-68; user variant :73-76). SHONEN.md and check-freshness.mjs are pinned, so L1 must not touch them (QUALITY.md #13).
+- Gate self-tests: they git-commit only inside mkdtemp roots (check-round-contract.mjs:313-324, check-freshness.mjs:120-129). Global/system core.hooksPath is unset (rc=1), so no user hooks fire.
+- Pre-existing, outside this round's scope: the score-command guard (check-round-contract.mjs:152, check-user-round-contract.mjs:169) blocks ; & ` < > \ $( ${ but not `|`. A SCORECARD `command:` of the form "git … | <cmd>" would be executed by `bash -c` (:165 / :176). The input is L1-owned SCORECARD text. Smallest fix: also reject `|`, or use spawnSync('git', argv) with no shell. Also, check-user-round-contract.mjs:14,202-203 executes a validator from /home/vgpnk/Projects/ufo-fsd-alpha, which is code outside the repo. Report only; not absorbed.
+- AriaEntry boundary: per SOURCES.md:37-38, role locators are "explicitly not an accessibility audit" and ARIA snapshots are "structural evidence, not pixels". The entry must keep both limits and the loopback-first perimeter (SKILL.md:687-695 per bidi note :13). Any snapshot of a real site would be out of perimeter.
+
+Tools installed/updated: none.

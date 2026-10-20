@@ -1,0 +1,140 @@
+# BidiScopes Scout Report — BiDi Note Table Inspection (Spec-vs-Implementation & Release Pin Gaps)
+Reviewed-at: 2026-10-20
+Seat: TabiR12.BidiScopes (scout)
+Target file: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/webdriver-bidi-capability-matrix.md
+Output path: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-12/w1/BidiScopes.txt
+(Acceptance path wins per parent message; no duplicate .md report written; leaf member, no verification commands executed)
+
+---
+
+## 1. Axes Touched
+- Calibration: Separating W3C Working Draft protocol specifications from browser/binding implementation realities; maintaining strict "locally measured: no".
+- Freshness: Auditing current pins against cited source snapshots (S005–S012); identifying dated announcements (2022–2024) vs current host runtime (Chromium 152).
+- Coverage: Examining all 17 table rows in §2 for spec coverage, CDP counterpart mapping, and known gap descriptions.
+- Adjacency: Interfacing between spec standards (W3C TR), browser documentation (MDN), vendor rollouts (Chrome blog), driver architectures (chromium-bidi), and binding clients (Selenium).
+
+---
+
+## 2. Table Inspection: Spec-vs-Implementation Wording
+
+The capability matrix in `corpus/knowledge/webdriver-bidi-capability-matrix.md:58-76` contains 17 rows mapping tabi's CDP evidence surfaces to WebDriver BiDi counterparts.
+
+### 2.1 Structural & Header Posture [Observation]
+- Column headers: `tabi surface (evidence use)` | `CDP used (anchor)` | `BiDi counterpart (WD-20261008 anchor)` | `known gaps / notes` | `locally measured`.
+- Column 5 explicitly sets `locally measured: no` across all 17 rows, reiterated in `:56` ("no row has been run on a BiDi endpoint").
+- The title of Column 3 explicitly designates the counterparts as specification anchors from `WD-20261008` (W3C Working Draft 2026-10-08), establishing that the column maps protocol definitions rather than runtime behavior.
+
+### 2.2 Row-by-Row Wording & Framing Analysis [Observation & Inference]
+Across the 17 rows, the note maintains rigorous discipline, with specific observations:
+
+1. **Browser identity at launch (:60)**:
+   - Spec anchor: `session.new` capabilities (`browserName`, `browserVersion`; `#command-session-new`).
+   - Wording: Distinguishes spec capabilities from CDP's `/json/version` HTTP response; cites S007 for engine-specific CLI setup differences (implementation distinction).
+2. **Target inventory (:61)**:
+   - Spec anchor: `browsingContext.getTree` (`#command-browsingContext-getTree`).
+   - Wording: Accurately identifies that `getTree` returns hierarchical browsing contexts, not flat CDP target types (`page`/`worker`/`service_worker`).
+3. **Navigate (:62)**:
+   - Spec anchor: `browsingContext.navigate` and milestone events.
+   - Wording: Distinguishes spec lifecycle events (`domContentLoaded`, `load`) from empirical settlement discipline (`readyState` polling).
+4. **Screenshot (:63)**:
+   - Spec anchor: `browsingContext.captureScreenshot` (`origin:"viewport"|"document"`).
+   - Wording: Strictly analyzes spec parameters vs CDP `captureBeyondViewport:true`; warns against inferring equivalence without empirical measurement.
+5. **DOM shape/state (:64)**:
+   - Spec anchor: `browsingContext.locateNodes` + caller-supplied `script.evaluate`.
+   - Wording: Notes that no standard command defines CDP's columnar `DOMSnapshot` schema; marks custom script serialization as non-standard caller-defined behavior.
+6. **Wait predicates / volatile readouts (:65)**:
+   - Spec anchor: `script.evaluate` / `script.callFunction`.
+   - Wording: Highlights differences between BiDi `RemoteValue`/`SharedReference` and CDP `returnByValue`/`RemoteObject`; explicitly notes "await/return mapping is not measured".
+7. **Viewport pin (:66)**:
+   - Spec anchor: `browsingContext.setViewport` + `emulation.*` (§7.4.2.12).
+   - Wording: Notes `setViewport` lacks CDP's `mobile` flag, and §7.4.2.12 text-layout override is not full mobile emulation.
+8. **Click input (:67)**:
+   - Spec anchor: `input.performActions` (pointer sources).
+   - Wording: Describes spec Actions model (tick/action-list based) vs CDP single dispatch.
+9. **Text fill (:68)**:
+   - Spec anchor: `input.performActions` key actions; `input.setFiles`.
+   - Wording: Identifies that WD-20261008 defines no `input.insertText` command (§7.9.3); typing via key actions has unmeasured side effects compared to direct insertion.
+10. **Network client events (:69)**:
+    - Spec anchor in table text: `network.beforeRequestSent`, `network.responseStarted`, `network.responseCompleted`, `network.fetchError`.
+    - Counterpart anchor link: `#event-network-beforeSendRequest`.
+    - **Drift / Spec Anchor Mismatch**: The event is named `network.beforeRequestSent` in text, but the markdown anchor link is `#event-network-beforeSendRequest`. In WD-20261008 §7.5.4.1, the canonical event name is `network.beforeRequestSent`.
+11. **Wire truth (raw status/headers) (:70)**:
+    - Spec anchor: `network.ResponseData` (§7.5.4.17).
+    - Wording: Sharply separates structured status/headers from CDP `ExtraInfo` raw wire bytes; explicitly warns "Do not claim wire-truth parity".
+12. **Byte truth (:71)**:
+    - Spec anchor: `network.addDataCollector` / `network.getData` / `network.disownData`.
+    - Wording: Correctly notes that BiDi body capture is collector-gated (§7.5.2, §7.5.5.1) and that "total storage is implementation-defined" (spec explicitly defers to implementations).
+13. **Pre-settle hold (:72)**:
+    - Spec anchor: `network.addIntercept` + `network.continueRequest`/`failRequest`/`provideResponse`.
+    - Wording: Injects client-binding implementation evidence: "Selenium Python API is `_add_intercept`, 'currently the available Python API' (S009) — binding coverage varies".
+    - **Asymmetry Observation**: While all other rows describe spec features or browser engine boundaries, Row 13 evaluates a specific client language binding (Selenium Python), reflecting the provisional nature of high-level intercept implementations.
+14. **Navigation history witness (:73)**:
+    - Spec anchor: `browsingContext.traverseHistory`.
+    - Wording: Identifies that `traverseHistory` returns an empty result `{}` and WD defines no command returning the history-entry list.
+15. **Cookies (:74)**:
+    - Spec anchor: `storage.getCookies` (§7.7.3.1).
+    - Wording: Distinguishes partition/scope filtering from CDP browser-wide cookie retrieval.
+16. **Stop loading / nav-cancel (:75)**:
+    - Spec anchor: None in WD §7.3.3 (`browsingContext.stopScreencast` only stops screencasts).
+    - Wording: Accurately records the absence of a navigation stop command in the BiDi spec.
+17. **User prompts / dialogs (:76)**:
+    - Spec anchor: `browsingContext.handleUserPrompt`, `browsingContext.userPromptOpened` / `userPromptClosed`.
+    - Wording: Notes standard BiDi functionality not currently utilized in tabi's CDP recipes.
+
+---
+
+## 3. Release Pin Gaps (Audit of S005–S012)
+
+| Source ID | Cited URL | Current Pin in Note / SOURCES.md | Pin Quality | Release Pin Gap Identified |
+|---|---|---|---|---|
+| **S005** | `https://www.w3.org/TR/webdriver-bidi/` | Dated WD `2026-10-08`, commit `f922e6af669ead51496db85f37813f39438ef171` | High (Spec & commit pinned) | **Spec-to-Engine Gap**: Pinned to the spec draft, but contains zero mapping to browser engine milestone releases (e.g. Chrome, Firefox, Safari versions supporting this draft). |
+| **S006** | `https://developer.mozilla.org/en-US/docs/Web/WebDriver/Reference/BiDi/Modules` | MDN content commit `253bed3def8e1680475ea75987d24ca62ee9f989` | Moderate (Doc commit pinned) | **BCD Version Gap**: Pins MDN markdown commit, but extracts no browser compatibility data (BCD) engine versions for individual modules. |
+| **S007** | `https://developer.mozilla.org/en-US/docs/Web/WebDriver/How_to/Create_BiDi_connection` | MDN content commit `f83c12ab41865e0e195dd36ad9cdcad511a36957` | Moderate (Doc commit pinned) | **Engine Release Bounds Gap**: Mentions Firefox direct CLI vs Chromium wrapper requirement, but pins no version numbers for Firefox, Chromium, or ChromeDriver. |
+| **S008** | `https://www.selenium.dev/documentation/webdriver/bidi/` | Modified `2026-08-15`, content commit `7a6516d16481aec8f6c60c442140b37ab468c3ba` | Moderate (Doc commit pinned) | **Library Release Gap**: Pinned to docs git commit, but does not state the underlying Selenium release version (e.g. Selenium 4.x). |
+| **S009** | `https://www.selenium.dev/documentation/webdriver/bidi/w3c/network/` | Modified `2026-07-23`, cites "Selenium v4.32 example" | Weak (Date & text only) | **Commit & Binding Scope Gap**: Lacks a git content commit hash in note:5 and SOURCES.md. Cites provisional Python `_add_intercept`, omitting Java/JS/C# binding status. |
+| **S010** | `https://developer.chrome.com/blog/webdriver-bidi-2023` | Updated `2023-05-09` | Weak (Historical date only) | **Staleness Gap**: >3 years old. References Chrome/ChromeDriver 106 and Firefox 102 (2022). No content hash. Irrelevant for current Chromium 152 runtime. |
+| **S011** | `https://developer.chrome.com/blog/firefox-support-in-puppeteer-with-webdriver-bidi` | Updated `2024-08-07` | Weak (Date only) | **Staleness Gap**: >2 years old. Cites Firefox 129 and Puppeteer 23. No commit or content hash. Modern Puppeteer and browser versions unpinned. |
+| **S012** | `https://github.com/GoogleChromeLabs/chromium-bidi` | Git commit `1c6f4363b532258da7f4732deba2656a1a4fea45` | Moderate (Git commit pinned) | **Package & DEPS Roll Gap**: Restricted to README only. Lacks an npm package release tag (e.g. `chromium-bidi@...`) and lacks Chromium DEPS roll mapping to Chromium 152. |
+| **Lead** | `https://wpt.fyi/results/webdriver/tests/bidi` | None (Unopened lead; app shell only) | Unpinned | **Implementation Conformance Gap**: Official WPT test results dashboard was not read; no test run ID, commit hash, or static export exists. |
+
+---
+
+## 4. Key Findings & Recommendations
+
+### F1 (Medium) — Row 10 Anchor Link Mismatch
+- **Observation**: In `corpus/knowledge/webdriver-bidi-capability-matrix.md:69`, the BiDi counterpart text lists `network.beforeRequestSent`, but the anchor link is `#event-network-beforeSendRequest`.
+- **Inference**: The anchor reflects an older working draft naming convention (`beforeSendRequest`) that was updated in the specification text to `beforeRequestSent`.
+- **Recommendation**: Align the anchor fragment with the canonical spec anchor `#event-network-beforeRequestSent` on next note update.
+
+### F2 (Medium) — Row 13 Client-Binding Asymmetry
+- **Observation**: Row 13 (:72) introduces specific client-binding implementation status ("Selenium Python API is `_add_intercept` ... binding coverage varies"), while all other rows evaluate protocol spec anchors.
+- **Inference**: Client binding APIs for WebDriver BiDi are in flux and often lag behind the W3C draft, creating a second layer of implementation uncertainty beyond browser engine support.
+- **Recommendation**: Clarify in §1 or Row 13 notes that client binding support (Puppeteer, Selenium, Playwright) is distinct from both the W3C spec and browser engine capabilities.
+
+### F3 (Medium) — Release Pin Disconnect for Local Chromium 152
+- **Observation**: The local environment runs `Chromium 152.0.7977.82 Arch Linux` (verified via `chromium --version`). Unknown U1 (:117-119) asks which commands are implemented in Chromium 152 via chromium-bidi. S012 pins commit `1c6f4363b532258da7f4732deba2656a1a4fea45` of the `chromium-bidi` repository.
+- **Inference**: There is no documented or pinned bridge between commit `1c6f4363` and the version of `chromium-bidi` embedded in or tested against Chromium 152.
+- **Recommendation**: Record the `chromium-bidi` version bundled in Chromium 152 DEPS or map the commit to an npm release.
+
+### F4 (Low) — Missing Commit Hash for S009
+- **Observation**: In `corpus/knowledge/webdriver-bidi-capability-matrix.md:5` and `corpus/SOURCES.md:23`, S009 has a page modification date (`2026-07-23`) but no git content commit hash, whereas S006, S007, and S008 include full content hashes.
+- **Recommendation**: In a future non-breaking sources refresh, pin the content commit hash for `https://www.selenium.dev/documentation/webdriver/bidi/w3c/network/`.
+
+### F5 (Low) — Stale Historical Blog References (S010, S011)
+- **Observation**: S010 (Chrome 106, 2022) and S011 (Firefox 129 / Puppeteer 23, 2024) represent historical milestones, not current capability matrices.
+- **Inference**: While useful as historical context for rollout posture, they do not establish modern BiDi capability for Chromium 152 or current Firefox.
+- **Recommendation**: Retain as background only (already noted in SOURCES.md:24-25); do not treat as active implementation pins.
+
+---
+
+## 5. Confirmed Facts (No Defect)
+- C1: Strictly observed separation: `locally measured: no` is maintained across all 17 rows, preventing any false support claim.
+- C2: Spec vs CDP distinction: Gaps explicitly document protocol limitations (no DOMSnapshot columnar format, no navigation history entries, no fast `insertText`, no raw wire headers, collector-gated bodies).
+- C3: W3C Working Draft is precisely pinned to dated URL `WD-20261008` and commit `f922e6af669ead51496db85f37813f39438ef171`.
+
+---
+
+## 6. Verification Gaps & Tooling
+- Verification commands (`check-sources.mjs`, `check-round-contract.mjs`) were not executed per leaf scout bounds.
+- No browser was launched or BiDi session probed.
+- Tooling: No new tools installed or updated. Existing bash (`which chromium`, `chromium --version`) and workspace inspection tools used.

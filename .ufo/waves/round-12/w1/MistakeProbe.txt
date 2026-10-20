@@ -1,0 +1,110 @@
+MistakeProbe — M2 / post-review M-1 claim-record regression checker
+====================================================================
+
+Scope: authored only `.ufo/waves/round-12/w1/mistake/**` plus this report. The checker
+and its self-test were NOT executed here, per the lane contract; L1 owns red-before and
+green-after execution. No corpus/LOG/SKILL edits, no commits, no browser runtime work.
+
+Files (absolute)
+----------------
+- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-12/w1/mistake/check-claim-record.mjs
+- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-12/w1/mistake/expected.json
+- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-12/w1/mistake/fixtures/m2-observation-source-only.jsonl
+  sha256 d0786ce3b2c57b95b522ce53540c2192c86ef4685708ae548c80bc4f3dd87555
+- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-12/w1/mistake/fixtures/m2-inference-source-scoped.jsonl
+  sha256 849faed6c6db85fe15dba50942f4adda461bc86fda5a22b452615fea31e41d5d
+- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-12/w1/mistake/fixtures/observation-runtime-captured.jsonl
+  sha256 1d785877cd447f2605427b83dcceb2e310251450e3e90b6c1c9b98c5f3f7a351
+
+No duplicate `.md` report was written; the renderer's reportDir suggestion was superseded
+by the parent's path instruction. The earlier README.md was removed; only the files above
+remain.
+
+Documented slip (observation, not inference)
+--------------------------------------------
+- `corpus/lessons/kaika-fleet-round-1.md:96-101`: M-1 records that host-Chromium
+  non-enforcement "was stated as observed in `SKILL.md:1606`, `corpus/README.md:167`,
+  `LOG.md:491` and S004's `teaches`. It is source-level inference." The lesson classifies
+  the recurrence as M2 (over-claimed observation), captured by QUALITY #3.
+- `SKILL.md:1621-1625`: correction says the "does not" refusal is an "inference from
+  Chromium source ... not an observation — no launch against a default data dir was made
+  or will be."
+- `corpus/README.md:197-199` and `LOG.md:516-519`: same correction appended.
+- `corpus/SOURCES.md:42`: S028 supersedes S004 and says "that this host's unbranded
+  Chromium does not enforce it is an inference from source, never observed by a launch."
+- `corpus/QUALITY.md:3-6` requires falsifiable/sourced claims and separation of
+  observation, inference and unknown; `:10-12` requires fixed input identities,
+  symlink/non-regular refusal, and self-test exit/finding pairs.
+
+Authored behavior
+-----------------
+Bounded JSONL claim-record validator, not an NLP/truth checker. Required record fields:
+`id`, `claim`, `modality` (`observation` | `inference` | `unknown`), `evidence`
+(`runtime` or `source` entries). Optional `scope`, `falsifier`, `note`; unknown fields are
+rejected. The host-enforcement classification uses fixed lexical tokens only
+(`host|this machine|this lane|unbranded chromium` plus `enforce*|refus*|ignore*|reject*|
+block*`); it does not read the cited source or decide truth.
+
+Stable results:
+- Red fixture `m2-observation-source-only.jsonl`: `modality: "observation"`, host
+  enforcement claim, source evidence only -> exit 1, finding
+  `observation_without_runtime`, detail `host_enforcement_source_only`.
+- Green fixture `m2-inference-source-scoped.jsonl`: `modality: "inference"`,
+  `scope: "source"`, source evidence, dated falsifier -> exit 0, `CLAIM_GATE
+  verdict=clean`, no FINDING line.
+- Control `observation-runtime-captured.jsonl`: host-enforcement observation with
+  `kind: "runtime"` evidence -> exit 0. It is a schema control only; no launch was made
+  and its `control:` ref is not citable evidence.
+- Additional self-test refusals: `inference_scope_missing` (inference without
+  `scope: "source"`, exit 1), `inference_scope_mismatch` (source-scoped inference with no
+  source evidence, exit 1), `could_not_evaluate` / `input_missing`,
+  `input_symlink_refused`, `input_not_regular` (exit 2), and `no_records` (exit 1).
+
+Self-test (isolated):
+`--self-test` reads `expected.json`, verifies each persisted fixture's sha256 against its
+frozen pin, copies the fixtures into a fresh `mkdtemp` root, runs the child checker there,
+and asserts every expected exit/finding pair. It asserts the red and green pair above, so
+both required behaviors are covered. The temp root is removed in `finally`; no network
+access. Inputs are opened with `O_NOFOLLOW`, lstat-checked, and confined beneath the
+declared root; symlinked, non-regular, missing and invalid-UTF-8 inputs fail closed with
+exit 2.
+
+Exact L1 commands (not run by this seat)
+---------------------------------------
+  node .ufo/waves/round-12/w1/mistake/check-claim-record.mjs --self-test
+    expected: exit 0; every `SELFTEST ... result=PASS`; `CLAIM_SELFTEST
+    verdict=clean cases=9/9`.
+
+  node .ufo/waves/round-12/w1/mistake/check-claim-record.mjs --file fixtures/m2-observation-source-only.jsonl
+    expected: exit 1; `FINDING id=observation_without_runtime claim=M1-HOST-ENFORCEMENT
+    detail=host_enforcement_source_only`.
+
+  node .ufo/waves/round-12/w1/mistake/check-claim-record.mjs --file fixtures/m2-inference-source-scoped.jsonl
+    expected: exit 0; `CLAIM_GATE verdict=clean records=1 findings=0 ...`; no FINDING.
+
+The default invocation (no flags) validates the green fixture. Red-before is the red
+fixture run (old M-1 statement); green-after is the green fixture run (corrected
+inference). `expected.json` holds the three sha256 pins and the 9-case self-test table;
+the checker fails closed on a pin mismatch.
+
+Evidence / unknowns
+-------------------
+- Observation: the source corrections and S028 exist at the cited lines; corpus criteria
+  match the gate pattern.
+- Inference: requiring `kind: "runtime"` for a host-enforcement observation, and
+  `scope: "source"` + source evidence for inference, is sufficient to catch this M-1
+  shape without judging prose truth.
+- Unknown: whether a default-profile launch would enforce or not on this host; no launch
+  was made, and the runtime control is fixture-only. The checker deliberately does not
+  evaluate that question.
+- Unknown/risk: lexical markers are bounded; a host-enforcement claim phrased outside the
+  fixed tokens is not classified. This is the documented cost of avoiding an NLP claim.
+  The explicit `modality` field remains load-bearing.
+- Risk: the checker has not been executed, so syntax/runtime behavior is unverified by
+  this seat; L1's self-test run is the first execution. The fixture pins were computed
+  from the authored bytes with coreutils `sha256sum`, not from checker output.
+
+Tooling
+-------
+No tool installed or updated. `sha256sum` (coreutils) was used only to compute the
+fixture pins recorded in `expected.json`.

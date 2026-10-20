@@ -1,0 +1,192 @@
+Tabi round 12 / wave w1 — BiDi freshness review receipt (C1, note 2 of 3)
+reviewed: 2026-10-20 (all source fetches below performed this session)
+subject: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/webdriver-bidi-capability-matrix.md
+subject digest: sha256 bac287881870dae77cc9ec8c928e09bc55e8ed8915cf972fc1a7ecf60748300c (128 lines, read this session; not modified)
+method: HTTP re-fetch of the note's eight cited sources and the W3C editor's draft; HTML parsed locally for section text, CDDL and anchor ids. No browser was launched, no BiDi/CDP endpoint was contacted, no runtime probe was run ("locally measured: no" still holds).
+VERDICT: CONFIRMED for draft identity and every checked mapping; no draft/mapping drift. One SCOPED CORRECTION (wording/scope, not source drift) on note:45-46 under S011 / FreshnessAttack B3 — see §2a. Four optional recommendations (R1 precision, R2 coverage, R3 pin refresh, R4 nuance); the note's implementation unknowns U1-U5 remain unmeasured. No note edit performed: L1 owns the standalone source-recheck-round12 correction note; the old note is not mutated.
+
+1. DRAFT VERSION AND CHANGE CHECK [observation]
+- https://www.w3.org/TR/webdriver-bidi/ returned HTTP 200. Its header block lists:
+  "This version: https://www.w3.org/TR/2026/WD-webdriver-bidi-20261008/", "Latest published version:
+  https://www.w3.org/TR/webdriver-bidi/", "Previous Versions: .../WD-webdriver-bidi-20260930/",
+  "Editor's Draft: https://w3c.github.io/webdriver-bidi/".
+- Dated WD fetch (2026-10-20): 4,235,856 bytes,
+  sha256 dc1077db50fe784435fd57f2fa7005607937b5ee4293f6f12d8731bd6a1d24d4.
+  <meta name="revision" content="f922e6af669ead51496db85f37813f39438ef171"> — exactly the revision pinned at note:5.
+  <meta name="generator" content="Bikeshed version ea4009a02, updated Thu Sep 17 15:24:44 2026 -0700">.
+- Editor's Draft fetch (2026-10-20): 4,235,329 bytes,
+  sha256 d07f85f8afd9e2d2ee616832f4f280ffd2c9ba06ff00b5ad9591eb5ad2b8e1bb; same revision
+  f922e6af669ead51496db85f37813f39438ef171, same Bikeshed build.
+- Change check: extraction of every id="command-*"/id="event-*" anchor yielded 106 anchors on both the
+  dated WD and the Editor's Draft, with an identical set (0 only-in-ED, 0 only-in-WD). Combined with the
+  equal revision meta, there is no observed draft change since the note was written. The latest published
+  WD is still the 2026-10-08 draft (previous 2026-09-30); no newer dated WD exists as of this review.
+- Note digest unchanged (see header). No republication, no section renumbering, no command/event
+  addition or removal observed. The ED is 527 bytes smaller; that byte difference was not diffed
+  section-by-section, but the identical revision meta and identical anchor set evidence no section or
+  command/event change.
+
+2. SPEC CLAIMS [observation, note line → opened source location → verdict]
+- note:21-25 ten modules: §7 headings are exactly 7.1 session, 7.2 browser, 7.3 browsingContext,
+  7.4 emulation, 7.5 network, 7.6 script, 7.7 storage, 7.8 log, 7.9 input, 7.10 webExtension.
+  No bluetooth/permissions/userAgentClientHints module heading exists in this draft. CONFIRMED.
+- note:21 abstract quote: "This document defines the BiDirectional WebDriver Protocol, a mechanism for
+  remote control of user agents." The quoted fragment is verbatim. CONFIRMED.
+- note:26-29 transport/subscription: §4 Transport opens "Message transport is provided using the
+  WebSocket protocol. [RFC6455]"; §3.6 defines events as "a notification, sent by the remote end to the
+  local end"; §7.1.3.4/7.1.3.5 are session.subscribe/session.unsubscribe. CONFIRMED. Precision: the
+  subscribe command is §7.1.3.4, not the whole of §7.1.3.
+- note:30-33 browser identity: session.NewResult = { sessionId: text, capabilities:
+  session.CapabilityResponse }; session.CapabilityResponse = { acceptInsecureCerts: bool,
+  browserName: text, browserVersion: text, platformName: text, setWindowRect: bool, userAgent: text,
+  ? proxy, ? unhandledPromptBehavior, ? webSocketUrl: text, Extensible }. session.StatusResult =
+  { ready: bool, message: text }. CONFIRMED. Nuance: CapabilityResponse also carries optional
+  webSocketUrl (the BiDi socket), which is not CDP /json/version's webSocketDebuggerUrl; the note's
+  contrast is still correct.
+- note:34-37 setup paths: MDN S007 says webSocketUrl is set when creating a classic WebDriver session,
+  "This method works with Firefox directly; however, Chromium-based browsers require the additional
+  Chromium BiDi wrapper package", and gives ws://127.0.0.1:9222/session for Firefox. CONFIRMED.
+- note:43-46 historical blogs: S010 page still dated 2023-05-09 with ChromeDriver 106 and Firefox 102. S011 still dated 2024-08-07 with Firefox 129/Puppeteer 23. S010 CONFIRMED as a historical/version-scoped statement. S011 version/date claims CONFIRMED; its CDP sentence carries the scoped correction in §2a.
+- note:47-51 Selenium claims: S008 has dateModified 2026-08-15, footer commit
+  7a6516d16481aec8f6c60c442140b37ab468c3ba, webSocketUrl examples, and says the low-level domains are
+  accessible "but the goal is to provide ... high-level APIs". S009 has dateModified 2026-07-23,
+  Selenium v4.32 badge, and the comment "_add_intercept is currently the available Python API for BiDi
+  network intercepts ... updated when a public API is stabilized." CONFIRMED.
+- note:38-42 WPT: NOT RECHECKED this round. It stays an unread-results lead, not evidence; the spec's
+  own "Implementation Report: https://wpt.fyi/results/webdriver/tests/bidi" link is the same surface.
+
+2a. S011 / FreshnessAttack B3 — SCOPED CORRECTION (wording/scope, not source drift)
+[observation + inference]
+- Under test: note:45-46 (FreshnessAttack B3 labels it note46-47) "says Puppeteer's Chrome CDP support
+  remained unchanged".
+- S011 verbatim, opened 2026-10-20, §Firefox, CDP, and Puppeteer:
+  "Puppeteer's support for Chrome DevTools Protocol (CDP) remains unchanged."
+- S011 verbatim, §CDP support in the future:
+  "for Chrome, Puppeteer will keep defaulting to CDP—to not break existing automations, but also to keep
+  supporting automations specialized to Chrome's features."
+- Adjudication: the support-unchanged half is verbatim supported, so this is NOT factual drift, and B3's
+  alternative ("keep CDP as Chrome default") is incomplete rather than contradictory. The note compresses
+  two distinct S011 claims — Puppeteer's protocol support and Chrome's default protocol — into one
+  sentence. Scoped correction: keep the subject explicitly on Puppeteer and state both halves, e.g.
+  "Puppeteer's CDP support is unchanged, and Puppeteer keeps defaulting to CDP for Chrome." Do not
+  generalize to Chrome browser CDP support or to other clients. Correction candidate for L1's standalone
+  note; the subject note is not edited.
+
+3. MATRIX ROWS, CONCRETE MAPPINGS [observation; note line → WD-20261008 location → verdict]
+Note: WD anchors are "command-…"/"event-…" ids (e.g. event-network-beforeSendRequest), while
+event names are dotted literals (network.beforeRequestSent). The note uses the ids and names correctly.
+- note:60 Browser identity → session.new / session.CapabilityResponse (browserName, browserVersion). CONFIRMED.
+- note:61 Target inventory → browsingContext.getTree: "returns a tree of all descendent navigables
+  including the given parent itself, or all top-level contexts when no parent is provided." It returns
+  browsingContext.InfoList, not CDP target records/types. CONFIRMED.
+- note:62 Navigate → browsingContext.navigate plus navigationStarted/navigationCommitted/navigationFailed/
+  domContentLoaded/load event sections all exist (7.3.4.3, .11, .12, .6, .7). The draft also has
+  navigationAborted (7.3.4.10) and historyUpdated (7.3.4.5), which the note does not list; omission does
+  not affect the row. The "milestone events don't establish a payload settle predicate" gap stands as
+  inference from the event set. CONFIRMED.
+- note:63 Screenshot → browsingContext.captureScreenshot CDDL:
+  ? origin: ("viewport" / "document").default "viewport", ? format, ? clip, ? imageSize.
+  No captureBeyondViewport member. CONFIRMED.
+- note:64 DOM shape → browsingContext.locateNodes: "returns a list of all nodes matching the specified
+  locator"; result { nodes: [* script.NodeRemoteValue] }. No DOMSnapshot-style command or columnar
+  documents+strings schema exists in the 106 anchors. CONFIRMED.
+- note:65 Wait predicates → script.evaluate and script.callFunction both take awaitPromise: bool and
+  optional serializationOptions/resultOwnership; script.RemoteValue/SharedReference types exist. The
+  await/return equivalence to CDP remains explicitly unmeasured. CONFIRMED (mapping only).
+- note:66 Viewport pin → browsingContext.setViewport params are context, viewport (or null),
+  devicePixelRatio (or null), userContexts. No mobile parameter. §7.4.2.12 is
+  emulation.setTextLayoutModeOverride, whose emulation.TextLayoutMode = "mobile" — separate from
+  setViewport and not mobile emulation. CONFIRMED.
+- note:67 Click input → input.performActions exists (7.9.3.1); the WebDriver actions/action-list model
+  applies. CONFIRMED at command level; the word "tick" was not re-quoted this pass (inherited WebDriver
+  Actions wording), so treat that adjective as inference, not a fresh quote.
+- note:68 Text fill → §7.9.3 contains exactly 7.9.3.1 input.performActions, 7.9.3.2 input.releaseActions,
+  7.9.3.3 input.setFiles (files: [* text], file inputs). The string "insertText" appears zero times in the
+  WD. CONFIRMED.
+- note:69 Network client events → network.beforeRequestSent (anchor event-network-beforeSendRequest),
+  responseStarted, responseCompleted, fetchError sections all exist; ResponseData carries bytesReceived,
+  headersSize, bodySize (7.5.4.17). CONFIRMED, including the non-obvious anchor spelling.
+- note:70 Wire truth → ResponseData.headers is [* network.Header] (serialized name/value pairs);
+  status: js-uint, statusText: text, protocol: text (ALPN-derived). No ExtraInfo raw header-block bytes
+  and no byte-exact original status line are defined. CONFIRMED.
+- note:71 Byte truth → ResponseData has bytesReceived, headersSize (nullable), bodySize (nullable),
+  content; retrieval uses network.addDataCollector/getData/disownData. network.CollectorType = "blob"
+  with the note "In the future we might also support the 'stream' collector type". addDataCollector
+  takes dataTypes, maxEncodedDataSize, ? collectorType (default "blob"). CONFIRMED, with wording
+  precision R1 below: the spec's own NOTE ties body cloning to collectors present "when the response is
+  created", not merely when data is requested.
+- note:72 Pre-settle hold → network.addIntercept, continueRequest, failRequest, provideResponse all
+  exist (7.5.5.2-.3, .7, .9). The draft also has continueResponse, continueWithAuth and
+  setExtraHeaders (7.5.5.4, .5, .13), not listed by the note. Selenium binding quote still current.
+  CONFIRMED.
+- note:73 Navigation history → browsingContext.traverseHistory params { context, delta: js-int },
+  result EmptyResult. No command returns a history-entry list; a historyUpdated event exists but is an
+  event, not a list-returning command. CONFIRMED.
+- note:74 Cookies → storage.getCookies accepts storage.CookieFilter plus a
+  BrowsingContextPartitionDescriptor/StorageKeyPartitionDescriptor; result =
+  { cookies: [* network.Cookie], partitionKey: storage.PartitionKey }. CONFIRMED.
+- note:75 Stop loading → §7.3.3 lists 15 browsingContext commands; none stops an in-flight navigation.
+  browsingContext.stopScreencast is the only "stop" command and stops screencasting. CONFIRMED.
+- note:76 User prompts → browsingContext.handleUserPrompt and userPromptOpened/userPromptClosed sections
+  exist (7.3.3.6, 7.3.4.13-.14). CONFIRMED as an unclaimed CDP-side surface.
+
+4. IMPLEMENTATION-SCOPE SOURCES [observation]
+- S006 MDN modules: content re-verified only. The served page contains bluetooth (6 occurrences),
+  permissions (7), userAgentClientHints (5). Provenance uncertainty: MDN does not display a content
+  commit id on the page; 253bed3def8e1680475ea75987d24ca62ee9f989 is the latest commit touching
+  files/en-us/web/webdriver/reference/bidi/modules/index.md per the GitHub API (2026-04-22), matching
+  the note's pin. That is an API-side inference about the served revision, not page-shown provenance:
+  label commit currency medium-confidence, section content observation. The WD still has ten module
+  headings, so the note's "extra index entries are not module sections" distinction holds. Caveat:
+  string counts prove page presence, not list-item position; the module-heading side is exact.
+- S007 MDN connection guide: content confirmed as quoted in §2 above; its content commit was not
+  re-pinned this pass (page text only).
+- S008 Selenium: dateModified 2026-08-15 and footer commit 7a6516d16481aec8f6c60c442140b37ab468c3ba;
+  GitHub API confirms 7a6516d is the latest commit for
+  website_and_docs/content/documentation/webdriver/bidi/_index.en.md (2026-08-15T03:26:42Z). Note pin is
+  current. S009 dateModified 2026-07-23; the binding-status text is verbatim.
+- S010/S011 Chrome blogs: last-updated dates unchanged (2023-05-09, 2024-08-07); cited version claims
+  present. Wide currency was never claimed by the note. S011's CDP sentence is adjudicated in §2a
+  (scoped correction, not source drift).
+- S012 chromium-bidi: pinned commit 1c6f4363b532258da7f4732deba2656a1a4fea45 resolves; README sha256
+  f3a626db446bda23866afbeab6e5d0f6a60de10f30b0ea7de821ceda356af401. The README says it is "implemented
+  as a JavaScript layer translating between BiDi and CDP, running inside a Chrome tab" and points to
+  WPT status. Current main HEAD observed as 17af535f178672d7e0289ad2f9b1aa5d22c0fda6 (2026-10-19T10:26:55Z),
+  and its README sha256 is identical to the pinned one: architecture statement unchanged. The README
+  still proves no per-command support (its WPT pointer is the results route).
+
+5. PRECISION RECOMMENDATIONS [inference; note left unedited per scope]
+- R1 (note:71): tighten collector timing. The spec's clone step only stores a response body when the
+  session already has network collectors, and §7.5.2 NOTE: "This might happen if there are no collectors
+  setup when the response is created, and WebDriver BiDi clone network response body does not clone the
+  corresponding body." Say "collector must exist before the response is created/cloned", not only "when
+  the response body is collected". Also quote the cap as max total collected size "whose value is
+  implementation-defined" (the note's "total storage is implementation-defined" is a fair paraphrase).
+- R2 (note:62, 69, 72, 73): the matrix is deliberately tabi-surface-scoped, but the same pinned draft
+  also exposes navigationAborted, historyUpdated, continueResponse, continueWithAuth, setExtraHeaders and
+  input.releaseActions. Adding them would only widen coverage; no row verdict changes.
+- R3 (note:5/S012): optional pin refresh to current main HEAD 17af535f... (2026-10-19), whose README bytes
+  hash identically; this is bookkeeping, not a content change. S007 is the only cited page whose commit
+  freshness was not re-pinned (content verified).
+- R4 (note:60): if the "not a WebSocket URL" contrast is ever sharpened, name CDP's
+  webSocketDebuggerUrl explicitly; session.CapabilityResponse does contain the optional BiDi webSocketUrl.
+- C1 (correction candidates for L1's standalone source-recheck-round12 note, not edits to the old note):
+  (a) record the S011 scoped correction from §2a — support unchanged is verbatim, Chrome-default must be
+  stated separately and kept Puppeteer-scoped; (b) label S006 MDN commit currency API-inferred, not
+  page-shown provenance; (c) carry the R1 collector-timing precision. All 17 matrix rows and the
+  remaining §1 claims need no correction.
+
+6. UNKNOWNS / NOT RECHECKED
+- U1: per-command implementation support in chromium 152.0.7977.82 remains unmeasured; the WPT results
+  page was not opened this round, so it is still an unread-results lead, not evidence.
+- U2-U5 in the note (vendor-extended ResponseData fields, realm/worker scope, collector performance,
+  binding stability for a Node client) remain unmeasured; nothing here changes them.
+- The note's local CDP anchors were spot-checked at the cited lines for screenshot/DOMSnapshot/wire/byte
+  surfaces (SKILL.md:353-354, 374, 401-402; multi-step-journey.md:34; network-evidence-rung.md:54) and are
+  consistent; the remaining local anchors were not re-audited this pass.
+- No runtime claim is made anywhere in this receipt; all verdicts are document-level.
+
+7. HYGIENE
+- Tool installs/updates this session: none.
+- Writes: this file only. The subject note, SOURCES.md, README, SKILL.md and all shared files were not
+  edited. No browser, driver, or WebSocket endpoint was started.

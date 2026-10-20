@@ -1,0 +1,64 @@
+# ProfileScope Scout Report: Profile Boundary Note, Branded vs Unbranded Inference, and Chrome for Testing Exemption
+Session: Tabi round 12 (TabiR12.ProfileScope)
+Target Note: corpus/knowledge/chrome-remote-debugging-profile-boundary.md
+Root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+
+## 1. Grounding and Source Verification
+
+- Note Method and Scope: The note is explicitly documentation-only; no browser was launched, no profile touched, and no live target engaged (chrome-remote-debugging-profile-boundary.md:1).
+- S001 (Chrome Security Blog, 2025-03-17):
+  - Stated rule: "from Chrome 136 we're making changes to the behavior of --remote-debugging-port and --remote-debugging-pipe. These switches will no longer be respected if attempting to debug the default Chrome data directory."
+  - Stated rationale: "A non-standard data directory uses a different encryption key meaning Chrome's data is now protected from attackers [App-Bound Encryption]."
+  - CfT recommendation: "For browser automation scenarios, we recommend using Chrome for Testing which will continue to respect the existing behavior."
+- S004 / S028 (remote_debugging_server.cc and .h @main):
+  - Re-fetched raw and verified:
+    - remote_debugging_server.cc: SHA-256 ea72757acd7c3bff419db92bf5be101256c1bc813fcb87174a401fc8856901cc (identical to 2026-10-19 pin in note:87 and SOURCES.md:42).
+    - remote_debugging_server.h: SHA-256 841c6f67378c05cdbdbd8da48e2a39474278d84cc9049881de552589ad78a602 (identical to note:87).
+  - Code enforcement (remote_debugging_server.cc:160-183):
+    - IsRemoteDebuggingAllowed checks prefs::kDevToolsRemoteDebuggingAllowed (refusal kDisabledByPolicy), then desktop default-user-data-dir gate.
+    - Branding switch:
+      #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+        constexpr bool default_user_data_dir_check_enabled = true;
+      #else
+        const bool default_user_data_dir_check_enabled =
+            g_enable_default_user_data_dir_check_for_chromium_branding_for_testing;
+      #endif
+    - Refusal: If default_user_data_dir_check_enabled is true and is_default_user_data_dir.value_or(true), returns kDisabledByDefaultUserDataDir.
+
+## 2. Branded vs Unbranded: Inference vs Observation
+
+- Observed (Code & Package):
+  1. Chromium source syntax compiles the default-user-data-dir refusal check as constexpr true only when BUILDFLAG(GOOGLE_CHROME_BRANDING) is set (remote_debugging_server.cc:169-170).
+  2. For non-branded builds (#else), default_user_data_dir_check_enabled reads g_enable_default_user_data_dir_check_for_chromium_branding_for_testing, defaulting to false unless flipped via EnableDefaultUserDataDirCheckForTesting() (remote_debugging_server.h:46-50).
+  3. The local system browser package is Arch extra/chromium 152.0.7977.82-1, which is built from Chromium open-source without Google Chrome proprietary branding (corpus/knowledge/browser-surface-census.md:19).
+- Inferred (Not Observed at Runtime):
+  1. Because local Chromium lacks GOOGLE_CHROME_BRANDING, it was inferred that local Chromium does not enforce the default-profile debugging refusal.
+  2. The note correctly categorized this in §3 as "[inference — derived from §2, not executed]" and in §4 as "[inference: the check is branding-gated §2 — the refusal was never measured locally]".
+- Mistake M-1 / M2 and Rectification:
+  1. In kaika round 1, secondary distillation layers (SKILL.md:1606, corpus/README.md:167, LOG.md:491, and initial S004 teaches) slipped into phrasing the inference as an observed fact ("this host's unbranded Chromium does not enforce it").
+  2. Post-review corrected this slip: no launch with a default profile was ever executed on the host, and lane hygiene strictly forbids attaching remote debugging to user profiles (SKILL.md:660-679).
+  3. S028 was appended to supersede S004's teaches (SOURCES.md:42), and explicit errata blocks were added (LOG.md:516-519; SKILL.md:1621-1625; corpus/README.md:196-199).
+  4. Conclusion: The note's boundary matrix remains an inference derived from static source inspection. The distinction between code observation and runtime observation must be strictly maintained.
+
+## 3. Chrome for Testing (CfT) Exemption Mechanism
+
+- Stated Unknown in Note:
+  - Note §3 row 5: "| Chrome for Testing | any | blog-claimed exempt (S001); mechanism not found in this file — [unknown] |"
+  - Note Unknowns #2: "Chrome for Testing's exemption mechanism — not located in remote_debugging_server.cc; blog claim only."
+- Resolution of the Exemption Mechanism via Build-System Architecture:
+  1. In the Chromium GN build system (build/config/chrome_build.gni), Chrome for Testing is defined by is_chrome_for_testing = true.
+  2. chrome_build.gni enforces mutual exclusion:
+     assert(!is_chrome_for_testing || !is_chrome_branded,
+            "`is_chrome_for_testing` is incompatible with `is_chrome_branded`")
+  3. The preprocessor flag GOOGLE_CHROME_BRANDING is defined solely by is_chrome_branded = true (build/BUILD.gn).
+  4. Because is_chrome_for_testing mandates is_chrome_branded = false, BUILDFLAG(GOOGLE_CHROME_BRANDING) evaluates to 0 in all Chrome for Testing builds.
+  5. Consequently, in remote_debugging_server.cc, Chrome for Testing falls directly into the #else branch where default_user_data_dir_check_enabled defaults to false.
+  6. No CfT-specific macro or branch exists inside remote_debugging_server.cc because CfT is structurally an unbranded build variant at the compiler preprocessor level.
+  7. Additionally, S001's stated motivation for the boundary is protecting App-Bound Encryption keys on consumer Chrome; CfT does not use consumer profile encryption or consumer default profiles (docs/chrome_for_testing/README.md).
+- Status: The mechanism is now fully accounted for at the GN build and preprocessor level (incompatible with is_chrome_branded), explaining why no CfT-specific code appears in remote_debugging_server.cc. However, as an empirical runtime fact, it remains unexecuted/unobserved locally.
+
+## 4. Lane Practice & Hygiene Summary
+
+- Practical Guard: Tabi's launch recipe (SKILL.md:129: --user-data-dir=<out>/profile) guarantees a fresh, throwaway profile per run. Hygiene, not browser-enforced refusal, is the lane's operative boundary.
+- Session Material: Cookies, tokens, and profile stores are strictly shape-only (SKILL.md:662-665); debugging user profiles is forbidden regardless of browser behavior.
+- Confidence: High for source-level code and build-flag mechanisms; empirical runtime behavior of default-profile launch remains unobserved and unexercised by design.

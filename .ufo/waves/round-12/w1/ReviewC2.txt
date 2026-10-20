@@ -1,0 +1,34 @@
+ReviewC2 — accessible-locator / ARIA-snapshot admission (tabi round 12, w1)
+Identical content to ReviewC2.md (acceptance path). Labels: [obs] observed in opened file or fetched source; [inf] inference; [unk] unknown.
+
+HIGH
+1. S023 teaches-cell paraphrase overstates the source. [obs] corpus/SOURCES.md:37 says "explicitly not an accessibility audit". https://playwright.dev/docs/locators §Locate by role says: "Note that role locators do not replace accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines." Quote the source, not the paraphrase. Correct an opened row only by a superseding row (precedent SOURCES.md:42, S028 supersedes S004).
+2. S025 supports only scope and general semantics. [obs] corpus/SOURCES.md:39 teaches "which roles, names and keyboard patterns a widget should expose". Only the APG home was opened. It states scope ("apply accessibility semantics to common design patterns and widgets") and "ARIA roles, states and properties and … keyboard support", and links to patterns/ (not opened). Per-widget role/keyboard claims need a new opened row or must be dropped (QUALITY 12 scope).
+3. Coverage baseline 9 is contested. [obs] corpus/lessons/kaika-fleet-round-1.md:84 "spot-check: non-author pending" vs :88 "Non-author reviewer: admit with conditions (6/6 spot-checks agree)". SCORECARD.md:400-401 "pending non-author verification". Axes table SCORECARD.md:96 shows coverage 5; :234 shows 7; :330 shows 8; :406 shows 9. L1 must state which baseline 9→10 uses.
+
+MEDIUM
+4. S024 teaches-cell "structural evidence, not pixels" is not in the fetched page. [obs/inf] Label as [inference]. Quotable: "aria snapshots provide a YAML representation of the accessibility tree of a page" (§Aria snapshots); "A template is a constraint, not necessarily a complete serialization" (§Aria snapshots); partial/strict matching sections; case-sensitive, whitespace-normalized, order-sensitive comparison (§Snapshot matching).
+5. Stale pointers after admit. [obs] corpus/README.md:193 "open — S023–S025 … no note" -> docs-held pointer (README convention :186). corpus/SOURCES.md:49 "queued, not mined" goes stale. README coverage "29/29" (:157-163) needs a new row in the same commit (QUALITY 11). Do not edit historical block (README:173).
+6. Overlap with existing accessibility-tree usage. [obs] LOG.md:489 records ARIA as zero-hit ground (new). SKILL.md:402 documents webbridge snapshot as "accessibility tree, @e refs". Note must not equate webbridge @e snapshot with Playwright ARIA snapshot YAML. Equivalence unmeasured [unk].
+7. Unversioned docs. [obs] Both Playwright pages are "docs-default-stable" (Docusaurus v3.10.1). Use "stable docs served 2026-10-19, no version pin" (S013 convention).
+8. Metric is presence only. [obs] SCORECARD.md:439-440 and .ufo/waves/round-12/measure.mjs:11 count ls-tree lines at a revision. Moves only after commit; not an admission-quality measure.
+
+LOW / notes
+9. Source freshness confirmed. [obs] curl -sL --max-time 30 | sha256sum on 2026-10-20: S023 234a24527d5a96e600e0dc1d832fb56bd8a539283df9f497ba982de21cdbdee6; S024 bbbad6881341619286827304e5b5202f5a9246aac8223a6508fb4feb1b7e6194; S025 17521385704dfa9ab49fa599b78258c579aa05676aa88c6ca629c94682c3d30f. All equal the seat fetches at corpus/lessons/kaika-fleet-round-1.md:66-68. Hash match, not non-author verification. L1 re-open (:72-73) covers S023 only.
+10. Protected paths. [obs] baseline-census.tsv has no playwright/accessib/aria entries; check-round-contract.mjs:60-69 protectedPath does not cover corpus/knowledge/. Target path absent. New file only; never append to corpus/lessons/round-N.md or kaika-fleet-round-1.md (QUALITY 13).
+11. [obs, out of scope] kaika-fleet-round-1.md:65 S022 raw sha e3b0c442…b855 = empty-input hash; row notes "raw curl body empty".
+
+MANDATORY CAVEATS FOR THE C2 ENTRY
+- Every claim: quoted source sentence with section, or [inference]/[unknown] (QUALITY 2/3).
+- Scope: S023 role/label/text semantics; S024 ARIA-snapshot representation/matching; S025 scope + general semantics only (QUALITY 12).
+- "No browser runtime support claimed." tabi has not run getByRole or toMatchAriaSnapshot [unk]. No Capabilities row (SCORECARD.md:383-387).
+- Front matter like corpus/knowledge/web-flake-retry-evidence.md:1-6: source: line citing S023/S024/S025 with sections; verified-at: 2026-10-19; recheck: (S023/S024 on-release; S025 365d). check-sources.mjs:322.
+- SOURCES transitions (ReviewSources owns): queued -> mined; used-by = new path; note contains literal S023/S024/S025 (check-sources.mjs:231-233); mined requires used-by (:330-332).
+- Same commit: corpus/README.md coverage row (QUALITY 11), Frontier row :193 -> docs-held — runtime unmeasured, SOURCES.md:49 path text, LOG.md entry (AGENTS.md; QUALITY 7).
+- C2 9->10 conditional on resolving finding 3.
+- Left open after admit: Playwright ARIA-snapshot behavior in tabi runtime [unk]; APG patterns/ pages [unopened]; webbridge @e vs ARIA equivalence [unk]; unversioned docs.
+
+VERIFICATION GAPS
+- Not run (per assignment): check-sources.mjs, measure.mjs, self-tests, builds.
+- Quotes checked against reader output, not raw bytes; raw hashes match, quote-to-byte mapping not re-derived.
+- APG patterns/ pages and other Playwright pages not opened.

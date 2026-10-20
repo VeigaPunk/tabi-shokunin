@@ -1,0 +1,121 @@
+# PlanningWalk — Bounded Planner Data-Walk (Tabi Round 12)
+agent: TabiR12.PlanningWalk (scout)
+timestamp: 2026-10-20
+repo-root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+
+## 1. Executive Summary & Score Justification Verdict
+
+- **Claimed Score Increments:**
+  - C1: Freshness 8 → 9 (re-verify 3 external kaika notes with dated, hash-pinned receipt; 0 → 3 reviews).
+  - C2: Coverage 9 → 10 (admit `playwright-accessible-locators-and-snapshots.md` on queued S023–S025 ground; 0 → 1 note).
+- **Are Claimed Scores Justified?**
+  - **YES.** Both claims are justified under lane conventions and AXES protocol without numerical score arithmetic:
+    1. Freshness is at 8, tied for lowest non-retired axis with operability (8) and adjacency (8) (`SCORECARD.md:403-406`). Advancing freshness 8→9 works the lowest non-retired axis. Re-opening external sources and producing a dated, hash-pinned review receipt satisfies the freshness criterion.
+    2. Coverage is at 9 (`SCORECARD.md:406`). Advancing coverage 9→10 directly completes the planned next work identified in round 1 (`SCORECARD.md:439-440`: "planned: coverage 9→10 — Playwright accessible locators / ARIA snapshots entry mined from S023–S025 (0 → 1)"), expanding coverage into accessible locators and ARIA snapshots on documented, non-runtime ground.
+    3. Neither axis relies on scalar or fractional arithmetic; scores record discrete before→after counts and explicitly measured qualitative states (`SCORECARD.md:8-11,408-412`).
+  - **Critical Caveat:** All round-12 scores must remain *candidate self-verdicts* until evaluated by an independent outside verifier dispatched by the orchestrator (`corpus/lessons/round-1-verifier-spotcheck.md:1-17`).
+
+---
+
+## 2. Examination of Current Kaika Rows & Baseline State
+
+- **Baseline & Current State (`SCORECARD.md:393-456`, `LOG.md:462-526`):**
+  - Pre-kaika state (`user-20261015-r06`): depth=8, coverage=8, operability=7, freshness=8, calibration=8, adjacency=8 (`SCORECARD.md:405`).
+  - Pre-action: `user-20261015-r07` was recorded as executed and unadmitted without credit (`LOG.md:464-476`) because its operability receipt was byte-identical to `r01` (`77374a71…`).
+  - Kaika fleet round-1 work commit: `a4115fafce511b7f140ea176bcd0807ebf141fc6` (base `40a6de87f72b78d90ea627ad89717e55f219001e`).
+  - Kaika fleet round-1 claimed scores (`SCORECARD.md:406`):
+    - **depth:** 8 (unchanged)
+    - **coverage:** 8 → 9 (+ capability `sources-registry`, 27 SOURCES rows, 3 knowledge notes admitted)
+    - **operability:** 7 → 8 (new `scripts/check-sources.mjs` structural gate, 25 clean self-test cases, post-review 26 clean cases; receipt `corpus/evidence/kaika-fleet-round-1/operability/selftest-receipt.txt`)
+    - **freshness:** 8 (unchanged)
+    - **calibration:** 8 → 9 (drift 17 → 0: 15 unmapped notes mapped, r07 recorded, `training-round-11.md` written, 7 QUALITY criteria added)
+    - **adjacency:** 8 (unchanged)
+- **Outside Adjudication (`corpus/lessons/round-1-verifier-spotcheck.md:1-17`):**
+  - Orchestrator verifier (W3ReviewTabi) independently re-opened 9 sources, verified admits/rejects, and admitted the round.
+  - Scores officially established entering round 12: depth 8, coverage 9, operability 8, freshness 8, calibration 9, adjacency 8.
+- **Saturation Line & Stagnation Window (`SCORECARD.md:428-434`):**
+  - Saturation line: **8**. Stagnation window: **N = 3** rounds.
+  - All axes are at 8–9. Because capability `sources-registry` entered in round 1, the stagnation window restarted at round 1. Round 12 is in window round 2; stagnation nudge does not fire.
+
+---
+
+## 3. Planned Next Work vs Round-12 Claims
+
+- **Planned Work Declared in Round 1 (`SCORECARD.md:435-445`):**
+  - *Planned Freshness 8→9:* Dated `recheck:` lines on every knowledge note, 5 → 29 (`grep -l '^recheck:' corpus/knowledge/*.md | wc -l`), each with a date/cadence and procedure.
+  - *Planned Coverage 9→10:* Playwright accessible locators / ARIA snapshots entry mined from S023–S025 (`corpus/knowledge/playwright-accessible-locators-and-snapshots.md` 0 → 1).
+  - *Planned Calibration:* First measured loopback rate boundary (token bucket → 429 + `Retry-After`) replacing asserted absence behind class C6.
+- **Round-12 Declared Scope (`.ufo/waves/round-12/w1/spec.json:3`):**
+  - *C1 Freshness 8→9:* Independently re-open and re-verify three kaika external knowledge notes (`chrome-remote-debugging-profile-boundary.md`, `webdriver-bidi-capability-matrix.md`, `web-flake-retry-evidence.md`) against their cited sources, with a dated, hash-pinned review receipt (0 → 3 current-round reviews). Lowest non-retired axis: freshness (8).
+  - *C2 Coverage 9→10:* Admit accessible locators/ARIA snapshot knowledge on previously queued S023–S025 ground (`corpus/knowledge/playwright-accessible-locators-and-snapshots.md` 0 → 1). No browser runtime support claimed.
+- **Comparison & Alignment:**
+  - Coverage 9→10 directly fulfills the planned next work identified in round 1.
+  - Freshness 8→9 in round 12 shifts from a mechanical count of `recheck:` lines to substantive re-opening and verification of the 3 external notes against external primary sources. This is a qualitative upgrade in evidence rigor, addressing real-source drift rather than mere metadata lines.
+
+---
+
+## 4. Outside Verifier Constraints
+
+- **Non-Author Independence Principle:**
+  - Grounded in `corpus/QUALITY.md` rules 1–3, `corpus/lessons/kaika-fleet-round-1.md` (M9, M13), and `corpus/lessons/round-1-verifier-spotcheck.md:1-17`.
+  - Author-side swarm is NOT independent non-author verification: "A dispatched subagent is still the lane" (`round-1-verifier-spotcheck.md:17`).
+  - In round 1 post-review, SHONEN checkmarks were retracted from `[x]` to `[~]` because the prior verifiers (TABI-B4, TABI-R3-4) were internal subagents (`SHONEN.md:5-12`, `LOG.md:519-525`).
+- **Verifier Scope:**
+  - Outside verification must be executed by an orchestrator-dispatched agent after round landing.
+  - Verifier spot-checks ≥1 admit, ≥1 reject, re-opens ≥3 SOURCES rows, and re-runs counting commands.
+  - Consequence for Round 12: Subagent reviews (e.g. `FreshProfile`, `FreshBidi`, `FreshRetry`) produce internal evidence receipts. Neither subagents nor L1 may claim external non-author signoff or mark SHONEN boxes `[x]`. All round-12 claims remain candidate self-verdicts pending orchestrator adjudication.
+
+---
+
+## 5. Protected-History & Gate Constraints
+
+- **Protected History Definitions (`scripts/check-round-contract.mjs:60-69`, `scripts/check-user-round-contract.mjs:73-82`):**
+  - Protected paths:
+    - `^corpus/lessons/round-\d+\.md$`
+    - `corpus/evidence/fleet-round-1-freshness/`
+    - `.ufo/rounds/fleet-round-1-interactive-20261015/`
+    - `.ufo/reports/fleet-round-1-attempt-20261015/`
+    - `.ufo/plans/fleet-round-1-interactive-20261015`
+    - `.ufo/continuation/fleet-round-1-interactive-20261015`
+    - `scripts/check-freshness.mjs`
+    - `SHONEN.md`
+  - Append-only files: `LOG.md`, `SCORECARD.md`, `SKILL.md`, `PROVINCE.md`, `corpus/QUALITY.md`, `corpus/README.md`.
+  - Baseline census: `corpus/evidence/pstack-20261015/baseline-census.tsv` pins protected blobs to baseline `7f506affa55f6fb892d3c8073c75151c998bdf2c`.
+- **Known Carried Debt on `SHONEN.md`:**
+  - `SHONEN.md` was regenerated to four `[~]` in round-1 post-review by orchestrator direction (`LOG.md:519-525`).
+  - Because `SHONEN.md` is pinned in `baseline-census.tsv`, `ROUND_CONTRACT` reports `history_rewritten` (`round-1-verifier-spotcheck.md:17`).
+  - This debt is acknowledged by the orchestrator and does not count as round harm.
+  - Round 12 MUST NOT edit `SHONEN.md` or any path matching `protectedPath`.
+  - New knowledge notes and receipts must be written to new, round-specific paths (e.g., `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`, `.ufo/waves/round-12/...`, `corpus/evidence/round-12/...`).
+
+---
+
+## 6. Falsifiers for C1 and C2
+
+### Falsifiers for C1 (Freshness 8 → 9: Re-verify 3 Kaika Notes)
+1. **Unopened / Cached Sources:** Claiming verification without fresh HTTP/git fetches of cited sources (S001–S004/S028, S005–S012, S013–S019), or omitting live fetch dates and sha256 byte digests.
+2. **Inference vs. Observation Slip:** Repeating the round-1 mistake (M15/post-review correction) by asserting that unbranded Chromium is observed not to enforce `--remote-debugging-port` default-profile restrictions (it is an unmeasured inference from source code; no default-profile launch was run).
+3. **Asserting Unknown Exemption:** Claiming Chrome for Testing default-profile exemption is proven in Chromium source when the mechanism is unlocated and explicitly labeled `[unknown]` (`chrome-remote-debugging-profile-boundary.md:52`).
+4. **BiDi Implementation Overclaim:** Claiming browser runtime support or binding parity beyond what sources state; stripping or violating the `locally measured: no` perimeter (`webdriver-bidi-capability-matrix.md:9-17,56`).
+5. **Flake Replay Overclaim:** Asserting that `--shuffle <seed>` provides guaranteed flake reproduction without acknowledging the necessary execution environment conditions (worker count, shard, OS, config) (`web-flake-retry-evidence.md:21-22,60-62`).
+6. **Missing / Unpinned Review Receipts:** Failing to commit a dated review receipt with note hashes, source URLs, exact quotations, and section anchors (receipt count remains < 3).
+7. **Author-Side Verification Overreach:** Attempting to claim non-author outside verification based on internal subagent runs.
+
+### Falsifiers for C2 (Coverage 9 → 10: Admit Accessible Locators/ARIA Note)
+1. **Unopened S023–S025 Ground:** Writing `playwright-accessible-locators-and-snapshots.md` without opening S023 (`playwright.dev/docs/locators`), S024 (`playwright.dev/docs/aria-snapshots`), and S025 (`w3.org/WAI/ARIA/apg/`) in round 12 with fresh fetch sha256 hashes and quotes.
+2. **SOURCES Registry Inconsistency:** Failing to update S023–S025 status from `queued` to `mined` in `corpus/SOURCES.md`, failing to add valid `opened` dates and `used-by` paths, or failing `scripts/check-sources.mjs` / `sources-census.sh validate`.
+3. **Runtime / Accessibility Audit Overclaim:** Claiming live browser execution support (forbidden by round goal) or claiming role locators substitute for accessibility audits (contradicted by S023 quote: "role locators do not replace accessibility audits...").
+4. **Discipline Category Bleed:** Failing to strictly segregate observation, inference, and unknown sections in the new note (QUALITY rule 3).
+5. **Unindexed Knowledge Note:** Failing to record the new note in `corpus/README.md`'s coverage index in the same integration commit (QUALITY rule 11, mistake M12).
+6. **Protected Path Mutation:** Writing to any path governed by `protectedPath` or mutating append-only historical blocks.
+
+---
+
+## 7. Conclusions & Recommendations for L1
+
+1. **Score Justification:** Both C1 (freshness 8→9) and C2 (coverage 9→10) are justified, coherent with historical trajectories, and advance the lowest non-retired axis without invoking numerical score arithmetic.
+2. **Review Receipt Form:** Ensure review receipts record:
+   - Target note path, byte count, and sha256.
+   - Re-opened source URLs, access date, quote (≤25 words), location anchor, and fetch sha256.
+   - Explicit confirmation of each substantive claim (or identification of drift/unknown).
+3. **Strict Non-Author Separation:** Keep all round-12 claims framed as lane self-verdicts; do not modify `SHONEN.md` or assert external audit closure.

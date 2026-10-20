@@ -1,0 +1,129 @@
+ClaimAttack — tabi round 12, w1 (critic, leaf). 2026-10-20.
+Scope: try to break (a) the claim that C1 and C2 are causally separable and (b) the claim that the round works the lowest axis, both checked against the current SCORECARD.
+Rule sources opened: AXES.md:27-38 (fleet, read-only), PROTOCOL.md:96-97,507-516 (fleet, read-only).
+Writes: this file only. No tools were installed and no verification commands were run.
+Measurement script under attack: .ufo/waves/round-12/measure.mjs:1-11.
+Labels: [OBS] observed, [INF] inferred, [UNK] unknown.
+
+== Verdict summary ==
+F1 separability: FALSIFIED as currently measured. A fixable defect.
+F2 freshness metric points the wrong way: it counts only "confirmed" reviews. A fixable defect.
+F3 "independently" is overclaimed. A wording defect.
+F4 "hash-pinned" cannot apply to a dynamic source as written. A fixable defect.
+F5 lowest-axis: compliance HOLDS, but the stated lowest set is wrong (depth is missing).
+F6 C2 coverage 9→10 is premature saturation. The judge must reject the 10 unless it is re-scoped.
+F7 C2 counter checks only that the file exists. A fixable defect.
+F8 a shared-file coupling is already in the worktree, plus small items.
+
+== F1 — C1 and C2 are not causally separable under measure.mjs ==
+[OBS] The C1 counter is measure.mjs:9. It counts entries in reviews[] that have date==='2026-10-20', result==='confirmed', claims.length>0 and sha256.length===64.
+  - Nothing restricts a review to the three kaika notes.
+  - Nothing restricts a review to their sources (S001–S019/S028), or requires distinct targets.
+[OBS] The uncommitted SKILL.md hunk (git diff; SKILL.md:1639-1643) says C2's note uses "S023–S025, reopened 2026-10-20". It also places the "source-only freshness reviews" in that same corpus/evidence/round-12/source-recheck.json.
+[INF] Counterexample: a receipt with three confirmed reviews of S023, S024 and S025 (re-opened for the C2 note) gives source_rechecks=3. Zero kaika notes would have been re-verified.
+  - So C1 can be "verified" by C2's work alone. That breaks AXES.md:30-31: each claim must be verifiable without the others having landed.
+[INF] Reverse coupling risk: if the C2 note cites source-recheck.json for its re-open pins, C2's evidence depends on C1's receipt.
+Impacted axes: freshness (C1 credit), coverage (C2), calibration.
+Smallest correction:
+  - The C1 filter must require each review's target to be in a fixed set (the three note paths, or their S-ids S001–S019/S028), with a distinct-note count of 3.
+  - Exclude S023–S025 from the C1 count.
+  - Keep C2's re-open pins in the C2 note, or in a separate file. Not in source-recheck.json.
+
+== F2 — the freshness metric rewards "no drift" and ignores drift found ==
+[OBS] AXES.md:14 defines freshness as "Drift detection — … re-verified against live surfaces; stale items flagged or fixed".
+[OBS] measure.mjs:9 counts only result==='confirmed'.
+[INF] Counterexample: a reviewer finds that S001 (a dynamic page) or S002 (a living page) has changed text, and correctly records "drifted" with an appended erratum. That scores 0 for that review. The one outcome freshness exists to detect earns no credit.
+  - This pushes reviewers toward confirming, which is a false-provenance risk.
+Smallest correction: count reviews whose result is in {confirmed, drift-flagged, fixed}, each carrying an outcome plus an evidence pointer. Report confirmed and drift counts separately.
+
+== F3 — "independently re-open and re-verify" is overclaimed ==
+[OBS] The round contract (spec.json:3) says "Author-side swarm is not independent non-author verification."
+[OBS] The round-1 adjudication withdrew the lane-subagent [x] marks: "a dispatched subagent is still the lane" (corpus/lessons/round-1-verifier-spotcheck.md:17; LOG.md:519-522).
+[OBS] The re-checks are done by lane seats (FreshProfile, FreshBidi, FreshRetry, from the w1 roster).
+[OBS] measure.mjs records no reviewer identity.
+Impacted axis: calibration.
+Correction: word C1 as "re-opened by fresh author-side seats, pending non-author verification". Also add a reviewer field to each review.
+
+== F4 — "hash-pinned" is checked only by length, and one source cannot match its earlier hash ==
+[OBS] measure.mjs:9 checks only sha256.length===64. Any 64-character string passes, hex or not.
+[OBS] S001 is a dynamic page. The L1 re-fetch hash differed from the seat's hash (corpus/lessons/kaika-fleet-round-1.md:73-74). So for S001, "confirmed" cannot mean the hash equals the 2026-10-19 pin.
+[INF] As written, the receipt can carry fresh hashes that prove nothing about the claim text.
+Correction:
+  - Each review records prior_sha256 and new_sha256, plus the quoted claim text found at the cited anchor (quote-presence).
+  - The counter checks the hash is /^[0-9a-f]{64}$/.
+  - A dynamic page is confirmed by the quote, not by hash equality.
+
+== F5 — lowest-axis compliance ==
+[OBS] Current scores, admitted per corpus/lessons/round-1-verifier-spotcheck.md:17, and from SCORECARD.md:406:
+  - depth 8, coverage 9, operability 8, freshness 8, calibration 9, adjacency 8.
+[OBS] Nothing is retired (SCORECARD.md:444).
+[OBS] The nudge waiver is not active: the window restarted in round 1 because a capability entered (SCORECARD.md:430-433; AXES.md:68-70).
+[OBS] The lowest non-retired set is {depth, operability, freshness, adjacency}, all at 8. The Goal lists only operability, freshness and adjacency. Depth is omitted: a record error.
+[OBS] C1 targets freshness, which is in the lowest set. So AXES.md:33 and PROTOCOL.md:97 are SATISFIED.
+[OBS] Tie-break, AXES.md:21-23 (pick from the trend furthest behind):
+  - quality (depth/freshness/operability) = 8/8/8
+  - expansion (coverage/adjacency) = 9/8
+  - discernment = 9
+  - Quality is furthest behind, so freshness is consistent with the tie-break.
+[OBS] C2 raises coverage (9). Within expansion that is the higher axis; adjacency, the 8, is left alone. This is allowed (1–3 claims), but C2 is not a lowest-axis move.
+[OBS] SCORECARD.md:400-401,406 still label the round-1 row "(claimed)" / "pending non-author verification". The adjudication only appears in the lessons file. A reader re-deriving "current" scores from the SCORECARD alone sees pending values. This is calibration drift, owned by L1.
+Correction: state the tie as all four axes at 8; record the round-1 admission next to SCORECARD:406.
+
+== F6 — C2 coverage 9→10 is premature saturation ==
+[OBS] AXES.md:12 defines coverage as the "Fraction of the domain's real surfaces", with the bar "none unexplored without reason".
+[OBS] The round-1 adjudication credited 8→9 "as a note/row count, not the AXES fraction" (round-1-verifier-spotcheck.md:17).
+[OBS] The corpus/README.md coverage map has 6 rows marked "open" (:180-183, :193-194):
+  - extension↔daemon handshake
+  - native WebMCP
+  - rate/ToS
+  - real-site journeys
+  - ARIA (the one C2 closes)
+  - WebMCP spec
+[OBS] SCORECARD.md:96 names coverage ceilings that are still unmeasured.
+[INF] After C2, 5 open surfaces remain. A 10 asserts a saturated fraction that the lane's own map contradicts. That is premature saturation from one documentation-only entry ("No browser runtime support is claimed"), and it would enable a later retire-on-saturation.
+Smallest correction:
+  - Declare C2's measure as open coverage rows 6→5, plus the note 0→1.
+  - Either do not map it to score 10, or state in the same SCORECARD row that 10 is a count-based step and not saturation, with the 5 open rows listed.
+  - Otherwise the judge should reject the 10, not the note.
+
+== F7 — the C2 counter checks existence only ==
+[OBS] measure.mjs:11 sets accessible_locator_entry from file presence alone.
+[INF] An empty or uncited file scores 1.
+Required by QUALITY.md:26-29 (criteria 11, 12) and not checked:
+  - a `source: S023…S025` line
+  - a `recheck:` line
+  - SOURCES rows S023–S025 flipped from queued to mined with used-by filled in
+  - the README coverage row :193 updated in the same commit
+Correction: extend the counter to grep the note for the source/recheck lines, and the SOURCES status for S023–S025.
+
+== F8 — coupling and residual items ==
+[OBS] There is an uncommitted SKILL.md append: one new section, "## Round 12 — accessible evidence and source-only rechecks" (SKILL.md:1630-1643). It points at both claims' artifacts, and neither exists yet:
+  - corpus/knowledge/playwright-accessible-locators-and-snapshots.md (ls → absent)
+  - corpus/evidence/round-12/ (ls → absent)
+[INF] If either claim is rejected and the other is admitted, SKILL keeps a dangling citation. That harms depth/calibration, so the claims cannot be admitted independently without editing this block.
+  Correction: split it into two SKILL blocks, one per claim, each landing with its own artifact.
+[OBS] SKILL.md is append-only under the round gates (check-round-contract.mjs:25). The hunk keeps the byte prefix (it only adds a newline to the previous last line), so this is not a defect [INF].
+[OBS] Adjacency: kake's frontier owns "accessibility conformance (WCAG 2.2)" (kake-shokunin/PROVINCE.md:24-25). The SKILL draft already says "A role match is not an accessibility conformance result". The C2 note should name kake as the owner of conformance, so the scope is reported, not absorbed.
+[OBS] Plan substitution: the recorded plan was freshness = `recheck:` lines on every note, 5→29 (SCORECARD.md:437-438). Today 5 of 29 notes carry one (grep count). C1 swaps this for 3 reviews of 1-day-old notes, whose own cadences are 90d/on-release (SOURCES.md:15-33). The 24 notes with no recheck line stay unchecked.
+  - [INF] This is the lowest-information freshness target. Not a defect if recorded, but the plan change must be stated in the round's SCORECARD block.
+[OBS] No-harm baseline is degraded:
+  - ROUND_CONTRACT reads history_rewritten since 5cdc976 because of the SHONEN.md byte pin. The debt is "re-baseline it next round" (round-1-verifier-spotcheck.md:17; LOG.md:523-525).
+  - USER_ROUND_CONTRACT is already red (SCORECARD.md:416).
+  - [INF] So round 12 has no green round-contract gate to prove "no axis harmed". The debt is owed this round and is unclaimed.
+[UNK] What the C1/C2 seats will actually write. Not observable yet. F1 and F7 hold for any receipt that passes the current counter.
+
+== Addendum — response to the L1 final plan (2026-10-20) ==
+The plan:
+  - keep coverage 9 and freshness 8 (delta 0)
+  - claim measured counts instead: 0→1 documented surface and 0→3 source-claim rechecks
+  - withdraw the numeric increments
+Effect on findings:
+  - F6 is RESOLVED, as long as the round's SCORECARD block says "no score move, no saturation" and lists the 5 coverage rows still open.
+  - F5 holds unchanged: compliant. C1 still works freshness, one of the tied lowest axes.
+Remaining substantive objection: with the scores frozen, the counts ARE the claims, so F1, F2 and F7 now carry the whole admission.
+  F1: the C1 count must be target-restricted to the three kaika notes and their sources. It must also require 3 distinct notes. Otherwise C2's S023–S025 re-opens satisfy C1.
+  F2: the seat targets allow the verdicts confirmed, drift and unknown (spec.json, FreshProfile/FreshBidi/FreshRetry).
+    - measure.mjs:9 counts only "confirmed", so a correct drift finding scores 0.
+    - Count {confirmed, drift} with evidence, and report the two separately.
+  F7: the C2 count must check source/recheck lines in the note, the S023–S025 status flip, and the README :193 row update. File existence alone is not enough.
+  F3/F4/F8 are unchanged. In particular, split the SKILL block (SKILL.md:1630-1643) so each claim lands alone.

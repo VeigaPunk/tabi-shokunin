@@ -1,0 +1,163 @@
+SourceChain — Source Hierarchy & Registry Change Audit for C1/C2 (Tabi Round 12, w1)
+Seat: TabiR12.SourceChain (connector)
+Date: 2026-10-20
+Repo root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Output path: .ufo/waves/round-12/w1/SourceChain.txt (sole assigned write; no duplicate .md created)
+
+## 1. Executive Summary
+
+- C1 (Freshness 8→9, 3 kaika external notes re-verified against sources):
+  - Involves 20 distinct rows: S001–S004, S028 (profile boundary); S005–S012 (BiDi matrix); S013–S019 (flake retry).
+  - Registry changes needed in corpus/SOURCES.md: EXACTLY ZERO.
+  - All 20 rows are already status `mined`, all `used-by` paths are already populated and valid, and cadences (`on-release`, `90d`, `180d`) remain current.
+  - Round-12 re-verification receipts belong in `.ufo/waves/round-12/` / `corpus/evidence/` and the round-12 lesson's §Gate table, NOT in `corpus/SOURCES.md` (overwriting row `opened` date is strictly forbidden by SOURCES contract v1 rule 2).
+
+- C2 (Coverage 9→10, admit playwright-accessible-locators-and-snapshots.md):
+  - Involves 3 target rows: S023, S024, S025 (currently `queued`).
+  - Source hierarchy: Ordered dependency chain S025 (W3C APG semantics) → S023 (Playwright locator querying) → S024 (ARIA snapshot structural matching). All Tier A (`docs`).
+  - Strict semantic vs audit boundary: Role locators reflect accessibility tree semantics but do NOT substitute for accessibility audits or conformance tests (S023 verbatim: "role locators do not replace accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines").
+  - Minimal registry changes permitted: Exactly two in-place cell transitions per row (status `queued` → `mined`, `used-by` `—` → `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`).
+  - `opened` must remain `2026-10-19`; `recheck` retains `on-release` (S023, S024) and `365d` (S025).
+  - Transitions must land in the same integration commit as the new note, README coverage index update, and round lesson old→new logging.
+
+---
+
+## 2. Source Hierarchy Audit
+
+### A. C1: Re-verification of 3 Kaika Notes (Freshness 8→9)
+
+1. Note: `corpus/knowledge/chrome-remote-debugging-profile-boundary.md`
+   - Exact Row IDs: S001, S002, S003, S004 (and superseding S028).
+   - Hierarchy & Authority:
+     - S004 / S028 (code, Tier A): Primary structural enforcement authority (`remote_debugging_server.cc/h` @main). S028 supersedes S004 to maintain strict boundary between branding-gated code logic and host runtime non-enforcement (source-level inference, not observed execution).
+     - S001 (docs, Tier A): Primary policy & published intent authority (Chrome security blog, 2025-03-17).
+     - S002 (docs, Tier A): Living protocol posture authority (CDP protocol viewer: unsupported, build-scoped).
+     - S003 (docs, Tier A): Isolated automation build purpose authority (Chrome for Testing blog).
+   - Tier balance: 5 Tier A rows; 0 Tier B; 0 Tier C.
+
+2. Note: `corpus/knowledge/webdriver-bidi-capability-matrix.md`
+   - Exact Row IDs: S005, S006, S007, S008, S009, S010, S011, S012.
+   - Hierarchy & Authority:
+     - S005 (spec, Tier A): Primary normative protocol authority (W3C Working Draft WD-20261008, §§7.1–7.10).
+     - S008, S009 (docs, Tier A): Primary client binding authority (Selenium official BiDi docs & v4.32 Python intercept).
+     - S010, S011 (docs, Tier A): Primary vendor rollout & support posture authorities (Chrome developer blogs 2023/2024).
+     - S012 (docs, Tier A): Primary implementer architecture authority (GoogleChromeLabs/chromium-bidi README).
+     - S006, S007 (docs, Tier B): Secondary navigable indices & connection guides (MDN BiDi modules & WebSocket setup).
+   - Tier balance: 6 Tier A (1 spec, 5 docs); 2 Tier B (MDN docs); 0 Tier C. Spec is strictly segregated from implementation coverage ("locally measured: no" throughout).
+
+3. Note: `corpus/knowledge/web-flake-retry-evidence.md`
+   - Exact Row IDs: S013, S014, S015, S016, S017, S018, S019.
+   - Hierarchy & Authority:
+     - S013, S014, S015, S016, S017 (docs, Tier A): Primary test runner semantics authorities (Playwright stable docs: retries, traces, actionability, auto-retrying assertions, v1.64 shuffle seed).
+     - S018 (paper, Tier A): Primary empirical flake repair classification authority (ICST 2025 accepted paper, 123-test sample).
+     - S019 (paper, Tier B): Secondary wait-time adjustment prevalence authority (KNU institutional abstract).
+   - Tier balance: 6 Tier A (5 docs, 1 paper); 1 Tier B (paper abstract); 0 Tier C.
+
+### B. C2: Accessible Locators & ARIA Snapshots (Coverage 9→10)
+
+- Note: `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`
+- Exact Row IDs: S023, S024, S025.
+- Hierarchy & Ordered Study Sequence (corpus/SOURCES.md:49):
+  1. `S025` (docs, Tier A): W3C ARIA Authoring Practices Guide (`https://www.w3.org/WAI/ARIA/apg/`).
+     - Authority: Foundational accessibility semantics (roles, accessible names, widget design patterns, "A role is a promise"). Informative guide without normative conformance model.
+  2. `S023` (docs, Tier A): Playwright Locators (`https://playwright.dev/docs/locators`).
+     - Authority: Test-runner selector semantics (`getByRole`, `getByLabel`, strictness enforcement).
+     - Audit Boundary: S023 explicitly disclaims accessibility auditing ("role locators do not replace accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines").
+  3. `S024` (docs, Tier A): Playwright Snapshot Testing (`https://playwright.dev/docs/aria-snapshots`).
+     - Authority: Structural YAML accessibility-tree template representation and matching constraints.
+- Tier balance: 3 Tier A (`docs`); 0 Tier B; 0 Tier C. High authoritative grounding.
+
+---
+
+## 3. Registry State & Census Baseline
+
+- Current Census (`corpus/SOURCES.md:13-43`):
+  - Total registered rows: 28 (S001–S028, sequential, zero duplicate IDs).
+  - Tiers: A = 22, B = 4 (S006, S007, S019, S022), C = 2 (S026, S027).
+  - Statuses:
+    - `mined`: 20 rows (S001–S019, S028).
+    - `queued`: 6 rows (S020, S021, S022, S023, S024, S025).
+    - `rejected`: 2 rows (S026, S027).
+  - Target Rows for Round 12:
+    - S023: docs | Tier A | scope: Playwright role/label/text selector semantics | queued | opened: 2026-10-19 | recheck: on-release | used-by: —
+    - S024: docs | Tier A | scope: Playwright ARIA snapshot representation and matching | queued | opened: 2026-10-19 | recheck: on-release | used-by: —
+    - S025: docs | Tier A | scope: ARIA authoring semantics and widget patterns | queued | opened: 2026-10-19 | recheck: 365d | used-by: —
+
+---
+
+## 4. Permitted vs Forbidden Registry Changes (SOURCES Contract v1 Rules)
+
+Grounded in `.ufo/waves/kaika/SOURCES-CONTRACT-v1.md` (Rule 2) and `scripts/check-sources.mjs`:
+
+1. **Strictly Immutable In-Place Fields:**
+   - `id`: Never reused, never renumbered (Rule 2; `check-sources.mjs:288-290`).
+   - `source` (Title / URL): Normalized canonical URL cannot change (Rule 2; `check-sources.mjs:292-300`).
+   - `kind`, `tier`, `scope`, `anchor`: Curated facts at accession (Rule 2).
+   - `teaches`: Immutable learner benefit. Wording corrections require a superseding row `supersedes S0NN —` (S028 precedent).
+   - `opened`: Immutable accession date (ISO date of the round that authored the row: `2026-10-19`). MUST NOT be overwritten by round-12 access dates.
+
+2. **Permitted In-Place Mutable Fields:**
+   - `status`: Permitted transition: `queued` → `mined` (when cited by ≥1 path in `used-by`).
+   - `used-by`: Permitted transition: `—` → `corpus/knowledge/<note>.md`.
+   - `recheck`: Permitted change if cadence is updated (e.g. `90d` or `on-release`); no change needed this round.
+
+3. **Gate Constraints (`scripts/check-sources.mjs`):**
+   - W03 (`mined_without_used_by`): A `mined` row cannot have empty or `—` `used-by` (:330-332).
+   - E11 (`used_by_missing`): Every `used-by` path must resolve to an existing regular file inside repo root (:336-338).
+   - `used_by_uncited`: The target file MUST contain the literal row ID matching regex `(?<![A-Za-z0-9])S0NN(?![0-9])` (:231-233). S023, S024, and S025 must each appear as discrete tokens in the new note.
+   - Any in-place mutation of `status`, `recheck`, or `used-by` MUST be logged old→new in the round lesson (Rule 2).
+
+---
+
+## 5. Minimal Registry Recommendations for C1 & C2
+
+### A. For C1 (Freshness 8→9): ZERO Mutations in `corpus/SOURCES.md`
+- Do NOT edit S001–S019 or S028 in `corpus/SOURCES.md`.
+- Do NOT update `opened` from `2026-10-19` to `2026-10-20` (forbidden by Rule 2).
+- Do NOT update `recheck` (current cadences are valid and active).
+- Record the round-12 re-openings, byte SHA-256 hashes, and verified quotations in the round-12 lesson's §Gate table and review receipts (`.ufo/waves/round-12/w1/FreshProfile.txt`, `FreshBidi.txt`, `FreshRetry.txt`).
+
+### B. For C2 (Coverage 9→10): Exactly Three Row Edits & One Path Update
+Upon creation of `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`:
+
+1. Update S023 (`corpus/SOURCES.md:37`):
+   - `status`: `queued` → `mined`
+   - `used-by`: `—` → `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`
+   - (All other cells unchanged; `opened` stays `2026-10-19`; `recheck` stays `on-release`).
+
+2. Update S024 (`corpus/SOURCES.md:38`):
+   - `status`: `queued` → `mined`
+   - `used-by`: `—` → `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`
+   - (All other cells unchanged; `opened` stays `2026-10-19`; `recheck` stays `on-release`).
+
+3. Update S025 (`corpus/SOURCES.md:39`):
+   - `status`: `queued` → `mined`
+   - `used-by`: `—` → `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`
+   - (All other cells unchanged; `opened` stays `2026-10-19`; `recheck` stays `365d`).
+
+4. Update `## Paths` (`corpus/SOURCES.md:49`):
+   - From:
+     `- accessible-selectors (queued, not mined) — S025 → S023 → S024: semantic roles and names first, then role locators, then ARIA snapshots as structural evidence; the planned next-round entry.`
+   - To:
+     `- accessible-selectors — S025 → S023 → S024: semantic roles and names first, then role locators, then ARIA snapshots as structural evidence. Ends at knowledge/playwright-accessible-locators-and-snapshots.md.`
+
+5. Append to `## Search log` (`corpus/SOURCES.md`):
+   - Append one PRISMA-style prose block documenting the 2026-10-20 re-check and mining of S023–S025 (Rule 5).
+
+---
+
+## 6. Integration Co-requisites & Verification Gaps
+
+To maintain full compliance across all repository gates:
+
+1. **Atomic Commit Package (AGENTS.md, QUALITY #7, #11):**
+   The registry transitions must be committed alongside:
+   - `corpus/knowledge/playwright-accessible-locators-and-snapshots.md` (containing literal `S023`, `S024`, `S025` tokens).
+   - `corpus/README.md:193` update from `open — S023–S025 opened and queued...` to `docs-held — ...` (QUALITY #11).
+   - Round-12 lesson file under `corpus/lessons/` (NOT appending to protected `round-N.md` files; QUALITY #13, M13) containing the old→new transition log.
+   - `LOG.md` entry documenting the C1 freshness receipt and C2 coverage expansion.
+
+2. **Verification Gaps & Guardrails:**
+   - Per leaf contract, no verification commands were executed by this seat (`scripts/check-sources.mjs` and git commands deferred to L1).
+   - Internal swarm reviews are author-side evidence only; external non-author verification remains pending orchestrator adjudication post-landing.
+   - No tool installs or updates performed.

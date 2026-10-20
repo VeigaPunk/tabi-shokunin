@@ -1,0 +1,153 @@
+# DriftConnections — Connecting Prior Inference Overclaim to Round-12 Source-Only Rechecks
+agent: TabiR12.DriftConnections (connector)
+seat: UFO-FSD connector | date: 2026-10-20
+repo-root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+assigned-output: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-12/w1/DriftConnections.txt
+rules-applied: leaf member; no verification commands run; read-only repository inspection; no tools installed.
+
+================================================================================
+1. EVIDENCE & GENEALOGY OF THE PRIOR INFERENCE OVERCLAIM MISTAKE
+================================================================================
+
+1.1 Historical Inception: M2 and Post-Review M-1
+- Mistake M2 (corpus/lessons/kaika-fleet-round-1.md:17): "Observation admitted before its artifact was staged" (launch-window targets claimed from truncated listing, downgraded non-replayable; captured by QUALITY #1/#3).
+- Post-review Mistake M-1 (corpus/lessons/kaika-fleet-round-1.md:96-101; LOG.md:516-519): Recurrence of M2 under source-distillation pressure:
+  "host-Chromium non-enforcement was stated as observed in SKILL.md:1606, corpus/README.md:167, LOG.md:491 and S004's teaches. It is source-level inference. Corrections appended to all three; SOURCES rule 2 correction: new row S028 (supersedes S004 —, re-fetched by the L1, sha256 identical)."
+
+1.2 Exact Anatomical Defect of M-1:
+- Source reading: Chromium C++ source (remote_debugging_server.cc:169-177 @main, S004/S028) revealed that the Chrome 136 default user-data-dir refusal is wrapped in `#if BUILDFLAG(GOOGLE_CHROME_BRANDING)`.
+- Distillation overclaim: The author distilled this into an empirical runtime observation: "this host's unbranded Chromium does not [refuse]" (SKILL.md:1606; LOG.md:491; corpus/README.md:167).
+- Ground truth: NO default-profile launch was ever executed on the host. The statement was a source-level deduction about binary compilation, not an empirical observation of host execution.
+- Quality contract violated:
+  - corpus/QUALITY.md rule 3: "Observation, inference, and unknown stay separate."
+  - corpus/QUALITY.md rule 1: "Every claim falsifiable or marked opinion."
+  - corpus/QUALITY.md rule 2: "Every claim carries a source: a measured anchor (path:line, command, evidence id) — never oral knowledge."
+- Historical remedy: Row S028 was appended to supersede S004 (corpus/SOURCES.md:42), explicitly declaring that lack of host enforcement is an inference from source, never observed by a launch. Errata were appended to SKILL.md:1621-1625 and corpus/README.md:199.
+
+================================================================================
+2. SECOND-ORDER DRIFT HAZARDS IN ROUND-12 SOURCE-ONLY RECHECKS
+================================================================================
+
+Round 12 declares two primary claims (spec.json:3):
+- C1 Freshness 8 → 9: Independently re-open and re-verify three external knowledge notes (profile boundary S001/S028, WebDriver BiDi S005–S012, Playwright web-flake S013–S019) against cited sources, with a dated, hash-pinned review receipt (0 → 3 current-round reviews).
+- C2 Coverage 9 → 10: Admit accessible locators and ARIA snapshot knowledge on previously queued S023–S025 ground (0 → 1 entry).
+- Explicit constraint: NO browser runtime support is claimed; no browser launch is executed.
+
+The Hazard (Second-Order Drift):
+Across all four knowledge surfaces, upstream documentation and code describe runtime mechanisms:
+1. Profile Boundary (S001, S028): Google branding flags and default-data-dir refusal behavior.
+2. WebDriver BiDi Matrix (S005–S012): Protocol events (e.g. `network.beforeRequestSent`) and translation modules.
+3. Web-Flake Retry Evidence (S013–S019): Playwright 1.64 `--shuffle` execution, worker process discard, retry categorization.
+4. Accessible Locators & ARIA Snapshots (S023–S025): ARIA accessibility tree representation and locator resolution.
+
+If the C1 review receipt (`corpus/evidence/round-12/source-recheck.json`) or the C2 knowledge note (`corpus/knowledge/playwright-accessible-locators-and-snapshots.md`) phrase findings as behaviors of the underlying runtime rather than textual properties of the opened documents, M-1 recurs systematically:
+- Claiming BiDi handles events on this host conflates spec draft text (S005) or adapter README (S012) with measured browser execution (`locally measured: no`).
+- Claiming Playwright retry/shuffle deterministically resolves test flakes locally conflates upstream docs (S013, S017) with unperformed local test runs.
+- Claiming role locators replace or perform accessibility testing contradicts S023's explicit limitation ("role locators do not replace accessibility audits") and overclaims unmeasured browser DOM behavior.
+- Claiming unbranded Chromium behavior on default profiles without a launch repeats M-1 verbatim.
+
+================================================================================
+3. AFFECTED AXES & CONTRADICTION ANALYSIS
+================================================================================
+
+- Declared moving axes:
+  - Freshness (8 → 9): Lowest non-retired axis; moved by dated, hash-pinned re-checks against primary external sources.
+  - Coverage (9 → 10): Moved by admitting documented Playwright accessible-locator / ARIA-snapshot knowledge on queued S023–S025 ground.
+- Guarded non-regression axes:
+  - Calibration (holds 9): Advanced 8→9 in kaika round 1 by resolving 17-point self-description drift and mining mistakes M1–M15.
+  - Operability (holds 8): Guarded by scripts/check-sources.mjs (26 clean self-test cases) and contract checkers.
+  - Adjacency (holds 8), Depth (holds 8).
+
+The Contradiction:
+Freshness 8→9 requires *substantive* re-verification of the claims within the three external knowledge notes (as checked by .ufo/waves/round-12/measure.mjs: `r.result==='confirmed' && r.claims.length>0`). A mechanical check confirming only that URLs return HTTP 200 without checking substantive claims leaves freshness weak.
+HOWEVER, if those substantive claims confirm runtime behaviors without executing them, the round corrupts Calibration (9) by committing post-review mistake M-1.
+To improve Freshness without harming Calibration, the round cannot smooth this contradiction into a scalar compromise. It must formalize the boundary between source observation and behavioral inference.
+
+================================================================================
+4. PROPOSED MOVE: DUAL-ANCHOR CLAIM DISCIPLINE & SCHEMA SYNTHESIS
+================================================================================
+
+Synthesize the hermetic claim-record discipline authored by TabiR12.MistakeProbe (.ufo/waves/round-12/w1/mistake/expected.json and fixtures/*.jsonl) directly into the C1 review receipt (`corpus/evidence/round-12/source-recheck.json`) and the C2 knowledge note.
+
+Every claim admitted in round 12 must strictly conform to a Dual-Anchor structure:
+
+4.1 Explicit Observation Wording (Anchor 1: Source Document Text)
+- Grammar:
+  `[OBSERVATION: SOURCE] <Source ID> (<URL or file:line>) fetched on <ISO-date> (sha256 <64-hex>) explicitly states in <section/heading>: "<verbatim quote <=25 words>".`
+- Inviolable constraint: An observation MUST NEVER assert host execution, binary runtime behaviour, browser response, or process state. The observation is SOLELY that the cited document contains the cited bytes.
+- Concrete Examples:
+  - S028: `[OBSERVATION: SOURCE] remote_debugging_server.cc:169-177 @main (sha256 ea72757a...01cc) wraps default-profile enforcement in #if BUILDFLAG(GOOGLE_CHROME_BRANDING).`
+  - S005: `[OBSERVATION: SOURCE] W3C WebDriver BiDi WD-20261008 §7.4 (sha256 dc1077db...) defines command 'network.beforeRequestSent'.`
+  - S017: `[OBSERVATION: SOURCE] Playwright docs/release-notes Version 1.64 §Test runner states: "New --shuffle command line option schedules tests in a random order".`
+  - S023: `[OBSERVATION: SOURCE] Playwright docs/locators §Locate by role states: "role locators do not replace accessibility audits and conformance tests".`
+
+4.2 Explicit Inference Wording (Anchor 2: Source-Scoped Hypothesis + Anti-Claim)
+- Grammar:
+  `[INFERENCE: SCOPE=SOURCE] Under the hypothesis that <upstream engine/runtime> implements the cited source text, <inferred behavior> is expected. Runtime status on this host is UNMEASURED and remains UNKNOWN.`
+- Inviolable constraint: Every inference must explicitly name its scope (`scope: "source"`) and include an explicit disclaimer of local runtime observation.
+- Concrete Examples:
+  - Profile Boundary: `[INFERENCE: SCOPE=SOURCE] The Chromium source indicates that non-branded desktop builds omit the default user data dir check. Whether this host's Chromium package enforces the refusal at runtime has not been observed and remains unknown; the lane runbook (--user-data-dir=<out>/profile) remains the active guard.`
+  - WebDriver BiDi: `[INFERENCE: SCOPE=SOURCE] W3C BiDi spec defines network event subscription; however, implementation in Chrome via chromium-bidi remains an internal translation layer and browser support on this host is unmeasured (locally measured: no).`
+  - Accessible Locators: `[INFERENCE: SCOPE=SOURCE] ARIA snapshots provide structural tree validation based on accessibility semantics; whether this reduces test flakiness in tabi's execution environment is unobserved.`
+
+4.3 Review Receipt Schema Integration (`source-recheck.json`)
+Structure each element in `reviews[].claims[]` with explicit fields:
+```json
+{
+  "id": "CLAIM-01",
+  "modality": "observation",
+  "source_ref": "corpus/SOURCES.md:42 (S028)",
+  "source_location": "remote_debugging_server.cc:169-177",
+  "verbatim_quote": "Enables the default user data dir check even for non-Chrome branded builds, for testing",
+  "substantive_inference": {
+    "scope": "source",
+    "text": "The refusal is compiled only into Google-branded builds and fails closed.",
+    "runtime_status": "unmeasured"
+  },
+  "status": "confirmed"
+}
+```
+
+================================================================================
+5. OPERATIONAL FALSIFIERS
+================================================================================
+
+To ensure compliance with corpus/QUALITY.md rule 1 ("Every claim falsifiable"), the following three operational falsifiers are established:
+
+5.1 Falsifier 1 (Structural Claim Discipline Falsifier — Automated via MistakeProbe):
+- Assertion: Any claim entry marked `modality: "observation"` that asserts host runtime execution or enforcement while citing only `kind: "source"` evidence is immediately FALSIFIED.
+- Observable exit condition: MistakeProbe validator exits with code 1 and finding `observation_without_runtime` (fixture: .ufo/waves/round-12/w1/mistake/fixtures/m2-observation-source-only.jsonl).
+
+5.2 Falsifier 2 (Source-Text Integrity Falsifier):
+- Assertion: An observation asserting that source S### contains quotation Q at section S is FALSIFIED if:
+  `curl -sL --max-time 30 '<URL>' | sha256sum` does not match the recorded hash, or the verbatim quotation Q is absent from the indicated section of the fetched payload.
+
+5.3 Falsifier 3 (Runtime Behavior Falsifier):
+- Assertion: The inference that "host's unbranded Chromium does not enforce default-profile debugging refusal" is FALSIFIED if:
+  A controlled, recorded launch of `/usr/bin/chromium --remote-debugging-port=9222` against the default user-data-dir exits with an enforcement error, refusal log, or non-zero status code. (Note: As long as no launch is performed, stating it as an observation remains a contract violation).
+- Assertion: The inference that "WebDriver BiDi is supported for tabi capture" is FALSIFIED if:
+  Connecting to a loopback Chromium WebSocket with BiDi session initialization fails to establish a BiDi session.
+
+================================================================================
+6. RISKS & SECOND-ORDER EFFECTS
+================================================================================
+
+- Runtime Surface: Risk is zero. Re-checks are strictly HTTP read-only curl/fetch operations. No browser or daemon is executed, honoring the leaf bounds and shape-only session rules.
+- Contract Surface: scripts/check-sources.mjs validates registry integrity (26 self-test cases clean). Transition of S023–S025 from queued→mined must only occur after corpus/knowledge/playwright-accessible-locators-and-snapshots.md exists and cites the exact tokens (used_by_missing / used_by_uncited guards).
+- Substrate / Protected History: Zero mutations to protected paths (SHONEN.md, baseline-census.tsv, scripts/check-freshness.mjs, corpus/lessons/round-N.md). All outputs reside under new, round-12 specific directories (.ufo/waves/round-12/w1/ and corpus/evidence/round-12/).
+- Verification Surface: Guarantees that .ufo/waves/round-12/measure.mjs measures genuine, non-overclaimed reviews (r.result === 'confirmed' with verified claims) without corrupting Calibration.
+
+================================================================================
+7. VERIFICATION DIRECTIVE FOR L1
+================================================================================
+
+Leaf member cannot execute verification commands. At integration, L1 should run:
+1. `node .ufo/waves/round-12/w1/mistake/check-claim-discipline.mjs --self-test` (when completed by MistakeProbe; must exit 0).
+2. `node scripts/check-sources.mjs --self-test` (must exit 0 with 26 clean cases).
+3. Verify that `corpus/evidence/round-12/source-recheck.json` contains:
+   - Exactly 3 reviews dated 2026-10-20 with result "confirmed", 64-character sha256 hashes, and non-empty claims.
+   - All claims strictly distinguish `observation` (source text) from `inference` (runtime unmeasured).
+4. Verify that `corpus/knowledge/playwright-accessible-locators-and-snapshots.md` includes explicit disclaimers:
+   - Role locators do not replace accessibility audits (S023).
+   - ARIA snapshots are structural constraints, not pixel checks (S024).
+   - No local browser runtime support is claimed.

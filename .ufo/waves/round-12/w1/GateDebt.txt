@@ -1,0 +1,55 @@
+GateDebt — SHONEN pin debt, baseline red vs new regression (tabi round 12, w1)
+Scope: read-only source opening + git object/history queries. No gate, test, or build was run. No pins changed. Only this file written.
+
+PINS (observed)
+- ROUND HARD_BASELINE 7f506affa55f6fb892d3c8073c75151c998bdf2c — scripts/check-round-contract.mjs:11
+- USER HARD_BASELINE 7f506aff… — scripts/check-user-round-contract.mjs:12; PSTACK_PIN 92d700d6a8aa9855f1e9d2cc8e12c82f762a1367 — :13
+- SHONEN.md is in protectedPath — check-round-contract.mjs:68 (also user :81, :132)
+- SHONEN blob: baseline 5e055b8c60d606d202029eddabb8a45e13203b06 (= census row, corpus/evidence/pstack-20261015/baseline-census.tsv:25; = 92d700d:SHONEN.md); HEAD 9dcb2687d3083f696b57032389eed7349e03893e.
+- SHONEN last changed in commit 5cdc97654b71c81da9e324f619a335a1594d1e02 ("round-1: post-review fixes"), LOG.md:519-525 (operator-ordered regen to four [~]).
+
+FINDING 1 — ROUND_CONTRACT (new regression)
+- Clean at a4115fa (SCORECARD.md:415). Now fails at checkHistory protected loop: `history_rewritten — Protected bytes changed: SHONEN.md` (check-round-contract.mjs:94-98). Census row would also fail (:115-116) but the protected loop fires first.
+- Observed: `git diff --name-only 7f506aff HEAD` over every protectedPath glob (corpus/lessons/round-N.md, corpus/evidence/fleet-round-1-freshness, .ufo/{continuation,plans,reports,rounds}, scripts/check-freshness.mjs, SHONEN.md) lists only SHONEN.md. SHONEN is the sole protected drift.
+- Per-round checks do not read SHONEN.md (checkReport reads report box lines only, :203-216). [INFERENCE] per-round checks stay as clean at a4115fa.
+
+FINDING 2 — USER_ROUND_CONTRACT (baseline red masked by new finding)
+- Baseline red, unchanged: `round_count` (6 of 10 user rounds; check-user-round-contract.mjs:341; SCORECARD.md:416; LOG.md:503). Not caused by SHONEN.
+- New: checkHistory runs before roundIds (:339 before :341). First failure is now `history_rewritten — Pstack bytes changed: SHONEN.md` via PSTACK_PATHS diff since 92d700d (:121-135; SHONEN at :38, filter :132). Exit still 1, finding changed; round_count is masked, not fixed.
+- Since 92d700d, the PSTACK_PATHS diff shows SHONEN.md as the only drift the filter keeps. scripts/check-round-contract.mjs, check-freshness.mjs, pstack-*.mjs and corpus/evidence/pstack-20261015 are unchanged since 92d700d.
+
+Baseline red vs regression summary: round_count (USER) = pre-existing baseline red. history_rewritten on SHONEN (ROUND and USER) = new regression from 5cdc976.
+
+Verifier note: corpus/lessons/round-1-verifier-spotcheck.md:17 says "re-baseline it next round". The verifier is an integrator-written note, not a gate authority. It does not clear the red now.
+
+MINIMAL LAWFUL FIX — Option A (recommended, not implemented)
+Pin the new SHONEN blob by content, not by moving the history baseline.
+- Schema, in both gate files: const SHONEN_PIN = { path: 'SHONEN.md', baselineBlob: '5e055b8c60d606d202029eddabb8a45e13203b06', pinnedBlob: '9dcb2687d3083f696b57032389eed7349e03893e', pinnedCommit: '5cdc97654b71c81da9e324f619a335a1594d1e02' };
+- ROUND (check-round-contract.mjs): in the protected loop (:94-98), when `production && path === SHONEN_PIN.path`, compare blob(head) to pinnedBlob. In the census loop (:111-117), the SHONEN row compares head to pinnedBlob; the baseline comparison stays. Census file and SHONEN.md are not edited (QUALITY.md item 13: gate-protected census; no append).
+- USER (check-user-round-contract.mjs): same exemption in the protected loop (:107-111). Remove SHONEN.md from PSTACK_PATHS (:38) and the explicit filter (:132), or exempt by blob.
+- Production-only gating keeps fixtures unchanged: writeGoodFixture writes SHONEN 'baseline-shonen', which is unchanged between fixture baseline and head.
+- Second-order effect: editing scripts/check-round-contract.mjs puts it into USER's PSTACK drift (user :34, :128), which goes red until PSTACK_PIN (user :13) moves to a commit that includes that edit. That is a two-commit sequence: land the gate edit, then move PSTACK_PIN. Alternatively remove scripts/check-round-contract.mjs from PSTACK_PATHS, which weakens the pin and needs an explicit decision.
+- Effect ROUND: history check passes; round loop unchanged. Expected `ROUND_CONTRACT verdict=clean rounds=10` [INFERENCE, not run].
+- Effect USER: SHONEN finding gone; finding returns to baseline `round_count 6/10`. Still failed. Expected no new drift from other PSTACK_PATHS, per the diff above.
+- Gap: the production-only exemption cannot be exercised by a fixture self-test. A self-test for unpinned SHONEN in production would need a production-mode harness; state this rather than claim coverage.
+
+MINIMAL LAWFUL FIX — Option B (no gate code edit; L0 decision)
+- Restore SHONEN.md bytes to 5e055b8c (the blob at 7f506aff and 92d700d) and carry the four-[~] demotion in LOG/SCORECARD/report text. This reverses the operator-ordered regen (LOG.md:519-525), so it needs L0 approval.
+- Effect: ROUND history check passes (protected blob and census row both equal). USER PSTACK drift clears. Baseline round_count remains.
+
+REJECTED — move HARD_BASELINE (both gates) to 5cdc976 or later
+- Both gates replace each round's measured commit with HARD_BASELINE to re-measure `before` (check-round-contract.mjs:299-301; check-user-round-contract.mjs:357-359). Moving the pin re-measures all before values at the new commit. SCORECARD before values sit in the APPEND_ONLY prefix (check-round-contract.mjs:99-104) and cannot be corrected. Expected score_mismatch for rounds whose counts changed [INFERENCE, not run].
+
+APPEND_ONLY PREFIX (git diff --numstat 7f506aff HEAD; deletions = lines removed or changed)
+- LOG.md 249 added / 0 deleted — prefix preserved by numstat.
+- corpus/QUALITY.md 22 / 0 — preserved by numstat.
+- corpus/README.md 103 / 0 — preserved by numstat.
+- SCORECARD.md 241 / 1 — ONE deleted/changed line. Possible APPEND_ONLY prefix break (check-round-contract.mjs:99-104). Not identified; unresolved.
+- SKILL.md 34 / 1 — ONE deleted/changed line. Possible APPEND_ONLY prefix break. Not identified; unresolved.
+- PROVINCE.md — absent from numstat (unchanged).
+- Numstat is not a byte-prefix proof. The actual prefix check was not run. If the deleted line is in the prefix, both gates fail with history_rewritten `Append-only prefix changed` regardless of the SHONEN fix. This must be checked before claiming Option A clears ROUND/USER history.
+
+CENSUS
+- corpus/evidence/pstack-20261015/baseline-census.tsv is absent at 7f506aff (created later). Line 1 equals 7f506aff. Its row 25 pins SHONEN baseline blob 5e055b8c. The census is not a baseline-pinned file; the ROUND census loop checks it at baseline and HEAD.
+
+Tool install/update: none.

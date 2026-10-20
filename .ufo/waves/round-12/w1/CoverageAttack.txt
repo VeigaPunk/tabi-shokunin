@@ -1,0 +1,46 @@
+CoverageAttack — tabi round 12, C2 "coverage 9→10 (0→1 entry)" — critic, 2026-10-20
+Seat: TabiR12.CoverageAttack (critic, leaf). Writes: this file only. Installs/updates: none.
+Read-only; no verification commands were run. Observations are file reads made at the time of this review (the tree is changing in-round).
+
+VERDICT: the entry count can verify (0→1). The 9→10 scalar is unsupported as a coverage fraction. Treat this as a fixable claim-wording/score defect, not a harm trade. Smallest safe correction: §5.
+
+1. Counterexample A — the denominator rules out 10/10 [observation + inference]
+- AXES.md:12 defines coverage as a "Fraction of the domain's real surfaces the skill governs". Its target is "PROVINCE.md lists every surface; none unexplored without reason". AXES.md:79 sets the score range at 0–10, so 10 is the ceiling.
+- PROVINCE.md:6-13 lists owned surfaces. Two of them are "site-specific gotchas" and "rate/rights discipline" (:10-11). The lane's own map still marks both open:
+  - corpus/README.md:182: Rate/ToS "open — the approval table still decides from an absence"
+  - corpus/README.md:183: Real-site journeys "open"
+  - SCORECARD.md:96: "Ceiling: rate/rights/site-gotcha records still unmeasured … extension↔daemon handshake open"
+- Frontier tables at corpus/README.md:180-184 and :190-194, as read now: 10 rows = 6 open, 3 docs-held, 1 superseded, 0 held. If the ARIA row (:193) moves from open to docs-held, that becomes 5 open and 4 docs-held. README:175 defines "held" as measured and cited, and README:186 says docs-held means "runtime unmeasured". So no reading of the lane's own frontier table gives a full fraction. The 9→10 move is not supported.
+- PROVINCE.md is unchanged by this round, as of this read. The AXES "lists every surface" target is not shown either.
+
+2. Counterexample B — the numerator is a count, not new PROVINCE ground [observation + inference]
+- Precedent: corpus/lessons/round-1-verifier-spotcheck.md:17 admitted the previous coverage move as "score 8→9 as a note/row count, not the AXES fraction". The kaika reviewer reported the same thing as M-3 (/home/vgpnk/Projects/shokunin/.ufo/waves/kaika-w3/tabi-review.md:14,65,137,160-161): "PROVINCE.md is unchanged and no denominator is measured". So the current 9 is already a count convention. Adding another +1 per entry keeps it a counter. It does not turn it into a fraction.
+- The count convention also cannot continue: from 10, the next admitted entry would have to score 11 on a 0–10 scale (AXES.md:79). That makes the scalar unusable for future expansion. [inference]
+- The ARIA/accessible-locator ground is not a separately listed PROVINCE surface. It fits under "dynamic-page evidence patterns" (PROVINCE.md:12-13), which is already governed:
+  - SKILL.md:402: the State row already prefers webbridge `snapshot` (an accessibility tree with `@e` refs)
+  - corpus/knowledge/webbridge-plugin-anatomy.md:81-82
+  So under a PROVINCE-surface denominator the numerator does not change. What is new is a tool/edge class (Playwright role locators and ARIA snapshots), and that is documentation-held only (SKILL.md:1639-1640). [inference on the surface mapping]
+- Inflation vector: the "open" frontier row README:193 was created by the lane itself last round, from its own queued rows (SOURCES.md:37-39,49). A round that creates a frontier row and then fills it gains +1 each time with no denominator check. LEARNING.md:33 does accept this as expansion-trend evidence. It is not evidence of AXES coverage.
+
+3. Admission preconditions for the entry count itself, read at review time [observation]
+- SOURCES.md:37-39: S023, S024 and S025 are still `queued` with used-by `—`. CORPUS.md:123-124 (expansion counts only entries whose `source:` cites a `mined` row) and LEARNING.md:33 both require these rows to be flipped to `mined`, with used-by pointing at the note.
+- The gate does not enforce that direction. scripts/check-sources.mjs:329-341 checks only mined→used-by and used-by→citation. A note that cites a queued row passes, so a green SOURCES_GATE does not prove the expansion condition. L1 must check this by hand.
+- corpus/knowledge/playwright-accessible-locators-and-snapshots.md and corpus/evidence/round-12/ did not exist when I globbed them. SKILL.md:1639,1642 already point to both. The README convention is "A row is written when its file exists, never before" (corpus/README.md:9). This is state at observation time and may be in flight; it only matters if it is still true at integration.
+- QUALITY.md:26-27 (criterion 11): in the same commit, README:193 needs an append-only status change to docs-held. The coverage statement at README:163 ("29/29 notes") also needs a superseding count of 30/30, or a dated gap.
+- S025 anchor (SOURCES.md:39): "APG home, no revision marker". Specific claims about roles, names or keyboard patterns need a page- or section-level APG anchor. The landing page is not enough. [inference, from QUALITY.md:4-5]
+
+4. Measurement defects in the planned counting command (SCORECARD.md:440) [observation]
+- `git ls-tree -r --name-only HEAD | grep -c corpus/knowledge/playwright-…md` has three problems:
+  - It uses HEAD, not a pinned measured-against rev. Other claims pin revs (SCORECARD.md:410-411, :242).
+  - The pattern is unanchored, and its `.` characters are regex wildcards.
+  - It proves the file exists, not that the entry was admitted under QUALITY.md.
+- Fix: `git ls-tree -r --name-only <rev> | grep -c '^corpus/knowledge/playwright-accessible-locators-and-snapshots\.md$'` at base and at after, plus the mined-status check from §3.
+- Possible duplicate authority (minor): the new SKILL.md:1631-1643 section gives Playwright role/ARIA guidance but never points back to SKILL.md:402, the lane's substrate rule for accessibility-tree state (webbridge `snapshot`). :1637 ("Keep the existing … evidence ladder") only partly reconciles them. Fix: state that webbridge snapshot / raw CDP remains the lane-run tool and that Playwright ARIA is documentation-held, not lane-executed.
+
+5. Smallest safe correction
+- Re-word C2 as "coverage: improved — admitted entries on uncovered map ground 0→1 (count convention per round-1-verifier-spotcheck.md:17; not the AXES:12 fraction)". Either hold the scalar at 9, or record it as "10 (count convention), not a full-coverage assertion" with the reason in SCORECARD. Do not let a bare 10 read as "PROVINCE fully covered": PROVINCE.md:10-11 surfaces are still open (README:182-183).
+- Optional, to make a fraction re-derivable: publish a denominator, for example PROVINCE.md:6-13's 7 surfaces, or the README:178-194 frontier rows with statuses. Report numerator/denominator before and after. By my read of the frontier rows (not executed): docs-held 3/9 → 4/9 non-superseded rows, and held 0 → 0.
+- Then the admission preconditions from §3: S023–S025 set to `mined` with used-by; the note file actually exists; README :193 status change and the 30/30 map statement; anchored, rev-pinned counting command.
+
+Impacted axes: coverage (score semantics) and calibration (a scalar that claims more than its measure; AXES.md:15 and :51-55 say "a score no reader can re-derive is an opinion"). No harm found to depth, operability, freshness or adjacency from C2 as scoped. "No browser runtime support claimed" is consistent with SKILL.md:1640.
+Unknown: whether the orchestrator will again accept the count convention at the scale ceiling. That is a judge ruling, not a lane fact.

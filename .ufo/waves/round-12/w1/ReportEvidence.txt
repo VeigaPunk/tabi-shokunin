@@ -1,0 +1,126 @@
+ReportEvidence — tabi round-12 w1 evidence checklist (draft, not the report)
+Scope: checklist for the round-12 report. Writes only this file. No commands run, no builds/tests, no git subcommands.
+Labels: [obs] = opened in a file or artifact; [inf] = inference; [unk] = not observed.
+
+## A. Required section order (fleet report contract)
+Source: /home/vgpnk/Projects/shokunin/.ufo/prompts/tabi-round-12.md:99-125 (§4), host extras at :220-221.
+Target path: /home/vgpnk/Projects/shokunin/.ufo/reports/round-12/tabi.md [obs: tabi-round-12.md:101]. Not present [obs: .ufo/reports/round-12/ listing has no tabi.md].
+Required order:
+  1. Work performed (opens with the 1–3 declared claims and their axes; one bullet per item with path:line / command / commit evidence)
+  2. Landed changes (each tied to a LOG.md entry and the commit hash)
+  3. Before → after measurements (one per claim: counting command + measured commit)
+  4. Sources & frontier (SOURCES rows before→after, counting command, tier counts, frontier rows; or "SOURCES: unchanged — ..." line)
+  5. Trend verdicts (expansion / quality / discernment; improved|harmed|unchanged|unprovable-but-better; no scalar)
+  6. SHONEN (one line per box)
+  Plus report extras: a `Stale-lane` line and any tool installs (lane-addendum.md §6 item 6, tabi-round-12.md:220-221).
+Marker rule [obs :121-125]: missing sections other than Sources & frontier and Trend verdicts, or no evidence pointers = round failed.
+Gate-side check [obs: scripts/check-round-contract.mjs:203-216]: checkReport wants lane-local reports/<id>.md, a `lane-commit:` line, and `^## SHONEN$`. This differs from the fleet path above. Route to L1 as a location conflict; do not reconcile here.
+Checklist:
+  [ ] six headings present, in this order, exact names
+  [ ] every bullet carries path:line, command output, or commit hash
+  [ ] `## SHONEN` heading exact (gate :211)
+  [ ] `Stale-lane` line present
+  [ ] tool-install line present (may read "none")
+  [ ] report commit cites pushed lane HEAD (prompt :212) and lands last
+
+## B. Census
+Requirement [obs: tabi-round-12.md:54-66]: run `/home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi` at round start and round end; paste both outputs and exit codes; exit 0 required at round end.
+Start [obs: .ufo/waves/round-12/w1/census-before.txt:1-3]: command as above, Exit 0, line `tabi ok /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/SOURCES.md`. Artifact was written by the dispatcher, not by this seat.
+End [unk]: not run. L1 must run it after the last write and paste output + exit code.
+Script present [obs: glob of /home/vgpnk/Projects/shokunin/scripts/**].
+Checklist:
+  [ ] end-of-round census output and exit code pasted (must be 0)
+  [ ] start census file kept as-is (census-before.txt)
+
+## C. Counts (corpus/SOURCES.md, observed)
+Rows: S001–S028, lines 15–42 [obs: SOURCES.md:15-42] = 28 rows.
+Status [obs unless noted]:
+  mined: S001–S019 (19) — lines 15–33
+  queued: S020–S025 (6) — lines 34–39 (S020 WebMCP, S021 DevTools agents, S022 flaky JS, S023 Playwright locators, S024 ARIA snapshots, S025 APG)
+  rejected: S026, S027 (2) — lines 40–41
+  S028: row present (code, tier A, "supersedes S004", SOURCES.md:42); its status column is truncated in the read [unk]. If mined, mined = 20 and total classed = 28.
+Tier [obs from tier column, with S028 tier A]: A = 22, B = 4 (S006, S007, S019, S022), C = 2 (S026, S027). Total 28.
+Paths: accessible-selectors "queued, not mined", S025→S023→S024, "planned next-round entry" [obs: SOURCES.md:49].
+Search log: 2026-10-19 entries at SOURCES.md:53-57; S023–S025 read for the lead, "stable docs read 2026-10-19" [obs: :37-39].
+Drift vs SCORECARD [obs: SCORECARD.md:411]: SCORECARD claims rows 0→27 (A21 B4 C2; mined 19 queued 6 rejected 2). Current file is 28 rows, A22. One-row drift (S028). Report must cite the current count and name the difference.
+Knowledge notes: LOG and SCORECARD state 23 notes [obs: SCORECARD.md:21-22, :96]. Not re-counted here [unk].
+Checklist:
+  [ ] before count (27 per SCORECARD baseline, or 28 at this read) and after count, with the exact command used
+  [ ] tier counts by row
+  [ ] old→new status changes for each touched row (for example S023–S025 queued→mined if mined this round)
+  [ ] S028 status confirmed before quoting
+
+## D. Commits
+Lane HEAD [obs]: .git/HEAD → refs/heads/master; .git/refs/heads/master = f032f2dccc8a99632eea52edafa8220284b5c919. Last reflog entry (.git/logs/HEAD): "merge kaika/publish-sync: Fast-forward".
+Previous references, now superseded [obs]: round-11 integration HEAD d24b98d (SCORECARD.md:13-14); kaika base 40a6de87f, work commit a4115fa (SCORECARD.md:397).
+Round-12 commit [unk]: none in the reflog tail. Reflog shows no round-12 entry. Round-12 wave evidence (.ufo/waves/round-12/w1/*) was not checked for tracking state [unk].
+Push status [unk]: not checked; no git subcommands run.
+Lesson file [obs: corpus/lessons listing]: round-1..10.md, training-round-11.md, pstack-*, user-*, kaika-fleet-round-1.md present. round-11.md absent (named training-round-11.md, the closeout). round-12.md absent and owed by this round (tabi-round-12.md:68-70). `round-12.md` matches the protectedPath regex [obs: check-round-contract.mjs:61]; a new file is allowed, an existing one is not.
+Checklist:
+  [ ] lane HEAD hash cited is the pushed HEAD at report time (re-read .git/refs/heads/master then)
+  [ ] `tabi-shokunin <tabi@shokunin.local>` identity on round-12 commits (prompt :205)
+  [ ] landed-changes list maps each change to its commit and LOG entry
+  [ ] corpus/lessons/round-12.md ## Mistakes present (or sweep pasted showing none)
+  [ ] no edit to protected paths: SHONEN.md, corpus/lessons/round-N.md (existing), .ufo/reports/fleet-round-1-attempt-20261015/, corpus/evidence/fleet-round-1-freshness/ [obs: check-round-contract.mjs:60-69]
+
+## E. Claims and baselines (conflicts to route to L1)
+Wave claims [obs: .ufo/waves/round-12/w1/spec.json:3]: C1 freshness 8→9 (three kaika external notes re-verified; dated hash-pinned receipt; 0→3 reviews); C2 coverage 9→10 (S023–S025 locators/ARIA entry; 0→1).
+Source of the 8/9/10 numbers [obs: SCORECARD.md:393-406]: "Kaika fleet round-1 (2026-10-19)" section, row "kaika-fleet-round-1 (claimed)": depth 8, coverage 9, operability 8, freshness 8, calibration 9, adjacency 8. Self-verdicts, pending non-author verification (:399-401).
+Training-chain axes table [obs: SCORECARD.md:93-100]: depth 7, coverage 5, operability 5, freshness 3, calibration 6, adjacency 5. A different scale from the 8/9/10 numbers. Named as a conflict, not reconciled.
+Planned mechanism mismatch [obs: SCORECARD.md:437-440]: planned freshness 8→9 is "dated recheck: lines on every knowledge note, 5→29" (`grep -l '^recheck:' corpus/knowledge/*.md | wc -l`). The wave's C1 is a three-note re-verification with a receipt. Different mechanism; the report must state which one is claimed.
+Planned coverage matches [obs: SCORECARD.md:439-440]: playwright-accessible-locators-and-snapshots.md, 0→1, mined from S023–S025. Counting command: `git ls-tree -r --name-only HEAD | grep -c corpus/knowledge/playwright-accessible-locators-and-snapshots.md`.
+Checklist:
+  [ ] claim axes stated on one scale, with the scale's source cited
+  [ ] before values cited from SCORECARD with path:line
+  [ ] counting command pasted per claim, plus the measured commit
+  [ ] no claim of browser runtime support (wave spec :3)
+
+## F. SHONEN
+Canonical file [obs: SHONEN.md:5,7,9,11]: four boxes, all `[~]`. Gate BOXES match these lines (check-round-contract.mjs:14-19) by suffix.
+Rule [obs: tabi-round-12.md:118-119]: `[x]` only with a named non-author verifier; `[~]` with a resolvable evidence pointer; `[ ]` if untouched.
+Historical [x] marks withdrawn [obs: LOG.md:519-525]: SHONEN.md is byte-pinned by the gate; changing it is an operator-routed L0 question.
+Non-author status [obs]: seats in this wave are same-lane advisory (spec.json:3 contract; scribe-current.json:80 in the pstack evidence). None qualifies as non-author. Expect `[~]` at most.
+Checklist:
+  [ ] four lines in the report, `- [~] ` or `- [ ] ` prefix, exact box text
+  [ ] no `[x]`
+  [ ] SHONEN.md not edited
+
+## G. Stale-lane and inherited state
+Requirement [obs: lane-addendum.md:83-84; tabi-round-12.md:220-221]: one `Stale-lane` line.
+Watchdog [obs: .ufo/watchdog.log:396-397]: `lane-dead-no-report tabi round=1; retry same round` (2026-10-15). No tabi round=12 entry found in the watchdog. So no inherited round-12 attempt is recorded [obs; absence of evidence, scope of grep: this file].
+Chain status [obs: LOG.md:138; SCORECARD.md:121-123]: training chain ends at round 11; "nothing presumes a round 12".
+Namespace question open [obs: .ufo/l0-questions.md:34]: tabi | round-1 | reconcile relaunched round namespace; fleet round-1 follows completed training round 11.
+Round-12 label source [obs: tabi-round-12.md:149-152]: campaign target round 100 (operator directive).
+Other planner-seat question open [obs: l0-questions.md:52-53]: kama and tsukuroi round-12 questions on planner vs validator; wave maps the planner seat to PlanningWalk (scout).
+Checklist:
+  [ ] Stale-lane line: state that no round-12 tabi attempt is in the watchdog, that the round label conflicts with the training closeout, and that the namespace question at l0-questions.md:34 is open
+  [ ] inherited uncommitted state named (if any) per prompt :213-215
+
+## H. Tools
+Authorization [obs: spec.json:3 contains "Tooling authorization (operator, 2026-10-19)" and RULES.md pointer]: present in the wave context, as lane-addendum §6 item 7 requires.
+Installs by this seat [obs]: none. This seat ran no installs or updates.
+Installs elsewhere [unk]: no wave seat's install record was read (assignments-result.txt is 149 KB; not parsed).
+Checklist:
+  [ ] per install: tool, version, channel, reason (RULES.md:14)
+  [ ] "none" line if no installs
+
+## I. Wave counts (observed)
+Dispatch [obs: .ufo/waves/round-12/w1/dispatch.json:16-20]: counts spawn 32, resume 0, total 32. maxLanes 32 (:4-15).
+Registry [obs: swarm-registry.json:7-200]: 32 members, names consistent with spec.
+Role mix [obs: spec.json role fields]: executor 5, scout 9, connector 4, reviewer 6, critic 4, sentinel 1, scribe 2, revenger 1 = 32.
+Planner-equivalent: PlanningWalk (scout) is the bounded data walk. The L1 holds the canonical planner seat (lane-addendum §6 item 2).
+Floor [obs vs tabi-round-12.md:82-88]: ≥8 L2, one batch. Met by role count (planner-equivalent, connector 4, executor 5, scribe 2, scout 9, reviewer 6, critic 4).
+Single-task-call requirement [unk]: dispatch.json:228-230 carries the taskCall; the actual call was not checked.
+Checklist:
+  [ ] report states 32 spawn, role mix, planner mapping
+  [ ] single batched task call confirmed by L1 (not by this seat)
+
+## J. Open items for L1 (not resolved here)
+1. Round label and namespace (LOG.md:138; l0-questions.md:34; tabi-round-12.md:149-152).
+2. Report location: fleet path vs gate-expected lane-local reports/<id>.md (check-round-contract.mjs:203-216).
+3. Axis scale: kaika claimed 8/9/10 vs training table 3/5/5/6/5/7 (SCORECARD.md:93-100, :403-406).
+4. C1 mechanism: wave three-note receipt vs planned recheck-line row (SCORECARD.md:437-438).
+5. SOURCES count: 28 now vs 27 in SCORECARD.md:411; S028 status unconfirmed.
+6. Lesson naming: training-round-11.md vs round-11.md; round-12.md owed.
+7. Post-round census exit code (run by L1).
+8. Pushed HEAD at report time (current master f032f2dc, not yet round-12 work).

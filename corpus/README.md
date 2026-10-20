@@ -197,3 +197,25 @@ Correction (kaika round-1 post-review, 2026-10-19): the `chrome-remote-debugging
 row above (line 167) says this host's unbranded Chromium "does not enforce" the ≥136 refusal.
 That is an inference from Chromium source (the note's §3 labels it so; S028 supersedes S004),
 not an observation — no default-profile launch was made. The row's guard rule is unchanged.
+
+## Round 12 — coverage and freshness reconciliation (2026-10-20)
+
+This append supersedes the queued/no-note accessible-selector row at :193 only.
+The historical maps and 29/29 statement at :163 describe their original revisions.
+Current note-map count is recorded by the round's committed measurement, not inferred
+from those historical counts.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/playwright-accessible-locators-and-snapshots.md` | New docs-held ground: role/name/label locator choice, strictness and re-rendering, partial ARIA templates and child matching modes. Different from webbridge `@e`; no runtime capability, visual guarantee or accessibility certificate. | S023, S024, S025, reopened 2026-10-20 |
+| `knowledge/source-recheck-round-12.md` | Corrections on existing ground: same-port address retry vs approval-mode port fallback; switch-only refusal scope; rolling-stable retry version qualification; a proposed false BiDi correction rejected against the exact source sentence. | S028, S011, S013, S017; `corpus/evidence/round-12/source-recheck.json` |
+
+| Frontier item | Current status | Pointer |
+|---|---|---|
+| Playwright accessible locators / ARIA snapshots | docs-held — previously queued, now mined; no local Playwright execution | `knowledge/playwright-accessible-locators-and-snapshots.md` |
+| Other open frontier ground | unchanged — extension↔daemon handshake, native WebMCP host probe, rate/rights real-site records, real-site journeys, WebMCP spec mining | historical frontier rows :180–183 and :194 |
+
+The two appended errata in `chrome-remote-debugging-profile-boundary.md` and
+`web-flake-retry-evidence.md` point to the correction dossier. Their original verification
+headers remain historical; three bounded source-claim families were rechecked, not every
+claim in every note. In particular, S018/S019 paper/abstract content was not refreshed.

@@ -1,0 +1,113 @@
+EvidenceLadder — Connector Synthesis (Tabi Round 12, Wave 1)
+Seat: TabiR12.EvidenceLadder (connector)
+Date: 2026-10-20
+Repo root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Assigned output: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-12/w1/EvidenceLadder.txt
+Commands run: none (read-only research across in-repo files and opened external sources; no verification commands).
+Tool installations/upgrades: none.
+
+================================================================================
+1. NAMED AXES (Godspeed Posture)
+================================================================================
+- Coverage: Round-12 claim C2 advances coverage 9→10 via admission of Playwright accessible locators and ARIA snapshots on previously queued S023–S025 ground (0→1 entry).
+- Freshness: Round-12 claim C1 advances freshness 8→9 (lowest non-retired axis) via dated re-open receipts of 3 kaika external notes.
+- Depth: Preserved at 8. Protects the four-rung evidence ladder from dilution; prevents category collapse across pixels, DOM, and wire.
+- Calibration: Maintained at 9. Strictly enforces observation vs inference separation (QUALITY.md #3), preventing overclaims regarding accessibility conformance or runtime execution.
+- Operability: Preserved at 8. Retains clean structural gates without touching protected historical paths or mutating append-only contracts.
+- Adjacency: Connects S023 (locators), S024 (ARIA snapshots), and S025 (W3C APG) directly to Tabi's existing evidence-capture discipline and layer routing.
+
+================================================================================
+2. LOCAL REPO AND SOURCE EVIDENCE
+================================================================================
+[obs] = observed directly in repo file or fetched source; [inf] = analytical inference; [unk] = unknown / unmeasured.
+
+A. The Existing Four-Rung Ladder & Layer Routing Table:
+- [obs] SKILL.md:361-375 defines the ladder:
+  * Rung 1: Static bytes (deterministic PNG byte-identity; static content rendering; environment-scoped).
+  * Rung 2: Dynamic capture (before/after pair under sha-pinned methodology and state-waits; action-effect claims).
+  * Rung 3: Multi-signal (two or more independent signals agree: visual read-back + DOM shape/struct + protocol metadata).
+  * Rung 4: Network (wire capture; five correlated surfaces: client model, wire ExtraInfo, byte totals, page-side perf, server log).
+- [obs] SKILL.md:366: "never present a lower rung as support for a higher one."
+- [obs] SKILL.md:413-417: "Action-effect claims ('clicking X changed Y') capture a before/after pair of whichever class the effect lives in; click is synthetic el.click() and fill is clear-and-insert, so the call's success return is not the evidence."
+- [obs] SKILL.md:437-438 & layer-routing-synthesis.md:83 (RT13): Measured case D2 proved that HIDDEN-MARKER-7b3e was present in DOM shape (grep=1) and raw DOMSnapshot, but red pixels = 0 px (blue band = 17,079 px). Measured case D8 proved :visited rendered 1,033 differing pixels while DOM shape and struct were byte-identical.
+- [obs] SKILL.md:432-435 & network-evidence-rung.md §6: Measured cases D4, D6, D7 proved that network wire events arbitrate status, byte transfer, and aborted requests that leave no DOM/AX trace (D4 client abort leaves no DOM trace; D6 cache repeats have 0 wire lines; D7 wire 304 vs client 200).
+- [obs] arc-synthesis.md:35-42: Rounds 5–9 added 5 measured extensions inside Rung 4 (async, cache/trips, stateful, state-changing) without adding a 5th rung. The four-rung ladder ceiling is an invariant contract.
+- [obs] executor-test-sufficiency.md:95: Round-3 executor test found Rung 3 multi-signal "SUFFICIENT (partial climb)... not maximised (no second independent shape channel beyond DOMSnapshot and JS counting)".
+
+B. Primary Sources (Opened 2026-10-20; Hashes Verified Identical to Round-1 Gate):
+- [obs] S023 (https://playwright.dev/docs/locators, sha256 234a2452…bdee6, §Locate by role):
+  "Note that role locators **do not replace** accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines."
+  "When locating by role, you should usually pass the accessible name as well, so that the locator pinpoints the exact element."
+  "Every time a locator is used for an action, an up-to-date DOM element is located in the page."
+- [obs] S024 (https://playwright.dev/docs/aria-snapshots, sha256 bbbad688…e6194, §Aria snapshots, §Snapshot matching):
+  "In Playwright, aria snapshots provide a YAML representation of the accessibility tree of a page."
+  "A template is a constraint, not necessarily a complete serialization of the accessibility tree."
+  "Snapshot testing and assertion testing serve different purposes... Snapshot testing captures a 'snapshot' or representation of the entire state of an element..."
+  Matches via partial matching (omitting attributes/names) or strict matching (`/children: equal | deep-equal | contain`).
+- [obs] S025 (https://www.w3.org/WAI/ARIA/apg/, sha256 17521385…3d30f, §Introduction, §Read Me First):
+  "This guide describes how to apply accessibility semantics to common design patterns and widgets."
+  APG About Introduction: "The APG does not specify normative requirements and thus does not have a conformance model."
+  APG Read Me First Principle 1: "A role is a promise... Unlike HTML input elements, ARIA roles do not cause browsers to provide keyboard behaviors or styling."
+- [obs] Round-12 Peer Findings (.ufo/waves/round-12/w1/):
+  * ReviewC2.txt:4-12: Highlights that S023 teaches paraphrase ("explicitly not an accessibility audit") overstates the source ("do not replace accessibility audits... but give early feedback"); S024 "structural evidence, not pixels" is an inference, not raw page text; SKILL.md:402 webbridge @e snapshot must not be equated with Playwright ARIA snapshot YAML without empirical proof.
+  * LocatorSource.txt:108-123: Identifies 5 boundary overclaims (role locators != accessibility compliance; role locators without names trigger strictness collisions; role locators do not verify visual rendering; first()/nth() bypass strictness and induce flakiness).
+  * ApgSource.txt:81-111: Delineates the 4-part boundary between accessibility semantics (role/name/state projection in AX tree) and an accessibility audit (normative WCAG conformance, keyboard behavior fulfillment, visual contrast/focus indicators, AT interoperability).
+
+================================================================================
+3. CONTRADICTIONS & SUBSTITUTION TRAPS TO PREVENT
+================================================================================
+A. Trap 1: ARIA-as-Pixel Substitution (conflating ARIA snapshot / role locator with Visual Rendered State, Rungs 1 and 3)
+- Contradiction: Conflating an ARIA snapshot match with visual rendering directly contradicts the measured findings in RT13 (D2/D8):
+  1. Off-screen or hidden elements: Elements with `.sr-only` (`clip: rect(0,0,0,0); position: absolute; width: 1px; height: 1px; overflow: hidden`), `opacity: 0`, or covered by opaque overlays remain in the accessibility tree and match `getByRole` or `toMatchAriaSnapshot`, but render ZERO visible pixels to the user.
+  2. Presentational elements: Elements with `role="presentation"`, `role="none"`, or styled text without semantic wrappers are stripped from the accessibility tree, yet are fully visible on screen.
+  3. Visual defects: Color contrast failures (WCAG 1.4.3), missing font glyphs, broken layouts, and clipped text boxes are invisible to ARIA snapshots.
+- Hard Invariant: An ARIA snapshot match NEVER proves "the page renders X" or "X is visually displayed". It can never substitute for Rung 1 static PNG bytes or Rung 3 visual screenshot read-back.
+
+B. Trap 2: ARIA-as-Network Substitution (conflating locator auto-waiting / ARIA match with Wire Truth, Rung 4)
+- Contradiction: Conflating locator presence or snapshot updates with network completion contradicts measured cases D4, D6, and D7:
+  1. Client-side mutations: A locator can resolve or an ARIA snapshot can update via client-side JavaScript state, optimistic UI updates, or in-memory caches without issuing any network request (D6 cache-served repeats have 0 wire lines).
+  2. Failed/aborted requests: An interaction can fail on the wire (D4 client abort, HTTP 500/502/504) while leaving the pre-existing DOM/AX tree intact, or conversely, an API request can succeed (200 OK) while the client fails to render the resulting semantic elements.
+  3. Network timing & body bytes: Locators provide zero insight into transferred byte closure (`finEnc`), headers (`responseReceivedExtraInfo`), or wire latency.
+- Hard Invariant: An ARIA snapshot or locator assertion NEVER proves "the page fetched X / got Y / got nothing". It can never substitute for Rung 4 wire capture.
+
+C. Trap 3: Semantics-as-Audit Substitution (conflating role presence with accessibility conformance)
+- Contradiction: Declaring `<div role="button">Submit</div>` matches `getByRole('button', { name: 'Submit' })` and satisfies an ARIA snapshot `- button "Submit"`, but completely fails keyboard operation (`Enter`/`Space`), focus management (`tabindex="0"`), and WCAG 2.1/2.2 conformance.
+- Hard Invariant: ARIA locators and snapshots reflect semantic metadata exposed to the browser's accessibility tree, never full accessibility or WCAG compliance.
+
+================================================================================
+4. PROPOSED MOVE: THE SEMANTIC-LAYER ROUTING ADDENDUM (Bounded Synthesis)
+================================================================================
+Without adding a 5th rung (which would violate the 4-rung ceiling earned in round 4 and maintained through round 11), synthesize a formal Semantic-Layer Routing Addendum in the round-12 knowledge note and SKILL layer routing:
+
+1. Position ARIA Snapshots as Layer L6.5 in the Layer Routing Table:
+   - L6: DOM Document Content (CDP `DOMSnapshot` columnar arrays + shape text; captures all elements, text nodes, `::marker` pseudo-elements, and raw input values with `-1` sentinel).
+   - L6.5: Computed Accessibility Tree (Playwright ARIA Snapshots; YAML representation of computed roles, accessible names via AccName, and ARIA attributes; filters presentational noise; supports partial matching and strict `/children` constraints).
+   - L7: Pixels (Screenshot PNG + pixel tools; visible rendered state; only layer seeing `display:none` and `:visited`).
+
+2. Precise Ladder Rung Connections:
+   - Rung 1 (Static bytes): DISALLOWED for ARIA snapshots. Rung 1 requires pixel-level image determinism. ARIA is blind to styling, colors, and layout.
+   - Rung 2 (Dynamic capture): ALLOWED as action targeting and wait predicates (`page.getByRole(...)`), NOT the outcome evidence. The effect of the action must be captured in the appropriate before/after artifact (L6.5 ARIA YAML, L6 DOM, L7 PNG, or L4 wire slice).
+   - Rung 3 (Multi-signal): ADMITTED as a distinct third structural channel. Solves the historical r3 debt (`executor-test-sufficiency.md:95`) where Rung 3 lacked a second independent structural channel beyond DOMSnapshot. An action-effect claim achieves maximized multi-signal corroboration when Visual (L7 PNG), Raw DOM (L6 DOMSnapshot), and Semantic Structure (L6.5 ARIA Snapshot) all independently agree.
+   - Rung 4 (Network wire): STRICTLY DISALLOWED for ARIA. Wire truth must be arbitrated by CDP Network events, ExtraInfo, and server logs.
+
+3. Two Immutable Anti-Substitution Rules for C2 Note:
+   - Rule A (Anti-Pixel): "An ARIA snapshot match proves only that the browser's accessibility engine computed the specified roles and names; it cannot prove visual visibility, layout stability, or pixel rendering. Any visibility claim must pair with Layer L7 (screenshot)."
+   - Rule B (Anti-Network): "An ARIA locator resolution proves only that an element matching the semantic query was attached to the client DOM at the moment of evaluation; it cannot prove that a network request was dispatched, reached the wire, or completed. Any traffic claim must pair with Layer L4 (CDP Network slice)."
+
+================================================================================
+5. SECOND-ORDER EFFECTS & RISKS
+================================================================================
+- Runtime Surface: None. The round goal explicitly declares: "No browser runtime support is claimed." Tabi has no local Playwright runner execution. The addendum defines static and contractual knowledge bounds only.
+- Contract Surface: Fully respects append-only rules (`APPEND_ONLY` in check-round-contract.mjs). Modifies no historical notes; applies exclusively to the new C2 knowledge note (`corpus/knowledge/playwright-accessible-locators-and-snapshots.md`) and future SKILL append.
+- Substrate / Protected Paths: Zero writes to `protectedPath` (avoids `SHONEN.md`, `corpus/lessons/round-*.md`, etc.).
+- Verification Surface: Avoids invalidating existing test-sufficiency definitions. Resolves the long-standing open gap in Rung 3 (providing a third structural channel) without perturbing the 4-rung count or the 9-item record envelope.
+
+================================================================================
+6. VERIFICATION (How L1 Verifies the Admitted Note)
+================================================================================
+L1 should verify that the newly authored knowledge note (`playwright-accessible-locators-and-snapshots.md`):
+1. Cites exact primary source quotes (≤25 words) for S023 (§Locate by role), S024 (§Aria snapshots), and S025 (§Introduction).
+2. Explicitly labels "structural evidence, not pixels" as an [INFERENCE] from S024's separation of ARIA snapshots from visual regression docs.
+3. Contains explicit sections establishing Rule A (Anti-Pixel) and Rule B (Anti-Network), citing measured cases D2, D4, D6, D7, and D8 from `SKILL.md:430-441`.
+4. Records `locally measured: no` / `No browser runtime support claimed` in its header, preserving the honest perimeter.
+5. Passes `scripts/check-sources.mjs` once S023–S025 are transitioned from `queued` to `mined` with `used-by` pointing to the new note.

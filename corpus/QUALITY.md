@@ -28,3 +28,14 @@
     (lesson: corpus/lessons/kaika-fleet-round-1.md#mistakes M12)
 12. Source tier: an admitted external claim cites ≥1 opened corpus/SOURCES.md row of tier A or B for its scope; tier C never sole support; tier definitions live in corpus/SOURCES.md. (source: SOURCES contract v1 rule 3 — contract-derived, not a mined-lesson criterion)
 13. Before writing a corpus path, check it against the lane's gate-protected set (`protectedPath` in scripts/check-*-contract.mjs, `corpus/evidence/pstack-20261015/baseline-census.tsv`); protected history is never appended — a new round gets a new file. (lesson: corpus/lessons/kaika-fleet-round-1.md#mistakes M13)
+14. Distillation preserves the evidence class of its source: a source-code reading may
+    justify a source-scoped inference, but never an observed host behavior. Check the
+    distilled SKILL/index claim as well as the note; a dated documentation recheck
+    does not renew a historical runtime observation.
+    (lesson: corpus/lessons/round-12.md#mistakes; recurrence of kaika M2/post-review M-1)
+15. Supersedes criterion 12's tier-definition pointer only: use the scoped A/B/C
+    definitions in the canonical `CORPUS.md` §SOURCES.md contract v1
+    (`/home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/CORPUS.md`).
+    `corpus/SOURCES.md` curates rows; it does not define a second tier scheme.
+    The opened A/B requirement and tier-C prohibition are unchanged.
+    (lesson: corpus/lessons/round-12.md#mistakes; ReviewSources finding 2)

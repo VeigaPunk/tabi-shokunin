@@ -115,3 +115,24 @@ automation: it "will continue to respect the existing behavior."
    this file; loopback is hardcoded in the factory).
 5. chromium-review CL number for the change — gitiles `+log` returned 403; the code anchor
    stands at @main + sha256, not a commit hash.
+
+## Round 12 correction — source recheck (2026-10-20)
+
+Superseding scope/attribution for §2: :38–40 concerns the refused command-line switch
+paths only, not every server-start path. Feature/pref-gated approval mode also exists
+(.cc:397–417); its installed-binary state was not measured. At :41 the classes were
+conflated: the switch-path `TCPServerSocketFactory` retries IPv4→IPv6 at the same
+requested port, whereas approval mode's `TCPServerSocketFactoryWithPortFallback` also
+retries port zero. Both source implementations bind loopback. No local listener or
+default-profile launch was observed.
+
+Additional qualifications from the same source review: “identically” at :38 means both
+switches call the same permission gate, not identical surrounding control flow; the
+policy check is outside the desktop-only data-dir check, so matrix :50 is not limited
+to desktop. The “old GET form” at :68 was not established by a cited historical source;
+only the current PUT contract is held. The supported-client list at :93 is illustrative,
+not exhaustive (the viewer also names Chrome and Chrome DevTools for agents).
+
+Full correction and rejected false correction: `source-recheck-round-12.md` (S028,
+source observation vs runtime inference explicit). Earlier source digests and dates
+remain historical. Source checks and disposition: `corpus/evidence/round-12/source-recheck.json`.

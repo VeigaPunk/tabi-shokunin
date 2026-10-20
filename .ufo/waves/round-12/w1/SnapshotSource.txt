@@ -1,0 +1,177 @@
+# SnapshotSource Scout Report: Playwright ARIA Snapshots (S024)
+
+## Axes
+- Freshness: Re-opened S024 on 2026-10-20; SHA-256 and HTTP response headers recorded and pinned.
+- Coverage: Partial matching, strict matching (`/children`), regex patterns, accessible names, attributes, order sensitivity, and scoping limits exhaustively analyzed from documentation and API references.
+- Calibration: Rigid boundary separation between observed documentation facts, structural inferences, and potential overclaims (ARIA snapshot != visual pixel test; ARIA snapshot != accessibility compliance audit).
+- Adjacency: Interfaces directly with S023 (Playwright Locators) and S025 (W3C APG) on the queued accessible-selectors frontier and maps to the four-rung evidence ladder.
+
+---
+
+## 1. Source Identification & Verification (Observed)
+- Source ID: `S024` (corpus/SOURCES.md)
+- Primary Document URL: `https://playwright.dev/docs/aria-snapshots`
+- Document Title: "Snapshot testing | Playwright"
+- Access Date: `2026-10-20`
+- Content SHA-256 (canonical URL body): `bbbad6881341619286827304e5b5202f5a9246aac8223a6508fb4feb1b7e6194`
+- HTTP Metadata: ETag `"6ad64547-1e9f2"`, Last-Modified `Mon, 19 Oct 2026 16:28:55 GMT`, Content-Type `text/html; charset=utf-8`
+- Relevant API Reference URLs:
+  * `https://playwright.dev/docs/api/class-pageassertions#page-assertions-to-match-aria-snapshot`
+  * `https://playwright.dev/docs/api/class-locatorassertions#locator-assertions-to-match-aria-snapshot`
+  * `https://playwright.dev/docs/api/class-locatorassertions#locator-assertions-to-match-aria-snapshot-2`
+  * `https://playwright.dev/docs/api/class-page#page-aria-snapshot`
+  * `https://playwright.dev/docs/api/class-locator#locator-aria-snapshot`
+  * `https://playwright.dev/docs/api/class-locator#locator-aria-snapshot-json`
+
+---
+
+## 2. Located Quotations (≤25 words each) & Section Anchors (Observed)
+
+1. **Snapshot Testing Purpose**
+   - Location: `https://playwright.dev/docs/aria-snapshots` §Overview
+   - Quote: "With Playwright's Snapshot testing you can assert the accessibility tree of a page against a predefined snapshot template."
+
+2. **Template as Constraint**
+   - Location: `https://playwright.dev/docs/aria-snapshots` §Aria snapshots
+   - Quote: "A template is a constraint, not necessarily a complete serialization of the accessibility tree."
+
+3. **YAML Format Description**
+   - Location: `https://playwright.dev/docs/aria-snapshots` §Aria snapshots
+   - Quote: "The YAML format describes the hierarchical structure of accessible elements on the page, detailing roles, attributes, values, and text content."
+
+4. **Case & Whitespace Normalization**
+   - Location: `https://playwright.dev/docs/aria-snapshots` §Snapshot matching
+   - Quote: "The comparison is case-sensitive and normalizes whitespace within names and text values. YAML indentation determines nesting."
+
+5. **Order Sensitivity**
+   - Location: `https://playwright.dev/docs/aria-snapshots` §Snapshot matching
+   - Quote: "The comparison is order-sensitive, meaning the order of elements in the snapshot template must match the order in the page's accessibility tree."
+
+6. **Depth and Parent Scope Matching**
+   - Location: `https://playwright.dev/docs/aria-snapshots` §Snapshot matching
+   - Quote: "A single-node template can match at any depth within the selected page or locator. Multiple top-level nodes must match under the same parent, in order."
+
+7. **Partial Matching Mechanics**
+   - Location: `https://playwright.dev/docs/aria-snapshots` §Partial matching
+   - Quote: "You can perform partial matches on nodes by omitting attributes or accessible names, enabling verification of specific parts of the accessibility tree without requiring exact matches."
+
+8. **Subset Default for Children**
+   - Location: `https://playwright.dev/docs/aria-snapshots` §Strict matching
+   - Quote: "By default, a template containing the subset of children will be matched"
+
+9. **Strict Children Matching Modes**
+   - Location: `https://playwright.dev/docs/aria-snapshots` §Strict matching
+   - Quote: "The /children property controls children for the node where it appears: - contain (default): Matches if all specified children are present in order."
+
+10. **Equal & Deep-Equal Rules**
+    - Location: `https://playwright.dev/docs/aria-snapshots` §Strict matching
+    - Quote: "- equal: Matches if direct children exactly match the specified list in order. - deep-equal: Matches if children and nested children exactly match the specified list in order."
+
+11. **Children Mode Overrides**
+    - Location: `https://playwright.dev/docs/aria-snapshots` §Strict matching
+    - Quote: "Add /children: contain to a nested node to override inherited deep-equal matching and allow extra children there."
+
+12. **Global Configuration for Children Mode**
+    - Location: `https://playwright.dev/docs/aria-snapshots` §Setting children mode globally
+    - Quote: "Instead of adding a /children property to every snapshot, you can set the default children matching mode for all toMatchAriaSnapshot calls in the configuration file"
+
+13. **Regular Expression Patterns**
+    - Location: `https://playwright.dev/docs/aria-snapshots` §Matching with regular expressions
+    - Quote: "Regular expressions allow flexible matching for elements with dynamic or variable text. Accessible names and text can support regex patterns."
+
+14. **Quoted Strings vs Patterns**
+    - Location: `https://playwright.dev/docs/aria-snapshots` §Aria snapshots
+    - Quote: "Quoted strings indicate exact values, /patterns/ are used for regular expression."
+
+15. **URL Regular Expression Support**
+    - Location: `https://playwright.dev/docs/aria-snapshots` §Links
+    - Quote: "The link’s destination may be matched using the /url property. ... The value of /url may also be a regular expression"
+
+16. **Programmatic Capture Methods**
+    - Location: `https://playwright.dev/docs/aria-snapshots` §Using page.ariaSnapshot() and locator.ariaSnapshot()
+    - Quote: "Methods page.ariaSnapshot() and locator.ariaSnapshot() allow you to programmatically create a YAML representation of accessible elements within a locator's scope"
+
+17. **Depth Limitation Option**
+    - Location: `https://playwright.dev/docs/api/class-locator#locator-aria-snapshot` §Arguments
+    - Quote: "depth: number (optional) Added in: v1.59. When specified, limits the depth of the snapshot."
+
+18. **Assertion vs Snapshot Boundary**
+    - Location: `https://playwright.dev/docs/aria-snapshots` §Assertion testing vs Snapshot testing
+    - Quote: "Snapshot testing captures a “snapshot” or representation of the entire state of an element, component, or data at a given moment, which is then saved for future comparisons."
+
+---
+
+## 3. Core Mechanics Breakdown
+
+### A. Template Structure & Element Syntax
+- **YAML Representation**: Accessibility tree serialized as a hierarchical YAML list where indentation encodes DOM/ARIA containment.
+- **Node Signature**: `- role "name" [attribute=value]: text`
+  - **Role**: ARIA or HTML semantic role (e.g. `heading`, `link`, `button`, `list`, `listitem`, `textbox`, `checkbox`). Derived from HTML semantics or explicit ARIA roles.
+  - **Accessible Name**: Computed via W3C AccName computation. Exact string matching if enclosed in quotes (`"Submit"`), or regex if enclosed in slashes (`/Submit \d+/`).
+  - **Attributes/States**: ARIA attributes in brackets (e.g. `[checked]`, `[disabled]`, `[expanded]`, `[level=1]`, `[pressed=true]`, `[invalid=spelling]`, `[selected]`).
+  - **Text / Paragraph**: Standalone text appears as `- text: Content`; multiline blocks are normalized (`<p>A<br>B</p>` becomes `- paragraph: A B`).
+  - **Link Destination**: Matchable via nested `/url` key (`- link "Doc":\n  - /url: "/intro"` or regex `- /url: /https:\/\/example.com\/.*/`).
+
+### B. Partial Matching Mechanics
+- **Attribute & Name Omission**: If an accessible name or ARIA attribute is omitted from a node, the matcher checks only the specified facets. For example:
+  - `- button` matches any button regardless of text label.
+  - `- checkbox` matches a checkbox regardless of checked/unchecked state.
+- **Child List Subsetting**: By default (`/children: contain`), unspecified child nodes are permitted. The assertion succeeds as long as the listed nodes appear in order.
+
+### C. Strict Matching Mechanics (`/children` Directive)
+- **Control Property**: `/children` placed directly under a node modifies child matching for that specific node:
+  1. `contain` (default): Requires specified children to be present in relative order; allows unlisted siblings. Empty expected children allows any children.
+  2. `equal`: Requires direct children to match the template exactly in identity and order; extra unlisted direct children cause immediate failure.
+  3. `deep-equal`: Enforces exact equality recursively down the entire subtree. Extra nested elements fail the match.
+- **Overrides**: A nested node can declare `/children: contain` inside a parent governed by `deep-equal` to relax constraints locally.
+- **Global Configuration**: `playwright.config.ts` can set `expect: { toMatchAriaSnapshot: { children: 'equal' } }` globally, overridable per-snapshot.
+
+### D. Order Sensitivity & Scoping Limits
+- **Strict Order Sensitivity**: Elements defined in the template MUST appear in the exact relative sequence found in the accessibility tree. Swapping sibling order in the template causes assertion failure even if all elements exist.
+- **Single-Node Depth Scope**: A single root node in a template matches anywhere at any depth within the asserted page or locator scope.
+- **Multi-Node Sibling Scope**: When a template specifies multiple top-level nodes, they MUST exist under the identical parent container in sequential order.
+- **Locator Scoping**: `expect(locator).toMatchAriaSnapshot()` restricts template matching strictly to the DOM subtree of `locator`, preventing ambient page changes from affecting component assertions.
+- **API Scope Control**: `locator.ariaSnapshot({ depth: N })` restricts tree traversal to `N` levels deep (added v1.59); `boxes: true` adds `[box=x,y,width,height]` (v1.60); `mode: 'ai'` emits token-efficient snapshots with `[ref=eN]` IDs and iframe traversal.
+
+---
+
+## 4. Potential Overclaims & Boundary Hazards (Inferences & Warnings)
+
+1. **Overclaim: ARIA snapshot is pixel/visual regression testing (FALSE)**
+   - *Evidence*: `playwright.dev/docs/aria-snapshots` explicitly defines ARIA snapshots as "a YAML representation of the accessibility tree".
+   - *Boundary*: ARIA snapshots verify semantic structure, accessible names, roles, and ARIA attributes. They do not capture pixel rendering, canvas drawings, CSS layout shifts, colors, background styling, or font metrics. Substituting ARIA snapshots for visual regression testing is a category error.
+
+2. **Overclaim: ARIA snapshot matching constitutes an accessibility compliance audit (FALSE)**
+   - *Evidence*: S024 explicitly links to Chrome DevTools Accessibility Tab and relies on computed accessibility tree nodes, while S023 notes that semantic checks "do not replace accessibility audits and conformance tests".
+   - *Boundary*: A page can match an ARIA snapshot perfectly while suffering critical WCAG failures: failing color contrast, missing focus indicators, keyboard traps, unannounced dynamic announcements, or broken landmark navigation.
+
+3. **Overclaim: ARIA snapshots are order-insensitive (FALSE)**
+   - *Evidence*: Documentation states explicitly: "The comparison is order-sensitive, meaning the order of elements in the snapshot template must match the order in the page's accessibility tree."
+   - *Boundary*: Unlike bag-of-elements assertions, reordering accessible elements in the DOM will break ARIA snapshot tests unless explicitly handled.
+
+4. **Overclaim: ARIA snapshots capture hidden or decorative DOM elements (FALSE)**
+   - *Evidence*: Only accessible elements with recognized roles or text content are included in the accessibility tree.
+   - *Boundary*: Elements styled with `display: none`, `visibility: hidden`, or marked `aria-hidden="true"` are pruned from the accessibility tree by browser engines and cannot be matched or asserted via ARIA snapshots.
+
+5. **Overclaim: Multi-root templates can match elements across different parents (FALSE)**
+   - *Evidence*: Documentation explicitly constrains: "Multiple top-level nodes must match under the same parent, in order."
+   - *Boundary*: An author cannot list two top-level nodes in a single snapshot expecting one to match in `<header>` and one in `<footer>`; they must share the immediate parent container.
+
+---
+
+## 5. Connections to Queued Sources & Evidence Ladder (Adjacency)
+
+- **S025 (W3C ARIA APG)**: Provides the normative specification for widget design patterns, expected roles, accessible names, and keyboard navigation contracts. It defines what the accessibility tree *should* expose.
+- **S023 (Playwright Locators)**: Provides single-element actionability and semantic selection handles (`getByRole`, `getByLabel`), enforcing strictness (throwing on multiplicity).
+- **S024 (Playwright ARIA Snapshots)**: Advances from single-element handles to holistic, hierarchical structural assertions over accessible subtrees. It bridges individual element queries and full page snapshots.
+- **Four-Rung Evidence Ladder Integration**:
+  * Rung 1 (Synthetic): Model or oral claims without browser evidence.
+  * Rung 2 (Network/Transport): HTTP logs, CDP sessions, BiDi frames.
+  * Rung 3 (Structural DOM / Accessibility State): ARIA snapshots and role locators belong squarely on Rung 3. They provide deterministic, structured, inspectable evidence of user-perceived state without pixel flakiness.
+  * Rung 4 (Rendered Artifacts): Screenshots, video recordings, trace archives. ARIA snapshots must not be conflated with Rung 4 pixel artifacts.
+
+---
+
+## 6. Remaining Unknowns & Gaps
+- None regarding S024 documentation, syntax, matching rules, or API contracts.
+- Repository constraint: no local browser runtime execution is installed or claimed; all findings reflect grounded documentation and specification evidence.

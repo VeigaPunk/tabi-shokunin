@@ -1,0 +1,100 @@
+FreshnessAttack — tabi round 12 / w1 (critic, TabiR12.FreshnessAttack), 2026-10-20
+Target: C1 freshness 8→9 (re-verify 3 kaika notes vs cited sources). Method: all 20 cited URLs (S001–S019, S004 .cc+.h)
+re-fetched in memory (urllib, no files written), sha256 compared with corpus/lessons/kaika-fleet-round-1.md:44-62,
+facts/quotes/line anchors checked against the fetched bytes; ICST PDF via `pdftotext -layout - -`; GitHub commits API for
+code/README anchors; `pacman -Q chromium`. No browser launched. No tools installed/updated. Author-side seat: this is a
+critic read, NOT the independent non-author review the claim needs.
+
+== Core attack: hash equality is neither necessary nor sufficient for freshness ==
+A1 [observation] Hash-identical source still hides a false/omitted claim: S004 .cc re-fetch sha256 ea72757a…01cc and .h
+   841c6f67…a602 are byte-identical to the note (chrome-remote-debugging-profile-boundary.md:87), yet F1/F2 below are
+   wrong/missing in the note. A receipt that pins "sha identical → fresh" would rubber-stamp them.
+A2 [observation] Hash-different source is not stale: S001 now 6592f4c7… (note :84 bf63ed06…, L1 re-open f0c70bd2…,
+   kaika-fleet-round-1.md:73) at identical size 96,397 B; S003 37fc2533… 107,904 B (note :86 107,908 B); S006 7dc6b2bd…,
+   S007 b7a0850e…, S010 84148379…, S011 9c7d53fa…, S012 f3a626db… (raw README; lesson :55 992ec9d3…), S019 52156c14…
+   (lesson :62 4fa85f45…). For S001/S003/S006/S007/S010/S011/S012 the quoted sentence and dated metadata are still present
+   (below). => C1 receipt MUST record per-claim quote/line/value checks; sha256 only identifies the bytes reviewed.
+
+== Note 1: chrome-remote-debugging-profile-boundary.md ==
+F1 [observation, material omission — boundary is under-stated] remote_debugging_server.cc @main has a third, default-
+   profile-capable HTTP path the note never mentions: "approval mode" — isRemoteDebuggingEnabledViaPrefs (:185-190, pref
+   kDevToolsRemoteDebuggingEnabled, "enabled via chrome://inspect"), StartHttpServerInApprovalModeIfEnabled /
+   MaybeStartOrStopServerForPrefChange / StartHttpServerInApprovalModeWithPort (:216-283), entered from GetInstance when no
+   switch started a server and feature kDevToolsAcceptDebuggingConnections is on (:397-417, non-Android). Gates checked:
+   only policy kDevToolsRemoteDebuggingAllowed (:236, :257, :406) + the pref — NOT the default-user-data-dir gate in
+   IsRemoteDebuggingAllowed (:160-183). Mode kWithApprovalOnly (:247), port read from DevToolsActivePort in DIR_USER_DATA,
+   default 9222 (:194-214, :267-282). So note :38-40 ("Both switches route through it… the /json/* surface never binds")
+   and matrix :48 ("branded Chrome ≥136 | default | refused — no listener") are true only for --remote-debugging-*; a
+   default-profile listener can exist on branded builds via chrome://inspect with per-connection approval.
+   [unknown] whether kDevToolsAcceptDebuggingConnections is default-on in 152 / branded stable (features file not opened).
+   Fix: add §2 bullet + §3 row "chrome://inspect approval mode | default | policy-gated only, data-dir gate not applied,
+   per-connection approval" and an Unknown for the feature default; keep lane rule (never debug real profile) unchanged.
+F2 [observation, false conflation] note :41-42 "The HTTP socket factory binds 127.0.0.1 then ::1 with fallback (:80-95,
+   :130-157)" cites two different classes. Switch path (:391-394) uses TCPServerSocketFactory (:69-111): 127.0.0.1 then
+   ::1, same port, no port fallback. :113-158 is TCPServerSocketFactoryWithPortFallback ("any available port if the port is
+   busy. Prefers a free port over switching from IPv4 to IPv6", :113-114), used only by approval mode (:244). Loopback-only
+   conclusion (§4 :61-63) survives; "with fallback" for the lane's --remote-debugging-port recipe is false.
+   Minor: GetInstance re-checks policy itself (:338-340) before IsRemoteDebuggingAllowed.
+F3 [observation, stale unknown] note :1 and Unknown 5 (:116-117) "gitiles +log 403 → anchor is branch+sha256, not a
+   commit". GitHub API commits?path=…/remote_debugging_server.cc resolves now: latest 9bb1a1e18b5a (2026-10-05,
+   "[dcheck-to-check] Convert DCHECKs in chrome/browser/ [9/25]"), prior 80ad0b9fc06a (2026-08-27, "[DevTools] Support
+   dynamic refresh for RemoteDebuggingAllowed policy"). [inference] 9bb1a1e is the blob behind ea72757a (no blob-sha
+   comparison made). Fix: receipt pins commit + sha; Unknown 5 narrows to "CL that introduced the ≥136 gate".
+Confirmed [observation]: .cc 424 lines (wc semantics); line anchors :50-53, :160-183, :164, :168-181, :169-173, :177,
+   :292-294, :335-424, :353-361, :384-395; .h :28-36 enum, :46-50 test hook (quote at .h:47-48 exact);
+   "RemoteDebuggingAddress" absent from .cc (supports Unknown 4). S001 quotes (:11-18) present verbatim, "Published: March
+   17, 2025", Will Harris. S002 sha identical; "CDP is not a public or supported API for Chrome, and it does not guarantee
+   backwards compatibility" and "/json/new?{url} PUT … (strictly requires PUT)" present. S003 "Last updated 2023-06-12",
+   quote (lesson :46) present. Local chromium: pacman `chromium 152.0.7977.82-1` (build 2026-09-03, installed 2026-10-11)
+   — note :51 version still current.
+
+== Note 2: webdriver-bidi-capability-matrix.md ==
+Confirmed [observation]: S005 sha identical (dc1077db…); header "This version: …/2026/WD-webdriver-bidi-20261008/",
+   previous 20260930, revision f922e6af… present; §7.1–7.10 = session, browser, browsingContext, emulation, network, script,
+   storage, log, input, webExtension. All 34 cited fragment ids exist. §7.3.3 commands list has no stop-navigation
+   (stopScreencast = 7.3.3.14); traverseHistory returns EmptyResult (7.3.3.15); §7.9.3 = performActions/releaseActions/
+   setFiles, "insertText" 0 occurrences; ResponseData (7.5.4.17) has bytesReceived/headersSize/bodySize; CollectorType =
+   "blob" + "stream" future note (7.5.4.6); addDataCollector maxEncodedDataSize, collectorType default "blob" (7.5.5.1);
+   7.4.2.12 = emulation.setTextLayoutModeOverride, TextLayoutMode = "mobile"; getCookies 7.7.3.1. S006 module index lists
+   13 incl. bluetooth/permissions/userAgentClientHints. S007 Chromium-wrapper sentence present. S008/S009 sha identical;
+   "Last modified August 15, 2026" / "July 23, 2026"; _add_intercept v4.32 comment present. S010 "Last updated 2023-05-09",
+   106/102 quote; S011 "Last updated 2024-08-07", 129/23 quote. S012 README commit 1c6f4363 is still the newest README
+   commit (2026-10-14, API); quote present.
+B1 [observation, unverifiable provenance] note :5 / SOURCES S006-S007 anchor "MDN content commit 253bed3d… / f83c12ab…":
+   the served pages expose no mdn/content commit link, only last-modified <time> 2026-04-22 (S006) and 2026-03-24 (S007).
+   A reviewer cannot re-derive these commits from the cited page. Fix: record the derivation (GitHub API path query) or
+   replace with page last-modified dates.
+B2 [observation, trap for reviewers] row :69 names `network.beforeRequestSent` but cites `#event-network-beforeSendRequest`.
+   That is the spec's real id (beforeRequestSent id does not exist; method string is network.beforeRequestSent). Correct as
+   written; any "fix" of the anchor would break it. Receipt should note the quirk.
+B3 [observation, paraphrase drift] :46-47 "Puppeteer's Chrome CDP support remained unchanged" — S011 §CDP support in the
+   future says "for Chrome, Puppeteer will keep defaulting to CDP". Source states a default protocol, not unchanged support.
+   Fix: "Puppeteer keeps CDP as Chrome's default protocol (S011)".
+B4 [observation→inference] U1 (:117-119) "WPT returned app shell only": the WD header itself names "Implementation Report:
+   https://wpt.fyi/results/webdriver/tests/bidi". [inference] results are reachable via the wpt.fyi JSON API, so U1 is
+   reducible; restating it is not a freshness gain. Not fetched here.
+
+== Note 3: web-flake-retry-evidence.md ==
+Confirmed [observation]: S013-S018 sha identical; all five docs "Docusaurus v3.10.1"; release notes first heading
+   "Version 1.64" (then 1.63); shuffle text exact ("shuffle seed 271828182", "npx playwright test --shuffle 271828182");
+   three categories quote; "discard the entire worker process … second worker process will start by retrying the failed
+   test"; trace 'on-first-retry' quote; S015/S016 quotes. ICST PDF: "123 flaky tests in 49 open-source web projects";
+   labels E/D/ED/DE/R/O "defined in Section III-C"; Table V 62 (50.4%) / 47 (38.2%) / 14 (11.4%); conditional row
+   description "Introduce timeout or dynamic delays in tests." (cy.wait(500)) — supports :119-122 and :150.
+R1 [observation, observation/inference mislabel] :24, :47-48, :142 say "Playwright Test 1.64's retry docs / the 1.64 retry
+   description / published category". S013 (test-retries) is unversioned stable docs; the 1.64 tie is only that the
+   release notes served the same day head 1.64. §1 is labelled [observation]. Fix: "stable docs served 2026-10-19 (release
+   notes then headed 1.64) [inference for the version tie]".
+R2 [unknown] S019 bytes changed (52156c14… vs 4fa85f45…); the 63% (31/49) abstract quote was not re-checked in this pass
+   (stopped on parent directive). Must be quote-checked before counting note 3 reviewed.
+R3 [unknown] :129-133 / U5 kaidoku Playwright 1.64.0 install not re-observed; stays an adjacent dated citation.
+
+== Impacted axes / verdict for the canonical judge ==
+- freshness (C1): defensible only if the receipt is per-claim (quote/line/value) not per-hash. Fixable defects: F1 (material
+  omission, profile boundary), F2 (false factory claim), F3 (stale unknown), B1 (unverifiable anchors), B3, R1, R2. A receipt
+  that records "re-fetched, sha identical, no change" for note 1 is a false-freshness counterexample (A1) → judge reject.
+- calibration: F2/R1 are observation-vs-inference slips (class M2, QUALITY #3 pattern).
+- independence: author-side swarm reviews ≠ non-author verification (spec contract); "0→3 current-round reviews" must not
+  be counted as independent.
+Smallest safe correction: C1 receipt lists, per note, each checked claim → source location → match/mismatch; append-only
+correction file (not in-place edit of protected history) for F1/F2/F3/B1/B3/R1; resolve R2 before claiming 3/3.

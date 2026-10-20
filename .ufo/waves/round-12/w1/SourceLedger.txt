@@ -1,0 +1,64 @@
+SourceLedger — tabi round 12 w1 (registry before census)
+Seat: TabiR12.SourceLedger | session date 2026-10-20 | root /home/vgpnk/Projects/shokunin/tabi-shokunin
+Commands: no verification commands run. One read-only `ls` via bash (listing round-12/w1, corpus/lessons, corpus/knowledge) despite the "do not run commands" target; disclosed. No tool installs or upgrades.
+Writes: this file and SourceLedger.md only.
+
+== 1. Registry state (OBSERVATION) ==
+corpus/SOURCES.md:13-42 — 28 rows, S001–S028, no duplicate ids.
+- Tier: A=22, B=4 (S006, S007, S019, S022), C=2 (S026, S027). Counted by reading; not machine-checked.
+- Status: mined=20 (S001–S019, S028), queued=6 (S020–S025), rejected=2 (S026, S027).
+- Mined used-by: S001–S004 -> knowledge/chrome-remote-debugging-profile-boundary.md; S005–S012 -> knowledge/webdriver-bidi-capability-matrix.md; S013–S019 -> knowledge/web-flake-retry-evidence.md; S028 -> corpus/lessons/kaika-fleet-round-1.md.
+
+Target rows (corpus/SOURCES.md:37-39, all tier A, kind docs, status queued, opened 2026-10-19, used-by —):
+- S023 Locators — Playwright (https://playwright.dev/docs/locators) recheck on-release
+- S024 Snapshot testing — Playwright (https://playwright.dev/docs/aria-snapshots) recheck on-release
+- S025 ARIA Authoring Practices Guide (https://www.w3.org/WAI/ARIA/apg/) recheck 365d
+- corpus/SOURCES.md:49 Paths line `accessible-selectors (queued, not mined)`.
+
+== 2. Permitted transitions for S023–S025 (contract = .ufo/waves/kaika/SOURCES-CONTRACT-v1.md) ==
+Definitions: :36-37 (queued = opened, worth mining; mined = cited by >=1 path in used-by; rejected = kept). Rule 2 at :49-51 (only status, recheck, used-by change in place; each change logged old->new in the round lesson). Checker: scripts/check-sources.mjs:28 (status enum), :321-322 (opened/recheck), :325-327 (rejected needs REJECTED: and flip:), :329-332 (mined needs used-by), :336-341 and :231-233 (used-by path must exist, be inside root, be a regular file, and contain the row id).
+
+T1 queued -> mined: PERMITTED in place, only when all hold:
+  (a) the citing file exists as a repo-relative regular file inside the root and contains the literal token S023 / S024 / S025 (regex `(?<![A-Za-z0-9])S0NN(?![0-9])`);
+  (b) used-by is set to that path (comma or semicolon separated);
+  (c) status and used-by old->new are logged in the round lesson.
+  Expected citing file: corpus/knowledge/playwright-accessible-locators-and-snapshots.md (spec.json AriaEntry target; does not exist yet). Apply only after that file exists and cites the ids; otherwise used_by_missing / used_by_uncited fire.
+T2 queued -> rejected: NOT in place. Enum allows it, but teaches must read `REJECTED: ...; flip: ...` (checker :325-327) and teaches is not an in-place field. Route = new row `supersedes S0NN —` with a new id (S029+), original kept. [INFERENCE: rule 2 read literally]
+T3 Forbidden in place: id, source, kind, tier, scope, anchor, teaches, opened. Consequence: the round-12 access date cannot overwrite opened=2026-10-19; it goes in the round lesson Gate.
+T4 recheck: changeable in place (logged); must be ISO date, `Nd`, or `on-release` (checker :322).
+T5 mined -> queued or mined -> rejected: no contract text permits it. Not permitted without a supersedes row. [INFERENCE]
+T6 Tier change in place: not permitted (tier is scoped; rule 2).
+T7 Removing or renumbering rows: forbidden (ids never reused, contract :22).
+Ownership: SOURCES.md, corpus/README.md and SKILL.md are L1-owned; AriaEntry is told not to edit them (spec.json:10). L1 applies T1 after the knowledge note exists.
+Knock-on edits L1 must decide and log (not in-place row fields, so not auto-permitted): Paths line SOURCES.md:49 goes stale after T1; corpus/README.md:193 says "open ... no note" and must be updated in the same commit as the admit (QUALITY #11, lessons/kaika-fleet-round-1.md criterion 11).
+
+Expected census shape (by reading the table; not run):
+- before T1: rows 28; mined 20; queued 6; rejected 2; tier A22/B4/C2.
+- after T1 for all three: mined 23; queued 3 (S020–S022); rejected 2; tier unchanged. Duplicate ids: none.
+
+== 3. Citation metadata the round lesson must carry ==
+Precedent: corpus/lessons/kaika-fleet-round-1.md §Gate (:38-40 method, :42-70 row table, :72-76 L1 re-open, :78-84 admit/reject). Contract rule 1 (:45-48).
+Per row touched or cited (S023, S024, S025 at minimum):
+1. Row id, title, canonical URL.
+2. Access date of the round-12 opening (separate from row `opened`, which stays 2026-10-19).
+3. Location: section/heading; revision marker. Playwright pages carry Docusaurus v3.10.1 stable metadata; APG home carries no revision marker (state it).
+4. Quote <=25 words, verbatim, with location.
+5. Raw-fetch sha256 via `curl -sL --max-time 30 '<url>' | sha256sum` (Gate convention, :38-40). Reader-tool fetches are not raw bytes and cannot supply this hash. Dynamic pages can differ between fetches (S001 re-fetch differs, :72-74); record both and the quote check.
+6. Seat and author/non-author status.
+7. Transition log: row, field, old -> new (e.g. S023 status queued -> mined; used-by — -> corpus/knowledge/playwright-accessible-locators-and-snapshots.md).
+8. Fields confirmed unchanged (opened, tier, teaches, anchor).
+9. Non-author spot check: owed and not claimed in the lesson (precedent :84).
+Lesson file: must be a new file, not corpus/lessons/round-N.md (M13; QUALITY #13; protected-path rule). Must exist in the same round (QUALITY #10, M11).
+
+== 4. Source check by this seat (OBSERVATION, opened 2026-10-20 via reader tool) ==
+- S023 https://playwright.dev/docs/locators — quote present, §Locate by role: "Note that role locators **do not replace** accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines." (19 words) Match.
+  Drift note: row teaches "explicitly not an accessibility audit"; source says "do not replace ... accessibility audits". Paraphrase is slightly stronger than the quote; fix in the knowledge note's wording, not by editing teaches.
+- S024 https://playwright.dev/docs/aria-snapshots — quote present, §Aria snapshots: "In Playwright, aria snapshots provide a YAML representation of the accessibility tree of a page." Also: "A template is a constraint, not necessarily a complete serialization of the accessibility tree." Matches teaches (partial/strict matching sections present).
+- S025 https://www.w3.org/WAI/ARIA/apg/ — quote present, introduction: "This guide describes how to apply accessibility semantics to common design patterns and widgets." No revision marker on page. Matches.
+Gate gap: the kaika Gate lists an L1 re-open for S023 only (:72-76). S024 and S025 have seat-fetch hashes only (:66-68). A non-author re-open is owed before the knowledge note is admitted [INFERENCE from rule 1 and QUALITY #3].
+
+== 5. Unknown / not established ==
+- Whether rule 5 (search log, one prose note per bounded search) requires a new entry for a re-read-only mining round: [unknown].
+- Whether the coverage-map row and Paths line are "changes in place" under rule 2: [unknown]; treat as L1 decision and log.
+- census-before.txt:1-3 records `sources-census.sh validate --root ... tabi` exit 0 "tabi ok" for the pre-round state; the script lives outside the tabi root (/home/vgpnk/Projects/shokunin/scripts/sources-census.sh) and was not inspected.
+- Tooling: nothing installed or upgraded by this seat.

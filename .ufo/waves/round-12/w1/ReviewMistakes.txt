@@ -1,0 +1,62 @@
+ReviewMistakes — tabi round 12, wave w1 (seat TabiR12.ReviewMistakes)
+Root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Authority: same-lane advisory leaf review. NOT a non-author verification, NOT a SHONEN/LEARNING attestation, NOT a judge verdict (AGENTS.md; corpus/QUALITY.md; SHONEN.md:6; kaika-w3/tabi-review.md:3).
+Method: source reading only. No builds, tests, formatters, git mutation or verification commands run. Counts were taken by listing (ls / grep). Labels: [O] observed in a cited file, [I] inference from code reading, [U] unknown.
+Tooling: none installed or updated.
+
+1. VERIFIER FINDINGS REVIEWED
+
+1a. [O] Kaika round-1 non-author pass (W3ReviewTabi) is a valid outside review. Its own header states "fresh task dispatched by the orchestrator; not the lane" (.ufo/waves/kaika-w3/tabi-review.md:3). Its two major findings were acted on:
+  - M-1 host-Chromium non-enforcement stated as observation. Corrected by appended S028 (corpus/SOURCES.md:42, "supersedes S004") and the correction at corpus/README.md:196-197.
+  - M-2 SHONEN [x] boxes named lane-dispatched verifiers. Withdrawn: SHONEN.md:6 "not non-author (orchestrator ruling)"; all four boxes now [~].
+  Residue [O]: S004's teaches cell (corpus/SOURCES.md:18) still reads "unbranded Chromium (this host) does not enforce it" as a taught fact. S028 supersedes it, so this is acceptable only if the supersession is read. Not a gate failure.
+
+1b. [O] The lesson's count "6/6 spot-checks agree" (corpus/lessons/kaika-fleet-round-1.md:88) is not reproducible from in-repo records. corpus/lessons/round-1-verifier-spotcheck.md:12-13 holds two rows (admit, reject). The per-item basis lives only in the out-of-repo file kaika-w3/tabi-review.md. [U] whether the 6/6 is accurate. Restate the basis in-repo or cite the out-of-repo path with the row count.
+
+1c. [O] Pstack spot-check reviewers are self-labelled. corpus/evidence/pstack-20261015-r01/spot-check.json:3 has "role": "non-author" for reviewer-r01. A grep of pstack-20261015-r01/dispatch.json, aggregate.json and slices.json for reviewer|non-author|spot returns zero hits. The reviewer id is not in any dispatch record of the round. [U] who dispatched reviewer-r01 and whether it is outside the lane. The gate accepts it on text shape alone (see section 2).
+  Also [O] spot-check.json:5 claims "I re-hashed public/dom.txt and public/screenshot.png". No command or hash-run record is cited, so QUALITY criterion 2 (measured anchor) is unmet for that claim. I did not re-hash (no verification commands run).
+
+2. REAL MINED MISTAKE — M-2 (non-author provenance), recurring at the gate
+
+Mined from: corpus/lessons/kaika-fleet-round-1.md:102-104 (M-2) and .ufo/waves/kaika-w3/tabi-review.md:156-159; SHONEN.md:6 shows the wrong label had been written as [x].
+Recurrence path [O]:
+  - scripts/check-round-contract.mjs:135 `spots = /^- spot-check: non-author (\S+) (agree|disagree) — (.+)$/gm`; :138 requires exactly one match; :139 returns it. Any token passes, including a lane seat id.
+  - scripts/check-user-round-contract.mjs:152 and :155: same regex, same gap (second caller).
+  - The fixture writer (check-round-contract.mjs:374) uses `reviewer-1`, which is not a lane seat id.
+  - Self-test (check-round-contract.mjs:400-435): four cases (clean, short_swarm, missing_gate, consequential_action). None exercises reviewer identity. The summary line prints a literal `cases=4` (near :435), not `cases.length`.
+  - corpus/QUALITY.md: criteria 1-13 contain no non-author / reviewer-independence criterion. Captured-by for M-2 is "none" (kaika-fleet-round-1.md:102-104 lists the fix as a ruling, not a gate or criterion).
+  - QUALITY criterion 6 (self-test asserts each refusal with exit/finding pair) is met for the four cases only.
+
+Observable red-before test contract (to add to scripts/check-round-contract.mjs self-test, then migrate scripts/check-user-round-contract.mjs the same way):
+  Case name: lane_seat_as_non_author
+  Fixture: writeGoodFixture(root) (check-round-contract.mjs:319-398), then rewrite corpus/lessons/pstack-20261015-r01.md line `- spot-check: non-author reviewer-1 agree — ...` to `- spot-check: non-author s01 agree — re-counted the marker and the reject`. `s01` is a seat in the round's own aggregate.json results with verdict PASS and a seat file present, so checkSwarm (:170-201) passes it.
+  Expected before fix [I]: gate prints ROUND_CONTRACT verdict=clean, exit 0. Case expects exit 1 / finding non_author_reviewer, so the self-test line reads `SELFTEST name=lane_seat_as_non_author expected_exit=1 actual_exit=0 expected_finding=non_author_reviewer ... result=FAIL`. This is the red.
+  Expected after fix: exit 1, output contains `finding=non_author_reviewer`, result=PASS.
+  Negative control (must stay clean): the existing `clean` case with `reviewer-1`.
+  Fix rule: refuse a spot-check reviewer id equal to any seat in the round's aggregate.json results or dispatch seats. Add the rule to the gate, not to SHONEN or the lesson text.
+  Cadence line: change `cases=4` to `cases=${cases.length}` so the summary cannot drift.
+
+Limits of the contract (state in the lesson, do not overclaim):
+  - The gate can refuse only reviewer ids provably in the round's own records. It cannot prove that an outside id such as reviewer-r01 is non-author (1c). [U]
+  - scripts/check-round-contract.mjs is not in protectedPath (:60-69), so editing it is allowed. SHONEN.md is protected (:67-68); do not edit SHONEN.md to make this pass. Gate edits are append-free code changes, so they do not affect the APPEND_ONLY prefix rule at :25.
+  - The change must be recorded in LOG.md with motivating evidence (AGENTS.md) by L1.
+
+3. SECONDARY — count drift in the coverage map (QUALITY criterion 11)
+
+  [O] corpus/README.md:135 states `knowledge notes | 26 | ls corpus/knowledge/*.md | wc -l`. Current listing gives 29. Knowledge rows in the map also number 29 (lines 13-20, 105, 113, 121, 141-155, 167-169), so the rows are complete; only the stated count is stale.
+  [O] corpus/README.md:136 states `lesson files | 26 | ls corpus/lessons/*.md | wc -l`. Current listing gives 29 (includes kaika-fleet-round-1.md, round-1-verifier-spotcheck.md, training-round-11.md, which the row's formula excludes).
+  [O] corpus/README.md:157-158 says "cover all 26 notes at base" — dated, so acceptable as history.
+  Red-before, observed now: the row's own command returns 29 ≠ 26. Fix by APPEND (corpus/README.md is in APPEND_ONLY, check-round-contract.mjs:25): append a dated correction stating 29 / 29 and the three post-base lessons, or restate the gap. Do not edit line 135-136 in place.
+
+4. STATUS OF PRIOR MINED MISTAKES (from corpus/lessons/kaika-fleet-round-1.md)
+  - M6 (executed wave never recorded): [O] user-20261015-r07 now appears in LOG.md and SCORECARD.md (grep hit). Recorded; criterion 7 met on the LOG side. No corpus/lessons/user-20261015-r07.md exists (lessons stop at user r06).
+  - M12 (frozen index): see section 3; the rows are current, the counts are stale.
+  - M7 (redundant reject re-runs, criterion 8) and M9/M13 (criteria 9, 13): no gate or self-test found in scripts/ for criterion 8; criterion 13 is enforced by check-round-contract.mjs:60-69 and :94-98.
+
+5. GAPS I COULD NOT CLOSE (not verified; no commands run)
+  - [U] Whether the pstack reviewer-r01..r09 spot-checks were produced outside the lane (1c).
+  - [U] Whether kaika-w3 6/6 count matches the out-of-repo file (1b).
+  - [U] Whether the re-hash claims in pstack-20261015-r01/spot-check.json:5 are true.
+  - [U] Whether the red in section 2 is red as written: derived by reading parseLesson (:135-139) and checkSwarm (:170-201), not executed.
+
+Next (for L1): (a) apply the section-2 self-test case and the user-gate twin, then run the gate self-tests once; (b) append the section-3 correction to corpus/README.md; (c) consider a QUALITY criterion 14 for reviewer independence, stated as a gate-enforced rule, with the lesson that prompted it (kaika-fleet-round-1.md:102-104).

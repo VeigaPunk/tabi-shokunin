@@ -1,0 +1,124 @@
+# APG Source Scouting: Semantics vs Audit Boundary (S025 / S023)
+Date: 2026-10-20
+Agent: TabiR12.ApgSource (scout)
+Target: Open APG home plus relevant pattern document; explain semantics vs audit boundary with located quotes.
+Source: S025 (W3C ARIA Authoring Practices Guide — https://www.w3.org/WAI/ARIA/apg/)
+Cross-Reference: S023 (Playwright Locators — https://playwright.dev/docs/locators)
+
+---
+
+## 1. APG Home & Scope
+
+- **Opened URL**: `https://www.w3.org/WAI/ARIA/apg/`
+- **Page Title**: `ARIA Authoring Practices Guide | APG | WAI | W3C`
+- **Canonical URL**: `https://www.w3.org/WAI/ARIA/apg/`
+- **Located Quotations**:
+  - Home §Introduction:
+    > "Learn to use the accessibility semantics defined by the Accessible Rich Internet Application (ARIA) specification to create accessible web experiences."
+  - Home §Introduction:
+    > "This guide describes how to apply accessibility semantics to common design patterns and widgets. It provides design patterns and functional examples complemented by in-depth guidance for fundamental practices."
+  - Home §APG Resources > Design Patterns and Examples:
+    > "Learn how to make accessible web components and widgets with ARIA roles, states and properties and by implementing keyboard support."
+
+---
+
+## 2. Foundational Status: Informative Guidance vs Normative Conformance
+
+- **Opened Document**: `https://www.w3.org/WAI/ARIA/apg/about/introduction/`
+- **Key Finding**: The APG explicitly disclaims normative authority and conformance testing.
+- **Located Quotations**:
+  - § APG is Not a Normative Standard:
+    > "The accessibility guidance in the APG is different from accessibility requirements specified by WCAG and ARIA. WCAG and ARIA are "W3C normative technical standards" while the APG is an "informative" resource. W3C normative technical standards, which are formally known as "W3C Recommendations", have conformance models that define how to comply with the requirements documented in the standard... The APG does not specify normative requirements and thus does not have a conformance model."
+  - § APG is Not a Normative Standard:
+    > "The ARIA Authoring Practices Task Force, which is part of the ARIA Working Group, uses consensus to ensure APG guidance is consistent with all relevant specifications, including ARIA, but its process for doing so is not bound by the W3C Recommendation Track process."
+  - § Purpose of the APG:
+    > "Promote practical techniques for developing modern GUIs that both support usability for people with disabilities and conform with WCAG requirements."
+  - § APG is not a UI Design System:
+    > "While the APG includes a library of patterns and functional examples, it's objectives do not include providing a comprehensive design system or production-ready code."
+
+---
+
+## 3. Core Architectural Principles ("Read Me First")
+
+- **Opened Document**: `https://www.w3.org/WAI/ARIA/apg/practices/read-me-first/`
+- **Key Finding**: Semantics are metadata for assistive technologies; declaring a role without implementing its behavioral contract destroys accessibility.
+- **Located Quotations**:
+  - § Principle 1: A role is a promise:
+    > `<div role="button">Place Order</div>`  
+    > "Is a promise that the author of that `<div>` has also incorporated JavaScript that provides the keyboard interactions expected for a button. Unlike HTML input elements, ARIA roles do not cause browsers to provide keyboard behaviors or styling. Using a role without fulfilling the promise of that role is similar to making a "Place Order" button that abandons an order and empties the shopping cart."
+  - § Principle 2: ARIA Can Both Cloak and Enhance, Creating Both Power and Danger:
+    > "The information assistive technologies need about the meaning and purpose of user interface elements is called accessibility semantics. From the perspective of assistive technologies, ARIA gives authors the ability to dress up HTML and SVG elements with critical accessibility semantics that the assistive technologies would not otherwise be able to reliably derive."
+    > "Some of ARIA is like a cloak; it covers up, or overrides, the original semantics or content... On the other hand, some uses of ARIA are more like suspenders or belts; they add meaning that provides essential support to the original content."
+    > "This is also the danger of ARIA. Authors can inadvertently override accessibility semantics."
+  - § Browser and Assistive Technology Support:
+    > "Testing assistive technology interoperability is essential before using code from this guide in production. Because the purpose of this guide is to illustrate appropriate use of ARIA 1.2 as defined in the ARIA specification, the design patterns, reference examples, and sample code intentionally do not describe and implement coding techniques for working around problems caused by gaps in support for ARIA 1.2 in browsers and assistive technologies."
+
+---
+
+## 4. Relevant Pattern Documents
+
+### 4.1. Button Pattern (`https://www.w3.org/WAI/ARIA/apg/patterns/button/`)
+- **Semantic Mapping**: Role `button`, accessible name via text or `aria-label`/`aria-labelledby`, optional `aria-describedby`, state `aria-pressed` (for toggle buttons), state `aria-disabled="true"`.
+- **Keyboard Obligations**:
+  - Focusable; `Space` and `Enter` activate the button.
+  - Contextual focus movement post-activation (dialog opening/closing, wizard step).
+- **Located Quotation (§Note)**:
+  > "The types of actions performed by buttons are distinctly different from the function of a link... It is important that both the appearance and role of a widget match the function it provides. Nevertheless, elements occasionally have the visual style of a link but perform the action of a button... However, a better solution is to adjust the visual design so it matches the function and ARIA role."
+
+### 4.2. Dialog (Modal) Pattern (`https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/`)
+- **Semantic Mapping**: Role `dialog`, property `aria-modal="true"`, accessible name via `aria-labelledby` or `aria-label`.
+- **Keyboard & Focus Obligations**:
+  - Focus moves into dialog upon opening.
+  - Tab and Shift+Tab wrap cyclically within the dialog (focus trap).
+  - Escape closes dialog and returns focus to the invoking element.
+- **Located Quotation (§Note)**:
+  > "Because marking a dialog modal by setting aria-modal to true can prevent users of some assistive technologies from perceiving content outside the dialog, users of those technologies will experience severe negative ramifications if a dialog is marked modal but does not behave as a modal for other users. So, mark a dialog modal only when both:
+  > 1. Application code prevents all users from interacting in any way with content outside of it.
+  > 2. Visual styling obscures the content outside of it."
+
+---
+
+## 5. Explanation of the Semantics vs Audit Boundary
+
+The boundary separating **accessibility semantics** from an **accessibility audit** is sharp and fundamental to both W3C specifications and browser automation frameworks (Playwright S023/S024):
+
+### 5.1. The Role of Semantics (What APG, WAI-ARIA, and Playwright Role Locators Cover)
+- Accessibility semantics provide the formal data structure—roles, accessible names, states, and properties—projected into the browser's accessibility tree so assistive technologies (and automation clients) can query: *"What is this element, what is its label, and what state is it in?"*
+- In test automation (Playwright S023), `page.getByRole('button', { name: 'Submit' })` queries this semantic layer directly.
+- S023 locates:
+  > "Role locators include buttons, checkboxes, headings, links, lists, tables, and many more and follow W3C specifications for ARIA role, ARIA attributes and accessible name."
+
+### 5.2. The Audit Boundary (Why Semantics $\neq$ Accessibility Audit)
+- In S023, Playwright explicitly establishes this boundary:
+  > "Note that role locators do not replace accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines."
+- This boundary consists of four distinct operational realities:
+  1. **Informative Guidance vs Normative Conformance**:
+     As APG introduction states, APG has no conformance model. An audit evaluates normative conformance against WCAG 2.1/2.2 (Principles: Perceivable, Operable, Understandable, Robust) and WAI-ARIA 1.2 normative specifications. A widget can strictly match an APG pattern structure and yet fail WCAG conformance if implemented improperly.
+  2. **Semantic Declaration vs Behavioral Contract ("A Role is a Promise")**:
+     An author can write `<div role="button">Submit</div>`. In Playwright, `page.getByRole('button', { name: 'Submit' })` will locate the element successfully, and an ARIA snapshot will record `button "Submit"`. However:
+     - The element may lack keyboard event handlers (`Enter`/`Space`).
+     - The element may not be focusable (`tabindex="0"` missing).
+     - The element may fail focus trapping or modal containment.
+     Automated semantic matching checks only the label and role in the tree, whereas an audit verifies whether the behavioral promise of the role is actually fulfilled.
+  3. **Visual, Perceptual, and Cognitive Criteria**:
+     An accessibility tree inspection or role locator cannot evaluate WCAG criteria outside the tree:
+     - Color contrast ratios (WCAG 1.4.3 / 1.4.11).
+     - Focus visible indicators and focus appearance (WCAG 2.4.7 / 2.4.13).
+     - Target size and pointer cancellation (WCAG 2.5.2 / 2.5.5 / 2.5.8).
+     - Content reflow and zoom without loss of functionality (WCAG 1.4.10).
+  4. **Assistive Technology Interoperability**:
+     As APG warns in *Read Me First*, APG examples intentionally avoid browser/screen reader hack workarounds. Full accessibility requires empirical verification across browser + AT combinations (e.g. JAWS/Chrome, NVDA/Firefox, VoiceOver/Safari). An automated semantic check cannot verify whether an AT actually speaks or navigates the widget correctly.
+
+---
+
+## 6. Corpus Evidence Separation (QUALITY.md §3)
+
+- **Observed Facts**:
+  - APG (`https://www.w3.org/WAI/ARIA/apg/`) explicitly states it is an informative resource with no conformance model.
+  - APG *Read Me First* defines "A role is a promise" and explicitly warns that ARIA attributes do not supply native browser keyboard behavior or focus trapping.
+  - APG *Dialog (Modal)* pattern requires two conditions before setting `aria-modal="true"`: complete programmatic interaction prevention and visual obscurity of outer content.
+  - Playwright S023 (`https://playwright.dev/docs/locators`) states verbatim: *"role locators do not replace accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines."*
+- **Inference**:
+  - Playwright's role locators and ARIA snapshots verify the semantic contract and structural tree, making them ideal for resilient user-facing test locators, but claiming accessibility compliance solely based on passing role locators or ARIA snapshot assertions is a critical category error and false claim.
+- **Unresolved Gaps**:
+  - APG notes that mobile/touch interaction patterns are currently unstandardized across mobile browsers and not yet covered by APG patterns.

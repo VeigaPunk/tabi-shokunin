@@ -1,0 +1,115 @@
+SnapshotAttack — Tabi round 12 w1 critic (TabiR12.SnapshotAttack), 2026-10-20
+Target: ARIA evidence equivalence (semantics, pixels, hidden state, accessibility audit, implementation claims) under C2.
+Scope: read-only attack. The only write is this file. No builds/tests/verification. No installs or tool updates.
+
+== Sources opened this session (curl -sSL, 2026-10-20T04:03Z) ==
+S023 https://playwright.dev/docs/locators              sha256 234a2452…dee6 (268087 B)
+S024 https://playwright.dev/docs/aria-snapshots        sha256 bbbad688…6194 (125426 B)
+S025 https://www.w3.org/WAI/ARIA/apg/                  sha256 17521385…d30f (39382 B)
+  All three are byte-identical to the TabiLeadScout hashes (corpus/lessons/kaika-fleet-round-1.md:66-68). [observation] The docs did not change between 2026-10-19 and 2026-10-20.
+Unregistered (not SOURCES rows; adjacency only):
+  U-a https://playwright.dev/docs/api/class-locator                 50bf21d2…99da
+  U-b https://playwright.dev/docs/api/class-locatorassertions       bb949bb8…952e
+  U-c https://playwright.dev/docs/accessibility-testing             e37dc9bb…7f96
+  U-d https://playwright.dev/docs/test-snapshots (Visual comparisons) e318967a…6547
+  U-e https://www.w3.org/WAI/ARIA/apg/practices/read-me-first/      59961923…6f
+  U-f https://www.w3.org/WAI/ARIA/apg/practices/hiding-semantics/   b3938274…8d
+Host [observation]: `playwright --version` → "Version 1.64.0"; `npm ls -g` shows playwright@1.64.0; ~/.cache/ms-playwright has chromium-1248. The newest "Added in" tag in U-a is v1.64. Nothing was executed with it.
+Attack surface: the AriaEntry note (corpus/knowledge/playwright-accessible-locators-and-snapshots.md) did not exist at review time (`ls corpus/knowledge` shows no playwright*). L1's uncommitted rows are in SKILL.md:1631-1643 (`git status`: M SKILL.md). The S024/S025 row glosses are at corpus/SOURCES.md:38-39.
+
+== F1 (HIGH, false provenance) — "not pixels" is a curator gloss, not S024 text ==
+Claim under attack: corpus/SOURCES.md:38 says "structural evidence, not pixels"; SKILL.md:1637 says "An ARIA snapshot replaces neither pixels…".
+Evidence: the extracted S024 body text has zero matches for "pixel". "screenshot" and "visual" appear only in the site nav and in the codegen tab description ("visually represents the aria snapshot"). S024 says: "A template is a constraint, not necessarily a complete serialization of the accessibility tree." (§Aria snapshots).
+Counterexample: U-a, locator.ariaSnapshot option `boxes` (Added in v1.60): "appends each element's bounding box as [box=x,y,width,height] … in CSS pixels". ariaSnapshotJSON (v1.63) has the same option. A snapshot can therefore carry layout geometry. Rendered appearance (color, contrast, overlap, clipping, paint) is still absent. That absence is an [inference]: the representation lists roles, names, attributes, text and /url only (S024 §Aria snapshots).
+Axes: provenance, calibration.
+Smallest correction: the entry must label "not pixels" as [inference] from S024's representation list, not as a quote. It should also add: "`boxes` (v1.60+) adds viewport geometry, not rendered pixels; a boxes-bearing snapshot is DPR/viewport-dependent." Optionally amend the S024 gloss in SOURCES (L1-owned) to "structural; no rendered appearance".
+
+== F2 (HIGH, hidden state) — S024 says nothing about hidden elements; three visibility notions diverge ==
+Evidence:
+- S024 has zero matches for "hidden", "aria-hidden", "shadow", "iframe" or "frame" outside the nav. [observation] Whether hidden or aria-hidden nodes appear in a snapshot is UNKNOWN from S024.
+- U-a getByRole `includeHidden`: "By default, only non-hidden elements, as defined by ARIA, are matched by role selector."
+- S023 §visible(): `<button style='display: none'>Invisible</button><button>Visible</button>`. page.locator('button') "will find both buttons and throw a strictness violation error".
+- SKILL.md:395: "DOM shape is blind to `display:none` and `:visited`"; "screenshot is the only rendered-state layer".
+Counterexamples [inference; not run]:
+- An aria-hidden="true" element that is painted. It is absent from role matching by default (U-a) but present in pixels.
+- A visually-clipped or off-screen labelled control. It is present for role matching but absent from pixels.
+- A CSS locator over a display:none node. It is present in DOM shape and absent from both other channels.
+So "snapshot matched" ≠ "user sees it" ≠ "DOM has it".
+Axes: correctness, calibration.
+Smallest correction: the entry adds a 3-column visibility table: DOM presence / ARIA-hidden-filtered / rendered. Each cell cites S023, U-a or SKILL.md:395. "Snapshot includes/excludes hidden nodes" is marked UNKNOWN (S024 silent) until a pinned local probe exists.
+
+== F3 (HIGH, semantic equivalence) — a passing template is much weaker than "tree equals" ==
+S024 rules that each allow a pass the reader may not expect:
+(a) Omitted attributes and names: "the checked attribute is ignored, so the test will pass regardless of the checkbox state". An unnamed `- button` passes "regardless of the button's label".
+(b) Default /children `contain`: "Matches if all specified children are present in order". "With no expected child entries, contain allows any children".
+(c) Location: "A single-node template can match at any depth within the selected page or locator." `- button "Submit"` scoped to page passes on ANY Submit button, including one in the wrong region.
+(d) Regex names and /url: `- heading /Issues \d+/`, `/url: /https://…/.*/`.
+(e) Comparison "normalizes whitespace within names and text values".
+(f) `equal`/`deep-equal` constrain children only. S024 never states that deep-equal enforces omitted attributes or names → UNKNOWN. "Strict" matching is therefore child-list strictness, not full-node equality.
+(g) U-a `depth` option (v1.59) truncates the generated snapshot. The default-mode snapshot excludes iframe content. That is an [inference] from U-a: ai mode "Includes snapshots of <iframe>s inside the target" is listed as a difference from default.
+SKILL.md:1636 states (a) and (b) and "not full-tree equality". It omits (c), (d), (f) and (g).
+Axes: correctness, calibration.
+Smallest correction: the entry's receipt contract requires recording scope locator, children mode, depth, mode (default/ai), boxes flag, and every regex used. (c) and (f) become explicit pitfalls; (f) is marked UNKNOWN.
+
+== F4 (MED, hidden temporal state) — the assertion retries, so a pass hides intermediate states ==
+Evidence: S024 §Updating snapshots: "Playwright retries the assertion until its expect timeout expires." Tabi's own flake note already separates actionability from the state predicate (web-flake-retry-evidence.md:76-80).
+Counterexample [inference]: a page passes through a broken accessible state (e.g. "button" briefly unnamed). Then it reaches the template state before timeout. toMatchAriaSnapshot passes, and the transient is never recorded.
+Smallest correction: the entry says a toMatchAriaSnapshot pass is an eventually-true predicate, not a first-observation capture. It is not ladder rung-2 before/after evidence unless paired with the SKILL.md:372 state-wait capture.
+
+== F5 (MED, false provenance) — baseline self-attestation ==
+Evidence:
+- S024: `-u` "uses changed mode and updates snapshots that do not match". `all` regenerates every snapshot.
+- S024: "Passing an empty string as the template … generates a snapshot on-the-fly".
+- S024 Disadvantages: "Over-Reliance: It can be tempting to accept changes to snapshots without fully understanding them, potentially hiding bugs."
+Counterexample: an .aria.yml produced by `-u` from the system under test is the system's own output. Matching it proves no change since generation, not correctness.
+Smallest correction: a snapshot receipt names how the baseline was authored (hand-written / codegen / -u mode) with sha256 and date. A generated baseline is labelled a regression anchor, not a correctness oracle.
+
+== F6 (HIGH, audit equivalence) — S023's audit disclaimer covers role locators, not snapshots ==
+Evidence:
+- S023 §Locate by role: "role locators do not replace accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines."
+- S024 has zero matches for "audit", "conformance" or "WCAG".
+- U-c (not a row): "Automated accessibility tests can detect some common accessibility problems … many accessibility problems can only be discovered through manual testing."
+Risk: if the entry quotes S023 as saying snapshots are not audits, that is a misattributed quote. If it says snapshot/axe/role passing implies WCAG conformance, that claim is unsupported.
+Smallest correction: write "snapshot ≠ audit" as [inference: S023 statement on role locators + S024 template-as-constraint]. Alternatively, L1 registers U-c as a new A-tier row before citing it (QUALITY.md rule 12: external claims need an opened SOURCES row). Never state conformance.
+
+== F7 (HIGH, semantics ≠ behavior; S025 over-reach) ==
+Evidence:
+- S025 row scope (SOURCES.md:39) is "APG home, no revision marker". The home page says only "implementing keyboard support" and lists patterns. It contains no rule saying which roles, names or keys a widget must expose.
+- U-e Read Me First: "A role is a promise … the author … has also incorporated JavaScript that provides the keyboard interactions expected for a button. Unlike HTML input elements, ARIA roles do not cause browsers to provide keyboard behaviors or styling."
+- U-e also says: "Testing assistive technology interoperability is essential before using code from this guide in production."
+- S024's state list is checked/disabled/expanded/invalid/level/pressed/selected. It has no keyboard operability or focus-order facet; "focus" matches in S024 are only the English verb.
+Counterexample: `<div role="button">Place Order</div>` with no key handler yields `- button "Place Order"` [inference from S024 role/name derivation]. The snapshot and getByRole pass while keyboard users cannot operate it.
+Also: the S025 gloss "Which roles, names and keyboard patterns a widget should expose" (SOURCES.md:39) is not supported by the opened home page.
+Smallest correction: the entry cites S025 only for what the home page says. The "role is a promise / keyboard not proven" boundary is either cited via a new APG Read-Me-First row (L1-owned SOURCES change) or kept as a labelled unregistered lead. Snapshots and role locators are described as proving exposed semantics only, never keyboard or AT behavior.
+
+== F8 (MED, implementation-identity) — three different "accessibility tree" producers ==
+Evidence:
+- S024 points readers to "the Chrome DevTools Accessibility Tab" to inspect the tree. It does not claim identity with Chromium's AX tree.
+- S023: role locators "follow W3C specifications for ARIA role, ARIA attributes and accessible name". That is Playwright's self-claim, unverified here.
+- webbridge-plugin-anatomy.md:81-82: kimi-webbridge `snapshot` = "accessibility tree with `@e` refs".
+- U-a: Playwright mode "ai" "Includes element references [ref=e2]".
+Risk: the entry or ladder treats webbridge `snapshot`, Playwright ariaSnapshot (default vs ai), CDP Accessibility, and screen-reader/platform AX output as one evidence class. Similar-looking ref syntax invites this.
+Smallest correction: one sentence naming the producer and mode as part of the evidence identity. Cross-producer equality is UNKNOWN (no local comparison). "Playwright computes the same tree as Chromium/AT" is never asserted.
+
+== F9 (MED, ladder independence) — can a snapshot be a rung-3 "independent signal"? ==
+Evidence: SKILL.md:373 rung 3 requires "two or more independent signals agree" (screenshot, DOM shape, protocol metadata). An accessibility tree is derived from the same DOM+style that DOM-shape captures [inference]. Agreement with DOM-shape is therefore correlated, not independent.
+SKILL.md:1637 says a snapshot "replaces neither pixels nor network/state evidence". That bars substitution but does not bar counting the snapshot as an extra rung-3 vote.
+The converse is also missing: a passing screenshot or DOM-shape capture says nothing about accessible names or roles. A visually perfect div-button has no role.
+Smallest correction: add to SKILL.md:1637's boundary (L1): "a snapshot adds an accessible-semantics channel; it is not independent of DOM shape for rung 3, and pixels/DOM do not establish accessible semantics."
+Separately, SKILL.md:1637 "state evidence" is ambiguous, because snapshots do carry ARIA states (checked/expanded/pressed, S024). It should say "the ladder's DOM state predicate".
+
+== F10 (LOW, implementation/version scoping) ==
+- U-a features used for boxes, depth, ai and ariaSnapshotJSON are tagged v1.59–v1.63. The host has 1.64.0 [observation]. No call was made, so every option is docs-held for the docs-as-served (newest tag v1.64), not "Playwright" in general.
+- S023 role-locator exceptions: "Locating by XPath does not pierce shadow roots. Closed-mode shadow roots are not supported." Snapshot coverage of closed shadow roots is UNKNOWN (S024 silent).
+- S023 testid: "even if your text or role of the attribute changes, the test will still pass". A getByTestId target therefore carries no semantic evidence. The decision table must not rank testid as an accessible-evidence choice.
+Smallest correction: put a version line in the provenance trio ("docs as served 2026-10-20, sha above; newest API tag v1.64; host 1.64.0 present, unexercised"). Add the two scope rows.
+
+== Smallest safe correction set (all edits L1/AriaEntry-owned; none applied here) ==
+1. Entry: separate S024-quoted facts from inferences: not pixels (F1), not audit (F6), hidden handling UNKNOWN (F2), deep-equal attribute enforcement UNKNOWN (F3f).
+2. Entry: receipt fields = producer+mode, scope, children mode, depth, boxes, regex list, baseline authorship/update mode + sha (F3, F5, F8).
+3. Entry: pitfalls = any-depth match, retry-masks-transient, role-is-a-promise/keyboard unproven, testid carries no semantics (F3c, F4, F7, F10).
+4. SKILL.md:1637 boundary: not rung-3-independent of DOM shape; converse non-implication; "state" → "DOM state predicate" (F9).
+5. SOURCES (L1): S024/S025 glosses overstate their pages (F1, F7). Either register U-c/U-e or keep them as leads. No immutable rows edited by this seat.
+
+Tradeoff vs defect: F1, F2, F3, F6 and F7 are fixable wording/provenance defects. If they ship unfixed, the C2 entry asserts unsourced equivalences, and the canonical judge should reject coverage credit for those claims. F8, F9 and F10 are calibration tightening; they don't block admission.
+Unknowns kept: hidden-node treatment in snapshots; deep-equal attribute strictness; closed-shadow/iframe coverage in default mode; Playwright tree vs Chromium AX vs AT output. No local probe was made.

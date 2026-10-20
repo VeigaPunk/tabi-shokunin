@@ -1,0 +1,76 @@
+ReviewC1 — tabi round 12, claim C1 (freshness via dated external rechecks)
+Seat: TabiR12.ReviewC1 (reviewer). Scope: design review only; the only file written is this one.
+Verdict: C1 as written does NOT yet make freshness movable without silent note edits. Four blocking gaps (F1–F4) and one unverifiable baseline (F5). Observation vs inference is marked.
+
+== Findings by severity ==
+
+F1 [blocking] The three notes are outside every gate's protected set, so an edit passes silently.
+- observation: protectedPath covers only corpus/lessons/round-N.md, corpus/evidence/fleet-round-1-freshness/, .ufo/rounds|plans|continuation|reports/fleet-round-1-*, scripts/check-freshness.mjs and SHONEN.md (scripts/check-round-contract.mjs:60-69; the same list at scripts/check-user-round-contract.mjs:73-). corpus/knowledge/* is absent.
+- observation: corpus/evidence/pstack-20261015/baseline-census.tsv lists lessons, reports, PROVINCE.md, SHONEN.md and check-freshness.mjs. It lists none of the three knowledge notes.
+- observation: the freshness pin universe (34 targets) is the 23 baseline notes, excluding the three round-1 notes (corpus/README.md:128-131; LOG.md:164-165).
+- consequence: rewriting verified-at or recheck in chrome-remote-debugging-profile-boundary.md, webdriver-bidi-capability-matrix.md or web-flake-retry-evidence.md passes check-round-contract, check-user-round-contract and check-freshness unchanged. The protectedPath check in QUALITY.md:30 gives these notes no protection.
+- required: the receipt pins each note's blob hash before and after the recheck (git hash-object or sha256 of the bytes). Any note change is an append-only errata block that records the pre-append hash (the SKILL.md §Pins pattern, SKILL.md:68-71). L1 final verification diffs each note and rejects non-append hunks. Recommendation for L1: add the three notes to protectedPath in the commit that admits the receipt. That is a shared file and L1's call.
+
+F2 [blocking] Nothing in the design moves the freshness axis; the proposed counter is a review count.
+- observation: the freshness axis is "drift detection — skill claims re-verified … Each round LOG entry includes a re-verification result" (kimi-shokunin protocol AXES.md:14). The LEARNING quality trend is "entries re-verified … verified-at freshness" (/home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/LEARNING.md:34).
+- observation: the last fleet freshness move was a pin-integrity witness with a dated committed instant, not a source recheck (SCORECARD.md:149, :174-206; LOG.md:199-241).
+- observation: the L1 claim is "0→3 current-round reviews" (spec.json context; dispatch.json taskCall.context). A review count is not a freshness measurement.
+- required: name the counting command before the round. For example: the number of knowledge notes whose verified-at is strictly later than their prior verified-at AND whose cited rows re-match a receipt. A receipt that re-confirms bytes without changing verified-at moves nothing and is reported as "held", not "improved".
+- required: apply the strictly-later-date rule the lane already uses (LOG.md:159-182 clause (c); SCORECARD.md:98). The prior verified-at is 2026-10-19 for all three notes. A receipt dated 2026-10-20 or later is strictly later; a same-day 2026-10-19 receipt is not.
+
+F3 [blocking] The receipt format and the recheck cadence have no mechanical enforcement.
+- observation: no script reads verified-at or recheck. A repo-wide grep for verified-at found hits only in markdown and lessons. scripts/check-sources.mjs checks SOURCES.md structure only; its own header says it "cannot see whether a source was opened" (corpus/SOURCES.md:9).
+- observation: cadences are declarative. S002 and S005 are 90d from 2026-10-19, due 2027-01-17 (corpus/SOURCES.md:16, :19). S013 and S017 are on-release, which has no date. S018 and S019 are 180d.
+- consequence: a recheck on 2026-10-20 is early for every cadence row. That is allowed, but it cannot be recorded as "cadence satisfied" and must not count as a due recheck.
+- required: the receipt is a new file under a new round path (QUALITY.md:30: a new round gets a new file). SOURCES.md rows change only in status, recheck and used-by, each logged old→new (.ufo/waves/kaika/SOURCES-CONTRACT-v1.md:49-51).
+
+F4 [blocking] "Hash-pinned" is not a valid pin for several sources; raw-byte hashes differ across fetches.
+- observation: kaika Gate records S001 seat sha bf63ed06… and an L1 re-fetch f0c70bd2… that differs; the L1 accepted it because the quote was present (corpus/lessons/kaika-fleet-round-1.md:44, :72-74).
+- observation (this session, source opening only): S001 was fetched three times with three different raw sha256 values (e5a3518e…, b91f3d42…, 1fa0ff00…). None matches the pinned bf63ed06…. The byte count was 96,397 each time, matching note §5 (note:84). S003 was fetched twice with two different values (91035269…, 9a7a2a27…). Neither matches the pinned 1618fa58…, and the byte count 107,908 matches note:86. Raw-byte pins are therefore not reproducible per request for these two pages. Same length with a different hash suggests a per-request token. The cause is not identified.
+- observation: S002 (35,462 B, ba8018bb…), S005 WD (dc1077db…), S013 (cf48ff4d…) and S017 (ce461e5b…) reproduced their pinned prefixes today (kaika lessons Gate rows, lessons:48, :56, :60).
+- observation: S022 is pinned to e3b0c442…, the SHA-256 of an empty body (lessons:65). The reader fetch of S002 returned only head metadata with no body text, while the raw bytes contain the text. A reader read is not a quote source.
+- required per row: pin mode is one of {raw-sha, quote-only, version-anchor}. Use raw-sha only where it reproduced on two fetches in the same receipt. Use quote-only for per-request-variant pages (S001, S003). Never accept the empty-body hash; treat it as unknown.
+
+F5 [high] The baseline "freshness 8" cannot be traced to the lane scorecard.
+- observation: SCORECARD.md:98 gives freshness 3 (last change r11). SCORECARD.md:234 gives freshness 7 after pstack-20261015-r10 in the continuation table. SCORECARD.md:140 calls freshness "unique lowest … 3". The L1 claim's "8→9" matches neither.
+- required: the receipt names the scorecard row and revision it moves. Otherwise "8→9" is an unanchored number (QUALITY.md:2-3: falsifiable, source-cited).
+
+F6 [medium] Independence and anchoring.
+- observation: the notes' authors were TabiCdpProfileExec, TabiBidiExec2 and TabiFlakeExec2 (kaika lessons Gate, lessons:44-62). The round-12 recheck seats are FreshProfile, FreshBidi and FreshRetry (executors) and ReviewSources (reviewer). They are fresh instances in the same lane.
+- observation: the contract says author-side swarm is not independent verification (spec.json context). The lane's own L1 re-open was author-side (lessons:72-76).
+- required: each receipt states whether the seat authored the note (false for the fresh seats) and the read order: source first, then the note digest, then comparison. A seat that read the note before fetching the source is anchored and says so.
+
+== Required receipt fields ==
+Header: receipt_id; UTC date (ISO) and the HEAD commit at fetch; seat id; authored_note (true/false); the scorecard row and revision the claim moves; the counting command; tool versions (curl, reader) and the commands run.
+Note block: note path; blob hash before; blob hash after (equal if no errata; otherwise the pre-append hash and an append-only diff); verified-at old and new; recheck field old and new.
+Per claim row: claim id; source id (S###); resolved final URL after redirects; source revision (W3C dated WD URL; Playwright version heading as seen, e.g. "Version 1.64"; a chromium commit SHA, not "main"); fetch method; raw byte count; sha256 of raw bytes; pinned sha from the SOURCES Gate; pin mode (raw-sha / quote-only / version-anchor); quote ≤25 words; quote location (section, or line in the raw bytes); quote_present (yes/no, with the byte source stated); verdict (confirmed / drift / unknown).
+Verdict rules: confirmed = quote present and (raw sha equal, or pin mode quote-only/version-anchor). drift = quote absent, or the quote is present but the raw sha changed in a non-reproducible way (record both; do not auto-pass). unknown = empty body, app shell, reader-only text, redirect to a different document, or network failure.
+
+== Failure conditions (fail closed; receipt not admitted if any holds) ==
+1. A note blob changed without an append-only errata block, or L1's diff finds a non-append hunk.
+2. The receipt path overwrites or appends to an existing lesson, evidence or round file.
+3. Fetch body empty, or sha equals the SHA-256 of the empty string (e3b0c442…).
+4. Quote not found in the fetched raw bytes (or in reader text, if the receipt says so).
+5. Source URL is a mutable branch (e.g. chromium main) with no resolved commit SHA recorded.
+6. Source version or heading not recorded for a rolling "stable" or "Latest" page (Playwright, W3C).
+7. verified-at not strictly later than 2026-10-19 used as freshness credit.
+8. An early recheck presented as cadence satisfied.
+9. Seat authorship not declared; anchored read order not declared.
+10. Counting command absent, or not tied to the named scorecard row.
+11. "Locally measured" or runtime support claimed from documentation-only rechecks (the notes say no runtime was measured; keep it that way).
+12. Two wordings of the same claim found in one source (see S002 below) and only one recorded.
+
+== Observation checks completed (source opening only; no repo verification run) ==
+- S004 @main (chrome/browser/devtools/remote_debugging_server.cc): raw sha256 ea72757a…01cc, 424 lines, identical to corpus/SOURCES.md S028 and note §5 (note:87). Symbols at :162 (IsRemoteDebuggingAllowed), :169 (GOOGLE_CHROME_BRANDING), :177 (value_or(true)), :292 (EnableDefaultUserDataDirCheckForTesting). Header sha 841c6f67…78a602 matches. The note's :160-183 anchors are consistent. This is a confirmed, later-dated recheck datum, but main is a moving ref, so the commit must be recorded.
+- S001 raw bytes contain "will no longer be respected if attempting to debug the default Chrome data" (quote present). Reader text also contains the publication date 2025-03-17.
+- S002 raw bytes contain "not a public or supported API for Chrome, and it does not guarantee" (the note's quote continues on the next line). The raw bytes also contain a second wording, "not a public or supported API, and we do not guarantee backwards". The note quotes only the first. The receipt must record which wording it checked; this is not yet a drift finding.
+- S013 reader text contains the passed/flaky/failed categories.
+- S005 reader text: dated WD 2026-10-08, reached via the W3C Latest-Version redirect.
+- S017 page heading is Version 1.64 with the --shuffle seed example (the note's claim matches; the page is rolling, so the heading must be recorded).
+
+== Residual risk and gaps ==
+- The recheck of the three notes was not performed here (out of scope).
+- The cause of per-request raw-byte variance on S001 and S003 is not identified.
+- The S002 second wording is not traced to its section.
+- No tools installed or updated by this seat. Lane-owned scripts were read, not run.
+- Duplicate row: S004 and S028 point at the same URL; S004 stays status "mined" (corpus/SOURCES.md:18, :42). L1 should confirm the supersession is logged (SOURCES-CONTRACT-v1 rule 2).

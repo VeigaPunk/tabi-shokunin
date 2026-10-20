@@ -1,0 +1,115 @@
+# RetryScope: Inspection of Flaky/Pass Classification and Attempt Receipt Preservation
+Seat: TabiR12.RetryScope (scout, leaf member, advisory)
+Root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Date: 2026-10-20
+Target Note: corpus/knowledge/web-flake-retry-evidence.md (170 lines, committed in kaika fleet round 1)
+Assigned Output: .ufo/waves/round-12/w1/RetryScope.txt (no duplicate .md written; no verification commands run)
+
+================================================================================
+1. NAMED AXES (GODSPEED POSTURE)
+================================================================================
+1. Classification Fidelity: Alignment between primary docs (S013) and note semantics; rejection of green-after-retry erasure.
+2. Receipt Preservation Completeness: Rigor and completeness of the 6-facet attempt ledger contract.
+3. Epistemic Boundary Discipline: Strict separation of observation, operational inference, rejected claims, and unknowns.
+4. Tabi State-Predicate Alignment: Mapping runner receipts onto tabi's "Wait on state, never on time" rule.
+
+================================================================================
+2. FLAKY / PASS CLASSIFICATION INSPECTION
+================================================================================
+Anchor: corpus/knowledge/web-flake-retry-evidence.md:24-28, 82-88, 142-146
+Source Grounding: S013 (https://playwright.dev/docs/test-retries, §Failures, §Retries)
+
+A. Published Classification State Machine [OBSERVATION]:
+- Source S013 verbatim classifies tests into exactly three outcomes:
+  1. "passed" — tests that passed on the first run;
+  2. "flaky" — tests that failed on the first run, but passed when retried;
+  3. "failed" — tests that failed on the first run and failed all retries.
+- Note reflection (:24-28, :82-84): Verbatim match to S013. A first-run pass is `passed`; a first-run failure followed by a retry pass is `flaky`; a first-run failure followed by failure across all retries is `failed`.
+
+B. Mechanical Label Function & Incompleteness Handling [INFERENCE]:
+- Note formulation (:82-87): "The label function is mechanical: all attempts pass from attempt one -> passed; first fails and any retry passes -> flaky; first fails and every configured retry fails -> failed. Missing/aborted attempt evidence -> unclassified, not an assumed pass or failure [inference from S013]."
+- Note explicitly marks the `unclassified` state as an operational inference from S013's failure-and-retry definitions, preventing silent default to passed or failed when attempt records are incomplete.
+- Bounded semantic attribution (:85-87): The note clarifies that `flaky` reports an observed execution sequence, not the fault's attribution (product, test, environment, or runner infrastructure).
+
+C. Eradication of "Green After Retry" / Erasure Prohibition [OBSERVATION / REJECTED]:
+- Rejection (:142-146): "A retry-pass is a reliable pass" is explicitly REJECTED.
+- Core rationale (:26-28): "Thus a retry-pass is evidence of outcome variation, not evidence that the initial failure can be erased or that the underlying application is healthy."
+- Receipt prerequisite (:41-43, :53-56): "A summary such as 'green after retry' is not enough to re-derive the classification... do not reconstruct a missing first failure from the final status. Apply the three labels above only when the whole configured attempt sequence is present."
+- Flip condition (:145-146): Requires a version-scoped change in published runner classification and an explicit receipt format retaining all attempts.
+
+================================================================================
+3. ATTEMPT RECEIPT PRESERVATION INSPECTION
+================================================================================
+Anchor: corpus/knowledge/web-flake-retry-evidence.md:39-88
+Source Grounding: S013, S014, S015, S016, S017
+
+A. Core Contract: The Per-Test Attempt Ledger [OPERATIONAL INFERENCE]:
+- Defined in §2 (:41-44): A durable ledger must track every execution from attempt 1 through attempt N (the configured retry limit).
+
+B. Six Preserved Receipt Facets (:45-80):
+1. Run Identity (:45-50):
+   - Items: Source revision, exact test/project IDs, Playwright Test version, browser name/version, OS/runtime, invocation command, effective configuration, retry limit, worker/shard settings, unique run ID.
+   - Lifecycle awareness (S013): Because Playwright 1.64 discards the worker process and browser on failure and starts a fresh worker for the retry, worker/attempt identity must be captured to expose lifecycle resets.
+2. Attempt Outcomes (:51-56):
+   - Items: First-run result, error and stack trace; for each retry: ordinal, result, error, stack, and duration.
+   - Rule: Retain raw reporter output or structured equivalent; never synthesize a missing first-run failure from the final status.
+3. Order Evidence (:57-62, S017):
+   - Items: Whether shuffle was active, exact `--shuffle` command/seed, runner-reported seed, and observed test execution order.
+   - Constraint [inference]: Replay seed must be preserved with runner version and worker/shard config; numeric seed alone is not an environment-complete replay recipe.
+4. First-Retry Trace (:63-69, S014):
+   - Items: `trace: 'on-first-retry'`, preserved `trace.zip`, cryptographic digest, test/attempt binding.
+   - Critical preservation rule (:68-69): "Keep the first-run error separately: a retry-only trace is not the first-run trace and cannot by itself show the original failure."
+5. Waited State Predicate (:70-75):
+   - Items: Exact code/source revision of the predicate, target (locator/document/request), initial observed value, expected terminal value, actual observed value, timeout, pass/expire outcome.
+   - Prohibition: "Waited for the page" or "slept 500 ms" is explicitly rejected as non-re-derivable.
+6. Action Context (:76-81, S015, S016):
+   - Items: Preceding action, locator, Playwright actionability checks/errors, assertion/matcher, and assertion timeout.
+   - Boundary: Actionability checks gate action dispatch only; they do not establish post-action application state.
+
+================================================================================
+4. TABI STATE-PREDICATE MAPPING & STUDY EVIDENCE
+================================================================================
+Anchor: corpus/knowledge/web-flake-retry-evidence.md:89-125
+Source Grounding: S018 (ICST 2025 paper), S019 (KNU wait study), SKILL.md:476-512
+
+A. Tabi Rule Integration (:91-99):
+- Maps receipt discipline to tabi's core rule: "Wait on state, never on time" (SKILL.md:476-501).
+- Reinforces payload-derived predicate settling (SKILL.md:498-502) and dual DOM + network witnesses (SKILL.md:503-510; async-step-evidence.md:69-77).
+- Notes that two animation frames settle paint only, never certifying network or business logic completion (SKILL.md:511-512).
+
+B. ICST 2025 Flake Class Mapping (:101-118, S018):
+- ED / DE (Event-DOM): Pair action with post-action DOM state + response witness; actionability is a prerequisite, not completion.
+- E (Event): Require completion witness and resulting state before downstream steps.
+- D (DOM): Explicitly state required DOM attributes/count/text in predicate; locator resolution alone is insufficient during rendering churn.
+- R (Response): Auto-retrying assertions (S016) against response payloads.
+- O (Other): Explicit non-DOM blocking condition.
+
+C. Rejection of Delay-Based "Fixes" (:121-125, :147-154):
+- Second rejected claim: "A longer fixed sleep is the default flake fix" is REJECTED.
+- While ICST paper reports 38.2% conditional/delay fixes and S019 studies wait tuning, delays record no state transition and do not prove root cause resolution.
+
+================================================================================
+5. LOCAL BOUNDARY & UNKNOWNS
+================================================================================
+Anchor: corpus/knowledge/web-flake-retry-evidence.md:126-139, 156-170
+
+A. Local Execution Perimeter [OBSERVATION]:
+- No Playwright runner flake was executed locally for this note; documentation-held receipt contract only.
+- Local boundary preserved: tabi relies on loopback fixtures and CDP captures; external/real-site flakes and runner execution were not measured.
+- Corrected external citation: §4 anchors kaidoku's Playwright 1.64.0 global install to `kaidoku-shokunin/corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:42-44`, resolving prior citation error M15.
+
+B. Recorded Unknowns (:158-170):
+- U1: Host installed Playwright vs 1.64 docs / shuffle flag support (unprobed).
+- U2: Cross-host / cross-version test order determinism from seed + shard configuration.
+- U3: Sensitivity / secret leakage risks in retained first-retry trace.zip archives.
+- U4: Dominant flake classes on tabi's specific internal fixture set.
+- U5: Currency of the 2026-10-13 global Playwright install.
+
+================================================================================
+6. SUMMARY FINDINGS FOR ROUND 12
+================================================================================
+1. The note's flaky/pass classification adheres strictly to Playwright S013 documentation (three discrete outcomes: passed, flaky, failed).
+2. The note makes a valid and necessary operational inference in defining `unclassified` for missing/aborted sequences.
+3. The note correctly and rigorously rejects erasing first-attempt failures, establishing that retry passes demonstrate variance rather than health.
+4. The 6-facet attempt receipt contract provides an actionable, re-derivable schema that directly reinforces tabi's state-predicate wait discipline.
+5. All epistemic levels (Observation, Operational Inference, Rejected Claims, and Unknowns) are properly segregated and labeled throughout.

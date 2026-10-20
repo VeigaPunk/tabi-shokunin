@@ -1,0 +1,152 @@
+Freshness re-review — corpus/knowledge/web-flake-retry-evidence.md (C1)
+reviewed-at: 2026-10-20T04:03:36Z (UTC; five fetches completed in one 1.03 s window)
+seat: TabiR12.FreshRetry (independent re-open; note not modified)
+note sha256: aaa0908b524b6e27ea6299ccc805cb86540219af8fdfa239bfe71ee81ce8f553
+note path: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/web-flake-retry-evidence.md
+method: curl -sS -L --compressed on the five cited playwright.dev stable pages, HTTP 200 each;
+        raw HTML hashed, visible text extracted locally for quotation. No browser, Playwright
+        runner, test or fixture executed. No tool installed or updated this seat.
+scope note: this receipt covers S013–S017 (Playwright). S018/S019 (ICST paper, KNU abstract)
+        were not re-opened here; they belong to the paper-source seat, not this one.
+
+VERDICT: 7/7 Playwright-attributed claim clusters CONFIRMED; 0 drift; 0 contradiction.
+All five page digests are byte-identical to the round-1 Gate
+(corpus/lessons/kaika-fleet-round-1.md:56-60) — no doc change between 2026-10-19 and 2026-10-20.
+No correction to the note is warranted; leave it unmodified.
+
+## Source receipts (raw HTML as served, stable channel)
+
+| row | URL | HTTP | bytes | sha256 | round-1 Gate | match |
+|---|---|---|---|---|---|---|
+| S013 | https://playwright.dev/docs/test-retries | 200 | 10801 | cf48ff4db0a305f9c1a8a829b60c295041e22daa0e018c4286ae182832ffbdfa | same (kaika-fleet-round-1.md:56) | identical |
+| S014 | https://playwright.dev/docs/trace-viewer | 200 | 11407 | e947d4dc0b73cdb8eae97f10c268c10024e4ff9410077acd7d69e6b0bafc1bee | same (:57) | identical |
+| S015 | https://playwright.dev/docs/actionability | 200 | 8533 | 31075410ae19edfe13f6f1cd5ec4d980ee9be0303009f4273563231db610fe8d | same (:58) | identical |
+| S016 | https://playwright.dev/docs/test-assertions | 200 | 15225 | 1bb8afe888af092190125a3d5a6aef753fb17312c0c0b774d296060ac0766a2c | same (:59) | identical |
+| S017 | https://playwright.dev/docs/release-notes | 200 | 99752 | ce461e5be73bd602d24395e4628c62ded8293b088a085c82f5436960241952c5 | same (:60) | identical |
+
+Channel identity: every page carries `<meta name="docusaurus_version" content="stable">` and
+`<meta name="docsearch:version" content="stable">`; `<meta name="generator" content="Docusaurus
+v3.10.1">` confirms the note's §1 metadata claim (note:11-12). Release-notes still opens at
+"Version 1.64" (next section "Version 1.63"); no 1.65 entry exists as of review.
+
+## Claim-by-claim (note location → source location → verbatim quote → status)
+
+1. note:10-13 — "official `stable` docs ... page metadata reports Docusaurus v3.10.1",
+   release-notes "headed Version 1.64".
+   S017 https://playwright.dev/docs/release-notes, first heading and meta tags above.
+   Quote: `Version 1.64`; `<meta name=generator content="Docusaurus v3.10.1">`.
+   Status: CONFIRMED.
+
+2. note:16-21 — "Playwright Test 1.64 adds `--shuffle`; its example is `npx playwright test
+   --shuffle`, which prints a `shuffle seed`, and a numeric seed can be replayed with
+   `npx playwright test --shuffle 271828182` (S017, Version 1.64 > Test runner)."
+   S017 §Version 1.64 > 🎯 Test runner (heading immediately precedes the item).
+   Quote: "New `--shuffle` command line option schedules tests in a random order, which helps
+   to find tests that accidentally depend on each other." Example block:
+   `npx playwright test --shuffle` / `# Running 42 tests using 4 workers, shuffle seed
+   271828182` / `# Pass the seed to reproduce the same order.` / `npx playwright test
+   --shuffle 271828182`.
+   Status: CONFIRMED (the seed-bearing line is an example-output comment, not a format
+   guarantee; the note already marks cross-condition replay as inference/unknown).
+
+3. note:24-26 — first-run pass `passed`, fail-then-retry-pass `flaky`, fail-all-retries
+   `failed` (S013, Retries).
+   S013 §Retries: "Playwright Test will categorize tests as follows:" —
+   `"passed" - tests that passed on the first run;`
+   `"flaky" - tests that failed on the first run, but passed when retried;`
+   `"failed" - tests that failed on the first run and failed all retries.`
+   Status: CONFIRMED. (Page is unversioned stable; the 1.64 label is inherited from the S017
+   head, which still holds today — a scope note for the on-release recheck, not drift.)
+
+4. note:47-49 — "The 1.64 retry description says a failed test's worker is discarded and a new
+   worker retries it" (S013, Failures and Retries).
+   S013 §Failures: "Should any test fail, Playwright Test will discard the entire worker
+   process along with the browser and will start a new one." and "If you enable retries,
+   second worker process will start by retrying the failed test and continue from there."
+   Status: CONFIRMED.
+
+5. note:58-60 — "For Playwright Test 1.64, the no-number example emits a seed and the numeric
+   form passes that seed back" (S017, Version 1.64 > Test runner).
+   S017 same block as #2: `# Running 42 tests using 4 workers, shuffle seed 271828182` then
+   `# Pass the seed to reproduce the same order.` then `npx playwright test --shuffle
+   271828182`.
+   Status: CONFIRMED.
+
+6. note:63-68 — "set `trace: 'on-first-retry'` ... Playwright's stable trace guide says this
+   mode records a trace on the first retry of a failed test; the viewer exposes action logs,
+   source locations, snapshots, errors, console, network and metadata (S014, Tracing on CI and
+   Trace Viewer features)."
+   S014 §Tracing on CI: "Traces should be run on continuous integration on the first retry of a
+   failed test by setting the `trace: 'on-first-retry'` option in the test configuration file.
+   This will produce a `trace.zip` file for each test that was retried." Option list:
+   "`'on-first-retry'` - Record a trace only when retrying a test for the first time."
+   S014 §Trace Viewer features: headings Actions ("Action snapshots", "Action log", "Source
+   code location"), Snapshots (Before/Action/After), Source, Errors, Console, Network,
+   Metadata.
+   Status: CONFIRMED. The note's "retry-only trace cannot show the original failure" follows
+   from the "only when retrying ... for the first time" wording and is marked as part of the
+   section's operational inference.
+
+7. note:78-79 — "The actionability guide's stable docs say actions wait for their applicable
+   checks; that does not prove the application's post-action state predicate held (S015,
+   Auto-waiting; S016, Auto-retrying assertions)."
+   S015 §Introduction: "Playwright performs a range of actionability checks on the elements
+   before making actions to ensure these actions behave as expected. It auto-waits for all the
+   relevant checks to pass and only then performs the requested action." Per-action table then
+   lists Visible/Stable/Receives Events/Enabled/Editable by action.
+   S016 §Auto-retrying assertions: "The following assertions will retry until the assertion
+   passes, or the assertion timeout is reached." §Non-retrying assertions: "These assertions
+   allow to test any conditions, but do not auto-retry." §Introduction: "Playwright also
+   includes web-specific async matchers that will wait until the expected condition is met."
+   Status: CONFIRMED (first half verbatim; second half is the note's correctly-labelled
+   inference).
+
+8. note:114-116 — "Playwright's stable assertion guide documents auto-retrying locator
+   matchers; retain the exact matcher and observed result (S016, Auto-retrying assertions)."
+   S016 §Auto-retrying assertions list includes `expect(locator).toBeVisible()`,
+   `toHaveText()`, `toHaveCount()`, `toMatchAriaSnapshot()`, etc., all under the retry
+   sentence quoted in #7.
+   Status: CONFIRMED.
+
+## Note-internal anchors (spot-check, opened in-repo)
+- SKILL.md:498 carries the quoted "Wait on state, never on time"; 499-501 the payload-derived
+  predicate; 503-509 the DOM+network witness pair; 511-512 "rAF settles paint, not network";
+  687-691 loopback-first evidence. Note's ranges (476-501, 498-502, 503-510, 511-512,
+  496-510, 687-695) all resolve to matching content.
+- corpus/knowledge/async-step-evidence.md:69-77 = pre/post predicates; :125-153 = §3 settle-wait
+  discipline. CONFIRMED.
+- corpus/knowledge/live-dynamic-capture.md:35-42 = per-click state polls + rAF; :151-173 = §4
+  rules delta including loopback ≠ no-egress. CONFIRMED.
+- kaidoku-shokunin/corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:43-44 = "playwright 1.64.0
+  global + ~/.cache/ms-playwright/chromium-1248"; 2026-10-14-r10-01-queue-ops.md:155-157 =
+  recordHar over localhost with Playwright 1.64.0. Both CONFIRMED as adjacent install
+  observations only (the note already refuses to treat them as tabi measurements).
+
+## Unknowns / residual risk
+- No local runner probe: host Playwright version, actual `--shuffle` output shape, and
+  first-retry trace contents remain unmeasured (note Unknowns 1-3 stand unchanged).
+- A future stable release will silently move the unversioned retries/trace/actionability
+  pages; the on-release recheck in the note's header is the correct guard.
+- S018/S019 text and the ICST sample figures were not re-opened by this seat.
+
+## Correction disposition (L1 direction, 2026-10-20)
+
+Status: one attribution imprecision in the note; no factual drift in any confirmed claim.
+Evidence basis: the version label "1.64" is displayed only by S017 (release-notes, first
+heading "Version 1.64"). S013/S014/S015/S016 are `stable`-channel pages: each carries
+`<meta name=docusaurus_version content=stable>` / `docsearch:version=stable` and no version
+number in its body; all five hashes still match the round-1 Gate, so the served text equals
+what the note read on 2026-10-19.
+Affected note text (over-attribution to 1.64):
+- note:24-26 "Playwright Test 1.64's retry docs classify ..." — the retries page states no
+  version; "1.64" is inherited from the current S017 head, not page content.
+- note:47-49 "The 1.64 retry description says a failed test's worker is discarded ..." — same
+  unversioned retries page.
+- note:58-60 "For Playwright Test 1.64, the no-number example ..." — correct as written;
+  S017 is the one version-pinned source in the cluster.
+Not affected: the quoted classification/worker-discard/trace/actionability/assertion sentences
+are verbatim-confirmed, and the note's on-release recheck already targets the stable docs.
+Disposition for L1: carry this as a separate correction/errata entry (append-only per
+corpus/QUALITY.md rule 4; this seat does not modify the note). Suggested replacement wording:
+"the stable retries page (1.64-current at review)", keeping "1.64" only on S017 citations.
+Review boundary: Playwright S013-S017 only; S018/S019 not reverified here.

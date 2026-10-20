@@ -1,0 +1,194 @@
+# Protected Historical Files Map & Safe Receipt Locations (Tabi Round 12)
+Root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Date: 2026-10-20
+Seat: TabiR12.ProtectedMap (scout)
+
+================================================================================
+1. BASELINE COMMIT PINS & INTEGRITY ANCHORS
+================================================================================
+- HARD_BASELINE = 7f506affa55f6fb892d3c8073c75151c998bdf2c
+  (scripts/check-round-contract.mjs:11, scripts/check-user-round-contract.mjs:12,
+   corpus/evidence/pstack-20261015/baseline-census.tsv:1)
+  Contract requirement: git merge-base --is-ancestor HARD_BASELINE HEAD == 0.
+
+- PSTACK_PIN = 92d700d6a8aa9855f1e9d2cc8e12c82f762a1367
+  (scripts/check-user-round-contract.mjs:13)
+  Contract requirement: git merge-base --is-ancestor PSTACK_PIN HEAD == 0.
+
+- CURRENT_ROUND_CONTEXT:
+  Branch tip at HEAD incorporates kaika fleet round 1 post-review fixes (5cdc97654).
+
+================================================================================
+2. FIVE TIERS OF HISTORICAL PROTECTION
+================================================================================
+
+--- TIER 1: protectedPath(path) (Both checkers) ---
+Defined identically in scripts/check-round-contract.mjs:60-69 and
+scripts/check-user-round-contract.mjs:73-82:
+  - /^corpus\/lessons\/round-\d+\.md$/
+  - corpus/evidence/fleet-round-1-freshness/*
+  - .ufo/rounds/fleet-round-1-interactive-20261015/*
+  - .ufo/reports/fleet-round-1-attempt-20261015/*
+  - .ufo/plans/fleet-round-1-interactive-20261015*
+  - .ufo/continuation/fleet-round-1-interactive-20261015*
+  - scripts/check-freshness.mjs
+  - SHONEN.md
+Invariant: For all matching paths in git ls-tree HARD_BASELINE, blob(HARD_BASELINE, path) === blob(HEAD, path).
+
+--- TIER 2: Production Baseline Census (56 files pinned by SHA-1 blob) ---
+Source: corpus/evidence/pstack-20261015/baseline-census.tsv
+Enforced by: scripts/check-round-contract.mjs:106-118
+Every recorded git blob hash must match BOTH blob(HARD_BASELINE, path) AND blob(HEAD, path):
+  1) .ufo/continuation/fleet-round-1-interactive-20261015.json (0d72d0fb80af0c7a2a616e36df21906e8ed90a5e)
+  2) .ufo/continuation/fleet-round-1-interactive-20261015.md   (b395acac75e3f9bca90a12b5863da4e39d7ee52b)
+  3) .ufo/plans/fleet-round-1-interactive-20261015.md          (8cf7c1fcec7532706bff33d2c56bcf1f00712140)
+  4) .ufo/reports/fleet-round-1-attempt-20261015/tabi.md       (b013d1b74e60ab1ae2a79d818a13b297bc0e2f8d)
+  5-22) 18 files in .ufo/rounds/fleet-round-1-interactive-20261015/:
+        browser-after.png, browser-before.png, browser-smoke.json,
+        entry-inventory.json, freshness.expected.json, gate-selftest-safe.json,
+        gate-selftest.json, gate-witness-safe.json, gate-witness.json,
+        gate-worktree-safe.json, gate-worktree.json, measurement-worktree.json,
+        receipt-blocker.json, routing.json, wave-validation.json,
+        wave.dispatch.json, wave.plan.json, wave.spec.json
+  23) PROVINCE.md                                             (c2222b16b3b18ce2c2058fb3a50d690c6e5735ae)
+  24) SHONEN.md                                               (5e055b8c60d606d202029eddabb8a45e13203b06)
+  25-45) 21 files in corpus/evidence/fleet-round-1-freshness/:
+        archive-smoke.json, baseline-current.json, before.json,
+        browser-after.png, browser-before.png, browser-current-after.png,
+        browser-current-before.png, browser-current.json, browser-smoke.json,
+        connector-current.json, critic-current.json, critic.json, dispatch.json,
+        integration-current.json, notes-current.json, pins.tsv,
+        planner-current.json, reports-current.json, scout-current.json,
+        scribe-current.json, substrate-current.json
+  46-55) 10 historical lessons: corpus/lessons/round-1.md through round-10.md
+  56) scripts/check-freshness.mjs                             (987c3267f1781db643e0269942a126ca9fee814a)
+NOTE ON SHONEN DEBT:
+SHONEN.md was regenerated to canonical [~] form in commit 5cdc97654 (LOG.md:522-525).
+This altered its blob relative to baseline-census.tsv row 25, so check-round-contract.mjs
+reports history_rewritten until an operator L0 baseline re-pin occurs.
+
+--- TIER 3: APPEND_ONLY Files (Prefix Byte-Equality Guard) ---
+Defined in scripts/check-round-contract.mjs:25 and scripts/check-user-round-contract.mjs:29:
+  - LOG.md
+  - SCORECARD.md
+  - SKILL.md
+  - PROVINCE.md
+  - corpus/QUALITY.md
+  - corpus/README.md
+Enforcement: show(HARD_BASELINE, path) must equal show(HEAD, path).subarray(0, baselineLength).
+Rule: Only appending at the end of the file is allowed; historical prefix cannot be edited.
+Caution: PROVINCE.md is also in Tier 2 baseline census, so modifying it trips census check.
+
+--- TIER 4: PSTACK Diff Filter (check-user-round-contract.mjs:121-135) ---
+Runs: git diff --name-only PSTACK_PIN HEAD -- ...PSTACK_PATHS
+Where PSTACK_PATHS = [
+  'corpus/evidence/pstack-20261015',
+  'corpus/lessons',
+  'reports',
+  'scripts/check-round-contract.mjs',
+  'scripts/pstack-seat.mjs',
+  'scripts/pstack-aggregate.mjs',
+  'scripts/check-freshness.mjs',
+  'SHONEN.md'
+]
+Fails with 'history_rewritten: Pstack bytes changed: <path>' if any diffed file matches:
+  - path.startsWith('corpus/evidence/pstack-20261015')
+  - /^corpus\/lessons\/pstack-20261015-r\d{2}\.md$/.test(path)
+  - /^corpus\/lessons\/round-\d+\.md$/.test(path)  <-- CRITICAL WARNING!
+  - /^reports\/pstack-20261015-r\d{2}\.md$/.test(path)
+  - scripts/check-round-contract.mjs
+  - scripts/pstack-seat.mjs
+  - scripts/pstack-aggregate.mjs
+  - scripts/check-freshness.mjs
+  - SHONEN.md
+  - protectedPath(path)
+
+*** CRITICAL LESSON / TRAP ALERT ***
+Because 'corpus/lessons' is in PSTACK_PATHS, creating ANY file matching
+/^corpus\/lessons\/round-\d+\.md$/ (such as corpus/lessons/round-12.md) will appear
+in git diff PSTACK_PIN HEAD and TRIGGER A FATAL CONTRACT FAILURE in check-user-round-contract!
+This was the exact root cause of mistake M13 in kaika fleet round 1 (QUALITY.md:30).
+NEVER name a new lesson 'corpus/lessons/round-12.md'!
+
+--- TIER 5: Historical Round Invariants (sameTree & scanConsequential) ---
+- Pstack Rounds 01..10 (check-round-contract.mjs:283-308):
+  - corpus/lessons/pstack-20261015-r{01..10}.md
+  - reports/pstack-20261015-r{01..10}.md
+  - corpus/evidence/pstack-20261015-r{01..10}/* (aggregate.json, seats/s01..s32.json, public/capture.json)
+  - Invariant: blob(HEAD) === blob(measured-against). Zero consequential needles.
+
+- User Rounds 01..10 (check-user-round-contract.mjs:336-369):
+  - corpus/lessons/user-20261015-r{01..10}.md
+  - reports/user-20261015-r{01..10}.md
+  - corpus/evidence/user-20261015-r{01..10}/* (spec.json, dispatch.json, aggregate.json, seats/s01..s32.json, public/capture.json)
+  - Invariant: blob(HEAD) === blob(measured-against). Zero consequential needles.
+
+================================================================================
+3. KAIKA EXTERNAL KNOWLEDGE NOTES PRESERVATION RULES
+================================================================================
+The three external knowledge notes admitted in kaika fleet round 1:
+  1) corpus/knowledge/chrome-remote-debugging-profile-boundary.md
+  2) corpus/knowledge/webdriver-bidi-capability-matrix.md
+  3) corpus/knowledge/web-flake-retry-evidence.md
+
+Status & Protection:
+- While not explicitly listed in protectedPath or PSTACK_PATHS, these notes are
+  governed by:
+  - QUALITY Criterion 4: "Errata are append-only blocks."
+  - QUALITY Criterion 13: "protected history is never appended — a new round gets a new file."
+  - QUALITY Criterion 14: Distillation preservation rule (no retroactive rewriting of facts).
+  - Explicit assignment target: "Do not change original note".
+- Modifying these notes in place would alter the hash-pinned foundation verified
+  by non-author spot-checks (corpus/lessons/round-1-verifier-spotcheck.md:10-13)
+  and cited by SOURCES.md rows S001-S019, S028.
+- CONCLUSION: The 3 original notes MUST REMAIN UNTOUCHED.
+
+================================================================================
+4. RECOMMENDED SAFE LOCATIONS FOR NEW NOTES & RECEIPTS (ROUND 12)
+================================================================================
+
+1. Safe Location for C2 New Knowledge Note:
+   Path: corpus/knowledge/playwright-accessible-locators-and-snapshots.md
+   - Safety: Completely outside protectedPath, PSTACK_PATHS, and baseline census.
+   - SOURCES Integration: When S023, S024, S025 transition queued -> mined, their
+     usedBy column points to this relative path.
+   - check-sources.mjs compliance: inspectUsedBy verifies regular file, inside root,
+     and regex matches S023, S024, S025 cited inside the note. Clean pass.
+
+2. Safe Locations for C1 Knowledge-Side Review Receipts:
+   Path: corpus/knowledge/
+   Options:
+   - Option A (Consolidated Knowledge Receipt - Recommended):
+     corpus/knowledge/freshness-review-receipt-round-12.md
+     (Following the convention of archive-receipt-r10.md, closeout-r11.md)
+   - Option B (Per-Note Knowledge Receipts):
+     corpus/knowledge/freshness-review-profile-boundary-r12.md
+     corpus/knowledge/freshness-review-webdriver-bidi-r12.md
+     corpus/knowledge/freshness-review-web-flake-retry-r12.md
+   Content contract for each receipt:
+   - sha256 pin of the original note (demonstrating zero modification)
+   - Review date (2026-10-20)
+   - Exact source quotation, section/location, and fresh fetch sha256 for each claim
+   - Evaluation verdict: confirmed / drift / unknown
+   - Correction recommendations (if any) to be applied via errata/append in living indices.
+
+3. Safe Location for C1 Raw Evidence / Tool Receipts:
+   Path: corpus/evidence/round-12/freshness/
+   (Or corpus/evidence/round-12/)
+   - profile-boundary-sources.json (or .txt)
+   - bidi-matrix-sources.json (or .txt)
+   - retry-evidence-sources.json (or .txt)
+   - Safety: Entirely unconstrained by historical pstack/user/fleet checks.
+
+4. Safe Location & Naming for Round 12 Lesson:
+   Path: corpus/lessons/kaika-fleet-round-12.md
+   (Or corpus/lessons/round-12-freshness.md)
+   *** DO NOT NAME IT corpus/lessons/round-12.md ***
+   Naming it round-12.md trips the PSTACK diff filter /^corpus\/lessons\/round-\d+\.md$/
+   in check-user-round-contract.mjs:126. Using 'kaika-fleet-round-12.md' follows the
+   pattern established by kaika-fleet-round-1.md, round-1-verifier-spotcheck.md,
+   and training-round-11.md, ensuring 100% gate safety.
+
+5. Safe Location for Round 12 Report:
+   Path: reports/kaika-fleet-round-12.md (or .ufo/reports/...)
+   - Safe from PSTACK report diff filter (which strictly filters /^reports\/pstack-20261015-r\d{2}\.md$/).

@@ -1627,3 +1627,37 @@ round lesson's `## Gate` (`corpus/lessons/kaika-fleet-round-1.md`).
   `## Registry`; an `S###` row in any other section fails `row_outside_registry`.
   Self-test: **26** cases (adds `row-outside-registry`). Receipt
   `corpus/evidence/kaika-fleet-round-1/operability/selftest-receipt-post-review.txt`.
+
+## Round 12 — accessible evidence (2026-10-20)
+
+| Claim to establish | Evidence choice | Boundary |
+|---|---|---|
+| The intended control can be identified across re-rendering | Prefer a role plus accessible name; use the associated label for a form control; narrow the scope until the intended single-action target is unique | A role match is not an accessibility conformance result; do not hide ambiguity with an unexplained first/nth choice |
+| A selected accessible structure satisfies the intended contract | State the ARIA template, scope, names/state constraints and child matching mode explicitly | Default partial matching permits omitted names, attributes and children; matching is not full-tree equality |
+| The page looks correct or performed the intended network action | Keep the existing screenshot / DOM-state-predicate / network ladder | An ARIA template match proves neither rendered appearance nor the network action [inference]; ARIA and DOM shape are not independent rung-3 witnesses |
+
+Source and precise examples: `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`
+(S023–S025, reopened 2026-10-20). Documentation-held, not a locally demonstrated Playwright
+capability. This extends the state-evidence routing at `:402`; Playwright YAML and webbridge
+`@e` snapshots are different producers/formats and must not be conflated.
+
+## Round 12 — bounded source-claim rechecks (2026-10-20)
+
+Source-only freshness reviews live in `corpus/evidence/round-12/source-recheck.json` and
+`corpus/knowledge/source-recheck-round-12.md`. The profile note's socket-factory conflation
+is corrected there and by an appended erratum; the retry note has a rolling-stable version
+qualification. Review dates do not refresh historical runtime captures. A source reading
+supports a source-scoped inference, not an observed host result. Same-lane recheck seats
+are author-side, not independent non-author verifiers.
+
+### Bounded claim-record gate registry
+
+| Name | Kind / owner | Entry and verdict map | Self-invocation | Persisted baseline | Write scope |
+|---|---|---|---|---|---|
+| claim-record-discipline | gate / tabi | `node .ufo/waves/round-12/w1/mistake/check-claim-record.mjs --file fixtures/m2-inference-source-scoped.jsonl`; 0 clean, 1 failed, 2 could-not-evaluate | Same entry with `--self-test` only; isolated fixtures assert code and stable finding, including source-only host observation refusal | `.ufo/waves/round-12/w1/mistake/expected.json` pins fixture digests and expected code/finding pairs | Input read-only; self-test writes only a temporary fixture tree and deletes it |
+
+This is a bounded structured-record/lexical guard for the mined mistake, not an NLP truth
+checker, a source verifier, or evidence that a runtime claim is true. A synthetic runtime
+control tests schema handling only and is not a fabricated browser observation. The
+round-counting command `.ufo/waves/round-12/measure.mjs REV` counts committed evidence;
+it is not a gate and does not independently judge source truth.

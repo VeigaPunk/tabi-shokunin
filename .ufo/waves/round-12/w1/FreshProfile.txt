@@ -1,0 +1,136 @@
+# FreshProfile — round-12 freshness review receipt
+
+status: COMPLETE — original note untouched; no browser launched; no profile touched; no tool installed.
+reviewed-at: 2026-10-20T01:05:54-03:00 (2026-10-20T04:05:54Z)
+seat: TabiR12.FreshProfile (executor, leaf)
+target: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/chrome-remote-debugging-profile-boundary.md
+note-digest: sha256 `bb2d5bffca2403e874a21846deacde46559f1c32788ebb770d4928223d0fa6e8` — 8,817 B — mtime 2026-10-19 19:43:09.112358229 -03:00
+method: raw `curl -sL` into `/tmp/tabi-r12-fresh/`; python text/code extraction; line reads of the cited corpus files; `pacman -Q chromium`. No chromium invocation, no CDP target, no consequential action.
+
+## Verdict
+
+- Published rule (S001) and enforcement code (S028=S004) re-opened: every quoted sentence is still present verbatim; S002 and S028/S004 bytes are hash-identical to the note's pins.
+- **2 substantive drifts in §2** (correction needed, note not modified):
+  1. note:38-40 generalizes "the `/json/*` HTTP surface never binds" beyond the switch paths. Refusal of `--remote-debugging-pipe`/`--remote-debugging-port` does return before `StartHttpServer` (`.cc:357,387`), but the approval-mode path (`.cc:399-416` → `:216-283` → `:243-248`) can bind an HTTP listener while calling only the policy pref, never `IsRemoteDebuggingAllowed`; the data-dir gate does not apply there.
+  2. note:41 conflates two factories: `TCPServerSocketFactory` (used by the switch path, `.cc:392`) retries IPv4→IPv6 **on the same port** (`.cc:86-95`); `TCPServerSocketFactoryWithPortFallback` (approval mode only, `.cc:244`) adds the port→0 fallback (`.cc:131-157`).
+- **2 of 4 §5 whole-page pins are not reproducible** (S001, S003: per-response CSP nonce plus feature-flag JSON). S002, S004 `.cc`, S004 `.h` reproduce exactly (3/5 fetched artifacts incl. companion).
+- Minor drifts: note:38 "identically"; note:50 policy-scope label; note:68 unanchored "old GET form"; note:93 supported-product list omits two current entries.
+- Unknowns 1–5 remain unknown; the file-scope parts of #2 and #4 re-confirmed absent from `remote_debugging_server.cc/.h`.
+
+## Source fetch ledger (2026-10-20, ~01:04–01:06 -03; two independent fetches per volatile page)
+
+| source | URL | bytes | sha256 | vs note §5 |
+|---|---|---|---|---|
+| S001 | https://developer.chrome.com/blog/remote-debugging-port | 96,397 | `061a7fac2606345bdbb05639677bc9285ac2b436acf69cac46b35d7a9e4e5998` | note `bf63ed06…a871668`, 96,397 B — **MISMATCH** |
+| S001 (2nd) | same | 96,393 | `0916ef508561bb4231c4973edb0b28ff877da282dd0d3beb39c8e75d48d213f5` | **MISMATCH** (two fetches differ) |
+| S002 | https://chromedevtools.github.io/devtools-protocol/ | 35,462 | `ba8018bb02f360686cbff23304da8b6e21923a2e012ade273e3f9a2ce1e2fd64` | identical — **MATCH** |
+| S003 | https://developer.chrome.com/blog/chrome-for-testing | 107,904 | `e0802f48525b7d1e8277de3fba3cd6431bf520325e5b5dfd39400cf9833992bf` | note `1618fa58…d3b77c`, 107,908 B — **MISMATCH** |
+| S003 (2nd) | same | 107,908 | `85d66bd128578f295971d84d9eebc1ce46fbfc19475a884fb45e1f882500b8d4` | **MISMATCH** |
+| S028 `.cc` | https://raw.githubusercontent.com/chromium/chromium/main/chrome/browser/devtools/remote_debugging_server.cc | 15,057 / 424 lines | `ea72757acd7c3bff419db92bf5be101256c1bc813fcb87174a401fc8856901cc` | identical to S004 — **MATCH** |
+| S028 `.h` | …/remote_debugging_server.h | 3,211 / 93 lines | `841c6f67378c05cdbdbd8da48e2a39474278d84cc9049881de552589ad78a602` | identical to S004 — **MATCH** |
+
+S001/S003 whole-page instability is real, not a fetch typo: `difflib` found 65 non-equal blocks between the two S001 fetches, including the CSP `nonce="…"` and the per-response feature-flag array (e.g. `DevPro__enable_devpro_offers`, `Profiles__enable_developer_profile_pages_as_content`). Same class on S003 (4-byte size delta, different hash).
+
+### Stable article-body digests (recommended pin replacement)
+
+Extraction (reproducible): `re.search(r'<article\b.*?</article>', html, re.S)`, then sha256 of the exact matched bytes.
+
+| source | article bytes | sha256 | stability |
+|---|---|---|---|
+| S001 | 7,707 | `aab173179c43a4ba5e162bb425cb04bba403b7efa1de8c956e04c6da68a53237` | identical across both fetches |
+| S003 | 12,977 | `b83ff58d025a756996478ec5b68f2c3ea5d096b26c653b0cb3410a53b389ca71` | identical across both fetches |
+
+## Claim checks
+
+Legend: C = confirmed at opened source; D = drift/overbroad; U = unknown.
+
+### §1 Published rule (S001)
+
+| ID | note | claim | opened source, exact text | result |
+|---|---|---|---|---|
+| A1 | :9-12 | published 2025-03-17, Will Harris; ≥136 refuses switches on default dir | S001 byline "Will Harris"; "Published: March 17, 2025"; "from Chrome 136 we're making changes to the behavior of `--remote-debugging-port` and `--remote-debugging-pipe`." | C |
+| A2 | :13-15 | switches not respected on default dir; require `--user-data-dir` non-standard | S001: "These switches will no longer be respected if attempting to debug the default Chrome data directory."; "These switches must now be accompanied by the `--user-data-dir` switch to point to a non-standard directory." | C |
+| A3 | :16-17 | stated reason: different encryption key keeps ABE data out of the exfiltration path | S001 rule paragraph: "A non-standard data directory uses a different encryption key meaning Chrome's data is now protected from attackers."; intro: "Since App-Bound Encryption was enabled we've seen an increase in attackers using Chrome Remote Debugging to extract cookies." | C (note sentence is a faithful paraphrase, not verbatim) |
+| A4 | :17-18 | CfT recommended and "will continue to respect the existing behavior" | S001: "For browser automation scenarios, we recommend using Chrome for Testing which will continue to respect the existing behavior." | C |
+
+### §2 Enforcement site (S028 `.cc` / `.h`; S004 has identical digest)
+
+| ID | note | claim | opened source, exact location/text | result |
+|---|---|---|---|---|
+| B1 | :24-27 | `IsRemoteDebuggingAllowed` (:160-183) gates policy then default-dir | `.cc:160` comment; `:161-163` signature; `:164` `if (!local_state->GetBoolean(prefs::kDevToolsRemoteDebuggingAllowed))`; `:168-181` data-dir block; `.h:33` `kDisabledByPolicy` | C |
+| B2 | :27-30 | branded compile-time gate; `constexpr true` under `GOOGLE_CHROME_BRANDING`, else testing global | `.cc:169` `#if BUILDFLAG(GOOGLE_CHROME_BRANDING)`; `:170` `constexpr bool default_user_data_dir_check_enabled = true;`; `:171-173` `#else` reads `g_enable_default_user_data_dir_check_for_chromium_branding_for_testing` | C |
+| B3 | :29-31 | testing global declared :50-53; only flip path `EnableDefaultUserDataDirCheckForTesting()` | `.cc:50-53` OS-guarded definition; `.h:46-50`; `.h:47-48` "Enables the default user data dir check even for non-Chrome branded builds, for testing."; `.cc:292-294` assignment | C |
+| B4 | :34-35 | OS scope desktop only | `.cc:50` and `.cc:168` `#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)` | C |
+| B5 | :36-37 | fail-closed indeterminate dir | `.cc:177` `is_default_user_data_dir.value_or(true)`; `.h:34-35` `kDisabledByDefaultUserDataDir` | C |
+| B6 | :38-40 | both switches route through gate; on refusal server not returned, `/json/*` never binds | Switch paths: `.cc:353-357` pipe, `:384-388` port, both `return base::unexpected(...)` before `StartHttpServer` (`:391`) — **this part C**. But approval mode `.cc:399-416` calls `StartHttpServerInApprovalModeIfEnabled` (`:411`), whose pref watcher starts a listener via `:216-283`/`:243-248`; that path checks only `kDevToolsRemoteDebuggingAllowed` (`:236-237`, `:257-258`) and never calls `IsRemoteDebuggingAllowed` | **D** — scope the no-listener statement to switch-requested servers; approval mode can bind without the data-dir gate [source-level inference, not executed] |
+| B7 | :38 | switches route "identically" | Pipe gate runs at `:353-357`; port branch first parses the port (`:364-365`) and resolves `DIR_USER_DATA` for port 0 (`:367-372`) before its gate at `:384-388` | **D** (precision; functional refusal same) |
+| B8 | :41 | one "HTTP socket factory" binds 127.0.0.1 then ::1 "with fallback" (:80-95, :130-157) | Switch path uses `TCPServerSocketFactory` (`:392`): `CreateForHttpServer` `:80-82` → `CreateLocalHostServerSocket` `:86-95` — `127.0.0.1` same port (`:89-90`), then `::1` same port (`:92-93`), else null. Approval path uses `TCPServerSocketFactoryWithPortFallback` (`:244`): `127.0.0.1:port` (`:133`), `127.0.0.1:0` (`:139`), `::1:port` (`:145`), `::1:0` (`:151`) | **D** — two factories conflated; only approval mode has port fallback; both are loopback-only |
+| B9 | :41-42 | `kRemoteDebuggingAddress` absent from this file | 0 grep hits in `.cc` and `.h` | C |
+
+### §3 Boundary matrix (note header: [inference — derived from §2, not executed])
+
+| ID | note | claim | source | result |
+|---|---|---|---|---|
+| C1 | :48 | branded ≥136 + default → refused, no listener | branding gate `:169-170` + fail-closed `:177` + early return `:357/:387` | C as source inference; never executed (no branded Chrome) |
+| C2 | :49 | branded ≥136 + non-standard dir → allowed | gate passes when `is_default_user_data_dir` is false (`:176-177`) | C as source inference |
+| C3 | :50 | policy=false → refused, row labeled "any desktop build" | policy check `:164-167` is **before** the OS `#if`; also `GetInstance` `:338-341` is unconditional | **D** (minor): gate applies on all platforms/builds, not only desktop |
+| C4 | :51 | unbranded Chromium incl. local Arch 152.0.7977.82 → allowed by this gate | `:171-173` testing global defaults false (`.cc:51-52`); `pacman -Q chromium` → `chromium 152.0.7977.82-1`; `browser-surface-census.md:19` | C as source inference; host build unchanged, no launch |
+| C5 | :52 | CfT blog-claimed exempt; mechanism not in this file | S001 A4; 0 hits for `Chrome for Testing`/`IsChromeForTesting` in `.cc/.h` | C / U (mechanism still unknown) |
+
+### §4 Lane practice
+
+| ID | note | claim | source | result |
+|---|---|---|---|---|
+| D1 | :56-59 | runbook recipe satisfies ≥136 by hygiene (`SKILL.md:127-133`; `cdp-evidence-patterns.md:23-27`) | `SKILL.md:127-133` block contains `--user-data-dir=<out>/profile` at `:129`; `cdp-evidence-patterns.md:23-27` exact | C |
+| D2 | :59 | host unbranded Chromium recipe unchanged; refusal never measured | labeled inference in note; C4 basis | C (as inference) |
+| D3 | :61-63 | keep `--remote-debugging-address=127.0.0.1`; factory forces loopback; flag effect unconfirmed | `SKILL.md:128` exact flag; `.cc:86-95` and `:131-157` bind only 127.0.0.1/::1; flag absent from file | C, with B8's factory distinction |
+| D4 | :64-67 | `/json/version` and `/json/list` documented; fields match measured lane record (`cdp-evidence-patterns.md:38-52`) | S002 §HTTP endpoints: "`/json/version` GET Browser version metadata and browser-level WebSocket URL"; "`/json` or `/json/list` GET List of inspectable targets"; field table "`Browser` string Product name and version", "`Protocol-Version` string Current supported protocol version (e.g. `1.3`)"; cdp:40-52 | C |
+| D5 | :67-69 | `/json/new?{url}` "strictly requires PUT"; "a compat change vs the old GET form" | S002: "`/json/new?{url}` PUT ... (strictly requires PUT)"; detail: "Calling it with `GET`, `POST`, or any other verb fails with 405 Method Not Allowed"; no old-GET statement anywhere on the page | PUT: C. "old GET form": **U** — unanchored baseline |
+| D6 | :70-75 | session-material rule (`SKILL.md:660-679`; webbridge `:671-677`); local unbranded would accept default dir but lane forbids | `SKILL.md:660` section; `:671-677` real-browser borrow; source C4; `SKILL.md:1606` repeats the guard | C |
+| D7 | :76-80 | CDP unsupported/unversioned; protocol shapes build-scoped (`cdp-evidence-patterns.md:85-88`) | S002 §Scope and support: "CDP is not a public or supported API for Chrome, and it does not guarantee backwards compatibility."; cdp:85 version-pin rule | C |
+
+### §5 Fetch records
+
+| ID | note | claim | re-run | result |
+|---|---|---|---|---|
+| E1 | :84 | S001 sha256 `bf63ed06…`, 96,397 B | two fetches: 96,397 B `061a7fac…`, 96,393 B `0916ef50…`; 65 dynamic blocks | **D** — whole-page pin non-reproducible; content confirmed; use article digest `aab17317…` |
+| E2 | :85 | S002 sha256 `ba8018bb…`, 35,462 B | exact match, same bytes | C |
+| E3 | :86 | S003 sha256 `1618fa58…`, 107,908 B | 107,904 B `e0802f48…`; 107,908 B `85d66bd1…` | **D** — same pin-method defect; article digest `b83ff58d…` |
+| E4 | :87 | S004 `.cc` `ea72757a…` 424 lines; `.h` `841c6f67…` | exact match; 15,057 B/424; 3,211 B/93 | C |
+| E5 | :6 | "sha256 in §5" is the verification anchor | only 3 of 5 fetched artifacts reproduce; chrome-blog pages embed per-response dynamic segments | **D** — method needs quote/article pin |
+
+### Rejected / Unknowns
+
+| ID | note | claim | result |
+|---|---|---|---|
+| F1 | :91-95 | rejected raw CDP as stable contract; enumeration "DevTools frontend, Lighthouse, Puppeteer, ChromeDriver" | Rejection C (S002 quote). Enumeration **D** (minor): S002 lists "Chrome / Chrome DevTools frontend / Chrome DevTools for agents / Lighthouse / Puppeteer / ChromeDriver" |
+| F2 | :96-98 | rejection of "browser enforces it now": branding gate | C (B2; C4) |
+| F3 | :99-103 | rejection of "Chromium refuses too": constexpr only branded; flip = distro enabling test hook | C source-level; flip condition unobserved (U) |
+| F4 | :105-117 | Unknowns 1-5 | **U** unchanged. #2 CfT mechanism and #4 address flag re-confirmed absent from `.cc/.h`; #3 definition not fetched; #1 no branded Chrome; #5 no CL lookup attempted |
+
+### Source-ledger alias
+
+`corpus/SOURCES.md:42` (S028) says it supersedes S004 and records the same `.cc` sha256; re-fetch confirms identical `.cc`/`.h` bytes. The note still cites S004 (`:5`, `:87`). No content conflict; future edit should record `S004 ≡ S028` (same digest) or cite S028.
+
+## Correction recommendations (L1 owns the correction dossier)
+
+1. **R1 (high, note:38-40)** — Scope the claim: refusal of a switch returns before `StartHttpServer`, so that listener never binds; approval mode (`.cc:399-416` → `:216-283`) is a separate listener path gated only on policy + `kDevToolsRemoteDebuggingEnabled`, bypassing the default-dir check. Do not state "/json/* never binds" unconditionally.
+2. **R2 (high, note:41)** — Split the factories: switch path `TCPServerSocketFactory` = 127.0.0.1 then ::1 on the same port (`.cc:86-95`); approval path `TCPServerSocketFactoryWithPortFallback` = port→0 fallback (`.cc:131-157`), used at `.cc:244`. Both loopback-only.
+3. **R3 (medium, note:38)** — Replace "identically" with the actual order: pipe gate at `:353-357`; port parsed at `:364-373` before the gate at `:384-388`.
+4. **R4 (medium, note:50)** — Policy gate is outside the OS `#if` (`.cc:164`, `:338`); label the row "any build/platform", not "any desktop build".
+5. **R5 (medium, note:67-69)** — Mark "compat change vs the old GET form" as unverified/unknown; S002 documents PUT and the GET→405 behavior only, with no prior-form statement.
+6. **R6 (low, note:93)** — Add "Chrome" and "Chrome DevTools for agents" to the supported-product list; rejection still stands.
+7. **R7 (high, note:84/:86)** — Replace whole-page hashes for S001/S003 with the stable article-body digests above plus the exact quoted strings; keep byte counts and dates. Record that developer.chrome.com responses carry a CSP nonce and per-response feature-flag JSON.
+8. **R8 (low, note:5/:6/:87)** — Record S028 as S004's superseding row with identical digest.
+
+## C1 contribution / bounds
+
+- One current-round review (2026-10-20), independent of the 2026-10-19 author fetch, with note digest, source digests, and quote-level checks. This is 1 of the 3 C1 reviews; L1 aggregates.
+- Supported: the note's rule/code content is current and its CDP-posture claim is unchanged (`S002` hash identical). Not supported: the note's whole-page pin method for S001/S003.
+- No browser runtime support is claimed. The approval-mode bypass is source-level inference; it was not exercised (feature flag + pref state not probed).
+
+## Retained evidence / risks / blockers
+
+- Local fetch set: `/tmp/tabi-r12-fresh/{s001.html,s001b.html,s002.html,s003.html,s003b.html,s028.cc,s028.h}` with the hashes above; volatile, hashes retained in this report.
+- Risks: no branded Chrome on host, so branded rows and the refusal symptom remain source-level/unknown; `<article>` digests depend on the page template; the note's original S001 bytes cannot be proven identical to either re-fetch, only its quoted text is confirmed.
+- Blockers: none. Note not modified; no installs; no external consequential action.

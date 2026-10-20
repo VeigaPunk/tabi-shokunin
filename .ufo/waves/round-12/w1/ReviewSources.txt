@@ -1,0 +1,51 @@
+ReviewSources — tabi round 12, w1 (SOURCES v1: S023–S025 transitions, source access, immutability)
+Reviewed 2026-10-20. Root: /home/vgpnk/Projects/shokunin/tabi-shokunin. Read-only review; no verification commands run (check-sources.mjs not executed).
+Output path per Acceptance (.txt). The Report line names .ufo/waves/round-12/w1/ReviewSources.md; that conflicts and was not also written (No other writes).
+
+## Findings by severity
+
+### F1 (blocking precondition, not a content defect) — S023–S025 queued→mined not applied; target note absent
+- Observed: corpus/SOURCES.md:37-39 — status `queued`, used-by `—` for S023, S024, S025. corpus/SOURCES.md:49 — path `accessible-selectors` "(queued, not mined)". corpus/README.md:193 — "open — S023–S025 opened and queued, no note".
+- Observed: corpus/knowledge/playwright-accessible-locators-and-snapshots.md does not exist (corpus/knowledge glob: no match; `ls | grep -i playwright|access|aria|locator` → none). The author task targets this path (.ufo/waves/round-12/w1/dispatch.json:234).
+- Gate rules (scripts/check-sources.mjs): mined needs a non-empty used-by (:329-332, W03 mined_without_used_by); used-by path must resolve inside root to a regular file (:336-338, E11 used_by_missing); the file must contain each row ID as a standalone token (:231-233, used_by_uncited) — so the note must cite S023, S024 and S025 individually, not only "S02x" ranges.
+- Required together in one commit (AGENTS.md: every change appends LOG.md; QUALITY #11): status and used-by cells for the three rows; SOURCES.md:49 path status; corpus/README.md:193 row; LOG.md entry; SCORECARD.md:439-440 counting command only after commit.
+- Transition edits should touch only status/used-by (and opened only if the round-12 re-open is recorded — see F4).
+
+### F2 (medium) — tier definitions are not in the cited place
+- Observed: corpus/QUALITY.md:29 (criterion 12) says "tier definitions live in corpus/SOURCES.md". corpus/SOURCES.md contains no tier definitions: `grep -n tier` hits only the header line 6 ("Tier is scoped to the row's scope cell") and column values. The SOURCES contract `.ufo/waves/kaika/SOURCES-CONTRACT-v1.md` (SOURCES.md:3) is not present in the reachable tree under /home/vgpnk/Projects/shokunin (glob, hidden + ignored included).
+- Effect: the tier A grades given to S023–S025 (SOURCES.md:37-39) and the criterion-12 admission check have no in-repo definition to check against.
+- Fix options (append-only): add a tier-definition block to SOURCES.md, or repoint QUALITY #12 to the contract with a stated unreachable-in-repo status.
+
+### F3 (low) — teaches-column wording drift on S023 and S024 (inference not marked)
+- S023 teaches (SOURCES.md:37): "explicitly not an accessibility audit". Opened source: "Note that role locators do not replace accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines" (https://playwright.dev/docs/locators, §Locate by role; raw HTML carries `<strong>do not replace</strong>`). "Not an audit" is a stronger reading than "do not replace … but give early feedback". Observation.
+- S024 teaches (SOURCES.md:38): "structural evidence, not pixels". The aria-snapshots page does not state this; it links "Visual comparisons" as a separate page. Inference. The note must label it [INFERENCE] or cite a different location.
+- Supported as written: S023 "user-facing" (source: "closest way to how users and assistive technology perceive the page"); S024 "partially or strictly" (source headings "Partial matching", "Strict matching"); S025 "roles, names and keyboard patterns" (source: "ARIA roles, states and properties and by implementing keyboard support").
+- Fix: the note quotes the source wording; if the row text is judged wrong, correct by a supersedes row (S028 precedent, SOURCES.md:42), not an in-place edit.
+
+### F4 (low) — round-12 re-open not recorded in the `opened` column
+- Observed: the rows say opened 2026-10-19 (SOURCES.md:37-39); the dispatch tasks direct the author to "Open S023 … this round" (dispatch.json:234). Re-open today reproduced the same raw digests (see Confirmed C1), so the content is stable, but no round-12 access record exists.
+- Fix: if mined in round 12, either keep 2026-10-19 and cite the Gate record in the note, or add a dated round-12 Gate row. Do not silently change `opened`.
+
+### F5 (low) — S022 access evidence is an empty-input digest
+- Observed: lesson row S022 (corpus/lessons/kaika-fleet-round-1.md:65) pins sha256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`, the SHA-256 of the empty string (the lesson states "raw curl body empty"; the page was read via reader). This is not a raw-fetch pin, though the contract requires one.
+- S022 stays `queued` (SOURCES.md:36) so no admit depends on it. The gate does not check digests (structure only). Recommend: do not mine S022 without a non-empty raw pin.
+
+## Confirmed (no finding)
+- C1 source access reproduced 2026-10-20 (curl -sL | sha256sum): playwright.dev/docs/locators → 234a24527d5a96e600e0dc1d832fb56bd8a539283df9f497ba982de21cdbdee6 (= lesson:66, = S023); playwright.dev/docs/aria-snapshots → bbbad6881341619286827304e5b5202f5a9246aac8223a6508fb4feb1b7e6194 (= lesson:67, = S024); www.w3.org/WAI/ARIA/apg/ → 17521385704dfa9ab49fa599b78258c579aa05676aa88c6ca629c94682c3d30f (= lesson:68, = S025). Observation: raw bodies unchanged from 2026-10-19 to 2026-10-20.
+- C2 quotes present in the re-fetched bodies: S024 "aria snapshots provide a YAML representation of the accessibility tree of a page."; S025 "This guide describes how to apply accessibility semantics to common design patterns and widgets."; S023 present after tag stripping (see F3). Quote lengths ≤25 words.
+- C3 immutability: `git status --short` for corpus/SOURCES.md, corpus/lessons, corpus/knowledge and LOG.md is empty (no uncommitted edits). `git log -- corpus/SOURCES.md` → a4115fa, 5cdc976 only; `git show <commit> -- corpus/SOURCES.md | grep '^-'` returns no removed content lines in either commit: pure appends. S004 teaches text is unchanged; S028 supersedes it (SOURCES.md:42).
+- C4 gate-visible S023–S025 fields: kind docs/docs/docs; tier A; opened and recheck valid ISO / `on-release` / `365d`; anchors present; no duplicate URLs (S023–S025 URLs unique in registry). Structure-only; check-sources.mjs not run.
+
+## Verification gaps
+- check-sources.mjs not executed (no verification commands in this assignment). L1 should run `node scripts/check-sources.mjs` (and `--self-test`) after the transition.
+- Non-author spot-check of the transition not performed (author-side swarm is not independent).
+- The kaika contract (F2) could not be opened from this tree; F2 is an observation about the in-repo pointer only.
+- Quote checks were grep-based on raw HTML; markup was stripped for matching, not rendered.
+
+## Tooling
+No installs or updates. Used existing curl, sha256sum, grep, git (read-only).
+
+## Appended clarification (TabiR12 reply, 2026-10-20; no earlier text rewritten)
+- F4 (opened/re-open): withdrawn as a defect. `opened` is immutable; a round-12 re-open date belongs in a Gate record, not in the registry cell. The "keep 2026-10-19 and cite the Gate record" option is the intended path. Read F4 as an informational note only.
+- F2 (tier definitions): the fix is a QUALITY superseding of criterion 12 pointing to the canonical contract, /home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/CORPUS.md §SOURCES v1 (contract authority). The F2 observation that SOURCES.md carries no in-repo tier definitions stands as observed; the remedy is the QUALITY supersession, not an in-place edit to SOURCES.md.
+- F3 (teaches wording): S023 and S024 teaches text is preserved as immutable registry content. The S024 "not pixels" reading and the S023 "not an audit" reading are bounded inferences to be carried in the new note with [INFERENCE] labels. No in-place registry rewrite and no supersedes row is required on my side.

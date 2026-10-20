@@ -531,3 +531,55 @@
   Evidence: the org's Devin wiki index lists this repo's generated wiki;
   sibling lane READMEs carry the same `**Wiki:**` header.
   Documentation-only change; no round run, no axis moved.
+
+## 2026-10-20 — round-12 (hyaku, attempt 1)
+
+- Declared C1 freshness: three named external source-claim families rechecked against
+  located primary text, 0→3 dated review records. Declared C2 coverage: accessible
+  locators / ARIA snapshots queued ground, 0→1 docs-held entry. Initial scalar
+  increments in the frozen wave are withdrawn: freshness stays8, coverage stays9
+  (delta0), because an entry count is not a domain-coverage fraction. Baseline is the
+  kaika row admitted by `corpus/lessons/round-1-verifier-spotcheck.md`, not the older
+  training-table snapshot. Counting command:
+  `node .ufo/waves/round-12/measure.mjs REV`; base
+  `f032f2dccc8a99632eea52edafa8220284b5c919` → source_rechecks0,
+  accessible_locator_entry0 (`.ufo/waves/round-12/before.json`).
+- C1 landed: `corpus/evidence/round-12/source-recheck.json`, three source-claim
+  comparisons and before/after note digests; `knowledge/source-recheck-round-12.md`.
+  Actual discrepancy: old profile :41 conflated same-port address retry with approval
+  mode's port-zero fallback. Profile and retry notes receive dated append-only
+  corrections; historical dates and bytes above the append points remain. The BiDi
+  matrix is confirmed at its dated WD, not promoted to implementation support.
+  Critic B3's proposed “remains unchanged” correction is rejected by the exact S011
+  introduction sentence. Motivation/review: `.ufo/waves/round-12/w1/FreshnessAttack.txt`,
+  `FreshProfile.txt`, `FreshBidi.txt`, `FreshRetry.txt`; lesson `round-12.md` §Gate.
+- C2 landed: `knowledge/playwright-accessible-locators-and-snapshots.md` (S023/S024/S025
+  reopened2026-10-20); SOURCES status queued→mined plus used-by; README maps both new
+  notes and records accessible-selectors open→docs-held; SKILL distinguishes ARIA
+  constraints from pixels/network, full audits and webbridge `@e`. No Playwright
+  runtime capability is claimed. QUALITY14 learns the earlier outside inference/
+  observation disagreement; QUALITY15 repairs the tier-definition pointer.
+- Mistake witness: `.ufo/waves/round-12/w1/mistake/` is a bounded structured-record
+  gate, registered in SKILL. Same claim/evidence/id, changing only modality and source
+  scope: red exit1 `observation_without_runtime`; green exit0. Self-test9/9 clean;
+  sources gate self-test26 clean; live gate28 rows, A22/B4/C2, mined23/queued3/rejected2.
+  Source census start/end exits0. Executed outputs: `corpus/evidence/round-12/*-red.json`,
+  `mistake-green.json`, `mistake-selftest.json`, `sources-selftest.json`,
+  `sources-live.json`, `census-after.json`. Counting script is not a truth gate.
+- One validated32-seat task wave, roles executor5/scout9/connector4/reviewer6/
+  critic4/sentinel1/scribe2/revenger1. L1 holds planner; PlanningWalk is a bounded scout
+  data-walk. Absolute spec.reportDir was rejected; orchestrator confirmed lane-relative
+  reportDir under absolute UFO_PROJECT_ROOT is correct and fixed the addendum. Every
+  task/context names the absolute lane repo. Spec, validator dispatch, registered IDs
+  and assigned seat reports are committed in `.ufo/waves/round-12/w1/`.
+- Inherited uncommitted lane state: none. No browser launched, profile/session/secret
+  read, consequential action, upstream write, or tool install. All SHONEN marks remain
+  asserted `[~]`; outside spot-check is owed to the orchestrator, not impersonated by
+  the author-side swarm. Legacy SHONEN/history gate debt remains explicit: no baseline
+  moves or untested production exceptions. The new required `round-12.md` also falls
+  under the legacy user gate's broad round-N diff guard. Decision/evidence:
+  `w1/GateDebt.txt`, `ProtectedMap.txt`, and lesson §Mistakes. Existing operator approval
+  round5 and namespace round1 questions remain outside this round; no new L0 question.
+- Stale-lane: this is the sole tabi mission; respawn-per-round, no other open tabi mission
+  is known. Report will cite the pushed lane HEAD; final measured commit and counts
+  are appended below rather than guessed in advance.
