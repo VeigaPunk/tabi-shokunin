@@ -756,3 +756,11 @@
   counting probes mid-flight despite the skip-verification instruction; no seat
   ran the actual gate/browser suite. Main's exercised receipts are the evidence,
   not the critic's proposed outcome table.
+- Metadata failure diagnosis confirmed two checker bugs, not bad historical
+  runtime evidence: evaluateNode read minimumSatisfied although deriveNode
+  returns minimumMajorSatisfied; evaluateCleanup required cleanup.workers,
+  a field absent from the real producer's schema. The targeted patch uses the
+  correct Node property and cross-checks the four actual worker inventories.
+  Original receipt/pin/sidecar/expected fixture bytes and refusal requirements
+  stay fixed. Selftest output gains stable parser aliases without changing
+  expected findings. Only this affected metadata target is rerun after cutover.

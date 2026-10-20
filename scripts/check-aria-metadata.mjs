@@ -397,7 +397,6 @@ function evaluateCleanup(receipt) {
   const counts = {
     receiptWorkers: Array.isArray(receipt?.workers) ? receipt.workers.length : null,
     summaryWorkers: Number.isInteger(receipt?.summary?.workers) ? receipt.summary.workers : null,
-    cleanupWorkers: Number.isInteger(cleanup?.workers) ? cleanup.workers : null,
     cleanupPerWorker: perWorker ? perWorker.length : null,
     serverPerWorker: Array.isArray(receipt?.server?.perWorker)
       ? receipt.server.perWorker.length
@@ -474,7 +473,7 @@ function evaluateNode(receipt, pin, workerContext) {
     descriptiveOnly: true,
     recordedRole: 'descriptive',
   });
-  pushFinding(findings, 'R14-ARIA-NODE-MINIMUM-01', node.minimumSatisfied, {
+  pushFinding(findings, 'R14-ARIA-NODE-MINIMUM-01', node.minimumMajorSatisfied, {
     observed: node.observed,
     observedMajor: node.observedMajor,
     minimumMajor: node.minimumMajor,
@@ -1917,7 +1916,8 @@ function runSelfTest() {
     for (const entry of results) {
       console.log(
         `ARIA_METADATA_SELFTEST result=${entry.ok ? 'PASS' : 'FAIL'} case=${entry.id} ` +
-          `expected_exit=${entry.expectedExit} exit=${entry.exit} finding=${entry.finding}` +
+          `name=${entry.id} expected_exit=${entry.expectedExit} actual_exit=${entry.exit} ` +
+          `expected_finding=${entry.finding} finding=${entry.finding} exit=${entry.exit}` +
           (entry.problems.length ? ` problems=${entry.problems.join('|')}` : ''),
       );
     }
