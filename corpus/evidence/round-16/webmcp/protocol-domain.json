@@ -1,0 +1,710 @@
+{
+  "schema": "tabi-round16-webmcp-protocol-v1",
+  "generatedAt": "2026-10-20T14:42:25.057Z",
+  "producer": "TabiR16.WebmcpProtocol-5",
+  "method": "spawn /usr/lib/chromium/chromium --headless --remote-debugging-port=0 with a fresh mkdtemp --user-data-dir and HOME=<mkdtemp> (isolates chromium-flags.conf); read DevToolsActivePort for the bound loopback port; record /proc/<pid>/cmdline verbatim as observedCmdline; HTTP GET /json/version then /json/protocol; sha256 over exact response bytes; extract the WebMCP domain object verbatim; SIGKILL + profile/HOME rm -rf in a finally block",
+  "chromiumExecutable": "/usr/lib/chromium/chromium",
+  "launcherNote": "/usr/bin/chromium is the Arch ELF launcher (14,424 B, file -L: ELF 64-bit LSB pie executable); it merges ~/.config/chromium-flags.conf into argv (observed contents: --ozone-platform=wayland, --ozone-platform-hint=wayland, --enable-features=TouchpadOverscrollHistoryNavigation, --load-extension=~/... literal tilde, --disable-features=Vulkan). This evidence bypasses the launcher entirely by spawning /usr/lib/chromium/chromium directly. observedCmdline shows the effective argv also carries headless-mode additions not in typed argv (--noerrdialogs, --ozone-platform=headless, --ozone-override-screen-size=800,600, --use-angle=swiftshader-webgl) \u2014 applied by chromium itself, visible in /proc cmdline.",
+  "runs": [
+    {
+      "label": "noflags",
+      "chromiumFlags": [],
+      "observedCmdline": [
+        "/usr/lib/chromium/chromium --headless --disable-gpu --no-first-run --no-default-browser-check --disable-extensions --remote-debugging-port=0 --user-data-dir=/tmp/webmcp-proto-noflags-Q8DxhP --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank"
+      ],
+      "devtoolsPort": 39149,
+      "versionEndpoint": {
+        "url": "http://127.0.0.1:39149/json/version",
+        "httpStatus": 200,
+        "sha256": "456404586f3347f8c8ec9a3616ed070916f0d9011bca7b413b39069735d316cf",
+        "body": {
+          "Browser": "Chrome/154.0.8037.97",
+          "Protocol-Version": "1.3",
+          "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+          "V8-Version": "15.4.80.20",
+          "WebKit-Version": "537.36 (@b510e9d7cd3a2fbd78d0ddc42234103206c5f78d)",
+          "webSocketDebuggerUrl": "ws://127.0.0.1:39149/devtools/browser/d75612e2-dbf6-4798-9d6b-551ad9f32612"
+        }
+      },
+      "protocolEndpoint": {
+        "url": "http://127.0.0.1:39149/json/protocol",
+        "httpStatus": 200,
+        "byteLength": 1578134,
+        "sha256": "126cf5fa9b3d6e189029d6af6695b6d029c2ca372277081804b9c82ce7865e7d",
+        "domainCount": 58,
+        "domains": [
+          "Accessibility",
+          "Ads",
+          "Animation",
+          "Audits",
+          "Autofill",
+          "BackgroundService",
+          "BluetoothEmulation",
+          "Browser",
+          "CSS",
+          "CacheStorage",
+          "Cast",
+          "CrashReportContext",
+          "DOM",
+          "DOMDebugger",
+          "DOMSnapshot",
+          "DOMStorage",
+          "DeviceAccess",
+          "DeviceOrientation",
+          "DigitalCredentials",
+          "Emulation",
+          "EventBreakpoints",
+          "Extensions",
+          "FedCm",
+          "Fetch",
+          "FileSystem",
+          "HeadlessExperimental",
+          "IO",
+          "IndexedDB",
+          "Input",
+          "Inspector",
+          "LayerTree",
+          "Log",
+          "Media",
+          "Memory",
+          "Network",
+          "Overlay",
+          "PWA",
+          "Page",
+          "Performance",
+          "PerformanceTimeline",
+          "Preload",
+          "Security",
+          "ServiceWorker",
+          "SmartCardEmulation",
+          "Storage",
+          "SystemInfo",
+          "Target",
+          "Tethering",
+          "Tracing",
+          "WebAudio",
+          "WebAuthn",
+          "WebMCP",
+          "Console",
+          "Debugger",
+          "HeapProfiler",
+          "Profiler",
+          "Runtime",
+          "Schema"
+        ],
+        "webmcpDomain": {
+          "domain": "WebMCP",
+          "experimental": true,
+          "dependencies": [
+            "Runtime",
+            "Page",
+            "DOM"
+          ],
+          "types": [
+            {
+              "id": "Annotation",
+              "description": "Tool annotations",
+              "type": "object",
+              "properties": [
+                {
+                  "name": "readOnly",
+                  "description": "A hint indicating that the tool does not modify any state.",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "name": "untrustedContent",
+                  "description": "A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "name": "consequential",
+                  "description": "A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "name": "autosubmit",
+                  "description": "If the declarative tool was declared with the autosubmit attribute.",
+                  "optional": true,
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "id": "InvocationStatus",
+              "description": "Represents the status of a tool invocation.",
+              "type": "string",
+              "enum": [
+                "Completed",
+                "Canceled",
+                "Error"
+              ]
+            },
+            {
+              "id": "Tool",
+              "description": "Definition of a tool that can be invoked.",
+              "type": "object",
+              "properties": [
+                {
+                  "name": "name",
+                  "description": "Tool name.",
+                  "type": "string"
+                },
+                {
+                  "name": "description",
+                  "description": "Tool description.",
+                  "type": "string"
+                },
+                {
+                  "name": "inputSchema",
+                  "description": "Schema for the tool's input parameters.",
+                  "optional": true,
+                  "type": "object"
+                },
+                {
+                  "name": "annotations",
+                  "description": "Optional annotations for the tool.",
+                  "optional": true,
+                  "$ref": "Annotation"
+                },
+                {
+                  "name": "frameId",
+                  "description": "Frame identifier associated with the tool registration.",
+                  "$ref": "Page.FrameId"
+                },
+                {
+                  "name": "backendNodeId",
+                  "description": "Optional node ID for declarative tools.",
+                  "optional": true,
+                  "$ref": "DOM.BackendNodeId"
+                },
+                {
+                  "name": "stackTrace",
+                  "description": "The stack trace at the time of the registration.",
+                  "optional": true,
+                  "$ref": "Runtime.StackTrace"
+                }
+              ]
+            },
+            {
+              "id": "RemovedTool",
+              "description": "Definition of a tool that was removed.",
+              "type": "object",
+              "properties": [
+                {
+                  "name": "name",
+                  "description": "Tool name.",
+                  "type": "string"
+                },
+                {
+                  "name": "frameId",
+                  "description": "Frame identifier associated with the tool registration.",
+                  "$ref": "Page.FrameId"
+                }
+              ]
+            }
+          ],
+          "commands": [
+            {
+              "name": "enable",
+              "description": "Enables the WebMCP domain, allowing events to be sent. Enabling the domain will trigger a toolsAdded event for\nall currently registered tools."
+            },
+            {
+              "name": "disable",
+              "description": "Disables the WebMCP domain."
+            },
+            {
+              "name": "invokeTool",
+              "description": "Invokes a registered tool.",
+              "parameters": [
+                {
+                  "name": "frameId",
+                  "description": "Frame in which to invoke the tool.",
+                  "$ref": "Page.FrameId"
+                },
+                {
+                  "name": "toolName",
+                  "description": "Name of the tool to invoke.",
+                  "type": "string"
+                },
+                {
+                  "name": "input",
+                  "description": "Input parameters for the tool, matching the tool's inputSchema.",
+                  "type": "object"
+                }
+              ],
+              "returns": [
+                {
+                  "name": "invocationId",
+                  "description": "Unique identifier for this invocation. Response is sent before tool events.",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "cancelInvocation",
+              "description": "Cancels a pending tool invocation.",
+              "parameters": [
+                {
+                  "name": "invocationId",
+                  "description": "Invocation identifier to cancel.",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "toolsAdded",
+              "description": "Event fired when new tools are added.",
+              "parameters": [
+                {
+                  "name": "tools",
+                  "description": "Array of tools that were added.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "Tool"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "toolsRemoved",
+              "description": "Event fired when tools are removed.",
+              "parameters": [
+                {
+                  "name": "tools",
+                  "description": "Array of tools that were removed.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "RemovedTool"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "toolInvoked",
+              "description": "Event fired when a tool invocation starts.",
+              "parameters": [
+                {
+                  "name": "toolName",
+                  "description": "Name of the tool to invoke.",
+                  "type": "string"
+                },
+                {
+                  "name": "frameId",
+                  "description": "Frame id",
+                  "$ref": "Page.FrameId"
+                },
+                {
+                  "name": "invocationId",
+                  "description": "Invocation identifier.",
+                  "type": "string"
+                },
+                {
+                  "name": "input",
+                  "description": "The input parameters used for the invocation.",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "toolResponded",
+              "description": "Event fired when a tool invocation completes or fails.",
+              "parameters": [
+                {
+                  "name": "invocationId",
+                  "description": "Invocation identifier.",
+                  "type": "string"
+                },
+                {
+                  "name": "status",
+                  "description": "Status of the invocation.",
+                  "$ref": "InvocationStatus"
+                },
+                {
+                  "name": "output",
+                  "description": "Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.\nNote: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.",
+                  "optional": true,
+                  "type": "any"
+                },
+                {
+                  "name": "errorText",
+                  "description": "Error text for protocol users.",
+                  "optional": true,
+                  "type": "string"
+                },
+                {
+                  "name": "exception",
+                  "description": "The exception object, if the javascript tool threw an error>",
+                  "optional": true,
+                  "$ref": "Runtime.RemoteObject"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "chromiumStderrTail": [
+        "DevTools listening on ws://127.0.0.1:39149/devtools/browser/d75612e2-dbf6-4798-9d6b-551ad9f32612"
+      ]
+    },
+    {
+      "label": "webmcp",
+      "chromiumFlags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ],
+      "observedCmdline": [
+        "/usr/lib/chromium/chromium --headless --disable-gpu --no-first-run --no-default-browser-check --disable-extensions --remote-debugging-port=0 --user-data-dir=/tmp/webmcp-proto-webmcp-mYME9l --enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp --enable-blink-features=WebMCP,WebMCPTesting --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank"
+      ],
+      "devtoolsPort": 38563,
+      "versionEndpoint": {
+        "url": "http://127.0.0.1:38563/json/version",
+        "httpStatus": 200,
+        "sha256": "77be978870899298274e8833fa61ba71402f958fe96b6942d128ee3c07e4c61e",
+        "body": {
+          "Browser": "Chrome/154.0.8037.97",
+          "Protocol-Version": "1.3",
+          "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+          "V8-Version": "15.4.80.20",
+          "WebKit-Version": "537.36 (@b510e9d7cd3a2fbd78d0ddc42234103206c5f78d)",
+          "webSocketDebuggerUrl": "ws://127.0.0.1:38563/devtools/browser/e5a5275d-5f3c-4509-ab81-fcf2dea22524"
+        }
+      },
+      "protocolEndpoint": {
+        "url": "http://127.0.0.1:38563/json/protocol",
+        "httpStatus": 200,
+        "byteLength": 1578134,
+        "sha256": "126cf5fa9b3d6e189029d6af6695b6d029c2ca372277081804b9c82ce7865e7d",
+        "domainCount": 58,
+        "domains": [
+          "Accessibility",
+          "Ads",
+          "Animation",
+          "Audits",
+          "Autofill",
+          "BackgroundService",
+          "BluetoothEmulation",
+          "Browser",
+          "CSS",
+          "CacheStorage",
+          "Cast",
+          "CrashReportContext",
+          "DOM",
+          "DOMDebugger",
+          "DOMSnapshot",
+          "DOMStorage",
+          "DeviceAccess",
+          "DeviceOrientation",
+          "DigitalCredentials",
+          "Emulation",
+          "EventBreakpoints",
+          "Extensions",
+          "FedCm",
+          "Fetch",
+          "FileSystem",
+          "HeadlessExperimental",
+          "IO",
+          "IndexedDB",
+          "Input",
+          "Inspector",
+          "LayerTree",
+          "Log",
+          "Media",
+          "Memory",
+          "Network",
+          "Overlay",
+          "PWA",
+          "Page",
+          "Performance",
+          "PerformanceTimeline",
+          "Preload",
+          "Security",
+          "ServiceWorker",
+          "SmartCardEmulation",
+          "Storage",
+          "SystemInfo",
+          "Target",
+          "Tethering",
+          "Tracing",
+          "WebAudio",
+          "WebAuthn",
+          "WebMCP",
+          "Console",
+          "Debugger",
+          "HeapProfiler",
+          "Profiler",
+          "Runtime",
+          "Schema"
+        ],
+        "webmcpDomain": {
+          "domain": "WebMCP",
+          "experimental": true,
+          "dependencies": [
+            "Runtime",
+            "Page",
+            "DOM"
+          ],
+          "types": [
+            {
+              "id": "Annotation",
+              "description": "Tool annotations",
+              "type": "object",
+              "properties": [
+                {
+                  "name": "readOnly",
+                  "description": "A hint indicating that the tool does not modify any state.",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "name": "untrustedContent",
+                  "description": "A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "name": "consequential",
+                  "description": "A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "name": "autosubmit",
+                  "description": "If the declarative tool was declared with the autosubmit attribute.",
+                  "optional": true,
+                  "type": "boolean"
+                }
+              ]
+            },
+            {
+              "id": "InvocationStatus",
+              "description": "Represents the status of a tool invocation.",
+              "type": "string",
+              "enum": [
+                "Completed",
+                "Canceled",
+                "Error"
+              ]
+            },
+            {
+              "id": "Tool",
+              "description": "Definition of a tool that can be invoked.",
+              "type": "object",
+              "properties": [
+                {
+                  "name": "name",
+                  "description": "Tool name.",
+                  "type": "string"
+                },
+                {
+                  "name": "description",
+                  "description": "Tool description.",
+                  "type": "string"
+                },
+                {
+                  "name": "inputSchema",
+                  "description": "Schema for the tool's input parameters.",
+                  "optional": true,
+                  "type": "object"
+                },
+                {
+                  "name": "annotations",
+                  "description": "Optional annotations for the tool.",
+                  "optional": true,
+                  "$ref": "Annotation"
+                },
+                {
+                  "name": "frameId",
+                  "description": "Frame identifier associated with the tool registration.",
+                  "$ref": "Page.FrameId"
+                },
+                {
+                  "name": "backendNodeId",
+                  "description": "Optional node ID for declarative tools.",
+                  "optional": true,
+                  "$ref": "DOM.BackendNodeId"
+                },
+                {
+                  "name": "stackTrace",
+                  "description": "The stack trace at the time of the registration.",
+                  "optional": true,
+                  "$ref": "Runtime.StackTrace"
+                }
+              ]
+            },
+            {
+              "id": "RemovedTool",
+              "description": "Definition of a tool that was removed.",
+              "type": "object",
+              "properties": [
+                {
+                  "name": "name",
+                  "description": "Tool name.",
+                  "type": "string"
+                },
+                {
+                  "name": "frameId",
+                  "description": "Frame identifier associated with the tool registration.",
+                  "$ref": "Page.FrameId"
+                }
+              ]
+            }
+          ],
+          "commands": [
+            {
+              "name": "enable",
+              "description": "Enables the WebMCP domain, allowing events to be sent. Enabling the domain will trigger a toolsAdded event for\nall currently registered tools."
+            },
+            {
+              "name": "disable",
+              "description": "Disables the WebMCP domain."
+            },
+            {
+              "name": "invokeTool",
+              "description": "Invokes a registered tool.",
+              "parameters": [
+                {
+                  "name": "frameId",
+                  "description": "Frame in which to invoke the tool.",
+                  "$ref": "Page.FrameId"
+                },
+                {
+                  "name": "toolName",
+                  "description": "Name of the tool to invoke.",
+                  "type": "string"
+                },
+                {
+                  "name": "input",
+                  "description": "Input parameters for the tool, matching the tool's inputSchema.",
+                  "type": "object"
+                }
+              ],
+              "returns": [
+                {
+                  "name": "invocationId",
+                  "description": "Unique identifier for this invocation. Response is sent before tool events.",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "cancelInvocation",
+              "description": "Cancels a pending tool invocation.",
+              "parameters": [
+                {
+                  "name": "invocationId",
+                  "description": "Invocation identifier to cancel.",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "toolsAdded",
+              "description": "Event fired when new tools are added.",
+              "parameters": [
+                {
+                  "name": "tools",
+                  "description": "Array of tools that were added.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "Tool"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "toolsRemoved",
+              "description": "Event fired when tools are removed.",
+              "parameters": [
+                {
+                  "name": "tools",
+                  "description": "Array of tools that were removed.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "RemovedTool"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "toolInvoked",
+              "description": "Event fired when a tool invocation starts.",
+              "parameters": [
+                {
+                  "name": "toolName",
+                  "description": "Name of the tool to invoke.",
+                  "type": "string"
+                },
+                {
+                  "name": "frameId",
+                  "description": "Frame id",
+                  "$ref": "Page.FrameId"
+                },
+                {
+                  "name": "invocationId",
+                  "description": "Invocation identifier.",
+                  "type": "string"
+                },
+                {
+                  "name": "input",
+                  "description": "The input parameters used for the invocation.",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "toolResponded",
+              "description": "Event fired when a tool invocation completes or fails.",
+              "parameters": [
+                {
+                  "name": "invocationId",
+                  "description": "Invocation identifier.",
+                  "type": "string"
+                },
+                {
+                  "name": "status",
+                  "description": "Status of the invocation.",
+                  "$ref": "InvocationStatus"
+                },
+                {
+                  "name": "output",
+                  "description": "Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.\nNote: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.",
+                  "optional": true,
+                  "type": "any"
+                },
+                {
+                  "name": "errorText",
+                  "description": "Error text for protocol users.",
+                  "optional": true,
+                  "type": "string"
+                },
+                {
+                  "name": "exception",
+                  "description": "The exception object, if the javascript tool threw an error>",
+                  "optional": true,
+                  "$ref": "Runtime.RemoteObject"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "chromiumStderrTail": [
+        "DevTools listening on ws://127.0.0.1:38563/devtools/browser/e5a5275d-5f3c-4509-ab81-fcf2dea22524"
+      ]
+    }
+  ],
+  "comparison": {
+    "protocolSha256Equal": true,
+    "domainListsEqual": true,
+    "webmcpDomainPresentNoFlags": true,
+    "webmcpDomainPresentWithFlags": true,
+    "webmcpDomainIdentical": true
+  }
+}

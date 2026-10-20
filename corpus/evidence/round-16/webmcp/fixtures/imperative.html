@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>webmcp imperative</title></head>
+<body>
+<h1>imperative</h1>
+<pre id="mc-status">modelContext-typeof=pending</pre>
+<pre id="register-status">register=pending</pre>
+<script>
+(function () {
+  var status = document.getElementById('mc-status');
+  var reg = document.getElementById('register-status');
+  var mc = document.modelContext;
+  status.textContent = 'modelContext-typeof=' + typeof mc;
+
+  window.__webmcpFixture = {
+    id: 'imperative',
+    expectedTools: [{
+      name: 'echo',
+      description: 'Echo the arguments back',
+      inputSchema: {
+        type: 'object',
+        properties: { q: { type: 'string' } },
+        required: ['q']
+      }
+    }],
+    actions: {},
+    actionOrder: [],
+    expectedRemoved: []
+  };
+
+  if (typeof mc !== 'object' || !mc || typeof mc.registerTool !== 'function') {
+    reg.textContent = 'register=skipped(modelContext-absent)';
+    window.__webmcpFixture.expectedTools = [];
+    return;
+  }
+  mc.registerTool({
+    name: 'echo',
+    description: 'Echo the arguments back',
+    inputSchema: {
+      type: 'object',
+      properties: { q: { type: 'string' } },
+      required: ['q']
+    },
+    execute: function (args) { return JSON.stringify({ echo: args }); }
+  }).then(function (result) {
+    reg.textContent = 'register=resolved result-typeof=' + typeof result;
+  }).catch(function (err) {
+    reg.textContent = 'register=rejected ' + String(err);
+  });
+})();
+</script>
+</body>
+</html>

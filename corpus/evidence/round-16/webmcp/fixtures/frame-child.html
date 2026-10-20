@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>webmcp frame child</title></head>
+<body>
+<h1>frame-child</h1>
+<form toolname="childSearch" tooldescription="Tool declared inside a same-origin iframe">
+  <label>Query <input type="text" name="q"></label>
+</form>
+<script>
+window.__webmcpFixture = {
+  id: 'frame-child',
+  expectedTools: [{
+    name: 'childSearch',
+    description: 'Tool declared inside a same-origin iframe',
+    inputSchema: {
+      type: 'object',
+      // <label>Query ...</label> becomes the parameter description (Chromium
+      // form_mcp_schema; same rule as declarative-form.html). Added after the
+      // first L1 run omitted it and failed.
+      properties: { q: { type: 'string', description: 'Query' } },
+      required: []
+    }
+  }],
+  actions: {},
+  actionOrder: [],
+  expectedRemoved: []
+};
+</script>
+</body>
+</html>

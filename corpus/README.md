@@ -283,3 +283,23 @@ dates and original pinned bytes stay fixed. Extension↔daemon handshake,
 native WebMCP, real-site rate/rights,
 real-site journeys and WebMCP spec mining remain open; no source-row or
 metadata-fixture count is counted as expansion.
+
+## Round 16 — native WebMCP held on Chromium 154 loopback (2026-10-20)
+
+New knowledge map row (33 notes; the 32 earlier rows are unchanged):
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/webmcp-chromium-loopback-round-16.md` | Runtime-held for Chromium 154.0.8037.97 with WebMCP flags on loopback fixtures only: `document.modelContext`, declarative and imperative tools over CDP `WebMCP.toolsAdded`/`toolsRemoved`, flag-off and domain-disabled controls, permissions-policy denial, the `data:` divergence, and the spec-versus-build table | S020, S030–S036 (receipt `evidence/round-16/webmcp/receipt.json`) |
+
+Frontier status (append-only; the round-3 bullet at `:35` and the kaika row at
+`:181` keep their historical wording): "Native WebMCP in chromium 152 —
+unprobed (census U3)" is now **held for Chromium 154 only**, flag-enabled,
+loopback, 11/11 receipt cases. Chromium 152 stays unprobed at runtime. The kaika
+row's "not `navigator.modelContext`, and no flag carries it" is superseded:
+the current spec (S020 §4.1) and the 154 IDL (S033) both put `modelContext` on
+`Document`, and `--enable-blink-features=WebMCP` carries it on 154. Still open:
+real-site WebMCP (needs operator approval), agent-side consumption of page
+tools, tool invocation as committed evidence, any unflagged/default-profile
+claim, and the extension↔daemon handshake, real-site rate/rights and real-site
+journey rows.

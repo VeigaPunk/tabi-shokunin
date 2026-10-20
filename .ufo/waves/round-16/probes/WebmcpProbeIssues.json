@@ -1,0 +1,982 @@
+{
+  "schema": "tabi-round16-webmcp-issues-probe-v1",
+  "probe": "WebmcpProbeIssues",
+  "purpose": "record Audits.issueAdded payloads for malformed declarative WebMCP forms",
+  "generatedAt": "2026-10-20T14:32:14.437Z",
+  "finishedAt": "2026-10-20T14:32:22.890Z",
+  "runtime": {
+    "node": "24.21.0",
+    "playwright": "1.64.0",
+    "playwrightRoot": "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules",
+    "chromiumExecutable": "/usr/bin/chromium",
+    "chromiumSha256": "eaed39c36bdf6ff6ff23f9f5215aaab017e59723b96f27f7fcd5e0be833a172b",
+    "chromiumVersion": "154.0.8037.97"
+  },
+  "flags": [
+    "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+    "--enable-blink-features=WebMCP,WebMCPTesting"
+  ],
+  "loopbackOnly": true,
+  "baseUrl": "http://127.0.0.1:44203",
+  "probeSha256": "92f191ce0486f9efc0dd86cb7944c002bbcef984e16e8fd9bd8a70e693ef3f7f",
+  "launchError": null,
+  "cases": [
+    {
+      "case": "missing-toolname",
+      "note": "form has tooldescription but no toolname",
+      "url": "http://127.0.0.1:44203/missing-toolname.html",
+      "cdpCommands": [
+        {
+          "command": "WebMCP.enable",
+          "ok": true,
+          "result": {}
+        },
+        {
+          "command": "Audits.enable",
+          "ok": true,
+          "result": {}
+        }
+      ],
+      "surface": {
+        "documentModelContextType": "object",
+        "navigatorModelContext": false,
+        "getToolsCount": 0,
+        "getToolsNames": []
+      },
+      "webmcpEvents": [],
+      "toolsAddedCount": 0,
+      "toolStillRegistered": false,
+      "issues": [
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextMissingToolName",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextMissingToolName",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        }
+      ],
+      "issueCodes": [
+        "GenericIssue",
+        "GenericIssue"
+      ],
+      "consoleMessages": [
+        {
+          "type": "log",
+          "text": "fixture-loaded missing-toolname",
+          "location": {
+            "url": "http://127.0.0.1:44203/missing-toolname.html",
+            "line": 0,
+            "column": 184,
+            "lineNumber": 0,
+            "columnNumber": 184
+          }
+        }
+      ]
+    },
+    {
+      "case": "missing-tooldescription",
+      "note": "form has toolname but no tooldescription",
+      "url": "http://127.0.0.1:44203/missing-tooldescription.html",
+      "cdpCommands": [
+        {
+          "command": "WebMCP.enable",
+          "ok": true,
+          "result": {}
+        },
+        {
+          "command": "Audits.enable",
+          "ok": true,
+          "result": {}
+        }
+      ],
+      "surface": {
+        "documentModelContextType": "object",
+        "navigatorModelContext": false,
+        "getToolsCount": 0,
+        "getToolsNames": []
+      },
+      "webmcpEvents": [],
+      "toolsAddedCount": 0,
+      "toolStillRegistered": false,
+      "issues": [
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextMissingToolDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextMissingToolDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        }
+      ],
+      "issueCodes": [
+        "GenericIssue",
+        "GenericIssue"
+      ],
+      "consoleMessages": [
+        {
+          "type": "log",
+          "text": "fixture-loaded missing-tooldescription",
+          "location": {
+            "url": "http://127.0.0.1:44203/missing-tooldescription.html",
+            "line": 0,
+            "column": 177,
+            "lineNumber": 0,
+            "columnNumber": 177
+          }
+        }
+      ]
+    },
+    {
+      "case": "input-without-name",
+      "note": "form is well-formed; sole input has no name attribute",
+      "url": "http://127.0.0.1:44203/input-without-name.html",
+      "cdpCommands": [
+        {
+          "command": "WebMCP.enable",
+          "ok": true,
+          "result": {}
+        },
+        {
+          "command": "Audits.enable",
+          "ok": true,
+          "result": {}
+        }
+      ],
+      "surface": {
+        "documentModelContextType": "object",
+        "navigatorModelContext": false,
+        "getToolsCount": 1,
+        "getToolsNames": [
+          "search"
+        ]
+      },
+      "webmcpEvents": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "search",
+                "description": "Search things",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "D826A2A04CBAA96D30E28139389D7488",
+                "backendNodeId": 3
+              }
+            ]
+          }
+        }
+      ],
+      "toolsAddedCount": 1,
+      "toolStillRegistered": true,
+      "issues": [
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingName",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingName",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormEmptyIdAndNameAttributesForInputError",
+                "violatingNodeId": 2,
+                "violatingNodeAttribute": ""
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormEmptyIdAndNameAttributesForInputError",
+                "violatingNodeId": 2,
+                "violatingNodeAttribute": ""
+              }
+            }
+          }
+        }
+      ],
+      "issueCodes": [
+        "GenericIssue",
+        "GenericIssue",
+        "GenericIssue",
+        "GenericIssue",
+        "GenericIssue",
+        "GenericIssue"
+      ],
+      "consoleMessages": [
+        {
+          "type": "log",
+          "text": "fixture-loaded input-without-name",
+          "location": {
+            "url": "http://127.0.0.1:44203/input-without-name.html",
+            "line": 0,
+            "column": 195,
+            "lineNumber": 0,
+            "columnNumber": 195
+          }
+        }
+      ]
+    },
+    {
+      "case": "required-input-without-name",
+      "note": "well-formed form; a required input has no name attribute",
+      "url": "http://127.0.0.1:44203/required-input-without-name.html",
+      "cdpCommands": [
+        {
+          "command": "WebMCP.enable",
+          "ok": true,
+          "result": {}
+        },
+        {
+          "command": "Audits.enable",
+          "ok": true,
+          "result": {}
+        }
+      ],
+      "surface": {
+        "documentModelContextType": "object",
+        "navigatorModelContext": false,
+        "getToolsCount": 1,
+        "getToolsNames": [
+          "search"
+        ]
+      },
+      "webmcpEvents": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "search",
+                "description": "Search things",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    ""
+                  ]
+                },
+                "frameId": "8059F5D56F16278A6FAC2A8639EC5DC7",
+                "backendNodeId": 4
+              }
+            ]
+          }
+        }
+      ],
+      "toolsAddedCount": 1,
+      "toolStillRegistered": true,
+      "issues": [
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextRequiredParameterMissingName",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 3
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextRequiredParameterMissingName",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 3
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormEmptyIdAndNameAttributesForInputError",
+                "violatingNodeId": 2,
+                "violatingNodeAttribute": ""
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormEmptyIdAndNameAttributesForInputError",
+                "violatingNodeId": 2,
+                "violatingNodeAttribute": ""
+              }
+            }
+          }
+        }
+      ],
+      "issueCodes": [
+        "GenericIssue",
+        "GenericIssue",
+        "GenericIssue",
+        "GenericIssue",
+        "GenericIssue",
+        "GenericIssue",
+        "GenericIssue",
+        "GenericIssue"
+      ],
+      "consoleMessages": [
+        {
+          "type": "log",
+          "text": "fixture-loaded required-input-without-name",
+          "location": {
+            "url": "http://127.0.0.1:44203/required-input-without-name.html",
+            "line": 0,
+            "column": 244,
+            "lineNumber": 0,
+            "columnNumber": 244
+          }
+        }
+      ]
+    },
+    {
+      "case": "param-missing-title-and-description",
+      "note": "named input with neither title attribute nor toolparamdescription",
+      "url": "http://127.0.0.1:44203/param-missing-title-and-description.html",
+      "cdpCommands": [
+        {
+          "command": "WebMCP.enable",
+          "ok": true,
+          "result": {}
+        },
+        {
+          "command": "Audits.enable",
+          "ok": true,
+          "result": {}
+        }
+      ],
+      "surface": {
+        "documentModelContextType": "object",
+        "navigatorModelContext": false,
+        "getToolsCount": 1,
+        "getToolsNames": [
+          "search"
+        ]
+      },
+      "webmcpEvents": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "search",
+                "description": "Search things",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "6B4E0A83511BF30CC17F4BB96097B9A2",
+                "backendNodeId": 3
+              }
+            ]
+          }
+        }
+      ],
+      "toolsAddedCount": 1,
+      "toolStillRegistered": true,
+      "issues": [
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        }
+      ],
+      "issueCodes": [
+        "GenericIssue",
+        "GenericIssue"
+      ],
+      "consoleMessages": [
+        {
+          "type": "log",
+          "text": "fixture-loaded param-missing-title-and-description",
+          "location": {
+            "url": "http://127.0.0.1:44203/param-missing-title-and-description.html",
+            "line": 0,
+            "column": 207,
+            "lineNumber": 0,
+            "columnNumber": 207
+          }
+        }
+      ]
+    },
+    {
+      "case": "positive-control",
+      "note": "well-formed declarative form (name/description/title present)",
+      "url": "http://127.0.0.1:44203/positive-control.html",
+      "cdpCommands": [
+        {
+          "command": "WebMCP.enable",
+          "ok": true,
+          "result": {}
+        },
+        {
+          "command": "Audits.enable",
+          "ok": true,
+          "result": {}
+        }
+      ],
+      "surface": {
+        "documentModelContextType": "object",
+        "navigatorModelContext": false,
+        "getToolsCount": 1,
+        "getToolsNames": [
+          "search"
+        ]
+      },
+      "webmcpEvents": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "search",
+                "description": "Search things",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "7667B719BE2D8BE449B0FCECB2A47B50",
+                "backendNodeId": 3
+              }
+            ]
+          }
+        }
+      ],
+      "toolsAddedCount": 1,
+      "toolStillRegistered": true,
+      "issues": [
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        }
+      ],
+      "issueCodes": [
+        "GenericIssue",
+        "GenericIssue"
+      ],
+      "consoleMessages": [
+        {
+          "type": "log",
+          "text": "fixture-loaded positive-control",
+          "location": {
+            "url": "http://127.0.0.1:44203/positive-control.html",
+            "line": 0,
+            "column": 202,
+            "lineNumber": 0,
+            "columnNumber": 202
+          }
+        }
+      ]
+    },
+    {
+      "case": "param-with-toolparamdescription",
+      "note": "named input carrying toolparamdescription attribute",
+      "url": "http://127.0.0.1:44203/param-with-toolparamdescription.html",
+      "cdpCommands": [
+        {
+          "command": "WebMCP.enable",
+          "ok": true,
+          "result": {}
+        },
+        {
+          "command": "Audits.enable",
+          "ok": true,
+          "result": {}
+        }
+      ],
+      "surface": {
+        "documentModelContextType": "object",
+        "navigatorModelContext": false,
+        "getToolsCount": 1,
+        "getToolsNames": [
+          "search"
+        ]
+      },
+      "webmcpEvents": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "search",
+                "description": "Search things",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string",
+                      "description": "Query text"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "A381CD60FB1A2324A1B4814EA0117289",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        }
+      ],
+      "toolsAddedCount": 1,
+      "toolStillRegistered": true,
+      "issues": [],
+      "issueCodes": [],
+      "consoleMessages": [
+        {
+          "type": "log",
+          "text": "fixture-loaded param-with-toolparamdescription",
+          "location": {
+            "url": "http://127.0.0.1:44203/param-with-toolparamdescription.html",
+            "line": 0,
+            "column": 237,
+            "lineNumber": 0,
+            "columnNumber": 237
+          }
+        }
+      ]
+    },
+    {
+      "case": "param-with-label",
+      "note": "named input associated with a <label for=> element",
+      "url": "http://127.0.0.1:44203/param-with-label.html",
+      "cdpCommands": [
+        {
+          "command": "WebMCP.enable",
+          "ok": true,
+          "result": {}
+        },
+        {
+          "command": "Audits.enable",
+          "ok": true,
+          "result": {}
+        }
+      ],
+      "surface": {
+        "documentModelContextType": "object",
+        "navigatorModelContext": false,
+        "getToolsCount": 1,
+        "getToolsNames": [
+          "search"
+        ]
+      },
+      "webmcpEvents": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "search",
+                "description": "Search things",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string",
+                      "description": "Query"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "3CE8F3EB98C24DE33EF8B872B5206E72",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        }
+      ],
+      "toolsAddedCount": 1,
+      "toolStillRegistered": true,
+      "issues": [],
+      "issueCodes": [],
+      "consoleMessages": [
+        {
+          "type": "log",
+          "text": "fixture-loaded param-with-label",
+          "location": {
+            "url": "http://127.0.0.1:44203/param-with-label.html",
+            "line": 0,
+            "column": 223,
+            "lineNumber": 0,
+            "columnNumber": 223
+          }
+        }
+      ]
+    },
+    {
+      "case": "param-with-aria-label",
+      "note": "named input carrying aria-label",
+      "url": "http://127.0.0.1:44203/param-with-aria-label.html",
+      "cdpCommands": [
+        {
+          "command": "WebMCP.enable",
+          "ok": true,
+          "result": {}
+        },
+        {
+          "command": "Audits.enable",
+          "ok": true,
+          "result": {}
+        }
+      ],
+      "surface": {
+        "documentModelContextType": "object",
+        "navigatorModelContext": false,
+        "getToolsCount": 1,
+        "getToolsNames": [
+          "search"
+        ]
+      },
+      "webmcpEvents": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "search",
+                "description": "Search things",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "5344505E6CDAF00031941699179B812F",
+                "backendNodeId": 3
+              }
+            ]
+          }
+        }
+      ],
+      "toolsAddedCount": 1,
+      "toolStillRegistered": true,
+      "issues": [
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        }
+      ],
+      "issueCodes": [
+        "GenericIssue",
+        "GenericIssue"
+      ],
+      "consoleMessages": [
+        {
+          "type": "log",
+          "text": "fixture-loaded param-with-aria-label",
+          "location": {
+            "url": "http://127.0.0.1:44203/param-with-aria-label.html",
+            "line": 0,
+            "column": 212,
+            "lineNumber": 0,
+            "columnNumber": 212
+          }
+        }
+      ]
+    },
+    {
+      "case": "param-with-toolparamtitle",
+      "note": "named input carrying toolparamtitle alone (attribute absent from binary strings)",
+      "url": "http://127.0.0.1:44203/param-with-toolparamtitle.html",
+      "cdpCommands": [
+        {
+          "command": "WebMCP.enable",
+          "ok": true,
+          "result": {}
+        },
+        {
+          "command": "Audits.enable",
+          "ok": true,
+          "result": {}
+        }
+      ],
+      "surface": {
+        "documentModelContextType": "object",
+        "navigatorModelContext": false,
+        "getToolsCount": 1,
+        "getToolsNames": [
+          "search"
+        ]
+      },
+      "webmcpEvents": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "search",
+                "description": "Search things",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "5A071BA126202584BD6551AA6965EF4F",
+                "backendNodeId": 3
+              }
+            ]
+          }
+        }
+      ],
+      "toolsAddedCount": 1,
+      "toolStillRegistered": true,
+      "issues": [
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        },
+        {
+          "issue": {
+            "code": "GenericIssue",
+            "details": {
+              "genericIssueDetails": {
+                "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                "violatingNodeId": 2
+              }
+            }
+          }
+        }
+      ],
+      "issueCodes": [
+        "GenericIssue",
+        "GenericIssue"
+      ],
+      "consoleMessages": [
+        {
+          "type": "log",
+          "text": "fixture-loaded param-with-toolparamtitle",
+          "location": {
+            "url": "http://127.0.0.1:44203/param-with-toolparamtitle.html",
+            "line": 0,
+            "column": 220,
+            "lineNumber": 0,
+            "columnNumber": 220
+          }
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "cases": 10,
+    "casesWithIssues": 8,
+    "casesWithTool": 8,
+    "uniqueIssueCodes": [
+      "GenericIssue"
+    ]
+  }
+}

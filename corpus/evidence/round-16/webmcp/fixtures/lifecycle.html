@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>webmcp lifecycle</title></head>
+<body>
+<h1>lifecycle</h1>
+<form id="toolform" toolname="transient" tooldescription="Form tool removed by removeForm action">
+  <label>Query <input type="text" name="q" toolparamdescription="Query text"></label>
+</form>
+<pre id="mc-status">modelContext-typeof=pending</pre>
+<pre id="lifecycle-status">lifecycle=pending</pre>
+<script>
+(function () {
+  var status = document.getElementById('mc-status');
+  var life = document.getElementById('lifecycle-status');
+  var mc = document.modelContext;
+  var ac = new AbortController();
+  status.textContent = 'modelContext-typeof=' + typeof mc;
+
+  window.__webmcpFixture = {
+    id: 'lifecycle',
+    expectedTools: [
+      {
+        name: 'transient',
+        description: 'Form tool removed by removeForm action',
+        inputSchema: {
+          type: 'object',
+          properties: { q: { type: 'string' } },
+          required: []
+        }
+      },
+      {
+        name: 'volatile',
+        description: 'Imperative tool removed by abortRegistration action',
+        inputSchema: { type: 'object', properties: {}, required: [] }
+      }
+    ],
+    actions: {
+      removeForm: function () {
+        var form = document.getElementById('toolform');
+        if (form) form.remove();
+        return Promise.resolve('removed');
+      },
+      abortRegistration: function () {
+        // Correct per spec/WPT: signal is the SECOND registerTool argument
+        // (ModelContextRegisterToolOptions), not a tool-dict member. Verified
+        // 2026-10-20 on Chromium 154.0.8037.97: 2nd-arg signal + abort()
+        // unregisters and fires toolsRemoved; dict-position signal is dropped
+        // by WebIDL and abort() is a no-op.
+        ac.abort();
+        return Promise.resolve('aborted');
+      }
+    },
+    actionOrder: ['removeForm', 'abortRegistration'],
+    expectedRemoved: ['transient', 'volatile']
+  };
+
+  if (typeof mc !== 'object' || !mc || typeof mc.registerTool !== 'function') {
+    life.textContent = 'lifecycle=skipped(modelContext-absent)';
+    window.__webmcpFixture.expectedTools = window.__webmcpFixture.expectedTools.slice(0, 1);
+    return;
+  }
+  mc.registerTool({
+    name: 'volatile',
+    description: 'Imperative tool removed by abortRegistration action',
+    inputSchema: { type: 'object', properties: {}, required: [] },
+    execute: function () { return 'volatile'; }
+  }, { signal: ac.signal }).then(function () {
+    life.textContent = 'lifecycle=registered';
+  }).catch(function (err) {
+    life.textContent = 'lifecycle=register-settled ' + String(err);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,534 @@
+{
+  "schema": "tabi-round16-webmcp-probe-invoke-v1",
+  "seat": "WebmcpProbeInvoke",
+  "capturedAt": "2026-10-20T14:41:30.097Z",
+  "question": "Is there a CDP command or testing API able to invoke a registered WebMCP tool? Invoke only the loopback echo tool and record request/response events and result shape.",
+  "scope": "loopback 127.0.0.1 only; temp profile; only the fixture's own read-only \"echo\" tool invoked",
+  "runtime": {
+    "node": "v24.21.0",
+    "chromiumExecutable": "/usr/bin/chromium",
+    "chromiumExecutableSha256": "eaed39c36bdf6ff6ff23f9f5215aaab017e59723b96f27f7fcd5e0be833a172b",
+    "browser": "Chrome/154.0.8037.97",
+    "webSocketDebuggerUrl": "present"
+  },
+  "producerSha256": "34bcb77636b89dad60c1ec0505159c9e388a9c0da0abcd105254fb7b0ad9ac6d",
+  "fixtureUrl": "http://127.0.0.1:43463/",
+  "cdpPort": 32847,
+  "protocolDomain": {
+    "domain": "WebMCP",
+    "experimental": true,
+    "dependencies": [
+      "Runtime",
+      "Page",
+      "DOM"
+    ],
+    "types": [
+      {
+        "id": "Annotation",
+        "description": "Tool annotations",
+        "type": "object",
+        "properties": [
+          {
+            "name": "readOnly",
+            "description": "A hint indicating that the tool does not modify any state.",
+            "optional": true,
+            "type": "boolean"
+          },
+          {
+            "name": "untrustedContent",
+            "description": "A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.",
+            "optional": true,
+            "type": "boolean"
+          },
+          {
+            "name": "consequential",
+            "description": "A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.",
+            "optional": true,
+            "type": "boolean"
+          },
+          {
+            "name": "autosubmit",
+            "description": "If the declarative tool was declared with the autosubmit attribute.",
+            "optional": true,
+            "type": "boolean"
+          }
+        ]
+      },
+      {
+        "id": "InvocationStatus",
+        "description": "Represents the status of a tool invocation.",
+        "type": "string",
+        "enum": [
+          "Completed",
+          "Canceled",
+          "Error"
+        ]
+      },
+      {
+        "id": "Tool",
+        "description": "Definition of a tool that can be invoked.",
+        "type": "object",
+        "properties": [
+          {
+            "name": "name",
+            "description": "Tool name.",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "description": "Tool description.",
+            "type": "string"
+          },
+          {
+            "name": "inputSchema",
+            "description": "Schema for the tool's input parameters.",
+            "optional": true,
+            "type": "object"
+          },
+          {
+            "name": "annotations",
+            "description": "Optional annotations for the tool.",
+            "optional": true,
+            "$ref": "Annotation"
+          },
+          {
+            "name": "frameId",
+            "description": "Frame identifier associated with the tool registration.",
+            "$ref": "Page.FrameId"
+          },
+          {
+            "name": "backendNodeId",
+            "description": "Optional node ID for declarative tools.",
+            "optional": true,
+            "$ref": "DOM.BackendNodeId"
+          },
+          {
+            "name": "stackTrace",
+            "description": "The stack trace at the time of the registration.",
+            "optional": true,
+            "$ref": "Runtime.StackTrace"
+          }
+        ]
+      },
+      {
+        "id": "RemovedTool",
+        "description": "Definition of a tool that was removed.",
+        "type": "object",
+        "properties": [
+          {
+            "name": "name",
+            "description": "Tool name.",
+            "type": "string"
+          },
+          {
+            "name": "frameId",
+            "description": "Frame identifier associated with the tool registration.",
+            "$ref": "Page.FrameId"
+          }
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "name": "enable",
+        "description": "Enables the WebMCP domain, allowing events to be sent. Enabling the domain will trigger a toolsAdded event for\nall currently registered tools."
+      },
+      {
+        "name": "disable",
+        "description": "Disables the WebMCP domain."
+      },
+      {
+        "name": "invokeTool",
+        "description": "Invokes a registered tool.",
+        "parameters": [
+          {
+            "name": "frameId",
+            "description": "Frame in which to invoke the tool.",
+            "$ref": "Page.FrameId"
+          },
+          {
+            "name": "toolName",
+            "description": "Name of the tool to invoke.",
+            "type": "string"
+          },
+          {
+            "name": "input",
+            "description": "Input parameters for the tool, matching the tool's inputSchema.",
+            "type": "object"
+          }
+        ],
+        "returns": [
+          {
+            "name": "invocationId",
+            "description": "Unique identifier for this invocation. Response is sent before tool events.",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "cancelInvocation",
+        "description": "Cancels a pending tool invocation.",
+        "parameters": [
+          {
+            "name": "invocationId",
+            "description": "Invocation identifier to cancel.",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "events": [
+      {
+        "name": "toolsAdded",
+        "description": "Event fired when new tools are added.",
+        "parameters": [
+          {
+            "name": "tools",
+            "description": "Array of tools that were added.",
+            "type": "array",
+            "items": {
+              "$ref": "Tool"
+            }
+          }
+        ]
+      },
+      {
+        "name": "toolsRemoved",
+        "description": "Event fired when tools are removed.",
+        "parameters": [
+          {
+            "name": "tools",
+            "description": "Array of tools that were removed.",
+            "type": "array",
+            "items": {
+              "$ref": "RemovedTool"
+            }
+          }
+        ]
+      },
+      {
+        "name": "toolInvoked",
+        "description": "Event fired when a tool invocation starts.",
+        "parameters": [
+          {
+            "name": "toolName",
+            "description": "Name of the tool to invoke.",
+            "type": "string"
+          },
+          {
+            "name": "frameId",
+            "description": "Frame id",
+            "$ref": "Page.FrameId"
+          },
+          {
+            "name": "invocationId",
+            "description": "Invocation identifier.",
+            "type": "string"
+          },
+          {
+            "name": "input",
+            "description": "The input parameters used for the invocation.",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "toolResponded",
+        "description": "Event fired when a tool invocation completes or fails.",
+        "parameters": [
+          {
+            "name": "invocationId",
+            "description": "Invocation identifier.",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "description": "Status of the invocation.",
+            "$ref": "InvocationStatus"
+          },
+          {
+            "name": "output",
+            "description": "Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.\nNote: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.",
+            "optional": true,
+            "type": "any"
+          },
+          {
+            "name": "errorText",
+            "description": "Error text for protocol users.",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "name": "exception",
+            "description": "The exception object, if the javascript tool threw an error>",
+            "optional": true,
+            "$ref": "Runtime.RemoteObject"
+          }
+        ]
+      }
+    ]
+  },
+  "invocationCandidates": [
+    "WebMCP.invokeTool"
+  ],
+  "webmcpCommands": [
+    "enable",
+    "disable",
+    "invokeTool",
+    "cancelInvocation"
+  ],
+  "webmcpEvents": [
+    "toolsAdded",
+    "toolsRemoved",
+    "toolInvoked",
+    "toolResponded"
+  ],
+  "invocationPath": {
+    "cdpInvokeTool": true,
+    "cdpCancelInvocation": true,
+    "testingApiInPage": false,
+    "inPageExecuteTool": true
+  },
+  "webmcpEnableResult": {},
+  "registration": {
+    "ok": true
+  },
+  "toolsAddedEcho": {
+    "tools": [
+      {
+        "name": "echo",
+        "description": "Echo the provided text back to the caller (read-only, no side effects).",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ]
+        },
+        "frameId": "A7C5A19D90120FC6A32BDB9697F9CA57",
+        "stackTrace": {
+          "callFrames": [
+            {
+              "functionName": "",
+              "scriptId": "3",
+              "url": "http://127.0.0.1:43463/",
+              "lineNumber": 5,
+              "columnNumber": 13
+            },
+            {
+              "functionName": "",
+              "scriptId": "3",
+              "url": "http://127.0.0.1:43463/",
+              "lineNumber": 13,
+              "columnNumber": 2
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "echoFrameIdMatchesNav": true,
+  "pageSurface": {
+    "document_modelContext": true,
+    "navigator_modelContext": false,
+    "document_modelContextTesting": false,
+    "navigator_modelContextTesting": false,
+    "window_keys": [
+      "ModelContext",
+      "WebMCPEvent"
+    ],
+    "testing_object": null,
+    "modelContext_proto": [
+      "ontoolchange",
+      "executeTool",
+      "getTools",
+      "registerTool",
+      "constructor"
+    ]
+  },
+  "invokeTool": {
+    "command": {
+      "frameId": "A7C5A19D90120FC6A32BDB9697F9CA57",
+      "toolName": "echo",
+      "input": {
+        "text": "round16-invoke-probe"
+      }
+    },
+    "result": {
+      "invocationId": "FCE0008EC451C7484BADCA9378EA426C"
+    }
+  },
+  "toolInvokedEvent": {
+    "toolName": "echo",
+    "frameId": "A7C5A19D90120FC6A32BDB9697F9CA57",
+    "invocationId": "FCE0008EC451C7484BADCA9378EA426C",
+    "input": "{\"text\":\"round16-invoke-probe\"}"
+  },
+  "toolRespondedEvent": {
+    "invocationId": "FCE0008EC451C7484BADCA9378EA426C",
+    "status": "Completed",
+    "output": "echo:round16-invoke-probe"
+  },
+  "echoResultShape": {
+    "status": "Completed",
+    "outputType": "string",
+    "output": "echo:round16-invoke-probe",
+    "invocationIdMatchesInvokeResult": true
+  },
+  "inPageExecuteTool": {
+    "jsonStringInput": {
+      "ok": true,
+      "result": "echo:inpage-execute"
+    },
+    "objectInput": {
+      "ok": false,
+      "err": "UnknownError: Failed to parse input arguments"
+    }
+  },
+  "unknownToolInvoke": {
+    "kind": "protocol_error",
+    "error": {
+      "code": -32602,
+      "message": "Tool not found"
+    }
+  },
+  "invalidInputInvoke": {
+    "result": {
+      "invocationId": "BB94614C9703282F57F60A2AA6EBB4D1"
+    },
+    "toolResponded": {
+      "invocationId": "BB94614C9703282F57F60A2AA6EBB4D1",
+      "status": "Completed",
+      "output": "echo:undefined"
+    }
+  },
+  "invokeBeforeEnable": {
+    "kind": "protocol_error",
+    "error": {
+      "code": -32000,
+      "message": "WebMCP domain is not enabled"
+    }
+  },
+  "allWebmcpEvents": [
+    {
+      "method": "WebMCP.toolsAdded",
+      "params": {
+        "tools": [
+          {
+            "name": "echo",
+            "description": "Echo the provided text back to the caller (read-only, no side effects).",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            },
+            "frameId": "A7C5A19D90120FC6A32BDB9697F9CA57",
+            "stackTrace": {
+              "callFrames": [
+                {
+                  "functionName": "",
+                  "scriptId": "3",
+                  "url": "http://127.0.0.1:43463/",
+                  "lineNumber": 5,
+                  "columnNumber": 13
+                },
+                {
+                  "functionName": "",
+                  "scriptId": "3",
+                  "url": "http://127.0.0.1:43463/",
+                  "lineNumber": 13,
+                  "columnNumber": 2
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "method": "WebMCP.toolInvoked",
+      "params": {
+        "toolName": "echo",
+        "frameId": "A7C5A19D90120FC6A32BDB9697F9CA57",
+        "invocationId": "FCE0008EC451C7484BADCA9378EA426C",
+        "input": "{\"text\":\"round16-invoke-probe\"}"
+      }
+    },
+    {
+      "method": "WebMCP.toolResponded",
+      "params": {
+        "invocationId": "FCE0008EC451C7484BADCA9378EA426C",
+        "status": "Completed",
+        "output": "echo:round16-invoke-probe"
+      }
+    },
+    {
+      "method": "WebMCP.toolInvoked",
+      "params": {
+        "toolName": "echo",
+        "frameId": "A7C5A19D90120FC6A32BDB9697F9CA57",
+        "invocationId": "49FA9BD2E4F36AD7840503454D9DE10C",
+        "input": "{\"text\":\"inpage-execute\"}"
+      }
+    },
+    {
+      "method": "WebMCP.toolResponded",
+      "params": {
+        "invocationId": "49FA9BD2E4F36AD7840503454D9DE10C",
+        "status": "Completed",
+        "output": "echo:inpage-execute"
+      }
+    },
+    {
+      "method": "WebMCP.toolInvoked",
+      "params": {
+        "toolName": "echo",
+        "frameId": "A7C5A19D90120FC6A32BDB9697F9CA57",
+        "invocationId": "5B808CAAFFFBB59C1F7D8A3418596638",
+        "input": "[object Object]"
+      }
+    },
+    {
+      "method": "WebMCP.toolResponded",
+      "params": {
+        "invocationId": "5B808CAAFFFBB59C1F7D8A3418596638",
+        "status": "Error",
+        "errorText": "Failed to parse input arguments"
+      }
+    },
+    {
+      "method": "WebMCP.toolInvoked",
+      "params": {
+        "toolName": "echo",
+        "frameId": "A7C5A19D90120FC6A32BDB9697F9CA57",
+        "invocationId": "BB94614C9703282F57F60A2AA6EBB4D1",
+        "input": "{}"
+      }
+    },
+    {
+      "method": "WebMCP.toolResponded",
+      "params": {
+        "invocationId": "BB94614C9703282F57F60A2AA6EBB4D1",
+        "status": "Completed",
+        "output": "echo:undefined"
+      }
+    }
+  ],
+  "verdict": {
+    "invocationPathExists": true,
+    "path": "WebMCP.invokeTool (CDP command; frameId + toolName + input → invocationId)",
+    "echoInvoked": true,
+    "echoOutput": "echo:round16-invoke-probe",
+    "testingApiPresent": false
+  }
+}

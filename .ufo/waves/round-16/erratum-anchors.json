@@ -1,0 +1,80 @@
+{
+  "schema": "tabi-round16-erratum-anchors-v1",
+  "seat": "ErratumAnchors",
+  "produced": "2026-10-20",
+  "scope": "routed defect 3 of corpus/lessons/round-15-verifier-spotcheck.md:122: 'Future SKILL/lesson text citing round-14 Node wording should point to the erratum section of this file.' Grep targets: SKILL.md, corpus/README.md, corpus/QUALITY.md, corpus/knowledge/*.md.",
+  "superseded_wording": {
+    "source": "corpus/lessons/round-14-verifier-spotcheck.md",
+    "quotes": [
+      { "line": 129, "text": "the historical producer does not read pin.node" },
+      { "line": 129, "text": "The producer's runtime pin match therefore cannot certify Node equality or historical minimum enforcement." },
+      { "line": 184, "text": "the historical producer, which never enforces pin.node" }
+    ],
+    "erratum_authority": "corpus/lessons/round-15-verifier-spotcheck.md lines 90-101 'Erratum to the round-14 verifier wording': judgment warranted; corrected statement = the historical run enforced the Node minimum (major >= 20) per case in the spec, never exact Node equality to recorded 24.21.0."
+  },
+  "hits": [
+    {
+      "path": "SKILL.md",
+      "line": 1744,
+      "exact_line": "| observed Node differs from pin.node.recorded | Report observed version, enforced minimum and descriptive record separately; do not claim exact equality was checked | Original runtime26.12.0, descriptive24.21.0, minimumMajor20 |",
+      "cites_round14_node_wording": true,
+      "distinguishes_minimum_vs_exact": true,
+      "note": "Round-14 decision-table row. Already separates enforced minimum from exact equality, but does not point to the round-15 erratum section."
+    },
+    {
+      "path": "SKILL.md",
+      "line": 1766,
+      "exact_line": "**Named correction to round14's Node table and the frozen sidecar's note:** \u201cenforced minimum\u201d has two enforcement layers over one recorded observation: the historical test spec's `assertPinnedRuntime()` checks `RUNTIME.nodeMajor >= PIN.node.minimumMajor` ... This corrects the round14 outside review's broader non-enforcement wording, which overlooked the spec assertion. Recorded24.21.0 remains descriptive, observed26.12.0 is not exact equality, and no browser execution is renewed. (block spans lines 1766-1777)",
+      "cites_round14_node_wording": true,
+      "distinguishes_minimum_vs_exact": true,
+      "note": "Round-15 named-correction block; states the distinction fully but names no erratum-section pointer."
+    },
+    {
+      "path": "corpus/README.md",
+      "line": 255,
+      "exact_line": "The historical producer and note keep their exact runtime-pinned bytes; replay outputs need the documented metadata qualification rather than an unqualified aggregate reading. Observed Node26.12.0 differs from descriptive24.21.0/minimum20. (round-14 section, lines 255-257)",
+      "cites_round14_node_wording": true,
+      "distinguishes_minimum_vs_exact": true,
+      "note": "Round-14 README paragraph; observed/descriptive/minimum separated; no erratum pointer."
+    },
+    {
+      "path": "corpus/README.md",
+      "line": 275,
+      "exact_line": "Named qualification to the Node sentence above: the historical test spec enforces minimumMajor20 (`aria-loopback.spec.mjs:269`, invoked `:924`) and the metadata checker re-evaluates it retrospectively. ... This corrects the outside review's overbroad non-enforcement inference without rewriting it. Observed26.12.0 versus descriptive24.21.0 is not exact environment reproduction. (round-15 section, lines 275-285)",
+      "cites_round14_node_wording": true,
+      "distinguishes_minimum_vs_exact": true,
+      "note": "Round-15 README named qualification; states the distinction; no erratum-section pointer."
+    },
+    {
+      "path": "corpus/QUALITY.md",
+      "line": 56,
+      "exact_line": "every worker stopped. Runtime metadata distinguishes observed, minimum-enforced and descriptive recorded versions. Historical corrections retain input digests, a same-checker red\u2192green witness and an explicit no-new-execution qualifier. (admission bar item 18, lines 54-59; lesson anchor corpus/lessons/round-14.md#mistakes)",
+      "cites_round14_node_wording": true,
+      "distinguishes_minimum_vs_exact": true,
+      "note": "Admission bar 18 states the observed/minimum-enforced/descriptive distinction; cites the round-14 lesson, not the round-15 erratum."
+    }
+  ],
+  "negative_result": {
+    "corpus/knowledge/*.md": "No hits for pin.node, 'never enforces', 'historical producer', non-enforcement, overbroad, exact Node equality, nodeMajor, minimumMajor or assertPinnedRuntime. corpus/knowledge/aria-loopback-round-13.md contains no Node/pin wording; corpus/knowledge/cdp-evidence-patterns.md:17 and executor-test-sufficiency.md:51 mention node v24.21.0 only as host version, not the round-14 wording."
+  },
+  "erratum_section_location": {
+    "file": "corpus/lessons/round-15-verifier-spotcheck.md",
+    "heading_line": 90,
+    "heading": "## Erratum to the round-14 verifier wording (non-author, recorded here; round-14 file unchanged)",
+    "corrected_statement_line": 101,
+    "section_ends_before_line": 103,
+    "append_rule": "File is append-only and immutable historical evidence is not edited; new text must be a NEW section appended at end of file (after line 126), never inserted into the existing erratum body."
+  },
+  "proposed_appends": [
+    {
+      "target": "corpus/lessons/round-15-verifier-spotcheck.md",
+      "placement": "New section appended at EOF (after line 126, after the SHONEN paragraph). No existing line edited.",
+      "proposed_text": "## Erratum pointer adopters (round-16 routing, append-only)\n\nRouted defect 3 of this file directed future SKILL/lesson text citing the round-14 Node wording to point here. The citing texts and their corrected distinction now live at:\n- `SKILL.md` \u00a7Round 15, 'Named correction to round14's Node table and the frozen sidecar's note' (added round 15; distinguishes spec-enforced minimumMajor20 from exact equality to recorded 24.21.0).\n- `corpus/README.md` \u00a7Round 15, 'Named qualification to the Node sentence above' (same distinction).\n- `SKILL.md` round-14 decision-table row 'observed Node differs from pin.node.recorded' and `corpus/QUALITY.md` admission bar 18 predate the erratum but already state the observed/minimum-enforced/descriptive distinction; the erratum does not supersede them.\nThe corrected statement remains the 'Erratum to the round-14 verifier wording' section above: the historical round-13 run enforced the Node minimum per case in the spec and never enforced exact Node equality; the overbroad 'never enforces pin.node' wording is confined to `corpus/lessons/round-14-verifier-spotcheck.md:129,184`, which stays byte-unchanged."
+    },
+    {
+      "target": "corpus/lessons/round-16.md (L1-authored new lesson, not this seat)",
+      "placement": "Round-16 lesson text, new section; advisory only.",
+      "proposed_text": "Round-15 outside routed defect 3 adopted: every lane text citing the round-14 Node/pin.node wording now resolves through the erratum section of corpus/lessons/round-15-verifier-spotcheck.md; anchors inventoried in .ufo/waves/round-16/erratum-anchors.json."
+    }
+  ]
+}

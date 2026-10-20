@@ -1,0 +1,5834 @@
+{
+  "schema": "tabi-round16-webmcp-declarative-probe-v1",
+  "seat": "TabiR16.WebmcpProbeDeclarative-5",
+  "capturedAt": "2026-10-20T14:42:26.983Z",
+  "scope": "declarative <form> -> WebMCP Tool.inputSchema derivation; loopback 127.0.0.1 only",
+  "runtime": {
+    "chromiumExecutable": "/usr/bin/chromium",
+    "chromiumVersion": "Chromium 154.0.8037.97 Arch Linux",
+    "chromiumSha256": "eaed39c36bdf6ff6ff23f9f5215aaab017e59723b96f27f7fcd5e0be833a172b",
+    "playwright": "1.64.0",
+    "node": "v24.21.0",
+    "freshTempProfile": true
+  },
+  "server": {
+    "bind": "127.0.0.1",
+    "port": 44299,
+    "pages": [
+      "matrix",
+      "extra",
+      "malformed"
+    ]
+  },
+  "runs": {
+    "plan-flags": {
+      "flags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ],
+      "enableResults": {
+        "matrix": {
+          "WebMCP.enable": {},
+          "Audits.enable": {}
+        },
+        "extra": {
+          "WebMCP.enable": {},
+          "Audits.enable": {}
+        },
+        "malformed": {
+          "WebMCP.enable": {},
+          "Audits.enable": {}
+        }
+      },
+      "events": [
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "basic",
+                "description": "Basic field types",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string"
+                    },
+                    "n": {
+                      "type": "number",
+                      "minimum": 1,
+                      "maximum": 10,
+                      "multipleOf": 0.5
+                    },
+                    "em": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "q",
+                    "em"
+                  ]
+                },
+                "frameId": "1CDFA14837C5D7E333025D79750087A9",
+                "backendNodeId": 6
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "selectenum",
+                "description": "Select and textarea",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "choice": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "a",
+                          "title": "Alpha"
+                        },
+                        {
+                          "type": "string",
+                          "const": "b",
+                          "title": "Beta"
+                        },
+                        {
+                          "type": "string",
+                          "const": "c",
+                          "title": "Gamma"
+                        }
+                      ],
+                      "enum": [
+                        "a",
+                        "b",
+                        "c"
+                      ]
+                    },
+                    "multi": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "const": "x",
+                            "title": "X"
+                          },
+                          {
+                            "type": "string",
+                            "const": "y",
+                            "title": "Y"
+                          }
+                        ],
+                        "enum": [
+                          "x",
+                          "y"
+                        ]
+                      },
+                      "uniqueItems": true
+                    },
+                    "notes": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "notes"
+                  ]
+                },
+                "frameId": "1CDFA14837C5D7E333025D79750087A9",
+                "backendNodeId": 10
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "radiogroup",
+                "description": "Radio group inside fieldset",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "size": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "s"
+                        },
+                        {
+                          "type": "string",
+                          "const": "m"
+                        },
+                        {
+                          "type": "string",
+                          "const": "l"
+                        }
+                      ],
+                      "enum": [
+                        "s",
+                        "m",
+                        "l"
+                      ]
+                    },
+                    "extra": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "size",
+                    "extra"
+                  ]
+                },
+                "frameId": "1CDFA14837C5D7E333025D79750087A9",
+                "backendNodeId": 13
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "descattrs",
+                "description": "Parameter description attribute candidates",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "p1": {
+                      "type": "string",
+                      "description": "desc via toolparamdescription"
+                    },
+                    "p2": {
+                      "type": "string"
+                    },
+                    "p3": {
+                      "type": "string"
+                    },
+                    "p4": {
+                      "type": "string"
+                    },
+                    "p5": {
+                      "type": "string"
+                    },
+                    "p6": {
+                      "type": "string",
+                      "description": "tpd wins"
+                    },
+                    "p7": {
+                      "type": "string",
+                      "description": "wrapped label"
+                    },
+                    "p8": {
+                      "type": "string",
+                      "description": "label-by-for"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "1CDFA14837C5D7E333025D79750087A9",
+                "backendNodeId": 18
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "autosub",
+                "description": "Autosubmit, no submit button",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "a": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "a"
+                  ]
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "1CDFA14837C5D7E333025D79750087A9",
+                "backendNodeId": 20
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "nosubmit",
+                "description": "No submit, no autosubmit",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "a": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "1CDFA14837C5D7E333025D79750087A9",
+                "backendNodeId": 22
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "types",
+                "description": "Many input types",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "pw": {
+                      "type": "string"
+                    },
+                    "d": {
+                      "type": "string",
+                      "format": "date",
+                      "description": "Dates MUST be provided in 'YYYY-MM-DD' format."
+                    },
+                    "r": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "multipleOf": 1
+                    },
+                    "u": {
+                      "type": "string"
+                    },
+                    "t": {
+                      "type": "string"
+                    },
+                    "s": {
+                      "type": "string"
+                    },
+                    "c": {
+                      "type": "string",
+                      "format": "^#[0-9a-zA-Z]{6}$"
+                    },
+                    "dt": {
+                      "type": "string",
+                      "format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$"
+                    },
+                    "mo": {
+                      "type": "string",
+                      "format": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+                    },
+                    "wk": {
+                      "type": "string",
+                      "format": "^[0-9]{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$"
+                    },
+                    "tm": {
+                      "type": "string",
+                      "format": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+                    },
+                    "reqnum": {
+                      "type": "number",
+                      "multipleOf": 1
+                    }
+                  },
+                  "required": [
+                    "reqnum"
+                  ]
+                },
+                "frameId": "1CDFA14837C5D7E333025D79750087A9",
+                "backendNodeId": 34
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "withtitle",
+                "description": "Has tooltitle",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "tt": {
+                      "type": "string",
+                      "description": "tt desc"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "1CDFA14837C5D7E333025D79750087A9",
+                "backendNodeId": 35
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "constraints",
+                "description": "String and numeric constraints",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "ml": {
+                      "type": "string",
+                      "description": "len param"
+                    },
+                    "def": {
+                      "type": "string",
+                      "description": "default param"
+                    },
+                    "nb": {
+                      "type": "number",
+                      "multipleOf": 1,
+                      "description": "bare number"
+                    },
+                    "ck": {
+                      "type": "boolean",
+                      "description": "checkbox no value"
+                    },
+                    "ta": {
+                      "type": "string",
+                      "description": "textarea len"
+                    },
+                    "reqsel": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "",
+                          "title": "pick"
+                        },
+                        {
+                          "type": "string",
+                          "const": "a",
+                          "title": "A"
+                        }
+                      ],
+                      "enum": [
+                        "",
+                        "a"
+                      ],
+                      "description": "required select"
+                    }
+                  },
+                  "required": [
+                    "reqsel"
+                  ]
+                },
+                "frameId": "E358EBB89863AD7332389858BDA4A297",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "radiolabels",
+                "description": "Radio with labels and tpd",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "r": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "1",
+                          "title": "One"
+                        },
+                        {
+                          "type": "string",
+                          "const": "2",
+                          "title": "Two"
+                        },
+                        {
+                          "type": "string",
+                          "const": "3"
+                        },
+                        {
+                          "type": "string",
+                          "const": "4"
+                        }
+                      ],
+                      "enum": [
+                        "1",
+                        "2",
+                        "3",
+                        "4"
+                      ]
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "E358EBB89863AD7332389858BDA4A297",
+                "backendNodeId": 4
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "datalist",
+                "description": "Datalist options",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "dl": {
+                      "type": "string",
+                      "description": "datalist param"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "E358EBB89863AD7332389858BDA4A297",
+                "backendNodeId": 5
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "outside",
+                "description": "Out-of-form association",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "external": {
+                      "type": "string",
+                      "description": "outside via form attr"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "E358EBB89863AD7332389858BDA4A297",
+                "backendNodeId": 6
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "face",
+                "description": "Form-associated custom element",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "plain": {
+                      "type": "string",
+                      "description": "sibling plain input"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "E358EBB89863AD7332389858BDA4A297",
+                "backendNodeId": 7
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "ckgroup",
+                "description": "Same-name checkbox group",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "fruit": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "const": "a"
+                          },
+                          {
+                            "type": "string",
+                            "const": "b"
+                          },
+                          {
+                            "type": "string",
+                            "const": "c"
+                          }
+                        ],
+                        "enum": [
+                          "a",
+                          "b",
+                          "c"
+                        ]
+                      },
+                      "uniqueItems": true
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "E358EBB89863AD7332389858BDA4A297",
+                "backendNodeId": 9
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "dupname",
+                "description": "Duplicate text name",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "string",
+                      "description": "ok field"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "E358EBB89863AD7332389858BDA4A297",
+                "backendNodeId": 10
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "hiddenparams",
+                "description": "Hidden inputs",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "hv": {
+                      "type": "string",
+                      "description": "hidden described"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "E358EBB89863AD7332389858BDA4A297",
+                "backendNodeId": 11
+              }
+            ]
+          }
+        },
+        {
+          "page": "malformed",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "nonamereq",
+                "description": "required param missing name",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {},
+                  "required": []
+                },
+                "frameId": "9A897D881D4E02EE3B82678623B03115",
+                "backendNodeId": 5
+              }
+            ]
+          }
+        },
+        {
+          "page": "malformed",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "nonameopt",
+                "description": "optional param missing name",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "named": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "9A897D881D4E02EE3B82678623B03115",
+                "backendNodeId": 8
+              }
+            ]
+          }
+        },
+        {
+          "page": "malformed",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "",
+                "description": "empty toolname",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "9A897D881D4E02EE3B82678623B03115",
+                "backendNodeId": 10
+              }
+            ]
+          }
+        },
+        {
+          "page": "malformed",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "emptydesc",
+                "description": "",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "9A897D881D4E02EE3B82678623B03115",
+                "backendNodeId": 12
+              }
+            ]
+          }
+        }
+      ],
+      "issues": [
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 2,
+                  "violatingNodeSelector": "INPUT [type=text=name=q=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "INPUT [type=number=name=n=min=1=max=10=step=0.5]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 4,
+                  "violatingNodeSelector": "INPUT [type=email=name=em=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 5,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=ok=value=yes]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 2,
+                  "violatingNodeSelector": "INPUT [type=text=name=q=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "INPUT [type=number=name=n=min=1=max=10=step=0.5]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 4,
+                  "violatingNodeSelector": "INPUT [type=email=name=em=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 5,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=ok=value=yes]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 7,
+                  "violatingNodeSelector": "SELECT [name=choice]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 8,
+                  "violatingNodeSelector": "SELECT [name=multi=multiple=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 9,
+                  "violatingNodeSelector": "TEXTAREA [name=notes=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 7,
+                  "violatingNodeSelector": "SELECT [name=choice]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 8,
+                  "violatingNodeSelector": "SELECT [name=multi=multiple=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 9,
+                  "violatingNodeSelector": "TEXTAREA [name=notes=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 11,
+                  "violatingNodeSelector": "INPUT [type=radio=name=size=value=s=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 12,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=extra=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 11,
+                  "violatingNodeSelector": "INPUT [type=radio=name=size=value=s=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 12,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=extra=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 14,
+                  "violatingNodeSelector": "INPUT [name=p2=title=desc via title]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 15,
+                  "violatingNodeSelector": "INPUT [name=p3=toolparamtitle=desc via toolparamtitle]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 16,
+                  "violatingNodeSelector": "INPUT [name=p4=aria-label=desc via aria-label]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 17,
+                  "violatingNodeSelector": "INPUT [name=p5=placeholder=desc via placeholder]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 14,
+                  "violatingNodeSelector": "INPUT [name=p2=title=desc via title]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 15,
+                  "violatingNodeSelector": "INPUT [name=p3=toolparamtitle=desc via toolparamtitle]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 16,
+                  "violatingNodeSelector": "INPUT [name=p4=aria-label=desc via aria-label]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 17,
+                  "violatingNodeSelector": "INPUT [name=p5=placeholder=desc via placeholder]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 19,
+                  "violatingNodeSelector": "INPUT [name=a=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 19,
+                  "violatingNodeSelector": "INPUT [name=a=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 21,
+                  "violatingNodeSelector": "INPUT [name=a]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 21,
+                  "violatingNodeSelector": "INPUT [name=a]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 23,
+                  "violatingNodeSelector": "INPUT [type=password=name=pw]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 24,
+                  "violatingNodeSelector": "INPUT [type=range=name=r=min=0=max=100]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 25,
+                  "violatingNodeSelector": "INPUT [type=url=name=u]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 26,
+                  "violatingNodeSelector": "INPUT [type=tel=name=t]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 27,
+                  "violatingNodeSelector": "INPUT [type=search=name=s]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 28,
+                  "violatingNodeSelector": "INPUT [type=color=name=c]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 29,
+                  "violatingNodeSelector": "INPUT [type=datetime-local=name=dt]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 30,
+                  "violatingNodeSelector": "INPUT [type=month=name=mo]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 31,
+                  "violatingNodeSelector": "INPUT [type=week=name=wk]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 32,
+                  "violatingNodeSelector": "INPUT [type=time=name=tm]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 33,
+                  "violatingNodeSelector": "INPUT [type=number=name=reqnum=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 23,
+                  "violatingNodeSelector": "INPUT [type=password=name=pw]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 24,
+                  "violatingNodeSelector": "INPUT [type=range=name=r=min=0=max=100]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 25,
+                  "violatingNodeSelector": "INPUT [type=url=name=u]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 26,
+                  "violatingNodeSelector": "INPUT [type=tel=name=t]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 27,
+                  "violatingNodeSelector": "INPUT [type=search=name=s]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 28,
+                  "violatingNodeSelector": "INPUT [type=color=name=c]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 29,
+                  "violatingNodeSelector": "INPUT [type=datetime-local=name=dt]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 30,
+                  "violatingNodeSelector": "INPUT [type=month=name=mo]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 31,
+                  "violatingNodeSelector": "INPUT [type=week=name=wk]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 32,
+                  "violatingNodeSelector": "INPUT [type=time=name=tm]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 33,
+                  "violatingNodeSelector": "INPUT [type=number=name=reqnum=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "extra",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "INPUT [type=radio=name=r=value=1=id=r1]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "extra",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "INPUT [type=radio=name=r=value=1=id=r1]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "extra",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 8,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=fruit=value=a=toolparamdescription=fruits]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "extra",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 8,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=fruit=value=a=toolparamdescription=fruits]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2,
+                  "violatingNodeSelector": "FORM [id=f-notoolname=tooldescription=has description, no toolname=action=/noop=method]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2,
+                  "violatingNodeSelector": "FORM [id=f-notoolname=tooldescription=has description, no toolname=action=/noop=method]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2,
+                  "violatingNodeSelector": "FORM [id=f-notoolname=tooldescription=has description, no toolname=action=/noop=method]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2,
+                  "violatingNodeSelector": "FORM [id=f-notoolname=tooldescription=has description, no toolname=action=/noop=method]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2,
+                  "violatingNodeSelector": "FORM [id=f-notoolname=tooldescription=has description, no toolname=action=/noop=method]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "FORM [id=f-notooldesc=toolname=nodesc=action=/noop=method=get]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "FORM [id=f-notooldesc=toolname=nodesc=action=/noop=method=get]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "FORM [id=f-notooldesc=toolname=nodesc=action=/noop=method=get]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "FORM [id=f-notooldesc=toolname=nodesc=action=/noop=method=get]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "FORM [id=f-notooldesc=toolname=nodesc=action=/noop=method=get]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextRequiredParameterMissingName",
+                  "violatingNodeId": 4,
+                  "violatingNodeSelector": "INPUT [required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextRequiredParameterMissingName",
+                  "violatingNodeId": 4,
+                  "violatingNodeSelector": "INPUT [required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingName",
+                  "violatingNodeId": 6,
+                  "violatingNodeSelector": "INPUT []"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 7,
+                  "violatingNodeSelector": "INPUT [name=named]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingName",
+                  "violatingNodeId": 6,
+                  "violatingNodeSelector": "INPUT []"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 7,
+                  "violatingNodeSelector": "INPUT [name=named]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 9,
+                  "violatingNodeSelector": "INPUT [name=x]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 9,
+                  "violatingNodeSelector": "INPUT [name=x]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 11,
+                  "violatingNodeSelector": "INPUT [name=x]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 11,
+                  "violatingNodeSelector": "INPUT [name=x]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormEmptyIdAndNameAttributesForInputError",
+                  "violatingNodeId": 4,
+                  "violatingNodeAttribute": "",
+                  "violatingNodeSelector": "INPUT [required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormEmptyIdAndNameAttributesForInputError",
+                  "violatingNodeId": 6,
+                  "violatingNodeAttribute": "",
+                  "violatingNodeSelector": "INPUT []"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormEmptyIdAndNameAttributesForInputError",
+                  "violatingNodeId": 4,
+                  "violatingNodeAttribute": "",
+                  "violatingNodeSelector": "INPUT [required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "malformed",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormEmptyIdAndNameAttributesForInputError",
+                  "violatingNodeId": 6,
+                  "violatingNodeAttribute": "",
+                  "violatingNodeSelector": "INPUT []"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "facts": {
+        "matrix": {
+          "documentModelContext": "object",
+          "navigatorModelContext": false,
+          "modelContextProtoKeys": [
+            "ontoolchange",
+            "executeTool",
+            "getTools",
+            "registerTool",
+            "constructor"
+          ],
+          "modelContextGetTools": [
+            {
+              "name": "autosub",
+              "description": "Autosubmit, no submit button",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "a": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "a"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "basic",
+              "description": "Basic field types",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "q": {
+                    "type": "string"
+                  },
+                  "n": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 10,
+                    "multipleOf": 0.5
+                  },
+                  "em": {
+                    "type": "string"
+                  },
+                  "ok": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "q",
+                  "em"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "descattrs",
+              "description": "Parameter description attribute candidates",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "p1": {
+                    "type": "string",
+                    "description": "desc via toolparamdescription"
+                  },
+                  "p2": {
+                    "type": "string"
+                  },
+                  "p3": {
+                    "type": "string"
+                  },
+                  "p4": {
+                    "type": "string"
+                  },
+                  "p5": {
+                    "type": "string"
+                  },
+                  "p6": {
+                    "type": "string",
+                    "description": "tpd wins"
+                  },
+                  "p7": {
+                    "type": "string",
+                    "description": "wrapped label"
+                  },
+                  "p8": {
+                    "type": "string",
+                    "description": "label-by-for"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "nosubmit",
+              "description": "No submit, no autosubmit",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "a": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "radiogroup",
+              "description": "Radio group inside fieldset",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "size": {
+                    "type": "string",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "s"
+                      },
+                      {
+                        "type": "string",
+                        "const": "m"
+                      },
+                      {
+                        "type": "string",
+                        "const": "l"
+                      }
+                    ],
+                    "enum": [
+                      "s",
+                      "m",
+                      "l"
+                    ]
+                  },
+                  "extra": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "size",
+                  "extra"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "selectenum",
+              "description": "Select and textarea",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "choice": {
+                    "type": "string",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "a",
+                        "title": "Alpha"
+                      },
+                      {
+                        "type": "string",
+                        "const": "b",
+                        "title": "Beta"
+                      },
+                      {
+                        "type": "string",
+                        "const": "c",
+                        "title": "Gamma"
+                      }
+                    ],
+                    "enum": [
+                      "a",
+                      "b",
+                      "c"
+                    ]
+                  },
+                  "multi": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "x",
+                          "title": "X"
+                        },
+                        {
+                          "type": "string",
+                          "const": "y",
+                          "title": "Y"
+                        }
+                      ],
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "uniqueItems": true
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notes"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "types",
+              "description": "Many input types",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "pw": {
+                    "type": "string"
+                  },
+                  "d": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Dates MUST be provided in 'YYYY-MM-DD' format."
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "multipleOf": 1
+                  },
+                  "u": {
+                    "type": "string"
+                  },
+                  "t": {
+                    "type": "string"
+                  },
+                  "s": {
+                    "type": "string"
+                  },
+                  "c": {
+                    "type": "string",
+                    "format": "^#[0-9a-zA-Z]{6}$"
+                  },
+                  "dt": {
+                    "type": "string",
+                    "format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$"
+                  },
+                  "mo": {
+                    "type": "string",
+                    "format": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+                  },
+                  "wk": {
+                    "type": "string",
+                    "format": "^[0-9]{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$"
+                  },
+                  "tm": {
+                    "type": "string",
+                    "format": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+                  },
+                  "reqnum": {
+                    "type": "number",
+                    "multipleOf": 1
+                  }
+                },
+                "required": [
+                  "reqnum"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "withtitle",
+              "description": "Has tooltitle",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "tt": {
+                    "type": "string",
+                    "description": "tt desc"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            }
+          ],
+          "modelContextGetToolsError": null,
+          "formReflection": {
+            "toolname": {
+              "in": false,
+              "value": null
+            },
+            "toolName": {
+              "in": false,
+              "value": null
+            },
+            "tooldescription": {
+              "in": false,
+              "value": null
+            },
+            "toolDescription": {
+              "in": false,
+              "value": null
+            },
+            "toolautosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutoSubmit": {
+              "in": false,
+              "value": null
+            },
+            "autosubmit": {
+              "in": false,
+              "value": null
+            }
+          },
+          "autoSubmitFormReflection": {
+            "toolautosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutoSubmit": {
+              "in": false,
+              "value": null
+            },
+            "autosubmit": {
+              "in": false,
+              "value": null
+            }
+          },
+          "formProtoKeys": [
+            "autocomplete"
+          ],
+          "inputReflection": {
+            "toolparamdescription": {
+              "in": false,
+              "value": null
+            },
+            "toolParamDescription": {
+              "in": false,
+              "value": null
+            },
+            "toolparamtitle": {
+              "in": false,
+              "value": null
+            },
+            "toolParamTitle": {
+              "in": false,
+              "value": null
+            },
+            "toolparamname": {
+              "in": false,
+              "value": null
+            },
+            "toolParamName": {
+              "in": false,
+              "value": null
+            }
+          },
+          "inputProtoKeys": [],
+          "selectProtoKeys": [],
+          "textareaProtoKeys": []
+        },
+        "extra": {
+          "documentModelContext": "object",
+          "navigatorModelContext": false,
+          "modelContextProtoKeys": [
+            "ontoolchange",
+            "executeTool",
+            "getTools",
+            "registerTool",
+            "constructor"
+          ],
+          "modelContextGetTools": [
+            {
+              "name": "ckgroup",
+              "description": "Same-name checkbox group",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "fruit": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "a"
+                        },
+                        {
+                          "type": "string",
+                          "const": "b"
+                        },
+                        {
+                          "type": "string",
+                          "const": "c"
+                        }
+                      ],
+                      "enum": [
+                        "a",
+                        "b",
+                        "c"
+                      ]
+                    },
+                    "uniqueItems": true
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "constraints",
+              "description": "String and numeric constraints",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "ml": {
+                    "type": "string",
+                    "description": "len param"
+                  },
+                  "def": {
+                    "type": "string",
+                    "description": "default param"
+                  },
+                  "nb": {
+                    "type": "number",
+                    "multipleOf": 1,
+                    "description": "bare number"
+                  },
+                  "ck": {
+                    "type": "boolean",
+                    "description": "checkbox no value"
+                  },
+                  "ta": {
+                    "type": "string",
+                    "description": "textarea len"
+                  },
+                  "reqsel": {
+                    "type": "string",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "",
+                        "title": "pick"
+                      },
+                      {
+                        "type": "string",
+                        "const": "a",
+                        "title": "A"
+                      }
+                    ],
+                    "enum": [
+                      "",
+                      "a"
+                    ],
+                    "description": "required select"
+                  }
+                },
+                "required": [
+                  "reqsel"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "datalist",
+              "description": "Datalist options",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "dl": {
+                    "type": "string",
+                    "description": "datalist param"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "dupname",
+              "description": "Duplicate text name",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "ok": {
+                    "type": "string",
+                    "description": "ok field"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "face",
+              "description": "Form-associated custom element",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "plain": {
+                    "type": "string",
+                    "description": "sibling plain input"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "hiddenparams",
+              "description": "Hidden inputs",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "hv": {
+                    "type": "string",
+                    "description": "hidden described"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "outside",
+              "description": "Out-of-form association",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "external": {
+                    "type": "string",
+                    "description": "outside via form attr"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "radiolabels",
+              "description": "Radio with labels and tpd",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "r": {
+                    "type": "string",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "1",
+                        "title": "One"
+                      },
+                      {
+                        "type": "string",
+                        "const": "2",
+                        "title": "Two"
+                      },
+                      {
+                        "type": "string",
+                        "const": "3"
+                      },
+                      {
+                        "type": "string",
+                        "const": "4"
+                      }
+                    ],
+                    "enum": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ]
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            }
+          ],
+          "modelContextGetToolsError": null,
+          "formReflection": {
+            "toolname": {
+              "in": false,
+              "value": null
+            },
+            "toolName": {
+              "in": false,
+              "value": null
+            },
+            "tooldescription": {
+              "in": false,
+              "value": null
+            },
+            "toolDescription": {
+              "in": false,
+              "value": null
+            },
+            "toolautosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutoSubmit": {
+              "in": false,
+              "value": null
+            },
+            "autosubmit": {
+              "in": false,
+              "value": null
+            }
+          },
+          "autoSubmitFormReflection": {
+            "toolautosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutoSubmit": {
+              "in": false,
+              "value": null
+            },
+            "autosubmit": {
+              "in": false,
+              "value": null
+            }
+          },
+          "formProtoKeys": [
+            "autocomplete"
+          ],
+          "inputReflection": {
+            "toolparamdescription": {
+              "in": false,
+              "value": null
+            },
+            "toolParamDescription": {
+              "in": false,
+              "value": null
+            },
+            "toolparamtitle": {
+              "in": false,
+              "value": null
+            },
+            "toolParamTitle": {
+              "in": false,
+              "value": null
+            },
+            "toolparamname": {
+              "in": false,
+              "value": null
+            },
+            "toolParamName": {
+              "in": false,
+              "value": null
+            }
+          },
+          "inputProtoKeys": [],
+          "selectProtoKeys": [],
+          "textareaProtoKeys": []
+        },
+        "malformed": {
+          "documentModelContext": "object",
+          "navigatorModelContext": false,
+          "modelContextProtoKeys": [
+            "ontoolchange",
+            "executeTool",
+            "getTools",
+            "registerTool",
+            "constructor"
+          ],
+          "modelContextGetTools": [
+            {
+              "name": "",
+              "description": "empty toolname",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "emptydesc",
+              "description": "",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "nonameopt",
+              "description": "optional param missing name",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "named": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "nonamereq",
+              "description": "required param missing name",
+              "inputSchema": {
+                "type": "object",
+                "properties": {},
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            }
+          ],
+          "modelContextGetToolsError": null,
+          "formReflection": {
+            "toolname": {
+              "in": false,
+              "value": null
+            },
+            "toolName": {
+              "in": false,
+              "value": null
+            },
+            "tooldescription": {
+              "in": false,
+              "value": null
+            },
+            "toolDescription": {
+              "in": false,
+              "value": null
+            },
+            "toolautosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutoSubmit": {
+              "in": false,
+              "value": null
+            },
+            "autosubmit": {
+              "in": false,
+              "value": null
+            }
+          },
+          "autoSubmitFormReflection": {
+            "toolautosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutoSubmit": {
+              "in": false,
+              "value": null
+            },
+            "autosubmit": {
+              "in": false,
+              "value": null
+            }
+          },
+          "formProtoKeys": [
+            "autocomplete"
+          ],
+          "inputReflection": {
+            "toolparamdescription": {
+              "in": false,
+              "value": null
+            },
+            "toolParamDescription": {
+              "in": false,
+              "value": null
+            },
+            "toolparamtitle": {
+              "in": false,
+              "value": null
+            },
+            "toolParamTitle": {
+              "in": false,
+              "value": null
+            },
+            "toolparamname": {
+              "in": false,
+              "value": null
+            },
+            "toolParamName": {
+              "in": false,
+              "value": null
+            }
+          },
+          "inputProtoKeys": [],
+          "selectProtoKeys": [],
+          "textareaProtoKeys": []
+        }
+      }
+    },
+    "plus-declarative-flags": {
+      "flags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp,WebMCPDeclarativeFileInput,WebMCPFormAssociatedCustomElements",
+        "--enable-blink-features=WebMCP,WebMCPTesting,WebMCPDeclarativeFileInput,WebMCPFormAssociatedCustomElements"
+      ],
+      "enableResults": {
+        "matrix": {
+          "WebMCP.enable": {},
+          "Audits.enable": {}
+        },
+        "extra": {
+          "WebMCP.enable": {},
+          "Audits.enable": {}
+        }
+      },
+      "events": [
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "basic",
+                "description": "Basic field types",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string"
+                    },
+                    "n": {
+                      "type": "number",
+                      "minimum": 1,
+                      "maximum": 10,
+                      "multipleOf": 0.5
+                    },
+                    "em": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "q",
+                    "em"
+                  ]
+                },
+                "frameId": "CB2BE9CE2F24FE5F2B8B8F736E697426",
+                "backendNodeId": 6
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "selectenum",
+                "description": "Select and textarea",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "choice": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "a",
+                          "title": "Alpha"
+                        },
+                        {
+                          "type": "string",
+                          "const": "b",
+                          "title": "Beta"
+                        },
+                        {
+                          "type": "string",
+                          "const": "c",
+                          "title": "Gamma"
+                        }
+                      ],
+                      "enum": [
+                        "a",
+                        "b",
+                        "c"
+                      ]
+                    },
+                    "multi": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "const": "x",
+                            "title": "X"
+                          },
+                          {
+                            "type": "string",
+                            "const": "y",
+                            "title": "Y"
+                          }
+                        ],
+                        "enum": [
+                          "x",
+                          "y"
+                        ]
+                      },
+                      "uniqueItems": true
+                    },
+                    "notes": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "notes"
+                  ]
+                },
+                "frameId": "CB2BE9CE2F24FE5F2B8B8F736E697426",
+                "backendNodeId": 10
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "radiogroup",
+                "description": "Radio group inside fieldset",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "size": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "s"
+                        },
+                        {
+                          "type": "string",
+                          "const": "m"
+                        },
+                        {
+                          "type": "string",
+                          "const": "l"
+                        }
+                      ],
+                      "enum": [
+                        "s",
+                        "m",
+                        "l"
+                      ]
+                    },
+                    "extra": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "size",
+                    "extra"
+                  ]
+                },
+                "frameId": "CB2BE9CE2F24FE5F2B8B8F736E697426",
+                "backendNodeId": 13
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "descattrs",
+                "description": "Parameter description attribute candidates",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "p1": {
+                      "type": "string",
+                      "description": "desc via toolparamdescription"
+                    },
+                    "p2": {
+                      "type": "string"
+                    },
+                    "p3": {
+                      "type": "string"
+                    },
+                    "p4": {
+                      "type": "string"
+                    },
+                    "p5": {
+                      "type": "string"
+                    },
+                    "p6": {
+                      "type": "string",
+                      "description": "tpd wins"
+                    },
+                    "p7": {
+                      "type": "string",
+                      "description": "wrapped label"
+                    },
+                    "p8": {
+                      "type": "string",
+                      "description": "label-by-for"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "CB2BE9CE2F24FE5F2B8B8F736E697426",
+                "backendNodeId": 18
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "autosub",
+                "description": "Autosubmit, no submit button",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "a": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "a"
+                  ]
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "CB2BE9CE2F24FE5F2B8B8F736E697426",
+                "backendNodeId": 20
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "nosubmit",
+                "description": "No submit, no autosubmit",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "a": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "CB2BE9CE2F24FE5F2B8B8F736E697426",
+                "backendNodeId": 22
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "types",
+                "description": "Many input types",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "pw": {
+                      "type": "string"
+                    },
+                    "d": {
+                      "type": "string",
+                      "format": "date",
+                      "description": "Dates MUST be provided in 'YYYY-MM-DD' format."
+                    },
+                    "r": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "multipleOf": 1
+                    },
+                    "f": {
+                      "type": "string"
+                    },
+                    "u": {
+                      "type": "string"
+                    },
+                    "t": {
+                      "type": "string"
+                    },
+                    "s": {
+                      "type": "string"
+                    },
+                    "c": {
+                      "type": "string",
+                      "format": "^#[0-9a-zA-Z]{6}$"
+                    },
+                    "dt": {
+                      "type": "string",
+                      "format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$"
+                    },
+                    "mo": {
+                      "type": "string",
+                      "format": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+                    },
+                    "wk": {
+                      "type": "string",
+                      "format": "^[0-9]{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$"
+                    },
+                    "tm": {
+                      "type": "string",
+                      "format": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+                    },
+                    "reqnum": {
+                      "type": "number",
+                      "multipleOf": 1
+                    }
+                  },
+                  "required": [
+                    "reqnum"
+                  ]
+                },
+                "frameId": "CB2BE9CE2F24FE5F2B8B8F736E697426",
+                "backendNodeId": 35
+              }
+            ]
+          }
+        },
+        {
+          "page": "matrix",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "withtitle",
+                "description": "Has tooltitle",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "tt": {
+                      "type": "string",
+                      "description": "tt desc"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "CB2BE9CE2F24FE5F2B8B8F736E697426",
+                "backendNodeId": 36
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "constraints",
+                "description": "String and numeric constraints",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "ml": {
+                      "type": "string",
+                      "description": "len param"
+                    },
+                    "def": {
+                      "type": "string",
+                      "description": "default param"
+                    },
+                    "nb": {
+                      "type": "number",
+                      "multipleOf": 1,
+                      "description": "bare number"
+                    },
+                    "ck": {
+                      "type": "boolean",
+                      "description": "checkbox no value"
+                    },
+                    "ta": {
+                      "type": "string",
+                      "description": "textarea len"
+                    },
+                    "reqsel": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "",
+                          "title": "pick"
+                        },
+                        {
+                          "type": "string",
+                          "const": "a",
+                          "title": "A"
+                        }
+                      ],
+                      "enum": [
+                        "",
+                        "a"
+                      ],
+                      "description": "required select"
+                    }
+                  },
+                  "required": [
+                    "reqsel"
+                  ]
+                },
+                "frameId": "0D41DA4105EC1267F5AEA2CA1698256D",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "radiolabels",
+                "description": "Radio with labels and tpd",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "r": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "1",
+                          "title": "One"
+                        },
+                        {
+                          "type": "string",
+                          "const": "2",
+                          "title": "Two"
+                        },
+                        {
+                          "type": "string",
+                          "const": "3"
+                        },
+                        {
+                          "type": "string",
+                          "const": "4"
+                        }
+                      ],
+                      "enum": [
+                        "1",
+                        "2",
+                        "3",
+                        "4"
+                      ]
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "0D41DA4105EC1267F5AEA2CA1698256D",
+                "backendNodeId": 4
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "datalist",
+                "description": "Datalist options",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "dl": {
+                      "type": "string",
+                      "description": "datalist param"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "0D41DA4105EC1267F5AEA2CA1698256D",
+                "backendNodeId": 5
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "outside",
+                "description": "Out-of-form association",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "external": {
+                      "type": "string",
+                      "description": "outside via form attr"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "0D41DA4105EC1267F5AEA2CA1698256D",
+                "backendNodeId": 6
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "face",
+                "description": "Form-associated custom element",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "plain": {
+                      "type": "string",
+                      "description": "sibling plain input"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "0D41DA4105EC1267F5AEA2CA1698256D",
+                "backendNodeId": 7
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "ckgroup",
+                "description": "Same-name checkbox group",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "fruit": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "const": "a"
+                          },
+                          {
+                            "type": "string",
+                            "const": "b"
+                          },
+                          {
+                            "type": "string",
+                            "const": "c"
+                          }
+                        ],
+                        "enum": [
+                          "a",
+                          "b",
+                          "c"
+                        ]
+                      },
+                      "uniqueItems": true
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "0D41DA4105EC1267F5AEA2CA1698256D",
+                "backendNodeId": 9
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "dupname",
+                "description": "Duplicate text name",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "string",
+                      "description": "ok field"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "0D41DA4105EC1267F5AEA2CA1698256D",
+                "backendNodeId": 10
+              }
+            ]
+          }
+        },
+        {
+          "page": "extra",
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "hiddenparams",
+                "description": "Hidden inputs",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "hv": {
+                      "type": "string",
+                      "description": "hidden described"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "0D41DA4105EC1267F5AEA2CA1698256D",
+                "backendNodeId": 11
+              }
+            ]
+          }
+        }
+      ],
+      "issues": [
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 2,
+                  "violatingNodeSelector": "INPUT [type=text=name=q=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "INPUT [type=number=name=n=min=1=max=10=step=0.5]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 4,
+                  "violatingNodeSelector": "INPUT [type=email=name=em=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 5,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=ok=value=yes]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 2,
+                  "violatingNodeSelector": "INPUT [type=text=name=q=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "INPUT [type=number=name=n=min=1=max=10=step=0.5]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 4,
+                  "violatingNodeSelector": "INPUT [type=email=name=em=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 5,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=ok=value=yes]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 7,
+                  "violatingNodeSelector": "SELECT [name=choice]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 8,
+                  "violatingNodeSelector": "SELECT [name=multi=multiple=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 9,
+                  "violatingNodeSelector": "TEXTAREA [name=notes=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 7,
+                  "violatingNodeSelector": "SELECT [name=choice]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 8,
+                  "violatingNodeSelector": "SELECT [name=multi=multiple=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 9,
+                  "violatingNodeSelector": "TEXTAREA [name=notes=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 11,
+                  "violatingNodeSelector": "INPUT [type=radio=name=size=value=s=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 12,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=extra=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 11,
+                  "violatingNodeSelector": "INPUT [type=radio=name=size=value=s=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 12,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=extra=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 14,
+                  "violatingNodeSelector": "INPUT [name=p2=title=desc via title]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 15,
+                  "violatingNodeSelector": "INPUT [name=p3=toolparamtitle=desc via toolparamtitle]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 16,
+                  "violatingNodeSelector": "INPUT [name=p4=aria-label=desc via aria-label]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 17,
+                  "violatingNodeSelector": "INPUT [name=p5=placeholder=desc via placeholder]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 14,
+                  "violatingNodeSelector": "INPUT [name=p2=title=desc via title]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 15,
+                  "violatingNodeSelector": "INPUT [name=p3=toolparamtitle=desc via toolparamtitle]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 16,
+                  "violatingNodeSelector": "INPUT [name=p4=aria-label=desc via aria-label]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 17,
+                  "violatingNodeSelector": "INPUT [name=p5=placeholder=desc via placeholder]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 19,
+                  "violatingNodeSelector": "INPUT [name=a=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 19,
+                  "violatingNodeSelector": "INPUT [name=a=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 21,
+                  "violatingNodeSelector": "INPUT [name=a]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 21,
+                  "violatingNodeSelector": "INPUT [name=a]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 23,
+                  "violatingNodeSelector": "INPUT [type=password=name=pw]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 24,
+                  "violatingNodeSelector": "INPUT [type=range=name=r=min=0=max=100]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 25,
+                  "violatingNodeSelector": "INPUT [type=file=name=f]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 26,
+                  "violatingNodeSelector": "INPUT [type=url=name=u]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 27,
+                  "violatingNodeSelector": "INPUT [type=tel=name=t]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 28,
+                  "violatingNodeSelector": "INPUT [type=search=name=s]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 29,
+                  "violatingNodeSelector": "INPUT [type=color=name=c]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 30,
+                  "violatingNodeSelector": "INPUT [type=datetime-local=name=dt]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 31,
+                  "violatingNodeSelector": "INPUT [type=month=name=mo]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 32,
+                  "violatingNodeSelector": "INPUT [type=week=name=wk]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 33,
+                  "violatingNodeSelector": "INPUT [type=time=name=tm]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 34,
+                  "violatingNodeSelector": "INPUT [type=number=name=reqnum=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 23,
+                  "violatingNodeSelector": "INPUT [type=password=name=pw]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 24,
+                  "violatingNodeSelector": "INPUT [type=range=name=r=min=0=max=100]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 25,
+                  "violatingNodeSelector": "INPUT [type=file=name=f]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 26,
+                  "violatingNodeSelector": "INPUT [type=url=name=u]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 27,
+                  "violatingNodeSelector": "INPUT [type=tel=name=t]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 28,
+                  "violatingNodeSelector": "INPUT [type=search=name=s]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 29,
+                  "violatingNodeSelector": "INPUT [type=color=name=c]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 30,
+                  "violatingNodeSelector": "INPUT [type=datetime-local=name=dt]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 31,
+                  "violatingNodeSelector": "INPUT [type=month=name=mo]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 32,
+                  "violatingNodeSelector": "INPUT [type=week=name=wk]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 33,
+                  "violatingNodeSelector": "INPUT [type=time=name=tm]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "matrix",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 34,
+                  "violatingNodeSelector": "INPUT [type=number=name=reqnum=required=]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "extra",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "INPUT [type=radio=name=r=value=1=id=r1]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "extra",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 3,
+                  "violatingNodeSelector": "INPUT [type=radio=name=r=value=1=id=r1]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "extra",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 8,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=fruit=value=a=toolparamdescription=fruits]"
+                }
+              }
+            }
+          }
+        },
+        {
+          "page": "extra",
+          "payload": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextParameterMissingTitleAndDescription",
+                  "violatingNodeId": 8,
+                  "violatingNodeSelector": "INPUT [type=checkbox=name=fruit=value=a=toolparamdescription=fruits]"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "facts": {
+        "matrix": {
+          "documentModelContext": "object",
+          "navigatorModelContext": false,
+          "modelContextProtoKeys": [
+            "ontoolchange",
+            "executeTool",
+            "getTools",
+            "registerTool",
+            "constructor"
+          ],
+          "modelContextGetTools": [
+            {
+              "name": "autosub",
+              "description": "Autosubmit, no submit button",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "a": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "a"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "basic",
+              "description": "Basic field types",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "q": {
+                    "type": "string"
+                  },
+                  "n": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 10,
+                    "multipleOf": 0.5
+                  },
+                  "em": {
+                    "type": "string"
+                  },
+                  "ok": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "q",
+                  "em"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "descattrs",
+              "description": "Parameter description attribute candidates",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "p1": {
+                    "type": "string",
+                    "description": "desc via toolparamdescription"
+                  },
+                  "p2": {
+                    "type": "string"
+                  },
+                  "p3": {
+                    "type": "string"
+                  },
+                  "p4": {
+                    "type": "string"
+                  },
+                  "p5": {
+                    "type": "string"
+                  },
+                  "p6": {
+                    "type": "string",
+                    "description": "tpd wins"
+                  },
+                  "p7": {
+                    "type": "string",
+                    "description": "wrapped label"
+                  },
+                  "p8": {
+                    "type": "string",
+                    "description": "label-by-for"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "nosubmit",
+              "description": "No submit, no autosubmit",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "a": {
+                    "type": "string"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "radiogroup",
+              "description": "Radio group inside fieldset",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "size": {
+                    "type": "string",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "s"
+                      },
+                      {
+                        "type": "string",
+                        "const": "m"
+                      },
+                      {
+                        "type": "string",
+                        "const": "l"
+                      }
+                    ],
+                    "enum": [
+                      "s",
+                      "m",
+                      "l"
+                    ]
+                  },
+                  "extra": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "size",
+                  "extra"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "selectenum",
+              "description": "Select and textarea",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "choice": {
+                    "type": "string",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "a",
+                        "title": "Alpha"
+                      },
+                      {
+                        "type": "string",
+                        "const": "b",
+                        "title": "Beta"
+                      },
+                      {
+                        "type": "string",
+                        "const": "c",
+                        "title": "Gamma"
+                      }
+                    ],
+                    "enum": [
+                      "a",
+                      "b",
+                      "c"
+                    ]
+                  },
+                  "multi": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "x",
+                          "title": "X"
+                        },
+                        {
+                          "type": "string",
+                          "const": "y",
+                          "title": "Y"
+                        }
+                      ],
+                      "enum": [
+                        "x",
+                        "y"
+                      ]
+                    },
+                    "uniqueItems": true
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "notes"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "types",
+              "description": "Many input types",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "pw": {
+                    "type": "string"
+                  },
+                  "d": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Dates MUST be provided in 'YYYY-MM-DD' format."
+                  },
+                  "r": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "multipleOf": 1
+                  },
+                  "f": {
+                    "type": "string"
+                  },
+                  "u": {
+                    "type": "string"
+                  },
+                  "t": {
+                    "type": "string"
+                  },
+                  "s": {
+                    "type": "string"
+                  },
+                  "c": {
+                    "type": "string",
+                    "format": "^#[0-9a-zA-Z]{6}$"
+                  },
+                  "dt": {
+                    "type": "string",
+                    "format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$"
+                  },
+                  "mo": {
+                    "type": "string",
+                    "format": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+                  },
+                  "wk": {
+                    "type": "string",
+                    "format": "^[0-9]{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$"
+                  },
+                  "tm": {
+                    "type": "string",
+                    "format": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+                  },
+                  "reqnum": {
+                    "type": "number",
+                    "multipleOf": 1
+                  }
+                },
+                "required": [
+                  "reqnum"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "withtitle",
+              "description": "Has tooltitle",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "tt": {
+                    "type": "string",
+                    "description": "tt desc"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            }
+          ],
+          "modelContextGetToolsError": null,
+          "formReflection": {
+            "toolname": {
+              "in": false,
+              "value": null
+            },
+            "toolName": {
+              "in": false,
+              "value": null
+            },
+            "tooldescription": {
+              "in": false,
+              "value": null
+            },
+            "toolDescription": {
+              "in": false,
+              "value": null
+            },
+            "toolautosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutoSubmit": {
+              "in": false,
+              "value": null
+            },
+            "autosubmit": {
+              "in": false,
+              "value": null
+            }
+          },
+          "autoSubmitFormReflection": {
+            "toolautosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutoSubmit": {
+              "in": false,
+              "value": null
+            },
+            "autosubmit": {
+              "in": false,
+              "value": null
+            }
+          },
+          "formProtoKeys": [
+            "autocomplete"
+          ],
+          "inputReflection": {
+            "toolparamdescription": {
+              "in": false,
+              "value": null
+            },
+            "toolParamDescription": {
+              "in": false,
+              "value": null
+            },
+            "toolparamtitle": {
+              "in": false,
+              "value": null
+            },
+            "toolParamTitle": {
+              "in": false,
+              "value": null
+            },
+            "toolparamname": {
+              "in": false,
+              "value": null
+            },
+            "toolParamName": {
+              "in": false,
+              "value": null
+            }
+          },
+          "inputProtoKeys": [],
+          "selectProtoKeys": [],
+          "textareaProtoKeys": []
+        },
+        "extra": {
+          "documentModelContext": "object",
+          "navigatorModelContext": false,
+          "modelContextProtoKeys": [
+            "ontoolchange",
+            "executeTool",
+            "getTools",
+            "registerTool",
+            "constructor"
+          ],
+          "modelContextGetTools": [
+            {
+              "name": "ckgroup",
+              "description": "Same-name checkbox group",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "fruit": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "a"
+                        },
+                        {
+                          "type": "string",
+                          "const": "b"
+                        },
+                        {
+                          "type": "string",
+                          "const": "c"
+                        }
+                      ],
+                      "enum": [
+                        "a",
+                        "b",
+                        "c"
+                      ]
+                    },
+                    "uniqueItems": true
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "constraints",
+              "description": "String and numeric constraints",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "ml": {
+                    "type": "string",
+                    "description": "len param"
+                  },
+                  "def": {
+                    "type": "string",
+                    "description": "default param"
+                  },
+                  "nb": {
+                    "type": "number",
+                    "multipleOf": 1,
+                    "description": "bare number"
+                  },
+                  "ck": {
+                    "type": "boolean",
+                    "description": "checkbox no value"
+                  },
+                  "ta": {
+                    "type": "string",
+                    "description": "textarea len"
+                  },
+                  "reqsel": {
+                    "type": "string",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "",
+                        "title": "pick"
+                      },
+                      {
+                        "type": "string",
+                        "const": "a",
+                        "title": "A"
+                      }
+                    ],
+                    "enum": [
+                      "",
+                      "a"
+                    ],
+                    "description": "required select"
+                  }
+                },
+                "required": [
+                  "reqsel"
+                ]
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "datalist",
+              "description": "Datalist options",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "dl": {
+                    "type": "string",
+                    "description": "datalist param"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "dupname",
+              "description": "Duplicate text name",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "ok": {
+                    "type": "string",
+                    "description": "ok field"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "face",
+              "description": "Form-associated custom element",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "plain": {
+                    "type": "string",
+                    "description": "sibling plain input"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "hiddenparams",
+              "description": "Hidden inputs",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "hv": {
+                    "type": "string",
+                    "description": "hidden described"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "outside",
+              "description": "Out-of-form association",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "external": {
+                    "type": "string",
+                    "description": "outside via form attr"
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            },
+            {
+              "name": "radiolabels",
+              "description": "Radio with labels and tpd",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "r": {
+                    "type": "string",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "1",
+                        "title": "One"
+                      },
+                      {
+                        "type": "string",
+                        "const": "2",
+                        "title": "Two"
+                      },
+                      {
+                        "type": "string",
+                        "const": "3"
+                      },
+                      {
+                        "type": "string",
+                        "const": "4"
+                      }
+                    ],
+                    "enum": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ]
+                  }
+                },
+                "required": []
+              },
+              "inputSchemaSerializedAs": "string",
+              "annotations": null,
+              "protoKeys": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ],
+              "ownKeys": [
+                "description",
+                "inputSchema",
+                "name",
+                "origin",
+                "title",
+                "window"
+              ]
+            }
+          ],
+          "modelContextGetToolsError": null,
+          "formReflection": {
+            "toolname": {
+              "in": false,
+              "value": null
+            },
+            "toolName": {
+              "in": false,
+              "value": null
+            },
+            "tooldescription": {
+              "in": false,
+              "value": null
+            },
+            "toolDescription": {
+              "in": false,
+              "value": null
+            },
+            "toolautosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutoSubmit": {
+              "in": false,
+              "value": null
+            },
+            "autosubmit": {
+              "in": false,
+              "value": null
+            }
+          },
+          "autoSubmitFormReflection": {
+            "toolautosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutosubmit": {
+              "in": false,
+              "value": null
+            },
+            "toolAutoSubmit": {
+              "in": false,
+              "value": null
+            },
+            "autosubmit": {
+              "in": false,
+              "value": null
+            }
+          },
+          "formProtoKeys": [
+            "autocomplete"
+          ],
+          "inputReflection": {
+            "toolparamdescription": {
+              "in": false,
+              "value": null
+            },
+            "toolParamDescription": {
+              "in": false,
+              "value": null
+            },
+            "toolparamtitle": {
+              "in": false,
+              "value": null
+            },
+            "toolParamTitle": {
+              "in": false,
+              "value": null
+            },
+            "toolparamname": {
+              "in": false,
+              "value": null
+            },
+            "toolParamName": {
+              "in": false,
+              "value": null
+            }
+          },
+          "inputProtoKeys": [],
+          "selectProtoKeys": [],
+          "textareaProtoKeys": []
+        }
+      }
+    }
+  },
+  "binaryStringsNote": "strings -n6 /usr/lib/chromium/chromium | grep -i toolparam => toolparamdescription only; no toolparamtitle"
+}

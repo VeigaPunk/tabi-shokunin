@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>webmcp frame parent</title></head>
+<body>
+<h1>frame-parent</h1>
+<iframe id="child" src="frame-child.html"></iframe>
+<script>
+window.__webmcpFixture = {
+  id: 'frame-parent',
+  expectedTools: [{
+    name: 'childSearch',
+    description: 'Tool declared inside a same-origin iframe',
+    inputSchema: {
+      type: 'object',
+      properties: { q: { type: 'string', description: 'Query' } },
+      required: []
+    },
+    frame: 'child'
+  }],
+  actions: {},
+  actionOrder: [],
+  expectedRemoved: []
+};
+</script>
+</body>
+</html>

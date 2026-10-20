@@ -1,0 +1,54 @@
+{
+  "schema": "tabi-round16-runtime-pin-v1",
+  "round": 16,
+  "capturedAt": "2026-10-20",
+  "host": "linux-x64 (Arch Linux, kernel 7.2.11-arch1-1)",
+  "commands": [
+    {
+      "argv": ["/usr/bin/chromium", "--version"],
+      "exit": 0,
+      "stdout": "Chromium 154.0.8037.97 Arch Linux"
+    },
+    {
+      "argv": ["sha256sum", "/usr/lib/chromium/chromium"],
+      "exit": 0,
+      "stdout": "95b17db7512c34bf5d78a0d55e0e49719725c73736c47eb0a7a831553c4b330a  /usr/lib/chromium/chromium"
+    },
+    {
+      "argv": ["pacman", "-Qi", "chromium"],
+      "exit": 0,
+      "stdoutFields": {
+        "Version": "154.0.8037.97-1",
+        "Build Date": "Fri 09 Oct 2026 07:41:57 AM -03"
+      },
+      "note": "read-only query; no transaction performed (pacman transactions paused host-wide 2026-10-20)"
+    },
+    {
+      "argv": ["node", "--version"],
+      "exit": 0,
+      "stdout": "v24.21.0"
+    },
+    {
+      "argv": ["npm", "root", "-g"],
+      "exit": 0,
+      "stdout": "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules"
+    }
+  ],
+  "packages": {
+    "playwright": {
+      "version": "1.64.0",
+      "packageJson": "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright/package.json"
+    },
+    "playwright-core": {
+      "version": "1.64.0",
+      "packageJson": "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright/node_modules/playwright-core/package.json",
+      "note": "nested under playwright, not a top-level global package"
+    }
+  },
+  "bundledChromium": {
+    "path": "/home/vgpnk/.cache/ms-playwright/chromium-1248",
+    "exists": true,
+    "note": "Playwright's own bundled chromium build; NOT used by round-16 harness, which launches /usr/bin/chromium (system 154.0.8037.97). Sibling entries chromium_headless_shell-1248 and ffmpeg-1013 also present."
+  },
+  "shapeOnly": "binary paths/digests and package versions only; no browser profile contents read or copied"
+}

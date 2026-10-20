@@ -1,0 +1,2094 @@
+{
+  "schema": "tabi-round16-webmcp-v1",
+  "verdict": "pass",
+  "generatedAt": "2026-10-20T14:48:16.345Z",
+  "producer": {
+    "path": "scripts/webmcp-loopback-round16.mjs",
+    "sha256": "961874e48f608983ddde31a8b7800ec1bb22616bea36b610677d1e916f8e2be1"
+  },
+  "producerSha256": "961874e48f608983ddde31a8b7800ec1bb22616bea36b610677d1e916f8e2be1",
+  "runtime": {
+    "observed": {
+      "chromium": {
+        "launchPath": "/usr/bin/chromium",
+        "launchSha256": "eaed39c36bdf6ff6ff23f9f5215aaab017e59723b96f27f7fcd5e0be833a172b",
+        "realExecutable": null,
+        "realExecutableSha256": null,
+        "product": "Chrome/154.0.8037.97",
+        "version": "Chrome/154.0.8037.97",
+        "versionSource": "CDP Browser.getVersion on flagged run"
+      },
+      "playwright": "1.64.0",
+      "playwrightDir": "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright",
+      "node": "24.21.0"
+    },
+    "pinned": {
+      "note": "pin values live in corpus/evidence/round-16/webmcp/runtime-pin.json (peer-owned); this harness does not copy them",
+      "requiredPlaywright": "1.64.0"
+    }
+  },
+  "runs": [
+    {
+      "label": "flagged",
+      "launchedArgs": [
+        "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ],
+      "pid": null,
+      "effectiveArgv": null,
+      "webmcpArgvTokens": [],
+      "realExecutable": null,
+      "version": "Chrome/154.0.8037.97"
+    },
+    {
+      "label": "flag-off",
+      "launchedArgs": [
+        "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1"
+      ],
+      "pid": null,
+      "effectiveArgv": null,
+      "webmcpArgvTokens": [],
+      "realExecutable": null,
+      "version": "Chrome/154.0.8037.97"
+    },
+    {
+      "label": "domain-disabled",
+      "launchedArgs": [
+        "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+        "--enable-blink-features=WebMCP",
+        "--disable-features=DevToolsWebMCPSupport"
+      ],
+      "pid": null,
+      "effectiveArgv": null,
+      "webmcpArgvTokens": [],
+      "realExecutable": null,
+      "version": "Chrome/154.0.8037.97"
+    }
+  ],
+  "flags": {
+    "enabled": [
+      "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting"
+    ],
+    "controlArgs": [],
+    "domainDisabledArgs": [
+      "--enable-blink-features=WebMCP",
+      "--disable-features=DevToolsWebMCPSupport"
+    ],
+    "browserArgsAll": [
+      "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1"
+    ],
+    "enableSemantics": "WebMCP.enable result is domain-presence evidence only; it returns {} even without flags"
+  },
+  "protocolDomain": {
+    "ok": true,
+    "source": "live http://127.0.0.1:43757/json/protocol",
+    "webmcp": {
+      "domain": "WebMCP",
+      "experimental": true,
+      "dependencies": [
+        "Runtime",
+        "Page",
+        "DOM"
+      ],
+      "types": [
+        {
+          "id": "Annotation",
+          "description": "Tool annotations",
+          "type": "object",
+          "properties": [
+            {
+              "name": "readOnly",
+              "description": "A hint indicating that the tool does not modify any state.",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "untrustedContent",
+              "description": "A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "consequential",
+              "description": "A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "autosubmit",
+              "description": "If the declarative tool was declared with the autosubmit attribute.",
+              "optional": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        {
+          "id": "InvocationStatus",
+          "description": "Represents the status of a tool invocation.",
+          "type": "string",
+          "enum": [
+            "Completed",
+            "Canceled",
+            "Error"
+          ]
+        },
+        {
+          "id": "Tool",
+          "description": "Definition of a tool that can be invoked.",
+          "type": "object",
+          "properties": [
+            {
+              "name": "name",
+              "description": "Tool name.",
+              "type": "string"
+            },
+            {
+              "name": "description",
+              "description": "Tool description.",
+              "type": "string"
+            },
+            {
+              "name": "inputSchema",
+              "description": "Schema for the tool's input parameters.",
+              "optional": true,
+              "type": "object"
+            },
+            {
+              "name": "annotations",
+              "description": "Optional annotations for the tool.",
+              "optional": true,
+              "$ref": "Annotation"
+            },
+            {
+              "name": "frameId",
+              "description": "Frame identifier associated with the tool registration.",
+              "$ref": "Page.FrameId"
+            },
+            {
+              "name": "backendNodeId",
+              "description": "Optional node ID for declarative tools.",
+              "optional": true,
+              "$ref": "DOM.BackendNodeId"
+            },
+            {
+              "name": "stackTrace",
+              "description": "The stack trace at the time of the registration.",
+              "optional": true,
+              "$ref": "Runtime.StackTrace"
+            }
+          ]
+        },
+        {
+          "id": "RemovedTool",
+          "description": "Definition of a tool that was removed.",
+          "type": "object",
+          "properties": [
+            {
+              "name": "name",
+              "description": "Tool name.",
+              "type": "string"
+            },
+            {
+              "name": "frameId",
+              "description": "Frame identifier associated with the tool registration.",
+              "$ref": "Page.FrameId"
+            }
+          ]
+        }
+      ],
+      "commands": [
+        {
+          "name": "enable",
+          "description": "Enables the WebMCP domain, allowing events to be sent. Enabling the domain will trigger a toolsAdded event for\nall currently registered tools."
+        },
+        {
+          "name": "disable",
+          "description": "Disables the WebMCP domain."
+        },
+        {
+          "name": "invokeTool",
+          "description": "Invokes a registered tool.",
+          "parameters": [
+            {
+              "name": "frameId",
+              "description": "Frame in which to invoke the tool.",
+              "$ref": "Page.FrameId"
+            },
+            {
+              "name": "toolName",
+              "description": "Name of the tool to invoke.",
+              "type": "string"
+            },
+            {
+              "name": "input",
+              "description": "Input parameters for the tool, matching the tool's inputSchema.",
+              "type": "object"
+            }
+          ],
+          "returns": [
+            {
+              "name": "invocationId",
+              "description": "Unique identifier for this invocation. Response is sent before tool events.",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "cancelInvocation",
+          "description": "Cancels a pending tool invocation.",
+          "parameters": [
+            {
+              "name": "invocationId",
+              "description": "Invocation identifier to cancel.",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "toolsAdded",
+          "description": "Event fired when new tools are added.",
+          "parameters": [
+            {
+              "name": "tools",
+              "description": "Array of tools that were added.",
+              "type": "array",
+              "items": {
+                "$ref": "Tool"
+              }
+            }
+          ]
+        },
+        {
+          "name": "toolsRemoved",
+          "description": "Event fired when tools are removed.",
+          "parameters": [
+            {
+              "name": "tools",
+              "description": "Array of tools that were removed.",
+              "type": "array",
+              "items": {
+                "$ref": "RemovedTool"
+              }
+            }
+          ]
+        },
+        {
+          "name": "toolInvoked",
+          "description": "Event fired when a tool invocation starts.",
+          "parameters": [
+            {
+              "name": "toolName",
+              "description": "Name of the tool to invoke.",
+              "type": "string"
+            },
+            {
+              "name": "frameId",
+              "description": "Frame id",
+              "$ref": "Page.FrameId"
+            },
+            {
+              "name": "invocationId",
+              "description": "Invocation identifier.",
+              "type": "string"
+            },
+            {
+              "name": "input",
+              "description": "The input parameters used for the invocation.",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "toolResponded",
+          "description": "Event fired when a tool invocation completes or fails.",
+          "parameters": [
+            {
+              "name": "invocationId",
+              "description": "Invocation identifier.",
+              "type": "string"
+            },
+            {
+              "name": "status",
+              "description": "Status of the invocation.",
+              "$ref": "InvocationStatus"
+            },
+            {
+              "name": "output",
+              "description": "Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.\nNote: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.",
+              "optional": true,
+              "type": "any"
+            },
+            {
+              "name": "errorText",
+              "description": "Error text for protocol users.",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "exception",
+              "description": "The exception object, if the javascript tool threw an error>",
+              "optional": true,
+              "$ref": "Runtime.RemoteObject"
+            }
+          ]
+        }
+      ]
+    },
+    "protocolSha256": "126cf5fa9b3d6e189029d6af6695b6d029c2ca372277081804b9c82ce7865e7d",
+    "committed": {
+      "path": "corpus/evidence/round-16/webmcp/protocol-domain.json",
+      "sha256": "26d90b7222797f3b1b468d672f3a4fc7c062ea2fabd589b654482141bcb7459e",
+      "webmcpDomain": {
+        "domain": "WebMCP",
+        "experimental": true,
+        "dependencies": [
+          "Runtime",
+          "Page",
+          "DOM"
+        ],
+        "types": [
+          {
+            "id": "Annotation",
+            "description": "Tool annotations",
+            "type": "object",
+            "properties": [
+              {
+                "name": "readOnly",
+                "description": "A hint indicating that the tool does not modify any state.",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "untrustedContent",
+                "description": "A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "consequential",
+                "description": "A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "autosubmit",
+                "description": "If the declarative tool was declared with the autosubmit attribute.",
+                "optional": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          {
+            "id": "InvocationStatus",
+            "description": "Represents the status of a tool invocation.",
+            "type": "string",
+            "enum": [
+              "Completed",
+              "Canceled",
+              "Error"
+            ]
+          },
+          {
+            "id": "Tool",
+            "description": "Definition of a tool that can be invoked.",
+            "type": "object",
+            "properties": [
+              {
+                "name": "name",
+                "description": "Tool name.",
+                "type": "string"
+              },
+              {
+                "name": "description",
+                "description": "Tool description.",
+                "type": "string"
+              },
+              {
+                "name": "inputSchema",
+                "description": "Schema for the tool's input parameters.",
+                "optional": true,
+                "type": "object"
+              },
+              {
+                "name": "annotations",
+                "description": "Optional annotations for the tool.",
+                "optional": true,
+                "$ref": "Annotation"
+              },
+              {
+                "name": "frameId",
+                "description": "Frame identifier associated with the tool registration.",
+                "$ref": "Page.FrameId"
+              },
+              {
+                "name": "backendNodeId",
+                "description": "Optional node ID for declarative tools.",
+                "optional": true,
+                "$ref": "DOM.BackendNodeId"
+              },
+              {
+                "name": "stackTrace",
+                "description": "The stack trace at the time of the registration.",
+                "optional": true,
+                "$ref": "Runtime.StackTrace"
+              }
+            ]
+          },
+          {
+            "id": "RemovedTool",
+            "description": "Definition of a tool that was removed.",
+            "type": "object",
+            "properties": [
+              {
+                "name": "name",
+                "description": "Tool name.",
+                "type": "string"
+              },
+              {
+                "name": "frameId",
+                "description": "Frame identifier associated with the tool registration.",
+                "$ref": "Page.FrameId"
+              }
+            ]
+          }
+        ],
+        "commands": [
+          {
+            "name": "enable",
+            "description": "Enables the WebMCP domain, allowing events to be sent. Enabling the domain will trigger a toolsAdded event for\nall currently registered tools."
+          },
+          {
+            "name": "disable",
+            "description": "Disables the WebMCP domain."
+          },
+          {
+            "name": "invokeTool",
+            "description": "Invokes a registered tool.",
+            "parameters": [
+              {
+                "name": "frameId",
+                "description": "Frame in which to invoke the tool.",
+                "$ref": "Page.FrameId"
+              },
+              {
+                "name": "toolName",
+                "description": "Name of the tool to invoke.",
+                "type": "string"
+              },
+              {
+                "name": "input",
+                "description": "Input parameters for the tool, matching the tool's inputSchema.",
+                "type": "object"
+              }
+            ],
+            "returns": [
+              {
+                "name": "invocationId",
+                "description": "Unique identifier for this invocation. Response is sent before tool events.",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "cancelInvocation",
+            "description": "Cancels a pending tool invocation.",
+            "parameters": [
+              {
+                "name": "invocationId",
+                "description": "Invocation identifier to cancel.",
+                "type": "string"
+              }
+            ]
+          }
+        ],
+        "events": [
+          {
+            "name": "toolsAdded",
+            "description": "Event fired when new tools are added.",
+            "parameters": [
+              {
+                "name": "tools",
+                "description": "Array of tools that were added.",
+                "type": "array",
+                "items": {
+                  "$ref": "Tool"
+                }
+              }
+            ]
+          },
+          {
+            "name": "toolsRemoved",
+            "description": "Event fired when tools are removed.",
+            "parameters": [
+              {
+                "name": "tools",
+                "description": "Array of tools that were removed.",
+                "type": "array",
+                "items": {
+                  "$ref": "RemovedTool"
+                }
+              }
+            ]
+          },
+          {
+            "name": "toolInvoked",
+            "description": "Event fired when a tool invocation starts.",
+            "parameters": [
+              {
+                "name": "toolName",
+                "description": "Name of the tool to invoke.",
+                "type": "string"
+              },
+              {
+                "name": "frameId",
+                "description": "Frame id",
+                "$ref": "Page.FrameId"
+              },
+              {
+                "name": "invocationId",
+                "description": "Invocation identifier.",
+                "type": "string"
+              },
+              {
+                "name": "input",
+                "description": "The input parameters used for the invocation.",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "toolResponded",
+            "description": "Event fired when a tool invocation completes or fails.",
+            "parameters": [
+              {
+                "name": "invocationId",
+                "description": "Invocation identifier.",
+                "type": "string"
+              },
+              {
+                "name": "status",
+                "description": "Status of the invocation.",
+                "$ref": "InvocationStatus"
+              },
+              {
+                "name": "output",
+                "description": "Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.\nNote: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.",
+                "optional": true,
+                "type": "any"
+              },
+              {
+                "name": "errorText",
+                "description": "Error text for protocol users.",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "name": "exception",
+                "description": "The exception object, if the javascript tool threw an error>",
+                "optional": true,
+                "$ref": "Runtime.RemoteObject"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "comparison": {
+      "webmcpDomainIdentical": true,
+      "liveSha256": null,
+      "note": "deep-equal of WebMCP domain objects, not bytes"
+    }
+  },
+  "safety": {
+    "loopbackOnly": true,
+    "claimScope": "page-level exact-origin confinement; no claim of global host no-egress",
+    "toolInvocation": "none — page-declared tool payloads are untrusted data; no invokeTool/cancelInvocation/executeTool/submit",
+    "serviceWorkers": "block",
+    "webSockets": "denied via context.routeWebSocket",
+    "hostResolverRules": "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+    "chromiumSandbox": true,
+    "minimalEnv": "HOME/XDG_CONFIG_HOME redirected to temp dir (isolates Arch chromium-flags.conf)",
+    "dataNavigationExemption": "top-level data: navigations admitted for the data-url divergence case only"
+  },
+  "server": {
+    "bind": "127.0.0.1",
+    "port": 43245,
+    "served": [
+      {
+        "path": "declarative-form.html",
+        "bytes": 1100
+      },
+      {
+        "path": "declarative-form.html",
+        "bytes": 1100
+      },
+      {
+        "path": "declarative-form.html",
+        "bytes": 1100
+      },
+      {
+        "path": "imperative.html",
+        "bytes": 1490
+      },
+      {
+        "path": "lifecycle.html",
+        "bytes": 2657
+      },
+      {
+        "path": "declarative-form.html",
+        "bytes": 1100
+      },
+      {
+        "path": "plain.html",
+        "bytes": 325
+      },
+      {
+        "path": "declarative-missing-name.html",
+        "bytes": 433
+      },
+      {
+        "path": "plain.html",
+        "bytes": 325
+      },
+      {
+        "path": "frame-parent.html",
+        "bytes": 583
+      },
+      {
+        "path": "frame-child.html",
+        "bytes": 860
+      },
+      {
+        "path": "plain.html",
+        "bytes": 325
+      }
+    ],
+    "deniedPaths": []
+  },
+  "loopback": {
+    "externalRequestsBlocked": [],
+    "externalRequestCount": 0
+  },
+  "fixtures": [
+    {
+      "file": "declarative-form.html",
+      "sha256": "7816ea656af94966989f51eb126d3bde0f8c44b7a88bd3da35fdff0b4568350e",
+      "bytes": 1100
+    },
+    {
+      "file": "declarative-missing-name.html",
+      "sha256": "12e74e989145661d9efeabef14189d1142cf99eb5f8e231c636a92ab6424ba31",
+      "bytes": 433
+    },
+    {
+      "file": "frame-child.html",
+      "sha256": "a4e060ada0e804aa4ab7220269b813ad4018365f364645118d88ba742e7727b6",
+      "bytes": 860
+    },
+    {
+      "file": "frame-parent.html",
+      "sha256": "5b51e2700c73ab922e6573dce1e0aae1265d78d5fd2d89beeead354e91a96eb3",
+      "bytes": 583
+    },
+    {
+      "file": "imperative.html",
+      "sha256": "568824181b4afb23d1ff039635b00c241cbe757dddfba7c5ad75cfe5c7112aa8",
+      "bytes": 1490
+    },
+    {
+      "file": "lifecycle.html",
+      "sha256": "7be6268a8b80d3a435d13ca12fd43b0a0ab1703b1b3981e289b443ac51eed938",
+      "bytes": 2657
+    },
+    {
+      "file": "plain.html",
+      "sha256": "537793b5d4ac11f7c61f5bc526f506abb4692876f3d50672085b0addb0a7748d",
+      "bytes": 325
+    }
+  ],
+  "cases": [
+    {
+      "id": "flags-off-negative-control",
+      "name": "flags-off-negative-control",
+      "fixture": "corpus/evidence/round-16/webmcp/fixtures/declarative-form.html",
+      "fixtureFile": "declarative-form.html",
+      "fixtureSha256": "7816ea656af94966989f51eb126d3bde0f8c44b7a88bd3da35fdff0b4568350e",
+      "status": "pass",
+      "expected": {
+        "webmcpEnable": "result object (domain presence only — enable returns {} even without flags)",
+        "documentModelContext": "undefined",
+        "navigatorModelContext": "absent",
+        "toolsAdded": 0,
+        "webmcpArgvTokens": 0
+      },
+      "expectedProvenance": "harness-specified (PLAN C2 flag-off contract)",
+      "divergence": false,
+      "actual": {
+        "webmcpEnableResult": {},
+        "enableSeq": [
+          "WebMCP.enable",
+          "Audits.enable",
+          "Page.enable"
+        ],
+        "documentModelContext": "undefined",
+        "navigatorModelContext": false,
+        "isSecureContext": true,
+        "effectiveArgv": null,
+        "webmcpArgvTokens": [],
+        "issues": []
+      },
+      "toolsAdded": [],
+      "events": [],
+      "eventLog": [],
+      "detail": "flags off: no document.modelContext, no toolsAdded, effective argv clean (pid null)",
+      "comparison": null,
+      "durationMs": 1720,
+      "control": "flag-off"
+    },
+    {
+      "id": "devtools-domain-disabled",
+      "name": "devtools-domain-disabled",
+      "fixture": "corpus/evidence/round-16/webmcp/fixtures/declarative-form.html",
+      "fixtureFile": "declarative-form.html",
+      "fixtureSha256": "7816ea656af94966989f51eb126d3bde0f8c44b7a88bd3da35fdff0b4568350e",
+      "status": "pass",
+      "expected": {
+        "documentModelContext": "object (page API present via blink WebMCP)",
+        "webmcpEnable": "error 'wasn't found' (DevToolsWebMCPSupport registers the CDP domain)",
+        "toolsAdded": 0
+      },
+      "expectedProvenance": "harness-specified (WebmcpProbeFlags ablation, .ufo/waves/round-16/probes/WebmcpProbeFlags.json)",
+      "divergence": false,
+      "actual": {
+        "documentModelContext": "object",
+        "webmcpEnableResult": {
+          "error": "cdpSession.send: Protocol error (WebMCP.enable): 'WebMCP.enable' wasn't found"
+        },
+        "launchedArgs": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP",
+          "--disable-features=DevToolsWebMCPSupport"
+        ],
+        "issues": []
+      },
+      "toolsAdded": [],
+      "events": [],
+      "eventLog": [],
+      "detail": "DevToolsWebMCPSupport disabled: page API present, CDP domain absent (cdpSession.send: Protocol error (WebMCP.enable): 'WebMCP.enable' wasn't found)",
+      "comparison": null,
+      "durationMs": 1713,
+      "flags": [
+        "--enable-blink-features=WebMCP",
+        "--disable-features=DevToolsWebMCPSupport"
+      ]
+    },
+    {
+      "id": "declarative-form-tool",
+      "name": "declarative-form-tool",
+      "fixture": "corpus/evidence/round-16/webmcp/fixtures/declarative-form.html",
+      "fixtureFile": "declarative-form.html",
+      "fixtureSha256": "7816ea656af94966989f51eb126d3bde0f8c44b7a88bd3da35fdff0b4568350e",
+      "status": "pass",
+      "expected": {
+        "tools": [
+          {
+            "name": "search",
+            "description": "Search",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "q": {
+                  "type": "string",
+                  "description": "Query text"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Category filter"
+                },
+                "sort": {
+                  "enum": [
+                    "relevance",
+                    "date"
+                  ],
+                  "description": "Sort order"
+                }
+              },
+              "required": [
+                "category"
+              ]
+            }
+          }
+        ],
+        "oracleBasis": "fixture-declared expectedTools (observed baseline; WPT getTools-declarative-schema shape)"
+      },
+      "expectedProvenance": "fixture __webmcpFixture.expectedTools",
+      "divergence": false,
+      "actual": {
+        "toolsAdded": [
+          {
+            "name": "search",
+            "description": "Search",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "q": {
+                  "type": "string",
+                  "description": "Query text"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Category filter"
+                },
+                "sort": {
+                  "type": "string",
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "relevance",
+                      "title": "relevance"
+                    },
+                    {
+                      "type": "string",
+                      "const": "date",
+                      "title": "date"
+                    }
+                  ],
+                  "enum": [
+                    "relevance",
+                    "date"
+                  ],
+                  "description": "Sort order"
+                }
+              },
+              "required": [
+                "category"
+              ]
+            },
+            "frameId": "135336A603C4416D9E87086EA1AF0780",
+            "backendNodeId": 2
+          }
+        ],
+        "enable": {},
+        "issues": [],
+        "issueErrorTypes": {},
+        "getTools": [
+          {
+            "name": "search"
+          }
+        ]
+      },
+      "toolsAdded": [
+        {
+          "name": "search",
+          "description": "Search",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "q": {
+                "type": "string",
+                "description": "Query text"
+              },
+              "category": {
+                "type": "string",
+                "description": "Category filter"
+              },
+              "sort": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "relevance",
+                    "title": "relevance"
+                  },
+                  {
+                    "type": "string",
+                    "const": "date",
+                    "title": "date"
+                  }
+                ],
+                "enum": [
+                  "relevance",
+                  "date"
+                ],
+                "description": "Sort order"
+              }
+            },
+            "required": [
+              "category"
+            ]
+          },
+          "frameId": "135336A603C4416D9E87086EA1AF0780",
+          "backendNodeId": 2
+        }
+      ],
+      "events": [
+        "WebMCP.toolsAdded"
+      ],
+      "eventLog": [
+        {
+          "event": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "search",
+                "description": "Search",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string",
+                      "description": "Query text"
+                    },
+                    "category": {
+                      "type": "string",
+                      "description": "Category filter"
+                    },
+                    "sort": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "relevance",
+                          "title": "relevance"
+                        },
+                        {
+                          "type": "string",
+                          "const": "date",
+                          "title": "date"
+                        }
+                      ],
+                      "enum": [
+                        "relevance",
+                        "date"
+                      ],
+                      "description": "Sort order"
+                    }
+                  },
+                  "required": [
+                    "category"
+                  ]
+                },
+                "frameId": "135336A603C4416D9E87086EA1AF0780",
+                "backendNodeId": 2
+              }
+            ]
+          },
+          "atMs": 12
+        }
+      ],
+      "detail": "1 declarative tool(s) observed via WebMCP.toolsAdded",
+      "comparison": {
+        "missing": [],
+        "unexpected": [],
+        "fieldMismatches": []
+      },
+      "durationMs": 32,
+      "flags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ]
+    },
+    {
+      "id": "imperative-model-context",
+      "name": "imperative-model-context",
+      "fixture": "corpus/evidence/round-16/webmcp/fixtures/imperative.html",
+      "fixtureFile": "imperative.html",
+      "fixtureSha256": "568824181b4afb23d1ff039635b00c241cbe757dddfba7c5ad75cfe5c7112aa8",
+      "status": "pass",
+      "expected": {
+        "tools": [
+          {
+            "name": "echo",
+            "description": "Echo the arguments back",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "q": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "q"
+              ]
+            }
+          }
+        ],
+        "documentModelContext": "object"
+      },
+      "expectedProvenance": "fixture __webmcpFixture.expectedTools (registerTool imperative)",
+      "divergence": false,
+      "actual": {
+        "toolsAdded": [
+          {
+            "name": "echo",
+            "description": "Echo the arguments back",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "q": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "q"
+              ]
+            },
+            "frameId": "D10438B8EF3B916338A1940540CF46D7",
+            "stackTrace": {
+              "callFrames": [
+                {
+                  "functionName": "",
+                  "scriptId": "8",
+                  "url": "http://127.0.0.1:43245/imperative.html",
+                  "lineNumber": 35,
+                  "columnNumber": 5
+                },
+                {
+                  "functionName": "",
+                  "scriptId": "8",
+                  "url": "http://127.0.0.1:43245/imperative.html",
+                  "lineNumber": 49,
+                  "columnNumber": 2
+                }
+              ]
+            }
+          }
+        ],
+        "modelContext": {
+          "documentModelContext": "object",
+          "registerTool": "function",
+          "getTools": "function",
+          "provideContext": "undefined"
+        },
+        "getTools": [
+          {
+            "name": "echo"
+          }
+        ],
+        "issues": []
+      },
+      "toolsAdded": [
+        {
+          "name": "echo",
+          "description": "Echo the arguments back",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "q": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "q"
+            ]
+          },
+          "frameId": "D10438B8EF3B916338A1940540CF46D7",
+          "stackTrace": {
+            "callFrames": [
+              {
+                "functionName": "",
+                "scriptId": "8",
+                "url": "http://127.0.0.1:43245/imperative.html",
+                "lineNumber": 35,
+                "columnNumber": 5
+              },
+              {
+                "functionName": "",
+                "scriptId": "8",
+                "url": "http://127.0.0.1:43245/imperative.html",
+                "lineNumber": 49,
+                "columnNumber": 2
+              }
+            ]
+          }
+        }
+      ],
+      "events": [
+        "WebMCP.toolsAdded"
+      ],
+      "eventLog": [
+        {
+          "event": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "echo",
+                "description": "Echo the arguments back",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "q"
+                  ]
+                },
+                "frameId": "D10438B8EF3B916338A1940540CF46D7",
+                "stackTrace": {
+                  "callFrames": [
+                    {
+                      "functionName": "",
+                      "scriptId": "8",
+                      "url": "http://127.0.0.1:43245/imperative.html",
+                      "lineNumber": 35,
+                      "columnNumber": 5
+                    },
+                    {
+                      "functionName": "",
+                      "scriptId": "8",
+                      "url": "http://127.0.0.1:43245/imperative.html",
+                      "lineNumber": 49,
+                      "columnNumber": 2
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "atMs": 11
+        }
+      ],
+      "detail": "1 imperative tool(s) observed; document.modelContext=object",
+      "comparison": {
+        "missing": [],
+        "unexpected": [],
+        "fieldMismatches": []
+      },
+      "durationMs": 30,
+      "flags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ]
+    },
+    {
+      "id": "lifecycle-removal",
+      "name": "lifecycle-removal",
+      "fixture": "corpus/evidence/round-16/webmcp/fixtures/lifecycle.html",
+      "fixtureFile": "lifecycle.html",
+      "fixtureSha256": "7be6268a8b80d3a435d13ca12fd43b0a0ab1703b1b3981e289b443ac51eed938",
+      "status": "pass",
+      "expected": {
+        "toolsAdded": [
+          "transient",
+          "volatile"
+        ],
+        "toolsRemoved": [
+          "transient",
+          "volatile"
+        ],
+        "basis": "toolsRemoved events carry {name,frameId} only; attribution relies on action/event sequence above"
+      },
+      "expectedProvenance": "fixture __webmcpFixture actionOrder + expectedRemoved",
+      "divergence": false,
+      "actual": {
+        "toolsAdded": [
+          "volatile",
+          "transient"
+        ],
+        "toolsRemoved": [
+          "transient",
+          "volatile"
+        ],
+        "actions": [
+          {
+            "action": "removeForm",
+            "ran": true,
+            "result": "removed",
+            "observedEventsAfterAction": true,
+            "removedAfterAction": [
+              {
+                "name": "transient",
+                "frameId": "A9A0D98B9681123002DB5AAE18F89FC6"
+              }
+            ],
+            "addedAfterAction": []
+          },
+          {
+            "action": "abortRegistration",
+            "ran": true,
+            "result": "aborted",
+            "observedEventsAfterAction": true,
+            "removedAfterAction": [
+              {
+                "name": "volatile",
+                "frameId": "A9A0D98B9681123002DB5AAE18F89FC6"
+              }
+            ],
+            "addedAfterAction": []
+          }
+        ],
+        "getTools": [],
+        "issues": []
+      },
+      "toolsAdded": [
+        {
+          "name": "volatile",
+          "description": "Imperative tool removed by abortRegistration action",
+          "inputSchema": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          },
+          "frameId": "A9A0D98B9681123002DB5AAE18F89FC6",
+          "stackTrace": {
+            "callFrames": [
+              {
+                "functionName": "",
+                "scriptId": "8",
+                "url": "http://127.0.0.1:43245/lifecycle.html",
+                "lineNumber": 61,
+                "columnNumber": 5
+              },
+              {
+                "functionName": "",
+                "scriptId": "8",
+                "url": "http://127.0.0.1:43245/lifecycle.html",
+                "lineNumber": 71,
+                "columnNumber": 2
+              }
+            ]
+          }
+        },
+        {
+          "name": "transient",
+          "description": "Form tool removed by removeForm action",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "q": {
+                "type": "string",
+                "description": "Query text"
+              }
+            },
+            "required": []
+          },
+          "frameId": "A9A0D98B9681123002DB5AAE18F89FC6",
+          "backendNodeId": 2
+        }
+      ],
+      "events": [
+        "WebMCP.toolsAdded",
+        "WebMCP.toolsAdded",
+        "WebMCP.toolsRemoved",
+        "WebMCP.toolsRemoved"
+      ],
+      "eventLog": [
+        {
+          "event": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "volatile",
+                "description": "Imperative tool removed by abortRegistration action",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {},
+                  "required": []
+                },
+                "frameId": "A9A0D98B9681123002DB5AAE18F89FC6",
+                "stackTrace": {
+                  "callFrames": [
+                    {
+                      "functionName": "",
+                      "scriptId": "8",
+                      "url": "http://127.0.0.1:43245/lifecycle.html",
+                      "lineNumber": 61,
+                      "columnNumber": 5
+                    },
+                    {
+                      "functionName": "",
+                      "scriptId": "8",
+                      "url": "http://127.0.0.1:43245/lifecycle.html",
+                      "lineNumber": 71,
+                      "columnNumber": 2
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "atMs": 10
+        },
+        {
+          "event": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "transient",
+                "description": "Form tool removed by removeForm action",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string",
+                      "description": "Query text"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "A9A0D98B9681123002DB5AAE18F89FC6",
+                "backendNodeId": 2
+              }
+            ]
+          },
+          "atMs": 10
+        },
+        {
+          "event": "WebMCP.toolsRemoved",
+          "params": {
+            "tools": [
+              {
+                "name": "transient",
+                "frameId": "A9A0D98B9681123002DB5AAE18F89FC6"
+              }
+            ]
+          },
+          "atMs": 15
+        },
+        {
+          "event": "WebMCP.toolsRemoved",
+          "params": {
+            "tools": [
+              {
+                "name": "volatile",
+                "frameId": "A9A0D98B9681123002DB5AAE18F89FC6"
+              }
+            ]
+          },
+          "atMs": 75
+        }
+      ],
+      "detail": "toolsRemoved observed for transient, volatile via actions removeForm, abortRegistration",
+      "comparison": null,
+      "durationMs": 153,
+      "flags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ]
+    },
+    {
+      "id": "navigation-clears-tools",
+      "name": "navigation-clears-tools",
+      "fixture": "corpus/evidence/round-16/webmcp/fixtures/declarative-form.html",
+      "fixtureFile": "declarative-form.html",
+      "fixtureSha256": "7816ea656af94966989f51eb126d3bde0f8c44b7a88bd3da35fdff0b4568350e",
+      "status": "pass",
+      "expected": {
+        "toolsRemovedOnNavigate": [],
+        "staleToolsInNewDocument": []
+      },
+      "expectedProvenance": "source oracle: devtools-frontend WebMCPModel.ts:192-203 (pin 66df492a) synthesizes removal on execution-context destruction; corroborated by .ufo/waves/round-16/probes/WebmcpProbeLifecycle.json cross_document_navigation; first L1 run expected toolsRemoved and failed (retained)",
+      "divergence": false,
+      "actual": {
+        "toolsRemoved": [],
+        "toolsAddedAfterNavigate": [],
+        "getTools": []
+      },
+      "toolsAdded": [
+        {
+          "name": "search",
+          "description": "Search",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "q": {
+                "type": "string",
+                "description": "Query text"
+              },
+              "category": {
+                "type": "string",
+                "description": "Category filter"
+              },
+              "sort": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "relevance",
+                    "title": "relevance"
+                  },
+                  {
+                    "type": "string",
+                    "const": "date",
+                    "title": "date"
+                  }
+                ],
+                "enum": [
+                  "relevance",
+                  "date"
+                ],
+                "description": "Sort order"
+              }
+            },
+            "required": [
+              "category"
+            ]
+          },
+          "frameId": "BA6C673A720593ABC00E4A1D47DC7C11",
+          "backendNodeId": 2
+        }
+      ],
+      "events": [
+        "WebMCP.toolsAdded"
+      ],
+      "eventLog": [
+        {
+          "event": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "search",
+                "description": "Search",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string",
+                      "description": "Query text"
+                    },
+                    "category": {
+                      "type": "string",
+                      "description": "Category filter"
+                    },
+                    "sort": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "relevance",
+                          "title": "relevance"
+                        },
+                        {
+                          "type": "string",
+                          "const": "date",
+                          "title": "date"
+                        }
+                      ],
+                      "enum": [
+                        "relevance",
+                        "date"
+                      ],
+                      "description": "Sort order"
+                    }
+                  },
+                  "required": [
+                    "category"
+                  ]
+                },
+                "frameId": "BA6C673A720593ABC00E4A1D47DC7C11",
+                "backendNodeId": 2
+              }
+            ]
+          },
+          "atMs": 11
+        }
+      ],
+      "detail": "navigation to plain.html: no toolsRemoved event; [search] absent from new document getTools",
+      "comparison": null,
+      "durationMs": 3057,
+      "flags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ]
+    },
+    {
+      "id": "declarative-missing-name",
+      "name": "declarative-missing-name",
+      "fixture": "corpus/evidence/round-16/webmcp/fixtures/declarative-missing-name.html",
+      "fixtureFile": "declarative-missing-name.html",
+      "fixtureSha256": "12e74e989145661d9efeabef14189d1142cf99eb5f8e231c636a92ab6424ba31",
+      "status": "pass",
+      "expected": {
+        "toolsAdded": 0,
+        "auditsErrorType": "FormModelContextMissingToolName"
+      },
+      "expectedProvenance": "harness-specified (FormModelContextMissingToolName observed twice on this build)",
+      "divergence": false,
+      "actual": {
+        "issues": [
+          {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2
+                }
+              }
+            }
+          },
+          {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2
+                }
+              }
+            }
+          },
+          {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2
+                }
+              }
+            }
+          },
+          {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2
+                }
+              }
+            }
+          }
+        ],
+        "issueErrorTypes": {
+          "FormModelContextMissingToolName": 4
+        },
+        "getTools": []
+      },
+      "toolsAdded": [],
+      "events": [
+        "Audits.issueAdded",
+        "Audits.issueAdded",
+        "Audits.issueAdded",
+        "Audits.issueAdded"
+      ],
+      "eventLog": [
+        {
+          "event": "Audits.issueAdded",
+          "params": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2
+                }
+              }
+            }
+          },
+          "atMs": 12
+        },
+        {
+          "event": "Audits.issueAdded",
+          "params": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2
+                }
+              }
+            }
+          },
+          "atMs": 12
+        },
+        {
+          "event": "Audits.issueAdded",
+          "params": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2
+                }
+              }
+            }
+          },
+          "atMs": 12
+        },
+        {
+          "event": "Audits.issueAdded",
+          "params": {
+            "issue": {
+              "code": "GenericIssue",
+              "details": {
+                "genericIssueDetails": {
+                  "errorType": "FormModelContextMissingToolName",
+                  "violatingNodeId": 2
+                }
+              }
+            }
+          },
+          "atMs": 12
+        }
+      ],
+      "detail": "no tool registered; Audits errorType FormModelContextMissingToolName x4",
+      "comparison": null,
+      "durationMs": 31,
+      "flags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ]
+    },
+    {
+      "id": "model-context-location",
+      "name": "model-context-location",
+      "fixture": "corpus/evidence/round-16/webmcp/fixtures/plain.html",
+      "fixtureFile": "plain.html",
+      "fixtureSha256": "537793b5d4ac11f7c61f5bc526f506abb4692876f3d50672085b0addb0a7748d",
+      "status": "pass",
+      "expected": {
+        "documentModelContext": "object (present)",
+        "navigatorModelContext": "absent"
+      },
+      "expectedProvenance": "harness-specified (PLAN C2: document.modelContext, not navigator)",
+      "divergence": false,
+      "actual": {
+        "documentModelContextType": "object",
+        "documentOwnProperty": false,
+        "navigatorHasModelContext": false,
+        "navigatorModelContextType": "undefined",
+        "isSecureContext": true
+      },
+      "toolsAdded": [],
+      "events": [],
+      "eventLog": [],
+      "detail": "document.modelContext=object (own=false); 'modelContext' in navigator=false; isSecureContext=true",
+      "comparison": null,
+      "durationMs": 27,
+      "flags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ]
+    },
+    {
+      "id": "frame-tools",
+      "name": "frame-tools",
+      "fixture": "corpus/evidence/round-16/webmcp/fixtures/frame-parent.html",
+      "fixtureFile": "frame-parent.html",
+      "fixtureSha256": "5b51e2700c73ab922e6573dce1e0aae1265d78d5fd2d89beeead354e91a96eb3",
+      "status": "pass",
+      "expected": {
+        "perFrameTools": [
+          {
+            "frame": "http://127.0.0.1:43245/frame-child.html",
+            "frameId": "7281F0AA54545E606407C692EB7299D9",
+            "name": "childSearch"
+          }
+        ]
+      },
+      "expectedProvenance": "fixture __webmcpFixture.expectedTools per frame (frame marker attribution)",
+      "divergence": false,
+      "actual": {
+        "cdpFrames": [
+          {
+            "id": "07C895A23AAFC78B5F2D4EEACD9E5A79",
+            "url": "http://127.0.0.1:43245/frame-parent.html"
+          },
+          {
+            "id": "7281F0AA54545E606407C692EB7299D9",
+            "url": "http://127.0.0.1:43245/frame-child.html"
+          }
+        ],
+        "perFrameDeclarations": [
+          {
+            "url": "http://127.0.0.1:43245/frame-parent.html",
+            "name": "",
+            "declaration": {
+              "id": "frame-parent",
+              "expectedTools": [
+                {
+                  "name": "childSearch",
+                  "description": "Tool declared inside a same-origin iframe",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "q": {
+                        "type": "string",
+                        "description": "Query"
+                      }
+                    },
+                    "required": []
+                  },
+                  "frame": "child"
+                }
+              ]
+            }
+          },
+          {
+            "url": "http://127.0.0.1:43245/frame-child.html",
+            "name": "child",
+            "declaration": {
+              "id": "frame-child",
+              "expectedTools": [
+                {
+                  "name": "childSearch",
+                  "description": "Tool declared inside a same-origin iframe",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "q": {
+                        "type": "string",
+                        "description": "Query"
+                      }
+                    },
+                    "required": []
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "toolsAdded": [
+        {
+          "name": "childSearch",
+          "description": "Tool declared inside a same-origin iframe",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "q": {
+                "type": "string",
+                "description": "Query"
+              }
+            },
+            "required": []
+          },
+          "frameId": "7281F0AA54545E606407C692EB7299D9",
+          "backendNodeId": 4
+        }
+      ],
+      "events": [
+        "WebMCP.toolsAdded"
+      ],
+      "eventLog": [
+        {
+          "event": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "childSearch",
+                "description": "Tool declared inside a same-origin iframe",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string",
+                      "description": "Query"
+                    }
+                  },
+                  "required": []
+                },
+                "frameId": "7281F0AA54545E606407C692EB7299D9",
+                "backendNodeId": 4
+              }
+            ]
+          },
+          "atMs": 16
+        }
+      ],
+      "detail": "1 tool(s) attributed to their declaring frames",
+      "comparison": null,
+      "durationMs": 36,
+      "flags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ]
+    },
+    {
+      "id": "opaque-sandboxed-iframe",
+      "name": "opaque-sandboxed-iframe",
+      "fixture": "corpus/evidence/round-16/webmcp/fixtures/plain.html",
+      "fixtureFile": "plain.html",
+      "fixtureSha256": "537793b5d4ac11f7c61f5bc526f506abb4692876f3d50672085b0addb0a7748d",
+      "status": "pass",
+      "expected": {
+        "sandboxedRegistration": "denied (modelContext absent or registerTool throws; permissions-policy \"tools\")",
+        "toolsAddedFromSandbox": 0
+      },
+      "expectedProvenance": "harness-specified (WebMCP spec S020 §4.4 permissions policy; probe-observed NotAllowedError)",
+      "divergence": false,
+      "actual": {
+        "iframeReport": {
+          "mcType": "object",
+          "regType": "function",
+          "error": "NotAllowedError: Access to the feature \"tools\" is disallowed by permissions policy.",
+          "errorName": "NotAllowedError",
+          "settled": "rejected"
+        },
+        "toolsAddedDelta": [],
+        "issues": []
+      },
+      "toolsAdded": [],
+      "events": [],
+      "eventLog": [],
+      "detail": "opaque sandboxed iframe denied: NotAllowedError (NotAllowedError: Access to the feature \"tools\" is disallowed by permissions policy.)",
+      "comparison": null,
+      "durationMs": 1058,
+      "flags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ]
+    },
+    {
+      "id": "data-url-declarative",
+      "name": "data-url-declarative",
+      "fixture": "data: (declarative-form.html bytes)",
+      "fixtureFile": "declarative-form.html",
+      "fixtureSha256": "7816ea656af94966989f51eb126d3bde0f8c44b7a88bd3da35fdff0b4568350e",
+      "status": "pass",
+      "expected": {
+        "documentModelContext": "undefined",
+        "toolsAdded": ">=1 (event fires despite absent page API — divergence)"
+      },
+      "expectedProvenance": "probe-observed divergence (probes/WebmcpProbeSecure.json): page API gated on secure context, CDP event not",
+      "divergence": true,
+      "actual": {
+        "documentModelContext": "undefined",
+        "isSecureContext": false,
+        "toolsAdded": [
+          {
+            "name": "search",
+            "description": "Search",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "q": {
+                  "type": "string",
+                  "description": "Query text"
+                },
+                "category": {
+                  "type": "string",
+                  "description": "Category filter"
+                },
+                "sort": {
+                  "type": "string",
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "relevance",
+                      "title": "relevance"
+                    },
+                    {
+                      "type": "string",
+                      "const": "date",
+                      "title": "date"
+                    }
+                  ],
+                  "enum": [
+                    "relevance",
+                    "date"
+                  ],
+                  "description": "Sort order"
+                }
+              },
+              "required": [
+                "category"
+              ]
+            },
+            "frameId": "D164478AF808BB91AE34B0BE723D67F3",
+            "backendNodeId": 2
+          }
+        ]
+      },
+      "toolsAdded": [
+        {
+          "name": "search",
+          "description": "Search",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "q": {
+                "type": "string",
+                "description": "Query text"
+              },
+              "category": {
+                "type": "string",
+                "description": "Category filter"
+              },
+              "sort": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "relevance",
+                    "title": "relevance"
+                  },
+                  {
+                    "type": "string",
+                    "const": "date",
+                    "title": "date"
+                  }
+                ],
+                "enum": [
+                  "relevance",
+                  "date"
+                ],
+                "description": "Sort order"
+              }
+            },
+            "required": [
+              "category"
+            ]
+          },
+          "frameId": "D164478AF808BB91AE34B0BE723D67F3",
+          "backendNodeId": 2
+        }
+      ],
+      "events": [
+        "WebMCP.toolsAdded"
+      ],
+      "eventLog": [
+        {
+          "event": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "search",
+                "description": "Search",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "q": {
+                      "type": "string",
+                      "description": "Query text"
+                    },
+                    "category": {
+                      "type": "string",
+                      "description": "Category filter"
+                    },
+                    "sort": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "relevance",
+                          "title": "relevance"
+                        },
+                        {
+                          "type": "string",
+                          "const": "date",
+                          "title": "date"
+                        }
+                      ],
+                      "enum": [
+                        "relevance",
+                        "date"
+                      ],
+                      "description": "Sort order"
+                    }
+                  },
+                  "required": [
+                    "category"
+                  ]
+                },
+                "frameId": "D164478AF808BB91AE34B0BE723D67F3",
+                "backendNodeId": 2
+              }
+            ]
+          },
+          "atMs": 13
+        }
+      ],
+      "detail": "divergence confirmed: doc.modelContext undefined but 1 tool(s) announced via CDP",
+      "comparison": null,
+      "durationMs": 90,
+      "flags": [
+        "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+        "--enable-blink-features=WebMCP,WebMCPTesting"
+      ]
+    }
+  ],
+  "summary": {
+    "cases": 11,
+    "passed": 11,
+    "failed": 0,
+    "missing": 0,
+    "caseSet": {
+      "expected": 11,
+      "expectedIds": [
+        "flags-off-negative-control",
+        "devtools-domain-disabled",
+        "declarative-form-tool",
+        "imperative-model-context",
+        "lifecycle-removal",
+        "navigation-clears-tools",
+        "declarative-missing-name",
+        "model-context-location",
+        "frame-tools",
+        "opaque-sandboxed-iframe",
+        "data-url-declarative"
+      ],
+      "ran": 11,
+      "passed": 11,
+      "failed": 0,
+      "missing": 0,
+      "duplicates": [],
+      "caseSetOk": true
+    }
+  },
+  "findings": [],
+  "closure": {
+    "pids": [
+      {
+        "label": "flagged",
+        "pid": null,
+        "gone": true
+      },
+      {
+        "label": "flag-off",
+        "pid": null,
+        "gone": true
+      },
+      {
+        "label": "domain-disabled",
+        "pid": null,
+        "gone": true
+      }
+    ],
+    "tempPaths": [
+      {
+        "path": "/tmp/tabi-r16-webmcp-xwUH4U/flagged-profile-E2a3Q3",
+        "removed": true
+      },
+      {
+        "path": "/tmp/tabi-r16-webmcp-xwUH4U/flagged-home-NTPeg9",
+        "removed": true
+      },
+      {
+        "path": "/tmp/tabi-r16-webmcp-xwUH4U/flag-off-profile-idLCd6",
+        "removed": true
+      },
+      {
+        "path": "/tmp/tabi-r16-webmcp-xwUH4U/flag-off-home-HSBJDG",
+        "removed": true
+      },
+      {
+        "path": "/tmp/tabi-r16-webmcp-xwUH4U/domain-disabled-profile-CbpHp2",
+        "removed": true
+      },
+      {
+        "path": "/tmp/tabi-r16-webmcp-xwUH4U/domain-disabled-home-fNZ0kB",
+        "removed": true
+      }
+    ],
+    "server": {
+      "portRefusedAfterClose": {
+        "refused": true,
+        "reason": "ECONNREFUSED"
+      },
+      "note": "any semantics — this is the drain proof, not the stop proof"
+    },
+    "strayProcesses": [],
+    "everyStopProof": true
+  }
+}

@@ -1827,3 +1827,52 @@ overrides; disable system/global Git config for the isolated run. Their
 legacy arm intentionally executes a pinned historical shell counter, so the
 write-scope row is a fixture-run precondition, not hostile-environment safety.
 Round15 command receipts record the exact minimal environment policy.
+
+## Round 16 — measurement binding and native WebMCP observation (2026-10-20)
+
+Appended after the round-15 section; nothing above is edited. Two new
+registered interfaces; no earlier registry row changes.
+
+### Measurement-binding gate registry (C1)
+
+| Name | Entry | Verdict map | Pinned / checked | Write scope |
+|---|---|---|---|---|
+| measurement-binding | `node scripts/check-measurement-binding.mjs --check <manifest> [--at REV] [--reproduce]`; `--legacy <round-15 measurements.json> [--at REV]`; `--self-test` (runs `scripts/selftest-measurement-binding.mjs`) | 0 clean, 1 findings, 2 could-not-evaluate | per claim: counter blob sha256 at `measuredRevision` and at REV, ancestry, `countedInputs` drift (`git diff --literal-pathspecs measuredRevision REV`), argv shape, and with `--reproduce` the worktree counter bytes before execution plus re-run of both the before and after arms | none (read-only; selftest writes only temp repos) |
+
+Finding reasons: `measured_revision_not_ancestor`, `counter_digest_unrecorded`,
+`counter_digest_mismatch`, `counter_changed_since_measurement`,
+`counted_inputs_undeclared`, `counted_input_changed`, `argv_unsupported`,
+`counter_failed`, `count_not_reproduced`; could-not-evaluate:
+`manifest_unreadable`, `manifest_schema_invalid`, `revision_unresolved`,
+`git_failed` (+ `usage`).
+
+Rule (QUALITY 22): a claim's count is admissible only with a recorded counter
+blob digest at its measured revision, declared counted inputs, and a
+`--check --reproduce` that is clean at the delivered HEAD. On the real
+round-15 file the gate reports C1 `counter_digest_unrecorded`,
+`counted_inputs_undeclared`, `counter_changed_since_measurement` and C2
+`counter_digest_mismatch` (its recorded digest is the post-measurement repair
+blob, `9fd8bca`, not the blob at measured `b7cf044`), `counted_inputs_undeclared`
+— the outside round-15 routed defects 1/2, now machine-detectable
+(`corpus/evidence/round-16/binding/legacy-r15.json`).
+
+Round-14 Node wording: cite `corpus/lessons/round-15-verifier-spotcheck.md`
+§Erratum to the round-14 verifier wording (lines 90-101), the non-author
+correction; this lane's round-14/15 rows at `:1744` and `:1766-1777` already
+state minimum enforcement versus exact equality and are read with that erratum.
+
+### Native WebMCP decision table (C2)
+
+Knowledge: `corpus/knowledge/webmcp-chromium-loopback-round-16.md`; harness
+`node scripts/webmcp-loopback-round16.mjs [--out PATH]` (0 pass, 1 a case
+failed, 2 could not evaluate; refuses to overwrite differing receipt bytes).
+
+| Question | Evidence | Rule |
+|---|---|---|
+| Is WebMCP live on this build? | receipt `flags-off-negative-control` vs `declarative-form-tool` | Only "flag-gated on Chromium 154.0.8037.97"; minimal flag `--enable-blink-features=WebMCP`. Never "available in Chrome" |
+| Which object? | `model-context-location` | `document.modelContext` (spec S020 §4.1 and 154 IDL S033 agree); any `navigator.modelContext` text is wrong (S038, S039 rejected) |
+| Did `WebMCP.enable` succeed, so WebMCP works? | `flags-off-negative-control`, `devtools-domain-disabled` | No: the domain answers `{}` with the page feature off and disappears only with `DevToolsWebMCPSupport` disabled |
+| Is a declarative tool spec behaviour? | S030, S031 | No: Chromium-only surface; cite the receipt and S033–S035, never S020 |
+| Did navigation remove tools? | `navigation-clears-tools`, S036 | No `toolsRemoved` is sent; infer removal from execution-context destruction |
+| Are no tools reported, so the page has none? | `data-url-declarative`, secure-context probe | Absence counts only on a secure context with the page feature on; CDP can announce declarative tools where the page API is absent |
+| May the lane invoke a page tool? | `WebMCP.invokeTool` probe | Loopback fixtures only; never on an external site without operator approval |

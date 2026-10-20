@@ -75,3 +75,16 @@
     applicable. Counter safety is scoped to the accepted grammar, not the Git
     environment, whole repository or a production path that stopped earlier.
     (lesson: corpus/lessons/round-15.md#mistakes; round14 outside routed4)
+22. A claim's count binds the counter blob sha256 at its measured revision and its
+    declared counted inputs, and is re-run at the delivered HEAD: admit only when
+    `scripts/check-measurement-binding.mjs --check <manifest> --at <delivered HEAD>
+    --reproduce` exits 0. A revision-only pin, or a digest of a counter committed after
+    the measured revision, is a finding (`counter_digest_unrecorded` /
+    `counter_digest_mismatch`), never a pass. (lesson: corpus/lessons/round-16.md#mistakes;
+    round15 outside routed 1/2)
+23. A browser-API observation names the exact exposed object, the build, the flags and
+    the origin's secure-context state, and checks the current spec text before calling
+    a name a divergence; a hypothesised API path is recorded as an unknown, never as
+    a negative finding. Spec citations back spec text only; implementation-only
+    surfaces cite source or receipts. (lesson: corpus/lessons/round-16.md#mistakes;
+    census U3 `navigator.modelContext` guess)

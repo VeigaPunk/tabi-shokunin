@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>webmcp declarative form</title></head>
+<body>
+<h1>declarative-form</h1>
+<form toolname="search" tooldescription="Search">
+  <label>Query <input type="text" name="q" toolparamdescription="Query text"></label>
+  <label>Category <input type="text" name="category" required toolparamdescription="Category filter"></label>
+  <label>Sort
+    <select name="sort" toolparamdescription="Sort order">
+      <option value="relevance">relevance</option>
+      <option value="date">date</option>
+    </select>
+  </label>
+</form>
+<script>
+window.__webmcpFixture = {
+  id: 'declarative-form',
+  expectedTools: [{
+    name: 'search',
+    description: 'Search',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        q: { type: 'string', description: 'Query text' },
+        category: { type: 'string', description: 'Category filter' },
+        sort: { enum: ['relevance', 'date'], description: 'Sort order' }
+      },
+      required: ['category']
+    }
+  }],
+  actions: {},
+  actionOrder: [],
+  expectedRemoved: []
+};
+</script>
+</body>
+</html>

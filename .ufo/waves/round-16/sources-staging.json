@@ -1,0 +1,230 @@
+{
+  "schema": "tabi-round16-sources-staging-v1",
+  "round": 16,
+  "date": "2026-10-20",
+  "producedBy": "TabiR16.SourcesStaging",
+  "registry": {
+    "file": "corpus/SOURCES.md",
+    "relativeTo": "lane root",
+    "currentState": {
+      "rows": 29,
+      "maxId": "S029",
+      "nextId": "S030",
+      "tiers": { "A": 23, "B": 4, "C": 2 },
+      "statuses": { "mined": 24, "queued": 3, "rejected": 2 },
+      "queuedRows": ["S020", "S021", "S022"],
+      "rejectedRows": ["S026", "S027"]
+    }
+  },
+  "validators": {
+    "laneGate": {
+      "path": "scripts/check-sources.mjs",
+      "invocation": "node scripts/check-sources.mjs",
+      "optionalFlags": {
+        "--root <dir>": "canonicalized via realpath; must be a directory",
+        "--file <rel>": "registry path relative to root; absolute paths, backslashes, NUL, drive letters and UNC prefixes rejected (unsafe_registry_path, exit 2)",
+        "--since <ISO-date>": "opened must additionally be >= this date",
+        "--self-test": "writes only to mkdtemp dirs; clean 26/26 observed 2026-10-20"
+      },
+      "exitCodes": { "0": "clean", "1": "findings", "2": "could_not_evaluate" },
+      "hardLineRequirements": [
+        "registry must be a regular file, not a symlink (O_NOFOLLOW + realpath identity); valid UTF-8 (fatal decoder)",
+        "file must contain all four trimmed headings at column zero: '## Registry', '## Paths', '## Search log', '## Leads (unopened)' (missing_section)",
+        "data rows must sit under '## Registry'; a '## ' heading flips section tracking; rows matching rowPattern elsewhere produce row_outside_registry"
+      ]
+    },
+    "fleetCensus": {
+      "path": "../scripts/sources-census.sh (fleet root: /home/vgpnk/Projects/shokunin/scripts/sources-census.sh)",
+      "contract": "SOURCES-CONTRACT-v1",
+      "modes": ["census", "validate", "overdue", "shared", "selftest"],
+      "exitCodes": { "0": "clean or warnings-only", "1": "E-code findings or overdue", "2": "usage/env/missing registry", "3": "selftest failure" },
+      "parser": "gawk -F'|'; accepts 0-3 leading ASCII spaces before rows/headings; >=4 spaces is indented code and ignored",
+      "warningsAreNonFatal": ["W01", "W02", "W03", "W04"]
+    },
+    "contract": {
+      "authority": "/home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/CORPUS.md §SOURCES.md contract v1 (frozen 2026-10-19, fleet-ledger rev dcf3b6484e02452fc7aec55d724744de188779b9)",
+      "keyRules": [
+        "rule 1: a row is a claim — written only after the source is opened this round; lesson Gate records URL, access date, <=25-word located quote",
+        "rule 2: append-only — only status, recheck and used-by change in place, logged old->new; a correction is a new row whose teaches opens 'supersedes S0NN —'",
+        "rule 4: expansion is knowledge, not rows — no row quota",
+        "rule 5: search log one prose note per bounded search",
+        "rule 6: no credential material, session/private URLs or op:// references"
+      ]
+    }
+  },
+  "fieldContract": {
+    "columnOrder": ["id", "source", "kind", "tier", "scope", "anchor", "teaches", "status", "opened", "recheck", "used-by"],
+    "columnCount": {
+      "rule": "11 cells => 13 fields when the line is split on '|' (leading and trailing pipe produce empty edge fields); both validators require NF==13 after trim",
+      "gateFinding": "malformed_row (E01) with detail fields_<n>",
+      "trap": "any literal '|' inside a cell inflates the split; markdown tables have no escaping here"
+    },
+    "id": {
+      "rowPattern": "^\\|[ \\t\\v\\f\\r]*S[0-9]{3,}[ \\t\\v\\f\\r]*\\|",
+      "valuePattern": "S[0-9]{3,} (S + 3 or more digits; 'S30' fails, 'S030' and 'S0300' pass)",
+      "uniqueness": "duplicate id => duplicate_id (E03); ids never reused (contract)",
+      "nonMatchingRowLine": "a Registry-section pipe-line whose first cell is not a valid id/header/divider is still a row candidate and yields bad_id"
+    },
+    "source": {
+      "shape": "<title> — <canonical URL or DOI>; a repo path or command is allowed only for kind=own-work (e.g. S029)",
+      "duplicateDetection": {
+        "gate": "first http(s):// match in cell; strip fragment, trailing slash, scheme and leading www.; lowercase host only. Any second row with equal normalized URL => duplicate_url (E04) unless teaches matches /^supersedes S[0-9]{3,}\\b/",
+        "fleet": "duplicate URL is scope-sensitive: same URL same scope => E04 (rejected rows exempt unless paired with non-rejected; 'supersedes S[0-9]{3}' anywhere in teaches exempts); same URL different scope => W04 warning only",
+        "divergence": "gate is URL-global; a same-URL/different-scope row is W04 under fleet but E04 under the gate"
+      }
+    },
+    "kind": {
+      "vocabulary": ["spec", "docs", "paper", "code", "tool", "dataset", "talk", "book", "community", "own-work"],
+      "finding": "bad_kind (E05)"
+    },
+    "tier": {
+      "vocabulary": ["A", "B", "C"],
+      "finding": "bad_tier (E06)",
+      "scopedTo": "scope cell; contract: A=primary/authoritative, B=strong secondary, C=lead only",
+      "tierInflation": "kind=community at tier=A => tier_inflation (E10)"
+    },
+    "scope": { "rule": "free text, the claim/topic the tier applies to; participates in fleet URL+scope dedup" },
+    "anchor": {
+      "rule": "exact section/heading/page/line plus revision (version, commit or publication date); never a bare homepage",
+      "gate": "empty or '—' => bare_anchor finding (gate-only; fleet silent)"
+    },
+    "teaches": {
+      "rule": "one grounded learner benefit",
+      "rejected": "status=rejected REQUIRES teaches containing literal 'REJECTED:' AND 'flip:' => else rejected_without_flip; fleet only warns W02 when teaches length < 8",
+      "supersedes": "correction rows open 'supersedes S0NN —'; gate dedup requires it at string start (/^supersedes S[0-9]{3,}\\b/), fleet accepts it anywhere"
+    },
+    "status": {
+      "vocabulary": ["queued", "mined", "rejected"],
+      "finding": "bad_status (E07)",
+      "trap": "'watch' is NOT a status (fleet header, E07); mined-with-dash-used-by is legal in fleet (W03 warning) but a hard gate finding mined_without_used_by"
+    },
+    "opened": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$ plus real calendar validation (e.g. 2026-02-30 fails)",
+      "gate": "bad_opened if not ISO-date or < --since value; no future check",
+      "fleet": "E08 if not a valid date OR opened_epoch > today (future dates fail fleet only)",
+      "trap": "a future-dated row passes the lane gate but fails fleet E08"
+    },
+    "recheck": {
+      "gateAccepted": "ISO date (calendar-valid) OR /^[0-9]+d$/ (e.g. 90d, 180d, 365d) OR literal 'on-release'",
+      "fleetAccepted": "ISO date (calendar-validated) OR /^[0-9]+d$/ OR any symbolic cadence matching /^[A-Za-z][A-Za-z0-9 _-]*$/ (e.g. 'annual', 'on-change')",
+      "divergence": "the only symbolic cadence both accept is 'on-release'; fleet-valid words like 'annual', 'quarterly', 'on-change' produce gate bad_recheck (E09). Contract v1 names only 90d, 180d, on-release",
+      "overdueMath": "NNd due = opened + N days; ISO due = the date; symbolic is reported as cadence, never judged overdue"
+    },
+    "usedBy": {
+      "shape": "repo-relative paths separated by ',' or ';', or single '—' (U+2014 em dash) for none; a literally empty cell => used_by_missing/used_by_empty",
+      "gateChecks": [
+        "every non-dash path on EVERY status (not only mined): escape (absolute, '..', backslash, NUL, drive-letter, UNC, symlink escape via nearest-real-ancestor realpath, ELOOP) => used_by_escape; stat failure or not-a-regular-file => used_by_missing; readable file that does not contain the row id under regex '(?<![A-Za-z0-9])<ID>(?![0-9])' => used_by_uncited (e.g. S030 must not be satisfied by 'S0300' or 'xS030'); unreadable => could_not_evaluate exit 2",
+        "status=mined with only '—'/empty paths => mined_without_used_by"
+      ],
+      "fleetChecks": [
+        "E11 missing used-by path on disk — only for status=mined rows, comma-split only, plain -e test, no citation or escape checking",
+        "W01: tier=C + mined + non-dash used-by (warning); W03: mined + used-by='—' (warning)"
+      ],
+      "divergence": "gate checks queued/rejected used-by paths too and additionally demands the citing file literally contain the row id; a queued row pointing at a nonexistent path is fleet-clean but gate-failed"
+    },
+    "documentLevel": [
+      "credential_patterns scanned over the WHOLE file: op://, BEGIN...PRIVATE KEY, ghp_*, AKIA*, xox[baprs]- => credential_material",
+      "no_rows finding when Registry yields zero row candidates",
+      "credential patterns and findings apply even inside prose sections"
+    ]
+  },
+  "traps": [
+    "em dash '—' (U+2014) is the only blank marker; ASCII '-', empty string, or 'none' are not (empty => used_by_empty; '-'/none => treated as real paths and fail)",
+    "'—' is invalid in anchor (bare_anchor) even though valid in used-by",
+    "cadence words: fleet accepts any symbolic word; gate accepts only 'on-release'; contract names only 90d/180d/on-release — use ISO date, NNd, or on-release",
+    "'watch' is not a status (E07)",
+    "mined requires at least one real used-by path (gate hard finding; fleet only W03) — write mined rows only when the citing file already exists AND literally contains 'S0NN' with non-alphanumeric left boundary and non-digit right boundary",
+    "citing 'S0300' or 'xS030' does not satisfy the S030 citation regex",
+    "queued/rejected rows with a non-'—' used-by are existence+citation checked by the gate even though fleet ignores them",
+    "community kind can never be tier A (E10/tier_inflation)",
+    "rejected rows require teaches containing 'REJECTED:' and 'flip:'; keep the retained reason (fleet W02 needs >=8 chars)",
+    "duplicate normalized URL across rows: gate demands teaches starting 'supersedes S0NN' (position matters — mid-string does not exempt); fleet same-scope E04 exempts rejected rows unless a non-rejected row shares the scope",
+    "used-by paths must be repo-relative forward-slash paths inside root; absolute paths, '..', backslashes and symlink escapes fail",
+    "a future 'opened' date passes the gate but fails fleet E08; a date before a --since invocation fails the gate only",
+    "any '|' inside a cell breaks NF=13 (E01)",
+    "gate headings/rows are column-zero ('^## ', '^|'); a row indented 1-3 spaces is counted by fleet but invisible to the gate rowPattern — keep rows at column zero",
+    "no http(s) URL in source (own-work rows) skips all duplicate-URL logic; DOI-only sources likewise",
+    "registry must be a plain regular file — symlink, directory, or non-UTF8 => exit 2 could_not_evaluate"
+  ],
+  "candidates": {
+    "notes": "S030-S036 ids are reservations only. Gate/row-shape validation below is by constraint reasoning, not by running the census on the live file. Actual row writes stay L1-only per PLAN and require this-round source opening per contract rule 1.",
+    "rows": [
+      {
+        "id": "S030",
+        "role": "new primary Chromium source actually opened this round (C2 WebMCP evidence)",
+        "exampleKind": "code",
+        "exampleTier": "A",
+        "status": "queued",
+        "shape": "| S030 | <title> — https://<canonical URL> | code | A | <scoped claim e.g. WebMCP declarative form binding in Chromium source> | <file/dir @rev read 2026-10-20, path:lines> | <grounded benefit> | queued | 2026-10-20 | on-release | — |",
+        "validates": true,
+        "checks": "rowPattern ok; NF=13; kind/tier/status in vocab; opened==today<=fleet today; on-release in both vocabularies; used-by '—' legal for queued; no duplicate URL if URL new"
+      },
+      {
+        "id": "S031",
+        "role": "new primary Chromium docs/source row actually opened this round",
+        "exampleKind": "docs",
+        "exampleTier": "A",
+        "status": "queued",
+        "shape": "| S031 | <title> — https://<canonical URL> | docs | A | <scoped claim> | <section @revision, read 2026-10-20> | <grounded benefit> | queued | 2026-10-20 | 90d | — |",
+        "validates": true,
+        "checks": "same as S030; NNd cadence accepted by both validators"
+      },
+      {
+        "id": "S032",
+        "role": "optional further primary row (e.g. CDP WebMCP domain documentation actually opened)",
+        "exampleKind": "docs",
+        "exampleTier": "B",
+        "status": "queued",
+        "shape": "| S032 | <title> — https://<canonical URL> | docs | B | <scoped claim> | <anchor w/ revision> | <grounded benefit> | queued | 2026-10-20 | 90d | — |",
+        "validates": true
+      },
+      {
+        "id": "S033",
+        "role": "in-place status flip, NOT a new line: S020 queued -> mined once corpus/knowledge/webmcp-chromium-loopback-round-16.md exists and cites 'S020'",
+        "editInPlace": "S020 row: status queued->mined, used-by '—'->corpus/knowledge/webmcp-chromium-loopback-round-16.md; log old->new in round-16 lesson",
+        "shape": "| S020 | WebMCP — https://webmachinelearning.github.io/webmcp/ | spec | A | WebMCP draft API semantics (Community Group draft) | CG-DRAFT 2026-10-16, revision f14762e6 | Grounds the native-WebMCP frontier: pages expose JavaScript tools to agents; a CG draft, not a W3C Standard | mined | 2026-10-19 | on-release | corpus/knowledge/webmcp-chromium-loopback-round-16.md |",
+        "validates": true,
+        "checks": "used-by path must exist on disk AND file text must match /(?<![A-Za-z0-9])S020(?![0-9])/; note 'source: S020' header satisfies it; avoids mined_without_used_by"
+      },
+      {
+        "id": "S034",
+        "role": "in-place used-by addition, NOT a new line: S002 CDP viewer re-open for the WebMCP domain",
+        "editInPlace": "S002 row: used-by append ', corpus/knowledge/webmcp-chromium-loopback-round-16.md'; log old->new",
+        "shape": "| S002 | ... | mined | 2026-10-19 | 90d | corpus/knowledge/chrome-remote-debugging-profile-boundary.md, corpus/knowledge/webmcp-chromium-loopback-round-16.md |",
+        "validates": true,
+        "checks": "the new file must also literally contain 'S020'/'S002' as applicable; comma is the fleet splitter — ';' splits under gate only"
+      },
+      {
+        "id": "S035",
+        "role": "rejected row for a tempting but untrusted source (kept with reason + flip)",
+        "exampleKind": "community",
+        "exampleTier": "C",
+        "status": "rejected",
+        "shape": "| S035 | <title> — https://<URL> | community | C | <scope> | <post/answer id + date, re-read 2026-10-20> | REJECTED: <reason>; flip: <what would change the verdict> | rejected | 2026-10-20 | on-release | — |",
+        "validates": true,
+        "checks": "community must not be tier A; teaches carries literal 'REJECTED:' and 'flip:'; used-by '—' is correct for rejected"
+      },
+      {
+        "id": "S036",
+        "role": "supersedes correction row if an existing row needs a corrected anchor/fact",
+        "exampleKind": "docs",
+        "exampleTier": "A",
+        "status": "mined",
+        "shape": "| S036 | <title> — https://<same URL as superseded row> | docs | A | <scope> | <anchor @rev read 2026-10-20> | supersedes S0NN — <corrected claim> | mined | 2026-10-20 | 90d | corpus/knowledge/<new-note>.md |",
+        "validates": true,
+        "checks": "'supersedes ' MUST be at teaches string start for the gate's /^supersedes S[0-9]{3,}\\b/ dedup exemption; mined status requires the used-by file to exist and cite 'S036'"
+      }
+    ]
+  },
+  "verification": {
+    "selfTest": "node scripts/check-sources.mjs --self-test => SOURCES_SELFTEST verdict=clean cases=26, exit 0 (observed 2026-10-20; writes only mkdtemp dirs)",
+    "liveCensus": "not run by this seat; L1 re-runs after integration",
+    "basisFiles": [
+      "tabi-shokunin/scripts/check-sources.mjs",
+      "/home/vgpnk/Projects/shokunin/scripts/sources-census.sh",
+      "/home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/CORPUS.md",
+      "tabi-shokunin/corpus/SOURCES.md",
+      "tabi-shokunin/.ufo/waves/round-16/PLAN.md"
+    ]
+  }
+}
