@@ -817,3 +817,10 @@
   promotion or new capability is claimed. Round14 is stagnation-window position1
   after round13's capability, not a restart. The report must follow lane commit
   and push; original historical producer/note/receipt/pin remain fixed.
+- Final production-only check on committed input revision
+  `20b72b9bdad30578ad1ef438527642c46dc79c68` was warranted by newly committed
+  first-add lesson/SCORECARD/docs, not a rerun of unchanged selftests.
+  ROUND remained clean10 exit0; USER remained honest round_count6/10 exit1
+  (not history_rewritten); final source census exit0. Exact commands and outputs
+  in `corpus/evidence/round-14/final-production.json`. No browser, selftest or
+  previously passing unaffected fixture suite was rerun at this stage.
