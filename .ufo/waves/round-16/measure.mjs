@@ -232,9 +232,16 @@ function countC2(rev) {
     for (const c of cases) {
       caseIds.push(c.id);
       if (c.status !== 'pass') failures.push(`case ${c.id} status ${c.status}`);
-      if (c.fixture) {
-        const fx = blob(rev, c.fixture);
+      // `fixture` is a display label (e.g. "data: (declarative-form.html
+      // bytes)"); `fixtureFile` names the served file. Repair after the first
+      // after-measurement at 8f7feb3 read the label as a path and counted 0
+      // (corpus/evidence/round-16/measure/count-after-c2-first-counter-defect.json).
+      if (c.fixtureFile !== undefined) {
+        const name = String(c.fixtureFile);
+        const fx = /^[A-Za-z0-9._-]+$/.test(name) ? blob(rev, `corpus/evidence/round-16/webmcp/fixtures/${name}`) : null;
         if (!fx || sha256(fx) !== c.fixtureSha256) failures.push(`case ${c.id} fixture digest`);
+      } else {
+        failures.push(`case ${c.id} names no fixtureFile`);
       }
     }
     for (const id of REQUIRED_CASES) if (!caseIds.includes(id)) failures.push(`missing case ${id}`);
