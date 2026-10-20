@@ -679,3 +679,9 @@
   eight unique case/profile entries and cross-checks each removal/context/process
   proof plus each worker's closed/refused server proof; it does not waive cleanup.
   No browser/gate behavior changed, so only the C2 counting target is re-executed.
+- Profile-contract repair then validated eight actual cases/four rejections, but
+  the counter's admission count stayed0 because it demanded a root-relative
+  `corpus/knowledge/` string inside the corpus-local README. Existing rows and
+  the same probe's noteMap use `knowledge/`. The final condition now uses that
+  established corpus-relative convention, retaining the exact known note path;
+  no README padding or admission/cleanup waiver was introduced.

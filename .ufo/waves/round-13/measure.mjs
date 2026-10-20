@@ -797,7 +797,7 @@ export function countC2(revision, read = reader(revision)) {
   }
 
   const readmeRaw = read.file(C2_README);
-  if (!readmeRaw || !readmeRaw.toString('utf8').includes(C2_NOTE)) {
+  if (!readmeRaw || !readmeRaw.toString('utf8').includes(C2_NOTE.slice('corpus/'.length))) {
     result.reasons.push('corpus/README.md note map does not list the note');
   }
 
