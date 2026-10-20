@@ -22,18 +22,22 @@ const ROUND_SCRIPT = 'scripts/check-round-contract.mjs';
 //   current - the round-14 non-shell runCount cutover in this wave
 // The round-13 history has two archived intermediates: 1199150 (git blob
 // d871e73d, sha256 6f9eddc7) and 1212207 (git blob 43db9f4b, sha256
-// 8478cd43). They are admitted only while walking pin..HEAD, never as the HEAD
-// bytes. HEAD must be the prior or the current identity; any other commit in
-// that history must be one of the four explicit identities. The archived bytes
-// at PSTACK_PIN must still hash to the prior identity.
+// 8478cd43). They are admitted only while walking pin..lane-tip, never as the
+// lane-tip bytes. The lane tip must be the prior or the current identity; any
+// other commit in that history must be one of the four explicit identities.
+// The archived bytes at PSTACK_PIN must still hash to the prior identity.
 const ROUND_SCRIPT_PRIOR_SHA256 = '7d403cee003c3b49e865d57e034821ea925252efc231b0b22ded62ac5410c398';
 const ROUND_SCRIPT_INTERMEDIATE_SHA256 = '6f9eddc74f0e10ac5046ed9ecd99650db4f338c004f5d0e349503b6515a6b299';
 const ROUND_SCRIPT_CUTOVER_SHA256 = '8478cd438b22f15bab153901276aad8afc7711d139e86769f4323b5f0affdb4d';
-const ROUND_SCRIPT_CURRENT_SHA256 = '8a573b4ed5875ce24a6d5f60e68cee575bc0687968c5105d4e9e3cfb0febe942';
+// Round 17: the round-14 cutover-current identity (8a573b4e…) is archived and the
+// round-17 lane-tip anchored gate becomes current.
+const ROUND_SCRIPT_ROUND14_SHA256 = '8a573b4ed5875ce24a6d5f60e68cee575bc0687968c5105d4e9e3cfb0febe942';
+const ROUND_SCRIPT_CURRENT_SHA256 = '1579a794d9b504ff4de1f9039d5498f97706546945d7980087a3df95a6e91828';
 const ROUND_SCRIPT_ARCHIVED_SHA256 = [
   ROUND_SCRIPT_PRIOR_SHA256,
   ROUND_SCRIPT_INTERMEDIATE_SHA256,
   ROUND_SCRIPT_CUTOVER_SHA256,
+  ROUND_SCRIPT_ROUND14_SHA256,
 ];
 const ROUND_SCRIPT_ACCEPTED_SHA256 = [
   ROUND_SCRIPT_PRIOR_SHA256,
@@ -113,14 +117,92 @@ function sameRoot(left, right) {
   }
 }
 
-function git(root, args, binary = false) {
-  return spawnSync('git', args, { cwd: root, encoding: binary ? undefined : 'utf8' });
+// Constructed child environment: no GIT_* variable is inherited, so a caller
+// (or git hook) exporting GIT_DIR, GIT_REPLACE_REF_BASE or an alternate object
+// store cannot redirect what the gate reads. Replace refs, grafts, system and
+// global config, lazy fetch and pathspec magic cannot alter the bytes either.
+// GIT_CEILING_DIRECTORIES stops repository discovery at the lane's parent, so
+// a lane whose .git stops qualifying cannot fall through to an enclosing repo.
+function git(root, args, binary = false, limits = null) {
+  const env = {
+    GIT_CONFIG_NOSYSTEM: '1',
+    GIT_CONFIG_GLOBAL: '/dev/null',
+    GIT_OPTIONAL_LOCKS: '0',
+    GIT_TERMINAL_PROMPT: '0',
+    GIT_NO_REPLACE_OBJECTS: '1',
+    GIT_GRAFT_FILE: '/dev/null',
+    GIT_NO_LAZY_FETCH: '1',
+    GIT_LITERAL_PATHSPECS: '1',
+    TZ: 'UTC',
+  };
+  if (process.env.PATH !== undefined) env.PATH = process.env.PATH.split(':').filter(entry => entry.startsWith('/')).join(':');
+  if (process.env.HOME !== undefined) env.HOME = process.env.HOME;
+  try {
+    env.GIT_CEILING_DIRECTORIES = resolve(realpathSync(root), '..');
+  } catch {
+    env.GIT_CEILING_DIRECTORIES = resolve(root, '..');
+  }
+  return spawnSync('git', args, { cwd: root, env, encoding: binary ? undefined : 'utf8', ...(limits || {}) });
 }
 
 function gitOk(root, args, binary = false) {
   const result = git(root, args, binary);
   if (result.error || result.status !== 0) fail('could_not_evaluate', `git ${args[0]} failed`, 2);
   return binary ? result.stdout : result.stdout.trimEnd();
+}
+
+// jj-colocated lanes detach git HEAD (it may name an unlanded or empty
+// commit), so gates certify the lane branch tip, never HEAD. Attached HEAD
+// (plain git, fixtures) resolves to its own branch; detached HEAD resolves
+// refs/heads/master. Resolved once per root, then threaded as one 40-hex
+// revision through every committed-state read and every code-revision field.
+const LANE_TIPS = new Map();
+function laneTip(root) {
+  let key;
+  try { key = realpathSync(root); } catch { key = resolve(root); }
+  const cached = LANE_TIPS.get(key);
+  if (cached !== undefined) return cached;
+  // Identity: the discovered worktree root must be this root, never a parent
+  // repository reached because the lane's own .git stopped qualifying.
+  const top = git(root, ['rev-parse', '--show-toplevel']);
+  if (top.error || top.status !== 0) fail('could_not_evaluate', 'Lane root is not a git worktree', 2);
+  let topPath;
+  try { topPath = realpathSync(top.stdout.trim()); } catch { topPath = top.stdout.trim(); }
+  if (topPath !== key) fail('could_not_evaluate', `Repository root is not the lane root: ${topPath}`, 2);
+  // Attached HEAD is exactly status 0 with one plain refs/heads/ name and a
+  // newline; detached is exactly status 1 with no output; anything else (a
+  // malformed HEAD, a spawn failure, a non-branch target) is could-not-evaluate.
+  const symbolic = git(root, ['symbolic-ref', '-q', '--no-recurse', 'HEAD']);
+  if (symbolic.error) fail('could_not_evaluate', 'HEAD symref query could not run', 2);
+  let ref;
+  if (symbolic.status === 0) {
+    if (!/^refs\/heads\/[^\0-\x20\x7f~^:?*\[\\]+\n$/.test(symbolic.stdout)) {
+      fail('could_not_evaluate', 'HEAD is not attached to a plain refs/heads/ branch', 2);
+    }
+    ref = symbolic.stdout.slice(0, -1);
+  } else if (symbolic.status === 1 && symbolic.stdout === '') {
+    ref = 'refs/heads/master';
+  } else {
+    fail('could_not_evaluate', `HEAD symref query failed (status=${symbolic.status})`, 2);
+  }
+  // The anchor must be a well-formed ref name before existence is consulted,
+  // so a malformed HEAD target is refused as malformed rather than as absent.
+  const wellFormed = git(root, ['check-ref-format', ref]);
+  if (wellFormed.error || wellFormed.status !== 0) fail('could_not_evaluate', `Lane tip ${ref} is not a valid ref name`, 2);
+  // A branch that is itself a symbolic ref would make the resolved commit an
+  // unlanded remote-tracking target; only a real branch ref is an anchor.
+  const anchor = git(root, ['for-each-ref', '--format=%(symref)', '--', ref]);
+  if (anchor.error || anchor.status !== 0) fail('could_not_evaluate', `Lane tip ${ref} could not be inspected`, 2);
+  if (anchor.stdout !== '\n') {
+    fail('could_not_evaluate', anchor.stdout === ''
+      ? `Lane tip ${ref} does not exist`
+      : `Lane tip ${ref} is a symbolic ref to ${anchor.stdout.trim()}`, 2);
+  }
+  const resolved = git(root, ['rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`]);
+  const tip = resolved.status === 0 ? resolved.stdout.trim() : '';
+  if (!/^[a-f0-9]{40}$/.test(tip)) fail('could_not_evaluate', `Lane tip ${ref} does not resolve to a commit`, 2);
+  LANE_TIPS.set(key, tip);
+  return tip;
 }
 
 function blob(root, rev, path) {
@@ -164,7 +246,7 @@ function gitBlobSha1(bytes) {
 
 function committedBlob(root, path) {
   if (!path || path.includes('..') || path.startsWith('/') || /[*?\[]/.test(path)) return false;
-  const result = git(root, ['--literal-pathspecs', 'ls-tree', 'HEAD', '--', path]);
+  const result = git(root, ['--literal-pathspecs', 'ls-tree', laneTip(root), '--', path]);
   if (result.status !== 0) return false;
   const lines = result.stdout.split('\n').filter(Boolean);
   if (lines.length !== 1) return false;
@@ -227,14 +309,15 @@ function acceptedRoundScript(root, pstackPin) {
   if (ROUND_SCRIPT_ACCEPTED_SHA256.some(digest => !/^[a-f0-9]{64}$/.test(digest))) {
     fail('could_not_evaluate', 'Round checker accepted digest chain is not filled', 2);
   }
-  const head = show(root, 'HEAD', ROUND_SCRIPT);
+  const tip = laneTip(root);
+  const head = show(root, tip, ROUND_SCRIPT);
   if (!head) return false;
   const pinned = show(root, pstackPin, ROUND_SCRIPT);
   if (pinned && sha256(pinned) !== ROUND_SCRIPT_PRIOR_SHA256) {
     fail('could_not_evaluate', 'Pinned checker bytes are not the recorded prior bytes', 2);
   }
   if (!pinned && sameRoot(root, defaultRoot)) fail('could_not_evaluate', 'Pinned checker bytes are missing', 2);
-  const history = git(root, ['log', '--no-show-signature', '--format=%H', `${pstackPin}..HEAD`, '--', ROUND_SCRIPT]);
+  const history = git(root, ['log', '--no-show-signature', '--format=%H', `${pstackPin}..${tip}`, '--', ROUND_SCRIPT]);
   if (history.status !== 0) fail('could_not_evaluate', 'Checker history query failed', 2);
   const archived = new Set([...ROUND_SCRIPT_ARCHIVED_SHA256, ROUND_SCRIPT_CURRENT_SHA256]);
   for (const rev of history.stdout.split('\n').filter(Boolean)) {
@@ -248,18 +331,19 @@ function acceptedRoundScript(root, pstackPin) {
 // absent at the baseline is admitted only as an initial addition and only when
 // no later commit in the pin range modified, deleted, renamed, or retyped it.
 function lessonDrift(root, baseline, pstackPin, status, path) {
+  const tip = laneTip(root);
   const historical = blob(root, baseline, path);
-  if (historical) return blob(root, 'HEAD', path) !== historical;
+  if (historical) return blob(root, tip, path) !== historical;
   if (status !== 'A') return true;
-  if (!blob(root, 'HEAD', path)) return true;
-  const changed = git(root, ['log', '--no-show-signature', '-m', '--no-renames', '--diff-filter=MDRT', '--format=%H', `${pstackPin}..HEAD`, '--', path]);
+  if (!blob(root, tip, path)) return true;
+  const changed = git(root, ['log', '--no-show-signature', '-m', '--no-renames', '--diff-filter=MDRT', '--format=%H', `${pstackPin}..${tip}`, '--', path]);
   if (changed.status !== 0) fail('could_not_evaluate', 'Lesson history query failed', 2);
   return changed.stdout.trim().length > 0;
 }
 
 function pstackDrift(root, baseline, pstackPin, status, path) {
   if (path === ROUND_SCRIPT) return !acceptedRoundScript(root, pstackPin);
-  if (path === 'SHONEN.md') return !canonicalShonen(show(root, 'HEAD', path), root);
+  if (path === 'SHONEN.md') return !canonicalShonen(show(root, laneTip(root), path), root);
   if (LEGACY_LESSON.test(path)) return lessonDrift(root, baseline, pstackPin, status, path);
   return path.startsWith('corpus/evidence/pstack-20261015')
     || /^corpus\/lessons\/pstack-20261015-r\d{2}\.md$/.test(path)
@@ -305,7 +389,7 @@ function argumentsOf(argv) {
 }
 
 function checkHistory(root, baseline, production, pstackPin) {
-  const head = gitOk(root, ['rev-parse', 'HEAD']);
+  const head = laneTip(root);
   const ancestor = git(root, ['merge-base', '--is-ancestor', baseline, head]);
   if (ancestor.status !== 0) fail('history_rewritten', 'Baseline is not an ancestor of HEAD');
   for (const path of list(root, baseline, '.').filter(protectedPath)) {
@@ -335,7 +419,7 @@ function checkHistory(root, baseline, production, pstackPin) {
 }
 
 function roundIds(root) {
-  return list(root, 'HEAD', 'corpus/lessons')
+  return list(root, laneTip(root), 'corpus/lessons')
     .map(path => /^corpus\/lessons\/(user-20261015-r\d{2})\.md$/.exec(path)?.[1])
     .filter(Boolean)
     .sort();
@@ -422,7 +506,7 @@ function runCount(root, command, rev = null) {
   const args = spec.kind === 'tree'
     ? ['ls-tree', '-r', '--name-only', target]
     : ['--literal-pathspecs', 'grep', '-h', '-e', spec.pattern, target, '--', spec.path];
-  const result = spawnSync('git', args, { cwd: root, timeout: 30000, maxBuffer: 16 * 1024 * 1024 });
+  const result = git(root, args, true, { timeout: 30000, maxBuffer: 16 * 1024 * 1024 });
   // git grep exits 1 when the pattern matches nothing: the historical `wc -l`
   // pipeline counted that as 0 lines, so preserve exactly that one status. Any
   // other failure (missing or malformed revision, spawn error) is explicit.
@@ -440,7 +524,7 @@ function runCount(root, command, rev = null) {
 }
 
 function checkSpec(root, id) {
-  const raw = show(root, 'HEAD', `corpus/evidence/${id}/spec.json`);
+  const raw = show(root, laneTip(root), `corpus/evidence/${id}/spec.json`);
   if (!raw) fail('short_swarm', `${id} spec is missing`);
   let spec;
   try { spec = JSON.parse(raw.toString('utf8')); } catch { fail('short_swarm', `${id} spec is not JSON`); }
@@ -471,7 +555,7 @@ function checkSpec(root, id) {
   if (parsed.schema !== 'ufo-swarm-wave-v1' || parsed.counts?.total !== 32 || parsed.counts?.spawn !== 32 || parsed.dispatch?.calls !== 1) {
     fail('short_swarm', `${id} validator did not accept one 32-member wave`);
   }
-  const dispatchRaw = show(root, 'HEAD', `corpus/evidence/${id}/dispatch.json`);
+  const dispatchRaw = show(root, laneTip(root), `corpus/evidence/${id}/dispatch.json`);
   if (!dispatchRaw) fail('short_swarm', `${id} dispatch record is missing`);
   let dispatch;
   try { dispatch = JSON.parse(dispatchRaw.toString('utf8')); } catch { fail('short_swarm', `${id} dispatch record is not JSON`); }
@@ -490,7 +574,8 @@ function checkSpec(root, id) {
 }
 
 function checkSwarm(root, id) {
-  const raw = show(root, 'HEAD', `corpus/evidence/${id}/aggregate.json`);
+  const tip = laneTip(root);
+  const raw = show(root, tip, `corpus/evidence/${id}/aggregate.json`);
   if (!raw) fail('short_swarm', `${id} aggregate is missing`);
   let aggregate;
   try { aggregate = JSON.parse(raw.toString('utf8')); } catch { fail('short_swarm', `${id} aggregate is not JSON`); }
@@ -509,7 +594,7 @@ function checkSwarm(root, id) {
     if (typeof evidencePath !== 'string' || evidencePath.includes('..') || !evidencePath.startsWith(`corpus/evidence/${id}/seats/`)) {
       fail('swarm_evidence', `${id} ${item.seat} evidence path is outside the seat directory`);
     }
-    const seatRaw = show(root, 'HEAD', evidencePath);
+    const seatRaw = show(root, tip, evidencePath);
     if (!seatRaw) fail('swarm_evidence', `${id} ${item.seat} evidence file is missing`);
     let seat;
     try { seat = JSON.parse(seatRaw.toString('utf8')); } catch { fail('swarm_evidence', `${id} ${item.seat} evidence is not JSON`); }
@@ -521,12 +606,13 @@ function checkSwarm(root, id) {
 }
 
 function checkReport(root, id, measured) {
+  const tip = laneTip(root);
   const path = `reports/${id}.md`;
-  const text = show(root, 'HEAD', path)?.toString('utf8');
+  const text = show(root, tip, path)?.toString('utf8');
   if (!text) fail('report_missing', `${id} report is missing`);
   if (!text.includes(`lane-commit: ${measured}`)) fail('report_commit', `${id} report does not cite the measured commit`);
   if (show(root, measured, path)) fail('report_not_after_commit', `${id} report was already in the cited commit`);
-  const ancestor = git(root, ['merge-base', '--is-ancestor', measured, 'HEAD']);
+  const ancestor = git(root, ['merge-base', '--is-ancestor', measured, tip]);
   if (ancestor.status !== 0) fail('report_commit', `${id} cited commit is not an ancestor of HEAD`);
   if (!/^## SHONEN$/m.test(text)) fail('report_shonen', `${id} report has no SHONEN heading`);
   for (const box of BOXES) {
@@ -536,9 +622,10 @@ function checkReport(root, id, measured) {
 }
 
 function scanConsequential(root, id) {
-  const paths = [`corpus/lessons/${id}.md`, `reports/${id}.md`, ...list(root, 'HEAD', `corpus/evidence/${id}`)];
+  const tip = laneTip(root);
+  const paths = [`corpus/lessons/${id}.md`, `reports/${id}.md`, ...list(root, tip, `corpus/evidence/${id}`)];
   for (const path of paths) {
-    const bytes = show(root, 'HEAD', path);
+    const bytes = show(root, tip, path);
     if (!bytes) continue;
     const text = bytes.toString('latin1');
     for (const needle of NEEDLES) {
@@ -556,17 +643,19 @@ function scanConsequential(root, id) {
 }
 
 function sameTree(root, id, measured) {
-  const paths = [`corpus/lessons/${id}.md`, ...list(root, 'HEAD', `corpus/evidence/${id}`)];
+  const tip = laneTip(root);
+  const paths = [`corpus/lessons/${id}.md`, ...list(root, tip, `corpus/evidence/${id}`)];
   for (const path of paths) {
-    if (blob(root, 'HEAD', path) !== blob(root, measured, path)) fail('evidence_moved', `${id} ${path} changed after the measured commit`);
+    if (blob(root, tip, path) !== blob(root, measured, path)) fail('evidence_moved', `${id} ${path} changed after the measured commit`);
   }
 }
 
 function checkPublic(root, ids, expect) {
+  const tip = laneTip(root);
   let found = 0;
   for (const id of ids) {
     const path = `corpus/evidence/${id}/public/capture.json`;
-    const bytes = show(root, 'HEAD', path);
+    const bytes = show(root, tip, path);
     if (!bytes) continue;
     let capture;
     try { capture = JSON.parse(bytes.toString('utf8')); } catch { fail('public_observation', `${id} public capture is not JSON`); }
@@ -583,7 +672,7 @@ function checkPublic(root, ids, expect) {
       const file = capture[key];
       const digest = capture[`${key}Sha256`];
       if (typeof file !== 'string' || file.includes('/') || !/^[a-f0-9]{64}$/.test(digest || '')) fail('public_observation', `${id} ${key} pin is incomplete`);
-      const body = show(root, 'HEAD', `${dir}/${file}`);
+      const body = show(root, tip, `${dir}/${file}`);
       if (!body || !body.length) fail('public_observation', `${id} ${key} file is missing`);
       if (createHash('sha256').update(body).digest('hex') !== digest) fail('public_observation', `${id} ${key} hash does not match the file`);
     }
@@ -597,6 +686,7 @@ function checkPublic(root, ids, expect) {
 function check(options) {
   const root = options.repo;
   const production = sameRoot(root, defaultRoot);
+  const tip = laneTip(root);
   checkHistory(root, options.baseline, production, options.pstackPin);
   const ids = roundIds(root);
   if (ids.length !== options.expect) fail('round_count', `Found ${ids.length} user rounds, expected ${options.expect}`);
@@ -604,10 +694,10 @@ function check(options) {
     const wanted = `user-20261015-r${String(index + 1).padStart(2, '0')}`;
     if (ids[index] !== wanted) fail('round_sequence', `Expected ${wanted}, found ${ids[index]}`);
   }
-  const scorecard = show(root, 'HEAD', 'SCORECARD.md').toString('utf8');
-  const log = show(root, 'HEAD', 'LOG.md').toString('utf8');
+  const scorecard = show(root, tip, 'SCORECARD.md').toString('utf8');
+  const log = show(root, tip, 'LOG.md').toString('utf8');
   for (const id of ids) {
-    const lesson = show(root, 'HEAD', `corpus/lessons/${id}.md`).toString('utf8');
+    const lesson = show(root, tip, `corpus/lessons/${id}.md`).toString('utf8');
     const gate = parseLesson(lesson, id);
     checkSpec(root, id);
     const swarm = checkSwarm(root, id);
@@ -787,11 +877,12 @@ function receiptMatches(expected, observed) {
 
 function witness(rev) {
   const commitRev = gitOk(defaultRoot, ['rev-parse', '--verify', `${rev}^{commit}`]);
-  const codeRevision = gitOk(defaultRoot, ['rev-parse', 'HEAD']);
+  const tip = laneTip(defaultRoot);
+  const codeRevision = tip;
   const scriptBytes = readFileSync(script);
   const codeSha256 = sha256(scriptBytes);
   const worktreeBlob = gitBlobSha1(scriptBytes);
-  const headBlob = blob(defaultRoot, 'HEAD', USER_SCRIPT);
+  const headBlob = blob(defaultRoot, tip, USER_SCRIPT);
   const committed = headBlob !== null && headBlob === worktreeBlob;
   const measuredRevision = committed ? codeRevision : 'uncommitted';
   const legacyBlob = blob(defaultRoot, commitRev, USER_SCRIPT);
@@ -871,11 +962,12 @@ function runCountWitness(rev) {
   if (!shellBytes || gitBlobSha1(shellBytes) !== shellBlob) {
     fail('witness_failure', 'Count-witness bytes do not match the resolved shell blob', 2);
   }
-  const codeRevision = gitOk(defaultRoot, ['rev-parse', 'HEAD']);
+  const tip = laneTip(defaultRoot);
+  const codeRevision = tip;
   const scriptBytes = readFileSync(script);
   const codeSha256 = sha256(scriptBytes);
   const worktreeBlob = gitBlobSha1(scriptBytes);
-  const headBlob = blob(defaultRoot, 'HEAD', USER_SCRIPT);
+  const headBlob = blob(defaultRoot, tip, USER_SCRIPT);
   const committed = headBlob !== null && headBlob === worktreeBlob;
   const parent = mkdtempSync('/var/tmp/tabi-user-count-witness-');
   try {
@@ -947,12 +1039,13 @@ function runDiagnosticWitness() {
   if (!baselineBytes || baselineBlob !== DIAGNOSTIC_BASELINE_BLOB || sha256(baselineBytes) !== DIAGNOSTIC_BASELINE_SHA256) {
     fail('witness_failure', 'Diagnostic baseline bytes are not the recorded round-14 gate', 2);
   }
+  const tip = laneTip(defaultRoot);
   const scriptBytes = readFileSync(script);
   const codeSha256 = sha256(scriptBytes);
   const worktreeBlob = gitBlobSha1(scriptBytes);
-  const headBlob = blob(defaultRoot, 'HEAD', USER_SCRIPT);
+  const headBlob = blob(defaultRoot, tip, USER_SCRIPT);
   const committed = headBlob !== null && headBlob === worktreeBlob;
-  const codeRevision = gitOk(defaultRoot, ['rev-parse', 'HEAD']);
+  const codeRevision = tip;
   const guardParts = scriptBytes.toString('utf8').split(MASK_GUARD);
   if (guardParts.length !== 2) {
     fail('could_not_evaluate', `Mask guard appears ${guardParts.length - 1} times in the evaluator source`, 2);
@@ -1066,6 +1159,45 @@ function diagnosticWitness() {
   if (!run.pass) fail('witness_failure', `Diagnostic baseline=${JSON.stringify(run.baseline)} repaired=${JSON.stringify(run.repaired)} missingRepaired=${JSON.stringify(run.repairedMissing)} missingMutant=${JSON.stringify(run.mutantMissing)}`);
 }
 
+// Self-test only: a replace ref swaps the tip's committed blob bytes while the
+// object id stays the printed tip, so only the constructed child env
+// (GIT_NO_REPLACE_OBJECTS=1) reads the committed bytes. The fixture proves the
+// hostile read is live before the case relies on it.
+function replaceRefFixture(root) {
+  const path = 'corpus/evidence/user-20261015-r01/aggregate.json';
+  const blob = gitOk(root, ['rev-parse', `refs/heads/master:${path}`]);
+  const aggregate = JSON.parse(readFileSync(join(root, path), 'utf8'));
+  aggregate.results = aggregate.results.slice(0, 31);
+  const scratch = join(root, '.git', 'poison-blob.json');
+  writeFileSync(scratch, JSON.stringify(aggregate));
+  const poison = gitOk(root, ['hash-object', '-w', scratch]);
+  rmSync(scratch);
+  gitOk(root, ['update-ref', `refs/replace/${blob}`, poison]);
+  const hostile = spawnSync('git', ['show', `refs/heads/master:${path}`], { cwd: root, encoding: 'utf8', env: { PATH: process.env.PATH } });
+  if (gitOk(root, ['rev-parse', `refs/heads/master:${path}`]) !== blob) fail('could_not_evaluate', 'Replace-ref fixture moved the tip blob', 2);
+  if (hostile.status !== 0 || JSON.parse(hostile.stdout).results.length !== 31) fail('could_not_evaluate', 'Replace-ref fixture is inert', 2);
+}
+
+// Self-test only: the fixture branch becomes a symbolic ref into a
+// remote-tracking ref, so the printed anchor names master while the commit
+// would come from elsewhere; laneTip must refuse that provenance.
+function symrefFixture(root) {
+  const tip = gitOk(root, ['rev-parse', 'refs/heads/master']);
+  gitOk(root, ['checkout', '-q', '--detach', tip]);
+  const path = join(root, 'corpus/evidence/user-20261015-r01/aggregate.json');
+  const aggregate = JSON.parse(readFileSync(path, 'utf8'));
+  aggregate.results = aggregate.results.slice(0, 31);
+  writeFileSync(path, JSON.stringify(aggregate));
+  gitOk(root, ['add', '--', '.']);
+  const hostile = commit(root, 'hostile');
+  gitOk(root, ['update-ref', 'refs/remotes/o/evil', hostile]);
+  gitOk(root, ['update-ref', '--no-deref', 'HEAD', tip]);
+  gitOk(root, ['symbolic-ref', 'refs/heads/master', 'refs/remotes/o/evil']);
+  if (gitOk(root, ['for-each-ref', '--format=%(symref)', '--', 'refs/heads/master']) !== 'refs/remotes/o/evil') {
+    fail('could_not_evaluate', 'Symref fixture is inert', 2);
+  }
+}
+
 function selfTest() {
   const rewriteScore = (root, { command, before = 0, after = 1 }) => {
     const path = join(root, 'SCORECARD.md');
@@ -1155,6 +1287,22 @@ function selfTest() {
     { name: 'historical_lesson_changed', mutate: root => {
       writeFileSync(join(root, 'corpus/lessons/round-1.md'), 'historical lesson rewritten\n');
     }, exit: 1, finding: 'history_rewritten' },
+    { name: 'detached_head_reads_lane_tip', skipMutationCommit: true, mutate: root => {
+      // jj detaches HEAD: jj new names an empty local commit and jj commit an
+      // unlanded one. The held branch tip must still decide the gate, so the
+      // off-branch commit carries lesson bytes that a HEAD-reading gate parses
+      // and refuses as missing_gate while the branch tip stays clean.
+      const branch = gitOk(root, ['symbolic-ref', '-q', 'HEAD']);
+      gitOk(root, ['checkout', '-q', '--detach']);
+      writeFileSync(join(root, 'corpus/lessons/user-20261015-r01.md'), 'axis: operability\nconsequential-external-actions: none\n\nDetached head bytes.\n');
+      gitOk(root, ['add', '--', '.']);
+      const detached = commit(root, 'detached off-branch');
+      const tip = gitOk(root, ['rev-parse', '--verify', `${branch}^{commit}`]);
+      if (detached === tip) fail('could_not_evaluate', 'Detached fixture HEAD did not leave the branch tip', 2);
+      if (gitOk(root, ['rev-parse', 'HEAD']) !== detached) fail('could_not_evaluate', 'Fixture HEAD is not detached at the off-branch commit', 2);
+    }, exit: 0, finding: 'clean' },
+    { name: 'lane_tip_replace_ref', skipMutationCommit: true, mutate: root => replaceRefFixture(root), exit: 0, finding: 'clean' },
+    { name: 'lane_tip_symref', skipMutationCommit: true, mutate: root => symrefFixture(root), exit: 2, finding: 'could_not_evaluate', detail: 'is a symbolic ref' },
     { name: 'future_lesson_rename_from_pinned', mutate: root => {
       gitOk(root, ['mv', 'corpus/lessons/round-1.md', 'corpus/lessons/round-13.md']);
     }, exit: 1, finding: 'history_rewritten' },
@@ -1210,7 +1358,7 @@ function selfTest() {
     try {
       const { baseline, pin } = writeGoodFixture(root);
       test.mutate(root);
-      if (test.name !== 'clean') {
+      if (test.name !== 'clean' && !test.skipMutationCommit) {
         gitOk(root, ['add', '--', '.']);
         commit(root, 'mutation');
       }
@@ -1265,7 +1413,7 @@ function selfTest() {
   console.log(`SELFTEST name=reason_negative_control source=count_missing_revision_red predicate=synthesized_exit_finding synthetic_accept=${syntheticAccept ? 1 : 0} source_reason=${wrongCause.reason ?? 'none'} expected_exit=0 actual_exit=0 expected_finding=clean reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na wrong_reason=${decoy.reason} expected_outcome=no-match actual_outcome=${decoyMatch ? 'match' : 'no-match'} reasonless_match=${reasonlessMatch ? 1 : 0} correct_reason=${correctCause.reason} correct_match=${correctMatch ? 1 : 0} malicious_reason=unsupported_counting_command malicious_match=${maliciousMatch ? 1 : 0} kind=helper isolation=in_process result=${negativeMatch ? 'PASS' : 'FAIL'}`);
   if (!negativeMatch) fail('selftest_failure', `Reason negative control failed: ${JSON.stringify({ wrongCause, decoyMatch, reasonlessMatch, correctMatch, maliciousMatch })}`);
   const committedIds = roundIds(defaultRoot);
-  const committedScorecard = show(defaultRoot, 'HEAD', 'SCORECARD.md').toString('utf8');
+  const committedScorecard = show(defaultRoot, laneTip(defaultRoot), 'SCORECARD.md').toString('utf8');
   for (const id of committedIds) {
     const score = parseScore(committedScorecard, id);
     const before = runCount(defaultRoot, score.command, HARD_BASELINE);

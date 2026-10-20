@@ -1,0 +1,68 @@
+VERDICT: ISSUES
+
+# Review — PLAN.md §C3 schema and count (adjacency, gameability)
+
+Scope: PLAN.md:30-34, :135-153, :39-40, plus live wave-1 artifacts. The checker, counter and map do not exist yet (`ls scripts/check-adjacency.mjs .ufo/waves/round-17/measure-c3.mjs corpus/adjacency.tsv` → exit 2), so I reviewed the **text** against `/tmp/tabi-r17-c3probe/check-literal.mjs`, my own literal implementation of it. No lane/fleet/sibling write; sandbox clone only; no `jj`.
+
+Probe result: the text as written verifies **11 rows of 11**, of which **2 are real** (`.ufo/waves/round-17/adjacency/revenger.tsv`, sha256 `d57e209f…`, 2 rows) and **9 fabricated** from the same material: 5 in `inflated.tsv` (2 exact duplicates, 1-word quote + tabi boilerplate, kaidoku ruling sentence used to rule a revenger row, relabelled duplicate surface quoting another line) + 3 in `degenerate.tsv` (both quotes `the`; `sibling=kaidoku` with a revenger pin; `tabi_ref=.ufo/waves/round-16/PLAN.md` quoting `baseline`) + 1 unlanded pin. Inflation 2 → 11 with no new contested scope.
+
+## Findings
+
+**F1 (high) — count unit is rows; rows have no substance floor.** PLAN:34 counts "verified adjacency dispositions 0→N"; PLAN:150-151's only per-row predicate is re-verification. Neither :137-146 nor :150-151 imposes uniqueness, a quote floor, surface relevance, or a cap, and a faithful implementation cannot add rules the text lacks (probe: duplicates, 1-word quotes, boilerplate all verify).
+
+**F2 (high) — tabi side is file-scoped, sibling side is line-scoped.** :139-140 requires the sibling quote on `<path>:<line>` at a pinned commit; :141 makes `tabi_ref` only `<path>` with the quote "substring of that file". A row quoting `PROVINCE.md:21` "**Out of province → report, never absorb.**" — boilerplate, unrelated — verifies for any sibling; live row 1 already uses `tabi_ref=PROVINCE.md` with no line. This is the unrelated-line vector, built in.
+
+**F3 (high) — a pinned sibling commit is not landed, durable, or bound.** (a) In a sandbox clone an unreferenced `commit-tree` child had `git branch --contains` = 0 branches and still verified (`unlanded.tsv`, 1/1); kaidoku is jj-colocated with detached HEAD (`symbolic-ref -q HEAD` → DETACHED), so an unlanded jj commit is a reachable pin — the defect C1 removes for tabi's own gates. (b) `git gc --prune=now` removed the object, so N at a fixed REV is not stable. (c) `countedInputs` are repo-relative paths inside the measured repo (`check-measurement-binding.mjs:42,321-346`), so sibling repos cannot be declared: the binding gate certifies C3 against tabi bytes only, and :39-40 "each counter reads only its own inputs" is contradicted by the C3 counter reading 4+ live sibling repos. `--at REV` binds the tabi side only.
+
+**F4 (high) — one ruling line can rule every row; the live map already misattributes one.** Probe row C reuses the kaidoku sentence (spotcheck:142) to `rule` a revenger surface and verifies. Live `revenger.tsv` row 1 instead reuses the ownership sentence (spotcheck:141, "**tabi** owns live browser/CDP page observation…") for a revenger overlap that sentence does not name (`ruled`, ruling_ref `tabi-shokunin@5859243…:corpus/lessons/round-16-verifier-spotcheck.md:141`). :143-144 neither requires the ruling to name the sibling nor limits a ruling line to one row, and allows `ruling_ref` in tabi's own repo (self-ruling). `round-16-verifier-spotcheck.md` is **not** in `protectedPath` (`check-round-contract.mjs:115-124`; `check-user-round-contract.mjs:56,165`), so only the 40-hex pin freezes it — valid only if checks read blobs at the pin, never the worktree.
+
+**F5 (med) — no row identity.** `surface` is free text, no uniqueness key, `sibling` never cross-checked against `sibling_ref`: `surface="REA-skill usage"` for the same revenger overlap verifies beside the original, and `sibling=kaidoku` with a `revenger-shokunin@…` ref verifies. One scope multiplies.
+
+**F6 (med) — prior art missing from the claim about cross-domain awareness.** `kagi-shokunin/corpus/adjacency.tsv` already exists (round 16; 7 columns `path owner status claim basis token note`; kagi PROVINCE.md:43,51; knowledge/adjacency-scope.md:82-100) with a 61-case self-test and 18-mutation `--falsify` (scope-gate.sh:669-800). It already records the kagi/kake scope PLAN:32 names: `chrome-profile  kake  contested  presence-only  lane:kake/SKILL.md:161  musketeer` (kagi adjacency.tsv:82; kake PROVINCE.md:35 names tabi). C3 cites none of it and declares a divergent 9-column schema without saying so. kagi states the bound C3 lacks: "A token is a floor, not a relevance proof: a line that mentions the surface without asserting a claim still passes" (kagi adjacency.tsv:25-27). The kagi/kake scope is pre-recorded: tabi's row is a cross-reference, not a newly named scope.
+
+**F7 (med) — no sweep completeness; missing siblings fail open.** 21 `*-shokunin` dirs (`ls -d *-shokunin | wc -l` = 21). There is no `none`/examined representation and :152-153 defines only "rows only", so an unexamined sibling is indistinguishable from an examined-no-overlap one, and a missing fragment silently shrinks evidence (r16: six wave-1 executors died, spotcheck:157). A missing repo/pin must be exit 2 / claim failure naming the row, never a skipped row.
+
+**F8 (med) — `contested-open` is self-certifying.** :144-145 accepts any tabi-authored `tabi | round-17 |` (or earlier) L0 line; the file has no machine answer state (the only "Answer by ID" text is prose in one tabi round-5 line). Filing a question is not AXES.md:16's "integrator arbitrates".
+
+**F9 (low) — self-test has no case table.** :147 lists `--self-test` only, against the lane precedent of 26 committed cases (`check-sources.mjs:47-73`) and kagi's 61. Cross-repo behaviour needs a two-repo fixture in a temp dir, never live siblings.
+
+**F10 (low) — TSV mechanics unspecified.** One header in the stated order, LF, exactly 9 fields, only `ruling_ref` may be `-`, no empty fields, no CRLF, no trimming; fragments headerless; `corpus/adjacency.tsv` == header + sorted concatenation of fragments — otherwise L1's "concatenate" (:152-153) is indistinguishable from rows the ownership table does not grant.
+
+**F11 — the 0 in "0→N" is vacuous.** Before = file absent, i.e. an absence statement, not a measurement. The lane already ruled this class: r1 "score 8→9 as a note/row count, not the AXES fraction" (corpus/lessons/round-1-verifier-spotcheck.md:17) and r12's withdrawn increment (SCORECARD.md:466-469). Adjacency must be justified by arbitration evidence, not row count.
+
+**No defect:** `git show <rev>:<path>` refuses `..` and absolute paths ("outside repository"; "path '/etc/passwd' exists on disk, but not in 'HEAD'"), so the path field is not an escape vector; the repo field still needs M2's allowlist.
+
+## Implementation status (provisional — `scripts/check-adjacency.mjs` appeared mid-review, 1195 lines, untracked)
+
+I ran a copy in a sandbox lane clone (`--at <committed sha>`, map committed in the clone) against 6 crafted rows. It **closes**: exact `(surface,sibling)` duplicates (`duplicate_row`), sibling-label mismatch (`sibling_ref_invalid`), HEAD-relative `--at`, and has a real self-test (`ADJACENCY_SELFTEST verdict=clean cases=31 reasons=15 could_not_evaluate=6`). It **inherits**: F2 (row with `tabi_ref=PROVINCE.md`, no line → verified), F1/F5 (1-word `REA` + boilerplate tabi quote → verified), F4 (spotcheck:142's kaidoku sentence as the ruling for a revenger row → verified), F5 (a relabelled surface as a second row of the same overlap → verified), F3 (an orphan commit, `git branch --contains` = 0, verified when present in the sibling repo; absent from the real fleet it fails closed as `sibling_unresolved`, which is right). Split rows enforce only "`ruling_quote` occurs somewhere in the tabi file": literal `-` passes because it occurs in `kimi-webbridge`, so no split statement is checked.
+
+## Answers
+
+1. **Rows inflatable?** Yes — no uniqueness key, closed surface vocabulary, quote floor, or substance rule; demonstrated 2→11.
+2. **Quotes satisfied by unrelated lines?** Yes — the tabi side is file-scoped by design (:141) and neither side has a relevance token; demonstrated with PROVINCE.md:21 and with the kaidoku ruling for a revenger row.
+3. **Is pinning sibling commits enough?** No — it proves bytes existed, not landability, retention, currency, or that the sentence rules this pair; and it cannot be a `countedInput`, so the binding gate cannot reproduce N.
+4. **Is "verified rows" an adjacency improvement per AXES.md:16?** The artifact is (executable cross-repo citation checking where none existed). The count is not: AXES adjacency is "name contested scope; integrator arbitrates", so the unit must be a distinct contested scope with an arbitrated or sibling-corroborated disposition, not a row.
+
+## Proposed minimum-substance rule (MUST)
+
+- **M1 Identity.** `surface` ∈ a counter-owned closed vocabulary; one row per `(surface_id, sibling_repo)`; no shared `sibling_ref`; duplicates are findings.
+- **M2 Labels agree.** `sibling` == repo of `sibling_ref` minus `-shokunin`; repo ∈ the 21 fleet dirs; `realpath` under the fleet root; `ruling_ref` repo ∈ {`fleet`} ∪ sibling dirs ∪ `tabi-shokunin`.
+- **M3 Both sides line-bound.** `tabi_ref` = `<path>:<line>`; every quote (sibling, tabi, ruling) must be a substring of exactly the cited 1-based line at the cited commit (trailing `\r` stripped, no other normalization), no newline, no TAB, 4–25 words **and** ≥20 non-space chars, both ends on token boundaries, no cut mid-parenthetical (live row 1's "…screenshot/DOM evidence" fails).
+- **M4 Relevance floor.** Each row's quotes must contain ≥1 counter-owned token for its `surface_id` (kagi's `token`, adjacency.tsv:20-27); state the bound: a mention-only line passes.
+- **M5 Pin is landed.** The `sibling_ref` commit must be contained by ≥1 `refs/heads/*` at verification time; record branch and tip; not contained → `historical`, excluded from N. Never hardcode `master` (kaidoku/revenger use `main`; tabi/fleet use `master`).
+- **M6 Pin is bound and recorded.** Record `sibling_blob_sha256` + `{branch, tip, blob sha256}` per pin (10th column or committed `corpus/evidence/round-17/adjacency/pins.json`), declare the sidecar a C3 `countedInput`, verify from blobs at the pin (never the worktree), and treat an unresolvable pin as exit 2 / claim failure naming the row. Disclose: N reproduces only while the sibling retains the object (r16 routed defect 1).
+- **M7 Ruling authority.** `ruled` requires a venue from a counter-owned allowlist (fleet L0 answered entry, `corpus/lessons/round-N-verifier-spotcheck.md`, fleet wave reports, a sibling's committed file); tabi's own PROVINCE/SKILL/LOG is refused. The quote must name the sibling lane token (or the surface token); one ruling line backs at most one row unless it names each sibling cited.
+- **M8 contested-open is not arbitration.** The L0 line must name the sibling lane; these are named-but-unarbitrated, and a score move needs ≥1 `ruled` or sibling-corroborated `split-declared` naming the scope.
+- **M9 Splits/refusals are two-sided.** Both quotes must state the same split; `refused-route` needs the sibling quote from a claim section (`Owns:`/declared scope, not a mention) and the tabi quote naming the route; refusals do not raise the score.
+- **M10 Sweep completeness.** One fragment per sibling dir (21), empty allowed; checker emits `siblings_examined`; absence is a finding; `corpus/adjacency.tsv` must byte-equal header + sorted fragment concatenation at REV.
+- **M11 Count unit.** N = distinct `(surface_id, sibling_repo)` keys with a landed, line-verified, token-bearing disposition, excluding `historical`; report `{ruled, contested-open, split, refused, historical}` and treat only ruled/contested-open as arbitrated.
+- **M12 Mutation arms (checker red on each).** (a) quote swapped to another verbatim line of the same file; (b) 1-word quote on the cited line; (c) duplicate row; (d) pin → orphan commit in a sandbox clone; (e) ruling quote from a line not naming the sibling; (f) `tabi_ref` line drift +1; (g) case-folded/space-normalized quote; (h) fragment removed; (i) worktree-only edit → N unchanged (proves blob-at-REV reads); (j) committed edit → N changes (proves binding).
+- **M13 Self-test.** Committed expected-case table + two-repo fixture (sibling + lane) in a temp dir; no live sibling reads.
+
+## What holds
+
+The closed disposition vocabulary (:142) is right in shape; 40-hex pins beat kagi's live `lane:` citations for byte stability; "counter re-verifies, does not trust the checker" (:150) and lane-tip anchoring (:147) are correct; the ruling is real and verbatim at the cited line (spotcheck:141, verified at `5859243`); both live rows' quotes verify verbatim (probe 2/2). The checked map is a genuine adjacency/operability gain; the row count is what fails.
+
+Files written: `.ufo/waves/round-17/w1/RevPlanC3.md`. Sandbox (retained as cited evidence): `/tmp/tabi-r17-c3probe/{check-literal.mjs,inflated.tsv,degenerate.tsv,unlanded.tsv,revclone,fleet,lane,fleet2}`; sandbox-lane probe commits `1dd4e4e` (8-row map) and `b31b9fb` (6-row map); `fleet2/revenger-shokunin` holds orphan `e9df331`. No tool installs; no lane/fleet/sibling write; no `jj`; no round gate executed.
+
+Residual risk: the literal probe is my reading of the text; the implementation-status tests ran on an untracked copy of a concurrently-written checker and may not reflect its final bytes; live artifacts can change after review (revenger.tsv digest recorded); sibling state sampled 2026-10-20 (kaidoku detached-HEAD ancestor of `main`; revenger `main`; tabi/fleet `master`).

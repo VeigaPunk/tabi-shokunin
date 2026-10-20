@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>round17 invoke iframe child</title></head>
+<body>
+<h1>invoke-iframe-child</h1>
+<script>
+(function () {
+  var mc = document.modelContext;
+  window.__obs = { calls: [] };
+  window.__rec = function (entry) {
+    window.__obs.calls.push(Object.assign({ at: performance.now() }, entry));
+  };
+  window.__ledger = function (payload) {
+    try {
+      return fetch('/__ledger', {
+        method: 'POST',
+        cache: 'no-store',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (r) { return r.text(); }).catch(function () { return null; });
+    } catch (error) {
+      return Promise.resolve(null);
+    }
+  };
+  window.__ready = (async function () {
+    if (typeof mc !== 'object' || !mc || typeof mc.registerTool !== 'function') {
+      return { ok: false, reason: 'no-modelContext' };
+    }
+    await mc.registerTool({
+      name: 'child-echo',
+      description: 'Echo from a same-origin child frame',
+      inputSchema: { type: 'object', properties: { text: { type: 'string' } }, required: ['text'] },
+      execute: async function (input) {
+        window.__rec({ tool: 'child-echo', phase: 'enter', input: input, inputType: typeof input });
+        await window.__ledger({ tool: 'child-echo', phase: 'enter', nonce: input && input.text, input: input });
+        return 'child-echo:' + (input && input.text);
+      }
+    });
+    return { ok: true };
+  })();
+})();
+</script>
+</body>
+</html>

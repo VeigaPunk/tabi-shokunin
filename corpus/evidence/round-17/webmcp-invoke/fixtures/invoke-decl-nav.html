@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>round17 invoke declarative navigation source</title></head>
+<body>
+<h1>invoke-decl-nav</h1>
+<form id="toolform" toolname="decl-nav" tooldescription="Declarative form tool whose agent-initiated submission navigates and completes from the landing document" toolautosubmit action="invoke-decl-result.html" method="get">
+  <label>Query <input type="text" name="q"></label>
+  <button type="submit" id="go">Go</button>
+</form>
+<script>
+(function () {
+  window.__obs = { calls: [] };
+  document.getElementById('toolform').addEventListener('submit', function (event) {
+    var q = new FormData(event.target).get('q');
+    window.__obs.calls.push({
+      kind: 'submit',
+      agentInvoked: event.agentInvoked === true,
+      isTrusted: event.isTrusted,
+      cancelable: event.cancelable,
+      q: q,
+      at: performance.now()
+    });
+    try {
+      fetch('/__ledger', {
+        method: 'POST',
+        cache: 'no-store',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ tool: 'decl-nav', phase: 'submit', nonce: q, q: q })
+      }).catch(function () {});
+    } catch (error) { /* ledger is best-effort */ }
+    try {
+      sessionStorage.setItem('invoke.obs.nav', JSON.stringify({
+        kind: 'submit',
+        agentInvoked: event.agentInvoked === true,
+        q: q,
+        at: performance.now()
+      }));
+    } catch (error) { /* storage unavailable */ }
+    // Deliberately not prevented: the submission navigates, and the landing
+    // document's application/ld+json blocks become the tool result.
+  });
+})();
+</script>
+</body>
+</html>

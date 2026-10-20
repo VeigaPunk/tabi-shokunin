@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>round17 invoke imperative</title></head>
+<body>
+<h1>invoke-imperative</h1>
+<pre id="mc-status">modelContext-typeof=pending</pre>
+<script>
+(function () {
+  var status = document.getElementById('mc-status');
+  var mc = document.modelContext;
+  status.textContent = 'modelContext-typeof=' + typeof mc;
+
+  window.__obs = { calls: [] };
+  window.__rec = function (entry) {
+    window.__obs.calls.push(Object.assign({ at: performance.now() }, entry));
+  };
+  // Server-side ledger: the execute call itself POSTs to the loopback fixture
+  // server, independent of window state that page.evaluate reads back.
+  window.__ledger = function (payload) {
+    try {
+      return fetch('/__ledger', {
+        method: 'POST',
+        cache: 'no-store',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (r) { return r.text(); }).catch(function () { return null; });
+    } catch (error) {
+      return Promise.resolve(null);
+    }
+  };
+
+  window.__ready = (async function () {
+    if (typeof mc !== 'object' || !mc || typeof mc.registerTool !== 'function') {
+      return { ok: false, reason: 'no-modelContext' };
+    }
+    var registrations = [];
+    registrations.push(mc.registerTool({
+      name: 'echo',
+      description: 'Echo the text argument',
+      inputSchema: { type: 'object', properties: { text: { type: 'string' } }, required: ['text'] },
+      execute: async function (input) {
+        window.__rec({ tool: 'echo', phase: 'enter', input: input, inputType: typeof input,
+          keys: input && typeof input === 'object' ? Object.keys(input) : null });
+        await window.__ledger({
+          tool: 'echo',
+          phase: 'enter',
+          nonce: input && (input.text !== undefined ? input.text : input.nonce),
+          input: input
+        });
+        return 'echo:' + (input && input.text);
+      }
+    }));
+    registrations.push(mc.registerTool({
+      name: 'thrower',
+      description: 'Throws synchronously from execute',
+      inputSchema: { type: 'object', properties: {}, required: [] },
+      execute: function (input) {
+        window.__rec({ tool: 'thrower', phase: 'enter', input: input, syncThrow: true });
+        // Fire-and-forget so the throw below is the same synchronous throw a
+        // page would make; the ledger request is already queued.
+        window.__ledger({ tool: 'thrower', phase: 'enter', input: input });
+        throw new Error('round17-throw');
+      }
+    }));
+    registrations.push(mc.registerTool({
+      name: 'rejecter',
+      description: 'Returns a promise rejected from execute',
+      inputSchema: { type: 'object', properties: {}, required: [] },
+      execute: async function (input) {
+        window.__rec({ tool: 'rejecter', phase: 'enter', input: input });
+        await window.__ledger({ tool: 'rejecter', phase: 'enter', input: input });
+        throw new Error('round17-reject');
+      }
+    }));
+    registrations.push(mc.registerTool({
+      name: 'slow-echo',
+      description: 'Echo after a delay',
+      inputSchema: { type: 'object', properties: { text: { type: 'string' } }, required: ['text'] },
+      execute: async function (input) {
+        window.__rec({ tool: 'slow-echo', phase: 'enter', input: input });
+        try {
+          sessionStorage.setItem('invoke.obs.slow', JSON.stringify({ phase: 'enter', input: input }));
+        } catch (error) { /* storage unavailable */ }
+        await window.__ledger({ tool: 'slow-echo', phase: 'enter', nonce: input && input.text, input: input });
+        await new Promise(function (resolve) { setTimeout(resolve, 1200); });
+        window.__rec({ tool: 'slow-echo', phase: 'settle' });
+        return 'slow:' + (input && input.text);
+      }
+    }));
+    var settled = await Promise.allSettled(registrations);
+    return { ok: settled.every(function (s) { return s.status === 'fulfilled'; }),
+      settled: settled.map(function (s) { return s.status; }) };
+  })();
+})();
+</script>
+</body>
+</html>

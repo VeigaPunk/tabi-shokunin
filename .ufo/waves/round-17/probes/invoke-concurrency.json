@@ -1,0 +1,1491 @@
+{
+  "schema": "tabi-round17-webmcp-probe-invoke-concurrency-v1",
+  "seat": "C2ProbeConcurrency",
+  "capturedAt": "2026-10-20T15:52:17.090Z",
+  "question": "Two or more concurrent WebMCP invocations: invocationId uniqueness, toolInvoked/toolResponded ordering, and whether a response is matchable to its request by invocationId alone.",
+  "scope": "loopback 127.0.0.1 only; temp profile and temp HOME; only the fixture's own read-only echo/delay/boom tools invoked; browser SIGKILLed and pid proven gone",
+  "predicates": [
+    {
+      "id": "concurrent-ids-unique",
+      "assert": "every invokeTool command response carries an invocationId and all ids on the session are distinct, including for identical toolName+input sent back to back"
+    },
+    {
+      "id": "ack-only",
+      "assert": "the invokeTool command result carries invocationId and no terminal status/output: completion is event-only"
+    },
+    {
+      "id": "one-invoked-one-responded",
+      "assert": "each invocationId appears exactly once in toolInvoked and exactly once in toolResponded"
+    },
+    {
+      "id": "responded-carries-toolname",
+      "assert": "toolResponded params name the tool or frame (if absent, tool correlation needs toolInvoked or the request record)"
+    },
+    {
+      "id": "overlap",
+      "assert": "in the ordered-pair group the second toolInvoked arrives before the first toolResponded, i.e. invocations overlap rather than serialize"
+    },
+    {
+      "id": "no-crosstalk",
+      "assert": "each toolResponded output embeds its own invocation input only (delay:<text>:<ms> / echo:<text>)"
+    },
+    {
+      "id": "responded-completion-order",
+      "assert": "toolResponded order follows completion order (short delay first) regardless of submission order"
+    },
+    {
+      "id": "duplicate-input-distinct-ids",
+      "assert": "two identical echo invocations yield 2 distinct ids, 2 toolInvoked, 2 toolResponded and 2 page executions"
+    },
+    {
+      "id": "observer-session-isolation",
+      "assert": "a second enabled CDP session receives zero WebMCP invocation events for an invocation it did not issue"
+    },
+    {
+      "id": "page-executions-match",
+      "assert": "the page-side execute log has one entry per invocation carrying the same input CDP sent"
+    }
+  ],
+  "producer": {
+    "path": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-17/probes/invoke-concurrency.mjs",
+    "sha256": "9eb7a256b5cf16b0722d0230215ff7593ffe7e3b631d2942556512d8896af302"
+  },
+  "runtime": {
+    "node": "v24.21.0",
+    "chromium": {
+      "launchPath": "/usr/bin/chromium",
+      "launchSha256": "eaed39c36bdf6ff6ff23f9f5215aaab017e59723b96f27f7fcd5e0be833a172b",
+      "realExecutable": "/usr/lib/chromium/chromium",
+      "realExecutableSha256": "95b17db7512c34bf5d78a0d55e0e49719725c73736c47eb0a7a831553c4b330a",
+      "product": "Chrome/154.0.8037.97",
+      "versionSource": "CDP /json/version on this run"
+    }
+  },
+  "fixtureUrl": "http://127.0.0.1:39359/",
+  "tmpRoot": "/tmp/tabi-r17-invoke-conc-46S92x",
+  "flags": {
+    "passed": [
+      "--headless",
+      "--remote-debugging-port=0",
+      "--no-first-run",
+      "--no-default-browser-check",
+      "--disable-gpu",
+      "--disable-extensions",
+      "--noerrdialogs",
+      "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+      "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting",
+      "--user-data-dir=/tmp/tabi-r17-invoke-conc-46S92x/profile",
+      "about:blank"
+    ],
+    "webmcpFeatureArgs": [
+      "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+      "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting"
+    ],
+    "hostEnvIsolated": true
+  },
+  "cdpPort": 44029,
+  "browser": {
+    "spawnPid": 701307,
+    "mainPid": 701307,
+    "effectiveArgv": [
+      "/usr/lib/chromium/chromium",
+      "--headless",
+      "--remote-debugging-port=0",
+      "--no-first-run",
+      "--no-default-browser-check",
+      "--disable-gpu",
+      "--disable-extensions",
+      "--noerrdialogs",
+      "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+      "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting",
+      "--user-data-dir=/tmp/tabi-r17-invoke-conc-46S92x/profile",
+      "about:blank"
+    ],
+    "realExecutable": "/usr/lib/chromium/chromium"
+  },
+  "error": null,
+  "protocol": {
+    "commands": [
+      {
+        "name": "enable"
+      },
+      {
+        "name": "disable"
+      },
+      {
+        "name": "invokeTool",
+        "parameters": [
+          {
+            "name": "frameId",
+            "description": "Frame in which to invoke the tool.",
+            "$ref": "Page.FrameId"
+          },
+          {
+            "name": "toolName",
+            "description": "Name of the tool to invoke.",
+            "type": "string"
+          },
+          {
+            "name": "input",
+            "description": "Input parameters for the tool, matching the tool's inputSchema.",
+            "type": "object"
+          }
+        ]
+      },
+      {
+        "name": "cancelInvocation",
+        "parameters": [
+          {
+            "name": "invocationId",
+            "description": "Invocation identifier to cancel.",
+            "type": "string"
+          }
+        ]
+      }
+    ],
+    "events": [
+      {
+        "name": "toolsAdded",
+        "parameters": [
+          {
+            "name": "tools",
+            "description": "Array of tools that were added.",
+            "type": "array",
+            "items": {
+              "$ref": "Tool"
+            }
+          }
+        ]
+      },
+      {
+        "name": "toolsRemoved",
+        "parameters": [
+          {
+            "name": "tools",
+            "description": "Array of tools that were removed.",
+            "type": "array",
+            "items": {
+              "$ref": "RemovedTool"
+            }
+          }
+        ]
+      },
+      {
+        "name": "toolInvoked",
+        "parameters": [
+          {
+            "name": "toolName",
+            "description": "Name of the tool to invoke.",
+            "type": "string"
+          },
+          {
+            "name": "frameId",
+            "description": "Frame id",
+            "$ref": "Page.FrameId"
+          },
+          {
+            "name": "invocationId",
+            "description": "Invocation identifier.",
+            "type": "string"
+          },
+          {
+            "name": "input",
+            "description": "The input parameters used for the invocation.",
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "toolResponded",
+        "parameters": [
+          {
+            "name": "invocationId",
+            "description": "Invocation identifier.",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "description": "Status of the invocation.",
+            "$ref": "InvocationStatus"
+          },
+          {
+            "name": "output",
+            "description": "Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.\nNote: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.",
+            "optional": true,
+            "type": "any"
+          },
+          {
+            "name": "errorText",
+            "description": "Error text for protocol users.",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "name": "exception",
+            "description": "The exception object, if the javascript tool threw an error>",
+            "optional": true,
+            "$ref": "Runtime.RemoteObject"
+          }
+        ]
+      }
+    ]
+  },
+  "cdp": {
+    "targetWsHost": "127.0.0.1:44029",
+    "targetType": "page"
+  },
+  "s1Enable": {
+    "result": {},
+    "error": null
+  },
+  "frameId": "8323B275AB704793A2048F05D4A36018",
+  "registration": {
+    "allThreeToolsAnnounced": true,
+    "toolsAnnounced": [
+      "echo",
+      "delay",
+      "boom"
+    ],
+    "pageRegister": {
+      "ok": true,
+      "names": [
+        "echo",
+        "delay",
+        "boom"
+      ]
+    }
+  },
+  "groupA": {
+    "invocations": [
+      {
+        "label": "alpha-slow",
+        "toolName": "delay",
+        "input": {
+          "text": "alpha",
+          "ms": 500
+        },
+        "commandId": 6,
+        "tSentMs": 352.132,
+        "promise": {},
+        "result": {
+          "invocationId": "A3F08C4DA6E4B4F0C3B129BDA88EA354"
+        },
+        "protocolError": null,
+        "tResultMs": 352.644,
+        "toolInvoked": [
+          {
+            "tMs": 353.009,
+            "params": {
+              "toolName": "delay",
+              "frameId": "8323B275AB704793A2048F05D4A36018",
+              "invocationId": "A3F08C4DA6E4B4F0C3B129BDA88EA354",
+              "input": "{\"ms\":500,\"text\":\"alpha\"}"
+            }
+          }
+        ],
+        "toolResponded": [
+          {
+            "tMs": 853.262,
+            "params": {
+              "invocationId": "A3F08C4DA6E4B4F0C3B129BDA88EA354",
+              "status": "Completed",
+              "output": "delay:alpha:500"
+            }
+          }
+        ],
+        "invokedInput": {
+          "ms": 500,
+          "text": "alpha"
+        },
+        "invokedInputIsJsonString": true,
+        "pageInputMatches": true,
+        "invokedInputKeySorted": true,
+        "status": "Completed",
+        "output": "delay:alpha:500",
+        "respondedExtraParams": [],
+        "outputEmbedsOwnInput": true
+      },
+      {
+        "label": "beta-fast",
+        "toolName": "delay",
+        "input": {
+          "text": "beta",
+          "ms": 50
+        },
+        "commandId": 7,
+        "tSentMs": 352.264,
+        "promise": {},
+        "result": {
+          "invocationId": "22DE82C49BCFAB9037B7C42282B764F0"
+        },
+        "protocolError": null,
+        "tResultMs": 353.056,
+        "toolInvoked": [
+          {
+            "tMs": 353.281,
+            "params": {
+              "toolName": "delay",
+              "frameId": "8323B275AB704793A2048F05D4A36018",
+              "invocationId": "22DE82C49BCFAB9037B7C42282B764F0",
+              "input": "{\"ms\":50,\"text\":\"beta\"}"
+            }
+          }
+        ],
+        "toolResponded": [
+          {
+            "tMs": 403.399,
+            "params": {
+              "invocationId": "22DE82C49BCFAB9037B7C42282B764F0",
+              "status": "Completed",
+              "output": "delay:beta:50"
+            }
+          }
+        ],
+        "invokedInput": {
+          "ms": 50,
+          "text": "beta"
+        },
+        "invokedInputIsJsonString": true,
+        "pageInputMatches": true,
+        "invokedInputKeySorted": true,
+        "status": "Completed",
+        "output": "delay:beta:50",
+        "respondedExtraParams": [],
+        "outputEmbedsOwnInput": true
+      }
+    ],
+    "events": [
+      {
+        "tMs": 353.009,
+        "method": "WebMCP.toolInvoked",
+        "invocationId": "A3F08C4DA6E4B4F0C3B129BDA88EA354",
+        "toolName": "delay"
+      },
+      {
+        "tMs": 353.281,
+        "method": "WebMCP.toolInvoked",
+        "invocationId": "22DE82C49BCFAB9037B7C42282B764F0",
+        "toolName": "delay"
+      },
+      {
+        "tMs": 403.399,
+        "method": "WebMCP.toolResponded",
+        "invocationId": "22DE82C49BCFAB9037B7C42282B764F0",
+        "status": "Completed"
+      },
+      {
+        "tMs": 853.262,
+        "method": "WebMCP.toolResponded",
+        "invocationId": "A3F08C4DA6E4B4F0C3B129BDA88EA354",
+        "status": "Completed"
+      }
+    ],
+    "completed": true,
+    "frames": [
+      {
+        "dir": "out",
+        "t": 352.132,
+        "id": 6,
+        "raw": "{\"id\":6,\"method\":\"WebMCP.invokeTool\",\"params\":{\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"toolName\":\"delay\",\"input\":{\"text\":\"alpha\",\"ms\":500}}}"
+      },
+      {
+        "dir": "out",
+        "t": 352.264,
+        "id": 7,
+        "raw": "{\"id\":7,\"method\":\"WebMCP.invokeTool\",\"params\":{\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"toolName\":\"delay\",\"input\":{\"text\":\"beta\",\"ms\":50}}}"
+      },
+      {
+        "dir": "in",
+        "t": 352.644,
+        "id": 6,
+        "raw": "{\"id\":6,\"result\":{\"invocationId\":\"A3F08C4DA6E4B4F0C3B129BDA88EA354\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 353.009,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"delay\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"A3F08C4DA6E4B4F0C3B129BDA88EA354\",\"input\":\"{\\\"ms\\\":500,\\\"text\\\":\\\"alpha\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 353.056,
+        "id": 7,
+        "raw": "{\"id\":7,\"result\":{\"invocationId\":\"22DE82C49BCFAB9037B7C42282B764F0\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 353.281,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"delay\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"22DE82C49BCFAB9037B7C42282B764F0\",\"input\":\"{\\\"ms\\\":50,\\\"text\\\":\\\"beta\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 403.399,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"22DE82C49BCFAB9037B7C42282B764F0\",\"status\":\"Completed\",\"output\":\"delay:beta:50\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 853.262,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"A3F08C4DA6E4B4F0C3B129BDA88EA354\",\"status\":\"Completed\",\"output\":\"delay:alpha:500\"}}"
+      }
+    ],
+    "checks": {
+      "idsUnique": true,
+      "invokedOnePerInvocation": true,
+      "respondedOnePerInvocation": true,
+      "ackOnlyInvocationId": true,
+      "respondedParams": [
+        {
+          "invocationId": "A3F08C4DA6E4B4F0C3B129BDA88EA354",
+          "status": "Completed",
+          "output": "delay:alpha:500"
+        },
+        {
+          "invocationId": "22DE82C49BCFAB9037B7C42282B764F0",
+          "status": "Completed",
+          "output": "delay:beta:50"
+        }
+      ],
+      "respondedOrder": [
+        "beta-fast",
+        "alpha-slow"
+      ],
+      "laterInvokedBeforeFirstResponse": true,
+      "phaseSeparation": "separated",
+      "outputsEmbedOwnInput": true,
+      "boomErrorShape": [],
+      "inputsPreserved": true
+    },
+    "id": "same-tool-reorder",
+    "expectedRespondedOrder": [
+      "beta-fast",
+      "alpha-slow"
+    ]
+  },
+  "groupB": {
+    "invocations": [
+      {
+        "label": "slow-delay",
+        "toolName": "delay",
+        "input": {
+          "text": "slow",
+          "ms": 300
+        },
+        "commandId": 8,
+        "tSentMs": 856.717,
+        "promise": {},
+        "result": {
+          "invocationId": "0361AF325494E4A89318FA041BFDDFED"
+        },
+        "protocolError": null,
+        "tResultMs": 857.206,
+        "toolInvoked": [
+          {
+            "tMs": 857.366,
+            "params": {
+              "toolName": "delay",
+              "frameId": "8323B275AB704793A2048F05D4A36018",
+              "invocationId": "0361AF325494E4A89318FA041BFDDFED",
+              "input": "{\"ms\":300,\"text\":\"slow\"}"
+            }
+          }
+        ],
+        "toolResponded": [
+          {
+            "tMs": 1157.615,
+            "params": {
+              "invocationId": "0361AF325494E4A89318FA041BFDDFED",
+              "status": "Completed",
+              "output": "delay:slow:300"
+            }
+          }
+        ],
+        "invokedInput": {
+          "ms": 300,
+          "text": "slow"
+        },
+        "invokedInputIsJsonString": true,
+        "pageInputMatches": true,
+        "invokedInputKeySorted": true,
+        "status": "Completed",
+        "output": "delay:slow:300",
+        "respondedExtraParams": [],
+        "outputEmbedsOwnInput": true
+      },
+      {
+        "label": "fast-echo",
+        "toolName": "echo",
+        "input": {
+          "text": "fast"
+        },
+        "commandId": 9,
+        "tSentMs": 856.835,
+        "promise": {},
+        "result": {
+          "invocationId": "687FC05F59D10357EEF4A0AE81DEA82D"
+        },
+        "protocolError": null,
+        "tResultMs": 857.262,
+        "toolInvoked": [
+          {
+            "tMs": 857.41,
+            "params": {
+              "toolName": "echo",
+              "frameId": "8323B275AB704793A2048F05D4A36018",
+              "invocationId": "687FC05F59D10357EEF4A0AE81DEA82D",
+              "input": "{\"text\":\"fast\"}"
+            }
+          }
+        ],
+        "toolResponded": [
+          {
+            "tMs": 857.438,
+            "params": {
+              "invocationId": "687FC05F59D10357EEF4A0AE81DEA82D",
+              "status": "Completed",
+              "output": "echo:fast"
+            }
+          }
+        ],
+        "invokedInput": {
+          "text": "fast"
+        },
+        "invokedInputIsJsonString": true,
+        "pageInputMatches": true,
+        "invokedInputKeySorted": true,
+        "status": "Completed",
+        "output": "echo:fast",
+        "respondedExtraParams": [],
+        "outputEmbedsOwnInput": true
+      },
+      {
+        "label": "throwing-boom",
+        "toolName": "boom",
+        "input": {
+          "text": "kaboom"
+        },
+        "commandId": 10,
+        "tSentMs": 856.876,
+        "promise": {},
+        "result": {
+          "invocationId": "B6D21096E2CA5092DAA64FBB3EB2E438"
+        },
+        "protocolError": null,
+        "tResultMs": 857.304,
+        "toolInvoked": [
+          {
+            "tMs": 857.531,
+            "params": {
+              "toolName": "boom",
+              "frameId": "8323B275AB704793A2048F05D4A36018",
+              "invocationId": "B6D21096E2CA5092DAA64FBB3EB2E438",
+              "input": "{\"text\":\"kaboom\"}"
+            }
+          }
+        ],
+        "toolResponded": [
+          {
+            "tMs": 857.56,
+            "params": {
+              "invocationId": "B6D21096E2CA5092DAA64FBB3EB2E438",
+              "status": "Error",
+              "errorText": "",
+              "exception": {
+                "type": "object",
+                "subtype": "error",
+                "className": "Error",
+                "description": "Error: boom:kaboom\n    at execute (http://127.0.0.1:39359/:29:61)",
+                "objectId": "4863594230475305057.2.1"
+              }
+            }
+          }
+        ],
+        "invokedInput": {
+          "text": "kaboom"
+        },
+        "invokedInputIsJsonString": true,
+        "pageInputMatches": true,
+        "invokedInputKeySorted": true,
+        "status": "Error",
+        "output": null,
+        "respondedExtraParams": [
+          "errorText",
+          "exception"
+        ],
+        "outputEmbedsOwnInput": null
+      }
+    ],
+    "events": [
+      {
+        "tMs": 857.366,
+        "method": "WebMCP.toolInvoked",
+        "invocationId": "0361AF325494E4A89318FA041BFDDFED",
+        "toolName": "delay"
+      },
+      {
+        "tMs": 857.41,
+        "method": "WebMCP.toolInvoked",
+        "invocationId": "687FC05F59D10357EEF4A0AE81DEA82D",
+        "toolName": "echo"
+      },
+      {
+        "tMs": 857.438,
+        "method": "WebMCP.toolResponded",
+        "invocationId": "687FC05F59D10357EEF4A0AE81DEA82D",
+        "status": "Completed"
+      },
+      {
+        "tMs": 857.531,
+        "method": "WebMCP.toolInvoked",
+        "invocationId": "B6D21096E2CA5092DAA64FBB3EB2E438",
+        "toolName": "boom"
+      },
+      {
+        "tMs": 857.56,
+        "method": "WebMCP.toolResponded",
+        "invocationId": "B6D21096E2CA5092DAA64FBB3EB2E438",
+        "status": "Error"
+      },
+      {
+        "tMs": 1157.615,
+        "method": "WebMCP.toolResponded",
+        "invocationId": "0361AF325494E4A89318FA041BFDDFED",
+        "status": "Completed"
+      }
+    ],
+    "completed": true,
+    "frames": [
+      {
+        "dir": "out",
+        "t": 856.717,
+        "id": 8,
+        "raw": "{\"id\":8,\"method\":\"WebMCP.invokeTool\",\"params\":{\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"toolName\":\"delay\",\"input\":{\"text\":\"slow\",\"ms\":300}}}"
+      },
+      {
+        "dir": "out",
+        "t": 856.835,
+        "id": 9,
+        "raw": "{\"id\":9,\"method\":\"WebMCP.invokeTool\",\"params\":{\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"toolName\":\"echo\",\"input\":{\"text\":\"fast\"}}}"
+      },
+      {
+        "dir": "out",
+        "t": 856.876,
+        "id": 10,
+        "raw": "{\"id\":10,\"method\":\"WebMCP.invokeTool\",\"params\":{\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"toolName\":\"boom\",\"input\":{\"text\":\"kaboom\"}}}"
+      },
+      {
+        "dir": "in",
+        "t": 857.206,
+        "id": 8,
+        "raw": "{\"id\":8,\"result\":{\"invocationId\":\"0361AF325494E4A89318FA041BFDDFED\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 857.262,
+        "id": 9,
+        "raw": "{\"id\":9,\"result\":{\"invocationId\":\"687FC05F59D10357EEF4A0AE81DEA82D\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 857.304,
+        "id": 10,
+        "raw": "{\"id\":10,\"result\":{\"invocationId\":\"B6D21096E2CA5092DAA64FBB3EB2E438\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 857.366,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"delay\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"0361AF325494E4A89318FA041BFDDFED\",\"input\":\"{\\\"ms\\\":300,\\\"text\\\":\\\"slow\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 857.41,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"echo\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"687FC05F59D10357EEF4A0AE81DEA82D\",\"input\":\"{\\\"text\\\":\\\"fast\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 857.438,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"687FC05F59D10357EEF4A0AE81DEA82D\",\"status\":\"Completed\",\"output\":\"echo:fast\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 857.531,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"boom\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"B6D21096E2CA5092DAA64FBB3EB2E438\",\"input\":\"{\\\"text\\\":\\\"kaboom\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 857.56,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"B6D21096E2CA5092DAA64FBB3EB2E438\",\"status\":\"Error\",\"errorText\":\"\",\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"Error\",\"description\":\"Error: boom:kaboom\\n    at execute (http://127.0.0.1:39359/:29:61)\",\"objectId\":\"4863594230475305057.2.1\"}}}"
+      },
+      {
+        "dir": "in",
+        "t": 1157.615,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"0361AF325494E4A89318FA041BFDDFED\",\"status\":\"Completed\",\"output\":\"delay:slow:300\"}}"
+      }
+    ],
+    "checks": {
+      "idsUnique": true,
+      "invokedOnePerInvocation": true,
+      "respondedOnePerInvocation": true,
+      "ackOnlyInvocationId": true,
+      "respondedParams": [
+        {
+          "invocationId": "0361AF325494E4A89318FA041BFDDFED",
+          "status": "Completed",
+          "output": "delay:slow:300"
+        },
+        {
+          "invocationId": "687FC05F59D10357EEF4A0AE81DEA82D",
+          "status": "Completed",
+          "output": "echo:fast"
+        },
+        {
+          "invocationId": "B6D21096E2CA5092DAA64FBB3EB2E438",
+          "status": "Error",
+          "errorText": "",
+          "exception": {
+            "type": "object",
+            "subtype": "error",
+            "className": "Error",
+            "description": "Error: boom:kaboom\n    at execute (http://127.0.0.1:39359/:29:61)",
+            "objectId": "4863594230475305057.2.1"
+          }
+        }
+      ],
+      "respondedOrder": [
+        "fast-echo",
+        "throwing-boom",
+        "slow-delay"
+      ],
+      "laterInvokedBeforeFirstResponse": true,
+      "phaseSeparation": "interleaved",
+      "outputsEmbedOwnInput": true,
+      "boomErrorShape": [
+        {
+          "invocationId": "B6D21096E2CA5092DAA64FBB3EB2E438",
+          "status": "Error",
+          "errorText": "",
+          "exceptionDescription": "Error: boom:kaboom\n    at execute (http://127.0.0.1:39359/:29:61)"
+        }
+      ],
+      "inputsPreserved": true
+    },
+    "id": "different-tools"
+  },
+  "groupC": {
+    "invocations": [
+      {
+        "label": "dup-1",
+        "toolName": "echo",
+        "input": {
+          "text": "dup"
+        },
+        "commandId": 11,
+        "tSentMs": 1159.903,
+        "promise": {},
+        "result": {
+          "invocationId": "819DDFD3AAF1506EBA6192306547F634"
+        },
+        "protocolError": null,
+        "tResultMs": 1160.398,
+        "toolInvoked": [
+          {
+            "tMs": 1160.512,
+            "params": {
+              "toolName": "echo",
+              "frameId": "8323B275AB704793A2048F05D4A36018",
+              "invocationId": "819DDFD3AAF1506EBA6192306547F634",
+              "input": "{\"text\":\"dup\"}"
+            }
+          }
+        ],
+        "toolResponded": [
+          {
+            "tMs": 1160.545,
+            "params": {
+              "invocationId": "819DDFD3AAF1506EBA6192306547F634",
+              "status": "Completed",
+              "output": "echo:dup"
+            }
+          }
+        ],
+        "invokedInput": {
+          "text": "dup"
+        },
+        "invokedInputIsJsonString": true,
+        "pageInputMatches": true,
+        "invokedInputKeySorted": true,
+        "status": "Completed",
+        "output": "echo:dup",
+        "respondedExtraParams": [],
+        "outputEmbedsOwnInput": true
+      },
+      {
+        "label": "dup-2",
+        "toolName": "echo",
+        "input": {
+          "text": "dup"
+        },
+        "commandId": 12,
+        "tSentMs": 1160.002,
+        "promise": {},
+        "result": {
+          "invocationId": "8FDBB0BB79AF873C5817E5BD57EE816B"
+        },
+        "protocolError": null,
+        "tResultMs": 1160.451,
+        "toolInvoked": [
+          {
+            "tMs": 1160.569,
+            "params": {
+              "toolName": "echo",
+              "frameId": "8323B275AB704793A2048F05D4A36018",
+              "invocationId": "8FDBB0BB79AF873C5817E5BD57EE816B",
+              "input": "{\"text\":\"dup\"}"
+            }
+          }
+        ],
+        "toolResponded": [
+          {
+            "tMs": 1160.593,
+            "params": {
+              "invocationId": "8FDBB0BB79AF873C5817E5BD57EE816B",
+              "status": "Completed",
+              "output": "echo:dup"
+            }
+          }
+        ],
+        "invokedInput": {
+          "text": "dup"
+        },
+        "invokedInputIsJsonString": true,
+        "pageInputMatches": true,
+        "invokedInputKeySorted": true,
+        "status": "Completed",
+        "output": "echo:dup",
+        "respondedExtraParams": [],
+        "outputEmbedsOwnInput": true
+      }
+    ],
+    "events": [
+      {
+        "tMs": 1160.512,
+        "method": "WebMCP.toolInvoked",
+        "invocationId": "819DDFD3AAF1506EBA6192306547F634",
+        "toolName": "echo"
+      },
+      {
+        "tMs": 1160.545,
+        "method": "WebMCP.toolResponded",
+        "invocationId": "819DDFD3AAF1506EBA6192306547F634",
+        "status": "Completed"
+      },
+      {
+        "tMs": 1160.569,
+        "method": "WebMCP.toolInvoked",
+        "invocationId": "8FDBB0BB79AF873C5817E5BD57EE816B",
+        "toolName": "echo"
+      },
+      {
+        "tMs": 1160.593,
+        "method": "WebMCP.toolResponded",
+        "invocationId": "8FDBB0BB79AF873C5817E5BD57EE816B",
+        "status": "Completed"
+      }
+    ],
+    "completed": true,
+    "frames": [
+      {
+        "dir": "out",
+        "t": 1159.903,
+        "id": 11,
+        "raw": "{\"id\":11,\"method\":\"WebMCP.invokeTool\",\"params\":{\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"toolName\":\"echo\",\"input\":{\"text\":\"dup\"}}}"
+      },
+      {
+        "dir": "out",
+        "t": 1160.002,
+        "id": 12,
+        "raw": "{\"id\":12,\"method\":\"WebMCP.invokeTool\",\"params\":{\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"toolName\":\"echo\",\"input\":{\"text\":\"dup\"}}}"
+      },
+      {
+        "dir": "in",
+        "t": 1160.398,
+        "id": 11,
+        "raw": "{\"id\":11,\"result\":{\"invocationId\":\"819DDFD3AAF1506EBA6192306547F634\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1160.451,
+        "id": 12,
+        "raw": "{\"id\":12,\"result\":{\"invocationId\":\"8FDBB0BB79AF873C5817E5BD57EE816B\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1160.512,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"echo\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"819DDFD3AAF1506EBA6192306547F634\",\"input\":\"{\\\"text\\\":\\\"dup\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1160.545,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"819DDFD3AAF1506EBA6192306547F634\",\"status\":\"Completed\",\"output\":\"echo:dup\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1160.569,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"echo\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"8FDBB0BB79AF873C5817E5BD57EE816B\",\"input\":\"{\\\"text\\\":\\\"dup\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1160.593,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"8FDBB0BB79AF873C5817E5BD57EE816B\",\"status\":\"Completed\",\"output\":\"echo:dup\"}}"
+      }
+    ],
+    "checks": {
+      "idsUnique": true,
+      "invokedOnePerInvocation": true,
+      "respondedOnePerInvocation": true,
+      "ackOnlyInvocationId": true,
+      "respondedParams": [
+        {
+          "invocationId": "819DDFD3AAF1506EBA6192306547F634",
+          "status": "Completed",
+          "output": "echo:dup"
+        },
+        {
+          "invocationId": "8FDBB0BB79AF873C5817E5BD57EE816B",
+          "status": "Completed",
+          "output": "echo:dup"
+        }
+      ],
+      "respondedOrder": [
+        "dup-1",
+        "dup-2"
+      ],
+      "laterInvokedBeforeFirstResponse": false,
+      "phaseSeparation": "interleaved",
+      "outputsEmbedOwnInput": true,
+      "boomErrorShape": [],
+      "inputsPreserved": true
+    },
+    "id": "duplicate-identical"
+  },
+  "observer": {
+    "id": "observer-session",
+    "s2Enable": {
+      "result": {},
+      "error": null
+    },
+    "s2EventsBefore": 1,
+    "s2ToolsAddedOnEnable": [
+      "boom",
+      "delay",
+      "echo"
+    ],
+    "s2WebmcpEventMethods": [
+      "WebMCP.toolsAdded",
+      "WebMCP.toolInvoked",
+      "WebMCP.toolResponded"
+    ],
+    "s2InvocationEvents": [
+      {
+        "tMs": 1333.844,
+        "method": "WebMCP.toolInvoked",
+        "params": {
+          "toolName": "echo",
+          "frameId": "8323B275AB704793A2048F05D4A36018",
+          "invocationId": "475298D115D81A57745A9A2449229F90",
+          "input": "{\"text\":\"watched\"}"
+        }
+      },
+      {
+        "tMs": 1333.898,
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "475298D115D81A57745A9A2449229F90",
+          "status": "Completed",
+          "output": "echo:watched"
+        }
+      }
+    ],
+    "s2SawInvocation": true,
+    "s1InvokedForObserved": 1,
+    "s1RespondedForObserved": 1,
+    "s1RespondedParams": {
+      "invocationId": "475298D115D81A57745A9A2449229F90",
+      "status": "Completed",
+      "output": "echo:watched"
+    },
+    "s1CommandResult": {
+      "invocationId": "475298D115D81A57745A9A2449229F90"
+    },
+    "s2Frames": [
+      {
+        "dir": "in",
+        "t": 1333.844,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"echo\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"475298D115D81A57745A9A2449229F90\",\"input\":\"{\\\"text\\\":\\\"watched\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1333.898,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"475298D115D81A57745A9A2449229F90\",\"status\":\"Completed\",\"output\":\"echo:watched\"}}"
+      }
+    ],
+    "s2RawTotal": 5
+  },
+  "groupD": {
+    "id": "two-sessions-concurrent",
+    "s1Command": {
+      "id": 14,
+      "result": {
+        "invocationId": "4D9F8BE85BE5433202AF6CB703BDA128"
+      },
+      "error": null
+    },
+    "s2Command": {
+      "id": 2,
+      "result": {
+        "invocationId": "CB8B2863DAB0D735112CFAA0DEC20C2E"
+      },
+      "error": null
+    },
+    "invocations": [
+      {
+        "label": "from-s1",
+        "toolName": "delay",
+        "input": {
+          "text": "from-s1",
+          "ms": 150
+        },
+        "commandId": 14,
+        "result": {
+          "invocationId": "4D9F8BE85BE5433202AF6CB703BDA128"
+        },
+        "protocolError": null,
+        "toolInvoked": [
+          {
+            "tMs": 1654.947,
+            "params": {
+              "toolName": "delay",
+              "frameId": "8323B275AB704793A2048F05D4A36018",
+              "invocationId": "4D9F8BE85BE5433202AF6CB703BDA128",
+              "input": "{\"ms\":150,\"text\":\"from-s1\"}"
+            }
+          }
+        ],
+        "toolResponded": [
+          {
+            "tMs": 1805.193,
+            "params": {
+              "invocationId": "4D9F8BE85BE5433202AF6CB703BDA128",
+              "status": "Completed",
+              "output": "delay:from-s1:150"
+            }
+          }
+        ],
+        "status": "Completed",
+        "output": "delay:from-s1:150",
+        "outputEmbedsOwnInput": true,
+        "pageInputMatches": true
+      },
+      {
+        "label": "from-s2",
+        "toolName": "delay",
+        "input": {
+          "text": "from-s2",
+          "ms": 80
+        },
+        "commandId": 2,
+        "result": {
+          "invocationId": "CB8B2863DAB0D735112CFAA0DEC20C2E"
+        },
+        "protocolError": null,
+        "toolInvoked": [
+          {
+            "tMs": 1654.994,
+            "params": {
+              "toolName": "delay",
+              "frameId": "8323B275AB704793A2048F05D4A36018",
+              "invocationId": "CB8B2863DAB0D735112CFAA0DEC20C2E",
+              "input": "{\"ms\":80,\"text\":\"from-s2\"}"
+            }
+          }
+        ],
+        "toolResponded": [
+          {
+            "tMs": 1735.152,
+            "params": {
+              "invocationId": "CB8B2863DAB0D735112CFAA0DEC20C2E",
+              "status": "Completed",
+              "output": "delay:from-s2:80"
+            }
+          }
+        ],
+        "status": "Completed",
+        "output": "delay:from-s2:80",
+        "outputEmbedsOwnInput": true,
+        "pageInputMatches": true
+      }
+    ],
+    "s1Events": [
+      {
+        "tMs": 1654.947,
+        "method": "WebMCP.toolInvoked",
+        "invocationId": "4D9F8BE85BE5433202AF6CB703BDA128",
+        "toolName": "delay"
+      },
+      {
+        "tMs": 1654.989,
+        "method": "WebMCP.toolInvoked",
+        "invocationId": "CB8B2863DAB0D735112CFAA0DEC20C2E",
+        "toolName": "delay"
+      },
+      {
+        "tMs": 1735.179,
+        "method": "WebMCP.toolResponded",
+        "invocationId": "CB8B2863DAB0D735112CFAA0DEC20C2E",
+        "status": "Completed"
+      },
+      {
+        "tMs": 1805.193,
+        "method": "WebMCP.toolResponded",
+        "invocationId": "4D9F8BE85BE5433202AF6CB703BDA128",
+        "status": "Completed"
+      }
+    ],
+    "s2Events": [
+      {
+        "tMs": 1654.963,
+        "method": "WebMCP.toolInvoked",
+        "invocationId": "4D9F8BE85BE5433202AF6CB703BDA128",
+        "toolName": "delay"
+      },
+      {
+        "tMs": 1654.994,
+        "method": "WebMCP.toolInvoked",
+        "invocationId": "CB8B2863DAB0D735112CFAA0DEC20C2E",
+        "toolName": "delay"
+      },
+      {
+        "tMs": 1735.152,
+        "method": "WebMCP.toolResponded",
+        "invocationId": "CB8B2863DAB0D735112CFAA0DEC20C2E",
+        "status": "Completed"
+      },
+      {
+        "tMs": 1805.165,
+        "method": "WebMCP.toolResponded",
+        "invocationId": "4D9F8BE85BE5433202AF6CB703BDA128",
+        "status": "Completed"
+      }
+    ],
+    "s1EventCounts": 4,
+    "s2EventCounts": 4,
+    "s1SeesS2": true,
+    "s2SeesS1": true,
+    "s1UniquePerInvocationInStream": true,
+    "s2UniquePerInvocationInStream": true,
+    "s1Frames": [
+      {
+        "dir": "out",
+        "t": 1654.098,
+        "id": 14,
+        "raw": "{\"id\":14,\"method\":\"WebMCP.invokeTool\",\"params\":{\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"toolName\":\"delay\",\"input\":{\"text\":\"from-s1\",\"ms\":150}}}"
+      },
+      {
+        "dir": "in",
+        "t": 1654.771,
+        "id": 14,
+        "raw": "{\"id\":14,\"result\":{\"invocationId\":\"4D9F8BE85BE5433202AF6CB703BDA128\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1654.947,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"delay\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"4D9F8BE85BE5433202AF6CB703BDA128\",\"input\":\"{\\\"ms\\\":150,\\\"text\\\":\\\"from-s1\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1654.989,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"delay\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"CB8B2863DAB0D735112CFAA0DEC20C2E\",\"input\":\"{\\\"ms\\\":80,\\\"text\\\":\\\"from-s2\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1735.179,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"CB8B2863DAB0D735112CFAA0DEC20C2E\",\"status\":\"Completed\",\"output\":\"delay:from-s2:80\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1805.193,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"4D9F8BE85BE5433202AF6CB703BDA128\",\"status\":\"Completed\",\"output\":\"delay:from-s1:150\"}}"
+      }
+    ],
+    "s2Frames": [
+      {
+        "dir": "out",
+        "t": 1654.23,
+        "id": 2,
+        "raw": "{\"id\":2,\"method\":\"WebMCP.invokeTool\",\"params\":{\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"toolName\":\"delay\",\"input\":{\"text\":\"from-s2\",\"ms\":80}}}"
+      },
+      {
+        "dir": "in",
+        "t": 1654.804,
+        "id": 2,
+        "raw": "{\"id\":2,\"result\":{\"invocationId\":\"CB8B2863DAB0D735112CFAA0DEC20C2E\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1654.963,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"delay\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"4D9F8BE85BE5433202AF6CB703BDA128\",\"input\":\"{\\\"ms\\\":150,\\\"text\\\":\\\"from-s1\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1654.994,
+        "raw": "{\"method\":\"WebMCP.toolInvoked\",\"params\":{\"toolName\":\"delay\",\"frameId\":\"8323B275AB704793A2048F05D4A36018\",\"invocationId\":\"CB8B2863DAB0D735112CFAA0DEC20C2E\",\"input\":\"{\\\"ms\\\":80,\\\"text\\\":\\\"from-s2\\\"}\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1735.152,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"CB8B2863DAB0D735112CFAA0DEC20C2E\",\"status\":\"Completed\",\"output\":\"delay:from-s2:80\"}}"
+      },
+      {
+        "dir": "in",
+        "t": 1805.165,
+        "raw": "{\"method\":\"WebMCP.toolResponded\",\"params\":{\"invocationId\":\"4D9F8BE85BE5433202AF6CB703BDA128\",\"status\":\"Completed\",\"output\":\"delay:from-s1:150\"}}"
+      }
+    ],
+    "checks": {
+      "respondedParams": [
+        {
+          "invocationId": "4D9F8BE85BE5433202AF6CB703BDA128",
+          "status": "Completed",
+          "output": "delay:from-s1:150"
+        },
+        {
+          "invocationId": "CB8B2863DAB0D735112CFAA0DEC20C2E",
+          "status": "Completed",
+          "output": "delay:from-s2:80"
+        }
+      ],
+      "phaseSeparation": "separated",
+      "copiesPerStream": [
+        {
+          "invocationId": "4D9F8BE85BE5433202AF6CB703BDA128",
+          "s1": 2,
+          "s2": 2
+        },
+        {
+          "invocationId": "CB8B2863DAB0D735112CFAA0DEC20C2E",
+          "s1": 2,
+          "s2": 2
+        }
+      ]
+    }
+  },
+  "pageCalls": {
+    "count": 10,
+    "calls": [
+      {
+        "name": "delay",
+        "input": {
+          "ms": 500,
+          "text": "alpha"
+        },
+        "at": 25.300000000745058
+      },
+      {
+        "name": "delay",
+        "input": {
+          "ms": 50,
+          "text": "beta"
+        },
+        "at": 25.5
+      },
+      {
+        "name": "delay",
+        "input": {
+          "ms": 300,
+          "text": "slow"
+        },
+        "at": 529.7000000011176
+      },
+      {
+        "name": "echo",
+        "input": {
+          "text": "fast"
+        },
+        "at": 529.8000000007451
+      },
+      {
+        "name": "boom",
+        "input": {
+          "text": "kaboom"
+        },
+        "at": 529.9000000003725
+      },
+      {
+        "name": "echo",
+        "input": {
+          "text": "dup"
+        },
+        "at": 832.9000000003725
+      },
+      {
+        "name": "echo",
+        "input": {
+          "text": "dup"
+        },
+        "at": 833
+      },
+      {
+        "name": "echo",
+        "input": {
+          "text": "watched"
+        },
+        "at": 1006.2000000011176
+      },
+      {
+        "name": "delay",
+        "input": {
+          "ms": 150,
+          "text": "from-s1"
+        },
+        "at": 1327.1000000014901
+      },
+      {
+        "name": "delay",
+        "input": {
+          "ms": 80,
+          "text": "from-s2"
+        },
+        "at": 1327.300000000745
+      }
+    ]
+  },
+  "transcript": {
+    "s1RawTotal": 63,
+    "s1Events": 33,
+    "s2RawTotal": 11
+  },
+  "predicateResults": [
+    {
+      "id": "concurrent-ids-unique",
+      "pass": true,
+      "detail": "9 ids for 9 invocations, 9 distinct"
+    },
+    {
+      "id": "ack-only",
+      "pass": true,
+      "detail": "[{\"invocationId\":\"A3F08C4DA6E4B4F0C3B129BDA88EA354\"},{\"invocationId\":\"22DE82C49BCFAB9037B7C42282B764F0\"},{\"invocationId\":\"0361AF325494E4A89318FA041BFDDFED\"},{\"invocationId\":\"687FC05F59D10357EEF4A0AE81DEA82D\"},{\"invocationId\":\"B6D21096E2CA5092DAA64FBB3EB2E438\"},{\"invocationId\":\"819DDFD3AAF1506EBA6192306547F634\"},{\"invocationId\":\"8FDBB0BB79AF873C5817E5BD57EE816B\"},{\"invocationId\":\"4D9F8BE85BE5433202AF6CB703BDA128\"},{\"invocationId\":\"CB8B2863DAB0D735112CFAA0DEC20C2E\"}]"
+    },
+    {
+      "id": "one-invoked-one-responded",
+      "pass": true,
+      "detail": "per issuing stream: [\"alpha-slow:inv=1,resp=1\",\"beta-fast:inv=1,resp=1\",\"slow-delay:inv=1,resp=1\",\"fast-echo:inv=1,resp=1\",\"throwing-boom:inv=1,resp=1\",\"dup-1:inv=1,resp=1\",\"dup-2:inv=1,resp=1\",\"from-s1:inv=1,resp=1\",\"from-s2:inv=1,resp=1\"]; groupD s1Unique=true s2Unique=true"
+    },
+    {
+      "id": "responded-carries-toolname",
+      "pass": false,
+      "detail": "toolResponded param keys observed: [\"errorText\",\"exception\",\"invocationId\",\"output\",\"status\"]"
+    },
+    {
+      "id": "overlap",
+      "pass": true,
+      "detail": "groupA events: [{\"tMs\":353.009,\"method\":\"WebMCP.toolInvoked\",\"invocationId\":\"A3F08C4DA6E4B4F0C3B129BDA88EA354\",\"toolName\":\"delay\"},{\"tMs\":353.281,\"method\":\"WebMCP.toolInvoked\",\"invocationId\":\"22DE82C49BCFAB9037B7C42282B764F0\",\"toolName\":\"delay\"},{\"tMs\":403.399,\"method\":\"WebMCP.toolResponded\",\"invocationId\":\"22DE82C49BCFAB9037B7C42282B764F0\",\"status\":\"Completed\"},{\"tMs\":853.262,\"method\":\"WebMCP.toolResponded\",\"invocationId\":\"A3F08C4DA6E4B4F0C3B129BDA88EA354\",\"status\":\"Completed\"}]"
+    },
+    {
+      "id": "no-crosstalk",
+      "pass": true,
+      "detail": "non-boom own-output=[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]; boom=[{\"invocationId\":\"B6D21096E2CA5092DAA64FBB3EB2E438\",\"status\":\"Error\",\"errorText\":\"\",\"exceptionDescription\":\"Error: boom:kaboom\\n    at execute (http://127.0.0.1:39359/:29:61)\"},null]"
+    },
+    {
+      "id": "responded-completion-order",
+      "pass": true,
+      "detail": "order=[\"beta-fast\",\"alpha-slow\"] expected=[\"beta-fast\",\"alpha-slow\"]; groupB order=[\"fast-echo\",\"throwing-boom\",\"slow-delay\"]"
+    },
+    {
+      "id": "duplicate-input-distinct-ids",
+      "pass": true,
+      "detail": "[{\"label\":\"dup-1\",\"id\":\"819DDFD3AAF1506EBA6192306547F634\",\"status\":\"Completed\"},{\"label\":\"dup-2\",\"id\":\"8FDBB0BB79AF873C5817E5BD57EE816B\",\"status\":\"Completed\"}]"
+    },
+    {
+      "id": "observer-session-isolation",
+      "pass": false,
+      "detail": "s2 invocation events=2, s2 methods=[\"WebMCP.toolsAdded\",\"WebMCP.toolInvoked\",\"WebMCP.toolResponded\"]"
+    },
+    {
+      "id": "dual-session-cross-delivery",
+      "pass": true,
+      "detail": "{\"s1EventCounts\":4,\"s2EventCounts\":4,\"s1SeesS2\":true,\"s2SeesS1\":true}"
+    },
+    {
+      "id": "session-attributable",
+      "pass": false,
+      "detail": "any session-ish key on an invocation event: false"
+    },
+    {
+      "id": "page-executions-match",
+      "pass": true,
+      "detail": "page execute entries=10, expected=10, inputsPreserved=true"
+    }
+  ],
+  "verdict": {
+    "allPredicatesHeld": false,
+    "failed": [
+      "responded-carries-toolname",
+      "observer-session-isolation",
+      "session-attributable"
+    ],
+    "invocationIdUnique": true,
+    "respondedCarriesToolName": false,
+    "observerIsolated": false,
+    "dualSessionCrossDelivery": true,
+    "sessionAttributable": false,
+    "completionOrder": [
+      "beta-fast",
+      "alpha-slow"
+    ],
+    "phaseSeparation": [
+      {
+        "id": "same-tool-reorder",
+        "phase": "separated"
+      },
+      {
+        "id": "different-tools",
+        "phase": "interleaved"
+      },
+      {
+        "id": "duplicate-identical",
+        "phase": "interleaved"
+      },
+      {
+        "id": "two-sessions-concurrent",
+        "phase": "separated"
+      }
+    ],
+    "ackBeforeCompletion": true
+  },
+  "shutdown": {
+    "killed": [
+      {
+        "pid": 701307,
+        "how": "spawn-pid"
+      }
+    ],
+    "profileMarker": "--user-data-dir=/tmp/tabi-r17-invoke-conc-46S92x/profile",
+    "survivors": [],
+    "gone": true,
+    "spawnPid": 701307,
+    "spawnPidPresent": false,
+    "spawnPidState": null,
+    "spawnPidGone": true,
+    "checkedAt": "2026-10-20T15:52:19.024Z"
+  },
+  "loopback": {
+    "bindAddress": "127.0.0.1",
+    "requestCount": 2,
+    "externalRequestCount": 0,
+    "paths": [
+      "/",
+      "/favicon.ico"
+    ]
+  }
+}

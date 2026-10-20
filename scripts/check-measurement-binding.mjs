@@ -21,6 +21,15 @@
 // environment (below). Git is additionally pinned against graft/replace/fsmonitor
 // manipulation, and every pathspec is literal.
 //
+// --at defaults to the lane tip, not HEAD (round 17, claim C1). jj-colocated
+// lanes detach git HEAD, and a detached HEAD may name an unlanded or empty
+// commit, so a gate that reads HEAD can certify bytes that are on no branch.
+// The lane tip is the branch HEAD is attached to (plain git, fixtures) or
+// refs/heads/master when HEAD is detached; it is resolved once per process and
+// threaded through every read. An anchor that is not a refs/heads/ name or
+// does not resolve reports could_not_evaluate revision_unresolved naming the
+// anchor. An explicit --at REV is still resolved exactly as before.
+//
 // Manifest shape (corpus/evidence/round-<N>/measurement-binding.json):
 //   { "schema": "tabi-measurement-binding-v1", "round": 16,
 //     "baseline": "<40-hex>",
@@ -39,7 +48,8 @@
 //   0  evaluated clean
 //   1  evaluated, per-claim findings
 //   2  could not evaluate: manifest_unreadable, manifest_schema_invalid,
-//      revision_unresolved, git_failed (usage for CLI surface refusals)
+//      revision_unresolved (--at or the lane-tip anchor), git_failed
+//      (usage for CLI surface refusals)
 //
 // Per-claim finding reasons (closed vocabulary):
 //   measured_revision_not_ancestor   measuredRevision is not
@@ -88,7 +98,7 @@
 
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, lstatSync, readFileSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, resolve as resolvePath } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -194,11 +204,19 @@ function minimalEnv() {
   return env;
 }
 
-function git(repo, args, binary = false) {
+// Repo-identity ceiling: set once resolveRepo has named the toplevel, so a
+// later call cannot discover an enclosing repository if the lane's `.git`
+// stops qualifying (SentinelAnchor F3).
+let gitCeiling = null;
+
+function git(repo, args, binary = false, extraEnv = null) {
+  const env = minimalEnv();
+  if (gitCeiling !== null) env.GIT_CEILING_DIRECTORIES = gitCeiling;
+  if (extraEnv !== null) Object.assign(env, extraEnv);
   try {
     return spawnSync('git', [...GIT_PREFIX, ...args], {
       cwd: repo,
-      env: minimalEnv(),
+      env,
       encoding: binary ? undefined : 'utf8',
       maxBuffer: MAX_BUFFER,
     });
@@ -236,14 +254,102 @@ function resolveCommit(repo, rev, label) {
   return result.stdout.trim();
 }
 
-// Resolve the repository root: --repo <dir> canonicalized through git itself,
-// or the git toplevel of the cwd when --repo is absent.
-function resolveRepo(dir) {
-  const result = git(resolvePath(dir ?? process.cwd()), ['rev-parse', '--show-toplevel']);
-  if (result.error || result.status !== 0) {
-    refuse(FAILURE_REASON.gitFailed, gitError(['rev-parse', '--show-toplevel'], result));
+// Resolve the lane tip: the branch HEAD is attached to, or refs/heads/master
+// when HEAD is detached (jj-colocated lanes are always detached). jj moves HEAD
+// to a fresh empty or unlanded commit, so a gate that reads HEAD can certify
+// bytes that are on no branch; the branch tip is the committed lane state.
+// Resolved once per process; callers thread the returned 40-hex onward.
+// The anchor must be a real branch: rev-parse follows a symbolic ref, so
+// `refs/heads/master` -> `refs/remotes/...` would certify an unlanded commit
+// (SentinelAnchor F5), and only status 0 with an exact refs/heads/ line or
+// status 1 with empty stdout names an anchor (F4: 128/spawn error is not
+// "detached").
+function laneTip(root) {
+  const args = ['symbolic-ref', '-q', '--no-recurse', 'HEAD'];
+  const sym = git(root, args);
+  if (sym.error) refuse(FAILURE_REASON.gitFailed, gitError(args, sym));
+  let ref;
+  if (sym.status === 0) {
+    if (!/^refs\/heads\/[^\0-\x20\x7f~^:?*\[\\]+\n$/.test(String(sym.stdout))) {
+      refuse(FAILURE_REASON.revisionUnresolved,
+        `lane tip anchor ${cleanDetail(sym.stdout) || '(empty)'} is not a refs/heads/ name`);
+    }
+    ref = String(sym.stdout).slice(0, -1);
+  } else if (sym.status === 1 && String(sym.stdout) === '') {
+    ref = 'refs/heads/master';
+  } else {
+    refuse(FAILURE_REASON.gitFailed, gitError(args, sym));
   }
-  return result.stdout.trim();
+  // A refname that passes the character filter can still carry revision
+  // syntax (`refs/heads/master@{1}` is the reflog entry of an older commit):
+  // check-ref-format rejects it, and the anchor must be exactly one real ref
+  // row, so a pattern that resolves to nothing through for-each-ref while
+  // resolving through rev-parse is refused (SentinelAnchor F13).
+  const formatArgs = ['check-ref-format', ref];
+  const format = git(root, formatArgs);
+  if (format.error) refuse(FAILURE_REASON.gitFailed, gitError(formatArgs, format));
+  if (format.status !== 0) {
+    refuse(FAILURE_REASON.revisionUnresolved,
+      `lane tip anchor ${cleanDetail(ref)} is not a valid refname`);
+  }
+  const symrefArgs = ['for-each-ref', '--format=%(refname)%00%(symref)', '--', ref];
+  const symref = git(root, symrefArgs);
+  if (symref.error || symref.status !== 0) {
+    refuse(FAILURE_REASON.gitFailed, gitError(symrefArgs, symref));
+  }
+  let anchorRows = 0;
+  for (const row of String(symref.stdout).split('\n')) {
+    if (row === '') continue;
+    const [name, target = ''] = row.split('\0');
+    if (name !== ref) continue;
+    anchorRows += 1;
+    if (target !== '') {
+      refuse(FAILURE_REASON.revisionUnresolved,
+        `lane tip anchor ${ref} is a symbolic ref to ${cleanDetail(target)}`);
+    }
+  }
+  if (anchorRows !== 1) {
+    refuse(FAILURE_REASON.revisionUnresolved,
+      `lane tip anchor ${ref} names ${anchorRows} ref rows, expected exactly one`);
+  }
+  const resolveArgs = ['rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`];
+  const result = git(root, resolveArgs);
+  if (result.error || result.status !== 0) {
+    refuse(FAILURE_REASON.revisionUnresolved,
+      `lane tip anchor ${ref} does not resolve to a commit`);
+  }
+  const oid = result.stdout.trim();
+  if (!HEX40.test(oid)) {
+    refuse(FAILURE_REASON.gitFailed, `lane tip anchor ${ref} resolved to non-40-hex ${cleanDetail(oid)}`);
+  }
+  return oid;
+}
+
+// Resolve the repository root: --repo <dir> canonicalized through git itself,
+// or the git toplevel of the cwd when --repo is absent. The lane is nested
+// inside the fleet repository, so the given directory must itself be the
+// toplevel: with a ceiling at its parent, a lane whose `.git` stops qualifying
+// cannot silently certify the enclosing repository (SentinelAnchor F3), and a
+// subdirectory argument is refused rather than anchored elsewhere.
+function resolveRepo(dir) {
+  const given = dir ?? process.cwd();
+  let start;
+  try {
+    start = realpathSync(resolvePath(given));
+  } catch (error) {
+    refuse(FAILURE_REASON.gitFailed, `repo path ${cleanDetail(given)}: ${error.message}`);
+  }
+  const args = ['rev-parse', '--show-toplevel'];
+  const result = git(start, args, false, { GIT_CEILING_DIRECTORIES: dirname(start) });
+  if (result.error || result.status !== 0) {
+    refuse(FAILURE_REASON.gitFailed, gitError(args, result));
+  }
+  const top = realpathSync(result.stdout.trim());
+  if (top !== start) {
+    refuse(FAILURE_REASON.gitFailed, `repo ${start} is not its own toplevel (${top})`);
+  }
+  gitCeiling = dirname(top);
+  return top;
 }
 
 // A repo-relative path or directory prefix suitable for a literal pathspec
@@ -706,6 +812,7 @@ function usage() {
     '  node scripts/check-measurement-binding.mjs --legacy <round-15 measurements.json> [--at REV] [--json] [--repo <dir>]',
     '  node scripts/check-measurement-binding.mjs --self-test [--repo <dir>]',
     '  node scripts/check-measurement-binding.mjs --reasons',
+    '  --at defaults to the lane tip: the attached HEAD branch, or refs/heads/master when HEAD is detached',
   ].join('\n');
 }
 
@@ -830,7 +937,8 @@ function main() {
       manifestProblemsEarly(manifestProblems(manifest), manifestFile);
     }
     repo = resolveRepo(options.repo);
-    atRev = resolveCommit(repo, options.at ?? 'HEAD', '--at');
+    // Resolve the anchor once: explicit --at verbatim, else the lane tip.
+    atRev = options.at === null ? laneTip(repo) : resolveCommit(repo, options.at, '--at');
     const evaluated = options.mode === 'legacy'
       ? evaluateLegacy(repo, manifest, atRev)
       : { claims: manifest.claims.map((claim) => claim.id),

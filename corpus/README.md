@@ -312,3 +312,50 @@ round 16: S020 is now mined by the note above, and native WebMCP is held for
 Chromium 154 with flags on loopback only. The kaika clause "not
 `navigator.modelContext`" (`:181`) holds at 154; only "no flag carries it" is
 superseded. Real-site WebMCP, agent-side consumption and Chromium 152 stay open.
+
+## Round 17 — WebMCP tool invocation over CDP as committed evidence (2026-10-20)
+
+New knowledge map row (34 notes; the 33 earlier rows are unchanged):
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/webmcp-invocation-round-17.md` | Runtime-held for Chromium 154.0.8037.97 with WebMCP flags on loopback fixtures only: CDP `WebMCP.invokeTool` against a page-registered tool, recorded as the raw request/response, the `invocationId`/`WebMCP.toolInvoked`/`WebMCP.toolResponded` events and the page-side `execute` observation per case, under predicates fixed in code before the run, with the required error and edge cases as receipt cases | S041–S048 (receipt `evidence/round-17/webmcp-invoke/receipt.json`) |
+
+Frontier status (append-only; the round-16 status at `:302-303` and its wave-2 note at
+`:307-314` keep their historical wording): the clause "tool invocation as committed
+evidence" (`:303`) is now **held for Chromium 154 only**, flag-enabled, loopback,
+11/11 (plus 4 supplementary controls) required cases in the committed receipt. Everything else named at `:302-305`
+stays open: real-site WebMCP (needs operator approval), agent-side consumption of page
+tools (no MCP client and no kimi-webbridge WebMCP surface observed,
+`knowledge/webmcp-chromium-loopback-round-16.md:128-129`), any unflagged/default-profile
+claim, Chromium 152 at runtime, and the extension↔daemon handshake, real-site rate/rights
+and real-site journey rows.
+
+Census U3 pointer index (routed defect 4,
+`corpus/lessons/round-16-verifier-spotcheck.md:151`). `knowledge/browser-surface-census.md`
+is sha-pinned at `corpus/evidence/fleet-round-1-freshness/pins.tsv:7`
+(`a33c22644d64…`, 265 lines), so its U3 line cannot gain an in-file pointer; this index row
+carries the pointer and no note byte changes. The routed text cites
+`corpus/README.md:295-317`, but the round-16 file ends at `:314`
+(`git show 3254740:corpus/README.md | wc -l` → `314`), so the row below cites the span that
+exists.
+
+| Pinned line | Points to | Status |
+|---|---|---|
+| `knowledge/browser-surface-census.md:188` (U3) | `corpus/README.md:295-305` and `:307-314` | answered for Chromium 154.0.8037.97 only, flags on, loopback; Chromium 152 unprobed at runtime |
+
+Re-derivation for this section: `sha256sum corpus/knowledge/browser-surface-census.md`
+(expect `a33c22644d64…`); `node -e 'const r=require("./corpus/evidence/round-17/webmcp-invoke/receipt.json");console.log(r.verdict,r.summary.cases,r.summary.passed,r.summary.failed,r.summary.missing,r.summary.caseSet.caseSetOk)'`;
+`diff <(ls corpus/knowledge | sed 's/\.md$//' | sort) <(grep -o 'knowledge/[a-z0-9-]*\.md' corpus/README.md | sed 's|knowledge/||;s|\.md$||' | sort -u)` → no output.
+
+Adjacency map (round 17, C3): sibling overlaps and their dispositions — including the
+round-16 integrator ruling on CDP (`corpus/lessons/round-16-verifier-spotcheck.md:141-142`)
+and the contested the-musketeer CDP profile lease (fleet `.ufo/l0-questions.md:62`) — live in
+`corpus/adjacency.tsv`, checked by `scripts/check-adjacency.mjs`. `PROVINCE.md` cannot carry
+them: it is a census-frozen row (`corpus/evidence/pstack-20261015/baseline-census.tsv:24`).
+
+Binding receipts history label (routed defect 2): `corpus/evidence/round-16/binding/selftest.json`
+(43 cases) and `binding/legacy-r15.json` were produced by the pre-hardening gate (`5150611c…`);
+the receipts of the registered gate at 3254740 (`1f84fb54…`, 59 cases) are in
+`corpus/evidence/round-17/routed/binding-hardened/` (`index.json`). The legacy stdout is
+byte-identical across the two gates; only the gate identity differs.

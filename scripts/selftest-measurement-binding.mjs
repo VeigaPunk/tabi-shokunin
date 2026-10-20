@@ -8,7 +8,7 @@
 // build of the same fixture run with the same flags. Usage:
 //   node scripts/selftest-measurement-binding.mjs [--gate <path>]
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -253,6 +253,17 @@ negative('counted_input_changed', mut => cleanShape(mut
   ? { mutate: ctx => put(ctx.root, 'counted/input.txt', 'counted input v2\n') } : {}),
   1, ['counted_input_changed']);
 
+// Drift need not modify an existing blob: a pure addition (MutBindSelftest M04
+// survivor: --diff-filter=M) and a pure deletion under a declared input prefix
+// are both counted_input_changed. Each pairs with the clean control above.
+negative('counted_input_added', mut => cleanShape(mut
+  ? { mutate: ctx => put(ctx.root, 'counted/added.txt', 'added after measurement\n') } : {}),
+  1, ['counted_input_changed']);
+
+negative('counted_input_deleted', mut => cleanShape(mut
+  ? { mutate: ctx => rmSync(join(ctx.root, 'counted/input.txt')) } : {}),
+  1, ['counted_input_changed']);
+
 negative('argv_unsupported_missing_rev', mut => cleanShape(mut
   ? { argv: ['node', 'measure.mjs', '--claim', 'C1'] } : {}),
   1, ['argv_unsupported']);
@@ -424,6 +435,117 @@ positive('rev_injection_inert', () => cleanShape({ argv: INJECTION_ARGV }), {
     }
   },
 });
+
+// ── Round-17 lane-tip anchoring (PLAN §C1) ────────────────────────────────
+// jj-colocated lanes detach HEAD at a commit that may be on no branch, so the
+// gate must certify the lane tip (refs/heads/master when detached), never
+// HEAD. Each detached fixture keeps HEAD at an off-branch commit P whose tree
+// drifts one counted input: a HEAD-reading gate (round-16 bytes) reports
+// counted_input_changed, while a lane-tip gate reads the manifest commit and
+// reports clean.
+function detachedOffBranch({ master = true } = {}) {
+  const built = cleanShape();
+  const tip = git(built.root, ['rev-parse', 'HEAD']);
+  const branch = master ? 'master' : 'main';
+  if (master) git(built.root, ['branch', '-m', 'master']);
+  // Commit P as a child of tip, then reset the branch back so P stays
+  // off-branch; detaching HEAD at P reproduces `jj new` on no branch.
+  put(built.root, 'counted/input.txt', 'off-branch counted-input drift\n');
+  const offBranch = commitAll(built.root, 'off-branch counted-input drift');
+  git(built.root, ['update-ref', `refs/heads/${branch}`, tip]);
+  git(built.root, ['update-ref', '--no-deref', 'HEAD', offBranch]);
+  return { ...built, tip, offBranch };
+}
+
+// The positive case asserts the printed `at` is the branch tip, not the
+// off-branch HEAD: --json is the only surface that prints the resolved 40-hex.
+positive('lane_tip_detached_off_branch', () => ({ ...detachedOffBranch(), extraArgs: ['--json'] }), {
+  assert: (built, got) => {
+    const parsed = JSON.parse(got.stdout.trim());
+    if (built.tip === built.offBranch) throw new Error('fixture tip equals off-branch HEAD');
+    if (parsed.verdict !== 'clean') throw new Error(`verdict=${parsed.verdict}`);
+    if (parsed.at !== built.tip) throw new Error(`at=${parsed.at} expected lane tip ${built.tip}`);
+  },
+});
+
+// Explicit --at still wins over the lane tip. The control is the identical
+// detached fixture without --at (lane tip -> clean); the negative adds exactly
+// one variable, the explicit --at P.
+negative('lane_tip_detached_explicit_at', mut => {
+  const built = detachedOffBranch();
+  return mut ? { ...built, extraArgs: ['--at', built.offBranch] } : built;
+}, 1, ['counted_input_changed']);
+
+// Detached HEAD with no refs/heads/master: no lane tip can be named, so the
+// gate must refuse (exit 2) rather than fall back to HEAD.
+negative('lane_tip_detached_no_master', mut => (mut ? detachedOffBranch({ master: false }) : cleanShape()),
+  2, ['revision_unresolved']);
+
+// E1 (SentinelAnchor F3): the lane is nested inside an enclosing repository.
+// Move a clean fixture under a parent repo and corrupt the lane's HEAD so git
+// no longer treats it as a repository; plain discovery then returns the parent
+// toplevel. The gate must refuse (exit 2) instead of naming the parent repo.
+negative('repo_fallthrough_refused', mut => {
+  if (!mut) return cleanShape();
+  const built = cleanShape();
+  const parent = mkdtempSync(join(tmpdir(), 'tabi-binding-parent-'));
+  git(parent, ['init', '-q', '-b', 'main']);
+  put(parent, 'fleet.txt', 'enclosing repository\n');
+  commitAll(parent, 'fleet base');
+  const lane = join(parent, 'lane');
+  renameSync(built.root, lane);
+  put(lane, '.git/HEAD', 'ref: HEAD\n');
+  return {
+    ...built,
+    root: lane,
+    manifest: join(lane, MANIFEST_REL),
+    extraRoots: [parent],
+  };
+}, 2, ['git_failed']);
+
+// E3 (SentinelAnchor F5): detached HEAD with refs/heads/master rewritten as a
+// symref to refs/remotes/o/evil. rev-parse follows it to an unlanded hostile
+// commit whose counted input drifted; the gate must refuse the anchor (exit 2)
+// rather than certify that commit.
+negative('lane_tip_symref_anchor', mut => {
+  if (!mut) return cleanShape();
+  const built = cleanShape();
+  const tip = git(built.root, ['rev-parse', 'HEAD']);
+  put(built.root, 'counted/input.txt', 'hostile remote drift\n');
+  const evil = commitAll(built.root, 'hostile remote commit');
+  git(built.root, ['update-ref', 'refs/remotes/o/evil', evil]);
+  git(built.root, ['update-ref', 'refs/heads/master', tip]);
+  writeFileSync(join(built.root, '.git/refs/heads/master'), 'ref: refs/remotes/o/evil\n');
+  git(built.root, ['update-ref', '--no-deref', 'HEAD', tip]);
+  return built;
+}, 2, ['revision_unresolved']);
+
+// An attached ref outside refs/heads (HEAD -> refs/tags/t) is not a lane
+// branch: only status 0 with an exact refs/heads/ line names an anchor
+// (SentinelAnchor F4 attached-non-heads clause).
+negative('lane_tip_attached_non_heads', mut => {
+  if (!mut) return cleanShape();
+  const built = cleanShape();
+  git(built.root, ['update-ref', 'refs/tags/t', 'HEAD']);
+  writeFileSync(join(built.root, '.git/HEAD'), 'ref: refs/tags/t\n');
+  return built;
+}, 2, ['revision_unresolved']);
+
+// F13 (SentinelAnchor): HEAD -> refs/heads/master@{1} passes the character
+// filter and rev-parse resolves the reflog entry of an older hostile commit.
+// check-ref-format plus the exact-row requirement must refuse it (exit 2).
+negative('lane_tip_reflog_anchor', mut => {
+  if (!mut) return cleanShape();
+  const built = cleanShape();
+  const tip = git(built.root, ['rev-parse', 'HEAD']);
+  put(built.root, 'counted/input.txt', 'reflog drift\n');
+  const hostile = commitAll(built.root, 'hostile reflog commit');
+  git(built.root, ['update-ref', 'refs/heads/master', hostile]);
+  git(built.root, ['update-ref', 'refs/heads/master', tip]);
+  writeFileSync(join(built.root, '.git/HEAD'), 'ref: refs/heads/master@{1}\n');
+  return built;
+}, 2, ['revision_unresolved']);
+
 
 // ── Runner ────────────────────────────────────────────────────────────────
 function runGate(gate, built, c) {

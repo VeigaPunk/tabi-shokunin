@@ -56,8 +56,33 @@ function isProduction(repo) {
   }
 }
 
+// Constructed child environment: no inherited GIT_* variable can redirect the
+// repository (GIT_DIR, GIT_OBJECT_DIRECTORY, GIT_ALTERNATE_OBJECT_DIRECTORIES,
+// GIT_CONFIG_*), and replace refs, grafts, lazy fetch and system/global config
+// cannot change what this gate reads. PATH keeps absolute entries only, so a
+// relative entry cannot resolve git inside the measured repo. The ceiling keeps
+// repository discovery from walking into the enclosing fleet checkout when this
+// lane's .git is unreadable; laneTip additionally requires toplevel == root.
 function git(root, args, binary = false) {
-  const result = spawnSync('git', args, { cwd: root, encoding: binary ? undefined : 'utf8', maxBuffer: 16 * 1024 * 1024 });
+  const env = {
+    GIT_CONFIG_NOSYSTEM: '1',
+    GIT_CONFIG_GLOBAL: '/dev/null',
+    GIT_OPTIONAL_LOCKS: '0',
+    GIT_TERMINAL_PROMPT: '0',
+    GIT_NO_REPLACE_OBJECTS: '1',
+    GIT_GRAFT_FILE: '/dev/null',
+    GIT_NO_LAZY_FETCH: '1',
+    GIT_LITERAL_PATHSPECS: '1',
+    TZ: 'UTC',
+  };
+  if (process.env.PATH !== undefined) env.PATH = process.env.PATH.split(':').filter(entry => entry.startsWith('/')).join(':');
+  if (process.env.HOME !== undefined) env.HOME = process.env.HOME;
+  try {
+    env.GIT_CEILING_DIRECTORIES = resolve(realpathSync(root), '..');
+  } catch {
+    env.GIT_CEILING_DIRECTORIES = resolve(root, '..');
+  }
+  const result = spawnSync('git', args, { cwd: root, env, encoding: binary ? undefined : 'utf8', maxBuffer: 16 * 1024 * 1024 });
   return result;
 }
 
@@ -77,6 +102,55 @@ function show(root, rev, path) {
   const result = git(root, ['show', `${rev}:${path}`], true);
   if (result.status !== 0) return null;
   return result.stdout;
+}
+
+// jj-colocated lanes detach git HEAD: after `jj commit` HEAD names an unlanded
+// local commit, and after `jj new` it names an empty commit on no branch. A gate
+// anchored on HEAD can therefore certify bytes that are on no branch. This gate
+// certifies the lane branch tip instead: an attached HEAD (plain git, fixtures)
+// resolves to its own branch, a detached HEAD resolves refs/heads/master. The
+// 40-hex is resolved once per run and threaded into every read, so a concurrent
+// jj command cannot mix revisions inside one verdict.
+function laneTip(root) {
+  const top = git(root, ['rev-parse', '--show-toplevel']);
+  let sameRepo = false;
+  try {
+    sameRepo = top.status === 0 && realpathSync(top.stdout.trim()) === realpathSync(root);
+  } catch {
+    sameRepo = false;
+  }
+  if (!sameRepo) fail('could_not_evaluate', 'Lane root is not the repository toplevel', 2);
+  const sym = git(root, ['symbolic-ref', '-q', '--no-recurse', 'HEAD']);
+  let ref;
+  if (sym.status === 0) {
+    if (!/^refs\/heads\/[^\x00-\x20\x7f~^:?*\[\\]+\n$/.test(sym.stdout)) {
+      fail('could_not_evaluate', `Attached HEAD is not a local branch: ${sym.stdout.trim() || '(empty)'}`, 2);
+    }
+    ref = sym.stdout.slice(0, -1);
+  } else if (sym.status === 1 && sym.stdout === '') {
+    ref = 'refs/heads/master';
+  } else {
+    fail('could_not_evaluate', 'git symbolic-ref could not read HEAD', 2);
+  }
+  // Reflog spellings such as `refs/heads/master@{1}`, `..`, `.lock` or a
+  // trailing slash pass a character-class check but are revision syntax, not
+  // ref names; resolving one would certify the branch's previous value.
+  if (git(root, ['check-ref-format', ref]).status !== 0) {
+    fail('could_not_evaluate', `Lane-tip anchor is not a valid ref name: ${ref}`, 2);
+  }
+  // A symbolic branch would let the printed anchor name one ref while the
+  // commit comes from another; require exactly one row whose symref field is
+  // empty (a symref prints its target, an absent ref prints nothing).
+  const anchor = git(root, ['for-each-ref', '--format=%(symref)', '--', ref]);
+  if (anchor.status !== 0 || anchor.stdout !== '\n') {
+    fail('could_not_evaluate', `Lane-tip anchor ${ref} is not a plain local branch`, 2);
+  }
+  const resolved = git(root, ['rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`]);
+  const tip = resolved.status === 0 ? resolved.stdout.trim() : '';
+  if (!/^[a-f0-9]{40}$/.test(tip)) {
+    fail('could_not_evaluate', `Lane-tip anchor ${ref} does not resolve to a commit`, 2);
+  }
+  return tip;
 }
 
 // Recomputed git object identity for executed-at-witness gate bytes, so a
@@ -107,16 +181,17 @@ function protectedPath(path) {
 // two-space evidence line per box. Statuses are [ ] or [~]; [x] fails closed
 // because this gate holds no independent non-author verifier record. A [~]
 // evidence line may carry prose but must include a backticked path that resolves
-// to a committed regular blob at HEAD. The normalized template must hash to the
-// persisted independent seed digest. Structural only, never a promotion grant.
+// to a committed regular blob at the lane tip. The normalized template must hash
+// to the persisted independent seed digest. Structural only, never a promotion
+// grant.
 function canonicalShonenText() {
   const lines = [`# ${LANE} — Promotion checklist`, '', 'Promotion to shokunin requires all of:', ''];
   for (const box of BOXES) lines.push(`- [~] ${box}`, '  `corpus/lessons/pstack-20261015-r01.md` — author-side evidence pointer');
   return `${lines.join('\n')}\n`;
 }
 
-function regularBlob(root, path) {
-  const result = git(root, ['--literal-pathspecs', 'ls-tree', 'HEAD', '--', path]);
+function regularBlob(root, rev, path) {
+  const result = git(root, ['--literal-pathspecs', 'ls-tree', rev, '--', path]);
   if (result.status !== 0) return false;
   const line = result.stdout.split('\n').find(item => item.endsWith(`\t${path}`));
   if (!line) return false;
@@ -130,7 +205,7 @@ function evidencePointers(text) {
     .filter(Boolean);
 }
 
-function checkShonenPolicy(root, text) {
+function checkShonenPolicy(root, rev, text) {
   if (text.includes('\r')) fail('shonen_policy', 'SHONEN.md must use LF line endings');
   if (!text.endsWith('\n') || text.endsWith('\n\n')) fail('shonen_policy', 'SHONEN.md must end with exactly one newline');
   const lines = text.slice(0, -1).split('\n');
@@ -151,7 +226,7 @@ function checkShonenPolicy(root, text) {
     if (mark === ' ' && hasEvidence) fail('shonen_policy', `SHONEN.md unchecked box carries prose: ${box}`);
     if (mark === '~') {
       if (!hasEvidence) fail('shonen_policy', `SHONEN.md [~] box has no indented evidence line: ${box}`);
-      if (!evidencePointers(evidence).some(pointer => regularBlob(root, pointer))) {
+      if (!evidencePointers(evidence).some(pointer => regularBlob(root, rev, pointer))) {
         fail('shonen_policy', `SHONEN.md [~] evidence has no backticked committed regular blob path: ${box}`);
       }
     }
@@ -164,17 +239,17 @@ function checkShonenPolicy(root, text) {
   }
 }
 
-function checkShonen(root, baseline) {
+function checkShonen(root, baseline, rev) {
   const before = blob(root, baseline, SHONEN_PATH);
   if (!before) fail('history_rewritten', `${SHONEN_PATH} is missing at the baseline`);
-  const after = blob(root, 'HEAD', SHONEN_PATH);
-  if (!after) fail('shonen_policy', `${SHONEN_PATH} is missing at HEAD`);
+  const after = blob(root, rev, SHONEN_PATH);
+  if (!after) fail('shonen_policy', `${SHONEN_PATH} is missing at the lane tip`);
   if (after === before) return;
-  checkShonenPolicy(root, show(root, 'HEAD', SHONEN_PATH).toString('utf8'));
+  checkShonenPolicy(root, rev, show(root, rev, SHONEN_PATH).toString('utf8'));
 }
 
-function censusEntries(root, baseline, production, expectedSha256) {
-  const bytes = show(root, 'HEAD', CENSUS_PATH);
+function censusEntries(root, baseline, production, expectedSha256, rev) {
+  const bytes = show(root, rev, CENSUS_PATH);
   if (!bytes) {
     if (production || expectedSha256) fail('history_rewritten', 'Baseline census is not committed');
     return null;
@@ -227,43 +302,42 @@ function argumentsOf(argv) {
   return options;
 }
 
-function checkHistory(root, baseline, production, censusSha256) {
-  const head = gitOk(root, ['rev-parse', 'HEAD']);
-  const ancestor = git(root, ['merge-base', '--is-ancestor', baseline, head]);
-  if (ancestor.status !== 0) fail('history_rewritten', 'Baseline is not an ancestor of HEAD');
+function checkHistory(root, baseline, production, censusSha256, rev) {
+  const ancestor = git(root, ['merge-base', '--is-ancestor', baseline, rev]);
+  if (ancestor.status !== 0) fail('history_rewritten', 'Baseline is not an ancestor of the lane tip');
   for (const path of list(root, baseline, '.').filter(protectedPath)) {
     const before = blob(root, baseline, path);
-    const after = blob(root, head, path);
+    const after = blob(root, rev, path);
     if (!before || !after) fail('history_rewritten', `Protected bytes changed: ${path}`);
     if (path === SHONEN_PATH) continue;
     if (before !== after) fail('history_rewritten', `Protected bytes changed: ${path}`);
   }
-  checkShonen(root, baseline);
+  checkShonen(root, baseline, rev);
   for (const path of APPEND_ONLY) {
     const before = show(root, baseline, path);
     if (!before) continue;
-    const after = show(root, head, path);
+    const after = show(root, rev, path);
     if (!after || !after.subarray(0, before.length).equals(before)) fail('history_rewritten', `Append-only prefix changed: ${path}`);
   }
-  const census = censusEntries(root, baseline, production, censusSha256);
+  const census = censusEntries(root, baseline, production, censusSha256, rev);
   if (!census) return;
   for (const { recorded, path } of census) {
     const before = blob(root, baseline, path);
     if (!before || before !== recorded) fail('history_rewritten', `Census baseline drifted: ${path}`);
-    const after = blob(root, head, path);
+    const after = blob(root, rev, path);
     if (path === SHONEN_PATH) {
       // Historical row is still compared to the committed old hash; only the
       // current bytes may follow the canonical seed, and never arbitrary prose.
-      if (!after) fail('shonen_policy', `${SHONEN_PATH} is missing at HEAD`);
-      if (after !== recorded) checkShonenPolicy(root, show(root, head, SHONEN_PATH).toString('utf8'));
+      if (!after) fail('shonen_policy', `${SHONEN_PATH} is missing at the lane tip`);
+      if (after !== recorded) checkShonenPolicy(root, rev, show(root, rev, SHONEN_PATH).toString('utf8'));
       continue;
     }
     if (after !== recorded) fail('history_rewritten', `Census blob drifted: ${path}`);
   }
 }
 
-function roundIds(root) {
-  return list(root, 'HEAD', 'corpus/lessons')
+function roundIds(root, rev) {
+  return list(root, rev, 'corpus/lessons')
     .map(path => /^corpus\/lessons\/(pstack-20261015-r\d{2})\.md$/.exec(path)?.[1])
     .filter(Boolean)
     .sort();
@@ -462,8 +536,8 @@ function countCommandRevision(command) {
   fail('score_mismatch', `Counting command does not expose a git revision operand: ${command}`);
 }
 
-function checkSwarm(root, id) {
-  const raw = show(root, 'HEAD', `corpus/evidence/${id}/aggregate.json`);
+function checkSwarm(root, id, rev) {
+  const raw = show(root, rev, `corpus/evidence/${id}/aggregate.json`);
   if (!raw) fail('short_swarm', `${id} aggregate is missing`);
   let aggregate;
   try { aggregate = JSON.parse(raw.toString('utf8')); } catch { fail('short_swarm', `${id} aggregate is not JSON`); }
@@ -484,7 +558,7 @@ function checkSwarm(root, id) {
     if (typeof evidencePath !== 'string' || evidencePath.includes('..') || !evidencePath.startsWith(`corpus/evidence/${id}/seats/`)) {
       fail('swarm_evidence', `${id} ${item.seat} evidence path is outside the seat directory`);
     }
-    const seatRaw = show(root, 'HEAD', evidencePath);
+    const seatRaw = show(root, rev, evidencePath);
     if (!seatRaw) fail('swarm_evidence', `${id} ${item.seat} evidence file is missing`);
     let seat;
     try { seat = JSON.parse(seatRaw.toString('utf8')); } catch { fail('swarm_evidence', `${id} ${item.seat} evidence is not JSON`); }
@@ -495,14 +569,14 @@ function checkSwarm(root, id) {
   return counts;
 }
 
-function checkReport(root, id, measured) {
+function checkReport(root, id, measured, rev) {
   const path = `reports/${id}.md`;
-  const text = show(root, 'HEAD', path)?.toString('utf8');
+  const text = show(root, rev, path)?.toString('utf8');
   if (!text) fail('report_missing', `${id} report is missing`);
   if (!text.includes(`lane-commit: ${measured}`)) fail('report_commit', `${id} report does not cite the measured commit`);
   if (show(root, measured, path)) fail('report_not_after_commit', `${id} report was already in the cited commit`);
-  const ancestor = git(root, ['merge-base', '--is-ancestor', measured, 'HEAD']);
-  if (ancestor.status !== 0) fail('report_commit', `${id} cited commit is not an ancestor of HEAD`);
+  const ancestor = git(root, ['merge-base', '--is-ancestor', measured, rev]);
+  if (ancestor.status !== 0) fail('report_commit', `${id} cited commit is not an ancestor of the lane tip`);
   if (!/^## SHONEN$/m.test(text)) fail('report_shonen', `${id} report has no SHONEN heading`);
   for (const box of BOXES) {
     const line = text.split('\n').find(item => item.endsWith(box));
@@ -510,14 +584,14 @@ function checkReport(root, id, measured) {
   }
 }
 
-function scanConsequential(root, id) {
+function scanConsequential(root, id, rev) {
   const paths = [
     `corpus/lessons/${id}.md`,
     `reports/${id}.md`,
-    ...list(root, 'HEAD', `corpus/evidence/${id}`),
+    ...list(root, rev, `corpus/evidence/${id}`),
   ];
   for (const path of paths) {
-    const bytes = show(root, 'HEAD', path);
+    const bytes = show(root, rev, path);
     if (!bytes) continue;
     const text = bytes.toString('latin1');
     for (const needle of NEEDLES) {
@@ -534,18 +608,18 @@ function scanConsequential(root, id) {
   }
 }
 
-function sameTree(root, id, measured) {
-  const paths = [`corpus/lessons/${id}.md`, ...list(root, 'HEAD', `corpus/evidence/${id}`)];
+function sameTree(root, id, measured, rev) {
+  const paths = [`corpus/lessons/${id}.md`, ...list(root, rev, `corpus/evidence/${id}`)];
   for (const path of paths) {
-    if (blob(root, 'HEAD', path) !== blob(root, measured, path)) fail('evidence_moved', `${id} ${path} changed after the measured commit`);
+    if (blob(root, rev, path) !== blob(root, measured, path)) fail('evidence_moved', `${id} ${path} changed after the measured commit`);
   }
 }
 
-function checkPublic(root, ids) {
+function checkPublic(root, ids, rev) {
   let found = 0;
   for (const id of ids) {
     const path = `corpus/evidence/${id}/public/capture.json`;
-    const bytes = show(root, 'HEAD', path);
+    const bytes = show(root, rev, path);
     if (!bytes) continue;
     let capture;
     try { capture = JSON.parse(bytes.toString('utf8')); } catch { fail('public_observation', `${id} public capture is not JSON`); }
@@ -562,7 +636,7 @@ function checkPublic(root, ids) {
       const file = capture[key];
       const digest = capture[`${key}Sha256`];
       if (typeof file !== 'string' || file.includes('/') || !/^[a-f0-9]{64}$/.test(digest || '')) fail('public_observation', `${id} ${key} pin is incomplete`);
-      const body = show(root, 'HEAD', `${dir}/${file}`);
+      const body = show(root, rev, `${dir}/${file}`);
       if (!body) fail('public_observation', `${id} ${key} file is missing`);
       if (createHash('sha256').update(body).digest('hex') !== digest) fail('public_observation', `${id} ${key} hash does not match the file`);
     }
@@ -574,19 +648,20 @@ function checkPublic(root, ids) {
 function check(options) {
   const root = options.repo;
   const production = isProduction(root);
-  checkHistory(root, options.baseline, production, options.censusSha256);
-  const ids = roundIds(root);
+  const rev = laneTip(root);
+  checkHistory(root, options.baseline, production, options.censusSha256, rev);
+  const ids = roundIds(root, rev);
   if (ids.length !== options.expect) fail('round_count', `Found ${ids.length} pstack rounds, expected ${options.expect}`);
   for (let index = 0; index < ids.length; index++) {
     const wanted = `pstack-20261015-r${String(index + 1).padStart(2, '0')}`;
     if (ids[index] !== wanted) fail('round_sequence', `Expected ${wanted}, found ${ids[index]}`);
   }
-  const scorecard = show(root, 'HEAD', 'SCORECARD.md').toString('utf8');
-  const log = show(root, 'HEAD', 'LOG.md').toString('utf8');
+  const scorecard = show(root, rev, 'SCORECARD.md').toString('utf8');
+  const log = show(root, rev, 'LOG.md').toString('utf8');
   for (const id of ids) {
-    const lesson = show(root, 'HEAD', `corpus/lessons/${id}.md`).toString('utf8');
+    const lesson = show(root, rev, `corpus/lessons/${id}.md`).toString('utf8');
     const gate = parseLesson(lesson, id);
-    const swarm = checkSwarm(root, id);
+    const swarm = checkSwarm(root, id, rev);
     const score = parseScore(scorecard, id);
     if (score.axis !== gate.axis) fail('missing_score', `${id} axis does not match its lesson`);
     if (score.before === score.after) fail('score_mismatch', `${id} before and after are the same`);
@@ -598,13 +673,13 @@ function check(options) {
     if (measuredMentions !== 1) fail('score_mismatch', `${id} counting command mentions the measured commit outside its revision operand`);
     if (runCount(root, beforeCommand) !== score.before) fail('score_mismatch', `${id} before measurement does not match`);
     if (runCount(root, score.command) !== score.after) fail('score_mismatch', `${id} after measurement does not match`);
-    checkReport(root, id, score.measured);
-    scanConsequential(root, id);
-    sameTree(root, id, score.measured);
+    checkReport(root, id, score.measured, rev);
+    scanConsequential(root, id, rev);
+    sameTree(root, id, score.measured, rev);
     const accounted = swarm.PASS + swarm.ISSUES + swarm.BLOCKED + swarm.DROPOUT + swarm.GAP;
     console.log(`ROUND id=${id} axis=${gate.axis} swarm=${accounted} pass=${swarm.PASS} issues=${swarm.ISSUES} blocked=${swarm.BLOCKED} dropout=${swarm.DROPOUT} gap=${swarm.GAP} admits=${gate.admits} rejects=${gate.rejects} spot=${gate.spot} consequential=0 before=${score.before} after=${score.after} measured-against=${score.measured}`);
   }
-  checkPublic(root, ids);
+  checkPublic(root, ids, rev);
   console.log(`ROUND_CONTRACT verdict=clean rounds=${ids.length} consequential=0`);
 }
 
@@ -730,9 +805,109 @@ function fixtureMeasured(root) {
   return match[1];
 }
 
+// Self-test only: shape the fixture like a jj lane. The poison commit drops one
+// swarm result, which flips the verdict for any gate that reads it. The fixture
+// branch is restored to the clean tip and HEAD is detached at the poison commit,
+// so HEAD names bytes the branch does not; the harness's own 'mutation' commit
+// then lands on the detached HEAD. The case asserts the gate reads the branch.
+function detachFixture(root) {
+  const sym = git(root, ['symbolic-ref', '-q', 'HEAD']);
+  if (sym.status !== 0) fail('could_not_evaluate', 'Fixture HEAD starts detached', 2);
+  if (sym.stdout.trim() !== 'refs/heads/master') gitOk(root, ['branch', '-m', 'master']);
+  const tip = gitOk(root, ['rev-parse', 'refs/heads/master']);
+  const path = join(root, 'corpus/evidence/pstack-20261015-r01/aggregate.json');
+  const aggregate = JSON.parse(readFileSync(path, 'utf8'));
+  aggregate.results = aggregate.results.slice(0, 31);
+  writeFileSync(path, JSON.stringify(aggregate));
+  gitOk(root, ['add', '--', '.']);
+  const poison = commit(root, 'poison');
+  gitOk(root, ['update-ref', 'refs/heads/master', tip]);
+  gitOk(root, ['update-ref', '--no-deref', 'HEAD', poison]);
+  // Leave one worktree change so the harness's post-mutation commit can land on
+  // the detached HEAD without altering the poisoned tree.
+  writeFileSync(join(root, 'detach-probe.txt'), 'detached head fixture\n');
+  if (git(root, ['symbolic-ref', '-q', 'HEAD']).status === 0) fail('could_not_evaluate', 'Detached-HEAD fixture kept an attached HEAD', 2);
+  if (gitOk(root, ['rev-parse', 'refs/heads/master']) !== tip) fail('could_not_evaluate', 'Detached-HEAD fixture moved the branch tip', 2);
+  if (gitOk(root, ['rev-parse', 'HEAD:corpus/evidence/pstack-20261015-r01/aggregate.json'])
+    === gitOk(root, ['rev-parse', 'refs/heads/master:corpus/evidence/pstack-20261015-r01/aggregate.json'])) {
+    fail('could_not_evaluate', 'Detached-HEAD fixture has the branch tree at HEAD; the case cannot discriminate', 2);
+  }
+}
+
+// Self-test only: detach the fixture and delete every local branch, so the
+// lane-tip anchor has nothing to resolve and the gate must fail closed at 2.
+function unresolvableFixture(root) {
+  const sym = git(root, ['symbolic-ref', '-q', 'HEAD']);
+  if (sym.status !== 0) fail('could_not_evaluate', 'Fixture HEAD starts detached', 2);
+  gitOk(root, ['update-ref', '--no-deref', 'HEAD', gitOk(root, ['rev-parse', 'HEAD'])]);
+  gitOk(root, ['branch', '-D', sym.stdout.trim().replace(/^refs\/heads\//, '')]);
+  writeFileSync(join(root, 'detach-probe.txt'), 'detached head fixture\n');
+  if (gitOk(root, ['for-each-ref', '--format=%(refname)', 'refs/heads/']) !== '') {
+    fail('could_not_evaluate', 'Unresolvable-anchor fixture kept a local branch', 2);
+  }
+}
+
+// Self-test only: a replace ref swaps the tip's blob bytes while the object id
+// stays the printed tip, so only a child env with GIT_NO_REPLACE_OBJECTS=1 reads
+// the committed bytes. The fixture asserts the hostile read is live before use.
+function replaceRefFixture(root) {
+  const path = 'corpus/evidence/pstack-20261015-r01/aggregate.json';
+  const blob = gitOk(root, ['rev-parse', `refs/heads/master:${path}`]);
+  const aggregate = JSON.parse(readFileSync(join(root, path), 'utf8'));
+  aggregate.results = aggregate.results.slice(0, 31);
+  const scratch = join(root, '.git', 'poison-blob.json');
+  writeFileSync(scratch, JSON.stringify(aggregate));
+  const poison = gitOk(root, ['hash-object', '-w', scratch]);
+  rmSync(scratch);
+  gitOk(root, ['replace', blob, poison]);
+  const hostile = spawnSync('git', ['show', `refs/heads/master:${path}`], { cwd: root, encoding: 'utf8', env: { PATH: process.env.PATH } });
+  if (gitOk(root, ['rev-parse', `refs/heads/master:${path}`]) !== blob) fail('could_not_evaluate', 'Replace-ref fixture moved the tip blob', 2);
+  if (JSON.parse(hostile.stdout).results.length !== 31) fail('could_not_evaluate', 'Replace-ref fixture is inert', 2);
+}
+
+// Self-test only: the fixture branch becomes a symbolic ref into a
+// remote-tracking ref, so the printed anchor names master while the commit comes
+// from elsewhere. laneTip must refuse instead of laundering that provenance.
+function symrefFixture(root) {
+  const tip = gitOk(root, ['rev-parse', 'refs/heads/master']);
+  gitOk(root, ['checkout', '-q', '--detach', tip]);
+  writeFileSync(join(root, 'hostile.txt'), 'hostile\n');
+  gitOk(root, ['add', '--', '.']);
+  const hostile = commit(root, 'hostile');
+  gitOk(root, ['update-ref', 'refs/remotes/o/evil', hostile]);
+  gitOk(root, ['update-ref', '--no-deref', 'HEAD', tip]);
+  gitOk(root, ['symbolic-ref', 'refs/heads/master', 'refs/remotes/o/evil']);
+  if (gitOk(root, ['for-each-ref', '--format=%(symref)', '--', 'refs/heads/master']) !== 'refs/remotes/o/evil') {
+    fail('could_not_evaluate', 'Symref fixture is inert', 2);
+  }
+}
+
+// Self-test only: a HEAD git cannot parse. symbolic-ref exits 128; the gate must
+// not mistake that failure for the detached-HEAD signal.
+function invalidHeadFixture(root) {
+  writeFileSync(join(root, '.git', 'HEAD'), 'ref: refs/heads/x^{tree}\n');
+}
+
+// Self-test only: HEAD names a rev-parse spelling that is not a ref name
+// (`refs/heads/master@{1}` = the branch's previous value). Without an explicit
+// ref-name check the gate would certify a reflog entry, not the branch.
+function reflogHeadFixture(root) {
+  const tip = gitOk(root, ['rev-parse', 'refs/heads/master']);
+  const previous = gitOk(root, ['rev-parse', '--verify', 'refs/heads/master@{1}']);
+  if (previous === tip) fail('could_not_evaluate', 'Reflog fixture has no distinct previous master', 2);
+  writeFileSync(join(root, '.git', 'HEAD'), 'ref: refs/heads/master@{1}\n');
+}
+
 function selfTest() {
   const cases = [
     { name: 'clean', mutate: () => {}, exit: 0, finding: 'clean' },
+    { name: 'lane_tip_detached_head', mutate: root => detachFixture(root), exit: 0, finding: 'clean',
+      branchRerun: { exit: 1, finding: 'short_swarm' } },
+    { name: 'lane_tip_unresolvable', mutate: root => unresolvableFixture(root), exit: 2, finding: 'could_not_evaluate' },
+    { name: 'lane_tip_replace_ref', mutate: root => replaceRefFixture(root), exit: 0, finding: 'clean', noCommit: true },
+    { name: 'lane_tip_symref', mutate: root => symrefFixture(root), exit: 2, finding: 'could_not_evaluate', noCommit: true },
+    { name: 'lane_tip_invalid_head', mutate: root => invalidHeadFixture(root), exit: 2, finding: 'could_not_evaluate', noCommit: true },
+    { name: 'lane_tip_reflog_spelling', mutate: root => reflogHeadFixture(root), exit: 2, finding: 'could_not_evaluate', noCommit: true },
     { name: 'short_swarm', mutate: root => {
       const path = join(root, 'corpus/evidence/pstack-20261015-r01/aggregate.json');
       const aggregate = JSON.parse(readFileSync(path, 'utf8'));
@@ -880,7 +1055,7 @@ function selfTest() {
       const baseline = writeGoodFixture(root);
       const extra = [];
       test.mutate(root, baseline, extra);
-      if (test.name !== 'clean') {
+      if (test.name !== 'clean' && !test.noCommit) {
         gitOk(root, ['add', '--', '.']);
         commit(root, 'mutation');
       }
@@ -891,6 +1066,17 @@ function selfTest() {
       const marker = test.marker ? ` no_marker=${markerOk ? 1 : 0}` : '';
       const match = result.status === test.exit && output.includes(test.finding === 'clean' ? 'verdict=clean' : `finding=${test.finding}`) && markerOk && detailOk;
       console.log(`SELFTEST name=${test.name} expected_exit=${test.exit} actual_exit=${result.status} expected_finding=${test.finding} result=${match ? 'PASS' : 'FAIL'}${marker}`);
+      if (test.branchRerun) {
+        // Arm C: name the bytes the detached HEAD already names, so a gate that
+        // certifies committed branch state must go red. Without this flip the
+        // green arm above would also pass a gate that ignored HEAD entirely.
+        gitOk(root, ['update-ref', 'refs/heads/master', gitOk(root, ['rev-parse', 'HEAD'])]);
+        const rerun = spawnSync(process.execPath, [script, '--repo', root, '--baseline', baseline, '--expect', '1', ...extra], { encoding: 'utf8' });
+        const rerunOutput = `${rerun.stdout}${rerun.stderr}`;
+        const rerunMatch = rerun.status === test.branchRerun.exit && rerunOutput.includes(`finding=${test.branchRerun.finding}`);
+        console.log(`SELFTEST name=${test.name}_branch_names_poison expected_exit=${test.branchRerun.exit} actual_exit=${rerun.status} expected_finding=${test.branchRerun.finding} result=${rerunMatch ? 'PASS' : 'FAIL'}`);
+        if (!rerunMatch) fail('selftest_failure', rerunOutput);
+      }
       if (!match) fail('selftest_failure', output);
     } finally {
       rmSync(root, { recursive: true, force: true });
@@ -1004,9 +1190,14 @@ function countWitness(rev) {
     const headStable = head === oldHead && head === newHead;
     const pass = oldRun.status === 0 && oldVerdict === 'clean' && oldMarker
       && !newMarker && newRun.status === 1 && newFinding === 'score_mismatch' && headStable;
-    const codeRevision = gitOk(defaultRoot, ['rev-parse', 'HEAD']);
-    const codeSha256 = createHash('sha256').update(readFileSync(script)).digest('hex');
-    console.log(`ROUND_CONTRACT_COUNT_WITNESS fixture=shared exit=${pass ? 0 : 2} verdict=${pass ? 'clean' : 'failed'} old_rev=${rev} baseline=${baseline} code_revision=${codeRevision} code_sha256=${codeSha256} old_exit=${oldRun.status} old_verdict=${oldVerdict} old_finding=${oldFinding} old_marker=${oldMarker ? 1 : 0} new_exit=${newRun.status} new_finding=${newFinding} new_marker=${newMarker ? 1 : 0} head_stable=${headStable ? 1 : 0} result=${pass ? 'PASS' : 'FAIL'}`);
+    const codeRevision = laneTip(defaultRoot);
+    const codeBytes = readFileSync(script);
+    const codeSha256 = createHash('sha256').update(codeBytes).digest('hex');
+    // The revision is the lane tip and the digest is the worktree bytes; a
+    // receipt that printed both with no committed bit would credit the tip with
+    // bytes it does not contain during a wave before integration.
+    const codeCommitted = blob(defaultRoot, codeRevision, 'scripts/check-round-contract.mjs') === gitBlobId(codeBytes);
+    console.log(`ROUND_CONTRACT_COUNT_WITNESS fixture=shared exit=${pass ? 0 : 2} verdict=${pass ? 'clean' : 'failed'} old_rev=${rev} baseline=${baseline} code_revision=${codeRevision} code_sha256=${codeSha256} code_committed=${codeCommitted ? 'yes' : 'no'} old_exit=${oldRun.status} old_verdict=${oldVerdict} old_finding=${oldFinding} old_marker=${oldMarker ? 1 : 0} new_exit=${newRun.status} new_finding=${newFinding} new_marker=${newMarker ? 1 : 0} head_stable=${headStable ? 1 : 0} result=${pass ? 'PASS' : 'FAIL'}`);
     if (!pass) {
       console.log(`COUNT_WITNESS_OLD ${oldOutput.trim()}`);
       console.log(`COUNT_WITNESS_NEW ${newOutput.trim()}`);
