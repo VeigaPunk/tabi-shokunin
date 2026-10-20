@@ -126,3 +126,41 @@ browser and binding against a loopback fixture. Keep the same evidence ladder
   `getResponseBody` on this host — unmeasured.
 - U5: Whether any binding tabi could actually drive (Node WS client → chromium-
   bidi) ships stable intercept APIs; only Selenium-Python status was read.
+
+## Dated correction — 2026-10-20 (round 13): collector timing and getData retrieval
+
+Appends to the §2 "Byte truth" row (`:71`) and the §3 sentence at `:87–88`. Earlier
+bytes above are unchanged; only the collector-timing wording is superseded. The row's
+verdict and `locally measured: no` are unchanged.
+
+Source reopened: https://www.w3.org/TR/2026/WD-webdriver-bidi-20261008/#network-data-collection
+(§7.5.2, fetched 2026-10-20T05:07:39Z, HTTP 200, 4,235,856 bytes,
+sha256 `dc1077db50fe784435fd57f2fa7005607937b5ee4293f6f12d8731bd6a1d24d4`; the page
+carries revision `f922e6af669ead51496db85f37813f39438ef171`).
+
+- [OBSERVATION: SOURCE] "WebDriver BiDi clone network response body"
+  (`#webdriver-bidi-clone-network-response-body`) creates the network-data record only
+  when the session's collector map satisfies "network collectors is not empty", and
+  sets its `cloned body` in that same step. A collector must therefore already be
+  registered when the response is created/cloned; `network.addDataCollector` (§7.5.5.1)
+  registers into `session's network collectors`, and adding one after
+  `network.responseCompleted` cannot recover that response body.
+- [OBSERVATION: SOURCE] The §7.5.2 note at `#maybe-collect-network-response-body`
+  states the same timing: "there are no collectors setup when the response is created",
+  and in that case the clone step "does not clone the corresponding body."
+- [OBSERVATION: SOURCE] `network.getData` (§7.5.5.8, `#command-network-getData`)
+  "retrieves a network data if it is available": it calls "get collected data", returns
+  `no such network data` when no record exists, and `unavailable network data` when the
+  record's `bytes` is null. A `pending` record makes it await the "network data
+  collected" event, i.e. wait for collection already begun at clone time; it never
+  starts collection. `getData` is retrieval, not retroactive collection.
+- [OBSERVATION: SOURCE] Whether `bytes` is stored depends on a collector whose
+  `dataTypes` includes `"response"` and whose context matches the request's top-level
+  navigable, with the body within that collector's `max encoded item size`
+  (`#maybe-collect-network-data`). Total collected storage is capped by the
+  implementation-defined `max total collected size` (`#max-total-collected-size`).
+
+Read the row's "must exist when the response body is collected" as a true but
+under-specified necessary condition: the operational deadline is response
+creation/clone, before any `getData`. No BiDi endpoint, browser, or collector was
+exercised for this correction.

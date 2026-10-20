@@ -1,0 +1,284 @@
+# ==============================================================================
+# PstackMap: USER PSTACK_PATHS, Protected Historical Paths, and Cutover Risks
+# Root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+# Date: 2026-10-20
+# Seat: TabiR13.PstackMap (scout)
+# Target Head: 75e7836b6c3090180aee2754e20a5d3cfb186e74
+# ==============================================================================
+
+--------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY & ANCHORS
+--------------------------------------------------------------------------------
+- Purpose: Map all USER PSTACK_PATHS, all 5 historical protection tiers, distinguish
+  existing vs. future lessons, and analyze checker script-cutover risks for Round 13.
+- Invariable Pins (Contract Invariant: NEVER MOVE HARD_BASELINE or PSTACK_PIN):
+  * HARD_BASELINE: 7f506affa55f6fb892d3c8073c75151c998bdf2c
+    - git merge-base --is-ancestor HARD_BASELINE HEAD: EXIT 0 (Ancestor verified)
+    - git merge-base --is-ancestor HARD_BASELINE PSTACK_PIN: EXIT 0 (Ancestor verified)
+  * PSTACK_PIN: 92d700d6a8aa9855f1e9d2cc8e12c82f762a1367
+    - git merge-base --is-ancestor PSTACK_PIN HEAD: EXIT 0 (Ancestor verified)
+  * HEAD: 75e7836b6c3090180aee2754e20a5d3cfb186e74
+- Leaf Constraint: Strictly read-only investigation. Zero verification runs
+  (no gate runs, no self-tests executed). Only git object queries, tree inspections,
+  and static prefix comparisons performed.
+
+--------------------------------------------------------------------------------
+2. COMPREHENSIVE USER PSTACK_PATHS MAPPING
+--------------------------------------------------------------------------------
+Source: scripts/check-user-round-contract.mjs:30-39
+PSTACK_PATHS contains 8 items evaluated via:
+  git diff --name-only PSTACK_PIN HEAD -- ...PSTACK_PATHS
+Followed by the drifted filter at scripts/check-user-round-contract.mjs:123-134.
+
+[Path 1] corpus/evidence/pstack-20261015
+- Kind: Directory
+- Status: 100% IDENTICAL between PSTACK_PIN and HEAD.
+  `git diff PSTACK_PIN HEAD -- corpus/evidence/pstack-20261015` produces empty output.
+- Guard in UserGate: `path.startsWith('corpus/evidence/pstack-20261015')`
+- Risk: Any future edits or additions under this directory trip fatal `history_rewritten`.
+  Round 13 evidence MUST live under `corpus/evidence/round-13/` (e.g. `aria/`), NEVER here.
+
+[Path 2] corpus/lessons
+- Kind: Directory
+- Status: DRIFTED under raw git diff.
+  `git diff --name-status PSTACK_PIN HEAD -- corpus/lessons` outputs:
+    A  corpus/lessons/kaika-fleet-round-1.md
+    A  corpus/lessons/round-1-verifier-spotcheck.md
+    A  corpus/lessons/round-12-verifier-spotcheck.md
+    A  corpus/lessons/round-12.md
+    A  corpus/lessons/training-round-11.md
+    A  corpus/lessons/user-20261015-r01.md .. r06.md
+- Guard in UserGate:
+  * `/^corpus\/lessons\/pstack-20261015-r\d{2}\.md$/` (pstack lessons 01..10)
+  * `/^corpus\/lessons\/round-\d+\.md$/` (HISTORICAL LESSON GUARD - OVERBROAD TRAP!)
+  * `protectedPath(path)` (also tests `/^corpus\/lessons\/round-\d+\.md$/`)
+- Trap Identification:
+  `corpus/lessons/round-12.md` was added in Round 12 (commit 0d82098).
+  Because the regex `/^corpus\/lessons\/round-\d+\.md$/` matches ANY number,
+  UserGate flags `round-12.md` as `Pstack bytes changed: corpus/lessons/round-12.md`,
+  even though `round-12.md` did NOT exist at PSTACK_PIN or HARD_BASELINE!
+
+[Path 3] reports
+- Kind: Directory
+- Status: DRIFTED under raw git diff (`reports/user-20261015-r01.md` .. `r06.md` added).
+- Guard in UserGate: `/^reports\/pstack-20261015-r\d{2}\.md$/`
+- Finding: The filter strictly matches only pstack reports (`pstack-20261015-r\d{2}`).
+  The added user reports and any future round reports (e.g. `reports/round-13.md`)
+  do NOT trigger the filter.
+
+[Path 4] scripts/check-round-contract.mjs
+- Kind: File
+- Blobs:
+  * HARD_BASELINE: absent
+  * PSTACK_PIN:    b2eb8316f41cd1039330e45f6739c07c5f11eace
+  * HEAD:          b2eb8316f41cd1039330e45f6739c07c5f11eace
+- Status: Unchanged between PSTACK_PIN and current HEAD.
+- Guard in UserGate: `path === 'scripts/check-round-contract.mjs'`
+- Cutover Critical Warning:
+  When RoundGate edits `scripts/check-round-contract.mjs` in Round 13, it will appear
+  in git diff PSTACK_PIN HEAD. UserGate will IMMEDIATELY fail with:
+  `history_rewritten: Pstack bytes changed: scripts/check-round-contract.mjs`
+  unless an explicit script-cutover policy is implemented.
+
+[Path 5] scripts/pstack-seat.mjs
+- Kind: File
+- Blobs:
+  * HARD_BASELINE: absent
+  * PSTACK_PIN:    ef570361c4a4ebea8c45e6b6a51622086d096377
+  * HEAD:          ef570361c4a4ebea8c45e6b6a51622086d096377
+- Status: 100% byte-identical. Unchanged. Must remain untouched.
+
+[Path 6] scripts/pstack-aggregate.mjs
+- Kind: File
+- Blobs:
+  * HARD_BASELINE: absent
+  * PSTACK_PIN:    a1ce0b18e9161ab05537058520e7c801f2f5ef9e
+  * HEAD:          a1ce0b18e9161ab05537058520e7c801f2f5ef9e
+- Status: 100% byte-identical. Unchanged. Must remain untouched.
+
+[Path 7] scripts/check-freshness.mjs
+- Kind: File
+- Blobs:
+  * HARD_BASELINE: 987c3267f1781db643e0269942a126ca9fee814a
+  * PSTACK_PIN:    987c3267f1781db643e0269942a126ca9fee814a
+  * HEAD:          987c3267f1781db643e0269942a126ca9fee814a
+- Status: 100% byte-identical across ALL commits. Unchanged. Must remain untouched.
+
+[Path 8] SHONEN.md
+- Kind: File
+- Blobs:
+  * HARD_BASELINE: 5e055b8c60d606d202029eddabb8a45e13203b06
+  * PSTACK_PIN:    5e055b8c60d606d202029eddabb8a45e13203b06
+  * HEAD:          9dcb2687d3083f696b57032389eed7349e03893e
+- Status: DRIFTED in commit 5cdc97654 (canonical regeneration with four `[~]`).
+- Guard in UserGate: `path === 'SHONEN.md'` and `protectedPath(path)`.
+- Finding: Currently trips `Protected bytes changed: SHONEN.md` in protected loop
+  and would trip `Pstack bytes changed: SHONEN.md` in PSTACK diff loop.
+
+--------------------------------------------------------------------------------
+3. ALL PROTECTED HISTORICAL PATHS: THE FIVE TIERS
+--------------------------------------------------------------------------------
+
+--- TIER 1: protectedPath(path) (Both checkers) ---
+Defined in scripts/check-round-contract.mjs:60-69 and
+scripts/check-user-round-contract.mjs:73-82:
+  1) /^corpus\/lessons\/round-\d+\.md$/
+  2) corpus/evidence/fleet-round-1-freshness/*
+  3) .ufo/rounds/fleet-round-1-interactive-20261015/*
+  4) .ufo/reports/fleet-round-1-attempt-20261015/*
+  5) .ufo/plans/fleet-round-1-interactive-20261015*
+  6) .ufo/continuation/fleet-round-1-interactive-20261015*
+  7) scripts/check-freshness.mjs
+  8) SHONEN.md
+Evaluation at baseline: Exactly 55 files match at HARD_BASELINE.
+Enforcement: `blob(HARD_BASELINE, path) === blob(HEAD, path)`
+Status: 54 of 55 files match 100%. Only SHONEN.md drifted (5e055b8c -> 9dcb2687).
+
+--- TIER 2: Production Baseline Census (56 files pinned by SHA-1 blob) ---
+Source: corpus/evidence/pstack-20261015/baseline-census.tsv
+Enforced ONLY in scripts/check-round-contract.mjs:106-118.
+Header: 7f506affa55f6fb892d3c8073c75151c998bdf2c
+Inventory breakdown:
+  - 1 file:  .ufo/continuation/fleet-round-1-interactive-20261015.json
+  - 1 file:  .ufo/continuation/fleet-round-1-interactive-20261015.md
+  - 1 file:  .ufo/plans/fleet-round-1-interactive-20261015.md
+  - 1 file:  .ufo/reports/fleet-round-1-attempt-20261015/tabi.md
+  - 18 files: .ufo/rounds/fleet-round-1-interactive-20261015/*
+  - 1 file:  PROVINCE.md (c2222b16b3b18ce2c2058fb3a50d690c6e5735ae)
+             [CRITICAL NOTE: PROVINCE.md is in Census and APPEND_ONLY, but NOT
+              in protectedPath. Because Census checks blob(HEAD) === recorded,
+              PROVINCE.md cannot even be appended to in production!]
+  - 1 file:  SHONEN.md (Row 25: 5e055b8c60d606d202029eddabb8a45e13203b06)
+  - 21 files: corpus/evidence/fleet-round-1-freshness/*
+  - 10 files: corpus/lessons/round-1.md through round-10.md
+  - 1 file:  scripts/check-freshness.mjs (987c3267f1781db643e0269942a126ca9fee814a)
+Total rows: 56.
+Status: Exactly 55 rows match both baseline and HEAD. Only SHONEN.md drifted.
+
+--- TIER 3: APPEND_ONLY Files (Prefix Byte Equality) ---
+Defined in check-round-contract.mjs:25 and check-user-round-contract.mjs:29:
+  1) LOG.md
+  2) SCORECARD.md
+  3) SKILL.md
+  4) PROVINCE.md
+  5) corpus/QUALITY.md
+  6) corpus/README.md
+Enforcement: show(HARD_BASELINE, path) === show(HEAD, path).subarray(0, baselineLength)
+Status: Verified by byte comparison at HEAD:
+  - LOG.md:             prefixOk: true (beforeLen: 27002, afterLen: 49763)
+  - SCORECARD.md:       prefixOk: true (beforeLen: 27469, afterLen: 44918)
+  - SKILL.md:           prefixOk: true (beforeLen: 125194, afterLen: 131632)
+  - PROVINCE.md:        prefixOk: true (beforeLen: 1020, afterLen: 1020)
+  - corpus/QUALITY.md:  prefixOk: true (beforeLen: 329, afterLen: 3126)
+  - corpus/README.md:   prefixOk: true (beforeLen: 12085, afterLen: 28230)
+All 6 files have 100% intact historical prefixes!
+
+--- TIER 4: PSTACK Diff Filter (check-user-round-contract.mjs) ---
+As mapped in Section 2 above over PSTACK_PATHS.
+
+--- TIER 5: Historical Round Invariants (sameTree & scanConsequential) ---
+Enforces blob(HEAD) === blob(score.measured) for round evidence and zero needles.
+- Pstack Rounds 01..10 (pstack-20261015-r01..r10):
+  * corpus/lessons/pstack-20261015-r{01..10}.md
+  * reports/pstack-20261015-r{01..10}.md
+  * corpus/evidence/pstack-20261015-r{01..10}/*
+- User Rounds 01..10 (user-20261015-r01..r06 present, r07..r10 absent):
+  * corpus/lessons/user-20261015-r{01..06}.md
+  * reports/user-20261015-r{01..06}.md
+  * corpus/evidence/user-20261015-r{01..06}/*
+
+--------------------------------------------------------------------------------
+4. DISTINGUISHING EXISTING VS. FUTURE LESSONS
+--------------------------------------------------------------------------------
+Inventory of All Lessons under `corpus/lessons/`:
+
+A. Existing Baseline Lessons (Immutable Historical Foundation):
+   - `round-1.md` through `round-10.md` (10 files)
+   - Present at HARD_BASELINE (7f506aff) and pinned in baseline-census.tsv.
+   - Status: MUST be 100% immutable (exact byte and blob match).
+
+B. Existing Pstack Lessons (Immutable Pstack Foundation):
+   - `pstack-20261015-r01.md` through `pstack-20261015-r10.md` (10 files)
+   - Present at PSTACK_PIN (92d700d).
+   - Status: MUST be 100% immutable.
+
+C. Existing User Lessons (Active Historical Rounds):
+   - `user-20261015-r01.md` through `user-20261015-r06.md` (6 files)
+   - Checked by roundIds in check-user-round-contract.mjs.
+   - Status: 6 admitted rounds exist; round_count 6/10 is inherited honest red.
+
+D. Admitted Fleet & Verifier Notes (Non-Round Lesson Files):
+   - `kaika-fleet-round-1.md`
+   - `training-round-11.md`
+   - `round-1-verifier-spotcheck.md`
+   - `round-12-verifier-spotcheck.md`
+   - Status: Permitted; do not match round-N or pstack regexes.
+
+E. Future Lessons & The Overbroad Regex Trap:
+   - File: `corpus/lessons/round-12.md` (added in Round 12), and any future `round-13.md`.
+   - Behavior in check-round-contract.mjs:
+     `for (const path of list(root, baseline, '.').filter(protectedPath))`
+     Iterates ONLY over files present at `baseline` (round-1..round-10).
+     Therefore, `check-round-contract.mjs` already naturally admits future lessons!
+   - Behavior in check-user-round-contract.mjs:
+     Runs `git diff PSTACK_PIN HEAD -- corpus/lessons`.
+     Because `round-12.md` was added after `PSTACK_PIN`, it appears in the diff.
+     The filter uses `/^corpus\/lessons\/round-\d+\.md$/` unconditionally.
+     Result: It mistakes a newly added future lesson for a mutated historical lesson!
+   - Required Repair for UserGate:
+     A lesson file that did NOT exist at PSTACK_PIN (e.g. `blob(PSTACK_PIN, path) === null`)
+     is an admitted future lesson, NOT a historical mutation.
+     Only paths present at PSTACK_PIN (or within the historical 1..10 range) that have
+     drifted (`--diff-filter=MD` or explicit presence check) must fail.
+
+--------------------------------------------------------------------------------
+5. CHECKER SCRIPT-CUTOVER RISKS & COORDINATION
+--------------------------------------------------------------------------------
+[Risk 1: Circular Gate Lock]
+- `scripts/check-round-contract.mjs` is listed in USER `PSTACK_PATHS` (:34) and in the
+  drift filter (:128).
+- RoundGate must edit `scripts/check-round-contract.mjs` to accept canonical SHONEN
+  regeneration and expand self-tests.
+- As soon as `check-round-contract.mjs` is edited, it appears in git diff PSTACK_PIN HEAD.
+- Contract restriction: PSTACK_PIN CANNOT MOVE.
+- Result: UserGate immediately fails with `history_rewritten: Pstack bytes changed: scripts/check-round-contract.mjs`
+  unless UserGate is simultaneously updated with a cutover mechanism.
+
+[Risk 2: Blanket Exemption vs. Content Pinning]
+- If UserGate simply removes `scripts/check-round-contract.mjs` from PSTACK_PATHS or
+  deletes its filter check, arbitrary and unvetted modifications to RoundGate become
+  unprotected, violating pstack integrity (QUALITY Criterion 16).
+- Solution: Legitimate cutover pinning. UserGate must recognize an explicit cutover
+  digest identity (either an accepted blob constant array or via an explicit policy file
+  such as `scripts/legacy-history-policy.json`).
+  The check verifies:
+    blob(HEAD, 'scripts/check-round-contract.mjs') === LEGACY_BLOB (b2eb8316...) ||
+    blob(HEAD, 'scripts/check-round-contract.mjs') === REPAIRED_ROUND_GATE_BLOB
+
+[Risk 3: Seat Execution Coordination]
+- UserGate and RoundGate are sibling seats in Round 13.
+- UserGate cannot hardcode RoundGate's final blob until RoundGate completes its repair.
+- Therefore, UserGate should implement a policy lookup (e.g. `scripts/legacy-history-policy.json`)
+  or accept the parent-coordinated hash so that the parent can set the final hash
+  without requiring multiple edit cycles.
+
+[Risk 4: Gate Asymmetry]
+- `scripts/check-user-round-contract.mjs` is NOT in PSTACK_PATHS, NOT in baseline-census.tsv,
+  and NOT in protectedPath.
+- Editing UserGate does NOT trigger drift in either gate.
+- Only editing RoundGate triggers drift in UserGate.
+
+--------------------------------------------------------------------------------
+6. VERIFICATION COMMANDS FOR MAIN / PARENT (NO RUNS BY THIS SEAT)
+--------------------------------------------------------------------------------
+Commands to verify once gate repairs land:
+1. Verify Census Rows at HEAD:
+   node -e "const {spawnSync}=require('child_process'),fs=require('fs');const lines=fs.readFileSync('corpus/evidence/pstack-20261015/baseline-census.tsv','utf8').trim().split('\n');for(const l of lines.slice(1)){const [c,p]=l.split(' ');const h=spawnSync('git',['rev-parse','--verify','HEAD:'+p],{encoding:'utf8'}).stdout.trim();if(h!==c)console.log('Drifted:',p,'expected:',c,'got:',h);}"
+2. Verify Append-Only Prefixes:
+   node -e "const {spawnSync}=require('child_process');for(const p of ['LOG.md','SCORECARD.md','SKILL.md','PROVINCE.md','corpus/QUALITY.md','corpus/README.md']){const s=r=>spawnSync('git',['show',r+':'+p]).stdout;const b=s('7f506affa55f6fb892d3c8073c75151c998bdf2c'),h=s('HEAD');console.log(p,'prefixOk:',h.subarray(0,b.length).equals(b));}"
+3. Run Gate Self-Tests:
+   node scripts/check-round-contract.mjs --self-test
+   node scripts/check-user-round-contract.mjs --self-test
+4. Run Production Gates (Expect RoundGate clean, UserGate failed finding=round_count 6/10):
+   node scripts/check-round-contract.mjs
+   node scripts/check-user-round-contract.mjs

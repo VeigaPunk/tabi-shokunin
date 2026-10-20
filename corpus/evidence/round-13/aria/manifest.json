@@ -1,0 +1,258 @@
+{
+  "schema": "tabi-aria-loopback-fixture-manifest-v1",
+  "wave": "tabi-round-13-w1",
+  "claim": "C2",
+  "description": "Committed inputs for the round-13 accessible-selector loopback demonstration. The runner verifies every sha256 before use and records the manifest digest in receipt.json.",
+  "fixtures": {
+    "controls": {
+      "path": "corpus/evidence/round-13/aria/fixtures/controls.html",
+      "sha256": "879d1c20219ec4da337a4a698938ea36d8af3803065de2963bc3ed6fcec7b2ea",
+      "bytes": 805
+    },
+    "panel": {
+      "path": "corpus/evidence/round-13/aria/fixtures/panel.html",
+      "sha256": "c04d8943f70558328785d4ed6454b6a9c805e3919aa70870e90a918dae2de385",
+      "bytes": 750
+    },
+    "queue": {
+      "path": "corpus/evidence/round-13/aria/fixtures/queue.html",
+      "sha256": "d9773d354d82160bf56b76a01494bd9a5ba9f46a9b3ea5db21ca5a1579cb0e63",
+      "bytes": 317
+    },
+    "reresolve": {
+      "path": "corpus/evidence/round-13/aria/fixtures/reresolve.html",
+      "sha256": "909d120bbde594ff39820de03460ed3b1f96ac4764df6dd671cf8fdc6543eac3",
+      "bytes": 830
+    }
+  },
+  "templates": {
+    "checkbox-unchecked": {
+      "path": "corpus/evidence/round-13/aria/templates/checkbox-unchecked.aria.yml",
+      "sha256": "e842699200ebe40fd355c35a895dd8ddab6784bf037e5f1450448c5d88de445c",
+      "bytes": 26
+    },
+    "checkbox-checked": {
+      "path": "corpus/evidence/round-13/aria/templates/checkbox-checked.aria.yml",
+      "sha256": "7e1281b4e47c301152b13b12d02988af912423ff2eacc030f32757b53b3a2a00",
+      "bytes": 36
+    },
+    "checkbox-checked-false": {
+      "path": "corpus/evidence/round-13/aria/templates/checkbox-checked-false.aria.yml",
+      "sha256": "b2ecea7ff437a114641a0031b50060c9e37a8250b8cbe2614154e043c90383ab",
+      "bytes": 42
+    },
+    "panel-before": {
+      "path": "corpus/evidence/round-13/aria/templates/panel-before.aria.yml",
+      "sha256": "bd0993293f7b8715730ad4d30cbbdafd83b3d84adf0797d310bfc3b0cd6e5c4e",
+      "bytes": 77
+    },
+    "panel-after": {
+      "path": "corpus/evidence/round-13/aria/templates/panel-after.aria.yml",
+      "sha256": "f2d56b00a9b49e689661ebbe6c1f20344fd556fdd5b2625991e658735dca0349",
+      "bytes": 105
+    },
+    "queue-contain": {
+      "path": "corpus/evidence/round-13/aria/templates/queue-contain.aria.yml",
+      "sha256": "0f807ac3b5686f93e3608cfb73c621662b2f23fe7a9cd3808f39c14a655a01f5",
+      "bytes": 57
+    },
+    "queue-equal-extra-fails": {
+      "path": "corpus/evidence/round-13/aria/templates/queue-equal-extra-fails.aria.yml",
+      "sha256": "3f4eb67759469d4fb1af988f480c2edf877cc04dc1a1638d299ade8270dbc265",
+      "bytes": 78
+    },
+    "queue-equal-exact": {
+      "path": "corpus/evidence/round-13/aria/templates/queue-equal-exact.aria.yml",
+      "sha256": "2e0c4c7314959c9713924b6d7a357b568eb31062ed7f34620412b113dbb55c3b",
+      "bytes": 99
+    }
+  },
+  "cases": [
+    {
+      "name": "role-name",
+      "findingId": "R13-ARIA-ROLE-NAME-01",
+      "fixture": "controls",
+      "locator": {
+        "contract": "getByRole('button', { name: 'Save changes', exact: true })",
+        "mustContain": [
+          "getByRole('button'",
+          "name: 'Save changes'",
+          "exact: true"
+        ],
+        "mustNotContain": [
+          ".first(",
+          ".nth(",
+          ".last("
+        ]
+      },
+      "templates": [],
+      "expected": "role plus accessible name resolves exactly one button; its click updates the scoped status to saved."
+    },
+    {
+      "name": "label-fill",
+      "findingId": "R13-ARIA-LABEL-01",
+      "fixture": "controls",
+      "locator": {
+        "contract": "getByLabel('Email address')",
+        "mustContain": [
+          "getByLabel('Email address')"
+        ],
+        "mustNotContain": [
+          ".first(",
+          ".nth(",
+          ".last("
+        ]
+      },
+      "templates": [],
+      "expected": "the label-associated input resolves to one field and accepts a filled value."
+    },
+    {
+      "name": "duplicate-strict",
+      "findingId": "R13-ARIA-STRICT-01",
+      "fixture": "controls",
+      "locator": {
+        "contract": "getByRole('button', { name: 'Delete', exact: true })",
+        "mustContain": [
+          "getByRole('button'",
+          "name: 'Delete'"
+        ],
+        "mustNotContain": [
+          ".first(",
+          ".nth(",
+          ".last("
+        ]
+      },
+      "templates": [],
+      "expected": "count is 2 and click rejects with the stable Playwright strict mode violation; no first/last/nth opt-out is used.",
+      "negative": {
+        "kind": "strict-mode",
+        "errorPatterns": [
+          "strict mode violation",
+          "resolved to 2 elements"
+        ]
+      }
+    },
+    {
+      "name": "re-resolve",
+      "findingId": "R13-ARIA-RERESOLVE-01",
+      "fixture": "reresolve",
+      "locator": {
+        "contract": "getByRole('button', { name: 'Bump counter', exact: true })",
+        "mustContain": [
+          "getByRole('button'",
+          "name: 'Bump counter'"
+        ],
+        "mustNotContain": [
+          ".first(",
+          ".nth(",
+          ".last("
+        ]
+      },
+      "templates": [],
+      "expected": "one locator clicks the original node, then the replacement node; the stale element handle is disconnected; instance tokens are 1, 2, 3."
+    },
+    {
+      "name": "panel-before-after",
+      "findingId": "R13-ARIA-PANEL-SNAPSHOT-01",
+      "fixture": "panel",
+      "locator": {
+        "contract": "getByRole('main', { name: 'Preferences', exact: true })",
+        "mustContain": [
+          "getByRole('main'",
+          "name: 'Preferences'"
+        ],
+        "mustNotContain": [
+          ".first(",
+          ".nth(",
+          ".last("
+        ]
+      },
+      "templates": [
+        "panel-before",
+        "panel-after"
+      ],
+      "expected": "before and after ariaSnapshot YAML are captured; each committed template matches its state and the YAML differs."
+    },
+    {
+      "name": "contain-default",
+      "findingId": "R13-ARIA-CONTAIN-01",
+      "fixture": "queue",
+      "locator": {
+        "contract": "getByRole('list', { name: 'Queue', exact: true })",
+        "mustContain": [
+          "getByRole('list'",
+          "name: 'Queue'"
+        ],
+        "mustNotContain": [
+          ".first(",
+          ".nth(",
+          ".last("
+        ]
+      },
+      "templates": [
+        "queue-contain"
+      ],
+      "expected": "the default contain mode accepts the Alpha/Beta template while the visible Gamma sibling is extra."
+    },
+    {
+      "name": "equal-explicit",
+      "findingId": "R13-ARIA-EQUAL-01",
+      "fixture": "queue",
+      "locator": {
+        "contract": "getByRole('list', { name: 'Queue', exact: true })",
+        "mustContain": [
+          "getByRole('list'",
+          "name: 'Queue'"
+        ],
+        "mustNotContain": [
+          ".first(",
+          ".nth(",
+          ".last("
+        ]
+      },
+      "templates": [
+        "queue-equal-extra-fails",
+        "queue-equal-exact"
+      ],
+      "expected": "explicit /children: equal rejects Alpha/Beta against the Alpha/Beta/Gamma tree, then the exact Alpha/Beta/Gamma template passes.",
+      "negative": {
+        "kind": "aria-snapshot",
+        "errorPatterns": [
+          "toMatchAriaSnapshot",
+          "Expected:",
+          "Received:"
+        ]
+      }
+    },
+    {
+      "name": "checked-wrong-state",
+      "findingId": "R13-ARIA-CHECKED-01",
+      "fixture": "panel",
+      "locator": {
+        "contract": "getByLabel('Accept terms')",
+        "mustContain": [
+          "getByLabel('Accept terms')"
+        ],
+        "mustNotContain": [
+          ".first(",
+          ".nth(",
+          ".last("
+        ]
+      },
+      "templates": [
+        "checkbox-unchecked",
+        "checkbox-checked",
+        "checkbox-checked-false"
+      ],
+      "expected": "the unchecked scope passes the partial template and rejects [checked]; after checking, the same [checked] template passes and an explicit [checked=false] template rejects the now-checked control.",
+      "negative": {
+        "kind": "aria-snapshot",
+        "errorPatterns": [
+          "toMatchAriaSnapshot",
+          "Expected:",
+          "Received:"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+# RuntimeInventory Scout Report: Playwright, Node, and Chromium Runtime Discovery
+
+## Axes
+- Discovery: Comprehensive enumeration of Node, Playwright, and Chromium paths and versions.
+- Accuracy: Exact observed filesystem paths, package versions, and binary metadata without assumptions.
+- Safety: Strictly read-only inspection; zero browser instances launched.
+- Compatibility: Evaluated Node engine requirements, browser revision pairing, and ESM module resolution.
+
+---
+
+## 1. Node.js & Tooling Environment (Observed)
+
+- **Node.js Executable**: `/run/user/1000/fnm_multishells/4118_1792460978869/bin/node`
+  - Canonical Path: `/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node`
+  - Version: `v24.21.0`
+  - Architecture: `x64` (`x86_64`)
+  - V8 Engine: `13.6.233.17-node.53`
+  - OS / Kernel: Linux `7.2.3-arch1-3` (Arch Linux)
+- **NPM Executable**: `/run/user/1000/fnm_multishells/4118_1792460978869/bin/npm`
+  - Canonical Path: `/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/npm`
+  - Version: `11.19.0`
+- **Global Prefix**: `/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation`
+- **Global Module Directory**: `/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules`
+
+---
+
+## 2. Playwright Packages & CLI (Observed)
+
+- **Installed Global Playwright Package**:
+  - Package: `playwright@1.64.0`
+  - Path: `/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright`
+  - Nested core package: `playwright-core@1.64.0` at `/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright/node_modules/playwright-core`
+  - Engine requirement: `engines.node: ">=20"` (Satisfied by Node v24.21.0)
+- **Playwright CLI**:
+  - Path: `/run/user/1000/fnm_multishells/4118_1792460978869/bin/playwright`
+  - CLI Version: `Version 1.64.0`
+- **`@playwright/test` Status**:
+  - Status: **NOT INSTALLED** anywhere globally or locally on the host.
+  - Finding: Neither `@playwright/test` nor its assertions are present in global npm, local repo, or pacman.
+- **Repository Package Context**:
+  - Repository `/home/vgpnk/Projects/shokunin/tabi-shokunin` has NO local `package.json` and NO local `node_modules/`.
+  - Resolution Impact: Bare ESM `import ... from "playwright"` will fail without module path resolution. Node scripts can resolve Playwright via:
+    1. CJS `createRequire`: `const require = createRequire("/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/"); const pw = require("playwright");`
+    2. Absolute ESM path: `import pw from "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright/index.mjs";`
+
+---
+
+## 3. Chromium Executables & Cache Inventory (Observed)
+
+- **Playwright Managed Chromium (Chrome for Testing)**:
+  - Cache Directory: `/home/vgpnk/.cache/ms-playwright/chromium-1248`
+  - Browser Binary Path: `/home/vgpnk/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome`
+  - Headless Shell Path: `/home/vgpnk/.cache/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell`
+  - Revision: `1248` (exact match to `playwright-core@1.64.0`'s `browsers.json`)
+  - Declared Browser Version: `156.0.8078.4` (from `browsers.json`)
+  - Verification Markers: `INSTALLATION_COMPLETE` and `DEPENDENCIES_VALIDATED` present.
+  - Default Resolver: `playwright.chromium.executablePath()` statically returns `/home/vgpnk/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome`.
+  - Browser Launch Status: **0 launches performed** (zero processes spawned; verified via static path and metadata checks).
+- **Host System Chromium**:
+  - Binary Path: `/usr/bin/chromium`
+  - Version: `Chromium 152.0.7977.82 Arch Linux`
+  - Package: `local/chromium 152.0.7977.82-1`
+  - Usability: Usable via explicit `executablePath: '/usr/bin/chromium'`, but managed `chromium-1248` is the native target for Playwright 1.64.0.
+- **Other Cached Browsers in `~/.cache/ms-playwright`**:
+  - `ffmpeg-1013`: Installed at `/home/vgpnk/.cache/ms-playwright/ffmpeg-1013`
+  - `firefox` (revision 1555): NOT installed.
+  - `webkit` (revision 2370): NOT installed.
+
+---
+
+## 4. Compatibility & Architectural Analysis (Observed & Inferred)
+
+- **Node Engine Compatibility [Observed]**:
+  - `playwright-core@1.64.0` requires Node `>=20`. Installed Node is `v24.21.0`. Fully compatible.
+- **Browser Revision Compatibility [Observed]**:
+  - `playwright-core@1.64.0/browsers.json` specifies Chromium revision `1248`. The cached binary in `~/.cache/ms-playwright/chromium-1248` is revision `1248`. 100% matched.
+- **AriaRunner Dependency Advisory [Inferred]**:
+  - `spec.json` task for `AriaRunner` states: "Use real @playwright/test expect assertions, never own substitute matching."
+  - Because `@playwright/test` is currently absent, if `expect` from `@playwright/test` is required, the operator tooling directive permits installing `@playwright/test@1.64.0` via `npm install -g @playwright/test@1.64.0` (matching `playwright@1.64.0`), or AriaRunner can import from an explicit package if installed.
+  - Alternatively, standalone assertion libraries or playwright's native locator matchers can be used if `@playwright/test` is omitted, but installing `@playwright/test@1.64.0` satisfies the strict acceptance criterion.
+
+---
+
+## 5. Confidence & Unresolved Gaps
+
+- **Confidence**: 100% on all observed paths, package versions, and absence of `@playwright/test`.
+- **Remaining Unknowns**:
+  - Whether parent prefers installing `@playwright/test@1.64.0` globally via npm or having `AriaRunner` execute an isolated test runner.

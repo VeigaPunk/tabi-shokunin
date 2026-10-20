@@ -1,0 +1,184 @@
+# HistoryConnection: Connecting Canonical PROTOCOL Gate / SHONEN Regeneration Rules with Old Pin Constraints
+# Seat: TabiR13.HistoryConnection (connector, leaf)
+# Date: 2026-10-20
+# Root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+# Acceptance Target: .ufo/waves/round-13/w1/HistoryConnection.txt
+
+================================================================================
+1. GODSPEED POSTURE & NAMED AXES
+================================================================================
+- Historical Integrity: Absolute preservation of frozen historical baselines
+  (HARD_BASELINE 7f506aff, PSTACK_PIN 92d700d, baseline-census.tsv, historical lesson bytes).
+- Protocol Conformance: Connecting canonical PROTOCOL.md SHONEN regeneration and
+  future lesson requirements directly to lane gate enforcement.
+- Non-Weakening Rigor: Replacing blunt byte equality with strict canonical validation
+  without introducing blanket bypasses, self-blessing, or moving pins.
+- Calibration & Honesty: Unmasking the genuine pre-existing red finding in USER
+  (round_count 6/10) rather than concealing debt or fabricating rounds.
+
+Leaf bounds strictly maintained: read-only repository inspection and architectural
+synthesis. Zero verification runs, zero builds, zero subagents dispatched.
+
+================================================================================
+2. CANONICAL PROTOCOL GATE & SHONEN REGENERATION RULES
+================================================================================
+Canonical authority: PROTOCOL.md (§File contract per shokunin repo, lines 432–448;
+Appendix incident row §Appendix "Canonical form"):
+
+2.1 Contract & Regeneration Invariants:
+- Purpose: Promotion checklist to shokunin; generated at mint by copying the canonical
+  template verbatim and deleted on promotion.
+- Evolving Gates Rule: "Gates evolve — when they change, the owning lane regenerates
+  SHONEN.md verbatim from the template on its next steered round (the lane is the
+  only allowed writer inside its repo)."
+- Mechanical Verification Rule: "Verification is mechanical: the seed block (indented
+  lines below) must diff byte-identical modulo <name> = the repo's directory name,
+  and marks are confined to the box character plus one indented evidence line per box
+  — [x] <verifier-id> or [~] with a resolvable pointer; no other prose, added boxes,
+  or removed boxes (§Appendix, "Canonical form")."
+
+2.2 Canonical Template Seed:
+    # <name> — Promotion checklist
+
+    Promotion to shokunin requires all of:
+
+    - [ ] SKILL.md contains real decision tables, error patterns, checklists, cited sources
+    - [ ] At least one end-to-end domain task executed and logged in LOG.md
+    - [ ] Instructions executable by an agent without oral context
+    - [ ] No cross-domain bleed (PROVINCE.md still accurate)
+
+2.3 Mark Discipline & Historical Tabi Adjudication:
+- Marks permitted: [~] asserted by the lane itself with a resolvable pointer;
+  [x] ONLY with a named non-author verifier per Promotion gates.
+- Incident & Adjudication (Commit 5cdc97654b71, "round-1: post-review fixes"):
+  In kaika fleet round 1, SHONEN.md had four [x] marks citing TABI-B4 and TABI-R3-4.
+  The orchestrator adjudicated Mistake M-2 (LOG.md:519-525; kaika-fleet-round-1.md:102-104):
+  lane-dispatched subagents are NOT independent non-authors. The operator ordered SHONEN.md
+  regenerated verbatim from the canonical template with all four boxes [~] and pointers.
+- The resulting HEAD blob is 9dcb2687d3083f696b57032389eed7349e03893e.
+
+================================================================================
+3. OLD PIN CONSTRAINTS & FAILURE ANATOMY
+================================================================================
+3.1 Pinned Historical Anchors:
+- HARD_BASELINE = 7f506affa55f6fb892d3c8073c75151c998bdf2c (both checkers)
+- PSTACK_PIN = 92d700d6a8aa9855f1e9d2cc8e12c82f762a1367 (check-user-round-contract.mjs:13)
+- Baseline Census = corpus/evidence/pstack-20261015/baseline-census.tsv:
+  Row 25 pins baseline blob 5e055b8c60d606d202029eddabb8a45e13203b06 SHONEN.md.
+
+3.2 Failure Points in check-round-contract.mjs:
+- Failure A (Protected path loop, :94-98):
+  SHONEN.md is listed in protectedPath (:68). checkHistory compares blob(baseline, path)
+  with blob(head, path). Since baseline has 5e055b8c and HEAD has 9dcb2687, the gate
+  fails with `history_rewritten: Protected bytes changed: SHONEN.md`.
+- Failure B (Production Census loop, :111-117):
+  Census line 25 specifies 5e055b8c. checkHistory compares both blob(baseline, path)
+  and blob(head, path) against the recorded hash. HEAD fails with:
+  `history_rewritten: Census blob drifted: SHONEN.md`.
+
+3.3 Failure Points in check-user-round-contract.mjs:
+- Failure C (Protected path loop, :107-111):
+  Identical protectedPath check fails on `history_rewritten: Protected bytes changed: SHONEN.md`.
+- Failure D (PSTACK diff check, :121-135):
+  Evaluates git diff PSTACK_PIN HEAD -- PSTACK_PATHS.
+  SHONEN.md drifted between 92d700d (5e055b8c) and HEAD (9dcb2687), tripping:
+  `history_rewritten: Pstack bytes changed: SHONEN.md`.
+- Failure E (Overbroad Future Lesson Trap):
+  The PSTACK drift filter matches `/^corpus\/lessons\/round-\d+\.md$/` unconditionally.
+  In round 12, corpus/lessons/round-12.md was added. Because it was absent at PSTACK_PIN,
+  the filter misclassifies this required new lesson as a mutated historical file, tripping:
+  `history_rewritten: Pstack bytes changed: corpus/lessons/round-12.md`.
+- Failure F (Checker Tooling Cutover Lock):
+  scripts/check-round-contract.mjs is in PSTACK_PATHS (:34) and in the drift filter (:128).
+  When RoundGate edits check-round-contract.mjs, git diff PSTACK_PIN HEAD catches it,
+  tripping `history_rewritten: Pstack bytes changed: scripts/check-round-contract.mjs`.
+
+================================================================================
+4. EVALUATION OF WEAKENING POLICIES (WHAT MUST BE REJECTED)
+================================================================================
+- Moving HARD_BASELINE: REJECTED.
+  HARD_BASELINE re-derives SCORECARD 'before' values (check-round-contract.mjs:299-301).
+  Moving it recalculates historical measurements against a different base commit,
+  breaking SCORECARD before/after contracts and violating append-only history.
+- Moving PSTACK_PIN: REJECTED.
+  Violates the fleet contract invariant that Pstack r01-r10 evidence is frozen.
+- Blanket Exemption for SHONEN.md: REJECTED.
+  Simply removing SHONEN.md from protectedPath or deleting its census row allows
+  arbitrary drift, non-canonical templates, or unauthorized [x] promotion claims.
+- Blanket "Allow All Absent at Pin" in USER: REJECTED.
+  Exempting any absent-at-pin path across all PSTACK_PATHS would permit unauthorized
+  files inside frozen trees (corpus/evidence/pstack-20261015/, pstack reports).
+- Dynamic Self-Blessing: REJECTED.
+  Allowing `to = blob(HEAD, path)` dynamically, or trusting any script whose
+  `--self-test` passes, introduces unvetted circular authority.
+- Changing USER --expect or Synthesizing Rounds: REJECTED.
+  USER inherited 6 of 10 rounds. Changing default expect from 10 to 6 or synthesizing
+  rounds conceals genuine operational debt.
+
+================================================================================
+5. THE MINIMAL NON-WEAKENING POLICY (ACTIONABLE SPECIFICATION)
+================================================================================
+The minimal lawful policy preserves the baseline audit trail completely while enforcing
+strict canonical validation on HEAD.
+
+5.1 Historical Baseline Invariance:
+- Baseline Check: At baseline (7f506aff), SHONEN.md MUST equal 5e055b8c... exactly.
+- Census Check: In baseline-census.tsv, line 1 MUST equal baseline, and row 25 MUST
+  verify `blob(baseline, 'SHONEN.md') === '5e055b8c60d606d202029eddabb8a45e13203b06'`.
+  The historical record remains immutable.
+
+5.2 Canonical SHONEN Policy at HEAD:
+Instead of requiring byte equality between baseline and HEAD for SHONEN.md, evaluate
+HEAD against the canonical protocol specification:
+- Seed Integrity:
+  Normalizing HEAD SHONEN.md (resetting marks to `[ ]` and removing indented evidence
+  lines) must match the canonical template for 'tabi-shokunin' byte-for-byte.
+  Seed SHA-256 constant: b45c2ac3cdf8ba80563e77cabf72670a6a101590f8031d9b484c67313bcdab67
+  (provenance: PROTOCOL.md lines 441-448 with `<name>`=tabi-shokunin).
+- Structural Rules:
+  1. Header must be exactly: `# tabi-shokunin — Promotion checklist\n\nPromotion to shokunin requires all of:\n`
+  2. Exactly four box lines matching BOXES in canonical order.
+  3. Mark discipline: only `[~]` (or `[ ]`) permitted. Any `[x]` fails closed with
+     `history_rewritten` (preventing recurrence of M-2 until external verification exists).
+  4. Evidence discipline: exactly one indented evidence line per box (`  <evidence>`).
+     Evidence pointers must resolve to valid files at HEAD (SKILL.md, PROVINCE.md, etc.).
+  5. Any additional boxes, deleted boxes, or prose outside the evidence lines fails closed
+     with `history_rewritten`.
+
+5.3 Narrow Future Lesson Admittance in check-user-round-contract.mjs:
+- Scoped strictly to `corpus/lessons/round-\d+\.md`.
+- Lessons that existed at PSTACK_PIN (`round-1.md` through `round-10.md`): MUST be
+  100% byte-identical. Any modification or deletion fails closed.
+- Lessons absent at PSTACK_PIN (`blob(PSTACK_PIN, path) === null`, e.g. `round-12.md`
+  or future `round-13.md`): Permitted as canonical future round lessons.
+- All other PSTACK_PATHS remain strictly frozen.
+
+5.4 Coordinated Checker Script-Cutover Identity:
+To prevent RoundGate's repaired script from tripping USER PSTACK drift without moving PSTACK_PIN:
+- UserGate defines an explicit, pinned cutover tuple:
+    path: 'scripts/check-round-contract.mjs'
+    from: 'b2eb8316f41cd1039330e45f6739c07c5f11eace' (legacy blob at PSTACK_PIN)
+    to:   '<repaired_round_gate_blob>' (exact committed blob of RoundGate's repair)
+- Drift is accepted if and only if `blob(PSTACK_PIN, path) === from && blob(HEAD, path) === to`.
+- Parent/L1 supplies the exact final blob once RoundGate's edits are staged.
+
+5.5 Honest Unmasking of USER Operational Debt:
+- Once SHONEN canonical validation, future lesson admittance, and script cutover pass,
+  checkHistory succeeds.
+- check() proceeds to evaluate roundIds. Because only 6 user rounds exist, UserGate
+  exits 1 with finding `round_count` ("Found 6 user rounds, expected 10").
+- The true operational status is revealed honestly without masking by history_rewritten.
+
+================================================================================
+6. SUMMARY MATRIX OF GATES & POLICIES
+================================================================================
+| Aspect               | Legacy Gate (Red)             | Minimal Non-Weakening Repair (Clean/Honest)      |
+|----------------------|-------------------------------|--------------------------------------------------|
+| HARD_BASELINE        | 7f506affa55f6fb8...          | 7f506affa55f6fb8... (UNTOUCHED)                  |
+| PSTACK_PIN           | 92d700d6a8aa9855...          | 92d700d6a8aa9855... (UNTOUCHED)                  |
+| Baseline Census Row  | recorded === head (FAILS)     | baseline === recorded && HEAD satisfies policy   |
+| Protected SHONEN     | head === baseline (FAILS)     | baseline === 5e055b8c && HEAD satisfies policy   |
+| Future Lessons       | round-\d+ regex catches all   | Pinned lessons immutable; absent-at-pin admitted  |
+| RoundGate Cutover    | Unchecked drift (FAILS USER)  | Explicit from/to blob pair pinned in UserGate    |
+| USER Production Exit | exit 1, history_rewritten     | exit 1, round_count (6 of 10) honest unmasking    |
+| ROUND Production Exit| exit 1, history_rewritten     | exit 0, verdict=clean rounds=10 consequential=0   |

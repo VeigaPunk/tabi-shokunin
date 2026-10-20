@@ -1,0 +1,167 @@
+# LocatorSource Scout Report: Playwright Locators Documentation Investigation
+
+Seat: TabiR13.LocatorSource (Leaf subagent)
+Date: 2026-10-20
+Target: Read-only bounded investigation under /home/vgpnk/Projects/shokunin/tabi-shokunin: Open official Playwright locators docs, locate role/name/label/re-resolution/strictness quotes and exact API version scope.
+Files Written:
+1. .ufo/waves/round-13/w1/LocatorSource.txt (this file)
+
+================================================================
+1. GODSPEED AXES
+================================================================
+- Freshness: Byte-exact verification of live official documentation against round-1 and round-12 pinned digests.
+- Coverage: Exhaustive extraction of verbatim quotes and section anchors across all 5 requested categories (role, name, label, re-resolution, strictness) and full version scope (v1.14 through v1.64).
+- Calibration: Verbatim quotation fidelity (each quote <= 25 words, preserving punctuation and exact phrasing), explicitly separating documented source claims from inferences.
+- Adjacency & Integrity: Strict leaf-member boundary; zero subagent dispatches; zero writes outside assigned file paths; zero test or gate execution.
+
+================================================================
+2. SOURCE IDENTITY & HTTP EVIDENCE
+================================================================
+- Primary Source: Playwright Locators Guide (Registry row S023)
+  - URL: https://playwright.dev/docs/locators
+  - HTTP Status: 200 OK
+  - Server: GitHub.com
+  - Response Body Size: 268,087 bytes
+  - Body SHA-256: 234a24527d5a96e600e0dc1d832fb56bd8a539283df9f497ba982de21cdbdee6
+  - Identity Status: Byte-identical across round-1, round-12, and current round-13 re-fetches.
+  - Doc Generator & Version: Docusaurus v3.10.1, stable documentation build (Playwright v1.64 baseline).
+
+- Supplementary Sources (API Reference & Release Notes):
+  - URL: https://playwright.dev/docs/api/class-page
+    - SHA-256: 5f8af4e006dd43c0e9302733cef08c7dfd24ad77385bb61cd29953b06848930e (975,536 bytes)
+  - URL: https://playwright.dev/docs/api/class-locator
+    - SHA-256: 50bf21d2f64a9e164cb2b2dd35141d12284d0d287c0b9c2c723e1e8d254b99da (572,193 bytes)
+  - URL: https://playwright.dev/docs/release-notes
+    - Historical versioning reference for locator API introduction and evolution.
+
+================================================================
+3. VERBATIM QUOTATIONS & SECTION ANCHORS (Each quote <= 25 words)
+================================================================
+
+A. ROLE
+- Section Anchor: §Locate by role (id="locate-by-role")
+  - Quote 1 (24 words):
+    "The page.getByRole() locator reflects how users and assistive technology perceive the page, for example whether some element is a button or a checkbox."
+  - Quote 2 (24 words):
+    "Role locators include buttons, checkboxes, headings, links, lists, tables, and many more and follow W3C specifications for ARIA role, ARIA attributes and accessible name."
+  - Quote 3 (21 words):
+    "Note that role locators do not replace accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines."
+  - Quote 4 (23 words):
+    "We recommend prioritizing role locators to locate elements, as it is the closest way to how users and assistive technology perceive the page."
+
+B. NAME (ACCESSIBLE NAME)
+- Section Anchor: §Locate by role (id="locate-by-role")
+  - Quote 1 (22 words):
+    "When locating by role, you should usually pass the accessible name as well, so that the locator pinpoints the exact element."
+- Section Anchor: API Reference — Page.getByRole (id="page-get-by-role")
+  - Quote 2 (11 words):
+    "Allows locating elements by their ARIA role, ARIA attributes and accessible name."
+
+C. LABEL
+- Section Anchor: §Locate by label (id="locate-by-label")
+  - Quote 1 (16 words):
+    "Most form controls usually have dedicated labels that could be conveniently used to interact with the form."
+  - Quote 2 (15 words):
+    "In this case, you can locate the control by its associated label using page.getByLabel()."
+  - Quote 3 (7 words):
+    "Use this locator when locating form fields."
+- Section Anchor: API Reference — Page.getByLabel (id="page-get-by-label")
+  - Quote 4 (19 words):
+    "Allows locating input elements by the text of the associated <label> or aria-labelledby element, or by the aria-label attribute."
+
+D. RE-RESOLUTION (Dynamic DOM Recovery & Action-Time Evaluation)
+- Section Anchor: §Locating elements (id="locating-elements")
+  - Quote 1 (18 words):
+    "Every time a locator is used for an action, an up-to-date DOM element is located in the page."
+  - Quote 2 (18 words):
+    "In the snippet below, the underlying DOM element will be located twice, once prior to every action."
+  - Quote 3 (25 words):
+    "This means that if the DOM changes in between the calls due to re-render, the new element corresponding to the locator will be used."
+- Section Anchor: Release Notes v1.14 (§New Locators API)
+  - Quote 4 (25 words):
+    "The difference between the Locator and ElementHandle is that the latter points to a particular element, while Locator captures the logic of how to retrieve that element."
+
+E. STRICTNESS
+- Section Anchor: §Strictness (id="strictness")
+  - Quote 1 (3 words):
+    "Locators are strict."
+  - Quote 2 (21 words):
+    "all operations on locators that imply some target DOM element will throw an exception if more than one element matches."
+  - Quote 3 (25 words):
+    "On the other hand, Playwright understands when you perform a multiple-element operation, so the following call works perfectly fine when the locator resolves to multiple elements."
+  - Quote 4 (24 words):
+    "You can explicitly opt-out from strictness check by telling Playwright which element to use when multiple elements match, through locator.first(), locator.last(), and locator.nth()."
+  - Quote 5 (20 words):
+    "These methods are not recommended because when your page changes, Playwright may click on an element you did not intend."
+- Section Anchor: Release Notes v1.14 (§New "strict" mode)
+  - Quote 6 (22 words):
+    "Selector ambiguity is a common problem in automation testing. "strict" mode ensures that your selector points to a single element and throws otherwise."
+
+================================================================
+4. EXACT API VERSION SCOPE & CHRONOLOGY
+================================================================
+
+- v1.14 (September 2021) — Foundation of Locators & Strictness:
+  - Playwright introduces the `Locator` abstraction as distinct from `ElementHandle`. Locators capture retrieval logic lazily rather than pointing to a static node reference.
+  - Locators are made "strict by default" for single-element actions.
+  - Page-level action methods gain `strict: true` opt-in parameter.
+  - Web-first auto-retrying assertions (`expect(locator)...`) are introduced.
+
+- v1.17 (January 2022) — Frame Traversal:
+  - Introduction of `FrameLocator` (`page.frameLocator()`, `locator.frameLocator()`) enabling seamless lazy locators through iframe boundaries.
+
+- v1.18 – v1.19 (February–March 2022) — Subtree & Text Filtering:
+  - Introduction of `hasText` and `has` filtering options (`filter({ has: locator })`).
+
+- v1.21 – v1.22 (April–May 2022) — Role Selector Engine:
+  - Internal ARIA role selector engine introduced (`role=button[name="..."]`).
+  - `locator.filter()` method introduced for narrowing locator scopes.
+
+- v1.27 (October 2022) — Dedicated Semantic Locator API:
+  - Official launch of user-facing semantic locator methods across `Page`, `Locator`, `FrameLocator`, and `Frame`:
+    - `page.getByRole(role, options)`: Locate by ARIA role, ARIA attributes, and accessible name.
+    - `page.getByLabel(text, options)`: Locate form input by label text, aria-labelledby, or aria-label.
+    - `page.getByPlaceholder(text, options)`: Locate input by placeholder text.
+    - `page.getByText(text, options)`: Locate by rendered text content.
+    - `page.getByAltText(text, options)`: Locate image/area by alt text.
+    - `page.getByTitle(text, options)`: Locate element by HTML title attribute.
+    - `page.getByTestId(testId)`: Locate by configured test id attribute.
+
+- v1.34 (June 2023) — Locator Combinators:
+  - Added `locator.and()` and `locator.or()` operators for simultaneous condition matching and fallbacks.
+
+- v1.49 – v1.59 (November 2024 – January 2025) — ARIA Snapshots:
+  - `locator.ariaSnapshot()` introduced in v1.49.
+  - `page.ariaSnapshot()` introduced in v1.59.
+
+- v1.60 (March 2025) — Accessible Description Matching:
+  - `description` option added to `getByRole()` matching W3C AccName accessible descriptions.
+
+- v1.63 (Early 2026) — JSON Snapshots & Visibility Filter:
+  - `locator.visible()` method introduced.
+  - `page.ariaSnapshotJSON()` and `locator.ariaSnapshotJSON()` added.
+
+- v1.64 (Current Stable Documentation Baseline & Host Global Runtime):
+  - `locator.within()` introduced for scoped subtree matching.
+  - WebMCP experimental integration (`page.webmcp`).
+  - Matches the globally installed `playwright@1.64.0` verified on host in RuntimeInventory.
+
+================================================================
+5. BOUNDARIES, INFERENCES, AND OVERCLAIM WARNINGS
+================================================================
+
+- Not an Accessibility Audit:
+  Playwright docs state explicitly: "role locators do not replace accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines." Using role locators verifies that a control is perceived with that role and name, but does not prove WCAG conformance, contrast compliance, or keyboard focusability.
+
+- Re-Resolution Mechanics:
+  Locators evaluate at action execution time. Unlike Selenium or Puppeteer `ElementHandle`s which can go stale (`StaleElementReferenceException`), Playwright locators automatically re-query the DOM on each action invocation (`click`, `fill`, etc.). If a framework re-renders the element between two actions, the locator transparently picks up the fresh element.
+
+- Opt-Out Strictness Hazards:
+  Using `locator.first()`, `locator.last()`, or `locator.nth()` suppresses Playwright's strictness defense. The docs explicitly warn that these methods are "not recommended" because layout or order shifts will silently interact with an unintended element. Similarly, `or()` is not a disambiguator: if both alternative conditions match simultaneously, strict mode will throw.
+
+================================================================
+6. OPERATIONAL SUMMARY & TOOL RECORD
+================================================================
+- Tool installs / updates: None. All inspection executed with native runtime tools.
+- Verification runs: None (strictly prohibited for this seat).
+- Subagent dispatches: None (strictly leaf member).

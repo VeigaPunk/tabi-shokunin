@@ -1,0 +1,128 @@
+# ReviewTemplates — partial vs equal ARIA template contract (round 13, w1, read-only)
+
+Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin. Leaf review; no runs, no installs, no edits outside this file pair.
+
+Sources read this session:
+- Playwright "Snapshot testing" (ARIA snapshots) — https://playwright.dev/docs/aria-snapshots, read via reader 2026-10-20. Sections used: §Aria snapshots, §Snapshot matching, §Partial matching, §Strict matching, §Setting children mode globally, §Updating snapshots, §Attributes and states.
+- Playwright API — https://playwright.dev/docs/api/class-locatorassertions (sha256 of fetched bytes `bb949bb823bb1f91634a4099e4cee64e670b385f81373eea1ace5c8b69cd952e`) and https://playwright.dev/docs/api/class-locator (sha256 `50bf21d2f64a9e164cb2b2dd35141d12284d0d287c0b9c2c723e1e8d254b99da`). Used for `toMatchAriaSnapshot(expected|options)` and `locator.ariaSnapshot({boxes, depth, mode})`.
+- Repo: `corpus/knowledge/playwright-accessible-locators-and-snapshots.md:69-112`, `.ufo/waves/round-13/w1/spec.json` (AriaRunner / ReviewTemplates prompts).
+
+Axes: contract correctness (what each mode asserts), falsifiability (each claim has a case that can fail), scope/cost (no runtime, no claims beyond docs).
+
+## 1. Findings by severity
+
+**HIGH-1 — The runner must exercise the matcher, not compare YAML strings.**
+Children modes (`contain`/`equal`/`deep-equal`), order sensitivity, and omission rules are defined for the `expect(...).toMatchAriaSnapshot(...)` assertion (S024 §Snapshot matching, §Strict matching). The `ariaSnapshot()` methods return the tree only (class-locator API: "returns the same tree ... serialized"; `toMatchAriaSnapshot(expected)` is the matcher). A runner that calls `locator.ariaSnapshot()` and does a string or set comparison of its own has not tested the Playwright partial/equal contract at all, and would prove nothing about `contain`.
+- Fix: run each case as `await expect(locator).toMatchAriaSnapshot(template, { timeout })` (from `@playwright/test`, outside a test runner wrapped in try/catch) and record the thrown diff text plus a separate `locator.ariaSnapshot()` capture as the actual. [inference: standalone use of `expect` outside the test runner is not documented; the runtime case must verify it, and fall back to `@playwright/test` runner if not.]
+
+**HIGH-2 — A checked-state template must spell `[checked]`; omitting it makes the assertion state-blind.**
+S024 §Partial matching: "In this partial match, the `checked` attribute is ignored, so the test will pass regardless of the checkbox state." Only `- checkbox [checked]` (S024 §Attributes and states) constrains the state. Any falsifier written as `- checkbox "Accept terms"` cannot fail on checked state.
+
+**MED-3 — Knowledge-file attribution is off for the default-children rule (corrective, for main to apply).**
+`corpus/knowledge/playwright-accessible-locators-and-snapshots.md:70` says "Matching is structural and partial by default ... (S024 §Snapshot matching)". The default `contain` ("By default, a template containing the subset of children will be matched") is in §Strict matching; §Snapshot matching only says order-sensitive, scope-by-depth, and top-level sibling rules. Line 72 already cites §Strict matching correctly. Smallest correction: move the "partial by default" citation on line 70 to `§Partial matching, §Strict matching`. Not edited by me.
+
+**MED-4 — Negative cases wait the full expect timeout unless shortened.**
+S024 §Updating snapshots: "Playwright retries the assertion until its expect timeout expires." Every expected-fail case will burn the default timeout. Pass an explicit short `timeout` on negative cases (the locator assertion API accepts `timeout` in ms) and record the value in the result, so a fail is determinate and a pass is not "matched eventually after a retry we did not record".
+
+**MED-5 — Single-node templates match at any depth; checked and name falsifiers need scoping and a decoy.**
+S024 §Snapshot matching: "A single-node template can match at any depth within the selected page or locator." `- checkbox [checked]` at page or `main` scope passes if ANY checkbox is checked. The checked-state falsifier below includes a checked decoy to prove this.
+
+**LOW-6 — Do not author `[checked=false]`; capture actual instead.** The docs show `[checked]` for a checked input and show the `aria-invalid` rule "A `false` value is omitted" (§Attributes and states), but do not state the unchecked rendering for `checked`. Record the captured YAML for the unchecked state and cite what it shows.
+
+**LOW-7 — Keep `boxes`, `mode: 'ai'`, and `ref` out of templates.** `boxes: true` appends `[box=x,y,width,height]`, and `mode: 'ai'` appends `[ref=eN]` (class-locator API). Either changes the YAML and makes templates non-portable across the default mode.
+
+**LOW-8 — Global config changes the default-contain case.** S024 §Setting children mode globally: `expect.toMatchAriaSnapshot.children`. If the runner sets `children: 'equal'` globally, the "default contain accepts extra child" case no longer tests default `contain`. Use a config without the global key for the default case; use the global key only in the override case (X7 below) and record which config each case ran under.
+
+**LOW-9 — Unquoted text exactness is unmeasured.** The docs' listitem examples are unquoted (`- listitem: Feature B`). The docs do not state whether unquoted text is exact or substring. Measure it with the near-miss case X8 before writing it into the corpus.
+
+**LOW-10 — Version support for `/children` and the global key is not dated by the pages read.** The pages are docs-as-served (stable, newest tag). Pin the installed Playwright version in the record; X7 is the falsifier that fails on a version that lacks the directive or the config key.
+
+## 2. Contract table (what each mode asserts; source-anchored)
+
+| mode / rule | asserts | does not assert | source |
+|---|---|---|---|
+| `contain` (default, no `/children`) | listed direct children present, in order; extra siblings allowed | unlisted children; grandchildren | S024 §Strict matching ("contain (default): Matches if all specified children are present in order"; "With no expected child entries, contain allows any children") |
+| `equal` (`- /children: equal`) | direct children exactly the listed list, in order; extra direct child fails | nested grandchildren (not constrained) | S024 §Strict matching ("equal: Matches if direct children exactly match ..."); "equal ... require none" when empty |
+| `deep-equal` | children and nested children exact, in order | — | S024 §Strict matching |
+| nested `- /children: contain` under inherited `deep-equal` | relaxes exactness for that node only | parent's constraint | S024 §Strict matching ("override inherited deep-equal ... allow extra children there") |
+| global `expect.toMatchAriaSnapshot.children` | default mode for all calls | overridden by explicit `/children` | S024 §Setting children mode globally |
+| omitted attribute or name (e.g. `- checkbox`, `- button`) | role (and listed attrs/names only) | omitted checked/pressed/name | S024 §Partial matching |
+| single-node template | match at any depth in scope | "the first/only one" | S024 §Snapshot matching |
+| order | sibling order must match | — | S024 §Snapshot matching ("order-sensitive") |
+
+Net: default `contain` is a subset constraint. `equal`/`deep-equal` exactness is about children only; it does NOT restore omitted names or states (knowledge file line 72, [inference], consistent with the docs).
+
+## 3. Concrete extra-child fixture (partial vs equal)
+
+Fixture HTML, served from the isolated loopback server (no external URL):
+
+```html
+<ul aria-label="Main Features">
+  <li>Feature A</li>
+  <li>Feature B</li>
+  <li>Feature C</li>
+</ul>
+```
+
+Locator: `page.getByRole('list', { name: 'Main Features' })`. Templates are exact YAML, 2-space indent. Negative cases use `timeout: 500` (MED-4).
+
+| id | template (YAML) | mode | expected | why |
+|---|---|---|---|---|
+| X1 | `- list "Main Features":`<br>`  - listitem: Feature B` | default contain | PASS | docs' partial example, name added; extra siblings A and C allowed |
+| X2 | `- list "Main Features":`<br>`  - /children: equal`<br>`  - listitem: Feature A`<br>`  - listitem: Feature B` | equal | FAIL | the docs' own equal example; "Feature C" is an unlisted direct child |
+| X3 | same as X2 plus `  - listitem: Feature C` | equal | PASS | positive control: exact children |
+| X4 | X3 with C and B swapped (A, C, B) | equal | FAIL | order sensitivity |
+| X5 | `- list "Main Features":`<br>`  - /children: equal` | equal, empty | FAIL | empty list under equal requires no children |
+| X6 | `- list "Main Features"` | default contain, no entries | PASS | contain with no entries allows any children |
+| X7 | with `children: 'equal'` set globally: `- list "Main Features":`<br>`  - /children: contain`<br>`  - listitem: Feature B` | global equal + override | PASS | explicit `/children` overrides global; without the override the same template under global equal FAILS (run as X7b, expected FAIL) |
+| X8 | `- list "Main Features":`<br>`  - listitem: Feature` (prefix) | default contain | measure, do not assume | tests whether unquoted text is exact or substring (LOW-9); record the observed result |
+| X9 (control) | X2 template, after removing the `Feature C` `<li>` via `evaluate` (same locator, same template) | equal | PASS | proves X2's FAIL is caused by the extra child and nothing else |
+
+X9 is the control that makes X2 a falsifier and not just a failing run. The `ariaSnapshot()` actual before and after X9 is the evidence that the tree changed; record both YAML captures and their sha256.
+
+Deep-equal nested case (conditional): add a nested `<a>` or `<span>` inside one `<li>` and assert under `deep-equal` on the list (expected FAIL), then under `deep-equal` with a nested `- /children: contain` override on that `listitem` (expected PASS). The exact nested YAML must be copied from the captured actual, not hand-authored [inference: the ARIA shape of a listitem with an inline element is not documented on the pages read].
+
+## 4. Concrete checked-state falsifier
+
+Fixture HTML:
+
+```html
+<main>
+  <label><input type="checkbox"> Accept terms</label>
+  <label><input type="checkbox" checked> Newsletter</label>
+</main>
+```
+
+Pre-state: Terms unchecked; Newsletter checked (decoy). Each case records the actual `locator.ariaSnapshot()` YAML.
+
+| id | action | locator | template | expected | purpose |
+|---|---|---|---|---|---|
+| C1 | none (pre) | `getByLabel('Accept terms')` | `- checkbox "Accept terms" [checked]` | FAIL (timeout 500) | wrong state rejects |
+| C2 | none (pre) | `getByLabel('Accept terms')` | `- checkbox "Accept terms"` | PASS | omitted `checked` is state-blind (HIGH-2) |
+| C3 | none (pre) | `getByRole('main')` | `- checkbox [checked]` | PASS | decoy: passes because Newsletter is checked; must NOT be cited as "Terms checked" (MED-5) |
+| C4 | `getByLabel('Accept terms').check()` (user action) | `getByLabel('Accept terms')` | `- checkbox "Accept terms" [checked]` | PASS | state change through the UI |
+| C5 | after C4 | `getByLabel('Accept terms')` | `- checkbox "Accept terms"` | PASS | omission still passes after change |
+| C6 | after C4 | `getByLabel('Accept terms')` | `- checkbox "Newsletter" [checked]` | FAIL (timeout 500) | scoped name mismatch: the locator's node is Terms, not Newsletter |
+
+Required captures per case: the actual YAML of `getByLabel('Accept terms').ariaSnapshot()` pre and post C4 (expected to show `- checkbox "Accept terms"` pre and `- checkbox "Accept terms" [checked]` post, if the docs' `[checked]` rule holds); sha256 of each capture; the Playwright version; the browser build. If the pre-state capture shows `[checked=false]` or any other form, the docs' form is not what the runtime emits and the template must be corrected from the capture (LOW-6), with the correction recorded, not silently edited.
+
+Hazard note: C3 is a true PASS that would mislead. Any evidence row citing a `- checkbox [checked]` pass must name the scope and the matched node, not "the terms checkbox".
+
+## 5. Proposed corpus corrections (for main; I did not edit)
+
+1. `corpus/knowledge/playwright-accessible-locators-and-snapshots.md:70` — change citation from `(S024 §Snapshot matching)` to `(S024 §Partial matching, §Strict matching)` for the "partial by default" clause.
+2. Add to §4 or Rejected: "A `- checkbox` template without `[checked]` does not evidence checked state (S024 §Partial matching)." Flip: a template with `[checked]` scoped to the named control and a captured YAML for both states.
+3. Add a note that `toMatchAriaSnapshot` is the matcher; `ariaSnapshot()` returns the tree only (class-locator API) — evidence rows must cite the matcher call for any partial/equal claim.
+
+## 6. Verification gaps (not run; no runs were permitted)
+
+- Whether `expect` from `@playwright/test` works standalone and records the diff on failure (HIGH-1 fallback).
+- Exact/substring behavior of unquoted text (X8).
+- Unchecked-state YAML form (C3/C2 captures; LOW-6).
+- Whether the pinned version implements `/children` and `expect.toMatchAriaSnapshot.children` (LOW-10; X7).
+- ARIA shape of nested inline elements inside a listitem (deep-equal case).
+
+## 7. Writes and tools
+
+- Writes: this file and `.ufo/waves/round-13/w1/ReviewTemplates.txt` (same content). No other writes.
+- Tools: read, web/reader fetch, curl+sha256sum on two Playwright API pages. No installs, upgrades, or runs.

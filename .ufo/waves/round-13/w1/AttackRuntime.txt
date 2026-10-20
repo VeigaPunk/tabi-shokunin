@@ -1,0 +1,94 @@
+AttackRuntime — tabi round 13 w1 critic (read-only; no runs, no installs, no browser launch)
+Target attacked: AriaRunner plan (spec.json item AriaRunner) → scripts/aria-loopback-round13.mjs + corpus/evidence/round-13/aria/*.
+State when reviewed: NEITHER artifact exists yet (ls: scripts/aria-loopback-round13.mjs and corpus/evidence/round-13 both absent).
+So these are attacks on the plan plus the installed runtime. Each item gives a counterexample, evidence, the axis it hits, and the smallest safe fix.
+Axes: C2 capability honesty (real matcher, real browser), evidence pinning (actual YAML/versions/digests), test discrimination (each negative fails for the stated reason), cleanup truth.
+
+Installed runtime facts (read from disk):
+- Node v24.21.0 (fnm). Global npm: playwright@1.64.0 at ~/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright, with playwright-core 1.64.0 nested inside it.
+- No @playwright/test package anywhere global. The lane has no package.json, node_modules, or lockfile. ESM `import '@playwright/test'` from scripts/ will not resolve, and NODE_PATH does not apply to ESM.
+- playwright-core browsers.json pins chromium revision 1248 = 156.0.8078.4, and ~/.cache/ms-playwright/chromium-1248 is installed (INSTALLATION_COMPLETE).
+- /usr/bin/chromium = 152.0.7977.82 (pacman chromium 152.0.7977.82-1). This is NOT the build Playwright 1.64 pins.
+
+A1 [BLOCKER, mocked/false-negative] toMatchAriaSnapshot refuses to run outside the test runner.
+  Evidence: playwright/lib/matchers/expect.js byte ~529634 reads
+  `const testInfo = expectConfig().testInfo; if (!testInfo) throw new Error(`${matcherName}() must be called during the test`)`.
+  `_expectConfig` defaults to `{ testInfo: null, ... }` (byte ~535568). The check fires even for inline string templates.
+  Counterexample: a plain `node scripts/aria-loopback-round13.mjs` that uses library `chromium.launch()` plus `import {expect} from 'playwright/test'`. Every toMatchAriaSnapshot call throws this plain Error. The positive cases go red (loud). The negative cases (equal rejects, wrong checked rejects) wrapped in `try{...}catch{record 'rejected'}` turn green for the wrong reason.
+  The tempting workaround is to bypass the check by setting expectConfig/testInfo, or to compare locator.ariaSnapshot() strings yourself. That is exactly the forbidden mocked/own matching.
+  Fix: run the cases under the real runner (`playwright test` from the exact pinned package, with a config/testMatch that includes the runner file, or a .mjs that spawns the runner on a generated config inside a temp dir). Record testInfo.project/config in the receipt. Never touch the internal expect config.
+
+A2 [BLOCKER, false-negative catch] Every expected failure must be checked for its exact cause, not just "it threw".
+  - toMatchAriaSnapshot (equal-rejects, wrong-checked):
+    - require `err.matcherResult?.name === 'toMatchAriaSnapshot'`, `err.matcherResult.pass === false`, and `typeof err.matcherResult.actual === 'string'`.
+    - require that actual to be byte-equal to the YAML captured by locator.ariaSnapshot() at the same step.
+    - Why: a template YAML parse error takes the errorMessage path, which returns `{ pass: this.isNot, message, name, expected }` with NO `actual` (expect.js ~531900). It still becomes an ExpectError named toMatchAriaSnapshot. So "has matcherResult.name" alone accepts a malformed template as a "rejection".
+    - The A1 guard Error has no matcherResult at all.
+    - Example: a misspelled `/children: equals` or `[checked=no]` (checked must be true|false|mixed per the coreBundle parser) would pass a naive catch.
+  - Strictness: require the message to match `/strict mode violation: .* resolved to 2 elements/` (coreBundle createStacklessError text). Also require `.first()` on the SAME locator to succeed. A name typo means click times out on 0 matches, which a bare catch also records as "strictness failed".
+  - toBeChecked wrong-state: require matcherResult.name === 'toBeChecked' and the expected value 'unchecked'/'checked' as passed. Also run a same-locator correct-state positive control so a missing checkbox (0 matches → timeout) is not counted as a state rejection.
+  - Never use expect.soft for negatives. Soft errors do not throw (handleError at expect.js ~541690), so a try/catch sees nothing and the test fails later with no finding ID. Never use `.not.` as the rejection witness either (see A4).
+
+A3 [BLOCKER, vacuous partial/equal] Contain-vs-equal needs a minimal triple plus proof that the sibling exists.
+  Counterexample: the page fails to render the extra sibling (typo, JS error, CSS hides it from the tree). Then default contain passes AND explicit equal passes. Either the negative goes red, or a lenient catch hides it. Or the extra sibling sits deeper than the node carrying `/children: equal`; equal only constrains direct children (deep-equal is the nested mode), so equal wrongly passes.
+  Fix:
+    (a) Assert the captured actual YAML contains the extra sibling's line as a direct child of the asserted scope.
+    (b) Template T_sub (subset) passes with no /children line.
+    (c) T_sub_eq = T_sub with `- /children: equal` added, so it is byte-identical apart from that one line (record the diff), and it is rejected per A2.
+    (d) POSITIVE equal control: T_full_eq lists all children including the sibling and passes. Without it, an "equal rejects" could just mean equal rejects everything (a parser issue).
+  Also: config-level `expect.toMatchAriaSnapshot.children` silently prepends `- /children: <mode>` to every template that has no /children line (expect.js ~530900; test.d.ts:301-314). A config setting children:'equal' or 'contain' makes the "default contain" claim false.
+  Fix: the generated config must NOT set toMatchAriaSnapshot.children. The receipt records `testInfo.project.expect?.toMatchAriaSnapshot ?? null`.
+
+A4 [HIGH, vacuous green] Snapshot-mode switches turn the matcher into a no-op or rewrite the templates.
+  - ignoreSnapshots (config or `--ignore-snapshots`) returns `{ pass: !this.isNot }` with no browser check (expect.js ~529700). Positives pass vacuously. `.not` negatives pass too.
+  - updateSnapshots 'all' (or 'changed' plus a mismatch) on an inline template sets expected=kImpossibleAriaMatch and returns `pass: true, suggestedRebaseline`. The runner then patches or overwrites the inline template in source. Committed "exact templates" can drift and positives go green vacuously.
+  - An empty template under 'missing'/'default' → "A snapshot is not provided, generating new baseline" with pass:true. Ban empty templates.
+  Fix:
+    - Hard-fail at start unless config.updateSnapshots ∈ {'none','missing'}, ignoreSnapshots === false, and no `-u`/`--update-snapshots`/`--update-source-method` flag is present.
+    - sha256 every template file before and after the run, and fail on any change.
+    - Templates must be committed fixture files read by the runner, not inline literals that the update machinery can rewrite.
+
+A5 [HIGH, missing pinned actual data] The actual YAML must come from the run, and every version must be read live.
+  Counterexample: hand-written `actual-*.yml` committed next to a receipt claiming they were captured. Or versions hardcoded as '1.64.0'/'156…'.
+  Fix:
+    - The runner writes the actual before/after YAML straight from `locator.ariaSnapshot()` (default mode: no `mode:'ai'`, no `boxes`, no `depth`, since ai mode adds [ref=eN] refs) to new files. It records sha256 and byte length of each, and records the same actual from A2's matcherResult.actual.
+    - Versions come from the live run: `browser.version()`, the executablePath actually launched, and `require.resolve` + package.json version of the playwright/@playwright/test actually loaded (realpath), plus process.version.
+    - L1 must show TWO runs whose actual YAML digests are byte-equal before committing. Otherwise "pinned actual" is a single sample.
+    - The before/after pair must bracket one recorded DOM change, with a settle predicate (expect on the post-state) before the after capture. The knowledge doc §6 rung-2 needs the pre-state kept.
+
+A6 [HIGH, pin/identity] Runtime/browser mismatch and a missing lock.
+  - Plan wording "installed chromium executable" invites executablePath=/usr/bin/chromium (152). That is version skew against playwright-core 1.64 (pins 156.0.8078.4, rev 1248). Accessibility-tree output may differ and is unsupported.
+    Fix: use the Playwright-managed chromium-1248 (default channel, no executablePath), or record the skew explicitly as an unsupported pairing. Either way, the receipt carries the real browser.version().
+  - "@playwright/test" exact pin: there is no local package and no lockfile. A global npm -g install is not a lock pin, and `npx @playwright/test` may fetch from the network and float.
+    Fix: install `@playwright/test@1.64.0` with `--save-exact` into a temp/vendored dir with package-lock.json. Commit (or digest-record) the lock entry's integrity. Assert at runtime that the resolved @playwright/test and playwright-core versions are both 1.64.0, matching the managed browser revision. Record tool/version/channel/reason per RULES.
+  - Re-resolution case: require a contrast. An ElementHandle taken before the replacement must report `isConnected === false` (or the old marker) after it, while the locator resolves to the new node's distinct marker (e.g. data-gen="2" or different text). Without this, a failed or no-op replacement still "proves" re-resolution.
+
+A7 [MEDIUM, runner vacuity]
+  - `playwright test` with default testMatch (*.spec|test.*) finds no tests in `aria-loopback-round13.mjs`. `--pass-with-no-tests`, `--list`, `test.skip`/`fixme`, a grep that matches nothing, or `--max-failures` with retries can all exit 0 without executing cases.
+    Fix: the receipt must list each case ID with status 'passed' from the runner's own result (JSON reporter). Require the expected count (e.g. 7 cases plus controls) and retries=0. Any skipped/flaky case is a failure.
+  - Expect timeout: negatives poll to the default 5 s timeout (timedOut is normal for a mismatch, so it is not a discriminator). Record the timeout used. Don't shrink it to make negatives fast while positives race the DOM.
+  - Stable finding IDs: derive them from the case name plus the template sha, not from execution order, so reordering can't relabel a result.
+
+A8 [MEDIUM, cleanup truth]
+  Counterexample: the cleanup receipt is written in `finally` BEFORE awaiting close/rm, or it states intent ("closed") rather than an observation.
+  Fix: write the receipt only after these awaited observations:
+    - `browser.isConnected() === false` after close (context.close for a persistent context);
+    - `server.listening === false`, plus a TCP connect to 127.0.0.1:<port> refused;
+    - `fs.existsSync(tmpProfile) === false` after `rm({recursive,force})`;
+    - temp dir path under os.tmpdir() via mkdtemp;
+    - port/host recorded as 127.0.0.1 only;
+    - context `route('**', ...)` aborting any non-127.0.0.1 request, with the abort count recorded (expected 0).
+  If a launchPersistentContext profile is used, it must be the mkdtemp dir, never ~/.config/chromium or the default.
+  Cleanup must also run when a case fails (test.afterAll / fixtures). Its receipt fields come from observations, so a crashed run cannot emit a clean receipt.
+
+Smallest safe correction set (all inside AriaRunner's write set):
+  - Real runner, never library-mode toMatchAriaSnapshot (A1).
+  - Each negative checked for its exact cause (matcherResult.name + pass:false + actual === captured, or the strict-mode message), each with a positive control (A2/A3).
+  - Snapshot switches locked, plus template digests before and after (A4).
+  - Actual YAML, versions, and digests written by the run, with two-run equality (A5).
+  - Exact 1.64.0 lock with managed chromium-1248, or the skew declared (A6).
+  - Case count and retries=0 asserted from the runner's own results (A7).
+  - Cleanup receipt written only from post-close observations (A8).
+Not a fixable defect, a tradeoff the judge must hold: a single loopback demonstration proves only these 7 behaviors on Playwright 1.64.0 / one chromium build. It is not an audit, cross-browser evidence, or a real-site claim, and the scalars stay unchanged until L1's two-run evidence exists.
+
+Tools installed/updated: none.

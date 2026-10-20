@@ -1,0 +1,90 @@
+ReceiptCorrection — tabi round 13, wave 1
+seat: TabiR13.ReceiptCorrection (leaf executor)
+date: 2026-10-20T05:08:52Z (source fetches 05:08:21Z–05:08:52Z)
+assignment: resolve routed round-12 verifier item 3 by appending a dated clarification to
+.ufo/waves/round-12/w1/FreshRetry.txt; no rewrite of the original receipt.
+
+## Routed item (read in full)
+
+corpus/lessons/round-12-verifier-spotcheck.md:207-209:
+"tabi — receipt metadata: FreshRetry.txt:21/25 labels 10801/99752 as raw bytes, but
+C1Review's same-digest raw fetch measured 99073/1002533. Correct through a dated appended
+receipt clarification, with count command and representation; do not rewrite old evidence.
+No numeric round claim relies on these byte cells."
+
+## Finding
+
+RESOLVED as a representation error, not a digest drift. The original `bytes` column is the
+HTTP `content-length` of the gzip-coded transfer (equal to curl `%{size_download}` when
+`--compressed` negotiates gzip). The sha256 was taken over the content-decoded HTML body.
+The two sizes differ for the same bytes; the verifier's 99073/1002533 reproduce exactly.
+
+Corrected raw-body counts (decoded representation, sha256 and `wc -c` over the same file):
+
+| row | URL | HTTP | old cell (gzip length) | decoded bytes | digest vs historical pin |
+|---|---|---|---|---|---|
+| S013 | https://playwright.dev/docs/test-retries | 200 | 10801 | 99073 | equal (cf48ff4d…) |
+| S014 | https://playwright.dev/docs/trace-viewer | 200 | 11407 | 60566 | equal (e947d4dc…) |
+| S015 | https://playwright.dev/docs/actionability | 200 | 8533 | 47845 | equal (31075410…) |
+| S016 | https://playwright.dev/docs/test-assertions | 200 | 15225 | 159543 | equal (1bb8afe8…) |
+| S017 | https://playwright.dev/docs/release-notes | 200 | 99752 | 1002533 | equal (ce461e5b…) |
+
+All five current decoded-body sha256 values equal the receipt's historical pins (and the
+round-1 Gate table, corpus/lessons/kaika-fleet-round-1.md:56-60, which records digests only,
+no byte counts). Because the digest matched on every row, the byte cells were corrected
+unconditionally; no row needed an identity qualification or a retained historic unknown.
+Rule recorded in the append: a future re-fetch whose digest differs must not inherit these
+counts; its identity would be unknown against the historic pin.
+
+Verifier item 3 named S013/S017; the same wire-vs-decoded defect also affects S014/S015/S016
+(11407/8533/15225 are gzip lengths), corrected in the same append under the same identity
+condition.
+
+## Count command and representation (retained evidence)
+
+```sh
+for u in test-retries trace-viewer actionability test-assertions release-notes; do
+  curl -sS -L --compressed -o "/tmp/$u.body" "https://playwright.dev/docs/$u"
+  printf '%s\t%s\t%s\n' "$u" "$(wc -c < "/tmp/$u.body")" \
+    "$(sha256sum "/tmp/$u.body" | cut -d' ' -f1)"
+done
+```
+
+Representation: raw HTTP response entity body after content decoding. Origin headers:
+`content-encoding: gzip`, `vary: Accept-Encoding`; `curl --compressed` decodes before
+writing, so the file is uncompressed HTML. `content-length` is the wire representation.
+Header probe: `HTTP/2 200`, `content-length: 10801`, `content-encoding: gzip`,
+`vary: Accept-Encoding`. `curl -w '%{size_download}'` = 10801 while the written body measured
+99073 bytes (sha256 cf48ff4d…), which is the exact source of the original cells.
+
+Control for representation independence (S013):
+`curl -sS -L -H 'Accept-Encoding: identity' https://playwright.dev/docs/test-retries`
+returned `HTTP/2 200`, `content-length: 99073`, 99073 bytes, sha256
+cf48ff4db0a305f9c1a8a829b60c295041e22daa0e018c4286ae182832ffbdfa. Both cited URLs resolved
+exactly with no redirect (`http=200 redirects=0`; `url_effective` equals the requested URL).
+Three body fetches per URL produced identical bytes and sha256 on every repetition.
+
+## Writes
+
+1. .ufo/waves/round-12/w1/FreshRetry.txt — appended block only, starting line 156,
+   "## Appended clarification — 2026-10-20 (round 13; routed verifier item 3)".
+   Pre-append: sha256 e3c84a450bc12f0107f5ddcc199b84581aa2cb0f22d283497030a900eaa60a4f,
+   10744 bytes, 152 lines. Post-append: sha256
+   378f3d1376a75ce5112c9f9c4993cd0e5cd9a3892c9f947ee1f7e6034fffdd70, 15530 bytes,
+   231 lines. The first 10744 bytes hash to the pre-append digest, proving append-only.
+2. .ufo/waves/round-13/w1/ReceiptCorrection.txt — this report.
+No other file written. No .md duplicate created (per parent clarification).
+
+## Boundaries and residual risk
+
+- Only the `bytes` cells are superseded. URLs, HTTP status, sha256 pins, Gate equality,
+  claim verdicts and the note digest stand unchanged.
+- S018/S019 were not re-opened by this seat; their status is unchanged.
+- These counts describe the 2026-10-20 decoded bodies. A future stable-channel release can
+  change the bodies; then the counts must not be carried forward and the digest check must be
+  re-run first.
+- No browser, Playwright runner, test or fixture was executed; no gate/build/lint/test was
+  run. The only commands were the mandated source fetches and local byte/digest counts.
+- No tool installed or updated.
+- The verifier's statement that no numeric round claim relies on these byte cells is
+  consistent with this correction: only the representation changes.

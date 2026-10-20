@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Re-resolve</title>
+</head>
+<body>
+<main aria-label="Counter">
+  <h1>Counter</h1>
+  <button id="bump" type="button" data-instance="1">Bump counter</button>
+  <output id="count" role="status" aria-label="Count">0</output>
+</main>
+<script>
+  let count = 0;
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    const button = target instanceof Element ? target.closest('#bump') : null;
+    if (!button) return;
+    count += 1;
+    document.getElementById('count').textContent = String(count);
+    setTimeout(() => {
+      const replacement = button.cloneNode(true);
+      replacement.dataset.instance = String(Number(button.dataset.instance) + 1);
+      button.replaceWith(replacement);
+    }, 0);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+# SafetyBrowser — round 13 w1 (sentinel, read-only)
+
+Scope: the security boundary of the C2 runtime (`scripts/aria-loopback-round13.mjs` plus `corpus/evidence/round-13/aria/`). Checked: loopback binding, a fresh temp profile, no access to credentials or sessions, no external network, cleanup, and confinement of local file reads and writes.
+
+State at review time (2026-10-20 ~02:10 local): neither `scripts/aria-loopback-round13.mjs` nor `corpus/evidence/round-13/` exists (`ls` → ENOENT). AriaRunner's transcript shows it is still at discovery. So this is a **pre-landing contract** built from the host and installed-runtime facts below. L1 must check the landed script against the acceptance predicates (§3) before the demonstration run.
+
+Method: file reads, `file`, `jq`, and `grep` over the installed `playwright-core` bundle; `/proc` reads; `env` names only (no values). No browser launched, no server started, no network contacted, no session material read. Nothing installed or updated; existing tools were enough.
+
+## 1. Host / runtime facts (observed)
+
+- F1 `/usr/bin/chromium` is an ELF **launcher**, not the browser. Its strings say: "Custom flags are read in order from the following files … `/etc` … `XDG_CONFIG_HOME` … `chromium-flags.conf`", and it execs `/usr/lib/chromium/chromium` (319,274,072 B).
+- F2 `~/.config/chromium-flags.conf` (212 B) contains `--ozone-platform=wayland`, `--ozone-platform-hint=wayland`, `--enable-features=TouchpadOverscrollHistoryNavigation`, `--load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url`, and `--disable-features=Vulkan`. SKILL.md:150-152 already records these host-injected flags on the effective child line. `/etc/chromium-flags.conf` is absent.
+- F3 Global `playwright@1.64.0` with `playwright-core@1.64.0` lives at `~/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/`. `@playwright/test` is **not** installed globally. Its `browsers.json` pins chromium and chromium-headless-shell to revision 1248 = `156.0.8078.4`, and both are present under `~/.cache/ms-playwright/`. The host `chromium` is 152 (round-12 receipts), so it is not the Playwright-paired build.
+- F4 Playwright's Chromium launch (coreBundle.js):
+  - `:44735-44743` adds `--user-data-dir=<mkdtemp>` and `--remote-debugging-pipe`, so there is no TCP CDP port.
+  - `:41181-41182` creates the temp dir as `mkdtemp(os.tmpdir()/playwright_chromiumdev_profile-)` and registers it in `tempDirectories`. `:44533` / `:10039` remove it on close.
+  - `:44747-44751` throws on `--user-data-dir` or `--remote-debugging-pipe` in `args`.
+  - `:36206-36256` default switches include `--disable-background-networking`, `--disable-component-update`, `--disable-extensions`, `--password-store=basic`, `--use-mock-keychain`, `--no-service-autorun`, `--disable-sync`, and `--disable-client-side-phishing-detection`.
+  - `:44764-44765` passes `--no-sandbox` unless `chromiumSandbox === true`.
+  - `:41211` uses `options.env ?? process.env` for the browser environment.
+  - `:44933-44936`: the BiDi-chromium variant uses `--remote-debugging-port=0`, a TCP listener.
+  - `:41207-41209`: SIGINT, SIGTERM and SIGHUP handlers are on by default.
+- F5 Environment variable names that look like secrets or sessions and would pass to the browser by default (values not read): `OPENAI_CODEX_TOKEN`, `XAI_OAUTH_TOKEN`, `SSH_AUTH_SOCK`, `SSH_ASKPASS`, `DBUS_SESSION_BUS_ADDRESS`. No `*_PROXY`, `NODE_PATH` or `PLAYWRIGHT*` variables are set. `TMPDIR` is unset, so `/tmp` (tmpfs, shared) is used.
+- F6 The user's real profile `~/.config/chromium/` exists (listing only). `/opt/google/chrome*` is absent.
+- F7 Sandbox prerequisites are present: `/usr/lib/chromium/chrome-sandbox` is setuid root, `kernel.unprivileged_userns_clone=1`, and `max_user_namespaces=122842`.
+- F8 `/etc/hosts` maps `localhost` to both 127.0.0.1 and ::1. No leftover `/tmp/playwright*` dirs exist (count 0 before the run).
+
+## 2. Findings (severity → exploit path → evidence → impact → smallest remediation)
+
+**SB-1 HIGH — Using `executablePath: '/usr/bin/chromium'` brings host flags into the "isolated" browser.**
+- Path: the launcher (F1) prepends the user's `chromium-flags.conf` (F2). The run then carries a host extension load request plus host feature and ozone flags. Its effective command line no longer matches what Playwright computed.
+- Mitigating factor: Playwright's default `--disable-extensions` probably suppresses `--load-extension` [INFERENCE: not launched]. But any `ignoreDefaultArgs` would re-enable the host extension inside the profile.
+- Impact:
+  - Isolation and the "pinned runtime" claim become false: the build is 152, not the paired 1248 (F3).
+  - The result now depends on user-editable config.
+- Remediation:
+  - Use `executablePath` = `~/.cache/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell`, or omit `executablePath` and let Playwright resolve revision 1248.
+  - If the host build is required, use `/usr/lib/chromium/chromium` directly (no launcher) and set `XDG_CONFIG_HOME` to a run-owned temp dir.
+  - Record `chromium.executablePath()` and `browser.version()` in the receipt.
+
+**SB-2 HIGH — The Node fixture server binds to all interfaces if `host` is omitted.**
+- Path: `server.listen(0)` / `listen(port)` with no host binds `::` (dual-stack). The fixture is then reachable from the LAN for the life of the run.
+- Second issue: navigating to `localhost` can resolve to ::1 first (F8), which mismatches a 127.0.0.1-only bind.
+- Impact: this breaks the loopback-only claim, and a remote party could inject requests or responses into the evidence window.
+- Remediation:
+  - Use `server.listen(0, '127.0.0.1')`, then assert `server.address().address === '127.0.0.1'` before launching the browser.
+  - Navigate only to `http://127.0.0.1:${port}/…` (IP literal), with an ephemeral port and no fixed or reused port.
+  - Record address and port in the receipt.
+
+**SB-3 MEDIUM — "No external network" cannot be proved at page level unless an allowlist is enforced and logged.**
+- Path:
+  - Any fixture `<link>`, `<img>`, `<script src>`, prefetch, or a page-registered service worker can reach off-host.
+  - Browser-process background traffic is not visible to `page.route`, so it relies only on F4's default switches.
+- Remediation:
+  - Use `context.route('**/*', r => new URL(r.request().url()).origin === ORIGIN ? r.continue() : r.abort('blockedbyclient'))`.
+  - Record every request URL (`context.on('request')`) and put `blocked_count` and `offorigin_urls[]` in the receipt, asserting `offorigin_urls` is empty.
+  - Set `newContext({ serviceWorkers: 'block', acceptDownloads: false })`.
+  - Optionally harden with `args: ['--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1']`, so all hostname resolution fails browser-wide.
+  - Make every fixture self-contained (inline CSS and JS only).
+- Claim wording: "page requests confined to origin (route log); browser background networking disabled by Playwright defaults; no packet-level proof".
+
+**SB-4 MEDIUM — The profile is fresh only on the `launch()` + `newContext()` path.**
+- Path:
+  - `launchPersistentContext(<path>)` with a user path, `storageState`, or `channel: 'chrome'|'chromium'` would break isolation, and a path such as `~/.config/chromium` would expose the real profile (F6).
+  - `connectOverCDP`, `launchServer`, or the BiDi-chromium variant opens or attaches to a TCP debugging port (F4 `:44936`).
+  - `ignoreDefaultArgs` strips `--password-store=basic`, `--use-mock-keychain`, `--disable-extensions`, and `--disable-background-networking`.
+- Remediation:
+  - Use only `chromium.launch({ headless: true, … })` + `browser.newContext({ … })`, with no `storageState`, `channel`, `ignoreDefaultArgs`, `connect*`, `launchServer`, or `launchPersistentContext`.
+  - Playwright already refuses `--user-data-dir` in args (`:44747-44749`); keep that guard by never working around it.
+  - Run headless only, so no window opens on the user's Wayland session.
+
+**SB-5 MEDIUM — The browser process inherits credential-bearing environment.**
+- Path: `:41211` passes the full `process.env` (F5) to Chromium, which runs with `--no-sandbox` by default (SB-8).
+- What it exposes: tokens, the ssh-agent socket, and the D-Bus session bus. `HOME` also points at `~/.pki/nssdb`, the user's NSS cert store [INFERENCE: Chromium Linux reads NSS from `$HOME/.pki`; not exercised].
+- Impact: a renderer or browser compromise via fixture content could reach session credentials. The likelihood is low because the fixture is trusted local content, but the claim "no credential access" would be unproven.
+- Remediation: pass an explicit minimal `env`, for example `{ PATH, LANG:'C.UTF-8', TZ:'UTC', HOME:<runTmp>/home, XDG_CONFIG_HOME:<runTmp>/cfg, XDG_CACHE_HOME:<runTmp>/cache, TMPDIR:<runTmp> }`. It must exclude `*_TOKEN`, `SSH_*`, `DBUS_*`, `WAYLAND_DISPLAY` and `DISPLAY`.
+
+**SB-6 MEDIUM — Cleanup must be provable, not assumed.**
+- Path:
+  - Profile and artifact dirs go to the shared `/tmp`, and a crash or SIGKILL leaves them behind. The SIGKILL case is not covered by the `:10081-10089` exit handlers.
+  - A server that is not closed, or keep-alive sockets, keep the port open.
+  - The launcher re-exec could leave orphans [INFERENCE].
+- Remediation:
+  - Create `runTmp = mkdtempSync(join(os.tmpdir(), 'tabi-r13-aria-'))` and set `process.env.TMPDIR = runTmp` before `launch`. `os.tmpdir()` re-reads `TMPDIR`, so Playwright's `playwright_chromiumdev_profile-*` / `playwright-artifacts-*` land inside the run-owned root.
+  - In `finally`, close in order: `context.close()` → `browser.close()` → `server.closeAllConnections(); await close`.
+  - Then prove cleanup:
+    - `readdirSync(runTmp)` has no `playwright_*` entries;
+    - a `net.connect(port,'127.0.0.1')` attempt gets `ECONNREFUSED`;
+    - `browser.isConnected() === false`.
+  - Then `rmSync(runTmp)` and record all of the above as `cleanup` in the receipt.
+  - Invocation should be wrapped in an outer `timeout <N>` (SKILL.md:562 "Bounded runs").
+
+**SB-7 MEDIUM — File confinement on both the read side (server) and the write side (evidence).**
+- Path: a server built as `path.join(root, req.url)` allows `..`/%2e traversal and following symlinks, which could serve arbitrary user files to the page and from there into the YAML evidence. A writer that takes a CLI or out path, or overwrites, can clobber frozen corpus or history (append-only contract).
+- Remediation:
+  - Read side: the server serves an **exact allowlist** `Map<'/case-x.html', absPath>` of the committed fixture files, rejecting non-GET and anything else with 404. Open with `O_NOFOLLOW` and require a regular file (precedent: `.ufo/reports/fleet-round-1-attempt-20261015/tabi.md:11`). Hash the served bytes into the receipt.
+  - Write side: the output dir is hardcoded to `corpus/evidence/round-13/aria/`, resolved with `realpath` and asserted to sit under the repo. Writes use `{ flag: 'wx' }` (refuse to overwrite), or go to a fresh run subdir.
+  - No `tracing`, `recordHar`, `recordVideo`, `screenshot`, or `storageState` dumps: the round claims no pixels, and these artifacts carry page and network bodies.
+
+**SB-8 LOW — `--no-sandbox` is the Playwright default (`:44764`).** The sandbox prerequisites exist (F7), so `chromiumSandbox: true` should be feasible [INFERENCE: not launched]. Remediation: set `chromiumSandbox: true`. If it fails, record the failure rather than silently dropping the sandbox.
+
+**SB-9 LOW (process / write-set) — Dependency acquisition.**
+- Path:
+  - `@playwright/test` is absent (F3). ESM bare `import '@playwright/test'` from `scripts/` does not resolve global modules, and ESM does not honour `NODE_PATH`.
+  - A naive `npm i` in the repo root creates `package.json`, `package-lock.json` and `node_modules/` outside the granted write set and runs install scripts.
+  - `npx -p @playwright/test` without an exact version floats.
+- Remediation: one of two routes.
+  - (a) Import the already-installed exact global `playwright@1.64.0` by absolute path via `createRequire`, using its `playwright/test` `expect` [INFERENCE: `@playwright/test` re-exports `playwright/test`; not opened locally since it isn't installed].
+  - (b) Install `@playwright/test@1.64.0` (exact) into a run-owned prefix outside the repo with `--ignore-scripts` and `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1`, keeping the lock and integrity hash as evidence.
+  - Either way, record the package version, the `playwright-core` version, the resolved path and the channel.
+
+## 3. Acceptance predicates for L1 (check against the landed script, before the run)
+
+1. `listen(` call carries `'127.0.0.1'`; the code asserts `server.address().address === '127.0.0.1'`; no `localhost` or `0.0.0.0` in navigation URLs. (SB-2)
+2. No `/usr/bin/chromium`. The executable is the Playwright 1248 build or `/usr/lib/chromium/chromium` with `XDG_CONFIG_HOME` overridden, and the receipt records the executable path and version. (SB-1)
+3. Absent: `launchPersistentContext`, `connectOverCDP`, `launchServer`, `storageState`, `channel:`, `ignoreDefaultArgs`, `--remote-debugging`, `--user-data-dir`, `~/.config/chromium`. Present: `headless: true`. (SB-4)
+4. Has a `context.route` origin allowlist, a request log, and `serviceWorkers: 'block'`; the receipt shows an empty `offorigin_urls`. (SB-3)
+5. Explicit minimal `env` passed to `launch`; no `process.env` spread. (SB-5)
+6. Run-owned `TMPDIR`. `finally` closes context, then browser, then server, and the cleanup receipt includes the refused port connect and the empty temp root. The documented invocation sits under `timeout`. (SB-6)
+7. The server uses an exact file allowlist with `O_NOFOLLOW`. Output is hardcoded under `corpus/evidence/round-13/aria/` with `wx`. No trace, HAR, video or screenshot. (SB-7)
+8. No `package.json`, `package-lock.json` or `node_modules/` created in the repo, and the dependency route and version are recorded. (SB-9)
+
+## 4. Not covered / unknowns
+
+- The landed script itself: not written at review time. All findings are pre-landing, and §3 must be applied once it lands.
+- Whether `--disable-extensions` fully suppresses the launcher's `--load-extension` in Chromium 152 or 156: not launched, unknown.
+- Whether Chromium exits on pipe EOF after the Node process is SIGKILLed: not exercised. That is why the run-owned `TMPDIR` plus an outer `timeout` are the guard.
+- Browser-process background traffic at packet level: not measurable without capture, so the claim must stay at the page and route level (SB-3).
+
+Tools installed or updated: none.

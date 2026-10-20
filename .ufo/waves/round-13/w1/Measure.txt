@@ -1,0 +1,193 @@
+Measure — tabi round 13, C1/C2 counting probe
+================================================
+
+Deliverable: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-13/measure.mjs
+Baseline: 75e7836b6c3090180aee2754e20a5d3cfb186e74 (short 75e7836)
+No gate, browser, census, test, formatter or build was run. No tool was installed.
+
+Purpose
+-------
+A revision-based counter. Every byte is read with `git show` / `git ls-tree`
+from the named revision; nothing is read from the working tree and nothing is
+executed. Missing evidence counts 0. A malformed receipt or digest mismatch
+fails closed: the affected count is 0 and that mode exits 1.
+
+Modes (run separately so one malformed claim cannot suppress the other)
+-----------------------------------------------------------------------
+  node .ufo/waves/round-13/measure.mjs <REV>                 # both claims + histogram + note map
+  node .ufo/waves/round-13/measure.mjs <REV> --claim C1      # reads only gates.json
+  node .ufo/waves/round-13/measure.mjs <REV> --claim C2      # reads only the ARIA receipt + note/index
+  node .ufo/waves/round-13/measure.mjs <REV> --histogram      # reads only corpus/SOURCES.md
+
+`--claim C1` never opens the ARIA receipt; `--claim C2` never opens
+gates.json. The full mode still reports each claim's independently valid
+count, but exits 1 if either receipt is malformed.
+
+C1 — repaired historical gates
+------------------------------
+Receipt (parent-owned): corpus/evidence/round-13/gates.json
+
+  { "gates": [ {
+      "path": "scripts/check-round-contract.mjs" | "scripts/check-user-round-contract.mjs",
+      "sha256": "<64 hex>",
+      "selfTest": { "exit": 0, "stdout": "..." },
+      "witness": { "before": { "exit": 1, "stdout": "..." },
+                   "after":  { "exit": 0, "stdout": "..." } },
+      "production": { "exit": 0|1, "stdout": "..." }
+  } ] }
+
+Counted as one fixture-covered repair only when all hold:
+
+1. `path` is exactly one of the two owned gate scripts; no duplicates.
+2. `sha256` equals the committed blob digest of that script at the revision.
+   This is the actual code digest, not a self-declared policy value.
+3. Self-test is green: exit 0, final
+   `ROUND_CONTRACT_SELFTEST verdict=clean cases=N` or
+   `USER_ROUND_CONTRACT_SELFTEST verdict=clean cases=N` with N >= 4 and no
+   `result=FAIL`. The gate's trailing counters (e.g. `alias_checks=1`) are
+   allowed, and an optional captured `stderr` field is merged with `stdout`
+   for matching because gate failures print their verdict line on stderr.
+4. The witness is a named red->green pair: before exit 1 with a gate line
+   `... verdict=failed finding=<name>` (not `could_not_evaluate`); after exit 0
+   with `... verdict=clean`. A `*_CONTRACT_WITNESS ... old_exit=1
+   old_finding=<name> ... new_exit=0 new_verdict=clean ... result=PASS`
+   summary is also accepted when the recorded exits are 1/0.
+5. Production policy is declared and honest:
+   - check-round-contract.mjs: exit 0, `verdict=clean ... rounds=10`.
+   - check-user-round-contract.mjs: exit 1,
+     `verdict=failed finding=round_count`, detail `Found 6 user rounds,
+     expected 10`, and no `verdict=clean`. The six-of-ten block is expected;
+     it is not converted into a false full production pass.
+
+Output field: `c1_fixture_covered_repairs` (0..2) with
+`c1_operability_scalar_delta: 0`; `c1_user_round_count_declared` is 1 only
+when the USER entry is fully valid and still reports 6 of 10. This counts
+narrow fixture-covered compatibility repairs, not two new clean full gates.
+Claim wording for the record: legacy history-check false reds repaired —
+ROUND red→clean (restores the a4115fa state), USER first finding
+history_rewritten→round_count with exit still 1; fixture-covered policy,
+operability scalar 8→8. Any malformed entry (unknown path, bad shape, digest
+mismatch, source missing) sets the count to 0 and exits 1.
+
+C2 — one real isolated loopback demonstration
+---------------------------------------------
+Receipt (AriaRunner-owned, additive schema accepted):
+corpus/evidence/round-13/aria/receipt.json
+
+Required shape (AriaRunner's final receipt): `schema:
+tabi-aria-loopback-receipt-v1`, `sourceSha256`, `loopback: true`,
+`externalSite: false`, `runtime` (node, playwright 1.64.0, chromium
+{executablePath,executableSha256,browserVersion,managedRevision or revision},
+command, pinned{pinPath,pinSha256,playwrightMatched,chromiumMatched,
+browserVersionMatched}), `config` {workers:1,retries:0,
+ignoreSnapshots:false,updateSnapshots:'none',globalChildrenOverride:null},
+`timeouts` {caseMs,expectMs,actionMs,navigationMs} (top-level aliases also
+accepted), `server` {host:127.0.0.1,port,origin,requests,
+externalRequestsBlocked:0}, `templates[]`, `fixtures[]`, `cases[]`,
+`negative[]`, and `cleanup` {allCaseCleanup,serverOk,outputConfinementOk,
+tempRootsRemoved,profilesRemoved,caseCleanup[],server{closed,
+refusedAfterClose},browserProcessesAfter:0}. An optional top-level `profile`
+{dir,temp,removed} is checked when present; the per-case cleanup fields carry
+the fresh-profile proof in the final receipt.
+
+The probe additionally requires:
+
+- sourceSha256 matches the committed scripts/aria-loopback-round13.mjs; the
+  committed runner or its committed .spec.mjs source contains
+  `@playwright/test` and calls `expect(`.
+- The receipt's `config` and the committed playwright.config.mjs both keep
+  `workers: 1`, `retries: 0`, `ignoreSnapshots: false`,
+  `updateSnapshots: 'none'` and no global children override, so a snapshot
+  failure cannot become a vacuous pass or be masked by retries/self-updated
+  baselines.
+- runtime.pinned.pinPath is a committed regular file and pinSha256 matches it;
+  when it is runtime-pin.json, its Playwright pin, chromium version and
+  executableSha256 are cross-checked against the receipt.
+- Every template/fixture and every case template/actualPath is committed at
+  the revision under corpus/evidence/round-13/aria/, with matching SHA-256.
+- >=4 positive `cases`, all status pass, stable `R13-ARIA-*` findingIds, with
+  coverage of role+name, label, locator re-resolution and contain/partial.
+  Locator cases may point `template` at committed manifest.json
+  (`templateKind: locator-contract`). Snapshot cases carry per-case
+  `snapshots[]` entries whose `.aria.yml` paths and SHA-256 are committed
+  under actual/; at least one such YAML and one templates/ source are required.
+- >=3 `negative` entries, each reject/reject with a Playwright matcher and
+  error message; coverage of duplicate/strict (message contains `strict mode
+  violation`), explicit equal snapshot, and checked-wrong. The checked-wrong
+  negative must use templates/checkbox-checked-false.aria.yml.
+- Cleanup, loopback and external-site claims above must be exactly true/zero.
+
+Note admission (same revision):
+- corpus/knowledge/aria-loopback-round-13.md exists.
+- Its `source:` line cites at least S023 and S024; every cited S-row is
+  `mined` in corpus/SOURCES.md and has the note path in its used-by cell.
+- corpus/README.md lists the note path (note map).
+- corpus/lessons/round-13.md has an `- admitted:` line naming the note path.
+
+Output fields: `c2_runtime_demonstration` (0/1), `c2_cases_passed`,
+`c2_negative_passed`, `c2_note_admitted`, `c2_knowledge_path`.
+The LocatorPrecision correction note is not counted as acquisition credit.
+Receipt `note`/`documentedContract` fields may support context, but the probe's
+C2 source/index/admission gate is the new aria-loopback-round-13.md path only;
+the round-12 documented contract and routed correction are not acquisition
+credit.
+A missing receipt or note counts 0 and exits 0; a malformed receipt or a
+referenced digest mismatch counts 0 and exits 1.
+
+Source census histogram and note map
+------------------------------------
+The probe emits a revision-based histogram from corpus/SOURCES.md under
+`source_histogram` in full and `--histogram` modes, and the exact replay
+commands under `commands`:
+
+  /home/vgpnk/Projects/shokunin/scripts/sources-census.sh census --root /home/vgpnk/Projects/shokunin tabi
+  /home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi
+
+The `census` command reports rows, tier.A/B/C and
+status.queued/mined/rejected per lane (and FLEET lines). Baseline values
+recorded by the parent in .ufo/waves/round-13/before.json are rows 28,
+A22/B4/C2, mined 23, queued 3, rejected 2; the revision histogram should
+reproduce those counts at 75e7836.
+
+Note-map command (also emitted):
+
+  diff <(git ls-tree -r --name-only <REV> -- corpus/knowledge | sed 's|^corpus/knowledge/||' | sort) <(git show <REV>:corpus/README.md | grep -o 'knowledge/[A-Za-z0-9._-]*\.md' | sed 's|^knowledge/||' | sort -u)
+
+Full mode also reports `note_map: {knowledge_notes, mapped, missing}` computed
+from the revision.
+
+Expected baseline / after (not run)
+-----------------------------------
+At 75e7836 both round-13 receipts are absent, so `--claim C1` and
+`--claim C2` should exit 0 with counts 0 and the reasons `gates receipt
+missing` / `aria receipt missing`. At the after revision the two counter
+fields should be 2 and 1 only if the committed receipts, gate digests,
+witness outputs, ARIA templates/actuals, pin file, note, registry used-by
+cells, README row and round-13 admission all match the contract above.
+
+Risks and producer requirements
+-------------------------------
+- gates.json stdout is captured self-report; the probe can prove shape,
+  committed code identity and internal red->green/named-finding consistency,
+  not that the commands were executed. Parent/L1 owns final execution.
+- The gate witness must carry a named finding: either the gate verdict line or
+  a `*_CONTRACT_WITNESS` summary with `old_finding=<name>`. A selftest-only or
+  unnamed summary is not accepted; the USER witness summary alone does not
+  print the old finding, so Main must record the old/new run output or extend
+  the summary.
+- USER production must remain exit 1 / finding=round_count / 6 of 10. A green
+  USER production is rejected as a false full pass.
+- AriaRunner must commit the exact schema above, keep pinPath repo-relative,
+  and commit every template, fixture, actual and JSON observation referenced.
+- Main must update all three layers for the note: corpus/SOURCES.md used-by,
+  corpus/README.md map, corpus/lessons/round-13.md admission. C2 stays 0 until
+  all three are present and the cited rows remain mined.
+- No claim beyond the counted surface: C1 is narrow compatibility repair with
+  operability scalar delta 0; C2 is one runtime demonstration, not an
+  accessibility audit, pixel comparison, or real-site claim.
+
+Files changed
+-------------
+- .ufo/waves/round-13/measure.mjs (new probe)
+- .ufo/waves/round-13/w1/Measure.txt (this report)
+No other file was written; no duplicate Measure.md was created.

@@ -1,0 +1,71 @@
+ReviewUser — tabi round 13, w1 (read-only; no gate, test, or build run; no installs)
+Scope: USER six/ten history failure; whether future-lesson repair can grant a false full production pass.
+Sources: scripts/check-user-round-contract.mjs; scripts/check-round-contract.mjs; .ufo/waves/round-12/w1/GateDebt.txt; read-only git plumbing at HEAD 75e7836.
+
+BASELINE (confirmed)
+- USER round count is honest: lessons corpus/lessons/user-20261015-r01..r06 = 6. roundIds counts lesson files only (evidence-only dirs ignored). Production expect is fixed at 10 (argumentsOf). Keep it; do not touch the --expect default.
+- SHONEN blob at HEAD = 9dcb2687; 7f506aff and 92d700d blob = 5e055b8c. The 92d700d..HEAD SHONEN diff is a rewrite, not four boxes: header "Seed checklist" -> "Promotion checklist"; 10 insertions, 38 deletions; evidence text removed; four [x] -> [~].
+
+FINDINGS (by severity)
+
+F1 HIGH — USER drift filter flags round-N lessons, including future ones.
+- The production drift check runs `git diff --name-only PSTACK_PIN HEAD -- PSTACK_PATHS`, which lists ADDED files too. Its filter keeps `protectedPath` matches, and protectedPath matches `^corpus/lessons/round-\d+\.md$`.
+- corpus/lessons/round-12.md was added in 0d82098, after PSTACK_PIN 92d700d (verified). So it is drift today. GateDebt.txt's "SHONEN.md is the only drift" is stale.
+- Once SHONEN is exempted (GateDebt Option A), USER will report `Pstack bytes changed: corpus/lessons/round-12.md`; SHONEN sorts first in git output, so it masks round-12 today. Round-13's own round-13.md lesson will trip the same check.
+- The contract says new future lesson paths are allowed; this filter violates that.
+- Fix: drift on modified/deleted paths only (`--diff-filter=MD`), or explicitly exempt added paths; blob-pin round-12.md if it must stay frozen. Expected result after fix: USER's first finding is round_count 6/10 (honest).
+
+F2 HIGH — Orphan user-20261015-r07 is a ready-made false pass for a future lesson.
+- Commit 2676cc8 ("Admit user-20261015-r07 evidence and gate") added 38 evidence files and NO lesson, report, or SCORECARD block (verified: no corpus/lessons or reports r07 at any commit).
+- Blob copies of r01 (verified by ls-tree): operability/selftest-receipt.txt = a09039f5 (same in r01 and r07); seats/s26/result.json = f5c4f6f1 (both); seats/s27/result.json = 8b5cac91 (both).
+- r07 aggregate.json verdicts (verified): 32 "PASS", 0 non-PASS.
+- kaika-fleet-round-1.md:83 rejects r07 as round credit, but the gate cannot read that.
+- Attack path (source-derived, not executed): a future corpus/lessons/user-20261015-r07.md + SCORECARD block with measured-against 2676cc8 and command `git ls-tree -r --name-only 2676cc8 | grep user-20261015-r07/operability/selftest-receipt.txt | wc -l`, before 0 at baseline. checkSpec/checkSwarm pass on existing files; checkReport passes (reports/user-20261015-r07.md absent at 2676cc8); sameTree passes; checkPublic skips (round-02 supplies the >=1). Result: ROUND count becomes 7 with no new work.
+- Fix: explicit round-ID list (or tombstone r07 as rejected); reject evidence blobs already present in an earlier round (cross-round blob uniqueness); require measured-against to be a commit AFTER the round's own evidence was first created.
+
+F3 HIGH — Counting-command grammar admits pipes; before/after are self-declared.
+- runCount rejects `[;&`<>\n\\]` and `$(`/`${`. It does NOT reject `|`, so `git rev-parse <sha> | echo 1` passes `startsWith('git ')` and the forbidden-char test; before/after are whatever the author echoes.
+- The metric itself is presence-only (`grep <path> | wc -l`); grep is an unanchored regex, so substring and `.` matches count.
+- Fix: whitelist the grammar (one git plumbing command plus `| wc -l`, exact-match path), or have the gate compute the metric from a fixed template instead of executing SCORECARD text. Source-derived; not executed.
+
+F4 MEDIUM — Frozen-evidence anchor is author-editable; historical user-round bytes are unfrozen.
+- APPEND_ONLY compares only the 7f506aff prefix of LOG.md, SCORECARD.md, SKILL.md, PROVINCE.md, corpus/QUALITY.md, corpus/README.md. User-round SCORECARD blocks (SCORECARD.md :332-379) and LOG entries are not frozen by any gate.
+- Verified: corpus/lessons/user-20261015-r01.md was added in 95ea5f8, after baseline, and is not in protectedPath. The SCORECARD add-history query returned empty (command issue, not evidence of absence); treat SCORECARD post-baseline status as [INFERENCE] from the r01 lesson add-history and the pstack-era blocks.
+- reports/user-*.md are not in protectedPath; checkReport only checks absence at the measured commit, not later edits.
+- sameTree compares lesson+evidence at HEAD vs the measured-against commit, but measured-against is author-declared inside the unfrozen SCORECARD. Rewriting measured-against to HEAD makes sameTree pass trivially.
+- Fix: blob-pin manifest for user-20261015-r01..r06 lesson, report, and SCORECARD block (census-style); freeze measured-against once landed.
+
+F5 MEDIUM — SHONEN blob-pin exemption: correct shape, but pin the exact blob, not "any [~]".
+- Blob equality against 9dcb2687 is strictly stronger than a marks/seed check. Do not add a generic "four [~] allowed" rule; that would accept arbitrary SHONEN rewrites.
+- Document in the gate that the pinned blob is the operator-ordered regen (LOG.md:519-525) and drops the seed header and verifier evidence text. The pin lives in both gates; the census row keeps 5e055b8c at baseline (baseline comparison stays).
+
+F6 MEDIUM — Shared-interface conflict with RoundGate.
+- Editing scripts/check-round-contract.mjs puts it into USER's PSTACK drift (it is in PSTACK_PATHS). PSTACK_PIN must stay unchanged (shared interface), so USER stays red by history indefinitely.
+- Removing it from PSTACK_PATHS weakens detection of ROUND-gate tampering (only USER's drift check covers it).
+- Fix: explicit script-cutover identity — USER holds a ROUND_GATE blob pin, set after RoundGate's final bytes are committed, coordinated via parent. Do not move PSTACK_PIN.
+
+F7 MEDIUM — Production-only branch is not fixture-testable.
+- production = (root === defaultRoot). None of the four selfTest cases reaches the production branch of checkHistory (census, pstack drift, SHONEN exemption). Planned cases (future lesson allowed; historical mutation rejected; canonical SHONEN accepted; malicious SHONEN rejected; pstack tamper rejected) cannot run through the current structure.
+- Fix: extract a pure history-findings function taking pins as parameters; selfTest calls it with fixture pins. Keep HARD_BASELINE and PSTACK_PIN constants unchanged.
+
+F8 LOW — checkPublic loopback check is bypassable for IPv6; other leniency.
+- Verified: `new URL('http://[::1]/').hostname` is `[::1]`, but checkPublic compares `host === '::1'`, so an IPv6 loopback URL with class `public-observation` is accepted as a real site. `localhost.` (trailing dot) is also not rejected (verified: hostname `localhost.`); `0.0.0.0` is not rejected.
+- checkPublic silently skips captures whose class or consequential field does not match (fail-closed count, but silent).
+- checkReport accepts `[ ]` for all four SHONEN boxes; it is presence-only.
+
+F9 LOW — Trust boundaries not pinned.
+- VALIDATOR = /home/vgpnk/Projects/ufo-fsd-alpha/scripts/ufo-swarm-wave.mjs is outside the repo and not digest-pinned; gate verdicts change with that file without a repo commit.
+- checkSwarm trusts self-written aggregate/seat/dispatch JSON; agentIds are not checkable against any runtime registry; BLOCKED/ISSUES are accepted (only DROPOUT/GAP fail).
+- .gitignore `.ufo/interactive-sessions/` was added in 2676cc8. The gate reads HEAD only, so this is harmless to the gate; note only.
+
+RECOMMENDED ORDER (no gate edit made by me)
+1. F1 drift filter to MD-only; F2 round-ID list plus cross-round blob uniqueness; F3 grammar whitelist. These three close the false-pass path.
+2. F4 blob-pin manifest for historical user rounds.
+3. F5/F6 SHONEN blob pin and ROUND_GATE blob pin (coordinated; no PSTACK_PIN move).
+4. F7 pure history function so the new branches have fixtures.
+
+VERIFICATION GAPS
+- No gate, test, or build was run (per assignment). Claims come from source reads and read-only git plumbing (HEAD 75e7836; SHONEN 9dcb2687; PSTACK_PIN 92d700d; 2676cc8; 0d82098; 95ea5f8).
+- Not executed: F3 pipe behaviour (source-derived). F4 SCORECARD add-history is [INFERENCE]. F8 hostname results come from a node URL parse, not from running the gate.
+- Dirty tree: 2 uncommitted entries at HEAD; not inspected.
+- Tools: none installed or updated.

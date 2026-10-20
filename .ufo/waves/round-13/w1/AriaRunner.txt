@@ -1,0 +1,223 @@
+TABI ROUND 13 — AriaRunner lane report
+Scope: C2 accessible-selector contract -> one isolated Playwright loopback demonstration.
+Status: AUTHORED, NOT EXECUTED. No Playwright test/browser run was performed in this lane.
+No .md report copy was created; this .txt is the only report write.
+
+1. ENTRY POINT AND INVOCATION
+   Entry: /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/aria-loopback-round13.mjs
+   Run (from repo root, Main only, once):
+     node scripts/aria-loopback-round13.mjs
+   Launcher preflight (no test executes if it fails; exit 2 + receipt could_not_evaluate):
+   - reads corpus/evidence/round-13/aria/runtime-pin.json,
+   - resolves the local official @playwright/test 1.64.0 package,
+   - verifies managed Chromium path suffix chromium-1248/chrome-linux64/chrome,
+     sha256 377a9fc07b495c3b8d0ab8ec1fdfd153641759f9756fea34d8dfce4de82f5025,
+     size 301186376 bytes,
+   - verifies spec/config marker strings,
+   - clears stale receipt/actual evidence,
+   then spawns (foreground, no background job):
+     <node> corpus/evidence/round-13/aria/node_modules/@playwright/test/cli.js test
+       --config=corpus/evidence/round-13/aria/playwright.config.mjs
+       --workers=1 --retries=0 --reporter=line --update-snapshots=none
+       --timeout=30000 --output=corpus/evidence/round-13/aria/artifacts
+   cwd is the repo root. The spec is:
+     corpus/evidence/round-13/aria/aria-loopback.spec.mjs
+   The launcher prints a one-line `TABI-ARIA-RESULT {...}` summary and exits:
+     0 = receipt verdict pass and runner exit 0
+     1 = receipt verdict fail or runner exit nonzero
+     2 = could-not-evaluate (missing deps/browser/pin/receipt)
+   This matters: toMatchAriaSnapshot throws outside a Playwright Test runner
+   (`playwright/lib/matchers/expect.js:13037-13044`, installed 1.64.0:
+   "must be called during the test"). The wrapper therefore launches the real
+   runner; it does not implement a matcher substitute.
+
+2. DEPENDENCIES / INSTALL RECORD
+   - Node: v24.21.0 (pin minimum major 20).
+   - Installed locally under the owned aria directory from official npm:
+       @playwright/test 1.64.0, playwright 1.64.0, playwright-core 1.64.0.
+     Command: npm install --prefix corpus/evidence/round-13/aria (--no-audit --no-fund).
+     Lock: corpus/evidence/round-13/aria/package-lock.json (integrity-pinned).
+     node_modules/ and artifacts/ are excluded by corpus/evidence/round-13/aria/.gitignore.
+   - Attempted `npm install -g @playwright/test@1.64.0`: FAILED EEXIST on the existing
+     global playwright bin symlink. It left no @playwright package residue. No global
+     change was made; the local exact install is used.
+   - No browser download/install: the existing managed Chrome for Testing 156.0.8078.4
+     (Playwright cache revision 1248) is used. System Chromium 152 is not used.
+   - No full-system upgrade; no pacman/uv/cargo installs.
+   - Restore after cleanup: `cd corpus/evidence/round-13/aria && npm ci`.
+
+3. ISOLATION AND CONFINEMENT
+   - HTTP server binds explicitly to 127.0.0.1:0 (ephemeral port); exact fixture routes
+     only (/fixtures/{controls,panel,queue,reresolve}.html, 204 /favicon.ico); unknown
+     path -> 404, query -> 400, non-GET -> 405. No directory/static file serving.
+   - Served bytes are re-hashed against manifest.json before listen.
+   - One fresh persistent browser context per case, profile under a fresh mkdtemp root;
+     browser env is a minimal explicit map (HOME, XDG_CONFIG/CACHE/DATA/STATE/RUNTIME,
+     TMPDIR, LANG, TZ) and does not inherit auth/token variables. serviceWorkers=block.
+     Sandbox is left at Playwright's default; --no-sandbox is NOT added.
+   - context.route('**/*') allows only http://127.0.0.1:<exact port> with no userinfo;
+     every other page request is aborted and logged. Page-level origin confinement only;
+     no claim of global host egress blocking. Chromium background-networking flags are set.
+   - Per-case cleanup proof: context.close awaited, context.newPage() after close must
+     reject, temp root/profile removal asserted absent, direct child PIDs before/after
+     launch compared (new browser processes after = 0). Server close proof: listening
+     false and fetch to the old origin refused. No repo-root test-results/ or
+     playwright-report/ may be introduced.
+   - Timeouts (pin + config + receipt): case 30000 ms, expect 2500 ms, action 3000 ms,
+     navigation 5000 ms, negative snapshot 1200 ms, server refusal 1500 ms,
+     process settle 3000 ms; launcher wall clock 240000 ms.
+   - Config pins workers=1, retries=0, ignoreSnapshots=false,
+     updateSnapshots='none', no global toMatchAriaSnapshot.children override. Each case
+     asserts Playwright 1.64 API locations: testInfo.project.retries=0,
+     testInfo.project.ignoreSnapshots=false, project expect.timeout=2500
+     (public FullProject.expect when exposed, otherwise project-internal expect),
+     project expect.toMatchAriaSnapshot.children undefined,
+     testInfo.config.workers=1, testInfo.config.updateSnapshots='none',
+     testInfo.retry=0, testInfo.timeout=30000, and the exact expected case set.
+     The same values are recorded in receipt.config.observed (not hardcoded).
+
+4. CASES (8; all real @playwright/test assertions)
+   role-name: getByRole('button',{name:'Save changes',exact:true});
+     count 1, accessible name, click -> status text 'saved'.
+   label-fill: getByLabel('Email address'); count 1, type=email, fill, value asserted.
+   duplicate-strict: getByRole('button',{name:'Delete',exact:true}); count 2;
+     bare click must reject with real Playwright message containing
+     "strict mode violation" and "resolved to 2 elements"; locator string asserted
+     to contain no .first()/.nth()/.last().
+   re-resolve: getByRole('button',{name:'Bump counter',exact:true}); click increments
+     and replaces the node (setTimeout 0); same locator clicks replacement; instance
+     tokens 1->2->3; retained pre-replacement element handle evaluates isConnected=false.
+   panel-before-after: getByRole('main',{name:'Preferences',exact:true});
+     captures main.ariaSnapshot() before and after "Toggle advanced"; both committed
+     templates asserted with toMatchAriaSnapshot; YAML must differ and after must
+     contain checkbox "Accept terms".
+   contain-default: getByRole('list',{name:'Queue',exact:true}); default contain
+     template Alpha/Beta passes while actual YAML also contains Gamma.
+   equal-explicit: same list; contain green first, then explicit /children: equal
+     Alpha/Beta must reject against Alpha/Beta/Gamma, then exact equal Alpha/Beta/Gamma
+     passes.
+   checked-wrong-state: reveal panel, getByLabel('Accept terms'); unchecked passes the
+     partial template; unchecked against [checked] must reject; after check(), the same
+     [checked] template passes; checked against explicit [checked=false] must reject.
+   Every rejection is caught through expect(promise).rejects.toThrow(...) and then
+   asserted for the stable matcher/strict message, Expected:/Received:, a real tree
+   token, and the absence of "must be called during the test" and YAML parse errors.
+   Four negatives total: strict, equal-extra, unchecked-vs-checked, checked-vs-false.
+
+5. COMMITTED EXACT TEMPLATES (paths and sha256)
+   templates/checkbox-unchecked.aria.yml
+     e842699200ebe40fd355c35a895dd8ddab6784bf037e5f1450448c5d88de445c
+     - checkbox "Accept terms"
+   templates/checkbox-checked.aria.yml
+     7e1281b4e47c301152b13b12d02988af912423ff2eacc030f32757b53b3a2a00
+     - checkbox "Accept terms" [checked]
+   templates/checkbox-checked-false.aria.yml
+     b2ecea7ff437a114641a0031b50060c9e37a8250b8cbe2614154e043c90383ab
+     - checkbox "Accept terms" [checked=false]
+     (Installed 1.64.0 source basis: coreBundle KeyParser converts checked=false to
+      boolean false; matchesNode compares template.checked !== undefined against the
+      actual node's checked value. Checked actual true vs false rejects.)
+   templates/panel-before.aria.yml
+     bd0993293f7b8715730ad4d30cbbdafd83b3d84adf0797d310bfc3b0cd6e5c4e
+     - main "Preferences":
+       - heading "Preferences"
+       - button "Toggle advanced"
+   templates/panel-after.aria.yml
+     f2d56b00a9b49e689661ebbe6c1f20344fd556fdd5b2625991e658735dca0349
+     - main "Preferences":
+       - heading "Preferences"
+       - button "Toggle advanced"
+       - checkbox "Accept terms"
+   templates/queue-contain.aria.yml
+     0f807ac3b5686f93e3608cfb73c621662b2f23fe7a9cd3808f39c14a655a01f5
+     - list "Queue":
+       - listitem "Alpha"
+       - listitem "Beta"
+   templates/queue-equal-extra-fails.aria.yml
+     3f4eb67759469d4fb1af988f480c2edf877cc04dc1a1638d299ade8270dbc265
+     - list "Queue":
+       - /children: equal
+       - listitem "Alpha"
+       - listitem "Beta"
+   templates/queue-equal-exact.aria.yml
+     2e0c4c7314959c9713924b6d7a357b568eb31062ed7f34620412b113dbb55c3b
+     - list "Queue":
+       - /children: equal
+       - listitem "Alpha"
+       - listitem "Beta"
+       - listitem "Gamma"
+   Source basis for /children and [checked=false]: installed
+   playwright-core/lib/coreBundle.js parser (parses /children values
+   contain|equal|deep-equal and checked true|false|mixed). This is version-scoped to
+   1.64.0, not a general docs claim. Generic wrapper flattening and whitespace
+   normalization were also read from the installed source (includeGenericRole is false
+   in default/autoexpect mode; mergeStringChildren drops whitespace-only strings).
+
+6. COMMITTED FIXTURES (paths and sha256)
+   fixtures/controls.html  879d1c20219ec4da337a4a698938ea36d8af3803065de2963bc3ed6fcec7b2ea
+   fixtures/panel.html     c04d8943f70558328785d4ed6454b6a9c805e3919aa70870e90a918dae2de385
+   fixtures/queue.html     d9773d354d82160bf56b76a01494bd9a5ba9f46a9b3ea5db21ca5a1579cb0e63
+   fixtures/reresolve.html 909d120bbde594ff39820de03460ed3b1f96ac4764df6dd671cf8fdc6543eac3
+   manifest.json pins every fixture/template path, byte count and sha256 and every
+   case's exact locator contract, expected outcome and negative error patterns.
+   runtime-pin.json pins Playwright 1.64.0/core 1.64.0, managed Chromium revision 1248,
+   version 156.0.8078.4, executable suffix/sha256/bytes, node minimum and timeouts.
+   package.json + package-lock.json pin the exact npm dependency tree.
+
+7. RETURNS / EVIDENCE PATHS (written only by Main's run)
+   corpus/evidence/round-13/aria/receipt.json
+     schema tabi-aria-loopback-receipt-v1; top-level sourceSha256 (launcher),
+     loopback=true, externalSite=false; runtime with node/playwright/chromium and
+     runtime.pinned {pinPath,pinSha256,matched,...}; manifest path+sha256; templates[]
+     (full text) and fixtures[] with digests; inputs[]; timeouts; config; server
+     requests + externalRequestsBlocked; cases[]; negative[]; findings[]; cleanup;
+     summary; verdict.
+   Every case record carries: name, findingId (stable R13-ARIA-*), status, expected,
+   actual, phase, durationMs, fixture path/sha256, locator/contract, template +
+   templateSha256 + templateKind, templates[] with full text, checks, counts, negative
+   entries, snapshots, browserRuntime, requests, external counters, cleanup proof,
+   actualPath + actualSha256 + actualBytes.
+   Documented-contract admission is recorded at top level as `note` and
+   `documentedContract` (path corpus/knowledge/playwright-accessible-locators-and-
+   snapshots.md, runtime sha256/bytes, sources S023/S024/S025, and contains checks
+   against corpus/README.md and corpus/SOURCES.md) and as finding R13-ARIA-NOTE-01.
+   A missing note or missing index admission fails the verdict.
+   corpus/evidence/round-13/aria/actual/<case>.json (observation, digest in receipt)
+   corpus/evidence/round-13/aria/actual/<case>-<before|after|actual>.aria.yml
+     (exact captured locator.ariaSnapshot YAML; path+sha256+full YAML in receipt)
+   corpus/evidence/round-13/aria/artifacts/ is runner scratch, ignored by git.
+   No repo-root test-results/ or playwright-report/ is expected; receipt records before/
+   after and fails if the run introduces either.
+
+8. VERDICT LOGIC
+   Receipt verdict is pass only if: all 8 expected case IDs ran exactly once and passed;
+   no retry; all 4 negatives rejected with the asserted stable messages and tree tokens;
+   runtime pin (versions, browser path/sha256/size, browser version, pin sha256) matched;
+   every per-case cleanup proof passed; server closed and port refused; page-level
+   external aborts 0; no root output directories introduced. Otherwise verdict fail and
+   the runner exits 1. Missing deps/browser/pin/receipt exits 2. Receipt is written before
+   final afterAll assertions so failures retain evidence.
+
+9. RISKS / WHAT MAIN SHOULD KNOW
+   - This lane did NOT execute the demonstration. No claim of a pass, no determinism or
+     two-run claim, no audit/pixels/real-site claim. The receipt is the only pass evidence.
+   - First-run sensitivity: actual accessibility-tree shape (especially panel-after
+     direct checkbox child and queue item whitespace) was reasoned from installed
+     Playwright source, not executed. If a template misses, the receipt fails closed and
+     retains the full expected/actual YAML and diff message in actual/ and receipt.json;
+     do not accept a snapshot update (config/pin forbid updates).
+   - Browser sandbox is host-dependent; Playwright default is left in place. If Chrome
+     cannot launch under the host sandbox, the receipt records the launch failure and
+     verdict fail; do not silently add --no-sandbox.
+   - Chrome background (browser-level) traffic is not covered by page-level routing;
+     the receipt says page-level exact-origin confinement only. No scenario claim beyond
+     the four committed fixtures.
+   - C2 scalars remain unchanged pending Main's measurement; Main owns corpus README/
+     SOURCES/QUALITY/LOG/SCORECARD/SKILL/lesson integration and receipt commit.
+
+10. VERIFICATION EXERCISED IN THIS LANE
+   - `node --check` on launcher, spec and config (syntax only).
+   - Read-only package/version probes: local @playwright/test/playwright/playwright-core
+     1.64.0; managed chrome --version 156.0.8078.4; sha256sum/stats; git status inventory.
+   - No browser was launched; no Playwright test was listed or executed; no fixture page
+     was loaded.

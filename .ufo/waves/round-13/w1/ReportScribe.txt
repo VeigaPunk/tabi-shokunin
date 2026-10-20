@@ -1,0 +1,132 @@
+# ReportScribe — tabi round 13 w1 checklist (read-only)
+
+Seat: TabiR13.ReportScribe | role: scribe | round 13 | 2026-10-20
+Root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Scope: read-only. No gate, test, build, census, or formatter runs. Git used only as read
+(`ls-tree`, `diff --name-only`, `show --stat`, `log`). Wrote only this file, plus its
+`.md` twin per the Report trailer. No report or lesson created.
+Labels: [obs path:line] observed in a file; [inf] inference; [unk] not observed.
+
+## 0. Report pointer correction (routed to Main; not edited here)
+
+- [obs] `wc -l corpus/knowledge/source-recheck-round-12.md` = 66 lines.
+- [obs] Fleet round-12 report `/home/vgpnk/Projects/shokunin/.ufo/reports/round-12/tabi.md:16`
+  cites `tabi-shokunin/corpus/knowledge/source-recheck-round-12.md:14-77`.
+  Correct to `:1-66` (or `:14-66`). Routed by `corpus/lessons/round-12-verifier-spotcheck.md:213-214`
+  (item 4). Fix in an append-only erratum, not by rewriting the fleet report in place.
+- [obs] Same report line 16, other pointers checked and valid:
+  `chrome-remote-debugging-profile-boundary.md:119-138` (file 138 lines; section header at :119);
+  `web-flake-retry-evidence.md:172-181` (file 181 lines; section header at :172).
+- [obs] `corpus/lessons/round-12.md:17` names the source-recheck file with no line range. Nothing to fix there.
+
+## 1. Report checklist: `/home/vgpnk/Projects/shokunin/.ufo/reports/round-13/tabi.md`
+
+Source: `/home/vgpnk/Projects/shokunin/.ufo/prompts/tabi-round-13.md` §4 (:99-129), §5 (:131-140),
+§6 (:141-235).
+
+- [obs] Fleet dir `.ufo/reports/round-13/` exists with other lanes' reports. `tabi.md` is absent at read time.
+- [obs] Headings, exact text, in this order (:104-119):
+  1. `Work performed`: opens by naming the 1–3 declared claims and their axes. Each bullet carries path:line, command output, or commit hash.
+  2. `Landed changes`: each change tied to its LOG.md entry and the commit hash that carries it.
+  3. `Before → after measurements`: one per claim, with the counting command and the measured commit.
+  4. `Sources & frontier`: SOURCES rows before→after, counting command, rows added by tier, rows touched old→new, frontier rows advanced. The `SOURCES: unchanged —` line is only for lanes with no corpus writes. Tabi writes corpus, so it is not used.
+  5. `Trend verdicts`: one verdict each for `expansion`, `quality`, `discernment`, from `improved | harmed | unchanged | unprovable-but-better`, with evidence. No scalar.
+  6. `SHONEN`: one line per box.
+- [obs] Marker rule (:121-125): missing sections (other than Sources & frontier and Trend verdicts), placeholder text, or no evidence pointers = round failed.
+- [obs] Extras (:227-232): a `Stale-lane` line (respawn-per-round; no other mission open); a tool-install line (write `none` if none; record tool, version, channel, reason); the inherited-state line (§5 item 5, :220-222).
+- [obs] Inherited state: `.ufo/watchdog.log:427` shows `launch tabi round=13 … attempt=1`. No `complete` or `lane-dead-no-report` line for tabi round=13 at read time. Name this in the report.
+- [obs] Commit and push order (:211-219): lane commits carry `tabi-shokunin <tabi@shokunin.local>`, pathspec-limited, pushed before the report. Fleet report goes through `/home/vgpnk/Projects/shokunin/scripts/hyaku/fleet-commit.sh --as tabi -m "round-13: tabi report" -- .ufo/reports/round-13/tabi.md`. The report lands last and cites the pushed lane HEAD.
+- [obs] Planner mapping (:182-185): L1 holds the canonical planner seat. PlanningWalk (scout) is the bounded data-walk. State this in Work performed.
+- [obs] Seat mix, from `.ufo/waves/round-13/w1/dispatch.json` taskCall (32 tasks, one call): executor 7, scout 6, connector 4, reviewer 7, critic 4, sentinel 2, revenger 1, scribe 1 = 32. Spec items also 32 (`spec.json`). No planner seat, as the validator forbids.
+- [obs] Gate conflict, location: `scripts/check-round-contract.mjs:272` `checkReport` reads `reports/<id>.md` and requires `lane-commit:` and `^## SHONEN$`. It runs only for `pstack-20261015-rNN` ids (`roundIds` :190-196). `scripts/check-user-round-contract.mjs:262` is the same shape and runs only for `user-20261015-rNN`. [inf] No committed gate checks the tabi round-13 report today. The fleet path in the prompt governs. Route to L1; do not reconcile here. Same conflict as `.ufo/waves/round-12/w1/ReportEvidence.txt` §J.2.
+- [obs] SHONEN (:118-119): one line per box, exact text from `SHONEN.md:5,7,9,11`:
+  - `SKILL.md contains real decision tables, error patterns, checklists, cited sources`
+  - `At least one end-to-end domain task executed and logged in LOG.md`
+  - `Instructions executable by an agent without oral context`
+  - `No cross-domain bleed (PROVINCE.md still accurate)`
+  `[x]` only with a named non-author verifier. `[~]` with a resolvable evidence pointer. `[ ]` if untouched. Current baseline is four `[~]` (round-12 precedent). Do not edit SHONEN.md.
+- [obs] Scalars: round-12 block (`SCORECARD.md` `## Round 12`, :458-521) = depth 8, coverage 9, operability 8, freshness 8, calibration 9, adjacency 8. Round-13 spec says scalars unchanged pending evidence.
+- [obs] Measure precedent: `.ufo/waves/round-12/measure.mjs REV`, `before.json`. Round-13 measure file: absent (`.ufo/waves/round-13/measure.mjs` not present at read time; Measure seat owns it).
+
+## 2. Lesson checklist: `corpus/lessons/round-13.md` (new file)
+
+Source: prompt §2b.3 (:68-72), §5 item 5 (:220-226), QUALITY #10 (:22-25).
+
+- [obs] `corpus/lessons/round-13.md` is absent. `corpus/lessons/round-12.md` (109 lines) exists and is frozen.
+- [obs] Protection: `protectedPath` regex `^corpus/lessons/round-\d+\.md$` (round gate :62-69; user gate :73-83). A new round-13.md is allowed. Editing round-12.md is not. Never edit round-N files that already exist.
+- Header: round, base HEAD (round-13 Measure baseline = `75e7836`, the round-12 verifier commit; `git log -1` at read time = `75e7836`), attempt 1.
+- `## Gate` (precedent: `round-12.md:11-38`):
+  - `- admitted: <path> — <reason>`
+  - `- rejected: <claim> — <reason>; flip: <what would change it>`
+  - `- spot-check: …` (non-author; say `pending` if none; never self-certify)
+  - Each new SOURCES row: URL, access date, ≤25-word located quote with location, raw-fetch sha256 (SOURCES.md header :1-8; prompt :49-53).
+  - Every status / recheck / used-by change, old→new (prompt :52-53).
+- `## Mistakes`: table `Class | Evidence pointer | Captured-by | Fix` (precedent `round-12.md:75-81`).
+  - A fix counts only once shown able to fail: red and green fixture, or an exit/finding pair (QUALITY #6 :10-12; round-12 mistake-red/green).
+  - If none found, paste the sweep command and its output (prompt :71-72).
+- Census: exact command, both outputs, both exit codes (prompt :54-66):
+  `/home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi`
+  Expected clean line (round-12 `census-before.txt` precedent): `tabi	ok	/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/SOURCES.md`. Round end must be exit 0.
+- Outside-disagreement disposition (§5 item 5): every item in `corpus/lessons/round-12-verifier-spotcheck.md` becomes a lesson-backed QUALITY criterion, a fix, or a stated reason for neither. See §6.
+- [inf] `parseLesson` (round gate :197-212) requires `axis:`, `consequential-external-actions: none`, and one `spot-check` line. It runs only for pstack ids, so no gate enforces it on round-13.md. Mirror the pattern for consistency; do not claim a gate pass.
+
+Mistake candidates (sources all [obs] in `round-12-verifier-spotcheck.md`). L1 picks one or more; captured-by is `none` unless a criterion is cited:
+  a. Citation attributes a default to the wrong section. `corpus/knowledge/playwright-accessible-locators-and-snapshots.md:70` cites `(S024 §Snapshot matching)` for "partial by default". The default `contain` lives under §Strict matching, as `:72` and `:111` already state. Captured-by: none. Fix: dated append-only erratum (LocatorPrecision).
+  b. Receipt value recorded without representation or fetch identity. `.ufo/waves/round-12/w1/FreshRetry.txt:21` (S013, 10801) and `:25` (S017, 99752) are labelled bytes. The verifier's same-digest fetch measured 99073 and 1002533 (`round-12-verifier-spotcheck.md:~190`, item 3). Captured-by: none. Fix: dated appended clarification (ReceiptCorrection); never rewrite the receipt.
+  c. Overbroad round-N drift guard. `scripts/check-user-round-contract.mjs:126` treats any `corpus/lessons/round-\d+\.md` diff since `PSTACK_PIN` as drift. Round-12 hit this (`round-12.md` is post-pin). Round-13 will hit it too. Captured-by: none before round 12 (`round-12.md:89-91`). Fix: UserGate, fixture-covered.
+  d. Collector-timing precision omitted. `corpus/knowledge/webdriver-bidi-capability-matrix.md:88` says "not a drop-in after-completion"; the dated WD §7.5.2 requires collectors before response creation/clone (`.ufo/waves/round-12/w1/FreshBidi.txt:158-177`, R1). Verifier ruled: debt, not false claim. Fix: BidiPrecision, append-only.
+
+## 3. Sources and frontier checklist
+
+Contract: `/home/vgpnk/Projects/shokunin/CORPUS.md` §`SOURCES.md — where a shokunin learns` (:64). Registry: `corpus/SOURCES.md`.
+
+- [obs] Columns (`corpus/SOURCES.md` header table): `id | source | kind | tier | scope | anchor | teaches | status | opened | recheck | used-by`.
+- [obs] Immutable: `id`, `source`, `opened`. Do not rewrite them (round-12 precedent `round-12.md:53-55`).
+- [obs] Round-12 end baseline (`SOURCES.md:15-42`, `round-12.md:69`, `SCORECARD.md` round-12 block): 28 rows S001–S028. Tiers A22 / B4 / C2. Status mined 23, queued 3, rejected 2.
+  - queued: S020 (A), S021 (A), S022 (B) at `SOURCES.md:34-36`.
+  - rejected: S026 (C), S027 (C).
+  - S023/S024/S025 mined in round 12, used-by `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`.
+- [obs] Frontier open per round-12 SCORECARD block: extension↔daemon handshake; native WebMCP probe; real-site rate/rights records; real-site journeys; WebMCP spec mining. Full table at `corpus/README.md:171-183`. Earlier `## Frontier` at `corpus/README.md:22-34` stays unedited.
+- Required (prompt §2b.4 :73-74): at least one round-13 claim rests on a SOURCES row opened this round, and its knowledge or evidence cites `S###`.
+  - [inf] Round-12 access date (2026-10-20) is the same calendar day. Re-open each cited source this round and record the round-13 access in the lesson. Do not cite round-12 reopenings as "this round" without re-opening.
+- Counting, before and after, in Sources & frontier: `/home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi` at start and end, plus row/tier/status counts for the report.
+
+## 4. Gate checklist (RoundGate: `scripts/check-round-contract.mjs`; UserGate: `scripts/check-user-round-contract.mjs`)
+
+- [obs] Constants that must not move (spec shared interface):
+  - `HARD_BASELINE = 7f506affa55f6fb892d3c8073c75151c998bdf2c` (round gate :11; user gate :12).
+  - `PSTACK_PIN = 92d700d6a8aa9855f1e9d2cc8e12c82f762a1367` (user gate :13).
+- [obs] Round gate `protectedPath` :62-69. Includes `corpus/lessons/round-\d+\.md`, `SHONEN.md`, `scripts/check-freshness.mjs`, and fleet-round-1 freshness/report/plan paths.
+- [obs] Round gate `checkHistory` :159-189: protected blobs in the baseline tree must match at HEAD. APPEND_ONLY prefixes (:25): LOG.md, SCORECARD.md, SKILL.md, PROVINCE.md, corpus/QUALITY.md, corpus/README.md. Production census at `corpus/evidence/pstack-20261015/baseline-census.tsv` (:~180-189).
+- [obs] User gate `PSTACK_PATHS` :30-39: `corpus/evidence/pstack-20261015`, `corpus/lessons`, `reports`, `scripts/check-round-contract.mjs`, `scripts/pstack-seat.mjs`, `scripts/pstack-aggregate.mjs`, `scripts/check-freshness.mjs`, `SHONEN.md`.
+- [obs] User gate drift filter :119-135 counts `corpus/lessons/round-\d+\.md` as drift (:126). This is the overbroad guard in §2c.
+- [obs] Name-only diff observed at read time: `git diff --name-only 7f506affa55f6fb892d3c8073c75151c998bdf2c HEAD -- SHONEN.md corpus/lessons scripts reports corpus/evidence/pstack-20261015`. The first 30 entries include `SHONEN.md`, `corpus/evidence/pstack-20261015/baseline-census.tsv`, `corpus/lessons/pstack-20261015-r01..r10.md`, `corpus/lessons/round-12.md`, `corpus/lessons/round-12-verifier-spotcheck.md`, and `reports/pstack-20261015-r*.md`. `SHONEN.md` changed at commit `5cdc976` (`git show --stat`: SHONEN.md 48 lines). [unk] Whether every listed path fails the gate: not run; RoundGate and UserGate own it.
+- [inf] Repairs must not weaken the gates. Canonical SHONEN regeneration accepted only with seed/marks verified, not by an arbitrary exemption (spec RoundGate item). Future `corpus/lessons/round-N.md` accepted only for new paths (spec UserGate item).
+- [obs] Gate self-tests exist (`--self-test`, round gate ~:340-390; user gate similar). Not run here; L1 runs them once after edits.
+
+## 5. Open decisions for L1 (not resolved here)
+
+1. Report location: prompt fleet path vs lane-local `reports/<id>.md` (§1 gate conflict).
+2. The new `round-13.md` trips the user gate drift guard (`check-user-round-contract.mjs:126`) until UserGate's repair lands. Sequence the commits accordingly.
+3. Two-file report naming: acceptance says `.txt`; Report trailer says `.md`. Safety.txt ruled `.txt` canonical (`.ufo/waves/round-12/w1/Safety.txt:43-46`). This seat wrote both, identical.
+4. Sources "opened this round" re-open (§3).
+
+## 6. Routed corrections from `corpus/lessons/round-12-verifier-spotcheck.md` → round-13 owner
+
+Source of all rows: `corpus/lessons/round-12-verifier-spotcheck.md:186-216` (routed defects 1–5), plus the ruling at :~157-168.
+
+| # | Routed item (verbatim intent) | Round-13 owner | Exact target / evidence |
+|---|---|---|---|
+| 1 | Carried legacy gate repair: accept canonical four-`[~]` SHONEN regeneration without moving baselines; cover SHONEN/census/PSTACK and future round lessons with fixtures; USER six-of-ten stays separate | RoundGate (`scripts/check-round-contract.mjs`), UserGate (`scripts/check-user-round-contract.mjs`) | GateDebt.txt, ProtectedMap.txt (round-12 w1); HARD_BASELINE and PSTACK_PIN unchanged |
+| 2 | Unswept FreshBidi R1/C1(c): add collector-before-response-creation/clone timing, citing dated WD §7.5.2; separate collection from getData retrieval | BidiPrecision | `corpus/knowledge/webdriver-bidi-capability-matrix.md` (append-only; anchors :71, :88, :103); `.ufo/waves/round-12/w1/FreshBidi.txt:158-177` |
+| 3 | Receipt metadata: FreshRetry.txt:21/25 labels 10801/99752 as raw bytes vs measured 99073/1002533; correct via dated append | ReceiptCorrection | `.ufo/waves/round-12/w1/FreshRetry.txt` (append only; count command; representation) |
+| 4a | Citation precision: `playwright-accessible-locators-and-snapshots.md:70` default-partial attributed to Snapshot matching; add Strict matching default-contain location (:72 already correct) | LocatorPrecision | `corpus/knowledge/playwright-accessible-locators-and-snapshots.md` (append-only dated erratum) |
+| 4b | Report pointer `source-recheck-round-12.md:14-77` in fleet round-12 report line 16 exceeds 66-line file | ReportScribe (this checklist) → Main erratum | `/home/vgpnk/Projects/shokunin/.ufo/reports/round-12/tabi.md:16` → `:1-66` |
+| 5 | Closure conformance debt: frozen step-1 closure checker not run; absolute reportDir prompt debt disclosed; no validator bypass | Operator/protocol (disclose in report) | `.ufo/prompts/tabi-round-13.md:199-200` (relative reportDir now used: `.ufo/waves/round-13/w1` in spec.json:4) |
+| R | Ruling on BiDi timing: C1 verifies; precision routed as debt | BidiPrecision (item 2) | `round-12-verifier-spotcheck.md` ruling block |
+
+Also carry (not routed as defects, but in the verifier's disclosures): S001/S003 whole-page digest volatility disclosed at `FreshProfile.txt:16–41`; historical fetch identities only, not semantic drift. Do not red-date unreviewed runtime or paper claims (verifier :~218-220).
+
+## 7. Commands run
+
+Read-only only: `wc -l`, `grep -n`, `sed -n`, `jq -r`, `git diff --name-only`, `git show --stat`, `git ls-tree`, `git log -1`. No gate, census, self-test, build, test, or formatter run. No tool installed or updated.

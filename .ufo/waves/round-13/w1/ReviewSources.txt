@@ -1,0 +1,85 @@
+ReviewSources — tabi round 13, w1 (registry rows S023/S024/S025; round-12 curation constraints; mutable used-by advice)
+Reviewed 2026-10-20. Root: /home/vgpnk/Projects/shokunin/tabi-shokunin. Read-only. No gate or measure script executed (check-sources.mjs, measure.mjs not run). Writes: this file, plus an identical copy at .ufo/waves/round-13/w1/ReviewSources.md (Acceptance names .txt; the Report trailer names .md; both carry the same content).
+
+Axes: Calibration (teaches cells vs opened text), Coverage (used-by completeness), Adjacency/Integrity (append-only contract, gate ordering). Freshness unchanged by this review.
+
+================================================================
+1. OBSERVED STATE
+================================================================
+- corpus/SOURCES.md:37-39: S023, S024, S025 = status `mined`, opened 2026-10-19, recheck `on-release` / `on-release` / `365d`, used-by = `corpus/knowledge/playwright-accessible-locators-and-snapshots.md` only.
+- Note exists and cites each row ID as a standalone token (note line 1 "source:" line plus §1 table rows 13-15). Gate used_by_uncited would pass on the note by reading (not executed).
+- Source freshness re-check today (curl -sL | sha256sum): S023 234a2452…bdee6, S024 bbbad688…e6194, S025 17521385…3d30f. All equal the registry-referenced round-1 hashes (corpus/lessons/kaika-fleet-round-1.md:66-68). Bodies unchanged since 2026-10-19.
+- Anchor sections re-located in the fetched bodies: S023 "Locate by role" / "Locating elements" / "Locate by label" present; S023 "accessibility audits" present once. S024 "Aria snapshots", "Snapshot matching", "Partial matching", "Strict matching", "Snapshots as separate files" present. S025 home: "Design Patterns and Examples", "Providing Accessible Names", "ARIA roles, states and properties", "keyboard support" present (home page only; no per-widget pattern page opened).
+- git: only .ufo/waves/round-13/ untracked; SOURCES.md and corpus/lessons clean at HEAD 75e7836.
+
+================================================================
+2. CONTRACT FOR MUTABLE FIELDS (what may change in place)
+================================================================
+- Source: /home/vgpnk/Projects/kimi-shokunin/skills/shokunin/protocol/CORPUS.md, Rules 2 and the used-by column definition (read via the `Registry` section).
+- Mutable in place: `status`, `recheck`, `used-by` only. Each change logged old→new in the round lesson.
+- Immutable in place: id, source, kind, tier, scope, anchor, teaches, opened. A correction is a NEW row whose teaches opens `supersedes S0NN —`.
+- used-by = "repo-relative paths of the knowledge entries OR LESSONS citing the row". Only standalone tokens count (check-sources.mjs:231-233 regex `(?<![A-Za-z0-9])ID(?![0-9])`).
+- Gate order: a used-by path must exist before the row is edited (check-sources.mjs:336-338 used_by_missing; corpus/README.md:9 "A row is written when its file exists, never before").
+- Cell format: comma-separated; split on [,;] (check-sources.mjs:329). Append, never replace; keep the note path (measure.mjs:20 requires the row line to contain the note path and `| mined |`).
+
+================================================================
+3. ADVISED MUTABLE used-by UPDATES
+================================================================
+A. Literal-definition gap (recommended). Three lessons cite S023, S024 and S025 by standalone token and are absent from used-by:
+   - corpus/lessons/round-12.md:14-15 (admitted-entry line), :44-46 (quote table), :55 (transition record)
+   - corpus/lessons/kaika-fleet-round-1.md:66-68 (origin of opened quotes and hashes)
+   - corpus/lessons/round-12-verifier-spotcheck.md:95, :151-154, :158-159
+   Precedent: S028 used-by already lists corpus/lessons/kaika-fleet-round-1.md alongside a knowledge entry (SOURCES.md:42). Advised: append all three lesson paths to S023, S024 and S025 used-by, after the note path, comma-separated. No other cell changes. Log old→new in the round-13 lesson (CORPUS.md Rule 2).
+   Calibration note: if Main prefers to list only the admitting lesson, state the reason in the round-13 lesson; do not silently leave the literal definition unmet.
+
+B. Round-13 C2 demonstration (conditional on Main writing a lesson). If corpus/lessons/round-13.md is written and cites S023 and/or S024 by standalone token, append that exact path to the used-by of each row it cites. A lesson path is a new future path and is allowed (not a frozen historical file).
+   - Do NOT add corpus/evidence/round-13/aria/* files to used-by. The column definition covers knowledge entries and lessons only; evidence files would widen the definition. If Main wants traceability there, cite the evidence file from the lesson.
+   - Ordering: create corpus/lessons/round-13.md before editing the used-by cells; otherwise the gate fails with used_by_missing mid-integration.
+
+C. In-place note edits (e.g., a round-13 demonstration section added to playwright-accessible-locators-and-snapshots.md) need NO used-by change: the path is unchanged. Only a new citing path changes the cell.
+
+D. status: stays `mined` for S023/S024/S025. No flip is required or advised.
+
+E. recheck: leave unchanged. The pinned Playwright runtime in round 13 does not by itself change the documentation cadence. If Main changes S024 recheck (on-release), log old→new in the lesson.
+
+F. opened: leave 2026-10-19. The round-12 and round-13 re-open dates belong in the lesson and note, not in this column (the round-12 lesson already kept 2026-10-19; consistent with the immutable list).
+
+G. Do not add a registry row for the Playwright npm package or browser build used by the demonstration unless the lesson cites it as a learning source. It is a runtime pin, recorded in evidence; SOURCES.md curates learning sources (CORPUS.md Rule 3). If a row is added, it is a new ID, opened in round 13, with a ≤25-word quote and anchor (Rule 1).
+
+================================================================
+4. IMMUTABLE DEBT (not fixable by used-by; route to Main)
+================================================================
+These are teaches/scope/anchor defects. They cannot be changed in place. Fix only by a supersedes row (new ID, opened in the writing round), or record as carried debt.
+- S023 teaches (SOURCES.md:37): "explicitly not an accessibility audit". Source (§Locate by role): "Note that role locators do not replace accessibility audits and conformance tests, but rather give early feedback about the ARIA guidelines." [observation: teaches overstates]. Round-12 ReviewSources F3 and ReviewC2 #1 already flagged it. The note's §Not a full accessibility audit labels this as inference, so the knowledge side is bounded; the registry text is not.
+- S024 teaches (SOURCES.md:38): "structural evidence, not pixels". Not in the fetched aria-snapshots page [observation]. The note labels it [inference] (note §Not pixels). Registry text still states it as a source fact.
+- S025 teaches (SOURCES.md:39) and scope "ARIA authoring semantics and widget patterns": only the APG home was opened (anchor "APG home, no revision marker"). The home supports general scope and "ARIA roles, states and properties"/"keyboard support" only [observation]. Per-widget role, name and keyboard claims need a new opened patterns row (round-12 ReviewC2 #2; QUALITY 12). Round-12 ReviewSources F3 judged the S025 teaches cell "supported as written"; that judgment does not cover per-widget patterns. Disagreement recorded, not resolved here.
+- Calibration effect: the note is bounded; the registry is not. A reader of SOURCES.md alone gets the overstated teaches. Carried debt, unchanged by used-by edits.
+
+================================================================
+5. OTHER OBSERVATIONS (no action required)
+================================================================
+- Round-12 F2 (tier definitions): resolved by QUALITY criterion 15, which points to CORPUS.md. No SOURCES edit.
+- Round-12 F4 (opened not re-recorded): still true; consistent with the immutable list. No change.
+- Round-12 F5 (S022 empty-input digest): out of scope; S022 is queued and not cited.
+- corpus/README.md:210 and SKILL.md:1640 cite the three IDs (SKILL as a range, not standalone tokens). Neither is a knowledge entry or lesson under the used-by definition; no used-by entry for them.
+- SCORECARD.md:440 counting command still greps only the note path; a used-by append does not change the measure.
+
+================================================================
+6. VERIFICATION FOR MAIN (not run here)
+================================================================
+After the used-by appends and any round-13 lesson:
+1. node scripts/check-sources.mjs ; node scripts/check-sources.mjs --self-test
+   (expect SOURCES_GATE verdict=clean; the used-by paths must resolve and cite their IDs)
+2. node .ufo/waves/round-12/measure.mjs HEAD (expect accessible_locator_entry 1; the mined/note-path check stays satisfied)
+3. Confirm each appended lesson path exists and contains the standalone token (grep -n -E '(^|[^A-Za-z0-9])S02[345]([^0-9]|$)' on that path).
+Tool installs or updates during this review: none.
+
+================================================================
+7. RETAINED DISSENT (after independent closure ruling)
+================================================================
+Closure rules S023/S024 scoped synthesis and audit boundary, and S025 home authoring scope, as valid; no per-widget claim intended. Main records that ruling and opens no new immutable supersedes rows.
+Dissent kept on the record, not withdrawn:
+- S025 scope and teaches cover per-widget widget patterns, but only the APG home was opened. Any future note making a per-widget role, name or keyboard claim needs a new opened row first.
+- S023 and S024 teaches wording remains a paraphrase of the sources; the note's [INFERENCE] labels carry the bounded claims.
+- used-by backfill: Main appends the current knowledge note and round-13 lesson paths. Historical lessons (round-12, kaika, round-12 spot-check) are not exhaustively backfilled, since the contract does not demand every citer. Section 3A's literal-definition point is recorded as waived by ruling, not as satisfied.
+Final sources checks are Main's; none were run here.

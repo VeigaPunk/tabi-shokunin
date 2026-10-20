@@ -1,0 +1,97 @@
+ReviewCapability — tabi round 13, wave w1 (read-only review; no runs, no installs, no edits)
+Scope: what one real isolated Playwright loopback demonstration can honestly admit as capability versus the docs-held accessible-selector entry; constraints on claims and promotion.
+
+Checked: corpus/knowledge/playwright-accessible-locators-and-snapshots.md (§1–§6, Rejected, Unknowns); corpus/SOURCES.md rows S023–S025; corpus/lessons/round-12.md; corpus/lessons/kaika-fleet-round-1.md:66-68; corpus/knowledge/cdp-evidence-patterns.md §1; SKILL.md:361-410; .ufo/waves/round-13/w1/spec.json and dispatch.json (AriaRunner, ReviewAria); host runtime state read-only (npm -g list, fnm playwright package, ~/.cache/ms-playwright, /usr/bin/chromium --version).
+Read-only fetches: https://playwright.dev/docs/locators and /docs/aria-snapshots, piped to sha256 and grep only (nothing written).
+
+## Host runtime facts (observed, read-only)
+- Global npm package `playwright@1.64.0` under fnm node v24.21.0 (`npm ls -g`). Not project-local: repo root has no package.json and no node_modules.
+- Bundled browser for 1.64.0: chromium revision 1248 = "Chrome for Testing" 156.0.8078.4 (playwright-core/browsers.json). Binary present: ~/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome (DEPENDENCIES_VALIDATED, INSTALLATION_COMPLETE markers present). chromium_headless_shell-1248 also present.
+- Host system browser: /usr/bin/chromium = Chromium 152.0.7977.82 Arch Linux. Different build from the one Playwright 1.64.0 is rolled against.
+- Source docs: S023 and S024 fetched today sha256 = 234a2452…cdbdee6 and bbbad688…7b4e6194 — identical to the doc §1 hashes. Served bytes unchanged.
+- Installed playwright-core exposes Page.ariaSnapshot (types.d.ts:2101) and Locator.ariaSnapshot (types.d.ts:14608). Both exist in 1.64.0.
+
+## HIGH
+
+H1. toMatchAriaSnapshot cannot run from a plain .mjs script.
+Evidence: playwright/lib/matchers/expect.js:13037-13044 — `const testInfo = expectConfig().testInfo; if (!testInfo) throw new Error("toMatchAriaSnapshot() must be called during the test")`.
+Consequence: scripts/aria-loopback-round13.mjs using only the `playwright` library can call locator.ariaSnapshot() and get YAML, but cannot invoke the Playwright matcher. Two honest options:
+  (a) run as a Playwright Test spec through the `playwright/test` entry (types/test.d.ts exists in the 1.64.0 package). Then the claim may say "Playwright 1.64.0 toMatchAriaSnapshot matched template T under children mode M". The runner then is a spec file, not a bare script — the spec path must be stated in the artifact.
+  (b) keep the bare .mjs and compare the YAML string itself. Then the claim may only say "runner-side exact string comparison of the ariaSnapshot YAML to template T". Playwright's contain/equal/deep-equal and partial-matching semantics are NOT exercised, so the docs' matcher claims (§4) stay docs-held.
+Recommendation: if the C2 point is the matcher semantics, use (a). Do not write (b) and label it toMatchAriaSnapshot.
+
+H2. Playwright Test writes outside the write set by default.
+Under (a), the default reporter and output dir write test-results/ and playwright-report/ into the cwd. Those paths are outside "scripts/aria-loopback-round13.mjs plus corpus/evidence/round-13/aria". Set outputDir to an isolated temp dir and reporter to a non-file reporter, or run from an isolated temp project directory. Verify afterward that the repo tree gained no files outside the write set.
+
+H3. Vacuous-pass hazard in the matcher.
+expect.js:13044 (and the same guard at :12537, :12592): `if (expectConfig().ignoreSnapshots) return { pass: !this.isNot }`. types test.d.ts:421 `ignoreSnapshots?: boolean`. If the config sets ignoreSnapshots, toMatchAriaSnapshot passes without comparing. The runner must assert ignoreSnapshots is absent/false and record the effective expect config in the artifact. Also keep updateSnapshots at 'none' for the demonstration: 'all' (expect.js:13064 area) replaces the expected value with an impossible match, and 'missing'/'default' generate baselines when the expected string is empty. A wrong config must make the run fail, not pass.
+
+H4. Runtime pin mismatch between "existing browser" and the Playwright pin.
+The spec says "pinned runtime … use existing browser with isolated temp profile". The package pin is 1.64.0 → Chrome for Testing 156.0.8078.4 (cache chromium-1248). The host /usr/bin/chromium is 152.0.7977.82. Using /usr/bin/chromium through executablePath would make a second unpaired runtime; it must not be presented as the 1.64.0 runtime. Recommendation: the claim names "Playwright 1.64.0 + Chrome for Testing 156.0.8078.4 (rev 1248, cache path recorded)". The runner should assert browser.version() === 156.0.8078.4 and record the executable sha256, and fail on mismatch. No browser download is needed; the build is already installed.
+
+H5. Module resolution. A bare `import … from 'playwright'` from scripts/*.mjs does not resolve: the repo has no package.json, and ESM ignores NODE_PATH. Options: (i) absolute import of the fnm global path (version-specific, fragile); (ii) install exact `playwright@1.64.0` into an isolated temp dir and record the integrity hash. Any package.json or node_modules in the repo is outside the write set. Any install performed must be recorded as tool/version/channel/reason per the operator directive. This review performed no install.
+
+## MEDIUM
+
+M1. Egress. Playwright's launch switches (coreBundle.js, `--disable-background-networking` present) reduce browser background traffic but do not establish no-egress. cdp-evidence-patterns.md §1 E4 already recorded Google traffic from a fresh profile. Claim only: "every page request recorded in this run targeted 127.0.0.1 (page.on('request') shape recorded)". Do not claim browser-level no-egress. The fixture must contain no external font, script, or image URLs.
+
+M2. Profile boundary. Playwright's launch uses a temporary --user-data-dir and a remote-debugging pipe (`--remote-debugging-pipe` string present in coreBundle.js; count 3, not separately verified at runtime). This satisfies the profile-isolation note only if the runner never passes channel 'chrome', never names the default profile, and never sets a TCP debugging port on the default profile. State this in the artifact.
+
+M3. Strictness. The runner should record `getByRole(role,{name}).count()` === 1 immediately before ariaSnapshot and fail otherwise. Never use .first() to clear a violation (knowledge doc §3, S023 §Strictness).
+
+M4. Negative controls are required. Partial matching drops omitted names and attributes (S024 §Partial matching; doc §4). A passing template proves little without discriminating cases. Minimum set:
+  - a mutated accessible name that must FAIL;
+  - a `/children: equal` template with one extra child that must FAIL;
+  - the absence case under default mode (no baseline → fail, not pass).
+Without these, "matched" has no discriminating power and the claim is weaker than the doc's own rules.
+
+M5. Retry policy. Set retries explicitly to 0. Any pass-on-retry must be classed flaky, and every attempt kept (S013, corpus/knowledge/web-flake-retry-evidence.md). The matcher's timeout is a window, not continuous match (doc §6 record shape).
+
+M6. Determinism. Two independent cold-profile runs with byte-identical YAML sha256 is the minimum determinism statement. It is environment-scoped (this host, this build, this fixture). Do not generalize to other builds or pages.
+
+M7. Ladder placement. Per SKILL.md:402 and knowledge doc §5–§6, an ARIA YAML is a state-claim structural witness from a single producer (Playwright). It is not an independent second signal against DOM shape (doc §6 "ARIA is not an independent second signal"). A static template run sits at rung-1 style evidence (sha-pinned bytes plus idempotence re-run), not rung 3. Counting YAML + DOM snapshot as two signals is rejected.
+
+## Admission and promotion constraints
+
+ADMIT (only if the run is executed and recorded with the artifacts in corpus/evidence/round-13/aria):
+- Playwright 1.64.0 (version recorded from package.json) + Chrome for Testing 156.0.8078.4 (rev 1248) headless, browser.version() equal to that string.
+- One loopback fixture served on 127.0.0.1 with an ephemeral port recorded; fixture bytes sha256-pinned.
+- getByRole count === 1 for the target; locator.ariaSnapshot() YAML emitted and sha256-pinned; the exact template and children mode recorded.
+- Template match under Playwright's matcher only in route (a) of H1; otherwise the match is labeled runner-side string comparison.
+- Two cold runs with byte-identical YAML; negative controls that FAIL as expected (M4).
+- Runtime facts: ignoreSnapshots false, updateSnapshots none, retries 0, profile temp, egress note.
+
+DO NOT ADMIT:
+- Any accessibility audit, WCAG or conformance, keyboard, focus order, screen-reader output, contrast, timing (S023 "role locators do not replace accessibility audits"; S024 "not necessarily a complete serialization").
+- Pixels, visibility, layout or rendering (no screenshot in this claim class; a screenshot would be its own read-back artifact).
+- Any real site or third-party page; any external URL.
+- Cross-browser claims: Firefox 1555 and WebKit 2370 are not run, so the single-snapshot policy (S024 "should be the same across browsers") stays untested.
+- Support for any Playwright version other than 1.64.0; any host Chromium other than 156.0.8078.4 (the /usr/bin/chromium 152 build is not this pin).
+- Equivalence with webbridge @e snapshots (doc §6 keeps the producers separate).
+- That Playwright's matcher passed, if the run used route (b) of H1.
+
+PROMOTION:
+- Spec says scalars unchanged pending evidence. A single one-fixture, one-build run does not justify a scalar move; it at most supports a dated, append-only qualifier on the knowledge note's "Runtime locally unmeasured" lines (doc §1 Unknowns 1 and 5; round-12 lesson). Do not rewrite the existing verified-at/locally-measured:no lines in place.
+- The note may move from "docs-held, runtime unmeasured" to "docs-held + one measured run (scoped)". Coverage stays at 9 unless main decides otherwise on separate grounds; capability is not promoted to "supported".
+- Any new SOURCES/knowledge row must name the runtime build, not just the docs date.
+
+## LOW / hygiene for main integration (not runtime claims)
+
+L1. corpus/SOURCES.md rows S023 and S024 say "read 2026-10-19"; S025 says "read 2026-10-19". The knowledge doc says accessed 2026-10-20 (04:04–04:05 GMT). Reconcile append-only.
+L2. Knowledge doc §2 table uses "explicitly recommended for non-interactive elements" (getByText) and "explicitly last resort" (CSS/XPath). The phrases "non-interactive" and "last resort" are absent from the fetched S023 bytes today (grep count 0), and "not recommended" is present. Reword as paraphrase or cite the exact sentence.
+L3. Verified present in fetched S023: "accessibility audits", "Every time a locator", "because when your page changes", "may click", "normalizes whitespace", "Filtering Locators", "Locator operators", "Get by nth", "Locate by test id"/"most resilient"/"not user facing". Verified present in fetched S024: "constraint, not necessarily", "single-node template", contain/deep-equal/Partial matching/Strict matching, "should be the same", "Snapshots as separate", "derived from ARIA".
+L4. Doc §1 Unknown 1 says the installed Playwright version is unmeasured. Host now shows playwright 1.64.0 globally, and S017 release notes reference Version 1.64 — the docs and package align by number [inference]. This is still not a measurement until the run executes; do not write it as measured.
+L5. The dispatch asks for a "page.ariaSnapshot() API spelling note". Page.ariaSnapshot and Locator.ariaSnapshot both exist in 1.64.0 types (types.d.ts:2101, :14608). Spelling is `ariaSnapshot`; the matcher is `toMatchAriaSnapshot`.
+
+## Install / tool record
+None performed. Observed only: npm -g playwright@1.64.0 (existing), ~/.cache/ms-playwright chromium-1248 (existing), /usr/bin/chromium 152.0.7977.82 (existing, system). Curl fetches used no writes.
+
+## Verification gaps (not run, per assignment)
+- No Playwright launch, locator resolution, ariaSnapshot call, or matcher call was executed. All API behavior above is from source reading of the installed package.
+- The standalone behavior of toMatchAriaSnapshot under playwright/test outside a Playwright config was read from source, not executed.
+- The remote-debugging-pipe default and temporary profile behavior were read from the bundle, not observed at runtime.
+- browser.version() on the cache binary was not read.
+- Egress: no network capture was taken; the M1 limit is a limit, not a result.
+
+## Residual risk
+Main risk is claim inflation: a single loopback run reads like a capability acquisition. Keep the claim class narrow (state, structural, one fixture, one build) and keep the docs' rejected list intact. Second risk: a plain-script runner quietly drops to string comparison and is then cited as "Playwright matched". H1 and H3 are the controls.

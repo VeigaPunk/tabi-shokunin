@@ -1,0 +1,23 @@
+Tabi R13 · LocatorPrecision · findings (2026-10-20)
+
+FILES CHANGED
+1. corpus/knowledge/playwright-accessible-locators-and-snapshots.md — append-only §7 (23 added lines, 0 deleted; `git diff --numstat` = 23 0). 22,896 → 28,243 bytes. New sha256 fa43a130de66b82699d5c4275b911b1b8b86564e4be99e50d609ce18d75dcc09.
+2. .ufo/waves/round-13/w1/LocatorPrecision.txt (this file).
+3. .ufo/waves/round-13/w1/LocatorPrecision.md (report).
+
+ITEM 4 VERDICT — SUPPORTED, ATTRIBUTION CORRECTED IN APPEND
+S024 reopened raw: HTTP 200, 125,426 bytes, sha256 bbbad6881341619286827304e5b5202f5a9246aac8223a6508fb4feb1b7e6194 — byte-identical to the round-12 fetch already in §1.
+- "contain (default): Matches if all specified children are present in order." occurs once, byte 55,236, inside §Strict matching (h3 id=strict-matching at 51,004; next heading at 60,470). Section lead: "By default, a template containing the subset of children will be matched:".
+- §Snapshot matching (h2 id=snapshot-matching at 38,500; §Partial matching at 42,708): 0 case-insensitive occurrences of "children"; its only "contain" substrings are in codeBlockContainer markup. It states assertion methods, case-sensitivity/whitespace normalization, indentation nesting, order sensitivity, single-node-any-depth and multiple-top-level-same-parent rules — no children mode.
+- Therefore §4 line 70's "Matching is structural and partial by default" is a §Strict matching claim, while the later depth/order sentence in the same bullet is §Snapshot matching; the single trailing anchor (S024 §Snapshot matching) only covers the latter. Body preserved; §7 records the correction. §1 quote row and §4 strict bullet already anchored §Strict matching correctly.
+
+ARIA SNAPSHOT API SPELLING — NO CORRECTION NEEDED
+No documentation error found; both names are documented on S024 §Using page.ariaSnapshot() and locator.ariaSnapshot() (h3 id=using-pageariasnapshot-and-locatorariasnapshot at 79,997; example `const snapshot = await page.ariaSnapshot();`) and in the API reference:
+- page.ariaSnapshot(options?) — "Added in: v1.59" — class-page sha256 5f8af4e006dd43c0e9302733cef08c7dfd24ad77385bb61cd29953b06848930e, 975,536 B.
+- locator.ariaSnapshot(options?) — "Added in: v1.49" — class-locator sha256 50bf21d2f64a9e164cb2b2dd35141d12284d0d287c0b9c2c723e1e8d254b99da, 572,193 B.
+- page.ariaSnapshotJSON() / locator.ariaSnapshotJSON() — "Added in: v1.63".
+Options on both: boxes, depth, mode ("ai" | "default", default "default"). Locator mode "ai": "Includes element references [ref=e2]", does not wait and throws when nothing matches, includes iframes. Playwright [ref=e2] ≠ webbridge @e ref (reinforces §6 conflation warning).
+Assertion API unchanged: expect(page|locator).toMatchAriaSnapshot() (class-pageassertions 1a6ac38d…, class-locatorassertions bb949bb8…).
+
+SCOPE / LIMITS
+Documentation only. No Playwright runner, browser, package probe, or locator resolution. API-reference URLs are not registered S0xx rows in corpus/SOURCES.md; cited by URL+hash+size for the corpus owner. No tool installs.

@@ -1,0 +1,27 @@
+ReviewNoHarm — tabi round 13 (read-only). Full findings and commands: .ufo/waves/round-13/w1/ReviewNoHarm.md (same content).
+
+HEAD 75e7836; HARD_BASELINE 7f506af; PSTACK_PIN 92d700d (ancestor, present). No gate runs, no edits; read-only git plumbing only; no installs.
+
+FINDINGS
+1. HIGH SHONEN.md: only protected/census drift. Baseline 5e055b8 = census row (baseline-census.tsv:25) = pin blob. HEAD 9dcb268 from 5cdc976. Both gates' checkHistory flag it (RoundGate protectedPath :68; UserGate PSTACK_PATHS :38 / filter :132). [inference: production fails here first]. Census file must stay byte-identical, so the HEAD-side SHONEN row needs a canonical policy, not a blob exemption. No generator exists in repo or ufo-fsd-alpha/scripts.
+2. HIGH UserGate drift filter flags future lesson corpus/lessons/round-12.md (added after pin; matches ^corpus/lessons/round-\d+\.md$ at check-user-round-contract.mjs:126). Fix: only MD/paths existing at pin; additions allowed. RoundGate iterates baseline paths only, so no change needed for future lessons there.
+3. HIGH coupling: scripts/check-round-contract.mjs is in UserGate pin drift set (:34, :128). Any RoundGate edit fails production UserGate unless an explicit cutover blob identity is added (not HARD_BASELINE/PSTACK_PIN). Both editors must agree and fixture-test.
+4. OK append-only prefixes intact: LOG 27002->49763; SCORECARD 27469->44918; SKILL 125194->131632; QUALITY 329->3126; corpus/README 12085->28230; PROVINCE 1020 unchanged (census-pinned c2222b16, do not change).
+5. OK frozen paths unchanged: corpus/lessons/round-1..10.md, fleet-round-1 freshness/.ufo trees, scripts/check-freshness.mjs (987c326).
+6. OK pstack pin drift: none beyond SHONEN.md and round-12.md.
+7. Honest count: 6 user lessons (r01..r06). user-20261015-r07 has evidence (2676cc8) but no lesson or report; do not count it. After history repair UserGate should reach round_count 6!=10.
+8. Unverified: UserGate calls ufo-fsd-alpha/scripts/ufo-swarm-wave.mjs (exists, 95076 B); literal 'plan' grep found nothing; confirm when running.
+9. Only .ufo/waves/round-13/ untracked; gate scripts, SHONEN, PROVINCE, census clean.
+
+COMMANDS FOR MAIN (after edits; none run by this lane)
+- Census: loop over baseline-census.tsv rows checking rev-parse of $B:path and HEAD:path against recorded sha; expect only SHONEN.md HEAD-side until policy lands.
+- git diff --name-status 7f506af HEAD -- corpus/lessons corpus/evidence/fleet-round-1-freshness .ufo/{rounds,reports,plans,continuation} scripts/check-freshness.mjs SHONEN.md PROVINCE.md  (expect only A for new lessons)
+- git diff --numstat 7f506af HEAD -- LOG.md SCORECARD.md SKILL.md PROVINCE.md corpus/QUALITY.md corpus/README.md  (deletions must be 0)
+- git diff --name-status 92d700d HEAD -- scripts/check-round-contract.mjs scripts/pstack-seat.mjs scripts/pstack-aggregate.mjs scripts/check-freshness.mjs  (empty unless cutover identity)
+- node scripts/check-round-contract.mjs --self-test
+- node scripts/check-round-contract.mjs
+- node scripts/check-user-round-contract.mjs --self-test
+- node scripts/check-user-round-contract.mjs   (expect round_count 6!=10 after repair)
+- node scripts/check-user-round-contract.mjs --repo <fixture> --baseline <sha> --expect 1   (isolated future-lesson fixture)
+
+GAPS: SHONEN canonical policy undecided; gate behaviour is code-reading inference; validator plan subcommand unconfirmed.

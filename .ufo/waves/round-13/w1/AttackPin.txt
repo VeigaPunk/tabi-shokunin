@@ -1,0 +1,84 @@
+AttackPin — checker-cutover policy integrity (tabi round 13, w1)
+Scope: read-only. I read the git objects, the parent PROTOCOL.md history, and a live working-tree snapshot of RoundGate's edit.
+No gate, self-test, build or test was run. The only write is this file. No tools were installed.
+Axes: no moved baseline / no current-digest self-blessing / persisted independent digest / cross-gate cutover identity.
+The RoundGate snapshot attacked is the working tree of scripts/check-round-contract.mjs at blob d24c95c4638c8b1c3735c85f075eace1461bf83d. It is mid-edit and may change before the final version.
+
+ESTABLISHED FACTS (git object queries; hashes computed in this session)
+- Baseline not moved: HARD_BASELINE 7f506aff… is unchanged in the snapshot. censusEntries still requires census line 1 == baseline, and every census row still requires blob(baseline,path) == recorded. That includes the SHONEN row (census :25 = 5e055b8c…).
+- Moving the baseline has no motive: the APPEND_ONLY byte-prefix at 7f506aff is intact at HEAD for all six files: LOG, SCORECARD, SKILL, PROVINCE, corpus/QUALITY.md and corpus/README.md. This settles the open question in round-12 GateDebt.txt:47-50. SHONEN.md is the only drifted protected path.
+- An independent seed authority exists and predates the baseline. In the parent repo PROTOCOL.md, the canonical seed block is byte-identical at 70ffb66 (2026-09-28), 6bd4f38 and HEAD 306ea14 (HEAD lines 441-448; 6bd4f38 lines 333-340).
+  - Raw template with `<name>`: sha256 471bb2f45c1ff8db5192a6e18db98963a1f51fa0c7b65a627ffe8bae481e1b22 (354 bytes); git blob 2eb388c3….
+  - With `<name>`=tabi-shokunin: sha256 b45c2ac3cdf8ba80563e77cabf72670a6a101590f8031d9b484c67313bcdab67; git blob d16606b2b0f42a33196407f95b3d1f1de7d1dbc8.
+- HEAD SHONEN (9dcb2687…) normalized equals the seed exactly. Normalizing means: reset the marks to `[ ]` and drop the 2-space evidence lines. All its evidence pointers resolve at HEAD: SKILL.md, corpus/knowledge/multi-step-journey.md, corpus/knowledge/executor-test-sufficiency.md and PROVINCE.md.
+- The pinned gate blob is scripts/check-round-contract.mjs b2eb8316f41cd1039330e45f6739c07c5f11eace, the same at PSTACK_PIN 92d700d and at HEAD. The census tsv is 672dba36… at PSTACK_PIN and at HEAD, and was added in 4d53c21.
+
+COUNTEREXAMPLES / DEFECTS
+
+P1. The seed is rebuilt in code, with no persisted independent digest (axes: self-blessing, independent digest). FIXABLE.
+  - Evidence: checkShonenPolicy builds the preamble from literals and reuses BOXES. Nothing ties these to PROTOCOL.md.
+  - Counterexample: one edit to BOXES or the preamble literal changes both what checkReport accepts and what the SHONEN policy accepts. No constant is left to disagree. The gate defines its own seed.
+  - Smallest fix: persist SHONEN_SEED_SHA256 = b45c2ac3…cdab67, with a provenance comment: parent PROTOCOL.md @6bd4f38 lines 333-340, byte-identical since 70ffb66.
+    - Normalize HEAD SHONEN: marks become `[ ]`; exactly one evidence line directly after each box is removed.
+    - Fail shonen_policy unless sha256(normalized) equals the constant.
+    - Keep the line-grammar checks as an extra layer; the digest is the authority.
+  - Do NOT read the parent repo at runtime: it is a separate, mutable repo, and the gate's header says "committed tabi files only". Instead, L1/Main records one external cross-check as round-13 evidence: `git -C .. show 6bd4f38:PROTOCOL.md` lines 333-340, dedent 4, substitute the name, then sha256.
+
+P2. The expected `<name>` comes from the runtime directory: basename(root) (axis: self-blessing, environment-derived expectation). FIXABLE.
+  - Evidence: production calls checkShonenPolicy(…, basename(root)).
+  - Counterexample 1: a checkout or worktree with another directory name (for example /tmp/tabi-r13) gives a false shonen_policy red, even though SHONEN is canonical.
+  - Counterexample 2: any title that matches whatever the directory happens to be called is accepted. The expected value is not persisted.
+  - Smallest fix: production uses the constant 'tabi-shokunin', which is what P1's digest covers. Fixtures pass their name explicitly, or keep the raw-template digest 471bb2f4… and substitute the name before hashing.
+
+P3. `[x]` passes on self-written text (axis: self-blessing). Severe for the cutover's honesty claim.
+  - Evidence: `[x]` needs only /verifier/i and /non-author/i in the evidence line. The self-test `shonen_x_with_verifier` makes "verifier: reviewer-9 non-author …" exit 0 (clean).
+  - Counterexample: the lane writes "  verifier: TABI-B4 non-author" and gets `[x]`. This is the round-1 incident again: TABI-B4 was lane-dispatched (LOG.md:519-525), and the gate would bless it.
+  - The gate cannot verify non-authorship from SHONEN text.
+  - Smallest fix: accept only `[ ]` and `[~]`. `[x]` fails with shonen_policy ("x needs an external verifier record") until an independent verifier record exists outside SHONEN and is gate-checked. Flip that self-test to expect exit 1.
+  - Also tighten `[~]`: the first backticked token, with `:N-M` stripped, must resolve as blob(HEAD,path). Today shonenPointer accepts any `word.ext` or any backtick, so pointers are never actually resolved.
+
+P4. --witness REV lets the caller choose the "red-before" arm (axes: moved baseline, independent digest). FIXABLE.
+  - Evidence: witness(rev) runs the gate found at any caller-supplied REV and does not check its identity.
+  - Counterexample: picking a REV whose gate also fails on some other finding still prints PASS, as long as old_finding=history_rewritten. The before arm is self-chosen, not pinned.
+  - Smallest fix: require blob(defaultRoot, rev, 'scripts/check-round-contract.mjs') == b2eb8316f41cd1039330e45f6739c07c5f11eace, or read that blob by hash and drop REV entirely.
+  - The witness also adds a CLI surface to a production gate. If it is only a one-time cutover demo, record its output as evidence and remove it (contract cleanup: no scaffolds).
+
+P5. Cross-gate cutover identity: the USER gate goes red as soon as the ROUND gate edit is committed (axes: duplicate authority, cutover identity). This decides the outcome.
+  - Evidence: check-user-round-contract.mjs PSTACK_PATHS and its drift filter include scripts/check-round-contract.mjs (user :34, :128). Its blob would move from b2eb8316… to the final blob.
+  - Forbidden repairs:
+    (a) moving PSTACK_PIN (contract);
+    (b) to = blob(HEAD, path) computed at runtime, which is a tautology;
+    (c) accepting any blob whose `--self-test` exits 0, which is forgeable self-attestation;
+    (d) dropping the path from PSTACK_PATHS without an explicit L1 decision.
+  - Smallest safe fix: in the USER gate, persist ROUND_GATE_CUTOVER = { path: 'scripts/check-round-contract.mjs', from: 'b2eb8316f41cd1039330e45f6739c07c5f11eace', to: '<final committed blob>' }. Accept the drift only if blob(PSTACK_PIN,path) === from && blob(HEAD,path) === to.
+  - `to` must be the blob of the final committed file. The snapshot's d24c95c4… is NOT final.
+  - Any later L1 touch to the ROUND gate must update `to` in the same commit. L1 then checks `git rev-parse HEAD:scripts/check-round-contract.mjs` == the `to` constant.
+  - Both gates must carry the same SHONEN_SEED_SHA256 (duplicate authority). L1 greps the two constants for equality.
+
+P6. Production verification is only meaningful after commit (axis: false provenance).
+  - Evidence: both gates evaluate `HEAD:` blobs, not the working tree.
+  - Counterexample: a USER run before the commit does not see the check-round-contract.mjs drift that P5 handles. It would show a false "only round_count" result.
+  - Fix: L1 runs the production gates only on the committed tree and quotes the commit plus the blob hashes.
+
+P7. The future-lesson exemption in the USER gate must stay narrow (axis: hidden regression).
+  - Evidence: round-12.md is absent at PSTACK_PIN, so the user drift filter /^corpus\/lessons\/round-\d+\.md$/ marks it as drift today.
+  - Counterexample: a general rule like "paths absent at pin are allowed" would also let new files into corpus/evidence/fleet-round-1-freshness/, .ufo/rounds/fleet-…/ and corpus/evidence/pstack-20261015/. Today those additions are caught by protectedPath / PSTACK_PATHS.
+  - Fix: apply the absent-at-pin exemption only to `^corpus/lessons/round-\d+\.md$`. Deletions and edits of paths present at pin stay red.
+
+P8. Fixture gaps (axis: premature saturation).
+  - There is no self-test for a census whose line 1 is not the baseline, i.e. a moved baseline. Add `census_moved_baseline`, with line 1 = HEAD commit, expecting history_rewritten.
+  - There is no self-test for a non-canonical title or name.
+  - There is no test that `[ ]` boxes with prose evidence lines are rejected. Today they are accepted (hasEvidence is optional for ' '), and PROTOCOL forbids prose.
+  - The USER round_count of 6/10 must stay red after the repair. Do not claim USER production clean.
+
+KEPT (attacked; no defect found)
+- The baseline side of the SHONEN census row is still checked against the recorded hash.
+- The census_tamper self-test (SHONEN recorded value set to zeros) gives history_rewritten.
+- historical_mutation on round-1.md stays red.
+- Production still forces HARD_BASELINE and --expect 10.
+
+VERDICT FOR THE JUDGE
+- The approach is sound: verify the baseline side, then apply a canonical policy to HEAD, without moving the baseline.
+- It is admissible only after P1 (persisted seed digest), P3 (no self-blessed `[x]`) and P5 (persisted from/to cutover pair in the USER gate) are fixed.
+- P2 and P4 are cheap hardening fixes.
+- Do not pin 9dcb2687… (the current SHONEN blob) as "the canonical answer". That blesses the current bytes, including the prose in the box-1 evidence line, instead of checking against the seed.

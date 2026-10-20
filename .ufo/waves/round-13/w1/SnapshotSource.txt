@@ -1,0 +1,289 @@
+# SnapshotSource Scout Report: Playwright ARIA Snapshots & Locator API Specification
+
+Seat: TabiR13.SnapshotSource (Leaf subagent)
+Date: 2026-10-20
+Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Target: Read-only bounded investigation under tabi-shokunin: Open official ARIA snapshots and locator API docs, locate actual ariaSnapshot, children contain/equal and checked-state semantics; note package version differences.
+Files Written:
+1. /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-13/w1/SnapshotSource.txt
+
+================================================================
+1. GODSPEED AXES
+================================================================
+- Freshness: Live byte-exact re-verification and cryptographic pinning of S024 (`aria-snapshots`), S023 (`locators`), and official Playwright API reference endpoints against served HTTP headers and SHA-256 digests.
+- Coverage: Comprehensive textual, architectural, and source-code verified extraction of:
+  * Programmatic `ariaSnapshot` & `ariaSnapshotJSON` methods (Page and Locator).
+  * Children matching modes (`contain`, `equal`, `deep-equal`) located in `§Strict matching`.
+  * Checked-state semantics (`[checked]`, `[checked=true]`, `[checked=false]`, `[checked=mixed]`, and omission).
+  * Complete package version history (v1.27 through v1.64) cross-checked with the host environment.
+- Calibration: Verbatim quotations (each <= 25 words) with exact section anchors; grounded distinction between documented facts, AST/runtime implementations in `playwright-core`, and architectural inferences.
+- Adjacency & Integrity: Strict leaf boundary; zero subagent dispatches; zero writes outside assigned target files; zero test runner executions or test suite modifications.
+
+================================================================
+2. SOURCE IDENTIFICATION & HTTP EVIDENCE
+================================================================
+
+- Primary Documentation Sources:
+  * Row S024: Playwright ARIA Snapshots Guide
+    - URL: https://playwright.dev/docs/aria-snapshots
+    - HTTP Status: 200 OK
+    - Server: GitHub.com
+    - Last-Modified: Mon, 19 Oct 2026 16:28:55 GMT
+    - ETag: "6ad64547-1e9f2"
+    - Body Size: 125,426 bytes
+    - SHA-256: bbbad6881341619286827304e5b5202f5a9246aac8223a6508fb4feb1b7e6194
+    - Status: Byte-identical across round-1, round-12, and round-13.
+
+  * Row S023: Playwright Locators Guide
+    - URL: https://playwright.dev/docs/locators
+    - HTTP Status: 200 OK
+    - Server: GitHub.com
+    - Last-Modified: Mon, 19 Oct 2026 16:28:55 GMT
+    - ETag: "6ad64547-41737"
+    - Body Size: 268,087 bytes
+    - SHA-256: 234a24527d5a96e600e0dc1d832fb56bd8a539283df9f497ba982de21cdbdee6
+    - Status: Byte-identical across round-1, round-12, and round-13.
+
+- Official API Reference Endpoints (Fetched & Verified):
+  * Page API: https://playwright.dev/docs/api/class-page
+    - Size: 975,536 bytes | SHA-256: 5f8af4e006dd43c0e9302733cef08c7dfd24ad77385bb61cd29953b06848930e
+  * Locator API: https://playwright.dev/docs/api/class-locator
+    - Size: 572,193 bytes | SHA-256: 50bf21d2f64a9e164cb2b2dd35141d12284d0d287c0b9c2c723e1e8d254b99da
+  * PageAssertions API: https://playwright.dev/docs/api/class-pageassertions
+    - Size: 104,757 bytes | SHA-256: 1a6ac38d3dab947b51bd91157e4d050c68fd2292f72e541987f7320e34b9768b
+  * LocatorAssertions API: https://playwright.dev/docs/api/class-locatorassertions
+    - Size: 303,904 bytes | SHA-256: bb949bb823bb1f91634a4099e4cee64e670b385f81373eea1ace5c8b69cd952e
+
+================================================================
+3. VERBATIM QUOTATIONS & SECTION ANCHORS (Each quote <= 25 words)
+================================================================
+
+1. Template as Constraint
+   - Location: S024 §Aria snapshots (id="aria-snapshots")
+   - Verbatim (14 words):
+     "A template is a constraint, not necessarily a complete serialization of the accessibility tree."
+
+2. Structural & Sibling Scope
+   - Location: S024 §Snapshot matching (id="snapshot-matching")
+   - Verbatim (24 words):
+     "A single-node template can match at any depth within the selected page or locator. Multiple top-level nodes must match under the same parent, in order."
+
+3. Case & Whitespace Normalization
+   - Location: S024 §Snapshot matching (id="snapshot-matching")
+   - Verbatim (16 words):
+     "The comparison is case-sensitive and normalizes whitespace within names and text values. YAML indentation determines nesting."
+
+4. Partial Matching of Attributes
+   - Location: S024 §Partial matching (id="partial-matching")
+   - Verbatim (23 words):
+     "You can perform partial matches on nodes by omitting attributes or accessible names, enabling verification of specific parts of the accessibility tree"
+
+5. Partial Matching of Checkbox State
+   - Location: S024 §Partial matching (id="partial-matching")
+   - Verbatim (19 words):
+     "In this partial match, the checked attribute is ignored, so the test will pass regardless of the checkbox state."
+
+6. Default Children Subset Mode (Section Anchor Clarification)
+   - Location: S024 §Strict matching (id="strict-matching") [NOT §Snapshot matching]
+   - Verbatim (12 words):
+     "By default, a template containing the subset of children will be matched:"
+
+7. Contain Mode Definition
+   - Location: S024 §Strict matching (id="strict-matching")
+   - Verbatim (12 words):
+     "contain (default): Matches if all specified children are present in order."
+
+8. Equal & Deep-Equal Definitions
+   - Location: S024 §Strict matching (id="strict-matching")
+   - Verbatim (24 words):
+     "equal: Matches if direct children exactly match the specified list in order. deep-equal: Matches if children and nested children exactly match the specified list in order."
+
+9. Children Mode Inheritance Override
+   - Location: S024 §Strict matching (id="strict-matching")
+   - Verbatim (17 words):
+     "Add /children: contain to a nested node to override inherited deep-equal matching and allow extra children there."
+
+10. Global Children Configuration
+    - Location: S024 §Setting children mode globally (id="setting-children-mode-globally")
+    - Verbatim (25 words):
+      "Instead of adding a /children property to every snapshot, you can set the default children matching mode for all toMatchAriaSnapshot calls in the configuration file"
+
+11. Programmatic Capture Methods
+    - Location: S024 §Using page.ariaSnapshot() and locator.ariaSnapshot() (id="using-pageariasnapshot-and-locatorariasnapshot")
+    - Verbatim (22 words):
+      "Methods page.ariaSnapshot() and locator.ariaSnapshot() allow you to programmatically create a YAML representation of accessible elements within a locator's scope"
+
+12. Checkbox State Serialization
+    - Location: S024 §Checkbox with checked attribute (id="checkbox-with-checked-attribute")
+    - Verbatim (4 words):
+      "- checkbox [checked]"
+
+================================================================
+4. CORE MECHANICS: ACTUAL `ariaSnapshot` API
+================================================================
+
+A. Method Declarations & Signatures:
+- `locator.ariaSnapshot(options?: AriaSnapshotOptions): Promise<string>`
+  * Added in: v1.49
+  * Scope: Constrained strictly to the element subtree matching the locator query.
+  * Options:
+    - `depth?: number` (Added v1.59): Limits tree traversal depth.
+    - `mode?: "default" | "ai"` (Added v1.59): "ai" emits `[ref=eN]` IDs and traverses `<iframe>` elements without waiting.
+    - `boxes?: boolean` (Added v1.60): Appends `[box=x,y,width,height]` in CSS pixels relative to viewport.
+    - `signal?: AbortSignal` (Added v1.62): Cancels the snapshot operation.
+    - `timeout?: number`: Maximum wait time in milliseconds.
+  * Return: Serialized YAML string representing the accessibility subtree.
+
+- `page.ariaSnapshot(options?: AriaSnapshotOptions): Promise<string>`
+  * Added in: v1.59
+  * Scope: Full page body accessibility tree (`page.locator('body').ariaSnapshot()`).
+  * Options: Identical options (`depth`, `mode`, `boxes`, `signal`, `timeout`).
+  * Return: Serialized YAML string for the entire document body.
+
+- `locator.ariaSnapshotJSON(options?)` & `page.ariaSnapshotJSON(options?)`
+  * Added in: v1.63
+  * Return: Structured JSON AST instead of YAML markup (properties: `role`, `name`, `text`, `children`, `checked`, `disabled`, `expanded`, `level`, `pressed`, `selected`, `url`, `placeholder`, `ref`, `box`, `cursor`).
+
+B. API Spelling & Existence Note (Resolution of Routed Inquiry):
+- `page.ariaSnapshot()` is the canonical, supported method on `Page` (introduced in v1.59).
+- `locator.ariaSnapshot()` is the canonical, supported method on `Locator` (introduced in v1.49).
+- There is NO spelling error or deprecated alias. In earlier versions (v1.49–v1.58), `page.ariaSnapshot()` did not exist directly on the `Page` object; page-level snapshots had to be taken via `page.locator(':root').ariaSnapshot()` or `page.locator('body').ariaSnapshot()`. From v1.59 onwards, `page.ariaSnapshot()` is directly supported and equivalent to targeting the main frame document body.
+
+================================================================
+5. CORE MECHANICS: CHILDREN `contain` / `equal` / `deep-equal` SEMANTICS
+================================================================
+
+A. Location & Attribution:
+- Documented in S024 under heading `§Strict matching` (h3 id="strict-matching").
+- The verifier note in round 12 is confirmed: §Snapshot matching covers basic structural matching (single vs multi-root, case/whitespace normalization, order sensitivity); §Strict matching defines the `/children` property and the three matching modes.
+
+B. The Three Modes & Exact Matching Logic (Verified from `playwright-core` AST):
+1. `contain` (Default Mode):
+   - Template directive: `- /children: contain` (or omitted).
+   - Core implementation: `containsList(node.children, template.children)`.
+   - Behavior:
+     * Requires all listed template children to appear in relative sequential order.
+     * Unlisted sibling children in the DOM/ARIA tree are accepted and skipped.
+     * An empty template children list matches any number of children (fully unconstrained).
+2. `equal`:
+   - Template directive: `- /children: equal`.
+   - Core implementation: `listEqual(node.children, template.children, false)`.
+   - Behavior:
+     * Direct children of the node must match the template 1-to-1 in count, identity, and sequence.
+     * If `template.length !== children.length`, the assertion fails immediately.
+     * Extra unlisted direct children cause immediate failure.
+     * Non-recursive: nested descendants of direct children revert to default `contain` matching unless they also declare strictness.
+3. `deep-equal`:
+   - Template directive: `- /children: deep-equal`.
+   - Core implementation: `listEqual(node.children, template.children, true)`.
+   - Behavior:
+     * Exact 1-to-1 equality is enforced recursively down every branch of the subtree.
+     * Any unlisted child at any nesting depth causes immediate match failure.
+     * Override capability: A nested child node can declare `/children: contain` to locally relax strictness and allow arbitrary extra children within that specific sub-branch.
+
+C. Global Configuration:
+- Configurable in `playwright.config.ts`:
+  ```ts
+  expect: {
+    toMatchAriaSnapshot: {
+      children: 'equal', // sets default mode across all toMatchAriaSnapshot calls
+    },
+  }
+  ```
+- Individual snapshot templates override global configuration by specifying an explicit `/children` key.
+
+================================================================
+6. CORE MECHANICS: CHECKED-STATE SEMANTICS
+================================================================
+
+A. Roles with Checked Support (`kAriaCheckedRoles` in `playwright-core`):
+- `checkbox`, `menuitemcheckbox`, `option`, `radio`, `switch`, `menuitemradio`, `treeitem`.
+
+B. Extraction from DOM (`getChecked`):
+- Native HTML controls (`<input type="checkbox">`, `<input type="radio">`):
+  * `element.indeterminate === true` evaluates to state `"mixed"`.
+  * `element.checked === true` evaluates to boolean `true`.
+  * `element.checked === false` evaluates to boolean `false`.
+- ARIA semantics (`aria-checked` attribute):
+  * `aria-checked="true"` evaluates to boolean `true`.
+  * `aria-checked="mixed"` evaluates to state `"mixed"`.
+  * `aria-checked="false"` (or missing/invalid) evaluates to boolean `false`.
+
+C. Serialization in YAML (`ariaSnapshot()` generator):
+- When checked (`true`): Emits `[checked]`.
+- When indeterminate (`"mixed"`): Emits `[checked=mixed]`.
+- When unchecked (`false`): The checked attribute is completely omitted from YAML output (renders as bare `- checkbox "Label"`).
+- Note: The generator NEVER outputs `[checked=false]`.
+
+D. Template Matching (`toMatchAriaSnapshot()` matcher):
+- Explicit `[checked]` or `[checked=true]`:
+  * Parses as `template.checked = true`.
+  * Requires `node.checked === true`.
+  * If the element is unchecked (`node.checked === false`), the assertion FAILS.
+- Explicit `[checked=false]`:
+  * Parses as `template.checked = false`.
+  * Requires `node.checked === false`.
+  * If the element is checked (`node.checked === true`), the assertion FAILS.
+- Explicit `[checked=mixed]`:
+  * Parses as `template.checked = "mixed"`.
+  * Requires `node.checked === "mixed"`.
+- Omitted checked attribute in template (e.g. `- checkbox "Agree"`):
+  * `template.checked` is `undefined`.
+  * In `matchesNode()`: `if (template.checked !== void 0 && template.checked !== node.checked) return false;` is bypassed.
+  * Partial matching rules apply: the assertion PASSES regardless of whether the checkbox is checked, unchecked, or indeterminate.
+
+================================================================
+7. PACKAGE VERSION EVOLUTION & HOST AUDIT
+================================================================
+
+A. Playwright Feature Timeline:
+- v1.20: `expect(locator).not` introduced for assertion negation.
+- v1.27: Semantic user-facing locators introduced (`getByRole`, `getByLabel`, `getByText`, `getByPlaceholder`, `getByAltText`, `getByTitle`, `getByTestId`).
+- v1.49:
+  * `locator.ariaSnapshot([options])` introduced (returns YAML).
+  * `expect(locator).toMatchAriaSnapshot(expectedTemplate)` introduced (inline string templates).
+- v1.50:
+  * `expect(locator).toMatchAriaSnapshot(options)` introduced for external `.aria.yml` files.
+- v1.59:
+  * `page.ariaSnapshot([options])` introduced directly on `Page`.
+  * `depth` option added to `ariaSnapshot()`.
+  * `mode: 'ai'` option added (emits `[ref=eN]` IDs and traverses iframes).
+  * `page.getByRef(ref)` introduced.
+- v1.60:
+  * `boxes: boolean` option added to `ariaSnapshot()` (emits `[box=x,y,width,height]`).
+  * `expect(page).toMatchAriaSnapshot()` introduced directly on `PageAssertions`.
+- v1.62:
+  * `signal: AbortSignal` option added to `ariaSnapshot()` and `toMatchAriaSnapshot()`.
+- v1.63:
+  * `locator.ariaSnapshotJSON([options])` and `page.ariaSnapshotJSON([options])` introduced (returns JSON AST).
+- v1.64:
+  * Latest stable release branch reflected in served documentation (Mon, 19 Oct 2026).
+
+B. Host Runtime Audit:
+- Node.js runtime: `v24.21.0` (managed via `fnm`).
+- Installed package: `playwright@1.64.0` located at `/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright`.
+- Playwright CLI: `/run/user/1000/fnm_multishells/4118_1792460978869/bin/playwright` (version 1.64.0).
+- Module resolution note: Loading `playwright` via Node CJS requires `NODE_PATH=/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules` or resolving against the global fnm path.
+- `@playwright/test`: Not installed globally in this fnm environment (only `playwright@1.64.0` is present). Downstream runners requiring `@playwright/test` runner must heed tooling directives or install the pinned test runner package.
+
+================================================================
+8. CRITICAL BOUNDARIES & OVERCLAIM DEFENSES
+================================================================
+
+1. ARIA Snapshot != Visual Screenshot:
+   - ARIA snapshots capture the computed accessibility tree derived from ARIA attributes and HTML semantics.
+   - ARIA snapshots carry zero data about rendered pixels, CSS colors, background images, font metrics, visual layout shifts, or clipping.
+   - The `boxes: true` option (v1.60+) adds viewport bounding boxes in CSS pixels, but does NOT represent rendered visual appearance.
+2. ARIA Snapshot != Accessibility Audit:
+   - Matching an ARIA snapshot does NOT prove WCAG conformance.
+   - Snapshots do not verify color contrast, keyboard tab order, focus traps, or screen-reader announcements.
+3. ARIA Snapshot != Independent Signal from DOM:
+   - ARIA snapshots and DOM structures are derived from the same source document. Agreement between them does not constitute independent corroborating signals on the evidence ladder.
+4. AI Ref != Webbridge Ref:
+   - Playwright's `[ref=eN]` (v1.59+ `mode: 'ai'`) is a transient internal reference for AI workflows and is distinct from webbridge `@e` accessibility refs.
+
+================================================================
+9. REMAINING UNKNOWNS & GAPS
+================================================================
+- Zero documentation or semantic specification unknowns remaining.
+- Runtime execution is deferred entirely to downstream executors (`AriaRunner`) and L1 verification per lane contract.

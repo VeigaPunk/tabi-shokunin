@@ -1,0 +1,253 @@
+# PlanningWalk — Bounded Planner Data-Walk (Tabi Round 13)
+agent: TabiR13.PlanningWalk (scout)
+timestamp: 2026-10-20
+repo-root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+baseline-head: 75e7836b6c3090180aee2754e20a5d3cfb186e74
+
+================================================================================
+1. EXECUTIVE SUMMARY & ROUND-13 CONTEXT
+================================================================================
+
+- Goal of Round 13:
+  - C1 Operability (tied lowest 8): Repair legacy historical gates (`scripts/check-round-contract.mjs` and `scripts/check-user-round-contract.mjs`) to accept exactly canonical protocol SHONEN regeneration (four canonical `[~]` boxes with evidence/marks) and future protocol lessons (`round-11.md`, `round-12.md`, `round-13.md`, etc.) while strictly preserving historical bytes, baseline commits (`HARD_BASELINE`, `PSTACK_PIN`), and census integrity; deliver 0 -> 2 fixture-covered repaired gates where USER `round_count` (inherited 6 of 10 rounds) remains honest.
+  - C2 Coverage / Capability: Move documentation-held accessible selector & ARIA snapshot contract (mined from S023–S025 in Round 12) into 1 real isolated Playwright loopback demonstration (`scripts/aria-loopback-round13.mjs` + fixtures under `corpus/evidence/round-13/aria/`) with pinned runtime, exact templates, and actual YAML snapshots; no audit, pixel, or real-site claim.
+  - Scalar Policy: "Scalars unchanged pending evidence." Like Round 12 (where scalar increments 8->9 and 9->10 were withdrawn after critic reviews to prevent score inflation without independent verification), Round 13 holds scalar deltas at 0 pending non-author verifier closure.
+
+- Key Verdict of this Data-Walk:
+  - Lowest-Axis Compliance: SATISFIED. Operability sits at 8, tied for lowest non-retired axis with depth (8), freshness (8), and adjacency (8). Working operability satisfies AXES.md lowest-axis requirements.
+  - Causal Separation: FULLY SEPARABLE. C1 operates exclusively on verification tooling / gate scripts in `scripts/`, while C2 operates on loopback runtime execution and evidence in `corpus/evidence/round-13/aria/`. They have zero shared files, zero shared execution dependencies, and zero overlapping failure modes.
+  - Honest Accounting: Round 13 maintains exact historical discipline. No baseline pins move, no historical lesson bytes mutate, and the USER gate's inherited 6/10 failure remains reported honestly.
+
+================================================================================
+2. SCORECARD LOWEST AXES ANALYSIS & TRAJECTORY
+================================================================================
+
+- Historical & Current Score Trajectory:
+  - Probation Rounds 1–3: Established initial measurements (depth 7, coverage 5, operability 5, freshness 3, calibration 6, adjacency 5).
+  - Training Rounds 4–11: Closed out at HEAD `d24b98d` with terminal refresh (SCORECARD.md:92-101).
+  - Pstack Continuation (2026-10-15): 10 rounds advanced scores to depth 7, coverage 7, operability 6, freshness 7, calibration 7, adjacency 7.
+  - User Continuation (2026-10-15): 6 admitted rounds brought depth 8, coverage 8, operability 7, freshness 8, calibration 8, adjacency 8.
+  - Kaika Fleet Round 1 (2026-10-19): Admitted by outside orchestrator verifier (`corpus/lessons/round-1-verifier-spotcheck.md:17`):
+    - depth: 8
+    - coverage: 8 -> 9 (+ capability `sources-registry`, 27 SOURCES rows)
+    - operability: 7 -> 8 (`scripts/check-sources.mjs` gate, 26 clean self-test cases)
+    - freshness: 8 (unchanged)
+    - calibration: 8 -> 9 (drift 17 -> 0, 7 QUALITY criteria)
+    - adjacency: 8 (unchanged)
+  - Round 12 (2026-10-20): Admitted with scalar deltas of 0:
+    - depth: 8 -> 8
+    - coverage: 9 -> 9 (docs-held entry admitted: `playwright-accessible-locators-and-snapshots.md`)
+    - operability: 8 -> 8 (source gate 26 cases clean, mistake witness 9/9 clean)
+    - freshness: 8 -> 8 (3 bounded source-claim rechecks: profile, BiDi, retries)
+    - calibration: 9 -> 9 (criteria 14/15 linked)
+    - adjacency: 8 -> 8
+
+- Current Axis Values at Round 13 Entry:
+  - depth: 8
+  - coverage: 9
+  - operability: 8
+  - freshness: 8
+  - calibration: 9
+  - adjacency: 8
+
+- Lowest Non-Retired Set:
+  - The lowest non-retired axes are tied at 8: {operability, depth, freshness, adjacency}.
+  - Trend Tie-Break (AXES.md:21-23): Quality trend (depth 8, freshness 8, operability 8) is furthest behind expansion (coverage 9, adjacency 8) and discernment (calibration 9).
+  - Working Operability (8) directly satisfies AXES.md rule to work the lowest non-retired axis.
+
+- Saturation Line & Stagnation Window:
+  - Saturation line: 8. Stagnation window: N = 3 rounds (declared in kaika fleet round 1, SCORECARD.md:430).
+  - Capability `sources-registry` entered in kaika round 1. Round 12 was window round 2; Round 13 is window round 3.
+  - Nudge does not fire; no stagnation waiver is required.
+
+================================================================================
+3. CAUSAL SEPARATION BETWEEN C1 AND C2
+================================================================================
+
+- Strict Orthogonality of Surfaces:
+  - C1 (Operability):
+    - Writes: `scripts/check-round-contract.mjs`, `scripts/check-user-round-contract.mjs`, and optional `scripts/legacy-history-policy.json`.
+    - Reads: Historical git tree (`7f506aff...`, `92d700d...`), `corpus/evidence/pstack-20261015/baseline-census.tsv`, `SHONEN.md`.
+    - Execution Context: Isolated git fixtures via `mkdtempSync` under `/var/tmp` running `node scripts/check-*-contract.mjs --self-test`.
+  - C2 (Coverage / Capability):
+    - Writes: `scripts/aria-loopback-round13.mjs`, `corpus/evidence/round-13/aria/*` (templates, actual YAML snapshots, runner receipts).
+    - Reads: `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`, local Node/Playwright modules.
+    - Execution Context: Ephemeral HTTP server on `127.0.0.1`, fresh isolated temporary browser profile in `/tmp`, local Chromium binary.
+
+- Independent Verifiability (Avoiding the Round-12 F1 Coupling Defect):
+  - In Round 12 (ClaimAttack F1), C1 and C2 shared a single receipt (`source-recheck.json`), creating a false coupling where C2 sources could count toward C1.
+  - In Round 13, C1 and C2 are strictly isolated:
+    - C1 probe checks ONLY gate self-test execution, gate script digests, and the production invocation exit/finding (`ROUND_CONTRACT` clean, `USER_ROUND_CONTRACT` honest round_count failure).
+    - C2 probe checks ONLY runner execution receipt, runtime version pin, committed template hashes, actual snapshot YAML hashes, and fixture cleanup.
+    - Neither probe reads the other's evidence path.
+    - Failure of C1 does not block C2 runtime demonstration.
+    - Failure of C2 does not break C1 historical gate checks.
+
+- Scalar Discipline:
+  - Both claims advance qualitative, verifiable evidence without inflating numerical scalars:
+    - C1: Operability 8 -> 8 (delivers 0 -> 2 fixture-covered repaired gates).
+    - C2: Coverage 9 -> 9 (delivers docs-held -> 1 isolated Playwright loopback demonstration).
+  - Prevents premature saturation (CoverageAttack F6) and unverified scalar promotion.
+
+================================================================================
+4. CONCRETE ACCEPTANCE CRITERIA FOR C1 (OPERABILITY: HISTORICAL GATE REPAIR)
+================================================================================
+
+- C1.1: Preserve Core Anchors and Historical Pins (Non-Negotiable)
+  - `HARD_BASELINE` in both gates MUST remain `7f506affa55f6fb892d3c8073c75151c998bdf2c`.
+  - `PSTACK_PIN` in `check-user-round-contract.mjs` MUST remain `92d700d6a8aa9855f1e9d2cc8e12c82f762a1367`.
+  - Moving either baseline pin to hide diffs is an inviolable contract violation.
+
+- C1.2: Canonical Protocol SHONEN Verification
+  - Background: Commit `5cdc97654` regenerated `SHONEN.md` to four `[~]` boxes by orchestrator direction (`LOG.md:519-525`), changing its blob from `5e055b8c...` to `9dcb2687...`.
+  - Repair Requirement:
+    - Instead of blanket-exempting `SHONEN.md`, both gates must implement a canonical policy validator:
+      - Validates that `SHONEN.md` contains exactly the four required canonical boxes:
+        1. "SKILL.md contains real decision tables, error patterns, checklists, cited sources"
+        2. "At least one end-to-end domain task executed and logged in LOG.md"
+        3. "Instructions executable by an agent without oral context"
+        4. "No cross-domain bleed (PROVINCE.md still accurate)"
+      - Validates that box markers are exclusively canonical status marks (`[~]` or `[ ]`; no unauthorized `[x]`).
+      - Validates that evidence citations follow each box without arbitrary text distortion.
+    - In `check-round-contract.mjs`:
+      - For the protected path loop (`:94-98`), accept HEAD `SHONEN.md` matching the canonical policy (or pinned hash `9dcb2687...`).
+      - For the census loop (`:111-117`), verify that baseline blob equals recorded census blob `5e055b8c...`, and HEAD blob matches canonical policy/hash.
+    - In `check-user-round-contract.mjs`:
+      - In PSTACK diff filter (`:121-135`), accept `SHONEN.md` if it satisfies canonical policy.
+
+- C1.3: Distinguish Frozen Historical Lessons from Future Protocol Lessons
+  - Background: Both checkers currently use `/^corpus\/lessons\/round-\d+\.md$/` in protected paths / PSTACK diffs. In `check-user-round-contract.mjs:127`, this causes ANY new lesson file (`round-11.md`, `round-12.md`, `round-13.md`) to fail as `Pstack bytes changed: corpus/lessons/round-N.md`.
+  - Repair Requirement:
+    - Restrict the historical lesson immutability guard to lessons that actually existed at the pinned baseline/pstack commit:
+      - Historical lessons `corpus/lessons/round-1.md` through `round-10.md` remain strictly immutable (byte-identical to baseline).
+      - Future lessons (`round-11.md`, `round-12.md`, `round-13.md`, etc.) are permitted and must not trigger `history_rewritten`.
+
+- C1.4: Coordinated Tooling Cutover for `scripts/check-round-contract.mjs`
+  - Background: `scripts/check-round-contract.mjs` is listed in `check-user-round-contract.mjs:34` (`PSTACK_PATHS`). Editing RoundGate triggers `Pstack bytes changed: scripts/check-round-contract.mjs` in UserGate.
+  - Repair Requirement:
+    - UserGate must recognize this legitimate tooling cutover via an explicit pinned digest mechanism:
+      - Option A: Pin the exact expected digest of repaired `check-round-contract.mjs` in `scripts/legacy-history-policy.json`.
+      - Option B: Pin the constructor constant within UserGate.
+    - Blanket exemption or ignoring diffs on `scripts/check-round-contract.mjs` is strictly forbidden.
+
+- C1.5: Honest Production Verdict on `USER_ROUND_CONTRACT`
+  - The inherited state of user rounds is 6 of 10 (`SCORECARD.md:416`, `LOG.md:503`).
+  - Production check `node scripts/check-user-round-contract.mjs` MUST exit 1 with `USER_ROUND_CONTRACT verdict=failed finding=round_count`.
+  - MUST NOT synthesize fake rounds or lower the `--expect 10` default.
+
+- C1.6: Fixture Self-Test Expansion
+  - 0 -> 2 repaired gates with comprehensive self-test suites:
+    - `check-round-contract.mjs --self-test` expands beyond the current 4 cases to assert:
+      - Canonical SHONEN accepted (verdict=clean).
+      - Invalid SHONEN mark or prose rejected (finding=shonen_tamper or history_rewritten).
+      - Missing SHONEN box rejected.
+      - Census blob tamper rejected.
+      - Historical lesson mutation rejected.
+    - `check-user-round-contract.mjs --self-test` expands to assert:
+      - Future lesson added passes (verdict=clean).
+      - Historical lesson mutation rejected.
+      - Canonical SHONEN accepted.
+      - Repaired RoundGate script accepted via policy digest.
+      - Tampered RoundGate script rejected.
+
+================================================================================
+5. CONCRETE ACCEPTANCE CRITERIA FOR C2 (COVERAGE/CAPABILITY: PLAYWRIGHT LOOPBACK)
+================================================================================
+
+- C2.1: Target Artifacts and Storage
+  - Runner script: `scripts/aria-loopback-round13.mjs`.
+  - Fixture directory: `corpus/evidence/round-13/aria/`.
+  - Output files: Fixture HTML files, committed template files (`.yaml`), actual captured snapshots, execution receipt (`receipt.json`).
+
+- C2.2: Execution Isolation & Environment Hygiene
+  - Local loopback only: Must bind to `127.0.0.1` on an ephemeral/free port (e.g. port 0 or dynamically assigned free port).
+  - Browser isolation: Must launch local Chromium with a fresh temporary `userDataDir` under `/var/tmp` or `/tmp` created specifically for the run.
+  - Zero external network: No outbound HTTP/HTTPS calls, no external CDN dependencies, no analytics.
+  - Strict cleanup: Ephemeral HTTP server closed, browser process closed, temporary profile directory wiped. Cleanup receipt records exit state.
+
+- C2.3: Concrete Behavioral Test Cases
+  1. Semantic Role & Accessible Name Selection:
+     - Target: `<button>Submit Order</button>`.
+     - Locator: `page.getByRole('button', { name: 'Submit Order' })`.
+     - Action: Click control and assert state update.
+  2. Form Control Fill by Label:
+     - Target: `<label for="uname">Username</label><input id="uname" type="text" />`.
+     - Locator: `page.getByLabel('Username')`.
+     - Action: Fill text and assert input value.
+  3. Strictness Violation on Duplicate Roles without `.first()`:
+     - Target: Two `<button class="action">Cancel</button>` elements in DOM.
+     - Operation: `page.getByRole('button', { name: 'Cancel' }).click()`.
+     - Expected: Throws Playwright strict mode violation error (multiple elements matched). Caught and asserted with stable finding ID `strictness_violation_caught`.
+  4. Dynamic Action-Time Locator Re-Resolution:
+     - Setup: Button exists in DOM.
+     - Action: DOM replaces the button element with a new DOM node (simulating framework re-render).
+     - Operation: Same locator instance acts on the replaced button.
+     - Expected: Playwright automatically re-locates the up-to-date DOM element and clicks successfully (confirming S023 §Locating elements contract).
+  5. Actual ARIA Snapshot Capture:
+     - Capture real accessibility tree snapshot YAML before and after user action via `locator.ariaSnapshot()`.
+  6. Partial vs Strict Matching (`contain` vs `equal`):
+     - Tree contains an unexpected extra sibling element.
+     - Default `contain` mode (partial match) accepts the extra sibling.
+     - Explicit `/children: equal` mode rejects the snapshot due to the unexpected sibling.
+  7. Checked State Falsifier:
+     - Checkbox is unchecked in DOM.
+     - Template specifies `- checkbox "Subscribe" [checked]`.
+     - Assertion throws mismatch error; caught and asserted with stable finding ID `checked_state_mismatch_caught`.
+
+- C2.4: Real Assertion Framework
+  - Must use actual Playwright assertion methods (e.g. `expect(locator).toMatchAriaSnapshot(...)`), NOT custom regex string approximations.
+
+- C2.5: Bounded Claim Scope (No Overreach)
+  - Explicitly states: This is a loopback structural verification, NOT an accessibility compliance audit (honoring S023: "role locators do not replace accessibility audits").
+  - No claims of pixel rendering, visual comparison, or cross-browser conformance.
+  - No claims of real-site testing.
+
+================================================================================
+6. COMPREHENSIVE FALSIFIERS FOR C1 AND C2
+================================================================================
+
+- Falsifiers for C1 (Operability: Historical Gate Repair):
+  1. Moving Baseline Pins: Shifting `HARD_BASELINE` (7f506aff...) or `PSTACK_PIN` (92d700d...) to hide diffs.
+  2. Unchecked SHONEN Exemption: Creating a blanket bypass for `SHONEN.md` that accepts arbitrary text, altered prose, or missing boxes.
+  3. Historical Lesson Mutation: Allowing changes to `corpus/lessons/round-1.md` through `round-10.md` or baseline census blobs.
+  4. Falsifying USER Pass: Synthesizing dummy rounds or lowering `--expect 10` to make `USER_ROUND_CONTRACT` falsely exit 0.
+  5. Blanket Script Bypass: Excluding `scripts/check-round-contract.mjs` from UserGate without digest pinning.
+  6. Missing Self-Test Cases: Claiming gate repair without self-test coverage proving both positive acceptance of canonical forms and rejection of tampering.
+  7. Direct Census File Editing: Modifying `baseline-census.tsv` directly (violating Tier 2 immutability).
+
+- Falsifiers for C2 (Coverage / Capability: Playwright Loopback):
+  1. Hand-Rolled Mock Runner: Using string parsing or simulated regex matching instead of real Playwright runtime.
+  2. Network / Profile Bleed: Connecting to external domains or reusing host browser profiles.
+  3. Swallowing Expected Failures: Suppressing strictness or snapshot mismatch exceptions without asserting stable finding IDs.
+  4. Vacuous Template Tests: Writing templates so loose that any DOM passes regardless of correctness.
+  5. Missing Artifacts: Failing to commit actual template YAML, generated snapshots, or runner receipt.
+  6. Leaked Host Resources: Leaving running Chromium processes or unclosed ports after execution.
+  7. Conformance / Audit Overclaim: Claiming that passing ARIA snapshot tests proves WCAG accessibility compliance or pixel accuracy.
+
+================================================================================
+7. RECOMMENDATIONS FOR L1 & WAVE PEERS
+================================================================================
+
+1. For RoundGate (`scripts/check-round-contract.mjs`):
+   - Implement `isCanonicalShonen(text)` validating the 4 canonical boxes and `[~]` marks.
+   - In `checkHistory`, check HEAD `SHONEN.md` against canonical validation; keep baseline check against `5e055b8c...`.
+   - Update census check to accept HEAD `SHONEN.md` matching canonical policy while enforcing recorded hash at baseline.
+   - Expand `--self-test` to cover canonical acceptance and tampering rejections.
+
+2. For UserGate (`scripts/check-user-round-contract.mjs`):
+   - Narrow the lesson regex in PSTACK diff to historical lessons (`round-([1-9]|10)\.md`) so future lessons (`round-11`+) pass freely.
+   - Accept canonical `SHONEN.md`.
+   - For `scripts/check-round-contract.mjs`, read accepted digest from `scripts/legacy-history-policy.json` (or constant).
+   - Ensure production check continues to report `verdict=failed finding=round_count` for 6/10 user rounds.
+
+3. For AriaRunner (`scripts/aria-loopback-round13.mjs`):
+   - Stand up local Node `http.createServer` on `127.0.0.1:0`.
+   - Launch Playwright with `headless: true`, custom temporary `userDataDir`.
+   - Run the 7 distinct scenarios, catching and verifying expected failures.
+   - Write structured receipt to `corpus/evidence/round-13/aria/receipt.json` with package versions, test statuses, and hashes.
+
+4. For Measure (`.ufo/waves/round-13/measure.mjs`):
+   - Maintain strict causal separation between C1 and C2 counters.
+   - C1 counter: Validates presence of repaired gate receipts, clean self-tests, and honest USER `round_count` finding.
+   - C2 counter: Validates presence of `aria-loopback-round13.mjs`, committed fixtures, actual snapshots, and clean receipt.
+   - Ensure neither counter can be satisfied by the other's evidence.

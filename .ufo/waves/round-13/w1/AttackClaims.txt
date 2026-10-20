@@ -1,0 +1,157 @@
+AttackClaims — tabi round 13, w1 (critic, leaf). 2026-10-20.
+Scope: attack the claims that C1 and C2 are causally independent, look for scalar or count
+inflation, and look for claims beyond the real domain surface. Read-only.
+Only this file was written. No gate, self-test, runner or browser was executed. No tools were installed.
+Read-only probes: git object comparisons (blob/prefix/diff/ls-tree) and static reads of the installed Playwright package.
+Labels: [OBS] observed, [INF] inferred.
+Baseline HEAD: 75e7836b6c3090180aee2754e20a5d3cfb186e74.
+
+== Verdict summary ==
+F1  Independence holds for the C2 file paths. It is OVERCLAIMED elsewhere: there are four coupling points. Fixable.
+F2  C1 "0→2 repaired gates" inflates the count. ROUND repair restores a regression the lane itself caused. USER still exits 1. Judge must reject any operability move.
+F3  STRONGEST: a truly canonical SHONEN policy rejects HEAD's SHONEN.md. A lenient one is an arbitrary exemption. Fixable.
+F4  C2 runtime claim can be vacuous with the installed Playwright. The matcher refuses to run outside the test runner, and update/ignore modes can turn a failure into a pass. Fixable.
+F5  C2's real domain surface is narrow. Coverage scalar, depth and conformance claims are out of bounds. A capability row would reset the stagnation window.
+F6  Routed-debt appends must not be credited. Otherwise they form an undeclared third claim.
+F7  No-harm baseline facts (append-only prefix, census) were checked. Remaining harm risks: calibration wording, adjacency naming.
+
+== F1 — causal independence ==
+[OBS] C2's write set does not touch any gate input:
+  - scripts/aria-loopback-round13.mjs is not matched by protectedPath (round :60-69, user :73-82).
+  - It is not in PSTACK_PATHS (user :30-39).
+  - corpus/evidence/round-13/aria/ is likewise matched by none of them.
+  - The census has 56 rows, and none is under round-13.
+  So C2 bytes cannot produce a history_rewritten finding. That part of PlanningWalk.txt:67-84 is correct.
+
+PlanningWalk.txt:18 overclaims "FULLY SEPARABLE … zero shared execution dependencies". The real couplings are:
+
+(a) The USER part of C1 depends on the ROUND part.
+  - USER's PSTACK diff includes scripts/check-round-contract.mjs (user :34, :128).
+  - The UserGate brief pins the repaired ROUND script's digest ("parent fills final digest").
+  - So the USER repair is green on history only if the ROUND bytes are accepted unchanged. Any post-critic edit to ROUND makes the USER pin stale.
+  - "0→2" is therefore a dependency chain (USER ⇒ ROUND), not two independent units.
+  Correction: report ROUND as independent and USER as conditional on the accepted ROUND digest. State that a ROUND rejection zeroes both.
+
+(b) One measure.mjs covers both claims.
+  - The Measure brief says "malformed fail closed".
+  - If a malformed C1 receipt aborts the whole script, C2 cannot be counted at all. That is a cross-claim veto.
+  Correction: separate per-claim subcommands, or independent per-claim result objects and exits. A C1 failure leaves C2 counted, and vice versa.
+
+(c) The round-13 lesson is shared.
+  - At HEAD, `git diff --name-status 92d700d HEAD -- <PSTACK_PATHS>` shows `M SHONEN.md` and `A corpus/lessons/round-12.md`. The other lesson/report additions do not match the filter.
+  - git sorts the path list byte-wise, so SHONEN.md is reported first and masks round-12.md (user :135, drifted[0]).
+  - round-13.md would also match the guard at user :126.
+  - [INF] If C1 is rejected, C2's lesson adds no new first finding: SHONEN stays first and USER was already red.
+  So there is no harm here. But C2's admission must not cite any legacy-gate green; that green only exists if C1 lands.
+
+(d) LocatorPrecision has already appended to C2's note.
+  - Observed: corpus/knowledge/playwright-accessible-locators-and-snapshots.md:127+ carries the routed verifier item 4 text.
+  - If the C2 counter requires the round-12 digest of that note, C2 fails because of the debt correction.
+  - If the C2 counter credits the note change, debt work is counted as C2.
+  Correction: check the note with an append-only prefix test against 75e7836. Count only round-13/aria runtime artifacts as the C2 increment.
+
+== F2 — C1 count/scalar inflation ==
+[OBS] ROUND_CONTRACT was clean at a4115fa (SCORECARD.md:414-415).
+[OBS] The lane's own post-review commit 5cdc976 turned it red (LOG.md:522-525: "ROUND_CONTRACT reads history_rewritten from this commit on").
+[OBS] Kaika round 1 was admitted at 5cdc976 with operability 7→8 (round-1-verifier-spotcheck.md:17).
+[INF] So the "0" in "0→2" is measured at a degraded HEAD. Restoring ROUND to clean repays a regression already inside the admitted 8; it is not new operability.
+[OBS] USER after repair still exits 1. The required production finding is round_count (PlanningWalk.txt:133-136; SCORECARD.md:416).
+  Calling USER a "repaired gate" without qualifiers reads as green. The real change is that the first finding moves from history_rewritten back to the honest baseline round_count.
+What is genuinely new, and countable:
+  - A fixture-covered policy that admits future round-N lessons and an exact SHONEN regeneration, with no pin move.
+  - Fixtures written by the same lane. They are author-side, not independent.
+Judge rule:
+  - Operability scalar 8→8 regardless of outcome.
+  - "Scalars unchanged pending evidence" must be fixed now as delta 0 for this round. Otherwise it invites a post-hoc move.
+Smallest correction: word C1 as
+  "legacy history-check false reds repaired: ROUND red→clean (restores a4115fa state), USER first finding history_rewritten→round_count (exit stays 1); policy fixtures N cases"
+and drop the bare "0→2 repaired gates".
+
+== F3 — SHONEN canonicality counterexample ==
+[OBS] PROTOCOL.md:432 says marks are confined to "the box character plus one indented evidence line per box — `[x] <verifier-id>` or `[~]` with a resolvable pointer; no other prose".
+[OBS] HEAD SHONEN.md (blob 9dcb2687d3083f696b57032389eed7349e03893e) has one evidence line per box, but those lines contain prose:
+  :6  "...; prior `[x]` named lane-dispatched TABI-B4/TABI-R3-4 — not non-author (orchestrator ruling, kaika round 1)"
+  :10 "(verdict SUFFICIENT; the executor was a lane-dispatched seat)"
+  :12 "refusal routes revenger/kaidoku/kake/kagi held (...)"
+[OBS] Every path pointer resolves: the three corpus files, SKILL.md:697 Approval-table heading, PROVINCE.md (21 lines).
+Counterexample:
+  - A validator that enforces PROTOCOL:432 rejects HEAD. ROUND stays red, so the C1 count is not met.
+  - A validator loose enough to accept HEAD ("any one indented line") accepts arbitrary text under every box. The assignment explicitly forbids that kind of exemption.
+  - Line 6 also contains a literal "`[x]`". A naive /\[x\]/ scan falsely rejects HEAD. A scan limited to box lines is required.
+Smallest correction:
+  - Accept blob 9dcb2687… by exact pin, citing its authority: operator-ordered regen at 5cdc976, LOG.md:519-525.
+  - Validate any other SHONEN blob strictly:
+    - seed bytes identical modulo `<name>`=tabi-shokunin;
+    - box marks in {[ ], [~]};
+    - reject [x] at gate level, because a gate cannot verify a non-author;
+    - exactly one indented line per box;
+    - each pointer path resolves at HEAD.
+  - Report wording: "exact historical regen + strict canonical future". Never "canonical policy accepts HEAD".
+  - The census row keeps baseline==5e055b8c (census row 25). HEAD is accepted only via the same policy.
+Side note — the lesson guard:
+  - The round-N lessons at both pins are exactly round-1..10, so PlanningWalk's hardcoded round-([1-9]|10) is equivalent today.
+  - Derive the set from the pin tree instead: only paths present at PSTACK_PIN are frozen.
+  - Only additions under corpus/lessons/round-N.md are allowed. Additions under corpus/evidence/pstack-20261015 or reports/pstack-* must stay rejected.
+
+== F4 — C2 runtime claim can be vacuous ==
+[OBS] Installed playwright@1.64.0, global, lib/matchers/expect.js:
+  :13041-13043  toMatchAriaSnapshot reads expectConfig().testInfo and throws "toMatchAriaSnapshot() must be called during the test" when it is absent, even for an inline string template.
+  :13044-13045  ignoreSnapshots returns pass = !isNot (a vacuous pass).
+  :13061-13069, :13124-13132  updateSnapshots 'all', or 'missing'/'default' with an empty template, returns pass:true with an inline template.
+  :13071-13074  a global toMatchAriaSnapshot.children config silently prepends /children:, so "default contain" stops being the default.
+Counterexample 1 — plain script:
+  - Suppose AriaRunner is `node scripts/aria-loopback-round13.mjs` and imports expect.
+  - Every snapshot assertion then throws the testInfo error.
+  - The expected-failure cases (equal rejects extra sibling; wrong [checked] rejects) "catch and assert" a throw and PASS for the wrong reason.
+  - The positive cases fail. The receipt would show a mix of passes and failures that are both wrong.
+Counterexample 2 — runner flag:
+  - Running with -u/--update-snapshots, the wrong-checked case passes.
+Smallest correction:
+  - Run through the Playwright test runner with a committed config that pins updateSnapshots:'none', ignoreSnapshots:false, and no toMatchAriaSnapshot.children override.
+  - Record the effective config in the receipt.
+  - Every expected failure asserts the matcher identity: matcherName toMatchAriaSnapshot plus a diff body naming the offending node or [checked]. A bare throw is not enough.
+  - Strictness failure asserts the "strict mode violation" text.
+  - Re-resolution case: assert that the original node is detached and that the replacement's own marker or handler fired. Otherwise it is vacuous.
+Install note:
+  - [OBS] The installed playwright@1.64.0 already exports "./test" (package.json exports: test.mjs/test.js), so `playwright/test` provides test and expect.
+  - @playwright/test is a re-export wrapper [INF]. Installing it is unnecessary under "no installs if existing tools suffice".
+"Pinned runtime":
+  - The global fnm prefix is mutable. "Pinned" can only mean recorded, not locked.
+  - The receipt should record: package version plus package.json sha256, browsers.json chromium revision 1248, resolved executable path and version (CfT 156.0.8078.4, not host chromium 152), node v24.21.0, and headless mode (RuntimeInventory.txt:29-63).
+
+== F5 — domain surface / scalar bounds for C2 ==
+What C2 actually witnesses:
+  - Documented Playwright semantics.
+  - One author-built loopback fixture.
+  - One engine/revision (chromium-1248), one Playwright version, one OS.
+What it does not witness:
+  - Real-site journeys (the frontier row stays open, SCORECARD.md:502-505).
+  - Firefox/WebKit (not installed, RuntimeInventory.txt:66-67).
+  - Screen-reader output, WCAG conformance (kake-shokunin/PROVINCE.md:24-25 owns it; name kake), or pixels.
+Bounds:
+  - Coverage scalar stays 9. The ARIA map row moves "docs-held" → "loopback-witnessed (PW 1.64.0/chromium-1248)". The five open frontier areas stay open.
+  - Depth stays 8: no protocol/runtime-support generalization.
+  - Capability row:
+    - It is allowed only with a passing demonstration in the report (AXES.md:62-64).
+    - Its name must be bounded, e.g. "run role/label locators + toMatchAriaSnapshot on a loopback fixture".
+    - Entering any row restarts the window. Round 13 is window round 3 (SCORECARD.md:430-433; PlanningWalk.txt:58-61), so a fixture-only row resets the stagnation nudge.
+    - The report must state that effect explicitly.
+  - The runtime result must not be counted as a freshness recheck of S024 citation locations. Runtime behaviour ≠ document text.
+
+== F6 — routed debt is not credit ==
+[OBS] BidiPrecision, ReceiptCorrection and LocatorPrecision implement routed items 2-4, which are "status-neutral" (round-12-verifier-spotcheck.md:197-214).
+Crediting them to freshness, C1 or C2 creates an undeclared third claim and inflates. They must be reported as debt closures with delta 0.
+
+== F7 — no-harm facts and residual risks ==
+[OBS] Append-only prefixes (HEAD vs 7f506aff) hold for LOG, SCORECARD, SKILL, PROVINCE, corpus/QUALITY and corpus/README.
+  This resolves the open GateDebt.txt:43-50 concern, consistent with round-12-verifier-spotcheck.md:187-195.
+[OBS] Census line 1 equals HARD_BASELINE; 56 rows. Only SHONEN.md drifts (recorded=baseline 5e055b8c, HEAD 9dcb268).
+Harm risks:
+  - calibration: the unqualified "repaired gate" for USER (F2); "canonical" for the HEAD SHONEN (F3); "pinned" for the global runtime (F4).
+  - adjacency: missing kake naming (F5).
+  - operability: harm only if HARD_BASELINE/PSTACK_PIN move, the census file is edited, or ROUND's script cutover is blanket-exempted in USER.
+Required after-state reading (L1):
+  - ROUND clean.
+  - USER exit 1 with finding=round_count.
+  - Both self-tests clean.
+  - FRESHNESS and sources gates unchanged.

@@ -1,0 +1,100 @@
+SafetyHistory — round 13 w1 sentinel (read-only; no edits, no gate/test runs)
+Scope: scripts/check-round-contract.mjs (round gate) and scripts/check-user-round-contract.mjs (user gate), working-tree
+edits as of the final read; their fixtures/self-tests; the checker-cutover digest policy.
+HARD_BASELINE 7f506af… and PSTACK_PIN 92d700d… are unchanged in both. scripts/legacy-history-policy.json is absent.
+Tools installed/updated: none.
+
+== Pins independently recomputed (read-only git/sha256; the gates were not run) ==
+- Census: sha256(HEAD:corpus/evidence/pstack-20261015/baseline-census.tsv) = b9c8dc3557b8…be9c.
+  Equals round CENSUS_SHA256. Blob 672dba36… is identical at PSTACK_PIN and HEAD.
+- Prior checker: sha256(PIN:scripts/check-round-contract.mjs) = 7d403cee003c…c398.
+  Equals user ROUND_SCRIPT_PRIOR_SHA256. Blob b2eb8316… is identical at PIN and HEAD and equals round LEGACY_GATE_BLOB.
+- SHONEN seed: /home/vgpnk/Projects/shokunin/PROTOCOL.md worktree :441-448, dedented 4, <name>=tabi-shokunin,
+  sha256 = b45c2ac3cdf8…ab67. 6bd4f38:PROTOCOL.md :333-340 gives the same. Equals SHONEN_SEED_SHA256 in both gates.
+- Cutover: user ROUND_SCRIPT_CUTOVER_SHA256 is still the placeholder 'ROUND_GATE_HANDOFF_SHA256'. That fails closed.
+  The worktree round script is currently da31745a94b9… (moving).
+  Fill it from `git show HEAD:scripts/check-round-contract.mjs | sha256sum` after the FINAL round-gate commit.
+  Any later round-gate fix (e.g. H1) needs a recompute.
+
+== Parent-requested coverage, latest code ==
+1 No-renames and future-lesson first-add immutability. Present in the user gate only.
+  - User gate :178-186, :242-248: `git diff --no-renames --name-status`. A round-N lesson present at HARD_BASELINE is
+    frozen. Otherwise it must be status A, with no M/D/R/T commit in PIN..HEAD.
+  - Fixtures: future_lesson_allowed, future_lesson_mutated, historical_lesson_renamed. The pstack-report rename hole
+    (`git mv reports/pstack-…-r01.md reports/zz.md` was hidden by post-image --name-only) is CLOSED.
+  - Gaps:
+    (a) The round gate has no equivalent. It protects only round-N.md present at baseline, so in a round-gate
+        production run corpus/lessons/round-12.md stays mutable.
+    (b) Lessons not named round-N (kaika-fleet-round-1.md, training-round-11.md, round-1/round-12-verifier-spotcheck.md)
+        are unguarded in both gates. Additions-only since PIN would trip on the legit `M kaika-fleet-round-1.md` in
+        5cdc976. Anchor a frozen-set constant at 75e7836b6c30… (round-13 start, before.json): every path in
+        `ls-tree -z FROZEN corpus/lessons` keeps its blob at HEAD.
+    (c) The lessonDrift `git log` lacks `-m`/`--diff-merges=first-parent`, so a modification made only in a merge
+        result (evil merge) is invisible.
+2 Pointers must be regular blobs, not trees.
+  - User gate committedBlob (:102-110) uses `ls-tree HEAD -- path` and requires mode 100644|100755, an exact echoed
+    path and no `..`, leading `/` or glob characters. This rejects trees, symlinks, gitlinks and quoted names.
+    Fixtures: shonen_tree_pointer, shonen_unresolvable_pointer.
+  - Round gate regularBlob (:97-100) uses `cat-file -t HEAD:path` == 'blob'. That rejects trees (fixture
+    shonen_tree_pointer) but ACCEPTS symlinks (mode 120000 is type blob), so a committed dangling or out-of-repo
+    symlink "resolves". LOW.
+    Fix: reuse the user gate's ls-tree mode check so both gates share one policy.
+3 Self-asserted [x] is rejected. Both gates fail closed on any [x] (round :125, user :144).
+  Fixtures shonen_x_self_declared and shonen_x_any_text expect red. The earlier round-gate keyword acceptance
+  ("verifier"+"non-author") is GONE. [ ] with prose is rejected in both.
+4 Persisted independent seed. The digest value is correct (above). Caveat, LOW and honesty only: at runtime both gates
+  hash a template built from their own constants (preamble + BOXES), never from input. The check therefore guards only
+  against editing BOXES/preamble without also editing the digest in the same file. Input fidelity comes from the exact
+  line compare. Title is fixed to LANE/SHONEN_NAME 'tabi-shokunin' (not basename), plus LF-only, a single trailing
+  newline and exactly one evidence line per box. Label it a "constant-consistency pin verified against PROTOCOL
+  6bd4f38:333-340 by review", not runtime-independent.
+5 Census missing-row integrity is CLOSED for production. The round gate byte-pins the census (CENSUS_SHA256, :151-160),
+  so row deletion (PROVINCE.md/SHONEN.md), byte tamper, deletion and a moved baseline line all change identity.
+  Fixtures: census_missing_row, census_byte_tamper, census_deleted, census_moved_baseline, census_row_mismatch.
+  The SHONEN census row still requires blob(baseline)==recorded before the canonical policy is applied.
+  --census-sha256 is fixture-only (refused on defaultRoot, but see M1).
+6 Exact cutover digest. The user gate accepts HEAD bytes only if sha256 is PRIOR or CUTOVER. It asserts the PIN blob
+  hashes to PRIOR (could_not_evaluate otherwise). There is no policy file, no env override, no hashing of the running
+  file, and other PSTACK paths stay diff-checked; deletion fails. Its trust root equals the user gate itself.
+  - Residual LOW: add a load-time assert of /^[a-f0-9]{64}$/ on CUTOVER so an unfilled pin reports could_not_evaluate,
+    not history_rewritten.
+  - Fixture round_script_cutover copies the WORKING-TREE file while production reads the HEAD blob, so take the receipt
+    after commit.
+  - Round --witness is now restricted to LEGACY_GATE_BLOB (an earlier any-rev concern is closed).
+
+== Open findings ==
+H1 HIGH. The counting command runs as `bash -c` in both gates (round runCount :278-279, user :289-290). Pre-existing;
+   r13 leaves it unchanged.
+   The filter is startsWith('git ') plus the denylist /[;&`<>\n\\]|\$[({]/; `|`, quotes, `!` and git options pass.
+   Exploit: a lane SCORECARD row `command: git show <measured>:x.sh | bash` (payload committed in the measured commit;
+   absent at the baseline) or `git -c alias.m='!sh p.sh' m <measured>` runs arbitrary code in the L1/non-author
+   verifier session. It also prints whatever before/after the row claims, so score_mismatch is defeated.
+   `git diff --output=PATH` and `git grep -O<cmd>` are further primitives.
+   Fix: no shell. All 16 committed commands match
+     ^git ls-tree -r --name-only ([a-f0-9]{40})( \| grep ('[^']*'|[A-Za-z0-9._/-]+))+ \| wc -l$
+   Run that as spawnSync('git',[…]) followed by spawnSync('grep',['--',pat],{input}) per stage, then count lines.
+   Fixtures use `git grep -h '<lit>' <rev> -- <path> | wc -l`: add that grammar branch or change the fixture.
+M1 MED. Production mode is lexical: options.repo=resolve(arg); production = root===defaultRoot (both gates).
+   Exploit: `--repo /proc/self/cwd` (cwd=repo) or any symlink alias gives production=false. The census pin, PSTACK diff
+   (pin=null), public-capture check and the expect==10 rule are all skipped. User output is then
+   `USER_ROUND_CONTRACT verdict=clean rounds=6` over the real corpus, a forged green against the honest 6/10
+   round_count. The same applies to acceptedRoundScript's `root === defaultRoot`.
+   Fix: realpathSync on both sides (or realpath of `git rev-parse --git-common-dir`), and print mode=production|fixture
+   in every verdict line. Measure/L1 must count only mode=production receipts.
+M2 MED. See 1(a)/(b): lessons outside round-N, and post-baseline lessons in the round gate, are not frozen.
+L1 LOW. ls-tree/diff output is parsed without -z (both gates).
+   core.quotePath C-quotes non-ASCII names, so for corpus/evidence/<id>/é.json:
+   - show()/blob() fail, scanConsequential skips the file, and sameTree compares null==null.
+   - The user drift startsWith check misses the quoted line.
+   So a file with `consequential-action: performed` or a POST record evades both gates. Latent (0 quoted names now).
+   Fix: -z and split on \0.
+L2 LOW. Round regularBlob accepts symlinks (see 2).
+L3 LOW. Fixture/witness git spawns inherit the caller's env. githooks(5) exports GIT_DIR/GIT_WORK_TREE, so --self-test
+   or --witness run from a hook would init/add/commit into the real repo [INFERENCE: not exercised].
+   Fix: drop GIT_* and set GIT_CONFIG_GLOBAL=/dev/null, GIT_CONFIG_NOSYSTEM=1, -c commit.gpgsign=false,
+   -c core.hooksPath=/dev/null.
+L4 LOW. lessonDrift log without -m (see 1c). Fixture spawns have no timeout (hang only).
+
+N/A: resume_continuity_v1 is not on this surface.
+L1 final checks: both --self-test; round --witness 75e7836 (resolves to LEGACY_GATE_BLOB); both production runs after
+the CUTOVER fill+commit; symlink --repo probe; rename/non-ASCII/post-pin-lesson fixtures as gaps are addressed.

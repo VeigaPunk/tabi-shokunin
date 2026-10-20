@@ -1,0 +1,82 @@
+# RoundGate — tabi round 13, w1 — legacy ROUND gate repair
+
+Seat: TabiR13.RoundGate (leaf executor). Root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Write set: scripts/check-round-contract.mjs and this assigned report only. No verification command, test, build, lint, formatter or smoke run was executed mid-flight. Only read-only git object queries, sha256sum/git hash-object, and file reads. No tool installed or upgraded.
+
+## 1. Axes
+
+- Operability (tied lowest 8): a committed canonical SHONEN regeneration no longer fails history_rewritten, while every historical byte, baseline and census identity stays enforced.
+- Calibration: the exemption is narrow, structural and fail-closed; it verifies the canonical seed and marks, not a private new blob.
+- Coverage: fixture-covered red-before/green-after witness plus adversarial accept/reject cases.
+- No axis scalar is claimed here.
+
+## 2. Files changed
+
+- scripts/check-round-contract.mjs only.
+- This report. No .md duplicate was created.
+
+## 3. Preserved invariants
+
+- HARD_BASELINE = 7f506affa55f6fb892d3c8073c75151c998bdf2c unchanged.
+- APPEND_ONLY byte-prefix checks, per-round score/measurement/swarm/report/consequential/public checks unchanged.
+- Protected historical paths (corpus/lessons/round-N.md, fleet-round-1 evidence/plans/rounds/reports, scripts/check-freshness.mjs) still require exact baseline bytes at HEAD.
+- New future lessons remain allowed: only paths present at the baseline are byte-frozen, so a newly added corpus/lessons/round-N.md is not a drift.
+- Production census file is not edited.
+
+## 4. Implemented behavior (scripts/check-round-contract.mjs)
+
+Constants added (HARD_BASELINE untouched):
+- LANE = 'tabi-shokunin' (fixed; no basename/checkout-path substitution).
+- SHONEN_SEED_SHA256 = b45c2ac3cdf8ba80563e77cabf72670a6a101590f8031d9b484c67313bcdab67. Provenance: parent PROTOCOL.md canonical SHONEN seed at 6bd4f38 lines 333-340, byte-identical since 70ffb66; mirrored measured value in .ufo/waves/round-13/w1/canonical-seed.json. Normalization = marks reset to [ ] and evidence lines dropped.
+- CENSUS_SHA256 = b9c8dc3557b825f8bd4b18ff0db03909e16ddd526ef18554cb2bf68da696be9c for corpus/evidence/pstack-20261015/baseline-census.tsv (HEAD blob 672dba36…, 57 lines incl PROVINCE.md c2222b16… and SHONEN.md 5e055b8c…).
+- LEGACY_GATE_BLOB = b2eb8316f41cd1039330e45f6739c07c5f11eace (red-before witness arm).
+
+SHONEN policy (applies only when HEAD blob differs from the baseline blob):
+- LF only; exactly one trailing newline; no arbitrary heading/prose.
+- Preamble fixed: "# tabi-shokunin — Promotion checklist", blank, "Promotion to shokunin requires all of:", blank.
+- Exactly the four canonical box texts, in order, anchored as "- [mark] <box>".
+- Marks allowed: space or ~ only. Any [x] fails closed (no committed non-author verifier allowlist exists in the gate); [ ] with prose fails; ~ requires exactly one two-space indented evidence line containing at least one backticked path that `git --literal-pathspecs ls-tree HEAD -- <path>` lists as mode 100644 or 100755 with type blob. Symlinks (mode 120000), trees (mode 040000), missing paths and words-only evidence all fail.
+- No second evidence line, no unindented prose after the boxes; normalized template must hash to SHONEN_SEED_SHA256, so an edit to BOXES or the preamble fails rather than self-blessing.
+
+Baseline and census semantics:
+- Historical SHONEN is still compared to the census-recorded old hash 5e055b8c60d606d202029eddabb8a45e13203b06 (baseline 7f506aff:SHONEN.md = 5e055b8c…). Only the HEAD side may follow the canonical seed.
+- Non-SHONEN census rows keep the original double comparison: baseline == recorded and HEAD == recorded.
+- Census exact identity is pinned by CENSUS_SHA256 in production, so deleting any row (including PROVINCE.md or SHONEN.md), adding a row, or editing a byte is history_rewritten. The census file itself is not modified.
+- `--census-sha256 HASH` exists only to exercise the production identity branch from an isolated fixture; when --repo resolves to defaultRoot the gate rejects the flag (usage exit 2), so production can never self-bless a new census hash.
+- Production detection compares realpath(repo) with realpath(defaultRoot), not lexical strings, so `--repo /proc/self/cwd`, a symlink alias, or a cwd-magic path cannot downgrade the production tree into a fixture. The same realpath check also enforces the fixed HARD_BASELINE/expect 10 production arguments.
+
+Regression witness (red-before/green-after, identical fixture, only gate bytes differ):
+- Command: `node scripts/check-round-contract.mjs --witness 75e7836b6c3090180aee2754e20a5d3cfb186e74`
+- The revision must resolve to blob b2eb8316f41cd1039330e45f6739c07c5f11eace; any other before-arm is a usage error.
+- It builds one temp fixture: legacy SHONEN bytes at baseline, canonical SHONEN at HEAD; runs the pinned legacy gate bytes and this file with identical `--repo/--baseline/--expect 1`; requires old exit 1 finding=history_rewritten and new exit 0 verdict=clean; prints `ROUND_CONTRACT_WITNESS fixture=shared old_rev=… old_exit=1 old_finding=history_rewritten new_exit=0 new_verdict=clean result=PASS` (exit 1 on disagreement). This is the exact command Main can run post-integration, diff being only the script bytes.
+
+Self-test inventory (26 fixture cases plus one production-alias refusal; NOT executed by this seat):
+- clean; canonical_shonen; canonical_shonen_census; future_lesson_allowed -> exit 0, verdict=clean.
+- short_swarm, missing_gate, consequential_action -> existing findings unchanged.
+- shonen_policy exit 1: invalid mark, extra prose, missing box, [x] without verifier, [x] with self-declared "verifier … non-author", wrong title, words-only evidence (missing pointer), tree pointer (`corpus`), symlink pointer (mode 120000), unchecked box with prose, extra evidence line, CRLF, double trailing newline.
+- history_rewritten exit 1: census recorded-row mismatch, missing census row with pinned identity, census byte tamper with pinned identity, deleted census with pinned identity, moved census line 1 (baseline hash) with pinned identity, mutation of historical corpus/lessons/round-1.md.
+- New future corpus/lessons/round-2.md added at HEAD stays exit 0 clean.
+- production_alias_refused: `--repo` symlink to defaultRoot plus `--census-sha256` exits 2 finding=usage because realpath resolves the production root.
+
+## 5. Exact retained evidence (read-only measurements)
+
+- Baseline SHONEN blob: 5e055b8c60d606d202029eddabb8a45e13203b06 (census row agrees).
+- HEAD SHONEN blob: 9dcb2687d3083f696b57032389eed7349e03893e; ends with a single LF, zero CR bytes; its four evidence pointers are blobs at HEAD: SKILL.md, corpus/knowledge/multi-step-journey.md, corpus/knowledge/executor-test-sufficiency.md, PROVINCE.md (and corpus/evidence/user-20261015-r02/boundary/refusal-receipt.txt).
+- Census sha256 b9c8dc3557b825f8bd4b18ff0db03909e16ddd526ef18554cb2bf68da696be9c; blob 672dba3672e8b5a29e89f34624fc37376b89cf4b.
+- Legacy gate at 75e7836: blob b2eb8316f41cd1039330e45f6739c07c5f11eace, sha256 7d403cee003c3b49e865d57e034821ea925252efc231b0b22ded62ac5410c398.
+- Edited gate, frozen working tree: sha256 6f9eddc74f0e10ac5046ed9ecd99650db4f338c004f5d0e349503b6515a6b299; git blob d871e73d303600fd691691bb45be7087e4a3c3a5. Per parent ruling this is provisional: Main records the blob of the committed file at final handoff, not this placeholder; UserGate keeps its clearly-invalid SHA-256 placeholder until Main fills the committed digest.
+
+## 6. USER cutover without moving PSTACK_PIN
+
+- Do not move PSTACK_PIN 92d700d6a8aa9855f1e9d2cc8e12c82f762a1367.
+- Persist one exact cutover pair in the USER gate: path scripts/check-round-contract.mjs, from blob b2eb8316f41cd1039330e45f6739c07c5f11eace (PSTACK_PIN blob), to the blob of the final committed ROUND gate. Accept the PSTACK drift only when blob(PSTACK_PIN,path) == from and blob(HEAD,path) == to; compute neither side at runtime.
+- Main must fill `to` at final handoff from `git rev-parse HEAD:scripts/check-round-contract.mjs` after the gate commit; the provisional working-tree blob above is not that authority.
+- Use `git diff --no-renames` in the USER drift filter so a rename cannot hide a pinned deletion.
+- USER must also apply the same SHONEN policy identity (fixed tabi-shokunin, seed sha256 b45c2ac3cdf8ba80563e77cabf72670a6a101590f8031d9b484c67313bcdab67) in its protected loop and PSTACK filter, and freeze future round-N lesson first-add bytes: only the initial add of a new corpus/lessons/round-N.md is allowed; later edits/deletions of that path remain red.
+
+## 7. Risks / limits
+
+- No command was run, so the self-test tally and witness output are unobserved here; Main runs them once after integration. Expected tally: 26 fixture cases plus production_alias_refused clean. The canonical policy was matched by reading HEAD SHONEN and the measured seed value, not by executing the gate.
+- CENSUS_SHA256 fixes the census at its current bytes; any legitimate future census change would require an explicit operator/L1 re-pin, never a runtime recompute.
+- The witness mode is a cutover CLI surface; it is pinned to the legacy blob, but if final policy wants no scaffold it can be removed after its output is recorded.
+- USER production round_count remains 6/10 and is out of this seat's scope; this repair asserts no USER pass.

@@ -1,0 +1,134 @@
+ReviewAria — round-13 planned true runtime assertion cases (AriaRunner spec)
+Scope: read-only review. No execution, no test runs, no installs, no edits outside this file.
+Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Report path: .ufo/waves/round-13/w1/ReviewAria.txt (single report; no .md copy per parent instruction)
+
+Sources read
+- .ufo/waves/round-13/w1/spec.json, item AriaRunner (planned cases and acceptance)
+- corpus/knowledge/playwright-accessible-locators-and-snapshots.md (round-12 docs-held note)
+- Installed package, read-only: /home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright
+  (playwright@1.64.0; nested playwright-core@1.64.0)
+  - lib/matchers/expect.js:13031-13130 (toMatchAriaSnapshot implementation)
+  - playwright-core/lib/coreBundle.js:150-245 (aria template parser: /children, containerMode, single-node unwrap)
+  - playwright-core/lib/coreBundle.js:750-753 (checked serialization)
+  - playwright-core/lib/coreBundle.js:20944 (strict mode violation message, embedded injected source)
+  - playwright-core/types/types.d.ts:2101-2130, 3227-3280, 14562-14676 (ariaSnapshot options, getByRole name matching)
+
+Axes (what this review protects)
+- Correctness of expected outcomes; no false green; runtime pin honesty; calibration of what a pass proves.
+
+Inventory on this host (observed, read-only)
+- playwright@1.64.0 global (fnm node v24.21.0). No @playwright/test package found anywhere on disk in the probe.
+- No package.json, no node_modules, no lockfile in tabi-shokunin. .gitignore contains only ".ufo/interactive-sessions/".
+- Browsers: ~/.cache/ms-playwright/chromium-1248 (INSTALLATION_COMPLETE), chromium_headless_shell-1248, ffmpeg-1013.
+- System browser: /usr/bin/chromium = Chromium 152.0.7977.82 Arch Linux. This is NOT the Playwright-pinned build.
+- node v24.21.0 (fnm multishell; not on default PATH outside fnm).
+
+=== F1 (blocking) toMatchAriaSnapshot cannot run outside the Playwright test runner ===
+Evidence: lib/matchers/expect.js:13041-13043:
+  const testInfo = expectConfig().testInfo;
+  if (!testInfo) throw new Error(`${matcherName}() must be called during the test`);
+This check happens before the string/object branch, so even the inline-string form throws in a plain `node` script.
+Consequence: a `scripts/aria-loopback-round13.mjs` run as `node ...` cannot call expect(locator).toMatchAriaSnapshot at all.
+Required fix (author-side, choose one before writing):
+  (a) make the file a Playwright test file and run it with `npx playwright test -c <config> <file>`, or
+  (b) do not use toMatchAriaSnapshot; that would violate the acceptance rule "never own substitute matching".
+Choose (a). Invocation must be stated explicitly in the report.
+Pitfall under (a): default testMatch in Playwright is spec/test patterns [inference, not read in the installed package]. A file named `aria-loopback-round13.mjs` will then report "no tests found" unless the config sets testMatch to that path. Ship the config (new file; it is outside the stated write set, so the parent must approve it or it must be inlined by the parent).
+
+=== F2 (blocking) package resolution: @playwright/test is absent; global playwright is not resolvable from the repo ===
+- The spec says "use real @playwright/test expect". That package is not installed anywhere in the probe. Only `playwright@1.64.0` (global) exists.
+- ESM `import ... from '@playwright/test'` from tabi-shokunin resolves nothing (no node_modules; NODE_PATH does not apply to ESM).
+- Acquisition must be an exact pin: `@playwright/test@1.64.0` (matches the installed playwright 1.64.0 and its playwright-core 1.64.0). Pinning requires creating package.json + lockfile in the repo, which is a write outside the declared write set (scripts/aria-loopback-round13.mjs + corpus/evidence/round-13/aria). Parent must approve the location or pin in a declared place.
+- Installer channel rules (RULES.md): npm -g / npm i is listed after pacman and uv; @playwright/test is npm-only, so npm is the correct channel. Record tool, version, channel, reason in the report.
+
+=== F3 (high) chromium pin: "installed chromium executable" is ambiguous and the wrong build is easy to pick ===
+- Playwright 1.64 launches its own pinned build (~/.cache/ms-playwright/chromium-1248, or chromium_headless_shell-1248 for headless). That is the pinned runtime.
+- /usr/bin/chromium (Chromium 152) is a different build; using it via launchOptions.executablePath is an unpinned runtime and not a Playwright-validated pair.
+- Expected: runner uses the default bundled executable (no executablePath), records browser.version(), and records the executable path resolved by chromium.executablePath().
+- If the spec author intends /usr/bin/chromium, the report must say so and mark the runtime as unpinned.
+- Note: headless default in 1.64 may use chromium_headless_shell-1248 [inference]. Record which binary actually launched; do not assume.
+
+=== F4 (high) false green: default updateSnapshots and the `{name}` template form ===
+- lib/matchers/expect.js:13054-13061, 13066-13068, 13118-13123: when the template is an object {name} and the file is missing, with updateSnapshots 'missing' (default outside CI [inference]), the matcher WRITES the actual snapshot and returns pass:true with a console log.
+- Consequence: "exact committed templates" can silently pass against a just-written file.
+- Required: use inline string templates (the string branch at 13050-13052 does not read or write files), OR set updateSnapshots: 'none' in the config. Do both if any file form is used. Do not rely on CI detection.
+- Also: a string template that is empty makes isMissingBaseline true and fails (kImpossibleAriaMatch). Good as a fail-closed, but do not count it as a template case.
+
+=== F5 (high) global children default: do not set toMatchAriaSnapshot.children in config ===
+- lib/matchers/expect.js:13071-13074: if expectConfig().toMatchAriaSnapshot.children is set, the matcher prepends `- /children: <mode>` to any template that lacks `/children:`. Setting it would change the "default contain" case silently. Leave it unset.
+
+=== F6 (high) `.not` assertions are vacuous when the locator matches nothing ===
+- A negative `expect(locator).not.toMatchAriaSnapshot(...)` passes if the element is absent, if the locator resolves to nothing, or if the template misses for any reason.
+- Required: precede each negative with `await expect(locator).toHaveCount(1)` and use a short explicit timeout (e.g. {timeout: 1000}); otherwise the negative waits the full default expect timeout (5000 ms) per case.
+- For "wrong checked state rejects": the positive check must be on the same node; the negative must be the same template against the wrong state, with count asserted first.
+
+=== F7 (medium) checked serialization is one-directional ===
+- coreBundle.js:750-753: a true checkbox emits ` [checked]`; mixed emits ` [checked=mixed]`; an unchecked checkbox emits NOTHING (no [checked=false]).
+- Consequence: the template `- checkbox "Agree" [checked]` fails on the unchecked box (expected: reject). A template `- checkbox "Agree" [checked=false]` never matches any state and is not a valid negative control.
+- Partial matching: a template omitting [checked] passes regardless of state (corpus note §4; docs). The "wrong checked state rejects" case must include [checked] in the template.
+
+=== F8 (medium) children-mode semantics: exact expected results ===
+Parser (coreBundle.js:169-177, 242): `- /children: equal` is a key inside a node's child sequence; it sets containerMode on the node that contains it.
+Expected results for the planned "contain accepts extra sibling / equal rejects same tree" case:
+  Fixture tree: <ul aria-label="Items"> with <li>First</li><li>Second</li><li>Third</li></ul>
+  Template A (default contain, passes):
+    - list "Items":
+      - listitem: First
+      - listitem: Second
+    Expected: PASS (extra sibling Third allowed; order preserved).
+  Template B (equal on the list node, rejects the same tree when the template lists only two items):
+    - list "Items":
+      - /children: equal
+      - listitem: First
+      - listitem: Second
+    Expected: FAIL (direct children must be exact; Third is extra).
+  Template C (equal, all three; passes): expected PASS.
+Pitfall: place `/children: equal` on the list node, NOT at top level. A top-level `- /children: equal` sets containerMode on the fragment; because the fragment is then not unwrapped (coreBundle.js:242), the comparison runs against the whole locator subtree, which is a different claim.
+Pitfall: names and states omitted from a node stay unconstrained even under equal (corpus note §4 [inference], consistent with docs). Template B does not prove the listitem labels are exact unless names are included (they are, in A/B/C above).
+Pitfall: whitespace inside names is normalized; names are case-sensitive in templates (docs/corpus note); the fixture text must match the template case exactly.
+
+=== F9 (medium) Locator API pitfalls for the planned cases ===
+- getByRole name and getByLabel text are case-insensitive SUBSTRING matches by default (types.d.ts:3228, 3276-3278). Use {exact: true} whenever the case asserts uniqueness.
+  Duplicate-role fixture: buttons "Save" and "Save draft". Bare getByRole('button', {name: 'Save'}) resolves to 2 elements (substring). With {exact:true} it resolves to 1. The "strictness fails without first()" expected result must come from the substring collision and be asserted, and the exact-true variant should be the passing control.
+- Strictness error text (coreBundle.js:20944, strictModeViolationError): "strict mode violation: <locator as code> resolved to N elements:" followed by element lines and possibly "...". Assert with /strict mode violation/ and the match count (N), not the full text (element lines are environment-shaped).
+- Inference: strict violation is raised immediately on a multi-match for an action, not retried until timeout. Confirm the elapsed time in the run instead of assuming; a wait equal to the action timeout would indicate retry.
+- Locators are queries re-resolved on each use (corpus note §3). The "locator re-resolves replaced node" case: capture a data-gen attribute on the node before and after `replaceWith`, then assert the locator's action or ariaSnapshot reports the new data-gen. Do NOT use elementHandle(), which pins the node and makes the case vacuous.
+- ariaSnapshot(): do not use mode:"ai" (adds [ref=eN], changes digests and is a different producer); do not use boxes:true (layout-dependent). Default mode only (types.d.ts:2101-2130, 14608-14690). ariaSnapshotJSON exists in 1.64 but is not the YAML the spec asks for.
+- Locator.ariaSnapshot default wait behavior: the ai-mode doc says it "does not wait", implying default mode waits [inference]. For the before/after capture, include an explicit precondition assertion (toHaveCount(1)) so the capture is not racing.
+- label fill: getByLabel substring default applies; a label such as "Name" also matches "Full name" if present. Keep fixture labels unambiguous or use exact:true.
+
+=== F10 (medium) expected-failure handling must not swallow ===
+- Pattern for strict violation: `await expect(loc.click({ timeout: 2000 })).rejects.toThrow(/strict mode violation/);` (real expect; the assertion itself fails if no error).
+- Pattern for toMatchAriaSnapshot negatives: see F6 (count precondition + short timeout). Do not wrap in try/catch that returns true.
+- Each expected failure must emit a stable finding ID and the observed message (or the matcher's received diff) into the receipt; a caught error without the message is a swallowed finding.
+
+=== F11 (medium) isolation and cleanup ===
+- Use browser.newContext() per case (fresh storage/profile); do not use launchPersistentContext or ~/.config profiles.
+- Loopback only: bind server to 127.0.0.1 port 0; add a route guard that aborts any request whose host is not 127.0.0.1 or localhost (page.route('**/*') in each context). Record blocked-count in the receipt; expected 0 external requests.
+- Cleanup receipt: context.close(), browser.close(), server.close(); record each close result. A failed close must be a finding, not ignored.
+- Digests: sha256 of exact YAML strings and of the committed template files. Deterministic only if the fixture has no timestamps/random ids.
+
+=== F12 (low) invocation and environment ===
+- Node is only on PATH via fnm multishell in this host; record `node --version` and the absolute node path in the receipt.
+- Playwright 1.64 CLI: `npx playwright --version` is the runtime version probe (no launch). Do not run it as verification; it is a write-free recording step only if the parent allows it.
+
+Exact expected results (summary table, per planned case)
+1. role+name selection: getByRole('button', {name:'Submit', exact:true}) -> count 1, click fires handler. PASS.
+2. label fill: getByLabel('Email', {exact:true}).fill('a@b.c') -> input.value === 'a@b.c'. PASS.
+3. duplicate-role strictness: getByRole('button', {name:'Save'}) with 'Save' + 'Save draft' -> action throws /strict mode violation/ resolved to 2 elements. PASS as an asserted expected failure. The first() variant is NOT part of this case and must not be used to make it pass.
+4. locator re-resolves: after replaceWith, locator.click() -> new node's handler fires (data-gen = 2). PASS.
+5. before/after ariaSnapshot: two YAML strings captured; before != after after the state change; both stored with sha256. PASS on capture; the comparison is an assertion, not a snapshot-file write.
+6. default contain accepts extra sibling: Template A PASS; control: a template with a missing sibling -> FAIL.
+7. explicit equal rejects same tree: Template B FAIL (rejected); Template C PASS. Both results asserted.
+8. wrong checked state rejects: template `- checkbox "Agree" [checked]` against unchecked -> FAIL (asserted via .not with toHaveCount(1) precondition). Control: checked state -> PASS.
+
+Verification gaps (not performed; no runs allowed)
+- Actual `updateSnapshots` default resolution was not traced through config code; F4 relies on the 'missing' default being the no-CI default [inference].
+- Default testMatch pattern (F1) not read from the installed package.
+- Whether strict-mode violation is raised without retry (F9 inference) is not measured.
+- Whether headless launch uses chromium_headless_shell-1248 or chromium-1248 is not measured.
+- The children-mode semantics (F8) are from parser + corpus note, not a live matcher trace; the matching function in the injected source was not located in this pass.
+
+Installs/updates by this seat: none. No writes other than this file.
+Blocking items for parent: F1 (runner entry must be a test file + config; config file is outside declared write set), F2 (@playwright/test@1.64.0 exact pin needs a declared location), F3 (choose bundled chromium-1248 vs /usr/bin/chromium).

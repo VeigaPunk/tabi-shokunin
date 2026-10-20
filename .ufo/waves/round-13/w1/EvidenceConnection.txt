@@ -1,0 +1,168 @@
+EvidenceConnection — Connector Synthesis (Tabi Round 13, Wave 1)
+Seat: TabiR13.EvidenceConnection (connector)
+Date: 2026-10-20
+Target: Connect runtime receipt fields to prior documentary note and ladder; prevent ARIA/DOM from counting independent signal.
+Repo Root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Assigned Output: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-13/w1/EvidenceConnection.txt
+Contract: Read-only leaf connector. Zero verification commands run. Write only this assigned .txt artifact; no duplicate .md copy.
+
+================================================================================
+1. GODSPEED AXES POSTURE & BOUNDARY DEFINITIONS
+================================================================================
+- Depth: Preserved at 8. Protects the four-rung evidence ladder (SKILL.md:361-375) from category collapse and dilution. Enforces the hard four-rung ceiling established in round 4 and reaffirmed in round 11 (arc-synthesis.md:35-42). Strictly bars false 5th rungs and bars pseudo-multi-signal claims.
+- Coverage: Connects round 12's docs-held accessible-selector contract (playwright-accessible-locators-and-snapshots.md) to round 13's real isolated loopback demonstration (scripts/aria-loopback-round13.mjs) without overclaiming beyond the tested surface.
+- Calibration: Maintained at 9. Strictly enforces QUALITY.md Rule 3 (observation vs inference vs unknown) and QUALITY.md Rule 14. Prevents equating ARIA snapshots with rendered pixels, accessibility compliance audits, or network truth. Prevents correlated DOM/ARIA channels from being counted as independent signals.
+- Operability: Preserved at 8. Defines a deterministic, reproducible runtime receipt schema adhering to Tabi's 10-item record envelope (SKILL.md:446-459) and closure audit requirements.
+- Adjacency / No-Harm: Respects PROVINCE.md boundaries (browser interaction & state-evidence capture; no test-craft or framework ownership); leaves protected historical paths, pins (HARD_BASELINE, PSTACK_PIN), and sibling files untouched.
+
+================================================================================
+2. CAUSAL SEPARATION: WHY ARIA AND DOM CANNOT COUNT AS INDEPENDENT SIGNALS
+================================================================================
+A. The Architectural Derivation (Correlated Engine Channels)
+- In modern browser rendering engines (Chromium / Blink):
+  1. The HTML parser parses markup into the DOM tree.
+  2. CSS style resolution and layout compute styles and element geometries.
+  3. The Accessibility Object Model (AXObjectCache / AXTree) is derived directly from the underlying DOM tree and computed styles.
+  4. Playwright's `locator.ariaSnapshot()` serializes this computed accessibility tree into YAML (`- role "name" [attribute=value]`).
+  5. Playwright's DOM queries (or CDP `DOMSnapshot.captureSnapshot` / `DOM.getDocument`) serialize the DOM tree nodes.
+- Both ARIA snapshots and DOM snapshots are downstream projections of the EXACT SAME underlying document state in memory.
+- If JavaScript mutates a DOM attribute (e.g. `button.setAttribute('aria-pressed', 'true')` or `button.textContent = 'Submitted'`), the DOM tree and the AXTree update from the identical mutation.
+- If a race condition, stale state, or DOM mutation failure occurs, both the DOM snapshot and the ARIA snapshot reflect the same defect.
+
+B. Shared Blind Spots (Why Neither Confirms Pixels or Wire)
+- Neither channel sees rendered pixels:
+  * An element with `class="sr-only"` (`clip: rect(0,0,0,0); position: absolute; width: 1px; height: 1px; overflow: hidden`) or `opacity: 0` is present in both DOM and ARIA snapshots, but paints ZERO visible pixels (measured case D2, SKILL.md:437).
+  * Contrast failures, broken web fonts, layout overlaps, and clipping do not alter the ARIA tree or DOM tree.
+  * Measured case D8 proved `:visited` links rendered 1,033 differing pixels while DOM shape was byte-identical.
+- Neither channel sees wire truth:
+  * Client-side JavaScript can update DOM and ARIA trees from local memory or cache without issuing a wire request (measured case D6, cache-served repeats have 0 wire lines).
+  * An HTTP 500 error or client abort (measured case D4) can leave pre-existing DOM and ARIA nodes unchanged.
+  * Transferred byte closure (`finEnc - body - headers = 0`, Rung 4) cannot be measured by DOM or ARIA.
+
+C. Hard Falsification for Rung 3 (Multi-Signal)
+- Rung 3 Definition (SKILL.md:373): "two or more independent signals agree (visual read-back screenshot read back visually, DOM shape, protocol metadata; two full independent runs)".
+- Falsification: Pairing a DOM snapshot with an ARIA snapshot (or role locator match) provides TWO CORRELATED VIEWS of one document, NOT two independent signals.
+- Invariant Rule: Agreement between an ARIA snapshot and a DOM snapshot DOES NOT satisfy Rung 3.
+- Legitimate Rung 3 Triad for Accessible Interactions:
+  * Channel 1 (State/Structural): ARIA snapshot YAML (Layer L6.5) OR DOMSnapshot struct (Layer L6). Choose one as the structural witness.
+  * Channel 2 (Visual/Rendered): Screenshot PNG read back visually / machine-checked (Layer L7).
+  * Channel 3 (Protocol/Wire): CDP Network slice ExtraInfo / byte totals (Layer L4) if a fetch claim is involved.
+  * Verified across two full independent runs with cold profiles.
+
+================================================================================
+3. RUNTIME RECEIPT SPECIFICATION FOR ROUND 13 (AriaRunner)
+================================================================================
+To connect the live loopback execution to Tabi's documentary corpus and evidence ladder, the runtime receipt generated by `scripts/aria-loopback-round13.mjs` under `corpus/evidence/round-13/aria/receipt.json` must record the following fields:
+
+1. Identification & Session Slot (SKILL.md:446 envelope items 1, 3):
+   - `schema_version`: "tabi-aria-receipt-v1"
+   - `run_id`: stable execution identifier (e.g. `aria-loopback-r13-<timestamp>`)
+   - `timestamp_utc`: ISO-8601 UTC timestamp of execution
+   - `loopback_url`: `http://127.0.0.1:<port>/page.html` (ephemeral port recorded)
+   - `cleanup_verified`: boolean (`true` only if server stopped, port released, temp profile unlinked)
+
+2. Runtime Provenance & Pinning (SKILL.md:446 envelope item 2):
+   - `node_version`: exact Node runtime (`v24.21.0`)
+   - `playwright_package_version`: exact package pin (`1.64.0`)
+   - `browser_engine`: "chromium"
+   - `browser_build`: "Chrome for Testing 156.0.8078.4" (rev 1248)
+   - `browser_executable_path`: "/home/vgpnk/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome"
+   - `profile_dir`: ephemeral temp path (`/tmp/tabi-aria-r13-XXXXXX`)
+   - `launch_flags`: array including `--disable-background-networking`, `--remote-debugging-pipe`
+
+3. Fixture Provenance:
+   - `fixture_path`: "corpus/evidence/round-13/aria/fixtures/page.html"
+   - `fixture_sha256`: SHA-256 digest of authored fixture HTML
+
+4. Assertion & Expect Configuration (Anti-Vacuous Guards, ReviewCapability H3):
+   - `ignore_snapshots`: `false` (fails closed if true; ensures active template comparison)
+   - `update_snapshots`: "none" (prevents silent self-attestation or auto-baseline overwrite)
+   - `retries`: `0` (asserts first-pass determinism; no retry masking per web-flake-retry-evidence.md)
+
+5. Test Cases Array (`cases`):
+   Each entry represents one asserted behavioral case, recording:
+   - `case_id`: stable finding ID
+     * `AR-01-ROLE-NAME-SELECT`: `getByRole('button', { name: 'Submit' })` resolves unique target.
+     * `AR-02-LABEL-FILL`: `getByLabel('Username')` fills input.
+     * `AR-03-STRICTNESS-FAIL`: duplicate matching roles throw `StrictnessViolation` without `.first()`.
+     * `AR-04-RERESOLVE-REPLACED`: locator re-resolves node cleanly after DOM replacement.
+     * `AR-05-SNAPSHOT-DYNAMIC`: dynamic state transition captured via before/after `ariaSnapshot`.
+     * `AR-06-CONTAIN-ACCEPT`: default `/children: contain` accepts extra sibling elements.
+     * `AR-07-EQUAL-REJECT`: explicit `/children: equal` rejects extra sibling with assertion error.
+     * `AR-08-CHECKED-REJECT`: mismatched `[checked]` attribute rejects with assertion error.
+   - `locator_expression`: string representation of locator query
+   - `locator_count`: count observed at action time (1 for singular targets; >=2 for strictness check)
+   - `children_mode`: "contain" (default) | "equal" | "deep-equal"
+   - `template`: exact expected YAML template string
+   - `template_sha256`: digest of expected template
+   - `timeout_ms`: explicit timeout (short for negative cases, e.g. 500 ms)
+   - `expected_outcome`: "PASS" | "FAIL"
+   - `actual_outcome`: "PASS" | "FAIL"
+   - `actual_yaml`: actual YAML emitted by `locator.ariaSnapshot()`
+   - `actual_yaml_sha256`: SHA-256 digest of actual YAML
+   - `error_message_excerpt`: verbatim thrown error excerpt for expected-fail cases (verifying assertion fired)
+
+6. Determinism Verification (SKILL.md:446 envelope item 5):
+   - `runs_compared`: 2 independent cold-profile executions
+   - `yaml_sha256_run1`: hash from first run
+   - `yaml_sha256_run2`: hash from second run
+   - `determinism_verdict`: "IDENTICAL" (environment-scoped)
+
+7. Ladder & Evidence Classification (Self-Bounding Header):
+   - `ladder_rung`: "Rung 2 — Dynamic Capture" (action-effect before/after structural witness)
+   - `claim_class`: "State (Computed Accessibility Tree, Layer L6.5)"
+   - `multi_signal_independent`: `false` (explicit anti-claim: ARIA and DOM are correlated document projections)
+   - `rendering_claim`: "NONE" (explicit anti-claim: not pixels, not visual appearance)
+   - `wire_claim`: "NONE" (explicit anti-claim: no network transport or byte closure claimed)
+   - `audit_claim`: "NONE" (explicit anti-claim: not accessibility audit, not WCAG conformance)
+
+================================================================================
+4. SYSTEMATIC CONNECTION MATRIX: RECEIPT <-> NOTE <-> LADDER
+================================================================================
+The table below maps each runtime receipt field to the prior documentary note (playwright-accessible-locators-and-snapshots.md) and the four-rung evidence ladder (SKILL.md:361-445):
+
+| Receipt Field | Prior Note Anchor (playwright-accessible-locators-and-snapshots.md) | Evidence Ladder Placement & Boundary (SKILL.md:361-445) | Anti-Substitution Enforcement |
+|---|---|---|---|
+| `locator_expression` + `locator_count` | §2 Decision table; §3 Strictness ("Every time a locator is used... up-to-date DOM element is located") | Methodology, not state evidence. Locator re-resolves at action time. | Prevents ambiguous targeting; verifies strictness enforcement without `.first()`. |
+| `case_id: AR-03-STRICTNESS-FAIL` | §3 Strictness ("opt-outs hide ambiguity; first(), last(), nth() are not recommended") | Methodology validation. Ambiguity is a finding, not a bypass. | Proves multiple matches throw strictness violations rather than silently picking arbitrary node. |
+| `template` + `children_mode: contain` | §4 Representation & matching; §4 Strict matching ("contain (default): Matches if all specified children are present in order") | Rung 2 Dynamic Capture (State claim class, Layer L6.5). Template is a constraint, not full-tree equality. | Prevents claiming that a passing default snapshot proves the absence of extra unexpected elements. |
+| `case_id: AR-07-EQUAL-REJECT` | §4 Strict matching ("equal: Matches if direct children exactly match the specified list in order") | Rung 2 Discriminator. Direct children exactness enforces boundary. | Proves that enforcing direct children requires explicit `/children: equal` mode. |
+| `case_id: AR-08-CHECKED-REJECT` | §4 Partial matching ("checked attribute is ignored unless specified; [checked] constrains state") | Rung 2 State Witness. Constrains specific semantic state attributes. | Proves that omitting attributes ignores state; asserts that wrong state throws. |
+| `actual_before_yaml` + `actual_after_yaml` | §6 Connection to ladder ("before/after YAML pair under a pinned methodology and state-wait") | Rung 2 Dynamic Capture Pair. Action-effect claims ("clicking X changed accessible state to Y"). | Pre-state must be captured; single passing assertion has no before image. |
+| `actual_yaml_sha256` | §6 Record shape ("Keep: template, mode, pass/fail, and artifact sha256") | Rung 2 Artifact Digest. Pinned hash of structural accessibility state. | Distinguishes static YAML capture from transient retry window. |
+| `expect_config.ignore_snapshots: false` | §4 Updating snapshots; ReviewCapability H3 (guard against vacuous matcher pass) | Calibration / Integrity Guard. Oracle must actively evaluate. | Prevents runner from vacuously passing due to snapshot suppression flags. |
+| `expect_config.update_snapshots: "none"` | §4 Generation vs update; §5 Rejected ("baseline self-attestation") | Calibration / Provenance. Evaluates against committed expectation. | Prevents `-u` from auto-generating self-attesting baselines that mask defects. |
+| `cleanup_verified` | §6 Connection to ladder; cdp-evidence-patterns.md §1 (loopback discipline) | Operability & Perimeter Hygiene. Ephemeral port and temp profile released. | Ensures zero process leaks, port collisions, or profile state bleed across runs. |
+| `ladder_rung: Rung 2` + `multi_signal_independent: false` | §5 Separation from pixels; §6 ("ARIA is not an independent second signal against DOM shape") | Evidence Ladder Rule 1 ("never present a lower rung as support for a higher one"). | BARS counting ARIA + DOM as Rung 3 multi-signal. BARS substituting ARIA for Rung 1 pixels or Rung 4 wire. |
+
+================================================================================
+5. VERIFICATION & MEASUREMENT INVARIANTS FOR MAIN AND MEASURE
+================================================================================
+When the L1 planner integrates round 13 and executes `.ufo/waves/round-13/measure.mjs`:
+
+1. Invariant for `measure.mjs` C2 Capability Evaluation:
+   - Must inspect `corpus/evidence/round-13/aria/receipt.json`.
+   - Must verify that `ladder_rung === "Rung 2 — Dynamic Capture"` or equivalent Layer L6.5 declaration is present.
+   - Must verify `ignore_snapshots === false` and `update_snapshots === "none"`.
+   - Must check that all 8 planned finding cases (`AR-01` through `AR-08`) are recorded with matching expected/actual outcomes.
+   - Must assert that NO Rung 3 multi-signal credit is claimed by combining ARIA with DOM shape.
+   - If receipt is missing or malformed, fail closed (C2 capability = 0).
+
+2. Invariant for LOG.md and SCORECARD.md Integration:
+   - Round 13 C2 capability claim must be framed strictly as:
+     "0 -> 1 isolated Playwright loopback demonstration of accessible selector and ARIA snapshot contract (role/name, label, strictness, re-resolution, dynamic before/after, contain vs equal, checked state)."
+   - Must explicitly record: "Environment-scoped loopback demonstration; ARIA is Layer L6.5 structural state, not pixels, not network, and not independent of DOM shape for Rung 3; no accessibility audit or WCAG conformance claimed; scalars unchanged."
+   - Never increment coverage scalar from 9 to 10 on a single loopback demonstration without PROVINCE denominator expansion.
+
+3. Invariant for SKILL.md and Knowledge Integration:
+   - Preserve existing lines SKILL.md:1631-1643.
+   - Append dated round 13 runtime qualification: Playwright 1.64.0 + Chrome for Testing 156.0.8078.4 loopback demonstration verified.
+   - Reaffirm that webbridge `snapshot` (@e refs) and Playwright `ariaSnapshot` (YAML) remain distinct producers and surfaces.
+
+================================================================================
+6. SUMMARY OF FINDINGS & CONCLUSION
+================================================================================
+- Runtime receipt fields are directly and rigorously connected to prior documentary note S023/S024/S025 (`playwright-accessible-locators-and-snapshots.md`) and Tabi's four-rung evidence ladder (`SKILL.md:361-445`).
+- The prevention of ARIA/DOM pseudo-independence is absolute: both channels derive from the same underlying browser document engine and share identical mutation/synchronization states. They represent alternative views of a single structural channel (Layer L6/L6.5).
+- An ARIA snapshot before/after dynamic interaction is admitted under Rung 2 (Dynamic Capture), provided it is accompanied by exact templates, children matching modes, negative discriminating controls, anti-vacuous expect configuration, and clean ephemeral cleanup receipts.
+- All boundaries against visual pixels (Rung 1/3), wire truth (Rung 4), and accessibility audits are preserved intact.

@@ -1,0 +1,92 @@
+UserGate — tabi round 13 w1, USER historical-gate policy repair
+File owned: scripts/check-user-round-contract.mjs. Report: only this .txt (no .md duplicate).
+No gate, self-test, witness, build, lint, or formatter was run. No tool installs/updates.
+All byte/commit claims below come from read-only git object queries and sha256sum at HEAD 1199150a.
+
+PINS PRESERVED
+- HARD_BASELINE 7f506affa55f6fb892d3c8073c75151c998bdf2c (line 12, unchanged).
+- PSTACK_PIN 92d700d6a8aa9855f1e9d2cc8e12c82f762a1367 (line 13, unchanged).
+- Default --expect is 10 (line 217); production still refuses any baseline/expect/pstack override.
+- Production USER result stays honest: round_count 6/10, exit 1. No rounds synthesized, no lesson added, no count edited.
+
+REPAIR 1 — canonical SHONEN (protocol seed/marks, not a blanket exemption)
+- Fixed lane title: `# tabi-shokunin — Promotion checklist` (no basename(root)).
+- Persisted independent seed digest SHA256 b45c2ac3cdf8ba80563e77cabf72670a6a101590f8031d9b484c67313bcdab67, provenance parent PROTOCOL.md @6bd4f38 lines 333-340; persisted evidence also exists at .ufo/waves/round-13/w1/canonical-seed.json. The gate never reads the parent repo.
+- Canonical file shape: LF only, no CR, exactly one trailing newline; preamble; four BOXES in order. Marks are `[ ]` and `[~]` only; `[x]` is rejected (no committed non-author verifier record this gate can authenticate). `[ ]` carries no evidence line. `[~]` carries exactly one two-space evidence line containing a backticked path that `git --literal-pathspecs ls-tree HEAD -- <path>` reports as exactly one mode 100644/100755 blob (trees 040000, symlinks 120000, missing paths fail). Normalized four-`[ ]`-box template must hash to the persisted seed digest.
+- Applied in both history paths: the baseline protected loop and the PSTACK drift loop. An unchanged historical SHONEN (baseline bytes == HEAD bytes) still passes the byte check; a canonical regeneration passes the structural policy; any other mutation fails history_rewritten.
+- Current production SHONEN: baseline/census blob 5e055b8c60d606d202029eddabb8a45e13203b06, HEAD blob 9dcb2687d3083f696b57032389eed7349e03893e. All four HEAD pointers verified read-only as mode 100644 blobs (SKILL.md, corpus/knowledge/multi-step-journey.md, corpus/knowledge/executor-test-sufficiency.md, PROVINCE.md via :3-19, and the r02 refusal receipt). HEAD ends in one LF, zero CR.
+
+REPAIR 2 — future round-N lessons admitted without reopening history
+- PSTACK drift now uses `git diff --no-renames --name-status` so a rename cannot hide a deletion; status is part of the decision.
+- A round-N lesson present at HARD_BASELINE is frozen: HEAD bytes must equal baseline bytes (M/D/A all fail if different or missing).
+- A round-N lesson absent at HARD_BASELINE is admitted only with status A, HEAD bytes present, and an empty `git log -m --no-renames --diff-filter=MDRT <PSTACK_PIN>..HEAD -- <path>`. `-m` catches evil-merge modifications; later M/D/R/T commits, including a modify-then-revert, reject. Only the first-add path is admitted.
+- Observed: corpus/lessons/round-12.md was added in 0d82098 after PSTACK_PIN and has no MDRT commit in 92d700d..HEAD, so it is admitted. Existing round-1..round-10 remain baseline-frozen.
+- The exemption is narrow: it applies only to /^corpus\/lessons\/round-\d+\.md$/. New pstack evidence, protected fleet paths, pstack lessons/reports and the script cutover are not exempted.
+
+REPAIR 3 — exact checker cutover, no blanket script drift
+- ROUND_SCRIPT_PRIOR_SHA256 7d403cee003c3b49e865d57e034821ea925252efc231b0b22ded62ac5410c398 = scripts/check-round-contract.mjs bytes at PSTACK_PIN.
+- ROUND_SCRIPT_CUTOVER_SHA256 6f9eddc74f0e10ac5046ed9ecd99650db4f338c004f5d0e349503b6515a6b299 = committed repaired round gate at 1199150a12f3979672452e2ae49260237e09a76f, git blob d871e73d303600fd691691bb45be7087e4a3c3a5. Verified committed and working-tree bytes match.
+- Acceptance is only: pinned bytes hash to the prior digest and HEAD bytes hash to the prior or exact cutover digest. Any third value fails history_rewritten. The cutover constant is now a filled 64-hex value; it no longer fails could_not_evaluate.
+- No scripts/legacy-history-policy.json was created (parent preferred the embedded constant). No environment override, no on-run recomputation, no self-blessing.
+
+REPAIR 4 — production-root and merge hardening
+- sameRoot() compares realpathSync(repo) with realpathSync(defaultRoot) in argument validation, check(), and cutover production detection. A symlink alias to the production repo can no longer be treated as a fixture to pass --expect 6 or --pstack-pin.
+- --pstack-pin remains fixture-only; production rejects it after realpath comparison.
+- Lesson history uses `git log -m --no-renames --diff-filter=MDRT` to expose merge-side changes.
+
+SELF-TEST INVENTORY (code added, not run)
+`node scripts/check-user-round-contract.mjs --self-test` is expected to print `USER_ROUND_CONTRACT_SELFTEST verdict=clean cases=21`. Expected per case:
+- clean: 0 clean.
+- short_swarm: 1 short_swarm.
+- missing_gate: 1 missing_gate.
+- consequential_action: 1 consequential_action.
+- future_lesson_allowed: 0 clean (round-2.md added once after the fixture pin).
+- future_lesson_mutated_after_commit: 1 history_rewritten (add then modify).
+- historical_lesson_changed: 1 history_rewritten.
+- future_lesson_rename_from_pinned: 1 history_rewritten (git mv round-1.md to round-13.md; --no-renames exposes D round-1.md).
+- canonical_shonen: 0 clean.
+- shonen_x_any_text: 1 history_rewritten (`[x]` with self-asserted "verifier non-author" text).
+- shonen_unresolvable_pointer: 1 history_rewritten.
+- shonen_tree_pointer: 1 history_rewritten (`corpus` tree).
+- shonen_blank_box_prose: 1 history_rewritten (`[ ]` with evidence line).
+- shonen_wrong_title: 1 history_rewritten.
+- shonen_extra_box: 1 history_rewritten.
+- shonen_crlf: 1 history_rewritten.
+- shonen_double_newline: 1 history_rewritten.
+- pstack_evidence_tamper: 1 history_rewritten (new file under corpus/evidence/pstack-20261015).
+- round_script_tamper: 1 history_rewritten (unaccepted bytes).
+- round_script_cutover: 0 clean (fixture copies the committed cutover bytes).
+- production_alias_refused: 2 usage (symlink alias to defaultRoot with --expect 1).
+Self-tests use the fixture-only `--pstack-pin` injection to reach the pstack branches; the production pins are unchanged.
+
+WITNESS (code added, not run)
+`node scripts/check-user-round-contract.mjs --witness 75e7836b6c3090180aee2754e20a5d3cfb186e74`
+- Pins the red-before arm by blob: scripts/check-user-round-contract.mjs at the rev must be git blob 18e2c79ada4258cc46af7696e98907299b77c431 (pre-repair bytes; SHA256 36405b10ccb46ef94e0fd6a8e495de5ee3e3112acc3fde1eb04fec5ebb056908).
+- Builds one isolated fixture: baseline SHONEN = legacy bytes at HARD_BASELINE (5e055b8c), HEAD SHONEN = canonical seed text; otherwise the standard one-round fixture.
+- Invokes old and new gate bytes with identical legacy-supported args only: `--repo <fixture> --baseline <fixture-baseline> --expect 1` (no --pstack-pin, no unsupported old-gate flag).
+- Expected old arm: exit 1, finding=history_rewritten. Expected new arm: exit 0, verdict=clean. Expected line:
+  `USER_ROUND_CONTRACT_WITNESS rev=<resolved rev> baseline=<fixture baseline> old_exit=1 new_exit=0 result=PASS`.
+- A mismatch fails with witness_failure (exit 1), not usage 2.
+
+EXPECTED PRODUCTION RESULT (not run)
+`node scripts/check-user-round-contract.mjs` after Main commits this file is expected to read HEAD 1199150a + integration commits, accept canonical SHONEN, the script cutover and future round-N first-add lessons, then fail at the honest inherited count: exit 1, `finding=round_count`, `Found 6 user rounds, expected 10`.
+
+INHERITED DEBT NOT FIXED (scope held; for next round)
+- runCount still admits `|` in counting commands and executes SCORECARD text; no grammar whitelist (ReviewUser F3).
+- Orphan user-20261015-r07 survivor replay / no cross-round blob uniqueness / no round-ID allowlist (F2).
+- Post-baseline user-round lessons, reports and SCORECARD blocks remain unfrozen; only round-N lesson first-adds are now frozen (F4).
+- checkPublic still does not reject `[::1]`, `localhost.` or `0.0.0.0` (F8).
+- External VALIDATOR bytes are not digest-pinned (F9).
+- checkReport's SHONEN box check is still presence-only and accepts `[x]`; it is not the SHONEN policy.
+- SHONEN policy accepts any future structurally canonical regeneration, not only blob 9dcb2687; that is the assigned seed/marks policy and is not an exact-blob pin.
+
+RESIDUAL RISKS
+- A future round-N lesson must not be edited after its first add within PSTACK_PIN..HEAD; a later edit (even reverted) is history_rewritten by design. Main should add round-13.md once and not touch it afterward.
+- The cutover digest is exact for 1199150a's bytes. Any later edit to scripts/check-round-contract.mjs requires updating ROUND_SCRIPT_CUTOVER_SHA256 in the same commit; parent says no further RoundGate edits are authorized.
+- sameRoot uses realpath; a root-only bind-mount alias could still present a different realpath and be treated as a fixture. Normal symlink aliases are covered by the self-test.
+- No gate/self-test/witness execution is claimed; Main runs all verification once after integration.
+
+HANDOFF
+- Only tracked write: scripts/check-user-round-contract.mjs (uncommitted). No report .md, no policy JSON, no other repository file.
+- Required Main verification (once): `node scripts/check-user-round-contract.mjs --self-test`; `node scripts/check-user-round-contract.mjs --witness 75e7836b6c3090180aee2754e20a5d3cfb186e74`; production `node scripts/check-user-round-contract.mjs`.
+- Expected: selftest cases=21 clean; witness result=PASS; production round_count 6/10 exit 1.

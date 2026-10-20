@@ -1,0 +1,62 @@
+# BidiPrecision — round 13 (tabi-shokunin), executor
+
+Status: complete. Append-only correction written; no runtime claim; no gate/build/test run.
+
+## Files changed
+- corpus/knowledge/webdriver-bidi-capability-matrix.md — appended only:
+  "## Dated correction — 2026-10-20 (round 13): collector timing and getData retrieval"
+  (new :130–166; previous 128 lines / 16,730 bytes unchanged).
+
+Byte preservation (measured, not a gate run):
+- old sha256  bac287881870dae77cc9ec8c928e09bc55e8ed8915cf972fc1a7ecf60748300c (16,730 bytes)
+- prefix sha256 of new file's first 16,730 bytes: bac287881870dae77cc9ec8c928e09bc55e8ed8915cf972fc1a7ecf60748300c — equal.
+- new full sha256: 39cd0ee2c748ec9cfc216c0acb35469776bb0315adea3a1edb402d53cbc364b6
+- new size: 19,304 bytes / 166 lines.
+
+## Behavior / correction
+The old §2 "Byte truth" row (:71) said a "response" data collector "must exist when the
+response body is collected", which is a true but under-specified necessary condition. The
+appendix states the operational timing: the collected-data record and its `cloned body`
+are created by the "WebDriver BiDi clone network response body" step only when the
+session's collector map is non-empty, i.e. a collector must already be registered when
+the response is created/cloned. `network.getData` (§7.5.5.8) retrieves an existing
+record; null record -> `no such network data`, null bytes -> `unavailable network data`,
+pending -> await "network data collected". It never starts collection. Bytes storage also
+requires a collector whose `dataTypes` contains `"response"`, context match, and size
+within `max encoded item size`; total storage is capped by implementation-defined
+`max total collected size`.
+
+## Exact retained evidence for lesson Gate
+- URL: https://www.w3.org/TR/2026/WD-webdriver-bidi-20261008/#network-data-collection
+  (dated WD §7.5.2; page also carries revision f922e6af669ead51496db85f37813f39438ef171)
+- Fetched: 2026-10-20T05:07:39Z (UTC), HTTP 200, 4,235,856 bytes,
+  sha256 dc1077db50fe784435fd57f2fa7005607937b5ee4293f6f12d8731bd6a1d24d4.
+- Primary quote (10 words): "there are no collectors setup when the response is created"
+  Location: §7.5.2 note under "maybe collect network response body", anchor
+  #maybe-collect-network-response-body.
+- Clone-step wording (5-word quoted substring): "network collectors is not empty"
+  Location: §7.5.2, anchor #webdriver-bidi-clone-network-response-body.
+- getData quote (8-word substring): "retrieves a network data if it is available"
+  Location: §7.5.5.8, anchor #command-network-getData.
+- Supporting anchors: #network-data-collection (§7.5.2), #command-network-addDataCollector
+  (§7.5.5.1), #maybe-collect-network-data, #max-total-collected-size.
+All quotes are ≤25 words.
+
+## Runtime / scope
+- No BiDi endpoint, WebSocket, browser, or collector was contacted or exercised.
+- No local measurement of collector behavior; `locally measured: no` retained.
+- Correction is document-level only; row verdicts unchanged.
+
+## Risks / integration notes
+- Round-12 evidence record corpus/evidence/round-12/source-recheck.json pins this file's
+  reviewed hash as bac287...; the live file is now 39cd0e.... That record is a historical
+  review pin, not a live-hash assertion. Observed: scripts/check-sources.mjs does not
+  hash corpus knowledge files, and corpus/evidence/fleet-round-1-freshness/pins.tsv has
+  no row for this target at baseline c24eaea. No live gate was run here.
+- Main owns README/SOURCES/SCORECARD/LOG/SKILL/lesson integration; the appendix is
+  discoverable at the file tail and names the superseded lines (:71, :87–88).
+
+## Hygiene
+- Tool installs/updates: none.
+- Writes: this .txt and the append above only. No duplicate .md created.
+- No build, lint, test, formatter, smoke, or gate command was run.

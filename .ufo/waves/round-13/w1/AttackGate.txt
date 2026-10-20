@@ -1,0 +1,62 @@
+AttackGate — critic, tabi round 13 w1. Target: narrow canonical SHONEN carveout + future-lesson carveout in the two legacy gates.
+Scope: read-only. I read the in-flight working-tree edits (RoundGate check-round-contract.mjs ~608 lines; UserGate check-user-round-contract.mjs ~582 lines), PROTOCOL.md seed, and git objects. I ran no gate, self-test, or witness. Files were still changing while I read them; line numbers refer to the snapshot I read. Tool install/update: none.
+
+GROUND FACTS
+- Canonical seed: /home/vgpnk/Projects/shokunin/PROTOCOL.md:439-451. Verbatim; `<name>` is the only substitution. Marks: `[~]` lane-asserted (evidence pointer required); `[x]` only with a named non-author verifier.
+- SHONEN blobs: baseline 7f506aff = PSTACK_PIN 92d700d = census row 25 = 5e055b8c; HEAD = 9dcb2687 (changed by 5cdc976). HEAD has four `[~]` boxes, each with one 2-space pointer line. All backticked paths exist: SKILL.md, corpus/knowledge/multi-step-journey.md, corpus/knowledge/executor-test-sufficiency.md, PROVINCE.md (cited as :3-19).
+- Lessons: round-1..10.md exist at both the baseline and the pin. round-12.md was added after the pin, in one commit (0d82098). In `git diff --name-only PIN HEAD`, SHONEN.md sorts first and round-12.md sorts next. So the old USER gate's first finding hid round-12.md as a second red behind the SHONEN red.
+- `git rev-parse --verify HEAD:corpus` returns a tree (ab0f35c). git-config(1) says diff.renames defaults to true for porcelain `git diff`, which both gates call.
+
+COUNTEREXAMPLES (severity order)
+1. Fake verifier accepted — ROUND. Impacted axes: operability, calibration.
+   check-round-contract.mjs:107 accepts `[x]` when the evidence line matches /\bverifier\b/ and /non-author/. Its own self-test `shonen_x_with_verifier` (:527-532) expects exit 0 for "  verifier: reviewer-9 non-author — ...". A line like "  verifier TABI-B4 — not non-author" also passes, because "not non-author" contains "non-author". That is the round-1 defect: lane-dispatched verifiers were recorded as `[x]`, and LOG.md:519-525 withdrew them. The gate cannot authenticate who wrote the line. The hyaku closure-prompt.md:62 says never write `[x]` into SHONEN.md, because promotion is operator-owned.
+   Fix: reject any `^- [x] ` SHONEN box line in ROUND. Flip that case to exit 1 with finding shonen_policy. UserGate already does this (:103-104, :123).
+2. Duplicate, divergent authority — ROUND vs USER. Impacted axes: operability.
+   The same SHONEN bytes get different verdicts. `[x]` + "verifier non-author" is clean in ROUND and red in USER. ROUND accepts a lexical pointer; USER requires one that resolves. ROUND puts no check on a `[ ]` box's evidence line; USER requires a resolvable pointer. ROUND pops all trailing blank lines; USER pops one.
+   Fix: one policy, byte-identical in both files: same BOXES, same marks {` `, `~`}, same pointer rule, same trailing-newline rule. Give both gates the same SHONEN cases in their self-tests.
+3. "Resolvable" pointer is not resolved — ROUND. Impacted axes: calibration, operability.
+   shonenPointer (:83-87) is regex only. Any backticked token passes, e.g. `` `nothing` ``. Prose with a slash passes, e.g. "and/or". So does "foo.md" even if the file is absent. The fixture pointer `corpus/lessons/pstack-20261015-r01.md` does exist, so no case covers a missing pointer.
+   Fix: port USER's pointerResolves. Then add the negative case `shonen_unresolvable_pointer` with exit 1. HEAD still passes.
+4. Directory or tree counts as evidence — USER, and ROUND after the fix in item 3. Impacted axes: calibration.
+   pointerResolves (:94-100) uses `rev-parse --verify HEAD:<path>`, which succeeds for trees. "  see `corpus` for proof" has 8+ characters, resolves, and is accepted.
+   Fix: require a blob, i.e. `git cat-file -t HEAD:<path>` must return `blob` (or use `HEAD:<path>^{blob}`). HEAD's four pointers are all files, so they still pass.
+5. Arbitrary prose under a `[ ]` box — ROUND. Impacted axes: operability.
+   Line :105-106 skips the evidence-line check when the mark is a space. So "- [ ] SKILL.md contains ...\n  PROMOTED by operator 2026-10-20" passes.
+   Fix: either forbid a continuation line under `[ ]` or apply the same blob-pointer rule. USER applies the pointer rule; pick one and use it in both gates.
+6. Seed identity comes from the filesystem — both gates. Impacted axes: operability; identity drift.
+   The name is `basename(root)`: ROUND :121/:192; USER :110. Fixtures therefore check "# tabi-round-contract-XXXXXX — Promotion checklist" and "# repo — …" (the witness case), not tabi-shokunin. A production run from a worktree or clone whose directory is not named `tabi-shokunin` turns red falsely. A copy in a directory named after another lane accepts that lane's title.
+   Fix: `const LANE = 'tabi-shokunin'` in both gates, and have fixtures write the title with LANE.
+7. Future lessons stay mutable and deletable after they land — USER (ROUND never covered them). Impacted axes: operability; historical integrity.
+   pstackDrift :151 accepts any `round-N.md` drift when the path is absent at the baseline. round-12.md is absent at the baseline forever, so a later rewrite or deletion of committed round-12.md passes USER. ROUND's protected loop lists only baseline paths, so it passes too. Before this change, USER flagged any round-N.md drift since the pin. The carveout reopens a committed lesson that was frozen.
+   Fix: accept an `A` status only. Then freeze each lesson after it lands: `git log --no-renames --diff-filter=MDRT --format=%H PIN..HEAD -- <path>` must be empty, meaning the file was never modified or removed after it was added. Today round-12.md has exactly one commit, so it passes. Add the fixture case `future_lesson_mutated_after_commit` with exit 1.
+8. A rename disguises deleting a pinned path as a "future lesson" — USER. Impacted axes: historical integrity.
+   Line :202 runs `git diff --name-only`, and rename detection is on by default. `git mv corpus/lessons/pstack-20261015-r10.md corpus/lessons/round-13.md` then lists only round-13.md. Its LEGACY_LESSON check is absent-at-baseline, so it is accepted, and USER never sees the pstack lesson vanish. ROUND catches this only indirectly, through round_count. The same blind spot already exists for `reports/pstack-*` renamed to an unmatched name.
+   Fix: `git diff --no-renames --name-status`. Accept the carveout only for status A plus a LEGACY_LESSON path. Any D or M on a pinned path stays red.
+9. Script-cutover pin is still a placeholder — USER. Impacted axes: operability.
+   `ROUND_SCRIPT_CUTOVER_SHA256 = 'ROUND_GATE_HANDOFF_SHA256'` (:18). This fails closed, which is correct, but production USER stays red on scripts/check-round-contract.mjs until the digest is filled in. RoundGate's file grew from 524 to 608 lines while I was reading it.
+   Fix: compute `sha256sum scripts/check-round-contract.mjs` only after RoundGate's final bytes, and do it at L1. Do not drop the path from PSTACK_PATHS or from the drift filter; that would be an arbitrary exemption that hides future weakening of ROUND.
+10. Not exactly canonical bytes — both gates. Low severity.
+   Both convert CRLF to LF before comparing, and ROUND also tolerates any number of trailing blank lines. The phrase "regenerated verbatim" is not enforced.
+   Fix: reject `\r`, and require exactly one trailing `\n`.
+
+HELD (attacks that failed against the current edits)
+- Extra or duplicate boxes, reordered boxes, reworded box text, and prose after the boxes: rejected by the exact `match[2] === box` / `slice(6) === box` comparison and the end-of-lines check.
+- Historic mutation of other protected paths: the protected loop is unchanged, and fixture case historical_mutation expects red.
+- Census: ROUND now checks the baseline blob against the recorded row for every path, including SHONEN (:186). Only the HEAD side of SHONEN is routed to the policy, and the census file is not edited. census_tamper expects red.
+- HARD_BASELINE, PSTACK_PIN, expect=10 and the production-override refusal are unchanged. USER's round_count of 6/10 stays red and is not masked.
+- Absent/missing SHONEN: ROUND fails at both baseline and HEAD. In USER, canonicalShonen(null) is false, so it falls through to the byte check.
+
+NOT ISSUES, BUT DECLARE FOR THE JUDGE
+- ROUND's `future_lesson_allowed` case is not a repair: new round-N.md files were already allowed in ROUND. ROUND's only red-to-green repair is SHONEN. USER's repairs are SHONEN, round-12.md, and the script cutover.
+- The shape policy accepts any future conforming SHONEN, including `[~]` downgraded to `[ ]` and new pointers. It is not limited to blob 9dcb268. That is the intended "seed/marks" policy; state it as such, not as "exactly the regen".
+- The report-side check `checkReport` (endsWith BOX, `[x]` allowed) is weaker than the SHONEN policy and still accepts `- [x] junk <box>`. This is pre-existing and out of this round's scope.
+
+SMALLEST SAFE CORRECTION
+Make one shared SHONEN policy, identical in both gates:
+- LANE constant for the title.
+- Box marks ` ` or `~` only.
+- At most one 2-space evidence line per box, required for `~`, and it must contain a backticked path that resolves to a blob at HEAD.
+- Exactly one trailing LF and no CR.
+In USER, change the diff to `--no-renames --name-status`. The lesson carveout then accepts status A only, plus the never-modified-after-add check.
+Fill ROUND_SCRIPT_CUTOVER_SHA256 at L1 from the final ROUND bytes.
+New fixture cases (all exit 1): shonen_x_any_text, shonen_unresolvable_pointer, shonen_tree_pointer, shonen_blank_box_prose, future_lesson_rename_from_pinned, future_lesson_mutated_after_commit.

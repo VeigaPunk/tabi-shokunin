@@ -1,0 +1,160 @@
+# Sibling Overlap & Province Boundary Analysis — Tabi Round 13 (Wave 1)
+Seat: TabiR13.SiblingOverlap (role: connector)
+Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin
+Date: 2026-10-20
+
+================================================================================
+1. PROVINCE TRIAD & SURFACE MATRIX
+================================================================================
+
+1.1. tabi-shokunin (This Lane)
+- Domain: Browser & web-interaction craft (旅, journey) — driving real browsers
+  against real sites and loopback with rigorous evidence discipline.
+- Core Surfaces Owned:
+  * Browser inventory & profile discipline: ephemeral isolated temp profiles,
+    process lifecycle, shape-only profile census, zero credential/token content reading.
+  * CDP & WebDriver BiDi session discipline: endpoints, targets, frames,
+    network capture, accessibility trees (AXTree), and dynamic-page evidence.
+  * Interaction approval tables: autonomous loopback (C1) vs operator-gated
+    classes (C2..C6); refusal of consequential external actions.
+  * Round 13 Execution Surface: scripts/aria-loopback-round13.mjs and
+    corpus/evidence/round-13/aria/ fixture files, demonstrating accessible locators
+    and ARIA snapshot matching against isolated loopback HTTP server.
+  * Lane Gate Suite: scripts/check-round-contract.mjs, scripts/check-user-round-contract.mjs,
+    scripts/check-freshness.mjs, scripts/check-sources.mjs.
+- Explicitly Refuses (Adjacent Lanes):
+  * Reusable general test craft / mutation harnesses (→ tameshi).
+  * Fleet-wide task orchestration, wave runners, substrate drivers (→ kumitate).
+  * Web publishing & hosting (→ kake).
+  * Secrets, credential persistence, vault handling (→ kagi).
+  * Reverse engineering & binary forensics (→ kaidoku / revenger).
+
+1.2. tameshi-shokunin (Sibling Lane)
+- Domain: Verification-fixture craft — the reusable method of honest checks:
+  hermetic suites, mutation testing, fail-closed arms, verdict-line discipline,
+  no-permissiveness audits, before/after proof.
+- Core Surfaces Owned:
+  * Generic mutation testing instruments: tools/mutate-and-run.sh,
+    tools/repeat-control.py, tools/pin-disposition.py, tools/bash-witness-study.py.
+  * Fleet-wide kill-rate regression ledger and defect taxonomies.
+  * The Rule of Two: a pattern is admitted from evidence in TWO independent
+    lanes before it is claimed general.
+- Explicitly Refuses (PROVINCE.md:16-19, 38-43):
+  * Product domains & sibling gate code: "every lane's gate remains its own;
+    tameshi owns only the reusable craft... Never edits a sibling's gate code
+    (read-only probes; recommendations travel in round reports)."
+  * UI & Visual diffing: Row S030 explicitly rejected ("visual/UI snapshot
+    diffing — adjacent UI lanes"). Tameshi refuses UI/DOM snapshot testing!
+
+1.3. kumitate-shokunin (Sibling Lane)
+- Domain: Orchestration & tooling — scopes OMP task/hub, ufo-fsd scripts & runtime.
+- Core Surfaces Owned:
+  * Origin script layer: /home/vgpnk/Projects/ufo-fsd-alpha/scripts/
+    (S1–S8: ufo-swarm-wave.mjs, ufo-wave-policy.json, claims-check, proxy-check).
+  * Origin runtime layer: crates/ufo-core-runtime/src/ + crates/ufo-cli/src/ (R1–R11).
+  * Kimi Code substrate: ~/.kimi-code/ (K1–K5).
+  * Swarm wave execution mechanics and validator enforcement.
+- Explicitly Refuses:
+  * Browser driving, CDP interaction, Playwright execution.
+  * Sibling gate maintenance or lane-internal domain scripts.
+
+================================================================================
+2. BOUNDARY TENSIONS & SECOND-ORDER COUPLING IN ROUND 13
+================================================================================
+
+2.1. Browser Loopback (C2) vs Tameshi Test Craft:
+- Tension: Is running Playwright in scripts/aria-loopback-round13.mjs an invasion
+  of Tameshi's testing domain?
+- Resolution: No. Tabi is validating the browser accessibility tree (AXTree)
+  resolution contract over loopback HTTP, which is core browser-interaction craft.
+  Tameshi explicitly rejects UI snapshot diffing (row S030).
+- Boundary Invariant: Tabi MUST NOT author custom test-runner abstractions,
+  generic assertion harnesses, or bespoke mutation runners. Tabi MUST use native
+  @playwright/test expect assertions (toMatchAriaSnapshot). Creating custom test
+  craft would infringe on Tameshi.
+
+2.2. Gate Repair (C1) vs Kumitate Tooling:
+- Tension: check-user-round-contract.mjs:14 hardcodes VALIDATOR =
+  '/home/vgpnk/Projects/ufo-fsd-alpha/scripts/ufo-swarm-wave.mjs'.
+- Resolution: Kumitate owns the validator and fleet policy. Tabi owns its own
+  lane contract checks. Tabi must configure its wave specs (spec.reportDir)
+  to conform to Kumitate's validator, but never patch Kumitate's files.
+
+2.3. The Inter-Gate Cutover Deadlock (RoundGate ↔ UserGate):
+- Critical Coupling: check-user-round-contract.mjs pins PSTACK_PATHS, which includes
+  'scripts/check-round-contract.mjs'.
+- Deadlock: When RoundGate repairs scripts/check-round-contract.mjs, UserGate's
+  git diff against PSTACK_PIN (92d700d6a8aa...) trips a fatal failure:
+  `history_rewritten: Pstack bytes changed: scripts/check-round-contract.mjs`.
+- Constraint: Contract forbids moving HARD_BASELINE (7f506affa55...) or PSTACK_PIN.
+  Contract also forbids blanket wildcard exemptions of script drift.
+
+================================================================================
+3. ONE NON-OBVIOUS MOVE: DUAL-DIGEST CUTOVER LEDGER WITH CONFINED LOOPBACK
+================================================================================
+
+3.1. Evidence
+- Baseline commit pins:
+  * HARD_BASELINE = 7f506affa55f6fb892d3c8073c75151c998bdf2c
+  * PSTACK_PIN = 92d700d6a8aa9855f1e9d2cc8e12c82f762a1367
+- Historical SHONEN blob at baseline = 5e055b8c60d606d202029eddabb8a45e13203b06
+  (also in baseline-census.tsv:25).
+- Canonical SHONEN blob at commit 5cdc97654 = 9dcb2687d3083f696b57032389eed7349e03893e.
+- USER baseline honest state = 6 of 10 admitted rounds (round_count finding).
+- Playwright runtime availability: globally installed playwright@1.64.0 with
+  system /usr/bin/chromium.
+
+3.2. Affected Axes
+- operability (C1): Improved (0→2 repaired fixture-covered gates without moving pins).
+- coverage / capability (C2): Improved (real isolated loopback demonstration with
+  pinned runtime and actual YAML ariaSnapshot evidence).
+- calibration: Preserved (USER 6/10 round_count honest failure unmasked; canonical
+  SHONEN strictly validated against protocol template).
+- adjacency: Preserved (strict zero-trespass against Tameshi and Kumitate).
+- freshness: Preserved (all historical lessons 1–10, pstack rounds, census rows immutable).
+
+3.3. Proposed Move
+1. Gate Interlock Cutover:
+   - Introduce an explicit committed policy (scripts/legacy-history-policy.json or
+     contract constants in both gates) defining:
+     * canonical_shonen: accepts historical baseline blob 5e055b8c... at baseline,
+       and canonical regenerated blob 9dcb2687... (four [~] boxes with evidence
+       pointers) at HEAD. Rejects prose alteration, missing boxes, or unverified marks.
+     * future_lessons: distinguishes immutable historical lessons (rounds 1–10
+       present at baseline/PSTACK_PIN) from future protocol lessons (rounds > 10).
+       Future lessons absent at pin are permitted if structurally valid.
+     * tooling_cutover: binds scripts/check-round-contract.mjs drift in UserGate
+       to the exact SHA-256 digest of RoundGate's repaired script.
+   - This eliminates the circular dependency between RoundGate and UserGate without
+     moving PSTACK_PIN, without blanket script exemptions, and without touching
+     HARD_BASELINE.
+2. Isolated Loopback Confinement:
+   - Confine scripts/aria-loopback-round13.mjs strictly to:
+     * Ephemeral loopback port (127.0.0.1:0 via node:http) to prevent port collisions.
+     * Fresh isolated temp browser context (zero profile or cookie persistence).
+     * Standard @playwright/test expect assertions for role/name/label and ariaSnapshot.
+     * Extraction of actual YAML trees to corpus/evidence/round-13/aria/.
+     * Complete process cleanup in finally blocks (preventing zombie Chromium processes).
+
+3.4. Risks & Mitigations
+- Risk 1 (Digest Drift): If RoundGate modifies check-round-contract.mjs after UserGate
+  pins its cutover digest, UserGate fails with tooling_drift.
+  Mitigation: L1 coordinates the final SHA-256 hash injection into policy during integration.
+- Risk 2 (Needle Trip): Loopback test evidence under corpus/evidence/round-13/aria/
+  could accidentally contain strings matching gate NEEDLES ('consequential-action: performed').
+  Mitigation: Ensure all test fixtures and YAML captures use neutral semantic names
+  ('booking-form', 'submit-button') that never match consequential needles.
+- Risk 3 (Node ESM Resolution): Global playwright@1.64.0 requires proper loader resolution
+  under Node 24.
+  Mitigation: Use createRequire(import.meta.url) with NODE_PATH fallback in runner.
+
+3.5. Verification
+- C1 Gate Verification (run once by L1):
+  * node scripts/check-round-contract.mjs --self-test -> exit 0.
+  * node scripts/check-user-round-contract.mjs --self-test -> exit 0.
+  * node scripts/check-round-contract.mjs -> clean rounds=10, exit 0.
+  * node scripts/check-user-round-contract.mjs -> exit 1 with finding=round_count
+    (honest 6/10, confirming history_rewritten is eliminated).
+- C2 Loopback Verification (run once by L1):
+  * node scripts/aria-loopback-round13.mjs -> exit 0, outputs valid YAML snapshots,
+    cleans up temp profile and closes loopback port.

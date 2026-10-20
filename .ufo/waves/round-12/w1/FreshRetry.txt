@@ -150,3 +150,82 @@ Disposition for L1: carry this as a separate correction/errata entry (append-onl
 corpus/QUALITY.md rule 4; this seat does not modify the note). Suggested replacement wording:
 "the stable retries page (1.64-current at review)", keeping "1.64" only on S017 citations.
 Review boundary: Playwright S013-S017 only; S018/S019 not reverified here.
+
+---
+
+## Appended clarification — 2026-10-20 (round 13; routed verifier item 3)
+
+Append-only: the receipt above is unchanged. This block supersedes the `bytes` cells at
+lines 21-25 only. Every digest pin, HTTP status, Gate match and claim verdict (7/7
+CONFIRMED) stands as written.
+
+Routed item read in full: corpus/lessons/round-12-verifier-spotcheck.md:207-209.
+"FreshRetry.txt:21/25 labels 10801/99752 as raw bytes, but C1Review's same-digest raw
+fetch measured 99073/1002533." Confirmed.
+
+Disposition: RESOLVED — representation error, not digest drift. The original `bytes` column
+is the HTTP `content-length` of the gzip-coded transfer (equal to curl `%{size_download}`
+when `--compressed` negotiates gzip), not the decoded HTML body over which the sha256 was
+taken.
+
+Representation (explicit): the hashed and counted object is the raw HTTP response entity
+body after content decoding. The origin serves `content-encoding: gzip` and
+`vary: Accept-Encoding`; `curl -sS -L --compressed` decodes the stream before writing the
+body, so the file is the uncompressed HTML. `content-length` describes the wire (gzip)
+representation and is not the decoded-body size. Control: a request with
+`Accept-Encoding: identity` (S013) returned `HTTP/2 200`, `content-length: 99073`, 99073
+bytes, same sha256 `cf48ff4d…`, proving the pinned body is representation-independent.
+Both URLs resolved exactly, no redirect (`http=200 redirects=0`; `url_effective` equals the
+requested URL).
+
+Count command (run 2026-10-20, 05:08:21Z–05:08:52Z; three body fetches per URL, identical
+bytes and sha256 on every repetition):
+
+```sh
+for u in test-retries trace-viewer actionability test-assertions release-notes; do
+  curl -sS -L --compressed -o "/tmp/$u.body" "https://playwright.dev/docs/$u"
+  printf '%s\t%s\t%s\n' "$u" "$(wc -c < "/tmp/$u.body")" \
+    "$(sha256sum "/tmp/$u.body" | cut -d' ' -f1)"
+done
+```
+
+Observed (decoded-body bytes replace the old wire-size cells):
+
+| row | URL (exact) | HTTP | old cell (gzip content-length) | corrected raw-body bytes | sha256 observed | historical pin | identity |
+|---|---|---|---|---|---|---|---|
+| S013 | https://playwright.dev/docs/test-retries | 200 | 10801 | 99073 | cf48ff4db0a305f9c1a8a829b60c295041e22daa0e018c4286ae182832ffbdfa | same (line 21; Gate :56) | digest equal |
+| S014 | https://playwright.dev/docs/trace-viewer | 200 | 11407 | 60566 | e947d4dc0b73cdb8eae97f10c268c10024e4ff9410077acd7d69e6b0bafc1bee | same (line 22; Gate :57) | digest equal |
+| S015 | https://playwright.dev/docs/actionability | 200 | 8533 | 47845 | 31075410ae19edfe13f6f1cd5ec4d980ee9be0303009f4273563231db610fe8d | same (line 23; Gate :58) | digest equal |
+| S016 | https://playwright.dev/docs/test-assertions | 200 | 15225 | 159543 | 1bb8afe888af092190125a3d5a6aef753fb17312c0c0b774d296060ac0766a2c | same (line 24; Gate :59) | digest equal |
+| S017 | https://playwright.dev/docs/release-notes | 200 | 99752 | 1002533 | ce461e5be73bd602d24395e4628c62ded8293b088a085c82f5436960241952c5 | same (line 25; Gate :60) | digest equal |
+
+Header/representation probe:
+
+```sh
+curl -sS -L --compressed -D - -o /dev/null https://playwright.dev/docs/test-retries \
+  | grep -iE '^(HTTP/|content-length|content-encoding|vary)'
+```
+
+Observed: `HTTP/2 200`; `content-length: 10801`; `content-encoding: gzip`;
+`vary: Accept-Encoding`. `curl … -w '%{size_download}'` printed `10801` while the written
+body measured 99073 bytes with sha256 `cf48ff4d…` — the exact mechanism that produced the
+original cells.
+
+Correction rule applied: raw-byte metadata is corrected only where the current decoded-body
+digest equals the historical pinned digest. That held for all five rows (S013-S017), so all
+five byte cells are corrected unconditionally; no row carries a qualified identity or a
+retained historic unknown from this check. If a future re-fetch digest differs, these counts
+must not be carried over to it: the identity would then be unknown and the historic pin is
+the only datum.
+
+Scope: verifier item 3 named S013/S017 counts (99073/1002533 reproduced exactly). The same
+wire-versus-decoded representation defect affects S014/S015/S016, whose old cells
+(11407/8533/15225) are likewise gzip lengths; they are corrected above under the same
+digest-equality condition. S018/S019 were not re-opened here. No note, Gate file or lesson
+was modified. No browser, Playwright runner, test or fixture was executed. No tool was
+installed or updated. The verifier's "No numeric round claim relies on these byte cells"
+holds: only the byte representation changes, not any verdict or count.
+
+Pre-append receipt identity: sha256
+e3c84a450bc12f0107f5ddcc199b84581aa2cb0f22d283497030a900eaa60a4f, 10744 bytes,
+152 lines. This block is appended after that state; earlier bytes are untouched.

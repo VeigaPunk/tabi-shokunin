@@ -1,0 +1,73 @@
+ReviewRound — tabi round 13 w1 (read-only review of round gate history/census model)
+Scope: scripts/check-round-contract.mjs, scripts/check-user-round-contract.mjs, corpus/evidence/pstack-20261015/baseline-census.tsv, SHONEN.md (7f506aff / 92d700d / 5cdc976 / 9dcb2687), .ufo/waves/round-12/w1/GateDebt.txt, corpus/lessons/round-12.md, SCORECARD.md, LOG.md.
+No gate, self-test, or build was run. Only read-only git object queries, cmp prefix checks, and one read-only scratch comparison in /tmp (self-removed). No repo writes beyond this file. Parent clarification honored: this .txt is the only report written; no .md duplicate.
+Tool install/update: none.
+
+PINS (observed)
+- HEAD 75e7836. HARD_BASELINE 7f506aff (both gates). PSTACK_PIN 92d700d (user gate :13).
+- SHONEN blobs: baseline/census 5e055b8c; HEAD and 5cdc976 9dcb2687.
+
+FINDINGS (severity order)
+
+[HIGH-1] GateDebt Option A does not return USER to round_count. It leaves a second drift.
+- corpus/lessons/round-12.md is a new file added after PSTACK_PIN. The USER drift filter matches /^corpus\/lessons\/round-\d+\.md$/, and `git diff --name-only 92d700d HEAD -- PSTACK_PATHS` lists it.
+- After SHONEN is exempted, USER fails `history_rewritten — Pstack bytes changed: corpus/lessons/round-12.md`. round_count stays masked.
+- Cause: the drift filter flags additions, but the spec requires future lesson paths to be allowed. Fix: diff with --diff-filter=MD (or check that the path exists at PSTACK_PIN). Modified or deleted pinned paths still fail.
+- Regression witness: fixture adds corpus/lessons/round-12.md → must not produce history_rewritten. Modifying corpus/lessons/round-1.md must still produce history_rewritten.
+
+[HIGH-2] The USER first failure is misreported in GateDebt.
+- checkHistory's protected loop runs first. protectedPath() includes SHONEN.md, so the current USER output is `history_rewritten — Protected bytes changed: SHONEN.md` (protected loop), not "Pstack bytes changed" as GateDebt states. Finding ID is the same. The exemption must be applied in the protected loop AND in the PSTACK drift path (or SHONEN removed from both lists with an explicit blob check). Applying it in only one path leaves USER red on SHONEN.
+
+[HIGH-3] PSTACK_PIN cannot move, and RoundGate's edit to check-round-contract.mjs trips USER drift.
+- scripts/check-round-contract.mjs is in USER PSTACK_PATHS and in the drift filter. Any RoundGate edit yields `history_rewritten — Pstack bytes changed: scripts/check-round-contract.mjs` (sorted after SHONEN/corpus entries). That masks round_count again.
+- GateDebt's "land the gate edit, then move PSTACK_PIN" violates the shared-interface rule (PSTACK_PIN unchanged).
+- Proposed legal path (no PSTACK_PIN move): USER gets an explicit script-cutover identity, e.g. const CUTOVER = { path: 'scripts/check-round-contract.mjs', blob: '<git hash-object of the post-edit file>' }. Drift is exempt only when the HEAD blob equals CUTOVER.blob, and only for that one path. Any other content still fails. The blob is computed before commit and verified after commit. RoundGate and UserGate must agree on this via parent.
+
+[HIGH-4] Census SHONEN row and the exemption conflict in ROUND.
+- The census row records baseline 5e055b8c. GateDebt's Option A says the census loop compares HEAD to pinnedBlob. As written, the census loop compares HEAD to recorded (5e055b8c) and fails at head. The SHONEN row must read as baseline-only (recorded vs baseline) plus a separate HEAD-vs-canonical check. Do not edit the census file.
+- Census row count and census file bytes are not pinned. Deleting a census row silently removes its check. The census file lives under corpus/evidence/pstack-20261015, which the USER drift prefix covers, so any census edit (or new pstack-20261015-rNN evidence) would flip USER to history_rewritten. Pin census line count or census blob in code (new constant; PSTACK_PIN itself does not move), or accept and document the risk.
+- Census vs protected set (read-only comparison, bg_735): protected baseline set = 55 paths; census rows = 56. No protected baseline path lacks a census row. The only census row outside the protected set is PROVINCE.md (APPEND_ONLY), as expected. So the census model is complete for protectedPath; the gap is only the unpinned census file itself (above).
+- Existing gap: reports/r4-aud-tab1.md, r5-aud-b5.md, r6-aud-b6.md, r7-aud-b7.md, r8-aud-b8.md, r9-aud-b9.md, r10-aud-b10.md exist at baseline but are in neither protectedPath nor the census. They are unfrozen by either gate. Record; do not expand scope this round unless the parent asks.
+
+[MEDIUM-5] Fixture coverage is four finding IDs per gate.
+- Self-tests cover clean, short_swarm, missing_gate, consequential_action (USER and ROUND). Never exercised: history_rewritten, round_count, round_sequence, missing_score, score_mismatch, report_missing/report_commit/report_not_after_commit/report_shonen, swarm_evidence, evidence_moved, public_observation, could_not_evaluate, usage.
+- Production-only exemptions (SHONEN, census, PSTACK drift) cannot run in fixtures. GateDebt's stated gap is correct. Fix: inject pins/census path via argument that defaults to the production constant, and have production refuse overrides (same pattern as --baseline/--expect).
+
+[MEDIUM-6] Future lesson policy.
+- ROUND counts only pstack-20261015-rNN and enforces expect 10 in production. A future pstack-20261015-r11 is round_count red by design; do not weaken it. Non-pstack round-N.md additions are unchecked by ROUND and only caught by USER (HIGH-1).
+- New paths under corpus/evidence/pstack-20261015* (prefix match) would also trip USER drift. Round-13 aria evidence (corpus/evidence/round-13/aria) is outside that prefix — keep it there.
+
+[LOW-7] APPEND_ONLY: GateDebt's unresolved SCORECARD/SKILL numstat deletions are resolved. Byte-prefix check (cmp of the first N baseline bytes of HEAD) passes for LOG.md, SCORECARD.md, SKILL.md, PROVINCE.md, corpus/QUALITY.md, corpus/README.md. Numstat deletions are a trailing-newline change, not a prefix break.
+
+[LOW-8] user-20261015-r01..r06 lessons and reports are not frozen by either gate (no protectedPath/PSTACK coverage). Existing gap; record it.
+
+SHONEN canonical policy (for RoundGate)
+- HEAD 9dcb2687 has header "# tabi-shokunin — Promotion checklist" and exactly four box lines `- [~] <BOX>` whose text matches BOXES exactly, each followed by evidence lines. Baseline 5e055b8c has `- [x]` seed lines and a different header.
+- Exemption should verify: blob equals the pinned canonical blob AND the four box lines exist in order with marks [~] (marks/evidence only). Any other content → history_rewritten. Reuse the existing finding ID; do not add a new ID, so every old red ID keeps its meaning.
+- Invalid marks ([x] or [ ]), added prose, or a missing box → history_rewritten.
+
+PROPOSED REGRESSIONS (each: fixture, mutation, expected exit, expected finding; ROUND and USER equivalents)
+Old red IDs must keep their meaning:
+- history_rewritten (protected): mutate corpus/lessons/round-1.md after baseline → exit 1, finding history_rewritten. Already reachable in fixture.
+- history_rewritten (SHONEN, canonical): fixture SHONEN = canonical regen, pinned via injected pin → exit 0, verdict=clean. (repaired gate 1)
+- history_rewritten (SHONEN, invalid): one [x] or added prose → exit 1, finding history_rewritten.
+- history_rewritten (SHONEN, missing box) → exit 1.
+- history_rewritten (census tamper): census SHONEN row changed → exit 1 (production path; needs injected census).
+- clean future lesson (USER): add corpus/lessons/round-12.md with expect matching → verdict=clean. (repaired gate 2)
+- USER drift on cutover: CUTOVER blob matches → clean; different blob → history_rewritten (Pstack bytes changed: scripts/check-round-contract.mjs).
+- round_count: fixture with 1 lesson, --expect 2 → exit 1, finding round_count. This is the red ID that must survive USER; after repairs, USER production must still say round_count 6 of 10.
+- round_sequence: only pstack-20261015-r02 with --expect 1 → round_sequence.
+- missing_score / score_mismatch: remove SCORECARD block / change after → missing_score / score_mismatch.
+- report_commit / report_shonen: lane-commit mismatch / missing box → report_commit / report_shonen.
+- evidence_moved: change lesson after measured commit → evidence_moved.
+- public_observation: loopback capture URL → public_observation.
+- swarm_evidence: seat verdict mismatch → swarm_evidence.
+
+Witness mode: run old and new gate on identical fixture; red-before (old: SHONEN canonical → history_rewritten) and green-after (new: clean). Requires RoundGate to add a gate-path argument or invoke two copies of the script.
+
+Explicit ask: parent must agree the CUTOVER identity (HIGH-3) with UserGate before either edits; otherwise HIGH-1 and HIGH-3 leave USER red on history_rewritten and round_count stays hidden.
+
+Residual risk / gaps
+- Nothing run. All claims are static reads, git object queries, and cmp prefix checks.
+- Option A's ROUND expectation (clean rounds=10) is [INFERENCE] until L1 runs the gate.
+- The reports/r*-aud-* gap (above) is observed but not pinned by any gate.

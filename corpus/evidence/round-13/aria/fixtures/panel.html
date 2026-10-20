@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Preferences</title>
+</head>
+<body>
+<main aria-label="Preferences">
+  <h1>Preferences</h1>
+  <button id="toggle" type="button" aria-expanded="false" aria-controls="advanced">Toggle advanced</button>
+  <div id="advanced" hidden>
+    <label for="accept">Accept terms</label>
+    <input id="accept" type="checkbox">
+  </div>
+</main>
+<script>
+  const toggle = document.getElementById('toggle');
+  toggle.addEventListener('click', () => {
+    const panel = document.getElementById('advanced');
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!expanded));
+    panel.hidden = expanded;
+  });
+</script>
+</body>
+</html>
