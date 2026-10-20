@@ -642,3 +642,32 @@
   Failed command/receipt remain `corpus/evidence/round-13/aria-execution-final.json`
   and `corpus/evidence/round-13/aria-second-receipt.json`; the filename does not
   upgrade that earlier failed run into final success.
+- Final targeted browser execution at `06e6ada` exited0: eight ran/eight passed,
+  four real expected rejections, one worker, no missing case; exact runtime
+  Playwright1.64.0 / managed Chrome for Testing156.0.8078.4. Receipt:
+  `corpus/evidence/round-13/aria-execution-pass.json` and `aria/receipt.json`
+  beneath the same evidence directory. Fresh profiles/temp roots removed,
+  contexts closed, fixture server refused connections after close.
+  New knowledge `corpus/knowledge/aria-loopback-round-13.md` is sourced by
+  reopened S023/S024/S025 and indexed; lesson `round-13.md` admits the bounded
+  runtime ground and retains audit/pixel/real-site/cross-browser rejections.
+- C1 final evidence `corpus/evidence/round-13/gates.json`: ROUND26 cases plus
+  alias control and USER21 cases clean; both pinned legacy witnesses observe
+  history_rewritten1→clean0. ROUND production clean10; USER remains failed
+  round_count6/10. Unchanged historical census/pins, explicit script cutover,
+  no automatic `[x]` authority. QUALITY16/17 capture the learned policy and
+  real-runtime negative-control rules. Source self-test26 clean; source gate
+  clean28; start/end census exit0; freshness --worktree clean34/34. Initial
+  no-mode freshness usage2 is preserved, not called a passing invocation.
+- S023/S024/S025 used-by gained only the new runtime note; immutable source
+  cells/dates, tiers/statuses/cadences remain. One wave32 seats; no inherited
+  uncommitted work. Tools: exact local official-npm @playwright/test/playwright/
+  playwright-core1.64.0 with lock; global install failed EEXIST, no browser
+  download or system upgrade. Source/precision chores add no third claim.
+  Scalar deltas0; outside closure and every SHONEN `[x]` remain non-author work.
+- Correction sweep over touched scripts/SKILL/README/BiDi/locator/FreshRetry/lesson
+  used patterns `ROUND_GATE_HANDOFF_SHA256|collector must exist|10801|99752|14-77|No Playwright runner|runtime unmeasured`.
+  Matches are preserved historical receipt/round12 statements with named
+  append-only qualifications. The touched locator note gained §8 superseding
+  its original runtime-unknown1 narrowly; its captured documentedContract hash
+  remains the original pre-append execution input, not a claim about later bytes.

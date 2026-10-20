@@ -1684,3 +1684,32 @@ gaps are separately retained in `.ufo/waves/round-13/w1/ReviewUser.txt` and
 `SafetyHistory.txt`; the bounded compatibility claim does not certify those paths.
 The new source registry/claim-record gates remain distinct and retain their own
 registered scopes. QUALITY16 and `corpus/lessons/round-13.md` explain this repair.
+
+## Round 13 — locally demonstrated accessible-selector contract (2026-10-20)
+
+The round-12 documentation-only wording remains historical. A separate, narrow
+runtime qualifier is now `corpus/knowledge/aria-loopback-round-13.md` (S023–S025).
+At code revision `06e6ada`, `node scripts/aria-loopback-round13.mjs` exited0:
+eight declared cases ran/eight passed, four expected rejections, no missing cases.
+Counting command: `node -e 'const r=require("./corpus/evidence/round-13/aria/receipt.json"); console.log(r.summary.cases,r.summary.negative)'`.
+The exact observed package is Playwright1.64.0; browser is managed Chrome for
+Testing156.0.8078.4, with executable/input digests checked in the retained receipt.
+This is not system-Chromium152 evidence or a claim about another installed version.
+
+| Situation | Executable rule | Evidence boundary |
+|---|---|---|
+| Need role/name/label selection or action-time re-resolution | Use the semantic locator, retain its expression/count and distinct replacement witness; treat ambiguity as a real strict-mode finding | These exact fixture behaviors ran; `.first()` is not the remedy |
+| Need contain/equal or checked-state evidence | Run real `expect(...).toMatchAriaSnapshot(...)` inside Playwright Test; retain template, actual YAML, mode and both positive/negative controls | `ariaSnapshot()` alone is a capture, not the matcher; bare-node wrong-context exceptions cannot prove a negative |
+| Runtime diagnostic differs from the expected source-reasoned spelling | Record the actual cause/tree/diff and fix only the wrongly specified signature | TypeError, parser failure or wrong runner context is not the desired ARIA rejection |
+| A failed worker restarts | Merge durable per-case/worker records after runner exit and require every declared case | One surviving worker's pass is not the full experiment |
+
+The receipt proves context closure, removed run-owned profiles/temp roots and refused
+server ports, with no page request outside the fixture origin. No packet-level
+no-egress, sandbox-certification, pixel/audit, real-site, cross-browser or determinism
+claim is made. Publishing remains kake-owned; credentials remain
+kagi-owned and forensic work remains revenger/kaidoku-owned.
+
+Replay in an isolated checkout so the original committed evidence stays frozen.
+`corpus/evidence/round-13/aria-execution-pass.json` is the exercised command receipt;
+the initial failed command/receipt and the second diagnostic-format failure remain
+separate durable evidence. QUALITY17 and lesson `round-13.md` explain the learned rule.

@@ -39,3 +39,15 @@
     `corpus/SOURCES.md` curates rows; it does not define a second tier scheme.
     The opened A/B requirement and tier-C prohibition are unchanged.
     (lesson: corpus/lessons/round-12.md#mistakes; ReviewSources finding 2)
+16. Historical protection distinguishes the baseline's existing paths from future
+    protocol-required lessons. A canonical mutable file gets a narrow validated policy,
+    never a moved measurement baseline or blanket path exemption; regression fixtures
+    must still reject changed historical bytes, altered census rows and noncanonical
+    SHONEN content. (lesson: corpus/lessons/round-13.md#mistakes; outside round-12
+    verifier routed item 1)
+17. A runtime negative control has a complete case-input manifest and checks the
+    pinned producer's actual rejection cause, not any exception or source-reasoned
+    diagnostic spelling. Retain the real expected/actual structure and a positive
+    control; aggregate every executed case after worker restart before admitting
+    a capability. (lesson: corpus/lessons/round-13.md#mistakes; missing queue template,
+    version-scoped equal-diff format and surviving-worker receipt)

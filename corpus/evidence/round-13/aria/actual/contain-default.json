@@ -1,0 +1,156 @@
+{
+  "name": "contain-default",
+  "findingId": "R13-ARIA-CONTAIN-01",
+  "status": "pass",
+  "expected": "the default contain mode accepts the Alpha/Beta template while the visible Gamma sibling is extra.",
+  "actual": "default contain accepted the Alpha/Beta template while the Gamma sibling was present as an extra child",
+  "phase": "confinement",
+  "durationMs": 152,
+  "fixture": "queue",
+  "fixturePath": "corpus/evidence/round-13/aria/fixtures/queue.html",
+  "fixtureSha256": "d9773d354d82160bf56b76a01494bd9a5ba9f46a9b3ea5db21ca5a1579cb0e63",
+  "locator": "getByRole('list', { name: 'Queue', exact: true })",
+  "contract": "getByRole('list', { name: 'Queue', exact: true })",
+  "note": {
+    "path": "corpus/knowledge/aria-loopback-round-13.md",
+    "exists": true,
+    "sha256": "a720f541e1a5733eec4fe41cb7abba0834edb426ce08804477e7ee11c27128c9",
+    "bytes": 6829,
+    "sources": [
+      "S023",
+      "S024",
+      "S025"
+    ],
+    "indexed": {
+      "readme": {
+        "path": "corpus/README.md",
+        "sha256": "5ee669de93861fe2067540d7db2f18318a20582c74f9f61f867ec6f4b5066283",
+        "contains": true
+      },
+      "sources": {
+        "path": "corpus/SOURCES.md",
+        "sha256": "c60e31094dfde513c1c416aeb385da75ae5b4a5b1a99326f816162584f907399",
+        "contains": true
+      }
+    },
+    "admitted": true,
+    "scope": "round-13 admitted runtime note; sourced/indexed documentation record of this demonstration",
+    "acquisitionCredit": true,
+    "documentedContract": {
+      "path": "corpus/knowledge/playwright-accessible-locators-and-snapshots.md",
+      "exists": true,
+      "sha256": "1c3f5526d4be85dadeaef6ea7d99fb7e864ba549effa255eeb8ffbf39b902c01",
+      "bytes": 28245,
+      "sources": [
+        "S023",
+        "S024",
+        "S025"
+      ],
+      "indexed": {
+        "readme": {
+          "path": "corpus/README.md",
+          "sha256": "5ee669de93861fe2067540d7db2f18318a20582c74f9f61f867ec6f4b5066283",
+          "contains": true
+        },
+        "sources": {
+          "path": "corpus/SOURCES.md",
+          "sha256": "c60e31094dfde513c1c416aeb385da75ae5b4a5b1a99326f816162584f907399",
+          "contains": true
+        }
+      },
+      "admitted": true,
+      "scope": "prior docs-held locator/snapshot contract; retained as record, not acquisition credit"
+    },
+    "notePolicy": "the round-13 note must exist and be mapped in corpus/README.md and corpus/SOURCES.md; the prior contract note is record only"
+  },
+  "template": "corpus/evidence/round-13/aria/templates/queue-contain.aria.yml",
+  "templateSha256": "0f807ac3b5686f93e3608cfb73c621662b2f23fe7a9cd3808f39c14a655a01f5",
+  "templateKind": "aria-yaml",
+  "templates": [
+    {
+      "name": "queue-contain",
+      "path": "corpus/evidence/round-13/aria/templates/queue-contain.aria.yml",
+      "sha256": "0f807ac3b5686f93e3608cfb73c621662b2f23fe7a9cd3808f39c14a655a01f5",
+      "bytes": 57,
+      "text": "- list \"Queue\":\n  - listitem \"Alpha\"\n  - listitem \"Beta\"\n"
+    }
+  ],
+  "checks": [
+    {
+      "id": "locator-contract",
+      "matcher": "toBe(committed contract)",
+      "pass": true,
+      "actual": "getByRole('list', { name: 'Queue', exact: true })"
+    },
+    {
+      "id": "contain.default",
+      "matcher": "toMatchAriaSnapshot(contain default)",
+      "pass": true
+    }
+  ],
+  "counts": {
+    "requests": 1,
+    "externalAborts": 0,
+    "items": 3,
+    "matchedTemplateItems": 2
+  },
+  "negative": [],
+  "snapshots": [
+    {
+      "label": "actual",
+      "path": "corpus/evidence/round-13/aria/actual/contain-default-actual.aria.yml",
+      "sha256": "b37128522a73d23c16526cfa76bdcbe4f1fab8a902a1a3822a0e4b256f3549fc",
+      "bytes": 78,
+      "yaml": "- list \"Queue\":\n  - listitem \"Alpha\"\n  - listitem \"Beta\"\n  - listitem \"Gamma\""
+    }
+  ],
+  "cleanup": {
+    "tempRoot": "/tmp/tabi-r13-aria-XXsJRt",
+    "profileDir": "/tmp/tabi-r13-aria-XXsJRt/profile",
+    "childProbeSupported": true,
+    "childrenBefore": [],
+    "contextPresent": true,
+    "contextClosed": true,
+    "closeError": null,
+    "newPageRejected": true,
+    "childrenAfter": [],
+    "browserProcessesAfter": [],
+    "profileRemoved": true,
+    "tempRootRemoved": true,
+    "ok": true
+  },
+  "browserRuntime": {
+    "version": "156.0.8078.4",
+    "source": "browser",
+    "executablePath": "/home/vgpnk/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+    "executableSha256": "377a9fc07b495c3b8d0ab8ec1fdfd153641759f9756fea34d8dfce4de82f5025",
+    "profile": "fresh persistent profile under fresh TMPDIR temp root",
+    "serviceWorkers": "block",
+    "browserEnv": [
+      "HOME",
+      "LANG",
+      "TMPDIR",
+      "TZ",
+      "XDG_CACHE_HOME",
+      "XDG_CONFIG_HOME",
+      "XDG_DATA_HOME",
+      "XDG_RUNTIME_DIR",
+      "XDG_STATE_HOME"
+    ]
+  },
+  "requests": [
+    "http://127.0.0.1:40983/fixtures/queue.html"
+  ],
+  "externalAborts": [],
+  "externalSeen": [],
+  "serverRequests": [
+    {
+      "method": "GET",
+      "path": "/fixtures/queue.html",
+      "status": 200,
+      "bytes": 317,
+      "ms": 0
+    }
+  ],
+  "error": null
+}

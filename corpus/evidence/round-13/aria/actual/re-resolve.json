@@ -1,0 +1,151 @@
+{
+  "name": "re-resolve",
+  "findingId": "R13-ARIA-RERESOLVE-01",
+  "status": "pass",
+  "expected": "one locator clicks the original node, then the replacement node; the stale element handle is disconnected; instance tokens are 1, 2, 3.",
+  "actual": "the same locator clicked the replacement node twice; instance tokens advanced 1->2->3 and the retained element handle reported isConnected=false",
+  "phase": "confinement",
+  "durationMs": 254,
+  "fixture": "reresolve",
+  "fixturePath": "corpus/evidence/round-13/aria/fixtures/reresolve.html",
+  "fixtureSha256": "909d120bbde594ff39820de03460ed3b1f96ac4764df6dd671cf8fdc6543eac3",
+  "locator": "getByRole('button', { name: 'Bump counter', exact: true })",
+  "contract": "getByRole('button', { name: 'Bump counter', exact: true })",
+  "note": {
+    "path": "corpus/knowledge/aria-loopback-round-13.md",
+    "exists": true,
+    "sha256": "a720f541e1a5733eec4fe41cb7abba0834edb426ce08804477e7ee11c27128c9",
+    "bytes": 6829,
+    "sources": [
+      "S023",
+      "S024",
+      "S025"
+    ],
+    "indexed": {
+      "readme": {
+        "path": "corpus/README.md",
+        "sha256": "5ee669de93861fe2067540d7db2f18318a20582c74f9f61f867ec6f4b5066283",
+        "contains": true
+      },
+      "sources": {
+        "path": "corpus/SOURCES.md",
+        "sha256": "c60e31094dfde513c1c416aeb385da75ae5b4a5b1a99326f816162584f907399",
+        "contains": true
+      }
+    },
+    "admitted": true,
+    "scope": "round-13 admitted runtime note; sourced/indexed documentation record of this demonstration",
+    "acquisitionCredit": true,
+    "documentedContract": {
+      "path": "corpus/knowledge/playwright-accessible-locators-and-snapshots.md",
+      "exists": true,
+      "sha256": "1c3f5526d4be85dadeaef6ea7d99fb7e864ba549effa255eeb8ffbf39b902c01",
+      "bytes": 28245,
+      "sources": [
+        "S023",
+        "S024",
+        "S025"
+      ],
+      "indexed": {
+        "readme": {
+          "path": "corpus/README.md",
+          "sha256": "5ee669de93861fe2067540d7db2f18318a20582c74f9f61f867ec6f4b5066283",
+          "contains": true
+        },
+        "sources": {
+          "path": "corpus/SOURCES.md",
+          "sha256": "c60e31094dfde513c1c416aeb385da75ae5b4a5b1a99326f816162584f907399",
+          "contains": true
+        }
+      },
+      "admitted": true,
+      "scope": "prior docs-held locator/snapshot contract; retained as record, not acquisition credit"
+    },
+    "notePolicy": "the round-13 note must exist and be mapped in corpus/README.md and corpus/SOURCES.md; the prior contract note is record only"
+  },
+  "template": "corpus/evidence/round-13/aria/manifest.json",
+  "templateSha256": "56764241df4f4a644af39e368b2e47f35d3f4bbbdf17e7cef3fa848ee0d72112",
+  "templateKind": "locator-contract",
+  "templates": [],
+  "checks": [
+    {
+      "id": "locator-contract",
+      "matcher": "toBe(committed contract)",
+      "pass": true,
+      "actual": "getByRole('button', { name: 'Bump counter', exact: true })"
+    },
+    {
+      "id": "re-resolve.tokens",
+      "matcher": "toEqual([1,2,3])",
+      "pass": true
+    },
+    {
+      "id": "re-resolve.stale-handle",
+      "matcher": "isConnected=false",
+      "pass": true
+    }
+  ],
+  "counts": {
+    "requests": 1,
+    "externalAborts": 0,
+    "matches": 1,
+    "instanceTokens": [
+      "1",
+      "2",
+      "3"
+    ],
+    "staleHandleConnectedAfterReplacement": false,
+    "countText": "2"
+  },
+  "negative": [],
+  "snapshots": [],
+  "cleanup": {
+    "tempRoot": "/tmp/tabi-r13-aria-ddGdqN",
+    "profileDir": "/tmp/tabi-r13-aria-ddGdqN/profile",
+    "childProbeSupported": true,
+    "childrenBefore": [],
+    "contextPresent": true,
+    "contextClosed": true,
+    "closeError": null,
+    "newPageRejected": true,
+    "childrenAfter": [],
+    "browserProcessesAfter": [],
+    "profileRemoved": true,
+    "tempRootRemoved": true,
+    "ok": true
+  },
+  "browserRuntime": {
+    "version": "156.0.8078.4",
+    "source": "browser",
+    "executablePath": "/home/vgpnk/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+    "executableSha256": "377a9fc07b495c3b8d0ab8ec1fdfd153641759f9756fea34d8dfce4de82f5025",
+    "profile": "fresh persistent profile under fresh TMPDIR temp root",
+    "serviceWorkers": "block",
+    "browserEnv": [
+      "HOME",
+      "LANG",
+      "TMPDIR",
+      "TZ",
+      "XDG_CACHE_HOME",
+      "XDG_CONFIG_HOME",
+      "XDG_DATA_HOME",
+      "XDG_RUNTIME_DIR",
+      "XDG_STATE_HOME"
+    ]
+  },
+  "requests": [
+    "http://127.0.0.1:40983/fixtures/reresolve.html"
+  ],
+  "externalAborts": [],
+  "externalSeen": [],
+  "serverRequests": [
+    {
+      "method": "GET",
+      "path": "/fixtures/reresolve.html",
+      "status": 200,
+      "bytes": 830,
+      "ms": 1
+    }
+  ],
+  "error": null
+}

@@ -142,3 +142,24 @@ Appended only; every byte above is unchanged. S024 was re-opened raw on 2026-10-
 Both methods are documented as `ariaSnapshot`, so there is no spelling error to repair and no alternate supported name is asserted here. The exact call forms are `page.ariaSnapshot()` / `page.ariaSnapshot(options)` and `locator.ariaSnapshot()` / `locator.ariaSnapshot(options)`. On the locator page the JSON sibling is `locator.ariaSnapshotJSON()` ("Added in: v1.63"); on the page method it is `page.ariaSnapshotJSON()`, described as returning "the same tree as page.ariaSnapshot()". Options listed on both: `boxes`, `depth`, and `mode` with values `"ai" | "default"` (defaults to `"default"`). A `mode: "ai"` snapshot "Includes element references [ref=e2]" and, for the locator form, "Does not wait for an element matching the locator, and throws when no elements match" and "Includes snapshots of <iframe>s inside the target." This is Playwright's own ref spelling, so §6's warning stands and gains a second reason: Playwright's `[ref=e2]` is not the webbridge `@e` ref, even where both are rendering-derived trees.
 
 These API-reference URLs are not rows in `corpus/SOURCES.md` at this append; they are cited here by URL, hash, and size only, and their registration is left to the corpus owner. No runtime was launched and no Playwright package or browser was probed; the version markers are documentation claims, not a host measurement.
+
+## 8. Round-13 runtime qualifier (2026-10-20; append-only)
+
+The round-12 method statement and Unknown1 describe the original documentation-only
+revision; they do not describe the lane after the round-13 experiment. This paragraph
+supersedes Unknown1 only for the exact fixture/package/browser and declared behaviors
+in `corpus/knowledge/aria-loopback-round-13.md`. At code revision `06e6ada`,
+`node scripts/aria-loopback-round13.mjs` exited0; eight cases ran/eight passed,
+four expected rejections. The counting command and exact observed values are in
+`corpus/evidence/round-13/aria-execution-pass.json` and `aria/receipt.json` within that
+same evidence directory. The runtime receipt's documentedContract hash identifies
+the pre-append documentation bytes used during that execution, not this later qualifier.
+
+Playwright1.64.0 and managed Chrome for Testing156.0.8078.4 were recorded and
+digest-checked. Role/name/label selection, strictness, re-resolution, before/after
+ARIA capture, default contain versus explicit equal, and scoped checkbox-state
+controls ran. This does not renew the other Unknowns, qualify another build,
+certify accessibility, supply pixels/network truth, establish determinism or
+exercise a real site. The original provenance dates and documentary claims above
+remain historical. Reproduce in an isolated checkout; preserve the committed
+original evidence before any later recheck.

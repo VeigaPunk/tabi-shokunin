@@ -234,3 +234,12 @@ This explicitly supersedes the current-state reading of the historical29/29 coun
 This adds the previously unheld runtime side of the round-12 docs-held ground.
 The prior documentation entry remains historical; it is not silently redated.
 The final receipt and lesson record whether the experiment actually passed.
+
+Runtime admission: `corpus/evidence/round-13/aria-execution-pass.json` records exit0
+at code revision `06e6ada`; `aria/receipt.json` records eight ran/eight passed,
+four expected rejections and cleanup. Command:
+`node -e 'const r=require("./corpus/evidence/round-13/aria/receipt.json"); console.log(r.summary.cases,r.summary.negative)'`.
+Accessible-selector ground is now runtime-held only for this exact package/browser
+and loopback fixture. Other open frontier ground from round12 is unchanged.
+The complete revision-based note-map command/count is retained in
+`corpus/evidence/round-13/measurements.json`; historical31/31 describes round12.
