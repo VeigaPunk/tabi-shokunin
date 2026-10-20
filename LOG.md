@@ -583,3 +583,9 @@
 - Stale-lane: this is the sole tabi mission; respawn-per-round, no other open tabi mission
   is known. Report will cite the pushed lane HEAD; final measured commit and counts
   are appended below rather than guessed in advance.
+- Round-12 measurement addendum: work commit
+  `0d82098e8151ac8c1f58f55716b9f6569bd1844a`. The hardened counting command ran against
+  both the base and that commit, exits0: source_rechecks0→3,
+  accessible_locator_entry0→1. Index measurement31notes/31mapped/no missing paths.
+  Exact commands/stdout in `corpus/evidence/round-12/measurements.json`; score delta0
+  recorded in SCORECARD's round-12 table. Counts measure committed work, not intentions.

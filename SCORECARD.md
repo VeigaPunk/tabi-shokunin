@@ -454,3 +454,70 @@ entered this round, so the window restarts here.
   clean (was 25); the C1 counting command is unchanged.
 - **SHONEN.** All four boxes `[~]` (the former `[x]` verifiers were lane-dispatched); the
   lane's `ROUND_CONTRACT` gate pins `SHONEN.md` and reads red after this change, by order.
+
+## Round 12 — hyaku, 2026-10-20
+
+Current baseline is the kaika row admitted by the outside
+`corpus/lessons/round-1-verifier-spotcheck.md:17`; older training/user tables remain
+historical. This block supersedes their current-state interpretation, not their bytes.
+Lowest non-retired tied axes: depth, operability, freshness, adjacency (8).
+C1 works freshness; no stagnation waiver is used.
+
+The frozen wave initially proposed freshness8→9 and coverage9→10. Critic
+`w1/CoverageAttack.txt` correctly rejected treating an added note as a full expertise
+fraction. Those increments are withdrawn: **scalar delta0** on both axes. The falsifiable
+improvements below are the actual work, not an inferred domain-mastery percentage.
+
+| Axis | Before → after scalar | Round-12 verdict / evidence |
+|---|---|---|
+| depth | 8→8 | unchanged; no runtime or new protocol-support claim |
+| coverage | 9→9 | improved documentary coverage: accessible-selector entry0→1, counted with provenance, mined sources, index and lesson admission, not mere file existence |
+| operability | 8→8 | unchanged claimed axis; source gate26 clean cases and live census clean; bounded mistake witness9/9 runs, no old-gate baseline weakened |
+| freshness | 8→8 | improved bounded source re-verification:0→3 exact target reviews, including two corrected/qualified discrepancies rather than demanding confirmation-only results |
+| calibration | 9→9 | unchanged claimed axis; overreach rejected, no outside verification impersonated; criteria14/15 linked to the round lesson |
+| adjacency | 8→8 | unchanged; publishing, credentials and forensic boundaries retained |
+
+| Claim | Before → after | Counting command | Measured revisions / evidence |
+|---|---|---|---|
+| C1 freshness |0→3 bounded source-claim rechecks: profile, WD BiDi mappings, Playwright retries;2 discrepancy dispositions,1 confirmed family. Original/current note digests pinned. S018/S019 and local runtime excluded | `node .ufo/waves/round-12/measure.mjs REV` | `f032f2dccc8a99632eea52edafa8220284b5c919` → `0d82098e8151ac8c1f58f55716b9f6569bd1844a`; `corpus/evidence/round-12/measurements.json`, `source-recheck.json` |
+| C2 coverage |0→1 docs-held accessible locator/ARIA template entry; no capability acquisition or perfect-coverage claim | `node .ufo/waves/round-12/measure.mjs REV` | same revisions; `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`; S023/S024/S025 mined and indexed |
+
+Both commands exited0 at both named revisions. The same script restricts C1 to three
+distinct named note paths, requires matching committed digests and resolvable review
+reports, and counts confirmed/drift/unknown records with dispositions. C2 additionally
+requires provenance fields, each source mined/used-by, an index row and explicit lesson
+admission. It is a counting probe, not a machine proof of source truth; claim-versus-text
+evidence is the linked source dossier and author-side review reports.
+
+The earlier plan to add `recheck:` lines5→29 is **not completed or credited**. Its mechanism
+was replaced before dispatch by bounded substantive source-claim rechecks; no historical
+note date is silently refreshed. Two notes receive append-only corrections, while the
+new dossier records a false critic correction rejected by opening the source.
+
+### Sources, frontier and judgment
+
+Rows28→28 (A22/B4/C2 unchanged), mined20→23, queued6→3, rejected2→2. S023/S024/S025
+queued→mined; used-by changes and opened-date preservation are logged in
+`corpus/lessons/round-12.md`. Census start/end exit0; live sources gate clean.
+Accessible-selector ground becomes docs-held. Five frontier areas stay open:
+extension↔daemon handshake, native WebMCP probe, real-site rate/rights records,
+real-site journeys, WebMCP spec mining. Expansion improved; quality improved by correcting
+the factory conflation and qualifying rolling docs; discernment unchanged pending fresh
+outside admit/reject verification. Author-side wave reviewers are not non-author verifiers.
+
+Legacy gate debt is not hidden: SHONEN regeneration at5cdc976 causes historical
+`history_rewritten`; the required new round-12 lesson also hits the old user gate's
+overbroad round-N guard. No gate exception, HARD_BASELINE move, PSTACK_PIN move, or
+SHONEN rollback was made. Full analysis: `.ufo/waves/round-12/w1/GateDebt.txt` and
+`ProtectedMap.txt`. No current legacy-gate pass is claimed. Admission remains subject
+to the orchestrator's independent closure, including this named debt.
+
+### Planned / capabilities / retired
+
+- planned: freshness — a fixture-covered policy repair for legacy gates that distinguishes
+  frozen historical round files from future protocol-required lessons and canonical
+  SHONEN regeneration, without rewriting historical measures.
+- planned: coverage — demonstrate the documentation-held locator/template contract on an
+  isolated loopback browser with pinned runtime, template and actual output.
+- capabilities: no new repertoire row; Playwright runtime was not exercised.
+- retired: none. Saturation line8 and window3 retained; this round does not use the nudge.

@@ -219,3 +219,8 @@ The two appended errata in `chrome-remote-debugging-profile-boundary.md` and
 `web-flake-retry-evidence.md` point to the correction dossier. Their original verification
 headers remain historical; three bounded source-claim families were rechecked, not every
 claim in every note. In particular, S018/S019 paper/abstract content was not refreshed.
+
+Round-12 measured index at `0d82098e8151ac8c1f58f55716b9f6569bd1844a`: **31 notes /
+31 mapped / no missing paths**, command and exact output in
+`corpus/evidence/round-12/measurements.json` (`map.command`, `map.stdout`, exit0).
+This explicitly supersedes the current-state reading of the historical29/29 count.
