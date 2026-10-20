@@ -86,9 +86,23 @@ accepted), `server` {host:127.0.0.1,port,origin,requests,
 externalRequestsBlocked:0}, `templates[]`, `fixtures[]`, `cases[]`,
 `negative[]`, and `cleanup` {allCaseCleanup,serverOk,outputConfinementOk,
 tempRootsRemoved,profilesRemoved,caseCleanup[],server{closed,
-refusedAfterClose},browserProcessesAfter:0}. An optional top-level `profile`
-{dir,temp,removed} is checked when present; the per-case cleanup fields carry
-the fresh-profile proof in the final receipt.
+refusedAfterClose},browserProcessesAfter:0}. `profile` is required:
+policy/temp/removed plus either per-case `entries[]` (case, absolute dir,
+removed, tempRootRemoved) or a legacy global `dir`. Every case must have
+exactly one profile entry with a unique directory; each `cleanup.caseCleanup`
+record must match its `profileDir` and prove ok, profileRemoved,
+tempRootRemoved, contextClosed and an empty browserProcessesAfter. Every
+`cleanup.server.perWorker` proof must be closed, listeningAfter false,
+refusedAfterClose true, with a loopback origin.
+
+Repair note for the actual 837b33a receipt: it carries
+`profile{policy,temp,removed,entries[8]}` with no global `profile.dir`. The
+counter now validates those per-case entries against every case record and
+against `cleanup.caseCleanup[].profileDir`, instead of requiring a global
+`dir`; it also verifies each per-worker server close/refusal record. The
+initial failed measurement remains preserved at
+`corpus/evidence/round-13/measure-initial.json`; Main reruns C2 after this
+handoff.
 
 The probe additionally requires:
 
@@ -116,6 +130,9 @@ The probe additionally requires:
   violation`), explicit equal snapshot, and checked-wrong. The checked-wrong
   negative must use templates/checkbox-checked-false.aria.yml.
 - Cleanup, loopback and external-site claims above must be exactly true/zero.
+  The initial failed measurement is preserved unchanged at
+  corpus/evidence/round-13/measure-initial.json; this repair changes only the
+  counter's profile/cleanup contract, not that retained evidence.
 
 Note admission (same revision):
 - corpus/knowledge/aria-loopback-round-13.md exists.

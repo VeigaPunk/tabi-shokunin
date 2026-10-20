@@ -671,3 +671,11 @@
   append-only qualifications. The touched locator note gained §8 superseding
   its original runtime-unknown1 narrowly; its captured documentedContract hash
   remains the original pre-append execution input, not a claim about later bytes.
+- Revision probe at evidence commit `837b33a` measured C1=2, but failed C2 closed
+  with `profile.dir is missing` despite the actual eight-case passing receipt.
+  Initial counting disagreement is preserved in
+  `corpus/evidence/round-13/measure-initial.json`. The producer correctly records
+  one fresh profile per case, not one global profile. The probe now requires
+  eight unique case/profile entries and cross-checks each removal/context/process
+  proof plus each worker's closed/refused server proof; it does not waive cleanup.
+  No browser/gate behavior changed, so only the C2 counting target is re-executed.

@@ -473,11 +473,42 @@ export function countC2(revision, read = reader(revision)) {
     if (endpoint.externalRequestsBlocked !== 0) add('loopback', 'externalRequestsBlocked must be 0');
   }
 
+  const caseNames = Array.isArray(receipt.cases)
+    ? receipt.cases.filter(item => isObject(item) && isText(item.name)).map(item => item.name)
+    : [];
   const profile = receipt.profile;
-  if (isObject(profile)) {
-    if (!isText(profile.dir)) add('profile', 'profile.dir is missing');
+  const profileEntries = new Map();
+  if (!isObject(profile)) {
+    add('profile', 'profile object is missing');
+  } else {
+    if (!isText(profile.policy)) add('profile', 'profile.policy is missing');
     if (profile.temp !== true) add('profile', 'profile.temp must be true');
     if (profile.removed !== true) add('profile', 'profile.removed must be true');
+    if (Array.isArray(profile.entries)) {
+      if (profile.entries.length === 0) add('profile', 'profile.entries is empty');
+      const dirs = new Set();
+      for (const entry of profile.entries) {
+        if (!isObject(entry) || !isText(entry.case)) {
+          add('profile', 'profile entry has no case');
+          continue;
+        }
+        if (profileEntries.has(entry.case)) add('profile', `duplicate profile entry for ${entry.case}`);
+        profileEntries.set(entry.case, entry);
+        if (!isText(entry.dir) || !entry.dir.startsWith('/')) add('profile', `profile ${entry.case} dir is not absolute`);
+        if (entry.removed !== true) add('profile', `profile ${entry.case} was not removed`);
+        if (entry.tempRootRemoved !== true) add('profile', `profile ${entry.case} temp root was not removed`);
+        if (isText(entry.dir)) {
+          if (dirs.has(entry.dir)) add('profile', `duplicate profile dir ${entry.dir}`);
+          dirs.add(entry.dir);
+        }
+      }
+      for (const name of caseNames) {
+        if (!profileEntries.has(name)) add('profile', `no profile entry for case ${name}`);
+      }
+      if (profileEntries.size !== caseNames.length) add('profile', 'profile entries do not match the case records');
+    } else if (!isText(profile.dir)) {
+      add('profile', 'profile.dir or profile.entries is missing');
+    }
   }
 
   const cleanup = receipt.cleanup;
@@ -495,12 +526,62 @@ export function countC2(revision, read = reader(revision)) {
       } else {
         if (cleanup.server.closed !== true) add('cleanup', 'cleanup.server.closed must be true');
         if (cleanup.server.refusedAfterClose !== true) add('cleanup', 'cleanup.server.refusedAfterClose must be true');
+        if (Array.isArray(cleanup.server.perWorker)) {
+          if (cleanup.server.perWorker.length === 0) add('cleanup', 'cleanup.server.perWorker is empty');
+          for (const worker of cleanup.server.perWorker) {
+            if (!isObject(worker)) {
+              add('cleanup', 'server per-worker proof is not an object');
+              continue;
+            }
+            if (worker.closed !== true) add('cleanup', 'server per-worker was not closed');
+            if (worker.listeningAfter !== false) add('cleanup', 'server per-worker still listens');
+            if (worker.refusedAfterClose !== true) add('cleanup', 'server per-worker refusal was not observed');
+            if (!isText(worker.origin)) {
+              add('cleanup', 'server per-worker origin is missing');
+            } else {
+              try {
+                const origin = new URL(worker.origin);
+                if (origin.hostname !== '127.0.0.1') add('cleanup', 'server per-worker origin is not loopback');
+              } catch {
+                add('cleanup', 'server per-worker origin is not a URL');
+              }
+            }
+          }
+        } else if ('listeningAfter' in cleanup.server && cleanup.server.listeningAfter !== false) {
+          add('cleanup', 'cleanup.server.listeningAfter must be false');
+        }
       }
       if (!Array.isArray(cleanup.caseCleanup) || cleanup.caseCleanup.length === 0) {
         add('cleanup', 'cleanup.caseCleanup is empty');
       } else {
+        const seen = new Set();
         for (const item of cleanup.caseCleanup) {
-          if (!isObject(item) || item.ok !== true) add('cleanup', 'every case cleanup must record ok=true');
+          if (!isObject(item) || !isText(item.case)) {
+            add('cleanup', 'case cleanup record has no case');
+            continue;
+          }
+          if (seen.has(item.case)) add('cleanup', `duplicate case cleanup for ${item.case}`);
+          seen.add(item.case);
+          if (item.ok !== true) add('cleanup', `case ${item.case} cleanup did not record ok=true`);
+          if (!isText(item.profileDir) || !item.profileDir.startsWith('/')) add('cleanup', `case ${item.case} profileDir is missing`);
+          if (item.profileRemoved !== true) add('cleanup', `case ${item.case} profile was not removed`);
+          if (item.tempRootRemoved !== true) add('cleanup', `case ${item.case} temp root was not removed`);
+          if (item.contextPresent !== false && item.contextClosed !== true) add('cleanup', `case ${item.case} context was not closed`);
+          if (!Array.isArray(item.browserProcessesAfter) || item.browserProcessesAfter.length !== 0) {
+            add('cleanup', `case ${item.case} left browser processes`);
+          }
+          const entry = profileEntries.get(item.case);
+          if (entry) {
+            if (isText(entry.dir) && isText(item.profileDir) && entry.dir !== item.profileDir) {
+              add('profile', `profile dir mismatch for case ${item.case}`);
+            }
+            if (entry.removed !== true || entry.tempRootRemoved !== true) {
+              add('profile', `profile entry for case ${item.case} is not fully removed`);
+            }
+          }
+        }
+        for (const name of caseNames) {
+          if (!seen.has(name)) add('cleanup', `no case cleanup for ${name}`);
         }
       }
     } else {
