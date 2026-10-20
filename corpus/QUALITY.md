@@ -99,3 +99,41 @@
     outputs differ across inputs (a stub dependency that must turn the result red,
     and input variations with different expected findings). (lesson:
     corpus/lessons/round-16.md#mistakes; wave-2 AttackC1Liar)
+26. A run claim (a count, verdict or exit "at REV") cites a committed receipt recording argv,
+    producer digest, the revision it ran at and its exit; or it says "holds by drift diff" and
+    names the empty `git diff --name-only` over every counted input plus the counter path — and
+    criterion 22's `--reproduce` at the delivered revision still applies. A bare "again at REV"
+    is a finding. (lesson: corpus/lessons/round-17.md#mistakes; round16 outside routed 3)
+27. A probe, gate or selftest is described by the finite set of shapes it defeats, each named by
+    the case or probe that goes red on it, and the description ends with the shapes left
+    untested. Absolute words ("unforgeable", "tamper-proof") are not admitted in prose about a
+    probe. Refines 25. (lesson: corpus/lessons/round-17.md#mistakes; round16 outside :76 — a
+    paraphrase of an uncommitted author summary, not a report word)
+28. Every evidence pointer in a lesson, note, QUALITY/SCORECARD/README row resolves as committed
+    bytes: a lane path tracked at the cited revision, or `<repo>@<40-hex>:<path>` for a sibling
+    or fleet object. A `/tmp` or untracked path is never the only root of a claim; it may appear
+    as labelled history or as data inside a receipt. (lesson: corpus/lessons/round-17.md#mistakes;
+    round16 outside routed 1)
+29. A gate's implicit anchor is the lane tip: the attached branch, else `refs/heads/master`,
+    read once per process with `symbolic-ref -q --no-recurse HEAD`, refusing a symbolic anchor
+    and any other status, peeled with `rev-parse --verify --end-of-options <ref>^{commit}` and
+    printed as the 40-hex in `code_revision=`/`codeRevision=` (`measuredRevision=uncommitted`
+    stays legal for worktree bytes). An explicit `--at`/`--witness` is the caller's revision.
+    "Delivered HEAD" in 22 means the 40-hex of local `refs/heads/master` that the lane helper
+    printed as `landed`. Carve-out: the byte-frozen `scripts/check-freshness.mjs` keeps its
+    witness parser; callers pass `"$(git rev-parse --verify refs/heads/master)"`. (lesson:
+    corpus/lessons/round-17.md#mistakes; fleet `.ufo/waves/hyaku/jj-w1/reports/JjAuditTabi.md` F1–F3, F6)
+30. A committed receipt records the producer it ran (path and sha256 of gate, selftest, harness
+    or counter); a claim cites it only when that digest equals the blob registered for the
+    claim. Receipts from an earlier hardening are labelled history by a committed index in the
+    superseding round; the frozen receipt is not edited. (lesson: corpus/lessons/round-17.md#mistakes;
+    round16 outside routed 2)
+31. Refines 4 and 24: a correction to a line of a sha-pinned note names that frozen path and line
+    in an append-only index row (`corpus/README.md`), so a reader at the frozen line can find it;
+    the pinned bytes stay untouched. (lesson: corpus/lessons/round-17.md#mistakes; round16 outside routed 4)
+32. A scope overlap with a sibling lane is dispositioned in a committed `corpus/adjacency.tsv` row
+    whose quotes resolve on pinned lines (`scripts/check-adjacency.mjs`); `ruled` cites a
+    non-lane-authored ruling that names the sibling, `contested-open` cites a fleet L0 line naming
+    the sibling. A clean checker certifies citations and venues, not bilateral agreement: a
+    `split-declared` or `refused-route` row records tabi's reading and says so. (lesson:
+    corpus/lessons/round-17.md#mistakes; round16 outside routed 5)

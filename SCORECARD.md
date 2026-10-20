@@ -772,3 +772,46 @@ and end; knowledge notes 32→33.
   kaidoku CDP-runtime overlap.
 - saturation 8 / window 3; the round-16 capability restarts the window (round 17 = position 1).
 - retired: none.
+
+## Round 17 — hyaku, 2026-10-20
+
+Baseline `5859243183c4d7ac5429dfdb8a73ce0d9a43d583`; measured revision
+`93bfead1f5f25f584353df3152a60209bbd89a2e`. C1 works operability 8 and C3 adjacency 8 (lowest
+non-retired tie with depth/freshness); C2 is coverage 9 + a capability acquisition. Round 17 is
+position 1 of the window after the round-16 capability; no waiver used.
+
+| Axis | Scalar before → after | Round17 verdict / evidence |
+|---|---|---|
+| depth | 8→8 | unchanged |
+| coverage | 9→9 | improved C2: held WebMCP-invocation entries 0→1 (one build, loopback, flags, fixture-owned tools); 10 withheld (real-site, agent-side, Chromium 152, default profile open) |
+| operability | 8→8 | improved C1: jj-anchor-safe behaviour-bearing gate entries 0→4 (all 4 of the behaviour-bearing entries; 4 label-only witness entries anchor-correct, not credited; 8 total); 9 withheld: USER 6/10 red, no outside execution, a re-anchor is not a new runnable rung |
+| freshness | 8→8 | unchanged (S032 re-opened unchanged) |
+| calibration | 9→9 | unchanged claimed axis; QUALITY 26–32 lesson-backed |
+| adjacency | 8→8 | improved C3: verified sibling-overlap dispositions 0→10 (ruled 1 by the integrator, contested-open 4 on tabi-filed L0 lines, split-declared 2, refused-route 3); 9 withheld: 1 of 10 arbitrated, no outside execution |
+
+| Claim | Before → after | Counting command | Measured revision / counter sha256 / evidence |
+|---|---|---|---|
+| C1 operability | 0→4 | `node .ufo/waves/round-17/measure-c1.mjs REV` (`c1_anchor_safe`) | 5859243 → 93bfead; `1bb9804acd6b1a52eb356efdb325c7eb835eb7ecc610357944bcfd30bd87f4d2`; `corpus/evidence/round-17/measurements.json` |
+| C2 coverage | 0→1 | `node .ufo/waves/round-17/measure-c2.mjs REV` (`c2_invocation_held`) | same revisions; `079dcc3924d36b34e56996efe694d35e474455489d611812a78615f3821fc3e1`; receipt `corpus/evidence/round-17/webmcp-invoke/receipt.json` |
+| C3 adjacency | 0→10 | `node .ufo/waves/round-17/measure-c3.mjs REV` (`c3_adjacency_verified`) | same revisions; `372c9658df761f3a640ded2b69b575f1167330bc362df8a63396977c40f66bc1`; `corpus/adjacency.tsv` |
+
+Binding: `node scripts/check-measurement-binding.mjs --check
+corpus/evidence/round-17/measurement-binding.json --at <landed tip> --reproduce` → exit 0
+`claims=3 bound=3` (receipt committed at round end). Sources 40→57 (A46/B4/C7;
+mined42/queued8/rejected7); census validate exit 0 at start and end; knowledge notes 33→34.
+
+### Capabilities — round 17
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| webmcp-cdp-invocation | Invoke page-registered WebMCP tools (imperative and declarative, fixture-owned) over CDP `WebMCP.invokeTool`/`cancelInvocation` on flag-enabled Chromium 154 loopback, recording raw frames, a loopback ledger of what `execute` received, controls and per-run pid/argv; harness-driven, not agent-side | `node scripts/webmcp-invoke-round17.mjs --out /tmp/x.json`; `corpus/evidence/round-17/webmcp-invoke/receipt.json` (11/11 + 4 controls) | round17 (round-16 probes invoked tools without a receipt) |
+
+### Planned / saturation / retired — round17
+
+- planned: operability 9 needs USER green or an L0 out-of-scope ruling, a non-author run of the
+  gates at the landed tip, and a new runnable rung; adjacency 9 needs kaidoku citing tabi on its
+  CDP row, the musketeer lease ruled, and a non-author run of the map checker. Also: harness
+  hardening debt (DevTools port, SIGTERM, downloads, merged feature switches), self-test cases
+  for the mutation survivors (no `--no-recurse`, status 128, env inheritance, per-call tip).
+- saturation 8 / window 3; the round-17 capability restarts the window (round 18 = position 1).
+- retired: none.

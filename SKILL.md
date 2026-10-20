@@ -1890,3 +1890,78 @@ failed, 2 could not evaluate; refuses to overwrite differing receipt bytes).
 - Declarative tools cite S030/S031/S033 and the receipt, never S020.
 - Confinement scope: page-level HTTP(S), beacon and page-WebSocket aborts only; WebRTC,
   WebTransport and SharedWorker traffic are not confined.
+
+## Round 17 — lane-tip anchoring, WebMCP invocation, adjacency map (2026-10-20)
+
+Append-only. Measured revision `93bfead1f5f25f584353df3152a60209bbd89a2e` ("M"); baseline
+`5859243183c4d7ac5429dfdb8a73ce0d9a43d583`. Sources S049–S052 (jj/git) are opened this round and
+still `queued`; S055/S056 correct S049/S050.
+
+### Lane-tip anchor rule (C1)
+
+- The lane is jj-colocated: git `HEAD` is jj-owned, normally detached, and may name an empty or
+  snapshot-only commit on no branch (fleet `.ufo/waves/hyaku/jj-w1/reports/JjAuditTabi.md` F1–F3;
+  `.ufo/waves/round-17/w1/RevJjHead.md`). Record revisions as the 40-hex of `refs/heads/master`
+  (`git rev-parse --verify refs/heads/master`), never bare `HEAD`, `@{u}`, `--abbrev-ref HEAD`.
+- With no explicit revision, `check-round-contract`, `check-user-round-contract`,
+  `check-measurement-binding` and `check-adjacency` resolve the lane tip once: `symbolic-ref -q
+  --no-recurse HEAD` (status 0 → that `refs/heads/` branch; status 1 → `refs/heads/master`; anything
+  else, a symbolic anchor or a non-toplevel root → exit 2), then `rev-parse --verify
+  --end-of-options <ref>^{commit}`; git runs with a constructed env (no inherited `GIT_*`, replace
+  objects and grafts off, ceiling directory). Code: `scripts/check-round-contract.mjs:114`,
+  `scripts/check-user-round-contract.mjs:160`, `scripts/check-measurement-binding.mjs:267`.
+- The anchor is the LOCAL branch tip, not the pushed one: after a helper exit 3 the tip is
+  unpushed and the gates still certify it. "Landed" means the hash the helper printed as
+  `landed <hash>`. An attached non-master branch is certified as that branch (open, PLAN §C1).
+- Witness receipts print `code_revision=`/`codeRevision=` as the tip; the round gate's
+  `--count-witness` adds `code_committed=yes|no`; the user witnesses print
+  `measuredRevision=uncommitted` when the worktree gate bytes differ from the tip's.
+- `scripts/check-freshness.mjs` is byte-frozen (protectedPath in both round gates; pstack census)
+  and still accepts `--witness HEAD`: always invoke it as
+  `node scripts/check-freshness.mjs --witness "$(git rev-parse --verify refs/heads/master)"`.
+  This rule is not enforced by code.
+- Explicit `--at REV` / `--witness REV` is the caller's revision; `check-measurement-binding`
+  still accepts `--at HEAD` (it then reads HEAD) — never pass it.
+- Identity chain: `scripts/check-user-round-contract.mjs` archives the round-14 round-gate identity
+  `8a573b4e…` and pins current `1579a794…`; any later change to `scripts/check-round-contract.mjs`
+  must land in the same commit as a rotated pair (every committed intermediate archived).
+- Commit only through `/home/vgpnk/Projects/shokunin/scripts/hyaku/jj-lane.sh commit … --as tabi -m
+  "round-N: …" -- <paths>`; never `git add|commit|stash|checkout|reset|pull|push` or a mutating
+  jj command in the lane; gates that write git run in a sandbox clone. For a status read use
+  `GIT_OPTIONAL_LOCKS=0 git status --porcelain`.
+
+### Registry — round 17 (sha256 at M)
+
+| Entry | argv | Verdict map | sha256 |
+|---|---|---|---|
+| round contract | `node scripts/check-round-contract.mjs [--self-test \| --witness REV \| --count-witness REV]` | 0 clean, 1 finding, 2 could not evaluate; self-test 38 cases | `1579a794…91828` |
+| user contract | `node scripts/check-user-round-contract.mjs [--self-test \| --witness REV \| --count-witness REV \| --diagnostic-witness]` | production stays 1 `round_count` 6/10 (inherited); self-test 45 cases | `568c0421…5f273` |
+| measurement binding | `node scripts/check-measurement-binding.mjs --check <manifest> [--at REV] [--reproduce]`; `--self-test` | 0/1/2; self-test 76 cases, 13 reasons; default `--at` = lane tip | `388c2b49…14af74` (selftest `8324692c…26b3`) |
+| adjacency map | `node scripts/check-adjacency.mjs [--at REV] [--fleet <fleet root>] [--json] [--self-test]` | 0 clean, 1 findings, 2 could not evaluate; self-test 57 cases, 18 reasons | `4e2c2a64…324aac` |
+| WebMCP invoke harness | `node scripts/webmcp-invoke-round17.mjs --out <path outside the lane>` | 0 pass, 1 a case failed, 2 could not evaluate (also a refused overwrite) | `de62820d…052d7` |
+| round-17 counters | `node .ufo/waves/round-17/measure-c{1,2,3}.mjs REV` | one JSON line; 0 counted, 2 could not evaluate | c1 `1bb9804a…`, c2 `079dcc39…`, c3 `372c9658…` |
+
+Binding: `node scripts/check-measurement-binding.mjs --check
+corpus/evidence/round-17/measurement-binding.json --at <landed tip> --reproduce` must exit 0
+`claims=3 bound=3`, run from the lane inside the fleet tree (the C3 counter reads sibling repos).
+The round-16 manifest is red at round-17 tips by design (`counted_input_changed`); its receipt is
+`corpus/evidence/round-17/routed/binding-hardened/check-at-1205d26.json`.
+
+### WebMCP invocation decision rows (C2; `corpus/knowledge/webmcp-invocation-round-17.md`)
+
+| Question | Answer on Chromium 154 loopback, flags on |
+|---|---|
+| Did the tool run because `invokeTool` returned an id? | No — the id precedes tool events (S041 line 68); read `toolResponded.status` |
+| Where is the error message? | `exception.description`; `errorText` is empty on throw/reject |
+| Does Chromium enforce `inputSchema`? | No — mismatching input ran `Completed` |
+| Does navigation or unregistration cancel a pending call? | No `toolResponded` within 8 s after navigation; unregistration does not cancel (probe); only `cancelInvocation` gave `Canceled` |
+| How to pair responses? | By `invocationId` through `toolInvoked`; `toolResponded` carries no tool name or session |
+| May the lane invoke a page tool? | Only fixture-owned tools on loopback; never a real site's tool without operator approval |
+
+### Adjacency map (C3)
+
+`corpus/adjacency.tsv` dispositions sibling overlaps (10 rows): the round-16 integrator CDP
+ruling (`corpus/lessons/round-16-verifier-spotcheck.md:141-142`) is the `ruled` kaidoku row;
+contested scope waits on fleet `.ufo/l0-questions.md:62` (the-musketeer CDP lease, kagi/kake) and
+`:65` (ruling reach to revenger and kama). A clean checker certifies citations and venues, not
+bilateral agreement. `PROVINCE.md` cannot carry the ruling (census-frozen).

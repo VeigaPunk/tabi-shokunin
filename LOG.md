@@ -1003,3 +1003,38 @@ the frontier row "Native WebMCP in chromium 152 — unprobed (census U3)"
 - Tools installed/updated: none by L1; wave-2 seat AttackC1Before ran `npx -y node@22`
   (Node 22.23.3, npx cache) for a cross-version probe; wave-1 seat RevCountCmds installed
   Node 22.23.3 and 20.20.2 via fnm for version testing.
+
+## Round 17 — hyaku, 2026-10-20 (lane-tip gates, WebMCP invocation, adjacency map)
+
+- Motivation: routed jj evidence (fleet `.ufo/waves/hyaku/jj-w1/reports/JjAuditTabi.md`,
+  `JjTrialTabi.md`): gates read jj-owned git `HEAD`, four `code_revision` fields printed it, and
+  `check-freshness --witness` accepts literal `HEAD`. Round-16 outside spot-check routed defects
+  1–5 and the integrator CDP ruling (`corpus/lessons/round-16-verifier-spotcheck.md:138-157`).
+- C1 operability: `laneTip` in `scripts/check-round-contract.mjs`,
+  `scripts/check-user-round-contract.mjs` (identity pair rotated), `scripts/check-measurement-binding.mjs`
+  (+ selftest 59→76); counter `measure-c1.mjs` 0 → 4 (5859243 → 93bfead). `check-freshness.mjs`
+  left byte-frozen (why-not + invocation rule in SKILL round 17). Commits `6c97851`, `93bfead`.
+- C2 coverage + capability `webmcp-cdp-invocation`: harness `scripts/webmcp-invoke-round17.mjs`,
+  receipt 11/11 + 4 controls, note `corpus/knowledge/webmcp-invocation-round-17.md`, sources
+  S041–S048 (+ S054 correction); counter 0 → 1.
+- C3 adjacency: `corpus/adjacency.tsv` (10 rows) + `scripts/check-adjacency.mjs`; fleet L0 questions
+  `ebeb396` (line 62, musketeer lease) and `b6b3b5e` (line 65, ruling reach to revenger/kama);
+  counter 0 → 10. `PROVINCE.md` untouched (census-frozen).
+- Routed: liar probe rooted (`corpus/evidence/round-17/routed/liar/`), hardened receipts and the
+  `1205d26` delivered-HEAD receipt (`routed/binding-hardened/`), census U3 and r16 note `:135`
+  README index rows, ruling recorded in the map.
+- Wave 2 falsified and L1 repaired: C2 counter certified 12 forged receipts (now 0 of 23),
+  C3 checker/counter 4 survivors (pin dedupe, ASCII surface, l0 file as ruled venue, lane-name
+  dependence) and a false kasegi `refused-route` row (dropped), C1 counter missed a `..HEAD` range
+  mutant (now drops to 2), note cells contradicted by the receipt (corrected), source rows
+  S047/S049/S050/S053 superseded by S054–S057.
+- No-harm (sandbox at M and lane): ROUND_CONTRACT clean 10; USER failed `round_count` 6/10
+  (unchanged); freshness `--worktree` clean 34; SOURCES gate clean rows=57; all 20 harm-baseline
+  entries same exits (`w2/HarmAfter.md`); census validate exit 0.
+- Author verdicts: C1 operability improved, C2 coverage improved (capability enters), C3 adjacency
+  improved; no scalar moves. Expansion improved, quality improved, discernment unchanged
+  (author-side only; outside check pending).
+- The L1 session was resumed once after an Anthropic 429 (same identity); three wave-1 seats were
+  revived by message. Wave-2 m_zfl seats died on zai 429 retry exhaustion (listed in the report).
+- Tools installed/updated: none by L1; wave-2 seat RevNoteVsReceipt installed acorn 8.19.0 with
+  npm into its /tmp sandbox only (predicate hashing).
