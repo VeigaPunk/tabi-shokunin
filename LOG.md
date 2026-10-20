@@ -1062,3 +1062,23 @@ the frontier row "Native WebMCP in chromium 152 — unprobed (census U3)"
 - Wave1 dispatched70 (registry `.ufo/waves/round-18/w1/swarm-registry.json`); L1 holds planner.
   Code writers used disjoint files but not separate writer worktrees: recorded conformance miss.
   Final measured revisions, falsification results and no-harm comparison follow in this same round.
+
+- Final round18 outcome: C1 freshness0→51, C2 operability0→6, C3 calibration0→5, scalars unchanged.
+  Evidence checkpoint `01531daf3fa784410db454e4d606488e467a039a`, binding reproduction exit0
+  claims3/bound3. Direct code measurements at `c0aff2364b49b21c41669f050e03800138589fa7` are retained
+  under `corpus/evidence/round-18/measurements.json`; exact-checkpoint binding/harm evidence is
+  `.ufo/waves/round-18/final/`. Full23-gate comparison:23 equal,22 clean plus inherited USER6/10 red.
+- Wave2:80 seats; total150; all70+80 scoped reports present. One all80 job-cap refusal spawned
+  none, unchanged payload succeeded after180s; no dead workers replaced. Final repair owners used
+  private clones. Role mixes and the wave1 writer-isolation miss are explicit in the lesson/report.
+- C1 now retains actual compressed responses and recomputes byte/decode/excerpt integrity; final
+  source verdicts41 held/9 drift-superseded/1 own-work. SOURCES57→76 (+18A/+1C; no old cells edited).
+  S065–S076 and README/knowledge/SKILL correction entries prevent false old assertions standing
+  as current guidance. Depth remains a deliberate deferred priority, not saturation.
+- QUALITY39 adds retained-body binding after the zero-digest survivor. Self-test receipts for
+  all new self-test claims are committed under corpus/evidence (38/26/38/8 cases).
+- Tool installs: SimplifyTools used acorn8.19.0, acorn-walk8.3.5, eslint9.39.5 from official npm
+  into its private /tmp/r18-ast for AST/unused-binding analysis. No host/global/pacman install.
+- Author trends: expansion unchanged; quality improved; discernment improved by lesson-backed
+  resolution of the previous outside disagreements. Current non-author closure/promotion is not
+  claimed. Open tabi round17 L0 questions (musketeer lease, revenger/kama ruling reach) unchanged.

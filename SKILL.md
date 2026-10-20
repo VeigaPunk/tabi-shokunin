@@ -1965,3 +1965,72 @@ ruling (`corpus/lessons/round-16-verifier-spotcheck.md:141-142`) is the `ruled` 
 contested scope waits on fleet `.ufo/l0-questions.md:62` (the-musketeer CDP lease, kagi/kake) and
 `:65` (ruling reach to revenger and kama). A clean checker certifies citations and venues, not
 bilateral agreement. `PROVINCE.md` cannot carry the ruling (census-frozen).
+
+## Round 18 — guarded browser evidence and source re-verification (2026-10-20)
+
+Current code/evidence checkpoint `01531daf3fa784410db454e4d606488e467a039a`, following code run
+`c0aff2364b49b21c41669f050e03800138589fa7`. SOURCE corrections S058–S076 and the two new notes
+are indexed in `corpus/README.md`; all source quotes/located openings are in the round18 lesson.
+This is hardening of already-held Chromium154 loopback ground, not new real-site authority.
+
+### Browser-harness decision table
+
+| Condition | Required behavior / evidence |
+|---|---|
+| SIGTERM, SIGINT or SIGHUP interrupts an owned run | Exit2 `run_aborted`; no pass/fail receipt. One bounded cleanup owns pending launches, contexts and exact process identities; never kill unrelated Chromium |
+| Ordinary completion or watchdog | Close owned browser tree before removing its private profile/HOME/temp tree; failure/timeout is not successful closure |
+| Need a page-tool CDP session | Use `context.newCDPSession(createdFixturePage)` over Playwright's pipe; no DevTools TCP listener. The pipe is still privileged, not a scope ruling on a sibling lease |
+| Recording CDPSession traffic | IDs are local correlations; errors are constructed from real `session.send` rejections, not raw wire frames or invented numeric protocol codes |
+| Fixture tool attempts a blob download | `acceptDownloads:false`, record settled failure, and scan actual bounded temp scopes while browser is alive and after close; absence after cleanup alone is insufficient |
+| Adding Chromium feature switches | Merge with pinned Playwright defaults; inspect effective main-process argv for one enable token, at most one disable token and preserved feature union |
+| Want a current freshness witness in jj | Run `node scripts/freshness-witness.mjs`; its default resolves the branch-tip40hex once. `--rev` deliberately permits explicit full-hash ancestors of master, but refuses HEAD/short/symbolic/off-branch input |
+
+The final observed six-hazard result is6 with original11 cases and four controls retained, plus
+the refused-download case (12/12). Sources S059/S060/S061/S062/S064 and superseding S070 distinguish
+vendor facts from derived harness rules. Runtime/producer identity is in the counter output.
+The old round17 raw-WebSocket harness remains frozen/runnable for its different transport evidence;
+the new harness does not claim the old wire-error-code facet is observable through CDPSession.
+
+**Correction to the round17 inputSchema row at :1956 and invocation note :54/:73:** the measured
+mismatch case was an **imperative** tool. Source S071 traces declarative form inputs through
+FillData, which rejects unknown names and invalid supported values. This is source-level evidence,
+not a new runtime validation probe or proof that every declarative custom-control type validates.
+
+### Source and correction procedure
+
+1. Reopen the cited source at its explicit build/revision, not “the latest” by assumption. Retain
+   raw bytes compressed, body SHA/size, decoder, quote location and exact excerpt.
+2. `node .ufo/waves/round-18/recheck-fetch.mjs` produces the receipt (CLI in its header); gzip
+   retention is default. Create a dedicated output directory first. `--normalize-only` writes
+   nothing. Treat its command string as an argv display, not a shell command.
+3. `node .ufo/waves/round-18/measure-c1.mjs REV [--live]` checks the **fixed round18 cohort51**;
+   it is not a reusable due-date gate. Late source rows cannot replace baseline cohort members.
+   The cohort's38/12/1 URL classes distinguish living/pinned/own-work; a static paper URL can
+   still classify living. Quote presence and body integrity do not establish full claim truth.
+4. Correct unsupported teaches/anchors with a new SOURCES row, logging status/recheck/used-by
+   transitions only if those cells actually change. S065–S076 are the round18 examples.
+5. Bind code/counted inputs at the delivered checkpoint:
+   `node scripts/check-measurement-binding.mjs --check .ufo/waves/round-18/measurement-binding.json --at <40hex> --reproduce`.
+
+**Supersedes the SKILL-only invocation guidance at :1919-1922 for routine callers:** use the
+guarded wrapper. The frozen `scripts/check-freshness.mjs --witness HEAD` remains directly callable;
+this round does not falsely claim global enforcement. Real-site actions, host process ownership,
+and both open sibling L0 rulings remain operator-owned.
+
+### Registry — round18
+
+All entries owned by tabi. Exact SHA pins are in `corpus/evidence/round-18/tool-identities.json`;
+counter pins/argv/input sets also live in `.ufo/waves/round-18/measurement-binding.json`.
+
+| Name / kind | Entry command | Verdict map | Self-test / expected values | Write scope |
+|---|---|---|---|---|
+| freshness witness / probe | `node scripts/freshness-witness.mjs [--rev <40hex>] [--dry-run]` | 0 downstream clean/dry-run,1 downstream finding,2 could-not-evaluate/refused input | `--self-test`:8 cases; expected outcomes embedded; receipt `corpus/evidence/round-18/selftests/wrapper.json` | stdout; isolated fixture repos in self-test |
+| invocation harness / probe | `node scripts/webmcp-invoke-round18.mjs --out <new external path>` | 0 pass,1 case failure,2 could-not-evaluate/abort | real12-case/four-control receipt `corpus/evidence/round-18/webmcp-invoke/receipt.json`; counter self-test supplies finite negative shapes | private temp profiles/server/process tree and selected output receipt |
+| source fetch / probe | `node .ufo/waves/round-18/recheck-fetch.mjs <header argv>` | 0 quote found,1 quote absent,2 could-not-evaluate/usage | `--normalize-only` is a probe, not a self-test; C1 fixtures test acceptance | explicit receipt/excerpt/body output directory |
+| C1 counter / probe | `node .ufo/waves/round-18/measure-c1.mjs REV [--live]` | 0 evaluated count,1 self-test failure,2 could-not-evaluate | `--self-test`:38; embedded cases; `corpus/evidence/round-18/selftests/c1.json` | isolated fixture repos; live mode public GETs |
+| C2 counter / probe | `node .ufo/waves/round-18/measure-c2.mjs REV` | 0 evaluated count,2 could-not-evaluate; self-test verdict explicit | `--self-test`:26; embedded stub cases; `corpus/evidence/round-18/selftests/c2.json` | private clones/browser runs/temp data, never lane Git |
+| C3 counter / probe | `node .ufo/waves/round-18/measure-c3.mjs REV` | 0 evaluated count,1 self-test failure,2 could-not-evaluate | `--self-test`:38; embedded cases; `corpus/evidence/round-18/selftests/c3.json` | private fixture repos only |
+
+A zero counter exit means it evaluated, not that all hazards/repairs passed. Read the count and
+per-item reasons. Finite mutants tested are recorded in the self-test receipts and wave reports;
+coordinated fabrication of remote publisher history is not claimed defeated.

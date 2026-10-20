@@ -815,3 +815,48 @@ mined42/queued8/rejected7); census validate exit 0 at start and end; knowledge n
   for the mutation survivors (no `--no-recurse`, status 128, env inheritance, per-call tip).
 - saturation 8 / window 3; the round-17 capability restarts the window (round 18 = position 1).
 - retired: none.
+
+## Round 18 — hyaku, 2026-10-20
+
+Baseline `2bff864fdfee684ddbcd066cc8e735adaba2735c`. Final evidence checkpoint
+`01531daf3fa784410db454e4d606488e467a039a`; main code measurements first ran at
+`c0aff2364b49b21c41669f050e03800138589fa7`, then all three counters reproduced at the checkpoint
+through `.ufo/waves/round-18/measurement-binding.json` (exit0, claims3/bound3).
+Freshness8 and operability8 each work a lowest non-retired tie. No stagnation waiver.
+
+| Axis | Scalar before → after | Verdict / evidence |
+|---|---|---|
+| depth | 8→8 | unchanged; explicitly deferred, not saturated; seven-round avoidance concern recorded in w1/CriticLowestAxis.md |
+| coverage | 9→9 | unchanged; original11 scenarios/four controls retained; no real-site/agent-side/default-profile/Chromium152 claim |
+| operability | 8→8 | improved C2: six finite hazards0→6; F6 is wrapper-scoped, not a global fix; scalar9 withheld while USER6/10 remains red |
+| freshness | 8→8 | improved C1: fixed-cohort source reopen receipts0→51 with retained bodies; 41 held,9 drift-superseded,1 own-work; no overdue or current-product inference |
+| calibration | 9→9 | improved C3: five routed outside-check defects0→5; independent current-round closure still pending |
+| adjacency | 8→8 | unchanged; six-sibling map and open leases retained, no silent arbitration |
+
+| Claim | Before → after | Counting command (run from lane) | Measured checkpoint / evidence |
+|---|---|---|---|
+| C1 freshness | 0→51 | `node .ufo/waves/round-18/measure-c1.mjs REV` (`c1_rows_rechecked`) | B→01531daf3fa784410db454e4d606488e467a039a; `corpus/evidence/round-18/measurements.json`, checkpoint binding reproduction |
+| C2 operability | 0→6 | `node .ufo/waves/round-18/measure-c2.mjs REV` (`c2_hazards_closed`) | same; runtime identity Chromium154.0.8037.97/Playwright1.64.0/Node24.21.0 retained in output |
+| C3 calibration | 0→5 | `node .ufo/waves/round-18/measure-c3.mjs REV` (`c3_routed_closed`) | same; each d1–d5 independently verified |
+
+Counter SHA pins: `corpus/evidence/round-18/tool-identities.json` and the binding manifest.
+The first integration `530f40a9bc3f10436161a2af1ca0fe9bffffc004` is history, not the final
+producer/body/counter state. Current source rows76 (A64/B4/C8; mined60/queued8/rejected8), from
+`node scripts/check-sources.mjs`; B had57. Fleet census exit0 at start/end, ten duplicate-URL
+warnings at end for explicit supersessions. Old source cells unchanged; additions19.
+
+No-harm at the exact checkpoint: all23 exits equal baseline (22×0, inherited USER round_count1).
+Full argv/streams/producers: `.ufo/waves/round-18/final/harm-at-checkpoint.json`; earlier complete
+code-run comparison: `corpus/evidence/round-18/harm-at-measured.json`. Main self-test receipts:
+C1 38/38, C2 26/26, C3 38/38 and wrapper8/8 under `corpus/evidence/round-18/selftests/`.
+Binding home is outside corpus/evidence to avoid C2's broad counted-evidence prefix including
+its own changing binding record. Final delivered-tip binding receipt is retained beside it.
+
+### Planned / capabilities / saturation / retired — round18
+
+- No new capability: this hardens and calibrates held ground; expansion unchanged.
+- On the next steer, prioritize depth: a runtime imperative/declarative validation decision table
+  from S071, or substrate re-verification of the r3/r8/r9 evidence ladder. Depth has not been
+  claimed since user-round5; choosing other tied-lowest axes repeatedly did not retire it.
+- USER round_count, real-site approval and sibling L0 lease/ruling questions remain open.
+- Saturation8/window3 unchanged; round18 is position1 after the round17 capability. Retired:none.
