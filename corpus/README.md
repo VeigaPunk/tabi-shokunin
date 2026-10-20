@@ -366,3 +366,22 @@ Round-17 wave-2 index rows (append-only):
 |---|---|---|
 | `knowledge/webmcp-chromium-loopback-round-16.md:135` ("contested scope awaiting an integrator ruling") | ruling at `corpus/lessons/round-16-verifier-spotcheck.md:141-142`; map row `cdp-runtime-observation` in `corpus/adjacency.tsv` | ruled for tabi/kaidoku; reach to revenger and kama is open (fleet `.ufo/l0-questions.md:65`) |
 | `knowledge/webmcp-invocation-round-17.md` source header | adds S054 (supersedes S047's anchor/teaches); S055–S057 supersede S049, S050, S053 | corrections from wave-2 source re-opens (`.ufo/waves/round-17/w2/Reopen*.md`) |
+
+## Round 18 — source rechecks and guarded harness execution (2026-10-20)
+
+| Entry | Ground | Evidence |
+|---|---|---|
+| `knowledge/source-recheck-round-18.md` | Early re-verification of current-at-baseline source rows; not overdue repair or new product support | `evidence/round-18/source-recheck/`; `.ufo/waves/round-18/measure-c1.mjs` |
+| `knowledge/harness-hardening-round-18.md` | Signal/cleanup, CDPSession transport, refused downloads and effective feature-switch contracts, sourced S059–S064 | successor `scripts/webmcp-invoke-round18.mjs`; `.ufo/waves/round-18/measure-c2.mjs` |
+| `lessons/round-18.md` | Explicit correction of round-17 sibling count and other routed records | `.ufo/waves/round-18/measure-c3.mjs`; `evidence/round-18/routed/` |
+
+Corrections index: `lessons/round-17.md:116` and fleet round-17 report line 35's sibling total
+are superseded by `lessons/round-18.md#corrections` (six). SOURCES S057's publisher anchor is
+superseded by S058 in all falsified cells. Old text remains historical, not current guidance.
+The round-17 short-digest rerun report points to seven **new** fully retained round-18 reruns;
+the lost original bytes were not recovered.
+
+Frontier: harness execution discipline is deepened on already-held loopback ground; real-site,
+agent-side invocation, default profile and Chromium 152 remain open. The source sweep is quality
+work, not expansion by row count. Frozen `check-freshness.mjs --witness HEAD` remains callable
+directly; `scripts/freshness-witness.mjs` is a guarded caller, not global enforcement.

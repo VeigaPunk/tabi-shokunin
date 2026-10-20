@@ -1,0 +1,886 @@
+{
+  "schema": "tabi-round18-harm-at-revision-v1",
+  "revision": "93bfead1f5f25f584353df3152a60209bbd89a2e",
+  "measuredAt": "2026-10-20T19:08:56.776Z",
+  "producer": {
+    "path": "corpus/evidence/round-18/routed/harm-runner.mjs",
+    "sha256": "892466566850fd5edce2e901e20ca81dc79fa7a9957fa45380e12dfa6f03b98f"
+  },
+  "baseline": {
+    "path": ".ufo/waves/round-17/harm-baseline.json",
+    "schema": "tabi-round17-harm-baseline-v1",
+    "revision": "5859243183c4d7ac5429dfdb8a73ce0d9a43d583"
+  },
+  "sandbox": {
+    "path": "/tmp/tabi-r18-harm-at-677jBY",
+    "preparation": "git clone --no-hardlinks LANE S; git checkout -q --detach REV; git update-ref refs/heads/master REV; git symbolic-ref HEAD refs/heads/master",
+    "retention": "removed after measurement",
+    "gitStatusPorcelainBefore": "",
+    "gitStatusPorcelainAfter": "",
+    "cleanBefore": true,
+    "cleanAfter": true,
+    "removedAfterMeasurement": true
+  },
+  "node": "v24.21.0",
+  "git": "git version 2.56.0",
+  "gitStatusPorcelainBefore": "",
+  "gitStatusPorcelainAfter": "",
+  "gateScriptsSha256": {
+    "scripts/check-aria-metadata.mjs": "d707625ef967ff0c8bf041ebb0ec70b73b76a1c04d6cc95101c79a110c4a600b",
+    "scripts/check-freshness.mjs": "93d196377d0553e0d94712a1e2aac099b96b0539d932fda85078fc52df96930b",
+    "scripts/check-measurement-binding.mjs": "388c2b4987bbb9f39f172cd40ca392b03bc9c869c1682b77576b0b986c14af74",
+    "scripts/check-round-contract.mjs": "1579a794d9b504ff4de1f9039d5498f97706546945d7980087a3df95a6e91828",
+    "scripts/check-sources.mjs": "afd047874a1aa136efc252290bef8c76bb90d85f405d1ecf593e9d407125df77",
+    "scripts/check-user-round-contract.mjs": "568c0421906278fe2d0ba0094c4bc48a5ae867bd683b1c5dfeabffe74585f273"
+  },
+  "measurementMethod": "Every baseline entry ran twice sequentially via this Node spawnSync runner (timeout 900000 ms, cwd=sandbox, inherited environment). Per-entry result fields record run 1; determinism compares run 1 and run 2 exit/stdout SHA-256/stderr SHA-256. No browser was launched by this measurement.",
+  "gates": [
+    {
+      "gate": "check-round-contract-production",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-round-contract.mjs"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 1580.34192,
+      "stdout": {
+        "bytes": 2227,
+        "sha256": "25e66498180565a95122221af203fba2a053e8cb87ca152b1ee25e077158bd61",
+        "lines": 11,
+        "summaryLine": "ROUND_CONTRACT verdict=clean rounds=10 consequential=0"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "25e66498180565a95122221af203fba2a053e8cb87ca152b1ee25e077158bd61",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 1580.34192
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "25e66498180565a95122221af203fba2a053e8cb87ca152b1ee25e077158bd61",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 1584.089487
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-round-contract-self-test",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-round-contract.mjs",
+        "--self-test"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 3774.838387,
+      "stdout": {
+        "bytes": 4605,
+        "sha256": "5e1c535b40314815a1105f01d6fe0e3617991e6ed82b447dd46d50fdb5646e42",
+        "lines": 42,
+        "summaryLine": "ROUND_CONTRACT_SELFTEST verdict=clean cases=38 alias_checks=1"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "5e1c535b40314815a1105f01d6fe0e3617991e6ed82b447dd46d50fdb5646e42",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 3774.838387
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "5e1c535b40314815a1105f01d6fe0e3617991e6ed82b447dd46d50fdb5646e42",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 3842.378927
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-round-contract-witness",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-round-contract.mjs",
+        "--witness",
+        "75e7836b6c3090180aee2754e20a5d3cfb186e74"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 237.221429,
+      "stdout": {
+        "bytes": 169,
+        "sha256": "c9f2c4116d69a0b64f0245bbdd313ad719208ae2bf04b057f6e5bc6f5360c0a4",
+        "lines": 1,
+        "summaryLine": "ROUND_CONTRACT_WITNESS fixture=shared old_rev=75e7836b6c3090180aee2754e20a5d3cfb186e74 old_exit=1 old_finding=history_rewritten new_exit=0 new_verdict=clean result=PASS"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "c9f2c4116d69a0b64f0245bbdd313ad719208ae2bf04b057f6e5bc6f5360c0a4",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 237.221429
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "c9f2c4116d69a0b64f0245bbdd313ad719208ae2bf04b057f6e5bc6f5360c0a4",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 235.91223
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-round-contract-count-witness",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-round-contract.mjs",
+        "--count-witness",
+        "bebe2efc4565bb068efd905e9ef78011bb6b4efd"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 340.500605,
+      "stdout": {
+        "bytes": 452,
+        "sha256": "c474ab43a13c685d6adb0fa2c28ed67c490196cc682d4481f1545389b0379c6b",
+        "lines": 1,
+        "summaryLine": "ROUND_CONTRACT_COUNT_WITNESS fixture=shared exit=0 verdict=clean old_rev=bebe2efc4565bb068efd905e9ef78011bb6b4efd baseline=5a0eefcd753311ce8ba3a19a644efccae1f7b50f code_revision=93bfead1f5f25f584353df3152a60209bbd89a2e code_sha256=1579a794d9b504ff4de1f9039d5498f97706546945d7980087a3df95a6e91828 code_committed=yes old_exit=0 old_verdict=clean old_finding=clean old_marker=1 new_exit=1 new_finding=score_mismatch new_marker=0 head_stable=1 result=PASS"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": false,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "c474ab43a13c685d6adb0fa2c28ed67c490196cc682d4481f1545389b0379c6b",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 340.500605
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "5d8854dbcec711e10dead9610659fc3c9dbaa15c292d86dd000c27a6dee3fb1a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 342.356474
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-user-round-contract-production",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-user-round-contract.mjs"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 1,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 156.436924,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "lines": 0,
+        "summaryLine": ""
+      },
+      "stderr": {
+        "bytes": 95,
+        "sha256": "47e9ffdc4fa167e16d3635ee9aca74d30ea8f365dc571dc21b03566a3daada53"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 1,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "47e9ffdc4fa167e16d3635ee9aca74d30ea8f365dc571dc21b03566a3daada53",
+          "runtimeMs": 156.436924
+        },
+        "secondRun": {
+          "exit": 1,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "47e9ffdc4fa167e16d3635ee9aca74d30ea8f365dc571dc21b03566a3daada53",
+          "runtimeMs": 151.763895
+        }
+      },
+      "baselineExit": 1,
+      "equal": true
+    },
+    {
+      "gate": "check-user-round-contract-self-test",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-user-round-contract.mjs",
+        "--self-test"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 4821.767369,
+      "stdout": {
+        "bytes": 12962,
+        "sha256": "1a92202e16d7dae48d5f2356a693e872f258146ff26c5aef001f10be9aadea81",
+        "lines": 46,
+        "summaryLine": "USER_ROUND_CONTRACT_SELFTEST verdict=clean cases=45 fixtures=35 alias=1 committedCounts=6 countWitness=1 diagnosticWitness=1 reasonControls=1"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "1a92202e16d7dae48d5f2356a693e872f258146ff26c5aef001f10be9aadea81",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 4821.767369
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "1a92202e16d7dae48d5f2356a693e872f258146ff26c5aef001f10be9aadea81",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 4911.74444
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-user-round-contract-witness",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-user-round-contract.mjs",
+        "--witness",
+        "75e7836b6c3090180aee2754e20a5d3cfb186e74"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 273.947663,
+      "stdout": {
+        "bytes": 1344,
+        "sha256": "6232573ec9720a97ed046cdcf3f5576a2618b6517ebb73a3b005f5335332b6cc",
+        "lines": 3,
+        "summaryLine": "USER_ROUND_CONTRACT_WITNESS rev=75e7836b6c3090180aee2754e20a5d3cfb186e74 baseline=b69d7357794cf969296da7ae1ca678a292abb60d args=[\"--repo\",\"/var/tmp/tabi-user-witness-BzvLlT/repo\",\"--baseline\",\"b69d7357794cf969296da7ae1ca678a292abb60d\",\"--expect\",\"1\"] measuredRevision=93bfead1f5f25f584353df3152a60209bbd89a2e codeRevision=93bfead1f5f25f584353df3152a60209bbd89a2e code-sha256=568c0421906278fe2d0ba0094c4bc48a5ae867bd683b1c5dfeabffe74585f273 new-sha256=568c0421906278fe2d0ba0094c4bc48a5ae867bd683b1c5dfeabffe74585f273 head-blob=9ebe31193325eb690e968ff09ef324400ae51fdb worktree-blob=9ebe31193325eb690e968ff09ef324400ae51fdb committed=yes old_exit=1 old_verdict=failed old_finding=history_rewritten new_exit=0 new_verdict=clean new_finding=null result=PASS"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": false,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "6232573ec9720a97ed046cdcf3f5576a2618b6517ebb73a3b005f5335332b6cc",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 273.947663
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "a2849b1fdf5587d87a75fd59d95c8a061cf547c57fd58096ab785f7e6b1d0a97",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 269.939455
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-user-round-contract-count-witness",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-user-round-contract.mjs",
+        "--count-witness",
+        "bebe2efc4565bb068efd905e9ef78011bb6b4efd"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 400.78256,
+      "stdout": {
+        "bytes": 1856,
+        "sha256": "694bb3310e3bb6f0529b23e76bcc4456ec1b375c539aefeebdde290de11afc74",
+        "lines": 3,
+        "summaryLine": "USER_ROUND_CONTRACT_COUNT_WITNESS rev=bebe2efc4565bb068efd905e9ef78011bb6b4efd baseline=73149879ee3a3b2fcf605716c954578b921602f1 args=[\"--repo\",\"/var/tmp/tabi-user-count-witness-hLJgeZ/repo\",\"--baseline\",\"73149879ee3a3b2fcf605716c954578b921602f1\",\"--expect\",\"1\",\"--pstack-pin\",\"0ae1a3bcac54ebfb466748722783dace0950e609\"] measuredRevision=93bfead1f5f25f584353df3152a60209bbd89a2e codeRevision=93bfead1f5f25f584353df3152a60209bbd89a2e code-sha256=568c0421906278fe2d0ba0094c4bc48a5ae867bd683b1c5dfeabffe74585f273 new-sha256=568c0421906278fe2d0ba0094c4bc48a5ae867bd683b1c5dfeabffe74585f273 head-blob=9ebe31193325eb690e968ff09ef324400ae51fdb worktree-blob=9ebe31193325eb690e968ff09ef324400ae51fdb committed=yes marker=.user-round14-count-marker old_exit=0 old_verdict=clean old_finding=clean old_finding_source=synthesized_clean_verdict old_marker=1 old_marker_applicable=1 old_marker_outcome=present new_exit=1 new_verdict=failed new_finding=score_mismatch new_reason=unsupported_counting_command new_marker=0 new_marker_applicable=1 new_marker_outcome=absent result=PASS"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": false,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "694bb3310e3bb6f0529b23e76bcc4456ec1b375c539aefeebdde290de11afc74",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 400.78256
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "c52573b81ef7e23c3ec34cab289d4150427c6b6e55666a04a778a1db6c36c9ce",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 394.468822
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-user-round-contract-diagnostic-witness",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-user-round-contract.mjs",
+        "--diagnostic-witness"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 460.343534,
+      "stdout": {
+        "bytes": 2330,
+        "sha256": "2e32f1fba9bf7c54f51fb04ec958d1d8de31bb3ea6a850e96218803f628bbb18",
+        "lines": 5,
+        "summaryLine": "USER_ROUND_CONTRACT_DIAGNOSTIC_WITNESS baseline=5c7710d7393112f2163dd7efcaa38fccf534dfc2 args={\"wrongAfter\":[\"--repo\",\"/var/tmp/tabi-user-diagnostic-witness-qTe4lE/wrong-after\",\"--baseline\",\"c094032a87779b9864b5884d8dfe586e4aadab89\",\"--expect\",\"1\",\"--pstack-pin\",\"dc6fa3e3524f23b748222798659c93d70b77ac5e\"],\"missing\":[\"--repo\",\"/var/tmp/tabi-user-diagnostic-witness-qTe4lE/missing-revision\",\"--baseline\",\"c094032a87779b9864b5884d8dfe586e4aadab89\",\"--expect\",\"1\",\"--pstack-pin\",\"dc6fa3e3524f23b748222798659c93d70b77ac5e\"]} measuredRevision=93bfead1f5f25f584353df3152a60209bbd89a2e codeRevision=93bfead1f5f25f584353df3152a60209bbd89a2e code-sha256=568c0421906278fe2d0ba0094c4bc48a5ae867bd683b1c5dfeabffe74585f273 baseline-blob=347ae9bbcdc692c3ad55fdfd931fa2cce13fec6d baseline-sha256=bde18c672d79dbe1ebf340f265d013a8956da8f961d85fb3862573b7a6a505f3 worktree-blob=9ebe31193325eb690e968ff09ef324400ae51fdb committed=yes wrong_reason=unsupported_counting_command expected_outcome=no-match wrong_match=0 reasonless_match=1 wrong_reason_only_match=0 correct_reason=after_count_mismatch correct_match=1 mutant_reason=after_count_mismatch mutant_reasonless_match=1 mutant_wrong_reason_only=0 mutant_decoy_match=1 baseline_predicate=synthesized_exit_finding baseline_synthetic_match=1 result=PASS"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": false,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "2e32f1fba9bf7c54f51fb04ec958d1d8de31bb3ea6a850e96218803f628bbb18",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 460.343534
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "f2ce05389819a18a6a419b23d3d1e8f8d544e0d64fe68ff9d2b04569a5f3d971",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 463.384803
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-freshness-worktree",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-freshness.mjs",
+        "--worktree"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 121.689048,
+      "stdout": {
+        "bytes": 5035,
+        "sha256": "6f99a374838256d5d9ab69a0ed1214d16fe6571180b0782b5317372bd2401b9a",
+        "lines": 35,
+        "summaryLine": "FRESHNESS_GATE verdict=clean finding=freshness_worktree matched=34 unique=34 lane=31 public=3 revision=worktree baseline=c24eaea14dfc0c4a3848742d31673db5675f9183 profile=production"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "6f99a374838256d5d9ab69a0ed1214d16fe6571180b0782b5317372bd2401b9a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 121.689048
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "6f99a374838256d5d9ab69a0ed1214d16fe6571180b0782b5317372bd2401b9a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 122.062438
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-freshness-witness",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-freshness.mjs",
+        "--witness",
+        "5859243183c4d7ac5429dfdb8a73ce0d9a43d583"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 160.780431,
+      "stdout": {
+        "bytes": 5066,
+        "sha256": "edd6804a426853ccd2c773d6980b275866c69b7bcbda80fe017aac01710f2bc9",
+        "lines": 35,
+        "summaryLine": "FRESHNESS_GATE verdict=clean finding=freshness_witness matched=34 unique=34 lane=31 public=3 revision=5859243183c4d7ac5429dfdb8a73ce0d9a43d583 baseline=c24eaea14dfc0c4a3848742d31673db5675f9183 profile=production"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "edd6804a426853ccd2c773d6980b275866c69b7bcbda80fe017aac01710f2bc9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 160.780431
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "edd6804a426853ccd2c773d6980b275866c69b7bcbda80fe017aac01710f2bc9",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 179.390294
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-freshness-self-test",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-freshness.mjs",
+        "--self-test"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 315.699985,
+      "stdout": {
+        "bytes": 1313,
+        "sha256": "32d6959967507bd75731eaa52a52a2bc47f8a2ffa7dc806f0528e3c0d1414838",
+        "lines": 13,
+        "summaryLine": "FRESHNESS_SELFTEST verdict=clean cases=12"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "32d6959967507bd75731eaa52a52a2bc47f8a2ffa7dc806f0528e3c0d1414838",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 315.699985
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "32d6959967507bd75731eaa52a52a2bc47f8a2ffa7dc806f0528e3c0d1414838",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 306.05786
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-sources-production",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-sources.mjs"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 18.896492,
+      "stdout": {
+        "bytes": 124,
+        "sha256": "71f296314d8181868d1e9858c3109029628d2755349bf770bfb8c98f19ff5c30",
+        "lines": 1,
+        "summaryLine": "SOURCES_GATE verdict=clean rows=57 tiers=A:46,B:4,C:7 status=queued:8,mined:42,rejected:7 findings=0 file=corpus/SOURCES.md"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "71f296314d8181868d1e9858c3109029628d2755349bf770bfb8c98f19ff5c30",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 18.896492
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "71f296314d8181868d1e9858c3109029628d2755349bf770bfb8c98f19ff5c30",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 18.894132
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-sources-self-test",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-sources.mjs",
+        "--self-test"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 431.133966,
+      "stdout": {
+        "bytes": 2688,
+        "sha256": "8a1efa8b30d2864dcc97e1e680be5b23ac1d8fda0f2bbe0d1ea2156a47a884a0",
+        "lines": 27,
+        "summaryLine": "SOURCES_SELFTEST verdict=clean cases=26"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "8a1efa8b30d2864dcc97e1e680be5b23ac1d8fda0f2bbe0d1ea2156a47a884a0",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 431.133966
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "8a1efa8b30d2864dcc97e1e680be5b23ac1d8fda0f2bbe0d1ea2156a47a884a0",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 429.715147
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-aria-metadata-check",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-aria-metadata.mjs",
+        "--check",
+        "corpus/evidence/round-14/aria-metadata/corrected.json"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 25.230169,
+      "stdout": {
+        "bytes": 9875,
+        "sha256": "ceda5c1a9d640c757971081c66be28611ab08e7278be7047cf0f66865c86f3bc",
+        "lines": 2,
+        "summaryLine": "ARIA_METADATA_JSON {\"schema\":\"tabi-aria-metadata-check-v1\",\"mode\":\"check\",\"ok\":true,\"exit\":0,\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"acceptedCorrection\":true,\"snapshot\":{\"ok\":true,\"mismatches\":[],\"unavailable\":[]},\"receipt\":{\"path\":\"corpus/evidence/round-13/aria/receipt.json\",\"absPath\":\"/tmp/tabi-r18-harm-at-677jBY/corpus/evidence/round-13/aria/receipt.json\",\"sha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"bytes\":97073},\"pin\":{\"path\":\"corpus/evidence/round-13/aria/runtime-pin.json\",\"absPath\":\"/tmp/tabi-r18-harm-at-677jBY/corpus/evidence/round-13/aria/runtime-pin.json\",\"sha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"bytes\":1154},\"sidecar\":{\"path\":\"corpus/evidence/round-14/aria-metadata/corrected.json\",\"sha256\":\"e156b922d0f59f6b66c4bba8aebc708bb0484c41cce1141960a0ab82c1a56745\",\"bytes\":4308,\"accepted\":true},\"observed\":{\"summaryListeningAfter\":true,\"perWorkerListeningAfter\":[false],\"node\":{\"observed\":\"26.12.0\",\"recorded\":\"24.21.0\",\"minimumMajor\":20,\"exactMatch\":false,\"minimumMajorSatisfied\":true}},\"derived\":{\"cleanup\":{\"summaryListeningAfter\":false,\"perWorkerListeningAfter\":[false],\"listeningAfter\":false,\"closed\":true,\"refusedAfterClose\":true,\"listensBefore\":true,\"notListeningAfter\":true,\"serverOk\":true,\"allProofsPass\":true,\"complete\":true,\"perWorkerCount\":1},\"node\":{\"observed\":\"26.12.0\",\"recorded\":\"24.21.0\",\"minimumMajor\":20,\"observedMajor\":26,\"recordedMajor\":24,\"exactMatch\":false,\"exactRecordedMatch\":false,\"observedMatchesRecorded\":false,\"minimumMajorSatisfied\":true,\"workerObservedNodes\":[\"26.12.0\"],\"workerAgreement\":true,\"parsed\":true,\"shapesOk\":true}},\"originalFindings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"}],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"receiptPath\":\"corpus/evidence/round-13/aria/receipt.json\",\"receiptSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"receiptBytes\":97073}},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"pinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"advertisedPinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\"}},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"canonicalReceipt\":true,\"canonicalPin\":true,\"receiptSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"pinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"anchors\":{\"receiptSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"pinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"producerSourceSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"specSha256\":\"03cb4e17d3b02785335dfd55df4717fbe18edf637d7defe043f8328ba9d7e4fc\",\"configSha256\":\"87ae779bbe194eb7b5a3d555de5d31184fc50a1bcc49c8499a2a81287707b3f4\",\"manifestSha256\":\"56764241df4f4a644af39e368b2e47f35d3f4bbbdf17e7cef3fa848ee0d72112\",\"workers\":{\"worker-0-1530637-1792474958700.json\":\"0d0f00e214c92f9e0b83b704e3488ff17a58c5141d2cd788cf337d599603a5e7\"}}}},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"declaredSource\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"specSha256\":\"03cb4e17d3b02785335dfd55df4717fbe18edf637d7defe043f8328ba9d7e4fc\",\"configSha256\":\"87ae779bbe194eb7b5a3d555de5d31184fc50a1bcc49c8499a2a81287707b3f4\",\"manifestSha256\":\"56764241df4f4a644af39e368b2e47f35d3f4bbbdf17e7cef3fa848ee0d72112\",\"workerSourceBindings\":[{\"sourceSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"sourceObjectSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"inputSourceSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\"}]}},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"manifestCases\":[\"checked-wrong-state\",\"contain-default\",\"duplicate-strict\",\"equal-explicit\",\"label-fill\",\"panel-before-after\",\"re-resolve\",\"role-name\"],\"workerCases\":[\"checked-wrong-state\",\"contain-default\",\"duplicate-strict\",\"equal-explicit\",\"label-fill\",\"panel-before-after\",\"re-resolve\",\"role-name\"]}},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"directoryNames\":[\"worker-0-1530637-1792474958700.json\"],\"referenced\":[\"worker-0-1530637-1792474958700.json\"]}},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"copiesChecked\":[\"cleanup.server.perWorker\",\"server.perWorker.proof\",\"worker.cleanup.server\"]}},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\",\"detail\":{\"cleanupObject\":true,\"serverObject\":true,\"perWorkerArray\":true}},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"perWorkerCount\":1}},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"perWorkerCount\":1}},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\",\"detail\":{\"observed\":false,\"derivedRawAnyListening\":false,\"perWorkerListeningAfter\":[false]}},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\",\"detail\":{\"observed\":true,\"observedTopLevel\":true,\"derivedAllClosed\":true}},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\",\"detail\":{\"observed\":true,\"observedTopLevel\":true,\"derivedAllRefused\":true}},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\",\"detail\":{\"observed\":true,\"observedTopLevel\":true,\"derivedAdmission\":true}},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\",\"detail\":{\"receiptWorkers\":1,\"summaryWorkers\":1,\"cleanupPerWorker\":1,\"serverPerWorker\":1}},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\",\"detail\":{\"observed\":\"26.12.0\",\"workerObservedNodes\":[\"26.12.0\"],\"workerAgreement\":true,\"semver\":\"^(\\\\d+)\\\\.(\\\\d+)\\\\.(\\\\d+)$\"}},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\",\"detail\":{\"observed\":\"26.12.0\",\"recorded\":\"24.21.0\",\"exactMatch\":false,\"exactRecordedMatch\":false,\"descriptiveOnly\":true,\"recordedRole\":\"descriptive\"}},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\",\"detail\":{\"observed\":\"26.12.0\",\"observedMajor\":26,\"minimumMajor\":20,\"minimumMajorSatisfied\":true}},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"path\":\"corpus/evidence/round-14/aria-metadata/corrected.json\",\"sha256\":\"e156b922d0f59f6b66c4bba8aebc708bb0484c41cce1141960a0ab82c1a56745\",\"bytes\":4308}},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\",\"detail\":{\"schema\":\"tabi-aria-metadata-correction-v1\",\"kind\":\"cleanup-and-node-metadata-correction\",\"expected\":\"tabi-aria-metadata-correction-v1\"}},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"receiptSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"pinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"proofSetSha256\":\"49e64adb065b098df9b8e37642258926fb0560208a455530b412ff06706c6633\",\"proofDigests\":[{\"index\":0,\"sha256\":\"3fec21b55a5987fbdcdebfa7694c64015d0a4ebbc9d418df48c1ddbc6dbe4f9a\"}]}},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"observed\":true,\"derived\":false,\"supportingProofs\":1}},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"computed\":{\"observed\":\"26.12.0\",\"recorded\":\"24.21.0\",\"minimumMajor\":20,\"observedMajor\":26,\"recordedMajor\":24,\"exactMatch\":false,\"exactRecordedMatch\":false,\"observedMatchesRecorded\":false,\"minimumMajorSatisfied\":true,\"workerObservedNodes\":[\"26.12.0\"],\"workerAgreement\":true,\"parsed\":true,\"shapesOk\":true},\"enforcedBy\":\"retrospective-checker\",\"historicalRuntimePinMatchIncludesNode\":false,\"historicalSpecEnforcedMinimumMajor\":true}},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\",\"detail\":{\"problems\":[]}},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"observed\":{\"allClosed\":true,\"allNotListeningAfter\":true,\"allRefusedAfterClose\":true,\"derivedListeningAfter\":false,\"perWorkerCount\":1,\"summaryServerOk\":true},\"expected\":{\"perWorkerCount\":1,\"allClosed\":true,\"allRefusedAfterClose\":true,\"allNotListeningAfter\":true,\"derivedListeningAfter\":false,\"summaryServerOk\":true}}},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"proofCount\":1,\"observed\":{\"allProofsComplete\":true,\"allProofsSupportCorrection\":true,\"everyProofClosed\":true,\"everyProofListensBefore\":true,\"everyProofNotListeningAfter\":true,\"everyProofRefusedAfterClose\":true,\"proofCount\":1,\"qualified\":true},\"expected\":{\"qualified\":true,\"proofCount\":1,\"allProofsComplete\":true,\"allProofsSupportCorrection\":true,\"everyProofListensBefore\":true,\"everyProofClosed\":true,\"everyProofRefusedAfterClose\":true,\"everyProofNotListeningAfter\":true}}},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\",\"detail\":{\"residualFailures\":[]}},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"pass\",\"detail\":{\"accepted\":true,\"correctedField\":\"cleanup.server.listeningAfter\",\"correctedValue\":false,\"residualFailures\":[]}}]}"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "ceda5c1a9d640c757971081c66be28611ab08e7278be7047cf0f66865c86f3bc",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 25.230169
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "ceda5c1a9d640c757971081c66be28611ab08e7278be7047cf0f66865c86f3bc",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 21.318071
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-aria-metadata-self-test",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-aria-metadata.mjs",
+        "--self-test"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 758.046267,
+      "stdout": {
+        "bytes": 66183,
+        "sha256": "d6ae0b28d9cba2ba14649da3d2094436683a681a1ee3665fdf1685b060371eb3",
+        "lines": 63,
+        "summaryLine": "ARIA_METADATA_JSON {\"schema\":\"tabi-aria-metadata-selftest-v1\",\"ok\":true,\"exit\":0,\"cases\":[{\"id\":\"clean-perworker-listening\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"expectedFinding\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"expectedFindingStatus\":\"pass\",\"finding\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"}],\"stderr\":\"\"},{\"id\":\"node-observed-recorded\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"expectedFinding\":\"R14-ARIA-NODE-RECORDED-01\",\"expectedFindingStatus\":\"pass\",\"finding\":\"R14-ARIA-NODE-RECORDED-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"}],\"stderr\":\"\"},{\"id\":\"old-contradiction\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"}],\"stderr\":\"\"},{\"id\":\"missing-server-summary\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"}],\"stderr\":\"\"},{\"id\":\"empty-perworker\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"}],\"stderr\":\"\"},{\"id\":\"nonboolean-listening-after\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"}],\"stderr\":\"\"},{\"id\":\"invalid-node-minimum\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-NODE-MINIMUM-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-NODE-MINIMUM-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-valid-accepted\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"expectedFinding\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"expectedFindingStatus\":\"pass\",\"finding\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"pass\"}],\"stderr\":\"\"},{\"id\":\"sidecar-auto-detect-check-input\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"expectedFinding\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"expectedFindingStatus\":\"pass\",\"finding\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"pass\"}],\"stderr\":\"\"},{\"id\":\"malformed-receipt\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-INPUT-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-INPUT-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-bad-receipt-digest\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-SIDECAR-BINDING-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-BINDING-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-wrong-direction\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-false-exact-node\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"witness-red-to-clean\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"expectedFinding\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"tamper\":null,\"problems\":[],\"findings\":[],\"stderr\":\"\"},{\"id\":\"witness-rejects-bad-sidecar\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[],\"stderr\":\"\"},{\"id\":\"sidecar-cleanup-mirror-refusal\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-qualification-mirror-refusal\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-mirror-type-refusal\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-silent-cleanup-mirror\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-node-descriptive-refusal\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-node-alias-refusal\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-correction-derived-refusal\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-spec-mirror-refusal\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-SIDECAR-BINDING-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-BINDING-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"fail\"}],\"stderr\":\"\"},{\"id\":\"sidecar-advisory-text-accepted\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"expectedFinding\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"expectedFindingStatus\":\"pass\",\"finding\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"pass\"}],\"stderr\":\"\"},{\"id\":\"witness-mirrors-differential\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"expectedFinding\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"tamper\":null,\"problems\":[],\"findings\":[],\"stderr\":\"\"},{\"id\":\"mirror-authentic-red\",\"ok\":true,\"expectedExit\":1,\"exit\":1,\"expectedFinding\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"expectedFindingStatus\":\"fail\",\"finding\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"fail\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"}],\"stderr\":\"\",\"tamperedPath\":null,\"removedPath\":null},{\"id\":\"mirror-authentic-clean\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"expectedFinding\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"expectedFindingStatus\":\"pass\",\"finding\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\"},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"pass\"}],\"stderr\":\"\",\"tamperedPath\":null,\"removedPath\":null},{\"id\":\"mirror-tamper-receipt\",\"ok\":true,\"expectedExit\":2,\"exit\":2,\"expectedFinding\":\"snapshot_tampered\",\"expectedFindingStatus\":\"could_not_evaluate\",\"finding\":\"snapshot_tampered\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"could_not_evaluate\",\"reason\":\"snapshot_tampered\"},\"tamper\":\"receipt\",\"problems\":[],\"findings\":[{\"id\":\"snapshot_tampered\",\"status\":\"could_not_evaluate\"}],\"stderr\":\"\",\"tamperedPath\":\"corpus/evidence/round-13/aria/receipt.json\",\"removedPath\":null},{\"id\":\"mirror-tamper-receipt-clean-semantics\",\"ok\":true,\"expectedExit\":2,\"exit\":2,\"expectedFinding\":\"snapshot_tampered\",\"expectedFindingStatus\":\"could_not_evaluate\",\"finding\":\"snapshot_tampered\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"could_not_evaluate\",\"reason\":\"snapshot_tampered\"},\"tamper\":\"receipt-clean\",\"problems\":[],\"findings\":[{\"id\":\"snapshot_tampered\",\"status\":\"could_not_evaluate\"}],\"stderr\":\"\",\"tamperedPath\":\"corpus/evidence/round-13/aria/receipt.json\",\"removedPath\":null},{\"id\":\"mirror-tamper-pin\",\"ok\":true,\"expectedExit\":2,\"exit\":2,\"expectedFinding\":\"snapshot_tampered\",\"expectedFindingStatus\":\"could_not_evaluate\",\"finding\":\"snapshot_tampered\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"could_not_evaluate\",\"reason\":\"snapshot_tampered\"},\"tamper\":\"pin\",\"problems\":[],\"findings\":[{\"id\":\"snapshot_tampered\",\"status\":\"could_not_evaluate\"}],\"stderr\":\"\",\"tamperedPath\":\"corpus/evidence/round-13/aria/runtime-pin.json\",\"removedPath\":null},{\"id\":\"mirror-tamper-manifest\",\"ok\":true,\"expectedExit\":2,\"exit\":2,\"expectedFinding\":\"snapshot_tampered\",\"expectedFindingStatus\":\"could_not_evaluate\",\"finding\":\"snapshot_tampered\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"could_not_evaluate\",\"reason\":\"snapshot_tampered\"},\"tamper\":\"manifest\",\"problems\":[],\"findings\":[{\"id\":\"snapshot_tampered\",\"status\":\"could_not_evaluate\"}],\"stderr\":\"\",\"tamperedPath\":\"corpus/evidence/round-13/aria/manifest.json\",\"removedPath\":null},{\"id\":\"mirror-tamper-spec\",\"ok\":true,\"expectedExit\":2,\"exit\":2,\"expectedFinding\":\"snapshot_tampered\",\"expectedFindingStatus\":\"could_not_evaluate\",\"finding\":\"snapshot_tampered\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"could_not_evaluate\",\"reason\":\"snapshot_tampered\"},\"tamper\":\"spec\",\"problems\":[],\"findings\":[{\"id\":\"snapshot_tampered\",\"status\":\"could_not_evaluate\"}],\"stderr\":\"\",\"tamperedPath\":\"corpus/evidence/round-13/aria/aria-loopback.spec.mjs\",\"removedPath\":null},{\"id\":\"mirror-tamper-config\",\"ok\":true,\"expectedExit\":2,\"exit\":2,\"expectedFinding\":\"snapshot_tampered\",\"expectedFindingStatus\":\"could_not_evaluate\",\"finding\":\"snapshot_tampered\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"could_not_evaluate\",\"reason\":\"snapshot_tampered\"},\"tamper\":\"config\",\"problems\":[],\"findings\":[{\"id\":\"snapshot_tampered\",\"status\":\"could_not_evaluate\"}],\"stderr\":\"\",\"tamperedPath\":\"corpus/evidence/round-13/aria/playwright.config.mjs\",\"removedPath\":null},{\"id\":\"mirror-tamper-worker\",\"ok\":true,\"expectedExit\":2,\"exit\":2,\"expectedFinding\":\"snapshot_tampered\",\"expectedFindingStatus\":\"could_not_evaluate\",\"finding\":\"snapshot_tampered\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"could_not_evaluate\",\"reason\":\"snapshot_tampered\"},\"tamper\":\"worker\",\"problems\":[],\"findings\":[{\"id\":\"snapshot_tampered\",\"status\":\"could_not_evaluate\"}],\"stderr\":\"\",\"tamperedPath\":\"corpus/evidence/round-13/aria/actual/workers/worker-0-1530637-1792474958700.json\",\"removedPath\":null},{\"id\":\"mirror-tamper-producer\",\"ok\":true,\"expectedExit\":2,\"exit\":2,\"expectedFinding\":\"snapshot_tampered\",\"expectedFindingStatus\":\"could_not_evaluate\",\"finding\":\"snapshot_tampered\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"could_not_evaluate\",\"reason\":\"snapshot_tampered\"},\"tamper\":\"producer\",\"problems\":[],\"findings\":[{\"id\":\"snapshot_tampered\",\"status\":\"could_not_evaluate\"}],\"stderr\":\"\",\"tamperedPath\":\"scripts/aria-loopback-round13.mjs\",\"removedPath\":null},{\"id\":\"mirror-unavailable-worker\",\"ok\":true,\"expectedExit\":2,\"exit\":2,\"expectedFinding\":\"snapshot_unavailable\",\"expectedFindingStatus\":\"could_not_evaluate\",\"finding\":\"snapshot_unavailable\",\"findingKind\":\"required_predicate\",\"classification\":{\"outcome\":\"could_not_evaluate\",\"reason\":\"snapshot_unavailable\"},\"tamper\":null,\"problems\":[],\"findings\":[{\"id\":\"snapshot_unavailable\",\"status\":\"could_not_evaluate\"}],\"stderr\":\"\",\"tamperedPath\":null,\"removedPath\":\"corpus/evidence/round-13/aria/actual/workers/worker-0-1530637-1792474958700.json\"}],\"helpers\":[{\"id\":\"mirror-contract-fields\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"finding\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"problems\":[],\"findings\":[],\"stderr\":\"\"},{\"id\":\"fixture-digest-set\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"finding\":\"fixture-digest-set\",\"problems\":[],\"findings\":[],\"stderr\":\"\"},{\"id\":\"derive-and-mirror-helper\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"finding\":\"helper:derive-and-mirror\",\"problems\":[],\"findings\":[],\"stderr\":\"\"},{\"id\":\"mirror-aggregate-literals\",\"ok\":true,\"expectedExit\":0,\"exit\":0,\"finding\":\"helper:mirror-aggregate-literals\",\"problems\":[],\"findings\":[],\"stderr\":\"\"}],\"fixtures\":[{\"name\":\"malformed-receipt\",\"ok\":true,\"expectedSha256\":\"a676bfc99808630d635c4caedacdaabf09f5b5e4a82d122c50c64f92cbb8fdec\",\"actualSha256\":\"a676bfc99808630d635c4caedacdaabf09f5b5e4a82d122c50c64f92cbb8fdec\",\"expectedBytes\":43,\"actualBytes\":43},{\"name\":\"pin\",\"ok\":true,\"expectedSha256\":\"f4a13da65c9327f621e1d70c28754f15c257364928f6b441a1f19df0aec33cf5\",\"actualSha256\":\"f4a13da65c9327f621e1d70c28754f15c257364928f6b441a1f19df0aec33cf5\",\"expectedBytes\":480,\"actualBytes\":480},{\"name\":\"receipt-empty\",\"ok\":true,\"expectedSha256\":\"1cf3b2578f282687c340ec3cf05941bd870d059cf1f4b59a4785c6fbf295e813\",\"actualSha256\":\"1cf3b2578f282687c340ec3cf05941bd870d059cf1f4b59a4785c6fbf295e813\",\"expectedBytes\":2390,\"actualBytes\":2390},{\"name\":\"receipt-green\",\"ok\":true,\"expectedSha256\":\"9bf68cb7a2cdf993c2736b7f5dacf919302b9f67d7e4b8b6b49679e610e8edf3\",\"actualSha256\":\"9bf68cb7a2cdf993c2736b7f5dacf919302b9f67d7e4b8b6b49679e610e8edf3\",\"expectedBytes\":3233,\"actualBytes\":3233},{\"name\":\"receipt-min\",\"ok\":true,\"expectedSha256\":\"e625e27afd08d36be31f1da3dcd41411e310df8a9015cfd6c21bc8b1619cd6f4\",\"actualSha256\":\"e625e27afd08d36be31f1da3dcd41411e310df8a9015cfd6c21bc8b1619cd6f4\",\"expectedBytes\":3233,\"actualBytes\":3233},{\"name\":\"receipt-missing-summary\",\"ok\":true,\"expectedSha256\":\"a73a4aa154d9fc540fb714e72059455605872324a887e0f90816a9a01f53c5fc\",\"actualSha256\":\"a73a4aa154d9fc540fb714e72059455605872324a887e0f90816a9a01f53c5fc\",\"expectedBytes\":2806,\"actualBytes\":2806},{\"name\":\"receipt-nonboolean\",\"ok\":true,\"expectedSha256\":\"3a58c0ecc0235218925eb9ce28ca6ef476f994aab2a143b068f4c6d35bd1250d\",\"actualSha256\":\"3a58c0ecc0235218925eb9ce28ca6ef476f994aab2a143b068f4c6d35bd1250d\",\"expectedBytes\":3237,\"actualBytes\":3237},{\"name\":\"receipt-old\",\"ok\":true,\"expectedSha256\":\"d1a4ce850f98ff8c33c8fa025dcba3029cb4003d4df7c0be00eb6b353c3600c3\",\"actualSha256\":\"d1a4ce850f98ff8c33c8fa025dcba3029cb4003d4df7c0be00eb6b353c3600c3\",\"expectedBytes\":3232,\"actualBytes\":3232},{\"name\":\"sidecar-advisory\",\"ok\":true,\"expectedSha256\":\"5e755a0c74fb861064327c6323e291b95730eea90c605936a21514f2fdd6729e\",\"actualSha256\":\"5e755a0c74fb861064327c6323e291b95730eea90c605936a21514f2fdd6729e\",\"expectedBytes\":4124,\"actualBytes\":4124},{\"name\":\"sidecar-baddigest\",\"ok\":true,\"expectedSha256\":\"8b80a80aaf5c3196a3992915e6bfe3be51875b26d2171bff9b8a3b23e3c7cd75\",\"actualSha256\":\"8b80a80aaf5c3196a3992915e6bfe3be51875b26d2171bff9b8a3b23e3c7cd75\",\"expectedBytes\":4393,\"actualBytes\":4393},{\"name\":\"sidecar-cleanup-mirrors\",\"ok\":true,\"expectedSha256\":\"ae3cd05b234d49f07e419fdd89850d25f6557de3b16e7df5e1ea2816cd6089d3\",\"actualSha256\":\"ae3cd05b234d49f07e419fdd89850d25f6557de3b16e7df5e1ea2816cd6089d3\",\"expectedBytes\":4396,\"actualBytes\":4396},{\"name\":\"sidecar-correction-derived\",\"ok\":true,\"expectedSha256\":\"67404bfd3da1a1ada2ceb1eed721b6f7a3d96cbc17268a388c0b79f559bb4003\",\"actualSha256\":\"67404bfd3da1a1ada2ceb1eed721b6f7a3d96cbc17268a388c0b79f559bb4003\",\"expectedBytes\":4392,\"actualBytes\":4392},{\"name\":\"sidecar-exactnode\",\"ok\":true,\"expectedSha256\":\"148306680cd01ea1dfebafb840a49ec4d025f5d52d30ede66f7a621a802a8230\",\"actualSha256\":\"148306680cd01ea1dfebafb840a49ec4d025f5d52d30ede66f7a621a802a8230\",\"expectedBytes\":4390,\"actualBytes\":4390},{\"name\":\"sidecar-mirror-silent\",\"ok\":true,\"expectedSha256\":\"a9a5c85c994fcc8b080c34965310330a6d50b1893ae83d77b5eeca4a27541c5e\",\"actualSha256\":\"a9a5c85c994fcc8b080c34965310330a6d50b1893ae83d77b5eeca4a27541c5e\",\"expectedBytes\":4394,\"actualBytes\":4394},{\"name\":\"sidecar-mirror-types\",\"ok\":true,\"expectedSha256\":\"fadafc15e7ac6d6b5e56ecedf27dd0dae4197f2b2f105862bc1dae49991fc8ae\",\"actualSha256\":\"fadafc15e7ac6d6b5e56ecedf27dd0dae4197f2b2f105862bc1dae49991fc8ae\",\"expectedBytes\":4394,\"actualBytes\":4394},{\"name\":\"sidecar-node-alias\",\"ok\":true,\"expectedSha256\":\"dc5522c2f4e2106092cac8b6d502301d45bed6222d5a19e33654b74fb4ed3856\",\"actualSha256\":\"dc5522c2f4e2106092cac8b6d502301d45bed6222d5a19e33654b74fb4ed3856\",\"expectedBytes\":4391,\"actualBytes\":4391},{\"name\":\"sidecar-node-descriptive\",\"ok\":true,\"expectedSha256\":\"108fd7f9fd70812345a8d9f9e4197a9f76b587c6e5c1d3c014405d2746c86898\",\"actualSha256\":\"108fd7f9fd70812345a8d9f9e4197a9f76b587c6e5c1d3c014405d2746c86898\",\"expectedBytes\":4394,\"actualBytes\":4394},{\"name\":\"sidecar-qualification-mirrors\",\"ok\":true,\"expectedSha256\":\"f173e6c37400069b4b1ab780f7276a04646964506de0940a7908c7bc7fa61b7b\",\"actualSha256\":\"f173e6c37400069b4b1ab780f7276a04646964506de0940a7908c7bc7fa61b7b\",\"expectedBytes\":4396,\"actualBytes\":4396},{\"name\":\"sidecar-spec-mirror\",\"ok\":true,\"expectedSha256\":\"e91da19565f889cc454ffe0e43f27a42c17b0d93749d87c15997adfbe03e132d\",\"actualSha256\":\"e91da19565f889cc454ffe0e43f27a42c17b0d93749d87c15997adfbe03e132d\",\"expectedBytes\":4393,\"actualBytes\":4393},{\"name\":\"sidecar-valid\",\"ok\":true,\"expectedSha256\":\"b41a374f3bf7c82dd800a741a09d483bc8db6f4aa4d75054ecec16aa66cabd1f\",\"actualSha256\":\"b41a374f3bf7c82dd800a741a09d483bc8db6f4aa4d75054ecec16aa66cabd1f\",\"expectedBytes\":4393,\"actualBytes\":4393},{\"name\":\"sidecar-wrongto\",\"ok\":true,\"expectedSha256\":\"a79333ec4f2bd8d083f1045f7d170012c0530633ab0c14ea4031a17410a611cf\",\"actualSha256\":\"a79333ec4f2bd8d083f1045f7d170012c0530633ab0c14ea4031a17410a611cf\",\"expectedBytes\":4390,\"actualBytes\":4390}],\"contract\":{\"schema\":\"tabi-aria-metadata-mirror-contract-v1\",\"cleanupFields\":[\"perWorkerCount\",\"allClosed\",\"allRefusedAfterClose\",\"allNotListeningAfter\",\"derivedListeningAfter\",\"summaryServerOk\"],\"qualificationFields\":[\"qualified\",\"proofCount\",\"allProofsComplete\",\"allProofsSupportCorrection\",\"everyProofListensBefore\",\"everyProofClosed\",\"everyProofRefusedAfterClose\",\"everyProofNotListeningAfter\"],\"tamper\":{\"findingId\":\"snapshot_tampered\",\"status\":\"could_not_evaluate\",\"outcome\":\"could_not_evaluate\",\"reason\":\"snapshot_tampered\",\"exit\":2},\"legacy\":{\"revision\":\"e570380d77180ab394256dd6187cac0c5eaf62ec\",\"checkerSha256\":\"ef37387217c7c0b19f936be2c5b81ebe4ea25aafcdb84bc2af5250720e4343f6\",\"checkedCleanupMirrorFields\":[],\"checkedQualificationFields\":[\"qualified\",\"proofCount\",\"allProofsSupportCorrection\",\"allProofsComplete\",\"everyProofNotListeningAfter\"],\"uncheckedQualificationFields\":[\"everyProofListensBefore\",\"everyProofClosed\",\"everyProofRefusedAfterClose\"],\"legacyExitForSameBytes\":0,\"legacyExecuted\":false,\"basis\":\"static subset derivation: the legacy checker compared only its listed field set, so a sidecar differing solely in unchecked cleanup/qualification mirrors had no failing checked finding\"}},\"cliCaseCount\":36,\"helperCaseCount\":4,\"caseCount\":40,\"countProblems\":[]}"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "d6ae0b28d9cba2ba14649da3d2094436683a681a1ee3665fdf1685b060371eb3",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 758.046267
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "d6ae0b28d9cba2ba14649da3d2094436683a681a1ee3665fdf1685b060371eb3",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 741.494804
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-aria-metadata-witness",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-aria-metadata.mjs",
+        "--witness"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 22.163231,
+      "stdout": {
+        "bytes": 13543,
+        "sha256": "d6c7b7584c7fe8a17edef89d65da6c2730d7cffd88dfd54ca97eb795dd4330cd",
+        "lines": 2,
+        "summaryLine": "ARIA_METADATA_JSON {\"schema\":\"tabi-aria-metadata-witness-v1\",\"mode\":\"witness\",\"ok\":true,\"exit\":0,\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"transition\":\"red->clean\",\"redFinding\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"originalUnchanged\":true,\"authenticatedAnchors\":true,\"receipt\":{\"beforeSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"afterSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\"},\"pin\":{\"beforeSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"afterSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\"},\"sidecarPath\":\"corpus/evidence/round-14/aria-metadata/corrected.json\",\"red\":{\"exit\":1,\"ok\":false,\"accepted\":false,\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"semantic_invalid\"},\"command\":[\"node\",\"scripts/check-aria-metadata.mjs\",\"--receipt\",\"corpus/evidence/round-13/aria/receipt.json\",\"--pin\",\"corpus/evidence/round-13/aria/runtime-pin.json\"],\"stdout\":\"command: node scripts/check-aria-metadata.mjs --receipt corpus/evidence/round-13/aria/receipt.json --pin corpus/evidence/round-13/aria/runtime-pin.json\\nARIA_METADATA check verdict=red findings=18 failed=1 accepted=false reason=semantic_invalid\\nARIA_METADATA findings R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"receiptPath\":\"corpus/evidence/round-13/aria/receipt.json\",\"receiptSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"receiptBytes\":97073}},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"pinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"advertisedPinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\"}},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"canonicalReceipt\":true,\"canonicalPin\":true,\"receiptSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"pinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"anchors\":{\"receiptSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"pinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"producerSourceSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"specSha256\":\"03cb4e17d3b02785335dfd55df4717fbe18edf637d7defe043f8328ba9d7e4fc\",\"configSha256\":\"87ae779bbe194eb7b5a3d555de5d31184fc50a1bcc49c8499a2a81287707b3f4\",\"manifestSha256\":\"56764241df4f4a644af39e368b2e47f35d3f4bbbdf17e7cef3fa848ee0d72112\",\"workers\":{\"worker-0-1530637-1792474958700.json\":\"0d0f00e214c92f9e0b83b704e3488ff17a58c5141d2cd788cf337d599603a5e7\"}}}},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"declaredSource\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"specSha256\":\"03cb4e17d3b02785335dfd55df4717fbe18edf637d7defe043f8328ba9d7e4fc\",\"configSha256\":\"87ae779bbe194eb7b5a3d555de5d31184fc50a1bcc49c8499a2a81287707b3f4\",\"manifestSha256\":\"56764241df4f4a644af39e368b2e47f35d3f4bbbdf17e7cef3fa848ee0d72112\",\"workerSourceBindings\":[{\"sourceSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"sourceObjectSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"inputSourceSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\"}]}},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"manifestCases\":[\"checked-wrong-state\",\"contain-default\",\"duplicate-strict\",\"equal-explicit\",\"label-fill\",\"panel-before-after\",\"re-resolve\",\"role-name\"],\"workerCases\":[\"checked-wrong-state\",\"contain-default\",\"duplicate-strict\",\"equal-explicit\",\"label-fill\",\"panel-before-after\",\"re-resolve\",\"role-name\"]}},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"directoryNames\":[\"worker-0-1530637-1792474958700.json\"],\"referenced\":[\"worker-0-1530637-1792474958700.json\"]}},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"copiesChecked\":[\"cleanup.server.perWorker\",\"server.perWorker.proof\",\"worker.cleanup.server\"]}},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\",\"detail\":{\"cleanupObject\":true,\"serverObject\":true,\"perWorkerArray\":true}},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"perWorkerCount\":1}},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"perWorkerCount\":1}},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"fail\",\"detail\":{\"observed\":true,\"derivedRawAnyListening\":false,\"perWorkerListeningAfter\":[false]}},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\",\"detail\":{\"observed\":true,\"observedTopLevel\":true,\"derivedAllClosed\":true}},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\",\"detail\":{\"observed\":true,\"observedTopLevel\":true,\"derivedAllRefused\":true}},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\",\"detail\":{\"observed\":true,\"observedTopLevel\":true,\"derivedAdmission\":true}},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\",\"detail\":{\"receiptWorkers\":1,\"summaryWorkers\":1,\"cleanupPerWorker\":1,\"serverPerWorker\":1}},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\",\"detail\":{\"observed\":\"26.12.0\",\"workerObservedNodes\":[\"26.12.0\"],\"workerAgreement\":true,\"semver\":\"^(\\\\d+)\\\\.(\\\\d+)\\\\.(\\\\d+)$\"}},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\",\"detail\":{\"observed\":\"26.12.0\",\"recorded\":\"24.21.0\",\"exactMatch\":false,\"exactRecordedMatch\":false,\"descriptiveOnly\":true,\"recordedRole\":\"descriptive\"}},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\",\"detail\":{\"observed\":\"26.12.0\",\"observedMajor\":26,\"minimumMajor\":20,\"minimumMajorSatisfied\":true}}]},\"green\":{\"exit\":0,\"ok\":true,\"accepted\":true,\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"command\":[\"node\",\"scripts/check-aria-metadata.mjs\",\"--receipt\",\"corpus/evidence/round-13/aria/receipt.json\",\"--pin\",\"corpus/evidence/round-13/aria/runtime-pin.json\",\"--sidecar\",\"corpus/evidence/round-14/aria-metadata/corrected.json\"],\"stdout\":\"command: node scripts/check-aria-metadata.mjs --receipt corpus/evidence/round-13/aria/receipt.json --pin corpus/evidence/round-13/aria/runtime-pin.json --sidecar corpus/evidence/round-14/aria-metadata/corrected.json\\nARIA_METADATA check verdict=clean findings=28 failed=0 accepted=true reason=clean\",\"findings\":[{\"id\":\"R14-ARIA-INPUT-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"receiptPath\":\"corpus/evidence/round-13/aria/receipt.json\",\"receiptSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"receiptBytes\":97073}},{\"id\":\"R14-ARIA-PIN-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"pinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"advertisedPinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\"}},{\"id\":\"R14-ARIA-ANCHOR-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"canonicalReceipt\":true,\"canonicalPin\":true,\"receiptSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"pinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"anchors\":{\"receiptSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"pinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"producerSourceSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"specSha256\":\"03cb4e17d3b02785335dfd55df4717fbe18edf637d7defe043f8328ba9d7e4fc\",\"configSha256\":\"87ae779bbe194eb7b5a3d555de5d31184fc50a1bcc49c8499a2a81287707b3f4\",\"manifestSha256\":\"56764241df4f4a644af39e368b2e47f35d3f4bbbdf17e7cef3fa848ee0d72112\",\"workers\":{\"worker-0-1530637-1792474958700.json\":\"0d0f00e214c92f9e0b83b704e3488ff17a58c5141d2cd788cf337d599603a5e7\"}}}},{\"id\":\"R14-ARIA-SOURCE-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"declaredSource\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"specSha256\":\"03cb4e17d3b02785335dfd55df4717fbe18edf637d7defe043f8328ba9d7e4fc\",\"configSha256\":\"87ae779bbe194eb7b5a3d555de5d31184fc50a1bcc49c8499a2a81287707b3f4\",\"manifestSha256\":\"56764241df4f4a644af39e368b2e47f35d3f4bbbdf17e7cef3fa848ee0d72112\",\"workerSourceBindings\":[{\"sourceSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"sourceObjectSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\",\"inputSourceSha256\":\"1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c\"}]}},{\"id\":\"R14-ARIA-MANIFEST-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"manifestCases\":[\"checked-wrong-state\",\"contain-default\",\"duplicate-strict\",\"equal-explicit\",\"label-fill\",\"panel-before-after\",\"re-resolve\",\"role-name\"],\"workerCases\":[\"checked-wrong-state\",\"contain-default\",\"duplicate-strict\",\"equal-explicit\",\"label-fill\",\"panel-before-after\",\"re-resolve\",\"role-name\"]}},{\"id\":\"R14-ARIA-WORKER-SET-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"directoryNames\":[\"worker-0-1530637-1792474958700.json\"],\"referenced\":[\"worker-0-1530637-1792474958700.json\"]}},{\"id\":\"R14-ARIA-WORKER-PROOF-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"copiesChecked\":[\"cleanup.server.perWorker\",\"server.perWorker.proof\",\"worker.cleanup.server\"]}},{\"id\":\"R14-ARIA-CLEANUP-SUMMARY-01\",\"status\":\"pass\",\"detail\":{\"cleanupObject\":true,\"serverObject\":true,\"perWorkerArray\":true}},{\"id\":\"R14-ARIA-CLEANUP-PERWORKER-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"perWorkerCount\":1}},{\"id\":\"R14-ARIA-CLEANUP-PROOF-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"perWorkerCount\":1}},{\"id\":\"R14-ARIA-CLEANUP-LISTENING-AFTER-01\",\"status\":\"pass\",\"detail\":{\"observed\":false,\"derivedRawAnyListening\":false,\"perWorkerListeningAfter\":[false]}},{\"id\":\"R14-ARIA-CLEANUP-CLOSED-01\",\"status\":\"pass\",\"detail\":{\"observed\":true,\"observedTopLevel\":true,\"derivedAllClosed\":true}},{\"id\":\"R14-ARIA-CLEANUP-REFUSED-01\",\"status\":\"pass\",\"detail\":{\"observed\":true,\"observedTopLevel\":true,\"derivedAllRefused\":true}},{\"id\":\"R14-ARIA-CLEANUP-SERVEROK-01\",\"status\":\"pass\",\"detail\":{\"observed\":true,\"observedTopLevel\":true,\"derivedAdmission\":true}},{\"id\":\"R14-ARIA-CLEANUP-COUNT-01\",\"status\":\"pass\",\"detail\":{\"receiptWorkers\":1,\"summaryWorkers\":1,\"cleanupPerWorker\":1,\"serverPerWorker\":1}},{\"id\":\"R14-ARIA-NODE-01\",\"status\":\"pass\",\"detail\":{\"observed\":\"26.12.0\",\"workerObservedNodes\":[\"26.12.0\"],\"workerAgreement\":true,\"semver\":\"^(\\\\d+)\\\\.(\\\\d+)\\\\.(\\\\d+)$\"}},{\"id\":\"R14-ARIA-NODE-RECORDED-01\",\"status\":\"pass\",\"detail\":{\"observed\":\"26.12.0\",\"recorded\":\"24.21.0\",\"exactMatch\":false,\"exactRecordedMatch\":false,\"descriptiveOnly\":true,\"recordedRole\":\"descriptive\"}},{\"id\":\"R14-ARIA-NODE-MINIMUM-01\",\"status\":\"pass\",\"detail\":{\"observed\":\"26.12.0\",\"observedMajor\":26,\"minimumMajor\":20,\"minimumMajorSatisfied\":true}},{\"id\":\"R14-ARIA-SIDECAR-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"path\":\"corpus/evidence/round-14/aria-metadata/corrected.json\",\"sha256\":\"e156b922d0f59f6b66c4bba8aebc708bb0484c41cce1141960a0ab82c1a56745\",\"bytes\":4308}},{\"id\":\"R14-ARIA-SIDECAR-SCHEMA-01\",\"status\":\"pass\",\"detail\":{\"schema\":\"tabi-aria-metadata-correction-v1\",\"kind\":\"cleanup-and-node-metadata-correction\",\"expected\":\"tabi-aria-metadata-correction-v1\"}},{\"id\":\"R14-ARIA-SIDECAR-BINDING-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"receiptSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"pinSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"proofSetSha256\":\"49e64adb065b098df9b8e37642258926fb0560208a455530b412ff06706c6633\",\"proofDigests\":[{\"index\":0,\"sha256\":\"3fec21b55a5987fbdcdebfa7694c64015d0a4ebbc9d418df48c1ddbc6dbe4f9a\"}]}},{\"id\":\"R14-ARIA-SIDECAR-CORRECTION-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"observed\":true,\"derived\":false,\"supportingProofs\":1}},{\"id\":\"R14-ARIA-SIDECAR-NODE-CLAIM-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"computed\":{\"observed\":\"26.12.0\",\"recorded\":\"24.21.0\",\"minimumMajor\":20,\"observedMajor\":26,\"recordedMajor\":24,\"exactMatch\":false,\"exactRecordedMatch\":false,\"observedMatchesRecorded\":false,\"minimumMajorSatisfied\":true,\"workerObservedNodes\":[\"26.12.0\"],\"workerAgreement\":true,\"parsed\":true,\"shapesOk\":true},\"enforcedBy\":\"retrospective-checker\",\"historicalRuntimePinMatchIncludesNode\":false,\"historicalSpecEnforcedMinimumMajor\":true}},{\"id\":\"R14-ARIA-SIDECAR-PROVENANCE-01\",\"status\":\"pass\",\"detail\":{\"problems\":[]}},{\"id\":\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"observed\":{\"allClosed\":true,\"allNotListeningAfter\":true,\"allRefusedAfterClose\":true,\"derivedListeningAfter\":false,\"perWorkerCount\":1,\"summaryServerOk\":true},\"expected\":{\"perWorkerCount\":1,\"allClosed\":true,\"allRefusedAfterClose\":true,\"allNotListeningAfter\":true,\"derivedListeningAfter\":false,\"summaryServerOk\":true}}},{\"id\":\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"status\":\"pass\",\"detail\":{\"problems\":[],\"proofCount\":1,\"observed\":{\"allProofsComplete\":true,\"allProofsSupportCorrection\":true,\"everyProofClosed\":true,\"everyProofListensBefore\":true,\"everyProofNotListeningAfter\":true,\"everyProofRefusedAfterClose\":true,\"proofCount\":1,\"qualified\":true},\"expected\":{\"qualified\":true,\"proofCount\":1,\"allProofsComplete\":true,\"allProofsSupportCorrection\":true,\"everyProofListensBefore\":true,\"everyProofClosed\":true,\"everyProofRefusedAfterClose\":true,\"everyProofNotListeningAfter\":true}}},{\"id\":\"R14-ARIA-SIDECAR-RESIDUAL-01\",\"status\":\"pass\",\"detail\":{\"residualFailures\":[]}},{\"id\":\"R14-ARIA-SIDECAR-ACCEPTED-01\",\"status\":\"pass\",\"detail\":{\"accepted\":true,\"correctedField\":\"cleanup.server.listeningAfter\",\"correctedValue\":false,\"residualFailures\":[]}}]}}"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "d6c7b7584c7fe8a17edef89d65da6c2730d7cffd88dfd54ca97eb795dd4330cd",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 22.163231
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "d6c7b7584c7fe8a17edef89d65da6c2730d7cffd88dfd54ca97eb795dd4330cd",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 23.662169
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-aria-metadata-witness-mirrors",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-aria-metadata.mjs",
+        "--witness-mirrors"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 23.207031,
+      "stdout": {
+        "bytes": 2271,
+        "sha256": "20482f5e63f0b38e6828631ea4ecdc815b7c697fc514e66e6fb5dcd16ec9b44c",
+        "lines": 2,
+        "summaryLine": "ARIA_METADATA_JSON {\"schema\":\"tabi-aria-metadata-witness-mirrors-v1\",\"mode\":\"witness-mirrors\",\"ok\":true,\"exit\":0,\"classification\":{\"outcome\":\"evaluated\",\"reason\":\"clean\"},\"baseline\":{\"exit\":0,\"accepted\":true,\"sha256\":\"9292da9d62948daef793a1a0c165704c2b4ba3cd75597ff534b0890ed3dbacea\",\"bytes\":4489,\"failFindings\":[]},\"mirror\":{\"exit\":1,\"accepted\":false,\"sha256\":\"d2fad9d9b5316cc73b0e54b3ca145076b6bda9e1c27b8268135e3a96d975dc11\",\"bytes\":4495,\"failFindings\":[\"R14-ARIA-SIDECAR-CLEANUP-MIRROR-01\",\"R14-ARIA-SIDECAR-QUALIFICATION-01\",\"R14-ARIA-SIDECAR-ACCEPTED-01\"],\"cleanupProblems\":[\"cleanup.perWorkerCount\",\"cleanup.allClosed\",\"cleanup.allRefusedAfterClose\",\"cleanup.allNotListeningAfter\",\"cleanup.derivedListeningAfter\",\"cleanup.summaryServerOk\"],\"qualificationProblems\":[\"qualification.everyProofListensBefore\",\"qualification.everyProofClosed\",\"qualification.everyProofRefusedAfterClose\"]},\"legacy\":{\"revision\":\"e570380d77180ab394256dd6187cac0c5eaf62ec\",\"checkerSha256\":\"ef37387217c7c0b19f936be2c5b81ebe4ea25aafcdb84bc2af5250720e4343f6\",\"checkedCleanupMirrorFields\":[],\"checkedQualificationFields\":[\"qualified\",\"proofCount\",\"allProofsSupportCorrection\",\"allProofsComplete\",\"everyProofNotListeningAfter\"],\"uncheckedQualificationFields\":[\"everyProofListensBefore\",\"everyProofClosed\",\"everyProofRefusedAfterClose\"],\"legacyExitForSameBytes\":0,\"legacyExecuted\":false,\"basis\":\"static subset derivation: the legacy checker compared only its listed field set, so a sidecar differing solely in unchecked cleanup/qualification mirrors had no failing checked finding\",\"qualificationWouldPass\":true,\"legacyCheckedFindingsAllPass\":true},\"originalUnchanged\":true,\"authenticatedAnchors\":true,\"receipt\":{\"beforeSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\",\"afterSha256\":\"b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7\"},\"pin\":{\"beforeSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\",\"afterSha256\":\"4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2\"},\"snapshot\":{\"ok\":true,\"mismatches\":[],\"unavailable\":[]},\"findings\":[]}"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "20482f5e63f0b38e6828631ea4ecdc815b7c697fc514e66e6fb5dcd16ec9b44c",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 23.207031
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "20482f5e63f0b38e6828631ea4ecdc815b7c697fc514e66e6fb5dcd16ec9b44c",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 21.325961
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-measurement-binding-self-test",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-measurement-binding.mjs",
+        "--self-test"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 3453.878727,
+      "stdout": {
+        "bytes": 10040,
+        "sha256": "13ab29c52ab387c050feec24359202f5cddf8dd7ecce1bbd35182f33a35a5a28",
+        "lines": 77,
+        "summaryLine": "MEASUREMENT_BINDING_SELFTEST verdict=clean cases=76 reasons=13"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "13ab29c52ab387c050feec24359202f5cddf8dd7ecce1bbd35182f33a35a5a28",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 3453.878727
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "13ab29c52ab387c050feec24359202f5cddf8dd7ecce1bbd35182f33a35a5a28",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 3526.218597
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    },
+    {
+      "gate": "check-measurement-binding-check-r16-at-1205d26-reproduce",
+      "argv": [
+        "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+        "scripts/check-measurement-binding.mjs",
+        "--check",
+        "corpus/evidence/round-16/measurement-binding.json",
+        "--at",
+        "1205d261776a349af99a5a205c7c2467fbabae16",
+        "--reproduce"
+      ],
+      "cwd": "/tmp/tabi-r18-harm-at-677jBY",
+      "exit": 0,
+      "signal": null,
+      "timedOut": false,
+      "runtimeMs": 4532.621016,
+      "stdout": {
+        "bytes": 51,
+        "sha256": "89ac1fca3d0297108afad7cb85cf64aa9e61b1cfe9018325c9ed47e47ee1f701",
+        "lines": 1,
+        "summaryLine": "MEASUREMENT_BINDING verdict=clean claims=2 bound=2"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "spawnError": null,
+      "determinism": {
+        "runs": 2,
+        "deterministic": true,
+        "firstRun": {
+          "exit": 0,
+          "stdoutSha256": "89ac1fca3d0297108afad7cb85cf64aa9e61b1cfe9018325c9ed47e47ee1f701",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 4532.621016
+        },
+        "secondRun": {
+          "exit": 0,
+          "stdoutSha256": "89ac1fca3d0297108afad7cb85cf64aa9e61b1cfe9018325c9ed47e47ee1f701",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtimeMs": 4526.588778
+        }
+      },
+      "baselineExit": 0,
+      "equal": true
+    }
+  ]
+}

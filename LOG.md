@@ -1038,3 +1038,27 @@ the frontier row "Native WebMCP in chromium 152 — unprobed (census U3)"
   revived by message. Wave-2 m_zfl seats died on zai 429 retry exhaustion (listed in the report).
 - Tools installed/updated: none by L1; wave-2 seat RevNoteVsReceipt installed acorn 8.19.0 with
   npm into its /tmp sandbox only (predicate hashing).
+
+## Round 18 — hyaku, 2026-10-20 (early rechecks, guarded execution, routed corrections)
+
+- Motivation: round-17 outside check routed five defects (`corpus/lessons/round-17-verifier-spotcheck.md:157-165`);
+  harness hazards were observed in `.ufo/waves/round-17/w2/SentinelHarnessAfter.md`.
+- Claims: C1 freshness8, source recheck receipts; C2 operability8, six finite execution hazards;
+  C3 calibration9, five routed record corrections. No scalar move or exploratory claim.
+  Both freshness and operability work a lowest non-retired tie; no stagnation waiver.
+- Source sweep: 51 current-at-baseline rows reopened, own-work/pinned/live classes kept distinct;
+  no row date-due. `corpus/evidence/round-18/source-recheck/`, source note, `measure-c1.mjs`.
+- New official sources S059–S064 ground `corpus/knowledge/harness-hardening-round-18.md`;
+  S058 corrects the S057 anchor without rewriting historical rows. All new Gate quotes are
+  in `corpus/lessons/round-18.md`. SOURCES status/recheck/used-by cells of old rows unchanged.
+- New successor `scripts/webmcp-invoke-round18.mjs` preserves the round-17 producer bytes;
+  `scripts/freshness-witness.mjs` guards its own invocation, not direct calls to the frozen CLI.
+- Routed evidence: full 20-gate historical run at 93bfead; committed 57-case adjacency receipt;
+  seven newly executed retained r17 harness receipts; sibling-count correction (six);
+  `corpus/evidence/round-18/routed/`, `measure-c3.mjs`, lesson Corrections.
+- QUALITY33–38 arise from the lesson's mistake rows. README indexes corrections/new notes.
+  Depth8 deliberately deferred: next viable move is substrate re-verification of the r3/r8/r9
+  evidence ladder; repeated lowest-axis ties are not a claim that depth is saturated.
+- Wave1 dispatched70 (registry `.ufo/waves/round-18/w1/swarm-registry.json`); L1 holds planner.
+  Code writers used disjoint files but not separate writer worktrees: recorded conformance miss.
+  Final measured revisions, falsification results and no-harm comparison follow in this same round.

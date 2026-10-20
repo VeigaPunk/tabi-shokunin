@@ -137,3 +137,24 @@
     the sibling. A clean checker certifies citations and venues, not bilateral agreement: a
     `split-declared` or `refused-route` row records tabi's reading and says so. (lesson:
     corpus/lessons/round-17.md#mistakes; round16 outside routed 5)
+33. A superseding source row removes the falsified premise from every cell, not only `teaches`;
+    old append-only rows remain explicitly superseded. Red example: S057's publisher anchor.
+    (lesson: corpus/lessons/round-18.md#mistakes; round17 outside routed 4)
+34. A prose count carries its counting command against the named revision, including counts outside
+    the measurement manifest. The sibling-count correction is six, independently re-derived from
+    the map, not copied from its old lesson. (lesson: corpus/lessons/round-18.md#mistakes;
+    round17 outside routed 1; round18 C3 wrong-seven negative case)
+35. A no-harm receipt binds the complete gate set and executed gate bytes to the measured revision;
+    a later orchestration runner has its own separately pinned identity. An earlier run is not a
+    run at that revision. (lesson: corpus/lessons/round-18.md#mistakes; round17 outside routed 2;
+    round18 C3 wrong-revision and missing-gate negative cases)
+36. Rerun evidence retains full SHA-256 digests and the artifacts they hash. A new execution is
+    labeled new, never a recovery of lost temporary bytes. (lesson:
+    corpus/lessons/round-18.md#mistakes; round17 outside routed 5)
+37. A self-test claim cites a committed receipt under `corpus/evidence/` with argv, exit, stdout
+    and producer identity, not solely a wave summary. (lesson:
+    corpus/lessons/round-18.md#mistakes; round17 outside routed 3)
+38. Quote presence is not source identity: a recheck binds row URL to fetched URL by explicit
+    same-source transformations and binds own-work bytes to their Git object. An unrelated URL
+    with a copied quote must not count. (lesson: corpus/lessons/round-18.md#mistakes;
+    .ufo/waves/round-18/w1/ReviewC1Contract.md)
