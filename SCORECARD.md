@@ -587,3 +587,73 @@ misrepresented as outside verification and SHONEN stays four asserted[~].
   own source-scoped/runtime-scoped evidence rather than more scalar inflation.
 - saturation line8 and window3 retained; the demonstrated capability restarts
   the stagnation window at round13. No axis retired or silently waived.
+
+## Round 14 — hyaku, 2026-10-20
+
+Baseline `bebe2efc4565bb068efd905e9ef78011bb6b4efd`. Two declared distinct-axis
+claims, no exploratory claim and no new browser execution. C1 works operability8,
+a lowest non-retired tie; the stagnation waiver is not used. The initially
+planned coverage item is carried forward, not silently claimed completed:
+outside cleanup/counting defects take this round's bounded work instead.
+
+| Axis | Scalar before → after | Round14 verdict / evidence |
+|---|---|---|
+| depth | 8→8 | unchanged; exact grammar/metadata precision, not broad browser mastery |
+| coverage | 9→9 | unchanged;32 notes/32 mapped, no new knowledge ground or browser capability |
+| operability | 8→8 | improved C1; two SCORECARD count paths become non-shell with real supported/refusal/differential controls |
+| freshness | 8→8 | unchanged; worktree freshness34/34 clean, historical runtime pins/dates preserved |
+| calibration | 9→9 | improved C2; checked qualified metadata correction0→1, original contradiction retained as red |
+| adjacency | 8→8 | unchanged; own browser evidence/legacy lane gates, no security/testing domain absorption or external interaction |
+
+| Claim | Falsifiable before → after | Counting command | Measured revisions / evidence |
+|---|---|---|---|
+| C1 operability | newly verified non-shell historical counters0→2; no full-USER-production-green claim | `node .ufo/waves/round-14/measure.mjs REV --claim C1` | `bebe2efc4565bb068efd905e9ef78011bb6b4efd`→`6be099015ca347eab36c62f30551eab919c2ce5c`, both exit0; gates/code receipts atf942c62; `corpus/evidence/round-14/measurements.json` |
+| C2 calibration | qualified original receipt/pin correction pairs0→1, not another runtime experiment | `node .ufo/waves/round-14/measure.mjs REV --claim C2` | same baseline→`0c5567e8a2b57fc64d5526f830941e2304cd2c35`, both exit0; checker executed ate570380; `aria-metadata/verification.json`, `measure-c2-final.json` under round14 evidence |
+
+Final counter revision `0c5567e8a2b57fc64d5526f830941e2304cd2c35`, SHA256
+`22b6f5e5fa585555923971a0f56c640a2d38ae2d797aa84e4f9cae288cf7cab1`.
+C2 output grammar changed after the first C1 measurement, but C1 counting/control
+logic is unchanged. Exact argv/stdout/stderr/exit records, probe revision and
+all initial failures are committed in the measurement dossier. C1/C2 are
+separable; their --claim modes read disjoint receipts, and C2's initial parser
+failure did not negate the observed C1=2.
+
+ROUND selftest32 fixture cases+alias, USER29 fixtures+alias+six committed-row
+count controls+count-witness differential all passed. Both shell witnesses use
+one command/tree: pinned old clean0 with marker→new score_mismatch1/no marker.
+Both prior history-policy witnesses pass separately. ROUND production clean10;
+USER production remains failed round_count6/10 before its counting step.
+Supported historical tree-path/content count values are preserved; missing
+Git revisions now explicitly fail instead of legacy wc-masked0. Git config,
+PATH/environment/hooks/alias trust and the external validator remain uncredited,
+as do r07 survivor replay/user-record freezing/IPv6 classification debt.
+
+C2 selftest16 clean; original --check exits1 only
+R14-ARIA-CLEANUP-LISTENING-AFTER-01; corrected --check exits0 with27 findings/
+zero failures; --witness exits0 red→clean/original_unchanged=true. The correction
+is sourced by mined own-work S029 and pins unchanged historical receipt/pin/
+worker/spec/config/manifest/producer. Node observed26.12.0, descriptive24.21.0,
+minimum20, exactMatch=false. Original producer/note were restored before commit
+to preserve the round13 source/note bindings; no future-producer repair is claimed.
+
+Sources28→29 (A22→23/B4/C2), mined23→24/queued3/rejected2. S029 is new own-work,
+not newly covered domain ground. No pre-existing row mutable/immutable cells
+change; S029's uncommitted cadence/used-by corrections are logged in lesson.
+Census start/end exit0, source selftest26/live29 clean. Histogram/note-map
+command `node .ufo/waves/round-14/measure.mjs REV --histogram` measured baseline
+and `4a300f676e4f9731402d85f409895fb1123aee4a`, both exit0; map32/32/no missing.
+
+Trend self-verdicts: expansion unchanged; quality improved through checked held-
+evidence qualification and safer runnable count paths; discernment improved by
+learning prior non-author defects into QUALITY18/19. Current outside admit/reject
+agreement remains pending; no lane-dispatched seat is a non-author verifier.
+
+### Planned / capabilities / saturation / retired — round14
+
+- planned: operability — bounded inherited survivor-replay/user-record evidence
+  debt, without relaxing expected rounds or claiming hostile-repository safety.
+- planned: coverage — carry forward one explicitly unheld browser frontier
+  surface through its own source/runtime evidence, not another metadata count.
+- capabilities: unchanged; aria-locator-template-loopback remains first-working13.
+- saturation8/window3 unchanged; round14 is position1 since that round13 capability,
+  not a restarted window. No axis retired, no hidden waiver, all scalar deltas0.

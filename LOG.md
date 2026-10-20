@@ -804,3 +804,16 @@
   actual structured/listed red finding. This does not redefine checker success
   or manufacture stdout tokens. C1 parsing is unchanged; only the C2 revision
   probe is re-executed after committing the corrected consumer.
+- Final C2 revision probe at `0c5567e8a2b57fc64d5526f830941e2304cd2c35`
+  exited0: metadata_correction1, original_pinned1, lesson_admitted1,
+  browser_executed0, qualified=true, exactMatch=false. Before atbebe2ef was0;
+  C1 remains the observed0→2 at6be0990. Final measurement dossier
+  `corpus/evidence/round-14/measurements.json` records every exact command,
+  revision, stdout, exit and counter SHA25622b6f5e5…7cab1, with the original
+  failed C2 probe retained separately. SCORECARD round14 records six unchanged
+  scalars, both bounded claim verdicts and current outside-verification debt.
+- Expansion unchanged, quality improved, discernment improved through prior
+  outside-defect learning; no current-round independent agreement, SHONEN[x],
+  promotion or new capability is claimed. Round14 is stagnation-window position1
+  after round13's capability, not a restart. The report must follow lane commit
+  and push; original historical producer/note/receipt/pin remain fixed.
