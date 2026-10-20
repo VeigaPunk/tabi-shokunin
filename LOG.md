@@ -633,3 +633,12 @@
   expected failure or verdict was weakened. The runtime repair supplies its
   missing template without changing matcher expectations. Initial failures
   remain evidence, not silently replaced by later success.
+- Targeted rerun at `9c547dd` passed ROUND's26 fixtures plus alias control and
+  USER's21 fixtures; USER production remained honest `round_count 6/10`. Browser
+  tests reached seven passes, with the remaining expected-rejection check wrongly
+  demanding `Expected:`/`Received:` labels. Playwright1.64's actual equal-tree diff
+  uses `- Expected - N`/`+ Received + N` headers. The fixture now matches those
+  exact observed diff signatures while retaining matcher-name/tree-token checks.
+  Failed command/receipt remain `corpus/evidence/round-13/aria-execution-final.json`
+  and `corpus/evidence/round-13/aria-second-receipt.json`; the filename does not
+  upgrade that earlier failed run into final success.
