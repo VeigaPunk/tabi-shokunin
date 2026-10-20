@@ -1661,3 +1661,26 @@ checker, a source verifier, or evidence that a runtime claim is true. A syntheti
 control tests schema handling only and is not a fabricated browser observation. The
 round-counting command `.ufo/waves/round-12/measure.mjs REV` counts committed evidence;
 it is not a gate and does not independently judge source truth.
+
+## Round 13 — historical-gate compatibility registry (2026-10-20)
+
+These are historical campaign-contract gates, not browser-support or promotion
+oracles. The compatibility policy keeps the original measurement commits fixed:
+canonical four-box SHONEN regeneration is checked separately from its historical
+census row; historical lesson bytes remain protected, while a new required lesson
+must not be mistaken for rewriting an old one. A `[~]` evidence pointer must be a
+committed regular file. New `[x]` marks are refused here because this author-side
+gate cannot establish non-author authority. Promotion remains externally adjudicated.
+
+| Name | Kind / owner | Entry and verdict map | Self-invocation | Persisted pinned values | Write scope |
+|---|---|---|---|---|---|
+| historical-pstack-contract | gate / tabi | `node scripts/check-round-contract.mjs`; 0 clean, 1 failed, 2 could-not-evaluate | `node scripts/check-round-contract.mjs --self-test`; isolated CLI exit/finding fixtures; `--witness 75e7836b6c3090180aee2754e20a5d3cfb186e74` compares the pinned legacy script against the repaired script on one fixture | `scripts/check-round-contract.mjs` constants HARD_BASELINE, canonical seed digest, census digest and legacy witness blob; `corpus/evidence/pstack-20261015/baseline-census.tsv` is unchanged | Production reads committed lane files only; self-test/witness writes isolated temporary fixture trees and removes them |
+| historical-user-contract | gate / tabi | `node scripts/check-user-round-contract.mjs`; 0 clean, 1 failed, 2 could-not-evaluate; inherited six-of-ten `round_count` is still failed, not a successful compatibility repair verdict | `node scripts/check-user-round-contract.mjs --self-test`; isolated CLI exit/finding fixtures | `scripts/check-user-round-contract.mjs` HARD_BASELINE/PSTACK_PIN, canonical seed and exact ROUND-script cutover constants; no runtime self-blessing | Production reads committed lane files; self-test writes isolated temporary fixtures and removes them |
+
+**Trust boundary:** these legacy gates execute lane-authored SCORECARD counting
+commands through a shell. They are not safe validators for an untrusted repository.
+The existing survivor-replay, user-record-freezing and public-origin-classification
+gaps are separately retained in `.ufo/waves/round-13/w1/ReviewUser.txt` and
+`SafetyHistory.txt`; the bounded compatibility claim does not certify those paths.
+The new source registry/claim-record gates remain distinct and retain their own
+registered scopes. QUALITY16 and `corpus/lessons/round-13.md` explain this repair.
