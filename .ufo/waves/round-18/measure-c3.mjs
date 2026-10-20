@@ -20,6 +20,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 const REFERENCE_REV = '93bfead1f5f25f584353df3152a60209bbd89a2e';
 const BASELINE_REV = '2bff864fdfee684ddbcd066cc8e735adaba2735c';
 const EXPECTED_RERUN_PRODUCER = 'de62820dd35e5cf7804b656ef3fe1678da8a15bdf4248c8b7fa737f878b052d7';
+const EXPECTED_COUNT_COMMAND = 'git show 93bfead:corpus/adjacency.tsv | cut -f2 | tail -n +2 | sort -u | wc -l';
 const HEX64 = /^[0-9a-f]{64}$/;
 const MAX_BUFFER = 64 * 1024 * 1024;
 
@@ -101,9 +102,16 @@ function validRevisionToken(rev) {
   return typeof rev === 'string' && /^[A-Za-z0-9][A-Za-z0-9._/~^@{}-]*$/.test(rev);
 }
 
-function assertRevision(repo, rev) {
+function resolveCommit(repo, rev) {
   if (!validRevisionToken(rev)) throw new CouldNotEvaluate('revision_unresolved');
-  checkedGit(repo, ['ls-tree', '-d', '-z', rev], { binary: true });
+  const resolved = checkedGit(repo, [
+    'rev-parse',
+    '--verify',
+    '--end-of-options',
+    `${rev}^{commit}`,
+  ]).trim();
+  if (!/^[0-9a-f]{40}$/.test(resolved)) throw new CouldNotEvaluate('revision_unresolved');
+  return resolved;
 }
 
 function parseTreeEntries(bytes) {
@@ -163,7 +171,7 @@ function harnessIdsFromSource(source) {
 }
 
 function buildReferenceFacts(repo, rev, enforcePinnedHarness) {
-  assertRevision(repo, rev);
+  rev = resolveCommit(repo, rev);
   const cacheKey = `${repo}\0${rev}\0${enforcePinnedHarness ? 'pinned' : 'fixture'}`;
   if (referenceCache.has(cacheKey)) return referenceCache.get(cacheKey);
 
@@ -250,6 +258,7 @@ function standaloneInteger(text, value) {
 
 function claimsSevenAsCorrected(line) {
   const sevenPattern = /(?<![\p{L}\p{N}_])7(?![\p{L}\p{N}_])/gu;
+  if (/\bafter recounting\b[^.;!?]{0,80}\bthere are\s*7\s+siblings?\b/i.test(line)) return true;
   for (const match of line.matchAll(sevenPattern)) {
     const before = line.slice(0, match.index).trimEnd();
     const after = line.slice(match.index + match[0].length);
@@ -264,6 +273,11 @@ function claimsSevenAsCorrected(line) {
   return false;
 }
 
+function correctedSiblingCount(line) {
+  const match = /\bcorrect(?:ed)?\s+(?:distinct\s+)?sibling\s+count\s+(?:is|=|:)\s*(\d+)\b/i.exec(line);
+  return match ? Number(match[1]) : null;
+}
+
 function verifyD1(reader, siblingCount) {
   const lesson = reader(PATHS.lesson);
   if (lesson === null) return result(false, 'lesson_missing');
@@ -271,6 +285,7 @@ function verifyD1(reader, siblingCount) {
   let inCorrections = false;
   let sawCitation = false;
   let sawReportCitation = false;
+  let sawCountCommand = false;
   let claimsSeven = false;
   let validCorrection = false;
   for (const line of lines) {
@@ -279,7 +294,9 @@ function verifyD1(reader, siblingCount) {
       inCorrections = heading[1] === '##' && heading[2].trim() === 'Corrections';
       continue;
     }
-    if (!inCorrections || !line.includes('corpus/lessons/round-17.md:116')) continue;
+    if (!inCorrections) continue;
+    if (line.includes(EXPECTED_COUNT_COMMAND)) sawCountCommand = true;
+    if (!line.includes('corpus/lessons/round-17.md:116')) continue;
     sawCitation = true;
     if (claimsSevenAsCorrected(line)) {
       claimsSeven = true;
@@ -287,12 +304,13 @@ function verifyD1(reader, siblingCount) {
     }
     if (!line.includes('.ufo/reports/round-17/tabi.md:35')) continue;
     sawReportCitation = true;
-    if (standaloneInteger(line, siblingCount)) validCorrection = true;
+    if (correctedSiblingCount(line) === siblingCount) validCorrection = true;
   }
   if (claimsSeven) return result(false, 'correction_claims_7');
+  if (!sawCountCommand) return result(false, 'correction_count_command_missing');
   if (validCorrection) return result(true, 'correction_line_verified');
   if (sawCitation && !sawReportCitation) return result(false, 'correction_report_citation_missing');
-  return result(false, sawCitation ? 'correction_sibling_count_missing' : 'correction_citation_missing');
+  return result(false, sawCitation ? 'correction_corrected_count_missing' : 'correction_citation_missing');
 }
 
 function sameArray(left, right) {
@@ -301,6 +319,13 @@ function sameArray(left, right) {
 
 function isRecord(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+function canonicalJson(value) {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (isRecord(value)) {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
 }
 
 function verifyD2(reader, facts, referenceRev) {
@@ -363,6 +388,37 @@ function verifyD2(reader, facts, referenceRev) {
     if (!isRecord(gate.stderr) || typeof gate.stderr.sha256 !== 'string' || !HEX64.test(gate.stderr.sha256)) {
       return result(false, 'short_stderr_sha256');
     }
+    const determinism = gate.determinism;
+    const firstRun = determinism?.firstRun;
+    const secondRun = determinism?.secondRun;
+    if (
+      !isRecord(determinism) ||
+      determinism.runs !== 2 ||
+      !isRecord(firstRun) ||
+      !isRecord(secondRun) ||
+      !Number.isInteger(firstRun.exit) ||
+      !Number.isInteger(secondRun.exit) ||
+      typeof firstRun.stdoutSha256 !== 'string' ||
+      !HEX64.test(firstRun.stdoutSha256) ||
+      typeof firstRun.stderrSha256 !== 'string' ||
+      !HEX64.test(firstRun.stderrSha256) ||
+      typeof secondRun.stdoutSha256 !== 'string' ||
+      !HEX64.test(secondRun.stdoutSha256) ||
+      typeof secondRun.stderrSha256 !== 'string' ||
+      !HEX64.test(secondRun.stderrSha256)
+    ) return result(false, 'determinism_record_invalid');
+    if (
+      gate.exit !== firstRun.exit ||
+      gate.stdout.sha256 !== firstRun.stdoutSha256 ||
+      gate.stderr.sha256 !== firstRun.stderrSha256
+    ) return result(false, 'gate_first_run_mismatch');
+    const deterministic =
+      firstRun.exit === secondRun.exit &&
+      firstRun.stdoutSha256 === secondRun.stdoutSha256 &&
+      firstRun.stderrSha256 === secondRun.stderrSha256;
+    if (typeof determinism.deterministic !== 'boolean' || determinism.deterministic !== deterministic) {
+      return result(false, 'determinism_flag_mismatch');
+    }
   }
   return result(true, '20_historical_gates_verified');
 }
@@ -393,6 +449,9 @@ function verifyD3(reader, facts, referenceRev) {
     return result(false, 'adjacency_receipt_schema_invalid');
   }
   if (receipt.revision !== referenceRev) return result(false, 'wrong_revision');
+  if (!sameArray(receipt.argv, ['node', PATHS.adjacencyChecker, '--self-test'])) {
+    return result(false, 'adjacency_selftest_argv_mismatch');
+  }
   if (receipt.exit !== 0) return result(false, 'selftest_exit_nonzero');
   const stdout = outputText(receipt.stdout);
   if (stdout === null) return result(false, 'selftest_stdout_missing');
@@ -454,7 +513,9 @@ function verifyD4(reader) {
   if (anchorColumn < 0 || openedColumn < 0) return result(false, 'S058_source_columns_missing');
   const row = rows[0];
   if (!row[teachesColumn].startsWith('supersedes S057 —')) return result(false, 'S058_not_superseding_S057');
-  if (row.some((cell) => /individual publisher/i.test(cell))) return result(false, 'S058_individual_publisher');
+  if (row.some((cell) => /(?:\bindividual publisher\b|\bnatural[-\s]person publisher\b|\bpublisher\s+François Beaufort\b)/i.test(cell))) {
+    return result(false, 'S058_individual_publisher');
+  }
   if (!/developer\s+Google Ireland, Ltd\./i.test(row[teachesColumn])) {
     return result(false, 'S058_corrected_publisher_missing');
   }
@@ -485,6 +546,15 @@ function verifyD5(reader, repo, rev, facts, referenceRev) {
     return result(false, 'rerun_index_schema_invalid');
   }
   if (index.revision !== referenceRev) return result(false, 'wrong_revision');
+  if (typeof index.note !== 'string') return result(false, 'rerun_qualification_missing');
+  if (/\brecover(?:s|ed|ing)?\s+the original(?: lost)?\s+round-17\s+\/tmp outputs\b/i.test(index.note)) {
+    return result(false, 'rerun_claims_original_recovered');
+  }
+  if (
+    !/\bnew reruns\b/i.test(index.note) ||
+    !/\bnot the same runs\b/i.test(index.note) ||
+    !/\bunrecoverable \/tmp outputs\b/i.test(index.note)
+  ) return result(false, 'rerun_qualification_missing');
   if (
     !isRecord(index.producer) ||
     index.producer.path !== PATHS.invokeHarness ||
@@ -508,6 +578,7 @@ function verifyD5(reader, repo, rev, facts, referenceRev) {
   const seenKeys = new Set();
   const seenPaths = new Set();
   const seenDigests = new Set();
+  const seenCanonicalReceipts = new Set();
   for (const run of index.runs) {
     if (!isRecord(run) || !Number.isInteger(run.k) || run.k < 1 || typeof run.file !== 'string') {
       return result(false, 'rerun_entry_invalid');
@@ -527,6 +598,9 @@ function verifyD5(reader, repo, rev, facts, referenceRev) {
     if (parsed.error || !isRecord(parsed.value)) return result(false, 'rerun_receipt_invalid_json');
     const receipt = parsed.value;
     if (receipt.schema !== 'tabi-round17-webmcp-invoke-v1') return result(false, 'rerun_receipt_schema_invalid');
+    const canonicalDigest = sha256(Buffer.from(canonicalJson(receipt), 'utf8'));
+    if (seenCanonicalReceipts.has(canonicalDigest)) return result(false, 'duplicate_rerun_execution');
+    seenCanonicalReceipts.add(canonicalDigest);
     if (
       !isRecord(receipt.producer) ||
       receipt.producer.path !== PATHS.invokeHarness ||
@@ -581,20 +655,20 @@ function verifyD5(reader, repo, rev, facts, referenceRev) {
 
 
 function evaluateRevision(repo, rev, referenceRev = REFERENCE_REV, { enforcePinnedHarness = true } = {}) {
-  assertRevision(repo, rev);
+  const measuredRev = resolveCommit(repo, rev);
   const facts = buildReferenceFacts(repo, referenceRev, enforcePinnedHarness);
-  const reader = createBlobReader(repo, rev);
+  const reader = createBlobReader(repo, measuredRev);
   const defects = {
     d1: verifyD1(reader, facts.siblings),
     d2: verifyD2(reader, facts, referenceRev),
     d3: verifyD3(reader, facts, referenceRev),
     d4: verifyD4(reader),
-    d5: verifyD5(reader, repo, rev, facts, referenceRev),
+    d5: verifyD5(reader, repo, measuredRev, facts, referenceRev),
   };
   const counterBytes = reader(SCRIPT_PATH);
   const c3 = Object.values(defects).filter((entry) => entry.pass).length;
   return {
-    rev,
+    rev: measuredRev,
     c3_routed_closed: c3,
     defects,
     counterSha256: counterBytes === null ? null : sha256(counterBytes),
@@ -706,7 +780,9 @@ function buildSelfTestFixture(repo) {
     '',
     '## Corrections',
     '',
-    '**D1 — sibling count is 6, not 7.** `corpus/lessons/round-17.md:116` and `.ufo/reports/round-17/tabi.md:35`.',
+    '**D1 — Correct sibling count is 6, not 7.** `corpus/lessons/round-17.md:116` and `.ufo/reports/round-17/tabi.md:35`.',
+    'Counting command:',
+    '`git show 93bfead:corpus/adjacency.tsv | cut -f2 | tail -n +2 | sort -u | wc -l` → `6`.',
     '',
   ].join('\n');
   putFixtureFile(repo, PATHS.lesson, lesson);
@@ -724,15 +800,27 @@ function buildSelfTestFixture(repo) {
       revision: facts.baseline.baseline,
     },
     gateScriptsSha256,
-    gates: facts.baseline.gates.map((gate) => ({
-      gate: gate.gate,
-      argv: gate.argv,
-      exit: gate.exit,
-      baselineExit: gate.exit,
-      equal: true,
-      stdout: { sha256: sha256(Buffer.from(`out:${gate.gate}`)) },
-      stderr: { sha256: sha256(Buffer.alloc(0)) },
-    })),
+    gates: facts.baseline.gates.map((gate, index) => {
+      const stdoutSha256 = sha256(Buffer.from(`out:${gate.gate}`));
+      const stderrSha256 = sha256(Buffer.alloc(0));
+      const secondStdoutSha256 = index === 0 ? sha256(Buffer.from(`second:${gate.gate}`)) : stdoutSha256;
+      const deterministic = stdoutSha256 === secondStdoutSha256;
+      return {
+        gate: gate.gate,
+        argv: gate.argv,
+        exit: gate.exit,
+        baselineExit: gate.exit,
+        equal: true,
+        stdout: { sha256: stdoutSha256 },
+        stderr: { sha256: stderrSha256 },
+        determinism: {
+          runs: 2,
+          deterministic,
+          firstRun: { exit: gate.exit, stdoutSha256, stderrSha256 },
+          secondRun: { exit: gate.exit, stdoutSha256: secondStdoutSha256, stderrSha256 },
+        },
+      };
+    }),
   };
   writeFixtureJson(repo, PATHS.harmReceipt, harmReceipt);
 
@@ -740,6 +828,7 @@ function buildSelfTestFixture(repo) {
   writeFixtureJson(repo, PATHS.adjacencyReceipt, {
     schema: 'tabi-routed-adjacency-selftest-v1',
     revision: referenceRev,
+    argv: ['node', PATHS.adjacencyChecker, '--self-test'],
     exit: 0,
     stdout: selftestStdout,
     stdoutSha256: sha256(Buffer.from(selftestStdout)),
@@ -811,6 +900,7 @@ function buildSelfTestFixture(repo) {
     schema: 'tabi-routed-harness-reruns-v1',
     revision: referenceRev,
     producer: { path: PATHS.invokeHarness, sha256: facts.invokeHarnessSha256 },
+    note: 'These are new reruns performed on 2026-10-20, replacing the unrecoverable /tmp outputs of round 17; they are not the same runs.',
     runs,
   });
   putFixtureFile(repo, SCRIPT_PATH, '// fixture counter identity\n');
@@ -861,6 +951,26 @@ function runSelfTest() {
   try {
     const { referenceRev, honestRev } = buildSelfTestFixture(repo);
     const honest = evaluateRevision(repo, honestRev, referenceRev, { enforcePinnedHarness: false });
+    const symbolic = evaluateRevision(repo, 'HEAD', referenceRev, { enforcePinnedHarness: false });
+    const treeObject = fixtureGit(repo, ['rev-parse', '--verify', `${honestRev}^{tree}`]).trim();
+    let treeObjectRejected = false;
+    try {
+      evaluateRevision(repo, treeObject, referenceRev, { enforcePinnedHarness: false });
+    } catch (error) {
+      treeObjectRejected = error instanceof CouldNotEvaluate;
+    }
+    const revisionChecks = [
+      {
+        name: 'symbolic HEAD canonicalized',
+        expected: honestRev,
+        observed: symbolic.rev,
+        pass: symbolic.rev === honestRev && symbolic.c3_routed_closed === 5,
+      },
+      {
+        name: 'tree object rejected',
+        pass: treeObjectRejected,
+      },
+    ];
     const forgeries = [
       {
         name: 'wrong revision', defect: 'd2', expectedWhy: 'wrong_revision',
@@ -869,6 +979,18 @@ function runSelfTest() {
       {
         name: '19 gates', defect: 'd2', expectedWhy: 'gate_count',
         mutation: (root) => mutateJson(root, PATHS.harmReceipt, (receipt) => { receipt.gates.pop(); }),
+      },
+      {
+        name: 'harm stdout digest differs from firstRun', defect: 'd2', expectedWhy: 'gate_first_run_mismatch',
+        mutation: (root) => mutateJson(root, PATHS.harmReceipt, (receipt) => {
+          receipt.gates[0].stdout.sha256 = '0'.repeat(64);
+        }),
+      },
+      {
+        name: 'determinism flag contradicts both runs', defect: 'd2', expectedWhy: 'determinism_flag_mismatch',
+        mutation: (root) => mutateJson(root, PATHS.harmReceipt, (receipt) => {
+          receipt.gates[1].determinism.deterministic = false;
+        }),
       },
       {
         name: 'short digest', defect: 'd2', expectedWhy: 'short_stdout_sha256',
@@ -894,12 +1016,40 @@ function runSelfTest() {
         }),
       },
       {
+        name: 'adjacency receipt uses a different argv', defect: 'd3', expectedWhy: 'adjacency_selftest_argv_mismatch',
+        mutation: (root) => mutateJson(root, PATHS.adjacencyReceipt, (receipt) => {
+          receipt.argv = ['node', PATHS.adjacencyChecker, '--not-self-test'];
+        }),
+      },
+      {
         name: 'S058 still saying individual publisher', defect: 'd4', expectedWhy: 'S058_individual_publisher',
         mutation: (root) => {
           const path = join(root, PATHS.sources);
           const text = readFileSync(path, 'utf8').replace(
             '| S058 | listing | docs | C |',
             '| S058 | listing individual publisher | docs | C |',
+          );
+          writeFileSync(path, text);
+        },
+      },
+      {
+        name: 'S058 natural-person publisher paraphrase', defect: 'd4', expectedWhy: 'S058_individual_publisher',
+        mutation: (root) => {
+          const path = join(root, PATHS.sources);
+          const text = readFileSync(path, 'utf8').replace(
+            `Developer Google Ireland, Ltd.; dossier ${PATHS.sourceDossier}`,
+            `Developer Google Ireland, Ltd.; Offered by François Beaufort (a natural-person publisher); dossier ${PATHS.sourceDossier}`,
+          );
+          writeFileSync(path, text);
+        },
+      },
+      {
+        name: 'S058 scope misattributes publisher to François Beaufort', defect: 'd4', expectedWhy: 'S058_individual_publisher',
+        mutation: (root) => {
+          const path = join(root, PATHS.sources);
+          const text = readFileSync(path, 'utf8').replace(
+            '| S058 | listing | docs | C | publisher facts |',
+            '| S058 | listing | docs | C | Listing publisher François Beaufort; prerequisites |',
           );
           writeFileSync(path, text);
         },
@@ -951,8 +1101,19 @@ function runSelfTest() {
         mutation: (root) => {
           const path = join(root, PATHS.lesson);
           const text = readFileSync(path, 'utf8').replace(
-            '**D1 — sibling count is 6, not 7.** `corpus/lessons/round-17.md:116` and `.ufo/reports/round-17/tabi.md:35`.',
+            '**D1 — Correct sibling count is 6, not 7.** `corpus/lessons/round-17.md:116` and `.ufo/reports/round-17/tabi.md:35`.',
             '**D1 — corrected sibling count is 7, not 6.** `corpus/lessons/round-17.md:116` and `.ufo/reports/round-17/tabi.md:35`.',
+          );
+          writeFileSync(path, text);
+        },
+      },
+      {
+        name: 'audit item 6 while recount claims 7 siblings', defect: 'd1', expectedWhy: 'correction_claims_7',
+        mutation: (root) => {
+          const path = join(root, PATHS.lesson);
+          const text = readFileSync(path, 'utf8').replace(
+            '**D1 — Correct sibling count is 6, not 7.** `corpus/lessons/round-17.md:116` and `.ufo/reports/round-17/tabi.md:35`.',
+            'Audit item 6: `corpus/lessons/round-17.md:116` and `.ufo/reports/round-17/tabi.md:35`; after recounting, there are 7 siblings.',
           );
           writeFileSync(path, text);
         },
@@ -964,6 +1125,29 @@ function runSelfTest() {
           const text = readFileSync(path, 'utf8').replace(' and `.ufo/reports/round-17/tabi.md:35`', '');
           writeFileSync(path, text);
         },
+      },
+      {
+        name: 'correction omits required counting command', defect: 'd1', expectedWhy: 'correction_count_command_missing',
+        mutation: (root) => {
+          const path = join(root, PATHS.lesson);
+          const text = readFileSync(path, 'utf8').replace(
+            EXPECTED_COUNT_COMMAND,
+            'git show 93bfead:corpus/adjacency.tsv | cut -f2 | wc -l',
+          );
+          writeFileSync(path, text);
+        },
+      },
+      {
+        name: 'rerun index falsely claims original recovery', defect: 'd5', expectedWhy: 'rerun_claims_original_recovered',
+        mutation: (root) => mutateJson(root, `${PATHS.rerunPrefix}index.json`, (index) => {
+          index.note = 'These recover the original lost round-17 /tmp outputs.';
+        }),
+      },
+      {
+        name: 'rerun index omits new-run qualification', defect: 'd5', expectedWhy: 'rerun_qualification_missing',
+        mutation: (root) => mutateJson(root, `${PATHS.rerunPrefix}index.json`, (index) => {
+          index.note = 'Seven receipts are stored.';
+        }),
       },
       {
         name: 'rerun sha mismatch', defect: 'd5', expectedWhy: 'rerun_sha_mismatch',
@@ -1029,13 +1213,36 @@ function runSelfTest() {
           });
         },
       },
+      {
+        name: 'same execution serialized with whitespace variants', defect: 'd5', expectedWhy: 'duplicate_rerun_execution',
+        mutation: (root) => {
+          const first = readFileSync(join(root, `${PATHS.rerunPrefix}run-1.json`));
+          for (let k = 2; k <= 7; k += 1) {
+            writeFileSync(
+              join(root, `${PATHS.rerunPrefix}run-${k}.json`),
+              Buffer.concat([first, Buffer.alloc(k - 1, 0x0a)]),
+            );
+          }
+          mutateJson(root, `${PATHS.rerunPrefix}index.json`, (index) => {
+            for (const run of index.runs) {
+              const bytes = readFileSync(join(root, `${PATHS.rerunPrefix}${run.file}`));
+              run.sha256 = sha256(bytes);
+            }
+          });
+        },
+      },
     ].map((test) => checkForgery(repo, referenceRev, honestRev, test));
     const honestPass = honest.c3_routed_closed === 5 && DEFECT_IDS.every((id) => honest.defects[id].pass);
-    const pass = honestPass && forgeries.length >= 10 && forgeries.every((test) => test.pass);
+    const pass =
+      honestPass &&
+      forgeries.length >= 10 &&
+      forgeries.every((test) => test.pass) &&
+      revisionChecks.every((check) => check.pass);
     return {
       selfTest: pass ? 'pass' : 'fail',
-      cases: forgeries.length + 1,
+      cases: forgeries.length + 1 + revisionChecks.length,
       honest: { c3_routed_closed: honest.c3_routed_closed, defects: honest.defects, pass: honestPass },
+      revisionChecks,
       forgeries,
     };
   } finally {
@@ -1062,9 +1269,8 @@ function main(argv) {
   const rev = argv[0];
   try {
     emit(evaluateRevision(ROOT, rev), 0);
-  } catch (error) {
-    const why = error instanceof CouldNotEvaluate ? 'could_not_evaluate' : 'could_not_evaluate';
-    emit(allUnavailable(rev, why), 2);
+  } catch {
+    emit(allUnavailable(null), 2);
   }
 }
 

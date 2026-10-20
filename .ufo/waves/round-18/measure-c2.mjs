@@ -3,11 +3,13 @@ import { createHash } from 'node:crypto';
 import { spawn, spawnSync } from 'node:child_process';
 import {
   copyFileSync,
+  createReadStream,
   existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
   readdirSync,
+  realpathSync,
   rmSync,
   statSync,
   writeFileSync,
@@ -37,8 +39,11 @@ const CONTROL_IDS = Object.freeze([
   'invoke-domain-disabled',
 ]);
 const DOWNLOAD_CASE_ID = 'invoke-download-refused';
+const SELF_TEST_PRODUCER_PATH = 'scripts/webmcp-invoke-round18.mjs';
+const SELF_TEST_PRODUCER_SHA256 = 'a'.repeat(64);
 const DOWNLOAD_SUGGESTED_FILENAME = 'webmcp-refused-download.txt';
 const DOWNLOAD_MARKER_PREFIX = 'tabi-r18-download-';
+const EXPECTED_CHROMIUM_LAUNCH_PATH = '/usr/bin/chromium';
 const DEFAULT_ENABLE_FEATURES = Object.freeze(['CDPScreenshotNewSurface']);
 const DEFAULT_DISABLE_FEATURES = Object.freeze([
   'AvoidUnnecessaryBeforeUnloadCheckSync',
@@ -80,6 +85,39 @@ class CannotEvaluate extends Error {}
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const sleep = (ms) => new Promise((resolvePromise) => setTimeout(resolvePromise, ms));
+const executableIdentityCache = new Map();
+
+async function fileExecutableIdentity(path) {
+  const canonicalPath = realpathSync(path);
+  if (!executableIdentityCache.has(canonicalPath)) {
+    executableIdentityCache.set(canonicalPath, (async () => {
+      const stat = statSync(canonicalPath);
+      const hash = createHash('sha256');
+      for await (const chunk of createReadStream(canonicalPath)) hash.update(chunk);
+      return {
+        path: canonicalPath,
+        device: String(stat.dev),
+        inode: String(stat.ino),
+        sha256: hash.digest('hex'),
+      };
+    })());
+  }
+  return executableIdentityCache.get(canonicalPath);
+}
+
+function processExecutableIdentity(pid) {
+  try {
+    const procPath = `/proc/${pid}/exe`;
+    const stat = statSync(procPath);
+    return {
+      path: realpathSync(procPath),
+      device: String(stat.dev),
+      inode: String(stat.ino),
+    };
+  } catch {
+    return null;
+  }
+}
 
 function gitEnv(home) {
   return {
@@ -87,6 +125,7 @@ function gitEnv(home) {
     HOME: home,
     GIT_CONFIG_NOSYSTEM: '1',
     GIT_CONFIG_GLOBAL: '/dev/null',
+    GIT_NO_REPLACE_OBJECTS: '1',
     GIT_OPTIONAL_LOCKS: '0',
     GIT_TERMINAL_PROMPT: '0',
     GIT_AUTHOR_NAME: 'Tabi C2 measurement probe',
@@ -452,7 +491,9 @@ async function runNormalArtifact(sandbox, artifactPath, { timeoutMs = NORMAL_TIM
       const key = `${processInfo.pid}\0${processInfo.argv.join('\0')}`;
       const entry = { pid: processInfo.pid, argv: processInfo.argv };
       if (!observed.has(key)) observed.set(key, entry);
-      if (isBrowserLaunchArgv(processInfo.argv) && !launchObserved.has(key)) launchObserved.set(key, entry);
+      if (isBrowserLaunchArgv(processInfo.argv) && !launchObserved.has(key)) {
+        launchObserved.set(key, { ...entry, executableIdentity: processExecutableIdentity(processInfo.pid) });
+      }
     }
     for (const path of scanDevToolsActivePort(run.tempPath)) devToolsFiles.add(path);
     for (const path of allFiles(run.tempPath)) {
@@ -498,7 +539,19 @@ async function runNormalArtifact(sandbox, artifactPath, { timeoutMs = NORMAL_TIM
   }
   const browserArgv = [...observed.values()];
   const launchArgv = [...launchObserved.values()];
-  return {
+  for (const entry of launchArgv) {
+    const observedIdentity = entry.executableIdentity;
+    if (!observedIdentity?.path) continue;
+    try {
+      const fileIdentity = await fileExecutableIdentity(observedIdentity.path);
+      entry.executableIdentity = fileIdentity.device === observedIdentity.device && fileIdentity.inode === observedIdentity.inode
+        ? fileIdentity
+        : { ...observedIdentity, sha256: null };
+    } catch {
+      entry.executableIdentity = { ...observedIdentity, sha256: null };
+    }
+  }
+  const result = {
     run,
     timedOut,
     completed: !timedOut && close !== null,
@@ -524,6 +577,8 @@ async function runNormalArtifact(sandbox, artifactPath, { timeoutMs = NORMAL_TIM
     tmpEmpty: tmpEntriesEmpty(run.tempPath),
     tmpFiles: allFiles(run.tempPath),
   };
+  result.browserEvidence = browserRunEvidence(result);
+  return result;
 }
 function producerDigest(receipt) {
   const value = receipt?.producerSha256 ?? receipt?.producer?.sha256 ?? null;
@@ -548,7 +603,7 @@ function countIds(records) {
   return counts;
 }
 
-function retainedCoverage(receipt) {
+function retainedCoverage(receipt, expectedProducer = null) {
   const cases = Array.isArray(receipt?.cases) ? receipt.cases : [];
   const controls = Array.isArray(receipt?.controls) ? receipt.controls : [];
   const caseCounts = countIds(cases);
@@ -560,6 +615,7 @@ function retainedCoverage(receipt) {
   const requiredControlFailures = CONTROL_IDS.filter((id) => controlCounts.get(id) !== 1 || !recordPassed(controls.find((record) => recordId(record) === id)));
   const downloadMatches = cases.filter((record) => recordId(record) === DOWNLOAD_CASE_ID);
   const downloadPass = downloadMatches.length === 1 && recordPassed(downloadMatches[0]);
+  let producerPass = null;
   if (!Array.isArray(receipt?.cases)) reasons.push('receipt cases[] missing');
   if (!Array.isArray(receipt?.controls)) reasons.push('receipt controls[] missing');
   if (duplicateCases.length) reasons.push(`case ids missing/duplicated: ${duplicateCases.join(',')}`);
@@ -567,25 +623,97 @@ function retainedCoverage(receipt) {
   if (requiredCaseFailures.length) reasons.push(`original required cases not uniquely passing: ${requiredCaseFailures.join(',')}`);
   if (requiredControlFailures.length) reasons.push(`original controls not uniquely passing: ${requiredControlFailures.join(',')}`);
   if (!downloadPass) reasons.push(`${DOWNLOAD_CASE_ID} is missing, duplicated, or not passing`);
+  if (expectedProducer) {
+    producerPass = receipt?.producerSha256 === expectedProducer.sha256
+      && receipt?.producer?.sha256 === expectedProducer.sha256
+      && receipt?.producer?.path === expectedProducer.path;
+    if (!producerPass) reasons.push(`receipt producer identity mismatch: expected ${expectedProducer.path}@${expectedProducer.sha256}, observed ${receipt?.producer?.path ?? 'no path'}@${receipt?.producerSha256 ?? receipt?.producer?.sha256 ?? 'no digest'}`);
+  }
   return {
     pass: reasons.length === 0,
-    why: reasons.length ? reasons.join('; ') : 'all 11 original cases, 4 original controls, and the download case are uniquely present and passing',
+    why: reasons.length ? reasons.join('; ') : 'all 11 original cases, 4 original controls, and the download case are uniquely present and passing, with the expected producer identity',
     originalCasesPassed: CASE_IDS.length - requiredCaseFailures.length,
     originalCasesRequired: CASE_IDS.length,
     originalControlsPassed: CONTROL_IDS.length - requiredControlFailures.length,
     originalControlsRequired: CONTROL_IDS.length,
     downloadCasePass: downloadPass,
+    producerPass,
+    producerPath: receipt?.producer?.path ?? null,
+    producerSha256: producerDigest(receipt),
     duplicateCases,
     duplicateControls,
   };
 }
-
-function coveredHazard(ownPass, ownWhy, coverage) {
+function browserRunEvidence(normal) {
+  const runs = Array.isArray(normal?.receipt?.runs) ? normal.receipt.runs : [];
+  const observedLaunches = Array.isArray(normal?.launchArgv) ? normal.launchArgv : [];
+  const requiredLabels = ['flagged', 'flag-off', 'domain-disabled'];
+  const reasons = [];
+  const matchedPids = [];
+  const expected = observedLaunches.find((entry) => entry.executableIdentity?.path)?.executableIdentity ?? null;
+  const expectedIsChromium = expected !== null && /(?:chromium|chrome)(?:\.exe)?$/i.test(basename(expected.path));
+  if (!expectedIsChromium || !HEX64.test(expected?.sha256 ?? '')) reasons.push('no observed Chromium main with a content-addressed executable identity');
+  const labelCounts = countIds(runs.map((run) => ({ id: run?.label })));
+  for (const label of requiredLabels) {
+    const matches = runs.filter((run) => run?.label === label);
+    if (matches.length !== 1) {
+      reasons.push(`receipt run ${label} occurs ${matches.length} times`);
+      continue;
+    }
+    const run = matches[0];
+    if (!Number.isInteger(run.pid) || run.pid <= 0) {
+      reasons.push(`receipt run ${label} has no positive PID`);
+      continue;
+    }
+    const observed = observedLaunches.filter((entry) => entry.pid === run.pid);
+    if (observed.length !== 1) {
+      reasons.push(`receipt run ${label} PID ${run.pid} is not one observed Chromium main PID`);
+      continue;
+    }
+    const processIdentity = observed[0].executableIdentity;
+    matchedPids.push(run.pid);
+    if (!processIdentity
+        || processIdentity.path !== expected?.path
+        || processIdentity.device !== expected?.device
+        || processIdentity.inode !== expected?.inode
+        || processIdentity.sha256 !== expected?.sha256
+        || observed[0].argv[0] !== processIdentity.path) {
+      reasons.push(`observed PID ${run.pid} executable identity differs from the actual launch identity`);
+    }
+    if (run.realExecutable !== processIdentity?.path || run.realExecutableSha256 !== processIdentity?.sha256) {
+      reasons.push(`receipt run ${label} executable identity does not match observed PID ${run.pid}`);
+    }
+    const recordedArgv = run.effectiveArgv ?? run.argv;
+    if (!Array.isArray(recordedArgv) || JSON.stringify(recordedArgv) !== JSON.stringify(observed[0].argv)) {
+      reasons.push(`receipt run ${label} argv does not match observed PID ${run.pid}`);
+    }
+  }
+  if (labelCounts.size !== requiredLabels.length || requiredLabels.some((label) => labelCounts.get(label) !== 1)) {
+    reasons.push('receipt run labels are not an exact unique launch-role set');
+  }
+  const chromium = normal?.receipt?.runtime?.observed?.chromium;
+  if (chromium?.launchPath !== EXPECTED_CHROMIUM_LAUNCH_PATH
+      || chromium?.realExecutable !== expected?.path
+      || chromium?.realExecutableSha256 !== expected?.sha256) {
+    reasons.push('receipt runtime Chromium identity does not match the observed launch identity');
+  }
+  return {
+    pass: reasons.length === 0,
+    why: reasons.length ? reasons.join('; ') : 'all three receipt launch PIDs match observed Chromium mains and effective executable SHA-256',
+    expectedExecutable: expected?.path ?? null,
+    expectedExecutableSha256: expected?.sha256 ?? null,
+    receiptPids: runs.map((run) => run?.pid ?? null),
+    matchedPids,
+    observedLaunchPids: observedLaunches.map((run) => run.pid),
+  };
+}
+function coveredHazard(ownPass, ownWhy, coverage, browserEvidence = null) {
   if (!coverage.pass) return { pass: false, why: `retained-coverage precondition failed (${coverage.why}); ${ownWhy}` };
+  if (browserEvidence && !browserEvidence.pass) return { pass: false, why: `observed-browser precondition failed (${browserEvidence.why}); ${ownWhy}` };
   return { pass: Boolean(ownPass), why: ownWhy };
 }
 
-function h1Hazard(h1, coverage) {
+function h1Hazard(h1, coverage, normal) {
   const pass = h1.trigger === 'case'
     && typeof h1.caseLine === 'string'
     && h1.childAliveAtSignal
@@ -596,7 +724,7 @@ function h1Hazard(h1, coverage) {
     && h1.passFailReceipt === null
     && h1.processCount === 0;
   const why = `case started=${typeof h1.caseLine === 'string'}, child alive at signal=${h1.childAliveAtSignal}, SIGTERM sent=${h1.killSent}, run_aborted/SIGTERM observed=${h1.signalDelivered}, exit=${h1.exitCode ?? 'none'}, pass/fail receipt=${h1.passFailReceipt ?? 'none'}, surviving TMPDIR processes=${h1.processCount}`;
-  return coveredHazard(pass, why, coverage);
+  return coveredHazard(pass, why, coverage, normal?.browserEvidence);
 }
 
 function h2Hazard({ h1, sigint, normal, watchdog }, coverage) {
@@ -612,7 +740,7 @@ function h2Hazard({ h1, sigint, normal, watchdog }, coverage) {
     && /(?:run_timeout|hard run timeout)/i.test(watchdogText);
   const pass = h1.tmpEmpty && normal.tmpEmpty && sigintTriggered && sigint.tmpEmpty && watchdogTriggered && watchdog.tmpEmpty;
   const why = `TMPDIR empty after SIGTERM=${h1.tmpEmpty}, normal=${normal.tmpEmpty}, SIGINT run=${sigintTriggered} (empty=${sigint.tmpEmpty}), watchdog=${watchdogTriggered} (empty=${watchdog.tmpEmpty}, browser argv=${watchdog.browserSamples})`;
-  return coveredHazard(pass, why, coverage);
+  return coveredHazard(pass, why, coverage, normal.browserEvidence);
 }
 
 function h3Hazard(normal, coverage) {
@@ -625,9 +753,8 @@ function h3Hazard(normal, coverage) {
     && normal.devToolsFiles.length === 0
     && ownedListeners === 0;
   const why = `normal run completed=${normal.completed}, observed browser argv=${normal.browserSamples}, --remote-debugging-port seen=${remotePort}, DevToolsActivePort seen=${normal.devToolsFiles.length > 0}, ss scans=${normal.listenerScans} available=${normal.listenerScanAvailable}, browser-owned listeners=${ownedListeners}`;
-  return coveredHazard(pass, why, coverage);
+  return coveredHazard(pass, why, coverage, normal.browserEvidence);
 }
-
 function filenameMatchesDownload(filePath, suggestedFilename) {
   const actual = basename(filePath).toLowerCase();
   const expected = basename(suggestedFilename).toLowerCase();
@@ -686,7 +813,7 @@ function h4Hazard(normal, coverage) {
     && liveFiles.length === 0
     && downloadedFiles.length === 0;
   const why = `case unique=${entry !== null}, pass=${entry ? recordPassed(entry) : false}, case line observed while process live=${normal.downloadCaseLineLive}, actual invoke attempt=${attempt} (marker prefix+sha=${markerValid}, request=${invocationRequestValid}, invocationId=${invocationIdPresent}, no error=${invokeErrorNull}, responded=${respondedCompleted}, output=${responseOutputMatches}, fields=${Object.keys(observations).join(',') || 'none'}), one settled refusal event=${refusalRecorded}, pre-close scans clear=${beforeCloseClear}, post-close scans clear=${afterCloseClear}, fixture files seen live=${liveFiles.length}, present after run=${downloadedFiles.length}`;
-  return coveredHazard(pass, why, coverage);
+  return coveredHazard(pass, why, coverage, normal.browserEvidence);
 }
 
 function featureSwitchCounts(argv) {
@@ -753,7 +880,7 @@ function s1Hazard(normal, coverage) {
   const missingRoles = requiredRoles.filter((role) => !roles.has(role));
   const pass = normal.launchArgv.length > 0 && violations.length === 0 && missingRoles.length === 0;
   const why = `observed launched browser argv=${normal.launchArgv.length}, required launch roles missing=${missingRoles.join(',') || 'none'}, feature-union violations=${violations.length}${violations.length ? ` (${JSON.stringify(violations)})` : ''}`;
-  return coveredHazard(pass, why, coverage);
+  return coveredHazard(pass, why, coverage, normal.browserEvidence);
 }
 function f6Hazard(sandbox, revision, wrapperPath, coverage, home) {
   if (!existsSync(wrapperPath) || !statSync(wrapperPath).isFile()) {
@@ -833,7 +960,7 @@ function makeWatchdogProbeArtifact(sandbox, sourcePath) {
 
 function evaluateHazards({ sandbox, revision, wrapperPath, h1, sigint, normal, watchdog, coverage, home }) {
   return {
-    h1: h1Hazard(h1, coverage),
+    h1: h1Hazard(h1, coverage, normal),
     h2: h2Hazard({ h1, sigint, normal, watchdog }, coverage),
     h3: h3Hazard(normal, coverage),
     h4: h4Hazard(normal, coverage),
@@ -852,6 +979,7 @@ function outputRecord({ rev, hazards, artifact, artifactSha256, counterSha256, h
       stderr: `${probe.stderr ?? ''}`.slice(-4000),
     } : null]),
   ) : null;
+  const runtime = normal?.receipt?.runtime?.observed ?? null;
   return {
     rev,
     c2_hazards_closed: Object.values(hazards).filter((result) => result.pass).length,
@@ -860,7 +988,20 @@ function outputRecord({ rev, hazards, artifact, artifactSha256, counterSha256, h
     artifactSha256,
     counterSha256,
     receiptSha256: normal?.receiptSha256 ?? null,
+    producerPath: normal?.receipt?.producer?.path ?? null,
     producerSha256: normal?.producerSha256 ?? null,
+    runtimeIdentity: runtime ? {
+      chromium: {
+        launchPath: runtime.chromium?.launchPath ?? null,
+        realExecutable: runtime.chromium?.realExecutable ?? null,
+        realExecutableSha256: runtime.chromium?.realExecutableSha256 ?? null,
+        version: runtime.chromium?.version ?? null,
+      },
+      playwright: runtime.playwright ?? null,
+      playwrightDir: runtime.playwrightDir ?? null,
+      node: runtime.node ?? null,
+    } : null,
+    browserEvidence: normal?.browserEvidence ?? null,
     watchdogPatch: watchdogPatch ?? null,
     abnormalProbes: {
       sigint: sigint ? {
@@ -955,7 +1096,11 @@ async function mainRevision(args) {
       label: 'watchdog',
     });
     probeTempDirs.push(watchdog.run.tempPath);
-    const coverage = retainedCoverage(normal.receipt);
+    const expectedProducer = {
+      path: artifactPath.slice(sandbox.length + 1).replaceAll('\\', '/'),
+      sha256: artifactDigest,
+    };
+    const coverage = retainedCoverage(normal.receipt, expectedProducer);
     const hazards = evaluateHazards({
       sandbox,
       revision,
@@ -1115,7 +1260,7 @@ if (['h1-good', 'h1-bad', 'sigint-good', 'sigint-leak'].includes(mode)) {
   if (mode === 'coverage-bad') cases.push({ ...cases[0] });
   process.stdout.write('WEBMCP_INVOKE_CASE id=invoke-download-refused status=pass\\n');
   await new Promise(resolvePromise => setTimeout(resolvePromise, 100));
-  writeFileSync(out, JSON.stringify({ verdict: 'pass', cases, controls, producerSha256: 'a'.repeat(64) }));
+  writeFileSync(out, JSON.stringify({ verdict: 'pass', cases, controls, producer: { path: ${JSON.stringify(SELF_TEST_PRODUCER_PATH)}, sha256: ${JSON.stringify(SELF_TEST_PRODUCER_SHA256)} }, producerSha256: ${JSON.stringify(SELF_TEST_PRODUCER_SHA256)} }));
   process.exit(0);
 }
 `;
@@ -1135,9 +1280,49 @@ async function selfTestEarly(sandbox, mode, options = {}) {
 
 async function selfTestNormal(sandbox, mode) {
   const stub = createStubRun(sandbox, mode);
-  return runNormalArtifact(sandbox, stub.artifactPath, { timeoutMs: 5000, pollMs: 20, label: `self-normal-${mode}` });
+  const normal = await runNormalArtifact(sandbox, stub.artifactPath, { timeoutMs: 5000, pollMs: 20, label: `self-normal-${mode}` });
+  if (!normal.receipt) return normal;
+  const identity = {
+    path: '/usr/lib/chromium/chromium',
+    device: 'self-test-device',
+    inode: 'self-test-inode',
+    sha256: 'a'.repeat(64),
+  };
+  normal.launchArgv = normal.launchArgv.map((entry) => ({
+    ...entry,
+    argv: [identity.path, ...entry.argv.slice(1)],
+    executableIdentity: identity,
+  }));
+  normal.receipt.runs = normal.launchArgv.map((entry) => {
+    const userData = entry.argv.find((arg) => arg.startsWith('--user-data-dir=')) ?? '';
+    const label = ['flagged', 'flag-off', 'domain-disabled'].find((candidate) => userData.includes(`${candidate}-profile`)) ?? 'unknown';
+    return {
+      label,
+      pid: entry.pid,
+      realExecutable: identity.path,
+      realExecutableSha256: identity.sha256,
+      effectiveArgv: entry.argv,
+    };
+  });
+  normal.receipt.runtime = {
+    observed: {
+      chromium: {
+        launchPath: EXPECTED_CHROMIUM_LAUNCH_PATH,
+        realExecutable: identity.path,
+        realExecutableSha256: identity.sha256,
+      },
+    },
+  };
+  normal.browserEvidence = browserRunEvidence(normal);
+  return normal;
 }
 
+function selfTestCoverage(receipt) {
+  return retainedCoverage(receipt, {
+    path: SELF_TEST_PRODUCER_PATH,
+    sha256: SELF_TEST_PRODUCER_SHA256,
+  });
+}
 function createTinyGitRepo(repo, home) {
   mkdirSync(repo, { recursive: true });
   const init = commandSync('git', ['init', '-q', '--initial-branch=master', repo], { cwd: dirname(repo), env: gitEnv(home) });
@@ -1147,6 +1332,36 @@ function createTinyGitRepo(repo, home) {
   git(repo, ['update-ref', 'refs/heads/master', rev], { home });
   git(repo, ['checkout', '-q', '--detach', rev], { home });
   return rev;
+}
+
+function selfTestReplacementRef(root, home) {
+  const repo = join(root, 'replace-ref');
+  mkdirSync(join(repo, 'corpus'), { recursive: true });
+  const init = commandSync('git', ['init', '-q', '--initial-branch=master', repo], { cwd: root, env: gitEnv(home) });
+  if (init.status !== 0) throw new CannotEvaluate(`replacement-ref self-test init failed: ${String(init.stderr).trim()}`);
+  const file = join(repo, 'corpus', 'probe.txt');
+  writeFileSync(file, 'original object');
+  git(repo, ['add', '--', 'corpus/probe.txt'], { home });
+  git(repo, ['commit', '-m', 'original object'], { home });
+  const original = String(git(repo, ['rev-parse', '--verify', 'HEAD'], { home })).trim();
+  writeFileSync(file, 'replacement object');
+  git(repo, ['add', '--', 'corpus/probe.txt'], { home });
+  git(repo, ['commit', '-m', 'replacement object'], { home });
+  const replacement = String(git(repo, ['rev-parse', '--verify', 'HEAD'], { home })).trim();
+  git(repo, ['replace', original, replacement], { home });
+  const protectedRead = String(git(repo, ['show', `${original}:corpus/probe.txt`], { home })).trim();
+  const unprotectedEnv = gitEnv(home);
+  delete unprotectedEnv.GIT_NO_REPLACE_OBJECTS;
+  const unprotected = commandSync('git', ['-c', 'core.hooksPath=/dev/null', 'show', `${original}:corpus/probe.txt`], {
+    cwd: repo,
+    env: unprotectedEnv,
+  });
+  const replacedRead = String(unprotected.stdout).trim();
+  const pass = protectedRead === 'original object' && unprotected.status === 0 && replacedRead === 'replacement object';
+  return {
+    pass,
+    why: `GIT_NO_REPLACE_OBJECTS read=${protectedRead}, replacement-enabled control=${replacedRead}, control exit=${unprotected.status}`,
+  };
 }
 
 function wrapperStubSource(good) {
@@ -1178,16 +1393,38 @@ async function runSelfTests() {
     const pass = actual.pass === expected;
     tests.push({ name, pass, expected, actual: actual.pass, why: actual.why });
   };
+  const syntheticBrowserNormal = { browserEvidence: { pass: true, why: 'synthetic receipt PID and executable identity matched observed launch processes' } };
   try {
     const h1Good = track(await selfTestEarly(root, 'h1-good'));
-    check('h1_live_case_sigterm_aborted', h1Hazard(h1Good, coverage), true);
+    check('h1_live_case_sigterm_aborted', h1Hazard(h1Good, coverage, syntheticBrowserNormal), true);
     const h1Bad = track(await selfTestEarly(root, 'h1-bad'));
-    check('h1_signal_without_abort_record', h1Hazard(h1Bad, coverage), false);
+    check('h1_signal_without_abort_record', h1Hazard(h1Bad, coverage, syntheticBrowserNormal), false);
     const startupExit = track(await selfTestEarly(root, 'startup-exit2'));
-    check('h1_startup_exit2_is_not_signal_success', h1Hazard(startupExit, coverage), false);
+    check('h1_startup_exit2_is_not_signal_success', h1Hazard(startupExit, coverage, syntheticBrowserNormal), false);
 
     const good = track(await selfTestNormal(root, 'good'));
-    const goodCoverage = retainedCoverage(good.receipt);
+    const goodCoverage = selfTestCoverage(good.receipt);
+    const badProducerDigest = {
+      ...good.receipt,
+      producerSha256: '0'.repeat(64),
+      producer: { ...good.receipt.producer, sha256: '0'.repeat(64) },
+    };
+    check('producer_digest_mismatch_rejected', selfTestCoverage(badProducerDigest), false);
+    const badProducerPath = {
+      ...good.receipt,
+      producer: { ...good.receipt.producer, path: 'scripts/webmcp-invoke-round17.mjs' },
+    };
+    check('producer_path_mismatch_rejected', selfTestCoverage(badProducerPath), false);
+    const forgedNoBrowser = { ...good, browserSamples: 0, browserArgv: [], launchArgv: [] };
+    forgedNoBrowser.browserEvidence = browserRunEvidence(forgedNoBrowser);
+    check('h4_forged_passing_receipt_without_observed_browser_is_rejected', h4Hazard(forgedNoBrowser, goodCoverage), false);
+    const browserCreditDenied = [
+      h1Hazard(h1Good, goodCoverage, forgedNoBrowser),
+      h2Hazard({ h1: h1Good, sigint: { trigger: 'case', caseLine: 'case', childAliveAtSignal: true, killSent: true, exitCode: 2, tmpEmpty: true }, normal: forgedNoBrowser, watchdog: { completed: true, exitCode: 2, browserSamples: 1, stdout: 'run_timeout', stderr: '', tmpEmpty: true } }, goodCoverage),
+      h3Hazard(forgedNoBrowser, goodCoverage),
+      s1Hazard(forgedNoBrowser, goodCoverage),
+    ].every((hazard) => hazard.pass === false);
+    check('browser_dependent_shared_credit_requires_observed_run_pids', { pass: browserCreditDenied, why: 'H1/H2/H3/S1 withheld credit without observed Chromium PID and executable identity matches' }, true);
     const sigintGood = track(await selfTestEarly(root, 'sigint-good', { signal: 'SIGINT', label: 'self-sigint-good' }));
     const watchdogGood = track(await selfTestNormal(root, 'watchdog-good'));
     check('h2_all_exit_paths_clean', h2Hazard({ h1: h1Good, sigint: sigintGood, normal: good, watchdog: watchdogGood }, goodCoverage), true);
@@ -1197,34 +1434,35 @@ async function runSelfTests() {
     check('s1_checks_launch_argv_not_renderer_children', { pass: good.launchArgv.length === 3 && good.browserArgv.length > good.launchArgv.length, why: `launch argv=${good.launchArgv.length}, all process argv=${good.browserArgv.length}` }, true);
 
     const tmpBad = track(await selfTestNormal(root, 'tmp-bad'));
-    check('h2_normal_exit_leftover', h2Hazard({ h1: h1Good, sigint: sigintGood, normal: tmpBad, watchdog: watchdogGood }, retainedCoverage(tmpBad.receipt)), false);
+    check('h2_normal_exit_leftover', h2Hazard({ h1: h1Good, sigint: sigintGood, normal: tmpBad, watchdog: watchdogGood }, selfTestCoverage(tmpBad.receipt)), false);
     const sigintBad = track(await selfTestEarly(root, 'sigint-leak', { signal: 'SIGINT', label: 'self-sigint-bad' }));
     check('h2_sigint_leftover', h2Hazard({ h1: h1Good, sigint: sigintBad, normal: good, watchdog: watchdogGood }, goodCoverage), false);
     const watchdogBad = track(await selfTestNormal(root, 'watchdog-bad'));
     check('h2_watchdog_leftover', h2Hazard({ h1: h1Good, sigint: sigintGood, normal: good, watchdog: watchdogBad }, goodCoverage), false);
 
     const portBad = track(await selfTestNormal(root, 'port-bad'));
-    check('h3_remote_port_present', h3Hazard(portBad, retainedCoverage(portBad.receipt)), false);
+    check('h3_remote_port_present', h3Hazard(portBad, selfTestCoverage(portBad.receipt)), false);
     const listenerBad = track(await selfTestNormal(root, 'listener-bad'));
-    check('h3_browser_owned_listener', h3Hazard(listenerBad, retainedCoverage(listenerBad.receipt)), false);
+    check('h3_browser_owned_listener', h3Hazard(listenerBad, selfTestCoverage(listenerBad.receipt)), false);
 
     const downloadBad = track(await selfTestNormal(root, 'download-bad'));
-    check('h4_download_not_refused', h4Hazard(downloadBad, retainedCoverage(downloadBad.receipt)), false);
+    check('h4_download_not_refused', h4Hazard(downloadBad, selfTestCoverage(downloadBad.receipt)), false);
     const playwrightDenial = track(await selfTestNormal(root, 'download-success-indicator'));
-    check('h4_playwright_deny_diagnostic_is_refusal', h4Hazard(playwrightDenial, retainedCoverage(playwrightDenial.receipt)), true);
+    check('h4_playwright_deny_diagnostic_is_refusal', h4Hazard(playwrightDenial, selfTestCoverage(playwrightDenial.receipt)), true);
     const acceptedDownload = track(await selfTestNormal(root, 'download-accepted'));
-    check('h4_downloaded_file_is_not_refusal', h4Hazard(acceptedDownload, retainedCoverage(acceptedDownload.receipt)), false);
+    check('h4_downloaded_file_is_not_refusal', h4Hazard(acceptedDownload, selfTestCoverage(acceptedDownload.receipt)), false);
 
     const featuresBad = track(await selfTestNormal(root, 'features-bad'));
-    check('s1_duplicate_feature_switches', s1Hazard(featuresBad, retainedCoverage(featuresBad.receipt)), false);
+    check('s1_duplicate_feature_switches', s1Hazard(featuresBad, selfTestCoverage(featuresBad.receipt)), false);
     const featuresMissing = track(await selfTestNormal(root, 'features-missing'));
-    check('s1_missing_playwright_or_harness_feature', s1Hazard(featuresMissing, retainedCoverage(featuresMissing.receipt)), false);
+    check('s1_missing_playwright_or_harness_feature', s1Hazard(featuresMissing, selfTestCoverage(featuresMissing.receipt)), false);
 
     const coverageBad = track(await selfTestNormal(root, 'coverage-bad'));
-    check('retained_coverage_gate', h3Hazard(good, retainedCoverage(coverageBad.receipt)), false);
+    check('retained_coverage_gate', h3Hazard(good, selfTestCoverage(coverageBad.receipt)), false);
 
     check('f6_wrapper_master_anchor', selfTestF6(root, true, home), true);
     check('f6_wrapper_rejects_head', selfTestF6(root, false, home), false);
+    check('git_replace_ref_disabled', selfTestReplacementRef(root, home), true);
   } finally {
     await terminateMarkerProcesses(tempDirs);
     for (const path of tempDirs) rmSync(path, { recursive: true, force: true });

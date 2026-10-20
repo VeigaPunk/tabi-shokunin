@@ -27,6 +27,7 @@
 // could_not_evaluate→2 (also for a refused overwrite unless --force).
 import { createHash, randomBytes } from 'node:crypto';
 import {
+  createReadStream,
   existsSync,
   lstatSync,
   mkdirSync,
@@ -66,6 +67,14 @@ const HOST_RESOLVER_DENY = '--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.
 const WAIT_EVENT_MS = 5000;
 const CASE_TIMEOUT_MS = 60000;
 const RUN_TIMEOUT_MS = 420000;
+const LAUNCH_TIMEOUT_MS = 15000;
+const PENDING_LAUNCH_ABORT_WAIT_MS = LAUNCH_TIMEOUT_MS + 1000;
+const PENDING_LAUNCH_SETTLE_MS = 3000;
+const CONTEXT_OPERATION_TIMEOUT_MS = 10000;
+const CONTEXT_CLOSE_TIMEOUT_MS = 5000;
+const CASE_CLOSE_TIMEOUT_MS = 3000;
+const CLEANUP_OPERATION_SETTLE_MS = 3000;
+const SERVER_CLOSE_TIMEOUT_MS = 3000;
 
 // Exact feature switches emitted by the pinned Playwright 1.64.0 Chromium
 // launcher. Only these tokens are ignored; every other Playwright default is
@@ -155,6 +164,8 @@ const activeOperations = new Set();
 const activeBodies = new Set();
 let activeServer = null;
 let runTempDir = null;
+let processTmpDir = null;
+let processTmpDirBeforeRun = null;
 let cleanupPromise = null;
 let cleanupEvidence = null;
 let abortState = null;
@@ -224,6 +235,36 @@ function abortable(promise) {
     );
   });
 }
+function settleWithin(promise, timeoutMs) {
+  return new Promise((resolvePromise) => {
+    let settled = false;
+    let timer;
+    const finish = (result) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolvePromise(result);
+    };
+    timer = setTimeout(() => finish({ settled: false }), timeoutMs);
+    timer.unref();
+    Promise.resolve(promise).then(
+      (value) => finish({ settled: true, value }),
+      (error) => finish({ settled: true, error }),
+    );
+  });
+}
+
+async function withTimeout(promise, timeoutMs, message) {
+  const result = await settleWithin(promise, timeoutMs);
+  if (!result.settled) throw Object.assign(new Error(message), { timeout: true });
+  if (result.error) throw result.error;
+  return result.value;
+}
+
+async function settleSet(set, timeoutMs) {
+  if (set.size === 0) return true;
+  return (await settleWithin(Promise.allSettled([...set]), timeoutMs)).settled;
+}
 
 function parseArgs(argv) {
   const args = {
@@ -259,6 +300,43 @@ function sha256FileBestEffort(path) {
   } catch {
     return null;
   }
+}
+const executableDigests = new Map();
+
+function executableFileIdentity(path) {
+  const stat = statSync(path, { bigint: true });
+  return {
+    dev: stat.dev.toString(),
+    ino: stat.ino.toString(),
+    size: stat.size.toString(),
+    mtimeNs: stat.mtimeNs.toString(),
+  };
+}
+
+async function sha256Executable(path) {
+  const canonicalPath = realpathSync(path);
+  const before = executableFileIdentity(canonicalPath);
+  const cached = executableDigests.get(canonicalPath);
+  if (cached) {
+    if (stableStringify(before) !== stableStringify(cached.identity)) {
+      throw new Error(`Chromium executable identity changed between launches: ${canonicalPath}`);
+    }
+    return cached;
+  }
+  const hash = createHash('sha256');
+  await new Promise((resolvePromise, rejectPromise) => {
+    const stream = createReadStream(canonicalPath);
+    stream.on('data', (chunk) => hash.update(chunk));
+    stream.on('error', rejectPromise);
+    stream.on('end', resolvePromise);
+  });
+  const after = executableFileIdentity(canonicalPath);
+  if (stableStringify(before) !== stableStringify(after)) {
+    throw new Error(`Chromium executable changed while hashing: ${canonicalPath}`);
+  }
+  const result = { sha256: hash.digest('hex'), identity: after };
+  executableDigests.set(canonicalPath, result);
+  return result;
 }
 
 function stableStringify(value) {
@@ -378,12 +456,27 @@ function findProcessesUsing(marker) {
   return hits;
 }
 
-function findBrowserPid(profile) {
+function findBrowserProcess(profile, processes = readProcSnapshot()) {
   const marker = `--user-data-dir=${profile}`;
-  const mains = findProcessesUsing(marker).filter(
-    (hit) => hit.argv.includes(marker) && !hit.argv.some((arg) => arg.startsWith('--type=')),
-  );
-  return mains.length === 1 ? mains[0].pid : null;
+  const mains = [...processes]
+    .filter(([, processInfo]) => processInfo.argv.includes(marker) && !processInfo.argv.some((arg) => arg.startsWith('--type=')))
+    .map(([pid, processInfo]) => ({ pid, ...processInfo }));
+  return mains.length === 1 ? mains[0] : null;
+}
+
+
+function signalRunProcesses(run, signal, processes = readProcSnapshot()) {
+  captureRunProcessTree(run, processes);
+  for (const pid of [...(run.processTreePids ?? [])].reverse()) {
+    const current = processes.get(pid);
+    const startTicks = run.processIdentity?.get(pid);
+    if (!current || startTicks === undefined || current.startTicks !== startTicks) continue;
+    try {
+      process.kill(pid, signal);
+    } catch {
+      /* already exited */
+    }
+  }
 }
 
 function captureRunProcessTree(run, processes = readProcSnapshot()) {
@@ -416,7 +509,7 @@ function captureRunProcessTree(run, processes = readProcSnapshot()) {
   return processes;
 }
 
-async function waitForRunProcesses(run, timeoutMs = 10000) {
+async function waitForRunProcesses(run, timeoutMs = 10000, termWaitMs = 2000, killWaitMs = 2000) {
   const known = run.processTreePids ?? new Set();
   const sameProcessIsAlive = (pid, processes) => {
     const current = processes.get(pid);
@@ -436,35 +529,43 @@ async function waitForRunProcesses(run, timeoutMs = 10000) {
   };
   let gone = await wait(timeoutMs);
   if (!gone) {
-    let processes = captureRunProcessTree(run);
-    for (const pid of [...known].reverse()) {
-      const current = processes.get(pid);
-      if (current && sameProcessIsAlive(pid, processes) && run.processIdentity?.has(pid)) {
-        try {
-          process.kill(pid, 'SIGTERM');
-        } catch {
-          /* already exited */
-        }
-      }
-    }
-    gone = await wait(2000);
+    signalRunProcesses(run, 'SIGTERM');
+    gone = await wait(termWaitMs);
   }
   if (!gone) {
-    const processes = captureRunProcessTree(run);
-    for (const pid of [...known].reverse()) {
-      const current = processes.get(pid);
-      if (current && sameProcessIsAlive(pid, processes) && run.processIdentity?.has(pid)) {
-        try {
-          process.kill(pid, 'SIGKILL');
-        } catch {
-          /* already exited */
-        }
-      }
-    }
-    gone = await wait(2000);
+    signalRunProcesses(run, 'SIGKILL');
+    gone = await wait(killWaitMs);
   }
   run.gone = gone;
   return gone;
+}
+
+async function abortPendingLaunches(waitMs = PENDING_LAUNCH_ABORT_WAIT_MS) {
+  const pending = () => runContexts.filter((opened) => opened.run.launchStatus === 'starting');
+  const deadline = Date.now() + waitMs;
+  while (pending().length > 0 && Date.now() < deadline) {
+    const processes = readProcSnapshot();
+    for (const opened of pending()) {
+      const processInfo = findBrowserProcess(opened.run.profile, processes);
+      if (!processInfo) continue;
+      opened.run.pid = processInfo.pid;
+      captureRunProcessTree(opened.run, processes);
+      opened.run.launchAbortRequested = true;
+      signalRunProcesses(opened.run, 'SIGTERM', processes);
+    }
+    if (pending().length > 0) await sleepRaw(25);
+  }
+  const stillPending = pending();
+  for (const opened of stillPending) {
+    opened.run.launchAbortRequested = true;
+    const processes = readProcSnapshot();
+    const processInfo = findBrowserProcess(opened.run.profile, processes);
+    if (processInfo) opened.run.pid = processInfo.pid;
+    captureRunProcessTree(opened.run, processes);
+    signalRunProcesses(opened.run, 'SIGTERM', processes);
+  }
+  await Promise.all(stillPending.map((opened) => waitForRunProcesses(opened.run, 0, 250, 1000)));
+  return pending().length === 0;
 }
 
 // --- Fixture server: loopback bind (asserted), fixtures-dir confinement,
@@ -682,19 +783,28 @@ function scanForBytes(root, marker) {
   return { root, markerSha256: sha256Buffer(markerBytes), filesScanned, matches, errors, complete: errors.length === 0 };
 }
 
-function closeOwnedContext(opened) {
+async function closeContextBounded(opened) {
   const { context, run } = opened;
-  if (run.shutdownPromise) return run.shutdownPromise;
-  run.shutdownPromise = (async () => {
-    run.contextClosing = true;
-    captureRunProcessTree(run);
-    try {
-      await context.close();
-    } catch (error) {
-      run.closeError = String(error?.message ?? error);
+  run.contextClosing = true;
+  captureRunProcessTree(run);
+  if (context) {
+    const closeOutcome = await settleWithin(
+      Promise.resolve().then(() => context.close()),
+      CONTEXT_CLOSE_TIMEOUT_MS,
+    );
+    if (!closeOutcome.settled) {
+      run.closeTimedOut = true;
+    } else if (closeOutcome.error) {
+      run.closeError = String(closeOutcome.error?.message ?? closeOutcome.error);
     }
-    return waitForRunProcesses(run);
-  })();
+  }
+  return waitForRunProcesses(run, run.closeTimedOut ? 0 : 10000, 500, 1500);
+}
+
+function closeOwnedContext(opened) {
+  const { run } = opened;
+  if (run.shutdownPromise) return run.shutdownPromise;
+  run.shutdownPromise = closeContextBounded(opened);
   return run.shutdownPromise;
 }
 
@@ -702,12 +812,17 @@ function cleanup() {
   if (cleanupPromise) return cleanupPromise;
   shutdownStarted = true;
   cleanupPromise = (async () => {
-    await Promise.allSettled([...pendingLaunches]);
+    const pendingLaunchAbortCompleted = await abortPendingLaunches();
+    let launchesSettled = await settleSet(pendingLaunches, PENDING_LAUNCH_SETTLE_MS);
+    if (!launchesSettled) {
+      await abortPendingLaunches(0);
+      launchesSettled = await settleSet(pendingLaunches, PENDING_LAUNCH_SETTLE_MS);
+    }
     const contexts = [...runContexts];
     for (const opened of contexts) captureRunProcessTree(opened.run);
     await Promise.allSettled(contexts.map((opened) => closeOwnedContext(opened)));
-    while (activeOperations.size > 0) await Promise.allSettled([...activeOperations]);
-    while (activeBodies.size > 0) await Promise.allSettled([...activeBodies]);
+    const activeOperationsSettled = await settleSet(activeOperations, CLEANUP_OPERATION_SETTLE_MS);
+    const activeBodiesSettled = await settleSet(activeBodies, CLEANUP_OPERATION_SETTLE_MS);
 
     const server = activeServer;
     let serverPort = null;
@@ -717,32 +832,44 @@ function cleanup() {
     } catch {
       serverPort = null;
     }
-    const serverClose = await closeServer(server);
+    const serverCloseOutcome = await settleWithin(closeServer(server), SERVER_CLOSE_TIMEOUT_MS);
+    const serverClose = serverCloseOutcome.settled
+      ? serverCloseOutcome.value
+      : { closed: false, timedOut: true };
     activeServer = null;
     const serverPortProbe = serverPort !== null
       ? await probePortClosed(serverPort)
-      : { refused: true, reason: 'no server port was opened' };
+      : { refused: false, reason: 'no server port was opened' };
 
-    const runPaths = contexts.flatMap((opened) => [
-      opened.run.profile,
-      opened.run.home,
-      opened.run.browserTempDir,
-    ]).filter(Boolean);
+    const runPaths = [
+      ...(runTempDir ? [runTempDir] : []),
+      ...(processTmpDir ? [processTmpDir] : []),
+      ...contexts.flatMap((opened) => [
+        opened.run.profile,
+        opened.run.home,
+        opened.run.browserTempDir,
+      ]),
+    ].filter(Boolean);
     const devtoolsActivePortChecks = contexts.map((opened) => ({
       label: opened.run.label,
       exists: opened.run.profile ? existsSync(join(opened.run.profile, 'DevToolsActivePort')) : null,
     }));
-    const strays = runTempDir ? findProcessesUsing(runTempDir) : [];
+    const strays = [
+      ...(runTempDir ? findProcessesUsing(runTempDir) : []),
+      ...(processTmpDir ? findProcessesUsing(processTmpDir) : []),
+    ];
     const runTempDirExistsBeforeRemoval = runTempDir ? existsSync(runTempDir) : false;
-    let removalError = null;
-    if (runTempDir) {
+    const processTmpDirExistsBeforeRemoval = processTmpDir ? existsSync(processTmpDir) : false;
+    const removalErrors = [];
+    for (const path of [runTempDir, processTmpDir].filter(Boolean)) {
       try {
-        rmSync(runTempDir, { recursive: true, force: true });
+        rmSync(path, { recursive: true, force: true });
       } catch (error) {
-        removalError = String(error?.message ?? error);
+        removalErrors.push({ path, error: String(error?.message ?? error) });
       }
     }
     const tempPaths = runPaths.map((path) => ({ path, removed: !existsSync(path) }));
+    const removalError = removalErrors.length ? removalErrors : null;
     cleanupEvidence = {
       runs: contexts.map((opened, index) => ({
         label: opened.run.label,
@@ -751,12 +878,24 @@ function cleanup() {
         processTreePids: [...(opened.run.processTreePids ?? [])],
         effectiveArgv: opened.run.effectiveArgv,
         featureSwitches: opened.run.featureSwitches,
+        realExecutable: opened.run.realExecutable,
+        realExecutableSha256: opened.run.realExecutableSha256,
+        realExecutableIdentity: opened.run.realExecutableIdentity,
         devtoolsActivePortExists: devtoolsActivePortChecks[index].exists,
+        closeTimedOut: opened.run.closeTimedOut === true,
       })),
       tempPaths,
       runTempDir,
       runTempDirExistsBeforeRemoval,
       runTempDirRemoved: runTempDir ? !existsSync(runTempDir) : true,
+      processTmpDir,
+      processTmpDirExistsBeforeRemoval,
+      processTmpDirRemoved: processTmpDir ? !existsSync(processTmpDir) : true,
+      processTmpDirBeforeRun,
+      launchesSettled,
+      pendingLaunchAbortCompleted,
+      activeOperationsSettled,
+      activeBodiesSettled,
       removalError,
       serverPort,
       serverClose,
@@ -777,10 +916,10 @@ function probePortClosed(port) {
     });
     req.on('timeout', () => {
       req.destroy();
-      resolvePromise({ refused: true, reason: 'timeout' });
+      resolvePromise({ refused: false, timedOut: true, reason: 'timeout' });
     });
     req.on('error', (error) => {
-      resolvePromise({ refused: true, reason: error.code || String(error) });
+      resolvePromise({ refused: error.code === 'ECONNREFUSED', reason: error.code || String(error) });
     });
   });
 }
@@ -914,8 +1053,9 @@ function featureLaunchOptions(extraArgs) {
 
 // --- Launch: persistent context, private TMPDIR, and observed effective argv. ---
 
-function launchChromium(chromium, chromiumPath, tmpBase, extraArgs, label, t0) {
-  const task = launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, label, t0);
+function launchChromium(chromium, chromiumPath, tmpBase, extraArgs, label) {
+  if (abortState || shutdownStarted) return Promise.reject(makeAbortError());
+  const task = launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, label);
   pendingLaunches.add(task);
   task.then(
     () => pendingLaunches.delete(task),
@@ -924,49 +1064,79 @@ function launchChromium(chromium, chromiumPath, tmpBase, extraArgs, label, t0) {
   return task;
 }
 
-async function launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, label, t0) {
+async function launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, label) {
   const profile = mkdtempSync(join(tmpBase, `${label}-profile-`));
   const home = mkdtempSync(join(tmpBase, `${label}-home-`));
   const browserTempDir = join(tmpBase, 't');
   mkdirSync(browserTempDir, { recursive: true });
   const { args, ignoreDefaultArgs } = featureLaunchOptions(extraArgs);
-  const context = await chromium.launchPersistentContext(profile, {
-    executablePath: chromiumPath,
-    headless: true,
-    args,
-    ignoreDefaultArgs,
-    env: minimalBrowserEnv(home, browserTempDir),
-    serviceWorkers: 'block',
-    acceptDownloads: false,
-    chromiumSandbox: true,
-    handleSIGINT: false,
-    handleSIGTERM: false,
-    handleSIGHUP: false,
-  });
   const run = {
     label,
     launchedArgs: args,
     ignoredDefaultArgs: ignoreDefaultArgs,
-    pid: findBrowserPid(profile),
+    pid: null,
     effectiveArgv: null,
     argv: null,
     webmcpArgvTokens: [],
     featureSwitches: null,
     realExecutable: null,
     realExecutableSha256: null,
-    version: context.browser()?.version() ?? null,
-    product: context.browser()?.version() ?? null,
+    realExecutableIdentity: null,
+    version: null,
+    product: null,
     devtoolsPort: null,
     profile,
     home,
     browserTempDir,
     gone: null,
     processTreePids: new Set(),
+    processIdentity: new Map(),
     shutdownPromise: null,
+    launchStatus: 'starting',
+    launchAbortRequested: false,
+    contextClosing: false,
+    closeTimedOut: false,
   };
-  const opened = { context, run };
+  const opened = { context: null, run };
   runContexts.push(opened);
+  if (abortState || shutdownStarted) {
+    run.launchStatus = 'aborted';
+    throw makeAbortError();
+  }
+
+  let context;
+  try {
+    context = await chromium.launchPersistentContext(profile, {
+      executablePath: chromiumPath,
+      headless: true,
+      args,
+      ignoreDefaultArgs,
+      env: minimalBrowserEnv(home, browserTempDir),
+      serviceWorkers: 'block',
+      acceptDownloads: false,
+      chromiumSandbox: true,
+      handleSIGINT: false,
+      handleSIGTERM: false,
+      handleSIGHUP: false,
+      timeout: LAUNCH_TIMEOUT_MS,
+    });
+    run.launchStatus = 'launched';
+  } catch (error) {
+    run.launchStatus = 'failed';
+    const processes = readProcSnapshot();
+    const processInfo = findBrowserProcess(profile, processes);
+    if (processInfo) {
+      run.pid = processInfo.pid;
+      captureRunProcessTree(run, processes);
+      signalRunProcesses(run, 'SIGTERM', processes);
+      await waitForRunProcesses(run, 0, 250, 1000);
+    }
+    throw error;
+  }
+  opened.context = context;
   const browser = context.browser();
+  run.version = browser?.version() ?? null;
+  run.product = run.version;
   browser?.on('disconnected', () => {
     if (!shutdownStarted && !run.contextClosing) {
       markAborted({ kind: 'browser_disconnected', message: 'Playwright Browser.disconnected event', run: label });
@@ -977,21 +1147,24 @@ async function launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, la
       markAborted({ kind: 'browser_disconnected', message: 'Playwright BrowserContext.close event', run: label });
     }
   });
-
-  const abortDeadline = Date.now() + 3000;
-  while (run.pid === null && Date.now() < abortDeadline && !abortState) {
-    await sleep(50);
-    run.pid = findBrowserPid(profile);
+  if (abortState || run.launchAbortRequested || shutdownStarted) {
+    await closeContextBounded(opened);
+    throw makeAbortError();
   }
-  if (abortState) {
-    if (run.pid === null) {
-      const pidDeadline = Date.now() + 2000;
-      while (run.pid === null && Date.now() < pidDeadline) {
-        run.pid = findBrowserPid(profile);
-        if (run.pid === null) await sleepRaw(50);
-      }
+
+  const pidDeadline = Date.now() + 3000;
+  while (run.pid === null && Date.now() < pidDeadline && !abortState) {
+    const processes = readProcSnapshot();
+    const processInfo = findBrowserProcess(profile, processes);
+    if (processInfo) {
+      run.pid = processInfo.pid;
+      captureRunProcessTree(run, processes);
+      break;
     }
-    await closeOwnedContext(opened);
+    await sleep(50);
+  }
+  if (abortState || run.launchAbortRequested || shutdownStarted) {
+    await closeContextBounded(opened);
     throw makeAbortError();
   }
 
@@ -1029,7 +1202,9 @@ async function launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, la
       run.realExecutable = null;
     }
   }
-  run.realExecutableSha256 = run.realExecutable ? sha256FileBestEffort(run.realExecutable) : null;
+  const executableDigest = run.realExecutable ? await sha256Executable(run.realExecutable) : null;
+  run.realExecutableSha256 = executableDigest?.sha256 ?? null;
+  run.realExecutableIdentity = executableDigest?.identity ?? null;
   captureRunProcessTree(run);
 
   const unsafeArgv = !Array.isArray(run.effectiveArgv) ||
@@ -1048,7 +1223,6 @@ async function launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, la
   }
   return opened;
 }
-
 // --- Case plumbing ---
 
 function eventRecords(raw, method, predicate, sinceIndex = 0) {
@@ -1194,7 +1368,17 @@ function trackPageDownloads(page) {
 
 async function attachCase(machine, base, fixtureFile) {
   const { context, run } = machine;
-  const page = await context.newPage();
+  let page;
+  try {
+    page = await withTimeout(
+      Promise.resolve().then(() => context.newPage()),
+      CONTEXT_OPERATION_TIMEOUT_MS,
+      `context.newPage timed out for ${run.label}`,
+    );
+  } catch (error) {
+    if (error?.timeout) markAborted({ kind: 'setup_timeout', message: error.message, run: run.label });
+    throw error;
+  }
   const pageLifecycle = { intentionalClose: false };
   page.on('close', () => {
     if (!pageLifecycle.intentionalClose && !shutdownStarted) {
@@ -1211,23 +1395,30 @@ async function attachCase(machine, base, fixtureFile) {
     const expectedUrl = `${base}/${fixtureFile}`;
     await page.goto(expectedUrl, { waitUntil: 'load', timeout: 15000 });
     if (page.url() !== expectedUrl) throw new Error(`fixture page URL mismatch: ${page.url()} != ${expectedUrl}`);
-    const session = await context.newCDPSession(page);
+    const session = await withTimeout(
+      Promise.resolve().then(() => context.newCDPSession(page)),
+      CONTEXT_OPERATION_TIMEOUT_MS,
+      `context.newCDPSession timed out for ${run.label}`,
+    );
     raw = createCDPRecorder(session, Date.now());
-    await page.evaluate(() => globalThis.__ready ?? null).catch((error) => {
+    await withTimeout(
+      Promise.resolve().then(() => page.evaluate(() => globalThis.__ready ?? null)),
+      CONTEXT_OPERATION_TIMEOUT_MS,
+      `fixture readiness timed out for ${run.label}`,
+    ).catch((error) => {
+      if (error?.timeout) {
+        markAborted({ kind: 'setup_timeout', message: error.message, run: run.label });
+        throw error;
+      }
       if (markBrowserClosed(error)) throw makeAbortError();
       return null;
     });
     return { page, raw, downloads, pageLifecycle, runLabel: run.label };
   } catch (error) {
-    if (raw) {
-      try {
-        await raw.detach();
-      } catch {
-        /* context or session already closed */
-      }
-    }
+    if (error?.timeout) markAborted({ kind: 'setup_timeout', message: error.message, run: run.label });
+    if (raw) await settleWithin(raw.detach(), CASE_CLOSE_TIMEOUT_MS);
     pageLifecycle.intentionalClose = true;
-    await page.close().catch(() => {});
+    await settleWithin(Promise.resolve().then(() => page.close()), CASE_CLOSE_TIMEOUT_MS);
     throw error;
   }
 }
@@ -1242,14 +1433,26 @@ async function closeCase(opened) {
   }
   opened.pageLifecycle.intentionalClose = true;
   if (opened.raw) opened.raw.intentionalClose = true;
+  if (abortState || shutdownStarted) return;
   if (opened.raw) {
-    try {
-      await opened.raw.detach();
-    } catch {
-      /* already detached or browser closed */
+    const detachOutcome = await settleWithin(opened.raw.detach(), CASE_CLOSE_TIMEOUT_MS);
+    if (!detachOutcome.settled) {
+      markAborted({ kind: 'cleanup_timeout', message: `CDPSession.detach timed out for ${opened.runLabel}`, run: opened.runLabel });
+      return;
+    }
+    if (detachOutcome.error && markBrowserClosed(detachOutcome.error)) return;
+  }
+  if (!opened.page.isClosed()) {
+    const pageCloseOutcome = await settleWithin(
+      Promise.resolve().then(() => opened.page.close()),
+      CASE_CLOSE_TIMEOUT_MS,
+    );
+    if (!pageCloseOutcome.settled) {
+      markAborted({ kind: 'cleanup_timeout', message: `page.close timed out for ${opened.runLabel}`, run: opened.runLabel });
+    } else if (pageCloseOutcome.error) {
+      markBrowserClosed(pageCloseOutcome.error);
     }
   }
-  await opened.page.close().catch(() => {});
 }
 
 function buildCaseRecord({
@@ -1301,7 +1504,6 @@ async function failStart(code, message, detail = {}) {
 }
 
 async function main() {
-  const t0 = Date.now();
   const args = parseArgs(process.argv.slice(2));
   if (args.help) {
     await cleanup();
@@ -1341,13 +1543,14 @@ async function main() {
 
   const producerSha256 = sha256FileBestEffort(SCRIPT);
   const launchSha256 = sha256FileBestEffort(args.chromium);
-  const processTmpDirBeforeRun = tmpdir();
+  processTmpDirBeforeRun = tmpdir();
+  processTmpDir = realpathSync(mkdtempSync(join(processTmpDirBeforeRun, 'tabi-r18-webmcp-invoke-process-')));
   const candidateRunTempDir = join(processTmpDirBeforeRun, 'tabi-r18-webmcp-invoke-XXXXXX');
   const candidateChromiumTmp = join(candidateRunTempDir, 't');
   const chromiumSocketPathProbe = join(candidateChromiumTmp, 'org.chromium.Chromium.XXXXXX', 'SingletonSocket');
   const runTempParent = chromiumSocketPathProbe.length < 100 ? processTmpDirBeforeRun : '/tmp';
   runTempDir = realpathSync(mkdtempSync(join(runTempParent, 'tabi-r18-webmcp-invoke-')));
-  process.env.TMPDIR = runTempDir;
+  process.env.TMPDIR = processTmpDir;
   const tmpBase = runTempDir;
   const { port, served, denied, ledger } = await startFixtureServer(args.fixtures, embeddedFixtures);
   const base = `http://127.0.0.1:${port}`;
@@ -1399,6 +1602,7 @@ async function main() {
         caseStart,
         downloads: opened.downloads,
       }));
+      registerOperation(bodyPromise, activeBodies);
       const abortableBody = abortable(bodyPromise);
       registerOperation(abortableBody, activeBodies);
       let timer;
@@ -1452,7 +1656,7 @@ async function main() {
         delete result.observations.downloadMarker;
         result.observations.afterContextClose = {
           runTempDir: scanForBytes(runTempDir, marker),
-          processTmpdir: scanForBytes(tmpdir(), marker),
+          processTmpdir: scanForBytes(processTmpDir, marker),
           browserGone: run.run.gone === true,
         };
       }
@@ -1467,7 +1671,7 @@ async function main() {
       record.downloadEvents = opened?.downloads.events ?? [];
       record.cdp = {
         recorderNote:
-          'Playwright pipe CDPSession attached to this fixture page. Frames contain every requested command and observed response plus subscribed WebMCP.* and Page.frameNavigated events; ids are local correlation ids, not wire ids, and CDPSession does not expose numeric protocol-error codes.',
+          'Playwright pipe CDPSession attached to this fixture page. Frames record every requested command, successful observed response, and subscribed WebMCP.* / Page.frameNavigated event. Rejected send error entries are synthesized client-side from Playwright error messages, not wire responses; ids are local correlation ids and numeric protocol-error codes are unavailable.',
         enable,
         mainFrameId,
         frames: caseFrames,
@@ -1512,6 +1716,7 @@ async function main() {
         caseStart,
         downloads: opened.downloads,
       }));
+      registerOperation(bodyPromise, activeBodies);
       const abortableBody = abortable(bodyPromise);
       registerOperation(abortableBody, activeBodies);
       observations = await abortableBody;
@@ -1549,7 +1754,7 @@ async function main() {
         downloadEvents: opened?.downloads.events ?? [],
         cdp: {
           recorderNote:
-            'Playwright pipe CDPSession attached to this fixture page; local correlation ids are not wire ids, and numeric protocol-error codes are not exposed.',
+            'Playwright pipe CDPSession attached to this fixture page. Rejected send error entries are synthesized client-side from Playwright error messages, not wire responses; ids are local correlation ids and numeric protocol-error codes are unavailable.',
           enable,
           mainFrameId,
           frames: caseFrames,
@@ -1567,7 +1772,8 @@ async function main() {
   let domainDisabled = null;
 
   try {
-    flagged = await launchChromium(chromium, args.chromium, tmpBase, WEBMCP_FEATURE_ARGS, 'flagged', t0);
+    flagged = await launchChromium(chromium, args.chromium, tmpBase, WEBMCP_FEATURE_ARGS, 'flagged');
+    if (abortState) throw makeAbortError();
     if (!Number.isInteger(flagged.run.pid) || flagged.run.pid <= 0) {
       throw new Error(`flagged launch missing browser pid (${flagged.run.pid})`);
     }
@@ -2083,7 +2289,8 @@ async function main() {
     });
 
     // --- Case 9: invoke-flags-off-control (separate unflagged launch) ---
-    flagOff = await launchChromium(chromium, args.chromium, tmpBase, [], 'flag-off', t0);
+    flagOff = await launchChromium(chromium, args.chromium, tmpBase, [], 'flag-off');
+    if (abortState) throw makeAbortError();
     if (!Number.isInteger(flagOff.run.pid) || flagOff.run.pid <= 0) {
       throw new Error(`flag-off launch missing browser pid (${flagOff.run.pid})`);
     }
@@ -2446,7 +2653,8 @@ async function main() {
     });
 
     // --- Domain-disabled control: separate launch (no CDP WebMCP domain) ---
-    domainDisabled = await launchChromium(chromium, args.chromium, tmpBase, DOMAIN_DISABLED_ARGS, 'domain-disabled', t0);
+    domainDisabled = await launchChromium(chromium, args.chromium, tmpBase, DOMAIN_DISABLED_ARGS, 'domain-disabled');
+    if (abortState) throw makeAbortError();
     if (!Number.isInteger(domainDisabled.run.pid) || domainDisabled.run.pid <= 0) {
       throw new Error(`domain-disabled launch missing browser pid (${domainDisabled.run.pid})`);
     }
@@ -2490,7 +2698,7 @@ async function main() {
           downloadEvents: downloads.events,
           beforeContextClose: {
             runTempDir: scanForBytes(runTempDir, downloadMarker),
-            processTmpdir: scanForBytes(tmpdir(), downloadMarker),
+            processTmpdir: scanForBytes(processTmpDir, downloadMarker),
           },
         };
         return {
@@ -2579,6 +2787,11 @@ async function main() {
     ...cleanupResult.runs.map((run) => run.devtoolsActivePortExists === false),
     ...profileChecks.map((check) => check.removed),
     cleanupResult.runTempDirRemoved === true,
+    cleanupResult.processTmpDirRemoved === true,
+    cleanupResult.launchesSettled === true,
+    cleanupResult.pendingLaunchAbortCompleted === true,
+    cleanupResult.activeOperationsSettled === true,
+    cleanupResult.activeBodiesSettled === true,
     cleanupResult.removalError === null,
     cleanupResult.serverClose.closed === true,
     serverPortProbe.refused === true,
@@ -2594,6 +2807,12 @@ async function main() {
       existedBeforeRemoval: cleanupResult.runTempDirExistsBeforeRemoval,
       removed: cleanupResult.runTempDirRemoved,
       removalError: cleanupResult.removalError,
+    },
+    processTmpDir: {
+      path: cleanupResult.processTmpDir,
+      existedBeforeRemoval: cleanupResult.processTmpDirExistsBeforeRemoval,
+      removed: cleanupResult.processTmpDirRemoved,
+      parent: cleanupResult.processTmpDirBeforeRun,
     },
     tempPaths: profileChecks,
     server: {
@@ -2657,6 +2876,7 @@ async function main() {
           launchSha256,
           realExecutable: flaggedRun?.realExecutable ?? null,
           realExecutableSha256,
+          realExecutableIdentity: flaggedRun?.realExecutableIdentity ?? null,
           product: flaggedRun?.product ?? null,
           version: flaggedRun?.version ?? null,
           versionSource: 'Playwright Browser.version() on its pipe-owned context',
@@ -2682,6 +2902,7 @@ async function main() {
       webmcpArgvTokens: opened.run.webmcpArgvTokens,
       realExecutable: opened.run.realExecutable,
       realExecutableSha256: opened.run.realExecutableSha256,
+      realExecutableIdentity: opened.run.realExecutableIdentity,
       version: opened.run.version,
       devtoolsPort: null,
       profile: opened.run.profile,
@@ -2796,10 +3017,8 @@ for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
 }
 
 watchdogTimer = setTimeout(() => {
-  if (!abortState) {
-    markAborted({ kind: 'watchdog', message: 'hard run timeout' });
-    console.error('WEBMCP_INVOKE_ERROR {"code":"run_timeout","message":"hard run timeout"}');
-  }
+  if (!markAborted({ kind: 'watchdog', message: 'hard run timeout' })) return;
+  console.error('WEBMCP_INVOKE_ERROR {"code":"run_timeout","message":"hard run timeout"}');
   void cleanup().then(
     () => {
       reportAbortedRun();

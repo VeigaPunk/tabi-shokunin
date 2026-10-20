@@ -6,7 +6,7 @@
 //     --quote "verbatim quote" --quote-source "path:line" --verdict held|drift|unreachable
 //     --anchor-observed "what revision/date marker the body shows" --note "teaches check" --seat Name
 //     --outdir /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round-18/source-recheck
-//     [--body FILE --fetch-command "how FILE was produced"]   (non-HTTP sources, e.g. git objects)
+//     [--retain-body]  (gzip retention is the default; `--body` remains for S029 only)
 //   node recheck-fetch.mjs --normalize-only --decode D --body FILE --quote Q   (probe; writes nothing)
 // Exit: 0 receipt written with quoteFound=true; 1 receipt written but quote not found; 2 usage/fetch error.
 import { createHash } from 'node:crypto';
@@ -14,6 +14,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync, existsSync } from 'no
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { gzipSync } from 'node:zlib';
 
 const sha = b => createHash('sha256').update(b).digest('hex');
 const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', '#39': "'", rsquo: '\u2019', lsquo: '\u2018', rdquo: '\u201d', ldquo: '\u201c', mdash: '\u2014', ndash: '\u2013', hellip: '\u2026' };
@@ -58,7 +59,7 @@ function args(argv) {
     const k = argv[i];
     if (!k.startsWith('--')) throw new Error(`bad arg ${k}`);
     const name = k.slice(2);
-    if (name === 'normalize-only') { o[name] = true; continue; }
+    if (name === 'normalize-only' || name === 'retain-body') { o[name] = true; continue; }
     if (i + 1 >= argv.length) throw new Error(`missing value for ${k}`);
     o[name] = argv[++i];
   }
@@ -100,6 +101,9 @@ function main() {
       else bytes = readFileSync(out);
     } finally { rmSync(dir, { recursive: true, force: true }); }
   }
+  const bodyPath = `${o.row}.body.gz`;
+  const compressedBody = gzipSync(bytes, { mtime: 0 });
+  writeFileSync(join(o.outdir, bodyPath), compressedBody);
   let text = '';
   try { text = normalize(decodeBody(bytes, decode)); } catch (e) { console.error(`RECHECK decode failed: ${e.message}`); }
   const q = normalize(o.quote);
@@ -117,6 +121,9 @@ function main() {
     httpStatus,
     bytes: bytes.length,
     sha256: sha(bytes),
+    bodyPath,
+    bodyGzipBytes: compressedBody.length,
+    bodyGzipSha256: sha(compressedBody),
     decode,
     normalizer: 'recheck-fetch.mjs normalize(): NFC, curly quotes/dashes folded, whitespace runs collapsed',
     quote: o.quote,

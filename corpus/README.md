@@ -385,3 +385,15 @@ Frontier: harness execution discipline is deepened on already-held loopback grou
 agent-side invocation, default profile and Chromium 152 remain open. The source sweep is quality
 work, not expansion by row count. Frozen `check-freshness.mjs --witness HEAD` remains callable
 directly; `scripts/freshness-witness.mjs` is a guarded caller, not global enforcement.
+
+Wave-2 correction index (the older bytes remain historical):
+
+| Earlier pointer | Current interpretation |
+|---|---|
+| `knowledge/webmcp-invocation-round-17.md:54,73`; `SKILL.md:1956`; SOURCES S042 | S071 and `knowledge/source-recheck-round-18.md` §7: the no-inputSchema-check observation is imperative-tool-scoped; declarative form validation is source-evidenced |
+| `knowledge/source-recheck-round-18.md:11,136,146` | Its §7 supersedes the57-row present-tense sentence and names S058; first-snapshot counts/producer are history, final retained-body receipts and measured records are current |
+| `knowledge/harness-hardening-round-18.md:12,24` | Its wave-2 clarifications correct the premature measurement-file pointer and Node24.22 paraphrase |
+| SOURCES S003/S008/S010/S018/S029/S031/S034/S044/S052/S054/S063 | S072/S066/S069/S076/S067/S073/S074/S068/S065/S075/S070 respectively; Gate in lesson and current source-note §7 |
+
+No frontier is declared closed merely because the source registry grew. Final corpus note count
+is36 (baseline34 plus the two round18 entries), not a new runtime capability.

@@ -62,3 +62,28 @@ The counter runs in a sandbox clone at REV and at B. Each probe uses a fresh TMP
 - **Not covered by this hardening:** argv allowlist (S3: `/etc/chromium-flags.conf` is read regardless of HOME, and no allowlist rejects `load-extension`, `proxy-server` or `no-sandbox`); network-namespace witness (S2: `loopbackOnly: true` and the WebSocket-deny claim are written unconditionally, and a swallowed `routeWebSocket` install failure is not recorded; the Sentinel's `unshare -rn` run had `lo` as the only interface, but the harness does not record that); field caps (S6: CDP frames, `output` and `exception` are stored without a cap, and ledger POSTs have no count limit); and `NODE_PATH` and entry identity (S8: the harness still searches `NODE_PATH`, and the version check reads only `package.json`).
 - **Scope of the claim.** The round-17 harness stays byte-frozen as a counted input. The round-18 harness is `scripts/webmcp-invoke-round18.mjs`. This note claims no real-site run, no agent-side invocation, no default-profile run, and no Chromium version beyond 154.0.8037.97.
 - **Playwright default switch list.** S059 does not enumerate Playwright's default Chromium switches, so the S1 merged list is grounded by the effective-argv audit, not by the docs.
+
+## Wave-2 clarifications and corrections
+
+- Source-backed default facts and tabi design rules are different. “Must own shutdown” and
+  “record both events” are derived evidence policies, not quoted API mandates. S070 supersedes
+  S063's attribution. S059's full launch-option locations are in its dossier: signals1221-1234,
+  args1182-1190 and ignoreDefaultArgs247-253 at Playwright1.64.0; S061's source paths and transport
+  boundary are in its dossier, including client-side synthesized request IDs.
+- The §Documented contract wording “signal events may run after Node has exited” was wrong.
+  Node24.22's actual clarification says Node may exit **before the listener is called if the
+  event loop is otherwise empty**; it does not describe events executing in an exited process.
+  That later version is not S070's24.21 source. The pinned fact remains listener-removes-default.
+- The counter prints JSON to stdout; it does not create `measurements.json`. The L1 captures
+  argv, exit, full output and producer identities in
+  `corpus/evidence/round-18/measurements.json`, which is the final measurement pointer. The
+  initial integration did not yet contain that file; the older present-tense pointer was premature.
+- CDPSession error entries are constructed from actual `session.send` rejections, not observed
+  wire error frames. Numeric protocol codes remain unavailable; the functional negative controls
+  retain protocol failure/no-invocation meaning with the missing numeric facet explicitly bounded.
+- Dropping the port applies only to this harness; it neither rules the four contested CDP rows
+  nor manages Chromium/Playwright/sibling tools. The frozen direct freshness CLI is still bypassable.
+- Superseding S071 narrows the old SKILL1956 and round17 invocation-note54/73 schema statement
+  to imperative tools. Declarative form input has source-level parameter validation; unknown
+  names and invalid supported values reject before execution. The round17 imperative mismatch
+  observation remains valid, not evidence of every tool kind.

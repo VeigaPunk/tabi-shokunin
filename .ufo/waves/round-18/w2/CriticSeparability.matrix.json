@@ -1,0 +1,53 @@
+{
+  "schema": "tabi-r18-critic-separability-v1",
+  "seat": "TabiR18.CriticSeparability-2",
+  "measured_rev": "530f40a9bc3f10436161a2af1ca0fe9bffffc004",
+  "sandbox": "/tmp/tabi-r18-csep (git clone --no-hardlinks of lane; all git writes confined there)",
+  "removal_commits": {
+    "revA_C1_removed": {
+      "commit": "17d62e32d89f4e06f6af1b989fc111af6026fc24",
+      "removed": "corpus/evidence/round-18/source-recheck/** (51 json + 51 excerpt.txt)"
+    },
+    "revB_C2_removed": {
+      "commit": "03558f7ddbaecc54585828c0a20c960fb6343d73",
+      "removed": "scripts/webmcp-invoke-round18.mjs, scripts/freshness-witness.mjs"
+    },
+    "revC3b_routed_removed": {
+      "commit": "83dab59c9b51f32e453a31d9865c1ca875bbd287",
+      "removed": "corpus/evidence/round-18/routed/** (harm receipt, adjacency selftest receipt, harm-runner.mjs, harness-reruns index+7 runs)"
+    },
+    "revS058only_row_removed": {
+      "commit": "6be1df0b271277c4c8dd7df15c54ab623b36ed29",
+      "removed": "S058 table row only in corpus/SOURCES.md (dossier blob retained)"
+    },
+    "revC3a_all_C3_removed": {
+      "commit": "ada876b57b92880b2ad28bd78377eae4bfe1e384",
+      "removed": "revC3b removal + S058 row + .ufo/waves/round-18/sources/S058Listing.md + lesson ## Corrections section"
+    }
+  },
+  "matrix": {
+    "REV_530f40a9": { "c1_rows_rechecked": 51, "c2_hazards_closed": 6, "c3_routed_closed": 5 },
+    "revA_C1_removed": { "c1_rows_rechecked": 0, "c2_hazards_closed": 6, "c3_routed_closed": 5 },
+    "revB_C2_removed": { "c1_rows_rechecked": 51, "c2_hazards_closed": 0, "c3_routed_closed": 5,
+      "c2_artifact_selected": "scripts/webmcp-invoke-round17.mjs (falls back to newest remaining round artifact)",
+      "c2_hazard_whys": "all 6 hazards fail; f6 why = 'scripts/freshness-witness.mjs absent or not a regular file at the revision'; h1-h4/s1 fail because invoke-download-refused retained-coverage precondition fails on the round17 artifact" },
+    "revC3b_routed_removed": { "c1_rows_rechecked": 51, "c2_hazards_closed": null, "c3_routed_closed": 2,
+      "c3_defects": "d1 pass, d2 harm_receipt_missing, d3 adjacency_receipt_missing, d4 pass, d5 rerun_index_missing" },
+    "revS058only_row_removed": { "c1_rows_rechecked": 51, "c1_eligible_rows": 57, "c3_routed_closed": 4,
+      "c3_d4_why": "S058_missing",
+      "note": "S057's held receipt still counts; count vs active-source claim distinction holds" },
+    "revC3a_all_C3_removed": { "c1_rows_rechecked": 51, "c1_eligible_rows": 57, "c2_hazards_closed": 6, "c3_routed_closed": 0,
+      "c3_defects": "d1 correction_citation_missing, d2 harm_receipt_missing, d3 adjacency_receipt_missing, d4 S058_missing, d5 rerun_index_missing" }
+  },
+  "counter_digests": {
+    "measure-c1.mjs": "df7999858aa0c75b60455f9ea9803cc4b629e4863d1357016220512b5df56234",
+    "measure-c2.mjs": "71478eef46ca0c23684fd0c85467ad853cede15e862936d83bc8ce292fb7fcb6",
+    "measure-c3.mjs": "cf99766282908f8948c8098a86d11b6ac6e5f94a09ca74f2344b34e92bcc346a",
+    "artifact_round18_at_REV": "0a1201a9c01e4ee23f8a94ad6d75b868c626f96c97960797acf05b6bdbfbe155"
+  },
+  "structural_facts": {
+    "teachesVerdict_distribution": "all 51 receipts = held; zero drift receipts, so C1's drift->superseding-row rule never fires",
+    "S057_receipt": "teachesVerdict=held; rowUrl occurs verbatim in the S057 row source cell at REV; count does not depend on S058",
+    "counter_cross_reads": "measure-c1 reads only corpus/SOURCES.md + corpus/evidence/round-18/source-recheck/** + .ufo/waves/round-18/recheck-fetch.mjs + pinned S029 blob at 837b33a; measure-c3 reads lesson/S058/routed/** + reference blobs at 93bfead/baseline; measure-c2 reads scripts/webmcp-invoke-round*.mjs + scripts/freshness-witness.mjs + corpus/evidence/**/webmcp-invoke/receipt.json only for new-vs-committed receipt deltas; no counter reads another claim's inputs"
+  }
+}

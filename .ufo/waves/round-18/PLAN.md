@@ -12,8 +12,10 @@ position 1 after the round-17 capability; no waiver.
 
 ## Claims (declared; causally separable; distinct axes)
 
-- **C1 — freshness 8 (lowest tie). Source rows re-verified against their live source with a committed
-  recheck receipt: 0 → N (target 51 = every row not superseded at B).** Superseded at B (not
+- **C1 — freshness 8 (lowest tie). Round-specific source reopening with a committed receipt:
+  0 → N (target 51 = every row not superseded at B).** The cohort is 38 living HTTP pages,
+  12 immutable-pinned HTTP sources and one own-work hygiene check, not 51 live product checks.
+  Scalar stays 8; no date-due or current-product-support claim. Superseded at B (not
   rechecked; their successors are): S004→S028, S039→S040, S047→S054, S049→S055, S050→S056,
   S053→S057. Receipt = `corpus/evidence/round-18/source-recheck/S###.json` + `S###.excerpt.txt`,
   produced ONLY by `node .ufo/waves/round-18/recheck-fetch.mjs` (schema `tabi-source-recheck-v1`; one

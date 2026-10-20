@@ -148,3 +148,57 @@ Examples already in `corpus/SOURCES.md` (not new this round):
 - **Non-HTTP sources.** The `command` field records how a body was produced. The producer does not re-run it, so reproducibility rests on the caller.
 - **Coverage.** The counter counts receipts. A row with no receipt is absent from the count, and the 6 superseded rows have none by design.
 - **Authorship.** Receipts were written by the seats that ran the fetches. Independent re-open of any row is a separate step (SOURCES rule 1) and is not claimed here.
+
+## 7. Wave-2 corrections — current interpretation supersedes the earlier snapshot prose
+
+The preceding sections record the first integration at
+`530f40a9bc3f10436161a2af1ca0fe9bffffc004`, not final current counts. In §1, “has 57 rows”
+means **at baseline B**; that integration already had 64 rows. S058 superseded S057 in that
+same commit, contrary to §6's “not a superseding row” wording. S065–S076 now make the
+additional corrections below. Current census and final counter values are recorded in
+`corpus/evidence/round-18/measurements.json` and SCORECARD.md, not inferred from these old tables.
+The fixed cohort remains 51 (38 living-URL, 12 pinned-URL, one own-work by the counter's URL
+classifier); a static paper URL can still classify “living”, so this is not a scientific
+content-mutability classification. No date-due or product-currency claim follows.
+
+| Current row | Supersedes | Correct interpretation and opened authority |
+|---|---|---|
+| S065 | S052 | HEAD names a base commit but may be attached via a symbolic branch reference; “not a branch” was overbroad. Git2.56 manual, `.ufo/waves/round-18/w2/LiveS052.md`. |
+| S066 | S008 | Selenium documents capability activation/low-level domain access; per-binding/API limitations belong to S009, not this page. `w2/LiveS008.md`. |
+| S067 | S029 | The original aggregate true encodes every worker not listening. It is not an active-listener contradiction; round14 derives listeningAfter=false. Historical Node fields stay historical. `w2/LiveS029.md`, `scripts/aria-loopback-round13.mjs:605`, corrected round14 receipt. |
+| S068 | S044 | ToolResponded carries invocationId. Keeping both events is tabi's evidence policy, not a protocol mandate. `w2/LiveS044.md`. |
+| S069 | S010 | The page states both browsers shipped in2022; it does not establish “first” ordering. `w2/LiveS010.md`. |
+| S070 | S063 | Node's listener/default-termination fact is distinct from tabi's derived shutdown/exit rule. Pin24.21 excludes the later24.22 clarification. `w2/NewS063.md`. |
+| S071 | S042 | No declared-inputSchema validation was evidenced for **imperative ExecuteV8Tool**; declarative FormMCPSchema::FillData rejects unknown parameters and invalid supported values. This is source-derived; no full JSON Schema compliance or new runtime measurement. `sources/DeclarativeValidation.md`. |
+| S072 | S003 | Old blog URL redirects301 to canonical docs; the body section is The solution: Chrome for Testing, not the navigation title. `w2/LiveS003.md`. |
+| S073 | S031 | The editors say Chromium is implementing and will trial a loose proposal, not that this source establishes shipment. `w2/LiveS031.md`. |
+| S074 | S034 | Source-file token absence does not by itself establish runtime inertness. `w2/LiveS034.md`. |
+| S075 | S054 | Response variability includes nonce and embedded experiment flags; it is not solely a nonce. Article semantics/155 deprecation remain as scoped. `w2/LiveS054.md`. |
+| S076 | S018 | TableV is printed100/PDF9, §III.C printed95/PDF4, §V.A printed98/PDF7, correcting earlier page numbers. `w2/LiveS018.md`. |
+
+Pointers abbreviated `w2/` or `sources/` in this section resolve beneath `.ufo/waves/round-18/`.
+All twelve rows were opened 2026-10-20 and their full Gate URLs/quotes/digests are in the
+round-18 lesson. The old rows remain historical under append-only SOURCES rules.
+
+Other receipt-note corrections: S007's Chromium wrapper and webSocketUrl passages are in the
+introduction, not the two named subsections; S051 has a version panel (last updated2.48.0,
+no changes2.48.1→2.56.0), with tagged adoc supporting the2.56 anchor; S012's source-move note
+already existed2026-09-23; S043 reuses the prior sentence with newly raw-markup spelling, not
+a new sentence; S034 status is line7035; S036's no-toolsRemoved description is navigation-scoped,
+not explicit-unregister behavior. S051's other exit statuses and several teaches clauses sit
+outside the short excerpt. S025's “before asserting by role” is tabi application, not APG wording.
+
+S001's branding qualifier comes from S028; the code also has desktop-OS guards (branding is
+necessary, not sufficient). S030's specification exclusion is at its pinned revision, not
+forever. S046's no-consent interpretation is tabi's evidentiary limit, not quoted editor text.
+S051/S052's anchor cells in §3 were abridged too, despite the earlier three-row abridgement list.
+For Gitiles, receipt hashes are base64 carrier hashes while source anchors can hash decoded bytes.
+`quoteOffset` is normalized-character offset, not raw byte offset.
+
+The first producer's `command` is an argv display, **not a shell command**: its unquoted
+user-agent contains shell punctuation. Literal replay is invalid. Reproduce through the producer
+CLI or its actual argv, not `sh -c` on that string. Subsequent regenerated receipts are new fetches;
+M1 preserves the original response/producer records in history. Final body-retention checks bind
+retained compressed bytes to body SHA/size, decode, offset and excerpt; that is finite evidence
+integrity, not authentication of the remote publisher. The current receipt tree and final
+measurement record—not the first-snapshot tallies above—are authoritative for final admission.

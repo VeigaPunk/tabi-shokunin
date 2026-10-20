@@ -50,6 +50,33 @@ New rows S058–S064 were opened this round. S058 rejected; S059–S064 mined an
 no old→new transitions. Census began `tabi ok`, exit 0, rows 57 (A46/B4/C7; mined42/queued8/rejected7).
 Command: `/home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi`.
 
+### Wave-2 source supersessions (opened 2026-10-20)
+
+Rows S065–S076 are corrections, not extra expansion claims. Each date below is 2026-10-20.
+Rendered-document quotes collapse markup/whitespace, not words; code quotes preserve source
+tokens. SHA values bind the indicated fetched or decoded body, not all future responses.
+
+| Row | URL or own-work path | Located quote (≤25 words) | Location; SHA-256; opener |
+|---|---|---|---|
+| S065 | https://git-scm.com/docs/git-rev-parse | "This will error out if $REV is empty or not a valid revision." | git-rev-parse.adoc:505 at git2.56.0; HTML `1e84fc200220b2cd356b78f2344766ee7cbaafa8bcef64679dbf47ec585f19da`; w2/LiveS052.md |
+| S066 | https://www.selenium.dev/documentation/webdriver/bidi/ | "The low-level BiDi domains will be accessible in the code to the end user" | §Enabling BiDi in Selenium, offset4770; `c919558a0ec5e42fb7b33560d633f508dd6f30dfb39f4821270cdfe0b3a9c97b`; w2/LiveS008.md |
+| S067 | scripts/aria-loopback-round13.mjs | `listeningAfter: serverProofs.length > 0 ? serverProofs.every((proof) => proof.listeningAfter === false) : null` | line605; `1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c`; w2/LiveS029.md and DraftNoteRecheck |
+| S068 | https://github.com/ChromeDevTools/devtools-frontend/blob/66df492aaa0129d090937e933dd44c5389ab24d2/front_end/panels/application/WebMCPView.ts | `this.#lastDevToolsInvocationId = await this.#selectedTool.tool.invoke(this.#selectedTool.parameters) ?? null;` | line945; `4b2fce64c708664f5f7c7953fea4fd2abba2998a29a629e10601a6c884a7540f`; w2/LiveS044.md |
+| S069 | https://developer.chrome.com/blog/webdriver-bidi-2023 | "In 2022, both Chrome/ChromeDriver 106 and Firefox 102 shipped support for the WebDriver BiDi standard." | §Where are we now?, offset3222; `691ce80ffcc67eff9852ab7936560d9b25d9b3a78a4b8caebf60aa4c7632fbe2`; w1/Recheck05.md and w2/LiveS010.md |
+| S070 | https://raw.githubusercontent.com/nodejs/node/v24.21.0/doc/api/process.md | "If one of these signals has a listener installed, its default behavior will be removed (Node.js will no longer exit)." | §Signal events:757-759; `3107879760e5fcd72bc2c48e77460b418b714a693a54073c51314934586ab3b7`; w2/NewS063.md |
+| S071 | https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT | `return ScriptToolError( ScriptToolErrorCode::kInvalidInputArguments, StrCat({"Input contains a parameter \"", parameter_name, "\" but there is no such parameter for the tool"}));` | FillData:216-219; decoded `904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f`; sources/DeclarativeValidation.md |
+| S072 | https://developer.chrome.com/docs/automation-and-testing/chrome-for-testing | "a dedicated flavor of Chrome targeting the testing use case, without auto-update, integrated into the Chrome release process" | §The solution: Chrome for Testing, offset5639; `03f8c76de7a731a74eed13292090d32ee816361b1f452c3c827529b8e17d6c1f`; w2/LiveS003.md |
+| S073 | https://github.com/webmachinelearning/webmcp/blob/main/declarative-api-explainer.md | "Chromium is implementing a loose version of this and will conduct testing/trials" | lines114-115 at51ed7565, offset5241; `4587c9f2540b673210c4eb0221d12ceda39496910dcdd6e649dc8ffa968bbd28`; w2/LiveS031.md |
+| S074 | https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/platform/runtime_enabled_features.json5 | `status: "experimental",` | WebMCP block, line7035; decoded `99b92e6776a5305543ab196a64128a11e2d4e86667e72e48787b05d45bcb1d2b`; w2/LiveS034.md |
+| S075 | https://developer.chrome.com/docs/ai/webmcp/imperative-api | "This asynchronous method returns the result of the tool execution, or null when a navigation is triggered." | §Execute tool, offset11615; `df5fc9dff4d54fa1bcde65f817701e941cfe8ce95dcbadbc7d645126fdf01836`; w2/LiveS054.md |
+| S076 | https://mpapad.github.io/publications/pdfs/ICST25.pdf | "This strategy involves adding synchronization logic to ensure that DOM elements are fully loaded and ready for interaction before proceeding with certain actions." | §V.A printed98; TableV printed100; `9304083f19871e117d5c4de0db4b1fe40767b66778641a188cdbd9dae4ebed3b`; w2/LiveS018.md |
+
+Pointers beginning `w1/`, `w2/`, or `sources/` here resolve beneath `.ufo/waves/round-18/`.
+S065–S076 enter mined with used-by the source-recheck note. Old rows retain their original
+status/recheck/used-by cells (no in-place transitions). The current disposition supersedes old
+whole-row attestations where a semantic or anchor error was found; historic receipt bytes do
+not silently become a fresh judgment about a corrected claim.
+
 ## Corrections
 
 Correct sibling count is 6. `corpus/lessons/round-17.md:116` and fleet `.ufo/reports/round-17/tabi.md:35`
@@ -107,3 +134,38 @@ Registry: `.ufo/waves/round-18/w1/swarm-registry.json`. Falsification-wave evide
 when delivered. Wave-1 seats wrote disjoint assigned files directly in LANE, without separate writer
 worktrees: this missed addendum §6.2's stronger writer-isolation contract despite no shared-file edit
 assignment. It is recorded as a conformance defect, not concealed as compliant isolation.
+
+### Wave-2 outcomes and repair decisions
+
+Wave2: 80 seats (scout59/reviewer7/executor4/mutation-tester3/sentinel2/critic2/connector2/
+simplifier1), one validated payload. First dispatch refused all80 at the100-job cap, spawning
+none; the unchanged payload succeeded on retry2 after180 seconds. Successful task IDs have
+the tool-assigned `-2` suffix because the refused names had been reserved; no dead worker was
+replaced. Registry and both attempts are retained under `.ufo/waves/round-18/w2/`.
+Total distinct seats150; no provider-dead seat. Both waves used host role routing, no model
+parameter. Same-identity resumptions repaired owned artifacts; they are not replacement seats.
+
+Independent removal matrix (`w2/CriticSeparability.md`) at first integration: 51/6/5;
+remove C1 inputs→0/6/5, remove C2 scripts→51/0/5, remove C3 repairs→51/6/0. Scope remains
+three causally separable claims. The C1 cohort is fixed at B, not “all currently active rows”;
+new source rows cannot replace or enlarge its51 members. Its URL-class split is38/12/1,
+not51 mutable live products. All scalar scores remain unchanged.
+
+| Wave-2 mistake class | Evidence and red shape | Repair or bounded interpretation |
+|---|---|---|
+| survivor | MutC1: fabricated S029 command, script-only excerpt, invalid source status; ReviewQuality: forged HTTP digest | Fixed-cohort, enum/command checks, retained gzip response bodies and re-derived SHA/size/decode/offset/excerpt. Regeneration is a new real fetch, not editing an old snapshot's fields |
+| survivor | ReviewCounterInputs: GIT_DIR/replace-object redirects, wrong StackExchange question, producer-zero digest | Isolated Git environments; source answer/question identity; actual browser/process and producer-to-artifact binding |
+| survivor | MutC2: passing-receipt replay without a browser credited H4 | Browser-dependent credit requires observed run-owned Chromium process identity, not the receipt alone |
+| survivor | MutC3: unrelated6/asserted7, inconsistent first-run hashes, publisher paraphrase, whitespace-replayed execution | Targeted semantic-count pattern, internal digest consistency, finite publisher-premise shapes, canonical execution uniqueness; no general authenticity claim |
+| reference-drift | LiveS018 printed page99, S051 missing version banner, S007 incorrect subsection names | Correct page/version/section metadata and preserve the old M1 snapshot as historical |
+| stale-premise | LiveS042 universal inputSchema claim; LiveS008/044/052 and other source attributions | S065–S076 supersede the exact source assertions; source-recheck note §7 records current interpretation; old rows/notes remain explicitly historical |
+| vacuous | ReviewHarness duplicated run-tree/process-TMPDIR scan | Distinguish caller temp scope from run tree, rather than claim two independent scans of the same root |
+| scope | SignalsAfter's already-spawned gated launcher execs after abort; all signal runs still exit2/clean | In-flight launch identity belongs to abort cleanup; no post-abort case/navigation is allowed |
+
+The remote origin of saved public bytes still rests on the observed fetch. SHA binding defeats
+the finite byte-corruption/forgery shapes tested, not a coordinated fabricated publisher history.
+None of the additional code hardening settles the open L0 leases or grants real-site approval.
+
+Tool installs by SimplifyTools only: acorn8.19.0, acorn-walk8.3.5 and eslint9.39.5 in its private
+`/tmp/r18-ast`, official npm registry, for AST reachability/unused-binding probes; no global or
+pacman transaction. Evidence: `.ufo/waves/round-18/w2/SimplifyTools.md:30-36`.
