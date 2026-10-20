@@ -789,3 +789,13 @@
   on-change was corrected to365d before admission; the registry preamble
   qualification restricts its original round1-all-rows wording to S001–S028.
   S029 used-by transitions and the withdrawn note link are recorded in lesson.
+- C1 measurement at committed evidence `6be0990` returned2 (before0), and
+  histogram at `4a300f6` returned29 source rows and32/32 mapped notes.
+  C2's first revision probe at `4a300f6` failed closed despite passing real
+  checker outcomes: it required positional selftest tokens in a different order
+  from the actual producer and sought finding= in stdout although the retained
+  structured before record names the actual finding. Full failed output is
+  `corpus/evidence/round-14/measure-c2-initial.json`; no real test result was
+  changed or rerun. MeasureClaims is repairing only this consumer grammar,
+  retaining expected/actual equality and actual named rejection requirements.
+  The frozen round14 lesson is not edited again.
