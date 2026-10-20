@@ -685,3 +685,14 @@
   the same probe's noteMap use `knowledge/`. The final condition now uses that
   established corpus-relative convention, retaining the exact known note path;
   no README padding or admission/cleanup waiver was introduced.
+- Final measurement addendum: evidence revision
+  `837b33a3988ebeea7f6b4ef5c04698da88909a73`, baseline
+  `75e7836b6c3090180aee2754e20a5d3cfb186e74`; command
+  `node .ufo/waves/round-13/measure.mjs REV --claim C1` exits0 at both revisions,
+  policies0→2. Independent `--claim C2` with the corrected counter exits0 at both,
+  demonstration0→1, eight cases/four negatives and note_admitted1. Histogram
+  --histogram exits0 both:28 rows, A22/B4/C2, mined23/queued3/rejected2 unchanged.
+  Exact commands/stdout/exits/counter full hash in
+  `corpus/evidence/round-13/measurements.json`; note-map32/32/no missing.
+  Capability aria-locator-template-loopback enters SCORECARD at round13; all
+  six scalar deltas0, no retired axis, saturation window restarts at13.

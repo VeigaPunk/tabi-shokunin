@@ -521,3 +521,69 @@ to the orchestrator's independent closure, including this named debt.
   isolated loopback browser with pinned runtime, template and actual output.
 - capabilities: no new repertoire row; Playwright runtime was not exercised.
 - retired: none. Saturation line8 and window3 retained; this round does not use the nudge.
+
+## Round 13 — hyaku, 2026-10-20
+
+Baseline `75e7836b6c3090180aee2754e20a5d3cfb186e74`; measured evidence revision
+`837b33a3988ebeea7f6b4ef5c04698da88909a73`; final counting-probe revision
+`b6d67c1` (full hash in `corpus/evidence/round-13/measurements.json`).
+The prior planned legacy repair is worked as **operability**, not freshness:
+the new evidence is runnable, fixture-covered compatibility policy. Operability8
+is a lowest non-retired tie, so no stagnation waiver is used.
+
+| Axis | Scalar before → after | Round-13 self-verdict and evidence |
+|---|---|---|
+| depth | 8→8 | unchanged; no broad protocol/browser-support certification |
+| coverage | 9→9 | improved narrowly: actual isolated locator/template experiment0→1 on previously docs-only ground |
+| operability | 8→8 | improved bounded policy coverage0→2; restoring compatibility is not two newly clean full gates |
+| freshness | 8→8 | unchanged claimed axis; source precision chores have no extra score credit; freshness --worktree34/34 clean |
+| calibration | 9→9 | unchanged claimed axis; failures/disagreements, old USER redness and author/non-author boundaries retained |
+| adjacency | 8→8 | unchanged; own lane scripts/browser fixture only, publishing/secrets/forensic/general-test-tooling boundaries retained |
+
+| Claim | Falsifiable before → after | Counting command | Measured commits / evidence |
+|---|---|---|---|
+| C1 operability | newly fixture-covered compatibility policies0→2; USER remains honest failed round_count6/10, not false green | `node .ufo/waves/round-13/measure.mjs REV --claim C1` | baseline75e7836→evidence837b33a, both exit0; `gates.json`, `measurements.json` under `corpus/evidence/round-13/` |
+| C2 coverage + capability | real isolated accessible-selector/template demonstration0→1; eight actual cases/four real expected rejections, indexed/sourced/admitted note | `node .ufo/waves/round-13/measure.mjs REV --claim C2` | same before/after revisions, final probe atb6d67c1, both exit0; runtime executed at06e6ada; `aria/receipt.json`, `aria-execution-pass.json`, `measurements.json` |
+
+Claims are separable: each `--claim` mode reads only its own evidence; a malformed
+C1 receipt does not veto C2 and vice versa. The two gates are intentionally coupled
+inside C1 through an exact script-cutover digest, not falsely described as two
+independent capabilities. Count0→2 describes newly covered policy, not new expertise
+points. Every ordinal delta is0 and independent closure remains owed.
+
+Gate evidence: ROUND self-test26 cases plus alias control; USER21 cases, clean.
+Each pinned legacy witness uses the same fixture/legacy-compatible arguments:
+old1 history_rewritten→new0 clean. Production ROUND clean10; production USER1
+round_count6/10. HARD_BASELINE/PSTACK_PIN and the census do not move. Broader inherited
+shell-count, survivor-replay/user-record, IPv6-origin and validator-pin debt is not
+cleared. Initial fixture/runtime/counter failures remain committed, with actual
+causes and targeted repairs in LOG's round-13 entry and the round lesson.
+
+Sources28→28 (A22/B4/C2; mined23/queued3/rejected2 unchanged), added tiersA0/B0/C0.
+S023/S024/S025 used-by gains the new runtime note only; exact old→new transitions
+are in the lesson. Census start/end exit0. Source self-test26 clean and live source
+gate clean28. Revision-based histogram command:
+`node .ufo/waves/round-13/measure.mjs REV --histogram`; both revisions exit0.
+Note-map32 notes/32 mapped/no missing at837b33a, via the committed measurement's
+exact note-map command/output. No historical verification date is silently renewed.
+
+### Capabilities — round 13
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| aria-locator-template-loopback | Demonstrate role/name/label selection, strictness, re-resolution, actual ARIA capture and contain/equal/checked constraints on one isolated fixture using Playwright1.64.0 and managed Chrome for Testing156.0.8078.4 | `node scripts/aria-loopback-round13.mjs`; `corpus/evidence/round-13/aria-execution-pass.json`; exact templates/actuals/cleanup in `aria/receipt.json` within that evidence directory; `corpus/knowledge/aria-loopback-round-13.md` | 13 |
+
+This capability is not an audit, pixel/real-site/cross-browser/determinism claim.
+Expansion improved; quality improved; discernment improved by turning the prior
+outside gate disagreement into QUALITY16, with new runtime lessons in QUALITY17.
+Current-round non-author admit/reject spot-check remains pending; no seat is
+misrepresented as outside verification and SHONEN stays four asserted[~].
+
+### Planned / saturation / retired — round 13
+
+- planned: operability — fixture-covered removal of inherited shell execution from
+  the legacy counting path, without changing historical measurement semantics.
+- planned: coverage — one explicitly unheld browser surface, only through its
+  own source-scoped/runtime-scoped evidence rather than more scalar inflation.
+- saturation line8 and window3 retained; the demonstrated capability restarts
+  the stagnation window at round13. No axis retired or silently waived.
