@@ -96,6 +96,40 @@ Real lane default run (`cd tabi-shokunin && node scripts/check-adjacency.mjs`):
 `detail=corpus/adjacency.tsv path absent at 5859243...`, exit 2 — correct: the
 lane tip resolved and the map is the L1's to write.
 
+## Wave-2 repair (Forge/Critic/Sentinel steer) — applied at this edit
+
+sha256: `4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac` (1748 lines)
+Self-test summary line:
+`ADJACENCY_SELFTEST verdict=clean cases=57 reasons=18 could_not_evaluate=6`
+
+Repairs applied (each has a negative case asserting its reason, or a positive
+case for the env rule):
+
+1. Pin dedupe: a second key, `siblingRefKey` = `<lane>@<path>:<line>`
+   (commit-independent), now flags a row that re-cites a sibling line under a
+   different surface; the folded surface+sibling key is kept. Case
+   `duplicate-sibling-pin` asserts `duplicate_row` only.
+2. `surface` restricted to ASCII `[a-z0-9-]` (new reason `surface_charset`;
+   case `surface-charset` uses a U+03BF omicron).
+3. A `ruled` venue refuses every fleet path under `.ufo/` (l0 questions are
+   not rulings): cases `ruling-venue-l0-question` and `ruling-venue-ufo`
+   assert `ruling_ref_invalid`. The fleet fixture moved off `.ufo/` to
+   `decisions.md`; the contested-open `.ufo/l0-questions.md` venue is
+   unchanged.
+4. `sibling_ref` path under `.ufo/` is refused (`sibling_ref_invalid`);
+   case `sibling-ref-under-ufo`.
+5. `core.commitGraph=false` added to `GIT_PREFIX` (SentinelAnchorAfter B1);
+   case `commit-graph-ignored` writes a garbage `commit-graph` into the
+   sibling and asserts a clean clean-map run.
+6. Header line replaced: the map records "the overlaps the lane has
+   dispositioned; known undispositioned overlaps are listed in the round
+   lesson."
+
+Real-map re-check at M `6c97851034e9d8f58b135d28ff969f1f28fa2f7d` (before
+these edits were committed by the L1): `ADJACENCY verdict=clean rows=9
+verified=9`, exit 0 — the tightened rules accept the landed map (all real
+surfaces are `[a-z0-9-]`; all nine sibling pins are distinct; no `.ufo/`
+paths on the sibling or ruled side).
 ## Risks / notes for the L1 map
 
 1. For a `ruled` self-venue row on the round-16 ruling, the line must be

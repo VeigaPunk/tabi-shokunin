@@ -28,3 +28,11 @@ Limits: byte-identity is asserted against committed blobs, digest pins and the
 bundle, not `/tmp` (provenance only). The probe defeats only these three shapes
 — a liar branching on the counter's exact argv can still pass, and the counter
 runs revision scripts unsandboxed.
+
+Wave-2 correction (`.ufo/waves/round-17/w2/ReRunLiar.md`): "no lane writes" above is wrong for the
+default invocation — `node generate.mjs` without `--out` rewrites this directory's `receipt.json`;
+re-run with `--out <dir outside the lane>`. `receipt.json` labels the pre-hardening counter path
+`.ufo/waves/round-16/measure-pre.mjs`; the bytes actually executed are
+`.ufo/waves/round-16/measure.mjs` at `b444ca8` (sha256 `bda4e18e…`, recorded correctly).
+A re-run at the round-17 tip (wave 2, `--out` outside the lane) reproduced every count and
+failure string and never read the `/tmp/tabi-r16-c1liar-93NO` clone (strace: 0 hits).

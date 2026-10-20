@@ -14,44 +14,51 @@
 //                  disposition `contested-open` additionally requires the line
 //                  to be fleet `.ufo/l0-questions.md` and to match
 //                  `tabi | round-<N> |`
-//   split/refused  ruling_ref `-` and the ruling_quote present in the tabi file
-//
-// Inputs the map may not forge (SentinelAnchor F7-F12):
-//   * every cited sibling/ruling quote passes the ≤25-word cap and a ≥3-word /
-//     ≥15-non-space-character floor; no C0/C1 control or invisible/bidi
+//   * every cited sibling/ruling quote passes the <=25-word cap and a >=4-word /
+//     >=20-non-space-character floor; no C0/C1 control or invisible/bidi
 //     character is admitted in any field;
 //   * `sibling` must list exactly the lane named in `sibling_ref`, and this
 //     lane's own token is never a sibling or ruler;
 //   * a cited sibling/fleet commit must be reachable from that repo's own
-//     branch tip (attached branch, else refs/heads/master, else
-//     refs/heads/main) — never merely present as an object, which is the
-//     forged-pin shape; a self-ruling must be committed at the evaluated rev;
-//   * `tabi_ref`/ruling paths may not be the map itself or wave scratch under
-//     `.ufo/waves/` (self-citation);
+//     branch tip ladder (attached HEAD naming a real refs/heads/ branch, else
+//     refs/heads/master, else refs/heads/main; a symref branch is refused) —
+//     never merely present as an object, which is the forged-pin shape; a
+//     self-ruling must be committed at the evaluated rev;
+//   * `tabi_ref`/ruling paths may not be the map itself; sibling pins and
+//     `ruled` venues may never live under `.ufo/` (wave scratch and the l0
+//     ledger are not province-level claims); a `ruled` self-venue is admissible
+//     only as a `corpus/lessons/*-verifier-spotcheck.md` line authored by
+//     someone other than this lane and byte-identical at the evaluated rev;
+//   * surfaces are ASCII kebab-case (`[a-z0-9-]`): cross-script homoglyphs are
+//     not foldable identity;
 //   * repo directories must be real, non-symlink git toplevels whose git dir
 //     is exactly `<dir>/.git`, with Git discovery ceilinged at the fleet;
 //   * duplicate identity is case/space-folded surface+sibling, and one cited
-//     sibling line counts once.
+//     sibling line (`<lane>@<path>:<line>`, commit-independent) counts once.
 //
 // Usage:
 //   node .ufo/waves/round-17/measure-c3.mjs [REV] [--repo DIR] [--fleet-root DIR]
 //
-// REV defaults to the lane tip (symbolic ref when attached, else
-// refs/heads/master) — never the literal `HEAD`, so a jj-colocated checkout
-// cannot certify bytes that are on no branch. --repo defaults to the lane
-// containing this script; --fleet-root defaults to --repo's parent and holds
-// the sibling `<lane>-shokunin` repos and the fleet repo.
+// REV defaults to the lane tip (symbolic-ref HEAD naming a real branch, else
+// refs/heads/master, else refs/heads/main) — never the literal `HEAD`, so a
+// jj-colocated checkout cannot certify bytes that are on no branch. --repo
+// defaults to the lane containing this script; --fleet-root defaults to
+// --repo's parent and holds the sibling `<lane>-shokunin` repos and the fleet
+// repo.
 //
 // Stdout is exactly one JSON line:
-//   {"c3_adjacency_verified":N,"rows":[...],"probes":{...}}
-// plus `by_disposition` counts of verified rows per disposition (L1 steer).
+//   {"c3_adjacency_verified":N,"c3_self_ruled":N,"c3_self_filed_questions":N,
+//    "by_disposition":{...},"rows":[...],"probes":{...}}
 // Exit 0 evaluated (any N), 2 could not evaluate (usage, unresolved REV,
 // unreadable repo, malformed header). Probes (QUALITY 25) run the checker blob
 // materialised from REV in a throwaway sandbox clone: the probe base — header
-// plus the counter-verified rows — must reach exit 0, and each of seven
-// counter-built mutations of that base (committed in the sandbox so worktree
-// readers and blob readers both observe them) must drop the verified count
-// and reach checker exit 1 (`probes.checker.mutations`).
+// plus the counter-verified rows — must reach exit 0, each counter-built
+// mutation of that base (committed in the sandbox so worktree readers and
+// blob readers both observe them) must drop the verified count and reach
+// checker exit 1 (`probes.checker.mutations`), the same map re-evaluated
+// inside the differently-named clone must keep the count
+// (`probes.checker.lane_name_independence`), and a HEAD that names a symref
+// branch must be refused (`probes.checker.lane_tip_symref`).
 //
 // Every child is spawned with an argv array under a minimal environment (no
 // shell); Git is pinned against replace/graft/fsmonitor and pathspec magic.
@@ -87,19 +94,28 @@ const RULING_REF_RE = /^(fleet|[a-z0-9][a-z0-9-]*-shokunin)@([0-9a-f]{40}):(.+):
 const TABI_REF_RE = /^([^:]+)(?::([1-9][0-9]*))?$/;
 const L0_TABI_ROW = /^tabi[ \t]*\|[ \t]*round-[0-9]+[ \t]*\|/;
 const HEAD_RELATIVE = /^(?:HEAD|head|@)/;
-const HEAD_REF = /^refs\/heads\/[A-Za-z0-9._/-]+$/;
 const CONTROL_CHARS = /[\u0000-\u001f\u007f-\u009f]/;
 const INVISIBLE_CHARS = /[\u200b-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/;
 const QUOTE_FLOOR_WORDS = 4;
 const QUOTE_FLOOR_CHARS = 20;
+// The lane this counter measures, same constant the checker uses
+// (`scripts/check-adjacency.mjs` SELF_LANE); the clone's directory name is
+// never an identity (ForgeC3Checker S4).
+const SELF_LANE = 'tabi';
+// Wave scratch is never evidence: sibling pins, and every `ruled` venue, must
+// not cite paths under `.ufo/` (ForgeC3Checker S3).
+const DOT_UFO_PREFIX = '.ufo/';
+// A surface is an ASCII kebab-case token: cross-script homoglyphs are not
+// foldable to a stable key (ForgeC3Checker S2).
+const SURFACE_CHARSET = /^[a-z0-9-]+$/;
 
-// Closed row-finding vocabulary: the checker's names, plus the guards this
-// counter adds on top of the checker contract (SentinelAnchor F10, L1 steer)
-// — a quote floor, a control/invisible-character ban, a sibling-name equality,
-// a `ruled` venue rule, and a sibling-naming rule.
+// Closed row-finding vocabulary: the checker's names, plus the quote floor and
+// control/invisible-character guards this counter adds on top of the checker
+// contract (SentinelAnchor F10).
 const REASON = Object.freeze({
   columnCount: 'column_count',
   surfaceEmpty: 'surface_empty',
+  surfaceCharset: 'surface_charset',
   siblingRefInvalid: 'sibling_ref_invalid',
   siblingUnresolved: 'sibling_unresolved',
   siblingQuoteAbsent: 'sibling_quote_absent',
@@ -110,8 +126,6 @@ const REASON = Object.freeze({
   rulingRefInvalid: 'ruling_ref_invalid',
   rulingUnresolved: 'ruling_unresolved',
   rulingQuoteAbsent: 'ruling_quote_absent',
-  rulingVenue: 'ruling_venue',
-  rulingUnnamed: 'ruling_unnamed',
   l0LineAbsent: 'l0_line_absent',
   quoteTooLong: 'quote_too_long',
   quoteTooShort: 'quote_too_short',
@@ -167,7 +181,7 @@ function minimalEnv() {
 }
 
 // Fixed global config on every invocation: no fsmonitor hook, no path quoting.
-const GIT_PREFIX = ['-c', 'core.fsmonitor=false', '-c', 'core.quotepath=false'];
+const GIT_PREFIX = ['-c', 'core.fsmonitor=false', '-c', 'core.quotepath=false', '-c', 'core.commitGraph=false'];
 
 function git(repo, args, binary = false) {
   try {
@@ -204,47 +218,69 @@ function resolveCommit(repo, rev, label) {
   return result.stdout.trim();
 }
 
-// Lane tip (PLAN §C1 semantics): attached HEAD resolves through its own branch;
-// detached HEAD resolves refs/heads/master. Never the literal token `HEAD`, and
-// never a silent fallback when symbolic-ref fails for a reason other than
-// "detached" (SentinelAnchor F4).
+// A ref must be a direct (non-symref) branch that resolves to a commit
+// (CriticQualityDraft): an anchor that is itself a symref is a refusal, not a
+// silent indirection.
+function exactBranchCommit(repo, ref, label) {
+  const symref = git(repo, ['for-each-ref', '--format=%(symref)', '--', ref]);
+  if (symref.error || symref.status !== 0) {
+    refuse('git_failed', gitError(['for-each-ref', ref], symref));
+  }
+  const target = String(symref.stdout).trim();
+  if (target !== '') {
+    refuse('lane_tip_unresolved', `${label}: ${ref} is a symref to ${clean(target)}`);
+  }
+  const resolved = git(repo, ['rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`]);
+  if (resolved.error || resolved.status !== 0) {
+    refuse('lane_tip_unresolved', `${label}: ${ref} does not resolve to a commit`);
+  }
+  return String(resolved.stdout).trim();
+}
+
+// First existing refs/heads/ candidate is the tip — the ladder never reads
+// HEAD, so a detached jj-colocated checkout still names its own line.
+function resolveLadderTip(repo, fallbacks, label) {
+  for (const candidate of fallbacks) {
+    const present = git(repo, ['show-ref', '--verify', '--quiet', candidate]);
+    if (present.error) refuse('git_failed', gitError(['show-ref', candidate], present));
+    if (present.status === 0) return exactBranchCommit(repo, candidate, label);
+  }
+  refuse('lane_tip_unresolved', `${label}: none of ${fallbacks.join(',')} exists`);
+}
+
+// Lane tip (PLAN §C1 semantics, CriticQualityDraft): `symbolic-ref -q
+// --no-recurse HEAD` must be status 0 with exactly one refs/heads/ line or
+// status 1 with empty stdout; anything else is could-not-evaluate. Detached
+// resolves refs/heads/master only. HEAD itself is never read.
+const LANE_REF_LINE = /^refs\/heads\/[A-Za-z0-9._/-]+\n$/;
+const LANE_TIP_FALLBACKS = Object.freeze(['refs/heads/master']);
+
 function laneTip(repo) {
-  const sym = git(repo, ['symbolic-ref', '-q', 'HEAD']);
-  if (sym.error || (sym.status !== 0 && sym.status !== 1)) {
-    refuse('git_failed', gitError(['symbolic-ref', '-q', 'HEAD'], sym));
+  const anchor = git(repo, ['symbolic-ref', '-q', '--no-recurse', 'HEAD']);
+  if (anchor.error || anchor.status === null || (anchor.status !== 0 && anchor.status !== 1)) {
+    refuse('git_failed', gitError(['symbolic-ref', '-q', '--no-recurse', 'HEAD'], anchor));
   }
-  let anchor = 'refs/heads/master';
-  if (sym.status === 0) {
-    anchor = String(sym.stdout).trim();
-    if (!HEAD_REF.test(anchor)) {
-      refuse('lane_tip_unresolved', `lane tip HEAD names ${clean(anchor)}, not a refs/heads/ branch`);
+  if (anchor.status === 0) {
+    if (!LANE_REF_LINE.test(String(anchor.stdout))) {
+      refuse('lane_tip_unresolved', `lane tip HEAD names ${clean(anchor.stdout)} not exactly one refs/heads/ branch`);
     }
+    return exactBranchCommit(repo, String(anchor.stdout).slice(0, -1), 'lane tip');
   }
-  return resolveCommit(repo, anchor, `lane tip ${anchor}`);
+  if (String(anchor.stdout) !== '') {
+    refuse('lane_tip_unresolved', `lane tip detached HEAD printed ${clean(anchor.stdout)}`);
+  }
+  return resolveLadderTip(repo, LANE_TIP_FALLBACKS, 'lane tip');
 }
 
 // Branch tip of a sibling or ruling repo, for the reachability guard
-// (SentinelAnchor F7): attached HEAD must be a refs/heads/ name; a detached
-// repo falls back to refs/heads/master, then refs/heads/main (kaidoku and
-// revenger publish on main). Only a branch tip counts — a commit reachable
-// from no branch is exactly the forged-pin shape the guard rejects.
+// (SentinelAnchor F7, checker resolveLadderTip): the first existing of
+// refs/heads/master then refs/heads/main is the tip — the ladder, never HEAD.
+// A commit reachable from no branch is exactly the forged-pin shape the guard
+// rejects.
+const TIP_FALLBACKS = Object.freeze(['refs/heads/master', 'refs/heads/main']);
+
 function siblingTip(repo) {
-  // master -> main ladder; the attached branch is only a fallback (L1 steer).
-  const sym = git(repo, ['symbolic-ref', '-q', 'HEAD']);
-  if (sym.error || (sym.status !== 0 && sym.status !== 1)) {
-    refuse('git_failed', gitError(['symbolic-ref', '-q', 'HEAD'], sym));
-  }
-  const attached = sym.status === 0 ? String(sym.stdout).trim() : null;
-  const candidates = ['refs/heads/master', 'refs/heads/main'];
-  if (attached !== null && !candidates.includes(attached)) candidates.push(attached);
-  for (const ref of candidates) {
-    if (!HEAD_REF.test(ref)) {
-      refuse('lane_tip_unresolved', `${repo}: HEAD names ${clean(ref)}, not a refs/heads/ branch`);
-    }
-    const resolved = git(repo, ['rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`]);
-    if (!resolved.error && resolved.status === 0) return resolved.stdout.trim();
-  }
-  refuse('lane_tip_unresolved', `${repo}: no refs/heads/master or refs/heads/main tip`);
+  return resolveLadderTip(repo, TIP_FALLBACKS, `${repo} tip`);
 }
 
 const ancestorCache = new Map();
@@ -293,17 +329,22 @@ function isAncestorOfEval(repo, commit, rev) {
 // this lane's history at or below the evaluated revision, and the cited line is
 // byte-identical at the evaluated revision. This mirrors the checker's
 // selfRulings admission rather than refusing every self-venue row.
-function checkSelfVenue(ctx, ruling, dir) {
+// Returns the row-finding reason to push, or null when the self-venue ruling
+// is admissible (mirrors the checker's selfRulings admission).
+function selfVenueReason(ctx, ruling, dir) {
   const author = lastAuthor(dir, ruling.commit, ruling.path);
-  if (author === null || author === `${ctx.ownToken}-shokunin`) return false;
-  if (!commitAt(ctx, ctx.laneRepo, ruling.commit)) return false;
-  if (!isAncestorOfEval(ctx.laneRepo, ruling.commit, ctx.rev)) return false;
+  if (author === null) return REASON.rulingUnresolved;
+  if (author === `${SELF_LANE}-shokunin`) return REASON.rulingRefInvalid;
+  if (!commitAt(ctx, ctx.laneRepo, ruling.commit)) return REASON.rulingUnresolved;
+  if (!isAncestorOfEval(ctx.laneRepo, ruling.commit, ctx.rev)) return REASON.rulingUnresolved;
   const pinnedBlob = blobAt(ctx, dir, ruling.commit, ruling.path);
   const pinnedLine = pinnedBlob.ok ? lineAt(pinnedBlob.text, ruling.line) : null;
   const atEvalBlob = blobAt(ctx, ctx.laneRepo, ctx.rev, ruling.path);
   const atEvalLine = atEvalBlob.ok ? lineAt(atEvalBlob.text, ruling.line) : null;
-  if (pinnedLine === null || atEvalLine === null) return false;
-  return pinnedLine === atEvalLine;
+  if (pinnedLine === null || atEvalLine === null || pinnedLine !== atEvalLine) {
+    return REASON.rulingUnresolved;
+  }
+  return null;
 }
 
 // A directory is a usable repo only when it is itself a real (non-symlink)
@@ -504,13 +545,19 @@ function verifyRow(ctx, row, index) {
   if (fields.some((field) => CONTROL_CHARS.test(field) || INVISIBLE_CHARS.test(field))) {
     reasons.push(REASON.fieldInvisible);
   }
-  if (surface.length === 0) reasons.push(REASON.surfaceEmpty);
+  if (surface.length === 0) {
+    reasons.push(REASON.surfaceEmpty);
+  } else if (!SURFACE_CHARSET.test(surface)) {
+    reasons.push(REASON.surfaceCharset);
+  }
 
   // sibling quote on its pinned line, at the sibling repo's pinned commit.
-  // `sibling` is exactly the lane named in sibling_ref and is never this lane
-  // (L1 steer: sibling==lane in ref, sibling!=tabi).
+  // `sibling` is exactly the lane named in sibling_ref, the ref path is never
+  // under `.ufo/` (wave scratch is not a province-level claim), and the lane
+  // is never this lane (wave-2 L1 steer).
   const sib = parseSiblingRef(siblingRef);
-  if (sib === null || sib.lane === ctx.ownToken) {
+  if (sib === null || sib.lane === SELF_LANE
+    || sib.path === '.ufo' || sib.path.startsWith(DOT_UFO_PREFIX)) {
     reasons.push(REASON.siblingRefInvalid);
   } else if (!LANE_TOKEN.test(sibling) || sibling !== sib.lane) {
     reasons.push(REASON.siblingRefInvalid);
@@ -574,13 +621,15 @@ function verifyRow(ctx, row, index) {
     } else if (isRulingSelfCitation(ruling.path)) {
       reasons.push(REASON.rulingRefInvalid);
     } else {
-      const selfVenue = ruling.repo === `${ctx.ownToken}-shokunin`;
-      const externalVenue = ruling.repo === 'fleet';
-      // A `ruled` verdict is the fleet's or a tabi integrator spot-check line;
-      // any other venue cannot rule. `contested-open` is fleet-only (above).
-      if (disposition === 'ruled' && !externalVenue
+      const selfVenue = ruling.repo === `${SELF_LANE}-shokunin`;
+      // A `ruled` venue is the fleet repository outside `.ufo/` or a tabi
+      // `corpus/lessons/*-verifier-spotcheck.md` line authored by someone other
+      // than this lane; an l0 question and wave scratch are not rulings
+      // (ForgeC3Checker S3). `contested-open` is fleet-l0 only (above).
+      if (disposition === 'ruled'
+        && (ruling.repo !== 'fleet' || ruling.path === '.ufo' || ruling.path.startsWith(DOT_UFO_PREFIX))
         && !(selfVenue && SELF_RULING_PATH.test(ruling.path))) {
-        reasons.push(REASON.rulingVenue);
+        reasons.push(REASON.rulingRefInvalid);
       } else {
         const dir = repoDirFor(ctx, ruling.repo);
         if (dir === null || !commitAt(ctx, dir, ruling.commit)) {
@@ -588,13 +637,14 @@ function verifyRow(ctx, row, index) {
         } else {
           const authority = selfVenue ? 'self' : 'external';
           const tip = siblingTipOrNull(dir);
-          if (tip === null || !reachesBranchTip(dir, ruling.commit, tip)) {
-            reasons.push(REASON.rulingUnresolved);
-          } else if (selfVenue && !checkSelfVenue(ctx, ruling, dir)) {
+          const selfReason = tip === null || !reachesBranchTip(dir, ruling.commit, tip)
+            ? REASON.rulingUnresolved
+            : selfVenue ? selfVenueReason(ctx, ruling, dir) : null;
+          if (selfReason !== null) {
             // A self-venue line must be authored by someone other than this
             // lane, be an ancestor of the evaluated rev, and be byte-identical
             // there: this lane's own history cannot certify itself.
-            reasons.push(REASON.rulingVenue);
+            reasons.push(selfReason);
           } else {
             const blob = blobAt(ctx, dir, ruling.commit, ruling.path);
             const line = blob.ok ? lineAt(blob.text, ruling.line) : null;
@@ -612,7 +662,7 @@ function verifyRow(ctx, row, index) {
                 reasons.push(REASON.rulingQuoteAbsent);
               } else if (disposition === 'ruled' && !rulingQuote.includes(sibLane)) {
                 // The quoted ruling words must name the lane they rule on.
-                reasons.push(REASON.rulingUnnamed);
+                reasons.push(REASON.rulingQuoteAbsent);
               }
             }
           }
@@ -641,6 +691,7 @@ function verifyRow(ctx, row, index) {
     surface,
     sibling,
     sibling_ref: siblingRef,
+    sibling_pin: sib === null ? null : `${sib.lane}@${sib.path}:${sib.line}`,
     disposition,
     ruling_authority: rulingAuthority,
     verified: reasons.length === 0,
@@ -651,31 +702,39 @@ function verifyRow(ctx, row, index) {
 function fold(text) {
   return String(text).toLowerCase().replace(/\s+/g, ' ').trim();
 }
-
 // Evaluate one TSV text end to end: parse, verify, mark duplicate identities.
-// Identity is case/space-folded surface+sibling, and a sibling line may be
-// cited once (SentinelAnchor F11).
+// A row is a duplicate when it reuses a folded surface already seen for the
+// same sibling lane, or when it re-pins a sibling line (`<lane>@<path>:<line>`,
+// commit-independent) already cited under another surface — one sibling line
+// counts once (ForgeC3Checker S1). Rows that are not exactly 9 columns skip
+// duplicate bookkeeping, matching the checker.
 function evaluate(text, ctx) {
   const parsed = parseTsv(text);
   if (!parsed.headerOk) {
     return { header: parsed.header, headerOk: false, rows: [], verified: 0 };
   }
   const rows = parsed.rows.map((row, index) => verifyRow(ctx, row, index));
-  // A row is unique by folded surface plus sibling lane (the checker's rule);
-  // ref bytes may differ while the overlap is the same one.
   const seenIdentities = new Set();
+  const seenPins = new Set();
   for (const row of rows) {
+    if (row.reasons.includes(REASON.columnCount)) continue;
     const identity = `${fold(row.surface)}\0${fold(row.sibling)}`;
-    if (seenIdentities.has(identity)) {
+    const pin = row.sibling_pin;
+    if (seenIdentities.has(identity) || (pin !== null && seenPins.has(pin))) {
       row.verified = false;
       row.reasons.push(REASON.duplicateRow);
     }
     seenIdentities.add(identity);
+    if (pin !== null) seenPins.add(pin);
   }
   const byDisposition = { 'contested-open': 0, ruled: 0, 'split-declared': 0, 'refused-route': 0 };
+  let selfRuled = 0;
+  let selfFiledQuestions = 0;
   for (const row of rows) {
     if (row.verified && Object.hasOwn(byDisposition, row.disposition)) {
       byDisposition[row.disposition] += 1;
+      if (row.disposition === 'ruled' && row.ruling_authority === 'self') selfRuled += 1;
+      if (row.disposition === 'contested-open') selfFiledQuestions += 1;
     }
   }
   return {
@@ -684,6 +743,8 @@ function evaluate(text, ctx) {
     rows,
     verified: rows.filter((row) => row.verified).length,
     by_disposition: byDisposition,
+    c3_self_ruled: selfRuled,
+    c3_self_filed_questions: selfFiledQuestions,
   };
 }
 
@@ -937,7 +998,8 @@ const MUTATION_SPECS = [
     build(ctx, env) {
       const fields = rowFields(env.baseLines[1]);
       const dup = setField(env.baseLines[1], 0, fields[0].toUpperCase());
-      return { text: `${env.baseText.replace(/\n$/, '')}\n${dup}\n`, target_row: 1,
+      return { text: `${env.baseText.replace(/\n$/, '')}\n${dup}\n`,
+        target_row: env.baseLines.length - 1,
         note: `appended row with surface '${clean(fields[0].toUpperCase())}'` };
     },
   },
@@ -961,6 +1023,116 @@ const MUTATION_SPECS = [
           note: `tabi_ref moved to ${tabi.path}:${lineNo}` };
       }
       return null;
+    },
+  },
+  {
+    // One sibling line (`<lane>@<path>:<line>`, commit-independent) is cited
+    // once; a second row re-pinning it under a different surface is a
+    // duplicate_row (ForgeC3Checker S1).
+    id: 'sibling_line_reuse',
+    build(ctx, env) {
+      if (env.baseLines.length < 3) return null;
+      const first = rowFields(env.baseLines[1]);
+      const second = rowFields(env.baseLines[2]);
+      const sib0 = parseSiblingRef(first[2]);
+      if (sib0 === null) return null;
+      let line = env.baseLines[2];
+      line = setField(line, 1, sib0.lane);
+      line = setField(line, 2, first[2]);
+      line = setField(line, 3, first[3]);
+      const mutated = replaceDataRow(env.baseText, 1, line);
+      return mutated === null ? null : { text: mutated, target_row: 1,
+        note: `second row re-pins ${sib0.lane}@${sib0.path}:${sib0.line}` };
+    },
+  },
+  {
+    // A surface is ASCII [a-z0-9-]: a Greek omicron is a homoglyph, not a
+    // surface (ForgeC3Checker S2).
+    id: 'non_ascii_surface',
+    build(ctx, env) {
+      const fields = rowFields(env.baseLines[1]);
+      const surface = fields[0];
+      let mutatedSurface = null;
+      if (surface.includes('o')) {
+        mutatedSurface = surface.replace('o', '\u03bf');
+      } else {
+        mutatedSurface = `${surface}-\u03bf`;
+      }
+      const mutated = replaceDataRow(env.baseText, 0, setField(env.baseLines[1], 0, mutatedSurface));
+      return mutated === null ? null : { text: mutated, target_row: 0,
+        note: `surface '${clean(surface)}' -> '${clean(mutatedSurface)}' (Greek omicron)` };
+    },
+  },
+  {
+    // A `ruled` venue under `.ufo/` is a question ledger or wave scratch, not
+    // a ruling (ForgeC3Checker S3): flip a contested-open row to ruled, or
+    // re-point a ruled row at the l0 ledger.
+    id: 'ruled_l0_venue',
+    build(ctx, env) {
+      for (let rowIndex = 0; rowIndex < env.baseLines.length - 1; rowIndex += 1) {
+        const line = env.baseLines[rowIndex + 1];
+        const fields = rowFields(line);
+        if (fields[6] === 'contested-open') {
+          // Same fleet l0 pin, same naming quote, disposition now `ruled`:
+          // a question cannot be a ruling.
+          const mutated = replaceDataRow(env.baseText, rowIndex, setField(line, 6, 'ruled'));
+          return mutated === null ? null : { text: mutated, target_row: rowIndex,
+            note: 'contested-open row flipped to ruled on a fleet l0 pin' };
+        }
+      }
+      // No contested-open row: re-point a ruled row's ref at the fleet l0 file,
+      // keeping a quote that names the sibling.
+      for (let rowIndex = 0; rowIndex < env.baseLines.length - 1; rowIndex += 1) {
+        const fields = rowFields(env.baseLines[rowIndex + 1]);
+        if (fields[6] !== 'ruled') continue;
+        const lane = parseSiblingRef(fields[2])?.lane ?? fields[1];
+        const tip = siblingTipOrNull(ctx.fleetRoot);
+        if (tip === null) return null;
+        const l0 = blobAt(ctx, ctx.fleetRoot, tip, L0_PATH);
+        if (!l0.ok) continue;
+        const l0Lines = l0.text.split('\n');
+        for (let index = 0; index < l0Lines.length; index += 1) {
+          const tokens = l0Lines[index].split(/\s+/);
+          for (let length = 4; length <= 8; length += 1) {
+            for (let start = 0; start + length <= tokens.length; start += 1) {
+              const run = tokens.slice(start, start + length).join(' ');
+              if (!quoteFloorOk(run)) continue;
+              if (!run.includes(lane)) continue;
+              if (!l0Lines[index].includes(run)) continue;
+              const newRef = `fleet@${tip}:${L0_PATH}:${index + 1}`;
+              const mutated = replaceDataRow(env.baseText, rowIndex,
+                setField(setField(env.baseLines[rowIndex + 1], 7, newRef), 8, run));
+              return mutated === null ? null : { text: mutated, target_row: rowIndex,
+                note: `ruled row re-pointed to l0:${index + 1}` };
+            }
+          }
+        }
+      }
+      return null;
+    },
+  },
+  {
+    // A sibling pin under `.ufo/` is wave scratch, not a province-level claim.
+    id: 'sibling_ufo_path',
+    build(ctx, env) {
+      const info = siblingLine(ctx, env.baseLines[1]);
+      if (info === null) return null;
+      // Prefer a real `.ufo/` path in the sibling at the pinned commit; else a
+      // placeholder still exercises the ref-layer refusal.
+      const tree = git(info.dir, ['ls-tree', '-r', '--name-only', info.ref.commit, '.ufo/']);
+      let path = '.ufo/README.md';
+      let source = 'placeholder';
+      if (!tree.error && tree.status === 0) {
+        const first = String(tree.stdout).split('\n').filter((line) => line.length > 0)[0];
+        if (first !== undefined && first.startsWith('.ufo/')) {
+          path = first;
+          source = 'sibling_tree';
+        }
+      }
+      const newRef = `${info.ref.lane}-shokunin@${info.ref.commit}:${path}:${info.ref.line}`;
+      const mutated = replaceDataRow(env.baseText, 0, setField(env.baseLines[1], 2, newRef));
+      return mutated === null ? null : { text: mutated, target_row: 0,
+        note: `sibling_ref rewritten to ${path} (${source})` };
     },
   },
 ];
@@ -1054,6 +1226,41 @@ function probeChecker(ctx, real) {
     }
     // Leave the sandbox holding the real bytes, then drop it.
     materialise(cloned.sandbox, TSV_PATH, tsv.bytes);
+    // Probe: the lane identity is the constant `tabi`, so this counter must
+    // give the same count when its own checkout is named anything else
+    // (ForgeC3Checker S4). The sandbox is already a differently named clone.
+    const laneCtx = { laneRepo: cloned.sandbox, fleetRoot: ctx.fleetRoot,
+      ownToken: SELF_LANE, rev: baseRev, blobs: new Map(), commits: new Map() };
+    const renamedEvaluation = evaluate(baseText, laneCtx);
+    const laneNameIndependence = {
+      clone_name: basename(cloned.sandbox),
+      differs: basename(cloned.sandbox) !== `${SELF_LANE}-shokunin`,
+      verified: renamedEvaluation.verified,
+      ok: renamedEvaluation.verified === verifiedRows.length,
+    };
+    // Probe: an attached HEAD whose named branch is itself a symref is refused,
+    // never silently dereferenced (CriticQualityDraft; laneTip anchor check).
+    const symrefProbe = { applied: false, refused: false, reason: null };
+    try {
+      const fake = git(cloned.sandbox,
+        ['symbolic-ref', 'refs/heads/c3-counter-fake', 'refs/heads/master']);
+      const head = git(cloned.sandbox, ['symbolic-ref', 'HEAD', 'refs/heads/c3-counter-fake']);
+      if (fake.error || fake.status !== 0 || head.error || head.status !== 0) {
+        symrefProbe.note = 'setup_failed';
+      } else {
+        symrefProbe.applied = true;
+        try {
+          laneTip(cloned.sandbox);
+          symrefProbe.reason = 'not_refused';
+        } catch (error) {
+          symrefProbe.refused = true;
+          symrefProbe.reason = error instanceof CouldNotEvaluate ? error.reason : 'other';
+        }
+      }
+    } finally {
+      git(cloned.sandbox, ['checkout', '-q', '-f', '--detach', baseRev]);
+      git(cloned.sandbox, ['update-ref', '-d', 'refs/heads/c3-counter-fake']);
+    }
     return {
       ...base,
       status: 'ran',
@@ -1062,6 +1269,8 @@ function probeChecker(ctx, real) {
       count_agreement: countAgreement,
       probe_base_exit: baseRun.exit,
       probe_base_ok: baseRun.exit === 0,
+      lane_name_independence: laneNameIndependence,
+      lane_tip_symref: symrefProbe,
       mutations,
     };
   } finally {
@@ -1097,7 +1306,10 @@ function main() {
   const ctx = {
     laneRepo,
     fleetRoot,
-    ownToken: basename(laneRepo).replace(/-shokunin$/, ''),
+    // The measured lane is `tabi` by contract (ForgeC3Checker S4): the checkout
+    // directory name is never an identity, so a clone named anything else must
+    // give the same count.
+    ownToken: SELF_LANE,
     rev: null,
     blobs: new Map(),
     commits: new Map(),
@@ -1140,7 +1352,8 @@ function main() {
   if (!tsv.ok) {
     // Baseline shape: the map does not exist yet, so nothing can be verified.
     evaluated = { header: [], headerOk: true, rows: [], verified: 0,
-      by_disposition: { 'contested-open': 0, ruled: 0, 'split-declared': 0, 'refused-route': 0 } };
+      by_disposition: { 'contested-open': 0, ruled: 0, 'split-declared': 0, 'refused-route': 0 },
+      c3_self_ruled: 0, c3_self_filed_questions: 0 };
     probes.tsv.absent_reason = tsv.reason ?? 'absent';
   } else {
     evaluated = evaluate(tsv.text, ctx);
@@ -1159,6 +1372,8 @@ function main() {
 
   const output = {
     c3_adjacency_verified: evaluated.verified,
+    c3_self_ruled: evaluated.c3_self_ruled,
+    c3_self_filed_questions: evaluated.c3_self_filed_questions,
     by_disposition: evaluated.by_disposition,
     rows: evaluated.rows,
     probes,

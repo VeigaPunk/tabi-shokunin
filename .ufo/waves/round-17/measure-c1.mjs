@@ -37,12 +37,20 @@
 //       off-branch commit must not change the verdict;
 //   (5) C behavior differs from A. A C difference that survives only in revision or
 //       committed labels is reported as kind="label" and is NOT counted (L1 repair 3);
-//   (6) static residue: literal 'HEAD' revision reads in the gate blob at REV outside
+//   (6) static residue: HEAD revision operands in the gate blob at REV outside
 //       the fixture sites of .ufo/waves/round-17/c1-sites.json on a
-//       provenance-bearing (non-fixture) function must equal 0 (L1 repair 5). The
-//       inventory is read from REV's own blob (`git cat-file blob REV:<path>`), never
-//       from the LANE worktree; when absent at REV the counter falls back to an
-//       embedded fixture-site list so the baseline 5859243 run stays evaluable.
+//       provenance-bearing (non-fixture) function must equal 0 (L1 repair 5). An
+//       operand is a quoted literal that IS a revision ('HEAD', 'HEAD~1',
+//       'HEAD^', 'HEAD:path', 'HEAD@{0}'), a bare reflog '@{...}', or a
+//       code/template range operand (`..HEAD`, `HEAD~`, `HEAD^`, `HEAD:`,
+//       `HEAD@`, `@{`) such as `${pin}..HEAD`. Prose occurrences in comments,
+//       error strings and other refs ('ancestor of HEAD', 'Detached-HEAD ...',
+//       'refs/heads/master@{1}') are not operands; a token built at runtime
+//       ('HE','AD' join) stays a declared behavior-arm gap (ReRunC1).
+//       The inventory is read from REV's own blob (`git cat-file blob
+//       REV:<path>`), never from the LANE worktree; when absent at REV the
+//       counter falls back to an embedded fixture-site list so the baseline
+//       5859243 run stays evaluable.
 // The entry drives the user gate through its full committed-state read path in
 // fixture mode (`--repo <clone> --baseline HARD --expect 6`) from a gate copy outside
 // the clone, so a partial HEAD read cannot hide behind round_count (L1 repair 4).
@@ -104,14 +112,22 @@ const ENTRIES = [
     gate: 'scripts/check-user-round-contract.mjs',
     argv: () => [],
     source: 'SKILL.md:1800 (historical-user-contract, production entry)',
-    // Ten user lessons make the gate leave round_count and run its loop; r07 has no
-    // Gate, so a tip-reader fails with missing_gate instead of round_count.
+    // Ten user lessons make the gate leave round_count and run its loop; r07 has
+    // no Gate, so a tip-reader fails with missing_gate instead of round_count.
+    // The two appends make P a *history* change: both paths already sit in the
+    // pin..tip diff (round-16.md added pin..tip, status 'M' at tip; the round
+    // script, status 'M' to acceptedRoundScript), so a `pin..HEAD` range sees
+    // P's extra modification while `pin..tip` does not (MutC1Counter survivor).
     poison: {
       write: [
         { path: 'corpus/lessons/user-20261015-r07.md', bytes: '\n' },
         { path: 'corpus/lessons/user-20261015-r08.md', bytes: '\n' },
         { path: 'corpus/lessons/user-20261015-r09.md', bytes: '\n' },
         { path: 'corpus/lessons/user-20261015-r10.md', bytes: '\n' },
+      ],
+      append: [
+        { path: 'scripts/check-round-contract.mjs', suffix: POISON_MARK },
+        { path: 'corpus/lessons/round-16.md', suffix: POISON_MARK },
       ],
     },
   },
@@ -381,8 +397,9 @@ function buildPoison(repo, rev, env, spec) {
 // except a `defaultRoot` read, which is always live. Mixed functions
 // (witness/countWitness/selfTest) are therefore judged per occurrence: fixture
 // reads use a fixture-local root and are excluded; defaultRoot reads count.
-// Template-literal `..HEAD` ranges (not quoted) are outside this literal scan;
-// c1-sites records them as helper-call sites.
+// The scanner counts revision operands below: quoted literals that are
+// revisions, plus `..HEAD` / `HEAD~` / `HEAD^` / `HEAD:` / `HEAD@` / `@{`
+// forms inside template and code text.
 // ---------------------------------------------------------------------------
 function normalizeSiteText(text) {
   return String(text ?? '').replace(/\s+/g, ' ').trim();
@@ -462,12 +479,75 @@ function loadSiteInventory(repo, rev, env) {
   return inventoryFromSites(parsed.sites, 'rev');
 }
 
-const HEAD_TOKEN = /'HEAD'/g;
+// HEAD revision operands on one source line. `//` comments are prose; string
+// and template spans are scanned for operand forms (a template's interpolations
+// are stripped first). A quoted literal counts when its content begins as a
+// revision operand ('HEAD', 'HEAD~1', 'HEAD:path', 'HEAD@{0}', '@{...}') or
+// carries an explicit `..HEAD` range end; free prose strings mentioning HEAD
+// ('ancestor of HEAD', 'Detached-HEAD fixture') do not.
+const CODE_HEAD_RE = /\.\.HEAD(?![\w$])|\bHEAD(?=[~^:@]|\.\.)|@\{/g;
+
+function quoteOperand(text, backtick) {
+  if (backtick) return (text.match(CODE_HEAD_RE) || []).length;
+  return /^(?:HEAD(?:$|[~^:@.])|@\{)/.test(text) || /\.\.HEAD(?![\w$])/.test(text) ? 1 : 0;
+}
+
+function headOperands(line) {
+  let count = 0;
+  let i = 0;
+  let quote = null;
+  let inner = '';
+  const code = () => (innerScanSource(line).match(CODE_HEAD_RE) || []).length;
+  while (i < line.length) {
+    const ch = line[i];
+    if (quote === null) {
+      if (ch === '/' && line[i + 1] === '/') break;
+      if (ch === "'" || ch === '"' || ch === '`') quote = ch;
+      i += 1;
+      continue;
+    }
+    if (ch === '\\') { inner += ch + (line[i + 1] ?? ''); i += 2; continue; }
+    if (quote === '`' && ch === '$' && line[i + 1] === '{') {
+      let depth = 1;
+      i += 2;
+      while (i < line.length && depth > 0) {
+        if (line[i] === '{') depth += 1;
+        else if (line[i] === '}') depth -= 1;
+        i += 1;
+      }
+      continue;
+    }
+    if (ch === quote) { count += quoteOperand(inner, quote === '`'); quote = null; inner = ''; i += 1; continue; }
+    inner += ch;
+    i += 1;
+  }
+  if (quote !== null) count += quoteOperand(inner, quote === '`');
+  return count + code();
+}
+
+// The source line minus comments and minus every string/template span.
+function innerScanSource(line) {
+  let out = '';
+  let i = 0;
+  let quote = null;
+  while (i < line.length) {
+    const ch = line[i];
+    if (quote === null) {
+      if (ch === '/' && line[i + 1] === '/') break;
+      if (ch === "'" || ch === '"' || ch === '`') { quote = ch; i += 1; continue; }
+      out += ch; i += 1; continue;
+    }
+    if (ch === '\\') { i += 2; continue; }
+    if (ch === quote) quote = null;
+    i += 1;
+  }
+  return out;
+}
 
 function isNonRevisionLine(line) {
   if (/\bsymbolic-ref\b/.test(line)) return true;
-  if (/\bwriteFileSync\b/.test(line) && /'HEAD'/.test(line)) return true;
-  if (/\bmethods?\b/.test(line) && /'HEAD'/.test(line) && /!==|===|includes\(|some\(/.test(line)) return true;
+  if (/\bwriteFileSync\b/.test(line) && /\bHEAD\b/.test(line)) return true;
+  if (/\bmethods?\b/.test(line) && /\bHEAD\b/.test(line) && /!==|===|includes\(|some\(/.test(line)) return true;
   if (/\bupdate-ref\b/.test(line) && !/(rev-parse|merge-base|ls-tree|cat-file|rev-list|show\(|list\(|blob\()/.test(line)) return true;
   return false;
 }
@@ -483,7 +563,7 @@ function residueFor(repo, rev, gatePath, inventory, env) {
   text.split('\n').forEach((line, index) => {
     const match = /^function\s+([A-Za-z_$][\w$]*)\s*\(/.exec(line);
     if (match) fn = match[1];
-    const tokens = (line.match(HEAD_TOKEN) || []).length;
+    const tokens = headOperands(line);
     if (!tokens) return;
     report.raw += tokens;
     if (isNonRevisionLine(line)) {

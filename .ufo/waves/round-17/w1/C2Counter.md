@@ -2,8 +2,9 @@ VERDICT: PASS
 
 Counter `.ufo/waves/round-17/measure-c2.mjs` implemented and hardened through three CriticC2 rounds
 (§A5a baseline isolation, §A3 fixture binding + distinctness, §A3 control substance + control error).
-sha256(`.ufo/waves/round-17/measure-c2.mjs`) = `2cba594b5b4e1be332b8949d64ba1a3218843d1332c10e7a58789459f9ec17ac`
+sha256(`.ufo/waves/round-17/measure-c2.mjs`) = `079dcc3924d36b34e56996efe694d35e474455489d611812a78615f3821fc3e1`
 (printed as `hashes.counterSelf`; `hashes.counterAtRevision` is the blob at REV — null at baseline).
+> Wave-2 repair applied below after ForgeC2Counter found 12 survivor forgeries.
 
 ## What it measures
 
@@ -82,6 +83,42 @@ note); README map row. Exit 0:
   three-case distinctness rule stands in; C2Harness confirmed the receipt shape this wave).
 - Raw-payload nonce/invocationId/page-ledger re-derivation once the per-case payload schema lands.
 The counter header records the current limit: shape + provenance, not a browser re-run.
+
+## Wave-2 repair (post-ForgeC2Counter)
+
+ForgeC2Counter built 24 sandbox commits against wave-1 (`/tmp/tabi-r17w2-ForgeC2Counter-ENaP/forge-results.json`):
+11 rejected outright, 12 forged receipts scored 1. CriticC2 then issued a wave-2 repair request. This
+counter was repaired; forge rerun (`rerun-c2counter-w2.json`) now: **all 23 forge commits 0, base M 1**.
+
+Changes:
+- `receipt.controls` REQUIRED (array, non-empty); counter-owned copy of the L1 control id list
+  (`invoke-before-enable`, `invoke-cancel`, `invoke-declarative-navigation-result`,
+  `invoke-domain-disabled`); uniqueness enforced on both `cases` and `controls` ids.
+- Fail-closed statuses: every `cases` + `controls` entry must `status === 'pass'` — controls counted
+  even when only `cases` count toward the summary.
+- `summary` recomputed: `cases`/`passed`/`failed`/`missing` must equal the observed counts and
+  `failed` must be the number 0 (undefined ⇒ failure); `caseSetOk` true (top or nested); when
+  `summary.caseSet` is present, `ran`/`passed`/`failed`/`missing`/`duplicates` are checked too.
+- `fixtureSha256`/`fixtureFile` binding extended from required cases to EVERY `cases` and
+  `controls` entry against `corpus/evidence/round-17/webmcp-invoke/fixtures/` blobs at REV.
+- New `predicateExtraction` + `predicatesBound`: a code-level scanner finds `predicate:` keys in
+  `scripts/webmcp-invoke-round17.mjs`, slices each literal (arrow/function/object), and requires
+  every entry's `predicate.fnSha256` to equal sha256 of a literal found in the harness blob
+  (Function.prototype.toString round-trip, `scripts/webmcp-invoke-round17.mjs:802,951`). Non-literal
+  sites skip membership rather than false-reject (`predicateExtraction` reports `verified N literal(s)`).
+- In-counter probes 7→17: + `duplicate_case_selfconsistent`, `nonrequired_case_failed`,
+  `summary_counts_mismatch`, `summary_failed_absent`, `controls_absent`, `required_control_missing`,
+  `control_failed`, `control_duplicate`, `control_fixture_mismatch`, `predicate_sha_unbound` — all held 0.
+
+Forge table (rerun; first failure each): v01 producerSha256 · v02a summary.cases · v02b/v02c/v02d/v18/v19
+duplicate case id · v03a case status fail · v03b control status fail · v04 S041 tier C · v05 no
+frontier row · v06 used-by lacks note · v07 README mention · v08 run gone · v09 externalRequestCount ·
+v10 summary.cases · v11 fixture digest · v12/v16 summary.failed · v13 control status fail · v14
+controls not array · v15 control fixture digest · v17 duplicate control id.
+
+M (6c97851) re-verified: `c2_invocation_held:1`, `failures:[]`, `fixtureBoundCases:15`,
+`predicatesBound:15`, `predicateExtraction:"verified 16 harness literal(s)"`, 4 controlIds.
+Baseline 5859243: `c2_invocation_held:0`, 3 absence failures, `probesOk:true`, one JSON line.
 
 ## Notes for L1 / C2Harness
 

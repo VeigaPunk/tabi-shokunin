@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Sibling-adjacency map gate (round 17, claim C3).
 //
-// corpus/adjacency.tsv records every real overlap between this lane and a
-// sibling lane, quoting the exact line on each side and stating a disposition.
+// corpus/adjacency.tsv records the overlaps the lane has dispositioned; known
+// undispositioned overlaps are listed in the round lesson. Each row quotes
+// the exact line on each side and states a disposition.
 // The map is evidence, so it is never read from the worktree: the map bytes,
 // every sibling/ruling line and every tabi file are read with
 // `git cat-file blob` at exact commits (this lane at the evaluated revision;
@@ -49,19 +50,23 @@
 // whitespace before use; quotes are matched as verbatim substrings after that
 // trim, so interior whitespace and punctuation must match the cited line.
 //
-//   surface        non-empty overlap name.
+//   surface        non-empty overlap name, ASCII [a-z0-9-] only.
 //   sibling        exactly the lane token named in sibling_ref (e.g.
 //                  `kaidoku` for `kaidoku-shokunin`); a token list or a
 //                  `-shokunin` suffix is not an equality.
 //   sibling_ref    <lane>-shokunin@<40-hex>:<path>:<line>. <path> is a clean
-//                  repo-relative path; sibling_quote must be a verbatim
+//                  repo-relative path outside `.ufo/` (wave scratch is not a
+//                  province-level claim); sibling_quote must be a verbatim
 //                  substring of exactly that line of that file at that commit.
 //                  The commit must be reachable from that repository's lane
 //                  tip — the first existing of refs/heads/master, then
 //                  refs/heads/main (the ladder, not HEAD, so a detached
 //                  jj-colocated lane still names its own line): a dangling
 //                  commit written with hash-object/mktree/commit-tree is not
-//                  evidence. The ref used is recorded in --json `tips`.
+//                  evidence. The ref used is recorded in --json `tips`. One
+//                  sibling pin (`<lane>@<path>:<line>`, commit-independent) is
+//                  cited once: a second row reusing it is duplicate_row even
+//                  under another surface.
 //   sibling_quote  verbatim substring, 4..25 whitespace-separated words and at
 //                  least 20 non-space characters.
 //   tabi_ref       <path>:<line> in this lane, resolved at the evaluated
@@ -71,7 +76,8 @@
 //   tabi_quote     verbatim substring, 4..25 words, >= 20 non-space characters.
 //   disposition    ruled | contested-open | split-declared | refused-route.
 //   ruling_ref     ruled: <repo>@<40-hex>:<path>:<line> whose venue is the
-//                  fleet repository or a tabi
+//                  fleet repository outside `.ufo/` (an l0 question is a
+//                  question, not a ruling) or a tabi
 //                  `corpus/lessons/*-verifier-spotcheck.md` line authored by
 //                  someone other than this lane; the commit must be reachable
 //                  from that repository's lane-tip ladder, and its
@@ -105,6 +111,8 @@
 // Per-row finding reasons (closed vocabulary):
 //   column_count            row is not exactly 9 TAB-separated columns
 //   surface_empty           surface column is empty
+//   surface_charset         surface carries a byte outside ASCII [a-z0-9-]
+//                           (a homoglyph or punctuation is not a surface)
 //   field_control_char      a field carries a C0/C1 control, bidi override or
 //                           zero-width/BOM code point
 //   sibling_ref_invalid     malformed ref, unclean path, the sibling column
@@ -141,7 +149,8 @@
 //   quote_too_long          a quote exceeds 25 whitespace-separated words
 //   quote_too_short         a quote is under 4 words or 20 non-space chars
 //   duplicate_row           the same folded surface+sibling pair appears on
-//                           two rows
+//                           two rows, or the same sibling pin
+//                           (lane@path:line) is cited twice
 //
 // Stdout grammar (text mode): first line
 //   ADJACENCY verdict=clean|failed|could_not_evaluate rows=N verified=M
@@ -151,8 +160,9 @@
 // rows with no finding. With --json, stdout is exactly one JSON object line.
 //
 // No token ever reaches a shell: every child is spawned with an argv array
-// under a minimal Git environment (see minimalEnv), pathspecs are literal, and
-// replace objects and grafts are disabled. --self-test builds a disposable
+// under a minimal Git environment (see minimalEnv), pathspecs are literal,
+// replace objects and grafts are disabled, and core.commitGraph=false keeps a
+// forged commit-graph from lying about ancestry. --self-test builds a disposable
 // fleet of git repositories under the OS temp directory and asserts one clean
 // case plus at least one case per reason, each negative asserting its exact
 // reason set and exit class; the last line is
@@ -193,6 +203,13 @@ const TABI_SELF_CITATION_EXACT = Object.freeze([MAP_PATH]);
 const TABI_SELF_CITATION_PREFIX = '.ufo/';
 const RULING_SELF_CITATION_EXACT = Object.freeze([MAP_PATH]);
 const RULING_SELF_CITATION_PREFIX = '.ufo/waves/';
+// Wave scratch is never evidence: sibling pins, and every `ruled` venue, must
+// not cite paths under `.ufo/` (l0-questions is a question ledger, not a
+// ruling; the contested-open venue names it explicitly).
+const DOT_UFO_PREFIX = '.ufo/';
+// A surface is an ASCII kebab-case token: cross-script homoglyphs and
+// punctuation are not foldable to a stable key.
+const SURFACE_CHARSET = /^[a-z0-9-]+$/;
 // C0/C1 controls, bidi overrides, zero-width and BOM code points. A quote that
 // carries any of these is not a human-checkable verbatim citation.
 const BANNED_CHARS = /[\x00-\x1f\x7f-\x9f\u200b-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/u;
@@ -230,6 +247,7 @@ const FAILURE_REASON = Object.freeze({
 const REASON = Object.freeze({
   columnCount: 'column_count',
   surfaceEmpty: 'surface_empty',
+  surfaceCharset: 'surface_charset',
   fieldControlChar: 'field_control_char',
   siblingRefInvalid: 'sibling_ref_invalid',
   siblingUnresolved: 'sibling_unresolved',
@@ -250,8 +268,9 @@ const FINDING_REASONS = Object.freeze(Object.values(REASON));
 const COULD_NOT_EVALUATE_REASONS = Object.freeze(Object.values(FAILURE_REASON));
 
 // Fixed global git config so a repository-controlled fsmonitor hook cannot
-// execute during plumbing; every pathspec is also literal by env.
-const GIT_PREFIX = ['-c', 'core.fsmonitor=false', '-c', 'core.quotepath=false'];
+// execute during plumbing and a forged commit-graph cannot lie about
+// ancestry; every pathspec is also literal by env.
+const GIT_PREFIX = ['-c', 'core.fsmonitor=false', '-c', 'core.quotepath=false', '-c', 'core.commitGraph=false'];
 
 class CouldNotEvaluate extends Error {
   constructor(reason, detail) {
@@ -655,6 +674,11 @@ function checkSibling({ lane, fleet, sibling, ref, quote, quoteBanned, add }) {
     add(REASON.siblingRefInvalid, `sibling_ref path=${cleanDetail(path)} is not a clean repo-relative path`);
     return null;
   }
+  if (path === DOT_UFO_PREFIX.replace(/\/$/, '') || path.startsWith(DOT_UFO_PREFIX)) {
+    add(REASON.siblingRefInvalid,
+      `sibling_ref path=${path} is under .ufo/; wave scratch is not a province-level claim`);
+    return null;
+  }
   // The sibling column must name exactly the lane in sibling_ref: a
   // lane-token list or a `-shokunin` suffix is not an equality.
   if (!LANE_TOKEN.test(sibling) || sibling !== laneToken) {
@@ -811,12 +835,17 @@ function checkRuling({
     return;
   }
   const selfVenue = token === SELF_LANE_REPO;
-  // A `ruled` ruling venue is the fleet repository or a tabi
+  // A `ruled` venue is the fleet repository outside `.ufo/` or a tabi
   // `corpus/lessons/*-verifier-spotcheck.md` line authored by someone other
-  // than this lane; any other repo or any self-written ruling is a refusal.
-  if (disposition === 'ruled' && token !== 'fleet' && !(selfVenue && SELF_RULING_PATH.test(path))) {
+  // than this lane; an l0 question and wave scratch are not rulings, and any
+  // other repo or any self-written ruling is a refusal.
+  if (disposition === 'ruled'
+      && (token !== 'fleet'
+          || path === DOT_UFO_PREFIX.replace(/\/$/, '') || path.startsWith(DOT_UFO_PREFIX))
+      && !(selfVenue && SELF_RULING_PATH.test(path))) {
     add(REASON.rulingRefInvalid,
-      `ruled ruling_ref must be fleet@... or tabi-shokunin@...:${SELF_RULING_PATH}:<line>`);
+      `ruled ruling_ref must be fleet@... outside .ufo/ or a non-tabi ` +
+      `*-verifier-spotcheck.md line; got ${token}@...:${path}`);
     return;
   }
   const dir = token === 'fleet' ? fleet : join(fleet, token);
@@ -943,7 +972,13 @@ function evaluateRow({ lane, fleet, atRev, rowNo, fields, onSelfRuling }) {
   });
   const quoteBanned = (index) => BANNED_CHARS.test(fields[index]);
 
-  if (surface.length === 0) add(REASON.surfaceEmpty, 'surface column is empty');
+  if (surface.length === 0) {
+    add(REASON.surfaceEmpty, 'surface column is empty');
+  } else if (!SURFACE_CHARSET.test(surface)) {
+    const code = surface.match(/[^a-z0-9-]/)[0].codePointAt(0);
+    add(REASON.surfaceCharset,
+      `surface=${cleanDetail(surface)} has code=U+${code.toString(16).toUpperCase().padStart(4, '0')} not in [a-z0-9-]`);
+  }
 
   checkSibling({
     lane, fleet, sibling, ref: siblingRef, quote: siblingQuote, quoteBanned: quoteBanned(3), add,
@@ -983,10 +1018,11 @@ function evaluateMap({ lane, fleet, atRev, text }) {
   }
   const findings = [];
   const selfRulings = [];
-  // A map row is unique by its folded surface name plus the sibling lane it
-  // quotes; two rows that name the same surface for the same sibling are a
-  // duplicate even if the ref bytes differ.
+  // A row is a duplicate when it reuses a surface name already folded for the
+  // same sibling lane, or when it re-pins a sibling line (repo@path:line,
+  // commit-independent) already cited under another surface.
   const foldedSeen = new Map();
+  const pinSeen = new Map();
   let rows = 0;
   for (let index = 1; index < lines.length; index += 1) {
     const rowNo = index + 1;
@@ -998,19 +1034,31 @@ function evaluateMap({ lane, fleet, atRev, text }) {
     }));
     if (fields.length !== COLUMNS.length) continue;
     const foldedKey = `${foldSurface(fields[0].trim())} ${fields[1].trim()}`;
-    if (foldedSeen.has(foldedKey)) {
+    const pinKey = siblingRefKey(fields[2].trim());
+    const pinHit = pinKey !== null && pinSeen.has(pinKey);
+    if (foldedSeen.has(foldedKey) || pinHit) {
       findings.push({
         row: rowNo,
         reason: REASON.duplicateRow,
         detail: `surface=${cleanDetail(fields[0].trim() || '-')} ` +
-          `sibling=${cleanDetail(fields[1].trim() || '-')} first_row=${foldedSeen.get(foldedKey)}`,
+          `sibling=${cleanDetail(fields[1].trim() || '-')} ` +
+          `pin=${cleanDetail(pinKey ?? '-')} ` +
+          `first_row=${foldedSeen.get(foldedKey) ?? pinSeen.get(pinKey)}`,
       });
-    } else {
-      foldedSeen.set(foldedKey, rowNo);
     }
+    if (!foldedSeen.has(foldedKey)) foldedSeen.set(foldedKey, rowNo);
+    if (pinKey !== null && !pinSeen.has(pinKey)) pinSeen.set(pinKey, rowNo);
   }
   const flagged = new Set(findings.map((finding) => finding.row));
   return { rows, verified: rows - flagged.size, findings: sortFindings(findings), selfRulings };
+}
+
+// The commit-independent pin identity `<lane>@<path>:<line>` for a parsed
+// sibling_ref, or null when the ref is malformed: one sibling line is cited
+// once no matter which commit or surface names it.
+function siblingRefKey(ref) {
+  const match = SIBLING_REF.exec(ref);
+  return match === null ? null : `${match[1]}@${match[3]}:${match[4]}`;
 }
 
 function sortFindings(findings) {
@@ -1117,7 +1165,7 @@ function parseArguments(argv) {
 // --self-test: a disposable fleet of git repositories.
 //
 // Layout under one temp root F (the fleet root is F itself):
-//   F/.ufo/decisions.md, F/.ufo/l0-questions.md   (fleet repo: `fleet` token)
+//   F/decisions.md, F/.ufo/l0-questions.md   (fleet repo: `fleet` token)
 //   F/tabi-shokunin/                              (lane repo under test)
 //   F/kaidoku-shokunin/                           (sibling repo)
 // Each case commits its map into the lane and spawns this CLI at that commit
@@ -1266,12 +1314,14 @@ function selfTest() {
         '',
         '| Runtime observation (CDP) | self-launched targets: chromium --headless --remote-debugging-port; list_browser_targets, inspect-web-page |',
         `${LONG_QUOTE} for browser-side mechanics.`,
+        'WebMCP page tools remain observation-only for kaidoku: the fleet record scope is read, not invoked.',
+        'A kaidoku crawler budget caps the fixture fetch rate per host.',
         '',
       ].join('\n'),
     });
 
     const fleetSha = commitFiles(root, {
-      '.ufo/decisions.md': 'ruling: tabi owns live browser and CDP page observation; '
+      'decisions.md': 'ruling: tabi owns live browser and CDP page observation; '
         + 'kaidoku cites tabi for browser-side mechanics.\n'
         + `note: ${LONG_QUOTE}.\n`,
       '.ufo/l0-questions.md': [
@@ -1309,7 +1359,7 @@ function selfTest() {
       'PROVINCE.md:2',
       'live browser and CDP page observation',
       'ruled',
-      `fleet@${fleetSha}:.ufo/decisions.md:1`,
+      `fleet@${fleetSha}:decisions.md:1`,
       'kaidoku cites tabi for browser-side mechanics',
     ];
     const cleanRuledSibling = [
@@ -1320,14 +1370,14 @@ function selfTest() {
       'PROVINCE.md:2',
       'Tab does live browser and CDP page observation',
       'ruled',
-      `fleet@${fleetSha}:.ufo/decisions.md:1`,
+      `fleet@${fleetSha}:decisions.md:1`,
       'kaidoku cites tabi for browser-side mechanics',
     ];
     const cleanContested = [
       'cdp-scope-tabi-vs-kaidoku',
       'kaidoku',
-      `kaidoku-shokunin@${siblingSha}:PROVINCE.md:3`,
-      'Runtime observation (CDP) | self-launched',
+      `kaidoku-shokunin@${siblingSha}:PROVINCE.md:5`,
+      'WebMCP page tools remain observation-only for kaidoku',
       'PROVINCE.md:2',
       'Tab does live browser and CDP page observation',
       'contested-open',
@@ -1337,8 +1387,8 @@ function selfTest() {
     const cleanSplit = [
       'crawler-politeness-split',
       'kaidoku',
-      `kaidoku-shokunin@${siblingSha}:PROVINCE.md:4`,
-      'kaidoku keeps CDP only as an REA provider surface',
+      `kaidoku-shokunin@${siblingSha}:PROVINCE.md:6`,
+      'kaidoku crawler budget caps the fixture fetch',
       'PROVINCE.md:4',
       'Split declared: tabi keeps live browser observation',
       'split-declared',
@@ -1373,6 +1423,14 @@ function selfTest() {
     // identical bytes is a no-op git refuses).
     cases.push(checkCase('clean', runCli(lane, ['--at', cleanSha, '--fleet', root, '--json']),
       { exit: 0, reasons: [], rows: 4, verified: 4 }));
+    // Commit-graph: a garbage commit-graph file in the sibling must be ignored
+    // (core.commitGraph=false in GIT_PREFIX); without it, forged ancestry could
+    // pass the reachability guard (SentinelAnchorAfter B1).
+    mkdirSync(join(sibling, '.git', 'objects', 'info'), { recursive: true });
+    writeFileSync(join(sibling, '.git', 'objects', 'info', 'commit-graph'), Buffer.from('not a graph\n'));
+    cases.push(checkCase('commit-graph-ignored',
+      runCli(lane, ['--at', cleanSha, '--fleet', root, '--json']),
+      { exit: 0, reasons: [], rows: 4, verified: 4 }));
 
     // Positive self-venue: a spotcheck line authored by the integrator.
     const selfVenueRow = [
@@ -1403,6 +1461,9 @@ function selfTest() {
     // quote_too_short: one word.
     runMap('quote-too-short', [row({ 3: 'CDP' })],
       { exit: 1, reasons: [REASON.quoteTooShort] });
+    // surface_charset: a Greek omicron (U+03BF) is a homoglyph, not a surface.
+    runMap('surface-charset', [row({ 0: 'cdp-runtime-observatiοn' })],
+      { exit: 1, reasons: [REASON.surfaceCharset] });
     runMap('sibling-ref-invalid-syntax',
       [row({ 2: `kaidoku-shokunin@${siblingSha.slice(0, 12)}:PROVINCE.md:3` })],
       { exit: 1, reasons: [REASON.siblingRefInvalid] });
@@ -1447,6 +1508,10 @@ function selfTest() {
     runMap('sibling-unresolved-unreachable',
       [row({ 2: `kaidoku-shokunin@${unreachableSha}:UNREACHABLE.md:1` })],
       { exit: 1, reasons: [REASON.siblingUnresolved] });
+    // A sibling pin under .ufo/ is wave scratch, not a province-level claim.
+    runMap('sibling-ref-under-ufo',
+      [splitRow({ 2: `kaidoku-shokunin@${siblingSha}:.ufo/waves/x.md:1` })],
+      { exit: 1, reasons: [REASON.siblingRefInvalid] });
     runMap('sibling-quote-absent', [row({ 3: 'not present on this fixture line' })],
       { exit: 1, reasons: [REASON.siblingQuoteAbsent] });
     runMap('tabi-ref-invalid-path', [row({ 4: '../PROVINCE.md:2' })],
@@ -1465,10 +1530,10 @@ function selfTest() {
       { exit: 1, reasons: [REASON.tabiQuoteAbsent] });
     runMap('disposition-unknown', [row({ 6: 'absorbed' })],
       { exit: 1, reasons: [REASON.dispositionUnknown] });
-    runMap('ruling-ref-invalid-syntax', [row({ 7: 'fleet:.ufo/decisions.md:1' })],
+    runMap('ruling-ref-invalid-syntax', [row({ 7: 'fleet:decisions.md:1' })],
       { exit: 1, reasons: [REASON.rulingRefInvalid] });
     runMap('ruling-ref-invalid-split',
-      [[...cleanSplit.slice(0, 7), `fleet@${fleetSha}:.ufo/decisions.md:1`, '-']],
+      [[...cleanSplit.slice(0, 7), `fleet@${fleetSha}:decisions.md:1`, '-']],
       { exit: 1, reasons: [REASON.rulingRefInvalid] });
     // A ruled venue that is a sibling repo is not an allowed venue.
     runMap('ruling-venue-sibling',
@@ -1482,8 +1547,16 @@ function selfTest() {
     runMap('ruling-venue-self-author',
       [row({ 7: `tabi-shokunin@${spotBadSha}:${SPOT}:1` })],
       { exit: 1, reasons: [REASON.rulingRefInvalid] });
+    // A ruled fleet path under .ufo/ is a question ledger or wave scratch,
+    // not a ruling venue (Forge S3).
+    runMap('ruling-venue-l0-question',
+      [row({ 7: `fleet@${fleetSha}:.ufo/l0-questions.md:2` })],
+      { exit: 1, reasons: [REASON.rulingRefInvalid] });
+    runMap('ruling-venue-ufo',
+      [row({ 7: `fleet@${fleetSha}:.ufo/waves/round-17/x.md:1` })],
+      { exit: 1, reasons: [REASON.rulingRefInvalid] });
     runMap('ruling-unresolved',
-      [row({ 7: `fleet@${'0'.repeat(40)}:.ufo/decisions.md:1` })],
+      [row({ 7: `fleet@${'0'.repeat(40)}:decisions.md:1` })],
       { exit: 1, reasons: [REASON.rulingUnresolved] });
     runMap('ruling-quote-absent', [row({ 8: 'absent ruling fixture phrase' })],
       { exit: 1, reasons: [REASON.rulingQuoteAbsent] });
@@ -1510,10 +1583,18 @@ function selfTest() {
     runMap('quote-too-long-tabi', [row({ 4: 'PROVINCE.md:5', 5: LONG_QUOTE })],
       { exit: 1, reasons: [REASON.quoteTooLong] });
     runMap('quote-too-long-ruling',
-      [[...cleanRuledFleet.slice(0, 7), `fleet@${fleetSha}:.ufo/decisions.md:2`, LONG_QUOTE]],
+      [[...cleanRuledFleet.slice(0, 7), `fleet@${fleetSha}:decisions.md:2`, LONG_QUOTE]],
       { exit: 1, reasons: [REASON.quoteTooLong] });
     // duplicate_row: same folded surface + sibling.
-    runMap('duplicate-row', [cleanRuledFleet, row({ 0: 'KAIDOKU-CDP-PAGE-OBSERVATION' })],
+    runMap('duplicate-row', [cleanRuledFleet,
+      [...cleanRuledFleet.slice(0, 2),
+        `kaidoku-shokunin@${siblingSha}:PROVINCE.md:5`,
+        'WebMCP page tools remain observation-only for kaidoku',
+        ...cleanRuledFleet.slice(4)]],
+      { exit: 1, reasons: [REASON.duplicateRow], rows: 2, verified: 1 });
+    // One sibling pin is cited once, even under a different surface name
+    // (Forge S1): a second row naming kaidoku PROVINCE.md:3 is duplicate_row.
+    runMap('duplicate-sibling-pin', [cleanRuledFleet, row({ 0: 'cdp-runtime-observation-again' })],
       { exit: 1, reasons: [REASON.duplicateRow], rows: 2, verified: 1 });
 
     // Schema and unreadable classes (exit 2).

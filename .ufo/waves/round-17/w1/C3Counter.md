@@ -1,138 +1,68 @@
 VERDICT: PASS
 
-# C3 counter - `.ufo/waves/round-17/measure-c3.mjs`
+## Deliverable
+`node .ufo/waves/round-17/measure-c3.mjs [--repo <dir>] [--fleet-root <dir>] [REV]` → one JSON line
+`{"c3_adjacency_verified":N,"c3_self_ruled":N,"c3_self_filed_questions":N,"by_disposition":{...},"rows":[...],"probes":{...}}`.
+sha256 `372c9658df761f3a640ded2b69b575f1167330bc362df8a63396977c40f66bc1` (`sha256sum`, 1396 lines).
+Reads `corpus/adjacency.tsv` and `scripts/check-adjacency.mjs` as blobs at REV via `git cat-file blob`;
+re-verifies every row itself (sibling quote on the pinned line, tabi quote on its pinned line at REV,
+ruling quote on its pinned line, contested-open → fleet l0 line names `tabi |` and the sibling lane);
+counts rows with zero findings. Minimal Git env (`-c core.fsmonitor=false -c core.quotepath=false
+-c core.commitGraph=false`), argv-only spawns, no shell.
 
-Owner: C3Counter (PLAN ownership row). Read-only on everything else. No lane git writes:
-every fixture/probe ran in `/tmp` clones (`git clone --shared`), removed by trap. No tool
-installs were needed (no pacman/uv/npx), so no tool record follows.
+## Baseline (acceptance)
+`node .ufo/waves/round-17/measure-c3.mjs --repo . 5859243183c4d7ac5429dfdb8a73ce0d9a43d583`
+→ `c3_adjacency_verified:0`, `probes.tsv.present:false`, `absent_reason:"absent"`,
+`probes.checker.present:false`, `status:"checker_absent"` — verbatim: the map and the checker
+do not exist at the baseline, nothing is verified, no fabrication.
 
-## Baseline 5859243 -> 0 (verbatim)
+## Positive path (acceptance)
+Synthetic one-row map = real row 0 verbatim (`cdp-runtime-observation / kaidoku / ruled`, self-venue
+ruling `tabi-shokunin@5859243:corpus/lessons/round-16-verifier-spotcheck.md:142`, last author
+`protocol-shokunin`, ancestor of eval, line byte-identical) committed at
+`/tmp/tabi-r17-C3Counter-pos` rev `b534c665ee8e34b8d372b91244317822517cdf31` on top of baseline +
+the repaired checker:
+`measure-c3.mjs --repo /tmp/tabi-r17-C3Counter-pos --fleet-root /home/vgpnk/Projects/shokunin b534c66...`
+→ `verified:1`, `self_ruled:1`, `real_ok:true`, `exit:0`, `base_ok:true`, `count_agreement:true`,
+`lane_name_independence.ok:true`, `lane_tip_symref.refused:true` (`lane_tip_unresolved`),
+10/10 constructible mutations red (`sibling_line_reuse` `applied:false` — needs ≥2 rows). Sandbox kept
+as cited evidence.
 
-`node .ufo/waves/round-17/measure-c3.mjs 5859243183c4d7ac5429dfdb8a73ce0d9a43d583`, exit 0, one line:
+## Live measure (lane tip 6c97851)
+`measure-c3.mjs --repo .` → `verified:9`, `self_ruled:1`, `self_filed:2`,
+`by_disposition {contested-open:2, ruled:1, split-declared:2, refused-route:4}`,
+checker `status:ran`, `real_ok:true exit:0`, `base_ok:true`, `agree:true`.
 
-```
-{"c3_adjacency_verified":0,"by_disposition":{"contested-open":0,"ruled":0,"split-declared":0,"refused-route":0},"rows":[],"probes":{"revision":"5859243183c4d7ac5429dfdb8a73ce0d9a43d583","lane_repo":"/home/vgpnk/Projects/shokunin/tabi-shokunin","fleet_root":"/home/vgpnk/Projects/shokunin","tsv":{"path":"corpus/adjacency.tsv","present":false,"sha256":null,"header":[],"header_ok":false,"data_rows":0,"absent_reason":"absent"},"checker":{"path":"scripts/check-adjacency.mjs","present":false,"sha256":null,"probe_rows":0,"probe_base_matches_map":false,"expected_real_exit":2,"status":"checker_absent","real":{"exit":null,"ok":false,"status":"checker_absent"},"mutations":[]},"error":null}}
-```
+## Wave-2 repairs mirrored (L1 steer: "counter mirrors the repaired checker")
+The worktree `scripts/check-adjacency.mjs` carries repairs not yet committed; the counter mirrors them:
+- `GIT_PREFIX` += `core.commitGraph=false` (matches checker GIT_LITERAL_PATHSPECS hardening).
+- `laneTip` = `symbolic-ref -q --no-recurse HEAD` → refs/heads/ name → `resolveLadderTip`; detached or
+  symref HEAD → `lane_tip_unresolved`. `siblingTip` = `resolveLadderTip` over `master`→`main` (real tip).
+- `sibling_ref` refuses `.ufo/` paths (`sibling_ref_invalid`); `surface` refuses non-`[a-z0-9-]`
+  (`surface_charset`, Greek-omicron homoglyph); `ruled` refuses `.ufo/` venues and permits self-venue
+  spotchecks via `selfVenueReason` (non-tabi author + ancestor-of-rev + line byte-identical).
+- Ruling reasons renamed to the checker's vocabulary: `ruling_ref_invalid` (venue/parse),
+  `ruling_quote_absent` (quote not on pinned line / `ruled` quote not naming the sibling),
+  `ruling_unresolved`, `l0_line_absent`.
+- Duplicate detection: folded `surface\0sibling` AND commit-independent pin `<lane>@<path>:<line>`;
+  non-9-column rows skip bookkeeping, exactly as the checker.
+- New output fields `c3_self_ruled`, `c3_self_filed_questions`; row field `sibling_pin`.
+- New probes: `lane_name_independence` (counter rerun inside the `S`-named clone re-counts identically),
+  `lane_tip_symref` (HEAD → symref branch → `lane_tip_unresolved`). New mutation specs:
+  `sibling_line_reuse`, `non_ascii_surface`, `ruled_l0_venue`, `sibling_ufo_path`.
+- `duplicate_surface` `target_row` corrected to the appended row index.
 
-Both `corpus/adjacency.tsv` and `scripts/check-adjacency.mjs` are absent at 5859243
-(`git cat-file` path returns `absent`), so N=0 is structural, not a red map.
+## Probe result vs REV blob checker
+At lane tip `6c97851` the committed checker blob predates the repair (repairs are worktree-only).
+Counter probes therefore report `checker_ok:false` on exactly the three new-rule mutations
+(`sibling_line_reuse`, `non_ascii_surface`, `ruled_l0_venue`); all other mutations exit 1.
+I verified the repaired worktree checker against each in `/tmp/tabi-r17-C3Counter-mutc`:
+`sibling_line_reuse` rev `109a853` → exit 1 `duplicate_row`; `non_ascii_surface` rev `9563d09` →
+exit 1 `surface_charset` (U+03BF); `ruled_l0_venue` rev `52e0169` → exit 1 `ruling_ref_invalid`.
+Reason names match the counter's one-for-one. Once the repair is committed these probes go green;
+the counter reports the REV blob truthfully, not the worktree.
 
-## What the counter re-derives (does not trust the checker)
+## Tooling
+None installed. `npx -y rea-agents` not needed (no REA calls). Node v24.21.0 / git already present.
 
-`measure-c3.mjs:1092 main` -> `measure-c3.mjs:486 verifyRow` per row; map blob read with
-`git ls-tree` + `git cat-file blob` at REV (`measure-c3.mjs:358 blobAt`). No shell: every child
-is an argv `spawnSync` under a minimal Git env (`GIT_CONFIG_NOSYSTEM`, global `/dev/null`,
-`GIT_LITERAL_PATHSPECS`, `GIT_NO_REPLACE_OBJECTS`, no fsmonitor, ceiling at `dirname(fleetRoot)`).
-
-- sibling: `sibling == sibling_ref lane`, never this lane; commit resolves, is a regular-file blob
-  at the pinned path, is reachable from the sibling lane-tip ladder (master -> main, attached
-  branch as fallback), and `sibling_quote` is a verbatim substring of exactly that line
-  (`measure-c3.mjs:509-534`). Quote floor 4 words / 20 non-space chars, cap 25 words.
-- tabi: `tabi_ref` must be `<path>:<line>` (non-`.ufo`, non-map), quote verbatim on that exact
-  line at REV (`measure-c3.mjs:537-562`).
-- disposition: closed four-value set. `ruled` venue = `fleet` or a self
-  `corpus/lessons/*-verifier-spotcheck.md` line whose last-touching author at the pinned commit is
-  not this lane and whose line is byte-identical at REV (`measure-c3.mjs:296 checkSelfVenue`,
-  `:385 lastAuthor`); `contested-open` = `fleet` `.ufo/l0-questions.md` `tabi | round-N |` line that
-  names the sibling; `split-declared|refused-route` = `-` plus a second quote present in the tabi
-  file (`measure-c3.mjs:564-660`). `ruled` quote must name the sibling.
-- duplicates: folded surface + sibling lane, matching the checker (one row per overlap).
-
-Output is one JSON line with `c3_adjacency_verified`, `by_disposition`, `rows[]` (line, fields,
-per-row `verified`/`reasons`) and `probes` (tsv identity, checker sha256, real run, 7 mutations).
-
-## Synthetic positive proof (real kaidoku line, sandbox, discarded)
-
-Fixture `/tmp/tabi-r17-c3proof2.sh` (sha256 `fec96811...`, kept as a scratch script; the clones it
-builds are removed). Layout `$T/fleet/{tabi-shokunin,kaidoku-shokunin}` as `--shared` clones, the
-delivered checker blob copied in, one row committed:
-
-| column | value |
-|---|---|
-| surface | `kaidoku CDP loopback observation` |
-| sibling | `kaidoku` |
-| sibling_ref | `kaidoku-shokunin@b2aad08c...:PROVINCE.md:53` (kaidoku `main` tip) |
-| sibling_quote | `Runtime observation (CDP) \| self-launched targets:` (kaidoku `PROVINCE.md:53`) |
-| tabi_ref | `corpus/lessons/round-16-verifier-spotcheck.md:142` |
-| tabi_quote | `keeps CDP only as an REA provider surface for shipped-artifact analysis` |
-| disposition | `ruled` |
-| ruling_ref | `tabi-shokunin@5859243...:corpus/lessons/round-16-verifier-spotcheck.md:142` |
-| ruling_quote | `**kaidoku** keeps CDP only as an REA provider surface` |
-
-Run `node .ufo/waves/round-17/measure-c3.mjs --repo $T/fleet/tabi-shokunin --fleet-root $T/fleet REV`
-(REV `8c330c8d...`, sandbox commit; TSV blob sha256 `e2bf5a9b...`): exit 0, `n=1`,
-`by_disposition.ruled=1`, `rows[0].verified=true`, `checker.status=ran`, `real.exit=0`,
-`count_agreement=true`, `probe_base_matches_map=true`, `probe_base_exit=0`, and all 7 mutations
-applied, each dropping the counter below its eligible row count and forcing `checker_exit=1`:
-
-| mutation | note | counter reason | checker |
-|---|---|---|---|
-| quote_from_other_line | quote drawn from `PROVINCE.md:1` | sibling_quote_absent | exit 1 |
-| one_word_quote | `Runtime` only | quote_too_short | exit 1 |
-| orphan_pin | pin -> `0000...` (no `refs/jj/keep` candidate) | sibling_unresolved | exit 1 |
-| self_tabi_ref | tabi_ref -> the map itself | tabi_ref_invalid | exit 1 |
-| ruling_unnamed | `an REA provider surface` | ruling_unnamed | exit 1 |
-| duplicate_surface | appended case-fold duplicate | duplicate_row | exit 1 |
-| tabi_line_shift | tabi_ref moved to line 1 | tabi_quote_absent | exit 1 |
-
-This is the `ruled` self-venue path exactly as the checker admits it: 5859243's last-touching
-author on the spot-check file is `protocol-shokunin`, not `tabi-shokunin`
-(`git log -1 --format=%an 5859243 -- corpus/lessons/round-16-verifier-spotcheck.md`).
-
-## Falsifier history (kept, not silently fixed)
-
-1. REV `dcc3ebc4...` -> 0, reasons `[tabi_quote_absent, ruling_quote_absent]`: my fixture quote
-   `kaidoku keeps CDP ...` skipped the `**` bold delimiters around `kaidoku` in the spot-check
-   line, so it was not verbatim. Fixed the fixture, not the counter.
-2. REV `83e8f7ca...` -> 0, reason `[ruling_quote_absent]`: a shell `sed` had written `\*\*kaidoku\*\*`
-   into the row. Fixed the fixture.
-3. Both were fixture defects, visible as 0 with real reasons rather than a crash: the counter
-   reported exactly why the row failed.
-
-## Real-map read (L1's in-flight `corpus/adjacency.tsv`, sandbox commit)
-
-`/tmp/tabi-r17-c3real.sh`: lane clone + the L1's current untracked map + checker, committed in the
-sandbox, `--fleet-root` the real fleet (real sibling pins), REV `66b80768...`, TSV blob sha256
-`7319cccc...`. Result: `n=9`, `rows_total=9`, every row verified, dispositions contested-open 2 /
-ruled 1 / split-declared 2 / refused-route 4; checker `ran`, `exit=0`, `[9 rows, 9 verified]`,
-`agreement=true`, `base_exit=0`, all 7 mutations applied with checker exit 1. This is a snapshot of
-a map the L1 still owns; it is evidence that the counter's contract accepts the delivered row
-shapes, not a count for the round.
-
-## Negative and coverage controls (all sandbox, all discarded)
-
-- forged map (`/tmp/tabi-r17-c3neg2.sh`): real map row with a nonexistent sibling pin -> N=0,
-  reason `sibling_unresolved`, `real.exit=1`, `count_agreement=true`, `mutations=[]`
-  (`no_verified_row`).
-- contested-open (`/tmp/tabi-r17-c3l0.sh`, sandbox fleet whose `l0-questions.md` gains two
-  `tabi | round-17 |` lines): row naming `kaidoku` verified, row naming nobody dropped
-  `l0_line_absent`; N=1 of 2, checker `[2 rows, 1 verified]`, exit 1, agreement true.
-- split/refused (`/tmp/tabi-r17-c3split.sh`): `split-declared` and `refused-route` rows verified
-  (ruling_ref `-`, second quote in the tabi file); a path-only `tabi_ref` row dropped
-  `tabi_ref_invalid`; N=2 of 3, checker `[3 rows, 2 verified]`, exit 1, agreement true.
-
-## Contract notes the L1 should see
-
-- PLAN §C3's text says `tabi_ref = <lane-relative path>`; the wave-1 steer and the landed
-  `scripts/check-adjacency.mjs` both require `<path>:<line>`. The counter follows the tighter
-  steer/checker, so adjacency scouts and the L1 concatenation must emit `:line`. PLAN is L1-owned
-  and untouched here.
-- The counter emits two reasons the checker folds into others: `ruling_venue` (checker:
-  `ruling_ref_invalid`) and `ruling_unnamed` (checker: `ruling_quote_absent`). Counts agree; only
-  labels differ. Quote floor 4/20 matches the checker exactly.
-- `siblingTip` uses master -> main and then the attached branch, per the steer; the checker's
-  ladder is master -> main only. A sibling pin reachable only from a non-master attached branch
-  would be admitted by this counter and refused by the checker; no current lane is in that state.
-- Probe expectations: `real.exit` must be 0 iff `N == rows`, 1 when a row is red, 2 when the map
-  is absent/schema-invalid. Each mutation must both drop the counter's N and force checker exit 1;
-  `probe_base_exit=0` re-checks the counter's own green classification against the checker on the
-  verified subset. All three are reported, never inferred.
-
-## Files written
-
-- `.ufo/waves/round-17/measure-c3.mjs` (new; 1181 lines; sha256
-  `8dec49726e968934df85c53c72ec30e09d8fb6e1d8cd67c125ea9759fca007c3`)
-- `.ufo/waves/round-17/w1/C3Counter.md` (this report)
-
-No other lane file was written; `corpus/adjacency.tsv`, `scripts/check-adjacency.mjs` and every
-byte-frozen surface were read only.
+Files written: `.ufo/waves/round-17/measure-c3.mjs`, `.ufo/waves/round-17/w1/C3Counter.md`

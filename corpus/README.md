@@ -359,3 +359,10 @@ Binding receipts history label (routed defect 2): `corpus/evidence/round-16/bind
 the receipts of the registered gate at 3254740 (`1f84fb54…`, 59 cases) are in
 `corpus/evidence/round-17/routed/binding-hardened/` (`index.json`). The legacy stdout is
 byte-identical across the two gates; only the gate identity differs.
+
+Round-17 wave-2 index rows (append-only):
+
+| Frozen or earlier line | Points to | Status |
+|---|---|---|
+| `knowledge/webmcp-chromium-loopback-round-16.md:135` ("contested scope awaiting an integrator ruling") | ruling at `corpus/lessons/round-16-verifier-spotcheck.md:141-142`; map row `cdp-runtime-observation` in `corpus/adjacency.tsv` | ruled for tabi/kaidoku; reach to revenger and kama is open (fleet `.ufo/l0-questions.md:65`) |
+| `knowledge/webmcp-invocation-round-17.md` source header | adds S054 (supersedes S047's anchor/teaches); S055–S057 supersede S049, S050, S053 | corrections from wave-2 source re-opens (`.ufo/waves/round-17/w2/Reopen*.md`) |

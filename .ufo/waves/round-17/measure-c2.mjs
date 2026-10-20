@@ -39,13 +39,26 @@
 //      the receipt carries the PLAN-mandated runtime identity and loopback
 //      counters (`runtime.observed.chromium.realExecutableSha256` 64-hex,
 //      `loopback.externalRequestCount` 0).
+//   4. (wave-2) `receipt.controls` is a non-empty array covering the L1
+//      control id list; case and control ids are each unique; EVERY cases[]
+//      and controls[] entry has status 'pass' and a fixtureFile/fixtureSha256
+//      that matches a committed fixture blob at REV; the summary numbers are
+//      recomputed from the entries (cases, passed, failed === 0 the number,
+//      missing) and summary.caseSet fields are checked when present; and each
+//      entry's `predicate.fnSha256` must equal the sha256 of a predicate
+//      literal actually sliced out of the harness blob at REV (the harness
+//      records sha256(predicate.toString()),
+//      scripts/webmcp-invoke-round17.mjs:802,951).
 //
 // Counter-owned negative probes (QUALITY 25): a deterministic in-memory
-// synthetic input set must evaluate 1, and seven tampered copies of it —
+// synthetic input set must evaluate 1, and seventeen tampered copies of it —
 // producer sha flipped, one required case removed, cited row status queued,
 // cited row present at the round baseline, flags-off control showing a
 // Completed response, imperative-success without one, flags-off control
-// recording no CDP error response — must each evaluate 0.
+// recording no CDP error response, a self-consistent duplicate case, a failed
+// non-required case, summary count mismatches, missing controls, a missing or
+// failed or duplicate or fixture-mismatched control, and a predicate digest
+// not derived from the harness — must each evaluate 0.
 // The probe results are printed in every run. If the synthetic base itself does
 // not evaluate 1 the counter cannot distinguish a
 // held claim from a broken claim, so the run exits 2.
@@ -94,6 +107,13 @@ const REQUIRED_CASES = [
 // (r16 AttackC2Forge, measure.mjs:290-294; a counter-owned case→fixture map is
 // impossible until C2Harness names its fixtures, so enforce distinctness now).
 const DISTINCT_FIXTURE_CASES = ['invoke-imperative-success', 'invoke-declarative-form', 'invoke-iframe-frameid'];
+// Counter-owned copy of the L1 required control id list (wave-2 repair).
+const REQUIRED_CONTROLS = [
+  'invoke-before-enable',
+  'invoke-cancel',
+  'invoke-declarative-navigation-result',
+  'invoke-domain-disabled',
+];
 
 const ENV = {
   PATH: process.env.PATH ?? '/usr/bin:/bin',
@@ -215,18 +235,208 @@ function cdpErrors(node, out = []) {
   return out;
 }
 
+// ---- predicate provenance (wave-2 repair) ----
+// The harness records `predicate.fnSha256` as sha256(predicate.toString())
+// (scripts/webmcp-invoke-round17.mjs:802,951). Function.prototype.toString
+// returns the literal source text, so the counter re-derives the digest set by
+// slicing every `predicate:` function literal out of the harness blob. Sites
+// whose value is the `{description, fnSha256}` payload object are ignored; any
+// site that is not an extractable function literal makes the set incomplete,
+// so the caller requires ok===true before membership checks (field presence is
+// still enforced).
+const isWs = (c) => c === ' ' || c === '\t' || c === '\r' || c === '\n';
+const ID_START = /[A-Za-z_$]/;
+
+// One-pass lexer: collects code-level offsets of `predicate:` keys, skipping
+// strings, comments, regex literals and template text (descending into ${}).
+function findPredicateSites(src) {
+  const n = src.length;
+  const sites = [];
+  const stack = [];
+  let i = 0;
+  let prevOperand = false;
+  const NOT_OPERAND = new Set(['return', 'case', 'typeof', 'delete', 'in', 'of', 'instanceof', 'new', 'await', 'yield', 'throw', 'void', 'if', 'for', 'while', 'switch', 'with', 'catch', 'do', 'else']);
+  while (i < n) {
+    const c = src[i];
+    if (stack.at(-1) === 'tpl') {
+      if (c === '\\') { i += 2; continue; }
+      if (c === '`') { stack.pop(); prevOperand = true; i++; continue; }
+      if (c === '$' && src[i + 1] === '{') { stack.push('interp'); i += 2; continue; }
+      i++; continue;
+    }
+    if (isWs(c)) { i++; continue; }
+    if (c === '/' && src[i + 1] === '/') { while (i < n && src[i] !== '\n') i++; continue; }
+    if (c === '/' && src[i + 1] === '*') {
+      const e = src.indexOf('*/', i + 2);
+      if (e < 0) return { ok: false, reason: 'unterminated block comment' };
+      i = e + 2; continue;
+    }
+    if (c === "'" || c === '"') {
+      const q = c; i++;
+      while (i < n) {
+        if (src[i] === '\\') { i += 2; continue; }
+        if (src[i] === q) break;
+        if (src[i] === '\n') return { ok: false, reason: 'unterminated string' };
+        i++;
+      }
+      if (i >= n) return { ok: false, reason: 'unterminated string' };
+      i++; prevOperand = true; continue;
+    }
+    if (c === '`') { stack.push('tpl'); i++; prevOperand = true; continue; }
+    if (c === '/') {
+      if (prevOperand) { i++; prevOperand = true; continue; } // division or /=
+      i++;
+      let inClass = false;
+      while (i < n) {
+        const d = src[i];
+        if (d === '\\') { i += 2; continue; }
+        if (d === '[' && !inClass) inClass = true;
+        else if (d === ']' && inClass) inClass = false;
+        else if (d === '/' && !inClass) break;
+        else if (d === '\n') return { ok: false, reason: 'unterminated regex' };
+        i++;
+      }
+      if (i >= n) return { ok: false, reason: 'unterminated regex' };
+      i++;
+      while (i < n && /[a-z]/i.test(src[i])) i++;
+      prevOperand = true; continue;
+    }
+    if (c === '{' || c === '(' || c === '[') { stack.push(c); i++; prevOperand = false; continue; }
+    if (c === '}' || c === ')' || c === ']') {
+      const t = stack.at(-1);
+      if (t === 'interp' && c === '}') { stack.pop(); i++; prevOperand = true; continue; }
+      const open = { '}': '{', ')': '(', ']': '[' }[c];
+      if (t === open) { stack.pop(); i++; prevOperand = true; continue; }
+      return { ok: false, reason: `unbalanced ${c} at ${i}` };
+    }
+    if (ID_START.test(c)) {
+      const m = /^[A-Za-z_$][\w$]*/.exec(src.slice(i));
+      const word = m ? m[0] : c;
+      if (word === 'predicate' && (i === 0 || src[i - 1] !== '.')) {
+        let j = i + word.length;
+        while (j < n && isWs(src[j])) j++;
+        if (src[j] === ':') sites.push(i);
+      }
+      prevOperand = !NOT_OPERAND.has(word);
+      i += word.length; continue;
+    }
+    if (/[0-9]/.test(c)) { i++; prevOperand = true; continue; }
+    i++; prevOperand = false;
+  }
+  return { ok: true, sites };
+}
+
+// Slice the expression after `predicate:` ending at the first depth-zero comma
+// or the closer of the enclosing literal — the same span toString() reports.
+function slicePredicateExpression(src, keyStart) {
+  const n = src.length;
+  let i = src.indexOf(':', keyStart) + 1;
+  while (i < n && isWs(src[i])) i++;
+  const start = i;
+  const stack = [];
+  let prevOperand = false;
+  while (i < n) {
+    const c = src[i];
+    const top = stack.at(-1);
+    if (top === 'tpl') {
+      if (c === '\\') { i += 2; continue; }
+      if (c === '`') { stack.pop(); i++; prevOperand = true; continue; }
+      if (c === '$' && src[i + 1] === '{') { stack.push('interp'); i += 2; continue; }
+      i++; continue;
+    }
+    if (isWs(c)) { i++; continue; }
+    if (c === '/' && src[i + 1] === '/') { while (i < n && src[i] !== '\n') i++; continue; }
+    if (c === '/' && src[i + 1] === '*') {
+      const e = src.indexOf('*/', i + 2);
+      if (e < 0) return { ok: false };
+      i = e + 2; continue;
+    }
+    if (c === "'" || c === '"') {
+      const q = c; i++;
+      while (i < n) {
+        if (src[i] === '\\') { i += 2; continue; }
+        if (src[i] === q) break;
+        if (src[i] === '\n') return { ok: false };
+        i++;
+      }
+      if (i >= n) return { ok: false };
+      i++; prevOperand = true; continue;
+    }
+    if (c === '`') { stack.push('tpl'); i++; prevOperand = true; continue; }
+    if (c === '/') {
+      if (prevOperand) { i++; prevOperand = true; continue; }
+      i++;
+      let inClass = false;
+      while (i < n) {
+        const d = src[i];
+        if (d === '\\') { i += 2; continue; }
+        if (d === '[' && !inClass) inClass = true;
+        else if (d === ']' && inClass) inClass = false;
+        else if (d === '/' && !inClass) break;
+        else if (d === '\n') return { ok: false };
+        i++;
+      }
+      if (i >= n) return { ok: false };
+      i++;
+      while (i < n && /[a-z]/i.test(src[i])) i++;
+      prevOperand = true; continue;
+    }
+    if (c === '{' || c === '(' || c === '[') { stack.push(c); i++; prevOperand = false; continue; }
+    if (c === '}' || c === ')' || c === ']') {
+      if (stack.length === 0) return { ok: true, start, end: i };
+      const t = stack.at(-1);
+      if (t === 'interp' && c === '}') { stack.pop(); i++; prevOperand = true; continue; }
+      const open = { '}': '{', ')': '(', ']': '[' }[c];
+      if (t === open) { stack.pop(); i++; prevOperand = true; continue; }
+      return { ok: false };
+    }
+    if (c === ',') {
+      if (stack.length === 0) return { ok: true, start, end: i };
+      i++; prevOperand = false; continue;
+    }
+    if (ID_START.test(c)) {
+      const m = /^[A-Za-z_$][\w$]*/.exec(src.slice(i));
+      i += m ? m[0].length : 1; prevOperand = true; continue;
+    }
+    if (/[0-9]/.test(c)) { i++; prevOperand = true; continue; }
+    i++; prevOperand = false;
+  }
+  return { ok: false };
+}
+
+const FN_LITERAL = /^(async\s+)?(function\b|\(|[\w$]+\s*=>)/;
+
+function extractPredicateDigests(text) {
+  if (text === null) return { ok: false, reason: 'harness absent' };
+  const found = findPredicateSites(text);
+  if (!found.ok) return { ok: false, reason: found.reason };
+  const digests = new Set();
+  for (const site of found.sites) {
+    const sl = slicePredicateExpression(text, site);
+    if (!sl.ok) return { ok: false, reason: `expression at ${site} unbounded` };
+    const expr = text.slice(sl.start, sl.end).trimEnd();
+    if (expr.startsWith('{')) continue; // {description, fnSha256} payload literal
+    if (!FN_LITERAL.test(expr)) return { ok: false, reason: `non-literal predicate at ${site}` };
+    digests.add(sha256(Buffer.from(expr)));
+  }
+  return { ok: true, digests, literals: digests.size };
+}
+
 // Pure predicate over already-read bytes, so the tamper probes exercise the
 // same code the real measurement does. Null means the blob is absent at REV;
 // `baselineIds` is the SOURCES registry id set at the round baseline (never
 // null: the caller refuses to evaluate without it); `readFixture(name)` maps a
-// declared fixture basename to the sha256 of its committed blob (or null).
-function evaluate({ noteText, sourcesText, readmeText, receiptText, harnessSha, baselineIds, readFixture }) {
+// declared fixture basename to the sha256 of its committed blob (or null);
+// `harnessText` is the harness blob's UTF-8 text (null when absent at REV).
+function evaluate({ noteText, sourcesText, readmeText, receiptText, harnessText, baselineIds, readFixture }) {
   const failures = [];
   const cited = [];
   let runCount = 0;
   let fixtureBound = 0;
+  let predicatesBound = 0;
+  let predicateExtraction = null;
   const caseIds = [];
-
+  const controlIds = [];
   if (noteText === null) failures.push(`note ${NOTE} absent at revision`);
   else {
     cited.push(...headerSources(noteText));
@@ -264,13 +474,17 @@ function evaluate({ noteText, sourcesText, readmeText, receiptText, harnessSha, 
     try { receipt = JSON.parse(receiptText); } catch { failures.push('receipt unparsable'); }
     if (receipt !== null) {
       if (receipt.verdict !== 'pass') failures.push(`receipt verdict ${receipt.verdict}`);
-      const caseSetOk = receipt.summary?.caseSet?.caseSetOk ?? receipt.summary?.caseSetOk;
-      if (caseSetOk !== true) failures.push('caseSetOk is not true');
-      if (typeof receipt.summary?.failed === 'number' && receipt.summary.failed !== 0) {
-        failures.push(`summary.failed ${receipt.summary.failed}`);
-      }
+
+      const harnessSha = harnessText === null ? null : sha256(Buffer.from(harnessText));
       if (harnessSha === null) failures.push(`harness ${HARNESS} absent at revision`);
       else if (receipt.producerSha256 !== harnessSha) failures.push('producerSha256 != harness blob at revision');
+      // Wave-2 repair: every recorded predicate.fnSha256 must be the digest of
+      // a predicate literal found in the harness blob. Membership is checked
+      // only when extraction saw every `predicate:` site; a named predicate or
+      // lexer gap yields an explicit skip, never a false red.
+      const extracted = extractPredicateDigests(harnessText);
+      predicateExtraction = extracted.ok ? `verified ${extracted.literals} harness literal(s)` : `skipped: ${extracted.reason}`;
+
       // PLAN §C2 receipt mirror: the receipt must carry the observed runtime
       // identity and the loopback egress counter, not just a verdict.
       if (!HEX64.test(String(receipt.runtime?.observed?.chromium?.realExecutableSha256 ?? ''))) {
@@ -281,32 +495,114 @@ function evaluate({ noteText, sourcesText, readmeText, receiptText, harnessSha, 
       }
 
       const cases = Array.isArray(receipt.cases) ? receipt.cases : null;
+      const controls = Array.isArray(receipt.controls) ? receipt.controls : null;
       if (cases === null) failures.push('receipt cases is not an array');
-      else {
-        for (const c of cases) caseIds.push(c?.id ?? null);
-        for (const required of REQUIRED_CASES) {
-          const found = cases.find((c) => c?.id === required);
-          if (!found) { failures.push(`required case ${required} missing`); continue; }
-          if (found.status !== 'pass') failures.push(`required case ${required} status ${found.status}`);
-          // r16 case→fixture binding, made name-free: each required case must
-          // name a committed fixture and its digest must be that blob's. The
-          // digest cannot bind a case to a fixture the lane never committed.
-          const file = found.fixtureFile;
-          const declared = found.fixtureSha256;
-          if (typeof file !== 'string' || !/^[A-Za-z0-9._-]+$/.test(file)) {
-            failures.push(`required case ${required} declares no safe fixtureFile`);
-          } else if (!HEX64.test(String(declared ?? ''))) {
-            failures.push(`required case ${required} declares no 64-hex fixtureSha256`);
-          } else {
-            const actual = readFixture(file);
-            if (actual === null) failures.push(`required case ${required} fixture ${file} absent at revision`);
-            else if (actual !== declared) failures.push(`required case ${required} fixture digest mismatch for ${file}`);
-            else fixtureBound += 1;
+      if (controls === null) failures.push('receipt controls is not an array');
+      else if (controls.length === 0) failures.push('receipt controls is empty');
+      if (cases !== null) for (const c of cases) caseIds.push(c?.id ?? null);
+      if (controls !== null) for (const c of controls) controlIds.push(c?.id ?? null);
+
+      // Id uniqueness before any first-match lookup (ForgeC2Counter duplicates).
+      const countIds = (ids, label) => {
+        const seen = new Map();
+        for (const id of ids) {
+          if (typeof id !== 'string' || id === '') { failures.push(`${label} entry lacks a string id`); continue; }
+          seen.set(id, (seen.get(id) ?? 0) + 1);
+        }
+        for (const [id, count] of seen) if (count > 1) failures.push(`${label} id ${id} appears ${count} times`);
+        return seen;
+      };
+      const caseSeen = countIds(caseIds, 'case');
+      const controlSeen = countIds(controlIds, 'control');
+
+      // Fail-closed: a verdict-pass receipt cannot carry a non-pass entry.
+      for (const entry of (cases ?? [])) {
+        if (entry === null || typeof entry !== 'object' || entry.status !== 'pass') {
+          failures.push(`case ${entry?.id ?? '?'} status ${entry?.status}`);
+        }
+      }
+      for (const entry of (controls ?? [])) {
+        if (entry === null || typeof entry !== 'object' || entry.status !== 'pass') {
+          failures.push(`control ${entry?.id ?? '?'} status ${entry?.status}`);
+        }
+      }
+
+      // Summary counts are recomputed, never trusted as printed.
+      const s = receipt.summary;
+      if (s === null || typeof s !== 'object' || Array.isArray(s)) {
+        failures.push('summary missing or not an object');
+      } else {
+        const passedN = (cases ?? []).filter((c) => c && c.status === 'pass').length;
+        if (s.cases !== (cases ?? []).length) failures.push(`summary.cases ${s.cases} != cases length ${(cases ?? []).length}`);
+        if (s.passed !== passedN) failures.push(`summary.passed ${s.passed} != ${passedN} passing cases`);
+        if (s.failed !== 0) failures.push(`summary.failed ${JSON.stringify(s.failed)} is not 0`);
+        if (s.missing !== 0) failures.push(`summary.missing ${JSON.stringify(s.missing)} is not 0`);
+        const caseSetOk = s.caseSet?.caseSetOk === true || s.caseSetOk === true;
+        if (!caseSetOk) failures.push('caseSetOk is not true');
+        if (s.caseSet !== null && typeof s.caseSet === 'object' && !Array.isArray(s.caseSet)) {
+          if (s.caseSet.ran !== (cases ?? []).length) failures.push(`summary.caseSet.ran ${s.caseSet.ran} != cases length ${(cases ?? []).length}`);
+          if (s.caseSet.passed !== passedN) failures.push(`summary.caseSet.passed ${s.caseSet.passed} != ${passedN} passing cases`);
+          if (s.caseSet.failed !== 0) failures.push(`summary.caseSet.failed ${JSON.stringify(s.caseSet.failed)} is not 0`);
+          if (s.caseSet.missing !== 0) failures.push(`summary.caseSet.missing ${JSON.stringify(s.caseSet.missing)} is not 0`);
+          if (!Array.isArray(s.caseSet.duplicates) || s.caseSet.duplicates.length !== 0) {
+            failures.push(`summary.caseSet.duplicates ${JSON.stringify(s.caseSet.duplicates)} is not empty`);
           }
         }
+      }
+
+      // Fixture binding on EVERY cases[]/controls[] entry (ForgeC2Counter:
+      // duplicate twins and controls carried unbound digests).
+      const bindFixture = (entry, kind) => {
+        const label = `${kind} ${entry?.id ?? '?'}`;
+        const file = entry?.fixtureFile;
+        const declared = entry?.fixtureSha256;
+        if (typeof file !== 'string' || !/^[A-Za-z0-9._-]+$/.test(file)) {
+          failures.push(`${label} declares no safe fixtureFile`);
+          return;
+        }
+        if (!HEX64.test(String(declared ?? ''))) {
+          failures.push(`${label} declares no 64-hex fixtureSha256`);
+          return;
+        }
+        const actual = readFixture(file);
+        if (actual === null) failures.push(`${label} fixture ${file} absent at revision`);
+        else if (actual !== declared) failures.push(`${label} fixture digest mismatch for ${file}`);
+        else fixtureBound += 1;
+      };
+      const bindPredicate = (entry, kind) => {
+        const label = `${kind} ${entry?.id ?? '?'}`;
+        const fn = entry?.predicate?.fnSha256;
+        if (!HEX64.test(String(fn ?? ''))) {
+          failures.push(`${label} predicate.fnSha256 missing or not 64-hex`);
+          return;
+        }
+        if (extracted.ok) {
+          if (!extracted.digests.has(fn)) {
+            failures.push(`${label} predicate.fnSha256 not derived from the harness blob`);
+          } else {
+            predicatesBound += 1;
+          }
+        }
+      };
+      for (const entry of (cases ?? [])) bindFixture(entry, 'case');
+      for (const entry of (controls ?? [])) bindFixture(entry, 'control');
+      for (const entry of (cases ?? [])) bindPredicate(entry, 'case');
+      for (const entry of (controls ?? [])) bindPredicate(entry, 'control');
+
+      for (const required of REQUIRED_CASES) {
+        const count = caseSeen.get(required) ?? 0;
+        if (count === 0) failures.push(`required case ${required} missing`);
+        else if (count > 1) failures.push(`required case ${required} appears ${count} times`);
+      }
+      for (const required of REQUIRED_CONTROLS) {
+        const count = controlSeen.get(required) ?? 0;
+        if (count === 0) failures.push(`required control ${required} missing`);
+        else if (count > 1) failures.push(`required control ${required} appears ${count} times`);
+      }
+
+      if (cases !== null) {
         // One trivial fixture must not back the three structurally different
-        // cases; a name-free stand-in for r16's counter-owned CASE_FIXTURES
-        // until C2Harness's fixture names are fixed.
+        // cases; a name-free stand-in for r16's counter-owned CASE_FIXTURES.
         const distinct = DISTINCT_FIXTURE_CASES.map((id) => cases.find((c) => c?.id === id));
         if (distinct.every((c) => c && typeof c.fixtureFile === 'string' && HEX64.test(String(c.fixtureSha256 ?? '')))) {
           if (new Set(distinct.map((c) => c.fixtureFile)).size !== distinct.length) {
@@ -351,13 +647,23 @@ function evaluate({ noteText, sourcesText, readmeText, receiptText, harnessSha, 
     }
   }
 
-  return { held: failures.length === 0 ? 1 : 0, failures, cited, caseIds, runCount, fixtureBound };
+  return { held: failures.length === 0 ? 1 : 0, failures, cited, caseIds, controlIds, runCount, fixtureBound, predicatesBound, predicateExtraction };
 }
 
 // --- counter-owned probes ---------------------------------------------------
 // Deterministic synthetic inputs (no git, no files). The base must be 1 so
 // each tampered copy proves the evaluator actually discriminates.
-const PROBE_SHA = 'ab'.repeat(32);
+// The probe harness blob carries one predicate literal; its digest is what the
+// synthetic receipt's predicate.fnSha256 fields must reference.
+const PROBE_HARNESS = [
+  '// synthetic probe harness for the C2 counter (not the lane harness)',
+  'const spec = {',
+  '  predicate: (o) => o.ok === true,',
+  '  other: () => false,',
+  '};',
+].join('\n');
+const PROBE_SHA = sha256(Buffer.from(PROBE_HARNESS));
+const PROBE_PRED = sha256(Buffer.from('(o) => o.ok === true'));
 const PROBE_NOTE = [
   'source: S900',
   'verified-at: 2026-10-20 (counter probe base)',
@@ -388,7 +694,10 @@ const PROBE_CASE_FIXTURE = {
 const PROBE_COMPLETED = [{ method: 'WebMCP.toolResponded', params: { status: 'Completed', invocationId: 'probe' } }];
 function probeCase(id, extra = {}) {
   const file = PROBE_CASE_FIXTURE[id] ?? 'probe-common.html';
-  const base = { id, status: 'pass', fixtureFile: file, fixtureSha256: PROBE_FIXTURES.get(file) };
+  const base = {
+    id, status: 'pass', fixtureFile: file, fixtureSha256: PROBE_FIXTURES.get(file),
+    predicate: { description: 'counter probe predicate', fnSha256: PROBE_PRED },
+  };
   if (id === 'invoke-imperative-success') base.eventLog = PROBE_COMPLETED;
   if (id === 'invoke-flags-off-control') {
     base.cdp = [
@@ -399,25 +708,37 @@ function probeCase(id, extra = {}) {
   return { ...base, ...extra };
 }
 const probeCases = (overrides = {}) => REQUIRED_CASES.map((id) => probeCase(id, overrides[id] ?? {}));
+function probeControl(id, extra = {}) {
+  return {
+    id, supplementary: true, status: 'pass', fixtureFile: 'probe-common.html',
+    fixtureSha256: PROBE_FIXTURES.get('probe-common.html'),
+    predicate: { description: 'counter probe control', fnSha256: PROBE_PRED },
+    ...extra,
+  };
+}
+const probeControls = (overrides = {}) => REQUIRED_CONTROLS.map((id) => probeControl(id, overrides[id] ?? {}));
 const PROBE_REAL_EXE = 'cd'.repeat(32);
 const PROBE_RECEIPT = {
   schema: 'tabi-round17-webmcp-invoke-v1',
   verdict: 'pass',
   producerSha256: PROBE_SHA,
-  summary: { cases: REQUIRED_CASES.length, passed: REQUIRED_CASES.length, failed: 0, missing: 0, caseSet: { caseSetOk: true } },
+  summary: {
+    cases: REQUIRED_CASES.length, passed: REQUIRED_CASES.length, failed: 0, missing: 0, caseSetOk: true,
+    caseSet: { expected: REQUIRED_CASES.length, ran: REQUIRED_CASES.length, passed: REQUIRED_CASES.length, failed: 0, missing: 0, duplicates: [], caseSetOk: true },
+  },
   runtime: { observed: { chromium: { realExecutableSha256: PROBE_REAL_EXE } } },
   loopback: { externalRequestCount: 0 },
   cases: probeCases(),
+  controls: probeControls(),
   runs: [{ label: 'flagged', pid: 424242, argv: ['/usr/lib/chromium/chromium', '--headless=new'], gone: true }],
 };
-
 function runProbes() {
   const base = {
     noteText: PROBE_NOTE,
     sourcesText: PROBE_SOURCES,
     readmeText: PROBE_README,
     receiptText: JSON.stringify(PROBE_RECEIPT),
-    harnessSha: PROBE_SHA,
+    harnessText: PROBE_HARNESS,
     baselineIds: new Set(),
     readFixture: (name) => PROBE_FIXTURES.get(name) ?? null,
   };
@@ -425,7 +746,29 @@ function runProbes() {
   if (baseResult.held !== 1) {
     throw new CannotEvaluate(`synthetic probe base did not evaluate 1: ${baseResult.failures.join(', ')}`);
   }
-  const flipped = PROBE_SHA.replace(/^ab/, 'ba');
+  const flipped = PROBE_SHA === '0'.repeat(64) ? 'f'.repeat(64) : '0'.repeat(64);
+  const clone = (x) => JSON.parse(JSON.stringify(x));
+  const withSummary = (cs, ct) => JSON.stringify({
+    ...PROBE_RECEIPT,
+    cases: cs,
+    controls: ct ?? PROBE_RECEIPT.controls,
+    summary: {
+      cases: cs.length,
+      passed: cs.filter((c) => c.status === 'pass').length,
+      failed: cs.filter((c) => c.status !== 'pass').length,
+      missing: 0,
+      caseSetOk: true,
+      caseSet: {
+        expected: REQUIRED_CASES.length, ran: cs.length,
+        passed: cs.filter((c) => c.status === 'pass').length,
+        failed: cs.filter((c) => c.status !== 'pass').length,
+        missing: 0, duplicates: [], caseSetOk: true,
+      },
+    },
+  });
+  const dupTwin = clone(PROBE_RECEIPT.cases[3]); // invoke-unknown-tool twin
+  const extraFail = probeCase(REQUIRED_CASES[3], { id: 'forge-extra', status: 'fail' });
+  const controlsNoCancel = PROBE_RECEIPT.controls.filter((c) => c.id !== 'invoke-cancel');
   const tampered = [
     ['producer_sha_flipped', { ...base, receiptText: JSON.stringify({ ...PROBE_RECEIPT, producerSha256: flipped }) }],
     ['required_case_removed', {
@@ -448,6 +791,50 @@ function runProbes() {
     ['control_records_nothing', {
       ...base,
       receiptText: JSON.stringify({ ...PROBE_RECEIPT, cases: probeCases({ 'invoke-flags-off-control': { cdp: [] } }) }),
+    }],
+    // Wave-2 ForgeC2Counter survivors.
+    ['duplicate_case_selfconsistent', {
+      ...base,
+      receiptText: withSummary([...PROBE_RECEIPT.cases, dupTwin]),
+    }],
+    ['nonrequired_case_failed', {
+      ...base,
+      receiptText: withSummary([...PROBE_RECEIPT.cases, extraFail]),
+    }],
+    ['summary_counts_mismatch', {
+      ...base,
+      receiptText: JSON.stringify({ ...PROBE_RECEIPT, summary: { ...PROBE_RECEIPT.summary, cases: 3, passed: 1 } }),
+    }],
+    ['summary_failed_absent', {
+      ...base,
+      receiptText: JSON.stringify({ ...PROBE_RECEIPT, summary: { ...PROBE_RECEIPT.summary, failed: undefined } }),
+    }],
+    ['controls_absent', {
+      ...base,
+      receiptText: JSON.stringify({ ...PROBE_RECEIPT, controls: undefined }),
+    }],
+    ['required_control_missing', {
+      ...base,
+      receiptText: JSON.stringify({ ...PROBE_RECEIPT, controls: controlsNoCancel }),
+    }],
+    ['control_failed', {
+      ...base,
+      receiptText: withSummary(PROBE_RECEIPT.cases, PROBE_RECEIPT.controls.map((c, i) => (i === 0 ? { ...c, status: 'fail' } : c))),
+    }],
+    ['control_duplicate', {
+      ...base,
+      receiptText: JSON.stringify({ ...PROBE_RECEIPT, controls: [...PROBE_RECEIPT.controls, clone(PROBE_RECEIPT.controls[0])] }),
+    }],
+    ['control_fixture_mismatch', {
+      ...base,
+      receiptText: withSummary(PROBE_RECEIPT.cases, PROBE_RECEIPT.controls.map((c, i) => (i === 0 ? { ...c, fixtureSha256: '0'.repeat(64) } : c))),
+    }],
+    ['predicate_sha_unbound', {
+      ...base,
+      receiptText: JSON.stringify({
+        ...PROBE_RECEIPT,
+        cases: PROBE_RECEIPT.cases.map((c, i) => (i === 0 ? { ...c, predicate: { ...c.predicate, fnSha256: '0'.repeat(64) } } : c)),
+      }),
     }],
   ];
   const probes = tampered.map(([name, inputs]) => {
@@ -497,7 +884,7 @@ function main() {
     sourcesText: text(sources),
     readmeText: text(readme),
     receiptText: text(receipt),
-    harnessSha: harness === null ? null : sha256(harness),
+    harnessText: text(harness),
     baselineIds,
     readFixture,
   });
@@ -516,11 +903,15 @@ function main() {
     failures,
     cited: result.cited,
     caseIds: result.caseIds,
+    controlIds: result.controlIds,
     requiredCases: REQUIRED_CASES,
+    requiredControls: REQUIRED_CONTROLS,
     runCount: result.runCount,
     baseline: BASELINE,
     baselineSourceIds: baselineIds.size,
     fixtureBoundCases: result.fixtureBound,
+    predicatesBound: result.predicatesBound,
+    predicateExtraction: result.predicateExtraction,
     probes: probeReport.probes,
     probesOk: probeReport.probesOk,
     hashes: {

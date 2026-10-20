@@ -1,0 +1,6734 @@
+{
+  "schema": "tabi-round17-webmcp-invoke-lifecycle-probe-v1",
+  "probe": "invoke-lifecycle",
+  "seat": "C2ProbeLifecycle",
+  "capturedAt": "2026-10-20T17:25:05.147Z",
+  "question": "CDP error/event payloads and their order for unknown toolName, invoke-after-unregister, and navigate/reload/close while an invocation is pending; adjacent: unregister-while-pending, invoke-old-name/frame after navigation.",
+  "scope": "loopback 127.0.0.1 only; fresh temp profile; only this probe fixture's own tools invoked",
+  "predictionsFixedBeforeRun": true,
+  "fixture": {
+    "slowMs": 2500,
+    "longMs": 10000,
+    "observeMs": 3500,
+    "origin": "http://127.0.0.1:46771",
+    "pages": {
+      "main": "http://127.0.0.1:46771/",
+      "second": "http://127.0.0.1:46771/second"
+    }
+  },
+  "cases": [
+    {
+      "id": "invoke-unknown-tool",
+      "question": "WebMCP.invokeTool with a name that was never registered in this frame",
+      "prediction": {
+        "kind": "protocol_error",
+        "code": -32602,
+        "message": "Tool not found",
+        "eventsExpected": 0
+      },
+      "predicateForHarness": "response.ok === false && response.error.code === -32602 && response.error.message === \"Tool not found\" && zero WebMCP.toolInvoked/toolResponded events for this frame within 500 ms",
+      "predictionHeld": true,
+      "steps": [
+        {
+          "label": "invokeTool no-such-tool",
+          "request": {
+            "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+            "toolName": "no-such-tool",
+            "input": {}
+          },
+          "response": {
+            "ok": false,
+            "error": {
+              "code": -32602,
+              "message": "Tool not found"
+            },
+            "method": "WebMCP.invokeTool",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "epoch": 1792517105479
+          }
+        }
+      ],
+      "observations": {
+        "target": {
+          "targetId": "7440F2A02C4969C3C010B690AA0665E0",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "enable": {
+            "ok": true,
+            "result": {},
+            "method": "WebMCP.enable",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "epoch": 1792517105465
+          },
+          "toolsAdded": {
+            "tools": [
+              {
+                "name": "abortable",
+                "description": "abortable lifecycle probe tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+                "stackTrace": {
+                  "callFrames": [
+                    {
+                      "functionName": "window.__registerAll",
+                      "scriptId": "3",
+                      "url": "http://127.0.0.1:46771/",
+                      "lineNumber": 69,
+                      "columnNumber": 22
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "pageState": {
+            "evaluateRaw": {
+              "ok": true,
+              "result": {
+                "result": {
+                  "type": "string",
+                  "value": "{\"hasModelContext\":true,\"tag\":\"aj33zb3h\",\"reg\":{\"pageTag\":\"aj33zb3h\",\"hasModelContext\":true,\"registerToolLength\":1,\"registered\":[\"echo\",\"slow\",\"slowlong\",\"abortable\"],\"failed\":[]},\"marks\":[\"registered\"]}"
+                }
+              },
+              "method": "Runtime.evaluate",
+              "sessionId": "593C4BF80A7C37D633DC125E33509744",
+              "epoch": 1792517105478
+            }
+          }
+        },
+        "webmcpEventsAfter": [],
+        "eventCount": 0
+      },
+      "events": [],
+      "pageMarks": [],
+      "requests": []
+    },
+    {
+      "id": "invoke-after-unregister",
+      "question": "abort the registerTool options.signal, wait WebMCP.toolsRemoved, then invokeTool the removed name",
+      "prediction": {
+        "toolsRemoved": true,
+        "kind": "protocol_error",
+        "code": -32602,
+        "message": "Tool not found",
+        "eventsExpected": 0
+      },
+      "predicateForHarness": "a WebMCP.toolsRemoved {name} arrives on abort; a later invokeTool for that name is a protocol error -32602 \"Tool not found\" with no toolInvoked/toolResponded",
+      "predictionHeld": true,
+      "steps": [
+        {
+          "label": "getTools() before abort",
+          "response": {
+            "ok": true,
+            "result": {
+              "result": {
+                "type": "object",
+                "value": {
+                  "ok": true,
+                  "count": 4,
+                  "tools": [
+                    {
+                      "name": "abortable",
+                      "inputSchemaType": "string"
+                    },
+                    {
+                      "name": "echo",
+                      "inputSchemaType": "string"
+                    },
+                    {
+                      "name": "slow",
+                      "inputSchemaType": "string"
+                    },
+                    {
+                      "name": "slowlong",
+                      "inputSchemaType": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            "method": "Runtime.evaluate",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "epoch": 1792517105980
+          }
+        },
+        {
+          "label": "abort options.signal for abortable",
+          "response": {
+            "ok": true,
+            "result": {
+              "result": {
+                "type": "object",
+                "value": {
+                  "ok": true,
+                  "name": "abortable"
+                }
+              }
+            },
+            "method": "Runtime.evaluate",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "epoch": 1792517105981
+          }
+        },
+        {
+          "label": "getTools() after abort",
+          "response": {
+            "ok": true,
+            "result": {
+              "result": {
+                "type": "object",
+                "value": {
+                  "ok": true,
+                  "count": 3,
+                  "tools": [
+                    {
+                      "name": "echo",
+                      "inputSchemaType": "string"
+                    },
+                    {
+                      "name": "slow",
+                      "inputSchemaType": "string"
+                    },
+                    {
+                      "name": "slowlong",
+                      "inputSchemaType": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            "method": "Runtime.evaluate",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "epoch": 1792517105982
+          }
+        },
+        {
+          "label": "invokeTool abortable after removal",
+          "request": {
+            "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+            "toolName": "abortable",
+            "input": {
+              "text": "after-unregister"
+            }
+          },
+          "response": {
+            "ok": false,
+            "error": {
+              "code": -32602,
+              "message": "Tool not found"
+            },
+            "method": "WebMCP.invokeTool",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "epoch": 1792517105982
+          }
+        }
+      ],
+      "observations": {
+        "toolsRemoved": {
+          "epoch": 1792517105981,
+          "method": "WebMCP.toolsRemoved",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "tools": [
+              {
+                "name": "abortable",
+                "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+              }
+            ]
+          }
+        },
+        "toolResponded": null,
+        "webmcpEventsAfter": [],
+        "eventCount": 0,
+        "outcome": "predicted"
+      },
+      "events": [
+        {
+          "epoch": 1792517105981,
+          "method": "WebMCP.toolsRemoved",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "tools": [
+              {
+                "name": "abortable",
+                "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+              }
+            ]
+          }
+        }
+      ],
+      "pageMarks": [
+        {
+          "pageTag": "aj33zb3h",
+          "path": "/",
+          "phase": "aborted",
+          "data": {
+            "name": "abortable"
+          },
+          "epoch": 1792517105981,
+          "perf": 514.5,
+          "receivedEpoch": 1792517105981,
+          "receivedAfterSrvStartMs": 834
+        }
+      ],
+      "requests": []
+    },
+    {
+      "id": "invoke-unregister-while-pending",
+      "question": "invoke slow (2500 ms), then abort its registration while the invocation is pending",
+      "prediction": {
+        "pendingInvocationSurvives": true,
+        "status": "Completed"
+      },
+      "predicateForHarness": "abort of the registration does not cancel an already-started invocation: toolResponded for that invocationId arrives with status \"Completed\" even though toolsRemoved already fired",
+      "predictionHeld": true,
+      "steps": [
+        {
+          "label": "invokeTool slow",
+          "request": {
+            "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+            "toolName": "slow",
+            "input": {
+              "text": "unregister-pending"
+            }
+          },
+          "response": {
+            "ok": true,
+            "result": {
+              "invocationId": "57BA08669FD5DE81D7158D9C30CE1DD9"
+            },
+            "method": "WebMCP.invokeTool",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "epoch": 1792517106283
+          }
+        },
+        {
+          "label": "abort signal for slow while pending",
+          "response": {
+            "ok": true,
+            "result": {
+              "result": {
+                "type": "object",
+                "value": {
+                  "ok": true,
+                  "name": "slow"
+                }
+              }
+            },
+            "method": "Runtime.evaluate",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "epoch": 1792517106284
+          }
+        }
+      ],
+      "observations": {
+        "toolInvoked": {
+          "epoch": 1792517106284,
+          "method": "WebMCP.toolInvoked",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "toolName": "slow",
+            "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+            "invocationId": "57BA08669FD5DE81D7158D9C30CE1DD9",
+            "input": "{\"text\":\"unregister-pending\"}"
+          }
+        },
+        "toolsRemovedWhilePending": {
+          "epoch": 1792517106284,
+          "method": "WebMCP.toolsRemoved",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "tools": [
+              {
+                "name": "slow",
+                "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+              }
+            ]
+          }
+        },
+        "toolResponded": {
+          "epoch": 1792517108784,
+          "method": "WebMCP.toolResponded",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "invocationId": "57BA08669FD5DE81D7158D9C30CE1DD9",
+            "status": "Completed",
+            "output": "slow:unregister-pending"
+          }
+        },
+        "responseEpochMinusAbortEpoch": 2500,
+        "pageMarks": [
+          {
+            "pageTag": "aj33zb3h",
+            "path": "/",
+            "phase": "execute-start",
+            "data": {
+              "name": "slow",
+              "input": {
+                "text": "unregister-pending"
+              },
+              "argc": 2,
+              "second": {
+                "type": "object",
+                "ctor": "Object",
+                "protos": [
+                  "constructor",
+                  "__defineGetter__",
+                  "__defineSetter__",
+                  "hasOwnProperty",
+                  "__lookupGetter__",
+                  "__lookupSetter__",
+                  "isPrototypeOf",
+                  "propertyIsEnumerable",
+                  "toString",
+                  "valueOf",
+                  "__proto__",
+                  "toLocaleString"
+                ]
+              }
+            },
+            "epoch": 1792517106283,
+            "perf": 817.1,
+            "receivedEpoch": 1792517106284,
+            "receivedAfterSrvStartMs": 1137
+          },
+          {
+            "pageTag": "aj33zb3h",
+            "path": "/",
+            "phase": "aborted",
+            "data": {
+              "name": "slow"
+            },
+            "epoch": 1792517106284,
+            "perf": 817.6,
+            "receivedEpoch": 1792517106284,
+            "receivedAfterSrvStartMs": 1137
+          },
+          {
+            "pageTag": "aj33zb3h",
+            "path": "/",
+            "phase": "execute-return",
+            "data": {
+              "name": "slow",
+              "result": "slow:unregister-pending"
+            },
+            "epoch": 1792517108784,
+            "perf": 3317.5,
+            "receivedEpoch": 1792517108785,
+            "receivedAfterSrvStartMs": 3638
+          }
+        ]
+      },
+      "events": [
+        {
+          "epoch": 1792517106284,
+          "method": "WebMCP.toolInvoked",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "toolName": "slow",
+            "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+            "invocationId": "57BA08669FD5DE81D7158D9C30CE1DD9",
+            "input": "{\"text\":\"unregister-pending\"}"
+          }
+        },
+        {
+          "epoch": 1792517106284,
+          "method": "WebMCP.toolsRemoved",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "tools": [
+              {
+                "name": "slow",
+                "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+              }
+            ]
+          }
+        },
+        {
+          "epoch": 1792517108784,
+          "method": "WebMCP.toolResponded",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "invocationId": "57BA08669FD5DE81D7158D9C30CE1DD9",
+            "status": "Completed",
+            "output": "slow:unregister-pending"
+          }
+        }
+      ],
+      "pageMarks": [
+        {
+          "pageTag": "aj33zb3h",
+          "path": "/",
+          "phase": "execute-start",
+          "data": {
+            "name": "slow",
+            "input": {
+              "text": "unregister-pending"
+            },
+            "argc": 2,
+            "second": {
+              "type": "object",
+              "ctor": "Object",
+              "protos": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ]
+            }
+          },
+          "epoch": 1792517106283,
+          "perf": 817.1,
+          "receivedEpoch": 1792517106284,
+          "receivedAfterSrvStartMs": 1137
+        },
+        {
+          "pageTag": "aj33zb3h",
+          "path": "/",
+          "phase": "aborted",
+          "data": {
+            "name": "slow"
+          },
+          "epoch": 1792517106284,
+          "perf": 817.6,
+          "receivedEpoch": 1792517106284,
+          "receivedAfterSrvStartMs": 1137
+        },
+        {
+          "pageTag": "aj33zb3h",
+          "path": "/",
+          "phase": "execute-return",
+          "data": {
+            "name": "slow",
+            "result": "slow:unregister-pending"
+          },
+          "epoch": 1792517108784,
+          "perf": 3317.5,
+          "receivedEpoch": 1792517108785,
+          "receivedAfterSrvStartMs": 3638
+        }
+      ],
+      "requests": []
+    },
+    {
+      "id": "invoke-navigation-pending",
+      "question": "invoke slowlong (10000 ms), then Page.navigate to /second while the invocation is pending",
+      "prediction": {
+        "toolResponded": "none or Canceled",
+        "toolsRemovedOnNavigation": false,
+        "frameNavigated": true,
+        "executionContextsCleared": true
+      },
+      "predicateForHarness": "navigating a frame with a pending invocation emits no toolResponded for that invocationId and no toolsRemoved for the old tool; it DOES emit Page.frameNavigated and Runtime.executionContextsCleared (in that order as observed), then toolsAdded for the new document",
+      "predictionHeld": true,
+      "steps": [
+        {
+          "label": "invokeTool slowlong",
+          "request": {
+            "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+            "toolName": "slowlong",
+            "input": {
+              "text": "nav-pending"
+            }
+          },
+          "response": {
+            "ok": true,
+            "result": {
+              "invocationId": "C38FCF6B7B4DF610F740FBE6139BA385"
+            },
+            "method": "WebMCP.invokeTool",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "epoch": 1792517109086
+          }
+        },
+        {
+          "label": "Page.navigate /second while pending",
+          "request": {
+            "url": "http://127.0.0.1:46771/second"
+          },
+          "response": {
+            "ok": true,
+            "result": {
+              "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+              "loaderId": "C2F165DE5144FFD0CCA89275E2997D35",
+              "isDownload": false
+            },
+            "method": "Page.navigate",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "epoch": 1792517109089
+          }
+        }
+      ],
+      "observations": {
+        "toolInvoked": {
+          "epoch": 1792517109086,
+          "method": "WebMCP.toolInvoked",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "toolName": "slowlong",
+            "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+            "invocationId": "C38FCF6B7B4DF610F740FBE6139BA385",
+            "input": "{\"text\":\"nav-pending\"}"
+          }
+        },
+        "navigatedFrameId": "7440F2A02C4969C3C010B690AA0665E0",
+        "reportedFrameIdUnchanged": true,
+        "webmcpEvents": [
+          {
+            "epoch": 1792517109095,
+            "method": "WebMCP.toolsAdded",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "params": {
+              "tools": [
+                {
+                  "name": "second-tool",
+                  "description": "second-tool lifecycle probe tool",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+                  "stackTrace": {
+                    "callFrames": [
+                      {
+                        "functionName": "window.__registerAll",
+                        "scriptId": "8",
+                        "url": "http://127.0.0.1:46771/second",
+                        "lineNumber": 69,
+                        "columnNumber": 22
+                      },
+                      {
+                        "functionName": "",
+                        "scriptId": "8",
+                        "url": "http://127.0.0.1:46771/second",
+                        "lineNumber": 92,
+                        "columnNumber": 31
+                      },
+                      {
+                        "functionName": "",
+                        "scriptId": "8",
+                        "url": "http://127.0.0.1:46771/second",
+                        "lineNumber": 93,
+                        "columnNumber": 2
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "orderEvents": [
+          {
+            "epoch": 1792517109090,
+            "method": "Runtime.executionContextsCleared",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "params": {}
+          },
+          {
+            "epoch": 1792517109090,
+            "method": "Runtime.executionContextsCleared",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "params": {}
+          },
+          {
+            "epoch": 1792517109090,
+            "method": "Page.frameNavigated",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "params": {
+              "frame": {
+                "id": "7440F2A02C4969C3C010B690AA0665E0",
+                "loaderId": "C2F165DE5144FFD0CCA89275E2997D35",
+                "url": "http://127.0.0.1:46771/second",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:46771",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              },
+              "type": "Navigation"
+            }
+          },
+          {
+            "epoch": 1792517109095,
+            "method": "WebMCP.toolsAdded",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "params": {
+              "tools": [
+                {
+                  "name": "second-tool",
+                  "description": "second-tool lifecycle probe tool",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+                  "stackTrace": {
+                    "callFrames": [
+                      {
+                        "functionName": "window.__registerAll",
+                        "scriptId": "8",
+                        "url": "http://127.0.0.1:46771/second",
+                        "lineNumber": 69,
+                        "columnNumber": 22
+                      },
+                      {
+                        "functionName": "",
+                        "scriptId": "8",
+                        "url": "http://127.0.0.1:46771/second",
+                        "lineNumber": 92,
+                        "columnNumber": 31
+                      },
+                      {
+                        "functionName": "",
+                        "scriptId": "8",
+                        "url": "http://127.0.0.1:46771/second",
+                        "lineNumber": 93,
+                        "columnNumber": 2
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "toolRespondedForPending": null,
+        "toolsRemovedForOldTool": false,
+        "secondToolAdded": true,
+        "pageMarks": [
+          {
+            "pageTag": "aj33zb3h",
+            "path": "/",
+            "phase": "execute-start",
+            "data": {
+              "name": "slowlong",
+              "input": {
+                "text": "nav-pending"
+              },
+              "argc": 2,
+              "second": {
+                "type": "object",
+                "ctor": "Object",
+                "protos": [
+                  "constructor",
+                  "__defineGetter__",
+                  "__defineSetter__",
+                  "hasOwnProperty",
+                  "__lookupGetter__",
+                  "__lookupSetter__",
+                  "isPrototypeOf",
+                  "propertyIsEnumerable",
+                  "toString",
+                  "valueOf",
+                  "__proto__",
+                  "toLocaleString"
+                ]
+              }
+            },
+            "epoch": 1792517109086,
+            "perf": 3619.6,
+            "receivedEpoch": 1792517109087,
+            "receivedAfterSrvStartMs": 3940
+          },
+          {
+            "pageTag": "h4j4nzen",
+            "path": "/second",
+            "phase": "registered",
+            "data": {
+              "pageTag": "h4j4nzen",
+              "hasModelContext": true,
+              "registerToolLength": 1,
+              "registered": [
+                "second-tool"
+              ],
+              "failed": []
+            },
+            "epoch": 1792517109095,
+            "perf": 8,
+            "receivedEpoch": 1792517109096,
+            "receivedAfterSrvStartMs": 3949
+          }
+        ],
+        "requests": [
+          {
+            "path": "/second",
+            "epoch": 1792517109088,
+            "afterSrvStartMs": 3941
+          }
+        ]
+      },
+      "events": [
+        {
+          "epoch": 1792517109086,
+          "method": "WebMCP.toolInvoked",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "toolName": "slowlong",
+            "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+            "invocationId": "C38FCF6B7B4DF610F740FBE6139BA385",
+            "input": "{\"text\":\"nav-pending\"}"
+          }
+        },
+        {
+          "epoch": 1792517109088,
+          "method": "Page.frameStartedLoading",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+          }
+        },
+        {
+          "epoch": 1792517109090,
+          "method": "Runtime.executionContextsCleared",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {}
+        },
+        {
+          "epoch": 1792517109090,
+          "method": "Runtime.executionContextsCleared",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {}
+        },
+        {
+          "epoch": 1792517109090,
+          "method": "Page.frameNavigated",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "frame": {
+              "id": "7440F2A02C4969C3C010B690AA0665E0",
+              "loaderId": "C2F165DE5144FFD0CCA89275E2997D35",
+              "url": "http://127.0.0.1:46771/second",
+              "domainAndRegistry": "",
+              "securityOrigin": "http://127.0.0.1:46771",
+              "securityOriginDetails": {
+                "isLocalhost": true
+              },
+              "mimeType": "text/html",
+              "adFrameStatus": {
+                "adFrameType": "none"
+              },
+              "secureContextType": "SecureLocalhost",
+              "crossOriginIsolatedContextType": "NotIsolated",
+              "gatedAPIFeatures": []
+            },
+            "type": "Navigation"
+          }
+        },
+        {
+          "epoch": 1792517109093,
+          "method": "Target.targetInfoChanged",
+          "sessionId": null,
+          "params": {
+            "targetInfo": {
+              "targetId": "7440F2A02C4969C3C010B690AA0665E0",
+              "type": "page",
+              "title": "127.0.0.1:46771/second",
+              "url": "http://127.0.0.1:46771/second",
+              "attached": true,
+              "canAccessOpener": false,
+              "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+            }
+          }
+        },
+        {
+          "epoch": 1792517109094,
+          "method": "Runtime.executionContextCreated",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "context": {
+              "id": 3,
+              "origin": "http://127.0.0.1:46771",
+              "name": "",
+              "uniqueId": "1641781052079674934.9221863489635898710",
+              "auxData": {
+                "isDefault": true,
+                "type": "default",
+                "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+              }
+            }
+          }
+        },
+        {
+          "epoch": 1792517109095,
+          "method": "WebMCP.toolsAdded",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "tools": [
+              {
+                "name": "second-tool",
+                "description": "second-tool lifecycle probe tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+                "stackTrace": {
+                  "callFrames": [
+                    {
+                      "functionName": "window.__registerAll",
+                      "scriptId": "8",
+                      "url": "http://127.0.0.1:46771/second",
+                      "lineNumber": 69,
+                      "columnNumber": 22
+                    },
+                    {
+                      "functionName": "",
+                      "scriptId": "8",
+                      "url": "http://127.0.0.1:46771/second",
+                      "lineNumber": 92,
+                      "columnNumber": 31
+                    },
+                    {
+                      "functionName": "",
+                      "scriptId": "8",
+                      "url": "http://127.0.0.1:46771/second",
+                      "lineNumber": 93,
+                      "columnNumber": 2
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "epoch": 1792517109095,
+          "method": "Page.loadEventFired",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "timestamp": 16092.444844
+          }
+        }
+      ],
+      "pageMarks": [
+        {
+          "pageTag": "aj33zb3h",
+          "path": "/",
+          "phase": "execute-start",
+          "data": {
+            "name": "slowlong",
+            "input": {
+              "text": "nav-pending"
+            },
+            "argc": 2,
+            "second": {
+              "type": "object",
+              "ctor": "Object",
+              "protos": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ]
+            }
+          },
+          "epoch": 1792517109086,
+          "perf": 3619.6,
+          "receivedEpoch": 1792517109087,
+          "receivedAfterSrvStartMs": 3940
+        },
+        {
+          "pageTag": "h4j4nzen",
+          "path": "/second",
+          "phase": "registered",
+          "data": {
+            "pageTag": "h4j4nzen",
+            "hasModelContext": true,
+            "registerToolLength": 1,
+            "registered": [
+              "second-tool"
+            ],
+            "failed": []
+          },
+          "epoch": 1792517109095,
+          "perf": 8,
+          "receivedEpoch": 1792517109096,
+          "receivedAfterSrvStartMs": 3949
+        }
+      ],
+      "requests": [
+        {
+          "path": "/second",
+          "epoch": 1792517109088,
+          "afterSrvStartMs": 3941
+        }
+      ]
+    },
+    {
+      "id": "invoke-after-navigation-old-name",
+      "question": "after the navigation completed, invokeTool the pre-navigation tool name (and the old frameId if it differs)",
+      "prediction": {
+        "kind": "protocol_error",
+        "code": -32602,
+        "message": "Tool not found"
+      },
+      "predicateForHarness": "after navigation the old tool name is gone from that frame: -32602 \"Tool not found\" (no event); a pre-navigation frameId that still resolves behaves the same",
+      "predictionHeld": true,
+      "steps": [
+        {
+          "label": "invokeTool slowlong after navigation (new frameId)",
+          "request": {
+            "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+            "toolName": "slowlong",
+            "input": {
+              "text": "post-nav"
+            }
+          },
+          "response": {
+            "ok": false,
+            "error": {
+              "code": -32602,
+              "message": "Tool not found"
+            },
+            "method": "WebMCP.invokeTool",
+            "sessionId": "593C4BF80A7C37D633DC125E33509744",
+            "epoch": 1792517116591
+          }
+        }
+      ],
+      "observations": {
+        "oldFrameIdEqualsNew": true
+      },
+      "events": [],
+      "pageMarks": [],
+      "requests": []
+    },
+    {
+      "id": "signal-form-ab",
+      "question": "abort a tool registered with options.signal={signal} and one registered with a bare AbortSignal as the 2nd positional argument",
+      "prediction": {
+        "removedFor": [
+          "sigopt"
+        ],
+        "removedForBare": false,
+        "invokeAfterOptionsAbort": "-32602 Tool not found",
+        "invokeAfterBareAbort": "invocationId then Completed"
+      },
+      "predicateForHarness": "the removal signal is the `signal` property of the second (options dictionary) argument: {signal} abort -> toolsRemoved + name gone from getTools() + invokeTool -32602 \"Tool not found\"; a bare AbortSignal in that position is accepted but wires nothing -> no toolsRemoved, invokeTool still returns an invocationId and the tool Completes",
+      "predictionHeld": true,
+      "steps": [
+        {
+          "label": "abort {signal} tool (sigopt)",
+          "response": {
+            "ok": true,
+            "result": {
+              "result": {
+                "type": "object",
+                "value": {
+                  "ok": true,
+                  "name": "sigopt"
+                }
+              }
+            },
+            "method": "Runtime.evaluate",
+            "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+            "epoch": 1792517116913
+          }
+        },
+        {
+          "label": "abort bare-signal tool (sigraw)",
+          "response": {
+            "ok": true,
+            "result": {
+              "result": {
+                "type": "object",
+                "value": {
+                  "ok": true,
+                  "name": "sigraw"
+                }
+              }
+            },
+            "method": "Runtime.evaluate",
+            "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+            "epoch": 1792517116913
+          }
+        },
+        {
+          "label": "getTools() after both aborts",
+          "response": {
+            "ok": true,
+            "result": {
+              "result": {
+                "type": "object",
+                "value": {
+                  "ok": true,
+                  "count": 1,
+                  "tools": [
+                    {
+                      "name": "sigraw",
+                      "inputSchemaType": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            "method": "Runtime.evaluate",
+            "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+            "epoch": 1792517118415
+          }
+        },
+        {
+          "label": "invokeTool sigopt ({signal} aborted)",
+          "response": {
+            "ok": false,
+            "error": {
+              "code": -32602,
+              "message": "Tool not found"
+            },
+            "method": "WebMCP.invokeTool",
+            "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+            "epoch": 1792517118415
+          }
+        },
+        {
+          "label": "invokeTool sigraw (bare signal aborted)",
+          "response": {
+            "ok": true,
+            "result": {
+              "invocationId": "8F7DD1D4F71D6F93B832D836BB311B5D"
+            },
+            "method": "WebMCP.invokeTool",
+            "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+            "epoch": 1792517118416
+          }
+        }
+      ],
+      "observations": {
+        "target": {
+          "targetId": "D294B2DEC7CD929C580695F2AB0A3202",
+          "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+          "frameId": "D294B2DEC7CD929C580695F2AB0A3202",
+          "pageState": {
+            "evaluateRaw": {
+              "ok": true,
+              "result": {
+                "result": {
+                  "type": "string",
+                  "value": "{\"hasModelContext\":true,\"tag\":\"b988r52l\",\"reg\":{\"pageTag\":\"b988r52l\",\"hasModelContext\":true,\"registerToolLength\":1,\"registered\":[\"sigopt\",\"sigraw\"],\"failed\":[]},\"marks\":[\"registered\"]}"
+                }
+              },
+              "method": "Runtime.evaluate",
+              "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+              "epoch": 1792517116912
+            }
+          },
+          "toolsAdded": {
+            "tools": [
+              {
+                "name": "sigraw",
+                "description": "sigraw lifecycle probe tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                "frameId": "D294B2DEC7CD929C580695F2AB0A3202",
+                "stackTrace": {
+                  "callFrames": [
+                    {
+                      "functionName": "window.__registerAll",
+                      "scriptId": "3",
+                      "url": "http://127.0.0.1:46771/ab",
+                      "lineNumber": 68,
+                      "columnNumber": 58
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "toolsRemoved": [
+          {
+            "epoch": 1792517116912,
+            "method": "WebMCP.toolsRemoved",
+            "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+            "params": {
+              "tools": [
+                {
+                  "name": "sigopt",
+                  "frameId": "D294B2DEC7CD929C580695F2AB0A3202"
+                }
+              ]
+            }
+          }
+        ],
+        "removedNames": [
+          "sigopt"
+        ],
+        "rawToolResponded": {
+          "epoch": 1792517118416,
+          "method": "WebMCP.toolResponded",
+          "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+          "params": {
+            "invocationId": "8F7DD1D4F71D6F93B832D836BB311B5D",
+            "status": "Completed",
+            "output": "sigraw:after-abort-bare"
+          }
+        },
+        "webmcpEvents": [
+          {
+            "epoch": 1792517118416,
+            "method": "WebMCP.toolInvoked",
+            "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+            "params": {
+              "toolName": "sigraw",
+              "frameId": "D294B2DEC7CD929C580695F2AB0A3202",
+              "invocationId": "8F7DD1D4F71D6F93B832D836BB311B5D",
+              "input": "{\"text\":\"after-abort-bare\"}"
+            }
+          },
+          {
+            "epoch": 1792517118416,
+            "method": "WebMCP.toolResponded",
+            "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+            "params": {
+              "invocationId": "8F7DD1D4F71D6F93B832D836BB311B5D",
+              "status": "Completed",
+              "output": "sigraw:after-abort-bare"
+            }
+          }
+        ],
+        "pageMarks": [
+          {
+            "pageTag": "b988r52l",
+            "path": "/ab",
+            "phase": "registered",
+            "data": {
+              "pageTag": "b988r52l",
+              "hasModelContext": true,
+              "registerToolLength": 1,
+              "registered": [
+                "sigopt",
+                "sigraw"
+              ],
+              "failed": []
+            },
+            "epoch": 1792517116912,
+            "perf": 8,
+            "receivedEpoch": 1792517116912,
+            "receivedAfterSrvStartMs": 11765
+          },
+          {
+            "pageTag": "b988r52l",
+            "path": "/ab",
+            "phase": "aborted",
+            "data": {
+              "name": "sigopt"
+            },
+            "epoch": 1792517116912,
+            "perf": 8.7,
+            "receivedEpoch": 1792517116913,
+            "receivedAfterSrvStartMs": 11766
+          },
+          {
+            "pageTag": "b988r52l",
+            "path": "/ab",
+            "phase": "aborted",
+            "data": {
+              "name": "sigraw"
+            },
+            "epoch": 1792517116913,
+            "perf": 9.3,
+            "receivedEpoch": 1792517116913,
+            "receivedAfterSrvStartMs": 11766
+          }
+        ]
+      },
+      "events": [
+        {
+          "epoch": 1792517116912,
+          "method": "WebMCP.toolsRemoved",
+          "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+          "params": {
+            "tools": [
+              {
+                "name": "sigopt",
+                "frameId": "D294B2DEC7CD929C580695F2AB0A3202"
+              }
+            ]
+          }
+        },
+        {
+          "epoch": 1792517118416,
+          "method": "WebMCP.toolInvoked",
+          "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+          "params": {
+            "toolName": "sigraw",
+            "frameId": "D294B2DEC7CD929C580695F2AB0A3202",
+            "invocationId": "8F7DD1D4F71D6F93B832D836BB311B5D",
+            "input": "{\"text\":\"after-abort-bare\"}"
+          }
+        },
+        {
+          "epoch": 1792517118416,
+          "method": "WebMCP.toolResponded",
+          "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+          "params": {
+            "invocationId": "8F7DD1D4F71D6F93B832D836BB311B5D",
+            "status": "Completed",
+            "output": "sigraw:after-abort-bare"
+          }
+        }
+      ],
+      "pageMarks": [
+        {
+          "pageTag": "b988r52l",
+          "path": "/ab",
+          "phase": "registered",
+          "data": {
+            "pageTag": "b988r52l",
+            "hasModelContext": true,
+            "registerToolLength": 1,
+            "registered": [
+              "sigopt",
+              "sigraw"
+            ],
+            "failed": []
+          },
+          "epoch": 1792517116912,
+          "perf": 8,
+          "receivedEpoch": 1792517116912,
+          "receivedAfterSrvStartMs": 11765
+        },
+        {
+          "pageTag": "b988r52l",
+          "path": "/ab",
+          "phase": "aborted",
+          "data": {
+            "name": "sigopt"
+          },
+          "epoch": 1792517116912,
+          "perf": 8.7,
+          "receivedEpoch": 1792517116913,
+          "receivedAfterSrvStartMs": 11766
+        },
+        {
+          "pageTag": "b988r52l",
+          "path": "/ab",
+          "phase": "aborted",
+          "data": {
+            "name": "sigraw"
+          },
+          "epoch": 1792517116913,
+          "perf": 9.3,
+          "receivedEpoch": 1792517116913,
+          "receivedAfterSrvStartMs": 11766
+        }
+      ],
+      "requests": []
+    },
+    {
+      "id": "invoke-reload-pending",
+      "question": "invoke slowlong, then Page.reload({ignoreCache:true}) while the invocation is pending",
+      "prediction": {
+        "toolResponded": "none or Canceled",
+        "toolsRemovedOnReload": false
+      },
+      "predicateForHarness": "reload with a pending invocation emits no toolResponded for that invocationId and no toolsRemoved; the new document re-announces its tools via toolsAdded",
+      "predictionHeld": true,
+      "steps": [
+        {
+          "label": "invokeTool slowlong",
+          "request": {
+            "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+            "toolName": "slowlong",
+            "input": {
+              "text": "reload-pending"
+            }
+          },
+          "response": {
+            "ok": true,
+            "result": {
+              "invocationId": "333EA53E7B3513E4D03F019641301F4D"
+            },
+            "method": "WebMCP.invokeTool",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "epoch": 1792517118439
+          }
+        },
+        {
+          "label": "Page.reload while pending",
+          "response": {
+            "ok": true,
+            "result": {},
+            "method": "Page.reload",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "epoch": 1792517118440
+          }
+        }
+      ],
+      "observations": {
+        "target": {
+          "targetId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+          "toolsAdded": {
+            "tools": [
+              {
+                "name": "abortable",
+                "description": "abortable lifecycle probe tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                "stackTrace": {
+                  "callFrames": [
+                    {
+                      "functionName": "window.__registerAll",
+                      "scriptId": "3",
+                      "url": "http://127.0.0.1:46771/",
+                      "lineNumber": 69,
+                      "columnNumber": 22
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "toolInvoked": {
+          "epoch": 1792517118439,
+          "method": "WebMCP.toolInvoked",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {
+            "toolName": "slowlong",
+            "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+            "invocationId": "333EA53E7B3513E4D03F019641301F4D",
+            "input": "{\"text\":\"reload-pending\"}"
+          }
+        },
+        "webmcpEvents": [
+          {
+            "epoch": 1792517118446,
+            "method": "WebMCP.toolsAdded",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "params": {
+              "tools": [
+                {
+                  "name": "echo",
+                  "description": "echo lifecycle probe tool",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                  "stackTrace": {
+                    "callFrames": [
+                      {
+                        "functionName": "window.__registerAll",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 69,
+                        "columnNumber": 22
+                      },
+                      {
+                        "functionName": "",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 92,
+                        "columnNumber": 31
+                      },
+                      {
+                        "functionName": "",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 93,
+                        "columnNumber": 2
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "epoch": 1792517118447,
+            "method": "WebMCP.toolsAdded",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "params": {
+              "tools": [
+                {
+                  "name": "slow",
+                  "description": "slow lifecycle probe tool",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                  "stackTrace": {
+                    "callFrames": [
+                      {
+                        "functionName": "window.__registerAll",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 69,
+                        "columnNumber": 22
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "epoch": 1792517118448,
+            "method": "WebMCP.toolsAdded",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "params": {
+              "tools": [
+                {
+                  "name": "slowlong",
+                  "description": "slowlong lifecycle probe tool",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                  "stackTrace": {
+                    "callFrames": [
+                      {
+                        "functionName": "window.__registerAll",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 69,
+                        "columnNumber": 22
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "epoch": 1792517118448,
+            "method": "WebMCP.toolsAdded",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "params": {
+              "tools": [
+                {
+                  "name": "abortable",
+                  "description": "abortable lifecycle probe tool",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                  "stackTrace": {
+                    "callFrames": [
+                      {
+                        "functionName": "window.__registerAll",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 69,
+                        "columnNumber": 22
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "orderEvents": [
+          {
+            "epoch": 1792517118442,
+            "method": "Runtime.executionContextsCleared",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "params": {}
+          },
+          {
+            "epoch": 1792517118442,
+            "method": "Runtime.executionContextsCleared",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "params": {}
+          },
+          {
+            "epoch": 1792517118442,
+            "method": "Page.frameNavigated",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "params": {
+              "frame": {
+                "id": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                "loaderId": "D435CFBFB084954B7294E21A59D7FD08",
+                "url": "http://127.0.0.1:46771/",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:46771",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              },
+              "type": "Navigation"
+            }
+          },
+          {
+            "epoch": 1792517118446,
+            "method": "WebMCP.toolsAdded",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "params": {
+              "tools": [
+                {
+                  "name": "echo",
+                  "description": "echo lifecycle probe tool",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                  "stackTrace": {
+                    "callFrames": [
+                      {
+                        "functionName": "window.__registerAll",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 69,
+                        "columnNumber": 22
+                      },
+                      {
+                        "functionName": "",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 92,
+                        "columnNumber": 31
+                      },
+                      {
+                        "functionName": "",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 93,
+                        "columnNumber": 2
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "epoch": 1792517118447,
+            "method": "WebMCP.toolsAdded",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "params": {
+              "tools": [
+                {
+                  "name": "slow",
+                  "description": "slow lifecycle probe tool",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                  "stackTrace": {
+                    "callFrames": [
+                      {
+                        "functionName": "window.__registerAll",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 69,
+                        "columnNumber": 22
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "epoch": 1792517118448,
+            "method": "WebMCP.toolsAdded",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "params": {
+              "tools": [
+                {
+                  "name": "slowlong",
+                  "description": "slowlong lifecycle probe tool",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                  "stackTrace": {
+                    "callFrames": [
+                      {
+                        "functionName": "window.__registerAll",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 69,
+                        "columnNumber": 22
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "epoch": 1792517118448,
+            "method": "WebMCP.toolsAdded",
+            "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+            "params": {
+              "tools": [
+                {
+                  "name": "abortable",
+                  "description": "abortable lifecycle probe tool",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                  "stackTrace": {
+                    "callFrames": [
+                      {
+                        "functionName": "window.__registerAll",
+                        "scriptId": "3",
+                        "url": "http://127.0.0.1:46771/",
+                        "lineNumber": 69,
+                        "columnNumber": 22
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "toolRespondedForPending": null,
+        "toolsRemovedOnReload": [],
+        "slowlongReAddedAfterReload": true,
+        "requests": [
+          {
+            "path": "/",
+            "epoch": 1792517118441,
+            "afterSrvStartMs": 13294
+          },
+          {
+            "path": "/favicon.ico",
+            "epoch": 1792517118447,
+            "afterSrvStartMs": 13300,
+            "status": 404
+          }
+        ],
+        "pageMarks": [
+          {
+            "pageTag": "e2qfhsih",
+            "path": "/",
+            "phase": "registered",
+            "data": {
+              "pageTag": "e2qfhsih",
+              "hasModelContext": true,
+              "registerToolLength": 1,
+              "registered": [
+                "echo",
+                "slow",
+                "slowlong",
+                "abortable"
+              ],
+              "failed": []
+            },
+            "epoch": 1792517118437,
+            "perf": 8.8,
+            "receivedEpoch": 1792517118438,
+            "receivedAfterSrvStartMs": 13291
+          },
+          {
+            "pageTag": "e2qfhsih",
+            "path": "/",
+            "phase": "execute-start",
+            "data": {
+              "name": "slowlong",
+              "input": {
+                "text": "reload-pending"
+              },
+              "argc": 2,
+              "second": {
+                "type": "object",
+                "ctor": "Object",
+                "protos": [
+                  "constructor",
+                  "__defineGetter__",
+                  "__defineSetter__",
+                  "hasOwnProperty",
+                  "__lookupGetter__",
+                  "__lookupSetter__",
+                  "isPrototypeOf",
+                  "propertyIsEnumerable",
+                  "toString",
+                  "valueOf",
+                  "__proto__",
+                  "toLocaleString"
+                ]
+              }
+            },
+            "epoch": 1792517118439,
+            "perf": 10.5,
+            "receivedEpoch": 1792517118439,
+            "receivedAfterSrvStartMs": 13292
+          },
+          {
+            "pageTag": "ziwmnswz",
+            "path": "/",
+            "phase": "registered",
+            "data": {
+              "pageTag": "ziwmnswz",
+              "hasModelContext": true,
+              "registerToolLength": 1,
+              "registered": [
+                "echo",
+                "slow",
+                "slowlong",
+                "abortable"
+              ],
+              "failed": []
+            },
+            "epoch": 1792517118447,
+            "perf": 7.3,
+            "receivedEpoch": 1792517118448,
+            "receivedAfterSrvStartMs": 13301
+          }
+        ]
+      },
+      "events": [
+        {
+          "epoch": 1792517118439,
+          "method": "WebMCP.toolInvoked",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {
+            "toolName": "slowlong",
+            "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+            "invocationId": "333EA53E7B3513E4D03F019641301F4D",
+            "input": "{\"text\":\"reload-pending\"}"
+          }
+        },
+        {
+          "epoch": 1792517118440,
+          "method": "Page.frameStartedLoading",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {
+            "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53"
+          }
+        },
+        {
+          "epoch": 1792517118442,
+          "method": "Runtime.executionContextsCleared",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {}
+        },
+        {
+          "epoch": 1792517118442,
+          "method": "Runtime.executionContextsCleared",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {}
+        },
+        {
+          "epoch": 1792517118442,
+          "method": "Page.frameNavigated",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {
+            "frame": {
+              "id": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+              "loaderId": "D435CFBFB084954B7294E21A59D7FD08",
+              "url": "http://127.0.0.1:46771/",
+              "domainAndRegistry": "",
+              "securityOrigin": "http://127.0.0.1:46771",
+              "securityOriginDetails": {
+                "isLocalhost": true
+              },
+              "mimeType": "text/html",
+              "adFrameStatus": {
+                "adFrameType": "none"
+              },
+              "secureContextType": "SecureLocalhost",
+              "crossOriginIsolatedContextType": "NotIsolated",
+              "gatedAPIFeatures": []
+            },
+            "type": "Navigation"
+          }
+        },
+        {
+          "epoch": 1792517118444,
+          "method": "Target.targetInfoChanged",
+          "sessionId": null,
+          "params": {
+            "targetInfo": {
+              "targetId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+              "type": "page",
+              "title": "tabi-r17-invoke-lifecycle",
+              "url": "http://127.0.0.1:46771/",
+              "attached": true,
+              "canAccessOpener": false,
+              "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+            }
+          }
+        },
+        {
+          "epoch": 1792517118446,
+          "method": "Runtime.executionContextCreated",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {
+            "context": {
+              "id": 3,
+              "origin": "http://127.0.0.1:46771",
+              "name": "",
+              "uniqueId": "2422220594704723611.-1697268373490855010",
+              "auxData": {
+                "isDefault": true,
+                "type": "default",
+                "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53"
+              }
+            }
+          }
+        },
+        {
+          "epoch": 1792517118446,
+          "method": "WebMCP.toolsAdded",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {
+            "tools": [
+              {
+                "name": "echo",
+                "description": "echo lifecycle probe tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                "stackTrace": {
+                  "callFrames": [
+                    {
+                      "functionName": "window.__registerAll",
+                      "scriptId": "3",
+                      "url": "http://127.0.0.1:46771/",
+                      "lineNumber": 69,
+                      "columnNumber": 22
+                    },
+                    {
+                      "functionName": "",
+                      "scriptId": "3",
+                      "url": "http://127.0.0.1:46771/",
+                      "lineNumber": 92,
+                      "columnNumber": 31
+                    },
+                    {
+                      "functionName": "",
+                      "scriptId": "3",
+                      "url": "http://127.0.0.1:46771/",
+                      "lineNumber": 93,
+                      "columnNumber": 2
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "epoch": 1792517118446,
+          "method": "Page.loadEventFired",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {
+            "timestamp": 16101.795879
+          }
+        },
+        {
+          "epoch": 1792517118447,
+          "method": "WebMCP.toolsAdded",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {
+            "tools": [
+              {
+                "name": "slow",
+                "description": "slow lifecycle probe tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                "stackTrace": {
+                  "callFrames": [
+                    {
+                      "functionName": "window.__registerAll",
+                      "scriptId": "3",
+                      "url": "http://127.0.0.1:46771/",
+                      "lineNumber": 69,
+                      "columnNumber": 22
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "epoch": 1792517118448,
+          "method": "WebMCP.toolsAdded",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {
+            "tools": [
+              {
+                "name": "slowlong",
+                "description": "slowlong lifecycle probe tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                "stackTrace": {
+                  "callFrames": [
+                    {
+                      "functionName": "window.__registerAll",
+                      "scriptId": "3",
+                      "url": "http://127.0.0.1:46771/",
+                      "lineNumber": 69,
+                      "columnNumber": 22
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "epoch": 1792517118448,
+          "method": "WebMCP.toolsAdded",
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "params": {
+            "tools": [
+              {
+                "name": "abortable",
+                "description": "abortable lifecycle probe tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ]
+                },
+                "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+                "stackTrace": {
+                  "callFrames": [
+                    {
+                      "functionName": "window.__registerAll",
+                      "scriptId": "3",
+                      "url": "http://127.0.0.1:46771/",
+                      "lineNumber": 69,
+                      "columnNumber": 22
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "pageMarks": [
+        {
+          "pageTag": "e2qfhsih",
+          "path": "/",
+          "phase": "registered",
+          "data": {
+            "pageTag": "e2qfhsih",
+            "hasModelContext": true,
+            "registerToolLength": 1,
+            "registered": [
+              "echo",
+              "slow",
+              "slowlong",
+              "abortable"
+            ],
+            "failed": []
+          },
+          "epoch": 1792517118437,
+          "perf": 8.8,
+          "receivedEpoch": 1792517118438,
+          "receivedAfterSrvStartMs": 13291
+        },
+        {
+          "pageTag": "e2qfhsih",
+          "path": "/",
+          "phase": "execute-start",
+          "data": {
+            "name": "slowlong",
+            "input": {
+              "text": "reload-pending"
+            },
+            "argc": 2,
+            "second": {
+              "type": "object",
+              "ctor": "Object",
+              "protos": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ]
+            }
+          },
+          "epoch": 1792517118439,
+          "perf": 10.5,
+          "receivedEpoch": 1792517118439,
+          "receivedAfterSrvStartMs": 13292
+        },
+        {
+          "pageTag": "ziwmnswz",
+          "path": "/",
+          "phase": "registered",
+          "data": {
+            "pageTag": "ziwmnswz",
+            "hasModelContext": true,
+            "registerToolLength": 1,
+            "registered": [
+              "echo",
+              "slow",
+              "slowlong",
+              "abortable"
+            ],
+            "failed": []
+          },
+          "epoch": 1792517118447,
+          "perf": 7.3,
+          "receivedEpoch": 1792517118448,
+          "receivedAfterSrvStartMs": 13301
+        }
+      ],
+      "requests": [
+        {
+          "path": "/",
+          "epoch": 1792517118441,
+          "afterSrvStartMs": 13294
+        },
+        {
+          "path": "/favicon.ico",
+          "epoch": 1792517118447,
+          "afterSrvStartMs": 13300,
+          "status": 404
+        }
+      ]
+    },
+    {
+      "id": "invoke-close-pending",
+      "question": "invoke slowlong, then Target.closeTarget while the invocation is pending",
+      "prediction": {
+        "toolResponded": "none (session dies)",
+        "targetDestroyed": true,
+        "detachedFromTarget": true
+      },
+      "predicateForHarness": "closing the target with a pending invocation emits Target.targetDestroyed (and Target.detachedFromTarget), never toolResponded for the invocationId; later commands on that session id fail with a protocol error (or time out)",
+      "predictionHeld": true,
+      "steps": [
+        {
+          "label": "invokeTool slowlong",
+          "request": {
+            "frameId": "7E711C222E9FC32F1B855B08979E83C1",
+            "toolName": "slowlong",
+            "input": {
+              "text": "close-pending"
+            }
+          },
+          "response": {
+            "ok": true,
+            "result": {
+              "invocationId": "358A96FE65BC99DEAB7E489290E81533"
+            },
+            "method": "WebMCP.invokeTool",
+            "sessionId": "1A62CBF046D3D478C143BE51DFB7F118",
+            "epoch": 1792517121962
+          }
+        },
+        {
+          "label": "Target.closeTarget while pending",
+          "request": {
+            "targetId": "7E711C222E9FC32F1B855B08979E83C1"
+          },
+          "response": {
+            "ok": true,
+            "result": {
+              "success": true
+            },
+            "method": "Target.closeTarget",
+            "epoch": 1792517121963
+          }
+        },
+        {
+          "label": "Runtime.evaluate on the closed session (after close)",
+          "response": {
+            "ok": false,
+            "error": {
+              "code": -32001,
+              "message": "Session with given id not found."
+            },
+            "method": "Runtime.evaluate",
+            "sessionId": "1A62CBF046D3D478C143BE51DFB7F118",
+            "epoch": 1792517124464
+          }
+        }
+      ],
+      "observations": {
+        "target": {
+          "targetId": "7E711C222E9FC32F1B855B08979E83C1",
+          "sessionId": "1A62CBF046D3D478C143BE51DFB7F118",
+          "frameId": "7E711C222E9FC32F1B855B08979E83C1"
+        },
+        "toolInvoked": {
+          "epoch": 1792517121962,
+          "method": "WebMCP.toolInvoked",
+          "sessionId": "1A62CBF046D3D478C143BE51DFB7F118",
+          "params": {
+            "toolName": "slowlong",
+            "frameId": "7E711C222E9FC32F1B855B08979E83C1",
+            "invocationId": "358A96FE65BC99DEAB7E489290E81533",
+            "input": "{\"text\":\"close-pending\"}"
+          }
+        },
+        "webmcpEvents": [],
+        "targetEvents": [
+          {
+            "epoch": 1792517121966,
+            "method": "Target.targetInfoChanged",
+            "sessionId": null,
+            "params": {
+              "targetInfo": {
+                "targetId": "7E711C222E9FC32F1B855B08979E83C1",
+                "type": "page",
+                "title": "tabi-r17-invoke-lifecycle",
+                "url": "http://127.0.0.1:46771/",
+                "attached": false,
+                "canAccessOpener": false,
+                "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+              }
+            }
+          },
+          {
+            "epoch": 1792517121966,
+            "method": "Target.detachedFromTarget",
+            "sessionId": null,
+            "params": {
+              "sessionId": "1A62CBF046D3D478C143BE51DFB7F118",
+              "targetId": "7E711C222E9FC32F1B855B08979E83C1"
+            }
+          },
+          {
+            "epoch": 1792517121966,
+            "method": "Target.targetDestroyed",
+            "sessionId": null,
+            "params": {
+              "targetId": "7E711C222E9FC32F1B855B08979E83C1"
+            }
+          }
+        ],
+        "order": [
+          {
+            "epoch": 1792517121966,
+            "method": "Target.targetInfoChanged",
+            "sessionId": null
+          },
+          {
+            "epoch": 1792517121966,
+            "method": "Target.detachedFromTarget",
+            "sessionId": null
+          },
+          {
+            "epoch": 1792517121966,
+            "method": "Target.targetDestroyed",
+            "sessionId": null
+          }
+        ],
+        "toolRespondedForPending": null,
+        "closedSessionCommand": {
+          "ok": false,
+          "error": {
+            "code": -32001,
+            "message": "Session with given id not found."
+          },
+          "timeout": false
+        },
+        "pageMarks": [
+          {
+            "pageTag": "4x4ol8qr",
+            "path": "/",
+            "phase": "registered",
+            "data": {
+              "pageTag": "4x4ol8qr",
+              "hasModelContext": true,
+              "registerToolLength": 1,
+              "registered": [
+                "echo",
+                "slow",
+                "slowlong",
+                "abortable"
+              ],
+              "failed": []
+            },
+            "epoch": 1792517121961,
+            "perf": 9.2,
+            "receivedEpoch": 1792517121962,
+            "receivedAfterSrvStartMs": 16815
+          },
+          {
+            "pageTag": "4x4ol8qr",
+            "path": "/",
+            "phase": "execute-start",
+            "data": {
+              "name": "slowlong",
+              "input": {
+                "text": "close-pending"
+              },
+              "argc": 2,
+              "second": {
+                "type": "object",
+                "ctor": "Object",
+                "protos": [
+                  "constructor",
+                  "__defineGetter__",
+                  "__defineSetter__",
+                  "hasOwnProperty",
+                  "__lookupGetter__",
+                  "__lookupSetter__",
+                  "isPrototypeOf",
+                  "propertyIsEnumerable",
+                  "toString",
+                  "valueOf",
+                  "__proto__",
+                  "toLocaleString"
+                ]
+              }
+            },
+            "epoch": 1792517121962,
+            "perf": 10,
+            "receivedEpoch": 1792517121963,
+            "receivedAfterSrvStartMs": 16816
+          }
+        ],
+        "requests": []
+      },
+      "events": [
+        {
+          "epoch": 1792517121962,
+          "method": "WebMCP.toolInvoked",
+          "sessionId": "1A62CBF046D3D478C143BE51DFB7F118",
+          "params": {
+            "toolName": "slowlong",
+            "frameId": "7E711C222E9FC32F1B855B08979E83C1",
+            "invocationId": "358A96FE65BC99DEAB7E489290E81533",
+            "input": "{\"text\":\"close-pending\"}"
+          }
+        },
+        {
+          "epoch": 1792517121966,
+          "method": "Target.targetInfoChanged",
+          "sessionId": null,
+          "params": {
+            "targetInfo": {
+              "targetId": "7E711C222E9FC32F1B855B08979E83C1",
+              "type": "page",
+              "title": "tabi-r17-invoke-lifecycle",
+              "url": "http://127.0.0.1:46771/",
+              "attached": false,
+              "canAccessOpener": false,
+              "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+            }
+          }
+        },
+        {
+          "epoch": 1792517121966,
+          "method": "Target.detachedFromTarget",
+          "sessionId": null,
+          "params": {
+            "sessionId": "1A62CBF046D3D478C143BE51DFB7F118",
+            "targetId": "7E711C222E9FC32F1B855B08979E83C1"
+          }
+        },
+        {
+          "epoch": 1792517121966,
+          "method": "Target.targetDestroyed",
+          "sessionId": null,
+          "params": {
+            "targetId": "7E711C222E9FC32F1B855B08979E83C1"
+          }
+        }
+      ],
+      "pageMarks": [
+        {
+          "pageTag": "4x4ol8qr",
+          "path": "/",
+          "phase": "registered",
+          "data": {
+            "pageTag": "4x4ol8qr",
+            "hasModelContext": true,
+            "registerToolLength": 1,
+            "registered": [
+              "echo",
+              "slow",
+              "slowlong",
+              "abortable"
+            ],
+            "failed": []
+          },
+          "epoch": 1792517121961,
+          "perf": 9.2,
+          "receivedEpoch": 1792517121962,
+          "receivedAfterSrvStartMs": 16815
+        },
+        {
+          "pageTag": "4x4ol8qr",
+          "path": "/",
+          "phase": "execute-start",
+          "data": {
+            "name": "slowlong",
+            "input": {
+              "text": "close-pending"
+            },
+            "argc": 2,
+            "second": {
+              "type": "object",
+              "ctor": "Object",
+              "protos": [
+                "constructor",
+                "__defineGetter__",
+                "__defineSetter__",
+                "hasOwnProperty",
+                "__lookupGetter__",
+                "__lookupSetter__",
+                "isPrototypeOf",
+                "propertyIsEnumerable",
+                "toString",
+                "valueOf",
+                "__proto__",
+                "toLocaleString"
+              ]
+            }
+          },
+          "epoch": 1792517121962,
+          "perf": 10,
+          "receivedEpoch": 1792517121963,
+          "receivedAfterSrvStartMs": 16816
+        }
+      ],
+      "requests": []
+    }
+  ],
+  "raw": [
+    {
+      "seq": 1,
+      "epoch": 1792517105454,
+      "dir": "send",
+      "msg": {
+        "id": 1,
+        "method": "Target.setDiscoverTargets",
+        "params": {
+          "discover": true
+        }
+      }
+    },
+    {
+      "seq": 2,
+      "epoch": 1792517105455,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetCreated",
+        "params": {
+          "targetInfo": {
+            "targetId": "4EE1DB8EF80EFB04BEA3543E50008FEC",
+            "type": "browser_ui",
+            "title": "Omnibox Popup",
+            "url": "chrome://omnibox-popup.top-chrome/",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 3,
+      "epoch": 1792517105455,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetCreated",
+        "params": {
+          "targetInfo": {
+            "targetId": "72380D38C11658156218F6FEDFE44E1B",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 4,
+      "epoch": 1792517105455,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetCreated",
+        "params": {
+          "targetInfo": {
+            "targetId": "C4F46398381336AF58E860BE06B5A62C",
+            "type": "browser_ui",
+            "title": "Omnibox Popup",
+            "url": "chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 5,
+      "epoch": 1792517105455,
+      "dir": "recv",
+      "msg": {
+        "id": 1,
+        "result": {}
+      }
+    },
+    {
+      "seq": 6,
+      "epoch": 1792517105455,
+      "dir": "send",
+      "msg": {
+        "id": 2,
+        "method": "WebMCP.enable",
+        "params": {}
+      }
+    },
+    {
+      "seq": 7,
+      "epoch": 1792517105456,
+      "dir": "recv",
+      "msg": {
+        "id": 2,
+        "error": {
+          "code": -32601,
+          "message": "'WebMCP.enable' wasn't found"
+        }
+      }
+    },
+    {
+      "seq": 8,
+      "epoch": 1792517105456,
+      "dir": "send",
+      "msg": {
+        "id": 3,
+        "method": "Target.createTarget",
+        "params": {
+          "url": "about:blank"
+        }
+      }
+    },
+    {
+      "seq": 9,
+      "epoch": 1792517105458,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetCreated",
+        "params": {
+          "targetInfo": {
+            "targetId": "7440F2A02C4969C3C010B690AA0665E0",
+            "type": "page",
+            "title": "",
+            "url": "about:blank",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 10,
+      "epoch": 1792517105461,
+      "dir": "recv",
+      "msg": {
+        "id": 3,
+        "result": {
+          "targetId": "7440F2A02C4969C3C010B690AA0665E0"
+        }
+      }
+    },
+    {
+      "seq": 11,
+      "epoch": 1792517105461,
+      "dir": "send",
+      "msg": {
+        "id": 4,
+        "method": "Target.attachToTarget",
+        "params": {
+          "targetId": "7440F2A02C4969C3C010B690AA0665E0",
+          "flatten": true
+        }
+      }
+    },
+    {
+      "seq": 12,
+      "epoch": 1792517105464,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "7440F2A02C4969C3C010B690AA0665E0",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "epoch": 1792517105464,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "7440F2A02C4969C3C010B690AA0665E0",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 14,
+      "epoch": 1792517105465,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.attachedToTarget",
+        "params": {
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "targetInfo": {
+            "targetId": "7440F2A02C4969C3C010B690AA0665E0",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          },
+          "waitingForDebugger": false
+        }
+      }
+    },
+    {
+      "seq": 15,
+      "epoch": 1792517105465,
+      "dir": "recv",
+      "msg": {
+        "id": 4,
+        "result": {
+          "sessionId": "593C4BF80A7C37D633DC125E33509744"
+        }
+      }
+    },
+    {
+      "seq": 16,
+      "epoch": 1792517105465,
+      "dir": "send",
+      "msg": {
+        "id": 5,
+        "method": "Page.enable",
+        "params": {},
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 17,
+      "epoch": 1792517105465,
+      "dir": "recv",
+      "msg": {
+        "id": 5,
+        "result": {},
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 18,
+      "epoch": 1792517105465,
+      "dir": "send",
+      "msg": {
+        "id": 6,
+        "method": "Runtime.enable",
+        "params": {},
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 19,
+      "epoch": 1792517105465,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextCreated",
+        "params": {
+          "context": {
+            "id": 1,
+            "origin": "://",
+            "name": "",
+            "uniqueId": "8404257789059749551.7218844455599103960",
+            "auxData": {
+              "isDefault": true,
+              "type": "default",
+              "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+            }
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 20,
+      "epoch": 1792517105465,
+      "dir": "recv",
+      "msg": {
+        "id": 6,
+        "result": {},
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 21,
+      "epoch": 1792517105465,
+      "dir": "send",
+      "msg": {
+        "id": 7,
+        "method": "WebMCP.enable",
+        "params": {},
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 22,
+      "epoch": 1792517105465,
+      "dir": "recv",
+      "msg": {
+        "id": 7,
+        "result": {},
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 23,
+      "epoch": 1792517105465,
+      "dir": "send",
+      "msg": {
+        "id": 8,
+        "method": "Page.navigate",
+        "params": {
+          "url": "http://127.0.0.1:46771/"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 24,
+      "epoch": 1792517105466,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedNavigating",
+        "params": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "url": "http://127.0.0.1:46771/",
+          "loaderId": "965F78A4B7EE9A1068FE01B103F678C3",
+          "navigationType": "differentDocument"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 25,
+      "epoch": 1792517105466,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedLoading",
+        "params": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 26,
+      "epoch": 1792517105469,
+      "dir": "recv",
+      "msg": {
+        "id": 8,
+        "result": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "loaderId": "965F78A4B7EE9A1068FE01B103F678C3",
+          "isDownload": false
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 27,
+      "epoch": 1792517105469,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 28,
+      "epoch": 1792517105470,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 29,
+      "epoch": 1792517105470,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameNavigated",
+        "params": {
+          "frame": {
+            "id": "7440F2A02C4969C3C010B690AA0665E0",
+            "loaderId": "965F78A4B7EE9A1068FE01B103F678C3",
+            "url": "http://127.0.0.1:46771/",
+            "domainAndRegistry": "",
+            "securityOrigin": "http://127.0.0.1:46771",
+            "securityOriginDetails": {
+              "isLocalhost": true
+            },
+            "mimeType": "text/html",
+            "adFrameStatus": {
+              "adFrameType": "none"
+            },
+            "secureContextType": "SecureLocalhost",
+            "crossOriginIsolatedContextType": "NotIsolated",
+            "gatedAPIFeatures": []
+          },
+          "type": "Navigation"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 30,
+      "epoch": 1792517105472,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "7440F2A02C4969C3C010B690AA0665E0",
+            "type": "page",
+            "title": "127.0.0.1:46771",
+            "url": "http://127.0.0.1:46771/",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 31,
+      "epoch": 1792517105474,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextCreated",
+        "params": {
+          "context": {
+            "id": 2,
+            "origin": "http://127.0.0.1:46771",
+            "name": "",
+            "uniqueId": "-8011676428939426859.-5387822970189059322",
+            "auxData": {
+              "isDefault": true,
+              "type": "default",
+              "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+            }
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 32,
+      "epoch": 1792517105476,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "echo",
+              "description": "echo lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 92,
+                    "columnNumber": 31
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 93,
+                    "columnNumber": 2
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 33,
+      "epoch": 1792517105476,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.domContentEventFired",
+        "params": {
+          "timestamp": 16088.824328
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 34,
+      "epoch": 1792517105476,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.loadEventFired",
+        "params": {
+          "timestamp": 16088.824468
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 35,
+      "epoch": 1792517105476,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStoppedLoading",
+        "params": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 36,
+      "epoch": 1792517105477,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "slow",
+              "description": "slow lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 37,
+      "epoch": 1792517105477,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "slowlong",
+              "description": "slowlong lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 38,
+      "epoch": 1792517105477,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "abortable",
+              "description": "abortable lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 39,
+      "epoch": 1792517105478,
+      "dir": "send",
+      "msg": {
+        "id": 9,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "JSON.stringify({hasModelContext: !!document.modelContext, tag: window.__pageTag, reg: window.__regResult, marks: (window.__localMarks || []).map(function (m) { return m.phase; })})",
+          "returnByValue": true
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 40,
+      "epoch": 1792517105478,
+      "dir": "recv",
+      "msg": {
+        "id": 9,
+        "result": {
+          "result": {
+            "type": "string",
+            "value": "{\"hasModelContext\":true,\"tag\":\"aj33zb3h\",\"reg\":{\"pageTag\":\"aj33zb3h\",\"hasModelContext\":true,\"registerToolLength\":1,\"registered\":[\"echo\",\"slow\",\"slowlong\",\"abortable\"],\"failed\":[]},\"marks\":[\"registered\"]}"
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 41,
+      "epoch": 1792517105478,
+      "dir": "send",
+      "msg": {
+        "id": 10,
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "toolName": "no-such-tool",
+          "input": {}
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 42,
+      "epoch": 1792517105479,
+      "dir": "recv",
+      "msg": {
+        "id": 10,
+        "error": {
+          "code": -32602,
+          "message": "Tool not found"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 43,
+      "epoch": 1792517105979,
+      "dir": "send",
+      "msg": {
+        "id": 11,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "window.__getTools()",
+          "awaitPromise": true,
+          "returnByValue": true
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 44,
+      "epoch": 1792517105980,
+      "dir": "recv",
+      "msg": {
+        "id": 11,
+        "result": {
+          "result": {
+            "type": "object",
+            "value": {
+              "ok": true,
+              "count": 4,
+              "tools": [
+                {
+                  "name": "abortable",
+                  "inputSchemaType": "string"
+                },
+                {
+                  "name": "echo",
+                  "inputSchemaType": "string"
+                },
+                {
+                  "name": "slow",
+                  "inputSchemaType": "string"
+                },
+                {
+                  "name": "slowlong",
+                  "inputSchemaType": "string"
+                }
+              ]
+            }
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 45,
+      "epoch": 1792517105981,
+      "dir": "send",
+      "msg": {
+        "id": 12,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "window.__abort(\"abortable\")",
+          "returnByValue": true
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 46,
+      "epoch": 1792517105981,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsRemoved",
+        "params": {
+          "tools": [
+            {
+              "name": "abortable",
+              "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+            }
+          ]
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 47,
+      "epoch": 1792517105981,
+      "dir": "recv",
+      "msg": {
+        "id": 12,
+        "result": {
+          "result": {
+            "type": "object",
+            "value": {
+              "ok": true,
+              "name": "abortable"
+            }
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 48,
+      "epoch": 1792517105981,
+      "dir": "send",
+      "msg": {
+        "id": 13,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "window.__getTools()",
+          "awaitPromise": true,
+          "returnByValue": true
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 49,
+      "epoch": 1792517105982,
+      "dir": "recv",
+      "msg": {
+        "id": 13,
+        "result": {
+          "result": {
+            "type": "object",
+            "value": {
+              "ok": true,
+              "count": 3,
+              "tools": [
+                {
+                  "name": "echo",
+                  "inputSchemaType": "string"
+                },
+                {
+                  "name": "slow",
+                  "inputSchemaType": "string"
+                },
+                {
+                  "name": "slowlong",
+                  "inputSchemaType": "string"
+                }
+              ]
+            }
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 50,
+      "epoch": 1792517105982,
+      "dir": "send",
+      "msg": {
+        "id": 14,
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "toolName": "abortable",
+          "input": {
+            "text": "after-unregister"
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 51,
+      "epoch": 1792517105982,
+      "dir": "recv",
+      "msg": {
+        "id": 14,
+        "error": {
+          "code": -32602,
+          "message": "Tool not found"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 52,
+      "epoch": 1792517106283,
+      "dir": "send",
+      "msg": {
+        "id": 15,
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "toolName": "slow",
+          "input": {
+            "text": "unregister-pending"
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 53,
+      "epoch": 1792517106283,
+      "dir": "recv",
+      "msg": {
+        "id": 15,
+        "result": {
+          "invocationId": "57BA08669FD5DE81D7158D9C30CE1DD9"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 54,
+      "epoch": 1792517106284,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolInvoked",
+        "params": {
+          "toolName": "slow",
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "invocationId": "57BA08669FD5DE81D7158D9C30CE1DD9",
+          "input": "{\"text\":\"unregister-pending\"}"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 55,
+      "epoch": 1792517106284,
+      "dir": "send",
+      "msg": {
+        "id": 16,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "window.__abort(\"slow\")",
+          "returnByValue": true
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 56,
+      "epoch": 1792517106284,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsRemoved",
+        "params": {
+          "tools": [
+            {
+              "name": "slow",
+              "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+            }
+          ]
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 57,
+      "epoch": 1792517106284,
+      "dir": "recv",
+      "msg": {
+        "id": 16,
+        "result": {
+          "result": {
+            "type": "object",
+            "value": {
+              "ok": true,
+              "name": "slow"
+            }
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 58,
+      "epoch": 1792517108784,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "57BA08669FD5DE81D7158D9C30CE1DD9",
+          "status": "Completed",
+          "output": "slow:unregister-pending"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 59,
+      "epoch": 1792517109085,
+      "dir": "send",
+      "msg": {
+        "id": 17,
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "toolName": "slowlong",
+          "input": {
+            "text": "nav-pending"
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 60,
+      "epoch": 1792517109086,
+      "dir": "recv",
+      "msg": {
+        "id": 17,
+        "result": {
+          "invocationId": "C38FCF6B7B4DF610F740FBE6139BA385"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 61,
+      "epoch": 1792517109086,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolInvoked",
+        "params": {
+          "toolName": "slowlong",
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "invocationId": "C38FCF6B7B4DF610F740FBE6139BA385",
+          "input": "{\"text\":\"nav-pending\"}"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 62,
+      "epoch": 1792517109086,
+      "dir": "send",
+      "msg": {
+        "id": 18,
+        "method": "Page.navigate",
+        "params": {
+          "url": "http://127.0.0.1:46771/second"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 63,
+      "epoch": 1792517109087,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedNavigating",
+        "params": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "url": "http://127.0.0.1:46771/second",
+          "loaderId": "C2F165DE5144FFD0CCA89275E2997D35",
+          "navigationType": "differentDocument"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 64,
+      "epoch": 1792517109088,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedLoading",
+        "params": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 65,
+      "epoch": 1792517109089,
+      "dir": "recv",
+      "msg": {
+        "id": 18,
+        "result": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "loaderId": "C2F165DE5144FFD0CCA89275E2997D35",
+          "isDownload": false
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 66,
+      "epoch": 1792517109090,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 67,
+      "epoch": 1792517109090,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 68,
+      "epoch": 1792517109090,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameNavigated",
+        "params": {
+          "frame": {
+            "id": "7440F2A02C4969C3C010B690AA0665E0",
+            "loaderId": "C2F165DE5144FFD0CCA89275E2997D35",
+            "url": "http://127.0.0.1:46771/second",
+            "domainAndRegistry": "",
+            "securityOrigin": "http://127.0.0.1:46771",
+            "securityOriginDetails": {
+              "isLocalhost": true
+            },
+            "mimeType": "text/html",
+            "adFrameStatus": {
+              "adFrameType": "none"
+            },
+            "secureContextType": "SecureLocalhost",
+            "crossOriginIsolatedContextType": "NotIsolated",
+            "gatedAPIFeatures": []
+          },
+          "type": "Navigation"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 69,
+      "epoch": 1792517109093,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "7440F2A02C4969C3C010B690AA0665E0",
+            "type": "page",
+            "title": "127.0.0.1:46771/second",
+            "url": "http://127.0.0.1:46771/second",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 70,
+      "epoch": 1792517109094,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextCreated",
+        "params": {
+          "context": {
+            "id": 3,
+            "origin": "http://127.0.0.1:46771",
+            "name": "",
+            "uniqueId": "1641781052079674934.9221863489635898710",
+            "auxData": {
+              "isDefault": true,
+              "type": "default",
+              "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+            }
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 71,
+      "epoch": 1792517109095,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "second-tool",
+              "description": "second-tool lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "8",
+                    "url": "http://127.0.0.1:46771/second",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "8",
+                    "url": "http://127.0.0.1:46771/second",
+                    "lineNumber": 92,
+                    "columnNumber": 31
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "8",
+                    "url": "http://127.0.0.1:46771/second",
+                    "lineNumber": 93,
+                    "columnNumber": 2
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 72,
+      "epoch": 1792517109095,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.domContentEventFired",
+        "params": {
+          "timestamp": 16092.444712
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 73,
+      "epoch": 1792517109095,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.loadEventFired",
+        "params": {
+          "timestamp": 16092.444844
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 74,
+      "epoch": 1792517109095,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStoppedLoading",
+        "params": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 75,
+      "epoch": 1792517116590,
+      "dir": "send",
+      "msg": {
+        "id": 19,
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "7440F2A02C4969C3C010B690AA0665E0",
+          "toolName": "slowlong",
+          "input": {
+            "text": "post-nav"
+          }
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 76,
+      "epoch": 1792517116591,
+      "dir": "recv",
+      "msg": {
+        "id": 19,
+        "error": {
+          "code": -32602,
+          "message": "Tool not found"
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 77,
+      "epoch": 1792517116891,
+      "dir": "send",
+      "msg": {
+        "id": 20,
+        "method": "Target.createTarget",
+        "params": {
+          "url": "about:blank"
+        }
+      }
+    },
+    {
+      "seq": 78,
+      "epoch": 1792517116895,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetCreated",
+        "params": {
+          "targetInfo": {
+            "targetId": "D294B2DEC7CD929C580695F2AB0A3202",
+            "type": "page",
+            "title": "",
+            "url": "about:blank",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 79,
+      "epoch": 1792517116896,
+      "dir": "recv",
+      "msg": {
+        "id": 20,
+        "result": {
+          "targetId": "D294B2DEC7CD929C580695F2AB0A3202"
+        }
+      }
+    },
+    {
+      "seq": 80,
+      "epoch": 1792517116897,
+      "dir": "send",
+      "msg": {
+        "id": 21,
+        "method": "Target.attachToTarget",
+        "params": {
+          "targetId": "D294B2DEC7CD929C580695F2AB0A3202",
+          "flatten": true
+        }
+      }
+    },
+    {
+      "seq": 81,
+      "epoch": 1792517116900,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "D294B2DEC7CD929C580695F2AB0A3202",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 82,
+      "epoch": 1792517116901,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "D294B2DEC7CD929C580695F2AB0A3202",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 83,
+      "epoch": 1792517116901,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.attachedToTarget",
+        "params": {
+          "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+          "targetInfo": {
+            "targetId": "D294B2DEC7CD929C580695F2AB0A3202",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          },
+          "waitingForDebugger": false
+        }
+      }
+    },
+    {
+      "seq": 84,
+      "epoch": 1792517116901,
+      "dir": "recv",
+      "msg": {
+        "id": 21,
+        "result": {
+          "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+        }
+      }
+    },
+    {
+      "seq": 85,
+      "epoch": 1792517116901,
+      "dir": "send",
+      "msg": {
+        "id": 22,
+        "method": "Page.enable",
+        "params": {},
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 86,
+      "epoch": 1792517116902,
+      "dir": "recv",
+      "msg": {
+        "id": 22,
+        "result": {},
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 87,
+      "epoch": 1792517116902,
+      "dir": "send",
+      "msg": {
+        "id": 23,
+        "method": "Runtime.enable",
+        "params": {},
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 88,
+      "epoch": 1792517116903,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextCreated",
+        "params": {
+          "context": {
+            "id": 1,
+            "origin": "://",
+            "name": "",
+            "uniqueId": "3501240231767050629.-5614062969501157738",
+            "auxData": {
+              "isDefault": true,
+              "type": "default",
+              "frameId": "D294B2DEC7CD929C580695F2AB0A3202"
+            }
+          }
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 89,
+      "epoch": 1792517116903,
+      "dir": "recv",
+      "msg": {
+        "id": 23,
+        "result": {},
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 90,
+      "epoch": 1792517116903,
+      "dir": "send",
+      "msg": {
+        "id": 24,
+        "method": "WebMCP.enable",
+        "params": {},
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 91,
+      "epoch": 1792517116903,
+      "dir": "recv",
+      "msg": {
+        "id": 24,
+        "result": {},
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 92,
+      "epoch": 1792517116903,
+      "dir": "send",
+      "msg": {
+        "id": 25,
+        "method": "Page.navigate",
+        "params": {
+          "url": "http://127.0.0.1:46771/ab"
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 93,
+      "epoch": 1792517116904,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedNavigating",
+        "params": {
+          "frameId": "D294B2DEC7CD929C580695F2AB0A3202",
+          "url": "http://127.0.0.1:46771/ab",
+          "loaderId": "7A1A47BD175439A1F1A6F0FF647C6F2E",
+          "navigationType": "differentDocument"
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 94,
+      "epoch": 1792517116904,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedLoading",
+        "params": {
+          "frameId": "D294B2DEC7CD929C580695F2AB0A3202"
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 95,
+      "epoch": 1792517116905,
+      "dir": "recv",
+      "msg": {
+        "id": 25,
+        "result": {
+          "frameId": "D294B2DEC7CD929C580695F2AB0A3202",
+          "loaderId": "7A1A47BD175439A1F1A6F0FF647C6F2E",
+          "isDownload": false
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 96,
+      "epoch": 1792517116906,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 97,
+      "epoch": 1792517116907,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 98,
+      "epoch": 1792517116907,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameNavigated",
+        "params": {
+          "frame": {
+            "id": "D294B2DEC7CD929C580695F2AB0A3202",
+            "loaderId": "7A1A47BD175439A1F1A6F0FF647C6F2E",
+            "url": "http://127.0.0.1:46771/ab",
+            "domainAndRegistry": "",
+            "securityOrigin": "http://127.0.0.1:46771",
+            "securityOriginDetails": {
+              "isLocalhost": true
+            },
+            "mimeType": "text/html",
+            "adFrameStatus": {
+              "adFrameType": "none"
+            },
+            "secureContextType": "SecureLocalhost",
+            "crossOriginIsolatedContextType": "NotIsolated",
+            "gatedAPIFeatures": []
+          },
+          "type": "Navigation"
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 99,
+      "epoch": 1792517116908,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "D294B2DEC7CD929C580695F2AB0A3202",
+            "type": "page",
+            "title": "127.0.0.1:46771/ab",
+            "url": "http://127.0.0.1:46771/ab",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 100,
+      "epoch": 1792517116910,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextCreated",
+        "params": {
+          "context": {
+            "id": 2,
+            "origin": "http://127.0.0.1:46771",
+            "name": "",
+            "uniqueId": "-8302116678465489727.-8635289495458555472",
+            "auxData": {
+              "isDefault": true,
+              "type": "default",
+              "frameId": "D294B2DEC7CD929C580695F2AB0A3202"
+            }
+          }
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 101,
+      "epoch": 1792517116911,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "sigopt",
+              "description": "sigopt lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "D294B2DEC7CD929C580695F2AB0A3202",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/ab",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/ab",
+                    "lineNumber": 92,
+                    "columnNumber": 31
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/ab",
+                    "lineNumber": 93,
+                    "columnNumber": 2
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 102,
+      "epoch": 1792517116911,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.domContentEventFired",
+        "params": {
+          "timestamp": 16100.261154
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 103,
+      "epoch": 1792517116911,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.loadEventFired",
+        "params": {
+          "timestamp": 16100.261294
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 104,
+      "epoch": 1792517116911,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStoppedLoading",
+        "params": {
+          "frameId": "D294B2DEC7CD929C580695F2AB0A3202"
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 105,
+      "epoch": 1792517116912,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "sigraw",
+              "description": "sigraw lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "D294B2DEC7CD929C580695F2AB0A3202",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/ab",
+                    "lineNumber": 68,
+                    "columnNumber": 58
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 106,
+      "epoch": 1792517116912,
+      "dir": "send",
+      "msg": {
+        "id": 26,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "JSON.stringify({hasModelContext: !!document.modelContext, tag: window.__pageTag, reg: window.__regResult, marks: (window.__localMarks || []).map(function (m) { return m.phase; })})",
+          "returnByValue": true
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 107,
+      "epoch": 1792517116912,
+      "dir": "recv",
+      "msg": {
+        "id": 26,
+        "result": {
+          "result": {
+            "type": "string",
+            "value": "{\"hasModelContext\":true,\"tag\":\"b988r52l\",\"reg\":{\"pageTag\":\"b988r52l\",\"hasModelContext\":true,\"registerToolLength\":1,\"registered\":[\"sigopt\",\"sigraw\"],\"failed\":[]},\"marks\":[\"registered\"]}"
+          }
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 108,
+      "epoch": 1792517116912,
+      "dir": "send",
+      "msg": {
+        "id": 27,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "window.__abort(\"sigopt\")",
+          "returnByValue": true
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 109,
+      "epoch": 1792517116912,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsRemoved",
+        "params": {
+          "tools": [
+            {
+              "name": "sigopt",
+              "frameId": "D294B2DEC7CD929C580695F2AB0A3202"
+            }
+          ]
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 110,
+      "epoch": 1792517116913,
+      "dir": "recv",
+      "msg": {
+        "id": 27,
+        "result": {
+          "result": {
+            "type": "object",
+            "value": {
+              "ok": true,
+              "name": "sigopt"
+            }
+          }
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 111,
+      "epoch": 1792517116913,
+      "dir": "send",
+      "msg": {
+        "id": 28,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "window.__abort(\"sigraw\")",
+          "returnByValue": true
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 112,
+      "epoch": 1792517116913,
+      "dir": "recv",
+      "msg": {
+        "id": 28,
+        "result": {
+          "result": {
+            "type": "object",
+            "value": {
+              "ok": true,
+              "name": "sigraw"
+            }
+          }
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 113,
+      "epoch": 1792517118414,
+      "dir": "send",
+      "msg": {
+        "id": 29,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "window.__getTools()",
+          "awaitPromise": true,
+          "returnByValue": true
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 114,
+      "epoch": 1792517118415,
+      "dir": "recv",
+      "msg": {
+        "id": 29,
+        "result": {
+          "result": {
+            "type": "object",
+            "value": {
+              "ok": true,
+              "count": 1,
+              "tools": [
+                {
+                  "name": "sigraw",
+                  "inputSchemaType": "string"
+                }
+              ]
+            }
+          }
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 115,
+      "epoch": 1792517118415,
+      "dir": "send",
+      "msg": {
+        "id": 30,
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "D294B2DEC7CD929C580695F2AB0A3202",
+          "toolName": "sigopt",
+          "input": {
+            "text": "after-abort-options"
+          }
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 116,
+      "epoch": 1792517118415,
+      "dir": "recv",
+      "msg": {
+        "id": 30,
+        "error": {
+          "code": -32602,
+          "message": "Tool not found"
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 117,
+      "epoch": 1792517118415,
+      "dir": "send",
+      "msg": {
+        "id": 31,
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "D294B2DEC7CD929C580695F2AB0A3202",
+          "toolName": "sigraw",
+          "input": {
+            "text": "after-abort-bare"
+          }
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 118,
+      "epoch": 1792517118416,
+      "dir": "recv",
+      "msg": {
+        "id": 31,
+        "result": {
+          "invocationId": "8F7DD1D4F71D6F93B832D836BB311B5D"
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 119,
+      "epoch": 1792517118416,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolInvoked",
+        "params": {
+          "toolName": "sigraw",
+          "frameId": "D294B2DEC7CD929C580695F2AB0A3202",
+          "invocationId": "8F7DD1D4F71D6F93B832D836BB311B5D",
+          "input": "{\"text\":\"after-abort-bare\"}"
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 120,
+      "epoch": 1792517118416,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "8F7DD1D4F71D6F93B832D836BB311B5D",
+          "status": "Completed",
+          "output": "sigraw:after-abort-bare"
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 121,
+      "epoch": 1792517118416,
+      "dir": "send",
+      "msg": {
+        "id": 32,
+        "method": "Target.createTarget",
+        "params": {
+          "url": "about:blank"
+        }
+      }
+    },
+    {
+      "seq": 122,
+      "epoch": 1792517118419,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetCreated",
+        "params": {
+          "targetInfo": {
+            "targetId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+            "type": "page",
+            "title": "",
+            "url": "about:blank",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 123,
+      "epoch": 1792517118421,
+      "dir": "recv",
+      "msg": {
+        "id": 32,
+        "result": {
+          "targetId": "5CA9AA2744B0E48EFFC641CDF8B96D53"
+        }
+      }
+    },
+    {
+      "seq": 124,
+      "epoch": 1792517118421,
+      "dir": "send",
+      "msg": {
+        "id": 33,
+        "method": "Target.attachToTarget",
+        "params": {
+          "targetId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+          "flatten": true
+        }
+      }
+    },
+    {
+      "seq": 125,
+      "epoch": 1792517118424,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 126,
+      "epoch": 1792517118425,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 127,
+      "epoch": 1792517118425,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.attachedToTarget",
+        "params": {
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B",
+          "targetInfo": {
+            "targetId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          },
+          "waitingForDebugger": false
+        }
+      }
+    },
+    {
+      "seq": 128,
+      "epoch": 1792517118425,
+      "dir": "recv",
+      "msg": {
+        "id": 33,
+        "result": {
+          "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+        }
+      }
+    },
+    {
+      "seq": 129,
+      "epoch": 1792517118425,
+      "dir": "send",
+      "msg": {
+        "id": 34,
+        "method": "Page.enable",
+        "params": {},
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 130,
+      "epoch": 1792517118427,
+      "dir": "recv",
+      "msg": {
+        "id": 34,
+        "result": {},
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 131,
+      "epoch": 1792517118427,
+      "dir": "send",
+      "msg": {
+        "id": 35,
+        "method": "Runtime.enable",
+        "params": {},
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 132,
+      "epoch": 1792517118427,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextCreated",
+        "params": {
+          "context": {
+            "id": 1,
+            "origin": "://",
+            "name": "",
+            "uniqueId": "-8462040582013355770.-8428905667695578690",
+            "auxData": {
+              "isDefault": true,
+              "type": "default",
+              "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53"
+            }
+          }
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 133,
+      "epoch": 1792517118427,
+      "dir": "recv",
+      "msg": {
+        "id": 35,
+        "result": {},
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 134,
+      "epoch": 1792517118427,
+      "dir": "send",
+      "msg": {
+        "id": 36,
+        "method": "WebMCP.enable",
+        "params": {},
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 135,
+      "epoch": 1792517118427,
+      "dir": "recv",
+      "msg": {
+        "id": 36,
+        "result": {},
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 136,
+      "epoch": 1792517118427,
+      "dir": "send",
+      "msg": {
+        "id": 37,
+        "method": "Page.navigate",
+        "params": {
+          "url": "http://127.0.0.1:46771/"
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 137,
+      "epoch": 1792517118428,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedNavigating",
+        "params": {
+          "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+          "url": "http://127.0.0.1:46771/",
+          "loaderId": "BD85CFB7573557B7B58F512990374982",
+          "navigationType": "differentDocument"
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 138,
+      "epoch": 1792517118428,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedLoading",
+        "params": {
+          "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53"
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 139,
+      "epoch": 1792517118429,
+      "dir": "recv",
+      "msg": {
+        "id": 37,
+        "result": {
+          "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+          "loaderId": "BD85CFB7573557B7B58F512990374982",
+          "isDownload": false
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 140,
+      "epoch": 1792517118430,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 141,
+      "epoch": 1792517118430,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 142,
+      "epoch": 1792517118430,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameNavigated",
+        "params": {
+          "frame": {
+            "id": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+            "loaderId": "BD85CFB7573557B7B58F512990374982",
+            "url": "http://127.0.0.1:46771/",
+            "domainAndRegistry": "",
+            "securityOrigin": "http://127.0.0.1:46771",
+            "securityOriginDetails": {
+              "isLocalhost": true
+            },
+            "mimeType": "text/html",
+            "adFrameStatus": {
+              "adFrameType": "none"
+            },
+            "secureContextType": "SecureLocalhost",
+            "crossOriginIsolatedContextType": "NotIsolated",
+            "gatedAPIFeatures": []
+          },
+          "type": "Navigation"
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 143,
+      "epoch": 1792517118433,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+            "type": "page",
+            "title": "127.0.0.1:46771",
+            "url": "http://127.0.0.1:46771/",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 144,
+      "epoch": 1792517118435,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextCreated",
+        "params": {
+          "context": {
+            "id": 2,
+            "origin": "http://127.0.0.1:46771",
+            "name": "",
+            "uniqueId": "1690803851310438812.6219582249144768941",
+            "auxData": {
+              "isDefault": true,
+              "type": "default",
+              "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53"
+            }
+          }
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 145,
+      "epoch": 1792517118436,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "echo",
+              "description": "echo lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 92,
+                    "columnNumber": 31
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 93,
+                    "columnNumber": 2
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 146,
+      "epoch": 1792517118436,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.domContentEventFired",
+        "params": {
+          "timestamp": 16101.784779
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 147,
+      "epoch": 1792517118436,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.loadEventFired",
+        "params": {
+          "timestamp": 16101.784882
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 148,
+      "epoch": 1792517118436,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStoppedLoading",
+        "params": {
+          "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53"
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 149,
+      "epoch": 1792517118436,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "slow",
+              "description": "slow lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 150,
+      "epoch": 1792517118436,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "slowlong",
+              "description": "slowlong lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 151,
+      "epoch": 1792517118436,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "abortable",
+              "description": "abortable lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 152,
+      "epoch": 1792517118436,
+      "dir": "send",
+      "msg": {
+        "id": 38,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "JSON.stringify({hasModelContext: !!document.modelContext, tag: window.__pageTag, reg: window.__regResult, marks: (window.__localMarks || []).map(function (m) { return m.phase; })})",
+          "returnByValue": true
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 153,
+      "epoch": 1792517118438,
+      "dir": "recv",
+      "msg": {
+        "id": 38,
+        "result": {
+          "result": {
+            "type": "string",
+            "value": "{\"hasModelContext\":true,\"tag\":\"e2qfhsih\",\"reg\":{\"pageTag\":\"e2qfhsih\",\"hasModelContext\":true,\"registerToolLength\":1,\"registered\":[\"echo\",\"slow\",\"slowlong\",\"abortable\"],\"failed\":[]},\"marks\":[\"registered\"]}"
+          }
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 154,
+      "epoch": 1792517118438,
+      "dir": "send",
+      "msg": {
+        "id": 39,
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+          "toolName": "slowlong",
+          "input": {
+            "text": "reload-pending"
+          }
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 155,
+      "epoch": 1792517118439,
+      "dir": "recv",
+      "msg": {
+        "id": 39,
+        "result": {
+          "invocationId": "333EA53E7B3513E4D03F019641301F4D"
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 156,
+      "epoch": 1792517118439,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolInvoked",
+        "params": {
+          "toolName": "slowlong",
+          "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+          "invocationId": "333EA53E7B3513E4D03F019641301F4D",
+          "input": "{\"text\":\"reload-pending\"}"
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 157,
+      "epoch": 1792517118439,
+      "dir": "send",
+      "msg": {
+        "id": 40,
+        "method": "Page.reload",
+        "params": {
+          "ignoreCache": true
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 158,
+      "epoch": 1792517118440,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedNavigating",
+        "params": {
+          "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+          "url": "http://127.0.0.1:46771/",
+          "loaderId": "D435CFBFB084954B7294E21A59D7FD08",
+          "navigationType": "reloadBypassingCache"
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 159,
+      "epoch": 1792517118440,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedLoading",
+        "params": {
+          "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53"
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 160,
+      "epoch": 1792517118440,
+      "dir": "recv",
+      "msg": {
+        "id": 40,
+        "result": {},
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 161,
+      "epoch": 1792517118442,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 162,
+      "epoch": 1792517118442,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 163,
+      "epoch": 1792517118442,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameNavigated",
+        "params": {
+          "frame": {
+            "id": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+            "loaderId": "D435CFBFB084954B7294E21A59D7FD08",
+            "url": "http://127.0.0.1:46771/",
+            "domainAndRegistry": "",
+            "securityOrigin": "http://127.0.0.1:46771",
+            "securityOriginDetails": {
+              "isLocalhost": true
+            },
+            "mimeType": "text/html",
+            "adFrameStatus": {
+              "adFrameType": "none"
+            },
+            "secureContextType": "SecureLocalhost",
+            "crossOriginIsolatedContextType": "NotIsolated",
+            "gatedAPIFeatures": []
+          },
+          "type": "Navigation"
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 164,
+      "epoch": 1792517118444,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+            "type": "page",
+            "title": "tabi-r17-invoke-lifecycle",
+            "url": "http://127.0.0.1:46771/",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 165,
+      "epoch": 1792517118446,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextCreated",
+        "params": {
+          "context": {
+            "id": 3,
+            "origin": "http://127.0.0.1:46771",
+            "name": "",
+            "uniqueId": "2422220594704723611.-1697268373490855010",
+            "auxData": {
+              "isDefault": true,
+              "type": "default",
+              "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53"
+            }
+          }
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 166,
+      "epoch": 1792517118446,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "echo",
+              "description": "echo lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 92,
+                    "columnNumber": 31
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 93,
+                    "columnNumber": 2
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 167,
+      "epoch": 1792517118446,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.domContentEventFired",
+        "params": {
+          "timestamp": 16101.795792
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 168,
+      "epoch": 1792517118446,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.loadEventFired",
+        "params": {
+          "timestamp": 16101.795879
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 169,
+      "epoch": 1792517118446,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStoppedLoading",
+        "params": {
+          "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53"
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 170,
+      "epoch": 1792517118447,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "slow",
+              "description": "slow lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 171,
+      "epoch": 1792517118448,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "slowlong",
+              "description": "slowlong lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 172,
+      "epoch": 1792517118448,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "abortable",
+              "description": "abortable lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "5CA9AA2744B0E48EFFC641CDF8B96D53",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "D92CE82FB29BBD0009A2D24C5F08CC5B"
+      }
+    },
+    {
+      "seq": 173,
+      "epoch": 1792517121940,
+      "dir": "send",
+      "msg": {
+        "id": 41,
+        "method": "Target.createTarget",
+        "params": {
+          "url": "about:blank"
+        }
+      }
+    },
+    {
+      "seq": 174,
+      "epoch": 1792517121943,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetCreated",
+        "params": {
+          "targetInfo": {
+            "targetId": "7E711C222E9FC32F1B855B08979E83C1",
+            "type": "page",
+            "title": "",
+            "url": "about:blank",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 175,
+      "epoch": 1792517121945,
+      "dir": "recv",
+      "msg": {
+        "id": 41,
+        "result": {
+          "targetId": "7E711C222E9FC32F1B855B08979E83C1"
+        }
+      }
+    },
+    {
+      "seq": 176,
+      "epoch": 1792517121945,
+      "dir": "send",
+      "msg": {
+        "id": 42,
+        "method": "Target.attachToTarget",
+        "params": {
+          "targetId": "7E711C222E9FC32F1B855B08979E83C1",
+          "flatten": true
+        }
+      }
+    },
+    {
+      "seq": 177,
+      "epoch": 1792517121948,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "7E711C222E9FC32F1B855B08979E83C1",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 178,
+      "epoch": 1792517121949,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "7E711C222E9FC32F1B855B08979E83C1",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 179,
+      "epoch": 1792517121949,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.attachedToTarget",
+        "params": {
+          "sessionId": "1A62CBF046D3D478C143BE51DFB7F118",
+          "targetInfo": {
+            "targetId": "7E711C222E9FC32F1B855B08979E83C1",
+            "type": "page",
+            "title": "about:blank",
+            "url": "about:blank",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          },
+          "waitingForDebugger": false
+        }
+      }
+    },
+    {
+      "seq": 180,
+      "epoch": 1792517121949,
+      "dir": "recv",
+      "msg": {
+        "id": 42,
+        "result": {
+          "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+        }
+      }
+    },
+    {
+      "seq": 181,
+      "epoch": 1792517121949,
+      "dir": "send",
+      "msg": {
+        "id": 43,
+        "method": "Page.enable",
+        "params": {},
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 182,
+      "epoch": 1792517121951,
+      "dir": "recv",
+      "msg": {
+        "id": 43,
+        "result": {},
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 183,
+      "epoch": 1792517121951,
+      "dir": "send",
+      "msg": {
+        "id": 44,
+        "method": "Runtime.enable",
+        "params": {},
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 184,
+      "epoch": 1792517121951,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextCreated",
+        "params": {
+          "context": {
+            "id": 1,
+            "origin": "://",
+            "name": "",
+            "uniqueId": "9191008267446171920.8853145222356289317",
+            "auxData": {
+              "isDefault": true,
+              "type": "default",
+              "frameId": "7E711C222E9FC32F1B855B08979E83C1"
+            }
+          }
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 185,
+      "epoch": 1792517121951,
+      "dir": "recv",
+      "msg": {
+        "id": 44,
+        "result": {},
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 186,
+      "epoch": 1792517121951,
+      "dir": "send",
+      "msg": {
+        "id": 45,
+        "method": "WebMCP.enable",
+        "params": {},
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 187,
+      "epoch": 1792517121951,
+      "dir": "recv",
+      "msg": {
+        "id": 45,
+        "result": {},
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 188,
+      "epoch": 1792517121951,
+      "dir": "send",
+      "msg": {
+        "id": 46,
+        "method": "Page.navigate",
+        "params": {
+          "url": "http://127.0.0.1:46771/"
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 189,
+      "epoch": 1792517121952,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedNavigating",
+        "params": {
+          "frameId": "7E711C222E9FC32F1B855B08979E83C1",
+          "url": "http://127.0.0.1:46771/",
+          "loaderId": "6C85A219885D19B137CBEC4EB0D707A5",
+          "navigationType": "differentDocument"
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 190,
+      "epoch": 1792517121952,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStartedLoading",
+        "params": {
+          "frameId": "7E711C222E9FC32F1B855B08979E83C1"
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 191,
+      "epoch": 1792517121954,
+      "dir": "recv",
+      "msg": {
+        "id": 46,
+        "result": {
+          "frameId": "7E711C222E9FC32F1B855B08979E83C1",
+          "loaderId": "6C85A219885D19B137CBEC4EB0D707A5",
+          "isDownload": false
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 192,
+      "epoch": 1792517121955,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 193,
+      "epoch": 1792517121956,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextsCleared",
+        "params": {},
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 194,
+      "epoch": 1792517121956,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameNavigated",
+        "params": {
+          "frame": {
+            "id": "7E711C222E9FC32F1B855B08979E83C1",
+            "loaderId": "6C85A219885D19B137CBEC4EB0D707A5",
+            "url": "http://127.0.0.1:46771/",
+            "domainAndRegistry": "",
+            "securityOrigin": "http://127.0.0.1:46771",
+            "securityOriginDetails": {
+              "isLocalhost": true
+            },
+            "mimeType": "text/html",
+            "adFrameStatus": {
+              "adFrameType": "none"
+            },
+            "secureContextType": "SecureLocalhost",
+            "crossOriginIsolatedContextType": "NotIsolated",
+            "gatedAPIFeatures": []
+          },
+          "type": "Navigation"
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 195,
+      "epoch": 1792517121958,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "7E711C222E9FC32F1B855B08979E83C1",
+            "type": "page",
+            "title": "127.0.0.1:46771",
+            "url": "http://127.0.0.1:46771/",
+            "attached": true,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 196,
+      "epoch": 1792517121960,
+      "dir": "recv",
+      "msg": {
+        "method": "Runtime.executionContextCreated",
+        "params": {
+          "context": {
+            "id": 2,
+            "origin": "http://127.0.0.1:46771",
+            "name": "",
+            "uniqueId": "-5785317572958545574.-6655188956304727722",
+            "auxData": {
+              "isDefault": true,
+              "type": "default",
+              "frameId": "7E711C222E9FC32F1B855B08979E83C1"
+            }
+          }
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 197,
+      "epoch": 1792517121961,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "echo",
+              "description": "echo lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "7E711C222E9FC32F1B855B08979E83C1",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 92,
+                    "columnNumber": 31
+                  },
+                  {
+                    "functionName": "",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 93,
+                    "columnNumber": 2
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 198,
+      "epoch": 1792517121961,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.domContentEventFired",
+        "params": {
+          "timestamp": 16105.310614
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 199,
+      "epoch": 1792517121961,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.loadEventFired",
+        "params": {
+          "timestamp": 16105.310764
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 200,
+      "epoch": 1792517121961,
+      "dir": "recv",
+      "msg": {
+        "method": "Page.frameStoppedLoading",
+        "params": {
+          "frameId": "7E711C222E9FC32F1B855B08979E83C1"
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 201,
+      "epoch": 1792517121961,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "slow",
+              "description": "slow lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "7E711C222E9FC32F1B855B08979E83C1",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 202,
+      "epoch": 1792517121961,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "slowlong",
+              "description": "slowlong lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "7E711C222E9FC32F1B855B08979E83C1",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 203,
+      "epoch": 1792517121961,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "abortable",
+              "description": "abortable lifecycle probe tool",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "frameId": "7E711C222E9FC32F1B855B08979E83C1",
+              "stackTrace": {
+                "callFrames": [
+                  {
+                    "functionName": "window.__registerAll",
+                    "scriptId": "3",
+                    "url": "http://127.0.0.1:46771/",
+                    "lineNumber": 69,
+                    "columnNumber": 22
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 204,
+      "epoch": 1792517121961,
+      "dir": "send",
+      "msg": {
+        "id": 47,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "JSON.stringify({hasModelContext: !!document.modelContext, tag: window.__pageTag, reg: window.__regResult, marks: (window.__localMarks || []).map(function (m) { return m.phase; })})",
+          "returnByValue": true
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 205,
+      "epoch": 1792517121962,
+      "dir": "recv",
+      "msg": {
+        "id": 47,
+        "result": {
+          "result": {
+            "type": "string",
+            "value": "{\"hasModelContext\":true,\"tag\":\"4x4ol8qr\",\"reg\":{\"pageTag\":\"4x4ol8qr\",\"hasModelContext\":true,\"registerToolLength\":1,\"registered\":[\"echo\",\"slow\",\"slowlong\",\"abortable\"],\"failed\":[]},\"marks\":[\"registered\"]}"
+          }
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 206,
+      "epoch": 1792517121962,
+      "dir": "send",
+      "msg": {
+        "id": 48,
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "7E711C222E9FC32F1B855B08979E83C1",
+          "toolName": "slowlong",
+          "input": {
+            "text": "close-pending"
+          }
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 207,
+      "epoch": 1792517121962,
+      "dir": "recv",
+      "msg": {
+        "id": 48,
+        "result": {
+          "invocationId": "358A96FE65BC99DEAB7E489290E81533"
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 208,
+      "epoch": 1792517121962,
+      "dir": "recv",
+      "msg": {
+        "method": "WebMCP.toolInvoked",
+        "params": {
+          "toolName": "slowlong",
+          "frameId": "7E711C222E9FC32F1B855B08979E83C1",
+          "invocationId": "358A96FE65BC99DEAB7E489290E81533",
+          "input": "{\"text\":\"close-pending\"}"
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 209,
+      "epoch": 1792517121963,
+      "dir": "send",
+      "msg": {
+        "id": 49,
+        "method": "Target.closeTarget",
+        "params": {
+          "targetId": "7E711C222E9FC32F1B855B08979E83C1"
+        }
+      }
+    },
+    {
+      "seq": 210,
+      "epoch": 1792517121963,
+      "dir": "recv",
+      "msg": {
+        "id": 49,
+        "result": {
+          "success": true
+        }
+      }
+    },
+    {
+      "seq": 211,
+      "epoch": 1792517121963,
+      "dir": "recv",
+      "msg": {
+        "method": "Inspector.detached",
+        "params": {
+          "reason": "Render process gone."
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 212,
+      "epoch": 1792517121966,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "7E711C222E9FC32F1B855B08979E83C1",
+            "type": "page",
+            "title": "tabi-r17-invoke-lifecycle",
+            "url": "http://127.0.0.1:46771/",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 213,
+      "epoch": 1792517121966,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.detachedFromTarget",
+        "params": {
+          "sessionId": "1A62CBF046D3D478C143BE51DFB7F118",
+          "targetId": "7E711C222E9FC32F1B855B08979E83C1"
+        }
+      }
+    },
+    {
+      "seq": 214,
+      "epoch": 1792517121966,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetDestroyed",
+        "params": {
+          "targetId": "7E711C222E9FC32F1B855B08979E83C1"
+        }
+      }
+    },
+    {
+      "seq": 215,
+      "epoch": 1792517124463,
+      "dir": "send",
+      "msg": {
+        "id": 50,
+        "method": "Runtime.evaluate",
+        "params": {
+          "expression": "1+1",
+          "returnByValue": true
+        },
+        "sessionId": "1A62CBF046D3D478C143BE51DFB7F118"
+      }
+    },
+    {
+      "seq": 216,
+      "epoch": 1792517124464,
+      "dir": "recv",
+      "msg": {
+        "id": 50,
+        "error": {
+          "code": -32001,
+          "message": "Session with given id not found."
+        }
+      }
+    },
+    {
+      "seq": 217,
+      "epoch": 1792517132465,
+      "dir": "send",
+      "msg": {
+        "id": 51,
+        "method": "Target.closeTarget",
+        "params": {
+          "targetId": "7440F2A02C4969C3C010B690AA0665E0"
+        }
+      }
+    },
+    {
+      "seq": 218,
+      "epoch": 1792517132465,
+      "dir": "recv",
+      "msg": {
+        "id": 51,
+        "result": {
+          "success": true
+        }
+      }
+    },
+    {
+      "seq": 219,
+      "epoch": 1792517132465,
+      "dir": "send",
+      "msg": {
+        "id": 52,
+        "method": "Target.closeTarget",
+        "params": {
+          "targetId": "D294B2DEC7CD929C580695F2AB0A3202"
+        }
+      }
+    },
+    {
+      "seq": 220,
+      "epoch": 1792517132466,
+      "dir": "recv",
+      "msg": {
+        "method": "Inspector.detached",
+        "params": {
+          "reason": "Render process gone."
+        },
+        "sessionId": "593C4BF80A7C37D633DC125E33509744"
+      }
+    },
+    {
+      "seq": 221,
+      "epoch": 1792517132466,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "7440F2A02C4969C3C010B690AA0665E0",
+            "type": "page",
+            "title": "tabi-r17-invoke-lifecycle",
+            "url": "http://127.0.0.1:46771/second",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 222,
+      "epoch": 1792517132466,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.detachedFromTarget",
+        "params": {
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "targetId": "7440F2A02C4969C3C010B690AA0665E0"
+        }
+      }
+    },
+    {
+      "seq": 223,
+      "epoch": 1792517132466,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetDestroyed",
+        "params": {
+          "targetId": "7440F2A02C4969C3C010B690AA0665E0"
+        }
+      }
+    },
+    {
+      "seq": 224,
+      "epoch": 1792517132467,
+      "dir": "recv",
+      "msg": {
+        "id": 52,
+        "result": {
+          "success": true
+        }
+      }
+    },
+    {
+      "seq": 225,
+      "epoch": 1792517132467,
+      "dir": "send",
+      "msg": {
+        "id": 53,
+        "method": "Target.closeTarget",
+        "params": {
+          "targetId": "5CA9AA2744B0E48EFFC641CDF8B96D53"
+        }
+      }
+    },
+    {
+      "seq": 226,
+      "epoch": 1792517132468,
+      "dir": "recv",
+      "msg": {
+        "method": "Inspector.detached",
+        "params": {
+          "reason": "Render process gone."
+        },
+        "sessionId": "C7EAECA6B14BF3F04232F96868C17E03"
+      }
+    },
+    {
+      "seq": 227,
+      "epoch": 1792517132468,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetInfoChanged",
+        "params": {
+          "targetInfo": {
+            "targetId": "D294B2DEC7CD929C580695F2AB0A3202",
+            "type": "page",
+            "title": "tabi-r17-invoke-lifecycle",
+            "url": "http://127.0.0.1:46771/ab",
+            "attached": false,
+            "canAccessOpener": false,
+            "browserContextId": "BB79148E1A34D3AE0D7C840CD0BAAE1A"
+          }
+        }
+      }
+    },
+    {
+      "seq": 228,
+      "epoch": 1792517132468,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.detachedFromTarget",
+        "params": {
+          "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+          "targetId": "D294B2DEC7CD929C580695F2AB0A3202"
+        }
+      }
+    },
+    {
+      "seq": 229,
+      "epoch": 1792517132468,
+      "dir": "recv",
+      "msg": {
+        "method": "Target.targetDestroyed",
+        "params": {
+          "targetId": "D294B2DEC7CD929C580695F2AB0A3202"
+        }
+      }
+    },
+    {
+      "seq": 230,
+      "epoch": 1792517132469,
+      "dir": "recv",
+      "msg": {
+        "id": 53,
+        "result": {
+          "success": true
+        }
+      }
+    },
+    {
+      "seq": 231,
+      "epoch": 1792517132469,
+      "dir": "send",
+      "msg": {
+        "id": 54,
+        "method": "Target.closeTarget",
+        "params": {
+          "targetId": "7E711C222E9FC32F1B855B08979E83C1"
+        }
+      }
+    },
+    {
+      "seq": 232,
+      "epoch": 1792517132471,
+      "dir": "recv",
+      "msg": {
+        "id": 54,
+        "error": {
+          "code": -32602,
+          "message": "No target with given id found"
+        }
+      }
+    }
+  ],
+  "producerSha256": "8b005ad0d6db617f5d90717692db1f03237932e534729d9ef16cd1e07a1474cd",
+  "runtime": {
+    "node": "v24.21.0",
+    "chromiumLaunchPath": "/usr/bin/chromium",
+    "chromiumLaunchSha256": "eaed39c36bdf6ff6ff23f9f5215aaab017e59723b96f27f7fcd5e0be833a172b",
+    "hostChromiumFlagsConf": true,
+    "product": "Chrome/154.0.8037.97",
+    "protocolVersion": "1.3",
+    "browserWebSocketHost": "127.0.0.1:41821"
+  },
+  "launch": {
+    "requestedArgv": [
+      "--disable-field-trial-config",
+      "--disable-background-networking",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows",
+      "--disable-back-forward-cache",
+      "--disable-breakpad",
+      "--disable-client-side-phishing-detection",
+      "--disable-component-extensions-with-background-pages",
+      "--disable-component-update",
+      "--no-default-browser-check",
+      "--disable-default-apps",
+      "--disable-dev-shm-usage",
+      "--disable-edgeupdater",
+      "--disable-extensions",
+      "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+      "--enable-features=CDPScreenshotNewSurface",
+      "--allow-pre-commit-input",
+      "--disable-hang-monitor",
+      "--disable-ipc-flooding-protection",
+      "--disable-popup-blocking",
+      "--disable-prompt-on-repost",
+      "--disable-renderer-backgrounding",
+      "--disable-updater-scheduler",
+      "--force-color-profile=srgb",
+      "--metrics-recording-only",
+      "--no-first-run",
+      "--password-store=basic",
+      "--use-mock-keychain",
+      "--no-service-autorun",
+      "--export-tagged-pdf",
+      "--disable-search-engine-choice-screen",
+      "--unsafely-disable-devtools-self-xss-warnings",
+      "--edge-skip-compat-layer-relaunch",
+      "--disable-infobars",
+      "--disable-search-engine-choice-screen",
+      "--disable-sync",
+      "--enable-unsafe-swiftshader",
+      "--headless",
+      "--hide-scrollbars",
+      "--mute-audio",
+      "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+      "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+      "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting",
+      "--user-data-dir=/tmp/tabi-r17-lifecycle-OOXm7q",
+      "--remote-debugging-port=0",
+      "about:blank"
+    ],
+    "deltasFromR16": [
+      "dropped argv[0] /usr/lib/chromium/chromium (spawning the /usr/bin/chromium launcher)",
+      "--remote-debugging-pipe -> --remote-debugging-port=0 (browser websocket for this probe)",
+      "r16 temp --user-data-dir -> this run's fresh temp profile"
+    ],
+    "envOverrides": {
+      "HOME": "<temp>",
+      "XDG_CONFIG_HOME": "<temp>/.config"
+    },
+    "pid": 271951,
+    "cdpPort": 41821,
+    "procCmdlineEntries": 1,
+    "effectiveTitle": "/usr/lib/chromium/chromium --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1 --enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp --enable-blink-features=WebMCP,WebMCPTesting --user-data-dir=/tmp/tabi-r17-lifecycle-OOXm7q --remote-debugging-port=0 --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl about:blank",
+    "realExecutable": "/usr/lib/chromium/chromium",
+    "realExecutableSha256": "95b17db7512c34bf5d78a0d55e0e49719725c73736c47eb0a7a831553c4b330a",
+    "requestedFlagsMissingFromTitle": [],
+    "webmcpFlagTokensInTitle": [
+      "--enable-features=CDPScreenshotNewSurface",
+      "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting"
+    ],
+    "titleStartsWithRealExecutable": true
+  },
+  "browserLevelWebmcpEnable": {
+    "ok": false,
+    "error": {
+      "code": -32601,
+      "message": "'WebMCP.enable' wasn't found"
+    },
+    "method": "WebMCP.enable",
+    "epoch": 1792517105456
+  },
+  "timerSweepWaitMs": 7998,
+  "observationWindow": {
+    "sweepEpoch": 1792517132464,
+    "runStartEpoch": 1792517105147,
+    "totalWallMs": 27317
+  },
+  "lateResponses": [
+    {
+      "case": "invoke-unregister-while-pending",
+      "invocationId": "57BA08669FD5DE81D7158D9C30CE1DD9",
+      "elapsedSinceInvokeMs": 26181,
+      "responded": 1,
+      "responses": [
+        {
+          "epoch": 1792517108784,
+          "method": "WebMCP.toolResponded",
+          "sessionId": "593C4BF80A7C37D633DC125E33509744",
+          "params": {
+            "invocationId": "57BA08669FD5DE81D7158D9C30CE1DD9",
+            "status": "Completed",
+            "output": "slow:unregister-pending"
+          }
+        }
+      ]
+    },
+    {
+      "case": "invoke-navigation-pending",
+      "invocationId": "C38FCF6B7B4DF610F740FBE6139BA385",
+      "elapsedSinceInvokeMs": 23378,
+      "responded": 0,
+      "responses": []
+    },
+    {
+      "case": "signal-form-ab",
+      "invocationId": "8F7DD1D4F71D6F93B832D836BB311B5D",
+      "elapsedSinceInvokeMs": 14048,
+      "responded": 1,
+      "responses": [
+        {
+          "epoch": 1792517118416,
+          "method": "WebMCP.toolResponded",
+          "sessionId": "C7EAECA6B14BF3F04232F96868C17E03",
+          "params": {
+            "invocationId": "8F7DD1D4F71D6F93B832D836BB311B5D",
+            "status": "Completed",
+            "output": "sigraw:after-abort-bare"
+          }
+        }
+      ]
+    },
+    {
+      "case": "invoke-reload-pending",
+      "invocationId": "333EA53E7B3513E4D03F019641301F4D",
+      "elapsedSinceInvokeMs": 14025,
+      "responded": 0,
+      "responses": []
+    },
+    {
+      "case": "invoke-close-pending",
+      "invocationId": "358A96FE65BC99DEAB7E489290E81533",
+      "elapsedSinceInvokeMs": 10502,
+      "responded": 0,
+      "responses": []
+    }
+  ],
+  "eventTotals": {
+    "total": 116,
+    "byMethod": {
+      "Target.targetCreated": 7,
+      "Target.targetInfoChanged": 15,
+      "Target.attachedToTarget": 4,
+      "Runtime.executionContextCreated": 10,
+      "Page.frameStartedNavigating": 6,
+      "Page.frameStartedLoading": 6,
+      "Runtime.executionContextsCleared": 12,
+      "Page.frameNavigated": 6,
+      "WebMCP.toolsAdded": 19,
+      "Page.domContentEventFired": 6,
+      "Page.loadEventFired": 6,
+      "Page.frameStoppedLoading": 6,
+      "WebMCP.toolsRemoved": 3,
+      "WebMCP.toolInvoked": 5,
+      "WebMCP.toolResponded": 2,
+      "Inspector.detached": 1,
+      "Target.detachedFromTarget": 1,
+      "Target.targetDestroyed": 1
+    }
+  },
+  "verdict": {
+    "cases": 8,
+    "predictionsHeld": 8,
+    "predictionsFailed": [],
+    "unknowns": []
+  },
+  "shutdown": {
+    "signal": "SIGKILL",
+    "sentToProcessGroup": -271951,
+    "childExitEvent": true,
+    "pid": 271951,
+    "pidGone": true,
+    "killZero": "ESRCH",
+    "procExeStillPresent": false,
+    "survivors": []
+  }
+}

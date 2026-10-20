@@ -1,0 +1,34 @@
+probe=invoke-lifecycle out=.ufo/waves/round-17/probes/invoke-lifecycle.json
+browser=Chrome/154.0.8037.97 pid=271951 gone=true survivors=0
+--- case invoke-unknown-tool predictionHeld=true
+    invokeTool no-such-tool: {"code":-32602,"message":"Tool not found"}
+--- case invoke-after-unregister predictionHeld=true
+    getTools() before abort: {"result":{"type":"object","value":{"ok":true,"count":4,"tools":[{"name":"abortable","inputSchemaType":"string"},{"name":"echo","inputSchemaType":"string"},{"name":"slow","inputSchemaType":"string"},{"name":"slowlong","inputSchemaType":"str
+    abort options.signal for abortable: {"result":{"type":"object","value":{"ok":true,"name":"abortable"}}}
+    getTools() after abort: {"result":{"type":"object","value":{"ok":true,"count":3,"tools":[{"name":"echo","inputSchemaType":"string"},{"name":"slow","inputSchemaType":"string"},{"name":"slowlong","inputSchemaType":"string"}]}}}
+    invokeTool abortable after removal: {"code":-32602,"message":"Tool not found"}
+--- case invoke-unregister-while-pending predictionHeld=true
+    invokeTool slow: {"invocationId":"57BA08669FD5DE81D7158D9C30CE1DD9"}
+    abort signal for slow while pending: {"result":{"type":"object","value":{"ok":true,"name":"slow"}}}
+    toolResponded: {"invocationId":"57BA08669FD5DE81D7158D9C30CE1DD9","status":"Completed","output":"slow:unregister-pending"}
+--- case invoke-navigation-pending predictionHeld=true
+    invokeTool slowlong: {"invocationId":"C38FCF6B7B4DF610F740FBE6139BA385"}
+    Page.navigate /second while pending: {"frameId":"7440F2A02C4969C3C010B690AA0665E0","loaderId":"C2F165DE5144FFD0CCA89275E2997D35","isDownload":false}
+    navigatedFrameId=7440F2A02C4969C3C010B690AA0665E0 unchanged=true
+--- case invoke-after-navigation-old-name predictionHeld=true
+    invokeTool slowlong after navigation (new frameId): {"code":-32602,"message":"Tool not found"}
+--- case signal-form-ab predictionHeld=true
+    abort {signal} tool (sigopt): {"result":{"type":"object","value":{"ok":true,"name":"sigopt"}}}
+    abort bare-signal tool (sigraw): {"result":{"type":"object","value":{"ok":true,"name":"sigraw"}}}
+    getTools() after both aborts: {"result":{"type":"object","value":{"ok":true,"count":1,"tools":[{"name":"sigraw","inputSchemaType":"string"}]}}}
+    invokeTool sigopt ({signal} aborted): {"code":-32602,"message":"Tool not found"}
+    invokeTool sigraw (bare signal aborted): {"invocationId":"8F7DD1D4F71D6F93B832D836BB311B5D"}
+--- case invoke-reload-pending predictionHeld=true
+    invokeTool slowlong: {"invocationId":"333EA53E7B3513E4D03F019641301F4D"}
+    Page.reload while pending: {}
+--- case invoke-close-pending predictionHeld=true
+    invokeTool slowlong: {"invocationId":"358A96FE65BC99DEAB7E489290E81533"}
+    Target.closeTarget while pending: {"success":true}
+    Runtime.evaluate on the closed session (after close): {"code":-32001,"message":"Session with given id not found."}
+    closedSessionCommand={"ok":false,"error":{"code":-32001,"message":"Session with given id not found."},"timeout":false}
+verdict={"cases":8,"predictionsHeld":8,"predictionsFailed":[],"unknowns":[]}
