@@ -6,31 +6,51 @@
 //      round-13 producer (every(proof.listeningAfter === false) stored true under a raw
 //      post-close observation name). The raw per-worker proofs say false.
 //   2. receipt.runtime.node recorded 26.12.0 while pin.node.recorded is 24.21.0 and the
-//      enforced floor is minimumMajor 20. Node is not part of the runtime pin match.
+//      retrospective floor is minimumMajor 20. Node is not part of the runtime pin match.
+//
+// The floor is enforced retrospectively by THIS checker from committed bytes. The pinned
+// historical spec asserted RUNTIME.nodeMajor >= PIN.node.minimumMajor during the run, but
+// the producer's runtime pin match (receipt.runtime.pinned.matched) covers only
+// Playwright, Chromium and browser version; it never includes Node. node.recorded stays
+// descriptive and no artifact certifies Node equality. Free-text notes and unknown
+// extension keys stay advisory and outside the checked contract.
 //
 // This gate never rewrites the historical receipt, pin, worker, spec, or runner bytes.
 // The corrected sidecar is a digest-bound statement derived from those bytes only; it
 // is not a browser execution and cannot turn an unrelated failure into a pass.
 //
+// Outcome classes:
+//   exit 0  evaluated clean
+//   exit 1  evaluated, semantic invalidity (contradiction, mirror mismatch, bad claim)
+//   exit 2  could not evaluate: usage/surface refusal, unsafe output, or authenticated
+//           snapshot digest drift, which is classified as reason snapshot_tampered
+//
 // Modes:
 //   node scripts/check-aria-metadata.mjs
 //     Check the committed historical receipt and pin. The original contradiction is red.
 //   node scripts/check-aria-metadata.mjs --sidecar <corrected.json>
-//     Accept the sidecar only after digest/source/proof/Node checks and a post-correction
-//     re-evaluation of the same bytes.
+//     Accept the sidecar only after digest/source/proof/Node/mirror checks and a
+//     post-correction re-evaluation of the same bytes.
 //   node scripts/check-aria-metadata.mjs --derive <receipt> <pin> --out <path>
 //     Deterministically re-derive the sidecar under corpus/evidence/round-14/aria-metadata/.
 //   node scripts/check-aria-metadata.mjs --witness
 //     One checker, two observations: old summary red, qualified sidecar green, original
 //     receipt/pin byte-identical afterwards.
+//   node scripts/check-aria-metadata.mjs --witness-mirrors
+//     Differential proof for the emitted cleanup/qualification mirrors: a byte-derived
+//     baseline sidecar is accepted; an otherwise-valid sidecar with falsified mirrors is
+//     refused as semantic invalidity (exit 1). The round-14 checked-field boundary is
+//     reported as static data, never re-executed.
 //   node scripts/check-aria-metadata.mjs --self-test
-//     Isolated mkdtemp fixtures, each exercised through a subprocess of this CLI.
+//     Isolated mkdtemp fixtures, each CLI case exercised through a subprocess of this
+//     CLI; the deterministic derivation is counted separately as a helper.
 
 import {
   closeSync,
   constants,
   fstatSync,
   lstatSync,
+  mkdirSync,
   mkdtempSync,
   openSync,
   readFileSync,
@@ -51,12 +71,77 @@ const DEFAULT_RECEIPT = 'corpus/evidence/round-13/aria/receipt.json';
 const DEFAULT_PIN = 'corpus/evidence/round-13/aria/runtime-pin.json';
 const DEFAULT_MANIFEST = 'corpus/evidence/round-13/aria/manifest.json';
 const DEFAULT_SIDECAR = 'corpus/evidence/round-14/aria-metadata/corrected.json';
-const DEFAULT_EXPECTATIONS = 'corpus/evidence/round-14/aria-metadata/expected-fixtures.json';
+const DEFAULT_EXPECTATIONS = 'corpus/evidence/round-15/metadata/expected-fixtures.json';
+const DEFAULT_MIRROR_CONTRACT = 'corpus/evidence/round-15/metadata/mirror-contract.json';
 const EVIDENCE_DIR = 'corpus/evidence/round-14/aria-metadata';
 const WORKER_DIR = 'corpus/evidence/round-13/aria/actual/workers';
 const WORKER_PREFIX = `${WORKER_DIR}/`;
 const SIDECAR_SCHEMA = 'tabi-aria-metadata-correction-v1';
 const EXPECTATIONS_SCHEMA = 'tabi-aria-metadata-fixture-expectations-v1';
+const MIRROR_CONTRACT_SCHEMA = 'tabi-aria-metadata-mirror-contract-v1';
+
+const OUTCOME = Object.freeze({
+  evaluated: 'evaluated',
+  couldNotEvaluate: 'could_not_evaluate',
+});
+const REASON = Object.freeze({
+  clean: 'clean',
+  semanticInvalid: 'semantic_invalid',
+  snapshotTampered: 'snapshot_tampered',
+  snapshotUnavailable: 'snapshot_unavailable',
+});
+const EXIT = Object.freeze({ clean: 0, semantic: 1, couldNotEvaluate: 2 });
+const TAMPER_FINDING = 'snapshot_tampered';
+const UNAVAILABLE_FINDING = 'snapshot_unavailable';
+const TAMPER_STATUS = 'could_not_evaluate';
+
+// Every field buildSidecar emits under cleanup/qualification is part of the checked
+// contract. These tables are code-owned: the committed mirror-contract asset must match
+// them exactly, so a new emitted mirror cannot ship without an enforcement entry.
+const CLEANUP_MIRROR_FIELDS = Object.freeze({
+  perWorkerCount: 'integer',
+  allClosed: 'boolean',
+  allRefusedAfterClose: 'boolean',
+  allNotListeningAfter: 'boolean',
+  derivedListeningAfter: 'boolean',
+  summaryServerOk: 'boolean',
+});
+const QUALIFICATION_MIRROR_FIELDS = Object.freeze({
+  qualified: 'boolean',
+  proofCount: 'integer',
+  allProofsComplete: 'boolean',
+  allProofsSupportCorrection: 'boolean',
+  everyProofListensBefore: 'boolean',
+  everyProofClosed: 'boolean',
+  everyProofRefusedAfterClose: 'boolean',
+  everyProofNotListeningAfter: 'boolean',
+});
+
+// Immutable legacy boundary of the round-14 checker that produced the still-accepted
+// corrected sidecar. Reported as static data; never executed by this gate.
+const LEGACY_ROUND14 = Object.freeze({
+  revision: 'e570380d77180ab394256dd6187cac0c5eaf62ec',
+  checkerSha256: 'ef37387217c7c0b19f936be2c5b81ebe4ea25aafcdb84bc2af5250720e4343f6',
+  checkedCleanupMirrorFields: Object.freeze([]),
+  checkedQualificationFields: Object.freeze([
+    'qualified',
+    'proofCount',
+    'allProofsSupportCorrection',
+    'allProofsComplete',
+    'everyProofNotListeningAfter',
+  ]),
+  uncheckedQualificationFields: Object.freeze([
+    'everyProofListensBefore',
+    'everyProofClosed',
+    'everyProofRefusedAfterClose',
+  ]),
+  legacyExitForSameBytes: 0,
+  legacyExecuted: false,
+  basis:
+    'static subset derivation: the legacy checker compared only its listed field set, ' +
+    'so a sidecar differing solely in unchecked cleanup/qualification mirrors had no ' +
+    'failing checked finding',
+});
 
 // Immutable historical identities. These are code constants, never CLI inputs.
 const ANCHORS = Object.freeze({
@@ -319,6 +404,14 @@ function evaluateCleanup(receipt) {
     perWorker && perWorker.length > 0
       ? perWorker.every((proof) => proof?.refusedAfterClose === true)
       : null;
+  const derivedListensBefore =
+    perWorker && perWorker.length > 0
+      ? perWorker.every((proof) => proof?.listeningBefore === true)
+      : null;
+  const derivedNotListeningAfter =
+    perWorker && perWorker.length > 0
+      ? perWorker.every((proof) => proof?.listeningAfter === false)
+      : null;
   const derivedAllGood = allProofsPass;
 
   const findings = [];
@@ -418,6 +511,8 @@ function evaluateCleanup(receipt) {
       listeningAfter: derivedListeningAfter,
       closed: derivedClosed,
       refusedAfterClose: derivedRefused,
+      listensBefore: derivedListensBefore,
+      notListeningAfter: derivedNotListeningAfter,
       serverOk: derivedAllGood,
       allProofsPass,
       complete,
@@ -773,6 +868,155 @@ function evaluateAnchors(receiptEntry, pinEntry, pin, receipt, workerContext) {
   });
 }
 
+function verifySnapshot() {
+  // Authenticated input bytes are hashed before any semantic evaluator runs. A digest
+  // mismatch means the historical snapshot cannot be evaluated, never a failed verdict.
+  const checks = [
+    { label: 'receipt', path: DEFAULT_RECEIPT, expected: ANCHORS.receiptSha256 },
+    { label: 'pin', path: DEFAULT_PIN, expected: ANCHORS.pinSha256 },
+    { label: 'manifest', path: SOURCE_PATHS.manifest, expected: ANCHORS.manifestSha256 },
+    { label: 'spec', path: SOURCE_PATHS.spec, expected: ANCHORS.specSha256 },
+    { label: 'config', path: SOURCE_PATHS.config, expected: ANCHORS.configSha256 },
+    { label: 'producer', path: SOURCE_PATHS.producer, expected: ANCHORS.producerSourceSha256 },
+    ...Object.entries(ANCHORS.workers).map(([name, expected]) => ({
+      label: `worker:${name}`,
+      path: `${WORKER_DIR}/${name}`,
+      expected,
+    })),
+  ];
+  const mismatches = [];
+  const unavailable = [];
+  const entries = [];
+  for (const check of checks) {
+    const entry = readEntry(check.path);
+    entries.push({
+      label: check.label,
+      path: check.path,
+      readable: entry.ok,
+      reason: entry.ok ? null : entry.reason,
+      sha256: entry.ok ? entry.sha256 : null,
+      expectedSha256: check.expected,
+    });
+    if (!entry.ok) {
+      unavailable.push({
+        label: check.label,
+        path: check.path,
+        expectedSha256: check.expected,
+        reason: entry.reason,
+      });
+      continue;
+    }
+    if (entry.sha256 !== check.expected) {
+      mismatches.push({
+        label: check.label,
+        path: check.path,
+        expectedSha256: check.expected,
+        actualSha256: entry.sha256,
+        bytes: entry.bytesLength,
+      });
+    }
+  }
+  return {
+    ok: mismatches.length === 0 && unavailable.length === 0,
+    mismatches,
+    unavailable,
+    entries,
+  };
+}
+
+function snapshotOutcome(snapshot) {
+  if (snapshot.mismatches.length === 0 && snapshot.unavailable.length === 0) return null;
+  if (snapshot.mismatches.length > 0) {
+    return {
+      ok: false,
+      exit: EXIT.couldNotEvaluate,
+      classification: {
+        outcome: OUTCOME.couldNotEvaluate,
+        reason: REASON.snapshotTampered,
+      },
+      snapshot,
+      tamper: snapshot.mismatches,
+      findings: [
+        finding(TAMPER_FINDING, TAMPER_STATUS, {
+          code: 'R14-ARIA-SNAPSHOT-TAMPERED-01',
+          reason: REASON.snapshotTampered,
+          problems: snapshot.mismatches.map((entry) => `snapshot_tampered:${entry.label}`),
+          mismatches: snapshot.mismatches,
+          unavailable: snapshot.unavailable,
+          semanticEvaluation: 'skipped',
+        }),
+      ],
+    };
+  }
+  return {
+    ok: false,
+    exit: EXIT.couldNotEvaluate,
+    classification: {
+      outcome: OUTCOME.couldNotEvaluate,
+      reason: REASON.snapshotUnavailable,
+    },
+    snapshot,
+    tamper: [],
+    findings: [
+      finding(UNAVAILABLE_FINDING, TAMPER_STATUS, {
+        code: 'R14-ARIA-SNAPSHOT-UNAVAILABLE-01',
+        reason: REASON.snapshotUnavailable,
+        problems: snapshot.unavailable.map((entry) => `snapshot_unavailable:${entry.label}:${entry.reason}`),
+        unavailable: snapshot.unavailable,
+        semanticEvaluation: 'skipped',
+      }),
+    ],
+  };
+}
+
+function mirrorFieldProblems(group, observed, expected, fields) {
+  if (!isPlainObject(observed)) return [`${group}:missing`];
+  const problems = [];
+  const observedKeys = Object.keys(observed).sort();
+  const declaredKeys = Object.keys(fields).sort();
+  if (stableStringify(observedKeys) !== stableStringify(declaredKeys)) {
+    problems.push(`${group}:field_set`);
+  }
+  for (const [name, type] of Object.entries(fields)) {
+    const value = observed[name];
+    const typeOk = type === 'boolean' ? typeof value === 'boolean' : Number.isInteger(value);
+    if (!typeOk) problems.push(`${group}.${name}:type`);
+    else if (value !== expected[name]) problems.push(`${group}.${name}`);
+  }
+  return problems;
+}
+
+function expectedMirrorValues(proofs, cleanupDerived) {
+  // Independent recomputation from the raw per-worker proofs, not from another emitted
+  // sidecar. Empty or incomplete proof sets cannot support any all-true mirror.
+  const complete = cleanupDerived.complete === true && proofs.length >= 1;
+  const listensBefore =
+    complete && proofs.every((proof) => proof?.listeningBefore === true);
+  const closed = complete && proofs.every((proof) => proof?.closed === true);
+  const refused = complete && proofs.every((proof) => proof?.refusedAfterClose === true);
+  const notListening = complete && proofs.every((proof) => proof?.listeningAfter === false);
+  return {
+    cleanup: {
+      perWorkerCount: proofs.length,
+      allClosed: closed,
+      allRefusedAfterClose: refused,
+      allNotListeningAfter: notListening,
+      derivedListeningAfter: cleanupDerived.listeningAfter,
+      summaryServerOk: cleanupDerived.serverOk === true,
+    },
+    qualification: {
+      qualified: true,
+      proofCount: proofs.length,
+      allProofsComplete: cleanupDerived.complete === true,
+      allProofsSupportCorrection: cleanupDerived.allProofsPass === true,
+      everyProofListensBefore: listensBefore,
+      everyProofClosed: closed,
+      everyProofRefusedAfterClose: refused,
+      everyProofNotListeningAfter: notListening,
+    },
+  };
+}
+
 function prepareContext(receiptPathText, pinPathText) {
   const receiptRead = readJson(receiptPathText);
   const pinRead = readJson(pinPathText);
@@ -894,11 +1138,7 @@ function evaluateSidecar(pathText, context, preEvaluation) {
     sha256: sha256(stableStringify(proof)),
   }));
 
-  const schemaOk =
-    sidecar?.schema === SIDECAR_SCHEMA ||
-    (typeof sidecar?.kind === 'string' &&
-      /metadata/i.test(sidecar.kind) &&
-      /correct/i.test(sidecar.kind));
+  const schemaOk = sidecar?.schema === SIDECAR_SCHEMA;
   pushFinding(findings, 'R14-ARIA-SIDECAR-SCHEMA-01', schemaOk, {
     schema: sidecar?.schema ?? null,
     kind: sidecar?.kind ?? null,
@@ -959,6 +1199,12 @@ function evaluateSidecar(pathText, context, preEvaluation) {
   if (source.producer?.sourceSha256 !== ANCHORS.producerSourceSha256) {
     bindingProblems.push('source.producer.sourceSha256');
   }
+  if (source.spec?.sha256 !== ANCHORS.specSha256) {
+    bindingProblems.push('source.spec.sha256');
+  }
+  if (source.manifest?.sha256 !== ANCHORS.manifestSha256) {
+    bindingProblems.push('source.manifest.sha256');
+  }
   pushFinding(findings, 'R14-ARIA-SIDECAR-BINDING-01', bindingProblems.length === 0, {
     problems: [...new Set(bindingProblems)],
     receiptSha256: context.receiptRead.entry.sha256 ?? null,
@@ -989,6 +1235,12 @@ function evaluateSidecar(pathText, context, preEvaluation) {
   if (correction?.supportingProofs !== proofs.length) {
     correctionProblems.push('corrections[0].supportingProofs');
   }
+  if (correction?.derived !== cleanupDerived.listeningAfter) {
+    correctionProblems.push('corrections[0].derived');
+  }
+  if (typeof correction?.rule !== 'string' || correction.rule.length === 0) {
+    correctionProblems.push('corrections[0].rule');
+  }
   const mirror = isPlainObject(sidecar?.correction) ? sidecar.correction : null;
   if (mirror?.field !== 'cleanup.server.listeningAfter') correctionProblems.push('correction.field');
   if (mirror?.pointer !== '/cleanup/server/listeningAfter') correctionProblems.push('correction.pointer');
@@ -996,6 +1248,7 @@ function evaluateSidecar(pathText, context, preEvaluation) {
   if (mirror?.corrected !== correction?.to) correctionProblems.push('correction.corrected');
   if (mirror?.derived !== cleanupDerived.listeningAfter) correctionProblems.push('correction.derived');
   if (mirror?.supportingProofs !== proofs.length) correctionProblems.push('correction.supportingProofs');
+  if (mirror?.rule !== correction?.rule) correctionProblems.push('correction.rule');
   if (!cleanupDerived.allProofsPass) correctionProblems.push('proofs_do_not_all_pass');
   if (cleanupDerived.complete !== true) correctionProblems.push('proofs_not_complete');
   if (cleanupDerived.listeningAfter !== false) correctionProblems.push('derived_not_false');
@@ -1013,24 +1266,26 @@ function evaluateSidecar(pathText, context, preEvaluation) {
   if (sidecarNode?.recorded !== node.recorded) nodeProblems.push('node.recorded');
   if (sidecarNode?.minimumMajor !== node.minimumMajor) nodeProblems.push('node.minimumMajor');
   if (sidecarNode?.exactMatch !== node.exactMatch) nodeProblems.push('node.exactMatch');
-  if (sidecarNode?.exactRecordedMatch !== undefined &&
-      sidecarNode.exactRecordedMatch !== node.exactMatch) {
+  if (sidecarNode?.exactRecordedMatch !== node.exactMatch) {
     nodeProblems.push('node.exactRecordedMatch');
   }
-  if (sidecarNode?.observedMatchesRecorded !== undefined &&
-      sidecarNode.observedMatchesRecorded !== node.observedMatchesRecorded) {
+  if (sidecarNode?.observedMatchesRecorded !== node.observedMatchesRecorded) {
     nodeProblems.push('node.observedMatchesRecorded');
   }
   if (sidecarNode?.minimumMajorSatisfied !== node.minimumMajorSatisfied) {
     nodeProblems.push('node.minimumMajorSatisfied');
   }
   if (sidecarNode?.descriptiveOnly !== true) nodeProblems.push('node.descriptiveOnly');
-  if (sidecarNode?.recordedRole !== 'descriptive' && sidecarNode?.recordedIsDescriptive !== true) {
-    nodeProblems.push('node.recordedRole');
+  if (sidecarNode?.recordedRole !== 'descriptive') nodeProblems.push('node.recordedRole');
+  if (sidecarNode?.recordedIsDescriptive !== true) {
+    nodeProblems.push('node.recordedIsDescriptive');
   }
   pushFinding(findings, 'R14-ARIA-SIDECAR-NODE-CLAIM-01', nodeProblems.length === 0, {
     problems: [...new Set(nodeProblems)],
     computed: node,
+    enforcedBy: 'retrospective-checker',
+    historicalRuntimePinMatchIncludesNode: false,
+    historicalSpecEnforcedMinimumMajor: true,
   });
 
   const provenanceProblems = [];
@@ -1057,27 +1312,46 @@ function evaluateSidecar(pathText, context, preEvaluation) {
     problems: provenanceProblems,
   });
 
+  const expectedMirrors = expectedMirrorValues(proofs, cleanupDerived);
+  const cleanupMirrorProblems = mirrorFieldProblems(
+    'cleanup',
+    sidecar?.cleanup,
+    expectedMirrors.cleanup,
+    CLEANUP_MIRROR_FIELDS,
+  );
+  pushFinding(
+    findings,
+    'R14-ARIA-SIDECAR-CLEANUP-MIRROR-01',
+    cleanupMirrorProblems.length === 0,
+    {
+      problems: cleanupMirrorProblems,
+      observed: isPlainObject(sidecar?.cleanup) ? sidecar.cleanup : null,
+      expected: expectedMirrors.cleanup,
+    },
+  );
+
   const qualificationProblems = [];
   if (sidecar?.qualified !== true) qualificationProblems.push('qualified');
   if (sidecar?.status !== 'qualified') qualificationProblems.push('status');
-  if (sidecar?.qualification?.qualified !== true) qualificationProblems.push('qualification.qualified');
-  if (sidecar?.qualification?.proofCount !== proofs.length) {
-    qualificationProblems.push('qualification.proofCount');
-  }
-  if (sidecar?.qualification?.allProofsSupportCorrection !== true) {
-    qualificationProblems.push('qualification.allProofsSupportCorrection');
-  }
-  if (sidecar?.qualification?.allProofsComplete !== true) {
-    qualificationProblems.push('qualification.allProofsComplete');
-  }
-  if (sidecar?.qualification?.everyProofNotListeningAfter !== true) {
-    qualificationProblems.push('qualification.everyProofNotListeningAfter');
-  }
+  if (proofs.length === 0) qualificationProblems.push('qualification.proofCount:empty');
+  qualificationProblems.push(
+    ...mirrorFieldProblems(
+      'qualification',
+      sidecar?.qualification,
+      expectedMirrors.qualification,
+      QUALIFICATION_MIRROR_FIELDS,
+    ),
+  );
   pushFinding(
     findings,
     'R14-ARIA-SIDECAR-QUALIFICATION-01',
     qualificationProblems.length === 0,
-    { problems: qualificationProblems, proofCount: proofs.length },
+    {
+      problems: [...new Set(qualificationProblems)],
+      proofCount: proofs.length,
+      observed: isPlainObject(sidecar?.qualification) ? sidecar.qualification : null,
+      expected: expectedMirrors.qualification,
+    },
   );
 
   const postEvaluation = evaluateAll(
@@ -1109,12 +1383,28 @@ function evaluateSidecar(pathText, context, preEvaluation) {
 }
 
 function runCheck({ receiptPathText, pinPathText, sidecarPathText }) {
+  const snapshot = verifySnapshot();
+  if (!snapshot.ok) {
+    return {
+      ...snapshotOutcome(snapshot),
+      context: null,
+      preEvaluation: null,
+      postEvaluation: null,
+      sidecarResult: null,
+      accepted: false,
+    };
+  }
   const context = prepareContext(receiptPathText, pinPathText);
   const preEvaluation = evaluateAll(context.receipt, context.pin, context);
   if (!sidecarPathText) {
     return {
       ok: preEvaluation.ok,
-      exit: preEvaluation.ok ? 0 : 1,
+      exit: preEvaluation.ok ? EXIT.clean : EXIT.semantic,
+      classification: {
+        outcome: OUTCOME.evaluated,
+        reason: preEvaluation.ok ? REASON.clean : REASON.semanticInvalid,
+      },
+      snapshot,
       context,
       preEvaluation,
       postEvaluation: null,
@@ -1132,7 +1422,12 @@ function runCheck({ receiptPathText, pinPathText, sidecarPathText }) {
     sidecarResult.findings.every((entry) => entry.status === 'pass');
   return {
     ok,
-    exit: ok ? 0 : 1,
+    exit: ok ? EXIT.clean : EXIT.semantic,
+    classification: {
+      outcome: OUTCOME.evaluated,
+      reason: ok ? REASON.clean : REASON.semanticInvalid,
+    },
+    snapshot,
     context,
     preEvaluation,
     postEvaluation: sidecarResult.postEvaluation,
@@ -1171,7 +1466,7 @@ function buildSidecar({ context, preEvaluation, receiptLabel, pinLabel }) {
     sha256: context.pinRead.entry.sha256,
     bytes: context.pinRead.entry.bytesLength,
   };
-  const allValuesOk = cleanupDerived.allProofsPass === true;
+  const expectedMirrors = expectedMirrorValues(proofs, cleanupDerived);
   return {
     schema: SIDECAR_SCHEMA,
     kind: 'cleanup-and-node-metadata-correction',
@@ -1257,26 +1552,28 @@ function buildSidecar({ context, preEvaluation, receiptLabel, pinLabel }) {
       recordedIsDescriptive: true,
       note:
         `observed Node ${node.observed} is not the exact recorded ${node.recorded} pin; ` +
-        `node.recorded is descriptive metadata and node.minimumMajor=${node.minimumMajor} ` +
-        'is the enforced floor',
+        `node.recorded is descriptive metadata. The frozen round-13 spec enforced ` +
+        `RUNTIME.nodeMajor >= pin.node.minimumMajor=${node.minimumMajor} per case, while the ` +
+        "launcher's runtime pin summary never included Node; this retrospective checker " +
+        're-derives the same floor from committed bytes.',
     },
     cleanup: {
-      perWorkerCount: proofs.length,
-      allClosed: cleanupDerived.closed,
-      allRefusedAfterClose: cleanupDerived.refusedAfterClose,
-      allNotListeningAfter: allValuesOk,
-      derivedListeningAfter: corrected,
-      summaryServerOk: cleanupDerived.serverOk,
+      perWorkerCount: expectedMirrors.cleanup.perWorkerCount,
+      allClosed: expectedMirrors.cleanup.allClosed,
+      allRefusedAfterClose: expectedMirrors.cleanup.allRefusedAfterClose,
+      allNotListeningAfter: expectedMirrors.cleanup.allNotListeningAfter,
+      derivedListeningAfter: expectedMirrors.cleanup.derivedListeningAfter,
+      summaryServerOk: expectedMirrors.cleanup.summaryServerOk,
     },
     qualification: {
-      qualified: true,
-      proofCount: proofs.length,
-      allProofsComplete: cleanupDerived.complete,
-      allProofsSupportCorrection: allValuesOk,
-      everyProofListensBefore: allValuesOk,
-      everyProofClosed: cleanupDerived.closed === true,
-      everyProofRefusedAfterClose: cleanupDerived.refusedAfterClose === true,
-      everyProofNotListeningAfter: allValuesOk,
+      qualified: expectedMirrors.qualification.qualified,
+      proofCount: expectedMirrors.qualification.proofCount,
+      allProofsComplete: expectedMirrors.qualification.allProofsComplete,
+      allProofsSupportCorrection: expectedMirrors.qualification.allProofsSupportCorrection,
+      everyProofListensBefore: expectedMirrors.qualification.everyProofListensBefore,
+      everyProofClosed: expectedMirrors.qualification.everyProofClosed,
+      everyProofRefusedAfterClose: expectedMirrors.qualification.everyProofRefusedAfterClose,
+      everyProofNotListeningAfter: expectedMirrors.qualification.everyProofNotListeningAfter,
     },
   };
 }
@@ -1318,6 +1615,10 @@ function resolveOutPath(outArg) {
 }
 
 function runDerive({ receiptPathText, pinPathText, outArg }) {
+  const snapshot = verifySnapshot();
+  if (!snapshot.ok) {
+    return { ...snapshotOutcome(snapshot), out: null, sidecar: null };
+  }
   const out = resolveOutPath(outArg);
   if (!out.ok) {
     return {
@@ -1487,6 +1788,35 @@ function runWitness({ receiptPathText, pinPathText, sidecarPathText }) {
   const beforeReceipt = readEntry(receiptPathText);
   const beforePin = readEntry(pinPathText);
   const red = runCheck({ receiptPathText, pinPathText, sidecarPathText: null });
+  if (red.exit === EXIT.couldNotEvaluate) {
+    const afterReceipt = readEntry(receiptPathText);
+    const afterPin = readEntry(pinPathText);
+    const originalUnchanged =
+      beforeReceipt.ok &&
+      afterReceipt.ok &&
+      beforePin.ok &&
+      afterPin.ok &&
+      beforeReceipt.sha256 === afterReceipt.sha256 &&
+      beforePin.sha256 === afterPin.sha256;
+    return {
+      ok: false,
+      exit: EXIT.couldNotEvaluate,
+      classification: red.classification,
+      red,
+      green: null,
+      redFinding: null,
+      originalUnchanged,
+      receipt: {
+        beforeSha256: beforeReceipt.ok ? beforeReceipt.sha256 : null,
+        afterSha256: afterReceipt.ok ? afterReceipt.sha256 : null,
+      },
+      pin: {
+        beforeSha256: beforePin.ok ? beforePin.sha256 : null,
+        afterSha256: afterPin.ok ? afterPin.sha256 : null,
+      },
+      sidecarPath: sidecarPathText,
+    };
+  }
   if (!sidecarPathText) {
     const sidecarEntry = readEntry(DEFAULT_SIDECAR);
     if (sidecarEntry.ok) sidecarPathText = DEFAULT_SIDECAR;
@@ -1502,13 +1832,20 @@ function runWitness({ receiptPathText, pinPathText, sidecarPathText }) {
     beforePin.ok &&
     afterPin.ok &&
     beforeReceipt.sha256 === afterReceipt.sha256 &&
-    beforePin.sha256 === afterPin.sha256;
+    beforePin.sha256 === afterPin.sha256 &&
+    red.context?.receiptRead?.entry?.sha256 === beforeReceipt.sha256 &&
+    red.context?.pinRead?.entry?.sha256 === beforePin.sha256;
+  const authenticatedAnchors =
+    beforeReceipt.sha256 === ANCHORS.receiptSha256 && beforePin.sha256 === ANCHORS.pinSha256;
   const redFinding = red.findings.find(
     (entry) =>
       entry.id === 'R14-ARIA-CLEANUP-LISTENING-AFTER-01' && entry.status === 'fail',
   );
-  const greenOk = Boolean(green && green.exit === 0 && green.accepted === true);
-  const ok = Boolean(red.exit === 1 && redFinding && greenOk && originalUnchanged);
+  const greenOk = Boolean(green && green.exit === EXIT.clean && green.accepted === true);
+  const tamperPhase = [red, green].find((phase) => phase?.exit === EXIT.couldNotEvaluate) ?? null;
+  const ok = Boolean(
+    !tamperPhase && red.exit === EXIT.semantic && redFinding && greenOk && originalUnchanged,
+  );
   const redCommand = [
     'node',
     'scripts/check-aria-metadata.mjs',
@@ -1523,30 +1860,46 @@ function runWitness({ receiptPathText, pinPathText, sidecarPathText }) {
   const phaseStdout = (phase, command) => {
     if (!phase || !command) return null;
     const failed = phase.findings.filter((entry) => entry.status !== 'pass').map((entry) => entry.id);
+    const verdict =
+      phase.exit === EXIT.couldNotEvaluate ? 'could-not-evaluate' : phase.ok ? 'clean' : 'red';
     return [
       `command: ${command.join(' ')}`,
-      `ARIA_METADATA check verdict=${phase.ok ? 'clean' : 'red'} findings=${phase.findings.length} ` +
-        `failed=${failed.length} accepted=${phase.accepted === true}`,
+      `ARIA_METADATA check verdict=${verdict} findings=${phase.findings.length} ` +
+        `failed=${failed.length} accepted=${phase.accepted === true}` +
+        (phase.classification ? ` reason=${phase.classification.reason}` : ''),
       ...(failed.length > 0 ? [`ARIA_METADATA findings ${failed.join(',')}`] : []),
     ].join('\n');
   };
   return {
     ok,
-    exit: ok ? 0 : 1,
+    exit: tamperPhase
+      ? EXIT.couldNotEvaluate
+      : ok
+        ? EXIT.clean
+        : EXIT.semantic,
+    classification: tamperPhase
+      ? tamperPhase.classification
+      : {
+          outcome: OUTCOME.evaluated,
+          reason: ok ? REASON.clean : REASON.semanticInvalid,
+        },
     red: {
       ...red,
+      classification: red.classification,
       command: redCommand,
       stdout: phaseStdout(red, redCommand),
     },
     green: green
       ? {
           ...green,
+          classification: green.classification,
           command: greenCommand,
           stdout: phaseStdout(green, greenCommand),
         }
       : null,
     redFinding: redFinding?.id ?? null,
     originalUnchanged,
+    authenticatedAnchors,
     receipt: {
       beforeSha256: beforeReceipt.ok ? beforeReceipt.sha256 : null,
       afterSha256: afterReceipt.ok ? afterReceipt.sha256 : null,
@@ -1558,6 +1911,173 @@ function runWitness({ receiptPathText, pinPathText, sidecarPathText }) {
     sidecarPath: sidecarPathText,
   };
 }
+
+function runWitnessMirrors({ receiptPathText, pinPathText }) {
+  const snapshot = verifySnapshot();
+  if (!snapshot.ok) {
+    return {
+      ...snapshotOutcome(snapshot),
+      baseline: null,
+      mirror: null,
+      legacy: LEGACY_ROUND14,
+      originalUnchanged: false,
+    };
+  }
+  const beforeReceipt = readEntry(receiptPathText);
+  const beforePin = readEntry(pinPathText);
+  const context = prepareContext(receiptPathText, pinPathText);
+  const preEvaluation = evaluateAll(context.receipt, context.pin, context);
+  const failing = preEvaluation.findings.filter((entry) => entry.status !== 'pass');
+  const failures = failing.map((entry) => entry.id);
+  const expectedFailureSet = ['R14-ARIA-CLEANUP-LISTENING-AFTER-01'];
+  const onlyContradiction =
+    failures.length === expectedFailureSet.length &&
+    expectedFailureSet.every((id) => failures.includes(id));
+  const shapeOk =
+    onlyContradiction &&
+    context.receipt?.verdict === 'pass' &&
+    preEvaluation.derived.cleanup.complete === true &&
+    preEvaluation.derived.cleanup.allProofsPass === true &&
+    preEvaluation.derived.cleanup.listeningAfter === false;
+  if (!shapeOk) {
+    return {
+      ok: false,
+      exit: EXIT.semantic,
+      classification: {
+        outcome: OUTCOME.evaluated,
+        reason: REASON.semanticInvalid,
+      },
+      snapshot,
+      findings: [
+        ...preEvaluation.findings,
+        finding('R14-ARIA-WITNESS-MIRRORS-01', 'fail', {
+          reason: 'source_pair_not_in_expected_shape',
+          failures,
+          expectedFailures: expectedFailureSet,
+          cleanup: preEvaluation.derived.cleanup,
+        }),
+      ],
+      baseline: null,
+      mirror: null,
+      legacy: LEGACY_ROUND14,
+      originalUnchanged: false,
+    };
+  }
+  const receiptLabel = repoRelative(context.receiptRead.entry.abs);
+  const pinLabel = repoRelative(context.pinRead.entry.abs);
+  const baselineSidecar = buildSidecar({ context, preEvaluation, receiptLabel, pinLabel });
+  const mirrorSidecar = clone(baselineSidecar);
+  // Falsify only fields the round-14 checker never read. qualification
+  // everyProofNotListeningAfter is an old checked field and stays true so the legacy
+  // subset would still accept the same bytes.
+  mirrorSidecar.cleanup = {
+    perWorkerCount: baselineSidecar.cleanup.perWorkerCount + 1,
+    allClosed: false,
+    allRefusedAfterClose: false,
+    allNotListeningAfter: false,
+    derivedListeningAfter: true,
+    summaryServerOk: false,
+  };
+  mirrorSidecar.qualification.everyProofListensBefore = false;
+  mirrorSidecar.qualification.everyProofClosed = false;
+  mirrorSidecar.qualification.everyProofRefusedAfterClose = false;
+  const dir = mkdtempSync(join(tmpdir(), 'tabi-r15-mirror-witness-'));
+  const baselineBytes = Buffer.from(stableStringify(baselineSidecar), 'utf8');
+  const mirrorBytes = Buffer.from(stableStringify(mirrorSidecar), 'utf8');
+  const baselinePath = join(dir, 'baseline.json');
+  const mirrorPath = join(dir, 'mirror.json');
+  let baselineResult;
+  let mirrorResult;
+  try {
+    writeFileSync(baselinePath, baselineBytes);
+    writeFileSync(mirrorPath, mirrorBytes);
+    baselineResult = evaluateSidecar(baselinePath, context, preEvaluation);
+    mirrorResult = evaluateSidecar(mirrorPath, context, preEvaluation);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+  const baselineAccepted =
+    baselineResult.accepted === true && baselineResult.postEvaluation?.ok === true;
+  const mirrorFindings = mirrorResult.findings;
+  const cleanupFinding = mirrorFindings.find(
+    (entry) => entry.id === 'R14-ARIA-SIDECAR-CLEANUP-MIRROR-01',
+  );
+  const qualificationFinding = mirrorFindings.find(
+    (entry) => entry.id === 'R14-ARIA-SIDECAR-QUALIFICATION-01',
+  );
+  const mirrorRejected =
+    mirrorResult.accepted === false &&
+    cleanupFinding?.status === 'fail' &&
+    qualificationFinding?.status === 'fail';
+  const mirrorQualificationFields = mirrorSidecar.qualification;
+  const legacyQualificationOk =
+    mirrorQualificationFields.qualified === true &&
+    mirrorQualificationFields.proofCount ===
+      (Array.isArray(context.receipt?.cleanup?.server?.perWorker)
+        ? context.receipt.cleanup.server.perWorker.length
+        : 0) &&
+    mirrorQualificationFields.allProofsSupportCorrection === true &&
+    mirrorQualificationFields.allProofsComplete === true &&
+    mirrorQualificationFields.everyProofNotListeningAfter === true;
+  const legacyCheckedFindingsAllPass = baselineAccepted && legacyQualificationOk;
+  const afterReceipt = readEntry(receiptPathText);
+  const afterPin = readEntry(pinPathText);
+  const originalUnchanged =
+    beforeReceipt.ok &&
+    afterReceipt.ok &&
+    beforePin.ok &&
+    afterPin.ok &&
+    beforeReceipt.sha256 === afterReceipt.sha256 &&
+    beforePin.sha256 === afterPin.sha256;
+  const authenticatedAnchors =
+    beforeReceipt.sha256 === ANCHORS.receiptSha256 && beforePin.sha256 === ANCHORS.pinSha256;
+  const ok = Boolean(
+    baselineAccepted && mirrorRejected && legacyCheckedFindingsAllPass && originalUnchanged,
+  );
+  const failedIds = (phase) =>
+    phase.findings.filter((entry) => entry.status !== 'pass').map((entry) => entry.id);
+  return {
+    ok,
+    exit: ok ? EXIT.clean : EXIT.semantic,
+    classification: {
+      outcome: OUTCOME.evaluated,
+      reason: ok ? REASON.clean : REASON.semanticInvalid,
+    },
+    snapshot,
+    baseline: {
+      exit: baselineAccepted ? EXIT.clean : EXIT.semantic,
+      accepted: baselineResult.accepted === true,
+      sha256: sha256(baselineBytes),
+      bytes: baselineBytes.length,
+      failFindings: failedIds(baselineResult),
+    },
+    mirror: {
+      exit: EXIT.semantic,
+      accepted: mirrorResult.accepted === true,
+      sha256: sha256(mirrorBytes),
+      bytes: mirrorBytes.length,
+      failFindings: failedIds(mirrorResult),
+      cleanupProblems: cleanupFinding?.detail?.problems ?? null,
+      qualificationProblems: qualificationFinding?.detail?.problems ?? null,
+    },
+    legacy: {
+      ...LEGACY_ROUND14,
+      qualificationWouldPass: legacyQualificationOk,
+      legacyCheckedFindingsAllPass,
+    },
+    originalUnchanged,
+    authenticatedAnchors,
+    receipt: {
+      beforeSha256: beforeReceipt.ok ? beforeReceipt.sha256 : null,
+      afterSha256: afterReceipt.ok ? afterReceipt.sha256 : null,
+    },
+    pin: {
+      beforeSha256: beforePin.ok ? beforePin.sha256 : null,
+      afterSha256: afterPin.ok ? afterPin.sha256 : null,
+    },
+  };
+}
+
 
 function fixtureReceipt({
   summaryListeningAfter = false,
@@ -1652,32 +2172,185 @@ function writeFixture(dir, name, value) {
   return { name, bytes: bytes.length, sha256: sha256(bytes) };
 }
 
+function mirrorInputList() {
+  const workerEntries = Object.keys(ANCHORS.workers).map((name) => ({
+    rel: `${WORKER_DIR}/${name}`,
+    sourceAbs: resolve(ROOT, WORKER_DIR, name),
+  }));
+  return [
+    { rel: 'scripts/check-aria-metadata.mjs', sourceAbs: SCRIPT },
+    { rel: SOURCE_PATHS.producer, sourceAbs: resolve(ROOT, SOURCE_PATHS.producer) },
+    { rel: DEFAULT_RECEIPT, sourceAbs: resolve(ROOT, DEFAULT_RECEIPT) },
+    { rel: DEFAULT_PIN, sourceAbs: resolve(ROOT, DEFAULT_PIN) },
+    { rel: SOURCE_PATHS.manifest, sourceAbs: resolve(ROOT, SOURCE_PATHS.manifest) },
+    { rel: SOURCE_PATHS.spec, sourceAbs: resolve(ROOT, SOURCE_PATHS.spec) },
+    { rel: SOURCE_PATHS.config, sourceAbs: resolve(ROOT, SOURCE_PATHS.config) },
+    { rel: DEFAULT_SIDECAR, sourceAbs: resolve(ROOT, DEFAULT_SIDECAR) },
+    ...workerEntries,
+  ];
+}
+
+function mirrorTargetFor(tamper) {
+  if (tamper === 'receipt' || tamper === 'receipt-clean') return DEFAULT_RECEIPT;
+  if (tamper === 'pin') return DEFAULT_PIN;
+  if (tamper === 'manifest') return SOURCE_PATHS.manifest;
+  if (tamper === 'spec') return SOURCE_PATHS.spec;
+  if (tamper === 'config') return SOURCE_PATHS.config;
+  if (tamper === 'producer') return SOURCE_PATHS.producer;
+  if (tamper === 'worker') {
+    const name = Object.keys(ANCHORS.workers)[0];
+    return name ? `${WORKER_DIR}/${name}` : null;
+  }
+  return null;
+}
+
+function tamperedBytes(target, bytes, tamper) {
+  if (tamper === 'receipt-clean') {
+    const value = JSON.parse(bytes.toString('utf8'));
+    value.cleanup.server.listeningAfter = false;
+    return Buffer.from(stableStringify(value), 'utf8');
+  }
+  const suffix = target.endsWith('.json') ? '\n' : '\n// round15 selftest tamper\n';
+  return Buffer.concat([bytes, Buffer.from(suffix, 'utf8')]);
+}
+
+function mirrorExpectedAnchor(rel) {
+  if (rel === DEFAULT_RECEIPT) return ANCHORS.receiptSha256;
+  if (rel === DEFAULT_PIN) return ANCHORS.pinSha256;
+  if (rel === SOURCE_PATHS.manifest) return ANCHORS.manifestSha256;
+  if (rel === SOURCE_PATHS.spec) return ANCHORS.specSha256;
+  if (rel === SOURCE_PATHS.config) return ANCHORS.configSha256;
+  if (rel === SOURCE_PATHS.producer) return ANCHORS.producerSourceSha256;
+  if (rel.startsWith(WORKER_PREFIX)) {
+    return ANCHORS.workers[rel.slice(WORKER_PREFIX.length)] ?? null;
+  }
+  return null;
+}
+
+function buildMirrorRoot(baseDir, tamper) {
+  const root = mkdtempSync(join(baseDir, 'mirror-'));
+  const target = tamper ? mirrorTargetFor(tamper) : null;
+  const files = [];
+  for (const item of mirrorInputList()) {
+    const source = readEntry(item.sourceAbs);
+    if (!source.ok) throw new Error(`mirror source unreadable: ${item.rel}:${source.reason}`);
+    const anchor = mirrorExpectedAnchor(item.rel);
+    if (anchor && source.sha256 !== anchor) {
+      throw new Error(`mirror source drifted: ${item.rel}:${source.sha256}`);
+    }
+    const bytes = item.rel === target ? tamperedBytes(target, source.bytes, tamper) : source.bytes;
+    const destination = join(root, item.rel);
+    mkdirSync(dirname(destination), { recursive: true });
+    writeFileSync(destination, bytes);
+    files.push({ path: item.rel, bytes: bytes.length, sha256: sha256(bytes) });
+  }
+  return { root, files, tamperedPath: target };
+}
+
+function spawnChecker(scriptPath, args, cwd) {
+  const child = spawnSync(process.execPath, [scriptPath, ...args], {
+    cwd,
+    encoding: 'utf8',
+    timeout: 30000,
+    maxBuffer: 16 * 1024 * 1024,
+    env: { PATH: process.env.PATH, HOME: process.env.HOME, TZ: 'UTC' },
+  });
+  let payload = null;
+  const jsonLine = (child.stdout || '')
+    .split('\n')
+    .find((line) => line.startsWith('ARIA_METADATA_JSON '));
+  if (jsonLine) {
+    try {
+      payload = JSON.parse(jsonLine.slice('ARIA_METADATA_JSON '.length));
+    } catch {
+      payload = null;
+    }
+  }
+  return { child, payload };
+}
+
 function runSelfTest() {
-  const results = [];
+  const cliCases = [];
+  const helpers = [];
   const fixtureResults = [];
   const expectRead = readJson(DEFAULT_EXPECTATIONS);
-  if (!expectRead.entry.ok || !expectRead.load.ok || expectRead.load.value?.schema !== EXPECTATIONS_SCHEMA) {
+  const contractRead = readJson(DEFAULT_MIRROR_CONTRACT);
+  const contractProblems = [];
+  if (!expectRead.entry.ok || !expectRead.load.ok ||
+      expectRead.load.value?.schema !== EXPECTATIONS_SCHEMA) {
+    contractProblems.push(
+      ...(expectRead.entry.ok ? [] : [`expectations:${expectRead.entry.reason}`]),
+      ...(expectRead.load.ok ? [] : [`expectations:${expectRead.load.reason}`]),
+      ...(expectRead.load.ok && expectRead.load.value?.schema !== EXPECTATIONS_SCHEMA
+        ? ['expectations:schema']
+        : []),
+    );
+  }
+  if (!contractRead.entry.ok || !contractRead.load.ok ||
+      contractRead.load.value?.schema !== MIRROR_CONTRACT_SCHEMA) {
+    contractProblems.push(
+      ...(contractRead.entry.ok ? [] : [`contract:${contractRead.entry.reason}`]),
+      ...(contractRead.load.ok ? [] : [`contract:${contractRead.load.reason}`]),
+      ...(contractRead.load.ok && contractRead.load.value?.schema !== MIRROR_CONTRACT_SCHEMA
+        ? ['contract:schema']
+        : []),
+    );
+  }
+  if (contractProblems.length > 0) {
     const payload = {
       schema: 'tabi-aria-metadata-selftest-v1',
       ok: false,
       exit: 1,
       findings: [
         finding('R14-ARIA-SELFTEST-01', 'fail', {
-          problems: [
-            ...(expectRead.entry.ok ? [] : [`expectations:${expectRead.entry.reason}`]),
-            ...(expectRead.load.ok ? [] : [`expectations:${expectRead.load.reason}`]),
-          ],
-          path: DEFAULT_EXPECTATIONS,
+          problems: contractProblems,
+          expectationsPath: DEFAULT_EXPECTATIONS,
+          contractPath: DEFAULT_MIRROR_CONTRACT,
         }),
       ],
       cases: [],
+      cliCaseCount: 0,
+      helperCaseCount: 0,
+      caseCount: 0,
     };
-    console.log('ARIA_METADATA_SELFTEST verdict=blocked cases=0');
+    console.log('ARIA_METADATA_SELFTEST verdict=blocked cli_cases=0 helpers=0');
     console.log(`ARIA_METADATA_JSON ${JSON.stringify(payload)}`);
     return { exit: 1, payload };
   }
   const expectations = expectRead.load.value;
-  const dir = mkdtempSync(join(tmpdir(), 'tabi-r14-aria-metadata-'));
+  const contract = contractRead.load.value;
+  const contractMismatches = [];
+  if (stableStringify(contract.cleanup?.fields ?? null) !==
+      stableStringify(CLEANUP_MIRROR_FIELDS)) {
+    contractMismatches.push('contract.cleanup.fields');
+  }
+  if (stableStringify(contract.qualification?.fields ?? null) !==
+      stableStringify(QUALIFICATION_MIRROR_FIELDS)) {
+    contractMismatches.push('contract.qualification.fields');
+  }
+  if (contract.tamper?.findingId !== TAMPER_FINDING) contractMismatches.push('contract.tamper.findingId');
+  if (contract.tamper?.status !== TAMPER_STATUS) contractMismatches.push('contract.tamper.status');
+  if (contract.tamper?.outcome !== OUTCOME.couldNotEvaluate) {
+    contractMismatches.push('contract.tamper.outcome');
+  }
+  if (contract.tamper?.reason !== REASON.snapshotTampered) {
+    contractMismatches.push('contract.tamper.reason');
+  }
+  if (contract.tamper?.exit !== EXIT.couldNotEvaluate) contractMismatches.push('contract.tamper.exit');
+  if (stableStringify(contract.legacy ?? null) !== stableStringify(LEGACY_ROUND14)) {
+    contractMismatches.push('contract.legacy');
+  }
+  helpers.push({
+    id: 'mirror-contract-fields',
+    ok: contractMismatches.length === 0,
+    expectedExit: EXIT.clean,
+    exit: contractMismatches.length === 0 ? EXIT.clean : EXIT.semantic,
+    finding: 'R14-ARIA-SIDECAR-CLEANUP-MIRROR-01',
+    problems: contractMismatches,
+    findings: [],
+    stderr: '',
+  });
+  const dir = mkdtempSync(join(tmpdir(), 'tabi-r15-aria-metadata-'));
   try {
     const pinBytes = Buffer.from(stableStringify(FIXTURE_PIN), 'utf8');
     const pinSha256 = sha256(pinBytes);
@@ -1762,6 +2435,76 @@ function runSelfTest() {
     autoSidecar.source.pin.path = join(dir, 'pin.json');
     generated['sidecar-auto'] = writeFixture(dir, 'sidecar-auto.json', autoSidecar);
 
+    const cleanupMirrors = clone(sidecarValid);
+    cleanupMirrors.cleanup = {
+      perWorkerCount: 2,
+      allClosed: false,
+      allRefusedAfterClose: false,
+      allNotListeningAfter: false,
+      derivedListeningAfter: true,
+      summaryServerOk: false,
+    };
+    generated['sidecar-cleanup-mirrors'] = writeFixture(
+      dir,
+      'sidecar-cleanup-mirrors.json',
+      cleanupMirrors,
+    );
+
+    const qualificationMirrors = clone(sidecarValid);
+    qualificationMirrors.qualification.everyProofListensBefore = false;
+    qualificationMirrors.qualification.everyProofClosed = false;
+    qualificationMirrors.qualification.everyProofRefusedAfterClose = false;
+    generated['sidecar-qualification-mirrors'] = writeFixture(
+      dir,
+      'sidecar-qualification-mirrors.json',
+      qualificationMirrors,
+    );
+
+    const mirrorTypes = clone(sidecarValid);
+    mirrorTypes.cleanup.allClosed = 'true';
+    mirrorTypes.qualification.everyProofClosed = 1;
+    mirrorTypes.qualification.proofCount = '1';
+    generated['sidecar-mirror-types'] = writeFixture(dir, 'sidecar-mirror-types.json', mirrorTypes);
+
+    const silentMirror = clone(sidecarValid);
+    silentMirror.cleanup.allNotListeningAfter = false;
+    generated['sidecar-mirror-silent'] = writeFixture(
+      dir,
+      'sidecar-mirror-silent.json',
+      silentMirror,
+    );
+
+    const nodeDescriptive = clone(sidecarValid);
+    nodeDescriptive.node.recordedIsDescriptive = false;
+    generated['sidecar-node-descriptive'] = writeFixture(
+      dir,
+      'sidecar-node-descriptive.json',
+      nodeDescriptive,
+    );
+
+    const nodeAlias = clone(sidecarValid);
+    nodeAlias.node.exactRecordedMatch = true;
+    nodeAlias.node.observedMatchesRecorded = true;
+    generated['sidecar-node-alias'] = writeFixture(dir, 'sidecar-node-alias.json', nodeAlias);
+
+    const correctionDerived = clone(sidecarValid);
+    correctionDerived.corrections[0].derived = true;
+    generated['sidecar-correction-derived'] = writeFixture(
+      dir,
+      'sidecar-correction-derived.json',
+      correctionDerived,
+    );
+
+    const specMirror = clone(sidecarValid);
+    specMirror.source.spec.sha256 = zero;
+    generated['sidecar-spec-mirror'] = writeFixture(dir, 'sidecar-spec-mirror.json', specMirror);
+
+    const advisoryExtension = clone(sidecarValid);
+    advisoryExtension.advisory = { note: 'unknown extension key stays outside the checked contract' };
+    advisoryExtension.provenance.note = 'advisory free text is excluded from the mirror contract';
+    advisoryExtension.node.note = 'advisory node note is excluded from the mirror contract';
+    generated['sidecar-advisory'] = writeFixture(dir, 'sidecar-advisory.json', advisoryExtension);
+
     for (const [name, entry] of Object.entries(expectations.fixtures || {})) {
       const generatedEntry = generated[name];
       const ok = Boolean(
@@ -1779,6 +2522,31 @@ function runSelfTest() {
       });
     }
 
+    const unpinnedFixtures = Array.isArray(expectations.unpinnedFixtures)
+      ? expectations.unpinnedFixtures
+      : [];
+    const declaredFixtureNames = [
+      ...Object.keys(expectations.fixtures || {}),
+      ...unpinnedFixtures,
+    ].sort();
+    const generatedFixtureNames = Object.keys(generated).sort();
+    const fixtureSetProblems = [];
+    if (stableStringify(declaredFixtureNames) !== stableStringify(generatedFixtureNames)) {
+      fixtureSetProblems.push(
+        `fixture_set:declared=${declaredFixtureNames.join(',')}:generated=${generatedFixtureNames.join(',')}`,
+      );
+    }
+    helpers.push({
+      id: 'fixture-digest-set',
+      ok: fixtureSetProblems.length === 0,
+      expectedExit: EXIT.clean,
+      exit: fixtureSetProblems.length === 0 ? EXIT.clean : EXIT.semantic,
+      finding: 'fixture-digest-set',
+      problems: fixtureSetProblems,
+      findings: [],
+      stderr: '',
+    });
+
     const pathFor = (token) => {
       if (token.startsWith('@')) {
         const name = token.slice(1);
@@ -1789,90 +2557,198 @@ function runSelfTest() {
       return token;
     };
 
-    for (const testCase of expectations.cases || []) {
-      const args = (testCase.args || []).map(pathFor);
-      const child = spawnSync(process.execPath, [SCRIPT, ...args], {
-        cwd: ROOT,
-        encoding: 'utf8',
-        timeout: 30000,
-        maxBuffer: 16 * 1024 * 1024,
-        env: { PATH: process.env.PATH, HOME: process.env.HOME, TZ: 'UTC' },
-      });
-      let payload = null;
-      const jsonLine = (child.stdout || '')
-        .split('\n')
-        .find((line) => line.startsWith('ARIA_METADATA_JSON '));
-      if (jsonLine) {
-        try {
-          payload = JSON.parse(jsonLine.slice('ARIA_METADATA_JSON '.length));
-        } catch {
-          payload = null;
-        }
-      }
+    const evaluateOutput = (testCase, child, payload) => {
       const problems = [];
       if (child.error) problems.push(`spawn:${child.error.code || child.error.message}`);
       if (child.status !== testCase.expectedExit) {
         problems.push(`exit:${child.status}:expected_${testCase.expectedExit}`);
       }
       if (!payload) problems.push('payload:missing');
-      if (testCase.kind === 'witness') {
-        if (payload) {
-          if (testCase.expectedExit === 0) {
-            if (payload.ok !== true) problems.push('witness:not_ok');
-            if (payload.red?.exit !== 1) problems.push('witness:red_exit');
-            if (payload.redFinding !== 'R14-ARIA-CLEANUP-LISTENING-AFTER-01') {
-              problems.push('witness:red_finding');
-            }
-            if (payload.green?.exit !== 0) problems.push('witness:green_exit');
-            if (payload.green?.accepted !== true) problems.push('witness:green_not_accepted');
-          } else {
-            if (payload.ok !== false) problems.push('witness:unexpected_ok');
-            if (payload.red?.exit !== 1) problems.push('witness:red_exit');
-            if (payload.redFinding !== 'R14-ARIA-CLEANUP-LISTENING-AFTER-01') {
-              problems.push('witness:red_finding');
-            }
-            if (payload.green?.exit === 0 && payload.green?.accepted === true) {
-              problems.push('witness:bad_sidecar_accepted');
-            }
-          }
-          if (payload.originalUnchanged !== true) problems.push('witness:original_changed');
+      if (payload) {
+        if (payload.exit !== testCase.expectedExit) {
+          problems.push(`payload:exit:${payload.exit}:expected_${testCase.expectedExit}`);
         }
-      } else if (payload) {
-        if (testCase.expectedExit === 0 && payload.ok !== true) problems.push('payload:not_ok');
-        const failFindings = (payload.findings || []).filter((entry) => entry.status === 'fail');
-        if (testCase.expectedExit === 0 && failFindings.length > 0) {
-          problems.push(`payload:unexpected_fail:${failFindings.map((entry) => entry.id).join(',')}`);
+        const findings = payload.findings || [];
+        if (testCase.expectedClassification) {
+          const actual = payload.classification ?? null;
+          if (!actual ||
+              actual.outcome !== testCase.expectedClassification.outcome ||
+              actual.reason !== testCase.expectedClassification.reason) {
+            problems.push(
+              `classification:${actual ? `${actual.outcome}/${actual.reason}` : 'missing'}`,
+            );
+          }
         }
         for (const expected of testCase.expectedFindings || []) {
-          const match = (payload.findings || []).find((entry) => entry.id === expected.id);
+          const match = findings.find((entry) => entry.id === expected.id);
           if (!match) problems.push(`finding_missing:${expected.id}`);
           else if (match.status !== expected.status) {
             problems.push(`finding_status:${expected.id}:${match.status}`);
           }
         }
+        if (Array.isArray(testCase.expectedFindingIds)) {
+          const observedIds = findings.map((entry) => entry.id).sort();
+          const expectedIds = [...testCase.expectedFindingIds].sort();
+          if (stableStringify(observedIds) !== stableStringify(expectedIds)) {
+            problems.push(`finding_ids:${observedIds.join(',') || 'none'}`);
+          }
+        }
+        if (Array.isArray(testCase.expectedFailedFindings)) {
+          const failedIds = findings
+            .filter((entry) => entry.status === 'fail')
+            .map((entry) => entry.id)
+            .sort();
+          const expectedFailed = [...testCase.expectedFailedFindings].sort();
+          if (stableStringify(failedIds) !== stableStringify(expectedFailed)) {
+            problems.push(`failed_findings:${failedIds.join(',') || 'none'}`);
+          }
+        }
+        for (const id of testCase.unexpectedFindings || []) {
+          if (findings.some((entry) => entry.id === id)) {
+            problems.push(`unexpected_finding:${id}`);
+          }
+        }
+        if (testCase.kind === 'witness') {
+          if (testCase.expectedExit === 0) {
+            if (payload.ok !== true) problems.push('witness:not_ok');
+            if (payload.red?.exit !== EXIT.semantic) problems.push('witness:red_exit');
+            if (payload.redFinding !== 'R14-ARIA-CLEANUP-LISTENING-AFTER-01') {
+              problems.push('witness:red_finding');
+            }
+            if (payload.green?.exit !== EXIT.clean) problems.push('witness:green_exit');
+            if (payload.green?.accepted !== true) problems.push('witness:green_not_accepted');
+          } else {
+            if (payload.ok !== false) problems.push('witness:unexpected_ok');
+            if (payload.red?.exit !== EXIT.semantic) problems.push('witness:red_exit');
+            if (payload.redFinding !== 'R14-ARIA-CLEANUP-LISTENING-AFTER-01') {
+              problems.push('witness:red_finding');
+            }
+            if (payload.green?.exit === EXIT.clean && payload.green?.accepted === true) {
+              problems.push('witness:bad_sidecar_accepted');
+            }
+          }
+          if (payload.originalUnchanged !== true) problems.push('witness:original_changed');
+        } else if (testCase.kind === 'mirror-witness') {
+          if (payload.ok !== true) problems.push('mirror_witness:not_ok');
+          if (payload.baseline?.exit !== EXIT.clean || payload.baseline?.accepted !== true) {
+            problems.push('mirror_witness:baseline_not_accepted');
+          }
+          if (payload.mirror?.exit !== EXIT.semantic || payload.mirror?.accepted !== false) {
+            problems.push('mirror_witness:mirror_not_refused');
+          }
+          for (const id of [
+            'R14-ARIA-SIDECAR-CLEANUP-MIRROR-01',
+            'R14-ARIA-SIDECAR-QUALIFICATION-01',
+          ]) {
+            if (!(payload.mirror?.failFindings || []).includes(id)) {
+              problems.push(`mirror_witness:missing:${id}`);
+            }
+          }
+          if (!(payload.mirror?.cleanupProblems || []).length) {
+            problems.push('mirror_witness:no_cleanup_problems');
+          }
+          if (!(payload.mirror?.qualificationProblems || []).length) {
+            problems.push('mirror_witness:no_qualification_problems');
+          }
+          if (payload.legacy?.legacyCheckedFindingsAllPass !== true) {
+            problems.push('mirror_witness:legacy_subset_not_passing');
+          }
+          if (payload.legacy?.legacyExitForSameBytes !== EXIT.clean ||
+              payload.legacy?.legacyExecuted !== false) {
+            problems.push('mirror_witness:legacy_boundary');
+          }
+          if (payload.originalUnchanged !== true) {
+            problems.push('mirror_witness:original_changed');
+          }
+        } else if (testCase.kind === 'tamper') {
+          if (payload.ok !== false) problems.push('tamper:unexpected_ok');
+          if (payload.snapshot?.unavailable?.length) {
+            problems.push('tamper:unexpected_unavailable');
+          }
+          const mismatchList = payload.findings?.[0]?.detail?.mismatches;
+          if (!Array.isArray(mismatchList) || mismatchList.length !== 1) {
+            problems.push(`tamper:mismatches:${Array.isArray(mismatchList) ? mismatchList.length : 'missing'}`);
+          } else if (testCase.expectedMismatch) {
+            if (mismatchList[0].label !== testCase.expectedMismatch.label) {
+              problems.push(`tamper:label:${mismatchList[0].label}`);
+            }
+            if (mismatchList[0].actualSha256 !== testCase.expectedMismatch.actualSha256) {
+              problems.push(`tamper:sha256:${mismatchList[0].actualSha256}`);
+            }
+            if (mismatchList[0].expectedSha256 !== testCase.expectedMismatch.expectedSha256) {
+              problems.push(`tamper:anchor:${mismatchList[0].expectedSha256}`);
+            }
+          }
+        } else {
+          if (testCase.expectedExit === 0 && payload.ok !== true) problems.push('payload:not_ok');
+          if (testCase.expectedExit === 1) {
+            const failed = findings.filter((entry) => entry.status === 'fail');
+            if (failed.length === 0) problems.push('payload:no_fail_finding');
+          }
+        }
       }
-      results.push({
+      const observedFinding =
+        (payload?.findings || []).find((entry) => entry.status !== 'pass')?.id ??
+        payload?.redFinding ??
+        'none';
+      return {
         id: testCase.id,
         ok: problems.length === 0,
         expectedExit: testCase.expectedExit,
         exit: child.status,
-        finding: testCase.expectedFindings?.[0]?.id ?? payload?.redFinding ?? 'none',
+        expectedFinding: testCase.expectedFindings?.[0]?.id ?? payload?.redFinding ?? 'none',
+        finding: observedFinding,
+        classification: payload?.classification ?? null,
+        tamper: testCase.tamper ?? null,
         problems,
         findings: (payload?.findings || []).map((entry) => ({ id: entry.id, status: entry.status })),
         stderr: (child.stderr || '').trim().slice(0, 1000),
-      });
+      };
+    };
+
+    for (const testCase of expectations.cases || []) {
+      const args = (testCase.args || []).map(pathFor);
+      const { child, payload } = spawnChecker(SCRIPT, args, ROOT);
+      cliCases.push(evaluateOutput(testCase, child, payload));
+    }
+
+    for (const testCase of expectations.mirrorCases || []) {
+      let mirror = null;
+      try {
+        mirror = buildMirrorRoot(dir, testCase.tamper ?? null);
+        const scriptPath = join(mirror.root, 'scripts/check-aria-metadata.mjs');
+        const { child, payload } = spawnChecker(scriptPath, testCase.args || [], mirror.root);
+        const evaluated = evaluateOutput(testCase, child, payload);
+        evaluated.tamperedPath = mirror.tamperedPath;
+        cliCases.push(evaluated);
+      } catch (error) {
+        cliCases.push({
+          id: testCase.id,
+          ok: false,
+          expectedExit: testCase.expectedExit,
+          exit: null,
+          expectedFinding: testCase.expectedFindings?.[0]?.id ?? 'none',
+          finding: 'none',
+          classification: null,
+          tamper: testCase.tamper ?? null,
+          problems: [`mirror:${error.message}`],
+          findings: [],
+          stderr: '',
+        });
+      } finally {
+        if (mirror) rmSync(mirror.root, { recursive: true, force: true });
+      }
     }
 
     const deriveContext = prepareContext(join(dir, 'receipt-old.json'), join(dir, 'pin.json'));
     const derivePre = evaluateAll(deriveContext.receipt, deriveContext.pin, deriveContext);
-    const deriveA = stableStringify(
-      buildSidecar({
-        context: deriveContext,
-        preEvaluation: derivePre,
-        receiptLabel: 'fixtures/receipt-old.json',
-        pinLabel: 'fixtures/pin.json',
-      }),
-    );
+    const deriveSidecar = buildSidecar({
+      context: deriveContext,
+      preEvaluation: derivePre,
+      receiptLabel: 'fixtures/receipt-old.json',
+      pinLabel: 'fixtures/pin.json',
+    });
+    const deriveA = stableStringify(deriveSidecar);
     const deriveB = stableStringify(
       buildSidecar({
         context: deriveContext,
@@ -1881,31 +2757,86 @@ function runSelfTest() {
         pinLabel: 'fixtures/pin.json',
       }),
     );
-    const deriveIdentical = deriveA === deriveB && deriveA === readFileSync(join(dir, 'sidecar-valid.json'), 'utf8');
-    results.push({
-      id: 'derive-deterministic-sidecar',
-      ok: deriveIdentical,
-      expectedExit: 0,
-      exit: deriveIdentical ? 0 : 1,
-      finding: 'R14-ARIA-SIDECAR-ACCEPTED-01',
-      problems: deriveIdentical ? [] : ['derive:not_byte_deterministic'],
+    const deriveProofs = Array.isArray(deriveContext.receipt?.cleanup?.server?.perWorker)
+      ? deriveContext.receipt.cleanup.server.perWorker
+      : [];
+    const deriveExpectedMirrors = expectedMirrorValues(deriveProofs, derivePre.derived.cleanup);
+    const derivedMirrorsMatch =
+      stableStringify({
+        cleanup: deriveSidecar.cleanup,
+        qualification: deriveSidecar.qualification,
+      }) ===
+      stableStringify({
+        cleanup: deriveExpectedMirrors.cleanup,
+        qualification: deriveExpectedMirrors.qualification,
+      });
+    const deriveIdentical =
+      deriveA === deriveB && deriveA === readFileSync(join(dir, 'sidecar-valid.json'), 'utf8');
+    const deriveProblems = [];
+    if (!deriveIdentical) deriveProblems.push('derive:not_byte_deterministic');
+    if (!derivedMirrorsMatch) deriveProblems.push('derive:mirrors_not_independently_derived');
+    helpers.push({
+      id: 'derive-and-mirror-helper',
+      ok: deriveProblems.length === 0,
+      expectedExit: EXIT.clean,
+      exit: deriveProblems.length === 0 ? EXIT.clean : EXIT.semantic,
+      finding: 'helper:derive-and-mirror',
+      problems: deriveProblems,
       findings: [],
       stderr: '',
     });
 
     const fixturesOk = fixtureResults.every((entry) => entry.ok);
-    const casesOk = results.every((entry) => entry.ok);
-    const ok = fixturesOk && casesOk && results.length >= 4;
+    const cliOk = cliCases.every((entry) => entry.ok);
+    const helpersOk = helpers.every((entry) => entry.ok);
+    const expectedCounts = expectations.caseCounts ?? null;
+    const countProblems = [];
+    if (!expectedCounts ||
+        expectedCounts.cliCases !== cliCases.length ||
+        expectedCounts.helpers !== helpers.length) {
+      countProblems.push(
+        `counts:cli=${cliCases.length}:helpers=${helpers.length}` +
+          (expectedCounts
+            ? `:expected_cli=${expectedCounts.cliCases}:expected_helpers=${expectedCounts.helpers}`
+            : ':expected_missing'),
+      );
+    }
+    const minimumCliCases = Number.isInteger(expectations.minimumCliCases)
+      ? expectations.minimumCliCases
+      : 4;
+    if (cliCases.length < minimumCliCases) {
+      countProblems.push(`counts:cli_below_minimum:${cliCases.length}:${minimumCliCases}`);
+    }
+    const ok =
+      fixturesOk && cliOk && helpersOk && countProblems.length === 0 && helpers.length >= 2;
     const payload = {
       schema: 'tabi-aria-metadata-selftest-v1',
       ok,
-      exit: ok ? 0 : 1,
-      cases: results,
+      exit: ok ? EXIT.clean : EXIT.semantic,
+      cases: cliCases,
+      helpers,
       fixtures: fixtureResults,
-      caseCount: results.length,
+      contract: {
+        schema: contract.schema,
+        cleanupFields: Object.keys(CLEANUP_MIRROR_FIELDS),
+        qualificationFields: Object.keys(QUALIFICATION_MIRROR_FIELDS),
+        tamper: {
+          findingId: TAMPER_FINDING,
+          status: TAMPER_STATUS,
+          outcome: OUTCOME.couldNotEvaluate,
+          reason: REASON.snapshotTampered,
+          exit: EXIT.couldNotEvaluate,
+        },
+        legacy: LEGACY_ROUND14,
+      },
+      cliCaseCount: cliCases.length,
+      helperCaseCount: helpers.length,
+      caseCount: cliCases.length + helpers.length,
+      countProblems,
     };
     console.log(
-      `ARIA_METADATA_SELFTEST verdict=${ok ? 'clean' : 'blocked'} cases=${results.length}`,
+      `ARIA_METADATA_SELFTEST verdict=${ok ? 'clean' : 'blocked'} ` +
+        `cli_cases=${cliCases.length} helpers=${helpers.length}`,
     );
     for (const entry of fixtureResults) {
       console.log(
@@ -1913,16 +2844,25 @@ function runSelfTest() {
           `expected_sha256=${entry.expectedSha256} actual_sha256=${entry.actualSha256 ?? 'none'}`,
       );
     }
-    for (const entry of results) {
+    for (const entry of cliCases) {
       console.log(
         `ARIA_METADATA_SELFTEST result=${entry.ok ? 'PASS' : 'FAIL'} case=${entry.id} ` +
-          `name=${entry.id} expected_exit=${entry.expectedExit} actual_exit=${entry.exit} ` +
-          `expected_finding=${entry.finding} finding=${entry.finding} exit=${entry.exit}` +
+          `name=${entry.id} case_class=cli expected_exit=${entry.expectedExit} ` +
+          `actual_exit=${entry.exit} expected_finding=${entry.expectedFinding} ` +
+          `finding=${entry.finding} exit=${entry.exit}` +
+          (entry.problems.length ? ` problems=${entry.problems.join('|')}` : ''),
+      );
+    }
+    for (const entry of helpers) {
+      console.log(
+        `ARIA_METADATA_SELFTEST result=${entry.ok ? 'PASS' : 'FAIL'} helper=${entry.id} ` +
+          `expected_exit=${entry.expectedExit} actual_exit=${entry.exit} ` +
+          `finding=${entry.finding}` +
           (entry.problems.length ? ` problems=${entry.problems.join('|')}` : ''),
       );
     }
     console.log(`ARIA_METADATA_JSON ${JSON.stringify(payload)}`);
-    return { exit: ok ? 0 : 1, payload };
+    return { exit: ok ? EXIT.clean : EXIT.semantic, payload };
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -1930,12 +2870,30 @@ function runSelfTest() {
 
 function checkPayload(result) {
   const { context, preEvaluation } = result;
+  if (!context || !preEvaluation) {
+    return {
+      schema: 'tabi-aria-metadata-check-v1',
+      mode: 'check',
+      ok: false,
+      exit: EXIT.couldNotEvaluate,
+      classification: result.classification,
+      acceptedCorrection: false,
+      snapshot: result.snapshot ?? null,
+      findings: result.findings,
+    };
+  }
   return {
     schema: 'tabi-aria-metadata-check-v1',
     mode: 'check',
     ok: result.ok,
     exit: result.exit,
+    classification: result.classification,
     acceptedCorrection: result.accepted === true,
+    snapshot: {
+      ok: result.snapshot?.ok ?? null,
+      mismatches: result.snapshot?.mismatches ?? null,
+      unavailable: result.snapshot?.unavailable ?? null,
+    },
     receipt: {
       path: context.receiptRead.entry.path,
       absPath: context.receiptRead.entry.abs,
@@ -1986,9 +2944,15 @@ function witnessPayload(result) {
     mode: 'witness',
     ok: result.ok,
     exit: result.exit,
-    transition: result.ok ? 'red->clean' : 'not-demonstrated',
+    classification: result.classification ?? null,
+    transition: result.ok
+      ? 'red->clean'
+      : result.exit === EXIT.couldNotEvaluate
+        ? 'could-not-evaluate'
+        : 'not-demonstrated',
     redFinding: result.redFinding,
     originalUnchanged: result.originalUnchanged,
+    authenticatedAnchors: result.authenticatedAnchors === true,
     receipt: result.receipt,
     pin: result.pin,
     sidecarPath: result.sidecarPath,
@@ -1996,20 +2960,59 @@ function witnessPayload(result) {
       exit: result.red.exit,
       ok: result.red.ok,
       accepted: result.red.accepted,
+      classification: result.red.classification ?? null,
       command: result.red.command,
       stdout: result.red.stdout,
-      findings: result.red.findings.map((entry) => ({ id: entry.id, status: entry.status })),
+      findings: result.red.findings.map((entry) => ({
+        id: entry.id,
+        status: entry.status,
+        detail: entry.detail,
+      })),
     },
     green: result.green
       ? {
           exit: result.green.exit,
           ok: result.green.ok,
           accepted: result.green.accepted,
+          classification: result.green.classification ?? null,
           command: result.green.command,
           stdout: result.green.stdout,
-          findings: result.green.findings.map((entry) => ({ id: entry.id, status: entry.status })),
+          findings: result.green.findings.map((entry) => ({
+            id: entry.id,
+            status: entry.status,
+            detail: entry.detail,
+          })),
         }
       : null,
+  };
+}
+
+function witnessMirrorsPayload(result) {
+  return {
+    schema: 'tabi-aria-metadata-witness-mirrors-v1',
+    mode: 'witness-mirrors',
+    ok: result.ok,
+    exit: result.exit,
+    classification: result.classification,
+    baseline: result.baseline,
+    mirror: result.mirror,
+    legacy: result.legacy,
+    originalUnchanged: result.originalUnchanged,
+    authenticatedAnchors: result.authenticatedAnchors === true,
+    receipt: result.receipt ?? null,
+    pin: result.pin ?? null,
+    snapshot: result.snapshot
+      ? {
+          ok: result.snapshot.ok,
+          mismatches: result.snapshot.mismatches,
+          unavailable: result.snapshot.unavailable,
+        }
+      : null,
+    findings: (result.findings || []).map((entry) => ({
+      id: entry.id,
+      status: entry.status,
+      detail: entry.detail,
+    })),
   };
 }
 
@@ -2019,6 +3022,7 @@ function derivePayload(result) {
     mode: 'derive',
     ok: result.ok,
     exit: result.exit,
+    classification: result.classification ?? null,
     out: result.out,
     findings: result.findings.map((entry) => ({ id: entry.id, status: entry.status, detail: entry.detail })),
     sidecarSha256: result.out?.sha256 ?? null,
@@ -2035,9 +3039,7 @@ function resolveCheckInput(inputPath) {
     };
   }
   const value = read.load.value;
-  const isSidecar =
-    value.schema === SIDECAR_SCHEMA ||
-    (typeof value.kind === 'string' && /metadata/i.test(value.kind) && /correct/i.test(value.kind));
+  const isSidecar = value.schema === SIDECAR_SCHEMA;
   if (!isSidecar) {
     return {
       ok: true,
@@ -2065,8 +3067,10 @@ function usage() {
   return [
     'ARIA_METADATA usage:',
     '  node scripts/check-aria-metadata.mjs [--receipt <path>] [--pin <path>] [--sidecar <path>]',
+    '  node scripts/check-aria-metadata.mjs --check <receipt-or-sidecar>',
     '  node scripts/check-aria-metadata.mjs --derive <receipt> <pin> --out <path>',
     '  node scripts/check-aria-metadata.mjs --witness [--receipt <path>] [--pin <path>] [--sidecar <path>]',
+    '  node scripts/check-aria-metadata.mjs --witness-mirrors [--receipt <path>] [--pin <path>]',
     '  node scripts/check-aria-metadata.mjs --self-test',
   ].join('\n');
 }
@@ -2097,6 +3101,9 @@ function parseArguments(argv) {
     } else if (arg === '--witness') {
       modes.add('witness');
       options.mode = 'witness';
+    } else if (arg === '--witness-mirrors') {
+      modes.add('witness-mirrors');
+      options.mode = 'witness-mirrors';
     } else if (arg === '--derive') {
       modes.add('derive');
       options.mode = 'derive';
@@ -2167,12 +3174,35 @@ function main() {
       sidecarPathText: options.sidecar,
     });
     const payload = witnessPayload(result);
-    const verdict = result.ok ? 'clean' : 'red';
+    const verdict =
+      result.exit === EXIT.couldNotEvaluate ? 'could-not-evaluate' : result.ok ? 'clean' : 'red';
     console.log(
       `ARIA_METADATA witness verdict=${verdict} transition=${payload.transition} ` +
         `red_exit=${result.red.exit} red_finding=${result.redFinding ?? 'none'} ` +
         `green_exit=${result.green?.exit ?? 'none'} accepted=${result.green?.accepted === true} ` +
-        `original_unchanged=${result.originalUnchanged}`,
+        `original_unchanged=${result.originalUnchanged}` +
+        (result.classification ? ` reason=${result.classification.reason}` : ''),
+    );
+    console.log(`ARIA_METADATA_JSON ${JSON.stringify(payload)}`);
+    return result.exit;
+  }
+  if (options.mode === 'witness-mirrors') {
+    const result = runWitnessMirrors({
+      receiptPathText: options.receipt,
+      pinPathText: options.pin,
+    });
+    const payload = witnessMirrorsPayload(result);
+    const verdict =
+      result.exit === EXIT.couldNotEvaluate ? 'could-not-evaluate' : result.ok ? 'clean' : 'red';
+    console.log(
+      `ARIA_METADATA witness-mirrors verdict=${verdict} exit=${result.exit} ` +
+        `baseline_exit=${result.baseline?.exit ?? 'none'} ` +
+        `mirror_exit=${result.mirror?.exit ?? 'none'} ` +
+        `mirror_accepted=${result.mirror?.accepted ?? 'none'} ` +
+        `legacy_exit=${result.legacy?.legacyExitForSameBytes ?? 'none'} ` +
+        `legacy_executed=${result.legacy?.legacyExecuted === true} ` +
+        `original_unchanged=${result.originalUnchanged}` +
+        (result.classification ? ` reason=${result.classification.reason}` : ''),
     );
     console.log(`ARIA_METADATA_JSON ${JSON.stringify(payload)}`);
     return result.exit;
@@ -2184,11 +3214,13 @@ function main() {
       outArg: options.out,
     });
     const payload = derivePayload(result);
-    const verdict = result.ok ? 'clean' : 'red';
+    const verdict =
+      result.exit === EXIT.couldNotEvaluate ? 'could-not-evaluate' : result.ok ? 'clean' : 'red';
     console.log(
       `ARIA_METADATA derive verdict=${verdict} exit=${result.exit} ` +
         `out=${result.out?.path ?? 'none'} sha256=${result.out?.sha256 ?? 'none'} ` +
-        `wrote=${result.out?.wrote ?? false} identical=${result.out?.identical ?? false}`,
+        `wrote=${result.out?.wrote ?? false} identical=${result.out?.identical ?? false}` +
+        (result.classification ? ` reason=${result.classification.reason}` : ''),
     );
     console.log(`ARIA_METADATA_JSON ${JSON.stringify(payload)}`);
     return result.exit;
@@ -2230,12 +3262,23 @@ function main() {
     sidecarPathText,
   });
   const payload = checkPayload(result);
+  if (result.exit === EXIT.couldNotEvaluate) {
+    const reason = result.classification?.reason ?? 'could_not_evaluate';
+    console.log(
+      `ARIA_METADATA check verdict=could-not-evaluate classification=could_not_evaluate ` +
+        `reason=${reason} finding=${reason} exit=${result.exit} ` +
+        `sidecar=${sidecarPathText ?? 'none'}${options.checkInput ? ` input=${options.checkInput}` : ''}`,
+    );
+    console.log(`ARIA_METADATA_JSON ${JSON.stringify(payload)}`);
+    return result.exit;
+  }
   const failed = result.findings.filter((entry) => entry.status !== 'pass').map((entry) => entry.id);
   const verdict = result.ok ? 'clean' : 'red';
   console.log(
     `ARIA_METADATA check verdict=${verdict} findings=${result.findings.length} ` +
       `failed=${failed.length} accepted=${result.accepted === true} ` +
-      `sidecar=${sidecarPathText ?? 'none'}${options.checkInput ? ` input=${options.checkInput}` : ''}`,
+      `sidecar=${sidecarPathText ?? 'none'}${options.checkInput ? ` input=${options.checkInput}` : ''}` +
+      (result.classification ? ` reason=${result.classification.reason}` : ''),
   );
   if (failed.length > 0) {
     console.log(`ARIA_METADATA findings ${failed.join(',')}`);
@@ -2249,12 +3292,19 @@ try {
   exitCode = main();
 } catch (error) {
   const message = String(error?.stack || error?.message || error);
-  console.log(`ARIA_METADATA fatal verdict=red reason=${String(error?.message || error)}`);
+  console.log(
+    `ARIA_METADATA fatal verdict=could-not-evaluate classification=could_not_evaluate ` +
+      `reason=fatal exit=2 error=${String(error?.message || error)}`,
+  );
   console.log(
     `ARIA_METADATA_JSON ${JSON.stringify({
       schema: 'tabi-aria-metadata-fatal-v1',
       ok: false,
       exit: 2,
+      classification: {
+        outcome: OUTCOME.couldNotEvaluate,
+        reason: 'fatal',
+      },
       error: message,
     })}`,
   );

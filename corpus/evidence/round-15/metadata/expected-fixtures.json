@@ -1,0 +1,899 @@
+{
+  "caseCounts": {
+    "cliCases": 35,
+    "helpers": 3
+  },
+  "cases": [
+    {
+      "args": [
+        "--receipt",
+        "@receipt-green",
+        "--pin",
+        "@pin"
+      ],
+      "expectedClassification": {
+        "outcome": "evaluated",
+        "reason": "clean"
+      },
+      "expectedExit": 0,
+      "expectedFailedFindings": [],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-CLEANUP-LISTENING-AFTER-01",
+          "status": "pass"
+        },
+        {
+          "id": "R14-ARIA-CLEANUP-PERWORKER-01",
+          "status": "pass"
+        },
+        {
+          "id": "R14-ARIA-WORKER-PROOF-01",
+          "status": "pass"
+        },
+        {
+          "id": "R14-ARIA-NODE-RECORDED-01",
+          "status": "pass"
+        }
+      ],
+      "id": "clean-perworker-listening"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-green",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 0,
+      "expectedFailedFindings": [],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-NODE-RECORDED-01",
+          "status": "pass"
+        },
+        {
+          "id": "R14-ARIA-NODE-MINIMUM-01",
+          "status": "pass"
+        }
+      ],
+      "id": "node-observed-recorded"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin"
+      ],
+      "expectedClassification": {
+        "outcome": "evaluated",
+        "reason": "semantic_invalid"
+      },
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-CLEANUP-LISTENING-AFTER-01",
+          "status": "fail"
+        }
+      ],
+      "id": "old-contradiction"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-missing-summary",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-CLEANUP-SUMMARY-01",
+          "status": "fail"
+        }
+      ],
+      "id": "missing-server-summary"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-empty",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-CLEANUP-PERWORKER-01",
+          "status": "fail"
+        },
+        {
+          "id": "R14-ARIA-CLEANUP-COUNT-01",
+          "status": "fail"
+        }
+      ],
+      "id": "empty-perworker"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-nonboolean",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-CLEANUP-PERWORKER-01",
+          "status": "fail"
+        }
+      ],
+      "id": "nonboolean-listening-after"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-min",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-NODE-MINIMUM-01",
+          "status": "fail"
+        }
+      ],
+      "id": "invalid-node-minimum"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-valid"
+      ],
+      "expectedClassification": {
+        "outcome": "evaluated",
+        "reason": "clean"
+      },
+      "expectedExit": 0,
+      "expectedFailedFindings": [],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-ACCEPTED-01",
+          "status": "pass"
+        },
+        {
+          "id": "R14-ARIA-CLEANUP-LISTENING-AFTER-01",
+          "status": "pass"
+        }
+      ],
+      "id": "sidecar-valid-accepted"
+    },
+    {
+      "args": [
+        "--check",
+        "@sidecar-auto"
+      ],
+      "expectedClassification": {
+        "outcome": "evaluated",
+        "reason": "clean"
+      },
+      "expectedExit": 0,
+      "expectedFailedFindings": [],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-ACCEPTED-01",
+          "status": "pass"
+        }
+      ],
+      "id": "sidecar-auto-detect-check-input"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@malformed-receipt",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-INPUT-01",
+          "status": "fail"
+        }
+      ],
+      "id": "malformed-receipt"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-baddigest"
+      ],
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-SIDECAR-BINDING-01",
+        "R14-ARIA-SIDECAR-ACCEPTED-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-BINDING-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-bad-receipt-digest"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-wrongto"
+      ],
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-CLEANUP-LISTENING-AFTER-01",
+        "R14-ARIA-SIDECAR-CORRECTION-01",
+        "R14-ARIA-SIDECAR-RESIDUAL-01",
+        "R14-ARIA-SIDECAR-ACCEPTED-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-CORRECTION-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-wrong-direction"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-exactnode"
+      ],
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-SIDECAR-NODE-CLAIM-01",
+        "R14-ARIA-SIDECAR-ACCEPTED-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-NODE-CLAIM-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-false-exact-node"
+    },
+    {
+      "args": [
+        "--witness",
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-valid"
+      ],
+      "expectedExit": 0,
+      "expectedFindings": [],
+      "id": "witness-red-to-clean",
+      "kind": "witness"
+    },
+    {
+      "args": [
+        "--witness",
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-baddigest"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [],
+      "id": "witness-rejects-bad-sidecar",
+      "kind": "witness"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-cleanup-mirrors"
+      ],
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-SIDECAR-CLEANUP-MIRROR-01",
+        "R14-ARIA-SIDECAR-ACCEPTED-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-CLEANUP-MIRROR-01",
+          "status": "fail"
+        },
+        {
+          "id": "R14-ARIA-SIDECAR-ACCEPTED-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-cleanup-mirror-refusal"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-qualification-mirrors"
+      ],
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-SIDECAR-QUALIFICATION-01",
+        "R14-ARIA-SIDECAR-ACCEPTED-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-QUALIFICATION-01",
+          "status": "fail"
+        },
+        {
+          "id": "R14-ARIA-SIDECAR-ACCEPTED-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-qualification-mirror-refusal"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-mirror-types"
+      ],
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-SIDECAR-CLEANUP-MIRROR-01",
+        "R14-ARIA-SIDECAR-QUALIFICATION-01",
+        "R14-ARIA-SIDECAR-ACCEPTED-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-CLEANUP-MIRROR-01",
+          "status": "fail"
+        },
+        {
+          "id": "R14-ARIA-SIDECAR-QUALIFICATION-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-mirror-type-refusal"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-mirror-silent"
+      ],
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-SIDECAR-CLEANUP-MIRROR-01",
+        "R14-ARIA-SIDECAR-ACCEPTED-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-CLEANUP-MIRROR-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-silent-cleanup-mirror"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-node-descriptive"
+      ],
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-SIDECAR-NODE-CLAIM-01",
+        "R14-ARIA-SIDECAR-ACCEPTED-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-NODE-CLAIM-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-node-descriptive-refusal"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-node-alias"
+      ],
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-SIDECAR-NODE-CLAIM-01",
+        "R14-ARIA-SIDECAR-ACCEPTED-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-NODE-CLAIM-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-node-alias-refusal"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-correction-derived"
+      ],
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-SIDECAR-CORRECTION-01",
+        "R14-ARIA-SIDECAR-ACCEPTED-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-CORRECTION-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-correction-derived-refusal"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-spec-mirror"
+      ],
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-SIDECAR-BINDING-01",
+        "R14-ARIA-SIDECAR-ACCEPTED-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-BINDING-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-spec-mirror-refusal"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-advisory"
+      ],
+      "expectedClassification": {
+        "outcome": "evaluated",
+        "reason": "clean"
+      },
+      "expectedExit": 0,
+      "expectedFailedFindings": [],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-ACCEPTED-01",
+          "status": "pass"
+        }
+      ],
+      "id": "sidecar-advisory-text-accepted"
+    },
+    {
+      "args": [
+        "--witness-mirrors",
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin"
+      ],
+      "expectedClassification": {
+        "outcome": "evaluated",
+        "reason": "clean"
+      },
+      "expectedExit": 0,
+      "expectedFindings": [],
+      "id": "witness-mirrors-differential",
+      "kind": "mirror-witness"
+    }
+  ],
+  "description": "Round-15 persisted expectations for check-aria-metadata.mjs --self-test. Pinned fixture digests bind isolated mkdtemp bytes; cases bind CLI exits, finding ids/statuses, classification, and exact failed sets. mirrorCases spawn a byte-identical checker copy under an mkdtemp ROOT so canonical authenticated inputs can be tampered one at a time. sidecar-auto embeds the mkdtemp path and is intentionally unpinned.",
+  "fixtures": {
+    "malformed-receipt": {
+      "bytes": 43,
+      "file": "malformed-receipt.json",
+      "sha256": "a676bfc99808630d635c4caedacdaabf09f5b5e4a82d122c50c64f92cbb8fdec"
+    },
+    "pin": {
+      "bytes": 480,
+      "file": "pin.json",
+      "sha256": "f4a13da65c9327f621e1d70c28754f15c257364928f6b441a1f19df0aec33cf5"
+    },
+    "receipt-empty": {
+      "bytes": 2390,
+      "file": "receipt-empty.json",
+      "sha256": "1cf3b2578f282687c340ec3cf05941bd870d059cf1f4b59a4785c6fbf295e813"
+    },
+    "receipt-green": {
+      "bytes": 3233,
+      "file": "receipt-green.json",
+      "sha256": "9bf68cb7a2cdf993c2736b7f5dacf919302b9f67d7e4b8b6b49679e610e8edf3"
+    },
+    "receipt-min": {
+      "bytes": 3233,
+      "file": "receipt-min.json",
+      "sha256": "e625e27afd08d36be31f1da3dcd41411e310df8a9015cfd6c21bc8b1619cd6f4"
+    },
+    "receipt-missing-summary": {
+      "bytes": 2806,
+      "file": "receipt-missing-summary.json",
+      "sha256": "a73a4aa154d9fc540fb714e72059455605872324a887e0f90816a9a01f53c5fc"
+    },
+    "receipt-nonboolean": {
+      "bytes": 3237,
+      "file": "receipt-nonboolean.json",
+      "sha256": "3a58c0ecc0235218925eb9ce28ca6ef476f994aab2a143b068f4c6d35bd1250d"
+    },
+    "receipt-old": {
+      "bytes": 3232,
+      "file": "receipt-old.json",
+      "sha256": "d1a4ce850f98ff8c33c8fa025dcba3029cb4003d4df7c0be00eb6b353c3600c3"
+    },
+    "sidecar-advisory": {
+      "bytes": 4124,
+      "file": "sidecar-advisory.json",
+      "sha256": "5e755a0c74fb861064327c6323e291b95730eea90c605936a21514f2fdd6729e"
+    },
+    "sidecar-baddigest": {
+      "bytes": 4393,
+      "file": "sidecar-baddigest.json",
+      "sha256": "8b80a80aaf5c3196a3992915e6bfe3be51875b26d2171bff9b8a3b23e3c7cd75"
+    },
+    "sidecar-cleanup-mirrors": {
+      "bytes": 4396,
+      "file": "sidecar-cleanup-mirrors.json",
+      "sha256": "ae3cd05b234d49f07e419fdd89850d25f6557de3b16e7df5e1ea2816cd6089d3"
+    },
+    "sidecar-correction-derived": {
+      "bytes": 4392,
+      "file": "sidecar-correction-derived.json",
+      "sha256": "67404bfd3da1a1ada2ceb1eed721b6f7a3d96cbc17268a388c0b79f559bb4003"
+    },
+    "sidecar-exactnode": {
+      "bytes": 4390,
+      "file": "sidecar-exactnode.json",
+      "sha256": "148306680cd01ea1dfebafb840a49ec4d025f5d52d30ede66f7a621a802a8230"
+    },
+    "sidecar-mirror-silent": {
+      "bytes": 4394,
+      "file": "sidecar-mirror-silent.json",
+      "sha256": "a9a5c85c994fcc8b080c34965310330a6d50b1893ae83d77b5eeca4a27541c5e"
+    },
+    "sidecar-mirror-types": {
+      "bytes": 4394,
+      "file": "sidecar-mirror-types.json",
+      "sha256": "fadafc15e7ac6d6b5e56ecedf27dd0dae4197f2b2f105862bc1dae49991fc8ae"
+    },
+    "sidecar-node-alias": {
+      "bytes": 4391,
+      "file": "sidecar-node-alias.json",
+      "sha256": "dc5522c2f4e2106092cac8b6d502301d45bed6222d5a19e33654b74fb4ed3856"
+    },
+    "sidecar-node-descriptive": {
+      "bytes": 4394,
+      "file": "sidecar-node-descriptive.json",
+      "sha256": "108fd7f9fd70812345a8d9f9e4197a9f76b587c6e5c1d3c014405d2746c86898"
+    },
+    "sidecar-qualification-mirrors": {
+      "bytes": 4396,
+      "file": "sidecar-qualification-mirrors.json",
+      "sha256": "f173e6c37400069b4b1ab780f7276a04646964506de0940a7908c7bc7fa61b7b"
+    },
+    "sidecar-spec-mirror": {
+      "bytes": 4393,
+      "file": "sidecar-spec-mirror.json",
+      "sha256": "e91da19565f889cc454ffe0e43f27a42c17b0d93749d87c15997adfbe03e132d"
+    },
+    "sidecar-valid": {
+      "bytes": 4393,
+      "file": "sidecar-valid.json",
+      "sha256": "b41a374f3bf7c82dd800a741a09d483bc8db6f4aa4d75054ecec16aa66cabd1f"
+    },
+    "sidecar-wrongto": {
+      "bytes": 4390,
+      "file": "sidecar-wrongto.json",
+      "sha256": "a79333ec4f2bd8d083f1045f7d170012c0530633ab0c14ea4031a17410a611cf"
+    }
+  },
+  "minimumCliCases": 35,
+  "mirrorCases": [
+    {
+      "args": [],
+      "expectedClassification": {
+        "outcome": "evaluated",
+        "reason": "semantic_invalid"
+      },
+      "expectedExit": 1,
+      "expectedFailedFindings": [
+        "R14-ARIA-CLEANUP-LISTENING-AFTER-01"
+      ],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-CLEANUP-LISTENING-AFTER-01",
+          "status": "fail"
+        }
+      ],
+      "id": "mirror-authentic-red"
+    },
+    {
+      "args": [
+        "--check",
+        "corpus/evidence/round-14/aria-metadata/corrected.json"
+      ],
+      "expectedClassification": {
+        "outcome": "evaluated",
+        "reason": "clean"
+      },
+      "expectedExit": 0,
+      "expectedFailedFindings": [],
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-ACCEPTED-01",
+          "status": "pass"
+        }
+      ],
+      "id": "mirror-authentic-clean"
+    },
+    {
+      "args": [],
+      "expectedClassification": {
+        "outcome": "could_not_evaluate",
+        "reason": "snapshot_tampered"
+      },
+      "expectedExit": 2,
+      "expectedFailedFindings": [],
+      "expectedFindingIds": [
+        "snapshot_tampered"
+      ],
+      "expectedFindings": [
+        {
+          "id": "snapshot_tampered",
+          "status": "could_not_evaluate"
+        }
+      ],
+      "expectedMismatch": {
+        "actualSha256": "481b49935d0450a53820a512f66cf0f26c54fe35eb096f6431cb02ac57f6bd54",
+        "expectedSha256": "b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7",
+        "label": "receipt"
+      },
+      "id": "mirror-tamper-receipt",
+      "kind": "tamper",
+      "tamper": "receipt"
+    },
+    {
+      "args": [],
+      "expectedClassification": {
+        "outcome": "could_not_evaluate",
+        "reason": "snapshot_tampered"
+      },
+      "expectedExit": 2,
+      "expectedFailedFindings": [],
+      "expectedFindingIds": [
+        "snapshot_tampered"
+      ],
+      "expectedFindings": [
+        {
+          "id": "snapshot_tampered",
+          "status": "could_not_evaluate"
+        }
+      ],
+      "expectedMismatch": {
+        "actualSha256": "caf8b69353912236abd5f11325bd60122d8221b961abe1dc32f2e2aeb82cd6ea",
+        "expectedSha256": "b458b351430388485aad1594640589809bf2eda59367b016d7e1d3a45a1989b7",
+        "label": "receipt"
+      },
+      "id": "mirror-tamper-receipt-clean-semantics",
+      "kind": "tamper",
+      "tamper": "receipt-clean"
+    },
+    {
+      "args": [],
+      "expectedClassification": {
+        "outcome": "could_not_evaluate",
+        "reason": "snapshot_tampered"
+      },
+      "expectedExit": 2,
+      "expectedFailedFindings": [],
+      "expectedFindingIds": [
+        "snapshot_tampered"
+      ],
+      "expectedFindings": [
+        {
+          "id": "snapshot_tampered",
+          "status": "could_not_evaluate"
+        }
+      ],
+      "expectedMismatch": {
+        "actualSha256": "c59c52042fadd49d3764a79b829dfdb765e4be29ea63d8c3793d0ee2b88fc0bd",
+        "expectedSha256": "4d8947564ee911a18ff2b931b8628910edada4781024fa40008d87e3cd16ccd2",
+        "label": "pin"
+      },
+      "id": "mirror-tamper-pin",
+      "kind": "tamper",
+      "tamper": "pin"
+    },
+    {
+      "args": [],
+      "expectedClassification": {
+        "outcome": "could_not_evaluate",
+        "reason": "snapshot_tampered"
+      },
+      "expectedExit": 2,
+      "expectedFailedFindings": [],
+      "expectedFindingIds": [
+        "snapshot_tampered"
+      ],
+      "expectedFindings": [
+        {
+          "id": "snapshot_tampered",
+          "status": "could_not_evaluate"
+        }
+      ],
+      "expectedMismatch": {
+        "actualSha256": "62e6ec0a7f0c7415bc6911c01957c41ee4da7505711bb9e625ffb369a94bd4f4",
+        "expectedSha256": "56764241df4f4a644af39e368b2e47f35d3f4bbbdf17e7cef3fa848ee0d72112",
+        "label": "manifest"
+      },
+      "id": "mirror-tamper-manifest",
+      "kind": "tamper",
+      "tamper": "manifest"
+    },
+    {
+      "args": [],
+      "expectedClassification": {
+        "outcome": "could_not_evaluate",
+        "reason": "snapshot_tampered"
+      },
+      "expectedExit": 2,
+      "expectedFailedFindings": [],
+      "expectedFindingIds": [
+        "snapshot_tampered"
+      ],
+      "expectedFindings": [
+        {
+          "id": "snapshot_tampered",
+          "status": "could_not_evaluate"
+        }
+      ],
+      "expectedMismatch": {
+        "actualSha256": "449dbf65dd8663acb17e8a24673717ac15b13cf3d0ded0850b74c9cfb6f28ffe",
+        "expectedSha256": "03cb4e17d3b02785335dfd55df4717fbe18edf637d7defe043f8328ba9d7e4fc",
+        "label": "spec"
+      },
+      "id": "mirror-tamper-spec",
+      "kind": "tamper",
+      "tamper": "spec"
+    },
+    {
+      "args": [],
+      "expectedClassification": {
+        "outcome": "could_not_evaluate",
+        "reason": "snapshot_tampered"
+      },
+      "expectedExit": 2,
+      "expectedFailedFindings": [],
+      "expectedFindingIds": [
+        "snapshot_tampered"
+      ],
+      "expectedFindings": [
+        {
+          "id": "snapshot_tampered",
+          "status": "could_not_evaluate"
+        }
+      ],
+      "expectedMismatch": {
+        "actualSha256": "bf3179bbdeb3481d66e738d00e9eef3dd6b78354b163a0726acb0eb78de492c2",
+        "expectedSha256": "87ae779bbe194eb7b5a3d555de5d31184fc50a1bcc49c8499a2a81287707b3f4",
+        "label": "config"
+      },
+      "id": "mirror-tamper-config",
+      "kind": "tamper",
+      "tamper": "config"
+    },
+    {
+      "args": [],
+      "expectedClassification": {
+        "outcome": "could_not_evaluate",
+        "reason": "snapshot_tampered"
+      },
+      "expectedExit": 2,
+      "expectedFailedFindings": [],
+      "expectedFindingIds": [
+        "snapshot_tampered"
+      ],
+      "expectedFindings": [
+        {
+          "id": "snapshot_tampered",
+          "status": "could_not_evaluate"
+        }
+      ],
+      "expectedMismatch": {
+        "actualSha256": "c7a8ebaa6a5cefc8f041e78aec9b9830b6a6f892fc51b0b3f73ffabc3a700110",
+        "expectedSha256": "0d0f00e214c92f9e0b83b704e3488ff17a58c5141d2cd788cf337d599603a5e7",
+        "label": "worker:worker-0-1530637-1792474958700.json"
+      },
+      "id": "mirror-tamper-worker",
+      "kind": "tamper",
+      "tamper": "worker"
+    },
+    {
+      "args": [],
+      "expectedClassification": {
+        "outcome": "could_not_evaluate",
+        "reason": "snapshot_tampered"
+      },
+      "expectedExit": 2,
+      "expectedFailedFindings": [],
+      "expectedFindingIds": [
+        "snapshot_tampered"
+      ],
+      "expectedFindings": [
+        {
+          "id": "snapshot_tampered",
+          "status": "could_not_evaluate"
+        }
+      ],
+      "expectedMismatch": {
+        "actualSha256": "5c4cb198f7124104ffa9ca86057bcd210db1ff6cd73b25406a291d873e867842",
+        "expectedSha256": "1d54c9e98a85022c4382d0a0eeb16e15f0256b7f561329258e7ca77152e4af9c",
+        "label": "producer"
+      },
+      "id": "mirror-tamper-producer",
+      "kind": "tamper",
+      "tamper": "producer"
+    }
+  ],
+  "schema": "tabi-aria-metadata-fixture-expectations-v1",
+  "unpinnedFixtures": [
+    "sidecar-auto"
+  ]
+}
