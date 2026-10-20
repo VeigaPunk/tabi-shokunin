@@ -589,3 +589,38 @@
   accessible_locator_entry0→1. Index measurement31notes/31mapped/no missing paths.
   Exact commands/stdout in `corpus/evidence/round-12/measurements.json`; score delta0
   recorded in SCORECARD's round-12 table. Counts measure committed work, not intentions.
+
+## 2026-10-20 — round-13 (hyaku, attempt 1)
+
+- Declared C1 operability: newly fixture-covered compatibility policies for the two
+  legacy historical gates, 0→2 policies, not two newly clean full gates. This works
+  a lowest tied axis (operability8); ordinal scores remain 8/9/8/8/9/8. Motivation:
+  `corpus/lessons/round-12-verifier-spotcheck.md:199-203`. HARD_BASELINE/PSTACK_PIN
+  and the historical census remain fixed. USER's inherited six-of-ten `round_count`
+  is not repaired by inventing rounds or reducing the expected count.
+- Declared C2 coverage/capability: documentation-held accessible-selector ground to
+  one real, isolated Playwright loopback demonstration, with actual ARIA YAML, exact
+  templates, runtime identities and negative controls. S023/S024 reopened this round;
+  this is not an audit, pixel comparison, real-site journey or cross-browser claim.
+  Runtime admission depends on the actual execution receipt, not the wave's plan.
+- One validated32-seat wave: executor7/scout6/connector4/reviewer7/critic4/sentinel2/
+  revenger1/scribe1; L1 holds planner and PlanningWalk is a bounded scout data-walk.
+  Spec/unchanged validator taskCall/registry: `.ufo/waves/round-13/w1/`.
+  Explicit `.txt` acceptance paths superseded rendered `.md` trailers; seats removed
+  their own duplicate reports. No model parameter or routing change was used.
+- Routed precision corrections carry no additional axis credit: collector timing in
+  `knowledge/webdriver-bidi-capability-matrix.md` (BidiPrecision); gzip-transfer versus
+  decoded-body counts appended to `.ufo/waves/round-12/w1/FreshRetry.txt`
+  (ReceiptCorrection); default-contain location clarified in
+  `knowledge/playwright-accessible-locators-and-snapshots.md` (LocatorPrecision).
+  Original bytes and historical verification dates remain. Round-12 report's dossier
+  pointer `:14-77` is corrected to `:14-66` in this round's report, never rewritten.
+- QUALITY16 learns the outside gate-policy disagreement. AttackGate/AttackPin and
+  SafetyHistory reports drove canonical seed pinning, resolvable regular-file
+  evidence pointers, rejection of self-asserted promotion, census integrity and
+  narrow history-aware lesson/script policies. Broader inherited USER count-shell,
+  survivor-replay and historical-user-record weaknesses are disclosed separately;
+  a bounded compatibility repair does not certify the entire legacy gate.
+- Pointer expansion for the two abbreviated `knowledge/` paths immediately above:
+  `corpus/knowledge/webdriver-bidi-capability-matrix.md` and
+  `corpus/knowledge/playwright-accessible-locators-and-snapshots.md`.

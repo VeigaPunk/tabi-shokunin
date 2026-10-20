@@ -2,7 +2,7 @@
 // Reads committed tabi round files only. A miss exits non-zero.
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, realpathSync, symlinkSync, unlinkSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -23,9 +23,32 @@ const NEEDLES = [
   'account-mutation: yes',
 ];
 const APPEND_ONLY = ['LOG.md', 'SCORECARD.md', 'SKILL.md', 'PROVINCE.md', 'corpus/QUALITY.md', 'corpus/README.md'];
+const SHONEN_PATH = 'SHONEN.md';
+const CENSUS_PATH = 'corpus/evidence/pstack-20261015/baseline-census.tsv';
+// Exact committed identity of the production census (HEAD blob 672dba36…).
+// Deleting any row, including PROVINCE.md or SHONEN.md, changes these bytes.
+const CENSUS_SHA256 = 'b9c8dc3557b825f8bd4b18ff0db03909e16ddd526ef18554cb2bf68da696be9c';
+// The lane name and seed digest are fixed, not derived from the checkout path.
+// Source: parent PROTOCOL.md canonical SHONEN seed at 6bd4f38 lines 333-340,
+// byte-identical since 70ffb66; <name>=tabi-shokunin. The normalized template
+// (marks reset to [ ], evidence lines dropped) hashes to this persisted digest.
+const LANE = 'tabi-shokunin';
+const SHONEN_SEED_SHA256 = 'b45c2ac3cdf8ba80563e77cabf72670a6a101590f8031d9b484c67313bcdab67';
+// Red-before arm allowed by --witness: the legacy gate committed at baseline.
+const LEGACY_GATE_BLOB = 'b2eb8316f41cd1039330e45f6739c07c5f11eace';
 
 function fail(finding, detail, exit = 1) {
   throw Object.assign(new Error(detail), { finding, exit });
+}
+
+// Lexical equality alone lets --repo /proc/self/cwd or a symlink alias reach the
+// production tree while appearing to be a fixture. Compare resolved paths.
+function isProduction(repo) {
+  try {
+    return realpathSync(repo) === realpathSync(defaultRoot);
+  } catch {
+    return false;
+  }
 }
 
 function git(root, args, binary = false) {
@@ -65,56 +88,161 @@ function protectedPath(path) {
     || path.startsWith('.ufo/plans/fleet-round-1-interactive-20261015')
     || path.startsWith('.ufo/continuation/fleet-round-1-interactive-20261015')
     || path === 'scripts/check-freshness.mjs'
-    || path === 'SHONEN.md';
+    || path === SHONEN_PATH;
+}
+
+// PROTOCOL.md canonical SHONEN seed: fixed lane title, one intro line, then the
+// four boxes in order. Regeneration may change only the status character and one
+// two-space evidence line per box. Statuses are [ ] or [~]; [x] fails closed
+// because this gate holds no independent non-author verifier record. A [~]
+// evidence line may carry prose but must include a backticked path that resolves
+// to a committed regular blob at HEAD. The normalized template must hash to the
+// persisted independent seed digest. Structural only, never a promotion grant.
+function canonicalShonenText() {
+  const lines = [`# ${LANE} — Promotion checklist`, '', 'Promotion to shokunin requires all of:', ''];
+  for (const box of BOXES) lines.push(`- [~] ${box}`, '  `corpus/lessons/pstack-20261015-r01.md` — author-side evidence pointer');
+  return `${lines.join('\n')}\n`;
+}
+
+function regularBlob(root, path) {
+  const result = git(root, ['--literal-pathspecs', 'ls-tree', 'HEAD', '--', path]);
+  if (result.status !== 0) return false;
+  const line = result.stdout.split('\n').find(item => item.endsWith(`\t${path}`));
+  if (!line) return false;
+  const [mode, type] = line.split('\t')[0].split(' ');
+  return type === 'blob' && (mode === '100644' || mode === '100755');
+}
+
+function evidencePointers(text) {
+  return [...text.matchAll(/`([^`\s]+)`/g)]
+    .map(match => match[1].replace(/:\d+(?:-\d+)?$/, '').replace(/^\.\//, ''))
+    .filter(Boolean);
+}
+
+function checkShonenPolicy(root, text) {
+  if (text.includes('\r')) fail('shonen_policy', 'SHONEN.md must use LF line endings');
+  if (!text.endsWith('\n') || text.endsWith('\n\n')) fail('shonen_policy', 'SHONEN.md must end with exactly one newline');
+  const lines = text.slice(0, -1).split('\n');
+  const preamble = [`# ${LANE} — Promotion checklist`, '', 'Promotion to shokunin requires all of:', ''];
+  for (let index = 0; index < preamble.length; index++) {
+    if (lines[index] !== preamble[index]) fail('shonen_policy', `SHONEN.md line ${index + 1} is not the canonical seed`);
+  }
+  let index = preamble.length;
+  for (const box of BOXES) {
+    const match = /^- \[([x~ ])\] (.+)$/.exec(lines[index] ?? '');
+    if (!match || match[2] !== box) fail('shonen_policy', `SHONEN.md canonical box missing, reworded or out of order: ${box}`);
+    const mark = match[1];
+    index++;
+    const evidence = lines[index];
+    const hasEvidence = typeof evidence === 'string' && /^ {2}\S/.test(evidence);
+    if (hasEvidence) index++;
+    if (mark === 'x') fail('shonen_policy', `SHONEN.md [x] has no committed non-author verifier allowlist: ${box}`);
+    if (mark === ' ' && hasEvidence) fail('shonen_policy', `SHONEN.md unchecked box carries prose: ${box}`);
+    if (mark === '~') {
+      if (!hasEvidence) fail('shonen_policy', `SHONEN.md [~] box has no indented evidence line: ${box}`);
+      if (!evidencePointers(evidence).some(pointer => regularBlob(root, pointer))) {
+        fail('shonen_policy', `SHONEN.md [~] evidence has no backticked committed regular blob path: ${box}`);
+      }
+    }
+    if (typeof lines[index] === 'string' && /^ {2}\S/.test(lines[index])) fail('shonen_policy', `SHONEN.md box has more than one evidence line: ${box}`);
+  }
+  if (index !== lines.length) fail('shonen_policy', `SHONEN.md has non-canonical prose after the four boxes: ${lines[index]}`);
+  const normalized = [...preamble, ...BOXES.map(box => `- [ ] ${box}`), ''].join('\n');
+  if (createHash('sha256').update(normalized).digest('hex') !== SHONEN_SEED_SHA256) {
+    fail('shonen_policy', 'SHONEN.md normalized template does not match the persisted canonical seed digest');
+  }
+}
+
+function checkShonen(root, baseline) {
+  const before = blob(root, baseline, SHONEN_PATH);
+  if (!before) fail('history_rewritten', `${SHONEN_PATH} is missing at the baseline`);
+  const after = blob(root, 'HEAD', SHONEN_PATH);
+  if (!after) fail('shonen_policy', `${SHONEN_PATH} is missing at HEAD`);
+  if (after === before) return;
+  checkShonenPolicy(root, show(root, 'HEAD', SHONEN_PATH).toString('utf8'));
+}
+
+function censusEntries(root, baseline, production, expectedSha256) {
+  const bytes = show(root, 'HEAD', CENSUS_PATH);
+  if (!bytes) {
+    if (production || expectedSha256) fail('history_rewritten', 'Baseline census is not committed');
+    return null;
+  }
+  const pin = production ? CENSUS_SHA256 : expectedSha256;
+  if (pin && createHash('sha256').update(bytes).digest('hex') !== pin) {
+    fail('history_rewritten', `Census identity changed: ${CENSUS_PATH}`);
+  }
+  const lines = bytes.toString('utf8').trimEnd().split('\n');
+  if (lines[0] !== baseline) fail('history_rewritten', 'Census baseline hash mismatch');
+  if (lines.length < 2) fail('history_rewritten', 'Census lists no protected paths');
+  return lines.slice(1).map(line => {
+    const match = /^([a-f0-9]{40}) (.+)$/.exec(line);
+    if (!match) fail('history_rewritten', 'Census row is malformed');
+    return { recorded: match[1], path: match[2] };
+  });
 }
 
 function argumentsOf(argv) {
-  const options = { repo: defaultRoot, baseline: HARD_BASELINE, expect: 10, selfTest: false };
+  const options = { repo: defaultRoot, baseline: HARD_BASELINE, expect: 10, selfTest: false, witness: null, censusSha256: null };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
     if (flag === '--self-test') options.selfTest = true;
+    else if (flag === '--witness' && argv[i + 1]) options.witness = argv[++i];
+    else if (flag === '--census-sha256' && argv[i + 1]) options.censusSha256 = argv[++i];
     else if (flag === '--repo' && argv[i + 1]) options.repo = resolve(argv[++i]);
     else if (flag === '--baseline' && argv[i + 1]) options.baseline = argv[++i];
     else if (flag === '--expect' && argv[i + 1]) options.expect = Number(argv[++i]);
-    else fail('usage', 'Use --self-test, or --repo PATH --baseline HASH --expect N for an isolated fixture', 2);
+    else fail('usage', 'Use --self-test, --witness REV, or --repo PATH --baseline HASH --expect N [--census-sha256 HASH] for an isolated fixture', 2);
   }
   if (options.selfTest && argv.length !== 1) fail('usage', '--self-test takes no other arguments', 2);
+  if (options.witness !== null) {
+    if (argv.length !== 2 || !/^[a-f0-9]{7,40}$/.test(options.witness)) fail('usage', '--witness takes one git revision whose gate bytes are the red-before arm', 2);
+    return options;
+  }
+  if (options.censusSha256 !== null) {
+    if (!/^[a-f0-9]{64}$/.test(options.censusSha256)) fail('usage', '--census-sha256 must be 64 hex characters', 2);
+    if (isProduction(options.repo)) fail('usage', 'Production census identity is fixed; --census-sha256 is fixture-only', 2);
+  }
   if (!/^[a-f0-9]{40}$/.test(options.baseline)) fail('usage', 'Baseline must be 40 hex characters', 2);
   if (!Number.isInteger(options.expect) || options.expect < 1 || options.expect > 10) fail('usage', 'Expect must be 1..10', 2);
-  if (options.repo === defaultRoot) {
+  if (isProduction(options.repo)) {
     if (options.baseline !== HARD_BASELINE || options.expect !== 10) fail('usage', 'Production check uses the fixed baseline and expects ten rounds', 2);
   }
   return options;
 }
 
-function checkHistory(root, baseline, production) {
+function checkHistory(root, baseline, production, censusSha256) {
   const head = gitOk(root, ['rev-parse', 'HEAD']);
   const ancestor = git(root, ['merge-base', '--is-ancestor', baseline, head]);
   if (ancestor.status !== 0) fail('history_rewritten', 'Baseline is not an ancestor of HEAD');
   for (const path of list(root, baseline, '.').filter(protectedPath)) {
     const before = blob(root, baseline, path);
     const after = blob(root, head, path);
-    if (!before || before !== after) fail('history_rewritten', `Protected bytes changed: ${path}`);
+    if (!before || !after) fail('history_rewritten', `Protected bytes changed: ${path}`);
+    if (path === SHONEN_PATH) continue;
+    if (before !== after) fail('history_rewritten', `Protected bytes changed: ${path}`);
   }
+  checkShonen(root, baseline);
   for (const path of APPEND_ONLY) {
     const before = show(root, baseline, path);
     if (!before) continue;
     const after = show(root, head, path);
     if (!after || !after.subarray(0, before.length).equals(before)) fail('history_rewritten', `Append-only prefix changed: ${path}`);
   }
-  if (!production) return;
-  const census = show(root, head, 'corpus/evidence/pstack-20261015/baseline-census.tsv');
-  if (!census) fail('history_rewritten', 'Baseline census is not committed');
-  const lines = census.toString('utf8').trimEnd().split('\n');
-  if (lines[0] !== baseline) fail('history_rewritten', 'Census baseline hash mismatch');
-  if (lines.length < 2) fail('history_rewritten', 'Census lists no protected paths');
-  for (const line of lines.slice(1)) {
-    const match = /^([a-f0-9]{40}) (.+)$/.exec(line);
-    if (!match) fail('history_rewritten', 'Census row is malformed');
-    const [, recorded, path] = match;
-    if (blob(root, baseline, path) !== recorded || blob(root, head, path) !== recorded) {
-      fail('history_rewritten', `Census blob drifted: ${path}`);
+  const census = censusEntries(root, baseline, production, censusSha256);
+  if (!census) return;
+  for (const { recorded, path } of census) {
+    const before = blob(root, baseline, path);
+    if (!before || before !== recorded) fail('history_rewritten', `Census baseline drifted: ${path}`);
+    const after = blob(root, head, path);
+    if (path === SHONEN_PATH) {
+      // Historical row is still compared to the committed old hash; only the
+      // current bytes may follow the canonical seed, and never arbitrary prose.
+      if (!after) fail('shonen_policy', `${SHONEN_PATH} is missing at HEAD`);
+      if (after !== recorded) checkShonenPolicy(root, show(root, head, SHONEN_PATH).toString('utf8'));
+      continue;
     }
+    if (after !== recorded) fail('history_rewritten', `Census blob drifted: ${path}`);
   }
 }
 
@@ -278,8 +406,8 @@ function checkPublic(root, ids) {
 
 function check(options) {
   const root = options.repo;
-  const production = root === defaultRoot;
-  checkHistory(root, options.baseline, production);
+  const production = isProduction(root);
+  checkHistory(root, options.baseline, production, options.censusSha256);
   const ids = roundIds(root);
   if (ids.length !== options.expect) fail('round_count', `Found ${ids.length} pstack rounds, expected ${options.expect}`);
   for (let index = 0; index < ids.length; index++) {
@@ -397,6 +525,24 @@ function writeGoodFixture(root) {
   return baseline;
 }
 
+function writeCanonicalShonen(root) {
+  writeFileSync(join(root, SHONEN_PATH), canonicalShonenText());
+}
+
+function writeCensus(root, baseline, tamperShonen = false) {
+  const lines = [baseline];
+  for (const path of list(root, baseline, '.').filter(protectedPath).sort()) {
+    const recorded = tamperShonen && path === SHONEN_PATH ? '0'.repeat(40) : blob(root, baseline, path);
+    lines.push(`${recorded} ${path}`);
+  }
+  mkdirSync(dirname(join(root, CENSUS_PATH)), { recursive: true });
+  writeFileSync(join(root, CENSUS_PATH), `${lines.join('\n')}\n`);
+}
+
+function censusSha(root) {
+  return createHash('sha256').update(readFileSync(join(root, CENSUS_PATH))).digest('hex');
+}
+
 function selfTest() {
   const cases = [
     { name: 'clean', mutate: () => {}, exit: 0, finding: 'clean' },
@@ -413,17 +559,117 @@ function selfTest() {
       const path = join(root, 'corpus/lessons/pstack-20261015-r01.md');
       writeFileSync(path, readFileSync(path, 'utf8') + 'consequential-action: performed\n');
     }, exit: 1, finding: 'consequential_action' },
+    { name: 'canonical_shonen', mutate: root => writeCanonicalShonen(root), exit: 0, finding: 'clean' },
+    { name: 'canonical_shonen_census', mutate: (root, baseline, extra) => {
+      writeCanonicalShonen(root);
+      writeCensus(root, baseline);
+      extra.push('--census-sha256', censusSha(root));
+    }, exit: 0, finding: 'clean' },
+    { name: 'shonen_invalid_mark', mutate: root => {
+      writeFileSync(join(root, SHONEN_PATH), canonicalShonenText().replace('- [~] At least one', '- [?] At least one'));
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_extra_prose', mutate: root => {
+      writeFileSync(join(root, SHONEN_PATH), `${canonicalShonenText()}Extra prose after the boxes.\n`);
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_missing_box', mutate: root => {
+      const text = canonicalShonenText().split('\n');
+      text.splice(8, 2);
+      writeFileSync(join(root, SHONEN_PATH), text.join('\n'));
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_x_without_verifier', mutate: root => {
+      writeFileSync(join(root, SHONEN_PATH), canonicalShonenText().replace('- [~] SKILL.md', '- [x] SKILL.md'));
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_x_self_declared', mutate: root => {
+      const text = canonicalShonenText().split('\n');
+      text[4] = `- [x] ${BOXES[0]}`;
+      text[5] = '  verifier: reviewer-9 non-author — independent recheck of the box';
+      writeFileSync(join(root, SHONEN_PATH), text.join('\n'));
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_wrong_title', mutate: root => {
+      writeFileSync(join(root, SHONEN_PATH), canonicalShonenText().replace('# tabi-shokunin —', '# other-checkout —'));
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_missing_pointer', mutate: root => {
+      const text = canonicalShonenText().split('\n');
+      text[5] = '  prose only with no backticked path';
+      writeFileSync(join(root, SHONEN_PATH), text.join('\n'));
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_tree_pointer', mutate: root => {
+      const text = canonicalShonenText().split('\n');
+      text[5] = '  `corpus` — a directory is not a regular blob';
+      writeFileSync(join(root, SHONEN_PATH), text.join('\n'));
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_symlink_pointer', mutate: root => {
+      writeFileSync(join(root, 'pointer-target.md'), 'target\n');
+      symlinkSync('pointer-target.md', join(root, 'pointer-link.md'));
+      const text = canonicalShonenText().split('\n');
+      text[5] = '  `pointer-link.md` — a symlink is not a regular blob';
+      writeFileSync(join(root, SHONEN_PATH), text.join('\n'));
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_unchecked_prose', mutate: root => {
+      const text = canonicalShonenText().split('\n');
+      text[4] = `- [ ] ${BOXES[0]}`;
+      writeFileSync(join(root, SHONEN_PATH), text.join('\n'));
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_extra_evidence_line', mutate: root => {
+      const text = canonicalShonenText().split('\n');
+      text.splice(6, 0, '  `SKILL.md` extra evidence');
+      writeFileSync(join(root, SHONEN_PATH), text.join('\n'));
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_crlf', mutate: root => {
+      writeFileSync(join(root, SHONEN_PATH), canonicalShonenText().replaceAll('\n', '\r\n'));
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'shonen_double_newline', mutate: root => {
+      writeFileSync(join(root, SHONEN_PATH), `${canonicalShonenText()}\n`);
+    }, exit: 1, finding: 'shonen_policy' },
+    { name: 'census_row_mismatch', mutate: (root, baseline) => writeCensus(root, baseline, true), exit: 1, finding: 'history_rewritten' },
+    { name: 'census_missing_row', mutate: (root, baseline, extra) => {
+      writeCensus(root, baseline);
+      extra.push('--census-sha256', censusSha(root));
+      const path = join(root, CENSUS_PATH);
+      const kept = readFileSync(path, 'utf8').trimEnd().split('\n').filter(line => !line.endsWith(` ${SHONEN_PATH}`));
+      writeFileSync(path, `${kept.join('\n')}\n`);
+    }, exit: 1, finding: 'history_rewritten' },
+    { name: 'census_byte_tamper', mutate: (root, baseline, extra) => {
+      writeCensus(root, baseline);
+      extra.push('--census-sha256', censusSha(root));
+      const path = join(root, CENSUS_PATH);
+      const lines = readFileSync(path, 'utf8').trimEnd().split('\n');
+      lines[1] = `0000000000000000000000000000000000000000 ${lines[1].slice(41)}`;
+      writeFileSync(path, `${lines.join('\n')}\n`);
+    }, exit: 1, finding: 'history_rewritten' },
+    { name: 'census_deleted', mutate: (root, baseline, extra) => {
+      writeCensus(root, baseline);
+      extra.push('--census-sha256', censusSha(root));
+      rmSync(join(root, CENSUS_PATH));
+    }, exit: 1, finding: 'history_rewritten' },
+    { name: 'census_moved_baseline', mutate: (root, baseline, extra) => {
+      writeCensus(root, baseline);
+      const path = join(root, CENSUS_PATH);
+      const lines = readFileSync(path, 'utf8').trimEnd().split('\n');
+      lines[0] = '1'.repeat(40);
+      writeFileSync(path, `${lines.join('\n')}\n`);
+      extra.push('--census-sha256', censusSha(root));
+    }, exit: 1, finding: 'history_rewritten' },
+    { name: 'historical_mutation', mutate: root => {
+      const path = join(root, 'corpus/lessons/round-1.md');
+      writeFileSync(path, `${readFileSync(path, 'utf8')}rewritten history\n`);
+    }, exit: 1, finding: 'history_rewritten' },
+    { name: 'future_lesson_allowed', mutate: root => {
+      mkdirSync(join(root, 'corpus/lessons'), { recursive: true });
+      writeFileSync(join(root, 'corpus/lessons/round-2.md'), 'future lesson\n');
+    }, exit: 0, finding: 'clean' },
   ];
   for (const test of cases) {
     const root = mkdtempSync(join('/var/tmp', 'tabi-round-contract-'));
     try {
       const baseline = writeGoodFixture(root);
-      test.mutate(root);
+      const extra = [];
+      test.mutate(root, baseline, extra);
       if (test.name !== 'clean') {
         gitOk(root, ['add', '--', '.']);
         commit(root, 'mutation');
       }
-      const result = spawnSync(process.execPath, [script, '--repo', root, '--baseline', baseline, '--expect', '1'], { encoding: 'utf8' });
+      const result = spawnSync(process.execPath, [script, '--repo', root, '--baseline', baseline, '--expect', '1', ...extra], { encoding: 'utf8' });
       const output = `${result.stdout}${result.stderr}`;
       const match = result.status === test.exit && output.includes(test.finding === 'clean' ? 'verdict=clean' : `finding=${test.finding}`);
       console.log(`SELFTEST name=${test.name} expected_exit=${test.exit} actual_exit=${result.status} expected_finding=${test.finding} result=${match ? 'PASS' : 'FAIL'}`);
@@ -432,12 +678,63 @@ function selfTest() {
       rmSync(root, { recursive: true, force: true });
     }
   }
-  console.log('ROUND_CONTRACT_SELFTEST verdict=clean cases=4');
+  const aliasRoot = mkdtempSync(join('/var/tmp', 'tabi-round-alias-'));
+  const alias = join(aliasRoot, 'repo');
+  try {
+    symlinkSync(defaultRoot, alias);
+    const result = spawnSync(process.execPath, [script, '--repo', alias, '--baseline', HARD_BASELINE, '--expect', '10', '--census-sha256', '0'.repeat(64)], { encoding: 'utf8' });
+    const output = `${result.stdout}${result.stderr}`;
+    const match = result.status === 2 && output.includes('finding=usage');
+    console.log(`SELFTEST name=production_alias_refused expected_exit=2 actual_exit=${result.status} expected_finding=usage result=${match ? 'PASS' : 'FAIL'}`);
+    if (!match) fail('selftest_failure', output);
+  } finally {
+    try { unlinkSync(alias); } catch {}
+    rmSync(aliasRoot, { recursive: true, force: true });
+  }
+  console.log(`ROUND_CONTRACT_SELFTEST verdict=clean cases=${cases.length} alias_checks=1`);
+}
+
+// Regression witness: identical fixture, only the gate bytes differ. The gate at
+// REV is the red-before arm; this file is the green-after arm. Both receive the
+// same --repo/--baseline/--expect arguments and run as separate processes.
+function witness(rev) {
+  const oldBlob = blob(defaultRoot, rev, 'scripts/check-round-contract.mjs');
+  if (oldBlob !== LEGACY_GATE_BLOB) fail('usage', `--witness revision must resolve to the pinned legacy gate blob ${LEGACY_GATE_BLOB}`, 2);
+  const oldSource = show(defaultRoot, rev, 'scripts/check-round-contract.mjs');
+  if (!oldSource) fail('usage', `No scripts/check-round-contract.mjs at ${rev}`, 2);
+  const scratch = mkdtempSync(join('/var/tmp', 'tabi-round-witness-'));
+  const root = join(scratch, 'repo');
+  const oldGate = join(scratch, 'old-gate.mjs');
+  mkdirSync(root);
+  writeFileSync(oldGate, oldSource);
+  try {
+    const baseline = writeGoodFixture(root);
+    writeCanonicalShonen(root);
+    gitOk(root, ['add', '--', '.']);
+    commit(root, 'canonical-shonen');
+    const args = ['--repo', root, '--baseline', baseline, '--expect', '1'];
+    const oldRun = spawnSync(process.execPath, [oldGate, ...args], { encoding: 'utf8' });
+    const newRun = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' });
+    const oldOutput = `${oldRun.stdout}${oldRun.stderr}`;
+    const newOutput = `${newRun.stdout}${newRun.stderr}`;
+    const oldFinding = /finding=(\w+)/.exec(oldOutput)?.[1] ?? 'none';
+    const newVerdict = /ROUND_CONTRACT verdict=(\w+)/.exec(newOutput)?.[1] ?? 'none';
+    const pass = oldRun.status === 1 && oldFinding === 'history_rewritten' && newRun.status === 0 && newVerdict === 'clean';
+    console.log(`ROUND_CONTRACT_WITNESS fixture=shared old_rev=${rev} old_exit=${oldRun.status} old_finding=${oldFinding} new_exit=${newRun.status} new_verdict=${newVerdict} result=${pass ? 'PASS' : 'FAIL'}`);
+    if (!pass) {
+      console.log(`WITNESS_OLD ${oldOutput.trim()}`);
+      console.log(`WITNESS_NEW ${newOutput.trim()}`);
+      fail('witness_failure', 'Old and edited gates disagreed on the identical canonical-SHONEN fixture');
+    }
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
 }
 
 try {
   const options = argumentsOf(process.argv.slice(2));
   if (options.selfTest) selfTest();
+  else if (options.witness) witness(options.witness);
   else check(options);
 } catch (error) {
   const exit = error.exit ?? 2;
