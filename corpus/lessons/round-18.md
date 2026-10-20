@@ -169,3 +169,34 @@ None of the additional code hardening settles the open L0 leases or grants real-
 Tool installs by SimplifyTools only: acorn8.19.0, acorn-walk8.3.5 and eslint9.39.5 in its private
 `/tmp/r18-ast`, official npm registry, for AST reachability/unused-binding probes; no global or
 pacman transaction. Evidence: `.ufo/waves/round-18/w2/SimplifyTools.md:30-36`.
+
+### Main-agent verification and evidence closure
+
+After both waves and all same-identity repairs landed as
+`c0aff2364b49b21c41669f050e03800138589fa7`, L1 ran the three before/after counters:
+C1 0→51 (51 fixed-cohort receipts; held41/drift-superseded9/own-work1), C2 0→6, C3 0→5,
+all evaluation exits0. Final self-tests: C1 38/38, C2 26/26, C3 38/38, wrapper8/8.
+Every self-test now has a receipt under `corpus/evidence/round-18/selftests/`, with exact argv,
+exit, full stdout and actual producer SHA. The source producer and all bodies were regenerated,
+not manually rehashed around old evidence. Exact command records: `evidence/round-18/measurements.json`
+beneath corpus. The registered SHA map is `corpus/evidence/round-18/tool-identities.json`.
+
+Full no-harm comparison at that landed revision: all23 gate exits equal baseline,
+22 exit0 and inherited USER `round_count` exit1 (6/10 user rounds). No timeout; sandbox clean
+before/after. The faithful fleet sandbox used real sibling directories (not symlinks), with
+the lane named tabi-shokunin, so the old r17 binding's fleet-dependent adjacency counter actually
+reproduced10 rather than a false environment zero. Full streams and producer hashes:
+`corpus/evidence/round-18/harm-at-measured.json`. The older first-integration harm receipt remains
+historical at its named revision, not relabeled as the final code run.
+
+End census command is the same fleet validator as the start: exit0, `tabi ok`, with ten W04
+duplicate-URL warnings for supersession scopes. `check-sources` records76 rows,
+A64/B4/C8 and mined60/queued8/rejected8. Old cells unchanged; additions19 (18A mined,1C rejected).
+No new capability or scalar promotion. Expansion unchanged; quality and discernment improve by
+bounded execution repairs and lesson-backed corrections to the previous outside disagreements.
+This round's independent non-author admit/reject remains the orchestrator's duty.
+
+Binding record home is `.ufo/waves/round-18/measurement-binding.json`, outside corpus/evidence:
+C2 deliberately snapshots matching evidence receipts, so a broad `corpus/evidence/` counted-input
+prefix cannot also contain its own changing binding record. The final binding checkpoint therefore
+pins the committed evidence snapshot and records its re-execution outside that prefix.

@@ -202,3 +202,21 @@ M1 preserves the original response/producer records in history. Final body-reten
 retained compressed bytes to body SHA/size, decode, offset and excerpt; that is finite evidence
 integrity, not authentication of the remote publisher. The current receipt tree and final
 measurement record—not the first-snapshot tallies above—are authoritative for final admission.
+
+## 8. Final retained-body verification
+
+At landed `c0aff2364b49b21c41669f050e03800138589fa7`, the repaired counter measured
+`c1_rows_rechecked=51`, `eligible_rows=51`, `held=41`, `drift_superseded=9`, `own_work=1`,
+with no rejected receipts. Command:
+`node .ufo/waves/round-18/measure-c1.mjs c0aff2364b49b21c41669f050e03800138589fa7`.
+The same counter at B measured0/51. Producer regeneration made50 real HTTP GETs plus the
+pinned S029 read; these are new snapshots, not re-labeled first-wave fetches. Each body is
+retained as gzip with compressed/raw digest binding. The own-work result stays separate even
+where its semantics were corrected by S067. C1 self-test38/38 and full observed stdout/argv:
+`corpus/evidence/round-18/selftests/c1.json` and `measurements.json`.
+
+Final source census is76 (A64/B4/C8; mined60/queued8/rejected8), versus57 at B.
+Counting command: `node scripts/check-sources.mjs`; the full23-gate run at the landed revision
+records its exact output. Fleet census exit0 retains duplicate-URL W04 warnings for explicit
+supersessions. All old registry cells remain unchanged; new rows and the note's current ledger,
+not an old historical “held” label, govern semantic support.

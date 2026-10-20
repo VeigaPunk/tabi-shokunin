@@ -158,3 +158,8 @@
     same-source transformations and binds own-work bytes to their Git object. An unrelated URL
     with a copied quote must not count. (lesson: corpus/lessons/round-18.md#mistakes;
     .ufo/waves/round-18/w1/ReviewC1Contract.md)
+39. A response-body digest is re-derived from retained bytes (compressed storage is fine), and
+    quote offset/excerpt are re-derived after decoding those same bytes. Digest-shaped strings
+    and an excerpt's self-hash alone are insufficient. This binds recorded content, not the
+    remote publisher's authenticity. (lesson: corpus/lessons/round-18.md#mistakes;
+    .ufo/waves/round-18/w2/ReviewQuality.md zero-digest mutant; final C1 self-test)
