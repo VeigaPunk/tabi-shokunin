@@ -852,12 +852,14 @@ const COUNT_WITNESS_REV = 'bebe2efc4565bb068efd905e9ef78011bb6b4efd';
 const DIAGNOSTIC_BASELINE_REV = '5c7710d7393112f2163dd7efcaa38fccf534dfc2';
 const DIAGNOSTIC_BASELINE_BLOB = '347ae9bbcdc692c3ad55fdfd931fa2cce13fec6d';
 const DIAGNOSTIC_BASELINE_SHA256 = 'bde18c672d79dbe1ebf340f265d013a8956da8f961d85fb3862573b7a6a505f3';
-// One unique source fragment of the closed counting evaluator. The mutant arm
-// flips only this guard, reproducing the historical `wc -l` masking that
-// classified a missing object as a zero count. A missing or duplicated
-// fragment is could-not-evaluate, never a silent no-op.
-const MASK_GUARD = "const masked = spec.kind === 'grep' && result.status === 1;";
-const MASK_MUTANT = 'const masked = true;';
+// The mutant arm flips exactly the real masking guard. The search value is
+// assembled from parts and anchored to the guard's two-space indentation and
+// line boundaries, so this declaration is not itself a match; splitting the
+// source must yield exactly two parts or the witness is could-not-evaluate.
+// Matching the bare statement text would also hit this declaration.
+const MASK_STATEMENT = "const masked = spec.kind === 'grep' && result.status === 1;";
+const MASK_GUARD = `\n  ${MASK_STATEMENT}\n`;
+const MASK_MUTANT = '\n  const masked = true;\n';
 
 function runCountWitness(rev) {
   const commitRev = gitOk(defaultRoot, ['rev-parse', '--verify', `${rev}^{commit}`]);
@@ -911,6 +913,7 @@ function runCountWitness(rev) {
       commitRev, baseline, args, pass, codeRevision, codeSha256, worktreeBlob, headBlob, committed,
       oldExit: before.status, oldVerdict: oldArm.verdict, oldMarker, oldArm,
       oldFinding: oldArm.finding ?? (oldArm.verdict === 'clean' ? 'clean' : 'none'),
+      oldFindingSource: oldArm.finding ? 'record' : (oldArm.verdict === 'clean' ? 'synthesized_clean_verdict' : 'absent'),
       newExit: after.status, newVerdict: newArm.verdict, newFinding: newArm.finding, newReason: newArm.reason, newMarker, newArm,
     };
   } finally {
@@ -922,7 +925,7 @@ function countWitness(rev) {
   const run = runCountWitness(rev);
   console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS_OLD exit=${run.oldExit} verdict=${run.oldVerdict} finding=${run.oldFinding} marker_applicable=1 marker_outcome=${run.oldMarker ? 'present' : 'absent'} error=${JSON.stringify(run.oldArm.error)} stdout=${JSON.stringify(run.oldArm.stdout)} stderr=${JSON.stringify(run.oldArm.stderr)}`);
   console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS_NEW exit=${run.newExit} verdict=${run.newVerdict} finding=${run.newFinding} reason=${run.newReason ?? 'none'} marker_applicable=1 marker_outcome=${run.newMarker ? 'present' : 'absent'} error=${JSON.stringify(run.newArm.error)} stdout=${JSON.stringify(run.newArm.stdout)} stderr=${JSON.stringify(run.newArm.stderr)}`);
-  console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS rev=${run.commitRev} baseline=${run.baseline} args=${JSON.stringify(run.args)} measuredRevision=${run.committed ? run.codeRevision : 'uncommitted'} codeRevision=${run.codeRevision} code-sha256=${run.codeSha256} new-sha256=${run.codeSha256} head-blob=${run.headBlob ?? 'none'} worktree-blob=${run.worktreeBlob} committed=${run.committed ? 'yes' : 'no'} marker=${COUNT_WITNESS_MARKER} old_exit=${run.oldExit} old_verdict=${run.oldVerdict} old_finding=${run.oldFinding} old_marker=${run.oldMarker ? 1 : 0} old_marker_applicable=1 old_marker_outcome=${run.oldMarker ? 'present' : 'absent'} new_exit=${run.newExit} new_verdict=${run.newVerdict} new_finding=${run.newFinding} new_reason=${run.newReason ?? 'none'} new_marker=${run.newMarker ? 1 : 0} new_marker_applicable=1 new_marker_outcome=${run.newMarker ? 'present' : 'absent'} result=${run.pass ? 'PASS' : 'FAIL'}`);
+  console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS rev=${run.commitRev} baseline=${run.baseline} args=${JSON.stringify(run.args)} measuredRevision=${run.committed ? run.codeRevision : 'uncommitted'} codeRevision=${run.codeRevision} code-sha256=${run.codeSha256} new-sha256=${run.codeSha256} head-blob=${run.headBlob ?? 'none'} worktree-blob=${run.worktreeBlob} committed=${run.committed ? 'yes' : 'no'} marker=${COUNT_WITNESS_MARKER} old_exit=${run.oldExit} old_verdict=${run.oldVerdict} old_finding=${run.oldFinding} old_finding_source=${run.oldFindingSource} old_marker=${run.oldMarker ? 1 : 0} old_marker_applicable=1 old_marker_outcome=${run.oldMarker ? 'present' : 'absent'} new_exit=${run.newExit} new_verdict=${run.newVerdict} new_finding=${run.newFinding} new_reason=${run.newReason ?? 'none'} new_marker=${run.newMarker ? 1 : 0} new_marker_applicable=1 new_marker_outcome=${run.newMarker ? 'present' : 'absent'} result=${run.pass ? 'PASS' : 'FAIL'}`);
   if (!run.pass) fail('witness_failure', `old=${JSON.stringify(run.oldArm)} oldMarker=${run.oldMarker} new=${JSON.stringify(run.newArm)} newMarker=${run.newMarker}`);
 }
 
@@ -1005,28 +1008,45 @@ function runDiagnosticWitness() {
       exit: 1, finding: 'score_mismatch', reason: 'counting_command_failed',
       detail: 'Counting command failed:',
     };
-    const baselineFindingOnly = baseline.exit === 1 && baseline.finding === 'score_mismatch';
+    // The synthetic baseline predicate is exit plus finding only; it is not an
+    // invocation of a legacy comparator.
+    const baselineSyntheticMatch = baseline.exit === 1 && baseline.finding === 'score_mismatch';
+    // Discriminating decoys: exit, finding and detail are copied from the actual
+    // receipt, so reason is the only remaining difference. The reasonless form
+    // must match (proving finding/detail alone cannot reject it); the form with
+    // the wrong reason must not.
+    const repairedBase = { exit: repaired.exit, finding: repaired.finding, detail: repaired.detail };
+    const reasonlessMatch = receiptMatches(repairedBase, repaired);
+    const wrongReasonOnlyMatch = receiptMatches({ ...repairedBase, reason: 'unsupported_counting_command' }, repaired);
+    const correctMatch = receiptMatches({ ...repairedBase, reason: 'after_count_mismatch' }, repaired);
     const wrongMatch = receiptMatches(unsupported, repaired);
-    const correctMatch = receiptMatches(wrongAfter, repaired);
-    const mutantCorrectMatch = receiptMatches(countFailed, mutantMissing);
-    const mutantDecoyMatch = receiptMatches(wrongAfter, mutantMissing);
-    const pass = baselineFindingOnly
+    const mutantBase = { exit: mutantMissing.exit, finding: mutantMissing.finding, detail: mutantMissing.detail };
+    const mutantReasonlessMatch = receiptMatches(mutantBase, mutantMissing);
+    const mutantWrongReasonOnly = receiptMatches({ ...mutantBase, reason: 'counting_command_failed' }, mutantMissing);
+    const mutantDecoyMatch = receiptMatches({ ...mutantBase, reason: 'after_count_mismatch' }, mutantMissing);
+    const mutantText = readFileSync(mutantGate, 'utf8');
+    const pass = baselineSyntheticMatch
       && baseline.reason === null
       && baseline.detail.includes('after measurement does not match')
       && repaired.reason === 'after_count_mismatch'
-      && !wrongMatch
+      && reasonlessMatch
+      && !wrongReasonOnlyMatch
       && correctMatch
+      && !wrongMatch
       && repairedMissing.reason === 'counting_command_failed'
       && receiptMatches(countFailed, repairedMissing)
       && mutantMissing.reason === 'after_count_mismatch'
-      && !mutantCorrectMatch
+      && mutantReasonlessMatch
+      && !mutantWrongReasonOnly
       && mutantDecoyMatch
       && sha256(readFileSync(mutantGate)) !== codeSha256
-      && readFileSync(mutantGate, 'utf8').includes(MASK_MUTANT);
+      && mutantText.includes(MASK_MUTANT)
+      && !mutantText.includes(MASK_GUARD);
     return {
       baselineRev, codeRevision, codeSha256, worktreeBlob, headBlob, committed,
       baseline, repaired, repairedMissing, mutantMissing,
-      baselineFindingOnly, wrongMatch, correctMatch, mutantCorrectMatch, mutantDecoyMatch,
+      baselineSyntheticMatch, wrongMatch, correctMatch, reasonlessMatch, wrongReasonOnlyMatch,
+      mutantReasonlessMatch, mutantWrongReasonOnly, mutantDecoyMatch,
       wrongReason: unsupported.reason, correctReason: wrongAfter.reason,
       afterArgs, missingArgs, pass,
     };
@@ -1042,7 +1062,7 @@ function diagnosticWitness() {
   print('USER_ROUND_CONTRACT_DIAGNOSTIC_WITNESS_REPAIRED', run.repaired);
   print('USER_ROUND_CONTRACT_DIAGNOSTIC_WITNESS_MISSING_REPAIRED', run.repairedMissing);
   print('USER_ROUND_CONTRACT_DIAGNOSTIC_WITNESS_MISSING_MUTANT', run.mutantMissing);
-  console.log(`USER_ROUND_CONTRACT_DIAGNOSTIC_WITNESS baseline=${run.baselineRev} args=${JSON.stringify({ wrongAfter: run.afterArgs, missing: run.missingArgs })} measuredRevision=${run.committed ? run.codeRevision : 'uncommitted'} codeRevision=${run.codeRevision} code-sha256=${run.codeSha256} baseline-blob=${DIAGNOSTIC_BASELINE_BLOB} baseline-sha256=${DIAGNOSTIC_BASELINE_SHA256} worktree-blob=${run.worktreeBlob} committed=${run.committed ? 'yes' : 'no'} wrong_reason=${run.wrongReason} expected_outcome=no-match wrong_match=${run.wrongMatch ? 1 : 0} correct_reason=${run.correctReason} correct_match=${run.correctMatch ? 1 : 0} mutant_reason=${run.mutantMissing.reason ?? 'none'} mutant_correct_match=${run.mutantCorrectMatch ? 1 : 0} mutant_decoy_match=${run.mutantDecoyMatch ? 1 : 0} baseline_finding_only_accepts=${run.baselineFindingOnly ? 1 : 0} result=${run.pass ? 'PASS' : 'FAIL'}`);
+  console.log(`USER_ROUND_CONTRACT_DIAGNOSTIC_WITNESS baseline=${run.baselineRev} args=${JSON.stringify({ wrongAfter: run.afterArgs, missing: run.missingArgs })} measuredRevision=${run.committed ? run.codeRevision : 'uncommitted'} codeRevision=${run.codeRevision} code-sha256=${run.codeSha256} baseline-blob=${DIAGNOSTIC_BASELINE_BLOB} baseline-sha256=${DIAGNOSTIC_BASELINE_SHA256} worktree-blob=${run.worktreeBlob} committed=${run.committed ? 'yes' : 'no'} wrong_reason=${run.wrongReason} expected_outcome=no-match wrong_match=${run.wrongMatch ? 1 : 0} reasonless_match=${run.reasonlessMatch ? 1 : 0} wrong_reason_only_match=${run.wrongReasonOnlyMatch ? 1 : 0} correct_reason=${run.correctReason} correct_match=${run.correctMatch ? 1 : 0} mutant_reason=${run.mutantMissing.reason ?? 'none'} mutant_reasonless_match=${run.mutantReasonlessMatch ? 1 : 0} mutant_wrong_reason_only=${run.mutantWrongReasonOnly ? 1 : 0} mutant_decoy_match=${run.mutantDecoyMatch ? 1 : 0} baseline_predicate=synthesized_exit_finding baseline_synthetic_match=${run.baselineSyntheticMatch ? 1 : 0} result=${run.pass ? 'PASS' : 'FAIL'}`);
   if (!run.pass) fail('witness_failure', `Diagnostic baseline=${JSON.stringify(run.baseline)} repaired=${JSON.stringify(run.repaired)} missingRepaired=${JSON.stringify(run.repairedMissing)} missingMutant=${JSON.stringify(run.mutantMissing)}`);
 }
 
@@ -1219,29 +1239,31 @@ function selfTest() {
       const markerField = markerApplicable
         ? ` marker_applicable=1 marker_outcome=${markerOutcome} no_marker=${leaked ? 0 : 1}`
         : ' marker_applicable=0 marker_outcome=not-applicable no_marker=na';
-      console.log(`SELFTEST name=${test.name} expected_exit=${test.exit} actual_exit=${observed.exit} expected_finding=${test.finding}${reasonField} reason=${observed.reason ?? 'none'} applicability=${markerApplicable ? 'applicable' : 'not_applicable'}${markerField} isolation=cli result=${match ? 'PASS' : 'FAIL'}`);
+      console.log(`SELFTEST name=${test.name} expected_exit=${test.exit} actual_exit=${observed.exit} expected_finding=${test.finding}${reasonField} reason=${observed.reason ?? 'none'} applicability=${markerApplicable ? 'applicable' : 'not_applicable'}${markerField} kind=child_cli isolation=cli result=${match ? 'PASS' : 'FAIL'}`);
       if (!match) fail('selftest_failure', `${observed.stdout}${observed.stderr}`);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
   }
-  // Falsifiable wrong-reason control over two actual CLI receipts. The
-  // missing-revision fixture returns score_mismatch for counting_command_failed;
-  // the wrong-after expectation belongs to a different cause. A finding-only
-  // predicate accepts that decoy; the literal reason comparator must reject it,
-  // while the real reason still matches. The control can pass only when reason
-  // is both asserted and discriminating.
+  // Falsifiable wrong-reason control over two actual CLI receipts. Every decoy
+  // copies the observed exit, finding and detail, so reason is the only
+  // difference: the reasonless form must match, the wrong reason must not, and
+  // the actual reason must. A finding/detail-only predicate therefore accepts
+  // the wrong cause; the reason contract rejects it. The exit+finding
+  // acceptance below is a synthesized predicate label, not a legacy comparator.
   const wrongCause = observedCases.get('count_missing_revision_red');
   const maliciousCause = observedCases.get('count_malicious_tee_refused');
-  const decoy = { exit: 1, finding: 'score_mismatch', reason: 'after_count_mismatch', detail: 'after measurement does not match' };
-  const correctCause = { exit: 1, finding: 'score_mismatch', reason: 'counting_command_failed', detail: 'Counting command failed:' };
-  const legacyAccept = wrongCause.exit === 1 && wrongCause.finding === 'score_mismatch';
+  const wrongBase = { exit: wrongCause.exit, finding: wrongCause.finding, detail: wrongCause.detail };
+  const decoy = { ...wrongBase, reason: 'after_count_mismatch' };
+  const correctCause = { ...wrongBase, reason: 'counting_command_failed' };
+  const syntheticAccept = wrongCause.exit === 1 && wrongCause.finding === 'score_mismatch';
   const decoyMatch = receiptMatches(decoy, wrongCause);
+  const reasonlessMatch = receiptMatches(wrongBase, wrongCause);
   const correctMatch = receiptMatches(correctCause, wrongCause);
   const maliciousMatch = receiptMatches(cases.find(test => test.name === 'count_malicious_tee_refused'), maliciousCause);
-  const negativeMatch = legacyAccept && !decoyMatch && correctMatch && maliciousMatch;
-  console.log(`SELFTEST name=reason_negative_control source=count_missing_revision_red source_reason=${wrongCause.reason ?? 'none'} expected_exit=0 actual_exit=0 expected_finding=clean reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na wrong_reason=${decoy.reason} expected_outcome=no-match actual_outcome=${decoyMatch ? 'match' : 'no-match'} correct_reason=${correctCause.reason} correct_match=${correctMatch ? 1 : 0} malicious_reason=unsupported_counting_command malicious_match=${maliciousMatch ? 1 : 0} legacy_finding_only_accepts=${legacyAccept ? 1 : 0} result=${negativeMatch ? 'PASS' : 'FAIL'}`);
-  if (!negativeMatch) fail('selftest_failure', `Reason negative control failed: ${JSON.stringify({ wrongCause, decoyMatch, correctMatch, maliciousMatch })}`);
+  const negativeMatch = syntheticAccept && reasonlessMatch && !decoyMatch && correctMatch && maliciousMatch;
+  console.log(`SELFTEST name=reason_negative_control source=count_missing_revision_red predicate=synthesized_exit_finding synthetic_accept=${syntheticAccept ? 1 : 0} source_reason=${wrongCause.reason ?? 'none'} expected_exit=0 actual_exit=0 expected_finding=clean reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na wrong_reason=${decoy.reason} expected_outcome=no-match actual_outcome=${decoyMatch ? 'match' : 'no-match'} reasonless_match=${reasonlessMatch ? 1 : 0} correct_reason=${correctCause.reason} correct_match=${correctMatch ? 1 : 0} malicious_reason=unsupported_counting_command malicious_match=${maliciousMatch ? 1 : 0} kind=helper isolation=in_process result=${negativeMatch ? 'PASS' : 'FAIL'}`);
+  if (!negativeMatch) fail('selftest_failure', `Reason negative control failed: ${JSON.stringify({ wrongCause, decoyMatch, reasonlessMatch, correctMatch, maliciousMatch })}`);
   const committedIds = roundIds(defaultRoot);
   const committedScorecard = show(defaultRoot, 'HEAD', 'SCORECARD.md').toString('utf8');
   for (const id of committedIds) {
@@ -1249,7 +1271,7 @@ function selfTest() {
     const before = runCount(defaultRoot, score.command, HARD_BASELINE);
     const after = runCount(defaultRoot, score.command, score.measured);
     const match = before === score.before && after === score.after;
-    console.log(`SELFTEST name=count_committed_${id} expected_exit=0 actual_exit=0 expected_finding=clean reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na isolation=cli result=${match ? 'PASS' : 'FAIL'} before=${before} after=${after} measured=${score.measured}`);
+    console.log(`SELFTEST name=count_committed_${id} expected_exit=0 actual_exit=0 expected_finding=clean reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na kind=helper isolation=in_process result=${match ? 'PASS' : 'FAIL'} before=${before} after=${after} measured=${score.measured}`);
     if (!match) fail('selftest_failure', `Committed count mismatch ${id}: before=${before}/${score.before} after=${after}/${score.after}`);
   }
   const witnessRun = runCountWitness(COUNT_WITNESS_REV);
@@ -1262,15 +1284,19 @@ function selfTest() {
     && witnessRun.newFinding === 'score_mismatch'
     && witnessRun.newReason === 'unsupported_counting_command'
     && !witnessRun.newMarker;
-  console.log(`SELFTEST name=count_witness_comparison countWitness=1 expected_exit=0 actual_exit=${witnessMatch ? 0 : 1} expected_finding=clean reason=none applicability=applicable marker_applicable=1 marker_outcome=${witnessRun.newMarker ? 'present' : 'absent'} no_marker=${witnessRun.newMarker ? 0 : 1} top_exit=${witnessMatch ? 0 : 1} exit=${witnessMatch ? 0 : 1} verdict=${witnessMatch ? 'clean' : 'failed'} old_exit=${witnessRun.oldExit} old_verdict=${witnessRun.oldVerdict} old_finding=${witnessRun.oldFinding} old_marker=${witnessRun.oldMarker ? 1 : 0} old_marker_outcome=${witnessRun.oldMarker ? 'present' : 'absent'} new_exit=${witnessRun.newExit} new_verdict=${witnessRun.newVerdict} new_finding=${witnessRun.newFinding} new_reason=${witnessRun.newReason ?? 'none'} new_marker=${witnessRun.newMarker ? 1 : 0} new_marker_outcome=${witnessRun.newMarker ? 'present' : 'absent'} result=${witnessMatch ? 'PASS' : 'FAIL'}`);
+  console.log(`SELFTEST name=count_witness_comparison countWitness=1 expected_exit=0 actual_exit=${witnessMatch ? 0 : 1} expected_finding=clean reason=none applicability=applicable marker_applicable=1 marker_outcome=${witnessRun.newMarker ? 'present' : 'absent'} no_marker=${witnessRun.newMarker ? 0 : 1} top_exit=${witnessMatch ? 0 : 1} exit=${witnessMatch ? 0 : 1} verdict=${witnessMatch ? 'clean' : 'failed'} old_exit=${witnessRun.oldExit} old_verdict=${witnessRun.oldVerdict} old_finding=${witnessRun.oldFinding} old_marker=${witnessRun.oldMarker ? 1 : 0} old_marker_outcome=${witnessRun.oldMarker ? 'present' : 'absent'} new_exit=${witnessRun.newExit} new_verdict=${witnessRun.newVerdict} new_finding=${witnessRun.newFinding} new_reason=${witnessRun.newReason ?? 'none'} new_marker=${witnessRun.newMarker ? 1 : 0} new_marker_outcome=${witnessRun.newMarker ? 'present' : 'absent'} kind=helper isolation=in_process result=${witnessMatch ? 'PASS' : 'FAIL'}`);
   if (!witnessMatch) fail('selftest_failure', `Count witness mismatch: ${JSON.stringify(witnessRun)}`);
   const diagnosticRun = runDiagnosticWitness();
   const diagnosticMatch = diagnosticRun.pass
     && diagnosticRun.repaired.reason === 'after_count_mismatch'
     && diagnosticRun.repairedMissing.reason === 'counting_command_failed'
     && diagnosticRun.mutantMissing.reason === 'after_count_mismatch'
+    && diagnosticRun.reasonlessMatch
+    && !diagnosticRun.wrongReasonOnlyMatch
+    && diagnosticRun.mutantReasonlessMatch
+    && !diagnosticRun.mutantWrongReasonOnly
     && !diagnosticRun.wrongMatch;
-  console.log(`SELFTEST name=diagnostic_witness_comparison diagnosticWitness=1 expected_exit=0 actual_exit=${diagnosticMatch ? 0 : 1} expected_finding=clean reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na wrong_reason=${diagnosticRun.wrongReason} expected_outcome=no-match actual_outcome=${diagnosticRun.wrongMatch ? 'match' : 'no-match'} correct_reason=${diagnosticRun.correctReason} correct_match=${diagnosticRun.correctMatch ? 1 : 0} mutant_reason=${diagnosticRun.mutantMissing.reason ?? 'none'} mutant_correct_match=${diagnosticRun.mutantCorrectMatch ? 1 : 0} baseline_finding_only_accepts=${diagnosticRun.baselineFindingOnly ? 1 : 0} result=${diagnosticMatch ? 'PASS' : 'FAIL'}`);
+  console.log(`SELFTEST name=diagnostic_witness_comparison diagnosticWitness=1 predicate=synthesized_exit_finding expected_exit=0 actual_exit=${diagnosticMatch ? 0 : 1} expected_finding=clean reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na wrong_reason=${diagnosticRun.wrongReason} expected_outcome=no-match actual_outcome=${diagnosticRun.wrongMatch ? 'match' : 'no-match'} reasonless_match=${diagnosticRun.reasonlessMatch ? 1 : 0} wrong_reason_only_match=${diagnosticRun.wrongReasonOnlyMatch ? 1 : 0} correct_reason=${diagnosticRun.correctReason} correct_match=${diagnosticRun.correctMatch ? 1 : 0} mutant_reason=${diagnosticRun.mutantMissing.reason ?? 'none'} mutant_reasonless_match=${diagnosticRun.mutantReasonlessMatch ? 1 : 0} mutant_wrong_reason_only=${diagnosticRun.mutantWrongReasonOnly ? 1 : 0} baseline_synthetic_match=${diagnosticRun.baselineSyntheticMatch ? 1 : 0} kind=helper isolation=in_process result=${diagnosticMatch ? 'PASS' : 'FAIL'}`);
   if (!diagnosticMatch) fail('selftest_failure', `Diagnostic witness mismatch: ${JSON.stringify(diagnosticRun)}`);
   const aliasRoot = mkdtempSync(join('/var/tmp', 'tabi-user-alias-'));
   try {
@@ -1279,7 +1305,7 @@ function selfTest() {
     const result = spawnSync(process.execPath, [script, '--repo', alias, '--baseline', HARD_BASELINE, '--expect', '1'], { encoding: 'utf8' });
     const output = `${result.stdout}${result.stderr}`;
     const match = result.status === 2 && output.includes('finding=usage');
-    console.log(`SELFTEST name=production_alias_refused expected_exit=2 actual_exit=${result.status} expected_finding=usage reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na isolation=cli result=${match ? 'PASS' : 'FAIL'}`);
+    console.log(`SELFTEST name=production_alias_refused expected_exit=2 actual_exit=${result.status} expected_finding=usage reason=none applicability=not_applicable marker_applicable=0 marker_outcome=not-applicable no_marker=na kind=child_cli isolation=production_alias result=${match ? 'PASS' : 'FAIL'}`);
     if (!match) fail('selftest_failure', output);
   } finally {
     rmSync(aliasRoot, { recursive: true, force: true });

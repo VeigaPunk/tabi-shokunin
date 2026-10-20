@@ -988,24 +988,26 @@ function mirrorFieldProblems(group, observed, expected, fields) {
 
 function expectedMirrorValues(proofs, cleanupDerived) {
   // Independent recomputation from the raw per-worker proofs, not from another emitted
-  // sidecar. Empty or incomplete proof sets cannot support any all-true mirror.
-  const complete = cleanupDerived.complete === true && proofs.length >= 1;
+  // sidecar. Per-field aggregates report the raw proofs whenever a nonempty set exists;
+  // support-wide fields (qualified, allProofsComplete) additionally require completeness.
+  const present = proofs.length >= 1;
+  const complete = cleanupDerived.complete === true && present;
   const listensBefore =
-    complete && proofs.every((proof) => proof?.listeningBefore === true);
-  const closed = complete && proofs.every((proof) => proof?.closed === true);
-  const refused = complete && proofs.every((proof) => proof?.refusedAfterClose === true);
-  const notListening = complete && proofs.every((proof) => proof?.listeningAfter === false);
+    present && proofs.every((proof) => proof?.listeningBefore === true);
+  const closed = present && proofs.every((proof) => proof?.closed === true);
+  const refused = present && proofs.every((proof) => proof?.refusedAfterClose === true);
+  const notListening = present && proofs.every((proof) => proof?.listeningAfter === false);
   return {
     cleanup: {
       perWorkerCount: proofs.length,
       allClosed: closed,
       allRefusedAfterClose: refused,
       allNotListeningAfter: notListening,
-      derivedListeningAfter: cleanupDerived.listeningAfter,
+      derivedListeningAfter: complete ? cleanupDerived.listeningAfter : null,
       summaryServerOk: cleanupDerived.serverOk === true,
     },
     qualification: {
-      qualified: true,
+      qualified: complete,
       proofCount: proofs.length,
       allProofsComplete: cleanupDerived.complete === true,
       allProofsSupportCorrection: cleanupDerived.allProofsPass === true,
@@ -2227,9 +2229,10 @@ function mirrorExpectedAnchor(rel) {
   return null;
 }
 
-function buildMirrorRoot(baseDir, tamper) {
+function buildMirrorRoot(baseDir, tamper, remove = null) {
   const root = mkdtempSync(join(baseDir, 'mirror-'));
   const target = tamper ? mirrorTargetFor(tamper) : null;
+  const removalTarget = remove ? mirrorTargetFor(remove) : null;
   const files = [];
   for (const item of mirrorInputList()) {
     const source = readEntry(item.sourceAbs);
@@ -2238,13 +2241,14 @@ function buildMirrorRoot(baseDir, tamper) {
     if (anchor && source.sha256 !== anchor) {
       throw new Error(`mirror source drifted: ${item.rel}:${source.sha256}`);
     }
+    if (item.rel === removalTarget) continue;
     const bytes = item.rel === target ? tamperedBytes(target, source.bytes, tamper) : source.bytes;
     const destination = join(root, item.rel);
     mkdirSync(dirname(destination), { recursive: true });
     writeFileSync(destination, bytes);
     files.push({ path: item.rel, bytes: bytes.length, sha256: sha256(bytes) });
   }
-  return { root, files, tamperedPath: target };
+  return { root, files, tamperedPath: target, removedPath: removalTarget };
 }
 
 function spawnChecker(scriptPath, args, cwd) {
@@ -2559,6 +2563,8 @@ function runSelfTest() {
 
     const evaluateOutput = (testCase, child, payload) => {
       const problems = [];
+      const requiredPredicate = testCase.requiredFinding ?? testCase.expectedFindings?.[0] ?? null;
+      let requiredActual = null;
       if (child.error) problems.push(`spawn:${child.error.code || child.error.message}`);
       if (child.status !== testCase.expectedExit) {
         problems.push(`exit:${child.status}:expected_${testCase.expectedExit}`);
@@ -2569,6 +2575,30 @@ function runSelfTest() {
           problems.push(`payload:exit:${payload.exit}:expected_${testCase.expectedExit}`);
         }
         const findings = payload.findings || [];
+        if (requiredPredicate) {
+          if (testCase.kind === 'witness') {
+            requiredActual =
+              (payload.red?.findings || []).find(
+                (entry) =>
+                  entry.id === requiredPredicate.id && entry.status === requiredPredicate.status,
+              ) ?? null;
+          } else if (testCase.kind === 'mirror-witness') {
+            requiredActual =
+              requiredPredicate.status === 'fail' &&
+              (payload.mirror?.failFindings || []).includes(requiredPredicate.id)
+                ? { id: requiredPredicate.id, status: 'fail' }
+                : null;
+          } else {
+            requiredActual =
+              findings.find(
+                (entry) =>
+                  entry.id === requiredPredicate.id && entry.status === requiredPredicate.status,
+              ) ?? null;
+          }
+          if (!requiredActual) {
+            problems.push(`required_predicate:${requiredPredicate.id}:${requiredPredicate.status}`);
+          }
+        }
         if (testCase.expectedClassification) {
           const actual = payload.classification ?? null;
           if (!actual ||
@@ -2679,6 +2709,27 @@ function runSelfTest() {
               problems.push(`tamper:anchor:${mismatchList[0].expectedSha256}`);
             }
           }
+        } else if (testCase.kind === 'unavailable') {
+          if (payload.ok !== false) problems.push('unavailable:unexpected_ok');
+          if (payload.snapshot?.mismatches?.length) {
+            problems.push('unavailable:unexpected_mismatch');
+          }
+          const unavailableList = payload.findings?.[0]?.detail?.unavailable;
+          if (!Array.isArray(unavailableList) || unavailableList.length !== 1) {
+            problems.push(
+              `unavailable:entries:${Array.isArray(unavailableList) ? unavailableList.length : 'missing'}`,
+            );
+          } else if (testCase.expectedUnavailable) {
+            if (unavailableList[0].label !== testCase.expectedUnavailable.label) {
+              problems.push(`unavailable:label:${unavailableList[0].label}`);
+            }
+            if (unavailableList[0].reason !== testCase.expectedUnavailable.reason) {
+              problems.push(`unavailable:reason:${unavailableList[0].reason}`);
+            }
+            if (unavailableList[0].expectedSha256 !== testCase.expectedUnavailable.expectedSha256) {
+              problems.push(`unavailable:anchor:${unavailableList[0].expectedSha256}`);
+            }
+          }
         } else {
           if (testCase.expectedExit === 0 && payload.ok !== true) problems.push('payload:not_ok');
           if (testCase.expectedExit === 1) {
@@ -2687,17 +2738,15 @@ function runSelfTest() {
           }
         }
       }
-      const observedFinding =
-        (payload?.findings || []).find((entry) => entry.status !== 'pass')?.id ??
-        payload?.redFinding ??
-        'none';
       return {
         id: testCase.id,
         ok: problems.length === 0,
         expectedExit: testCase.expectedExit,
         exit: child.status,
-        expectedFinding: testCase.expectedFindings?.[0]?.id ?? payload?.redFinding ?? 'none',
-        finding: observedFinding,
+        expectedFinding: requiredPredicate?.id ?? 'none',
+        expectedFindingStatus: requiredPredicate?.status ?? 'none',
+        finding: requiredActual?.id ?? 'none',
+        findingKind: 'required_predicate',
         classification: payload?.classification ?? null,
         tamper: testCase.tamper ?? null,
         problems,
@@ -2715,11 +2764,12 @@ function runSelfTest() {
     for (const testCase of expectations.mirrorCases || []) {
       let mirror = null;
       try {
-        mirror = buildMirrorRoot(dir, testCase.tamper ?? null);
+        mirror = buildMirrorRoot(dir, testCase.tamper ?? null, testCase.remove ?? null);
         const scriptPath = join(mirror.root, 'scripts/check-aria-metadata.mjs');
         const { child, payload } = spawnChecker(scriptPath, testCase.args || [], mirror.root);
         const evaluated = evaluateOutput(testCase, child, payload);
         evaluated.tamperedPath = mirror.tamperedPath;
+        evaluated.removedPath = mirror.removedPath;
         cliCases.push(evaluated);
       } catch (error) {
         cliCases.push({
@@ -2774,7 +2824,7 @@ function runSelfTest() {
       deriveA === deriveB && deriveA === readFileSync(join(dir, 'sidecar-valid.json'), 'utf8');
     const deriveProblems = [];
     if (!deriveIdentical) deriveProblems.push('derive:not_byte_deterministic');
-    if (!derivedMirrorsMatch) deriveProblems.push('derive:mirrors_not_independently_derived');
+    if (!derivedMirrorsMatch) deriveProblems.push('derive:mirrors_not_self_consistent');
     helpers.push({
       id: 'derive-and-mirror-helper',
       ok: deriveProblems.length === 0,
@@ -2782,6 +2832,102 @@ function runSelfTest() {
       exit: deriveProblems.length === 0 ? EXIT.clean : EXIT.semantic,
       finding: 'helper:derive-and-mirror',
       problems: deriveProblems,
+      findings: [],
+      stderr: '',
+    });
+
+    const aggregateProblems = [];
+    const aggregateControls = [
+      {
+        proofs: [{ listeningAfter: false }, { listeningAfter: true }],
+        complete: true,
+        listeningAfter: true,
+        expectedAllNot: false,
+        expectedDerived: true,
+        expectedAllClosed: false,
+        expectedEveryClosed: false,
+        expectedAllRefused: false,
+        expectedQualified: true,
+      },
+      {
+        proofs: [{ listeningAfter: false }, { listeningAfter: false }],
+        complete: true,
+        listeningAfter: false,
+        expectedAllNot: true,
+        expectedDerived: false,
+        expectedAllClosed: false,
+        expectedEveryClosed: false,
+        expectedAllRefused: false,
+        expectedQualified: true,
+      },
+      {
+        proofs: [{ listeningAfter: false }],
+        complete: false,
+        listeningAfter: false,
+        expectedAllNot: true,
+        expectedDerived: null,
+        expectedAllClosed: false,
+        expectedEveryClosed: false,
+        expectedAllRefused: false,
+        expectedQualified: false,
+      },
+      {
+        proofs: [
+          {
+            listeningBefore: true,
+            closed: false,
+            refusedAfterClose: true,
+            listeningAfter: false,
+          },
+        ],
+        complete: false,
+        listeningAfter: false,
+        expectedAllNot: true,
+        expectedDerived: null,
+        expectedAllClosed: false,
+        expectedEveryClosed: false,
+        expectedAllRefused: true,
+        expectedQualified: false,
+      },
+    ];
+    for (const control of aggregateControls) {
+      const values = expectedMirrorValues(control.proofs, {
+        complete: control.complete,
+        listeningAfter: control.listeningAfter,
+        serverOk: false,
+        allProofsPass: false,
+      });
+      const label = control.proofs.map((proof) => proof.listeningAfter).join(',');
+      if (values.cleanup.allNotListeningAfter !== control.expectedAllNot) {
+        aggregateProblems.push(`allNotListeningAfter:[${label}]:${values.cleanup.allNotListeningAfter}`);
+      }
+      if (values.cleanup.derivedListeningAfter !== control.expectedDerived) {
+        aggregateProblems.push(`derivedListeningAfter:[${label}]:${values.cleanup.derivedListeningAfter}`);
+      }
+      if (values.cleanup.allClosed !== control.expectedAllClosed) {
+        aggregateProblems.push(`allClosed:[${label}]:${values.cleanup.allClosed}`);
+      }
+      if (values.qualification.everyProofClosed !== control.expectedEveryClosed) {
+        aggregateProblems.push(
+          `everyProofClosed:[${label}]:${values.qualification.everyProofClosed}`,
+        );
+      }
+      if (values.cleanup.allRefusedAfterClose !== control.expectedAllRefused) {
+        aggregateProblems.push(
+          `allRefusedAfterClose:[${label}]:${values.cleanup.allRefusedAfterClose}`,
+        );
+      }
+      if (values.qualification.qualified !== control.expectedQualified) {
+        aggregateProblems.push(`qualified:[${label}]:${values.qualification.qualified}`);
+      }
+    }
+    helpers.push({
+      id: 'mirror-aggregate-literals',
+      ok: aggregateProblems.length === 0,
+      expectedExit: EXIT.clean,
+      exit: aggregateProblems.length === 0 ? EXIT.clean : EXIT.semantic,
+      finding: 'helper:mirror-aggregate-literals',
+      problems: aggregateProblems,
       findings: [],
       stderr: '',
     });
@@ -2849,7 +2995,8 @@ function runSelfTest() {
         `ARIA_METADATA_SELFTEST result=${entry.ok ? 'PASS' : 'FAIL'} case=${entry.id} ` +
           `name=${entry.id} case_class=cli expected_exit=${entry.expectedExit} ` +
           `actual_exit=${entry.exit} expected_finding=${entry.expectedFinding} ` +
-          `finding=${entry.finding} exit=${entry.exit}` +
+          `required_status=${entry.expectedFindingStatus} finding=${entry.finding} ` +
+          `finding_kind=${entry.findingKind} exit=${entry.exit}` +
           (entry.problems.length ? ` problems=${entry.problems.join('|')}` : ''),
       );
     }

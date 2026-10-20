@@ -33,30 +33,32 @@
 //     production: { exit, stdout, stderr? } }
 //
 // C1 counts 1 only when all of the following hold:
-//   1. revision is an ancestor of the measured revision and the gate blob at
-//      revision hashes to codeSha256;
+//   1. revision is an ancestor of the measured revision, the gate blob at
+//      revision hashes to codeSha256, and the same gate blob at the measured
+//      revision also hashes to codeSha256 (a stale receipt cannot count);
 //   2. the committed gate source contains no shell binary invocation,
 //      shell:true or -c flag, and its runCount implementation is non-shell;
 //   3. selfTest exits 0 and prints `USER_ROUND_CONTRACT_SELFTEST verdict=clean
 //      cases=N` with N >= 6 and at least as many case lines; every SELFTEST
 //      case line parses, every case is PASS with expected_exit == actual_exit,
-//      and expected_finding is stated (and equal to a shipped finding token);
-//   4. at least three passing cases assert a diagnostic reason
-//      (`expected_reason=<id>` plus `reason=<id>` or `actual_reason=<id>`,
-//      equal, not clean or could_not_evaluate) with at least two distinct
-//      reason ids, and the case set covers both `applicability=applicable` and
-//      `applicability=not_applicable`; any shipped applicability value must be
-//      one of those two;
-//   5. at least two reason-asserting cases are isolated CLI controls
-//      (`isolation=cli`, or fixture provenance when the token is absent:
-//      count_committed_*, count_witness* and production_* are the only
-//      non-fixture cases), and at least one isolated case refuses with a
-//      cause-specific expected_reason that is neither score_mismatch nor
-//      round_count, so a wrong generic cause cannot pass the same control;
-//   6. a marker-applicable observation exists: `no_marker=1` (applicable,
-//      absent), `no_marker=0` (applicable, leaked) or `marker_applicable=1`,
-//      and not-applicable is encoded as `no_marker=na` with
-//      applicability=not_applicable, never as no_marker=0;
+//      and expected_finding is one of the bounded shipped findings (clean,
+//      usage and the gate's fail(...) vocabulary), never an arbitrary token;
+//   4. at least three passing cases assert a shipped cause: `expected_reason`
+//      is one of unsupported_counting_command, counting_revision_mismatch,
+//      counting_command_failed, score_not_improved, before_count_mismatch,
+//      after_count_mismatch, `reason` equals it, `reason=none` never counts,
+//      and at least two distinct cause ids appear;
+//   5. at least two reason-asserting cases are isolated fixture CLI controls
+//      (`isolation=cli`; helper/in-process and production-alias names are
+//      excluded by provenance if the token is absent), and at least one
+//      isolated refusal (expected_exit != 0) asserts a shipped cause id, so a
+//      wrong generic reason cannot pass the same control;
+//   6. every case states applicability as exactly `applicable` or
+//      `not_applicable` and the shipped marker tuple: applicable =>
+//      marker_applicable=1, marker_outcome=absent|present, no_marker=1|0;
+//      not_applicable => marker_applicable=0, marker_outcome=not-applicable,
+//      no_marker=na. N/A never counts as an absence (no_marker=1) even with a
+//      forged marker_outcome, and both classes must appear;
 //   7. production keeps the historical honest refusal exactly: exit 1,
 //      `USER_ROUND_CONTRACT verdict=failed finding=round_count`,
 //      `Found 6 user rounds, expected 10`, and no clean verdict.
@@ -80,16 +82,15 @@
 //     oldCodeSha256: <64-hex>,            // ARIA gate blob digest at baseline
 //     selfTest: { exit, stdout, stderr? },
 //     snapshotInputs: { "<committed path>": "<64-hex>" },
-//     emittedMirrors?: [ "<newly enforced cleanup/qualification field>" ],
-//     mirrors: [ { case: "<emitted field path>",
+//     mirrors: [ { case: "<one of the nine required fields>",
 //                  before: { exit: 0, stdout, stderr? },   // historical checker
 //                  after:  { exit: 1, stdout, stderr? },   // new checker
 //                  pass: true } ],
 //     positive: { exit: 0, stdout, stderr?,
-//                 sidecar: { path, sha256 } },
+//                 payload?: { sidecar: { path, sha256 } } },
 //     oldPositive?: { exit: 0, stdout, stderr? },   // historical checker accepts
 //     tamper: { case: "spec-snapshot-digest",
-//               field: "<identity field>",
+//               field: "<concrete snapshot input path>",
 //               recordedSha256: <64-hex>,
 //               computedSha256: <64-hex>,
 //               before: { exit: 1, stdout, stderr? },       // historical checker
@@ -100,37 +101,43 @@
 //     browserExecuted: false }
 //
 // C2 counts 1 only when all of the following hold:
-//   1. revision is an ancestor of the measured revision and the ARIA gate blob
-//      at revision hashes to codeSha256; baseline is an ancestor of revision
-//      and the same gate path there hashes to oldCodeSha256, which differs;
-//   2. selfTest is green (summary cases=N >= 6 and >= case lines, all PASS with
-//      expected/actual exit and finding agreement), includes at least two
-//      literal mirror-refusal cases (expected_exit=1 with a
-//      mirror/cleanup/qualification finding), at least one snapshot case with
-//      expected_exit=2 and a snapshot-tampered finding id, and at least two
-//      fixture digest literals with expected_sha256 == actual_sha256;
+//   1. revision is an ancestor of the measured revision, the ARIA gate blob at
+//      revision hashes to codeSha256, and the same blob at the measured
+//      revision also hashes to codeSha256 (a stale receipt cannot count);
+//      baseline is an ancestor of revision and the same gate path there hashes
+//      to oldCodeSha256, which differs;
+//   2. selfTest is green: `ARIA_METADATA_SELFTEST verdict=clean cli_cases=N
+//      helpers=M` with integer fields, N >= 6 and N + M >= case lines; all case
+//      lines parse; every case is PASS with expected/actual exit and finding
+//      agreement; at least 2 passing `expected_exit=1` cases name a
+//      mirror/cleanup/qualification finding; at least 1 passing
+//      `expected_exit=2` case names a snapshot-tampered finding id; at least 2
+//      fixture digest literals have `expected_sha256 == actual_sha256`;
 //   3. snapshotInputs is a non-empty path→digest map and every named input is
 //      committed at the measured revision with exactly that digest;
-//   4. mirrors is non-empty; emittedMirrors, when present, names the newly
-//      enforced cleanup/qualification fields and mirrors covers each of them
-//      exactly once (the probe never demands a differential for a field whose
-//      old checker already enforced it); every differential field is a
-//      cleanup/qualification path, the historical checker accepts the false
-//      mirror (before exit 0, clean, accepted=true), the new checker refuses it
-//      (after exit 1, exactly one named mirror finding, never
-//      could_not_evaluate or a snapshot-tampered id), and every entry is marked
-//      pass=true;
-//   5. tamper binds an authenticated identity: field names
-//      sha256/digest/hash/bytes/revision/pin, recordedSha256 and computedSha256
-//      are different 64-hex digests, the historical authentic checker refuses
-//      the SHA mismatch with exit 1 (never clean), the new checker exits 2 with
-//      a snapshot-tampered finding id, an explicit could-not-evaluate
-//      classification and no clean verdict, and pass=true;
+//   4. mirrors contains exactly the nine newly enforced differentials:
+//      cleanup.{allClosed,allRefusedAfterClose,allNotListeningAfter,
+//      derivedListeningAfter,perWorkerCount,summaryServerOk},
+//      qualification.{everyProofListensBefore,everyProofClosed,
+//      everyProofRefusedAfterClose}. A subset, duplicate or extra case is an
+//      error. For each case the historical checker accepts the false mirror
+//      (before exit 0, clean, accepted=true), the new checker refuses it
+//      (after exit 1, accepted=false, exactly one non-acceptance finding that
+//      names the mirror/cleanup/qualification context; an acceptance-summary
+//      id may accompany it), and pass=true;
+//   5. tamper binds an authenticated identity: field is a concrete path listed
+//      in snapshotInputs, recordedSha256 equals snapshotInputs[field],
+//      computedSha256 is a different 64-hex digest, the historical authentic
+//      checker refuses the SHA mismatch with exit 1 and exactly one SOURCE
+//      finding and never reports could-not-evaluate or snapshot tampering, the
+//      new checker exits 2 with a snapshot-tampered finding id plus an explicit
+//      could-not-evaluate classification and no clean verdict, and pass=true;
 //   6. positive accepts the canonical correction: exit 0, `ARIA_METADATA check
-//      verdict=clean`, structured accepted=true, and sidecar.path is the
-//      round-14 corpus/evidence/round-14/aria-metadata/corrected.json whose
-//      bytes hash to the digest pinned by the round-14 verification receipt, so
-//      the historical sidecar stays byte-for-byte immutable;
+//      verdict=clean`, structured accepted=true, and the sidecar named by
+//      positive.payload.sidecar (or positive.sidecar) is the round-14
+//      corpus/evidence/round-14/aria-metadata/corrected.json whose bytes hash
+//      to the digest pinned by the round-14 verification receipt, so the
+//      historical sidecar stays byte-for-byte immutable;
 //   7. originalsUnchanged is a boolean map marking the round-14 corrected
 //      sidecar and the round-13 receipt/pin unchanged, and each of those
 //      committed digests is verified through snapshotInputs; the receipt is
@@ -167,12 +174,59 @@ const USER_PREFIX = 'USER_ROUND_CONTRACT';
 const USER_EXPECTED = { exit: 1, finding: 'round_count', rounds: 6, expectedRounds: 10 };
 const MIN_SELFTEST_CASES = 6;
 
-const MIRROR_FIELD = /cleanup|qualification/i;
+// Exact shipped cause ids. A diagnostic reason outside this set is not a
+// shipped cause and cannot satisfy the C1 contract.
+const COUNT_REASONS = new Set([
+  'unsupported_counting_command',
+  'counting_revision_mismatch',
+  'counting_command_failed',
+  'score_not_improved',
+  'before_count_mismatch',
+  'after_count_mismatch',
+]);
+
+// Bounded expected-finding vocabulary: every finding the USER gate can raise
+// (fail(...) sites in the committed source) plus the clean token. An arbitrary
+// expected_finding string is not evidence about a shipped outcome.
+const USER_FINDINGS = new Set([
+  'clean',
+  'consequential_action',
+  'could_not_evaluate',
+  'evidence_moved',
+  'history_rewritten',
+  'missing_gate',
+  'missing_score',
+  'public_observation',
+  'report_commit',
+  'report_missing',
+  'report_not_after_commit',
+  'report_shonen',
+  'round_count',
+  'round_sequence',
+  'score_mismatch',
+  'selftest_failure',
+  'short_swarm',
+  'swarm_evidence',
+  'usage',
+  'witness_failure',
+]);
+
+// The nine newly enforced cleanup/qualification mirrors. The differential
+// harness emits exactly these; a subset receipt is not a C2 count.
+const REQUIRED_MIRRORS = [
+  'cleanup.allClosed',
+  'cleanup.allRefusedAfterClose',
+  'cleanup.allNotListeningAfter',
+  'cleanup.derivedListeningAfter',
+  'cleanup.perWorkerCount',
+  'cleanup.summaryServerOk',
+  'qualification.everyProofListensBefore',
+  'qualification.everyProofClosed',
+  'qualification.everyProofRefusedAfterClose',
+];
+
 const MIRROR_FINDING = /mirror|cleanup|qualif|listening|context|sidecar/i;
 const SNAPSHOT_CASE = /snapshot|digest|sha|input|pin|receipt|identity/i;
-const SNAPSHOT_FIELD = /sha256|digest|hash|bytes|revision|pin|snapshot|input|identity/i;
-const CLEAN_REASONS = new Set(['clean', 'could_not_evaluate']);
-const GENERIC_REFUSAL_REASONS = new Set(['score_mismatch', 'round_count']);
 const SHELL_CALL = /(?:spawnSync|execSync|execFileSync|spawn|execFile)\s*\(\s*(['"`])(?:bash|sh|zsh|dash|fish|ksh)\1/i;
 const SHELL_TRUE = /\bshell\s*:\s*true\b/i;
 const SHELL_C = /(['"`])-c\1/;
@@ -489,6 +543,41 @@ function acceptedValue(value) {
   return null;
 }
 
+// A refusal payload may name a field failure plus its acceptance summary. This
+// collector preserves every distinct finding id so the caller can require
+// exactly one non-acceptance failure and no foreign ids.
+function findingIdsOfValue(value) {
+  if (isText(value)) {
+    const first = value.trim().split(/\s+/)[0];
+    return first ? [first] : [];
+  }
+  if (isObject(value)) {
+    const ids = [];
+    if (isText(value.id)) ids.push(value.id);
+    if (isText(value.finding)) ids.push(value.finding);
+    return ids;
+  }
+  if (Array.isArray(value)) return value.flatMap(findingIdsOfValue);
+  return [];
+}
+
+function allFindingIds(stream) {
+  const ids = new Set();
+  const collect = object => {
+    if (!isObject(object)) return;
+    for (const key of ['finding', 'redFinding', 'red_finding', 'findingId', 'findings']) {
+      for (const id of findingIdsOfValue(object[key])) ids.add(id);
+    }
+  };
+  for (const object of objectsOf(stream)) collect(object);
+  const text = textOf(stream);
+  for (const payload of payloadsIn(text)) {
+    for (const object of objectsOf(payload)) collect(object);
+  }
+  for (const id of findingTokens(text)) ids.add(id);
+  return [...ids];
+}
+
 // Return the top-level function body, ending at the first column-zero closing
 // brace. These gates are script-style files with one top-level definition per
 // function; a missing body is a fail-closed result, never "no shell found".
@@ -535,19 +624,20 @@ function analyzeRunCount(source) {
   return { ok: true, finding: null, detail: 'non_shell' };
 }
 
+// Exact shipped applicability strings only. No boolean aliases: the gate emits
+// applicable / not_applicable and the probe binds those two literally.
 function normalizeApplicability(value) {
   if (!isText(value)) return null;
-  const text = value.toLowerCase();
-  if (['applicable', 'true', '1', 'yes'].includes(text)) return 'applicable';
-  if (['not_applicable', 'not-applicable', 'inapplicable', 'false', '0', 'no', 'na', 'n/a'].includes(text)) return 'not_applicable';
+  if (value === 'applicable') return 'applicable';
+  if (value === 'not_applicable') return 'not_applicable';
   return 'invalid';
 }
 
-// Self-test provenance: every fixture case is spawned as its own CLI process
-// against an isolated temporary repo. Only these three executions are not
-// fixture CLI controls, so a reason assertion on any other case is an isolated
-// CLI assertion without requiring an invented isolation= token.
-const NON_ISOLATED_CASE = /^(?:count_committed_|count_witness|production_)/i;
+// Self-test provenance fallback when an isolation token is absent. The shipped
+// gate marks fixture reason controls isolation=cli; these names are helpers,
+// in-process witnesses or the production alias and are never fixture CLI
+// controls.
+const NON_ISOLATED_CASE = /^(?:count_committed_|count_witness|reason_negative_control|diagnostic_witness_comparison|production_)/i;
 const isIsolatedCase = name => !NON_ISOLATED_CASE.test(name);
 
 function parseJson(raw, label, add) {
@@ -577,6 +667,14 @@ function validateCommitPin(receipt, revision, checkerPath, add) {
   if (!bytes) add('checker_source', `${checkerPath} is not committed at revision`);
   else if (isHex(receipt.codeSha256) && receipt.codeSha256 !== digest) {
     add('checker_source', 'codeSha256 differs from the committed checker at revision');
+  }
+  // The receipt must describe the code at the measured revision too: a stale
+  // receipt captured before a later gate change cannot count 1.
+  const measuredBytes = reader(revision).file(checkerPath);
+  const measuredDigest = measuredBytes ? sha256(measuredBytes) : null;
+  if (!measuredBytes) add('checker_source', `${checkerPath} is not committed at the measured revision`);
+  else if (isHex(receipt.codeSha256) && receipt.codeSha256 !== measuredDigest) {
+    add('checker_stale', 'codeSha256 differs from the gate blob at the measured revision');
   }
   return { codeRevision, digest };
 }
@@ -696,67 +794,83 @@ export function countC1(revision, read = reader(revision)) {
       }
       if (!entry.expectedFinding) {
         add('self_test_no_expected_finding', `case ${entry.name} does not state expected_finding`);
+      } else if (!USER_FINDINGS.has(entry.expectedFinding)) {
+        add('self_test_finding_unknown', `case ${entry.name} expected_finding ${entry.expectedFinding} is not a shipped finding`);
       } else if (entry.finding && entry.expectedFinding !== entry.finding) {
         add('self_test_finding_mismatch', `case ${entry.name} expected_finding ${entry.expectedFinding}, finding ${entry.finding}`);
       }
+      // Exact shipped applicability strings on every case; absence is an error.
       const applicability = normalizeApplicability(entry.applicability);
-      if (entry.applicability !== null && applicability === 'invalid') {
+      if (applicability === null) {
+        add('self_test_applicability_missing', `case ${entry.name} does not state applicability`);
+      } else if (applicability === 'invalid') {
         add('self_test_applicability', `case ${entry.name} applicability ${entry.applicability} is not applicable/not_applicable`);
       }
       if (applicability === 'applicable') result.cases.applicable++;
       if (applicability === 'not_applicable') result.cases.notApplicable++;
       if (entry.expectedReason !== null) {
-        if (entry.reason === null) {
-          add('self_test_reason_missing', `case ${entry.name} asserts expected_reason without a reason token`);
-        } else if (normalizeReason(entry.reason) !== normalizeReason(entry.expectedReason)) {
+        const expectedReason = normalizeReason(entry.expectedReason);
+        const actualReason = entry.reason === null ? null : normalizeReason(entry.reason);
+        if (!COUNT_REASONS.has(expectedReason)) {
+          add('self_test_reason_unknown', `case ${entry.name} expected_reason ${entry.expectedReason} is not a shipped COUNT_REASONS id`);
+        } else if (actualReason === null || actualReason === 'none') {
+          add('self_test_reason_missing', `case ${entry.name} asserts expected_reason without a concrete reason`);
+        } else if (actualReason !== expectedReason) {
           add('self_test_reason_mismatch', `case ${entry.name} expected_reason ${entry.expectedReason}, reason ${entry.reason}`);
-        } else if (!CLEAN_REASONS.has(normalizeReason(entry.expectedReason))) {
+        } else {
           result.cases.reasonAssertions++;
-          reasonIds.add(normalizeReason(entry.expectedReason));
+          reasonIds.add(expectedReason);
           const isolated = entry.isolation !== null
             ? entry.isolation.toLowerCase() === 'cli'
             : isIsolatedCase(entry.name);
           if (isolated) {
             result.cases.isolatedCli++;
-            if (entry.expectedExit !== 0
-              && !GENERIC_REFUSAL_REASONS.has(normalizeReason(entry.expectedReason))) {
-              result.cases.negativeReason++;
-            }
+            if (entry.expectedExit !== 0) result.cases.negativeReason++;
           }
         }
       }
-      // Shipped marker semantics: no_marker=1 applies and is absent, 0 applies
-      // and leaked, na never applies; marker_applicable mirrors applicability.
+      // Exact shipped marker tuple. N/A is marker_applicable=0,
+      // marker_outcome=not-applicable, no_marker=na: it never counts as an
+      // absence (no_marker=1) and a forged marker_outcome cannot upgrade it.
       const noMarker = entry.noMarker === null ? null : entry.noMarker.toLowerCase();
       const markerApplicable = entry.markerApplicable === null ? null : entry.markerApplicable.toLowerCase();
       const markerOutcome = entry.markerOutcome === null ? null : entry.markerOutcome.toLowerCase();
-      if (markerApplicable !== null && markerApplicable !== '0' && markerApplicable !== '1') {
-        add('self_test_marker_applicability', `case ${entry.name} marker_applicable ${entry.markerApplicable} is not 0/1`);
+      if (markerApplicable === null || (markerApplicable !== '0' && markerApplicable !== '1')) {
+        add('self_test_marker_applicability', `case ${entry.name} marker_applicable ${entry.markerApplicable ?? 'missing'} is not 0/1`);
       }
-      if (noMarker !== null && !['1', '0', 'na'].includes(noMarker)) {
-        add('self_test_marker_applicability', `case ${entry.name} no_marker ${entry.noMarker} is not 1/0/na`);
+      if (noMarker === null || !['1', '0', 'na'].includes(noMarker)) {
+        add('self_test_marker_applicability', `case ${entry.name} no_marker ${entry.noMarker ?? 'missing'} is not 1/0/na`);
       }
-      if (markerOutcome !== null && !['absent', 'present', 'not-applicable'].includes(markerOutcome)) {
-        add('self_test_marker_applicability', `case ${entry.name} marker_outcome ${entry.markerOutcome} is not absent/present/not-applicable`);
-      }
-      if (applicability === 'not_applicable') {
-        if (noMarker === '1' || noMarker === '0') {
-          add('self_test_marker_applicability', `case ${entry.name} is not_applicable but reports no_marker=${entry.noMarker}`);
-        }
-        if (markerApplicable === '1') {
-          add('self_test_marker_applicability', `case ${entry.name} is not_applicable but reports marker_applicable=1`);
-        }
-        if (noMarker === null && markerApplicable === null && markerOutcome === null) {
-          add('self_test_marker_applicability', `case ${entry.name} is not_applicable without a marker datum`);
-        }
+      if (markerOutcome === null || !['absent', 'present', 'not-applicable'].includes(markerOutcome)) {
+        add('self_test_marker_applicability', `case ${entry.name} marker_outcome ${entry.markerOutcome ?? 'missing'} is not absent/present/not-applicable`);
       }
       if (applicability === 'applicable') {
-        if (noMarker === 'na' || markerApplicable === '0' || markerOutcome === 'not-applicable') {
-          add('self_test_marker_applicability', `case ${entry.name} is applicable but reports a not-applicable marker datum`);
+        if (markerApplicable !== '1') {
+          add('self_test_marker_applicability', `case ${entry.name} is applicable but marker_applicable=${entry.markerApplicable ?? 'missing'}`);
         }
-      }
-      if (noMarker === '1' || noMarker === '0' || markerApplicable === '1' || markerOutcome === 'absent' || markerOutcome === 'present') {
+        if (markerOutcome !== 'absent' && markerOutcome !== 'present') {
+          add('self_test_marker_applicability', `case ${entry.name} is applicable but marker_outcome=${entry.markerOutcome ?? 'missing'}`);
+        }
+        if (noMarker !== '1' && noMarker !== '0') {
+          add('self_test_marker_applicability', `case ${entry.name} is applicable but no_marker=${entry.noMarker ?? 'missing'}`);
+        }
+        if (markerOutcome === 'absent' && noMarker !== '1') {
+          add('self_test_marker_applicability', `case ${entry.name} reports marker_outcome=absent with no_marker=${entry.noMarker ?? 'missing'}`);
+        }
+        if (markerOutcome === 'present' && noMarker !== '0') {
+          add('self_test_marker_applicability', `case ${entry.name} reports marker_outcome=present with no_marker=${entry.noMarker ?? 'missing'}`);
+        }
         result.cases.markerApplicability++;
+      } else if (applicability === 'not_applicable') {
+        if (markerApplicable !== '0') {
+          add('self_test_marker_applicability', `case ${entry.name} is not_applicable but marker_applicable=${entry.markerApplicable ?? 'missing'}`);
+        }
+        if (markerOutcome !== 'not-applicable') {
+          add('self_test_marker_applicability', `case ${entry.name} is not_applicable but marker_outcome=${entry.markerOutcome ?? 'missing'}; N/A cannot count as absence`);
+        }
+        if (noMarker !== 'na') {
+          add('self_test_marker_applicability', `case ${entry.name} is not_applicable but no_marker=${entry.noMarker ?? 'missing'}`);
+        }
       }
     }
     result.cases.distinctReasons = [...reasonIds].sort();
@@ -773,7 +887,7 @@ export function countC1(revision, read = reader(revision)) {
       add('self_test_no_isolated_cli', `only ${result.cases.isolatedCli} isolated CLI reason controls; need 2`);
     }
     if (result.cases.negativeReason < 1) {
-      add('self_test_no_negative_reason_control', 'no isolated CLI refusal asserting a cause-specific reason other than score_mismatch/round_count');
+      add('self_test_no_negative_reason_control', 'no isolated CLI refusal asserting a shipped COUNT_REASONS id');
     }
     if (result.cases.markerApplicability < 1) {
       add('self_test_no_marker_applicability', 'no marker-applicable observation (no_marker or marker outcome)');
@@ -884,7 +998,11 @@ export function countC2(revision, read = reader(revision)) {
       add('malformed_self_test', 'selfTest.stderr must be text');
     }
     const text = outputOf(selfTest);
-    const summary = /^ARIA_METADATA_SELFTEST verdict=clean cases=(\d+)\b/m.exec(text);
+    const summaryLine = (/^ARIA_METADATA_SELFTEST\b[^\n]*\bverdict=[^\s]+/m.exec(text) || [])[0] ?? null;
+    const summaryTokens = summaryLine ? tokensOf(summaryLine) : new Map();
+    const summaryClean = summaryTokens.get('verdict') === 'clean';
+    const cliCases = Number(summaryTokens.get('cli_cases'));
+    const helpers = Number(summaryTokens.get('helpers'));
     const caseLines = caseLineList(text);
     const cases = selftestCases(text);
     if (caseLines.length !== cases.length) {
@@ -892,11 +1010,18 @@ export function countC2(revision, read = reader(revision)) {
     }
     const failures = cases.filter(entry => entry.result !== 'PASS');
     if (selfTest.exit !== 0) add('self_test_red', `selfTest exit ${selfTest.exit}, expected 0`);
-    if (!summary) add('self_test_not_green', 'missing clean ARIA_METADATA_SELFTEST summary');
-    else if (Number(summary[1]) < MIN_SELFTEST_CASES) {
-      add('self_test_thin', `only ${summary[1]} ARIA self-test cases, need >= ${MIN_SELFTEST_CASES}`);
-    } else if (Number(summary[1]) < cases.length) {
-      add('self_test_tally', `summary cases=${summary[1]} is below ${cases.length} emitted case lines`);
+    if (!summaryLine || !summaryClean) add('self_test_not_green', 'missing clean ARIA_METADATA_SELFTEST summary');
+    else {
+      if (!Number.isInteger(cliCases) || cliCases < 0) {
+        add('self_test_summary', 'summary lacks an integer cli_cases field');
+      } else if (cliCases < MIN_SELFTEST_CASES) {
+        add('self_test_thin', `only ${cliCases} ARIA CLI cases, need >= ${MIN_SELFTEST_CASES}`);
+      }
+      if (!Number.isInteger(helpers) || helpers < 0) {
+        add('self_test_summary', 'summary lacks an integer helpers field');
+      } else if (Number.isInteger(cliCases) && cliCases + helpers < cases.length) {
+        add('self_test_tally', `summary cli_cases=${cliCases} + helpers=${helpers} is below ${cases.length} emitted case lines`);
+      }
     }
     if (cases.length === 0) add('self_test_no_cases', 'no ARIA SELFTEST case lines');
     if (/\bresult=FAIL\b/.test(text) || failures.length) {
@@ -947,22 +1072,14 @@ export function countC2(revision, read = reader(revision)) {
     }
   }
 
-  const emittedRaw = receipt.emittedMirrors;
   const differentials = receipt.mirrors;
-  let declared = null;
-  if (emittedRaw !== undefined) {
-    if (!Array.isArray(emittedRaw) || emittedRaw.length === 0) {
-      add('mirrors_emitted', 'emittedMirrors, when present, must be a non-empty array of field paths');
-    } else {
-      const emitted = emittedRaw.filter(isText).map(normalizeField);
-      declared = new Set(emitted);
-      if (emitted.length === 0) add('mirrors_emitted', 'emittedMirrors has no field path');
-      if (declared.size !== emitted.length) add('mirrors_emitted', 'emittedMirrors repeats a field');
-    }
-  }
+  const required = new Set(REQUIRED_MIRRORS);
   if (!Array.isArray(differentials) || differentials.length === 0) {
     add('mirrors_shape', 'mirrors must be a non-empty array');
   } else {
+    if (differentials.length !== REQUIRED_MIRRORS.length) {
+      add('mirrors_count', `mirrors has ${differentials.length} entries; the nine required differentials are exactly required`);
+    }
     const seen = new Set();
     let refused = 0;
     for (const entry of differentials) {
@@ -971,30 +1088,37 @@ export function countC2(revision, read = reader(revision)) {
         continue;
       }
       const field = normalizeField(entry.case);
-      if (declared && !declared.has(field)) add('mirror_field_unemitted', `${field} is not declared in emittedMirrors`);
+      const isRequired = required.has(field);
+      if (!isRequired) add('mirror_unexpected', `${field} is not one of the nine required differentials`);
       if (seen.has(field)) add('mirror_duplicate', `${field} has more than one differential`);
       seen.add(field);
-      if (!MIRROR_FIELD.test(field)) add('mirror_field_scope', `${field} is not a cleanup/qualification mirror`);
       cleanArm(entry.before, 'mirror', `${field} historical checker`, add);
       const arm = refusalArm(entry.after, 1, 'mirror', field, add);
       if (arm && acceptedValue(arm) !== false) {
         add('mirror_accepted', `${field} refusal does not report accepted=false`);
       }
-      const finding = arm ? namedFinding(arm) : null;
-      if (!finding) add('mirror_finding', `${field} refusal has no unambiguous named finding`);
-      else if (/could[_-]?not[_-]?evaluate/.test(finding)) add('mirror_finding', `${field} refusal is could_not_evaluate`);
-      else if (isSnapshotTampered(finding)) add('mirror_finding', `${field} refusal is snapshot tampering, not a semantic mirror finding`);
-      else if (!MIRROR_FINDING.test(finding)) add('mirror_finding', `${field} finding ${finding} does not name the mirror context`);
-      else refused++;
+      // The refusal may name the field failure plus the acceptance summary;
+      // only the acceptance-summary id is tolerated beside it.
+      const ids = arm ? allFindingIds(arm) : [];
+      const failures = ids.filter(id => !/accepted/i.test(id));
+      if (failures.length !== 1) {
+        add('mirror_finding', `${field} refusal names ${failures.length} non-acceptance finding(s); need exactly one field failure`);
+      } else if (/could[_-]?not[_-]?evaluate/.test(failures[0])) {
+        add('mirror_finding', `${field} refusal is could_not_evaluate`);
+      } else if (isSnapshotTampered(failures[0])) {
+        add('mirror_finding', `${field} refusal is snapshot tampering, not a semantic mirror finding`);
+      } else if (!MIRROR_FINDING.test(failures[0])) {
+        add('mirror_finding', `${field} finding ${failures[0]} does not name the mirror context`);
+      } else if (isRequired) {
+        refused++;
+      }
       if (entry.pass !== true) add('mirror_pass', `${field} differential is not marked pass=true`);
     }
-    if (declared) {
-      for (const field of declared) {
-        if (!seen.has(field)) add('mirror_missing_differential', `${field} has no mirror differential`);
-      }
+    for (const field of REQUIRED_MIRRORS) {
+      if (!seen.has(field)) add('mirror_missing_differential', `${field} has no mirror differential`);
     }
     result.mirrors = {
-      emitted: declared ? declared.size : seen.size,
+      emitted: REQUIRED_MIRRORS.length,
       differentials: differentials.length,
       refused,
     };
@@ -1007,18 +1131,40 @@ export function countC2(revision, read = reader(revision)) {
     if (!isText(tamper.case) || !SNAPSHOT_CASE.test(tamper.case)) {
       add('snapshot_case', 'tamper.case does not name authenticated snapshot tampering');
     }
-    if (!isText(tamper.field) || !SNAPSHOT_FIELD.test(tamper.field)) {
-      add('snapshot_field', 'tamper.field does not name an authenticated identity');
+    if (!isText(tamper.field)) {
+      add('snapshot_field', 'tamper.field must be a concrete snapshot input path');
     }
     if (!isHex(tamper.recordedSha256) || !isHex(tamper.computedSha256)) {
       add('snapshot_digest', 'tamper recordedSha256/computedSha256 must be 64-hex digests');
     } else if (tamper.recordedSha256 === tamper.computedSha256) {
       add('snapshot_digest', 'tamper recorded and computed digests are identical; nothing was tampered');
     }
+    if (isText(tamper.field)) {
+      const tamperPath = repoPath(tamper.field);
+      if (!inputDigests.has(tamperPath)) {
+        add('snapshot_inputs', `tamper.field ${tamperPath} is not listed in snapshotInputs`);
+      } else if (isHex(tamper.recordedSha256) && inputDigests.get(tamperPath) !== tamper.recordedSha256) {
+        add('snapshot_digest', 'tamper.recordedSha256 differs from snapshotInputs[field]');
+      }
+    }
     // The authentic historical checker refuses the SHA mismatch semantically
-    // (exit 1); only the new checker classifies it as snapshot tampering (exit
-    // 2, could-not-evaluate). The differential is exit1->exit2, not clean->red.
+    // (exit 1, SOURCE finding); only the new checker classifies it as snapshot
+    // tampering (exit 2, could-not-evaluate). The old arm must never itself
+    // report the classification the new checker owns.
     refusalArm(tamper.before, 1, 'snapshot', 'tamper historical checker', add);
+    const oldIds = tamper.before ? allFindingIds(tamper.before) : [];
+    // The old arm reports several authentic failures (SOURCE plus residual and
+    // acceptance summaries); only SOURCE membership is required here, never a
+    // global single-finding shape.
+    if (!oldIds.some(id => /source/i.test(id))) {
+      add('snapshot_old_finding', 'tamper historical arm does not name a SOURCE finding');
+    }
+    if (oldIds.some(id => /could[_-]?not[_-]?evaluate/i.test(id))) {
+      add('snapshot_old_finding', 'tamper historical arm reports could_not_evaluate');
+    }
+    if (oldIds.some(id => isSnapshotTampered(id))) {
+      add('snapshot_old_finding', 'tamper historical arm reports snapshot tampering');
+    }
     const arm = refusalArm(tamper.after, 2, 'snapshot', 'tamper', add);
     const finding = arm ? namedFinding(arm) : null;
     if (!isSnapshotTampered(finding || '')) {
@@ -1045,9 +1191,11 @@ export function countC2(revision, read = reader(revision)) {
     const accepted = acceptedValue(positive);
     if (accepted !== true) add('check_not_accepted', 'positive output does not report accepted=true');
     if (accepted === false) add('check_not_accepted', 'positive output reports accepted=false');
-    const sidecar = positive.sidecar;
+    const sidecar = isObject(positive.payload) && isObject(positive.payload.sidecar)
+      ? positive.payload.sidecar
+      : positive.sidecar;
     if (!isObject(sidecar) || !isText(sidecar.path) || !isHex(sidecar.sha256)) {
-      add('sidecar_shape', 'positive.sidecar must be {path,sha256}');
+      add('sidecar_shape', 'positive.payload.sidecar (or positive.sidecar) must be {path,sha256}');
     } else {
       const path = repoPath(sidecar.path);
       if (path !== C2_SIDECAR) {

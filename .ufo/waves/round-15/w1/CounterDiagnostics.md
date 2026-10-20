@@ -20,8 +20,7 @@ fails for a different `score_mismatch` cause fail the new assertion.
 
 ## Files changed
 
-- `scripts/check-user-round-contract.mjs` (292 insertions, 33 deletions against HEAD
-  `7054a5e`).
+- `scripts/check-user-round-contract.mjs`.
 - This report. No other file was written; `scripts/check-round-contract.mjs` (ROUND gate),
   baselines, history pins, `SCORECARD.md`, `LOG.md`, evidence and configs are untouched.
 
@@ -41,24 +40,24 @@ refusal has one. Non-counting findings keep their historical line, so the produc
 short-circuit line is byte-identical: exit 1, `finding=round_count`,
 `Found 6 user rounds, expected 10`.
 
-Stable reason ids and their exact emitters (worktree lines):
+Stable reason ids and their emitters (worktree lines):
 
 | Reason id | Emitter |
 |---|---|
-| `unsupported_counting_command` | `parseScore` unsupported grammar, line 414 |
-| `counting_revision_mismatch` | `parseScore` command revision ≠ measured-against, line 415 |
-| `unsupported_counting_command` | `runCount` defensive grammar refusal, line 423 |
-| `counting_command_failed` | `runCount` spawn/git failure, line 431 |
-| `score_not_improved` | declared before equals declared after, line 619 |
-| `before_count_mismatch` | baseline count differs, line 621 |
-| `after_count_mismatch` | measured count differs, line 622 |
+| `unsupported_counting_command` | `parseScore` unsupported grammar |
+| `counting_revision_mismatch` | `parseScore` command revision ≠ measured-against |
+| `unsupported_counting_command` | `runCount` defensive grammar refusal |
+| `counting_command_failed` | `runCount` spawn/git failure |
+| `score_not_improved` | declared before equals declared after |
+| `before_count_mismatch` | baseline count differs |
+| `after_count_mismatch` | measured count differs |
 
 An unknown reason id is rejected at construction (`fail` throws could-not-evaluate exit 2
 with `Unknown refusal reason`), so a typo cannot silently weaken a control.
 
 ## Anchored child receipt parsing
 
-New `receiptOf(result)` (lines 756–779) parses only the child’s own contract record:
+New `receiptOf(result)` parses only the child’s own contract record:
 
 - failure: last stderr line starting `USER_ROUND_CONTRACT `, anchored
   `^USER_ROUND_CONTRACT verdict=(failed|could-not-evaluate) finding=([a-z_]+)(?: reason=([a-z_]+))? detail=(.*)$`;
@@ -70,13 +69,13 @@ This replaces first-match-over-combined-output matching for the new assertions. 
 ROUND progress line echoes lesson `spot=` prose, so a first-match search over stdout is
 not identity evidence. `gateFields` is retained only for the legacy history witness arm.
 
-`receiptMatches(expected, observed)` (781–788) asserts exit, finding, reason and detail
+`receiptMatches(expected, observed)` asserts exit, finding, reason and detail
 independently. A matching exit and `finding=score_mismatch` cannot satisfy an expectation
 whose reason or detail belongs to another cause.
 
 ## Literal per-case expectations
 
-Every counting control now declares its own literals in `cases[]`: `reason`, `detail` and
+Every counting control declares its own literals in `cases[]`: `reason`, `detail` and
 `appliesMarker`. No expectation is inferred from the production predicate.
 
 Reason-asserting controls (8 cases, 6 distinct reason ids):
@@ -92,11 +91,9 @@ Reason-asserting controls (8 cases, 6 distinct reason ids):
 | `count_before_after_equal_red` (new) | `score_not_improved` | not applicable |
 | `count_before_mismatch_red` (new) | `before_count_mismatch` | not applicable |
 
-Each also asserts a literal detail fragment (`counting command is not a supported git
-line count`, `Counting command failed:`, `after measurement does not match`,
-`does not measure its measured-against commit`, `before and after are the same`,
-`before measurement does not match`). The three new cases cover the two previously
-unexercised parsing/static refusals and the before-count path.
+Each also asserts a literal detail fragment. The three new cases cover the previously
+unexercised revision-binding refusal, static before/after equality, and the before-count
+path.
 
 ## Marker applicability versus no-marker outcome
 
@@ -107,7 +104,7 @@ SELFTEST name=<case> expected_exit=<n> actual_exit=<n> expected_finding=<token>
   [expected_reason=<id>] reason=<id|none>
   applicability=<applicable|not_applicable>
   marker_applicable=<0|1> marker_outcome=<absent|present|not-applicable>
-  no_marker=<1|0|na> isolation=cli result=<PASS|FAIL>
+  no_marker=<1|0|na> kind=child_cli isolation=cli result=<PASS|FAIL>
 ```
 
 - `no_marker=1`: marker check applicable and marker absent (the passing outcome).
@@ -122,39 +119,29 @@ marker_outcome=not-applicable no_marker=na`, removing the routed4 overload.
 
 ## Falsifiable wrong-reason controls
 
-1. `SELFTEST name=reason_negative_control` (lines 1227–1241) consumes two actual child
-   receipts from the same self-test run. The missing-revision fixture returns
-   `score_mismatch` for `counting_command_failed`. The decoy expectation is
-   `after_count_mismatch` with the after-mismatch detail. The control passes only when:
-   a finding-only predicate would accept that receipt (exit 1, score_mismatch), the
-   strict comparator rejects the decoy, the real reason matches, and the malicious tee
-   control’s own reason matches. If the comparator ever ignored reason, `actual_outcome`
-   becomes `match` and the control fails.
-2. `--diagnostic-witness` (new mode, lines 964–1043) runs two same-fixture differentials:
+1. `SELFTEST name=reason_negative_control` consumes two actual child receipts from the
+   same self-test run. It constructs decoys whose exit, finding and detail are copied
+   from the observed receipt, varying only reason. The reasonless form must match, the
+   wrong reason must not, and the actual reason must. If the comparator ignored reason,
+   the wrong-reason decoy would match and the control fails. The exit+finding acceptance
+   is labeled `predicate=synthesized_exit_finding`, not a legacy comparator.
+2. `--diagnostic-witness` runs two same-fixture differentials:
    - Arm 1 (baseline vs repaired): the pinned round-14 delivered gate at
      `5c7710d7393112f2163dd7efcaa38fccf534dfc2` (blob `347ae9bb…`, sha256 `bde18c67…`)
      and the reason-bearing worktree evaluate one supported count with a wrong declared
      after value. Both exit 1 with `score_mismatch`; baseline has no reason, repaired
-     reports `after_count_mismatch`. The malicious expectation
-     `unsupported_counting_command` is rejected and the correct after reason accepted.
-   - Arm 2 (repaired vs mutant): the worktree and a byte-identical copy with the unique
-     `MASK_GUARD` line replaced once by `const masked = true;` evaluate one
-     missing-revision fixture. Repaired reports `counting_command_failed`; the mutant
-     reports `after_count_mismatch` for the same bytes and args. The correct reason
-     fails on the mutant, the decoy reason matches the mutant, and the finding-only
-     predicate accepts the mutant. A missing or duplicated guard fragment is
-     could-not-evaluate exit 2, never a silent no-op.
-   The diagnostic receipt reports `wrong_reason`, `expected_outcome=no-match`,
-   `wrong_match`, `correct_reason`, `correct_match`, `mutant_reason`,
-   `mutant_correct_match`, `mutant_decoy_match`,
-   `baseline_finding_only_accepts`, code sha256/blob and both arm args.
-3. `runCountWitness` now requires the new arm to carry
+     reports `after_count_mismatch`. A reasonless decoy copied from that receipt matches;
+     changing only reason to `unsupported_counting_command` is rejected; changing only
+     reason to `after_count_mismatch` matches.
+   - Arm 2 (repaired vs mutant): the worktree and a byte-identical copy with the masking
+     guard replaced once evaluate one missing-revision fixture. Repaired reports
+     `counting_command_failed`; the mutant reports `after_count_mismatch` for the same
+     bytes and args. A reasonless decoy copied from the mutant receipt matches; changing
+     only reason to `counting_command_failed` is rejected; only the mutant’s actual after
+     reason matches. This retains the actual regressed-mask control cause.
+3. `runCountWitness` requires the new arm to carry
    `reason=unsupported_counting_command`; `SELFTEST name=count_witness_comparison` also
-   asserts it. A finding-only differential can no longer pass.
-
-The self-test also runs the diagnostic differential
-(`SELFTEST name=diagnostic_witness_comparison`, lines 1264–1271). No new browser run,
-coverage or scalar is claimed.
+   asserts it.
 
 ## Preserved behavior
 
@@ -176,13 +163,9 @@ coverage or scalar is claimed.
 - Round-14 delivered gate identity used as diagnostic baseline:
   `5c7710d7393112f2163dd7efcaa38fccf534dfc2:scripts/check-user-round-contract.mjs`,
   blob `347ae9bbcdc692c3ad55fdfd931fa2cce13fec6d`, sha256
-  `bde18c672d79dbe1ebf340f265d013a8956da8f961d85fb3862573b7a6a505f3` (also recorded
-  in the round-14 lesson).
-- Consumer contract: `.ufo/waves/round-15/measure.mjs` header lines 29–61 and
-  `countC1` lines 486–620; exact field names were messaged to
-  `TabiR15.MeasureContracts`. Note: its current marker condition treats
-  `no_marker=1` as not-applicable, which is inverted relative to the parent’s ruling
-  (`1` = applicable and absent); that probe condition needs the corresponding update.
+  `bde18c672d79dbe1ebf340f265d013a8956da8f961d85fb3862573b7a6a505f3`.
+- Consumer contract: `.ufo/waves/round-15/measure.mjs`; exact field names were messaged to
+  `TabiR15.MeasureContracts` and the probe now binds them.
 - `COUNT_WITNESS_REV = bebe2efc4565bb068efd905e9ef78011bb6b4efd` (unchanged shell arm).
 
 ## Commands for L1 (not run here; expected outcomes are declarations, not observations)
@@ -199,20 +182,17 @@ Declared expectations, to be established by execution:
 
 - `--self-test` exits 0 and ends with
   `USER_ROUND_CONTRACT_SELFTEST verdict=clean cases=<fixtures + committedCounts + 4>`;
-  every emitted `SELFTEST` line is `result=PASS`; the reason controls print
-  `expected_reason` equal to `reason` for at least six distinct ids; three marker
-  controls print `applicability=applicable no_marker=1`; non-marker controls print
-  `applicability=not_applicable no_marker=na`.
-- `reason_negative_control` prints `observed source_reason=counting_command_failed`,
-  `wrong_reason=after_count_mismatch`, `actual_outcome=no-match`,
-  `correct_match=1`, `legacy_finding_only_accepts=1`.
-- `--diagnostic-witness` exits 0 with `wrong_match=0`, `correct_match=1`,
-  `baseline_finding_only_accepts=1`, `mutant_reason=after_count_mismatch`,
-  `mutant_correct_match=0`, `mutant_decoy_match=1`.
+  every emitted `SELFTEST` line is `result=PASS`; reason controls print
+  `expected_reason` equal to `reason`; marker controls print `applicability=applicable
+  no_marker=1`; non-marker controls print `applicability=not_applicable no_marker=na`.
+- `reason_negative_control` prints `reasonless_match=1`, `wrong_reason=after_count_mismatch`,
+  `actual_outcome=no-match`, `correct_match=1`, `predicate=synthesized_exit_finding`.
+- `--diagnostic-witness` exits 0 with `reasonless_match=1`, `wrong_reason_only_match=0`,
+  `correct_match=1`, `mutant_reasonless_match=1`, `mutant_wrong_reason_only=0`,
+  `mutant_decoy_match=1`, `baseline_predicate=synthesized_exit_finding`, and the mask
+  split exactly two parts.
 - Production check still exits 1 with `USER_ROUND_CONTRACT verdict=failed
   finding=round_count` and `Found 6 user rounds, expected 10`.
-- `measure.mjs <REV> --claim C1` counts 1 only when the committed receipt matches the
-  emitted stdout and the probe’s marker semantics are corrected as above.
 
 ## Risks and retained debt
 
@@ -231,3 +211,80 @@ Declared expectations, to be established by execution:
   digest pinning are untouched (PriorDebt). These do not claim env or history safety.
 - No sidecar/measurement receipt was written here; `corpus/evidence/round-15/` remains
   L1/MeasureContracts-owned.
+
+## Wave2 correction (supersedes earlier build claims above)
+
+Build `72dcf03` surfaced two wave2 findings against the first worktree; both are repaired
+in the same owned file. No checks were run for this correction either.
+
+### CRITICAL — mask guard matched its own oracle literal
+
+The first worktree stored `MASK_GUARD` as the bare statement text. That text occurs twice
+in the source: the real guard and the constant declaration. `split(MASK_GUARD)` therefore
+produced 3 parts and the diagnostic witness always exited 2 at the split guard. The
+constant is now assembled from parts and anchored to the real statement’s line context:
+
+```js
+const MASK_STATEMENT = "const masked = spec.kind === 'grep' && result.status === 1;";
+const MASK_GUARD = `\n  ${MASK_STATEMENT}\n`;
+const MASK_MUTANT = '\n  const masked = true;\n';
+```
+
+The declaration line is at column 0 and begins `const MASK_STATEMENT = "…`, so it has
+neither the anchored leading newline plus two spaces nor the trailing newline. The runtime
+needle exists only at the real `runCount` guard; split must yield exactly two parts.
+The pass condition additionally asserts the mutant contains `MASK_MUTANT` and no longer
+contains `MASK_GUARD`, so a no-op replacement cannot pass. The earlier claim that the mask
+arm was valid at `72dcf03` is withdrawn; that build’s diagnostic witness result, if any,
+is invalid for this reason.
+
+### HIGH — decoys differed by detail as well as reason
+
+The first decoys changed reason and detail together, so a comparator that ignored reason
+could still reject them on detail. Every decoy now copies the observed receipt’s exit,
+finding and detail and varies only reason:
+
+- repaired wrong-after receipt: reasonless decoy matches; reason-only
+  `unsupported_counting_command` decoy is rejected; reason-only `after_count_mismatch`
+  decoy matches;
+- mutant missing-revision receipt: reasonless decoy matches; reason-only
+  `counting_command_failed` decoy is rejected; reason-only `after_count_mismatch` decoy
+  matches.
+
+`reason_negative_control` applies the same construction to the missing-revision receipt.
+The receipts print `reasonless_match`, `wrong_reason_only_match` /
+`mutant_wrong_reason_only` and `correct_match`, making the discrimination explicit. The
+actual regressed-mask control (mutant reports `after_count_mismatch`) is retained.
+
+### WR3 — synthesized labels
+
+`baseline_predicate=synthesized_exit_finding` and
+`predicate=synthesized_exit_finding` now label the exit+finding-only acceptance as a
+synthesized predicate; no legacy comparator was invoked. The count-witness old arm now
+reports `old_finding_source=record|synthesized_clean_verdict|absent` rather than presenting
+a synthesized `clean` token as a parsed legacy finding.
+
+### Evidence labels
+
+The first worktree over-labeled every SELFTEST line as isolated CLI. Corrected labels:
+
+- fixture child gates: `kind=child_cli isolation=cli` (the reason-asserting controls that
+  MeasureContracts counts as isolated);
+- `count_committed_*`: `kind=helper isolation=in_process` — `runCount` executes in the
+  parent process, so this is not a child CLI;
+- `count_witness_comparison`, `reason_negative_control` and
+  `diagnostic_witness_comparison`: `kind=helper isolation=in_process` — these are
+  in-process predicates over child receipts or differential runs;
+- `production_alias_refused`: `kind=child_cli isolation=production_alias` — the child gate
+  is run against a symlink alias of the production root, not an isolated fixture.
+
+MeasureContracts excludes helper and production-alias lines by name. The existing
+six-of-ten production refusal is unchanged. No environment, hook or security broadening
+was made in this correction; L1 runs the minimal environment and documents its
+precondition.
+
+### Blocker status
+
+Claimed blocker: the diagnostic witness was non-functional at build `72dcf03` because of
+the self-matching guard. The worktree repair is in place but unverified until L1 runs the
+commands above; until that run, no diagnostic-witness outcome should be claimed.

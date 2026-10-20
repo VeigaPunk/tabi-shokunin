@@ -12,16 +12,16 @@ expectation or a static derivation, and L1 owns post-integration checks.
 | calibration (C2) | Enforce all six emitted `cleanup` and eight `qualification` mirrors by independent recomputation from raw per-worker proofs | false mirror variants now exit 1 semantic; old corrected sidecar still accepted |
 | calibration (C2) | Authenticated-input digest verification before any semantic evaluator | digest drift exits 2 `could_not_evaluate` / `snapshot_tampered`; sidecar false claims stay exit 1 |
 | calibration (C2) | Enforce emitted Node descriptive aliases conjunctively and correction `derived`/`rule` mirrors | OR fail-open closed; old sidecar aliases already correct |
-| operability | Isolated CLI selftest cases with committed exits, finding ids/statuses, exact failed sets, fixture digests, and per-input tamper literals | 35 CLI cases + 3 helpers, precise `cli_cases`/`helpers` counts |
+| operability | Isolated CLI selftest cases with committed exits, finding ids/statuses, exact failed sets, fixture digests, and per-input tamper literals | 36 CLI cases + 4 helpers, precise `cli_cases`/`helpers` counts |
 | truthfulness | Corrected header comments and generated Node note: frozen spec did enforce minimumMajor; launcher pin summary omitted Node | no claim that the experiment skipped the floor; old frozen sidecar note stays accepted untouched |
 
 ## Files changed
 
 - `scripts/check-aria-metadata.mjs` — sha256
-  `5738296263a327807e0ea4b756ea6b643e88c6e3803b7a4cc42ed8e2e83e4eb0`,
-  3313 lines, diff `+1202/-152`.
-- NEW `corpus/evidence/round-15/metadata/expected-fixtures.json` — 23030 bytes,
-  sha256 `d3bcc239b6f0b83cd771645c8ccf9f513178ed426228a1d8116be7459e3f4397`.
+  `d707625ef967ff0c8bf041ebb0ec70b73b76a1c04d6cc95101c79a110c4a600b`,
+  3460 lines.
+- NEW `corpus/evidence/round-15/metadata/expected-fixtures.json` — 24116 bytes,
+  sha256 `3f84855045e6a29ae804e95a709464b08ebc7eaae3563796dbcca3a5f08ce70f`.
 - NEW `corpus/evidence/round-15/metadata/mirror-contract.json` — 2110 bytes,
   sha256 `18857a4dbe8e9267f68598b0ad2064a967299c12fd383c5c453347923f18308e`.
 - Historical bytes untouched and still match: round-14 `expected-fixtures.json`
@@ -39,13 +39,18 @@ emitted objects).
 
 `cleanup` (6): `perWorkerCount` integer `=== proofs.length`; `allClosed`,
 `allRefusedAfterClose`, `allNotListeningAfter`, `derivedListeningAfter` boolean
-per-field aggregates; `summaryServerOk` boolean admission.
+per-field aggregates; `summaryServerOk` boolean admission. `derivedListeningAfter` is
+`null` unless the proof set is nonempty and complete, so an incomplete snapshot cannot
+claim a derived raw state.
 
-`qualification` (8): `qualified`; `proofCount`; `allProofsComplete`;
-`allProofsSupportCorrection`; `everyProofListensBefore`; `everyProofClosed`;
-`everyProofRefusedAfterClose`; `everyProofNotListeningAfter`. Empty proof sets cannot
-pass (`qualification.proofCount:empty`). Generated values for the historical pair are
-byte-identical to the committed sidecar except the corrected `node.note` text.
+`qualification` (8): `qualified` derives from nonempty complete proof support (not a
+literal true); `proofCount`; `allProofsComplete`; `allProofsSupportCorrection`;
+`everyProofListensBefore`; `everyProofClosed`; `everyProofRefusedAfterClose`;
+`everyProofNotListeningAfter`. Empty or incomplete proof sets cannot pass
+(`qualification.proofCount:empty`, `qualification.qualified`). Every one of the 14 emitted
+cleanup/qualification fields now has a raw-data predicate. Generated values for the
+historical pair are byte-identical to the committed sidecar except the corrected
+`node.note` text.
 
 `mirror-contract.json` declares those field/type sets, the tamper classification, and the
 frozen legacy boundary; `--self-test` fails if code tables and asset diverge.
@@ -129,14 +134,32 @@ propagate exit 2 instead of collapsing it to 1.
 
 `--self-test` now loads the round-15 expectations and contract, then reports:
 
-- CLI cases: 35 = 15 preserved fixture cases + 10 new mirror/advisory/witness cases +
-  10 isolated mirror-root cases (2 authentic controls + 8 one-file tamper cases).
-- Helpers: 3 = `mirror-contract-fields`, `fixture-digest-set`,
-  `derive-and-mirror-helper` (determinism + mirror-table consistency only, not counted as CLI).
+- CLI cases: 36 = 15 preserved fixture cases + 10 new mirror/advisory/witness cases +
+  11 isolated mirror-root cases (2 authentic controls + 8 one-file tamper cases +
+  1 removed anchored-worker case asserting `snapshot_unavailable`).
+- Helpers: 4 = `mirror-contract-fields`, `fixture-digest-set`,
+  `derive-and-mirror-helper` (byte determinism + same-function mirror self-consistency;
+  token renamed `derive:mirrors_not_self_consistent`, not an independent content oracle),
+  and `mirror-aggregate-literals`. That helper's committed literal controls are:
+  `[false,true] → allNot=false/derived=true`; `[false,false] → allNot=true/derived=false`;
+  incomplete nonempty → `allNot=true/derived=null/qualified=false`; and
+  `closed:false, refusedAfterClose:true, listeningBefore:true` with `complete=false` →
+  `allClosed=false`, `everyProofClosed=false`, `allRefusedAfterClose=true`,
+  `qualified=false` (catches closed/refused mapping swaps and a constant-true completeness
+  flag). It exercises the same source function against committed literals, so it is a
+  case-table control, not an independent implementation oracle; the independent
+  enforcement evidence remains the CLI sidecar mutation cases, where the checker
+  recomputes from receipt proofs.
 - Fixture digests: 21 pinned + 1 intentionally unpinned (`sidecar-auto` embeds the mkdtemp
   path). Generated fixture-key set must equal pinned ∪ unpinned.
 - Exact failed-finding sets are asserted for mirror refusals; exact finding-id sets for
-  tamper cases; observed finding id is printed (the old `finding=` duplicate is fixed).
+  tamper and unavailable cases. `expected_finding=<id>` is the literal required predicate
+  for the case; `finding=<id>` is the actual payload finding retrieved by that id **and**
+  required status, with `finding_kind=required_predicate`. A missing matching predicate
+  fails the case. Green cases therefore report the passing predicate they actually
+  observed, not `none`; witness roots use the stable original
+  `R14-ARIA-CLEANUP-LISTENING-AFTER-01` fail predicate from `red.findings`, and the
+  mirror witness uses `R14-ARIA-SIDECAR-CLEANUP-MIRROR-01` fail from `mirror.failFindings`.
 
 Fixture digests were computed with a replica calibrated byte-for-byte against the
 committed round-14 sidecar (`e156b922…`, old note) and against all 8 previously pinned
@@ -148,7 +171,7 @@ Tamper cases copy a byte-identical checker plus authentic receipt, pin, manifest
 config, producer, worker, and corrected sidecar into an mkdtemp tree (ROOT derives from
 the copied script path), then append one newline (JSON) or
 `\n// round15 selftest tamper\n` (JS), or rewrite the receipt with corrected semantics.
-Each asserts exactly one mismatch and these literal tampered sha256 values:
+Each tamper case asserts exactly one mismatch and these literal tampered sha256 values:
 
 | target | actual sha256 | anchor |
 |---|---|---|
@@ -160,6 +183,11 @@ Each asserts exactly one mismatch and these literal tampered sha256 values:
 | config + comment | `bf3179bbdeb3481d66e738d00e9eef3dd6b78354b163a0726acb0eb78de492c2` | `87ae779b…b3f4` |
 | worker + LF | `c7a8ebaa6a5cefc8f041e78aec9b9830b6a6f892fc51b0b3f73ffabc3a700110` | `0d0f00e2…a5e7` |
 | producer + comment | `5c4cb198f7124104ffa9ca86057bcd210db1ff6cd73b25406a291d873e867842` | `1d54c9e9…af9c` |
+
+The eleventh mirror-root case removes the anchored worker file from the shadow tree and
+asserts exit 2, classification `could_not_evaluate`/`snapshot_unavailable`, finding id
+`snapshot_unavailable`, zero mismatches, and exactly one unavailable entry
+`{label: "worker:worker-0-1530637-1792474958700.json", reason: "missing"}`.
 
 The receipt-cleaned tamper would be a clean evaluation if bytes were trusted; it still
 exits 2, proving digest verification precedes semantics. `buildMirrorRoot` refuses to copy
@@ -219,8 +247,8 @@ round-14 to round-15 (L1-owned SKILL edit):
 cd /home/vgpnk/Projects/shokunin/tabi-shokunin
 
 node scripts/check-aria-metadata.mjs --self-test
-# expect exit 0; first line: ARIA_METADATA_SELFTEST verdict=clean cli_cases=35 helpers=3
-# 21 fixture PASS lines, 35 case PASS lines (case_class=cli), 3 helper PASS lines
+# expect exit 0; first line: ARIA_METADATA_SELFTEST verdict=clean cli_cases=36 helpers=4
+# 21 fixture PASS lines, 36 case PASS lines (case_class=cli), 4 helper PASS lines
 
 node scripts/check-aria-metadata.mjs --check corpus/evidence/round-14/aria-metadata/corrected.json
 # expect exit 0; accepted=true, findings=28, failed=0 (old sidecar still accepted)
@@ -278,6 +306,9 @@ round-15 derivation receipt, it should author that separately.
 - Read-refusal classes outside digest drift (missing/symlink/unreadable non-anchor inputs,
   malformed `--check` input) retain their prior exit-1 semantics; this slice only adds
   exit-2 for authenticated snapshot digest drift and authenticated-input unavailability.
+- Only canonical authenticated paths are digest-verified. Noncanonical receipt/pin copies
+  remain accepted for historical test isolation; broad noncanonical-receipt acceptance is
+  an explicit unclaimed boundary, not a new trust guarantee.
 - Sidecar complete-byte identity is still not checker-pinned; verification/counter
   evidence owns that debt. This report does not claim whole-sidecar byte authentication.
 - The fixed `WORKER_DIR` cannot isolate multi-worker algebra in this lane without new

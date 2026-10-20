@@ -47,8 +47,9 @@ def main():
    for name,code in [('before',old),('after',current)]:
     (root/SCRIPT).write_bytes(code)
     arms[name]=run(root,['--check',str(target)])
-   records.append({'case':section+'.'+key,'mutation':{'from':value,'to':mutant[section][key]},**arms,
-    'pass':arms['before']['exit']==0 and accepted(arms['before']) and arms['after']['exit']==1 and not accepted(arms['after']) and any('SIDECAR' in x for x in failed_ids(arms['after']))})
+   expected_finding='R14-ARIA-SIDECAR-CLEANUP-MIRROR-01' if section=='cleanup' else 'R14-ARIA-SIDECAR-QUALIFICATION-01'
+   records.append({'case':section+'.'+key,'expectedFinding':expected_finding,'mutation':{'from':value,'to':mutant[section][key]},**arms,
+    'pass':arms['before']['exit']==0 and accepted(arms['before']) and arms['after']['exit']==1 and not accepted(arms['after']) and failed_ids(arms['after'])=={expected_finding,'R14-ARIA-SIDECAR-ACCEPTED-01'}})
   # Positive canonical sidecar and authenticated source-byte alteration share one snapshot.
   (root/SCRIPT).write_bytes(old)
   old_positive=run(root,['--check',SIDECAR])
@@ -59,7 +60,12 @@ def main():
   arms={}
   for name,code in [('before',old),('after',current)]:
    (root/SCRIPT).write_bytes(code); arms[name]=run(root,['--check',SIDECAR])
-  tamper={'case':'spec-snapshot-digest','field':spec_path,'recordedSha256':hashlib.sha256(inputs[spec_path]).hexdigest(),'computedSha256':hashlib.sha256((root/spec_path).read_bytes()).hexdigest(),**arms,'pass':arms['before']['exit']==1 and not accepted(arms['before']) and 'R14-ARIA-SOURCE-01' in failed_ids(arms['before']) and arms['after']['exit']==2 and 'snapshot_tampered' in failed_ids(arms['after'])}
+  after_payload=arms['after']['payload'] or {}
+  mismatches=after_payload.get('snapshot',{}).get('mismatches',[])
+  expected_sha=hashlib.sha256(inputs[spec_path]).hexdigest()
+  actual_sha=hashlib.sha256((root/spec_path).read_bytes()).hexdigest()
+  precise_tamper=(after_payload.get('classification')=={'outcome':'could_not_evaluate','reason':'snapshot_tampered'} and len(mismatches)==1 and mismatches[0].get('path')==spec_path and mismatches[0].get('expectedSha256')==expected_sha and mismatches[0].get('actualSha256')==actual_sha)
+  tamper={'case':'spec-snapshot-digest','field':spec_path,'recordedSha256':expected_sha,'computedSha256':actual_sha,**arms,'pass':arms['before']['exit']==1 and not accepted(arms['before']) and 'R14-ARIA-SOURCE-01' in failed_ids(arms['before']) and arms['after']['exit']==2 and 'snapshot_tampered' in failed_ids(arms['after']) and precise_tamper}
   untouched={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==hashlib.sha256(data).hexdigest() for p,data in inputs.items()}
  result={'schema':'tabi-round15-metadata-differential-v1','sourceRows':['S029'],'baseline':BASE,'revision':rev,
   'codeSha256':hashlib.sha256(current).hexdigest(),'oldCodeSha256':hashlib.sha256(old).hexdigest(),

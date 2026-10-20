@@ -1,7 +1,7 @@
 {
   "caseCounts": {
-    "cliCases": 35,
-    "helpers": 3
+    "cliCases": 36,
+    "helpers": 4
   },
   "cases": [
     {
@@ -289,7 +289,11 @@
       "expectedExit": 0,
       "expectedFindings": [],
       "id": "witness-red-to-clean",
-      "kind": "witness"
+      "kind": "witness",
+      "requiredFinding": {
+        "id": "R14-ARIA-CLEANUP-LISTENING-AFTER-01",
+        "status": "fail"
+      }
     },
     {
       "args": [
@@ -304,7 +308,11 @@
       "expectedExit": 1,
       "expectedFindings": [],
       "id": "witness-rejects-bad-sidecar",
-      "kind": "witness"
+      "kind": "witness",
+      "requiredFinding": {
+        "id": "R14-ARIA-CLEANUP-LISTENING-AFTER-01",
+        "status": "fail"
+      }
     },
     {
       "args": [
@@ -533,7 +541,11 @@
       "expectedExit": 0,
       "expectedFindings": [],
       "id": "witness-mirrors-differential",
-      "kind": "mirror-witness"
+      "kind": "mirror-witness",
+      "requiredFinding": {
+        "id": "R14-ARIA-SIDECAR-CLEANUP-MIRROR-01",
+        "status": "fail"
+      }
     }
   ],
   "description": "Round-15 persisted expectations for check-aria-metadata.mjs --self-test. Pinned fixture digests bind isolated mkdtemp bytes; cases bind CLI exits, finding ids/statuses, classification, and exact failed sets. mirrorCases spawn a byte-identical checker copy under an mkdtemp ROOT so canonical authenticated inputs can be tampered one at a time. sidecar-auto embeds the mkdtemp path and is intentionally unpinned.",
@@ -644,7 +656,7 @@
       "sha256": "a79333ec4f2bd8d083f1045f7d170012c0530633ab0c14ea4031a17410a611cf"
     }
   },
-  "minimumCliCases": 35,
+  "minimumCliCases": 36,
   "mirrorCases": [
     {
       "args": [],
@@ -890,6 +902,32 @@
       "id": "mirror-tamper-producer",
       "kind": "tamper",
       "tamper": "producer"
+    },
+    {
+      "args": [],
+      "expectedClassification": {
+        "outcome": "could_not_evaluate",
+        "reason": "snapshot_unavailable"
+      },
+      "expectedExit": 2,
+      "expectedFailedFindings": [],
+      "expectedFindingIds": [
+        "snapshot_unavailable"
+      ],
+      "expectedFindings": [
+        {
+          "id": "snapshot_unavailable",
+          "status": "could_not_evaluate"
+        }
+      ],
+      "expectedUnavailable": {
+        "expectedSha256": "0d0f00e214c92f9e0b83b704e3488ff17a58c5141d2cd788cf337d599603a5e7",
+        "label": "worker:worker-0-1530637-1792474958700.json",
+        "reason": "missing"
+      },
+      "id": "mirror-unavailable-worker",
+      "kind": "unavailable",
+      "remove": "worker"
     }
   ],
   "schema": "tabi-aria-metadata-fixture-expectations-v1",

@@ -861,3 +861,40 @@
   identities. `.ufo/waves/round-15/w1/validation.json` and registry bind the
   exact one-call dispatch; execution outcomes are recorded below only after
   actually exercised.
+- Named precision correction to the preceding round15 launcher wording:
+  the launcher records `runtime.node`; only its `runtime.pinned` summary
+  and the spec's `runtimePinStatus()` summary omit Node. The executed
+  spec's minimum assertion and the retrospective checker are two layers
+  over the same observation, not independent runtime signals.
+- Build snapshot `72dcf031b9da24796b718517ea575f21e4f7caae` retains the
+  first implementation and64-seat build wave. Wave1 completed48 and
+  failed16 (all scout/connector identities except completed SourceLocators);
+  an initial17-failure estimate is corrected in
+  `.ufo/waves/round-15/w1/provider-failures.json`. No dead identity was
+  replaced. Wave2 validated/dispatched32 distinct attacks in one unchanged
+  taskCall, all completed; round total96. Registries and exact policy hashes/
+  environment are retained, rather than inferring route configuration.
+- Wave2 caught a real C1 code blocker: the mask-mutation needle occurred
+  inside its own source literal as well as the real guard. It also caught
+  wrong-reason decoys rejected independently by mismatched detail, false
+  isolation labels, and C2 consumer/schema mismatches. Scoped repairs
+  preserve grammars/baselines/expected10, use reason-only decoys, correct
+  helper labels, bind actual metadata output fields, and tighten the
+  differential to exact mirror failure sets/classification/digests. Source
+  attacks of72dcf03 are not mislabeled reviews of repaired bytes; L1's
+  subsequent exercised command receipts name the repaired revision.
+- The metadata scope stays canonical historical input files and complete
+  cleanup/qualification objects, not every sidecar field, arbitrary path
+  authenticity, worker-directory set drift, read-race freedom or generic
+  hostile-repository safety. Shared raw-data derivation is not an independent
+  expected-value oracle; literal aggregate controls and historical fixture
+  digests provide the distinct expectations.
+- CountProduction's misplaced fleet report was byte-exact recovered into
+  the lane (`corpus/evidence/round-15/misroot-recovery.json`), and Main owns
+  fleet-original removal. SourceCuration records its own misplaced report/
+  move/removal attempt. The round15 lesson mines these observed scope errors
+  without pretending the reminder alone proved recurrence impossible.
+- No installs/updates were performed. The later host-wide pacman pause was
+  relayed to live writers and added to wave2 context. Prior external-action
+  and namespace L0 questions remain open; non-author Node erratum and frozen
+  closure certification remain orchestrator/protocol actions.
