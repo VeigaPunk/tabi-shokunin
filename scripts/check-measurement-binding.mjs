@@ -185,7 +185,11 @@ function minimalEnv() {
     GIT_LITERAL_PATHSPECS: '1',
     TZ: 'UTC',
   };
-  if (process.env.PATH !== undefined) env.PATH = process.env.PATH;
+  // Wave-2 SentinelGate F3: relative PATH entries would resolve `timeout`/`git`
+  // inside the measured repo; keep absolute entries only.
+  if (process.env.PATH !== undefined) {
+    env.PATH = process.env.PATH.split(':').filter((entry) => entry.startsWith('/')).join(':');
+  }
   if (process.env.HOME !== undefined) env.HOME = process.env.HOME;
   return env;
 }
@@ -252,7 +256,10 @@ function isCleanRepoPath(path) {
   if (!PATH_CHARS.test(path)) return false;
   const body = path.endsWith('/') ? path.slice(0, -1) : path;
   if (body.length === 0) return false;
-  return body.split('/').every((segment) => segment.length > 0 && segment !== '.' && segment !== '..');
+  // Wave-2 SentinelGate F1: PATH_CHARS admits '-', so a leading '-' on any
+  // segment (e.g. counter.path "-e") is refused explicitly here.
+  return body.split('/').every((segment) => segment.length > 0 && segment !== '.' && segment !== '..'
+    && !segment.startsWith('-'));
 }
 
 // The tree entry for one exact path at one revision: { mode, type, oid } or
@@ -419,7 +426,8 @@ function reproduceArm(repo, argv, armRev) {
   const timeoutSec = Math.ceil(REPRODUCE_TIMEOUT_MS / 1000);
   let result;
   try {
-    result = spawnSync('timeout', ['-s', 'KILL', String(timeoutSec), process.execPath, ...mapped.slice(1)], {
+    // '--' ends node's own option parsing so argv[1] can only be a script.
+    result = spawnSync('timeout', ['-s', 'KILL', String(timeoutSec), process.execPath, '--', ...mapped.slice(1)], {
       cwd: repo,
       env: minimalEnv(),
       encoding: 'utf8',

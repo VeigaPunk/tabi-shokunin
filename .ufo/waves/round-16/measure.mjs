@@ -12,24 +12,25 @@
 // (count may be 0 with `failures` naming why); exit 2 = could not evaluate.
 //
 // C1 (operability) counts 1 only if, at REV, the measurement-binding gate is
-// BEHAVIOURALLY enforced — receipts are not trusted:
+// enforced as observed by counter-run probes (not by trusting printed receipts):
 //   1. scripts/check-measurement-binding.mjs and
 //      scripts/selftest-measurement-binding.mjs exist at REV as regular blobs;
-//      both are materialised into a temp dir and the SELFTEST is run directly
-//      (it drives the gate as a child CLI against isolated temp repos);
+//      both are materialised into a temp dir (children get HOME=that dir) and
+//      the SELFTEST is run directly (it drives the gate as a child CLI);
 //   2. every case line is PASS with expected_exit == actual_exit and
 //      expected_reasons == actual_reasons, the line count equals the summary
-//      `cases`, summary verdict is clean, and every reason in the counter-owned
-//      vocabulary VOCAB is an actual reason of some PASS case, plus at least
-//      one clean (exit 0, no reason) case;
-//   3. the materialised gate run with `--legacy` on the REAL round-15
-//      measurements.json (bytes at REV) `--at 36240c7…` (the delivered r15
-//      HEAD) exits 1 with EXACTLY the honest finding set
-//      C1 {counter_digest_unrecorded, counted_inputs_undeclared,
-//          counter_changed_since_measurement},
-//      C2 {counter_digest_mismatch, counted_inputs_undeclared}.
-//      This is the counter's own oracle on real history, independent of the
-//      selftest fixtures (round-15 outside spot-check routed defects 1/2).
+//      `cases`, summary verdict is clean, every reason in the counter-owned
+//      vocabulary VOCAB is an actual reason of some PASS case, ≥1 clean case;
+//   3. Probe A: the same selftest run with `--gate <counter-owned stub that
+//      always prints clean>` must exit non-zero with verdict=failed;
+//   4. Probe B: the materialised gate `--legacy` on the REAL round-15
+//      measurements.json under three counter-made variations (LEGACY_VARIANTS:
+//      delivered r15 HEAD, `--at` the C1 counter-code revision, and C1 given
+//      the digest of the blob at its measured revision) exits 1 with EXACTLY
+//      the per-variation finding sets (round-15 outside routed defects 1/2).
+//   Limits (wave-2 AttackC1Liar, SentinelCounter): a liar that branches on
+//   these exact arguments could still pass finite probes; the counter executes
+//   REV's scripts unsandboxed, so run it only on lane revisions.
 //
 // C2 (coverage) counts 1 only if, at REV:
 //   1. corpus/knowledge/webmcp-chromium-loopback-round-16.md exists and cites
@@ -37,7 +38,8 @@
 //      pipe fields, tier A or B, status mined, and the note in used-by; at
 //      least one cited row is non-own-work (opened external source); the note
 //      names the receipt path;
-//   2. corpus/README.md names knowledge/webmcp-chromium-loopback-round-16.md;
+//   2. corpus/README.md has a table row whose first cell is
+//      `knowledge/webmcp-chromium-loopback-round-16.md`;
 //   3. corpus/evidence/round-16/webmcp/receipt.json has schema
 //      tabi-round16-webmcp-v1, verdict pass, caseSet.caseSetOk, every case
 //      status pass, ≥11 cases including the flag-off negative control (no
@@ -68,9 +70,35 @@ const VOCAB = [
   'argv_unsupported', 'counter_failed', 'count_not_reproduced',
   'manifest_unreadable', 'manifest_schema_invalid', 'revision_unresolved', 'git_failed',
 ];
-const LEGACY_EXPECTED = {
-  C1: ['counted_inputs_undeclared', 'counter_changed_since_measurement', 'counter_digest_unrecorded'],
-  C2: ['counted_inputs_undeclared', 'counter_digest_mismatch'],
+// Oracle derived from git facts (blob sha256 of .ufo/waves/round-15/measure.mjs:
+// 3ee59de0… at 27dfd98 and b7cf044; dd9c8675… at 9fd8bca and 36240c7;
+// 9fd8bca is not an ancestor of measured b7cf044). Three variations of the
+// real round-15 file whose finding sets differ.
+const R15_COUNTER_AT_MEASURED = '3ee59de095750e08fc719ed19eb5baea02caf443df05479d24897783240fe384';
+const R15_CODE_C1 = '27dfd98bd6bbd85fe77fb028d531691ce066031a';
+const LEGACY_VARIANTS = [
+  { name: 'real-at-delivered', file: 'r15-measurements.json', at: R15_DELIVERED, expected: {
+    C1: ['counted_inputs_undeclared', 'counter_changed_since_measurement', 'counter_digest_unrecorded'],
+    C2: ['counted_inputs_undeclared', 'counter_digest_mismatch'] } },
+  { name: 'real-at-c1-code', file: 'r15-measurements.json', at: R15_CODE_C1, expected: {
+    C1: ['counted_inputs_undeclared', 'counter_digest_unrecorded'],
+    C2: ['counted_inputs_undeclared', 'counter_changed_since_measurement', 'counter_digest_mismatch'] } },
+  { name: 'c1-digest-recorded', file: 'r15-c1-digest.json', at: R15_DELIVERED, expected: {
+    C1: ['counted_inputs_undeclared', 'counter_changed_since_measurement'],
+    C2: ['counted_inputs_undeclared', 'counter_digest_mismatch'] } },
+];
+const CASE_FIXTURES = {
+  'flags-off-negative-control': 'declarative-form.html',
+  'devtools-domain-disabled': 'declarative-form.html',
+  'declarative-form-tool': 'declarative-form.html',
+  'imperative-model-context': 'imperative.html',
+  'lifecycle-removal': 'lifecycle.html',
+  'navigation-clears-tools': 'declarative-form.html',
+  'declarative-missing-name': 'declarative-missing-name.html',
+  'model-context-location': 'plain.html',
+  'frame-tools': 'frame-parent.html',
+  'opaque-sandboxed-iframe': 'plain.html',
+  'data-url-declarative': 'declarative-form.html',
 };
 const REQUIRED_CASES = ['flags-off-negative-control', 'declarative-form-tool'];
 
@@ -127,8 +155,12 @@ function countC1(rev) {
     writeFileSync(join(dir, GATE), gate);
     writeFileSync(join(dir, SELFTEST), selftest);
     writeFileSync(join(dir, 'r15-measurements.json'), legacy);
+    // Wave-2 repair (AttackC1Liar, SentinelCounter): children get a scratch
+    // HOME, and receipts printed by REV's own scripts are not enough — the
+    // counter adds two probes REV cannot satisfy with fixed output.
+    const childEnv = { ...ENV, HOME: dir };
     const st = spawnSync(process.execPath, [join(dir, SELFTEST)], {
-      cwd: dir, env: ENV, encoding: 'utf8', timeout: 600000, maxBuffer: 64 * 1024 * 1024,
+      cwd: dir, env: childEnv, encoding: 'utf8', timeout: 600000, maxBuffer: 64 * 1024 * 1024,
     });
     const lines = (st.stdout ?? '').split('\n').filter(Boolean);
     const caseLines = lines.filter((l) => l.startsWith('case='));
@@ -156,19 +188,37 @@ function countC1(rev) {
     if (missingVocab.length > 0) failures.push(`vocabulary not exercised: ${missingVocab.join(',')}`);
     if (caseLines.length < 2 * VOCAB.length) failures.push(`cases ${caseLines.length} < ${2 * VOCAB.length}`);
 
-    const lg = spawnSync(process.execPath, [join(dir, GATE), '--legacy', join(dir, 'r15-measurements.json'),
-      '--at', R15_DELIVERED, '--repo', ROOT], { cwd: dir, env: ENV, encoding: 'utf8', timeout: 120000 });
-    const found = {};
-    for (const line of (lg.stdout ?? '').split('\n')) {
-      const m = /^finding claim=(\S+) reason=(\S+) /.exec(line);
-      if (m) (found[m[1]] ??= []).push(m[2]);
-    }
-    out.legacy = { exit: lg.status, findings: found, at: R15_DELIVERED };
-    if (lg.status !== 1) failures.push(`legacy exit ${lg.status} (expected 1)`);
-    const ids = Object.keys(found).sort();
-    if (!sameSet(ids, Object.keys(LEGACY_EXPECTED))) failures.push(`legacy claims ${ids.join(',')}`);
-    for (const [id, want] of Object.entries(LEGACY_EXPECTED)) {
-      if (!sameSet(found[id] ?? [], want)) failures.push(`legacy ${id} reasons ${(found[id] ?? []).join(',')} != ${want.join(',')}`);
+    // Probe A — counter-owned stub gate: always "clean", exit 0. An honest
+    // selftest driving the gate it is given must go red against it.
+    writeFileSync(join(dir, 'stub-gate.mjs'), "console.log('MEASUREMENT_BINDING verdict=clean claims=1 bound=1');\n");
+    const stub = spawnSync(process.execPath, [join(dir, SELFTEST), '--gate', join(dir, 'stub-gate.mjs')], {
+      cwd: dir, env: childEnv, encoding: 'utf8', timeout: 600000, maxBuffer: 64 * 1024 * 1024,
+    });
+    const stubSummary = (stub.stdout ?? '').split('\n').filter(Boolean).at(-1) ?? '';
+    out.stubGate = { exit: stub.status, summary: stubSummary };
+    if (stub.status === 0 || !/verdict=failed/.test(stubSummary)) failures.push('selftest stays green against a counter-owned always-clean stub gate');
+
+    // Probe B — real round-15 history under three counter-made variations;
+    // the expected sets differ, so fixed output cannot satisfy all three.
+    const mutated = JSON.parse(legacy.toString('utf8'));
+    mutated.C1 = { ...mutated.C1, counterSha256: R15_COUNTER_AT_MEASURED };
+    writeFileSync(join(dir, 'r15-c1-digest.json'), JSON.stringify(mutated));
+    out.legacy = [];
+    for (const variant of LEGACY_VARIANTS) {
+      const lg = spawnSync(process.execPath, [join(dir, GATE), '--legacy', join(dir, variant.file),
+        '--at', variant.at, '--repo', ROOT], { cwd: dir, env: childEnv, encoding: 'utf8', timeout: 120000 });
+      const found = {};
+      for (const line of (lg.stdout ?? '').split('\n')) {
+        const m = /^finding claim=(\S+) reason=(\S+) /.exec(line);
+        if (m) (found[m[1]] ??= []).push(m[2]);
+      }
+      out.legacy.push({ variant: variant.name, exit: lg.status, findings: found, at: variant.at });
+      if (lg.status !== 1) failures.push(`legacy ${variant.name} exit ${lg.status} (expected 1)`);
+      const ids = Object.keys(found).sort();
+      if (!sameSet(ids, Object.keys(variant.expected))) failures.push(`legacy ${variant.name} claims ${ids.join(',')}`);
+      for (const [id, want] of Object.entries(variant.expected)) {
+        if (!sameSet(found[id] ?? [], want)) failures.push(`legacy ${variant.name} ${id} reasons ${(found[id] ?? []).join(',')} != ${want.join(',')}`);
+      }
     }
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -215,8 +265,9 @@ function countC2(rev) {
   }
   if (external === 0) failures.push('no non-own-work cited row');
   if (!noteText.includes(RECEIPT)) failures.push('note does not name the receipt');
-  if (!readme || !readme.toString('utf8').includes('knowledge/webmcp-chromium-loopback-round-16.md')) {
-    failures.push('README does not map the note');
+  const readmeRow = /^\| `knowledge\/webmcp-chromium-loopback-round-16\.md` \|/m;
+  if (!readme || !readmeRow.test(readme.toString('utf8'))) {
+    failures.push('README has no map row for the note');
   }
   let receipt;
   try { receipt = JSON.parse(receiptBytes.toString('utf8')); } catch { receipt = null; }
@@ -226,12 +277,21 @@ function countC2(rev) {
     if (receipt.schema !== 'tabi-round16-webmcp-v1') failures.push('receipt schema');
     if (receipt.verdict !== 'pass') failures.push(`receipt verdict ${receipt.verdict}`);
     if (receipt.summary?.caseSet?.caseSetOk !== true) failures.push('caseSet not ok');
+    const nCases = Array.isArray(receipt.cases) ? receipt.cases.length : -1;
+    if (receipt.summary?.passed !== nCases || receipt.summary?.failed !== 0 || receipt.summary?.cases !== nCases) {
+      failures.push('summary passed/failed/cases inconsistent with case list');
+    }
     if (receipt.producerSha256 !== sha256(harness)) failures.push('producerSha256 != harness blob');
     const cases = Array.isArray(receipt.cases) ? receipt.cases : [];
     if (cases.length < 11) failures.push(`cases ${cases.length} < 11`);
     for (const c of cases) {
       caseIds.push(c.id);
       if (c.status !== 'pass') failures.push(`case ${c.id} status ${c.status}`);
+      // Wave-2 AttackC2Forge: a counter-owned case→fixture map, so a case
+      // cannot be re-pointed at a different (e.g. tool-less) fixture.
+      if (CASE_FIXTURES[c.id] !== undefined && c.fixtureFile !== CASE_FIXTURES[c.id]) {
+        failures.push(`case ${c.id} fixtureFile ${c.fixtureFile} != ${CASE_FIXTURES[c.id]}`);
+      }
       // `fixture` is a display label (e.g. "data: (declarative-form.html
       // bytes)"); `fixtureFile` names the served file. Repair after the first
       // after-measurement at 8f7feb3 read the label as a path and counted 0

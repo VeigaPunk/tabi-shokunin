@@ -8,7 +8,7 @@
 // build of the same fixture run with the same flags. Usage:
 //   node scripts/selftest-measurement-binding.mjs [--gate <path>]
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -313,6 +313,70 @@ negative('git_failed', mut => {
 negative('multi_claim_inputs_undeclared', mut => cleanShape(mut ? {
   extraClaims: [ctx => claim(ctx, { id: 'C2', axis: 'coverage', countedInputs: [] })],
 } : {}), 1, ['counted_inputs_undeclared']);
+
+// ── Wave-2 additions (L1, after round-16 falsify wave mutation probes) ─────
+// Each case kills a gate weakening that survived the 43-case selftest
+// (.ufo/waves/round-16/w2/Mut*.md, SentinelGate.md).
+function rewriteManifest(built, edit) {
+  const manifest = JSON.parse(readFileSync(built.manifest, 'utf8'));
+  edit(manifest);
+  put(built.root, 'edited.json', JSON.stringify(manifest, null, 2) + '\n');
+  return { ...built, manifest: join(built.root, 'edited.json') };
+}
+const COUNTER_CONST = [
+  "const revision = process.argv[2] ?? 'unknown';",
+  'console.log(JSON.stringify({ revision, c1_binding_contracts: 1 }));',
+  '',
+].join('\n');
+const COUNTER_STRING = COUNTER_OK.replace('probe.status === 0 ? 1 : 0', "probe.status === 0 ? '1' : '0'");
+
+// A declared input that resolves to no tree entry (not just an empty list).
+negative('counted_inputs_undeclared_unresolved', mut => cleanShape(mut
+  ? { countedInputs: ['absent/'] } : {}),
+  1, ['counted_inputs_undeclared']);
+
+// Worktree counter bytes differ from the committed blob: refuse to execute.
+negative('counter_failed_worktree_differs', mut => {
+  const built = cleanShape();
+  if (mut) put(built.root, 'measure.mjs', COUNTER_V2);
+  return built;
+}, 1, ['counter_failed'], { reproduce: true });
+
+// A constant counter passes the after arm but not the before arm.
+negative('count_not_reproduced_constant', mut => cleanShape(mut ? { counter: COUNTER_CONST } : {}),
+  1, ['count_not_reproduced'], { reproduce: true });
+
+// A string "1"/"0" is not the recorded integer count.
+negative('count_not_reproduced_string', mut => cleanShape(mut ? { counter: COUNTER_STRING } : {}),
+  1, ['count_not_reproduced'], { reproduce: true });
+
+// Only the schema name is wrong; everything else is a valid v1 manifest.
+negative('manifest_schema_invalid_name_only', mut => {
+  const built = cleanShape();
+  return mut ? rewriteManifest(built, m => { m.schema = 'tabi-measurement-binding-v0'; }) : built;
+}, 2, ['manifest_schema_invalid']);
+
+// argv[1] must equal counter.path exactly, not just its basename.
+negative('argv_unsupported_dir_prefix', mut => cleanShape(mut
+  ? { argv: ['node', 'evil/measure.mjs', '{REV}'] } : {}),
+  1, ['argv_unsupported']);
+
+// A dash-led counter path would become a node option ("-e <code>").
+negative('counter_path_dash', mut => {
+  const built = cleanShape();
+  return mut ? rewriteManifest(built, m => {
+    m.claims[0].counter.path = '-e';
+    m.claims[0].counter.argv = ['node', '-e', '{REV}'];
+  }) : built;
+}, 2, ['manifest_schema_invalid']);
+
+// A resolvable ref whose name starts with '-' is still not a revision token.
+negative('revision_unresolved_dash_ref', mut => {
+  const built = cleanShape();
+  if (!mut) return built;
+  git(built.root, ['update-ref', 'refs/heads/-x', 'HEAD']);
+  return { ...built, extraArgs: ['--at', '-x'] };
+}, 2, ['revision_unresolved']);
 
 // --legacy mode: round-15-shaped measurements.json. The unchanged variant is
 // the same-shape positive control: it must report exactly the two intrinsic

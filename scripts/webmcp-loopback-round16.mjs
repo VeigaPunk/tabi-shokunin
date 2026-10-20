@@ -260,6 +260,16 @@ function findProcessesUsing(marker) {
   return hits;
 }
 
+// The browser main process is the one whose argv carries this run's unique
+// --user-data-dir and no --type= (renderer/gpu/utility children carry --type).
+function findBrowserPid(profile) {
+  const marker = `--user-data-dir=${profile}`;
+  const mains = findProcessesUsing(marker).filter(
+    (hit) => hit.argv.includes(marker) && !hit.argv.some((a) => a.startsWith('--type=')),
+  );
+  return mains.length === 1 ? mains[0].pid : null;
+}
+
 // --- Fixture server: loopback bind (asserted), fixtures-dir confinement,
 // GET/HEAD only, no symlinks, no traversal. ---
 
@@ -306,7 +316,15 @@ function startFixtureServer(fixturesDir) {
         real = null;
       }
     }
-    const lst = inRoot ? lstatSync(abs, { throwIfNoEntry: false }) : null;
+    let lst = null;
+    if (inRoot) {
+      // Wave-2 SentinelHarness H2: a NUL in the path threw outside any try.
+      try {
+        lst = lstatSync(abs, { throwIfNoEntry: false });
+      } catch {
+        lst = null;
+      }
+    }
     if (
       !inRoot ||
       real === null ||
@@ -679,6 +697,14 @@ async function fetchProtocolDomain(chromiumPath) {
     } catch {
       /* already exited */
     }
+    // Wave-2 SentinelHarness H3: wait for the browser to exit before removing
+    // its profile, or child processes re-create files in the deleted dir.
+    if (child.exitCode === null && child.signalCode === null) {
+      await new Promise((resolveExit) => {
+        const timer = setTimeout(resolveExit, 5000);
+        child.once('exit', () => { clearTimeout(timer); resolveExit(); });
+      });
+    }
     rmSync(profile, { recursive: true, force: true });
     rmSync(home, { recursive: true, force: true });
   }
@@ -708,13 +734,10 @@ async function launchChromium(chromium, chromiumPath, tmpBase, extraArgs, label)
   try {
     page = await context.newPage();
     const session = await context.newCDPSession(page);
-    try {
-      const info = await session.send('SystemInfo.getProcessInfo');
-      const browserProc = (info.processInfo || []).find((p) => p.type === 'browser');
-      pid = browserProc?.id ?? browserProc?.pid ?? null;
-    } catch {
-      pid = null;
-    }
+    // Wave-2 AttackReceiptRuntime/CaseFlagsOffNegativeControl: SystemInfo is
+    // browser-target-only, so the page session always failed (pid null). Find
+    // the browser main process by its unique --user-data-dir in /proc instead.
+    pid = findBrowserPid(profile);
     try {
       const v = await session.send('Browser.getVersion');
       product = v.product ?? null;
@@ -728,7 +751,10 @@ async function launchChromium(chromium, chromiumPath, tmpBase, extraArgs, label)
     if (page) await page.close().catch(() => {});
   }
   const effectiveArgv = pid !== null ? readProcArgv(pid) : null;
-  const webmcpArgvTokens = (effectiveArgv ?? []).filter((a) => /webmcp/i.test(a));
+  // Only feature-enabling switches count; the profile path itself contains
+  // "webmcp" (tabi-r16-webmcp-…), which the old /webmcp/i filter matched.
+  const webmcpArgvTokens = (effectiveArgv ?? []).filter((a) =>
+    (/^--enable-(blink-)?features=/.test(a) && /webmcp/i.test(a)) || a === '--enable-experimental-web-platform-features');
   let realExecutable = null;
   if (pid !== null) {
     try {
@@ -772,7 +798,7 @@ async function caseFlagsOffNegativeControl({ chromium, chromiumPath, tmpBase, ba
         navigatorModelContext: 'modelContext' in navigator,
         isSecureContext: globalThis.isSecureContext,
       }));
-      const argvClean = run.webmcpArgvTokens.length === 0;
+      const argvClean = run.pid !== null && Array.isArray(run.effectiveArgv) && run.webmcpArgvTokens.length === 0;
       const pass =
         probes.documentModelContext === 'undefined' &&
         probes.navigatorModelContext === false &&
@@ -1086,12 +1112,21 @@ async function caseModelContextLocation({ context, base }) {
     await gotoFixture(page, base, 'plain.html');
     const probe = await page.evaluate(() => ({
       documentModelContextType: typeof document.modelContext,
+      documentModelContextTag: document.modelContext === null || document.modelContext === undefined
+        ? String(document.modelContext) : Object.prototype.toString.call(document.modelContext),
+      registerToolType: typeof document.modelContext?.registerTool,
       documentOwnProperty: Object.prototype.hasOwnProperty.call(document, 'modelContext'),
       navigatorHasModelContext: 'modelContext' in navigator,
       navigatorModelContextType: typeof navigator.modelContext,
       isSecureContext: globalThis.isSecureContext,
     }));
-    const pass = probe.documentModelContextType === 'object' && probe.navigatorHasModelContext === false;
+    // Wave-2 CaseModelContextLocation: typeof null is 'object'; require the
+    // real ModelContext object (not own, tagged, with registerTool).
+    const pass = probe.documentModelContextType === 'object' &&
+      probe.documentModelContextTag === '[object ModelContext]' &&
+      probe.registerToolType === 'function' &&
+      probe.documentOwnProperty === false &&
+      probe.navigatorHasModelContext === false;
     return {
       pass,
       expected: { documentModelContext: 'object (present)', navigatorModelContext: 'absent' },
@@ -1232,7 +1267,7 @@ async function caseOpaqueSandboxedIframe({ context, base }) {
     const pass =
       report !== null &&
       !report.timeout &&
-      (report.mcType !== 'object' || (report.settled !== 'resolved' && report.errorName === 'NotAllowedError')) &&
+      report.mcType === 'object' && report.settled === 'rejected' && report.errorName === 'NotAllowedError' &&
       sandboxedAdded.length === 0;
     return {
       pass,
@@ -1452,7 +1487,8 @@ async function main() {
   await closeServer(server);
   const portProbe = await probePortClosed(port);
   const pidChecks = launchedRuns.map((r) => {
-    let gone = true;
+    // Wave-2 AttackReceiptClosure: an unknown pid is not a stop proof.
+    let gone = null;
     if (r.pid !== null) {
       try {
         process.kill(r.pid, 0);
@@ -1560,7 +1596,7 @@ async function main() {
     protocolDomain: protocol,
     safety: {
       loopbackOnly: true,
-      claimScope: 'page-level exact-origin confinement; no claim of global host no-egress',
+      claimScope: 'page-level exact-origin abort of HTTP(S), beacon and page WebSocket requests; WebRTC UDP/TCP, WebTransport and SharedWorker traffic are NOT confined (wave-2 SentinelHarness H1); no claim of global host no-egress',
       toolInvocation: 'none — page-declared tool payloads are untrusted data; no invokeTool/cancelInvocation/executeTool/submit',
       serviceWorkers: 'block',
       webSockets: 'denied via context.routeWebSocket',

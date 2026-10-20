@@ -303,3 +303,12 @@ real-site WebMCP (needs operator approval), agent-side consumption of page
 tools, tool invocation as committed evidence, any unflagged/default-profile
 claim, and the extension↔daemon handshake, real-site rate/rights and real-site
 journey rows.
+
+Wave-2 supersession note (2026-10-20, append-only): the earlier rows that say
+"WebMCP spec | open — S020 opened and queued" (`:194`), "unchanged … native
+WebMCP host probe … WebMCP spec mining" (`:216`) and the round-15 "native
+WebMCP … WebMCP spec mining remain open" (`:282-285`) are historical for
+round 16: S020 is now mined by the note above, and native WebMCP is held for
+Chromium 154 with flags on loopback only. The kaika clause "not
+`navigator.modelContext`" (`:181`) holds at 154; only "no flag carries it" is
+superseded. Real-site WebMCP, agent-side consumption and Chromium 152 stay open.
