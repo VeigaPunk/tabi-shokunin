@@ -924,3 +924,23 @@
   Gate/Mistakes, every routed disposition, actual command results and honest
   external-verifier debt. Sources, QUALITY20/21, SKILL/README qualifications
   and source-index land together; prior lessons/verifiers remain untouched.
+- Committed-evidence measurement at
+  `b7cf0446a31014a81b4882857c90c565ebc14210` gave C1=1 exit0 and
+  histogram29 sources/32 notes/32 mapped/no missing. The C2 consumer
+  actually failed exit1/count0 despite all retained gate/differential runs
+  succeeding: it counted pass predicates as failures and failed to tokenize
+  the underscore-prefixed ARIA_METADATA_SELFTEST and cli_cases/helpers
+  fields. Raw `corpus/evidence/round-15/count-after-c2.json` stays unchanged.
+- The scoped consumer-only repair filters actual finding statuses, parses
+  the exact ARIA line/token grammar, and keeps field failures separate from
+  acceptance summaries. No actual gate output, code, fixture expectations,
+  first-added lesson or C1 truth is rewritten. Only the affected C2 revision
+  counter is re-executed, not the already-passing gates/browser/selftests.
+- After final docs/lesson commit, first production reads atb7cf044 gave
+  ROUND exit0 clean10 and USER exit1 honest round_count6/10
+  (`corpus/evidence/round-15/final-production.json`). This is committed
+  history compatibility, not a rerun of unchanged fixture suites.
+- Operator wrap-up arrived after both waves completed: no further worker
+  was spawned; the existing active consumer writer finished. Fleet-root
+  misroot glob sweep returned no files for round15/w1 or w2; exact patterns
+  and output are in `corpus/evidence/round-15/wrapup-misroot.json`.

@@ -1,6 +1,6 @@
 # MeasureContracts — round-15 C1/C2 counting probe
 
-Owned deliverable: `.ufo/waves/round-15/measure.mjs` (1431 lines, new file). No other file modified.
+Owned deliverable: `.ufo/waves/round-15/measure.mjs` (1448 lines, new file). No other file modified.
 Nothing was executed: per the wave contract this seat runs no gate, checker, selftest, lint,
 formatter, smoke test, or browser. Every claim below is a source-level statement about the probe
 and the receipt contracts it enforces, not an observed run outcome.
@@ -172,11 +172,13 @@ extra case fails closed; there is no `emittedMirrors` authority to opt out of a 
 3. `snapshotInputs` is a non-empty path→64-hex map; every named path is committed at the measured
    revision with exactly that digest. Paths may be repository-relative or absolute under the lane
    root; the probe strips the root prefix.
-4. `mirrors` contains exactly the nine required differentials listed above. Each `before` is the
-   historical checker accepting the false mirror (exit 0, clean verdict,
-   structured/token `accepted=true`); each `after` is the new checker refusing it (exit 1,
-   `accepted=false`, one non-acceptance finding naming the mirror/cleanup/qualification context —
-   an acceptance-summary id may accompany it); `pass === true`.
+4. `mirrors` contains exactly the nine required differentials listed above. Finding ids are taken
+   only from payload entries whose recorded status is not `pass` (or `ok:false`) plus explicit
+   failure tokens; passed predicates never count. Each `before` is the historical checker
+   accepting the false mirror (exit 0, clean verdict, structured/token `accepted=true`); each
+   `after` is the new checker refusing it (exit 1, `accepted=false`, one non-acceptance finding
+   naming the mirror/cleanup/qualification context — an acceptance-summary id may accompany it);
+   `pass === true`.
 5. `tamper` binds an authenticated identity: `field` is a concrete path listed in
    `snapshotInputs`, `recordedSha256` equals `snapshotInputs[field]`, and `computedSha256` is a
    different 64-hex digest. The authentic historical checker refuses the SHA mismatch with exit 1
@@ -223,7 +225,27 @@ Output keys: `c2_enforced_contract`, `c2_receipt`, `c2_mirrors` (emitted/differe
 A partial C1 result cannot be quoted as green, and a malformed C1 receipt cannot change the C2
 count because no state is shared.
 
-## Commands for L1 (not run by this seat)
+## Wave-2 actual-run repair (consumer parsing only)
+
+The actual C1 run counted 1 (exit 0) at `b7cf0446a31014a81b4882857c90c565ebc14210`; C1 parsing was
+not changed. The actual C2 run counted 0, and every error was consumer parsing rather than receipt
+truth:
+
+1. `caseLineList` used `\bSELFTEST\b`, which cannot match `ARIA_METADATA_SELFTEST` because `_` is a
+   word character. C2 therefore saw zero case lines. It now matches `SELFTEST\b` and still requires
+   a name/case token, `expected_exit` and `result=PASS|FAIL`; USER lines are unaffected.
+2. The ARIA summary is `ARIA_METADATA_SELFTEST verdict=clean cli_cases=36 helpers=4`. The probe now
+   selects that line by prefix plus `verdict=clean` and extracts `cli_cases`/`helpers` with named
+   regexes instead of a token map over a possibly truncated match.
+3. Mirror `after` payloads list 28 predicates (26 `pass`, 2 `fail`). The collector now counts only
+   entries whose recorded status is not `pass` (or `ok:false`), so passed predicates are never
+   reported as failures. The two `fail` ids are the field finding plus the acceptance summary; the
+   latter is ignored by the acceptance filter, leaving exactly one field failure.
+
+The receipt, the gate source, the expected truths and the failing count receipt were not modified.
+L1 reruns only the C2 counter.
+
+
 
 ```
 node .ufo/waves/round-15/measure.mjs HEAD

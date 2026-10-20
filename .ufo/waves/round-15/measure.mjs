@@ -64,7 +64,9 @@
 //      `Found 6 user rounds, expected 10`, and no clean verdict.
 // Case fields are parsed as key=value tokens in any order; only lines that
 // carry SELFTEST, a name/case token, expected_exit and result=PASS|FAIL are
-// counted, and every such line must parse or the count fails closed. The
+// counted, and every such line must parse or the count fails closed.
+// `SELFTEST\b` deliberately also matches the `ARIA_METADATA_SELFTEST` prefix;
+// a word-boundary before it would fail because `_` is a word character. The
 // shipped USER case line is:
 //   SELFTEST name=<case> expected_exit=<n> actual_exit=<n>
 //     expected_finding=<id> [expected_reason=<id>] reason=<id|none>
@@ -124,7 +126,9 @@
 //      (before exit 0, clean, accepted=true), the new checker refuses it
 //      (after exit 1, accepted=false, exactly one non-acceptance finding that
 //      names the mirror/cleanup/qualification context; an acceptance-summary
-//      id may accompany it), and pass=true;
+//      id may accompany it). Passed predicates in a payload findings list never
+//      count: only entries whose recorded status is not pass (or ok:false) are
+//      failures;
 //   5. tamper binds an authenticated identity: field is a concrete path listed
 //      in snapshotInputs, recordedSha256 equals snapshotInputs[field],
 //      computedSha256 is a different 64-hex digest, the historical authentic
@@ -331,7 +335,7 @@ function tokensOf(text) {
 function caseLineList(text) {
   return text.split('\n')
     .map(line => line.trim())
-    .filter(line => /\bSELFTEST\b/.test(line)
+    .filter(line => /SELFTEST\b/.test(line)
       && /(?:^|\s)(?:name|case)=/.test(line)
       && /\bresult=(?:PASS|FAIL)\b/.test(line));
 }
@@ -546,18 +550,28 @@ function acceptedValue(value) {
 // A refusal payload may name a field failure plus its acceptance summary. This
 // collector preserves every distinct finding id so the caller can require
 // exactly one non-acceptance failure and no foreign ids.
+// Payload finding lists mix passed predicates with the actual failures. Only a
+// finding whose recorded status is not pass (or ok:false) is a failure.
+function isFailedFinding(value) {
+  if (!isObject(value)) return true;
+  if (typeof value.ok === 'boolean') return value.ok === false;
+  if (isText(value.status)) return value.status.toLowerCase() !== 'pass';
+  return true;
+}
+
 function findingIdsOfValue(value) {
   if (isText(value)) {
     const first = value.trim().split(/\s+/)[0];
     return first ? [first] : [];
   }
   if (isObject(value)) {
+    if (!isFailedFinding(value)) return [];
     const ids = [];
     if (isText(value.id)) ids.push(value.id);
     if (isText(value.finding)) ids.push(value.finding);
     return ids;
   }
-  if (Array.isArray(value)) return value.flatMap(findingIdsOfValue);
+  if (Array.isArray(value)) return value.filter(isFailedFinding).flatMap(findingIdsOfValue);
   return [];
 }
 
@@ -998,11 +1012,14 @@ export function countC2(revision, read = reader(revision)) {
       add('malformed_self_test', 'selfTest.stderr must be text');
     }
     const text = outputOf(selfTest);
-    const summaryLine = (/^ARIA_METADATA_SELFTEST\b[^\n]*\bverdict=[^\s]+/m.exec(text) || [])[0] ?? null;
-    const summaryTokens = summaryLine ? tokensOf(summaryLine) : new Map();
-    const summaryClean = summaryTokens.get('verdict') === 'clean';
-    const cliCases = Number(summaryTokens.get('cli_cases'));
-    const helpers = Number(summaryTokens.get('helpers'));
+    const summaryLine = text.split('\n')
+      .map(line => line.trim())
+      .find(line => line.startsWith('ARIA_METADATA_SELFTEST') && /\bverdict=clean\b/.test(line)) ?? null;
+    const cliMatch = summaryLine ? /\bcli_cases=(\d+)\b/.exec(summaryLine) : null;
+    const helperMatch = summaryLine ? /\bhelpers=(\d+)\b/.exec(summaryLine) : null;
+    const cliCases = cliMatch ? Number(cliMatch[1]) : NaN;
+    const helpers = helperMatch ? Number(helperMatch[1]) : NaN;
+    const summaryClean = Boolean(summaryLine);
     const caseLines = caseLineList(text);
     const cases = selftestCases(text);
     if (caseLines.length !== cases.length) {
