@@ -1,0 +1,314 @@
+{
+  "cases": [
+    {
+      "args": [
+        "--receipt",
+        "@receipt-green",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 0,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-CLEANUP-LISTENING-AFTER-01",
+          "status": "pass"
+        },
+        {
+          "id": "R14-ARIA-CLEANUP-PERWORKER-01",
+          "status": "pass"
+        },
+        {
+          "id": "R14-ARIA-WORKER-PROOF-01",
+          "status": "pass"
+        },
+        {
+          "id": "R14-ARIA-NODE-RECORDED-01",
+          "status": "pass"
+        }
+      ],
+      "id": "clean-perworker-listening"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-green",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 0,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-NODE-RECORDED-01",
+          "status": "pass"
+        },
+        {
+          "id": "R14-ARIA-NODE-MINIMUM-01",
+          "status": "pass"
+        }
+      ],
+      "id": "node-observed-recorded"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-CLEANUP-LISTENING-AFTER-01",
+          "status": "fail"
+        }
+      ],
+      "id": "old-contradiction"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-missing-summary",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-CLEANUP-SUMMARY-01",
+          "status": "fail"
+        }
+      ],
+      "id": "missing-server-summary"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-empty",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-CLEANUP-PERWORKER-01",
+          "status": "fail"
+        },
+        {
+          "id": "R14-ARIA-CLEANUP-COUNT-01",
+          "status": "fail"
+        }
+      ],
+      "id": "empty-perworker"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-nonboolean",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-CLEANUP-PERWORKER-01",
+          "status": "fail"
+        }
+      ],
+      "id": "nonboolean-listening-after"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-min",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-NODE-MINIMUM-01",
+          "status": "fail"
+        }
+      ],
+      "id": "invalid-node-minimum"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-valid"
+      ],
+      "expectedExit": 0,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-ACCEPTED-01",
+          "status": "pass"
+        },
+        {
+          "id": "R14-ARIA-CLEANUP-LISTENING-AFTER-01",
+          "status": "pass"
+        }
+      ],
+      "id": "sidecar-valid-accepted"
+    },
+    {
+      "args": [
+        "--check",
+        "@sidecar-auto"
+      ],
+      "expectedExit": 0,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-ACCEPTED-01",
+          "status": "pass"
+        }
+      ],
+      "id": "sidecar-auto-detect-check-input"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@malformed-receipt",
+        "--pin",
+        "@pin"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-INPUT-01",
+          "status": "fail"
+        }
+      ],
+      "id": "malformed-receipt"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-baddigest"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-BINDING-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-bad-receipt-digest"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-wrongto"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-CORRECTION-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-wrong-direction"
+    },
+    {
+      "args": [
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-exactnode"
+      ],
+      "expectedExit": 1,
+      "expectedFindings": [
+        {
+          "id": "R14-ARIA-SIDECAR-NODE-CLAIM-01",
+          "status": "fail"
+        }
+      ],
+      "id": "sidecar-false-exact-node"
+    },
+    {
+      "args": [
+        "--witness",
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-valid"
+      ],
+      "expectedExit": 0,
+      "id": "witness-red-to-clean",
+      "kind": "witness"
+    },
+    {
+      "args": [
+        "--witness",
+        "--receipt",
+        "@receipt-old",
+        "--pin",
+        "@pin",
+        "--sidecar",
+        "@sidecar-baddigest"
+      ],
+      "expectedExit": 1,
+      "id": "witness-rejects-bad-sidecar",
+      "kind": "witness"
+    }
+  ],
+  "description": "Persisted expectations for check-aria-metadata.mjs --self-test. Fixture digests bind the isolated mkdtemp bytes; case exits/finding IDs bind subprocess CLI observations.",
+  "fixtures": {
+    "malformed-receipt": {
+      "bytes": 43,
+      "file": "malformed-receipt.json",
+      "sha256": "a676bfc99808630d635c4caedacdaabf09f5b5e4a82d122c50c64f92cbb8fdec"
+    },
+    "pin": {
+      "bytes": 480,
+      "file": "pin.json",
+      "sha256": "f4a13da65c9327f621e1d70c28754f15c257364928f6b441a1f19df0aec33cf5"
+    },
+    "receipt-empty": {
+      "bytes": 2390,
+      "file": "receipt-empty.json",
+      "sha256": "1cf3b2578f282687c340ec3cf05941bd870d059cf1f4b59a4785c6fbf295e813"
+    },
+    "receipt-green": {
+      "bytes": 3233,
+      "file": "receipt-green.json",
+      "sha256": "9bf68cb7a2cdf993c2736b7f5dacf919302b9f67d7e4b8b6b49679e610e8edf3"
+    },
+    "receipt-min": {
+      "bytes": 3233,
+      "file": "receipt-min.json",
+      "sha256": "e625e27afd08d36be31f1da3dcd41411e310df8a9015cfd6c21bc8b1619cd6f4"
+    },
+    "receipt-missing-summary": {
+      "bytes": 2806,
+      "file": "receipt-missing-summary.json",
+      "sha256": "a73a4aa154d9fc540fb714e72059455605872324a887e0f90816a9a01f53c5fc"
+    },
+    "receipt-nonboolean": {
+      "bytes": 3237,
+      "file": "receipt-nonboolean.json",
+      "sha256": "3a58c0ecc0235218925eb9ce28ca6ef476f994aab2a143b068f4c6d35bd1250d"
+    },
+    "receipt-old": {
+      "bytes": 3232,
+      "file": "receipt-old.json",
+      "sha256": "d1a4ce850f98ff8c33c8fa025dcba3029cb4003d4df7c0be00eb6b353c3600c3"
+    }
+  },
+  "schema": "tabi-aria-metadata-fixture-expectations-v1"
+}
