@@ -2,7 +2,7 @@
 // Reads committed tabi round files only. A miss exits non-zero.
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, realpathSync, symlinkSync, unlinkSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, realpathSync, symlinkSync, unlinkSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -36,6 +36,11 @@ const LANE = 'tabi-shokunin';
 const SHONEN_SEED_SHA256 = 'b45c2ac3cdf8ba80563e77cabf72670a6a101590f8031d9b484c67313bcdab67';
 // Red-before arm allowed by --witness: the legacy gate committed at baseline.
 const LEGACY_GATE_BLOB = 'b2eb8316f41cd1039330e45f6739c07c5f11eace';
+// Prior admitted round-13 gate (HEAD bebe2ef, sha256 8478cd43…): its runCount
+// still executed the SCORECARD command through a shell. --count-witness uses
+// these exact bytes as the shell-count red-before arm.
+const COUNT_WITNESS_BLOB = '43db9f4bba56a27114ed116c85f27b80227e74bd';
+const COUNT_WITNESS_REV = 'bebe2efc4565bb068efd905e9ef78011bb6b4efd';
 
 function fail(finding, detail, exit = 1) {
   throw Object.assign(new Error(detail), { finding, exit });
@@ -52,7 +57,7 @@ function isProduction(repo) {
 }
 
 function git(root, args, binary = false) {
-  const result = spawnSync('git', args, { cwd: root, encoding: binary ? undefined : 'utf8' });
+  const result = spawnSync('git', args, { cwd: root, encoding: binary ? undefined : 'utf8', maxBuffer: 16 * 1024 * 1024 });
   return result;
 }
 
@@ -72,6 +77,12 @@ function show(root, rev, path) {
   const result = git(root, ['show', `${rev}:${path}`], true);
   if (result.status !== 0) return null;
   return result.stdout;
+}
+
+// Recomputed git object identity for executed-at-witness gate bytes, so a
+// replace ref or config-only substitution cannot hand us different source.
+function gitBlobId(bytes) {
+  return createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
 }
 
 function list(root, rev, prefix) {
@@ -183,20 +194,25 @@ function censusEntries(root, baseline, production, expectedSha256) {
 }
 
 function argumentsOf(argv) {
-  const options = { repo: defaultRoot, baseline: HARD_BASELINE, expect: 10, selfTest: false, witness: null, censusSha256: null };
+  const options = { repo: defaultRoot, baseline: HARD_BASELINE, expect: 10, selfTest: false, witness: null, countWitness: null, censusSha256: null };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
     if (flag === '--self-test') options.selfTest = true;
     else if (flag === '--witness' && argv[i + 1]) options.witness = argv[++i];
+    else if (flag === '--count-witness' && argv[i + 1]) options.countWitness = argv[++i];
     else if (flag === '--census-sha256' && argv[i + 1]) options.censusSha256 = argv[++i];
     else if (flag === '--repo' && argv[i + 1]) options.repo = resolve(argv[++i]);
     else if (flag === '--baseline' && argv[i + 1]) options.baseline = argv[++i];
     else if (flag === '--expect' && argv[i + 1]) options.expect = Number(argv[++i]);
-    else fail('usage', 'Use --self-test, --witness REV, or --repo PATH --baseline HASH --expect N [--census-sha256 HASH] for an isolated fixture', 2);
+    else fail('usage', 'Use --self-test, --witness REV, --count-witness REV, or --repo PATH --baseline HASH --expect N [--census-sha256 HASH] for an isolated fixture', 2);
   }
   if (options.selfTest && argv.length !== 1) fail('usage', '--self-test takes no other arguments', 2);
   if (options.witness !== null) {
     if (argv.length !== 2 || !/^[a-f0-9]{7,40}$/.test(options.witness)) fail('usage', '--witness takes one git revision whose gate bytes are the red-before arm', 2);
+    return options;
+  }
+  if (options.countWitness !== null) {
+    if (argv.length !== 2 || !/^[a-f0-9]{7,40}$/.test(options.countWitness)) fail('usage', '--count-witness takes one git revision whose gate bytes are the shell-count red-before arm', 2);
     return options;
   }
   if (options.censusSha256 !== null) {
@@ -289,10 +305,161 @@ function parseScore(scorecard, id) {
   };
 }
 
-function runCount(root, command) {
-  const result = spawnSync('bash', ['-c', command], { cwd: root, encoding: 'utf8', timeout: 30000 });
+// Historical SCORECARD counting grammar is a closed pipeline, never a shell:
+//   git ls-tree -r --name-only <rev> | grep <BRE> [| grep <BRE>]* | wc -l
+//   git grep -h <BRE> <rev> -- <path> [<path> ...] | wc -l
+// Tokenize with quote removal only, validate every argv token, and invoke git
+// directly. Any other syntax is score_mismatch before any process starts.
+const COUNT_REVISION = /^[a-f0-9]{40}$/;
+const COUNT_WORD = /^[A-Za-z0-9_./:=@%+,^-]+/;
+const COUNT_PIPE = Symbol('count-pipe');
+
+function countStages(command) {
+  const tokens = [];
+  let index = 0;
+  while (index < command.length) {
+    const char = command[index];
+    if (char === ' ') { index++; continue; }
+    if (char === '|') { tokens.push(COUNT_PIPE); index++; continue; }
+    if (char === "'") {
+      if (index > 0 && command[index - 1] !== ' ' && command[index - 1] !== '|') {
+        fail('score_mismatch', `Counting command concatenates a quote: ${command}`);
+      }
+      const end = command.indexOf("'", index + 1);
+      if (end < 0) fail('score_mismatch', `Counting command has an unbalanced quote: ${command}`);
+      const quoted = command.slice(index + 1, end);
+      if (!/^[\x20-\x7e]*$/.test(quoted) || /[;&<>`\\]|\$[({]/.test(quoted)) {
+        fail('score_mismatch', `Counting command quoted token carries shell syntax: ${command}`);
+      }
+      if (end + 1 < command.length && command[end + 1] !== ' ' && command[end + 1] !== '|') {
+        fail('score_mismatch', `Counting command concatenates a quote: ${command}`);
+      }
+      tokens.push(quoted);
+      index = end + 1;
+      continue;
+    }
+    const match = COUNT_WORD.exec(command.slice(index));
+    if (!match) fail('score_mismatch', `Counting command has unrecognized shell syntax: ${command}`);
+    tokens.push(match[0]);
+    index += match[0].length;
+  }
+  const stages = [[]];
+  for (const token of tokens) {
+    if (token === COUNT_PIPE) stages.push([]);
+    else stages[stages.length - 1].push(token);
+  }
+  if (stages.some(stage => stage.length === 0)) fail('score_mismatch', `Counting command has an empty pipeline stage: ${command}`);
+  return stages;
+}
+
+function countRevision(value, command) {
+  if (!COUNT_REVISION.test(value)) fail('score_mismatch', `Counting command revision is not a full commit: ${command}`);
+  return value;
+}
+
+function countPath(value, command) {
+  if (!/^[A-Za-z0-9_./@%+-]+$/.test(value) || value.startsWith('-') || value.startsWith('/') || value.split('/').includes('..')) {
+    fail('score_mismatch', `Counting command path is not a relative repository path: ${command}`);
+  }
+  return value;
+}
+
+function countPattern(value, command) {
+  if (!value || !/^[\x20-\x7e]+$/.test(value)) fail('score_mismatch', `Counting command pattern is not printable text: ${command}`);
+  if (value.startsWith('-')) fail('score_mismatch', `Counting command pattern looks like an option: ${command}`);
+  return value;
+}
+
+function breMatcher(value, command) {
+  countPattern(value, command);
+  let source = '';
+  for (let index = 0; index < value.length; index++) {
+    const char = value[index];
+    if (char === '\\' || char === '[' || char === ']') {
+      fail('score_mismatch', `Counting command pattern uses unsupported grep syntax: ${command}`);
+    }
+    if (char === '.') source += '.';
+    else if (char === '*') {
+      if (index === 0 || value[index - 1] === '^') fail('score_mismatch', `Counting command pattern has a misplaced '*': ${command}`);
+      source += '*';
+    } else if (char === '^') {
+      if (index !== 0) fail('score_mismatch', `Counting command pattern has a misplaced '^': ${command}`);
+      source += '^';
+    } else if (char === '$') {
+      if (index !== value.length - 1) fail('score_mismatch', `Counting command pattern has a misplaced '$': ${command}`);
+      source += '$';
+    } else {
+      source += char.replace(/[+?(){}|]/g, '\\$&');
+    }
+  }
+  try {
+    return new RegExp(source, 's');
+  } catch {
+    fail('score_mismatch', `Counting command pattern is not a supported basic regular expression: ${command}`);
+  }
+}
+
+function treeLineCount(root, stages, command) {
+  const head = stages[0];
+  if (head.length !== 5 || head[2] !== '-r' || head[3] !== '--name-only') {
+    fail('score_mismatch', `Counting command is not a plain git ls-tree listing: ${command}`);
+  }
+  const rev = countRevision(head[4], command);
+  const filters = stages.slice(1, -1).map(stage => {
+    if (stage.length !== 2 || stage[0] !== 'grep') {
+      fail('score_mismatch', `Counting command may only filter the listing with plain grep: ${command}`);
+    }
+    return breMatcher(stage[1], command);
+  });
+  if (filters.length < 1) fail('score_mismatch', `Counting command has no grep filter: ${command}`);
+  const result = git(root, ['ls-tree', '-r', '--name-only', rev]);
   if (result.error || result.status !== 0) fail('score_mismatch', `Counting command failed: ${command}`);
-  return result.stdout.trim();
+  const lines = result.stdout.split('\n');
+  if (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
+  let kept = lines;
+  for (const filter of filters) kept = kept.filter(line => filter.test(line));
+  return String(kept.length);
+}
+
+function grepLineCount(root, stages, command) {
+  const head = stages[0];
+  if (head.length < 6 || head[2] !== '-h' || head[5] !== '--') {
+    fail('score_mismatch', `Counting command is not a plain git grep of one revision and path: ${command}`);
+  }
+  const pattern = countPattern(head[3], command);
+  const rev = countRevision(head[4], command);
+  const paths = head.slice(6).map(path => countPath(path, command));
+  if (paths.length < 1) fail('score_mismatch', `Counting command has no grep path: ${command}`);
+  const result = git(root, ['grep', '-h', '-e', pattern, rev, '--', ...paths], true);
+  if (result.error || (result.status !== 0 && result.status !== 1)) fail('score_mismatch', `Counting command failed: ${command}`);
+  if (result.status === 1) return '0';
+  let newlines = 0;
+  for (const byte of result.stdout) if (byte === 0x0a) newlines++;
+  return String(newlines);
+}
+
+function runCount(root, command) {
+  const stages = countStages(command);
+  const last = stages[stages.length - 1];
+  if (last.length !== 2 || last[0] !== 'wc' || last[1] !== '-l') {
+    fail('score_mismatch', `Counting command must end with wc -l: ${command}`);
+  }
+  const head = stages[0];
+  if (head[0] === 'git' && head[1] === 'ls-tree') return treeLineCount(root, stages, command);
+  if (head[0] === 'git' && head[1] === 'grep') {
+    if (stages.length !== 2) fail('score_mismatch', `Counting command adds stages after git grep: ${command}`);
+    return grepLineCount(root, stages, command);
+  }
+  fail('score_mismatch', `Counting command is not a recognized git measurement: ${command}`);
+}
+
+// The revision operand, never a hex string that only appears in a grep pattern.
+function countCommandRevision(command) {
+  const head = countStages(command)[0];
+  if (head[0] !== 'git') fail('score_mismatch', `Counting command is not a git measurement: ${command}`);
+  if (head[1] === 'ls-tree' && head.length === 5) return countRevision(head[4], command);
+  if (head[1] === 'grep' && head.length >= 6 && head[2] === '-h') return countRevision(head[4], command);
+  fail('score_mismatch', `Counting command does not expose a git revision operand: ${command}`);
 }
 
 function checkSwarm(root, id) {
@@ -426,6 +593,9 @@ function check(options) {
     if (!log.includes(id)) fail('missing_score', `${id} has no LOG entry`);
     const beforeCommand = score.command.replaceAll(score.measured, options.baseline);
     if (beforeCommand === score.command) fail('missing_score', `${id} counting command does not use the measured commit`);
+    if (countCommandRevision(score.command) !== score.measured) fail('score_mismatch', `${id} counting revision operand is not the measured commit`);
+    const measuredMentions = countStages(score.command).flat().filter(token => typeof token === 'string' && token.includes(score.measured)).length;
+    if (measuredMentions !== 1) fail('score_mismatch', `${id} counting command mentions the measured commit outside its revision operand`);
     if (runCount(root, beforeCommand) !== score.before) fail('score_mismatch', `${id} before measurement does not match`);
     if (runCount(root, score.command) !== score.after) fail('score_mismatch', `${id} after measurement does not match`);
     checkReport(root, id, score.measured);
@@ -543,6 +713,23 @@ function censusSha(root) {
   return createHash('sha256').update(readFileSync(join(root, CENSUS_PATH))).digest('hex');
 }
 
+// Self-test only: replace the fixture's single counting command and after count.
+function rewriteScoreCommand(root, command, after) {
+  const path = join(root, 'SCORECARD.md');
+  const text = readFileSync(path, 'utf8')
+    .replace(/^command: .*$/m, () => `command: ${command}`)
+    .replace(/^after: \d+$/m, () => `after: ${after}`);
+  writeFileSync(path, text);
+}
+
+// The fixture's measured commit is the 'work' commit, one behind HEAD after
+// writeGoodFixture; the scorecard records it explicitly.
+function fixtureMeasured(root) {
+  const match = /^measured-against: ([a-f0-9]{40})$/m.exec(readFileSync(join(root, 'SCORECARD.md'), 'utf8'));
+  if (!match) fail('could_not_evaluate', 'Fixture SCORECARD has no measured-against', 2);
+  return match[1];
+}
+
 function selfTest() {
   const cases = [
     { name: 'clean', mutate: () => {}, exit: 0, finding: 'clean' },
@@ -658,6 +845,30 @@ function selfTest() {
       const path = join(root, 'corpus/lessons/round-1.md');
       writeFileSync(path, `${readFileSync(path, 'utf8')}rewritten history\n`);
     }, exit: 1, finding: 'history_rewritten' },
+    { name: 'count_supported_tree_lines', mutate: root => {
+      const measured = fixtureMeasured(root);
+      rewriteScoreCommand(root, `git ls-tree -r --name-only ${measured} | grep corpus/evidence/pstack-20261015-r01/seats/ | wc -l`, 32);
+    }, exit: 0, finding: 'clean' },
+    { name: 'count_supported_two_filters', mutate: root => {
+      const measured = fixtureMeasured(root);
+      rewriteScoreCommand(root, `git ls-tree -r --name-only ${measured} | grep pstack-20261015-r01/seats/ | grep result.json | wc -l`, 32);
+    }, exit: 0, finding: 'clean' },
+    { name: 'count_supported_git_grep', mutate: root => {
+      const measured = fixtureMeasured(root);
+      rewriteScoreCommand(root, `git grep -h 'marker counted for' ${measured} -- corpus/evidence/pstack-20261015-r01/seats | wc -l`, 32);
+    }, exit: 0, finding: 'clean' },
+    { name: 'count_malicious_extra_stage', mutate: root => {
+      const measured = fixtureMeasured(root);
+      rewriteScoreCommand(root, `git ls-tree -r --name-only ${measured} | grep marker | tee count-extra-marker | wc -l`, 1);
+    }, exit: 1, finding: 'score_mismatch', marker: 'count-extra-marker', detail: 'may only filter the listing with plain grep' },
+    { name: 'count_unsupported_grep_option', mutate: root => {
+      const measured = fixtureMeasured(root);
+      rewriteScoreCommand(root, `git ls-tree -r --name-only ${measured} | grep -v | tee count-option-marker | wc -l`, 1);
+    }, exit: 1, finding: 'score_mismatch', marker: 'count-option-marker', detail: 'pattern looks like an option' },
+    { name: 'count_traversal_grep_path', mutate: root => {
+      const measured = fixtureMeasured(root);
+      rewriteScoreCommand(root, `git grep -h marker ${measured} -- ../count-traversal-input | wc -l`, 1);
+    }, exit: 1, finding: 'score_mismatch', marker: 'count-traversal-marker', detail: 'path is not a relative repository path' },
     { name: 'future_lesson_allowed', mutate: root => {
       mkdirSync(join(root, 'corpus/lessons'), { recursive: true });
       writeFileSync(join(root, 'corpus/lessons/round-2.md'), 'future lesson\n');
@@ -675,13 +886,31 @@ function selfTest() {
       }
       const result = spawnSync(process.execPath, [script, '--repo', root, '--baseline', baseline, '--expect', '1', ...extra], { encoding: 'utf8' });
       const output = `${result.stdout}${result.stderr}`;
-      const match = result.status === test.exit && output.includes(test.finding === 'clean' ? 'verdict=clean' : `finding=${test.finding}`);
-      console.log(`SELFTEST name=${test.name} expected_exit=${test.exit} actual_exit=${result.status} expected_finding=${test.finding} result=${match ? 'PASS' : 'FAIL'}`);
+      const markerOk = !test.marker || !existsSync(join(root, test.marker));
+      const detailOk = !test.detail || output.includes(test.detail);
+      const marker = test.marker ? ` no_marker=${markerOk ? 1 : 0}` : '';
+      const match = result.status === test.exit && output.includes(test.finding === 'clean' ? 'verdict=clean' : `finding=${test.finding}`) && markerOk && detailOk;
+      console.log(`SELFTEST name=${test.name} expected_exit=${test.exit} actual_exit=${result.status} expected_finding=${test.finding} result=${match ? 'PASS' : 'FAIL'}${marker}`);
       if (!match) fail('selftest_failure', output);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
   }
+  const countRev = COUNT_WITNESS_REV;
+  const countRun = spawnSync(process.execPath, [script, '--count-witness', countRev], { encoding: 'utf8' });
+  const countOutput = `${countRun.stdout}${countRun.stderr}`;
+  const countField = name => new RegExp(`\\b${name}=([^\\s]+)`).exec(countOutput)?.[1] ?? 'none';
+  const countOldExit = countField('old_exit');
+  const countOldFinding = countField('old_finding');
+  const countOldMarker = countField('old_marker');
+  const countNewExit = countField('new_exit');
+  const countNewFinding = countField('new_finding');
+  const countNewMarker = countField('new_marker');
+  const countOk = countRun.status === 0
+    && countOldExit === '0' && countOldFinding === 'clean' && countOldMarker === '1'
+    && countNewExit === '1' && countNewFinding === 'score_mismatch' && countNewMarker === '0';
+  console.log(`SELFTEST name=count_witness_comparison countWitness=1 top_exit=${countRun.status} exit=${countRun.status} verdict=${countOk ? 'clean' : 'failed'} old_exit=${countOldExit} old_finding=${countOldFinding} old_marker=${countOldMarker} new_exit=${countNewExit} new_finding=${countNewFinding} new_marker=${countNewMarker} result=${countOk ? 'PASS' : 'FAIL'}`);
+  if (!countOk) fail('selftest_failure', countOutput);
   const aliasRoot = mkdtempSync(join('/var/tmp', 'tabi-round-alias-'));
   const alias = join(aliasRoot, 'repo');
   try {
@@ -706,6 +935,7 @@ function witness(rev) {
   if (oldBlob !== LEGACY_GATE_BLOB) fail('usage', `--witness revision must resolve to the pinned legacy gate blob ${LEGACY_GATE_BLOB}`, 2);
   const oldSource = show(defaultRoot, rev, 'scripts/check-round-contract.mjs');
   if (!oldSource) fail('usage', `No scripts/check-round-contract.mjs at ${rev}`, 2);
+  if (gitBlobId(oldSource) !== oldBlob) fail('usage', `--witness source bytes do not hash to blob ${oldBlob}`, 2);
   const scratch = mkdtempSync(join('/var/tmp', 'tabi-round-witness-'));
   const root = join(scratch, 'repo');
   const oldGate = join(scratch, 'old-gate.mjs');
@@ -735,10 +965,63 @@ function witness(rev) {
   }
 }
 
+// Count-command red-before arm: one fixture, one SCORECARD command. The pinned
+// prior gate accepts the extra `tee` stage and executes it through its shell;
+// this gate refuses the unrecognized stage before a process starts. The marker
+// is relative to the fixture root and removed between the two arms.
+function countWitness(rev) {
+  const oldBlob = blob(defaultRoot, rev, 'scripts/check-round-contract.mjs');
+  if (oldBlob !== COUNT_WITNESS_BLOB) fail('usage', `--count-witness revision must resolve to the pinned prior gate blob ${COUNT_WITNESS_BLOB}`, 2);
+  const oldSource = show(defaultRoot, rev, 'scripts/check-round-contract.mjs');
+  if (!oldSource) fail('usage', `No scripts/check-round-contract.mjs at ${rev}`, 2);
+  if (gitBlobId(oldSource) !== oldBlob) fail('usage', `--count-witness source bytes do not hash to blob ${oldBlob}`, 2);
+  const scratch = mkdtempSync(join('/var/tmp', 'tabi-round-count-witness-'));
+  const root = join(scratch, 'repo');
+  const oldGate = join(scratch, 'old-gate.mjs');
+  const marker = '.round14-count-marker';
+  mkdirSync(root);
+  writeFileSync(oldGate, oldSource);
+  try {
+    const baseline = writeGoodFixture(root);
+    const measured = fixtureMeasured(root);
+    rewriteScoreCommand(root, `git ls-tree -r --name-only ${measured} | grep round-marker.txt | tee ${marker} | wc -l`, 1);
+    gitOk(root, ['add', '--', '.']);
+    commit(root, 'count-injection');
+    const head = gitOk(root, ['rev-parse', 'HEAD']);
+    const args = ['--repo', root, '--baseline', baseline, '--expect', '1'];
+    const oldRun = spawnSync(process.execPath, [oldGate, ...args], { encoding: 'utf8' });
+    const oldOutput = `${oldRun.stdout}${oldRun.stderr}`;
+    const oldMarker = existsSync(join(root, marker));
+    if (oldMarker) unlinkSync(join(root, marker));
+    const oldHead = gitOk(root, ['rev-parse', 'HEAD']);
+    const newRun = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' });
+    const newOutput = `${newRun.stdout}${newRun.stderr}`;
+    const newMarker = existsSync(join(root, marker));
+    const newHead = gitOk(root, ['rev-parse', 'HEAD']);
+    const oldVerdict = /ROUND_CONTRACT verdict=(\w+)/.exec(oldOutput)?.[1] ?? 'none';
+    const oldFinding = /finding=(\w+)/.exec(oldOutput)?.[1] ?? (oldVerdict === 'clean' ? 'clean' : 'none');
+    const newFinding = /finding=(\w+)/.exec(newOutput)?.[1] ?? 'none';
+    const headStable = head === oldHead && head === newHead;
+    const pass = oldRun.status === 0 && oldVerdict === 'clean' && oldMarker
+      && !newMarker && newRun.status === 1 && newFinding === 'score_mismatch' && headStable;
+    const codeRevision = gitOk(defaultRoot, ['rev-parse', 'HEAD']);
+    const codeSha256 = createHash('sha256').update(readFileSync(script)).digest('hex');
+    console.log(`ROUND_CONTRACT_COUNT_WITNESS fixture=shared exit=${pass ? 0 : 2} verdict=${pass ? 'clean' : 'failed'} old_rev=${rev} baseline=${baseline} code_revision=${codeRevision} code_sha256=${codeSha256} old_exit=${oldRun.status} old_verdict=${oldVerdict} old_finding=${oldFinding} old_marker=${oldMarker ? 1 : 0} new_exit=${newRun.status} new_finding=${newFinding} new_marker=${newMarker ? 1 : 0} head_stable=${headStable ? 1 : 0} result=${pass ? 'PASS' : 'FAIL'}`);
+    if (!pass) {
+      console.log(`COUNT_WITNESS_OLD ${oldOutput.trim()}`);
+      console.log(`COUNT_WITNESS_NEW ${newOutput.trim()}`);
+      fail('count_witness_failure', 'Prior and edited gates disagreed on one shell-count command');
+    }
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
+}
+
 try {
   const options = argumentsOf(process.argv.slice(2));
   if (options.selfTest) selfTest();
   else if (options.witness) witness(options.witness);
+  else if (options.countWitness) countWitness(options.countWitness);
   else check(options);
 } catch (error) {
   const exit = error.exit ?? 2;

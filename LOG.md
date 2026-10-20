@@ -696,3 +696,40 @@
   `corpus/evidence/round-13/measurements.json`; note-map32/32/no missing.
   Capability aria-locator-template-loopback enters SCORECARD at round13; all
   six scalar deltas0, no retired axis, saturation window restarts at13.
+
+## 2026-10-20 — round-14 (hyaku, attempt 1)
+
+- Trigger: independent `corpus/lessons/round-13-verifier-spotcheck.md` routed
+  cleanup-summary inversion, stale descriptive Node metadata, USER witness
+  precision and inherited executable-count debt. Baseline
+  `bebe2efc4565bb068efd905e9ef78011bb6b4efd`; initial status clean,
+  configured identity tabi-shokunin, source census exit0 (exact receipt
+  `.ufo/waves/round-14/before.json`).
+- Declared C1 operability: two newly non-shell historical counters0→2 with
+  preserved real counting semantics and isolated refusal controls. Declared C2
+  calibration: one verified qualified metadata correction0→1; no new browser
+  observation, coverage/capability or scalar increase. Operability8 is tied lowest.
+- One validated wave32 dispatched unchanged through a single task call;
+  spec/dispatch/registry under `.ufo/waves/round-14/w1/`. Roles:
+  executor4/scout7/connector4/reviewer7/critic4/sentinel2/revenger2/scribe2.
+  L1 holds canonical planner; PlanningDataWalk is bounded reconnaissance.
+  Every seat has absolute lane write scope and trailer resolution; no route
+  configuration or model parameter changed, no sibling gate executed.
+- Opened S029 own-work exact historical runtime receipt and retained worker
+  fields; opened existing S023/S024 primary pages for scope limits. S029
+  source/anchor/date/quote and all row transitions are in the round14 lesson.
+  Registry rows are not knowledge expansion. No new knowledge note or frontier
+  ground is claimed.
+- QUALITY18/19 are lesson-grounded aggregate/version and non-executing-count
+  criteria; SKILL and corpus index receive bounded corrections and preserve
+  historical statements with explicit supersession. C2 preserves the original
+  receipt/pin; it must never be called another executed browser run.
+- Append-only numerical clarification: LOG round13's “USER21 cases” at prior
+  :637/:655, SCORECARD round13 :554 and lesson round13 Gate mean20 fixture
+  cases plus1 production-alias control=21 CLI controls. The original receipts
+  remain authoritative; child witness exits differ from the top-level witness
+  exit. No scratch fixture-ID stability or exact Node equality is asserted.
+- All prior verifier routed items are dispositioned in the new lesson; broader
+  r07 survivor replay, user-record freezing, IPv6 origin and external-validator
+  pin debt remain uncredited. Protocol/non-author closure-tooling debt remains
+  outside lane scope. SHONEN stays four asserted[~]; no promotion.

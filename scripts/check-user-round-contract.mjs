@@ -3,7 +3,7 @@
 // The production pstack checker is a different script and stays unchanged.
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, realpathSync, symlinkSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, realpathSync, symlinkSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -11,15 +11,34 @@ const script = fileURLToPath(import.meta.url);
 const defaultRoot = resolve(dirname(script), '..');
 const HARD_BASELINE = '7f506affa55f6fb892d3c8073c75151c998bdf2c';
 const PSTACK_PIN = '92d700d6a8aa9855f1e9d2cc8e12c82f762a1367';
-// The one lane-owned tooling cutover accepted after PSTACK_PIN: the repaired
-// round gate. Its exact bytes are pinned here; any other change to that file
-// (or a policy/self-blessing redirect) still fails history_rewritten.
+// Lane-owned round-gate identities accepted after PSTACK_PIN. The exact
+// current bytes are pinned below; any unrecorded change to that file (or a
+// policy/self-blessing redirect) still fails history_rewritten.
 const ROUND_SCRIPT = 'scripts/check-round-contract.mjs';
-// Exact old -> new checker identity. The old digest is the blob at PSTACK_PIN;
-// the new digest is the accepted lane-owned cutover committed at 1212207f
-// (git blob 43db9f4b). Any third value fails.
+// Exact accepted checker identities. Each entry is one explicit byte
+// identity, never a pattern or an exemption:
+//   prior   - the archived blob at PSTACK_PIN (git blob b2eb8316, sha256
+//             7d403cee)
+//   current - the round-14 non-shell runCount cutover in this wave
+// The round-13 history has two archived intermediates: 1199150 (git blob
+// d871e73d, sha256 6f9eddc7) and 1212207 (git blob 43db9f4b, sha256
+// 8478cd43). They are admitted only while walking pin..HEAD, never as the HEAD
+// bytes. HEAD must be the prior or the current identity; any other commit in
+// that history must be one of the four explicit identities. The archived bytes
+// at PSTACK_PIN must still hash to the prior identity.
 const ROUND_SCRIPT_PRIOR_SHA256 = '7d403cee003c3b49e865d57e034821ea925252efc231b0b22ded62ac5410c398';
+const ROUND_SCRIPT_INTERMEDIATE_SHA256 = '6f9eddc74f0e10ac5046ed9ecd99650db4f338c004f5d0e349503b6515a6b299';
 const ROUND_SCRIPT_CUTOVER_SHA256 = '8478cd438b22f15bab153901276aad8afc7711d139e86769f4323b5f0affdb4d';
+const ROUND_SCRIPT_CURRENT_SHA256 = '8a573b4ed5875ce24a6d5f60e68cee575bc0687968c5105d4e9e3cfb0febe942';
+const ROUND_SCRIPT_ARCHIVED_SHA256 = [
+  ROUND_SCRIPT_PRIOR_SHA256,
+  ROUND_SCRIPT_INTERMEDIATE_SHA256,
+  ROUND_SCRIPT_CUTOVER_SHA256,
+];
+const ROUND_SCRIPT_ACCEPTED_SHA256 = [
+  ROUND_SCRIPT_PRIOR_SHA256,
+  ROUND_SCRIPT_CURRENT_SHA256,
+];
 // Independent canonical seed authority. Parent PROTOCOL.md @6bd4f38 lines
 // 333-340 (byte-identical since 70ffb66), <name> = tabi-shokunin, normalized to
 // the four [ ] boxes with no evidence lines. Never read the parent at runtime.
@@ -29,6 +48,11 @@ const SHONEN_SEED_SHA256 = 'b45c2ac3cdf8ba80563e77cabf72670a6a101590f8031d9b484c
 // scripts/check-user-round-contract.mjs blob differs is not the legacy arm.
 const USER_SCRIPT = 'scripts/check-user-round-contract.mjs';
 const LEGACY_USER_GATE_BLOB = '18e2c79ada4258cc46af7696e98907299b77c431';
+// The immediate shell-bearing USER gate at the round-13 verifier baseline
+// bebe2ef (sha256 69066121…). --count-witness accepts only these exact bytes
+// as the red arm, so the same command is executed by the old shell and refused
+// by the new evaluator without trusting any other revision's source.
+const LEGACY_COUNT_GATE_BLOB = '7df3ee9f4df6db3c36c886f9173715bc299ce43a';
 const LEGACY_LESSON = /^corpus\/lessons\/round-\d+\.md$/;
 const VALIDATOR = '/home/vgpnk/Projects/ufo-fsd-alpha/scripts/ufo-swarm-wave.mjs';
 const ROLES = ['scout', 'reviewer', 'critic', 'connector', 'sentinel', 'executor', 'mutation-tester', 'revenger', 'simplifier', 'scribe'];
@@ -112,6 +136,12 @@ function sha256(bytes) {
   return createHash('sha256').update(bytes).digest('hex');
 }
 
+// Node-side git blob identity. The witness resolves a blob id and separately
+// reads bytes; refs/replace must not be able to make those two disagree.
+function gitBlobSha1(bytes) {
+  return createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
+}
+
 function committedBlob(root, path) {
   if (!path || path.includes('..') || path.startsWith('/') || /[*?\[]/.test(path)) return false;
   const result = git(root, ['--literal-pathspecs', 'ls-tree', 'HEAD', '--', path]);
@@ -171,11 +201,11 @@ function canonicalShonen(bytes, root) {
   return cursor === lines.length && sha256(normalized.join('\n')) === SHONEN_SEED_SHA256;
 }
 
-// Accept the exact pre-cutover bytes or exactly one recorded new digest.
-// The archived bytes must still hash to the recorded prior digest.
+// Accept only the explicit recorded identities. The archived bytes must still
+// hash to the recorded prior digest, so the chain cannot be re-signed.
 function acceptedRoundScript(root, pstackPin) {
-  if (!/^[a-f0-9]{64}$/.test(ROUND_SCRIPT_CUTOVER_SHA256)) {
-    fail('could_not_evaluate', 'Round checker cutover digest is not filled', 2);
+  if (ROUND_SCRIPT_ACCEPTED_SHA256.some(digest => !/^[a-f0-9]{64}$/.test(digest))) {
+    fail('could_not_evaluate', 'Round checker accepted digest chain is not filled', 2);
   }
   const head = show(root, 'HEAD', ROUND_SCRIPT);
   if (!head) return false;
@@ -184,8 +214,14 @@ function acceptedRoundScript(root, pstackPin) {
     fail('could_not_evaluate', 'Pinned checker bytes are not the recorded prior bytes', 2);
   }
   if (!pinned && sameRoot(root, defaultRoot)) fail('could_not_evaluate', 'Pinned checker bytes are missing', 2);
-  const digest = sha256(head);
-  return digest === ROUND_SCRIPT_CUTOVER_SHA256 || digest === ROUND_SCRIPT_PRIOR_SHA256;
+  const history = git(root, ['log', '--no-show-signature', '--format=%H', `${pstackPin}..HEAD`, '--', ROUND_SCRIPT]);
+  if (history.status !== 0) fail('could_not_evaluate', 'Checker history query failed', 2);
+  const archived = new Set([...ROUND_SCRIPT_ARCHIVED_SHA256, ROUND_SCRIPT_CURRENT_SHA256]);
+  for (const rev of history.stdout.split('\n').filter(Boolean)) {
+    const bytes = show(root, rev, ROUND_SCRIPT);
+    if (!bytes || !archived.has(sha256(bytes))) return false;
+  }
+  return ROUND_SCRIPT_ACCEPTED_SHA256.includes(sha256(head));
 }
 
 // A round-N lesson is frozen at the baseline when present there. A lesson
@@ -196,7 +232,7 @@ function lessonDrift(root, baseline, pstackPin, status, path) {
   if (historical) return blob(root, 'HEAD', path) !== historical;
   if (status !== 'A') return true;
   if (!blob(root, 'HEAD', path)) return true;
-  const changed = git(root, ['log', '-m', '--no-renames', '--diff-filter=MDRT', '--format=%H', `${pstackPin}..HEAD`, '--', path]);
+  const changed = git(root, ['log', '--no-show-signature', '-m', '--no-renames', '--diff-filter=MDRT', '--format=%H', `${pstackPin}..HEAD`, '--', path]);
   if (changed.status !== 0) fail('could_not_evaluate', 'Lesson history query failed', 2);
   return changed.stdout.trim().length > 0;
 }
@@ -215,20 +251,26 @@ function pstackDrift(root, baseline, pstackPin, status, path) {
 }
 
 function argumentsOf(argv) {
-  const options = { repo: defaultRoot, baseline: HARD_BASELINE, expect: 10, selfTest: false, pstackPin: null, witness: null };
+  const options = { repo: defaultRoot, baseline: HARD_BASELINE, expect: 10, selfTest: false, pstackPin: null, witness: null, countWitness: null };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
     if (flag === '--self-test') options.selfTest = true;
     else if (flag === '--witness' && argv[i + 1]) options.witness = argv[++i];
+    else if (flag === '--count-witness' && argv[i + 1]) options.countWitness = argv[++i];
     else if (flag === '--repo' && argv[i + 1]) options.repo = resolve(argv[++i]);
     else if (flag === '--baseline' && argv[i + 1]) options.baseline = argv[++i];
     else if (flag === '--expect' && argv[i + 1]) options.expect = Number(argv[++i]);
     else if (flag === '--pstack-pin' && argv[i + 1]) options.pstackPin = argv[++i];
-    else fail('usage', 'Use --self-test, --witness REV, or --repo PATH --baseline HASH --expect N [--pstack-pin HASH] for an isolated fixture', 2);
+    else fail('usage', 'Use --self-test, --witness REV, --count-witness REV, or --repo PATH --baseline HASH --expect N [--pstack-pin HASH] for an isolated fixture', 2);
   }
   if (options.selfTest && argv.length !== 1) fail('usage', '--self-test takes no other arguments', 2);
+  if (options.witness !== null && options.countWitness !== null) fail('usage', 'Use one witness mode', 2);
   if (options.witness !== null) {
     if (argv.length !== 2 || !/^[a-f0-9]{7,40}$/.test(options.witness)) fail('usage', '--witness takes one git revision whose gate bytes are the red-before arm', 2);
+    return options;
+  }
+  if (options.countWitness !== null) {
+    if (argv.length !== 2 || !/^[a-f0-9]{7,40}$/.test(options.countWitness)) fail('usage', '--count-witness takes one git revision whose shell gate bytes are the red-before arm', 2);
     return options;
   }
   if (!/^[a-f0-9]{40}$/.test(options.baseline)) fail('usage', 'Baseline must be 40 hex characters', 2);
@@ -291,6 +333,48 @@ function parseLesson(text, id) {
   return { axis, admits: admits.length, rejects: rejects.length, spot: spots[0][2] };
 }
 
+// Closed grammar for the exact committed counting rows. Accepted shapes are
+// `git ls-tree -r --name-only REV | grep PATTERN [| grep PATTERN] | wc -l`
+// (the historical pstack and USER SCORECARD rows) and
+// `git grep -h PATTERN REV -- PATH | wc -l` (the USER fixture rows). No other
+// shape is evaluated and no token reaches a shell: git receives argv and its
+// raw stdout bytes are counted. The historical pipeline's trailing `wc -l`
+// masked git status; this evaluator preserves only the one meaningful masked
+// case (grep exit 1 means no match and counts 0) and fails explicitly for a
+// missing or malformed revision, a spawn failure, or any other nonzero status.
+const TREE_COUNT = /^git ls-tree -r --name-only ([a-f0-9]{40}) \| grep (?:'([^']*)'|(\S+))(?: \| grep (?:'([^']*)'|(\S+)))? \| wc -l$/;
+const GREP_COUNT = /^git grep -h '([^']*)' ([a-f0-9]{40}) -- (\S+) \| wc -l$/;
+// GNU grep BRE is supported only for this literal subset plus a leading `^`,
+// a trailing `$` and `.` wildcard. Anything else fails closed.
+const GREP_PATTERN = /^[A-Za-z0-9 _:.\/^$-]+$/;
+const GREP_PATH = /^[A-Za-z0-9._\/-]+$/;
+
+function countPattern(pattern) {
+  if (pattern.startsWith('-') || !GREP_PATTERN.test(pattern)) return null;
+  const start = pattern.startsWith('^');
+  const end = pattern.endsWith('$');
+  const body = pattern.slice(start ? 1 : 0, end ? -1 : undefined);
+  if (!body || body.includes('^') || body.includes('$')) return null;
+  return new RegExp(`${start ? '^' : ''}${body}${end ? '$' : ''}`);
+}
+
+function countingCommand(command) {
+  const tree = TREE_COUNT.exec(command);
+  const grep = tree ? null : GREP_COUNT.exec(command);
+  if (!tree && !grep) return null;
+  if (tree) {
+    const patterns = [tree[2] ?? tree[3], tree[4] ?? tree[5]].filter(value => value !== undefined);
+    const regexes = patterns.map(countPattern);
+    if (regexes.includes(null)) return null;
+    return { kind: 'tree', rev: tree[1], regexes };
+  }
+  const pattern = grep[1];
+  const path = grep[3];
+  if (!countPattern(pattern)) return null;
+  if (path.startsWith('-') || path.includes('..') || !GREP_PATH.test(path)) return null;
+  return { kind: 'grep', rev: grep[2], pattern, path };
+}
+
 function parseScore(scorecard, id) {
   const pattern = new RegExp(`<!-- user-round:${id}\\n([\\s\\S]*?)-->`);
   const body = pattern.exec(scorecard)?.[1];
@@ -300,17 +384,37 @@ function parseScore(scorecard, id) {
     if (!match) fail('missing_score', `${id} scorecard lacks ${name}`);
     return match[1].trim();
   };
-  const command = field('command');
-  if (!command.startsWith('git ') || /[;&`<>\n\\]|\$[({]/.test(command)) fail('missing_score', `${id} counting command is not a git measurement`);
   const measured = field('measured-against');
   if (!/^[a-f0-9]{40}$/.test(measured)) fail('missing_score', `${id} measured-against is not a commit`);
+  const command = field('command');
+  const spec = countingCommand(command);
+  if (!spec) fail('score_mismatch', `${id} counting command is not a supported git line count`);
+  if (spec.rev !== measured) fail('score_mismatch', `${id} counting command does not measure its measured-against commit`);
   return { axis: field('axis'), before: field('before'), after: field('after'), command, measured };
 }
 
-function runCount(root, command) {
-  const result = spawnSync('bash', ['-c', command], { cwd: root, encoding: 'utf8', timeout: 30000 });
-  if (result.error || result.status !== 0) fail('score_mismatch', `Counting command failed: ${command}`);
-  return result.stdout.trim();
+function runCount(root, command, rev = null) {
+  const spec = countingCommand(command);
+  if (!spec) fail('score_mismatch', `Unsupported counting command: ${command}`);
+  const target = rev ?? spec.rev;
+  const args = spec.kind === 'tree'
+    ? ['ls-tree', '-r', '--name-only', target]
+    : ['--literal-pathspecs', 'grep', '-h', '-e', spec.pattern, target, '--', spec.path];
+  const result = spawnSync('git', args, { cwd: root, timeout: 30000, maxBuffer: 16 * 1024 * 1024 });
+  // git grep exits 1 when the pattern matches nothing: the historical `wc -l`
+  // pipeline counted that as 0 lines, so preserve exactly that one status. Any
+  // other failure (missing or malformed revision, spawn error) is explicit.
+  const masked = spec.kind === 'grep' && result.status === 1;
+  if (result.error || (result.status !== 0 && !masked)) fail('score_mismatch', `Counting command failed: ${command}`);
+  const stdout = result.stdout || Buffer.alloc(0);
+  if (spec.kind === 'grep') {
+    let lines = 0;
+    for (const byte of stdout) if (byte === 0x0a) lines++;
+    return String(lines);
+  }
+  const rows = stdout.toString('latin1').split('\n');
+  if (rows.at(-1) === '') rows.pop();
+  return String(rows.filter(row => spec.regexes.every(regex => regex.test(row))).length);
 }
 
 function checkSpec(root, id) {
@@ -489,10 +593,8 @@ function check(options) {
     if (score.axis !== gate.axis) fail('missing_score', `${id} axis does not match its lesson`);
     if (score.before === score.after) fail('score_mismatch', `${id} before and after are the same`);
     if (!log.includes(id)) fail('missing_score', `${id} has no LOG entry`);
-    const beforeCommand = score.command.replaceAll(score.measured, options.baseline);
-    if (beforeCommand === score.command) fail('missing_score', `${id} counting command does not use the measured commit`);
-    if (runCount(root, beforeCommand) !== score.before) fail('score_mismatch', `${id} before measurement does not match`);
-    if (runCount(root, score.command) !== score.after) fail('score_mismatch', `${id} after measurement does not match`);
+    if (runCount(root, score.command, options.baseline) !== score.before) fail('score_mismatch', `${id} before measurement does not match`);
+    if (runCount(root, score.command, score.measured) !== score.after) fail('score_mismatch', `${id} after measurement does not match`);
     checkReport(root, id, score.measured);
     scanConsequential(root, id);
     sameTree(root, id, score.measured);
@@ -628,11 +730,21 @@ function gateFields(result) {
 
 function witness(rev) {
   const commitRev = gitOk(defaultRoot, ['rev-parse', '--verify', `${rev}^{commit}`]);
+  const codeRevision = gitOk(defaultRoot, ['rev-parse', 'HEAD']);
+  const scriptBytes = readFileSync(script);
+  const codeSha256 = sha256(scriptBytes);
+  const worktreeBlob = gitBlobSha1(scriptBytes);
+  const headBlob = blob(defaultRoot, 'HEAD', USER_SCRIPT);
+  const committed = headBlob !== null && headBlob === worktreeBlob;
+  const measuredRevision = committed ? codeRevision : 'uncommitted';
   const legacyBlob = blob(defaultRoot, commitRev, USER_SCRIPT);
   if (legacyBlob !== LEGACY_USER_GATE_BLOB) {
     fail('witness_failure', `Witness arm is not the pinned legacy gate: ${legacyBlob}`, 2);
   }
   const legacyBytes = show(defaultRoot, commitRev, USER_SCRIPT);
+  if (!legacyBytes || gitBlobSha1(legacyBytes) !== legacyBlob) {
+    fail('witness_failure', 'Witness bytes do not match the resolved legacy blob', 2);
+  }
   const legacyShonen = show(defaultRoot, HARD_BASELINE, 'SHONEN.md');
   if (!legacyShonen) fail('witness_failure', 'Legacy SHONEN is missing at HARD_BASELINE', 2);
   const parent = mkdtempSync('/var/tmp/tabi-user-witness-');
@@ -657,16 +769,132 @@ function witness(rev) {
       && newArm.verdict === 'clean';
     console.log(`USER_ROUND_CONTRACT_WITNESS_OLD exit=${before.status} verdict=${oldArm.verdict} finding=${oldArm.finding} error=${JSON.stringify(oldArm.error)} stdout=${JSON.stringify(oldArm.stdout)} stderr=${JSON.stringify(oldArm.stderr)}`);
     console.log(`USER_ROUND_CONTRACT_WITNESS_NEW exit=${after.status} verdict=${newArm.verdict} finding=${newArm.finding} error=${JSON.stringify(newArm.error)} stdout=${JSON.stringify(newArm.stdout)} stderr=${JSON.stringify(newArm.stderr)}`);
-    console.log(`USER_ROUND_CONTRACT_WITNESS rev=${commitRev} baseline=${baseline} args=${JSON.stringify(args)} old_exit=${before.status} old_verdict=${oldArm.verdict} old_finding=${oldArm.finding} new_exit=${after.status} new_verdict=${newArm.verdict} new_finding=${newArm.finding} result=${pass ? 'PASS' : 'FAIL'}`);
+    console.log(`USER_ROUND_CONTRACT_WITNESS rev=${commitRev} baseline=${baseline} args=${JSON.stringify(args)} measuredRevision=${measuredRevision} codeRevision=${codeRevision} code-sha256=${codeSha256} new-sha256=${codeSha256} head-blob=${headBlob ?? 'none'} worktree-blob=${worktreeBlob} committed=${committed ? 'yes' : 'no'} old_exit=${before.status} old_verdict=${oldArm.verdict} old_finding=${oldArm.finding} new_exit=${after.status} new_verdict=${newArm.verdict} new_finding=${newArm.finding} result=${pass ? 'PASS' : 'FAIL'}`);
     if (!pass) fail('witness_failure', `old=${JSON.stringify(oldArm)} new=${JSON.stringify(newArm)}`);
   } finally {
     rmSync(parent, { recursive: true, force: true });
   }
 }
 
+// Same-command red arm: the pinned shell gate and the new evaluator receive
+// one commit tree and one SCORECARD command. The old bash runCount executes
+// the pipeline's `tee`, creating a marker while returning the expected 0/1
+// counts; the new evaluator rejects the unsupported stage before execution.
+// The marker is removed between arms and asserted absent after the new arm.
+const COUNT_WITNESS_MARKER = '.user-round14-count-marker';
+// The round-13 verifier baseline commit carrying the pinned shell gate blob.
+// --self-test runs the differential against it; --count-witness REV accepts any
+// revision whose gate blob equals LEGACY_COUNT_GATE_BLOB.
+const COUNT_WITNESS_REV = 'bebe2efc4565bb068efd905e9ef78011bb6b4efd';
+
+function runCountWitness(rev) {
+  const commitRev = gitOk(defaultRoot, ['rev-parse', '--verify', `${rev}^{commit}`]);
+  const shellBlob = blob(defaultRoot, commitRev, USER_SCRIPT);
+  if (shellBlob !== LEGACY_COUNT_GATE_BLOB) {
+    fail('witness_failure', `Count-witness arm is not the pinned shell gate: ${shellBlob}`, 2);
+  }
+  const shellBytes = show(defaultRoot, commitRev, USER_SCRIPT);
+  if (!shellBytes || gitBlobSha1(shellBytes) !== shellBlob) {
+    fail('witness_failure', 'Count-witness bytes do not match the resolved shell blob', 2);
+  }
+  const codeRevision = gitOk(defaultRoot, ['rev-parse', 'HEAD']);
+  const scriptBytes = readFileSync(script);
+  const codeSha256 = sha256(scriptBytes);
+  const worktreeBlob = gitBlobSha1(scriptBytes);
+  const headBlob = blob(defaultRoot, 'HEAD', USER_SCRIPT);
+  const committed = headBlob !== null && headBlob === worktreeBlob;
+  const parent = mkdtempSync('/var/tmp/tabi-user-count-witness-');
+  try {
+    const root = join(parent, 'repo');
+    mkdirSync(root, { recursive: true });
+    const { baseline, pin } = writeGoodFixture(root);
+    const scorecardPath = join(root, 'SCORECARD.md');
+    const scorecard = readFileSync(scorecardPath, 'utf8');
+    const measured = /^measured-against: ([a-f0-9]{40})$/m.exec(scorecard)[1];
+    const command = `git ls-tree -r --name-only ${measured} | grep round-marker.txt | tee ${COUNT_WITNESS_MARKER} | wc -l`;
+    writeFileSync(scorecardPath, scorecard.replace(/^command: .*$/m, `command: ${command}`));
+    gitOk(root, ['add', '--', '.']);
+    commit(root, 'count-witness command');
+    const shellGate = join(parent, 'shell-user-gate.mjs');
+    writeFileSync(shellGate, shellBytes);
+    const args = ['--repo', root, '--baseline', baseline, '--expect', '1', '--pstack-pin', pin];
+    const before = spawnSync(process.execPath, [shellGate, ...args], { encoding: 'utf8' });
+    const oldArm = gateFields(before);
+    const oldMarker = existsSync(join(root, COUNT_WITNESS_MARKER));
+    rmSync(join(root, COUNT_WITNESS_MARKER), { force: true });
+    const after = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' });
+    const newArm = gateFields(after);
+    const newMarker = existsSync(join(root, COUNT_WITNESS_MARKER));
+    const pass = before.status === 0
+      && oldArm.verdict === 'clean'
+      && oldMarker
+      && after.status === 1
+      && newArm.finding === 'score_mismatch'
+      && !newMarker;
+    return {
+      commitRev, baseline, args, pass, codeRevision, codeSha256, worktreeBlob, headBlob, committed,
+      oldExit: before.status, oldVerdict: oldArm.verdict, oldMarker, oldArm,
+      oldFinding: oldArm.finding ?? (oldArm.verdict === 'clean' ? 'clean' : 'none'),
+      newExit: after.status, newVerdict: newArm.verdict, newFinding: newArm.finding, newMarker, newArm,
+    };
+  } finally {
+    rmSync(parent, { recursive: true, force: true });
+  }
+}
+
+function countWitness(rev) {
+  const run = runCountWitness(rev);
+  console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS_OLD exit=${run.oldExit} verdict=${run.oldVerdict} finding=${run.oldFinding} marker=${run.oldMarker ? 1 : 0} error=${JSON.stringify(run.oldArm.error)} stdout=${JSON.stringify(run.oldArm.stdout)} stderr=${JSON.stringify(run.oldArm.stderr)}`);
+  console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS_NEW exit=${run.newExit} verdict=${run.newVerdict} finding=${run.newFinding} marker=${run.newMarker ? 1 : 0} error=${JSON.stringify(run.newArm.error)} stdout=${JSON.stringify(run.newArm.stdout)} stderr=${JSON.stringify(run.newArm.stderr)}`);
+  console.log(`USER_ROUND_CONTRACT_COUNT_WITNESS rev=${run.commitRev} baseline=${run.baseline} args=${JSON.stringify(run.args)} measuredRevision=${run.committed ? run.codeRevision : 'uncommitted'} codeRevision=${run.codeRevision} code-sha256=${run.codeSha256} new-sha256=${run.codeSha256} head-blob=${run.headBlob ?? 'none'} worktree-blob=${run.worktreeBlob} committed=${run.committed ? 'yes' : 'no'} marker=${COUNT_WITNESS_MARKER} old_exit=${run.oldExit} old_verdict=${run.oldVerdict} old_finding=${run.oldFinding} old_marker=${run.oldMarker ? 1 : 0} new_exit=${run.newExit} new_verdict=${run.newVerdict} new_finding=${run.newFinding} new_marker=${run.newMarker ? 1 : 0} result=${run.pass ? 'PASS' : 'FAIL'}`);
+  if (!run.pass) fail('witness_failure', `old=${JSON.stringify(run.oldArm)} oldMarker=${run.oldMarker} new=${JSON.stringify(run.newArm)} newMarker=${run.newMarker}`);
+}
+
 function selfTest() {
+  const rewriteScore = (root, { command, before = 0, after = 1 }) => {
+    const path = join(root, 'SCORECARD.md');
+    const text = readFileSync(path, 'utf8');
+    const measured = /^measured-against: ([a-f0-9]{40})$/m.exec(text)[1];
+    writeFileSync(path, text
+      .replace(/^before: .*$/m, `before: ${before}`)
+      .replace(/^after: .*$/m, `after: ${after}`)
+      .replace(/^command: .*$/m, `command: ${command.replaceAll('MEASURED', measured)}`));
+  };
   const cases = [
     { name: 'clean', mutate: () => {}, exit: 0, finding: 'clean' },
+    { name: 'count_malicious_tee_refused', mutate: root => rewriteScore(root, {
+      command: `git ls-tree -r --name-only MEASURED | grep round-marker.txt | tee ${COUNT_WITNESS_MARKER} | wc -l`,
+    }), exit: 1, finding: 'score_mismatch', noMarker: COUNT_WITNESS_MARKER },
+    { name: 'count_malicious_shell_refused', mutate: root => rewriteScore(root, {
+      command: `git ls-tree -r --name-only MEASURED | sh -c 'touch ${COUNT_WITNESS_MARKER}'`,
+    }), exit: 1, finding: 'score_mismatch', noMarker: COUNT_WITNESS_MARKER },
+    { name: 'count_malicious_option_injection_refused', mutate: root => rewriteScore(root, {
+      command: `git --git-dir=/var/tmp/other ls-tree -r --name-only MEASURED | grep round-marker.txt | wc -l`,
+    }), exit: 1, finding: 'score_mismatch', noMarker: COUNT_WITNESS_MARKER },
+    { name: 'count_historical_supported', mutate: root => rewriteScore(root, {
+      command: 'git ls-tree -r --name-only MEASURED | grep round-marker.txt | wc -l',
+    }), exit: 0, finding: 'clean' },
+    { name: 'count_quoted_supported', mutate: root => rewriteScore(root, {
+      command: "git ls-tree -r --name-only MEASURED | grep 'round-marker.txt' | wc -l",
+    }), exit: 0, finding: 'clean' },
+    { name: 'count_two_stage_supported', mutate: root => rewriteScore(root, {
+      command: 'git ls-tree -r --name-only MEASURED | grep round- | grep marker.txt | wc -l',
+    }), exit: 0, finding: 'clean' },
+    { name: 'count_missing_revision_red', mutate: root => {
+      const zeros = '0'.repeat(40);
+      rewriteScore(root, { command: `git ls-tree -r --name-only ${zeros} | grep round-marker.txt | wc -l` });
+      const path = join(root, 'SCORECARD.md');
+      writeFileSync(path, readFileSync(path, 'utf8').replace(/^measured-against: .*$/m, `measured-against: ${zeros}`));
+    }, exit: 1, finding: 'score_mismatch' },
+    { name: 'count_wrong_after_red', mutate: root => rewriteScore(root, {
+      command: 'git ls-tree -r --name-only MEASURED | grep round-marker.txt | wc -l', after: 2,
+    }), exit: 1, finding: 'score_mismatch' },
+    { name: 'round_script_rollback_to_cutover', mutate: root => {
+      const bytes = show(defaultRoot, '1212207fd7fad4adf1df1b3a2bde549235bd144d', ROUND_SCRIPT);
+      if (!bytes || sha256(bytes) !== ROUND_SCRIPT_CUTOVER_SHA256) fail('could_not_evaluate', 'Archived round-13 cutover bytes are unavailable', 2);
+      mkdirSync(join(root, 'scripts'), { recursive: true });
+      writeFileSync(join(root, 'scripts/check-round-contract.mjs'), bytes);
+    }, exit: 1, finding: 'history_rewritten' },
     { name: 'short_swarm', mutate: root => {
       const path = join(root, 'corpus/evidence/user-20261015-r01/aggregate.json');
       const aggregate = JSON.parse(readFileSync(path, 'utf8'));
@@ -756,13 +984,37 @@ function selfTest() {
       }
       const result = spawnSync(process.execPath, [script, '--repo', root, '--baseline', baseline, '--expect', '1', '--pstack-pin', pin], { encoding: 'utf8' });
       const output = `${result.stdout}${result.stderr}`;
-      const match = result.status === test.exit && output.includes(test.finding === 'clean' ? 'verdict=clean' : `finding=${test.finding}`);
-      console.log(`SELFTEST name=${test.name} expected_exit=${test.exit} actual_exit=${result.status} expected_finding=${test.finding} result=${match ? 'PASS' : 'FAIL'}`);
+      const leaked = test.noMarker ? existsSync(join(root, test.noMarker)) : false;
+      const match = result.status === test.exit
+        && output.includes(test.finding === 'clean' ? 'verdict=clean' : `finding=${test.finding}`)
+        && !leaked;
+      console.log(`SELFTEST name=${test.name} expected_exit=${test.exit} actual_exit=${result.status} expected_finding=${test.finding} result=${match ? 'PASS' : 'FAIL'} no_marker=${test.noMarker ? (leaked ? 0 : 1) : 0}`);
       if (!match) fail('selftest_failure', output);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
   }
+  const committedIds = roundIds(defaultRoot);
+  const committedScorecard = show(defaultRoot, 'HEAD', 'SCORECARD.md').toString('utf8');
+  for (const id of committedIds) {
+    const score = parseScore(committedScorecard, id);
+    const before = runCount(defaultRoot, score.command, HARD_BASELINE);
+    const after = runCount(defaultRoot, score.command, score.measured);
+    const match = before === score.before && after === score.after;
+    console.log(`SELFTEST name=count_committed_${id} expected_exit=0 actual_exit=0 expected_finding=clean result=${match ? 'PASS' : 'FAIL'} no_marker=0 before=${before} after=${after} measured=${score.measured}`);
+    if (!match) fail('selftest_failure', `Committed count mismatch ${id}: before=${before}/${score.before} after=${after}/${score.after}`);
+  }
+  const witnessRun = runCountWitness(COUNT_WITNESS_REV);
+  const witnessMatch = witnessRun.pass
+    && witnessRun.oldExit === 0
+    && witnessRun.oldVerdict === 'clean'
+    && witnessRun.oldFinding === 'clean'
+    && witnessRun.oldMarker
+    && witnessRun.newExit === 1
+    && witnessRun.newFinding === 'score_mismatch'
+    && !witnessRun.newMarker;
+  console.log(`SELFTEST name=count_witness_comparison countWitness=1 expected_exit=0 actual_exit=${witnessMatch ? 0 : 1} expected_finding=clean no_marker=0 top_exit=${witnessMatch ? 0 : 1} exit=${witnessMatch ? 0 : 1} verdict=${witnessMatch ? 'clean' : 'failed'} old_exit=${witnessRun.oldExit} old_verdict=${witnessRun.oldVerdict} old_finding=${witnessRun.oldFinding} old_marker=${witnessRun.oldMarker ? 1 : 0} new_exit=${witnessRun.newExit} new_verdict=${witnessRun.newVerdict} new_finding=${witnessRun.newFinding} new_marker=${witnessRun.newMarker ? 1 : 0} result=${witnessMatch ? 'PASS' : 'FAIL'}`);
+  if (!witnessMatch) fail('selftest_failure', `Count witness mismatch: ${JSON.stringify(witnessRun)}`);
   const aliasRoot = mkdtempSync(join('/var/tmp', 'tabi-user-alias-'));
   try {
     const alias = join(aliasRoot, 'repo');
@@ -775,12 +1027,13 @@ function selfTest() {
   } finally {
     rmSync(aliasRoot, { recursive: true, force: true });
   }
-  console.log(`USER_ROUND_CONTRACT_SELFTEST verdict=clean cases=${cases.length + 1}`);
+  console.log(`USER_ROUND_CONTRACT_SELFTEST verdict=clean cases=${cases.length + 1} fixtures=${cases.length} alias=1 committedCounts=${committedIds.length} countWitness=1`);
 }
 
 try {
   const options = argumentsOf(process.argv.slice(2));
   if (options.witness !== null) witness(options.witness);
+  else if (options.countWitness !== null) countWitness(options.countWitness);
   else if (options.selfTest) selfTest();
   else check(options);
 } catch (error) {
