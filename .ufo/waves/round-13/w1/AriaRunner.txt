@@ -93,9 +93,10 @@ No .md report copy was created; this .txt is the only report write.
      contain checkbox "Accept terms".
    contain-default: getByRole('list',{name:'Queue',exact:true}); default contain
      template Alpha/Beta passes while actual YAML also contains Gamma.
-   equal-explicit: same list; contain green first, then explicit /children: equal
-     Alpha/Beta must reject against Alpha/Beta/Gamma, then exact equal Alpha/Beta/Gamma
-     passes.
+   equal-explicit: same list; loads queue-contain (default contain control),
+     queue-equal-extra-fails and queue-equal-exact from the manifest; contain green first,
+     then explicit /children: equal Alpha/Beta must reject against Alpha/Beta/Gamma, then
+     exact equal Alpha/Beta/Gamma passes.
    checked-wrong-state: reveal panel, getByLabel('Accept terms'); unchecked passes the
      partial template; unchecked against [checked] must reject; after check(), the same
      [checked] template passes; checked against explicit [checked=false] must reject.
@@ -177,11 +178,17 @@ No .md report copy was created; this .txt is the only report write.
    templateSha256 + templateKind, templates[] with full text, checks, counts, negative
    entries, snapshots, browserRuntime, requests, external counters, cleanup proof,
    actualPath + actualSha256 + actualBytes.
-   Documented-contract admission is recorded at top level as `note` and
-   `documentedContract` (path corpus/knowledge/playwright-accessible-locators-and-
-   snapshots.md, runtime sha256/bytes, sources S023/S024/S025, and contains checks
-   against corpus/README.md and corpus/SOURCES.md) and as finding R13-ARIA-NOTE-01.
-   A missing note or missing index admission fails the verdict.
+   Worker receipts: corpus/evidence/round-13/aria/actual/workers/worker-<index>-<pid>-
+   <timestamp>.json. Each worker writes only its local observations; it never writes the
+   final receipt. The launcher merges every worker receipt plus any surviving per-case
+   JSON into the single receipt above, so a worker restart cannot truncate the aggregate.
+   Note admission: top-level `note`/`documentedContract`/`notePath`/`noteSha256`/
+   `noteAdmitted` and finding R13-ARIA-NOTE-01. The primary admitted note is
+   corpus/knowledge/aria-loopback-round-13.md (must exist and be mapped in
+   corpus/README.md and corpus/SOURCES.md). The prior
+   corpus/knowledge/playwright-accessible-locators-and-snapshots.md is recorded under
+   `documentedContract` as record only, not acquisition credit. A missing round-13 note
+   or missing index admission fails the verdict.
    corpus/evidence/round-13/aria/actual/<case>.json (observation, digest in receipt)
    corpus/evidence/round-13/aria/actual/<case>-<before|after|actual>.aria.yml
      (exact captured locator.ariaSnapshot YAML; path+sha256+full YAML in receipt)
@@ -190,34 +197,63 @@ No .md report copy was created; this .txt is the only report write.
    after and fails if the run introduces either.
 
 8. VERDICT LOGIC
-   Receipt verdict is pass only if: all 8 expected case IDs ran exactly once and passed;
-   no retry; all 4 negatives rejected with the asserted stable messages and tree tokens;
-   runtime pin (versions, browser path/sha256/size, browser version, pin sha256) matched;
-   every per-case cleanup proof passed; server closed and port refused; page-level
-   external aborts 0; no root output directories introduced. Otherwise verdict fail and
-   the runner exits 1. Missing deps/browser/pin/receipt exits 2. Receipt is written before
-   final afterAll assertions so failures retain evidence.
+   The launcher recomputes the verdict after all workers exit. Pass only if: all 8 expected
+   case IDs ran exactly once and passed; no retry/duplicate; all 4 negatives rejected with
+   the asserted stable messages and tree tokens; runtime pin (versions, browser
+   path/sha256/size, browser version, pin sha256) matched; the round-13 note is admitted;
+   observed config is workers=1/retries=0/ignoreSnapshots=false/updateSnapshots=none/
+   expectTimeout=2500/no children override; every per-case cleanup proof passed; every
+   worker server closed and its port refused; page-level external aborts 0; no root output
+   directories introduced; child exit 0. Otherwise verdict fail and the runner exits 1.
+   Missing deps/browser/pin exits 2. Since afterAll writes only a worker receipt, a
+   restarted worker still leaves per-case JSON and worker evidence for a truthful failure
+   receipt; the final receipt is written by the launcher after aggregation.
 
-9. RISKS / WHAT MAIN SHOULD KNOW
-   - This lane did NOT execute the demonstration. No claim of a pass, no determinism or
-     two-run claim, no audit/pixels/real-site claim. The receipt is the only pass evidence.
-   - First-run sensitivity: actual accessibility-tree shape (especially panel-after
-     direct checkbox child and queue item whitespace) was reasoned from installed
-     Playwright source, not executed. If a template misses, the receipt fails closed and
-     retains the full expected/actual YAML and diff message in actual/ and receipt.json;
-     do not accept a snapshot update (config/pin forbid updates).
+9. INITIAL MAIN RUN AND CORRECTIONS (2026-10-20)
+   Main's first run: exit 1, "6 passed / 2 failed"; full capture
+   corpus/evidence/round-13/aria-execution-initial.json; initial receipt archived at
+   corpus/evidence/round-13/aria-initial-receipt.json. Both files are preserved.
+   Genuine first failure: equal-explicit line 1045 TypeError, "Cannot read properties of
+   undefined (reading 'text')" for templates['queue-contain']. Root cause: the committed
+   manifest's equal-explicit template input list lacked queue-contain; the default-contain
+   control was therefore absent from that case's loaded template map. Fix: append
+   queue-contain to equal-explicit's manifest templates (primary remains
+   queue-equal-extra-fails). No ARIA matching behavior or expected red/green was changed.
+   The captured actual YAML confirms the intended tree: queue is list "Queue" with
+   Alpha/Beta/Gamma; the contain control is a genuine subset and the equal-extra template
+   is a genuine full-child mismatch. Panel/checked captures also confirm their templates.
+   Second failure was collateral: after the first test failure Playwright restarted the
+   worker; the final afterAll then saw only the last worker's single case and its aggregate
+   assertion failed. Fix: afterAll now writes a per-worker receipt only; the launcher
+   merges worker receipts and surviving per-case JSON into receipt.json after the child
+   exits. No full-run afterAll assertion can truncate or fake the aggregate. Per-case
+   artifacts are written in each test's finally block, so a failed worker still leaves
+   truthful evidence.
+   No rerun, execution, or check was performed by this lane after these corrections.
+
+10. RISKS / WHAT MAIN SHOULD KNOW
+   - This lane did NOT rerun the demonstration. The corrections are author-side; the
+     receipt is the only pass evidence. No determinism/two-run, audit, pixel, or real-site
+     claim.
+   - The primary admitted note path is now
+     corpus/knowledge/aria-loopback-round-13.md. It must exist and be mapped in
+     corpus/README.md and corpus/SOURCES.md before the final run; otherwise the run
+     intentionally exits 1 with R13-ARIA-NOTE-01 fail. The prior Playwright note is
+     record-only and cannot grant C2 credit.
    - Browser sandbox is host-dependent; Playwright default is left in place. If Chrome
-     cannot launch under the host sandbox, the receipt records the launch failure and
-     verdict fail; do not silently add --no-sandbox.
-   - Chrome background (browser-level) traffic is not covered by page-level routing;
-     the receipt says page-level exact-origin confinement only. No scenario claim beyond
-     the four committed fixtures.
+     cannot launch, the receipt records the launch failure; do not silently add
+     --no-sandbox.
+   - Chrome background (browser-level) traffic is not covered by page-level routing; the
+     receipt claims page-level exact-origin confinement only. No scenario claim beyond the
+     four committed fixtures.
    - C2 scalars remain unchanged pending Main's measurement; Main owns corpus README/
-     SOURCES/QUALITY/LOG/SCORECARD/SKILL/lesson integration and receipt commit.
+     SOURCES/QUALITY/LOG/SCORECARD/SKILL/lesson integration, the round-13 note, and
+     receipt commit.
 
-10. VERIFICATION EXERCISED IN THIS LANE
-   - `node --check` on launcher, spec and config (syntax only).
-   - Read-only package/version probes: local @playwright/test/playwright/playwright-core
-     1.64.0; managed chrome --version 156.0.8078.4; sha256sum/stats; git status inventory.
-   - No browser was launched; no Playwright test was listed or executed; no fixture page
-     was loaded.
+11. VERIFICATION EXERCISED IN THIS LANE
+   - `node --check` on launcher, spec and config (syntax only) after the corrections.
+   - Read-only inspection of Main's first-run capture, archived receipt, and actual YAML;
+     no test, browser, or runner invocation by this lane.
+   - Read-only package/version probes earlier: local @playwright/test/playwright/
+     playwright-core 1.64.0; managed chrome --version 156.0.8078.4; sha256sum/stats.
+   - No rerun, no test listing, no fixture page load.

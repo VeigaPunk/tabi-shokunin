@@ -17,7 +17,6 @@ import { fileURLToPath } from 'node:url';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = process.env.TABI_R13_ARIA_ROOT ? resolve(process.env.TABI_R13_ARIA_ROOT) : resolve(HERE, '../../../..');
 const PWT_DIR = process.env.TABI_R13_ARIA_PWT_DIR ? resolve(process.env.TABI_R13_ARIA_PWT_DIR) : join(HERE, 'node_modules', '@playwright', 'test');
-const RECEIPT_PATH = process.env.TABI_R13_ARIA_RECEIPT ? resolve(process.env.TABI_R13_ARIA_RECEIPT) : join(HERE, 'receipt.json');
 const ACTUAL_DIR = process.env.TABI_R13_ARIA_ACTUAL_DIR ? resolve(process.env.TABI_R13_ARIA_ACTUAL_DIR) : join(HERE, 'actual');
 const SCRIPT_PATH = join(ROOT, 'scripts', 'aria-loopback-round13.mjs');
 
@@ -296,27 +295,45 @@ function assertConfig(testInfo) {
   };
 }
 
-function loadNoteAdmission() {
-  const rel = 'corpus/knowledge/playwright-accessible-locators-and-snapshots.md';
+function buildNoteAdmission(rel, sources, scope) {
   const abs = join(ROOT, rel);
   const text = safeReadText(abs);
   const readme = safeReadText(join(ROOT, 'corpus/README.md')) || '';
-  const sources = safeReadText(join(ROOT, 'corpus/SOURCES.md')) || '';
+  const sourcesText = safeReadText(join(ROOT, 'corpus/SOURCES.md')) || '';
   const shortRel = rel.replace(/^corpus\//, '');
   const readmeContains = text !== null && (readme.includes(rel) || readme.includes(shortRel));
-  const sourcesContains = text !== null && (sources.includes(rel) || sources.includes(shortRel));
+  const sourcesContains = text !== null && (sourcesText.includes(rel) || sourcesText.includes(shortRel));
   return {
     path: rel,
     exists: text !== null,
     sha256: text !== null ? sha256Text(text) : null,
     bytes: text !== null ? statSync(abs).size : null,
-    sources: ['S023', 'S024', 'S025'],
+    sources,
     indexed: {
       readme: { path: 'corpus/README.md', sha256: sha256Text(readme), contains: readmeContains },
-      sources: { path: 'corpus/SOURCES.md', sha256: sha256Text(sources), contains: sourcesContains },
+      sources: { path: 'corpus/SOURCES.md', sha256: sha256Text(sourcesText), contains: sourcesContains },
     },
     admitted: text !== null && readmeContains && sourcesContains,
-    scope: 'sourced/indexed documentation-held note; runtime demonstration is separate',
+    scope,
+  };
+}
+
+function loadNoteAdmission() {
+  const primary = buildNoteAdmission(
+    'corpus/knowledge/aria-loopback-round-13.md',
+    ['S023', 'S024', 'S025'],
+    'round-13 admitted runtime note; sourced/indexed documentation record of this demonstration',
+  );
+  const documentedContract = buildNoteAdmission(
+    'corpus/knowledge/playwright-accessible-locators-and-snapshots.md',
+    ['S023', 'S024', 'S025'],
+    'prior docs-held locator/snapshot contract; retained as record, not acquisition credit',
+  );
+  return {
+    ...primary,
+    acquisitionCredit: primary.admitted,
+    documentedContract,
+    notePolicy: 'the round-13 note must exist and be mapped in corpus/README.md and corpus/SOURCES.md; the prior contract note is record only',
   };
 }
 
@@ -814,6 +831,8 @@ function finalizeCase(record, session) {
     phase: record.phase,
     durationMs: record.durationMs,
     fixture: record.fixture,
+    fixturePath: record.fixturePath,
+    fixtureSha256: record.fixtureSha256,
     locator: record.locator,
     contract: record.contract,
     note: record.note || null,
@@ -1287,6 +1306,7 @@ test.afterAll(async () => {
     wave: 'tabi-round-13-w1',
     claim: 'C2',
     lane: 'AriaRunner',
+    worker: { index: process.env.TEST_WORKER_INDEX ?? null, pid: process.pid },
     generatedAt: new Date().toISOString(),
     command: 'node scripts/aria-loopback-round13.mjs',
     sourceSha256: SCRIPT_SHA256,
@@ -1439,23 +1459,14 @@ test.afterAll(async () => {
     },
     verdict,
   };
-  mkdirSync(HERE, { recursive: true });
-  const tempReceipt = join(HERE, `.receipt.${process.pid}.tmp`);
+  // Each worker writes its local observation. A test failure restarts the
+  // Playwright worker, so the launcher merges these worker receipts plus the
+  // per-case JSON files into the single final receipt. No full-run assertion
+  // runs here: it would fail in a restarted worker that only saw its own cases.
+  mkdirSync(join(ACTUAL_DIR, 'workers'), { recursive: true });
+  const workerIndex = process.env.TEST_WORKER_INDEX ?? 'x';
+  const workerFile = join(ACTUAL_DIR, 'workers', `worker-${workerIndex}-${process.pid}-${Date.now()}.json`);
+  const tempReceipt = `${workerFile}.tmp`;
   writeFileSync(tempReceipt, `${JSON.stringify(receipt, null, 2)}\n`);
-  renameSync(tempReceipt, RECEIPT_PATH);
-
-  expect([...CASE_RECORDS.map((record) => record.name)].sort()).toEqual([...CASE_ORDER.map((entry) => entry.name)].sort());
-  for (const record of CASE_RECORDS) expect(record.status).toBe('pass');
-  expect(NEGATIVES.length).toBeGreaterThanOrEqual(3);
-  expect(negativeKinds).toEqual(expect.arrayContaining(['strict-mode', 'aria-snapshot']));
-  expect(NEGATIVES.some((entry) => entry.name === 'checked-wrong.unchecked-vs-checked')).toBe(true);
-  expect(NEGATIVES.some((entry) => entry.name === 'checked-wrong.checked-vs-false')).toBe(true);
-  expect(serverOk).toBe(true);
-  expect(allCleanupPass).toBe(true);
-  expect(externalsZero).toBe(true);
-  expect(outputConfinementOk).toBe(true);
-  expect(SETUP_ERROR).toBe(null);
-  expect(runtime.matched).toBe(true);
-  expect(NOTE_INFO?.admitted).toBe(true);
-  expect(verdict).toBe('pass');
+  renameSync(tempReceipt, workerFile);
 });

@@ -224,3 +224,13 @@ Round-12 measured index at `0d82098e8151ac8c1f58f55716b9f6569bd1844a`: **31 note
 31 mapped / no missing paths**, command and exact output in
 `corpus/evidence/round-12/measurements.json` (`map.command`, `map.stdout`, exit0).
 This explicitly supersedes the current-state reading of the historical29/29 count.
+
+## Round 13 — isolated accessible-selector runtime ground (2026-10-20)
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/aria-loopback-round-13.md` | Complete executable experiment contract for role/name/label selection, strictness, action-time re-resolution and partial-versus-equal ARIA templates. Actual runtime admission is determined by the retained execution receipt and round-13 lesson, not this index row. No pixels/audit/real-site/cross-browser claim. | S023/S024/S025; `corpus/evidence/round-13/aria/receipt.json` |
+
+This adds the previously unheld runtime side of the round-12 docs-held ground.
+The prior documentation entry remains historical; it is not silently redated.
+The final receipt and lesson record whether the experiment actually passed.

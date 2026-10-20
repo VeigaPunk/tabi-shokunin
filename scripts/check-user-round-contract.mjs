@@ -16,10 +16,10 @@ const PSTACK_PIN = '92d700d6a8aa9855f1e9d2cc8e12c82f762a1367';
 // (or a policy/self-blessing redirect) still fails history_rewritten.
 const ROUND_SCRIPT = 'scripts/check-round-contract.mjs';
 // Exact old -> new checker identity. The old digest is the blob at PSTACK_PIN;
-// the new digest is the accepted lane-owned cutover committed at 1199150a
-// (git blob d871e73d). Any third value fails.
+// the new digest is the accepted lane-owned cutover committed at 1212207f
+// (git blob 43db9f4b). Any third value fails.
 const ROUND_SCRIPT_PRIOR_SHA256 = '7d403cee003c3b49e865d57e034821ea925252efc231b0b22ded62ac5410c398';
-const ROUND_SCRIPT_CUTOVER_SHA256 = '6f9eddc74f0e10ac5046ed9ecd99650db4f338c004f5d0e349503b6515a6b299';
+const ROUND_SCRIPT_CUTOVER_SHA256 = '8478cd438b22f15bab153901276aad8afc7711d139e86769f4323b5f0affdb4d';
 // Independent canonical seed authority. Parent PROTOCOL.md @6bd4f38 lines
 // 333-340 (byte-identical since 70ffb66), <name> = tabi-shokunin, normalized to
 // the four [ ] boxes with no evidence lines. Never read the parent at runtime.
@@ -613,6 +613,19 @@ function canonicalShonenFixture() {
   return lines.join('\n');
 }
 
+function gateFields(result) {
+  const stdout = result.stdout ?? '';
+  const stderr = result.stderr ?? '';
+  const text = `${stdout}${stderr}`;
+  return {
+    stdout,
+    stderr,
+    error: result.error ? String(result.error) : null,
+    verdict: /(?:^|\s)verdict=([a-z-]+)/.exec(text)?.[1] ?? null,
+    finding: /(?:^|\s)finding=([a-z_]+)/.exec(text)?.[1] ?? null,
+  };
+}
+
 function witness(rev) {
   const commitRev = gitOk(defaultRoot, ['rev-parse', '--verify', `${rev}^{commit}`]);
   const legacyBlob = blob(defaultRoot, commitRev, USER_SCRIPT);
@@ -635,14 +648,17 @@ function witness(rev) {
     const args = ['--repo', root, '--baseline', baseline, '--expect', '1'];
     const before = spawnSync(process.execPath, [legacyGate, ...args], { encoding: 'utf8' });
     const after = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' });
-    const beforeText = `${before.stdout}${before.stderr}`;
-    const afterText = `${after.stdout}${after.stderr}`;
+    const oldArm = gateFields(before);
+    const newArm = gateFields(after);
     const pass = before.status === 1
-      && beforeText.includes('finding=history_rewritten')
+      && oldArm.verdict === 'failed'
+      && oldArm.finding === 'history_rewritten'
       && after.status === 0
-      && afterText.includes('verdict=clean');
-    console.log(`USER_ROUND_CONTRACT_WITNESS rev=${commitRev} baseline=${baseline} old_exit=${before.status} new_exit=${after.status} result=${pass ? 'PASS' : 'FAIL'}`);
-    if (!pass) fail('witness_failure', `${beforeText}\n${afterText}`);
+      && newArm.verdict === 'clean';
+    console.log(`USER_ROUND_CONTRACT_WITNESS_OLD exit=${before.status} verdict=${oldArm.verdict} finding=${oldArm.finding} error=${JSON.stringify(oldArm.error)} stdout=${JSON.stringify(oldArm.stdout)} stderr=${JSON.stringify(oldArm.stderr)}`);
+    console.log(`USER_ROUND_CONTRACT_WITNESS_NEW exit=${after.status} verdict=${newArm.verdict} finding=${newArm.finding} error=${JSON.stringify(newArm.error)} stdout=${JSON.stringify(newArm.stdout)} stderr=${JSON.stringify(newArm.stderr)}`);
+    console.log(`USER_ROUND_CONTRACT_WITNESS rev=${commitRev} baseline=${baseline} args=${JSON.stringify(args)} old_exit=${before.status} old_verdict=${oldArm.verdict} old_finding=${oldArm.finding} new_exit=${after.status} new_verdict=${newArm.verdict} new_finding=${newArm.finding} result=${pass ? 'PASS' : 'FAIL'}`);
+    if (!pass) fail('witness_failure', `old=${JSON.stringify(oldArm)} new=${JSON.stringify(newArm)}`);
   } finally {
     rmSync(parent, { recursive: true, force: true });
   }

@@ -1,7 +1,7 @@
 UserGate — tabi round 13 w1, USER historical-gate policy repair
 File owned: scripts/check-user-round-contract.mjs. Report: only this .txt (no .md duplicate).
 No gate, self-test, witness, build, lint, or formatter was run. No tool installs/updates.
-All byte/commit claims below come from read-only git object queries and sha256sum at HEAD 1199150a.
+All byte/commit claims below come from read-only git object queries and sha256sum at HEAD 1212207f.
 
 PINS PRESERVED
 - HARD_BASELINE 7f506affa55f6fb892d3c8073c75151c998bdf2c (line 12, unchanged).
@@ -25,7 +25,7 @@ REPAIR 2 — future round-N lessons admitted without reopening history
 
 REPAIR 3 — exact checker cutover, no blanket script drift
 - ROUND_SCRIPT_PRIOR_SHA256 7d403cee003c3b49e865d57e034821ea925252efc231b0b22ded62ac5410c398 = scripts/check-round-contract.mjs bytes at PSTACK_PIN.
-- ROUND_SCRIPT_CUTOVER_SHA256 6f9eddc74f0e10ac5046ed9ecd99650db4f338c004f5d0e349503b6515a6b299 = committed repaired round gate at 1199150a12f3979672452e2ae49260237e09a76f, git blob d871e73d303600fd691691bb45be7087e4a3c3a5. Verified committed and working-tree bytes match.
+- ROUND_SCRIPT_CUTOVER_SHA256 8478cd438b22f15bab153901276aad8afc7711d139e86769f4323b5f0affdb4d = committed corrected round gate at 1212207fd7fad4adf1df1b3a2bde549235bd144d, git blob 43db9f4bba56a27114ed116c85f27b80227e74bd. Verified committed and working-tree bytes match. This replaces the superseded 1199150a/6f9eddc7 identity; the corrected commit fixes the census-delete fixture checkpoint without suppressing its history finding.
 - Acceptance is only: pinned bytes hash to the prior digest and HEAD bytes hash to the prior or exact cutover digest. Any third value fails history_rewritten. The cutover constant is now a filled 64-hex value; it no longer fails could_not_evaluate.
 - No scripts/legacy-history-policy.json was created (parent preferred the embedded constant). No environment override, no on-run recomputation, no self-blessing.
 
@@ -64,12 +64,15 @@ WITNESS (code added, not run)
 - Pins the red-before arm by blob: scripts/check-user-round-contract.mjs at the rev must be git blob 18e2c79ada4258cc46af7696e98907299b77c431 (pre-repair bytes; SHA256 36405b10ccb46ef94e0fd6a8e495de5ee3e3112acc3fde1eb04fec5ebb056908).
 - Builds one isolated fixture: baseline SHONEN = legacy bytes at HARD_BASELINE (5e055b8c), HEAD SHONEN = canonical seed text; otherwise the standard one-round fixture.
 - Invokes old and new gate bytes with identical legacy-supported args only: `--repo <fixture> --baseline <fixture-baseline> --expect 1` (no --pstack-pin, no unsupported old-gate flag).
-- Expected old arm: exit 1, finding=history_rewritten. Expected new arm: exit 0, verdict=clean. Expected line:
-  `USER_ROUND_CONTRACT_WITNESS rev=<resolved rev> baseline=<fixture baseline> old_exit=1 new_exit=0 result=PASS`.
-- A mismatch fails with witness_failure (exit 1), not usage 2.
+- Expected old arm: exit 1, verdict=failed, finding=history_rewritten. Expected new arm: exit 0, verdict=clean. The witness parses those fields from the actual child output; it does not invent them. Expected output lines:
+  `USER_ROUND_CONTRACT_WITNESS_OLD exit=1 verdict=failed finding=history_rewritten error=null stdout="<raw child stdout>" stderr="<raw child stderr>"`
+  `USER_ROUND_CONTRACT_WITNESS_NEW exit=0 verdict=clean finding=null error=null stdout="<raw child stdout>" stderr="<raw child stderr>"`
+  `USER_ROUND_CONTRACT_WITNESS rev=<resolved rev> baseline=<fixture baseline> args="<identical legacy-supported args>" old_exit=1 old_verdict=failed old_finding=history_rewritten new_exit=0 new_verdict=clean new_finding=null result=PASS`
+  Raw stdout/stderr are JSON-escaped on one line so the red history_rewritten and green clean are retained as actual arm evidence.
+- A mismatch in exit status, parsed verdict, or parsed finding fails with witness_failure (exit 1), not usage 2.
 
 EXPECTED PRODUCTION RESULT (not run)
-`node scripts/check-user-round-contract.mjs` after Main commits this file is expected to read HEAD 1199150a + integration commits, accept canonical SHONEN, the script cutover and future round-N first-add lessons, then fail at the honest inherited count: exit 1, `finding=round_count`, `Found 6 user rounds, expected 10`.
+`node scripts/check-user-round-contract.mjs` after Main commits this file is expected to read HEAD 1212207f + integration commits, accept canonical SHONEN, the corrected script cutover and future round-N first-add lessons, then fail at the honest inherited count: exit 1, `finding=round_count`, `Found 6 user rounds, expected 10`.
 
 INHERITED DEBT NOT FIXED (scope held; for next round)
 - runCount still admits `|` in counting commands and executes SCORECARD text; no grammar whitelist (ReviewUser F3).
@@ -82,7 +85,7 @@ INHERITED DEBT NOT FIXED (scope held; for next round)
 
 RESIDUAL RISKS
 - A future round-N lesson must not be edited after its first add within PSTACK_PIN..HEAD; a later edit (even reverted) is history_rewritten by design. Main should add round-13.md once and not touch it afterward.
-- The cutover digest is exact for 1199150a's bytes. Any later edit to scripts/check-round-contract.mjs requires updating ROUND_SCRIPT_CUTOVER_SHA256 in the same commit; parent says no further RoundGate edits are authorized.
+- The cutover digest is exact for 1212207f's bytes. Any later edit to scripts/check-round-contract.mjs requires updating ROUND_SCRIPT_CUTOVER_SHA256 in the same commit; parent says no further RoundGate edits are authorized.
 - sameRoot uses realpath; a root-only bind-mount alias could still present a different realpath and be treated as a fixture. Normal symlink aliases are covered by the self-test.
 - No gate/self-test/witness execution is claimed; Main runs all verification once after integration.
 
