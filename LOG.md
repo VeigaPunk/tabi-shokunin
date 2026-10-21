@@ -1112,3 +1112,5 @@ the frontier row "Native WebMCP in chromium 152 — unprobed (census U3)"
   now covers each shape as informational coverage, not claim credit. H4: the round-18 scan looks for marker
   bytes, not the suggested filename as the spot-check wrote (`w1/ProbeR18Download.md`); both the replayed
   record and a planted GUID artifact still pass the round-18 predicate (`c2-mutants/`).
+
+- Round-19 correction (machine-checkable single line): LOG.md:1059 "QUALITY33–38" is superseded by QUALITY 33–39 (seven criteria, 33/34/35/36/37/38/39; awk command above re-derives 7).

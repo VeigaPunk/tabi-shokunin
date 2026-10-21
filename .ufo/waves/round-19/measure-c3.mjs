@@ -421,7 +421,7 @@ function measure(repo, rev) {
   if (checkerText !== null && ledgerText !== null) checkerResult = runIsolationChecker(checkerText, ledgerText);
   const d4 = checkD4(checkerText, ledgerText, checkerResult);
   return {
-    c3_routed_closed: d1.pass && d2.pass && d3.pass && d4.pass,
+    c3_routed_closed: [d1, d2, d3, d4].filter((item) => item.pass).length,
     d1: { pass: d1.pass, reason: d1.reason },
     d2: { pass: d2.pass, reason: d2.reason },
     d3: { pass: d3.pass, reason: d3.reason },
@@ -610,11 +610,11 @@ function main(argv) {
   try {
     const result = measure(ROOT, argv[0]);
     process.stdout.write(`${JSON.stringify(result)}\n`);
-    process.exitCode = result.c3_routed_closed ? 0 : 1;
+    process.exitCode = result.c3_routed_closed === 4 ? 0 : 1;
   } catch (error) {
     const reason = String(error?.message ?? error).replace(/[\r\n]+/g, ' ').slice(0, 240);
     const result = {
-      c3_routed_closed: false,
+      c3_routed_closed: 0,
       d1: { pass: false, reason: `could_not_evaluate:${reason}` },
       d2: { pass: false, reason: `could_not_evaluate:${reason}` },
       d3: { pass: false, reason: `could_not_evaluate:${reason}` },
