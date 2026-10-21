@@ -232,3 +232,10 @@
     is contained in its named source row's immutable anchor; extending that anchor requires
     a new explicit same-source supersession row, never an in-place anchor edit.
     (lesson: corpus/lessons/round-20.md#mistakes; w1/CriticCount, AttackLC05, ReviewSourceContract)
+51. A task-return barrier is not all-actor quiescence: peer messages may revive a parked
+    seat. Scope return claims to observed facts, preserve later report-only activity,
+    and import fixed committed blobs rather than mutable clone worktrees. A separately
+    frozen before-import snapshot is an ordering record, not observer authentication.
+    A metadata guard's clean verdict must never be reported as proof of settlement.
+    (lesson: corpus/lessons/round-20.md#mistakes;
+    `.ufo/waves/round-20/w2/ReviewReturnBoundary.md`, `WaveMembership.md`)

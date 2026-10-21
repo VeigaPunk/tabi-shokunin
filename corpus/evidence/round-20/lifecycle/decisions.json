@@ -6,20 +6,20 @@
     "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT",
     "sha256": "8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916"
   },
-  "scope": "source-only Chromium 154.0.8037.97; not runtime-observed",
+  "scope": "source-only Chromium 154.0.8037.97; no new runtime observation in round 20",
   "decisions": [
     {
       "id": "LC01",
       "condition": "At ExecuteTool entry the form has no toolautosubmit attribute, so require_submit_button is computed true.",
-      "outcome": "require_submit_button is true; the autosubmit use counter is incremented only when the attribute is present at entry.",
+      "outcome": "The local require_submit_button is true. The autosubmit UseCounter::Count call is in the opposite, false branch; this is a callsite statement, not a per-call telemetry increment claim.",
       "startLine": 181,
       "endLine": 186,
       "quote": "!form_->FastHasAttribute(html_names::kToolautosubmitAttr);"
     },
     {
       "id": "LC02",
-      "condition": "FillFormControls returns a ScriptToolError.",
-      "outcome": "done_callback is run with the error immediately; the running state (is_currently_running_, active submit button, done_callback_) is not set by that call. invocation_id_ is written earlier, at line 178, outside this span.",
+      "condition": "The FillFormControls error result is present after the enclosing CEReactionsScope has closed.",
+      "outcome": "Contains a call to the incoming done_callback with the error, then returns before the assignments at lines 204-210. invocation_id_ was written at line 178 and is not reset on this return path.",
       "startLine": 189,
       "endLine": 210,
       "quote": "return std::move(done_callback).Run(base::unexpected(error.value()));"
@@ -35,7 +35,7 @@
     {
       "id": "LC04",
       "condition": "FillFormControls returned no error and the entry-time require_submit_button is true.",
-      "outcome": "submit_button->Focus() and context->PauseExecution() are called; this branch does not run the done callback. The pending outcome is not established here: focus handlers and PauseExecution effects are outside the excerpt.",
+      "outcome": "Contains calls to submit_button->Focus() and context->PauseExecution(), but no direct CallDoneCallback call in this branch. Effects inside those callees are not established by this span.",
       "startLine": 212,
       "endLine": 218,
       "quote": "context->PauseExecution();"
@@ -43,47 +43,47 @@
     {
       "id": "LC05",
       "condition": "FillFormControls returned no error and the entry-time require_submit_button is false (toolautosubmit present at entry).",
-      "outcome": "form_->PrepareForSubmission(/*event*/ nullptr, submit_button) is called immediately; this callsite alone establishes no submit event, navigation, or completion.",
+      "outcome": "Contains a direct PrepareForSubmission(nullptr, submit_button) call instead of the focus/pause arm. The callee has submit/response paths and early returns; this call alone guarantees neither completion nor its absence.",
       "startLine": 218,
       "endLine": 221,
       "quote": "form_->PrepareForSubmission(/*event*/ nullptr, submit_button);"
     },
     {
       "id": "LC06",
-      "condition": "CancelTool is called (it CHECKs is_currently_running_).",
-      "outcome": "CallDoneCallback runs with kToolCancelled and the message Tool execution cancelled by abort signal.",
+      "condition": "CancelTool is entered and its is_currently_running_ CHECK passes.",
+      "outcome": "Calls the CallDoneCallback method with kToolCancelled and literal message Tool execution cancelled by abort signal. Stored-callback delivery and cleanup are conditional as in LC07; the literal does not establish the cancellation trigger.",
       "startLine": 224,
       "endLine": 229,
       "quote": "Tool execution cancelled by abort signal"
     },
     {
       "id": "LC07",
-      "condition": "CallDoneCallback is called.",
-      "outcome": "If done_callback_ is null it returns with no state change. If non-null, the callback is invoked (line 266) before the state reset at lines 267-270, which sets is_currently_running_ to false, clears active_submit_button_ and invocation_id_, and is followed by PseudoStateChanged notifications (lines 271-274). At the callback, the reset has not run, so those fields hold pre-completion values unless the callback changes them; the excerpt does not show what the callback does.",
+      "condition": "CallDoneCallback is entered; its done_callback_.is_null() test selects the early-return or held-callback arm.",
+      "outcome": "Null returns before cleanup. Otherwise the code invokes Run(result) before clearing running/button/invocation fields; after Run returns it notifies the form pseudo-state, and the old button pseudo-state only if that old button was non-null. The callback body is outside this span.",
       "startLine": 261,
       "endLine": 275,
       "quote": "std::move(done_callback_).Run(result);"
     },
     {
       "id": "LC08",
-      "condition": "HandleWebMcpToolResponse receives a settlement for a tool that is not CurrentlyRunning.",
-      "outcome": "The settlement is ignored: the function returns without calling the done callback.",
+      "condition": "HandleWebMcpToolResponse enters with tool->CurrentlyRunning() false.",
+      "outcome": "Returns before resolve/reject handling, without a CallDoneCallback or ReportException call from this function on that arm.",
       "startLine": 290,
       "endLine": 298,
       "quote": "if (!tool->CurrentlyRunning()) {"
     },
     {
       "id": "LC09",
-      "condition": "The tool is still CurrentlyRunning, the respondWith promise resolves with an object, and v8::JSON::Stringify(...).ToLocal(...) returns false.",
-      "outcome": "CallDoneCallback is called with kToolInvocationFailed and the fixed serialization message; this arm returns before the fallback and success callback. It does not classify every non-serializable JavaScript value.",
+      "condition": "HandleWebMcpToolResponse passed the CurrentlyRunning guard at handler entry, reaches the resolved object arm, and JSON::Stringify(...).ToLocal(...) returns false.",
+      "outcome": "Contains a CallDoneCallback call with kToolInvocationFailed and fixed serialization text, then a return before fallback/success. Stored-callback delivery is conditional as in LC07; no claim is made about which JavaScript objects can reach this arm.",
       "startLine": 298,
       "endLine": 319,
       "quote": "could not be serialized to JSON"
     },
     {
       "id": "LC10",
-      "condition": "The tool is still CurrentlyRunning and the respondWith promise rejects.",
-      "outcome": "The rejection value is reported through V8ScriptRunner::ReportException, then CallDoneCallback runs with kToolInvocationFailed and the text respondWith promise was rejected.",
+      "condition": "HandleWebMcpToolResponse passed its CurrentlyRunning guard at handler entry and reaches the resolved=false arm.",
+      "outcome": "Contains a ReportException(value) call followed by a CallDoneCallback call with kToolInvocationFailed and fixed text respondWith promise was rejected. The text is not the rejection value; delivery is conditional as in LC07.",
       "startLine": 320,
       "endLine": 327,
       "quote": "respondWith promise was rejected"
@@ -91,16 +91,16 @@
     {
       "id": "LC11",
       "sourceId": "S100",
-      "condition": "The tool is still running after submit dispatch; should_submit is false; TakeRespondWithPromise() returns no promise.",
-      "outcome": "CallDoneCallback runs with kToolInvocationFailed and the programming-error message; no output value is set on that path.",
+      "condition": "PrepareForSubmission reaches its post-dispatch declarative block with executing_tool still running, no promise taken, and should_submit=false.",
+      "outcome": "Contains a CallDoneCallback call with kToolInvocationFailed and fixed site-programming-error text. Whether the stored callback runs follows LC07; this row makes no CDP field or status claim.",
       "startLine": 787,
       "endLine": 815,
       "quote": "The site has a programming error: it called"
     },
     {
       "id": "LC12",
-      "condition": "PrepareForSubmission reaches the should_submit branch and executing_tool remains CurrentlyRunning after ScheduleFormSubmission returns.",
-      "outcome": "CallDoneCallback runs with base::ok of a null String, which the source comment describes as a navigation-intent sentinel: internal, and not proof of navigation, success, or any CDP output value. The ok call follows the ScheduleFormSubmission call in the same block and is guarded only by executing_tool remaining CurrentlyRunning; it is not conditioned on navigation being scheduled. The body of ScheduleFormSubmission is outside the retained anchor.",
+      "condition": "The should_submit block is reached; after ScheduleFormSubmission returns executing_tool is non-null and CurrentlyRunning, and the WebMCPEnabled CHECK passes.",
+      "outcome": "Contains CallDoneCallback(base::ok(String())) at line 829. The comment describes the null String as indicating a navigation trigger, but the call is not gated on a scheduling return value. Delivery follows LC07; this row establishes no navigation, success, or CDP output guarantee.",
       "startLine": 818,
       "endLine": 830,
       "quote": "executing_tool->CallDoneCallback(base::ok(String()));"

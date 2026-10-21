@@ -149,6 +149,8 @@ admitted to `knowledge/` (admission stays in `corpus/QUALITY.md`). Structural ch
 
 - 2026-10-21 · round-20 bounded anchor recheck. Question: can S096 support LC11 at html_form_element.cc:787-815? Opened its exact Gitiles URL and retained raw/base64 plus decoded bytes (`.ufo/waves/round-20/source-opening.json`). Identified1 candidate anchor extension, screened1, included1 (S100), excluded0; stop: source span and immutable-row correction route established. This is same-source deepening, not publisher diversity or a broad discovery census.
 
+- Round-20 registry reading clarification: later additions quote their own round lesson's `## Gate` (S100: `corpus/lessons/round-20.md#gate`). A legacy kaika-Gate pointer is historical, not a claim that every later source row appears in the kaika lesson.
+
 ## Leads (unopened)
 
 - WPT WebDriver BiDi results — https://wpt.fyi/results/webdriver/tests/bidi — fetched only as an application shell; per-command interoperability data is unread.

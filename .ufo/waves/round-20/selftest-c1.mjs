@@ -29,6 +29,7 @@ const repoRoot = resolve(here, '..', '..', '..');
 const defaultMeasure = resolve(here, 'measure-c1.mjs');
 const defaultExpected = resolve(repoRoot, 'corpus/evidence/round-20/selftests/expected.json');
 const EXPECTED_SCHEMA = 'tabi-round20-c1-selftest-expected-v1';
+const CORRECTED_HEADING = '### Declarative WebMCP completion lifecycle \u2014 corrected source-scoped (round 20)';
 
 // Pinned spec: design.json source, heading and manifestShape, and the registry
 // row contract. Kept here, never read from the counter or from scribe output, so
@@ -36,7 +37,7 @@ const EXPECTED_SCHEMA = 'tabi-round20-c1-selftest-expected-v1';
 const PIN = Object.freeze({
   metric: 'c1_lifecycle_decisions',
   schema: 'tabi-webmcp-lifecycle-decisions-v1',
-  scope: 'source-only Chromium 154.0.8037.97; not runtime-observed',
+  scope: 'source-only Chromium 154.0.8037.97; no new runtime observation in round 20',
   heading: '### Declarative WebMCP completion lifecycle \u2014 source-scoped (round 20)',
   sourceId: 'S096',
   authorityId: 'S100',
@@ -203,17 +204,54 @@ function renderNote(state) {
       const source = state.rowSourceOverride[decision.id] ?? decision.sourceId ?? state.source.id;
       return `| ${decision.id} | ${decision.condition} | ${decision.outcome} | ${source}:${decision.startLine}-${decision.endLine} |`;
     });
+  const staleHistoryRows = rows.map(row => row.startsWith('| LC01 |')
+    ? row.replace('toolautosubmit attribute present or absent on the form', 'historical LC01 condition')
+    : row);
+  const correctedRows = state.correctedRowMismatch
+    ? rows.map(row => row.startsWith('| LC07 |') ? row.replace('the state is cleared', 'state is cleared') : row)
+    : rows;
+  const currentSectionRows = state.extraCurrentRow
+    ? [...correctedRows, '| LC05 (repeat) | duplicate-row fixture only | S096:218-221 |']
+    : correctedRows;
+  const tableHeader = ['| ID | condition | outcome | source |', '|---|---|---|---|'];
+  const sources = `Sources: ${PIN.sourceId} (Chromium 154.0.8037.97 html_form_element.cc, source-only); ${PIN.authorityId} (same bytes, LC11 authority row).`;
+  const scope = `Scope: ${state.scope}`;
+
+  if (state.correctedNote) {
+    return [
+      PIN.heading,
+      '',
+      sources,
+      '',
+      scope,
+      '',
+      ...tableHeader,
+      ...staleHistoryRows,
+      '',
+      CORRECTED_HEADING,
+      '',
+      sources,
+      '',
+      scope,
+      '',
+      ...tableHeader,
+      ...currentSectionRows,
+      '',
+    ].join('\n');
+  }
+
   return [
     PIN.heading,
     '',
-    `Sources: ${PIN.sourceId} (Chromium 154.0.8037.97 html_form_element.cc, source-only); ${PIN.authorityId} (same bytes, LC11 authority row).`,
+    sources,
     '',
-    `Scope: ${state.scope}`,
+    scope,
     '',
-    '| ID | condition | outcome | source |',
-    '|---|---|---|---|',
+    ...tableHeader,
     ...rows,
+    ...(state.duplicateTableHeading ? [PIN.heading] : []),
     '',
+    ...(state.duplicateCorrectedHeadings ? [CORRECTED_HEADING, '', CORRECTED_HEADING, ''] : []),
   ].join('\n');
 }
 
@@ -288,6 +326,11 @@ function baseState(blob) {
     source: { id: PIN.sourceId, path: PIN.sourcePath, url: PIN.sourceUrl, sha256: PIN.sourceSha256 },
     decisions: DECISIONS.map(decision => ({ ...decision })),
     omitRows: [],
+    duplicateTableHeading: false,
+    correctedNote: false,
+    correctedRowMismatch: false,
+    duplicateCorrectedHeadings: false,
+    extraCurrentRow: false,
     rowSourceOverride: {},
     usedBy: [PIN.priorNote, PIN.notePath],
     sourceAnchor: SOURCE_ANCHOR,
@@ -342,6 +385,17 @@ const CASES = Object.freeze([
   { name: 'wrong_anchor_s100', mutate: state => { state.authority.anchor = `tag 154.0.8037.97 commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d; html_form_element.cc:174-328; decoded sha256 ${PIN.sourceSha256}`; } },
   { name: 'wrong_anchor_s096', mutate: state => { state.sourceAnchor = `tag 154.0.8037.97 commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d; html_form_element.cc:174-328,729-758; decoded sha256 ${PIN.sourceSha256}`; } },
   { name: 'malformed_anchor_s100', mutate: state => { state.authority.anchor = `tag 154.0.8037.97 commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d; html_form_element.cc:787-; decoded sha256 ${PIN.sourceSha256}`; } },
+  { name: 'decision_shape', mutate: state => { byId(state, 'LC11').sourceId = 100; state.omitRows = ['LC11']; } },
+  { name: 'decision_unknown_id', mutate: state => { state.decisions.push({ ...byId(state, 'LC12'), id: 'LC13' }); state.omitRows = ['LC13']; } },
+  { name: 'decision_text_invalid', mutate: state => { byId(state, 'LC04').condition = ''; } },
+  { name: 'table_heading_duplicate', mutate: state => { state.duplicateTableHeading = true; } },
+  { name: 'lc12_span_crosses_anchor_gap', mutate: state => { byId(state, 'LC12').startLine = 817; } },
+  { name: 'corrected_heading_historical_rows', mutate: state => { state.correctedNote = true; } },
+  { name: 'corrected_section_row_mismatch', mutate: state => { state.correctedNote = true; state.correctedRowMismatch = true; } },
+  { name: 'duplicate_corrected_headings', mutate: state => { state.duplicateCorrectedHeadings = true; } },
+  { name: 'malformed_extra_current_row', mutate: state => { state.correctedNote = true; state.extraCurrentRow = true; } },
+  { name: 'missing_anchor_clause_s100', mutate: state => { state.authority.anchor = AUTHORITY_ANCHOR.replace('html_form_element.cc:787-815; ', ''); } },
+  { name: 'trailing_anchor_junk_s100', mutate: state => { state.authority.anchor = AUTHORITY_ANCHOR.replace('html_form_element.cc:787-815;', 'html_form_element.cc:787-815 trailing-junk;'); } },
 ]);
 
 // Null when the result matches the persisted pair; otherwise the first mismatch.

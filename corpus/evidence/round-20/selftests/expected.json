@@ -3,7 +3,7 @@
   "metric": "c1_lifecycle_decisions",
   "design": {
     "path": ".ufo/waves/round-20/design.json",
-    "sha256": "1c9f536e329d74fef1c4502c133c551a30fe7ccfc18f2641ba85ee4245a7a1da"
+    "sha256": "85e509e9982fa0e4eb816334f481c42ee9e5babeb834f515042109064fa82e46"
   },
   "source": {
     "id": "S096",
@@ -15,7 +15,10 @@
     "decision_anchor_uncovered",
     "decision_duplicate_id",
     "decision_missing",
+    "decision_shape",
     "decision_source_mismatch",
+    "decision_text_invalid",
+    "decision_unknown_id",
     "manifest_malformed",
     "manifest_shape",
     "partial_state",
@@ -30,6 +33,7 @@
     "source_mismatch",
     "source_missing",
     "span_invalid",
+    "table_heading_duplicate",
     "table_row_extra",
     "table_row_missing"
   ],
@@ -164,7 +168,7 @@
       "name": "wrong_source_id",
       "count": 12,
       "exit": 1,
-      "findings": ["decision_source_mismatch", "registry_backlink_missing", "source_mismatch"],
+      "findings": ["decision_source_mismatch", "source_mismatch"],
       "mutation": "manifest source id S097; rows mirror effective S097 for the eleven S096 decisions; LC11 stays S100"
     },
     {
@@ -185,14 +189,14 @@
       "name": "wrong_decision_source_override",
       "count": 12,
       "exit": 1,
-      "findings": ["decision_anchor_uncovered", "decision_source_mismatch", "registry_backlink_missing"],
+      "findings": ["decision_source_mismatch"],
       "mutation": "LC11 sourceId S099; note row S099:787-815"
     },
     {
       "name": "missing_decision_source_override",
       "count": 12,
       "exit": 1,
-      "findings": ["decision_anchor_uncovered", "decision_source_mismatch", "registry_backlink_missing"],
+      "findings": ["decision_anchor_uncovered", "decision_source_mismatch"],
       "mutation": "LC11 sourceId removed; note row S096:787-815"
     },
     {
@@ -206,7 +210,7 @@
       "name": "forced_s096_lc11",
       "count": 12,
       "exit": 1,
-      "findings": ["decision_anchor_uncovered", "decision_source_mismatch", "registry_backlink_missing"],
+      "findings": ["decision_anchor_uncovered", "decision_source_mismatch"],
       "mutation": "LC11 sourceId forced to S096; note row S096:787-815"
     },
     {
@@ -271,6 +275,83 @@
       "exit": 1,
       "findings": ["registry_row_invalid"],
       "mutation": "S100 anchor range html_form_element.cc:787- is malformed"
+    },
+    {
+      "name": "decision_shape",
+      "count": 12,
+      "exit": 1,
+      "findings": ["decision_shape"],
+      "mutation": "LC11 sourceId is numeric and its non-renderable table row is omitted"
+    },
+    {
+      "name": "decision_unknown_id",
+      "count": 13,
+      "exit": 1,
+      "findings": ["decision_unknown_id"],
+      "mutation": "LC13-shaped decision appended and its non-renderable table row omitted"
+    },
+    {
+      "name": "decision_text_invalid",
+      "count": 12,
+      "exit": 1,
+      "findings": ["decision_text_invalid"],
+      "mutation": "LC04 condition is the empty string; table mirrors it"
+    },
+    {
+      "name": "table_heading_duplicate",
+      "count": 12,
+      "exit": 1,
+      "findings": ["table_heading_duplicate"],
+      "mutation": "a second original lifecycle section heading is appended after the mirrored rows"
+    },
+    {
+      "name": "lc12_span_crosses_anchor_gap",
+      "count": 12,
+      "exit": 1,
+      "findings": ["decision_anchor_uncovered", "span_invalid"],
+      "mutation": "LC12 startLine moves 818 to 817 and the table row mirrors 817-830; line 817 lies outside S096's declared anchor ranges"
+    },
+    {
+      "name": "corrected_heading_historical_rows",
+      "count": 12,
+      "exit": 0,
+      "findings": [],
+      "mutation": "one original section has a stale LC01 row; the corrected source-scoped section mirrors all 12 current manifest rows"
+    },
+    {
+      "name": "corrected_section_row_mismatch",
+      "count": 12,
+      "exit": 1,
+      "findings": ["table_row_extra", "table_row_missing"],
+      "mutation": "original rows are historical; only corrected-section LC07 outcome differs from the current manifest row"
+    },
+    {
+      "name": "duplicate_corrected_headings",
+      "count": 12,
+      "exit": 1,
+      "findings": ["table_heading_duplicate"],
+      "mutation": "original section mirrors all 12 decisions; two corrected headings with no LC rows trigger duplicate detection and historical fallback"
+    },
+    {
+      "name": "malformed_extra_current_row",
+      "count": 12,
+      "exit": 1,
+      "findings": ["table_row_extra"],
+      "mutation": "append an LC05 (repeat) candidate under the unique corrected current heading after all 12 valid rows"
+    },
+    {
+      "name": "missing_anchor_clause_s100",
+      "count": 12,
+      "exit": 1,
+      "findings": ["registry_row_invalid"],
+      "mutation": "remove the S100 html_form_element.cc:787-815 range clause while preserving URL, tag and decoded sha256"
+    },
+    {
+      "name": "trailing_anchor_junk_s100",
+      "count": 12,
+      "exit": 1,
+      "findings": ["registry_row_invalid"],
+      "mutation": "append trailing-junk inside the S100 html_form_element.cc:787-815 range clause before its semicolon"
     }
   ]
 }

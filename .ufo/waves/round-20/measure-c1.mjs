@@ -73,8 +73,9 @@ const MANIFEST_PATH = 'corpus/evidence/round-20/lifecycle/decisions.json';
 const NOTE_PATH = 'corpus/knowledge/webmcp-completion-lifecycle-round-20.md';
 const REGISTRY_PATH = 'corpus/SOURCES.md';
 const MANIFEST_SCHEMA = 'tabi-webmcp-lifecycle-decisions-v1';
-const MANIFEST_SCOPE = 'source-only Chromium 154.0.8037.97; not runtime-observed';
+const MANIFEST_SCOPE = 'source-only Chromium 154.0.8037.97; no new runtime observation in round 20';
 const TABLE_HEADING = '### Declarative WebMCP completion lifecycle \u2014 source-scoped (round 20)';
+const CORRECTED_TABLE_HEADING = '### Declarative WebMCP completion lifecycle \u2014 corrected source-scoped (round 20)';
 const QUOTE_MAX_WORDS = 25;
 
 // 1-based inclusive source-line spans and citing source ids pinned by the design.
@@ -96,15 +97,14 @@ const PINNED_BY_ID = new Map(PINNED_DECISIONS.map((pinned) => [pinned.id, pinned
 const DECISION_REQUIRED_KEYS = Object.freeze(['condition', 'endLine', 'id', 'outcome', 'quote', 'startLine']);
 const DECISION_OPTIONAL_KEYS = Object.freeze(['sourceId']);
 
-const LC_ROW = /^\|\s*LC\d{2}\s*\|/;
+const LC_ROW = /^\|\s*LC/;
 const SECTION_END = /^#{1,3} /;
 const REGISTRY_SECTION_END = /^## /;
-const SEPARATOR_ROW = /^\|(\s*:?-+:?\s*\|)+\s*$/;
-const ANCHOR_FILE = 'html_form_element.cc:';
-// The pinned file followed by its line ranges (a-b or a), e.g.
-// "html_form_element.cc:174-328,729-758,818-842"; the lookahead ends the list.
-const ANCHOR_RANGES = /html_form_element\.cc:(\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*)(?![\d,-])/;
-// Affirmative runtime or observation wording is refused in decision text.
+const ANCHOR_FILE = 'html_form_element.cc';
+// One complete semicolon-delimited file/range clause; reject trailing commas,
+// junk, repeated clauses and missing file parts instead of accepting a prefix.
+const ANCHOR_RANGE_CLAUSE = /^html_form_element\.cc:(\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*$)/;
+// These tokens are refused in decision text, including negations; this is not a semantic classifier.
 const RUNTIME_WORDING = /\b(runtime|run-time|observed|observation|empirical\w*|measured|reproduced)\b/i;
 
 // Closed, stable finding ids (the reason strings returned by evaluate).
@@ -155,6 +155,7 @@ export const PINS = Object.freeze({
   sourceRecord: Object.freeze({ id: SOURCE_ID, path: SOURCE_PATH, url: SOURCE_URL, sha256: SOURCE_SHA256 }),
   supersedingSourceId: SUPERSEDING_SOURCE_ID,
   heading: TABLE_HEADING,
+  correctedHeading: CORRECTED_TABLE_HEADING,
   quoteMaxWords: QUOTE_MAX_WORDS,
   decisions: PINNED_DECISIONS,
 });
@@ -234,13 +235,14 @@ function citesToken(text, token) {
   return new RegExp(`(?<![A-Za-z0-9])${token}(?![0-9])`).test(text);
 }
 
-// Line ranges the anchor cell declares for the pinned file: [] when the cell
-// names no html_form_element.cc ranges, null when they are malformed or repeated.
+// Exactly one semicolon-delimited html_form_element.cc range clause is required.
+// Other semicolon-separated source prose (e.g. tag and digest metadata) remains
+// independent and is not parsed as ranges.
 function declaredRanges(anchor) {
-  const occurrences = anchor.split(ANCHOR_FILE).length - 1;
-  if (occurrences === 0) return [];
-  const match = ANCHOR_RANGES.exec(anchor);
-  if (occurrences !== 1 || match === null) return null;
+  const clauses = anchor.split(';').map((part) => part.trim()).filter((part) => part.includes(ANCHOR_FILE));
+  if (clauses.length !== 1) return null;
+  const match = ANCHOR_RANGE_CLAUSE.exec(clauses[0]);
+  if (match === null) return null;
   const ranges = match[1].split(',').map((part) => {
     const [first, last = first] = part.split('-').map(Number);
     return [first, last];
@@ -403,40 +405,31 @@ function checkDecisions(decisions, manifestSourceId, sourceLines, registry, find
   }
 }
 
-// Table rows under the declared heading must equal the renderable manifest
-// decisions as a multiset. Rows outside the heading's section are extra.
+// The corrected section, when unique, is authoritative for the current manifest.
+// Historical LC rows are tolerated only in the original heading's section(s).
+// With no unique corrected heading, retain the original historical-revision path.
 function checkTable(noteLines, decisions, manifestSourceId, findings) {
-  const headings = [];
+  const originalHeadings = [];
+  const correctedHeadings = [];
   noteLines.forEach((line, index) => {
-    if (line.trimEnd() === TABLE_HEADING) headings.push(index);
+    const heading = line.trimEnd();
+    if (heading === TABLE_HEADING) originalHeadings.push(index);
+    if (heading === CORRECTED_TABLE_HEADING) correctedHeadings.push(index);
   });
-  if (headings.length > 1) findings.add(FINDING.tableHeadingDuplicate);
-  if (headings.length === 0) findings.add(FINDING.tableRowMissing);
+  if (originalHeadings.length > 1 || correctedHeadings.length > 1) {
+    findings.add(FINDING.tableHeadingDuplicate);
+  }
 
-  const start = headings.length > 0 ? headings[0] : -1;
-  let end = -1;
-  if (start >= 0) {
-    end = noteLines.length;
+  function sectionBounds(start) {
+    let end = noteLines.length;
     for (let index = start + 1; index < noteLines.length; index++) {
       if (SECTION_END.test(noteLines[index])) {
         end = index;
         break;
       }
     }
+    return { start, end };
   }
-
-  const inSection = new Map();
-  let outside = false;
-  noteLines.forEach((line, index) => {
-    if (!LC_ROW.test(line)) return;
-    if (start >= 0 && index > start && index < end) {
-      const row = line.trimEnd();
-      inSection.set(row, (inSection.get(row) ?? 0) + 1);
-    } else {
-      outside = true;
-    }
-  });
-  if (outside) findings.add(FINDING.tableRowExtra);
 
   const expected = new Map();
   for (const entry of decisions) {
@@ -444,6 +437,53 @@ function checkTable(noteLines, decisions, manifestSourceId, findings) {
     const row = renderRow(entry, manifestSourceId);
     expected.set(row, (expected.get(row) ?? 0) + 1);
   }
+
+  function compareCurrentSection(bounds, historicalSections) {
+    const currentRows = new Map();
+    let outside = false;
+    noteLines.forEach((line, index) => {
+      if (!LC_ROW.test(line)) return;
+      if (index > bounds.start && index < bounds.end) {
+        const row = line.trimEnd();
+        currentRows.set(row, (currentRows.get(row) ?? 0) + 1);
+        return;
+      }
+      const historical = historicalSections.some((section) => index > section.start && index < section.end);
+      if (!historical) outside = true;
+    });
+    if (outside) findings.add(FINDING.tableRowExtra);
+    for (const [row, want] of expected) {
+      if ((currentRows.get(row) ?? 0) < want) findings.add(FINDING.tableRowMissing);
+    }
+    for (const [row, have] of currentRows) {
+      if (have > (expected.get(row) ?? 0)) findings.add(FINDING.tableRowExtra);
+    }
+  }
+
+  if (correctedHeadings.length === 1) {
+    const currentSection = sectionBounds(correctedHeadings[0]);
+    const historicalSections = originalHeadings.map(sectionBounds);
+    compareCurrentSection(currentSection, historicalSections);
+    return;
+  }
+
+  // Historical behavior retained for commits without one unique corrected
+  // heading, including the existing historical fixtures.
+  if (originalHeadings.length === 0) findings.add(FINDING.tableRowMissing);
+  const start = originalHeadings.length > 0 ? originalHeadings[0] : -1;
+  const bounds = start >= 0 ? sectionBounds(start) : null;
+  const inSection = new Map();
+  let outside = false;
+  noteLines.forEach((line, index) => {
+    if (!LC_ROW.test(line)) return;
+    if (bounds !== null && index > bounds.start && index < bounds.end) {
+      const row = line.trimEnd();
+      inSection.set(row, (inSection.get(row) ?? 0) + 1);
+    } else {
+      outside = true;
+    }
+  });
+  if (outside) findings.add(FINDING.tableRowExtra);
   for (const [row, want] of expected) {
     if ((inSection.get(row) ?? 0) < want) findings.add(FINDING.tableRowMissing);
   }

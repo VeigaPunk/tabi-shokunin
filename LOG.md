@@ -1236,3 +1236,32 @@ are not actor-quiescence barriers. The timestamped before-import capture and don
 identities remain observations, but no complete-isolation certification is credited.
 See `.ufo/waves/round-20/w1/ordering-correction.json` and
 `.ufo/waves/round-20/w2/ReviewReturnBoundary.md`. Round19 d4 stays unprovable.
+
+### Round-20 source/counter repairs after the frozen return
+
+- Imported exact committed blobs only after pushed freeze
+  `e0b5d02a6aef76b0d2799d92618f79f1bca40062`; the three repair writers used
+  distinct new clones at4ae9981, with identities, path subsets, blob hashes and
+  durable bundles in `.ufo/waves/round-20/repair-ledger.json`. These were
+  same-identity follow-ups, not w2 production seats or replacements.
+- W2 found the original fixed-oracle disagreement, unexercised finding ids,
+  malformed LC-row and anchor-clause gaps. Reconciled expectations against the
+  existing whole-note citation rule rather than inventing new backlink semantics;
+  added the missing fixtures and corrected-heading cases. Sources:
+  `.ufo/waves/round-20/w2/CounterS100Authority.md`, `CounterMissingId.md`,
+  `CounterHeading.md`; handoffs and original donor bytes remain retained.
+- Appended, never rewrote, the note and SKILL semantic corrections. Current rows
+  distinguish callsites from effects, entry guards from callback-time state,
+  method calls from stored-callback delivery, and fixed text from rejection reasons.
+  The current manifest and scope literal match the corrected-source heading.
+  S100/S096 source ids and pinned spans remain unchanged.
+- The wave-1 guard now has regular-input refusals and a frozen-input mode that
+  verifies every digest before comparing a persisted expected verdict. It does
+  not certify actor settlement, membership, ordering or isolation.
+- Corrected raw/gzip metadata labels, appended a corpus correction index and
+  QUALITY51, and retained declared/build/final design identities. The four-file
+  measurement input set is derived from code, not the earlier guessed two-file set.
+- W2 ReviewBindingInputs ran an unsolicited r19 binding replay despite the
+  read-only/no-gate bounds. Its report records exact argv/exit/producer and no
+  runtime/browser execution or writes. This is a conformance defect, not L1
+  serial verification or re-adjudication of the closed round19.

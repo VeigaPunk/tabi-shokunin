@@ -2249,3 +2249,113 @@ The wave gate refuses only its finite metadata shapes. It does not authenticate 
 captured a snapshot, establish capture order, certify writer isolation, or prove no harm.
 The lesson probe enumerates the lesson predicate without rerunning the inherited red gate.
 No new capability row, promotion, retirement, real-site authority or sibling lease is earned.
+
+## Round-20 falsification correction — canonical source guidance
+
+This append supersedes the initial round-20 lifecycle table and its diagnostic/history
+wording, including the old note table at lines 29–40 and SKILL table at lines 2217–2228.
+Those bytes remain history. The corrected table below is the current guidance and the
+counter selects it, not the historical rows. It is still one finite sample, not an
+exhaustive inventory, twelve novel branches, a scalar promotion or a runtime capability.
+
+**Evidence class:** source-only Chromium 154.0.8037.97; no new runtime observation in
+round 20. Earlier runtime observations are explicitly retained below. A source callsite
+is not proof of its end-to-end effect. `CallDoneCallback(...)` denotes a method call;
+actual stored-callback delivery and cleanup depend on LC07. These descriptions assume
+the named internal branch is reached and its stated CHECKs hold, not that WebMCP is
+available in any particular profile or shipping configuration. The source's callees
+and page handlers are not silently treated as effect-free.
+
+### Declarative WebMCP completion lifecycle — corrected source-scoped (round 20)
+
+| ID | condition | outcome | Source anchor |
+|---|---|---|---|
+| LC01 | At ExecuteTool entry the form has no toolautosubmit attribute, so require_submit_button is computed true. | The local require_submit_button is true. The autosubmit UseCounter::Count call is in the opposite, false branch; this is a callsite statement, not a per-call telemetry increment claim. | S096:181-186 |
+| LC02 | The FillFormControls error result is present after the enclosing CEReactionsScope has closed. | Contains a call to the incoming done_callback with the error, then returns before the assignments at lines 204-210. invocation_id_ was written at line 178 and is not reset on this return path. | S096:189-210 |
+| LC03 | The call parsed a JSON object, FormMCPSchema::SubmitButton() returns null, and require_submit_button (computed at ExecuteTool entry) is true. | FillFormControls returns kMissingRequiredSubmitButton before the FillData call on the same path is reached. | S096:249-258 |
+| LC04 | FillFormControls returned no error and the entry-time require_submit_button is true. | Contains calls to submit_button->Focus() and context->PauseExecution(), but no direct CallDoneCallback call in this branch. Effects inside those callees are not established by this span. | S096:212-218 |
+| LC05 | FillFormControls returned no error and the entry-time require_submit_button is false (toolautosubmit present at entry). | Contains a direct PrepareForSubmission(nullptr, submit_button) call instead of the focus/pause arm. The callee has submit/response paths and early returns; this call alone guarantees neither completion nor its absence. | S096:218-221 |
+| LC06 | CancelTool is entered and its is_currently_running_ CHECK passes. | Calls the CallDoneCallback method with kToolCancelled and literal message Tool execution cancelled by abort signal. Stored-callback delivery and cleanup are conditional as in LC07; the literal does not establish the cancellation trigger. | S096:224-229 |
+| LC07 | CallDoneCallback is entered; its done_callback_.is_null() test selects the early-return or held-callback arm. | Null returns before cleanup. Otherwise the code invokes Run(result) before clearing running/button/invocation fields; after Run returns it notifies the form pseudo-state, and the old button pseudo-state only if that old button was non-null. The callback body is outside this span. | S096:261-275 |
+| LC08 | HandleWebMcpToolResponse enters with tool->CurrentlyRunning() false. | Returns before resolve/reject handling, without a CallDoneCallback or ReportException call from this function on that arm. | S096:290-298 |
+| LC09 | HandleWebMcpToolResponse passed the CurrentlyRunning guard at handler entry, reaches the resolved object arm, and JSON::Stringify(...).ToLocal(...) returns false. | Contains a CallDoneCallback call with kToolInvocationFailed and fixed serialization text, then a return before fallback/success. Stored-callback delivery is conditional as in LC07; no claim is made about which JavaScript objects can reach this arm. | S096:298-319 |
+| LC10 | HandleWebMcpToolResponse passed its CurrentlyRunning guard at handler entry and reaches the resolved=false arm. | Contains a ReportException(value) call followed by a CallDoneCallback call with kToolInvocationFailed and fixed text respondWith promise was rejected. The text is not the rejection value; delivery is conditional as in LC07. | S096:320-327 |
+| LC11 | PrepareForSubmission reaches its post-dispatch declarative block with executing_tool still running, no promise taken, and should_submit=false. | Contains a CallDoneCallback call with kToolInvocationFailed and fixed site-programming-error text. Whether the stored callback runs follows LC07; this row makes no CDP field or status claim. | S100:787-815 |
+| LC12 | The should_submit block is reached; after ScheduleFormSubmission returns executing_tool is non-null and CurrentlyRunning, and the WebMCPEnabled CHECK passes. | Contains CallDoneCallback(base::ok(String())) at line 829. The comment describes the null String as indicating a navigation trigger, but the call is not gated on a scheduling return value. Delivery follows LC07; this row establishes no navigation, success, or CDP output guarantee. | S096:818-830 |
+
+### Source-only diagnostic checklist — not a failure taxonomy
+
+1. LC02: distinguish the incoming callback callsite from a function/API return value;
+   its own assignments at 204–210 are skipped, but the earlier invocation-id write is not reset.
+2. LC03: `SubmitButton()==null` is the schema accessor result, not proof that the DOM
+   contains no visual submit button. Its selection implementation is not claimed here.
+3. LC04: focus/pause callsites do not guarantee either completion or non-completion;
+   effects inside their callees require separate evidence.
+4. LC05: `PrepareForSubmission` may dispatch, complete or return early. The callsite
+   does not establish a universal outcome or the absence of a submit event.
+5. LC06: the running CHECK must pass. The abort-signal words are a fixed literal,
+   not evidence of the cause, a delivered CDP field or a user-visible cancellation event.
+6. LC07: the null guard is distinct from LC08's not-running guard. Run precedes cleanup;
+   form pseudo-state notification is unconditional after cleanup, old-button notification is conditional.
+7. LC09–LC10: distinguish handler-entry running state from callback-time state, method
+   callsites from stored-callback delivery, and fixed error text from an arbitrary rejection reason.
+8. LC11: an empty promise take is the branch condition, not proof that respondWith was
+   never called. No protocol status/output mapping is supplied by this source sample.
+9. LC12: `base::ok(String())` is an internal success-typed argument, not a failure class.
+   The comment says navigation was triggered; this is not a verified scheduling, landing,
+   wire-output or success guarantee. Callee delivery still follows LC07.
+
+`S100:635-842` supplies the additional submit-path context, including the early-return
+callsites at 639/647/659/679 and the `submitFromJavaScript` callback at 839–841. The body
+of ScheduleFormSubmission is retained in the file but lies outside these registered
+anchor ranges, so this sample does not infer its full scheduling semantics. S100 is the
+same body as S096/S078: the table's LC11 override and these prose anchors add no publisher.
+
+### History corrections — retained observations, no new execution
+
+- Both committed r17 declarative receipt fixtures use toolautosubmit; the earlier
+  sentence about a separate receipt form with a submit button must not imply a
+  non-autosubmit receipt. The real `invoke-declarative-form` case and
+  `invoke-declarative-navigation-result` control remain historical observations in
+  `corpus/evidence/round-17/webmcp-invoke/receipt.json`.
+- The r17 probe `.ufo/waves/round-17/w1/C2ProbeDeclarative.md:71-73` first had no
+  response for 2500 ms, then a later page requestSubmit produced Completed and page
+  output. This is probe-class history, not an indefinitely pending guarantee.
+- `.ufo/waves/round-17/w1/C2ProbeFrames.md:70-72` records the plain-form missing-submit
+  error. It must not be described as never triggered. The no-handler autosubmit probe
+  at `C2ProbeDeclarative.md:78-80` also records navigation and Completed with an empty array.
+- r17 `receipt.json` control `invoke-cancel`, `actual.responded`, records Canceled with
+  empty errorText on imperative slow-echo. That is not a declarative CancelTool witness;
+  a pass-only stdout line alone does not establish the observed payload.
+- r19 `corpus/evidence/round-19/validation/receipt.json`, cases
+  `decl-unknown-param-01` and `decl-missing-required-01`, stores observed Error with
+  submitCount0. The former is fill-time, the latter is the submit-validation path in
+  LC05's callee. Expected case blocks are not substituted for those observed fields.
+- The r17 landing-document array in `invoke-declarative-navigation-result` is retained.
+  This sample does not reconstruct the renderer/browser bridge to it, and neither
+  confirms nor contradicts that runtime result from a C++ callsite alone.
+
+### Current gate and measurement boundaries
+
+The lifecycle counter validates source identity, pinned ids/spans, literal quotes,
+registered anchor containment and the active note-table rendering. It does not grade
+semantic truth, novelty, all Markdown grammar or all Unicode/control-character forms.
+It uses JSON.parse semantics; duplicate JSON keys and fenced/comment lookalikes are
+not a promised refusal set. Scalar credit requires both exit0 and the expected count;
+a count emitted alongside findings is not an admitted result. SKILL's mirror receives
+separate review. The exact four counted inputs and counter blob are pinned in
+`.ufo/waves/round-20/measurement-binding.json` at final measurement.
+
+The frozen wave-1 metadata gate's canonical entry is
+`node .ufo/waves/round-20/check-wave.mjs --frozen .ufo/waves/round-20/w1/frozen`.
+This supersedes the earlier registry row's direct-mode evidence command. Direct mode
+remains a diagnostic; frozen mode pins every input digest before comparing the expected
+verdict. Codes0/1/2 mean matched/failed/could-not-evaluate, with selftest
+`node .ufo/waves/round-20/check-wave.mjs --selftest` and expected fixture values in
+`corpus/evidence/round-20/wave-check-expected.json`. Its inputs are authored metadata,
+not authentication of an observer, membership, actor quiescence or ordering. It is
+w1-specific, not a w2 checker; nested marker values and arbitrary path strings are
+outside its finite shape proof. The w1 all-actor settlement flags are withdrawn in
+`.ufo/waves/round-20/w1/ordering-correction.json`; r19 d4 remains unprovable. The w2
+return was frozen before repairs in commit `e0b5d02a6aef76b0d2799d92618f79f1bca40062`.
+

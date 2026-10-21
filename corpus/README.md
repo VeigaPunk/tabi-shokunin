@@ -450,3 +450,15 @@ Correction index: S078's old empty-string wording is already superseded by S096;
 immutable row is rewritten. S100 extends anchors, not independent authority. The
 LC12 C++ sentinel-to-landing-result bridge is outside this sample, not newly established
 as an output mapping. Round-19 missing return-time evidence remains unprovable.
+
+### Round-20 falsification correction index
+
+| Historical pointer | Current guidance / disposition |
+|---|---|
+| `knowledge/webmcp-completion-lifecycle-round-20.md:29-40`, its initial checklist/history, and `SKILL.md:2217-2228` | The appended `Round-20 falsification correction — canonical source guidance` in both files supersedes those rows. The counter selects only the corrected-source heading; old rows remain history, not additional current decisions. |
+| `README.md:449-450` “neither immutable row is rewritten” | Immutable cells were not rewritten; S096's mutable used-by cell was appended under the contract. S100 extends scope for LC11 and additional prose anchors without independent-source credit. |
+| w1 return/outcome “all64 settled” flags | Withdrawn as all-actor assertions; `.ufo/waves/round-20/w1/ordering-correction.json`. The w2 return was frozen in `e0b5d02a6aef76b0d2799d92618f79f1bca40062` before exact-blob repairs. |
+| rawSha256/rawBytes in the initial source-opening metadata | Uncompressed HTTP base64 carrier; storage encoding, compressed-file hash/size and gunzip step are now explicit in `.ufo/waves/round-20/source-opening.json`. Initial retrieval time remains unrecorded, not inferred from mtimes. |
+
+No row count is source diversity or new runtime coverage. The new note remains one
+source-distillation entry on held ground; the parent performs independent admission.
