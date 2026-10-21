@@ -48,8 +48,10 @@ C3 admits a routed defect only when `.ufo/waves/round-19/measure-c3.mjs` re-deri
 | S092 | https://raw.githubusercontent.com/nodejs/node/v24.21.0/doc/api/child_process.md | 2026-10-21 | "On non-Windows platforms, if `options.detached` is set to `true`, the child process will be made the leader of a new process group and session." (24 words) | doc/api/child_process.md §options.detached lines 912-915 | `32b3209c134878bfd556e50db453353b8360d810e5d72015e104fb254f52b03a` | w1/SrcSignalsChild.md, w1/SrcSignalsChild.gate.json |
 | S093 | https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT | 2026-10-21 | "Dates MUST be provided in 'YYYY-MM-DD' format." (7 words) | form_mcp_schema.cc:583 | `904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f` | w1/SrcFormSchemaBuild.md, w1/SrcFormSchemaBuild.gate.json |
 
+| S094 (rejected) | https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema_unittest.cc?format=TEXT | 2026-10-21 | "NOT_FOUND: Requested entity was not found" (6 words) | 404 response first line; retained `corpus/evidence/round-19/sources/form_mcp_schema_unittest-404.txt.gz` | `9d640282763185d862683fc9f41bea0e42783725a1e344ff193e0cc05bdc8b19` | w1/SrcFormSchemaTests.md; L1 re-fetch |
+
 Status at entry: S077, S078, S079, S082, S083, S091 mined (used-by the round-19 knowledge note); the rest
-queued. S077 `supersedes S071 —` (stronger: every validator branch, runtime-verified), S071 stays historical.
+queued; S094 rejected (HTTP404). S077 `supersedes S071 —` (stronger: every validator branch, runtime-verified), S071 stays historical.
 Excluded: `form_mcp_schema_unittest.cc` (404 at the tag); `html_form_mcp_tool_test.cc` (the seat's gate quote
 came from `form_mcp_schema.cc`, not the test file — kept as a lead); the second WHATWG dossier merged into S083.
 No existing row's status/recheck/used-by changed. Census at start: `tabi ok`, exit 0, rows 76.
