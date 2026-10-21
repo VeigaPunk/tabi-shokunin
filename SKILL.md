@@ -2195,3 +2195,57 @@ allowlisted. The C2 counter correlates raw command/reply/events with current pag
 the receipt, defeating the demonstrated nonce-aware no-invoke specimen with untouched raw frames.
 All fields remain producer-authored: coordinated falsification of the raw evidence is outside the finite
 claim. Full verification receipts and the original claim's unresolved d4/no-harm limits are in SCORECARD.
+
+## Round 20 — source-scoped completion troubleshooting
+
+This deepens the existing declarative WebMCP ground; it acquires no runtime capability.
+The selection is a finite sample fixed before drafting, not a coverage denominator or
+twelve novel independent branches. Earlier source dossiers held several facts; the new
+artifact makes their conditions and limits available in the playbook. Historical r17
+autosubmit success/navigation and r19 validation receipts remain their own evidence.
+
+### Declarative WebMCP completion lifecycle — source-scoped (round 20)
+
+Source-only Chromium 154.0.8037.97, assuming this internal declarative-tool path is reached;
+not a claim that a browser exposes or executes it. S096 and S100 reuse one retained source
+body. Method, history and raw/decoded provenance: `corpus/knowledge/webmcp-completion-lifecycle-round-20.md`.
+The counter measures the note's mechanically valid documented rows, not semantic truth,
+runtime coverage, branch novelty or this domain's whole-axis score.
+
+| ID | condition | outcome | Source anchor |
+|---|---|---|---|
+| LC01 | At ExecuteTool entry the form has no toolautosubmit attribute, so require_submit_button is computed true. | require_submit_button is true; the autosubmit use counter is incremented only when the attribute is present at entry. | S096:181-186 |
+| LC02 | FillFormControls returns a ScriptToolError. | done_callback is run with the error immediately; the running state (is_currently_running_, active submit button, done_callback_) is not set by that call. invocation_id_ is written earlier, at line 178, outside this span. | S096:189-210 |
+| LC03 | The call parsed a JSON object, FormMCPSchema::SubmitButton() returns null, and require_submit_button (computed at ExecuteTool entry) is true. | FillFormControls returns kMissingRequiredSubmitButton before the FillData call on the same path is reached. | S096:249-258 |
+| LC04 | FillFormControls returned no error and the entry-time require_submit_button is true. | submit_button->Focus() and context->PauseExecution() are called; this branch does not run the done callback. The pending outcome is not established here: focus handlers and PauseExecution effects are outside the excerpt. | S096:212-218 |
+| LC05 | FillFormControls returned no error and the entry-time require_submit_button is false (toolautosubmit present at entry). | form_->PrepareForSubmission(/*event*/ nullptr, submit_button) is called immediately; this callsite alone establishes no submit event, navigation, or completion. | S096:218-221 |
+| LC06 | CancelTool is called (it CHECKs is_currently_running_). | CallDoneCallback runs with kToolCancelled and the message Tool execution cancelled by abort signal. | S096:224-229 |
+| LC07 | CallDoneCallback is called. | If done_callback_ is null it returns with no state change. If non-null, the callback is invoked (line 266) before the state reset at lines 267-270, which sets is_currently_running_ to false, clears active_submit_button_ and invocation_id_, and is followed by PseudoStateChanged notifications (lines 271-274). At the callback, the reset has not run, so those fields hold pre-completion values unless the callback changes them; the excerpt does not show what the callback does. | S096:261-275 |
+| LC08 | HandleWebMcpToolResponse receives a settlement for a tool that is not CurrentlyRunning. | The settlement is ignored: the function returns without calling the done callback. | S096:290-298 |
+| LC09 | The tool is still CurrentlyRunning, the respondWith promise resolves with an object, and v8::JSON::Stringify(...).ToLocal(...) returns false. | CallDoneCallback is called with kToolInvocationFailed and the fixed serialization message; this arm returns before the fallback and success callback. It does not classify every non-serializable JavaScript value. | S096:298-319 |
+| LC10 | The tool is still CurrentlyRunning and the respondWith promise rejects. | The rejection value is reported through V8ScriptRunner::ReportException, then CallDoneCallback runs with kToolInvocationFailed and the text respondWith promise was rejected. | S096:320-327 |
+| LC11 | The tool is still running after submit dispatch; should_submit is false; TakeRespondWithPromise() returns no promise. | CallDoneCallback runs with kToolInvocationFailed and the programming-error message; no output value is set on that path. | S100:787-815 |
+| LC12 | PrepareForSubmission reaches the should_submit branch and executing_tool remains CurrentlyRunning after ScheduleFormSubmission returns. | CallDoneCallback runs with base::ok of a null String, which the source comment describes as a navigation-intent sentinel: internal, and not proof of navigation, success, or any CDP output value. The ok call follows the ScheduleFormSubmission call in the same block and is guarded only by executing_tool remaining CurrentlyRunning; it is not conditioned on navigation being scheduled. The body of ScheduleFormSubmission is outside the retained anchor. | S096:818-830 |
+
+**Use the table without converting calls into outcomes.** Pin the source bytes before
+reusing these branches; separate fill-time refusal from running-state entry (LC02–03);
+do not interpret focus/pause or PrepareForSubmission as completion (LC04–05); preserve
+callback-before-reset ordering and the not-running guard (LC07–10); and distinguish
+the internal null-String sentinel from any observed navigation or output (LC12).
+The bridge to the r17 landing-document JSON-LD result is outside this source sample,
+not a new runtime contradiction established by this round. Reset/removal/re-registration,
+other builds and unobserved runtime paths remain outside the sample.
+
+### Registry — round 20
+
+| Name / kind | Entry command (lane root) | Verdict map | Self-test | Pinned values | Write scope / owner |
+|---|---|---|---|---|---|
+| lifecycle documented-row counter / probe | `node .ufo/waves/round-20/measure-c1.mjs REV` | 0 evaluated count (baseline absent=0); 1 failed validation; 2 could-not-evaluate | `node .ufo/waves/round-20/measure-c1.mjs --selftest` | `corpus/evidence/round-20/selftests/expected.json`; retained source; S096/S100; `.ufo/waves/round-20/measurement-binding.json` | git blobs/stdout only; selftest in-memory fixtures; tabi |
+| wave-1 provenance metadata / gate | `node .ufo/waves/round-20/check-wave.mjs --spec .ufo/waves/round-20/w1/spec.json --registry .ufo/waves/round-20/w1/swarm-registry.json --snapshot .ufo/waves/round-20/w1/return.json` | 0 clean; 1 failed; 2 could-not-evaluate | `node .ufo/waves/round-20/check-wave.mjs --selftest` | `corpus/evidence/round-20/wave-check-expected.json`; w1 spec, registry, direct snapshot | read-only metadata; selftest isolated temp fixtures; tabi |
+| curation census / probe | `node .ufo/waves/round-20/counts.mjs REV` | 0 counted JSON; 2 could-not-evaluate | none claimed | counted committed SOURCES table and knowledge paths | read-only git/stdout; tabi |
+| lesson-history enumeration / probe | `node .ufo/waves/round-20/lesson-history.mjs REV` | 0 enumerated JSON; 2 could-not-evaluate | none claimed | frozen USER lessonDrift predicate at baseline; not complete USER gate | read-only git/stdout; tabi |
+
+The wave gate refuses only its finite metadata shapes. It does not authenticate who
+captured a snapshot, establish capture order, certify writer isolation, or prove no harm.
+The lesson probe enumerates the lesson predicate without rerunning the inherited red gate.
+No new capability row, promotion, retirement, real-site authority or sibling lease is earned.

@@ -1,0 +1,34 @@
+### Declarative WebMCP completion lifecycle — source-scoped (round 20)
+
+Source-only, Chromium 154.0.8037.97, S096 (top source, same immutable body); LC11 is rendered from S100 (same URL, tag and digest; supersedes S096 for that row only). Not runtime-observed; no universal guarantee of eventual completion or response; the twelve rows are documented sourced rows, not twelve novel independent predicates, and are a finite sample rather than exhaustive completion or cancellation coverage. Detail: corpus/knowledge/webmcp-completion-lifecycle-round-20.md.
+
+| ID | condition | outcome | Source anchor |
+|---|---|---|---|
+| LC01 | At ExecuteTool entry the form has no toolautosubmit attribute, so require_submit_button is computed true. | require_submit_button is true; the autosubmit use counter is incremented only when the attribute is present at entry. | S096:181-186 |
+| LC02 | FillFormControls returns a ScriptToolError. | done_callback is run with the error immediately; the running state (is_currently_running_, active submit button, done_callback_) is not set by that call. invocation_id_ is written earlier, at line 178, outside this span. | S096:189-210 |
+| LC03 | The call parsed a JSON object, FormMCPSchema::SubmitButton() returns null, and require_submit_button (computed at ExecuteTool entry) is true. | FillFormControls returns kMissingRequiredSubmitButton before the FillData call on the same path is reached. | S096:249-258 |
+| LC04 | FillFormControls returned no error and the entry-time require_submit_button is true. | submit_button->Focus() and context->PauseExecution() are called; this branch does not run the done callback. The pending outcome is not established here: focus handlers and PauseExecution effects are outside the excerpt. | S096:212-218 |
+| LC05 | FillFormControls returned no error and the entry-time require_submit_button is false (toolautosubmit present at entry). | form_->PrepareForSubmission(/*event*/ nullptr, submit_button) is called immediately; this callsite alone establishes no submit event, navigation, or completion. | S096:218-221 |
+| LC06 | CancelTool is called (it CHECKs is_currently_running_). | CallDoneCallback runs with kToolCancelled and the message Tool execution cancelled by abort signal. | S096:224-229 |
+| LC07 | CallDoneCallback is called. | If done_callback_ is null it returns with no state change. If non-null, the callback is invoked (line 266) before the state reset at lines 267-270, which sets is_currently_running_ to false, clears active_submit_button_ and invocation_id_, and is followed by PseudoStateChanged notifications (lines 271-274). At the callback, the reset has not run, so those fields hold pre-completion values unless the callback changes them; the excerpt does not show what the callback does. | S096:261-275 |
+| LC08 | HandleWebMcpToolResponse receives a settlement for a tool that is not CurrentlyRunning. | The settlement is ignored: the function returns without calling the done callback. | S096:290-298 |
+| LC09 | The tool is still CurrentlyRunning, the respondWith promise resolves with an object, and v8::JSON::Stringify(...).ToLocal(...) returns false. | CallDoneCallback is called with kToolInvocationFailed and the fixed serialization message; this arm returns before the fallback and success callback. It does not classify every non-serializable JavaScript value. | S096:298-319 |
+| LC10 | The tool is still CurrentlyRunning and the respondWith promise rejects. | The rejection value is reported through V8ScriptRunner::ReportException, then CallDoneCallback runs with kToolInvocationFailed and the text respondWith promise was rejected. | S096:320-327 |
+| LC11 | The tool is still running after submit dispatch; should_submit is false; TakeRespondWithPromise() returns no promise. | CallDoneCallback runs with kToolInvocationFailed and the programming-error message; no output value is set on that path. | S100:787-815 |
+| LC12 | PrepareForSubmission reaches the should_submit branch and executing_tool remains CurrentlyRunning after ScheduleFormSubmission returns. | CallDoneCallback runs with base::ok of a null String, which the source comment describes as a navigation-intent sentinel: internal, and not proof of navigation, success, or any CDP output value. The ok call follows the ScheduleFormSubmission call in the same block and is guarded only by executing_tool remaining CurrentlyRunning; it is not conditioned on navigation being scheduled. The body of ScheduleFormSubmission is outside the retained anchor. | S096:818-830 |
+
+Finite sample, not exhaustive coverage: the table does not enumerate every completion or cancellation path; other paths remain outside these twelve decisions. Within the S100 anchor, submitFromJavaScript also calls the done callback with a null String for a running tool (S100:834-842); this caveat is not another row.
+
+Finite failure checklist (every non-success or undetermined class in this table; anything else makes no claim):
+
+1. Fill error (LC02): call returns an error at once; running state not set.
+2. Missing required submit button (LC03): fill refused before FillData runs.
+3. Focus and pause branch (LC04): no done callback on this branch; the pending outcome is not established by the excerpt.
+4. Cancel (LC06): kToolCancelled with the abort-signal message.
+5. Serialization failure of a resolved object (LC09): kToolInvocationFailed with the serialization message.
+6. Rejected respondWith promise (LC10): kToolInvocationFailed with the rejection message.
+7. Programming-error path without a respondWith promise (LC11): kToolInvocationFailed with the programming-error message; no output value.
+8. Settlement after the tool stopped running (LC08): ignored; no second callback.
+9. Null-String sentinel on the navigating submit path (LC12): internal navigation-intent sentinel per the source comment; not proof of navigation, success, or any CDP output value.
+
+Scope limits: one build; source-only; not a claim for other forms, controls, frames, or builds.

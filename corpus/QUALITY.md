@@ -226,3 +226,9 @@
     first integration's 9 failures were five checkbox encoding mismatches plus four disabled-hidden
     field-reader mismatches. These supersede those narrower attribution examples, not their requirements.
     (lesson: corpus/lessons/round-19.md#mistakes; w2/ScribeCoherence E12–E13)
+50. A source-only decision table separates the sampled callsite from its downstream effect,
+    preserves entry-time predicates across possible callbacks, and distinguishes documentary
+    row counts from semantic entailment, novelty and runtime coverage. Each citation span
+    is contained in its named source row's immutable anchor; extending that anchor requires
+    a new explicit same-source supersession row, never an in-place anchor edit.
+    (lesson: corpus/lessons/round-20.md#mistakes; w1/CriticCount, AttackLC05, ReviewSourceContract)

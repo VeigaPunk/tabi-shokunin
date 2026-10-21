@@ -1190,3 +1190,33 @@ is resolved-by-ruling, retained verbatim in `.ufo/waves/round-19/final/l0-ruling
 the preceding compatibility-as-axis-harm/quality-harmed reading; it does not change the observed exits or
 erase provenance. Progression proceeds on repaired claims by orchestrator authorization. C3 d4 remains
 unprovable for missing historical return-time snapshot; only d1–d3 are measured closed.
+
+## Round 20 — hyaku, 2026-10-21 (fresh held round 20, attempt 1)
+
+- Declared C1 depth: turn already source-held but scattered declarative lifecycle
+  facts into a source-scoped troubleshooting sample; target0→12 documented rows,
+  not12 novel predicates, runtime cases or a scalar promotion. Motivation:
+  `corpus/README.md:407-410`, round19's source-only frontier, and
+  `.ufo/waves/round-20/w1/{CriticCount,AttackLC05,AttackLC12}.md`.
+- Built with64 validated seats, L1 planner held; exact dispatch/registry and
+  source/semantic disagreements are in `.ufo/waves/round-20/w1/`.
+  Four production writers used isolated clones; committed donor branches survive
+  in `writer-bundles/` with the full path/base/identity/diff ledger in
+  `.ufo/waves/round-20/isolation-ledger.json`.
+- Captured actual full-wave return at `.ufo/waves/round-20/w1/return.json`
+  before the first import; tracked diff empty. This is current-round evidence,
+  not a reconstruction or repair of round19's missing d4 observation.
+- Retained newly fetched raw/base64 and decoded source identities in
+  `.ufo/waves/round-20/source-opening.json`; S100 extends S096's anchor for
+  LC11 using the same bytes. S096 only gains a mutable used-by backlink;
+  old→new audit will land in the final one-write round20 lesson.
+- Landed knowledge/table, finite counter and independent fixture expectations,
+  wave metadata guard, curation/history probes, new index row and lesson-backed
+  QUALITY50. Main integration corrected the note heading and manifest shape,
+  LC05 callsite-only outcome, LC09 ToLocal-failure wording, and LC12 code quote.
+  Donor originals remain in the bundles; no original expectation is silently erased.
+- Rejected integration suggestions to edit immutable source anchors, treat
+  source rows as independent corroboration, infer universal human gating or
+  navigation success, or count all source dossiers as new frontier coverage.
+  Historical lesson/gate bytes remain untouched. Verification and final counts
+  are recorded in the later round20 log entry, not asserted here.

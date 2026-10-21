@@ -1,0 +1,276 @@
+{
+  "schema": "tabi-round20-c1-selftest-expected-v1",
+  "metric": "c1_lifecycle_decisions",
+  "design": {
+    "path": ".ufo/waves/round-20/design.json",
+    "sha256": "1c9f536e329d74fef1c4502c133c551a30fe7ccfc18f2641ba85ee4245a7a1da"
+  },
+  "source": {
+    "id": "S096",
+    "path": "corpus/evidence/round-20/sources/html_form_element.cc",
+    "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT",
+    "sha256": "8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916"
+  },
+  "reasons": [
+    "decision_anchor_uncovered",
+    "decision_duplicate_id",
+    "decision_missing",
+    "decision_source_mismatch",
+    "manifest_malformed",
+    "manifest_shape",
+    "partial_state",
+    "quote_invalid",
+    "quote_mismatch",
+    "registry_backlink_missing",
+    "registry_row_invalid",
+    "registry_status_invalid",
+    "runtime_wording",
+    "scope_mismatch",
+    "source_digest_mismatch",
+    "source_mismatch",
+    "source_missing",
+    "span_invalid",
+    "table_row_extra",
+    "table_row_missing"
+  ],
+  "cases": [
+    {
+      "name": "valid_all12",
+      "count": 12,
+      "exit": 0,
+      "findings": [],
+      "mutation": "none: retained blob; twelve decisions; LC11 sourceId S100 with an S100 registry row whose anchor declares html_form_element.cc:787-815 and whose source cell carries the URL; S096 anchor covers 174-328,729-758,818-842; S096 used-by names the round-19 and round-20 notes"
+    },
+    {
+      "name": "baseline_absent0",
+      "count": 0,
+      "exit": 0,
+      "findings": [],
+      "mutation": "empty Map: no manifest and no note"
+    },
+    {
+      "name": "partial_manifest_without_note",
+      "count": 12,
+      "exit": 1,
+      "findings": ["partial_state"],
+      "mutation": "valid manifest with the note removed"
+    },
+    {
+      "name": "partial_note_without_manifest",
+      "count": 0,
+      "exit": 1,
+      "findings": ["partial_state"],
+      "mutation": "valid note with the manifest removed"
+    },
+    {
+      "name": "manifest_malformed_json",
+      "count": 0,
+      "exit": 1,
+      "findings": ["manifest_malformed"],
+      "mutation": "manifest truncated to 96 bytes; note keeps heading, a Sources line naming S096 and S100, scope and table header with zero LC rows; registry and blob valid"
+    },
+    {
+      "name": "wrong_manifest_schema",
+      "count": 12,
+      "exit": 1,
+      "findings": ["manifest_shape"],
+      "mutation": "manifest schema name ends in v0"
+    },
+    {
+      "name": "source_digest_edit",
+      "count": 12,
+      "exit": 1,
+      "findings": ["source_digest_mismatch"],
+      "mutation": "one newline appended to the retained blob, after every pinned span"
+    },
+    {
+      "name": "source_absent",
+      "count": 12,
+      "exit": 1,
+      "findings": ["source_missing"],
+      "mutation": "retained blob key removed from the Map; manifest, note and registry valid"
+    },
+    {
+      "name": "quote_mismatch",
+      "count": 12,
+      "exit": 1,
+      "findings": ["quote_mismatch"],
+      "mutation": "LC04 quote changed from PauseExecution to PauseExecutionNow"
+    },
+    {
+      "name": "invalid_quote_empty",
+      "count": 12,
+      "exit": 1,
+      "findings": ["quote_invalid"],
+      "mutation": "LC06 quote is the empty string"
+    },
+    {
+      "name": "invalid_quote_26_words",
+      "count": 12,
+      "exit": 1,
+      "findings": ["quote_invalid"],
+      "mutation": "LC09 quote is an exact literal substring of span lines 298-319 spanning 26 whitespace words"
+    },
+    {
+      "name": "invalid_span_reversed",
+      "count": 12,
+      "exit": 1,
+      "findings": ["span_invalid"],
+      "mutation": "LC03 span written as 258-249 in manifest and table"
+    },
+    {
+      "name": "wrong_scope",
+      "count": 12,
+      "exit": 1,
+      "findings": ["scope_mismatch"],
+      "mutation": "manifest and note scope name Chromium 153.0.7000.0"
+    },
+    {
+      "name": "runtime_wording",
+      "count": 12,
+      "exit": 1,
+      "findings": ["runtime_wording"],
+      "mutation": "LC04 outcome and its table row state observed at runtime"
+    },
+    {
+      "name": "duplicate_id",
+      "count": 13,
+      "exit": 1,
+      "findings": ["decision_duplicate_id"],
+      "mutation": "LC05 repeated as a thirteenth decision and table row"
+    },
+    {
+      "name": "missing_table_row",
+      "count": 12,
+      "exit": 1,
+      "findings": ["table_row_missing"],
+      "mutation": "LC07 row removed from the note table; manifest intact"
+    },
+    {
+      "name": "missing_manifest_decision",
+      "count": 11,
+      "exit": 1,
+      "findings": ["decision_missing"],
+      "mutation": "LC12 removed from manifest and table"
+    },
+    {
+      "name": "wrong_source_url",
+      "count": 12,
+      "exit": 1,
+      "findings": ["source_mismatch"],
+      "mutation": "manifest source url names tag 154.0.8037.98"
+    },
+    {
+      "name": "wrong_source_id",
+      "count": 12,
+      "exit": 1,
+      "findings": ["decision_source_mismatch", "registry_backlink_missing", "source_mismatch"],
+      "mutation": "manifest source id S097; rows mirror effective S097 for the eleven S096 decisions; LC11 stays S100"
+    },
+    {
+      "name": "wrong_source_path",
+      "count": 12,
+      "exit": 1,
+      "findings": ["source_mismatch"],
+      "mutation": "manifest source path names html_form_element_copy.cc"
+    },
+    {
+      "name": "missing_registry_backlink",
+      "count": 12,
+      "exit": 1,
+      "findings": ["registry_backlink_missing"],
+      "mutation": "S096 used-by lists only the round-19 note"
+    },
+    {
+      "name": "wrong_decision_source_override",
+      "count": 12,
+      "exit": 1,
+      "findings": ["decision_anchor_uncovered", "decision_source_mismatch", "registry_backlink_missing"],
+      "mutation": "LC11 sourceId S099; note row S099:787-815"
+    },
+    {
+      "name": "missing_decision_source_override",
+      "count": 12,
+      "exit": 1,
+      "findings": ["decision_anchor_uncovered", "decision_source_mismatch", "registry_backlink_missing"],
+      "mutation": "LC11 sourceId removed; note row S096:787-815"
+    },
+    {
+      "name": "override_table_mismatch",
+      "count": 12,
+      "exit": 1,
+      "findings": ["decision_anchor_uncovered", "decision_source_mismatch", "table_row_extra", "table_row_missing"],
+      "mutation": "LC11 sourceId removed while its note row still reads S100:787-815"
+    },
+    {
+      "name": "forced_s096_lc11",
+      "count": 12,
+      "exit": 1,
+      "findings": ["decision_anchor_uncovered", "decision_source_mismatch", "registry_backlink_missing"],
+      "mutation": "LC11 sourceId forced to S096; note row S096:787-815"
+    },
+    {
+      "name": "s100_row_missing",
+      "count": 12,
+      "exit": 1,
+      "findings": ["registry_row_invalid"],
+      "mutation": "registry has no S100 row; LC11 row still cites S100"
+    },
+    {
+      "name": "s100_status_not_mined",
+      "count": 12,
+      "exit": 1,
+      "findings": ["registry_status_invalid"],
+      "mutation": "S100 status queued"
+    },
+    {
+      "name": "s100_backlink_missing",
+      "count": 12,
+      "exit": 1,
+      "findings": ["registry_backlink_missing"],
+      "mutation": "S100 used-by lists only the round-19 note"
+    },
+    {
+      "name": "s100_teaches_not_supersedes",
+      "count": 12,
+      "exit": 1,
+      "findings": ["registry_row_invalid"],
+      "mutation": "S100 teaches does not open with supersedes S096 dash"
+    },
+    {
+      "name": "s100_url_mismatch",
+      "count": 12,
+      "exit": 1,
+      "findings": ["registry_row_invalid"],
+      "mutation": "S100 source url names tag 154.0.8037.98"
+    },
+    {
+      "name": "s100_digest_mismatch",
+      "count": 12,
+      "exit": 1,
+      "findings": ["registry_row_invalid"],
+      "mutation": "S100 anchor sha256 replaced by 64 zeros"
+    },
+    {
+      "name": "wrong_anchor_s100",
+      "count": 12,
+      "exit": 1,
+      "findings": ["decision_anchor_uncovered"],
+      "mutation": "S100 anchor declares html_form_element.cc:174-328 only; LC11 787-815 uncovered"
+    },
+    {
+      "name": "wrong_anchor_s096",
+      "count": 12,
+      "exit": 1,
+      "findings": ["decision_anchor_uncovered"],
+      "mutation": "S096 anchor drops 818-842; LC12 uncovered"
+    },
+    {
+      "name": "malformed_anchor_s100",
+      "count": 12,
+      "exit": 1,
+      "findings": ["registry_row_invalid"],
+      "mutation": "S100 anchor range html_form_element.cc:787- is malformed"
+    }
+  ]
+}

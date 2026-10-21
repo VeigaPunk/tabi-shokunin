@@ -432,3 +432,21 @@ L0 disposition: Main ruled that USER refusal growth inherited before this contin
 conformance debt with axes unaffected, not a new axis harm. Its recorded refusal stays two and history/
 gate remain unchanged (`../.ufo/waves/round-19/final/l0-ruling.txt`). C3 d4 remains separately unprovable;
 current trend grading is the lesson's final L0 ruling section.
+
+## Round 20 — completion lifecycle source distillation (2026-10-21)
+
+| Note | Ground / evidence class | Sources |
+|---|---|---|
+| `knowledge/webmcp-completion-lifecycle-round-20.md` | Deepens already source-held declarative lifecycle ground into a finite troubleshooting table: entry-time autosubmit fork, fill refusal, focus/pause callsites, callback ordering, response errors and internal null-String sentinel. Source-only; not a new runtime surface, independent-branch count or capability. | S096 reopened; S100 is an explicit same-body anchor extension for LC11; `evidence/round-20/lifecycle/decisions.json`; retained raw/decoded source metadata in `../.ufo/waves/round-20/source-opening.json` |
+
+Frontier remains open: real-site WebMCP, agent-side consumption, non-autosubmit runtime
+execution, declarative cancellation/rejection/late-settlement fixtures, other builds and
+default-profile behaviour. Historical autosubmit success/navigation were already observed
+in r17; this round does not erase them or turn source calls into new observations.
+The new note is mapped here; run `node .ufo/waves/round-20/counts.mjs REV` for the
+revision-bound corpus census. Extra SOURCES rows are not expansion or source diversity.
+
+Correction index: S078's old empty-string wording is already superseded by S096; neither
+immutable row is rewritten. S100 extends anchors, not independent authority. The
+LC12 C++ sentinel-to-landing-result bridge is outside this sample, not newly established
+as an output mapping. Round-19 missing return-time evidence remains unprovable.

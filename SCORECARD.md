@@ -920,3 +920,15 @@ Technical C1/C2 improvements remain measured; no new axis harm was observed in t
 C3's original target4 remains unprovable (d4 missing direct return-time evidence); no proxy observation
 is substituted. Main authorizes progression on repaired claims; independent closure/admission is theirs,
 not asserted by this author scorecard.
+
+## Round 20 — declared source-scoped depth claim (2026-10-21)
+
+Baseline `c49929430d996b016dde2e3a3a5be380f3433fdb`; fresh held round20/attempt1.
+C1 only: **depth**, a lowest non-retired tie at8, target0→12 mechanically validated
+documented lifecycle rows plus separate semantic review. Scalar depth remains8, not
+an unsupported whole-domain promotion. The sample is not12 novel branches or a
+coverage denominator. Source S096 is reopened; LC11 cites new same-body S100.
+Counting command: `node .ufo/waves/round-20/measure-c1.mjs REV`; field
+`c1_lifecycle_decisions`. This is a declaration, not an executed measurement.
+Other axes, capabilities, saturation8/window3 and retirement status are unchanged.
+Round19 stays closed; its original C3 target4 remains unprovable.

@@ -1,0 +1,109 @@
+{
+  "schema": "tabi-webmcp-lifecycle-decisions-v1",
+  "source": {
+    "id": "S096",
+    "path": "corpus/evidence/round-20/sources/html_form_element.cc",
+    "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT",
+    "sha256": "8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916"
+  },
+  "scope": "source-only Chromium 154.0.8037.97; not runtime-observed",
+  "decisions": [
+    {
+      "id": "LC01",
+      "condition": "At ExecuteTool entry the form has no toolautosubmit attribute, so require_submit_button is computed true.",
+      "outcome": "require_submit_button is true; the autosubmit use counter is incremented only when the attribute is present at entry.",
+      "startLine": 181,
+      "endLine": 186,
+      "quote": "!form_->FastHasAttribute(html_names::kToolautosubmitAttr);"
+    },
+    {
+      "id": "LC02",
+      "condition": "FillFormControls returns a ScriptToolError.",
+      "outcome": "done_callback is run with the error immediately; the running state (is_currently_running_, active submit button, done_callback_) is not set by that call. invocation_id_ is written earlier, at line 178, outside this span.",
+      "startLine": 189,
+      "endLine": 210,
+      "quote": "return std::move(done_callback).Run(base::unexpected(error.value()));"
+    },
+    {
+      "id": "LC03",
+      "condition": "The call parsed a JSON object, FormMCPSchema::SubmitButton() returns null, and require_submit_button (computed at ExecuteTool entry) is true.",
+      "outcome": "FillFormControls returns kMissingRequiredSubmitButton before the FillData call on the same path is reached.",
+      "startLine": 249,
+      "endLine": 258,
+      "quote": "if (!*submit_button && require_submit_button) {"
+    },
+    {
+      "id": "LC04",
+      "condition": "FillFormControls returned no error and the entry-time require_submit_button is true.",
+      "outcome": "submit_button->Focus() and context->PauseExecution() are called; this branch does not run the done callback. The pending outcome is not established here: focus handlers and PauseExecution effects are outside the excerpt.",
+      "startLine": 212,
+      "endLine": 218,
+      "quote": "context->PauseExecution();"
+    },
+    {
+      "id": "LC05",
+      "condition": "FillFormControls returned no error and the entry-time require_submit_button is false (toolautosubmit present at entry).",
+      "outcome": "form_->PrepareForSubmission(/*event*/ nullptr, submit_button) is called immediately; this callsite alone establishes no submit event, navigation, or completion.",
+      "startLine": 218,
+      "endLine": 221,
+      "quote": "form_->PrepareForSubmission(/*event*/ nullptr, submit_button);"
+    },
+    {
+      "id": "LC06",
+      "condition": "CancelTool is called (it CHECKs is_currently_running_).",
+      "outcome": "CallDoneCallback runs with kToolCancelled and the message Tool execution cancelled by abort signal.",
+      "startLine": 224,
+      "endLine": 229,
+      "quote": "Tool execution cancelled by abort signal"
+    },
+    {
+      "id": "LC07",
+      "condition": "CallDoneCallback is called.",
+      "outcome": "If done_callback_ is null it returns with no state change. If non-null, the callback is invoked (line 266) before the state reset at lines 267-270, which sets is_currently_running_ to false, clears active_submit_button_ and invocation_id_, and is followed by PseudoStateChanged notifications (lines 271-274). At the callback, the reset has not run, so those fields hold pre-completion values unless the callback changes them; the excerpt does not show what the callback does.",
+      "startLine": 261,
+      "endLine": 275,
+      "quote": "std::move(done_callback_).Run(result);"
+    },
+    {
+      "id": "LC08",
+      "condition": "HandleWebMcpToolResponse receives a settlement for a tool that is not CurrentlyRunning.",
+      "outcome": "The settlement is ignored: the function returns without calling the done callback.",
+      "startLine": 290,
+      "endLine": 298,
+      "quote": "if (!tool->CurrentlyRunning()) {"
+    },
+    {
+      "id": "LC09",
+      "condition": "The tool is still CurrentlyRunning, the respondWith promise resolves with an object, and v8::JSON::Stringify(...).ToLocal(...) returns false.",
+      "outcome": "CallDoneCallback is called with kToolInvocationFailed and the fixed serialization message; this arm returns before the fallback and success callback. It does not classify every non-serializable JavaScript value.",
+      "startLine": 298,
+      "endLine": 319,
+      "quote": "could not be serialized to JSON"
+    },
+    {
+      "id": "LC10",
+      "condition": "The tool is still CurrentlyRunning and the respondWith promise rejects.",
+      "outcome": "The rejection value is reported through V8ScriptRunner::ReportException, then CallDoneCallback runs with kToolInvocationFailed and the text respondWith promise was rejected.",
+      "startLine": 320,
+      "endLine": 327,
+      "quote": "respondWith promise was rejected"
+    },
+    {
+      "id": "LC11",
+      "sourceId": "S100",
+      "condition": "The tool is still running after submit dispatch; should_submit is false; TakeRespondWithPromise() returns no promise.",
+      "outcome": "CallDoneCallback runs with kToolInvocationFailed and the programming-error message; no output value is set on that path.",
+      "startLine": 787,
+      "endLine": 815,
+      "quote": "The site has a programming error: it called"
+    },
+    {
+      "id": "LC12",
+      "condition": "PrepareForSubmission reaches the should_submit branch and executing_tool remains CurrentlyRunning after ScheduleFormSubmission returns.",
+      "outcome": "CallDoneCallback runs with base::ok of a null String, which the source comment describes as a navigation-intent sentinel: internal, and not proof of navigation, success, or any CDP output value. The ok call follows the ScheduleFormSubmission call in the same block and is guarded only by executing_tool remaining CurrentlyRunning; it is not conditioned on navigation being scheduled. The body of ScheduleFormSubmission is outside the retained anchor.",
+      "startLine": 818,
+      "endLine": 830,
+      "quote": "executing_tool->CallDoneCallback(base::ok(String()));"
+    }
+  ]
+}

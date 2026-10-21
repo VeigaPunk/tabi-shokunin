@@ -1,0 +1,50 @@
+## Completed (1)
+
+### TabiR20.ExecFixtures [task] — completed
+Label: TabiR20.ExecFixtures
+Delivery: not auto-delivered; recovered by this snapshot.
+```
+<task-result id="TabiR20.ExecFixtures" agent="executor" status="completed" duration="26m19s">
+
+<output>
+**Commit:** `7908955c9579f853d38ca076b32b6802e31c2f47` on `round20/ExecFixtures`, parent `c49929430d996b016dde2e3a3a5be380f3433fdb`. Author and committer are `tabi-shokunin <tabi@shokunin.local>`. Not pushed.
+
+**Changed paths** (`git diff --name-only c49929430d…HEAD`):
+- `.ufo/waves/round-20/selftest-c1.mjs` (mode 100755, same as the repo's selftest scripts)
+- `corpus/evidence/round-20/selftests/expected.json`
+
+**Contract:** built against lane `design.json` sha256 `1c9f536e329d74fef1c4502c133c551a30fe7ccfc18f2641ba85ee4245a7a1da`. The clone's `37fa4eab…` copy was not used.
+
+**What the commit contains**
+- The runner imports `evaluate` and `FINDING_IDS` from the sibling `measure-c1.mjs`. For each of 34 cases it builds a fresh in-memory Map from the pinned spec and the retained S096 blob. It asserts `c1_lifecycle_decisions`, `exit` and the sorted finding set.
+- Pre-flight faults exit 2: blob sha256, quote literal and word-count checks, and the LC11 authority pin.
+- Importing the runner runs nothing. It writes no files and spawns no processes.
+- `expected.json` holds the 34 pairs, the 20 exercised reasons and the S096 pin. Case names match the runner exactly, in the same order.
+- The valid control adds LC11 `sourceId: S100`. It also adds an S100 registry row with the same URL and sha, a `teaches` cell opening `supersedes S096 —`, and an anchor declaring `html_form_element.cc:787-815`. S096 used-by names both notes.
+- LC12 wording now follows the revised topic. Quote and span are unchanged.
+
+**Dependency flags**
+- Depend on S100 authority: `valid_all12`, `wrong_decision_source_override`, `missing_decision_source_override`, `override_table_mismatch`, `forced_s096_lc11`, `s100_row_missing`, `s100_status_not_mined`, `s100_backlink_missing`, `s100_teaches_not_supersedes`, `s100_url_mismatch`, `s100_digest_mismatch`, `wrong_anchor_s100`, `malformed_anchor_s100`.
+- `manifest_malformed_json` expects `[manifest_malformed]` only because its zero-row note keeps an S100 token in the intro. ExecCounter's conditional answer says this keeps the backlink check quiet. This is the most fragile expectation.
+- Changed topic: no fixture reads topic text, so no case depends on it.
+
+**Not confirmed under counter v3**
+- `invalid_span_reversed` → `[span_invalid]`. ExecCounter confirmed this under the earlier rules. The v3 containment check could add `decision_anchor_uncovered` or treat the reversed span differently.
+- The other non-S100 cases carry forward from ExecCounter's first interface message: `source_digest_edit`, `source_absent`, `quote_mismatch`, `missing_table_row`, `missing_manifest_decision`, `runtime_wording`, `duplicate_id`, `wrong_scope`, `wrong_source_url`, `wrong_source_path`, `missing_registry_backlink`, and the `partial_*` pair. Their v3 correction did not list them.
+- Confirmed: `valid_all12`, `wrong_manifest_schema` (`manifest_shape`), both `invalid_quote_*` (`quote_invalid`), `wrong_source_id`, all `s100_*` sets, the three override sets, `forced_s096_lc11`, and both `wrong_anchor_*` sets.
+- I read only sibling `git status`, `git log` and a file stat. I never opened or copied `measure-c1.mjs`. Every reason set comes from ExecCounter's messages plus the spec.
+
+**Coverage gap:** the counter registers 24 ids and these fixtures exercise 20. Not covered: `decision_shape`, `decision_unknown_id`, `decision_text_invalid`, `table_heading_duplicate`. I did not add fixtures for them because they are outside the listed set. That call is yours.
+
+**Inputs not in the commit:** the retained blob `corpus/evidence/round-20/sources/html_form_element.cc` (sha256 `8c8d…6916`, verified) and the lane `design.json` are untracked in the clone. Integration needs both present. The runner exits 2 if the blob is missing.
+
+**Not done, per orders**
+- No tests, builds or runs, and no push.
+- The report `.ufo/waves/round-20/w1/ExecFixtures.md` was not written, because your order was to stop writing. The findings above are the report.
+- `LOG.md` is untouched. It is outside my assigned outputs, so the integration owner should add the entry.
+- No tools installed or updated.
+</output>
+</task-result>
+
+TabiR20.ExecFixtures is now idle — message it via `write agent://TabiR20.ExecFixtures` to follow up; transcript at history://TabiR20.ExecFixtures
+```
