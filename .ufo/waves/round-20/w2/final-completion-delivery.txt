@@ -1,0 +1,33 @@
+## Completed (1)
+
+### TabiR20.ReviewBundles [task] — completed
+Label: TabiR20.ReviewBundles
+Delivery: not auto-delivered; recovered by this snapshot.
+```
+<task-result id="TabiR20.ReviewBundles" agent="reviewer" status="completed" duration="27m57s">
+
+<output>
+ReviewBundles is written to `.ufo/waves/round-20/w2/ReviewBundles.md`. The four donor bundles verify and their commit, base, author, and path claims are exact. The ledger and checkpoint `4ae99816` still do not describe the same state, and there is no tests run.
+
+**Findings (by severity)**
+
+1. **High: ScribeLifecycle checkpoint bytes diverge from the donor.** All three files differ from their bundle tips. The donor commits are not in the lane object database, so the change exists only as prose in `integration.json`. Of 14 hunks, three are not itemized: the table header (`S096:START-END` → `Source anchor`) in the skill section and note, and a skill-section caveat rewrite. The content itself checks out: the 12 quotes are literal within their spans, and the note's new source claims match the retained bytes.
+
+2. **High: the SKILL.md insertion is unrecorded and not a verbatim rendering.** It is a 54-line append, and no ledger path or integration record covers it. Thirteen of 28 non-blank lines of the reviewed section are absent, including the "Not runtime-observed" scope sentence, the failure checklist, and the scope-limits line. Its registry row cites `.ufo/waves/round-20/measurement-binding.json`, which exists nowhere.
+
+3. **High: seven second-generation writer commits sit outside the ledger and checkpoint.** They live in `final-clones/` on `round20/*Canonical`, `*Oracle`, and `*Conformance` branches, and their digests match the handoffs. They landed 07:29–07:41 −03, after the w2 dispatch at 07:22:30 −03, while the w2 context says production is frozen. The second-generation counter pins a new scope literal and a corrected heading that no committed artifact contains, and no ScribeLifecycle second-generation commit exists.
+
+4. **Medium: ledger clone and branch references do not resolve.** The `clones/` directory is gone, and the `round20/<writer>` branches exist only inside the bundles.
+
+5. **Medium: the source-opening record digests the wrong object.** `rawSha256` covers the gunzipped base64 text, not the retained `.gz`. The first retrieval time is undisclosed beyond the JSON's own note.
+
+6. **Low: forward and placeholder references.** QUALITY.md item 50 cites a lesson file that does not exist yet. The SKILL.md `REV` placeholder does not match what `counts.mjs` and `lesson-history.mjs` accept (a full 40-hex revision).
+
+**Verified:** all four bundles pass `git bundle verify`, and their sha256, prerequisite, identity-chain, and path-subset claims match the ledger. The S096 raw and decoded digests reproduced from a fresh Gitiles fetch, and the tag resolves to commit `b510e9d7`. All 12 decision spans sit inside the S096 or S100 anchors. Production changes are append-only except one used-by cell.
+
+**Gaps and process:** no tests, selftests, evaluate runs, or builds. Source checks are literal and line-range checks only, not semantic review. Tools installed or updated: none. `git status` ran in the lane and in the three final clones, which can refresh index stat caches. Nothing was staged, committed, or changed, and I will not repeat it. The temporary sandbox in `/tmp` was removed.
+</output>
+</task-result>
+
+TabiR20.ReviewBundles is now idle — message it via `write agent://TabiR20.ReviewBundles` to follow up; transcript at history://TabiR20.ReviewBundles
+```

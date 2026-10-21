@@ -1220,3 +1220,19 @@ unprovable for missing historical return-time snapshot; only d1–d3 are measure
   navigation success, or count all source dossiers as new frontier coverage.
   Historical lesson/gate bytes remain untouched. Verification and final counts
   are recorded in the later round20 log entry, not asserted here.
+
+### Round-20 falsification return — frozen before repair imports
+
+The fresh64-seat w2 task returns have been received. Before importing any repair
+payload, L1 captured `.ufo/waves/round-20/w2/return.json` with command argv,
+status/output hashes, the lane tip, report hashes and selected immutable donor heads.
+The snapshot and reports are frozen in a separate commit before payload integration.
+This is author-side observation, not global actor quiescence or outside certification.
+
+Correction to the earlier round20 full-wave wording: the raw w1 `all64Settled`
+and `allSettledBeforeImport` flags are withdrawn as all-actor claims. Peer messages
+revived report-only CriticIsolation activity after capture; task-return barriers
+are not actor-quiescence barriers. The timestamped before-import capture and donor
+identities remain observations, but no complete-isolation certification is credited.
+See `.ufo/waves/round-20/w1/ordering-correction.json` and
+`.ufo/waves/round-20/w2/ReviewReturnBoundary.md`. Round19 d4 stays unprovable.
