@@ -1321,3 +1321,13 @@ was absent; cp+cmp exited0 and only that own fleet copy was removed. The retaine
 report and `.ufo/waves/round-20/final/misroot-recovery.json` record it. Fleet
 runtime/state and foreign files were untouched. No tool was installed or updated.
 The old r17 lease/ruling questions remain open; no new r20 L0 question is needed.
+
+Post-lesson verification at `e41ae33c238540a469e4a031fad3ad00ef112616`:
+the history probe enumerated exactly the two inherited refused lessons
+round18/round19, with round20 initial-addition only and no later MDRT commit.
+Receipt: `.ufo/waves/round-20/final/lesson-history.json`. This is the lesson
+predicate only, not a claimed clean USER gate.
+Binding reproduce at that tip exits0, claims1/bound1; counted-input/counter
+drift from the measured revision is empty. Exact receipts:
+`final/binding-after-lesson.json` and `final/count-input-drift.json` under
+`.ufo/waves/round-20/`. Delivered-tip reproduction is recorded in the fleet report.
