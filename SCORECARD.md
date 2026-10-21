@@ -868,3 +868,55 @@ Baseline `66251bfc1aef393e4aec599e950a8deb867736bb`. Declared claims: C1 depth (
 the counters run at the landed revision; the lines in this block are not measurements.
 
 Round-19 correction: SCORECARD.md:830; IDs and pass status retained; 6 of 15 checks dropped numeric CDP codes: five now assert message substrings (invoke-unknown-tool, invoke-after-unregister, invoke-flags-off-control, invoke-iframe-frameid, invoke-before-enable); invoke-domain-disabled only a nonempty message. Supersedes the round-18 wording at `SCORECARD.md:830` ("original11 scenarios/four controls retained") and in the filed round-18 report line 8 ("Final main run retains all11 original scenarios/four controls"), where they read as unchanged assertions; re-derived by `.ufo/waves/round-19/measure-c3.mjs` d2 from the round-17 vs round-18 harness predicates at the baseline.
+
+### Round-19 measured disposition — original claims retained, admission withheld
+
+Executed measurement checkpoint: `f5032f34e3d39da636708199b0f22a838325bbdc`; baseline:
+`66251bfc1aef393e4aec599e950a8deb867736bb`. Complete argv/exits/stdout, counter SHA-256 and results:
+`corpus/evidence/round-19/measurements/final.json`. The final measurement-binding manifest under
+`.ufo/waves/round-19/measurement-binding.json` records the later documentation checkpoint and its
+delivered-tip reproduction; it is not replaced by the historical r16/r17 binding passes.
+
+| Claim / axis | Measured before → after | Counting command, from lane root | Verdict |
+|---|---|---|---|
+| C1 depth | 0→27 (`c1_validation_decisions`), both exit0 | `node .ufo/waves/round-19/measure-c1.mjs REV` | improved for 27 finite, explicitly scoped decisions; semantic source review remains separate from token matching |
+| C2 operability | 0→2 (`c2_h4_properties`), both exit0 | `node .ufo/waves/round-19/measure-c2.mjs REV` | finite artifact-root / current-nonce properties improved; does not erase the separate legacy history harm below |
+| C3 calibration | 0→3 (`c3_routed_closed`), both exit0 | `node .ufo/waves/round-19/measure-c3.mjs REV` | **unprovable against the declared target4**: d1–d3 verified, d4 refuses reconstructed wave-return evidence |
+
+| Axis | Scalar before → after | Round disposition |
+|---|---|---|
+| depth | 8→8 | C1 improves technical detail on a lowest non-retired tie; no unsupported whole-domain scalar promotion |
+| coverage | 9→9 | new validation note enters prior source-only runtime ground, still loopback/single-build |
+| operability | 8→8 | C2 improvement, but **no-harm not established / harmed legacy compatibility**: USER lesson-history refusal set1→2 in inherited ancestry |
+| freshness | 8→8 | bounded new-source openings/corrections; no global recertification |
+| calibration | 9→9 | C3 original four-closure target unprovable; direct return-time snapshot never captured; omitted source-evidence writers also disclosed |
+| adjacency | 8→8 | no sibling ownership, real-site authority or lease ruling added |
+
+New producer execution: 66/66 cases match with zero findings, retained context/argv/cleanup proofs;
+`corpus/evidence/round-19/validation/receipt.json` (producer code at
+`bf466e317bc4dd08192b1dd390b253b4bb0bee8d`). Finite self-tests at that code checkpoint:
+C1 39, C2 40, C3 26, isolation7, each exit0 (`.ufo/waves/round-19/final/selftest-runs.json`).
+The nonce-aware no-invoke mutant accepted at R is now rejected: counter metric0, raw invokes0/responses0,
+both observed predicates false (`final/noinvoke-mutant-after.json` under the round wave).
+
+All23 historical gate exits equal B (22×0, inherited USER1); this is **not** no-harm proof. The frozen USER
+predicate's refusal set grows `[round-18.md]`→`[round-18.md,round-19.md]` because the inherited checkpoint
+modified a lesson after its initial addition. No history rewrite or frozen-gate relaxation is performed.
+Evidence: `w2/CriticNoHarm.md` NH1 and `final/harm-at-measured.json`, both under the round wave.
+
+No new capability row or retirement; saturation8/window3 unchanged. No waiver: depth8 was worked.
+Planned only on a separately authorized next steer: make workflow capture return snapshots before any
+integration and resolve the frozen USER history-policy conflict through its owner; do not recast
+reconstruction as observation or treat this round's partial C3 as an admitted four-closure claim.
+
+### L0 disposition — supersedes legacy-compatibility harm grading above
+
+Main's in-session orchestrator ruling is retained verbatim in
+`.ufo/waves/round-19/final/l0-ruling.txt` and resolved in the fleet L0 queue. The refusal growth1→2
+is an **inherited lane-side conformance defect, axes unaffected**, not a repairable axis harm of the
+continuation. The frozen gate/history remain unchanged and the refusal stays two. This supersedes
+the table's “harmed legacy compatibility” grading and any quality-harmed inference based solely on it.
+Technical C1/C2 improvements remain measured; no new axis harm was observed in the serial checks.
+C3's original target4 remains unprovable (d4 missing direct return-time evidence); no proxy observation
+is substituted. Main authorizes progression on repaired claims; independent closure/admission is theirs,
+not asserted by this author scorecard.

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+    "-e",
+    "const{execFileSync}=require('node:child_process');const repo=process.argv[1],before=process.argv[2],after=process.argv[3];function census(rev){const text=execFileSync('git',['-C',repo,'show',rev+':corpus/SOURCES.md'],{encoding:'utf8'});const rows=text.split(/\\r?\\n/).filter(l=>/^\\|\\s*S[0-9]{3,}\\s*\\|/.test(l)).map(l=>l.split('|').map(x=>x.trim()));const tiers={},status={};for(const r of rows){tiers[r[4]]=(tiers[r[4]]||0)+1;status[r[8]]=(status[r[8]]||0)+1;}return{revision:rev,rows:rows.length,tiers,status,malformed:rows.filter(r=>r.length!==13).length};}const b=census(before),a=census(after);console.log(JSON.stringify({before:b,after:a,added:a.rows-b.rows,tiersAdded:Object.fromEntries(Object.keys(a.tiers).map(k=>[k,a.tiers[k]-(b.tiers[k]||0)]))}));",
+    "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+    "66251bfc1aef393e4aec599e950a8deb867736bb",
+    "f5032f34e3d39da636708199b0f22a838325bbdc"
+  ],
+  "exit": 0,
+  "durationMs": 18,
+  "stdout": "{\"before\":{\"revision\":\"66251bfc1aef393e4aec599e950a8deb867736bb\",\"rows\":76,\"tiers\":{\"A\":64,\"B\":4,\"C\":8},\"status\":{\"mined\":60,\"queued\":8,\"rejected\":8},\"malformed\":0},\"after\":{\"revision\":\"f5032f34e3d39da636708199b0f22a838325bbdc\",\"rows\":99,\"tiers\":{\"A\":86,\"B\":4,\"C\":9},\"status\":{\"mined\":71,\"queued\":19,\"rejected\":9},\"malformed\":0},\"added\":23,\"tiersAdded\":{\"A\":22,\"B\":0,\"C\":1}}\n",
+  "stderr": "",
+  "warningCount": 15
+}

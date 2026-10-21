@@ -428,3 +428,7 @@ S077 rather than counting punctuation as source diversity. The final counter use
 `### Declarative WebMCP input-validation decision table — corrected (round 19)` rendering; the original
 table is retained historical text. The frozen USER gate additionally refuses the modified round-19 lesson
 in inherited ancestry; unchanged gate exits must not be read as proof of no new harm.
+L0 disposition: Main ruled that USER refusal growth inherited before this continuation is lane-side
+conformance debt with axes unaffected, not a new axis harm. Its recorded refusal stays two and history/
+gate remain unchanged (`../.ufo/waves/round-19/final/l0-ruling.txt`). C3 d4 remains separately unprovable;
+current trend grading is the lesson's final L0 ruling section.

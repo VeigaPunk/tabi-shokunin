@@ -2180,3 +2180,18 @@ locale messages, DOM values and concrete outputs are additionally backed by the 
 | DV-26 | In the pinned textarea-empty fixture, precisely decl-textarea-empty-03 test: A key is omitted; no other input shape is asserted. | For the tested empty input object, the two optional text/textarea fields keep their prefilled values through one prevented submit event; no implicit reset or arbitrary handler behavior is asserted. | `decl-textarea-empty-03`; control `decl-textarea-empty-04` | S077 `form_mcp_schema.cc:233-241` |
 | DV-27 | In the pinned textarea-empty fixture, precisely decl-textarea-empty-02 test: A key is sent as the empty string; no other input shape is asserted. | The tested optional text/textarea fields clear on empty strings and complete; required fields and other control types are not covered. | `decl-textarea-empty-02`; control `decl-textarea-empty-04` | S077 `form_mcp_schema.cc:311-313` |
 
+#### Execution prerequisites and bounded evidence
+
+Run the validation producer only with trusted input trees and receipt-output ancestors that remain
+immutable for the entire run. Static symlink/containment checks do not protect against a same-uid actor
+replacing ancestors concurrently. New receipts record this prerequisite, per-context effective argv,
+feature/resolver decisions, executable-object identity, page-request/WebSocket guard installation, artifact
+snapshots before/after context close, and cleanup. These are page-transport controls, not OS-level egress
+confinement; all-page download listening and every transient create/delete race remain untested.
+
+The invoke successor's any-new-file predicate applies to explicit run download directories and private
+Playwright artifact roots; ordinary profile state is separately inventoried/marker-scanned, not filename
+allowlisted. The C2 counter correlates raw command/reply/events with current page/fixture evidence inside
+the receipt, defeating the demonstrated nonce-aware no-invoke specimen with untouched raw frames.
+All fields remain producer-authored: coordinated falsification of the raw evidence is outside the finite
+claim. Full verification receipts and the original claim's unresolved d4/no-harm limits are in SCORECARD.

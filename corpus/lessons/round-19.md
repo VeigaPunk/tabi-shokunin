@@ -174,3 +174,40 @@ DV07's null-specific source span now includes conversion/fill/text validation (4
 requires the parameter-specific error. DV19 covers both tooLong and tooShort anchors; S095 supplies the
 completed range/color spans. Generic S096 error-path citations do not independently entail each HTML
 constraint or localized message: those are finite runtime observations.
+
+## Measured outcome and trend limits
+
+Fresh execution evidence (main L1, after all implementation handoffs): self-tests39/40/26/7 all exit0,
+then repaired validation producer66/66, zero findings. Before/after commands at
+`f5032f34e3d39da636708199b0f22a838325bbdc` give C1 0→27, C2 0→2, C3 0→3, all evaluated exit0
+(`corpus/evidence/round-19/measurements/final.json`). The unchanged nonce-aware no-invoke mutant formerly
+credited2 now gives0 with rawInvokeCount0/rawToolRespondedCount0 and both observed predicates false
+(`.ufo/waves/round-19/final/noinvoke-mutant-after.json`). It is a finite raw-correlation repair, not proof
+against coordinated fabrication of all fields.
+
+The serial inherited gate set retains23/23 exits, including the inherited USER1. Its first error is still
+round18, but the source-derived refusal-set comparison exposes round19 too; no-harm is NOT established.
+C3 target4 is still **unprovable — missing return-time snapshot evidence**, compounded by the source-writer
+inventory omission. Neither a new current snapshot nor another clone count repairs that historical gap.
+
+The continuation's wave-2 return snapshot is actual, but was captured **after** L1 had already integrated
+independent corrections while pinned-R read-only seats ran. It is named
+`isolation/w2-return-after-L1-integration.txt`, not passed off as the promised pre-integration snapshot.
+That missed ordering is an additional author conformance defect; it does not change or authenticate d4.
+
+Author trend assessment: **expansion improved** (runtime-held validation ground);
+**quality harmed overall** (legacy history compatibility refusal grew despite technical/prose repairs);
+**discernment improved, bounded** (previous outside disagreements and current dissent become explicit
+lesson-backed criteria/corrections; d4 remains unprovable and current outside admit/reject closure is
+pending). This trade prevents an admission assertion. No promotion boxes are self-checked as non-author.
+
+## L0 ruling — current trend disposition
+
+Main's orchestrator ruling (`.ufo/waves/round-19/final/l0-ruling.txt`) supersedes the preceding
+quality-harmed/axis-harm inference from the frozen USER refusal. It is inherited lane-side conformance
+debt with **axes unaffected**; no gate/history edit is authorized or performed and the refusal stays two.
+The L0 question is resolved-by-ruling. Current author trends therefore read **expansion improved,
+quality improved, discernment improved (bounded)**: new runtime-held ground, semantic/provenance repairs
+and reproducible finite guards, and lesson-backed disagreements. No current non-author admission is
+claimed, and C3 d4 is still **unprovable — missing direct return-time snapshot evidence**. Main authorizes
+progression on repaired claims without turning reconstructed evidence into an observation.

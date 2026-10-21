@@ -1152,3 +1152,41 @@ the frontier row "Native WebMCP in chromium 152 — unprobed (census U3)"
 - QUALITY47–49 and the lesson's continuation mistake table capture these findings. All original round-18
   evidence and byte-frozen B-era scripts/notes stay unchanged. Tool installs/updates: none in this
   continuation; wave reports name none. No sibling or domain-source tree was edited or pushed.
+
+### Round-19 measured results — no admission by proxy
+
+- Main L1 ran the integrated self-tests once at `bf466e317bc4dd08192b1dd390b253b4bb0bee8d` in a faithful
+  private sandbox: C1 39/39, C2 40/40, C3 26/26, isolation7/7, exits0. Full commands/streams/producers:
+  `.ufo/waves/round-19/final/selftest-runs.json`; canonical self-test receipts under corpus/evidence.
+- New producer validation at that checkpoint: exit0, cases66/passed66/failed0/findings0, all contexts
+  retain argv, executable/guard/artifact/cleanup proofs. Exact execution:
+  `.ufo/waves/round-19/final/validation-run.json`; canonical receipt was landed at
+  `f5032f34e3d39da636708199b0f22a838325bbdc`. `corpus/evidence/round-19/history.json` labels the
+  earlier producer receipt and count files historical rather than silently recertifying them.
+- At f5032f34e3d39da636708199b0f22a838325bbdc, the three counter commands
+  `node .ufo/waves/round-19/measure-c{1,2,3}.mjs REV` were each executed on B and the measured checkpoint:
+  C1 0→27, C2 0→2, C3 0→3; every evaluation exit0. Actual individual argv and full output are in
+  `corpus/evidence/round-19/measurements/final.json`. C3 d4 reason is the missing direct snapshot,
+  not a clean closure. Original target4 remains unprovable, not silently reduced.
+- The unchanged no-invoke mutant `92b5742186d6e94e381e282739e2cbc33f028d21`, formerly credited2, was
+  evaluated with the repaired C2 counter: count0, raw invokes0/responses0, invocationObserved=false and
+  responseObserved=false (`.ufo/waves/round-19/final/noinvoke-mutant-after.json`). All-raw-evidence
+  coordinated fabrication remains untested; a real-browser process alone is not invocation proof.
+- Serial inherited no-harm comparison at f5032f34e3d39da636708199b0f22a838325bbdc:23/23 exits equal B,
+ 22 clean plus inherited USER1; sandbox clean before/after (`final/harm-at-measured.json` under round19).
+  The known lesson-history refusal expansion1→2 and missing d4 observation remain explicit; this is
+  a trade/limit, not an admitted “no axis harmed” round.
+- `node scripts/check-sources.mjs` at the measured checkpoint → rows99, A86/B4/C9,
+  queued19/mined71/rejected9, findings0 (retained in the no-harm receipt). Start rows76; new rows23:
+ 22A/1C, with five supersession rows S095–S099 and no independent-publisher/diversity credit.
+  Fleet `scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi` end exit0,
+ 15 W04 duplicate-scope warnings; exact before replay/end outputs are in `final/census-*.json`.
+
+### Round-19 L0 resolution — inherited conformance debt, not axis harm
+
+Main ruled the frozen USER refusal growth1→2 an inherited process violation to DOCUMENT, with axes
+unaffected; keep lesson files append-only, history/gate unchanged, and refusal at two. The fleet question
+is resolved-by-ruling, retained verbatim in `.ufo/waves/round-19/final/l0-ruling.txt`. This supersedes
+the preceding compatibility-as-axis-harm/quality-harmed reading; it does not change the observed exits or
+erase provenance. Progression proceeds on repaired claims by orchestrator authorization. C3 d4 remains
+unprovable for missing historical return-time snapshot; only d1–d3 are measured closed.
