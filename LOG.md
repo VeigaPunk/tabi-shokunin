@@ -1474,3 +1474,21 @@ with Gate, S101 located quote, S100/S101 mutable-cell audit, mistakes, limits an
 author/outside distinction. Later checks are recorded here/report, not by editing it.
 Fleet-root status sweep showed tracked runtime/state only, no untracked own-seat
 misroots; none were moved/deleted. No installs, new L0 request or next-round claim.
+
+Post-lesson checks at `ab73abefbaddff258af162f15364bb014ffe02f4`:
+measurement binding reproduce0, claims1/bound1. LessonDrift-only enumeration
+returns exactly the inherited round18/round19 refusal set; round21 is one
+initial addition with no later MDRT commits. This is not a clean USER
+production verdict. Receipts: `.ufo/waves/round-21/final/binding-after-lesson.json`
+and `lesson-history.json`. No lesson bytes were changed after their initial commit.
+Delivered-tip reproduction is written directly into the fleet report so that
+retaining its result does not itself create another lane-tip revision.
+
+Landing interruption: a parent-requested empty checkpoint
+`5ce64991e926a052018fa02742a703db2b4516cc` left the dirty working copy on a
+non-tip base, and the normal helper correctly refused. Main resolved this
+at parent/operator level by advancing and pushing the bookmark to that
+empty checkpoint; this lane used no direct mutating jj/git command.
+Normal helper retry retains the pending own receipts/dispositions.
+`final/reanchor-incident.json` records the refusal and parent message.
+No counted input or lesson byte changed; the measured claims remain unchanged.

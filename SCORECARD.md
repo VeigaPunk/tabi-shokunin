@@ -1032,3 +1032,10 @@ agreement. No new capability row or retirement; saturation8/window3 unchanged.
 Planned only on a separately authorized steer: an operability claim on finite
 browser-observation failure cleanup or a bounded absent-user-activation contrast;
 neither is preclaimed or required to complete this round.
+
+Post-lesson disposition at `ab73abefbaddff258af162f15364bb014ffe02f4`:
+binding reproduce0, claims1/bound1; LessonDrift-only refused set stays
+round18/round19, with round21 initial-addition-only. Exact receipts are
+`final/binding-after-lesson.json` and `lesson-history.json` under the round wave.
+The final report carries reproduction against the actual delivered lane tip;
+the inherited USER production failure remains skipped, not declared clean.
