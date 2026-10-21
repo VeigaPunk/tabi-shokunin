@@ -1,0 +1,935 @@
+{
+  "schema": "tabi-round22-review-chronology-selftest-v1",
+  "cases": [
+    {
+      "name": "absent_event_history",
+      "expected": {
+        "exit": 2,
+        "finding": "event_history_unavailable",
+        "assertions": {
+          "event_history.status": "unavailable",
+          "event_history.seats": null
+        }
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:59:00Z"
+        }
+      }
+    },
+    {
+      "name": "peer_revival_after_failure",
+      "expected": {
+        "exit": 1,
+        "finding": "peer_revival_after_failure",
+        "assertions": {
+          "event_history.seats.0.first_terminal.event.status": "failed",
+          "event_history.seats.0.latest_observed_status": "running",
+          "event_history.seats.0.events.length": 2,
+          "event_history.seats.0.failure_events.length": 1
+        }
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:59:00Z"
+        },
+        "event_history": [
+          {
+            "seat": "BuildRuntime",
+            "sequence": 1,
+            "type": "failure",
+            "status": "failed",
+            "actor": "provider",
+            "timestamp": "2026-10-21T11:55:00Z"
+          },
+          {
+            "seat": "BuildRuntime",
+            "sequence": 2,
+            "type": "message",
+            "status": "running",
+            "actor": "TabiR21",
+            "recipient": "BuildRuntime",
+            "timestamp": "2026-10-21T11:56:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "routing_broadcast",
+      "expected": {
+        "exit": 1,
+        "finding": "routing_broadcast"
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:59:00Z"
+        },
+        "event_history": [
+          {
+            "seat": "BuildCounter",
+            "sequence": 1,
+            "type": "message",
+            "actor": "TabiR21",
+            "route": "broadcast",
+            "recipient": "agent://all",
+            "timestamp": "2026-10-21T11:58:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "late_failure",
+      "expected": {
+        "exit": 1,
+        "finding": "late_failure",
+        "assertions": {
+          "event_history.seats.0.first_terminal.event.status": "completed",
+          "event_history.seats.0.latest_observed_status": "failed",
+          "event_history.seats.0.failure_events.length": 1
+        }
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:59:00Z"
+        },
+        "event_history": [
+          {
+            "seat": "BuildRuntime",
+            "sequence": 1,
+            "type": "status",
+            "status": "completed",
+            "actor": "BuildRuntime",
+            "timestamp": "2026-10-21T11:55:00Z"
+          },
+          {
+            "seat": "BuildRuntime",
+            "sequence": 2,
+            "type": "failure",
+            "status": "failed",
+            "actor": "provider",
+            "timestamp": "2026-10-21T11:56:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "chronology_gap",
+      "expected": {
+        "exit": 1,
+        "finding": "review_scope_gap"
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T12:00:01Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T12:00:01Z"
+        },
+        "event_history": []
+      }
+    },
+    {
+      "name": "exact_pre_review_artifact_positive",
+      "expected": {
+        "exit": 0,
+        "finding": "review_scope_match",
+        "assertions": {
+          "verdict": "matched_supplied_scope",
+          "scope.status": "matched",
+          "scope.review_clock_role": "review_observation_upper_bound",
+          "provenance.review": "read-at-revision",
+          "provenance.acquisition": "claimed-in-receipt",
+          "event_history.status": "available"
+        }
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:59:00Z"
+        },
+        "event_history": [
+          {
+            "seat": "BuildRuntime",
+            "sequence": 1,
+            "type": "activity",
+            "status": "complete",
+            "actor": "BuildRuntime",
+            "timestamp": "2026-10-21T11:59:30Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown_clocks",
+      "expected": {
+        "exit": 2,
+        "finding": "chronology_unavailable"
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": null,
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": null
+        },
+        "event_history": []
+      }
+    },
+    {
+      "name": "differing_producer",
+      "expected": {
+        "exit": 1,
+        "finding": "review_scope_gap"
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:59:00Z"
+        },
+        "event_history": []
+      }
+    },
+    {
+      "name": "same_producer_different_artifact_path",
+      "expected": {
+        "exit": 1,
+        "finding": "review_scope_gap",
+        "assertions": {
+          "findings.1": "artifact_scope_mismatch"
+        }
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime-execution-final.json",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime-execution-final.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime-execution-final.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:59:00Z"
+        },
+        "event_history": []
+      }
+    },
+    {
+      "name": "same_path_receipt_digest_mismatch",
+      "expected": {
+        "exit": 1,
+        "finding": "review_scope_gap",
+        "assertions": {
+          "findings.1": "artifact_scope_mismatch"
+        }
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:59:00Z"
+        },
+        "event_history": []
+      }
+    },
+    {
+      "name": "same_path_artifact_digest_mismatch",
+      "expected": {
+        "exit": 1,
+        "finding": "review_scope_gap",
+        "assertions": {
+          "findings.1": "artifact_scope_mismatch"
+        }
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:59:00Z"
+        },
+        "event_history": []
+      }
+    },
+    {
+      "name": "missing_artifact_digest",
+      "expected": {
+        "exit": 2,
+        "finding": "artifact_scope_unavailable"
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:59:00Z"
+        },
+        "event_history": []
+      }
+    },
+    {
+      "name": "missing_receipt_digest",
+      "expected": {
+        "exit": 2,
+        "finding": "artifact_scope_unavailable"
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:59:00Z"
+        },
+        "event_history": []
+      }
+    },
+    {
+      "name": "producer_only_match_artifact_unknown",
+      "expected": {
+        "exit": 2,
+        "finding": "artifact_scope_unavailable"
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound"
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "finished_at": "2026-10-21T11:59:00Z"
+        },
+        "event_history": []
+      }
+    },
+    {
+      "name": "observed_during_acquisition",
+      "expected": {
+        "exit": 1,
+        "finding": "review_scope_gap"
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T12:01:00Z"
+        },
+        "event_history": [
+          {
+            "seat": "BuildRuntime",
+            "sequence": 1,
+            "type": "activity",
+            "status": "complete",
+            "actor": "BuildRuntime",
+            "timestamp": "2026-10-21T11:59:30Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing_acquisition_finish",
+      "expected": {
+        "exit": 2,
+        "finding": "chronology_unavailable"
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "event_history": [
+          {
+            "seat": "BuildRuntime",
+            "sequence": 1,
+            "type": "activity",
+            "status": "complete",
+            "actor": "BuildRuntime",
+            "timestamp": "2026-10-21T11:59:30Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "finish_before_start",
+      "expected": {
+        "exit": 2,
+        "finding": "chronology_unavailable"
+      },
+      "input": {
+        "schema": "tabi-round22-review-chronology-input-v1",
+        "review": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "observed_at": "2026-10-21T12:00:00Z",
+          "clock_role": "review_observation_upper_bound",
+          "artifact_scope": {
+            "provenance": "read_at_revision",
+            "revision": "5f585773258b33d2d514b00cd0b0775333578db6",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          }
+        },
+        "acquisition": {
+          "producer_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "started_at": "2026-10-21T11:59:00Z",
+          "artifact_scope": {
+            "provenance": "claimed_in_receipt",
+            "path": "corpus/evidence/round-21/runtime",
+            "receipt": {
+              "path": "corpus/evidence/round-21/runtime/receipt.json",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "artifacts": [
+              {
+                "path": "corpus/evidence/round-21/runtime/na-click.json",
+                "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ]
+          },
+          "finished_at": "2026-10-21T11:58:00Z"
+        },
+        "event_history": [
+          {
+            "seat": "BuildRuntime",
+            "sequence": 1,
+            "type": "activity",
+            "status": "complete",
+            "actor": "BuildRuntime",
+            "timestamp": "2026-10-21T11:59:30Z"
+          }
+        ]
+      }
+    }
+  ]
+}

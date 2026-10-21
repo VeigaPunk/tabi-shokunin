@@ -2404,3 +2404,38 @@ first-literal-form attribute names and causal payload mirrors. Its HTML grammar 
 finite, not a general parser (comment/script lookalikes remain outside coverage).
 Detailed kernel identity fields and lifecycle meanings receive separate review;
 the structural selftest's silent synthetic population is not runtime evidence.
+
+## Round22 — explicit finite lifecycle outcome oracle
+
+Source: reopened own-work S101, `corpus/evidence/round-21/runtime/receipt.json`
+and invocation-correlated per-case frames. Current additional note:
+`corpus/knowledge/webmcp-lifecycle-oracle-round-22.md`. This deepens retained
+round21 observations; it is not a new browser acquisition or twelve new branches.
+
+| Decision | Required evidence | Refuse |
+|---|---|---|
+| Structural receipt is internally consistent | Apply fixed case-specific status/output/error predicates independently of mirrored summaries | Inferring semantic agreement merely from digest consistency or all-silent synthetic success |
+| Non-autosubmit is pending or later settles | Case-specific finite window and invocation correlation; exact expected terminal class where observed | Silent reset/rejection, wrong status, wrong nonce or unrelated event |
+| Native submission navigates | Landing navigation with case nonce; JSON-LD array output; old-document collection unavailable/null | Object/array collapse or unavailable→empty normalization |
+| Promise is deliberately held | Intermediate active state and release-before-response sequence | Early completion, missing release or universal eventual-settlement wording |
+| Artifact was reviewed | Name exact reviewed producer/artifact identity and chronology | Calling an older W2 review a review of final bytes acquired after W2 returned |
+| Failed seat later receives IRC/broadcast | Retain first-terminal failure, wake/activity and later failures separately | Final-status-only history, treating unavailable history as no wakes, or all-actor settlement from a task-return barrier |
+
+The finite oracle expects one pending, five Completed, two Canceled and four
+Error cases in this historical acquisition. Exact output shapes, error strings
+and raw/summary/producer bindings are persisted, not recomputed from the observed
+status. Diagnostic wording is build/locale-scoped. Re-running the oracle checks
+retained bytes, not the browser. The old structural gate remains unchanged and
+its separate semantic witness/non-author admission remain valid history.
+
+### Round22 runnable artifacts registry
+
+| Name | Kind | Entry command | Verdict map | Self-test | Pinned-value path | Write scope | Owner |
+|---|---|---|---|---|---|---|---|
+| finite lifecycle semantic outcome oracle | gate | `node .ufo/waves/round-22/measure-c1.mjs FULL40HEXREV` | 0=clean/baseline; 1=failed; 2=could-not-evaluate | `node .ufo/waves/round-22/measure-c1.mjs --selftest` | `corpus/evidence/round-22/semantic-expectations.json`; `.ufo/waves/round-22/fixtures/expected.json`; retained round21 acquisition artifact digests | read-only committed blobs; selftest disposable Git trees only | tabi |
+| finite review-chronology/history classifier | gate | `node .ufo/waves/round-22/check-review-chronology.mjs INPUT_JSON` | 0=clean; 1=failed evidence claim; 2=could-not-evaluate | `node .ufo/waves/round-22/check-review-chronology.mjs --selftest` | `.ufo/waves/round-22/debt-expectations.json` | read-only supplied JSON; isolated selftest fixtures only | tabi |
+
+Neither gate authenticates observers, authors, publishers, complete wake history,
+hostile-host integrity or general scheduler quiescence. Historical gaps remain
+explicitly unavailable/debt. No new capability, shared-profile use, real-site
+operation or ownership of sibling orchestration follows from these local checks.

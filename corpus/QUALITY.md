@@ -266,3 +266,25 @@
     the actual acquisition. Preserve this distinction when a coherent different
     status remains structurally countable. (lesson: corpus/lessons/round-21.md#mistakes;
     `.ufo/waves/round-21/w2/ConnectNoHarm.md`; semantic contrast witness)
+56. Refines55: an outcome oracle persists independent case-specific expected
+    status, output/error shape and finite-window position. Its negative cases
+    coherently change raw events and mirrored summaries and refresh digest links,
+    then require a semantic finding, not merely stale-hash refusal. Baseline zero
+    for a new instrument is not absence of earlier knowledge: reused observations
+    retain their old population count and receive no new coverage credit.
+    (lesson: corpus/lessons/round-22.md#mistakes; w1 ConnPlanner, Raw05, Raw07)
+57. Review scope is content-addressed and chronology-bound: record the exact
+    artifact/producer reviewed, review return, acquisition start and completion.
+    A start time alone cannot establish availability of the complete artifacts.
+    An older review cannot certify finalized bytes acquired after it returned. Later
+    L1 checks or fresh non-author immutable review are named separately, never
+    backdated into the old wave's scope. Unknown clocks/identities stay unknown.
+    (lesson: corpus/lessons/round-22.md#mistakes;
+    `.ufo/waves/round-22/round21-closure.json` wave_conformance_debt)
+58. Refines51: a first-terminal failure snapshot is not complete final seat
+    history. Preserve observed later peer/routing messages, activity and failure
+    notices with their own times/classes; unavailable history is unavailable,
+    not an empty list or evidence of no wakes. Finite observed classifications
+    never authenticate every actor or certify quiescence.
+    (lesson: corpus/lessons/round-22.md#mistakes;
+    `.ufo/waves/round-22/round21-closure.json` wave_conformance_debt)

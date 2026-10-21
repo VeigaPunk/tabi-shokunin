@@ -497,3 +497,24 @@ Both knowledge files are indexed; only the corrected entry contributes current
 claim evidence. A file-count increase caused by preserving a correction is not
 another frontier or expansion credit. S100/S101 used-by additions are logged in
 the round21 lesson; immutable source-row cells are unchanged.
+
+## Round22 — failure-capable outcome semantics on held lifecycle ground
+
+| Note | Ground / evidence class | Sources |
+|---|---|---|
+| `knowledge/webmcp-lifecycle-oracle-round-22.md` | Explicit fixed status/output/error/timing oracle for the same twelve retained round21 observations; coherent semantic contradictions must fail even with consistent digest links. No new browser run or frontier-surface admission. | Reopened S101 own-work receipt/raw; `evidence/round-22/semantic-expectations.json`; `../.ufo/waves/round-22/measure-c1.mjs` |
+
+Population reuse is explicit: round21 observations12→12, new observations0,
+new branches0. C1's0→12 measures absence→presence of a failure-capable oracle
+for those held rows, not knowledge absent→twelve newly discovered facts.
+Expansion is unchanged; quality improvement depends on exercised coherent
+semantic negative controls, not a new filename or duplicated source row.
+No new source row or publisher-diversity credit is claimed; S101's mutable
+used-by cell gains this note while its immutable cells remain unchanged.
+
+The new note also carries an append-only correction index for admitted
+round21's W1 wake/routing/later-error history and W2's older-artifact scope.
+Historical closure/report/lesson bytes remain unchanged. A classifier does
+not retroactively observe missing event history or authenticate settlement.
+Real-site/agent-side/default-profile/custom-element/cross-build and arbitrary
+fault/liveness frontiers remain open as before.

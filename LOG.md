@@ -1492,3 +1492,86 @@ empty checkpoint; this lane used no direct mutating jj/git command.
 Normal helper retry retains the pending own receipts/dispositions.
 `final/reanchor-incident.json` records the refusal and parent message.
 No counted input or lesson byte changed; the measured claims remain unchanged.
+
+## Round22 — finite lifecycle outcome oracle and honest review scope
+
+Motivation: admitted round21 closure `MANIFEST.json rounds[417]`, retained as
+`.ufo/waves/round-22/round21-closure.json`, found broader W1 wake/routing/error
+history than the filed report described, and W2 returned before the finalized
+producer/acquisition. That admission remains historical; its debt is not
+retroactively erased. The old counter's silent structural positive is not
+an outcome oracle (QUALITY55 and round21 final semantic witness).
+
+C1 declaration: depth, lowest non-retired tie8, target0→12 finite explicit
+semantic-oracle rows over retained round21 raw observations, scalar8→8.
+Command `node .ufo/waves/round-22/measure-c1.mjs REV`; no additional runtime
+observation, capability, branch-coverage or promotion claim. Source S101
+will be reopened for the recorded outcomes, not source/binary equivalence.
+Baseline and observed clean lane state: `.ufo/waves/round-22/baseline.json`.
+Source-census start exit0 with retained duplicate-URL warnings:
+`.ufo/waves/round-22/census-before.json`.
+
+One validated64-seat build wave dispatched with unchanged rendered context
+and task bytes; required tool-schema `solutionSpace` metadata is added only
+at the transport boundary. L1 holds planner. Private clones isolate all
+three code writers; other seats write only assigned reports. No historical
+seat is intentionally awakened or replaced. Validation, actual registry,
+spawn identities and label check are retained under the round22 wave.
+The registry CLI first refused an absolute path (`invalid_registry_path`);
+the corrected relative-path call bound all64 IDs, label `tabi-r22-w1`.
+
+### Round22 pre-measurement classification correction
+
+W1 CriticClaim/CriticScope and ConnPlanner independently identified the
+taxonomy problem: round21 already received depth credit for these exact
+twelve observations and their independently checked raw semantics.
+Adding executable rejection of coherent semantic contradictions is a real
+operability improvement, not another twelve facts of depth. The original
+declaration stays above as design history. Before any measurement, the sole
+operative C1 is corrected to operability (also a lowest non-retired tie8),
+same metric/target0→12, scalar8→8. Depth and observation population12→12
+remain unchanged; no second claim, coverage/expansion or capability credit.
+Concrete motivating evidence: `.ufo/waves/round-22/w1/CriticClaim.md`,
+`CriticScope.md`, `ConnPlanner.md`; the all-silent old positive is a structural
+control, not failure of the already admitted round21 raw semantic reading.
+
+Review-identity correction from CriticReview/ConnProvince: the same producer
+can emit different successful/failed acquisitions. Producer equality and clocks
+alone never prove review of an artifact; exact receipt/artifact digests and
+declared review provenance are required. Historical first-terminal snapshots
+also cannot certify complete wake history. Generic scheduler semantics stay
+sibling-owned; this round's classifier is a local browser-evidence guard only.
+
+### Round22 build integration and pre-review boundary
+
+Main agreed to the sole C1 operability classification, depth held12→12;
+the verbatim ruling is `.ufo/waves/round-22/classification-ruling.json`.
+Three private writers returned fixed commits. L1 imported only assigned
+committed blobs after exact changed-path checks; originals remain in small
+prerequisite-bound bundles under `history/`, with clone/base/commit/blob/digest
+mapping in `writer-imports.json`. Owned clone scaffolds were removed.
+
+Integration corrections are recorded, not hidden, in `integration-changes.json`:
+atomic zero credit on any finding; canonical source-header alignment; actual
+retained semantic positive instead of the old deliberately silent fixture;
+row-local malformed-input findings propagated globally; explicit non-byte
+input refusal; non-coercing receipt dates; tied-clock sequence-only delayed
+mutation; and a minimal Git environment with revision-pinned cohort input.
+The review guard now requires acquisition completion, not merely start, before
+a matched supplied scope. Independent CLI expectations were authored for42
+semantic controls and17 chronology/history controls. They are not yet exercised.
+The actual historical input is `historical-chronology-input.json`, expected
+`review_scope_gap`; the twelve old/final identity contrasts are retained in
+`historical-review-contrast.json`. No old producer, counter, receipt or lesson
+was changed. The current note is a recheck/method entry on held ground.
+
+W1 has64 observed completed stop outputs and64 hashed reports, no dead or
+replacement seats. Full available event metadata—not just final status—is
+`w1-event-history.json`:72 assistant error events (3 native in-flight,
+22 weekly-limit,24 Devin resource_exhausted,23 Zai1302), no retry-exhausted
+event,7 live peer messages. At that snapshot63 dispose records existed;
+ReviewChronology had returned but not yet disposed. No actor quiescence is
+certified and no broadcast was sent by this lane. Exact provider errors,
+observed models, transcript hashes and snapshot bounds are preserved.
+The spawn acknowledgement, actual registry and terminal-return snapshot remain
+distinct artifacts. No tests/builds/formatters/browser execution were run.

@@ -1039,3 +1039,31 @@ round18/round19, with round21 initial-addition-only. Exact receipts are
 `final/binding-after-lesson.json` and `lesson-history.json` under the round wave.
 The final report carries reproduction against the actual delivered lane tip;
 the inherited USER production failure remains skipped, not declared clean.
+
+## Round22 — declared finite lifecycle semantic-oracle claim
+
+Baseline `5f585773258b33d2d514b00cd0b0775333578db6`; held round22/attempt1.
+C1 only: depth, a lowest non-retired tie8, target0→12 explicit semantically
+checked lifecycle rows over the retained round21 acquisition. Counting command:
+`node .ufo/waves/round-22/measure-c1.mjs REV`, field
+`c1_semantically_checked_lifecycle_rows`. This is a new durable outcome oracle,
+not twelve additional observations, novel branches or a fresh browser run.
+Scalar8 remains8; no capability, retirement or promotion is preclaimed.
+Reopened own-work S101 supports the source-scoped finite predicates.
+Historical W1 wake-history and W2 final-artifact review chronology defects are
+corrected append-only this round, without reconstructing missing observations
+or relabeling earlier reviews as reviews of finalized bytes.
+Other axes and saturation8/window3 remain unchanged.
+
+### Round22 pre-measurement axis correction
+
+The initial depth declaration above is retained as design history, not a
+claim of additional depth content. W1 CriticClaim/CriticScope/ConnPlanner
+showed that the same twelve observations already received independently
+checked semantic depth credit in round21. Their population remains12→12.
+The sole operative C1 is therefore **operability**, also a lowest non-retired
+tie8: absent→twelve failure-capable semantic-oracle rows over held evidence.
+The counting command/metric and scalar8→8 remain as declared. Depth content,
+coverage and all other axes remain unchanged. This correction precedes
+measurement; no successful result is relabeled or duplicate claim added.
+Sources: `.ufo/waves/round-22/w1/{CriticClaim,CriticScope,ConnPlanner}.md`.
