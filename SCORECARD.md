@@ -984,3 +984,51 @@ S100 is reopened for interpretation; source reading is not runtime proof.
 Scalar depth8 and other axes remain unchanged pending measured evidence.
 No new capability or retirement is preclaimed; saturation8/window3 unchanged.
 The round20 source-only frontier motivates actual non-autosubmit contrasts.
+
+### Round21 executed disposition — C1 target met, no scalar promotion
+
+Measured checkpoint `2d5eaaa3c8317bce31e1180b49df4516db35d44b`; baseline
+`e7cf11a810003d4a65cc85bd265f2c17dd65b738`. Actual counting command:
+`node .ufo/waves/round-21/measure-c1.mjs REV`, field
+`c1_lifecycle_observations`: baseline0/exit0 → clean12/exit0.
+Counter SHA-256 `8d99242316c3217f1c5d76edc5e4b28f8a22c1d9dd6d1e884ad4a87b17fdf5eb`.
+Full command/streams: `corpus/evidence/round-21/measurements.json`.
+Exact counted inputs and producer identity:
+`.ufo/waves/round-21/measurement-binding.json`; measured-revision reproduce0,
+claims1/bound1 (`final/binding-at-measured.json` under the round wave).
+
+| Claim / axis | Before → after | Author verdict / bounds |
+|---|---|---|
+| C1 depth | 0→12 finite recorded observations; scalar8→8 | improved: actual non-autosubmit contrasts with raw/summary/producer/source binding and separate semantic reading, not12 novel branches or a coverage denominator |
+| coverage9, operability8, freshness8, calibration9, adjacency8 | unchanged | no additional axis/capability/promotion/retirement credit; no new harm observed in exercised scope |
+
+Main's serial cohort:30/30 expected outcomes, including22 historical-clean
+invocations and new CLI selftest83/83; old round20 source count12 retained.
+Evidence: `.ufo/waves/round-21/final/serial-checks.json` and
+`corpus/evidence/round-21/selftest-c1.json`. Known inherited USER production
+failure was skipped, not recertified. Final lesson-history enumeration and
+delivered-tip binding are recorded separately after the lesson's initial commit.
+
+Current canonical entry is
+`corpus/knowledge/webmcp-nonautosubmit-round-21-corrected.md`; the original
+note is superseded history with its committed prefix preserved. Curation command
+`node .ufo/waves/round-20/counts.mjs REV`: rows100→101 (A87/B4/C9→A88/B4/C9),
+mined72→73, queued19/rejected9 unchanged; knowledge files38→40 include the
+superseded original, not two admissions. S101 is own-work, not source diversity.
+Sources census start/end0; exact streams retained in the round wave.
+
+Actual acquisition ran worktree producer
+`bc11e4d657a9bf1a99b3b6b1b9eb7eeb61ccf3ab2de60cc42ff383936748a811`,
+not a future committed revision. Its exact Node argv and before-move artifact
+pins are `runtime-execution-finalized.json`; the measured semantic contrast
+witness is `final/semantic-contrast-witness.json`, both under the round wave.
+Its silent structural fixture is not a semantic oracle. Effective browser argv,
+served-wire bytes, actor authentication, all fault paths and real sites remain
+outside the claim. Independent non-author closure/SHONEN remains unasserted.
+
+Author trends: expansion improved for finite non-autosubmit runtime ground;
+quality improved within exercised bounds; discernment unchanged pending outside
+agreement. No new capability row or retirement; saturation8/window3 unchanged.
+Planned only on a separately authorized steer: an operability claim on finite
+browser-observation failure cleanup or a bounded absent-user-activation contrast;
+neither is preclaimed or required to complete this round.

@@ -1443,3 +1443,34 @@ including one provider invalid_prompt refusal that was not retried or replaced.
 Failure groups and exact errors are retained in w1/w2-failures.json and
 provider-errors.txt. Both actual registry files have matching non-null labels
 and64 bound IDs (`dispatch-label-check.json`). No new tool installation/update.
+
+### Round21 executed verification and one-write lesson
+
+At landed checkpoint `2d5eaaa3c8317bce31e1180b49df4516db35d44b`,
+`.ufo/waves/round-21/run-checks.py` executed30/30 expected outcomes:
+22 historical-clean invocations, new CLI selftest83/83, retained round20
+selftests45/27 and source count12, both C1 arms and curation counts.
+Complete argv/streams/producer/input identities: `final/serial-checks.json`
+under the round wave. The known inherited USER production failure was skipped.
+
+C1 baseline0→clean12 with both exit0; full receipt
+`corpus/evidence/round-21/measurements.json`. Counter SHA-256
+`8d99242316c3217f1c5d76edc5e4b28f8a22c1d9dd6d1e884ad4a87b17fdf5eb`.
+Measured-revision binding reproduce exits0, claims1/bound1; exact inputs are
+in `.ufo/waves/round-21/measurement-binding.json`. The standalone new selftest
+receipt is under `corpus/evidence/round-21/selftest-c1.json`.
+
+Semantic witness command read committed raw data, not another browser run:
+12 case/invocation/discriminator rows,108 recorded/108 unique PID identities,
+and original-note prefix preservation true. Exact replay code/argv and data:
+`final/semantic-witness-command.json`, `semantic-contrast-witness.json`.
+The structural synthetic population is all-silent and deliberately not the
+semantic oracle. Current published contrasts agree with the actual raw results.
+
+Source census start/end0; curation rows100→101, knowledge38→40 (one historical
+superseded original plus one canonical entry, not two admits). Counts/streams
+are in serial-checks and census JSONs. The final round21 lesson is written once
+with Gate, S101 located quote, S100/S101 mutable-cell audit, mistakes, limits and
+author/outside distinction. Later checks are recorded here/report, not by editing it.
+Fleet-root status sweep showed tracked runtime/state only, no untracked own-seat
+misroots; none were moved/deleted. No installs, new L0 request or next-round claim.
