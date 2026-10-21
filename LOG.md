@@ -1265,3 +1265,30 @@ See `.ufo/waves/round-20/w1/ordering-correction.json` and
   read-only/no-gate bounds. Its report records exact argv/exit/producer and no
   runtime/browser execution or writes. This is a conformance defect, not L1
   serial verification or re-adjudication of the closed round19.
+
+### Round-20 residual review and serial verification checkpoint
+
+The allowed ordinary residual batch had8 seats (reviewer6/critic1/connector1),
+not a padded third swarm. Its reports are under `.ufo/waves/round-20/residual/`.
+The four semantic slices judged current LC01–LC12 ENTAILED; the fixed-oracle
+review found the current45 pairs statically consistent and the frozen-input
+review found the27 metadata fixtures consistent. These are inspections, not test passes.
+
+ResidualParser caught a real blocking code defect: the anchor refactor had
+removed SEPARATOR_ROW while parseRegistry still used it. Restored the exact
+separator declaration without re-running the broken revision to confirm the error.
+No exception suppression or new fallback was added. The post-fix revision must
+be measured afresh; no stale w2 counter hash or binding values are reused.
+
+The serial runner now includes the actual frozen w1 triple, both revision-bound
+C1 arms with required count/verdict checks, corpus counts and full artifact
+identities as well as the historical-clean cohort and both new selftests.
+The inherited red USER production gate is explicitly skipped, not rerun to
+confirm a known error; the final lesson-history probe must show no new refusal.
+The integration text file is explicitly labelled historical, not an active caller.
+Final lesson, measurement binding, results and one-write audit land after this run.
+
+Pre-verification static census, exit0: C1 cases45/reasons24, wave cases27,
+QUALITY rules51, wave seats64+64 and residual8. The exact Node argv and stdout
+are retained in `.ufo/waves/round-20/counted-pre-verification.json`; this is a
+count of committed-next artifacts, not a passing test claim.

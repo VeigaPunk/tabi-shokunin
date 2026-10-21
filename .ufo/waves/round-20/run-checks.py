@@ -63,6 +63,23 @@ if __name__ == '__main__':
                                  ('wave-provenance', '.ufo/waves/round-20/check-wave.mjs', '--selftest')]:
             cohort.append({'gate': name, 'argv': [NODE, path, flag], 'expectedExit': 0,
                            'producerPath': path, 'kind': 'round20'})
+        counter = '.ufo/waves/round-20/measure-c1.mjs'
+        for name, target, count, verdict in [('before', 'c49929430d996b016dde2e3a3a5be380f3433fdb', 0, 'baseline'), ('after', revision, 12, 'clean')]:
+            cohort.append({'gate': 'c1-' + name, 'argv': [NODE, counter, target], 'expectedExit': 0,
+                           'producerPath': counter, 'kind': 'measurement',
+                           'expectedMetrics': {'c1_lifecycle_decisions': count, 'verdict': verdict}})
+        cohort.append({'gate': 'wave-frozen-real', 'argv': [NODE, '.ufo/waves/round-20/check-wave.mjs', '--frozen', '.ufo/waves/round-20/w1/frozen'],
+                       'expectedExit': 0, 'producerPath': '.ufo/waves/round-20/check-wave.mjs', 'kind': 'round20',
+                       'expectedMetrics': {'verdict': 'frozen_match', 'findings': []}})
+        cohort.append({'gate': 'curation-counts', 'argv': [NODE, '.ufo/waves/round-20/counts.mjs', revision], 'expectedExit': 0,
+                       'producerPath': '.ufo/waves/round-20/counts.mjs', 'kind': 'measurement',
+                       'expectedMetrics': {'rows': 100, 'knowledge': 38}})
+        identity_paths = ['SKILL.md', 'corpus/SOURCES.md', 'corpus/knowledge/webmcp-completion-lifecycle-round-20.md',
+                          'corpus/evidence/round-20/lifecycle/decisions.json', 'corpus/evidence/round-20/sources/html_form_element.cc',
+                          '.ufo/waves/round-20/selftest-c1.mjs', 'corpus/evidence/round-20/selftests/expected.json',
+                          'corpus/evidence/round-20/wave-check-expected.json', '.ufo/waves/round-20/design.json']
+        identity_paths += ['.ufo/waves/round-20/w1/frozen/' + name for name in ['expected.json', 'spec.json', 'registry.json', 'snapshot.json']]
+        result['artifactSha256'] = {path: digest(lane / path) for path in identity_paths}
         for gate in cohort:
             argv = [str(fleet) if value == str(FLEET) else value for value in gate['argv']]
             row = dict(gate, argv=argv, producerSha256=digest(lane / gate['producerPath']))
@@ -74,6 +91,13 @@ if __name__ == '__main__':
                 row.update(exit=None, stdout=(error.stdout or b'').decode(errors='replace'),
                            stderr=(error.stderr or b'').decode(errors='replace'), timedOut=True)
             row['pass'] = row['exit'] == row['expectedExit']
+            if 'expectedMetrics' in row:
+                try:
+                    row['observedMetrics'] = json.loads(row['stdout'])
+                    row['pass'] = row['pass'] and all(row['observedMetrics'].get(key) == value
+                                                     for key, value in row['expectedMetrics'].items())
+                except (ValueError, AttributeError):
+                    row['pass'] = False
             result['runs'].append(row)
             print(row['gate'], row['exit'], 'expected', row['expectedExit'], flush=True)
         result['sandbox']['statusAfter'] = git(lane, 'status', '--porcelain=v1', '-uall')

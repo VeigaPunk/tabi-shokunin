@@ -100,6 +100,7 @@ const DECISION_OPTIONAL_KEYS = Object.freeze(['sourceId']);
 const LC_ROW = /^\|\s*LC/;
 const SECTION_END = /^#{1,3} /;
 const REGISTRY_SECTION_END = /^## /;
+const SEPARATOR_ROW = /^\|(\s*:?-+:?\s*\|)+\s*$/;
 const ANCHOR_FILE = 'html_form_element.cc';
 // One complete semicolon-delimited file/range clause; reject trailing commas,
 // junk, repeated clauses and missing file parts instead of accepting a prefix.
