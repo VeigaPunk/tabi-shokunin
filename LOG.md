@@ -1114,3 +1114,41 @@ the frontier row "Native WebMCP in chromium 152 — unprobed (census U3)"
   record and a planted GUID artifact still pass the round-18 predicate (`c2-mutants/`).
 
 - Round-19 correction (machine-checkable single line): LOG.md:1059 "QUALITY33–38" is superseded by QUALITY 33–39 (seven criteria, 33/34/35/36/37/38/39; awk command above re-derives 7).
+
+### Round-19 continuation integration — same held claim, writer TabiR19
+
+- Inherited committed checkpoint d5cf4d726c52c02b65c0a25a5aa3f49bd3e73e47 and untracked wave-2 metadata;
+  no different round was claimed. Wave 2 dispatched the validator's unchanged 72-seat taskCall once.
+  Role/seat counts and dead-seat errors: `.ufo/waves/round-19/w2/outcome.json`; 70 reports, two provider
+  deaths retained (MutateC1 weekly quota, SentinelInvoke cyber_policy), no dead seat replaced.
+- C1 source/prose corrections supersede the premature “27 admitted” reading, boolean-only checkbox rule,
+  generic hidden-control rule, disabled-option serialization, numeric-string formatting and source-only
+  explanations overstated as runtime proof. Exact finite cases now bind the corrected SKILL table and
+  manifest; note/index errata and SOURCES S095–S099 retain the source corrections. S087 queued→mined
+  and used-by —→the validation note; lesson Gate records each source opening and transition.
+- Fresh C1 integrity repair from RuntimeNumberType clone c481684f6de4b48de2321af35db2f49087178606:
+  fields/schema/command-error expectations, within-receipt tool/input/id/response consistency, stable
+  fresh/committed comparison and canonical Condition/Answer binding. Dead MutateC1 is not relabelled as
+  performed; finite self-tests and the existing reviewer findings cover named shapes only.
+- Validation guard repair from RuntimeUnknownParam clone 2dbdc54733cdb0faa79525884313b38c09046402:
+  exact effective feature/resolver checks, fail-closed WebSocket setup and executable identity,
+  before/after two-root artifact snapshots and retained launch/cleanup proofs. Trusted immutable input
+  trees/output ancestors remain REQUIRED; same-uid pathname races and all-page download capture are not
+  claimed closed. Registry's unsupported --fixtures recipe is superseded by native --cases/--out.
+- C2 fixes the ordinary-profile-file false positive by root purpose, not a metadata.json allowlist
+  (RuntimeRange clone 7fbf398307045f28e4b599c49678b59982e357d0). Its counter additionally correlates raw
+  invoke/reply/events, fixture and page record within each receipt (RuntimeNonScalar clone
+  7b2a7f4c40ac894b4d93fb3a5e1e12b810115074), after w2/MutateC2's nonce-aware no-invoke survivor.
+  Coordinated fabrication of all raw evidence remains untested; no “tamper-proof” claim.
+- C3 now checks the seven-criteria correction's declared cardinality and refuses reconstructed
+  wave-return status. **Original target four closures remains unprovable:** d4's direct wave-1 return
+  snapshot never existed, and 16 source-evidence writers were not inventoried by the 23-entry clone ledger.
+  Four same-identity implementation follow-ups used distinct clones/branches and disjoint production paths;
+  imports are explicit in w2/outcome.json. This cannot retroactively repair wave-1 provenance.
+- No-harm limitation: w2/CriticNoHarm extracted the frozen USER lesson-history predicate and found
+  refused lessons grow from round18 alone at B to round18+round19 in inherited d5cf4d7 ancestry. No content
+  revert can erase that historical event. Frozen scripts/history are not weakened or rewritten, and equal
+  gate exits are not reported as sufficient no-harm evidence. Admission stays withheld.
+- QUALITY47–49 and the lesson's continuation mistake table capture these findings. All original round-18
+  evidence and byte-frozen B-era scripts/notes stay unchanged. Tool installs/updates: none in this
+  continuation; wave reports name none. No sibling or domain-source tree was edited or pushed.

@@ -1,0 +1,459 @@
+{
+  "schema": "tabi-webmcp-validation-receipt-v1",
+  "generatedAt": "2026-10-21T08:41:48.982Z",
+  "runtime": {
+    "identity": "Chromium 154.0.8037.97 / Playwright 1.64.0 / Node 24.21.0",
+    "chromium": {
+      "launchPath": "/usr/bin/chromium",
+      "launchSha256": "eaed39c36bdf6ff6ff23f9f5215aaab017e59723b96f27f7fcd5e0be833a172b",
+      "realExecutable": "/usr/lib/chromium/chromium",
+      "realExecutableSha256": "95b17db7512c34bf5d78a0d55e0e49719725c73736c47eb0a7a831553c4b330a",
+      "version": "154.0.8037.97",
+      "versionSource": "Playwright Browser.version() on a pipe-owned context"
+    },
+    "playwright": {
+      "version": "1.64.0",
+      "directory": "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright"
+    },
+    "node": "24.21.0"
+  },
+  "producerSha256": "4a1de295d6f7f7389395c86a28f23ea27fe6ebc2b6194a93d66567b0bab101a4",
+  "casesFilesSha256": {
+    "date-time.json": "f6531c28bf9efead2ceabf1517e7e5016c6b7192097e10b4979a66a0f3d62b90"
+  },
+  "fixturesSha256": {
+    "date-time.html": "85f518f6699ffc01ceca85effacd086fb7cb5e5f77429a803ad909ac03eb7683"
+  },
+  "cases": [
+    {
+      "id": "decl-date-time-01",
+      "family": "date-time",
+      "input": {
+        "date": "2026-10-21",
+        "time": "13:45",
+        "datetime": "2026-10-21T13:45",
+        "month": "2026-10"
+      },
+      "expected": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "date": "2026-10-21",
+          "time": "13:45",
+          "datetime": "2026-10-21T13:45",
+          "month": "2026-10"
+        },
+        "schema": {
+          "properties.date.format": "date",
+          "properties.time.format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.datetime.format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.month.format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "required": []
+        }
+      },
+      "observed": {
+        "status": "Completed",
+        "errorText": null,
+        "commandError": null,
+        "invocationId": "9328E2301DFB81DCEDD7905F9BE4C137",
+        "toolInvoked": {
+          "toolName": "date-time",
+          "frameId": "4B7A4DB5BBAF6B5E13897CF8C2FB5186",
+          "invocationId": "9328E2301DFB81DCEDD7905F9BE4C137",
+          "input": "{\"date\":\"2026-10-21\",\"datetime\":\"2026-10-21T13:45\",\"month\":\"2026-10\",\"time\":\"13:45\"}"
+        },
+        "toolResponded": {
+          "invocationId": "9328E2301DFB81DCEDD7905F9BE4C137",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "date": "2026-10-21",
+              "time": "13:45",
+              "datetime": "2026-10-21T13:45",
+              "month": "2026-10"
+            }
+          }
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string",
+              "format": "date",
+              "description": "Date (Dates MUST be provided in 'YYYY-MM-DD' format.)"
+            },
+            "time": {
+              "type": "string",
+              "format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Time"
+            },
+            "datetime": {
+              "type": "string",
+              "format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Date/time"
+            },
+            "month": {
+              "type": "string",
+              "format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+              "description": "Month"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 1,
+        "fields": {
+          "date": "2026-10-21",
+          "time": "13:45",
+          "datetime": "2026-10-21T13:45",
+          "month": "2026-10"
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": true
+    },
+    {
+      "id": "decl-date-time-02",
+      "family": "date-time",
+      "input": {
+        "date": "10/21/2026",
+        "time": "13:45",
+        "datetime": "2026-10-21T13:45",
+        "month": "2026-10"
+      },
+      "expected": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"10/21/2026\" for parameter date",
+        "submitCount": 0,
+        "fields": {
+          "date": "",
+          "time": "",
+          "datetime": "",
+          "month": ""
+        },
+        "schema": {
+          "properties.date.format": "date",
+          "properties.time.format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.datetime.format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.month.format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "required": []
+        }
+      },
+      "observed": {
+        "status": "Error",
+        "errorText": "Invalid value \"10/21/2026\" for parameter date",
+        "commandError": null,
+        "invocationId": "0AFB6124027ECB879B408E9C5B60F362",
+        "toolInvoked": {
+          "toolName": "date-time",
+          "frameId": "AC90924BFA77C6740238661BA25131A9",
+          "invocationId": "0AFB6124027ECB879B408E9C5B60F362",
+          "input": "{\"date\":\"10/21/2026\",\"datetime\":\"2026-10-21T13:45\",\"month\":\"2026-10\",\"time\":\"13:45\"}"
+        },
+        "toolResponded": {
+          "invocationId": "0AFB6124027ECB879B408E9C5B60F362",
+          "status": "Error",
+          "errorText": "Invalid value \"10/21/2026\" for parameter date"
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string",
+              "format": "date",
+              "description": "Date (Dates MUST be provided in 'YYYY-MM-DD' format.)"
+            },
+            "time": {
+              "type": "string",
+              "format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Time"
+            },
+            "datetime": {
+              "type": "string",
+              "format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Date/time"
+            },
+            "month": {
+              "type": "string",
+              "format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+              "description": "Month"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 0,
+        "fields": {
+          "date": "",
+          "time": "",
+          "datetime": "",
+          "month": ""
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": true
+    },
+    {
+      "id": "decl-date-time-03",
+      "family": "date-time",
+      "input": {
+        "date": "2026-10-21",
+        "time": "1:45 PM",
+        "datetime": "2026-10-21T13:45",
+        "month": "2026-10"
+      },
+      "expected": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"1:45 PM\" for parameter time",
+        "submitCount": 0,
+        "fields": {
+          "date": "",
+          "time": "",
+          "datetime": "",
+          "month": ""
+        },
+        "schema": {
+          "properties.date.format": "date",
+          "properties.time.format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.datetime.format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.month.format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "required": []
+        }
+      },
+      "observed": {
+        "status": "Error",
+        "errorText": "Invalid value \"1:45 PM\" for parameter time",
+        "commandError": null,
+        "invocationId": "D0DCE5E78E5FA4B116178D15AF060680",
+        "toolInvoked": {
+          "toolName": "date-time",
+          "frameId": "87E7E845A72078CE90E22C5D561F31BD",
+          "invocationId": "D0DCE5E78E5FA4B116178D15AF060680",
+          "input": "{\"date\":\"2026-10-21\",\"datetime\":\"2026-10-21T13:45\",\"month\":\"2026-10\",\"time\":\"1:45 PM\"}"
+        },
+        "toolResponded": {
+          "invocationId": "D0DCE5E78E5FA4B116178D15AF060680",
+          "status": "Error",
+          "errorText": "Invalid value \"1:45 PM\" for parameter time"
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string",
+              "format": "date",
+              "description": "Date (Dates MUST be provided in 'YYYY-MM-DD' format.)"
+            },
+            "time": {
+              "type": "string",
+              "format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Time"
+            },
+            "datetime": {
+              "type": "string",
+              "format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Date/time"
+            },
+            "month": {
+              "type": "string",
+              "format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+              "description": "Month"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 0,
+        "fields": {
+          "date": "",
+          "time": "",
+          "datetime": "",
+          "month": ""
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": true
+    },
+    {
+      "id": "decl-date-time-04",
+      "family": "date-time",
+      "input": {
+        "date": "2026-10-21",
+        "time": "13:45",
+        "datetime": "10/21/2026 1:45 PM",
+        "month": "2026-10"
+      },
+      "expected": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"10/21/2026 1:45 PM\" for parameter datetime",
+        "submitCount": 0,
+        "fields": {
+          "date": "",
+          "time": "",
+          "datetime": "",
+          "month": ""
+        },
+        "schema": {
+          "properties.date.format": "date",
+          "properties.time.format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.datetime.format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.month.format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "required": []
+        }
+      },
+      "observed": {
+        "status": "Error",
+        "errorText": "Invalid value \"10/21/2026 1:45 PM\" for parameter datetime",
+        "commandError": null,
+        "invocationId": "C4EBD7AE34EA7A646D695D2912F03737",
+        "toolInvoked": {
+          "toolName": "date-time",
+          "frameId": "A14E8F21F5D132AC219EF4689DA80BC7",
+          "invocationId": "C4EBD7AE34EA7A646D695D2912F03737",
+          "input": "{\"date\":\"2026-10-21\",\"datetime\":\"10/21/2026 1:45 PM\",\"month\":\"2026-10\",\"time\":\"13:45\"}"
+        },
+        "toolResponded": {
+          "invocationId": "C4EBD7AE34EA7A646D695D2912F03737",
+          "status": "Error",
+          "errorText": "Invalid value \"10/21/2026 1:45 PM\" for parameter datetime"
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string",
+              "format": "date",
+              "description": "Date (Dates MUST be provided in 'YYYY-MM-DD' format.)"
+            },
+            "time": {
+              "type": "string",
+              "format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Time"
+            },
+            "datetime": {
+              "type": "string",
+              "format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Date/time"
+            },
+            "month": {
+              "type": "string",
+              "format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+              "description": "Month"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 0,
+        "fields": {
+          "date": "",
+          "time": "",
+          "datetime": "",
+          "month": ""
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": true
+    },
+    {
+      "id": "decl-date-time-05",
+      "family": "date-time",
+      "input": {
+        "date": "2027-01-01",
+        "time": "08:00",
+        "datetime": "2027-01-01T08:00",
+        "month": "2027-01"
+      },
+      "expected": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: date: Value must be 12/31/2026 or earlier.. time: Value must be 9:00 AM or later.. datetime: Value must be 12/31/2026, 5:00 PM or earlier.. month: Value must be December 2026 or earlier.. ",
+        "submitCount": 0,
+        "fields": {
+          "date": "2027-01-01",
+          "time": "08:00",
+          "datetime": "2027-01-01T08:00",
+          "month": "2027-01"
+        },
+        "schema": {
+          "properties.date.format": "date",
+          "properties.time.format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.datetime.format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.month.format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "required": []
+        }
+      },
+      "observed": {
+        "status": "Error",
+        "errorText": "Form validation failed: date: Value must be 12/31/2026 or earlier.. time: Value must be 9:00 AM or later.. datetime: Value must be 12/31/2026, 5:00 PM or earlier.. month: Value must be December 2026 or earlier.. ",
+        "commandError": null,
+        "invocationId": "A069ECC9D6B59EA24AE8D34D81060FF2",
+        "toolInvoked": {
+          "toolName": "date-time",
+          "frameId": "4351F7296D7742C40EBA3A3549254A59",
+          "invocationId": "A069ECC9D6B59EA24AE8D34D81060FF2",
+          "input": "{\"date\":\"2027-01-01\",\"datetime\":\"2027-01-01T08:00\",\"month\":\"2027-01\",\"time\":\"08:00\"}"
+        },
+        "toolResponded": {
+          "invocationId": "A069ECC9D6B59EA24AE8D34D81060FF2",
+          "status": "Error",
+          "errorText": "Form validation failed: date: Value must be 12/31/2026 or earlier.. time: Value must be 9:00 AM or later.. datetime: Value must be 12/31/2026, 5:00 PM or earlier.. month: Value must be December 2026 or earlier.. "
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "date": {
+              "type": "string",
+              "format": "date",
+              "description": "Date (Dates MUST be provided in 'YYYY-MM-DD' format.)"
+            },
+            "time": {
+              "type": "string",
+              "format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Time"
+            },
+            "datetime": {
+              "type": "string",
+              "format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Date/time"
+            },
+            "month": {
+              "type": "string",
+              "format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+              "description": "Month"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 0,
+        "fields": {
+          "date": "2027-01-01",
+          "time": "08:00",
+          "datetime": "2027-01-01T08:00",
+          "month": "2027-01"
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": true
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "cases": 5,
+    "passed": 5,
+    "failed": 0,
+    "findings": 0
+  }
+}

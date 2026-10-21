@@ -459,32 +459,123 @@ function downloadEvents(entry) {
   return arrays[0] ?? [];
 }
 
+// Receipt-local corroboration only: all observations and frames remain producer-authored, not tamper-proof evidence.
+function h4RawInvocationShape(entry) {
+  const actual = entry?.actual ?? entry?.observations ?? {};
+  const frames = Array.isArray(entry?.cdp?.frames) ? entry.cdp.frames : [];
+  const invokes = frames.filter((item) =>
+    item?.dir === 'out' && item.frame?.method === 'WebMCP.invokeTool');
+  const request = invokes.length === 1 ? invokes[0] : null;
+  const requestParams = request?.frame?.params ?? null;
+  const requestId = request?.frame?.id ?? null;
+  const requestReplies = request
+    ? frames.filter((item) =>
+      item?.dir === 'in' &&
+      item.frame?.id === requestId &&
+      (Object.hasOwn(item.frame, 'result') || Object.hasOwn(item.frame, 'error')))
+    : [];
+  const requestReply = requestReplies.length === 1 ? requestReplies[0] : null;
+  const invokedEvents = frames.filter((item) =>
+    item?.dir === 'in' && item.frame?.method === 'WebMCP.toolInvoked');
+  const respondedEvents = frames.filter((item) =>
+    item?.dir === 'in' && item.frame?.method === 'WebMCP.toolResponded');
+  const invoke = actual.invoke ?? null;
+  const responded = actual.responded ?? null;
+  const invocationId = invoke?.invocationId ?? null;
+  const actualParams = invoke?.request?.params ?? null;
+  const emptyInput = (value) => value !== null
+    && typeof value === 'object'
+    && !Array.isArray(value)
+    && Object.keys(value).length === 0;
+  const requestMatches = request !== null
+    && Number.isInteger(requestId)
+    && requestId > 0
+    && requestParams?.toolName === 'download-blob'
+    && typeof entry?.cdp?.mainFrameId === 'string'
+    && entry.cdp.mainFrameId.length > 0
+    && requestParams.frameId === entry.cdp.mainFrameId
+    && emptyInput(requestParams.input)
+    && invoke?.request?.method === 'WebMCP.invokeTool'
+    && invoke?.error === null
+    && actualParams?.toolName === requestParams.toolName
+    && actualParams?.frameId === requestParams.frameId
+    && emptyInput(actualParams.input);
+  const replyId = requestReply?.frame?.result?.invocationId ?? null;
+  const invocationReplyMatches = requestMatches
+    && requestReplies.length === 1
+    && !Object.hasOwn(requestReply.frame, 'error')
+    && typeof replyId === 'string'
+    && replyId.length > 0
+    && invocationId === replyId
+    && invoke?.result?.invocationId === replyId;
+  const invokedParams = invokedEvents.length === 1 ? invokedEvents[0].frame.params : null;
+  const invocationEventMatches = invocationReplyMatches
+    && invokedEvents.length === 1
+    && invokedParams?.invocationId === replyId
+    && invokedParams?.toolName === 'download-blob';
+  const respondedParams = respondedEvents.length === 1 ? respondedEvents[0].frame.params : null;
+  const responseEventMatches = invocationReplyMatches
+    && respondedEvents.length === 1
+    && respondedParams?.invocationId === replyId
+    && respondedParams?.status === 'Completed'
+    && respondedParams?.output === 'download-triggered';
+  const registeredTools = frames
+    .filter((item) => item?.dir === 'in' && item.frame?.method === 'WebMCP.toolsAdded')
+    .flatMap((item) => Array.isArray(item.frame.params?.tools) ? item.frame.params.tools : []);
+  const fixtureEvidenceObserved = entry?.fixtureFile === 'invoke-download-refused.html'
+    && entry?.fixture === 'scripts/webmcp-invoke-round19.mjs#embedded:invoke-download-refused.html'
+    && HEX64.test(entry?.fixtureSha256 ?? '')
+    && registeredTools.length === 1
+    && registeredTools[0]?.name === 'download-blob'
+    && Array.isArray(entry?.toolsAdded)
+    && entry.toolsAdded.length === 1
+    && entry.toolsAdded[0]?.name === 'download-blob';
+  const pageRecord = actual.pageDownloadRecord ?? null;
+  const pageEvidenceObserved = pageRecord?.tool === 'download-blob'
+    && typeof pageRecord?.nonce === 'string'
+    && pageRecord.nonce.length > 0
+    && actual.downloadMarkerPrefix === 'tabi-r19-download-'
+    && HEX64.test(actual.downloadMarkerSha256 ?? '');
+  return {
+    invocationObserved: invocationReplyMatches && invocationEventMatches,
+    responseObserved: responseEventMatches
+      && responded?.invocationId === replyId
+      && responded?.status === 'Completed'
+      && responded?.output === 'download-triggered',
+    fixtureEvidenceObserved,
+    pageEvidenceObserved,
+    rawInvokeCount: invokes.length,
+    rawToolInvokedCount: invokedEvents.length,
+    rawToolRespondedCount: respondedEvents.length,
+  };
+}
+
 function h4RecordShape(receipt, nonce) {
   const entry = findCase(receipt, DOWNLOAD_CASE_ID);
   const actual = entry?.actual ?? entry?.observations ?? {};
   const events = downloadEvents(entry);
   const event = events.length === 1 ? events[0] : null;
   const pageRecord = actual.pageDownloadRecord ?? null;
-  const invoke = actual.invoke ?? null;
-  const responded = actual.responded ?? null;
+  const invocation = h4RawInvocationShape(entry);
   const nonceEchoed = pageRecord?.tool === 'download-blob' && pageRecord?.nonce === nonce;
-  const invocationObserved = typeof invoke?.invocationId === 'string'
-    && invoke.invocationId.length > 0
-    && invoke.error === null;
-  const responseObserved = responded?.status === 'Completed' && responded?.output === 'download-triggered';
   const refusalObserved = event !== null
     && typeof event.suggestedFilename === 'string'
     && event.failureSettled === true
     && event.failure !== null
     && event.failureError === null;
   return {
-    pass: casePassed(entry) && nonceEchoed && invocationObserved && responseObserved && refusalObserved,
+    pass: casePassed(entry)
+      && nonceEchoed
+      && invocation.invocationObserved
+      && invocation.responseObserved
+      && invocation.fixtureEvidenceObserved
+      && invocation.pageEvidenceObserved
+      && refusalObserved,
     casePresent: entry !== null,
     caseStatus: entry?.status ?? (entry?.pass === true ? 'pass' : null),
     pageDownloadRecord: pageRecord,
     nonceEchoed,
-    invocationObserved,
-    responseObserved,
+    ...invocation,
     eventCount: events.length,
     refusalObserved,
     nonce,
@@ -983,7 +1074,7 @@ function normalH4Shape(normal, artifact, nonce) {
     producerPass,
     browserObserved,
     browserIdentitiesObserved: identities,
-    why: pass ? 'clean receipt passed with a real invocation, exact page nonce echo, and zero new files' : 'clean run did not prove the real invocation, nonce echo, complete zero-new-file scan, producer identity, and browser ownership',
+    why: pass ? 'clean receipt contains a correlated raw CDP invocation/response, fixture and page evidence, current nonce echo, and zero new files' : 'clean run lacks correlated receipt-local CDP evidence, fixture/page nonce evidence, complete zero-new-file scan, producer identity, or browser ownership',
   };
 }
 
@@ -1258,11 +1349,15 @@ function selfTest() {
       downloadMarkerSha256: 'b'.repeat(64),
       pageDownloadRecord: { tool: 'download-blob', ...(includeNonce ? { nonce } : {}) },
       invoke: {
-        request: { method: 'WebMCP.invokeTool', params: { toolName: 'download-blob' } },
+        request: {
+          method: 'WebMCP.invokeTool',
+          params: { frameId: 'main-frame', toolName: 'download-blob', input: {} },
+        },
+        result: { invocationId: 'invoke-1' },
         invocationId: 'invoke-1',
         error: null,
       },
-      responded: { status: 'Completed', output: 'download-triggered' },
+      responded: { invocationId: 'invoke-1', status: 'Completed', output: 'download-triggered' },
       downloadEvents: [event],
       downloadScan: scan,
       beforeContextClose: {
@@ -1274,6 +1369,13 @@ function selfTest() {
         processTmpdir: { complete: true, matches: [] },
       },
     };
+    const frames = [
+      { seq: 1, dir: 'in', frame: { method: 'WebMCP.toolsAdded', params: { tools: [{ name: 'download-blob' }] } } },
+      { seq: 2, dir: 'out', frame: { id: 1, method: 'WebMCP.invokeTool', params: { frameId: 'main-frame', toolName: 'download-blob', input: {} } } },
+      { seq: 3, dir: 'in', frame: { id: 1, result: { invocationId: 'invoke-1' } } },
+      { seq: 4, dir: 'in', frame: { method: 'WebMCP.toolInvoked', params: { invocationId: 'invoke-1', toolName: 'download-blob' } } },
+      { seq: 5, dir: 'in', frame: { method: 'WebMCP.toolResponded', params: { invocationId: 'invoke-1', status: 'Completed', output: 'download-triggered' } } },
+    ];
     return {
       verdict,
       nonce,
@@ -1282,7 +1384,15 @@ function selfTest() {
       cases: CASE_IDS.map((id) => ({
         id,
         status: id === DOWNLOAD_CASE_ID && verdict === 'fail' ? 'fail' : 'pass',
-        ...(id === DOWNLOAD_CASE_ID ? { actual, downloadEvents: [event] } : {}),
+        ...(id === DOWNLOAD_CASE_ID ? {
+          fixture: 'scripts/webmcp-invoke-round19.mjs#embedded:invoke-download-refused.html',
+          fixtureFile: 'invoke-download-refused.html',
+          fixtureSha256: 'c'.repeat(64),
+          actual,
+          downloadEvents: [event],
+          toolsAdded: [{ name: 'download-blob' }],
+          cdp: { mainFrameId: 'main-frame', frames },
+        } : {}),
       })),
       controls: CONTROL_IDS.map((id) => ({ id, status: 'pass' })),
     };
@@ -1291,13 +1401,58 @@ function selfTest() {
   const nonceA = '0123456789abcdef0123456789abcdef';
   const nonceB = 'fedcba9876543210fedcba9876543210';
   const currentReceipt = makeReceipt(nonceA, candidateArtifact);
-  check('h4_real_invocation_nonce_echo_accepted', h4RecordShape(currentReceipt, nonceA).pass);
+  check('h4_real_raw_invocation_fixture_and_nonce_evidence_accepted', h4RecordShape(currentReceipt, nonceA).pass);
   check('h4_wrong_current_nonce_rejected', !h4RecordShape(currentReceipt, nonceB).pass);
   const counterAwareEcho = JSON.parse(JSON.stringify(currentReceipt));
   const counterAwareCase = findCase(counterAwareEcho, DOWNLOAD_CASE_ID);
   counterAwareCase.actual.invoke = { request: null, invocationId: null, error: null };
   counterAwareCase.actual.responded = null;
   check('h4_counter_aware_nonce_echo_without_invoke_rejected', !h4RecordShape(counterAwareEcho, nonceA).pass);
+  const missingRawInvoke = JSON.parse(JSON.stringify(currentReceipt));
+  findCase(missingRawInvoke, DOWNLOAD_CASE_ID).cdp.frames = findCase(missingRawInvoke, DOWNLOAD_CASE_ID).cdp.frames
+    .filter((item) => !(item.dir === 'out' && item.frame?.method === 'WebMCP.invokeTool'));
+  check('h4_missing_raw_invoke_rejected', !h4RecordShape(missingRawInvoke, nonceA).pass);
+  const contradictoryRawInvoke = JSON.parse(JSON.stringify(currentReceipt));
+  findCase(contradictoryRawInvoke, DOWNLOAD_CASE_ID).cdp.frames
+    .find((item) => item.dir === 'out' && item.frame?.method === 'WebMCP.invokeTool').frame.params.toolName = 'other-tool';
+  check('h4_raw_invoke_wrong_tool_rejected', !h4RecordShape(contradictoryRawInvoke, nonceA).pass);
+  const missingInvokeReply = JSON.parse(JSON.stringify(currentReceipt));
+  findCase(missingInvokeReply, DOWNLOAD_CASE_ID).cdp.frames = findCase(missingInvokeReply, DOWNLOAD_CASE_ID).cdp.frames
+    .filter((item) => !(item.dir === 'in' && item.frame?.id === 1));
+  check('h4_missing_raw_invoke_reply_rejected', !h4RecordShape(missingInvokeReply, nonceA).pass);
+  const contradictoryInvokeReply = JSON.parse(JSON.stringify(currentReceipt));
+  findCase(contradictoryInvokeReply, DOWNLOAD_CASE_ID).cdp.frames
+    .find((item) => item.dir === 'in' && item.frame?.id === 1).frame.result.invocationId = 'other-invocation';
+  check('h4_raw_invoke_reply_id_mismatch_rejected', !h4RecordShape(contradictoryInvokeReply, nonceA).pass);
+  const missingToolInvoked = JSON.parse(JSON.stringify(currentReceipt));
+  findCase(missingToolInvoked, DOWNLOAD_CASE_ID).cdp.frames = findCase(missingToolInvoked, DOWNLOAD_CASE_ID).cdp.frames
+    .filter((item) => item.frame?.method !== 'WebMCP.toolInvoked');
+  check('h4_missing_raw_tool_invoked_rejected', !h4RecordShape(missingToolInvoked, nonceA).pass);
+  const contradictoryToolInvoked = JSON.parse(JSON.stringify(currentReceipt));
+  findCase(contradictoryToolInvoked, DOWNLOAD_CASE_ID).cdp.frames
+    .find((item) => item.frame?.method === 'WebMCP.toolInvoked').frame.params.invocationId = 'other-invocation';
+  check('h4_raw_tool_invoked_id_mismatch_rejected', !h4RecordShape(contradictoryToolInvoked, nonceA).pass);
+  const missingToolResponded = JSON.parse(JSON.stringify(currentReceipt));
+  findCase(missingToolResponded, DOWNLOAD_CASE_ID).cdp.frames = findCase(missingToolResponded, DOWNLOAD_CASE_ID).cdp.frames
+    .filter((item) => item.frame?.method !== 'WebMCP.toolResponded');
+  check('h4_missing_raw_tool_responded_rejected', !h4RecordShape(missingToolResponded, nonceA).pass);
+  const contradictoryToolResponded = JSON.parse(JSON.stringify(currentReceipt));
+  findCase(contradictoryToolResponded, DOWNLOAD_CASE_ID).cdp.frames
+    .find((item) => item.frame?.method === 'WebMCP.toolResponded').frame.params.status = 'Error';
+  check('h4_raw_tool_responded_status_mismatch_rejected', !h4RecordShape(contradictoryToolResponded, nonceA).pass);
+  const missingFixtureEvidence = JSON.parse(JSON.stringify(currentReceipt));
+  delete findCase(missingFixtureEvidence, DOWNLOAD_CASE_ID).fixtureSha256;
+  check('h4_missing_fixture_evidence_rejected', !h4RecordShape(missingFixtureEvidence, nonceA).pass);
+  const contradictoryToolRespondedId = JSON.parse(JSON.stringify(currentReceipt));
+  findCase(contradictoryToolRespondedId, DOWNLOAD_CASE_ID).cdp.frames
+    .find((item) => item.frame?.method === 'WebMCP.toolResponded').frame.params.invocationId = 'other-invocation';
+  check('h4_raw_tool_responded_id_mismatch_rejected', !h4RecordShape(contradictoryToolRespondedId, nonceA).pass);
+  const contradictoryActualResponse = JSON.parse(JSON.stringify(currentReceipt));
+  findCase(contradictoryActualResponse, DOWNLOAD_CASE_ID).actual.responded.invocationId = 'other-invocation';
+  check('h4_actual_response_id_mismatch_rejected', !h4RecordShape(contradictoryActualResponse, nonceA).pass);
+  const missingPageEvidence = JSON.parse(JSON.stringify(currentReceipt));
+  delete findCase(missingPageEvidence, DOWNLOAD_CASE_ID).actual.downloadMarkerSha256;
+  check('h4_missing_page_evidence_rejected', !h4RecordShape(missingPageEvidence, nonceA).pass);
   check('h4_clean_scan_requires_zero_new_files', cleanDownloadScanShape(currentReceipt).pass);
   const dirtyReceipt = JSON.parse(JSON.stringify(currentReceipt));
   findCase(dirtyReceipt, DOWNLOAD_CASE_ID).actual.downloadScan.newFiles.push({ path: '/tmp/unexpected' });

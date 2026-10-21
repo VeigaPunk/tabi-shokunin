@@ -1,0 +1,64 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "checkbox",
+  "fixture": "checkbox.html",
+  "author": "RuntimeCheckbox scoped DV-15 falsification",
+  "cases": [
+    {
+      "id": "decl-checkbox-06",
+      "tool": "checkbox",
+      "input": {
+        "withoutValue": "true",
+        "withValue": "true"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"true\" for parameter withValue",
+        "submitCount": 0,
+        "fields": {
+          "withoutValue": null,
+          "withValue": null
+        },
+        "schema": {
+          "properties.withoutValue.type": "boolean",
+          "properties.withValue.type": "boolean"
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "345-352",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does DV-15 boolean-only wording correctly predict rejection of the coercible string \"true\"?",
+      "answer": "Falsification expectation copied from the admitted boolean-only rule; inspect actual observed fields and status, not the hypothesis."
+    },
+    {
+      "id": "decl-checkbox-07",
+      "tool": "checkbox",
+      "input": {
+        "withoutValue": "false",
+        "withValue": "false"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"false\" for parameter withValue",
+        "submitCount": 0,
+        "fields": {
+          "withoutValue": null,
+          "withValue": null
+        },
+        "schema": {
+          "properties.withoutValue.type": "boolean",
+          "properties.withValue.type": "boolean"
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "345-352",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does DV-15 boolean-only wording correctly predict rejection of the coercible string \"false\"?",
+      "answer": "Falsification expectation copied from the admitted boolean-only rule; inspect actual observed fields and status, not the hypothesis."
+    }
+  ]
+}

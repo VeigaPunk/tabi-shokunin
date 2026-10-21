@@ -98,3 +98,79 @@ ConnPlannerWalk carried the planning data-walk. No dead seat. Three job-cap refu
 unchanged payload spawned all 72 on attempt 4 (`w1/dispatch-attempts.json`). Same-identity follow-ups: 17
 source seats wrote gate JSONs; ExecMeasureC1/C2/C3 and ExecValidationHarness revised their own artifacts in
 their own clones.
+
+## Gate correction — continuation writer TabiR19, same held round/attempt
+
+Inherited: committed round-19 checkpoint `d5cf4d726c52c02b65c0a25a5aa3f49bd3e73e47`, its wave-1 evidence,
+producers, 66-case receipt, 27-candidate manifest and drafted wave-2 specification. Only wave-2 metadata
+was untracked at continuation entry. No r18 work was redone. The stale coordinator is parked by Main.
+Inherited counts are historical until reproduced; rejected inherited **interpretations** are named below,
+not erased. No inherited artifact was silently discarded.
+
+The statement “Admitted: 27” in the initial Gate was premature: the retained ea170da3 measurement was 24,
+while wave-2 CriticSeparability subsequently measured 27 at d5cf4d7. Final repaired bytes require their own
+measurement. Fifteen families were fixed before probing; 27 decisions were selected after observing probes
+and declared before counting. This supersedes “predeclared” where it implied before-probe decisions and
+“every validator branch, runtime-verified”: custom elements/files and untested branches remain excluded.
+
+Wave-2 semantic reviews found finite results supported but universal prose overbroad. The manifest and a
+new canonical corrected SKILL table explicitly name the exact probe cases for every decision. The old
+table is historical, not current guidance. Specific corrections: string-boolean checkbox coercion (DV15),
+described hidden inputs (DV05), disabled-option FormData omission (DV13), numeric string versus JSON-number
+formatting (DV10), combined four-control date probe (DV22), enabled radio duplicate values (DV17), native
+email/URL validation despite absent schema format, optional text clearing/omission, and source-versus-runtime
+newline evidence. `ScribeCoherence.md` and the 27 `Decision*.md` reports carry exact source/receipt reasons.
+
+S087 transition: **status queued→mined; used-by —→corpus/knowledge/webmcp-declarative-validation-round-19.md;
+recheck unchanged on-release**. Its proposition was already consumed in the note. No other old row's mutable
+cells changed. S095–S097 are new supersession rows, not in-place edits of immutable cells:
+
+| Row | Opened URL | Access | Located quote (≤25 words) | Location / retained fresh body |
+|---|---|---|---|---|
+| S095 | https://html.spec.whatwg.org/multipage/input.html | 2026-10-21 | Strip newlines from the value. | Text/Search 1762-1763; w2/SourceS082.body.gz; decoded sha256 9782129b804f60f85c5701d071b52e50b9067469fc4191fd2a372a8a9931c1d4 |
+| S096 | https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT | 2026-10-21 | Return a null string | comment at 827; w2/SourceS078.body.gz; decoded sha256 8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916 |
+| S097 | https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/inspector/inspector_web_mcp_agent.cc?format=TEXT | 2026-10-21 | nullptr, error.message, | 242; w2/SourceS079.inspector.body.gz; decoded sha256 1cc55ef978a63d4fb8f9678ade444756fdb90fb182e497680bae0aeedf968475 |
+| S098 | https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT | 2026-10-21 | Dates MUST be provided in 'YYYY-MM-DD' format. | 583; w2/SourceS093.body.gz; decoded sha256 904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f |
+| S099 | https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl | 2026-10-21 | object input | 66; w2/SourceS079.body.gz; decoded sha256 26e62f2998c63798c81dc487cc14844b840e5dd2aafde1fd37a2e39ece0a37ff |
+
+S095 supplies input Text/Search scope and completes range-step/color-serialization anchors; no textarea
+authority is invented. S096 corrects navigation's null String sentinel; S097 distinguishes omitted output
+from JSON null and records ParseJSON fallback. The source reports reopened their exact primary URLs.
+S083's original quote is 18 whitespace words, not 16 (still ≤25); :84's “wave-2 snapshot taken” was future
+tense written as evidence and is withdrawn for the inherited checkpoint.
+
+C3 d4 remains **unprovable — missing direct wave-1 return-time snapshot evidence**. The clone/branch/commit
+ledger demonstrates scoped writer provenance, but reconstructed status from mtimes cannot establish the
+missing observation. The revised C3 counter refuses that reconstruction. Main explicitly affirmed this
+honest limit. A later wave snapshot does not retroactively close d4.
+
+## Continuation mistakes and failure-capable repairs
+
+| Class | Evidence | Captured-by | Fix / observed red case |
+|---|---|---|---|
+| scope | w2/Decision15.md, RuntimeCheckbox.md and supplemental coercion receipts | QUALITY14/27 insufficiently applied | `"true"` and `"false"` each Completed twice, falsifying “booleans only”; finite corrected table, QUALITY47 |
+| reference-drift | w2/Decision02.md, Decision10.md, Decision14.md | QUALITY25/30 | counter previously omitted fields/schema/raw response and prose fidelity; strengthened comparisons and corresponding isolated self-test mutants |
+| vacuous | w2/MutateC3.md d1-count survivor | QUALITY43 | six-criteria correction was still credited; new exact-cardinality rejection and self-test |
+| attribution | w1 reconstructed after-status; w2/ScribeCoherence E07 and MutateC3 d4-clean survivor | QUALITY45 | refuse reconstruction, keep d4 unprovable; QUALITY48; no historical status fabricated |
+| survivor | w2/CriticSeparability.md R-C2 normal profile metadata false positive | QUALITY40 | purpose-classify browser state versus download/artifact roots, preserve arbitrary UUID-file refusal; no filename allowlist |
+| reference-drift | w2 runtime seats and SentinelValidation: unsupported --fixtures exits 2 | registry command accuracy | corrected native --cases/--out command, sibling regular fixture copies; no new CLI |
+| landing | w2/CriticNoHarm NH1: frozen USER refused lessons grow round18→round18+round19 in inherited ancestry | inherited USER lessonDrift | irrecoverable historical M event; no rewrite/rebase/frozen-gate relaxation. Exit equality is not a no-harm proof |
+| attribution | w2/CriticNoHarm NH2: punctuation hid source reuse in S079/S093 | source identity/QUALITY38 | disclose shared canonical identities and distinguish S041 protocol/S077 implementation reuse; no source-diversity credit |
+| number-drift | w2/ScribeCoherence E13 | QUALITY46 | 9 first-run failures = five checkbox encoding + four disabled-hidden reader mismatches, not nine checkbox failures; QUALITY49 |
+| provider | w2/MutateC1 failed_precondition weekly usage quota; SentinelInvoke cyber_policy | wave death rule | dead seats retained by name/error, never replaced; unexecuted attacks remain unexecuted |
+
+No counter, self-test, report, or lane-dispatched review substitutes for the fresh non-author closure.
+Quality/no-harm verdicts must explicitly retain both the missing d4 observation and the expanded legacy
+USER lesson-history refusal, even if all historical gate exit codes equal the baseline.
+
+S098/S099 additionally supersede S093/S079's punctuation-dependent identities: they explicitly reuse
+S077 implementation/S041 protocol bytes. This is corrected curation, **not** independent-source growth.
+S098 stays queued; S099 is mined by the current note's protocol-input qualification.
+ReviewIsolation additionally found 16 source-evidence writers outside the 23-entry production ledger and
+the L1's sixth non-scalar control beyond its seat's 2–5-case assignment. Both are retained conformance
+defects; no retroactive waiver or complete-isolation claim is made. The six-case file remains because the
+new in-family success control is real, attributed, and necessary for the C1 contrast, not fabricated.
+DV07's null-specific source span now includes conversion/fill/text validation (49–328), and its outcome
+requires the parameter-specific error. DV19 covers both tooLong and tooShort anchors; S095 supplies the
+completed range/color spans. Generic S096 error-path citations do not independently entail each HTML
+constraint or localized message: those are finite runtime observations.

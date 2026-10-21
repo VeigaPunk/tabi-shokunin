@@ -1,0 +1,320 @@
+{
+  "schema": "tabi-webmcp-validation-receipt-v1",
+  "generatedAt": "2026-10-21T08:40:30.913Z",
+  "runtime": {
+    "identity": "Chromium 154.0.8037.97 / Playwright 1.64.0 / Node 24.21.0",
+    "chromium": {
+      "launchPath": "/usr/bin/chromium",
+      "launchSha256": "eaed39c36bdf6ff6ff23f9f5215aaab017e59723b96f27f7fcd5e0be833a172b",
+      "realExecutable": "/usr/lib/chromium/chromium",
+      "realExecutableSha256": "95b17db7512c34bf5d78a0d55e0e49719725c73736c47eb0a7a831553c4b330a",
+      "version": "154.0.8037.97",
+      "versionSource": "Playwright Browser.version() on a pipe-owned context"
+    },
+    "playwright": {
+      "version": "1.64.0",
+      "directory": "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright"
+    },
+    "node": "24.21.0"
+  },
+  "producerSha256": "4a1de295d6f7f7389395c86a28f23ea27fe6ebc2b6194a93d66567b0bab101a4",
+  "casesFilesSha256": {
+    "email-url.json": "be690c81d578d6ae6cd2425bd47867883dd6f60718436c9813d3f0b3adcb1bcc"
+  },
+  "fixturesSha256": {
+    "email-url.html": "d59eab89819a8c14b1bc32aaf3d553a6ca0927e19a3e5aa457c45e078ad79bb3"
+  },
+  "cases": [
+    {
+      "id": "decl-email-url-01",
+      "family": "email-url",
+      "input": {
+        "email": "not-an-email",
+        "url": "https://valid.example.test/"
+      },
+      "expected": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: email: Please include an '@' in the email address.",
+        "submitCount": 0,
+        "fields": {
+          "email": "not-an-email",
+          "url": "https://valid.example.test/"
+        },
+        "schema": {
+          "properties.email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "properties.url": {
+            "type": "string",
+            "description": "URL"
+          }
+        }
+      },
+      "observed": {
+        "status": "Error",
+        "errorText": "Form validation failed: email: Please include an '@' in the email address. 'not-an-email' is missing an '@'.. ",
+        "commandError": null,
+        "invocationId": "8B7BF48C3DC3DE523AE7E7298596D045",
+        "toolInvoked": {
+          "toolName": "decl-email-url",
+          "frameId": "15B32D3A623F4C1410E037B21FB25B8C",
+          "invocationId": "8B7BF48C3DC3DE523AE7E7298596D045",
+          "input": "{\"email\":\"not-an-email\",\"url\":\"https://valid.example.test/\"}"
+        },
+        "toolResponded": {
+          "invocationId": "8B7BF48C3DC3DE523AE7E7298596D045",
+          "status": "Error",
+          "errorText": "Form validation failed: email: Please include an '@' in the email address. 'not-an-email' is missing an '@'.. "
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 0,
+        "fields": {
+          "email": "not-an-email",
+          "url": "https://valid.example.test/"
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": true
+    },
+    {
+      "id": "decl-email-url-02",
+      "family": "email-url",
+      "input": {
+        "email": "person@example.test",
+        "url": "https://valid.example.test/"
+      },
+      "expected": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "schema": {
+          "properties.email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "properties.url": {
+            "type": "string",
+            "description": "URL"
+          }
+        }
+      },
+      "observed": {
+        "status": "Completed",
+        "errorText": null,
+        "commandError": null,
+        "invocationId": "4BA6F4C0FB25E4DF7C600C3F6D32FAF6",
+        "toolInvoked": {
+          "toolName": "decl-email-url",
+          "frameId": "E3E65A7A5635A8B7A05EC8416C14D829",
+          "invocationId": "4BA6F4C0FB25E4DF7C600C3F6D32FAF6",
+          "input": "{\"email\":\"person@example.test\",\"url\":\"https://valid.example.test/\"}"
+        },
+        "toolResponded": {
+          "invocationId": "4BA6F4C0FB25E4DF7C600C3F6D32FAF6",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 1,
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": true
+    },
+    {
+      "id": "decl-email-url-03",
+      "family": "email-url",
+      "input": {
+        "email": "person@example.test",
+        "url": "not-a-url"
+      },
+      "expected": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: url: Please enter a URL.",
+        "submitCount": 0,
+        "fields": {
+          "email": "person@example.test",
+          "url": "not-a-url"
+        },
+        "schema": {
+          "properties.email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "properties.url": {
+            "type": "string",
+            "description": "URL"
+          }
+        }
+      },
+      "observed": {
+        "status": "Error",
+        "errorText": "Form validation failed: url: Please enter a URL.. ",
+        "commandError": null,
+        "invocationId": "B55730BBB329848505007A1997022A44",
+        "toolInvoked": {
+          "toolName": "decl-email-url",
+          "frameId": "6D6D9CBF77F872071FF98DDD29184841",
+          "invocationId": "B55730BBB329848505007A1997022A44",
+          "input": "{\"email\":\"person@example.test\",\"url\":\"not-a-url\"}"
+        },
+        "toolResponded": {
+          "invocationId": "B55730BBB329848505007A1997022A44",
+          "status": "Error",
+          "errorText": "Form validation failed: url: Please enter a URL.. "
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 0,
+        "fields": {
+          "email": "person@example.test",
+          "url": "not-a-url"
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": true
+    },
+    {
+      "id": "decl-email-url-04",
+      "family": "email-url",
+      "input": {
+        "email": "person@example.test",
+        "url": "https://valid.example.test/"
+      },
+      "expected": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "schema": {
+          "properties.email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "properties.url": {
+            "type": "string",
+            "description": "URL"
+          }
+        }
+      },
+      "observed": {
+        "status": "Completed",
+        "errorText": null,
+        "commandError": null,
+        "invocationId": "5B08A6D42B180681C6C54CC122742AA9",
+        "toolInvoked": {
+          "toolName": "decl-email-url",
+          "frameId": "DF398C57EA7E4F60AB73141FDCCBB4AD",
+          "invocationId": "5B08A6D42B180681C6C54CC122742AA9",
+          "input": "{\"email\":\"person@example.test\",\"url\":\"https://valid.example.test/\"}"
+        },
+        "toolResponded": {
+          "invocationId": "5B08A6D42B180681C6C54CC122742AA9",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 1,
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": true
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "cases": 4,
+    "passed": 4,
+    "failed": 0,
+    "findings": 0
+  }
+}

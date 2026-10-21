@@ -211,3 +211,18 @@
     expectation still equals an observed run, never a hoped one. Red example: checkbox cases expected checked
     booleans while the harness reports FormData-like values, 9/64 failing until the field contract was stated.
     (lesson: corpus/lessons/round-19.md#mistakes; integration receipts receipt-1→receipt-2)
+47. Refines 14/27: a type-level rejection claim names the tested input shapes and checks the implementation's
+    conversion branches before universal words are used. Source-token presence is not entailment of the
+    whole decision. Supplemental accepted `"true"`/`"false"` checkbox strings are red counterexamples to
+    “booleans only”; described hidden controls and disabled-option serialization are separate branches.
+    (lesson: corpus/lessons/round-19.md#mistakes; w2/ScribeCoherence E03–E06, Decision15, RuntimeCheckbox)
+48. Refines 45: a reconstructed return-time status or tracked diff, even backed by mtimes, is not an observed
+    before/after snapshot. The checker must reject that provenance for closure credit; an irrecoverable
+    historical observation stays unprovable. Red case: the round-19 wave-1 ledger explicitly labels its
+    after-state RECONSTRUCTED; C3's d4 refuses it.
+    (lesson: corpus/lessons/round-19.md#mistakes; w2/ScribeCoherence E07; measure-c3 reconstructed-snapshot case)
+49. Refines 40/44/46's explanatory text only: round-18 H4 scanned marker bytes, not suggested filenames;
+    C3 d3 also tests nonempty agentIds in post-record records/registries (validation snapshots are not them);
+    first integration's 9 failures were five checkbox encoding mismatches plus four disabled-hidden
+    field-reader mismatches. These supersede those narrower attribution examples, not their requirements.
+    (lesson: corpus/lessons/round-19.md#mistakes; w2/ScribeCoherence E12–E13)

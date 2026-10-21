@@ -83,3 +83,75 @@ Playwright 1.64.0 launches with an artifacts directory created by
 downloads there under a GUID name. A refused-download check must therefore scan that whole directory for any
 new file, not search for the suggested filename or a marker; the round-19 invoke successor does this
 (`scripts/webmcp-invoke-round19.mjs`, measured by `.ufo/waves/round-19/measure-c2.mjs`).
+
+## Wave-2 correction entry — supersedes the named generalizations above
+
+Source/evidence: `.ufo/waves/round-19/w2/ScribeCoherence.md`, `Decision15.md`, `Decision22.md`,
+`SourceS082.md`, `SourceS083.md`, and the `RuntimeCheckbox.*` retained observations.
+
+- The 15 families were selected before probing; the 27 candidate decisions were extracted after
+  those probes and declared before counting. Candidate count is not an admission count; the older
+  measurement at ea170da3 admitted 24. Final measurements have their own revision-bound receipts.
+- **:45-47, hidden inputs:** the rejected fixture input lacks `toolparamdescription`. Nonempty descriptions
+  route hidden inputs through S077's text-control path (`:1270-1281`); hidden inputs are not generally
+  unsettable. That additional branch was not part of the canonical 66-case cohort.
+- **:57-58, checkbox “booleans only”: withdrawn.** Only `"on"`, `"checkbox-choice"` and `"unrelated"`
+  were the rejected string probes. S077 `:71-88,337-342` accepts integers and case-insensitive
+  true/false/1/0 strings too; the wave-2 supplemental `"true"`/`"false"` calls completed. Prefer JSON
+  booleans as schema-shaped input, not as an assertion about every accepted value.
+- **:59-60, disabled select:** the option is selected and a submit event completes, but the fixture's
+  FormData output omits it (`fields: {}`). Selected, submitted-event, and serialized are distinct facts.
+- **:53-55, date/time:** `decl-date-time-05` sets all four bounded controls outside their configured
+  bounds at once; all values remain filled, four native validation messages are returned, and no
+  submit event occurs. No isolated one-field range experiment is claimed. S078 describes the generic
+  validation-error path, not the locale message or every range constraint.
+- **:73-75, “format not enforced”: withdrawn.** The tested length limits do not block agent/script fills.
+  Email/URL schemas omit `format`, but their native type constraints reject malformed inputs at autosubmit.
+- **:64-65, text/textarea source boundary:** input.html's Text/Search algorithm supports single-line
+  newline stripping only; textarea CRLF normalization is retained as the fixture's runtime observation,
+  not attributed to those input-element lines. Range step-rounding additionally needs input.html
+  `:3415-3420`; exact color serialization needs `:3682-3705`, beyond the original abbreviated anchors.
+- **:9, recheck:** S077–S079 and S091 are version-pinned source openings; S082/S083 are dated rolling
+  Living Standard snapshots, not Chromium-tag-pinned sources. Their registry cadence remains on-release;
+  the conflicting 180d annotation above is superseded, not a registry transition.
+- S087's registration/spec proposition was already consumed in :17-18; its registry status is now mined
+  and used-by names this note. That is source curation, not another runtime capability.
+
+Runtime claims remain one pinned Chromium build on loopback fixtures. A source token existing in an
+anchored body does not prove the whole natural-language decision; semantic reviews and these explicit
+scope corrections are separate evidence from the numerical counter.
+
+Additional current source qualifications (opened 2026-10-21):
+
+- **S095**, https://html.spec.whatwg.org/multipage/input.html, decoded body
+  `9782129b804f60f85c5701d071b52e50b9067469fc4191fd2a372a8a9931c1d4`: supersedes S082's
+  incomplete Text/Search/range/color scope and anchors, as recorded in `w2/SourceS082.md`.
+- **S096**, Chromium 154 `html_form_element.cc`, same retained body as S078: supersedes the
+  ordinary-empty-string reading of S078. Navigation's callback uses a **null String sentinel**;
+  a source return is not evidence of completed navigation or an ordinary empty CDP output.
+- **S097**, Chromium 154 `inspector_web_mcp_agent.cc:47-64,208-243`, decoded body
+  `1cc55ef978a63d4fb8f9678ade444756fdb90fb182e497680bae0aeedf968475`, supersedes S079's
+  abbreviated output description. Success parses JSON or falls back to a string; failure passes a
+  null optional-output pointer, so the output field is **omitted**, not JSON `null`.
+- **:48-53:** number and range do not share every rejection branch. Number accepts an empty string
+  to clear; JSON string `"42"` remains string input and fills text `"42"`, while only the tested
+  JSON number `1.25e21` is observed formatted as `"1.25000e+21"`. There is no universal numeric
+  string/exponent successful-submission promise; native constraints still run afterward.
+- **:35-42:** every supplied entry must pass fill validation before any apply call. The first fill
+  error returns early; it need not visit all keys. HTML constraint-invalid values are a later,
+  non-rollback stage. “Mixed valid+invalid” there means **fill-invalid**.
+- **:59-61:** multiple-select validation requires an array whose scalar-converted option values are
+  distinct and present; duplicate/coercion extensions are source-derived, not additional canonical
+  runtime cases. A visible label equal to its value is not intrinsically invalid.
+- **:81-85:** S091's artifact location applies with no artifactsDir/downloadsPath overrides. Scanning
+  artifact roots is tabi evidence policy derived from that placement, not an upstream mandate.
+
+Every corrected decision is now explicitly restricted to its named probe inputs and fixture. Preconditions
+such as enabled native controls, no novalidate bypass, the fixture's initial values, no intervening handler
+mutation, and its prevented submit listener are not universal browser guarantees. The corrected SKILL table
+is the canonical rendering of `validation/decisions.json`; older rows remain visible historical text.
+
+S099 (same Chromium-tag PDL URL/body as source S079 above, `WebMCP.pdl:59-69,109-123`) is the current
+canonical-identity row for the `object input` declaration used in :66-67; it explicitly reuses S041 bytes.
+S098 similarly qualifies the queued schema-construction reading as S077 implementation reuse. Neither is
+claimed as an independent new publisher/source. Original rows remain historical; see round-19 Gate.

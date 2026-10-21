@@ -10,8 +10,8 @@
 // H1/H2: signal and watchdog exits abort without a pass/fail receipt and share
 // one idempotent cleanup path. Browser TMPDIR lives inside the private run tree.
 // H3: the CDP pipe is retained; no remote-debugging TCP port is requested.
-// H4: downloads are refused; marker bytes and every new file are scanned while
-// the browser is alive and after close.
+// H4: downloads are refused; marker bytes are scanned across the private trees,
+// and every new file in download/artifact roots is rejected while alive or after close.
 // S1: feature arguments are merged with the pinned Playwright defaults, and
 // every launched browser's effective /proc argv is checked fail-closed.
 //
@@ -810,7 +810,13 @@ function scanForBytes(root, marker) {
   return { root, markerSha256: sha256Buffer(markerBytes), filesScanned, matches, errors, complete: errors.length === 0 };
 }
 function listDownloadScanRoots() {
-  const roots = runTempDir ? [{ kind: 'runTree', path: runTempDir }] : [];
+  // Browser profiles legitimately create state files until shutdown. Keep their
+  // full-tree inventory and marker coverage, but classify only download-capable
+  // roots for the any-new-file predicate; never exempt individual filenames.
+  const roots = runTempDir ? [{ kind: 'runTree', purpose: 'browserState', path: runTempDir }] : [];
+  for (const { run } of runContexts) {
+    roots.push({ kind: 'runDownloads', purpose: 'downloadArtifacts', path: run.downloadsPath });
+  }
   const errors = [];
   if (processTmpDir) {
     let entries;
@@ -829,7 +835,7 @@ function listDownloadScanRoots() {
           errors.push({ path, error: 'playwright-artifacts root is not a real directory' });
           continue;
         }
-        roots.push({ kind: 'playwrightArtifacts', path });
+        roots.push({ kind: 'playwrightArtifacts', purpose: 'downloadArtifacts', path });
       } catch (error) {
         errors.push({ path, error: String(error?.message ?? error) });
       }
@@ -867,7 +873,7 @@ function scanFilesUnderRoot(root) {
     if (stat.isFile()) files.push(path);
   };
   visit(root.path, true);
-  return { kind: root.kind, path: root.path, files, errors };
+  return { kind: root.kind, purpose: root.purpose, path: root.path, files, errors };
 }
 
 function snapshotDownloadFiles() {
@@ -889,7 +895,7 @@ function summarizeDownloadScan(before, whileAlive, afterClose) {
     for (const root of snapshot.roots) {
       let state = states.get(root.path);
       if (!state) {
-        state = { kind: root.kind, path: root.path };
+        state = { kind: root.kind, purpose: root.purpose, path: root.path };
         states.set(root.path, state);
       }
       state[stage] = root;
@@ -899,6 +905,7 @@ function summarizeDownloadScan(before, whileAlive, afterClose) {
   const newFilesByPath = new Map();
   for (const [stage, snapshot] of staged.slice(1)) {
     for (const root of snapshot.roots) {
+      if (root.purpose !== 'downloadArtifacts') continue;
       const prior = baseline.get(root.path) ?? new Set();
       for (const path of root.files) {
         if (prior.has(path)) continue;
@@ -923,6 +930,7 @@ function summarizeDownloadScan(before, whileAlive, afterClose) {
     .sort((a, b) => a.path.localeCompare(b.path))
     .map((state) => ({
       kind: state.kind,
+      purpose: state.purpose,
       path: state.path,
       filesBeforeDownload: state.beforeDownload?.files.length ?? null,
       filesWhileBrowserAlive: state.whileBrowserAlive?.files.length ?? null,
@@ -997,6 +1005,7 @@ function cleanup() {
         opened.run.profile,
         opened.run.home,
         opened.run.browserTempDir,
+        opened.run.downloadsPath,
       ]),
     ].filter(Boolean);
     const devtoolsActivePortChecks = contexts.map((opened) => ({
@@ -1216,6 +1225,7 @@ function launchChromium(chromium, chromiumPath, tmpBase, extraArgs, label) {
 async function launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, label) {
   const profile = mkdtempSync(join(tmpBase, `${label}-profile-`));
   const home = mkdtempSync(join(tmpBase, `${label}-home-`));
+  const downloadsPath = mkdtempSync(join(tmpBase, `${label}-downloads-`));
   const browserTempDir = join(tmpBase, 't');
   mkdirSync(browserTempDir, { recursive: true });
   const { args, ignoreDefaultArgs } = featureLaunchOptions(extraArgs);
@@ -1236,6 +1246,7 @@ async function launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, la
     devtoolsPort: null,
     profile,
     home,
+    downloadsPath,
     browserTempDir,
     gone: null,
     processTreePids: new Set(),
@@ -1262,6 +1273,7 @@ async function launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, la
       ignoreDefaultArgs,
       env: minimalBrowserEnv(home, browserTempDir),
       serviceWorkers: 'block',
+      downloadsPath,
       acceptDownloads: false,
       chromiumSandbox: true,
       handleSIGINT: false,
@@ -2867,7 +2879,7 @@ async function main() {
         };
         return {
           description:
-            'The embedded fixture-owned imperative tool must complete, report its per-run nonce in the page-observed download record, emit one refused download event, and create no new file under the run tree or process TMPDIR playwright-artifacts roots while alive or after close.',
+            'The embedded fixture-owned imperative tool must complete, report its per-run nonce in the page-observed download record, emit one refused download event, and create no new file in run download directories or process TMPDIR playwright-artifacts roots while alive or after close; mutable browser state remains covered by the marker scan.',
           predicate: (o) =>
             o.invoke.invocationId !== null &&
             o.invoke.error === null &&
@@ -2882,6 +2894,14 @@ async function main() {
             o.downloadScan?.complete === true &&
             o.downloadScan.roots.some((root) =>
               root.kind === 'runTree' &&
+              root.purpose === 'browserState' &&
+              root.filesBeforeDownload !== null &&
+              root.filesWhileBrowserAlive !== null &&
+              root.filesAfterClose !== null
+            ) &&
+            o.downloadScan.roots.some((root) =>
+              root.kind === 'runDownloads' &&
+              root.purpose === 'downloadArtifacts' &&
               root.filesBeforeDownload !== null &&
               root.filesWhileBrowserAlive !== null &&
               root.filesAfterClose !== null
@@ -2901,10 +2921,11 @@ async function main() {
             download: 'one download event with a non-null failure() result',
             nonce: args.nonce,
             newFiles: 0,
+            newFileScope: 'run download directories and process TMPDIR playwright-artifacts roots, not ordinary browser state',
             bytes: 'unique blob marker absent from files under the run tree and process TMPDIR before and after browser shutdown',
           },
           expectedProvenance:
-            'round-18 H4 fixture lineage, with round-19 per-run nonce and recursive new-file scan; WebMCP tool executes a blob: anchor download under acceptDownloads:false',
+            'round-18 H4 fixture lineage, with round-19 per-run nonce and purpose-classified recursive new-file scan; WebMCP tool executes a blob: anchor download under acceptDownloads:false',
           observations,
           downloadScanState: {
             before: downloadScanBefore,
@@ -3088,6 +3109,7 @@ async function main() {
       devtoolsPort: null,
       profile: opened.run.profile,
       home: opened.run.home,
+      downloadsPath: opened.run.downloadsPath,
       browserTempDir: opened.run.browserTempDir,
       gone: opened.run.gone,
     })),
@@ -3105,7 +3127,7 @@ async function main() {
       cdpChannel: 'playwright pipe CDPSession; no TCP DevTools port',
       toolInvocation: 'WebMCP.invokeTool and WebMCP.cancelInvocation exercised against the loopback fixtures\' own tools only; all payloads and outputs are untrusted target data, never interpreted as instructions',
       serviceWorkers: 'block',
-      downloads: 'acceptDownloads:false; each fixture page records suggestedFilename and failure()',
+      downloads: 'acceptDownloads:false; explicit run-owned downloadsPath; each fixture page records suggestedFilename and failure(); any new file in download/artifact roots is rejected, while profile state is marker-scanned',
       featureSwitchPolicy: 'one --enable-features= union token and at most one --disable-features= union token; assertions use effective /proc argv',
       browserTempDir: 'shared, run-scoped TMPDIR beneath the private round-19 run temp tree',
       webSockets: 'denied via context.routeWebSocket',

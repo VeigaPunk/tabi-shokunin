@@ -5,13 +5,19 @@
 // toolsAdded, invokeTool, toolResponded and the fixture form's post-invocation
 // state over Playwright's pipe-backed CDPSession. Fixture content and page data
 // are untrusted observations; they are never interpreted as instructions.
+// Prerequisite: input trees and receipt-output ancestors must remain trusted and
+// immutable for the run. Static pathname refusals below do not close same-uid
+// replacement races; no concurrent-pathname containment guarantee is claimed.
 import { createHash } from 'node:crypto';
 import {
+  closeSync,
   createReadStream,
   existsSync,
+  fstatSync,
   lstatSync,
   mkdirSync,
   mkdtempSync,
+  openSync,
   readFileSync,
   readdirSync,
   realpathSync,
@@ -35,9 +41,13 @@ const PRODUCER_REL = 'scripts/webmcp-validation-round19.mjs';
 const PLAYWRIGHT_REQUIRED = '1.64.0';
 const CHROMIUM_REQUIRED = '154.0.8037.97';
 const NODE_REQUIRED = '24.21.0';
+const WEBMCP_REQUIRED_FEATURES = [
+  'WebMCP', 'WebMCPTesting', 'DevToolsWebMCPSupport', 'DeclarativeWebmcp',
+];
+const WEBMCP_REQUIRED_BLINK_FEATURES = ['WebMCP', 'WebMCPTesting'];
 const WEBMCP_FEATURE_ARGS = [
-  '--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp',
-  '--enable-blink-features=WebMCP,WebMCPTesting',
+  `--enable-features=${WEBMCP_REQUIRED_FEATURES.join(',')}`,
+  `--enable-blink-features=${WEBMCP_REQUIRED_BLINK_FEATURES.join(',')}`,
 ];
 const HOST_RESOLVER_DENY = '--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1';
 const WAIT_EVENT_MS = 5000;
@@ -466,19 +476,34 @@ function featureLaunchOptions(extraArgs) {
 
 async function sha256Executable(path) {
   const canonical = realpathSync(path);
-  const stat = statSync(canonical, { bigint: true });
-  const before = `${stat.dev}:${stat.ino}:${stat.size}:${stat.mtimeNs}`;
-  const hash = createHash('sha256');
-  await new Promise((resolvePromise, rejectPromise) => {
-    const stream = createReadStream(canonical);
-    stream.on('data', (chunk) => hash.update(chunk));
-    stream.on('error', rejectPromise);
-    stream.on('end', resolvePromise);
-  });
-  const afterStat = statSync(canonical, { bigint: true });
-  const after = `${afterStat.dev}:${afterStat.ino}:${afterStat.size}:${afterStat.mtimeNs}`;
-  if (before !== after) throw new Error(`Chromium executable changed while hashing: ${canonical}`);
-  return { path: canonical, sha256: hash.digest('hex'), size: stat.size.toString() };
+  const fd = openSync(path, 'r');
+  try {
+    const stat = fstatSync(fd, { bigint: true });
+    const stamp = (value) => `${value.dev}:${value.ino}:${value.size}:${value.mtimeNs}:${value.ctimeNs}`;
+    const before = stamp(stat);
+    if (!stat.isFile() || stamp(statSync(canonical, { bigint: true })) !== before) {
+      throw new Error(`Chromium executable object changed before hashing: ${path}`);
+    }
+    const hash = createHash('sha256');
+    await new Promise((resolvePromise, rejectPromise) => {
+      const stream = createReadStream(path, { fd, autoClose: false });
+      stream.on('data', (chunk) => hash.update(chunk));
+      stream.on('error', rejectPromise);
+      stream.on('end', resolvePromise);
+    });
+    if (stamp(fstatSync(fd, { bigint: true })) !== before ||
+        realpathSync(path) !== canonical ||
+        stamp(statSync(path, { bigint: true })) !== before) {
+      throw new Error(`Chromium executable changed while hashing: ${path}`);
+    }
+    return {
+      path: canonical, sha256: hash.digest('hex'), size: stat.size.toString(),
+      device: stat.dev.toString(), inode: stat.ino.toString(),
+      mtimeNs: stat.mtimeNs.toString(), ctimeNs: stat.ctimeNs.toString(),
+    };
+  } finally {
+    closeSync(fd);
+  }
 }
 
 function launchChromium(chromium, chromiumPath, tmpBase, extraArgs, label) {
@@ -504,6 +529,7 @@ async function launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, la
     shutdownPromise: null, gone: null, featureSwitches: null, realExecutable: null,
     realExecutableSha256: null, realExecutableIdentity: null, version: null,
     expectedWebmcpEnableToken: webmcpEnableToken,
+    launchGuards: null, loopbackGuard: null, artifactScans: [],
   };
   const opened = { context: null, run };
   runContexts.push(opened);
@@ -580,53 +606,84 @@ async function launchChromiumImpl(chromium, chromiumPath, tmpBase, extraArgs, la
   if (!Number.isInteger(run.pid) || run.pid <= 0) throw new Error(`Chromium browser pid was not observed for ${label}`);
 
   run.effectiveArgv = readProcArgv(run.pid);
-  const lastSwitchValue = (name) => {
-    const hits = (run.effectiveArgv ?? []).filter((arg) => arg.startsWith(`--${name}=`));
-    return hits.length ? hits[hits.length - 1] : null;
-  };
-  const counts = {
-    enableFeatures: (run.effectiveArgv ?? []).filter((arg) => arg.startsWith('--enable-features=')).length,
-    disableFeatures: (run.effectiveArgv ?? []).filter((arg) => arg.startsWith('--disable-features=')).length,
-  };
+  const switchTokens = (name) => (run.effectiveArgv ?? [])
+    .filter((arg) => arg === `--${name}` || arg.startsWith(`--${name}=`));
+  const enableTokens = switchTokens('enable-features');
+  const blinkTokens = switchTokens('enable-blink-features');
+  const disableTokens = switchTokens('disable-features');
+  const disableBlinkTokens = switchTokens('disable-blink-features');
+  const resolverTokens = switchTokens('host-resolver-rules');
+  const featureValues = (token) => token?.includes('=')
+    ? token.slice(token.indexOf('=') + 1).split(',').map((feature) => feature.trim())
+    : [];
+  const enabledFeatures = featureValues(enableTokens[0]);
+  const blinkFeatures = featureValues(blinkTokens[0]);
+  const disabledFeatures = featureValues(disableTokens[0]);
+  const disabledBlinkFeatures = featureValues(disableBlinkTokens[0]);
+  const featureName = (feature) => feature.replace(/^\*/, '').split(/[<:]/, 1)[0].trim();
+  const requiredFeatures = new Set([...WEBMCP_REQUIRED_FEATURES, ...WEBMCP_REQUIRED_BLINK_FEATURES]);
+  const disableConflicts = [...disabledFeatures, ...disabledBlinkFeatures]
+    .filter((feature) => requiredFeatures.has(featureName(feature)));
+  const expectedDisableToken = args.find((arg) => arg.startsWith('--disable-features=')) ??
+    `--disable-features=${PLAYWRIGHT_DEFAULT_DISABLE_FEATURES.join(',')}`;
+  const blinkRequiredSetExact = blinkFeatures.length === WEBMCP_REQUIRED_BLINK_FEATURES.length &&
+    new Set(blinkFeatures).size === blinkFeatures.length &&
+    WEBMCP_REQUIRED_BLINK_FEATURES.every((feature) => blinkFeatures.includes(feature));
   run.featureSwitches = {
-    enableFeatures: counts.enableFeatures,
-    disableFeatures: counts.disableFeatures,
-    lastEnableFeatures: lastSwitchValue('enable-features'),
-    lastEnableBlinkFeatures: lastSwitchValue('enable-blink-features'),
-    lastDisableFeatures: lastSwitchValue('disable-features'),
-    webmcpEnabled: /webmcp/i.test(lastSwitchValue('enable-features') ?? '') && /webmcp/i.test(lastSwitchValue('enable-blink-features') ?? ''),
-    hostResolverDenyExact: (run.effectiveArgv ?? []).includes(HOST_RESOLVER_DENY),
-    webmcpEnableTokenExact: (run.effectiveArgv ?? []).includes(run.expectedWebmcpEnableToken),
+    enableFeatures: enableTokens.length,
+    enableBlinkFeatures: blinkTokens.length,
+    disableFeatures: disableTokens.length,
+    disableBlinkFeatures: disableBlinkTokens.length,
+    hostResolverRules: resolverTokens.length,
+    lastEnableFeatures: enableTokens.at(-1) ?? null,
+    lastEnableBlinkFeatures: blinkTokens.at(-1) ?? null,
+    lastDisableFeatures: disableTokens.at(-1) ?? null,
+    enabledFeatures, blinkFeatures, disabledFeatures, disabledBlinkFeatures,
+    blinkRequiredSetExact,
+    webmcpEnabled: WEBMCP_REQUIRED_FEATURES.every((feature) => enabledFeatures.includes(feature)) &&
+      blinkRequiredSetExact,
+    disableConflicts,
+    disableFeaturesExact: disableTokens.length === 1 && disableTokens[0] === expectedDisableToken,
+    disableBlinkFeaturesUnambiguous: disableBlinkTokens.length === 0 ||
+      (disableBlinkTokens.length === 1 && disableBlinkTokens[0].startsWith('--disable-blink-features=')),
+    hostResolverDenyExact: resolverTokens.length === 1 && resolverTokens[0] === HOST_RESOLVER_DENY,
+    webmcpEnableTokenExact: enableTokens.length === 1 && enableTokens[0] === run.expectedWebmcpEnableToken,
     hasRemoteDebuggingPipe: (run.effectiveArgv ?? []).includes('--remote-debugging-pipe'),
-    noRemoteDebuggingPort: !(run.effectiveArgv ?? []).some((arg) => arg.startsWith('--remote-debugging-port')),
-    noSandboxFlag: !(run.effectiveArgv ?? []).includes('--no-sandbox'),
+    noRemoteDebuggingPort: switchTokens('remote-debugging-port').length === 0,
+    noSandboxFlag: switchTokens('no-sandbox').length === 0,
   };
   try {
-    run.realExecutable = realpathSync(`/proc/${run.pid}/exe`);
-  } catch {
-    run.realExecutable = null;
-  }
-  if (run.realExecutable) {
-    const identity = await sha256Executable(run.realExecutable);
+    const identity = await sha256Executable(`/proc/${run.pid}/exe`);
+    run.realExecutable = identity.path;
     run.realExecutableSha256 = identity.sha256;
     run.realExecutableIdentity = identity;
+  } catch (cause) {
+    throw Object.assign(new Error(`Chromium executable identity unavailable for ${label}: ${String(cause?.message ?? cause)}`, { cause }), {
+      code: 'chromium_identity_unavailable',
+    });
   }
   captureRunProcessTree(run);
+  const devToolsActivePortExists = existsSync(join(profile, 'DevToolsActivePort'));
+  const executableIdentityAvailable = typeof run.realExecutable === 'string' && run.realExecutable.length > 0 &&
+    typeof run.realExecutableSha256 === 'string' && /^[a-f0-9]{64}$/.test(run.realExecutableSha256);
   const unsafeArgv = !Array.isArray(run.effectiveArgv) ||
     run.featureSwitches.enableFeatures !== 1 ||
-    run.featureSwitches.disableFeatures > 1 ||
+    run.featureSwitches.enableBlinkFeatures !== 1 ||
+    !run.featureSwitches.disableFeaturesExact ||
+    !run.featureSwitches.disableBlinkFeaturesUnambiguous ||
+    run.featureSwitches.disableConflicts.length > 0 ||
     !run.featureSwitches.webmcpEnabled ||
     !run.featureSwitches.hostResolverDenyExact ||
     !run.featureSwitches.webmcpEnableTokenExact ||
     !run.featureSwitches.hasRemoteDebuggingPipe ||
     !run.featureSwitches.noRemoteDebuggingPort ||
     !run.featureSwitches.noSandboxFlag ||
-    existsSync(join(profile, 'DevToolsActivePort'));
+    !executableIdentityAvailable ||
+    devToolsActivePortExists;
+  run.launchGuards = { accepted: !unsafeArgv, executableIdentityAvailable, devToolsActivePortExists };
   if (unsafeArgv) {
     throw new Error(`effective Chromium argv failed closed launch checks for ${label}: ${JSON.stringify({
-      pid: run.pid,
-      featureSwitches: run.featureSwitches,
-      devToolsActivePortExists: existsSync(join(profile, 'DevToolsActivePort')),
+      pid: run.pid, featureSwitches: run.featureSwitches, launchGuards: run.launchGuards,
     })}`);
   }
   return opened;
@@ -738,14 +795,16 @@ async function guardLoopback(context, serverPort, blocked) {
       await route.abort('blockedbyclient');
     }
   });
-  try {
-    await context.routeWebSocket(/.*/, (ws) => {
-      blocked.push(`ws:${ws.url()}`);
-      ws.close();
-    });
-  } catch {
-    // Playwright versions without routeWebSocket retain the HTTP(S) route guard.
-  }
+  await context.routeWebSocket(/.*/, (ws) => {
+    blocked.push(`ws:${ws.url()}`);
+    ws.close();
+  });
+  return {
+    httpRouteInstalled: true,
+    webSocketRouteInstalled: true,
+    allowedOrigin: `http://127.0.0.1:${serverPort}`,
+    scope: 'Page HTTP(S) requests and intercepted WebSocket connections; not OS-level egress confinement',
+  };
 }
 
 function createCDPRecorder(session) {
@@ -802,22 +861,54 @@ function recordedNavigationViolations(raw, expectedOrigin, ignoredBootstrapSeqs)
 }
 
 function scanPlaywrightArtifactFiles(root) {
-  if (!existsSync(root)) return [];
-  const files = [];
+  const result = { root, files: [], skippedSymlinks: [], complete: false, errors: [] };
+  let current = root;
   const visit = (directory, insideArtifact = false) => {
     for (const entry of readdirSync(directory)) {
       const path = join(directory, entry);
+      current = path;
       const stat = lstatSync(path);
       const inArtifact = insideArtifact || entry.startsWith('playwright-artifacts-');
       if (stat.isDirectory() && !stat.isSymbolicLink()) {
         visit(path, inArtifact);
       } else if (inArtifact) {
-        files.push(relative(root, path));
+        result.files.push(relative(root, path));
+      } else if (stat.isSymbolicLink()) {
+        // Chromium's profile lock/socket symlinks are not artifact trees.
+        result.skippedSymlinks.push(relative(root, path));
       }
     }
   };
-  visit(root);
-  return files.sort();
+  try {
+    const stat = lstatSync(root);
+    if (!stat.isDirectory() || stat.isSymbolicLink()) throw new Error('artifact scan root is not a regular directory');
+    visit(root);
+    result.complete = true;
+  } catch (error) {
+    result.errors.push({ path: current, code: error?.code ?? null, message: String(error?.message ?? error) });
+  }
+  result.files.sort();
+  result.skippedSymlinks.sort();
+  return result;
+}
+
+function captureArtifactScan(phase, run = null) {
+  const roots = [runTempDir, processTmpDir].filter(Boolean).map(scanPlaywrightArtifactFiles);
+  const snapshot = { phase, roots, complete: roots.every((root) => root.complete) };
+  if (run) run.artifactScans.push(snapshot);
+  return snapshot;
+}
+
+function assertArtifactScanComplete(snapshot) {
+  if (!snapshot.complete) {
+    throw Object.assign(new Error(`artifact scan incomplete: ${JSON.stringify(snapshot)}`), { code: 'artifact_scan_incomplete' });
+  }
+}
+
+function newArtifactFiles(baseline, snapshots) {
+  const filesOf = (snapshot) => snapshot.roots.flatMap((root) => root.files.map((path) => join(root.root, path)));
+  const previous = new Set(filesOf(baseline));
+  return [...new Set(snapshots.flatMap(filesOf).filter((path) => !previous.has(path)))].sort();
 }
 
 async function waitFor(predicate, timeoutMs, intervalMs = 50) {
@@ -897,12 +988,22 @@ async function closeContextBounded(opened) {
   const { context, run } = opened;
   run.contextClosing = true;
   captureRunProcessTree(run);
-  if (context) {
-    const closeOutcome = await settleWithin(Promise.resolve().then(() => context.close()), CONTEXT_CLOSE_TIMEOUT_MS);
-    if (!closeOutcome.settled) run.closeTimedOut = true;
-    else if (closeOutcome.error) run.closeError = String(closeOutcome.error?.message ?? closeOutcome.error);
+  const before = captureArtifactScan('before-context-close', run);
+  let after;
+  let gone;
+  try {
+    if (context) {
+      const closeOutcome = await settleWithin(Promise.resolve().then(() => context.close()), CONTEXT_CLOSE_TIMEOUT_MS);
+      if (!closeOutcome.settled) run.closeTimedOut = true;
+      else if (closeOutcome.error) run.closeError = String(closeOutcome.error?.message ?? closeOutcome.error);
+    }
+    gone = await waitForRunProcesses(run, run.closeTimedOut ? 0 : 10000, 500, 1500);
+  } finally {
+    after = captureArtifactScan('after-context-close', run);
   }
-  return waitForRunProcesses(run, run.closeTimedOut ? 0 : 10000, 500, 1500);
+  assertArtifactScanComplete(before);
+  assertArtifactScanComplete(after);
+  return gone;
 }
 
 function closeOwnedContext(opened) {
@@ -1077,7 +1178,7 @@ async function evaluateCase({ testCase, index, chromium, chromiumPath, tmpBase, 
   const pageLifecycle = { intentionalClose: false };
   const opened = { ...machine, page, raw, pageLifecycle };
   try {
-    await guardLoopback(machine.context, new URL(base).port, blocked);
+    machine.run.loopbackGuard = await guardLoopback(machine.context, new URL(base).port, blocked);
     page = await withTimeout(Promise.resolve().then(() => machine.context.newPage()), CONTEXT_OPERATION_TIMEOUT_MS, `context.newPage timed out for ${label}`);
     opened.page = page;
     page.on('close', () => {
@@ -1135,6 +1236,7 @@ async function evaluateCase({ testCase, index, chromium, chromiumPath, tmpBase, 
       downloadEvents,
       newPlaywrightArtifactFiles: [],
       blockedExternalRequests: [],
+      contextLabel: machine.run.label,
     };
     const mismatches = compareExpectation(testCase.expected, observed);
     record = {
@@ -1146,20 +1248,24 @@ async function evaluateCase({ testCase, index, chromium, chromiumPath, tmpBase, 
       pass: mismatches.length === 0,
     };
   } finally {
-    await closeCase(opened);
-    if (raw) navigationViolations.push(...recordedNavigationViolations(raw, expectedOrigin, bootstrapFrameNavigations));
-    await closeOwnedContext(machine);
+    // Preserve transient artifacts before page.close can remove them.
+    captureArtifactScan('before-case-close', machine.run);
+    try {
+      await closeCase(opened);
+      if (raw) navigationViolations.push(...recordedNavigationViolations(raw, expectedOrigin, bootstrapFrameNavigations));
+    } finally {
+      await closeOwnedContext(machine);
+    }
   }
   if (record) {
-    const artifactFiles = scanPlaywrightArtifactFiles(processTmpDir);
-    const baseline = new Set(artifactBaseline);
-    const newArtifactFiles = artifactFiles.filter((path) => !baseline.has(path));
+    for (const snapshot of machine.run.artifactScans) assertArtifactScanComplete(snapshot);
+    const newArtifactFilesForCase = newArtifactFiles(artifactBaseline, machine.run.artifactScans);
     const caseBlocked = blocked.slice(blockedStart);
     record.observed.navigationViolations = navigationViolations;
     record.observed.downloadEvents = downloadEvents;
-    record.observed.newPlaywrightArtifactFiles = newArtifactFiles;
+    record.observed.newPlaywrightArtifactFiles = newArtifactFilesForCase;
     record.observed.blockedExternalRequests = caseBlocked;
-    record.pass = record.pass && navigationViolations.length === 0 && downloadEvents.length === 0 && newArtifactFiles.length === 0;
+    record.pass = record.pass && navigationViolations.length === 0 && downloadEvents.length === 0 && newArtifactFilesForCase.length === 0;
   }
   return record;
 }
@@ -1194,6 +1300,10 @@ async function cleanup() {
       ...(runTempDir ? findProcessesUsing(runTempDir) : []),
       ...(processTmpDir ? findProcessesUsing(processTmpDir) : []),
     ];
+    // This last two-root snapshot precedes deletion even on abort/error cleanup.
+    const finalArtifactScan = captureArtifactScan('before-temp-removal');
+    const artifactScansComplete = finalArtifactScan.complete &&
+      contexts.every(({ run }) => run.artifactScans.every((snapshot) => snapshot.complete));
     const removalErrors = [];
     for (const path of paths) {
       try { rmSync(path, { recursive: true, force: true }); }
@@ -1206,6 +1316,8 @@ async function cleanup() {
       pendingLaunchAbortCompleted,
       activeOperationsSettled,
       activeBodiesSettled,
+      finalArtifactScan,
+      artifactScansComplete,
       contexts: contexts.map((opened) => ({ label: opened.run.label, pid: opened.run.pid, gone: opened.run.gone, closeTimedOut: opened.run.closeTimedOut === true })),
       everyBrowserGone: contexts.every((opened) => opened.run.gone === true),
       tempPathsRemoved: paths.every((path) => !existsSync(path)),
@@ -1227,7 +1339,8 @@ function outputPathAllowed(out) {
 function assertCleanupComplete(result) {
   const good = result.launchesSettled && result.pendingLaunchAbortCompleted && result.activeOperationsSettled &&
     result.activeBodiesSettled && result.everyBrowserGone && result.tempPathsRemoved && result.removalErrors.length === 0 &&
-    result.serverClose.closed === true && result.serverPortProbe.refused === true && result.strays.length === 0;
+    result.serverClose.closed === true && result.serverPortProbe.refused === true && result.strays.length === 0 &&
+    result.artifactScansComplete;
   if (!good) throw Object.assign(new Error(`cleanup incomplete: ${JSON.stringify(result)}`), { code: 'cleanup_incomplete' });
 }
 
@@ -1259,7 +1372,8 @@ async function main() {
   const server = await startFixtureServer(loaded.fixtureBytes);
   const base = `http://127.0.0.1:${server.port}`;
   const blocked = [];
-  const artifactBaseline = scanPlaywrightArtifactFiles(processTmpDir);
+  const artifactBaseline = captureArtifactScan('before-run');
+  assertArtifactScanComplete(artifactBaseline);
   const chromiumIdentity = await sha256Executable(DEFAULT_CHROMIUM);
   const producerSha256 = sha256File(SCRIPT);
   const cases = [];
@@ -1298,12 +1412,25 @@ async function main() {
     }
   }
   const cleanupResult = await cleanup();
+  const finalArtifactFiles = newArtifactFiles(artifactBaseline, [cleanupResult.finalArtifactScan]);
+  if (finalArtifactFiles.length > 0) {
+    findings.push({ severity: 'fail', code: 'playwright_artifact_file_created', phase: 'before-temp-removal', files: finalArtifactFiles });
+  }
   assertCleanupComplete(cleanupResult);
   if (abortState) throw makeAbortError();
   const firstRun = runContexts[0]?.run;
   const chromiumVersion = firstRun?.version ?? null;
   if (chromiumVersion !== CHROMIUM_REQUIRED) throw Object.assign(new Error(`Chromium ${chromiumVersion}; required ${CHROMIUM_REQUIRED}`), { code: 'chromium_version_mismatch' });
-  if (runContexts.some(({ run }) => run.version !== CHROMIUM_REQUIRED || run.realExecutableSha256 !== firstRun.realExecutableSha256)) {
+  if (!firstRun || runContexts.some(({ run }) =>
+    typeof run.realExecutable !== 'string' || run.realExecutable.length === 0 ||
+    typeof run.realExecutableSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(run.realExecutableSha256) ||
+    run.realExecutableIdentity === null)) {
+    throw Object.assign(new Error('Chromium executable identity unavailable for a case context'), { code: 'chromium_identity_unavailable' });
+  }
+  if (runContexts.some(({ run }) => run.version !== CHROMIUM_REQUIRED ||
+    run.realExecutable !== firstRun.realExecutable ||
+    run.realExecutableSha256 !== firstRun.realExecutableSha256 ||
+    !deepEqual(run.realExecutableIdentity, firstRun.realExecutableIdentity))) {
     throw Object.assign(new Error('Chromium runtime identity changed between case contexts'), { code: 'chromium_identity_changed' });
   }
   const runtime = {
@@ -1327,6 +1454,23 @@ async function main() {
     casesFilesSha256: loaded.casesFilesSha256,
     fixturesSha256: loaded.fixturesSha256,
     cases,
+    contexts: runContexts.map(({ run }) => ({
+      label: run.label, pid: run.pid, version: run.version,
+      effectiveArgv: run.effectiveArgv,
+      featureSwitches: run.featureSwitches,
+      launchGuards: run.launchGuards,
+      loopbackGuard: run.loopbackGuard,
+      realExecutable: run.realExecutable,
+      realExecutableSha256: run.realExecutableSha256,
+      realExecutableIdentity: run.realExecutableIdentity,
+      artifactScans: run.artifactScans,
+    })),
+    artifactBaseline,
+    cleanup: cleanupResult,
+    filesystemAssumptions: {
+      trustedImmutableInputTreesAndOutputAncestorsRequired: true,
+      sameUidPathnameRaceProtection: false,
+    },
     findings,
     summary: {
       cases: cases.length,

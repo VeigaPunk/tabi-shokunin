@@ -17,6 +17,7 @@ import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HEADING = '### Declarative WebMCP input-validation decision table (round 19)';
+const CORRECTED_HEADING = '### Declarative WebMCP input-validation decision table — corrected (round 19)';
 const DECISIONS_PATH = 'corpus/evidence/round-19/validation/decisions.json';
 const CASES_DIR = 'corpus/evidence/round-19/validation/cases';
 const FIXTURES_DIR = 'corpus/evidence/round-19/validation/fixtures';
@@ -216,10 +217,14 @@ function isMarkdownHeading(line) {
 
 function parseDecisionTable(markdown) {
   const lines = markdown.split(/\r?\n/);
-  const headingIndexes = [];
+  const originalIndexes = [];
+  const correctedIndexes = [];
   for (let i = 0; i < lines.length; i++) {
-    if (lines[i].trim() === HEADING) headingIndexes.push(i);
+    if (lines[i].trim() === HEADING) originalIndexes.push(i);
+    if (lines[i].trim() === CORRECTED_HEADING) correctedIndexes.push(i);
   }
+  // A corrected table supersedes the frozen historical table, never another correction.
+  const headingIndexes = correctedIndexes.length > 0 ? correctedIndexes : originalIndexes;
   if (headingIndexes.length !== 1) return { headingCount: headingIndexes.length, rows: [] };
   const headingIndex = headingIndexes[0];
 
@@ -241,6 +246,15 @@ function parseDecisionTable(markdown) {
 
 function cleanCell(value) {
   return value.trim().replace(/^`+|`+$/g, '').trim();
+}
+
+function normalizedDecisionCell(value) {
+  // Ignore only Markdown code delimiters, escaped table pipes and whitespace.
+  return value.replace(/\\\|/g, '|').replace(/`+/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function isObjectRecord(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
 function includesExactToken(text, token) {
@@ -383,11 +397,13 @@ function loadCaseBundle(repo, rev, tree, cache) {
     for (const entryCase of document.cases) {
       if (!entryCase || typeof entryCase.id !== 'string'
           || !/^decl-[a-z0-9][a-z0-9-]*-\d{2}$/.test(entryCase.id)
+          || typeof entryCase.tool !== 'string' || entryCase.tool.trim() === ''
           || !Object.hasOwn(entryCase, 'input')
           || !entryCase.expect || typeof entryCase.expect !== 'object' || Array.isArray(entryCase.expect)
           || typeof entryCase.expect.status !== 'string'
           || !(entryCase.expect.errorTextIncludes === null || typeof entryCase.expect.errorTextIncludes === 'string')
           || ![0, 1].includes(entryCase.expect.submitCount)
+          || !['fields', 'schema'].every(key => entryCase.expect[key] === null || isObjectRecord(entryCase.expect[key]))
           || !entryCase.source || typeof entryCase.source.file !== 'string'
           || typeof entryCase.source.lines !== 'string' || typeof entryCase.source.url !== 'string') {
         issues.push('case_file_invalid');
@@ -401,6 +417,7 @@ function loadCaseBundle(repo, rev, tree, cache) {
         id: entryCase.id,
         family,
         fixture: document.fixture,
+        tool: entryCase.tool,
         input: entryCase.input,
         expected: entryCase.expect,
         source: entryCase.source,
@@ -483,20 +500,33 @@ function indexReceiptCases(receipt) {
 
 function receiptObservation(record) {
   const observed = record?.observed;
-  if (!observed || typeof observed !== 'object' || Array.isArray(observed)
+  if (!isObjectRecord(observed)
       || typeof observed.status !== 'string'
       || !(observed.errorText === null || typeof observed.errorText === 'string')
-      || ![0, 1].includes(observed.submitCount)) return null;
+      || ![0, 1].includes(observed.submitCount)
+      || !(observed.fields === null || isObjectRecord(observed.fields))
+      || !(observed.schema === null || isObjectRecord(observed.schema))
+      || !(observed.commandError === null || (isObjectRecord(observed.commandError)
+        && typeof observed.commandError.message === 'string' && observed.commandError.message.trim() !== ''))) return null;
   return {
     status: observed.status,
     errorText: observed.errorText,
     submitCount: observed.submitCount,
+    fields: observed.fields,
+    schema: observed.schema,
+    commandError: observed.commandError,
   };
 }
 
 function comparableReceiptRecord(record) {
   const observed = receiptObservation(record);
   if (!observed) return null;
+  const invoked = record.observed.toolInvoked;
+  const responded = record.observed.toolResponded;
+  let invokedInput = invoked?.input;
+  if (typeof invokedInput === 'string') {
+    try { invokedInput = JSON.parse(invokedInput); } catch { /* Rejected by receiptInvocationRejection. */ }
+  }
   return {
     id: record.id,
     family: record.family,
@@ -504,7 +534,69 @@ function comparableReceiptRecord(record) {
     expected: record.expected,
     pass: record.pass,
     observed,
+    // Invocation/frame ids are correlated within a receipt, never across runs.
+    toolInvoked: isObjectRecord(invoked) ? { toolName: invoked.toolName, input: invokedInput } : null,
+    toolResponded: isObjectRecord(responded) ? {
+      status: responded.status,
+      errorText: responded.errorText ?? null,
+      ...(Object.hasOwn(responded, 'output') ? { output: responded.output } : {}),
+    } : null,
   };
+}
+
+function caseExpectationMatches(expected, observed) {
+  if (observed.status !== expected.status || observed.submitCount !== expected.submitCount
+      || (expected.errorTextIncludes === null ? observed.errorText !== null
+        : typeof observed.errorText !== 'string' || !observed.errorText.includes(expected.errorTextIncludes))) return false;
+  if (expected.fields !== null) {
+    if (!isObjectRecord(observed.fields)) return false;
+    for (const [name, value] of Object.entries(expected.fields)) {
+      if (!Object.hasOwn(observed.fields, name) || !isDeepStrictEqual(observed.fields[name], value)) return false;
+    }
+  }
+  if (expected.schema !== null) {
+    for (const [path, value] of Object.entries(expected.schema)) {
+      let actual = observed.schema;
+      for (const part of path.split('.')) {
+        if (!part || actual === null || typeof actual !== 'object' || !Object.hasOwn(actual, part)) return false;
+        actual = actual[part];
+      }
+      if (!isDeepStrictEqual(actual, value)) return false;
+    }
+  }
+  return true;
+}
+
+function receiptInvocationRejection(record, definition) {
+  const observed = record.observed;
+  if (!['invocationId', 'toolInvoked', 'toolResponded'].every(key => Object.hasOwn(observed, key))) {
+    return 'receipt_case_invocation_incomplete';
+  }
+  if (observed.status === 'no-response') {
+    // Non-object CDP inputs are rejected before an invocation exists.
+    return !isObjectRecord(definition.input) && observed.commandError !== null
+      && observed.commandError.message.includes('Invalid parameters')
+      && observed.invocationId === null && observed.toolInvoked === null && observed.toolResponded === null
+      && observed.errorText === null && observed.submitCount === 0
+      ? null : 'receipt_case_command_rejection_mismatch';
+  }
+  if (observed.commandError !== null) return 'receipt_case_command_error';
+  if (typeof observed.invocationId !== 'string' || observed.invocationId.trim() === ''
+      || !isObjectRecord(observed.toolInvoked)) return 'receipt_case_invocation_missing';
+  const invoked = observed.toolInvoked;
+  if (invoked.invocationId !== observed.invocationId || invoked.toolName !== definition.tool
+      || typeof invoked.input !== 'string') return 'receipt_case_invocation_mismatch';
+  let input;
+  try { input = JSON.parse(invoked.input); } catch { return 'receipt_case_invocation_mismatch'; }
+  if (!isDeepStrictEqual(input, definition.input)) return 'receipt_case_invocation_mismatch';
+  const responded = observed.toolResponded;
+  if (!isObjectRecord(responded)) return 'receipt_case_response_missing';
+  if (responded.invocationId !== observed.invocationId || responded.status !== observed.status
+      || (responded.errorText ?? null) !== observed.errorText
+      || (Object.hasOwn(responded, 'toolName') && responded.toolName !== definition.tool)) {
+    return 'receipt_case_response_mismatch';
+  }
+  return null;
 }
 
 function makeDecisionStates(decisions) {
@@ -551,6 +643,12 @@ function indexDecisionRows(decisions, table) {
       continue;
     }
     const row = matching[0];
+    if (normalizedDecisionCell(row.cells[1] ?? '') !== normalizedDecisionCell(decision.condition)) {
+      states.get(decision.id).push('skill_condition_mismatch');
+    }
+    if (normalizedDecisionCell(row.cells[2] ?? '') !== normalizedDecisionCell(decision.answer)) {
+      states.get(decision.id).push('skill_answer_mismatch');
+    }
     const rowText = row.cells.join(' | ');
     for (const caseId of decision.probeCases) {
       if (!includesExactToken(rowText, caseId)) states.get(decision.id).push('skill_probe_case_missing');
@@ -685,6 +783,12 @@ function validateDecisionCases(decision, state, bundle, freshIndex, committedInd
     }
     if (!isDeepStrictEqual(freshComparable, committedComparable)) addReason(state, 'receipt_mismatch');
     if (freshRecord.pass !== true || committedRecord.pass !== true) addReason(state, 'case_not_passed');
+    for (const record of [freshRecord, committedRecord]) {
+      if (!caseExpectationMatches(definition.expected, receiptObservation(record))) {
+        addReason(state, 'receipt_case_expectation_mismatch');
+      }
+      addReason(state, receiptInvocationRejection(record, definition));
+    }
   }
 
   for (const caseId of decision.probeCases) {
@@ -696,8 +800,8 @@ function validateDecisionCases(decision, state, bundle, freshIndex, committedInd
       if (!observed) continue;
       if (observed.status !== decision.outcome.status
           || observed.submitCount !== decision.outcome.submitCount
-          || (decision.outcome.errorTextIncludes !== null
-            && !String(observed.errorText ?? '').includes(decision.outcome.errorTextIncludes))) {
+          || (decision.outcome.errorTextIncludes === null ? observed.errorText !== null
+            : !String(observed.errorText ?? '').includes(decision.outcome.errorTextIncludes))) {
         addReason(state, 'probe_outcome_mismatch');
       }
     }
@@ -898,7 +1002,7 @@ function fixtureCaseDocument(family, fixture, probeCount = EXPECTED_DECISION_COU
       id,
       tool: 'fixture-tool',
       input: { value: `probe-${suffix}` },
-      expect: { status: 'Error', errorTextIncludes: 'invalid fixture input', submitCount: 0, fields: null, schema: null },
+      expect: { status: 'Error', errorTextIncludes: 'invalid fixture input', submitCount: 0, fields: { value: 'seed' }, schema: { 'properties.value.type': 'string' } },
       source: { file: 'fixture.cc', lines: '3-3', url: 'https://fixture.invalid/src/fixture.cc' },
       question: `Does ${id} reject?`,
       answer: 'Observed Error with no submit.',
@@ -908,7 +1012,7 @@ function fixtureCaseDocument(family, fixture, probeCount = EXPECTED_DECISION_COU
     id: `decl-${family}-99`,
     tool: 'fixture-tool',
     input: { value: 'control' },
-    expect: { status: 'Completed', errorTextIncludes: null, submitCount: 1, fields: null, schema: null },
+    expect: { status: 'Completed', errorTextIncludes: null, submitCount: 1, fields: { value: 'control' }, schema: { 'properties.value.type': 'string' } },
     source: { file: 'fixture.cc', lines: '3-3', url: 'https://fixture.invalid/src/fixture.cc' },
     question: 'Control case.',
     answer: 'Observed Completed with one submit.',
@@ -918,7 +1022,7 @@ function fixtureCaseDocument(family, fixture, probeCount = EXPECTED_DECISION_COU
       id: 'decl-other-family-99',
       tool: 'other-tool',
       input: { value: 'other-control' },
-      expect: { status: 'Completed', errorTextIncludes: null, submitCount: 1, fields: null, schema: null },
+      expect: { status: 'Completed', errorTextIncludes: null, submitCount: 1, fields: { value: 'other-control' }, schema: { 'properties.value.type': 'string' } },
       source: { file: 'other.cc', lines: '1-1', url: 'https://fixture.invalid/src/other.cc' },
       question: 'Other-family control.',
       answer: 'Observed Completed with one submit.',
@@ -947,15 +1051,24 @@ function makeFixtureDecision(index, bodyHash, sourceRow = 'S077') {
   };
 }
 
-function fixtureSkill(decisions, { heading = true, omitDecisionId = null } = {}) {
+function fixtureSkill(decisions, {
+  heading = true, omitDecisionId = null, correctedHeading = false,
+  changedCondition = false, changedAnswer = false, formatCells = false,
+} = {}) {
+  const renderCell = text => {
+    const escaped = text.replace(/\|/g, '\\|');
+    return formatCells ? `\`${escaped.replace(/ /g, '  ')}\`` : escaped;
+  };
   const lines = [
-    ...(heading ? [HEADING, ''] : ['### Other heading', '']),
+    ...(heading ? [correctedHeading ? CORRECTED_HEADING : HEADING, ''] : ['### Other heading', '']),
     '| Decision | Condition | Answer | Probe cases | Control case | Source | Outcome |',
     '|---|---|---|---|---|---|---|',
   ];
   for (const decision of decisions) {
     if (decision.id === omitDecisionId) continue;
-    lines.push(`| ${decision.id} | ${decision.condition} | ${decision.answer} | ${decision.probeCases.map(id => `\`${id}\``).join(', ')} | \`${decision.controlCase}\` | \`${decision.source.row}\` | ${decision.outcome.status} / ${decision.outcome.submitCount} |`);
+    const condition = changedCondition && decision.id === 'DV-01' ? 'Changed condition with retained identifiers' : decision.condition;
+    const answer = changedAnswer && decision.id === 'DV-01' ? 'The browser accepts this value and submits.' : decision.answer;
+    lines.push(`| ${decision.id} | ${renderCell(condition)} | ${renderCell(answer)} | ${decision.probeCases.map(id => `\`${id}\``).join(', ')} | \`${decision.controlCase}\` | \`${decision.source.row}\` | ${decision.outcome.status} / ${decision.outcome.submitCount} |`);
   }
   return `${lines.join('\n')}\n`;
 }
@@ -981,10 +1094,28 @@ function expectedRuntime() {
 
 function makeFixtureReceipt(producerDigest, casesDoc, fixtureDigest, shape = {}) {
   const cases = casesDoc.cases.map(testCase => {
-    const isControl = testCase.id.endsWith('-99');
-    const observed = isControl
-      ? { status: shape.controlStatus ?? 'Completed', errorText: null, submitCount: 1 }
-      : { status: 'Error', errorText: 'invalid fixture input', submitCount: 0 };
+    const status = testCase.expect.status;
+    const errorText = testCase.expect.errorTextIncludes;
+    const noInvocation = status === 'no-response';
+    const invocationId = noInvocation ? null : `committed-${testCase.id}`;
+    const fields = { ...testCase.expect.fields };
+    const observed = {
+      status,
+      errorText,
+      submitCount: testCase.expect.submitCount,
+      fields,
+      schema: { type: 'object', properties: { value: { type: 'string' } }, required: [] },
+      commandError: noInvocation ? { message: 'cdpSession.send: Protocol error (WebMCP.invokeTool): Invalid parameters' } : null,
+      invocationId,
+      toolInvoked: noInvocation ? null : {
+        invocationId, frameId: `committed-frame-${testCase.id}`, toolName: testCase.tool, input: JSON.stringify(testCase.input),
+      },
+      toolResponded: noInvocation ? null : {
+        invocationId, status,
+        ...(errorText === null ? {} : { errorText }),
+        ...(status === 'Completed' ? { output: { ok: true, fields: { ...fields } } } : {}),
+      },
+    };
     return {
       id: testCase.id,
       family: testCase.id === 'decl-other-family-99' ? 'other-family' : casesDoc.family,
@@ -1033,6 +1164,13 @@ function createFixtureRepo(parent, name, shape = {}) {
     ? { schema: 'tabi-webmcp-validation-cases-v1', family: 'other-family', fixture: 'other-family.html', author: 'CounterSelfTest', cases: [casesDoc.cases.at(-1)] }
     : null;
   if (includeOther) casesDoc.cases.pop();
+  if (Object.hasOwn(shape, 'nonObjectInput')) {
+    casesDoc.cases[0].input = shape.nonObjectInput;
+    casesDoc.cases[0].expect.status = 'no-response';
+    casesDoc.cases[0].expect.errorTextIncludes = null;
+    decisions[0].outcome = { status: 'no-response', errorTextIncludes: null, submitCount: 0 };
+  }
+  if (shape.nullField) casesDoc.cases[0].expect.fields.value = null;
   const caseBytes = Buffer.from(`${JSON.stringify(casesDoc, null, 2)}\n`);
   const fixtureBytes = Buffer.from('<!doctype html><title>fixture</title><form toolname="fixture-tool"></form>\n');
   const otherFixtureBytes = Buffer.from('<!doctype html><title>other</title><form toolname="other-tool"></form>\n');
@@ -1042,12 +1180,18 @@ function createFixtureRepo(parent, name, shape = {}) {
   const otherCaseBytes = otherDoc ? Buffer.from(`${JSON.stringify(otherDoc, null, 2)}\n`) : null;
   const otherFixtureDigest = otherDoc ? sha256(otherFixtureBytes) : null;
 
-  if (shape.missingRow) {
-    // The SKILL table omits DV-01 while the predeclared manifest remains intact.
-  }
   let sourceText = fixtureSources(bodyHash, shape.sourceOpened ?? '2026-10-21', shape.sourceCell ?? undefined, shape.sourceStatus ?? 'mined');
   if (shape.sourceCell === undefined) sourceText = fixtureSources(bodyHash, shape.sourceOpened ?? '2026-10-21', 'fixture.cc — https://fixture.invalid/src/fixture.cc', shape.sourceStatus ?? 'mined');
-  const skillText = fixtureSkill(decisions, { heading: shape.heading !== false, omitDecisionId: shape.missingRow ? 'DV-01' : null });
+  const skillOptions = {
+    heading: shape.heading !== false, omitDecisionId: shape.missingRow ? 'DV-01' : null,
+    changedCondition: shape.changedCondition, changedAnswer: shape.changedAnswer, formatCells: shape.formatCells,
+  };
+  let skillText = fixtureSkill(decisions, skillOptions);
+  if (shape.correctedTable || shape.duplicateCorrectedTable) {
+    const corrected = fixtureSkill(decisions, { ...skillOptions, correctedHeading: true });
+    skillText = `${fixtureSkill(decisions, { changedAnswer: true })}\n${corrected}`;
+    if (shape.duplicateCorrectedTable) skillText += `\n${corrected}`;
+  }
   const manifest = {
     schema: DECISIONS_SCHEMA,
     round: 19,
@@ -1063,26 +1207,51 @@ function createFixtureRepo(parent, name, shape = {}) {
   if (otherDoc) {
     receipt.casesFilesSha256['other-family.json'] = sha256(otherCaseBytes);
     receipt.fixturesFilesSha256['other-family.html'] = otherFixtureDigest;
-    const otherCase = otherDoc.cases[0];
-    receipt.cases.push({
-      id: otherCase.id,
-      family: otherDoc.family,
-      input: otherCase.input,
-      expected: otherCase.expect,
-      observed: { status: 'Completed', errorText: null, submitCount: 1 },
-      pass: true,
-    });
+    receipt.cases.push(...makeFixtureReceipt(producerDigest, otherDoc, otherFixtureDigest).cases);
   }
   const freshReceipt = JSON.parse(JSON.stringify(receipt));
+  for (const record of freshReceipt.cases) {
+    const observed = record.observed;
+    if (observed.invocationId === null) continue;
+    observed.invocationId = `fresh-${record.id}`;
+    observed.toolInvoked.invocationId = observed.invocationId;
+    observed.toolInvoked.frameId = `fresh-frame-${record.id}`;
+    observed.toolResponded.invocationId = observed.invocationId;
+  }
+  const committedProbe = receipt.cases.find(entry => entry.id === decisions[0].probeCases[0]);
+  const freshProbe = freshReceipt.cases.find(entry => entry.id === decisions[0].probeCases[0]);
+  if (shape.changedField) committedProbe.observed.fields.value = 'tampered';
+  if (shape.missingField) delete committedProbe.observed.fields.value;
+  if (shape.missingFields) delete committedProbe.observed.fields;
+  if (shape.changedSchema) committedProbe.observed.schema.properties.value.type = 'number';
+  if (shape.changedFieldsBoth) {
+    committedProbe.observed.fields.value = 'tampered';
+    freshProbe.observed.fields.value = 'tampered';
+  }
+  if (shape.rawResponseContradiction) committedProbe.observed.toolResponded.status = 'Completed';
+  if (shape.missingRawResponse) committedProbe.observed.toolResponded = null;
+  if (shape.wrongResponseId) committedProbe.observed.toolResponded.invocationId = 'another-invocation';
+  if (shape.wrongToolName) committedProbe.observed.toolInvoked.toolName = 'another-tool';
+  if (shape.wrongInvokedInput) committedProbe.observed.toolInvoked.input = '{"value":42}';
+  if (shape.unexpectedCommandError) committedProbe.observed.commandError = { message: 'unexpected command failure' };
+  if (shape.missingCommandRejection) committedProbe.observed.commandError = null;
   if (shape.receiptMismatch) {
-    const committedCase = receipt.cases.find(entry => entry.id === decisions[0].probeCases[0]);
-    committedCase.observed.status = 'Completed';
+    committedProbe.observed.status = 'Completed';
   }
   if (shape.controlStatus) {
-    const control = receipt.cases.find(entry => entry.id === decisions[0].controlCase);
-    control.observed.status = shape.controlStatus;
-    const freshControl = freshReceipt.cases.find(entry => entry.id === decisions[0].controlCase);
-    freshControl.observed.status = shape.controlStatus;
+    for (const current of [receipt, freshReceipt]) {
+      const control = current.cases.find(entry => entry.id === decisions[0].controlCase);
+      control.observed.status = shape.controlStatus;
+      control.observed.toolResponded.status = shape.controlStatus;
+      if (shape.controlStatus !== 'Completed') delete control.observed.toolResponded.output;
+    }
+  }
+  if (shape.unexpectedNullError) {
+    for (const current of [receipt, freshReceipt]) {
+      const control = current.cases.find(entry => entry.id === decisions[0].controlCase);
+      control.observed.errorText = 'unexpected error';
+      control.observed.toolResponded.errorText = 'unexpected error';
+    }
   }
   if (shape.producerMismatch) {
     receipt.producerSha256 = '0'.repeat(64);
@@ -1108,6 +1277,10 @@ function createFixtureRepo(parent, name, shape = {}) {
     [`${FIXTURES_DIR}/fixture-family.html`, fixtureBytes],
     [`${SOURCE_BODIES_DIR}/fixture.cc.gz`, compressedBody],
   ]);
+  if (shape.baseline) {
+    files.delete(DECISIONS_PATH);
+    files.set('SKILL.md', Buffer.from('# Before round-19 validation\n'));
+  }
   if (otherDoc) {
     files.set(`${CASES_DIR}/other-family.json`, otherCaseBytes);
     files.set(`${FIXTURES_DIR}/other-family.html`, otherFixtureBytes);
@@ -1160,14 +1333,38 @@ function selfTest() {
   const cases = [];
   const scenarios = [
     { name: 'positive predeclared inventory', shape: {}, expectedCount: 27, expectedReasons: {} },
+    { name: 'missing null-valued expected field is not treated as null', shape: { nullField: true, missingField: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'receipt_case_expectation_mismatch'] } },
+    { name: 'baseline without manifest or heading evaluates to zero', kind: 'baseline', shape: { baseline: true }, expectedCount: 0, expectedReasons: {} },
+    { name: 'corrected table supersedes stale historical answer', shape: { correctedTable: true }, expectedCount: 27, expectedReasons: {} },
+    { name: 'duplicate corrected headings fail closed', shape: { duplicateCorrectedTable: true }, expectedCount: 0, expectedReasons: Object.fromEntries(Array.from({ length: 27 }, (_, i) => [`DV-${String(i + 1).padStart(2, '0')}`, ['heading_not_unique']])) },
+    { name: 'code delimiters and whitespace normalize', shape: { formatCells: true }, expectedCount: 27, expectedReasons: {} },
+    { name: 'array command rejection has no invocation', shape: { nonObjectInput: [] }, expectedCount: 27, expectedReasons: {} },
+    { name: 'string command rejection has no invocation', shape: { nonObjectInput: 'not-an-object' }, expectedCount: 27, expectedReasons: {} },
+    { name: 'null command rejection has no invocation', shape: { nonObjectInput: null }, expectedCount: 27, expectedReasons: {} },
+    { name: 'object input cannot claim protocol-only rejection', shape: { nonObjectInput: {} }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_case_command_rejection_mismatch'] } },
+    { name: 'no-response requires the command rejection', shape: { nonObjectInput: [], missingCommandRejection: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'receipt_case_command_rejection_mismatch'] } },
+    { name: 'changed observed field with pass retained', shape: { changedField: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'receipt_case_expectation_mismatch'] } },
+    { name: 'missing expected field key with pass retained', shape: { missingField: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'receipt_case_expectation_mismatch'] } },
+    { name: 'missing observed fields object', shape: { missingFields: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_case_observation_incomplete'] } },
+    { name: 'changed observed schema with pass retained', shape: { changedSchema: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'receipt_case_expectation_mismatch'] } },
+    { name: 'matching bad fields in both receipts still fail expectations', shape: { changedFieldsBoth: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_case_expectation_mismatch'] } },
+    { name: 'raw response contradicts summarized status', shape: { rawResponseContradiction: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'receipt_case_response_mismatch'] } },
+    { name: 'missing raw response', shape: { missingRawResponse: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'receipt_case_response_missing'] } },
+    { name: 'raw response id must match within the receipt', shape: { wrongResponseId: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_case_response_mismatch'] } },
+    { name: 'raw invocation tool must match case definition', shape: { wrongToolName: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'receipt_case_invocation_mismatch'] } },
+    { name: 'raw invocation input preserves JSON types', shape: { wrongInvokedInput: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'receipt_case_invocation_mismatch'] } },
+    { name: 'invocation cannot also have a command error', shape: { unexpectedCommandError: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'receipt_case_command_error'] } },
+    { name: 'null error expectation requires no error text', shape: { unexpectedNullError: true }, expectedCount: 0, expectedReasons: Object.fromEntries(Array.from({ length: 27 }, (_, i) => [`DV-${String(i + 1).padStart(2, '0')}`, ['receipt_case_expectation_mismatch']])) },
+    { name: 'changed SKILL condition retains all identifiers', shape: { changedCondition: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['skill_condition_mismatch'] } },
+    { name: 'changed SKILL answer retains all identifiers', shape: { changedAnswer: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['skill_answer_mismatch'] } },
     { name: 'duplicate probe id rejects every owner', shape: { duplicateProbe: true }, expectedCount: 25, expectedReasons: { 'DV-01': ['duplicate_probe_case_id'], 'DV-02': ['duplicate_probe_case_id'] } },
     { name: 'missing SKILL row', shape: { missingRow: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['skill_row_missing'] } },
     { name: 'wrong source token line range', shape: { wrongTokenLines: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['source_token_missing'] } },
     { name: 'body SHA mismatch', shape: { bodyShaMismatch: true }, expectedCount: 0, expectedReasons: Object.fromEntries(Array.from({ length: 27 }, (_, i) => [`DV-${String(i + 1).padStart(2, '0')}`, ['source_body_sha256_mismatch']])) },
     { name: 'source opened before round date', shape: { sourceOpened: '2026-10-20' }, expectedCount: 0, expectedReasons: Object.fromEntries(Array.from({ length: 27 }, (_, i) => [`DV-${String(i + 1).padStart(2, '0')}`, ['source_opened_date']])) },
-    { name: 'receipt differs from fresh run', shape: { receiptMismatch: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'probe_outcome_mismatch'] } },
+    { name: 'receipt differs from fresh run', shape: { receiptMismatch: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['receipt_mismatch', 'receipt_case_expectation_mismatch', 'receipt_case_response_mismatch', 'probe_outcome_mismatch'] } },
     { name: 'producer SHA mismatch', shape: { producerMismatch: true }, expectedCount: 0, expectedReasons: Object.fromEntries(Array.from({ length: 27 }, (_, i) => [`DV-${String(i + 1).padStart(2, '0')}`, ['producer_sha256_mismatch']])) },
-    { name: 'control is not Completed', shape: { controlStatus: 'Error' }, expectedCount: 0, expectedReasons: Object.fromEntries(Array.from({ length: 27 }, (_, i) => [`DV-${String(i + 1).padStart(2, '0')}`, ['control_not_completed']])) },
+    { name: 'control is not Completed', shape: { controlStatus: 'Error' }, expectedCount: 0, expectedReasons: Object.fromEntries(Array.from({ length: 27 }, (_, i) => [`DV-${String(i + 1).padStart(2, '0')}`, ['receipt_case_expectation_mismatch', 'control_not_completed']])) },
     { name: 'control is from another family', shape: { crossFamilyControl: true }, expectedCount: 26, expectedReasons: { 'DV-01': ['control_family_mismatch'] } },
     { name: 'missing target heading', shape: { heading: false }, expectedCount: 0, expectedReasons: Object.fromEntries(Array.from({ length: 27 }, (_, i) => [`DV-${String(i + 1).padStart(2, '0')}`, ['missing_heading']])) },
     { name: 'case file digest mismatch', shape: { caseDigestMismatch: true }, expectedCount: 0, expectedReasons: Object.fromEntries(Array.from({ length: 27 }, (_, i) => [`DV-${String(i + 1).padStart(2, '0')}`, ['case_file_digest_map_mismatch']])) },
@@ -1254,7 +1451,8 @@ function selfTest() {
     noReproduce: true,
     allPass: cases.every(item => item.pass),
     case_count: cases.length,
-    negative_shape_count: cases.length - 1,
+    negative_shape_count: scenarios.filter(scenario => scenario.kind !== 'baseline'
+      && (scenario.expectedExit === 2 || scenario.expectedCount < EXPECTED_DECISION_COUNT)).length,
     cases,
   };
 }

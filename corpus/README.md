@@ -411,3 +411,20 @@ ElementInternals form-associated controls (validation bypassed by source, not ex
 
 Corrections indexed: `LOG.md:1059` count (LOG round 19), `SCORECARD.md:830` assertion wording (SCORECARD
 round 19), round-18 registry `wave: null` (`.ufo/waves/round-19/corrections/r18-registry-wave-null.md`).
+
+Round-19 wave-2 index correction, superseding :405's population wording and the current guidance at
+`knowledge/webmcp-declarative-validation-round-19.md:45-65,73-75`: **15 pre-probe families, 27 post-probe
+candidate decisions declared before counting**; use revision-bound measurements for admitted counts.
+Current scope/semantics are in that note's `## Wave-2 correction entry` and SKILL's matching correction:
+checkbox boolean-like strings may coerce; undescribed versus described hidden controls differ; a selected
+disabled option is omitted from FormData; malformed email/URL native validity is still enforced.
+The note also consumes S087 (queued→mined, used-by now this note); add it to :405's source list.
+The original 66-case population is unchanged; supplemental coercion observations are not silently added
+to that count. C3's missing direct wave-1 return snapshot remains unprovable, not repaired by mtimes.
+Current supersession sources additionally include S095 (complete input sanitizer scope/anchors), S096
+(navigation null String sentinel), S097 (optional output omission/parse fallback) and S099 (canonical PDL
+identity explicitly reusing S041). S098 keeps the same-file schema reading queued and explicitly reuses
+S077 rather than counting punctuation as source diversity. The final counter uses the SKILL
+`### Declarative WebMCP input-validation decision table — corrected (round 19)` rendering; the original
+table is retained historical text. The frozen USER gate additionally refuses the modified round-19 lesson
+in inherited ancestry; unchanged gate exits must not be read as proof of no new harm.

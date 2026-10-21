@@ -114,7 +114,9 @@ function checkD1(log, quality) {
   const correction = typeof log === 'string' && log.split(/\r?\n/).some((line) =>
     /\bround[ -]?19\b/i.test(line)
       && /LOG\.md:1059/.test(line)
-      && /\bQUALITY\b.{0,32}33\s*[\u2010-\u2015-]\s*39/i.test(line));
+      && /\bQUALITY\b.{0,32}33\s*[\u2010-\u2015-]\s*39/i.test(line)
+      && /\b(?:seven|7)\b/i.test(line)
+      && !/\b(?:six|6)\s+criteria\b/i.test(line));
 
   const matches = typeof quality === 'string'
     ? [...quality.matchAll(/^(\d+)\.\s+/gm)]
@@ -351,6 +353,10 @@ function checkD4(checkerText, ledgerText, checkerResult) {
   if (!isStatusSnapshot(ledger.laneStatusBefore) || !isStatusSnapshot(ledger.laneStatusAfter)) {
     return { pass: false, reason: 'lane_status_snapshots_missing_or_invalid' };
   }
+  if (/reconstruct/i.test(String(ledger.laneStatusAfterMethod ?? ''))
+    || /reconstruct/i.test(String(ledger.trackedDiffMethod ?? ''))) {
+    return { pass: false, reason: 'direct_return_snapshot_missing_reconstruction_is_not_observation' };
+  }
   if (ledger.trackedDiffEmpty !== true) return { pass: false, reason: 'tracked_diff_not_empty' };
   if (!checkerResult || checkerResult.error || checkerResult.status === null || checkerResult.status === undefined) {
     return { pass: false, reason: 'checker_did_not_complete' };
@@ -468,6 +474,8 @@ function selfTest() {
   record('d1_correction_and_seven', true, checkD1(d1Good.log, d1Good.quality));
   const d1Old = makeD1Fixture({ correction: 'LOG.md:1059; QUALITY 33–38' });
   record('d1_old_range_rejected', false, checkD1(d1Old.log, d1Old.quality));
+  const d1WrongCount = makeD1Fixture({ correction: 'LOG.md:1059; QUALITY 33–39 (six criteria)' });
+  record('d1_wrong_cardinality_rejected', false, checkD1(d1WrongCount.log, d1WrongCount.quality));
   const d1MissingCitation = makeD1Fixture({ omitCitation: 39 });
   record('d1_missing_round18_citation_rejected', false, checkD1(d1MissingCitation.log, d1MissingCitation.quality));
 
@@ -540,6 +548,10 @@ function selfTest() {
     laneStatusAfter: '?? .ufo/waves/round-19/',
     trackedDiffEmpty: true,
   };
+  record('d4_reconstructed_snapshot_rejected', false, checkD4('export {};', JSON.stringify({
+    ...goodLedgerValue,
+    laneStatusAfterMethod: 'RECONSTRUCTED from mtimes, not observed at return',
+  }), null));
   const goodLedger = JSON.stringify(goodLedgerValue);
   record('d4_clean_checker_accepted', true, checkD4('export {};', goodLedger, {
     status: 0, stdout: '{"schema":"tabi-r19-isolation-check-v1","verdict":"clean","entries":1,"findings":[],"errors":[]}', stderr: '', error: null,
@@ -610,7 +622,7 @@ function main(argv) {
   try {
     const result = measure(ROOT, argv[0]);
     process.stdout.write(`${JSON.stringify(result)}\n`);
-    process.exitCode = result.c3_routed_closed === 4 ? 0 : 1;
+    process.exitCode = 0; // An evaluated count, including zero, is not an admission verdict.
   } catch (error) {
     const reason = String(error?.message ?? error).replace(/[\r\n]+/g, ' ').slice(0, 240);
     const result = {
