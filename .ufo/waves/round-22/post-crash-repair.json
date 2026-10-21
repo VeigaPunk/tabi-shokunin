@@ -1,0 +1,79 @@
+{
+  "schema": "tabi-round22-post-crash-repair-v1",
+  "at": "2026-10-21T16:38:20.829585+00:00",
+  "author": "TabiR22-2 (session-3 replacement L1)",
+  "reviewedCheckpoint": "0f24164be77e72ba359fe4befdc42d96bc343034",
+  "discovery": {
+    "command": "python3 .ufo/waves/round-22/run-checks.py 0f24164be77e72ba359fe4befdc42d96bc343034 .ufo/waves/round-22/checks-pre-w2-0f24164.json",
+    "exit": 1,
+    "result": "33/35 expected outcomes; oracle22-selftest exit1 (41/42, positive failed); c1-after value0 verdict failed",
+    "findings": [
+      "semantic_error na-native-submit:post:page-errors",
+      "semantic_navigation na-native-submit:post:url"
+    ],
+    "evidence": [
+      ".ufo/waves/round-22/checks-pre-w2-0f24164.json",
+      ".ufo/waves/round-22/selftest-pre-repair-0f24164.json"
+    ]
+  },
+  "defects": [
+    {
+      "id": "D1",
+      "class": "absent-vs-empty",
+      "where": "measure-c1.mjs validatePageState page-errors",
+      "detail": "native-submit landing is a fresh document without the fixture error recorder; raw after-action has no errors key; oracle compared undefined to expected []",
+      "fix": "on the landing stage require errors key absent and expected errors [] (mirrors existing nonce/submits absence rule)"
+    },
+    {
+      "id": "D2",
+      "class": "tokenization",
+      "where": "measure-c1.mjs validatePageState url search",
+      "detail": "expected urlSearch \"?q=$nonce\" embeds the token; resolveTokens only resolves whole-value tokens, so the expected search stayed literal",
+      "fix": "replace $nonce inside expected urlSearch with the URL-encoded case nonce"
+    },
+    {
+      "id": "D3",
+      "class": "masked-negative",
+      "where": "fixtures/expected.json native-submits-empty",
+      "detail": "expected finding semantic_navigation passed only because the positive defect emitted it in every mutant; checkOracle matches with ids.includes",
+      "fix": "expected finding corrected to semantic_status (oracle emits exactly [semantic_status], submit-observation)"
+    }
+  ],
+  "addedControls": [
+    "native-landing-errors -> semantic_error",
+    "native-landing-wrong-query -> semantic_navigation"
+  ],
+  "sandbox": {
+    "clone": "/tmp/tabi-r22-st at 0f24164 (throwaway)",
+    "selftest": "44/44 clean exit0",
+    "measureAt0f24164WithRepairedOracle": "value12 clean exit0"
+  },
+  "mutationProbes": [
+    {
+      "mutant": "landing errors check disabled (landing ? false)",
+      "selftest": "43/44 failed: native-landing-errors"
+    },
+    {
+      "mutant": "accept any ?q= search",
+      "selftest": "43/44 failed: native-landing-wrong-query"
+    }
+  ],
+  "unchanged": [
+    "corpus/evidence/round-22/semantic-expectations.json (pinned 4a693dce...)",
+    "metric",
+    "target 12",
+    "claim classification operability, depth 12->12, scalar 8->8"
+  ],
+  "honesty": "Repair authored after observing the failing positive (fitting risk). Target, metric and pinned expectations are unchanged; no author-side W2 seat ever reviewed 0f24164 (W2 never spawned, cap refusals). Non-author review of this repair is the fresh post-crash wave and the closure.",
+  "filesBefore": {
+    "measure-c1.mjs": "76b47edd9eb30ff64554ef0238ffcea70312059318f9c86cc64231fea7acc447",
+    "selftest-c1.mjs": "be5d362c2106ce02d28e938910bfd083b2962defc6087ae741eb24eb51e85203",
+    "fixtures/expected.json": "cfe81b4768869e40272986bc63a33f494a2554109e292181b4dcf8ddb6df487f"
+  },
+  "filesAfter": {
+    "measure-c1.mjs": "47176aed1955f60547c97303d23530069848320f0f2ab773e0f68ee0b6b0775c",
+    "selftest-c1.mjs": "985aa9c77452368bb8381695ed406fa3b633940e3c328f4c96773248f98dc5b6",
+    "fixtures/expected.json": "b1380a0b21a26d320729514b4bc5c7d8a2f5361d5df6d9af5badde95f9fadade"
+  },
+  "diff": "diff --git i/.ufo/waves/round-22/fixtures/expected.json w/.ufo/waves/round-22/fixtures/expected.json\nindex 2af0bd5..c359a85 100644\n--- i/.ufo/waves/round-22/fixtures/expected.json\n+++ w/.ufo/waves/round-22/fixtures/expected.json\n@@ -279,6 +279,28 @@\n       \"exit\": 1,\n       \"value\": 0,\n       \"verdict\": \"failed\",\n+      \"finding\": \"semantic_status\"\n+    },\n+    {\n+      \"name\": \"native-landing-errors\",\n+      \"mutation\": {\n+        \"kind\": \"native-landing-errors\",\n+        \"caseId\": \"na-native-submit\"\n+      },\n+      \"exit\": 1,\n+      \"value\": 0,\n+      \"verdict\": \"failed\",\n+      \"finding\": \"semantic_error\"\n+    },\n+    {\n+      \"name\": \"native-landing-wrong-query\",\n+      \"mutation\": {\n+        \"kind\": \"native-landing-wrong-query\",\n+        \"caseId\": \"na-native-submit\"\n+      },\n+      \"exit\": 1,\n+      \"value\": 0,\n+      \"verdict\": \"failed\",\n       \"finding\": \"semantic_navigation\"\n     },\n     {\ndiff --git i/.ufo/waves/round-22/measure-c1.mjs w/.ufo/waves/round-22/measure-c1.mjs\nindex 6880d39..ab7af10 100755\n--- i/.ufo/waves/round-22/measure-c1.mjs\n+++ w/.ufo/waves/round-22/measure-c1.mjs\n@@ -112,7 +112,10 @@ function validatePageState(actual, expected, nonce, inputQ, origin, id, stage, f\n   if (actual.secureContext !== true || actual.formActive !== expected.formActive ||\n       actual.formExists !== expected.formExists || actual.value !== resolveTokens(expected.value, nonce, inputQ) ||\n       actual.focused !== expected.focused) addFinding(findings, 'semantic_status', `${id}:${stage}:form-state`);\n-  const expectedNonce = stage === 'post' && id === 'na-native-submit' ? undefined : nonce;\n+  // The native-submit landing is a fresh document without the fixture's nonce,\n+  // submit and error recorders: those keys must be absent there, not empty.\n+  const landing = stage === 'post' && id === 'na-native-submit';\n+  const expectedNonce = landing ? undefined : nonce;\n   if (expectedNonce === undefined ? Object.hasOwn(actual, 'nonce') : actual.nonce !== expectedNonce)\n     addFinding(findings, 'semantic_status', `${id}:${stage}:nonce-state`);\n   if (expected.submitCount === null) {\n@@ -123,14 +126,17 @@ function validatePageState(actual, expected, nonce, inputQ, origin, id, stage, f\n     }] : [];\n     if (!equal(actual.submits, expectedSubmits)) addFinding(findings, 'semantic_status', `${id}:${stage}:submit-event`);\n   }\n-  if (!equal(actual.errors, expected.errors)) addFinding(findings, 'semantic_error', `${id}:${stage}:page-errors`);\n+  if (landing ? Object.hasOwn(actual, 'errors') || !equal(expected.errors, []) : !equal(actual.errors, expected.errors))\n+    addFinding(findings, 'semantic_error', `${id}:${stage}:page-errors`);\n   if (typeof actual.url !== 'string') {\n     addFinding(findings, 'semantic_navigation', `${id}:${stage}:url-missing`);\n   } else {\n     try {\n       const url = new URL(actual.url);\n       const expectedPath = expected.urlPath;\n-      const expectedSearch = resolveTokens(expected.urlSearch, nonce, inputQ);\n+      // Tokens may sit inside the expected query (`?q=$nonce`), not only as a whole value.\n+      const expectedSearch = typeof expected.urlSearch === 'string'\n+        ? expected.urlSearch.replaceAll('$nonce', encodeURIComponent(nonce)) : null;\n       if (url.origin !== origin || url.pathname !== expectedPath || url.search !== expectedSearch || url.hash || url.username || url.password)\n         addFinding(findings, 'semantic_navigation', `${id}:${stage}:url`);\n     } catch {\ndiff --git i/.ufo/waves/round-22/selftest-c1.mjs w/.ufo/waves/round-22/selftest-c1.mjs\nindex e78691c..bdff1b6 100755\n--- i/.ufo/waves/round-22/selftest-c1.mjs\n+++ w/.ufo/waves/round-22/selftest-c1.mjs\n@@ -214,6 +214,18 @@ function mutate(files, recipe) {\n         record.after.submits = [];\n       });\n       return;\n+    case 'native-landing-errors':\n+    case 'native-landing-wrong-query':\n+      changeCase(files, caseId, (record, raw) => {\n+        const observation = raw.pageObservations.find((row) => row.label === 'after-action');\n+        const marker = raw.frames.find((row) => row.dir === 'observation' && row.label === 'after-action');\n+        if (!observation || !marker || typeof observation.value.url !== 'string') throw new Error('fixture_post_marker_missing');\n+        if (kind === 'native-landing-errors') observation.value.errors = [];\n+        else observation.value.url = observation.value.url.replace(/\\?q=[^&#]*/, '?q=wrong-landing-nonce');\n+        marker.value = structuredClone(observation.value);\n+        record.after.pageState = structuredClone(observation.value);\n+      });\n+      return;\n     case 'delayed-early-response':\n       changeCase(files, caseId, (record, raw) => {\n         const frame = responseFor(raw, record);\n"
+}

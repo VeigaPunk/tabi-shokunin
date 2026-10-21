@@ -112,7 +112,10 @@ function validatePageState(actual, expected, nonce, inputQ, origin, id, stage, f
   if (actual.secureContext !== true || actual.formActive !== expected.formActive ||
       actual.formExists !== expected.formExists || actual.value !== resolveTokens(expected.value, nonce, inputQ) ||
       actual.focused !== expected.focused) addFinding(findings, 'semantic_status', `${id}:${stage}:form-state`);
-  const expectedNonce = stage === 'post' && id === 'na-native-submit' ? undefined : nonce;
+  // The native-submit landing is a fresh document without the fixture's nonce,
+  // submit and error recorders: those keys must be absent there, not empty.
+  const landing = stage === 'post' && id === 'na-native-submit';
+  const expectedNonce = landing ? undefined : nonce;
   if (expectedNonce === undefined ? Object.hasOwn(actual, 'nonce') : actual.nonce !== expectedNonce)
     addFinding(findings, 'semantic_status', `${id}:${stage}:nonce-state`);
   if (expected.submitCount === null) {
@@ -123,14 +126,17 @@ function validatePageState(actual, expected, nonce, inputQ, origin, id, stage, f
     }] : [];
     if (!equal(actual.submits, expectedSubmits)) addFinding(findings, 'semantic_status', `${id}:${stage}:submit-event`);
   }
-  if (!equal(actual.errors, expected.errors)) addFinding(findings, 'semantic_error', `${id}:${stage}:page-errors`);
+  if (landing ? Object.hasOwn(actual, 'errors') || !equal(expected.errors, []) : !equal(actual.errors, expected.errors))
+    addFinding(findings, 'semantic_error', `${id}:${stage}:page-errors`);
   if (typeof actual.url !== 'string') {
     addFinding(findings, 'semantic_navigation', `${id}:${stage}:url-missing`);
   } else {
     try {
       const url = new URL(actual.url);
       const expectedPath = expected.urlPath;
-      const expectedSearch = resolveTokens(expected.urlSearch, nonce, inputQ);
+      // Tokens may sit inside the expected query (`?q=$nonce`), not only as a whole value.
+      const expectedSearch = typeof expected.urlSearch === 'string'
+        ? expected.urlSearch.replaceAll('$nonce', encodeURIComponent(nonce)) : null;
       if (url.origin !== origin || url.pathname !== expectedPath || url.search !== expectedSearch || url.hash || url.username || url.password)
         addFinding(findings, 'semantic_navigation', `${id}:${stage}:url`);
     } catch {

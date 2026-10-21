@@ -214,6 +214,18 @@ function mutate(files, recipe) {
         record.after.submits = [];
       });
       return;
+    case 'native-landing-errors':
+    case 'native-landing-wrong-query':
+      changeCase(files, caseId, (record, raw) => {
+        const observation = raw.pageObservations.find((row) => row.label === 'after-action');
+        const marker = raw.frames.find((row) => row.dir === 'observation' && row.label === 'after-action');
+        if (!observation || !marker || typeof observation.value.url !== 'string') throw new Error('fixture_post_marker_missing');
+        if (kind === 'native-landing-errors') observation.value.errors = [];
+        else observation.value.url = observation.value.url.replace(/\?q=[^&#]*/, '?q=wrong-landing-nonce');
+        marker.value = structuredClone(observation.value);
+        record.after.pageState = structuredClone(observation.value);
+      });
+      return;
     case 'delayed-early-response':
       changeCase(files, caseId, (record, raw) => {
         const frame = responseFor(raw, record);
