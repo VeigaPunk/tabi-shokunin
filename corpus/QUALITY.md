@@ -163,3 +163,51 @@
     and an excerpt's self-hash alone are insufficient. This binds recorded content, not the
     remote publisher's authenticity. (lesson: corpus/lessons/round-18.md#mistakes;
     .ufo/waves/round-18/w2/ReviewQuality.md zero-digest mutant; final C1 self-test)
+40. A download or artifact predicate scans every new file under each browser artifact root of the run (the
+    run's private `playwright-artifacts-*` directories, whatever the file name, including Playwright
+    `<uuid>` names) by a before/after listing diff, and binds the accepted download record to a per-run value:
+    a nonce the counter generates for that run and the page echoes, or an artifact the browser observably
+    produced in that run. A pasted record, a prior receipt, or a record whose nonce differs from this run's is
+    refused. A negative control plants a uuid-named file under the run's artifact root and requires the scan to
+    flag it. Refines 25. (lesson: corpus/lessons/round-19.md#mistakes; round-18 spot-check routed 3, H4 —
+    suggested-filename scan and harness-reported marker)
+41. A signal-abort claim enumerates each signal it names (SIGINT, SIGHUP, SIGTERM, and any other named) and,
+    per signal, requires: a run-owned browser pid set observed non-empty before the signal is sent; exit 2 with
+    reason `run_aborted`; no pass/fail receipt written; and that pid set empty afterwards. Evidence for one
+    signal does not cover another. “No surviving browser” over an empty pre-signal set is vacuous and is a
+    finding. (lesson: corpus/lessons/round-19.md#mistakes; round-18 spot-check routed 3, H1 — SIGTERM-only
+    checks; “no surviving browser” reads 0 on both revisions)
+42. A claim that a revision-input gate refuses a shape enumerates each refused shape named in its header or
+    claim (for example `HEAD`, `@`, `master`, a 7–12-hex short hash, a full hash off the declared branch) and,
+    per shape, asserts both the nonzero exit and the shape-correct refusal reason (token and detail text)
+    observed in stdout or stderr. Testing the literal form of one shape does not cover the others. A shape with no red case
+    and no reason-token assertion is listed as untested in the claim. (lesson:
+    corpus/lessons/round-19.md#mistakes; round-18 spot-check routed 3, F6 — counter tried only literal
+    `--rev HEAD`, checked exit code, not refusal reason)
+43. A LOG or SCORECARD count line (criteria, rows, cases, correction items, or sibling counts) is re-derived by
+    a command run against the content it counts at the revision about to be committed, before that commit is
+    made; the command and its output are recorded in the same integration commit. A count copied from prose,
+    an older lesson, or a prior line is a finding. Refines 34. Red examples: `LOG.md:1059` “QUALITY33–38”
+    against the committed seven criteria 33–39; a SCORECARD assertion-delta count against the six case ids whose
+    predicates replaced numeric CDP codes. (lesson: corpus/lessons/round-19.md#mistakes; round-18 spot-check
+    routed 1 and routed 3 — LOG.md:1059, SCORECARD.md:830)
+44. After every dispatch, each registry file the round produces is checked by command for a non-null `wave`
+    equal to its spec's `wave`. A dispatch output's embedded registry object is not the registry file and does
+    not satisfy this check. A null or mismatched label is a finding recorded against that dispatch, not deferred
+    to the next round. Red case: a registry with `"wave": null` is rejected. Shapes left untested: `agentId: null`
+    in validation snapshots (routed 4 says no claim depends on it; not claimed here). (lesson:
+    corpus/lessons/round-19.md#mistakes; round-18 spot-check routed 4 — both `w{1,2}/swarm-registry.json`
+    carried `"wave": null`)
+45. Concurrent production writers in a wave prove clone isolation by a committed ledger. For each writer: clone
+    path, branch, base (the wave baseline), commit (40-hex), and `git diff --name-only base commit`, which must
+    be a subset of the writer's assigned paths. Before and after lane `git status --porcelain=v1 -uall` snapshots must
+    differ only by files under the round's wave directory, and the tracked diff must be empty. Disjoint assigned paths written into one shared checkout do not satisfy
+    this. A writer whose changed paths exceed its assignment, a missing ledger row, or a snapshot delta outside
+    report files is a finding. The ledger proves isolation of writes, not the correctness of their content.
+    (lesson: corpus/lessons/round-19.md#mistakes; round-18 spot-check routed 2 — wave 1 wrote disjoint files in
+    one checkout)
+46. An integration-time change to a seat-authored expectation or to the harness's observation contract is
+    recorded with the seat original retained and the reason, and the full case set is re-run after it; the
+    expectation still equals an observed run, never a hoped one. Red example: checkbox cases expected checked
+    booleans while the harness reports FormData-like values, 9/64 failing until the field contract was stated.
+    (lesson: corpus/lessons/round-19.md#mistakes; integration receipts receipt-1→receipt-2)

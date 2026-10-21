@@ -1,0 +1,1 @@
+The loader rejects the fixture name before opening any fixture.

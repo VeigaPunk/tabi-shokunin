@@ -1,0 +1,369 @@
+{
+  "schema": "tabi-webmcp-missing-required-probe-v1",
+  "runtime": {
+    "chromium": "154.0.8037.97",
+    "playwright": "1.64.0",
+    "node": "v24.21.0"
+  },
+  "fixture": "missing-required.html",
+  "fixtureSha256": "bfadfce920424be159807251a1432c986d6e7a724024434e6baf0c3224fc4822",
+  "probe": {
+    "script": "throwaway /fast/scratch/tabi-r19/FamMissingRequired-4-probe/probe.mjs",
+    "fixtureServer": "127.0.0.1 loopback only",
+    "hostResolverRules": "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+    "featureArgs": [
+      "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting"
+    ],
+    "cdp": "context.newCDPSession(page) over Playwright's browser pipe",
+    "acceptDownloads": false,
+    "eventWaitLimitMs": 8000,
+    "privateHomeAndTmp": "unique run-owned directories under /fast/scratch; removed after browser.close()",
+    "repetitions": 2
+  },
+  "enable": {
+    "request": {
+      "method": "WebMCP.enable",
+      "params": {}
+    },
+    "response": {
+      "result": {},
+      "error": null
+    }
+  },
+  "firstRunRawCdp": [
+    {
+      "id": "decl-missing-required-01",
+      "input": {},
+      "toolsAdded": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "missing-required",
+              "description": "Observe omitted and invalid declarative text parameters",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "required": {
+                    "type": "string",
+                    "description": "Required text"
+                  },
+                  "optional": {
+                    "type": "string",
+                    "description": "Optional text"
+                  }
+                },
+                "required": ["required"]
+              },
+              "annotations": {"autosubmit": true},
+              "frameId": "2AA056559AD88DA1535C0FACE16AB6CB",
+              "backendNodeId": 2
+            }
+          ]
+        }
+      },
+      "invokeTool": {
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "2AA056559AD88DA1535C0FACE16AB6CB",
+          "toolName": "missing-required",
+          "input": {}
+        },
+        "response": {"result": {"invocationId": "D914C468988E63C15FA566C0288103EC"}, "error": null}
+      },
+      "toolInvoked": {
+        "method": "WebMCP.toolInvoked",
+        "params": {
+          "toolName": "missing-required",
+          "frameId": "2AA056559AD88DA1535C0FACE16AB6CB",
+          "invocationId": "D914C468988E63C15FA566C0288103EC",
+          "input": "{}"
+        }
+      },
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "D914C468988E63C15FA566C0288103EC",
+          "status": "Error",
+          "errorText": "Form validation failed: required: Please fill out this field.. "
+        }
+      },
+      "observation": {
+        "status": "Error",
+        "errorText": "Form validation failed: required: Please fill out this field.. ",
+        "submitCount": 0,
+        "calls": [],
+        "fields": {"required": "", "optional": "optional-default"}
+      }
+    },
+    {
+      "id": "decl-missing-required-02",
+      "input": {"required": ""},
+      "toolsAdded": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "missing-required",
+              "description": "Observe omitted and invalid declarative text parameters",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "required": {
+                    "type": "string",
+                    "description": "Required text"
+                  },
+                  "optional": {
+                    "type": "string",
+                    "description": "Optional text"
+                  }
+                },
+                "required": ["required"]
+              },
+              "annotations": {"autosubmit": true},
+              "frameId": "D79334F95F3442F67795251E8973C437",
+              "backendNodeId": 2
+            }
+          ]
+        }
+      },
+      "invokeTool": {
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "D79334F95F3442F67795251E8973C437",
+          "toolName": "missing-required",
+          "input": {"required": ""}
+        },
+        "response": {"result": {"invocationId": "034A24B0748F9B722A91BC3DF0FA8756"}, "error": null}
+      },
+      "toolInvoked": {
+        "method": "WebMCP.toolInvoked",
+        "params": {
+          "toolName": "missing-required",
+          "frameId": "D79334F95F3442F67795251E8973C437",
+          "invocationId": "034A24B0748F9B722A91BC3DF0FA8756",
+          "input": "{\"required\":\"\"}"
+        }
+      },
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "034A24B0748F9B722A91BC3DF0FA8756",
+          "status": "Error",
+          "errorText": "Form validation failed: required: Please fill out this field.. "
+        }
+      },
+      "observation": {
+        "status": "Error",
+        "errorText": "Form validation failed: required: Please fill out this field.. ",
+        "submitCount": 0,
+        "calls": [],
+        "fields": {"required": "", "optional": "optional-default"}
+      }
+    },
+    {
+      "id": "decl-missing-required-03",
+      "input": {"required": null},
+      "toolsAdded": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "missing-required",
+              "description": "Observe omitted and invalid declarative text parameters",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "required": {
+                    "type": "string",
+                    "description": "Required text"
+                  },
+                  "optional": {
+                    "type": "string",
+                    "description": "Optional text"
+                  }
+                },
+                "required": ["required"]
+              },
+              "annotations": {"autosubmit": true},
+              "frameId": "191B7E32A5753A1671A531CA2B57EEA4",
+              "backendNodeId": 2
+            }
+          ]
+        }
+      },
+      "invokeTool": {
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "191B7E32A5753A1671A531CA2B57EEA4",
+          "toolName": "missing-required",
+          "input": {"required": null}
+        },
+        "response": {"result": {"invocationId": "B1502BF7CD447D6635F7A943AD0DF583"}, "error": null}
+      },
+      "toolInvoked": {
+        "method": "WebMCP.toolInvoked",
+        "params": {
+          "toolName": "missing-required",
+          "frameId": "191B7E32A5753A1671A531CA2B57EEA4",
+          "invocationId": "B1502BF7CD447D6635F7A943AD0DF583",
+          "input": "{\"required\":null}"
+        }
+      },
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "B1502BF7CD447D6635F7A943AD0DF583",
+          "status": "Error",
+          "errorText": "Invalid value for parameter required"
+        }
+      },
+      "observation": {
+        "status": "Error",
+        "errorText": "Invalid value for parameter required",
+        "submitCount": 0,
+        "calls": [],
+        "fields": {"required": "", "optional": "optional-default"}
+      }
+    },
+    {
+      "id": "decl-missing-required-04",
+      "input": {"required": "provided-required"},
+      "toolsAdded": {
+        "method": "WebMCP.toolsAdded",
+        "params": {
+          "tools": [
+            {
+              "name": "missing-required",
+              "description": "Observe omitted and invalid declarative text parameters",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "required": {
+                    "type": "string",
+                    "description": "Required text"
+                  },
+                  "optional": {
+                    "type": "string",
+                    "description": "Optional text"
+                  }
+                },
+                "required": ["required"]
+              },
+              "annotations": {"autosubmit": true},
+              "frameId": "904BCD91F62BB60FB309C1448DD81D40",
+              "backendNodeId": 2
+            }
+          ]
+        }
+      },
+      "invokeTool": {
+        "method": "WebMCP.invokeTool",
+        "params": {
+          "frameId": "904BCD91F62BB60FB309C1448DD81D40",
+          "toolName": "missing-required",
+          "input": {"required": "provided-required"}
+        },
+        "response": {"result": {"invocationId": "74F1DA191B7ADAEB77A35181C86FF621"}, "error": null}
+      },
+      "toolInvoked": {
+        "method": "WebMCP.toolInvoked",
+        "params": {
+          "toolName": "missing-required",
+          "frameId": "904BCD91F62BB60FB309C1448DD81D40",
+          "invocationId": "74F1DA191B7ADAEB77A35181C86FF621",
+          "input": "{\"required\":\"provided-required\"}"
+        }
+      },
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "74F1DA191B7ADAEB77A35181C86FF621",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "required": "provided-required",
+              "optional": "optional-default"
+            }
+          }
+        }
+      },
+      "observation": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "required": "provided-required",
+              "optional": "optional-default"
+            }
+          }
+        ],
+        "fields": {"required": "provided-required", "optional": "optional-default"}
+      }
+    }
+  ],
+  "repeatRun": {
+    "repetition": 2,
+    "cases": [
+      {
+        "id": "decl-missing-required-01",
+        "input": {},
+        "toolRespondedParams": {
+          "invocationId": "8A04A5157FBAB2ECF8933EC65114A40C",
+          "status": "Error",
+          "errorText": "Form validation failed: required: Please fill out this field.. "
+        },
+        "observation": {"submitCount": 0, "calls": [], "fields": {"required": "", "optional": "optional-default"}}
+      },
+      {
+        "id": "decl-missing-required-02",
+        "input": {"required": ""},
+        "toolRespondedParams": {
+          "invocationId": "046BB8CF141092FE0EBB33F9BBC27703",
+          "status": "Error",
+          "errorText": "Form validation failed: required: Please fill out this field.. "
+        },
+        "observation": {"submitCount": 0, "calls": [], "fields": {"required": "", "optional": "optional-default"}}
+      },
+      {
+        "id": "decl-missing-required-03",
+        "input": {"required": null},
+        "toolRespondedParams": {
+          "invocationId": "FD0B78BFEB6200F03EA475674E79E5AA",
+          "status": "Error",
+          "errorText": "Invalid value for parameter required"
+        },
+        "observation": {"submitCount": 0, "calls": [], "fields": {"required": "", "optional": "optional-default"}}
+      },
+      {
+        "id": "decl-missing-required-04",
+        "input": {"required": "provided-required"},
+        "toolRespondedParams": {
+          "invocationId": "F98602B9DFD356AC267C012BF87D1EEA",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {"required": "provided-required", "optional": "optional-default"}
+          }
+        },
+        "observation": {
+          "submitCount": 1,
+          "calls": [
+            {
+              "agentInvoked": true,
+              "isTrusted": true,
+              "fields": {"required": "provided-required", "optional": "optional-default"}
+            }
+          ],
+          "fields": {"required": "provided-required", "optional": "optional-default"}
+        }
+      }
+    ]
+  }
+}

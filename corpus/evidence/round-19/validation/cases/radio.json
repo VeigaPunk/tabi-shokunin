@@ -1,0 +1,88 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "radio",
+  "fixture": "radio.html",
+  "author": "FamRadio-4",
+  "cases": [
+    {
+      "id": "decl-radio-01",
+      "tool": "radio",
+      "input": {
+        "choice": "beta"
+      },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "choice": "beta"
+        },
+        "schema": {
+          "properties.choice.enum": [
+            "alpha",
+            "beta"
+          ]
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "839-872",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "For a valid enabled radio value, what enum is exposed and which value is checked after invocation?",
+      "answer": "Completed; the derived enum is [alpha, beta], beta is checked, and the submit handler receives choice=beta."
+    },
+    {
+      "id": "decl-radio-02",
+      "tool": "radio",
+      "input": {
+        "choice": "not-an-option"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"not-an-option\" for parameter choice",
+        "submitCount": 0,
+        "fields": null,
+        "schema": {
+          "properties.choice.enum": [
+            "alpha",
+            "beta"
+          ]
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "374-388",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does an unlisted radio value invoke the form submit handler or fail validation?",
+      "answer": "Error: Invalid value \"not-an-option\" for parameter choice; no submit occurs and all three initially-unchecked radios remain unchecked."
+    },
+    {
+      "id": "decl-radio-03",
+      "tool": "radio",
+      "input": {
+        "choice": "gamma"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"gamma\" for parameter choice",
+        "submitCount": 0,
+        "fields": null,
+        "schema": {
+          "properties.choice.enum": [
+            "alpha",
+            "beta"
+          ]
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "1238-1245",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Is the value of a disabled radio included in the derived enum or accepted by invocation?",
+      "answer": "gamma is excluded from the derived enum [alpha, beta]; invoking gamma returns Error with an invalid-value message, no submit, and no radio checked."
+    }
+  ]
+}

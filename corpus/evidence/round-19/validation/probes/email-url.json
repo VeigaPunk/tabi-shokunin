@@ -1,0 +1,2506 @@
+{
+  "schema": "tabi-webmcp-email-url-probe-v1",
+  "runtime": {
+    "browser": "Chromium",
+    "browserVersion": "154.0.8037.97",
+    "executable": "/usr/bin/chromium",
+    "playwright": "1.64.0",
+    "node": "v24.21.0",
+    "fixtureOrigin": "http://127.0.0.1:35993",
+    "hostResolverDeny": "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+    "launchArgs": [
+      "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting"
+    ]
+  },
+  "cases": [
+    {
+      "run": 1,
+      "case": "email-malformed",
+      "input": {
+        "email": "not-an-email",
+        "url": "https://valid.example.test/"
+      },
+      "launch": {
+        "browserVersion": "154.0.8037.97",
+        "browserPid": 784774,
+        "argv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/eu-CV8t9m/profile",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guards": {
+          "webmcpFeature": true,
+          "devtoolsWebMcpEnabled": true,
+          "declarativeWebMcpEnabled": true,
+          "hostResolverDeny": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandbox": true,
+          "oneMergedEnableFeaturesSwitch": true,
+          "noDevToolsActivePort": true
+        }
+      },
+      "frameId": "3F2AA4B03E2AA07E2C5AC29C81DCED7C",
+      "commands": [
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "3F2AA4B03E2AA07E2C5AC29C81DCED7C",
+                "loaderId": "9DE1E06D1DFC2287C7534BA5E608E146",
+                "url": "http://127.0.0.1:35993/email-url.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:35993",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "3F2AA4B03E2AA07E2C5AC29C81DCED7C",
+            "toolName": "decl-email-url",
+            "input": {
+              "email": "not-an-email",
+              "url": "https://valid.example.test/"
+            }
+          }
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "251AA52B7E84942945C8A7C1A828CFED"
+          }
+        }
+      ],
+      "toolsAdded": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "decl-email-url",
+                "description": "Observe declared email and URL input validation",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "Email"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "URL"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "3F2AA4B03E2AA07E2C5AC29C81DCED7C",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        }
+      ],
+      "tool": {
+        "name": "decl-email-url",
+        "description": "Observe declared email and URL input validation",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "3F2AA4B03E2AA07E2C5AC29C81DCED7C",
+        "backendNodeId": 2
+      },
+      "invokeResult": {
+        "invocationId": "251AA52B7E84942945C8A7C1A828CFED"
+      },
+      "invokeError": null,
+      "invocationId": "251AA52B7E84942945C8A7C1A828CFED",
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "251AA52B7E84942945C8A7C1A828CFED",
+          "status": "Error",
+          "errorText": "Form validation failed: email: Please include an '@' in the email address. 'not-an-email' is missing an '@'.. "
+        }
+      },
+      "toolRespondedTimeoutMs": 8000,
+      "normalized": {
+        "status": "Error",
+        "errorText": "Form validation failed: email: Please include an '@' in the email address. 'not-an-email' is missing an '@'.. ",
+        "submitCount": 0,
+        "fields": {
+          "email": "not-an-email",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "not-an-email",
+            "willValidate": true,
+            "validity": {
+              "valid": false,
+              "typeMismatch": true,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      },
+      "state": {
+        "submitCount": 0,
+        "calls": [],
+        "fields": {
+          "email": "not-an-email",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "not-an-email",
+            "willValidate": true,
+            "validity": {
+              "valid": false,
+              "typeMismatch": true,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "run": 1,
+      "case": "email-valid",
+      "input": {
+        "email": "person@example.test",
+        "url": "https://valid.example.test/"
+      },
+      "launch": {
+        "browserVersion": "154.0.8037.97",
+        "browserPid": 786463,
+        "argv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/eu-ucUukp/profile",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guards": {
+          "webmcpFeature": true,
+          "devtoolsWebMcpEnabled": true,
+          "declarativeWebMcpEnabled": true,
+          "hostResolverDeny": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandbox": true,
+          "oneMergedEnableFeaturesSwitch": true,
+          "noDevToolsActivePort": true
+        }
+      },
+      "frameId": "F8CAEDC211E96BD1F0621B18ADE7D028",
+      "commands": [
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "F8CAEDC211E96BD1F0621B18ADE7D028",
+                "loaderId": "13F0BEEC293D0F4F157CE9F4F6C1069E",
+                "url": "http://127.0.0.1:35993/email-url.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:35993",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "F8CAEDC211E96BD1F0621B18ADE7D028",
+            "toolName": "decl-email-url",
+            "input": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "51DEA480F9D214481816D576F2787D01"
+          }
+        }
+      ],
+      "toolsAdded": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "decl-email-url",
+                "description": "Observe declared email and URL input validation",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "Email"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "URL"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "F8CAEDC211E96BD1F0621B18ADE7D028",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        }
+      ],
+      "tool": {
+        "name": "decl-email-url",
+        "description": "Observe declared email and URL input validation",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "F8CAEDC211E96BD1F0621B18ADE7D028",
+        "backendNodeId": 2
+      },
+      "invokeResult": {
+        "invocationId": "51DEA480F9D214481816D576F2787D01"
+      },
+      "invokeError": null,
+      "invocationId": "51DEA480F9D214481816D576F2787D01",
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "51DEA480F9D214481816D576F2787D01",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        }
+      },
+      "toolRespondedTimeoutMs": 8000,
+      "normalized": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      },
+      "state": {
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        ],
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "run": 1,
+      "case": "url-malformed",
+      "input": {
+        "email": "person@example.test",
+        "url": "not-a-url"
+      },
+      "launch": {
+        "browserVersion": "154.0.8037.97",
+        "browserPid": 788061,
+        "argv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/eu-GKMTFz/profile",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guards": {
+          "webmcpFeature": true,
+          "devtoolsWebMcpEnabled": true,
+          "declarativeWebMcpEnabled": true,
+          "hostResolverDeny": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandbox": true,
+          "oneMergedEnableFeaturesSwitch": true,
+          "noDevToolsActivePort": true
+        }
+      },
+      "frameId": "3B477A58CC1E1788D7BB4435602C2790",
+      "commands": [
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "3B477A58CC1E1788D7BB4435602C2790",
+                "loaderId": "8EF6D8F5AB2174C3DB29D5E7DBD589E1",
+                "url": "http://127.0.0.1:35993/email-url.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:35993",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "3B477A58CC1E1788D7BB4435602C2790",
+            "toolName": "decl-email-url",
+            "input": {
+              "email": "person@example.test",
+              "url": "not-a-url"
+            }
+          }
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "7B09FE5AC524B3F94FB9A31DBC45CA3C"
+          }
+        }
+      ],
+      "toolsAdded": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "decl-email-url",
+                "description": "Observe declared email and URL input validation",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "Email"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "URL"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "3B477A58CC1E1788D7BB4435602C2790",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        }
+      ],
+      "tool": {
+        "name": "decl-email-url",
+        "description": "Observe declared email and URL input validation",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "3B477A58CC1E1788D7BB4435602C2790",
+        "backendNodeId": 2
+      },
+      "invokeResult": {
+        "invocationId": "7B09FE5AC524B3F94FB9A31DBC45CA3C"
+      },
+      "invokeError": null,
+      "invocationId": "7B09FE5AC524B3F94FB9A31DBC45CA3C",
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "7B09FE5AC524B3F94FB9A31DBC45CA3C",
+          "status": "Error",
+          "errorText": "Form validation failed: url: Please enter a URL.. "
+        }
+      },
+      "toolRespondedTimeoutMs": 8000,
+      "normalized": {
+        "status": "Error",
+        "errorText": "Form validation failed: url: Please enter a URL.. ",
+        "submitCount": 0,
+        "fields": {
+          "email": "person@example.test",
+          "url": "not-a-url"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "not-a-url",
+            "willValidate": true,
+            "validity": {
+              "valid": false,
+              "typeMismatch": true,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      },
+      "state": {
+        "submitCount": 0,
+        "calls": [],
+        "fields": {
+          "email": "person@example.test",
+          "url": "not-a-url"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "not-a-url",
+            "willValidate": true,
+            "validity": {
+              "valid": false,
+              "typeMismatch": true,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "run": 1,
+      "case": "url-valid",
+      "input": {
+        "email": "person@example.test",
+        "url": "https://valid.example.test/"
+      },
+      "launch": {
+        "browserVersion": "154.0.8037.97",
+        "browserPid": 789625,
+        "argv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/eu-SwzkgR/profile",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guards": {
+          "webmcpFeature": true,
+          "devtoolsWebMcpEnabled": true,
+          "declarativeWebMcpEnabled": true,
+          "hostResolverDeny": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandbox": true,
+          "oneMergedEnableFeaturesSwitch": true,
+          "noDevToolsActivePort": true
+        }
+      },
+      "frameId": "1DFEB499F927B63B2A44490DD8892843",
+      "commands": [
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "1DFEB499F927B63B2A44490DD8892843",
+                "loaderId": "2339EDCC060985F0EF5BD388053E5F37",
+                "url": "http://127.0.0.1:35993/email-url.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:35993",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "1DFEB499F927B63B2A44490DD8892843",
+            "toolName": "decl-email-url",
+            "input": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "20D0012DE3A6F775E58370A2B51EE211"
+          }
+        }
+      ],
+      "toolsAdded": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "decl-email-url",
+                "description": "Observe declared email and URL input validation",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "Email"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "URL"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "1DFEB499F927B63B2A44490DD8892843",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        }
+      ],
+      "tool": {
+        "name": "decl-email-url",
+        "description": "Observe declared email and URL input validation",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "1DFEB499F927B63B2A44490DD8892843",
+        "backendNodeId": 2
+      },
+      "invokeResult": {
+        "invocationId": "20D0012DE3A6F775E58370A2B51EE211"
+      },
+      "invokeError": null,
+      "invocationId": "20D0012DE3A6F775E58370A2B51EE211",
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "20D0012DE3A6F775E58370A2B51EE211",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        }
+      },
+      "toolRespondedTimeoutMs": 8000,
+      "normalized": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      },
+      "state": {
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        ],
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "run": 2,
+      "case": "email-malformed",
+      "input": {
+        "email": "not-an-email",
+        "url": "https://valid.example.test/"
+      },
+      "launch": {
+        "browserVersion": "154.0.8037.97",
+        "browserPid": 790934,
+        "argv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/eu-Oc6kJ6/profile",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guards": {
+          "webmcpFeature": true,
+          "devtoolsWebMcpEnabled": true,
+          "declarativeWebMcpEnabled": true,
+          "hostResolverDeny": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandbox": true,
+          "oneMergedEnableFeaturesSwitch": true,
+          "noDevToolsActivePort": true
+        }
+      },
+      "frameId": "E3DE382A2DDD9253EC36599E006FAA84",
+      "commands": [
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "E3DE382A2DDD9253EC36599E006FAA84",
+                "loaderId": "5F796FEDE7B5D81B30E75F06D9B9DCAD",
+                "url": "http://127.0.0.1:35993/email-url.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:35993",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "E3DE382A2DDD9253EC36599E006FAA84",
+            "toolName": "decl-email-url",
+            "input": {
+              "email": "not-an-email",
+              "url": "https://valid.example.test/"
+            }
+          }
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "BCC5759124FF883535D1B27B715497D4"
+          }
+        }
+      ],
+      "toolsAdded": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "decl-email-url",
+                "description": "Observe declared email and URL input validation",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "Email"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "URL"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "E3DE382A2DDD9253EC36599E006FAA84",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        }
+      ],
+      "tool": {
+        "name": "decl-email-url",
+        "description": "Observe declared email and URL input validation",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "E3DE382A2DDD9253EC36599E006FAA84",
+        "backendNodeId": 2
+      },
+      "invokeResult": {
+        "invocationId": "BCC5759124FF883535D1B27B715497D4"
+      },
+      "invokeError": null,
+      "invocationId": "BCC5759124FF883535D1B27B715497D4",
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "BCC5759124FF883535D1B27B715497D4",
+          "status": "Error",
+          "errorText": "Form validation failed: email: Please include an '@' in the email address. 'not-an-email' is missing an '@'.. "
+        }
+      },
+      "toolRespondedTimeoutMs": 8000,
+      "normalized": {
+        "status": "Error",
+        "errorText": "Form validation failed: email: Please include an '@' in the email address. 'not-an-email' is missing an '@'.. ",
+        "submitCount": 0,
+        "fields": {
+          "email": "not-an-email",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "not-an-email",
+            "willValidate": true,
+            "validity": {
+              "valid": false,
+              "typeMismatch": true,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      },
+      "state": {
+        "submitCount": 0,
+        "calls": [],
+        "fields": {
+          "email": "not-an-email",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "not-an-email",
+            "willValidate": true,
+            "validity": {
+              "valid": false,
+              "typeMismatch": true,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "run": 2,
+      "case": "email-valid",
+      "input": {
+        "email": "person@example.test",
+        "url": "https://valid.example.test/"
+      },
+      "launch": {
+        "browserVersion": "154.0.8037.97",
+        "browserPid": 791540,
+        "argv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/eu-cXKHhR/profile",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guards": {
+          "webmcpFeature": true,
+          "devtoolsWebMcpEnabled": true,
+          "declarativeWebMcpEnabled": true,
+          "hostResolverDeny": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandbox": true,
+          "oneMergedEnableFeaturesSwitch": true,
+          "noDevToolsActivePort": true
+        }
+      },
+      "frameId": "A9324EBF959C05F1FCD5537CAEE2C386",
+      "commands": [
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "A9324EBF959C05F1FCD5537CAEE2C386",
+                "loaderId": "9DF14E55AF8C921CE235DE9E25027288",
+                "url": "http://127.0.0.1:35993/email-url.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:35993",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "A9324EBF959C05F1FCD5537CAEE2C386",
+            "toolName": "decl-email-url",
+            "input": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "0E35B5BF307F8C8884BD011321D1533A"
+          }
+        }
+      ],
+      "toolsAdded": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "decl-email-url",
+                "description": "Observe declared email and URL input validation",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "Email"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "URL"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "A9324EBF959C05F1FCD5537CAEE2C386",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        }
+      ],
+      "tool": {
+        "name": "decl-email-url",
+        "description": "Observe declared email and URL input validation",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "A9324EBF959C05F1FCD5537CAEE2C386",
+        "backendNodeId": 2
+      },
+      "invokeResult": {
+        "invocationId": "0E35B5BF307F8C8884BD011321D1533A"
+      },
+      "invokeError": null,
+      "invocationId": "0E35B5BF307F8C8884BD011321D1533A",
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "0E35B5BF307F8C8884BD011321D1533A",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        }
+      },
+      "toolRespondedTimeoutMs": 8000,
+      "normalized": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      },
+      "state": {
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        ],
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "run": 2,
+      "case": "url-malformed",
+      "input": {
+        "email": "person@example.test",
+        "url": "not-a-url"
+      },
+      "launch": {
+        "browserVersion": "154.0.8037.97",
+        "browserPid": 792388,
+        "argv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/eu-UMTIaD/profile",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guards": {
+          "webmcpFeature": true,
+          "devtoolsWebMcpEnabled": true,
+          "declarativeWebMcpEnabled": true,
+          "hostResolverDeny": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandbox": true,
+          "oneMergedEnableFeaturesSwitch": true,
+          "noDevToolsActivePort": true
+        }
+      },
+      "frameId": "72CC425DA010C9A4C48C92C2A907701E",
+      "commands": [
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "72CC425DA010C9A4C48C92C2A907701E",
+                "loaderId": "5B39A89F634D7A65F334CDC05C5DD78B",
+                "url": "http://127.0.0.1:35993/email-url.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:35993",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "72CC425DA010C9A4C48C92C2A907701E",
+            "toolName": "decl-email-url",
+            "input": {
+              "email": "person@example.test",
+              "url": "not-a-url"
+            }
+          }
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "D77CE878A01B3E656E4C4923EACBFF80"
+          }
+        }
+      ],
+      "toolsAdded": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "decl-email-url",
+                "description": "Observe declared email and URL input validation",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "Email"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "URL"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "72CC425DA010C9A4C48C92C2A907701E",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        }
+      ],
+      "tool": {
+        "name": "decl-email-url",
+        "description": "Observe declared email and URL input validation",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "72CC425DA010C9A4C48C92C2A907701E",
+        "backendNodeId": 2
+      },
+      "invokeResult": {
+        "invocationId": "D77CE878A01B3E656E4C4923EACBFF80"
+      },
+      "invokeError": null,
+      "invocationId": "D77CE878A01B3E656E4C4923EACBFF80",
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "D77CE878A01B3E656E4C4923EACBFF80",
+          "status": "Error",
+          "errorText": "Form validation failed: url: Please enter a URL.. "
+        }
+      },
+      "toolRespondedTimeoutMs": 8000,
+      "normalized": {
+        "status": "Error",
+        "errorText": "Form validation failed: url: Please enter a URL.. ",
+        "submitCount": 0,
+        "fields": {
+          "email": "person@example.test",
+          "url": "not-a-url"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "not-a-url",
+            "willValidate": true,
+            "validity": {
+              "valid": false,
+              "typeMismatch": true,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      },
+      "state": {
+        "submitCount": 0,
+        "calls": [],
+        "fields": {
+          "email": "person@example.test",
+          "url": "not-a-url"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "not-a-url",
+            "willValidate": true,
+            "validity": {
+              "valid": false,
+              "typeMismatch": true,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "run": 2,
+      "case": "url-valid",
+      "input": {
+        "email": "person@example.test",
+        "url": "https://valid.example.test/"
+      },
+      "launch": {
+        "browserVersion": "154.0.8037.97",
+        "browserPid": 793064,
+        "argv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/eu-LOR1Ai/profile",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guards": {
+          "webmcpFeature": true,
+          "devtoolsWebMcpEnabled": true,
+          "declarativeWebMcpEnabled": true,
+          "hostResolverDeny": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandbox": true,
+          "oneMergedEnableFeaturesSwitch": true,
+          "noDevToolsActivePort": true
+        }
+      },
+      "frameId": "864D5F5D3DC22027741FEC21EE6ED0F0",
+      "commands": [
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "response",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "864D5F5D3DC22027741FEC21EE6ED0F0",
+                "loaderId": "CB7EC6F0830B6BCE98A56766D1FB0B69",
+                "url": "http://127.0.0.1:35993/email-url.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:35993",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "864D5F5D3DC22027741FEC21EE6ED0F0",
+            "toolName": "decl-email-url",
+            "input": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        },
+        {
+          "direction": "response",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "389BD9937625DDEBD322619AEEFB454B"
+          }
+        }
+      ],
+      "toolsAdded": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "decl-email-url",
+                "description": "Observe declared email and URL input validation",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "Email"
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "URL"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "864D5F5D3DC22027741FEC21EE6ED0F0",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        }
+      ],
+      "tool": {
+        "name": "decl-email-url",
+        "description": "Observe declared email and URL input validation",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "Email"
+            },
+            "url": {
+              "type": "string",
+              "description": "URL"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "864D5F5D3DC22027741FEC21EE6ED0F0",
+        "backendNodeId": 2
+      },
+      "invokeResult": {
+        "invocationId": "389BD9937625DDEBD322619AEEFB454B"
+      },
+      "invokeError": null,
+      "invocationId": "389BD9937625DDEBD322619AEEFB454B",
+      "toolResponded": {
+        "method": "WebMCP.toolResponded",
+        "params": {
+          "invocationId": "389BD9937625DDEBD322619AEEFB454B",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        }
+      },
+      "toolRespondedTimeoutMs": 8000,
+      "normalized": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      },
+      "state": {
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "email": "person@example.test",
+              "url": "https://valid.example.test/"
+            }
+          }
+        ],
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "controls": {
+          "email": {
+            "type": "email",
+            "value": "person@example.test",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          },
+          "url": {
+            "type": "url",
+            "value": "https://valid.example.test/",
+            "willValidate": true,
+            "validity": {
+              "valid": true,
+              "typeMismatch": false,
+              "valueMissing": false,
+              "patternMismatch": false,
+              "tooLong": false,
+              "tooShort": false,
+              "rangeUnderflow": false,
+              "rangeOverflow": false,
+              "stepMismatch": false,
+              "badInput": false,
+              "customError": false
+            }
+          }
+        }
+      }
+    }
+  ],
+  "stability": {
+    "email-malformed": {
+      "stable": true,
+      "runs": 2
+    },
+    "email-valid": {
+      "stable": true,
+      "runs": 2
+    },
+    "url-malformed": {
+      "stable": true,
+      "runs": 2
+    },
+    "url-valid": {
+      "stable": true,
+      "runs": 2
+    }
+  },
+  "serverRequests": [
+    {
+      "method": "GET",
+      "url": "/email-url.html",
+      "host": "127.0.0.1:35993"
+    },
+    {
+      "method": "GET",
+      "url": "/email-url.html",
+      "host": "127.0.0.1:35993"
+    },
+    {
+      "method": "GET",
+      "url": "/email-url.html",
+      "host": "127.0.0.1:35993"
+    },
+    {
+      "method": "GET",
+      "url": "/email-url.html",
+      "host": "127.0.0.1:35993"
+    },
+    {
+      "method": "GET",
+      "url": "/email-url.html",
+      "host": "127.0.0.1:35993"
+    },
+    {
+      "method": "GET",
+      "url": "/email-url.html",
+      "host": "127.0.0.1:35993"
+    },
+    {
+      "method": "GET",
+      "url": "/email-url.html",
+      "host": "127.0.0.1:35993"
+    },
+    {
+      "method": "GET",
+      "url": "/email-url.html",
+      "host": "127.0.0.1:35993"
+    }
+  ]
+}

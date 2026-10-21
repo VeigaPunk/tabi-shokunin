@@ -1,0 +1,116 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "select-enum",
+  "fixture": "select-enum.html",
+  "author": "FamSelectEnum-4",
+  "cases": [
+    {
+      "id": "decl-select-enum-01",
+      "tool": "select-enum",
+      "input": { "choice": "beta-code" },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "choice": "beta-code" },
+        "schema": {
+          "properties.choice.type": "string",
+          "properties.choice.anyOf": [
+            { "type": "string", "const": "alpha-code", "title": "Alpha label" },
+            { "type": "string", "const": "beta-code", "title": "Beta visible label" },
+            { "type": "string", "const": "disabled-code", "title": "Disabled visible label" }
+          ],
+          "properties.choice.enum": [ "alpha-code", "beta-code", "disabled-code" ]
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "733-770",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does a single-select option value pass declarative validation and fill the control?",
+      "answer": "Yes: Completed, one submit, and both the control and response fields contain beta-code."
+    },
+    {
+      "id": "decl-select-enum-02",
+      "tool": "select-enum",
+      "input": { "choice": "Beta visible label" },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"Beta visible label\" for parameter choice",
+        "submitCount": 0,
+        "fields": { "choice": "alpha-code" },
+        "schema": {
+          "properties.choice.type": "string",
+          "properties.choice.anyOf": [
+            { "type": "string", "const": "alpha-code", "title": "Alpha label" },
+            { "type": "string", "const": "beta-code", "title": "Beta visible label" },
+            { "type": "string", "const": "disabled-code", "title": "Disabled visible label" }
+          ],
+          "properties.choice.enum": [ "alpha-code", "beta-code", "disabled-code" ]
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "390-405",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does the visible option label substitute for the distinct option value?",
+      "answer": "No: Error with the exact invalid-value message, zero submits, and the control remains alpha-code."
+    },
+    {
+      "id": "decl-select-enum-03",
+      "tool": "select-enum",
+      "input": { "choice": "missing-code" },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"missing-code\" for parameter choice",
+        "submitCount": 0,
+        "fields": { "choice": "alpha-code" },
+        "schema": {
+          "properties.choice.type": "string",
+          "properties.choice.anyOf": [
+            { "type": "string", "const": "alpha-code", "title": "Alpha label" },
+            { "type": "string", "const": "beta-code", "title": "Beta visible label" },
+            { "type": "string", "const": "disabled-code", "title": "Disabled visible label" }
+          ],
+          "properties.choice.enum": [ "alpha-code", "beta-code", "disabled-code" ]
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "390-405",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Is a value absent from the select's option list accepted?",
+      "answer": "No: Error with the exact invalid-value message, zero submits, and the control remains alpha-code."
+    },
+    {
+      "id": "decl-select-enum-04",
+      "tool": "select-enum",
+      "input": { "choice": "disabled-code" },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "choice": "disabled-code" },
+        "schema": {
+          "properties.choice.type": "string",
+          "properties.choice.anyOf": [
+            { "type": "string", "const": "alpha-code", "title": "Alpha label" },
+            { "type": "string", "const": "beta-code", "title": "Beta visible label" },
+            { "type": "string", "const": "disabled-code", "title": "Disabled visible label" }
+          ],
+          "properties.choice.enum": [ "alpha-code", "beta-code", "disabled-code" ]
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "390-405",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does a disabled option's value remain in the enum and pass validation?",
+      "answer": "Yes: Completed and the control selects disabled-code; the submit's FormData and response fields are empty."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>round19 non-scalar WebMCP</title></head><body>
+<form id="text-form" toolname="decl-nonscalar-text" tooldescription="Probe non-scalar values for scalar text controls" toolautosubmit>
+  <label>Null text <input type="text" name="text_null" value="seed-null"></label>
+  <label>Array text <input type="text" name="text_array" value="seed-array"></label>
+  <label>Nested object text <input type="text" name="text_nested" value="seed-nested"></label>
+  <label>Long text <input type="text" name="text_long" value="seed-long"></label>
+  <button type="submit">Submit text</button>
+</form>
+<form id="number-form" toolname="decl-nonscalar-number" tooldescription="Probe non-scalar values for scalar number controls" toolautosubmit>
+  <label>Null number <input type="number" name="number_null" value="11"></label>
+  <label>Array number <input type="number" name="number_array" value="12"></label>
+  <label>Nested object number <input type="number" name="number_nested" value="13"></label>
+  <label>Long number <input type="number" name="number_long" value="14"></label>
+  <button type="submit">Submit number</button>
+</form>
+<script>
+(function () {
+  window.__obs = { calls: [] };
+  for (const form of document.forms) {
+    form.addEventListener('submit', function (event) {
+      const fields = Object.fromEntries(new FormData(event.target));
+      window.__obs.calls.push({ agentInvoked: event.agentInvoked === true, isTrusted: event.isTrusted, fields });
+      event.preventDefault();
+      event.respondWith(Promise.resolve({ ok: true, fields: Object.fromEntries(new FormData(event.target)) }));
+    });
+  }
+  window.__ready = true;
+})();
+</script></body></html>

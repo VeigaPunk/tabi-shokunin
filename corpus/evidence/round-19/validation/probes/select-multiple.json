@@ -1,0 +1,3887 @@
+{
+  "schema": "tabi-webmcp-select-multiple-probe-v1",
+  "runtime": {
+    "chromium": "154.0.8037.97",
+    "chromiumExecutable": "/usr/bin/chromium",
+    "playwright": "1.64.0",
+    "node": "v24.21.0"
+  },
+  "fixture": {
+    "path": "fixtures/select-multiple.html",
+    "sha256": "b5aa24ac70de9b911984695f28ff1285da141d5cad128b022bda00b3976643b3"
+  },
+  "source": {
+    "formMCPSchema": {
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT",
+      "decodedSha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f"
+    },
+    "htmlFormElement": {
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT",
+      "decodedSha256": "8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916"
+    }
+  },
+  "launch": {
+    "featureArgs": [
+      "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting"
+    ],
+    "hostResolverDeny": "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+    "playwrightDefaultEnableFeatures": [
+      "CDPScreenshotNewSurface"
+    ],
+    "playwrightDefaultDisableFeatures": [
+      "AvoidUnnecessaryBeforeUnloadCheckSync",
+      "DestroyProfileOnBrowserClose",
+      "DialMediaRouteProvider",
+      "GlobalMediaControls",
+      "HttpsUpgrades",
+      "LensOverlay",
+      "MediaRouter",
+      "PaintHolding",
+      "ThirdPartyStoragePartitioning",
+      "BlockOriginHeaderModificationOnRedirect",
+      "Translate",
+      "AutoDeElevate",
+      "OptimizationHints",
+      "NetworkTimeServiceQuerying",
+      "AimEnabled",
+      "msForceBrowserSignIn",
+      "msEdgeUpdateLaunchServicesPreferredVersion"
+    ],
+    "acceptDownloads": false,
+    "remoteDebugging": "Playwright CDP pipe; no TCP port requested",
+    "routeGuard": "Only the exact loopback fixture origin is continued; all other requests are aborted"
+  },
+  "attempts": [
+    {
+      "repetition": 1,
+      "caseId": "decl-select-multiple-01",
+      "input": {
+        "colors": [
+          "red",
+          "blue"
+        ]
+      },
+      "cdp": {
+        "commandsAndEvents": [
+          {
+            "direction": "out",
+            "method": "Page.getFrameTree",
+            "params": {}
+          },
+          {
+            "direction": "reply",
+            "method": "Page.getFrameTree",
+            "result": {
+              "frameTree": {
+                "frame": {
+                  "id": "C0F30A3BF4BF921CD254ECDCBC93EC62",
+                  "loaderId": "436EF37E070380A819C639C9BBF35404",
+                  "url": "http://127.0.0.1:44489/select-multiple.html",
+                  "domainAndRegistry": "",
+                  "securityOrigin": "http://127.0.0.1:44489",
+                  "securityOriginDetails": {
+                    "isLocalhost": true
+                  },
+                  "mimeType": "text/html",
+                  "adFrameStatus": {
+                    "adFrameType": "none"
+                  },
+                  "secureContextType": "SecureLocalhost",
+                  "crossOriginIsolatedContextType": "NotIsolated",
+                  "gatedAPIFeatures": []
+                }
+              }
+            }
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.enable",
+            "params": {}
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [
+                {
+                  "name": "decl-select-multiple",
+                  "description": "Select multiple valid color values",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "red",
+                              "title": "Red"
+                            },
+                            {
+                              "type": "string",
+                              "const": "green",
+                              "title": "Green"
+                            },
+                            {
+                              "type": "string",
+                              "const": "blue",
+                              "title": "Blue"
+                            }
+                          ],
+                          "enum": [
+                            "red",
+                            "green",
+                            "blue"
+                          ]
+                        },
+                        "uniqueItems": true,
+                        "description": "Colors"
+                      }
+                    },
+                    "required": []
+                  },
+                  "annotations": {
+                    "autosubmit": true
+                  },
+                  "frameId": "C0F30A3BF4BF921CD254ECDCBC93EC62",
+                  "backendNodeId": 2
+                }
+              ]
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.enable",
+            "result": {}
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "C0F30A3BF4BF921CD254ECDCBC93EC62",
+              "toolName": "decl-select-multiple",
+              "input": {
+                "colors": [
+                  "red",
+                  "blue"
+                ]
+              }
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.invokeTool",
+            "result": {
+              "invocationId": "E01F5617FB334EE56912DC8B354DE50D"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolInvoked",
+            "params": {
+              "toolName": "decl-select-multiple",
+              "frameId": "C0F30A3BF4BF921CD254ECDCBC93EC62",
+              "invocationId": "E01F5617FB334EE56912DC8B354DE50D",
+              "input": "{\"colors\":[\"red\",\"blue\"]}"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolResponded",
+            "params": {
+              "invocationId": "E01F5617FB334EE56912DC8B354DE50D",
+              "status": "Completed",
+              "output": {
+                "ok": true,
+                "fields": {
+                  "colors": "blue"
+                }
+              }
+            }
+          }
+        ],
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "decl-select-multiple",
+              "description": "Select multiple valid color values",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "colors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "red",
+                          "title": "Red"
+                        },
+                        {
+                          "type": "string",
+                          "const": "green",
+                          "title": "Green"
+                        },
+                        {
+                          "type": "string",
+                          "const": "blue",
+                          "title": "Blue"
+                        }
+                      ],
+                      "enum": [
+                        "red",
+                        "green",
+                        "blue"
+                      ]
+                    },
+                    "uniqueItems": true,
+                    "description": "Colors"
+                  }
+                },
+                "required": []
+              },
+              "annotations": {
+                "autosubmit": true
+              },
+              "frameId": "C0F30A3BF4BF921CD254ECDCBC93EC62",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "C0F30A3BF4BF921CD254ECDCBC93EC62",
+            "toolName": "decl-select-multiple",
+            "input": {
+              "colors": [
+                "red",
+                "blue"
+              ]
+            }
+          }
+        },
+        "invokeToolReply": {
+          "invocationId": "E01F5617FB334EE56912DC8B354DE50D"
+        },
+        "invokeToolError": null,
+        "toolRespondedParams": {
+          "invocationId": "E01F5617FB334EE56912DC8B354DE50D",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "colors": "blue"
+            }
+          }
+        }
+      },
+      "tool": {
+        "name": "decl-select-multiple",
+        "description": "Select multiple valid color values",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "C0F30A3BF4BF921CD254ECDCBC93EC62",
+        "backendNodeId": 2
+      },
+      "page": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "colors": "blue"
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "colors",
+            "tagName": "select",
+            "type": "select-multiple",
+            "value": "red",
+            "multiple": true,
+            "selectedValues": [
+              "red",
+              "blue"
+            ]
+          }
+        ],
+        "fields": {
+          "colors": [
+            "red",
+            "blue"
+          ]
+        }
+      },
+      "launch": {
+        "pid": 892855,
+        "executable": "/usr/lib/chromium/chromium",
+        "browserVersion": "154.0.8037.97",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "mergedEnableFeatures": [
+          "CDPScreenshotNewSurface",
+          "WebMCP",
+          "WebMCPTesting",
+          "DevToolsWebMCPSupport",
+          "DeclarativeWebmcp"
+        ],
+        "mergedDisableFeatures": [
+          "AvoidUnnecessaryBeforeUnloadCheckSync",
+          "DestroyProfileOnBrowserClose",
+          "DialMediaRouteProvider",
+          "GlobalMediaControls",
+          "HttpsUpgrades",
+          "LensOverlay",
+          "MediaRouter",
+          "PaintHolding",
+          "ThirdPartyStoragePartitioning",
+          "BlockOriginHeaderModificationOnRedirect",
+          "Translate",
+          "AutoDeElevate",
+          "OptimizationHints",
+          "NetworkTimeServiceQuerying",
+          "AimEnabled",
+          "msForceBrowserSignIn",
+          "msEdgeUpdateLaunchServicesPreferredVersion"
+        ],
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/fm4-JsQ8hb/profile-decl-select-multiple-01-1-wxS1Lt",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "checks": {
+          "oneMergedEnableFeatures": true,
+          "webmcpEnabled": true,
+          "declarativeWebmcpEnabled": true,
+          "testingFeatureEnabled": true,
+          "blinkFeaturesEnabled": true,
+          "devtoolsFeatureNotDisabled": true,
+          "hostResolverDenied": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandboxFlag": true,
+          "noDevToolsActivePort": true,
+          "privateProfile": true
+        }
+      },
+      "observedSummary": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "colors": [
+            "red",
+            "blue"
+          ]
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "timedOut": false
+    },
+    {
+      "repetition": 1,
+      "caseId": "decl-select-multiple-02",
+      "input": {
+        "colors": [
+          "red",
+          "invalid"
+        ]
+      },
+      "cdp": {
+        "commandsAndEvents": [
+          {
+            "direction": "out",
+            "method": "Page.getFrameTree",
+            "params": {}
+          },
+          {
+            "direction": "reply",
+            "method": "Page.getFrameTree",
+            "result": {
+              "frameTree": {
+                "frame": {
+                  "id": "9B0E59736263035C08092980D8355D5E",
+                  "loaderId": "9B12ADEF33B9D38B046FFE3465B02061",
+                  "url": "http://127.0.0.1:44489/select-multiple.html",
+                  "domainAndRegistry": "",
+                  "securityOrigin": "http://127.0.0.1:44489",
+                  "securityOriginDetails": {
+                    "isLocalhost": true
+                  },
+                  "mimeType": "text/html",
+                  "adFrameStatus": {
+                    "adFrameType": "none"
+                  },
+                  "secureContextType": "SecureLocalhost",
+                  "crossOriginIsolatedContextType": "NotIsolated",
+                  "gatedAPIFeatures": []
+                }
+              }
+            }
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.enable",
+            "params": {}
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [
+                {
+                  "name": "decl-select-multiple",
+                  "description": "Select multiple valid color values",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "red",
+                              "title": "Red"
+                            },
+                            {
+                              "type": "string",
+                              "const": "green",
+                              "title": "Green"
+                            },
+                            {
+                              "type": "string",
+                              "const": "blue",
+                              "title": "Blue"
+                            }
+                          ],
+                          "enum": [
+                            "red",
+                            "green",
+                            "blue"
+                          ]
+                        },
+                        "uniqueItems": true,
+                        "description": "Colors"
+                      }
+                    },
+                    "required": []
+                  },
+                  "annotations": {
+                    "autosubmit": true
+                  },
+                  "frameId": "9B0E59736263035C08092980D8355D5E",
+                  "backendNodeId": 2
+                }
+              ]
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.enable",
+            "result": {}
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "9B0E59736263035C08092980D8355D5E",
+              "toolName": "decl-select-multiple",
+              "input": {
+                "colors": [
+                  "red",
+                  "invalid"
+                ]
+              }
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.invokeTool",
+            "result": {
+              "invocationId": "65677AEDAD3765C27C815E4F3899F303"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolInvoked",
+            "params": {
+              "toolName": "decl-select-multiple",
+              "frameId": "9B0E59736263035C08092980D8355D5E",
+              "invocationId": "65677AEDAD3765C27C815E4F3899F303",
+              "input": "{\"colors\":[\"red\",\"invalid\"]}"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolResponded",
+            "params": {
+              "invocationId": "65677AEDAD3765C27C815E4F3899F303",
+              "status": "Error",
+              "errorText": "Invalid value for parameter colors"
+            }
+          }
+        ],
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "decl-select-multiple",
+              "description": "Select multiple valid color values",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "colors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "red",
+                          "title": "Red"
+                        },
+                        {
+                          "type": "string",
+                          "const": "green",
+                          "title": "Green"
+                        },
+                        {
+                          "type": "string",
+                          "const": "blue",
+                          "title": "Blue"
+                        }
+                      ],
+                      "enum": [
+                        "red",
+                        "green",
+                        "blue"
+                      ]
+                    },
+                    "uniqueItems": true,
+                    "description": "Colors"
+                  }
+                },
+                "required": []
+              },
+              "annotations": {
+                "autosubmit": true
+              },
+              "frameId": "9B0E59736263035C08092980D8355D5E",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "9B0E59736263035C08092980D8355D5E",
+            "toolName": "decl-select-multiple",
+            "input": {
+              "colors": [
+                "red",
+                "invalid"
+              ]
+            }
+          }
+        },
+        "invokeToolReply": {
+          "invocationId": "65677AEDAD3765C27C815E4F3899F303"
+        },
+        "invokeToolError": null,
+        "toolRespondedParams": {
+          "invocationId": "65677AEDAD3765C27C815E4F3899F303",
+          "status": "Error",
+          "errorText": "Invalid value for parameter colors"
+        }
+      },
+      "tool": {
+        "name": "decl-select-multiple",
+        "description": "Select multiple valid color values",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "9B0E59736263035C08092980D8355D5E",
+        "backendNodeId": 2
+      },
+      "page": {
+        "calls": [],
+        "controls": [
+          {
+            "name": "colors",
+            "tagName": "select",
+            "type": "select-multiple",
+            "value": "",
+            "multiple": true,
+            "selectedValues": []
+          }
+        ],
+        "fields": {
+          "colors": []
+        }
+      },
+      "launch": {
+        "pid": 893160,
+        "executable": "/usr/lib/chromium/chromium",
+        "browserVersion": "154.0.8037.97",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "mergedEnableFeatures": [
+          "CDPScreenshotNewSurface",
+          "WebMCP",
+          "WebMCPTesting",
+          "DevToolsWebMCPSupport",
+          "DeclarativeWebmcp"
+        ],
+        "mergedDisableFeatures": [
+          "AvoidUnnecessaryBeforeUnloadCheckSync",
+          "DestroyProfileOnBrowserClose",
+          "DialMediaRouteProvider",
+          "GlobalMediaControls",
+          "HttpsUpgrades",
+          "LensOverlay",
+          "MediaRouter",
+          "PaintHolding",
+          "ThirdPartyStoragePartitioning",
+          "BlockOriginHeaderModificationOnRedirect",
+          "Translate",
+          "AutoDeElevate",
+          "OptimizationHints",
+          "NetworkTimeServiceQuerying",
+          "AimEnabled",
+          "msForceBrowserSignIn",
+          "msEdgeUpdateLaunchServicesPreferredVersion"
+        ],
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/fm4-JsQ8hb/profile-decl-select-multiple-02-1-beE99p",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "checks": {
+          "oneMergedEnableFeatures": true,
+          "webmcpEnabled": true,
+          "declarativeWebmcpEnabled": true,
+          "testingFeatureEnabled": true,
+          "blinkFeaturesEnabled": true,
+          "devtoolsFeatureNotDisabled": true,
+          "hostResolverDenied": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandboxFlag": true,
+          "noDevToolsActivePort": true,
+          "privateProfile": true
+        }
+      },
+      "observedSummary": {
+        "status": "Error",
+        "errorText": "Invalid value for parameter colors",
+        "submitCount": 0,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "timedOut": false
+    },
+    {
+      "repetition": 1,
+      "caseId": "decl-select-multiple-03",
+      "input": {
+        "colors": "red"
+      },
+      "cdp": {
+        "commandsAndEvents": [
+          {
+            "direction": "out",
+            "method": "Page.getFrameTree",
+            "params": {}
+          },
+          {
+            "direction": "reply",
+            "method": "Page.getFrameTree",
+            "result": {
+              "frameTree": {
+                "frame": {
+                  "id": "409F7CEC6D5A760F651D7C1809F0F2F8",
+                  "loaderId": "2892E6ECD9CDCED3A9E1375605AB61E4",
+                  "url": "http://127.0.0.1:44489/select-multiple.html",
+                  "domainAndRegistry": "",
+                  "securityOrigin": "http://127.0.0.1:44489",
+                  "securityOriginDetails": {
+                    "isLocalhost": true
+                  },
+                  "mimeType": "text/html",
+                  "adFrameStatus": {
+                    "adFrameType": "none"
+                  },
+                  "secureContextType": "SecureLocalhost",
+                  "crossOriginIsolatedContextType": "NotIsolated",
+                  "gatedAPIFeatures": []
+                }
+              }
+            }
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.enable",
+            "params": {}
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [
+                {
+                  "name": "decl-select-multiple",
+                  "description": "Select multiple valid color values",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "red",
+                              "title": "Red"
+                            },
+                            {
+                              "type": "string",
+                              "const": "green",
+                              "title": "Green"
+                            },
+                            {
+                              "type": "string",
+                              "const": "blue",
+                              "title": "Blue"
+                            }
+                          ],
+                          "enum": [
+                            "red",
+                            "green",
+                            "blue"
+                          ]
+                        },
+                        "uniqueItems": true,
+                        "description": "Colors"
+                      }
+                    },
+                    "required": []
+                  },
+                  "annotations": {
+                    "autosubmit": true
+                  },
+                  "frameId": "409F7CEC6D5A760F651D7C1809F0F2F8",
+                  "backendNodeId": 2
+                }
+              ]
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.enable",
+            "result": {}
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "409F7CEC6D5A760F651D7C1809F0F2F8",
+              "toolName": "decl-select-multiple",
+              "input": {
+                "colors": "red"
+              }
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.invokeTool",
+            "result": {
+              "invocationId": "454BFAF5F3F3B37697E0713C5F451AC3"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolInvoked",
+            "params": {
+              "toolName": "decl-select-multiple",
+              "frameId": "409F7CEC6D5A760F651D7C1809F0F2F8",
+              "invocationId": "454BFAF5F3F3B37697E0713C5F451AC3",
+              "input": "{\"colors\":\"red\"}"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolResponded",
+            "params": {
+              "invocationId": "454BFAF5F3F3B37697E0713C5F451AC3",
+              "status": "Error",
+              "errorText": "Invalid value \"red\" for parameter colors"
+            }
+          }
+        ],
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "decl-select-multiple",
+              "description": "Select multiple valid color values",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "colors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "red",
+                          "title": "Red"
+                        },
+                        {
+                          "type": "string",
+                          "const": "green",
+                          "title": "Green"
+                        },
+                        {
+                          "type": "string",
+                          "const": "blue",
+                          "title": "Blue"
+                        }
+                      ],
+                      "enum": [
+                        "red",
+                        "green",
+                        "blue"
+                      ]
+                    },
+                    "uniqueItems": true,
+                    "description": "Colors"
+                  }
+                },
+                "required": []
+              },
+              "annotations": {
+                "autosubmit": true
+              },
+              "frameId": "409F7CEC6D5A760F651D7C1809F0F2F8",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "409F7CEC6D5A760F651D7C1809F0F2F8",
+            "toolName": "decl-select-multiple",
+            "input": {
+              "colors": "red"
+            }
+          }
+        },
+        "invokeToolReply": {
+          "invocationId": "454BFAF5F3F3B37697E0713C5F451AC3"
+        },
+        "invokeToolError": null,
+        "toolRespondedParams": {
+          "invocationId": "454BFAF5F3F3B37697E0713C5F451AC3",
+          "status": "Error",
+          "errorText": "Invalid value \"red\" for parameter colors"
+        }
+      },
+      "tool": {
+        "name": "decl-select-multiple",
+        "description": "Select multiple valid color values",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "409F7CEC6D5A760F651D7C1809F0F2F8",
+        "backendNodeId": 2
+      },
+      "page": {
+        "calls": [],
+        "controls": [
+          {
+            "name": "colors",
+            "tagName": "select",
+            "type": "select-multiple",
+            "value": "",
+            "multiple": true,
+            "selectedValues": []
+          }
+        ],
+        "fields": {
+          "colors": []
+        }
+      },
+      "launch": {
+        "pid": 893450,
+        "executable": "/usr/lib/chromium/chromium",
+        "browserVersion": "154.0.8037.97",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "mergedEnableFeatures": [
+          "CDPScreenshotNewSurface",
+          "WebMCP",
+          "WebMCPTesting",
+          "DevToolsWebMCPSupport",
+          "DeclarativeWebmcp"
+        ],
+        "mergedDisableFeatures": [
+          "AvoidUnnecessaryBeforeUnloadCheckSync",
+          "DestroyProfileOnBrowserClose",
+          "DialMediaRouteProvider",
+          "GlobalMediaControls",
+          "HttpsUpgrades",
+          "LensOverlay",
+          "MediaRouter",
+          "PaintHolding",
+          "ThirdPartyStoragePartitioning",
+          "BlockOriginHeaderModificationOnRedirect",
+          "Translate",
+          "AutoDeElevate",
+          "OptimizationHints",
+          "NetworkTimeServiceQuerying",
+          "AimEnabled",
+          "msForceBrowserSignIn",
+          "msEdgeUpdateLaunchServicesPreferredVersion"
+        ],
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/fm4-JsQ8hb/profile-decl-select-multiple-03-1-B0Hv8a",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "checks": {
+          "oneMergedEnableFeatures": true,
+          "webmcpEnabled": true,
+          "declarativeWebmcpEnabled": true,
+          "testingFeatureEnabled": true,
+          "blinkFeaturesEnabled": true,
+          "devtoolsFeatureNotDisabled": true,
+          "hostResolverDenied": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandboxFlag": true,
+          "noDevToolsActivePort": true,
+          "privateProfile": true
+        }
+      },
+      "observedSummary": {
+        "status": "Error",
+        "errorText": "Invalid value \"red\" for parameter colors",
+        "submitCount": 0,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "timedOut": false
+    },
+    {
+      "repetition": 1,
+      "caseId": "decl-select-multiple-04",
+      "input": {
+        "colors": []
+      },
+      "cdp": {
+        "commandsAndEvents": [
+          {
+            "direction": "out",
+            "method": "Page.getFrameTree",
+            "params": {}
+          },
+          {
+            "direction": "reply",
+            "method": "Page.getFrameTree",
+            "result": {
+              "frameTree": {
+                "frame": {
+                  "id": "3F33E731458C71C1D2C44E9E937A368B",
+                  "loaderId": "AC1E89F578E700AD62358691C025FC3F",
+                  "url": "http://127.0.0.1:44489/select-multiple.html",
+                  "domainAndRegistry": "",
+                  "securityOrigin": "http://127.0.0.1:44489",
+                  "securityOriginDetails": {
+                    "isLocalhost": true
+                  },
+                  "mimeType": "text/html",
+                  "adFrameStatus": {
+                    "adFrameType": "none"
+                  },
+                  "secureContextType": "SecureLocalhost",
+                  "crossOriginIsolatedContextType": "NotIsolated",
+                  "gatedAPIFeatures": []
+                }
+              }
+            }
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.enable",
+            "params": {}
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [
+                {
+                  "name": "decl-select-multiple",
+                  "description": "Select multiple valid color values",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "red",
+                              "title": "Red"
+                            },
+                            {
+                              "type": "string",
+                              "const": "green",
+                              "title": "Green"
+                            },
+                            {
+                              "type": "string",
+                              "const": "blue",
+                              "title": "Blue"
+                            }
+                          ],
+                          "enum": [
+                            "red",
+                            "green",
+                            "blue"
+                          ]
+                        },
+                        "uniqueItems": true,
+                        "description": "Colors"
+                      }
+                    },
+                    "required": []
+                  },
+                  "annotations": {
+                    "autosubmit": true
+                  },
+                  "frameId": "3F33E731458C71C1D2C44E9E937A368B",
+                  "backendNodeId": 2
+                }
+              ]
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.enable",
+            "result": {}
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "3F33E731458C71C1D2C44E9E937A368B",
+              "toolName": "decl-select-multiple",
+              "input": {
+                "colors": []
+              }
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.invokeTool",
+            "result": {
+              "invocationId": "44AADE57498CB403750E61A039ADB409"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolInvoked",
+            "params": {
+              "toolName": "decl-select-multiple",
+              "frameId": "3F33E731458C71C1D2C44E9E937A368B",
+              "invocationId": "44AADE57498CB403750E61A039ADB409",
+              "input": "{\"colors\":[]}"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolResponded",
+            "params": {
+              "invocationId": "44AADE57498CB403750E61A039ADB409",
+              "status": "Completed",
+              "output": {
+                "ok": true,
+                "fields": {}
+              }
+            }
+          }
+        ],
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "decl-select-multiple",
+              "description": "Select multiple valid color values",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "colors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "red",
+                          "title": "Red"
+                        },
+                        {
+                          "type": "string",
+                          "const": "green",
+                          "title": "Green"
+                        },
+                        {
+                          "type": "string",
+                          "const": "blue",
+                          "title": "Blue"
+                        }
+                      ],
+                      "enum": [
+                        "red",
+                        "green",
+                        "blue"
+                      ]
+                    },
+                    "uniqueItems": true,
+                    "description": "Colors"
+                  }
+                },
+                "required": []
+              },
+              "annotations": {
+                "autosubmit": true
+              },
+              "frameId": "3F33E731458C71C1D2C44E9E937A368B",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "3F33E731458C71C1D2C44E9E937A368B",
+            "toolName": "decl-select-multiple",
+            "input": {
+              "colors": []
+            }
+          }
+        },
+        "invokeToolReply": {
+          "invocationId": "44AADE57498CB403750E61A039ADB409"
+        },
+        "invokeToolError": null,
+        "toolRespondedParams": {
+          "invocationId": "44AADE57498CB403750E61A039ADB409",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {}
+          }
+        }
+      },
+      "tool": {
+        "name": "decl-select-multiple",
+        "description": "Select multiple valid color values",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "3F33E731458C71C1D2C44E9E937A368B",
+        "backendNodeId": 2
+      },
+      "page": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {}
+          }
+        ],
+        "controls": [
+          {
+            "name": "colors",
+            "tagName": "select",
+            "type": "select-multiple",
+            "value": "",
+            "multiple": true,
+            "selectedValues": []
+          }
+        ],
+        "fields": {
+          "colors": []
+        }
+      },
+      "launch": {
+        "pid": 893722,
+        "executable": "/usr/lib/chromium/chromium",
+        "browserVersion": "154.0.8037.97",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "mergedEnableFeatures": [
+          "CDPScreenshotNewSurface",
+          "WebMCP",
+          "WebMCPTesting",
+          "DevToolsWebMCPSupport",
+          "DeclarativeWebmcp"
+        ],
+        "mergedDisableFeatures": [
+          "AvoidUnnecessaryBeforeUnloadCheckSync",
+          "DestroyProfileOnBrowserClose",
+          "DialMediaRouteProvider",
+          "GlobalMediaControls",
+          "HttpsUpgrades",
+          "LensOverlay",
+          "MediaRouter",
+          "PaintHolding",
+          "ThirdPartyStoragePartitioning",
+          "BlockOriginHeaderModificationOnRedirect",
+          "Translate",
+          "AutoDeElevate",
+          "OptimizationHints",
+          "NetworkTimeServiceQuerying",
+          "AimEnabled",
+          "msForceBrowserSignIn",
+          "msEdgeUpdateLaunchServicesPreferredVersion"
+        ],
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/fm4-JsQ8hb/profile-decl-select-multiple-04-1-2YkOCU",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "checks": {
+          "oneMergedEnableFeatures": true,
+          "webmcpEnabled": true,
+          "declarativeWebmcpEnabled": true,
+          "testingFeatureEnabled": true,
+          "blinkFeaturesEnabled": true,
+          "devtoolsFeatureNotDisabled": true,
+          "hostResolverDenied": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandboxFlag": true,
+          "noDevToolsActivePort": true,
+          "privateProfile": true
+        }
+      },
+      "observedSummary": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "timedOut": false
+    },
+    {
+      "repetition": 2,
+      "caseId": "decl-select-multiple-01",
+      "input": {
+        "colors": [
+          "red",
+          "blue"
+        ]
+      },
+      "cdp": {
+        "commandsAndEvents": [
+          {
+            "direction": "out",
+            "method": "Page.getFrameTree",
+            "params": {}
+          },
+          {
+            "direction": "reply",
+            "method": "Page.getFrameTree",
+            "result": {
+              "frameTree": {
+                "frame": {
+                  "id": "A086F09BDF02566DD7577B5B3D5770C7",
+                  "loaderId": "7D128FA32560847DBD3CACF47CC16966",
+                  "url": "http://127.0.0.1:44489/select-multiple.html",
+                  "domainAndRegistry": "",
+                  "securityOrigin": "http://127.0.0.1:44489",
+                  "securityOriginDetails": {
+                    "isLocalhost": true
+                  },
+                  "mimeType": "text/html",
+                  "adFrameStatus": {
+                    "adFrameType": "none"
+                  },
+                  "secureContextType": "SecureLocalhost",
+                  "crossOriginIsolatedContextType": "NotIsolated",
+                  "gatedAPIFeatures": []
+                }
+              }
+            }
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.enable",
+            "params": {}
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [
+                {
+                  "name": "decl-select-multiple",
+                  "description": "Select multiple valid color values",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "red",
+                              "title": "Red"
+                            },
+                            {
+                              "type": "string",
+                              "const": "green",
+                              "title": "Green"
+                            },
+                            {
+                              "type": "string",
+                              "const": "blue",
+                              "title": "Blue"
+                            }
+                          ],
+                          "enum": [
+                            "red",
+                            "green",
+                            "blue"
+                          ]
+                        },
+                        "uniqueItems": true,
+                        "description": "Colors"
+                      }
+                    },
+                    "required": []
+                  },
+                  "annotations": {
+                    "autosubmit": true
+                  },
+                  "frameId": "A086F09BDF02566DD7577B5B3D5770C7",
+                  "backendNodeId": 2
+                }
+              ]
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.enable",
+            "result": {}
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "A086F09BDF02566DD7577B5B3D5770C7",
+              "toolName": "decl-select-multiple",
+              "input": {
+                "colors": [
+                  "red",
+                  "blue"
+                ]
+              }
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.invokeTool",
+            "result": {
+              "invocationId": "2204844206E6605AC0707B12FE72CF7E"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolInvoked",
+            "params": {
+              "toolName": "decl-select-multiple",
+              "frameId": "A086F09BDF02566DD7577B5B3D5770C7",
+              "invocationId": "2204844206E6605AC0707B12FE72CF7E",
+              "input": "{\"colors\":[\"red\",\"blue\"]}"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolResponded",
+            "params": {
+              "invocationId": "2204844206E6605AC0707B12FE72CF7E",
+              "status": "Completed",
+              "output": {
+                "ok": true,
+                "fields": {
+                  "colors": "blue"
+                }
+              }
+            }
+          }
+        ],
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "decl-select-multiple",
+              "description": "Select multiple valid color values",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "colors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "red",
+                          "title": "Red"
+                        },
+                        {
+                          "type": "string",
+                          "const": "green",
+                          "title": "Green"
+                        },
+                        {
+                          "type": "string",
+                          "const": "blue",
+                          "title": "Blue"
+                        }
+                      ],
+                      "enum": [
+                        "red",
+                        "green",
+                        "blue"
+                      ]
+                    },
+                    "uniqueItems": true,
+                    "description": "Colors"
+                  }
+                },
+                "required": []
+              },
+              "annotations": {
+                "autosubmit": true
+              },
+              "frameId": "A086F09BDF02566DD7577B5B3D5770C7",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "A086F09BDF02566DD7577B5B3D5770C7",
+            "toolName": "decl-select-multiple",
+            "input": {
+              "colors": [
+                "red",
+                "blue"
+              ]
+            }
+          }
+        },
+        "invokeToolReply": {
+          "invocationId": "2204844206E6605AC0707B12FE72CF7E"
+        },
+        "invokeToolError": null,
+        "toolRespondedParams": {
+          "invocationId": "2204844206E6605AC0707B12FE72CF7E",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "colors": "blue"
+            }
+          }
+        }
+      },
+      "tool": {
+        "name": "decl-select-multiple",
+        "description": "Select multiple valid color values",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "A086F09BDF02566DD7577B5B3D5770C7",
+        "backendNodeId": 2
+      },
+      "page": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "colors": "blue"
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "colors",
+            "tagName": "select",
+            "type": "select-multiple",
+            "value": "red",
+            "multiple": true,
+            "selectedValues": [
+              "red",
+              "blue"
+            ]
+          }
+        ],
+        "fields": {
+          "colors": [
+            "red",
+            "blue"
+          ]
+        }
+      },
+      "launch": {
+        "pid": 893944,
+        "executable": "/usr/lib/chromium/chromium",
+        "browserVersion": "154.0.8037.97",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "mergedEnableFeatures": [
+          "CDPScreenshotNewSurface",
+          "WebMCP",
+          "WebMCPTesting",
+          "DevToolsWebMCPSupport",
+          "DeclarativeWebmcp"
+        ],
+        "mergedDisableFeatures": [
+          "AvoidUnnecessaryBeforeUnloadCheckSync",
+          "DestroyProfileOnBrowserClose",
+          "DialMediaRouteProvider",
+          "GlobalMediaControls",
+          "HttpsUpgrades",
+          "LensOverlay",
+          "MediaRouter",
+          "PaintHolding",
+          "ThirdPartyStoragePartitioning",
+          "BlockOriginHeaderModificationOnRedirect",
+          "Translate",
+          "AutoDeElevate",
+          "OptimizationHints",
+          "NetworkTimeServiceQuerying",
+          "AimEnabled",
+          "msForceBrowserSignIn",
+          "msEdgeUpdateLaunchServicesPreferredVersion"
+        ],
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/fm4-JsQ8hb/profile-decl-select-multiple-01-2-X2RA6q",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "checks": {
+          "oneMergedEnableFeatures": true,
+          "webmcpEnabled": true,
+          "declarativeWebmcpEnabled": true,
+          "testingFeatureEnabled": true,
+          "blinkFeaturesEnabled": true,
+          "devtoolsFeatureNotDisabled": true,
+          "hostResolverDenied": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandboxFlag": true,
+          "noDevToolsActivePort": true,
+          "privateProfile": true
+        }
+      },
+      "observedSummary": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "colors": [
+            "red",
+            "blue"
+          ]
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "timedOut": false
+    },
+    {
+      "repetition": 2,
+      "caseId": "decl-select-multiple-02",
+      "input": {
+        "colors": [
+          "red",
+          "invalid"
+        ]
+      },
+      "cdp": {
+        "commandsAndEvents": [
+          {
+            "direction": "out",
+            "method": "Page.getFrameTree",
+            "params": {}
+          },
+          {
+            "direction": "reply",
+            "method": "Page.getFrameTree",
+            "result": {
+              "frameTree": {
+                "frame": {
+                  "id": "3697FEC0717AFCA18A1D8E48EF295A21",
+                  "loaderId": "9F3185FC37E2EF0D2D29FC4B76F499C7",
+                  "url": "http://127.0.0.1:44489/select-multiple.html",
+                  "domainAndRegistry": "",
+                  "securityOrigin": "http://127.0.0.1:44489",
+                  "securityOriginDetails": {
+                    "isLocalhost": true
+                  },
+                  "mimeType": "text/html",
+                  "adFrameStatus": {
+                    "adFrameType": "none"
+                  },
+                  "secureContextType": "SecureLocalhost",
+                  "crossOriginIsolatedContextType": "NotIsolated",
+                  "gatedAPIFeatures": []
+                }
+              }
+            }
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.enable",
+            "params": {}
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [
+                {
+                  "name": "decl-select-multiple",
+                  "description": "Select multiple valid color values",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "red",
+                              "title": "Red"
+                            },
+                            {
+                              "type": "string",
+                              "const": "green",
+                              "title": "Green"
+                            },
+                            {
+                              "type": "string",
+                              "const": "blue",
+                              "title": "Blue"
+                            }
+                          ],
+                          "enum": [
+                            "red",
+                            "green",
+                            "blue"
+                          ]
+                        },
+                        "uniqueItems": true,
+                        "description": "Colors"
+                      }
+                    },
+                    "required": []
+                  },
+                  "annotations": {
+                    "autosubmit": true
+                  },
+                  "frameId": "3697FEC0717AFCA18A1D8E48EF295A21",
+                  "backendNodeId": 2
+                }
+              ]
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.enable",
+            "result": {}
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "3697FEC0717AFCA18A1D8E48EF295A21",
+              "toolName": "decl-select-multiple",
+              "input": {
+                "colors": [
+                  "red",
+                  "invalid"
+                ]
+              }
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.invokeTool",
+            "result": {
+              "invocationId": "3C2D0AF49F1322732D2788CC134C05D2"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolInvoked",
+            "params": {
+              "toolName": "decl-select-multiple",
+              "frameId": "3697FEC0717AFCA18A1D8E48EF295A21",
+              "invocationId": "3C2D0AF49F1322732D2788CC134C05D2",
+              "input": "{\"colors\":[\"red\",\"invalid\"]}"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolResponded",
+            "params": {
+              "invocationId": "3C2D0AF49F1322732D2788CC134C05D2",
+              "status": "Error",
+              "errorText": "Invalid value for parameter colors"
+            }
+          }
+        ],
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "decl-select-multiple",
+              "description": "Select multiple valid color values",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "colors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "red",
+                          "title": "Red"
+                        },
+                        {
+                          "type": "string",
+                          "const": "green",
+                          "title": "Green"
+                        },
+                        {
+                          "type": "string",
+                          "const": "blue",
+                          "title": "Blue"
+                        }
+                      ],
+                      "enum": [
+                        "red",
+                        "green",
+                        "blue"
+                      ]
+                    },
+                    "uniqueItems": true,
+                    "description": "Colors"
+                  }
+                },
+                "required": []
+              },
+              "annotations": {
+                "autosubmit": true
+              },
+              "frameId": "3697FEC0717AFCA18A1D8E48EF295A21",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "3697FEC0717AFCA18A1D8E48EF295A21",
+            "toolName": "decl-select-multiple",
+            "input": {
+              "colors": [
+                "red",
+                "invalid"
+              ]
+            }
+          }
+        },
+        "invokeToolReply": {
+          "invocationId": "3C2D0AF49F1322732D2788CC134C05D2"
+        },
+        "invokeToolError": null,
+        "toolRespondedParams": {
+          "invocationId": "3C2D0AF49F1322732D2788CC134C05D2",
+          "status": "Error",
+          "errorText": "Invalid value for parameter colors"
+        }
+      },
+      "tool": {
+        "name": "decl-select-multiple",
+        "description": "Select multiple valid color values",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "3697FEC0717AFCA18A1D8E48EF295A21",
+        "backendNodeId": 2
+      },
+      "page": {
+        "calls": [],
+        "controls": [
+          {
+            "name": "colors",
+            "tagName": "select",
+            "type": "select-multiple",
+            "value": "",
+            "multiple": true,
+            "selectedValues": []
+          }
+        ],
+        "fields": {
+          "colors": []
+        }
+      },
+      "launch": {
+        "pid": 894084,
+        "executable": "/usr/lib/chromium/chromium",
+        "browserVersion": "154.0.8037.97",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "mergedEnableFeatures": [
+          "CDPScreenshotNewSurface",
+          "WebMCP",
+          "WebMCPTesting",
+          "DevToolsWebMCPSupport",
+          "DeclarativeWebmcp"
+        ],
+        "mergedDisableFeatures": [
+          "AvoidUnnecessaryBeforeUnloadCheckSync",
+          "DestroyProfileOnBrowserClose",
+          "DialMediaRouteProvider",
+          "GlobalMediaControls",
+          "HttpsUpgrades",
+          "LensOverlay",
+          "MediaRouter",
+          "PaintHolding",
+          "ThirdPartyStoragePartitioning",
+          "BlockOriginHeaderModificationOnRedirect",
+          "Translate",
+          "AutoDeElevate",
+          "OptimizationHints",
+          "NetworkTimeServiceQuerying",
+          "AimEnabled",
+          "msForceBrowserSignIn",
+          "msEdgeUpdateLaunchServicesPreferredVersion"
+        ],
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/fm4-JsQ8hb/profile-decl-select-multiple-02-2-howloI",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "checks": {
+          "oneMergedEnableFeatures": true,
+          "webmcpEnabled": true,
+          "declarativeWebmcpEnabled": true,
+          "testingFeatureEnabled": true,
+          "blinkFeaturesEnabled": true,
+          "devtoolsFeatureNotDisabled": true,
+          "hostResolverDenied": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandboxFlag": true,
+          "noDevToolsActivePort": true,
+          "privateProfile": true
+        }
+      },
+      "observedSummary": {
+        "status": "Error",
+        "errorText": "Invalid value for parameter colors",
+        "submitCount": 0,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "timedOut": false
+    },
+    {
+      "repetition": 2,
+      "caseId": "decl-select-multiple-03",
+      "input": {
+        "colors": "red"
+      },
+      "cdp": {
+        "commandsAndEvents": [
+          {
+            "direction": "out",
+            "method": "Page.getFrameTree",
+            "params": {}
+          },
+          {
+            "direction": "reply",
+            "method": "Page.getFrameTree",
+            "result": {
+              "frameTree": {
+                "frame": {
+                  "id": "AC99EEEF3AB65476AE8C73A7B48050D6",
+                  "loaderId": "F4448DF81C8A0AF3FADAE022988FCDAB",
+                  "url": "http://127.0.0.1:44489/select-multiple.html",
+                  "domainAndRegistry": "",
+                  "securityOrigin": "http://127.0.0.1:44489",
+                  "securityOriginDetails": {
+                    "isLocalhost": true
+                  },
+                  "mimeType": "text/html",
+                  "adFrameStatus": {
+                    "adFrameType": "none"
+                  },
+                  "secureContextType": "SecureLocalhost",
+                  "crossOriginIsolatedContextType": "NotIsolated",
+                  "gatedAPIFeatures": []
+                }
+              }
+            }
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.enable",
+            "params": {}
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [
+                {
+                  "name": "decl-select-multiple",
+                  "description": "Select multiple valid color values",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "red",
+                              "title": "Red"
+                            },
+                            {
+                              "type": "string",
+                              "const": "green",
+                              "title": "Green"
+                            },
+                            {
+                              "type": "string",
+                              "const": "blue",
+                              "title": "Blue"
+                            }
+                          ],
+                          "enum": [
+                            "red",
+                            "green",
+                            "blue"
+                          ]
+                        },
+                        "uniqueItems": true,
+                        "description": "Colors"
+                      }
+                    },
+                    "required": []
+                  },
+                  "annotations": {
+                    "autosubmit": true
+                  },
+                  "frameId": "AC99EEEF3AB65476AE8C73A7B48050D6",
+                  "backendNodeId": 2
+                }
+              ]
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.enable",
+            "result": {}
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "AC99EEEF3AB65476AE8C73A7B48050D6",
+              "toolName": "decl-select-multiple",
+              "input": {
+                "colors": "red"
+              }
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.invokeTool",
+            "result": {
+              "invocationId": "C602320AE4EEEF2D1EC6B73F8711703C"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolInvoked",
+            "params": {
+              "toolName": "decl-select-multiple",
+              "frameId": "AC99EEEF3AB65476AE8C73A7B48050D6",
+              "invocationId": "C602320AE4EEEF2D1EC6B73F8711703C",
+              "input": "{\"colors\":\"red\"}"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolResponded",
+            "params": {
+              "invocationId": "C602320AE4EEEF2D1EC6B73F8711703C",
+              "status": "Error",
+              "errorText": "Invalid value \"red\" for parameter colors"
+            }
+          }
+        ],
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "decl-select-multiple",
+              "description": "Select multiple valid color values",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "colors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "red",
+                          "title": "Red"
+                        },
+                        {
+                          "type": "string",
+                          "const": "green",
+                          "title": "Green"
+                        },
+                        {
+                          "type": "string",
+                          "const": "blue",
+                          "title": "Blue"
+                        }
+                      ],
+                      "enum": [
+                        "red",
+                        "green",
+                        "blue"
+                      ]
+                    },
+                    "uniqueItems": true,
+                    "description": "Colors"
+                  }
+                },
+                "required": []
+              },
+              "annotations": {
+                "autosubmit": true
+              },
+              "frameId": "AC99EEEF3AB65476AE8C73A7B48050D6",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "AC99EEEF3AB65476AE8C73A7B48050D6",
+            "toolName": "decl-select-multiple",
+            "input": {
+              "colors": "red"
+            }
+          }
+        },
+        "invokeToolReply": {
+          "invocationId": "C602320AE4EEEF2D1EC6B73F8711703C"
+        },
+        "invokeToolError": null,
+        "toolRespondedParams": {
+          "invocationId": "C602320AE4EEEF2D1EC6B73F8711703C",
+          "status": "Error",
+          "errorText": "Invalid value \"red\" for parameter colors"
+        }
+      },
+      "tool": {
+        "name": "decl-select-multiple",
+        "description": "Select multiple valid color values",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "AC99EEEF3AB65476AE8C73A7B48050D6",
+        "backendNodeId": 2
+      },
+      "page": {
+        "calls": [],
+        "controls": [
+          {
+            "name": "colors",
+            "tagName": "select",
+            "type": "select-multiple",
+            "value": "",
+            "multiple": true,
+            "selectedValues": []
+          }
+        ],
+        "fields": {
+          "colors": []
+        }
+      },
+      "launch": {
+        "pid": 894257,
+        "executable": "/usr/lib/chromium/chromium",
+        "browserVersion": "154.0.8037.97",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "mergedEnableFeatures": [
+          "CDPScreenshotNewSurface",
+          "WebMCP",
+          "WebMCPTesting",
+          "DevToolsWebMCPSupport",
+          "DeclarativeWebmcp"
+        ],
+        "mergedDisableFeatures": [
+          "AvoidUnnecessaryBeforeUnloadCheckSync",
+          "DestroyProfileOnBrowserClose",
+          "DialMediaRouteProvider",
+          "GlobalMediaControls",
+          "HttpsUpgrades",
+          "LensOverlay",
+          "MediaRouter",
+          "PaintHolding",
+          "ThirdPartyStoragePartitioning",
+          "BlockOriginHeaderModificationOnRedirect",
+          "Translate",
+          "AutoDeElevate",
+          "OptimizationHints",
+          "NetworkTimeServiceQuerying",
+          "AimEnabled",
+          "msForceBrowserSignIn",
+          "msEdgeUpdateLaunchServicesPreferredVersion"
+        ],
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/fm4-JsQ8hb/profile-decl-select-multiple-03-2-InNgND",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "checks": {
+          "oneMergedEnableFeatures": true,
+          "webmcpEnabled": true,
+          "declarativeWebmcpEnabled": true,
+          "testingFeatureEnabled": true,
+          "blinkFeaturesEnabled": true,
+          "devtoolsFeatureNotDisabled": true,
+          "hostResolverDenied": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandboxFlag": true,
+          "noDevToolsActivePort": true,
+          "privateProfile": true
+        }
+      },
+      "observedSummary": {
+        "status": "Error",
+        "errorText": "Invalid value \"red\" for parameter colors",
+        "submitCount": 0,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "timedOut": false
+    },
+    {
+      "repetition": 2,
+      "caseId": "decl-select-multiple-04",
+      "input": {
+        "colors": []
+      },
+      "cdp": {
+        "commandsAndEvents": [
+          {
+            "direction": "out",
+            "method": "Page.getFrameTree",
+            "params": {}
+          },
+          {
+            "direction": "reply",
+            "method": "Page.getFrameTree",
+            "result": {
+              "frameTree": {
+                "frame": {
+                  "id": "374D757356D2C5C47EF054E4236667D8",
+                  "loaderId": "C04E4C9DD574280CF2DB72A8F7359D35",
+                  "url": "http://127.0.0.1:44489/select-multiple.html",
+                  "domainAndRegistry": "",
+                  "securityOrigin": "http://127.0.0.1:44489",
+                  "securityOriginDetails": {
+                    "isLocalhost": true
+                  },
+                  "mimeType": "text/html",
+                  "adFrameStatus": {
+                    "adFrameType": "none"
+                  },
+                  "secureContextType": "SecureLocalhost",
+                  "crossOriginIsolatedContextType": "NotIsolated",
+                  "gatedAPIFeatures": []
+                }
+              }
+            }
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.enable",
+            "params": {}
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [
+                {
+                  "name": "decl-select-multiple",
+                  "description": "Select multiple valid color values",
+                  "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                      "colors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "red",
+                              "title": "Red"
+                            },
+                            {
+                              "type": "string",
+                              "const": "green",
+                              "title": "Green"
+                            },
+                            {
+                              "type": "string",
+                              "const": "blue",
+                              "title": "Blue"
+                            }
+                          ],
+                          "enum": [
+                            "red",
+                            "green",
+                            "blue"
+                          ]
+                        },
+                        "uniqueItems": true,
+                        "description": "Colors"
+                      }
+                    },
+                    "required": []
+                  },
+                  "annotations": {
+                    "autosubmit": true
+                  },
+                  "frameId": "374D757356D2C5C47EF054E4236667D8",
+                  "backendNodeId": 2
+                }
+              ]
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.enable",
+            "result": {}
+          },
+          {
+            "direction": "out",
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "374D757356D2C5C47EF054E4236667D8",
+              "toolName": "decl-select-multiple",
+              "input": {
+                "colors": []
+              }
+            }
+          },
+          {
+            "direction": "reply",
+            "method": "WebMCP.invokeTool",
+            "result": {
+              "invocationId": "A75C58A393D1F0C0C4B03E3CE4BEB05B"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolInvoked",
+            "params": {
+              "toolName": "decl-select-multiple",
+              "frameId": "374D757356D2C5C47EF054E4236667D8",
+              "invocationId": "A75C58A393D1F0C0C4B03E3CE4BEB05B",
+              "input": "{\"colors\":[]}"
+            }
+          },
+          {
+            "direction": "in",
+            "method": "WebMCP.toolResponded",
+            "params": {
+              "invocationId": "A75C58A393D1F0C0C4B03E3CE4BEB05B",
+              "status": "Completed",
+              "output": {
+                "ok": true,
+                "fields": {}
+              }
+            }
+          }
+        ],
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "decl-select-multiple",
+              "description": "Select multiple valid color values",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "colors": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "red",
+                          "title": "Red"
+                        },
+                        {
+                          "type": "string",
+                          "const": "green",
+                          "title": "Green"
+                        },
+                        {
+                          "type": "string",
+                          "const": "blue",
+                          "title": "Blue"
+                        }
+                      ],
+                      "enum": [
+                        "red",
+                        "green",
+                        "blue"
+                      ]
+                    },
+                    "uniqueItems": true,
+                    "description": "Colors"
+                  }
+                },
+                "required": []
+              },
+              "annotations": {
+                "autosubmit": true
+              },
+              "frameId": "374D757356D2C5C47EF054E4236667D8",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "374D757356D2C5C47EF054E4236667D8",
+            "toolName": "decl-select-multiple",
+            "input": {
+              "colors": []
+            }
+          }
+        },
+        "invokeToolReply": {
+          "invocationId": "A75C58A393D1F0C0C4B03E3CE4BEB05B"
+        },
+        "invokeToolError": null,
+        "toolRespondedParams": {
+          "invocationId": "A75C58A393D1F0C0C4B03E3CE4BEB05B",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {}
+          }
+        }
+      },
+      "tool": {
+        "name": "decl-select-multiple",
+        "description": "Select multiple valid color values",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "374D757356D2C5C47EF054E4236667D8",
+        "backendNodeId": 2
+      },
+      "page": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {}
+          }
+        ],
+        "controls": [
+          {
+            "name": "colors",
+            "tagName": "select",
+            "type": "select-multiple",
+            "value": "",
+            "multiple": true,
+            "selectedValues": []
+          }
+        ],
+        "fields": {
+          "colors": []
+        }
+      },
+      "launch": {
+        "pid": 894406,
+        "executable": "/usr/lib/chromium/chromium",
+        "browserVersion": "154.0.8037.97",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "mergedEnableFeatures": [
+          "CDPScreenshotNewSurface",
+          "WebMCP",
+          "WebMCPTesting",
+          "DevToolsWebMCPSupport",
+          "DeclarativeWebmcp"
+        ],
+        "mergedDisableFeatures": [
+          "AvoidUnnecessaryBeforeUnloadCheckSync",
+          "DestroyProfileOnBrowserClose",
+          "DialMediaRouteProvider",
+          "GlobalMediaControls",
+          "HttpsUpgrades",
+          "LensOverlay",
+          "MediaRouter",
+          "PaintHolding",
+          "ThirdPartyStoragePartitioning",
+          "BlockOriginHeaderModificationOnRedirect",
+          "Translate",
+          "AutoDeElevate",
+          "OptimizationHints",
+          "NetworkTimeServiceQuerying",
+          "AimEnabled",
+          "msForceBrowserSignIn",
+          "msEdgeUpdateLaunchServicesPreferredVersion"
+        ],
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/tmp/fm4-JsQ8hb/profile-decl-select-multiple-04-2-7JGGle",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "checks": {
+          "oneMergedEnableFeatures": true,
+          "webmcpEnabled": true,
+          "declarativeWebmcpEnabled": true,
+          "testingFeatureEnabled": true,
+          "blinkFeaturesEnabled": true,
+          "devtoolsFeatureNotDisabled": true,
+          "hostResolverDenied": true,
+          "remoteDebuggingPipe": true,
+          "noRemoteDebuggingPort": true,
+          "noNoSandboxFlag": true,
+          "noDevToolsActivePort": true,
+          "privateProfile": true
+        }
+      },
+      "observedSummary": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "timedOut": false
+    }
+  ],
+  "stability": [
+    {
+      "caseId": "decl-select-multiple-01",
+      "repeatCount": 2,
+      "stableSummary": true,
+      "first": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "colors": [
+            "red",
+            "blue"
+          ]
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "second": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "colors": [
+            "red",
+            "blue"
+          ]
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      }
+    },
+    {
+      "caseId": "decl-select-multiple-02",
+      "repeatCount": 2,
+      "stableSummary": true,
+      "first": {
+        "status": "Error",
+        "errorText": "Invalid value for parameter colors",
+        "submitCount": 0,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "second": {
+        "status": "Error",
+        "errorText": "Invalid value for parameter colors",
+        "submitCount": 0,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      }
+    },
+    {
+      "caseId": "decl-select-multiple-03",
+      "repeatCount": 2,
+      "stableSummary": true,
+      "first": {
+        "status": "Error",
+        "errorText": "Invalid value \"red\" for parameter colors",
+        "submitCount": 0,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "second": {
+        "status": "Error",
+        "errorText": "Invalid value \"red\" for parameter colors",
+        "submitCount": 0,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      }
+    },
+    {
+      "caseId": "decl-select-multiple-04",
+      "repeatCount": 2,
+      "stableSummary": true,
+      "first": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      },
+      "second": {
+        "status": "Completed",
+        "errorText": null,
+        "submitCount": 1,
+        "fields": {
+          "colors": []
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "colors": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "red",
+                    "title": "Red"
+                  },
+                  {
+                    "type": "string",
+                    "const": "green",
+                    "title": "Green"
+                  },
+                  {
+                    "type": "string",
+                    "const": "blue",
+                    "title": "Blue"
+                  }
+                ],
+                "enum": [
+                  "red",
+                  "green",
+                  "blue"
+                ]
+              },
+              "uniqueItems": true,
+              "description": "Colors"
+            }
+          },
+          "required": []
+        }
+      }
+    }
+  ]
+}

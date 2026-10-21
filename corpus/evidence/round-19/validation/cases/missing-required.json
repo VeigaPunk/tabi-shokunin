@@ -1,0 +1,118 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "missing-required",
+  "fixture": "missing-required.html",
+  "author": "FamMissingRequired-4",
+  "cases": [
+    {
+      "id": "decl-missing-required-01",
+      "tool": "missing-required",
+      "input": {},
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: required: Please fill out this field..",
+        "submitCount": 0,
+        "fields": {
+          "required": "",
+          "optional": "optional-default"
+        },
+        "schema": {
+          "required": ["required"],
+          "properties.required.type": "string",
+          "properties.optional.type": "string"
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/html_form_element.cc",
+        "lines": "729-758",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT"
+      },
+      "question": "What happens when a required text key is omitted while its control starts empty?",
+      "answer": "It remained empty; native form validation returned Error before the submit listener ran."
+    },
+    {
+      "id": "decl-missing-required-02",
+      "tool": "missing-required",
+      "input": {
+        "required": ""
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: required: Please fill out this field..",
+        "submitCount": 0,
+        "fields": {
+          "required": "",
+          "optional": "optional-default"
+        },
+        "schema": {
+          "required": ["required"],
+          "properties.required.type": "string",
+          "properties.optional.type": "string"
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/html_form_element.cc",
+        "lines": "729-758",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT"
+      },
+      "question": "How does a required text field respond to an explicitly empty string?",
+      "answer": "The field became empty, then native form validation returned Error before the submit listener ran."
+    },
+    {
+      "id": "decl-missing-required-03",
+      "tool": "missing-required",
+      "input": {
+        "required": null
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value for parameter required",
+        "submitCount": 0,
+        "fields": {
+          "required": "",
+          "optional": "optional-default"
+        },
+        "schema": {
+          "required": ["required"],
+          "properties.required.type": "string",
+          "properties.optional.type": "string"
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "208-230",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "How does null behave when supplied for a text field?",
+      "answer": "The invocation returned Error with Invalid value for parameter required; both fields retained their initial values."
+    },
+    {
+      "id": "decl-missing-required-04",
+      "tool": "missing-required",
+      "input": {
+        "required": "provided-required"
+      },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "required": "provided-required",
+          "optional": "optional-default"
+        },
+        "schema": {
+          "required": ["required"],
+          "properties.required.type": "string",
+          "properties.optional.type": "string"
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "208-243",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does omitting a non-required input clear its default when the required input is supplied?",
+      "answer": "No; optional remained optional-default and was included in the single submitted form."
+    }
+  ]
+}

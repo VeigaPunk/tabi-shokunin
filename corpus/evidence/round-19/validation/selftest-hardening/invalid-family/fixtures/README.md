@@ -1,0 +1,1 @@
+The loader rejects the invalid family before opening a fixture.

@@ -1,0 +1,150 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "textarea-empty",
+  "fixture": "textarea-empty.html",
+  "author": "FamTextareaEmpty-4",
+  "cases": [
+    {
+      "id": "decl-textarea-empty-01",
+      "tool": "textarea-empty",
+      "input": {
+        "memo": "alpha\r\nbeta\ngamma",
+        "title": "first\r\nsecond"
+      },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "memo": "alpha\nbeta\ngamma",
+          "title": "firstsecond"
+        },
+        "schema": {
+          "properties.memo.type": "string",
+          "properties.title.type": "string",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "933-947",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "How do textarea and text input controls handle multiline strings?",
+      "answer": "The textarea keeps line breaks as LF; the text input removes CR and LF."
+    },
+    {
+      "id": "decl-textarea-empty-02",
+      "tool": "textarea-empty",
+      "input": {
+        "memo": "",
+        "title": ""
+      },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "memo": "",
+          "title": ""
+        },
+        "schema": {
+          "properties.memo.type": "string",
+          "properties.title.type": "string",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "933-947",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Do explicit empty strings clear both pre-filled controls?",
+      "answer": "Both current values become empty while their defaultValue strings remain pre-filled."
+    },
+    {
+      "id": "decl-textarea-empty-03",
+      "tool": "textarea-empty",
+      "input": {},
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "memo": "pre-filled textarea",
+          "title": "pre-filled input"
+        },
+        "schema": {
+          "properties.memo.type": "string",
+          "properties.title.type": "string",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "208-241",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does omitting both input keys clear or preserve pre-filled defaults?",
+      "answer": "Omitting both keys leaves the pre-filled textarea and text input values intact."
+    },
+    {
+      "id": "decl-textarea-empty-04",
+      "tool": "textarea-empty",
+      "input": {
+        "memo": "pre-filled textarea",
+        "title": "pre-filled input"
+      },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "memo": "pre-filled textarea",
+          "title": "pre-filled input"
+        },
+        "schema": {
+          "properties.memo.type": "string",
+          "properties.title.type": "string",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "933-947",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Can callers explicitly submit values identical to the pre-filled defaults?",
+      "answer": "Explicit default-matching strings round-trip unchanged for both controls."
+    },
+    {
+      "id": "decl-textarea-empty-05",
+      "tool": "textarea-empty",
+      "input": {
+        "memo": "  café 🧪\t\nβeta  ",
+        "title": " \t café 🧪 "
+      },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "memo": "  café 🧪\t\nβeta  ",
+          "title": " \t café 🧪 "
+        },
+        "schema": {
+          "properties.memo.type": "string",
+          "properties.title.type": "string",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "933-947",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Are whitespace and Unicode preserved through both text controls?",
+      "answer": "Leading and trailing spaces, tabs, Unicode, and the textarea newline round-trip unchanged."
+    }
+  ]
+}

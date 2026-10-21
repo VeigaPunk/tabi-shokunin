@@ -1,0 +1,126 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "unknown-param",
+  "fixture": "unknown-param.html",
+  "author": "FamUnknownParam-4",
+  "cases": [
+    {
+      "id": "decl-unknown-param-01",
+      "tool": "unknown-param",
+      "input": {
+        "unknown": "sentinel-only"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Input contains a parameter \"unknown\" but there is no such parameter for the tool",
+        "submitCount": 0,
+        "fields": {
+          "query": "initial-query",
+          "other": "initial-other"
+        },
+        "schema": {
+          "type": "object",
+          "properties.query.type": "string",
+          "properties.query.description": "Query",
+          "properties.other.type": "string",
+          "properties.other.description": "Other",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "208-244",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does a key with no matching form-control parameter invoke or mutate the declarative form?",
+      "answer": "No: Chromium returns Error with the unknown-parameter message, dispatches no submit, and leaves both controls unchanged."
+    },
+    {
+      "id": "decl-unknown-param-02",
+      "tool": "unknown-param",
+      "input": {
+        "query": "changed-valid",
+        "unknown": "sentinel-mixed"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Input contains a parameter \"unknown\" but there is no such parameter for the tool",
+        "submitCount": 0,
+        "fields": {
+          "query": "initial-query",
+          "other": "initial-other"
+        },
+        "schema": {
+          "type": "object",
+          "properties.query.type": "string",
+          "properties.query.description": "Query",
+          "properties.other.type": "string",
+          "properties.other.description": "Other",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "208-244",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "If a recognized key precedes an unknown key, does Chromium partially apply or submit the valid value?",
+      "answer": "No: the invoke returns Error, submits zero times, and keeps query at initial-query despite query appearing first in input."
+    },
+    {
+      "id": "decl-unknown-param-03",
+      "tool": "unknown-param",
+      "input": {
+        "queryId": "sentinel-id"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Input contains a parameter \"queryId\" but there is no such parameter for the tool",
+        "submitCount": 0,
+        "fields": {
+          "query": "initial-query",
+          "other": "initial-other"
+        },
+        "schema": {
+          "type": "object",
+          "properties.query.type": "string",
+          "properties.query.description": "Query",
+          "properties.other.type": "string",
+          "properties.other.description": "Other",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "1243-1245",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does a key matching input id queryId alias the same control whose form name is query?",
+      "answer": "No: queryId is rejected as an unknown parameter; the field name is query and its value remains initial-query."
+    },
+    {
+      "id": "decl-unknown-param-04",
+      "tool": "unknown-param",
+      "input": {
+        "query": "changed-valid"
+      },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "query": "changed-valid",
+          "other": "initial-other"
+        },
+        "schema": null
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "233-241",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Control: does a valid key alone fill and submit?",
+      "answer": "L1 integration control case (TabiR19-2), added so DV-01/DV-02 have an in-family success path; expectation set from the observed run."
+    }
+  ]
+}

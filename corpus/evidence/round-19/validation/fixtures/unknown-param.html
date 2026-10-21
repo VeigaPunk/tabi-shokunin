@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>round19 unknown declarative parameters</title></head>
+<body>
+<form id="tool-form" toolname="unknown-param" tooldescription="Probe unknown and id-only form input names" toolautosubmit>
+  <label>Query <input id="queryId" name="query" type="text" value="initial-query"></label>
+  <label>Other <input id="otherId" name="other" type="text" value="initial-other"></label>
+  <button type="submit" id="submit">Submit</button>
+</form>
+<script>
+window.__obs = { calls: [] };
+const form = document.getElementById('tool-form');
+form.addEventListener('submit', (event) => {
+  const fields = Object.fromEntries(new FormData(event.target));
+  window.__obs.calls.push({ agentInvoked: event.agentInvoked === true, isTrusted: event.isTrusted, fields });
+  event.preventDefault();
+  event.respondWith(Promise.resolve({ ok: true, fields }));
+});
+</script>
+</body>
+</html>

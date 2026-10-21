@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>number-range validation probe</title></head>
+<body>
+<form id="number-range-form" toolname="number-range" tooldescription="Probe declarative number input bounds and step validation" toolautosubmit>
+  <label>Amount <input id="amount" name="amount" type="number" min="2" max="10" step="3"></label>
+  <button type="submit">Submit</button>
+</form>
+<script>
+(() => {
+  window.__obs = { calls: [] };
+  const form = document.getElementById('number-range-form');
+  form.addEventListener('submit', (event) => {
+    const fields = Object.fromEntries(new FormData(event.target));
+    window.__obs.calls.push({
+      agentInvoked: event.agentInvoked === true,
+      isTrusted: event.isTrusted,
+      fields,
+    });
+    event.preventDefault();
+    event.respondWith(Promise.resolve({ ok: true, fields }));
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+{
+  "schema": "tabi-webmcp-validation-receipt-v1",
+  "generatedAt": "2026-10-21T07:30:54.484Z",
+  "runtime": {
+    "identity": "Chromium 154.0.8037.97 / Playwright 1.64.0 / Node 24.21.0",
+    "chromium": {
+      "launchPath": "/usr/bin/chromium",
+      "launchSha256": "eaed39c36bdf6ff6ff23f9f5215aaab017e59723b96f27f7fcd5e0be833a172b",
+      "realExecutable": "/usr/lib/chromium/chromium",
+      "realExecutableSha256": "95b17db7512c34bf5d78a0d55e0e49719725c73736c47eb0a7a831553c4b330a",
+      "version": "154.0.8037.97",
+      "versionSource": "Playwright Browser.version() on a pipe-owned context"
+    },
+    "playwright": {
+      "version": "1.64.0",
+      "directory": "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright"
+    },
+    "node": "24.21.0"
+  },
+  "producerSha256": "4a1de295d6f7f7389395c86a28f23ea27fe6ebc2b6194a93d66567b0bab101a4",
+  "casesFilesSha256": {
+    "smoke.json": "caf32501b85fc5d34bf0e9a1a637e9b3d339befb675446c903ea7446422b8de4"
+  },
+  "fixturesSha256": {
+    "selftest.html": "7438cf4fed222810033f3d92c72a5e2f77458628e477bb09e69f4818313ffcc5"
+  },
+  "cases": [
+    {
+      "id": "decl-selftest-01",
+      "family": "selftest",
+      "input": {
+        "q": "smoke-one",
+        "mode": "basic"
+      },
+      "expected": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "q": "smoke-one",
+          "mode": "basic"
+        },
+        "schema": {
+          "properties.q.type": "string"
+        }
+      },
+      "observed": {
+        "status": "Completed",
+        "errorText": null,
+        "commandError": null,
+        "invocationId": "526C51636D887A0B960EE1E925519B68",
+        "toolInvoked": {
+          "toolName": "validation-selftest",
+          "frameId": "91CDCC9802CD13E708D7FB42FE019ED3",
+          "invocationId": "526C51636D887A0B960EE1E925519B68",
+          "input": "{\"mode\":\"basic\",\"q\":\"smoke-one\"}"
+        },
+        "toolResponded": {
+          "invocationId": "526C51636D887A0B960EE1E925519B68",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "q": "smoke-one",
+              "mode": "basic"
+            }
+          }
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string",
+              "description": "Query"
+            },
+            "mode": {
+              "type": "string",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "basic",
+                  "title": "Basic"
+                },
+                {
+                  "type": "string",
+                  "const": "advanced",
+                  "title": "Advanced"
+                }
+              ],
+              "enum": [
+                "basic",
+                "advanced"
+              ],
+              "description": "Mode"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 1,
+        "fields": {
+          "q": "smoke-one",
+          "mode": "basic"
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": true
+    },
+    {
+      "id": "decl-selftest-02",
+      "family": "selftest",
+      "input": {
+        "q": "smoke-two",
+        "mode": "advanced",
+        "unexpected": "discard-me"
+      },
+      "expected": {
+        "status": "Error",
+        "errorTextIncludes": "there is no such parameter for the tool",
+        "submitCount": 0,
+        "fields": {
+          "q": "",
+          "mode": "basic"
+        },
+        "schema": {
+          "properties.q.type": "string"
+        }
+      },
+      "observed": {
+        "status": "Error",
+        "errorText": "Input contains a parameter \"unexpected\" but there is no such parameter for the tool",
+        "commandError": null,
+        "invocationId": "07DBE5F2B0ED7659493D4427AC74DBD7",
+        "toolInvoked": {
+          "toolName": "validation-selftest",
+          "frameId": "4B4C1837AE66D56140BC07ABB282ECC7",
+          "invocationId": "07DBE5F2B0ED7659493D4427AC74DBD7",
+          "input": "{\"mode\":\"advanced\",\"q\":\"smoke-two\",\"unexpected\":\"discard-me\"}"
+        },
+        "toolResponded": {
+          "invocationId": "07DBE5F2B0ED7659493D4427AC74DBD7",
+          "status": "Error",
+          "errorText": "Input contains a parameter \"unexpected\" but there is no such parameter for the tool"
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string",
+              "description": "Query"
+            },
+            "mode": {
+              "type": "string",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "basic",
+                  "title": "Basic"
+                },
+                {
+                  "type": "string",
+                  "const": "advanced",
+                  "title": "Advanced"
+                }
+              ],
+              "enum": [
+                "basic",
+                "advanced"
+              ],
+              "description": "Mode"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 0,
+        "fields": {
+          "q": "",
+          "mode": "basic"
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": true
+    }
+  ],
+  "findings": [],
+  "summary": {
+    "cases": 2,
+    "passed": 2,
+    "failed": 0,
+    "findings": 0
+  }
+}

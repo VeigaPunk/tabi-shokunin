@@ -397,3 +397,17 @@ Wave-2 correction index (the older bytes remain historical):
 
 No frontier is declared closed merely because the source registry grew. Final corpus note count
 is36 (baseline34 plus the two round18 entries), not a new runtime capability.
+
+## Round 19 — declarative WebMCP validation measured (2026-10-21)
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/webmcp-declarative-validation-round-19.md` | Chromium 154 loopback runtime behaviour of declarative form tools for 15 input families: fill-time vs submit-time error classes and their exact texts, keying by name, disabled/readonly/hidden handling, per-type coercion and sanitization, length limits not enforced for agent fills, CDP non-object refusal; 27 predeclared decisions | S077–S079, S082, S083, S091; `evidence/round-19/validation/` (cases, fixtures, probes, `decisions.json`, receipt); `scripts/webmcp-validation-round19.mjs` |
+
+Frontier update: declarative validation moves from source-level (`SKILL.md:1994-1997`) to runtime-held for
+the tested families. Still frontier: real-site WebMCP, agent-side consumption, custom elements /
+ElementInternals form-associated controls (validation bypassed by source, not exercised), forms without
+`toolautosubmit`, file inputs, other Chromium builds.
+
+Corrections indexed: `LOG.md:1059` count (LOG round 19), `SCORECARD.md:830` assertion wording (SCORECARD
+round 19), round-18 registry `wave: null` (`.ufo/waves/round-19/corrections/r18-registry-wave-null.md`).

@@ -1,0 +1,705 @@
+{
+  "schema": "tabi-webmcp-validation-decisions-v1",
+  "round": 19,
+  "author": "TabiR19-2 (L1, predeclared before counting)",
+  "runtime": "Chromium 154.0.8037.97 / Playwright 1.64.0 / Node 24.21.0",
+  "rules": "A decision counts once. Probe case ids are unique across decisions; the control is an in-family Completed case. Outcome = toolResponded status (or no-response), errorText substring, submitCount, re-checked on a fresh reproduced receipt. Source = token present in lines [a,b] of the retained decoded body whose sha256 appears in the cited SOURCES row anchor.",
+  "decisions": [
+    {
+      "id": "DV-01",
+      "family": "unknown-param",
+      "condition": "An input key names no control",
+      "answer": "Error; errorText `Input contains a parameter \"<key>\" but there is no such parameter for the tool`; no submit; controls unchanged",
+      "probeCases": [
+        "decl-unknown-param-01"
+      ],
+      "controlCase": "decl-unknown-param-04",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "but there is no such parameter for the tool",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          214,
+          219
+        ],
+        "token": "there is no such parameter for the tool"
+      }
+    },
+    {
+      "id": "DV-02",
+      "family": "unknown-param",
+      "condition": "A valid key is sent together with an unknown key",
+      "answer": "Whole call rejected with the unknown-parameter Error; the valid key is NOT applied (validate-all, then apply)",
+      "probeCases": [
+        "decl-unknown-param-02"
+      ],
+      "controlCase": "decl-unknown-param-04",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "but there is no such parameter for the tool",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          208,
+          241
+        ],
+        "token": "form control states remain unchanged"
+      }
+    },
+    {
+      "id": "DV-03",
+      "family": "unknown-param",
+      "condition": "The key is the control's id, not its name",
+      "answer": "Rejected as unknown: parameters are keyed by the control name",
+      "probeCases": [
+        "decl-unknown-param-03"
+      ],
+      "controlCase": "decl-unknown-param-04",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "\"queryId\" but there is no such parameter",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          1238,
+          1247
+        ],
+        "token": "GetWebMCPParameterName"
+      }
+    },
+    {
+      "id": "DV-04",
+      "family": "disabled-hidden",
+      "condition": "A key targets a disabled or readonly control",
+      "answer": "Absent from inputSchema and rejected as unknown parameter; control unchanged",
+      "probeCases": [
+        "decl-disabled-hidden-01",
+        "decl-disabled-hidden-02"
+      ],
+      "controlCase": "decl-disabled-hidden-04",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "but there is no such parameter for the tool",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          1238,
+          1243
+        ],
+        "token": "IsDisabledOrReadOnly"
+      }
+    },
+    {
+      "id": "DV-05",
+      "family": "disabled-hidden",
+      "condition": "A key targets an `<input type=hidden>`",
+      "answer": "Absent from inputSchema but NOT unknown: Error `Invalid value \"<v>\" for parameter <name>` (no validator branch for hidden)",
+      "probeCases": [
+        "decl-disabled-hidden-03"
+      ],
+      "controlCase": "decl-disabled-hidden-04",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"hidden-after\" for parameter hiddenField",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          246,
+          300
+        ],
+        "token": "return false;"
+      }
+    },
+    {
+      "id": "DV-06",
+      "family": "missing-required",
+      "condition": "A `required` control is omitted or sent as \"\"",
+      "answer": "Fill succeeds, then autosubmit's interactive validation fails: Error `Form validation failed: <name>: Please fill out this field.`; no submit",
+      "probeCases": [
+        "decl-missing-required-01",
+        "decl-missing-required-02"
+      ],
+      "controlCase": "decl-missing-required-04",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: required:",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S078",
+        "body": "corpus/evidence/round-19/sources/html_form_element.cc.gz",
+        "bodySha256": "8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916",
+        "lines": [
+          729,
+          751
+        ],
+        "token": "Form validation failed: "
+      }
+    },
+    {
+      "id": "DV-07",
+      "family": "missing-required",
+      "condition": "A scalar control receives JSON null, an array or an object",
+      "answer": "Fill-time Error with the unquoted template `Invalid value for parameter <name>`",
+      "probeCases": [
+        "decl-missing-required-03",
+        "decl-non-scalar-01",
+        "decl-non-scalar-02"
+      ],
+      "controlCase": "decl-missing-required-04",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value for parameter ",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          222,
+          231
+        ],
+        "token": "\"Invalid value for parameter \", parameter_name"
+      }
+    },
+    {
+      "id": "DV-08",
+      "family": "non-scalar",
+      "condition": "The top-level input is not a JSON object (array, string, null)",
+      "answer": "CDP rejects the command (`Invalid parameters`): no invocationId, no toolInvoked, page untouched",
+      "probeCases": [
+        "decl-non-scalar-03",
+        "decl-non-scalar-04",
+        "decl-non-scalar-05"
+      ],
+      "controlCase": "decl-non-scalar-06",
+      "outcome": {
+        "status": "no-response",
+        "errorTextIncludes": null,
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S079",
+        "body": "corpus/evidence/round-19/sources/WebMCP.pdl.gz",
+        "bodySha256": "26e62f2998c63798c81dc487cc14844b840e5dd2aafde1fd37a2e39ece0a37ff",
+        "lines": [
+          59,
+          69
+        ],
+        "token": "object input"
+      }
+    },
+    {
+      "id": "DV-09",
+      "family": "number-type",
+      "condition": "A number control receives a non-numeric string or a boolean",
+      "answer": "Fill-time Error `Invalid value \"<v>\" for parameter n` (boolean quoted as \"true\"); control left empty",
+      "probeCases": [
+        "decl-number-type-03",
+        "decl-number-type-04"
+      ],
+      "controlCase": "decl-number-type-01",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          321,
+          335
+        ],
+        "token": "SanitizeValue(number_string).empty()"
+      }
+    },
+    {
+      "id": "DV-10",
+      "family": "number-type",
+      "condition": "A number control receives a numeric string or a large exponent",
+      "answer": "Accepted and submitted; the string is coerced (\"42\") and 1.25e21 is reserialized as `1.25000e+21`",
+      "probeCases": [
+        "decl-number-type-02",
+        "decl-number-type-05"
+      ],
+      "controlCase": "decl-number-type-01",
+      "outcome": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          49,
+          62
+        ],
+        "token": "String::Number(d)"
+      }
+    },
+    {
+      "id": "DV-11",
+      "family": "number-range",
+      "condition": "A number violates min, max or step",
+      "answer": "Filled (field keeps the bad value), then Error `Form validation failed: amount: Value must be …` / `Please enter a valid value. The two nearest valid values are 2 and 5.`; no submit",
+      "probeCases": [
+        "decl-number-range-01",
+        "decl-number-range-02",
+        "decl-number-range-03"
+      ],
+      "controlCase": "decl-number-range-04",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: amount:",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S078",
+        "body": "corpus/evidence/round-19/sources/html_form_element.cc.gz",
+        "bodySha256": "8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916",
+        "lines": [
+          729,
+          751
+        ],
+        "token": "control->validationMessage()"
+      }
+    },
+    {
+      "id": "DV-12",
+      "family": "select-enum",
+      "condition": "A single select receives a visible label or an absent value",
+      "answer": "Fill-time Error `Invalid value \"<v>\" for parameter choice`; only option `value` strings match; selection unchanged",
+      "probeCases": [
+        "decl-select-enum-02",
+        "decl-select-enum-03"
+      ],
+      "controlCase": "decl-select-enum-01",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "for parameter choice",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          390,
+          409
+        ],
+        "token": "allowed_values.Contains(s)"
+      }
+    },
+    {
+      "id": "DV-13",
+      "family": "select-enum",
+      "condition": "A single select receives the value of a `disabled` option",
+      "answer": "Accepted, selected and submitted: option disabled state is not filtered (contrast DV-17)",
+      "probeCases": [
+        "decl-select-enum-04"
+      ],
+      "controlCase": "decl-select-enum-01",
+      "outcome": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          397,
+          400
+        ],
+        "token": "GetOptionList()"
+      }
+    },
+    {
+      "id": "DV-14",
+      "family": "select-multiple",
+      "condition": "A multiple select receives an array with a non-option member, or a bare string",
+      "answer": "Error (`Invalid value for parameter colors` / `Invalid value \"red\" for parameter colors`); no selection change",
+      "probeCases": [
+        "decl-select-multiple-02",
+        "decl-select-multiple-03"
+      ],
+      "controlCase": "decl-select-multiple-01",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "for parameter colors",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          403,
+          425
+        ],
+        "token": "JSONArray::Cast(&value)"
+      }
+    },
+    {
+      "id": "DV-15",
+      "family": "checkbox",
+      "condition": "A single checkbox receives a string (including \"on\" or its value attribute)",
+      "answer": "Error `Invalid value \"<v>\" for parameter <name>`; single checkboxes take booleans only",
+      "probeCases": [
+        "decl-checkbox-03",
+        "decl-checkbox-04",
+        "decl-checkbox-05"
+      ],
+      "controlCase": "decl-checkbox-01",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          337,
+          343
+        ],
+        "token": "ToBoolean(value, unused)"
+      }
+    },
+    {
+      "id": "DV-16",
+      "family": "radio",
+      "condition": "A radio group receives a value matching no radio",
+      "answer": "Error `Invalid value \"not-an-option\" for parameter choice`; nothing checked",
+      "probeCases": [
+        "decl-radio-02"
+      ],
+      "controlCase": "decl-radio-01",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"not-an-option\"",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          374,
+          388
+        ],
+        "token": "input.Value() == string"
+      }
+    },
+    {
+      "id": "DV-17",
+      "family": "radio",
+      "condition": "A radio group receives the value of a `disabled` radio",
+      "answer": "Rejected like an unknown value: disabled radios are dropped from the control set (contrast DV-13)",
+      "probeCases": [
+        "decl-radio-03"
+      ],
+      "controlCase": "decl-radio-01",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"gamma\"",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          1238,
+          1243
+        ],
+        "token": "IsDisabledOrReadOnly"
+      }
+    },
+    {
+      "id": "DV-18",
+      "family": "text-constraints",
+      "condition": "A text value violates `pattern`",
+      "answer": "Filled, then Error `Form validation failed: q: Please match the requested format.`; no submit",
+      "probeCases": [
+        "decl-text-constraints-01"
+      ],
+      "controlCase": "decl-text-constraints-04",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Please match the requested format",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S078",
+        "body": "corpus/evidence/round-19/sources/html_form_element.cc.gz",
+        "bodySha256": "8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916",
+        "lines": [
+          729,
+          751
+        ],
+        "token": "Form validation failed: "
+      }
+    },
+    {
+      "id": "DV-19",
+      "family": "text-constraints",
+      "condition": "A text value violates `minlength`/`maxlength` (len 2 < 3; len 6 > 5)",
+      "answer": "NOT enforced: Completed and submitted unchanged — too-short/too-long apply only to user edits, not script/agent fills",
+      "probeCases": [
+        "decl-text-constraints-02",
+        "decl-text-constraints-03"
+      ],
+      "controlCase": "decl-text-constraints-04",
+      "outcome": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1
+      },
+      "source": {
+        "row": "S083",
+        "body": "corpus/evidence/round-19/sources/form-control-infrastructure.html.gz",
+        "bodySha256": "af71cc015c6203cc9d6c04822ec277a7969d6b594205e2ab0e557be4e2295b92",
+        "lines": [
+          323,
+          327
+        ],
+        "token": "last changed by a user edit"
+      }
+    },
+    {
+      "id": "DV-20",
+      "family": "email-url",
+      "condition": "An email or url control receives a malformed string",
+      "answer": "Filled, then Error `Form validation failed: email: Please include an '@' …` / `url: Please enter a URL.`; schema has no `format`",
+      "probeCases": [
+        "decl-email-url-01",
+        "decl-email-url-03"
+      ],
+      "controlCase": "decl-email-url-02",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: ",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S078",
+        "body": "corpus/evidence/round-19/sources/html_form_element.cc.gz",
+        "bodySha256": "8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916",
+        "lines": [
+          729,
+          751
+        ],
+        "token": "Form validation failed: "
+      }
+    },
+    {
+      "id": "DV-21",
+      "family": "date-time",
+      "condition": "A date, time or datetime-local control receives a non-ISO string",
+      "answer": "Fill-time Error `Invalid value \"<v>\" for parameter <name>`; nothing filled (sanitizer yields empty)",
+      "probeCases": [
+        "decl-date-time-02",
+        "decl-date-time-03",
+        "decl-date-time-04"
+      ],
+      "controlCase": "decl-date-time-01",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          302,
+          318
+        ],
+        "token": "!input->SanitizeValue(s).empty()"
+      }
+    },
+    {
+      "id": "DV-22",
+      "family": "date-time",
+      "condition": "A date/time value lies outside min/max",
+      "answer": "Filled, then Error `Form validation failed: date: Value must be 12/31/2026 or earlier.` (locale-formatted); no submit",
+      "probeCases": [
+        "decl-date-time-05"
+      ],
+      "controlCase": "decl-date-time-01",
+      "outcome": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: date:",
+        "submitCount": 0
+      },
+      "source": {
+        "row": "S078",
+        "body": "corpus/evidence/round-19/sources/html_form_element.cc.gz",
+        "bodySha256": "8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916",
+        "lines": [
+          729,
+          751
+        ],
+        "token": "control->validationMessage()"
+      }
+    },
+    {
+      "id": "DV-23",
+      "family": "range-color",
+      "condition": "A range control receives an out-of-range or non-numeric value",
+      "answer": "Completed and submitted after sanitization: 99 → `10` (max); \"not-a-number\" → `6` (midpoint 5 snapped to step 2)",
+      "probeCases": [
+        "decl-range-color-01",
+        "decl-range-color-02"
+      ],
+      "controlCase": "decl-range-color-03",
+      "outcome": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1
+      },
+      "source": {
+        "row": "S082",
+        "body": "corpus/evidence/round-19/sources/input.html.gz",
+        "bodySha256": "9782129b804f60f85c5701d071b52e50b9067469fc4191fd2a372a8a9931c1d4",
+        "lines": [
+          3391,
+          3412
+        ],
+        "token": "suffering from an overflow"
+      }
+    },
+    {
+      "id": "DV-24",
+      "family": "range-color",
+      "condition": "A color control receives a CSS name or an unparseable string",
+      "answer": "Completed: \"red\" → `#ff0000`; unparseable → `#000000` (opaque black)",
+      "probeCases": [
+        "decl-range-color-03",
+        "decl-range-color-04",
+        "decl-range-color-05"
+      ],
+      "controlCase": "decl-range-color-01",
+      "outcome": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1
+      },
+      "source": {
+        "row": "S082",
+        "body": "corpus/evidence/round-19/sources/input.html.gz",
+        "bodySha256": "9782129b804f60f85c5701d071b52e50b9067469fc4191fd2a372a8a9931c1d4",
+        "lines": [
+          3667,
+          3678
+        ],
+        "token": "opaque"
+      }
+    },
+    {
+      "id": "DV-25",
+      "family": "textarea-empty",
+      "condition": "A value contains CR/LF",
+      "answer": "textarea normalizes CRLF to LF; a single-line text input strips CR and LF",
+      "probeCases": [
+        "decl-textarea-empty-01"
+      ],
+      "controlCase": "decl-textarea-empty-04",
+      "outcome": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1
+      },
+      "source": {
+        "row": "S082",
+        "body": "corpus/evidence/round-19/sources/input.html.gz",
+        "bodySha256": "9782129b804f60f85c5701d071b52e50b9067469fc4191fd2a372a8a9931c1d4",
+        "lines": [
+          1762,
+          1763
+        ],
+        "token": "strip-newlines"
+      }
+    },
+    {
+      "id": "DV-26",
+      "family": "textarea-empty",
+      "condition": "A key is omitted",
+      "answer": "The control keeps its default/pre-filled value (omission is not clearing)",
+      "probeCases": [
+        "decl-textarea-empty-03"
+      ],
+      "controlCase": "decl-textarea-empty-04",
+      "outcome": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          233,
+          241
+        ],
+        "token": "FillParameterData(parameter_name, *contents)"
+      }
+    },
+    {
+      "id": "DV-27",
+      "family": "textarea-empty",
+      "condition": "A key is sent as the empty string",
+      "answer": "The control is cleared (empty strings pass text validation)",
+      "probeCases": [
+        "decl-textarea-empty-02"
+      ],
+      "controlCase": "decl-textarea-empty-04",
+      "outcome": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1
+      },
+      "source": {
+        "row": "S077",
+        "body": "corpus/evidence/round-19/sources/form_mcp_schema.cc.gz",
+        "bodySha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+        "lines": [
+          311,
+          313
+        ],
+        "token": "if (s.empty())"
+      }
+    }
+  ]
+}

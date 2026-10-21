@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>round19 select multiple</title></head>
+<body>
+<form id="toolform" toolname="decl-select-multiple" tooldescription="Select multiple valid color values" toolautosubmit>
+  <label>Colors
+    <select name="colors" multiple>
+      <option value="red">Red</option>
+      <option value="green">Green</option>
+      <option value="blue">Blue</option>
+    </select>
+  </label>
+  <button type="submit" id="go">Go</button>
+</form>
+<script>
+(function () {
+  window.__obs = { calls: [] };
+  var form = document.getElementById('toolform');
+  form.addEventListener('submit', function (event) {
+    var fields = Object.fromEntries(new FormData(event.target));
+    window.__obs.calls.push({
+      agentInvoked: event.agentInvoked === true,
+      isTrusted: event.isTrusted,
+      fields: fields
+    });
+    event.preventDefault();
+    event.respondWith(Promise.resolve({ ok: true, fields: fields }));
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "number-range",
+  "fixture": "number-range.html",
+  "author": "FamNumberRange-4",
+  "cases": [
+    {
+      "id": "decl-number-range-01",
+      "tool": "number-range",
+      "input": { "amount": -1 },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Value must be greater than or equal to 2.",
+        "submitCount": 0,
+        "fields": { "amount": "-1" },
+        "schema": {
+          "properties.amount.minimum": 2,
+          "properties.amount.maximum": 10
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/html_form_element.cc",
+        "lines": "729-758",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT"
+      },
+      "question": "For a value below min but aligned to step, is the input rejected, retained-invalid, or clamped?",
+      "answer": "Retained as -1 with rangeUnderflow=true; toolResponded Error, zero submit events; schema minimum=2 and maximum=10."
+    },
+    {
+      "id": "decl-number-range-02",
+      "tool": "number-range",
+      "input": { "amount": 11 },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Value must be less than or equal to 10.",
+        "submitCount": 0,
+        "fields": { "amount": "11" },
+        "schema": {
+          "properties.amount.minimum": 2,
+          "properties.amount.maximum": 10
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/html_form_element.cc",
+        "lines": "729-758",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT"
+      },
+      "question": "For a value above max but aligned to step, is the input rejected, retained-invalid, or clamped?",
+      "answer": "Retained as 11 with rangeOverflow=true; toolResponded Error, zero submit events; schema minimum=2 and maximum=10."
+    },
+    {
+      "id": "decl-number-range-03",
+      "tool": "number-range",
+      "input": { "amount": 4 },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "The two nearest valid values are 2 and 5.",
+        "submitCount": 0,
+        "fields": { "amount": "4" },
+        "schema": {
+          "properties.amount.minimum": 2,
+          "properties.amount.maximum": 10
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/html_form_element.cc",
+        "lines": "729-758",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT"
+      },
+      "question": "For an in-range value that misses step=3, is the input rejected, retained-invalid, or rounded?",
+      "answer": "Retained as 4 with stepMismatch=true; toolResponded Error, zero submit events; schema minimum=2 and maximum=10 (no multipleOf)."
+    },
+    {
+      "id": "decl-number-range-04",
+      "tool": "number-range",
+      "input": { "amount": 5 },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "amount": "5" },
+        "schema": {
+          "properties.amount.minimum": 2,
+          "properties.amount.maximum": 10
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/html_form_element.cc",
+        "lines": "760-806",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT"
+      },
+      "question": "Does an in-range, step-aligned value submit through the declarative tool?",
+      "answer": "Retained as 5 with valid=true; toolResponded Completed and one trusted agentInvoked submit; schema minimum=2 and maximum=10."
+    }
+  ]
+}

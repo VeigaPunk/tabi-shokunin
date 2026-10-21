@@ -1,0 +1,355 @@
+{
+  "schema": "tabi-webmcp-validation-probe-v1",
+  "family": "text-constraints",
+  "runtime": {
+    "chromium": "154.0.8037.97",
+    "playwright": "1.64.0",
+    "node": "v24.21.0",
+    "executablePath": "/usr/bin/chromium",
+    "fixtureOrigin": "http://127.0.0.1:42231",
+    "featureArgs": [
+      "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting"
+    ],
+    "mergedLaunchArgs": [
+      "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+      "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting"
+    ],
+    "ignoredDefaultArgs": [
+      "--enable-features=CDPScreenshotNewSurface"
+    ],
+    "hostResolverDeny": "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+    "acceptDownloads": false,
+    "privateTmpHome": true,
+    "blockedRequestsByPass": [
+      { "id": "pattern-mismatch", "pass": 1, "requests": [] },
+      { "id": "minlength-violation", "pass": 1, "requests": [] },
+      { "id": "maxlength-violation", "pass": 1, "requests": [] },
+      { "id": "satisfying", "pass": 1, "requests": [] },
+      { "id": "pattern-mismatch", "pass": 2, "requests": [] },
+      { "id": "minlength-violation", "pass": 2, "requests": [] },
+      { "id": "maxlength-violation", "pass": 2, "requests": [] },
+      { "id": "satisfying", "pass": 2, "requests": [] }
+    ]
+  },
+  "stability": {
+    "passes": 2,
+    "casesPerPass": 4
+  },
+  "webmcpEnable": {
+    "method": "WebMCP.enable",
+    "params": {},
+    "reply": {}
+  },
+  "cases": [
+    {
+      "id": "pattern-mismatch",
+      "input": { "q": "abc" },
+      "firstProbe": {
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "text-constraints",
+              "description": "Submit a text field constrained by pattern, minlength, and maxlength",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "q": {
+                    "type": "string",
+                    "pattern": "[A-Z]+",
+                    "description": "Query"
+                  }
+                },
+                "required": []
+              },
+              "annotations": { "autosubmit": true },
+              "frameId": "25530A26E36C4790D8F68F74D961BDEF",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "dir": "out",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "25530A26E36C4790D8F68F74D961BDEF",
+            "toolName": "text-constraints",
+            "input": { "q": "abc" }
+          }
+        },
+        "invokeToolReply": {
+          "dir": "in",
+          "method": "WebMCP.invokeTool",
+          "result": { "invocationId": "B47133D2FD01076DFBF8B26E253833B3" }
+        },
+        "toolInvokedParams": {
+          "toolName": "text-constraints",
+          "frameId": "25530A26E36C4790D8F68F74D961BDEF",
+          "invocationId": "B47133D2FD01076DFBF8B26E253833B3",
+          "input": "{\"q\":\"abc\"}"
+        },
+        "toolRespondedParams": {
+          "invocationId": "B47133D2FD01076DFBF8B26E253833B3",
+          "status": "Error",
+          "errorText": "Form validation failed: q: Please match the requested format.. "
+        },
+        "postInvoke": {
+          "value": "abc",
+          "validity": { "valid": false, "patternMismatch": true, "tooShort": false, "tooLong": false },
+          "validationMessage": "Please match the requested format.",
+          "formCheckValidity": false,
+          "calls": []
+        }
+      },
+      "confirmation": {
+        "toolRespondedParams": {
+          "invocationId": "62F893538F24418B21E16102BC6CE42A",
+          "status": "Error",
+          "errorText": "Form validation failed: q: Please match the requested format.. "
+        },
+        "postInvoke": {
+          "value": "abc",
+          "validity": { "valid": false, "patternMismatch": true, "tooShort": false, "tooLong": false },
+          "validationMessage": "Please match the requested format.",
+          "formCheckValidity": false,
+          "calls": []
+        }
+      }
+    },
+    {
+      "id": "minlength-violation",
+      "input": { "q": "AB" },
+      "firstProbe": {
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "text-constraints",
+              "description": "Submit a text field constrained by pattern, minlength, and maxlength",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "q": {
+                    "type": "string",
+                    "pattern": "[A-Z]+",
+                    "description": "Query"
+                  }
+                },
+                "required": []
+              },
+              "annotations": { "autosubmit": true },
+              "frameId": "7EC6B272D0203C2C3504C98DA6B642D8",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "dir": "out",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "7EC6B272D0203C2C3504C98DA6B642D8",
+            "toolName": "text-constraints",
+            "input": { "q": "AB" }
+          }
+        },
+        "invokeToolReply": {
+          "dir": "in",
+          "method": "WebMCP.invokeTool",
+          "result": { "invocationId": "A4A257CBF41851284DE36B9D55C24945" }
+        },
+        "toolInvokedParams": {
+          "toolName": "text-constraints",
+          "frameId": "7EC6B272D0203C2C3504C98DA6B642D8",
+          "invocationId": "A4A257CBF41851284DE36B9D55C24945",
+          "input": "{\"q\":\"AB\"}"
+        },
+        "toolRespondedParams": {
+          "invocationId": "A4A257CBF41851284DE36B9D55C24945",
+          "status": "Completed",
+          "output": { "ok": true, "fields": { "q": "AB" } }
+        },
+        "postInvoke": {
+          "value": "AB",
+          "validity": { "valid": true, "patternMismatch": false, "tooShort": false, "tooLong": false },
+          "validationMessage": "",
+          "formCheckValidity": true,
+          "calls": [
+            { "agentInvoked": true, "isTrusted": true, "fields": { "q": "AB" } }
+          ]
+        }
+      },
+      "confirmation": {
+        "toolRespondedParams": {
+          "invocationId": "796F59889428F056F985681932F07592",
+          "status": "Completed",
+          "output": { "ok": true, "fields": { "q": "AB" } }
+        },
+        "postInvoke": {
+          "value": "AB",
+          "validity": { "valid": true, "patternMismatch": false, "tooShort": false, "tooLong": false },
+          "validationMessage": "",
+          "formCheckValidity": true,
+          "calls": [
+            { "agentInvoked": true, "isTrusted": true, "fields": { "q": "AB" } }
+          ]
+        }
+      }
+    },
+    {
+      "id": "maxlength-violation",
+      "input": { "q": "ABCDEF" },
+      "firstProbe": {
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "text-constraints",
+              "description": "Submit a text field constrained by pattern, minlength, and maxlength",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "q": {
+                    "type": "string",
+                    "pattern": "[A-Z]+",
+                    "description": "Query"
+                  }
+                },
+                "required": []
+              },
+              "annotations": { "autosubmit": true },
+              "frameId": "83F6C11A55FB805230A9E82AD42644FE",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "dir": "out",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "83F6C11A55FB805230A9E82AD42644FE",
+            "toolName": "text-constraints",
+            "input": { "q": "ABCDEF" }
+          }
+        },
+        "invokeToolReply": {
+          "dir": "in",
+          "method": "WebMCP.invokeTool",
+          "result": { "invocationId": "9FC19896DFB87C7AD30A0C0C3F00E91D" }
+        },
+        "toolInvokedParams": {
+          "toolName": "text-constraints",
+          "frameId": "83F6C11A55FB805230A9E82AD42644FE",
+          "invocationId": "9FC19896DFB87C7AD30A0C0C3F00E91D",
+          "input": "{\"q\":\"ABCDEF\"}"
+        },
+        "toolRespondedParams": {
+          "invocationId": "9FC19896DFB87C7AD30A0C0C3F00E91D",
+          "status": "Completed",
+          "output": { "ok": true, "fields": { "q": "ABCDEF" } }
+        },
+        "postInvoke": {
+          "value": "ABCDEF",
+          "validity": { "valid": true, "patternMismatch": false, "tooShort": false, "tooLong": false },
+          "validationMessage": "",
+          "formCheckValidity": true,
+          "calls": [
+            { "agentInvoked": true, "isTrusted": true, "fields": { "q": "ABCDEF" } }
+          ]
+        }
+      },
+      "confirmation": {
+        "toolRespondedParams": {
+          "invocationId": "135EDF24727ABFA89FB90F319F20CB2A",
+          "status": "Completed",
+          "output": { "ok": true, "fields": { "q": "ABCDEF" } }
+        },
+        "postInvoke": {
+          "value": "ABCDEF",
+          "validity": { "valid": true, "patternMismatch": false, "tooShort": false, "tooLong": false },
+          "validationMessage": "",
+          "formCheckValidity": true,
+          "calls": [
+            { "agentInvoked": true, "isTrusted": true, "fields": { "q": "ABCDEF" } }
+          ]
+        }
+      }
+    },
+    {
+      "id": "satisfying",
+      "input": { "q": "ABCD" },
+      "firstProbe": {
+        "toolsAddedParams": {
+          "tools": [
+            {
+              "name": "text-constraints",
+              "description": "Submit a text field constrained by pattern, minlength, and maxlength",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "q": {
+                    "type": "string",
+                    "pattern": "[A-Z]+",
+                    "description": "Query"
+                  }
+                },
+                "required": []
+              },
+              "annotations": { "autosubmit": true },
+              "frameId": "1CB273988CCFD85E7ED43DB56F892CF7",
+              "backendNodeId": 2
+            }
+          ]
+        },
+        "invokeToolRequest": {
+          "dir": "out",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "1CB273988CCFD85E7ED43DB56F892CF7",
+            "toolName": "text-constraints",
+            "input": { "q": "ABCD" }
+          }
+        },
+        "invokeToolReply": {
+          "dir": "in",
+          "method": "WebMCP.invokeTool",
+          "result": { "invocationId": "4EB06004AD7F608F34DBE392E7902A2E" }
+        },
+        "toolInvokedParams": {
+          "toolName": "text-constraints",
+          "frameId": "1CB273988CCFD85E7ED43DB56F892CF7",
+          "invocationId": "4EB06004AD7F608F34DBE392E7902A2E",
+          "input": "{\"q\":\"ABCD\"}"
+        },
+        "toolRespondedParams": {
+          "invocationId": "4EB06004AD7F608F34DBE392E7902A2E",
+          "status": "Completed",
+          "output": { "ok": true, "fields": { "q": "ABCD" } }
+        },
+        "postInvoke": {
+          "value": "ABCD",
+          "validity": { "valid": true, "patternMismatch": false, "tooShort": false, "tooLong": false },
+          "validationMessage": "",
+          "formCheckValidity": true,
+          "calls": [
+            { "agentInvoked": true, "isTrusted": true, "fields": { "q": "ABCD" } }
+          ]
+        }
+      },
+      "confirmation": {
+        "toolRespondedParams": {
+          "invocationId": "4F46460E21A8C2EFBD9533BC0EAAC8A8",
+          "status": "Completed",
+          "output": { "ok": true, "fields": { "q": "ABCD" } }
+        },
+        "postInvoke": {
+          "value": "ABCD",
+          "validity": { "valid": true, "patternMismatch": false, "tooShort": false, "tooLong": false },
+          "validationMessage": "",
+          "formCheckValidity": true,
+          "calls": [
+            { "agentInvoked": true, "isTrusted": true, "fields": { "q": "ABCD" } }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "checkbox",
+  "fixture": "checkbox.html",
+  "author": "FamCheckbox-4",
+  "cases": [
+    {
+      "id": "decl-checkbox-01",
+      "tool": "checkbox",
+      "input": { "withoutValue": true, "withValue": true },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "withoutValue": true, "withValue": true },
+        "schema": { "properties.withoutValue.type": "boolean", "properties.withValue.type": "boolean" }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "970-981",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does boolean true check each checkbox regardless of an explicit value attribute?",
+      "answer": "Yes; both boolean-schema controls become checked, submitting default on and explicit checkbox-choice."
+    },
+    {
+      "id": "decl-checkbox-02",
+      "tool": "checkbox",
+      "input": { "withoutValue": false, "withValue": false },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "withoutValue": false, "withValue": false },
+        "schema": { "properties.withoutValue.type": "boolean", "properties.withValue.type": "boolean" }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "970-981",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does boolean false uncheck each checkbox regardless of an explicit value attribute?",
+      "answer": "Yes; both controls remain unchecked; the Completed submit omits both from FormData."
+    },
+    {
+      "id": "decl-checkbox-03",
+      "tool": "checkbox",
+      "input": { "withoutValue": "checkbox-choice", "withValue": "checkbox-choice" },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"checkbox-choice\" for parameter withValue",
+        "submitCount": 0,
+        "fields": { "withoutValue": false, "withValue": false },
+        "schema": { "properties.withoutValue.type": "boolean", "properties.withValue.type": "boolean" }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "345-352",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Is the explicit checkbox's value string accepted as the input value?",
+      "answer": "No; Error names withValue, no submit occurs, and both controls stay unchecked."
+    },
+    {
+      "id": "decl-checkbox-04",
+      "tool": "checkbox",
+      "input": { "withoutValue": "on", "withValue": "on" },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"on\" for parameter withValue",
+        "submitCount": 0,
+        "fields": { "withoutValue": false, "withValue": false },
+        "schema": { "properties.withoutValue.type": "boolean", "properties.withValue.type": "boolean" }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "345-352",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Is the browser's default checkbox value string on accepted as input?",
+      "answer": "No; Error names withValue, no submit occurs, and both controls stay unchecked."
+    },
+    {
+      "id": "decl-checkbox-05",
+      "tool": "checkbox",
+      "input": { "withoutValue": "unrelated", "withValue": "unrelated" },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"unrelated\" for parameter withValue",
+        "submitCount": 0,
+        "fields": { "withoutValue": false, "withValue": false },
+        "schema": { "properties.withoutValue.type": "boolean", "properties.withValue.type": "boolean" }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "345-352",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Is an unrelated string accepted as checkbox input?",
+      "answer": "No; Error names withValue, no submit occurs, and both controls stay unchecked."
+    }
+  ]
+}

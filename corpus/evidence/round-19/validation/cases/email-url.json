@@ -1,0 +1,144 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "email-url",
+  "fixture": "email-url.html",
+  "author": "FamEmailUrl",
+  "cases": [
+    {
+      "id": "decl-email-url-01",
+      "tool": "decl-email-url",
+      "input": {
+        "email": "not-an-email",
+        "url": "https://valid.example.test/"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: email: Please include an '@' in the email address.",
+        "submitCount": 0,
+        "fields": {
+          "email": "not-an-email",
+          "url": "https://valid.example.test/"
+        },
+        "schema": {
+          "properties.email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "properties.url": {
+            "type": "string",
+            "description": "URL"
+          }
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "556-568",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc"
+      },
+      "question": "Does malformed type=email input acquire a schema format or pass the declarative submit?",
+      "answer": "The emitted property is string without format; not-an-email remains filled with typeMismatch=true, responds Error, and runs no submit handler."
+    },
+    {
+      "id": "decl-email-url-02",
+      "tool": "decl-email-url",
+      "input": {
+        "email": "person@example.test",
+        "url": "https://valid.example.test/"
+      },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "schema": {
+          "properties.email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "properties.url": {
+            "type": "string",
+            "description": "URL"
+          }
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "556-568",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc"
+      },
+      "question": "Does a syntactically valid email pass native validation and submit?",
+      "answer": "The schema still has no format; the email is typeMismatch=false and the tool responds Completed after one trusted submit."
+    },
+    {
+      "id": "decl-email-url-03",
+      "tool": "decl-email-url",
+      "input": {
+        "email": "person@example.test",
+        "url": "not-a-url"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: url: Please enter a URL.",
+        "submitCount": 0,
+        "fields": {
+          "email": "person@example.test",
+          "url": "not-a-url"
+        },
+        "schema": {
+          "properties.email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "properties.url": {
+            "type": "string",
+            "description": "URL"
+          }
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "556-568",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc"
+      },
+      "question": "Does malformed type=url input acquire a schema format or pass the declarative submit?",
+      "answer": "The emitted property is string without format; not-a-url remains filled with typeMismatch=true, responds Error, and runs no submit handler."
+    },
+    {
+      "id": "decl-email-url-04",
+      "tool": "decl-email-url",
+      "input": {
+        "email": "person@example.test",
+        "url": "https://valid.example.test/"
+      },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "email": "person@example.test",
+          "url": "https://valid.example.test/"
+        },
+        "schema": {
+          "properties.email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "properties.url": {
+            "type": "string",
+            "description": "URL"
+          }
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "556-568",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc"
+      },
+      "question": "Does an absolute valid URL pass native validation?",
+      "answer": "The schema has no format; the URL is typeMismatch=false and the tool responds Completed after one trusted submit."
+    }
+  ]
+}

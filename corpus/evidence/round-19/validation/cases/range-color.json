@@ -1,0 +1,122 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "range-color",
+  "fixture": "range-color.html",
+  "author": "FamRange",
+  "cases": [
+    {
+      "id": "decl-range-color-01",
+      "tool": "decl-range-color",
+      "input": { "range": 99, "color": "#123456" },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "range": "10", "color": "#123456" },
+        "schema": {
+          "properties.range.type": "number",
+          "properties.range.minimum": 0,
+          "properties.range.maximum": 10,
+          "properties.range.multipleOf": 2
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "321-334",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does a numeric range value above max remain out of range or sanitize to a permitted bound?",
+      "answer": "It completed and submitted range 10, the max aligned with step 2."
+    },
+    {
+      "id": "decl-range-color-02",
+      "tool": "decl-range-color",
+      "input": { "range": "not-a-number", "color": "#123456" },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "range": "6", "color": "#123456" },
+        "schema": {
+          "properties.range.type": "number",
+          "properties.range.minimum": 0,
+          "properties.range.maximum": 10,
+          "properties.range.multipleOf": 2
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "321-334",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does nonnumeric range input reject the tool call or use the range control's sanitized default?",
+      "answer": "It completed and submitted range 6, a valid step-2 midpoint value."
+    },
+    {
+      "id": "decl-range-color-03",
+      "tool": "decl-range-color",
+      "input": { "range": 4, "color": "red" },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "range": "4", "color": "#ff0000" },
+        "schema": {
+          "properties.color.type": "string",
+          "properties.color.format": "^#[0-9a-zA-Z]{6}$"
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "302-318",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does a CSS color keyword get rejected by the hex-looking schema or normalized by the color control?",
+      "answer": "It completed and normalized red to #ff0000 despite the advertised format pattern."
+    },
+    {
+      "id": "decl-range-color-04",
+      "tool": "decl-range-color",
+      "input": { "range": 4, "color": "not-a-color" },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "range": "4", "color": "#000000" },
+        "schema": {
+          "properties.color.type": "string",
+          "properties.color.format": "^#[0-9a-zA-Z]{6}$"
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "302-318",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does an invalid color token reject invocation or fall back to the color control's default?",
+      "answer": "It completed and submitted the color default #000000."
+    },
+    {
+      "id": "decl-range-color-05",
+      "tool": "decl-range-color",
+      "input": { "range": 4, "color": "#12GG56" },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "range": "4", "color": "#000000" },
+        "schema": {
+          "properties.color.type": "string",
+          "properties.color.format": "^#[0-9a-zA-Z]{6}$"
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "302-318",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does malformed hexadecimal color input reject invocation or fall back to the color control's default?",
+      "answer": "It completed and submitted the color default #000000."
+    }
+  ]
+}

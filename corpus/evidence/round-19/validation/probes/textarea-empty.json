@@ -1,0 +1,4039 @@
+{
+  "schema": "tabi-webmcp-textarea-empty-probe-v1",
+  "runtime": {
+    "chromiumVersion": "154.0.8037.97",
+    "playwrightVersion": "1.64.0",
+    "nodeVersion": "v24.21.0",
+    "chromiumPath": "/usr/bin/chromium",
+    "fixtureUrlOrigin": "http://127.0.0.1:34947",
+    "privateProfilesAndHomes": true,
+    "hostResolverDeny": "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+    "acceptDownloads": false,
+    "devtoolsTransport": "Playwright CDPSession over Chromium pipe; no TCP DevTools port"
+  },
+  "cases": [
+    {
+      "id": "decl-textarea-empty-01",
+      "question": "How do textarea and text input controls handle multiline strings?",
+      "input": {
+        "memo": "alpha\r\nbeta\ngamma",
+        "title": "first\r\nsecond"
+      }
+    },
+    {
+      "id": "decl-textarea-empty-02",
+      "question": "Do explicit empty strings clear both pre-filled controls?",
+      "input": {
+        "memo": "",
+        "title": ""
+      }
+    },
+    {
+      "id": "decl-textarea-empty-03",
+      "question": "Does omitting both input keys clear or preserve pre-filled defaults?",
+      "input": {}
+    },
+    {
+      "id": "decl-textarea-empty-04",
+      "question": "Can callers explicitly submit values identical to the pre-filled defaults?",
+      "input": {
+        "memo": "pre-filled textarea",
+        "title": "pre-filled input"
+      }
+    },
+    {
+      "id": "decl-textarea-empty-05",
+      "question": "Are whitespace and Unicode preserved through both text controls?",
+      "input": {
+        "memo": "  café 🧪\t\nβeta  ",
+        "title": " \t café 🧪 "
+      }
+    }
+  ],
+  "runs": [
+    {
+      "pass": "first",
+      "caseId": "decl-textarea-empty-01",
+      "input": {
+        "memo": "alpha\r\nbeta\ngamma",
+        "title": "first\r\nsecond"
+      },
+      "cdp": [
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "233C32E1193B1E2D567704E5695CDD43",
+                "loaderId": "6E27369DD028F8809D095F8BC5ADE379",
+                "url": "http://127.0.0.1:34947/textarea-empty.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:34947",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "233C32E1193B1E2D567704E5695CDD43",
+            "toolName": "textarea-empty",
+            "input": {
+              "memo": "alpha\r\nbeta\ngamma",
+              "title": "first\r\nsecond"
+            }
+          }
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "D43CDB15A39849199A1BB3B924C8F711"
+          }
+        }
+      ],
+      "events": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "textarea-empty",
+                "description": "Observe declarative textarea and text input value application",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "memo": {
+                      "type": "string",
+                      "description": "Memo"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "233C32E1193B1E2D567704E5695CDD43",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "method": "WebMCP.toolInvoked",
+          "params": {
+            "toolName": "textarea-empty",
+            "frameId": "233C32E1193B1E2D567704E5695CDD43",
+            "invocationId": "D43CDB15A39849199A1BB3B924C8F711",
+            "input": "{\"memo\":\"alpha\\r\\nbeta\\ngamma\",\"title\":\"first\\r\\nsecond\"}"
+          }
+        },
+        {
+          "method": "WebMCP.toolResponded",
+          "params": {
+            "invocationId": "D43CDB15A39849199A1BB3B924C8F711",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "memo": "alpha\nbeta\ngamma",
+                "title": "firstsecond"
+              }
+            }
+          }
+        }
+      ],
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "merged": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        },
+        "browserVersion": "154.0.8037.97",
+        "pid": 714636,
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/fast/scratch/tabi-r19/FamTextareaEmpty-4-probe/first-decl-textarea-empty-01-RN7CsH/profile-coWuP8",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guard": {
+          "enableFeaturesCount": 1,
+          "enableFeatures": "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "disableFeaturesCount": 1,
+          "enableBlinkFeaturesCount": 1,
+          "enableBlinkFeatures": "--enable-blink-features=WebMCP,WebMCPTesting",
+          "devtoolsPipe": true,
+          "devtoolsPort": false,
+          "sandboxOff": false,
+          "profileDevToolsActivePortExists": false,
+          "hostResolverDenyPresent": true,
+          "webmcpEnabled": true
+        }
+      },
+      "toolsAdded": {
+        "tools": [
+          {
+            "name": "textarea-empty",
+            "description": "Observe declarative textarea and text input value application",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "description": "Memo"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title"
+                }
+              },
+              "required": []
+            },
+            "annotations": {
+              "autosubmit": true
+            },
+            "frameId": "233C32E1193B1E2D567704E5695CDD43",
+            "backendNodeId": 2
+          }
+        ]
+      },
+      "tool": {
+        "name": "textarea-empty",
+        "description": "Observe declarative textarea and text input value application",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "233C32E1193B1E2D567704E5695CDD43",
+        "backendNodeId": 2
+      },
+      "invoke": {
+        "params": {
+          "frameId": "233C32E1193B1E2D567704E5695CDD43",
+          "toolName": "textarea-empty",
+          "input": {
+            "memo": "alpha\r\nbeta\ngamma",
+            "title": "first\r\nsecond"
+          }
+        },
+        "result": {
+          "invocationId": "D43CDB15A39849199A1BB3B924C8F711"
+        }
+      },
+      "toolResponded": {
+        "invocationId": "D43CDB15A39849199A1BB3B924C8F711",
+        "status": "Completed",
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "alpha\nbeta\ngamma",
+            "title": "firstsecond"
+          }
+        }
+      },
+      "pageState": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "alpha\nbeta\ngamma",
+              "title": "firstsecond"
+            }
+          }
+        ],
+        "submitCount": 1,
+        "controls": [
+          {
+            "name": "memo",
+            "tagName": "TEXTAREA",
+            "type": "textarea",
+            "value": "alpha\nbeta\ngamma",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "tagName": "INPUT",
+            "type": "text",
+            "value": "firstsecond",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "alpha\nbeta\ngamma",
+          "title": "firstsecond"
+        }
+      },
+      "blockedRequests": [],
+      "cleanup": {
+        "killed": [],
+        "survivors": [],
+        "runRootRemoved": true,
+        "browserTempRootRemoved": true
+      },
+      "frameId": "233C32E1193B1E2D567704E5695CDD43",
+      "webmcpEnable": {}
+    },
+    {
+      "pass": "first",
+      "caseId": "decl-textarea-empty-02",
+      "input": {
+        "memo": "",
+        "title": ""
+      },
+      "cdp": [
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "DFCFF7BD3AD45B1E98A120B8A5B8FD37",
+                "loaderId": "8E45A63739207E5EEB494003BA2B1281",
+                "url": "http://127.0.0.1:34947/textarea-empty.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:34947",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "DFCFF7BD3AD45B1E98A120B8A5B8FD37",
+            "toolName": "textarea-empty",
+            "input": {
+              "memo": "",
+              "title": ""
+            }
+          }
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "1B16982A7D81703D21361D9493712AF1"
+          }
+        }
+      ],
+      "events": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "textarea-empty",
+                "description": "Observe declarative textarea and text input value application",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "memo": {
+                      "type": "string",
+                      "description": "Memo"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "DFCFF7BD3AD45B1E98A120B8A5B8FD37",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "method": "WebMCP.toolInvoked",
+          "params": {
+            "toolName": "textarea-empty",
+            "frameId": "DFCFF7BD3AD45B1E98A120B8A5B8FD37",
+            "invocationId": "1B16982A7D81703D21361D9493712AF1",
+            "input": "{\"memo\":\"\",\"title\":\"\"}"
+          }
+        },
+        {
+          "method": "WebMCP.toolResponded",
+          "params": {
+            "invocationId": "1B16982A7D81703D21361D9493712AF1",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "memo": "",
+                "title": ""
+              }
+            }
+          }
+        }
+      ],
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "merged": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        },
+        "browserVersion": "154.0.8037.97",
+        "pid": 715105,
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/fast/scratch/tabi-r19/FamTextareaEmpty-4-probe/first-decl-textarea-empty-02-R1F9ib/profile-CLqxUx",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guard": {
+          "enableFeaturesCount": 1,
+          "enableFeatures": "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "disableFeaturesCount": 1,
+          "enableBlinkFeaturesCount": 1,
+          "enableBlinkFeatures": "--enable-blink-features=WebMCP,WebMCPTesting",
+          "devtoolsPipe": true,
+          "devtoolsPort": false,
+          "sandboxOff": false,
+          "profileDevToolsActivePortExists": false,
+          "hostResolverDenyPresent": true,
+          "webmcpEnabled": true
+        }
+      },
+      "toolsAdded": {
+        "tools": [
+          {
+            "name": "textarea-empty",
+            "description": "Observe declarative textarea and text input value application",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "description": "Memo"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title"
+                }
+              },
+              "required": []
+            },
+            "annotations": {
+              "autosubmit": true
+            },
+            "frameId": "DFCFF7BD3AD45B1E98A120B8A5B8FD37",
+            "backendNodeId": 2
+          }
+        ]
+      },
+      "tool": {
+        "name": "textarea-empty",
+        "description": "Observe declarative textarea and text input value application",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "DFCFF7BD3AD45B1E98A120B8A5B8FD37",
+        "backendNodeId": 2
+      },
+      "invoke": {
+        "params": {
+          "frameId": "DFCFF7BD3AD45B1E98A120B8A5B8FD37",
+          "toolName": "textarea-empty",
+          "input": {
+            "memo": "",
+            "title": ""
+          }
+        },
+        "result": {
+          "invocationId": "1B16982A7D81703D21361D9493712AF1"
+        }
+      },
+      "toolResponded": {
+        "invocationId": "1B16982A7D81703D21361D9493712AF1",
+        "status": "Completed",
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "",
+            "title": ""
+          }
+        }
+      },
+      "pageState": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "",
+              "title": ""
+            }
+          }
+        ],
+        "submitCount": 1,
+        "controls": [
+          {
+            "name": "memo",
+            "tagName": "TEXTAREA",
+            "type": "textarea",
+            "value": "",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "tagName": "INPUT",
+            "type": "text",
+            "value": "",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "",
+          "title": ""
+        }
+      },
+      "blockedRequests": [],
+      "cleanup": {
+        "killed": [],
+        "survivors": [],
+        "runRootRemoved": true,
+        "browserTempRootRemoved": true
+      },
+      "frameId": "DFCFF7BD3AD45B1E98A120B8A5B8FD37",
+      "webmcpEnable": {}
+    },
+    {
+      "pass": "first",
+      "caseId": "decl-textarea-empty-03",
+      "input": {},
+      "cdp": [
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "ED999D42921D395C375631AE8154D0FB",
+                "loaderId": "070530FEB27D9B94D7466107DA13AA90",
+                "url": "http://127.0.0.1:34947/textarea-empty.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:34947",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "ED999D42921D395C375631AE8154D0FB",
+            "toolName": "textarea-empty",
+            "input": {}
+          }
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "6FA7E623943C3AFC48A66870EC4DCED8"
+          }
+        }
+      ],
+      "events": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "textarea-empty",
+                "description": "Observe declarative textarea and text input value application",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "memo": {
+                      "type": "string",
+                      "description": "Memo"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "ED999D42921D395C375631AE8154D0FB",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "method": "WebMCP.toolInvoked",
+          "params": {
+            "toolName": "textarea-empty",
+            "frameId": "ED999D42921D395C375631AE8154D0FB",
+            "invocationId": "6FA7E623943C3AFC48A66870EC4DCED8",
+            "input": "{}"
+          }
+        },
+        {
+          "method": "WebMCP.toolResponded",
+          "params": {
+            "invocationId": "6FA7E623943C3AFC48A66870EC4DCED8",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "memo": "pre-filled textarea",
+                "title": "pre-filled input"
+              }
+            }
+          }
+        }
+      ],
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "merged": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        },
+        "browserVersion": "154.0.8037.97",
+        "pid": 715502,
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/fast/scratch/tabi-r19/FamTextareaEmpty-4-probe/first-decl-textarea-empty-03-w8ntXV/profile-vT4icl",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guard": {
+          "enableFeaturesCount": 1,
+          "enableFeatures": "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "disableFeaturesCount": 1,
+          "enableBlinkFeaturesCount": 1,
+          "enableBlinkFeatures": "--enable-blink-features=WebMCP,WebMCPTesting",
+          "devtoolsPipe": true,
+          "devtoolsPort": false,
+          "sandboxOff": false,
+          "profileDevToolsActivePortExists": false,
+          "hostResolverDenyPresent": true,
+          "webmcpEnabled": true
+        }
+      },
+      "toolsAdded": {
+        "tools": [
+          {
+            "name": "textarea-empty",
+            "description": "Observe declarative textarea and text input value application",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "description": "Memo"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title"
+                }
+              },
+              "required": []
+            },
+            "annotations": {
+              "autosubmit": true
+            },
+            "frameId": "ED999D42921D395C375631AE8154D0FB",
+            "backendNodeId": 2
+          }
+        ]
+      },
+      "tool": {
+        "name": "textarea-empty",
+        "description": "Observe declarative textarea and text input value application",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "ED999D42921D395C375631AE8154D0FB",
+        "backendNodeId": 2
+      },
+      "invoke": {
+        "params": {
+          "frameId": "ED999D42921D395C375631AE8154D0FB",
+          "toolName": "textarea-empty",
+          "input": {}
+        },
+        "result": {
+          "invocationId": "6FA7E623943C3AFC48A66870EC4DCED8"
+        }
+      },
+      "toolResponded": {
+        "invocationId": "6FA7E623943C3AFC48A66870EC4DCED8",
+        "status": "Completed",
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "pre-filled textarea",
+            "title": "pre-filled input"
+          }
+        }
+      },
+      "pageState": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "pre-filled textarea",
+              "title": "pre-filled input"
+            }
+          }
+        ],
+        "submitCount": 1,
+        "controls": [
+          {
+            "name": "memo",
+            "tagName": "TEXTAREA",
+            "type": "textarea",
+            "value": "pre-filled textarea",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "tagName": "INPUT",
+            "type": "text",
+            "value": "pre-filled input",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "pre-filled textarea",
+          "title": "pre-filled input"
+        }
+      },
+      "blockedRequests": [],
+      "cleanup": {
+        "killed": [],
+        "survivors": [],
+        "runRootRemoved": true,
+        "browserTempRootRemoved": true
+      },
+      "frameId": "ED999D42921D395C375631AE8154D0FB",
+      "webmcpEnable": {}
+    },
+    {
+      "pass": "first",
+      "caseId": "decl-textarea-empty-04",
+      "input": {
+        "memo": "pre-filled textarea",
+        "title": "pre-filled input"
+      },
+      "cdp": [
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "FB7D67263022EF2C509E94DAF64E7CA0",
+                "loaderId": "C67788BBA478EAF8D593220CF355A458",
+                "url": "http://127.0.0.1:34947/textarea-empty.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:34947",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "FB7D67263022EF2C509E94DAF64E7CA0",
+            "toolName": "textarea-empty",
+            "input": {
+              "memo": "pre-filled textarea",
+              "title": "pre-filled input"
+            }
+          }
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "588D4F463C870A7A9C9FCBC56203E6C7"
+          }
+        }
+      ],
+      "events": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "textarea-empty",
+                "description": "Observe declarative textarea and text input value application",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "memo": {
+                      "type": "string",
+                      "description": "Memo"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "FB7D67263022EF2C509E94DAF64E7CA0",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "method": "WebMCP.toolInvoked",
+          "params": {
+            "toolName": "textarea-empty",
+            "frameId": "FB7D67263022EF2C509E94DAF64E7CA0",
+            "invocationId": "588D4F463C870A7A9C9FCBC56203E6C7",
+            "input": "{\"memo\":\"pre-filled textarea\",\"title\":\"pre-filled input\"}"
+          }
+        },
+        {
+          "method": "WebMCP.toolResponded",
+          "params": {
+            "invocationId": "588D4F463C870A7A9C9FCBC56203E6C7",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "memo": "pre-filled textarea",
+                "title": "pre-filled input"
+              }
+            }
+          }
+        }
+      ],
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "merged": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        },
+        "browserVersion": "154.0.8037.97",
+        "pid": 716002,
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/fast/scratch/tabi-r19/FamTextareaEmpty-4-probe/first-decl-textarea-empty-04-6VLxu7/profile-EMvQUg",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guard": {
+          "enableFeaturesCount": 1,
+          "enableFeatures": "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "disableFeaturesCount": 1,
+          "enableBlinkFeaturesCount": 1,
+          "enableBlinkFeatures": "--enable-blink-features=WebMCP,WebMCPTesting",
+          "devtoolsPipe": true,
+          "devtoolsPort": false,
+          "sandboxOff": false,
+          "profileDevToolsActivePortExists": false,
+          "hostResolverDenyPresent": true,
+          "webmcpEnabled": true
+        }
+      },
+      "toolsAdded": {
+        "tools": [
+          {
+            "name": "textarea-empty",
+            "description": "Observe declarative textarea and text input value application",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "description": "Memo"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title"
+                }
+              },
+              "required": []
+            },
+            "annotations": {
+              "autosubmit": true
+            },
+            "frameId": "FB7D67263022EF2C509E94DAF64E7CA0",
+            "backendNodeId": 2
+          }
+        ]
+      },
+      "tool": {
+        "name": "textarea-empty",
+        "description": "Observe declarative textarea and text input value application",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "FB7D67263022EF2C509E94DAF64E7CA0",
+        "backendNodeId": 2
+      },
+      "invoke": {
+        "params": {
+          "frameId": "FB7D67263022EF2C509E94DAF64E7CA0",
+          "toolName": "textarea-empty",
+          "input": {
+            "memo": "pre-filled textarea",
+            "title": "pre-filled input"
+          }
+        },
+        "result": {
+          "invocationId": "588D4F463C870A7A9C9FCBC56203E6C7"
+        }
+      },
+      "toolResponded": {
+        "invocationId": "588D4F463C870A7A9C9FCBC56203E6C7",
+        "status": "Completed",
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "pre-filled textarea",
+            "title": "pre-filled input"
+          }
+        }
+      },
+      "pageState": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "pre-filled textarea",
+              "title": "pre-filled input"
+            }
+          }
+        ],
+        "submitCount": 1,
+        "controls": [
+          {
+            "name": "memo",
+            "tagName": "TEXTAREA",
+            "type": "textarea",
+            "value": "pre-filled textarea",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "tagName": "INPUT",
+            "type": "text",
+            "value": "pre-filled input",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "pre-filled textarea",
+          "title": "pre-filled input"
+        }
+      },
+      "blockedRequests": [],
+      "cleanup": {
+        "killed": [],
+        "survivors": [],
+        "runRootRemoved": true,
+        "browserTempRootRemoved": true
+      },
+      "frameId": "FB7D67263022EF2C509E94DAF64E7CA0",
+      "webmcpEnable": {}
+    },
+    {
+      "pass": "first",
+      "caseId": "decl-textarea-empty-05",
+      "input": {
+        "memo": "  café 🧪\t\nβeta  ",
+        "title": " \t café 🧪 "
+      },
+      "cdp": [
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "AE4900844E67A1AF07D34B37A0E489E2",
+                "loaderId": "882A984018689B675E3930A5380CE20D",
+                "url": "http://127.0.0.1:34947/textarea-empty.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:34947",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "AE4900844E67A1AF07D34B37A0E489E2",
+            "toolName": "textarea-empty",
+            "input": {
+              "memo": "  café 🧪\t\nβeta  ",
+              "title": " \t café 🧪 "
+            }
+          }
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "24E79F069BA5D2C2D357E1A61A45EA25"
+          }
+        }
+      ],
+      "events": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "textarea-empty",
+                "description": "Observe declarative textarea and text input value application",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "memo": {
+                      "type": "string",
+                      "description": "Memo"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "AE4900844E67A1AF07D34B37A0E489E2",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "method": "WebMCP.toolInvoked",
+          "params": {
+            "toolName": "textarea-empty",
+            "frameId": "AE4900844E67A1AF07D34B37A0E489E2",
+            "invocationId": "24E79F069BA5D2C2D357E1A61A45EA25",
+            "input": "{\"memo\":\"  caf\\u00e9 \\ud83e\\uddea\\t\\n\\u03b2eta \\u2003\",\"title\":\" \\t caf\\u00e9 \\ud83e\\uddea \"}"
+          }
+        },
+        {
+          "method": "WebMCP.toolResponded",
+          "params": {
+            "invocationId": "24E79F069BA5D2C2D357E1A61A45EA25",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "memo": "  café 🧪\t\nβeta  ",
+                "title": " \t café 🧪 "
+              }
+            }
+          }
+        }
+      ],
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "merged": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        },
+        "browserVersion": "154.0.8037.97",
+        "pid": 716460,
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/fast/scratch/tabi-r19/FamTextareaEmpty-4-probe/first-decl-textarea-empty-05-1KpTN7/profile-UQnKXl",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guard": {
+          "enableFeaturesCount": 1,
+          "enableFeatures": "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "disableFeaturesCount": 1,
+          "enableBlinkFeaturesCount": 1,
+          "enableBlinkFeatures": "--enable-blink-features=WebMCP,WebMCPTesting",
+          "devtoolsPipe": true,
+          "devtoolsPort": false,
+          "sandboxOff": false,
+          "profileDevToolsActivePortExists": false,
+          "hostResolverDenyPresent": true,
+          "webmcpEnabled": true
+        }
+      },
+      "toolsAdded": {
+        "tools": [
+          {
+            "name": "textarea-empty",
+            "description": "Observe declarative textarea and text input value application",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "description": "Memo"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title"
+                }
+              },
+              "required": []
+            },
+            "annotations": {
+              "autosubmit": true
+            },
+            "frameId": "AE4900844E67A1AF07D34B37A0E489E2",
+            "backendNodeId": 2
+          }
+        ]
+      },
+      "tool": {
+        "name": "textarea-empty",
+        "description": "Observe declarative textarea and text input value application",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "AE4900844E67A1AF07D34B37A0E489E2",
+        "backendNodeId": 2
+      },
+      "invoke": {
+        "params": {
+          "frameId": "AE4900844E67A1AF07D34B37A0E489E2",
+          "toolName": "textarea-empty",
+          "input": {
+            "memo": "  café 🧪\t\nβeta  ",
+            "title": " \t café 🧪 "
+          }
+        },
+        "result": {
+          "invocationId": "24E79F069BA5D2C2D357E1A61A45EA25"
+        }
+      },
+      "toolResponded": {
+        "invocationId": "24E79F069BA5D2C2D357E1A61A45EA25",
+        "status": "Completed",
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "  café 🧪\t\nβeta  ",
+            "title": " \t café 🧪 "
+          }
+        }
+      },
+      "pageState": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "  café 🧪\t\nβeta  ",
+              "title": " \t café 🧪 "
+            }
+          }
+        ],
+        "submitCount": 1,
+        "controls": [
+          {
+            "name": "memo",
+            "tagName": "TEXTAREA",
+            "type": "textarea",
+            "value": "  café 🧪\t\nβeta  ",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "tagName": "INPUT",
+            "type": "text",
+            "value": " \t café 🧪 ",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "  café 🧪\t\nβeta  ",
+          "title": " \t café 🧪 "
+        }
+      },
+      "blockedRequests": [],
+      "cleanup": {
+        "killed": [],
+        "survivors": [],
+        "runRootRemoved": true,
+        "browserTempRootRemoved": true
+      },
+      "frameId": "AE4900844E67A1AF07D34B37A0E489E2",
+      "webmcpEnable": {}
+    },
+    {
+      "pass": "repeat",
+      "caseId": "decl-textarea-empty-01",
+      "input": {
+        "memo": "alpha\r\nbeta\ngamma",
+        "title": "first\r\nsecond"
+      },
+      "cdp": [
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "03D0EFDE8D65D24164C5C2EBEA63FC02",
+                "loaderId": "B203F65FBE14D6E43F731A3B82EFE0F4",
+                "url": "http://127.0.0.1:34947/textarea-empty.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:34947",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "03D0EFDE8D65D24164C5C2EBEA63FC02",
+            "toolName": "textarea-empty",
+            "input": {
+              "memo": "alpha\r\nbeta\ngamma",
+              "title": "first\r\nsecond"
+            }
+          }
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "D241CF58AE759910D6EE2D6227616646"
+          }
+        }
+      ],
+      "events": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "textarea-empty",
+                "description": "Observe declarative textarea and text input value application",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "memo": {
+                      "type": "string",
+                      "description": "Memo"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "03D0EFDE8D65D24164C5C2EBEA63FC02",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "method": "WebMCP.toolInvoked",
+          "params": {
+            "toolName": "textarea-empty",
+            "frameId": "03D0EFDE8D65D24164C5C2EBEA63FC02",
+            "invocationId": "D241CF58AE759910D6EE2D6227616646",
+            "input": "{\"memo\":\"alpha\\r\\nbeta\\ngamma\",\"title\":\"first\\r\\nsecond\"}"
+          }
+        },
+        {
+          "method": "WebMCP.toolResponded",
+          "params": {
+            "invocationId": "D241CF58AE759910D6EE2D6227616646",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "memo": "alpha\nbeta\ngamma",
+                "title": "firstsecond"
+              }
+            }
+          }
+        }
+      ],
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "merged": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        },
+        "browserVersion": "154.0.8037.97",
+        "pid": 716848,
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/fast/scratch/tabi-r19/FamTextareaEmpty-4-probe/repeat-decl-textarea-empty-01-u0ke4D/profile-31c0YR",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guard": {
+          "enableFeaturesCount": 1,
+          "enableFeatures": "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "disableFeaturesCount": 1,
+          "enableBlinkFeaturesCount": 1,
+          "enableBlinkFeatures": "--enable-blink-features=WebMCP,WebMCPTesting",
+          "devtoolsPipe": true,
+          "devtoolsPort": false,
+          "sandboxOff": false,
+          "profileDevToolsActivePortExists": false,
+          "hostResolverDenyPresent": true,
+          "webmcpEnabled": true
+        }
+      },
+      "toolsAdded": {
+        "tools": [
+          {
+            "name": "textarea-empty",
+            "description": "Observe declarative textarea and text input value application",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "description": "Memo"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title"
+                }
+              },
+              "required": []
+            },
+            "annotations": {
+              "autosubmit": true
+            },
+            "frameId": "03D0EFDE8D65D24164C5C2EBEA63FC02",
+            "backendNodeId": 2
+          }
+        ]
+      },
+      "tool": {
+        "name": "textarea-empty",
+        "description": "Observe declarative textarea and text input value application",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "03D0EFDE8D65D24164C5C2EBEA63FC02",
+        "backendNodeId": 2
+      },
+      "invoke": {
+        "params": {
+          "frameId": "03D0EFDE8D65D24164C5C2EBEA63FC02",
+          "toolName": "textarea-empty",
+          "input": {
+            "memo": "alpha\r\nbeta\ngamma",
+            "title": "first\r\nsecond"
+          }
+        },
+        "result": {
+          "invocationId": "D241CF58AE759910D6EE2D6227616646"
+        }
+      },
+      "toolResponded": {
+        "invocationId": "D241CF58AE759910D6EE2D6227616646",
+        "status": "Completed",
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "alpha\nbeta\ngamma",
+            "title": "firstsecond"
+          }
+        }
+      },
+      "pageState": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "alpha\nbeta\ngamma",
+              "title": "firstsecond"
+            }
+          }
+        ],
+        "submitCount": 1,
+        "controls": [
+          {
+            "name": "memo",
+            "tagName": "TEXTAREA",
+            "type": "textarea",
+            "value": "alpha\nbeta\ngamma",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "tagName": "INPUT",
+            "type": "text",
+            "value": "firstsecond",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "alpha\nbeta\ngamma",
+          "title": "firstsecond"
+        }
+      },
+      "blockedRequests": [],
+      "cleanup": {
+        "killed": [],
+        "survivors": [],
+        "runRootRemoved": true,
+        "browserTempRootRemoved": true
+      },
+      "frameId": "03D0EFDE8D65D24164C5C2EBEA63FC02",
+      "webmcpEnable": {}
+    },
+    {
+      "pass": "repeat",
+      "caseId": "decl-textarea-empty-02",
+      "input": {
+        "memo": "",
+        "title": ""
+      },
+      "cdp": [
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "FC3761CC153C333D84C8D69137A27706",
+                "loaderId": "97230E7D03395DBA2181AC28045F9A3C",
+                "url": "http://127.0.0.1:34947/textarea-empty.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:34947",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "FC3761CC153C333D84C8D69137A27706",
+            "toolName": "textarea-empty",
+            "input": {
+              "memo": "",
+              "title": ""
+            }
+          }
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "9DAAE671E0E895FC26FF917609B321DD"
+          }
+        }
+      ],
+      "events": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "textarea-empty",
+                "description": "Observe declarative textarea and text input value application",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "memo": {
+                      "type": "string",
+                      "description": "Memo"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "FC3761CC153C333D84C8D69137A27706",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "method": "WebMCP.toolInvoked",
+          "params": {
+            "toolName": "textarea-empty",
+            "frameId": "FC3761CC153C333D84C8D69137A27706",
+            "invocationId": "9DAAE671E0E895FC26FF917609B321DD",
+            "input": "{\"memo\":\"\",\"title\":\"\"}"
+          }
+        },
+        {
+          "method": "WebMCP.toolResponded",
+          "params": {
+            "invocationId": "9DAAE671E0E895FC26FF917609B321DD",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "memo": "",
+                "title": ""
+              }
+            }
+          }
+        }
+      ],
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "merged": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        },
+        "browserVersion": "154.0.8037.97",
+        "pid": 717323,
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/fast/scratch/tabi-r19/FamTextareaEmpty-4-probe/repeat-decl-textarea-empty-02-Bp7vQA/profile-fBKQJ3",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guard": {
+          "enableFeaturesCount": 1,
+          "enableFeatures": "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "disableFeaturesCount": 1,
+          "enableBlinkFeaturesCount": 1,
+          "enableBlinkFeatures": "--enable-blink-features=WebMCP,WebMCPTesting",
+          "devtoolsPipe": true,
+          "devtoolsPort": false,
+          "sandboxOff": false,
+          "profileDevToolsActivePortExists": false,
+          "hostResolverDenyPresent": true,
+          "webmcpEnabled": true
+        }
+      },
+      "toolsAdded": {
+        "tools": [
+          {
+            "name": "textarea-empty",
+            "description": "Observe declarative textarea and text input value application",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "description": "Memo"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title"
+                }
+              },
+              "required": []
+            },
+            "annotations": {
+              "autosubmit": true
+            },
+            "frameId": "FC3761CC153C333D84C8D69137A27706",
+            "backendNodeId": 2
+          }
+        ]
+      },
+      "tool": {
+        "name": "textarea-empty",
+        "description": "Observe declarative textarea and text input value application",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "FC3761CC153C333D84C8D69137A27706",
+        "backendNodeId": 2
+      },
+      "invoke": {
+        "params": {
+          "frameId": "FC3761CC153C333D84C8D69137A27706",
+          "toolName": "textarea-empty",
+          "input": {
+            "memo": "",
+            "title": ""
+          }
+        },
+        "result": {
+          "invocationId": "9DAAE671E0E895FC26FF917609B321DD"
+        }
+      },
+      "toolResponded": {
+        "invocationId": "9DAAE671E0E895FC26FF917609B321DD",
+        "status": "Completed",
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "",
+            "title": ""
+          }
+        }
+      },
+      "pageState": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "",
+              "title": ""
+            }
+          }
+        ],
+        "submitCount": 1,
+        "controls": [
+          {
+            "name": "memo",
+            "tagName": "TEXTAREA",
+            "type": "textarea",
+            "value": "",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "tagName": "INPUT",
+            "type": "text",
+            "value": "",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "",
+          "title": ""
+        }
+      },
+      "blockedRequests": [],
+      "cleanup": {
+        "killed": [],
+        "survivors": [],
+        "runRootRemoved": true,
+        "browserTempRootRemoved": true
+      },
+      "frameId": "FC3761CC153C333D84C8D69137A27706",
+      "webmcpEnable": {}
+    },
+    {
+      "pass": "repeat",
+      "caseId": "decl-textarea-empty-03",
+      "input": {},
+      "cdp": [
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "39931E74A7DAB20B069CC6D69885DC36",
+                "loaderId": "E242CBD5FCDC22327720CEEC1B8AE5F0",
+                "url": "http://127.0.0.1:34947/textarea-empty.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:34947",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "39931E74A7DAB20B069CC6D69885DC36",
+            "toolName": "textarea-empty",
+            "input": {}
+          }
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "82AABB2D0085001B5EB9589BEA3CAC56"
+          }
+        }
+      ],
+      "events": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "textarea-empty",
+                "description": "Observe declarative textarea and text input value application",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "memo": {
+                      "type": "string",
+                      "description": "Memo"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "39931E74A7DAB20B069CC6D69885DC36",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "method": "WebMCP.toolInvoked",
+          "params": {
+            "toolName": "textarea-empty",
+            "frameId": "39931E74A7DAB20B069CC6D69885DC36",
+            "invocationId": "82AABB2D0085001B5EB9589BEA3CAC56",
+            "input": "{}"
+          }
+        },
+        {
+          "method": "WebMCP.toolResponded",
+          "params": {
+            "invocationId": "82AABB2D0085001B5EB9589BEA3CAC56",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "memo": "pre-filled textarea",
+                "title": "pre-filled input"
+              }
+            }
+          }
+        }
+      ],
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "merged": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        },
+        "browserVersion": "154.0.8037.97",
+        "pid": 717758,
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/fast/scratch/tabi-r19/FamTextareaEmpty-4-probe/repeat-decl-textarea-empty-03-lkY6nQ/profile-5qzd3S",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guard": {
+          "enableFeaturesCount": 1,
+          "enableFeatures": "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "disableFeaturesCount": 1,
+          "enableBlinkFeaturesCount": 1,
+          "enableBlinkFeatures": "--enable-blink-features=WebMCP,WebMCPTesting",
+          "devtoolsPipe": true,
+          "devtoolsPort": false,
+          "sandboxOff": false,
+          "profileDevToolsActivePortExists": false,
+          "hostResolverDenyPresent": true,
+          "webmcpEnabled": true
+        }
+      },
+      "toolsAdded": {
+        "tools": [
+          {
+            "name": "textarea-empty",
+            "description": "Observe declarative textarea and text input value application",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "description": "Memo"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title"
+                }
+              },
+              "required": []
+            },
+            "annotations": {
+              "autosubmit": true
+            },
+            "frameId": "39931E74A7DAB20B069CC6D69885DC36",
+            "backendNodeId": 2
+          }
+        ]
+      },
+      "tool": {
+        "name": "textarea-empty",
+        "description": "Observe declarative textarea and text input value application",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "39931E74A7DAB20B069CC6D69885DC36",
+        "backendNodeId": 2
+      },
+      "invoke": {
+        "params": {
+          "frameId": "39931E74A7DAB20B069CC6D69885DC36",
+          "toolName": "textarea-empty",
+          "input": {}
+        },
+        "result": {
+          "invocationId": "82AABB2D0085001B5EB9589BEA3CAC56"
+        }
+      },
+      "toolResponded": {
+        "invocationId": "82AABB2D0085001B5EB9589BEA3CAC56",
+        "status": "Completed",
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "pre-filled textarea",
+            "title": "pre-filled input"
+          }
+        }
+      },
+      "pageState": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "pre-filled textarea",
+              "title": "pre-filled input"
+            }
+          }
+        ],
+        "submitCount": 1,
+        "controls": [
+          {
+            "name": "memo",
+            "tagName": "TEXTAREA",
+            "type": "textarea",
+            "value": "pre-filled textarea",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "tagName": "INPUT",
+            "type": "text",
+            "value": "pre-filled input",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "pre-filled textarea",
+          "title": "pre-filled input"
+        }
+      },
+      "blockedRequests": [],
+      "cleanup": {
+        "killed": [],
+        "survivors": [],
+        "runRootRemoved": true,
+        "browserTempRootRemoved": true
+      },
+      "frameId": "39931E74A7DAB20B069CC6D69885DC36",
+      "webmcpEnable": {}
+    },
+    {
+      "pass": "repeat",
+      "caseId": "decl-textarea-empty-04",
+      "input": {
+        "memo": "pre-filled textarea",
+        "title": "pre-filled input"
+      },
+      "cdp": [
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "761BFA862F4FC886D91E8F65C5197B3D",
+                "loaderId": "A53DB9E2C93E0BC772C80B261C11903F",
+                "url": "http://127.0.0.1:34947/textarea-empty.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:34947",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "761BFA862F4FC886D91E8F65C5197B3D",
+            "toolName": "textarea-empty",
+            "input": {
+              "memo": "pre-filled textarea",
+              "title": "pre-filled input"
+            }
+          }
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "BB67E4C9BE2BF28E387027C3E52D5568"
+          }
+        }
+      ],
+      "events": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "textarea-empty",
+                "description": "Observe declarative textarea and text input value application",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "memo": {
+                      "type": "string",
+                      "description": "Memo"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "761BFA862F4FC886D91E8F65C5197B3D",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "method": "WebMCP.toolInvoked",
+          "params": {
+            "toolName": "textarea-empty",
+            "frameId": "761BFA862F4FC886D91E8F65C5197B3D",
+            "invocationId": "BB67E4C9BE2BF28E387027C3E52D5568",
+            "input": "{\"memo\":\"pre-filled textarea\",\"title\":\"pre-filled input\"}"
+          }
+        },
+        {
+          "method": "WebMCP.toolResponded",
+          "params": {
+            "invocationId": "BB67E4C9BE2BF28E387027C3E52D5568",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "memo": "pre-filled textarea",
+                "title": "pre-filled input"
+              }
+            }
+          }
+        }
+      ],
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "merged": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        },
+        "browserVersion": "154.0.8037.97",
+        "pid": 718230,
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/fast/scratch/tabi-r19/FamTextareaEmpty-4-probe/repeat-decl-textarea-empty-04-KUbn6K/profile-5ziVVA",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guard": {
+          "enableFeaturesCount": 1,
+          "enableFeatures": "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "disableFeaturesCount": 1,
+          "enableBlinkFeaturesCount": 1,
+          "enableBlinkFeatures": "--enable-blink-features=WebMCP,WebMCPTesting",
+          "devtoolsPipe": true,
+          "devtoolsPort": false,
+          "sandboxOff": false,
+          "profileDevToolsActivePortExists": false,
+          "hostResolverDenyPresent": true,
+          "webmcpEnabled": true
+        }
+      },
+      "toolsAdded": {
+        "tools": [
+          {
+            "name": "textarea-empty",
+            "description": "Observe declarative textarea and text input value application",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "description": "Memo"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title"
+                }
+              },
+              "required": []
+            },
+            "annotations": {
+              "autosubmit": true
+            },
+            "frameId": "761BFA862F4FC886D91E8F65C5197B3D",
+            "backendNodeId": 2
+          }
+        ]
+      },
+      "tool": {
+        "name": "textarea-empty",
+        "description": "Observe declarative textarea and text input value application",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "761BFA862F4FC886D91E8F65C5197B3D",
+        "backendNodeId": 2
+      },
+      "invoke": {
+        "params": {
+          "frameId": "761BFA862F4FC886D91E8F65C5197B3D",
+          "toolName": "textarea-empty",
+          "input": {
+            "memo": "pre-filled textarea",
+            "title": "pre-filled input"
+          }
+        },
+        "result": {
+          "invocationId": "BB67E4C9BE2BF28E387027C3E52D5568"
+        }
+      },
+      "toolResponded": {
+        "invocationId": "BB67E4C9BE2BF28E387027C3E52D5568",
+        "status": "Completed",
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "pre-filled textarea",
+            "title": "pre-filled input"
+          }
+        }
+      },
+      "pageState": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "pre-filled textarea",
+              "title": "pre-filled input"
+            }
+          }
+        ],
+        "submitCount": 1,
+        "controls": [
+          {
+            "name": "memo",
+            "tagName": "TEXTAREA",
+            "type": "textarea",
+            "value": "pre-filled textarea",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "tagName": "INPUT",
+            "type": "text",
+            "value": "pre-filled input",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "pre-filled textarea",
+          "title": "pre-filled input"
+        }
+      },
+      "blockedRequests": [],
+      "cleanup": {
+        "killed": [],
+        "survivors": [],
+        "runRootRemoved": true,
+        "browserTempRootRemoved": true
+      },
+      "frameId": "761BFA862F4FC886D91E8F65C5197B3D",
+      "webmcpEnable": {}
+    },
+    {
+      "pass": "repeat",
+      "caseId": "decl-textarea-empty-05",
+      "input": {
+        "memo": "  café 🧪\t\nβeta  ",
+        "title": " \t café 🧪 "
+      },
+      "cdp": [
+        {
+          "direction": "send",
+          "method": "Page.getFrameTree",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "Page.getFrameTree",
+          "result": {
+            "frameTree": {
+              "frame": {
+                "id": "02A07C970948B4005170AE36B14AFF76",
+                "loaderId": "0231DBAF20F068F759DB47A1A7D48CA3",
+                "url": "http://127.0.0.1:34947/textarea-empty.html",
+                "domainAndRegistry": "",
+                "securityOrigin": "http://127.0.0.1:34947",
+                "securityOriginDetails": {
+                  "isLocalhost": true
+                },
+                "mimeType": "text/html",
+                "adFrameStatus": {
+                  "adFrameType": "none"
+                },
+                "secureContextType": "SecureLocalhost",
+                "crossOriginIsolatedContextType": "NotIsolated",
+                "gatedAPIFeatures": []
+              }
+            }
+          }
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.enable",
+          "params": {}
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.enable",
+          "result": {}
+        },
+        {
+          "direction": "send",
+          "method": "WebMCP.invokeTool",
+          "params": {
+            "frameId": "02A07C970948B4005170AE36B14AFF76",
+            "toolName": "textarea-empty",
+            "input": {
+              "memo": "  café 🧪\t\nβeta  ",
+              "title": " \t café 🧪 "
+            }
+          }
+        },
+        {
+          "direction": "reply",
+          "method": "WebMCP.invokeTool",
+          "result": {
+            "invocationId": "A6D5A63248F685E479DA12FE42D9DC24"
+          }
+        }
+      ],
+      "events": [
+        {
+          "method": "WebMCP.toolsAdded",
+          "params": {
+            "tools": [
+              {
+                "name": "textarea-empty",
+                "description": "Observe declarative textarea and text input value application",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "memo": {
+                      "type": "string",
+                      "description": "Memo"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title"
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "02A07C970948B4005170AE36B14AFF76",
+                "backendNodeId": 2
+              }
+            ]
+          }
+        },
+        {
+          "method": "WebMCP.toolInvoked",
+          "params": {
+            "toolName": "textarea-empty",
+            "frameId": "02A07C970948B4005170AE36B14AFF76",
+            "invocationId": "A6D5A63248F685E479DA12FE42D9DC24",
+            "input": "{\"memo\":\"  caf\\u00e9 \\ud83e\\uddea\\t\\n\\u03b2eta \\u2003\",\"title\":\" \\t caf\\u00e9 \\ud83e\\uddea \"}"
+          }
+        },
+        {
+          "method": "WebMCP.toolResponded",
+          "params": {
+            "invocationId": "A6D5A63248F685E479DA12FE42D9DC24",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "memo": "  café 🧪\t\nβeta  ",
+                "title": " \t café 🧪 "
+              }
+            }
+          }
+        }
+      ],
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "merged": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        },
+        "browserVersion": "154.0.8037.97",
+        "pid": 718625,
+        "effectiveArgv": [
+          "/usr/lib/chromium/chromium",
+          "--disable-field-trial-config",
+          "--disable-background-networking",
+          "--disable-background-timer-throttling",
+          "--disable-backgrounding-occluded-windows",
+          "--disable-back-forward-cache",
+          "--disable-breakpad",
+          "--disable-client-side-phishing-detection",
+          "--disable-component-extensions-with-background-pages",
+          "--disable-component-update",
+          "--no-default-browser-check",
+          "--disable-default-apps",
+          "--disable-dev-shm-usage",
+          "--disable-edgeupdater",
+          "--disable-extensions",
+          "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+          "--allow-pre-commit-input",
+          "--disable-hang-monitor",
+          "--disable-ipc-flooding-protection",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
+          "--disable-renderer-backgrounding",
+          "--disable-updater-scheduler",
+          "--force-color-profile=srgb",
+          "--metrics-recording-only",
+          "--no-first-run",
+          "--password-store=basic",
+          "--use-mock-keychain",
+          "--no-service-autorun",
+          "--export-tagged-pdf",
+          "--disable-search-engine-choice-screen",
+          "--unsafely-disable-devtools-self-xss-warnings",
+          "--edge-skip-compat-layer-relaunch",
+          "--disable-infobars",
+          "--disable-search-engine-choice-screen",
+          "--disable-sync",
+          "--enable-unsafe-swiftshader",
+          "--headless",
+          "--hide-scrollbars",
+          "--mute-audio",
+          "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "--user-data-dir=/fast/scratch/tabi-r19/FamTextareaEmpty-4-probe/repeat-decl-textarea-empty-05-qg3jAM/profile-djdjfD",
+          "--remote-debugging-pipe",
+          "about:blank"
+        ],
+        "guard": {
+          "enableFeaturesCount": 1,
+          "enableFeatures": "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+          "disableFeaturesCount": 1,
+          "enableBlinkFeaturesCount": 1,
+          "enableBlinkFeatures": "--enable-blink-features=WebMCP,WebMCPTesting",
+          "devtoolsPipe": true,
+          "devtoolsPort": false,
+          "sandboxOff": false,
+          "profileDevToolsActivePortExists": false,
+          "hostResolverDenyPresent": true,
+          "webmcpEnabled": true
+        }
+      },
+      "toolsAdded": {
+        "tools": [
+          {
+            "name": "textarea-empty",
+            "description": "Observe declarative textarea and text input value application",
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "memo": {
+                  "type": "string",
+                  "description": "Memo"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Title"
+                }
+              },
+              "required": []
+            },
+            "annotations": {
+              "autosubmit": true
+            },
+            "frameId": "02A07C970948B4005170AE36B14AFF76",
+            "backendNodeId": 2
+          }
+        ]
+      },
+      "tool": {
+        "name": "textarea-empty",
+        "description": "Observe declarative textarea and text input value application",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "annotations": {
+          "autosubmit": true
+        },
+        "frameId": "02A07C970948B4005170AE36B14AFF76",
+        "backendNodeId": 2
+      },
+      "invoke": {
+        "params": {
+          "frameId": "02A07C970948B4005170AE36B14AFF76",
+          "toolName": "textarea-empty",
+          "input": {
+            "memo": "  café 🧪\t\nβeta  ",
+            "title": " \t café 🧪 "
+          }
+        },
+        "result": {
+          "invocationId": "A6D5A63248F685E479DA12FE42D9DC24"
+        }
+      },
+      "toolResponded": {
+        "invocationId": "A6D5A63248F685E479DA12FE42D9DC24",
+        "status": "Completed",
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "  café 🧪\t\nβeta  ",
+            "title": " \t café 🧪 "
+          }
+        }
+      },
+      "pageState": {
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "  café 🧪\t\nβeta  ",
+              "title": " \t café 🧪 "
+            }
+          }
+        ],
+        "submitCount": 1,
+        "controls": [
+          {
+            "name": "memo",
+            "tagName": "TEXTAREA",
+            "type": "textarea",
+            "value": "  café 🧪\t\nβeta  ",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "tagName": "INPUT",
+            "type": "text",
+            "value": " \t café 🧪 ",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "  café 🧪\t\nβeta  ",
+          "title": " \t café 🧪 "
+        }
+      },
+      "blockedRequests": [],
+      "cleanup": {
+        "killed": [],
+        "survivors": [],
+        "runRootRemoved": true,
+        "browserTempRootRemoved": true
+      },
+      "frameId": "02A07C970948B4005170AE36B14AFF76",
+      "webmcpEnable": {}
+    }
+  ],
+  "stability": [
+    {
+      "caseId": "decl-textarea-empty-01",
+      "stable": true,
+      "first": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "status": "Completed",
+        "errorText": null,
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "alpha\nbeta\ngamma",
+            "title": "firstsecond"
+          }
+        },
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "alpha\nbeta\ngamma",
+              "title": "firstsecond"
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "memo",
+            "value": "alpha\nbeta\ngamma",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "value": "firstsecond",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "alpha\nbeta\ngamma",
+          "title": "firstsecond"
+        }
+      },
+      "repeat": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "status": "Completed",
+        "errorText": null,
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "alpha\nbeta\ngamma",
+            "title": "firstsecond"
+          }
+        },
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "alpha\nbeta\ngamma",
+              "title": "firstsecond"
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "memo",
+            "value": "alpha\nbeta\ngamma",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "value": "firstsecond",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "alpha\nbeta\ngamma",
+          "title": "firstsecond"
+        }
+      }
+    },
+    {
+      "caseId": "decl-textarea-empty-02",
+      "stable": true,
+      "first": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "status": "Completed",
+        "errorText": null,
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "",
+            "title": ""
+          }
+        },
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "",
+              "title": ""
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "memo",
+            "value": "",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "value": "",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "",
+          "title": ""
+        }
+      },
+      "repeat": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "status": "Completed",
+        "errorText": null,
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "",
+            "title": ""
+          }
+        },
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "",
+              "title": ""
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "memo",
+            "value": "",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "value": "",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "",
+          "title": ""
+        }
+      }
+    },
+    {
+      "caseId": "decl-textarea-empty-03",
+      "stable": true,
+      "first": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "status": "Completed",
+        "errorText": null,
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "pre-filled textarea",
+            "title": "pre-filled input"
+          }
+        },
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "pre-filled textarea",
+              "title": "pre-filled input"
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "memo",
+            "value": "pre-filled textarea",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "value": "pre-filled input",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "pre-filled textarea",
+          "title": "pre-filled input"
+        }
+      },
+      "repeat": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "status": "Completed",
+        "errorText": null,
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "pre-filled textarea",
+            "title": "pre-filled input"
+          }
+        },
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "pre-filled textarea",
+              "title": "pre-filled input"
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "memo",
+            "value": "pre-filled textarea",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "value": "pre-filled input",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "pre-filled textarea",
+          "title": "pre-filled input"
+        }
+      }
+    },
+    {
+      "caseId": "decl-textarea-empty-04",
+      "stable": true,
+      "first": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "status": "Completed",
+        "errorText": null,
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "pre-filled textarea",
+            "title": "pre-filled input"
+          }
+        },
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "pre-filled textarea",
+              "title": "pre-filled input"
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "memo",
+            "value": "pre-filled textarea",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "value": "pre-filled input",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "pre-filled textarea",
+          "title": "pre-filled input"
+        }
+      },
+      "repeat": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "status": "Completed",
+        "errorText": null,
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "pre-filled textarea",
+            "title": "pre-filled input"
+          }
+        },
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "pre-filled textarea",
+              "title": "pre-filled input"
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "memo",
+            "value": "pre-filled textarea",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "value": "pre-filled input",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "pre-filled textarea",
+          "title": "pre-filled input"
+        }
+      }
+    },
+    {
+      "caseId": "decl-textarea-empty-05",
+      "stable": true,
+      "first": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "status": "Completed",
+        "errorText": null,
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "  café 🧪\t\nβeta  ",
+            "title": " \t café 🧪 "
+          }
+        },
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "  café 🧪\t\nβeta  ",
+              "title": " \t café 🧪 "
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "memo",
+            "value": "  café 🧪\t\nβeta  ",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "value": " \t café 🧪 ",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "  café 🧪\t\nβeta  ",
+          "title": " \t café 🧪 "
+        }
+      },
+      "repeat": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "memo": {
+              "type": "string",
+              "description": "Memo"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title"
+            }
+          },
+          "required": []
+        },
+        "status": "Completed",
+        "errorText": null,
+        "output": {
+          "ok": true,
+          "fields": {
+            "memo": "  café 🧪\t\nβeta  ",
+            "title": " \t café 🧪 "
+          }
+        },
+        "submitCount": 1,
+        "calls": [
+          {
+            "agentInvoked": true,
+            "isTrusted": true,
+            "fields": {
+              "memo": "  café 🧪\t\nβeta  ",
+              "title": " \t café 🧪 "
+            }
+          }
+        ],
+        "controls": [
+          {
+            "name": "memo",
+            "value": "  café 🧪\t\nβeta  ",
+            "defaultValue": "pre-filled textarea"
+          },
+          {
+            "name": "title",
+            "value": " \t café 🧪 ",
+            "defaultValue": "pre-filled input"
+          }
+        ],
+        "formData": {
+          "memo": "  café 🧪\t\nβeta  ",
+          "title": " \t café 🧪 "
+        }
+      }
+    }
+  ]
+}

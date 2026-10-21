@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Round 19 missing-required validation</title>
+</head>
+<body>
+  <form id="toolform" toolname="missing-required" tooldescription="Observe omitted and invalid declarative text parameters" toolautosubmit>
+    <label>Required text <input type="text" name="required" required></label>
+    <label>Optional text <input type="text" name="optional" value="optional-default"></label>
+    <button type="submit" id="go">Submit</button>
+  </form>
+  <script>
+    (function () {
+      window.__obs = { calls: [] };
+      var form = document.getElementById('toolform');
+      form.addEventListener('submit', function (event) {
+        var fields = Object.fromEntries(new FormData(event.target));
+        window.__obs.calls.push({
+          agentInvoked: event.agentInvoked === true,
+          isTrusted: event.isTrusted,
+          fields: fields
+        });
+        event.preventDefault();
+        event.respondWith(Promise.resolve({ ok: true, fields: fields }));
+      });
+      window.__ready = true;
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1519 @@
+{
+  "probe": "tabi-round-19-radio",
+  "accessDate": "2026-10-21",
+  "runtime": {
+    "chromium": "154.0.8037.97",
+    "chromiumVersionObserved": "154.0.8037.97",
+    "executablePath": "/usr/bin/chromium",
+    "playwright": "1.64.0",
+    "node": "v24.21.0",
+    "fixtureUrlOrigin": "http://127.0.0.1:45837",
+    "loopbackServerBind": "127.0.0.1",
+    "cdpTransport": "Playwright context.newCDPSession(page) pipe",
+    "acceptDownloads": false,
+    "hostResolverRules": "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+    "privateHome": "/fast/scratch/tabi-r19/FamRadio-4-probe/home",
+    "privateTmp": "/fast/scratch/tabi-r19/FamRadio-4-probe/tmp"
+  },
+  "fixture": {
+    "path": "/fast/scratch/tabi-r19/FamRadio-4/corpus/evidence/round-19/validation/fixtures/radio.html",
+    "sha256": "c7b61d6d5b2ae68c00960ff43b3945a36419861a4b0cb03aac8cd34be024037a"
+  },
+  "cases": [
+    {
+      "id": "valid-beta",
+      "input": {
+        "choice": "beta"
+      }
+    },
+    {
+      "id": "invalid-unknown",
+      "input": {
+        "choice": "not-an-option"
+      }
+    },
+    {
+      "id": "disabled-gamma",
+      "input": {
+        "choice": "gamma"
+      }
+    }
+  ],
+  "rounds": [
+    {
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "version": "154.0.8037.97",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "mergedFeatures": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        }
+      },
+      "cases": [
+        {
+          "round": "repeat-1",
+          "caseId": "valid-beta",
+          "input": {
+            "choice": "beta"
+          },
+          "toolsAdded": {
+            "tools": [
+              {
+                "name": "radio",
+                "description": "Choose one radio option",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "choice": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "alpha",
+                          "title": "Alpha"
+                        },
+                        {
+                          "type": "string",
+                          "const": "beta",
+                          "title": "Beta"
+                        }
+                      ],
+                      "enum": [
+                        "alpha",
+                        "beta"
+                      ]
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "6B5EE82AE6D9985F66D96055B05567B2",
+                "backendNodeId": 3
+              }
+            ]
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "choice": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "alpha",
+                    "title": "Alpha"
+                  },
+                  {
+                    "type": "string",
+                    "const": "beta",
+                    "title": "Beta"
+                  }
+                ],
+                "enum": [
+                  "alpha",
+                  "beta"
+                ]
+              }
+            },
+            "required": []
+          },
+          "commands": [
+            {
+              "method": "WebMCP.enable",
+              "params": {},
+              "result": {}
+            },
+            {
+              "method": "Page.getFrameTree",
+              "params": {},
+              "result": {
+                "frameTree": {
+                  "frame": {
+                    "id": "6B5EE82AE6D9985F66D96055B05567B2",
+                    "loaderId": "DF0834FABC6D7466F51C6C2508486328",
+                    "url": "http://127.0.0.1:45837/radio.html",
+                    "domainAndRegistry": "",
+                    "securityOrigin": "http://127.0.0.1:45837",
+                    "securityOriginDetails": {
+                      "isLocalhost": true
+                    },
+                    "mimeType": "text/html",
+                    "adFrameStatus": {
+                      "adFrameType": "none"
+                    },
+                    "secureContextType": "SecureLocalhost",
+                    "crossOriginIsolatedContextType": "NotIsolated",
+                    "gatedAPIFeatures": []
+                  }
+                }
+              }
+            },
+            {
+              "method": "WebMCP.invokeTool",
+              "params": {
+                "frameId": "6B5EE82AE6D9985F66D96055B05567B2",
+                "toolName": "radio",
+                "input": {
+                  "choice": "beta"
+                }
+              },
+              "result": {
+                "invocationId": "327077425E253786BBF58F999AB9E6B4"
+              }
+            }
+          ],
+          "invokeToolRequest": {
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "6B5EE82AE6D9985F66D96055B05567B2",
+              "toolName": "radio",
+              "input": {
+                "choice": "beta"
+              }
+            }
+          },
+          "invokeToolReply": {
+            "invocationId": "327077425E253786BBF58F999AB9E6B4"
+          },
+          "invokeToolError": null,
+          "toolResponded": {
+            "invocationId": "327077425E253786BBF58F999AB9E6B4",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "choice": "beta"
+              }
+            }
+          },
+          "toolRespondedWaitError": null,
+          "pageState": {
+            "calls": [
+              {
+                "agentInvoked": true,
+                "isTrusted": true,
+                "fields": {
+                  "choice": "beta"
+                }
+              }
+            ],
+            "radios": [
+              {
+                "id": "choice-alpha",
+                "name": "choice",
+                "value": "alpha",
+                "checked": false,
+                "disabled": false
+              },
+              {
+                "id": "choice-beta",
+                "name": "choice",
+                "value": "beta",
+                "checked": true,
+                "disabled": false
+              },
+              {
+                "id": "choice-gamma",
+                "name": "choice",
+                "value": "gamma",
+                "checked": false,
+                "disabled": true
+              }
+            ]
+          },
+          "webmcpEvents": [
+            {
+              "method": "WebMCP.toolsAdded",
+              "params": {
+                "tools": [
+                  {
+                    "name": "radio",
+                    "description": "Choose one radio option",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {
+                        "choice": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "alpha",
+                              "title": "Alpha"
+                            },
+                            {
+                              "type": "string",
+                              "const": "beta",
+                              "title": "Beta"
+                            }
+                          ],
+                          "enum": [
+                            "alpha",
+                            "beta"
+                          ]
+                        }
+                      },
+                      "required": []
+                    },
+                    "annotations": {
+                      "autosubmit": true
+                    },
+                    "frameId": "6B5EE82AE6D9985F66D96055B05567B2",
+                    "backendNodeId": 3
+                  }
+                ]
+              },
+              "at": 1792565377150
+            },
+            {
+              "method": "WebMCP.toolInvoked",
+              "params": {
+                "toolName": "radio",
+                "frameId": "6B5EE82AE6D9985F66D96055B05567B2",
+                "invocationId": "327077425E253786BBF58F999AB9E6B4",
+                "input": "{\"choice\":\"beta\"}"
+              },
+              "at": 1792565377151
+            },
+            {
+              "method": "WebMCP.toolResponded",
+              "params": {
+                "invocationId": "327077425E253786BBF58F999AB9E6B4",
+                "status": "Completed",
+                "output": {
+                  "ok": true,
+                  "fields": {
+                    "choice": "beta"
+                  }
+                }
+              },
+              "at": 1792565377151
+            }
+          ]
+        },
+        {
+          "round": "repeat-1",
+          "caseId": "invalid-unknown",
+          "input": {
+            "choice": "not-an-option"
+          },
+          "toolsAdded": {
+            "tools": [
+              {
+                "name": "radio",
+                "description": "Choose one radio option",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "choice": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "alpha",
+                          "title": "Alpha"
+                        },
+                        {
+                          "type": "string",
+                          "const": "beta",
+                          "title": "Beta"
+                        }
+                      ],
+                      "enum": [
+                        "alpha",
+                        "beta"
+                      ]
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "5A0F1AFE508E0C61054542B85EEE4F20",
+                "backendNodeId": 3
+              }
+            ]
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "choice": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "alpha",
+                    "title": "Alpha"
+                  },
+                  {
+                    "type": "string",
+                    "const": "beta",
+                    "title": "Beta"
+                  }
+                ],
+                "enum": [
+                  "alpha",
+                  "beta"
+                ]
+              }
+            },
+            "required": []
+          },
+          "commands": [
+            {
+              "method": "WebMCP.enable",
+              "params": {},
+              "result": {}
+            },
+            {
+              "method": "Page.getFrameTree",
+              "params": {},
+              "result": {
+                "frameTree": {
+                  "frame": {
+                    "id": "5A0F1AFE508E0C61054542B85EEE4F20",
+                    "loaderId": "A583A0DA745E9E20C90133E4D8D78954",
+                    "url": "http://127.0.0.1:45837/radio.html",
+                    "domainAndRegistry": "",
+                    "securityOrigin": "http://127.0.0.1:45837",
+                    "securityOriginDetails": {
+                      "isLocalhost": true
+                    },
+                    "mimeType": "text/html",
+                    "adFrameStatus": {
+                      "adFrameType": "none"
+                    },
+                    "secureContextType": "SecureLocalhost",
+                    "crossOriginIsolatedContextType": "NotIsolated",
+                    "gatedAPIFeatures": []
+                  }
+                }
+              }
+            },
+            {
+              "method": "WebMCP.invokeTool",
+              "params": {
+                "frameId": "5A0F1AFE508E0C61054542B85EEE4F20",
+                "toolName": "radio",
+                "input": {
+                  "choice": "not-an-option"
+                }
+              },
+              "result": {
+                "invocationId": "BDFB8D9FFE334039064F8E8BBBEBF32B"
+              }
+            }
+          ],
+          "invokeToolRequest": {
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "5A0F1AFE508E0C61054542B85EEE4F20",
+              "toolName": "radio",
+              "input": {
+                "choice": "not-an-option"
+              }
+            }
+          },
+          "invokeToolReply": {
+            "invocationId": "BDFB8D9FFE334039064F8E8BBBEBF32B"
+          },
+          "invokeToolError": null,
+          "toolResponded": {
+            "invocationId": "BDFB8D9FFE334039064F8E8BBBEBF32B",
+            "status": "Error",
+            "errorText": "Invalid value \"not-an-option\" for parameter choice"
+          },
+          "toolRespondedWaitError": null,
+          "pageState": {
+            "calls": [],
+            "radios": [
+              {
+                "id": "choice-alpha",
+                "name": "choice",
+                "value": "alpha",
+                "checked": false,
+                "disabled": false
+              },
+              {
+                "id": "choice-beta",
+                "name": "choice",
+                "value": "beta",
+                "checked": false,
+                "disabled": false
+              },
+              {
+                "id": "choice-gamma",
+                "name": "choice",
+                "value": "gamma",
+                "checked": false,
+                "disabled": true
+              }
+            ]
+          },
+          "webmcpEvents": [
+            {
+              "method": "WebMCP.toolsAdded",
+              "params": {
+                "tools": [
+                  {
+                    "name": "radio",
+                    "description": "Choose one radio option",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {
+                        "choice": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "alpha",
+                              "title": "Alpha"
+                            },
+                            {
+                              "type": "string",
+                              "const": "beta",
+                              "title": "Beta"
+                            }
+                          ],
+                          "enum": [
+                            "alpha",
+                            "beta"
+                          ]
+                        }
+                      },
+                      "required": []
+                    },
+                    "annotations": {
+                      "autosubmit": true
+                    },
+                    "frameId": "5A0F1AFE508E0C61054542B85EEE4F20",
+                    "backendNodeId": 3
+                  }
+                ]
+              },
+              "at": 1792565377247
+            },
+            {
+              "method": "WebMCP.toolInvoked",
+              "params": {
+                "toolName": "radio",
+                "frameId": "5A0F1AFE508E0C61054542B85EEE4F20",
+                "invocationId": "BDFB8D9FFE334039064F8E8BBBEBF32B",
+                "input": "{\"choice\":\"not-an-option\"}"
+              },
+              "at": 1792565377247
+            },
+            {
+              "method": "WebMCP.toolResponded",
+              "params": {
+                "invocationId": "BDFB8D9FFE334039064F8E8BBBEBF32B",
+                "status": "Error",
+                "errorText": "Invalid value \"not-an-option\" for parameter choice"
+              },
+              "at": 1792565377248
+            }
+          ]
+        },
+        {
+          "round": "repeat-1",
+          "caseId": "disabled-gamma",
+          "input": {
+            "choice": "gamma"
+          },
+          "toolsAdded": {
+            "tools": [
+              {
+                "name": "radio",
+                "description": "Choose one radio option",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "choice": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "alpha",
+                          "title": "Alpha"
+                        },
+                        {
+                          "type": "string",
+                          "const": "beta",
+                          "title": "Beta"
+                        }
+                      ],
+                      "enum": [
+                        "alpha",
+                        "beta"
+                      ]
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "2990B53FC1FFF21DD5B56874704DEF73",
+                "backendNodeId": 3
+              }
+            ]
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "choice": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "alpha",
+                    "title": "Alpha"
+                  },
+                  {
+                    "type": "string",
+                    "const": "beta",
+                    "title": "Beta"
+                  }
+                ],
+                "enum": [
+                  "alpha",
+                  "beta"
+                ]
+              }
+            },
+            "required": []
+          },
+          "commands": [
+            {
+              "method": "WebMCP.enable",
+              "params": {},
+              "result": {}
+            },
+            {
+              "method": "Page.getFrameTree",
+              "params": {},
+              "result": {
+                "frameTree": {
+                  "frame": {
+                    "id": "2990B53FC1FFF21DD5B56874704DEF73",
+                    "loaderId": "EF8672564071480C24609F8416099FDE",
+                    "url": "http://127.0.0.1:45837/radio.html",
+                    "domainAndRegistry": "",
+                    "securityOrigin": "http://127.0.0.1:45837",
+                    "securityOriginDetails": {
+                      "isLocalhost": true
+                    },
+                    "mimeType": "text/html",
+                    "adFrameStatus": {
+                      "adFrameType": "none"
+                    },
+                    "secureContextType": "SecureLocalhost",
+                    "crossOriginIsolatedContextType": "NotIsolated",
+                    "gatedAPIFeatures": []
+                  }
+                }
+              }
+            },
+            {
+              "method": "WebMCP.invokeTool",
+              "params": {
+                "frameId": "2990B53FC1FFF21DD5B56874704DEF73",
+                "toolName": "radio",
+                "input": {
+                  "choice": "gamma"
+                }
+              },
+              "result": {
+                "invocationId": "B3041B8300B25608B49394B896D758F9"
+              }
+            }
+          ],
+          "invokeToolRequest": {
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "2990B53FC1FFF21DD5B56874704DEF73",
+              "toolName": "radio",
+              "input": {
+                "choice": "gamma"
+              }
+            }
+          },
+          "invokeToolReply": {
+            "invocationId": "B3041B8300B25608B49394B896D758F9"
+          },
+          "invokeToolError": null,
+          "toolResponded": {
+            "invocationId": "B3041B8300B25608B49394B896D758F9",
+            "status": "Error",
+            "errorText": "Invalid value \"gamma\" for parameter choice"
+          },
+          "toolRespondedWaitError": null,
+          "pageState": {
+            "calls": [],
+            "radios": [
+              {
+                "id": "choice-alpha",
+                "name": "choice",
+                "value": "alpha",
+                "checked": false,
+                "disabled": false
+              },
+              {
+                "id": "choice-beta",
+                "name": "choice",
+                "value": "beta",
+                "checked": false,
+                "disabled": false
+              },
+              {
+                "id": "choice-gamma",
+                "name": "choice",
+                "value": "gamma",
+                "checked": false,
+                "disabled": true
+              }
+            ]
+          },
+          "webmcpEvents": [
+            {
+              "method": "WebMCP.toolsAdded",
+              "params": {
+                "tools": [
+                  {
+                    "name": "radio",
+                    "description": "Choose one radio option",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {
+                        "choice": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "alpha",
+                              "title": "Alpha"
+                            },
+                            {
+                              "type": "string",
+                              "const": "beta",
+                              "title": "Beta"
+                            }
+                          ],
+                          "enum": [
+                            "alpha",
+                            "beta"
+                          ]
+                        }
+                      },
+                      "required": []
+                    },
+                    "annotations": {
+                      "autosubmit": true
+                    },
+                    "frameId": "2990B53FC1FFF21DD5B56874704DEF73",
+                    "backendNodeId": 3
+                  }
+                ]
+              },
+              "at": 1792565377339
+            },
+            {
+              "method": "WebMCP.toolInvoked",
+              "params": {
+                "toolName": "radio",
+                "frameId": "2990B53FC1FFF21DD5B56874704DEF73",
+                "invocationId": "B3041B8300B25608B49394B896D758F9",
+                "input": "{\"choice\":\"gamma\"}"
+              },
+              "at": 1792565377341
+            },
+            {
+              "method": "WebMCP.toolResponded",
+              "params": {
+                "invocationId": "B3041B8300B25608B49394B896D758F9",
+                "status": "Error",
+                "errorText": "Invalid value \"gamma\" for parameter choice"
+              },
+              "at": 1792565377341
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "launch": {
+        "executablePath": "/usr/bin/chromium",
+        "version": "154.0.8037.97",
+        "args": [
+          "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+          "--enable-blink-features=WebMCP,WebMCPTesting",
+          "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp"
+        ],
+        "ignoreDefaultArgs": [
+          "--enable-features=CDPScreenshotNewSurface"
+        ],
+        "mergedFeatures": {
+          "enable": [
+            "CDPScreenshotNewSurface",
+            "WebMCP",
+            "WebMCPTesting",
+            "DevToolsWebMCPSupport",
+            "DeclarativeWebmcp"
+          ],
+          "disable": [
+            "AvoidUnnecessaryBeforeUnloadCheckSync",
+            "DestroyProfileOnBrowserClose",
+            "DialMediaRouteProvider",
+            "GlobalMediaControls",
+            "HttpsUpgrades",
+            "LensOverlay",
+            "MediaRouter",
+            "PaintHolding",
+            "ThirdPartyStoragePartitioning",
+            "BlockOriginHeaderModificationOnRedirect",
+            "Translate",
+            "AutoDeElevate",
+            "OptimizationHints",
+            "NetworkTimeServiceQuerying",
+            "AimEnabled",
+            "msForceBrowserSignIn",
+            "msEdgeUpdateLaunchServicesPreferredVersion"
+          ],
+          "passthrough": [
+            "--enable-blink-features=WebMCP,WebMCPTesting"
+          ]
+        }
+      },
+      "cases": [
+        {
+          "round": "repeat-2",
+          "caseId": "valid-beta",
+          "input": {
+            "choice": "beta"
+          },
+          "toolsAdded": {
+            "tools": [
+              {
+                "name": "radio",
+                "description": "Choose one radio option",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "choice": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "alpha",
+                          "title": "Alpha"
+                        },
+                        {
+                          "type": "string",
+                          "const": "beta",
+                          "title": "Beta"
+                        }
+                      ],
+                      "enum": [
+                        "alpha",
+                        "beta"
+                      ]
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "3B34645E61019CC41EBF7B79C82B83D2",
+                "backendNodeId": 3
+              }
+            ]
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "choice": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "alpha",
+                    "title": "Alpha"
+                  },
+                  {
+                    "type": "string",
+                    "const": "beta",
+                    "title": "Beta"
+                  }
+                ],
+                "enum": [
+                  "alpha",
+                  "beta"
+                ]
+              }
+            },
+            "required": []
+          },
+          "commands": [
+            {
+              "method": "WebMCP.enable",
+              "params": {},
+              "result": {}
+            },
+            {
+              "method": "Page.getFrameTree",
+              "params": {},
+              "result": {
+                "frameTree": {
+                  "frame": {
+                    "id": "3B34645E61019CC41EBF7B79C82B83D2",
+                    "loaderId": "CB72652FBCDEC7C994D50C60BEFB787F",
+                    "url": "http://127.0.0.1:45837/radio.html",
+                    "domainAndRegistry": "",
+                    "securityOrigin": "http://127.0.0.1:45837",
+                    "securityOriginDetails": {
+                      "isLocalhost": true
+                    },
+                    "mimeType": "text/html",
+                    "adFrameStatus": {
+                      "adFrameType": "none"
+                    },
+                    "secureContextType": "SecureLocalhost",
+                    "crossOriginIsolatedContextType": "NotIsolated",
+                    "gatedAPIFeatures": []
+                  }
+                }
+              }
+            },
+            {
+              "method": "WebMCP.invokeTool",
+              "params": {
+                "frameId": "3B34645E61019CC41EBF7B79C82B83D2",
+                "toolName": "radio",
+                "input": {
+                  "choice": "beta"
+                }
+              },
+              "result": {
+                "invocationId": "A17584EED9868CFFACD9EC8F753EC942"
+              }
+            }
+          ],
+          "invokeToolRequest": {
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "3B34645E61019CC41EBF7B79C82B83D2",
+              "toolName": "radio",
+              "input": {
+                "choice": "beta"
+              }
+            }
+          },
+          "invokeToolReply": {
+            "invocationId": "A17584EED9868CFFACD9EC8F753EC942"
+          },
+          "invokeToolError": null,
+          "toolResponded": {
+            "invocationId": "A17584EED9868CFFACD9EC8F753EC942",
+            "status": "Completed",
+            "output": {
+              "ok": true,
+              "fields": {
+                "choice": "beta"
+              }
+            }
+          },
+          "toolRespondedWaitError": null,
+          "pageState": {
+            "calls": [
+              {
+                "agentInvoked": true,
+                "isTrusted": true,
+                "fields": {
+                  "choice": "beta"
+                }
+              }
+            ],
+            "radios": [
+              {
+                "id": "choice-alpha",
+                "name": "choice",
+                "value": "alpha",
+                "checked": false,
+                "disabled": false
+              },
+              {
+                "id": "choice-beta",
+                "name": "choice",
+                "value": "beta",
+                "checked": true,
+                "disabled": false
+              },
+              {
+                "id": "choice-gamma",
+                "name": "choice",
+                "value": "gamma",
+                "checked": false,
+                "disabled": true
+              }
+            ]
+          },
+          "webmcpEvents": [
+            {
+              "method": "WebMCP.toolsAdded",
+              "params": {
+                "tools": [
+                  {
+                    "name": "radio",
+                    "description": "Choose one radio option",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {
+                        "choice": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "alpha",
+                              "title": "Alpha"
+                            },
+                            {
+                              "type": "string",
+                              "const": "beta",
+                              "title": "Beta"
+                            }
+                          ],
+                          "enum": [
+                            "alpha",
+                            "beta"
+                          ]
+                        }
+                      },
+                      "required": []
+                    },
+                    "annotations": {
+                      "autosubmit": true
+                    },
+                    "frameId": "3B34645E61019CC41EBF7B79C82B83D2",
+                    "backendNodeId": 3
+                  }
+                ]
+              },
+              "at": 1792565377543
+            },
+            {
+              "method": "WebMCP.toolInvoked",
+              "params": {
+                "toolName": "radio",
+                "frameId": "3B34645E61019CC41EBF7B79C82B83D2",
+                "invocationId": "A17584EED9868CFFACD9EC8F753EC942",
+                "input": "{\"choice\":\"beta\"}"
+              },
+              "at": 1792565377544
+            },
+            {
+              "method": "WebMCP.toolResponded",
+              "params": {
+                "invocationId": "A17584EED9868CFFACD9EC8F753EC942",
+                "status": "Completed",
+                "output": {
+                  "ok": true,
+                  "fields": {
+                    "choice": "beta"
+                  }
+                }
+              },
+              "at": 1792565377545
+            }
+          ]
+        },
+        {
+          "round": "repeat-2",
+          "caseId": "invalid-unknown",
+          "input": {
+            "choice": "not-an-option"
+          },
+          "toolsAdded": {
+            "tools": [
+              {
+                "name": "radio",
+                "description": "Choose one radio option",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "choice": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "alpha",
+                          "title": "Alpha"
+                        },
+                        {
+                          "type": "string",
+                          "const": "beta",
+                          "title": "Beta"
+                        }
+                      ],
+                      "enum": [
+                        "alpha",
+                        "beta"
+                      ]
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "F6254841AC7141DA1B2CF7FB537396B5",
+                "backendNodeId": 3
+              }
+            ]
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "choice": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "alpha",
+                    "title": "Alpha"
+                  },
+                  {
+                    "type": "string",
+                    "const": "beta",
+                    "title": "Beta"
+                  }
+                ],
+                "enum": [
+                  "alpha",
+                  "beta"
+                ]
+              }
+            },
+            "required": []
+          },
+          "commands": [
+            {
+              "method": "WebMCP.enable",
+              "params": {},
+              "result": {}
+            },
+            {
+              "method": "Page.getFrameTree",
+              "params": {},
+              "result": {
+                "frameTree": {
+                  "frame": {
+                    "id": "F6254841AC7141DA1B2CF7FB537396B5",
+                    "loaderId": "1FC19F999D33003B85663137176FDE30",
+                    "url": "http://127.0.0.1:45837/radio.html",
+                    "domainAndRegistry": "",
+                    "securityOrigin": "http://127.0.0.1:45837",
+                    "securityOriginDetails": {
+                      "isLocalhost": true
+                    },
+                    "mimeType": "text/html",
+                    "adFrameStatus": {
+                      "adFrameType": "none"
+                    },
+                    "secureContextType": "SecureLocalhost",
+                    "crossOriginIsolatedContextType": "NotIsolated",
+                    "gatedAPIFeatures": []
+                  }
+                }
+              }
+            },
+            {
+              "method": "WebMCP.invokeTool",
+              "params": {
+                "frameId": "F6254841AC7141DA1B2CF7FB537396B5",
+                "toolName": "radio",
+                "input": {
+                  "choice": "not-an-option"
+                }
+              },
+              "result": {
+                "invocationId": "4E27E85FAEECBE90AB3D982C2E57D5C1"
+              }
+            }
+          ],
+          "invokeToolRequest": {
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "F6254841AC7141DA1B2CF7FB537396B5",
+              "toolName": "radio",
+              "input": {
+                "choice": "not-an-option"
+              }
+            }
+          },
+          "invokeToolReply": {
+            "invocationId": "4E27E85FAEECBE90AB3D982C2E57D5C1"
+          },
+          "invokeToolError": null,
+          "toolResponded": {
+            "invocationId": "4E27E85FAEECBE90AB3D982C2E57D5C1",
+            "status": "Error",
+            "errorText": "Invalid value \"not-an-option\" for parameter choice"
+          },
+          "toolRespondedWaitError": null,
+          "pageState": {
+            "calls": [],
+            "radios": [
+              {
+                "id": "choice-alpha",
+                "name": "choice",
+                "value": "alpha",
+                "checked": false,
+                "disabled": false
+              },
+              {
+                "id": "choice-beta",
+                "name": "choice",
+                "value": "beta",
+                "checked": false,
+                "disabled": false
+              },
+              {
+                "id": "choice-gamma",
+                "name": "choice",
+                "value": "gamma",
+                "checked": false,
+                "disabled": true
+              }
+            ]
+          },
+          "webmcpEvents": [
+            {
+              "method": "WebMCP.toolsAdded",
+              "params": {
+                "tools": [
+                  {
+                    "name": "radio",
+                    "description": "Choose one radio option",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {
+                        "choice": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "alpha",
+                              "title": "Alpha"
+                            },
+                            {
+                              "type": "string",
+                              "const": "beta",
+                              "title": "Beta"
+                            }
+                          ],
+                          "enum": [
+                            "alpha",
+                            "beta"
+                          ]
+                        }
+                      },
+                      "required": []
+                    },
+                    "annotations": {
+                      "autosubmit": true
+                    },
+                    "frameId": "F6254841AC7141DA1B2CF7FB537396B5",
+                    "backendNodeId": 3
+                  }
+                ]
+              },
+              "at": 1792565377637
+            },
+            {
+              "method": "WebMCP.toolInvoked",
+              "params": {
+                "toolName": "radio",
+                "frameId": "F6254841AC7141DA1B2CF7FB537396B5",
+                "invocationId": "4E27E85FAEECBE90AB3D982C2E57D5C1",
+                "input": "{\"choice\":\"not-an-option\"}"
+              },
+              "at": 1792565377638
+            },
+            {
+              "method": "WebMCP.toolResponded",
+              "params": {
+                "invocationId": "4E27E85FAEECBE90AB3D982C2E57D5C1",
+                "status": "Error",
+                "errorText": "Invalid value \"not-an-option\" for parameter choice"
+              },
+              "at": 1792565377638
+            }
+          ]
+        },
+        {
+          "round": "repeat-2",
+          "caseId": "disabled-gamma",
+          "input": {
+            "choice": "gamma"
+          },
+          "toolsAdded": {
+            "tools": [
+              {
+                "name": "radio",
+                "description": "Choose one radio option",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "choice": {
+                      "type": "string",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "alpha",
+                          "title": "Alpha"
+                        },
+                        {
+                          "type": "string",
+                          "const": "beta",
+                          "title": "Beta"
+                        }
+                      ],
+                      "enum": [
+                        "alpha",
+                        "beta"
+                      ]
+                    }
+                  },
+                  "required": []
+                },
+                "annotations": {
+                  "autosubmit": true
+                },
+                "frameId": "FDBD46CFA317A6C8722E61BE846A5DAC",
+                "backendNodeId": 3
+              }
+            ]
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "choice": {
+                "type": "string",
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "alpha",
+                    "title": "Alpha"
+                  },
+                  {
+                    "type": "string",
+                    "const": "beta",
+                    "title": "Beta"
+                  }
+                ],
+                "enum": [
+                  "alpha",
+                  "beta"
+                ]
+              }
+            },
+            "required": []
+          },
+          "commands": [
+            {
+              "method": "WebMCP.enable",
+              "params": {},
+              "result": {}
+            },
+            {
+              "method": "Page.getFrameTree",
+              "params": {},
+              "result": {
+                "frameTree": {
+                  "frame": {
+                    "id": "FDBD46CFA317A6C8722E61BE846A5DAC",
+                    "loaderId": "B592C6DD483362CED37E3719F8A0E929",
+                    "url": "http://127.0.0.1:45837/radio.html",
+                    "domainAndRegistry": "",
+                    "securityOrigin": "http://127.0.0.1:45837",
+                    "securityOriginDetails": {
+                      "isLocalhost": true
+                    },
+                    "mimeType": "text/html",
+                    "adFrameStatus": {
+                      "adFrameType": "none"
+                    },
+                    "secureContextType": "SecureLocalhost",
+                    "crossOriginIsolatedContextType": "NotIsolated",
+                    "gatedAPIFeatures": []
+                  }
+                }
+              }
+            },
+            {
+              "method": "WebMCP.invokeTool",
+              "params": {
+                "frameId": "FDBD46CFA317A6C8722E61BE846A5DAC",
+                "toolName": "radio",
+                "input": {
+                  "choice": "gamma"
+                }
+              },
+              "result": {
+                "invocationId": "D237BCF82003766F815A2A21D137E796"
+              }
+            }
+          ],
+          "invokeToolRequest": {
+            "method": "WebMCP.invokeTool",
+            "params": {
+              "frameId": "FDBD46CFA317A6C8722E61BE846A5DAC",
+              "toolName": "radio",
+              "input": {
+                "choice": "gamma"
+              }
+            }
+          },
+          "invokeToolReply": {
+            "invocationId": "D237BCF82003766F815A2A21D137E796"
+          },
+          "invokeToolError": null,
+          "toolResponded": {
+            "invocationId": "D237BCF82003766F815A2A21D137E796",
+            "status": "Error",
+            "errorText": "Invalid value \"gamma\" for parameter choice"
+          },
+          "toolRespondedWaitError": null,
+          "pageState": {
+            "calls": [],
+            "radios": [
+              {
+                "id": "choice-alpha",
+                "name": "choice",
+                "value": "alpha",
+                "checked": false,
+                "disabled": false
+              },
+              {
+                "id": "choice-beta",
+                "name": "choice",
+                "value": "beta",
+                "checked": false,
+                "disabled": false
+              },
+              {
+                "id": "choice-gamma",
+                "name": "choice",
+                "value": "gamma",
+                "checked": false,
+                "disabled": true
+              }
+            ]
+          },
+          "webmcpEvents": [
+            {
+              "method": "WebMCP.toolsAdded",
+              "params": {
+                "tools": [
+                  {
+                    "name": "radio",
+                    "description": "Choose one radio option",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {
+                        "choice": {
+                          "type": "string",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "alpha",
+                              "title": "Alpha"
+                            },
+                            {
+                              "type": "string",
+                              "const": "beta",
+                              "title": "Beta"
+                            }
+                          ],
+                          "enum": [
+                            "alpha",
+                            "beta"
+                          ]
+                        }
+                      },
+                      "required": []
+                    },
+                    "annotations": {
+                      "autosubmit": true
+                    },
+                    "frameId": "FDBD46CFA317A6C8722E61BE846A5DAC",
+                    "backendNodeId": 3
+                  }
+                ]
+              },
+              "at": 1792565377731
+            },
+            {
+              "method": "WebMCP.toolInvoked",
+              "params": {
+                "toolName": "radio",
+                "frameId": "FDBD46CFA317A6C8722E61BE846A5DAC",
+                "invocationId": "D237BCF82003766F815A2A21D137E796",
+                "input": "{\"choice\":\"gamma\"}"
+              },
+              "at": 1792565377732
+            },
+            {
+              "method": "WebMCP.toolResponded",
+              "params": {
+                "invocationId": "D237BCF82003766F815A2A21D137E796",
+                "status": "Error",
+                "errorText": "Invalid value \"gamma\" for parameter choice"
+              },
+              "at": 1792565377732
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "runError": null
+}

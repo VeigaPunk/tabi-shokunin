@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>round 19 range-color validation</title></head>
+<body>
+<form id="toolform" toolname="decl-range-color" tooldescription="Probe browser sanitization of declarative range and color fields" toolautosubmit>
+  <label>Range <input type="range" name="range" min="0" max="10" step="2" value="4"></label>
+  <label>Color <input type="color" name="color" value="#123456"></label>
+</form>
+<script>
+(function () {
+  window.__obs = { calls: [] };
+  var form = document.getElementById('toolform');
+  form.addEventListener('submit', function (event) {
+    var fields = Object.fromEntries(new FormData(event.target));
+    window.__obs.calls.push({
+      agentInvoked: event.agentInvoked === true,
+      isTrusted: event.isTrusted,
+      fields: fields
+    });
+    event.preventDefault();
+    event.respondWith(Promise.resolve({ ok: true, fields: fields }));
+  });
+})();
+</script>
+</body>
+</html>

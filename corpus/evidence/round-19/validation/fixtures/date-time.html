@@ -1,0 +1,16 @@
+<!doctype html><meta charset="utf-8"><title>date-time WebMCP validation probe</title>
+<form id="date-time" toolname="date-time" tooldescription="Record date and time input validation behavior" toolautosubmit>
+  <label>Date <input id="date" name="date" type="date" min="2026-01-01" max="2026-12-31"></label>
+  <label>Time <input id="time" name="time" type="time" min="09:00" max="17:00"></label>
+  <label>Date/time <input id="datetime" name="datetime" type="datetime-local" min="2026-01-01T09:00" max="2026-12-31T17:00"></label>
+  <label>Month <input id="month" name="month" type="month" min="2026-01" max="2026-12"></label>
+</form>
+<script>
+window.__obs = { calls: [] };
+document.querySelector('form').addEventListener('submit', event => {
+  const fields = Object.fromEntries(new FormData(event.target));
+  window.__obs.calls.push({ agentInvoked: event.agentInvoked === true, isTrusted: event.isTrusted, fields });
+  event.preventDefault();
+  event.respondWith(Promise.resolve({ ok: true, fields: Object.fromEntries(new FormData(event.target)) }));
+});
+</script>

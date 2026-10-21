@@ -1,0 +1,84 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "text-constraints",
+  "fixture": "text-constraints.html",
+  "author": "FamTextConstraints",
+  "cases": [
+    {
+      "id": "decl-text-constraints-01",
+      "tool": "text-constraints",
+      "input": { "q": "abc" },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed: q: Please match the requested format.",
+        "submitCount": 0,
+        "fields": { "q": "abc" },
+        "schema": { "properties.q.pattern": "[A-Z]+" }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/html_form_element.cc",
+        "lines": "729-758",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT"
+      },
+      "question": "Does a text value that violates pattern reach the declarative submit listener?",
+      "answer": "No. abc remains in the field, patternMismatch is true, the tool responds Error, and the submit listener is not called."
+    },
+    {
+      "id": "decl-text-constraints-02",
+      "tool": "text-constraints",
+      "input": { "q": "AB" },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "q": "AB" },
+        "schema": { "properties.q.pattern": "[A-Z]+" }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "933-947",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does WebMCP fill reject a pattern-matching value shorter than minlength=3?",
+      "answer": "No. AB is unchanged and completes with one submit; post-fill valid is true and tooShort is false."
+    },
+    {
+      "id": "decl-text-constraints-03",
+      "tool": "text-constraints",
+      "input": { "q": "ABCDEF" },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "q": "ABCDEF" },
+        "schema": { "properties.q.pattern": "[A-Z]+" }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "933-947",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does WebMCP fill truncate or reject a pattern-matching value longer than maxlength=5?",
+      "answer": "No. ABCDEF remains untruncated and completes with one submit; post-fill valid is true and tooLong is false."
+    },
+    {
+      "id": "decl-text-constraints-04",
+      "tool": "text-constraints",
+      "input": { "q": "ABCD" },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "q": "ABCD" },
+        "schema": { "properties.q.pattern": "[A-Z]+" }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "933-947",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does a string satisfying pattern, minlength, and maxlength complete a declarative tool call?",
+      "answer": "Yes. ABCD is unchanged, valid, and completes through one submit callback."
+    }
+  ]
+}

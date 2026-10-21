@@ -1,0 +1,104 @@
+{
+  "schema": "tabi-webmcp-validation-receipt-v1",
+  "generatedAt": "2026-10-21T07:30:40.270Z",
+  "runtime": {
+    "identity": "Chromium 154.0.8037.97 / Playwright 1.64.0 / Node 24.21.0",
+    "chromium": {
+      "launchPath": "/usr/bin/chromium",
+      "launchSha256": "eaed39c36bdf6ff6ff23f9f5215aaab017e59723b96f27f7fcd5e0be833a172b",
+      "realExecutable": "/usr/lib/chromium/chromium",
+      "realExecutableSha256": "95b17db7512c34bf5d78a0d55e0e49719725c73736c47eb0a7a831553c4b330a",
+      "version": "154.0.8037.97",
+      "versionSource": "Playwright Browser.version() on a pipe-owned context"
+    },
+    "playwright": {
+      "version": "1.64.0",
+      "directory": "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright"
+    },
+    "node": "24.21.0"
+  },
+  "producerSha256": "4a1de295d6f7f7389395c86a28f23ea27fe6ebc2b6194a93d66567b0bab101a4",
+  "casesFilesSha256": {
+    "external.json": "e9224d316d381ec63bd60d7804409a13d8d5b32001ac965a7dc70f8c3336d09a"
+  },
+  "fixturesSha256": {
+    "hardening-external.html": "fc0d1539533a3191c0d46f298a981ae718ab789b9767cb53a21a64f80d6f0035"
+  },
+  "cases": [
+    {
+      "id": "decl-hardening-external-01",
+      "family": "hardening-external",
+      "input": {
+        "q": "probe-external"
+      },
+      "expected": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "q": "probe-external"
+        },
+        "schema": {
+          "properties.q.type": "string"
+        }
+      },
+      "observed": {
+        "status": "Completed",
+        "errorText": null,
+        "commandError": null,
+        "invocationId": "A0B8B48A6757191FBC79F1980D7543A5",
+        "toolInvoked": {
+          "toolName": "hardening-external",
+          "frameId": "1E0FC82A0CC9F2AAD17C74BC37CE5A2D",
+          "invocationId": "A0B8B48A6757191FBC79F1980D7543A5",
+          "input": "{\"q\":\"probe-external\"}"
+        },
+        "toolResponded": {
+          "invocationId": "A0B8B48A6757191FBC79F1980D7543A5",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "q": "probe-external"
+            }
+          }
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 1,
+        "fields": {
+          "q": "probe-external"
+        },
+        "navigationViolations": [],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": [
+          "https://example.invalid/blocked.png"
+        ]
+      },
+      "pass": true
+    }
+  ],
+  "findings": [
+    {
+      "severity": "fail",
+      "code": "external_request_blocked",
+      "requests": [
+        "https://example.invalid/blocked.png"
+      ]
+    }
+  ],
+  "summary": {
+    "cases": 1,
+    "passed": 1,
+    "failed": 0,
+    "findings": 1
+  }
+}

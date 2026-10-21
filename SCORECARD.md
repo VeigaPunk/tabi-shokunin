@@ -860,3 +860,11 @@ its own changing binding record. Final delivered-tip binding receipt is retained
   claimed since user-round5; choosing other tied-lowest axes repeatedly did not retire it.
 - USER round_count, real-site approval and sibling L0 lease/ruling questions remain open.
 - Saturation8/window3 unchanged; round18 is position1 after the round17 capability. Retired:none.
+
+## Round 19 — hyaku, 2026-10-21
+
+Baseline `66251bfc1aef393e4aec599e950a8deb867736bb`. Declared claims: C1 depth (8, lowest tie), C2 operability
+(8, lowest tie), C3 calibration (9). Measured values, revisions and the axis table are appended below once
+the counters run at the landed revision; the lines in this block are not measurements.
+
+Round-19 correction: SCORECARD.md:830; IDs and pass status retained; 6 of 15 checks dropped numeric CDP codes: five now assert message substrings (invoke-unknown-tool, invoke-after-unregister, invoke-flags-off-control, invoke-iframe-frameid, invoke-before-enable); invoke-domain-disabled only a nonempty message. Supersedes the round-18 wording at `SCORECARD.md:830` ("original11 scenarios/four controls retained") and in the filed round-18 report line 8 ("Final main run retains all11 original scenarios/four controls"), where they read as unchanged assertions; re-derived by `.ufo/waves/round-19/measure-c3.mjs` d2 from the round-17 vs round-18 harness predicates at the baseline.

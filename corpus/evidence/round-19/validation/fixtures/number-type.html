@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>WebMCP number input validation</title></head>
+<body>
+<form id="number-tool" toolname="number-type" tooldescription="Probe JSON values supplied to a number input" toolautosubmit>
+  <label>Number <input id="n" type="number" name="n"></label>
+</form>
+<script>
+(() => {
+  window.__obs = { calls: [] };
+  const form = document.getElementById('number-tool');
+  form.addEventListener('submit', (event) => {
+    const fields = Object.fromEntries(new FormData(event.target));
+    window.__obs.calls.push({ agentInvoked: event.agentInvoked, isTrusted: event.isTrusted, fields });
+    event.preventDefault();
+    event.respondWith(Promise.resolve({ ok: true, fields: Object.fromEntries(new FormData(event.target)) }));
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>round19 frame navigation probe</title></head>
+<body>
+<iframe src="data:text/html,hardening-navigation"></iframe>
+<form toolname="hardening-navigation" tooldescription="Loopback-only validation probe" toolautosubmit>
+  <input type="text" name="q">
+  <button type="submit">Submit</button>
+</form>
+<script>
+window.__obs = { calls: [] };
+document.forms[0].addEventListener('submit', (event) => {
+  const fields = Object.fromEntries(new FormData(event.target));
+  window.__obs.calls.push({ agentInvoked: event.agentInvoked === true, isTrusted: event.isTrusted, fields });
+  event.preventDefault();
+  event.respondWith(Promise.resolve({ ok: true, fields }));
+});
+</script>
+</body></html>

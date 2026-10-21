@@ -1,0 +1,123 @@
+{
+  "schema": "tabi-webmcp-checkbox-probe-v1",
+  "runtime": {
+    "chromiumPath": "/usr/bin/chromium",
+    "chromium": "Chromium 154.0.8037.97",
+    "node": "v24.21.0",
+    "playwright": "1.64.0",
+    "playwrightPath": "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright"
+  },
+  "fixture": {
+    "path": "corpus/evidence/round-19/validation/fixtures/checkbox.html",
+    "sha256": "defdadd1408037a052a5af368d77464b4b992ccff295329ce8efb6ea1bc4753b"
+  },
+  "guardedLaunch": {
+    "featureArgs": [
+      "--enable-features=WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting"
+    ],
+    "PlaywrightDefaultsMerged": true,
+    "privateHomeAndTMPDIR": true,
+    "acceptDownloads": false,
+    "serviceWorkers": "block",
+    "hostResolverDeny": "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+    "pageRequestGuard": "exact loopback HTTP fixture origin only; WebSockets blocked",
+    "effectiveArgvGuardPassed": true,
+    "CDPTransport": "remote-debugging-pipe; no remote-debugging-port"
+  },
+  "firstRunGeneratedAt": "2026-10-21T06:55:15.550Z",
+  "cases": [
+    {
+      "id": "decl-checkbox-01",
+      "input": { "withoutValue": true, "withValue": true },
+      "cdp": {
+        "enable": { "request": { "method": "WebMCP.enable", "params": {} }, "response": {} },
+        "toolsAdded": { "tools": [{ "name": "checkbox", "description": "Probe checkbox input values with and without an explicit value attribute", "inputSchema": { "type": "object", "properties": { "withoutValue": { "type": "boolean", "description": "Without value attribute" }, "withValue": { "type": "boolean", "description": "With value attribute" } }, "required": [] }, "annotations": { "autosubmit": true }, "frameId": "A8934A049E2117F52E6EF978644CD998", "backendNodeId": 2 }] },
+        "invokeTool": { "request": { "method": "WebMCP.invokeTool", "params": { "frameId": "A8934A049E2117F52E6EF978644CD998", "toolName": "checkbox", "input": { "withoutValue": true, "withValue": true } } }, "response": { "invocationId": "D549EDAB19D3BA97CE2E9C283EA58CAF" }, "error": null },
+        "toolResponded": { "invocationId": "D549EDAB19D3BA97CE2E9C283EA58CAF", "status": "Completed", "output": { "ok": true, "fields": { "withoutValue": "on", "withValue": "checkbox-choice" } } }
+      },
+      "pageCalls": [{ "agentInvoked": true, "isTrusted": true, "fields": { "withoutValue": "on", "withValue": "checkbox-choice" } }],
+      "postInvokeStates": { "withoutValue": { "checked": true, "value": "on", "hasValueAttribute": false }, "withValue": { "checked": true, "value": "checkbox-choice", "hasValueAttribute": true } },
+      "cleanup": { "remainingProfilePids": [], "privateRunTreeRemoved": true }
+    },
+    {
+      "id": "decl-checkbox-02",
+      "input": { "withoutValue": false, "withValue": false },
+      "cdp": {
+        "enable": { "request": { "method": "WebMCP.enable", "params": {} }, "response": {} },
+        "toolsAdded": { "tools": [{ "name": "checkbox", "description": "Probe checkbox input values with and without an explicit value attribute", "inputSchema": { "type": "object", "properties": { "withoutValue": { "type": "boolean", "description": "Without value attribute" }, "withValue": { "type": "boolean", "description": "With value attribute" } }, "required": [] }, "annotations": { "autosubmit": true }, "frameId": "0A2C0B6D5EE8300AE65F363E4C65D9F3", "backendNodeId": 2 }] },
+        "invokeTool": { "request": { "method": "WebMCP.invokeTool", "params": { "frameId": "0A2C0B6D5EE8300AE65F363E4C65D9F3", "toolName": "checkbox", "input": { "withoutValue": false, "withValue": false } } }, "response": { "invocationId": "EE202CED2DE9BE9221B2CA70AD434DBE" }, "error": null },
+        "toolResponded": { "invocationId": "EE202CED2DE9BE9221B2CA70AD434DBE", "status": "Completed", "output": { "ok": true, "fields": {} } }
+      },
+      "pageCalls": [{ "agentInvoked": true, "isTrusted": true, "fields": {} }],
+      "postInvokeStates": { "withoutValue": { "checked": false, "value": "on", "hasValueAttribute": false }, "withValue": { "checked": false, "value": "checkbox-choice", "hasValueAttribute": true } },
+      "cleanup": { "remainingProfilePids": [], "privateRunTreeRemoved": true }
+    },
+    {
+      "id": "decl-checkbox-03",
+      "input": { "withoutValue": "checkbox-choice", "withValue": "checkbox-choice" },
+      "cdp": {
+        "enable": { "request": { "method": "WebMCP.enable", "params": {} }, "response": {} },
+        "toolsAdded": { "tools": [{ "name": "checkbox", "description": "Probe checkbox input values with and without an explicit value attribute", "inputSchema": { "type": "object", "properties": { "withoutValue": { "type": "boolean", "description": "Without value attribute" }, "withValue": { "type": "boolean", "description": "With value attribute" } }, "required": [] }, "annotations": { "autosubmit": true }, "frameId": "E25FF29CBF0FC10953A2E923FED34D13", "backendNodeId": 2 }] },
+        "invokeTool": { "request": { "method": "WebMCP.invokeTool", "params": { "frameId": "E25FF29CBF0FC10953A2E923FED34D13", "toolName": "checkbox", "input": { "withoutValue": "checkbox-choice", "withValue": "checkbox-choice" } } }, "response": { "invocationId": "00A00FB4BA4B3BAC59060DB8699034B4" }, "error": null },
+        "toolResponded": { "invocationId": "00A00FB4BA4B3BAC59060DB8699034B4", "status": "Error", "errorText": "Invalid value \"checkbox-choice\" for parameter withValue" }
+      },
+      "pageCalls": [],
+      "postInvokeStates": { "withoutValue": { "checked": false, "value": "on", "hasValueAttribute": false }, "withValue": { "checked": false, "value": "checkbox-choice", "hasValueAttribute": true } },
+      "cleanup": { "remainingProfilePids": [], "privateRunTreeRemoved": true }
+    },
+    {
+      "id": "decl-checkbox-04",
+      "input": { "withoutValue": "on", "withValue": "on" },
+      "cdp": {
+        "enable": { "request": { "method": "WebMCP.enable", "params": {} }, "response": {} },
+        "toolsAdded": { "tools": [{ "name": "checkbox", "description": "Probe checkbox input values with and without an explicit value attribute", "inputSchema": { "type": "object", "properties": { "withoutValue": { "type": "boolean", "description": "Without value attribute" }, "withValue": { "type": "boolean", "description": "With value attribute" } }, "required": [] }, "annotations": { "autosubmit": true }, "frameId": "4B7891A7E5BAAC922D7001AB5B1C7F2D", "backendNodeId": 2 }] },
+        "invokeTool": { "request": { "method": "WebMCP.invokeTool", "params": { "frameId": "4B7891A7E5BAAC922D7001AB5B1C7F2D", "toolName": "checkbox", "input": { "withoutValue": "on", "withValue": "on" } } }, "response": { "invocationId": "61C0B0CB31841F558C57499BD134A152" }, "error": null },
+        "toolResponded": { "invocationId": "61C0B0CB31841F558C57499BD134A152", "status": "Error", "errorText": "Invalid value \"on\" for parameter withValue" }
+      },
+      "pageCalls": [],
+      "postInvokeStates": { "withoutValue": { "checked": false, "value": "on", "hasValueAttribute": false }, "withValue": { "checked": false, "value": "checkbox-choice", "hasValueAttribute": true } },
+      "cleanup": { "remainingProfilePids": [], "privateRunTreeRemoved": true }
+    },
+    {
+      "id": "decl-checkbox-05",
+      "input": { "withoutValue": "unrelated", "withValue": "unrelated" },
+      "cdp": {
+        "enable": { "request": { "method": "WebMCP.enable", "params": {} }, "response": {} },
+        "toolsAdded": { "tools": [{ "name": "checkbox", "description": "Probe checkbox input values with and without an explicit value attribute", "inputSchema": { "type": "object", "properties": { "withoutValue": { "type": "boolean", "description": "Without value attribute" }, "withValue": { "type": "boolean", "description": "With value attribute" } }, "required": [] }, "annotations": { "autosubmit": true }, "frameId": "E250B058C7E57C9D7F2983FC4D3893C4", "backendNodeId": 2 }] },
+        "invokeTool": { "request": { "method": "WebMCP.invokeTool", "params": { "frameId": "E250B058C7E57C9D7F2983FC4D3893C4", "toolName": "checkbox", "input": { "withoutValue": "unrelated", "withValue": "unrelated" } } }, "response": { "invocationId": "C84D6B8C5FDD379ED6ED633D065AF787" }, "error": null },
+        "toolResponded": { "invocationId": "C84D6B8C5FDD379ED6ED633D065AF787", "status": "Error", "errorText": "Invalid value \"unrelated\" for parameter withValue" }
+      },
+      "pageCalls": [],
+      "postInvokeStates": { "withoutValue": { "checked": false, "value": "on", "hasValueAttribute": false }, "withValue": { "checked": false, "value": "checkbox-choice", "hasValueAttribute": true } },
+      "cleanup": { "remainingProfilePids": [], "privateRunTreeRemoved": true }
+    }
+  ],
+  "isolatedInputProbes": [
+    { "target": "withoutValue", "input": "checkbox-choice", "status": "Error", "errorText": "Invalid value \"checkbox-choice\" for parameter withoutValue", "submitCount": 0, "checked": false },
+    { "target": "withoutValue", "input": "on", "status": "Error", "errorText": "Invalid value \"on\" for parameter withoutValue", "submitCount": 0, "checked": false },
+    { "target": "withoutValue", "input": "unrelated", "status": "Error", "errorText": "Invalid value \"unrelated\" for parameter withoutValue", "submitCount": 0, "checked": false },
+    { "target": "withValue", "input": "checkbox-choice", "status": "Error", "errorText": "Invalid value \"checkbox-choice\" for parameter withValue", "submitCount": 0, "checked": false },
+    { "target": "withValue", "input": "on", "status": "Error", "errorText": "Invalid value \"on\" for parameter withValue", "submitCount": 0, "checked": false },
+    { "target": "withValue", "input": "unrelated", "status": "Error", "errorText": "Invalid value \"unrelated\" for parameter withValue", "submitCount": 0, "checked": false }
+  ],
+  "repeatability": {
+    "secondRunGeneratedAt": "2026-10-21T06:55:23.561Z",
+    "outcomesIdentical": true,
+    "nondeterminism": "none observed across five cases and six isolated input probes",
+    "secondRunOutcomes": [
+      { "id": "decl-checkbox-01", "status": "Completed", "errorText": null, "checked": { "withoutValue": true, "withValue": true }, "submitCount": 1 },
+      { "id": "decl-checkbox-02", "status": "Completed", "errorText": null, "checked": { "withoutValue": false, "withValue": false }, "submitCount": 1 },
+      { "id": "decl-checkbox-03", "status": "Error", "errorText": "Invalid value \"checkbox-choice\" for parameter withValue", "checked": { "withoutValue": false, "withValue": false }, "submitCount": 0 },
+      { "id": "decl-checkbox-04", "status": "Error", "errorText": "Invalid value \"on\" for parameter withValue", "checked": { "withoutValue": false, "withValue": false }, "submitCount": 0 },
+      { "id": "decl-checkbox-05", "status": "Error", "errorText": "Invalid value \"unrelated\" for parameter withValue", "checked": { "withoutValue": false, "withValue": false }, "submitCount": 0 },
+      { "id": "isolate-withoutValue-01", "status": "Error", "errorText": "Invalid value \"checkbox-choice\" for parameter withoutValue", "checked": { "withoutValue": false, "withValue": false }, "submitCount": 0 },
+      { "id": "isolate-withoutValue-02", "status": "Error", "errorText": "Invalid value \"on\" for parameter withoutValue", "checked": { "withoutValue": false, "withValue": false }, "submitCount": 0 },
+      { "id": "isolate-withoutValue-03", "status": "Error", "errorText": "Invalid value \"unrelated\" for parameter withoutValue", "checked": { "withoutValue": false, "withValue": false }, "submitCount": 0 },
+      { "id": "isolate-withValue-01", "status": "Error", "errorText": "Invalid value \"checkbox-choice\" for parameter withValue", "checked": { "withoutValue": false, "withValue": false }, "submitCount": 0 },
+      { "id": "isolate-withValue-02", "status": "Error", "errorText": "Invalid value \"on\" for parameter withValue", "checked": { "withoutValue": false, "withValue": false }, "submitCount": 0 },
+      { "id": "isolate-withValue-03", "status": "Error", "errorText": "Invalid value \"unrelated\" for parameter withValue", "checked": { "withoutValue": false, "withValue": false }, "submitCount": 0 }
+    ]
+  },
+  "cleanupSummary": { "contexts": 22, "remainingProfilePids": 0, "privateTmpTreesRemoved": 22, "blockedRequests": 0 }
+}

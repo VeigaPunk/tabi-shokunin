@@ -1,0 +1,183 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "date-time",
+  "fixture": "date-time.html",
+  "author": "FamDateTime",
+  "cases": [
+    {
+      "id": "decl-date-time-01",
+      "tool": "date-time",
+      "input": {
+        "date": "2026-10-21",
+        "time": "13:45",
+        "datetime": "2026-10-21T13:45",
+        "month": "2026-10"
+      },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "date": "2026-10-21",
+          "time": "13:45",
+          "datetime": "2026-10-21T13:45",
+          "month": "2026-10"
+        },
+        "schema": {
+          "properties.date.format": "date",
+          "properties.time.format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.datetime.format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.month.format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/html_form_element.cc",
+        "lines": "174-221",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT"
+      },
+      "question": "Do valid ISO values for all four temporal controls reach the declarative submit handler?",
+      "answer": "Yes: one trusted agent-invoked submit completed and retained all four values."
+    },
+    {
+      "id": "decl-date-time-02",
+      "tool": "date-time",
+      "input": {
+        "date": "10/21/2026",
+        "time": "13:45",
+        "datetime": "2026-10-21T13:45",
+        "month": "2026-10"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"10/21/2026\" for parameter date",
+        "submitCount": 0,
+        "fields": {
+          "date": "",
+          "time": "",
+          "datetime": "",
+          "month": ""
+        },
+        "schema": {
+          "properties.date.format": "date",
+          "properties.time.format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.datetime.format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.month.format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "246-318",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does a locale-formatted date fail before form control values are applied?",
+      "answer": "Yes: the tool returned Error for 10/21/2026; no field changed and no submit was dispatched."
+    },
+    {
+      "id": "decl-date-time-03",
+      "tool": "date-time",
+      "input": {
+        "date": "2026-10-21",
+        "time": "1:45 PM",
+        "datetime": "2026-10-21T13:45",
+        "month": "2026-10"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"1:45 PM\" for parameter time",
+        "submitCount": 0,
+        "fields": {
+          "date": "",
+          "time": "",
+          "datetime": "",
+          "month": ""
+        },
+        "schema": {
+          "properties.date.format": "date",
+          "properties.time.format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.datetime.format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.month.format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "246-318",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does a 12-hour time string fail the time input sanitizer?",
+      "answer": "Yes: 1:45 PM was rejected for parameter time; no values were applied and no submit occurred."
+    },
+    {
+      "id": "decl-date-time-04",
+      "tool": "date-time",
+      "input": {
+        "date": "2026-10-21",
+        "time": "13:45",
+        "datetime": "10/21/2026 1:45 PM",
+        "month": "2026-10"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"10/21/2026 1:45 PM\" for parameter datetime",
+        "submitCount": 0,
+        "fields": {
+          "date": "",
+          "time": "",
+          "datetime": "",
+          "month": ""
+        },
+        "schema": {
+          "properties.date.format": "date",
+          "properties.time.format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.datetime.format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.month.format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "246-318",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does a locale-formatted datetime-local value fail before filling the control?",
+      "answer": "Yes: the tool returned Error for the datetime parameter; no control changed and no submit occurred."
+    },
+    {
+      "id": "decl-date-time-05",
+      "tool": "date-time",
+      "input": {
+        "date": "2027-01-01",
+        "time": "08:00",
+        "datetime": "2027-01-01T08:00",
+        "month": "2027-01"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Form validation failed:",
+        "submitCount": 0,
+        "fields": {
+          "date": "2027-01-01",
+          "time": "08:00",
+          "datetime": "2027-01-01T08:00",
+          "month": "2027-01"
+        },
+        "schema": {
+          "properties.date.format": "date",
+          "properties.time.format": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.datetime.format": "^[0-9]{4}-(0[1-9]|1[0-2])-[0-9]{2}T([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "properties.month.format": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/html_form_element.cc",
+        "lines": "729-759",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT"
+      },
+      "question": "Can ISO values outside the four native min/max bounds be filled but still block declarative submission?",
+      "answer": "Yes: values remained present, native validation returned Error for all four, and no submit event fired."
+    }
+  ]
+}

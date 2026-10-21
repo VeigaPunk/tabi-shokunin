@@ -1,0 +1,46 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "selftest",
+  "fixture": "selftest.html",
+  "author": "ExecValidationHarness",
+  "cases": [
+    {
+      "id": "decl-selftest-01",
+      "tool": "validation-selftest",
+      "input": { "q": "smoke-one", "mode": "basic" },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": { "q": "smoke-one", "mode": "basic" },
+        "schema": { "properties.q.type": "string" }
+      },
+      "source": {
+        "file": "selftest fixture only (not production evidence)",
+        "lines": "1-1",
+        "url": "http://127.0.0.1/"
+      },
+      "question": "Does a valid form input complete declarative invocation?",
+      "answer": "Measured by this smoke run; not production evidence."
+    },
+    {
+      "id": "decl-selftest-02",
+      "tool": "validation-selftest",
+      "input": { "q": "smoke-two", "mode": "advanced", "unexpected": "discard-me" },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "there is no such parameter for the tool",
+        "submitCount": 0,
+        "fields": { "q": "", "mode": "basic" },
+        "schema": { "properties.q.type": "string" }
+      },
+      "source": {
+        "file": "selftest fixture only (not production evidence)",
+        "lines": "1-1",
+        "url": "http://127.0.0.1/"
+      },
+      "question": "What happens to an undeclared parameter?",
+      "answer": "Measured by this smoke run; not production evidence."
+    }
+  ]
+}

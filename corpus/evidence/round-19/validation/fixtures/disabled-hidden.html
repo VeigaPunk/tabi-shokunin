@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>round 19 disabled-hidden</title></head>
+<body>
+<form id="toolform" toolname="disabled-hidden" tooldescription="Probe form-control schema and invocation behavior" toolautosubmit>
+  <label>Baseline <input id="baseline" type="text" name="baseline" value="baseline-before"></label>
+  <label>Disabled <input id="disabledField" type="text" name="disabledField" value="disabled-before" disabled></label>
+  <label>Readonly <input id="readonlyField" type="text" name="readonlyField" value="readonly-before" readonly></label>
+  <input id="hiddenField" type="hidden" name="hiddenField" value="hidden-before">
+  <label>Unnamed <input id="unnamedField" type="text" value="unnamed-before"></label>
+  <button type="submit" id="go" name="submitAction" value="submit">Go</button>
+</form>
+<script>
+(function () {
+  window.__obs = { calls: [] };
+  var form = document.getElementById('toolform');
+
+  form.addEventListener('submit', function (event) {
+    var fields = Object.fromEntries(new FormData(event.target));
+    window.__obs.calls.push({
+      agentInvoked: event.agentInvoked === true,
+      isTrusted: event.isTrusted,
+      fields: fields
+    });
+    event.preventDefault();
+    event.respondWith(Promise.resolve({ ok: true, fields: fields }));
+  });
+})();
+</script>
+</body>
+</html>

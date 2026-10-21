@@ -2034,3 +2034,70 @@ counter pins/argv/input sets also live in `.ufo/waves/round-18/measurement-bindi
 A zero counter exit means it evaluated, not that all hazards/repairs passed. Read the count and
 per-item reasons. Finite mutants tested are recorded in the self-test receipts and wave reports;
 coordinated fabrication of remote publisher history is not claimed defeated.
+
+## Round 19 — declarative WebMCP input validation, measured (2026-10-21)
+
+Runtime-verified on Chromium 154.0.8037.97 / Playwright 1.64.0 / Node 24.21.0, loopback fixtures,
+WebMCP flags on, one fresh context per case. Harness: `node scripts/webmcp-validation-round19.mjs --out
+<path outside the lane>` (exit 0 all cases pass, 1 a case failed, 2 could not evaluate); cases/fixtures/
+probes and the predeclared decision manifest live in `corpus/evidence/round-19/validation/`
+(`decisions.json`, receipt `receipt.json`). Knowledge: `corpus/knowledge/webmcp-declarative-validation-round-19.md`.
+This supersedes the source-only qualification at `SKILL.md:1994-1997` for the rows below: the declarative
+rejection paths are now runtime-observed, not only read from S071. It is not a claim about real sites,
+other builds, agent-side clients or custom elements (ValidateParameterData returns true for them, S077 `form_mcp_schema.cc:289-291`).
+
+### Declarative WebMCP input-validation decision table (round 19)
+
+Two error classes exist. **Fill-time** (`kInvalidInputArguments`, S077): unknown key or a value the
+per-type validator rejects — the whole call fails, NO control changes, no submit. **Submit-time**
+(`kToolInvocationFailed`, S078 `html_form_element.cc:729-751`): values were filled, then toolautosubmit's
+interactive constraint validation failed — the error reads `Form validation failed: <name>: <validationMessage>. `
+and the bad values REMAIN in the form. Read `toolResponded.status` + `errorText`; never infer success from
+the invocation id. Non-object input never reaches Blink (CDP `Invalid parameters`).
+
+| Decision | Condition | Observed outcome | Cases (probe; control) | Source |
+|---|---|---|---|---|
+| DV-01 | An input key names no control | Error; errorText `Input contains a parameter "<key>" but there is no such parameter for the tool`; no submit; controls unchanged | `decl-unknown-param-01`; control `decl-unknown-param-04` | S077 `form_mcp_schema.cc:214-219` |
+| DV-02 | A valid key is sent together with an unknown key | Whole call rejected with the unknown-parameter Error; the valid key is NOT applied (validate-all, then apply) | `decl-unknown-param-02`; control `decl-unknown-param-04` | S077 `form_mcp_schema.cc:208-241` |
+| DV-03 | The key is the control's id, not its name | Rejected as unknown: parameters are keyed by the control name | `decl-unknown-param-03`; control `decl-unknown-param-04` | S077 `form_mcp_schema.cc:1238-1247` |
+| DV-04 | A key targets a disabled or readonly control | Absent from inputSchema and rejected as unknown parameter; control unchanged | `decl-disabled-hidden-01`, `decl-disabled-hidden-02`; control `decl-disabled-hidden-04` | S077 `form_mcp_schema.cc:1238-1243` |
+| DV-05 | A key targets an `<input type=hidden>` | Absent from inputSchema but NOT unknown: Error `Invalid value "<v>" for parameter <name>` (no validator branch for hidden) | `decl-disabled-hidden-03`; control `decl-disabled-hidden-04` | S077 `form_mcp_schema.cc:246-300` |
+| DV-06 | A `required` control is omitted or sent as "" | Fill succeeds, then autosubmit's interactive validation fails: Error `Form validation failed: <name>: Please fill out this field.`; no submit | `decl-missing-required-01`, `decl-missing-required-02`; control `decl-missing-required-04` | S078 `html_form_element.cc:729-751` |
+| DV-07 | A scalar control receives JSON null, an array or an object | Fill-time Error with the unquoted template `Invalid value for parameter <name>` | `decl-missing-required-03`, `decl-non-scalar-01`, `decl-non-scalar-02`; control `decl-missing-required-04` | S077 `form_mcp_schema.cc:222-231` |
+| DV-08 | The top-level input is not a JSON object (array, string, null) | CDP rejects the command (`Invalid parameters`): no invocationId, no toolInvoked, page untouched | `decl-non-scalar-03`, `decl-non-scalar-04`, `decl-non-scalar-05`; control `decl-non-scalar-06` | S079 `WebMCP.pdl:59-69` |
+| DV-09 | A number control receives a non-numeric string or a boolean | Fill-time Error `Invalid value "<v>" for parameter n` (boolean quoted as "true"); control left empty | `decl-number-type-03`, `decl-number-type-04`; control `decl-number-type-01` | S077 `form_mcp_schema.cc:321-335` |
+| DV-10 | A number control receives a numeric string or a large exponent | Accepted and submitted; the string is coerced ("42") and 1.25e21 is reserialized as `1.25000e+21` | `decl-number-type-02`, `decl-number-type-05`; control `decl-number-type-01` | S077 `form_mcp_schema.cc:49-62` |
+| DV-11 | A number violates min, max or step | Filled (field keeps the bad value), then Error `Form validation failed: amount: Value must be …` / `Please enter a valid value. The two nearest valid values are 2 and 5.`; no submit | `decl-number-range-01`, `decl-number-range-02`, `decl-number-range-03`; control `decl-number-range-04` | S078 `html_form_element.cc:729-751` |
+| DV-12 | A single select receives a visible label or an absent value | Fill-time Error `Invalid value "<v>" for parameter choice`; only option `value` strings match; selection unchanged | `decl-select-enum-02`, `decl-select-enum-03`; control `decl-select-enum-01` | S077 `form_mcp_schema.cc:390-409` |
+| DV-13 | A single select receives the value of a `disabled` option | Accepted, selected and submitted: option disabled state is not filtered (contrast DV-17) | `decl-select-enum-04`; control `decl-select-enum-01` | S077 `form_mcp_schema.cc:397-400` |
+| DV-14 | A multiple select receives an array with a non-option member, or a bare string | Error (`Invalid value for parameter colors` / `Invalid value "red" for parameter colors`); no selection change | `decl-select-multiple-02`, `decl-select-multiple-03`; control `decl-select-multiple-01` | S077 `form_mcp_schema.cc:403-425` |
+| DV-15 | A single checkbox receives a string (including "on" or its value attribute) | Error `Invalid value "<v>" for parameter <name>`; single checkboxes take booleans only | `decl-checkbox-03`, `decl-checkbox-04`, `decl-checkbox-05`; control `decl-checkbox-01` | S077 `form_mcp_schema.cc:337-343` |
+| DV-16 | A radio group receives a value matching no radio | Error `Invalid value "not-an-option" for parameter choice`; nothing checked | `decl-radio-02`; control `decl-radio-01` | S077 `form_mcp_schema.cc:374-388` |
+| DV-17 | A radio group receives the value of a `disabled` radio | Rejected like an unknown value: disabled radios are dropped from the control set (contrast DV-13) | `decl-radio-03`; control `decl-radio-01` | S077 `form_mcp_schema.cc:1238-1243` |
+| DV-18 | A text value violates `pattern` | Filled, then Error `Form validation failed: q: Please match the requested format.`; no submit | `decl-text-constraints-01`; control `decl-text-constraints-04` | S078 `html_form_element.cc:729-751` |
+| DV-19 | A text value violates `minlength`/`maxlength` (len 2 < 3; len 6 > 5) | NOT enforced: Completed and submitted unchanged — too-short/too-long apply only to user edits, not script/agent fills | `decl-text-constraints-02`, `decl-text-constraints-03`; control `decl-text-constraints-04` | S083 `form-control-infrastructure.html:323-327` |
+| DV-20 | An email or url control receives a malformed string | Filled, then Error `Form validation failed: email: Please include an '@' …` / `url: Please enter a URL.`; schema has no `format` | `decl-email-url-01`, `decl-email-url-03`; control `decl-email-url-02` | S078 `html_form_element.cc:729-751` |
+| DV-21 | A date, time or datetime-local control receives a non-ISO string | Fill-time Error `Invalid value "<v>" for parameter <name>`; nothing filled (sanitizer yields empty) | `decl-date-time-02`, `decl-date-time-03`, `decl-date-time-04`; control `decl-date-time-01` | S077 `form_mcp_schema.cc:302-318` |
+| DV-22 | A date/time value lies outside min/max | Filled, then Error `Form validation failed: date: Value must be 12/31/2026 or earlier.` (locale-formatted); no submit | `decl-date-time-05`; control `decl-date-time-01` | S078 `html_form_element.cc:729-751` |
+| DV-23 | A range control receives an out-of-range or non-numeric value | Completed and submitted after sanitization: 99 → `10` (max); "not-a-number" → `6` (midpoint 5 snapped to step 2) | `decl-range-color-01`, `decl-range-color-02`; control `decl-range-color-03` | S082 `input.html:3391-3412` |
+| DV-24 | A color control receives a CSS name or an unparseable string | Completed: "red" → `#ff0000`; unparseable → `#000000` (opaque black) | `decl-range-color-03`, `decl-range-color-04`, `decl-range-color-05`; control `decl-range-color-01` | S082 `input.html:3667-3678` |
+| DV-25 | A value contains CR/LF | textarea normalizes CRLF to LF; a single-line text input strips CR and LF | `decl-textarea-empty-01`; control `decl-textarea-empty-04` | S082 `input.html:1762-1763` |
+| DV-26 | A key is omitted | The control keeps its default/pre-filled value (omission is not clearing) | `decl-textarea-empty-03`; control `decl-textarea-empty-04` | S077 `form_mcp_schema.cc:233-241` |
+| DV-27 | A key is sent as the empty string | The control is cleared (empty strings pass text validation) | `decl-textarea-empty-02`; control `decl-textarea-empty-04` | S077 `form_mcp_schema.cc:311-313` |
+
+Agent rules derived from the table: send keys by control `name`; send checkboxes as booleans, numbers as JSON
+numbers, selects/radios by option `value` (never label); expect disabled/readonly/hidden controls to be
+unsettable; do not rely on minlength/maxlength or on select-option `disabled` to constrain an agent; treat a
+`Form validation failed` error as "form now holds the rejected values"; treat omission as "leave as is" and
+`""` as "clear". Measured counts: 66 cases, 27 decisions — `node .ufo/waves/round-19/measure-c1.mjs <rev>`.
+
+### Registry — round 19
+
+| Name / kind | Entry command (lane root) | Verdict map | Self-test | Pinned values | Write scope / owner |
+|---|---|---|---|---|---|
+| validation counter / gate | `node .ufo/waves/round-19/measure-c1.mjs REV` | 0 clean/evaluated, 1 failed, 2 could-not-evaluate | same command `--self-test` (fixture mode; receipt `corpus/evidence/round-19/selftests/c1.json`) | `corpus/evidence/round-19/validation/decisions.json`, case/fixture/receipt/body digests | temporary sandbox + stdout only; tabi |
+| download binding counter / gate | `node .ufo/waves/round-19/measure-c2.mjs REV` | 0 evaluated, 1 failed, 2 could-not-evaluate | same `--self-test`; receipt `corpus/evidence/round-19/selftests/c2.json` | counter-owned nonce/artifact mutants; `c2-mutants/` under round19 waves | temporary owned browsers/profiles/server + stdout; tabi |
+| routed correction counter / gate | `node .ufo/waves/round-19/measure-c3.mjs REV` | 0 all four closed, 1 a closure failed, 2 could-not-evaluate | same `--self-test`; receipt `corpus/evidence/round-19/selftests/c3.json` | B harnesses + QUALITY33–39 + registry specs + isolation ledger | read-only Git + temp isolation checker; tabi |
+| writer isolation / gate | `node .ufo/waves/round-19/isolation/check-isolation.mjs` | 0 clean, 1 failed, 2 could-not-evaluate | same `--self-test`; receipt `corpus/evidence/round-19/selftests/isolation.json` | `isolation/ledger.json`, clones/commits/base B | read-only clone Git, temp fixture repos in self-test; tabi |
+| validation harness / probe | `node scripts/webmcp-validation-round19.mjs --out NEW_EXTERNAL_PATH` | 0 all cases match, 1 failed, 2 could-not-evaluate/refused | `--cases corpus/evidence/round-19/validation/selftest/cases --fixtures corpus/evidence/round-19/validation/selftest/fixtures --out NEW_EXTERNAL_PATH`; wrong-expectation control `selftest-wrong/` | cases/fixtures, runtime pin154/1.64/24.21, recorded producer digest | own temp browser/server + selected new external receipt; tabi |
+| download-bound invoke harness / probe | `node scripts/webmcp-invoke-round19.mjs --out NEW_EXTERNAL_PATH` | 0 pass, 1 failed, 2 could-not-evaluate/abort | counter C2 supplies finite mutants; no standalone self-invocation claimed | 12 case ids/four controls + nonce/artifact-root expectations | own temp browser/server + selected receipt; tabi |

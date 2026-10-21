@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>round 19 checkbox validation</title></head>
+<body>
+<form id="checkbox" toolname="checkbox" tooldescription="Probe checkbox input values with and without an explicit value attribute" toolautosubmit>
+  <label for="without-value">Without value attribute</label>
+  <input id="without-value" type="checkbox" name="withoutValue">
+  <label for="with-value">With value attribute</label>
+  <input id="with-value" type="checkbox" name="withValue" value="checkbox-choice">
+  <button type="submit">Submit</button>
+</form>
+<script>
+window.__obs = { calls: [] };
+document.getElementById('checkbox').addEventListener('submit', function (event) {
+  var fields = Object.fromEntries(new FormData(event.target));
+  window.__obs.calls.push({
+    agentInvoked: event.agentInvoked === true,
+    isTrusted: event.isTrusted,
+    fields: fields
+  });
+  event.preventDefault();
+  event.respondWith(Promise.resolve({ ok: true, fields: fields }));
+});
+</script>
+</body>
+</html>

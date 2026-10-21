@@ -1,0 +1,26 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>round19 validation smoke wrong expectation</title></head>
+<body>
+<form id="toolform" toolname="validation-selftest" tooldescription="Local declarative validation smoke tool" toolautosubmit>
+  <label>Query <input type="text" name="q"></label>
+  <label>Mode
+    <select name="mode">
+      <option value="basic">Basic</option>
+      <option value="advanced">Advanced</option>
+    </select>
+  </label>
+  <button type="submit">Go</button>
+</form>
+<script>
+(function () {
+  window.__obs = { calls: [] };
+  var form = document.getElementById('toolform');
+  form.addEventListener('submit', function (event) {
+    var fields = Object.fromEntries(new FormData(event.target));
+    window.__obs.calls.push({ agentInvoked: event.agentInvoked === true, isTrusted: event.isTrusted, fields: fields });
+    event.preventDefault();
+    event.respondWith(Promise.resolve({ ok: true, fields: fields }));
+  });
+})();
+</script>
+</body></html>

@@ -1082,3 +1082,33 @@ the frontier row "Native WebMCP in chromium 152 — unprobed (census U3)"
 - Author trends: expansion unchanged; quality improved; discernment improved by lesson-backed
   resolution of the previous outside disagreements. Current non-author closure/promotion is not
   claimed. Open tabi round17 L0 questions (musketeer lease, revenger/kama ruling reach) unchanged.
+
+## Round 19 — hyaku, 2026-10-21 (steered round 19, attempt 1)
+
+- Baseline `66251bfc1aef393e4aec599e950a8deb867736bb`. L1 TabiR19-2 holds the planner seat. Claims:
+  C1 depth (8, lowest tie) runtime-verified declarative-WebMCP validation decisions from the predeclared
+  manifest `corpus/evidence/round-19/validation/decisions.json` (27 decisions, 66 cases); C2 operability
+  (8, lowest tie) download-evidence binding properties in the invoke successor (artifact-root scan + per-run
+  nonce); C3 calibration (9) four non-code routed defects from the round-18 spot-check. Motivation:
+  `SKILL.md:1994-1997` left declarative validation source-only; spot-check routed 1–4.
+- Round-19 correction of LOG.md:1059: "QUALITY33–38 arise from the lesson's mistake rows" is superseded —
+  the round-18 additions are QUALITY 33–39 (seven criteria, `corpus/QUALITY.md:140-165`); re-derived by
+  `awk '/^[0-9]+\. /{n=$1+0} n>=33&&n<=39&&/round-18\.md/{s[n]=1} END{print length(s)}' corpus/QUALITY.md`
+  → 7 at the baseline. The old entry is retained unchanged.
+- Wave 1: 72 seats (scout19/executor26/scribe8/reviewer7/connector6/critic3/revenger2/sentinel1), one
+  validated payload; three job-cap refusals spawned none, the unchanged payload spawned all 72 on attempt 4.
+  Production writers worked in clones under `/fast/scratch/tabi-r19/<seat>` (ledger
+  `.ufo/waves/round-19/isolation/ledger.json`, checker clean 23 entries). Four executors refused to commit;
+  the L1 committed their clone files on their branches, labelled as such.
+- Integration: 66/66 cases pass on Chromium 154.0.8037.97/Playwright 1.64.0/Node 24.21.0 after (a) the
+  harness field reader keyed unnamed controls as "" and excluded buttons, (b) checkbox expectations were
+  re-encoded from checked booleans to the harness's FormData-like values (seat original retained), (c) two
+  in-family control cases were added. First run 55/64 (`validation/integration/`).
+- Sources S077–S093 opened 2026-10-21 (6 mined, 11 queued); S077 supersedes S071's single anchor. Knowledge
+  `corpus/knowledge/webmcp-declarative-validation-round-19.md`. QUALITY 40–46 from round-19 mistakes.
+- H1/F6 (spot-check routed 3): the round-18 harness already exits 2 with no receipt and no surviving browser on
+  SIGINT/SIGHUP (`w1/ProbeR18Signals.json`), and the witness refuses HEAD/@/master/short/off-branch with
+  `witness_revision_refused` plus a shape-specific detail (`w1/ProbeR18Witness.json`); the round-19 C2 counter
+  now covers each shape as informational coverage, not claim credit. H4: the round-18 scan looks for marker
+  bytes, not the suggested filename as the spot-check wrote (`w1/ProbeR18Download.md`); both the replayed
+  record and a planted GUID artifact still pass the round-18 predicate (`c2-mutants/`).

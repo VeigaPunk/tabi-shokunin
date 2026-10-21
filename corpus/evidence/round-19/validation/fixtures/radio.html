@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>radio-group WebMCP fixture</title></head>
+<body>
+<form id="radio-form" toolname="radio" tooldescription="Choose one radio option" toolautosubmit>
+  <fieldset>
+    <legend>Choice</legend>
+    <label for="choice-alpha">Alpha</label>
+    <input id="choice-alpha" type="radio" name="choice" value="alpha">
+    <label for="choice-beta">Beta</label>
+    <input id="choice-beta" type="radio" name="choice" value="beta">
+    <label for="choice-gamma">Gamma (disabled)</label>
+    <input id="choice-gamma" type="radio" name="choice" value="gamma" disabled>
+  </fieldset>
+  <button id="submit" type="submit">Submit</button>
+</form>
+<script>
+(() => {
+  window.__obs = { calls: [] };
+  const form = document.getElementById('radio-form');
+  form.addEventListener('submit', (event) => {
+    const fields = Object.fromEntries(new FormData(event.target).entries());
+    window.__obs.calls.push({
+      agentInvoked: event.agentInvoked === true,
+      isTrusted: event.isTrusted,
+      fields,
+    });
+    event.preventDefault();
+    event.respondWith(Promise.resolve({ ok: true, fields }));
+  });
+})();
+</script>
+</body>
+</html>

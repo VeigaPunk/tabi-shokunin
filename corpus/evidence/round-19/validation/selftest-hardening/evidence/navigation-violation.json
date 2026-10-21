@@ -1,0 +1,127 @@
+{
+  "schema": "tabi-webmcp-validation-receipt-v1",
+  "generatedAt": "2026-10-21T07:30:40.272Z",
+  "runtime": {
+    "identity": "Chromium 154.0.8037.97 / Playwright 1.64.0 / Node 24.21.0",
+    "chromium": {
+      "launchPath": "/usr/bin/chromium",
+      "launchSha256": "eaed39c36bdf6ff6ff23f9f5215aaab017e59723b96f27f7fcd5e0be833a172b",
+      "realExecutable": "/usr/lib/chromium/chromium",
+      "realExecutableSha256": "95b17db7512c34bf5d78a0d55e0e49719725c73736c47eb0a7a831553c4b330a",
+      "version": "154.0.8037.97",
+      "versionSource": "Playwright Browser.version() on a pipe-owned context"
+    },
+    "playwright": {
+      "version": "1.64.0",
+      "directory": "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright"
+    },
+    "node": "24.21.0"
+  },
+  "producerSha256": "4a1de295d6f7f7389395c86a28f23ea27fe6ebc2b6194a93d66567b0bab101a4",
+  "casesFilesSha256": {
+    "navigation.json": "e3813e6689e7f3527ccae4bdeb54249bfe4ce5f5bae9b957d29736355ca953f6"
+  },
+  "fixturesSha256": {
+    "hardening-navigation.html": "3ce6de8af36bdfde688d5f4db8baf91fb8df52e1c0db6f5a76a6d507c8d59253"
+  },
+  "cases": [
+    {
+      "id": "decl-hardening-navigation-01",
+      "family": "hardening-navigation",
+      "input": {
+        "q": "probe-navigation"
+      },
+      "expected": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "q": "probe-navigation"
+        },
+        "schema": {
+          "properties.q.type": "string"
+        }
+      },
+      "observed": {
+        "status": "Completed",
+        "errorText": null,
+        "commandError": null,
+        "invocationId": "F6C25761F9F4C8FBDEE6821EC34494E7",
+        "toolInvoked": {
+          "toolName": "hardening-navigation",
+          "frameId": "E82D5F972FA61553B904A72A5CC82BB1",
+          "invocationId": "F6C25761F9F4C8FBDEE6821EC34494E7",
+          "input": "{\"q\":\"probe-navigation\"}"
+        },
+        "toolResponded": {
+          "invocationId": "F6C25761F9F4C8FBDEE6821EC34494E7",
+          "status": "Completed",
+          "output": {
+            "ok": true,
+            "fields": {
+              "q": "probe-navigation"
+            }
+          }
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string"
+            }
+          },
+          "required": []
+        },
+        "submitCount": 1,
+        "fields": {
+          "q": "probe-navigation"
+        },
+        "navigationViolations": [
+          {
+            "source": "Page.getFrameTree",
+            "frameId": "E079CBE9932853BB36B283C9E489ED91",
+            "url": "data:text/html,hardening-navigation",
+            "origin": "null"
+          },
+          {
+            "source": "Page.frameNavigated",
+            "frameId": "E079CBE9932853BB36B283C9E489ED91",
+            "url": "data:text/html,hardening-navigation",
+            "origin": "null"
+          }
+        ],
+        "downloadEvents": [],
+        "newPlaywrightArtifactFiles": [],
+        "blockedExternalRequests": []
+      },
+      "pass": false
+    }
+  ],
+  "findings": [
+    {
+      "severity": "fail",
+      "code": "navigation_outside_fixture_origin",
+      "case": "decl-hardening-navigation-01",
+      "violations": [
+        {
+          "source": "Page.getFrameTree",
+          "frameId": "E079CBE9932853BB36B283C9E489ED91",
+          "url": "data:text/html,hardening-navigation",
+          "origin": "null"
+        },
+        {
+          "source": "Page.frameNavigated",
+          "frameId": "E079CBE9932853BB36B283C9E489ED91",
+          "url": "data:text/html,hardening-navigation",
+          "origin": "null"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "cases": 1,
+    "passed": 0,
+    "failed": 1,
+    "findings": 1
+  }
+}

@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>text constraints</title></head>
+<body>
+<form id="toolform" toolname="text-constraints" tooldescription="Submit a text field constrained by pattern, minlength, and maxlength" toolautosubmit>
+  <label>Query <input type="text" name="q" pattern="[A-Z]+" minlength="3" maxlength="5"></label>
+  <button type="submit" id="go">Go</button>
+</form>
+<script>
+(function () {
+  window.__obs = { calls: [] };
+  var form = document.getElementById('toolform');
+
+  form.addEventListener('submit', function (event) {
+    var fields = Object.fromEntries(new FormData(event.target));
+    window.__obs.calls.push({
+      agentInvoked: event.agentInvoked === true,
+      isTrusted: event.isTrusted,
+      fields: fields
+    });
+    event.preventDefault();
+    event.respondWith(Promise.resolve({
+      ok: true,
+      fields: Object.fromEntries(new FormData(event.target))
+    }));
+  });
+})();
+</script>
+</body>
+</html>

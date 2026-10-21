@@ -1,0 +1,200 @@
+{
+  "schema": "tabi-webmcp-select-enum-probe-v1",
+  "family": "select-enum",
+  "capturedAt": "2026-10-21",
+  "runtime": {
+    "chromiumExecutable": "/usr/bin/chromium",
+    "chromiumVersion": "154.0.8037.97",
+    "playwrightVersion": "1.64.0",
+    "nodeVersion": "v24.21.0",
+    "fixtureOrigin": "http://127.0.0.1:<ephemeral-port>",
+    "cdpTransport": "Playwright CDPSession over pipe via context.newCDPSession(page)",
+    "acceptDownloads": false,
+    "serviceWorkers": "block",
+    "hostResolverRule": "--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1",
+    "effectiveFeatureArgs": [
+      "--enable-features=CDPScreenshotNewSurface,WebMCP,WebMCPTesting,DevToolsWebMCPSupport,DeclarativeWebmcp",
+      "--enable-blink-features=WebMCP,WebMCPTesting"
+    ],
+    "playwrightDefaultDisableFeaturesMerged": [
+      "AvoidUnnecessaryBeforeUnloadCheckSync",
+      "DestroyProfileOnBrowserClose",
+      "DialMediaRouteProvider",
+      "GlobalMediaControls",
+      "HttpsUpgrades",
+      "LensOverlay",
+      "MediaRouter",
+      "PaintHolding",
+      "ThirdPartyStoragePartitioning",
+      "BlockOriginHeaderModificationOnRedirect",
+      "Translate",
+      "AutoDeElevate",
+      "OptimizationHints",
+      "NetworkTimeServiceQuerying",
+      "AimEnabled",
+      "msForceBrowserSignIn",
+      "msEdgeUpdateLaunchServicesPreferredVersion"
+    ],
+    "launchGuards": {
+      "hostResolverDenyObserved": true,
+      "oneEnableFeaturesSwitch": true,
+      "oneEnableBlinkFeaturesSwitch": true,
+      "oneDisableFeaturesSwitch": true,
+      "remoteDebuggingPipe": true,
+      "remoteDebuggingPort": false,
+      "noSandboxFlag": false,
+      "profileDevToolsActivePort": false,
+      "privateHomeAndTmp": true
+    }
+  },
+  "source": {
+    "tag": "154.0.8037.97",
+    "commit": "b510e9d7cd3a2fbd78d0ddc42234103206c5f78d",
+    "accessDate": "2026-10-21",
+    "formMcpSchema": {
+      "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT",
+      "decodedSha256": "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f",
+      "checkedLines": [ "208-243", "390-405", "733-770" ]
+    },
+    "htmlFormElement": {
+      "file": "third_party/blink/renderer/core/html/forms/html_form_element.cc",
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT",
+      "decodedSha256": "8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916",
+      "checkedLines": [ "174-221", "231-259" ]
+    }
+  },
+  "schemaObservation": {
+    "path": "properties.choice",
+    "type": "string",
+    "anyOf": [
+      { "type": "string", "const": "alpha-code", "title": "Alpha label" },
+      { "type": "string", "const": "beta-code", "title": "Beta visible label" },
+      { "type": "string", "const": "disabled-code", "title": "Disabled visible label" }
+    ],
+    "enum": [ "alpha-code", "beta-code", "disabled-code" ],
+    "oneOf": null,
+    "description": "Choice",
+    "required": []
+  },
+  "firstRun": {
+    "loopbackPort": 43079,
+    "cases": [
+      {
+        "id": "decl-select-enum-01",
+        "input": { "choice": "beta-code" },
+        "eventOrder": [ "WebMCP.toolsAdded", "WebMCP.toolInvoked", "WebMCP.toolResponded" ],
+        "cdp": {
+          "enable": { "method": "WebMCP.enable", "params": {}, "response": {} },
+          "toolsAdded": {
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [ {
+                "name": "select-enum",
+                "description": "Single select enum probe",
+                "inputSchema": { "type": "object", "properties": { "choice": { "type": "string", "anyOf": [ { "type": "string", "const": "alpha-code", "title": "Alpha label" }, { "type": "string", "const": "beta-code", "title": "Beta visible label" }, { "type": "string", "const": "disabled-code", "title": "Disabled visible label" } ], "enum": [ "alpha-code", "beta-code", "disabled-code" ], "description": "Choice" } }, "required": [] },
+                "annotations": { "autosubmit": true },
+                "frameId": "D286FEDD04E378926CC7B66796208DE9",
+                "backendNodeId": 2
+              } ]
+            }
+          },
+          "invokeTool": { "method": "WebMCP.invokeTool", "params": { "frameId": "D286FEDD04E378926CC7B66796208DE9", "toolName": "select-enum", "input": { "choice": "beta-code" } }, "response": { "invocationId": "048FEE40A796A7F477823166C169110B" } },
+          "toolInvoked": { "method": "WebMCP.toolInvoked", "params": { "toolName": "select-enum", "frameId": "D286FEDD04E378926CC7B66796208DE9", "invocationId": "048FEE40A796A7F477823166C169110B", "input": "{\"choice\":\"beta-code\"}" } },
+          "toolResponded": { "method": "WebMCP.toolResponded", "params": { "invocationId": "048FEE40A796A7F477823166C169110B", "status": "Completed", "output": { "ok": true, "fields": { "choice": "beta-code" } } } }
+        },
+        "pageState": { "calls": [ { "agentInvoked": true, "isTrusted": true, "fields": { "choice": "beta-code" } } ], "fields": { "choice": "beta-code" }, "controls": { "choice": { "value": "beta-code", "selectedIndex": 1, "selectedOptions": [ { "value": "beta-code", "label": "Beta visible label", "disabled": false, "selected": true } ], "options": [ { "value": "alpha-code", "label": "Alpha label", "disabled": false, "selected": false }, { "value": "beta-code", "label": "Beta visible label", "disabled": false, "selected": true }, { "value": "disabled-code", "label": "Disabled visible label", "disabled": true, "selected": false } ] } } }
+      },
+      {
+        "id": "decl-select-enum-02",
+        "input": { "choice": "Beta visible label" },
+        "eventOrder": [ "WebMCP.toolsAdded", "WebMCP.toolInvoked", "WebMCP.toolResponded" ],
+        "cdp": {
+          "enable": { "method": "WebMCP.enable", "params": {}, "response": {} },
+          "toolsAdded": {
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [ {
+                "name": "select-enum",
+                "description": "Single select enum probe",
+                "inputSchema": { "type": "object", "properties": { "choice": { "type": "string", "anyOf": [ { "type": "string", "const": "alpha-code", "title": "Alpha label" }, { "type": "string", "const": "beta-code", "title": "Beta visible label" }, { "type": "string", "const": "disabled-code", "title": "Disabled visible label" } ], "enum": [ "alpha-code", "beta-code", "disabled-code" ], "description": "Choice" } }, "required": [] },
+                "annotations": { "autosubmit": true },
+                "frameId": "79BC32948902FEF907D250AFBFAC9C0C",
+                "backendNodeId": 2
+              } ]
+            }
+          },
+          "invokeTool": { "method": "WebMCP.invokeTool", "params": { "frameId": "79BC32948902FEF907D250AFBFAC9C0C", "toolName": "select-enum", "input": { "choice": "Beta visible label" } }, "response": { "invocationId": "E72E0EA15E2EB253967D54070F737D98" } },
+          "toolInvoked": { "method": "WebMCP.toolInvoked", "params": { "toolName": "select-enum", "frameId": "79BC32948902FEF907D250AFBFAC9C0C", "invocationId": "E72E0EA15E2EB253967D54070F737D98", "input": "{\"choice\":\"Beta visible label\"}" } },
+          "toolResponded": { "method": "WebMCP.toolResponded", "params": { "invocationId": "E72E0EA15E2EB253967D54070F737D98", "status": "Error", "errorText": "Invalid value \"Beta visible label\" for parameter choice" } }
+        },
+        "pageState": { "calls": [], "fields": { "choice": "alpha-code" }, "controls": { "choice": { "value": "alpha-code", "selectedIndex": 0, "selectedOptions": [ { "value": "alpha-code", "label": "Alpha label", "disabled": false, "selected": true } ], "options": [ { "value": "alpha-code", "label": "Alpha label", "disabled": false, "selected": true }, { "value": "beta-code", "label": "Beta visible label", "disabled": false, "selected": false }, { "value": "disabled-code", "label": "Disabled visible label", "disabled": true, "selected": false } ] } } }
+      },
+      {
+        "id": "decl-select-enum-03",
+        "input": { "choice": "missing-code" },
+        "eventOrder": [ "WebMCP.toolsAdded", "WebMCP.toolInvoked", "WebMCP.toolResponded" ],
+        "cdp": {
+          "enable": { "method": "WebMCP.enable", "params": {}, "response": {} },
+          "toolsAdded": {
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [ {
+                "name": "select-enum",
+                "description": "Single select enum probe",
+                "inputSchema": { "type": "object", "properties": { "choice": { "type": "string", "anyOf": [ { "type": "string", "const": "alpha-code", "title": "Alpha label" }, { "type": "string", "const": "beta-code", "title": "Beta visible label" }, { "type": "string", "const": "disabled-code", "title": "Disabled visible label" } ], "enum": [ "alpha-code", "beta-code", "disabled-code" ], "description": "Choice" } }, "required": [] },
+                "annotations": { "autosubmit": true },
+                "frameId": "83215C916B68527F0B813EA466BC816C",
+                "backendNodeId": 2
+              } ]
+            }
+          },
+          "invokeTool": { "method": "WebMCP.invokeTool", "params": { "frameId": "83215C916B68527F0B813EA466BC816C", "toolName": "select-enum", "input": { "choice": "missing-code" } }, "response": { "invocationId": "7CB57133E28EED571244CEEA13AC4FD0" } },
+          "toolInvoked": { "method": "WebMCP.toolInvoked", "params": { "toolName": "select-enum", "frameId": "83215C916B68527F0B813EA466BC816C", "invocationId": "7CB57133E28EED571244CEEA13AC4FD0", "input": "{\"choice\":\"missing-code\"}" } },
+          "toolResponded": { "method": "WebMCP.toolResponded", "params": { "invocationId": "7CB57133E28EED571244CEEA13AC4FD0", "status": "Error", "errorText": "Invalid value \"missing-code\" for parameter choice" } }
+        },
+        "pageState": { "calls": [], "fields": { "choice": "alpha-code" }, "controls": { "choice": { "value": "alpha-code", "selectedIndex": 0, "selectedOptions": [ { "value": "alpha-code", "label": "Alpha label", "disabled": false, "selected": true } ], "options": [ { "value": "alpha-code", "label": "Alpha label", "disabled": false, "selected": true }, { "value": "beta-code", "label": "Beta visible label", "disabled": false, "selected": false }, { "value": "disabled-code", "label": "Disabled visible label", "disabled": true, "selected": false } ] } } }
+      },
+      {
+        "id": "decl-select-enum-04",
+        "input": { "choice": "disabled-code" },
+        "eventOrder": [ "WebMCP.toolsAdded", "WebMCP.toolInvoked", "WebMCP.toolResponded" ],
+        "cdp": {
+          "enable": { "method": "WebMCP.enable", "params": {}, "response": {} },
+          "toolsAdded": {
+            "method": "WebMCP.toolsAdded",
+            "params": {
+              "tools": [ {
+                "name": "select-enum",
+                "description": "Single select enum probe",
+                "inputSchema": { "type": "object", "properties": { "choice": { "type": "string", "anyOf": [ { "type": "string", "const": "alpha-code", "title": "Alpha label" }, { "type": "string", "const": "beta-code", "title": "Beta visible label" }, { "type": "string", "const": "disabled-code", "title": "Disabled visible label" } ], "enum": [ "alpha-code", "beta-code", "disabled-code" ], "description": "Choice" } }, "required": [] },
+                "annotations": { "autosubmit": true },
+                "frameId": "7C0286CF84A12F9C19B7633D66838A5E",
+                "backendNodeId": 2
+              } ]
+            }
+          },
+          "invokeTool": { "method": "WebMCP.invokeTool", "params": { "frameId": "7C0286CF84A12F9C19B7633D66838A5E", "toolName": "select-enum", "input": { "choice": "disabled-code" } }, "response": { "invocationId": "E167C7A7D2F1E3E6878977B05BBB5ED6" } },
+          "toolInvoked": { "method": "WebMCP.toolInvoked", "params": { "toolName": "select-enum", "frameId": "7C0286CF84A12F9C19B7633D66838A5E", "invocationId": "E167C7A7D2F1E3E6878977B05BBB5ED6", "input": "{\"choice\":\"disabled-code\"}" } },
+          "toolResponded": { "method": "WebMCP.toolResponded", "params": { "invocationId": "E167C7A7D2F1E3E6878977B05BBB5ED6", "status": "Completed", "output": { "ok": true, "fields": {} } } }
+        },
+        "pageState": { "calls": [ { "agentInvoked": true, "isTrusted": true, "fields": {} } ], "fields": { "choice": "disabled-code" }, "controls": { "choice": { "value": "disabled-code", "selectedIndex": 2, "selectedOptions": [ { "value": "disabled-code", "label": "Disabled visible label", "disabled": true, "selected": true } ], "options": [ { "value": "alpha-code", "label": "Alpha label", "disabled": false, "selected": false }, { "value": "beta-code", "label": "Beta visible label", "disabled": false, "selected": false }, { "value": "disabled-code", "label": "Disabled visible label", "disabled": true, "selected": true } ] } } }
+      }
+    ]
+  },
+  "repeatRun": {
+    "loopbackPort": 36497,
+    "runtimeIdentity": { "chromiumVersion": "154.0.8037.97", "playwrightVersion": "1.64.0", "nodeVersion": "v24.21.0" },
+    "cases": [
+      { "id": "decl-select-enum-01", "input": { "choice": "beta-code" }, "status": "Completed", "errorText": null, "submitCount": 1, "fields": { "choice": "beta-code" }, "submitFields": { "choice": "beta-code" }, "schema": { "enum": [ "alpha-code", "beta-code", "disabled-code" ], "anyOfTitles": [ "Alpha label", "Beta visible label", "Disabled visible label" ] } },
+      { "id": "decl-select-enum-02", "input": { "choice": "Beta visible label" }, "status": "Error", "errorText": "Invalid value \"Beta visible label\" for parameter choice", "submitCount": 0, "fields": { "choice": "alpha-code" }, "submitFields": null, "schema": { "enum": [ "alpha-code", "beta-code", "disabled-code" ], "anyOfTitles": [ "Alpha label", "Beta visible label", "Disabled visible label" ] } },
+      { "id": "decl-select-enum-03", "input": { "choice": "missing-code" }, "status": "Error", "errorText": "Invalid value \"missing-code\" for parameter choice", "submitCount": 0, "fields": { "choice": "alpha-code" }, "submitFields": null, "schema": { "enum": [ "alpha-code", "beta-code", "disabled-code" ], "anyOfTitles": [ "Alpha label", "Beta visible label", "Disabled visible label" ] } },
+      { "id": "decl-select-enum-04", "input": { "choice": "disabled-code" }, "status": "Completed", "errorText": null, "submitCount": 1, "fields": { "choice": "disabled-code" }, "submitFields": {}, "schema": { "enum": [ "alpha-code", "beta-code", "disabled-code" ], "anyOfTitles": [ "Alpha label", "Beta visible label", "Disabled visible label" ] } }
+    ]
+  },
+  "stability": {
+    "behaviorAndSchema": "Stable across the original run and one full rerun: the same inputSchema (string type, anyOf const/title pairs, enum), status/errorText, submit count, post-invoke control value and submit fields were observed for each case.",
+    "nondeterminism": "The ephemeral loopback port, frameId, and invocationId values differed between runs; schema and case outcomes did not.",
+    "cleanup": "Both browser contexts were closed; no run-owned private-profile Chromium process and no /tmp te-* directory remained after the rerun."
+  }
+}

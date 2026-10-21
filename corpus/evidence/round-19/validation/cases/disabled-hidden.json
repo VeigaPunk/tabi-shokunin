@@ -1,0 +1,164 @@
+{
+  "schema": "tabi-webmcp-validation-cases-v1",
+  "family": "disabled-hidden",
+  "fixture": "disabled-hidden.html",
+  "author": "FamDisabledHidden-4",
+  "cases": [
+    {
+      "id": "decl-disabled-hidden-01",
+      "tool": "disabled-hidden",
+      "input": {
+        "disabledField": "disabled-after"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Input contains a parameter \"disabledField\" but there is no such parameter for the tool",
+        "submitCount": 0,
+        "fields": {
+          "baseline": "baseline-before",
+          "disabledField": "disabled-before",
+          "readonlyField": "readonly-before",
+          "hiddenField": "hidden-before",
+          "": "unnamed-before"
+        },
+        "schema": {
+          "properties": {
+            "baseline": {
+              "type": "string",
+              "description": "Baseline"
+            },
+            "": {
+              "type": "string",
+              "description": "Unnamed"
+            }
+          },
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "1238-1246",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Is a disabled named input included in the declarative schema, and what happens when it is targeted?",
+      "answer": "disabledField is absent; targeting it returns Error for an unknown parameter, leaves all inputs unchanged, and does not submit."
+    },
+    {
+      "id": "decl-disabled-hidden-02",
+      "tool": "disabled-hidden",
+      "input": {
+        "readonlyField": "readonly-after"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Input contains a parameter \"readonlyField\" but there is no such parameter for the tool",
+        "submitCount": 0,
+        "fields": {
+          "baseline": "baseline-before",
+          "disabledField": "disabled-before",
+          "readonlyField": "readonly-before",
+          "hiddenField": "hidden-before",
+          "": "unnamed-before"
+        },
+        "schema": {
+          "properties": {
+            "baseline": {
+              "type": "string",
+              "description": "Baseline"
+            },
+            "": {
+              "type": "string",
+              "description": "Unnamed"
+            }
+          },
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "1238-1246",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Is a readonly named input included in the declarative schema, and what happens when it is targeted?",
+      "answer": "readonlyField is absent; targeting it returns Error for an unknown parameter, leaves all inputs unchanged, and does not submit."
+    },
+    {
+      "id": "decl-disabled-hidden-03",
+      "tool": "disabled-hidden",
+      "input": {
+        "hiddenField": "hidden-after"
+      },
+      "expect": {
+        "status": "Error",
+        "errorTextIncludes": "Invalid value \"hidden-after\" for parameter hiddenField",
+        "submitCount": 0,
+        "fields": {
+          "baseline": "baseline-before",
+          "disabledField": "disabled-before",
+          "readonlyField": "readonly-before",
+          "hiddenField": "hidden-before",
+          "": "unnamed-before"
+        },
+        "schema": {
+          "properties": {
+            "baseline": {
+              "type": "string",
+              "description": "Baseline"
+            },
+            "": {
+              "type": "string",
+              "description": "Unnamed"
+            }
+          },
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "1270-1287",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Is a type=hidden input included without a tool parameter description, and what happens when it is targeted?",
+      "answer": "hiddenField is absent; targeting it returns Error for an invalid value rather than unknown, leaves the input unchanged, and does not submit."
+    },
+    {
+      "id": "decl-disabled-hidden-04",
+      "tool": "disabled-hidden",
+      "input": {
+        "": "unnamed-after"
+      },
+      "expect": {
+        "status": "Completed",
+        "errorTextIncludes": null,
+        "submitCount": 1,
+        "fields": {
+          "baseline": "baseline-before",
+          "disabledField": "disabled-before",
+          "readonlyField": "readonly-before",
+          "hiddenField": "hidden-before",
+          "": "unnamed-after"
+        },
+        "schema": {
+          "properties": {
+            "baseline": {
+              "type": "string",
+              "description": "Baseline"
+            },
+            "": {
+              "type": "string",
+              "description": "Unnamed"
+            }
+          },
+          "required": []
+        }
+      },
+      "source": {
+        "file": "third_party/blink/renderer/core/html/forms/form_mcp_schema.cc",
+        "lines": "1238-1246",
+        "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT"
+      },
+      "question": "Does an unnamed text input appear as an empty-name property, and can empty-name input fill it?",
+      "answer": "The schema contains property \"\"; input {\"\":\"unnamed-after\"} fills the DOM control and completes one submit (agentInvoked=true, isTrusted=true); FormData omits it because the control is unnamed."
+    }
+  ]
+}
