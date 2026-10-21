@@ -1,0 +1,17 @@
+<!doctype html><meta charset="utf-8"><title>auto-invalid</title>
+<form id="f" toolname="lifecycle" tooldescription="Dummy loopback lifecycle" toolautosubmit action="/landing" method="get">
+<label>Dummy<input name="q" required type="email"></label><button id="go" type="submit">Run</button></form>
+<script>
+window.observations={nonce:"cf498362-a5e0-403e-8c1d-f0999094e1f1",submits:[],errors:[]};
+window.addEventListener('error',e=>observations.errors.push(e.message));
+f.addEventListener('submit',e=>{
+ observations.submits.push({agentInvoked:e.agentInvoked,isTrusted:e.isTrusted,q:f.elements.q.value,active:f.matches(':tool-form-active'),respondWith:typeof e.respondWith});
+ e.preventDefault();
+ const mode="invalid";
+ if(mode==='throw') throw Error('dummy submit handler throw');
+ const value={ok:true,nonce:"cf498362-a5e0-403e-8c1d-f0999094e1f1",q:f.elements.q.value};
+ if(mode==='reject') e.respondWith(Promise.reject(Error('dummy rejection')));
+ else if(mode==='delayed') e.respondWith(new Promise(resolve=>{window.release=()=>resolve(value)}));
+ else e.respondWith(Promise.resolve(value));
+});
+</script>

@@ -1,0 +1,28 @@
+# ReviewInvalid — round21 validation distinction
+
+Reviewed axes: validation phase (input-fill rejection vs interactive constraint validation), submission trigger (`toolautosubmit`, `requestSubmit()`, and `form.submit()`), and whether raw evidence supports the knowledge-note wording.
+
+## Verdict
+
+**No actionable defect in the current canonical round21 invalid-case wording or observed behavior.** The evidence supports a narrower statement: both `na-invalid-submit` and `auto-invalid` end in interactive form validation at submission time, but with different triggers. Round21 does **not** contain a fill-time `FillFormControls` rejection case. The current note does not claim that it does.
+
+## Evidence and falsifiable boundary
+
+- `corpus/evidence/round-21/runtime/na-invalid-submit.html:2-3` is a non-autosubmit form with a required text field. In the canonical run, `na-invalid-submit.json:137-165` records `invokeTool` with the run nonce and the correlated `toolInvoked`; `:168-195` records a pre-action value equal to that nonce, then the `invalidRequestSubmit` action and its completion; `:197-223` records the matching `Error` (`Form validation failed: q: Please fill out this field.. `), no submit event, and the now-empty value. The canonical producer implements that action at `scripts/webmcp-lifecycle-round21.mjs:163-174` (line 170 clears the value and calls `requestSubmit()`). This supports the note's precise description at `corpus/knowledge/webmcp-nonautosubmit-round-21.md:41`: validation after the page-side mutation, not initial-fill refusal.
+- `auto-invalid` is also a submit-time constraint-validation result, not a fill-time argument rejection. Its fixture has `toolautosubmit` and a required email field (`corpus/evidence/round-21/runtime/auto-invalid.html:2-3`). The raw trace `auto-invalid.json:136-179` records the `not-an-email` invocation followed by the correlated `Form validation failed` email message before the pre-action observation. The note correctly calls this native email validation and explicitly excludes initial JSON-type validation (`webmcp-nonautosubmit-round-21.md:43`).
+- The source distinction is direct: `html_form_element.cc:729-758` calls `ValidateInteractively()` and reports `Form validation failed`; `requestSubmit()` reaches `PrepareForSubmission` at `:871-872`. By contrast, `submitFromJavaScript()` at `:834-842` schedules submission and resolves a running tool without entering that validation branch. Thus `na-native-submit` (`form.submit()`) is not a validation control interchangeable with `na-invalid-submit` (`requestSubmit()`).
+- Prior evidence distinguishes the missing phase: round19's `webmcp-declarative-validation-round-19.md:35-42` defines fill-time `kInvalidInputArguments` separately from submit-time interactive validation. Its `decl-unknown-param-01` receipt (`corpus/evidence/round-19/validation/receipt.json:4642-4697`) shows an unknown-parameter error with unchanged fields and zero submits; `decl-missing-required-01` (`:1412-1464`) instead returns `Form validation failed` with zero submits. Round20 records the same classification at `corpus/knowledge/webmcp-completion-lifecycle-round-20.md:81,170-172`.
+
+**Falsifiable failure shape:** describing either round21 invalid case as a fill-time `FillFormControls` rejection would be contradicted by the raw `Form validation failed` response and the S100 `PrepareForSubmission` validation path. Likewise, if a later `na-invalid-submit` acquisition had a successful submit/`Completed` result after the action, the existing “invalid submit” interpretation would no longer be supported, even if the fixed case ID and evidence digest were updated.
+
+**Minimum acceptance condition:** keep the round21 claim limited to observed submit-time validation; for `na-invalid-submit`, preserve the invocation → valid pre-action value → post-pre-action invalidation + `requestSubmit()` → correlated validation response/no submit chain. A fill-time claim requires separate evidence of a fill-stage error (e.g. the r19 unknown-parameter shape), not merely an `Error` status or a `Form validation failed` message. No extra case is required by the fixed-12 contract if the note continues to state the present boundary.
+
+## Residual risk
+
+`measure-c1.mjs:2` explicitly counts finite evidence-backed observations, not semantic entailment. It correlates response events and summaries (`:74-85`) but does not assert a particular validation status for either invalid case; it returns the case count when structural findings are absent (`:89`). Therefore C1 count alone cannot protect the semantic interpretation against a future producer regression. That is consistent with the counter's stated scope, but integration must continue to use the separate raw-evidence/source semantic review; the current note already requires that review at `webmcp-nonautosubmit-round-21.md:91-93`.
+
+## Verification gaps
+
+- LSP device unavailable: attempted `read xd://lsp`; the mounted-device response reports no such tool. The following path/line references are literal file reads, not LSP caller/definition/diagnostic proof.
+- No build, tests, browser, or other checks were run, as assigned. No tools were installed or updated.
+- The initially inspected BuildRuntime/BuildCounter clone snapshots are isolated drafts, not current integration inputs; per the parent routing notice, this verdict uses the canonical lane-root producer, counter, note, and final-acquisition evidence only.

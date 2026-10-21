@@ -2359,3 +2359,40 @@ outside its finite shape proof. The w1 all-actor settlement flags are withdrawn 
 `.ufo/waves/round-20/w1/ordering-correction.json`; r19 d4 remains unprovable. The w2
 return was frozen before repairs in commit `e0b5d02a6aef76b0d2799d92618f79f1bca40062`.
 
+
+## Round-21 non-autosubmit lifecycle — observed decision rules
+
+Current note: `corpus/knowledge/webmcp-nonautosubmit-round-21.md` (S101
+own-work runtime evidence; S100 reopened upstream source interpretation).
+Source callsites alone are not runtime completion. The recorded experiment uses
+Chromium154.0.8037.97, Playwright1.64.0, Node24.21.0 and private loopback fixtures.
+
+| Observed situation | Action / reading | Evidence case |
+|---|---|---|
+| Filled non-autosubmit form, active pseudo-state | Record a finite no-response window, never an indefinite guarantee | na-pending |
+| Later input click or page requestSubmit | Correlate completion by invocationId; isTrusted/agentInvoked do not prove a human submit | na-click, na-requestsubmit |
+| Native form.submit | Inspect navigation and landing output independently; no submit event need be observed | na-native-submit |
+| Reset or remove this tested form | Retain the observed Canceled event and exact reason; do not generalize to every DOM mutation | na-reset, na-remove |
+| Promise rejected / preventDefault then throw | Distinguish rejection from programming-error text; retain handler ordering | na-reject, na-throw |
+| Held response promise | Retain intermediate observation and explicit release, then correlated result | na-delayed |
+| Required field emptied / autosubmit invalid email | Distinguish later native-submit validation from initial fill refusal | na-invalid-submit, auto-invalid |
+
+The autosubmit positive control is held-ground evidence (`auto-positive`), not
+another novel lifecycle branch. Every case's raw JSON and served HTML are under
+`corpus/evidence/round-21/runtime/`; the note supplies exact outcome text and limits.
+Reset/removal are observation-only with respect to S100's narrower source anchors.
+No real-site, default-profile, human-witness, cross-build or determinism claim follows.
+
+### Round-21 runnable artifacts registry
+
+| Name | Kind | Entry command | Verdict map | Self-test | Pinned-value path | Write scope | Owner |
+|---|---|---|---|---|---|---|---|
+| finite lifecycle capture | probe | `/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node scripts/webmcp-lifecycle-round21.mjs --out NEW_DIRECTORY` | 0=observed finite run; 1=failed execution; 2=could-not-evaluate usage/aborted; no semantic pass | not a gate; actual run retained | `corpus/evidence/round-21/runtime/receipt.json` producer/environment and raw case digests | new owned output directory and private temporary browser/server state; no external actions | tabi |
+| lifecycle observation count | gate | `node .ufo/waves/round-21/measure-c1.mjs REV` | 0=clean/baseline; 1=failed relationships; 2=could-not-evaluate | `node .ufo/waves/round-21/measure-c1.mjs --selftest` | `.ufo/waves/round-21/fixtures/expected.json`, positive-ordered.json, retained runtime receipt | read-only committed Git blobs; selftest disposable isolated Git trees only | tabi |
+
+The gate checks fixed-case completeness, raw invocation/event correlation, artifact
+digests, finite windows and recorded cleanup. It does not certify observation
+authenticity, all possible producer stubs, source-to-binary equivalence or semantic
+truth. A twelve-case count is not a branch-coverage ratio. A missing response in the
+recorded window is not an eventual-settlement guarantee. Outside admission remains
+the independent closer's duty, not a property conferred by lane-dispatched reviews.

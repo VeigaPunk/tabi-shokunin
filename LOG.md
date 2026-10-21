@@ -1331,3 +1331,72 @@ Binding reproduce at that tip exits0, claims1/bound1; counted-input/counter
 drift from the measured revision is empty. Exact receipts:
 `final/binding-after-lesson.json` and `final/count-input-drift.json` under
 `.ufo/waves/round-20/`. Delivered-tip reproduction is recorded in the fleet report.
+
+## Round 21 — finite non-autosubmit lifecycle (2026-10-21)
+
+Steered round21/attempt1; baseline `e7cf11a810003d4a65cc85bd265f2c17dd65b738`,
+initial lane status clean. C1 only, depth (lowest non-retired tie8):
+target0→12 finite receipt-bound lifecycle observations, not12 novel branches,
+universal semantics or a coverage denominator. Scalar stays8.
+Motivation: round20's source-only lifecycle and open non-autosubmit runtime
+frontier (`SCORECARD.md:970-971`, `corpus/README.md:442-444`).
+
+Validated64-seat w1: `.ufo/waves/round-21/{w1-spec,w1-dispatch,w1-record}.json`,
+actual registry `w1/swarm-registry.json` with wave tabi-r21-w1 and64 bound
+identities. L1 holds the planner seat; ConnPlanner is a bounded data-walk only.
+Provider failures killed all three executor seats before implementation; no
+dead seat is replaced. The unused private writer clones were removed as
+throwaway scaffolding after those failures. They produced no production commits.
+L1 implemented the reachable runtime/counter/CLI fixtures directly.
+
+Domain execution: exact pinned Node argv, producer digest, full stdout/stderr
+and exit0 are in `.ufo/waves/round-21/runtime-execution-pinned.json`.
+The initial generic-node invocation failed node_version_mismatch before any
+browser run; retained separately in `runtime-execution.json`, not silently
+overwritten or called a browser failure. Successful execution observed all
+declared cases and browser/server closure; final revision-bound gate credit
+and serial checks are recorded separately after author-side falsification.
+
+New knowledge: `corpus/knowledge/webmcp-nonautosubmit-round-21.md`, raw runtime
+JSON/HTML in `corpus/evidence/round-21/runtime/`, SKILL decision rules/registry,
+and README coverage pointer. S101 is opened own-work; S100 was reopened with
+the same decoded body hash (`source-opening.json`). Reset/removal are
+observation-only outside S100's immutable anchors; source-to-Arch-binary
+equivalence remains unproved. RequestSubmit's trusted/agentInvoked flags are
+not a human witness, and pending is always a finite-window observation.
+
+The r19 missing return snapshot remains unprovable. No historical lesson,
+frozen gate or prior count is rewritten; outside admission/SHONEN remains the
+non-author closer's duty. No tool installation/update has been required.
+
+### Round-21 first-falsification repairs and peer-wakeup correction
+
+`w1/ReviewPreAction.md` found an invoke-error path that still dispatched an
+action and timestamp ties between separate observation/action arrays. The
+current producer stops on an unusable invocation ID and retains observation,
+dispatch-start and acknowledgement markers in the same ordered transcript.
+The counter checks their relative sequence; missing-observation-marker is
+a persisted red CLI fixture. This is recorded order, not actor authentication.
+
+`w1/ReviewNavigation.md` found that a lost old-document submit collection was
+normalized to an empty list. Current acquisition preserves null (unavailable),
+and the note no longer treats that loss as an observed zero. The CLI oracle
+contains positive-null and negative-empty shapes; QUALITY52/53 cite these
+actual findings and the round21 lesson, not a generic hardening wish.
+
+New domain execution after each repair is retained without rewriting earlier
+run bytes: `runtime-execution-final.json` names the current producer and
+successful new output directory, renamed to `corpus/evidence/round-21/runtime/`.
+`history/index.json` under the round wave maps the earlier pinned and ordered
+acquisitions to `history/runtime-v1/` and `runtime-v2/` with exact old producers.
+These are new runs, never recovered historical observations.
+
+Correction to the earlier executor-death account: the original three seats
+did fail, but peer messages later revived BuildRuntime and BuildCounter.
+Their mutable clone drafts are NOT integration inputs or replacement-seat
+credit. L1 stopped further work and requested cleanup of any already-owned
+processes; the detached counter donor `3fa97a9f061ca2904ee9b93d0fcbcc1f9192eb27`
+is retained only as `history/revived-counter.bundle`. `w1/ReviewRawInvoke.md`
+describes those unintegrated incompatible draft schemas, not the canonical
+L1 producer/counter. This recurrence reinforces QUALITY51: a terminal task
+return is not durable quiescence. Wave2 explicitly forbids waking dead seats.

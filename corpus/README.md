@@ -462,3 +462,26 @@ as an output mapping. Round-19 missing return-time evidence remains unprovable.
 
 No row count is source diversity or new runtime coverage. The new note remains one
 source-distillation entry on held ground; the parent performs independent admission.
+
+## Round 21 — finite non-autosubmit lifecycle observations (2026-10-21)
+
+| Note | Ground / evidence class | Sources |
+|---|---|---|
+| `knowledge/webmcp-nonautosubmit-round-21.md` | Recorded non-autosubmit contrasts: bounded pending, later click/requestSubmit/native submit, tested reset/removal, rejection, preventDefault-before-throw, held promise and submit-time validation; autosubmit controls retain already-held ground | S101 own-work raw runtime receipts; S100 reopened source interpretation, with reset/removal explicitly outside its registered anchors |
+
+This enters the non-autosubmit runtime frontier named in the round20 block
+(:442-444), for these finite loopback fixtures only. Older r17 probes for pending
+and requestSubmit remain prior evidence, not new discoveries. Controls and trigger
+variants are not new independent branches. The new note is not twelve novel entries
+or a domain-coverage denominator; C1 is a bounded depth claim, scalar8 unchanged.
+
+Still frontier: real-site and agent-side consumption, other builds, default profiles,
+custom elements, arbitrary DOM-update cancellation, late settlement beyond the
+recorded windows and repeated-run determinism. The source-to-Arch-binary relation
+is an explicitly unproved inference; the raw observations stand separately.
+S101 is own-work curation, not publisher diversity. Re-derive registry/knowledge
+totals with `node .ufo/waves/round-20/counts.mjs REV`.
+
+Correction index: round20 source-only guidance stays source-only; current runtime
+contrasts do not retroactively turn its callsites into historical measurements.
+The r19 return-snapshot claim remains unprovable. Prior lesson bytes remain untouched.

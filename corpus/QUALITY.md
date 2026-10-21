@@ -239,3 +239,18 @@
     A metadata guard's clean verdict must never be reported as proof of settlement.
     (lesson: corpus/lessons/round-20.md#mistakes;
     `.ufo/waves/round-20/w2/ReviewReturnBoundary.md`, `WaveMembership.md`)
+52. A strict invocation→observation→action claim places the completed observation,
+    dispatch-start marker and operation acknowledgement in the same ordered transcript
+    as the correlated invocation result; tied millisecond timestamps across separate
+    arrays are not strict-order proof. An invoke error or missing ID stops the action,
+    and a missing observation marker has its own same-counter red fixture. These
+    author-recorded markers prove finite record consistency, not actor authentication
+    or a human action. (lesson: corpus/lessons/round-21.md#mistakes;
+    `.ufo/waves/round-21/w1/ReviewPreAction.md`; missing-observation-marker CLI case)
+53. Navigation can destroy the document holding a page-side observation. A missing
+    old-document collection is unavailable (null), not an observed empty list; keep
+    navigation/output evidence separately and do not turn loss of state into a zero
+    count. A same-counter positive-null / negative-empty pair distinguishes the
+    shapes. (lesson: corpus/lessons/round-21.md#mistakes;
+    `.ufo/waves/round-21/w1/ReviewNavigation.md`; unavailable-null-positive and
+    unavailable-to-empty CLI cases)

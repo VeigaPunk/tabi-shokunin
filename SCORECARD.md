@@ -969,3 +969,18 @@ Author trends: expansion unchanged; quality improved bounded; discernment unchan
 pending outside agreement. Saturation8/window3 and retired:none remain unchanged.
 Planned only on a separately authorized steer: runtime contrasts for non-autosubmit
 loopback forms, not another row quota. No next round is claimed.
+
+## Round 21 — declared finite lifecycle observation claim (2026-10-21)
+
+Baseline `e7cf11a810003d4a65cc85bd265f2c17dd65b738`; held round21/attempt1.
+C1 only: depth, a lowest non-retired tie at8, target0→12 receipt-bound
+loopback lifecycle scenario observations contrasting non-autosubmit actions
+with autosubmit controls. This counts finite evidenced observations, not12
+novel branches, a coverage denominator or universal completion guarantees.
+Counting command: `node .ufo/waves/round-21/measure-c1.mjs REV`, field
+`c1_lifecycle_observations`. Each case retains raw invocation/event correlation,
+finite observation windows, dummy per-run nonce and browser/server cleanup.
+S100 is reopened for interpretation; source reading is not runtime proof.
+Scalar depth8 and other axes remain unchanged pending measured evidence.
+No new capability or retirement is preclaimed; saturation8/window3 unchanged.
+The round20 source-only frontier motivates actual non-autosubmit contrasts.

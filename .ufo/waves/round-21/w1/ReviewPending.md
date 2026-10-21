@@ -1,0 +1,33 @@
+# ReviewPending — round21
+
+Review date: 2026-10-21. Scope: finite no-response observation for `na-pending`, bounded pre-action ordering, and avoiding an unbounded-pending claim. Axes: finite-window fidelity · invocation-correlated absence · honest limits. Read the current lane-root producer, counter, note, final acquisition record and raw `na-pending` evidence; also read the relevant round17 invocation/declarative probe, round19 validation note, and round20 lifecycle/source-boundary notes. No tests, checks, builds, linters, browser sessions or other executions were run by this reviewer. No LSP reference/definition/diagnostic proof is claimed or needed for this scoped finding.
+
+## Findings (by severity)
+
+### P2 — A response arriving after the `after-action` marker can be counted inside the finite window
+
+**Falsifiable failure shape:** a matching `WebMCP.toolResponded` event for this invocation is recorded after the `after-action` observation marker, but before the producer reads the response array. The producer then places that event in `after.responses`; the counter accepts the array as matching all correlated response events, despite the event falling beyond `after.end`/the marker sequence. That can change the claimed outcome for `na-pending` from “no matching response in either recorded window” even though the response arrived outside those windows.
+
+**Evidence:** `scripts/webmcp-lifecycle-round21.mjs:140-146` records observations as ordered `observation` frames; `:177-178` awaits `observe('after-action')` and then constructs `after.responses` by calling `responses()`. That helper at `:161` selects every current frame matching `WebMCP.toolResponded` and the invocation ID, with no sequence cutoff. `.ufo/waves/round-21/measure-c1.mjs:74-85` likewise builds `events` for the invocation without a post-marker bound and validates `after.responses` against `events.map(...)`; it has the post marker sequence available at `post.seq`. Thus a correlated response with `seq > post.seq` is not rejected as outside the finite window.
+
+**Minimum acceptance condition:** attach a sequence cutoff to each window boundary and derive `after.responses` only from matching frames at or before the `after-action` marker (or an equivalently explicit end timestamp); have the counter independently enforce that cutoff. Retain later events separately as later observations, not as in-window responses. Do not infer eventual non-completion.
+
+**Current run impact:** no such late frame is present in this acquisition. The actual `na-pending` receipt reports a 254 ms pre-action interval with `responseCount: 0`, followed by a 501 ms interval with `responses: []` (`corpus/evidence/round-21/runtime/receipt.json:21-39`). The raw trace records `toolInvoked` at seq 11, pre-action at seq 12, the no-action boundary at seq 13, and after-action at seq 15; no matching `toolResponded` appears in the trace through that marker (`corpus/evidence/round-21/runtime/na-pending.json:105-213`). The present observation therefore supports absence only through those recorded finite boundaries; it does not demonstrate the failure shape or a universal guarantee.
+
+### P2 — Pre-action observation has no explicit finite watchdog
+
+**Falsifiable failure shape:** after the producer's 250 ms sleep, `page.evaluate` in `observe()` does not settle. The `await` has no local timeout/race; the pre-action boundary is never recorded, a later non-auto action is never reached, and control does not enter that case's `finally` cleanup while the await remains pending. In that failure, the producer cannot establish a finite no-response result or its required cleanup.
+
+**Evidence:** `scripts/webmcp-lifecycle-round21.mjs:140-146` implements `observe()` with an unbounded `await page.evaluate(...)`; `:158-162` waits 250 ms and then awaits the pre-action observation before assigning `preAction`. The corresponding case `finally` begins at `:180`, so a promise that never settles cannot reach it. The post-action observation at `:177` has the same shape. This is a code-path limitation, not an assertion that the already-recorded run hung.
+
+**Minimum acceptance condition:** bound each observation operation with a finite watchdog and ensure timeout/error still closes that case context and records an explicit unknown/failed observation; never translate an observation timeout into `responseCount: 0` or “pending”.
+
+## Scope and prior evidence
+
+The current published note is appropriately bounded: `corpus/knowledge/webmcp-nonautosubmit-round-21.md:49-52` directs readers to exact per-case durations and explicitly says a missing response in a finite window does not prove it can never arrive. Its `na-pending` row (`:30-32`) reports the two observed windows and does not assert indefinite pending. The current acquisition record identifies the run as the current qualified acquisition and records the fixed producer hash and exit 0 (`.ufo/waves/round-21/runtime-execution-final.json:11-18`); this reviewer did not rerun it or the counter.
+
+Relevant history narrows, rather than enlarges, the claim: round17's declarative probe recorded no response for 2500 ms followed by a later page-side `requestSubmit()` producing `Completed` (`.ufo/waves/round-21/clones/BuildRuntime/.ufo/waves/round-17/w1/C2ProbeDeclarative.md:71-73`). The round20 lifecycle note explicitly preserves that as probe-class history, not an indefinitely-pending guarantee (`.ufo/waves/round-21/clones/BuildRuntime/corpus/knowledge/webmcp-completion-lifecycle-round-20.md:160-162`). Round19's validation study excludes forms without `toolautosubmit` (`.ufo/waves/round-21/clones/BuildRuntime/corpus/knowledge/webmcp-declarative-validation-round-19.md:17-20`), so it is not runtime evidence for this pending case.
+
+Historical clone-only note (2026-10-21, before the parent routing correction): an initial read of isolated `clones/BuildRuntime` / `clones/BuildCounter` drafts showed a timestamp/direction representation mismatch. That finding is **not current**: the canonical lane-root producer emits numeric `Date.now()` timestamps and `sent`/`result`/`event` frame directions (`scripts/webmcp-lifecycle-round21.mjs:116-145`), matching the current counter's checks (`.ufo/waves/round-21/measure-c1.mjs:68-85`). Those isolated drafts are not integration inputs and should not be treated as a current defect.
+
+Report: `.ufo/waves/round-21/w1/ReviewPending.md`
