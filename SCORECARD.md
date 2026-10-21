@@ -932,3 +932,40 @@ Counting command: `node .ufo/waves/round-20/measure-c1.mjs REV`; field
 `c1_lifecycle_decisions`. This is a declaration, not an executed measurement.
 Other axes, capabilities, saturation8/window3 and retirement status are unchanged.
 Round19 stays closed; its original C3 target4 remains unprovable.
+
+### Round-20 executed disposition — C1 target met, no scalar promotion
+
+Measured revision `e45b05280ac0255670a7d5206c9a00586d48f7f5`; baseline
+`c49929430d996b016dde2e3a3a5be380f3433fdb`. Main executed
+`node .ufo/waves/round-20/measure-c1.mjs REV` on both revisions: exit0,
+baseline0 → clean12, field `c1_lifecycle_decisions`. Current corrected-source
+rows only are counted; retained historical rows are not additional credit.
+Counter SHA-256 `19921191fad84ba79414188e1a7b1bc05acdb491b1e6052ed5b70454864f7945`.
+Receipt: `corpus/evidence/round-20/measurements.json`; exact four-file binding:
+`.ufo/waves/round-20/measurement-binding.json`, measured-revision reproduce exit0,
+claims1/bound1. Delivered-tip reproduction is separately recorded in the final report.
+
+| Claim / axis | Before → after | Author verdict / limits |
+|---|---|---|
+| C1 depth | 0→12 current documented source rows; scalar8→8 | improved, bounded source-distillation artifact with separate LC01–LC12 semantic ENTAILED reviews; not12 novel branches, runtime coverage or a whole-domain score promotion |
+| coverage9, operability8, freshness8, calibration9, adjacency8 | unchanged | no additional axis/capability/promotion/retirement credit; actual verification and learned boundaries support the single claim only |
+
+Main serial evidence at the measured commit:28/28 expected outcomes;22 historical-clean
+invocations preserved, new CLI selftests45/27 clean, actual frozen input match clean,
+both C1 arms and corpus counts verified. The known USER production error was skipped,
+not re-run to confirm it. Final lesson-history enumeration must keep the inherited
+refused set at round18/round19; no history or frozen gate is rewritten.
+
+Curation command `node .ufo/waves/round-20/counts.mjs REV`: registry99→100,
+A86/B4/C9→A87/B4/C9; mined71/queued19/rejected9→mined72/queued19/rejected9;
+knowledge37→38. The same-body S100 anchor extension is not publisher diversity,
+and the new note deepens held ground, not a new runtime capability.
+Sources-census start/end exit0 (complete streams retained in the wave).
+
+W1 all-actor settlement flags are explicitly withdrawn; no isolation certification
+or r19 d4 repair is claimed. Current verification is finite author-side evidence.
+Independent non-author admit/reject closure and SHONEN promotion remain unasserted.
+Author trends: expansion unchanged; quality improved bounded; discernment unchanged
+pending outside agreement. Saturation8/window3 and retired:none remain unchanged.
+Planned only on a separately authorized steer: runtime contrasts for non-autosubmit
+loopback forms, not another row quota. No next round is claimed.

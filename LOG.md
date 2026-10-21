@@ -1292,3 +1292,32 @@ Pre-verification static census, exit0: C1 cases45/reasons24, wave cases27,
 QUALITY rules51, wave seats64+64 and residual8. The exact Node argv and stdout
 are retained in `.ufo/waves/round-20/counted-pre-verification.json`; this is a
 count of committed-next artifacts, not a passing test claim.
+
+### Round-20 executed results and final one-write lesson
+
+Main executed `.ufo/waves/round-20/run-checks.py` at pushed
+`e45b05280ac0255670a7d5206c9a00586d48f7f5`:28/28 expected outcomes.
+The full receipt at `.ufo/waves/round-20/final/serial-checks.json` retains every
+argv/exit/stdout/stderr and producer/input identity. New CLI selftests are
+45 cases/24 findings vocabulary and27 metadata cases, both clean; the actual
+frozen w1 triple is frozen_match/pinnedExit0. All22 historical-clean invocations
+remain0. The inherited USER production failure is explicitly skipped.
+
+C1 before/after:0→12 with both exit0, baseline/clean respectively, not a
+count credited alongside findings. Command and exact streams are in
+`corpus/evidence/round-20/measurements.json`; counter SHA-256
+`19921191fad84ba79414188e1a7b1bc05acdb491b1e6052ed5b70454864f7945`.
+Four-file binding and measured-revision reproduce both clean, claims1/bound1;
+the final report records delivered-tip reproduction rather than a drift inference.
+
+Sources census start/end0. Registry99→100 (one tierA same-body S100, no diversity
+credit), knowledge37→38 on held source ground. Exact counting commands/outputs
+are in `counts-before.json`, serial-checks curation-counts and census JSONs.
+The final `corpus/lessons/round-20.md` is written once with Gate, exact new-row
+quote/digests, S096 old→new used-by audit, retained rejects, Mistakes and bounds.
+
+Misroot sweep found only own ResidualFrozen at the fleet wave path: lane target
+was absent; cp+cmp exited0 and only that own fleet copy was removed. The retained
+report and `.ufo/waves/round-20/final/misroot-recovery.json` record it. Fleet
+runtime/state and foreign files were untouched. No tool was installed or updated.
+The old r17 lease/ruling questions remain open; no new r20 L0 question is needed.
