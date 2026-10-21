@@ -59,8 +59,10 @@ if __name__ == '__main__':
             '.ufo/waves/round-21/measure-c1.mjs', '.ufo/waves/round-21/selftest-c1.mjs',
             '.ufo/waves/round-21/fixtures/expected.json', '.ufo/waves/round-21/fixtures/positive-ordered.json',
             'scripts/webmcp-lifecycle-round21.mjs', 'corpus/evidence/round-21/runtime/receipt.json',
-            'corpus/knowledge/webmcp-nonautosubmit-round-21.md', 'SKILL.md', 'corpus/SOURCES.md',
+            'corpus/knowledge/webmcp-nonautosubmit-round-21-corrected.md', 'SKILL.md', 'corpus/SOURCES.md',
             '.ufo/waves/round-21/source-opening.json', '.ufo/waves/round-21/sources/html_form_element.cc',
+            '.ufo/waves/round-21/sources/html_form_element.cc.base64.gz',
+            '.ufo/waves/round-21/fixtures/source-carrier.gz', '.ufo/waves/round-21/runtime-execution-finalized.json',
         ]
         result['artifactSha256'] = {path: digest(lane / path) for path in identity_paths}
         cohort = []
@@ -81,7 +83,7 @@ if __name__ == '__main__':
         cohort.append({'gate': 'lifecycle20-after', 'argv': [NODE, '.ufo/waves/round-20/measure-c1.mjs', revision],
                        'expectedExit': 0, 'producerPath': '.ufo/waves/round-20/measure-c1.mjs', 'kind': 'no-harm',
                        'expectedMetrics': {'c1_lifecycle_decisions': 12, 'verdict': 'clean'}})
-        for name, target, rows, knowledge in [('before', BASE, 100, 38), ('after', revision, 101, 39)]:
+        for name, target, rows, knowledge in [('before', BASE, 100, 38), ('after', revision, 101, 40)]:
             cohort.append({'gate': 'curation-' + name, 'argv': [NODE, '.ufo/waves/round-20/counts.mjs', target],
                            'expectedExit': 0, 'producerPath': '.ufo/waves/round-20/counts.mjs', 'kind': 'census',
                            'expectedMetrics': {'rows': rows, 'knowledge': knowledge}})

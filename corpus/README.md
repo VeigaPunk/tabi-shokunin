@@ -485,3 +485,15 @@ totals with `node .ufo/waves/round-20/counts.mjs REV`.
 Correction index: round20 source-only guidance stays source-only; current runtime
 contrasts do not retroactively turn its callsites into historical measurements.
 The r19 return-snapshot claim remains unprovable. Prior lesson bytes remain untouched.
+
+### Round21 current-entry correction index
+
+| Superseded pointer | Current entry / disposition |
+|---|---|
+| `knowledge/webmcp-nonautosubmit-round-21.md` and the initial row above | `knowledge/webmcp-nonautosubmit-round-21-corrected.md` is the canonical measured entry. The original note retains its committed prefix plus a supersession append; it is historical, not a second admission. |
+| Initial provenance / source-citation / wording | Corrected entry supplies the full external URL, resolved-value serialization spans, requested-flag and Node-argv qualification, user-gesture limit, JSON-LD-object-versus-output-array distinction, and finalized acquisition pointer. |
+
+Both knowledge files are indexed; only the corrected entry contributes current
+claim evidence. A file-count increase caused by preserving a correction is not
+another frontier or expansion credit. S100/S101 used-by additions are logged in
+the round21 lesson; immutable source-row cells are unchanged.

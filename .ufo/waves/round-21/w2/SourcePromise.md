@@ -1,0 +1,37 @@
+# SourcePromise — S100 promise/throw ordering
+
+Axes: source-claim precision; retained-runtime correlation; ordering falsifiability; production noninterference.
+
+## Findings
+
+1. **Attack: equate attaching promise reactions with guaranteed eventual tool completion.** Observed source contradicts that stronger reading. `.ufo/waves/round-21/sources/html_form_element.cc:787-806` checks `executing_tool && executing_tool->CurrentlyRunning()` before taking the promise and attaching resolved/rejected reactions. `HandleWebMcpToolResponse` independently checks `CurrentlyRunning()` at **295-297** and returns before either serialization or rejection reporting if false. Thus reaction attachment and later callback eligibility are distinct. The comment at 795-796 is conditional implementation intent, not a liveness theorem. The current note, `corpus/knowledge/webmcp-nonautosubmit-round-21.md:40`, explicitly avoids generic eventual-settlement guarantees; this attack does not falsify that bounded sentence. Confidence: high for the displayed control flow, not binary equivalence.
+
+2. **Attack: classify the thrown listener exception as a rejected respondWith promise.** The actual fixture does `preventDefault()` first, then throws before calling `respondWith`: `scripts/webmcp-lifecycle-round21.mjs:112-120`. S100's `807-813` diagnoses canceled submission with no captured promise; it is not a catch/translation of the listener's exception into promise rejection. In contrast, S100 `320-326` explicitly reports the rejection exception and returns the fixed promise-rejected tool error. Retained current `corpus/evidence/round-21/runtime/na-throw.json:184-225` records action seq13, acknowledgement seq14, matching tool Error seq15 with the preventDefault/no-respondWith diagnostic, and the separate page error `Uncaught Error: dummy submit handler throw` in the seq16 observation. `na-reject.json:184-225` records the analogous seq15 tool error `respondWith promise was rejected` and the separate page error `Uncaught Error: dummy rejection`. These are different mechanisms despite both having tool status Error. Note lines 38-39 preserve the distinction. Confidence: high.
+
+3. **Attack: treat delayed promise release as an unbounded settlement result or proof that the post-settlement guard was exercised.** Current `corpus/evidence/round-21/runtime/na-delayed.json:184-265` records action seq13, acknowledgement seq14, held-promise observation seq15 with formActive=true, release marker seq16, matching Completed seq17, and post observation seq18 with formActive=false. Invocation ID is `6B4E7894D6E4EEED79F71A2ACCAD3372`; output nonce and q equal `bb8978d0-4274-45c6-838a-0185a7d0cca3`. The release and response have equal millisecond timestamps but distinct ordered seq values; no positive sub-millisecond latency claim follows. `scripts/webmcp-lifecycle-round21.mjs:222-225` shows the controlled release and final window cutoff. This demonstrates the single controlled fulfillment, not the false-running guard branch, pending-forever behavior, cancellation during a held promise, or eventual execution for every promise. Confidence: high.
+
+4. **Attack: assume any resolved promise must yield Completed.** S100 `298-319` first serializes object values; failed JSON serialization calls the tool error callback at 308-312. Non-object/null-result handling takes the ToString path at 316-319. The retained delayed case supplies an ordinary serializable object, so its Completed observation does not cover serialization failure or all resolved values. No present note sentence claims otherwise. Confidence: high for source interpretation; those other value classes remain unobserved here.
+
+## Callback guard versus settlement
+
+Observed supporting definition/caller text: `HTMLFormMcpTool::CallDoneCallback`, S100 local file **261-274**, returns for a null callback, otherwise moves/runs it, then sets `is_currently_running_ = false` and clears invocation/UI state. The state clearing is **after** callback invocation (266-267), not before it; do not assert a stronger reentrancy guarantee from this snippet. `HandleWebMcpToolResponse` has the pre-processing running guard; its two reaction callsites are 798-806. These observations do not establish when an arbitrary promise settles or whether callbacks can run in every context lifecycle state.
+
+LSP limitation: `read xd://lsp` reports **No such tool** and lists mounted devices without LSP. Therefore no answering language server was available and no cold-empty semantic result was used. Definition/caller tracing above is literal source inspection/grep fallback, **not semantic references proof**. `CurrentlyRunning()`'s inline declaration/body is not present in the opened `.cc` snapshot; its accessor implementation was not independently inspected. No claim of exhaustive references or exported API behavior is made.
+
+## Counter/control boundary (static inspection only)
+
+`measure-c1.mjs:85-96` correlates response invocation IDs, preserves frame sequence and pre/post mirrored observations, and limits response summaries at post.seq. It does **not** require the delayed intermediate observation/release ordering or assert per-case response status/error text. `selftest-c1.mjs:63-84` and `fixtures/expected.json:160-164` contain late/foreign/pre-invocation response controls; these are correlation controls, not promise-guard branch controls. A concrete missing scoped semantic mutant is deleting/reordering the delayed release marker and held-state observation while leaving pre/post, response and hashes internally coherent. This is a static observation of absent dedicated predicates, not an executed counter acceptance result, and not a defect claim against the stated finite-observation count. `fixtures/positive-ordered.json:21-26` embeds synthetic promise-case data; it is not browser execution evidence. No counter or selftest was run.
+
+## External source opening
+
+Opened 2026-10-21: https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc#290
+
+Located quote (line 295, 3 whitespace-delimited words): `if (!tool->CurrentlyRunning()) {`
+
+The read returned a base64 carrier; decoding it in memory produced SHA-256 `8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916`, matching the retained decoded source and `.ufo/waves/round-21/source-opening.json:2-6`. The retained acquisition metadata names the same tagged path with `?format=TEXT` and access time `2026-10-21T12:37:47.692898+00:00`. This comparison is observed byte identity of decoded source, not publisher authentication or Arch binary equivalence. No downloaded file was written into production.
+
+## Scope / remaining unknowns
+
+Current acquisition selected using `.ufo/waves/round-21/runtime-execution-bounded.json:5-18`, not historical acquisitions. Conclusions are three finite retained cases plus narrow tagged-source interpretation, not novel branch count, coverage percentage, general promise liveness, or actor quiescence. Reentrant callback behavior, async cancellation during a held promise, throwing before preventDefault, throwing after respondWith, and serialization-error runtime behavior remain unresolved by these observations. No production changes, registry/source-row writes, browser work, test/build/lint/formatter execution, delegation, or tool installation/update occurred. Only this report was written.
+
+Report: .ufo/waves/round-21/w2/SourcePromise.md

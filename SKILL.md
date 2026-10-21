@@ -2362,7 +2362,7 @@ return was frozen before repairs in commit `e0b5d02a6aef76b0d2799d92618f79f1bca4
 
 ## Round-21 non-autosubmit lifecycle — observed decision rules
 
-Current note: `corpus/knowledge/webmcp-nonautosubmit-round-21.md` (S101
+Current note: `corpus/knowledge/webmcp-nonautosubmit-round-21-corrected.md` (S101
 own-work runtime evidence; S100 reopened upstream source interpretation).
 Source callsites alone are not runtime completion. The recorded experiment uses
 Chromium154.0.8037.97, Playwright1.64.0, Node24.21.0 and private loopback fixtures.
@@ -2371,11 +2371,11 @@ Chromium154.0.8037.97, Playwright1.64.0, Node24.21.0 and private loopback fixtur
 |---|---|---|
 | Filled non-autosubmit form, active pseudo-state | Record a finite no-response window, never an indefinite guarantee | na-pending |
 | Later input click or page requestSubmit | Correlate completion by invocationId; isTrusted/agentInvoked do not prove a human submit | na-click, na-requestsubmit |
-| Native form.submit | Inspect navigation and landing output independently; no submit event need be observed | na-native-submit |
+| Native form.submit | Inspect navigation and landing output independently; old-document submit count can be unavailable (null), not observed zero | na-native-submit |
 | Reset or remove this tested form | Retain the observed Canceled event and exact reason; do not generalize to every DOM mutation | na-reset, na-remove |
 | Promise rejected / preventDefault then throw | Distinguish rejection from programming-error text; retain handler ordering | na-reject, na-throw |
 | Held response promise | Retain intermediate observation and explicit release, then correlated result | na-delayed |
-| Required field emptied / autosubmit invalid email | Distinguish later native-submit validation from initial fill refusal | na-invalid-submit, auto-invalid |
+| Required field emptied / autosubmit invalid email | Both are submit-stage validity errors: later page mutation for na-invalid-submit, immediate autosubmit for auto-invalid; neither is initial-fill refusal or validation by JavaScript form.submit() | na-invalid-submit, auto-invalid |
 
 The autosubmit positive control is held-ground evidence (`auto-positive`), not
 another novel lifecycle branch. Every case's raw JSON and served HTML are under
@@ -2388,7 +2388,7 @@ No real-site, default-profile, human-witness, cross-build or determinism claim f
 | Name | Kind | Entry command | Verdict map | Self-test | Pinned-value path | Write scope | Owner |
 |---|---|---|---|---|---|---|---|
 | finite lifecycle capture | probe | `/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node scripts/webmcp-lifecycle-round21.mjs --out NEW_DIRECTORY` | 0=observed finite run; 1=failed execution; 2=could-not-evaluate usage/aborted; no semantic pass | not a gate; actual run retained | `corpus/evidence/round-21/runtime/receipt.json` producer/environment and raw case digests | new owned output directory and private temporary browser/server state; no external actions | tabi |
-| lifecycle observation count | gate | `node .ufo/waves/round-21/measure-c1.mjs REV` | 0=clean/baseline; 1=failed relationships; 2=could-not-evaluate | `node .ufo/waves/round-21/measure-c1.mjs --selftest` | `.ufo/waves/round-21/fixtures/expected.json`, positive-ordered.json, retained runtime receipt | read-only committed Git blobs; selftest disposable isolated Git trees only | tabi |
+| lifecycle observation count | gate | `node .ufo/waves/round-21/measure-c1.mjs REV` | 0=clean/baseline; 1=failed relationships; 2=could-not-evaluate | `node .ufo/waves/round-21/measure-c1.mjs --selftest` | `.ufo/waves/round-21/fixtures/expected.json`, positive-ordered.json, source-carrier.gz; pinned producer and acquisition/artifact hashes | read-only committed Git blobs; selftest disposable isolated Git trees only | tabi |
 
 The gate checks fixed-case completeness, raw invocation/event correlation, artifact
 digests, finite windows and recorded cleanup. It does not certify observation
@@ -2396,3 +2396,11 @@ authenticity, all possible producer stubs, source-to-binary equivalence or seman
 truth. A twelve-case count is not a branch-coverage ratio. A missing response in the
 recorded window is not an eventual-settlement guarantee. Outside admission remains
 the independent closer's duty, not a property conferred by lane-dispatched reviews.
+
+The capture records exact Node producer argv and requested Chromium flags, not the
+complete effective browser command line or attested transport. The counter pins the
+producer bytes, acquisition record, raw source carrier/body, header associations,
+first-literal-form attribute names and causal payload mirrors. Its HTML grammar is
+finite, not a general parser (comment/script lookalikes remain outside coverage).
+Detailed kernel identity fields and lifecycle meanings receive separate review;
+the structural selftest's silent synthetic population is not runtime evidence.

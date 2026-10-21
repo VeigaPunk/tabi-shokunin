@@ -1,0 +1,11 @@
+{
+  "scope": "immediate post-dispatch actual registry-file labels only; not actor authentication or quiescence",
+  "argv": [
+    "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+    "-e",
+    "const fs=require('node:fs'); const out=[1,2].map(n=>{const s=JSON.parse(fs.readFileSync('.ufo/waves/round-21/w'+n+'-spec.json'));const r=JSON.parse(fs.readFileSync('.ufo/waves/round-21/w'+n+'/swarm-registry.json'));return {wave:n,expected:s.wave,actual:r.wave,matches:typeof r.wave==='string'&&r.wave===s.wave,members:Object.keys(r.members).length,bound:Object.values(r.members).filter(v=>typeof v.agentId==='string'&&v.agentId.length).length};});console.log(JSON.stringify(out));if(out.some(x=>!x.matches))process.exitCode=1;"
+  ],
+  "exit": 0,
+  "stdout": "[{\"wave\":1,\"expected\":\"tabi-r21-w1\",\"actual\":\"tabi-r21-w1\",\"matches\":true,\"members\":64,\"bound\":64},{\"wave\":2,\"expected\":\"tabi-r21-w2\",\"actual\":\"tabi-r21-w2\",\"matches\":true,\"members\":64,\"bound\":64}]\n",
+  "stderr": ""
+}

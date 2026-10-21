@@ -1,0 +1,18 @@
+# na-click semantic review
+
+## Findings by severity
+
+None. The note row and round-21 SKILL decision agree with the current runtime evidence for this finite `na-click` observation.
+
+## Scoped evidence and derivation
+
+- `corpus/knowledge/webmcp-nonautosubmit-round-21.md:33` identifies the action as a Playwright input-pipeline button click and records the observed Completed result plus `isTrusted`/`agentInvoked`; `SKILL.md:2373` says to correlate by `invocationId` and not treat either flag as proof of a human submit. The producer uses `page.locator('#go').click()` for this case (`scripts/webmcp-lifecycle-round21.mjs:210-220`), matching the row’s action description.
+- The raw trace records invocation ID `0B53A87928A9E2638D504C5088EFD942` at the invoke result/tool-invoked frames (`corpus/evidence/round-21/runtime/na-click.json:132-165`) and a `WebMCP.toolResponded` event with that same ID at seq 14. That event reports `status: "Completed"` and output `{ok:true, nonce:"9acf5007-c443-4473-8764-f04bba30c49d", q:"9acf5007-c443-4473-8764-f04bba30c49d"}` (`na-click.json:192-204`). The correlated receipt independently retains `invokeError: null` and exactly one response with the same ID, status, and output (`corpus/evidence/round-21/runtime/receipt.json:59-86`). Neither response record contains an `errorText` field; the after-action page observation has `errors: []` (`na-click.json:213-234`; receipt `:97-114`).
+- The receipt’s pre-action window is 255 ms with zero matching responses and `formActive: true`; its post-action window is 542 ms, containing the matching Completed response (`receipt.json:65-86`). The submit record has `agentInvoked: true`, `isTrusted: true`, `active: true`, and `respondWith: "function"`. At the post-action observation, the URL is still `/na-click`, the form exists, its field retains the nonce, and `formActive` is false; there are no recorded navigations (`receipt.json:87-114`). Thus the event-time active state and later page state differ; this is not evidence of navigation or of a human witness.
+- The fixture directly prevents default, then supplies a resolved promise with the dummy object (`corpus/evidence/round-21/runtime/na-click.html:7-15`). This is consistent with the observed outcome, but the status/output mapping above is S101 runtime evidence, not a source-only deduction.
+
+## Source boundary, residual risk, verification gaps
+
+The row’s S100 citation `720-815` is within the registered S100 anchors `html_form_element.cc:174-328,635-842` (`corpus/SOURCES.md:114`). The cited code sets `agentInvoked` for an active declarative WebMCP submission and dispatches the submit event (`.ufo/waves/round-21/sources/html_form_element.cc:769-776`), then routes a supplied `respondWith()` promise to the response handler (`:787-806`). It does not establish this run’s `isTrusted` value, CDP `Completed` status/output, observed post-action state, or human involvement; those remain S101 observations. S100 is same-source upstream interpretation, not proof of source/binary equivalence (`corpus/knowledge/webmcp-nonautosubmit-round-21.md:14-21`; `corpus/SOURCES.md:114-115`).
+
+This is one loopback case and bounded observation only: 255 ms before action and 542 ms after it. It does not establish universal click behavior, eventual behavior outside those windows, or who initiated a human-level interaction. No screenshot is claimed. No gate, browser execution, build, or test was run.

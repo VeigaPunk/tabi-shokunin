@@ -254,3 +254,15 @@
     shapes. (lesson: corpus/lessons/round-21.md#mistakes;
     `.ufo/waves/round-21/w1/ReviewNavigation.md`; unavailable-null-positive and
     unavailable-to-empty CLI cases)
+54. A source association is checked in the first `source:` line, not rescued by
+    a matching identifier elsewhere in the body. The declared S101 own-work
+    receipt and S100 external URL stay distinct, and registry backlinks point to
+    the current corrected entry. A copied-header-label red control must fail with
+    `source_binding`. (lesson: corpus/lessons/round-21.md#mistakes;
+    `.ufo/waves/round-21/w2/CounterSource.md`; copied-note-source-label case)
+55. Structural consistency is not a semantic oracle. A silent synthetic CLI fixture
+    may test observation-counting relationships, but each published lifecycle
+    contrast needs a separate revision/case/invocation/sequence-anchored reading of
+    the actual acquisition. Preserve this distinction when a coherent different
+    status remains structurally countable. (lesson: corpus/lessons/round-21.md#mistakes;
+    `.ufo/waves/round-21/w2/ConnectNoHarm.md`; semantic contrast witness)

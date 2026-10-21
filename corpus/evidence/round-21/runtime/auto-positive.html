@@ -2,14 +2,14 @@
 <form id="f" toolname="lifecycle" tooldescription="Dummy loopback lifecycle" toolautosubmit action="/landing" method="get">
 <label>Dummy<input name="q" required ></label><button id="go" type="submit">Run</button></form>
 <script>
-window.observations={nonce:"993abf00-22b1-4cae-9605-e90d528bf007",submits:[],errors:[]};
+window.observations={nonce:"87f23377-4b21-45d9-b50b-2845277ff7d4",submits:[],errors:[]};
 window.addEventListener('error',e=>observations.errors.push(e.message));
 f.addEventListener('submit',e=>{
  observations.submits.push({agentInvoked:e.agentInvoked,isTrusted:e.isTrusted,q:f.elements.q.value,active:f.matches(':tool-form-active'),respondWith:typeof e.respondWith});
  e.preventDefault();
  const mode="success";
  if(mode==='throw') throw Error('dummy submit handler throw');
- const value={ok:true,nonce:"993abf00-22b1-4cae-9605-e90d528bf007",q:f.elements.q.value};
+ const value={ok:true,nonce:"87f23377-4b21-45d9-b50b-2845277ff7d4",q:f.elements.q.value};
  if(mode==='reject') e.respondWith(Promise.reject(Error('dummy rejection')));
  else if(mode==='delayed') e.respondWith(new Promise(resolve=>{window.release=()=>resolve(value)}));
  else e.respondWith(Promise.resolve(value));

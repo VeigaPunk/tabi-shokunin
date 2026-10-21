@@ -1400,3 +1400,46 @@ is retained only as `history/revived-counter.bundle`. `w1/ReviewRawInvoke.md`
 describes those unintegrated incompatible draft schemas, not the canonical
 L1 producer/counter. This recurrence reinforces QUALITY51: a terminal task
 return is not durable quiescence. Wave2 explicitly forbids waking dead seats.
+
+### Round-21 final integration corrections — current pointers and measured scope
+
+Supersedes current-acquisition wording at :1352-1353 and :1388-1391:
+`runtime-execution-finalized.json` is current; pinned/ordered/final/bounded
+records are historical, with exact producers and raw data mapped by
+`.ufo/waves/round-21/history/index.json`. The finalized new execution exits0,
+pins every artifact before relocation, and retains cleanup failures rather
+than letting a server-close error skip evidence persistence. Fault injection
+of every host/browser cleanup failure remains unexercised.
+
+Checkpoint `1b5f449ad15525d281fda4558aeef1086f1e4a65` omitted the producer from
+its explicit path list. The next integration explicitly commits
+`scripts/webmcp-lifecycle-round21.mjs`, SHA-256
+`bc11e4d657a9bf1a99b3b6b1b9eb7eeb61ccf3ab2de60cc42ff383936748a811`;
+the counter pins these bytes and the acquisition/artifact chain. The missing-
+producer state was reported by w2; it was not rerun merely to confirm it.
+The producer-absent CLI control makes that repair failure-capable.
+
+Canonical knowledge is now
+`corpus/knowledge/webmcp-nonautosubmit-round-21-corrected.md`. The original
+note retains its entire committed prefix plus an explicit supersession append;
+README indexes both without counting a second admission. Current provenance
+includes the external URL, source-header associations, serialization spans,
+requested-versus-effective flags, Node-argv scope, automation user-gesture
+limits, and the JSON-LD-object/output-array distinction. S100/S101 used-by
+cells append the corrected path; immutable cells and prior lessons stay intact.
+
+Fresh w2 attacks led to quoted-attribute parsing, typed malformed-input
+findings, action-ack identity, invoked payload/page-echo checks, raw-carrier
+verification and acquisition binding. These are finite structural checks,
+not a semantic oracle: actual contrasts receive a separate revision-bound
+case/invocation/sequence witness. Source interpretation and reset/removal's
+observation-only status remain distinct.
+
+Executed static census (`counted-pre-verification.json`):83 unique CLI oracle
+cases,12 case IDs,23 finding IDs,55 QUALITY criteria; waves64+64, with role
+mixes derived from their actual specs. No selftest pass is inferred from this
+census. W1 original failures32 (two later peer-revived/stopped), w2 failures6,
+including one provider invalid_prompt refusal that was not retried or replaced.
+Failure groups and exact errors are retained in w1/w2-failures.json and
+provider-errors.txt. Both actual registry files have matching non-null labels
+and64 bound IDs (`dispatch-label-check.json`). No new tool installation/update.

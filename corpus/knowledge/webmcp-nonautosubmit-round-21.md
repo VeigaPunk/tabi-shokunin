@@ -104,3 +104,15 @@ instructions. This run has no screenshot claim. The gate verifies finite recorde
 relationships and digests, not observation authenticity against a malicious author,
 all possible harness stubs, every feature-flag alteration, or universal semantics.
 The separate semantic review and outside admit/reject closure remain required.
+
+## Round-21 supersession — current guidance is the corrected entry
+
+This initial committed note is retained historical text, not the active C1 entry.
+Use `corpus/knowledge/webmcp-nonautosubmit-round-21-corrected.md`: it supplies the
+external URL in the provenance header, complete serialization citations, exact Node
+producer-argv scope, requested-versus-effective flag limits, and the finalized
+acquisition pointer. Native-submit output is an array containing the landing
+JSON-LD object; post-navigation submit state remains unavailable, not zero.
+The initial wording and headers above are superseded, not silently re-admitted.
+This append preserves the entire original prefix from
+`1b5f449ad15525d281fda4558aeef1086f1e4a65`; only the corrected entry is measured.

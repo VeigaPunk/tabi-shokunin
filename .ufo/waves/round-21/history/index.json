@@ -19,9 +19,23 @@
     "reason": "ReviewPending/ReviewCleanup: add explicit window cutoff, bounded observations/close and late owned-process snapshots"
   },
   "runtime-execution-bounded.json": {
-    "class": "current bounded qualified acquisition",
-    "outputRelocation": ".ufo/waves/round-21/runtime-bounded-candidate -> corpus/evidence/round-21/runtime/",
-    "producer": "scripts/webmcp-lifecycle-round21.mjs"
+    "class": "historical bounded acquisition",
+    "runtimeRelocation": ".ufo/waves/round-21/history/runtime-v4/",
+    "producer": ".ufo/waves/round-21/history/webmcp-lifecycle-v4.mjs",
+    "reason": "Finalized producer preserves receipt/error evidence when server close fails; new acquisition has before-move artifact digests"
+  },
+  "runtime-execution-finalized.json": {
+    "class": "current finalized acquisition",
+    "outputRelocation": ".ufo/waves/round-21/runtime-finalized-candidate -> corpus/evidence/round-21/runtime/",
+    "producer": "scripts/webmcp-lifecycle-round21.mjs",
+    "producerSha256": "bc11e4d657a9bf1a99b3b6b1b9eb7eeb61ccf3ab2de60cc42ff383936748a811",
+    "evidence": "Execution record pins every canonical artifact before relocation"
+  },
+  "runtime-execution.json": {
+    "class": "historical prerequisite refusal, not a browser run",
+    "producer": ".ufo/waves/round-21/history/webmcp-lifecycle-v1.mjs",
+    "reason": "Generic node argv refused node_version_mismatch before browser allocation; rejected Node version/executable were not recorded",
+    "recordLocation": ".ufo/waves/round-21/runtime-execution.json"
   },
   "fixtures/positive.json": "historical pre-order-marker synthetic fixture; current CLI uses positive-ordered.json",
   "cloneRelocations": {

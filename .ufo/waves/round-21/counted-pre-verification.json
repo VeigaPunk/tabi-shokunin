@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node",
+    "--input-type=module",
+    "-e",
+    "import fs from 'node:fs';import crypto from 'node:crypto';const g=await import('./.ufo/waves/round-21/measure-c1.mjs');const expected=JSON.parse(fs.readFileSync('.ufo/waves/round-21/fixtures/expected.json'));const quality=fs.readFileSync('corpus/QUALITY.md','utf8');const waves=[1,2].map(n=>{const s=JSON.parse(fs.readFileSync('.ufo/waves/round-21/w'+n+'-spec.json'));return {wave:s.wave,seats:s.items.length,roles:s.items.reduce((a,x)=>(a[x.role]=(a[x.role]||0)+1,a),{})};});console.log(JSON.stringify({expectedCases:expected.length,uniqueCaseNames:new Set(expected.map(x=>x.name)).size,caseIds:g.IDS.length,findingIds:g.FINDINGS.length,qualityCriteria:(quality.match(/^\\d+\\./gm)||[]).length,waves,counterSha256:crypto.createHash('sha256').update(fs.readFileSync('.ufo/waves/round-21/measure-c1.mjs')).digest('hex')}));"
+  ],
+  "exit": 0,
+  "stdout": "{\"expectedCases\":83,\"uniqueCaseNames\":83,\"caseIds\":12,\"findingIds\":23,\"qualityCriteria\":55,\"waves\":[{\"wave\":\"tabi-r21-w1\",\"seats\":64,\"roles\":{\"executor\":3,\"connector\":2,\"scribe\":1,\"scout\":22,\"reviewer\":18,\"revenger\":10,\"critic\":8}},{\"wave\":\"tabi-r21-w2\",\"seats\":64,\"roles\":{\"reviewer\":34,\"scout\":20,\"mutation-tester\":4,\"critic\":4,\"connector\":2}}],\"counterSha256\":\"8d99242316c3217f1c5d76edc5e4b28f8a22c1d9dd6d1e884ad4a87b17fdf5eb\"}\n",
+  "stderr": "",
+  "scope": "static artifact census, not a passing runtime/counter/selftest claim"
+}
