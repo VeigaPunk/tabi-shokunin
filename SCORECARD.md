@@ -1396,7 +1396,7 @@ zero is not accepted because the frozen supersession rule is not enforced.
 |---|---|---|
 | C1 calibration | baseline `4ad4c77` → `mismatches=6` (five LOG-window findings + one live-tree m3 finding); selftest 13 → 17 | **failed** — the apparent zero is unsound: `CritC1Supersession.md` and `ExecC1Attacks.md` prove the paragraph matcher clears real `LOG.md:221` without citing that line, contrary to the frozen C1 predicate. `m3` also reads live porcelain rather than the pinned `--rev`. No post-data counter-rule change; defer repair to a new claim. |
 | C2 depth | counter target 0 → `valid=true` at corrected gate `5ed6484da66e6bf73654281d2e9ba3703f0c2ef0` (present, sha_match, anchor_located, anchor_unique, byte_count_match) | **measured, inherited-conformance not established** — absent receipt now yields exit 2 and selftest 5/5, but round-27 claim text dropped inherited fetch-failure and revision-binding clauses; the receipt has no revision field and the gate cannot prove that inherited condition. |
-| C3 coverage | counter target 0 → 1 S107-citing entry at `6ca3b89ad2a7b480984859834b3d28f1e75a9a26` | **measured, standing §10 duty incomplete** — transformed row and live census exit 0 (`census-after-c3.txt`), but the 38-row quarantine slice was not hand-checked this round and the round-27 claim record differs from inherited text. Refusal grounds and census measurements are in `corpus/lessons/round-27.md` §Gate. |
+| C3 coverage | counter target 0 → 1 S107-citing entry at `6ca3b89ad2a7b480984859834b3d28f1e75a9a26` | **counter passes; §10 hand-check complete with adoption conflict routed** — census exit 0 (`census-after-c3.txt`); 38-row slice verdicts are in the lesson/reviewer reports. S114/S140 have source text present but were not appended because frozen C3 only admits S107; the conflict is in the round-27 L0 question. |
 | operability | 8 → 8 (a new gate lands with registry row; SKILL.md eight-field rows appended under the append-only round-27 section; `check-gate-registry.mjs` clean) | improved in substance, scalar held — counted under the claim's own counter, not re-scored |
 | freshness, adjacency | unchanged | no claim; no harm measured — every prior-round byte is append-only |
 
@@ -1405,18 +1405,19 @@ No capability-table promotion this round: `check-s106-evidence.mjs` is a gate
 
 ## Round 27 — waves and seats
 
-Two v1 waves (32 + 36 = 68 seats; run-7 band, within 64–100 total). W1
-(build/first falsifiers): 3 scout, 9 executor, 5 scribe, 2 simplifier, 4
-reviewer, 3 critic, 2 mutation-tester, 2 connector, 1 sentinel, 1 revenger
-(m_flash 16/32 = 50%; attack 9/32 = 28.1%). W2 (falsify): 13 executor, 4
-scribe, 1 simplifier, 3 mutation-tester, 2 reviewer, 5 critic, 4 scout, 2
-sentinel, 2 connector (m_flash 18/36 = 50%; attack 10/36 = 27.8%). Both
-validated under policy v1; W1 dispatched as one batched call and W2 dispatched
-after its 36-seat spec validated. W1: 32 reports/32 seats; no dead seats.
-W2: 33 reports/36 seats at this snapshot, two seats still running, and
-`ScribeClaimRecordAudit` completed without writing its assigned report (no
-artifact, no error text). The §3 planner seat is held by the L1; the validated
-spec met the L2 floor inside W1.
+Two v1 waves (32 + 36 = 68 seats) plus one four-reviewer residual call for the
+§10 quarantine slice = **72 round seats**. W1 (build/first falsifiers): 3 scout,
+9 executor, 5 scribe, 2 simplifier, 4 reviewer, 3 critic, 2 mutation-tester,
+2 connector, 1 sentinel, 1 revenger (m_flash 16/32 = 50%; attack 9/32 = 28.1%).
+W2 (falsify): 13 executor, 4 scribe, 1 simplifier, 3 mutation-tester, 2
+reviewer, 5 critic, 4 scout, 2 sentinel, 2 connector (m_flash 18/36 = 50%;
+attack 10/36 = 27.8%). Both validated under policy v1 and dispatched as one
+batched call each. W1: 32 reports/32 seats. W2: 35 reports/36; no dead job,
+but `ScribeClaimRecordAudit` completed without its assigned report. Residual
+call: four reviewers/4 reports, all quarantine verdicts recorded; 35 absent/
+refuse, S114 and S140 present but not adopted under the frozen C3 scope, and
+S171 unverifiable after HTTP 404. L0 question filed on present-quarantine versus
+frozen-claim handling. The §3 planner seat is held by the L1; W1 met the L2 floor.
 
 ### Planned / saturation / retired — round 27
 

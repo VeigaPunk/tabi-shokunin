@@ -19,18 +19,25 @@ ends, rows 106 → 107 (`.ufo/waves/round-27/census-before.txt`,
 |---|---|---|---|---|
 | C1 | calibration | frozen target: extended m1 at baseline ≥1; tip 0; selftest 13→≥15 | `node scripts/check-selfassessment.mjs --rev <REV> --json` (`mismatches`) | **failed** — baseline 4ad4c77 gives 6 total (5 LOG-window + m3), but adversarial evidence shows the supersession matcher clears `LOG.md:221` without a citation to that line (CritC1Supersession.md; ExecC1Attacks.md). Current implementation's `:\d+` paragraph matcher does not enforce the frozen line-citation rule; tip target 0 is therefore not a sound verified result. `m3` also reads live status, not pinned revision. Do not amend the frozen claim; resolve in a later claim. |
 | C2 | depth | 0 gate → `valid=true` | `node scripts/check-s106-evidence.mjs --rev <REV> --json` (`valid`) | **counter passes; inherited claim conformance not established** — corrected gate at `5ed6484da66e6bf73654281d2e9ba3703f0c2ef0` returns valid=true, selftest 5/5, and absent receipt returns CNE/exit 2. However, round-27 claims text omits inherited fetch-failure and measurement-revision binding; the S106 receipt has no revision field, so that inherited requirement is not proven. |
-| C3 | coverage | 0 → ≥1 entry citing S107 | `git grep -lE '^source: S107 ' <REV> -- corpus/knowledge \| wc -l` | **counter passes; standing §10 duty incomplete** — 1 entry and S107 row landed at `6ca3b89ad2a7b480984859834b3d28f1e75a9a26`; census exit 0, rows 106 → 107. The 38-row quarantine slice was not hand-checked this round; no compliant §10 closeout or unchanged inherited claim can be asserted. |
+| C3 | coverage | 0 → ≥1 entry citing S107 | `git grep -lE '^source: S107 ' <REV> -- corpus/knowledge \| wc -l` | **counter passes; quarantine hand-check complete, present-row adoption unresolved** — 1 S107-citing entry and census exit 0 (106 → 107). Of 38 quarantine rows, 35 are absent, S171 is unverifiable, and S114/S140 have present text but were not appended because the frozen claim admits only the S107 entry; the conflicting §10 direction is routed to L0. |
 
 ## Gate (sources opened this round, 2026-10-25)
 
 - **S107 admitted** — HTTP Semantics RFC 9110 — https://www.rfc-editor.org/rfc/rfc9110.txt — access 2026-10-25, fresh plain-text fetch 502941 B sha256 `21c1cdce…` (committed bytes `.ufo/waves/round-27/assimilation/rfc9110.txt`). Located quote (§10.2.3, lines 4805-4807): "Retry-After indicates the minimum time that the user agent is asked to wait before issuing the redirected request." Staged row S124 transformed to fleet schema (recheck prose `"(errata only)"` stripped to `730d`; opened re-dated to this lane's access; anchor cell rebuilt from this round's located quotes; used-by exactly the admitted entry). Staged id → lane id assignment by document (the registry continues at S107), never arithmetic.
-- **Staged S125 refused as a row** — its document (`draft-ietf-httpbis-rfc6265bis-13.txt`, ietf.org) was not re-opened this round and its staged scope differs from S102. On the same bytes, `scripts/check-sources.mjs` flags duplicate URL as E04; the scope-sensitive sources census reports W04 (across scopes), E09 (prose recheck), and E11 (missing used-by target), not E04. A control with S102's exact scope produces census E04. Flip: re-open the source for a lane claim, then merge/supersede S102 or add a distinct scoped row only if an admitted entry uses it and both gates pass.
-- **Staged S142 refused as a row** — it is the same RFC 9110 document as S107 and its §15.4.2–§15.4.9 scope is already covered by S107's cited ground; no separate entry was admitted. `check-sources.mjs` flags same-URL duplication; the scope-sensitive census reports W04 rather than E04. The measured `supersedes S107` merge passes both gates; this row remains refused because it adds no separately admitted knowledge. Reconsider only if a future entry needs separately citable, non-overlapping scope.
+- **Staged S125 refused as a row** — its RFC6265bis-13 source was freshly re-opened in the quarantine audit; the row's `Rate limits…` quote was absent. The URL matches lane S102 but the scope differs: `check-sources.mjs` flags duplicate URL as E04; the scope-sensitive census reports W04, E09 (prose recheck), E11 (missing used-by), not E04. A same-scope control yields census E04. No cookie-samesite entry is admitted by this frozen C3 claim. Flip: a future claim reopens/adopts that knowledge and merges/supersedes S102 or adds a separate scoped row only if its admitted entry uses it and both gates pass.
+- **Staged S142 refused as a row** — same RFC 9110 document as S107; its §15.4.2–§15.4.9 scope is already covered by S107, and its quarantine row's `which tool list do I see` quote was absent from the cited source. `check-sources.mjs` flags same-URL duplication; census reports W04 rather than E04. A `supersedes S107` merge passed both gates, but no second entry is admitted under frozen C3. Reconsider only for separately citable scope in a future claim.
 - Stripped staged-recheck prose recorded per the assimilation contract: S124 `"(errata only)"` → bare `730d`; the staged S125 cell `"180d (draft; re-read for a new revision)"` stays with its refused row.
-- Quarantine: the 38-row tabi slice remains closed and no quarantine row was
-  adopted, but the required this-round hand-check of each row was not completed;
-  §10 Wave-4 quarantine-first duty remains unmet. `considerthese/` is absent in
-  this lane. This is a closeout gap, not a clean carried verdict.
+- Quarantine slice: all 38 rows were re-opened (reports
+  `.ufo/waves/round-27/quarantine/Quarantine{A,B,C,D}.md`). Thirty-five
+  absent/refuse: S102, S106, S109, S110, S111, S117, S118, S124, S125, S126,
+  S130, S131, S133, S134, S135, S137, S138, S142, S143, S144, S145, S147,
+  S148, S149, S153, S154, S158, S163, S164, S165, S166, S167, S174, S175,
+  S176. S171 returned 404 and remains unverifiable, not fabricated. S114 and
+  S140 have source text present after quote/markup correction, but no lane
+  entry cites either; they were not adopted to preserve frozen C3's exact
+  one-entry/S107 target. This conflicts with the quarantine rule's
+  present→adopt instruction; L0 question routed. No quarantine rows appended.
+  `considerthese/` is absent.
 - **Package defect caught before admission, not a lane mistake** — staged
   entry/rows conflated 307 and 308 under one MUST-NOT clause; the fresh RFC
   locates it only for 307 (§15.4.8, line 7494). The admitted entry separates
