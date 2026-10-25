@@ -1,0 +1,90 @@
+#!/usr/bin/env node
+// Generates the round-25 wave-2 (falsify) spec. Lane evidence, not a gate.
+import { writeFileSync, readFileSync, mkdirSync } from "node:fs";
+
+const LANE = "/home/vgpnk/Projects/shokunin/tabi-shokunin";
+const WAVE_DIR = `${LANE}/.ufo/waves/round-25`;
+const GODSPEED = readFileSync("/home/vgpnk/.agents/skills/godspeed/directive.md", "utf8").trim();
+const MEAS = "3e213bea7363a2aad3f92af86afb3a95699cf9a7"; // measurement/delivery commit
+mkdirSync(WAVE_DIR, { recursive: true });
+
+const context = `# Goal
+tabi round 25, wave 2 (falsify) — attack the landed round so its claims, counters, receipts and
+docs either survive or are corrected before handoff. The round is measured at commit ${MEAS};
+the counting commands are the two production gates:
+  node scripts/check-bfcache-receipt.mjs --rev ${MEAS} --json   -> expect exit 0, valid=true, restores=1
+  node scripts/check-source-reopen-receipt.mjs --rev ${MEAS} --json -> expect exit 0, reopened=6, resolved=6, unresolved=0
+Read ${WAVE_DIR}/claims.json first (frozen, with pre-data revisions). Your item names the one
+artifact you attack and the expected survival rule. If your attack finds a real defect, report it
+with the exact command + output and the minimal reproduction; do NOT edit tracked files (you are a
+read-only reporter). The L1 integrates accepted fixes after the wave.
+
+# Contract
+Lane root ${LANE}; every path you use is absolute. Every \`Report:\` trailer path is relative to
+${LANE} — write it at ${LANE}/<that path>. You are a READ-ONLY reporter: write ONLY the single report
+file named in your item (${WAVE_DIR}/w2/<name>.md) plus throwaway fixtures under
+${LANE}/.ufo/waves/round-25/scratch/<YourName>/. Never edit tracked repo files, never run git/jj
+writes, never touch the fleet repo or siblings (read-only). Never spawn or delegate, never message
+other seats. You MAY re-run the counting commands and read committed bytes; you may run node scripts
+from /tmp copies if you need to mutate a counter, never the tracked file. You may launch nothing that
+outlives your seat; no external probes beyond documented GETs on the six freshness URLs. Tooling
+authorization (operator 2026-10-19): you may install/upgrade tools after reading
+/home/vgpnk/.omp/agent/RULES.md (official channels only; record tool/version/channel/reason). PACMAN
+GUARD: all pacman transactions are paused host-wide — use uv tool / npx / official binary in
+~/.local/bin only; never run pacman. Evidence discipline: every number carries the command that
+produced it; observation/inference/unknown stay separate; a negative claim carries its sweep.`;
+
+const items = [
+  ["RevC1Gate", "reviewer", `Review the C1 gate (scripts/check-bfcache-receipt.mjs) against its registry row (SKILL.md round-25 section) and its selftest: re-run \`node scripts/check-bfcache-receipt.mjs --selftest --json\` (expect cases=17 passed=17 clean) and \`node scripts/check-bfcache-receipt.mjs --rev ${MEAS} --json\` (expect exit 0). Then audit the source for any path where a receipt could score clean without a real restore: e.g. events array containing the same event twice with different seq, a restore event whose url has no matching Navigation event (loaderId check is skipped when 'expect===undefined'), or history_result recorded ok:true without any CDP call. Report each concrete spoof you find with the minimal receipt JSON that would pass (or state none).`],
+  ["RevC2Gate", "reviewer", `Review the C2 gate (scripts/check-source-reopen-receipt.mjs): re-run \`node scripts/check-source-reopen-receipt.mjs --selftest --json\` (expect cases=18 passed=18 clean) and \`node scripts/check-source-reopen-receipt.mjs --rev ${MEAS} --json\` (expect exit 0, 6/6/0). Audit for vacuous resolutions: a holds verdict whose located_quote is found in the bytes but is not the row's canonical quote (the counter requires located==held and held in bytes — can a row pass with a wrong-but-present held_quote?); a supersession row that opens with 'supersedes <id> —' but is appended for a different URL; any way to score 6/6/0 while one row was never fetched this round. Report each spoof with a minimal receipt JSON.`],
+  ["CritC1Receipt", "critic", `Attack the committed C1 receipt (corpus/evidence/round-25/bfcache/receipt.json + events.jsonl): re-run the gate at ${MEAS}; then attempt to show the receipt could be forgeries or mis-derived: (a) is the events array complete vs events.jsonl (61 lines, frameNavigated seq 13/39/57)? (b) do the screenshots exist and are their hashes in the receipt? (c) could the same receipt pass if events.jsonl were absent? (d) does the raw log contain any Page.backForwardCacheNotUsed? Report findings with commands.`],
+  ["CritC2Receipt", "critic", `Attack the committed C2 receipt (corpus/evidence/round-25/freshness/reopened.json + S*.html): re-run the gate at ${MEAS}; then verify the six held quotes actually appear in the committed bytes (use a tag-stripped normalize), that each sha256 equals the stored file hash, and that the fetched_at dates are real. Search the six stored HTML files for any second occurrence of each quote. Report findings with commands.`],
+  ["MutC1Counter", "mutation-tester", `Mutation-test the C1 gate by copying it to your scratch and introducing one mutant at a time that the selftest must catch: (1) drop the loopback check, (2) drop the loaderId continuity check, (3) drop the page-witness check, (4) drop the f12 contradiction check, (5) drop the history-index check, (6) allow summary.restores to exceed distinct events, (7) allow restores > goBacks. For each: run the mutated copy's selftest on your copy and record whether any case flips green (a mutant that flips green = the gate's selftest misses it; report which). Keep the tracked file untouched.`],
+  ["MutC2Counter", "mutation-tester", `Mutation-test the C2 gate by copying it to your scratch: mutants (1) skip the digest-vs-bytes equality, (2) skip the quote-in-bytes check, (3) skip the supersession 'supersedes <id> —' prefix, (4) skip the fetched_at date regex, (5) tolerate duplicate ids, (6) tolerate unresolved>0 on exit 0. For each run the mutated copy's selftest and report any case that flips green. Keep the tracked file untouched.`],
+  ["MutCounterC1Flags", "mutation-tester", `Mutation-test the C1 flag parsing specifically: mutants on flags_effective: (a) '--disable-features=WebMCP,BackForwardCache' (must fail), (b) '--disable-features=WebMCP' (must pass), (c) '--disable-back-forward-cache=1' (must fail), (d) flag string in a different case '--DISABLE-BACK-FORWARD-CACHE' (decision: fail-closed? state what the gate does and whether that is acceptable). Run the production gate with each variant receipt from your scratch and record findings.`],
+  ["ScoutReopenS106", "scout", `Re-open S106 (Chromium 154 content_features.cc) exactly as the round did: fetch https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/content/public/common/content_features.cc?format=TEXT, decode, locate the two lines quoted in the row (BASE_FEATURE(kBackForwardCache, ...) and '// Enable using the BackForwardCache.'), and report byte count, sha256, line numbers, and whether the quote still resolves. Do not judge admission; report bytes and quote.`],
+  ["ScoutFalsifyS104S105", "scout", `Re-open S104 (web.dev/articles/bfcache) and S105 (Page.pdl at tag 154.0.8037.97) in this round's fresh bytes and verify the C1 entry's claims: the S104 quote at line 2531 (from the round-24 SOURCES cell) and the Page.pdl NavigationType enum line ~1345. Report whether both still resolve and whether the bfcache-runtime entry's descriptions (restore emits no load event; loaderId continuity) are consistent with the PDL text.`],
+  ["CritEntryBfcache", "critic", `Critique corpus/knowledge/bfcache-runtime-observed-round-25.md against QUALITY: does it over-claim (e.g., 'runtime-held on this host' vs 'this host, this browser, this day')? Are every observed fact traceable to the receipt/events/controls? Is the INFERENCE on Playwright's page.goBack() labeled? Does it misstate S104/S105? List every sentence that needs tightening with the exact replacement.`],
+  ["CritEntryFreshness", "critic", `Critique corpus/knowledge/source-recheck-round-25.md and the C2 claim: is 'six on-release rows hold' honest when the six were chosen (vs the full on-release set)? Does the entry disclose the selection? Is the S020 anchor drift handled exactly per round-18 precedent? Are the byte-identical digest notes correct? List concrete fixes.`],
+  ["RevLessonGate", "reviewer", `Review corpus/lessons/round-25.md ## Gate against the round prompt's Gate requirements: opened sources with URLs + access date 2026-10-25 + located quotes (S106 quote text must appear), census before/after recorded, at least one sourced claim citing an S### row opened this round (C1 cites S106), quarantined-row verdicts (none adopted; rejection recorded), and the two required id lists for assimilation (staged vs lane; collision count) with renumber if adoption. Report missing items.`],
+  ["RevLessonMistakes", "reviewer", `Review the round-25 lesson ## Mistakes: M1 must show the receipt-pinning mismatch with the exact hashes (4722dbaf8efc... vs 8bc1d32...), the fix, and the 'shown able to fail' red fixture evidence; M2 must show the harness exit-13 bug and its fix. Verify both fixes are able to fail (red before). Report gaps.`],
+  ["RevScorecardClaims", "reviewer", `Review SCORECARD.md round-25 blocks for consistency with claims.json and the measurements: the Before→After cells, the counting commands, the quoted output values (restores=1; 6/6/0; selftest 17/17 and 18/18), and the 'no scalar promotion' statements. Cross-check the capability rows' claims against actual gate behavior. Report any mismatch.`],
+  ["ScoutHarmDiff", "scout", `Produce the harm diff for the round: \`git diff 9e136667 ${MEAS} --stat\` and \`git diff 9e136667 ${MEAS} -- corpus/SOURCES.md SCORECARD.md LOG.md SKILL.md corpus/QUALITY.md\` (appends only?). Check no line was rewritten (use \`git diff -w\` and word-diff on the first 40 lines of each hunk) and that prior evidence stays intact. Report each file's diff direction (+/− counts) and any non-append.`],
+  ["RevCensus", "reviewer", `Re-run \`scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi\` (expect exit 0) and confirm rows 105 → 106 (S106 added) with no E03/E04 new errors; check the S106 row has all cells and the quote ≤25 words. Also run \`node scripts/check-sources.mjs --self-test\`? (only if it exists with that flag; otherwise skip and say so).`],
+  ["SentReceiptSanity", "sentinel", `Security review of the committed receipts: can any field smuggle control characters that break the JSON single-line output of the gates? Check events.params values for newlines and verify the gate's JSON output remains parseable. Also check the receipt files contain no absolute host paths beyond the recorded argv (which is historical), and that no session material or tokens leaked into corpus/evidence/round-25/. Report.`],
+  ["ScoutDocAnchors", "scout", `Verify every cross-reference in the new docs resolves: lesson → gate files; scorecard → receipts; README frontier → entries; knowledge entries → SOURCES rows S104/S105/S106; S106 used-by → entry. Use \`grep -n\` on each pointer and report any dangling reference (file or line).`],
+  ["CritNoHarmClaims", "critic", `Adversarial no-harm review: could C1 or C2 be read as harming another axis? C1 observes via browser (depth), C2 reopens sources (freshness). Check that the C2 receipt's decision did not overwrite any prior evidence (bytes are new files), that no prior receipt's bytes changed, and that S025/other rows were untouched. Report.`],
+  ["RevTriggers", "reviewer", `Check the round's triggers: the lesson must 'never praise past self without a captured failing case' for the given fix; the C1/C2 claims are on the lowest non-retired tie (8). Also confirm no claim asserts a scalar improvement. Report compliance.`],
+  ["ScoutDupUrls", "scout", `Run the duplicate-URL check across the whole registry at ${MEAS}: \`grep -oE 'https?://[^ |]+' corpus/SOURCES.md | sort | uniq -d\` — report duplicates that are not the known S096/S098/S099/S100 same-source family, plus whether S106 duplicates any existing URL.`],
+  ["RevEvidenceIndex", "reviewer", `Verify corpus/evidence/round-25/ contains exactly: bfcache/{receipt.json,events.jsonl,controls.json,1-a.png,2-b.png,3-a-back.png} and freshness/{reopened.json,S013.html,S015.html,S016.html,S020.html,S023.html,S024.html}, and that all files exist at ${MEAS} (\`git ls-tree -r --name-only ${MEAS} -- corpus/evidence/round-25\`). Report any missing file.`],
+  ["CritControlAdequacy", "critic", `Assess whether the negative controls prove the positive: the disabled-flag control differs by one variable? the no-history control by one variable? Do the two controls together rule out 'restore is an artifact of the harness'? Could the restore be a same-document re-navigation mislabeled? Use the raw events and Network events to argue. Report.`],
+  ["ScoutSnapshotCheck", "scout", `Open the three committed screenshots (1-a.png, 2-b.png, 3-a-back.png) with the read tool and confirm they show the A page, B page, and the restored A page with its nonce text (text should be visible in the PNG). Report what each screenshot displays.`],
+  ["RevSeverGates", "reviewer", `Re-run every gate in the registry at ${MEAS} in the lane (read-only): for each of the 16 gates listed by check-gate-registry, run its selftest or entry command with the documented flags where feasible, and report exit codes. Focus on check-gate-registry (selftest cases=22), check-selfassessment (cases=13), check-sources, check-freshness, check-adjacency, round-evidence-audit. If any gate exits non-clean at ${MEAS}, report it verbatim.`],
+  ["CritAxisFit", "critic", `Re-examine axis fit: is C1 'depth' (claim boundary) or 'coverage' (claim distribution)? Is C2 'freshness' or 'operability'? The scorecard claims C1 depth C2 freshness; argue for or against with reference to the axis definitions in fleet AXES.md (read it). Report a verdict.`],
+  ["SimplReportShape", "simplifier", `Read the round report contract in the round prompt (section 4) and the draft evidence in this lane; list any section that risks being under-evidenced (e.g., Trend verdicts wording, waves/seats census, assimilation sentence, carried items) and what single sentence/pointer closes each gap. Do not write the report.`],
+  ["RevCounterPins", "reviewer", `Check the pinned-value claims of the two new gates: their CASES tables are inside the scripts (fine), and the scorecard says selftests 17/17 and 18/18 measured at ${MEAS}; re-run both selftests now and report the counts (this re-verifies the pins). Also verify each gate's --selftest artifacts are deleted after the run (ls /tmp | grep tabi-*).`],
+  ["ScoutBackupCheck", "scout", `Check that the receipt's raw event log (events.jsonl) is internally consistent with the receipt's events array: extract the 3 frameNavigated lines by seq, compare URLs/types/loaderIds with the receipt; then confirm no other frameNavigated lines exist in the log. Report the comparison.`],
+  ["SentGateIsolation", "sentinel", `Check gate isolation: run both gates with a hostile receipt under /tmp (your scratch) that attempts command injection via fields (e.g., url value containing \`; touch /tmp/pwned\`), and confirm no file is created and the gate exits with a finding/2. Report.`],
+  ["RevKillRules", "reviewer", `Audit kill rules vs implementation: (a) missing receipt → could-not-evaluate (exit 2) for both gates; (b) C1 restores=0 → exit 1; (c) C2 unresolved>0 → exit 1; (d) gate exception → exit 2. Verify each with a direct run from your scratch fixtures. Report the four exit codes.`],
+  ["RevMesPins", "reviewer", `Verify the measurement claim: re-run \`node scripts/check-bfcache-receipt.mjs --rev ${MEAS} --json\` and \`node scripts/check-source-reopen-receipt.mjs --rev ${MEAS} --json\`; capture the outputs verbatim into your report, exit codes included. These are the official numbers for the final report.`],
+  ["ScoutClaimsJson", "scout", `Read .ufo/waves/round-25/claims.json in full; verify the revisions array documents each of: Page.goBack nonexistence (method naming), before-state definition, C2 fail-closed strictness, controls-before-data, wave-1 policy validation, route table. Flag any revision missing a source pointer. Report.`],
+  ["CritNotClaimed", "critic", `Audit the 'notClaimed' list in claims.json against the round's actual results: did anything get claimed beyond the list (e.g., 'runtime-held' as a universal, or freshness as a full-registry claim)? Are the six chosen rows' limitation disclosed? Report.`],
+];
+
+const spec = {
+  wave: "tabi-r25-w2",
+  context,
+  reportDir: ".ufo/waves/round-25/w2",
+  maxLanes: items.length,
+  items: items.map(([name, role, body]) => ({
+    name,
+    role,
+    prompt: `${GODSPEED}\n\n${body}\n\nReport path: .ufo/waves/round-25/w2/${name}.md`,
+  })),
+};
+
+writeFileSync(`${WAVE_DIR}/w2-spec.json`, JSON.stringify(spec, null, 2) + "\n");
+console.log(`wrote ${WAVE_DIR}/w2-spec.json items=${items.length}`);
+const byRole = {};
+for (const [, r] of items) byRole[r] = (byRole[r] ?? 0) + 1;
+console.log(JSON.stringify(byRole));
