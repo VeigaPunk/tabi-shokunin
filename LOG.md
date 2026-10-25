@@ -1788,3 +1788,34 @@ calibration counter's m1 window to `LOG.md` entries that are not revision-bound 
 `RevCounterScope` finding: `LOG.md:1664` still reads twelve and self-corrects in prose).
 (c) Decide the adjacency-map row's kind cell (it is a registry table without a `Kind` column, so
 the conformance gate reports it as a missing row rather than an incomplete one).
+## Round 25 — 2026-10-25 (hyaku run 6) — bfcache runtime observation, six on-release source rechecks, two new counters
+
+**Claims (frozen before data).** C1 depth: 0 committed bfcache receipts at baseline →
+restores ≥ 1, valid (counter `scripts/check-bfcache-receipt.mjs`); the journey probe
+navigates loopback A→B→A with the CDP history primitive
+`Page.navigateToHistoryEntry` (the frozen claim's `Page.goBack` wording was amended
+pre-data: the method does not exist on this build — observed -32601). C2 freshness:
+0 → reopened=6, unresolved=0 (counter `scripts/check-source-reopen-receipt.mjs`).
+
+**Measured at `870fab29977a2ab8cbee7fbe0e6dc4ef87ff6009`**, re-run at the delivery
+tip:
+- C1: `node scripts/check-bfcache-receipt.mjs --rev <REV> --json` → `valid=true`,
+  `restores=1`, exit 0; receipt sha256 `250767649fa1…`, raw event log committed,
+  negative controls (no history step; `--disable-back-forward-cache`) both 0.
+- C2: `node scripts/check-source-reopen-receipt.mjs --rev <REV> --json` →
+  `reopened=6`, `resolved=6`, `unresolved=0`, exit 0; receipt sha256
+  `609ab7c4eb36…`; committed bytes for all six rows.
+- Gate registry: `node scripts/check-gate-registry.mjs --rev <REV> --json` →
+  `nonconformant=0` over 25 rows (the two new gates included).
+- Census: `scripts/sources-census.sh validate --root … tabi` exit 0 before and after
+  (rows 105 → 106, S106 opened this round).
+- Selftests: bfcache-receipt cases=17/17; source-reopen-receipt cases=18/18.
+
+**Scratch and cleanup.** Wave scratch lived under
+`.ufo/waves/round-25/scratch/` (deleted at handoff). Wave reports are under
+`.ufo/waves/round-25/w1/` and the wave-2 reports in `.ufo/waves/round-25/w2/`.
+
+**Next-iterations.** (b) extend the calibration counter's m1 window to non-revision-bound
+LOG.md entries (LOG.md:1664 still reads twelve and self-corrects in prose); (c) decide the
+adjacency-map row's kind cell; (d) re-run the C1 journey probe at the next browser bump and
+characterize restore rate under load; (e) headed-mode / cross-origin A→B→A restore probes.

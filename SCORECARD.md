@@ -1268,3 +1268,56 @@ without writing (dead seat, not replaced). W2 (falsify) 32 seats, dispatched aft
 Round total and the W2 role mix are recorded in the round report; the `planner` seat is held by
 the L1 (the validator rejects `planner` as a swarm role), and the `labrat`/`distiller` items ride
 `executor`/`reviewer` seats for the same reason.
+## Round 25 — declared claims (frozen before data)
+
+Baseline `9e13666759bcf30665abec84dec13adefc1fa86a`; claims frozen in
+`.ufo/waves/round-25/claims.json` before either counter existed. Axes at round start:
+depth 8, coverage 9, operability 8, freshness 8, calibration 9, adjacency 8. Lowest
+non-retired axis: **tie at 8** (depth, operability, freshness, adjacency); C1 works
+depth, C2 works freshness. Saturation 8 / window 3 retained; the stagnation nudge is
+inactive (capabilities entered at rounds 22–24).
+
+| Claim | Axis / type | Before → after | Counting command (field) |
+|---|---|---|---|
+| C1 | depth — frontier entry: runtime observation | 0 committed bfcache receipts at baseline → restores ≥ 1, valid | `node scripts/check-bfcache-receipt.mjs --rev <REV> --json` (`restores`, `valid`) |
+| C2 | freshness — on-release source re-verification | 0 rows re-opened this round → reopened=6, unresolved=0 | `node scripts/check-source-reopen-receipt.mjs --rev <REV> --json` (`reopened`, `unresolved`) |
+
+## Round 25 — executed disposition
+
+Measured 2026-10-25 at commit `870fab29977a2ab8cbee7fbe0e6dc4ef87ff6009` (the
+measurement commit carrying the gates, the receipts, S106 and the entries); the same
+commands are re-run at the final delivery tip and both read committed bytes.
+
+| Claim / axis | Before → after | Verdict / bounds |
+|---|---|---|
+| C1 depth | 0 → restores=1, valid=true | **met**: receipt `corpus/evidence/round-25/bfcache/receipt.json` (sha256 25076764…) scores exit 0 at the measured commit, with the restore traced to a real `Page.backForwardCacheRestore` on the original loaderId, a real history-index drop (2 → 1), the page witness (`pageshow.persisted` + surviving JS state), no `backForwardCacheNotUsed`, and two negative controls (no-history → 0; `--disable-back-forward-cache` → 0). `--selftest` cases=17, passed=17. Scalar depth 8→8 |
+| C2 freshness | 0 → reopened=6, resolved=6, unresolved=0 | **met**: receipt `corpus/evidence/round-25/freshness/reopened.json` (sha256 609ab7c4…) scores exit 0 at the measured commit; all six on-release quotes located in this round's committed bytes; 0 supersessions. `--selftest` cases=18, passed=18. Scalar freshness 8→8 |
+| operability, coverage, calibration, adjacency | unchanged | no additional credit claimed; exercised scope shows no harm — every prior-round byte is an append; the only registry add is S106 |
+
+**Capability rows (appended; earlier tables stay historical snapshots).**
+
+Bfcache-receipt gate — reads the committed journey receipt, ties every counted
+restore to a raw `Page.frameNavigated` BackForwardCacheRestore event with the
+original loaderId, the history-index drop (i.e., a real `Page.navigateToHistoryEntry`
+step; `Page.goBack` is not a CDP method), the page witness, digest binding, the
+absence of disable flags (including `--disable-features=…BackForwardCache…`), and
+the absence of `backForwardCacheNotUsed`; scores 0 clean (restores ≥ 1) / 1 failed /
+2 could-not-evaluate. Evidence: `scripts/check-bfcache-receipt.mjs`, `--selftest`
+(cases=17), `corpus/evidence/round-25/bfcache/receipt.json`. First-working round: 25.
+
+Source-reopen-receipt gate — reads the freshness receipt, recomputes each sha256
+over the committed bytes, validates this-round fetched dates, and locates each held
+quote in the stored bytes (tag-stripped, whitespace-normalized), or validates a
+this-round superseding row that opens with `supersedes <id> —`; scores 0 clean
+(reopened=6, unresolved=0) / 1 failed / 2 could-not-evaluate. Evidence:
+`scripts/check-source-reopen-receipt.mjs`, `--selftest` (cases=18),
+`corpus/evidence/round-25/freshness/reopened.json`. First-working round: 25.
+
+## Round 25 — waves and seats
+
+W1 (v1 band 32–64) 34 seats: 9 scout, 7 executor, 5 scribe, 4 reviewer, 4 critic,
+1 connector, 1 revenger, 2 mutation-tester, 1 simplifier, 1 sentinel; all 34 reports
+landed. W2 (falsify) 34 seats, dispatched after W1 returned and the measurement
+commit landed. Round total and the W2 role mix are recorded in the round report; the
+`planner` seat is held by the L1 (the validator rejects `planner` as a swarm role),
+and `labrat`/`distiller` items ride `executor`/`reviewer` seats.
