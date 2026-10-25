@@ -284,6 +284,11 @@ function mutate(files, recipe) {
     case 'producer-unpinned':
       files[PRODUCER] = text(files[PRODUCER]) + '\n// unpinned selftest mutation\n';
       return;
+    case 'expectations-bytes-unpinned':
+      // Appending a byte keeps the JSON schema valid, so only the pinned digest
+      // guard can reject this revision: the case isolates that guard.
+      files[EXPECTATIONS] = text(files[EXPECTATIONS]) + '\n';
+      return;
     case 'acquisition-unpinned': {
       const execution = readJson(files, EXECUTION);
       execution.artifacts[RECEIPT] = '0'.repeat(64);

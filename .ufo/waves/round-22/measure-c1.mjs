@@ -19,7 +19,7 @@ const RUNTIME_PREFIX = 'corpus/evidence/round-21/runtime/';
 const RESULT_SCHEMA = 'tabi-round22-c1-semantic-measure-v1';
 const EXPECTATIONS_SCHEMA = 'tabi-round22-semantic-expectations-v1';
 const METRIC = 'c1_semantically_checked_lifecycle_rows';
-const EXPECTATIONS_SHA256 = '4a693dce44b1161df5ced71fd2739ff4a1a4147d893b83dfc780d92cc5b60e1e';
+const EXPECTATIONS_SHA256 = 'd00aed4c29b06ef49a055773d1f31fc662a85048e6c62a75ef45e30506c56914';
 const PRODUCER_SHA256 = 'bc11e4d657a9bf1a99b3b6b1b9eb7eeb61ccf3ab2de60cc42ff383936748a811';
 const SOURCE_HEADER = 'source: S101 — corpus/evidence/round-21/runtime/receipt.json and per-case raw CDP/fixture bytes; .ufo/waves/round-21/runtime-execution-finalized.json';
 const CASE_IDS = [
@@ -97,6 +97,9 @@ function expectationShape(expectations) {
     ['none', 'pre-action', 'action-to-post'].includes(row.responseWindow) &&
     (row.response === null || plain(row.response)) && plain(row.pre) && plain(row.post) &&
     ['none', 'landing'].includes(row.navigation) &&
+    Array.isArray(row.pre.errors) &&
+    (row.post.errors === null || Array.isArray(row.post.errors)) &&
+    (row.post.errors === null) === (row.navigation === 'landing') &&
     (row.delayed === undefined || plain(row.delayed)));
 }
 
@@ -114,6 +117,9 @@ function validatePageState(actual, expected, nonce, inputQ, origin, id, stage, f
       actual.focused !== expected.focused) addFinding(findings, 'semantic_status', `${id}:${stage}:form-state`);
   // The native-submit landing is a fresh document without the fixture's nonce,
   // submit and error recorders: those keys must be absent there, not empty.
+  // Absent-recorder fields are encoded as `null` in the pinned expectations
+  // (`submitCount: null`, and `errors: null` for the landing stage), so the
+  // pinned file never spells absence as an empty array (null-to-empty collapse).
   const landing = stage === 'post' && id === 'na-native-submit';
   const expectedNonce = landing ? undefined : nonce;
   if (expectedNonce === undefined ? Object.hasOwn(actual, 'nonce') : actual.nonce !== expectedNonce)
@@ -126,7 +132,7 @@ function validatePageState(actual, expected, nonce, inputQ, origin, id, stage, f
     }] : [];
     if (!equal(actual.submits, expectedSubmits)) addFinding(findings, 'semantic_status', `${id}:${stage}:submit-event`);
   }
-  if (landing ? Object.hasOwn(actual, 'errors') || !equal(expected.errors, []) : !equal(actual.errors, expected.errors))
+  if (expected.errors === null ? Object.hasOwn(actual, 'errors') : !equal(actual.errors, expected.errors))
     addFinding(findings, 'semantic_error', `${id}:${stage}:page-errors`);
   if (typeof actual.url !== 'string') {
     addFinding(findings, 'semantic_navigation', `${id}:${stage}:url-missing`);
