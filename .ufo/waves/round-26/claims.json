@@ -1,0 +1,76 @@
+{
+  "schema": "tabi-round-claims-v1",
+  "lane": "tabi",
+  "round": 26,
+  "frozenAt": "2026-10-25",
+  "frozenBeforeData": true,
+  "baseline": "4ad4c77eed78bca1a149e65a7ec6a84b5f71c925",
+  "axisScoresAtRoundStart": {
+    "depth": 8,
+    "coverage": 9,
+    "operability": 8,
+    "freshness": 8,
+    "calibration": 9,
+    "adjacency": 8
+  },
+  "lowestNonRetiredAxis": "tie at 8 among depth, operability, freshness, adjacency; C2 works depth (tie). C1 works calibration 9, C3 works coverage 9. Saturation 8 / window 3 retained; the stagnation nudge is inactive (capabilities entered at rounds 22-25). No axis retired.",
+  "routedFromRound25Closure": [
+    "untracked .ufo/waves/round-25/w2/ resolved: the swarm-registry.json is committed this round as round-25 wave evidence (conformance, not a claim)",
+    "S106 decoded-source evidence committed: decoded bytes + sha256 receipt (claim C2)",
+    "report-path discipline: this round's report lands at the contract path with all required sections first-pass (lesson M1 + QUALITY criterion)",
+    "W2 dispatch-or-disclose: both waves run this round (round shape, not a claim)"
+  ],
+  "claims": [
+    {
+      "id": "C1",
+      "axis": "calibration",
+      "type": "routed counter-window extension (LOG.md next-iteration (b) from round 25; round-24 spot-check routed defect family)",
+      "declared": "Extend scripts/check-selfassessment.mjs class m1 (self-test tally vs measured oracle) from its SCORECARD.md-only window to LOG.md round entries, unchanged rules: a LOG line carrying a gate self-test tally (--self-test N/N, N-case, cases=N, or 'N cases') associates to the lane scripts/*.mjs named in its own line or its round section (single-script sections only; multi-script ambiguity stays could-not-evaluate), and mismatches against the gate's measured current tally are findings unless an append-only correction line later in LOG.md names the same script, states the oracle-correct number, carries a correction marker and cites the superseded line. Before: at baseline 4ad4c77 the extended counter reports >=1 m1-selftest-tally mismatch from LOG.md — specifically LOG.md:1664 'Non-vacuity: --selftest 12/12' in the round-23 entry (scripts/round-evidence-audit.mjs, measured 13 since commit 43e9bb5). After: the round's append-only LOG correction block supersedes every baseline LOG-window finding and the extended counter reports mismatches=0 at the tip; the SCORECARD window stays clean (no regression of the round-24 5->0 state).",
+      "metric": "selfassessment_mismatches_extended_window",
+      "countingCommand": "node scripts/check-selfassessment.mjs --rev <REV> --json",
+      "counterField": "mismatches (integer): run with the tip-extended counter against baseline 4ad4c77 -> >=1 (LOG window); at the tip -> 0. Plus --selftest cases (13 at baseline) grows by >=2 red/green cases for the LOG window.",
+      "before": "0 mismatches counted at baseline under the current SCORECARD-only counter (the LOG-window stale tally is uncovered today; the extended counter run against baseline bytes reports >=1)",
+      "after": "mismatches=0 at the tip under the extended counter, with every baseline LOG-window finding dispositioned by a cited append-only correction; selftest cases >= 15",
+      "control": "Do-nothing control: drop the LOG correction block (or point it at the wrong line) and the extended counter must re-report the finding at the tip — a miss is catchable, never silent. Skip-work control: a correction line that states the wrong oracle number or lacks the line citation must NOT supersede (falsified shape recorded in wave evidence).",
+      "killRule": "The extension touches class m1 only; m2 (receipt exits) and m3 (unlanded paths) stay unchanged. If the extended counter at baseline reports zero LOG-window findings, the counter or the association rule is wrong — fix before data, never narrow the target. could-not-evaluate semantics stay fail-closed as today.",
+      "failureCapable": "node scripts/check-selfassessment.mjs --selftest -> isolated cases assert exit and finding id: LOG round-entry with stale tally (finding), same with correction line citing it (superseded, no finding), multi-script ambiguity (could-not-evaluate), LOG window regression on a clean SCORECARD fixture (clean)."
+    },
+    {
+      "id": "C2",
+      "axis": "depth",
+      "type": "routed source-evidence admission (round-25 closure routed defect 4: S106 exact source line not recoverable through independent reopen)",
+      "declared": "Commit decoded S106 source evidence: the base64-decoded bytes of https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/content/public/common/content_features.cc?format=TEXT at corpus/evidence/round-26/sources/content_features-154.0.8037.97.cc plus a receipt (url, fetched_at, transfer=base64 format=TEXT, encoded_sha256, decoded bytes, decoded_sha256, located anchor line and text). The counter scripts/check-s106-evidence.mjs --rev <REV> --json reads the receipt, recomputes decoded_sha256 over the committed bytes, and requires the anchor text 'BASE_FEATURE(kBackForwardCache' at the recorded line with the FEATURE_ENABLED_BY_DEFAULT marker; reports {present, sha_match, anchor_located, valid}. Target: valid=true at the tip. Before: 0 committed S106 evidence bytes (git ls-tree -r --name-only 4ad4c77 -- corpus/evidence/round-26 is empty).",
+      "metric": "s106_decoded_evidence_valid",
+      "countingCommand": "node scripts/check-s106-evidence.mjs --rev <REV> --json",
+      "counterField": "valid (boolean true required), with present=1, sha_match=true, anchor_located=true",
+      "before": 0,
+      "after": "valid=true",
+      "control": "Skip-work controls scored before data: a receipt whose decoded_sha256 does not match the committed bytes (edited-after-decode control) must fail sha_match; a receipt whose anchor line number is off by one must fail anchor_located; a fabricated receipt with no committed bytes file must be could-not-evaluate, never valid. Naive control 'grep -c BackForwardCache corpus/evidence/round-25/bfcache/events.jsonl' would falsely meet — recorded.",
+      "killRule": "Receipt absent at the measured revision -> could-not-evaluate (exit 2), never valid. Fetch failure at evidence-build time (non-200, undecodable base64) -> the claim is blocked honestly, never satisfied from memory. The counter reads only committed bytes at the revision; the receipt's recorded revision must equal the report's cited measurement revision (check-measurement-binding discipline).",
+      "failureCapable": "node scripts/check-s106-evidence.mjs --selftest -> isolated cases assert exit and finding id: sha mismatch (failed), anchor off-by-one (failed), missing bytes (could-not-evaluate), clean fixture (clean)."
+    },
+    {
+      "id": "C3",
+      "axis": "coverage",
+      "type": "assimilation admission under addendum section 10 (shokuknow merge/tabi), documented-upstream",
+      "declared": "Adopt ONE theme from the staged merge/tabi package: 'journey redirect and Retry-After semantics', by admitting the entry redirect-and-retry-after-semantics (re-grounded this round: fresh RFC 9110 bytes fetched by this lane, every cited quote located in those bytes with this round's access date, the entry re-pointed at the lane registry row the document earns). Append exactly ONE new SOURCES row S107 (HTTP Semantics RFC 9110, https://www.rfc-editor.org/rfc/rfc9110.txt) transformed from the staged S124 row to fleet schema (recheck '730d' with stripped prose to the lesson Gate; used-by exactly the admitted entries; no literal or escaped pipe in any cell). Refusals carried in the lesson Gate: staged S125 row refused as a row (its document already stands in this registry as S102 — a within-scope duplicate URL; the sibling cookie-samesite entry may be admitted only re-pointed at S102 by document), and staged S142/redirect-status-classification refused (overlap; flip condition recorded). Per-entry gates: PROVINCE scope check, QUALITY bar, expansion credit only on ground the coverage map does not hold. Before: 0 entries cite S107 (git grep -lE '^source: S107 ' 4ad4c77 -- corpus/knowledge is empty; S107 absent). After: >=1 admitted entry cites S107 and census exit 0 at the tip.",
+      "metric": "assimilated_entries_citing_new_row",
+      "countingCommand": "git grep -lE '^source: S107 ' <REV> -- corpus/knowledge | wc -l",
+      "counterField": "entry count citing a row first opened this round (target >= 1, measured value recorded); plus scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi exit 0 at the tip",
+      "before": 0,
+      "after": ">= 1",
+      "control": "Do-nothing control: appending the staged S124 row byte-identical (campaign schema, prose recheck cell) must fail the census --file gate in the scratch mirror (kengaku precedent); a junk entry that names S107 without located quotes must fail the QUALITY review seat. Skip-work control: adopting without re-opening the RFC bytes must be caught by the Gate block's located-quote requirement.",
+      "killRule": "If any quote the admitted entry rests on is absent from this round's fresh bytes, the entry is refused and the claim misses honestly (no silent re-anchoring to memory). If the census gate reports E03/E04 on the transformed row, the row is refused or superseded per CORPUS.md rule 2 — never appended past a duplicate finding. Drift the read-only checks cannot fix -> append an L0 question and adopt nothing.",
+      "failureCapable": "Scratch-mirror census gate: /home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --file <mirror>/corpus/SOURCES.md exits non-zero on the byte-exact staged row and 0 on the transformed row; the indented-id collision fixture proves the guard before any append."
+    }
+  ],
+  "notClaimed": [
+    "no scalar axis promotion: every axis score is unchanged this round",
+    "no non-author judgment: every seat is lane-dispatched; the non-author closure remains the fleet's",
+    "no real-site interaction, no consequential external action, no session/credential material; the only external fetches are documented GETs of public spec/source bytes named in the seat items",
+    "the round-25 untracked .ufo/waves/round-25/w2/ resolution and report-path discipline are routed conformance items, not claim slots",
+    "the quarantine slice (38 tabi rows) stays closed with round-22 verdicts carried; no adoption from it this round"
+  ],
+  "revisions": [],
+  "notes": "Claims frozen before any wave ran. The wave-1 spec, controls and counters are built and scored after this freeze; any pre-data revision lands in the revisions array with its source."
+}

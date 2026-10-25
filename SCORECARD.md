@@ -1321,3 +1321,50 @@ landed. W2 (falsify) 34 seats, dispatched after W1 returned and the measurement
 commit landed. Round total and the W2 role mix are recorded in the round report; the
 `planner` seat is held by the L1 (the validator rejects `planner` as a swarm role),
 and `labrat`/`distiller` items ride `executor`/`reviewer` seats.
+
+## Round 26 — declared claims (frozen before data)
+
+Baseline `4ad4c77eed78bca1a149e65a7ec6a84b5f71c925`; claims frozen in
+`.ufo/waves/round-26/claims.json` before any wave ran (`frozenBeforeData: true`,
+empty `revisions`). Axes at round start: depth 8, coverage 9, operability 8,
+freshness 8, calibration 9, adjacency 8. Lowest non-retired axis: **tie at 8**
+(depth, operability, freshness, adjacency); C2 works depth (tie), C1
+calibration 9, C3 coverage 9. Saturation 8 / window 3 retained; the stagnation
+nudge is inactive (capabilities entered at rounds 22–25). No axis retired.
+
+| Claim | Axis / type | Before → after | Counting command (field) |
+|---|---|---|---|
+| C1 | calibration — counter-window extension (routed round-25 LOG next-iteration (b)) | extended `check-selfassessment.mjs` m1 window to LOG.md round entries: ≥1 `m1-selftest-tally` mismatch at baseline (LOG.md:1664 `12/12` vs measured 13) → 0 at tip after append-only corrections; selftest 13 → ≥15 | `node scripts/check-selfassessment.mjs --rev <REV> --json` (`mismatches`) |
+| C2 | depth — routed source-evidence admission (round-25 closure defect 4) | 0 committed S106 evidence bytes at baseline → `valid=true` at tip | `node scripts/check-s106-evidence.mjs --rev <REV> --json` (`valid`) |
+| C3 | coverage — assimilation admission (addendum §10), documented-upstream | 0 entries cite a row first opened this round → ≥1 entry citing new row S107 (staged redirect/Retry-After theme, re-grounded) | `git grep -lE '^source: S107 ' <REV> -- corpus/knowledge \| wc -l` |
+
+## Round 26 — executed disposition
+
+Round shape: **operator wrap-up ended the run mid-round** ("start no new
+waves … land NOW with what you have"). Wave 1 was built and policy-validated
+(34 seats, exit 0, `w1-dispatch.json` produced) but never dispatched; wave 2
+never built; round total **0 seats**. Per the run-6 amendment, a round whose
+swarm never ran gets no falsification credit — recorded plainly, not prettified.
+
+| Claim / axis | Before → after | Verdict |
+|---|---|---|
+| C1 calibration | counter extension never built; no measurement arm exists | **failed — not executed**. The LOG correction block (superseding :1664, oracle `cases: 13` measured by the L1, exit 0) landed append-only as evidence-of-record, but no instrument proves the LOG window, so the frozen predicate is not re-derivable. Scalar calibration 9→9 |
+| C2 depth | decoded evidence committed (`corpus/evidence/round-26/sources/` + `s106.json`: encoded sha256 `f17347b2…`, decoded sha256 `9b93fe64…`, anchor line 187 unique, comment 186 — matching the S106 row); the frozen counter `scripts/check-s106-evidence.mjs` never built | **failed — not executed** as a claim (the frozen counting command does not exist); the routed evidence it was to gate is landed and closes round-25 closure defect 4. Scalar depth 8→8 |
+| C3 coverage | nothing re-grounded; registry untouched (106 → 106 rows, census exit 0 both ends) | **failed — not executed**; the §10 machinery (collision guard, staged-row transform, scratch-mirror census gate) never ran and nothing was appended. Assimilation verdicts (incl. the pre-noted S125/S142 refusals) are owed to a round with seats. Scalar coverage 9→9 |
+| operability, freshness, adjacency | unchanged | no claim; wrap-up tree gates re-read clean where run (see LOG); no harm — every prior-round byte is an append, the only prior-tree change is the commit of the untracked round-25 w2 registry (routed defect 3) |
+
+No capability rows enter (no gate ran). No scalar moves. Routed defect 1
+(report-path/SHONEN) is answered by this round's first-pass contract-path
+report; the mechanization (`scripts/report-contract.mjs`) is specced but
+unbuilt — named, not claimed (QUALITY 67 same). The frozen `claims.json` is
+the resumption point for the next round's re-dispatch of these claims
+unchanged.
+
+## Round 26 — waves and seats
+
+W1 (v1 band 32–64) 34 seats specced (9 scout, 8 executor, 4 scribe, 4
+reviewer, 4 critic, 1 connector, 1 revenger, 1 sentinel, 1 mutation-tester,
+1 simplifier): spec validated under `ufo-wave-policy.json` (exit 0) and the
+dispatch payload built (`w1-dispatch.json`); **dispatched 0 — operator
+wrap-up**. W2 never specced. Round total 0 seats, 0 dead. The §3 planner seat
+is held by the L1; the validated spec would have met the L2 floor inside W1.

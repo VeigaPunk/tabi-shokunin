@@ -1819,3 +1819,60 @@ tip:
 LOG.md entries (LOG.md:1664 still reads twelve and self-corrects in prose); (c) decide the
 adjacency-map row's kind cell; (d) re-run the C1 journey probe at the next browser bump and
 characterize restore rate under load; (e) headed-mode / cross-origin A→B→A restore probes.
+
+## Round 26 — 2026-10-25 (hyaku run 6) — frozen claims, wrap-up landing; routed evidence committed, claims unexecuted
+
+**Claims (frozen before data, `.ufo/waves/round-26/claims.json`, baseline
+`4ad4c77`).** C1 calibration: extend `check-selfassessment.mjs` class m1 to
+LOG.md round entries (routed round-25 next-iteration (b)); counter
+`node scripts/check-selfassessment.mjs --rev <REV> --json` field `mismatches`,
+extended counter at baseline ≥1 → 0 at tip, selftest 13 → ≥15. C2 depth
+(lowest-axis tie): commit decoded S106 evidence +
+`scripts/check-s106-evidence.mjs --json` field `valid`, 0 → valid=true
+(routed round-25 closure defect 4). C3 coverage: assimilate the staged
+redirect/Retry-After theme from the read-only `merge/tabi/` package, one
+transformed row S107, `git grep -lE '^source: S107 ' <REV> -- corpus/knowledge
+| wc -l` 0 → ≥1.
+
+**Round shape (operator wrap-up).** The orchestrator ended the run mid-round:
+"start no new waves … land NOW with what you have." Wave 1 was built (34 seats;
+spec validated under policy v1, exit 0; `w1-dispatch.json` produced) but never
+dispatched; wave 2 never built; round total 0 seats. No falsification credit;
+all three claims recorded **failed (not executed)** in SCORECARD.md. The
+run-6 capacity amendment's 8-resend path was not available to a mid-round
+wrap-up order and is not claimed.
+
+**Measured by the L1 during wrap-up (evidence-of-record, not claim receipts):**
+- Routed defect 4 (S106): decoded bytes committed —
+  `corpus/evidence/round-26/sources/content-features-154.0.8037.97.cc`
+  (73,952 B / 1,624 lines, sha256 `9b93fe64…`) + receipt `s106.json`
+  (encoded sha256 `f17347b2…`; transfer = base64 `?format=TEXT`); anchor
+  `BASE_FEATURE(kBackForwardCache, base::FEATURE_ENABLED_BY_DEFAULT);` at
+  decoded line 187 with the comment at 186, token unique in file — matches the
+  S106 row anchor.
+- Correction (supersedes LOG.md:1664): `scripts/round-evidence-audit.mjs
+  --selftest` measured `cases: 13` at `4ad4c77` (exit 0); the round-23 entry's
+  `12/12` restates the pre-`43e9bb5` tally. Append-only; the mechanical window
+  that would prove this class (C1) was not built.
+- Routed defect 3 (untracked `.ufo/waves/round-25/w2/swarm-registry.json`):
+  committed as round-25 wave evidence.
+- Census: `scripts/sources-census.sh validate --root … tabi` exit 0 before and
+  after (rows 106 → 106; registry untouched; assimilation set unadjudicated —
+  no seats, and nothing appends without the §10 machinery).
+- Gates at the wrap-up tree: `check-selfassessment.mjs --rev 4ad4c77` →
+  mismatches=0, selftest cases=13 (unchanged — the extension never landed);
+  `round-evidence-audit.mjs --selftest` → cases=13.
+
+**Landed paths.** `.ufo/waves/round-26/{claims.json,census-before.txt,gen-w1.mjs,
+w1-spec.json,w1-dispatch.json,w1-validate.err}`, `.ufo/waves/round-25/w2/
+swarm-registry.json` (committed), `corpus/evidence/round-26/sources/`,
+`corpus/lessons/round-26.md`, this entry, SCORECARD.md round-26 blocks.
+
+**Next-iterations (owed).** (a) Re-dispatch round 26's frozen claims unchanged
+in a fresh round — the claims file is the resumption point; (b) build
+`scripts/report-contract.mjs` (specced as ExecReportPreflight) so the M1 fix is
+mechanical, not disciplinary; (c) append QUALITY criterion 67 (decoded-source
+evidence for base64 `?format=TEXT` rows) with a review seat's read; (d) run the
+C3 assimilation with the full §10 machinery (collision guard incl. the
+indented-fixture proof, staged-row transform, scratch-mirror census gate —
+S125 pre-noted refuse as S102 duplicate, S142 pre-noted refuse as overlap).
