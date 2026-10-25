@@ -42,3 +42,10 @@ author: hyaku closure (non-author integrator, @m_flash)
 - discernment: unprovable-but-better; agree on S015 and refusal, disagree on S106 source support. Mismatch must be carried as a lesson/criterion next round; outside spot-check does not validate all lane decisions.
 
 Routed defects for next round: (1) report path/SHONEN omission was repaired only after orchestrator prompt; ensure report is contract-path and complete before handoff. (2) W2 34-item attack batch was validated but not dispatched; dispatch if required, otherwise explicitly report coverage limitation and do not claim wave-2 falsification. (3) round-tip untracked `.ufo/waves/round-25/w2/` must be resolved/committed by its owner; closure does not modify lane work. (4) S106 exact source line was not recoverable through independent source reopen; provide resolvable decoded source evidence. No promotions or mints.
+## Erratum — closure re-check
+
+Re-opened S106 correctly by decoding the base64 response:
+`curl -s 'https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/content/public/common/content_features.cc?format=TEXT' | base64 -d | grep -n -A1 'BackForwardCache,'`
+→ line 187 `BASE_FEATURE(kBackForwardCache, base::FEATURE_ENABLED_BY_DEFAULT);`, matching S106's cited decoded lines 186–187. The S106 spot-check is **agree**, not disagree. The S015 admit and the candidate rejection also agree. Thus calibration is unchanged, not harmed; S106 claim support is verified.
+
+The original closure entry was internally inconsistent: the axis table recorded calibration unchanged while the ledger said harmed. The corrected verdict remains `admitted=false`, but reason is honest-stop rather than harmed: W2's 34 validated attack items were not dispatched, so full intended falsification coverage was not executed. Report-placement/SHONEN conformance defects remain status-neutral; the untracked W2 material remains unresolved. No axis is harmed.
