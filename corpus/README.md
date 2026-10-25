@@ -545,18 +545,29 @@ edited (the round-3 bullet at `:42-47` and the `:183` status cell keep their byt
 |---|---|---|
 | `knowledge/csrf-defense-shape-boundary.md` *(round 23)* | Documented-upstream vocabulary for a submit a journey observes: the cookie draft states its own limit (`§8.8.1 "Defense in depth"` — SameSite is one layer, and server-side tokens plus idempotent safe methods are demanded alongside it), and the OWASP sheet lists the server-side defences (synchronizer token, double-submit cookie, custom request header, plus Fetch Metadata, `Origin`/`Referer`, user interaction — an open list, not an enumeration) and names the JavaScript cookie hole SameSite leaves. Nothing in it was run, captured or observed in a browser. | S102 RFC 6265bis draft-13 §8.8.1; S103 OWASP CSRF Prevention Cheat Sheet §"Employing Custom Request Headers for AJAX/API", §"Dealing with Client-Side CSRF Attacks (IMPORTANT)", §"Limitations of SameSite" |
 
-Frontier restatement (append-only; the `:42-43` bullet and `:183` cell are not
-rewritten): **CSRF-checked submits** — `documented taxonomy held; measured submit
+Frontier restatement (append-only; the `:42-47` bullet — quoted by its first two lines
+above — and the `:183` cell are not rewritten): **CSRF-checked submits** — `documented taxonomy held; measured submit
 still untested`. The defence a site uses can now be classified from a submit the
 lane observes (paired token occurrence, repeated cookie value, non-simple request
 header), and a SameSite cookie is not read as a CSRF defence on its own; **no
-submit carrying any of those shapes has been executed or captured**, so the
-`untested by rule` half of the round-3 anti-claim stands.
+site's defence shape has been classified, and only one submit was ever captured
+carrying one of those shapes** — the round-8 loopback fixture's hidden `token`
+input, retained at `corpus/evidence/w9-tabi-b91/runs/replay-consumed-post/rep1/facts.json`
+(`tokenShape`) and never classified by this vocabulary. The `untested by rule`
+half of the round-3 anti-claim therefore narrows rather than falls: the shapes are
+documented, one is present in a fixture capture, and none has been read off a site.
 
-Ground was not held before: `grep -rniE 'synchroni[sz]er token|double-submit|custom
-request header' corpus/knowledge/*.md SKILL.md corpus/*.md` → exit 1, no hits; the
-only CSRF/SameSite mentions are an anti-claim, a fixture disclaimer ("a CSRF-shaped
-instrument, not a security analysis") and two unexercised unknowns. Defence
+Ground was not held before: at the baseline revision
+`git grep -rniE 'synchroni[sz]er token|double-submit|custom request header'
+a89f1935 -- corpus SKILL.md` → exit 1, no hits (the terms arrive with this entry, so
+the sweep must be run at the baseline, not in the worktree). CSRF/SameSite *mentions*
+do exist there — `git grep -ciE 'csrf|samesite' a89f1935 -- corpus/knowledge SKILL.md
+corpus/*.md` → 15 files / 30 lines, including 7 literal `SameSite=Lax` occurrences in
+the stateful-fixture and state-changing-matrix notes — but none carries a defence-shape
+vocabulary: they are an anti-claim, a fixture disclaimer ("a CSRF-shaped instrument, not
+a security analysis"), two unexercised unknowns, and the round-8 token-shaped fixture
+capture this entry names. The observation column is lane inference throughout; the
+entry labels the inference-bearing rows `[INFERENCE]` and says so in prose. Defence
 adequacy stays kasegi's ground: this row records observability only, and no
 adjacency row is filed (`corpus/adjacency.tsv` has no CSRF surface; a `refused-route`
 row needs a route that does not exist).

@@ -10,17 +10,18 @@ tier: documented upstream, not measured in this lane
 vocabulary a journey receipt needs in order to *classify* a submit it actually
 observes. The measurement — a loopback submit carrying one of these shapes,
 captured through CDP — has not been made, and the lane's bounded-runs rule
-(`PROVINCE.md`, third-party and consequential classes) still gates any real site.
+(`PROVINCE.md` — external sites and consequential actions) still gates any real site.
 
 ## 1. What the draft says, and what a receipt may not conclude from it
 
 Boundary first: this entry records **what the sources say and how to observe it**.
-Whether a defence is adequate is a security judgment and belongs to kasegi
-(`PROVINCE.md` — the lane records provenance, no security verdict); nothing below
-is this lane's verdict on a site.
+Whether a defence is adequate is a security judgment and belongs to kasegi (the
+fleet roster's bounty/security-research lane); `PROVINCE.md` keeps this lane to
+provenance and records no security verdict. Nothing below is this lane's verdict on
+a site.
 
-The draft states the guarantee and its own limit in the same paragraph (S102
-§8.8.1, lines 2815–2828 of the fetched plain text):
+The draft states the guarantee and its own limit in one subsection body (S102
+§8.8.1, lines 2815–2828; the quoted spans sit at 2815–2824):
 
 > "SameSite" cookies offer a robust defense against CSRF attack when deployed in
 > strict mode, and when supported by the client …
@@ -34,7 +35,8 @@ The draft states the guarantee and its own limit in the same paragraph (S102
 Three conclusions a receipt must therefore not draw: that a `SameSite=Lax` or
 `Strict` cookie *is* the site's CSRF defence; that a submit succeeding cross-site
 proves the site has none; that a `SameSite=None; Secure` cookie is a defence at
-all. The clause is a demand for a second layer, which is why the second layer is
+all — [INFERENCE] that attribute pairing is a delivery requirement (draft §8.8.3,
+lines 2871–2873), not a statement about a site's CSRF defence. The clause is a demand for a second layer, which is why the second layer is
 observable — and observability is this lane's ground.
 
 ## 2. The second layer is listed by the sheet, not enumerated by it
@@ -56,9 +58,12 @@ AJAX or API endpoints is the use of a custom request header", and the adjacent
 sentence adds "No token is needed for this approach." A driver that replays a
 request without that header is not testing the same request the page made.
 
-Every row's *what a receipt could hold* column is inference about observation, not a
-claim that the sheet says it; the sheet says which defences exist, not what they look
-like in a capture. Nothing in the table has been captured.
+The observation column ("what a lane inference says a receipt could hold") is
+inference throughout, not a claim that the sheet says it: the sheet says which
+defences exist, not what they look like in a capture. Rows whose mechanism is
+documented are not tagged `[INFERENCE]` individually; the ones that add a lane test
+carry the tag inline. Nothing in this table was captured except the round-8 fixture
+instance named in §6.
 
 ## 3. SameSite does not cover the JavaScript-originated case
 
@@ -75,8 +80,9 @@ For this lane that is the difference between two receipts that look alike: a
 same-site navigation the browser initiated (SameSite applies) and a same-site
 request a page script issued (SameSite does not). The invocation record already
 distinguishes them — the navigation-history witness classifies `typed` / `link` /
-`form_submit` (`multi-step-journey.md` §4) — so the classification is available
-without a new capability, and the claim about it is not yet measured.
+`form_submit` (`multi-step-journey.md` §2 and §6) — so the classification uses an
+existing witness, and the *classification* of a real submit against this vocabulary
+is not yet measured (see §6).
 
 ## 4. What a receipt should record
 
@@ -116,10 +122,18 @@ wrong still fails the Gate.
 
 ## 6. Open
 
-- **Unmeasured:** no submit carrying any of these shapes has been executed in a
-  browser by this lane; the loopback POST form already captured (round 6–8) had no
-  token field, no paired cookie and no custom header, which is one observation of
-  `none-observed`, not a measurement of the taxonomy.
+- **Partly measured, not classified:** this lane's round-8 loopback fixture did
+  submit a form carrying a hidden `token` input whose value also appeared in the
+  captured POST, and the retained artefacts record it
+  (`corpus/evidence/w9-tabi-b91/runs/replay-consumed-post/rep1/facts.json`
+  `tokenShape`, plus the `submit-refused token-consumed` ledger entry). That is one
+  captured instance of the token-shaped row — on the lane's own fixture, not on a
+  site, and it was never classified by this vocabulary. What remains unmeasured: a
+  site's defence shape, the double-submit and custom-header rows, and the
+  cross-origin behaviour of any of them.
+- **Not claimed:** that these three classes exhaust the sheet's list (they do not —
+  see §2) or that a SameSite cookie's presence says anything about a site's
+  CSRF posture.
 - **Unknown:** whether a real site's defence shape can be read from a single
   request without a differential (a token field absent on page 1 and present on
   page 2 is more informative than either alone).

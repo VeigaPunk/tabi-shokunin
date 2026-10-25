@@ -1677,9 +1677,10 @@ ids S102/S103 are different documents and were not adopted); collision guard pro
 indented scratch fixture before the append.
 
 Routed-defect corrections (append-only, `corpus/lessons/round-23.md` §Corrections): refusal
-arithmetic 23 → 24 (13 `w2` + 11 `w2b` receipts; attempt 10 absent); wave band 65 > 64 and
-round total 129 > 128; the Gate spot-check result now on record; per-attempt grades
-(1 progressing / 2 silent over an 85-hour commit gap / 3 landed); registry identities
+arithmetic 23 → 24 (13 `w2` + 11 `w2b` receipts; attempt 10 absent; a second committed figure says 14 in
+7 wave files); wave band 65 > 64 and round total 129 > 128; the Gate spot-check result now
+on record; per-attempt grades (1 progressing / 2 silent across a 30.7-hour zero-commit window,
+distinct from the round's 85.3-hour evidence-to-landing gap / 3 landed); registry identities
 (`record` run for both of this round's waves); landed change ↔ LOG entry binding.
 
 Landed paths: `scripts/round-evidence-audit.mjs`,

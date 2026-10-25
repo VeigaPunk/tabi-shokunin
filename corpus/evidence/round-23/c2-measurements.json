@@ -1,0 +1,38 @@
+{
+  "schema": "tabi-round-23-c2-measurements-v1",
+  "metric": "admitted_entries_citing_row_first_opened_this_round",
+  "counter": "git grep -lE '^source: S10[23] ' <REV> -- corpus/knowledge | wc -l",
+  "at": "2026-10-25",
+  "before": {
+    "rev": "a89f1935f523a64b00991d792fca6a8c0d321948",
+    "value": 0,
+    "rows": 101,
+    "maxId": "S101"
+  },
+  "after": {
+    "rev": "03c1b4d9a9ea7719ff4a13a63989fa9be36229c3",
+    "value": 1,
+    "files": ["corpus/knowledge/csrf-defense-shape-boundary.md"],
+    "addedFiles": {
+      "command": "git diff --diff-filter=A --name-only a89f1935 03c1b4d -- corpus/knowledge",
+      "out": ["corpus/knowledge/csrf-defense-shape-boundary.md"]
+    },
+    "rows": 103,
+    "rowIds": ["S102", "S103"],
+    "usedBy": "corpus/knowledge/csrf-defense-shape-boundary.md"
+  },
+  "counterBounds": [
+    "the counter counts citations whose line begins 'source: S10<2|3> ', so (a) appending such a line to an existing note would also read 1, (b) a note citing both rows on one line, or with bolded '**source:**', reads 0, and (c) a bare `git add` of an untracked note moves the no-revision form but not the revision form",
+    "the admission is distinguished from those shapes by the added-file diff above (exactly one added knowledge file) and by the two rows existing in corpus/SOURCES.md with used-by naming it",
+    "the counter does not read corpus/SOURCES.md; the row count is reported separately (rows 101 -> 103)"
+  ],
+  "digests": {
+    "S102": "062239316659673b9373865352e8ec5cb710c3d5fe66eedceacfaa6d34d85fbf",
+    "S103": "6f32bfbf96bda9fc4bccfad8edf6d3ff09559b4b12bb869f9f425051c4872312",
+    "note": "S103's digest pins the fetched HTML; the two quoted spans are matched on tag-stripped text (inline <strong>/<code> markup), and the stripped text's own sha256 is not recorded — named as a bound, not smoothed"
+  },
+  "controls": {
+    "quoteLocation": "every quoted span located in the bytes fetched this round (S102 lines 2815/2816-2818/2822-2824; S103 under the 'Employing Custom Request Headers for AJAX/API' and 'Dealing with Client-Side CSRF Attacks (IMPORTANT)' headings)",
+    "stagedFailure": "as staged the entry failed three ways: a paraphrase inside quotation marks ('offers' vs 'offer'), a section that does not exist (0 of 34 h1-h4 headings), and a quote attributed to the wrong heading"
+  }
+}

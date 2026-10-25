@@ -28,16 +28,25 @@ C1: round-22 → exit **1**, `findingClasses` = six
 (`c1-refusal-arithmetic`, `c2-wave-caps`, `c3-gate-spotcheck`, `c4-stale-attempts`,
 `c5-registry-identities`, `c6-landed-log-binding`), 7 findings, per-class
 1/1/1/1/1/2. Before-arm: the instrument does not exist at the baseline revision
-(`git cat-file -e a89f1935:scripts/round-evidence-audit.mjs` → absent, exit 128) → 0 classes.
-Controls: round-21 evidence → exit **0, clean, 0 classes** (zero-control); `--selftest` →
-12/12, exit 0 (one red and one green per class); the skip-work control
+(`git cat-file -e a89f1935:scripts/round-evidence-audit.mjs` → exit **128**) → 0 classes are
+mechanically detectable. Non-vacuity has two arms, both on round-22 bytes: `--selftest` →
+12 cases / 12 passed / inventory 6 red + 6 green, exit 0; and
+`--selftest --rev <rev> --round 22 --round-cap 128` → baseline 7 findings / 6 classes with
+**6/6 repairs**, each repair removing exactly its own class. The skip-work control
 (`.ufo/waves/round-23/fixtures/skipwork-control.mjs`) reaches 6 on round-22 evidence **but
-also 6 on a clean fixture**, so the target is not reachable by skipping the work
-(`skipwork-receipt.json`).
+also 6 on a clean fixture**, so it is refused (`skipwork-receipt.json`). Round-21 evidence is
+**not** a zero-control: it trips `c3-gate-spotcheck` — exit 1, 1 finding — which is a true
+positive (its Gate records no spot-check result and says no "owed to closure"); the declared
+control text was corrected on record in `claims.json` `revisions[2]` rather than by widening
+the predicate.
 
 C2: baseline 0 → 1 (`git grep -lE '^source: S10[23] ' … -- corpus/knowledge` lists
-`corpus/knowledge/csrf-defense-shape-boundary.md`), and `git diff --diff-filter=A` over the
-same range names exactly that one added file. Registry rows 101 → 103.
+`corpus/knowledge/csrf-defense-shape-boundary.md`), and
+`git diff --diff-filter=A --name-only a89f1935 <checkpoint> -- corpus/knowledge` names exactly
+that one added file. Registry rows 101 → 103. Measured at the checkpoint
+`03c1b4d9a9ea7719ff4a13a63989fa9be36229c3` — the commit that carries the auditor, the entry
+and both rows — and re-run after the disposition commit; the receipt is
+`corpus/evidence/round-23/c1-measurements.json`.
 
 Sourced claim (this round's rows, opened this round): **S102** —
 `https://www.ietf.org/archive/id/draft-ietf-httpbis-rfc6265bis-13.txt`, accessed 2026-10-25,
@@ -64,7 +73,10 @@ unused, assigned after the source is opened):
 | S146 | OWASP CSRF Prevention Cheat Sheet | **S103** |
 
 Staged `S102`/`S103` are *different documents* (CDP contribution README, `chrome.debugger`
-reference) and were not adopted. Collision guard run before the append: 0–3-space extractor
+reference) and were not adopted. The map is documentary, not positional: the staged
+`source`-cell URLs are byte-equal to the lane rows, and the arithmetic coincidence
+(`lane = staged − 43`) is killed by a point the lane did not adopt — staged `S147` would
+predict lane `S104`, and `corpus/SOURCES.md` has no `cloudflare-1xxx-errors/error-1015` row. Collision guard run before the append: 0–3-space extractor
 → `reg_ids=101 staged_ids=148 collisions=0`; the false-green was proven on an indented
 scratch fixture (`collisions=S002` long-pattern vs empty column-zero-only) —
 `.ufo/waves/round-23/scratch/ExecCollisionGuard/`.
@@ -94,8 +106,9 @@ Each names the superseded figure; no filed byte is rewritten.
    granted 16:10:37Z and the kernel died at 16:10:51Z with 0 seats, note in
    `w2-cap-refusal-11.json`) plus 11 `w2b-cap-refusal-*.json` (attempts 1–11, spawn at 12).
    Superseded: `LOG.md:1584`, `SCORECARD.md:1111`, `corpus/lessons/round-22.md:130` and the
-   fleet report's "23". A second committed figure also disagrees — 9 wave files say "14
-   whole-payload" for W2, whose receipts are 13.
+   fleet report's "23". A second committed figure also disagrees — **7** wave files (11
+   occurrences) say "14 whole-payload" for W2, whose receipts are 13
+   (`git grep -l "14 whole-payload" a89f1935 -- .ufo/waves/round-22 | wc -l` → 7).
 2. **Wave and round caps.** W2b was validated at `maxLanes: 65` against the policy's
    `waveMaxLanes: 64`, and the round total was 129 spawned seats against the ≤128 cap
    (`.ufo/waves/round-22/w2b-spec.json`, `-validation.json` — which itself substituted a
@@ -105,9 +118,13 @@ Each names the superseded figure; no filed byte is rewritten.
 4. **Stale-lane per attempt.** Round 22 had three dispatches (2026-10-21T11:47:45-03,
    2026-10-23T20:41:38-03, 2026-10-25T03:23:44-03, per the lane's watchdog launches). Filed
    line graded them all as "none". Grades, per attempt: **attempt 1 progressing**
-   (`0f24164`, `e3cf4e0`); **attempt 2 silent** — no lane commit between 2026-10-23T20:41:38
-   and 2026-10-25T03:23:44, an 85-hour gap; **attempt 3 landed** (`47bfb5f`, `fbee618`,
-   `be271a2`). The class `c4-stale-attempts` now requires a per-attempt grade.
+   (`0f24164`, `e3cf4e0`); **attempt 2 silent** — zero lane commits in its window, from its
+   dispatch (2026-10-23T20:41:38-03) to attempt 3's (2026-10-25T03:23:44-03), a **30.7-hour**
+   span (`python3` difference of the two stamps); the round's separate
+   evidence-to-landing gap is **85.3 h** (last receipt 2026-10-21T17:14:05Z → first landing
+   commit 2026-10-25T06:31:37Z); **attempt 3 landed** (`47bfb5f`, `fbee618`, `be271a2`). The
+   two spans are different facts and are not interchangeable. The class
+   `c4-stale-attempts` now requires a per-attempt grade.
 5. **Registry seat identities.** W2b's registry carries 65 members and 65 `agentId: null`, so
    its evidence cannot be tied to its transcripts; `record` never ran (`updatedAt ==
    createdAt`). `record` is the mechanism that supplies the field
@@ -128,8 +145,9 @@ Each names the superseded figure; no filed byte is rewritten.
 | M3 | a change and its LOG entry bound to different commits | `47bfb5f` (0 LOG hunks) vs `fbee618` (1) | round-23 prompt §4's "every change tied to a LOG.md entry and to the commit hash that carries it" — met on the surface (a LOG.md section was named), not in substance | `c6-landed-log-binding`: per-row commit → `LOG.md` membership → 2 findings on round 22; green fixture binds "LOG entry lands in `<hash>`" and clears |
 | M4 | a control declared before it was run, and it did not clear | `.ufo/waves/round-23/claims.json` control text vs `node … --round 21 …` first run (2 classes) | claim sizing: a control is a command whose expected result is fixed in advance — the expectation was written as prose ("round-21 must not yield the classes") without the per-class disposition | control restated per class (round-21 is a zero-control only after the auditor accepts `*-task-result.json` receipts and a named non-author deferral in `## Gate`); the first runs' divergence is recorded in `## Waves` and the receipt, not smoothed |
 
-M1–M3 are the round-22 routed defects re-derived as criteria; M4 is this round's own. Each
-fix is a check whose red and green fixtures both run (`--selftest`, 12 cases).
+M1–M3 are the round-22 routed defects re-derived as criteria; M4 and M5 are this round's own.
+Each fix is a check whose red and green fixtures both run (`--selftest`, 12 cases), except M5,
+whose check is the landing command's own file list.
 
 ## Waves
 
@@ -158,3 +176,21 @@ been executed or captured, no browser ran this round, and no axis score moved �
 stays where round 22 left it. `scripts/check-sources.mjs` matches a row id anywhere in an
 entry body, so a clean census is not proof that the entry's `source:` lines cite the rows; the
 first-line binding was checked here by hand and by `git grep -lE '^source: S10[23] '`.
+
+### M5 — seat scratch was committed with the production artifacts (this round's own)
+
+- **Class:** commit hygiene (evidence vs working scratch).
+- **Evidence pointer:** `git ls-tree -r HEAD .ufo/waves/round-23/scratch | wc -l` → **868** files,
+  23,631,703 B inside the production commit; the on-disk tree is far larger (17,677 files /
+  194 MB, including two seat clones with embedded `.git`). Found by wave 2
+  (`.ufo/waves/round-23/w2/W2Prune.md`).
+- **Captured-by:** the round-23 wave context said "throwaway fixtures under
+  `scratch/<YourName>/`", which the seats honoured — the context never said the *landing* must
+  exclude them, and the L1 committed the directory wholesale.
+- **Fix (shown able to fail):** the disposition commit names every path it carries and excludes
+  `scratch/` and `assimilation/validate/` (the mirror is 89/91 files byte-identical to committed
+  `corpus/` blobs, and its single differing file would put a second, contradictory `S102`/`S103`
+  pair in the repo). A follow-up cleanup commit — the helper is the only writer, so a bulk
+  deletion is one commit — removes the 868 scratch blobs; until it lands, the over-commit is
+  disclosed here rather than hidden. The check that would have caught it is name-only:
+  `git show --name-only --format='' <commit> | grep -c '^\.ufo/waves/round-23/scratch/'` must be 0.

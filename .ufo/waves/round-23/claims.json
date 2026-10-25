@@ -21,7 +21,7 @@
       "type": "capability-acquisition",
       "declared": "Build a lane-owned, fail-closed round-evidence auditor that mechanically derives six defect classes from a round's committed wave bytes, reproducing the six defects the round-22 non-author spot-check routed (refusal arithmetic, wave/round caps, Gate spot-check row, per-attempt stale-lane grading, registry seat identities, landed-change LOG binding). Before: 0 classes mechanically detectable (no such script exists at baseline). After: 6/6 classes detected on round-22 committed evidence with per-class evidence pointers.",
       "metric": "defect_classes_detected",
-      "countingCommand": "node scripts/round-evidence-audit.mjs --rev <REV> --round 22 --json",
+      "countingCommand": "node scripts/round-evidence-audit.mjs --rev <REV> --round 22 --round-cap 128 --json",
       "counterField": "findings[].class (distinct count)",
       "before": 0,
       "after": 6,
@@ -54,7 +54,9 @@
       "field": "C1.countingCommand",
       "from": "node scripts/round-evidence-audit.mjs --rev <REV> --round 22 --json",
       "to": "node scripts/round-evidence-audit.mjs --rev <REV> --round 22 --round-cap 128 --json -> distinct count of findings[].class",
-      "why": "The round cap is an input the contract declares, and a verdict computed without it is fail-open. The auditor now refuses with exit 2 instead of guessing. The value 128 is the round-23 prompt's seat cap; the auditor echoes it in every output beside the band it read from the fleet policy."
+      "why": "The round cap is an input the contract declares, and a verdict computed without it is fail-open. The auditor now refuses with exit 2 instead of guessing. The value 128 is the round-23 prompt's seat cap; the auditor echoes it in every output beside the band it read from the fleet policy.",
+      "fieldUpdated": true,
+      "note": "the frozen field has been updated to the executed form; the original string is preserved in `from`"
     },
     {
       "at": "2026-10-25",
@@ -77,7 +79,7 @@
       "phase": "before the C2 value was cited",
       "field": "C2.control / failureCapable",
       "from": "a skip-work control ... refused by the scratch census gate",
-      "to": "failureCapable: the staged entry's citation layer fails — its quoted sentence is a paraphrase ('offers' vs the source's 'offer'), one section it names does not exist in the sheet (0 of 34 headings), and the client-side quote sits under a different heading. Control: every quoted span is located in the bytes fetched this round (2/2 for S102, 2/2 for S103) and each row's anchor names the heading that actually contains it.",
+      "to": "failureCapable: the staged entry's citation layer fails \u2014 its quoted sentence is a paraphrase ('offers' vs the source's 'offer'), one section it names does not exist in the sheet (0 of 34 headings), and the client-side quote sits under a different heading. Control: every quoted span is located in the bytes fetched this round (every quoted span in the admitted entry was located in the bytes fetched this round) and each row's anchor names the heading that actually contains it.",
       "why": "The scratch census gate validates row shape, not quote presence; naming it the claim's control conflated two instruments."
     },
     {
