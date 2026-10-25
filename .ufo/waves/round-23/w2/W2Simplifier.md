@@ -5,6 +5,7 @@
 ## Pinned bytes (the file moved six times under this seat)
 - Attacked at `sha256 978dfc49…` (**1070 lines**). While reading it went 938 → 954 → 1008 → 1012 → 1034 → 1070 lines (author-side, uncommitted). Every line ref below is at 978dfc49; every deletion is text-anchored.
 - Verified variant: `.ufo/waves/round-23/scratch/W2Simplifier/simplified-3.mjs` (1031 lines), copied from `e88a078e…` (1034 lines) and edited only there. All 11 anchors are byte-identical at 978dfc49, so the recipe applies forward; the 36 lines added since are a c6 `unresolvable cited commit` branch plus `topFiles`, neither of which the batch touches.
+- Drift after that pin: the live file is now `ddee0113…` (1102 lines, 13 in-memory cases). All 11 anchors are still present there (e.g. 268 `refusalPath`, 380 `band === null`, 300 `topFiles`), so the batch still applies; the verified artifact remains pinned to e88a078e.
 
 ## Deletions applied in the variant (all green)
 1. `refused` field — six writers (273,274,275,279,281,283,284), zero readers.
