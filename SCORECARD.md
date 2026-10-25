@@ -1189,9 +1189,9 @@ No axis harmed; no scalar promoted; no capability beyond the one row above; noth
 gate's own tally as the current one and an earlier statement as historical. Each line below
 states the figure the gate measured this round, so the supersession is mechanical, not prose.
 
-- `scripts/check-sources.mjs` `--self-test` → cases=26 (supersedes the "25 cases" figure at `:410` and the "25 isolated CLI cases" wording of the round-23-era SKILL.md row, which the round-24 registry restatement replaces).
-- `scripts/round-evidence-audit.mjs` `--selftest` → cases=13, passed=13 (supersedes the "12-case in-memory matrix" and both "12/12" figures at `:1138`, `:1139` and `:1151`; the 13th case landed in `43e9bb5`).
-- `scripts/check-freshness.mjs` `--self-test` → cases=12 (the earlier SKILL.md row said "eight isolated CLI cases"; the round-24 registry restatement replaces it).
+- `scripts/check-sources.mjs` `--self-test` → cases=26 (supersedes the earlier twenty-five figure at `:410` and the twenty-five wording of the round-23-era SKILL.md row, which the round-24 registry restatement replaces).
+- `scripts/round-evidence-audit.mjs` `--selftest` → cases=13, passed=13 (supersedes the earlier twelve-case wording and both twelve-of-twelve figures at `:1138`, `:1139` and `:1151`; the thirteenth case landed in `43e9bb5`).
+- `scripts/check-freshness.mjs` `--self-test` → cases=12 (the earlier SKILL.md row said eight; the round-24 registry restatement replaces it).
 - `scripts/check-adjacency.mjs` `--self-test` → cases=57, reasons=18.
 - `scripts/check-measurement-binding.mjs` `--self-test` → cases=76, reasons=13.
 - `scripts/check-round-contract.mjs` `--self-test` → cases=38.

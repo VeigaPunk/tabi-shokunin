@@ -185,7 +185,17 @@ function m1Findings(repo, rev, docText, cache) {
         for (const m of line.matchAll(re)) claims.push(Number(m[1]));
       }
       if (!claims.length) continue;
-      for (const script of scripts) {
+      // Association is per line: a tally belongs to the scripts named on its
+      // own line, else to the section's single script, else it is ambiguous and
+      // is reported could-not-evaluate (never compared against a cross-product).
+      const lineScripts = new Set();
+      for (const m of line.matchAll(SCRIPT_IN_TEXT)) lineScripts.add(m[1].replace(/^\.\//, ""));
+      const targets = lineScripts.size ? [...lineScripts] : scripts.size === 1 ? [...scripts] : [];
+      if (!targets.length) {
+        findings.push({ class: "m1-selftest-tally", doc: "SCORECARD.md", line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "ambiguous script association" });
+        continue;
+      }
+      for (const script of targets) {
         const oracle = gateTally(repo, rev, script, cache);
         if (oracle.status !== "measured") {
           findings.push({ class: "m1-selftest-tally", doc: "SCORECARD.md", line: no, script, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: oracle.why });
