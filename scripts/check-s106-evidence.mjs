@@ -237,7 +237,7 @@ function makeFixture() {
     },
     commit() {
       run(["add", "-A"]);
-      run(["commit", "-q", "-m", "fixture"]);
+      run(["commit", "--allow-empty", "-q", "-m", "fixture"]);
       committed = true;
       return run(["rev-parse", "HEAD"]).trim();
     },
