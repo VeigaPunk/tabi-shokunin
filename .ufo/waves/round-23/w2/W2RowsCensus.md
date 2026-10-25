@@ -18,7 +18,7 @@ contradicted by the lane's evidence sweep.**
 - **`mined` used-by resolves** — frozen used-by loop → no `missing:` line; target `corpus/knowledge/csrf-defense-shape-boundary.md` exists and cites both rows on two `source:` lines.
 - **Opened = this round** — col 10 is `2026-10-25` for both (today).
 - **Recheck legal** — `./scripts/sources-census.sh overdue --root … tabi` → `cadence S102 recheck=on-release opened=2026-10-25`, `cadence S103 recheck=90d …` (E09 clean; see finding 4).
-- **Append-only** — `git diff --numstat a89f1935 03c1b4d -- corpus/SOURCES.md` → `2 0`, and every changed line is a `+` row.
+- **Append-only** — `git diff --numstat a89f1935 03c1b4d -- corpus/SOURCES.md` → `2 0`, and every changed line is a `+` row. The worktree then reworded S102's `anchor` cell in place (span now reads "subsection body lines 2815-2828 … (quoted spans 2815-2824)"); re-checked after that edit: still 13 columns, census exit 0. In-place `anchor` edits are outside rule 2's allowed fields, so land it as authoring before the closing commit, not as a later correction.
 
 ## Census gate
 
@@ -49,6 +49,8 @@ on disk and in the landing commit; quote texts are character-exact against the r
 
 ## Residual risk / gaps
 
+- Bytes moved under this seat (concurrent sibling writes to `SOURCES.md`, the entry, the lesson and the receipt). Every
+  check above was re-run on the final worktree state after the move; the counts are those re-runs.
 - No network this seat: the retained scratch copies prove row↔artifact consistency and digest equality, **not** that
   the live pages still hash the same. S103 is rolling (`last-modified 2026-10-25T06:56:47Z`); freshness after landing is unverified here.
 - `corpus/SOURCES.md:4` still reads "Every row below was opened in kaika fleet round-1 (2026-10-19)", contradicted by

@@ -1,14 +1,13 @@
 # W2 · W2Trends — the three trend verdicts, held to LEARNING.md's observables
 
-Read-only at `03c1b4d9a9ea7719ff4a13a63989fa9be36229c3` (HEAD moved `a89f193` → `03c1b4d` mid-review, so
-every command names its revision); before-arm baseline `a89f1935f523a64b00991d792fca6a8c0d321948`; finding 12
-reads the worktree §Round 23 text, uncommitted at review time.
+Read-only at `03c1b4d9a9ea7719ff4a13a63989fa9be36229c3` (HEAD moved `a89f193` → `03c1b4d` mid-review; every command names its revision); before-arm baseline `a89f1935f523a64b00991d792fca6a8c0d321948`.
+Finding 12 reads the worktree §Round 23 text, uncommitted at review time.
 
 **Verdict line:** expansion **improved** (bounded: one admitted documented-upstream entry on uncovered
 ground) · quality **unchanged** · discernment **unchanged** for round 23's own decisions, provable only
 in the carried criterion channel (`QUALITY.md` 61–63 ← lesson M1–M3 ← the `a89f193` spot-check).
 
-| Trend | Observable it must rest on (`LEARNING.md`) | Evidence pointer | Verdict |
+| Trend | Observable (`LEARNING.md`) | Evidence pointer | Verdict |
 |---|---|---|---|
 | expansion | :33 admitted entry on ground the map did not hold, `source:` citing a `mined` row, net new | findings 1–4 | improved, bounded |
 | quality | :34 entries re-verified / deepened / superseded; `verified-at` freshness | findings 6, 7 | unchanged |
@@ -17,8 +16,8 @@ in the carried criterion channel (`QUALITY.md` 61–63 ← lesson M1–M3 ← th
 ## Findings
 
 1. **The expansion counter is commit-scoped and now reproduces.** `git grep -lE '^source: S10[23] '
-   a89f1935f523a64b00991d792fca6a8c0d321948 -- corpus/knowledge | wc -l` → `0`; same at `03c1b4d` →
-   `1`. A worktree `grep -l` also returns 1 from untracked bytes — not the claim's counter.
+   a89f1935f523a64b00991d792fca6a8c0d321948 -- corpus/knowledge | wc -l` → `0`; at `03c1b4d` → `1`
+   (a worktree `grep -l` returns 1 too, from untracked bytes — not the claim's counter).
 2. **Net new on uncovered ground; nothing else in `knowledge/` moved.** `git diff --diff-filter=A
    --name-only a89f1935f523a64b00991d792fca6a8c0d321948 03c1b4d -- corpus/knowledge` → exactly
    `csrf-defense-shape-boundary.md`; `--name-status` → one `A`; `ls-tree | wc -l` → 41 / 42.
@@ -32,9 +31,9 @@ in the carried criterion channel (`QUALITY.md` 61–63 ← lesson M1–M3 ← th
    span is the deliberately quoted non-existent staged heading (E2).
 5. **Ground novelty reproduces at the baseline only.** `git grep -rniE 'synchroni[sz]er token|
    double-submit|custom request header' a89f1935f523a64b00991d792fca6a8c0d321948 -- corpus SKILL.md`
-   → exit 1, no hits. Held SameSite text is a fixture disclosure plus one unexercised unknown
-   (`git grep -n -i samesite <baseline> -- corpus/knowledge` → 6 `SameSite=Lax` in
-   `stateful-fixture-evidence.md`, 1 `U7` in `state-changing-matrix-r9.md`).
+   → exit 1, no hits. Held SameSite text is a fixture disclosure plus one unknown (`git grep -n -i
+   samesite <baseline> -- corpus/knowledge` → 6 `SameSite=Lax` in `stateful-fixture-evidence.md`, 1
+   `U7` in `state-changing-matrix-r9.md`).
 6. **Refuse "frontier area entered".** `sed -n '/## Round 23 — CSRF/,/Counting commands/p'
    corpus/README.md` keeps the measured half open (`still untested`, `narrows rather than falls`,
    `none has been read off a site`). Expansion credit is the admitted entry, never the frontier.
@@ -44,8 +43,8 @@ in the carried criterion channel (`QUALITY.md` 61–63 ← lesson M1–M3 ← th
    :34 observable. `grep -n "Capabilities table" SCORECARD.md` → the row exists at `03c1b4d`, so this
    is a test failure, not a missing artifact: neither trend may take C1 as its mover.
 8. **Quality is `unchanged`, mechanically.** `git grep -l 'verified-at: 2026-10-25' 03c1b4d --
-   corpus/knowledge` → only the new entry; no held entry re-verified, deepened or superseded
-   (finding 2's `A`-only diff). Every "quality improved" sentence would lack a :34 observable.
+   corpus/knowledge` → only the new entry; nothing held re-verified, deepened or superseded (finding
+   2's `A`-only diff). Every "quality improved" sentence would lack a :34 observable.
 9. **Quality is not `harmed` either.** The one false citation lived in the never-admitted staged bytes
    — `git grep -c 'offers a robust defense' a89f1935f523a64b00991d792fca6a8c0d321948 --
    corpus/knowledge` → `0` — and the landed entry quotes `offer` verbatim with "deployed in strict
