@@ -59,6 +59,19 @@ then behaved as predicted (E09 on the staged row, ok on the transformed row).
 Shown able to fail: the vacuous run is preserved in this lesson's record; the
 corrected run's receipts are `.ufo/waves/round-27/assimilation/{staged,xform}-census.txt`.
 
+### M3 — absent S106 receipt classified invalid, not could-not-evaluate
+
+Class: gate verdict taxonomy / frozen kill-rule omission. Evidence: the C2
+reviewer exercised the absent-receipt path at baseline and found `evaluate()`
+returned `{present:false,valid:false}`, which the CLI classified as exit 1;
+the frozen C2 kill rule requires receipt absence to be could-not-evaluate,
+exit 2. The original four-case selftest covered missing bytes but not a missing
+receipt. Fix, landed after that review: absent receipt now throws `Refusal`, and
+the fifth selftest case asserts exit 2; the SKILL registry row records 5/5.
+This is an implementation correction to the frozen rule, not a predicate
+change. Seat evidence: `.ufo/waves/round-27/w1/RevC2Gate.md`; independent
+mutation coverage gap: `.ufo/waves/round-27/w1/MutC2Gate.md`.
+
 ## Corrections
 
 - LOG.md round-27 entry carries five append-only corrections dispositioning

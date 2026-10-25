@@ -108,7 +108,7 @@ export function evaluate(repo, revArg) {
   const rev = resolveRev(repo, revArg);
   const receiptText = readBlob(repo, rev, RECEIPT_PATH);
   if (receiptText === null) {
-    return { schema: SCHEMA, rev, present: false, sha_match: false, anchor_located: false, valid: false, reason: `receipt absent at ${rev}` };
+    throw new Refusal(`receipt absent at ${rev}`);
   }
   const receipt = parseReceipt(receiptText);
   const bytesText = readBlob(repo, rev, receipt.bytes_path);
@@ -203,6 +203,12 @@ const CASES = [
     exit: 2,
     valid: null,
     build: (d) => { d.receipt(fixtureReceipt()); },
+  },
+  {
+    id: "missing-receipt-could-not-evaluate",
+    exit: 2,
+    valid: null,
+    build: () => {},
   },
 ];
 
