@@ -339,6 +339,24 @@ const CASES = [
     build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("12-case in-memory matrix")); },
   },
   {
+    id: "m1-ambiguous-association-is-not-counted",
+    exit: 0,
+    classes: [],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.gate("scripts/check-other.mjs");
+      d.scorecard([
+        "# scorecard",
+        "",
+        "## Round 23 — executed disposition",
+        "",
+        "Both `scripts/check-fixture.mjs` and `scripts/check-other.mjs` are cited here.",
+        "The combined matrix is a 12-case one, with no script named on this line.",
+        "",
+      ].join("\n"));
+    },
+  },
+  {
     id: "m1-no-tally-is-not-a-mismatch",
     exit: 0,
     classes: [],

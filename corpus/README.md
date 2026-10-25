@@ -574,3 +574,11 @@ row needs a route that does not exist).
 
 Counting commands (2026-10-25): `ls corpus/knowledge/*.md | wc -l` → 42;
 `grep -cE '^\| S10[23] ' corpus/SOURCES.md` → 2.
+
+## Frontier — round 24 (2026-10-25)
+
+| Frontier item | Status | Pointer |
+|---|---|---|
+| Navigation-history evidence across a bfcache restore | docs-held, runtime open — the discriminator (`Page.frameNavigated.type = BackForwardCacheRestore`, `Page.backForwardCacheNotUsed` with `notRestoredExplanations`) is documented from the pinned tag; no restore has been observed on this host and the lane's historical probes launched with `--disable-back-forward-cache`. | `corpus/knowledge/navigation-history-bfcache-evidence.md` §2–§5 (U1–U5); rows S104/S105; `corpus/evidence/round-24/sources/` |
+| Gate-registry conformance | held — every lane gate now carries an eight-field row, proved mechanically rather than read. | `scripts/check-gate-registry.mjs` (`--rev` → `nonconformant=0`); `SKILL.md` §"Round 24 — gate registry conformance" |
+| Self-assessment calibration | held for SCORECARD.md — the lane's own figures are compared to the instruments that produce them; LOG.md journal entries are out of the window by declaration. | `scripts/check-selfassessment.mjs`; `corpus/evidence/round-24/c2-measurements.json` |

@@ -1204,3 +1204,67 @@ repairs, clean) was re-run this round and returned exactly that (`baselineFindin
 `baselineClasses: 6`, `cases: 6`, `passed: 6`, `clean: true`). A wave-1 prototype reported 4
 findings / 3 classes for the same command; that measurement did not reproduce and is recorded as
 a prototype defect in `corpus/lessons/round-24.md`, not as a correction.
+
+## Round 24 — declared claims (frozen before data), gate-registry and calibration gates
+
+Baseline `573c99e4885382db38babc3a6fc90e77afeb42a6`; claims frozen in
+`.ufo/waves/round-24/claims.json` before either instrument existed. Axes at round start:
+depth 8, coverage 9, operability 8, freshness 8, calibration 9, adjacency 8. Lowest non-retired
+axis: **operability** (tie at 8 with depth, freshness, adjacency); C1 works the operability
+surface the round-23 non-author spot-check routed as a conformance defect. Saturation 8 / window 3
+retained; the stagnation nudge is inactive (capabilities entered at rounds 22–23).
+
+| Claim | Axis / type | Before → after | Counting command (field) |
+|---|---|---|---|
+| C1 | operability — capability acquisition + routed defect 1 | 3 → 0 nonconformant gates | `node scripts/check-gate-registry.mjs --rev <REV> --json` (`nonconformant`) |
+| C2 | calibration — capability acquisition + routed defects 2 and 4 | 5 → 0 self-assessment mismatches | `node scripts/check-selfassessment.mjs --rev <REV> --json` (`mismatches`) |
+| C3 | coverage — frontier entry (documented-upstream) | 0 → 1 admitted entry citing a row first opened this round | `git grep -lE '^source: S10[45] ' <REV> -- corpus/knowledge \| wc -l` |
+
+## Round 24 — executed disposition
+
+Measured 2026-10-25 against the tip commit that carries the gates, the registry restatement, the
+corrections and the entry; the exact revisions and both raw receipts are in
+`corpus/evidence/round-24/` (`c1-baseline.json`, `c1-tip.json`, `c2-baseline.json`,
+`c2-tip.json`, `c1-measurements.json`, `c2-measurements.json`).
+
+| Claim / axis | Before → after | Verdict / bounds |
+|---|---|---|
+| C1 operability | 3 → 0 nonconformant gates (12 gates at baseline, 14 at tip: the two new gates enter the set and both carry rows) | **met**: baseline findings are `e1-missing-row` for `check-adjacency`, `check-measurement-binding` and `round-evidence-audit` (the routed defect); tip is clean, exit 0. `--selftest` cases=22, passed=22. Scalar operability 8→8 |
+| C2 calibration | 5 → 0 mismatches | **met**: baseline counts four stale tallies (`check-sources` twenty-five vs 26 at `:410`; `round-evidence-audit` twelve vs 13 at `:1138`, `:1139`, `:1151`) and one `m3-unlanded-paths` finding; tip counts none, with five earlier statements superseded by the round's correction block. `--selftest` cases=13, passed=13. Scalar calibration 9→9 |
+| C3 coverage | 0 → 1 admitted entry (`corpus/knowledge/navigation-history-bfcache-evidence.md`) citing S104 and S105, both opened this round | **met**: rows 103 → 105, census exit 0. Documented-upstream: no browser ran, no restore observed, no measured credit. Scalar coverage 9→9 |
+| depth, freshness, calibration(score), adjacency | unchanged | no additional credit claimed; exercised scope shows no harm — the round's deletions are the owed round-23 scratch cleanup plus untracked junk, every prior-round prose byte is an append |
+
+**Capability rows (appended; the r22/r23-era tables are historical snapshots and are not edited).**
+
+Gate-registry conformance gate — derives the lane's gate set from a revision's committed bytes
+(convention `check-*.mjs`/`*audit*.mjs` plus row-named scripts), parses five historical registry
+table shapes by header name, and reports each gate whose latest row is missing or incomplete
+against PROTOCOL §Gate standard's eight fields. Evidence: `scripts/check-gate-registry.mjs`,
+`--selftest` (cases=22), `corpus/evidence/round-24/c1-measurements.json`. First-working round: 24.
+
+Self-assessment mismatch counter — compares the lane's written self-assessment against observed
+state in three classes (stale self-test tally vs the gate's own output, receipt exit vs a
+closed-grammar re-run, unlanded paths vs a landed disposition), with append-only supersession and
+fail-closed could-not-evaluate. Evidence: `scripts/check-selfassessment.mjs`, `--selftest`
+(cases=13), `corpus/evidence/round-24/c2-measurements.json`. First-working round: 24.
+
+**Routed round-23 defects, disposition.** 1 — gate registry row: closed (row `round-evidence-audit`
+appended with all eight fields; the conformance gate proves it mechanically). 2 — 89 uncommitted
+paths: closed (66 empty numeric files, four empty `.err` captures and the untracked seat scratch
+deleted; the two rewrite-in-progress files restored from the branch; the late `W2Simplifier.md`
+append committed; `git status --porcelain` empty at the tip). 3 — M5 scratch over-commit: closed
+(1,034 committed scratch paths removed in one commit; the bytes stay readable at `573c99e`, named
+in `corpus/lessons/round-24.md`; `.ufo/waves/*/scratch/` is now ignored so the class cannot
+recur). 4 — stale 12/12 figure: closed (corrections block, mechanical supersession, C2 counts it).
+5 — receipt exit field: **does not reproduce** at the reviewed tip or the baseline (both read
+`before.exit: 128`, matching the command); the defect describes the blob at `03c1b4d`, where the
+field was `1` until `7ac9fff` corrected it — recorded, not "fixed". 6 — disclosed open limits: unchanged.
+
+## Round 24 — waves and seats
+
+W1 (v1 band 32–64) 32 seats: 6 scout, 6 executor, 4 scribe, 6 reviewer, 4 critic, 1 connector,
+1 revenger, 2 mutation-tester, 1 simplifier, 1 sentinel. 31 reports landed; `ScribeLesson` returned
+without writing (dead seat, not replaced). W2 (falsify) 32 seats, dispatched after W1 returned.
+Round total and the W2 role mix are recorded in the round report; the `planner` seat is held by
+the L1 (the validator rejects `planner` as a swarm role), and the `labrat`/`distiller` items ride
+`executor`/`reviewer` seats for the same reason.

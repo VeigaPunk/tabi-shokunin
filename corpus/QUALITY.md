@@ -327,3 +327,21 @@
     at that revision — every commit after the first inherits the file.
     (lesson: corpus/lessons/round-23.md#mistakes M3; `47bfb5f` → 0 LOG hunks,
     `fbee618` → 1)
+
+64. A gate's registry row is checked mechanically against the §Gate standard, not read: the gate
+    set is derived from the revision's own scripts (a naming convention plus the scripts rows
+    invoke), never from the registry, so the registry cannot vouch for its own completeness; table
+    shapes are read by header name, never by cell position, because a lane accumulates several;
+    and a later row for the same gate supersedes an earlier one. A field predicate that a mutated
+    row cannot fail is not a predicate — every required field carries a red mutant and a green
+    control in the gate's own self-test. (lesson: corpus/lessons/round-24.md#m1; routed round-23
+    defect 1; `scripts/check-gate-registry.mjs` cases=22)
+
+65. A self-assessment figure is compared against the instrument that produced it, at the revision
+    being graded, never against a committed receipt that may itself carry the stale figure. A
+    later statement of the same figure supersedes an earlier one only when the later statement
+    names the same instrument and states the measured value; the counter reports the superseded
+    mentions rather than silently dropping them. A class whose "before" is a working-tree property
+    is measured with a clean tree and says so, because a fresh checkout scores it zero by
+    construction. (lesson: corpus/lessons/round-24.md#m2; routed round-23 defects 2 and 4;
+    `scripts/check-selfassessment.mjs` cases=13)

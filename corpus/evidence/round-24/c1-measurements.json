@@ -1,0 +1,43 @@
+{
+ "schema": "tabi-round-24-c1-measurements-v1",
+ "metric": "nonconformant_gates",
+ "counter": "node scripts/check-gate-registry.mjs --rev <REV> --json -> nonconformant",
+ "before": {
+  "rev": "573c99e4885382db38babc3a6fc90e77afeb42a6",
+  "nonconformant": 3,
+  "gates": 12,
+  "findings": [
+   {
+    "id": "e1-missing-row",
+    "gate": "check-adjacency",
+    "line": null
+   },
+   {
+    "id": "e1-missing-row",
+    "gate": "check-measurement-binding",
+    "line": null
+   },
+   {
+    "id": "e1-missing-row",
+    "gate": "round-evidence-audit",
+    "line": null
+   }
+  ]
+ },
+ "after": {
+  "rev": "b973fde3c89fb2d3476ad0b6002791b75ec87a27",
+  "nonconformant": 0,
+  "gates": 14,
+  "findings": []
+ },
+ "selftest": {
+  "command": "node scripts/check-gate-registry.mjs --selftest",
+  "cases": 22,
+  "passed": 22
+ },
+ "control": {
+  "path": ".ufo/waves/round-24/scratch/ExecControlSkip/check-gate-registry-skip.mjs",
+  "behaviour": "greps SKILL.md for the literal round-evidence-audit and prints nonconformant=0 unconditionally",
+  "scored_at_baseline": "0 (meets the after-target while skipping the work) -> the frozen counter is not that control"
+ }
+}

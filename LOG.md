@@ -1745,3 +1745,44 @@ correction word, `c3` is word-presence only, `lessonSha256` hashes a re-encoded 
 the blob bytes, a missing object reads as "absent at this revision", the round cap is supplied by
 the caller and never verified against a committed declaration, and the OWASP spans are matched on
 stripped text whose own digest is unrecorded.
+
+## Round 24 — 2026-10-25 (hyaku run 6) — gate-registry conformance, calibration counter, bfcache frontier entry
+
+**Claims (frozen before data, `.ufo/waves/round-24/claims.json`, baseline `573c99e`).** C1
+operability: `scripts/check-gate-registry.mjs` derives the lane's gate set from a revision's
+committed bytes and reports gates whose latest registry row is missing or incomplete against
+PROTOCOL §Gate standard's eight fields — 3 → 0 nonconformant. C2 calibration:
+`scripts/check-selfassessment.mjs` counts self-assessment/observed-state mismatches in three
+classes — 5 → 0. C3 coverage: one entry admitted on an unheld browser-interaction surface
+(navigation-history evidence across a bfcache restore) citing S104/S105 opened this round — 0 → 1.
+
+**Landed changes (each with its commit).**
+- `16fa92f` — the late `W2Simplifier.md` drift append (round-23 wave-2 seat report edited after
+  its wave commit at `e059a8f`; landed here because no round-23 claim depended on it).
+- `f6f7f45` — `scripts/check-gate-registry.mjs`, `scripts/check-selfassessment.mjs`, the SKILL.md
+  registry restatement (eleven canonical rows superseding the five historical table shapes),
+  the SCORECARD corrections block, `corpus/knowledge/navigation-history-bfcache-evidence.md`,
+  SOURCES rows S104/S105, `corpus/evidence/round-24/sources/` (the fetched bytes), and the wave-1
+  evidence under `.ufo/waves/round-24/`.
+- `2d76938` — `.gitignore`: `.ufo/waves/*/scratch/` is ignored, the structural fix for the
+  round-23 M5 over-commit (its captured-by was "nothing said the landing must exclude scratch").
+- `9e52cb2` — the M5 cleanup itself: 1,034 committed scratch paths deleted in one commit
+  (`git ls-tree -r master .ufo/waves/round-23/scratch | wc -l` → 0). The bytes remain readable at
+  `573c99e` (`git show 573c99e:.ufo/waves/round-23/scratch/<path>`), which is the recovery route
+  named for every round-23 document that cites a scratch path.
+- `b973fde` — the calibration gate's per-line tally association and the corrections block wording
+  that makes supersession mechanical.
+- `round-24` final commit — round report trail, lesson, QUALITY criterion 64, README frontier row,
+  measurement receipts, wave-2 evidence.
+
+**Routed round-23 defects.** 1 closed (row exists, proven mechanically); 2 closed (89 → 0
+porcelain paths); 3 closed (1,034 → 0 committed scratch paths, ignore rule in place); 4 closed
+(corrections + supersession + counter); 5 does not reproduce at the reviewed tip (`before.exit`
+reads 128 at `c90dffd` and `573c99e`; the stale `1` lived at `03c1b4d` until `7ac9fff`); 6 unchanged.
+
+**Falsifiable next-iterations.** (a) Observe a real `BackForwardCacheRestore` on a loopback fixture
+with `--disable-back-forward-cache` dropped — U1 of the new entry is unmeasured. (b) Extend the
+calibration counter's m1 window to `LOG.md` entries that are not revision-bound (the
+`RevCounterScope` finding: `LOG.md:1664` still reads twelve and self-corrects in prose).
+(c) Decide the adjacency-map row's kind cell (it is a registry table without a `Kind` column, so
+the conformance gate reports it as a missing row rather than an incomplete one).
