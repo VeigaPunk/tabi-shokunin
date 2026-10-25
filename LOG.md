@@ -1575,3 +1575,73 @@ certified and no broadcast was sent by this lane. Exact provider errors,
 observed models, transcript hashes and snapshot bounds are preserved.
 The spawn acknowledgement, actual registry and terminal-return snapshot remain
 distinct artifacts. No tests/builds/formatters/browser execution were run.
+
+## Round22 landing — C1 met at 12, encoding revision, quarantine hand-check (2026-10-25)
+
+Round22 was dispatched three times (watchdog launches 2026-10-21, 2026-10-23,
+2026-10-25; the first two left no report). This entry records the landing attempt
+of hyaku run 6, which inherited the round's W1 (64 seats, 64/64 reports), the
+never-spawned W2 (64 validated seats, 0 spawned, 23 whole-payload
+"Background job limit reached (100)" receipts, then loss of the host session) and
+the post-crash W2b replacement (65 seats spawned, 58 reports, 7 dead seats not
+replaced). Nothing inherited was taken on trust: every counting command, the
+selftest, the serial-cohort gates and the pin digests were re-run at the inherited
+tip before any edit.
+
+Claim (unchanged from the declaration): operability, a lowest non-retired tie at
+8, 0→12 explicit semantically checked lifecycle rows over the retained round-21
+acquisition; population12→12; scalar8→8. Measured 2026-10-25:
+`node .ufo/waves/round-22/measure-c1.mjs 5f585773…` → 0/`baseline`;
+`… 47bfb5f7ad3c87d0deb2629af6b7d7fe2076cf3e` → 12/`clean`, no findings.
+`selftest-c1.mjs` → clean 45/45; `run-checks.py 47bfb5f…` → 35/35 expected
+outcomes (`.ufo/waves/round-22/checks-at-47bfb5f.json`).
+
+Repairs made in this landing attempt (each falsifier-driven, none target-driven):
+
+1. Encoding revision (W2b `CriticRepairFitting` §F1, `CriticAuthority` §A1/A4,
+   `CriticTrend` §F2): `cases[na-native-submit].post.errors` `[]`→`null`
+   (absent-recorder convention, matching `submitCount: null` in the same pinned
+   stage); the id-guarded landing branch became the uniform null-means-absent
+   rule; `expectationShape` binds `post.errors === null` to `navigation: landing`;
+   `EXPECTATIONS_SHA256` re-pinned `d00aed4c…`. Disclosed in
+   `.ufo/waves/round-22/expectation-revision.json` and in a note errata. Value
+   neutrality measured, not asserted: 12 at the pre-revision oracle `e3cf4e0`,
+   12 at the post-revision oracle `47bfb5f`.
+2. Provenance correction: `post-crash-repair.json` had labelled the lane's own
+   W2b seats "non-author review" and claimed unchanged pinned expectations. It now
+   records W2b as author-side, points at the encoding revision, and asserts no
+   non-author judgment; independent closure remains owed.
+3. Selftest hardening (W2b `ReviewExpectationsPin` §F1): new case
+   `expectations-bytes-unpinned` appends one byte to the pinned expectations, keeps
+   the JSON schema valid, and requires `input_shape` — the first case that isolates
+   the expectations digest guard. 44→45 cases, all passing.
+
+Frontier step: SOURCES registry 101→101 rows, mined73→73, A88/B4/C9 unchanged;
+census before/after exit0. S101 (own-work receipt/raw) was reopened this round and
+cited by C1; located quote “Tool execution cancelled by a form reset” (8 words) in
+`na-reset` raw `WebMCP.toolResponded` frames, raw sha256 `097b8833…`. No new source
+row was written because no admitted entry cites a source first opened this round.
+`considerthese/` does not exist in this lane. Assimilation is quarantine-first:
+the lane's 38-row absent-defect register slice was hand-checked (37 quotes absent
+from the re-fetched cited sources → refused; 1 unreachable → unverifiable; 4
+matcher controls passing), adoption closed, no campaign file written, no staged row
+appended, no id renumbering. Full verdicts in
+`.ufo/waves/round-22/assimilation/quarantine-verdicts.{tsv,json}` and
+`corpus/lessons/round-22.md` §Gate.
+
+Mistakes mined this round (lesson §Mistakes): the backwards-read pinned literal
+with false non-author provenance, and an all-negative detector believed before it
+had positive controls. Both fixes are shown able to fail.
+
+Misroot sweep: `git -C /home/vgpnk/Projects/shokunin status --porcelain` was run
+before the report; no seat of this lane wrote into the fleet root this attempt, so
+nothing was copied back or deleted.
+
+Tooling: none installed or updated this round (no pacman, uv, cargo or npm
+transaction was run; host pacman transactions remain paused by the orchestrator
+ruling).
+
+Honest bounds: every seat involved was dispatched by this lane, so all findings are
+author-side; no non-author admit/reject agreement, SHONEN promotion or
+stagnation-window restart is asserted. No new browser run, real site, other build,
+default profile or served-wire identity is established.

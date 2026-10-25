@@ -288,3 +288,21 @@
     never authenticate every actor or certify quiescence.
     (lesson: corpus/lessons/round-22.md#mistakes;
     `.ufo/waves/round-22/round21-closure.json` wave_conformance_debt)
+59. A pinned expectation must spell absence as absence. When a stage has no
+    recorder for a field, pin `null` (as the stage already pins a missing submit
+    recorder) rather than `[]`; a code branch may not read a pinned literal
+    backwards so that the observation equal to the pin fails while an unobserved
+    dimension passes. A revision to a pinned field that is authored after the data
+    was observed must be disclosed, must keep metric/target/blocking rule/population
+    unchanged, and must show value neutrality by measured before→after at both
+    oracle revisions — assertion is not neutrality. Bind the encoding in the schema
+    check and isolate the digest guard with its own mutant, or a later revision can
+    loosen the pin invisibly. (lesson: corpus/lessons/round-22.md#m1; w2b
+    CriticRepairFitting F1, CriticAuthority A1/A4, ReviewExpectationsPin F1;
+    `.ufo/waves/round-22/expectation-revision.json`)
+60. An all-negative result from a detector is uninterpretable until the same
+    detector finds a known-present control and misses a known-absent one; run both
+    before publishing any verdicts, record them in the verdict receipt, and fail the
+    run when a control disagrees. A register row with no checkable payload is
+    `unverifiable`, never a silent pass. (lesson: corpus/lessons/round-22.md#m2;
+    `.ufo/waves/round-22/assimilation/quarantine-verdicts.json` controls)

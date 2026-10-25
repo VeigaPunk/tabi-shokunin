@@ -2439,3 +2439,15 @@ Neither gate authenticates observers, authors, publishers, complete wake history
 hostile-host integrity or general scheduler quiescence. Historical gaps remain
 explicitly unavailable/debt. No new capability, shared-profile use, real-site
 operation or ownership of sibling orchestration follows from these local checks.
+
+## Errata — round22 axis and encoding (2026-10-25, append-only)
+
+The round22 oracle entry above says the round "deepens" retained ground. That is
+the observation content of round21, not this round's claim: round22's C1 is
+**operability** (a lowest non-retired tie at 8), 0→12 failure-capable semantic
+rows over the same twelve retained observations, with the population unchanged at
+12→12 and scalar operability 8→8. The pinned `na-native-submit.post.errors` is now
+`null` (absent recorder), the landing branch is the uniform null-means-absent rule,
+and `.ufo/waves/round-22/expectation-revision.json` carries the disclosed,
+measured-value-neutral revision. Do not cite this round as depth or as a new
+browser acquisition.

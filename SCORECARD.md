@@ -1067,3 +1067,51 @@ The counting command/metric and scalar8→8 remain as declared. Depth content,
 coverage and all other axes remain unchanged. This correction precedes
 measurement; no successful result is relabeled or duplicate claim added.
 Sources: `.ufo/waves/round-22/w1/{CriticClaim,CriticScope,ConnPlanner}.md`.
+
+### Round22 executed disposition — C1 target met at 12 (author-side), with a disclosed encoding revision
+
+Measured 2026-10-25 by this round's landing attempt, against committed bytes.
+
+| Claim / axis | Before → after | Author verdict / bounds |
+|---|---|---|
+| C1 operability (lowest non-retired tie 8) | 0→12 explicit semantically checked lifecycle rows over the same 12 retained round-21 observations; scalar 8→8 | **met**: `node .ufo/waves/round-22/measure-c1.mjs REV` → baseline `5f58577…` value0/`baseline`; checkpoint `47bfb5f…` value12/`clean`, findings none. Observation population12→12, no new browser run |
+| depth, coverage, freshness, calibration, adjacency | unchanged | no additional credit claimed; exercised scope shows no harm (35/35 serial cohort, both no-harm lifecycle arms) |
+
+Counting command and field unchanged from the declaration:
+`node .ufo/waves/round-22/measure-c1.mjs FULL40HEXREV`, field
+`c1_semantically_checked_lifecycle_rows`. Supporting gates at the checkpoint:
+`node .ufo/waves/round-22/selftest-c1.mjs` → clean 45/45;
+`python3 .ufo/waves/round-22/run-checks.py 47bfb5f… …` → 35/35 expected outcomes
+(`.ufo/waves/round-22/checks-at-47bfb5f.json`).
+
+Disclosed revision (W2b falsifier `CriticRepairFitting.md` §F1): the pinned
+`cases[na-native-submit].post.errors` was `[]` while the same stage used `null`
+for an absent submit recorder, so the landing branch read the pin backwards.
+The field is now `null`, the id-guarded branch is replaced by a uniform
+null-means-absent rule, the shape check binds `post.errors === null` to
+`navigation: landing`, and the digest is re-pinned (`4a693dce…` → `d00aed4c…`).
+The revision was authored after the data was observed and after the author-side
+W2b seats scored; metric, target12, the atomic blocking rule and the evidence
+population are unchanged, and the value is identical before and after (12 at
+`e3cf4e0`, 12 at `47bfb5f`) — it cannot have manufactured the target. Receipt:
+`.ufo/waves/round-22/expectation-revision.json`; errata appended to the note.
+`post-crash-repair.json` now records W2b as author-side (its seats are this lane's),
+so no non-author judgment is asserted anywhere in this round — independent
+non-author closure is owed.
+
+Capability row (appended; the table at `:381` is a historical snapshot and is not
+edited in place, per the append-only mutable-docs rule):
+**semantic outcome oracle** — replays retained raw CDP/page evidence against
+independently pinned expectations and blocks the count on any finding (atomic),
+with 45 isolated CLI cases including a mutant that isolates the expectations
+digest guard.
+Evidence: `.ufo/waves/round-22/measure-c1.mjs`, `selftest-c1.mjs`,
+`.ufo/waves/round-22/checks-at-47bfb5f.json`. First-working round: 22.
+
+Waves: W1 64/64 reports; W2 64 validated, 0 spawned (23 whole-payload cap
+refusals, then loss of the host session); W2b 65 spawned, 58 reports, 7 dead
+seats not replaced; round total 129 seats (one over the ≤128 cap, reported).
+Sources census start/end exit0, rows101→101, mined73→73, no new row.
+Quarantine-first assimilation: 38 register rows hand-checked, 37 refused
+(quote absent from the re-fetched cited source), 1 unverifiable, adoption closed.
+Saturation8/window3 retained; no axis retired.

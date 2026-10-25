@@ -1,0 +1,51 @@
+{
+  "schema": "tabi-round22-expectation-revision-v1",
+  "at": "2026-10-25T06:34:00Z",
+  "author": "tabi L1 (hyaku run 6, round-22 landing attempt)",
+  "priorRecord": {
+    "path": ".ufo/waves/round-22/post-crash-repair.json",
+    "pinnedAtThatRecord": "4a693dce44b1161df5ced71fd2739ff4a1a4147d893b83dfc780d92cc5b60e1e"
+  },
+  "revision": {
+    "path": "corpus/evidence/round-22/semantic-expectations.json",
+    "field": "cases[na-native-submit].post.errors",
+    "before": [],
+    "after": null,
+    "pinBefore": "4a693dce44b1161df5ced71fd2739ff4a1a4147d893b83dfc780d92cc5b60e1e",
+    "pinAfter": "d00aed4c29b06ef49a055773d1f31fc662a85048e6c62a75ef45e30506c56914",
+    "codeChange": "measure-c1.mjs validatePageState: the id-guarded landing branch (5017 Object.hasOwn(actual,'errors') || !equal(expected.errors, [])) is replaced by the uniform null-means-absent-recorder rule; the landing nonce and submits rules are unchanged; expectationShape now requires post.errors to be null exactly when navigation is 'landing'"
+  },
+  "reason": "The native-submit landing is a fresh document with no error recorder, and the note's own reject row for this case forbids the null-to-empty collapse. The pinned [] spelled an absent recorder as an empty array, so the landing branch had to read a pinned literal backwards (an observation literally equal to the pin failed; an unobservable dimension passed). null matches the existing submitCount: null convention in the same pinned stage, and it is now visible in the pinned file, not only in code.",
+  "valueNeutrality": {
+    "preRevisionOracleAt": "e3cf4e0d30bb835532ff44b118c5ad52e09eb76d",
+    "preRevisionValue": 12,
+    "postRevisionOracleAt": "47bfb5f7ad3c87d0deb2629af6b7d7fe2076cf3e",
+    "postRevisionValue": 12,
+    "measuredAt": "2026-10-25",
+    "conclusion": "value-neutral on the retained evidence: the revision cannot have manufactured the target, because both oracles report 12 on the same frozen round-21 bytes"
+  },
+  "unchanged": [
+    "metric c1_semantically_checked_lifecycle_rows",
+    "target 0->12",
+    "atomic blocking rule (any finding yields value 0)",
+    "evidence population: the 12 retained round-21 cases and their raw bytes",
+    "producer pin bc11e4d6..."
+  ],
+  "controls": {
+    "selftestCases": 45,
+    "selftestPassed": 45,
+    "newCase": "expectations-bytes-unpinned — appends one byte to the pinned expectations, keeps JSON schema valid, and requires input_shape; it isolates the EXPECTATIONS_SHA256 guard, which no earlier case isolated (W2b ReviewExpectationsPin F1)",
+    "semanticControls": {
+      "positive": "the retained na-native-submit bytes have no errors key and still count (absence satisfies null)",
+      "native-landing-errors": "an observation carrying errors: [] now fails semantic_error — presence is rejected, as the null convention requires"
+    }
+  },
+  "disclosure": "Authored after observing the retained data and after the round's W2b falsifiers had scored the pre-revision rule (CriticRepairFitting F1; CriticAuthority A4; CriticTrend F2). It is disclosed as a target-encoding revision, not a value-driven fit: metric, target, blocking rule and evidence population are unchanged, and the value is identical before and after. The W2b seats are author-side (dispatched by this lane), so no non-author judgment is asserted here; independent non-author review of this revision is owed to the round's closure session.",
+  "evidence": {
+    "measureAtE3cf4e0": "node .ufo/waves/round-22/measure-c1.mjs e3cf4e0d30bb835532ff44b118c5ad52e09eb76d -> {\"value\":12,\"verdict\":\"clean\"}",
+    "measureAt47bfb5f": "node .ufo/waves/round-22/measure-c1.mjs 47bfb5f7ad3c87d0deb2629af6b7d7fe2076cf3e -> {\"value\":12,\"verdict\":\"clean\"}",
+    "selftestAt47bfb5f": "node .ufo/waves/round-22/selftest-c1.mjs -> {\"verdict\":\"clean\",\"cases\":45,\"passed\":45}",
+    "serialCohort": ".ufo/waves/round-22/checks-at-47bfb5f.json (35/35 expected outcomes)",
+    "falsifier": ".ufo/waves/round-22/w2b/CriticRepairFitting.md#F1"
+  }
+}

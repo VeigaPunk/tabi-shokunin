@@ -518,3 +518,20 @@ Historical closure/report/lesson bytes remain unchanged. A classifier does
 not retroactively observe missing event history or authenticate settlement.
 Real-site/agent-side/default-profile/custom-element/cross-build and arbitrary
 fault/liveness frontiers remain open as before.
+
+### Round22 landing errata — encoding revision and quarantine verdicts (2026-10-25)
+
+The round22 note gained an append-only `## Errata` section: the pinned
+`na-native-submit.post.errors` field was changed `[]`→`null` so absence is spelled
+as absence, the oracle's id-guarded landing branch was replaced by the uniform
+null-means-absent rule, and the digest was re-pinned. Metric, target12, the atomic
+blocking rule and the evidence population are unchanged and the value is identical
+before and after (12 at `e3cf4e0`, 12 at `47bfb5f`); receipt
+`.ufo/waves/round-22/expectation-revision.json`. The W2b seats that found the
+defect are author-side, so no non-author agreement is claimed.
+
+Wave-4 quarantine-first assimilation produced verdicts only, no adoption: 38
+register rows hand-checked (37 quotes absent from the re-fetched cited sources →
+refused, 1 unreachable → unverifiable, 4 matcher controls passing). See
+`.ufo/waves/round-22/assimilation/` and `lessons/round-22.md` §Gate. No SOURCES row
+was added (101→101, mined73→73).

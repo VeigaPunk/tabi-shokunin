@@ -113,3 +113,33 @@ Re-running an outcome oracle over immutable bytes is not re-running the browser.
 All author-dispatched reviewers remain author-side; independent non-author admission
 and SHONEN promotion are not self-attested. Historical reports/lessons/counters,
 producer and acquisition stay unchanged; corrections are new entries.
+
+## Errata — landing-stage encoding revision (2026-10-25, disclosed)
+
+The pinned `na-native-submit.post.errors` was written as `[]` when this oracle was
+authored (commit `0f24164`). The landing document carries no error recorder, so the
+pinned empty array spelled absence as emptiness — the null-to-empty collapse this
+note's own reject row forbids — and the landing branch had to read that literal
+backwards (an observation equal to the pin failed; an unobserved dimension passed).
+
+Correction, authored after the W2b falsifiers scored the pre-revision rule
+(`.ufo/waves/round-22/w2b/CriticRepairFitting.md` F1):
+
+- the field is now `null`, matching the `submitCount: null` convention already in the
+  same pinned stage — absence is spelled as absence, in the pinned file itself;
+- the code's id-guarded landing branch is replaced by the uniform rule
+  (`expected.errors === null` requires the key to be absent; otherwise compare), so
+  the pinned meaning no longer depends on a hardcoded case id;
+- `expectationShape` requires `post.errors` to be `null` exactly when the row's
+  `navigation` is `landing`;
+- the expectations digest is re-pinned (`4a693dce…` → `d00aed4c…`), and a new selftest
+  case (`expectations-bytes-unpinned`) isolates that digest guard.
+
+Value neutrality is measured, not asserted: the pre-revision oracle reads 12 at
+`e3cf4e0`, the post-revision oracle reads 12 at `47bfb5f`, on the same frozen round-21
+bytes; metric, target, the atomic blocking rule and the evidence population are
+unchanged. Full receipt: `.ufo/waves/round-22/expectation-revision.json`.
+Disclosed limit: the landing stage has no error recorder, so this row certifies
+recorder absence, not "no page errors occurred". The revision was authored after the
+data was observed and after the author-side W2b seats had scored; independent
+non-author review is owed to the round's closure, and none is asserted here.
