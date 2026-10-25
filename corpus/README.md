@@ -562,8 +562,8 @@ Ground was not held before: at the baseline revision
 a89f1935 -- corpus SKILL.md` → exit 1, no hits (the terms arrive with this entry, so
 the sweep must be run at the baseline, not in the worktree). CSRF/SameSite *mentions*
 do exist there — `git grep -ciE 'csrf|samesite' a89f1935 -- corpus/knowledge SKILL.md
-corpus/*.md` → 15 files / 30 lines, including 7 literal `SameSite=Lax` occurrences in
-the stateful-fixture and state-changing-matrix notes — but none carries a defence-shape
+corpus/*.md` → 10 files / 23 lines, including 6 literal `SameSite=Lax` occurrences, all in
+`stateful-fixture-evidence.md` — but none carries a defence-shape
 vocabulary: they are an anti-claim, a fixture disclaimer ("a CSRF-shaped instrument, not
 a security analysis"), two unexercised unknowns, and the round-8 token-shaped fixture
 capture this entry names. The observation column is lane inference throughout; the

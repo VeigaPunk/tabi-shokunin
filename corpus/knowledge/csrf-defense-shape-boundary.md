@@ -6,7 +6,7 @@ verified-at: 2026-10-25
 recheck: on-release for S102 (a draft only changes when a new revision is published; -13 has Expires 18 May 2024), 90d for S103 (rolling revision): `curl -fsSL https://www.ietf.org/archive/id/draft-ietf-httpbis-rfc6265bis-13.txt | grep -c 'not the extent of'` → must be ≥1
 tier: documented upstream, not measured in this lane
 
-**Nothing in this entry was run, captured or observed in a browser.** It is the
+**Nothing in this entry was run, captured or observed in a browser by this round** — the one earlier capture it names (§6, the round-9 fixture) was made by the lane in an earlier round and is here only as a classification target. It is the
 vocabulary a journey receipt needs in order to *classify* a submit it actually
 observes. The measurement — a loopback submit carrying one of these shapes,
 captured through CDP — has not been made, and the lane's bounded-runs rule
@@ -16,9 +16,10 @@ captured through CDP — has not been made, and the lane's bounded-runs rule
 
 Boundary first: this entry records **what the sources say and how to observe it**.
 Whether a defence is adequate is a security judgment and belongs to kasegi (the
-fleet roster's bounty/security-research lane); `PROVINCE.md` keeps this lane to
-provenance and records no security verdict. Nothing below is this lane's verdict on
-a site.
+fleet roster's bounty/security-research lane); This lane's own scope line records provenance, not
+security verdicts (`corpus/knowledge/stateful-fixture-evidence.md:79`; the interaction
+classes live in `interaction-approval-table.md:58-62`). Nothing below is this lane's
+verdict on a site.
 
 The draft states the guarantee and its own limit in one subsection body (S102
 §8.8.1, lines 2815–2828; the quoted spans sit at 2815–2824):
@@ -50,7 +51,7 @@ and this entry does not claim those are all of them:
 |---|---|---|
 | synchronizer token | a token value that appears both in the document and in the submitted body or a header | [INFERENCE] the paired-occurrence test is this lane's, not the sheet's wording |
 | double-submit cookie | a cookie value repeated in the body or a header | [INFERENCE] same test, cookie side |
-| custom request header | a non-simple header on an AJAX/API request, which a cross-origin form cannot set | the sheet states the mechanism; the "cannot set" half is the preflight rule |
+| custom request header | a non-simple header on an AJAX/API request; the sheet states the mechanism, and a cross-origin form cannot set one |
 
 The custom-header case has a mechanical consequence for a journey driver: the
 sheet's sentence is "A user-friendly defense that is particularly well suited for
@@ -98,7 +99,7 @@ is not yet measured (see §6).
 
 Adopted from the shokuknow `corpus-expansion-1` package (`merge/tabi/`, entry
 `csrf-defense-boundary.md`) and re-grounded under this lane's bar
-(`QUALITY.md` 1–10, 61–63). Three defects in the staged bytes were corrected here,
+(`QUALITY.md` 1–10, 61–63). Three material defects in the staged bytes were corrected here,
 each found by re-opening the source rather than by reading the package:
 
 - **E1 — a quote that was a paraphrase.** The staged entry quotes "offers a robust
@@ -115,18 +116,20 @@ each found by re-opening the source rather than by reading the package:
   sentence and "No token is needed for this approach." into one 28-word quote,
   above this lane's ≤25-word Gate cap; they are two sentences and are cited as two.
 
-None of the three is a fabrication: every quoted span is present in the fetched
-bytes. They are citation-layer defects, which is exactly what a re-grounding pass
+None of the three is a fabrication: every span quoted *in this entry* is present in
+the fetched bytes; what failed was the staged entry's citation layer. They are citation-layer defects, which is exactly what a re-grounding pass
 exists to catch — a staged entry whose quotes are right and whose locators are
 wrong still fails the Gate.
 
 ## 6. Open
 
-- **Partly measured, not classified:** this lane's round-8 loopback fixture did
+- **Partly measured, not classified:** this lane's round-9 loopback fixture did
   submit a form carrying a hidden `token` input whose value also appeared in the
   captured POST, and the retained artefacts record it
-  (`corpus/evidence/w9-tabi-b91/runs/replay-consumed-post/rep1/facts.json`
-  `tokenShape`, plus the `submit-refused token-consumed` ledger entry). That is one
+  (`corpus/evidence/w9-tabi-b91/runs/replay-consumed-post/rep1/facts.json` records
+  `tokenShape`; the co-occurrence of value and POST is written up at
+  `stateful-fixture-evidence.md:516`, and the `submit-refused token-consumed` ledger
+  entry is at seq 9 of the same run). That is one
   captured instance of the token-shaped row — on the lane's own fixture, not on a
   site, and it was never classified by this vocabulary. What remains unmeasured: a
   site's defence shape, the double-submit and custom-header rows, and the

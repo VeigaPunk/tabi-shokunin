@@ -61,22 +61,14 @@ function sha256(buf) {
   return createHash("sha256").update(buf).digest("hex");
 }
 
+// An allowlist, not a denylist: git reads configuration, tracing and hook targets from the
+// environment (GIT_CONFIG_COUNT/KEY/VALUE, GIT_CONFIG_PARAMETERS, GIT_TRACE*, GIT_EXTERNAL_DIFF,
+// GIT_ASKPASS, GIT_SSH*, GIT_PAGER …), and any of them can execute a command. The child gets
+// only what it needs to run, plus the guards this auditor relies on.
 function scrubbedEnv() {
-  const env = { ...process.env };
-  for (const key of [
-    "GIT_DIR",
-    "GIT_WORK_TREE",
-    "GIT_INDEX_FILE",
-    "GIT_OBJECT_DIRECTORY",
-    "GIT_ALTERNATE_OBJECT_DIRECTORIES",
-    "GIT_COMMON_DIR",
-    "GIT_NAMESPACE",
-    "GIT_GLOB_PATHSPECS",
-    "GIT_NOGLOB_PATHSPECS",
-    "GIT_ICASE_PATHSPECS",
-    "GIT_LITERAL_PATHSPECS",
-  ]) {
-    delete env[key];
+  const env = {};
+  for (const key of ["PATH", "HOME", "TMPDIR", "LANG", "LC_ALL", "USER", "LOGNAME", "SHELL"]) {
+    if (process.env[key] !== undefined) env[key] = process.env[key];
   }
   return {
     ...env,
@@ -85,6 +77,7 @@ function scrubbedEnv() {
     GIT_NO_REPLACE_OBJECTS: "1",
     GIT_OPTIONAL_LOCKS: "0",
     GIT_TERMINAL_PROMPT: "0",
+    GIT_PAGER: "cat",
     LC_ALL: "C",
   };
 }
@@ -171,7 +164,10 @@ export function section(text, heading) {
   const lines = text.split("\n");
   const want = heading.trim().toLowerCase();
   let start = -1;
+  let fence = false;
   for (let i = 0; i < lines.length; i += 1) {
+    if (/^\s*(```|~~~)/.test(lines[i])) fence = !fence;
+    if (fence) continue;
     if (lines[i].trim().toLowerCase() === want) {
       start = i + 1;
       break;
@@ -179,8 +175,10 @@ export function section(text, heading) {
   }
   if (start === -1) return "";
   const body = [];
+  fence = false;
   for (let i = start; i < lines.length; i += 1) {
-    if (/^##\s+/.test(lines[i])) break;
+    if (/^\s*(```|~~~)/.test(lines[i])) fence = !fence;
+    if (!fence && /^##\s+/.test(lines[i])) break;
     body.push(lines[i]);
   }
   return body.join("\n");
@@ -189,7 +187,24 @@ export function section(text, heading) {
 // "<n> whole-payload refusals" — the report/lesson wording for a capacity refusal.
 export function extractRefusalCitations(text) {
   if (typeof text !== "string") return [];
-  return [...new Set([...text.matchAll(/\b(\d{1,3})\s+whole-payload\s+refusal/gi)].map((m) => Number(m[1])))];
+  const out = new Set();
+  for (const line of String(text).split("\n")) {
+    // A line that marks a figure as superseded/corrected is the record of a defect; it is not
+    // an assertion, and counting it would make every honest correction un-auditable.
+    if (/supersed|correct|instead|filed|asserted|was\s+\d|→|->|not\s+\d/i.test(line)) continue;
+    for (const m of line.matchAll(/\b(\d{1,3})\s+whole-payload\s+refusal/gi)) out.add(Number(m[1]));
+  }
+  return [...out];
+}
+
+// A Gate records a spot-check only affirmatively: a line that names a spot-check AND a
+// result (agree/disagree/result:/verdict), or names the record as owed to closure. A denial
+// ("no spot-check result was recorded") is the defect itself, not a record of one.
+function gateRecordsSpotCheck(gate) {
+  if (/owed to closure/i.test(gate)) return true;
+  return String(gate)
+    .split("\n")
+    .some((line) => /spot-?check/i.test(line) && /(agree|disagree|result\s*:|verdict)/i.test(line) && !/\b(no|not|none|never)\b[^.]*spot-?check/i.test(line));
 }
 
 // A per-attempt grade names the attempt and its disposition; the bare word "attempt"
@@ -199,6 +214,12 @@ function gradedAttempts(text) {
   const re = /attempt\s*#?\s*(\d{1,2})\s*[—:–\-.)]?\s*\**\s*(progressing|silent|landed|graded|refused|stale|dead|complete|completed)/gi;
   for (const m of String(text || "").matchAll(re)) seen.add(m[1]);
   return { count: seen.size, ids: [...seen], lt2: seen.size < 2 };
+}
+
+// A grade counts only when its attempt id names a committed receipt: a ghost id in prose
+// is not evidence that the attempt was graded.
+function joinedGrades(ids, receiptIds) {
+  return ids.filter((id) => receiptIds.has(String(Number(id)))).length;
 }
 
 // The Stale-lane paragraph: the line and the wrapped/indented lines under it.
@@ -231,7 +252,9 @@ function waveEvidence(ctx, roundDir, stem) {
     const body = ctx.read(path);
     if (body === null) continue;
     const m = body.match(SPAWN_MARKER);
-    return { path, spawned: m ? Number(m[1]) : 0, refused: m ? false : body.includes(REFUSAL_MARKER), accounted: true };
+    if (m) return { path, spawned: Number(m[1]), refused: false, accounted: true };
+    if (body.includes(REFUSAL_MARKER)) return { path, spawned: 0, refused: true, accounted: true };
+    return { path, spawned: 0, refused: false, accounted: false };
   }
   const refusals = (ctx.list(roundDir) || []).filter((f) => new RegExp(`/${stem}-cap-refusal-\\d+\\.json$`).test(f));
   if (refusals.length) {
@@ -254,11 +277,22 @@ export function audit(ctx, opts) {
     findings.push({ class: cls, cited, derived, evidence, detail });
 
   const files = ctx.list(roundDir) || [];
+  // A wave spec is a top-level file of the round directory. Fixtures and scratch copies can
+  // contain their own .ufo/waves trees; enumerating recursively would audit them as waves.
+  const topFiles = files.filter((f) => !f.slice(roundDir.length + 1).includes("/"));
   const band = policy?.sighting?.dispatch?.swarm ?? null;
 
   // c1 — refusal arithmetic: the asserted figure vs the receipts committed.
   const refusalFiles = files.filter((f) => /cap-refusal[^/]*\.json$/.test(f));
-  const refusalReceipts = refusalFiles.filter((f) => (ctx.read(f) || "").includes(REFUSAL_MARKER));
+  // A refusal receipt is a capacity failure, not any file that happens to quote the marker:
+  // the payload must open with the dispatch failure envelope and carry the marker.
+  const isRefusal = (body) => {
+    if (!body || !body.includes(REFUSAL_MARKER)) return false;
+    const parsed = parseJson(body);
+    const text = parsed ? (parsed.result?.text ?? parsed.text ?? "") : body;
+    return typeof text === "string" && /Failed to start background task jobs/i.test(text) && text.includes(REFUSAL_MARKER);
+  };
+  const refusalReceipts = refusalFiles.filter((f) => isRefusal(ctx.read(f)));
   // Every cited figure is checked, not the largest one: a stale figure left beside a
   // corrected one is exactly the state the routed defect warns about.
   const citedSet = [...new Set([...extractRefusalCitations(lessonText), ...extractRefusalCitations(reportText)])];
@@ -275,7 +309,7 @@ export function audit(ctx, opts) {
   }
 
   // c2 — wave caps, unaccounted waves, round total.
-  const specFiles = files.filter((f) => /-spec\.json$/.test(f));
+  const specFiles = topFiles.filter((f) => /-spec\.json$/.test(f));
   const capProblems = [];
   let roundTotal = 0;
   const waveCounts = [];
@@ -310,6 +344,8 @@ export function audit(ctx, opts) {
       if (Number.isFinite(maxLanes) && maxLanes < band.waveMinLanes)
         capProblems.push(`${specFile}: maxLanes ${maxLanes} < policy waveMinLanes ${band.waveMinLanes}`);
     }
+    if (spawn.spawned > maxLanes)
+      capProblems.push(`${waveCounts[waveCounts.length - 1].receipt}: ${spawn.spawned} seats spawned > spec maxLanes ${maxLanes}`);
     if (items !== null && Number.isFinite(maxLanes) && items > maxLanes)
       capProblems.push(`${specFile}: items ${items} > maxLanes ${maxLanes}`);
     const reg = parseJson(ctx.read(`${roundDir}/${stem}/swarm-registry.json`));
@@ -331,7 +367,7 @@ export function audit(ctx, opts) {
     add("c3-gate-spotcheck", null, "lesson-absent", [`corpus/lessons/round-${round}.md`], "lesson file absent at this revision");
   } else if (!gate.trim()) {
     add("c3-gate-spotcheck", null, "gate-absent", [`corpus/lessons/round-${round}.md`], "lesson carries no '## Gate' section");
-  } else if (!/spot-?check/i.test(gate) && !/owed to closure/i.test(gate)) {
+  } else if (!gateRecordsSpotCheck(gate)) {
     add(
       "c3-gate-spotcheck",
       null,
@@ -343,42 +379,78 @@ export function audit(ctx, opts) {
 
   // c4 — a multi-attempt round grades each attempt in its Stale-lane paragraph.
   // An "attempt" is a dispatch attempt of the round (an attempt receipt), not a wave.
-  const attemptArtifacts = files.filter((f) => /attempt[^/]*\.json$/.test(f));
+  const attemptArtifacts = files.filter(
+    (f) => f.startsWith(`${roundDir}/`) && /^attempt[^/]*\.json$|^[^/]*-attempt[^/]*\.json$/.test(f.slice(roundDir.length + 1))
+  );
+  const receiptIds = new Set();
+  for (const f of files) {
+    if (!f.startsWith(`${roundDir}/`) || f.slice(roundDir.length + 1).includes("/")) continue;
+    for (const m of f.slice(roundDir.length + 1).matchAll(/attempt(\d+)|-(?:cap-refusal|refusal)-(\d+)\.json$/g)) {
+      receiptIds.add(String(Number(m[1] ?? m[2])));
+    }
+  }
   const stale = staleParagraph(reportText);
   if (attemptArtifacts.length >= 2) {
     if (!stale) {
       add("c4-stale-attempts", null, attemptArtifacts.length, attemptArtifacts.slice(0, 3), "the report carries no Stale-lane line while more than one attempt receipt is committed");
-    } else if (gradedAttempts(stale.paragraph).count < 2) {
+    } else if (joinedGrades(gradedAttempts(stale.paragraph).ids, receiptIds) < 2) {
       add(
         "c4-stale-attempts",
         stale.line.trim().slice(0, 120),
-        `${attemptArtifacts.length} attempt receipts / ${gradedAttempts(stale.paragraph).count} graded`,
+        `${attemptArtifacts.length} attempt receipts / ${joinedGrades(gradedAttempts(stale.paragraph).ids, receiptIds)} graded and joined`,
         attemptArtifacts.slice(0, 3),
-        "the Stale-lane paragraph grades fewer than two attempts while several attempt receipts are committed"
+        "the Stale-lane paragraph grades fewer than two attempts that a committed attempt receipt can be matched to, while several attempt receipts are committed"
       );
     }
   }
 
-  // c5 — a wave that really spawned records its members' identities.
-  for (const regFile of files.filter((f) => /swarm-registry\.json$/.test(f))) {
-    const stem = regFile.slice(roundDir.length + 1).replace(/\/swarm-registry\.json$/, "");
-    const spawn = waveEvidence(ctx, roundDir, stem);
-    if (spawn.spawned <= 0) continue;
-    const reg = parseJson(ctx.read(regFile));
-    const members = reg && reg.members && typeof reg.members === "object" ? reg.members : null;
-    if (!members) {
-      add("c5-registry-identities", spawn.spawned, "registry-unreadable", [regFile], "a spawned wave has no readable member registry");
+  // c5 — a wave that really spawned records its members' identities. A missing registry is a
+  // finding, not a skip: deleting the file must not clear the class.
+  const registryOf = (stem) => {
+    for (const candidate of [`${roundDir}/${stem}/swarm-registry.json`, `${roundDir}/${stem}-swarm-registry.json`]) {
+      if (files.includes(candidate)) return candidate;
+    }
+    return null;
+  };
+  const spawnedWaves = [];
+  for (const specFile of specFiles) {
+    const stem = waveStem(roundDir, specFile);
+    const spawned = waveEvidence(ctx, roundDir, stem).spawned;
+    if (spawned > 0) spawnedWaves.push({ stem, spawned, registry: registryOf(stem) });
+  }
+  for (const wave of spawnedWaves) {
+    if (wave.registry === null) {
+      add(
+        "c5-registry-identities",
+        `${wave.spawned} spawned`,
+        "registry-absent",
+        [`${roundDir}/${wave.stem}/swarm-registry.json`],
+        `wave ${wave.stem} spawned ${wave.spawned} seats and left no member registry, so none of them can be tied to a transcript`
+      );
+      continue;
+    }
+    const reg = parseJson(ctx.read(wave.registry));
+    const members = reg ? reg.members : null;
+    if (!members || typeof members !== "object" || Array.isArray(members)) {
+      add("c5-registry-identities", `${wave.spawned} spawned`, "registry-unreadable", [wave.registry], `wave ${wave.stem} has no readable object-form member registry`);
       continue;
     }
     const names = Object.keys(members);
-    const anonymous = names.filter((n) => !members[n] || !members[n].agentId);
-    if (names.length && anonymous.length) {
+    const ids = names.map((n) => (members[n] && typeof members[n].agentId === "string" ? members[n].agentId.trim() : ""));
+    const anonymous = names.filter((n, i) => ids[i] === "");
+    const unique = new Set(ids.filter(Boolean));
+    const problems = [];
+    if (names.length === 0) problems.push("registry has no members");
+    if (anonymous.length) problems.push(`${anonymous.length} of ${names.length} members carry no agentId`);
+    if (names.length && unique.size !== ids.filter(Boolean).length) problems.push("member ids are not unique");
+    if (names.length < wave.spawned) problems.push(`${names.length} members for ${wave.spawned} spawned seats`);
+    if (problems.length) {
       add(
         "c5-registry-identities",
-        `${spawn.spawned} spawned / ${names.length} members`,
-        `${anonymous.length} without agentId`,
-        [regFile, ...anonymous.slice(0, 3)],
-        `${spawn.spawned} seats spawned but ${anonymous.length} of ${names.length} registry members carry no agentId, so the wave's evidence cannot be tied to its transcripts`
+        `${wave.spawned} spawned / ${names.length} members`,
+        problems.join("; "),
+        [wave.registry, ...anonymous.slice(0, 3)],
+        "the registry does not account for the seats this wave spawned, so its evidence cannot be tied to its transcripts"
       );
     }
   }
@@ -582,8 +654,24 @@ export function selftest() {
       );
     }, { clean: true }),
   ];
+  // Inventory: a deleted case must fail the suite, so the count and the per-class shape are
+  // asserted, not inferred from the cases that happen to be present.
+  const inventory = CLASSES.map((cls, i) => {
+    const red = cases.filter((c) => c.name.startsWith(`c${i + 1}-red-`)).length;
+    const green = cases.filter((c) => c.name.startsWith(`c${i + 1}-green-`)).length;
+    return { class: cls, red, green, ok: red === 1 && green === 1 };
+  });
+  const inventoryOk = cases.length === CLASSES.length * 2 && inventory.every((c) => c.ok);
   const passed = cases.filter((c) => c.pass).length;
-  return { schema: `${SCHEMA}-selftest`, cases: cases.length, passed, clean: passed === cases.length, runs: cases };
+  return {
+    schema: `${SCHEMA}-selftest`,
+    cases: cases.length,
+    passed,
+    inventory,
+    inventoryOk,
+    clean: inventoryOk && passed === cases.length,
+    runs: cases,
+  };
 }
 
 // --------------------------------------------------- evidence-keyed selftest --
@@ -835,7 +923,10 @@ function main(argv) {
       fail(`cannot read the wave policy at ${policyPath}`);
     }
     const { policy } = resolvePolicy(policyPath, policyText);
-    const reportPath = values.get("--report") || `/home/vgpnk/Projects/shokunin/.ufo/reports/round-${round}/tabi.md`;
+    const reportPath = resolve(values.get("--report") || `/home/vgpnk/Projects/shokunin/.ufo/reports/round-${round}/tabi.md`);
+    if (!reportPath.startsWith("/home/vgpnk/Projects/shokunin/.ufo/reports/")) {
+      fail(`--report must name a file under /home/vgpnk/Projects/shokunin/.ufo/reports/, got ${reportPath}`);
+    }
     let reportBuf;
     try {
       reportBuf = readFileSync(reportPath);
@@ -869,7 +960,12 @@ function main(argv) {
   if (!FLEET_POLICIES.includes(policyPath)) {
     fail(`--policy must name one of the fleet authority files (${FLEET_POLICIES.join(", ")}), got ${policyPath}`);
   }
-  const reportPath = values.get("--report") || `/home/vgpnk/Projects/shokunin/.ufo/reports/round-${round}/tabi.md`;
+  const reportPath = resolve(values.get("--report") || `/home/vgpnk/Projects/shokunin/.ufo/reports/round-${round}/tabi.md`);
+  // The report input is a round artifact in the fleet repo; an arbitrary path would let a caller
+  // choose the bytes c4 and c6 are decided on.
+  if (!reportPath.startsWith("/home/vgpnk/Projects/shokunin/.ufo/reports/")) {
+    fail(`--report must name a file under /home/vgpnk/Projects/shokunin/.ufo/reports/, got ${reportPath}`);
+  }
 
   let policyText;
   try {
