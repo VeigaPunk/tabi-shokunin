@@ -40,13 +40,13 @@
 //                      C1 extension (round 27): same association rule (a tally
 //                      belongs to the scripts named on its own line, else to a
 //                      single-script section, else could-not-evaluate) and the
-//                      same supersession convention, with the correction unit
-//                      being the paragraph (Markdown wraps one correction over
-//                      several lines): a later paragraph clears an earlier
-//                      stale mention only when it names the same script,
-//                      carries a correction marker, cites the superseded line
-//                      (:/LINE/) and states the oracle-correct number via a
-//                      tally shape. Plain later claims never clear anything.
+//                      correction unit being a paragraph (Markdown wraps one
+//                      correction over several lines): a later paragraph clears
+//                      an earlier stale mention only when it names the same
+//                      script, carries a correction marker, cites the stale line
+//                      or a containing LOG.md/SCORECARD.md range, and states the
+//                      oracle-correct number via a tally shape. Plain later
+//                      claims never clear anything.
 //   m2-receipt-exit    A committed evidence receipt that records a command and
 //                      its exit must reproduce that exit when the command is
 //                      re-run. Only a closed grammar is executed — `git cat-file
@@ -236,7 +236,7 @@ function m1Findings(repo, rev, docText, cache) {
       g.observed === g.claimed &&
       g.observed === f.observed &&
       /supersed|correct|replace|replac|superseding/i.test(g.lineText || "") &&
-      /:\d+/.test(g.lineText || ""));
+      citesLine(g.lineText || "", f.line));
   }
   return findings;
 }
@@ -263,6 +263,15 @@ function paragraphs(docText) {
   });
   return out;
 }
+function citesLine(text, line) {
+  return [...text.matchAll(/\b(?:LOG|SCORECARD)\.md:(\d+)(?:-(\d+))?\b/g)]
+    .some((match) => {
+      const first = Number(match[1]);
+      const last = Number(match[2] || match[1]);
+      return first <= line && line <= last;
+    });
+}
+
 
 function m1LogFindings(repo, rev, logText, cache) {
   const findings = [];
@@ -306,13 +315,7 @@ function m1LogFindings(repo, rev, logText, cache) {
       }
     }
   }
-  // Supersession unit is the paragraph (Markdown wraps one append-only
-  // correction over several lines). A later paragraph clears an earlier stale
-  // mention only when it (a) names the same script, (b) carries a correction
-  // marker, (c) cites the superseded line (:/LINE/) and (d) states the
-  // oracle-correct number in a tally shape. A paragraph stating a wrong number,
-  // or lacking the citation, never clears anything (frozen claim C1 skip-work
-  // control; round-27 selftest case m1-log-wrong-number-correction).
+  // Supersession requires a citation naming the stale line (or a containing range).
   const paras = paragraphs(logText);
   for (const f of findings) {
     if (f.observed === null || f.observed === f.claimed) continue;
@@ -322,7 +325,7 @@ function m1LogFindings(repo, rev, logText, cache) {
       const namesScript = [...text.matchAll(SCRIPT_IN_TEXT)].some((m) => m[1].replace(/^\.\//, "") === f.script);
       return namesScript &&
         /supersed|correct/i.test(text) &&
-        /:\d+/.test(text) &&
+        citesLine(text, f.line) &&
         statedTallyNumbers(text).includes(f.observed);
     });
   }
@@ -459,7 +462,16 @@ const CASES = [
     classes: [],
     build: (d) => {
       d.gate("scripts/check-fixture.mjs");
-      d.scorecard(fixtureDoc("`--selftest` (12/12)", "\n## Round 24 — corrections\n\n`scripts/check-fixture.mjs` `--selftest` (13/13) supersedes the twelve figure at `:5`.\n"));
+      d.scorecard(fixtureDoc("`--selftest` (12/12)", "\n## Round 24 — corrections\n\n`scripts/check-fixture.mjs` `--selftest` (13/13) supersedes the twelve figure at `SCORECARD.md:5`.\n"));
+    },
+  },
+  {
+    id: "m1-scorecard-unrelated-citation-not-superseded",
+    exit: 1,
+    classes: ["m1-selftest-tally"],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (12/12)", "\n## Round 24 — corrections\n\n`scripts/check-fixture.mjs` `--selftest` (13/13) supersedes the stale figure at `SCORECARD.md:999`.\n"));
     },
   },
   {
@@ -520,6 +532,26 @@ const CASES = [
       d.gate("scripts/check-fixture.mjs");
       d.scorecard(fixtureDoc("`--selftest` (13/13)"));
       d.log(logDoc("Non-vacuity: `--selftest` 12/12 across the fixture matrix.", "Correction (supersedes LOG.md:6): `scripts/check-fixture.mjs` `--selftest` measured `cases: 12` at the tip."));
+    },
+  },
+  {
+    id: "m1-log-unrelated-citation-not-superseded",
+    exit: 1,
+    classes: ["m1-selftest-tally"],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (13/13)"));
+      d.log(logDoc("Non-vacuity: `--selftest` 12/12 across the fixture matrix.", "Correction (supersedes LOG.md:999): `scripts/check-fixture.mjs` `--selftest` measured `cases: 13` at the tip."));
+    },
+  },
+  {
+    id: "m1-log-timestamp-not-citation",
+    exit: 1,
+    classes: ["m1-selftest-tally"],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (13/13)"));
+      d.log(logDoc("Non-vacuity: `--selftest` 12/12 across the fixture matrix.", "Correction at 2026-10-25T05:16:28Z: `scripts/check-fixture.mjs` `--selftest` measured `cases: 13` at the tip."));
     },
   },
   {

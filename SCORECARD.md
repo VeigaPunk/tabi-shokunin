@@ -1426,3 +1426,31 @@ frozen-claim handling. The §3 planner seat is held by the L1; W1 met the L2 flo
   and criterion 68 defines its required report check.
 - capabilities: unchanged; gates are counters, not repertoire rows.
 - saturation 8 / window 3 unchanged; no axis retired or waived.
+
+## Round 28 — declared claims and disposition
+
+Baseline `eb23c0b84668afc48ebab8bd7e4a8a4457407cc4`; axes depth 8, coverage 9,
+operability 8, freshness 8, calibration 9, adjacency 8. Lowest-axis tie at 8;
+C1 works depth. Claims frozen before wave data in `.ufo/waves/round-28/claims.json`.
+
+| Claim / axis | Before → after | Verdict |
+|---|---|---|
+| C1 depth | `node scripts/check-s106-evidence.mjs --selftest`: 5 cases at baseline → implementation adds 2 revision-binding cases; post-edit result not run. S106 gate and receipt modified to bind `measured_rev`. | **unprovable** — main verification pending; no after count asserted. |
+| C2 calibration | `node scripts/check-selfassessment.mjs --rev eb23c0b84668afc48ebab8bd7e4a8a4457407cc4 --json` previously false-cleared LOG.md:221; selftest baseline 17 cases. Exact document/line matcher and two red cases added; post-edit gate/selftest not run. | **unprovable** — main verification pending; no after count asserted. |
+
+No score delta recorded. Counting commands and baseline measurements above; after-state is not measured. C1 and C2 are causally separate at their gates; no coverage claim. S106 source opened this round and cited in the round-28 lesson as C1 evidence. Calibration and depth remain unchanged pending verification.
+
+## Round 28 — waves and seats
+
+One v2 wave `w1`: 64 seats (24 executor, 8 scribe, 8 critic, 8 reviewer,
+8 mutation-tester, 4 connector, 4 scout); 64 results, no missing outputs,
+0 dead seats. `w1-spec.json` and `w1-dispatch.json` validated under policy v2;
+one batched handoff via `w1.ready`. m_flash majority roles: executor/scribe/
+critic = 40/64 (62.5%); attack roles critic/reviewer/mutation-tester =
+24/64 (37.5%). L1 holds the canonical planner seat; bounded planning data walk
+rode connector/scout items. No residual calls.
+
+### Planned / saturation / retired — round 28
+
+- planned: freshness — re-verify on-release rows S104–S106 at the next browser-tag bump.
+- capabilities unchanged; no axis retired; saturation 8 / window 3; stagnation nudge inactive.

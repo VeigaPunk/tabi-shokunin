@@ -371,3 +371,14 @@
     not satisfy headings or boxes. The round-25 verifier recorded both a wrong-path
     draft and missing SHONEN, defects a prose reminder had failed to prevent.
     (lesson: corpus/lessons/round-26.md#m1; routed round-25 closure defect 1)
+69. A receipt's measurement revision must be a full resolved commit identity;
+    the gate compares the committed source bytes at that revision with the
+    receipt digest and also checks the evaluation revision's bytes. Do not bind
+    a receipt to its own containing commit hash (circular), or accept an
+    ancestor label without checking that revision's bytes. A self-test includes
+    both the matching-source and divergent-source controls. (lesson:
+    corpus/lessons/round-28.md#mistakes M1)
+70. A self-assessment supersession citation names the target document and line
+    (or a range containing it); timestamps and unrelated numeric tokens do not
+    count. Test an unrelated-line red case, timestamp red case, and exact-line
+    positive case. (lesson: corpus/lessons/round-28.md#mistakes M2)

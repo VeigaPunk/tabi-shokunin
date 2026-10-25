@@ -2513,3 +2513,18 @@ committed bytes, anchor text required at the recorded line, unique in the file.
 |---|---|---|---|---|---|---|---|
 | s106-evidence | gate | `node scripts/check-s106-evidence.mjs --rev REV [--json]` | 0=clean (valid: receipt present, sha_match, anchor_located, anchor_unique, byte_count_match); 1=failed (receipt present but committed bytes disagree — sha_match, anchor_located or byte_count mismatch); 2=could-not-evaluate (usage, unreadable revision, receipt or bytes absent, malformed receipt) | `node scripts/check-s106-evidence.mjs --selftest` (cases=5, passed=5) | `scripts/check-s106-evidence.mjs` CASES table; `corpus/evidence/round-26/sources/s106.json` + decoded bytes | stdout/stderr only; production reads committed git blobs at the revision only; self-test writes and deletes only its own temporary repositories | tabi L1 |
 | selfassessment-counter | gate | `node scripts/check-selfassessment.mjs --rev REV [--json]` | 0=clean; 1=failed (one or more mismatches); 2=could-not-evaluate (usage, unreadable revision, git failure); 3=self-test disagreement | `node scripts/check-selfassessment.mjs --selftest` (cases=17, passed=17) | `scripts/check-selfassessment.mjs` CASES table; `corpus/evidence/round-24/c2-measurements.json` | stdout/stderr only; executes only lane `scripts/` gates with their declared self-test flag, and only `git cat-file -e`/`git show` receipts; self-test writes and deletes only its own temporary repositories | tabi L1 |
+
+## Round 28 — revision-bound S106 and exact LOG citations (2026-10-25; append-only)
+
+The S106 receipt now names `measured_rev`; the gate checks the committed source
+bytes there against the receipt digest, and checks the evaluated revision's
+bytes independently. Its case table has seven cases, including measured-revision
+match and mismatch. The selfassessment LOG matcher now requires a `LOG.md` or
+`SCORECARD.md` line/range citation containing the stale line; its case table adds
+unrelated-citation and timestamp controls. Round-28 post-edit self-tests and
+tip counters were not run by the L1; see the report and lesson for verdicts.
+
+| Name | Kind | Entry command | Verdict map | Self-test case inventory | Pinned-value path | Write scope | Owner |
+|---|---|---|---|---|---|---|---|
+| s106-evidence (revision binding) | gate | `node scripts/check-s106-evidence.mjs --rev REV [--json]` | 0=clean (revision_match, sha_match, anchor_located, anchor_unique, byte_count_match); 1=failed (revision/source bytes or evidence mismatch); 2=could-not-evaluate (usage, unresolved revision, missing receipt/source bytes, malformed receipt) | 7 cases in CASES (not run at round-28 tip) | `scripts/check-s106-evidence.mjs` CASES; `corpus/evidence/round-26/sources/s106.json` + decoded bytes | stdout/stderr only; committed git blobs read; self-test owns temp repos | tabi L1 |
+| selfassessment-counter (exact line citations) | gate | `node scripts/check-selfassessment.mjs --rev REV [--json]` | 0=clean; 1=failed (one or more mismatches); 2=could-not-evaluate; 3=self-test disagreement | 20 cases in CASES (not run at round-28 tip) | `scripts/check-selfassessment.mjs` CASES; `corpus/evidence/round-24/c2-measurements.json` | stdout/stderr only; executes lane scripts gates and read-only Git receipts; self-test owns temp repos | tabi L1 |

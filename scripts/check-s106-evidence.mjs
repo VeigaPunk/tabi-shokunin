@@ -5,7 +5,7 @@
 //          2 could-not-evaluate (usage, unreadable revision, receipt or bytes
 //          absent at the measured revision, malformed receipt). Any other
 //          nonzero code is undeclared and reads as could-not-evaluate.
-// Self-test: `--selftest` (5 isolated cases over temporary sandbox
+// Self-test: `--selftest` (7 isolated cases over temporary sandbox
 //          repositories; asserts exit code AND the stable field set; creates
 //          and removes its own temp trees, never touches the lane).
 // Frozen by: .ufo/waves/round-26/claims.json claim C2 (frozen 2026-10-25,
@@ -93,9 +93,10 @@ function parseReceipt(text) {
   }
   if (!doc || typeof doc !== "object") throw new Refusal("receipt is not an object");
   if (doc.schema !== RECEIPT_SCHEMA) throw new Refusal(`receipt schema mismatch: ${JSON.stringify(doc.schema)}`);
-  for (const key of ["url", "decoded_sha256", "bytes_path"]) {
+  for (const key of ["url", "decoded_sha256", "bytes_path", "measured_rev"]) {
     if (typeof doc[key] !== "string" || !doc[key]) throw new Refusal(`receipt missing ${key}`);
   }
+  if (!/^[0-9a-f]{40}$/.test(doc.measured_rev)) throw new Refusal("receipt measured_rev must be a full lowercase commit id");
   if (typeof doc.decoded_bytes !== "number") throw new Refusal("receipt missing decoded_bytes");
   if (!doc.anchor || typeof doc.anchor !== "object") throw new Refusal("receipt missing anchor");
   if (typeof doc.anchor.line !== "number" || typeof doc.anchor.text !== "string" || !doc.anchor.text) {
@@ -107,15 +108,14 @@ function parseReceipt(text) {
 export function evaluate(repo, revArg) {
   const rev = resolveRev(repo, revArg);
   const receiptText = readBlob(repo, rev, RECEIPT_PATH);
-  if (receiptText === null) {
-    throw new Refusal(`receipt absent at ${rev}`);
-  }
+  if (receiptText === null) throw new Refusal(`receipt absent at ${rev}`);
   const receipt = parseReceipt(receiptText);
+  const measuredRev = resolveRev(repo, receipt.measured_rev);
+  const measuredBytes = readBlob(repo, measuredRev, receipt.bytes_path);
+  const revisionMatch = measuredBytes !== null &&
+    sha256(measuredBytes) === receipt.decoded_sha256;
   const bytesText = readBlob(repo, rev, receipt.bytes_path);
-  if (bytesText === null) {
-    // Fabricated receipt with no committed bytes: could-not-evaluate, never valid.
-    throw new Refusal(`decoded bytes absent at ${rev}: ${receipt.bytes_path}`);
-  }
+  if (bytesText === null) throw new Refusal(`decoded bytes absent at ${rev}: ${receipt.bytes_path}`);
   const observedSha = sha256(bytesText);
   const shaMatch = observedSha === receipt.decoded_sha256;
   const lines = bytesText.split("\n");
@@ -124,7 +124,7 @@ export function evaluate(repo, revArg) {
   const occurrences = lines.filter((l) => l.trim() === receipt.anchor.text.trim()).length;
   const anchorUnique = occurrences === 1;
   const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;
-  const valid = shaMatch && anchorLocated && anchorUnique && byteCountMatch;
+  const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;
   return {
     schema: SCHEMA,
     rev,
@@ -135,6 +135,7 @@ export function evaluate(repo, revArg) {
     decoded_sha256_claimed: receipt.decoded_sha256,
     decoded_sha256_observed: observedSha,
     sha_match: shaMatch,
+    revision_match: revisionMatch,
     anchor: { line: receipt.anchor.line, text: receipt.anchor.text, occurrences },
     anchor_located: anchorLocated,
     anchor_unique: anchorUnique,
@@ -178,6 +179,25 @@ const CASES = [
     exit: 0,
     valid: true,
     build: (d) => { d.receipt(fixtureReceipt()); d.bytes(FIXTURE_BYTES); },
+  },
+  {
+    id: "measured-revision-bytes-match",
+    exit: 0,
+    valid: true,
+    field: "revision_match",
+    build: (d) => { d.receipt(fixtureReceipt()); d.bytes(FIXTURE_BYTES); },
+  },
+  {
+    id: "measured-revision-bytes-mismatch",
+    exit: 1,
+    valid: false,
+    field: "revision_match",
+    build: (d) => {
+      d.bytes(FIXTURE_BYTES.replace("// tail", "// prior source bytes"));
+      const measuredRev = d.commit();
+      d.bytes(FIXTURE_BYTES);
+      d.receipt(fixtureReceipt({ measured_rev: measuredRev }));
+    },
   },
   {
     id: "sha-mismatch-invalid",
@@ -242,7 +262,17 @@ function makeFixture() {
       return run(["rev-parse", "HEAD"]).trim();
     },
     rev() {
-      if (!committed) d.commit();
+      if (!committed) {
+        const receiptPath = join(root, RECEIPT_PATH);
+        if (existsSync(receiptPath)) {
+          const receipt = JSON.parse(readFileSync(receiptPath, "utf8"));
+          if (!receipt.measured_rev) {
+            receipt.measured_rev = d.commit();
+            d.receipt(receipt);
+          }
+        }
+        d.commit();
+      }
       return run(["rev-parse", "HEAD"]).trim();
     },
   };

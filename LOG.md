@@ -1958,3 +1958,30 @@ killRule; C3 adds an inference-specific clause. The round-26 claim file remains
 the original; this note discloses drift and does not rewrite the frozen
 round-27 record after data. Consequently no claim is described as a verbatim
 resumption; see lesson M5 and the wave-2 audit reports.
+
+## Round 28 — 2026-10-25 — revision provenance and exact selfassessment citations
+
+Claims frozen before data at `.ufo/waves/round-28/claims.json`; baseline
+`eb23c0b84668afc48ebab8bd7e4a8a4457407cc4`. C1 (depth) targets S106
+measurement-revision binding and two revision controls; C2 (calibration)
+targets exact stale-line citation matching and negative citation/timestamp
+controls. Baseline observations from wave-1: S106 selftest 5/5 and receipt has
+no revision field (`w1/Crit02.md`, `Crit06.md`); checker selftest 17/17 while
+LOG.md:221 is wrongly marked superseded (`w1/Crit01.md`, `Crit05.md`).
+
+Implementation: `scripts/check-s106-evidence.mjs` now requires `measured_rev`,
+compares its committed bytes to the receipt digest and the evaluation revision
+bytes, and defines two revision controls. `corpus/evidence/round-26/sources/
+s106.json` records the existing source-evidence commit `0c666adc217685e1ece2af8596b732b303a3b15c`.
+`scripts/check-selfassessment.mjs` now parses named LOG/SCORECARD line/range
+citations and requires the stale line to be covered; two regression cases
+cover unrelated-line and timestamp false-clear shapes. Claim counters after
+these edits were **not run by the L1**; claims remain unprovable pending main
+verification, and no score delta is claimed. Evidence/source reopening:
+`corpus/lessons/round-28.md`, S106 committed bytes `:186-187`.
+
+SOURCES census was 107 rows at entry (prior verifier `round-27-verifier-spotcheck.md:17`)
+and 107 at exit; census command exited 0 at both boundaries. No row was
+added, touched, or advanced. Source census warnings remained 16 W04 duplicate-URL
+warnings. The S106 source was opened this round; S125 was freshly reopened and
+remains rejected, with no row status change.
