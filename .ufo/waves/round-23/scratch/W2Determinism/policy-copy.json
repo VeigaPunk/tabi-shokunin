@@ -1,0 +1,375 @@
+{
+  "orchestrator": {
+    "route": "local/fixture-primary",
+    "role": "portable contract fixture; not the canonical judge"
+  },
+  "automaticSubstrate": "omp",
+  "runnerUpSubstrate": "devin",
+  "fixtureRoundBudget": 5,
+  "proposalsPerLane": 2,
+  "budgets": {
+    "note": "Spec 03 + A-03 (P3): token budgets are first-class stop kinds. 0 = unlimited (explicit — this key absent is config-invalid, never silently unlimited). Post-round: mission_cumulative >= tokensPerMission stops the loop honesty_brake (exit 2, recorded, never convergence/completion). Pre-dispatch: projected wave cost (p50 of prior rounds; first round uses tokensPerRound as the estimate) exceeding the remaining budget stops honesty_brake with budget_projection telemetry — the frozen wave is never trimmed to fit. wallClockMsPerMission expiry is honesty_brake too, typed distinct from watcher-deadline lane_timeout (T33). maxAttemptsPerLane bounds spec 11's retry rows; D1a counts against it. phase0ProbeTokens budgets spec 04's per-domain Phase 0 probes (P4). The fixture loop reads the same field names from config/orchestration.json budgets — same names, separate surface; each numeric is single-sourced per surface. rateCard is operator-supplied and dated; a route missing from the card prices null, never zero.",
+    "tokensPerRound": 0,
+    "tokensPerMission": 0,
+    "wallClockMsPerMission": 0,
+    "maxAttemptsPerLane": 0,
+    "phase0ProbeTokens": 0,
+    "action": "honesty_brake"
+  },
+  "membrane": {
+    "note": "Spec 06 (P5): the contract's own senses. An admitted proposal whose touched_paths intersect membrane.paths emits authority_boundary: the work lands locally but the loop seals until the operator signs (ufo charter sign <runId>, TTY-only) and a full Phase 0 re-passes. The system may edit its own body under judgment; edits to its own senses are operator-owned, like publishing (I10). screening classes are evidence flags on artifacts — never auto-rejection. The fixture loop reads membrane{paths,action} from config/orchestration.json — same names, separate surface; the canonical path list below is single-sourced here.",
+    "paths": [
+      "crates/ufo-core-runtime/**",
+      "crates/ufo-cli/**",
+      "scripts/collect-omp-native-handoff*",
+      "scripts/sync-ufo-contracts.mjs",
+      "scripts/run-omp-native-trial.mjs",
+      "scripts/ufo-sighting*",
+      "config/ufo.json",
+      "config/the-tick.machine.json",
+      "skills/ufo/SKILL.md",
+      "skills/ufo/references/**",
+      "ssot/godspeed-core/directive.md"
+    ],
+    "action": "authority_boundary",
+    "screening": {
+      "version": "2026-09-17",
+      "classes": [
+        "directive_bytes",
+        "terminal_marker",
+        "judge_imperative",
+        "assignment_header",
+        "directive_task_data"
+      ]
+    }
+  },
+  "sighting": {
+    "triggers": [
+      "open the hatch",
+      "open ufo sighting",
+      "i wanna see the ufos"
+    ],
+    "terminalLauncher": "omarchy-launch-or-focus-tui",
+    "tmuxSession": "ufo_sighting",
+    "tmuxWindow": 1,
+    "surfaceDigest": "sha256:1064c19addf69f294fd46ebbaa3a99298a4fe60eb5241fcb0d1406f1c0ba6bb4",
+    "layouts": {
+      "16:9": {
+        "rows": 3,
+        "columns": 5
+      },
+      "21:9": {
+        "rows": 3,
+        "columns": 6
+      }
+    },
+    "twinMaxDepth": 1,
+    "windowPaneCeiling": 16,
+    "heartbeatIntervalMs": 30000,
+    "autoRegisterInvokedNativeTrial": true,
+    "autoOpenWall": true,
+    "dispatch": {
+      "mode": "task-queue",
+      "queuePath": ".ufo/pending-work.json",
+      "globalRunnerCeiling": 1056,
+      "maxConcurrentL1": 16,
+      "autoDispatchMissions": true,
+      "missionFormat": {
+        "id": "nightcall",
+        "configPath": "config/mission-nightcall.yml",
+        "defaultIterateRounds": 1024,
+        "l1Alias": "m_strong"
+      },
+      "swarm": {
+        "maxLanes": 256,
+        "minLanes": 16,
+        "rampBatchSize": 5,
+        "rampIntervalMs": 700,
+        "note": "hyaku campaign policy (operator directive 2026-10-19: 'i want you to launch waves of 32-64 actually'); copy of ufo-fsd-alpha config/ufo.json with only the wave band changed (16-32 -> 32-64); maxLanes 100 unchanged. Original note: kimi AgentSwarm parity: one batched task call per wave; resume lanes revive parked agent ids via hub send; every spawn lane carries a taxonomy role; no per-lane model param — the global OMP `m_*` alias table supplies routing and the generated `omp-seat-routing` mirror binds judge parity. Members are leaf-by-default when their agent card omits spawns; spawns: [] is not the leaf spelling. The executor card explicitly permits only labrat. Host observation (not repo-checked): OMP frontmatter `tools` is an allowlist; `jobs` is a hub operation, not a tool name, and `tools.approval` deny is session-scoped. scripts/ufo-swarm-wave.mjs validates and emits the wave payload.",
+        "waveMinLanes": 32,
+        "waveMaxLanes": 64
+      }
+    }
+  },
+  "nativeProfiles": {
+    "omp-native-v1": {
+      "transport": "omp/task",
+      "judgeCommand": "ufo judge-handoff",
+      "concurrencyCeiling": 32,
+      "planner": {
+        "role": "planner",
+        "depth": 1,
+        "count": 1
+      },
+      "proposalRoles": [
+        "scout",
+        "reviewer",
+        "critic",
+        "connector",
+        "sentinel",
+        "executor",
+        "mutation-tester",
+        "revenger",
+        "simplifier",
+        "scribe"
+      ],
+      "distiller": {
+        "role": "distiller",
+        "depth": 1,
+        "count": 1
+      },
+      "probe": {
+        "role": "labrat",
+        "depth": 2,
+        "parent": "executor",
+        "count": 1
+      },
+      "extendedContext": true,
+      "l1Context": {
+        "minimumTokens": 1000000
+      },
+      "retry": {
+        "usageAwareFallback": false,
+        "fallbackRevertPolicy": "never"
+      },
+      "deadlines": {
+        "note": "Deadline exceed is lane_timeout telemetry: never a capacity event and never a route-chain advance (I6). orchestratorMs is 7200000 because the launcher's OMP_RUN_TIMEOUT_MS (2h5m, scripts/run-omp-native-trial.mjs:85-91) would otherwise kill a longer-bounded orchestrator lane first, leaving the spec's 4h draft value dead code. Seat-class map: main to orchestratorMs; planner to plannerMs; distiller to distillerMs; labrat to labratMs; thinking proposal roles (critic, connector, revenger, reviewer, sentinel) to thinkingMs; mechanical proposal roles (executor, mutation-tester, scout, simplifier, scribe) to mechanicalMs.",
+        "orchestratorMs": 7200000,
+        "plannerMs": 3600000,
+        "thinkingMs": 3600000,
+        "distillerMs": 2400000,
+        "mechanicalMs": 1800000,
+        "labratMs": 1200000
+      },
+      "recovery": {
+        "note": "Spec 11 failure-action matrix + account-level backpressure (PC-C). temporaryRetry bounds same-route retries for temporary classes (timeout, tool_failure, unknown): maxAttempts is TOTAL attempts (2 = one retry). authentication/permission_denied report authorization_unavailable with no retry or hop; invalid_request is unavailable with no retry; capacity classes keep chain advance; process_exit/lane_timeout keep D1a. backpressure: herdThreshold capacity failures in one route-provider domain inside herdWindowMs cool the domain for domainCooldownMs — lanes into it record typed domain-cooldown unavailability, never a hop-storm; maxConcurrentPerDomain 0 = unlimited. P4 may re-home backpressure under failureDomains. The fixture loop reads the same field names from config/orchestration.json recovery — same names, separate surface; each numeric is single-sourced per surface.",
+        "temporaryRetry": {
+          "maxAttempts": 2,
+          "backoffMs": 0
+        },
+        "backpressure": {
+          "domainCooldownMs": 60000,
+          "herdThreshold": 3,
+          "herdWindowMs": 30000,
+          "maxConcurrentPerDomain": 0
+        }
+      },
+      "l3Evidence": {
+        "transport": "sekhmet",
+        "authority": "evidence-only",
+        "concurrencyCeiling": 64
+      },
+      "credentialAuthority": "omp-native",
+      "statusLine": {
+        "extension": ".omp/hooks/ufo-statusline.mjs",
+        "preset": "custom",
+        "leftSegments": [
+          "pi",
+          "vim",
+          "model",
+          "mode",
+          "collab",
+          "path",
+          "git",
+          "pr",
+          "context_pct",
+          "cost"
+        ],
+        "rightSegments": [
+          "status",
+          "usage",
+          "session_name"
+        ],
+        "showHookStatus": false
+      }
+    },
+    "omp-native-v2": {
+      "extends": "omp-native-v1",
+      "note": "v2 evidence backbone — plan_digest + acceptance_criteria additive optional fields; strict admission unchanged; extends resolves one hop"
+    },
+    "omp-native-resilient-v1": {
+      "extends": "omp-native-v1",
+      "note": "resilient admission (spec 10) — authorized capacity hops admitted through a complete attempt ledger; strict v2 stays the default; activation is an operator re-charter via launcher --profile"
+    },
+    "devin-native-v1": {
+      "transport": "devin/subagent",
+      "judge": "crates/ufo-core-runtime",
+      "evidenceKind": "in_session_subagent_dispatch",
+      "admittedByJudgeHandoff": false,
+      "honestyNote": "Devin run_subagent seats produce session-local dispatch evidence, not an omp-native-v1 transcript handoff; `ufo judge-handoff` admits the omp-native profiles only (frozen `omp-native-v1`, strict `omp-native-v2`, and `omp-native-resilient-v1` on an operator re-charter). The judged path on this substrate stays `self-iter` delegation to the canonical Rust runtime.",
+      "seatProfiles": ".devin/agents/ufo-<role>.md",
+      "headlessArgv": [
+        "devin",
+        "-p",
+        "--permission-mode",
+        "dangerous",
+        "--model",
+        "<modelId>",
+        "--",
+        "<assignment>"
+      ],
+      "concurrencyCeiling": 16,
+      "planner": {
+        "role": "planner",
+        "depth": 1,
+        "count": 1
+      },
+      "proposalRoles": [
+        "scout",
+        "reviewer",
+        "critic",
+        "connector",
+        "sentinel",
+        "executor",
+        "mutation-tester",
+        "revenger",
+        "simplifier",
+        "scribe"
+      ],
+      "distiller": {
+        "role": "distiller",
+        "depth": 1,
+        "count": 1
+      },
+      "probe": {
+        "role": "labrat",
+        "depth": 2,
+        "parent": "executor",
+        "count": 1,
+        "readOnly": true,
+        "parentMaxNesting": 2
+      },
+      "contractProvenance": "seat topology only: roles and depths are project-owned; every seat route, fallback, and model catalog is owned by the global OMP config"
+    }
+  },
+  "fixtureAxes": {
+    "identity": {
+      "id": "portableFixtureAxes"
+    },
+    "axes": [
+      "correctness",
+      "safety",
+      "legibility",
+      "coverage"
+    ]
+  },
+  "lanes": [
+    {
+      "id": "scout",
+      "role": "scout",
+      "substrate": "omp"
+    },
+    {
+      "id": "reviewer",
+      "role": "reviewer",
+      "substrate": "omp"
+    },
+    {
+      "id": "labrat",
+      "role": "labrat",
+      "substrate": "omp"
+    },
+    {
+      "id": "critic",
+      "role": "critic",
+      "substrate": "omp"
+    },
+    {
+      "id": "connector",
+      "role": "connector",
+      "substrate": "omp"
+    },
+    {
+      "id": "executor",
+      "role": "executor",
+      "substrate": "omp"
+    },
+    {
+      "id": "mutation-tester",
+      "role": "mutation-tester",
+      "substrate": "omp"
+    },
+    {
+      "id": "revenger",
+      "role": "revenger",
+      "substrate": "omp"
+    },
+    {
+      "id": "simplifier",
+      "role": "simplifier",
+      "substrate": "omp"
+    },
+    {
+      "id": "scribe",
+      "role": "scribe",
+      "substrate": "omp"
+    }
+  ],
+  "substrates": [
+    {
+      "id": "omp",
+      "protocol": "local",
+      "route": "local/fixture-primary"
+    },
+    {
+      "id": "kimi",
+      "protocol": "local",
+      "route": "local/fixture-primary"
+    },
+    {
+      "id": "codex",
+      "protocol": "local",
+      "route": "local/fixture-primary"
+    },
+    {
+      "id": "cursor",
+      "protocol": "local",
+      "route": "local/fixture-primary"
+    },
+    {
+      "id": "opencode",
+      "protocol": "local",
+      "route": "local/fixture-primary"
+    },
+    {
+      "id": "grok",
+      "protocol": "local",
+      "route": "local/fixture-primary"
+    },
+    {
+      "id": "devin",
+      "protocol": "local",
+      "route": "local/fixture-primary"
+    }
+  ],
+  "targets": {
+    "omp": {
+      "substrate": "omp",
+      "description": "OMP local shape"
+    },
+    "kimi": {
+      "substrate": "kimi",
+      "description": "Kimi local shape"
+    },
+    "codex": {
+      "substrate": "codex",
+      "description": "Codex local shape"
+    },
+    "cursor": {
+      "substrate": "cursor",
+      "description": "Cursor local shape"
+    },
+    "opencode": {
+      "substrate": "opencode",
+      "description": "OpenCode local shape"
+    },
+    "grok": {
+      "substrate": "grok",
+      "description": "Grok local shape"
+    },
+    "devin": {
+      "substrate": "devin",
+      "description": "Devin local shape"
+    }
+  }
+}

@@ -1645,3 +1645,64 @@ Honest bounds: every seat involved was dispatched by this lane, so all findings 
 author-side; no non-author admit/reject agreement, SHONEN promotion or
 stagnation-window restart is asserted. No new browser run, real site, other build,
 default profile or served-wire identity is established.
+
+## Round23 — the six routed defects made mechanical; one frontier entry re-grounded (2026-10-25)
+
+Baseline `a89f1935f523a64b00991d792fca6a8c0d321948` (round-22 tip incl. the non-author
+spot-check). Two claims, frozen in `.ufo/waves/round-23/claims.json` before the instruments
+existed, with six disclosed `revisions` entries (counting command gains the mandatory
+`--round-cap`; scope names the two external inputs; the round-21 control arm corrected
+after its first run; C2's control restated; PROVINCE wording withdrawn; the six predicates
+written out).
+
+**C1 — operability (lowest non-retired tie at 8), capability acquisition.**
+`scripts/round-evidence-audit.mjs` derives six defect classes from round-22's committed
+bytes, reproducing the six defects the round-22 spot-check routed. Counting command
+`node scripts/round-evidence-audit.mjs --rev a89f1935f523a64b00991d792fca6a8c0d321948 --round 22 --round-cap 128 --json`,
+field = distinct `findings[].class`: 0 → 6 (exit 1, 7 findings). Before-arm: the instrument
+is absent at the baseline revision (`git cat-file -e a89f193:scripts/round-evidence-audit.mjs`
+→ exit 128), so 0 classes are mechanically detectable. Non-vacuity: `--selftest` 12/12
+(one red + one green per class, each red isolating its class); `--selftest --rev … --round 22
+--round-cap 128` → baseline 7 findings / 6 classes and six repairs, each removing exactly its
+own class (6/6); the skip-work control reaches 6 on round-22 evidence **and 6 on a clean
+fixture**, so it is refused (`fixtures/skipwork-receipt.json`); round-21 evidence trips only
+c3, a true positive under the frozen predicate, and is not claimed as a zero-control.
+
+**C2 — coverage, documented-upstream.** `corpus/knowledge/csrf-defense-shape-boundary.md`
+admitted after this lane re-opened both sources itself; rows S102/S103 appended.
+Counting command `git grep -lE '^source: S10[23] ' <REV> -- corpus/knowledge | wc -l`: 0 → 1.
+Registry rows 101 → 103 (A88/B4/C9 → A89/B5/C9, mined 73 → 75); census exit 0 both ends,
+the same 16 `W04` warnings. Ids assigned by document (staged S145→S102, S146→S103; the staged
+ids S102/S103 are different documents and were not adopted); collision guard proven against an
+indented scratch fixture before the append.
+
+Routed-defect corrections (append-only, `corpus/lessons/round-23.md` §Corrections): refusal
+arithmetic 23 → 24 (13 `w2` + 11 `w2b` receipts; attempt 10 absent); wave band 65 > 64 and
+round total 129 > 128; the Gate spot-check result now on record; per-attempt grades
+(1 progressing / 2 silent over an 85-hour commit gap / 3 landed); registry identities
+(`record` run for both of this round's waves); landed change ↔ LOG entry binding.
+
+Landed paths: `scripts/round-evidence-audit.mjs`,
+`.ufo/waves/round-23/fixtures/{skipwork-control.mjs,skipwork-receipt.json}`,
+`corpus/evidence/round-23/c1-measurements.json`, `corpus/knowledge/csrf-defense-shape-boundary.md`,
+`corpus/SOURCES.md` (+2 rows), `corpus/README.md` (coverage row + frontier restatement),
+`corpus/QUALITY.md` (criteria 61–63), `corpus/lessons/round-23.md`, `LOG.md`, `SCORECARD.md`,
+and the wave evidence under `.ufo/waves/round-23/` (specs, dispatch payloads, registries,
+`record` receipts, spawn results, 88 seat reports, scratch fixtures).
+
+Waves: **two v1 waves, 44 + 44 = 88 seats** (≤128). W1 build — scout 10 · reviewer 10 ·
+executor 8 · scribe 8 · critic 4 · connector 2 · mutation-tester 1 · sentinel 1. W2 falsify —
+reviewer 28 · critic 6 · mutation-tester 3 · sentinel 2 · revenger 2 · scout 2 · simplifier 1
+(37/44 attack roles). Dead seats and the wave-2 harvest are recorded in the round report.
+The canonical planner seat is held by the L1; the bounded data-walk rode `ConnPlannerWalk`.
+
+Tooling: none installed or updated (no pacman, uv, cargo or npm transaction; host pacman
+transactions stay paused by the orchestrator ruling). No browser run, no real site, no new
+knowledge beyond documented-upstream text, no credential or session material.
+
+Honest bounds: every seat is this lane's, so all findings are author-side — no non-author
+agreement exists for round 23. The auditor is a lane capability over the lane's own evidence,
+not a fleet gate: it reads the fleet report and policy by path (digests recorded), writes
+nothing, and refuses rather than producing a clean verdict from absent inputs. The two claims
+were measured against the tree of this commit; the committed checkpoint and its re-run are
+recorded in the `## Round 23` block of `SCORECARD.md` and in the round report.

@@ -1,0 +1,33 @@
+{
+  "schema": "tabi-round-23-control-receipt-v1",
+  "at": "2026-10-25T07:14:22.666Z",
+  "frozenTarget": {
+    "metric": "defect_classes_detected",
+    "on": "round-22 committed evidence",
+    "target": 6
+  },
+  "counter": "node scripts/round-evidence-audit.mjs --rev <REV> --round 22 --round-cap 128 --json -> findingClasses.length",
+  "realAuditor": {
+    "round22Classes": 6,
+    "round22Exit": 1,
+    "selftestCases": 12,
+    "selftestPassed": 12,
+    "greenFixtureCases": 6,
+    "greenFixtureFindings": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "skipworkControl": {
+    "round22Classes": 6,
+    "cleanFixtureClasses": 6,
+    "reads": "nothing"
+  },
+  "verdict": "control-refused",
+  "why": "the skip-work control reaches the frozen target on round-22 evidence (6) but also reports 6 on a clean fixture; the real auditor reports 6 on round-22 evidence and 0 on every green fixture case, so the target is not reachable by skipping the work",
+  "ordering": "claims were frozen in .ufo/waves/round-23/claims.json before scripts/round-evidence-audit.mjs existed; this control receipt was built after the first measurement and before filing — disclosed, and it refused the control rather than widening the target"
+}

@@ -1,0 +1,100 @@
+{
+  "schema": "tabi-round-claims-v1",
+  "lane": "tabi",
+  "round": 23,
+  "frozenAt": "2026-10-25",
+  "frozenBeforeData": true,
+  "baseline": "a89f1935f523a64b00991d792fca6a8c0d321948",
+  "axisScoresAtRoundStart": {
+    "depth": 8,
+    "coverage": 9,
+    "operability": 8,
+    "freshness": 8,
+    "calibration": 9,
+    "adjacency": 8
+  },
+  "lowestNonRetiredAxis": "operability (tie at 8 with depth, freshness, adjacency; round 22 moved operability, so this round keeps the same tie under a different surface)",
+  "claims": [
+    {
+      "id": "C1",
+      "axis": "operability",
+      "type": "capability-acquisition",
+      "declared": "Build a lane-owned, fail-closed round-evidence auditor that mechanically derives six defect classes from a round's committed wave bytes, reproducing the six defects the round-22 non-author spot-check routed (refusal arithmetic, wave/round caps, Gate spot-check row, per-attempt stale-lane grading, registry seat identities, landed-change LOG binding). Before: 0 classes mechanically detectable (no such script exists at baseline). After: 6/6 classes detected on round-22 committed evidence with per-class evidence pointers.",
+      "metric": "defect_classes_detected",
+      "countingCommand": "node scripts/round-evidence-audit.mjs --rev <REV> --round 22 --json",
+      "counterField": "findings[].class (distinct count)",
+      "before": 0,
+      "after": 6,
+      "control": "A skip-work control (script that prints six findings unconditionally, or reads its own expectation file) must fail: the clean fixture must yield 0 findings and every check's green mutant must clear it. Round-21 evidence is the second control (must not yield the round-22 classes at all).",
+      "killRule": "Any class whose red fixture does not trip it, or whose green fixture still trips it, is removed from the counted set; the target then misses and the round reports an honest stop on that class.",
+      "failureCapable": "node scripts/round-evidence-audit.mjs --selftest -> cases=12, passed=12, exit 0; one mutant per check in each direction (red trips, green clears)."
+    },
+    {
+      "id": "C2",
+      "axis": "coverage",
+      "type": "assimilation-adoption",
+      "declared": "Admit one staged shokuknow entry (corpus-expansion-1 merge/tabi: the CSRF defence-shape boundary, a named PROVINCE/corpus frontier item: 'CSRF-checked submits untested by rule') only after this lane re-opens every cited source itself, and append the two SOURCES rows it cites, re-pointed by document, with this round's access date and located quotes. Documented-upstream only: no measured credit. Before: 0 admitted entries cite a row first opened this round (S102 absent from corpus/knowledge). After: 1.",
+      "metric": "admitted_entries_citing_row_first_opened_this_round",
+      "countingCommand": "git grep -lE '^source: S10[23] ' <REV> -- corpus/knowledge | wc -l",
+      "before": 0,
+      "after": 1,
+      "control": "A skip-work control that copies the staged file verbatim without re-opening the sources fails the Gate: the located-quote check for S102/S103 (every quoted span must be found in the fetched bytes) would have no quote to show; and a staging-only append leaves used-by dangling. Adopting the staged bytes as-is is refused by the scratch census gate.",
+      "killRule": "If any cited quote is absent from the re-fetched source, the row is refused (not adopted) and C2 reports 0 / honest stop. If the entry duplicates held ground, it is not admitted as coverage and C2 reports the miss."
+    }
+  ],
+  "notClaimed": [
+    "no new browser run, real site, default profile or served-wire identity",
+    "no scalar axis promotion: every axis score is unchanged this round",
+    "no non-author judgment: every seat is lane-dispatched"
+  ],
+  "revisions": [
+    {
+      "at": "2026-10-25",
+      "phase": "before any claim value was read",
+      "field": "C1.countingCommand",
+      "from": "node scripts/round-evidence-audit.mjs --rev <REV> --round 22 --json",
+      "to": "node scripts/round-evidence-audit.mjs --rev <REV> --round 22 --round-cap 128 --json -> distinct count of findings[].class",
+      "why": "The round cap is an input the contract declares, and a verdict computed without it is fail-open. The auditor now refuses with exit 2 instead of guessing. The value 128 is the round-23 prompt's seat cap; the auditor echoes it in every output beside the band it read from the fleet policy."
+    },
+    {
+      "at": "2026-10-25",
+      "phase": "after wave 1, before the claim value was cited",
+      "field": "C1.scope (declared wording)",
+      "from": "six defect classes from a round's committed wave bytes",
+      "to": "six defect classes from the lane's committed round bytes, plus two identified external inputs read by path and pinned by sha256 in every output: the fleet round report (a round's own report lives in the fleet repo) and the fleet wave-policy authority",
+      "why": "c4 and c6 read the report's Stale-lane line and landed-changes table, and c2 reads the band from the policy file; none of the three is lane-committed at any revision. The target (0 -> 6 classes on round-22 evidence) is unchanged; only the description of the inputs is corrected."
+    },
+    {
+      "at": "2026-10-25",
+      "phase": "after the first control run",
+      "field": "C1.control (round-21 arm)",
+      "from": "round-21 evidence is the second control (must not yield the round-22 classes at all)",
+      "to": "round-21 is NOT a zero-control under the frozen c3 predicate: it trips c3-gate-spotcheck, which is a true positive (its Gate records no spot-check result and does not say 'owed to closure'). The zero-controls are (a) the six-case evidence-keyed repair matrix over round-22 bytes, which requires baseline 6 classes and exactly one removal per repair, and (b) the skip-work control, which reaches the target on round-22 evidence and also reports six on a clean fixture.",
+      "why": "A control whose expected result was written as prose and then disagreed with the measurement is corrected on record, not reinterpreted. An earlier widening of the accept set (accepting a bare 'non-author ... closure' line) was reverted to the frozen predicate after it cleared round-21 post-observation."
+    },
+    {
+      "at": "2026-10-25",
+      "phase": "before the C2 value was cited",
+      "field": "C2.control / failureCapable",
+      "from": "a skip-work control ... refused by the scratch census gate",
+      "to": "failureCapable: the staged entry's citation layer fails — its quoted sentence is a paraphrase ('offers' vs the source's 'offer'), one section it names does not exist in the sheet (0 of 34 headings), and the client-side quote sits under a different heading. Control: every quoted span is located in the bytes fetched this round (2/2 for S102, 2/2 for S103) and each row's anchor names the heading that actually contains it.",
+      "why": "The scratch census gate validates row shape, not quote presence; naming it the claim's control conflated two instruments."
+    },
+    {
+      "at": "2026-10-25",
+      "phase": "before the C2 value was cited",
+      "field": "C2.declared wording",
+      "from": "a named PROVINCE/corpus frontier item",
+      "to": "a named corpus frontier item (corpus/README.md lines 43 and 183: 'CSRF-checked submits untested by rule'); PROVINCE.md carries no CSRF line, so no PROVINCE claim is made",
+      "why": "PROVINCE.md has 0 occurrences of csrf/samesite; the frontier sentence is corpus-level."
+    },
+    {
+      "at": "2026-10-25",
+      "phase": "predicate freeze (stated, not changed)",
+      "field": "C1 predicates in words",
+      "from": "(implicit in the class names)",
+      "to": "c1 fires when ANY cited '<n> whole-payload refusals' figure (lesson or report) differs from the count of committed refusal receipts carrying the capacity marker. c2 fires on a wave spec above the policy band, a registry larger than its spec, a wave with a spec and no dispatch receipt, or a round total above --round-cap. c3 fires when the lesson's ## Gate section contains neither 'spot-check' nor 'owed to closure'. c4 fires when two or more attempt receipts are committed and the report's Stale-lane paragraph grades fewer than two attempts (attempt number plus disposition). c5 fires when a wave with spawned seats has registry members without agentId. c6 fires when a landed-changes row cites only commits that touch no LOG.md and does not say where the entry lands.",
+      "why": "A closure re-deriving the count needs the rules in words; these are the same sentences the code implements and the same labels the receipt prints."
+    }
+  ]
+}

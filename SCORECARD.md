@@ -1115,3 +1115,51 @@ Sources census start/end exit0, rows101→101, mined73→73, no new row.
 Quarantine-first assimilation: 38 register rows hand-checked, 37 refused
 (quote absent from the re-fetched cited source), 1 unverifiable, adoption closed.
 Saturation8/window3 retained; no axis retired.
+
+## Round 23 — declared claims (frozen before data), CSRF frontier entry
+
+Baseline `a89f1935f523a64b00991d792fca6a8c0d321948`; both claims declared in
+`.ufo/waves/round-23/claims.json` before the instrument existed, with six disclosed
+`revisions` entries. Axes at round start: depth 8, coverage 9, operability 8, freshness 8,
+calibration 9, adjacency 8. Lowest non-retired axis: **operability** (tie at 8 with depth,
+freshness, adjacency; round 23 moves the tie's operability surface). Saturation 8 / window 3
+retained; the stagnation nudge is inactive (a capability entered at round 22), so no waiver
+is claimed or needed. No axis is retired.
+
+| Claim | Axis / type | Before → after | Counting command (field) |
+|---|---|---|---|
+| C1 | operability — capability acquisition | 0 → 6 defect classes derived from round-22 committed bytes | `node scripts/round-evidence-audit.mjs --rev <REV> --round 22 --round-cap 128 --json` (distinct `findings[].class`) |
+| C2 | coverage — assimilation admission | 0 → 1 admitted entry citing a row first opened this round | `git grep -lE '^source: S10[23] ' <REV> -- corpus/knowledge \| wc -l` |
+
+**Capabilities table (appended; the r22-era table is a historical snapshot and is not edited).**
+Round-evidence auditor — derives six accounting classes (refusal arithmetic, wave/round caps,
+Gate spot-check record, per-attempt stale-lane grading, registry identities, landed-change
+LOG binding) from a round's committed bytes plus two digest-pinned external inputs, with a
+12-case in-memory matrix and a six-repair evidence-keyed matrix; refuses rather than
+guessing. Evidence: `scripts/round-evidence-audit.mjs`, `--selftest` (12/12),
+`--selftest --rev a89f1935… --round 22 --round-cap 128` (6/6 repairs),
+`.ufo/waves/round-23/fixtures/skipwork-receipt.json`. First-working round: 23.
+
+## Round 23 — executed disposition
+
+Measured 2026-10-25 against the tree of the checkpoint commit that carries the auditor, the
+entry and both SOURCES rows; the checkpoint hash and the post-commit re-run are recorded in
+the report (the report lands last).
+
+| Claim / axis | Before → after | Verdict / bounds |
+|---|---|---|
+| C1 operability | 0 → 6 classes; exit 1; 7 findings (c1 1, c2 1, c3 1, c4 1, c5 1, c6 2) | **met** as a capability: `--selftest` 12/12 exit 0; `--selftest --rev … --round 22 --round-cap 128` baseline 7 findings / 6 classes with 6/6 repairs removing exactly their own class; skip-work control refused (6 on a clean fixture); round-21 trips c3 only, a true positive, and is **not** a zero-control. Scalar operability 8→8 |
+| C2 coverage | 0 → 1 admitted entry citing S102/S103; rows 101 → 103 | **met**: both cited spans located in bytes fetched this round (S102 §8.8.1 line 2815; S103 §"Employing Custom Request Headers for AJAX/API"); the staged citation layer failed three ways and was corrected (errata E1–E3); documented-upstream, no measured credit. Scalar coverage 9→9 |
+| depth, freshness, calibration, adjacency | unchanged | no additional credit claimed; exercised scope shows no harm (append-only prefixes on all six mutable docs, round-21/22 evidence bytes unchanged, auditor writes nothing) |
+
+Per-claim evidence pointers: `corpus/evidence/round-23/c1-measurements.json` (C1 revision
+sweep), `.ufo/waves/round-23/fixtures/skipwork-receipt.json` (control), `.ufo/waves/round-23/w1/`
+and `w2/` (seat reports), `corpus/lessons/round-23.md` (§Gate, §Corrections, §Mistakes).
+
+Routed round-22 defects, all six closed by appended correction (never by rewriting the filed
+bytes) in `corpus/lessons/round-23.md` §Corrections: refusal arithmetic 23 → 24; wave band
+65 > 64 and round 129 > 128; the Gate spot-check result now on record; per-attempt grades
+for three dispatches; registry identities recorded for this round's waves; landed change ↔
+LOG entry bound to one commit. Criteria 61–63 encode the first three as rules.
+
+No axis harmed; no scalar promoted; no capability beyond the one row above; nothing retired.

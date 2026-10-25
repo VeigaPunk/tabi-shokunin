@@ -535,3 +535,31 @@ register rows hand-checked (37 quotes absent from the re-fetched cited sources �
 refused, 1 unreachable → unverifiable, 4 matcher controls passing). See
 `.ufo/waves/round-22/assimilation/` and `lessons/round-22.md` §Gate. No SOURCES row
 was added (101→101, mined73→73).
+
+## Round 23 — CSRF defence shapes: documented taxonomy held, measured submit still untested (2026-10-25)
+
+Append-only. One coverage row and one Frontier restatement; no earlier line is
+edited (the round-3 bullet at `:42-47` and the `:183` status cell keep their bytes).
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/csrf-defense-shape-boundary.md` *(round 23)* | Documented-upstream vocabulary for a submit a journey observes: the cookie draft states its own limit (`§8.8.1 "Defense in depth"` — SameSite is one layer, and server-side tokens plus idempotent safe methods are demanded alongside it), and the OWASP sheet lists the server-side defences (synchronizer token, double-submit cookie, custom request header, plus Fetch Metadata, `Origin`/`Referer`, user interaction — an open list, not an enumeration) and names the JavaScript cookie hole SameSite leaves. Nothing in it was run, captured or observed in a browser. | S102 RFC 6265bis draft-13 §8.8.1; S103 OWASP CSRF Prevention Cheat Sheet §"Employing Custom Request Headers for AJAX/API", §"Dealing with Client-Side CSRF Attacks (IMPORTANT)", §"Limitations of SameSite" |
+
+Frontier restatement (append-only; the `:42-43` bullet and `:183` cell are not
+rewritten): **CSRF-checked submits** — `documented taxonomy held; measured submit
+still untested`. The defence a site uses can now be classified from a submit the
+lane observes (paired token occurrence, repeated cookie value, non-simple request
+header), and a SameSite cookie is not read as a CSRF defence on its own; **no
+submit carrying any of those shapes has been executed or captured**, so the
+`untested by rule` half of the round-3 anti-claim stands.
+
+Ground was not held before: `grep -rniE 'synchroni[sz]er token|double-submit|custom
+request header' corpus/knowledge/*.md SKILL.md corpus/*.md` → exit 1, no hits; the
+only CSRF/SameSite mentions are an anti-claim, a fixture disclaimer ("a CSRF-shaped
+instrument, not a security analysis") and two unexercised unknowns. Defence
+adequacy stays kasegi's ground: this row records observability only, and no
+adjacency row is filed (`corpus/adjacency.tsv` has no CSRF surface; a `refused-route`
+row needs a route that does not exist).
+
+Counting commands (2026-10-25): `ls corpus/knowledge/*.md | wc -l` → 42;
+`grep -cE '^\| S10[23] ' corpus/SOURCES.md` → 2.

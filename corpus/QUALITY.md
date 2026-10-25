@@ -306,3 +306,24 @@
     run when a control disagrees. A register row with no checkable payload is
     `unverifiable`, never a silent pass. (lesson: corpus/lessons/round-22.md#m2;
     `.ufo/waves/round-22/assimilation/quarantine-verdicts.json` controls)
+61. A round-evidence figure is derived from the round's own receipts, never restated
+    from prose, and the derivation ships as a check that fails on the round that
+    produced the defect. A detector that cannot be shown failing on that round is not
+    evidence that the figure is right, and a counter whose "before" arm cannot be run
+    (an absent instrument) must say so in those words rather than print 0.
+    (lesson: corpus/lessons/round-23.md#mistakes M1; auditor class
+    `c1-refusal-arithmetic`, which derives 24 refusals from 13+11 receipts against a
+    filed 23)
+62. A wave's seat count is checked against the policy band before dispatch and the
+    round's total against the declared round cap; a replacement wave does not buy a
+    larger band, and a wave's own validation record is not an authority — a record
+    that substituted a band is the mechanism of the defect, not a licence. The cap is
+    an input the run must supply: a verdict computed without it is fail-open and must
+    refuse instead. (lesson: corpus/lessons/round-23.md#mistakes M2;
+    `.ufo/waves/round-22/w2b-spec.json` 65 vs policy 64, round 129 vs ≤128)
+63. A landed change and the LOG.md entry that describes it are bound to one commit, or
+    the row says which commit carries the entry. The test is membership of `LOG.md` in
+    the cited commit's own file list, never the presence of a LOG.md path in the tree
+    at that revision — every commit after the first inherits the file.
+    (lesson: corpus/lessons/round-23.md#mistakes M3; `47bfb5f` → 0 LOG hunks,
+    `fbee618` → 1)
