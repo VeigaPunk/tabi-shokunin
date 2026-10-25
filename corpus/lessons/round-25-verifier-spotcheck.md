@@ -49,3 +49,6 @@ Re-opened S106 correctly by decoding the base64 response:
 → line 187 `BASE_FEATURE(kBackForwardCache, base::FEATURE_ENABLED_BY_DEFAULT);`, matching S106's cited decoded lines 186–187. The S106 spot-check is **agree**, not disagree. The S015 admit and the candidate rejection also agree. Thus calibration is unchanged, not harmed; S106 claim support is verified.
 
 The original closure entry was internally inconsistent: the axis table recorded calibration unchanged while the ledger said harmed. The corrected verdict remains `admitted=false`, but reason is honest-stop rather than harmed: W2's 34 validated attack items were not dispatched, so full intended falsification coverage was not executed. Report-placement/SHONEN conformance defects remain status-neutral; the untracked W2 material remains unresolved. No axis is harmed.
+## Erratum — admission correction
+
+Re-read closure prompt step 5 and PROTOCOL.md §Round-robin rounds, closure step 1 (lines 243–246): report-contract defects are status-neutral unless round rules prescribe failure. No closure rule makes non-dispatch of the optional second wave an admission bar; it is a reported conformance/coverage limitation. Both declared claims verify and no axis is harmed, so the corrected admission is **true** (`admitted`). W2 non-dispatch remains recorded and routed; it does not overturn the two claim verdicts.
