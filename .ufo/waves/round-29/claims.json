@@ -1,0 +1,66 @@
+{
+  "schema": "tabi-round-claims-v1",
+  "lane": "tabi",
+  "round": 29,
+  "attempt": 1,
+  "frozenAt": "2026-10-26",
+  "frozenBeforeData": true,
+  "freshStart": "run-8 fresh-start round (closures r26 rejected-honest-stop, r27 rejected-harmed, r28 rejected-honest-stop read first: MANIFEST.json tabi rounds 26-28 and corpus/lessons/round-2{6,7,8}-verifier-spotcheck.md). Every claim below has a do-nothing control and a cheapest junk control scored before any claim data (receipts in .ufo/waves/round-29/baseline/).",
+  "baseline": "856fa9e1202179f5cfbd28c1f0efdd4eb1f426bb",
+  "axisScoresAtRoundStart": {"depth": 8, "coverage": 9, "operability": 8, "freshness": 8, "calibration": 9, "adjacency": 8},
+  "lowestNonRetiredAxis": "tie at 8 (depth, operability, freshness, adjacency); C1 works operability and C3 works freshness. Saturation 8 / window 3; stagnation nudge inactive; no axis retired.",
+  "measurementRule": "Every after-measurement runs at the named lane branch tip in a clean checkout of that revision (git status --porcelain empty), and its raw output is committed under .ufo/waves/round-29/measure/ before the report is written. A counter not run is a claim not verified (round-28 closure).",
+  "claims": [
+    {
+      "id": "C1",
+      "axis": "operability",
+      "type": "routed gate repair (round-28 verifier routed defect 1 and 2)",
+      "predicate": "At REV, `node scripts/check-s106-evidence.mjs --selftest` exits 0 and prints `S106_SELFTEST verdict=clean cases=N passed=N` with N >= 7; its CASES include ids measured-revision-bytes-match and measured-revision-bytes-mismatch; the committed receipt corpus/evidence/round-29/s106-selftest/mutation.txt shows the same self-test run on a copy of the gate whose revision comparison is removed exiting nonzero with measured-revision-bytes-mismatch FAIL; and `node scripts/check-s106-evidence.mjs --rev REV --json` reports valid=true.",
+      "countingCommand": "node scripts/check-s106-evidence.mjs --selftest; echo exit=$?",
+      "before": "exit=1, no tally: ReferenceError existsSync is not defined at scripts/check-s106-evidence.mjs:267 (baseline/s106-selftest.txt)",
+      "target": "exit=0, verdict=clean, cases=N passed=N, N >= 7, both revision case ids present, mutation receipt red",
+      "killRule": "any of: nonzero exit, N < 7, either revision case id absent, mutation receipt absent or green, --rev valid != true -> failed",
+      "controls": {
+        "doNothing": "baseline self-test: exit=1, ReferenceError, no tally (baseline/s106-selftest.txt) -> does not meet target",
+        "caseDeletionJunk": "existsSync import added and both revision cases deleted: `S106_SELFTEST verdict=clean cases=5 passed=5` exit 0 (baseline/c1-control-case-deletion.txt, diff baseline/c1-control-case-deletion.diff) -> does not meet target (N < 7, ids absent)"
+      }
+    },
+    {
+      "id": "C2",
+      "axis": "calibration",
+      "type": "self-assessment vs observed state mismatch count (AXES calibration; round-28 verifier routed defect 3)",
+      "predicate": "In a clean checkout of REV, `node scripts/check-selfassessment.mjs --rev REV --json` run with the counter frozen in this round's counter commit (sha256 728128008e2242b635bda30a28313de20b06d381d7855f11f18fa5043ba560c4: a supersession citation clears a stale tally only when it names the stale line's own document and a line or range containing it, plus the pre-existing script-name, correction-marker and observed-number conditions) reports mismatches = 0.",
+      "countingCommand": "node scripts/check-selfassessment.mjs --rev <REV> --json | jq '.mismatches'   (clean checkout of REV)",
+      "before": "6 at baseline 856fa9e in a clean clone with the frozen counter: SCORECARD.md:410 (25 vs 26), :1138, :1139, :1151 (12 vs 13), :1439 (17 vs 20), LOG.md:221 (8 vs 12) (baseline/c2-before-frozen-counter-cleanbase.json.txt)",
+      "target": "0",
+      "killRule": "mismatches > 0 at REV -> failed; counter exit 2 or counter bytes differing from the frozen sha256 -> not verified",
+      "controls": {
+        "doNothing": "6 (the baseline measurement itself)",
+        "crossDocumentJunk": "scratch clone of baseline plus corrections that state the right script and number but cite the other document (SCORECARD lines cited as LOG.md:N, LOG.md:221 cited as SCORECARD.md:221): old counter mismatches=0 (meets the target: the old counter is gameable), frozen counter mismatches=6 (baseline/c2-control-crossdoc-*.json, tails in baseline/c2-control-crossdoc-*-tail.md)"
+      },
+      "redBefore": "two cross-document self-test cases added before the matcher change: old matcher SELFASSESSMENT_SELFTEST verdict=failed cases=22 passed=20 (baseline/c2-red-before-selftest.txt); frozen matcher verdict=clean cases=22 passed=22 (baseline/c2-after-fix-selftest.txt)"
+    },
+    {
+      "id": "C3",
+      "axis": "freshness",
+      "type": "on-release re-verification of release-pinned source rows (sourced claim: new registry row for the release trigger, re-opened rows S033..S106)",
+      "predicate": "At REV, `node scripts/check-release-pins.mjs --rev REV --stable 156.0.8078.47 --json` with the counter frozen in this round's counter commit reports population = 23 and unresolved = 0, where each of the 23 on-release registry rows pinned to Chromium tag 154.0.8037.97 is resolved only by committed 154 and 156 decoded bytes with matching sha256, ranges bound to the row's own anchor, the row's registry digest matched where it records one, an independent re-fetch record from a different seat agreeing with the 156 bytes, and, for a row whose anchored content changed, a superseding registry row opening `supersedes <id> —` pinned at the 156 tag.",
+      "countingCommand": "node scripts/check-release-pins.mjs --rev <REV> --stable 156.0.8078.47 --json | jq '{population,unresolved,holds,drifted}'",
+      "trigger": "Chromium Dash fetch_releases Stable/Linux response (baseline/chromiumdash-stable-linux.json, sha256 90abf2c3efe7df7b3c48521ca754bb24191f7f05b3b60b93ebb735375fd7fe33): version 156.0.8078.47, previous_version 155.0.8059.84; all 23 rows are pinned at 154.0.8037.97",
+      "before": "population=23 unresolved=23 at baseline 856fa9e (baseline/c3-before.json, exit 1)",
+      "target": "population=23 unresolved=0",
+      "killRule": "unresolved > 0 or population != 23 at REV -> failed; exit 2 -> not verified; any drifted row whose citing knowledge entries carry no round-29 recheck note -> quality harmed (reported as a trade, never admitted)",
+      "controls": {
+        "doNothing": "unresolved=23 (baseline/c3-before.json)",
+        "copiedOldAsNewJunk": "self-test case copied-old-as-new-caught-by-refetch: old bytes committed as the 156 bytes with self-consistent sha and ranges -> unresolved=1 via f6-refetch (baseline/c3-selftest-frozen.txt)",
+        "noBytesJunk": "self-test cases sha-mismatch / new-bytes-under-old-tag / range-not-in-anchor / digest-binding-mismatch -> unresolved (baseline/c3-selftest-frozen.txt, cases=20 passed=20)"
+      }
+    }
+  ],
+  "separability": "C1 touches scripts/check-s106-evidence.mjs only; C2 is the frozen counter plus append-only SCORECARD/LOG corrections; C3 is the new counter plus corpus/evidence/round-29/release-pins/, SOURCES rows and a knowledge entry. If C1 does not land, SCORECARD.md:1438 stays could-not-evaluate (no tally) and C2 is unaffected; C3 reads no file C1 or C2 changes.",
+  "notClaimed": [
+    "no coverage or depth claim; no §10 package adoption (S114/S140 stay behind the open round-27 L0 question; Assimilation: none)",
+    "no real-site interaction beyond read-only GETs of public Chromium Gitiles and Chromium Dash; no credentials or session material",
+    "considerthese/ directory absent at baseline"
+  ]
+}

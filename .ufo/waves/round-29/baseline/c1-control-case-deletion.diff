@@ -1,0 +1,28 @@
+37c37
+< import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
+---
+> import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from "node:fs";
+47c47
+< const LANE = join(dirname(fileURLToPath(import.meta.url)), "..");
+---
+> const LANE = "/fast/scratch/hyaku/tabi-r29/L1-measure/base";
+182,200d181
+<   },
+<   {
+<     id: "measured-revision-bytes-match",
+<     exit: 0,
+<     valid: true,
+<     field: "revision_match",
+<     build: (d) => { d.receipt(fixtureReceipt()); d.bytes(FIXTURE_BYTES); },
+<   },
+<   {
+<     id: "measured-revision-bytes-mismatch",
+<     exit: 1,
+<     valid: false,
+<     field: "revision_match",
+<     build: (d) => {
+<       d.bytes(FIXTURE_BYTES.replace("// tail", "// prior source bytes"));
+<       const measuredRev = d.commit();
+<       d.bytes(FIXTURE_BYTES);
+<       d.receipt(fixtureReceipt({ measured_rev: measuredRev }));
+<     },

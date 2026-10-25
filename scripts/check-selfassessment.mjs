@@ -236,7 +236,7 @@ function m1Findings(repo, rev, docText, cache) {
       g.observed === g.claimed &&
       g.observed === f.observed &&
       /supersed|correct|replace|replac|superseding/i.test(g.lineText || "") &&
-      citesLine(g.lineText || "", f.line));
+      citesLine(g.lineText || "", "SCORECARD.md", f.line));
   }
   return findings;
 }
@@ -263,11 +263,15 @@ function paragraphs(docText) {
   });
   return out;
 }
-function citesLine(text, line) {
-  return [...text.matchAll(/\b(?:LOG|SCORECARD)\.md:(\d+)(?:-(\d+))?\b/g)]
+// A citation clears a stale tally only when it names the stale line's own
+// document and a line or range containing it (QUALITY 70; round-28 verifier
+// routed defect 3): `SCORECARD.md:N` never clears `LOG.md:N`, nor the reverse.
+function citesLine(text, doc, line) {
+  return [...text.matchAll(/\b(LOG|SCORECARD)\.md:(\d+)(?:-(\d+))?\b/g)]
     .some((match) => {
-      const first = Number(match[1]);
-      const last = Number(match[2] || match[1]);
+      if (`${match[1]}.md` !== doc) return false;
+      const first = Number(match[2]);
+      const last = Number(match[3] || match[2]);
       return first <= line && line <= last;
     });
 }
@@ -325,7 +329,7 @@ function m1LogFindings(repo, rev, logText, cache) {
       const namesScript = [...text.matchAll(SCRIPT_IN_TEXT)].some((m) => m[1].replace(/^\.\//, "") === f.script);
       return namesScript &&
         /supersed|correct/i.test(text) &&
-        citesLine(text, f.line) &&
+        citesLine(text, "LOG.md", f.line) &&
         statedTallyNumbers(text).includes(f.observed);
     });
   }
@@ -475,6 +479,15 @@ const CASES = [
     },
   },
   {
+    id: "m1-scorecard-crossdoc-citation-not-superseded",
+    exit: 1,
+    classes: ["m1-selftest-tally"],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (12/12)", "\n## Round 24 — corrections\n\n`scripts/check-fixture.mjs` `--selftest` (13/13) supersedes the stale figure at `LOG.md:5`.\n"));
+    },
+  },
+  {
     id: "m1-case-phrase-stale",
     exit: 1,
     classes: ["m1-selftest-tally"],
@@ -542,6 +555,16 @@ const CASES = [
       d.gate("scripts/check-fixture.mjs");
       d.scorecard(fixtureDoc("`--selftest` (13/13)"));
       d.log(logDoc("Non-vacuity: `--selftest` 12/12 across the fixture matrix.", "Correction (supersedes LOG.md:999): `scripts/check-fixture.mjs` `--selftest` measured `cases: 13` at the tip."));
+    },
+  },
+  {
+    id: "m1-log-crossdoc-citation-not-superseded",
+    exit: 1,
+    classes: ["m1-selftest-tally"],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (13/13)"));
+      d.log(logDoc("Non-vacuity: `--selftest` 12/12 across the fixture matrix.", "Correction (supersedes SCORECARD.md:6): `scripts/check-fixture.mjs` `--selftest` measured `cases: 13` at the tip."));
     },
   },
   {
