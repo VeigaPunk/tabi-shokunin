@@ -40,6 +40,10 @@ positive (its Gate records no spot-check result and says no "owed to closure"); 
 control text was corrected on record in `claims.json` `revisions[2]` rather than by widening
 the predicate.
 
+Round-23 self-audit (the same instrument against this round's own committed bytes, with this
+round's report present): `node scripts/round-evidence-audit.mjs --rev 43e9bb5 --round 23 --round-cap 128 --json`
+→ exit **0**, `clean: true`, `findingClasses: []`.
+
 C2: baseline 0 → 1 (`git grep -lE '^source: S10[23] ' <REV> -- corpus/knowledge | wc -l` → 0 at
 `a89f1935`, **1** at the checkpoint; the file listed is
 `corpus/knowledge/csrf-defense-shape-boundary.md`), and
@@ -185,8 +189,10 @@ first-line binding was checked here by hand and by `git grep -lE '^source: S10[2
 
 - **Class:** commit hygiene (evidence vs working scratch).
 - **Evidence pointer:** `git ls-tree -r HEAD .ufo/waves/round-23/scratch | wc -l` → **868** files,
-  23,631,703 B inside the production commit; the on-disk tree is far larger (17,677 files /
-  194 MB, including two seat clones with embedded `.git`). Found by wave 2
+  23,631,703 B inside the production commit; **1,034** scratch paths by the final tip
+  (`git ls-tree -r --name-only <tip> -- .ufo/waves/round-23 | grep -c 'scratch/'` → 1034; the
+  868 figure first written here was measured earlier and is superseded), and the on-disk tree is
+  larger still, including seat clones with embedded `.git`. Found by wave 2
   (`.ufo/waves/round-23/w2/W2Prune.md`).
 - **Captured-by:** the round-23 wave context said "throwaway fixtures under
   `scratch/<YourName>/`", which the seats honoured — the context never said the *landing* must

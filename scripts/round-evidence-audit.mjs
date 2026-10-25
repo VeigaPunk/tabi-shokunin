@@ -210,7 +210,7 @@ export function extractRefusalCitations(text) {
     // A line that marks a figure as superseded/corrected is the record of a defect; it is not
     // an assertion, and counting it would make every honest correction un-auditable.
     if (/supersed|correct|instead|filed|asserted|was\s+\d|→|->|not\s+\d/i.test(line)) continue;
-    for (const m of line.matchAll(/\b(\d{1,3})\s+whole-payload\s+refusal/gi)) out.add(Number(m[1]));
+    for (const m of line.matchAll(/(?:\*\*)?\b(\d{1,3})\b(?:\*\*)?\s+whole-payload\s+refusal/gi)) out.add(Number(m[1]));
   }
   return [...out];
 }
