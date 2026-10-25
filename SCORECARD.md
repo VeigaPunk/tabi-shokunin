@@ -1388,14 +1388,14 @@ stagnation nudge inactive (capabilities entered at rounds 22–25). No axis reti
 
 ## Round 27 — executed disposition
 
-Measured against the landed commits; the extended counter's tip run is the
-clean-tree measurement.
+Measurements below are tied to the named committed revisions; C1's apparent
+zero is not accepted because the frozen supersession rule is not enforced.
 
 | Claim / axis | Before → after | Verdict |
 |---|---|---|
-| C1 calibration | baseline `4ad4c77` → `mismatches=6` (5 LOG-window findings at LOG.md:335/:391/:1090/:1103/:1664 plus the m3 working-tree class) → tip `mismatches=0` under a clean tree; selftest 13 → 17 (four new LOG-window cases incl. the wrong-number red control) | **met** — evidence `.ufo/waves/round-27/selfassess-baseline-raw.json`, `measure-c1-fd722a7.json` (tip run at the integration commit records the same `mismatches=0` once the working tree is clean — m3 is a live-tree class whose receipt records the porcelain count at the measurement instant) |
-| C2 depth | 0 → `valid=true` at `5577d1b6fe2dc298486e354b5416d38acafeffaa` (present, sha_match, anchor_located, anchor_unique, byte_count_match) | **met** — `scripts/check-s106-evidence.mjs`; selftest 4/4; receipt `.ufo/waves/round-27/measure-c2-5577d1b.json` |
-| C3 coverage | 0 → 1 entry cites S107 at `6ca3b89ad2a7b480984859834b3d28f1e75a9a26` | **met** — transformed row appended (not byte-exact: staged S124 fails the census gate E09 on its prose recheck cell — `.ufo/waves/round-27/assimilation/staged-census.txt`); registry 106 → 107 rows; census exit 0 (`census-after-c3.txt`). Refusals carried in `corpus/lessons/round-27.md` §Gate: staged S125 (duplicate URL of S102), staged S142 (same-document §15.4 overlap) |
+| C1 calibration | baseline `4ad4c77` → `mismatches=6` (five LOG-window findings + one live-tree m3 finding); selftest 13 → 17 | **failed** — the apparent zero is unsound: `CritC1Supersession.md` and `ExecC1Attacks.md` prove the paragraph matcher clears real `LOG.md:221` without citing that line, contrary to the frozen C1 predicate. `m3` also reads live porcelain rather than the pinned `--rev`. No post-data counter-rule change; defer repair to a new claim. |
+| C2 depth | 0 → `valid=true` at corrected gate `5ed6484da66e6bf73654281d2e9ba3703f0c2ef0` (present, sha_match, anchor_located, anchor_unique, byte_count_match) | **met after correction** — absent receipt now yields frozen CNE/exit 2; selftest 5/5; see `scripts/check-s106-evidence.mjs` and `corpus/lessons/round-27.md` M3. |
+| C3 coverage | 0 → 1 entry cites S107 at `6ca3b89ad2a7b480984859834b3d28f1e75a9a26` | **met** — transformed row appended; census E09 rejects the byte-exact staged S124 recheck cell (`.ufo/waves/round-27/assimilation/staged-census.txt`); registry 106 → 107 rows and live census exit 0 (`census-after-c3.txt`). S125/S142 refusal reasons are recorded in `corpus/lessons/round-27.md` §Gate (S125: not opened this round; E09/E11/W04; S142: same-document scope overlap, not E04). |
 | operability | 8 → 8 (a new gate lands with registry row; SKILL.md eight-field rows appended under the append-only round-27 section; `check-gate-registry.mjs` clean) | improved in substance, scalar held — counted under the claim's own counter, not re-scored |
 | freshness, adjacency | unchanged | no claim; no harm measured — every prior-round byte is append-only |
 
@@ -1404,20 +1404,21 @@ No capability-table promotion this round: `check-s106-evidence.mjs` is a gate
 
 ## Round 27 — waves and seats
 
-Two v1 waves (32 + 32 = 64 seats; run-7 band floor, run-7 m_flash-majority rule
-met inside each wave — the m_flash-routed roles executor/scribe/simplifier
-carry 16 of 32 in wave 1). W1 (attack/verify, claims landed pre-wave by the
-L1): 3 scout, 9 executor, 5 scribe, 2 simplifier, 4 reviewer, 3 critic,
-2 mutation-tester, 2 connector, 1 sentinel, 1 revenger — dispatched as one
-validated payload under policy v1 (`w1-dispatch.json`, validator exit 0).
-W2 dispatched after W1 findings landed. Dead seats: <recorded>. The §3 planner
-seat is held by the L1; the validated spec met the L2 floor inside W1.
+Two v1 waves (32 + 36 = 68 seats; run-7 band, within 64–100 total). W1
+(build/first falsifiers): 3 scout, 9 executor, 5 scribe, 2 simplifier, 4
+reviewer, 3 critic, 2 mutation-tester, 2 connector, 1 sentinel, 1 revenger
+(m_flash 16/32 = 50%; attack 9/32 = 28.1%). W2 (falsify): 13 executor, 4
+scribe, 1 simplifier, 3 mutation-tester, 2 reviewer, 5 critic, 4 scout, 2
+sentinel, 2 connector (m_flash 18/36 = 50%; attack 10/36 = 27.8%). Both
+validated under policy v1; W1 dispatched as one batched call and W2 dispatched
+after its 36-seat spec validated. Dead seats: record from each wave registry
+after settlement. The §3 planner seat is held by the L1; the validated spec met
+the L2 floor inside W1.
 
 ### Planned / saturation / retired — round 27
 
 - planned: freshness — re-verify the on-release rows S104–S106's sources on the
-  next browser-tag bump; operability — the `report-contract.mjs` utility lands
-  as a lane script when a review seat's read confirms it (built this round,
-  committed as wave evidence).
+  next browser-tag bump; report-contract utility now lands at `scripts/report-contract.mjs`
+  and criterion 68 defines its required report check.
 - capabilities: unchanged; gates are counters, not repertoire rows.
 - saturation 8 / window 3 unchanged; no axis retired or waived.

@@ -599,11 +599,14 @@ Append-only. One coverage row; no earlier line is edited.
 | `knowledge/redirect-and-retry-after-semantics.md` *(round 27)* | Documented-upstream classification vocabulary for redirects a journey driver observes: 303 → GET-or-HEAD retrieval; 301/302 MAY rewrite POST to GET (normative *Note*); 307 MUST NOT change the request method; 308's preservation is an inference labeled INFERENCE (the clause lives in RFC 7538, not in the fetched RFC 9110 bytes); Retry-After may accompany any 3xx and 503. Nothing in it was run, captured or observed in a browser. | S107 RFC 9110 §15.4, §15.4.2–15.4.4, §15.4.8–15.4.9, §10.2.3; fresh fetch 2026-10-25 (502941 B, sha256 21c1cdce…) with bytes committed at `.ufo/waves/round-27/assimilation/rfc9110.txt` |
 
 Frontier restatement (append-only; earlier rows keep their bytes): **redirects on
-journeys** — `documented semantics held; measured redirect untested`. The round-3
-anti-claim's "redirects … untested by rule" narrows: the classification vocabulary is
-documented; no live redirect has been classified by it (the round-6 loopback
-fixture's redirect chain was traversed, never classified). The 308 preservation is
-an inference until re-anchored in RFC 7538.
+journeys** — RFC semantics documented; real-site redirects remain untested.
+Earlier loopback evidence already records the 302→303→307 chain and 303→GET /
+307 method-body preservation (`knowledge/state-changing-matrix-r9.md:162-177`;
+`knowledge/external-class-fixture-v2.md:373-404`). This entry adds the
+spec-ground 301/302 POST→GET caveat and Retry-After on 3xx; no live redirect
+has been classified against this full vocabulary. RFC 9110's historical note
+supports 308 method preservation, but §15.4.9 does not repeat the normative
+MUST-NOT; the status-specific clause remains open for any future claim.
 
 | Frontier item | Status | Pointer |
 |---|---|---|

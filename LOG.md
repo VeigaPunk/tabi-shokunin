@@ -1923,3 +1923,25 @@ with the measured oracle; the extended counter at the tip then reports
   restated for the record anyway: the C1 LOG-window extension added four cases
   this round and `scripts/check-selfassessment.mjs` `--selftest` now measures
   `cases: 17`.
+
+### C1 counter falsification — frozen target not validated
+
+Wave-1 adversarial reports found that the paragraph-level matcher accepts any
+colon-number token as the cited superseded line. It therefore marks the real
+`LOG.md:221` stale selftest mention superseded by a later 183-line paragraph
+that does not cite line 221; the correction-bullet count is not evidence that
+the frozen line-citation predicate holds. The counter's apparent zero is
+unsound, so C1 is recorded failed, not met. `m3` also reads live porcelain
+state rather than binding its count to `--rev`. Do not revise the frozen
+predicate after data; the matcher and revision-binding defect remain next-round
+work. Evidence: `.ufo/waves/round-27/w1/CritC1Supersession.md` and
+`.ufo/waves/round-27/w1/ExecC1Attacks.md`.
+
+### C2 correction — missing receipt follows the frozen could-not-evaluate rule
+
+The first landed `scripts/check-s106-evidence.mjs` revision classified an
+absent receipt as invalid (exit 1), although C2's frozen kill rule requires
+could-not-evaluate (exit 2). The C2 reviewer found this with a missing-receipt
+fixture. Correction: absent receipt now throws `Refusal`; a selftest case
+asserts exit 2, and the registered selftest count is 5/5. This is an
+implementation correction to the unchanged frozen rule, not a claim rewrite.

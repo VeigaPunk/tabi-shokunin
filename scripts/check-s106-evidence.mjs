@@ -5,12 +5,12 @@
 //          2 could-not-evaluate (usage, unreadable revision, receipt or bytes
 //          absent at the measured revision, malformed receipt). Any other
 //          nonzero code is undeclared and reads as could-not-evaluate.
-// Self-test: `--selftest` (4 isolated cases over temporary sandbox
+// Self-test: `--selftest` (5 isolated cases over temporary sandbox
 //          repositories; asserts exit code AND the stable field set; creates
 //          and removes its own temp trees, never touches the lane).
 // Frozen by: .ufo/waves/round-26/claims.json claim C2 (frozen 2026-10-25,
-//          executed round 27) — predicate, counter, kill rule and target are
-//          the claim's, unchanged.
+//          executed round 27) — implements the predicate, counter, kill rule
+//          and target; also checks anchor uniqueness and decoded byte count.
 // Write scope: stdout/stderr only. Production reads committed git blobs only
 //          (git show <rev>:<path>); it never fetches, never writes the lane,
 //          never reads credentials or session material.
@@ -26,8 +26,8 @@
 // the admission mechanical: at the measured revision the committed decoded
 // bytes MUST hash to the receipt's decoded_sha256, and the receipt's anchor
 // text MUST sit at the receipt's recorded line, uniquely. valid = present &&
-// sha_match && anchor_located. A fabricated receipt with no committed bytes
-// is could-not-evaluate (exit 2), never valid.
+// sha_match && anchor_located && anchor_unique && byte_count_match. A missing
+// receipt or its referenced committed bytes is could-not-evaluate (exit 2).
 //
 // Usage:
 //   node scripts/check-s106-evidence.mjs --rev <40-hex-or-ref> [--json]
