@@ -4,7 +4,7 @@
 // Verdict: 0 clean, 1 failed (>=1 nonconformant gate), 2 could-not-evaluate
 //          (usage, unreadable revision, git failure). Any other nonzero code is
 //          undeclared and reads as could-not-evaluate.
-// Self-test: `--selftest` (15 isolated cases over temporary sandbox repositories;
+// Self-test: `--selftest` (22 isolated cases over temporary sandbox repositories;
 //          asserts exit code AND stable finding id; creates and removes its own
 //          temp trees, never touches the lane).
 // Pinned values: the expected exit/finding table is the CASES constant in this

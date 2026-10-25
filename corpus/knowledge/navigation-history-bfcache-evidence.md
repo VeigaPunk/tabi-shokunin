@@ -1,7 +1,7 @@
 # Navigation-history evidence: a bfcache restore is a navigation with no request
 
-source: S104 — https://web.dev/articles/bfcache — §"What is the back/forward cache?" comparison table, fetched 2026-10-25, 157667 bytes, sha256 `0dd45292df5288f84748b4d5087ed1c69b0b98eb27dc46eaf7c50c9ffaf28e07`
-source: S105 — https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/public/devtools_protocol/domains/Page.pdl?format=TEXT — `Page.frameNavigated.type` and the experimental `Page.backForwardCacheNotUsed` event, fetched 2026-10-25, 82548 bytes decoded, sha256 `e944a3b19fa2c87b4ed0a84cca85b16b127618725394496ba046a2dfdf9405be`
+source: S104 — https://web.dev/articles/bfcache — §"bfcache basics" comparison table, fetched 2026-10-25, 157667 bytes, sha256 `0dd45292df5288f84748b4d5087ed1c69b0b98eb27dc46eaf7c50c9ffaf28e07`
+source: S105 — https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/public/devtools_protocol/domains/Page.pdl?format=TEXT — `Page.frameNavigated.type` and the experimental `Page.backForwardCacheNotUsed` event, fetched 2026-10-25, 61911 bytes decoded from a 82548-byte base64 transfer, sha256 `e944a3b19fa2c87b4ed0a84cca85b16b127618725394496ba046a2dfdf9405be`
 verified-at: 2026-10-25
 recheck: 90d for S104 (rolling article); on-release for S105 (a pinned Chromium tag is immutable)
 tier: documented upstream, not measured in this lane
@@ -41,7 +41,8 @@ At the lane's pinned tag (154.0.8037.97), the Page domain carries both signals
   positive marker: the document that arrived was restored, not fetched.
 - `Page.backForwardCacheNotUsed` is an experimental event carrying
   `loaderId`, `frameId`, and a required `notRestoredExplanations` array (S105,
-  line 1706 onward). It is the negative marker: the navigation happened and the
+  line 1706 onward), plus an optional `notRestoredExplanationsTree` for per-frame
+  refusal structure. It is the negative marker: the navigation happened and the
   cache refused it, with the refusal reasons attached. Note the field name —
   `notRestoredExplanations` in this build, not the web-facing
   `NotRestoredReasons` API name the article uses (S104, line 2893: "The Chrome
@@ -55,7 +56,7 @@ At the lane's pinned tag (154.0.8037.97), the Page domain carries both signals
 |---|---|---|---|
 | `Page.frameNavigated` with `type: BackForwardCacheRestore` | the frame-navigated event verbatim, plus the post-restore DOM snapshot and the pre-navigation snapshot | the step navigated and the document was restored from memory | that the page state is fresh, or that the server saw the step |
 | `Page.frameNavigated` with `type: Navigation` | the event plus the request slice for the new document | the step navigated and the document was fetched | that the restore path was unavailable (no reason recorded) |
-| `Page.backForwardCacheNotUsed` present | the event with its full `notRestoredExplanations` array | the cache refused this navigation, with the reasons it named | that the refusal cause is the page's fault, or that the reasons are exhaustive |
+| `Page.backForwardCacheNotUsed` present | the event with its full `notRestoredExplanations` array (and `notRestoredExplanationsTree` when present) | the cache refused this navigation, with the reasons it named | that the refusal cause is the page's fault, or that the reasons are exhaustive |
 | no frame-navigated event in the window | the window bounds and the step's own action record | no navigation was observed inside the window | that no navigation occurred (window too short, or the step was a same-document history change) |
 | network slice empty, DOM unchanged | both slices plus the frame-navigated event | nothing on its own — empty network is consistent with a restore AND with a no-op | "the step did nothing" |
 
@@ -83,10 +84,13 @@ At the lane's pinned tag (154.0.8037.97), the Page domain carries both signals
   is not stable across runs.
 - U3 — Whether `notRestoredExplanations` is populated for loopback pages at all
   (a page with no disqualifying features may never emit the event).
-- U4 — The web.dev article is a live page and changed between two fetches in this
-  same round (a scout's copy: 157667 bytes, sha256 `4535f93b…`; this entry's own
-  copy: 157667 bytes, sha256 `0dd45292…` — same size, different bytes), so its
-  quoted spans are dated, not stable.
+- U4 — The web.dev article is a live page: three same-day fetches produced three
+  digests (a scout's copy 157667 B / `4535f93b…`; this entry's own 157667 B /
+  `0dd45292…`; a wave-2 re-open 157663 B / `df5cc100…`). The article body is
+  byte-stable across all three (the diff is devsite bootstrap noise), so the
+  quoted spans and their line numbers resolve; the whole-file sha256 is a
+  per-response artifact and the row's anchor cell describes the committed fetch,
+  not the live page.
 - U5 — Firefox and Safari also ship a bfcache (S104, line 2511); nothing here
   claims their protocol surfaces match Chromium's.
 

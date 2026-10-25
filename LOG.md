@@ -1772,8 +1772,10 @@ classes — 5 → 0. C3 coverage: one entry admitted on an unheld browser-intera
   named for every round-23 document that cites a scratch path.
 - `b973fde` — the calibration gate's per-line tally association and the corrections block wording
   that makes supersession mechanical.
-- `round-24` final commit — round report trail, lesson, QUALITY criterion 64, README frontier row,
-  measurement receipts, wave-2 evidence.
+- `round-24` final commits — wave-2 report evidence, the round report trail on the fleet repo, and
+  the final measurement receipts. The cleanup commit `9e52cb2` deleted 1,035 paths: 1,034 scratch
+  paths plus the empty `.ufo/waves/round-23/w2-record.err` (junk, same class as the four `.err`
+  leftovers).
 
 **Routed round-23 defects.** 1 closed (row exists, proven mechanically); 2 closed (89 → 0
 porcelain paths); 3 closed (1,034 → 0 committed scratch paths, ignore rule in place); 4 closed

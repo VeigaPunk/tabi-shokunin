@@ -5,7 +5,7 @@
 // Verdict: 0 clean, 1 failed (>=1 mismatch), 2 could-not-evaluate (usage,
 //          unreadable revision, git failure). Any other nonzero code is
 //          undeclared and reads as could-not-evaluate.
-// Self-test: `--selftest` (10 isolated cases over temporary sandbox
+// Self-test: `--selftest` (13 isolated cases over temporary sandbox
 //          repositories; asserts exit code AND stable finding id; creates and
 //          removes its own temp trees, never touches the lane).
 // Pinned values: the expected exit/finding table is the CASES constant in this
@@ -181,10 +181,19 @@ function m1Findings(repo, rev, docText, cache) {
     for (const { line, no } of sec.lines) {
       if (!/self-?test|case/.test(line)) continue;
       const claims = [];
-      for (const re of TALLY_PATTERNS) {
+      let fractionOk = true;
+      for (const m of line.matchAll(/`?--self-?test`?[^\n|]{0,24}?\(?(\d+)\s*\/\s*(\d+)\)?/g)) {
+        if (Number(m[1]) !== Number(m[2])) fractionOk = false;
+        claims.push(Number(m[1]));
+      }
+      for (const re of [/(\d+)-case\b/g, /\bcases\s*=\s*(\d+)/g, /\b(\d+)\s+(?:isolated\s+)?(?:CLI\s+)?cases\b/g]) {
         for (const m of line.matchAll(re)) claims.push(Number(m[1]));
       }
       if (!claims.length) continue;
+      if (!fractionOk) {
+        findings.push({ class: "m1-selftest-tally", doc: "SCORECARD.md", line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "malformed fraction claim (N !== M)" });
+        continue;
+      }
       // Association is per line: a tally belongs to the scripts named on its
       // own line, else to the section's single script, else it is ambiguous and
       // is reported could-not-evaluate (never compared against a cross-product).
@@ -201,15 +210,24 @@ function m1Findings(repo, rev, docText, cache) {
           findings.push({ class: "m1-selftest-tally", doc: "SCORECARD.md", line: no, script, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: oracle.why });
           continue;
         }
-        findings.push({ class: "m1-selftest-tally", doc: "SCORECARD.md", line: no, script, claimed: claims[0], observed: oracle.tally, superseded: false });
+        findings.push({ class: "m1-selftest-tally", doc: "SCORECARD.md", line: no, script, claimed: claims[0], observed: oracle.tally, superseded: false, lineText: line });
       }
     }
   }
-  // supersession: a later line stating the correct tally for the same script
-  // clears earlier stale mentions of it.
+  // supersession: a later line clears an earlier stale mention only when it (a)
+  // names the same script, (b) states the oracle-correct number, (c) carries a
+  // correction marker, and (d) cites the superseded line (or restates the figure).
+  // Plain later claims never clear anything; an unmarked claim leaves the stale
+  // mention standing. (Falsified and hardened in wave 2: CritSupersessionGaming.)
   for (const f of findings) {
-    if (f.observed === null) continue;
-    f.superseded = findings.some((g) => g.script === f.script && g.line > f.line && g.observed === g.claimed && g.observed === f.observed);
+    if (f.observed === null || f.observed === f.claimed) continue;
+    f.superseded = findings.some((g) =>
+      g.script === f.script &&
+      g.line > f.line &&
+      g.observed === g.claimed &&
+      g.observed === f.observed &&
+      /supersed|correct|replace|replac|superseding/i.test(g.lineText || "") &&
+      /:\d+/.test(g.lineText || ""));
   }
   return findings;
 }
@@ -329,7 +347,7 @@ const CASES = [
     classes: [],
     build: (d) => {
       d.gate("scripts/check-fixture.mjs");
-      d.scorecard(fixtureDoc("`--selftest` (12/12)", "\n## Round 24 — corrections\n\n`scripts/check-fixture.mjs` `--selftest` (13/13) supersedes the 12 figure above.\n"));
+      d.scorecard(fixtureDoc("`--selftest` (12/12)", "\n## Round 24 — corrections\n\n`scripts/check-fixture.mjs` `--selftest` (13/13) supersedes the twelve figure at `:5`.\n"));
     },
   },
   {

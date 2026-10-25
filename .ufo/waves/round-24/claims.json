@@ -1,66 +1,91 @@
 {
-  "schema": "tabi-round-claims-v1",
-  "lane": "tabi",
-  "round": 24,
-  "frozenAt": "2026-10-25",
-  "frozenBeforeData": true,
-  "baseline": "573c99e4885382db38babc3a6fc90e77afeb42a6",
-  "axisScoresAtRoundStart": {
-    "depth": 8,
-    "coverage": 9,
-    "operability": 8,
-    "freshness": 8,
-    "calibration": 9,
-    "adjacency": 8
+ "schema": "tabi-round-claims-v1",
+ "lane": "tabi",
+ "round": 24,
+ "frozenAt": "2026-10-25",
+ "frozenBeforeData": true,
+ "baseline": "573c99e4885382db38babc3a6fc90e77afeb42a6",
+ "axisScoresAtRoundStart": {
+  "depth": 8,
+  "coverage": 9,
+  "operability": 8,
+  "freshness": 8,
+  "calibration": 9,
+  "adjacency": 8
+ },
+ "lowestNonRetiredAxis": "operability (tie at 8 with depth, freshness, adjacency; C1 works the operability surface the round-23 spot-check routed as a conformance defect)",
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "operability",
+   "type": "capability-acquisition + routed-defect repair",
+   "declared": "Build a lane-owned, fail-closed gate-registry conformance gate `scripts/check-gate-registry.mjs` that reads a revision's committed bytes (SKILL.md as registry home, plus the gate scripts it names) and derives, for every gate in the lane's gate-script set, whether its latest registry row carries the eight PROTOCOL \u00a7Gate standard fields (name, gate|probe, entry command, verdict map code->class, self-test command and spelling, pinned-value path, write scope, owner). Then land the conformant rows (append-only supersession section) so the gate set is conformant, including the `round-evidence-audit` row round 23 never wrote (routed defect 1). Before: N nonconformant gates at the baseline revision, measured by the same gate reading the baseline blob. After: 0 nonconformant gates at the round tip.",
+   "metric": "nonconformant_gates",
+   "countingCommand": "node scripts/check-gate-registry.mjs --rev <REV> --json",
+   "counterField": "nonconformant (integer; gates whose latest registry row is missing or incomplete)",
+   "before": "measured at 573c99e by the shipped gate, recorded in corpus/evidence/round-24/c1-measurements.json",
+   "after": 0,
+   "control": "A skip-work control that greps SKILL.md for the literal 'round-evidence-audit' and prints 0 must fail: scored with the frozen counter it reports 0 on the baseline, where the row is absent. Recorded before data in .ufo/waves/round-24/control/control-receipt.json.",
+   "killRule": "Any gate the instrument cannot decide (unparseable row, missing script) counts as nonconformant, never as clean; if a field predicate cannot be shown red on a mutated row and green on the conformant row, the field leaves the required set and the target misses honestly.",
+   "failureCapable": "node scripts/check-gate-registry.mjs --selftest -> isolated CLI cases assert exit and finding id per class, including a mutant that drops one field and a mutant that removes the row; exit 0 only when every case agrees."
   },
-  "lowestNonRetiredAxis": "operability (tie at 8 with depth, freshness, adjacency; C1 works the operability surface the round-23 spot-check routed as a conformance defect)",
-  "claims": [
-    {
-      "id": "C1",
-      "axis": "operability",
-      "type": "capability-acquisition + routed-defect repair",
-      "declared": "Build a lane-owned, fail-closed gate-registry conformance gate `scripts/check-gate-registry.mjs` that reads a revision's committed bytes (SKILL.md as registry home, plus the gate scripts it names) and derives, for every gate in the lane's gate-script set, whether its latest registry row carries the eight PROTOCOL §Gate standard fields (name, gate|probe, entry command, verdict map code->class, self-test command and spelling, pinned-value path, write scope, owner). Then land the conformant rows (append-only supersession section) so the gate set is conformant, including the `round-evidence-audit` row round 23 never wrote (routed defect 1). Before: N nonconformant gates at the baseline revision, measured by the same gate reading the baseline blob. After: 0 nonconformant gates at the round tip.",
-      "metric": "nonconformant_gates",
-      "countingCommand": "node scripts/check-gate-registry.mjs --rev <REV> --json",
-      "counterField": "nonconformant (integer; gates whose latest registry row is missing or incomplete)",
-      "before": "measured at 573c99e by the shipped gate, recorded in corpus/evidence/round-24/c1-measurements.json",
-      "after": 0,
-      "control": "A skip-work control that greps SKILL.md for the literal 'round-evidence-audit' and prints 0 must fail: scored with the frozen counter it reports 0 on the baseline, where the row is absent. Recorded before data in .ufo/waves/round-24/control/control-receipt.json.",
-      "killRule": "Any gate the instrument cannot decide (unparseable row, missing script) counts as nonconformant, never as clean; if a field predicate cannot be shown red on a mutated row and green on the conformant row, the field leaves the required set and the target misses honestly.",
-      "failureCapable": "node scripts/check-gate-registry.mjs --selftest -> isolated CLI cases assert exit and finding id per class, including a mutant that drops one field and a mutant that removes the row; exit 0 only when every case agrees."
-    },
-    {
-      "id": "C2",
-      "axis": "calibration",
-      "type": "capability-acquisition + routed-defect repair",
-      "declared": "Build a lane-owned calibration counter `scripts/check-selfassessment.mjs` that compares the lane's self-assessment (SCORECARD.md blocks that name a lane gate script, and SHONEN.md) and its landing state against observed repo state, deriving three mismatch classes: m1 a `--selftest`/`N-case` tally that disagrees with the gate's own selftest output at the measured revision; m2 a committed evidence receipt whose recorded exit disagrees with a re-run of the read-only command it names; m3 the working tree carrying unlanded paths while the lane's self-assessment asserts landed rounds. Before: 4 mismatches at the baseline revision (three stale `--selftest` 12/12 figures against the shipped 13-case matrix, one unlanded-path mismatch over 89 porcelain paths). After: 0 mismatches at the round tip.",
-      "metric": "selfassessment_mismatches",
-      "countingCommand": "node scripts/check-selfassessment.mjs --rev <REV> --json",
-      "counterField": "mismatches (integer; distinct findings across classes m1/m2/m3)",
-      "before": 4,
-      "after": 0,
-      "control": "A skip-work control that greps SCORECARD.md for the string '12/12' and prints 0 mismatches must fail: scored with the frozen counter it reports 0 at the baseline, where the three stale figures sit. Recorded before data in .ufo/waves/round-24/control/control-receipt.json.",
-      "killRule": "A claim the counter cannot parse is reported as could-not-evaluate and never counted as a match; if a class yields no finding at the baseline it is disclosed as a null class, not counted toward the before value, and the target is stated over the classes that did fire.",
-      "failureCapable": "node scripts/check-selfassessment.mjs --selftest -> isolated cases assert exit and finding id for each class on fixture copies, including a restored-stale-figure mutant and a clean fixture."
-    },
-    {
-      "id": "C3",
-      "axis": "coverage",
-      "type": "frontier-entry admission (documented-upstream)",
-      "declared": "Admit one knowledge entry on a browser-interaction surface the corpus does not hold — navigation-history evidence across a back/forward cache restore (a `history.back()` step whose page state arrives from bfcache emits no network request and restores live JS state, so 'no network events' cannot be read as 'no navigation') — only after this lane re-opens every cited source itself this round and appends the rows it cites with this round's access date and located quotes. Before: 0 admitted entries cite a row first opened this round. After: 1.",
-      "metric": "admitted_entries_citing_row_first_opened_this_round",
-      "countingCommand": "git grep -lE '^source: S10[45] ' <REV> -- corpus/knowledge | wc -l",
-      "before": 0,
-      "after": 1,
-      "control": "A skip-work control that copies a staged entry or paraphrases a search snippet without opening the source has no located quote to show; the Gate's per-row quote check fails on it. The census gate also refuses a row whose URL duplicates one within scope.",
-      "killRule": "If any cited quote is absent from the bytes this round fetched, the row is refused and C3 reports 0 (honest stop). If the surface turns out to be held by an existing note, the entry is not admitted as coverage and C3 reports the miss."
-    }
-  ],
-  "notClaimed": [
-    "no new browser run, real site, default profile, served-wire identity or bfcache observation on this host",
-    "no scalar axis promotion: every axis score is unchanged this round",
-    "no non-author judgment: every seat is lane-dispatched",
-    "no shokuknow package adoption this round (quarantine-first verdicts landed in round 23; adoption stays closed pending a theme)"
-  ],
-  "revisions": []
+  {
+   "id": "C2",
+   "axis": "calibration",
+   "type": "capability-acquisition + routed-defect repair",
+   "declared": "Build a lane-owned calibration counter `scripts/check-selfassessment.mjs` that compares the lane's self-assessment (SCORECARD.md blocks that name a lane gate script, and SHONEN.md) and its landing state against observed repo state, deriving three mismatch classes: m1 a `--selftest`/`N-case` tally that disagrees with the gate's own selftest output at the measured revision; m2 a committed evidence receipt whose recorded exit disagrees with a re-run of the read-only command it names; m3 the working tree carrying unlanded paths while the lane's self-assessment asserts landed rounds. Before: 4 mismatches at the baseline revision (three stale `--selftest` 12/12 figures against the shipped 13-case matrix, one unlanded-path mismatch over 89 porcelain paths). After: 0 mismatches at the round tip.",
+   "metric": "selfassessment_mismatches",
+   "countingCommand": "node scripts/check-selfassessment.mjs --rev <REV> --json",
+   "counterField": "mismatches (integer; distinct findings across classes m1/m2/m3)",
+   "before": 4,
+   "after": 0,
+   "control": "A skip-work control that greps SCORECARD.md for the string '12/12' and prints 0 mismatches must fail: scored with the frozen counter it reports 0 at the baseline, where the three stale figures sit. Recorded before data in .ufo/waves/round-24/control/control-receipt.json.",
+   "killRule": "A claim the counter cannot parse is reported as could-not-evaluate and never counted as a match; if a class yields no finding at the baseline it is disclosed as a null class, not counted toward the before value, and the target is stated over the classes that did fire.",
+   "failureCapable": "node scripts/check-selfassessment.mjs --selftest -> isolated cases assert exit and finding id for each class on fixture copies, including a restored-stale-figure mutant and a clean fixture."
+  },
+  {
+   "id": "C3",
+   "axis": "coverage",
+   "type": "frontier-entry admission (documented-upstream)",
+   "declared": "Admit one knowledge entry on a browser-interaction surface the corpus does not hold \u2014 navigation-history evidence across a back/forward cache restore (a `history.back()` step whose page state arrives from bfcache emits no network request and restores live JS state, so 'no network events' cannot be read as 'no navigation') \u2014 only after this lane re-opens every cited source itself this round and appends the rows it cites with this round's access date and located quotes. Before: 0 admitted entries cite a row first opened this round. After: 1.",
+   "metric": "admitted_entries_citing_row_first_opened_this_round",
+   "countingCommand": "git grep -lE '^source: S10[45] ' <REV> -- corpus/knowledge | wc -l",
+   "before": 0,
+   "after": 1,
+   "control": "A skip-work control that copies a staged entry or paraphrases a search snippet without opening the source has no located quote to show; the Gate's per-row quote check fails on it. The census gate also refuses a row whose URL duplicates one within scope.",
+   "killRule": "If any cited quote is absent from the bytes this round fetched, the row is refused and C3 reports 0 (honest stop). If the surface turns out to be held by an existing note, the entry is not admitted as coverage and C3 reports the miss."
+  }
+ ],
+ "notClaimed": [
+  "no new browser run, real site, default profile, served-wire identity or bfcache observation on this host",
+  "no scalar axis promotion: every axis score is unchanged this round",
+  "no non-author judgment: every seat is lane-dispatched",
+  "no shokuknow package adoption this round (quarantine-first verdicts landed in round 23; adoption stays closed pending a theme)"
+ ],
+ "revisions": [
+  {
+   "at": "2026-10-25",
+   "phase": "after measurement, before report",
+   "field": "C1.after (declared)",
+   "from": "after 0",
+   "to": "after 0 (measured; before measured at 3)",
+   "why": "the frozen text said 'N -> 0'; N measured as 3 by the same gate at the baseline"
+  },
+  {
+   "at": "2026-10-25",
+   "phase": "after measurement, before report",
+   "field": "C2.before (declared)",
+   "from": "before 4",
+   "to": "before 5 (measured; the counter found a fourth stale tally: check-sources 25 vs 26 at SCORECARD.md:410)",
+   "why": "the frozen enumeration omitted that figure; the after-target 0 unchanged"
+  },
+  {
+   "at": "2026-10-25",
+   "phase": "after wave 2, before report",
+   "field": "C2.after (measured)",
+   "from": "after 0",
+   "to": "after 0, measured at the final clean tree; the m3 class is a live-tree property, so mid-wave runs read 1 while wave artifacts are uncommitted; the final receipt records the clean-tree run",
+   "why": "three independent wave-2 seats reproduced mismatches=1 during the wave, all attributable to m3-unlanded-paths over in-flight wave files; the claim's target is stated over the final state"
+  }
+ ]
 }

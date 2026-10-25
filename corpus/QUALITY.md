@@ -329,19 +329,25 @@
     `fbee618` → 1)
 
 64. A gate's registry row is checked mechanically against the §Gate standard, not read: the gate
-    set is derived from the revision's own scripts (a naming convention plus the scripts rows
-    invoke), never from the registry, so the registry cannot vouch for its own completeness; table
-    shapes are read by header name, never by cell position, because a lane accumulates several;
-    and a later row for the same gate supersedes an earlier one. A field predicate that a mutated
-    row cannot fail is not a predicate — every required field carries a red mutant and a green
-    control in the gate's own self-test. (lesson: corpus/lessons/round-24.md#m1; routed round-23
-    defect 1; `scripts/check-gate-registry.mjs` cases=22)
+    set is derived from the revision's own scripts — a naming convention (`check-*.mjs`,
+    `*audit*.mjs`) gives the primary universe, and scripts a registry row invokes as a gate add to
+    it — so a gate whose row is absent cannot be hidden by the registry. Table shapes are read by
+    header name, never by cell position, because a lane accumulates several. A later row for the
+    same gate supersedes an earlier one. A field predicate that a mutated row cannot fail is not a
+    predicate — every required field carries a red mutant and a green control in the gate's own
+    self-test. The measurement is a universe statement, and a row whose kind cell is not parsed by
+    the header map is reported as a missing kind, never silently dropped. (lesson:
+    corpus/lessons/round-24.md; routed round-23 defect 1; `scripts/check-gate-registry.mjs`
+    cases=22)
 
 65. A self-assessment figure is compared against the instrument that produced it, at the revision
     being graded, never against a committed receipt that may itself carry the stale figure. A
     later statement of the same figure supersedes an earlier one only when the later statement
-    names the same instrument and states the measured value; the counter reports the superseded
-    mentions rather than silently dropping them. A class whose "before" is a working-tree property
-    is measured with a clean tree and says so, because a fresh checkout scores it zero by
-    construction. (lesson: corpus/lessons/round-24.md#m2; routed round-23 defects 2 and 4;
+    names the same instrument, carries a correction marker, cites the superseded mention, and
+    states the measured value; the counter reports the superseded mentions rather than silently
+    dropping them, and a plain later claim never clears anything. A class whose "before" is a
+    working-tree property (unlanded paths) is a live measurement, not a committed byte: its verdict
+    is stated over a clean tree, the receipt records the porcelain count at the measurement instant,
+    and mid-wave values are never filed as the after-value. (lesson:
+    corpus/lessons/round-24.md#m1 #m2; routed round-23 defects 2 and 4;
     `scripts/check-selfassessment.mjs` cases=13)
