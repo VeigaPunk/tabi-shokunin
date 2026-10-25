@@ -5,7 +5,7 @@
 // Verdict: 0 clean, 1 failed (>=1 mismatch), 2 could-not-evaluate (usage,
 //          unreadable revision, git failure). Any other nonzero code is
 //          undeclared and reads as could-not-evaluate.
-// Self-test: `--selftest` (13 isolated cases over temporary sandbox
+// Self-test: `--selftest` (17 isolated cases over temporary sandbox
 //          repositories; asserts exit code AND stable finding id; creates and
 //          removes its own temp trees, never touches the lane).
 // Pinned values: the expected exit/finding table is the CASES constant in this
@@ -24,20 +24,29 @@
 // Calibration is self-assessment quality (AXES.md): does the lane's own written
 // claim match the state a reader can observe? Three classes:
 //
-//   m1-selftest-tally  A SCORECARD.md section that names a lane gate script
+//   m1-selftest-tally  A SCORECARD.md OR LOG.md section that names a lane gate
+//                      script
 //                      (block = one `##` heading section) carries a self-test
 //                      tally — `` `--selftest` (N/N) ``, `N-case`, `cases=N`,
-//                      `N cases` — that disagrees with that gate's OWN self-test
+//                      `cases: N`, `N cases` — that disagrees with that gate's
+//                      OWN self-test
 //                      output at the measured revision. The oracle is the gate
 //                      binary itself, never a committed receipt (a receipt can
-//                      carry the stale figure). A gate whose blob at <rev> is not
-//                      byte-identical to the runnable working copy, or whose
+//                      carry the stale figure). A gate whose blob at <rev> is
+//                      not byte-identical to the runnable working copy, or
+//                      whose
 //                      self-test prints no tally, is could-not-evaluate — never
-//                      a match.
-//                      Supersession: a later line in the same document stating
-//                      the correct tally for the same gate supersedes the earlier
-//                      stale mention (the lane's append-only correction
-//                      convention). Only unsuperseded mentions count.
+//                      a match. The LOG.md window is the frozen round-26 claim
+//                      C1 extension (round 27): same association rule (a tally
+//                      belongs to the scripts named on its own line, else to a
+//                      single-script section, else could-not-evaluate) and the
+//                      same supersession convention, with the correction unit
+//                      being the paragraph (Markdown wraps one correction over
+//                      several lines): a later paragraph clears an earlier
+//                      stale mention only when it names the same script,
+//                      carries a correction marker, cites the superseded line
+//                      (:/LINE/) and states the oracle-correct number via a
+//                      tally shape. Plain later claims never clear anything.
 //   m2-receipt-exit    A committed evidence receipt that records a command and
 //                      its exit must reproduce that exit when the command is
 //                      re-run. Only a closed grammar is executed — `git cat-file
@@ -232,7 +241,95 @@ function m1Findings(repo, rev, docText, cache) {
   return findings;
 }
 
-// ---- m2: receipt exits ------------------------------------------------------
+// ---- m1 LOG.md window (frozen round-26 claim C1, executed round 27) ---------
+
+function statedTallyNumbers(text) {
+  const out = [];
+  for (const m of text.matchAll(/`?--self-?test`?[^\n|]{0,24}?\(?(\d+)\s*\/\s*(\d+)\)?/g)) { out.push(Number(m[1]), Number(m[2])); }
+  for (const m of text.matchAll(/(\d+)-case\b/g)) out.push(Number(m[1]));
+  for (const m of text.matchAll(/\bcases\s*[:=]\s*(\d+)/g)) out.push(Number(m[1]));
+  for (const m of text.matchAll(/\b(\d+)\s+(?:isolated\s+)?(?:CLI\s+)?cases\b/g)) out.push(Number(m[1]));
+  for (const m of text.matchAll(/\b(\d+)\s*\/\s*(\d+)\b/g)) { out.push(Number(m[1]), Number(m[2])); }
+  return out;
+}
+
+function paragraphs(docText) {
+  const out = [];
+  let cur = null;
+  docText.split("\n").forEach((line, i) => {
+    if (line.trim() === "") { cur = null; return; }
+    if (!cur) { cur = { start: i + 1, lines: [] }; out.push(cur); }
+    cur.lines.push(line);
+  });
+  return out;
+}
+
+function m1LogFindings(repo, rev, logText, cache) {
+  const findings = [];
+  for (const sec of sections(logText)) {
+    const scripts = new Set();
+    for (const { line } of sec.lines) for (const m of line.matchAll(SCRIPT_IN_TEXT)) scripts.add(m[1].replace(/^\.\//, ""));
+    if (!scripts.size) continue;
+    for (const { line, no } of sec.lines) {
+      if (!/self-?test|case/.test(line)) continue;
+      const claims = [];
+      let fractionOk = true;
+      for (const m of line.matchAll(/`?--self-?test`?[^\n|]{0,24}?\(?(\d+)\s*\/\s*(\d+)\)?/g)) {
+        if (Number(m[1]) !== Number(m[2])) fractionOk = false;
+        claims.push(Number(m[1]));
+      }
+      for (const re of [/(\d+)-case\b/g, /\bcases\s*=\s*(\d+)/g, /\b(\d+)\s+(?:isolated\s+)?(?:CLI\s+)?cases\b/g]) {
+        for (const m of line.matchAll(re)) claims.push(Number(m[1]));
+      }
+      if (!claims.length) continue;
+      if (!fractionOk) {
+        findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "malformed fraction claim (N !== M)" });
+        continue;
+      }
+      // Association is per line, exactly as in the SCORECARD window: a tally
+      // belongs to the scripts named on its own line, else to the section's
+      // single script, else it is ambiguous and is reported could-not-evaluate.
+      const lineScripts = new Set();
+      for (const m of line.matchAll(SCRIPT_IN_TEXT)) lineScripts.add(m[1].replace(/^\.\//, ""));
+      const targets = lineScripts.size ? [...lineScripts] : scripts.size === 1 ? [...scripts] : [];
+      if (!targets.length) {
+        findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "ambiguous script association" });
+        continue;
+      }
+      for (const script of targets) {
+        const oracle = gateTally(repo, rev, script, cache);
+        if (oracle.status !== "measured") {
+          findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: oracle.why });
+          continue;
+        }
+        findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script, claimed: claims[0], observed: oracle.tally, superseded: false, lineText: line });
+      }
+    }
+  }
+  // Supersession unit is the paragraph (Markdown wraps one append-only
+  // correction over several lines). A later paragraph clears an earlier stale
+  // mention only when it (a) names the same script, (b) carries a correction
+  // marker, (c) cites the superseded line (:/LINE/) and (d) states the
+  // oracle-correct number in a tally shape. A paragraph stating a wrong number,
+  // or lacking the citation, never clears anything (frozen claim C1 skip-work
+  // control; round-27 selftest case m1-log-wrong-number-correction).
+  const paras = paragraphs(logText);
+  for (const f of findings) {
+    if (f.observed === null || f.observed === f.claimed) continue;
+    f.superseded = paras.some((p) => {
+      if (p.start <= f.line) return false;
+      const text = p.lines.join("\n");
+      const namesScript = [...text.matchAll(SCRIPT_IN_TEXT)].some((m) => m[1].replace(/^\.\//, "") === f.script);
+      return namesScript &&
+        /supersed|correct/i.test(text) &&
+        /:\d+/.test(text) &&
+        statedTallyNumbers(text).includes(f.observed);
+    });
+  }
+  return findings;
+}
+
+
 
 const SAFE_GIT = /^git (?:-C \S+ )?(cat-file -e|show) ([0-9a-fA-F]{7,40}:[A-Za-z0-9_.\/-]+)$/;
 
@@ -298,7 +395,9 @@ export function evaluate(repo, revArg) {
   const scorecard = readBlob(repo, rev, "SCORECARD.md");
   if (scorecard === null) throw new Refusal(`SCORECARD.md absent at ${rev}`);
   const cache = new Map();
-  const findings = [...m1Findings(repo, rev, scorecard, cache), ...m2Findings(repo, rev), ...m3Findings(repo, scorecard)];
+  const logText = readBlob(repo, rev, "LOG.md");
+  const logFindings = logText === null ? [] : m1LogFindings(repo, rev, logText, cache);
+  const findings = [...m1Findings(repo, rev, scorecard, cache), ...logFindings, ...m2Findings(repo, rev), ...m3Findings(repo, scorecard)];
   const counted = findings.filter((f) => f.observed !== null && f.observed !== f.claimed && !f.superseded);
   return {
     schema: SCHEMA,
@@ -324,6 +423,19 @@ function fixtureDoc(tally, extra = "") {
     "",
     `| C1 | \`scripts/check-fixture.mjs\` ${tally} | met |`,
     extra,
+    "",
+  ].join("\n");
+}
+
+function logDoc(tallyLine, correction = "") {
+  return [
+    "# LOG",
+    "",
+    "## Round 23 — executed disposition",
+    "",
+    "`scripts/check-fixture.mjs` gate landed.",
+    tallyLine,
+    ...(correction ? ["", correction] : []),
     "",
   ].join("\n");
 }
@@ -379,6 +491,55 @@ const CASES = [
     exit: 0,
     classes: [],
     build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("evidence retained under corpus/evidence/")); },
+  },
+  {
+    id: "m1-log-stale-tally",
+    exit: 1,
+    classes: ["m1-selftest-tally"],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (13/13)"));
+      d.log(logDoc("Non-vacuity: `--selftest` 12/12 across the fixture matrix."));
+    },
+  },
+  {
+    id: "m1-log-stale-then-corrected",
+    exit: 0,
+    classes: [],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (13/13)"));
+      d.log(logDoc("Non-vacuity: `--selftest` 12/12 across the fixture matrix.", "Correction (supersedes LOG.md:6): `scripts/check-fixture.mjs` `--selftest` measured `cases: 13` at the tip."));
+    },
+  },
+  {
+    id: "m1-log-wrong-number-correction",
+    exit: 1,
+    classes: ["m1-selftest-tally"],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (13/13)"));
+      d.log(logDoc("Non-vacuity: `--selftest` 12/12 across the fixture matrix.", "Correction (supersedes LOG.md:6): `scripts/check-fixture.mjs` `--selftest` measured `cases: 12` at the tip."));
+    },
+  },
+  {
+    id: "m1-log-ambiguous-section-not-counted",
+    exit: 0,
+    classes: [],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.gate("scripts/check-other.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (13/13)"));
+      d.log([
+        "# LOG",
+        "",
+        "## Round 23 — executed disposition",
+        "",
+        "Both `scripts/check-fixture.mjs` and `scripts/check-other.mjs` landed.",
+        "The combined matrix is a 12-case one, with no script named on this line.",
+        "",
+      ].join("\n"));
+    },
   },
   {
     id: "m2-receipt-matches",
@@ -455,6 +616,9 @@ function makeFixture() {
     },
     scorecard(text) {
       writeFileSync(join(root, "SCORECARD.md"), text);
+    },
+    log(text) {
+      writeFileSync(join(root, "LOG.md"), text);
     },
     receipt(rel, obj) {
       const abs = join(root, rel);

@@ -1876,3 +1876,50 @@ evidence for base64 `?format=TEXT` rows) with a review seat's read; (d) run the
 C3 assimilation with the full §10 machinery (collision guard incl. the
 indented-fixture proof, staged-row transform, scratch-mirror census gate —
 S125 pre-noted refuse as S102 duplicate, S142 pre-noted refuse as overlap).
+
+## Round 27 — 2026-10-25 (hyaku run 7) — re-dispatch of round-26 frozen claims, executed
+
+Baseline `f185b4e7ab10cd9e8925e8ec614c9c111772357d` (round-26 tip incl. the
+non-author spot-check). Round 26 froze three claims before data
+(`.ufo/waves/round-26/claims.json`, `frozenBeforeData: true`) and recorded them
+failed — not executed when the operator ended the run mid-round. Round 27
+re-dispatches the same three claims with predicate, counter, kill rule and
+target unchanged (the round-26 LOG next-iteration (a) resumption point; §10
+frozen/resumed clause — frozen claims are never rewritten). Axes at round
+start: depth 8, coverage 9, operability 8, freshness 8, calibration 9,
+adjacency 8 (lowest non-retired tie at 8: depth/operability/freshness/adjacency;
+C2 works depth). Saturation 8 / window 3; nudge inactive. Census before:
+`scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi`
+exit 0, rows 106, 16 W04 (carried; `.ufo/waves/round-27/census-before.txt`).
+
+### C1 corrections (append-only, LOG-window disposition for the extended m1)
+
+The extended `scripts/check-selfassessment.mjs` m1 window measured against the
+baseline found five unsuperseded stale-tally mentions in LOG.md (round-23's
+`:1664` was already superseded by the round-26 correction at its `:1853`
+paragraph — counted as superseded, not cleared). Each is dispositioned below
+with the measured oracle; the extended counter at the tip then reports
+`mismatches=0` (measured receipt in the claim block below).
+
+- Correction (supersedes LOG.md:335): the four-case figure quoted at :335 is
+  the shipped ROUND_CONTRACT self-test receipt (`ROUND_CONTRACT_SELFTEST
+  verdict=clean`), not a `scripts/check-freshness.mjs` tally;
+  `scripts/check-freshness.mjs` `--selftest` measured `cases: 12` at `f185b4e`.
+- Correction (supersedes LOG.md:391): the four-case figure quoted at :391 is
+  the shipped user-swarm contract self-test receipt (`verdict=clean`), not a
+  `scripts/check-freshness.mjs` tally; `scripts/check-freshness.mjs`
+  `--selftest` measured `cases: 12` at `f185b4e`.
+- Correction (supersedes LOG.md:1090): the sixty-six figure at :1090 counts
+  validation decisions in `corpus/evidence/round-19/validation/decisions.json`,
+  not a `scripts/check-sources.mjs` self-test tally;
+  `scripts/check-sources.mjs` `--selftest` measured `cases: 26` at `f185b4e`.
+- Correction (supersedes LOG.md:1103): the sixty-six-over-sixty-six fraction at
+  :1103 counts integration validation cases, not a `scripts/check-sources.mjs`
+  self-test tally; `scripts/check-sources.mjs` `--selftest` measured
+  `cases: 26` at `f185b4e`.
+- Correction (supersedes LOG.md:1863): the round-26 wrap-up statement "selftest
+  `cases: 13`" for `scripts/check-selfassessment.mjs` (line :1863, in a
+  multi-script section so the tally is could-not-evaluate, never counted) is
+  restated for the record anyway: the C1 LOG-window extension added four cases
+  this round and `scripts/check-selfassessment.mjs` `--selftest` now measures
+  `cases: 17`.
