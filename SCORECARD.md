@@ -1163,3 +1163,22 @@ for three dispatches; registry identities recorded for this round's waves; lande
 LOG entry bound to one commit. Criteria 61–63 encode the first three as rules.
 
 No axis harmed; no scalar promoted; no capability beyond the one row above; nothing retired.
+
+### Round 23 — corrections to the block above (append-only, after wave-2 review)
+
+- **Measured revisions, now named.** C1 is measured at `03c1b4d9a9ea7719ff4a13a63989fa9be36229c3`
+  (production checkpoint) and re-run unchanged at the final lane tip; C2 is measured at the same
+  commit. Runnable forms: `node scripts/round-evidence-audit.mjs --rev 03c1b4d9a9ea7719ff4a13a63989fa9be36229c3 --round 22 --round-cap 128 --json`
+  → 6 classes / 7 findings / exit 1; `git grep -lE '^source: S10[23] ' 03c1b4d9a9ea7719ff4a13a63989fa9be36229c3 -- corpus/knowledge | wc -l`
+  → 1. The placeholder `<REV>` in the tables above is this commit.
+- **The append-only claim, corrected.** Five of the six mutable docs are byte-prefix extensions of
+  the baseline (`LOG.md`, `SCORECARD.md`, `corpus/QUALITY.md`, `corpus/README.md`, `SKILL.md`);
+  `corpus/SOURCES.md` is **not** a prefix extension — two rows are inserted at the registry's
+  mid-file boundary (before `## Paths`), a pure insertion with 0 baseline lines removed
+  (`git diff a89f1935 <tip> -- corpus/SOURCES.md` → 2 insertions, 0 deletions). The earlier
+  "append-only prefixes on all six" wording is superseded by this paragraph.
+- **Wave and seat census.** W1 44 seats (44/44 reports, 0 dead), W2 44 seats (34/44 reports, 10
+  dead, none replaced), round total 88 ≤ 128; both wave specs inside the 32–64 band; registries
+  44/44 members with agentIds and `record` receipts.
+- **Capability-row command, runnable.** `node scripts/round-evidence-audit.mjs --selftest --rev 03c1b4d9a9ea7719ff4a13a63989fa9be36229c3 --round 22 --round-cap 128`
+  → baseline 7 findings / 6 classes, 6/6 repairs, exit 0.

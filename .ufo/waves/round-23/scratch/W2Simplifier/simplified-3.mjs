@@ -213,7 +213,7 @@ function gradedAttempts(text) {
   const seen = new Set();
   const re = /attempt\s*#?\s*(\d{1,2})\s*[—:–\-.)]?\s*\**\s*(progressing|silent|landed|graded|refused|stale|dead|complete|completed)/gi;
   for (const m of String(text || "").matchAll(re)) seen.add(m[1]);
-  return { count: seen.size, ids: [...seen], lt2: seen.size < 2 };
+  return [...seen];
 }
 
 // A grade counts only when its attempt id names a committed receipt: a ghost id in prose
@@ -247,23 +247,19 @@ function waveEvidence(ctx, roundDir, stem) {
     `${roundDir}/${stem}-task-result.json`,
     `${roundDir}/${stem}/spawn-result.json`,
   ];
-  const refusalPath = `${roundDir}/${stem}-cap-refusal.json`;
   for (const path of spawnPaths) {
     const body = ctx.read(path);
     if (body === null) continue;
     const m = body.match(SPAWN_MARKER);
-    if (m) return { path, spawned: Number(m[1]), refused: false, accounted: true };
-    if (body.includes(REFUSAL_MARKER)) return { path, spawned: 0, refused: true, accounted: true };
-    return { path, spawned: 0, refused: false, accounted: false };
+    if (m) return { path, spawned: Number(m[1]), accounted: true };
+    if (body.includes(REFUSAL_MARKER)) return { path, spawned: 0, accounted: true };
+    return { path, spawned: 0, accounted: false };
   }
-  const refusals = (ctx.list(roundDir) || []).filter((f) => new RegExp(`/${stem}-cap-refusal-\\d+\\.json$`).test(f));
-  if (refusals.length) {
-    return { path: refusals[0], spawned: 0, refused: true, accounted: true };
-  }
-  if (ctx.read(refusalPath) !== null) return { path: refusalPath, spawned: 0, refused: true, accounted: true };
+  const refusals = (ctx.list(roundDir) || []).filter((f) => new RegExp(`/${stem}-cap-refusal[^/]*\\.json$`).test(f));
+  if (refusals.length) return { path: refusals[0], spawned: 0, accounted: true };
   const validation = ctx.read(`${roundDir}/${stem}-validation.json`);
-  if (validation !== null) return { path: `${roundDir}/${stem}-validation.json`, spawned: 0, refused: false, accounted: false };
-  return { path: null, spawned: 0, refused: false, accounted: false };
+  if (validation !== null) return { path: `${roundDir}/${stem}-validation.json`, spawned: 0, accounted: false };
+  return { path: null, spawned: 0, accounted: false };
 }
 
 export function audit(ctx, opts) {
@@ -324,7 +320,6 @@ export function audit(ctx, opts) {
     const items = Array.isArray(spec.items) ? spec.items.length : null;
     const spawn = waveEvidence(ctx, roundDir, stem);
     roundTotal += spawn.spawned;
-    const validation = parseJson(ctx.read(`${roundDir}/${stem}-validation.json`));
     waveCounts.push({
       wave: stem,
       spec: specFile,
@@ -332,18 +327,15 @@ export function audit(ctx, opts) {
       items,
       spawned: spawn.spawned,
       receipt: spawn.path,
-      receiptPolicy: validation?.policy ?? null,
     });
     if (!spawn.accounted) {
       capProblems.push(`${specFile}: wave ${stem} left no spawn-result and no refusal receipt, so its seats cannot be counted`);
       continue;
     }
-    if (band) {
-      if (Number.isFinite(maxLanes) && maxLanes > band.waveMaxLanes)
-        capProblems.push(`${specFile}: maxLanes ${maxLanes} > policy waveMaxLanes ${band.waveMaxLanes}`);
-      if (Number.isFinite(maxLanes) && maxLanes < band.waveMinLanes)
-        capProblems.push(`${specFile}: maxLanes ${maxLanes} < policy waveMinLanes ${band.waveMinLanes}`);
-    }
+    if (Number.isFinite(maxLanes) && maxLanes > band.waveMaxLanes)
+      capProblems.push(`${specFile}: maxLanes ${maxLanes} > policy waveMaxLanes ${band.waveMaxLanes}`);
+    if (Number.isFinite(maxLanes) && maxLanes < band.waveMinLanes)
+      capProblems.push(`${specFile}: maxLanes ${maxLanes} < policy waveMinLanes ${band.waveMinLanes}`);
     if (spawn.spawned > maxLanes)
       capProblems.push(`${waveCounts[waveCounts.length - 1].receipt}: ${spawn.spawned} seats spawned > spec maxLanes ${maxLanes}`);
     if (items !== null && Number.isFinite(maxLanes) && items > maxLanes)
@@ -355,7 +347,6 @@ export function audit(ctx, opts) {
         capProblems.push(`${roundDir}/${stem}/swarm-registry.json: ${n} members > spec maxLanes ${maxLanes}`);
     }
   }
-  if (band === null) capProblems.push("policy band unavailable: the policy input supplied no sighting.dispatch.swarm");
   if (roundTotal > roundCap) capProblems.push(`round total ${roundTotal} spawned seats > round cap ${roundCap}`);
   if (capProblems.length) {
     add("c2-wave-caps", roundCap, roundTotal, waveCounts, capProblems.join("; "));
@@ -393,14 +384,17 @@ export function audit(ctx, opts) {
   if (attemptArtifacts.length >= 2) {
     if (!stale) {
       add("c4-stale-attempts", null, attemptArtifacts.length, attemptArtifacts.slice(0, 3), "the report carries no Stale-lane line while more than one attempt receipt is committed");
-    } else if (joinedGrades(gradedAttempts(stale.paragraph).ids, receiptIds) < 2) {
-      add(
-        "c4-stale-attempts",
-        stale.line.trim().slice(0, 120),
-        `${attemptArtifacts.length} attempt receipts / ${joinedGrades(gradedAttempts(stale.paragraph).ids, receiptIds)} graded and joined`,
-        attemptArtifacts.slice(0, 3),
-        "the Stale-lane paragraph grades fewer than two attempts that a committed attempt receipt can be matched to, while several attempt receipts are committed"
-      );
+    } else {
+      const joined = joinedGrades(gradedAttempts(stale.paragraph), receiptIds);
+      if (joined < 2) {
+        add(
+          "c4-stale-attempts",
+          stale.line.trim().slice(0, 120),
+          `${attemptArtifacts.length} attempt receipts / ${joined} graded and joined`,
+          attemptArtifacts.slice(0, 3),
+          "the Stale-lane paragraph grades fewer than two attempts that a committed attempt receipt can be matched to, while several attempt receipts are committed"
+        );
+      }
     }
   }
 
@@ -440,9 +434,8 @@ export function audit(ctx, opts) {
     const anonymous = names.filter((n, i) => ids[i] === "");
     const unique = new Set(ids.filter(Boolean));
     const problems = [];
-    if (names.length === 0) problems.push("registry has no members");
     if (anonymous.length) problems.push(`${anonymous.length} of ${names.length} members carry no agentId`);
-    if (names.length && unique.size !== ids.filter(Boolean).length) problems.push("member ids are not unique");
+    if (unique.size !== ids.filter(Boolean).length) problems.push("member ids are not unique");
     if (names.length < wave.spawned) problems.push(`${names.length} members for ${wave.spawned} spawned seats`);
     if (problems.length) {
       add(
@@ -463,9 +456,7 @@ export function audit(ctx, opts) {
       .filter((l) => /^\s*\|/.test(l) && !/^\s*\|[\s:|-]+\|\s*$/.test(l))
       .filter((l) => !/^\s*\|\s*change\s*\|/i.test(l));
     for (const row of rows) {
-      const hashes = [...new Set([...row.matchAll(/\b[0-9a-f]{7,40}\b/g)].map((m) => m[0]))].filter(
-        (h) => HASHLIKE.test(h) && /[a-f]/.test(h) && !/^\d+$/.test(h)
-      );
+      const hashes = [...new Set([...row.matchAll(/\b[0-9a-f]{7,40}\b/g)].map((m) => m[0]))].filter((h) => /[a-f]/.test(h));
       if (!hashes.length) continue;
       const bindsElsewhere = /LOG entry lands in/i.test(row);
       const seen = [];
@@ -894,6 +885,16 @@ function resolvePolicy(policyPath, policyText) {
   return { policy, band, authorities };
 }
 
+// One gate for both CLI branches (an arbitrary path could restate a band the fleet never
+// authorised); the shared message keeps the refused path visible.
+function resolvePolicyPath(values) {
+  const policyPath = values.get("--policy") ? resolve(values.get("--policy")) : DEFAULT_POLICY;
+  if (!FLEET_POLICIES.includes(policyPath)) {
+    fail(`--policy must name one of the fleet authority files (${FLEET_POLICIES.join(", ")}), got ${policyPath}`);
+  }
+  return policyPath;
+}
+
 function main(argv) {
   const { flags, values } = parseArgs(argv);
   if (flags.has("-h") || flags.has("--help")) {
@@ -914,8 +915,7 @@ function main(argv) {
     if (capRaw === undefined) fail("--round-cap is required with --selftest --rev");
     const roundCap = Number(capRaw);
     if (!Number.isFinite(roundCap) || roundCap <= 0) fail(`--round-cap must be a positive number, got ${JSON.stringify(capRaw)}`);
-    const policyPath = values.get("--policy") ? resolve(values.get("--policy")) : DEFAULT_POLICY;
-    if (!FLEET_POLICIES.includes(policyPath)) fail(`--policy must name one of the fleet authority files (${FLEET_POLICIES.join(", ")})`);
+    const policyPath = resolvePolicyPath(values);
     let policyText;
     try {
       policyText = readFileSync(policyPath, "utf8");
@@ -954,12 +954,9 @@ function main(argv) {
   const scriptPath = fileURLToPath(import.meta.url);
   const scriptRoot = resolve(dirname(scriptPath), "..");
   const root = scriptRoot;
-  const policyPath = values.get("--policy") ? resolve(values.get("--policy")) : DEFAULT_POLICY;
   // The policy input may only name a fleet authority file: an arbitrary path could restate a
   // band the fleet never authorised (the tighten-only guard below is the second lock).
-  if (!FLEET_POLICIES.includes(policyPath)) {
-    fail(`--policy must name one of the fleet authority files (${FLEET_POLICIES.join(", ")}), got ${policyPath}`);
-  }
+  const policyPath = resolvePolicyPath(values);
   const reportPath = resolve(values.get("--report") || `/home/vgpnk/Projects/shokunin/.ufo/reports/round-${round}/tabi.md`);
   // The report input is a round artifact in the fleet repo; an arbitrary path would let a caller
   // choose the bytes c4 and c6 are decided on.

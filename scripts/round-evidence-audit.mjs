@@ -126,6 +126,19 @@ export function gitCtx(root, rev) {
       const out = gitRaw(root, ["diff-tree", "--no-commit-id", "--name-only", "-r", "--end-of-options", commit]);
       return out === null ? null : out.toString("utf8").split("\n").filter(Boolean);
     },
+    topLevel(prefix) {
+      const out = gitRaw(root, ["ls-tree", "-z", "--end-of-options", rev, "--", prefix]);
+      if (out === null) return null;
+      return out
+        .toString("utf8")
+        .split("\0")
+        .filter(Boolean)
+        .map((record) => {
+          const [meta, path] = record.split("\t");
+          const [, type] = (meta || "").split(" ");
+          return { path, type };
+        });
+    },
   };
 }
 
@@ -145,6 +158,11 @@ export function fixtureCtx(files, commitFiles = {}) {
     },
     filesOfCommit(commit) {
       return Object.prototype.hasOwnProperty.call(commitFiles, commit) ? commitFiles[commit] : null;
+    },
+    topLevel(prefix) {
+      return [...map.keys()]
+        .filter((p) => p.startsWith(`${prefix}/`) && !p.slice(prefix.length + 1).includes("/"))
+        .map((path) => ({ path, type: "blob" }));
     },
   };
 }
@@ -310,7 +328,11 @@ export function audit(ctx, opts) {
 
   // c2 — wave caps, unaccounted waves, round total.
   const specFiles = topFiles.filter((f) => /-spec\.json$/.test(f));
-  const capProblems = [];
+  const topEntries = typeof ctx.topLevel === "function" ? ctx.topLevel(roundDir) || [] : [];
+  const nonBlobSpecs = topEntries.filter((e) => /-spec\.json$/.test(e.path) && e.type !== "blob");
+  const capProblems = nonBlobSpecs.map(
+    (e) => `${e.path}: a ${e.type} named as a wave spec — its seats cannot be counted, so the wave cannot be graded`
+  );
   let roundTotal = 0;
   const waveCounts = [];
   for (const specFile of specFiles) {
@@ -469,12 +491,26 @@ export function audit(ctx, opts) {
       if (!hashes.length) continue;
       const bindsElsewhere = /LOG entry lands in/i.test(row);
       const seen = [];
+      const unresolved = [];
       let logBound = false;
       for (const hash of hashes) {
         const touched = ctx.filesOfCommit(hash);
-        if (touched === null) continue;
+        if (touched === null) {
+          unresolved.push(hash);
+          continue;
+        }
         seen.push(hash);
         if (touched.includes("LOG.md")) logBound = true;
+      }
+      if (unresolved.length && !logBound) {
+        add(
+          "c6-landed-log-binding",
+          unresolved.join(","),
+          "unresolvable cited commit",
+          [row.trim().slice(0, 160)],
+          "the row cites a commit that does not resolve in this repository, so the change it claims is not bound to any LOG entry"
+        );
+        continue;
       }
       if (seen.length && !logBound && !bindsElsewhere) {
         add(
