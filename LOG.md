@@ -1945,3 +1945,16 @@ could-not-evaluate (exit 2). The C2 reviewer found this with a missing-receipt
 fixture. Correction: absent receipt now throws `Refusal`; a selftest case
 asserts exit 2, and the registered selftest count is 5/5. This is an
 implementation correction to the unchanged frozen rule, not a claim rewrite.
+
+### Resumption-text audit — inherited claims were not verbatim
+
+The round-27 claims record and its `resumeNote` describe an unchanged
+re-dispatch, but wave-2 comparison found claim-text differences from
+round-26: C1's baseline/after/control/killRule, C2's control/killRule/
+failureCapable, and C3's declared/control/killRule/failureCapable. Among the
+changed conditions, C2 drops inherited fetch-failure and measurement-revision
+binding requirements; C1 substitutes a measured baseline value into the
+killRule; C3 adds an inference-specific clause. The round-26 claim file remains
+the original; this note discloses drift and does not rewrite the frozen
+round-27 record after data. Consequently no claim is described as a verbatim
+resumption; see lesson M5 and the wave-2 audit reports.

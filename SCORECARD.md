@@ -1369,22 +1369,23 @@ dispatch payload built (`w1-dispatch.json`); **dispatched 0 — operator
 wrap-up**. W2 never specced. Round total 0 seats, 0 dead. The §3 planner seat
 is held by the L1; the validated spec would have met the L2 floor inside W1.
 
-## Round 27 — declared claims (re-dispatch of round-26 frozen claims)
+## Round 27 — declared claims (resumption attempt; inherited text drift disclosed)
 
-Baseline `f185b4e7ab10cd9e8925e8ec614c9c111772357d`; claims record
-`.ufo/waves/round-27/claims.json` — the round-26 claims re-dispatched verbatim
-(predicate, counter, kill rule, target unchanged per §10 frozen/resumed and the
-round-26 LOG resumption point). Axes at round start: depth 8, coverage 9,
-operability 8, freshness 8, calibration 9, adjacency 8. Lowest non-retired
-axis: **tie at 8** (depth, operability, freshness, adjacency); C2 works depth
-(tie), C1 calibration 9, C3 coverage 9. Saturation 8 / window 3 retained;
-stagnation nudge inactive (capabilities entered at rounds 22–25). No axis retired.
+Baseline `f185b4e7ab10cd9e8925e8ec614c9c111772357d`; the round-27
+`.ufo/waves/round-27/claims.json` says the round-26 claims were re-dispatched
+unchanged, but wave-2 audit found C1/C2/C3 claim text differences from the
+inherited file. The frozen record was not rewritten after data; see lesson M5
+and the report. Axes and the intended targets are recorded below.
+Axes at round start: depth 8, coverage 9, operability 8, freshness 8,
+calibration 9, adjacency 8. Lowest non-retired axis tie at 8 (depth,
+operability, freshness, adjacency); C2 intended to work depth. Saturation 8 /
+window 3; nudge inactive; no axis retired.
 
-| Claim | Axis / type | Before → after | Counting command (field) |
+| Round-27 claim text (not identical to inherited record) | Axis / type | Target | Counting command (field) |
 |---|---|---|---|
-| C1 | calibration — counter-window extension (frozen round-26 claim, unchanged) | extended `check-selfassessment.mjs` m1 window to LOG.md round entries: ≥1 `m1-selftest-tally` mismatch at baseline → 0 at tip after append-only corrections; selftest 13 → ≥15 | `node scripts/check-selfassessment.mjs --rev <REV> --json` (`mismatches`) |
-| C2 | depth — routed source-evidence admission (frozen round-26 claim, unchanged) | 0 gate → `valid=true` at tip | `node scripts/check-s106-evidence.mjs --rev <REV> --json` (`valid`) |
-| C3 | coverage — assimilation admission (addendum §10), documented-upstream | 0 entries cite S107 → ≥1 (entry re-grounded on fresh RFC 9110 bytes) | `git grep -lE '^source: S107 ' <REV> -- corpus/knowledge \| wc -l` |
+| C1 | calibration — intended counter-window extension; inherited claim text drifted | intended target: ≥1 LOG-window mismatch at counter baseline → 0 at tip; selftest 13 → ≥15 | `node scripts/check-selfassessment.mjs --rev <REV> --json` (`mismatches`) |
+| C2 | depth — intended routed source-evidence admission; inherited claim text drifted | intended target: 0 gate → `valid=true` at tip | `node scripts/check-s106-evidence.mjs --rev <REV> --json` (`valid`) |
+| C3 | coverage — intended §10 assimilation admission; inherited claim text drifted | intended target: 0 entries cite S107 → ≥1 | `git grep -lE '^source: S107 ' <REV> -- corpus/knowledge \| wc -l` |
 
 ## Round 27 — executed disposition
 
@@ -1394,8 +1395,8 @@ zero is not accepted because the frozen supersession rule is not enforced.
 | Claim / axis | Before → after | Verdict |
 |---|---|---|
 | C1 calibration | baseline `4ad4c77` → `mismatches=6` (five LOG-window findings + one live-tree m3 finding); selftest 13 → 17 | **failed** — the apparent zero is unsound: `CritC1Supersession.md` and `ExecC1Attacks.md` prove the paragraph matcher clears real `LOG.md:221` without citing that line, contrary to the frozen C1 predicate. `m3` also reads live porcelain rather than the pinned `--rev`. No post-data counter-rule change; defer repair to a new claim. |
-| C2 depth | 0 → `valid=true` at corrected gate `5ed6484da66e6bf73654281d2e9ba3703f0c2ef0` (present, sha_match, anchor_located, anchor_unique, byte_count_match) | **met after correction** — absent receipt now yields frozen CNE/exit 2; selftest 5/5; see `scripts/check-s106-evidence.mjs` and `corpus/lessons/round-27.md` M3. |
-| C3 coverage | 0 → 1 entry cites S107 at `6ca3b89ad2a7b480984859834b3d28f1e75a9a26` | **met** — transformed row appended; census E09 rejects the byte-exact staged S124 recheck cell (`.ufo/waves/round-27/assimilation/staged-census.txt`); registry 106 → 107 rows and live census exit 0 (`census-after-c3.txt`). S125/S142 refusal reasons are recorded in `corpus/lessons/round-27.md` §Gate (S125: not opened this round; E09/E11/W04; S142: same-document scope overlap, not E04). |
+| C2 depth | counter target 0 → `valid=true` at corrected gate `5ed6484da66e6bf73654281d2e9ba3703f0c2ef0` (present, sha_match, anchor_located, anchor_unique, byte_count_match) | **measured, inherited-conformance not established** — absent receipt now yields exit 2 and selftest 5/5, but round-27 claim text dropped inherited fetch-failure and revision-binding clauses; the receipt has no revision field and the gate cannot prove that inherited condition. |
+| C3 coverage | counter target 0 → 1 S107-citing entry at `6ca3b89ad2a7b480984859834b3d28f1e75a9a26` | **measured, standing §10 duty incomplete** — transformed row and live census exit 0 (`census-after-c3.txt`), but the 38-row quarantine slice was not hand-checked this round and the round-27 claim record differs from inherited text. Refusal grounds and census measurements are in `corpus/lessons/round-27.md` §Gate. |
 | operability | 8 → 8 (a new gate lands with registry row; SKILL.md eight-field rows appended under the append-only round-27 section; `check-gate-registry.mjs` clean) | improved in substance, scalar held — counted under the claim's own counter, not re-scored |
 | freshness, adjacency | unchanged | no claim; no harm measured — every prior-round byte is append-only |
 
@@ -1411,9 +1412,11 @@ reviewer, 3 critic, 2 mutation-tester, 2 connector, 1 sentinel, 1 revenger
 scribe, 1 simplifier, 3 mutation-tester, 2 reviewer, 5 critic, 4 scout, 2
 sentinel, 2 connector (m_flash 18/36 = 50%; attack 10/36 = 27.8%). Both
 validated under policy v1; W1 dispatched as one batched call and W2 dispatched
-after its 36-seat spec validated. Dead seats: record from each wave registry
-after settlement. The §3 planner seat is held by the L1; the validated spec met
-the L2 floor inside W1.
+after its 36-seat spec validated. W1: 32 reports/32 seats; no dead seats.
+W2: 33 reports/36 seats at this snapshot, two seats still running, and
+`ScribeClaimRecordAudit` completed without writing its assigned report (no
+artifact, no error text). The §3 planner seat is held by the L1; the validated
+spec met the L2 floor inside W1.
 
 ### Planned / saturation / retired — round 27
 
