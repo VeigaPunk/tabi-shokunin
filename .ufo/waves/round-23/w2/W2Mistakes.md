@@ -9,7 +9,7 @@ still pass `--selftest` with the branch deleted.
 Bytes attacked: `corpus/lessons/round-23.md` sha256 `d39da4df7ca23f6a873b506a8e2bf5b2ddf3f7d73cc9835ad5e259ea299e251b`;
 `scripts/round-evidence-audit.mjs` sha256 `978dfc495b840ab63107761f4ad998bb2ae98aa3241867b2e778792f51ad9578` (write time).
 Both moved during this review (lesson `f9344bf8`→`d0b23c96`→`98555c0e`→`d39da4df`; auditor
-`94759966`→`325006d2`→`a71048ad`→`e88a078e`), and the M4 cell that read "round-21 is a zero-control
+`94759966`→`325006d2`→`a71048ad`→`e88a078e`→`978dfc49`), and the M4 cell that read "round-21 is a zero-control
 only after the auditor accepts `*-task-result.json` receipts and a named non-author deferral" was
 replaced mid-review — that contradiction is *not* filed here; the prose-only finding below binds the
 current cell.
@@ -32,7 +32,7 @@ current cell.
 4. **M2 fix: the round-total half is real but unpinned by the claimed 12 cases.** It fires alone
    (probe: two waves at band cap 2, `--round-cap 3`): `.ufo/waves/round-23/scratch/W2Mistakes/probe-c6-c2.mjs`
    → `c2-wave-caps: "round total 4 spawned seats > round cap 3"`. Deleting that push still yields
-   `passed 12`: `sed 's/^  if (roundTotal > roundCap) capProblems.push/  \/\/ removed /' scripts/round-evidence-audit.mjs > /tmp/m.mjs; cp /tmp/m.mjs .ufo/waves/round-23/scratch/W2Mistakes/mut-roundarm4.mjs; node .ufo/waves/round-23/scratch/W2Mistakes/mut-roundarm4.mjs --selftest`
+   `passed 12`: `sed 's/^  if (roundTotal > roundCap) capProblems.push/  \/\/ removed /' scripts/round-evidence-audit.mjs > .ufo/waves/round-23/scratch/W2Mistakes/mut-roundarm4.mjs; node .ufo/waves/round-23/scratch/W2Mistakes/mut-roundarm4.mjs --selftest`
    → `"passed":12, "clean":true`. Smallest correction: a c2-red case with waves in band and round total above cap.
 5. **M3 captured-by is a post-hoc citation.** The identical clause is in the round-22 prompt, i.e. the
    rule that was in force when `47bfb5f` landed:
@@ -62,8 +62,8 @@ current cell.
 10. **M5's captured-by is an absence its own quoted context fills.** The wave specs already say
     "throwaway fixtures under `…/scratch/<YourName>/`" — a throwaway is not a landing — and the row's own
     name-only check is the rule that should have caught it. That check fails at current HEAD:
-    `grep -o "throwaway fixtures under" .ufo/waves/round-23/w1-spec.json`; `git ls-tree -r HEAD .ufo/waves/round-23/scratch | wc -l` → `868` at `dfae5cd`.
+    `grep -o "throwaway fixtures under" .ufo/waves/round-23/w1-spec.json`; `git ls-tree -r HEAD .ufo/waves/round-23/scratch | wc -l` → `1034` at `2433ed2` (the row's `868` is stale).
 11. **Provenance bound (affects any reader of this table).** §Mistakes and the auditor were edited by the
-    lane during this review; findings 4, 6 and 7 were re-derived on `e88a078e` after the earlier hashes,
+    lane during this review; findings 4, 6 and 7 were re-derived after each script edit (last on `978dfc49`),
     and the earlier M4 contradiction was dropped rather than filed. Any later edit to the table voids the
     hash pin, not the commands.
