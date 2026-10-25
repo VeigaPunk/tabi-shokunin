@@ -2497,3 +2497,19 @@ digest, validates this-round fetch dates, and locates each held quote in the sto
 |---|---|---|---|---|---|---|---|
 | bfcache-receipt | gate | `node scripts/check-bfcache-receipt.mjs --rev REV [--json]` | 0=clean (receipt present, valid, restores>=1); 1=failed (invalid receipt or restores=0); 2=could-not-evaluate (usage, unreadable revision, git failure, unexpected error) | `node scripts/check-bfcache-receipt.mjs --selftest` (cases=17, passed=17) | `scripts/check-bfcache-receipt.mjs` CASES table; `corpus/evidence/round-25/bfcache/receipt.json` | stdout/stderr only; production reads committed git blobs; self-test writes and deletes only its own temporary repositories | tabi L1 |
 | source-reopen-receipt | gate | `node scripts/check-source-reopen-receipt.mjs --rev REV [--json]` | 0=clean (reopened=6, unresolved=0); 1=failed (any unresolved/dup/miscount); 2=could-not-evaluate (usage, unreadable revision, git failure, malformed receipt, unexpected error) | `node scripts/check-source-reopen-receipt.mjs --selftest` (cases=18, passed=18) | `scripts/check-source-reopen-receipt.mjs` CASES table; `corpus/evidence/round-25/freshness/reopened.json` | stdout/stderr only; production reads committed git blobs; self-test writes and deletes only its own temporary repositories | tabi L1 |
+## Round 27 — LOG-window extension and decoded-source evidence gate (2026-10-25; append-only; never edit above)
+
+The selfassessment counter's m1 window now covers LOG.md round entries in addition to
+SCORECARD.md (frozen round-26 claim C1, executed this round): the same association rule
+(own line's scripts, else single-script section, else could-not-evaluate) applies, and the
+correction unit is the paragraph — a later paragraph clears an earlier stale mention only
+when it names the same script, carries a correction marker, cites the superseded line
+(`:LINE`) and states the oracle-correct number in a tally shape. The decoded-source evidence
+gate C2 commits the S106 decoded bytes + receipt (`corpus/evidence/round-26/sources/`) to a
+mechanical check: receipt parsed at the revision, decoded_sha256 recomputed over the
+committed bytes, anchor text required at the recorded line, unique in the file.
+
+| Name | Kind | Entry command | Verdict map | Self-test | Pinned-value path | Write scope | Owner |
+|---|---|---|---|---|---|---|---|
+| s106-evidence | gate | `node scripts/check-s106-evidence.mjs --rev REV [--json]` | 0=valid (receipt present, sha_match, anchor_located, anchor_unique, byte_count_match); 1=invalid (receipt present but committed bytes disagree); 2=could-not-evaluate (usage, unreadable revision, receipt or bytes absent, malformed receipt) | `node scripts/check-s106-evidence.mjs --selftest` (cases=4, passed=4) | `scripts/check-s106-evidence.mjs` CASES table; `corpus/evidence/round-26/sources/s106.json` + decoded bytes | stdout/stderr only; production reads committed git blobs at the revision only; self-test writes and deletes only its own temporary repositories | tabi L1 |
+| selfassessment-counter | gate | `node scripts/check-selfassessment.mjs --rev REV [--json]` | 0=clean; 1=failed (one or more mismatches); 2=could-not-evaluate (usage, unreadable revision, git failure); 3=self-test disagreement | `node scripts/check-selfassessment.mjs --selftest` (cases=17, passed=17) | `scripts/check-selfassessment.mjs` CASES table; `corpus/evidence/round-24/c2-measurements.json` | stdout/stderr only; executes only lane `scripts/` gates with their declared self-test flag, and only `git cat-file -e`/`git show` receipts; self-test writes and deletes only its own temporary repositories | tabi L1 |
