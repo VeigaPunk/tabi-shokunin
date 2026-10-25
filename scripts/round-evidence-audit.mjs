@@ -489,7 +489,22 @@ export function audit(ctx, opts) {
         (h) => HASHLIKE.test(h) && /[a-f]/.test(h) && !/^\d+$/.test(h)
       );
       if (!hashes.length) continue;
-      const bindsElsewhere = /LOG entry lands in/i.test(row);
+      let bindsElsewhere = false;
+      const escape = row.match(/LOG entry lands in\s*`?([0-9a-f]{7,40})`?/i);
+      if (escape) {
+        const touched = ctx.filesOfCommit(escape[1]);
+        bindsElsewhere = touched !== null && touched.includes("LOG.md");
+        if (!bindsElsewhere) {
+          add(
+            "c6-landed-log-binding",
+            escape[1],
+            touched === null ? "named commit does not resolve" : "named commit touches no LOG.md",
+            [row.trim().slice(0, 160)],
+            "the row says where its LOG entry lands, but that commit does not carry it"
+          );
+          continue;
+        }
+      }
       const seen = [];
       const unresolved = [];
       let logBound = false;
@@ -625,6 +640,22 @@ export function selftest() {
     runFixtureCase("c2-red-spec-above-band", "c2-wave-caps", (fx) => {
       fx.files[".ufo/waves/round-90/w1-spec.json"] = JSON.stringify({ wave: "fx-w1", maxLanes: 5, items: [{ name: "A" }, { name: "B" }] });
     }),
+    runFixtureCase("c2-red-round-total-over-cap", "c2-wave-caps", (fx) => {
+      // Specs stay inside the band (2 <= waveMaxLanes 2); only the total exceeds the cap.
+      fx.files[".ufo/waves/round-90/w2-spec.json"] = JSON.stringify({ wave: "fx-w2", maxLanes: 2, items: [{ name: "C" }, { name: "D" }] });
+      fx.files[".ufo/waves/round-90/w2-spawn-result.json"] = JSON.stringify({ text: "Spawned 2 background agents using scout, reviewer." });
+      fx.files[".ufo/waves/round-90/w2/swarm-registry.json"] = JSON.stringify({
+        schema: "ufo-swarm-registry-v1",
+        members: { C: { agentId: "fx.C" }, D: { agentId: "fx.D" } },
+      });
+      fx.files[".ufo/waves/round-90/w3-spec.json"] = JSON.stringify({ wave: "fx-w3", maxLanes: 2, items: [{ name: "E" }, { name: "F" }] });
+      fx.files[".ufo/waves/round-90/w3-spawn-result.json"] = JSON.stringify({ text: "Spawned 2 background agents using scout, reviewer." });
+      fx.files[".ufo/waves/round-90/w3/swarm-registry.json"] = JSON.stringify({
+        schema: "ufo-swarm-registry-v1",
+        members: { E: { agentId: "fx.E" }, F: { agentId: "fx.F" } },
+      });
+      // the refusal receipts stay at 2, so c1 keeps its own arm quiet
+    }),
     runFixtureCase("c2-green-total-at-cap", null, (fx) => {
       fx.files[".ufo/waves/round-90/w2-spec.json"] = JSON.stringify({ wave: "fx-w2", maxLanes: 2, items: [{ name: "C" }, { name: "D" }] });
       fx.files[".ufo/waves/round-90/w2-spawn-result.json"] = JSON.stringify({ text: "Spawned 2 background agents using scout, reviewer." });
@@ -695,9 +726,10 @@ export function selftest() {
   const inventory = CLASSES.map((cls, i) => {
     const red = cases.filter((c) => c.name.startsWith(`c${i + 1}-red-`)).length;
     const green = cases.filter((c) => c.name.startsWith(`c${i + 1}-green-`)).length;
-    return { class: cls, red, green, ok: red === 1 && green === 1 };
+    return { class: cls, red, green, ok: red >= 1 && green >= 1 && i + 1 !== 2 ? red === 1 && green === 1 : true };
   });
-  const inventoryOk = cases.length === CLASSES.length * 2 && inventory.every((c) => c.ok);
+  // c2 carries two red arms (band and round total), so the inventory is 13, not 12.
+  const inventoryOk = cases.length === CLASSES.length * 2 + 1 && inventory.every((c) => c.ok);
   const passed = cases.filter((c) => c.pass).length;
   return {
     schema: `${SCHEMA}-selftest`,

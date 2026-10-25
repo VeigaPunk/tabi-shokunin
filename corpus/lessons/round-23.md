@@ -30,7 +30,7 @@ C1: round-22 → exit **1**, `findingClasses` = six
 1/1/1/1/1/2. Before-arm: the instrument does not exist at the baseline revision
 (`git cat-file -e a89f1935:scripts/round-evidence-audit.mjs` → exit **128**) → 0 classes are
 mechanically detectable. Non-vacuity has two arms, both on round-22 bytes: `--selftest` →
-12 cases / 12 passed / inventory 6 red + 6 green, exit 0; and
+13 cases / 13 passed / inventory 6 red arms + 7 green arms, exit 0; and
 `--selftest --rev <rev> --round 22 --round-cap 128` → baseline 7 findings / 6 classes with
 **6/6 repairs**, each repair removing exactly its own class. The skip-work control
 (`.ufo/waves/round-23/fixtures/skipwork-control.mjs`) reaches 6 on round-22 evidence **but
@@ -40,7 +40,8 @@ positive (its Gate records no spot-check result and says no "owed to closure"); 
 control text was corrected on record in `claims.json` `revisions[2]` rather than by widening
 the predicate.
 
-C2: baseline 0 → 1 (`git grep -lE '^source: S10[23] ' … -- corpus/knowledge` lists
+C2: baseline 0 → 1 (`git grep -lE '^source: S10[23] ' <REV> -- corpus/knowledge | wc -l` → 0 at
+`a89f1935`, **1** at the checkpoint; the file listed is
 `corpus/knowledge/csrf-defense-shape-boundary.md`), and
 `git diff --diff-filter=A --name-only a89f1935 <checkpoint> -- corpus/knowledge` names exactly
 that one added file. Registry rows 101 → 103. Measured at the checkpoint

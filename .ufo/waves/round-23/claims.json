@@ -19,7 +19,7 @@
       "id": "C1",
       "axis": "operability",
       "type": "capability-acquisition",
-      "declared": "Build a lane-owned, fail-closed round-evidence auditor that mechanically derives six defect classes from a round's committed wave bytes, reproducing the six defects the round-22 non-author spot-check routed (refusal arithmetic, wave/round caps, Gate spot-check row, per-attempt stale-lane grading, registry seat identities, landed-change LOG binding). Before: 0 classes mechanically detectable (no such script exists at baseline). After: 6/6 classes detected on round-22 committed evidence with per-class evidence pointers.",
+      "declared": "Build a lane-owned, fail-closed round-evidence auditor that derives six defect classes from a round's committed lane bytes plus three identified external inputs (the fleet round report, the fleet wave-policy authority, and the round cap the run must supply), reproducing the six defects the round-22 non-author spot-check routed (refusal arithmetic, wave/round caps, Gate spot-check row, per-attempt stale-lane grading, registry seat identities, landed-change LOG binding). Before: 0 classes mechanically detectable (no such script exists at baseline). After: 6/6 classes detected on round-22 committed evidence with per-class evidence pointers.",
       "metric": "defect_classes_detected",
       "countingCommand": "node scripts/round-evidence-audit.mjs --rev <REV> --round 22 --round-cap 128 --json",
       "counterField": "findings[].class (distinct count)",
@@ -27,7 +27,7 @@
       "after": 6,
       "control": "A skip-work control (script that prints six findings unconditionally, or reads its own expectation file) must fail: the clean fixture must yield 0 findings and every check's green mutant must clear it. Round-21 evidence is the second control (must not yield the round-22 classes at all).",
       "killRule": "Any class whose red fixture does not trip it, or whose green fixture still trips it, is removed from the counted set; the target then misses and the round reports an honest stop on that class.",
-      "failureCapable": "node scripts/round-evidence-audit.mjs --selftest -> cases=12, passed=12, exit 0; one mutant per check in each direction (red trips, green clears)."
+      "failureCapable": "node scripts/round-evidence-audit.mjs --selftest -> cases=13, passed=13, exit 0 (one red and one green per class, plus a second red arm for c2's round-total leg), and node scripts/round-evidence-audit.mjs --selftest --rev <REV> --round 22 --round-cap 128 -> 6 repairs, exit 0."
     },
     {
       "id": "C2",

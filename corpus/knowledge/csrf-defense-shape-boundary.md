@@ -42,10 +42,11 @@ observable — and observability is this lane's ground.
 
 ## 2. The second layer is listed by the sheet, not enumerated by it
 
-The sheet (S103) lists several server-side defences. Three of them leave something
-a capture can hold; the list is **open** — the sheet also names Fetch Metadata
-(`Sec-Fetch-Site`), `Origin`/`Referer` checking and user-interaction verification,
-and this entry does not claim those are all of them:
+The sheet (S103) lists several server-side defences. Several of them leave something a capture
+can hold; the list is **open** — besides the three tabulated below, the sheet names Fetch
+Metadata (`Sec-Fetch-Site`), `Origin`/`Referer` checking and user-interaction
+verification, and this entry does not claim those are all of them. Fetch Metadata is
+itself a captured request header, which is why §4 carries a slot for it:
 
 | Defence class (the sheet's own naming) | What a lane inference says a receipt could hold | Note |
 |---|---|---|
@@ -87,8 +88,9 @@ is not yet measured (see §6).
 
 ## 4. What a receipt should record
 
-1. The defence shape observed (one of the three above, or `none-observed`),
-   with the artefact that shows it (form body, request headers, cookie pair).
+1. The defence shape observed — one of the three tabulated in §2, or `fetch-metadata`
+   (`Sec-Fetch-Site` on the request), or `none-observed` — with the artefact that shows
+   it (form body, request headers, cookie pair).
 2. Whether the submit was browser-initiated or script-initiated.
 3. What the SameSite attributes were, and whether they were *load-bearing* for
    this request shape — not whether they "protect against CSRF".
@@ -105,7 +107,8 @@ each found by re-opening the source rather than by reading the package:
 - **E1 — a quote that was a paraphrase.** The staged entry quotes "offers a robust
   defense"; the draft says "offer a robust defense" (plural verb). The quote is
   corrected, not kept with a note (`grep -c 'offers a robust defense'` → 0 on the
-  fetched bytes).
+  fetched bytes). E2's heading count uses the page's `<h1>`–`<h4>` headings (34 of 39
+  heading tags); none matches the staged section.
 - **E2 — two misplaced section citations.** The staged entry cites
   "§Common CSRF weaknesses and protection mechanisms", which does not exist in the
   sheet (0 headings of 34 match); the custom-header sentence lives under
