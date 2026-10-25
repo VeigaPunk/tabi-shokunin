@@ -1,0 +1,23 @@
+{
+  "schema": "tabi-bfcache-controls-v1",
+  "negative": [
+    {
+      "mode": "nohistory",
+      "restores": 0,
+      "note": "A->B only; no history step; frameNavigated types Navigation,Navigation",
+      "flags": [
+        "--headless=new",
+        "--disable-gpu"
+      ]
+    },
+    {
+      "mode": "disabled",
+      "restores": 0,
+      "note": "A->B->back with --disable-back-forward-cache; back came in as Navigation; backForwardCacheNotUsed cited BackForwardCacheDisabled, BackForwardCacheDisabledByCommandLine, BrowsingInstanceNotSwapped",
+      "flags": [
+        "--disable-back-forward-cache"
+      ]
+    }
+  ],
+  "controlsMean": "each negative differs from the positive journey by exactly one variable (history step / disable flag)"
+}

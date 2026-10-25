@@ -2477,3 +2477,23 @@ no earlier byte is edited. The verdict on the restatement is mechanical:
 | round-evidence-audit | gate | `node scripts/round-evidence-audit.mjs --rev REV --round N --round-cap SEATS [--report PATH] [--policy NAME] [--json]` | 0=clean; 1=failed (one or more findings); 2=could-not-evaluate (usage, IO, unreadable revision, missing round cap); 3=self-test disagreement | `node scripts/round-evidence-audit.mjs --selftest` (cases=13, passed=13) and `--selftest --rev REV --round N --round-cap SEATS` (evidence-keyed repair matrix) | `scripts/round-evidence-audit.mjs` CASES table; `corpus/evidence/round-23/c1-measurements.json`; the fleet round report and wave policy are read by path and digested in every output | stdout/stderr only; reads lane blobs at a revision plus the fleet report and policy; writes nothing | tabi L1 |
 | gate-registry-conformance | gate | `node scripts/check-gate-registry.mjs --rev REV [--json]` | 0=clean; 1=failed (one or more nonconformant gates); 2=could-not-evaluate (usage, unreadable revision, git failure); 3=self-test disagreement | `node scripts/check-gate-registry.mjs --selftest` (cases=22, passed=22) | `scripts/check-gate-registry.mjs` CASES table; `corpus/evidence/round-24/c1-measurements.json` | stdout/stderr only; production reads committed git blobs; self-test writes and deletes only its own temporary repositories | tabi L1 |
 | selfassessment-counter | gate | `node scripts/check-selfassessment.mjs --rev REV [--json]` | 0=clean; 1=failed (one or more mismatches); 2=could-not-evaluate (usage, unreadable revision, git failure); 3=self-test disagreement | `node scripts/check-selfassessment.mjs --selftest` (cases=13, passed=13) | `scripts/check-selfassessment.mjs` CASES table; `corpus/evidence/round-24/c2-measurements.json` | stdout/stderr only; executes only lane `scripts/` gates with their declared self-test flag, and only `git cat-file -e`/`git show` receipts; self-test writes and deletes only its own temporary repositories | tabi L1 |
+## Round 25 — bfcache runtime observation and source-reopen counters (2026-10-25; append-only; never edit above)
+
+Two counters land with this round. C1 (`scripts/check-bfcache-receipt.mjs`) reads the committed
+journey receipt at `corpus/evidence/round-25/bfcache/receipt.json` and verifies the restore event
+log against the raw event stream: stage-named history step executed via the history index
+(`Page.navigateToHistoryEntry`, the CDP history primitive; `Page.goBack` does not exist on this
+build — observed -32601), no disabled flag in the effective argv (including
+`--disable-features=…BackForwardCache…`), events digest binding, distinct restore events not
+exceeding goBack steps, loaderId continuity with the original A navigation, the page witness
+(`pageshow.persisted` + surviving JS state), no `Page.backForwardCacheNotUsed` contradiction, and
+the history-index drop. C2 (`scripts/check-source-reopen-receipt.mjs`) reads
+`corpus/evidence/round-25/freshness/reopened.json`, hashes the committed bytes against each row's
+digest, validates this-round fetch dates, and locates each held quote in the stored bytes
+(tag-stripped, whitespace-normalized), or validates a this-round superseding row that opens with
+`supersedes <id> —`.
+
+| Name | Kind | Entry command | Verdict map | Self-test | Pinned-value path | Write scope | Owner |
+|---|---|---|---|---|---|---|---|
+| bfcache-receipt | gate | `node scripts/check-bfcache-receipt.mjs --rev REV [--json]` | 0=clean (receipt present, valid, restores>=1); 1=failed (invalid receipt or restores=0); 2=could-not-evaluate (usage, unreadable revision, git failure, unexpected error) | `node scripts/check-bfcache-receipt.mjs --selftest` (cases=17, passed=17) | `scripts/check-bfcache-receipt.mjs` CASES table; `corpus/evidence/round-25/bfcache/receipt.json` | stdout/stderr only; production reads committed git blobs; self-test writes and deletes only its own temporary repositories | tabi L1 |
+| source-reopen-receipt | gate | `node scripts/check-source-reopen-receipt.mjs --rev REV [--json]` | 0=clean (reopened=6, unresolved=0); 1=failed (any unresolved/dup/miscount); 2=could-not-evaluate (usage, unreadable revision, git failure, malformed receipt, unexpected error) | `node scripts/check-source-reopen-receipt.mjs --selftest` (cases=18, passed=18) | `scripts/check-source-reopen-receipt.mjs` CASES table; `corpus/evidence/round-25/freshness/reopened.json` | stdout/stderr only; production reads committed git blobs; self-test writes and deletes only its own temporary repositories | tabi L1 |

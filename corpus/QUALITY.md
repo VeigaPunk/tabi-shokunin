@@ -351,3 +351,8 @@
     and mid-wave values are never filed as the after-value. (lesson:
     corpus/lessons/round-24.md#m1 #m2; routed round-23 defects 2 and 4;
     `scripts/check-selfassessment.mjs` cases=13)
+66. A claim's measurement receipt records the exact revision it was measured at, and the report
+    cites the same hash; a receipt whose recorded revision differs from the cited revision is a
+    defect (reference-drift), and the gate re-runs the counting command at the delivered tip rather
+    than trusting the receipt's self-report alone. (lesson: corpus/lessons/round-25.md#m1; routed
+    round-24 spot-check observation; `scripts/check-measurement-binding.mjs` red fixture)

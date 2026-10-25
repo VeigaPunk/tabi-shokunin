@@ -50,5 +50,36 @@
     "no real-site interaction, no consequential external action, no session/credential material",
     "assimilation (if any) is a frontier-step item under the assimilation contract, not a claim slot; quarantine-first verdicts from round 22 are carried, adoption is conditional on this round's re-grounding"
   ],
-  "revisions": []
+  "revisions": [
+    {
+      "when": "2026-10-25 pre-data (before any measurement commit)",
+      "what": "C1 history-step method naming: Page.goBack is NOT a CDP method on this build (observed -32601 in four runs). The real history step is Page.navigateToHistoryEntry(currentIndex-1) via Page.getNavigationHistory (Puppeteer page.goBack() primitive). The receipt step keeps action goBack with cdpMethod Page.navigateToHistoryEntry; the counter's f3 records history_result.ok and f13 verifies the history index drop. Target and metric unchanged (restores>=1, valid).",
+      "source": "wave-1 ExecHarnessC1 + ExecBfcacheDiagnostics reports"
+    },
+    {
+      "when": "2026-10-25 pre-data",
+      "what": "C1 before-state defined as committed-receipt absence swept at the baseline (git ls-tree for corpus/evidence/round-25 is empty); round-24 corpus U1/README.md:582 documents no committed probe performs a history step at all. The counter reports could-not-evaluate at revisions lacking the receipt; the claim's before=0 is the swept absence, not a counter output.",
+      "source": "ScoutFrontierSweep"
+    },
+    {
+      "when": "2026-10-25 pre-data",
+      "what": "C2 target strictness: reopened=6 and unresolved=0 with zero tolerated could-not-evaluate rows; a row whose fresh fetch failed at measure time is unresolved (fail-closed). A superseding row must exist and open with 'supersedes <this row id> —' and opened=2026-10-25. The counter does NOT require the digest to differ from earlier fetches (byte-identical pages are honest holds; freshness rests on fetched_at, committed bytes, and digest=sha(bytes)).",
+      "source": "ScoutFreshnessReopen + ExecFreshnessReceipt counter-design findings"
+    },
+    {
+      "when": "2026-10-25 pre-data",
+      "what": "Controls scored before claim data: C1 fake receipt (control/fake-receipt-bfcache.json) fails the production counter (invalid), no-history and disabled negative runs yield restores=0; C2 skip-work receipt (control/skipwork-freshness.json) fails (unresolved=6). Naive grep controls would falsely meet targets (recorded by ExecControlScore).",
+      "source": "wave-1 ExecControlScore + selftest matrices"
+    },
+    {
+      "when": "2026-10-25 pre-data",
+      "what": "Wave-1 validation note: the spec was dispatched via the validator's run under the upstream default band and re-validated under the hyaku v1 policy (UFO_CONFIG_PATH=…/ufo-wave-policy.json, UFO_FLEET_ALLOW_EXTERNAL_TOOLS=1, UFO_PROJECT_ROOT=lane); v1 plan/run exit 0 and the taskCall payload is byte-identical. 34 seats, roles incl planner-held L1, connector, executors, scribe, scout, reviewer, critic, mutation-tester, sentinel, simplifier, revenger.",
+      "source": "w1-spec.json + plan/run logs"
+    },
+    {
+      "when": "2026-10-25 pre-data",
+      "what": "Route table: every taxonomy role resolves to @m_flash via the operator's global config (task.agentModelOverrides/modelRoles); no per-lane model was passed (ScoutWavePolicy).",
+      "source": "~/.omp/agent/config.yml (read-only)"
+    }
+  ]
 }
