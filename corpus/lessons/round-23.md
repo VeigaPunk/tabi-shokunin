@@ -88,7 +88,10 @@ exit **0**, 103 rows (A89/B5/C9, mined 75), the same 16 `W04` warnings. Rows add
 1×A, 1×B. Rows touched: none in place — two new rows only.
 
 **Spot-check result (closing round-22 routed defect 3).** The round-22 non-author
-spot-check is now on record and is cited here rather than deferred:
+spot-check is now on record and is cited here rather than deferred
+(`grep -c 'agree\*\*' corpus/lessons/round-22-verifier-spotcheck.md` → 5,
+`grep -c 'disagree\*\*' …` → 0; `awk` over its §Discernment table → 1 admit, 2 refused,
+1 unverifiable, 1 register binding; `awk '/^## Routed defects/,/^## Notes for the operator/' … | grep -cE '^[0-9]+[.] '` → 6):
 `corpus/lessons/round-22-verifier-spotcheck.md` (hyaku closure, reviewer `@m_flash`,
 lane tip reviewed `be271a2`), **5 agree / 0 disagree** on the gate — 1 admit
 (`webmcp-lifecycle-oracle-round-22.md`), 3 refusal rulings (S102/S106 `payload-absent`,
@@ -143,7 +146,7 @@ Each names the superseded figure; no filed byte is rewritten.
 | M1 | a count asserted, never derived | `corpus/lessons/round-22-verifier-spotcheck.md:200-207` (routed defect 1); filed "23" at `LOG.md:1584`, `SCORECARD.md:1111`, `corpus/lessons/round-22.md:130` | PROTOCOL "a numeric claim carries its counting command" — present, and bypassed because the prompt scoped it to measurements, not prose | `c1-refusal-arithmetic`: on round-22 bytes cited 23 / derived 24 → 1 finding; red fixture (cited 1 vs 2 receipts) trips, green (cited 2 vs 2) clears |
 | M2 | a cap checked after authorisation | `w2b-spec.json` `maxLanes: 65`; policy `waveMaxLanes: 64`; total 129 | the policy band exists but nothing read it at validation time — the wave's own record substituted `[64,100]` | `c2-wave-caps`: 65 > 64 and 129 > 128 → 1 finding; green fixture at exactly the cap (2+2 = 4 of 4) clears; `--round-cap` is now mandatory (a verdict without it is exit 2) |
 | M3 | a change and its LOG entry bound to different commits | `47bfb5f` (0 LOG hunks) vs `fbee618` (1) | round-23 prompt §4's "every change tied to a LOG.md entry and to the commit hash that carries it" — met on the surface (a LOG.md section was named), not in substance | `c6-landed-log-binding`: per-row commit → `LOG.md` membership → 2 findings on round 22; green fixture binds "LOG entry lands in `<hash>`" and clears |
-| M4 | a control declared before it was run, and it did not clear | `.ufo/waves/round-23/claims.json` control text vs `node … --round 21 …` first run (2 classes) | claim sizing: a control is a command whose expected result is fixed in advance — the expectation was written as prose ("round-21 must not yield the classes") without the per-class disposition | control restated per class (round-21 is a zero-control only after the auditor accepts `*-task-result.json` receipts and a named non-author deferral in `## Gate`); the first runs' divergence is recorded in `## Waves` and the receipt, not smoothed |
+| M4 | a control declared before it was run, and it did not clear | `.ufo/waves/round-23/claims.json` control text vs `node … --round 21 …` first run (2 classes) | claim sizing: a control is a command whose expected result is fixed in advance — the expectation was written as prose ("round-21 must not yield the classes") without the per-class disposition | control restated in `claims.json` `revisions[2]`: round-21 is **not** a zero-control (it trips c3 as a true positive), and the zero-controls are the six-case evidence-keyed repair matrix and the skip-work refusal. An earlier widening that *would* have cleared round-21 was reverted to the frozen predicate instead of being kept |
 
 M1–M3 are the round-22 routed defects re-derived as criteria; M4 and M5 are this round's own.
 Each fix is a check whose red and green fixtures both run (`--selftest`, 12 cases), except M5,
