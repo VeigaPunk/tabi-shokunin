@@ -1,0 +1,3429 @@
+
+
+
+
+
+
+
+
+
+<!doctype html>
+<html 
+      lang="en"
+      dir="ltr">
+  <head>
+    <meta name="google-signin-client-id" content="157101835696-ooapojlodmuabs2do2vuhhnf90bccmoi.apps.googleusercontent.com"><meta name="google-signin-scope"
+          content="profile email https://www.googleapis.com/auth/developerprofiles https://www.googleapis.com/auth/developerprofiles.award https://www.googleapis.com/auth/devprofiles.full_control.firstparty"><meta property="og:site_name" content="web.dev">
+    <meta property="og:type" content="website"><meta name="theme-color" content="#3740ff"><meta charset="utf-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <link rel="manifest" href="/_pwa/web/manifest.json"
+          crossorigin="use-credentials">
+    <link rel="preconnect" href="//www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="//fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="//www.google-analytics.com" crossorigin><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&display=swap">
+      <link rel="stylesheet"
+            href="//fonts.googleapis.com/css2?family=Material+Icons&family=Material+Symbols+Outlined&display=block"><link rel="stylesheet" href="https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web/css/app.css">
+      
+        <link rel="stylesheet" href="https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web/css/dark-theme.css" disabled>
+      <link rel="shortcut icon" href="https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web/images/favicon.png">
+    <link rel="apple-touch-icon" href="https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web/images/touchicon-180.png"><link rel="canonical" href="https://web.dev/articles/bfcache"><link rel="search" type="application/opensearchdescription+xml"
+            title="web.dev" href="https://web.dev/s/opensearch.xml">
+      <link rel="alternate" hreflang="en"
+          href="https://web.dev/articles/bfcache" /><link rel="alternate" hreflang="x-default" href="https://web.dev/articles/bfcache" /><link rel="alternate" hreflang="ar"
+          href="https://web.dev/articles/bfcache?hl=ar" /><link rel="alternate" hreflang="bn"
+          href="https://web.dev/articles/bfcache?hl=bn" /><link rel="alternate" hreflang="zh-Hans"
+          href="https://web.dev/articles/bfcache?hl=zh-cn" /><link rel="alternate" hreflang="zh-Hant"
+          href="https://web.dev/articles/bfcache?hl=zh-tw" /><link rel="alternate" hreflang="fa"
+          href="https://web.dev/articles/bfcache?hl=fa" /><link rel="alternate" hreflang="fr"
+          href="https://web.dev/articles/bfcache?hl=fr" /><link rel="alternate" hreflang="de"
+          href="https://web.dev/articles/bfcache?hl=de" /><link rel="alternate" hreflang="he"
+          href="https://web.dev/articles/bfcache?hl=he" /><link rel="alternate" hreflang="hi"
+          href="https://web.dev/articles/bfcache?hl=hi" /><link rel="alternate" hreflang="id"
+          href="https://web.dev/articles/bfcache?hl=id" /><link rel="alternate" hreflang="it"
+          href="https://web.dev/articles/bfcache?hl=it" /><link rel="alternate" hreflang="ja"
+          href="https://web.dev/articles/bfcache?hl=ja" /><link rel="alternate" hreflang="ko"
+          href="https://web.dev/articles/bfcache?hl=ko" /><link rel="alternate" hreflang="pl"
+          href="https://web.dev/articles/bfcache?hl=pl" /><link rel="alternate" hreflang="pt-BR"
+          href="https://web.dev/articles/bfcache?hl=pt-br" /><link rel="alternate" hreflang="ru"
+          href="https://web.dev/articles/bfcache?hl=ru" /><link rel="alternate" hreflang="es-419"
+          href="https://web.dev/articles/bfcache?hl=es-419" /><link rel="alternate" hreflang="th"
+          href="https://web.dev/articles/bfcache?hl=th" /><link rel="alternate" hreflang="tr"
+          href="https://web.dev/articles/bfcache?hl=tr" /><link rel="alternate" hreflang="vi"
+          href="https://web.dev/articles/bfcache?hl=vi" /><link rel="alternate" hreflang="en-cn"
+          href="https://web.developers.google.cn/articles/bfcache" /><link rel="alternate" hreflang="x-default" href="https://web.developers.google.cn/articles/bfcache" /><link rel="alternate" hreflang="ar-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=ar" /><link rel="alternate" hreflang="bn-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=bn" /><link rel="alternate" hreflang="zh-Hans-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=zh-cn" /><link rel="alternate" hreflang="zh-Hant-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=zh-tw" /><link rel="alternate" hreflang="fa-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=fa" /><link rel="alternate" hreflang="fr-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=fr" /><link rel="alternate" hreflang="de-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=de" /><link rel="alternate" hreflang="he-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=he" /><link rel="alternate" hreflang="hi-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=hi" /><link rel="alternate" hreflang="id-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=id" /><link rel="alternate" hreflang="it-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=it" /><link rel="alternate" hreflang="ja-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=ja" /><link rel="alternate" hreflang="ko-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=ko" /><link rel="alternate" hreflang="pl-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=pl" /><link rel="alternate" hreflang="pt-BR-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=pt-br" /><link rel="alternate" hreflang="ru-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=ru" /><link rel="alternate" hreflang="es-419-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=es-419" /><link rel="alternate" hreflang="th-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=th" /><link rel="alternate" hreflang="tr-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=tr" /><link rel="alternate" hreflang="vi-cn"
+          href="https://web.developers.google.cn/articles/bfcache?hl=vi" /><title>Back/forward cache &nbsp;|&nbsp; Articles &nbsp;|&nbsp; web.dev</title>
+
+<meta property="og:title" content="Back/forward cache &nbsp;|&nbsp; Articles &nbsp;|&nbsp; web.dev"><meta name="description" content="Learn to optimize your pages for instant loads when using the browser&amp;#39;s back and forward buttons.">
+  <meta property="og:description" content="Learn to optimize your pages for instant loads when using the browser&amp;#39;s back and forward buttons."><meta property="og:url" content="https://web.dev/articles/bfcache"><meta property="og:image" content="https://web.dev/static/articles/bfcache/image/thumbnail.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675"><meta property="og:locale" content="en"><meta name="twitter:card" content="summary_large_image"><script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "dateModified": "2026-10-16",
+    "headline": "Back/forward cache"
+  }
+</script><script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Articles",
+      "item": "https://web.dev/articles"
+    },{
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Back/forward cache",
+      "item": "https://web.dev/articles/bfcache"
+    }]
+  }
+  </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+    </head>
+  <body class="color-scheme--light"
+        template="page"
+        theme="web-theme"
+        type="article"
+        
+        appearance
+        
+        layout="docs"
+        
+        
+        
+        
+        
+        display-toc
+        pending>
+  
+    <devsite-progress type="indeterminate" id="app-progress"></devsite-progress>
+  
+  
+    <a href="#main-content" class="skip-link button">
+      
+      Skip to main content
+    </a>
+    <section class="devsite-wrapper">
+      <devsite-cookie-notification-bar></devsite-cookie-notification-bar>
+        <devsite-header role="banner">
+  
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="devsite-header--inner" data-nosnippet>
+  <div class="devsite-top-logo-row-wrapper-wrapper">
+    <div class="devsite-top-logo-row-wrapper">
+      <div class="devsite-top-logo-row">
+        <button type="button" id="devsite-hamburger-menu"
+          class="devsite-header-icon-button button-flat material-icons gc-analytics-event"
+          data-category="Site-Wide Custom Events"
+          data-label="Navigation menu button"
+          visually-hidden
+          aria-label="Open menu">
+        </button>
+        
+<div class="devsite-product-name-wrapper">
+
+  <a href="/" class="devsite-site-logo-link gc-analytics-event"
+   data-category="Site-Wide Custom Events" data-label="Site logo" track-type="globalNav"
+   track-name="webDev" track-metadata-position="nav"
+   track-metadata-eventDetail="nav">
+  
+  <picture>
+    
+    <source srcset="https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web/images/lockup-dark-theme.svg"
+            media="(prefers-color-scheme: dark)"
+            class="devsite-dark-theme">
+    
+    <img src="https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web/images/lockup.svg" class="devsite-site-logo" alt="web.dev">
+  </picture>
+  
+</a>
+
+
+
+</div>
+        <div class="devsite-top-logo-row-middle">
+          <div class="devsite-header-upper-tabs">
+            
+              
+              
+  <devsite-tabs class="upper-tabs">
+
+    <nav class="devsite-tabs-wrapper" aria-label="Upper tabs">
+      
+        
+          <tab class="devsite-dropdown
+    devsite-dropdown-full
+    
+    
+    ">
+  
+    <button
+      class="devsite-tabs-content devsite-tabs-dropdown-only gc-analytics-event  devsite-icon devsite-icon-arrow-drop-down"
+  
+       track-type="nav"
+       track-metadata-position="nav - resources"
+       track-metadata-module="primary nav"
+       
+       
+         
+           data-category="Site-Wide Custom Events"
+         
+           data-label="Tab: Resources"
+         
+           track-name="resources"
+         
+       >
+    Resources
+  
+  </button>
+  
+  <div class="devsite-tabs-dropdown" role="menu" aria-label="submenu" hidden>
+    <div class="devsite-tabs-dropdown-content">
+      
+      
+        <div class="devsite-tabs-dropdown-column
+                    ">
+          
+            <ul class="devsite-tabs-dropdown-section
+                       build-icon web-dev-subnav">
+              
+                <li class="devsite-nav-title" role="heading" tooltip>Web Platform</li>
+              
+              
+                <li class="devsite-nav-description">Dive into the web platform, at your pace.
+</li>
+              
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/html"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/html"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="web platform"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      HTML
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/css"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/css"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="web platform"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      CSS
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/javascript"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/javascript"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="web platform"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      JavaScript
+                    </div>
+                    
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </div>
+      
+        <div class="devsite-tabs-dropdown-column
+                    ">
+          
+            <ul class="devsite-tabs-dropdown-section
+                       build-icon web-dev-subnav">
+              
+                <li class="devsite-nav-title" role="heading" tooltip>User experience</li>
+              
+              
+                <li class="devsite-nav-description">Learn how to build better user experiences.
+</li>
+              
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/performance"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/performance"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="user experience"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Performance
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/accessibility"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/accessibility"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="user experience"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Accessibility
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/identity"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/identity"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="user experience"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Identity
+                    </div>
+                    
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </div>
+      
+        <div class="devsite-tabs-dropdown-column
+                    ">
+          
+            <ul class="devsite-tabs-dropdown-section
+                       productivity-icon web-dev-subnav">
+              
+                <li class="devsite-nav-title" role="heading" tooltip>Learn</li>
+              
+              
+                <li class="devsite-nav-description">Get up to speed on web development.</li>
+              
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/learn/html"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/learn/html"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="learn"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Learn HTML
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/learn/css"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/learn/css"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="learn"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Learn CSS
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/learn/javascript"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/learn/javascript"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="learn"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Learn JavaScript
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/learn/ai"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/learn/ai"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="learn"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Learn AI
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/learn/performance"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/learn/performance"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="learn"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Learn Performance
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/learn/accessibility"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/learn/accessibility"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="learn"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Learn Accessibility
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/learn"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/learn"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="learn"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      More courses
+                    </div>
+                    
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </div>
+      
+        <div class="devsite-tabs-dropdown-column
+                    ">
+          
+            <ul class="devsite-tabs-dropdown-section
+                       experience-icon web-dev-subnav">
+              
+                <li class="devsite-nav-title" role="heading" tooltip>Additional resources</li>
+              
+              
+                <li class="devsite-nav-description">Explore content collections, patterns, and more.</li>
+              
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/explore/ai"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/explore/ai"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="additional resources"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      AI and the web
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/explore"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/explore"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="additional resources"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Explore
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://pagespeed.web.dev/"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://pagespeed.web.dev/"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="additional resources"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      PageSpeed Insights
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/shows"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/shows"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="additional resources"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Podcasts &amp; shows
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/newsletter"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/newsletter"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="additional resources"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      Developer Newsletter
+                    </div>
+                    
+                  </a>
+                </li>
+              
+                <li class="devsite-nav-item">
+                  <a href="https://web.dev/about"
+                    
+                     track-type="nav"
+                     track-metadata-eventdetail="https://web.dev/about"
+                     track-metadata-position="nav - resources"
+                     track-metadata-module="tertiary nav"
+                     
+                       track-metadata-module_headline="additional resources"
+                     
+                     tooltip
+                  >
+                    
+                    <div class="devsite-nav-item-title">
+                      About web.dev
+                    </div>
+                    
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </div>
+      
+    </div>
+  </div>
+</tab>
+        
+      
+        
+          <tab  >
+            
+    <a href="https://web.dev/discover"
+    class="devsite-tabs-content gc-analytics-event "
+      track-metadata-eventdetail="https://web.dev/discover"
+    
+       track-type="nav"
+       track-metadata-position="nav - discover"
+       track-metadata-module="primary nav"
+       
+       
+         
+           data-category="Site-Wide Custom Events"
+         
+           data-label="Tab: Discover"
+         
+           track-name="discover"
+         
+       >
+    Discover
+  
+    </a>
+    
+  
+          </tab>
+        
+      
+        
+          <tab  >
+            
+    <a href="https://web.dev/baseline"
+    class="devsite-tabs-content gc-analytics-event "
+      track-metadata-eventdetail="https://web.dev/baseline"
+    
+       track-type="nav"
+       track-metadata-position="nav - baseline"
+       track-metadata-module="primary nav"
+       
+       
+         
+           data-category="Site-Wide Custom Events"
+         
+           data-label="Tab: Baseline"
+         
+           track-name="baseline"
+         
+       >
+    Baseline
+  
+    </a>
+    
+  
+          </tab>
+        
+      
+        
+          <tab  >
+            
+    <a href="https://web.dev/how-to-use-baseline"
+    class="devsite-tabs-content gc-analytics-event "
+      track-metadata-eventdetail="https://web.dev/how-to-use-baseline"
+    
+       track-type="nav"
+       track-metadata-position="nav - how to use baseline"
+       track-metadata-module="primary nav"
+       
+       
+         
+           data-category="Site-Wide Custom Events"
+         
+           data-label="Tab: How to use Baseline"
+         
+           track-name="how to use baseline"
+         
+       >
+    How to use Baseline
+  
+    </a>
+    
+  
+          </tab>
+        
+      
+        
+          <tab  >
+            
+    <a href="https://web.dev/blog"
+    class="devsite-tabs-content gc-analytics-event "
+      track-metadata-eventdetail="https://web.dev/blog"
+    
+       track-type="nav"
+       track-metadata-position="nav - blog"
+       track-metadata-module="primary nav"
+       
+       
+         
+           data-category="Site-Wide Custom Events"
+         
+           data-label="Tab: Blog"
+         
+           track-name="blog"
+         
+       >
+    Blog
+  
+    </a>
+    
+  
+          </tab>
+        
+      
+        
+          <tab  >
+            
+    <a href="https://web.dev/case-studies"
+    class="devsite-tabs-content gc-analytics-event "
+      track-metadata-eventdetail="https://web.dev/case-studies"
+    
+       track-type="nav"
+       track-metadata-position="nav - case studies"
+       track-metadata-module="primary nav"
+       
+       
+         
+           data-category="Site-Wide Custom Events"
+         
+           data-label="Tab: Case Studies"
+         
+           track-name="case studies"
+         
+       >
+    Case Studies
+  
+    </a>
+    
+  
+          </tab>
+        
+      
+    </nav>
+
+  </devsite-tabs>
+
+            
+           </div>
+          
+<devsite-search
+    enable-signin
+    enable-search
+    enable-suggestions
+      enable-query-completion
+    
+    enable-search-summaries
+    project-name="Articles"
+    tenant-name="web.dev"
+    
+    
+    
+    
+    
+    >
+  <form class="devsite-search-form" action="https://web.dev/s/results" method="GET">
+    <div class="devsite-search-container">
+      <button type="button"
+              search-open
+              class="devsite-search-button devsite-header-icon-button button-flat material-icons"
+              
+              aria-label="Open search"></button>
+      <div class="devsite-searchbox">
+        <input
+          aria-activedescendant=""
+          aria-autocomplete="list"
+          
+          aria-label="Search"
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          autocomplete="off"
+          class="devsite-search-field devsite-search-query"
+          name="q"
+          
+          placeholder="Search"
+          role="combobox"
+          type="text"
+          value=""
+          >
+          <div class="devsite-search-image material-icons" aria-hidden="true">
+            
+              <svg class="devsite-search-ai-image" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g clip-path="url(#clip0_6641_386)">
+                    <path d="M19.6 21L13.3 14.7C12.8 15.1 12.225 15.4167 11.575 15.65C10.925 15.8833 10.2333 16 9.5 16C7.68333 16 6.14167 15.375 4.875 14.125C3.625 12.8583 3 11.3167 3 9.5C3 7.68333 3.625 6.15 4.875 4.9C6.14167 3.63333 7.68333 3 9.5 3C10.0167 3 10.5167 3.05833 11 3.175C11.4833 3.275 11.9417 3.43333 12.375 3.65L10.825 5.2C10.6083 5.13333 10.3917 5.08333 10.175 5.05C9.95833 5.01667 9.73333 5 9.5 5C8.25 5 7.18333 5.44167 6.3 6.325C5.43333 7.19167 5 8.25 5 9.5C5 10.75 5.43333 11.8167 6.3 12.7C7.18333 13.5667 8.25 14 9.5 14C10.6667 14 11.6667 13.625 12.5 12.875C13.35 12.1083 13.8417 11.15 13.975 10H15.975C15.925 10.6333 15.7833 11.2333 15.55 11.8C15.3333 12.3667 15.05 12.8667 14.7 13.3L21 19.6L19.6 21ZM17.5 12C17.5 10.4667 16.9667 9.16667 15.9 8.1C14.8333 7.03333 13.5333 6.5 12 6.5C13.5333 6.5 14.8333 5.96667 15.9 4.9C16.9667 3.83333 17.5 2.53333 17.5 0.999999C17.5 2.53333 18.0333 3.83333 19.1 4.9C20.1667 5.96667 21.4667 6.5 23 6.5C21.4667 6.5 20.1667 7.03333 19.1 8.1C18.0333 9.16667 17.5 10.4667 17.5 12Z" fill="#5F6368"/>
+                  </g>
+                <defs>
+                <clipPath id="clip0_6641_386">
+                <rect width="24" height="24" fill="white"/>
+                </clipPath>
+                </defs>
+              </svg>
+            
+          </div>
+          <div class="devsite-search-shortcut-icon-container" aria-hidden="true">
+            <kbd class="devsite-search-shortcut-icon">/</kbd>
+          </div>
+      </div>
+    </div>
+  </form>
+  <button type="button"
+          search-close
+          class="devsite-search-button devsite-header-icon-button button-flat material-icons"
+          
+          aria-label="Close search"></button>
+</devsite-search>
+
+        </div>
+
+        
+
+          
+
+          
+
+          
+
+          <devsite-appearance-selector></devsite-appearance-selector>
+
+          
+<devsite-language-selector>
+  <ul role="presentation">
+    
+    
+    <li role="presentation">
+      <a role="menuitem" lang="en"
+        >English</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="de"
+        >Deutsch</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="es_419"
+        >Español – América Latina</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="fr"
+        >Français</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="id"
+        >Indonesia</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="it"
+        >Italiano</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="pl"
+        >Polski</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="pt_br"
+        >Português – Brasil</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="vi"
+        >Tiếng Việt</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="tr"
+        >Türkçe</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="ru"
+        >Русский</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="he"
+        >עברית</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="ar"
+        >العربيّة</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="fa"
+        >فارسی</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="hi"
+        >हिंदी</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="bn"
+        >বাংলা</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="th"
+        >ภาษาไทย</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="zh_cn"
+        >中文 – 简体</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="zh_tw"
+        >中文 – 繁體</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="ja"
+        >日本語</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="ko"
+        >한국어</a>
+    </li>
+    
+  </ul>
+</devsite-language-selector>
+
+
+          
+
+        
+
+        
+          <devsite-user 
+                        
+                        
+                          enable-profiles
+                        
+                        
+                        id="devsite-user">
+            
+              
+              <span class="button devsite-top-button" aria-hidden="true" visually-hidden>Sign in</span>
+            
+          </devsite-user>
+        
+        
+        
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="devsite-collapsible-section
+    
+      devsite-header-no-lower-tabs
+    ">
+    <div class="devsite-header-background">
+      
+        
+          <div class="devsite-product-id-row"
+           >
+            <div class="devsite-product-description-row">
+              
+                
+                <div class="devsite-product-id">
+                  
+                  
+                  
+                    <ul class="devsite-breadcrumb-list"
+  >
+  
+  <li class="devsite-breadcrumb-item
+             ">
+    
+    
+    
+      
+        
+  <a href="https://web.dev/articles"
+      
+        class="devsite-breadcrumb-link gc-analytics-event"
+      
+        data-category="Site-Wide Custom Events"
+      
+        data-label="Lower Header"
+      
+        data-value="1"
+      
+        track-type="globalNav"
+      
+        track-name="breadcrumb"
+      
+        track-metadata-position="1"
+      
+        track-metadata-eventdetail="Articles"
+      
+    >
+    
+          Articles
+        
+  </a>
+  
+      
+    
+  </li>
+  
+</ul>
+                </div>
+                
+              
+              
+            </div>
+            
+          </div>
+          
+        
+      
+      
+    </div>
+  </div>
+
+</div>
+
+
+
+  
+</devsite-header>
+        <devsite-book-nav scrollbars hidden>
+          
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="devsite-book-nav-filter"
+     hidden>
+  <span class="filter-list-icon material-icons" aria-hidden="true"></span>
+  <input type="text"
+         placeholder="Filter"
+         
+         aria-label="Type to filter"
+         role="searchbox">
+  
+  <span class="filter-clear-button hidden"
+        data-title="Clear filter"
+        aria-label="Clear filter"
+        role="button"
+        tabindex="0"></span>
+</div>
+
+<nav class="devsite-book-nav devsite-nav nocontent" data-nosnippet
+     aria-label="Side menu">
+  <div class="devsite-mobile-header">
+    <button type="button"
+            id="devsite-close-nav"
+            class="devsite-header-icon-button button-flat material-icons gc-analytics-event"
+            data-category="Site-Wide Custom Events"
+            data-label="Close navigation"
+            aria-label="Close navigation">
+    </button>
+    <div class="devsite-product-name-wrapper">
+
+  <a href="/" class="devsite-site-logo-link gc-analytics-event"
+   data-category="Site-Wide Custom Events" data-label="Site logo" track-type="globalNav"
+   track-name="webDev" track-metadata-position="nav"
+   track-metadata-eventDetail="nav">
+  
+  <picture>
+    
+    <source srcset="https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web/images/lockup-dark-theme.svg"
+            media="(prefers-color-scheme: dark)"
+            class="devsite-dark-theme">
+    
+    <img src="https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web/images/lockup.svg" class="devsite-site-logo" alt="web.dev">
+  </picture>
+  
+</a>
+
+
+</div>
+  </div>
+
+  <div class="devsite-book-nav-wrapper">
+    <div class="devsite-mobile-nav-top">
+      
+        <ul class="devsite-nav-list">
+          
+            <li class="devsite-nav-item">
+              
+  
+  <span
+    
+       class="devsite-nav-title"
+       tooltip
+    
+    
+      
+        data-category="Site-Wide Custom Events"
+      
+        data-label="Tab: Resources"
+      
+        track-name="resources"
+      
+    >
+  
+    <span class="devsite-nav-text" tooltip >
+      Resources
+   </span>
+    
+  
+  </span>
+  
+
+  
+    <ul class="devsite-nav-responsive-tabs devsite-nav-has-menu
+               ">
+      
+<li class="devsite-nav-item">
+
+  
+  <span
+    
+       class="devsite-nav-title"
+       tooltip
+    
+    
+      
+        data-category="Site-Wide Custom Events"
+      
+        data-label="Tab: Resources"
+      
+        track-name="resources"
+      
+    >
+  
+    <span class="devsite-nav-text" tooltip menu="Resources">
+      More
+   </span>
+    
+    <span class="devsite-nav-icon material-icons" data-icon="forward"
+          menu="Resources">
+    </span>
+    
+  
+  </span>
+  
+
+</li>
+
+    </ul>
+  
+              
+            </li>
+          
+            <li class="devsite-nav-item">
+              
+  
+  <a href="/discover"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+      
+        data-category="Site-Wide Custom Events"
+      
+        data-label="Tab: Discover"
+      
+        track-name="discover"
+      
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Discover"
+     track-type="globalNav"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Discover
+   </span>
+    
+  
+  </a>
+  
+
+  
+              
+            </li>
+          
+            <li class="devsite-nav-item">
+              
+  
+  <a href="/baseline"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+      
+        data-category="Site-Wide Custom Events"
+      
+        data-label="Tab: Baseline"
+      
+        track-name="baseline"
+      
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Baseline"
+     track-type="globalNav"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Baseline
+   </span>
+    
+  
+  </a>
+  
+
+  
+              
+            </li>
+          
+            <li class="devsite-nav-item">
+              
+  
+  <a href="/how-to-use-baseline"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+      
+        data-category="Site-Wide Custom Events"
+      
+        data-label="Tab: How to use Baseline"
+      
+        track-name="how to use baseline"
+      
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: How to use Baseline"
+     track-type="globalNav"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      How to use Baseline
+   </span>
+    
+  
+  </a>
+  
+
+  
+              
+            </li>
+          
+            <li class="devsite-nav-item">
+              
+  
+  <a href="/blog"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+      
+        data-category="Site-Wide Custom Events"
+      
+        data-label="Tab: Blog"
+      
+        track-name="blog"
+      
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Blog"
+     track-type="globalNav"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Blog
+   </span>
+    
+  
+  </a>
+  
+
+  
+              
+            </li>
+          
+            <li class="devsite-nav-item">
+              
+  
+  <a href="/case-studies"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+      
+        data-category="Site-Wide Custom Events"
+      
+        data-label="Tab: Case Studies"
+      
+        track-name="case studies"
+      
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Case Studies"
+     track-type="globalNav"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Case Studies
+   </span>
+    
+  
+  </a>
+  
+
+  
+              
+            </li>
+          
+          
+          
+        </ul>
+      
+    </div>
+    
+      <div class="devsite-mobile-nav-bottom">
+        
+        
+          
+    
+      
+      <ul class="devsite-nav-list" menu="Resources"
+          aria-label="Side menu" hidden>
+        
+          
+            
+              
+<li class="devsite-nav-item devsite-nav-heading">
+
+  
+  <span
+    
+       class="devsite-nav-title"
+       tooltip
+    
+    >
+  
+    <span class="devsite-nav-text" tooltip >
+      Web Platform
+   </span>
+    
+  
+  </span>
+  
+
+</li>
+
+            
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/html"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: HTML"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      HTML
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/css"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: CSS"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      CSS
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/javascript"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: JavaScript"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      JavaScript
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+          
+        
+          
+            
+              
+<li class="devsite-nav-item devsite-nav-heading">
+
+  
+  <span
+    
+       class="devsite-nav-title"
+       tooltip
+    
+    >
+  
+    <span class="devsite-nav-text" tooltip >
+      User experience
+   </span>
+    
+  
+  </span>
+  
+
+</li>
+
+            
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/performance"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Performance"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Performance
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/accessibility"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Accessibility"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Accessibility
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/identity"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Identity"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Identity
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+          
+        
+          
+            
+              
+<li class="devsite-nav-item devsite-nav-heading">
+
+  
+  <span
+    
+       class="devsite-nav-title"
+       tooltip
+    
+    >
+  
+    <span class="devsite-nav-text" tooltip >
+      Learn
+   </span>
+    
+  
+  </span>
+  
+
+</li>
+
+            
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/learn/html"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Learn HTML"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Learn HTML
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/learn/css"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Learn CSS"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Learn CSS
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/learn/javascript"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Learn JavaScript"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Learn JavaScript
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/learn/ai"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Learn AI"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Learn AI
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/learn/performance"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Learn Performance"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Learn Performance
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/learn/accessibility"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Learn Accessibility"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Learn Accessibility
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/learn"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: More courses"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      More courses
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+          
+        
+          
+            
+              
+<li class="devsite-nav-item devsite-nav-heading">
+
+  
+  <span
+    
+       class="devsite-nav-title"
+       tooltip
+    
+    >
+  
+    <span class="devsite-nav-text" tooltip >
+      Additional resources
+   </span>
+    
+  
+  </span>
+  
+
+</li>
+
+            
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/explore/ai"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: AI and the web"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      AI and the web
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/explore"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Explore"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Explore
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="https://pagespeed.web.dev/"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: PageSpeed Insights"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      PageSpeed Insights
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/shows"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Podcasts &amp;amp; shows"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Podcasts &amp;amp; shows
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/newsletter"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: Developer Newsletter"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      Developer Newsletter
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+              
+<li class="devsite-nav-item">
+
+  
+  <a href="/about"
+    
+       class="devsite-nav-title gc-analytics-event
+              
+              "
+    
+
+    
+     data-category="Site-Wide Custom Events"
+     data-label="Responsive Tab: About web.dev"
+     track-type="navMenu"
+     track-metadata-eventDetail="globalMenu"
+     track-metadata-position="nav">
+  
+    <span class="devsite-nav-text" tooltip >
+      About web.dev
+   </span>
+    
+  
+  </a>
+  
+
+</li>
+
+            
+          
+        
+      </ul>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+        
+        
+      </div>
+    
+  </div>
+</nav>
+          
+        </devsite-book-nav>
+      
+      <section id="gc-wrapper">
+        <main role="main" id="main-content" class="devsite-main-content"
+            
+              
+              has-sidebar
+            >
+          <div class="devsite-sidebar">
+            <div class="devsite-sidebar-content">
+                
+                <devsite-toc class="devsite-nav"
+                            role="navigation"
+                            aria-label="On this page"
+                            depth="2"
+                            scrollbars
+                            data-nosnippet
+                  ></devsite-toc>
+                <devsite-recommendations-sidebar class="nocontent devsite-nav" data-nosnippet>
+                </devsite-recommendations-sidebar>
+            </div>
+          </div>
+          <devsite-content>
+            
+              
+
+
+
+
+
+
+
+
+
+
+<article class="devsite-article">
+  
+  
+  
+  
+  
+
+  <div class="devsite-article-meta nocontent" role="navigation" data-nosnippet>
+    
+    
+    <ul class="devsite-breadcrumb-list"
+  
+    aria-label="Breadcrumb">
+  
+  <li class="devsite-breadcrumb-item
+             ">
+    
+    
+    
+      
+        
+  <a href="https://web.dev/"
+      
+        class="devsite-breadcrumb-link gc-analytics-event"
+      
+        data-category="Site-Wide Custom Events"
+      
+        data-label="Breadcrumbs"
+      
+        data-value="1"
+      
+        track-type="globalNav"
+      
+        track-name="breadcrumb"
+      
+        track-metadata-position="1"
+      
+        track-metadata-eventdetail=""
+      
+    >
+    
+          Home
+        
+  </a>
+  
+      
+    
+  </li>
+  
+  <li class="devsite-breadcrumb-item
+             ">
+    
+      
+      <div class="devsite-breadcrumb-guillemet material-icons" aria-hidden="true"></div>
+    
+    
+    
+      
+        
+  <a href="https://web.dev/articles"
+      
+        class="devsite-breadcrumb-link gc-analytics-event"
+      
+        data-category="Site-Wide Custom Events"
+      
+        data-label="Breadcrumbs"
+      
+        data-value="2"
+      
+        track-type="globalNav"
+      
+        track-name="breadcrumb"
+      
+        track-metadata-position="2"
+      
+        track-metadata-eventdetail="Articles"
+      
+    >
+    
+          Articles
+        
+  </a>
+  
+      
+    
+  </li>
+  
+</ul>
+    
+      
+    <devsite-thumb-rating position="header">
+    </devsite-thumb-rating>
+  
+    
+  </div>
+  
+    <h1 class="devsite-page-title" tabindex="-1">
+      Back/forward cache<devsite-actions hidden data-nosnippet><devsite-feature-tooltip
+      ack-key="AckCollectionsBookmarkTooltipDismiss"
+      analytics-category="Site-Wide Custom Events"
+      analytics-action-show="Callout Profile displayed"
+      analytics-action-close="Callout Profile dismissed"
+      analytics-label="Create Collection Callout"
+      class="devsite-page-bookmark-tooltip nocontent"
+      data-nosnippet
+      dismiss-button="true"
+      id="devsite-collections-dropdown"
+      
+      dismiss-button-text="Dismiss"
+
+      
+      close-button-text="Got it">
+
+    
+    
+      <devsite-bookmark></devsite-bookmark>
+    
+
+    <span slot="popout-heading">
+      
+      Stay organized with collections
+    </span>
+    <span slot="popout-contents">
+      
+      Save and categorize content based on your preferences.
+    </span>
+  </devsite-feature-tooltip>
+    <devsite-llm-tools></devsite-llm-tools></devsite-actions>
+  
+      
+    </h1>
+  <div class="devsite-page-title-meta"><devsite-view-release-notes></devsite-view-release-notes></div>
+  
+
+  <devsite-toc class="devsite-nav"
+    depth="2"
+    devsite-toc-embedded
+    >
+  </devsite-toc>
+  
+    
+  <div class="devsite-article-body clearfix
+  ">
+
+  
+    
+    
+
+
+
+
+<p><style>
+  .wd-author__links {
+    display: flex;
+  }
+  /* Name, title and links stacked in a column centred against the avatar. */
+  .wd-author--with-title > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.3;
+  }
+  .wd-author__title {
+    color: var(--devsite-secondary-text-color);
+    font-size: 0.875em;
+  }
+  .wd-author--with-title .wd-author__links {
+    margin-block-start: 4px;
+  }
+  </style>
+
+<div class="wd-authors" translate="no">
+  
+    
+    
+      <div class="wd-author">
+        
+          <img class="devsite-landing-row-item-icon" alt="Philip Walton" 
+            src="https://web.dev/images/authors/philipwalton.jpg" 
+            decoding="async" height="64" loading="lazy" width="64"> 
+        
+        <div>
+          <span> 
+            Philip Walton
+          </span>
+          
+          <div class="wd-author__links">
+            
+              <a href="https://twitter.com/philwalton" aria-label="Philip Walton on X" rel="me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 300 271">
+                  <title>X</title>
+                  <path fill="currentColor" d="m236 0h46l-101 115 118 156h-92.6l-72.5-94.8-83 94.8h-46l107-123-113-148h94.9l65.5 86.6zm-16.1 244h25.5l-165-218h-27.4z"></path>
+                </svg></a>
+            
+            
+              <a href="https://github.com/philipwalton" aria-label="Philip Walton on GitHub" rel="me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32.6 31.8">
+                  <title>GitHub</title>
+                  <path d="M16.3 0C7.3 0 0 7.3 0 16.3c0 7.2 4.7 13.3 11.1 15.5.8.1 1.1-.4 1.1-.8v-2.8c-4.5 1-5.5-2.2-5.5-2.2-.7-1.9-1.8-2.4-1.8-2.4-1.5-1 .1-1 .1-1 1.6.1 2.5 1.7 2.5 1.7 1.5 2.5 3.8 1.8 4.7 1.4.1-1.1.6-1.8 1-2.2-3.6-.4-7.4-1.8-7.4-8.1 0-1.8.6-3.2 1.7-4.4-.1-.3-.7-2 .2-4.2 0 0 1.4-.4 4.5 1.7 1.3-.4 2.7-.5 4.1-.5 1.4 0 2.8.2 4.1.5 3.1-2.1 4.5-1.7 4.5-1.7.9 2.2.3 3.9.2 4.3 1 1.1 1.7 2.6 1.7 4.4 0 6.3-3.8 7.6-7.4 8 .6.5 1.1 1.5 1.1 3V31c0 .4.3.9 1.1.8 6.5-2.2 11.1-8.3 11.1-15.5C32.6 7.3 25.3 0 16.3 0z" fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" />
+                </svg></a>
+            
+            
+            
+              <a href="https://www.linkedin.com/in/waltonphilip" aria-label="Philip Walton on LinkedIn" rel="me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 200 200">
+                  <title>LinkedIn</title>
+                  <path d="M185.2 0H14.8C6.6 0 0 6.4 0 14.3v171.3c0 7.9 6.6 14.3 14.8 14.3h170.4c8.1 0 14.8-6.4 14.8-14.3V14.3C199.9 6.4 193.3 0 185.2 0zM60.6 167.3H30.4V77.1h30.2v90.2zM45.5 64.8h-.2c-10.1 0-16.7-6.9-16.7-15.6 0-8.8 6.7-15.6 17.1-15.6 10.3 0 16.7 6.7 16.9 15.6 0 8.6-6.5 15.6-17.1 15.6zm124 102.5h-30.2V119c0-12.1-4.4-20.4-15.3-20.4-8.4 0-13.3 5.6-15.5 11-.8 1.9-1 4.6-1 7.3v50.4H77.3s.4-81.8 0-90.3h30.2v12.8c4-6.1 11.2-14.9 27.2-14.9 19.9 0 34.8 12.9 34.8 40.6v51.8zm-62.2-77.1c0-.1.1-.2.2-.3v.3h-.2z" fill="currentColor" />
+                </svg></a>
+            
+            
+              <a href="https://toot.cafe/@philipwalton" aria-label="Philip Walton on Mastodon" rel="me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                  <title>Mastodon</title>
+                  <path fill="currentColor" d="M 15.659 9.592 C 15.424 10.72 13.553 11.956 11.404 12.195 C 10.283 12.32 9.18 12.434 8.003 12.384 C 6.079 12.302 4.56 11.956 4.56 11.956 C 4.56 12.13 4.572 12.297 4.595 12.452 C 4.845 14.224 6.478 14.33 8.025 14.379 C 9.586 14.429 10.976 14.02 10.976 14.02 L 11.04 15.337 C 11.04 15.337 9.948 15.884 8.003 15.984 C 6.93 16.039 5.598 15.959 4.047 15.576 C 0.683 14.746 0.104 11.4 0.015 8.006 C -0.012 6.998 0.005 6.048 0.005 5.253 C 0.005 1.782 2.443 0.765 2.443 0.765 C 3.672 0.238 5.782 0.017 7.975 0 L 8.029 0 C 10.221 0.017 12.332 0.238 13.561 0.765 C 13.561 0.765 15.999 1.782 15.999 5.253 C 15.999 5.253 16.03 7.814 15.659 9.592 Z M 13.124 5.522 L 13.124 9.725 L 11.339 9.725 L 11.339 5.646 C 11.339 4.786 10.951 4.35 10.175 4.35 C 9.317 4.35 8.887 4.867 8.887 5.891 L 8.887 8.124 L 7.113 8.124 L 7.113 5.891 C 7.113 4.867 6.683 4.35 5.825 4.35 C 5.049 4.35 4.661 4.786 4.661 5.646 L 4.661 9.725 L 2.876 9.725 L 2.876 5.522 C 2.876 4.663 3.111 3.981 3.582 3.476 C 4.067 2.971 4.703 2.712 5.493 2.712 C 6.406 2.712 7.098 3.039 7.555 3.695 L 8 4.39 L 8.445 3.695 C 8.902 3.039 9.594 2.712 10.507 2.712 C 11.297 2.712 11.933 2.971 12.418 3.476 C 12.889 3.981 13.124 4.663 13.124 5.522 Z" style="stroke:none;stroke-miterlimit:10;fill-rule:evenodd;"></path>
+                </svg></a>
+            
+            
+              <a href="https://bsky.app/profile/philipwalton.com" aria-label="Philip Walton on Bluesky" rel="me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 568 501">
+                  <title>Bluesky</title>
+                  <path fill="currentColor" d="M123.121 33.664C188.241 82.553 258.281 181.68 284 234.873c25.719-53.192 95.759-152.32 160.879-201.21C491.866-1.611 568-28.906 568 57.947c0 17.346-9.945 145.713-15.778 166.555-20.275 72.453-94.155 90.933-159.875 79.748C507.222 323.8 536.444 388.56 473.333 453.32c-119.86 122.992-172.272-30.859-185.702-70.281-2.462-7.227-3.614-10.608-3.631-7.733-.017-2.875-1.169.506-3.631 7.733-13.43 39.422-65.842 193.273-185.702 70.281-63.111-64.76-33.89-129.52 80.986-149.071-65.72 11.185-139.6-7.295-159.875-79.748C9.945 203.659 0 75.291 0 57.946 0-28.906 76.135-1.612 123.121 33.664Z"/>
+                </svg>
+              </a>
+            
+            
+              <a href="https://philipwalton.com/" aria-label="Philip Walton's homepage" rel="me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 30 30">
+                  <title>Homepage</title>
+                  <circle cx="14.5" cy="14.5" r="13.5" stroke-width="2" stroke-miterlimit="10" fill="none" stroke="currentColor" />
+                  <ellipse cx="14.5" cy="14.5" rx="6.1" ry="13.5" stroke-width="2" stroke-miterlimit="10" fill="none" stroke="currentColor" />
+                  <path d="M1.6 9.6h25.8M1.6 19.4h25.8" stroke-width="2" stroke-miterlimit="10" fill="none" stroke="currentColor" />
+                </svg></a>
+            
+          </div>
+        </div>
+      </div>
+    
+  
+    
+    
+      <div class="wd-author">
+        
+          <img class="devsite-landing-row-item-icon" alt="Barry Pollard" 
+            src="https://web.dev/images/authors/tunetheweb.jpg" 
+            decoding="async" height="64" loading="lazy" width="64"> 
+        
+        <div>
+          <span> 
+            Barry Pollard
+          </span>
+          
+          <div class="wd-author__links">
+            
+              <a href="https://twitter.com/tunetheweb" aria-label="Barry Pollard on X" rel="me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 300 271">
+                  <title>X</title>
+                  <path fill="currentColor" d="m236 0h46l-101 115 118 156h-92.6l-72.5-94.8-83 94.8h-46l107-123-113-148h94.9l65.5 86.6zm-16.1 244h25.5l-165-218h-27.4z"></path>
+                </svg></a>
+            
+            
+              <a href="https://github.com/tunetheweb" aria-label="Barry Pollard on GitHub" rel="me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32.6 31.8">
+                  <title>GitHub</title>
+                  <path d="M16.3 0C7.3 0 0 7.3 0 16.3c0 7.2 4.7 13.3 11.1 15.5.8.1 1.1-.4 1.1-.8v-2.8c-4.5 1-5.5-2.2-5.5-2.2-.7-1.9-1.8-2.4-1.8-2.4-1.5-1 .1-1 .1-1 1.6.1 2.5 1.7 2.5 1.7 1.5 2.5 3.8 1.8 4.7 1.4.1-1.1.6-1.8 1-2.2-3.6-.4-7.4-1.8-7.4-8.1 0-1.8.6-3.2 1.7-4.4-.1-.3-.7-2 .2-4.2 0 0 1.4-.4 4.5 1.7 1.3-.4 2.7-.5 4.1-.5 1.4 0 2.8.2 4.1.5 3.1-2.1 4.5-1.7 4.5-1.7.9 2.2.3 3.9.2 4.3 1 1.1 1.7 2.6 1.7 4.4 0 6.3-3.8 7.6-7.4 8 .6.5 1.1 1.5 1.1 3V31c0 .4.3.9 1.1.8 6.5-2.2 11.1-8.3 11.1-15.5C32.6 7.3 25.3 0 16.3 0z" fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" />
+                </svg></a>
+            
+            
+            
+            
+              <a href="https://mastodon.social/@tunetheweb" aria-label="Barry Pollard on Mastodon" rel="me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16">
+                  <title>Mastodon</title>
+                  <path fill="currentColor" d="M 15.659 9.592 C 15.424 10.72 13.553 11.956 11.404 12.195 C 10.283 12.32 9.18 12.434 8.003 12.384 C 6.079 12.302 4.56 11.956 4.56 11.956 C 4.56 12.13 4.572 12.297 4.595 12.452 C 4.845 14.224 6.478 14.33 8.025 14.379 C 9.586 14.429 10.976 14.02 10.976 14.02 L 11.04 15.337 C 11.04 15.337 9.948 15.884 8.003 15.984 C 6.93 16.039 5.598 15.959 4.047 15.576 C 0.683 14.746 0.104 11.4 0.015 8.006 C -0.012 6.998 0.005 6.048 0.005 5.253 C 0.005 1.782 2.443 0.765 2.443 0.765 C 3.672 0.238 5.782 0.017 7.975 0 L 8.029 0 C 10.221 0.017 12.332 0.238 13.561 0.765 C 13.561 0.765 15.999 1.782 15.999 5.253 C 15.999 5.253 16.03 7.814 15.659 9.592 Z M 13.124 5.522 L 13.124 9.725 L 11.339 9.725 L 11.339 5.646 C 11.339 4.786 10.951 4.35 10.175 4.35 C 9.317 4.35 8.887 4.867 8.887 5.891 L 8.887 8.124 L 7.113 8.124 L 7.113 5.891 C 7.113 4.867 6.683 4.35 5.825 4.35 C 5.049 4.35 4.661 4.786 4.661 5.646 L 4.661 9.725 L 2.876 9.725 L 2.876 5.522 C 2.876 4.663 3.111 3.981 3.582 3.476 C 4.067 2.971 4.703 2.712 5.493 2.712 C 6.406 2.712 7.098 3.039 7.555 3.695 L 8 4.39 L 8.445 3.695 C 8.902 3.039 9.594 2.712 10.507 2.712 C 11.297 2.712 11.933 2.971 12.418 3.476 C 12.889 3.981 13.124 4.663 13.124 5.522 Z" style="stroke:none;stroke-miterlimit:10;fill-rule:evenodd;"></path>
+                </svg></a>
+            
+            
+              <a href="https://bsky.app/profile/tunetheweb.com" aria-label="Barry Pollard on Bluesky" rel="me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 568 501">
+                  <title>Bluesky</title>
+                  <path fill="currentColor" d="M123.121 33.664C188.241 82.553 258.281 181.68 284 234.873c25.719-53.192 95.759-152.32 160.879-201.21C491.866-1.611 568-28.906 568 57.947c0 17.346-9.945 145.713-15.778 166.555-20.275 72.453-94.155 90.933-159.875 79.748C507.222 323.8 536.444 388.56 473.333 453.32c-119.86 122.992-172.272-30.859-185.702-70.281-2.462-7.227-3.614-10.608-3.631-7.733-.017-2.875-1.169.506-3.631 7.733-13.43 39.422-65.842 193.273-185.702 70.281-63.111-64.76-33.89-129.52 80.986-149.071-65.72 11.185-139.6-7.295-159.875-79.748C9.945 203.659 0 75.291 0 57.946 0-28.906 76.135-1.612 123.121 33.664Z"/>
+                </svg>
+              </a>
+            
+            
+              <a href="https://www.tunetheweb.com" aria-label="Barry Pollard's homepage" rel="me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 30 30">
+                  <title>Homepage</title>
+                  <circle cx="14.5" cy="14.5" r="13.5" stroke-width="2" stroke-miterlimit="10" fill="none" stroke="currentColor" />
+                  <ellipse cx="14.5" cy="14.5" rx="6.1" ry="13.5" stroke-width="2" stroke-miterlimit="10" fill="none" stroke="currentColor" />
+                  <path d="M1.6 9.6h25.8M1.6 19.4h25.8" stroke-width="2" stroke-miterlimit="10" fill="none" stroke="currentColor" />
+                </svg></a>
+            
+          </div>
+        </div>
+      </div>
+    
+  
+</div></p>
+
+<p>
+<p class="wd-pubdates"
+    style="font-size: 90%; border-bottom: 1px solid var(--devsite-ref-palette--grey200);color: var(--devsite-ref-palette--blue-grey700);">
+  Published: May 25, 2023, Last updated: October 16, 2026
+</p>
+</p>
+
+<p>Back/forward cache (or bfcache) is a browser optimization that enables instant
+back and forward navigation. It significantly improves the browsing experience,
+especially for users with slower networks or devices.</p>
+
+<p>As web developers, it&#39;s critical to understand how to <a href="#optimize">optimize your pages for bfcache</a>, so your users can reap the benefits.</p>
+
+<aside class="note">
+<p>Prefer video to reading? Check out this <a href="https://youtu.be/Y2IVv5KnrmI">DevTools Tips video on debugging bfcache</a> for a summary of what's on this page.</p>
+<devsite-video video-id="Y2IVv5KnrmI"></devsite-video>
+</aside>
+
+<h2 id="browser-compatibility" data-text="Browser compatibility" tabindex="-1">Browser compatibility</h2>
+
+<p>All major browsers include a bfcache, including Chrome since version 96, <a href="https://developer.mozilla.org/docs/Mozilla/Firefox/Releases/1.5/Using_Firefox_1.5_caching">Firefox</a> and <a href="https://webkit.org/blog/427/webkit-page-cache-i-the-basics/">Safari</a>.</p>
+
+<h2 id="basics" data-text="bfcache basics" tabindex="-1">bfcache basics</h2>
+
+<p>With back/forward cache (bfcache), instead of destroying a page when the user navigates away, we postpone destruction and pause JS execution. If the user navigates back soon, we make the page visible again and unpause JS execution. This results in a near instant page navigation for the user.</p>
+
+<p>How many times have you visited a website and clicked a link to go to another page, only to realize it&#39;s not what you wanted and click the back button? In that moment, bfcache can make a big difference in how fast the previous page loads:</p>
+
+<div class="table-wrapper">
+  <table data-alignment="top">
+    <tr>
+      <td width="30%"><strong><em>Without</em> bfcache enabled</strong></td>
+      <td>
+        A new request is initiated to load the previous page, and, depending on how well that page has been <a
+        href="/explore/reliable#the-options-in-your-caching-toolbox"> optimized</a> for repeat visits, the browser might have to re-download, re-parse, and re-execute some (or all) of resources it just downloaded.
+      </td>
+    </tr>
+    <tr>
+      <td><strong><em>With</em> bfcache enabled</strong></td>
+      <td>
+        Loading the previous page is <em>essentially instant</em>, because the entire page can be restored from memory, without having to go to the network at all.
+      </td>
+    </tr>
+  </table>
+</div>
+
+<p>Check out this video of bfcache in action to understand the speed up it can bring to navigations:</p>
+
+<figure>
+  <devsite-video video-id="cuPsdRckkF0"></devsite-video>
+  <figcaption>Using bfcache makes pages load much more quickly during back and forward navigation.</figcaption>
+</figure>
+
+<p>In the video, the example with bfcache is quite a bit faster than the example without it.</p>
+
+<p>bfcache not only speeds up navigation, it also reduces data usage, since resources don&#39;t have to be downloaded again.</p>
+
+<p>Chrome usage data shows that 1 in 10 navigations on desktop and 1 in 5 on mobile are either back or forward. With bfcache enabled, browsers could eliminate the data transfer and time spent loading for billions of web pages every single day!</p>
+
+<h3 id="how-bfcache-works" data-text='How the "cache" works' tabindex="-1">How the "cache" works</h3>
+
+<p>The &quot;cache&quot; used by bfcache is different from the <a href="/articles/http-cache">HTTP cache</a>, which plays its own role in speeding up repeat navigations. bfcache is a snapshot of the entire page in memory, including the JavaScript heap, whereas the HTTP cache contains only the responses for previously made requests. Since it&#39;s very rare for all requests required to load a page to be fulfilled from the HTTP cache, repeat visits using bfcache restores are always faster than even the most well-optimized non-bfcache navigations.</p>
+
+<p>Freezing a page to potentially re-enable it again later involves some complexity in terms of how best to preserve in-progress code. For example, how do you handle <code translate="no" dir="ltr">setTimeout()</code> calls where the timeout is reached while the page is in the bfcache?</p>
+
+<p>The answer is that browsers pause any pending timers or unresolved promises for pages in bfcache, including almost all pending tasks in the <a href="https://html.spec.whatwg.org/multipage/webappapis.html#task-queue">JavaScript task queues</a>, and resume processing tasks if the page is restored from the bfcache.</p>
+
+<p>In some cases, such as for timeouts and promises, this is fairly low risk, but in other cases it can lead to confusing or unexpected behavior. For example, if the browser pauses a task that&#39;s required as part of an <a href="https://developer.mozilla.org/docs/Web/API/IDBTransaction">IndexedDB
+transaction</a>, it can affect other open tabs in the same origin, because the same IndexedDB databases can be accessed by multiple tabs simultaneously. As a result, browsers will generally not attempt to cache pages in the middle of an IndexedDB transaction or while using APIs that might affect other pages.</p>
+
+<p>For more details on how various API usage affects a page&#39;s bfcache eligibility, see <a href="#optimize">Optimize your pages for bfcache</a>.</p>
+
+<h3 id="iframes" data-text="The bfcache and iframes" tabindex="-1">The bfcache and iframes</h3>
+
+<p>If a page contains embedded iframes, then the iframes themselves are not separately eligible for the bfcache. For example, if you navigate to another URL within an iframe, the previous content does not enter bfcache and if you go back, the browser will go &quot;back&quot; within the iframe rather than in the main frame, but the back navigation within the iframe won&#39;t use the bfcache.</p>
+
+<p>However, when the main frame is restored from the bfcache, embedded iframes will be restored as they were when the page entered the bfcache.</p>
+
+<p>The main frame can also be blocked from using the bfcache if an embedded iframe uses APIs that block this. The <a href="#permissions-policy">Permissions Policy</a> set on the main frame or the use of <a href="https://developer.mozilla.org/docs/Web/HTML/Element/iframe#sandbox"><code translate="no" dir="ltr">sandbox</code> attributes</a> can be used to avoid this.</p>
+
+<h3 id="spa" data-text="The bfcache and Single Page Apps (SPA)" tabindex="-1">The bfcache and Single Page Apps (SPA)</h3>
+
+<p>Because bfcache works with browser-managed navigations, it doesn&#39;t work for &quot;soft navigations&quot; within a single-page app (SPA). However, bfcache can still help when going back to an SPA rather than doing a full re-initialisation of that app again from the start.</p>
+
+<h3 id="observe" data-text="APIs to observe bfcache" tabindex="-1">APIs to observe bfcache</h3>
+
+<p>Although bfcache is an optimization that browsers do automatically, it&#39;s still important for developers to know when it&#39;s happening so they can <a href="#optimize">optimize their pages for it</a> and <a href="#analytics">adjust any metrics or performance measurement</a> accordingly.</p>
+
+<p>The primary events used to observe bfcache are the <a href="https://developer.mozilla.org/docs/Web/API/PageTransitionEvent">page transition events</a> <code translate="no" dir="ltr">pageshow</code> and <code translate="no" dir="ltr">pagehide</code>, which are supported by <a href="https://caniuse.com/page-transition-events">most browsers</a>.</p>
+
+<p>The newer <a href="https://developer.chrome.com/blog/page-lifecycle-api">Page Lifecycle</a> events—<code translate="no" dir="ltr">freeze</code> and <code translate="no" dir="ltr">resume</code>—are also dispatched when pages enter or leave bfcache, as well as in some other situations, for example, when a background tab gets frozen to minimize CPU usage. These events are only supported in Chromium-based browsers.</p>
+
+<h4 id="observe-page-restored" data-text="Observe when a page is restored from bfcache" tabindex="-1">Observe when a page is restored from bfcache</h4>
+
+<p>The <code translate="no" dir="ltr">pageshow</code> event fires right after the <code translate="no" dir="ltr">load</code> event when the page is initially loading and any time the page is restored from bfcache. The <code translate="no" dir="ltr">pageshow</code> event has a <a href="https://developer.mozilla.org/docs/Web/API/PageTransitionEvent/persisted"><code translate="no" dir="ltr">persisted</code></a> property, which is <code translate="no" dir="ltr">true</code> if the page was restored from bfcache and <code translate="no" dir="ltr">false</code> otherwise. You can use the <code translate="no" dir="ltr">persisted</code> property to distinguish regular page loads from bfcache restores. For example:</p>
+<div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="JavaScript"><code translate="no" dir="ltr"><span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'pageshow'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-k">if</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">persisted</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-nx">console</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">log</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'This page was restored from the bfcache.'</span><span class="devsite-syntax-p">);</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-p">}</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-k">else</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-nx">console</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">log</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'This page was loaded normally.'</span><span class="devsite-syntax-p">);</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-p">}</span>
+<span class="devsite-syntax-p">});</span>
+</code></pre></devsite-code>
+<p>In browsers that support the Page Lifecycle API, the <code translate="no" dir="ltr">resume</code> event fires when pages are restored from bfcache (immediately before the <code translate="no" dir="ltr">pageshow</code> event) and when a user revisits a frozen background tab. If you want to update a page&#39;s state after it&#39;s frozen (which includes pages in the bfcache), you can use the <code translate="no" dir="ltr">resume</code> event, but if you want to measure your site&#39;s bfcache hit rate, you&#39;d need to use the <code translate="no" dir="ltr">pageshow</code> event. In some cases, you might need to use both.</p>
+
+<p>For details on bfcache measurement best practices, see <a href="#analytics">How bfcache affects analytics and performance measurement</a>.</p>
+
+<h4 id="observe-page-enters" data-text="Observe when a page is entering bfcache" tabindex="-1">Observe when a page is entering bfcache</h4>
+
+<p>The <code translate="no" dir="ltr">pagehide</code> event fires either when a page unloads or when the browser tries to put it in the bfcache.</p>
+
+<p>The <code translate="no" dir="ltr">pagehide</code> event also has a <code translate="no" dir="ltr">persisted</code> property. If it&#39;s <code translate="no" dir="ltr">false</code>, you can be confident a that page isn&#39;t about to enter the bfcache. However, <code translate="no" dir="ltr">persisted</code> being <code translate="no" dir="ltr">true</code> doesn&#39;t guarantee that a page will be cached. It means the browser <em>intends</em> to cache the page, but there may be other factors that make it impossible to cache.</p>
+<div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="JavaScript"><code translate="no" dir="ltr"><span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'pagehide'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-k">if</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">persisted</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-nx">console</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">log</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'This page *might* be entering the bfcache.'</span><span class="devsite-syntax-p">);</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-p">}</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-k">else</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-nx">console</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">log</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'This page will unload normally and be discarded.'</span><span class="devsite-syntax-p">);</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-p">}</span>
+<span class="devsite-syntax-p">});</span>
+</code></pre></devsite-code>
+<p>Similarly, the <code translate="no" dir="ltr">freeze</code> event fires immediately after the <code translate="no" dir="ltr">pagehide</code> event if <code translate="no" dir="ltr">persisted</code> is <code translate="no" dir="ltr">true</code>, but that only means the browser <em>intends</em> to cache the page. It might still have to discard it for a number of reasons explained later.</p>
+
+<h2 id="optimize" data-text="Optimize your pages for bfcache" tabindex="-1">Optimize your pages for bfcache</h2>
+
+<p>Not all pages get stored in bfcache, and even when a page does get stored there, it won&#39;t stay there indefinitely. It&#39;s critical that developers understand what makes pages eligible (and ineligible) for bfcache to maximize their cache-hit rates.</p>
+
+<p>The following sections outline the best practices to make it as likely as possible that the browser can cache your pages.</p>
+
+<h3 id="never-use-the-unload-event" data-text="Never use the unload event" tabindex="-1">Never use the <code translate="no" dir="ltr">unload</code> event</h3>
+
+<p>The most important way to optimize for bfcache in all browsers is to never use the <code translate="no" dir="ltr">unload</code> event. Ever!</p>
+
+<p>The <code translate="no" dir="ltr">unload</code> event is problematic for browsers because it predates bfcache and many pages on the internet operate under the (reasonable) assumption that a page won&#39;t continue to exist after the <code translate="no" dir="ltr">unload</code> event has fired. This presents a challenge because many of those pages were <em>also</em> built with the assumption that the <code translate="no" dir="ltr">unload</code> event would fire any time a user is navigating away, which is no longer true (and <a href="https://developer.chrome.com/blog/page-lifecycle-api/#the-unload-event">hasn&#39;t been true for a long time</a>).</p>
+
+<p>So browsers are faced with a dilemma, they have to choose between something that can improve the user experience—but might also risk breaking the page.</p>
+
+<p>Chrome has now <a href="https://developer.chrome.com/blog/unload-deprecated-in-chrome">deprecated the <code translate="no" dir="ltr">unload</code> event</a>, so it will no longer fire in Chrome, except on iOS where all browsers use the WebKit rendering engine, and so behave like Safari.</p>
+
+<p>On desktop, Firefox (and in the past, Chrome) have chosen to make pages ineligible for bfcache if they add an <code translate="no" dir="ltr">unload</code> listener, which is less risky but also disqualifies <em>a lot</em> of pages. Safari will attempt to cache some pages with an <code translate="no" dir="ltr">unload</code> event listener, but to reduce potential breakage it won&#39;t run the <code translate="no" dir="ltr">unload</code> event when a user is navigating away, which makes the event very unreliable.</p>
+
+<p>On mobile, Safari (and in the past, Chrome) does attempt to cache pages with an <code translate="no" dir="ltr">unload</code> event listener since the risk of breakage is lower due to the fact that the <code translate="no" dir="ltr">unload</code> event has always been extremely unreliable on mobile. Firefox treats pages that use <code translate="no" dir="ltr">unload</code> as ineligible for the bfcache, except on iOS, where all browsers use the WebKit rendering engine, and so behave like Safari.</p>
+
+<p>Instead of using the <code translate="no" dir="ltr">unload</code> event, use the <code translate="no" dir="ltr">pagehide</code> event. The <code translate="no" dir="ltr">pagehide</code> event fires in all cases where the <code translate="no" dir="ltr">unload</code> event fires, and it <em>also</em> fires when a page is put in the bfcache.</p>
+
+<p>In fact, <a href="https://developer.chrome.com/docs/lighthouse">Lighthouse</a> has a <a href="https://github.com/GoogleChrome/lighthouse/pull/11085"><code translate="no" dir="ltr">no-unload-listeners</code> audit</a>, which will warn developers if any JavaScript on their pages (including that from third-party libraries) adds an <code translate="no" dir="ltr">unload</code> event listener.</p>
+
+<aside class="warning"><b>Warning: </b> Never add an <code translate="no" dir="ltr">unload</code> event listener! Use the <code translate="no" dir="ltr">pagehide</code> event instead. Adding an <code translate="no" dir="ltr">unload</code> event listener will make your site slower in Firefox, and the code won't even run most of the time in Chrome and Safari. </aside>
+
+<h4 id="permissions-policy" data-text="Use Permission Policy to prevent unload handlers being used on a page" tabindex="-1">Use Permission Policy to prevent unload handlers being used on a page</h4>
+
+<p>Sites that don&#39;t use <code translate="no" dir="ltr">unload</code> event handlers can ensure these are not added by using a <a href="https://developer.chrome.com/blog/deprecating-unload/#permissions-policy">Permissions Policy</a>.</p>
+<div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="Bash Session"><code translate="no" dir="ltr"><span class="devsite-syntax-go">Permissions-Policy: unload=()</span>
+</code></pre></devsite-code>
+<p>This also prevents third parties or extensions from slowing the site down by adding unload handlers and making the site ineligible for the bfcache.</p>
+
+<aside class="special"><b>Important: </b> This policy is only supported in Chromium-based browsers, which have now deprecated the `unload` event so it may not have an effect unless other browsers also start to support this header.</aside>
+
+<h4 id="beforeunload-caution" data-text="Only add beforeunload listeners conditionally" tabindex="-1">Only add <code translate="no" dir="ltr">beforeunload</code> listeners conditionally</h4>
+
+<p>The <code translate="no" dir="ltr">beforeunload</code> event won&#39;t make your pages ineligible for bfcache in modern browsers&#39; bfcache but previously it did and it is still unreliable, so avoid using it unless absolutely necessary.</p>
+
+<p>Unlike the <code translate="no" dir="ltr">unload</code> event, however, there are legitimate uses for
+<code translate="no" dir="ltr">beforeunload</code>. For example, when you want to warn the user that they have
+unsaved changes they&#39;ll lose if they leave the page. In this case, it&#39;s
+recommended that you only add <code translate="no" dir="ltr">beforeunload</code> listeners when a user has unsaved
+changes and then remove them immediately after the unsaved changes are saved.</p>
+
+<div class="wd-compare">
+  <div class="compare-worse">Don't</div>
+  <div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="JavaScript"><span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'beforeunload'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">=></span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-k">if</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">pageHasUnsavedChanges</span><span class="devsite-syntax-p">())</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">preventDefault</span><span class="devsite-syntax-p">();</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-k">return</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">returnValue</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-s1">'Are you sure you want to exit?'</span><span class="devsite-syntax-p">;</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-p">}</span>
+<span class="devsite-syntax-p">});</span></pre></devsite-code>
+<span class="wd-caption">
+This code adds a <code translate="no" dir="ltr">beforeunload</code> listener unconditionally.
+</span>
+</div>
+
+<div class="wd-compare">
+  <div class="compare-better">Do</div>
+  <div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="JavaScript"><span class="devsite-syntax-kd">function</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">beforeUnloadListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">preventDefault</span><span class="devsite-syntax-p">();</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-k">return</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">returnValue</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-s1">'Are you sure you want to exit?'</span><span class="devsite-syntax-p">;</span>
+<span class="devsite-syntax-p">};</span>
+
+<span class="devsite-syntax-c1">// A function that invokes a callback when the page has unsaved changes.</span>
+<span class="devsite-syntax-nx">onPageHasUnsavedChanges</span><span class="devsite-syntax-p">(()</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">=></span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'beforeunload'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">beforeUnloadListener</span><span class="devsite-syntax-p">);</span>
+<span class="devsite-syntax-p">});</span>
+
+<span class="devsite-syntax-c1">// A function that invokes a callback when the page's unsaved changes are resolved.</span>
+<span class="devsite-syntax-nx">onAllChangesSaved</span><span class="devsite-syntax-p">(()</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">=></span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">removeEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'beforeunload'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">beforeUnloadListener</span><span class="devsite-syntax-p">);</span>
+<span class="devsite-syntax-p">});</span></pre></devsite-code>
+<span class="wd-caption">
+This code only adds the <code translate="no" dir="ltr">beforeunload</code> listener when it's needed (and
+removes it when it's not).
+</span>
+</div>
+
+<h3 id="minimize-no-store" data-text="Minimize use of Cache-Control: no-store" tabindex="-1">Minimize use of <code translate="no" dir="ltr">Cache-Control: no-store</code></h3>
+
+<p><code translate="no" dir="ltr">Cache-Control: no-store</code> is an HTTP header web servers can set on responses that instructs the browser not to store the response in any HTTP cache. It&#39;s used for resources containing sensitive user information, such as pages behind a login.</p>
+
+<p>Although bfcache is not an HTTP cache, historically, when <code translate="no" dir="ltr">Cache-Control: no-store</code> is set on the page resource itself (as opposed to any subresource), browsers have chosen not to store the page in bfcache so any pages using <code translate="no" dir="ltr">Cache-Control: no-store</code> may not be eligible for bfcache. There is <a href="https://developer.chrome.com/docs/web-platform/bfcache-ccns">work underway to change this behavior for Chrome</a> in a privacy-preserving manner.</p>
+
+<p>Since <code translate="no" dir="ltr">Cache-Control: no-store</code> restricts a page&#39;s eligibility for bfcache, it should only be set on pages that contain sensitive information where caching of any sort is never appropriate.</p>
+
+<p>For pages that need to always serve up-to-date content—and that content does not contain sensitive information—use <code translate="no" dir="ltr">Cache-Control: no-cache</code> or <code translate="no" dir="ltr">Cache-Control: max-age=0</code>. These directives instruct the browser to revalidate the content before serving it, and they don&#39;t affect a page&#39;s bfcache eligibility.</p>
+
+<p>Note that when a page is restored from bfcache, it is restored from memory, not from the HTTP cache. As a result, directives like <code translate="no" dir="ltr">Cache-Control: no-cache</code> or <code translate="no" dir="ltr">Cache-Control: max-age=0</code> are not taken into account, and no revalidation occurs before the content is displayed to the user.</p>
+
+<p>This is still likely a better user experience, however, as bfcache restores are instant and—since pages don&#39;t stay in the bfcache for very long—it&#39;s unlikely that the content is out of date. However, if your content does change minute-by-minute, you can fetch any updates using the <code translate="no" dir="ltr">pageshow</code> event, as outlined in the next section.</p>
+
+<h3 id="update-data-after-restore" data-text="Update stale or sensitive data after bfcache restore" tabindex="-1">Update stale or sensitive data after bfcache restore</h3>
+
+<p>If your site keeps user state—especially any sensitive user information—that data needs to be updated or cleared after a page is restored from bfcache.</p>
+
+<p>For example, if a user navigates to a checkout page and then updates their shopping cart, a back navigation could potentially expose out-of-date information if a stale page is restored from bfcache.</p>
+
+<p>Another, more critical example is if a user signs out of a site on a public computer and the next user clicks the back button. This could potentially expose private data that the user assumed was cleared when they logged out.</p>
+
+<p>To avoid situations like this, it&#39;s good to always update the page after a <code translate="no" dir="ltr">pageshow</code> event if <code translate="no" dir="ltr">event.persisted</code> is <code translate="no" dir="ltr">true</code>:</p>
+<div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="JavaScript"><code translate="no" dir="ltr"><span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'pageshow'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-k">if</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">persisted</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-c1">// Do any checks and updates to the page</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-p">}</span>
+<span class="devsite-syntax-p">});</span>
+</code></pre></devsite-code>
+<p>While ideally you would update the content in place, for some changes you may want to force a full reload. The following code checks for the presence of a site-specific cookie in the <code translate="no" dir="ltr">pageshow</code> event and reloads if the cookie is not found:</p>
+<div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="JavaScript"><code translate="no" dir="ltr"><span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'pageshow'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-k">if</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">persisted</span><span class="devsite-syntax-w"> &amp;&amp; </span><span class="devsite-syntax-o">!</span><span class="devsite-syntax-nb">document</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">cookie</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">match</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-err">/my-cookie)) {</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-c1">// Force a reload if the user has logged out.</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-nx">location</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">reload</span><span class="devsite-syntax-p">();</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-p">}</span>
+<span class="devsite-syntax-p">});</span>
+</code></pre></devsite-code>
+<p>A reload has the advantage that will still preserve the history (to allow forward navigations), but a redirect may be more appropriate in some cases.</p>
+
+<h3 id="ads-restore" data-text="Ads and bfcache restore" tabindex="-1">Ads and bfcache restore</h3>
+
+<p>As a publisher, you may want to refresh ads on each back/forward navigation. Making a page ineligible for bfcache through the use of <code translate="no" dir="ltr">Cache-Control: no-store</code> is a bad approach that harms performance for your users.</p>
+
+<p>Instead, you can keep your pages eligible for bfcache and refresh just the ads. Some ad tagging libraries, like <a href="https://developers.google.com/publisher-tag/reference#googletag.config.AutoRefreshConfig.backForwardCache">Google Publisher Tag (GPT)</a>, automatically refresh actively viewed ad slots when a user returns to a page through a bfcache restore. If your ad tagging library does not do this and you want ads to be refreshed, you can use the <a href="#observe-page-restored"><code translate="no" dir="ltr">pageshow</code></a> event to detect bfcache restores and trigger an ad refresh.</p>
+
+<h3 id="avoid-window-opener" data-text="Avoid window.opener references" tabindex="-1">Avoid <code translate="no" dir="ltr">window.opener</code> references</h3>
+
+<p>In older browsers, if a page was opened using <a href="https://developer.mozilla.org/docs/Web/API/Window/open"><code translate="no" dir="ltr">window.open()</code></a> from a link with <a href="https://developer.mozilla.org/docs/Web/HTML/Element/a#target"><code translate="no" dir="ltr">target=_blank</code></a>, without specifying <a href="https://developer.mozilla.org/docs/Web/HTML/Link_types/noopener"><code translate="no" dir="ltr">rel=&quot;noopener&quot;</code></a>, the opening page would have a reference to the window object of the opened page.</p>
+
+<p>In addition to <a href="https://mathiasbynens.github.io/rel-noopener/">being a security risk</a>, a page with a non-null <a href="https://developer.mozilla.org/docs/Web/API/Window/opener"><code translate="no" dir="ltr">window.opener</code></a> reference can&#39;t safely be put into bfcache, because that could break any pages attempting to access it.</p>
+
+<p>As a result, it&#39;s best to avoid creating <code translate="no" dir="ltr">window.opener</code> references. You can do this by using <code translate="no" dir="ltr">rel=&quot;noopener&quot;</code> whenever possible (note, this is now the default in all modern browsers). If your site requires opening a window and controlling it through <a href="https://developer.mozilla.org/docs/Web/API/Window/postMessage"><code translate="no" dir="ltr">window.postMessage()</code></a> or directly referencing the window object, neither the opened window nor the opener will be eligible for the bfcache.</p>
+
+<h3 id="close-open-connections" data-text="Close open connections before the user navigates away" tabindex="-1">Close open connections before the user navigates away</h3>
+
+<p>As mentioned previously, when a page is held in the bfcache, it pauses all scheduled JavaScript tasks and resumes them when the page is taken out of the cache.</p>
+
+<p>If these scheduled JavaScript tasks are only accessing DOM APIs—or other APIs isolated to just the current page—then pausing these tasks while the page is not visible to the user is not going to cause any problems.</p>
+
+<p>However, if these tasks are connected to APIs that are also accessible from other pages in the same origin (for example: IndexedDB, Web Locks, WebSockets) this can be problematic because pausing these tasks may prevent code in other tabs from running.</p>
+
+<p>As a result, some browsers won&#39;t attempt to put a page in bfcache in the following scenarios:</p>
+
+<ul>
+<li>Pages with an open <a href="https://developer.mozilla.org/docs/Web/API/IDBOpenDBRequest">IndexedDB connection</a>.</li>
+<li>Pages with in-progress <a href="https://developer.mozilla.org/docs/Web/API/Fetch_API">fetch()</a> or <a href="https://developer.mozilla.org/docs/Web/API/XMLHttpRequest">XMLHttpRequest</a>.</li>
+<li>Pages with an open <a href="https://developer.mozilla.org/docs/Web/API/WebSocket">WebSocket</a> or <a href="https://developer.mozilla.org/docs/Web/API/WebRTC_API">WebRTC</a> connection. Chrome (as of 149) and Safari do no block on open WebSockets but other browsers do.</li>
+</ul>
+
+<p>If your page is using any of these APIs, we strongly recommend closing connections and removing or disconnecting observers during the <code translate="no" dir="ltr">pagehide</code> or <code translate="no" dir="ltr">freeze</code> event. That allows the browser to safely cache the page without the risk of affecting other open tabs.</p>
+
+<p>Then, if the page is restored from the bfcache, you can reopen or reconnect to those APIs during the <code translate="no" dir="ltr">pageshow</code> or <code translate="no" dir="ltr">resume</code> event, or have them always automatically reopen using the <code translate="no" dir="ltr">error</code> or <code translate="no" dir="ltr">close</code> events. Ensure you do no open multiple connections if using multiple events.</p>
+
+<p>The following example shows how to ensure that pages using IndexedDB are eligible for bfcache by closing an open connection in the <code translate="no" dir="ltr">pagehide</code> event listener:</p>
+<div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="JavaScript"><code translate="no" dir="ltr"><span class="devsite-syntax-kd">let</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">dbPromise</span><span class="devsite-syntax-p">;</span>
+<span class="devsite-syntax-kd">function</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">openDB</span><span class="devsite-syntax-p">()</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-k">if</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-o">!</span><span class="devsite-syntax-nx">dbPromise</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-nx">dbPromise</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-ow">new</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nb">Promise</span><span class="devsite-syntax-p">((</span><span class="devsite-syntax-nx">resolve</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">reject</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">      </span><span class="devsite-syntax-kd">const</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">req</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">indexedDB</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">open</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'my-db'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-mf">1</span><span class="devsite-syntax-p">);</span>
+<span class="devsite-syntax-w">      </span><span class="devsite-syntax-nx">req</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">onupgradeneeded</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">()</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">req</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">result</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">createObjectStore</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'keyval'</span><span class="devsite-syntax-p">);</span>
+<span class="devsite-syntax-w">      </span><span class="devsite-syntax-nx">req</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">onerror</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">()</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">reject</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">req</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">error</span><span class="devsite-syntax-p">);</span>
+<span class="devsite-syntax-w">      </span><span class="devsite-syntax-nx">req</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">onsuccess</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">()</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">resolve</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">req</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">result</span><span class="devsite-syntax-p">);</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-p">});</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-p">}</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-k">return</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">dbPromise</span><span class="devsite-syntax-p">;</span>
+<span class="devsite-syntax-p">}</span>
+
+<span class="devsite-syntax-c1">// Close the connection to the database when the user leaves.</span>
+<span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'pagehide'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">()</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-k">if</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">dbPromise</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-nx">dbPromise</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">then</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">db</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">db</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">close</span><span class="devsite-syntax-p">());</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-nx">dbPromise</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-kc">null</span><span class="devsite-syntax-p">;</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-p">}</span>
+<span class="devsite-syntax-p">});</span>
+
+<span class="devsite-syntax-c1">// Open the connection when the page is loaded or restored from bfcache.</span>
+<span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'pageshow'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">()</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">openDB</span><span class="devsite-syntax-p">());</span>
+</code></pre></devsite-code>
+<h3 id="test" data-text="Test to ensure your pages are cacheable" tabindex="-1">Test to ensure your pages are cacheable</h3>
+
+<p>Chrome DevTools can help you test your pages to ensure they&#39;re optimized for bfcache, and identify any issues that might prevent them from being eligible.</p>
+
+<p>To test a page:</p>
+
+<ol>
+<li>Navigate to the page in Chrome.</li>
+<li>In DevTools, go to <strong>Application</strong> -&gt; <strong>Back-forward Cache</strong>.</li>
+<li>Click the <strong>Run Test</strong> button. DevTools then tries to navigate away and back
+to determine whether the page can be restored from bfcache.</li>
+</ol>
+
+<figure>
+  <img src="/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76.png" alt="Back-forward cache panel in DevTools" width="800" height="313" srcset="https://web.dev/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76_36.png 36w,https://web.dev/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76_48.png 48w,https://web.dev/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76_72.png 72w,https://web.dev/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76_96.png 96w,https://web.dev/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76_480.png 480w,https://web.dev/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76_720.png 720w,https://web.dev/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76_856.png 856w,https://web.dev/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76_960.png 960w,https://web.dev/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76_1440.png 1440w,https://web.dev/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76_1920.png 1920w,https://web.dev/static/articles/bfcache/image/back-forward-cache-panel-fc27405c6cd76_2880.png 2880w" sizes="(max-width: 840px) 100vw, 856px">
+  <figcaption>The <strong>Back-forward Cache</strong> panel in DevTools.</figcaption>
+</figure>
+
+<p>If the test is successful, the panel reports &quot;Restored from back-forward cache&quot;.</p>
+
+<figure>
+  <img src="/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2.png" alt="DevTools reporting a page was successfully restored from bfcache" width="800" height="313" srcset="https://web.dev/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2_36.png 36w,https://web.dev/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2_48.png 48w,https://web.dev/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2_72.png 72w,https://web.dev/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2_96.png 96w,https://web.dev/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2_480.png 480w,https://web.dev/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2_720.png 720w,https://web.dev/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2_856.png 856w,https://web.dev/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2_960.png 960w,https://web.dev/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2_1440.png 1440w,https://web.dev/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2_1920.png 1920w,https://web.dev/static/articles/bfcache/image/devtools-reporting-page-1dd392594f6b2_2880.png 2880w" sizes="(max-width: 840px) 100vw, 856px">
+  <figcaption>A successfully restored page.</figcaption>
+</figure>
+
+<p>If it&#39;s unsuccessful, the panel indicates the reason why. If the reason is something you can address as a developer, the panel marks it as <strong>Actionable</strong>.</p>
+
+<figure>
+  <img src="/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2.png" alt="DevTools reporting failure to restore a page from bfcache" width="800" height="313" srcset="https://web.dev/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2_36.png 36w,https://web.dev/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2_48.png 48w,https://web.dev/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2_72.png 72w,https://web.dev/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2_96.png 96w,https://web.dev/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2_480.png 480w,https://web.dev/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2_720.png 720w,https://web.dev/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2_856.png 856w,https://web.dev/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2_960.png 960w,https://web.dev/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2_1440.png 1440w,https://web.dev/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2_1920.png 1920w,https://web.dev/static/articles/bfcache/image/devtools-reporting-failur-e962032a9c1e2_2880.png 2880w" sizes="(max-width: 840px) 100vw, 856px">
+  <figcaption>A failed bfcache test with an actionable result.</figcaption>
+</figure>
+
+<p>In this example, the use of an <code translate="no" dir="ltr">unload</code> event listener makes the page <a href="#never-use-the-unload-event">ineligible</a> for bfcache. You can fix that by switching from <code translate="no" dir="ltr">unload</code> to using <code translate="no" dir="ltr">pagehide</code>:</p>
+
+<div class="wd-compare">
+  <div class="compare-better">Do</div>
+  <div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="JavaScript"><span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'pagehide'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">...);</span></pre></devsite-code>
+</div>
+
+<div class="wd-compare">
+  <div class="compare-worse">Don't</div>
+  <div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="JavaScript"><span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'unload'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">...);</span></pre></devsite-code>
+</div>
+
+<p>Lighthouse 10.0 also <a href="https://developer.chrome.com/blog/lighthouse-10-0#bfcache">added a bfcache audit</a>, which performs a similar test. For more information, see the <a href="https://developer.chrome.com/docs/lighthouse/performance/bf-cache">bfcache audit&#39;s docs</a>.</p>
+
+<h2 id="analytics" data-text="How bfcache affects analytics and performance measurement" tabindex="-1">How bfcache affects analytics and performance measurement</h2>
+
+<p>If you use an analytics tool to measure visits to your site, you might notice a decrease in the total number of pageviews reported as Chrome enables bfcache for more users.</p>
+
+<p>In fact, you&#39;re likely already underreporting pageviews from other browsers that implement bfcache, because many popular analytics libraries don&#39;t measure bfcache restores as new pageviews.</p>
+
+<p>To include bfcache restores in your pageview count, set listeners for the <code translate="no" dir="ltr">pageshow</code> event and check the <code translate="no" dir="ltr">persisted</code> property.</p>
+
+<p>The following example shows how to do this with Google Analytics. Other analytics tools likely use similar logic:</p>
+<div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="JavaScript"><code translate="no" dir="ltr"><span class="devsite-syntax-c1">// Send a pageview when the page is first loaded.</span>
+<span class="devsite-syntax-c1">// This happens by default just by loading gtag</span>
+<span class="devsite-syntax-nx">gtag</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'config'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-s1">'TAG_ID'</span><span class="devsite-syntax-p">);</span>
+
+<span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'pageshow'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-c1">// Send another pageview if the page is restored from bfcache.</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-k">if</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">persisted</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-nx">gtag</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'event'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-s1">'page_view'</span><span class="devsite-syntax-p">);</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-p">}</span>
+<span class="devsite-syntax-p">});</span>
+</code></pre></devsite-code>
+<h3 id="measure-bfcache-hit-ratio" data-text="Measure your bfcache hit ratio" tabindex="-1">Measure your bfcache hit ratio</h3>
+
+<p>You may also want to measure whether the bfcache was used, to help identify pages that are not utilizing the bfcache. This can be done by measuring the navigation type for page loads:</p>
+<div></div><devsite-code><pre class="devsite-click-to-copy" translate="no" dir="ltr" is-upgraded syntax="JavaScript"><code translate="no" dir="ltr"><span class="devsite-syntax-c1">// Send a navigation_type when the page is first loaded.</span>
+<span class="devsite-syntax-c1">// To do this disable the default pageview so you can manually send it</span>
+<span class="devsite-syntax-c1">// supplemented with the additional detail.</span>
+<span class="devsite-syntax-nx">gtag</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'config'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-s1">'TAG_ID'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">send_page_view</span><span class="devsite-syntax-o">:</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-kc">false</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">});</span>
+<span class="devsite-syntax-nx">gtag</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'event'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-s1">'page_view'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">   </span><span class="devsite-syntax-s1">'navigation_type'</span><span class="devsite-syntax-o">:</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-nx">performance</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">getEntriesByType</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'navigation'</span><span class="devsite-syntax-p">)[</span><span class="devsite-syntax-mf">0</span><span class="devsite-syntax-p">].</span><span class="devsite-syntax-nx">type</span><span class="devsite-syntax-p">;</span>
+<span class="devsite-syntax-p">});</span>
+
+<span class="devsite-syntax-nb">window</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">addEventListener</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'pageshow'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-o">=</span>&gt;<span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-k">if</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-nx">event</span><span class="devsite-syntax-p">.</span><span class="devsite-syntax-nx">persisted</span><span class="devsite-syntax-p">)</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-c1">// Send another pageview if the page is restored from bfcache.</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-nx">gtag</span><span class="devsite-syntax-p">(</span><span class="devsite-syntax-s1">'event'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-s1">'page_view'</span><span class="devsite-syntax-p">,</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-p">{</span>
+<span class="devsite-syntax-w">      </span><span class="devsite-syntax-s1">'navigation_type'</span><span class="devsite-syntax-o">:</span><span class="devsite-syntax-w"> </span><span class="devsite-syntax-s1">'back_forward_cache'</span><span class="devsite-syntax-p">;</span>
+<span class="devsite-syntax-w">    </span><span class="devsite-syntax-p">});</span>
+<span class="devsite-syntax-w">  </span><span class="devsite-syntax-p">}</span>
+<span class="devsite-syntax-p">});</span>
+</code></pre></devsite-code>
+<p>Calculate your bfcache hit ratio using the counts for <code translate="no" dir="ltr">back_forward</code> navigations and <code translate="no" dir="ltr">back_forward_cache</code> navigations.</p>
+
+<p>It is important to realize that there are a number of scenarios, outside of the site owners control, when a Back/Forward navigation won&#39;t use the bfcache, including:</p>
+
+<ul>
+<li>when the user quits the browser and starts it again</li>
+<li>when the user duplicates a tab</li>
+<li>when the user closes a tab and reopens it</li>
+</ul>
+
+<p>In some of these cases the original navigation type may be preserved by some browsers and so may show a type of <code translate="no" dir="ltr">back_forward</code> despite these not being Back/Forward navigations.</p>
+
+<p>Even without those exclusions the bfcache will be discarded after a period to conserve memory.</p>
+
+<p>So, website owners shouldn&#39;t be expecting a 100% bfcache hit ratio for all <code translate="no" dir="ltr">back_forward</code> navigations. However, measuring their ratio can be useful to identify pages where the page itself is preventing bfcache usage for a high proportion of back and forward navigations.</p>
+
+<p>The Chrome team has added the <a href="https://developer.chrome.com/docs/web-platform/bfcache-notrestoredreasons"><code translate="no" dir="ltr">NotRestoredReasons</code> API</a> to help expose the reasons why pages don&#39;t use bfcache, so developers can improve their bfcache hit rates. The Chrome team has also <a href="https://developer.chrome.com/blog/crux-navigation-types">added navigation types to CrUX</a> making it possible to see the number of bfcache navigations even without measuring it yourself.</p>
+
+<h3 id="performance-measurement" data-text="Performance measurement" tabindex="-1">Performance measurement</h3>
+
+<p>bfcache can also negatively affect performance metrics collected <a href="/articles/user-centric-performance-metrics#in_the_field">in the field</a>, specifically metrics that measure page load times.</p>
+
+<p>Since bfcache navigations restore an existing page rather than initiate a new page load, the total number of page loads collected will decrease when bfcache is enabled. What&#39;s critical, though, is that the page loads being replaced by bfcache restores would likely have been some of the fastest page loads in your dataset. This is because back and forward navigations, by definition, are repeat visits, and repeat page loads are generally faster than page loads from first time visitors (due to <a href="/articles/http-cache">HTTP caching</a>, as mentioned earlier).</p>
+
+<p>The result is fewer fast page loads in your dataset, which will likely skew the distribution slower—despite the fact that the performance experienced by the user has probably improved!</p>
+
+<p>There are a few ways to deal with this issue. One is to annotate all page load metrics with their respective <a href="https://www.w3.org/TR/navigation-timing-2/#sec-performance-navigation-types">navigation type</a>: <code translate="no" dir="ltr">navigate</code>, <code translate="no" dir="ltr">reload</code>, <code translate="no" dir="ltr">back_forward</code>, or <code translate="no" dir="ltr">prerender</code>. This lets you continue to monitor your performance within these navigation types, even if the overall distribution skews negative. We recommend this approach for non-user-centric page load metrics like <a href="/articles/ttfb">Time to First Byte (TTFB)</a>.</p>
+
+<p>For user-centric metrics like the <a href="/articles/vitals">Core Web Vitals</a>, a better option is to report a value that more accurately represents what the user experiences.</p>
+
+<aside class="caution"><b>Caution: </b> The <code translate="no" dir="ltr">back_forward</code> navigation type in the <a href="https://www.w3.org/TR/navigation-timing-2/#sec-performance-navigation-types">Navigation Timing API</a> is not to be confused with bfcache restores. The Navigation Timing API only annotates page loads, whereas bfcache restores are re-using a page loaded from a previous navigation. </aside>
+
+<h3 id="core-web-vitals" data-text="Impact on Core Web Vitals" tabindex="-1">Impact on Core Web Vitals</h3>
+
+<p><a href="/articles/vitals">Core Web Vitals</a> measure the user&#39;s experience of a web page across a variety of dimensions (loading speed, interactivity, visual stability), and since users experience bfcache restores as faster navigations than full page loads, it&#39;s important that the Core Web Vitals metrics reflect this. After all, a user doesn&#39;t care whether or not bfcache was enabled, they just care that the navigation was fast!</p>
+
+<p>Tools that collect and report on the Core Web Vitals metrics, like the <a href="https://developer.chrome.com/docs/crux">Chrome User Experience Report</a>, treat bfcache restores as separate page visits in their dataset. And while there aren&#39;t dedicated web performance APIs for measuring these metrics after bfcache restores, you can approximate their values using existing web APIs:</p>
+
+<ul>
+<li>For <a href="/articles/lcp">Largest Contentful Paint (LCP)</a>, use the delta between the <code translate="no" dir="ltr">pageshow</code> event&#39;s timestamp and the timestamp of the next painted frame, because all elements in the frame will be painted at the same time. In the case of a bfcache restore, LCP and FCP are the same.</li>
+<li>For <a href="/articles/inp">Interaction to Next Paint (INP)</a>, keep using your existing Performance Observer, but reset the current INP value to 0.</li>
+<li>For <a href="/articles/cls">Cumulative Layout Shift (CLS)</a>, keep using your existing Performance Observer, but reset the current CLS value to 0.</li>
+</ul>
+
+<p>For more details on how bfcache affects each metric, see the individual Core Web Vitals <a href="/articles/vitals#core_web_vitals">metric guides pages</a>. For a specific example of how to implement bfcache versions of these metrics, refer to the <a href="https://github.com/GoogleChrome/web-vitals/pull/87">PR adding them to the web-vitals JS library</a>.</p>
+
+<p>The <a href="https://github.com/GoogleChrome/web-vitals">web-vitals</a> JavaScript library <a href="https://github.com/GoogleChrome/web-vitals/pull/87">supports bfcache restores</a> in the metrics it reports.</p>
+
+<h2 id="additional_resources" data-text="Additional Resources" tabindex="-1">Additional Resources</h2>
+
+<ul>
+<li><a href="https://developer.mozilla.org/Firefox/Releases/1.5/Using_Firefox_1.5_caching">Firefox Caching</a>
+<em>(bfcache in Firefox)</em></li>
+<li><a href="https://webkit.org/blog/427/webkit-page-cache-i-the-basics/">Page Cache</a>
+<em>(bfcache in Safari)</em></li>
+<li><a href="https://docs.google.com/document/d/1JtDCN9A_1UBlDuwkjn1HWxdhQ1H2un9K4kyPLgBqJUc/edit?usp=sharing">Back/forward cache: web exposed behavior</a>
+<em>(bfcache differences across browsers)</em></li>
+<li><a href="https://www.smashingmagazine.com/2022/05/performance-game-changer-back-forward-cache/">Performance Game Changer: Browser Back/Forward Cache</a>
+<em>(a case study from Smashing Magazine showing dramatic Core Web Vitals improvements by enabling bfcache)</em></li>
+</ul>
+
+  
+
+  
+</div>
+
+  
+    
+    
+      
+    <devsite-thumb-rating position="footer">
+    </devsite-thumb-rating>
+  
+       
+    
+    
+  
+
+  <div class="devsite-floating-action-buttons"></div></article>
+
+
+<devsite-content-footer class="nocontent" data-nosnippet>
+  <p>Except as otherwise noted, the content of this page is licensed under the <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 License</a>, and code samples are licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 License</a>. For details, see the <a href="https://developers.google.com/site-policies">Google Developers Site Policies</a>. Java is a registered trademark of Oracle and/or its affiliates.</p>
+  <p>Last updated 2026-10-16 UTC.</p>
+</devsite-content-footer>
+
+
+<devsite-notification
+>
+</devsite-notification>
+
+
+  
+<div class="devsite-content-data">
+  
+  
+    <template class="devsite-content-data-template">
+      [[["Easy to understand","easyToUnderstand","thumb-up"],["Solved my problem","solvedMyProblem","thumb-up"],["Other","otherUp","thumb-up"]],[["Missing the information I need","missingTheInformationINeed","thumb-down"],["Too complicated / too many steps","tooComplicatedTooManySteps","thumb-down"],["Out of date","outOfDate","thumb-down"],["Samples / code issue","samplesCodeIssue","thumb-down"],["Other","otherDown","thumb-down"]],["Last updated 2026-10-16 UTC."],[],[]]
+    </template>
+  
+</div>
+            
+          </devsite-content>
+        </main>
+        <devsite-footer-promos class="devsite-footer">
+          
+            
+          
+        </devsite-footer-promos>
+        <devsite-footer-linkboxes class="devsite-footer">
+          
+            
+<nav class="devsite-footer-linkboxes nocontent"
+     aria-label="Footer links"
+     data-nosnippet>
+  
+  <ul class="devsite-footer-linkboxes-list">
+    
+    <li class="devsite-footer-linkbox wd-footer-promo">
+    <h3 class="devsite-footer-linkbox-heading no-link">web.dev</h3>
+      <ul class="devsite-footer-linkbox-list">
+        
+        <li class="devsite-footer-linkbox-item">
+          
+          <h3 class="devsite-footer-linkbox-heading no-link">
+          
+            web.dev
+          
+          </h3>
+          
+          
+          <div class="devsite-footer-linkbox-description">We want to help you build beautiful, accessible, fast, and secure websites that work cross-browser, and for all of your users. This site is our home for content to help you on that journey, written by members of the Chrome team, and external experts.</div>
+          
+        </li>
+        
+      </ul>
+    </li>
+    
+    <li class="devsite-footer-linkbox ">
+    <h3 class="devsite-footer-linkbox-heading no-link">Contribute</h3>
+      <ul class="devsite-footer-linkbox-list">
+        
+        <li class="devsite-footer-linkbox-item">
+          
+          <a href="https://issuetracker.google.com/issues/new?component=1400680&amp;template=1857359"
+             class="devsite-footer-linkbox-link gc-analytics-event"
+             data-category="Site-Wide Custom Events"
+            
+             data-label="Footer Link (index 1)"
+            >
+            
+          
+            File a bug
+          
+          </a>
+          
+          
+        </li>
+        
+        <li class="devsite-footer-linkbox-item">
+          
+          <a href="https://issuetracker.google.com/issues?q=status:open%20componentid:1400680&amp;s=created_time:desc"
+             class="devsite-footer-linkbox-link gc-analytics-event"
+             data-category="Site-Wide Custom Events"
+            
+             data-label="Footer Link (index 2)"
+            >
+            
+              
+              
+            
+          
+            See open issues
+          
+          </a>
+          
+          
+        </li>
+        
+      </ul>
+    </li>
+    
+    <li class="devsite-footer-linkbox ">
+    <h3 class="devsite-footer-linkbox-heading no-link">Related Content</h3>
+      <ul class="devsite-footer-linkbox-list">
+        
+        <li class="devsite-footer-linkbox-item">
+          
+          <a href="https://developer.chrome.com/"
+             class="devsite-footer-linkbox-link gc-analytics-event"
+             data-category="Site-Wide Custom Events"
+            
+             data-label="Footer Link (index 1)"
+            >
+            
+          
+            Chrome for Developers
+          
+          </a>
+          
+          
+        </li>
+        
+        <li class="devsite-footer-linkbox-item">
+          
+          <a href="https://blog.chromium.org/"
+             class="devsite-footer-linkbox-link gc-analytics-event"
+             data-category="Site-Wide Custom Events"
+            
+             data-label="Footer Link (index 2)"
+            >
+            
+          
+            Chromium updates
+          
+          </a>
+          
+          
+        </li>
+        
+        <li class="devsite-footer-linkbox-item">
+          
+          <a href="/case-studies"
+             class="devsite-footer-linkbox-link gc-analytics-event"
+             data-category="Site-Wide Custom Events"
+            
+             data-label="Footer Link (index 3)"
+            >
+            
+          
+            Case studies
+          
+          </a>
+          
+          
+        </li>
+        
+        <li class="devsite-footer-linkbox-item">
+          
+          <a href="/shows"
+             class="devsite-footer-linkbox-link gc-analytics-event"
+             data-category="Site-Wide Custom Events"
+            
+             data-label="Footer Link (index 4)"
+            >
+            
+              
+              
+            
+          
+            Podcasts &amp; shows
+          
+          </a>
+          
+          
+        </li>
+        
+      </ul>
+    </li>
+    
+    <li class="devsite-footer-linkbox ">
+    <h3 class="devsite-footer-linkbox-heading no-link">Follow</h3>
+      <ul class="devsite-footer-linkbox-list">
+        
+        <li class="devsite-footer-linkbox-item">
+          
+          <a href="https://twitter.com/ChromiumDev"
+             class="devsite-footer-linkbox-link gc-analytics-event"
+             data-category="Site-Wide Custom Events"
+            
+             data-label="Footer Link (index 1)"
+            >
+            
+          
+            @ChromiumDev on X
+          
+          </a>
+          
+          
+        </li>
+        
+        <li class="devsite-footer-linkbox-item">
+          
+          <a href="https://www.youtube.com/user/ChromeDevelopers"
+             class="devsite-footer-linkbox-link gc-analytics-event"
+             data-category="Site-Wide Custom Events"
+            
+             data-label="Footer Link (index 2)"
+            >
+            
+          
+            YouTube
+          
+          </a>
+          
+          
+        </li>
+        
+        <li class="devsite-footer-linkbox-item">
+          
+          <a href="https://www.linkedin.com/showcase/chrome-for-developers"
+             class="devsite-footer-linkbox-link gc-analytics-event"
+             data-category="Site-Wide Custom Events"
+            
+             data-label="Footer Link (index 3)"
+            >
+            
+          
+            Chrome for Developers on LinkedIn
+          
+          </a>
+          
+          
+        </li>
+        
+        <li class="devsite-footer-linkbox-item">
+          
+          <a href="/static/blog/feed.xml"
+             class="devsite-footer-linkbox-link gc-analytics-event"
+             data-category="Site-Wide Custom Events"
+            
+             data-label="Footer Link (index 4)"
+            >
+            
+              
+              
+            
+          
+            RSS
+          
+          </a>
+          
+          
+        </li>
+        
+      </ul>
+    </li>
+    
+  </ul>
+  
+</nav>
+          
+        </devsite-footer-linkboxes>
+        <devsite-footer-utility class="devsite-footer">
+          
+            
+
+<div class="devsite-footer-utility nocontent" data-nosnippet>
+  
+
+  
+  <nav class="devsite-footer-utility-links" aria-label="Utility links">
+    
+    <ul class="devsite-footer-utility-list">
+      
+      <li class="devsite-footer-utility-item
+                 ">
+        
+        
+        <a class="devsite-footer-utility-link gc-analytics-event"
+           href="//policies.google.com/terms"
+           data-category="Site-Wide Custom Events"
+           data-label="Footer Terms link"
+         >
+          Terms
+        </a>
+        
+      </li>
+      
+      <li class="devsite-footer-utility-item
+                 ">
+        
+        
+        <a class="devsite-footer-utility-link gc-analytics-event"
+           href="//policies.google.com/privacy"
+           data-category="Site-Wide Custom Events"
+           data-label="Footer Privacy link"
+         >
+          Privacy
+        </a>
+        
+      </li>
+      
+      <li class="devsite-footer-utility-item
+                 glue-cookie-notification-bar-control">
+        
+        
+        <a class="devsite-footer-utility-link gc-analytics-event"
+           href="#"
+           data-category="Site-Wide Custom Events"
+           data-label="Footer Manage cookies link"
+         
+           aria-hidden="true"
+         >
+          Manage cookies
+        </a>
+        
+      </li>
+      
+    </ul>
+    
+    
+<devsite-language-selector>
+  <ul role="presentation">
+    
+    
+    <li role="presentation">
+      <a role="menuitem" lang="en"
+        >English</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="de"
+        >Deutsch</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="es_419"
+        >Español – América Latina</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="fr"
+        >Français</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="id"
+        >Indonesia</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="it"
+        >Italiano</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="pl"
+        >Polski</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="pt_br"
+        >Português – Brasil</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="vi"
+        >Tiếng Việt</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="tr"
+        >Türkçe</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="ru"
+        >Русский</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="he"
+        >עברית</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="ar"
+        >العربيّة</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="fa"
+        >فارسی</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="hi"
+        >हिंदी</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="bn"
+        >বাংলা</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="th"
+        >ภาษาไทย</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="zh_cn"
+        >中文 – 简体</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="zh_tw"
+        >中文 – 繁體</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="ja"
+        >日本語</a>
+    </li>
+    
+    <li role="presentation">
+      <a role="menuitem" lang="ko"
+        >한국어</a>
+    </li>
+    
+  </ul>
+</devsite-language-selector>
+
+  </nav>
+</div>
+          
+        </devsite-footer-utility>
+        <devsite-panel>
+          
+        </devsite-panel>
+        
+      </section>
+      </section>
+    <devsite-sitemask></devsite-sitemask>
+    <devsite-snackbar></devsite-snackbar>
+    <devsite-tooltip ></devsite-tooltip>
+    <devsite-heading-link></devsite-heading-link>
+    <devsite-analytics>
+      
+        <script type="application/json" analytics>[]</script>
+<script type="application/json" tag-management>{&#34;at&#34;: &#34;True&#34;, &#34;ga4&#34;: [], &#34;ga4p&#34;: [], &#34;gtm&#34;: [{&#34;id&#34;: &#34;GTM-MZWCJPP&#34;, &#34;purpose&#34;: 0}], &#34;parameters&#34;: {&#34;internalUser&#34;: &#34;False&#34;, &#34;language&#34;: {&#34;machineTranslated&#34;: &#34;False&#34;, &#34;requested&#34;: &#34;en&#34;, &#34;served&#34;: &#34;en&#34;}, &#34;pageType&#34;: &#34;article&#34;, &#34;projectName&#34;: &#34;Articles&#34;, &#34;signedIn&#34;: &#34;False&#34;, &#34;tenant&#34;: &#34;web&#34;, &#34;recommendations&#34;: {&#34;sourcePage&#34;: &#34;&#34;, &#34;sourceType&#34;: 0, &#34;sourceRank&#34;: 0, &#34;sourceIdenticalDescriptions&#34;: 0, &#34;sourceTitleWords&#34;: 0, &#34;sourceDescriptionWords&#34;: 0, &#34;experiment&#34;: &#34;&#34;}, &#34;experiment&#34;: {&#34;ids&#34;: &#34;&#34;}}}</script>
+      
+    </devsite-analytics>
+    
+      <devsite-badger></devsite-badger>
+    
+    
+    
+    
+    
+<script nonce="8fA22kouTLidfhiy2qSKd4/378a1Hx">
+  
+  (function(d,e,v,s,i,t,E){d['GoogleDevelopersObject']=i;
+    t=e.createElement(v);t.async=1;t.src=s;E=e.getElementsByTagName(v)[0];
+    E.parentNode.insertBefore(t,E);})(window, document, 'script',
+    'https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web/js/app_loader.js', '[27,"en",null,"/js/devsite_app_module.js","https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43","https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web","https://web-dot-devsite-v2-prod-3p.appspot.com",1,null,["/_pwa/web/manifest.json","https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/images/video-placeholder.svg","https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web/images/favicon.png","https://www.gstatic.com/devrel-devsite/prod/v5a0f9ff8b593048661361a49e11ab98a8b1ac025e19e60e6189f2b56796f8a43/web/images/lockup.svg","https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:400,400italic,500,500italic,700,700italic|Roboto+Mono:400,500,700&display=swap"],1,null,[1,6,8,12,14,17,21,25,50,52,63,70,75,76,80,87,91,92,93,97,98,100,101,102,103,104,105,107,108,109,110,112,113,116,117,118,120,122,124,125,126,127,129,130,131,132,133,134,135,136,138,140,141,147,148,149,151,152,156,157,158,159,161,163,164,168,169,170,179,180,182,183,186,191,193,196],"AIzaSyCNm9YxQumEXwGJgTDjxoxXK6m1F-9720Q","AIzaSyCc76DZePGtoyUjqKrLdsMGk_ry7sljLbY","web.dev","AIzaSyB9bqgQ2t11WJsOX8qNsCQ6U-w91mmqF-I","AIzaSyAdYnStPdzjcJJtQ0mvIaeaMKj7_t6J_Fg",null,null,null,["Profiles__enable_awarding_url","Concierge__enable_remove_info_panel_tags","Concierge__enable_pushui","DevPro__enable_devpro_offers","Profiles__enable_targeted_hero","Profiles__enable_profile_collections","MiscFeatureFlags__enable_framebox_badge_methods","DevPro__enable_developer_subscriptions","DevPro__enable_g1_integration","DevPro__enable_firebase_workspaces_card","Profiles__enable_callout_notifications","Profiles__enable_playlist_community_acl","Cloud__enable_legacy_calculator_redirect","Concierge__enable_devsite_llm_tools","Cloud__fast_free_trial","DevPro__enable_free_benefits","Profiles__enable_stripe_subscription_management","MiscFeatureFlags__enable_firebase_utm","Profiles__enable_developer_profiles_callout","Profiles__enable_auto_apply_credits","MiscFeatureFlags__enable_llms_txt","DevPro__enable_vertex_credit_card","MiscFeatureFlags__enable_project_variables","TpcFeatures__proxy_prod_host","MiscFeatureFlags__developers_footer_dark_image","MiscFeatureFlags__gdp_dashboard_reskin_enabled","BookNav__enable_tenant_cache_key","Profiles__enable_developer_profile_pages_as_content","Search__enable_ai_eligibility_checks","Cloud__enable_cloud_shell_fte_user_flow","Profiles__enable_developer_profile_benefits_ui_redesign","DevPro__enable_nvidia_credits_card","Cloud__enable_cloud_dlp_service","CloudShell__cloud_code_overflow_menu","Analytics__enable_devpro_interaction_logging","CloudShell__cloud_shell_button","DevPro__enable_devsite_captcha","MiscFeatureFlags__enable_explicit_template_dependencies","Cloud__enable_cloudx_experiment_ids","Experiments__reqs_query_experiments","Profiles__enable_page_saving","TpcFeatures__enable_unmirrored_page_left_nav","EngEduTelemetry__enable_engedu_telemetry","Search__enable_dynamic_content_confidential_banner","MiscFeatureFlags__remove_cross_domain_tracking_params","Search__enable_ai_search_summaries_for_all","DevPro__enable_payments_second_batch","Analytics__enable_clearcut_logging","Search__enable_page_map","Profiles__enable_purchase_prompts","Profiles__enable_dashboard_curated_recommendations","Cloud__enable_free_trial_server_call","DevPro__enable_cloud_innovators_plus","MiscFeatureFlags__enable_variable_operator","Concierge__enable_actions_menu","Cloud__cache_serialized_dynamic_content","DevPro__enable_credits_banner","Cloud__enable_cloud_shell","OnSwitch__enable","DevPro__remove_eu_tax_intake_form","Profiles__enable_release_notes_notifications","Profiles__require_profile_eligibility_for_signin","AIStudioInteractionsToggle__interactions_are_default","Profiles__enable_public_developer_profiles","MiscFeatureFlags__enable_appearance_cookies","Profiles__enable_recognition_badges","Profiles__enable_completecodelab_endpoint","MiscFeatureFlags__enable_variable_operator_index_yaml","MiscFeatureFlags__developers_footer_image","DevPro__enable_g1_ineligible_redirect","DevPro__enable_google_one_card","Profiles__enable_complete_playlist_endpoint","DevPro__enable_embed_profile_creation","MiscFeatureFlags__fix_lower_breadcrumbs","MiscFeatureFlags__enable_view_transitions","Profiles__enable_user_type","Search__enable_suggestions_from_borg","Profiles__enable_join_program_group_endpoint","DevPro__enable_google_payments_buyflow","MiscFeatureFlags__enable_explain_this_code","DevPro__enable_enterprise","DevPro__enable_code_assist","SignIn__enable_l1_signup_flow","Profiles__enable_completequiz_endpoint"],null,null,"AIzaSyA58TaKli1DculwmAmbpzLVGuWc8eCQgQc","https://developerscontentserving-pa.googleapis.com","AIzaSyDWBU60w0P9hEkr29kkksYs8Z7gvZ8u_wc","https://developerscontentsearch-pa.googleapis.com",2,4,null,"https://developerprofiles-pa.googleapis.com",[27,"web","web.dev","web.dev",null,"web-dot-devsite-v2-prod-3p.appspot.com",null,null,[null,null,null,null,null,null,null,null,null,null,null,[1],null,null,null,null,null,null,[1],null,null,null,null,[1,null,1],[1,1,null,1,1],null,null,null,null,null,[1]],null,[38,null,null,null,null,null,"/images/lockup.svg","/images/touchicon-180.png",null,null,null,1,1,null,null,null,null,null,null,null,null,2,null,null,null,"/images/lockup-dark-theme.svg",[]],[],null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,[[],[1,1]],[[null,null,null,null,null,["GTM-MZWCJPP"],null,null,null,null,null,[["GTM-MZWCJPP",1]],1]],null,4],null,null,1,1,"https://developerscontentinsights-pa.googleapis.com","AIzaSyC11xEGtFhkmSh_iF6l_itbxnFz2GrIBOg","AIzaSyAXJ10nRF73mmdSDINgkCNX5bbd2KPcWm8","https://developers.googleapis.com",null,null,"AIzaSyCjP0KOnHfv8mwe38sfzZJMOnqE3HvrD4A",null,null,"https://developers.googleapis.com"]')
+  
+</script>
+
+    <devsite-a11y-announce></devsite-a11y-announce>
+  </body>
+</html>

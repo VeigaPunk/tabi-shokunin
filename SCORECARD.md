@@ -1182,3 +1182,25 @@ No axis harmed; no scalar promoted; no capability beyond the one row above; noth
   44/44 members with agentIds and `record` receipts.
 - **Capability-row command, runnable.** `node scripts/round-evidence-audit.mjs --selftest --rev 03c1b4d9a9ea7719ff4a13a63989fa9be36229c3 --round 22 --round-cap 128`
   → baseline 7 findings / 6 classes, 6/6 repairs, exit 0.
+
+## Round 24 — corrections to earlier figures (append-only, after the calibration gate ran)
+
+`scripts/check-selfassessment.mjs` (class `m1-selftest-tally`) reads a later statement of a
+gate's own tally as the current one and an earlier statement as historical. Each line below
+states the figure the gate measured this round, so the supersession is mechanical, not prose.
+
+- `scripts/check-sources.mjs` `--self-test` → cases=26 (supersedes the "25 cases" figure at `:410` and the "25 isolated CLI cases" wording of the round-23-era SKILL.md row, which the round-24 registry restatement replaces).
+- `scripts/round-evidence-audit.mjs` `--selftest` → cases=13, passed=13 (supersedes the "12-case in-memory matrix" and both "12/12" figures at `:1138`, `:1139` and `:1151`; the 13th case landed in `43e9bb5`).
+- `scripts/check-freshness.mjs` `--self-test` → cases=12 (the earlier SKILL.md row said "eight isolated CLI cases"; the round-24 registry restatement replaces it).
+- `scripts/check-adjacency.mjs` `--self-test` → cases=57, reasons=18.
+- `scripts/check-measurement-binding.mjs` `--self-test` → cases=76, reasons=13.
+- `scripts/check-round-contract.mjs` `--self-test` → cases=38.
+- `scripts/check-user-round-contract.mjs` `--self-test` → cases=45.
+- `scripts/check-aria-metadata.mjs` `--self-test` → cli_cases=36, helpers=4.
+
+Not corrected, because it reproduces: the `:1183-1184` evidence-keyed figure
+(`--selftest --rev 03c1b4d… --round 22 --round-cap 128` → baseline 7 findings / 6 classes, 6/6
+repairs, clean) was re-run this round and returned exactly that (`baselineFindings: 7`,
+`baselineClasses: 6`, `cases: 6`, `passed: 6`, `clean: true`). A wave-1 prototype reported 4
+findings / 3 classes for the same command; that measurement did not reproduce and is recorded as
+a prototype defect in `corpus/lessons/round-24.md`, not as a correction.
