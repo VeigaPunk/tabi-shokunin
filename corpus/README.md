@@ -589,3 +589,26 @@ Counting commands (2026-10-25): `ls corpus/knowledge/*.md | wc -l` → 42;
 | Navigation-history evidence across a bfcache restore | **runtime-held on this host** — a loopback A→B→A journey restored A from the bfcache (one `Page.frameNavigated` BackForwardCacheRestore on the original loaderId, the history-index drop, `pageshow.persisted`, surviving JS state, zero requests back to A); negative controls (no history step; `--disable-back-forward-cache`) both yield 0 restores. Round-24 U1 closed. | `corpus/knowledge/bfcache-runtime-observed-round-25.md`; `corpus/evidence/round-25/bfcache/receipt.json` + `events.jsonl` + `controls.json`; rows S104/S105/S106 |
 | On-release source freshness | held — six on-release rows re-opened on 2026-10-25, all quotes located in fresh bytes, 0 supersessions. | `corpus/knowledge/source-recheck-round-25.md`; `corpus/evidence/round-25/freshness/reopened.json` + committed bytes |
 | Bfcache-receipt gate / source-reopen-receipt gate | held — both land with eight-field registry rows, selftests 17/17 and 18/18, and exit 0 at the measurement commit. | `SKILL.md` §"Round 25 — …"; `scripts/check-bfcache-receipt.mjs`; `scripts/check-source-reopen-receipt.mjs` |
+
+## Round 27 — redirect semantics documented; LOG-window calibration mechanical (2026-10-25)
+
+Append-only. One coverage row; no earlier line is edited.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/redirect-and-retry-after-semantics.md` *(round 27)* | Documented-upstream classification vocabulary for redirects a journey driver observes: 303 → GET-or-HEAD retrieval; 301/302 MAY rewrite POST to GET (normative *Note*); 307 MUST NOT change the request method; 308's preservation is an inference labeled INFERENCE (the clause lives in RFC 7538, not in the fetched RFC 9110 bytes); Retry-After may accompany any 3xx and 503. Nothing in it was run, captured or observed in a browser. | S107 RFC 9110 §15.4, §15.4.2–15.4.4, §15.4.8–15.4.9, §10.2.3; fresh fetch 2026-10-25 (502941 B, sha256 21c1cdce…) with bytes committed at `.ufo/waves/round-27/assimilation/rfc9110.txt` |
+
+Frontier restatement (append-only; earlier rows keep their bytes): **redirects on
+journeys** — `documented semantics held; measured redirect untested`. The round-3
+anti-claim's "redirects … untested by rule" narrows: the classification vocabulary is
+documented; no live redirect has been classified by it (the round-6 loopback
+fixture's redirect chain was traversed, never classified). The 308 preservation is
+an inference until re-anchored in RFC 7538.
+
+| Frontier item | Status | Pointer |
+|---|---|---|
+| LOG-window calibration | held — the m1 self-assessment window covers LOG.md round entries; five stale-tally findings dispositioned by append-only corrections | `scripts/check-selfassessment.mjs` (`--selftest` cases=17); `LOG.md` round-27 entry |
+| Decoded-source evidence gate | held — the S106 decoded bytes + receipt validate mechanically | `scripts/check-s106-evidence.mjs`; `corpus/evidence/round-26/sources/` |
+
+Counting commands (2026-10-25): `ls corpus/knowledge/*.md | wc -l` → 46;
+`grep -cE '^\| S10[0-7] ' corpus/SOURCES.md` → 8.

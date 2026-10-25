@@ -1368,3 +1368,56 @@ reviewer, 4 critic, 1 connector, 1 revenger, 1 sentinel, 1 mutation-tester,
 dispatch payload built (`w1-dispatch.json`); **dispatched 0 — operator
 wrap-up**. W2 never specced. Round total 0 seats, 0 dead. The §3 planner seat
 is held by the L1; the validated spec would have met the L2 floor inside W1.
+
+## Round 27 — declared claims (re-dispatch of round-26 frozen claims)
+
+Baseline `f185b4e7ab10cd9e8925e8ec614c9c111772357d`; claims record
+`.ufo/waves/round-27/claims.json` — the round-26 claims re-dispatched verbatim
+(predicate, counter, kill rule, target unchanged per §10 frozen/resumed and the
+round-26 LOG resumption point). Axes at round start: depth 8, coverage 9,
+operability 8, freshness 8, calibration 9, adjacency 8. Lowest non-retired
+axis: **tie at 8** (depth, operability, freshness, adjacency); C2 works depth
+(tie), C1 calibration 9, C3 coverage 9. Saturation 8 / window 3 retained;
+stagnation nudge inactive (capabilities entered at rounds 22–25). No axis retired.
+
+| Claim | Axis / type | Before → after | Counting command (field) |
+|---|---|---|---|
+| C1 | calibration — counter-window extension (frozen round-26 claim, unchanged) | extended `check-selfassessment.mjs` m1 window to LOG.md round entries: ≥1 `m1-selftest-tally` mismatch at baseline → 0 at tip after append-only corrections; selftest 13 → ≥15 | `node scripts/check-selfassessment.mjs --rev <REV> --json` (`mismatches`) |
+| C2 | depth — routed source-evidence admission (frozen round-26 claim, unchanged) | 0 gate → `valid=true` at tip | `node scripts/check-s106-evidence.mjs --rev <REV> --json` (`valid`) |
+| C3 | coverage — assimilation admission (addendum §10), documented-upstream | 0 entries cite S107 → ≥1 (entry re-grounded on fresh RFC 9110 bytes) | `git grep -lE '^source: S107 ' <REV> -- corpus/knowledge \| wc -l` |
+
+## Round 27 — executed disposition
+
+Measured against the landed commits; the extended counter's tip run is the
+clean-tree measurement.
+
+| Claim / axis | Before → after | Verdict |
+|---|---|---|
+| C1 calibration | baseline `4ad4c77` → `mismatches=6` (5 LOG-window findings at LOG.md:335/:391/:1090/:1103/:1664 plus the m3 working-tree class) → tip `mismatches=0` under a clean tree; selftest 13 → 17 (four new LOG-window cases incl. the wrong-number red control) | **met** — evidence `.ufo/waves/round-27/selfassess-baseline-raw.json`, `measure-c1-fd722a7.json` (tip run at the integration commit records the same `mismatches=0` once the working tree is clean — m3 is a live-tree class whose receipt records the porcelain count at the measurement instant) |
+| C2 depth | 0 → `valid=true` at `5577d1b6fe2dc298486e354b5416d38acafeffaa` (present, sha_match, anchor_located, anchor_unique, byte_count_match) | **met** — `scripts/check-s106-evidence.mjs`; selftest 4/4; receipt `.ufo/waves/round-27/measure-c2-5577d1b.json` |
+| C3 coverage | 0 → 1 entry cites S107 at `6ca3b89ad2a7b480984859834b3d28f1e75a9a26` | **met** — transformed row appended (not byte-exact: staged S124 fails the census gate E09 on its prose recheck cell — `.ufo/waves/round-27/assimilation/staged-census.txt`); registry 106 → 107 rows; census exit 0 (`census-after-c3.txt`). Refusals carried in `corpus/lessons/round-27.md` §Gate: staged S125 (duplicate URL of S102), staged S142 (same-document §15.4 overlap) |
+| operability | 8 → 8 (a new gate lands with registry row; SKILL.md eight-field rows appended under the append-only round-27 section; `check-gate-registry.mjs` clean) | improved in substance, scalar held — counted under the claim's own counter, not re-scored |
+| freshness, adjacency | unchanged | no claim; no harm measured — every prior-round byte is append-only |
+
+No capability-table promotion this round: `check-s106-evidence.mjs` is a gate
+(counter), not a repertoire capability.
+
+## Round 27 — waves and seats
+
+Two v1 waves (32 + 32 = 64 seats; run-7 band floor, run-7 m_flash-majority rule
+met inside each wave — the m_flash-routed roles executor/scribe/simplifier
+carry 16 of 32 in wave 1). W1 (attack/verify, claims landed pre-wave by the
+L1): 3 scout, 9 executor, 5 scribe, 2 simplifier, 4 reviewer, 3 critic,
+2 mutation-tester, 2 connector, 1 sentinel, 1 revenger — dispatched as one
+validated payload under policy v1 (`w1-dispatch.json`, validator exit 0).
+W2 dispatched after W1 findings landed. Dead seats: <recorded>. The §3 planner
+seat is held by the L1; the validated spec met the L2 floor inside W1.
+
+### Planned / saturation / retired — round 27
+
+- planned: freshness — re-verify the on-release rows S104–S106's sources on the
+  next browser-tag bump; operability — the `report-contract.mjs` utility lands
+  as a lane script when a review seat's read confirms it (built this round,
+  committed as wave evidence).
+- capabilities: unchanged; gates are counters, not repertoire rows.
+- saturation 8 / window 3 unchanged; no axis retired or waived.

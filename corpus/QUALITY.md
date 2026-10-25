@@ -356,3 +356,21 @@
     defect (reference-drift), and the gate re-runs the counting command at the delivered tip rather
     than trusting the receipt's self-report alone. (lesson: corpus/lessons/round-25.md#m1; routed
     round-24 spot-check observation; `scripts/check-measurement-binding.mjs` red fixture)
+
+67. A googlesource `?format=TEXT` source row is not admitted until the decoded bytes and
+    both digests (encoded transfer and decoded) are committed as lane evidence: the
+    transfer is base64, and reading it as the document is a reproducible defect class
+    (round-25 closure defect 4; the r26 M2 mistake). The row's anchor cites the decoded
+    text by line number and the receipt records `bytes_path`, `decoded_sha256` and
+    `encoded_sha256`; the admission gate recomputes the digest over the committed bytes,
+    never the live URL. (lesson: corpus/lessons/round-26.md#m2; routed round-25 closure
+    defect 4; `scripts/check-s106-evidence.mjs` cases=4)
+68. A round's report is not fleet-committed until a runnable check confirms it carries
+    every required section — Work performed, Landed changes, Before → after
+    measurements, Sources & frontier, Trend verdicts, and exactly one `## SHONEN` with
+    one box line per SHONEN.md box — at the contract path
+    `.ufo/reports/round-<N>/<lane>.md`. The round-25 report's first landing at
+    `.ufo/waves/round-25/tabi.md` without SHONEN is the defect class this names; the
+    check (scripts/report-contract.mjs) is the mechanization of a discipline a prose
+    reminder kept missing. (lesson: corpus/lessons/round-26.md#m1; routed round-25
+    closure defect 1)
