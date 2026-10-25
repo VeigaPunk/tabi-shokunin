@@ -93,6 +93,20 @@ keeps every byte addressable at a named revision.
 | `c1-measurements.json` `before.exit: 1` | `corpus/lessons/round-23-verifier-spotcheck.md` §4.5 | does not reproduce: `git show c90dffd:…` and `573c99e:…` both read 128; the stale `1` lived at `03c1b4d` until `7ac9fff` |
 | Wave-1 prototype "4 findings / 3 classes, 3/6 repairs" for the auditor's evidence-keyed matrix | `.ufo/waves/round-24/w1/ExecMismatchProto.md` | the shipped auditor returns 7 findings / 6 classes, 6/6 repairs, clean (`--selftest --rev 03c1b4d… --round 22 --round-cap 128`); the prototype's number is recorded as a prototype defect, not as a lane figure |
 
+## Wave-2 falsification of the first C2 filing, and the clean-tree fix
+
+The 33-seat falsify wave reproduced C2 as committed as `mismatches=1` at the mid-wave tip, because
+`m3-unlanded-paths` reads the live working tree and the wave's own artifacts were uncommitted. The
+frozen claim's `after` was therefore meaningless until the final clean tree existed. The round's
+answer is not to soften the number: the final receipt `c2-tip.json` records `mismatches=0`,
+`clean=true`, measured at `3069ca9` with `git status --porcelain` = 0, and the instrument's
+tree-dependence is a disclosed property (QUALITY 65) rather than a hidden one. The counter's m2
+class is disclosed as a null class (one supported receipt decodable, the other 75
+could-not-evaluate) — the kill rule's disclosure demanded it, and the report's wave-2 section
+carries it. Wave-2 also falsified C1's "whole gate set" wording (the derived universe is 14 gates,
+and five wave-local gates declared in earlier rows are outside it) and C3's presence-proxy metric
+(the quote control is not a scripted check); both are recorded as instrument limits in the report.
+
 ## Open, carried
 
 - `LOG.md:1664` still reads twelve for the auditor's self-test; it is a dated journal entry bound
