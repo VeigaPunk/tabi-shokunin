@@ -1,0 +1,54 @@
+{
+  "schema": "tabi-round-claims-v1",
+  "lane": "tabi",
+  "round": 25,
+  "frozenAt": "2026-10-25",
+  "frozenBeforeData": true,
+  "baseline": "9e13666759bcf30665abec84dec13adefc1fa86a",
+  "axisScoresAtRoundStart": {
+    "depth": 8,
+    "coverage": 9,
+    "operability": 8,
+    "freshness": 8,
+    "calibration": 9,
+    "adjacency": 8
+  },
+  "lowestNonRetiredAxis": "tie at 8 among depth, operability, freshness, adjacency; C1 works depth, C2 works freshness. Saturation 8 / window 3 retained; the stagnation nudge is inactive (capabilities entered at rounds 22-24). No axis retired.",
+  "claims": [
+    {
+      "id": "C1",
+      "axis": "depth",
+      "type": "frontier-entry runtime admission (observation)",
+      "declared": "Observe a real BackForwardCacheRestore on a loopback fixture and commit a receipt: a journey probe navigates fixture A -> B -> A via CDP Page.goBack (a real history step, not a synthetic shortcut), WITHOUT --disable-back-forward-cache, and records Page.frameNavigated events. The counter scripts/check-bfcache-receipt.mjs --rev <REV> --json reads the committed receipt at corpus/evidence/round-25/bfcache/receipt.json and reports {receipt_present, restores, valid}. Target: restores >= 1 with valid=true at the tip. Before: 0 committed receipt (git ls-tree -r --name-only 9e136667 -- corpus/evidence/round-25 is empty) and round-24 entry U1 documents no committed probe performs a history step at all. The accompanying knowledge entry cites S104/S105 (mined, re-opened this round) and S106 (opened this round): sourcing satisfied.",
+      "metric": "observed_bfcache_restores",
+      "countingCommand": "node scripts/check-bfcache-receipt.mjs --rev <REV> --json",
+      "counterField": "restores (integer >= 1 required) and valid (boolean true required)",
+      "before": 0,
+      "after": "restores >= 1, valid=true",
+      "control": "Skip-work control: a forged receipt claiming restores=2 with no raw CDP event backing (control/fake-receipt-bfcache.json) must FAIL validity with the frozen counter; a do-nothing run (no history step) must yield restores=0. Both scored before claim data in wave 1; outputs recorded as wave evidence.",
+      "killRule": "A receipt missing at the measured revision is could-not-evaluate, never 0. Every counted restore must trace to a real Page.frameNavigated event in the run's committed raw event log AND the run must have executed a history step (goBack) with a matching before/after target; otherwise valid=false and the target misses honestly. A run whose browser flags include --disable-back-forward-cache is invalid for this claim.",
+      "failureCapable": "node scripts/check-bfcache-receipt.mjs --selftest -> isolated cases assert exit and finding id: forged receipt (invalid), no-history run (restores=0), digest mismatch (invalid), valid run receipt (clean)."
+    },
+    {
+      "id": "C2",
+      "axis": "freshness",
+      "type": "on-release source re-verification",
+      "declared": "Re-open six on-release SOURCES rows this round (S013, S015, S016, S020, S023, S024), fetch their current bytes fresh, and for each locate the row's held quote in today's bytes or land a new superseding row (append-only) with the corrected anchor. The counter scripts/check-source-reopen-receipt.mjs --rev <REV> --json reads corpus/evidence/round-25/freshness/reopened.json and reports {reopened, resolved, unresolved, supersessions}. Target: reopened=6 and unresolved=0 at the tip. Before: 0 rows re-opened this round (no receipt at baseline).",
+      "metric": "freshness_rows_reopened_unresolved",
+      "countingCommand": "node scripts/check-source-reopen-receipt.mjs --rev <REV> --json",
+      "counterField": "reopened (integer, target 6) and unresolved (integer, target 0)",
+      "before": 0,
+      "after": "reopened=6, unresolved=0",
+      "control": "Skip-work control: a receipt that marks rows resolved without a fresh fetch digest for THIS round (control/skipwork-freshness.json, reusing 2026-10-19 bytes) must FAIL with the frozen counter; a row whose fresh bytes do not contain the held quote must be marked unresolved, never silently resolved.",
+      "killRule": "A row whose fetch fails at measure time (network error, non-200) is could-not-evaluate for that row, never resolved or unresolved; if more than one row is could-not-evaluate at the tip, the target misses honestly. A resolved row must carry this round's fetch digest and either a located held quote or a pointer to a new superseding row committed in the same round.",
+      "failureCapable": "node scripts/check-source-reopen-receipt.mjs --selftest -> isolated cases assert exit and finding id: stale-bytes row (unresolved), quote-absent row (unresolved), dangling supersession (unresolved), clean 6/6 receipt (clean)."
+    }
+  ],
+  "notClaimed": [
+    "no scalar axis promotion: every axis score is unchanged this round",
+    "no non-author judgment: every seat is lane-dispatched; the non-author closure remains the fleet's",
+    "no real-site interaction, no consequential external action, no session/credential material",
+    "assimilation (if any) is a frontier-step item under the assimilation contract, not a claim slot; quarantine-first verdicts from round 22 are carried, adoption is conditional on this round's re-grounding"
+  ],
+  "revisions": []
+}
