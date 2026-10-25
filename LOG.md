@@ -1707,3 +1707,41 @@ not a fleet gate: it reads the fleet report and policy by path (digests recorded
 nothing, and refuses rather than producing a clean verdict from absent inputs. The two claims
 were measured against the tree of this commit; the committed checkpoint and its re-run are
 recorded in the `## Round 23` block of `SCORECARD.md` and in the round report.
+
+## Round23 — post-landing corrections (2026-10-25, wave-2 harvest, append-only)
+
+The §Round23 entry above describes the round as it stood at `03c1b4d`/`7ac9fff`. Every commit
+after those two carries corrections the same entry could not name; this section names them, so
+that each post-landing commit is bound to a LOG entry (round-22 routed defect 6, applied to this
+round's own trail). Each bullet names the commit and what it carries.
+
+- `dfae5cd` — M4 control restatement in `corpus/lessons/round-23.md` (round-21 is not a
+  zero-control; the zero-controls are the evidence-keyed repair matrix and the skip-work refusal),
+  counting commands for the spot-check counts, and the self-audit receipt.
+- `add37e7` — `c1` now ignores superseded/corrected figures and extracts a markdown-emphasised
+  number; `c3` requires an affirmative spot-check record (a denial is the defect, not a record);
+  entry contradiction fixes (the round-9 fixture capture, the "Limitations of SameSite" heading,
+  the errata scope) and the baseline-only README sweep.
+- `af00b59` — the ten late wave-2 seat reports that existed at that point.
+- `2433ed2` — two read-path fail-opens closed: a cited commit that does not resolve is a `c6`
+  finding instead of a skip, and a directory named `*-spec.json` is a `c2` finding instead of an
+  invisible wave; `SCORECARD.md` corrections (measured revisions, the SOURCES mid-file insertion,
+  the seat census, runnable capability command); the last late reports.
+- `43e9bb5` — a second `c2` red arm for the round-total leg (selftest 13 cases; removing that arm
+  now exits 3), the `c6` "LOG entry lands in `<hash>`" escape must resolve to a commit that
+  carries the entry, the entry's Fetch-Metadata slot and quote ellipses, and the C2 wording in the
+  Gate.
+- `e059a8f` — all 44 wave-2 seat reports landed (the round's wave census closes at 44 + 44 = 88
+  reports, 0 dead seats by this commit; the "88 seat reports" wording in §Round23 became true
+  here, not at `03c1b4d`).
+- `b905efb` — `c1` reads a markdown-emphasised citation, the Gate carries the round-23
+  self-audit command and its clean result, and M5's scratch count is corrected to the measured
+  1,034 paths.
+
+Not fixed, disclosed: `M5` (scratch over-commit, cleanup commit owed), `c2`/`c5` read only
+top-level `<stem>-spec.json` waves (nine older rounds are out of their reach), `c4` grades
+presence rather than truth and is vacuous for this round, `c1` drops a citation line containing a
+correction word, `c3` is word-presence only, `lessonSha256` hashes a re-encoded string rather than
+the blob bytes, a missing object reads as "absent at this revision", the round cap is supplied by
+the caller and never verified against a committed declaration, and the OWASP spans are matched on
+stripped text whose own digest is unrecorded.
