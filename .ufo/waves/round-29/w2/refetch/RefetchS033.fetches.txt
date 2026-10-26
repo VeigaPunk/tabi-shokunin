@@ -1,0 +1,32 @@
+# RefetchS033 fetch log — commands run in scratch /fast/scratch/hyaku/tabi-r29/RefetchS033; lane read-only.
+# Recorded independent fetch: 2026-10-26T05:09:33Z. Statuses below re-captured verbatim in a
+# replay loop (third and fourth GET); sha256 values are of the bytes of the recorded fetch,
+# which are byte-identical to the replayed bodies (raw b64 sha equal, see *).
+
+$ curl -sS -o replay-154.0.8037.97.b64 -w '%{http_code}' 'https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/script_tools/model_context_supplement.idl?format=TEXT'
+HTTP 200
+  replay_raw_b64_sha256 = 9c0d5822fbae41ec86cf407e8040d86ea3ace4d213d7845f2c436b72620cf373
+  recorded_raw_b64_sha256= 9c0d5822fbae41ec86cf407e8040d86ea3ace4d213d7845f2c436b72620cf373
+  decoded_sha256(recorded bytes) = 50dd337d33c38403c60084fa8c716c9d8e2c01ff26405e331408c122ef906364   decoded_bytes=389 lines=13
+$ curl -sS -o replay-156.0.8078.47.b64 -w '%{http_code}' 'https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47/third_party/blink/renderer/core/script_tools/model_context_supplement.idl?format=TEXT'
+HTTP 200
+  replay_raw_b64_sha256 = 9c0d5822fbae41ec86cf407e8040d86ea3ace4d213d7845f2c436b72620cf373
+  recorded_raw_b64_sha256= 9c0d5822fbae41ec86cf407e8040d86ea3ace4d213d7845f2c436b72620cf373
+  decoded_sha256(recorded bytes) = 50dd337d33c38403c60084fa8c716c9d8e2c01ff26405e331408c122ef906364   decoded_bytes=389 lines=13
+
+$ cmp -s bytes-154.0.8037.97.idl bytes-156.0.8078.47.idl
+exit=0 (0 = identical)
+
+$ curl '.../+/refs/tags/<tag>/<path>?format=JSON'   (blob id, server-side)
+  154.0.8037.97 -> blob c954510d188abb6fb21542e7a60127608650d48c
+  156.0.8078.47 -> blob c954510d188abb6fb21542e7a60127608650d48c
+
+$ curl '.../+/refs/tags/<tag>?format=JSON'   (tag ref -> commit)
+  154.0.8037.97 -> commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d   # row anchor cites b510e9d7cd3a2fbd78d0ddc42234103206c5f78d
+  156.0.8078.47 -> commit 1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775
+
+$ curl '.../+/refs/tags/156.0.8078.47/third_party/blink/renderer/core/script_tools/?format=JSON'
+  .idl entries at 156: model_context.idl model_context_supplement.idl model_context_tool.idl
+
+404 rule: NOT APPLICABLE (HTTP 200 at both tags). raw decoded sha256 == normalised sha256;
+          no request_id substitution was performed, so the refetch JSON carries the raw value.

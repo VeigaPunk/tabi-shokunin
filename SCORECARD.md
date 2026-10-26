@@ -1464,3 +1464,38 @@ the stale lines stay as written, these lines supersede them.
 - `scripts/round-evidence-audit.mjs` `--selftest` (13/13): correction — supersedes the stale tallies at `SCORECARD.md:1138-1139` and `SCORECARD.md:1151`.
 - `scripts/check-selfassessment.mjs` `--selftest` (22/22): correction — supersedes the stale tally at `SCORECARD.md:1439` (the doc-bound matcher added two cross-document cases this round).
 - `scripts/check-s106-evidence.mjs` `--selftest` (7/7): correction — supersedes the stale tally at `SCORECARD.md:1438` (its figure was the round-28 baseline count; at the round-28 tip the self-test crashed before printing a tally).
+
+## Round 29 — declared claims (frozen before data) and executed disposition
+
+Fresh-start round (run 8). Baseline `856fa9e1202179f5cfbd28c1f0efdd4eb1f426bb`; claims, counters and
+controls frozen in `97be89bc66139eb45526a04af59a35dccc006eb9` (`.ufo/waves/round-29/claims.json`).
+Axes at round start: depth 8, coverage 9, operability 8, freshness 8, calibration 9, adjacency 8;
+lowest-axis tie at 8 — C1 works operability, C3 works freshness. Saturation 8 / window 3; nudge
+inactive; no axis retired. Measured at `9cc92b0880a104551a32369f8f59bf4af9d0959e` and re-measured at
+the final lane tip in a clean clone; raw outputs in `.ufo/waves/round-29/measure/`.
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 operability | `node scripts/check-s106-evidence.mjs --selftest; echo exit=$?` | exit 1, ReferenceError, no tally → `S106_SELFTEST verdict=clean cases=7 passed=7` exit 0; mutant without the revision comparison fails `measured-revision-bytes-mismatch` (`corpus/evidence/round-29/s106-selftest/mutation.txt`); `--rev` valid=true | met (lane-side); operability 8 → 8 (a restored gate, not a new one) |
+| C2 calibration | `node scripts/check-selfassessment.mjs --rev <REV> --json` in a clean checkout (frozen counter sha256 728128…60c4) | mismatches 6 → 0 | met (lane-side); calibration 9 → 9 |
+| C3 freshness | `node scripts/check-release-pins.mjs --rev <REV> --stable 156.0.8078.47 --json` | population 23, unresolved 23 → 0 (holds 16, drifted 7, superseded by S109–S115) | met (lane-side) with disclosed counter weaknesses (lesson round-29 M4); freshness 8 → 9 |
+| depth, coverage, adjacency | — | no claim | unchanged; no-harm sweep `.ufo/waves/round-29/w2/ExecNoHarm.md` found no gate green at baseline and red at tip |
+
+Gate registry: `node scripts/check-gate-registry.mjs --rev <REV>` nonconformant 2 → 0 (counted under
+C1's axis, no separate credit). The `scripts/check-release-pins.mjs` self-test runs `cases=20` (registry row in
+SKILL.md round 29). C2's frozen counter now runs `cases=22` (`scripts/check-selfassessment.mjs`).
+Coupling disclosed after wave 1: C1 landing turned `SCORECARD.md:1438` from could-not-evaluate into a counted
+stale tally, superseded in the round-29 corrections section above.
+
+### Round 29 — waves and seats
+
+Two v1 waves. W1 build + first falsifiers, 44 seats (26 executor, 6 critic, 3 reviewer, 3 mutation-tester,
+3 connector, 2 scout, 1 scribe); W2 falsify, 39 seats (25 critic, 5 executor, 3 reviewer, 3 mutation-tester,
+2 connector, 1 scout). Round total 83; no residual call. The L1 holds the planner seat.
+
+### Planned / saturation / retired — round 29
+
+- planned: operability — release-pin counter v2 (anchor-derived span sets, exact-path binding, population id
+  set, self-supersession refusal, 404 rows judged on status and first line) closing the round-29 wave-1
+  attack fixtures; s106 self-test cases for anchor uniqueness and byte count (surviving mutants, `w1/MutC1Baseline.md`).
+- capabilities unchanged (gates are counters); saturation 8 / window 3; no axis retired.

@@ -1,0 +1,15 @@
+Fixture: mktemp -d -p /fast/scratch/hyaku/tabi-r29/RefetchS079 ; git -C $D init -q (toplevel verified == $D)
+Contents seeded from git blobs of 32008a453737a27f69e9ab401d0b9775d2a944f7:
+  scripts/check-release-pins.mjs, corpus/SOURCES.md, corpus/evidence/round-29/release-pins/receipt.json,
+  corpus/evidence/round-29/release-pins/bytes/**  (+ refetch/S079.json = the record written by this seat)
+Counter calls: node <D>/scripts/check-release-pins.mjs --repo <D> --rev <E> --stable 156.0.8078.47 --json
+(exit code is 1 for every probe only because the other 22 population rows are unresolved in the fixture.)
+
+E1 7bd255ff9d9bda76db6e3051fb206f8cc573b872  full filing + this seat's refetch(S079)
+   -> S079 resolved=true verdict=holds reasons=[]      (expected baseline)
+E2 d7873dd67ef9a31853ff467058ce26271930968c  receipt S079.files := [WebMCP.pdl] only (.cc dropped)
+   -> S079 resolved=true verdict=holds reasons=[]      ATTACK: subset filing accepted
+E3 569eae44e6e10641380c5fc1b122b3dad6d5e65c  S079 anchor: the two cited sha256 values swapped between files
+   -> S079 resolved=true verdict=holds reasons=[]      ATTACK: f5 "some file matches some digest" is not per-file
+E4 69974de3f68cd6bc3fe6171b2380c10f43ecf630  154 .cc bytes replaced by the 156 .cc bytes, receipt old_sha256 := 156 sha
+   -> S079 resolved=true verdict=holds reasons=[]      ATTACK: no independent 154 re-fetch; old-tag provenance unproven

@@ -1,0 +1,21 @@
+--- /fast/scratch/hyaku/tabi-r29/ExecRerunC1/lane/scripts/check-s106-evidence.mjs	2026-10-26 02:25:26.463609803 -0300
++++ /fast/scratch/hyaku/tabi-r29/ExecRerunC1/mut-base/scripts/check-s106-evidence.mjs	2026-10-26 02:25:45.441189167 -0300
+@@ -45,7 +45,7 @@
+ const SELFTEST_SCHEMA = "tabi-s106-evidence-selftest-v1";
+ const RECEIPT_PATH = "corpus/evidence/round-26/sources/s106.json";
+ const RECEIPT_SCHEMA = "tabi-s106-evidence-v1";
+-const LANE = join(dirname(fileURLToPath(import.meta.url)), "..");
++const LANE = "/home/vgpnk/Projects/shokunin/tabi-shokunin";
+ 
+ class Refusal extends Error {
+   constructor(message) {
+@@ -113,8 +113,7 @@
+   const receipt = parseReceipt(receiptText);
+   const measuredRev = resolveRev(repo, receipt.measured_rev);
+   const measuredBytes = readBlob(repo, measuredRev, receipt.bytes_path);
+-  const revisionMatch = measuredBytes !== null &&
+-    sha256(measuredBytes) === receipt.decoded_sha256;
++  const revisionMatch = true; // MUTANT: revision comparison removed
+   const bytesText = readBlob(repo, rev, receipt.bytes_path);
+   if (bytesText === null) throw new Refusal(`decoded bytes absent at ${rev}: ${receipt.bytes_path}`);
+   const observedSha = sha256(bytesText);

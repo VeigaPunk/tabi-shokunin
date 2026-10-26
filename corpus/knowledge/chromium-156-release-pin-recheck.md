@@ -113,3 +113,6 @@ naming the superseding row: `webmcp-invocation-round-17.md` (S042 → S109),
   records are committed (`corpus/evidence/round-29/release-pins/refetch/`); before that commit the
   counter reports every row unresolved on `f6-refetch` (F1). Raw outputs:
   `.ufo/waves/round-29/measure/`.
+- Correction to the bullet above (wave-2 `RevSources.md`, S110): the inserted hunk is 10 lines — the
+  9-line guard 201-209 plus the blank line 210 — and with a separate one-line change above it, 154
+  lines from 198 on sit 11 lines lower at 156. "A second one-line change" explains the +1, not the +10.

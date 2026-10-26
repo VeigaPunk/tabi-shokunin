@@ -1,0 +1,24 @@
+### s106 --selftest (tip e1e3a15)
+CASE id=clean-fixture-valid expected_exit=0 exit=0 valid=true PASS
+CASE id=measured-revision-bytes-match expected_exit=0 exit=0 valid=true PASS
+CASE id=measured-revision-bytes-mismatch expected_exit=1 exit=1 valid=false PASS
+CASE id=sha-mismatch-invalid expected_exit=1 exit=1 valid=false PASS
+CASE id=anchor-off-by-one-invalid expected_exit=1 exit=1 valid=false PASS
+CASE id=missing-bytes-could-not-evaluate expected_exit=2 exit=2 valid=n/a refusal=decoded bytes absent at 064464735a0af00c1144ae091ae8d33abce26df9: corpus/evidence/round-26/sources/content-features-154.0.8037.97.cc PASS
+CASE id=missing-receipt-could-not-evaluate expected_exit=2 exit=2 valid=n/a refusal=receipt absent at 323ccbedb815742265572a5ee27e39b65ff754e5 PASS
+S106_SELFTEST verdict=clean cases=7 passed=7
+exit=0
+
+### release-pins --rev e1e3a15 --stable 156.0.8078.47
+exit=1 (json: rp-tip.json)
+
+### release-pins --rev 32008a4
+exit=1 (json: rp-32008a4.json)
+
+### selfassessment --rev e1e3a15
+exit=0 (json: sa-tip.json, mismatches=0)
+
+### sha256 counters
+728128008e2242b635bda30a28313de20b06d381d7855f11f18fa5043ba560c4  scripts/check-selfassessment.mjs
+567637200b05eaf6c4ca750294b6ddc30ce64417c336fe135ab625f8c6fc3770  scripts/check-release-pins.mjs
+1a01256eb8138ec3b171ef08ccb5b10df4f0730c657015232c07c95608e45eb3  scripts/check-s106-evidence.mjs

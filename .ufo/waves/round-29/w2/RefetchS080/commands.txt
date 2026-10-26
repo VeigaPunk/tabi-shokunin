@@ -1,0 +1,38 @@
+# RefetchS080 — commands and exit codes (all run 2026-10-26)
+
+S=/fast/scratch/hyaku/tabi-r29/RefetchS080
+git clone --shared -q /home/vgpnk/Projects/shokunin/tabi-shokunin $S/lane && git -C $S/lane checkout -q 32008a453737a27f69e9ab401d0b9775d2a944f7
+  -> git -C $S/lane status --porcelain | wc -l  => 0
+  -> git -C $S/lane rev-parse HEAD              => 32008a453737a27f69e9ab401d0b9775d2a944f7
+
+# 16 independent Gitiles fetches (?format=TEXT, base64 in, base64 -d, sha256 of decoded bytes)
+curl -sS -o <b64> -w '%{http_code}' 'https://chromium.googlesource.com/chromium/src/+/refs/tags/<tag>/<path>?format=TEXT'
+  -> 15 of 16 => HTTP 200 ; 1 of 16 (156.0.8078.47 html_form_element.cc) => HTTP 503 (service error)
+  -> same URL retried 3s later => HTTP 200, decoded 69536 bytes, sha256 2a96a97b...f86102
+  -> per-file status + sha256 + byte length: fetches.txt
+
+# tag -> commit (independent of the receipt's anchor cells)
+curl -sS 'https://chromium.googlesource.com/chromium/src/+/refs/tags/<tag>?format=JSON'
+  -> 156.0.8078.47 HTTP 200 => 1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775
+  -> 154.0.8037.97 HTTP 200 => b510e9d7cd3a2fbd78d0ddc42234103206c5f78d
+  (gitiles-tag-commits.txt)
+
+# frozen counter at the contract tip
+node scripts/check-release-pins.mjs --rev 32008a453737a27f69e9ab401d0b9775d2a944f7 --stable 156.0.8078.47 --json
+  -> exit 1 ; population=23 unresolved=23 ; S080 resolved=false verdict=null reasons=[f6-refetch x8]
+  (counter-at-tip-32008a4.json)
+
+# fixture $D2 = git init in $S, populated from `git -C $S/lane archive 32008a45 | tar -x -C $D2`
+#   (git -C $D2 rev-parse --show-toplevel == $D2 verified before the first commit)
+# + my refetch record committed at corpus/evidence/round-29/release-pins/refetch/S080.json
+node scripts/check-release-pins.mjs --repo $D2 --rev HEAD --stable 156.0.8078.47 --json
+  -> 00-with-refetch                 exit 1 ; resolved=1 unresolved=22 drifted=1 ; S080 resolved=true verdict=drifted reasons=[]
+  -> A-superseder-anchor-stripped    exit 1 ; resolved=1 unresolved=22 drifted=1 ; S080 resolved=true verdict=drifted reasons=[]
+  -> B-superseder-source-bogus-path  exit 1 ; resolved=1 unresolved=22 drifted=1 ; S080 resolved=true verdict=drifted reasons=[]
+  -> C-wrong-supersedes-target       exit 1 ; resolved=0 unresolved=23 ; S080 resolved=false reasons=['s1-drift-unsuperseded']
+  -> D-subset-filing-drop-drifted    exit 1 ; resolved=1 unresolved=22 holds=1 drifted=0 ; S080 resolved=true verdict=holds reasons=[]
+  (fixture-*.json)
+
+# not used as evidence: `node scripts/check-sources.mjs --rev <tip>` — refused with
+#   FINDING detail=bad_arguments (unsupported flag combination); the exit status observed was the
+#   pipeline's `tail`, so it is not reported as a verdict.

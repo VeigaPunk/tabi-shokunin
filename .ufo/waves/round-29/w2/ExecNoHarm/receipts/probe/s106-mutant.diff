@@ -1,0 +1,12 @@
+--- /fast/scratch/hyaku/tabi-r29/ExecNoHarm/tip/scripts/check-s106-evidence.mjs	2026-10-26 02:25:29.717237159 -0300
++++ /fast/scratch/hyaku/tabi-r29/ExecNoHarm/probe/s106-mutant.mjs	2026-10-26 02:29:35.214960587 -0300
+@@ -113,8 +113,7 @@
+   const receipt = parseReceipt(receiptText);
+   const measuredRev = resolveRev(repo, receipt.measured_rev);
+   const measuredBytes = readBlob(repo, measuredRev, receipt.bytes_path);
+-  const revisionMatch = measuredBytes !== null &&
+-    sha256(measuredBytes) === receipt.decoded_sha256;
++  const revisionMatch = true;
+   const bytesText = readBlob(repo, rev, receipt.bytes_path);
+   if (bytesText === null) throw new Refusal(`decoded bytes absent at ${rev}: ${receipt.bytes_path}`);
+   const observedSha = sha256(bytesText);

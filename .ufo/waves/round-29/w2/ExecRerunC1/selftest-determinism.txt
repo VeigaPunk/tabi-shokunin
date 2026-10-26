@@ -1,0 +1,16 @@
+# selftest x3 (sha-normalised comparison)
+run1 exit=0
+run2 exit=0
+run3 exit=0
+run1 vs run2 sha-normalised identical: true
+run1 vs run3 sha-normalised identical: true
+--- raw run1 ---
+CASE id=clean-fixture-valid expected_exit=0 exit=0 valid=true PASS
+CASE id=measured-revision-bytes-match expected_exit=0 exit=0 valid=true PASS
+CASE id=measured-revision-bytes-mismatch expected_exit=1 exit=1 valid=false PASS
+CASE id=sha-mismatch-invalid expected_exit=1 exit=1 valid=false PASS
+CASE id=anchor-off-by-one-invalid expected_exit=1 exit=1 valid=false PASS
+CASE id=missing-bytes-could-not-evaluate expected_exit=2 exit=2 valid=n/a refusal=decoded bytes absent at 85a521532f6c6cb0c05b23295c7c9d5539a9bb5a: corpus/evidence/round-26/sources/content-features-154.0.8037.97.cc PASS
+CASE id=missing-receipt-could-not-evaluate expected_exit=2 exit=2 valid=n/a refusal=receipt absent at 2b6a39b19890b5af3fb2dc5e6c4be77a111f8261 PASS
+S106_SELFTEST verdict=clean cases=7 passed=7
+exit=0

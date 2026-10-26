@@ -1,0 +1,21 @@
+--- /fast/scratch/hyaku/tabi-r29/ExecRerunC1/lane/scripts/check-s106-evidence.mjs	2026-10-26 02:25:26.463609803 -0300
++++ /fast/scratch/hyaku/tabi-r29/ExecRerunC1/mut-addcase/scripts/check-s106-evidence.mjs	2026-10-26 02:28:09.920009203 -0300
+@@ -225,6 +225,18 @@
+     },
+   },
+   {
++    id: "anchor-duplicate-invalid",
++    exit: 1,
++    valid: false,
++    field: "anchor_unique",
++    fieldValue: false,
++    build: (d) => {
++      const dup = FIXTURE_BYTES.replace("// tail", FIXTURE_LINE);
++      d.receipt(fixtureReceipt({ decoded_sha256: sha256(dup), decoded_bytes: Buffer.byteLength(dup) }));
++      d.bytes(dup);
++    },
++  },
++  {
+     id: "missing-bytes-could-not-evaluate",
+     exit: 2,
+     valid: null,

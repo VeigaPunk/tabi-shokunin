@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r29/ExecRerunC1/lane/scripts/check-s106-evidence.mjs	2026-10-26 02:25:26.463609803 -0300
++++ /fast/scratch/hyaku/tabi-r29/ExecRerunC1/mut-anchor/scripts/check-s106-evidence.mjs	2026-10-26 02:26:09.680718815 -0300
+@@ -123,7 +123,7 @@
+   const recorded = lines[receipt.anchor.line - 1];
+   const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();
+   const occurrences = lines.filter((l) => l.trim() === receipt.anchor.text.trim()).length;
+-  const anchorUnique = occurrences === 1;
++  const anchorUnique = true; // MUTANT M3: anchor uniqueness check dropped
+   const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;
+   const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;
+   return {

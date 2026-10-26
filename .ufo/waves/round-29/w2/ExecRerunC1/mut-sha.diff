@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r29/ExecRerunC1/lane/scripts/check-s106-evidence.mjs	2026-10-26 02:25:26.463609803 -0300
++++ /fast/scratch/hyaku/tabi-r29/ExecRerunC1/mut-sha/scripts/check-s106-evidence.mjs	2026-10-26 02:26:09.675847760 -0300
+@@ -118,7 +118,7 @@
+   const bytesText = readBlob(repo, rev, receipt.bytes_path);
+   if (bytesText === null) throw new Refusal(`decoded bytes absent at ${rev}: ${receipt.bytes_path}`);
+   const observedSha = sha256(bytesText);
+-  const shaMatch = observedSha === receipt.decoded_sha256;
++  const shaMatch = true; // MUTANT M2: committed-bytes sha comparison dropped
+   const lines = bytesText.split("\n");
+   const recorded = lines[receipt.anchor.line - 1];
+   const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();

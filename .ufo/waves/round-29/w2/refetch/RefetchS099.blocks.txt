@@ -1,0 +1,51 @@
+== 156 lines 36-45 (inside block1 +-25 window start at 36) ==
+    36	    properties
+    37	      # Tool name.
+    38	      string name
+    39	      # Tool description.
+    40	      string description
+    41	      # Schema for the tool's input parameters.
+    42	      optional object inputSchema
+    43	      # Optional annotations for the tool.
+    44	      optional Annotation annotations
+    45	      # Frame identifier associated with the tool registration.
+== 156 lines 61-71 (block1) ==
+    61	  command invokeTool
+    62	    parameters
+    63	      # Frame in which to invoke the tool.
+    64	      Page.FrameId frameId
+    65	      # Name of the tool to invoke.
+    66	      string toolName
+    67	      # Input parameters for the tool, matching the tool's inputSchema.
+    68	      object input
+    69	    returns
+    70	      # Unique identifier for this invocation. Response is sent before tool events.
+    71	      string invocationId
+== 156 lines 111-125 (block2) ==
+   111	  # Event fired when a tool invocation completes or fails.
+   112	  event toolResponded
+   113	    parameters
+   114	      # Invocation identifier.
+   115	      string invocationId
+   116	      # Status of the invocation.
+   117	      InvocationStatus status
+   118	      # Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.
+   119	      # Note: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.
+   120	      optional any output
+   121	      # Error text for protocol users.
+   122	      optional string errorText
+   123	      # The exception object, if the javascript tool threw an error>
+   124	      optional Runtime.RemoteObject exception
+   125	
+== 154 lines 16-26 ==
+    16	      # A hint indicating that the tool does not modify any state.
+    17	      optional boolean readOnly
+    18	      # A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.
+    19	      optional boolean untrustedContent
+    20	      # A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.
+    21	      optional boolean consequential
+    22	      # If the declarative tool was declared with the autosubmit attribute.
+    23	      optional boolean autosubmit
+    24	
+    25	  # Represents the status of a tool invocation.
+    26	  type InvocationStatus extends string

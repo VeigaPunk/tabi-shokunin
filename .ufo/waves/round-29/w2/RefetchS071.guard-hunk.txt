@@ -1,0 +1,21 @@
+$ diff -U0 154.0.8037.97__html_form_element.cc.txt 156.0.8078.47__html_form_element.cc.txt
+--- dec/154.0.8037.97__third_party_blink_renderer_core_html_forms_html_form_element.cc.txt	2026-10-26 02:11:06.445214734 -0300
++++ dec/156.0.8078.47__third_party_blink_renderer_core_html_forms_html_form_element.cc.txt	2026-10-26 02:11:06.450165421 -0300
+@@ -125,0 +126 @@
++      is_connected_nested_form_(false),
+@@ -199,0 +201,10 @@
++  // Filling out the form controls dispatches `input` and `change` events,
++  // whose handlers may have detached the document.
++  if (!form_->GetDocument().IsActive()) {
++    return std::move(done_callback)
++        .Run(base::unexpected(
++            ScriptToolError(ScriptToolErrorCode::kToolInvocationFailed,
++                            "The document was detached while filling out "
++                            "the form")));
++  }
++
+@@ -361,0 +373,7 @@
++  // Declarative WebMCP tools require script execution capability. Sandboxed
++  // frames without `allow-scripts` cannot register tools, consistent with the
++  // imperative `registerTool()` API.
++  if (GetExecutionContext()->IsSandboxed(

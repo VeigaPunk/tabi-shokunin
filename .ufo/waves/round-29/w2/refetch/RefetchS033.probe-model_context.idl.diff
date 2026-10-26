@@ -1,0 +1,24 @@
+--- /fast/scratch/hyaku/tabi-r29/RefetchS033/154.0.8037.97-model_context.idl	2026-10-26 02:08:56.527336870 -0300
++++ /fast/scratch/hyaku/tabi-r29/RefetchS033/156.0.8078.47-model_context.idl	2026-10-26 02:08:58.111641872 -0300
+@@ -28,7 +28,7 @@
+ dictionary RegisteredTool {
+   required DOMString name;
+   required DOMString description;
+-  DOMString inputSchema;
++  object inputSchema;
+   // `title` can be exposed as a `DOMString` since it was taken in by a
+   // `USVString`, meaning all unmatched surrogate processing has already been
+   // done, and there's no need to do it again on tool exposure.
+@@ -71,9 +71,11 @@
+   [CallWith=ScriptState, MeasureAs=ModelContextGetTools] Promise<sequence<RegisteredTool>> getTools(optional ModelContextGetToolOptions options = {});
+   [CallWith=ScriptState, MeasureAs=ModelContextExecuteTool] Promise<DOMString?> executeTool(
+       RegisteredTool tool,
+-      DOMString inputArguments,
++      optional any inputObject,
+       optional ExecuteToolOptions options = {}
+   );
+   attribute EventHandler ontoolchange;
++  attribute EventHandler ontoolactivated;
++  attribute EventHandler ontoolcancel;
+ };
+ 

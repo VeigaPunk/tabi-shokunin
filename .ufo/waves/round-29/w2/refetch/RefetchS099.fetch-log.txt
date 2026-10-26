@@ -1,0 +1,29 @@
+RefetchS099 fetch log — 2026-10-26 — independent re-fetch of row S099 (Chromium 154.0.8037.97 → 156.0.8078.47)
+Path: third_party/blink/public/devtools_protocol/domains/WebMCP.pdl
+Scratch: /fast/scratch/hyaku/tabi-r29/RefetchS099 (TMPDIR); no wave-1 PinS099 bytes read or copied.
+No tool installed or upgraded.
+
+1) curl -sS -o raw-156.0.8078.47.b64 -w '%{http_code}' \
+     'https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl?format=TEXT'
+   -> HTTP 200 ; exit=0
+   base64 -d -> 4126 bytes (126 split lines, 125 newlines)
+   sha256 f386bcfd036328f1fb1572b5404bfad09a7f6ff078093241fbc3409a1036f99f
+
+2) curl ... refs/tags/154.0.8037.97/...WebMCP.pdl?format=TEXT
+   -> HTTP 200 ; exit=0
+   base64 -d -> 3969 bytes (124 split lines, 123 newlines)
+   sha256 26e62f2998c63798c81dc487cc14844b840e5dd2aafde1fd37a2e39ece0a37ff
+
+3) second independent GETs of both tags (curl -w '%{http_code}', base64 -d, sha256sum, cmp)
+   156 -> HTTP 200, f386bcfd…f99f, cmp identical
+   154 -> HTTP 200, 26e62f29…37ff, cmp identical
+
+4) tag -> commit (Gitiles ?format=JSON, the ")]}'" line stripped)
+   154.0.8037.97 -> b510e9d7cd3a2fbd78d0ddc42234103206c5f78d  (matches the S099 anchor cell)
+   156.0.8078.47 -> 1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775  (not recorded anywhere in round-29 evidence)
+
+5) committed bytes vs fetch (corpus/evidence/round-29/release-pins/bytes/...)
+   cmp 154: identical to this fetch ; cmp 156: identical to this fetch
+
+Commands and exits for the counter/fixture runs are in this seat's report §3–§5;
+raw JSON receipts: RefetchS099.counter-at-tip.json, RefetchS099.fx-*.json.

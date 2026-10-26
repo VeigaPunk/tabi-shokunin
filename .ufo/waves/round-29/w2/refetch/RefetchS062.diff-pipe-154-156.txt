@@ -1,0 +1,21 @@
+--- bytes/154.0.8037.97/content/browser/devtools/devtools_pipe_handler.cc	2026-10-26 02:10:50.178987290 -0300
++++ bytes/156.0.8078.47/content/browser/devtools/devtools_pipe_handler.cc	2026-10-26 02:10:50.470491255 -0300
+@@ -302,7 +302,8 @@
+   explicit PipeWriterCBOR(int write_fd) : PipeWriterBase(write_fd) {}
+ 
+   void WriteIntoPipe(std::string message) override {
+-    DCHECK(crdtp::cbor::IsCBORMessage(crdtp::SpanFrom(message)));
++    CHECK(crdtp::cbor::IsCBORMessage(crdtp::SpanFrom(message)),
++          base::NotFatalUntil::M159);
+     WriteBytes(message.data(), message.size());
+   }
+ };
+@@ -432,7 +433,7 @@
+   shutting_down_ = true;
+ 
+   // Disconnect from the target.
+-  DCHECK(browser_target_);
++  CHECK(browser_target_, base::NotFatalUntil::M159);
+   browser_target_->DetachClient(this);
+   browser_target_ = nullptr;
+ 

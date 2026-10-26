@@ -1,0 +1,49 @@
+[rule] counter blockIn replicated (trim, collapse inner whitespace, contiguous anywhere):
+  old 7023-7050 (28 lines) -> 1 hit(s): [(7204, 7231)]
+  old 7035-7035 (1 lines) -> 296 hit(s): [(273, 273), (282, 282), (301, 301), (312, 312)] ...
+  => both ranges have >=1 hit => file verdict holds, row verdict holds (agrees with receipt ranges)
+
+[+/-25 window] aligned diff, old 6998-7075 vs new 7179-7256 (78 lines each):
+  insert: 154:6998-6998
+  insert: 156:7179-7180
+    +156:7179 '    {'
+    +156:7180 '      // Restricts the sharing of HIDDevice instances across different V8'
+  delete: 154:7011-7012
+    -154:7011 '      origin_trial_feature_name: "WebIdentityDigitalCredentialsCreation",'
+    -154:7012 '      origin_trial_allows_third_party: true,'
+  delete: 156:7194-7194
+  replace: 154:7014-7014
+    -154:7014 '      status: "experimental",'
+  replace: 156:7195-7195
+    +156:7195 '      status: "stable",'
+
+[singleton artefact] 156:273 (first hit of the 7035 singleton) belongs to AccessibilityImplicitActions:
+  156:270: '      // If the author did not define aria-actions, surface button and link'
+  156:271: '      // children inside option and menuitem elements as implicit actions.'
+  156:272: '      name: "AccessibilityImplicitActions",'
+  156:273: '      status: "experimental",'
+  156:274: '    },'
+  the WebMCP status line at 156 is 7216, inside the mapped block 7204-7231:
+  156:7211: '      implied_by: ['
+  156:7212: '        "WebMCPDeclarativeFileInput",'
+  156:7213: '        "WebMCPFormAssociatedCustomElements",'
+  156:7214: '        "WebMCPTesting"'
+  156:7215: '      ],'
+  156:7216: '      status: "experimental",'
+  156:7217: '    },'
+
+[teaches cell of S074 re-checked at 156]
+  WebMCP entry lines 156:7204-7217 status line: status: "experimental",
+  'WebMCP is declared experimental' -> True
+  'implied by WebMCPTesting' -> False (156:7214)
+  'this file lacks DeclarativeWebmcp' -> occurrences in 156 = 0 | 154 = 0
+  'Declarative' token counts 154/156 = 11 11
+  WebMCP-family names 154: ['WebMCP', 'WebMCPDeclarativeFileInput', 'WebMCPFormAssociatedCustomElements', 'WebMCPTesting']
+  WebMCP-family names 156: ['WebMCP', 'WebMCPDeclarativeFileInput', 'WebMCPFormAssociatedCustomElements', 'WebMCPTesting']
+  'WebMCP' string count 154/156 = 9 9
+
+[corrected implied_by check]
+  webmcp entry window 156:7204-7217 contains implied_by element WebMCPTesting -> True
+  implied_by block 156:7211-7215: ['implied_by: [', '"WebMCPDeclarativeFileInput",', '"WebMCPFormAssociatedCustomElements",', '"WebMCPTesting"', '],']
+  154 counterpart 7030-7034: ['implied_by: [', '"WebMCPDeclarativeFileInput",', '"WebMCPFormAssociatedCustomElements",', '"WebMCPTesting"', '],']
+  identical implied_by lists -> True

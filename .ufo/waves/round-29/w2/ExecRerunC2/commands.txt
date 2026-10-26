@@ -1,0 +1,86 @@
+# ExecRerunC2 — exact commands, exit codes, environment (2026-10-26)
+# Scratch root: /fast/scratch/hyaku/tabi-r29/ExecRerunC2 (HYAKU_SCRATCH=/fast/scratch/hyaku)
+# node v24.21.0 ; git 2.56.0 ; jq = jaq 3.1.1
+# No tools installed or upgraded this seat.
+
+## clones (git clone --shared from the lane, never the lane checkout)
+git -C /home/vgpnk/Projects/shokunin/tabi-shokunin ...  # read-only
+git clone --shared -q /home/vgpnk/Projects/shokunin/tabi-shokunin $S/tip32008a45
+git -C $S/tip32008a45 checkout -q 32008a453737a27f69e9ab401d0b9775d2a944f7
+  -> rev=32008a453737a27f69e9ab401d0b9775d2a944f7 ; status --porcelain --untracked-files=all = EMPTY
+git clone --shared -q /home/vgpnk/Projects/shokunin/tabi-shokunin $S/base856
+git -C $S/base856 checkout -q 856fa9e1202179f5cfbd28c1f0efdd4eb1f426bb
+  -> rev=856fa9e1202179f5cfbd28c1f0efdd4eb1f426bb ; porcelain EMPTY
+
+## frozen counter identity
+sha256sum $S/tip32008a45/scripts/check-selfassessment.mjs
+  -> 728128008e2242b635bda30a28313de20b06d381d7855f11f18fa5043ba560c4   (equals claims frozen sha) exit=0
+git -C tip32008a45 cat-file blob 32008a453737a27f69e9ab401d0b9775d2a944f7:scripts/check-selfassessment.mjs | sha256sum
+  -> 728128008e2242b635bda30a28313de20b06d381d7855f11f18fa5043ba560c4   exit=0
+git -C tip32008a45 cat-file blob 97be89bc66139eb45526a04af59a35dccc006eb9:scripts/check-selfassessment.mjs | sha256sum
+  -> 728128008e2242b635bda30a28313de20b06d381d7855f11f18fa5043ba560c4   exit=0  (frozen at the claims commit, unchanged at tip)
+git -C tip32008a45 cat-file blob 856fa9e1202179f5cfbd28c1f0efdd4eb1f426bb:scripts/check-selfassessment.mjs | sha256sum
+  -> 9bc6feb7207b6a1a3861c0c8f2804d481351c8c8a08f90b45903692932054d3f   exit=0  (baseline-era counter, different)
+
+## C2 AFTER — tip 32008a45, clean shared clone (cwd = clone)
+cd $S/tip32008a45 && node scripts/check-selfassessment.mjs --rev 32008a453737a27f69e9ab401d0b9775d2a944f7 --json
+  -> exit=0 ; mismatches=0 ; counted=[] ; superseded=12 ; couldNotEvaluate=92 ; clean=true ; findings=120
+  receipt: tip-c2.json
+
+## C2 BEFORE — baseline 856fa9e, clean clone, frozen counter COPIED OUTSIDE the clone, --repo
+cp $S/tip32008a45/scripts/check-selfassessment.mjs $S/frozen/check-selfassessment.mjs   # sha 728128008e… (same)
+node $S/frozen/check-selfassessment.mjs --repo $S/base856 --rev 856fa9e1202179f5cfbd28c1f0efdd4eb1f426bb --json
+  -> exit=1 ; mismatches=6 ; superseded=5 ; couldNotEvaluate=93
+  counted: SCORECARD.md:410 25->26 | SCORECARD.md:1138 12->13 | SCORECARD.md:1139 12->13 |
+           SCORECARD.md:1151 12->13 | SCORECARD.md:1439 17->20 | LOG.md:221 8->12
+  receipt: baseline-c2-frozen.json
+  canonical JSON identical to committed .ufo/waves/round-29/baseline/c2-before-frozen-counter-cleanbase.json.txt
+  (that receipt's only extra byte sequence is the trailing `exit=1` line)
+
+## cross-check: tip measurement against the committed after-receipt
+jq -S . $S/c2-at-35045d7d.json vs .ufo/waves/round-29/w1/build/c2/c2-lane-tip.json
+  -> IDENTICAL ; and tip-c2.json findings are identical to at-35045d7d.json apart from .rev
+
+## progression (frozen counter, --repo = tip clone, --rev = commit)
+190052c9 -> exit=1 mismatches=6 counted=[410,1138,1139,1151,1439,LOG:221] superseded=5  CNE=93
+59e8167a -> exit=1 mismatches=1 counted=[LOG.md:221 8->12]                     superseded=11 CNE=92
+35045d7d -> exit=0 mismatches=0 counted=[]                                      superseded=12 CNE=92
+32008a45 -> exit=0 mismatches=0 counted=[]                                      superseded=12 CNE=92
+
+## pre-round counter (baseline blob 9bc6feb) run at tip
+node $S/old/check-selfassessment.mjs --repo $S/tip32008a45 --rev 32008a453737a27f69e9ab401d0b9775d2a944f7 --json
+  -> exit=0 ; mismatches=0 ; superseded=12 ; couldNotEvaluate=92  (identical tallies to the frozen counter)
+
+## oracle numbers re-run directly at tip (independent of the counter)
+node scripts/check-sources.mjs --self-test        -> exit=0 SOURCES_SELFTEST verdict=clean cases=26
+node scripts/round-evidence-audit.mjs --selftest  -> exit=0 "cases": 13
+node scripts/check-selfassessment.mjs --selftest  -> exit=0 SELFASSESSMENT_SELFTEST verdict=clean cases=22 passed=22
+node scripts/check-s106-evidence.mjs --selftest   -> exit=0 S106_SELFTEST verdict=clean cases=7 passed=7
+node scripts/check-freshness.mjs --self-test      -> exit=0 FRESHNESS_SELFTEST verdict=clean cases=12
+
+## baseline oracle context
+node $S/old/check-selfassessment.mjs --selftest    -> SELFASSESSMENT_SELFTEST verdict=clean cases=20 passed=20
+git -C base856 show 856fa9e:scripts/check-s106-evidence.mjs | grep -cE '^\s*id: "'  -> 7
+git -C tip32008a45 show 32008a45:scripts/check-s106-evidence.mjs | grep -cE '^\s*id: "' -> 7
+node base856/scripts/check-s106-evidence.mjs --selftest
+  -> nonzero (harness reported exit 1); stderr: ReferenceError: existsSync is not defined
+     at .../base856/scripts/check-s106-evidence.mjs:267:9  (receipt: baseline-s106-selftest.err)
+
+## attack probes (scratch copy of the tip clone, $S/probe; toplevel verified == $S/probe)
+cp -a $S/tip32008a45 $S/probe ; git -C probe rev-parse --show-toplevel -> /fast/scratch/hyaku/tabi-r29/ExecRerunC2/probe
+P2 (1cf7ad1) plant stale `check-sources --selftest (25/25)` + correction citing `SCORECARD.md:1-99999`
+   -> frozen counter exit=0, mismatches=0  => range widening clears an arbitrary SCORECARD stale row
+P1 (f49b31e) LOG.md:221 correction citation re-pointed to `SCORECARD.md:221`
+   -> exit=1, mismatches=1, counted=[LOG.md:221 8->12]  => own-document rule bites at tip
+P3 (3f70af1) SCORECARD.md:1439 correction citation re-pointed to `SCORECARD.md:1440`
+   -> exit=1, mismatches=1, counted=[SCORECARD.md:1439 17->22]  => containing-line requirement bites at tip
+receipts: probe-P1-crossdoc.json, probe-P2-widerange.json, probe-P3-wrongline.json, probe-*.diff
+
+## integration check (lane advanced during the wave)
+git -C $S/tip32008a45 fetch -q origin master
+git -C $S/tip32008a45 diff --name-only 32008a45..e1e3a15 -- SCORECARD.md LOG.md scripts/   -> EMPTY
+git -C $S/tip32008a45 checkout -q e1e3a15
+  -> rev=e1e3a15f2db10c135739e0ee7e81ce63a02facf6 ; porcelain EMPTY
+node scripts/check-selfassessment.mjs --rev e1e3a15f2db10c135739e0ee7e81ce63a02facf6 --json
+  -> exit=0 ; mismatches=0 ; counted=[] ; superseded=12 ; couldNotEvaluate=92 ; clean=true
+  receipt: at-e1e3a15-integrated-tip.json

@@ -1,0 +1,31 @@
+S105 independent re-fetch — RefetchS105 (wave w2, round 29)
+lane read: 32008a453737a27f69e9ab401d0b9775d2a944f7 (clean `git clone --shared`, git status --porcelain empty)
+scratch: /fast/scratch/hyaku/tabi-r29/RefetchS105   date 2026-10-26 UTC
+independence: bytes fetched live here; wave-1 seat PinS105 bytes were never opened or copied (only its
+report text was read afterwards, for comparison)
+
+$ P=third_party/blink/public/devtools_protocol/domains/Page.pdl
+$ curl -sS -o <tag>.b64 -w '%{http_code}' "https://chromium.googlesource.com/chromium/src/+/refs/tags/<TAG>/$P?format=TEXT"
+tag=156.0.8078.47 http=200 b64bytes=83876
+  base64 -d -> decoded=62905  sha256=9eb79e1b6747b462e908d54758474854064d42b8362097542708d11e8c407a11   exit 0
+tag=154.0.8037.97 http=200 b64bytes=82548
+  base64 -d -> decoded=61911  sha256=e944a3b19fa2c87b4ed0a84cca85b16b127618725394496ba046a2dfdf9405be   exit 0
+
+$ cmp f154/Page.pdl <lane>/bytes/154.0.8037.97/.../Page.pdl   -> identical (exit 0)
+$ cmp f156/Page.pdl <lane>/bytes/156.0.8078.47/.../Page.pdl   -> identical (exit 0)
+$ sha256sum <lane>/bytes/{154,156}/.../Page.pdl               -> the two digests above (committed bytes authentic)
+
+$ curl -sS 'https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Linux&num=2'   http=200
+  version=156.0.8078.47 previous_version=155.0.8059.84 channel=Stable platform=Linux   (live stable check,
+  committed baseline/chromiumdash-stable-linux.json sha256 90abf2c3efe7df7b3c48521ca754bb24191f7f05b3b60b93ebb735375fd7fe33 as claimed)
+
+$ node scripts/check-release-pins.mjs --rev 32008a45... --stable 156.0.8078.47 --json   exit 1
+  {population:23, unresolved:23, holds:0, drifted:0}
+  S105: resolved=false, reasons=["f6-refetch third_party/blink/public/devtools_protocol/domains/Page.pdl"]
+  (r1/f1/f2/f3/f4/f5 all pass for S105 at the tip; only the independent refetch record is missing)
+
+404 rule: not applicable — both requests returned 200 and the bodies carry no `request_id` field, so
+normalisation is the identity; raw sha256 == normalised sha256 for both tags.
+
+Output copied: .ufo/waves/round-29/w2/refetch/S105.json (seat RefetchS105, tag 156.0.8078.47, status 200,
+sha256 9eb79e1b...7a11).

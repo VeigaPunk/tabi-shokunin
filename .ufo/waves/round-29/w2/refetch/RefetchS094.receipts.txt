@@ -1,0 +1,86 @@
+# RefetchS094 receipts — commands, URLs, exit codes
+
+Seat RefetchS094 (leaf), wave w2, round 29. Scratch: /fast/scratch/hyaku/tabi-r29/RefetchS094
+(removed with the shell trap at the end; every file below was copied here first).
+Measurement clone: `git clone --shared` of the lane, checked out at
+32008a453737a27f69e9ab401d0b9775d2a944f7, `git status --porcelain` = 0 lines.
+
+Tooling: no installs or upgrades were made. node v24.21.0, curl 8.23.0, git/coreutils/base64
+already present; pacman was not invoked.
+
+## 1. Independent fetches (my bytes, my URLs)
+
+B= https://chromium.googlesource.com/chromium/src/+/refs/tags
+P= third_party/blink/renderer/core/html/forms/form_mcp_schema_unittest.cc
+
+```
+ts=$(date -u +%FT%TZ)
+code=$(curl -sS -o body -w '%{http_code}' "$B/<tag>/$P?format=TEXT")   # 404 bodies are PLAIN TEXT, not base64
+raw=$(sha256sum body | cut -d' ' -f1)
+sed -E 's/request_id: "[0-9a-f]{32}"/request_id: "<per-request id removed>"/' body > norm
+```
+
+| sample | tag | HTTP | bytes | raw sha256 | normalised sha256 | request_id |
+|---|---|---|---|---|---|---|
+| A | 156.0.8078.47 | 404 | 233 | 94ce1ef487afbe3cc6b6340d824cf8358fd40654f787d991ac7bb4d048b70c53 | 604d97983ea428e85f90186c8c8daee9e0bb226132b7075be266266110764868 | 8ab9ac27c6474b29af634ce2ac8458be |
+| B | 156.0.8078.47 | 404 | 233 | df355096876c5bde8b5a5bcd1560260dbbaddf875160a96983762d07491f1d3f | 604d97983ea428e85f90186c8c8daee9e0bb226132b7075be266266110764868 | f60a72c1089d4af69f8d52eae387d7de |
+| C | 154.0.8037.97 | 404 | 233 | 8e8b4b1831068f20b98cbb07f3cefcf761368c19501f3be597e3cf0e2f23d2ed | 604d97983ea428e85f90186c8c8daee9e0bb226132b7075be266266110764868 | 2509f522ac884f88b796625ee67a072c |
+
+curl exit 0 and `-w '%{http_code}'` = 404 for all three. Sample A timestamp 2026-10-26T05:19:13Z
+(the `fetched_at` in S094.json); B 05:19:14Z; C 05:19:14Z. These three are the logged fetches
+(log: RefetchS094.fetches.txt); every digest in S094.json comes from sample A.
+
+Byte copies: RefetchS094.156.normalized.txt (= sample A normalised, 225 bytes) and
+RefetchS094.154.normalized.txt (committed 154 body with its nonce replaced by the same placeholder,
+225 bytes). Both hash to 604d9798…, and `cmp` of them is equal.
+
+Independent absence witness (different endpoint, same tag):
+```
+curl -sS -o dl156 -w '%{http_code}\n' "$B/156.0.8078.47/third_party/blink/renderer/core/html/forms?format=JSON"
+```
+HTTP 200, 37359 bytes; names matching mcp: form_mcp_schema.cc / form_mcp_schema.h /
+html_form_mcp_tool_test.cc — no form_mcp_schema_unittest.cc. Receipt: RefetchS094.dir-listing-156.0.8078.47.json.
+
+Flip-lead check named in the row's teaches cell:
+```
+curl -sS -o lead.b64 -w '%{http_code}' "$B/156.0.8078.47/third_party/blink/renderer/core/html/forms/html_form_mcp_tool_test.cc?format=TEXT"
+base64 -d lead.b64 > lead.cc
+```
+HTTP 200, 106254 bytes, sha256 944ee9e45eb9c400143a3746296af16fcbfdea3249dec669580b751f0ae27be6.
+Receipt: RefetchS094.lead-156.html_form_mcp_tool_test.cc.
+
+## 2. Counter at the named revision
+
+```
+cd <clone at 32008a4> && node scripts/check-release-pins.mjs \
+  --rev 32008a453737a27f69e9ab401d0b9775d2a944f7 --stable 156.0.8078.47 --json   # exit=1
+```
+→ population=23 unresolved=23 holds=0 drifted=0; S094
+`{"resolved":false,"verdict":null,"reasons":["f6-refetch …form_mcp_schema_unittest.cc"]}`
+(same at lane tip e1e3a15f2db10c135739e0ee7e81ce63a02facf6, exit=1, population=23 unresolved=23).
+Receipts: RefetchS094.counter-32008a4.json, RefetchS094.counter-at-tip.json.
+Counter blob at 32008a4: `git rev-parse 32008a4:scripts/check-release-pins.mjs` = cbb2388fa7265f615fc5edc798f56930e4c64237;
+working-tree sha256 567637200b05eaf6c4ca750294b6ddc30ce64417c336fe135ab625f8c6fc3770.
+Receipt blob at 32008a4 == working tree == sha256 ef3f9b0ad25dff53e8f429ffe200060cf8d9c4e269727487fc3431398ea23f77.
+
+## 3. Fixture probe (throwaway repo under $S, `git init`, every git call names -C $D)
+
+D = mktemp -d -p $S fxbase.XXXX; `git -C "$D" rev-parse --show-toplevel` == D verified before the
+first commit. D holds copies of corpus/SOURCES.md, scripts/check-release-pins.mjs, the two committed
+S094 byte files, a receipt trimmed to the single S094 row (schema/stable preserved), and
+refetch/S094.json. Run: `node "$D/scripts/check-release-pins.mjs" --repo "$D" --rev HEAD --stable 156.0.8078.47 --json`.
+
+Base (with RefetchS094's record): S094 resolved=true verdict=holds reasons=[] (exit 1 overall because
+the other 22 population rows have no receipt entry, expected). Receipt: RefetchS094.counter-with-refetch.json.
+
+Battery (RefetchS094.probe-battery.txt; script RefetchS094.probe-battery.mjs; each case committed in D):
+P1 refetch sha := sample A's RAW digest → f6-refetch (normalisation is mandatory, unenforced)
+P2 refetch seat := PinS094 → f6-refetch (seat independence enforced)
+P3 156 bytes := 404 body of a DIFFERENT path (…/forms/s094_unrelated_probe_does_not_exist.cc, HTTP 404)
+   with new_sha256 and the refetch digest set to that body's normalised digest → resolved, holds
+P4 receipt ranges := [[100,200]] (uncited by the anchor, and impossible: the body has 7 lines) → resolved, holds
+P5 old_status := 200 → verdict drifted, s1-drift-unsuperseded
+P6 base restored → resolved, holds
+
+Foreign 404 body receipt: RefetchS094.foreign-404-body.raw.txt / .normalized.txt / .status.txt.
+Its normalised sha256 is also 604d97983ea4…64868 — the Gitiles 404 envelope is path-invariant.

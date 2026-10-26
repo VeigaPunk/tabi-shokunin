@@ -1,0 +1,136 @@
+--- clone/corpus/evidence/round-29/release-pins/bytes/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc	2026-10-26 02:24:19.911949764 -0300
++++ f/fhe.156.0.8078.47.cc	2026-10-26 02:23:57.539645705 -0300
+@@ -123,6 +123,7 @@
+       has_elements_associated_by_form_attribute_(false),
+       did_finish_parsing_children_(false),
+       is_in_reset_function_(false),
++      is_connected_nested_form_(false),
+       rel_list_(MakeGarbageCollected<RelList>(this)) {
+   UseCounter::Count(document, WebFeature::kFormElement);
+ }
+@@ -197,6 +198,16 @@
+     return std::move(done_callback).Run(base::unexpected(error.value()));
+   }
+ 
++  // Filling out the form controls dispatches `input` and `change` events,
++  // whose handlers may have detached the document.
++  if (!form_->GetDocument().IsActive()) {
++    return std::move(done_callback)
++        .Run(base::unexpected(
++            ScriptToolError(ScriptToolErrorCode::kToolInvocationFailed,
++                            "The document was detached while filling out "
++                            "the form")));
++  }
++
+   // Success. Now we can either submit the form or focus the submit button.
+   // TODO(masonf): This should key off of the `autosubmit` attribute, and only
+   // submit here if the attribute is present. Else it should just focus the
+@@ -359,6 +370,13 @@
+   if (!GetDocument().GetFrame()) {
+     return;
+   }
++  // Declarative WebMCP tools require script execution capability. Sandboxed
++  // frames without `allow-scripts` cannot register tools, consistent with the
++  // imperative `registerTool()` API.
++  if (GetExecutionContext()->IsSandboxed(
++          network::mojom::blink::WebSandboxFlags::kScripts)) {
++    return;
++  }
+   // The `<form>` must have *both* the `toolname` and `tooldescription`
+   // attributes, and the form must be document-connected, to qualify for
+   // declarative WebMCP inclusion.
+@@ -465,6 +483,11 @@
+ Node::InsertionNotificationRequest HTMLFormElement::InsertedInto(
+     ContainerNode& insertion_point) {
+   HTMLElement::InsertedInto(insertion_point);
++  if (insertion_point.isConnected() && FindFormAncestor()) {
++    DCHECK(!is_connected_nested_form_);
++    is_connected_nested_form_ = true;
++    GetDocument().IncrementConnectedNestedFormCount();
++  }
+   LogAddElementIfIsolatedWorldAndInDocument("form", html_names::kMethodAttr,
+                                             html_names::kActionAttr);
+   if (insertion_point.isConnected()) {
+@@ -515,6 +538,21 @@
+   GetDocument().EnsureFormController().WillDeleteForm(this);
+   HTMLElement::RemovedFrom(insertion_point);
+ 
++  // Stop counting this form as a connected nested form. This has to come
++  // after the code above: removing the form disassociates listed elements that
++  // are not descendants (ones associated by the parser, and, via
++  // HTMLElement::RemovedFrom(), ones associated through their form attribute),
++  // and Disassociate() checks `is_connected_nested_form_` to invalidate the
++  // outer forms' element lists for them. (Descendant listed elements get
++  // their own RemovedFrom() after this and handle the outer forms there.)
++  if (is_connected_nested_form_) {
++    // The flag is only set while connected, and a connected node is always
++    // removed as part of a connected subtree.
++    DCHECK(insertion_point.isConnected());
++    is_connected_nested_form_ = false;
++    GetDocument().DecrementConnectedNestedFormCount();
++  }
++
+   if (insertion_point.isConnected()) {
+     InvalidateAncestorFormsForAutofill(&insertion_point);
+     GetDocument().MarkOutermostFormsDirty();
+@@ -1191,15 +1229,14 @@
+   listed_elements_for_autofill_.clear();
+   if (e.ToHTMLElement().FastHasAttribute(html_names::kFormAttr))
+     has_elements_associated_by_form_attribute_ = true;
+-  ScheduleWebMCPSchemaUpdateIfActive();
+-  if (RuntimeEnabledFeatures::EmailVerificationStatusIndicatorEnabled(
+-          GetExecutionContext())) {
+-    if (auto* input_element = DynamicTo<HTMLInputElement>(e.ToHTMLElement())) {
+-      if (input_element->IsEmailVerificationTokenField()) {
+-        NotifyEmailVerificationTokenFieldChanged();
+-      }
+-    }
++  if (is_connected_nested_form_ || !isConnected()) {
++    // Outer forms list this form's elements for autofill
++    // (CollectListedElements()), including form=-associated ones that are not
++    // their descendants. Only connected nested forms are tracked; a
++    // disconnected form just walks its (cold) ancestor chain.
++    InvalidateAncestorFormsForAutofill(parentNode());
+   }
++  ScheduleWebMCPSchemaUpdateIfActive();
+ }
+ 
+ void HTMLFormElement::Disassociate(ListedElement& e) {
+@@ -1207,16 +1244,11 @@
+   listed_elements_.clear();
+   listed_elements_for_autofill_are_dirty_ = true;
+   listed_elements_for_autofill_.clear();
++  if (is_connected_nested_form_ || !isConnected()) {
++    InvalidateAncestorFormsForAutofill(parentNode());
++  }
+   RemoveFromPastNamesMap(e.ToHTMLElement());
+   ScheduleWebMCPSchemaUpdateIfActive();
+-  if (RuntimeEnabledFeatures::EmailVerificationStatusIndicatorEnabled(
+-          GetExecutionContext())) {
+-    if (auto* input_element = DynamicTo<HTMLInputElement>(e.ToHTMLElement())) {
+-      if (input_element->IsEmailVerificationTokenField()) {
+-        NotifyEmailVerificationTokenFieldChanged();
+-      }
+-    }
+-  }
+ }
+ 
+ bool HTMLFormElement::IsURLAttribute(const Attribute& attribute) const {
+@@ -1724,17 +1756,6 @@
+     return;
+   }
+   ScheduleDeclarativeWebMCPToolRegistration();
+-}
+-
+-void HTMLFormElement::NotifyEmailVerificationTokenFieldChanged() {
+-  for (ListedElement* listed_element : ListedElements()) {
+-    HTMLElement& html_element = listed_element->ToHTMLElement();
+-    if (auto* input_element = DynamicTo<HTMLInputElement>(html_element)) {
+-      if (input_element->type() == input_type_names::kEmail) {
+-        input_element->UpdateEmailVerificationIndicator();
+-      }
+-    }
+-  }
+ }
+ 
+ }  // namespace blink

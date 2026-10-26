@@ -1,0 +1,23 @@
+### WebMCP.pdl 154 -> 156
+--- out/154.0.8037.97/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl	2026-10-26 02:17:39.274130156 -0300
++++ out/156.0.8078.47/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl	2026-10-26 02:17:38.140800659 -0300
+@@ -19,6 +19,8 @@
+       optional boolean untrustedContent
+       # A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.
+       optional boolean consequential
++      # If true, indicates that the tool is intended for debugging and developer tooling rather than end-user interactions.
++      optional boolean debugging
+       # If the declarative tool was declared with the autosubmit attribute.
+       optional boolean autosubmit
+ 
+### inspector_web_mcp_agent.cc 154 -> 156
+--- out/154.0.8037.97/third_party/blink/renderer/core/inspector/inspector_web_mcp_agent.cc	2026-10-26 02:17:38.068429125 -0300
++++ out/156.0.8078.47/third_party/blink/renderer/core/inspector/inspector_web_mcp_agent.cc	2026-10-26 02:17:37.939672876 -0300
+@@ -72,6 +72,7 @@
+     builder.setReadOnly(annotations->read_only);
+     builder.setUntrustedContent(annotations->untrusted_content);
+     builder.setConsequential(annotations->consequential);
++    builder.setDebugging(annotations->debugging);
+     has_annotations = true;
+   }
+   if (element && element->FastHasAttribute(html_names::kToolautosubmitAttr)) {

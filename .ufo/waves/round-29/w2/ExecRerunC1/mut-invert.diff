@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r29/ExecRerunC1/lane/scripts/check-s106-evidence.mjs	2026-10-26 02:25:26.463609803 -0300
++++ /fast/scratch/hyaku/tabi-r29/ExecRerunC1/mut-invert/scripts/check-s106-evidence.mjs	2026-10-26 02:26:09.686239749 -0300
+@@ -308,7 +308,7 @@
+         if (!Object.prototype.hasOwnProperty.call(c, "fieldValue")) {
+           throw new Error(`case ${c.id} declares field ${c.field} without fieldValue`);
+         }
+-        ok = ok && out[c.field] === c.fieldValue;
++        ok = ok && out[c.field] !== c.fieldValue; // MUTANT M5: inverted field assertion (round-28 defect 2 replay)
+       }
+       results.push({ id: c.id, ok, expectedExit: c.exit, exit, valid: out.valid ?? null, refusal: out.refusal ?? null });
+     } finally {
