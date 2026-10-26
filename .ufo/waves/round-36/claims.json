@@ -1,0 +1,278 @@
+{
+ "schema": "tabi-round-claims-v1",
+ "lane": "tabi",
+ "round": 36,
+ "attempt": 1,
+ "frozenAt": "2026-10-27",
+ "frozenBeforeData": true,
+ "baseline": "11c64b96f357de106c30a71c5e21ca44a3eacdc0",
+ "priorClosure": "round 35 rejected-honest-stop (corpus/lessons/round-35-verifier-spotcheck.md): C1 adjacency missed newMapped>=2 at 0 on the closed 383-line pool \u2014 third consecutive honest stop on a fixed newMapped quota; C2 coverage+capability met. Routed defects carried here: (1) entry D11 cites a 0-byte evidence file -> correction lands this round (not a claim); (2) C2 counter amendment M1 threshold 16 / M3 non-loopback live leg / M4 caller-named binaries / w2 MutDriverReceipt whitespace-twin self-sniff -> C2; (3) S125 on-release cadence with its four companion files -> lands this round (not a claim); (4) C1 meter: a fixed newMapped quota on a closed, fully screened pool cannot be met honestly; the planned split (completeness vs delta discovery) is the lane's own next step -> C1. Fresh-start rule (run-10): the three rejected closures were read; both claims are ones a do-nothing control cannot reach (controls committed in .ufo/waves/round-36/baseline/).",
+ "axisScoresAtRoundStart": {
+  "depth": 9,
+  "coverage": 9,
+  "operability": 9,
+  "freshness": 9,
+  "calibration": 9,
+  "adjacency": 8
+ },
+ "lowestNonRetiredAxis": "adjacency 8 (unique). Saturation 8 / window 3; the round-35 capability row webdriver-bidi-runtime-firefox restarts the window (round 36 = position 1), so the stagnation nudge is inactive and the lowest-axis obligation binds: C1 works adjacency.",
+ "measurementRule": "Every after-measurement runs .ufo/waves/round-36/measure.sh <REV> <OUT> <FREEZE> in a clean clone of the named lane branch revision REV; the counters are taken from the FREEZE commit (git show FREEZE:<path>), never from the worktree, and their bytes must equal frozenDigests; scripts/check-adjacency.mjs at REV must equal the digest pinned inside C1 and scripts/check-bidi-runtime.mjs at REV must equal the digest pinned inside C2. TMPDIR under $HYAKU_SCRATCH/tabi-r36/. C2 runs a live Firefox session (binaries recorded in provenance). Raw output is committed under .ufo/waves/round-36/measure/ before the report. A counter not run is a claim not verified.",
+ "frozenDigests": {
+  ".ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs": "8a223faf5e109fc05dac1373a4a4979b65f9ec2ffef40f86ae9bf40ba1aad385",
+  ".ufo/waves/round-36/counters/c2-firefox-bidi-v2.mjs": "15910c59d40a8e7b708e73b206dca3dfcc2db38ef29a9a81d668b07ef9e2b764",
+  ".ufo/waves/round-36/baseline/controls.mjs": "27dba3eab9debc2712997e25280df933e3c73c573fe88101cb4a5dd7c259b061",
+  ".ufo/waves/round-36/measure.sh": "6a652aca6a487ae4459c986243befc09412924d3a41945eb3c446f4adff35afa",
+  ".ufo/waves/round-36/baseline/c1-drift-audit-build.mjs": "c8153a5a6d9e29a3991a0d753c482d2963aaa0e224978386d96ad661c62a2be1",
+  ".ufo/waves/round-36/baseline/c1-delta-pins.json": "810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655",
+  "scripts/check-adjacency.mjs (pinned inside C1; must stay unchanged)": "4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac",
+  "scripts/check-bidi-runtime.mjs (pinned inside C2; must stay unchanged)": "370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87"
+ },
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "adjacency",
+   "type": "axis move on the lowest non-retired axis (sourced: the drift-audit method entry cites a SOURCES.md row opened this round)",
+   "surface": "The sibling-overlap map corpus/adjacency.tsv and screen ledger corpus/adjacency-screen-browser.tsv (383 lines, closed pool, fully screened at the baseline) PLUS the new drift-verification ledger corpus/adjacency-screen-drift.tsv: every screen row citing a lane whose head moved after the round-35 pins (12 drifted lanes, delta heads frozen at .ufo/waves/round-36/baseline/c1-delta-pins.json, each verified resolvable at freeze) re-audited at the frozen head \u2014 status unchanged/moved/stale re-derived by the counter, moved rows naming a head line where the cited text verifies verbatim \u2014 plus the delta leg: every browser-ground line a sibling added post-pin must be mapped (n1-n4) or screened. Re-derived this round before freezing: 307 screen rows cite drifted lanes; the post-pin delta pool is EMPTY (0 added browser-ground lines across the 12 drifted lanes, verified by git diff); 3 kaidoku rows' cited lines moved verbatim (SKILL.md 585->748, 621->784, 652->815); 0 stale; 0 files gone.",
+   "countingCommand": "node .ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs --rev <REV> --repo <clean clone> --fleet /home/vgpnk/Projects/shokunin --json",
+   "before": "predicate false two ways at the baseline: the instrument cannot even read the round-start tip (c1-J0-absent-instrument exit 2 \u2014 the delta pins are new this round), and with the instrument in place but no ledger committed (the do-nothing control) drift.auditCoverage is 0/307 with auditMissing 307 (c1-J1-do-nothing exit 1).",
+   "predicate": "check-adjacency verdict clean at REV AND completeness.unaccounted == 0 AND drift.total >= 1 AND drift.auditCoverage == drift.total AND drift.auditFindings == 0 AND drift.staleFindings == 0 AND delta.unaccounted == 0 AND delta.screenFindings == 0 \u2014 the same sentence in this file, in the counter's header and as the counter's `predicate` field.",
+   "target": "predicate true at the measured revision with the derived ledger committed: 307/307 drift rows audited, every status equal to the status the counter re-derives from the sibling git objects at the frozen delta heads, every moved note naming a relocation line where the pin-cited text verifies verbatim at head.",
+   "killRule": "predicate false at REV -> failed. Counter exit 2, counter bytes != frozenDigests, or scripts/check-adjacency.mjs at REV != its pinned digest -> not verified. A drift row a wave-2 seat shows mis-audited is corrected in the ledger (or regenerated from the build tool) and re-measured; a correction withdrawn against a finding is not re-counted. Any miss is an honest stop; the target is never narrowed after data.",
+   "feasibilityDisclosed": "The ledger's statuses are re-derived by the frozen counter from sibling git objects, so a forged ledger survives only where it equals the honest derivation. c1-J2 (every row claimed 'unchanged') fails with exactly the 3 moved rows reported as status mismatches; c1-J3 (moved rows naming wrong relocation lines) fails with 3 wrong-relocation findings; c1-J4 (a junk row in the delta screen ledger, the delta pool being empty) fails; c1-J5 (the honest derived ledger) passes, so the predicate is reachable. The disclosed limit: a forger who runs the same derivation needs no lane work \u2014 the claim's work is the derivation, the verification sampling and the landed ledger, and wave 2 attacks every status class and the 3 moved rows by hand.",
+   "controls": {
+    "c1-J0-absent-instrument": {
+     "exit": 2,
+     "predicate": null,
+     "summary": {
+      "screenFindings": 0
+     }
+    },
+    "c1-J1-do-nothing": {
+     "exit": 1,
+     "predicate": false,
+     "summary": {
+      "candidates": 383,
+      "unaccounted": 0,
+      "newMapped": 0,
+      "adjacency": "clean",
+      "screenFindings": 0,
+      "driftTotal": 307,
+      "auditCoverage": 0,
+      "auditFindings": 0,
+      "auditMissing": 307,
+      "driftObserved": {
+       "unchanged": 304,
+       "moved": 3,
+       "stale": 0
+      },
+      "staleFindings": 0,
+      "deltaTotal": 0,
+      "deltaUnaccounted": 0,
+      "deltaScreenFindings": 0
+     }
+    },
+    "c1-J2-all-unchanged": {
+     "exit": 1,
+     "predicate": false,
+     "summary": {
+      "candidates": 383,
+      "unaccounted": 0,
+      "newMapped": 0,
+      "adjacency": "clean",
+      "screenFindings": 0,
+      "driftTotal": 307,
+      "auditCoverage": 304,
+      "auditFindings": 3,
+      "auditMissing": 3,
+      "driftObserved": {
+       "unchanged": 304,
+       "moved": 3,
+       "stale": 0
+      },
+      "staleFindings": 0,
+      "deltaTotal": 0,
+      "deltaUnaccounted": 0,
+      "deltaScreenFindings": 0
+     }
+    },
+    "c1-J3-wrong-relocation": {
+     "exit": 1,
+     "predicate": false,
+     "summary": {
+      "candidates": 383,
+      "unaccounted": 0,
+      "newMapped": 0,
+      "adjacency": "clean",
+      "screenFindings": 0,
+      "driftTotal": 307,
+      "auditCoverage": 304,
+      "auditFindings": 3,
+      "auditMissing": 3,
+      "driftObserved": {
+       "unchanged": 304,
+       "moved": 3,
+       "stale": 0
+      },
+      "staleFindings": 0,
+      "deltaTotal": 0,
+      "deltaUnaccounted": 0,
+      "deltaScreenFindings": 0
+     }
+    },
+    "c1-J4-delta-screen-junk": {
+     "exit": 1,
+     "predicate": false,
+     "summary": {
+      "candidates": 383,
+      "unaccounted": 0,
+      "newMapped": 0,
+      "adjacency": "clean",
+      "screenFindings": 0,
+      "driftTotal": 307,
+      "auditCoverage": 307,
+      "auditFindings": 0,
+      "auditMissing": 0,
+      "driftObserved": {
+       "unchanged": 304,
+       "moved": 3,
+       "stale": 0
+      },
+      "staleFindings": 0,
+      "deltaTotal": 0,
+      "deltaUnaccounted": 0,
+      "deltaScreenFindings": 1
+     }
+    },
+    "c1-J5-honest-floor": {
+     "exit": 0,
+     "predicate": true,
+     "summary": {
+      "candidates": 383,
+      "unaccounted": 0,
+      "newMapped": 0,
+      "adjacency": "clean",
+      "screenFindings": 0,
+      "driftTotal": 307,
+      "auditCoverage": 307,
+      "auditFindings": 0,
+      "auditMissing": 0,
+      "driftObserved": {
+       "unchanged": 304,
+       "moved": 3,
+       "stale": 0
+      },
+      "staleFindings": 0,
+      "deltaTotal": 0,
+      "deltaUnaccounted": 0,
+      "deltaScreenFindings": 0
+     }
+    }
+   }
+  },
+  {
+   "id": "C2",
+   "axis": "operability",
+   "type": "axis move (counter amendment; round-35 routed defects M1/M3/M4 plus the w2 MutDriverReceipt self-sniff residual)",
+   "surface": "The WebDriver-BiDi Firefox runtime evidence (entry corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md, receipt corpus/evidence/round-35/bidi-firefox/receipt.json, runs run1/run2) under the AMENDED instrument .ufo/waves/round-36/counters/c2-firefox-bidi-v2.mjs: A1 TARGET 14 -> 16 equal to the round-35 claim's declared sentence (QUALITY 98); A2 the --firefox/--geckodriver binaries sha256-pinned against the round-35 install receipts, caller-named binaries off the pins refused (QUALITY 99); A3 lstat-refused exclusive scratch writes (r34 F1 family); A4 a driver whose whitespace-normalised bytes equal this counter's refused (K1-K3 residual); A5 the live leg starts Firefox with the DNS-off prefs and samples the firefox process tree's ESTABLISHED non-loopback sockets for the whole session, predicate requires egressNonLoopback == 0 (QUALITY 100); A6 binding additionally requires pairwise-disjoint browsing-context id sets across runs and the live session.",
+   "countingCommand": "node .ufo/waves/round-36/counters/c2-firefox-bidi-v2.mjs --rev <REV> --repo <clean clone> --json",
+   "before": "the instrument is absent at the round-start tip (c2-J0-baseline-absent); the prior instrument is the round-35 v1 counter carrying the four recorded residuals above.",
+   "predicate": "no entry finding AND no receipt finding AND no binding finding AND failing == 0 AND admitted >= 16 AND live.egressNonLoopback == 0 \u2014 the same sentence in this file, in the counter's header and as the counter's `predicate` field.",
+   "target": "predicate true at the measured revision (the honest r35 evidence re-admitted under the amended instrument, including a fresh live Firefox session with socket sampling) AND the frozen attack battery refused as committed in the receipts: boundary one short \u2014 first admitted row flipped to 'no' reads admitted 15 and predicate false (c2-J3-boundary-15); an unregistered caller-named binary is refused before any run (c2-J2-wrong-binary exit 2); a whitespace-normalised byte clone of the counter as the receipt's driver is refused (c2-J4-wsnorm-clone); one transcript committed at two paths is refused (c2-J5-duplicate-run); and the egress sampler is shown live \u2014 a scratch variant of the counter with the DNS-off prefs dropped observes >= 1 non-loopback ESTABLISHED socket (c2-J6-egress-instrument).",
+   "killRule": "predicate false at REV -> failed. Counter exit 2, counter bytes != frozenDigests, or scripts/check-bidi-runtime.mjs at REV != its pinned digest -> not verified. Any battery member the counter admits -> failed. Any miss is an honest stop; the target is never narrowed after data.",
+   "feasibilityDisclosed": "c2-J1-regression proves the amended instrument still admits the honest round-35 evidence (admitted 16/16, failing 0, binding null, egress 0 with DNS-off prefs), so the amendment hardens the instrument without re-litigating the evidence; c2-J3 binds the threshold one below the target (QUALITY 98's boundary requirement); c2-J6 reads 8 non-loopback sockets across 3 samples with the prefs dropped, so the A5 leg is an observation, not a decoration (QUALITY 100). Disclosed limit: rewritten-id transcript clones stay a recorded limit as in round 35 (A6 refuses identical-id clones only).",
+   "controls": {
+    "c2-J0-baseline-absent": {
+     "exit": 0,
+     "predicate": null,
+     "summary": {
+      "note": "v2 absent at round-start tip (expected: amendment instrument is new this round)"
+     }
+    },
+    "c2-J1-regression": {
+     "exit": 0,
+     "predicate": true,
+     "summary": {
+      "population": 17,
+      "admitted": 16,
+      "target": 16,
+      "failing": 0,
+      "unmeasured": 1,
+      "entry": null,
+      "receipt": null,
+      "binding": null,
+      "egressNonLoopback": 0,
+      "live": "firefox 158.0.1 cmds=28"
+     }
+    },
+    "c2-J2-wrong-binary": {
+     "exit": 2,
+     "predicate": null,
+     "summary": {
+      "live": null
+     }
+    },
+    "c2-J3-boundary-15": {
+     "exit": 1,
+     "predicate": false,
+     "summary": {
+      "population": 17,
+      "admitted": 15,
+      "target": 16,
+      "failing": 0,
+      "unmeasured": 2,
+      "entry": null,
+      "receipt": null,
+      "binding": null,
+      "egressNonLoopback": 0,
+      "live": "firefox 158.0.1 cmds=28"
+     }
+    },
+    "c2-J4-wsnorm-clone": {
+     "exit": 1,
+     "predicate": false,
+     "summary": {
+      "population": 17,
+      "admitted": 0,
+      "target": 16,
+      "failing": 16,
+      "unmeasured": 1,
+      "entry": null,
+      "receipt": "driver is a whitespace-normalised copy of this counter (A4)",
+      "binding": null,
+      "egressNonLoopback": null,
+      "live": null
+     }
+    },
+    "c2-J5-duplicate-run": {
+     "exit": 1,
+     "predicate": false,
+     "summary": {
+      "population": 17,
+      "admitted": 0,
+      "target": 16,
+      "failing": 16,
+      "unmeasured": 1,
+      "entry": null,
+      "receipt": "transcript sha256 repeated across runs",
+      "binding": null,
+      "egressNonLoopback": null,
+      "live": null
+     }
+    },
+    "c2-J6-egress-instrument": {
+     "exit": 1,
+     "predicate": false,
+     "summary": {
+      "egressNonLoopback": 8,
+      "egress": {
+       "samples": 3,
+       "nonLoopback": 8,
+       "pids": 9
+      },
+      "note": "DNS-off prefs dropped: a live sampler must see Mozilla egress (QUALITY 100)"
+     }
+    }
+   }
+  }
+ ]
+}
