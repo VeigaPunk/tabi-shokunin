@@ -1,0 +1,71 @@
+CritClaimsAxes — run log (tabi round 33 w2, final claim attack)
+Date: 2026-10-26. Host: linux x86_64. No installs, no browser, no network fetch.
+S=/fast/scratch/hyaku/tabi-r33/CritClaimsAxes (TMPDIR=$S/tmp), L=/home/vgpnk/Projects/shokunin/tabi-shokunin,
+F=/home/vgpnk/Projects/shokunin, REV=042d6d9abf97d567d495652a85eabc851b81adc1, FREEZE=e6b0a9074d434ccc307badd312ae7379d1193fea
+
+1) git clone -q --shared "$L" "$S/clone"                                   exit 0
+   git -C "$S/clone" checkout -q --detach 042d6d9...                       exit 0
+   git -C "$S/clone" rev-parse --show-toplevel                             -> $S/clone (asserted)
+   git -C "$L" show e6b0a90:.ufo/waves/round-33/counters/c1-adjacency-sweep.mjs > $S/k/c1.mjs
+   git -C "$L" show e6b0a90:.ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs > $S/k/c2.mjs
+   sha256sum $S/k/c1.mjs -> da59d157c29ce53781fcfb6159149504a185b890d923efc6eecfe22d4b2c6380
+   sha256sum $S/k/c2.mjs -> 51ace65fcece8e794b80afdb386638c755b3aa137297c33a34ffce7fb24e812b
+   git -C "$S/clone" show HEAD:<same paths> | sha256sum -> identical both
+   git -C "$S/clone" show HEAD:scripts/check-adjacency.mjs | sha256sum
+     -> 4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac
+   git -C "$S/clone" show b7d16fb:scripts/check-adjacency.mjs | sha256sum -> identical
+   git -C "$L" show e6b0a90:.ufo/waves/round-33/measure.sh | sha256sum -> ca6b830e1c9b685664da7db0ebb30674175c4c95f9fb11f8b2ce75a033784c7e
+   git -C "$S/clone" show HEAD:.ufo/waves/round-33/measure.sh | sha256sum -> identical
+   git -C "$L" show e6b0a90:.ufo/waves/round-33/baseline/controls.mjs | sha256sum
+     -> 2d0cf8416a35c2440cc1b6478f90b0f7a6d8a3436d617ea3527b0b8f3f5a451e
+
+2) node $S/k/c1.mjs --rev 042d6d9... --repo $S/clone --fleet $F --json > c1-at-042d6d9.json
+   exit 0; predicate true; adjacency clean rows=14 verified=14 findings=0;
+   candidates 52 mapped 9 screened 43 unaccounted 0 newMapped 4 (rows 12-15, kake, split-declared);
+   screenFindings 0; unaccountedKeys []
+   node $S/k/c2.mjs --rev 042d6d9... --repo $S/clone --json > c2-at-042d6d9.json
+   exit 0; predicate true; H0/H1/H2 true admitted 16 failing 0; forgeriesAccepted 0/8;
+   selftest exit 0 "cases=44 passed=44"; digestLiterals []; gateSha256 62453b55...ac75
+   F exits at 042d6d9: F1 1 t1-receipt, F2 1 x3-duplicate-id, F3 1 t1-receipt, F4 1 t1-receipt,
+   F5 1 t1-receipt, F6 1 t1-receipt, F7 1 x4-measured-cell (admitted 15 failing 1),
+   F8 1 s1-source-row (failing 17)
+
+3) Fidelity: checkout --detach bf48b81, run both counters:
+   c1 exit 0, JSON identical to measure/c1-at-bf48b81.json after jq -S (diff empty)
+   c2 exit 0, JSON identical to measure/c2-at-bf48b81.json except the 10 synthetic variant
+   "commit" fields (diff shows only those lines)
+   Baseline b7d16fb: c1 exit 1 (clean 10/10, 52/5/0/47/0); c2 exit 1 (honest true,
+   forgeriesAccepted 8, cases 27) — matches baseline/measure-at-baseline/*.json and
+   baseline/controls-summary.json do-nothing rows.
+
+4) Candidate list: node $S/k/c1.mjs --list-candidates --fleet $F | cut -f1 | sort
+   vs cut -f1 .ufo/waves/round-33/baseline/c1-candidates.tsv | sort -> diff empty, 52/52.
+
+5) Separability (commits in $S/clone; identity CritClaimsAxes@scratch.local; toplevel asserted):
+   A 1d0b38543b63ae63a6a26828b03fb2c73bd26c2c (adjacency.tsv->baseline, ledger deleted)
+     c1 exit 1 (clean 10/10, 52/5/0/47/0); c2 exit 0 (true, 0/8, cases 44)
+   B adce41f343e341d5e64e05a797c3833f5e553262 (check-bidi-runtime.mjs->baseline v1)
+     c1 exit 0 (true, 14/14, 52/9/43/0/4); c2 exit 1 (8 forgeries, cases 27)
+   C 0041e272c1533a357c05d8d77a463375e022f792 (adjacency.tsv+SKILL.md->baseline, ledger deleted)
+     c1 exit 1 (clean 10/10, 47/0); c2 exit 0 (true, 0/8, cases 44)
+   D 93099b9e15c671fad750fd5b7ce4a3b3618aa78f (gate+SOURCES+entry note->baseline; v2 note and
+     lessons/round-33.md deleted)
+     c1 exit 0 (true, 14/14, 52/9/43/0/4); c2 exit 1 (8 forgeries, cases 27)
+
+6) Rule-change audit:
+   git log --oneline -- <claims.json|c1|c2|measure.sh|controls.mjs> -> only e6b0a90 (freeze)
+   blob digests at e6b0a90 vs 042d6d9 equal for all five (claims 796f7800...cf515e)
+   git log --oneline b7d16fb..042d6d9 -- scripts/check-adjacency.mjs -> empty (last touch 93bfead, round 17)
+   git diff --name-status bf48b81 042d6d9 -> 6 measure files + w2-spec.json (A) + SCORECARD.md (M, 2 ins)
+   git diff bf48b81 042d6d9 -- SCORECARD.md -> one appended bullet (SCORECARD.md:1805) + blank line
+
+7) node scripts/check-selfassessment.mjs --rev HEAD --json (cwd $S/clone at 042d6d9)
+   exit 0; mismatches 0 (bf48b81 provenance records exit 1, mismatch 1)
+
+8) Screen ledger: 43 data rows; reasons same-surface 36, no-claim-declared 4, not-browser-sense 2,
+   third-lane-report 1; header line 1 = sibling_ref<TAB>reason<TAB>surface<TAB>quote<TAB>note.
+
+Cleanup: rm -rf $S (receipts copied first), test ! -d $S -> scratch removed.
+pgrep -fa 'chromedriver|chromium' -> one line, not mine and not a browser:
+  1371 /usr/bin/earlyoom -r 3600 --avoid (^|/)(Hyprland|Xwayland|sddm|init|systemd|sshd|pipewire|pipewire-pulse|wireplumber|waybar)$ --prefer (^|/)(java|node|chromium|python3?)$
+(host earlyoom daemon; its argv merely names chromium). No chromedriver/chromium was started by this seat.

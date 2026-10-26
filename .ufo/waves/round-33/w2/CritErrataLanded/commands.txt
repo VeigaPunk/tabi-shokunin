@@ -1,0 +1,34 @@
+# CritErrataLanded — commands and exit codes (lane root /home/vgpnk/Projects/shokunin/tabi-shokunin)
+S=/fast/scratch/hyaku/tabi-r33/CritErrataLanded
+git clone -q --shared <lane> "$S/clone"; git -C "$S/clone" checkout -q --detach 042d6d9abf97d567d495652a85eabc851b81adc1   # exit 0
+cd "$S/clone"
+git diff --numstat b7d16fb 042d6d9a -- corpus/knowledge/webdriver-bidi-runtime-round-32.md corpus/lessons/round-32.md corpus/README.md LOG.md
+  -> 39/0 25/0 29/0 152/0 (insertions/deletions)                                            # exit 0, 0 deletions
+git diff --numstat b7d16fb 042d6d9a -- SKILL.md SCORECARD.md LOG.md corpus/README.md corpus/QUALITY.md corpus/SOURCES.md
+  -> 128/0 111/0 152/0 29/0 55/0 3/0                                                         # exit 0, 0 deletions
+node scripts/check-selfassessment.mjs --rev 042d6d9abf97d567d495652a85eabc851b81adc1 --json   # exit 0
+  -> SELFASSESSMENT verdict=clean mismatches=0 could_not_evaluate=115 superseded=41 findings=217 {m1:129,m2:77,m4:11} counted=0
+node scripts/check-selfassessment.mjs --rev 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6 --json  # exit 1 (18 mismatches)
+  -> findings=195 {m1-selftest-tally:109, m2-receipt-exit:77, m4-nudge-state:9}; counted 15 m1 + 3 m4
+node scripts/check-bidi-runtime.mjs --rev 042d6d9a --baseline d805d1d6 --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md --json
+  -> exit 0, population=17 admitted=16 failing=0 unmeasured=1 distinct=16 clean=true live=false
+grep -c '^| R[0-9]' corpus/knowledge/webdriver-bidi-runtime-round-32.md  -> 34;  git show b7d16fb:... | grep -c '^| R[0-9]' -> 34
+git show 042d6d9a:.ufo/waves/round-32/w1/ExecC2Apply/corrections.patch > corrections.patch; sha256sum -> 7a61bfa6855d95d188fb77f7869e954cd308ecdd2a10e3fc45832655d7dfd879
+grep -c '^diff --git' corrections.patch -> 3
+git cat-file -t 363be55 -> fatal, exit 128 (absent)
+git checkout --detach 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6; git apply corrections.patch (exit 0); git add -A; git write-tree
+  -> f0d867c3a711f6c7c2176841aff92efef95233d5 (== the correction's tree)
+git -c user.name=CritErrataLanded -c user.email=... commit -q -m repro -> a1a080aa1baf4b874757e446fdbfb9b35a7bbc44
+node scripts/check-selfassessment.mjs --rev a1a080aa --json  # exit 0 -> mismatches=0 clean=true findings=198 {m1:112,m2:77,m4:9}
+node scripts/check-bidi-runtime.mjs --selftest               # exit 0 -> BIDI_RUNTIME_SELFTEST verdict=clean cases=44 passed=44
+node v1-gate.mjs --selftest                                   # exit 0 -> cases=27 passed=27 (LOG:2154 figure)
+sha256sum .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs .ufo/waves/round-33/baseline/controls.mjs .ufo/waves/round-33/measure.sh scripts/check-adjacency.mjs
+  -> da59d157...6380 51ace65f...812b 2d0cf841...451e ca6b830e...4c7e 4e2c2a64...4aac (all five == the LOG quote)
+curl -q -sS --proto =https https://www.w3.org/TR/2026/WD-webdriver-bidi-20261008/   # 2026-10-26T18:55:57Z, HTTP 200, 4235856 B, sha256 dc1077db...24d4
+grep: 7.1.3.4" id="command-session-subscribe"> ... "The session.subscribe Command"  # present
+file/stat/readelf/strings /usr/bin/chromium -> ELF pie, BuildID b60b9805a567483207ed7c08dc10d69a2b00aee4, 14424 bytes; strings carry chromium-flags.conf, XDG_CONFIG_HOME, /usr/lib/chromium/chromium
+wc -l ~/.config/chromium-flags.conf -> 5 (incl. --ozone-platform-hint=wayland, second in SentinelPerimeter.md:89-92 argv)
+grep -n session_commands .ufo/waves/round-32/w1/ScribeEntry/fetch-receipts.md -> no match, exit 1
+grep -cE '^\s{4}id: "' scripts/check-selfassessment.mjs -> 39; grep -c 'results.push(' -> 2
+awk '$5=="yes"' .ufo/waves/round-33/w1/ConnSiblingScan/leads.tsv | wc -l -> 34
+pgrep -fa 'chromedriver|chromium' -> only the system earlyoom line; no browser started by this seat

@@ -1,0 +1,33 @@
+# CritAdjacencyHarm receipts (round 33 w2), lane rev 042d6d9abf97d567d495652a85eabc851b81adc1
+# cwd for all lane git reads: /home/vgpnk/Projects/shokunin/tabi-shokunin (read-only)
+# clone for script runs: /fast/scratch/hyaku/tabi-r33/CritAdjacencyHarm/clone (git clone --shared, detached at REV)
+
+git diff b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd 042d6d9abf97d567d495652a85eabc851b81adc1 -- PROVINCE.md
+  -> 0 bytes, exit 0  (diff-PROVINCE.txt)
+git diff --numstat BASE REV -- PROVINCE.md corpus/adjacency.tsv
+  -> "4	0	corpus/adjacency.tsv" only; PROVINCE.md absent, exit 0  (numstat.txt)
+git show BASE:PROVINCE.md | sha256sum ; git show REV:PROVINCE.md | sha256sum
+  -> both 16c27b12a60dbbcc43903d40334c314f6587bd8703d1e890e076398eac1a946a
+row-level compare of corpus/adjacency.tsv BASE vs REV (python, git show)
+  -> header+10 baseline rows byte-identical: True ; appended rows: 4
+sha256sum .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs scripts/check-adjacency.mjs
+  -> da59d157c29ce53781fcfb6159149504a185b890d923efc6eecfe22d4b2c6380 (= frozenDigests)
+     4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac (= pinned adj gate)
+TMPDIR=$S/tmp node .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs --repo "$S/clone" --fleet /home/vgpnk/Projects/shokunin --rev 042d6d9... --json
+  -> exit 0, predicate true, candidates 52, mapped 9, screened 43, unaccounted 0, newMapped 4,
+     adjacency clean 14/14  (c1-counter.json, c1-counter.stderr empty)
+node scripts/check-adjacency.mjs --at 042d6d9... --repo "$S/clone" --fleet /home/vgpnk/Projects/shokunin --json
+  -> exit 0, verdict clean, rows 14, verified 14, selfRulings 2, findings []  (c1-gate.json)
+python audit of corpus/adjacency-screen.tsv (43 rows) against .ufo/waves/round-33/baseline/c1-candidates.tsv
+  -> 0 findings: every sibling_ref is a frozen candidate; every quote a verbatim substring of that
+     candidate line, 4..25 words and >=20 non-space chars; every same-surface names a surface that a
+     verified map row already carries for the same sibling; every other reason writes "-"
+baseline-mapped candidate line equality (git show at both pins)
+  -> kaidoku:53 True ; kake:30==34 True ; kake:35==39 True ; kagi:43 True ; revenger:5 True
+added-line sweep of BASE..REV for sibling-ground tokens (grep -inE over git diff '^+')
+  -> absorbed-ground-sweep.txt ; hits are the four split declarations, candidate counts and lead lists only
+gap scan of the 20 sibling PROVINCE.md at the frozen PINS (python, frozen REGEX copied from the counter)
+  -> 0 lines matching the frozen regex outside c1-candidates.tsv ; 40 browser-vocabulary lines outside it
+     (gap-scan.txt)
+no network fetch, no browser/chromedriver/chromium run, no tool installed, no lane write
+pgrep -fa 'chromedriver|chromium' -> (none owned; see report)

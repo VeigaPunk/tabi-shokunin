@@ -1,0 +1,48 @@
+# run1 (rev 042d6d9a, TMPDIR long, XDG_RUNTIME_DIR /tmp/sv2rt): connect() destinations
+# parsed from /strace, one row per distinct (family, address, port, result, scope)
+
+## non-zero-port TCP connects
+   3  AF_INET  127.0.0.1                                  port=37287 result=-1           loopback
+   3  AF_INET  127.0.0.1                                  port=  443 result=0            loopback
+   2  AF_INET6 2001:4860:4860::8888                       port=  443 result=0            OFF-HOST
+   2  AF_INET6 2800:3f0:4004:816::200e                    port=  443 result=-1           OFF-HOST
+   1  AF_INET6 2001:4860:4829:7700::                      port=  443 result=-1           OFF-HOST
+   1  AF_INET6 2001:4860:4840:400::                       port=  443 result=-1           OFF-HOST
+   1  AF_INET6 2600:1900:4110:86f::                       port=   80 result=-1           OFF-HOST
+   1  AF_INET6 2800:3f0:4003:c02::54                      port=  443 result=-1           OFF-HOST
+   1  AF_INET6 2800:3f0:4004:80d::200e                    port=   80 result=-1           OFF-HOST
+   1  AF_INET  127.0.0.1                                  port=42107 result=-1           loopback
+   1  AF_INET  127.0.0.1                                  port=43391 result=-1           loopback
+   1  AF_INET6 ::1                                        port=42107 result=-1           loopback
+
+## port-0 connects (AF_INET/AF_INET6 route probes, no connection established): 41
+
+## AF_UNIX connects
+   3  /run/systemd/resolve/io.systemd.Resolve
+   2  /run/user/1000/bus
+   1  /run/dbus/system_bus_socket
+   1  ?
+   1  /tmp/.X11-unix/X0
+   1  /tmp/sv2rt/wayland-1
+
+## off-host TCP connects: 9 rows
+  AF_INET6 2001:4860:4829:7700:: port=443 result=-1
+  AF_INET6 2001:4860:4840:400:: port=443 result=-1
+  AF_INET6 2001:4860:4860::8888 port=443 result=0
+  AF_INET6 2600:1900:4110:86f:: port=80 result=-1
+  AF_INET6 2800:3f0:4003:c02::54 port=443 result=-1
+  AF_INET6 2800:3f0:4004:80d::200e port=80 result=-1
+  AF_INET6 2800:3f0:4004:816::200e port=443 result=-1
+
+## bind() syscalls (run4 traceless-bind run, TMPDIR /tmp/sv2u)
+  23<socket:[372426622]>, {sa_family=AF_INET, sin_port=htons(0), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+  24<socket:[372445384]>, {sa_family=AF_INET, sin_port=htons(0), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+  7<socket:[372449380]>, {sa_family=AF_INET6, sin6_port=htons(39283), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "::1", &sin6_addr), sin6_scope_id=0}, 28) = 0
+  8<socket:[372449381]>, {sa_family=AF_INET, sin_port=htons(39283), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+  78<socket:[372446755]>, {sa_family=AF_INET, sin_port=htons(0), sin_addr=inet_addr("127.0.0.1")}, 16) = 0
+
+## listening sockets of the gate's own chromedriver (ss -ltnpH sampled during the run)
+  run1: LISTEN 0 5 [::1]:37287 [::]:* users:(("chromedriver",pid=95374,fd=7))
+  run1: LISTEN 0 5 127.0.0.1:37287 0.0.0.0:* users:(("chromedriver",pid=95374,fd=8))
+  run3: LISTEN 0 5 [::1]:35455 [::]:* users:(("chromedriver",pid=913479,fd=7))
+  run3: LISTEN 0 5 127.0.0.1:35455 0.0.0.0:* users:(("chromedriver",pid=913479,fd=8))

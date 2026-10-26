@@ -1,0 +1,38 @@
+# scratch: S=/fast/scratch/hyaku/tabi-r33/CritC1Overrides ; TMPDIR=$S
+git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"                        exit 0
+git -C "$S/clone" checkout -q --detach 042d6d9abf97d567d495652a85eabc851b81adc1                  exit 0
+git -C "$S/clone" rev-parse --show-toplevel  ->  /fast/scratch/hyaku/tabi-r33/CritC1Overrides/clone
+sha256sum .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs scripts/check-adjacency.mjs
+  -> da59d157c29ce53781fcfb6159149504a185b890d923efc6eecfe22d4b2c6380  (= claims.json frozenDigests)
+  -> 4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac  (= the digest pinned inside C1)
+
+# landed (control)
+node .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs --repo "$S/clone" \
+     --fleet /home/vgpnk/Projects/shokunin --rev 042d6d9a... --json > landed.json                exit 0
+  {"predicate":true,"mapped":9,"screened":43,"unaccounted":0,"newMapped":4,
+   "adjacency":{"verdict":"clean","rows":14,"verified":14,"findings":0}}
+
+# reversal set: drafted dispositions (w1 Adj* ledgers) vs landed ledger
+cat .ufo/waves/round-33/w1/Adj*/screen.tsv | grep -v '^sibling_ref' | cut -f1 | grep PROVINCE.md | sort -u > draft-screens.txt   # 46
+cat .ufo/waves/round-33/w1/Adj*/rows.tsv | cut -f3 | grep PROVINCE.md | sort -u > draft-rows.txt                                # 1
+git show 042d6d9a...:corpus/adjacency-screen.tsv | tail -n +2 | cut -f1 | sort > landed-screens.txt                            # 43
+comm -23 draft-screens.txt landed-screens.txt     -> PROVINCE.md:304, :347, :79   (3 promotions, 0 demotions)
+comm -13 draft-screens.txt landed-screens.txt     -> empty                        (0 screens added)
+
+# counterfactuals, one draft disposition restored at a time (base = 042d6d9a, clone commits only)
+node .ufo/.../c1-adjacency-sweep.mjs --repo "$S/clone" --fleet ... --rev dd196cdd... --json      exit 1  (A)
+node .ufo/.../c1-adjacency-sweep.mjs --repo "$S/clone" --fleet ... --rev ee3b6cff... --json      exit 1  (B2)
+node .ufo/.../c1-adjacency-sweep.mjs --repo "$S/clone" --fleet ... --rev d71e502d... --json      exit 1  (D2)
+node .ufo/.../c1-adjacency-sweep.mjs --repo "$S/clone" --fleet ... --rev 0635a194... --json      exit 0  (C2)
+node .ufo/.../c1-adjacency-sweep.mjs --repo "$S/clone" --fleet ... --rev 8b447071... --json      exit 1  (E)
+
+# E gate detail
+git -C "$S/clone" checkout -q --detach 8b447071...
+node scripts/check-adjacency.mjs --at 8b447071... --repo "$S/clone" --fleet ... --json > E-gate.json   exit 1
+  findings: [{"row":16,"reason":"duplicate_row","detail":"surface=crawler-discipline-vs-publishing sibling=kake pin=kake@PROVINCE.md:304 first_row=6"}]
+
+# sibling bytes (read-only)
+git -C kake-shokunin show 7c61c8cc...:PROVINCE.md | sed -n '28,36p'      # row 6's cited line + its continuation
+git -C kake-shokunin show 04404859...:PROVINCE.md | sed -n '30,36p;79,80p;304p;340,348p'
+git -C kake-shokunin show 04404859...:SKILL.md   | sed -n '558,561p'      # "tabi receives authorized browser/AT evaluation"
+git -C tabi-shokunin show 042d6d9a...:SKILL.md    | sed -n '2883,2891p'   # the round-33 declaration lines

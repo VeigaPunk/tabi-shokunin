@@ -1,0 +1,39 @@
+# Independent audit of corpus/adjacency-screen.tsv (43 rows) and of the four new map rows
+# run at integration 042d6d9abf97d567d495652a85eabc851b81adc1 in /fast/scratch/hyaku/tabi-r33/CritAdjacencyHarm/clone
+# candidates: .ufo/waves/round-33/baseline/c1-candidates.tsv (52 rows, ref<TAB>line text)
+
+candidates 52
+screen rows 43 ; column count set {5} ; header = sibling_ref<TAB>reason<TAB>surface<TAB>quote<TAB>note
+screen findings: []          # ref format, membership in the frozen candidate list, uniqueness,
+                             # quote verbatim-substring of the candidate line, 4..25 words, >=20 non-space chars,
+                             # reason in {not-browser-sense,same-surface,third-lane-report,no-claim-declared},
+                             # same-surface -> surface carried by a verified map row for the SAME sibling,
+                             # every other reason -> "-"
+screen refs unique: True
+screened refs are all candidates: True
+reason distribution: same-surface 36, no-claim-declared 4, not-browser-sense 2, third-lane-report 1
+
+map rows 14 (header + 14 data rows)
+new rows (file lines 12-15) all split-declared vs kake at 044048597d62f3199494b63b36e90dd57825e350:
+  line 12 js-rendering-browser-execution            sibling_quote "browser execution stays tabi's"
+  line 13 robots-txt-publisher-audit-vs-client-obedience sibling_quote "...belong to tabi"
+  line 14 accessibility-browser-at-execution        sibling_quote "...Browser/assistive-technology"
+  line 15 crawl-budget-vs-client-crawl-thresholds   sibling_quote "backoff reduces the crawl rate across the whole hostname"
+tabi_quote on the cited tabi line: all true ; ruling_quote (split-declared) on the same tabi line: all true
+note: for all four rows tabi_ref = one of SKILL.md:2887-2890 and ruling_quote is a substring of that same line.
+
+baseline-mapped candidates, cited line text at the map pin vs the frozen candidate pin:
+  kaidoku 9011581d:53 == 8b9634e:53   True
+  kake    7c61c8cc:30 == 0440485:34   True
+  kake    7c61c8cc:35 == 0440485:39   True
+  kagi    c2cab35b:43 == 69b61db:43   True
+  revenger cf02419:5 == 6da884c:5     True
+
+coverage: mapped 9 + screened 43 = 52 ; unaccounted 0 (frozen counter, predicate true)
+
+lines in the 20 sibling PROVINCE.md at the frozen PINS that match the frozen REGEX but are not candidates: 0
+browser-vocabulary lines outside the frozen regex (see gap-scan.txt), the kake ones that matter to this lane:
+  kake:67  "This is not rendered-DOM observation, navigation/readiness approval or permission to publish."
+           neither in corpus/adjacency.tsv nor corpus/adjacency-screen.tsv (grep count 0)
+  kake:354 ": `canonical/JS rendering" / 361 "JS rendering" / 363 "js-rendering-queue"
+           neither mapped nor screened; row 12's declaration at kake:61/362 already dispositions that split

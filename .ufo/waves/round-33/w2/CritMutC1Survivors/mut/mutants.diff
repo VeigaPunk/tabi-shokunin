@@ -1,0 +1,84 @@
+--- pristine
++++ m04-cdv-presence-only.mjs
+@@ -819,7 +819,7 @@
+   if (!receiptFinding && runs.length) {
+     const shots = runs.map((r) => firstShot(r.rec));
+     if (shots.some((s) => !s) || new Set(shots).size !== 1) bindingFinding = "first screenshots absent or differ between runs";
+-    else if (runs.some((r) => !cdv(r.rec)) || new Set(runs.map((r) => cdv(r.rec))).size !== 1) bindingFinding = "chromedriverVersion absent or differs between runs";
++    else if (runs.some((r) => !cdv(r.rec))) bindingFinding = "chromedriverVersion absent or differs between runs";
+     else if (live && liveRec) {
+       if (firstShot(liveRec) !== shots[0]) bindingFinding = "first screenshot differs from this counter's live session";
+       else if (cdv(liveRec) !== cdv(runs[0].rec)) bindingFinding = "chromedriverVersion differs from this counter's live session";
+--- pristine
++++ m06-ok-accepts-any-frame.mjs
+@@ -236,7 +236,7 @@
+   return rec;
+ }
+ 
+-const ok = (c) => c && c.response && c.response.type === "success";
++const ok = (c) => c && c.response;
+ const res = (c) => (c && c.response && c.response.result) || {};
+ const strVal = (rv) => (rv && rv.type === "string" ? rv.value : undefined);
+ 
+--- pristine
++++ m11-driver-sha-not-compared.mjs
+@@ -770,7 +770,7 @@
+       else {
+         const drv = blob(repo, rev, receiptObj.driver);
+         if (drv === null) receiptFinding = `driver absent: ${receiptObj.driver}`;
+-        else if (sha256(drv) !== receiptObj.driverSha256) receiptFinding = `driver sha256 differs: ${receiptObj.driver}`;
++        else if (false) receiptFinding = `driver sha256 differs: ${receiptObj.driver}`;
+         else if (gateBuf !== null && sha256(drv) === sha256(gateBuf)) receiptFinding = "driver is a byte copy of this gate";
+         else {
+           out.driverImports = importSpecs(drv.toString("utf8")).map((s) => ({ kind: s.kind, spec: s.spec, names: s.names }));
+--- pristine
++++ m17a-r1-loopback-loosened.mjs
+@@ -144,7 +144,7 @@
+ const DRIVER_ALLOW = new Set(["FIXTURE", "FIXTURE_SHA256", "FIXTURE_HEADER", "VIEWPORT", "DATA_TEXT", "serveFixture"]);
+ const SESSION_ID = /^[0-9a-f]{32}$/; // ChromeDriver 154 classic session id shape
+ const CONTEXT_ID = /^[0-9A-F]{32}$/; // ChromeDriver 154 browsing-context id shape
+-const WS_LOOPBACK = /^ws:\/\/(127\.0\.0\.1|localhost):\d+\/session\//;
++const WS_LOOPBACK = /^ws:\/\//;
+ const WS_SESSION = /^ws:\/\/[^/]+\/session\/([0-9a-f]{32})$/;
+ const MEASURED = /^(yes|no)(?:\s*[—–-]\s*\S[\s\S]*)?$/i;
+ const HEX64 = /\b[0-9a-f]{64}\b/;
+--- pristine
++++ m17b-sessionof-loopback-dropped.mjs
+@@ -386,7 +386,6 @@
+   const m = WS_SESSION.exec(url);
+   if (!m) return { why: `webSocketUrl is not ws://<host>/session/<sessionId>: ${url}` };
+   if (m[1] !== sid) return { why: `webSocketUrl session segment ${m[1]} != sessionId ${sid}` };
+-  if (!WS_LOOPBACK.test(url)) return { why: `webSocketUrl is not a loopback ws session url: ${url}` };
+   return { sid, url };
+ }
+ 
+--- pristine
++++ m17c-both-loopback-dropped.mjs
+@@ -144,7 +144,7 @@
+ const DRIVER_ALLOW = new Set(["FIXTURE", "FIXTURE_SHA256", "FIXTURE_HEADER", "VIEWPORT", "DATA_TEXT", "serveFixture"]);
+ const SESSION_ID = /^[0-9a-f]{32}$/; // ChromeDriver 154 classic session id shape
+ const CONTEXT_ID = /^[0-9A-F]{32}$/; // ChromeDriver 154 browsing-context id shape
+-const WS_LOOPBACK = /^ws:\/\/(127\.0\.0\.1|localhost):\d+\/session\//;
++const WS_LOOPBACK = /^ws:\/\//;
+ const WS_SESSION = /^ws:\/\/[^/]+\/session\/([0-9a-f]{32})$/;
+ const MEASURED = /^(yes|no)(?:\s*[—–-]\s*\S[\s\S]*)?$/i;
+ const HEX64 = /\b[0-9a-f]{64}\b/;
+@@ -386,7 +386,6 @@
+   const m = WS_SESSION.exec(url);
+   if (!m) return { why: `webSocketUrl is not ws://<host>/session/<sessionId>: ${url}` };
+   if (m[1] !== sid) return { why: `webSocketUrl session segment ${m[1]} != sessionId ${sid}` };
+-  if (!WS_LOOPBACK.test(url)) return { why: `webSocketUrl is not a loopback ws session url: ${url}` };
+   return { sid, url };
+ }
+ 
+--- pristine
++++ m18-png-dims-unchecked.mjs
+@@ -295,7 +295,7 @@
+   R4: (rec) => {
+     const shots = rec.cmds.filter((c) => c.method === "browsingContext.captureScreenshot" && ok(c));
+     if (!shots.length) return "no captureScreenshot";
+-    return shots.some((c) => { const s = pngSize(res(c).data); return s && s.width === VIEWPORT.width && s.height === VIEWPORT.height; }) ? null : "screenshot is not a PNG of the pinned viewport";
++    return shots.some((c) => pngSize(res(c).data)) ? null : "screenshot is not a PNG of the pinned viewport";
+   },
+   R5: (rec) => (rec.cmds.some((c) => c.method === "browsingContext.locateNodes" && ok(c) && c.params.locator && c.params.locator.type === "css" && c.params.locator.value === "#h"
+     && Array.isArray(res(c).nodes) && res(c).nodes.length === 1 && res(c).nodes[0].value && res(c).nodes[0].value.localName === "h1") ? null : "no locateNodes #h -> one h1"),

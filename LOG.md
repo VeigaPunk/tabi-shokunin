@@ -2380,3 +2380,11 @@ distinct counts and criterion 86, and round 33's C2 rebuilds the gate against th
 (baseline reading `.ufo/waves/round-33/baseline/c2-J1-do-nothing.json`).
 
 Correction (round 33, named) — supersedes `.ufo/waves/round-33/claims.json` `notClaimed`'s assimilation reason, "the lane's quarantine-first round (hand-check of its absent-defect register slice) has not run": false as written. The 38-row slice was hand-checked in round 22 and re-opened row by row in round 27 (`corpus/lessons/round-27.md:30-39`; fleet `.ufo/l0-questions.md:165`). Round 33 takes no `merge/tabi/` theme because none touches the adjacency map or the BiDi gate (w1 ScoutAssimilation). The frozen file stays as written (lesson round-33 M4).
+
+Correction — supersedes `LOG.md:2236` ("every baseline receipt landed in that same freeze commit"): the seven
+`baseline/measure-at-baseline/` receipts were committed in `bf48b81c`, after the freeze, measured with the frozen counter
+bytes (w2 CritCorrections a). Correction — supersedes `LOG.md:2243-2244`: `provenance-b7d16fb.txt` records the two counter
+digests and `scripts/check-adjacency.mjs`, plus `check-bidi-runtime.mjs` and `check-selfassessment.mjs`; the control
+driver and `measure.sh` digests are in `claims.json` only (w2 CritCorrections e). Correction — supersedes `LOG.md:2355`:
+its "dispositioned 19 of the 27 carried items" is wrong; the w1 intake closed 7 of the 27 carried items and 20 remain
+carried, as the same paragraph's remain-count says (w2 CritCorrections c).

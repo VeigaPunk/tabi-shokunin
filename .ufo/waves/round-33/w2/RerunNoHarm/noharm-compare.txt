@@ -1,0 +1,59 @@
+baseline_commands=28 rev_commands=28
+01  base_exit=0 rev_exit=0 same-cmd  node scripts/check-adjacency.mjs --at <REV> --fleet /home/vgpnk/Projects/shokunin
+02  base_exit=0 rev_exit=0 same-cmd  node scripts/check-gate-registry.mjs --rev HEAD
+03  base_exit=0 rev_exit=0 same-cmd  node scripts/check-release-pins.mjs --rev HEAD --stable 156.0.8078.47
+04  base_exit=0 rev_exit=0 same-cmd  node scripts/check-s106-evidence.mjs --rev HEAD
+05  base_exit=0 rev_exit=0 same-cmd  node scripts/check-frontier-admission.mjs --rev HEAD --frontier rate-tos-signal --since 2026-10-26
+06  base_exit=0 rev_exit=0 same-cmd  node scripts/check-decision-table.mjs --rev HEAD --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc --entry corpus/knowledge/rate-signal-decision-table.md
+07  base_exit=0 rev_exit=0 same-cmd  node scripts/check-bidi-runtime.mjs --rev HEAD --baseline d805d1d6132430118b206a848b85753ab35d1014 --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md
+08  base_exit=0 rev_exit=0 same-cmd  node scripts/check-selfassessment.mjs --rev HEAD
+09  base_exit=0 rev_exit=0 same-cmd  node scripts/check-sources.mjs
+10  base_exit=0 rev_exit=0 same-cmd  /home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --file <CLONE>/corpus/SOURCES.md
+11  base_exit=0 rev_exit=0 same-cmd  scripts/check-adjacency.mjs --self-test
+12  base_exit=0 rev_exit=0 same-cmd  scripts/check-aria-metadata.mjs --self-test
+13  base_exit=0 rev_exit=0 same-cmd  scripts/check-bfcache-receipt.mjs --selftest
+14  base_exit=0 rev_exit=0 same-cmd  scripts/check-bidi-runtime.mjs --selftest
+15  base_exit=0 rev_exit=0 same-cmd  scripts/check-decision-table.mjs --selftest
+16  base_exit=0 rev_exit=0 same-cmd  scripts/check-freshness.mjs --self-test
+17  base_exit=0 rev_exit=0 same-cmd  scripts/check-frontier-admission.mjs --selftest
+18  base_exit=0 rev_exit=0 same-cmd  scripts/check-gate-mutants.mjs --selftest
+19  base_exit=0 rev_exit=0 same-cmd  scripts/check-gate-registry.mjs --selftest
+20  base_exit=0 rev_exit=0 same-cmd  scripts/check-measurement-binding.mjs --self-test
+21  base_exit=0 rev_exit=0 same-cmd  scripts/check-release-pins.mjs --selftest
+22  base_exit=0 rev_exit=0 same-cmd  scripts/check-round-contract.mjs --self-test
+23  base_exit=0 rev_exit=0 same-cmd  scripts/check-s106-evidence.mjs --selftest
+24  base_exit=0 rev_exit=0 same-cmd  scripts/check-selfassessment.mjs --selftest
+25  base_exit=0 rev_exit=0 same-cmd  scripts/check-source-reopen-receipt.mjs --selftest
+26  base_exit=0 rev_exit=0 same-cmd  scripts/check-sources.mjs --self-test
+27  base_exit=0 rev_exit=0 same-cmd  scripts/check-user-round-contract.mjs --self-test
+28  base_exit=0 rev_exit=0 same-cmd  scripts/round-evidence-audit.mjs --selftest
+cmd_or_exit_mismatches=0
+rev_nonzero_exits=[]
+green_at_baseline_red_at_rev=[]
+
+## metric deltas
+ADJACENCY
+  base: ADJACENCY verdict=clean rows=10 verified=10
+  rev : ADJACENCY verdict=clean rows=14 verified=14
+GATE_REGISTRY
+  base: GATE_REGISTRY verdict=clean rev=b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd rows=40 gates=22 nonconformant=0 findings=0
+  rev : GATE_REGISTRY verdict=clean rev=042d6d9abf97d567d495652a85eabc851b81adc1 rows=41 gates=22 nonconformant=0 findings=0
+RELEASE_PINS
+  base: RELEASE_PINS verdict=clean rev=b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd stable=156.0.8078.47 population=23 resolved=23 unresolved=0 holds=16 drifted=7
+  rev : RELEASE_PINS verdict=clean rev=042d6d9abf97d567d495652a85eabc851b81adc1 stable=156.0.8078.47 population=23 resolved=23 unresolved=0 holds=16 drifted=7
+DECISION_TABLE
+  base: DECISION_TABLE verdict=clean rev=b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd baseline=96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc entry=corpus/knowledge/rate-signal-decision-table.md live=false population=13 admitted=13 failing=0
+  rev : DECISION_TABLE verdict=clean rev=042d6d9abf97d567d495652a85eabc851b81adc1 baseline=96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc entry=corpus/knowledge/rate-signal-decision-table.md live=false population=13 admitted=13 failing=0
+BIDI_RUNTIME
+  base: BIDI_RUNTIME verdict=clean rev=b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd population=16 admitted=16 failing=0 live=false
+  rev : BIDI_RUNTIME verdict=clean rev=042d6d9abf97d567d495652a85eabc851b81adc1 population=17 admitted=16 failing=0 unmeasured=1 distinct=16 live=false
+SELFASSESSMENT
+  base: SELFASSESSMENT verdict=clean rev=b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd mismatches=0 could_not_evaluate=106 superseded=39
+  rev : SELFASSESSMENT verdict=clean rev=042d6d9abf97d567d495652a85eabc851b81adc1 mismatches=0 could_not_evaluate=115 superseded=41
+SOURCES_GATE
+  base: SOURCES_GATE verdict=clean rows=126 tiers=A:111,B:6,C:9 status=queued:15,mined:102,rejected:9 findings=0 file=corpus/SOURCES.md
+  rev : SOURCES_GATE verdict=clean rows=129 tiers=A:114,B:6,C:9 status=queued:15,mined:105,rejected:9 findings=0 file=corpus/SOURCES.md
+
+selftest_cases_base=57,17,27,34,12,24,12,22,76,29,38,10,41,18,26,45,13
+selftest_cases_rev =57,17,44,34,12,24,12,22,76,29,38,10,41,18,26,45,13
+any_case_count_dropped=[]

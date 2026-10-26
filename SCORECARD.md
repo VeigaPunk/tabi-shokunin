@@ -1803,3 +1803,16 @@ forgery accepted (`.ufo/waves/round-33/baseline/c2-J1-do-nothing.json`).
 Correction (round 33, named) — supersedes `.ufo/waves/round-33/claims.json` `notClaimed`'s assimilation reason, "the lane's quarantine-first round (hand-check of its absent-defect register slice) has not run": false as written. The 38-row slice was hand-checked in round 22 and re-opened row by row in round 27 (`corpus/lessons/round-27.md:30-39`; fleet `.ufo/l0-questions.md:165`). Round 33 takes no `merge/tabi/` theme because none touches the adjacency map or the BiDi gate (w1 ScoutAssimilation). The frozen file stays as written (lesson round-33 M4).
 
 - `scripts/check-bidi-runtime.mjs` `--selftest` (44/44): correction — supersedes the stale tally at `SCORECARD.md:1657` (a one-line restatement of the wrapped round-33 correction above: in this document the calibration counter reads a correction and its citation on one line; L1 measurement at `bf48b81c`, `.ufo/waves/round-33/measure/selfassessment-at-bf48b81.json`, mismatches 1).
+
+## Round 33 — wave-2 corrections (append-only; each cites the stale line in its own document)
+
+Correction — supersedes `SCORECARD.md:1699` ("every baseline receipt frozen in `e6b0a907…`"): the counters, controls,
+control receipts, `claims.json`, the candidate list and `baseline/census-start.txt` landed in the freeze commit; the
+seven `baseline/measure-at-baseline/` receipts were measured after the freeze with the frozen counter bytes and committed
+in `bf48b81c` (w2 CritCorrections a). Their readings equal the frozen controls' do-nothing receipts.
+
+Correction — supersedes `SCORECARD.md:1781`: the figure 44 is the v2 gate's own `--selftest` summary at the round-33
+integration revision, not at the freeze, where the gate was still v1 (w2 CritCorrections b).
+
+Correction — supersedes `SCORECARD.md:1762`: `baseline/census-start.txt` carries the census validator output (`tabi ok`,
+exit 0); the `SOURCES_GATE … rows=126` line is in `baseline/measure-at-baseline/noharm-at-b7d16fb.txt` (w2 CritCorrections d).

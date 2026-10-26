@@ -1,0 +1,21 @@
+## case A: XDG_RUNTIME_DIR unset, TMPDIR len 52 -> scratch 74 > 60
+EXIT=2
+stderr: BIDI_RUNTIME verdict=could-not-evaluate detail=no short directory for chromium's singleton socket (TMPDIR 52 bytes, XDG_RUNTIME_DIR unset); set a TMPDIR of at most 40 bytes
+stdout_bytes=0
+spawns_chromedriver_or_chromium=0
+deletions:
+833240 rmdir("/fast/scratch/hyaku/tabi-r33/SentinelLiveV2/tmp_long/tabi-bidi-live-PmNqvO") = 0
+leftover_tabi_bidi_in_TMPDIR=0
+foreign_dirs_surviving_in_TMPDIR=2
+
+## case B: XDG_RUNTIME_DIR len 46 (> 40), TMPDIR len 52
+EXIT=2
+stderr: BIDI_RUNTIME verdict=could-not-evaluate detail=no short directory for chromium's singleton socket (TMPDIR 52 bytes, XDG_RUNTIME_DIR 46); set a TMPDIR of at most 40 bytes
+stdout_bytes=0
+spawns_chromedriver_or_chromium=0
+deletions:
+773180 rmdir("/fast/scratch/hyaku/tabi-r33/SentinelLiveV2/tmp_long/tabi-bidi-live-79mL7z") = 0
+leftover_tabi_bidi_in_rt=0
+foreign_dirs_surviving_in_rt=2
+
+## note: an earlier attempt at case A was malformed (env -u placed after an assignment -> exit 127, no gate run); the case above is the corrected invocation.

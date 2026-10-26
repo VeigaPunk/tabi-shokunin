@@ -2896,3 +2896,20 @@ These lines state this lane's side of four overlaps the round-33 sweep found in 
   frozen battery construction F1–F8 and one per round-32 surviving mutant M04, M06, M09, M10, M11, M14, M17, M18 and
   M19, and the gate prints `BIDI_RUNTIME_SELFTEST verdict=clean cases=44 passed=44` at the round-33 measured
   revision (registry section above).
+
+## Round 33 — wave-2 corrections (2026-10-26; append-only; each cites the line it corrects)
+
+The row below supersedes the round-33 `bidi-runtime` row at `SKILL.md:2817` (w2 CritRegistryRow: its clean
+predicate, verdict map and write scope did not match the code; `scripts/check-gate-registry.mjs` checks presence only).
+
+| Name | Kind | Entry command | Verdict map | Self-test | Pinned-value path | Write scope | Owner |
+|---|---|---|---|---|---|---|---|
+| bidi-runtime | gate | `node scripts/check-bidi-runtime.mjs --rev REV --baseline REV --entry corpus/knowledge/X.md [--receipt PATH] [--live] [--json]` | 0=clean (no entry finding, population>=1, admitted>=1, failing=0; a `no` row is counted as unmeasured and never admitted); 1=failed (entry absent, no newly mined source row with a Gate fetch row, a duplicate row id, a Measured cell that is not `yes` or `no`, a run pair without distinct session provenance, a driver that is the gate or imports it beyond the allow-list, or a measured row not admitted); 2=could-not-evaluate (usage, unresolvable revision, registry absent, `--live` without chromedriver or chromium, sandbox unavailable, no short socket directory); 3=self-test failed (could-not-evaluate) | `node scripts/check-bidi-runtime.mjs --selftest` (cases=44, passed=44) | `scripts/check-bidi-runtime.mjs` FIXTURE, ROWS, PREDICATES, CASES and DRIVER_ALLOW; `corpus/evidence/round-32/bidi/`; `.ufo/waves/round-33/claims.json` C2 frozenDigests; `corpus/knowledge/bidi-runtime-gate-v2-round-33.md` | stdout/stderr only; production reads committed git blobs; `--live` starts chromedriver and headless chromium from `/usr/lib/chromium/chromium` with no `--no-sandbox`, a throwaway profile and throwaway HOME, XDG_CONFIG_HOME, XDG_CACHE_HOME, XDG_DATA_HOME and XDG_STATE_HOME inside its own scratch, chromium's TMPDIR in that scratch when it is at most 60 bytes long else in a throwaway dir under XDG_RUNTIME_DIR, else refuses; removes only dirs it created; 127.0.0.1 fixtures only | tabi L1 |
+
+Corrections to the tabi-side declarations at `SKILL.md:2887-2890` (w2 CritDeclarations, CritRowA11y, CritRowCrawlBudget,
+CritC1Overrides):
+
+- `SKILL.md:2887`: correction — the selection half of "canonical declaration and selection stay kake's" sits at kake `PROVINCE.md:354-358`, not at `:60-61`, which say the frontier is open and browser execution is tabi's.
+- `SKILL.md:2888`: correction — tabi's robots obedience is measured on its own loopback fixture (`probe-robots`, `SKILL.md:327`) and documented upstream for real hosts (decision table D1–D5, tier line "documented upstream, not measured in this lane"); it is not a measurement of a real host's robots.txt.
+- `SKILL.md:2889`: correction — tabi holds browser execution of accessible-tree and role-locator capture on loopback (`corpus/knowledge/aria-loopback-round-13.md`, `playwright-accessible-locators-and-snapshots.md`), not assistive-technology runs: those notes disclaim keyboard, screen-reader and WCAG testing (`aria-loopback-round-13.md:45`). Assistive-technology execution for kake's review is a route tabi accepts as frontier, not a held surface, and kake's condition is a named property, build or process scope (kake `SKILL.md:559`).
+- `SKILL.md:2890`: correction — the crawl-rate bullet no longer backs a map row: the row `crawl-budget-vs-client-crawl-thresholds` was withdrawn in round-33 wave 2 because kake `PROVINCE.md:347` names no lane and restates kake's side of the split already mapped as `crawler-discipline-vs-publishing` (map row 6); the line is now screened `same-surface` on that row. The thresholds it names are documented upstream, not measured in this lane.

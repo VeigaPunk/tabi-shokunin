@@ -1,0 +1,33 @@
+# RerunC2 evidence — commands and exit codes
+# UTC: 2026-10-26 (see report)
+# TMPDIR=<HYAKU_SCRATCH>/tabi-r33/RerunC2/tmpN, HYAKU_SCRATCH=/fast/scratch/hyaku
+# S=/fast/scratch/hyaku/tabi-r33/RerunC2
+
+[1] git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"
+    git -C "$S/clone" checkout -q --detach 042d6d9abf97d567d495652a85eabc851b81adc1
+    -> exit 0; rev-parse HEAD = 042d6d9abf97d567d495652a85eabc851b81adc1
+    -> rev-parse --show-toplevel = /fast/scratch/hyaku/tabi-r33/RerunC2/clone
+
+[2] git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show e6b0a9074d434ccc307badd312ae7379d1193fea:.ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs > "$S/c2-counter.mjs"
+    -> exit 0; sha256 51ace65fcece8e794b80afdb386638c755b3aa137297c33a34ffce7fb24e812b (== claims.json frozenDigests)
+
+[3] TMPDIR="$S/tmp1" node "$S/c2-counter.mjs" --rev 042d6d9abf97d567d495652a85eabc851b81adc1 --repo "$S/clone" --json > run1.json
+    -> exit 0; sha256(run1.json) f0a651ecac14255be207727e47067bbbd5af05d17b702296f5c791b3257bff2f; 2764 bytes
+
+[4] TMPDIR="$S/tmp2" node "$S/c2-counter.mjs" --rev 042d6d9abf97d567d495652a85eabc851b81adc1 --repo "$S/clone" --json > run2.json
+    -> exit 0; sha256(run2.json) 7505cceb52a8c36636a0770b57f5e6d0df9c69e29af4f79c13b050832e8ef3ad; 2764 bytes
+
+[5] TMPDIR="$S/tmp4" node "$S/c2-counter.mjs" --rev 042d6d9abf97d567d495652a85eabc851b81adc1 --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json > run3-lane-repo.json
+    -> exit 0 (third run, --repo = lane checkout rather than my clone)
+
+[6] TMPDIR="$S/tmp3" node "$S/c2-counter.mjs" --rev b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd --repo "$S/clone" --json > run-base.json
+    -> exit 1 (predicate false at baseline, as frozen); sha256(run-base.json) 5de7311a28974014fd65e2e1564f042b6444af326c5fec8040e1de84d324f79a; 2675 bytes
+
+[7] git -C "$S/clone" node scripts/check-bidi-runtime.mjs --selftest
+    -> exit 0; last line: BIDI_RUNTIME_SELFTEST verdict=clean cases=44 passed=44
+
+[8] grep scans of scripts/check-bidi-runtime.mjs at 042d6d9 for the five HONEST_DIGESTS (full and 12-hex prefix) and for any 40+ hex literal
+    -> 0 matches each; gate blob 10be4ef950f2acd76922d9d9c6f2c8f464530678, sha256 62453b55e5e5de331ee6e8fdb3fa8b8ddbf3b43a7b6da944a9544b3af8deac75
+
+stderr files run1.err/run2.err/run3.err/run-base.err: 0 bytes each.
+No chromedriver/chromium started by this seat (battery is offline); pgrep shows no owned browser process.

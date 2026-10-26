@@ -1,0 +1,29 @@
+VARIANT V0-honest commit=042d6d9abf97 changed=0
+  gate=pristine exit=0 admitted=16/17 failing=0 binding=- reasons=- detail=-
+VARIANT V1-m11-driver-sha-mismatch commit=263021247d07 changed=1
+  gate=pristine exit=1 admitted=0/17 failing=16 binding=- reasons=t1-receipt detail=R1:driver sha256 differs: scripts/bidi-loopback-round32.mjs
+  gate=m11-driver-sha-not-compared exit=0 admitted=16/17 failing=0 binding=- reasons=- detail=-
+VARIANT V2-m06-error-frame-with-payload commit=adfffbd202fd changed=2
+  gate=pristine exit=1 admitted=15/17 failing=1 binding=- reasons=t2-run detail=R2:run1: no getTree with contexts
+  gate=m06-ok-accepts-any-frame exit=0 admitted=16/17 failing=0 binding=- reasons=- detail=-
+VARIANT V3-m04-cross-run-chromedriver commit=a3caa59c17b6 changed=2
+  gate=pristine exit=1 admitted=0/17 failing=16 binding=chromedriverVersion absent or differs between runs reasons=t3-binding detail=R1:chromedriverVersion absent or differs between runs
+  gate=m04-cdv-presence-only exit=0 admitted=16/17 failing=0 binding=- reasons=- detail=-
+VARIANT V4-m18-png-wrong-ihdr commit=67e3c9a878e2 changed=3
+  gate=pristine exit=1 admitted=15/17 failing=1 binding=- reasons=t2-run detail=R4:run1: screenshot is not a PNG of the pinned viewport
+  gate=m18-png-dims-unchecked exit=0 admitted=16/17 failing=0 binding=- reasons=- detail=-
+VARIANT V5-m17-ws-off-loopback commit=37bcc2141ab5 changed=3
+  gate=pristine exit=1 admitted=0/17 failing=16 binding=- reasons=t1-receipt detail=R1:run1: webSocketUrl is not a loopback ws session url: ws://10.0.0.1:37279/session/10abbb479bdcc37a405098c5ea778bf0
+  gate=m17a-r1-loopback-loosened exit=0 admitted=16/17 failing=0 binding=- reasons=- detail=-
+  gate=m17b-sessionof-loopback-dropped exit=1 admitted=15/17 failing=1 binding=- reasons=t2-run detail=R1:run1: webSocketUrl not a loopback ws url
+  gate=m17c-both-loopback-dropped exit=0 admitted=16/17 failing=0 binding=- reasons=- detail=-
+VARIANT V6-probe-gate-near-copy-driver commit=23a16a4ba7fe changed=2
+  gate=pristine exit=0 admitted=16/17 failing=0 binding=- reasons=- detail=-
+CONTROL gate=m11-driver-sha-not-compared on honest REV exit=0 admitted=16/17 reasons=-
+CONTROL gate=m06-ok-accepts-any-frame on honest REV exit=0 admitted=16/17 reasons=-
+CONTROL gate=m04-cdv-presence-only on honest REV exit=0 admitted=16/17 reasons=-
+CONTROL gate=m18-png-dims-unchecked on honest REV exit=0 admitted=16/17 reasons=-
+CONTROL gate=m17a-r1-loopback-loosened on honest REV exit=0 admitted=16/17 reasons=-
+CONTROL gate=m17b-sessionof-loopback-dropped on honest REV exit=0 admitted=16/17 reasons=-
+CONTROL gate=m17c-both-loopback-dropped on honest REV exit=0 admitted=16/17 reasons=-
+WROTE /fast/scratch/hyaku/tabi-r33/CritMutC1Survivors/results.json

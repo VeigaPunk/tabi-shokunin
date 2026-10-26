@@ -581,3 +581,10 @@
     CritC1Axis found cheaper constructions it did not name (lesson round-33 M5) — a feasibility sentence is bounded by
     the attacks actually run, and says so. (source: corpus/lessons/round-33.md M1 and M5, routed defect 4;
     `.ufo/waves/round-33/claims.json` C1/C2 `feasibilityDisclosed`)
+
+91. An integrator who reverses a seat's screen-or-map decision records each reversal with its ground on the sibling's own
+    bytes, and a reversal that is load-bearing for a frozen target is attacked before the target is read; a map row whose
+    only sibling-side ground is a fact on the sibling's own side of an already-mapped split is a screen, whatever its
+    surface name. Red state: round 33's integration `042d6d9a` reads C1 predicate true with the kake:347 row and false
+    without it (`.ufo/waves/round-33/measure/c1-at-bf48b81.json`; `.ufo/waves/round-33/w2/CritC1Overrides.md`).
+    (source: corpus/lessons/round-33.md M6)

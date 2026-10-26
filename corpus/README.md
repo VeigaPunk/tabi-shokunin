@@ -784,3 +784,7 @@ Append-only. One knowledge row and one map file; no earlier line is edited.
   wire-truth parity (CDP's raw `ExtraInfo` header block and a byte-exact status line) is a fourth §3 gap
   (`webdriver-bidi-capability-matrix.md:84-86`), and the frontier row at `:735` already lists it as unmatched.
   (w2 CritReadmeLog F4.)
+
+## Round 33 — wave-2 correction (append-only)
+
+- `corpus/README.md:766`: correction — three new kake overlaps landed (JS rendering, robots.txt, accessibility execution); the crawl-rate row was withdrawn in wave 2 as a re-key of the mapped crawler split (lesson round-33 M6), and accessibility execution is held for accessible-tree capture only, assistive-technology runs being frontier (`SKILL.md` round-33 wave-2 corrections).

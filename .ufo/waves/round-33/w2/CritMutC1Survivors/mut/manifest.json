@@ -1,0 +1,46 @@
+{
+ "source": "/fast/scratch/hyaku/tabi-r33/CritMutC1Survivors/clone/scripts/check-bidi-runtime.mjs",
+ "sourceSha256": "62453b55e5e5de331ee6e8fdb3fa8b8ddbf3b43a7b6da944a9544b3af8deac75",
+ "mutants": {
+  "m11-driver-sha-not-compared": {
+   "path": "/fast/scratch/hyaku/tabi-r33/CritMutC1Survivors/mut/m11-driver-sha-not-compared.mjs",
+   "sha256": "8c801394fd9e199c577c2e99208ed5946f2b71927e8cedac783284252d5ad14c",
+   "from": "else if (sha256(drv) !== receiptObj.driverSha256) receiptFinding = `driver sha256 differs: ${receiptObj.driver}`;",
+   "to": "else if (false) receiptFinding = `driver sha256 differs: ${receiptObj.driver}`;"
+  },
+  "m06-ok-accepts-any-frame": {
+   "path": "/fast/scratch/hyaku/tabi-r33/CritMutC1Survivors/mut/m06-ok-accepts-any-frame.mjs",
+   "sha256": "c95c7823e6a05023567bfcc69ba64ba8be03b825bbdf4474d7c8eb510448d315",
+   "from": "const ok = (c) => c && c.response && c.response.type === \"success\";",
+   "to": "const ok = (c) => c && c.response;"
+  },
+  "m04-cdv-presence-only": {
+   "path": "/fast/scratch/hyaku/tabi-r33/CritMutC1Survivors/mut/m04-cdv-presence-only.mjs",
+   "sha256": "313c5e94dde130c839c78580aabc509cdf3201f538ebbe2efebe2d1fd3f84541",
+   "from": "else if (runs.some((r) => !cdv(r.rec)) || new Set(runs.map((r) => cdv(r.rec))).size !== 1) bindingFinding = \"chromedriverVersion absent or differs between runs\";",
+   "to": "else if (runs.some((r) => !cdv(r.rec))) bindingFinding = \"chromedriverVersion absent or differs between runs\";"
+  },
+  "m18-png-dims-unchecked": {
+   "path": "/fast/scratch/hyaku/tabi-r33/CritMutC1Survivors/mut/m18-png-dims-unchecked.mjs",
+   "sha256": "35f2b91951911a3f96e40d4ae7c24fbc07486b37cfdd54fe0d43f2eca337f5ef",
+   "from": "return shots.some((c) => { const s = pngSize(res(c).data); return s && s.width === VIEWPORT.width && s.height === VIEWPORT.height; }) ? null : \"screenshot is not a PNG of the pinned viewport\";",
+   "to": "return shots.some((c) => pngSize(res(c).data)) ? null : \"screenshot is not a PNG of the pinned viewport\";"
+  },
+  "m17a-r1-loopback-loosened": {
+   "path": "/fast/scratch/hyaku/tabi-r33/CritMutC1Survivors/mut/m17a-r1-loopback-loosened.mjs",
+   "sha256": "52b46cc3ac3dc2504bbd55ec636e5824b276100669711c4aea9664d229245091",
+   "from": "const WS_LOOPBACK = /^ws:\\/\\/(127\\.0\\.0\\.1|localhost):\\d+\\/session\\//;",
+   "to": "const WS_LOOPBACK = /^ws:\\/\\//;"
+  },
+  "m17b-sessionof-loopback-dropped": {
+   "path": "/fast/scratch/hyaku/tabi-r33/CritMutC1Survivors/mut/m17b-sessionof-loopback-dropped.mjs",
+   "sha256": "8f33557d6410c990bc8d5844e10292c146ca1ff0471a24a80e80dab3346de7d7",
+   "from": "  if (!WS_LOOPBACK.test(url)) return { why: `webSocketUrl is not a loopback ws session url: ${url}` };\n",
+   "to": ""
+  },
+  "m17c-both-loopback-dropped": {
+   "path": "/fast/scratch/hyaku/tabi-r33/CritMutC1Survivors/mut/m17c-both-loopback-dropped.mjs",
+   "sha256": "30740cbc9b67337b40ce3729cff38fbe696b197866e875bd2b5e3b1e0db8ee2c"
+  }
+ }
+}

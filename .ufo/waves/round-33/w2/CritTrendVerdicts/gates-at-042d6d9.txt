@@ -1,0 +1,39 @@
+### selfassessment
+$ node scripts/check-selfassessment.mjs --rev HEAD
+FINDING class=m4-nudge-state doc=SCORECARD.md line=1712 claimed=inactive observed=inactive
+SELFASSESSMENT verdict=clean rev=042d6d9abf97d567d495652a85eabc851b81adc1 mismatches=0 could_not_evaluate=115 superseded=41
+exit=0
+
+### sources
+$ node scripts/check-sources.mjs
+SOURCES_GATE verdict=clean rows=129 tiers=A:114,B:6,C:9 status=queued:15,mined:105,rejected:9 findings=0 file=corpus/SOURCES.md
+exit=0
+
+### gate-registry
+$ node scripts/check-gate-registry.mjs --rev HEAD
+GATE name=round-evidence-audit script=scripts/round-evidence-audit.mjs row=2477 rows=1 conformant
+GATE_REGISTRY verdict=clean rev=042d6d9abf97d567d495652a85eabc851b81adc1 rows=41 gates=22 nonconformant=0 findings=0
+exit=0
+
+### release-pins
+$ node scripts/check-release-pins.mjs --rev HEAD --stable 156.0.8078.47
+RELEASE_PINS verdict=clean rev=042d6d9abf97d567d495652a85eabc851b81adc1 stable=156.0.8078.47 population=23 resolved=23 unresolved=0 holds=16 drifted=7
+exit=0
+
+### bidi-selftest
+$ node scripts/check-bidi-runtime.mjs --selftest
+CASE id=refusal-no-entry-arg expected_exit=2 exit=2 expected_admitted=0 admitted=0 expected_population=- population=0 expected_reason=refused reason=refused PASS
+BIDI_RUNTIME_SELFTEST verdict=clean cases=44 passed=44
+exit=0
+
+### bidi-offline
+$ node scripts/check-bidi-runtime.mjs --rev HEAD --baseline d805d1d6132430118b206a848b85753ab35d1014 --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md
+ROW id=R17 line=83 measured=yes admitted
+BIDI_RUNTIME verdict=clean rev=042d6d9abf97d567d495652a85eabc851b81adc1 population=17 admitted=16 failing=0 unmeasured=1 distinct=16 live=false
+exit=0
+
+### adjacency
+$ node scripts/check-adjacency.mjs --at 042d6d9abf97d567d495652a85eabc851b81adc1 --fleet /home/vgpnk/Projects/shokunin
+ADJACENCY verdict=clean rows=14 verified=14
+exit=0
+

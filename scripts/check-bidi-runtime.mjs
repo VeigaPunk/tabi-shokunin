@@ -596,9 +596,13 @@ export async function liveRecord({ chromedriver = "chromedriver", chromium = "/u
   const home = join(scratch, "home");
   mkdirSync(join(home, ".config"), { recursive: true });
   mkdirSync(join(home, ".cache"), { recursive: true });
+  mkdirSync(join(home, ".local", "share"), { recursive: true });
+  mkdirSync(join(home, ".local", "state"), { recursive: true });
   const fx = await serveFixture();
   const port = await freePort();
-  const cd = spawn(chromedriver, [`--port=${port}`], { stdio: "ignore", env: { ...process.env, TMPDIR: chromeTmp, TMP: chromeTmp, TEMP: chromeTmp, HOME: home, XDG_CONFIG_HOME: join(home, ".config"), XDG_CACHE_HOME: join(home, ".cache") } });
+  // Round 33 (w2 SentinelLiveV2): XDG_DATA_HOME and XDG_STATE_HOME are redirected too — this host exports
+  // XDG_DATA_HOME under the real home, and chromium's NSS initialisation followed it there.
+  const cd = spawn(chromedriver, [`--port=${port}`], { stdio: "ignore", env: { ...process.env, TMPDIR: chromeTmp, TMP: chromeTmp, TEMP: chromeTmp, HOME: home, XDG_CONFIG_HOME: join(home, ".config"), XDG_CACHE_HOME: join(home, ".cache"), XDG_DATA_HOME: join(home, ".local", "share"), XDG_STATE_HOME: join(home, ".local", "state") } });
   const rec = { newSession: null, cmds: [], events: [] };
   let ws = null;
   let sessionId = null;

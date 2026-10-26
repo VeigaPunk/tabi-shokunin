@@ -335,3 +335,41 @@ R11 — seat outputs at drafting: `ls -d .ufo/waves/round-33/w1/ScribeSrc*` → 
 `row-S128.md`, `fetch-receipts.tsv`, `host-crosscheck.md`; `ScribeSrcSandbox/` holds `source-row-S129.md`,
 `receipts.tsv`.
 `ls corpus/adjacency-screen.tsv corpus/knowledge/bidi-runtime-gate-v2-round-33.md` → both absent.
+
+## Wave 2 — falsify (append-only)
+
+38 seats attacked the integration `042d6d9abf97d567d495652a85eabc851b81adc1` (`.ufo/waves/round-33/w2/`). Held: both
+frozen counters re-run independently (RerunC1, RerunC2: byte-identical readings, predicate true at `042d6d9a`), the
+census 126 → 129 (RerunCensus), the no-harm sweep 28/28 (RerunNoHarm), S127 and S129 re-opened byte-identical
+(ReopenS127, ReopenS129), the row `js-rendering-browser-execution` (CritRowJS), the 21 crawler-split screens
+(CritScreenCrawlerSplit, one low precision note at kake:411), the 11 new-surface screens (CritScreenRobotsCrawl), the
+four row mutants and nine mutation classes (MutC1Rows), no sibling ground absorbed (CritAdjacencyHarm), no lead
+contradicting a screen (ConnSiblingLeads), no sibling drift since the pins (ScoutSiblingDrift), the five round-32 MutC1
+survivors refused at the receipt level (CritMutC1Survivors), session-provenance forgeries with real-shaped ids refused
+(CritForgeV2A), causal separability and the frozen predicates as worded (CritClaimsAxes).
+
+Defects and their dispositions (each landed append-only in the integration that follows `042d6d9a`):
+
+| finding | severity | disposition |
+|---|---|---|
+| CritRowCrawlBudget, CritC1Overrides: row `crawl-budget-vs-client-crawl-thresholds` (kake:347) is a re-key of map row 6 — the kake line names no lane, w1 AdjKakeB had screened it, and the L1 promoted it | medium | **row withdrawn**; kake:347 and the four crawl-budget screens re-screened `same-surface` on `crawler-discipline-vs-publishing`. C1 then reads newMapped 3: **C1 fails its frozen target** (M6) |
+| CritC1Overrides: kake:304 restates the boundary row 6 maps; the screen→row reversals of kake:79 and kake:304 were not recorded | medium | recorded here; rows 13 (robots) and 14 (accessibility) kept — each kake line names or hands off to tabi (kake `PROVINCE.md:304`; kake `SKILL.md:559-560`); CritRowRobots held the robots overlap on substance |
+| CritRowA11y, CritDeclarations: the tabi declaration claims assistive-technology execution the lane disclaims; citation spans in bullets 1, 2, 4 | medium / moderate | `SKILL.md` round-33 wave-2 corrections of `:2887-2890` |
+| CritRegistryRow: round-33 registry row's clean predicate, verdict map (exit 3) and write scope did not match the code | medium | superseding registry row in `SKILL.md` round-33 wave-2 corrections |
+| SentinelLiveV2: live leg reached the real home through `XDG_DATA_HOME` | medium | gate redirects `XDG_DATA_HOME` and `XDG_STATE_HOME`; L1 strace re-run: 0 opens under `~/.pki`, `~/.local/share/pki`, `~/.config/chromium` |
+| CritForgeV2B (fabricated second run with fresh ids; allow-listed driver that never ran), CritForgeV2C (same-host junk Gate row passes s1) | limits / medium | recorded in the v2 note §8 as limits; not predicate changes |
+| CritV2Note F1, F2: §7 live reading without a receipt; sandbox citation | low | note §8; live receipt `measure/c2-live-at-*.json` committed |
+| CritCorrections a–e: freeze-before-data overstated for `measure-at-baseline/`, 44 attributed to the freeze, a census citation, a LOG errata count, a provenance description | medium / low | SCORECARD and LOG round-33 wave-2 corrections |
+| CritCorrections: no-harm leg read `check-selfassessment` mismatches 1 at `bf48b81c` | medium | the one-line correction in `042d6d9a`; the final measurement re-reads it at the measured revision |
+| CritS125Cadence: the recorded 90d reason does not discriminate S125 from the 30 `on-release` tag rows | moderate | accepted: the reason is withdrawn as a justification; S125 stays `90d` only until a second seat's 156 fetch lets draft-3 land (routed forward) |
+| ReopenS128: three locator/stamp precision defects | low | carried to the next registry curation (superseding row) |
+| CritScreenOthers: kake 396/422/440 better `same-surface` than `no-claim-declared` | low | carried; label-only, the counter treats both as accounted |
+| CritTrendVerdicts | — | read with the round report's verdicts |
+
+### Mistakes found by wave 2
+
+| # | class | evidence pointer | captured by | fix |
+|---|---|---|---|---|
+| M6 | `scope` | the L1 reversed three w1 screen decisions (kake:79, :304, :347) during integration; each reversal was load-bearing for newMapped 4, and kake:347's had no sibling-side ground (`.ufo/waves/round-33/w2/CritC1Overrides.md`, `CritRowCrawlBudget.md`) | none — the counter counts surface strings; no rule asked the integrator to record reversals | criterion 91; row 15 withdrawn, so the target is missed rather than met on an aimed row. Shown able to fail: the C1 counter at the integration with row 15 reads predicate true, without it false (`measure/c1-at-bf48b81.json` vs the final measurement) |
+| M7 | `vacuous` | the frozen C2 battery accepts a stub gate keyed on the battery's own commit subjects (`.ufo/waves/round-33/w1/CritC2Counter.md`) | none at the freeze; criterion 89 names the populations, not construction tells | next battery randomises variant subjects, paths and ids; this round's C2 reading is read beside v2's per-variant reason ids |
+| M8 | `scope` | the live leg's home isolation covered HOME and XDG config/cache but not XDG data/state (`.ufo/waves/round-33/w2/SentinelLiveV2.md`) | none | redirect added; the strace check is the red/green (w2 receipt red, L1 re-run 0 hits) |

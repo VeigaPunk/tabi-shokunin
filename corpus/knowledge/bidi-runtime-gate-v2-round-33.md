@@ -303,3 +303,21 @@ gate at the wave's no-harm pass untouched (claims C2 `noHarmRule`).
 - The lane measurement at the measured revision supersedes these scratch readings:
   `.ufo/waves/round-33/measure/c2-at-*.json`.
 
+
+## 8. Corrections and limits found by wave 2 (append-only)
+
+- §7 live bullet (`:298-302`): the integrated live reading quoted there had no committed receipt when written (w2
+  CritV2Note F1); the receipt is `.ufo/waves/round-33/measure/c2-live-at-*.json` at the measured revision. The sandbox
+  facts (setuid `chrome-sandbox`, `kernel.unprivileged_userns_clone=1`) are recorded in
+  `.ufo/waves/round-33/w1/ExecLiveLeg.md`, not in `sandbox-probe.txt` (CritV2Note F2).
+- Live-leg home isolation: w2 SentinelLiveV2 found chromium's NSS store still reaching the real home through
+  `XDG_DATA_HOME`; the gate now also redirects `XDG_DATA_HOME` and `XDG_STATE_HOME` into its scratch.
+- Survivors of v2 (limits, not predicate changes): a second run fabricated from a real transcript with fresh
+  real-shaped ids, and a driver importing only allow-listed symbols that never ran, are admitted offline and `--live`
+  (w2 CritForgeV2B); a junk `mined` row on the same host as a junk lesson Gate row with a made-up 64-hex digest passes
+  `s1-source-row` (w2 CritForgeV2C) — the rule checks the Gate row's shape, not a fetch. v2's provenance checks are
+  syntactic; the live leg re-tests every admitted row on a session the gate starts itself.
+- The frozen battery's predicate is satisfiable by a stub gate that refuses the battery's variants by its own commit
+  subject (`battery F<n>`) and prints honest counts otherwise (w1 CritC2Counter): the predicate shows v2 refuses F1–F8,
+  not how. That v2 refuses them by its rules is shown by its reason ids per variant (§7) and by w1 ExecGateV2's mutant
+  receipts (`mutants.json`), and the five round-32 survivors are refused at the receipt level (w2 CritMutC1Survivors).

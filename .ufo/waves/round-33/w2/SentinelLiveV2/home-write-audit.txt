@@ -1,0 +1,61 @@
+# write-intent openat under /home (O_WRONLY|O_RDWR|O_CREAT|O_TRUNC|O_APPEND)
+## run1 (run1/live.strace)
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/home/vgpnk/.local/share/pki/nssdb/cert9.db", O_RDWR|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0644) = 143</home/vgpnk/.local/share/pki/nssdb/cert9.db>
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/home/vgpnk/.local/share/pki/nssdb/key4.db", O_RDWR|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0644) = 145</home/vgpnk/.local/share/pki/nssdb/key4.db>
+## run3 (run3/live.strace)
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/home/vgpnk/.local/share/pki/nssdb/cert9.db", O_RDWR|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0644) = 143</home/vgpnk/.local/share/pki/nssdb/cert9.db>
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/home/vgpnk/.local/share/pki/nssdb/key4.db", O_RDWR|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0644) = 144</home/vgpnk/.local/share/pki/nssdb/key4.db>
+## run5 (run5/open.strace)
+
+## run1: every /home path touched, grouped by first two components
+    756 Projects/shokunin
+    332 .local/share
+    184 .config/git
+     65 .opencode/bin
+     65 .local/bin
+
+## run8: non-open syscalls naming /home (unlink/rename/rmdir)
+1804495 unlink("/home/vgpnk/.local/share/fonts/.uuid") = -1 ENOENT (No such file or directory)
+1804495 unlink("/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/CACHEDIR.TAG.TMP-JSb4FJ") = 0
+1804495 unlink("/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/CACHEDIR.TAG.NEW") = -1 ENOENT (No such file or directory)
+1804495 rename("/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/CACHEDIR.TAG.NEW", "/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/CACHEDIR.TAG") = 0
+1804495 unlink("/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/CACHEDIR.TAG.LCK") = 0
+1804495 unlink("/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/fd424b3ebba8b0ae917ff62fdc57f652-le64.cache-12.TMP-mRaBjU") = 0
+1804495 unlink("/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/fd424b3ebba8b0ae917ff62fdc57f652-le64.cache-12.NEW") = -1 ENOENT (No such file or directory)
+1804495 rename("/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/fd424b3ebba8b0ae917ff62fdc57f652-le64.cache-12.NEW", "/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/fd424b3ebba8b0ae917f
+1804495 unlink("/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/fd424b3ebba8b0ae917ff62fdc57f652-le64.cache-9") = -1 ENOENT (No such file or directory)
+1804495 unlink("/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/fd424b3ebba8b0ae917ff62fdc57f652-le64.cache-10") = -1 ENOENT (No such file or directory)
+1804495 unlink("/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/fd424b3ebba8b0ae917ff62fdc57f652-le64.cache-11") = -1 ENOENT (No such file or directory)
+1804495 unlink("/tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig/fd424b3ebba8b0ae917ff62fdc57f652-le64.cache-12.LCK") = 0
+1800040 unlinkat(27</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.config/chromium/Crash Reports>, "new", AT_REMOVEDIR) = 0
+1800040 unlinkat(27</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.config/chromium/Crash Reports>, "pending", AT_REMOVEDIR) = 0
+1800040 unlinkat(27</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.config/chromium/Crash Reports>, "completed", AT_REMOVEDIR) = 0
+1800040 unlinkat(27</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.config/chromium/Crash Reports>, "attachments", AT_REMOVEDIR) = 0
+1800040 unlinkat(27</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.config/chromium/Crash Reports>, "settings.dat", 0) = 0
+1800040 unlinkat(26</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.config/chromium>, "Crash Reports", AT_REMOVEDIR) = 0
+1800040 unlinkat(25</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.config>, "chromium", AT_REMOVEDIR) = 0
+1800040 unlinkat(26</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig>, "CACHEDIR.TAG", 0) = 0
+1800040 unlinkat(26</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig>, "fd424b3ebba8b0ae917ff62fdc57f652-le64.cache-12", 0) = 0
+1800040 unlinkat(26</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig>, "fd424b3ebba8b0ae917ff62fdc57f652-le64.cache-9", 0) = 0
+1800040 unlinkat(26</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig>, "fd424b3ebba8b0ae917ff62fdc57f652-le64.cache-10", 0) = 0
+1800040 unlinkat(26</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache/fontconfig>, "fd424b3ebba8b0ae917ff62fdc57f652-le64.cache-11", 0) = 0
+1800040 unlinkat(25</tmp/sv2y/tabi-bidi-live-iBhtzw/home/.cache>, "fontconfig", AT_REMOVEDIR) = 0
+
+## run5 (XDG_DATA_HOME and XDG_STATE_HOME unset): nssdb opens
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/pkcs11.txt", O_RDONLY) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/pkcs11.txt", O_RDONLY) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/pkcs11.txt", O_RDWR|O_CREAT|O_APPEND, 0600) = 143</tmp/sv2v/tabi-bidi-l
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/cert9.db", O_RDWR|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0644) = 143</tmp/sv2v/t
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/cert9.db-journal", O_RDWR|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0600) = 145</tm
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb", O_RDONLY|O_CLOEXEC) = 146</tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/key4.db", O_RDWR|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0644 <unfinished ...>
+<... openat resumed>)           = 145</tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/key4.db>
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/key4.db-journal", O_RDWR|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0600 <unfinished
+<... openat resumed>)           = 146</tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/key4.db-journal>
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb", O_RDONLY|O_CLOEXEC) = 148</tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/libnssckbi.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or direct
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/key4.db", O_RDWR|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0644) = 147</tmp/sv2v/ta
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb/key4.db-journal", O_RDWR|O_CREAT|O_NOFOLLOW|O_CLOEXEC, 0600) = 148</tmp
+openat(AT_FDCWD</fast/scratch/hyaku/tabi-r33/SentinelLiveV2/clone>, "/tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb", O_RDONLY|O_CLOEXEC) = 149</tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local
+openat(27</tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki>, "nssdb", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 28</tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb>
+openat(27</tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki>, "nssdb", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_DIRECTORY) = 28</tmp/sv2v/tabi-bidi-live-t9bNy1/home/.local/share/pki/nssdb>

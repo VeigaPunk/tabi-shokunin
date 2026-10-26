@@ -1,0 +1,27 @@
+# CritRowRobots receipts — 2026-10-26 (HYAKU_SCRATCH=/fast/scratch/hyaku)
+
+## clone (exit 0)
+$ git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone" && git -C "$S/clone" checkout -q --detach 042d6d9abf97d567d495652a85eabc851b81adc1
+042d6d9abf97d567d495652a85eabc851b81adc1
+
+## gate, json (exit 0)
+$ node clone/scripts/check-adjacency.mjs --at 042d6d9abf97d567d495652a85eabc851b81adc1 --repo "$PWD/clone" --fleet /home/vgpnk/Projects/shokunin --json
+{"schema":"tabi-adjacency-check-v1","mode":"check","map":"corpus/adjacency.tsv","repo":"/fast/scratch/hyaku/tabi-r33/CritRowRobots/clone","fleet":"/home/vgpnk/Projects/shokunin","at":"042d6d9abf97d567d495652a85eabc851b81adc1","verdict":"clean","rows":14,"verified":14,"selfRulings":[2],"tips":{"/home/vgpnk/Projects/shokunin/kaidoku-shokunin":"refs/heads/main","/home/vgpnk/Projects/shokunin/tabi-shokunin":"refs/heads/master","/home/vgpnk/Projects/shokunin/revenger-shokunin":"refs/heads/main","/home/vgpnk/Projects/shokunin":"refs/heads/master","/home/vgpnk/Projects/shokunin/kake-shokunin":"refs/heads/master","/home/vgpnk/Projects/shokunin/kagi-shokunin":"refs/heads/master","/home/vgpnk/Projects/shokunin/kumitate-shokunin":"refs/heads/master","/home/vgpnk/Projects/shokunin/kama-shokunin":"refs/heads/master"},"vocabulary":{"findings":["column_count","surface_empty","surface_charset","field_control_char","sibling_ref_invalid","sibling_unresolved","sibling_quote_absent","tabi_ref_invalid","tabi_unresolved","tabi_quote_absent","disposition_unknown","ruling_ref_invalid","ruling_unresolved","ruling_quote_absent","l0_line_absent","quote_too_long","quote_too_short","duplicate_row"],"couldNotEvaluate":["map_unreadable","map_schema_invalid","revision_unresolved","lane_tip_unresolved","git_failed","usage"]},"findings":[]}
+EXIT=0
+
+## gate, text (exit 0)
+ADJACENCY verdict=clean rows=14 verified=14
+EXIT=0
+
+## C1 frozen counter (exit 0)
+$ node clone/.ufo/waves/round-33/counters/c1-adjacency-sweep.mjs --repo "$PWD/clone" --fleet /home/vgpnk/Projects/shokunin --rev 042d6d9abf97d567d495652a85eabc851b81adc1
+C1_ADJACENCY_SWEEP predicate=met rev=042d6d9abf97d567d495652a85eabc851b81adc1 adjacency=clean candidates=52 mapped=9 screened=43 unaccounted=0 newMapped=4 screenFindings=0
+EXIT=0
+
+## tabi PROVINCE robots mention (exit 1 = none)
+0
+EXIT=1
+
+## no browser started by this seat
+1371 /usr/bin/earlyoom -r 3600 --avoid (^|/)(Hyprland|Xwayland|sddm|init|systemd|sshd|pipewire|wireplumber|waybar)$ --prefer (^|/)(java|node|chromium|python3?)$
+816841 curl -q -sS --proto =https -o /fast/scratch/hyaku/tabi-r33/RevLesson33/fetches/s128-pkgbuild -w %{http_code} https://gitlab.archlinux.org/archlinux/packaging/packages/chromium/-/raw/871c2ad960ad54af03579cb90a1c9656485ea598/PKGBUILD

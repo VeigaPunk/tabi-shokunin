@@ -1,0 +1,440 @@
+{
+ "seat": "CritMutC1Survivors",
+ "rev": "042d6d9abf97d567d495652a85eabc851b81adc1",
+ "baseline": "d805d1d6132430118b206a848b85753ab35d1014",
+ "entry": "corpus/knowledge/webdriver-bidi-runtime-round-32.md",
+ "gateSha256": "62453b55e5e5de331ee6e8fdb3fa8b8ddbf3b43a7b6da944a9544b3af8deac75",
+ "variants": {
+  "V0-honest": {
+   "commit": "042d6d9abf97d567d495652a85eabc851b81adc1",
+   "changedPaths": [],
+   "extra": null
+  },
+  "V1-m11-driver-sha-mismatch": {
+   "commit": "263021247d077aae4c7000a49b65fabde7a2d314",
+   "changedPaths": [
+    "M corpus/evidence/round-32/bidi/receipt.json"
+   ],
+   "extra": null
+  },
+  "V2-m06-error-frame-with-payload": {
+   "commit": "adfffbd202fd0511429f71949d544a8a7ed5516b",
+   "changedPaths": [
+    "M corpus/evidence/round-32/bidi/receipt.json",
+    " M corpus/evidence/round-32/bidi/run1/transcript.jsonl"
+   ],
+   "extra": {
+    "getTreeResponseType": "error",
+    "getTreeResultHasContexts": true
+   }
+  },
+  "V3-m04-cross-run-chromedriver": {
+   "commit": "a3caa59c17b6ef45bc618293050553e0582b0565",
+   "changedPaths": [
+    "M corpus/evidence/round-32/bidi/receipt.json",
+    " M corpus/evidence/round-32/bidi/run2/transcript.jsonl"
+   ],
+   "extra": null
+  },
+  "V4-m18-png-wrong-ihdr": {
+   "commit": "67e3c9a878e22053082d7cb87ac934325593e0cc",
+   "changedPaths": [
+    "M corpus/evidence/round-32/bidi/receipt.json",
+    " M corpus/evidence/round-32/bidi/run1/transcript.jsonl",
+    " M corpus/evidence/round-32/bidi/run2/transcript.jsonl"
+   ],
+   "extra": {
+    "pngBytes": 119,
+    "ihdrWidth": 100,
+    "ihdrHeight": 100,
+    "identicalAcrossRuns": "data identical, transcripts differ"
+   }
+  },
+  "V5-m17-ws-off-loopback": {
+   "commit": "37bcc2141ab5715e1fb1450413af0977d511eb15",
+   "changedPaths": [
+    "M corpus/evidence/round-32/bidi/receipt.json",
+    " M corpus/evidence/round-32/bidi/run1/transcript.jsonl",
+    " M corpus/evidence/round-32/bidi/run2/transcript.jsonl"
+   ],
+   "extra": {
+    "wsRun1": "ws://10.0.0.1:37279/session/10abbb479bdcc37a405098c5ea778bf0"
+   }
+  },
+  "V6-probe-gate-near-copy-driver": {
+   "commit": "23a16a4ba7fecebc2d3146c791c2af923cb3d2e9",
+   "changedPaths": [
+    "M corpus/evidence/round-32/bidi/receipt.json",
+    "?? corpus/evidence/round-32/bidi/near-copy-driver.mjs"
+   ],
+   "extra": null
+  }
+ },
+ "selftest": {
+  "pristine": {
+   "exit": 0,
+   "cases": 44,
+   "passed": 44,
+   "failed": []
+  },
+  "m11-driver-sha-not-compared": {
+   "exit": 3,
+   "cases": 44,
+   "passed": 43,
+   "failed": [
+    "v2-m11-driver-sha-differs"
+   ]
+  },
+  "m06-ok-accepts-any-frame": {
+   "exit": 3,
+   "cases": 44,
+   "passed": 43,
+   "failed": [
+    "v2-m06-error-frame-as-success"
+   ]
+  },
+  "m04-cdv-presence-only": {
+   "exit": 3,
+   "cases": 44,
+   "passed": 43,
+   "failed": [
+    "v2-m04-runs-chromedriver-differ"
+   ]
+  },
+  "m18-png-dims-unchecked": {
+   "exit": 3,
+   "cases": 44,
+   "passed": 43,
+   "failed": [
+    "v2-m18-png-wrong-dimensions"
+   ]
+  },
+  "m17a-r1-loopback-loosened": {
+   "exit": 3,
+   "cases": 44,
+   "passed": 43,
+   "failed": [
+    "v2-m17-ws-url-off-loopback"
+   ]
+  },
+  "m17b-sessionof-loopback-dropped": {
+   "exit": 3,
+   "cases": 44,
+   "passed": 43,
+   "failed": [
+    "v2-m17-ws-url-off-loopback"
+   ]
+  },
+  "m17c-both-loopback-dropped": {
+   "exit": 3,
+   "cases": 44,
+   "passed": 43,
+   "failed": [
+    "v2-m17-ws-url-off-loopback"
+   ]
+  }
+ },
+ "results": {
+  "V0-honest": {
+   "pristine": {
+    "exit": 0,
+    "admitted": 16,
+    "population": 17,
+    "failing": 0,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [],
+    "details": [],
+    "stderr": ""
+   }
+  },
+  "V1-m11-driver-sha-mismatch": {
+   "pristine": {
+    "exit": 1,
+    "admitted": 0,
+    "population": 17,
+    "failing": 16,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [
+     "t1-receipt"
+    ],
+    "details": [
+     "R1:driver sha256 differs: scripts/bidi-loopback-round32.mjs",
+     "R2:driver sha256 differs: scripts/bidi-loopback-round32.mjs",
+     "R3:driver sha256 differs: scripts/bidi-loopback-round32.mjs",
+     "R4:driver sha256 differs: scripts/bidi-loopback-round32.mjs"
+    ],
+    "stderr": ""
+   },
+   "m11-driver-sha-not-compared": {
+    "exit": 0,
+    "admitted": 16,
+    "population": 17,
+    "failing": 0,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [],
+    "details": [],
+    "stderr": ""
+   }
+  },
+  "V2-m06-error-frame-with-payload": {
+   "pristine": {
+    "exit": 1,
+    "admitted": 15,
+    "population": 17,
+    "failing": 1,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [
+     "t2-run"
+    ],
+    "details": [
+     "R2:run1: no getTree with contexts"
+    ],
+    "stderr": ""
+   },
+   "m06-ok-accepts-any-frame": {
+    "exit": 0,
+    "admitted": 16,
+    "population": 17,
+    "failing": 0,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [],
+    "details": [],
+    "stderr": ""
+   }
+  },
+  "V3-m04-cross-run-chromedriver": {
+   "pristine": {
+    "exit": 1,
+    "admitted": 0,
+    "population": 17,
+    "failing": 16,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": "chromedriverVersion absent or differs between runs",
+    "reasons": [
+     "t3-binding"
+    ],
+    "details": [
+     "R1:chromedriverVersion absent or differs between runs",
+     "R2:chromedriverVersion absent or differs between runs",
+     "R3:chromedriverVersion absent or differs between runs",
+     "R4:chromedriverVersion absent or differs between runs"
+    ],
+    "stderr": ""
+   },
+   "m04-cdv-presence-only": {
+    "exit": 0,
+    "admitted": 16,
+    "population": 17,
+    "failing": 0,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [],
+    "details": [],
+    "stderr": ""
+   }
+  },
+  "V4-m18-png-wrong-ihdr": {
+   "pristine": {
+    "exit": 1,
+    "admitted": 15,
+    "population": 17,
+    "failing": 1,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [
+     "t2-run"
+    ],
+    "details": [
+     "R4:run1: screenshot is not a PNG of the pinned viewport"
+    ],
+    "stderr": ""
+   },
+   "m18-png-dims-unchecked": {
+    "exit": 0,
+    "admitted": 16,
+    "population": 17,
+    "failing": 0,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [],
+    "details": [],
+    "stderr": ""
+   }
+  },
+  "V5-m17-ws-off-loopback": {
+   "pristine": {
+    "exit": 1,
+    "admitted": 0,
+    "population": 17,
+    "failing": 16,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [
+     "t1-receipt"
+    ],
+    "details": [
+     "R1:run1: webSocketUrl is not a loopback ws session url: ws://10.0.0.1:37279/session/10abbb479bdcc37a405098c5ea778bf0",
+     "R2:run1: webSocketUrl is not a loopback ws session url: ws://10.0.0.1:37279/session/10abbb479bdcc37a405098c5ea778bf0",
+     "R3:run1: webSocketUrl is not a loopback ws session url: ws://10.0.0.1:37279/session/10abbb479bdcc37a405098c5ea778bf0",
+     "R4:run1: webSocketUrl is not a loopback ws session url: ws://10.0.0.1:37279/session/10abbb479bdcc37a405098c5ea778bf0"
+    ],
+    "stderr": ""
+   },
+   "m17a-r1-loopback-loosened": {
+    "exit": 0,
+    "admitted": 16,
+    "population": 17,
+    "failing": 0,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [],
+    "details": [],
+    "stderr": ""
+   },
+   "m17b-sessionof-loopback-dropped": {
+    "exit": 1,
+    "admitted": 15,
+    "population": 17,
+    "failing": 1,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [
+     "t2-run"
+    ],
+    "details": [
+     "R1:run1: webSocketUrl not a loopback ws url"
+    ],
+    "stderr": ""
+   },
+   "m17c-both-loopback-dropped": {
+    "exit": 0,
+    "admitted": 16,
+    "population": 17,
+    "failing": 0,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [],
+    "details": [],
+    "stderr": ""
+   }
+  },
+  "V6-probe-gate-near-copy-driver": {
+   "pristine": {
+    "exit": 0,
+    "admitted": 16,
+    "population": 17,
+    "failing": 0,
+    "unmeasured": 1,
+    "entryFinding": null,
+    "binding": null,
+    "reasons": [],
+    "details": [],
+    "stderr": ""
+   }
+  }
+ },
+ "controls": {
+  "m11-driver-sha-not-compared": {
+   "exit": 0,
+   "admitted": 16,
+   "population": 17,
+   "failing": 0,
+   "unmeasured": 1,
+   "entryFinding": null,
+   "binding": null,
+   "reasons": [],
+   "details": [],
+   "stderr": ""
+  },
+  "m06-ok-accepts-any-frame": {
+   "exit": 0,
+   "admitted": 16,
+   "population": 17,
+   "failing": 0,
+   "unmeasured": 1,
+   "entryFinding": null,
+   "binding": null,
+   "reasons": [],
+   "details": [],
+   "stderr": ""
+  },
+  "m04-cdv-presence-only": {
+   "exit": 0,
+   "admitted": 16,
+   "population": 17,
+   "failing": 0,
+   "unmeasured": 1,
+   "entryFinding": null,
+   "binding": null,
+   "reasons": [],
+   "details": [],
+   "stderr": ""
+  },
+  "m18-png-dims-unchecked": {
+   "exit": 0,
+   "admitted": 16,
+   "population": 17,
+   "failing": 0,
+   "unmeasured": 1,
+   "entryFinding": null,
+   "binding": null,
+   "reasons": [],
+   "details": [],
+   "stderr": ""
+  },
+  "m17a-r1-loopback-loosened": {
+   "exit": 0,
+   "admitted": 16,
+   "population": 17,
+   "failing": 0,
+   "unmeasured": 1,
+   "entryFinding": null,
+   "binding": null,
+   "reasons": [],
+   "details": [],
+   "stderr": ""
+  },
+  "m17b-sessionof-loopback-dropped": {
+   "exit": 0,
+   "admitted": 16,
+   "population": 17,
+   "failing": 0,
+   "unmeasured": 1,
+   "entryFinding": null,
+   "binding": null,
+   "reasons": [],
+   "details": [],
+   "stderr": ""
+  },
+  "m17c-both-loopback-dropped": {
+   "exit": 0,
+   "admitted": 16,
+   "population": 17,
+   "failing": 0,
+   "unmeasured": 1,
+   "entryFinding": null,
+   "binding": null,
+   "reasons": [],
+   "details": [],
+   "stderr": ""
+  }
+ }
+}

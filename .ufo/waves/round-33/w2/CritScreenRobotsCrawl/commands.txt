@@ -1,0 +1,50 @@
+CritScreenRobotsCrawl — commands and exit codes (all runs 2026-10-26, lane read-only, scratch clone only)
+
+S=/fast/scratch/hyaku/tabi-r33/CritScreenRobotsCrawl
+D=$S/clone
+export TMPDIR=$S/tmp
+HYAKU_SCRATCH=/fast/scratch/hyaku
+
+# clone + pin the revision under test
+git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"                       exit 0
+git -C "$D" checkout -q --detach 042d6d9abf97d567d495652a85eabc851b81adc1                        exit 0
+git -C "$D" rev-parse --show-toplevel                                                            -> $D (toplevel_ok asserted before every commit)
+git -C "$D" rev-parse HEAD                                                                       -> 042d6d9abf97d567d495652a85eabc851b81adc1
+
+# worktree == evaluated revision for every lane file quoted in the report
+git show 042d6d9a:<f> | sha256sum  vs  sha256sum <f>, f in corpus/adjacency-screen.tsv,
+  corpus/adjacency.tsv, SKILL.md, corpus/lessons/round-33.md                                      all four same=YES
+sha256sum corpus/adjacency-screen.tsv -> a3ed0ad08f23566cbeea664a10c1fe5e0754aeb801eadab873556118e56950e1
+sha256sum corpus/adjacency.tsv        -> da1207ae6e2943fd7a2fcd3e377cb99a6f8bc459b35c804975e9ceb93dd96ea1
+
+# sibling pin is the kake tip and the pin is an ancestor of it
+git -C /home/vgpnk/Projects/shokunin/kake-shokunin rev-parse refs/heads/master                   -> 044048597d62f3199494b63b36e90dd57825e350
+git -C /home/vgpnk/Projects/shokunin/kake-shokunin merge-base --is-ancestor 0440485... refs/heads/master  exit 0
+
+# frozen counter at the revision under attack
+node .../round-33/counters/c1-adjacency-sweep.mjs --repo "$D" --fleet /home/vgpnk/Projects/shokunin \
+     --rev 042d6d9abf97d567d495652a85eabc851b81adc1 --json > counter-at-042d6d9a.json            exit 0
+  predicate true, candidates 52, mapped 9, screened 43, unaccounted 0, newMapped 4
+
+# map gate at the same revision (script read from the clone, frozen digest 4e2c2a64...)
+node "$D/scripts/check-adjacency.mjs" --at 042d6d9a... --repo "$D" --fleet /home/vgpnk/Projects/shokunin --json > gate-at-042d6d9a.json   exit 0
+  verdict clean, rows 14, verified 14, findings 0, selfRulings [2]
+
+# PROBE 1 — keep w1's coined js surface name on :23 and :60 (clone-only commit 4e20714efac9...)
+node .../c1-adjacency-sweep.mjs --repo "$D" --rev 4e20714e... --json > probe-coined-surface.json exit 1
+  predicate false, screened 41, unaccounted 2,
+  screenFindings row 7 and row 8: reason screen-surface-unmapped, detail "a-js-rendered-canonical-vs-browser-execution kake"
+
+# PROBE 2 — put kake:323 on crawler-discipline-vs-publishing (clone-only commit 88fcbfd2fcde...)
+node .../c1-adjacency-sweep.mjs --repo "$D" --rev 88fcbfd2... --json > probe-323-on-B.json        exit 0
+  predicate true, screened 43, unaccounted 0, newMapped 4, screenFindings []
+
+# both probe branches deleted; clone returned to the detached evaluated revision
+git -C "$D" checkout -q --detach 042d6d9a... ; git -C "$D" branch -D probe-coined ; -D probe-323    exit 0
+git -C "$D" rev-parse HEAD -> 042d6d9a... ; git -C "$D" status --porcelain | wc -l -> 0
+
+# screen-row quote checks (independent of the counter): verbatim substring at the frozen pin,
+# column count, word count, non-space count — 11/11 pass
+# kake bytes read with: git -C kake-shokunin cat-file blob 0440485...:PROVINCE.md
+
+# browsers: none started; pgrep -fa 'chromedriver|chromium' returned no line owned by this seat (rc=1, only host earlyoom argv matches filtered out)
