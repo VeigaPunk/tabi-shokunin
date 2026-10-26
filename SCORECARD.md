@@ -1956,3 +1956,46 @@ Tool installs (operator authorization 2026-10-19, official channel "release bina
 `14F26682D0916CDD81E37B6D61B7B526D98F0353`) into `~/.local/opt/firefox-158.0.1` + `~/.local/bin/firefox`; geckodriver
 0.37.1 (GitHub `mozilla/geckodriver` release, sha256 `e815130e…09f7e`; its `.asc` verifies Good but by a subkey Mozilla
 marks revoked — recorded, not trusted beyond the HTTPS release) into `~/.local/bin`. Reason: C2's second engine.
+
+## Round 35 — executed disposition
+
+Measured at `8de96c2986979112d4161b1961949db3258c26e8` (the wave-2 integration) in a clean clone with the frozen counter bytes taken
+from the freeze `a4bfef0f75027c915e715649950b1d46dcb33d83` (raw outputs `.ufo/waves/round-35/measure/*-at-8de96c2*`;
+`provenance-8de96c2.txt`: porcelain 0, both counter digests equal `claims.json` frozenDigests, `scripts/check-adjacency.mjs`
+and `scripts/check-bidi-runtime.mjs` equal their pins, Firefox `firefox-bin` sha256 `46e2c204…` and geckodriver sha256
+`f831b7e6…` equal the install receipts — QUALITY 99).
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency | `node .ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs --rev <REV> --json` | candidates 383; mapped 0 → 0, screened 0 → 383, unaccounted 383 → 0, newMapped 0 → 0, adjacency clean (16 rows); predicate false | **not met** — target newMapped >= 2 missed. Wave 1 drafted one row (kagi `SKILL.md:40`); wave 2 withdrew it (w2 CritRowKagiA against CritRowKagiB; recorded reversal) and eight attack seats found no screen that should map. Every one of the 383 lines is accounted. Adjacency 8 → 8 |
+| C2 coverage + capability (sourced: S134–S141) | `node .ufo/waves/round-35/counters/c2-firefox-bidi.mjs --rev <REV> --json` | population 0 → 17, admitted 0 → 16, failing 0 → 0, unmeasured 0 → 1 (R16), binding null, live session Firefox 158.0.1 / geckodriver 0.37.1 with first screenshot `7a3ae6a9…`; predicate true | **met** under the declared sentence (admitted 16 = the declared `>= 16`; the counter's frozen threshold is 14 — lesson M1, QUALITY 98). Recorded limits: a byte-cloned second run with rewritten ids passes (w2 MutDriverReceipt M2); caller-named fake binaries pass (M4; this reading's binary digests are pinned in provenance); the counter's own live leg is not loopback-only (M3). Coverage 9 → 9 (a second engine moves the BiDi runtime evidence from one implementation to two) |
+| depth, operability, freshness, calibration | — | no claim | unchanged; no-harm `measure/noharm-at-8de96c2.txt` 28 of 28 exit 0, `check-freshness --worktree` clean 34/34 (`measure/freshness-worktree-at-8de96c2.txt`; it was red at the w1 integration and repaired — lesson M5), `check-selfassessment` mismatches 0, round-33/34 C1 counters unaccounted 0 with screenFindings [], round-34 C2 counter killed 20, census exit 0 (`measure/census-end.txt`), `measure/numstat-at-8de96c2.txt` 0 deleted lines in the append-only files |
+
+### Capabilities — round 35
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| webdriver-bidi-runtime-firefox | Drive a WebDriver BiDi session on Firefox 158.0.1 through geckodriver 0.37.1 on this host (classic `webSocketUrl: true` handshake, headless, throwaway profile under `--profile-root`, free `--websocket-port` never the 9222 default, `network.dns.disabled` + `network.trr.mode 5` so a run measured 0 non-loopback sockets, `127.0.0.1` fixtures only) and record per-surface runtime evidence for the sixteen matrix §2 rows that have a BiDi command, two cold runs bound by identical first-screenshot bytes | `scripts/bidi-firefox-loopback-round35.mjs`; `corpus/evidence/round-35/bidi-firefox/receipt.json`; `corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md`; egress sample w2 SentinelDriverEgress; demonstration = the measured C2 run above | 35 |
+
+The row names the transport operation the shokunin runs, not the gate or counter that checks it (QUALITY 84); it is a
+separate row from round 32's Chromium row because the operation (geckodriver launch, Marionette-brokered BiDi socket,
+UUID identity grammar, DNS-off prefs) did not run on this host before this round (w2 CritCapabilityRow).
+
+### Round 35 — waves and seats
+
+Two v1 waves. W1 build + first falsifiers, 51 seats (35 scribe, 4 executor, 3 connector, 2 critic, 2 mutation-tester,
+2 scout, 2 reviewer, 1 sentinel); W2 falsify, 34 seats (16 critic, 7 reviewer, 6 scout, 2 connector, 2 mutation-tester,
+1 sentinel). Round total 85; no residual call; dead seats 0 (`w1-results.json` 51 of 51, `w2-results.json` 34 of 34
+non-empty outputs). The L1 holds the canonical planner seat; the planning data-walk rode w1 ConnRound.
+
+### Planned / saturation / retired — round 35
+
+- planned: adjacency — split the claim meter (w2 ConnAdjacencySaturation): completeness (every sibling line on the
+  lane's ground accounted, re-swept on sibling drift since the pins) and delta discovery (new rows only from sibling
+  commits after the pins); no fixed newMapped quota on a closed pool.
+- planned: operability — C2 counter amendment: threshold 16 with a boundary control (QUALITY 98), binary digests pinned
+  (QUALITY 99), DNS-off prefs in its live leg (QUALITY 100), per-run content binding against cloned runs (w2
+  MutDriverReceipt M2); a production-mode no-harm leg for every gate (QUALITY 101); S125 `on-release` with its four
+  companion files; calibration counter v4 still carried.
+- saturation 8 / window 3; the round-35 capability row `webdriver-bidi-runtime-firefox` restarts the window (round 36 =
+  position 1); no axis retired.

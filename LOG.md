@@ -2467,3 +2467,11 @@ cell fixes on S135/S136/S139/S141 (w2 Reopen*), driver and receipt unchanged. No
 `corpus/knowledge/browser-surface-census.md` withdrawn (it turned `check-freshness --worktree` red — w2 RevCorrections
 D1; lesson M5, QUALITY 101). Motivating evidence: `.ufo/waves/round-35/w2/CritRowKagiA.md`,
 `.ufo/waves/round-35/w2/RevCorrections.md`, `.ufo/waves/round-35/w2/MutDriverReceipt.md`.
+
+Round 35 disposition (2026-10-26), measured at `8de96c2986979112d4161b1961949db3258c26e8` with the frozen counters from `a4bfef0f75027c915e715649950b1d46dcb33d83`. C1 adjacency **not
+met** — unaccounted 383 → 0, newMapped 0 against the frozen target 2 (the one drafted row withdrawn in wave 2). C2
+coverage + capability **met** — Firefox 158.0.1 / geckodriver 0.37.1 hold all 16 matrix rows with a BiDi command
+(admitted 16, failing 0, binding null) on two committed runs and the counter's own live session; capability
+`webdriver-bidi-runtime-firefox` entered. No-harm: 28 of 28 offline gates and self-tests exit 0, `check-freshness
+--worktree` clean, `check-selfassessment` mismatches 0, census exit 0. Waves: w1 51, w2 34, total 85, dead 0.
+Re-verification: S134–S141 re-opened by w2 Reopen*, all hold with four cell fixes.
