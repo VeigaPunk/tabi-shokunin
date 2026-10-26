@@ -1,0 +1,41 @@
+# S096 fetch log — seat PinS096, round 29 wave w1, 2026-10-26 (UTC)
+
+# 1. decoded bytes, tag 154.0.8037.97
+$ curl -sS -o raw-154.0.8037.97.b64 -w 'tag=154.0.8037.97 http=%{http_code}\n' \
+    'https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT'
+tag=154.0.8037.97 http=200
+curl_exit=0
+
+# 2. decoded bytes, tag 156.0.8078.47
+$ curl -sS -o raw-156.0.8078.47.b64 -w 'tag=156.0.8078.47 http=%{http_code}\n' \
+    'https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT'
+tag=156.0.8078.47 http=200
+curl_exit=0
+
+# 3. base64 -d + sha256 + line counts (decoded bytes saved under bytes/<tag>/<path>)
+154.0.8037.97 sha256=8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916 lines=1740 bytes=68278
+156.0.8078.47 sha256=2a96a97bfb4246b7a23895be7548533ce7adc32286f10df36831e370f8f86102 lines=1761 bytes=69536
+
+# 4. tag refs (Gitiles ?format=JSON)
+$ curl -sS 'https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97?format=JSON'   -> http=200, commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d
+$ curl -sS 'https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47?format=JSON'   -> http=200, commit 1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775
+
+# 5. blob ids (Gitiles ?format=JSON on the file)
+154.0.8037.97 blob cd7efa45834bfce0697b06c7092f16d084c4eb55  (http=200)
+156.0.8078.47 blob b3611221ba58efc420f5fa627aa30b14a75b4a77  (http=200)
+
+# 6. range verdicts (scratch script cmp.mjs; normalized = trim + collapse inner whitespace, same rule as
+#    scripts/check-release-pins.mjs normLine/blockIn)
+$ node cmp.mjs ; exit=0
+range 174-328: hitsRaw=[] hitsNonEmpty=[]            -> drifted (no contiguous occurrence anywhere in 156)
+range 729-758: hitsRaw=[[767,796]]                   -> holds at 156:767-796
+range 818-842: hitsRaw=[[856,880]]                   -> holds at 156:856-880
+
+# 7. diffs
+$ diff -u bytes/154.0.8037.97/<path> bytes/156.0.8078.47/<path> > full-154-vs-156.diff ; diff_exit=1
+  8 hunks: @@ -123,6 +123,7 @@  @@ -197,6 +198,16 @@  @@ -359,6 +370,13 @@  @@ -465,6 +483,11 @@
+           @@ -515,6 +538,21 @@ @@ -1191,15 +1229,14 @@ @@ -1207,16 +1244,11 @@ @@ -1724,17 +1756,6 @@
+$ diff -u <154:170-335 with line prefixes> <156:171-350 with line prefixes> > region-174-328.diff ; diff_exit=1
+
+# 8. sub-range map at 156 (scratch script sub.mjs; exact block match, normalized)
+$ node sub.mjs ; exit=0   (full output in subrange-map.txt)

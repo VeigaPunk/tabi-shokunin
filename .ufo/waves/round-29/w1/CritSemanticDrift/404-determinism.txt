@@ -1,0 +1,37 @@
+# Gitiles 404 body is non-deterministic: request_id line varies per request
+
+## 154.0.8037.97 form_mcp_schema_unittest.cc (HTTP 404 each time)
+a4637049f8f81d81ef4de13c3580838b29290440eafd910df013b33a4febf017  nf/r154-1.bin
+bebca7e69a6c8757c2b4eafaa553c3e2215c9bf5504388f207e0c5001c818c34  nf/r154-2.bin
+c68555fb8ef025d34b4ba9694d81f52dd73623faf0922aa9a0a85c427e1def30  nf/r154-3.bin
+77a2a5f6f0a6fbfdfd6fdc7629c2c0bc16b7f4ddacf1c7d5dd8d659bbb818f27  nf/154.0.8037.97.404body
+
+## 156.0.8078.47 same path (HTTP 404 each time)
+b662d2baaa165f0dfde839676adb09eba7c25cd6faf62180dea880f2a0d765da  nf/r156-1.bin
+ec16cbcc11d721dea283cbc59629d4f693fec6f51ec57ac18858ba582af683d3  nf/r156-2.bin
+c3741cfed375e638f86588edca6952fb44512cd3fa24be120891a88dd33f8934  nf/r156-3.bin
+c693a07dcebdbaec1325de7c36b473d0c8ff48a2ed27970688f9bda802be6f04  nf/156.0.8078.47.404body
+
+## diff of two independent 156 fetches (only the request_id line differs)
+7c7
+< request_id: "1fd8d730786241bc8902672f74e72656"
+---
+> request_id: "e0e30a6c580042429df265e3b144b431"
+(diff exit 1)
+
+## body (233 bytes, cat -A)
+NOT_FOUND: Requested entity was not found$
+[type.googleapis.com/google.rpc.LocalizedMessage]$
+locale: "en-US"$
+message: "Object is not found"$
+$
+[type.googleapis.com/google.rpc.RequestInfo]$
+request_id: "bbda0809c39e4a838483297f968a8d9c"$
+$
+
+## S094 anchor records body sha256 9d640282763185d862683fc9f41bea0e42783725a1e344ff193e0cc05bdc8b19 - not reproduced by any fetch above
+
+## foreign-path 404 probe (third_party/blink/renderer/core/html/forms/does_not_exist_probe.cc at 156.0.8078.47)
+http=404 size=233
+12c9c2fb8644d65495d55eac18edb9bf15edbecbbd487c6e76835f6d673f753f  nf/other-path-404.bin
+committing this body under the cited S094 path still yields S094=holds (see s094-remedy-a-run.txt, remedy-a-otherpath)

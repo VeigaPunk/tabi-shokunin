@@ -615,3 +615,16 @@ MUST-NOT; the status-specific clause remains open for any future claim.
 
 Counting commands (2026-10-25): `ls corpus/knowledge/*.md | wc -l` → 46;
 `grep -cE '^\| S10[0-7] ' corpus/SOURCES.md` → 8.
+
+## Round 29 — Chromium 156 release-pin recheck (2026-10-26)
+
+Append-only. One knowledge row; no earlier line is edited.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/chromium-156-release-pin-recheck.md` *(round 29)* | The 23 on-release rows pinned at Chromium 154.0.8037.97 re-opened at Stable 156.0.8078.47: 16 hold, 7 drifted (superseded by S109–S115); new at 156 inside anchored ground: the declarative form tool's post-fill detached-document failure, ModelContext-dispatched `toolactivated`, `ScriptToolAnnotations.debugging`, `SelectOption` without the selectedcontent flag gate. Source-level only. | S108–S115; receipt `evidence/round-29/release-pins/` |
+
+| Frontier item | Status | Pointer |
+|---|---|---|
+| On-release source freshness (Chromium tag pins) | held at 156.0.8078.47 for the 23 tag-pinned rows; counter `scripts/check-release-pins.mjs` measures it; known counter weaknesses routed (lesson round-29 M4) | `corpus/lessons/round-29.md` |
+| Runtime behaviour on a 156 build | open — no 156 browser run; the post-fill detached-document arm is documented, not observed | `knowledge/chromium-156-release-pin-recheck.md` §Limits |

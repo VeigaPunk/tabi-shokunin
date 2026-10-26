@@ -1,0 +1,39 @@
+commit 5a286cc437a3d15d2692b5ebca8352036f22a3de
+Author: tabi-fixture <fixture@tabi.local>
+Date:   Mon Oct 26 01:50:29 2026 -0300
+
+    c2 dry run: append-only corrections (fixture commit, scratch clone)
+
+diff --git a/LOG.md b/LOG.md
+index 1fbe4e9..4b1349b 100644
+--- a/LOG.md
++++ b/LOG.md
+@@ -1985,3 +1985,9 @@ and 107 at exit; census command exited 0 at both boundaries. No row was
+ added, touched, or advanced. Source census warnings remained 16 W04 duplicate-URL
+ warnings. The S106 source was opened this round; S125 was freshly reopened and
+ remains rejected, with no row status change.
++
++- 2026-10-26 — **round 29 calibration correction (append-only).** At base
++  `97be89bc66139eb45526a04af59a35dccc006eb9` in a clean checkout, `node
++  scripts/check-freshness.mjs --self-test` measures `cases: 12`, exit 0; this
++  supersedes the eight-case figure recorded at `LOG.md:221`. The superseded
++  line stays standing as provenance, and no other LOG.md line is edited.
+diff --git a/SCORECARD.md b/SCORECARD.md
+index 5a3bd7e..aa73df3 100644
+--- a/SCORECARD.md
++++ b/SCORECARD.md
+@@ -1454,3 +1454,14 @@ rode connector/scout items. No residual calls.
+ 
+ - planned: freshness — re-verify on-release rows S104–S106 at the next browser-tag bump.
+ - capabilities unchanged; no axis retired; saturation 8 / window 3; stagnation nudge inactive.
++
++## Round 29 — corrections
++
++Append-only exact corrections, measured 2026-10-26 at base `97be89bc66139eb45526a04af59a35dccc006eb9` in a clean clone with the frozen counter (sha256 `7281280…560c4`). Each line names the gate whose own self-test is the oracle, states the observed tally in a recognised form, and cites the superseded line; the earlier lines stay standing as provenance.
++
++- `scripts/check-sources.mjs` `--self-test` measured 26 cases at the round-29 base; the twenty-five figure at `SCORECARD.md:410` is superseded.
++- `scripts/round-evidence-audit.mjs` `--selftest` (13/13) corrects the twelve figure at `SCORECARD.md:1138`.
++- `scripts/round-evidence-audit.mjs` `--selftest` (13/13) corrects the twelve figure at `SCORECARD.md:1139`.
++- `scripts/round-evidence-audit.mjs` `--selftest` (13/13) corrects the twelve figure at `SCORECARD.md:1151`.
++- `scripts/check-selfassessment.mjs` `--selftest` (22/22) corrects the seventeen figure at `SCORECARD.md:1439`.
++- `scripts/check-s106-evidence.mjs` `--selftest` (7/7) corrects the five-case figure at `SCORECARD.md:1438`; the gate's `CASES` table already holds seven ids including `measured-revision-bytes-match` and `measured-revision-bytes-mismatch`, so the repaired self-test prints `cases=7` once C1 lands.

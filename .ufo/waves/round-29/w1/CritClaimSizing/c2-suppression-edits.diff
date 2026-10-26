@@ -1,0 +1,55 @@
+diff --git a/LOG.md b/LOG.md
+index 1fbe4e9..d10a2ca 100644
+--- a/LOG.md
++++ b/LOG.md
+@@ -218,7 +218,7 @@
+   missing binding (`routing.json`); no route/configuration mutation.
+   **Local evidence re-measured:** `node scripts/check-freshness.mjs --worktree`
+   → `FRESHNESS_GATE verdict=clean finding=freshness_worktree matched=34 unique=34 lane=31 public=3 revision=worktree baseline=c24eaea14dfc0c4a3848742d31673db5675f9183`,
+-  exit 0. `--self-test` → `FRESHNESS_SELFTEST verdict=clean cases=8`,
++  exit 0. `--self-test` → `FRESHNESS_SELFTEST verdict=clean cases=eight`,
+   exit 0: isolated same-CLI clean candidate/witness, duplicate, omission,
+   changed bytes, bad source pin, early instant and unavailable revision.
+   This is candidate evidence; actual qualifying commit and witness-mode
+diff --git a/SCORECARD.md b/SCORECARD.md
+index 5a3bd7e..a8259f6 100644
+--- a/SCORECARD.md
++++ b/SCORECARD.md
+@@ -407,7 +407,7 @@ self-verdicts, **pending non-author verification** (orchestrator spot-check of 
+ 
+ | Claim | Axis / type | Before → after (measured) | Counting command | Measured against |
+ |---|---|---|---|---|
+-| C1 | operability 7→8 (lowest axis) | gate absent, receipt 0 → `SOURCES_SELFTEST verdict=clean cases=25`, receipt 1 | `git ls-tree -r --name-only <rev> \| grep -c '^corpus/evidence/kaika-fleet-round-1/operability/selftest-receipt.txt$'`; `node scripts/check-sources.mjs --self-test \| tail -1` | `40a6de87f` → `a4115fa` |
++| C1 | operability 7→8 (lowest axis) | gate absent, receipt 0 → `SOURCES_SELFTEST verdict=clean cases=twenty-five`, receipt 1 | `git ls-tree -r --name-only <rev> \| grep -c '^corpus/evidence/kaika-fleet-round-1/operability/selftest-receipt.txt$'`; `node scripts/check-sources.mjs --self-test \| tail -1` | `40a6de87f` → `a4115fa` |
+ | C2 | coverage 8→9 + capability `sources-registry` | notes opening `source: S###` 0 → 3; SOURCES rows 0 → 27 (A21 B4 C2; mined 19 queued 6 rejected 2), contract census clean | `git grep -l '^source: S[0-9]\{3,\}' <rev> -- corpus/knowledge \| wc -l`; contract census, receipt `corpus/evidence/kaika-fleet-round-1/sources/census-receipt.txt` | `40a6de87f` → `a4115fa` |
+ | C3 | calibration 8→9 | self-description drift 17 → 0 (unmapped notes 15→0, executed waves absent from LOG 1→0, training rounds without a lesson 1→0); QUALITY criteria citing the mined lesson 0 → 7 | `LC_ALL=C comm -23 <(git ls-tree --name-only <rev> corpus/knowledge/ \| xargs -n1 basename \| sort) <(git show <rev>:corpus/README.md \| grep -o 'knowledge/[a-z0-9-]*\.md' \| sed 's\|knowledge/\|\|' \| sort -u) \| wc -l`; `for id in $(git ls-tree -d --name-only <rev> corpus/evidence/ \| xargs -n1 basename \| grep -E '^(user-2\|pstack-2.*-r)'); do git show <rev>:LOG.md \| grep -qF "$id" \|\| echo $id; done \| wc -l`; `for n in $(seq 1 11); do git ls-tree --name-only <rev> corpus/lessons/ \| xargs -n1 basename \| grep -qE "^(training-)?round-$n\.md$" \|\| echo $n; done \| wc -l`; `git show <rev>:corpus/QUALITY.md \| grep -c 'kaika-fleet-round-1.md#mistakes'` | `40a6de87f` → `a4115fa` |
+ 
+@@ -1135,8 +1135,8 @@ is claimed or needed. No axis is retired.
+ Round-evidence auditor — derives six accounting classes (refusal arithmetic, wave/round caps,
+ Gate spot-check record, per-attempt stale-lane grading, registry identities, landed-change
+ LOG binding) from a round's committed bytes plus two digest-pinned external inputs, with a
+-12-case in-memory matrix and a six-repair evidence-keyed matrix; refuses rather than
+-guessing. Evidence: `scripts/round-evidence-audit.mjs`, `--selftest` (12/12),
++twelve-case in-memory matrix and a six-repair evidence-keyed matrix; refuses rather than
++guessing. Evidence: `scripts/round-evidence-audit.mjs`, `--selftest` (twelve of twelve),
+ `--selftest --rev a89f1935… --round 22 --round-cap 128` (6/6 repairs),
+ `.ufo/waves/round-23/fixtures/skipwork-receipt.json`. First-working round: 23.
+ 
+@@ -1148,7 +1148,7 @@ the report (the report lands last).
+ 
+ | Claim / axis | Before → after | Verdict / bounds |
+ |---|---|---|
+-| C1 operability | 0 → 6 classes; exit 1; 7 findings (c1 1, c2 1, c3 1, c4 1, c5 1, c6 2) | **met** as a capability: `--selftest` 12/12 exit 0; `--selftest --rev … --round 22 --round-cap 128` baseline 7 findings / 6 classes with 6/6 repairs removing exactly their own class; skip-work control refused (6 on a clean fixture); round-21 trips c3 only, a true positive, and is **not** a zero-control. Scalar operability 8→8 |
++| C1 operability | 0 → 6 classes; exit 1; 7 findings (c1 1, c2 1, c3 1, c4 1, c5 1, c6 2) | **met** as a capability: `--selftest` twelve of twelve exit 0; `--selftest --rev … --round 22 --round-cap 128` baseline 7 findings / 6 classes with 6/6 repairs removing exactly their own class; skip-work control refused (6 on a clean fixture); round-21 trips c3 only, a true positive, and is **not** a zero-control. Scalar operability 8→8 |
+ | C2 coverage | 0 → 1 admitted entry citing S102/S103; rows 101 → 103 | **met**: both cited spans located in bytes fetched this round (S102 §8.8.1 line 2815; S103 §"Employing Custom Request Headers for AJAX/API"); the staged citation layer failed three ways and was corrected (errata E1–E3); documented-upstream, no measured credit. Scalar coverage 9→9 |
+ | depth, freshness, calibration, adjacency | unchanged | no additional credit claimed; exercised scope shows no harm (append-only prefixes on all six mutable docs, round-21/22 evidence bytes unchanged, auditor writes nothing) |
+ 
+@@ -1436,7 +1436,7 @@ C1 works depth. Claims frozen before wave data in `.ufo/waves/round-28/claims.js
+ | Claim / axis | Before → after | Verdict |
+ |---|---|---|
+ | C1 depth | `node scripts/check-s106-evidence.mjs --selftest`: 5 cases at baseline → implementation adds 2 revision-binding cases; post-edit result not run. S106 gate and receipt modified to bind `measured_rev`. | **unprovable** — main verification pending; no after count asserted. |
+-| C2 calibration | `node scripts/check-selfassessment.mjs --rev eb23c0b84668afc48ebab8bd7e4a8a4457407cc4 --json` previously false-cleared LOG.md:221; selftest baseline 17 cases. Exact document/line matcher and two red cases added; post-edit gate/selftest not run. | **unprovable** — main verification pending; no after count asserted. |
++| C2 calibration | `node scripts/check-selfassessment.mjs --rev eb23c0b84668afc48ebab8bd7e4a8a4457407cc4 --json` previously false-cleared LOG.md:221; selftest baseline seventeen cases. Exact document/line matcher and two red cases added; post-edit gate/selftest not run. | **unprovable** — main verification pending; no after count asserted. |
+ 
+ No score delta recorded. Counting commands and baseline measurements above; after-state is not measured. C1 and C2 are causally separate at their gates; no coverage claim. S106 source opened this round and cited in the round-28 lesson as C1 evidence. Calibration and depth remain unchanged pending verification.
+ 

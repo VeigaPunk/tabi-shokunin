@@ -1,0 +1,32 @@
+S074 re-open at stable Chromium tag — fetch log (seat PinS074, 2026-10-26)
+Source: Gitiles commit_ish ?format=TEXT, base64 -d, read-only public GETs.
+
+Commands and results (each `curl` exit code is 0 unless shown):
+
+1) for T in 154.0.8037.97 156.0.8078.47; do
+     code=$(curl -sS -o "$S/$T.b64" -w '%{http_code}' \
+       "https://chromium.googlesource.com/chromium/src/+/refs/tags/$T/third_party/blink/renderer/platform/runtime_enabled_features.json5?format=TEXT")
+     base64 -d "$S/$T.b64" > bytes/$T/third_party/blink/renderer/platform/runtime_enabled_features.json5
+   done
+   154.0.8037.97 status=200 base64_bytes=310220 decoded_bytes=232665 lines=7428
+   156.0.8078.47 status=200 base64_bytes=321936 decoded_bytes=241452 lines=7634
+   curl exit=0, base64 exit=0
+
+2) sha256sum on the two decoded files (exit 0):
+   99b92e6776a5305543ab196a64128a11e2d4e86667e72e48787b05d45bcb1d2b  154.0.8037.97/.../runtime_enabled_features.json5
+   5314547c7c6a45a76286713423567efac7163de7b7d7b17018960ee3b7fe14b4  156.0.8078.47/.../runtime_enabled_features.json5
+
+3) Same-seat reproducibility re-GET (identical URL per tag, fresh scratch file, exit 0):
+   154.0.8037.97 status=200 sha=99b92e6776a5305543ab196a64128a11e2d4e86667e72e48787b05d45bcb1d2b  (identical)
+   156.0.8078.47 status=200 sha=5314547c7c6a45a76286713423567efac7163de7b7d7b17018960ee3b7fe14b4  (identical)
+   This is a same-seat re-get, NOT the independent refetch record the gate's f6-refetch
+   requires (that seat must differ from entry.fetched_by = PinS074); no
+   corpus/evidence/round-29/release-pins/refetch/S074.json is written by this seat.
+
+4) Registry digest check: row S074 anchor carries
+   sha256 99b92e6776a5305543ab196a64128a11e2d4e86667e72e48787b05d45bcb1d2b
+   -> equals the 154.0.8037.97 decoded sha256 (match, full 64 hex).
+
+Note: bytes are staged under this pin dir; entry.json names the canonical
+corpus/evidence/round-29/release-pins/bytes/<tag>/<path> locations that the
+receipt assembler must populate (this seat does not write corpus/).

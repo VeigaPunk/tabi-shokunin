@@ -1,0 +1,42 @@
+S105 registry row re-opened at Chromium tag 156.0.8078.47 — fetch log
+seat: PinS105   lane rev: 97be89bc66139eb45526a04af59a35dccc006eb9   date: 2026-10-26 (UTC)
+
+Row files enumerated (item step 1)
+  source cell URL: third_party/blink/public/devtools_protocol/domains/Page.pdl at refs/tags/154.0.8037.97
+  anchor-named basenames: none (the anchor names only in-file identifiers:
+    NavigationType, Page.frameNavigated.type, Page.backForwardCacheNotUsed,
+    notRestoredExplanations) -> one Chromium source file for this row.
+  anchor ranges, spelled as in the anchor: "decoded line 1345" -> 1345 (single line);
+    "decoded line 1706" -> 1706 (single line).
+
+Commands (exit codes shown)
+  $ P=third_party/blink/public/devtools_protocol/domains/Page.pdl
+  $ curl -sS -o "$S/$T.b64" -w '%{http_code}' \
+      "https://chromium.googlesource.com/chromium/src/+/refs/tags/$T/$P?format=TEXT"
+  tag=154.0.8037.97 http=200 b64bytes=82548
+  base64 -d -> decoded=61911  sha256=e944a3b19fa2c87b4ed0a84cca85b16b127618725394496ba046a2dfdf9405be
+  tag=156.0.8078.47 http=200 b64bytes=83876
+  base64 -d -> decoded=62905  sha256=9eb79e1b6747b462e908d54758474854064d42b8362097542708d11e8c407a11
+  exit=0 (whole loop; curl and base64 -d each returned 0)
+
+Byte files written (decoded, exact chromium path under each tag dir)
+  bytes/154.0.8037.97/third_party/blink/public/devtools_protocol/domains/Page.pdl  61911 B  e944a3b1...05be
+  bytes/156.0.8078.47/third_party/blink/public/devtools_protocol/domains/Page.pdl  62905 B  9eb79e1b...7a11
+
+Digest binding (item step 3)
+  row source+anchor carry sha256 e944a3b19fa2c87b4ed0a84cca85b16b127618725394496ba046a2dfdf9405be
+  -> MATCH with the 154.0.8037.97 decoded sha256 (full 64-hex equality).
+  Row byte count 61911 and base64 transfer 82548 also reproduce exactly.
+
+Range verdicts (item step 4) — independent re-implementation of the counter's
+normLine (trim + collapse inner whitespace) + contiguous-block search; blockcheck.txt
+  [1345,1345]  old line: "BackForwardCacheRestore"  -> holds, now at 156 line 1373
+  [1706,1706]  old line: "experimental event backForwardCacheNotUsed" -> holds, now at 156 line 1734
+  old line count 1795 by `wc -l` / 1796 by split("\n") (trailing newline), new 1823 by `wc -l` /
+  1824 by split("\n"); +28 line delta before the first anchor.
+  No range drifted -> no supersede row drafted (item step 6 is not triggered).
+
+Notes
+  - No 404 file in this row, so the absent-file rule is unused.
+  - f6-refetch for S105 must come from a seat other than PinS105
+    (corpus/evidence/round-29/release-pins/refetch/S105.json).

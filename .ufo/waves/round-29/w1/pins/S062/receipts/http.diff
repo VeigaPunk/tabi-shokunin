@@ -1,0 +1,162 @@
+--- bytes/154.0.8037.97/content/browser/devtools/devtools_http_handler.cc	2026-10-26 01:23:38.443773973 -0300
++++ bytes/156.0.8078.47/content/browser/devtools/devtools_http_handler.cc	2026-10-26 01:23:38.448569669 -0300
+@@ -25,6 +25,7 @@
+ #include "base/memory/ref_counted_memory.h"
+ #include "base/message_loop/message_pump_type.h"
+ #include "base/strings/escape.h"
++#include "base/strings/strcat.h"
+ #include "base/strings/string_number_conversions.h"
+ #include "base/strings/string_util.h"
+ #include "base/strings/string_view_util.h"
+@@ -57,6 +58,7 @@
+ #include "net/server/http_server_response_info.h"
+ #include "net/socket/server_socket.h"
+ #include "net/traffic_annotation/network_traffic_annotation.h"
++#include "url/origin.h"
+ #include "v8/include/v8-version-string.h"
+ 
+ #if BUILDFLAG(IS_ANDROID)
+@@ -87,6 +89,14 @@
+ const char kTargetDevtoolsFrontendUrlField[] = "devtoolsFrontendUrl";
+ const char kMissingGitRevision[] = "@0000000000000000000000000000000000000000";
+ 
++#if BUILDFLAG(IS_WIN)
++const char kNativeFilePathStyle[] = "windows";
++#elif BUILDFLAG(IS_POSIX) || BUILDFLAG(IS_FUCHSIA)
++const char kNativeFilePathStyle[] = "posix";
++#else
++#error Unsupported native file path style
++#endif
++
+ const int32_t kSendBufferSizeForDevTools = 256 * 1024 * 1024;  // 256Mb
+ const int32_t kReceiveBufferSizeForDevTools = 100 * 1024 * 1024;  // 100Mb
+ 
+@@ -233,7 +243,7 @@
+ void TerminateOnUI(std::unique_ptr<base::Thread> thread,
+                    std::unique_ptr<ServerWrapper> server_wrapper,
+                    std::unique_ptr<DevToolsSocketFactory> socket_factory) {
+-  DCHECK_CURRENTLY_ON(BrowserThread::UI);
++  CHECK_CURRENTLY_ON(BrowserThread::UI, base::NotFatalUntil::M159);
+   if (server_wrapper)
+     thread->task_runner()->DeleteSoon(FROM_HERE, std::move(server_wrapper));
+   if (socket_factory)
+@@ -251,7 +261,7 @@
+                        ServerWrapper* server_wrapper,
+                        DevToolsSocketFactory* socket_factory,
+                        std::unique_ptr<net::IPEndPoint> ip_address) {
+-  DCHECK_CURRENTLY_ON(BrowserThread::UI);
++  CHECK_CURRENTLY_ON(BrowserThread::UI, base::NotFatalUntil::M159);
+   if (handler && thread && server_wrapper) {
+     handler->ServerStarted(
+         std::move(thread), std::unique_ptr<ServerWrapper>(server_wrapper),
+@@ -272,7 +282,8 @@
+     const base::FilePath& debug_frontend_dir,
+     const std::string& browser_guid,
+     bool bundles_resources) {
+-  DCHECK(thread->task_runner()->BelongsToCurrentThread());
++  CHECK(thread->task_runner()->BelongsToCurrentThread(),
++        base::NotFatalUntil::M159);
+   std::unique_ptr<ServerWrapper> server_wrapper;
+   std::unique_ptr<net::ServerSocket> server_socket =
+       socket_factory->CreateForHttpServer();
+@@ -333,13 +344,13 @@
+         server_wrapper_(server_wrapper),
+         connection_id_(connection_id),
+         agent_host_(agent_host) {
+-    DCHECK_CURRENTLY_ON(BrowserThread::UI);
++    CHECK_CURRENTLY_ON(BrowserThread::UI, base::NotFatalUntil::M159);
+     // TODO(dgozman): handle return value of AttachClient.
+     agent_host_->AttachClient(this);
+   }
+ 
+   ~DevToolsAgentHostClientImpl() override {
+-    DCHECK_CURRENTLY_ON(BrowserThread::UI);
++    CHECK_CURRENTLY_ON(BrowserThread::UI, base::NotFatalUntil::M159);
+     if (agent_host_)
+       agent_host_->DetachClient(this);
+   }
+@@ -347,8 +358,8 @@
+   std::string GetTypeForMetrics() override { return "RemoteDebugger"; }
+ 
+   void AgentHostClosed(DevToolsAgentHost* agent_host) override {
+-    DCHECK_CURRENTLY_ON(BrowserThread::UI);
+-    DCHECK(agent_host == agent_host_.get());
++    CHECK_CURRENTLY_ON(BrowserThread::UI, base::NotFatalUntil::M159);
++    CHECK(agent_host == agent_host_.get(), base::NotFatalUntil::M159);
+ 
+     constexpr char kMsg[] =
+         "{\"method\":\"Inspector.detached\","
+@@ -364,8 +375,8 @@
+ 
+   void DispatchProtocolMessage(DevToolsAgentHost* agent_host,
+                                base::span<const uint8_t> message) override {
+-    DCHECK_CURRENTLY_ON(BrowserThread::UI);
+-    DCHECK(agent_host == agent_host_.get());
++    CHECK_CURRENTLY_ON(BrowserThread::UI, base::NotFatalUntil::M159);
++    CHECK(agent_host == agent_host_.get(), base::NotFatalUntil::M159);
+     task_runner_->PostTask(
+         FROM_HERE,
+         base::BindOnce(&ServerWrapper::SendOverWebSocket,
+@@ -374,7 +385,7 @@
+   }
+ 
+   void OnMessage(base::span<const uint8_t> message) {
+-    DCHECK_CURRENTLY_ON(BrowserThread::UI);
++    CHECK_CURRENTLY_ON(BrowserThread::UI, base::NotFatalUntil::M159);
+     if (agent_host_)
+       agent_host_->DispatchProtocolMessage(this, message);
+   }
+@@ -617,6 +628,7 @@
+     version.Set("Protocol-Version", DevToolsAgentHost::GetProtocolVersion());
+     version.Set("WebKit-Version", GetWebKitVersion());
+     version.Set("Browser", GetContentClient()->browser()->GetProduct());
++    version.Set("File-Path-Style", kNativeFilePathStyle);
+     version.Set("User-Agent", GetContentClient()->browser()->GetUserAgent());
+     version.Set("V8-Version", V8_VERSION_STRING);
+     std::string host = info.GetHeaderValue("host");
+@@ -696,6 +708,14 @@
+       return;
+     }
+ 
++    DevToolsManager* manager = DevToolsManager::GetInstance();
++    if (manager->delegate() &&
++        !manager->delegate()->AllowInspectingTarget(agent_host.get())) {
++      SendJson(connection_id, net::HTTP_FORBIDDEN, std::nullopt,
++               "Target is not inspectable");
++      return;
++    }
++
+     if (command == "activate") {
+       if (agent_host->Activate()) {
+         SendJson(connection_id, net::HTTP_OK, std::nullopt, "Target activated");
+@@ -814,8 +834,14 @@
+   if (!thread_)
+     return;
+ 
+-  if (request.headers.count("origin") &&
+-      !remote_allow_origins_.count(request.headers.at("origin")) &&
++  bool is_same_origin =
++      server_ip_address_ &&
++      url::Origin::Create(
++          GURL(base::StrCat({"http://", server_ip_address_->ToString()})))
++          .IsSameOriginWith(GURL(request.GetHeaderValue("origin")));
++  if (request.headers.count("origin") && !is_same_origin &&
++      !remote_allow_origins_.count(
++          base::ToLowerASCII(request.headers.at("origin"))) &&
+       !remote_allow_origins_.count("*")) {
+     const std::string& origin = request.headers.at("origin");
+     const std::string message = base::StringPrintf(
+@@ -873,6 +899,13 @@
+     return;
+   }
+ 
++  DevToolsManager* manager = DevToolsManager::GetInstance();
++  if (manager->delegate() &&
++      !manager->delegate()->AllowInspectingTarget(agent.get())) {
++    Send403(connection_id, "Target is not inspectable");
++    return;
++  }
++
+   connection_to_client_[connection_id] =
+       std::make_unique<DevToolsAgentHostClientImpl>(
+           thread_->task_runner(), server_wrapper_.get(), connection_id, agent);

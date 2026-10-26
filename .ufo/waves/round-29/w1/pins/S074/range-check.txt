@@ -1,0 +1,39 @@
+S074 range check — 154.0.8037.97 anchored ranges against 156.0.8078.47
+Method: the frozen counter's own predicate (scripts/check-release-pins.mjs normLine = trim + collapse inner
+whitespace runs to one space; blockIn = the old block's normalized lines occur as one contiguous run of new lines).
+
+File (only file the row cites; the row's source cell URL and its anchor basenames name no other file):
+  third_party/blink/renderer/platform/runtime_enabled_features.json5
+  154.0.8037.97 status 200, 7428 lines, sha256 99b92e6776a5305543ab196a64128a11e2d4e86667e72e48787b05d45bcb1d2b
+  156.0.8078.47 status 200, 7634 lines, sha256 5314547c7c6a45a76286713423567efac7163de7b7d7b17018960ee3b7fe14b4
+
+range [7023,7050]  (28 lines; anchor text "WebMCP block7023-7050")  VERDICT: holds
+  occurrence count in 156: 1
+  new location: lines 7204-7231 (uniform +181 shift)
+  `diff -u <(sed -n '7023,7050p' <154>) <(sed -n '7204,7231p' <156>)` -> exit 0, empty output (byte-identical block)
+  block first/last lines: 7023 `name: "WebMCP",` ... 7050 `},`
+
+range [7035,7035]  (1 line; anchor text "status7035")  VERDICT: holds
+  line 7035 (154) = `      status: "experimental",`  (the WebMCP block's own status)
+  new location: line 7216; `diff -u` of the single lines -> exit 0, empty output
+  normalized line `status: "experimental",` also occurs 295 other times in the 156 file; the gate's
+  first-match predicate is satisfied (and the anchored occurrence sits at 7216 inside 7204-7231).
+
+Whole-file context (not part of the range predicate, recorded for the recheck note):
+  diff 154 vs 156 -> 308 removed / 514 added lines; file grew 7428 -> 7634 lines.
+  `grep -n 'WebMCP\|DeclarativeWebmcp\|DeclarativeWebMCP' full.diff` -> no match (exit 1): nothing in the
+  WebMCP neighbourhood changed anywhere in the file, not merely inside the anchored ranges.
+  `grep -c 'DeclarativeWebmcp'` -> 0 at 154 and 0 at 156: the row's "this file lacks DeclarativeWebmcp"
+  survives verbatim at the new tag.
+  156 WebMCP feature names: 7204 WebMCP, 7219 WebMCPDeclarativeFileInput, 7225 WebMCPFormAssociatedCustomElements,
+  7229 WebMCPTesting — same four names, same statuses (experimental / test / experimental / experimental) and the
+  same implied_by list (WebMCPDeclarativeFileInput, WebMCPFormAssociatedCustomElements, WebMCPTesting).
+
+Row verdict: holds (every file holds, every range holds) -> no drifted row -> no superseding registry row and no
+per-knowledge-entry recheck note are required by item step 6 / the gate's s1-drift-unsuperseded condition.
+
+Gate conditions checked directly against the row's own cells:
+  f2-path-bound: source cell contains refs/tags/154.0.8037.97/third_party/blink/renderer/platform/runtime_enabled_features.json5
+  f4-ranges: anchorHasRange(anchor,7023,7050)=true, anchorHasRange(anchor,7035,7035)=true
+  f5-digest: row anchor carries 99b92e67...d45bcb1d2b = old_sha256 (match). CAVEAT: the frozen counter's
+    rowDigests() extracts nothing from this row (see report finding F-1), so f5 is vacuous for S074 in the gate.

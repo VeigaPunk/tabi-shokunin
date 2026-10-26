@@ -1,0 +1,41 @@
+S078 fetch log — PinS078, round 29 w1 (claim C3)
+
+Seat: PinS078
+Scratch: /fast/scratch/hyaku/tabi-r29/PinS078 (HYAKU_SCRATCH=/fast/scratch/hyaku)
+Path: third_party/blink/renderer/core/html/forms/html_form_element.cc (the only Chromium path row S078 cites)
+Ranges per anchor: 174-328 and 635-842 (154.0.8037.97 line numbers)
+
+## Fetches (Gitiles ?format=TEXT, base64 on 200)
+
+1) curl -sS -o old.b64 -w '%{http_code}' \
+     'https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT'
+   old_status=200   curl_exit=0
+2) curl -sS -o new.b64 -w '%{http_code}' \
+     'https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT'
+   new_status=200   curl_exit=0
+
+base64 -d old.b64 > old.cc ; base64 -d new.b64 > new.cc      exit=0 (both)
+wc -l: old.cc 1740 lines, new.cc 1761 lines
+
+## Digests
+
+base64 payload sha256
+  old.b64 ff55d51149ec4d3f320f43c2ea6a9a4d78798360f71e78d1f1df00c6ea6519ed
+  new.b64 b7a3fae87d610da26729b4d011bcacc7a3015dda74369b6a44e7cbf082686886
+
+decoded bytes sha256
+  154.0.8037.97 8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916
+  156.0.8078.47 2a96a97bfb4246b7a23895be7548533ce7adc32286f10df36831e370f8f86102
+
+Row S078 anchor records decoded sha256 8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916 ->
+matches the 154.0.8037.97 decoded sha256 (f5-digest satisfied).
+
+## Range verdicts (counter rule: each old line trimmed, inner whitespace collapsed, block contiguous in new)
+
+node blockIn replica over the decoded pairs:
+  range 174-328 len=155 hits=[]      holds=false (drifted)
+  range 635-842 len=208 hits=[673]   holds=true  (156.0.8078.47 lines 673-880)
+sed -n '635,842p' old.cc vs sed -n '673,880p' new.cc: cmp exit=0 (byte-identical)
+
+Focused diff of the drifted region: drift-174-328.diff (old 174-328 vs new 175-339, one +10 hunk).
+Split mapping for old 174-328: old 174-197 == new 175-198; inserted new 201-210; old 198-328 == new 209-339.

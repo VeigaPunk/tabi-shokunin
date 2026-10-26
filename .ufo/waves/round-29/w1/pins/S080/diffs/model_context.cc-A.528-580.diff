@@ -1,0 +1,29 @@
+--- 154.0.8037.97:third_party/blink/renderer/core/script_tools/model_context.cc:528-580
++++ 156.0.8078.47:third_party/blink/renderer/core/script_tools/model_context.cc:527-577
+@@ -1,4 +1,4 @@
+-bool ModelContext::ExecuteTool(const base::UnguessableToken& invocation_id,
++bool ModelContext::ExecuteTool(base::UnguessableToken invocation_id,
+                                const String& name,
+                                const String& input_arguments,
+                                ScriptToolExecutedCallback tool_executed_cb) {
+@@ -38,16 +38,14 @@
+                            std::move(tool_executed_cb));
+   }
+ 
+-  // Fire the `toolactivate` event *after* activating the tool, but potentially
++  // Fire the `toolactivated` event *after* activating the tool, but potentially
+   // *before* the tool call finishes. Importantly, if the tool is a declarative
+   // WebMCP tool, the form will be filled out synchronously above in
+   // ExecuteDeclarativeTool(), so by the time the event is fired, the form will
+   // be populated.
+-  if (LocalDOMWindow* window = document_->domWindow()) {
+-    // This is a synchronous, non-cancelable event.
+-    window->DispatchEvent(
+-        *WebMCPEvent::Create(event_type_names::kToolactivated, name));
+-  }
++  // This is a synchronous, non-cancelable event.
++  DispatchEvent(
++      *ToolActivatedEvent::Create(event_type_names::kToolactivated, name));
+ 
+   return success;
+ }

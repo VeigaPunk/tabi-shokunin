@@ -1,0 +1,76 @@
+# PinS098 fetch log — registry row S098 (`form_mcp_schema.cc`), tags 154.0.8037.97 → 156.0.8078.47
+# All commands run 2026-10-26 (UTC). Scratch: /fast/scratch/hyaku/tabi-r29/PinS098 (HYAKU_SCRATCH=/fast/scratch/hyaku).
+# Row source cell names exactly one Chromium path; the anchor names no basename beyond it
+# (`form_mcp_schema.h` appears only in the teaches cell, never in source/anchor).
+
+P=third_party/blink/renderer/core/html/forms/form_mcp_schema.cc
+
+# 1. primary fetch, both tags (Gitiles ?format=TEXT → base64 on 200)
+$ curl -sS -o "$S/<tag>.b64" -w '%{http_code}' \
+    "https://chromium.googlesource.com/chromium/src/+/refs/tags/<tag>/$P?format=TEXT"
+  154.0.8037.97  http=200  b64_bytes=68940  decoded=51703  lines=1440  sha256=904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f
+  156.0.8078.47  http=200  b64_bytes=68940  decoded=51703  lines=1440  sha256=904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f
+  exit=0
+$ base64 -d "$S/<tag>.b64" > bytes/<tag>/$P          # exit=0
+
+# 2. byte identity across tags
+$ cmp bytes/154.0.8037.97/$P bytes/156.0.8078.47/$P
+  cmp_exit=0                                          # no output: files identical
+$ sha256sum bytes/154.0.8037.97/$P bytes/156.0.8078.47/$P
+  904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f  .../154.0.8037.97/...
+  904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f  .../156.0.8078.47/...
+  exit=0
+
+# 3. second (independent, same seat) fetch, hashed in-stream
+$ curl -sS -o "$S/re-<tag>.b64" -w '%{http_code}' "<same URL>"
+  154.0.8037.97  http=200  sha256=904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f
+  156.0.8078.47  http=200  sha256=904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f
+  exit=0
+
+# 4. tag → commit resolution (row anchor claims commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d for 154)
+$ curl -sS -o "$S/tag-<tag>.json" -w '%{http_code}' \
+    "https://chromium.googlesource.com/chromium/src/+/refs/tags/<tag>?format=JSON"
+  154.0.8037.97  http=200  commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d  tree e096b0852a79…
+  156.0.8078.47  http=200  commit 1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775  tree f22c00b13ad2…
+  exit=0                                              # row's stated 154 commit confirmed
+
+# 5. row binding checks (node, counter semantics for f2/f4/f5)
+$ node -e '…S098 row cells…'
+  cells: 13 id: S098
+  anchorHasRange 491 928 true
+  anchorHasRange 583 583 true
+  row digests: [ "904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f" ]
+  digest match: true
+  header basename in source/anchor: false
+  path in source: true
+  exit=0
+
+# 6. range verdict
+$ node compare-ranges.mjs .                            # exit=0, see ranges-verdict.json
+  [491,928] holds → 156.0.8078.47 lines 491-928 (438-line block)
+  [583,583] holds → 156.0.8078.47 line 583
+  file_verdict: holds
+
+# 7. frozen counter against a scratch clone carrying only this entry
+$ git clone --shared -q <lane> "$S/dnclone.BWyK/clone"                        # exit=0
+$ git -C <clone> rev-parse --show-toplevel    # = /fast/scratch/hyaku/tabi-r29/PinS098/dnclone.BWyK/clone
+$ git -C <clone> commit … "fixture: S098 release-pin receipt"
+  222418e5d988a6d6d1ee527b87a8b7f7e3f49d28      # clone worktree clean after commit
+$ node scripts/check-release-pins.mjs --repo <clone> --rev HEAD --stable 156.0.8078.47 --json
+  counter_exit=1  population=23 unresolved=22 holds=1 drifted=0
+  {"id":"S098","resolved":true,"verdict":"holds","reasons":[]}                # f1..f6 + f5 digest all pass
+
+# 8. bytes at the resolved commit SHAs (tag-mapping independent)
+$ curl -sS -o "$S/c-<sha>.b64" -w '%{http_code}' \
+    "https://chromium.googlesource.com/chromium/src/+/<sha>/$P?format=TEXT"
+  b510e9d7cd3a2fbd78d0ddc42234103206c5f78d  http=200  sha256=904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f
+  1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775  http=200  sha256=904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f
+  exit=0
+
+# 9. round-19 retained body cross-check (advisory only, not a repair)
+$ zcat .ufo/waves/round-19/w2/SourceS077.body.gz | sha256sum
+  904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f  -   # 1440 lines
+  # the .gz container itself hashes df892e59a77a0e1574ee4ac43f592a31c5e863ce59a412206229180dbaf06097,
+  # so the round-19 dossier label "r19 gzip sha256 904b75e7…" names the decompressed body, not the gzip.
+
+# Verdict: file holds, both ranges hold, no drift, no superseding row required.

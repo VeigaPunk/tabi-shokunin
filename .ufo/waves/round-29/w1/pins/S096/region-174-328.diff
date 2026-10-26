@@ -1,0 +1,348 @@
+--- /dev/fd/63	2026-10-26 01:27:48.116445246 -0300
++++ /dev/fd/62	2026-10-26 01:27:48.116445246 -0300
+@@ -1,166 +1,180 @@
+-170|             ? active_webmcp_tool_->InvocationId()
+-171|             : std::nullopt;
+-172|}
+-173|
+-174|void HTMLFormElement::HTMLFormMcpTool::ExecuteTool(
+-175|    const base::UnguessableToken& invocation_id,
+-176|    String input_arguments,
+-177|    base::OnceCallback<void(McpToolCallbackResult)> done_callback) {
+-178|  invocation_id_ = invocation_id;
+-179|  UseCounter::Count(form_->GetDocument(),
+-180|                    WebFeature::kModelContextExecuteDeclarativeTool);
+-181|  bool require_submit_button =
+-182|      !form_->FastHasAttribute(html_names::kToolautosubmitAttr);
+-183|  if (!require_submit_button) {
+-184|    UseCounter::Count(form_->GetDocument(),
+-185|                      WebFeature::kModelContextExecuteDeclarativeAutosubmit);
+-186|  }
+-187|  HTMLFormControlElement* submit_button = nullptr;
+-188|
+-189|  std::optional<ScriptToolError> error;
+-190|  {
+-191|    CEReactionsScope reactions(form_->GetDocument().GetAgent().isolate());
+-192|    error = FillFormControls(input_arguments, require_submit_button,
+-193|                             &submit_button);
+-194|  }
+-195|
+-196|  if (error.has_value()) {
+-197|    return std::move(done_callback).Run(base::unexpected(error.value()));
+-198|  }
+-199|
+-200|  // Success. Now we can either submit the form or focus the submit button.
+-201|  // TODO(masonf): This should key off of the `autosubmit` attribute, and only
+-202|  // submit here if the attribute is present. Else it should just focus the
+-203|  // submit button and then signal the agent to allow user input again.
+-204|  is_currently_running_ = true;
+-205|  active_submit_button_ = submit_button;
+-206|  form_->PseudoStateChanged(CSSSelector::kPseudoToolFormActive);
+-207|  if (submit_button) {
+-208|    submit_button->PseudoStateChanged(CSSSelector::kPseudoToolSubmitActive);
++171|             ? active_webmcp_tool_->InvocationId()
++172|             : std::nullopt;
++173|}
++174|
++175|void HTMLFormElement::HTMLFormMcpTool::ExecuteTool(
++176|    const base::UnguessableToken& invocation_id,
++177|    String input_arguments,
++178|    base::OnceCallback<void(McpToolCallbackResult)> done_callback) {
++179|  invocation_id_ = invocation_id;
++180|  UseCounter::Count(form_->GetDocument(),
++181|                    WebFeature::kModelContextExecuteDeclarativeTool);
++182|  bool require_submit_button =
++183|      !form_->FastHasAttribute(html_names::kToolautosubmitAttr);
++184|  if (!require_submit_button) {
++185|    UseCounter::Count(form_->GetDocument(),
++186|                      WebFeature::kModelContextExecuteDeclarativeAutosubmit);
++187|  }
++188|  HTMLFormControlElement* submit_button = nullptr;
++189|
++190|  std::optional<ScriptToolError> error;
++191|  {
++192|    CEReactionsScope reactions(form_->GetDocument().GetAgent().isolate());
++193|    error = FillFormControls(input_arguments, require_submit_button,
++194|                             &submit_button);
++195|  }
++196|
++197|  if (error.has_value()) {
++198|    return std::move(done_callback).Run(base::unexpected(error.value()));
++199|  }
++200|
++201|  // Filling out the form controls dispatches `input` and `change` events,
++202|  // whose handlers may have detached the document.
++203|  if (!form_->GetDocument().IsActive()) {
++204|    return std::move(done_callback)
++205|        .Run(base::unexpected(
++206|            ScriptToolError(ScriptToolErrorCode::kToolInvocationFailed,
++207|                            "The document was detached while filling out "
++208|                            "the form")));
+ 209|  }
+-210|  done_callback_ = std::move(done_callback);
+-211|
+-212|  if (require_submit_button) {
+-213|    // Without `toolautosubmit`, we focus the submit button, tell the agent to
+-214|    // allow user input, and wait for the user to submit it.
+-215|    submit_button->Focus();
+-216|    auto* context = ModelContextSupplement::modelContext(form_->GetDocument());
+-217|    context->PauseExecution();
+-218|  } else {
+-219|    // With the `toolautosubmit` attribute, we immediately submit the form.
+-220|    form_->PrepareForSubmission(/*event*/ nullptr, submit_button);
+-221|  }
+-222|}
+-223|
+-224|void HTMLFormElement::HTMLFormMcpTool::CancelTool() {
+-225|  CHECK(is_currently_running_);
+-226|  CallDoneCallback(base::unexpected(
+-227|      ScriptToolError(ScriptToolErrorCode::kToolCancelled,
+-228|                      "Tool execution cancelled by abort signal")));
+-229|}
+-230|
+-231|std::optional<ScriptToolError>
+-232|HTMLFormElement::HTMLFormMcpTool::FillFormControls(
+-233|    const String& input_arguments,
+-234|    bool require_submit_button,
+-235|    HTMLFormControlElement** submit_button) {
+-236|  *submit_button = nullptr;
+-237|  std::unique_ptr<JSONValue> json = ParseJSON(input_arguments);
+-238|  if (!json) {
+-239|    return ScriptToolError(ScriptToolErrorCode::kInvalidInputArguments,
+-240|                           "Failed to parse input string as JSON");
+-241|  }
+-242|
+-243|  std::unique_ptr<JSONObject> json_obj = JSONObject::From(std::move(json));
+-244|  if (!json_obj) {
+-245|    return ScriptToolError(ScriptToolErrorCode::kInvalidInputArguments,
+-246|                           "JSON input arguments must be an object");
+-247|  }
+-248|
+-249|  FormMCPSchema mcp_schema(*form_);
+-250|  *submit_button = mcp_schema.SubmitButton();
+-251|  if (!*submit_button && require_submit_button) {
+-252|    return ScriptToolError(
+-253|        ScriptToolErrorCode::kMissingRequiredSubmitButton,
+-254|        "No submit button was found, but for a form without `toolautosubmit`, "
+-255|        "there must be a submit button");
+-256|  }
+-257|
+-258|  return mcp_schema.FillData(*json_obj);
+-259|}
+-260|
+-261|void HTMLFormElement::HTMLFormMcpTool::CallDoneCallback(
+-262|    McpToolCallbackResult result) {
+-263|  if (done_callback_.is_null()) {
+-264|    return;
+-265|  }
+-266|  std::move(done_callback_).Run(result);
+-267|  is_currently_running_ = false;
+-268|  auto old_submit_button = active_submit_button_;
+-269|  active_submit_button_ = nullptr;
+-270|  invocation_id_ = std::nullopt;
+-271|  form_->PseudoStateChanged(CSSSelector::kPseudoToolFormActive);
+-272|  if (old_submit_button) {
+-273|    old_submit_button->PseudoStateChanged(CSSSelector::kPseudoToolSubmitActive);
+-274|  }
+-275|}
+-276|
+-277|String HTMLFormElement::HTMLFormMcpTool::ComputeInputSchema() {
+-278|  FormMCPSchema mcp_schema(*form_);
+-279|  if (auto json = mcp_schema.ComputeJSON()) {
+-280|    return json->ToJSONString();
+-281|  }
+-282|  return "{}";
+-283|}
+-284|
+-285|void HTMLFormElement::HTMLFormMcpTool::Trace(Visitor* visitor) const {
+-286|  visitor->Trace(form_);
+-287|  visitor->Trace(active_submit_button_);
+-288|}
+-289|
+-290|void HTMLFormElement::HandleWebMcpToolResponse(HTMLFormMcpTool* tool,
+-291|                                               bool resolved,
+-292|                                               ScriptState* script_state,
+-293|                                               ScriptValue value) {
+-294|  CHECK(tool);
+-295|  if (!tool->CurrentlyRunning()) {
+-296|    return;
+-297|  }
+-298|  if (resolved) {
+-299|    String result;
+-300|    if (value.IsObject()) {
+-301|      v8::TryCatch try_catch(script_state->GetIsolate());
+-302|      v8::Local<v8::String> json_string;
+-303|      if (v8::JSON::Stringify(script_state->GetContext(), value.V8Value())
+-304|              .ToLocal(&json_string)) {
+-305|        result = ToBlinkString<String>(script_state->GetIsolate(), json_string,
+-306|                                       kDoNotExternalize);
+-307|      } else {
+-308|        tool->CallDoneCallback(base::unexpected(
+-309|            ScriptToolError(ScriptToolErrorCode::kToolInvocationFailed,
+-310|                            "respondWith promise resolved with an object that "
+-311|                            "could not be serialized to JSON")));
+-312|        return;
+-313|      }
+-314|    }
+-315|
+-316|    if (result.IsNull()) {
+-317|      value.ToString(result);
+-318|    }
+-319|    tool->CallDoneCallback(result);
+-320|  } else {
+-321|    // Promise rejected - error.
+-322|    V8ScriptRunner::ReportException(script_state->GetIsolate(),
+-323|                                    value.V8Value());
+-324|    tool->CallDoneCallback(base::unexpected(
+-325|        ScriptToolError(ScriptToolErrorCode::kToolInvocationFailed,
+-326|                        "respondWith promise was rejected")));
+-327|  }
+-328|}
+-329|
+-330|void HTMLFormElement::ReportInvalidMCPFormIssueIfNeeded(
+-331|    const String& name,
+-332|    const String& description) {
+-333|  if (!isConnected()) {
+-334|    return;
+-335|  }
++210|
++211|  // Success. Now we can either submit the form or focus the submit button.
++212|  // TODO(masonf): This should key off of the `autosubmit` attribute, and only
++213|  // submit here if the attribute is present. Else it should just focus the
++214|  // submit button and then signal the agent to allow user input again.
++215|  is_currently_running_ = true;
++216|  active_submit_button_ = submit_button;
++217|  form_->PseudoStateChanged(CSSSelector::kPseudoToolFormActive);
++218|  if (submit_button) {
++219|    submit_button->PseudoStateChanged(CSSSelector::kPseudoToolSubmitActive);
++220|  }
++221|  done_callback_ = std::move(done_callback);
++222|
++223|  if (require_submit_button) {
++224|    // Without `toolautosubmit`, we focus the submit button, tell the agent to
++225|    // allow user input, and wait for the user to submit it.
++226|    submit_button->Focus();
++227|    auto* context = ModelContextSupplement::modelContext(form_->GetDocument());
++228|    context->PauseExecution();
++229|  } else {
++230|    // With the `toolautosubmit` attribute, we immediately submit the form.
++231|    form_->PrepareForSubmission(/*event*/ nullptr, submit_button);
++232|  }
++233|}
++234|
++235|void HTMLFormElement::HTMLFormMcpTool::CancelTool() {
++236|  CHECK(is_currently_running_);
++237|  CallDoneCallback(base::unexpected(
++238|      ScriptToolError(ScriptToolErrorCode::kToolCancelled,
++239|                      "Tool execution cancelled by abort signal")));
++240|}
++241|
++242|std::optional<ScriptToolError>
++243|HTMLFormElement::HTMLFormMcpTool::FillFormControls(
++244|    const String& input_arguments,
++245|    bool require_submit_button,
++246|    HTMLFormControlElement** submit_button) {
++247|  *submit_button = nullptr;
++248|  std::unique_ptr<JSONValue> json = ParseJSON(input_arguments);
++249|  if (!json) {
++250|    return ScriptToolError(ScriptToolErrorCode::kInvalidInputArguments,
++251|                           "Failed to parse input string as JSON");
++252|  }
++253|
++254|  std::unique_ptr<JSONObject> json_obj = JSONObject::From(std::move(json));
++255|  if (!json_obj) {
++256|    return ScriptToolError(ScriptToolErrorCode::kInvalidInputArguments,
++257|                           "JSON input arguments must be an object");
++258|  }
++259|
++260|  FormMCPSchema mcp_schema(*form_);
++261|  *submit_button = mcp_schema.SubmitButton();
++262|  if (!*submit_button && require_submit_button) {
++263|    return ScriptToolError(
++264|        ScriptToolErrorCode::kMissingRequiredSubmitButton,
++265|        "No submit button was found, but for a form without `toolautosubmit`, "
++266|        "there must be a submit button");
++267|  }
++268|
++269|  return mcp_schema.FillData(*json_obj);
++270|}
++271|
++272|void HTMLFormElement::HTMLFormMcpTool::CallDoneCallback(
++273|    McpToolCallbackResult result) {
++274|  if (done_callback_.is_null()) {
++275|    return;
++276|  }
++277|  std::move(done_callback_).Run(result);
++278|  is_currently_running_ = false;
++279|  auto old_submit_button = active_submit_button_;
++280|  active_submit_button_ = nullptr;
++281|  invocation_id_ = std::nullopt;
++282|  form_->PseudoStateChanged(CSSSelector::kPseudoToolFormActive);
++283|  if (old_submit_button) {
++284|    old_submit_button->PseudoStateChanged(CSSSelector::kPseudoToolSubmitActive);
++285|  }
++286|}
++287|
++288|String HTMLFormElement::HTMLFormMcpTool::ComputeInputSchema() {
++289|  FormMCPSchema mcp_schema(*form_);
++290|  if (auto json = mcp_schema.ComputeJSON()) {
++291|    return json->ToJSONString();
++292|  }
++293|  return "{}";
++294|}
++295|
++296|void HTMLFormElement::HTMLFormMcpTool::Trace(Visitor* visitor) const {
++297|  visitor->Trace(form_);
++298|  visitor->Trace(active_submit_button_);
++299|}
++300|
++301|void HTMLFormElement::HandleWebMcpToolResponse(HTMLFormMcpTool* tool,
++302|                                               bool resolved,
++303|                                               ScriptState* script_state,
++304|                                               ScriptValue value) {
++305|  CHECK(tool);
++306|  if (!tool->CurrentlyRunning()) {
++307|    return;
++308|  }
++309|  if (resolved) {
++310|    String result;
++311|    if (value.IsObject()) {
++312|      v8::TryCatch try_catch(script_state->GetIsolate());
++313|      v8::Local<v8::String> json_string;
++314|      if (v8::JSON::Stringify(script_state->GetContext(), value.V8Value())
++315|              .ToLocal(&json_string)) {
++316|        result = ToBlinkString<String>(script_state->GetIsolate(), json_string,
++317|                                       kDoNotExternalize);
++318|      } else {
++319|        tool->CallDoneCallback(base::unexpected(
++320|            ScriptToolError(ScriptToolErrorCode::kToolInvocationFailed,
++321|                            "respondWith promise resolved with an object that "
++322|                            "could not be serialized to JSON")));
++323|        return;
++324|      }
++325|    }
++326|
++327|    if (result.IsNull()) {
++328|      value.ToString(result);
++329|    }
++330|    tool->CallDoneCallback(result);
++331|  } else {
++332|    // Promise rejected - error.
++333|    V8ScriptRunner::ReportException(script_state->GetIsolate(),
++334|                                    value.V8Value());
++335|    tool->CallDoneCallback(base::unexpected(
++336|        ScriptToolError(ScriptToolErrorCode::kToolInvocationFailed,
++337|                        "respondWith promise was rejected")));
++338|  }
++339|}
++340|
++341|void HTMLFormElement::ReportInvalidMCPFormIssueIfNeeded(
++342|    const String& name,
++343|    const String& description) {
++344|  if (!isConnected()) {
++345|    return;
++346|  }
++347|  if (name.empty()) {
++348|    AuditsIssue::ReportGenericIssue(
++349|        GetDocument().GetFrame(),
++350|        mojom::blink::GenericIssueErrorType::kFormModelContextMissingToolName,

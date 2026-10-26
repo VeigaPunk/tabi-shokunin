@@ -1,0 +1,246 @@
+--- 154.0.8037.97/third_party_blink_renderer_core_script_tools_model_context.cc	2026-10-26 01:52:43.644730138 -0300
++++ 156.0.8078.47/third_party_blink_renderer_core_script_tools_model_context.cc	2026-10-26 01:52:44.680383632 -0300
+@@ -8,6 +8,7 @@
+ #include "base/metrics/histogram_functions.h"
+ #include "base/task/single_thread_task_runner.h"
+ #include "base/time/time.h"
++#include "third_party/blink/public/common/script_tools/script_tool_utils.h"
+ #include "third_party/blink/public/platform/browser_interface_broker_proxy.h"
+ #include "third_party/blink/public/web/web_script_tool_types.h"
+ #include "third_party/blink/renderer/bindings/core/v8/capture_source_location.h"
+@@ -27,8 +28,10 @@
+ #include "third_party/blink/renderer/core/dom/document.h"
+ #include "third_party/blink/renderer/core/dom/events/event.h"
+ #include "third_party/blink/renderer/core/dom/scoped_abort_state.h"
++#include "third_party/blink/renderer/core/event_target_names.h"
+ #include "third_party/blink/renderer/core/event_type_names.h"
+-#include "third_party/blink/renderer/core/events/web_mcp_event.h"
++#include "third_party/blink/renderer/core/events/tool_activated_event.h"
++#include "third_party/blink/renderer/core/events/tool_cancel_event.h"
+ #include "third_party/blink/renderer/core/execution_context/agent.h"
+ #include "third_party/blink/renderer/core/execution_context/execution_context.h"
+ #include "third_party/blink/renderer/core/frame/local_dom_window.h"
+@@ -74,12 +77,19 @@
+ const char kDocumentDomainEnabledError[] =
+     "document.modelContext cannot be used when document.domain is enabled.";
+ 
+-String ValidateAndStringifyObject(ScriptState* script_state,
+-                                  ExceptionState& exception_state,
+-                                  const ScriptObject& input) {
++String ValidateAndStringifyValue(ScriptState* script_state,
++                                 ExceptionState& exception_state,
++                                 ScriptValue input,
++                                 const String& value_name) {
++  if (!input.V8Value()->IsObject()) {
++    exception_state.ThrowTypeError("invalid " + value_name +
++                                   ": value is not an object");
++    return String();
++  }
++
+   v8::Local<v8::String> value;
+   TryRethrowScope rethrow_scope(script_state->GetIsolate(), exception_state);
+-  if (!v8::JSON::Stringify(script_state->GetContext(), input.V8Object())
++  if (!v8::JSON::Stringify(script_state->GetContext(), input.V8Value())
+            .ToLocal(&value)) {
+     CHECK(rethrow_scope.HasCaught());
+     return String();
+@@ -97,28 +107,14 @@
+   // which the spec uses in
+   // https://webmachinelearning.github.io/webmcp/#dom-modelcontext-registertool.
+   if (result == "undefined") {
+-    exception_state.ThrowTypeError(
+-        "invalid input schema: toJSON() returns undefined");
++    exception_state.ThrowTypeError("invalid " + value_name +
++                                   ": toJSON() returns undefined");
+     return String();
+   }
+ 
+   return result;
+ }
+ 
+-bool IsValidToolName(const String& name) {
+-  if (name.empty() || name.length() > 128) {
+-    return false;
+-  }
+-  for (wtf_size_t i = 0; i < name.length(); ++i) {
+-    UChar c = name[i];
+-    if (!IsAsciiAlphanumeric(c) && c != '_' && c != '-' && c != '.') {
+-      return false;
+-    }
+-  }
+-
+-  return true;
+-}
+-
+ ScriptObject JSONStringToScriptObject(ScriptState* script_state,
+                                       const String& json_string) {
+   v8::Local<v8::String> v8_json_string =
+@@ -380,7 +376,7 @@
+                                            "Duplicate tool name"));
+   }
+ 
+-  if (!IsValidToolName(tool->name())) {
++  if (!IsValidScriptToolName(tool->name().Utf8())) {
+     return ScriptPromise<IDLUndefined>::RejectWithDOMException(
+         script_state,
+         MakeGarbageCollected<DOMException>(DOMExceptionCode::kInvalidStateError,
+@@ -396,11 +392,11 @@
+ 
+   String input_schema;
+   if (tool->hasInputSchema()) {
+-    ExceptionState exception_state(script_state->GetIsolate());
+-    input_schema = ValidateAndStringifyObject(script_state, exception_state,
+-                                              tool->inputSchema());
++    input_schema = ValidateAndStringifyValue(
++        script_state, PassThroughException(script_state->GetIsolate()),
++        tool->inputSchema(), "input schema");
+     if (!input_schema) {
+-      // Exception already thrown by ValidateAndStringifyObject
++      // Exception already thrown by ValidateAndStringifyValue.
+       return EmptyPromise();
+     }
+   }
+@@ -463,6 +459,8 @@
+     CHECK(tool->annotations()->hasConsequentialHint());
+     script_tool->annotations->consequential =
+         tool->annotations()->consequentialHint();
++    CHECK(tool->annotations()->hasDebugging());
++    script_tool->annotations->debugging = tool->annotations()->debugging();
+   }
+ 
+   auto* tool_data = MakeGarbageCollected<ToolData>(
+@@ -511,6 +509,7 @@
+     declaration.read_only = script_tool.annotations->read_only;
+     declaration.untrusted_content = script_tool.annotations->untrusted_content;
+     declaration.consequential = script_tool.annotations->consequential;
++    declaration.debugging = script_tool.annotations->debugging;
+   }
+   return declaration;
+ }
+@@ -525,7 +524,7 @@
+       blink::BindOnce(std::move(callback), base::unexpected(std::move(error))));
+ }
+ 
+-bool ModelContext::ExecuteTool(const base::UnguessableToken& invocation_id,
++bool ModelContext::ExecuteTool(base::UnguessableToken invocation_id,
+                                const String& name,
+                                const String& input_arguments,
+                                ScriptToolExecutedCallback tool_executed_cb) {
+@@ -565,21 +564,19 @@
+                            std::move(tool_executed_cb));
+   }
+ 
+-  // Fire the `toolactivate` event *after* activating the tool, but potentially
++  // Fire the `toolactivated` event *after* activating the tool, but potentially
+   // *before* the tool call finishes. Importantly, if the tool is a declarative
+   // WebMCP tool, the form will be filled out synchronously above in
+   // ExecuteDeclarativeTool(), so by the time the event is fired, the form will
+   // be populated.
+-  if (LocalDOMWindow* window = document_->domWindow()) {
+-    // This is a synchronous, non-cancelable event.
+-    window->DispatchEvent(
+-        *WebMCPEvent::Create(event_type_names::kToolactivated, name));
+-  }
++  // This is a synchronous, non-cancelable event.
++  DispatchEvent(
++      *ToolActivatedEvent::Create(event_type_names::kToolactivated, name));
+ 
+   return success;
+ }
+ 
+-bool ModelContext::CancelTool(const base::UnguessableToken& invocation_id) {
++bool ModelContext::CancelTool(base::UnguessableToken invocation_id) {
+   CHECK(document_->IsActive());
+ 
+   // It's possible for `invocation_id` to not match any pending execution, for
+@@ -641,10 +638,9 @@
+   }
+ 
+   // Dispatch the synchronous toolcancel event for both types of tools.
+-  if (LocalDOMWindow* window = document_->domWindow()) {
+-    window->DispatchEvent(
+-        *WebMCPEvent::Create(event_type_names::kToolcancel, tool_name));
+-  }
++  DispatchEvent(
++      *ToolCancelEvent::Create(event_type_names::kToolcancel, tool_name));
++
+   return true;
+ }
+ 
+@@ -694,7 +690,7 @@
+ //     but respondWith() isn't called, an error is reported back to the agent.)
+ void ModelContext::ExecuteDeclarativeTool(
+     DeclarativeWebMCPTool* tool,
+-    const base::UnguessableToken& invocation_id,
++    base::UnguessableToken invocation_id,
+     const String& input_arguments,
+     AbortController* abort_controller,
+     ScriptToolExecutedCallback tool_executed_cb) {
+@@ -750,7 +746,7 @@
+ // waits for the promise to resolve, JSON-stringifies the result, and passes
+ // it to OnToolExecuted().
+ bool ModelContext::ExecuteV8Tool(V8ToolExecuteCallback* tool_function,
+-                                 const base::UnguessableToken& invocation_id,
++                                 base::UnguessableToken invocation_id,
+                                  const String& name,
+                                  const String& input_arguments,
+                                  AbortController* abort_controller,
+@@ -831,6 +827,9 @@
+ 
+   // TODO(https://crbug.com/509983792): Surface an error if the tool's name is
+   // not valid.
++  if (!IsValidScriptToolName(declarative_tool->ToolName().Utf8())) {
++    return;
++  }
+   UseCounter::Count(document_,
+                     WebFeature::kModelContextRegisterDeclarativeTool);
+ 
+@@ -1041,13 +1040,23 @@
+     result->setTitle(t->title);
+     result->setDescription(t->description);
+     if (!t->input_schema.IsNull()) {
+-      result->setInputSchema(t->input_schema);
++      ScriptState* script_state = resolver->GetScriptState();
++      ScriptState::Scope scope(script_state);
++      v8::TryCatch try_catch(script_state->GetIsolate());
++      auto script_object =
++          JSONStringToScriptObject(script_state, t->input_schema);
++      ScriptValue script_value = script_object;
++      if (try_catch.HasCaught() || script_value.IsEmpty()) {
++        continue;
++      }
++      result->setInputSchema(script_object);
+     }
+     if (t->annotations) {
+       auto* annotations = ToolAnnotations::Create();
+       annotations->setReadOnlyHint(t->annotations->read_only);
+       annotations->setUntrustedContentHint(t->annotations->untrusted_content);
+       annotations->setConsequentialHint(t->annotations->consequential);
++      annotations->setDebugging(t->annotations->debugging);
+       result->setAnnotations(annotations);
+     }
+ 
+@@ -1071,7 +1080,7 @@
+ ScriptPromise<IDLNullable<IDLString>> ModelContext::executeTool(
+     ScriptState* script_state,
+     RegisteredTool* tool,
+-    String input_arguments,
++    ScriptValue input_object,
+     const ExecuteToolOptions* options) {
+   if (!document_->IsActive()) {
+     return ScriptPromise<IDLNullable<IDLString>>::RejectWithDOMException(
+@@ -1114,6 +1123,14 @@
+                           "an opaque origin."));
+   }
+ 
++  String input_arguments = ValidateAndStringifyValue(
++      script_state, PassThroughException(script_state->GetIsolate()),
++      input_object, "input object");
++  if (!input_arguments) {
++    // Exception already thrown by ValidateAndStringifyValue.
++    return EmptyPromise();
++  }
++
+   auto* resolver =
+       MakeGarbageCollected<ScriptPromiseResolver<IDLNullable<IDLString>>>(
+           script_state);

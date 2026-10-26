@@ -1,0 +1,33 @@
+S081 fetch log — seat PinS081 — 2026-10-26T04:26Z (UTC)
+
+Row under test: corpus/SOURCES.md:95 (S081), anchor `html_select_element.cc:291-347, 871-887, 1047-1108, 1162-1184, 180-210`
+Chromium path (from the row's source URL): third_party/blink/renderer/core/html/forms/html_select_element.cc
+Other files named in the row: the anchor names no second basename. The teaches cell names
+`form_mcp_schema.cc` only to hand caller-side validation to S071 (its own row's file); it is not
+an S081 anchor target and was not fetched here.
+
+Commands (scratch $S=/fast/scratch/hyaku/tabi-r29/PinS081):
+
+1) curl -sS -w '%{http_code}' \
+     'https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_select_element.cc?format=TEXT'
+   -> http=200, base64 body 115240 bytes  (exit 0)
+   base64 -d -> 86429 bytes, 2414 lines
+   sha256 c7498d99eac696cb2ce8a0993080c0492ad7accbaf4b689c21cc10379908d19e
+
+2) same URL with refs/tags/156.0.8078.47/
+   -> http=200, base64 body 114192 bytes  (exit 0)
+   base64 -d -> 85642 bytes, 2389 lines
+   sha256 6fff11afc90ef8421468d4df1fc811895930c3c64989c83dfdc0ae71c35dfea9
+
+3) curl -sS 'https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97?format=JSON'
+   -> http=200, commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d (matches the row's anchor commit cell)
+
+4) curl -sS 'https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47?format=JSON'
+   -> http=200, commit 1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775
+
+5) gzip -dc .ufo/waves/round-19/w2/SourceS081.body.gz | sha256sum   (exit 0)
+   -> c7498d99eac696cb2ce8a0993080c0492ad7accbaf4b689c21cc10379908d19e, 86429 bytes
+   i.e. an earlier seat's retained round-19 body reproduces this fetch byte-for-byte.
+
+Bodies written (decoded bytes, exact chromium path) under
+.ufo/waves/round-29/w1/pins/S081/bytes/<tag>/third_party/blink/renderer/core/html/forms/html_select_element.cc

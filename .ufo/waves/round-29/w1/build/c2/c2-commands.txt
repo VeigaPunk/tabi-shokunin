@@ -1,0 +1,38 @@
+# C2 dry-run — commands actually run (scratch: /fast/scratch/hyaku/tabi-r29/ExecC2DryRun)
+# C = $S/lane  (git clone --shared of the lane, checked out at 97be89bc66139eb45526a04af59a35dccc006eb9)
+# TMPDIR=$S/tmp for every gate run (gates mkdtemp under TMPDIR)
+
+01  cd $S && git clone -q --shared /home/vgpnk/Projects/shokunin/tabi-shokunin lane
+02  git -C $S/lane checkout -q 97be89bc66139eb45526a04af59a35dccc006eb9        # exit 0; HEAD=97be89b; status --porcelain = 0 paths
+03  sha256sum $C/scripts/check-selfassessment.mjs
+     728128008e2242b635bda30a28313de20b06d381d7855f11f18fa5043ba560c4   (== frozen counter sha)
+04  cd $C && node scripts/check-selfassessment.mjs --repo "$C" --rev HEAD --json > c2-before.json
+     exit=1   mismatches=6   couldNotEvaluate=93   superseded=5      -> c2-before.json
+05  node scripts/check-sources.mjs --self-test            exit=0  SOURCES_SELFTEST verdict=clean cases=26
+06  node scripts/round-evidence-audit.mjs --selftest       exit=0  cases=13
+07  node scripts/check-selfassessment.mjs --selftest      exit=0  SELFASSESSMENT_SELFTEST verdict=clean cases=22 passed=22
+08  node scripts/check-freshness.mjs --self-test          exit=0  FRESHNESS_SELFTEST verdict=clean cases=12
+09  node scripts/check-s106-evidence.mjs --selftest       exit=1  ReferenceError: existsSync is not defined at scripts/check-s106-evidence.mjs:267
+10  cat draft-scorecard.md >> SCORECARD.md ; cat draft-log.md >> LOG.md
+11  git -C $C -c user.email=fixture@tabi.local -c user.name=tabi-fixture commit -q -am "c2 dry run: append-only corrections"
+     HEAD=5a286cc437a3d15d2692b5ebca8352036f22a3de ; status --porcelain = 0 paths
+12  node scripts/check-selfassessment.mjs --repo "$C" --rev HEAD --json > c2-after.json
+     exit=0   mismatches=0   couldNotEvaluate=94   superseded=11     -> c2-after.json
+13  variant A (wrong document): correction for SCORECARD.md:1138 re-cites `LOG.md:1138`; commit; rerun
+     exit=1   mismatches=1   counted: SCORECARD.md:1138 12 vs 13           -> c2-variantA.json
+14  git -C $C reset -q --hard 5a286cc
+15  variant B (wrong number): correction for SCORECARD.md:1139 states `--selftest` (12/12); commit; rerun
+     exit=1   mismatches=2   counted: SCORECARD.md:1139 12 vs 13 AND the correction line itself -> c2-variantB.json
+16  git -C $C reset -q --hard 5a286cc
+17  variant C (LOG wrong document): LOG paragraph cites `SCORECARD.md:221`; commit; rerun
+     exit=1   mismatches=1   counted: LOG.md:221 8 vs 12                 -> c2-variantC.json
+18  git -C $C reset -q --hard 5a286cc
+19  variant D (LOG wrong number): LOG paragraph states `cases: 8`; commit; rerun
+     exit=1   mismatches=1   counted: LOG.md:221 8 vs 12                 -> c2-variantD.json
+20  git -C $C reset -q --hard 5a286cc   (final state: corrections commit, clean tree)
+21  $S/sim = second `git clone --shared` at 97be89b + the same two drafts + fixture gate
+     scripts/check-s106-evidence.mjs printing `S106_SELFTEST verdict=clean cases=7 passed=7`; commit; rerun
+     exit=0   mismatches=0   SCORECARD.md:1438 {claimed 5, observed 7, superseded true}   -> c2-sim-cases7.json
+22  $S/sim fixture gate switched to cases=9; commit; rerun
+     exit=1   mismatches=2   counted: SCORECARD.md:1438 5 vs 9 AND the round-29 correction line 7 vs 9 -> c2-sim-cases9.json
+23  git -C $S/sim reset -q --hard HEAD~1   (back to the 7-case sim commit)

@@ -1,0 +1,111 @@
+{
+ "old_range": [
+  1047,
+  1108
+ ],
+ "new_span": [
+  1049,
+  1109
+ ],
+ "new_span_len": 61
+}
+
+===== unified diff (trimmed, context 3) =====
+--- 154.0.8037.97:1044-1111
++++ 156.0.8078.47:1046-1112
+@@ -29,8 +29,7 @@
+ if (flags & kDeselectOtherOptionsFlag)
+ should_update_popup |= DeselectItemsWithoutValidation(element);
+ 
+-if (!RuntimeEnabledFeatures::SelectedcontentSpecEnabled() ||
+-!(flags & kDontUpdateSelectedcontentFlag)) {
++if (!(flags & kDontUpdateSelectedcontentFlag)) {
+ if (IsMultiple()) {
+ UpdateAllSelectedcontentsMultiple();
+ } else {
+
+===== 156 region verbatim with line numbers =====
+ 1038|   SetNeedsValidityCheck();
+ 1039|   select_type_->ClearLastOnChangeSelection();
+ 1040| }
+ 1041| 
+ 1042| void HTMLSelectElement::HrInsertedOrRemoved(HTMLHRElement& hr) {
+ 1043|   SetRecalcListItems();
+ 1044|   select_type_->ClearLastOnChangeSelection();
+ 1045| }
+ 1046| 
+ 1047| // TODO(tkent): This function is not efficient.  It contains multiple O(N)
+ 1048| // operations. crbug.com/577989.
+ 1049| void HTMLSelectElement::SelectOption(HTMLOptionElement* element,
+ 1050|                                      SelectOptionFlags flags,
+ 1051|                                      WebAutofillState autofill_state) {
+ 1052|   TRACE_EVENT0("blink", "HTMLSelectElement::selectOption");
+ 1053| 
+ 1054|   bool should_update_popup = false;
+ 1055| 
+ 1056|   SetAutofillState(element ? autofill_state : WebAutofillState::kNotFilled);
+ 1057| 
+ 1058|   if (element) {
+ 1059|     if (!element->Selected())
+ 1060|       should_update_popup = true;
+ 1061|     // skip_mutation_observer_update is set to true here because
+ 1062|     // last_on_change_option_ isn't set to the new option element yet, which
+ 1063|     // results in a DCHECK being hit in MenuListSelectType::OptionToBeShown when
+ 1064|     // copying the option's text content to this select element's InnerElement
+ 1065|     // which requires that SelectedOption() matches last_on_change_option_.
+ 1066|     // Instead, UpdateMutationObserver is explicitly called after
+ 1067|     // DidSelectOption later in this method.
+ 1068|     element->SetSelectedState(true, /*skip_mutation_observer_update=*/true);
+ 1069|     if (flags & kMakeOptionDirtyFlag)
+ 1070|       element->SetDirty(true);
+ 1071|   }
+ 1072| 
+ 1073|   // DeselectItemsWithoutValidation() is O(N).
+ 1074|   if (flags & kDeselectOtherOptionsFlag)
+ 1075|     should_update_popup |= DeselectItemsWithoutValidation(element);
+ 1076| 
+ 1077|   if (!(flags & kDontUpdateSelectedcontentFlag)) {
+ 1078|     if (IsMultiple()) {
+ 1079|       UpdateAllSelectedcontentsMultiple();
+ 1080|     } else {
+ 1081|       UpdateAllSelectedcontentsSingle(element);
+ 1082|     }
+ 1083|   }
+ 1084| 
+ 1085|   // Note that DidSelectOption fires change events, which can invoke script
+ 1086|   // and then change the selected option again.
+ 1087|   select_type_->DidSelectOption(element, flags, should_update_popup);
+ 1088| 
+ 1089|   if (element) {
+ 1090|     // Now that last_on_change_option_ has been updated by DidSelectOption, we
+ 1091|     // can update the select's MutationObserver and update text.
+ 1092|     element->UpdateMutationObserver(/*in_style_recalc=*/false);
+ 1093|   }
+ 1094| 
+ 1095|   NotifyFormStateChanged();
+ 1096|   if (GetDocument().IsActive()) {
+ 1097|     GetDocument()
+ 1098|         .GetPage()
+ 1099|         ->GetChromeClient()
+ 1100|         .DidChangeSelectionInSelectControl(*this);
+ 1101|   }
+ 1102| 
+ 1103|   // We set the Autofilled state again because setting the autofill value
+ 1104|   // triggers JavaScript events and the site may override the autofilled
+ 1105|   // value, which resets the autofill state. Even if the website modifies the
+ 1106|   // from control element's content during the autofill operation, we want the
+ 1107|   // state to show as as autofilled.
+ 1108|   SetAutofillState(element ? autofill_state : WebAutofillState::kNotFilled);
+ 1109| }
+ 1110| 
+ 1111| void HTMLSelectElement::SelectOptionFromPopoverPickerOrListbox(
+ 1112|     HTMLOptionElement* option) {
+ 1113|   if (!UsesMenuList() || IsMultiple()) {
+ 1114|     option->SetSelectedState(!option->Selected());
+ 1115|     option->SetDirty(true);
+ 1116|     if (!IsMultiple()) {
+ 1117|       // TODO(crbug.com/357649033): Consider using last_on_change_option_ to
+ 1118|       // avoid needing to iterate options here. It currently only works for
+ 1119|       // MenuList selects. Also consider using DeselectItemsWithoutValidation().
+ 1120|       for (HTMLOptionElement& option_from_list : GetOptionList()) {
+ 1121|         if (option != option_from_list) {

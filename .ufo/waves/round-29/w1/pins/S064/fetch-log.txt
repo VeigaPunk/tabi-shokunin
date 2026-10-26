@@ -1,0 +1,75 @@
+# S064 fetch log — PinS064, round 29 wave 1, 2026-10-26
+
+Scratch: /fast/scratch/hyaku/tabi-r29/PinS064 (TMPDIR for every fetch and the scratch clone).
+
+## Fetches (read-only HTTPS GET, no credentials)
+
+    for tag in 154.0.8037.97 156.0.8078.47; do
+      for p in base/command_line.cc base/feature_list.cc; do
+        curl -sS -o "$S/<p>.<tag>.b64" -w '%{http_code}' \
+          "https://chromium.googlesource.com/chromium/src/+/refs/tags/$tag/$p?format=TEXT"
+      done
+    done
+
+    tag=154.0.8037.97 path=base/command_line.cc   http=200 b64bytes=39224
+    tag=154.0.8037.97 path=base/feature_list.cc   http=200 b64bytes=78032
+    tag=156.0.8078.47 path=base/command_line.cc   http=200 b64bytes=39224
+    tag=156.0.8078.47 path=base/feature_list.cc   http=200 b64bytes=80492      exit 0
+
+## Ref resolution (Gitiles ?format=JSON, first line `)]}'` stripped)
+
+    refs/tags/154.0.8037.97  http=200  commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d
+    refs/tags/156.0.8078.47  http=200  commit 1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775
+
+## Blob ids (proves the two tags serve distinct trees, not a cached body)
+
+    154.0.8037.97 base/command_line.cc  3a95f227d419ebe02319c065f3cdedf2a65c69a4
+    154.0.8037.97 base/feature_list.cc  638645475a4318b769d48ceafcfa9cf0161c17ca
+    156.0.8078.47 base/command_line.cc  3a95f227d419ebe02319c065f3cdedf2a65c69a4   (unchanged blob)
+    156.0.8078.47 base/feature_list.cc  e8f9091d2a1c1126a6b01abb70535ac5bce94aff   (new blob)
+
+## Decoded bytes
+
+    base64 -d <b64> > bytes/<tag>/<path>
+
+    tag                  path                  decoded B  lines  decoded sha256
+    154.0.8037.97  base/command_line.cc   29417      861    05eb1d1afc5f24dfb1d3c2ee0f709a39f37643f86dd7a9cac3ff2a8d7699bb53
+    154.0.8037.97  base/feature_list.cc  58523     1533    ffac846218de0bcdab248b6d4fd6cbba788d00045db297bed9df5423ce277c45
+    156.0.8078.47  base/command_line.cc   29417      861    05eb1d1afc5f24dfb1d3c2ee0f709a39f37643f86dd7a9cac3ff2a8d7699bb53
+    156.0.8078.47  base/feature_list.cc  60368     1583    63d3deed4907bd137b5958054756a9de98a3e859a56377b2954a85b1c7bd8cd7
+
+(line counts are `wc -l`, i.e. trailing-newline terminated lines; split-on-"\n" element counts are 860/1532 and 860/1582, which is what scripts/check-release-pins.mjs slices)
+
+## Cross-transport and stability checks (all http=200, exit 0)
+
+    raw.githubusercontent.com/chromium/chromium/154.0.8037.97/base/command_line.cc
+      http=200 29417 B sha256 05eb1d1afc5f24dfb1d3c2ee0f709a39f37643f86dd7a9cac3ff2a8d7699bb53
+    raw.githubusercontent.com/chromium/chromium/154.0.8037.97/base/feature_list.cc
+      http=200 58523 B sha256 ffac846218de0bcdab248b6d4fd6cbba788d00045db297bed9df5423ce277c45
+    raw.githubusercontent.com/chromium/chromium/156.0.8078.47/base/command_line.cc
+      http=200 29417 B sha256 05eb1d1afc5f24dfb1d3c2ee0f709a39f37643f86dd7a9cac3ff2a8d7699bb53
+    raw.githubusercontent.com/chromium/chromium/156.0.8078.47/base/feature_list.cc
+      http=200 60368 B sha256 63d3deed4907bd137b5958054756a9de98a3e859a56377b2954a85b1c7bd8cd7
+    Gitiles re-fetch of both 156 bodies: b64 sha edd7d45a… / 2a51ec6b…, decoded sha identical to the first fetch.
+
+## Range check (154 block ⇒ contiguous occurrence in 156, lines trimmed, inner whitespace collapsed)
+
+    base/command_line.cc  154:449-455  holds  → 156:449-455
+    base/feature_list.cc  154:417-453  holds  → 156:420-456
+    base/feature_list.cc  154:872-875  holds  → 156:897-900
+
+`diff -u` 154 vs 156: base/command_line.cc 0 changed lines; base/feature_list.cc 147 changed
+lines in 15 hunks, earliest at `@@ -11,6 +11,8 @@`, none touching 417-453 or 872-875 (the
+offsets there are accumulated shift from hunks at 11 and 32 only).
+
+## Counter probe on this entry (scratch `git clone --shared`, no lane writes)
+
+    D=$(mktemp -d -p "$S") && git clone -q --shared <lane> "$D"
+    git -C "$D" rev-parse --show-toplevel   → /fast/scratch/hyaku/tabi-r29/PinS064/entryprobe
+    git -C "$D" checkout 97be89bc66139eb45526a04af59a35dccc006eb9
+    # bytes copied from this dir; receipt.json = {schema tabi-release-pins-v1, stable 156.0.8078.47, rows:[entry.json]}
+    # refetch/S064.json carries the same two 156 shas under seat `FixtureProbeR29` (fixture only; not a real second seat)
+    node scripts/check-release-pins.mjs --repo "$D" --rev HEAD --stable 156.0.8078.47 --json
+    exit=1 (22 sibling rows unresolved, expected)
+    S064 → {"resolved": true, "verdict": "holds", "reasons": []}
+    population 23, resolved 1, unresolved 22, holds 1, drifted 0

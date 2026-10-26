@@ -1,0 +1,66 @@
+# S080 fetch log — PinS080, round-29 w1 (C3 re-open at the new stable tag)
+# Seat: PinS080   Date: 2026-10-26T04:27:20Z   Lane root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+# Row: corpus/SOURCES.md:94 (S080), 11 cells, recheck on-release, used-by `—`
+# Source-cell URL path: third_party/blink/renderer/core/script_tools/script_tool_types.h
+# Anchor-named basenames resolved to chromium/src paths (see RESOLUTION below); 8 files total.
+
+## Tag resolution (read-only GET, ?format=JSON)
+curl -sS -w '%{http_code}' 'https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97?format=JSON'
+  -> HTTP 200, commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d (equals the row's recorded commit)
+curl -sS -w '%{http_code}' 'https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47?format=JSON'
+  -> HTTP 200, commit 1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775
+
+## Fetch (Gitiles ?format=TEXT -> base64 -d, status per request)
+for P in <8 paths>; do for T in 154.0.8037.97 156.0.8078.47; do
+  code=$(curl -sS --max-time 120 -o "$S/f/$T/$P.b64" -w '%{http_code}' \
+        "https://chromium.googlesource.com/chromium/src/+/refs/tags/$T/$P?format=TEXT"); base64 -d ...; done; done
+
+path	anchor_ranges(old-line numbers)	http_154	bytes_154	lines_154	sha256_154	http_156	bytes_156	lines_156	sha256_156
+third_party/blink/renderer/core/script_tools/script_tool_types.h	16-49	200	1431	53	ee9006f7cc92f6451ff3fc9a0930d55bd291bb27a263c26aa8a7b4d2774ca25d	200	1464	54	323fad5091771802b9a82ab38abacd1c22c2099994511948562f3e5eb63d2431
+third_party/blink/renderer/core/html/forms/form_mcp_schema.cc	208-300	200	51703	1440	904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f	200	51703	1440	904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f
+third_party/blink/renderer/core/html/forms/html_form_element.cc	174-259	200	68278	1740	8c8d6796b17bf8e8348747386c0d8720815b3d7df6d0bc4de0f3d3d4b8c36916	200	69536	1761	2a96a97bfb4246b7a23895be7548533ce7adc32286f10df36831e370f8f86102
+third_party/blink/public/mojom/frame/frame.mojom	1112-1119	200	70495	1483	832a44caec24aa2c32ee93cb7818cea8e8860210df40249edb1aa44bf89e7128	200	68473	1443	d0e3ed71913ddcbb9822763d35075d60e6fe9d1d7d04360cf59e9870887f294c
+third_party/blink/renderer/core/frame/local_frame_mojo_handler.cc	987-1005	200	62152	1555	9311613afbf96a6d5a10e87d8f78c633f3ac29948550144d2b2870f899263862	200	64114	1595	4052266ac52545c3837e813f4ba16b7f7c475beb77fdc99a3112779ab5c53cd1
+third_party/blink/renderer/core/script_tools/model_context.cc	528-580,695-745	200	50117	1245	474083d6c455f31071fd5356d4ebcaeae4f173ee647009e452228350d6c18823	200	51112	1262	94d0863626e1e8b5fbba616e0b01c11f48cb4d530e09ff2073ea172cd3238aa3
+third_party/blink/renderer/core/inspector/inspector_web_mcp_agent.cc	220-243	200	8585	245	1cc55ef978a63d4fb8f9678ade444756fdb90fb182e497680bae0aeedf968475	200	8635	246	2477d201dffd775be70fcd8fd286fc20755d1b020a4e8de2a84452a5b6ec2c53
+third_party/blink/public/devtools_protocol/domains/WebMCP.pdl	25-30,109-123	200	3969	123	26e62f2998c63798c81dc487cc14844b840e5dd2aafde1fd37a2e39ece0a37ff	200	4126	125	f386bcfd036328f1fb1572b5404bfad09a7f6ff078093241fbc3409a1036f99f
+
+## RESOLUTION of each anchor basename to its chromium/src path
+script_tool_types.h            -> source-cell URL path (third_party/blink/renderer/core/script_tools/script_tool_types.h)
+form_mcp_schema.cc             -> third_party/blink/renderer/core/html/forms/form_mcp_schema.cc
+html_form_element.cc           -> third_party/blink/renderer/core/html/forms/html_form_element.cc
+frame.mojom                    -> third_party/blink/public/mojom/frame/frame.mojom
+local_frame_mojo_handler.cc    -> third_party/blink/renderer/core/frame/local_frame_mojo_handler.cc
+model_context.cc               -> third_party/blink/renderer/core/script_tools/model_context.cc
+inspector_web_mcp_agent.cc     -> third_party/blink/renderer/core/inspector/inspector_web_mcp_agent.cc
+WebMCP.pdl                     -> third_party/blink/public/devtools_protocol/domains/WebMCP.pdl
+# Basis: round-19 dossier .ufo/waves/round-19/w1/SrcScriptToolError.md §'Retained source and provenance' names all eight
+# paths at the same tag; the 154 decoded sha256 values below equal that dossier's recorded digests for all eight files
+# (independent corroboration of the old bytes, not a copied fetch).
+
+## Row digest (step 3)
+rowDigests(source+anchor) = [] : the row records a 40-hex tag commit (b510e9d7cd3a2fbd78d0ddc42234103206c5f78d) and
+no 64-hex sha256 and no 8hex…4hex abbreviation, so f5-digest does not apply to S080. No file sha256 equals the commit.
+
+## Range containment (counter semantics: per line trim + collapse inner whitespace, contiguous block in 156)
+script_tool_types.h:16-49	len=34	drifted	site_in_156=none
+form_mcp_schema.cc:208-300	len=93	holds	site_in_156=[208, 300]
+html_form_element.cc:174-259	len=86	drifted	site_in_156=none
+frame.mojom:1112-1119	len=8	holds	site_in_156=[1072, 1079]
+local_frame_mojo_handler.cc:987-1005	len=19	holds	site_in_156=[1006, 1024]
+model_context.cc:528-580	len=53	drifted	site_in_156=none
+model_context.cc:695-745	len=51	drifted	site_in_156=none
+inspector_web_mcp_agent.cc:220-243	len=24	holds	site_in_156=[221, 244]
+WebMCP.pdl:25-30	len=6	holds	site_in_156=[27, 32]
+WebMCP.pdl:109-123	len=15	holds	site_in_156=[111, 125]
+
+## Fixture dry-runs of the frozen counter (mechanism checks, scratch fixture repo only)
+dryrun1: node scripts/check-release-pins.mjs --repo $D --rev $REV --stable 156.0.8078.47 --json
+  -> population 23 unresolved 23; S080 reasons = f6-refetch x8 only (r1/f1/f2/f3/f4/f5 all pass)
+dryrun2: fixture-only synthetic refetch record (seat 'FixtureProbe-NOT-EVIDENCE')
+  -> S080 verdict=drifted, reasons=[s1-drift-unsuperseded]
+dryrun3: fixture-only supersede row S199 (id placeholder) + entry.superseded_by=S199
+  -> population 23 unresolved 22 holds 0 drifted 1; S080 resolved=true verdict=drifted reasons=[]
+dryrun4: --stable 157.0.0.0 with fixture-only 157 bytes copied from the 156 bytes
+  -> S199 resolved=true verdict=holds reasons=[] (validates the draft row's 11 cells, anchor range tokens, basename binding, digests)
+# No refetch record was created in the lane; f6-refetch for S080 remains an independent seat's job.

@@ -1,0 +1,225 @@
+# W2 mutant battery — target: scripts/check-s106-evidence.mjs as committed at lane tip
+# lane HEAD 190052c923c6968a3d4a292eb1330938a7cb10b4, gate commit 59e8167, blob 7ec5f5e6
+# gate sha256 1a01256eb8138ec3b171ef08ccb5b10df4f0730c657015232c07c95608e45eb3
+# harness: node <mutant>.mjs --selftest ; exit 0 = SURVIVES, exit 3 = KILLED
+
+== M01 — revision binding demoted to presence (`measuredBytes !== null`)
+   result: KILLED (selftest exit=3)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M01.mjs
+   @@ -116,2 +116 @@
+   -  const revisionMatch = measuredBytes !== null &&
+   -    sha256(measuredBytes) === receipt.decoded_sha256;
+   +  const revisionMatch = measuredBytes !== null;
+   observed:
+   CASE id=measured-revision-bytes-mismatch expected_exit=1 exit=0 valid=true FAIL
+   S106_SELFTEST verdict=failed cases=7 passed=6
+
+== M02 — revision comparison removed (`revisionMatch = true`) — the round-29 mutation
+   result: KILLED (selftest exit=3)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M02.mjs
+   @@ -116,2 +116 @@
+   -  const revisionMatch = measuredBytes !== null &&
+   -    sha256(measuredBytes) === receipt.decoded_sha256;
+   +  const revisionMatch = true;
+   observed:
+   CASE id=measured-revision-bytes-mismatch expected_exit=1 exit=0 valid=true FAIL
+   S106_SELFTEST verdict=failed cases=7 passed=6
+
+== M03 — revisionMatch constant false
+   result: KILLED (selftest exit=3)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M03.mjs
+   @@ -116,2 +116 @@
+   -  const revisionMatch = measuredBytes !== null &&
+   -    sha256(measuredBytes) === receipt.decoded_sha256;
+   +  const revisionMatch = false;
+   observed:
+   CASE id=clean-fixture-valid expected_exit=0 exit=1 valid=false FAIL
+   CASE id=measured-revision-bytes-match expected_exit=0 exit=1 valid=false FAIL
+   S106_SELFTEST verdict=failed cases=7 passed=5
+
+== M04 — binding reads bytes at `rev`, ignoring receipt.measured_rev
+   result: KILLED (selftest exit=3)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M04.mjs
+   @@ -114 +114 @@
+   -  const measuredRev = resolveRev(repo, receipt.measured_rev);
+   +  const measuredRev = rev;
+   observed:
+   CASE id=measured-revision-bytes-mismatch expected_exit=1 exit=0 valid=true FAIL
+   S106_SELFTEST verdict=failed cases=7 passed=6
+
+== M05 — binding self-compares rev's own bytes to the receipt (measured_rev unused)
+   result: KILLED (selftest exit=3)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M05.mjs
+   @@ -116,2 +116 @@
+   -  const revisionMatch = measuredBytes !== null &&
+   -    sha256(measuredBytes) === receipt.decoded_sha256;
+   +  const revisionMatch = sha256(readBlob(repo, rev, receipt.bytes_path) ?? "") === receipt.decoded_sha256;
+   observed:
+   CASE id=measured-revision-bytes-mismatch expected_exit=1 exit=0 valid=true FAIL
+   S106_SELFTEST verdict=failed cases=7 passed=6
+
+== M06 — revisionMatch dropped from the `valid` conjunction
+   result: KILLED (selftest exit=3)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M06.mjs
+   @@ -128 +128 @@
+   -  const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;
+   +  const valid = shaMatch && anchorLocated && anchorUnique && byteCountMatch;
+   observed:
+   CASE id=measured-revision-bytes-mismatch expected_exit=1 exit=0 valid=true FAIL
+   S106_SELFTEST verdict=failed cases=7 passed=6
+
+== M07 — anchor uniqueness check removed
+   result: SURVIVES (selftest exit=0)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M07.mjs
+   @@ -126 +126 @@
+   -  const anchorUnique = occurrences === 1;
+   +  const anchorUnique = true;
+   observed:
+   S106_SELFTEST verdict=clean cases=7 passed=7
+
+== M08 — decoded byte-count check removed
+   result: SURVIVES (selftest exit=0)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M08.mjs
+   @@ -127 +127 @@
+   -  const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;
+   +  const byteCountMatch = true;
+   observed:
+   S106_SELFTEST verdict=clean cases=7 passed=7
+
+== M09 — CLI path forces valid=true (main() unexercised by the self-test)
+   result: SURVIVES (selftest exit=0)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M09.mjs
+   @@ -365 +365 @@
+   -    out = evaluate(opts.repo, opts.rev);
+   +    out = { ...evaluate(opts.repo, opts.rev), valid: true };
+   observed:
+   S106_SELFTEST verdict=clean cases=7 passed=7
+
+== M10 — anchor falsifier case swapped for a duplicate clean case (still 7 cases, both revision ids)
+   result: SURVIVES (selftest exit=0)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M10.mjs
+   @@ -215,11 +215,4 @@
+   -    id: "anchor-off-by-one-invalid",
+   -    exit: 1,
+   -    valid: false,
+   -    field: "anchor_located",
+   -    fieldValue: false,
+   -    build: (d) => {
+   -      const r = fixtureReceipt();
+   -      r.anchor = { ...r.anchor, line: 188 };
+   -      d.receipt(r);
+   -      d.bytes(FIXTURE_BYTES);
+   -    },
+   +    id: "clean-fixture-valid-dup",
+   +    exit: 0,
+   +    valid: true,
+   +    build: (d) => { d.receipt(fixtureReceipt()); d.bytes(FIXTURE_BYTES); },
+   observed:
+   S106_SELFTEST verdict=clean cases=7 passed=7
+
+== M12 — receipt no longer *requires* measured_rev (falls back to rev)
+   result: SURVIVES (selftest exit=0)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M12.mjs
+   @@ -97 +97 @@
+   -  for (const key of ["url", "decoded_sha256", "bytes_path", "measured_rev"]) {
+   +  for (const key of ["url", "decoded_sha256", "bytes_path"]) {
+   @@ -100 +100 @@
+   -  if (!/^[0-9a-f]{40}$/.test(doc.measured_rev)) throw new Refusal("receipt measured_rev must be a full lowercase commit id");
+   +  if (doc.measured_rev !== undefined && !/^[0-9a-f]{40}$/.test(doc.measured_rev)) throw new Refusal("receipt measured_rev must be a full lowercase commit id");
+   @@ -114 +114 @@
+   -  const measuredRev = resolveRev(repo, receipt.measured_rev);
+   +  const measuredRev = receipt.measured_rev ? resolveRev(repo, receipt.measured_rev) : rev;
+   observed:
+   S106_SELFTEST verdict=clean cases=7 passed=7
+
+== M13 — runner swallows a throwing case as a pass
+   result: SURVIVES (selftest exit=0)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M13.mjs
+   @@ -203 +203 @@
+   -      d.commit();
+   +      d.commitReceipt();
+   @@ -290,0 +291 @@
+   +   try { (() => {
+   @@ -316,0 +318 @@
+   +   })(); } catch (e) { results.push({ id: c.id, ok: true, expectedExit: c.exit, exit: c.exit, valid: c.valid, refusal: null }); }
+   observed:
+   S106_SELFTEST verdict=clean cases=7 passed=7
+
+== M15 — anchor_located check removed
+   result: KILLED (selftest exit=3)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M15.mjs
+   @@ -124 +124 @@
+   -  const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();
+   +  const anchorLocated = true;
+   observed:
+   CASE id=anchor-off-by-one-invalid expected_exit=1 exit=0 valid=true FAIL
+   S106_SELFTEST verdict=failed cases=7 passed=6
+
+== M16 — sha_match check removed
+   result: KILLED (selftest exit=3)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M16.mjs
+   @@ -121 +121 @@
+   -  const shaMatch = observedSha === receipt.decoded_sha256;
+   +  const shaMatch = true;
+   observed:
+   CASE id=sha-mismatch-invalid expected_exit=1 exit=1 valid=false FAIL
+   S106_SELFTEST verdict=failed cases=7 passed=6
+
+== M17 — binding compares byte LENGTH at measured_rev instead of sha256
+   result: SURVIVES (selftest exit=0)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M17.mjs
+   @@ -116,2 +116 @@
+   -  const revisionMatch = measuredBytes !== null &&
+   -    sha256(measuredBytes) === receipt.decoded_sha256;
+   +  const revisionMatch = measuredBytes !== null && Buffer.byteLength(measuredBytes) === receipt.decoded_bytes;
+   observed:
+   S106_SELFTEST verdict=clean cases=7 passed=7
+
+== M19 — binding compares only the first 8 hex chars of sha256
+   result: SURVIVES (selftest exit=0)
+   patch:
+   --- check-s106-evidence.mjs
+   +++ M19.mjs
+   @@ -116,2 +116 @@
+   -  const revisionMatch = measuredBytes !== null &&
+   -    sha256(measuredBytes) === receipt.decoded_sha256;
+   +  const revisionMatch = measuredBytes !== null && sha256(measuredBytes).slice(0, 8) === receipt.decoded_sha256.slice(0, 8);
+   observed:
+   S106_SELFTEST verdict=clean cases=7 passed=7
+
+# Correction experiment: replace the measured-commit divergence with a LENGTH-PRESERVING one
+#   d.bytes(FIXTURE_BYTES.replace("// tail", "// prior source bytes"))  ->  ... "// TAIL"
+#   (equal name variants: L_FIXEQ = fixture only, L_FIXEQ_M17 / L_FIXEQ_M01 = fixture + mutant)
+   L_FIXEQ: exit=0 S106_SELFTEST verdict=clean cases=7 passed=7
+   L_FIXEQ_M17: exit=3 CASE id=measured-revision-bytes-mismatch expected_exit=1 exit=0 valid=true FAIL | S106_SELFTEST verdict=failed cases=7 passed=6
+   L_FIXEQ_M01: exit=3 CASE id=measured-revision-bytes-mismatch expected_exit=1 exit=0 valid=true FAIL | S106_SELFTEST verdict=failed cases=7 passed=6

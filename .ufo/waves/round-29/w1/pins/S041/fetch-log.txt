@@ -1,0 +1,40 @@
+# S041 fetch log — PinS041, round-29 w1 (C3 re-open)
+# Seat: PinS041   Date: 2026-10-26T04:23:39Z
+# Source cell URL: https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl
+# Chromium files cited by row S041: exactly one (the source-cell URL path). Anchor names no other basename.
+
+P=third_party/blink/public/devtools_protocol/domains/WebMCP.pdl
+
+# tag resolution (read-only GET, ?format=JSON)
+curl -sS -w '\n%{http_code}' 'https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97?format=JSON'   -> HTTP 200, commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d (matches row anchor commit)
+curl -sS -w '\n%{http_code}' 'https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47?format=JSON'   -> HTTP 200, commit 1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775
+
+# decoded bytes (Gitiles ?format=TEXT -> base64 -d)
+for T in 154.0.8037.97 156.0.8078.47; do
+  code=$(curl -sS -o "$S/f/$T/$P.b64" -w '%{http_code}' "https://chromium.googlesource.com/chromium/src/+/refs/tags/$T/$P?format=TEXT")
+  base64 -d "$S/f/$T/$P.b64" > "$S/f/$T/$P"
+done
+
+tag               http  b64_bytes  decoded_bytes  decoded_lines(split\n)
+154.0.8037.97     200   5292       3969           124   (123 newline-terminated lines)
+156.0.8078.47     200   5504       4126           126   (125 newline-terminated lines)
+
+sha256 decoded:
+26e62f2998c63798c81dc487cc14844b840e5dd2aafde1fd37a2e39ece0a37ff  bytes/154.0.8037.97/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl
+f386bcfd036328f1fb1572b5404bfad09a7f6ff078093241fbc3409a1036f99f  bytes/156.0.8078.47/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl
+
+row S041 digest in anchor cell: 26e62f29…37ff  -> prefix of old_sha256 26e62f29 ✓, suffix 37ff ✓  => f5-digest MATCH
+
+# range containment check (counter semantics: trim, collapse inner whitespace, contiguous block)
+range 7-7     len=1   hits in 156 = [[7,7]]        holds    (site 7-7)
+range 58-122  len=65  hits in 156 = [[60,124]]     holds    (site 60-124; +2 shift from the line-23 insertion)
+
+# whole-file unified diff 154 -> 156 (single hunk, outside both anchored ranges)
+@@ -19,6 +19,8 @@
+       optional boolean untrustedContent
+       # A hint indicating that executing the tool will result in consequential actions, ex: booking a flight, transferring money.
+       optional boolean consequential
++      # If true, indicates that the tool is intended for debugging and developer tooling rather than end-user interactions.
++      optional boolean debugging
+       # If the declarative tool was declared with the autosubmit attribute.
+       optional boolean autosubmit

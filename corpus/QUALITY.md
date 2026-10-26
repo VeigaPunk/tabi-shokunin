@@ -382,3 +382,17 @@
     (or a range containing it); timestamps and unrelated numeric tokens do not
     count. Test an unrelated-line red case, timestamp red case, and exact-line
     positive case. (lesson: corpus/lessons/round-28.md#mistakes M2)
+71. A gate, counter or self-test whose bytes a round changes is executed at the commit
+    that lands the change; the round commits that run (argv, revision, exit, tally) and
+    one mutant that turns a named case red. A landed instrument no recorded run reaches is
+    a `landing` finding even when no claim rests on it. (lesson:
+    corpus/lessons/round-29.md#mistakes M1)
+72. Command output quoted in a report, lesson or SCORECARD row is a committed capture
+    made by redirect at a named revision and cited by path; a re-capture by the same
+    command at that revision must match byte-for-byte. (lesson:
+    corpus/lessons/round-29.md#mistakes M2)
+73. A counter frozen for a claim is attacked before freezing by a seat that did not write
+    it, with fixtures that try to reach the target without the claimed work; every
+    clause of the predicate sentence names the code line that enforces it, and a clause
+    no line enforces is dropped from the sentence or enforced before data. (lesson:
+    corpus/lessons/round-29.md#mistakes M4)

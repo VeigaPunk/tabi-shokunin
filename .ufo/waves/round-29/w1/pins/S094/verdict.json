@@ -1,0 +1,67 @@
+{
+  "id": "S094",
+  "seat": "PinS094",
+  "row_ref": "corpus/SOURCES.md:108",
+  "row_status_in_registry": "rejected (absence row: guessed test filename does not exist at the tag)",
+  "kind": "absence",
+  "tags": {
+    "old": "154.0.8037.97",
+    "new": "156.0.8078.47"
+  },
+  "files": [
+    {
+      "path": "third_party/blink/renderer/core/html/forms/form_mcp_schema_unittest.cc",
+      "old_status": 404,
+      "new_status": 404,
+      "files_fetched": 2,
+      "old_body_bytes": 233,
+      "new_body_bytes": 233,
+      "old_sha256_committed": "9d640282763185d862683fc9f41bea0e42783725a1e344ff193e0cc05bdc8b19",
+      "new_sha256_committed": "03016b0d4b5175446c24f72c845afeec449867018302f55cb767ebf6b2d7a056",
+      "old_sha256_live_refetch": "07186be4641ae6094a57002d757161e0bdc1c09863094eaf52a3f37ffc2000fc",
+      "new_sha256_live_refetch": "d71e047953acdff3732fa01d961ba2d7f59f31996e9aacf11380c2b990a74807",
+      "ranges": [],
+      "ranges_verdict": [],
+      "content_verdict": "holds",
+      "content_basis": "counter 404 branch: old_status 404, new_status 404, new body contains the literal NOT_FOUND on line 1",
+      "registry_digest": "9d640282763185d862683fc9f41bea0e42783725a1e344ff193e0cc05bdc8b19",
+      "registry_digest_match": "match against the committed 154 body (the retained 2026-10-21 fetch, corpus/evidence/round-19/sources/form_mcp_schema_unittest-404.txt.gz); NO match against a live 154 re-fetch (request_id differs)"
+    }
+  ],
+  "row_verdict": "holds",
+  "superseding_row_required": false,
+  "superseding_row_reason": "no range drifted: the file is absent at both tags, so the counter's 404 branch holds and the s1-drift-unsuperseded path is not reached",
+  "anchor_line_ranges_for_file": "none — the anchor gives no line ranges for this file ('HTTP 404 fetched 2026-10-21; first line NOT_FOUND: Requested entity was not found; body sha256 9d640282...')",
+  "counter_probe": {
+    "repo": "throwaway git fixture under /fast/scratch/hyaku/tabi-r29/PinS094 (removed after the probe; raw JSON retained here)",
+    "command": "node scripts/check-release-pins.mjs --repo <fixture> --rev HEAD --stable 156.0.8078.47 --json",
+    "cases": [
+      { "id": "base", "exit": 1, "population": 23, "unresolved": 22, "s094": "resolved:true verdict:holds reasons:[]", "note": "the other 22 population rows carry no receipt entry in the fixture (expected)" },
+      { "id": "no-refetch", "exit": 1, "population": 23, "unresolved": 23, "s094": "resolved:false reasons:[f6-refetch]", "note": "confirms the f6-refetch dependency" },
+      { "id": "unrelated-404-body", "exit": 1, "population": 23, "unresolved": 22, "s094": "resolved:true verdict:holds reasons:[]", "note": "FALSIFIER F2: a 404 body fetched from a DIFFERENT chromium path, with new_sha256 and the refetch record updated to match, still resolves. The 404 branch never binds the absence-row body to anything but the old digest." }
+    ],
+    "raw": ".ufo/waves/round-29/w1/pins/S094/fixture-counter-out/{base,no-refetch,unrelated-404-body}.json"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "blocks C3 unresolved=0 for this row",
+      "claim": "Every Gitiles 404 body embeds a fresh per-response `request_id` (line 7), so its sha256 is non-reproducible for this URL at either tag; an independent seat's live re-fetch can never equal the receipt's new_sha256, and check-release-pins.mjs f6-refetch demands exact sha256 equality.",
+      "evidence": "fetch-log.txt §'why the 404 body hash is not reproducible': two consecutive 156 re-fetches give e7a5db02… and d33621f8…, differing only in the request_id line (diff exit 1); same for the plain HTML 404 body (b7f6ee87… vs d1ec0b65…, request_id only)."
+    },
+    {
+      "id": "F2",
+      "severity": "counter-shape weakness (finding only; the counter is frozen this round)",
+      "claim": "For old_status 404 the counter accepts ANY 404 NOT_FOUND body as the 156 bytes, so absence rows are resolved by status+token, not content; a receipt can bind to bytes fetched from a different path and still resolve.",
+      "evidence": "fixture-counter-out/unrelated-404-body.json: S094 resolved=true after replacing the committed 156 body with the 404 body for third_party/blink/renderer/core/html/forms/does_not_exist_probe.cc (sha256 09b8999d…)."
+    },
+    {
+      "id": "F3",
+      "severity": "informational (flip lead resolves)",
+      "claim": "The row's recorded flip lead html_form_mcp_tool_test.cc exists at both tags with byte-identical content (sha256 944ee9e4…, 106254 bytes, HTTP 200×2), so the rejected row's flip condition is still available at 156.0.8078.47.",
+      "evidence": ".ufo/waves/round-29/w1/pins/S094/lead/html_form_mcp_tool_test.cc@154.0.8037.97 and @156.0.8078.47"
+    }
+  ],
+  "f6_remedy": "Either (a) an independent seat fetches the 156 body and its own bytes are the committed new_bytes (entry authored by PinS094 with new_sha256 = that seat's sha, provenance recorded), or (b) the counter's 404 branch drops body-sha binding in a later round. Recording a refetch sha that was not produced by a live fetch by that seat would be fabrication and is not proposed here.",
+  "notes": "No bytes were fabricated: the committed 154 body is the lane's own retained 2026-10-21 fetch of this exact URL at this exact tag (provenance corpus/evidence/round-19/sources/form_mcp_schema_unittest-404.txt.gz, zcat sha256 = the row's pinned digest); today's live re-fetch is stored separately under bytes-verification/ and differs only in request_id."
+}

@@ -1,0 +1,261 @@
+{
+  "schema": "tabi-round-evidence-audit-v1-selftest",
+  "cases": 13,
+  "passed": 13,
+  "inventory": [
+    {
+      "class": "c1-refusal-arithmetic",
+      "red": 1,
+      "green": 1,
+      "ok": true
+    },
+    {
+      "class": "c2-wave-caps",
+      "red": 2,
+      "green": 1,
+      "ok": true
+    },
+    {
+      "class": "c3-gate-spotcheck",
+      "red": 1,
+      "green": 1,
+      "ok": true
+    },
+    {
+      "class": "c4-stale-attempts",
+      "red": 1,
+      "green": 1,
+      "ok": true
+    },
+    {
+      "class": "c5-registry-identities",
+      "red": 1,
+      "green": 1,
+      "ok": true
+    },
+    {
+      "class": "c6-landed-log-binding",
+      "red": 1,
+      "green": 1,
+      "ok": true
+    }
+  ],
+  "inventoryOk": true,
+  "clean": true,
+  "runs": [
+    {
+      "name": "c1-red-cited-below-receipts",
+      "expectation": "c1-refusal-arithmetic",
+      "pass": true,
+      "observed": [
+        "c1-refusal-arithmetic"
+      ],
+      "findings": [
+        {
+          "class": "c1-refusal-arithmetic",
+          "cited": "1",
+          "derived": 2,
+          "evidence": [
+            ".ufo/waves/round-90/w1-cap-refusal-01.json",
+            ".ufo/waves/round-90/w1-cap-refusal-02.json"
+          ],
+          "detail": "cited 1 whole-payload refusals, receipts committed 2 (2 refusal files, 2 carrying the capacity marker)"
+        }
+      ]
+    },
+    {
+      "name": "c1-green-cited-matches-receipts",
+      "expectation": "clean",
+      "pass": true,
+      "observed": [],
+      "findings": []
+    },
+    {
+      "name": "c2-red-spec-above-band",
+      "expectation": "c2-wave-caps",
+      "pass": true,
+      "observed": [
+        "c2-wave-caps"
+      ],
+      "findings": [
+        {
+          "class": "c2-wave-caps",
+          "cited": 4,
+          "derived": 2,
+          "evidence": [
+            {
+              "wave": "w1",
+              "spec": ".ufo/waves/round-90/w1-spec.json",
+              "maxLanes": 5,
+              "items": 2,
+              "spawned": 2,
+              "receipt": ".ufo/waves/round-90/w1-spawn-result.json",
+              "receiptPolicy": null
+            }
+          ],
+          "detail": ".ufo/waves/round-90/w1-spec.json: maxLanes 5 > policy waveMaxLanes 2"
+        }
+      ]
+    },
+    {
+      "name": "c2-red-round-total-over-cap",
+      "expectation": "c2-wave-caps",
+      "pass": true,
+      "observed": [
+        "c2-wave-caps"
+      ],
+      "findings": [
+        {
+          "class": "c2-wave-caps",
+          "cited": 4,
+          "derived": 6,
+          "evidence": [
+            {
+              "wave": "w1",
+              "spec": ".ufo/waves/round-90/w1-spec.json",
+              "maxLanes": 2,
+              "items": 2,
+              "spawned": 2,
+              "receipt": ".ufo/waves/round-90/w1-spawn-result.json",
+              "receiptPolicy": null
+            },
+            {
+              "wave": "w2",
+              "spec": ".ufo/waves/round-90/w2-spec.json",
+              "maxLanes": 2,
+              "items": 2,
+              "spawned": 2,
+              "receipt": ".ufo/waves/round-90/w2-spawn-result.json",
+              "receiptPolicy": null
+            },
+            {
+              "wave": "w3",
+              "spec": ".ufo/waves/round-90/w3-spec.json",
+              "maxLanes": 2,
+              "items": 2,
+              "spawned": 2,
+              "receipt": ".ufo/waves/round-90/w3-spawn-result.json",
+              "receiptPolicy": null
+            }
+          ],
+          "detail": "round total 6 spawned seats > round cap 4"
+        }
+      ]
+    },
+    {
+      "name": "c2-green-total-at-cap",
+      "expectation": "clean",
+      "pass": true,
+      "observed": [],
+      "findings": []
+    },
+    {
+      "name": "c3-red-gate-without-spotcheck",
+      "expectation": "c3-gate-spotcheck",
+      "pass": true,
+      "observed": [
+        "c3-gate-spotcheck"
+      ],
+      "findings": [
+        {
+          "class": "c3-gate-spotcheck",
+          "cited": null,
+          "derived": "no-spotcheck-line",
+          "evidence": [
+            "corpus/lessons/round-90.md"
+          ],
+          "detail": "the Gate section names neither a spot-check result, nor an 'owed to closure' line, nor a named non-author deferral"
+        }
+      ]
+    },
+    {
+      "name": "c3-green-gate-owed-to-closure",
+      "expectation": "clean",
+      "pass": true,
+      "observed": [],
+      "findings": []
+    },
+    {
+      "name": "c4-red-multi-attempt-ungraded",
+      "expectation": "c4-stale-attempts",
+      "pass": true,
+      "observed": [
+        "c4-stale-attempts"
+      ],
+      "findings": [
+        {
+          "class": "c4-stale-attempts",
+          "cited": "**Stale-lane:** none — respawn-per-round driver",
+          "derived": "2 attempt receipts / 0 graded and joined",
+          "evidence": [
+            ".ufo/waves/round-90/attempt02-result.json",
+            ".ufo/waves/round-90/attempt03-result.json"
+          ],
+          "detail": "the Stale-lane paragraph grades fewer than two attempts that a committed attempt receipt can be matched to, while several attempt receipts are committed"
+        }
+      ]
+    },
+    {
+      "name": "c4-green-multi-attempt-graded",
+      "expectation": "clean",
+      "pass": true,
+      "observed": [],
+      "findings": []
+    },
+    {
+      "name": "c5-red-anonymous-spawned-wave",
+      "expectation": "c5-registry-identities",
+      "pass": true,
+      "observed": [
+        "c5-registry-identities"
+      ],
+      "findings": [
+        {
+          "class": "c5-registry-identities",
+          "cited": "2 spawned / 2 members",
+          "derived": "2 of 2 members carry no agentId",
+          "evidence": [
+            ".ufo/waves/round-90/w1/swarm-registry.json",
+            "A",
+            "B"
+          ],
+          "detail": "the registry does not account for the seats this wave spawned, so its evidence cannot be tied to its transcripts"
+        }
+      ]
+    },
+    {
+      "name": "c5-green-refused-wave-may-be-anonymous",
+      "expectation": "clean",
+      "pass": true,
+      "observed": [],
+      "findings": []
+    },
+    {
+      "name": "c6-red-landed-commit-without-log",
+      "expectation": "c6-landed-log-binding",
+      "pass": true,
+      "observed": [
+        "c6-landed-log-binding"
+      ],
+      "findings": [
+        {
+          "class": "c6-landed-log-binding",
+          "cited": "bbbbbbb",
+          "derived": "no LOG.md in any cited commit",
+          "evidence": [
+            "| fixture change | `LOG.md` §fixture | `bbbbbbb` |"
+          ],
+          "detail": "the row cites only commits that touch no LOG.md and does not say where the entry lands"
+        }
+      ]
+    },
+    {
+      "name": "c6-green-entry-bound-elsewhere",
+      "expectation": "clean",
+      "pass": true,
+      "observed": [],
+      "findings": []
+    }
+  ]
+}
+exit=0

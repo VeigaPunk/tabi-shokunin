@@ -1,0 +1,67 @@
+# PinS094 S094 fetch log — live fetches made by PinS094 (same seat; does NOT satisfy f6-refetch)
+# date_utc=2026-10-26T04:30:07Z
+# row: corpus/SOURCES.md:108 (rejected absence row, tier C, recheck on-release)
+# method: Gitiles ?format=TEXT; on HTTP 404 Gitiles returns a PLAIN-TEXT error body (not base64),
+#         so base64 -d exits 1 — recorded below, bytes kept verbatim.
+
+TAG=154.0.8037.97 url=https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema_unittest.cc?format=TEXT
+  curl exit=0 http_status=404 body_bytes=233
+  base64 -d exit=1 decoded_bytes=2   # 404 body is plain text, not base64
+  body_sha256=07186be4641ae6094a57002d757161e0bdc1c09863094eaf52a3f37ffc2000fc
+  first_line=NOT_FOUND: Requested entity was not found
+  grep_NOT_FOUND=1
+  committed_at=corpus/evidence/round-29/release-pins/bytes/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema_unittest.cc (copy: .ufo/waves/round-29/w1/pins/S094/bytes/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema_unittest.cc)
+  committed_sha256=9d640282763185d862683fc9f41bea0e42783725a1e344ff193e0cc05bdc8b19
+
+TAG=156.0.8078.47 url=https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47/third_party/blink/renderer/core/html/forms/form_mcp_schema_unittest.cc?format=TEXT
+  curl exit=0 http_status=404 body_bytes=233
+  base64 -d exit=1 decoded_bytes=2   # 404 body is plain text, not base64
+  body_sha256=d71e047953acdff3732fa01d961ba2d7f59f31996e9aacf11380c2b990a74807
+  first_line=NOT_FOUND: Requested entity was not found
+  grep_NOT_FOUND=1
+  committed_at=corpus/evidence/round-29/release-pins/bytes/156.0.8078.47/third_party/blink/renderer/core/html/forms/form_mcp_schema_unittest.cc (copy: .ufo/waves/round-29/w1/pins/S094/bytes/156.0.8078.47/third_party/blink/renderer/core/html/forms/form_mcp_schema_unittest.cc)
+  committed_sha256=03016b0d4b5175446c24f72c845afeec449867018302f55cb767ebf6b2d7a056
+
+## digest binding (row anchor sha256 9d640282763185d862683fc9f41bea0e42783725a1e344ff193e0cc05bdc8b19)
+committed 154 body sha256            = 9d640282763185d862683fc9f41bea0e42783725a1e344ff193e0cc05bdc8b19
+row anchor digest                    = 9d640282763185d862683fc9f41bea0e42783725a1e344ff193e0cc05bdc8b19
+match                                = yes (the committed 154 body IS the retained 2026-10-21 fetch body)
+provenance of the committed 154 body = corpus/evidence/round-19/sources/form_mcp_schema_unittest-404.txt.gz
+  zcat | sha256sum                   = 9d640282763185d862683fc9f41bea0e42783725a1e344ff193e0cc05bdc8b19
+live 154 re-fetch by PinS094 today   = 07186be4641ae6094a57002d757161e0bdc1c09863094eaf52a3f37ffc2000fc (differs in request_id only)
+verification copy of the live 154 re-fetch = .ufo/waves/round-29/w1/pins/S094/bytes-verification/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema_unittest.cc
+  sha256                             = 622bb8f0091bb6050bfd350c8a1f0a3f73aa10a18d8af48de0b6492dc2fb1ea5
+
+## why the 404 body hash is not reproducible (falsifier F1)
+sample1 curl exit=0 http_status=404 sha256=e7a5db021933ab23800d2f279775fcf71f57003c2cecfe80d8d19756ce065bec request_line=request_id: "89ec2b7348574bc588933867940b126c"
+sample2 curl exit=0 http_status=404 sha256=d33621f8cfac88584398bd670fa14f3f5e9a7ea2420506c96fcd4b15b4b1a4ca request_line=request_id: "5f6241b81d4d4cdd8da3f0bed3252804"
+diff sample1 sample2:
+7c7
+< request_id: "89ec2b7348574bc588933867940b126c"
+---
+> request_id: "5f6241b81d4d4cdd8da3f0bed3252804"
+diff exit=1
+same for plain (no ?format=TEXT) HTML 404 body: receipts/plain-404-{a,b}.html differ only in request_id
+  a=b7f6ee87392f080fa66a3a068c2643ebc0a572d382e5c5e5b9366793c03b6224
+  b=d1ec0b651da96890a86c14ba475c50bdbe1abd6e46c592e128b1016511f835e4
+
+## absence corroboration (dirname listing, Gitiles ?format=JSON)
+listing 154 http_status=200 bytes=37662 names_matching_mcp:
+    "name": "form_mcp_schema.cc"
+    "name": "form_mcp_schema.h"
+    "name": "html_form_mcp_tool_test.cc"
+listing 156 http_status=200 bytes=37359 names_matching_mcp:
+    "name": "form_mcp_schema.cc"
+    "name": "form_mcp_schema.h"
+    "name": "html_form_mcp_tool_test.cc"
+  form_mcp_schema_unittest.cc absent from both listings -> 404 is a real absence, not a Gitiles glitch
+
+## adjudication (frozen counter semantics, scripts/check-release-pins.mjs)
+old_status=404 + new_status=404 + new body contains NOT_FOUND -> file verdict=holds (counter 404 branch)
+ranges: the anchor gives no line ranges for this file (absence row) -> ranges []
+superseding row: NOT required (no range drifted; 404 file holds)
+
+## floor
+an independent seat's live re-fetch CANNOT reproduce new_sha256 (03016b0d...) because every 404 body
+carries a fresh request_id -> f6-refetch is unsatisfiable for S094 unless the refetch seat's own
+fetched bytes are the committed new_bytes (entry authored by a different seat). See report F1.

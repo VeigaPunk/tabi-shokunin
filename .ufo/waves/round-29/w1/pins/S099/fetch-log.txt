@@ -1,0 +1,42 @@
+S099 fetch log — seat PinS099 — 2026-10-26
+Chromium path: third_party/blink/public/devtools_protocol/domains/WebMCP.pdl
+Registry row: corpus/SOURCES.md line 113 (11 cells; recheck on-release; tag 154.0.8037.97)
+
+Commands (TMPDIR=/fast/scratch/hyaku/tabi-r29/PinS099), exit code after each:
+
+1) curl -sS -m 60 -w '%{http_code}' -o $S/154.0.8037.97/body.b64 \
+     'https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl?format=TEXT'
+   -> HTTP 200, base64 5292 bytes; exit=0
+   base64 -d -> 3969 bytes, 124 split lines (123 newlines)
+   sha256 26e62f2998c63798c81dc487cc14844b840e5dd2aafde1fd37a2e39ece0a37ff
+
+2) curl ... /refs/tags/156.0.8078.47/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl?format=TEXT
+   -> HTTP 200, base64 5504 bytes; exit=0
+   base64 -d -> 4126 bytes, 126 split lines (125 newlines)
+   sha256 f386bcfd036328f1fb1572b5404bfad09a7f6ff078093241fbc3409a1036f99f
+
+3) Same-seat confirmation GETs (both again 200, identical sha256 and byte counts); exit=0
+   156: f386bcfd036328f1fb1572b5404bfad09a7f6ff078093241fbc3409a1036f99f 4126
+   154: 26e62f2998c63798c81dc487cc14844b840e5dd2aafde1fd37a2e39ece0a37ff 3969
+   (This is NOT the independent f6 refetch record; a different seat must produce
+    corpus/evidence/round-29/release-pins/refetch/S099.json.)
+
+4) Tag commit metadata (Gitiles ?format=JSON):
+   refs/tags/154.0.8037.97 -> HTTP 200, commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d
+     (matches the registry row's anchor commit exactly)
+   refs/tags/156.0.8078.47 -> HTTP 200, commit 1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775
+
+5) Range contiguity (counter's normLine/blockIn semantics) — node mirror-check.mjs, exit=0:
+   range 59-69   holds  -> 156 lines 61-71
+   range 109-123 holds  -> 156 lines 111-125
+   verdict: holds (no drift); supersede_needed=false
+
+6) diff -u 154.0.8037.97/WebMCP.pdl 156.0.8078.47/WebMCP.pdl; exit=0
+   single hunk @@ -19,6 +19,8 @@ — two lines inserted after `optional boolean consequential`:
+   +      # If true, indicates that the tool is intended for debugging and developer tooling rather than end-user interactions.
+   +      optional boolean debugging
+   Both insertions sit above line 59, hence the uniform +2 shift of both anchored ranges.
+
+Local byte locations (this seat's output dir; parent copies into the committed receipt root):
+  .ufo/waves/round-29/w1/pins/S099/bytes/154.0.8037.97/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl
+  .ufo/waves/round-29/w1/pins/S099/bytes/156.0.8078.47/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl

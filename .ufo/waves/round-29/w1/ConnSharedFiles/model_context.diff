@@ -1,0 +1,141 @@
+10a11
+> #include "third_party/blink/public/common/script_tools/script_tool_utils.h"
+29a31
+> #include "third_party/blink/renderer/core/event_target_names.h"
+31c33,34
+< #include "third_party/blink/renderer/core/events/web_mcp_event.h"
+---
+> #include "third_party/blink/renderer/core/events/tool_activated_event.h"
+> #include "third_party/blink/renderer/core/events/tool_cancel_event.h"
+77,79c80,89
+< String ValidateAndStringifyObject(ScriptState* script_state,
+<                                   ExceptionState& exception_state,
+<                                   const ScriptObject& input) {
+---
+> String ValidateAndStringifyValue(ScriptState* script_state,
+>                                  ExceptionState& exception_state,
+>                                  ScriptValue input,
+>                                  const String& value_name) {
+>   if (!input.V8Value()->IsObject()) {
+>     exception_state.ThrowTypeError("invalid " + value_name +
+>                                    ": value is not an object");
+>     return String();
+>   }
+> 
+82c92
+<   if (!v8::JSON::Stringify(script_state->GetContext(), input.V8Object())
+---
+>   if (!v8::JSON::Stringify(script_state->GetContext(), input.V8Value())
+100,101c110,111
+<     exception_state.ThrowTypeError(
+<         "invalid input schema: toJSON() returns undefined");
+---
+>     exception_state.ThrowTypeError("invalid " + value_name +
+>                                    ": toJSON() returns undefined");
+108,121d117
+< bool IsValidToolName(const String& name) {
+<   if (name.empty() || name.length() > 128) {
+<     return false;
+<   }
+<   for (wtf_size_t i = 0; i < name.length(); ++i) {
+<     UChar c = name[i];
+<     if (!IsAsciiAlphanumeric(c) && c != '_' && c != '-' && c != '.') {
+<       return false;
+<     }
+<   }
+< 
+<   return true;
+< }
+< 
+383c379
+<   if (!IsValidToolName(tool->name())) {
+---
+>   if (!IsValidScriptToolName(tool->name().Utf8())) {
+399,401c395,397
+<     ExceptionState exception_state(script_state->GetIsolate());
+<     input_schema = ValidateAndStringifyObject(script_state, exception_state,
+<                                               tool->inputSchema());
+---
+>     input_schema = ValidateAndStringifyValue(
+>         script_state, PassThroughException(script_state->GetIsolate()),
+>         tool->inputSchema(), "input schema");
+403c399
+<       // Exception already thrown by ValidateAndStringifyObject
+---
+>       // Exception already thrown by ValidateAndStringifyValue.
+465a462,463
+>     CHECK(tool->annotations()->hasDebugging());
+>     script_tool->annotations->debugging = tool->annotations()->debugging();
+513a512
+>     declaration.debugging = script_tool.annotations->debugging;
+528c527
+< bool ModelContext::ExecuteTool(const base::UnguessableToken& invocation_id,
+---
+> bool ModelContext::ExecuteTool(base::UnguessableToken invocation_id,
+568c567
+<   // Fire the `toolactivate` event *after* activating the tool, but potentially
+---
+>   // Fire the `toolactivated` event *after* activating the tool, but potentially
+573,577c572,574
+<   if (LocalDOMWindow* window = document_->domWindow()) {
+<     // This is a synchronous, non-cancelable event.
+<     window->DispatchEvent(
+<         *WebMCPEvent::Create(event_type_names::kToolactivated, name));
+<   }
+---
+>   // This is a synchronous, non-cancelable event.
+>   DispatchEvent(
+>       *ToolActivatedEvent::Create(event_type_names::kToolactivated, name));
+582c579
+< bool ModelContext::CancelTool(const base::UnguessableToken& invocation_id) {
+---
+> bool ModelContext::CancelTool(base::UnguessableToken invocation_id) {
+644,647c641,643
+<   if (LocalDOMWindow* window = document_->domWindow()) {
+<     window->DispatchEvent(
+<         *WebMCPEvent::Create(event_type_names::kToolcancel, tool_name));
+<   }
+---
+>   DispatchEvent(
+>       *ToolCancelEvent::Create(event_type_names::kToolcancel, tool_name));
+> 
+697c693
+<     const base::UnguessableToken& invocation_id,
+---
+>     base::UnguessableToken invocation_id,
+753c749
+<                                  const base::UnguessableToken& invocation_id,
+---
+>                                  base::UnguessableToken invocation_id,
+833a830,832
+>   if (!IsValidScriptToolName(declarative_tool->ToolName().Utf8())) {
+>     return;
+>   }
+1044c1043,1052
+<       result->setInputSchema(t->input_schema);
+---
+>       ScriptState* script_state = resolver->GetScriptState();
+>       ScriptState::Scope scope(script_state);
+>       v8::TryCatch try_catch(script_state->GetIsolate());
+>       auto script_object =
+>           JSONStringToScriptObject(script_state, t->input_schema);
+>       ScriptValue script_value = script_object;
+>       if (try_catch.HasCaught() || script_value.IsEmpty()) {
+>         continue;
+>       }
+>       result->setInputSchema(script_object);
+1050a1059
+>       annotations->setDebugging(t->annotations->debugging);
+1074c1083
+<     String input_arguments,
+---
+>     ScriptValue input_object,
+1116a1126,1133
+>   String input_arguments = ValidateAndStringifyValue(
+>       script_state, PassThroughException(script_state->GetIsolate()),
+>       input_object, "input object");
+>   if (!input_arguments) {
+>     // Exception already thrown by ValidateAndStringifyValue.
+>     return EmptyPromise();
+>   }
+> 

@@ -1,0 +1,63 @@
+# PinS093 — S093 C3 re-open at 156.0.8078.47: fetch + verification log
+# date_utc=2026-10-26T04:26:00Z (first fetch round 04:22–04:27Z)
+# Network: read-only HTTPS GET of chromium.googlesource.com Gitiles, ?format=TEXT.
+# Raw base64 saved under $HYAKU_SCRATCH/tabi-r29/PinS093/raw.<tag>.<ext>.b64; decoded bytes copied
+# into .ufo/waves/round-29/w1/pins/S093/bytes/<tag>/<chromium path> (this seat's output dir only).
+
+ROW S093 (corpus/SOURCES.md:107, 13 split cells):
+  source  = Chromium 154 form_mcp_schema.cc + .h Gitiles URLs at refs/tags/154.0.8037.97
+  kind    = code ; tier A ; status queued ; opened 2026-10-21 ; recheck on-release ; used-by —
+  anchor  = tag `154.0.8037.97`, commit `b510e9d7cd3a2fbd78d0ddc42234103206c5f78d`;
+            `.cc:121-181, 491-539, 556-928, 1095-1236, 1238-1438`; `.h:41-50, 56-121, 148-158`;
+            decoded `.cc` SHA-256 `904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f`
+
+FILES CITED BY THE ROW (2; both named by full path in the source cell, so no basename resolution needed):
+  third_party/blink/renderer/core/html/forms/form_mcp_schema.cc   ranges 121-181, 491-539, 556-928, 1095-1236, 1238-1438
+  third_party/blink/renderer/core/html/forms/form_mcp_schema.h    ranges 41-50, 56-121, 148-158
+
+FETCHES (curl -sS -w '%{http_code}' ...?format=TEXT ; base64 -d):
+  TAG=154.0.8037.97 .cc  http_status=200 b64_bytes=68940 decoded_bytes=51703 lines(split)=1441 sha256=904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f
+  TAG=156.0.8078.47 .cc  http_status=200 b64_bytes=68940 decoded_bytes=51703 lines(split)=1441 sha256=904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f
+  TAG=154.0.8037.97 .h   http_status=200 b64_bytes=12324 decoded_bytes=9243  lines(split)=206  sha256=e44593c07b6048aec70404aa000e354157f38838d6065984de684629159340f7
+  TAG=156.0.8078.47 .h   http_status=200 b64_bytes=12324 decoded_bytes=9243  lines(split)=206  sha256=e44593c07b6048aec70404aa000e354157f38838d6065984de684629159340f7
+
+TAG-IDENTITY CONTROLS (prove the two tag endpoints are distinct and identity is real, not an endpoint artifact):
+  refs/tags/154.0.8037.97?format=JSON              status=200 commit=b510e9d7cd3a2fbd78d0ddc42234103206c5f78d (matches the row's recorded commit)
+  refs/tags/156.0.8078.47?format=JSON              status=200 commit=1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775
+  refs/tags/154.0.8037.97/chrome/VERSION?format=TEXT status=200 decoded: MAJOR=154 MINOR=0 BUILD=8037 PATCH=97
+  refs/tags/156.0.8078.47/chrome/VERSION?format=TEXT status=200 decoded: MAJOR=156 MINOR=0 BUILD=8078 PATCH=47
+
+DIGEST CHECK (step 3): row records one 64-hex digest in the anchor cell.
+  f5: 904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f == sha256(154.0.8037.97 .cc decoded) -> MATCH
+  .h carries no recorded digest (row records `.cc` SHA-256 only); its 154 digest e44593c07b6048aec70404aa000e354157f38838d6065984de684629159340f7 is newly recorded here.
+
+RANGE CHECK (step 4; counter algorithm: old block lines trimmed + inner whitespace collapsed, contiguous in new file):
+  .cc 121-181    holds   new_at=121
+  .cc 491-539    holds   new_at=491
+  .cc 556-928    holds   new_at=556
+  .cc 1095-1236  holds   new_at=1095
+  .cc 1238-1438  holds   new_at=1238
+  .h  41-50      holds   new_at=41
+  .h  56-121     holds   new_at=56
+  .h  148-158    holds   new_at=148
+  -> 0 drifted ranges; whole-file sha256 equality holds for both files, so the block test is entailed and was also run directly.
+
+COUNTER-RULE REPLAY against the row (scripts/check-release-pins.mjs f1/f2/f4/f5, replicated over the real row text):
+  f1-old-tag            row tags = [154.0.8037.97]; entry old_tag = 154.0.8037.97 -> pass
+  f2-path-bound         `refs/tags/154.0.8037.97/<path>` present in source cell for BOTH files -> pass
+                        (note: anchor names the files only as `.cc` / `.h`, so basename(path) is NOT in the anchor;
+                         binding is carried by the source cell, which f2 accepts)
+  f4-ranges             every a-b token occurs in the anchor cell; b <= 1441 (.cc) / 206 (.h) -> pass
+  f5-digest             anchor digest matches .cc old_sha256 -> pass
+  f3-bytes / f6-refetch NOT satisfiable from this seat: f3 needs the bytes committed at
+                        corpus/evidence/round-29/release-pins/bytes/... and f6 needs a refetch record from a
+                        seat other than PinS093; both are assembly steps outside this seat's write scope.
+
+REFETCH REPRODUCIBILITY (same seat — does NOT satisfy f6):
+  attempt 1 of the 156 .cc re-fetch returned http_status=503 (empty body, base64 -d failed; not recorded as bytes)
+  attempt 2 http_status=200 size=68940, b64 byte-identical to the first 156 fetch (cmp exit 0),
+  decoded sha256=904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f -> 04:27:17Z
+
+VERDICT: both files reported 200 at both tags and are byte-identical; all 8 anchored ranges hold at the same line
+numbers; the row's recorded digest matches; NO range drifted, so supersede-row.md is intentionally absent
+(no registry supersede row is required for S093 under claim C3).

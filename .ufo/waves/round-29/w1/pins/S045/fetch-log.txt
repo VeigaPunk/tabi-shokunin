@@ -1,0 +1,61 @@
+# S045 pin fetch log — seat PinS045, round 29 w1 (C3)
+
+Row: `corpus/SOURCES.md` line 59 (id S045). Anchor cell:
+`tag 154.0.8037.97 (commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d), executeTool-abort.https.html:87 and
+:113, inspector-protocol/webmcp/invoke-tool.js:38-51, WebMCP.pdl:68`
+
+Files the row cites (1 URL in the source cell + 2 by basename in the anchor, resolved against earlier
+wave dossiers):
+- `third_party/blink/web_tests/external/wpt/webmcp/imperative/executeTool-abort.https.html` — from the source cell URL; anchor ranges `87`, `113`
+- `third_party/blink/web_tests/inspector-protocol/webmcp/invoke-tool.js` — anchor basename `inspector-protocol/webmcp/invoke-tool.js`; ranges `38-51`
+- `third_party/blink/public/devtools_protocol/domains/WebMCP.pdl` — anchor basename `WebMCP.pdl`; range `68`
+
+Resolution evidence for the two basenames: `.ufo/waves/round-17/w1/SrcWebTests.md:52` and
+`.ufo/waves/round-18/w1/Recheck22.md:39` (invoke-tool.js), `.ufo/waves/round-16/w1/SrcChromiumPdl.md:13`
+and `corpus/evidence/round-18/source-recheck/S041.json` (WebMCP.pdl).
+
+## Commands (all run 2026-10-26T04:23Z, scratch /fast/scratch/hyaku/tabi-r29/PinS045)
+
+```
+curl -sS --max-time 120 -A 'tabi-shokunin-r29-pins/1' -o <b64> -w '%{http_code}' \
+  "https://chromium.googlesource.com/chromium/src/+/refs/tags/<tag>/<path>?format=TEXT"
+base64 -d < <b64> > .ufo/waves/round-29/w1/pins/S045/bytes/<tag>/<path>
+```
+fetch.sh exit 0 (6/6 URLs returned; all decodes exit 0).
+
+## Results
+
+| tag | chromium path | HTTP | decoded bytes | decoded sha256 | as-served base64 sha256 |
+|---|---|---|---|---|---|
+| 154.0.8037.97 | third_party/blink/web_tests/external/wpt/webmcp/imperative/executeTool-abort.https.html | 200 | 8013 | faf6e4889b9d71e9795b72950847ea17f9c1fd583536323f580ad9d9dda92c8e | b1300c0657f169b40c1be61c58daa3320d50d22b553e13b7f514a2c7be567968 |
+| 154.0.8037.97 | third_party/blink/web_tests/inspector-protocol/webmcp/invoke-tool.js | 200 | 2782 | 4fc851748c4ac1600c15646731419d8ba17d0c03b3c10d1c3b07db8a55e84d9c | 5c09390632cd67d6261cee80fb5147057b8886bf413384d17c9b3b8d52c3851d |
+| 154.0.8037.97 | third_party/blink/public/devtools_protocol/domains/WebMCP.pdl | 200 | 3969 | 26e62f2998c63798c81dc487cc14844b840e5dd2aafde1fd37a2e39ece0a37ff | 0ea9bf3f3d06269e993b6d7367494843ae072c909ff2dde9a9ca3a47d84d47e4 |
+| 156.0.8078.47 | third_party/blink/web_tests/external/wpt/webmcp/imperative/executeTool-abort.https.html | 200 | 9519 | bf847908421e81d2903cb23de9fc4d66eda2681dabf66436803a48912dd60c67 | f6583908a02f032d9bc8c88fc7f097291305ce96a744f2dbd473121ebad2482e |
+| 156.0.8078.47 | third_party/blink/web_tests/inspector-protocol/webmcp/invoke-tool.js | 200 | 2782 | 4fc851748c4ac1600c15646731419d8ba17d0c03b3c10d1c3b07db8a55e84d9c | 5c09390632cd67d6261cee80fb5147057b8886bf413384d17c9b3b8d52c3851d |
+| 156.0.8078.47 | third_party/blink/public/devtools_protocol/domains/WebMCP.pdl | 200 | 4126 | f386bcfd036328f1fb1572b5404bfad09a7f6ff078093241fbc3409a1036f99f | ce63eca12c521de3e59f5a957ea920a71f61dde1c0b54668184239cecbcfc535 |
+
+Cross-check against earlier wave records for the same 154 bodies: 154 `WebMCP.pdl` decoded sha
+`26e62f29…0a37ff` equals the round-17/18/19 dossier digest, and its as-served base64 sha
+`0ea9bf3f…d47e4` equals `corpus/knowledge/source-recheck-round-18.md:90`; 154 html as-served base64 sha
+prefix `b1300c0657f1` equals `corpus/knowledge/source-recheck-round-18.md:94`. 154 `invoke-tool.js`
+decoded sha equals `.ufo/waves/round-17/w1/SrcWebTests.md:52`.
+
+## Range comparison (154 lines trimmed + inner whitespace collapsed, matched as one contiguous block in 156)
+
+| chromium path | 154 range | verdict | 156 line(s) |
+|---|---|---|---|
+| …/executeTool-abort.https.html | 87 | holds | 108 |
+| …/executeTool-abort.https.html | 113 | holds | 143 |
+| …/inspector-protocol/webmcp/invoke-tool.js | 38-51 | holds | 38-51 (file byte-identical) |
+| …/WebMCP.pdl | 68 | holds | 70 |
+
+Row verdict: holds (0 drifted ranges, 0 drifted files). No superseding registry row drafted.
+Row digest: the row records none — no 64-hex and no 8hex…4hex pattern in its source or anchor cells
+(scanned with the counter's `rowDigests` regexes: `full64: []`, `abbr: []`); f5-digest therefore does not
+apply. The 40-hex `b510e9d7…` in the anchor is a Gitiles commit id, not a sha256.
+
+## Control reads (read-only)
+
+- `git -C /home/vgpnk/Projects/shokunin/tabi-shokunin status --porcelain` → exit 0; only untracked
+  round-29 wave scaffolding (`.ufo/waves/round-29/w1*`), no modified tracked file.
+- `git -C /home/vgpnk/Projects/shokunin/tabi-shokunin rev-parse HEAD` → 97be89bc66139eb45526a04af59a35dccc006eb9 (exit 0).

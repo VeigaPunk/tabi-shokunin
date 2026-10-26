@@ -1,0 +1,71 @@
+# S077 fetch log — PinS077, tabi round-29 w1 (C3 re-open at 156.0.8078.47)
+# Seat: PinS077   Date: 2026-10-26T04:26:22Z
+# Registry row: corpus/SOURCES.md line 91
+# Row record: tag 154.0.8037.97, commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d,
+#   anchor `form_mcp_schema.cc:49-111,208-490,930-1093,1238-1438`,
+#   decoded SHA-256 904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f
+
+## Files cited by row S077 — exactly one
+source cell URL path: third_party/blink/renderer/core/html/forms/form_mcp_schema.cc
+anchor basenames:     form_mcp_schema.cc (same file); no other basename in the anchor cell.
+                      used-by knowledge entry (webmcp-declarative-validation-round-19.md) names no
+                      second Chromium file for S077, so no directory listing was needed.
+
+P=third_party/blink/renderer/core/html/forms/form_mcp_schema.cc
+
+## Tag resolution (read-only GET, ?format=JSON)
+curl -sS -w '\nHTTP=%{http_code}\n' 'https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97?format=JSON'
+  -> HTTP 200, commit b510e9d7cd3a2fbd78d0ddc42234103206c5f78d  (matches row anchor commit)  exit=0
+curl -sS -w '\nHTTP=%{http_code}\n' 'https://chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47?format=JSON'
+  -> HTTP 200, commit 1d17a2e2ee147bb7d6ae2ab6abdb3a2510c17775                       exit=0
+
+## Decoded bytes (Gitiles ?format=TEXT -> base64 -d)
+for T in 154.0.8037.97 156.0.8078.47; do
+  code=$(curl -sS -w '%{http_code}' -o "$S/$T/$P.b64" "https://chromium.googlesource.com/chromium/src/+/refs/tags/$T/$P?format=TEXT")
+  echo "$T status=$code size=$(stat -c%s "$S/$T/$P.b64")"
+  base64 -d "$S/$T/$P.b64" > "$S/$T/$P"
+done
+observed: 154.0.8037.97 status=200 size=68940 b64; 156.0.8078.47 status=200 size=68940 b64   exit=0
+re-probe of both URLs for exit-code capture: 154 exit=0 http=200 ; 156 exit=0 http=200
+
+tag            http  b64_bytes  decoded_bytes  lines(split \n)  newline-terminated lines
+154.0.8037.97  200   68940      51703          1441             1440
+156.0.8078.47  200   68940      51703          1441             1440
+cmp 154/$P 156/$P -> identical (byte-for-byte)
+
+## sha256 of decoded bytes
+904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f  bytes/154.0.8037.97/$P
+904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f  bytes/156.0.8078.47/$P
+
+## f5-digest
+row digest (64 hex) 904b75e705f89910522ff7db733c5cd3729178cf496607d50b6124e96502152f
+=> equals old_sha256 exactly. MATCH.
+
+## f4 range containment (counter semantics: trim, collapse inner whitespace runs, contiguous block)
+range 49-111    len=63   hits in 156 = [(49, 111)]     holds (same lines)
+range 208-490   len=283  hits in 156 = [(208, 490)]    holds (same lines)
+range 930-1093  len=164  hits in 156 = [(930, 1093)]   holds (same lines)
+range 1238-1438 len=201  hits in 156 = [(1238, 1438)]  holds (same lines)
+No drifted range -> no supersede-row.md written (step 6 not triggered).
+
+## spot-check of the used-by knowledge entry's finer S077 citations against the 156 bytes
+grep -n on bytes/156.0.8078.47/$P:
+  289:  if (IsCustomElement(*controls_for_name)) {     (entry: ":289-291 custom elements return true")
+  290:    // TODO(andruud): How to do validation for custom elements?
+  291:    return true;
+ 1241:      if (form_control->IsDisabledOrReadOnly()) {   (entry: ":1241 readonly controls dropped")
+ 1270:bool FormMCPSchema::IsText(ListedElement& control) const {  (entry: ":1270-1281 text-control path")
+All cited lines still sit at the cited numbers; the entry's reading remains byte-exact.
+
+## counter mechanics check (scratch fixture, NOT evidence)
+D=$(mktemp -d -p "$S" -t fx.XXXX) && git -C "$D" init -q
+git -C "$D" rev-parse --show-toplevel -> $D (verified before first commit)
+registry = header + corpus/SOURCES.md line 91 verbatim; bytes copied to the receipt paths; receipt = this entry.
+A: node scripts/check-release-pins.mjs --repo "$D" --rev 3d5557a2329e1a440b520fbc5ed8be9786c8e884 --stable 156.0.8078.47 --json
+   exit=1  population=1 unresolved=1  S077 reasons=['f6-refetch <path>'] verdict=null
+   (f1,f2,f3,f4,f5 all pass; only the independent re-fetch record is missing — another seat's duty)
+B: added a synthetic refetch record seat="MechanicsProbe" (fixture-only label; NOT a real re-fetch)
+   node scripts/check-release-pins.mjs --repo "$D" --rev <after-refetch> --stable 156.0.8078.47 --json
+   exit=0  population=1 unresolved=0 holds=1 drifted=0  S077 reasons=[] verdict="holds"
+   => entry.json shape is accepted; the real refetch (different seat) is the only outstanding input.
+Raw outputs: fixture-counter-out.json
