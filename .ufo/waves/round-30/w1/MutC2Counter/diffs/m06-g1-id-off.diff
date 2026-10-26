@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r30/MutC2Counter/clone/scripts/check-frontier-admission.mjs	2026-10-26 03:47:56.059192099 -0300
++++ /fast/scratch/hyaku/tabi-r30/MutC2Counter/mutants/m06-g1-id-off.mjs	2026-10-26 03:49:39.527066327 -0300
+@@ -199,7 +199,7 @@
+     const rb = blob(repo, rev, `${receipts}/${id}.json`);
+     let rc = null;
+     if (rb !== null) { try { rc = JSON.parse(rb.toString("utf8")); } catch { rc = null; } }
+-    if (!rc || rc.id !== id) { res.reason = "g1-receipt"; cache.set(id, res); return res; }
++    if (!rc) { res.reason = "g1-receipt"; cache.set(id, res); return res; }
+     const row = rows.get(id);
+     if (typeof rc.url !== "string" || !rc.url || !row.source.includes(rc.url)) { res.reason = "g2-url"; cache.set(id, res); return res; }
+     const bytes = blob(repo, rev, rc.bytes_path);

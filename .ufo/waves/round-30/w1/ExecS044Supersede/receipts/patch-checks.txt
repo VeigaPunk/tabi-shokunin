@@ -1,0 +1,39 @@
+Patch self-check log — ExecS044Supersede, 2026-10-26. All runs in scratch
+(`/fast/scratch/hyaku/tabi-r30/ExecS044Supersede`), never in the lane.
+
+1. `node scripts/check-sources.mjs --root .` in the seat clone at 061e620 + the two edits
+   -> exit 0, `SOURCES_GATE verdict=clean rows=116 tiers=A:101,B:6,C:9 status=queued:19,mined:88,rejected:9 findings=0`
+   (`receipts/check-sources-clone.txt`).
+
+2. `git apply --check S118-supersede-S044.patch` in a pristine 061e620 tree
+   (`git archive 061e620 | tar -x`) -> exit 0 (applies clean).
+
+3. `git apply --check S118-supersede-S044.patch` against a snapshot of the lane worktree at
+   2026-10-26T07:0xZ -> exit 1, `error: patch failed: corpus/SOURCES.md:127`. Expected: the lane
+   worktree already carries the in-flight S116/S117 rows between S115 and `## Paths`, and this patch
+   is diffed against 061e620 as the contract requires. The knowledge-entry hunk is not affected: the
+   lane's `corpus/knowledge/webmcp-invocation-round-17.md` is byte-identical to the freeze revision
+   (`diff -q` exit 0).
+
+4. `S118-supersede-S044.on-lane-worktree.patch` (same change rebased onto that snapshot, produced with
+   `git diff --no-index`) -> `git apply --check` exit 0, `git apply` exit 0.
+
+5. `node scripts/check-sources.mjs --root <merged>` where merged = pristine 061e620 tree + the lane's
+   current `corpus/SOURCES.md` + the entry edit + S118 -> exit 1 with exactly two findings, both
+   `used_by_missing row=S116` and `row=S117` (their used-by entries `corpus/knowledge/rate-limit-policy-fields.md`
+   and `host-published-rate-limit-headers.md` are C2's in-flight files and are not in the pristine tree).
+   No finding names S118. Registry rows 118.
+
+Not run (owned by the parent after integration): `check-release-pins.mjs`,
+`check-gate-mutants.mjs`, `check-frontier-admission.mjs`, `check-selfassessment.mjs`,
+`check-gate-registry.mjs`, `check-s106-evidence.mjs`, `sources-census.sh validate`.
+
+6. Patch headers: the clone inherits `diff.mnemonicprefix = true` (fleet git config), so a raw
+   `git diff <commit>` emits `c/` … `w/` prefixes. The delivered `S118-supersede-S044.patch` was
+   rewritten to conventional `a/` … `b/` prefixes with `sed` (headers only, no content change) and
+   re-verified: `git apply --check` exit 0, `git apply` exit 0 in a fresh 061e620 archive tree, and
+   `diff -q` of both patched files against the seat clone's edited files exit 0
+   (`patch_reproduces_clone_edits`). `check-sources.mjs --root <that tree>` exit 0, rows=116, findings=0.
+7. `S118-supersede-S044.on-lane-worktree.patch` headers are `a/` … `b/` (produced with
+   `git diff --no-index` and prefix-rewritten); `git apply --check` and `git apply` exit 0 against a
+   snapshot of the lane worktree.

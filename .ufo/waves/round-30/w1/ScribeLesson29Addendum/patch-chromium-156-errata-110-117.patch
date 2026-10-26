@@ -1,0 +1,31 @@
+diff --git a/corpus/knowledge/chromium-156-release-pin-recheck.md b/corpus/knowledge/chromium-156-release-pin-recheck.md
+index 70e1cc9..65dab87 100644
+--- a/corpus/knowledge/chromium-156-release-pin-recheck.md
++++ b/corpus/knowledge/chromium-156-release-pin-recheck.md
+@@ -116,3 +116,26 @@ naming the superseding row: `webmcp-invocation-round-17.md` (S042 → S109),
+ - Correction to the bullet above (wave-2 `RevSources.md`, S110): the inserted hunk is 10 lines — the
+   9-line guard 201-209 plus the blank line 210 — and with a separate one-line change above it, 154
+   lines from 198 on sit 11 lines lower at 156. "A second one-line change" explains the +1, not the +10.
++
++### Errata — round-30 scribe addendum (2026-10-26; append-only, seat `ScribeLesson29Addendum`)
++
++- **`:110-111` is superseded by `:117-118`.** The "+10 because of a second one-line change above it" is
++  wrong: the measured net delta below the guard is **+11**. Re-measured on the committed pair
++  `corpus/evidence/round-29/release-pins/bytes/{154.0.8037.97,156.0.8078.47}/third_party/blink/renderer/core/html/forms/html_form_element.cc`
++  (`diff -u`, exit 1) two hunks sit above the guard region: `@@ -123,6 +123,7 @@`
++  adds one line (`is_connected_nested_form_(false),`, 156:124) and `@@ -197,6 +198,16 @@` adds ten
++  (the guard plus blank 210). Above 156:124 the delta is 0, from 156:124 through 156:200 it is +1, and
++  from 156:211 (`  // Success. Now we can either submit the form or focus the submit button.`, which is
++  154:200) it is +11. Nine added guard lines plus one added blank line do not fit "+10" once the
++  earlier one-line change is counted; `:117-118` states the +11, though its "from 198 on" is loose at
++  the seam: 154:198 (`  }`) is 156:199 and 154:199 (blank) is 156:200, both still +1, because the
++  ten-line insertion begins after 154:199 — the +11 starts at 154:200 / 156:211.
++- **S110's guard span is 9 lines, not 10.** `corpus/SOURCES.md:124` (S110) says "a 10-line
++  detached-document guard inserted at 201-209"; the same count appears at `:129` (S115, "a 10-line guard
++  added at 201-210"). Verified against the committed 156 bytes
++  (`.../bytes/156.0.8078.47/third_party/blink/renderer/core/html/forms/html_form_element.cc`, 1761
++  lines, `sha256 2a96a97bfb4246b7a23895be7548533ce7adc32286f10df36831e370f8f86102` — the decoded digest
++  S110 itself records): `:201-202` the two comment lines, `:203` `if (!form_->GetDocument().IsActive()) {`,
++  `:204-208` the `return std::move(done_callback).Run(...)` spanning five lines, `:209` `}`. That is
++  nine lines; `:210` is the blank tenth line of the insertion hunk and `:211` resumes `// Success.`.
++  "10-line" counts the hunk, not the guard — read the guard as `201-209`, 9 lines.

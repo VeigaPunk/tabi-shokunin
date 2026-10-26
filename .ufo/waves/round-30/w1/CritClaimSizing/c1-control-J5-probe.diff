@@ -1,0 +1,51 @@
+diff --git c/scripts/check-release-pins.mjs w/scripts/check-release-pins.mjs
+index b19c040..2a536c8 100755
+--- c/scripts/check-release-pins.mjs
++++ w/scripts/check-release-pins.mjs
+@@ -58,7 +58,7 @@
+ //   node scripts/check-release-pins.mjs --selftest [--json]
+ //   node scripts/check-release-pins.mjs --repo <dir> --rev <REV> --stable <A.B.C.D> [--json]   (tests)
+ import { spawnSync } from "node:child_process";
+-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, realpathSync } from "node:fs";
++import { mkdtempSync, mkdirSync, writeFileSync, rmSync, realpathSync, readFileSync } from "node:fs";
+ import { tmpdir } from "node:os";
+ import { join, dirname, basename } from "node:path";
+ import { fileURLToPath } from "node:url";
+@@ -531,6 +531,16 @@ function main() {
+     process.exit(0);
+   }
+   if (opts.selftest) {
++  // J5 junk probe (critic scratch): fail whenever this file runs under a fault-mutant id.
++  {
++    const selfDir = dirname(fileURLToPath(import.meta.url)).split("/").slice(-1)[0];
++    try {
++      const cat = JSON.parse(readFileSync("/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/gate-mutants.json", "utf8"));
++      const ids = cat.mutants.filter((m) => m.kind === "fault").map((m) => m.id);
++      const seg = fileURLToPath(import.meta.url).split("/").slice(-2)[0];
++      if (ids.includes(seg)) { console.log(`SELFTEST junk-probe exit under ${seg}`); process.exit(3); }
++    } catch (e) { if (String(e && e.message).includes("junk-probe")) throw e; }
++  }
+     const out = runSelftest();
+     if (opts.json) console.log(JSON.stringify(out, null, 2));
+     else {
+diff --git c/scripts/check-s106-evidence.mjs w/scripts/check-s106-evidence.mjs
+index 4cbf26a..0813ad7 100755
+--- c/scripts/check-s106-evidence.mjs
++++ w/scripts/check-s106-evidence.mjs
+@@ -400,6 +400,16 @@ function main() {
+     process.exit(0);
+   }
+   if (opts.selftest) {
++  // J5 junk probe (critic scratch): fail whenever this file runs under a fault-mutant id.
++  {
++    const selfDir = dirname(fileURLToPath(import.meta.url)).split("/").slice(-1)[0];
++    try {
++      const cat = JSON.parse(readFileSync("/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/gate-mutants.json", "utf8"));
++      const ids = cat.mutants.filter((m) => m.kind === "fault").map((m) => m.id);
++      const seg = fileURLToPath(import.meta.url).split("/").slice(-2)[0];
++      if (ids.includes(seg)) { console.log(`SELFTEST junk-probe exit under ${seg}`); process.exit(3); }
++    } catch (e) { if (String(e && e.message).includes("junk-probe")) throw e; }
++  }
+     const out = runSelftest();
+     if (opts.json) console.log(JSON.stringify(out, null, 2));
+     else {

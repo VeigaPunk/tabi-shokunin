@@ -1,0 +1,90 @@
+{
+  "curl": {
+    "file_scheme_direct": {
+      "url": "file:///etc/hostname",
+      "exit": 0,
+      "stdout_tail": "<hostname-redacted>\n\n000",
+      "stderr": "",
+      "env": [],
+      "note": "body of file:///etc/hostname redacted (host identity)"
+    },
+    "redirect_to_file": {
+      "url": "https://127.0.0.1:55657/redir-file",
+      "exit": 1,
+      "stdout_tail": "\n302",
+      "stderr": "curl: (1) Protocol \"file\" is disabled (in redirect)",
+      "env": [
+        "CURL_CA_BUNDLE"
+      ]
+    },
+    "redirect_to_ftp": {
+      "url": "https://127.0.0.1:55657/redir-ftp",
+      "exit": 7,
+      "stdout_tail": "\n302",
+      "stderr": "curl: (7) Failed to connect to 127.0.0.1:1 after 0 ms: Could not connect to server",
+      "env": [
+        "CURL_CA_BUNDLE"
+      ]
+    },
+    "redirect_cross_origin": {
+      "url": "https://127.0.0.1:55657/redir-cross",
+      "exit": 0,
+      "stdout_tail": ". The budget is disclosed per route in response headers.\n200",
+      "stderr": "",
+      "env": [
+        "CURL_CA_BUNDLE"
+      ]
+    },
+    "netrc_injection": {
+      "url": "https://127.0.0.1:55657/doc",
+      "exit": 0,
+      "stdout_tail": ". The budget is disclosed per route in response headers.\n200",
+      "stderr": "",
+      "env": [
+        "HOME"
+      ]
+    },
+    "no_ambient_config": {
+      "url": "https://127.0.0.1:55657/doc",
+      "exit": 60,
+      "stdout_tail": "\n000",
+      "stderr": "curl: (60) SSL certificate OpenSSL verify result: self-signed certificate (18)\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, ",
+      "env": [
+        "HOME"
+      ]
+    }
+  },
+  "hits": [
+    {
+      "port": 55657,
+      "path": "/redir-file",
+      "authorization": null,
+      "user_agent": "curl/8.23.0"
+    },
+    {
+      "port": 55657,
+      "path": "/redir-ftp",
+      "authorization": null,
+      "user_agent": "curl/8.23.0"
+    },
+    {
+      "port": 55657,
+      "path": "/redir-cross",
+      "authorization": null,
+      "user_agent": "curl/8.23.0"
+    },
+    {
+      "port": 58247,
+      "path": "/doc",
+      "authorization": null,
+      "user_agent": "curl/8.23.0"
+    },
+    {
+      "port": 55657,
+      "path": "/doc",
+      "authorization": "Basic bmV0cmN1c2VyOm5ldHJjcGFzcw==",
+      "user_agent": "curl/8.23.0"
+    }
+  ],
+  "at": "2026-10-26T06:43:39.266749+00:00"
+}

@@ -1,0 +1,28 @@
+CritClaimSizing — read-only HTTPS GETs (no logins, cookies, credentials or session material)
+All times UTC, 2026-10-26. `curl -sS -L --max-time 30 -o <file> -w '%{http_code}'`.
+
+url                                                                                  | time      | http | bytes  | sha256 (full unless marked)
+-------------------------------------------------------------------------------------|-----------|------|--------|------------------------------------------------------------
+https://docs.discord.com/developers/docs/topics/rate-limits                          | 07:07:32Z | 404  | 121321 | 65f46ccd0cab2d196ec4a85bba3eccec0e48e87758d8d4f00ef1c59fa2753c83
+https://www.ietf.org/archive/id/draft-ietf-httpapi-ratelimit-headers-10.txt           | 07:07:32Z | 200  | 67803  | f40a241153d69329e2cbfee86cb39512d42007a2355769b35b1ce68cd16b7aa5
+https://www.ietf.org/archive/id/draft-ietf-httpapi-ratelimit-headers-11.txt           | 07:07:32Z | 200  | 67097  | d6016dd0db5a33ba3f1e6b6f4c84e9b5ecc00986822d5212bab831f6c2d1d412
+https://discord.com/developers/docs/topics/rate-limits                               | 07:07:52Z | 200  | 408912 | 5a794ce4520c... (prefix only; re-fetched below)
+https://docs.discord.com/developers/docs/topics/rate-limits/                         | 07:07:52Z | 404  | 121321 | af3b46010d6b6f26... (prefix recorded)
+https://docs.discord.com/developers/docs/topics/rate-limits.md                       | 07:07:52Z | 404  | 662    | 328dc659ea35521c... (prefix recorded)
+https://docs.discord.com/developers/docs/topics/Rate-Limits                          | 07:07:52Z | 404  | 121321 | 7b6f268f297ab6e6... (prefix recorded)
+https://docs.discord.com/developers/resources/rate-limits                            | 07:07:52Z | 404  | 121311 | 32ef50ae307ad1bb... (prefix recorded)
+https://docs.discord.com/developers/topics/rate-limits                               | 07:08:00Z | 200  | 408912 | 0e32bd342dd2fdebf695861384cfc4d5597ea78731efdd435741e96326ea15cb
+https://discord.com/developers/docs/topics/rate-limits                               | 07:08:02Z | 200  | 408912 | 3664bc2a5b2d4c4606a5fb1acaa87d14f335b0a4cb5ee13a7925368eec66b16c  (d1.body)
+https://discord.com/developers/docs/topics/rate-limits                               | 07:08:05Z | 200  | 408912 | 120c65133f2c91aa15c0274d71a7247771e00c13588e85935d72e4acc8414430  (d2.body)
+https://discord.com/developers/docs/topics/rate-limits                               | 07:07:52Z | 200  | 408912 | f691f72c0c1fab111ef79a46e31dd7a3cc648beeee910173156db30127a3c70a
+https://www.ietf.org/archive/id/draft-ietf-httpapi-ratelimit-headers-09.txt           | 07:11:49Z | 200  | 67876  | (status/size only)
+
+Finding 1 — the package's Discord URL (https://docs.discord.com/developers/topics/rate-limits) is live at
+200/408912 B; the "docs" path variant 404s. Both the -10 and -11 drafts and -09 are live 200, so the staged
+"-10 and later return 404" line is false, as claims.json already notes.
+
+Finding 2 — the raw Discord bytes differ on every GET (408912 B each, three distinct sha256 above), but the
+counter's `normalise()` output was byte-identical across two fetches 3 s apart (8728 chars,
+c719ecca4bef84b9…, verified with ./norm2.mjs, which extracts the counter's own normalise function).
+The quote and all four X-RateLimit-* names survive normalisation. So C2's l1/l3 checks are satisfiable
+against this page even though it is server-rendered with volatile raw bytes.

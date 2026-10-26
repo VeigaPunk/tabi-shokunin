@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r30/MutC1Counter/clone/scripts/check-gate-mutants.mjs	2026-10-26 03:42:08.149068576 -0300
++++ /fast/scratch/hyaku/tabi-r30/MutC1Counter/mutants/M04-pristine-clean-refusal-off.mjs	2026-10-26 03:46:15.907498737 -0300
+@@ -203,7 +203,7 @@
+     const res = runSelftestOf(work, `pristine-${gates.length}`, basename(g.script), sources.get(g.script));
+     pristine.set(g.script, res);
+     gates.push({ script: g.script, sha256: sha256(Buffer.from(sources.get(g.script))), pristine_clean: res.clean, cases: res.cases, passed: res.passed, exit: res.exit, timed_out: res.timed_out });
+-    if (!res.clean) {
++    if (false) {
+       throw new Refusal(`pristine self-test of ${g.script} is not clean (exit=${res.exit} cases=${res.cases} passed=${res.passed} timed_out=${res.timed_out} failing=${res.failing_cases.join(",")})`);
+     }
+   }

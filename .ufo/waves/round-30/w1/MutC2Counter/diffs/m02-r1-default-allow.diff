@@ -1,0 +1,13 @@
+--- /fast/scratch/hyaku/tabi-r30/MutC2Counter/clone/scripts/check-frontier-admission.mjs	2026-10-26 03:47:56.059192099 -0300
++++ /fast/scratch/hyaku/tabi-r30/MutC2Counter/mutants/m02-r1-default-allow.mjs	2026-10-26 03:49:39.506066338 -0300
+@@ -245,8 +245,8 @@
+     if (!ids.length || !hasVerified || !hasRecheck) reasons.push("e1-provenance");
+     const norms = [];
+     for (const id of reasons.length ? [] : ids) {
+-      const row = rows.get(id);
+-      if (!row) { reasons.push(`r1-row-missing ${id}`); continue; }
++      let row = rows.get(id);
++      if (!row) { row = { id, source: "", kind: "spec", tier: "A", scope: "", anchor: "", teaches: "", status: "mined", opened: since, recheck: "", usedBy: path }; }
+       if (row.status !== "mined") { reasons.push(`r2-status ${id}`); continue; }
+       const used = row.usedBy.split(/[,;]/).map((p) => p.trim());
+       if (!used.includes(path)) { reasons.push(`r3-used-by ${id}`); continue; }

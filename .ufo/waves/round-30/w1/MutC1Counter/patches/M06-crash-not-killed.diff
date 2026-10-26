@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r30/MutC1Counter/clone/scripts/check-gate-mutants.mjs	2026-10-26 03:42:08.149068576 -0300
++++ /fast/scratch/hyaku/tabi-r30/MutC1Counter/mutants/M06-crash-not-killed.mjs	2026-10-26 03:46:15.907671597 -0300
+@@ -213,7 +213,7 @@
+     const src = sources.get(m.script);
+     const mutated = src.replace(m.find, () => m.replace);
+     const res = runSelftestOf(work, `mutant-${i}`, basename(m.script), mutated);
+-    const killed = !res.clean;
++    const killed = res.exit === 1;
+     mutants.push({
+       id: m.id, script: m.script, kind: m.kind, killed,
+       outcome: m.kind === "fault" ? (killed ? "killed" : "SURVIVED") : (killed ? "FALSE-KILL" : "survived"),

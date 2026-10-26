@@ -1,0 +1,93 @@
+diff --git a/SCORECARD.md b/SCORECARD.md
+index 75d4c98..69b63c4 100644
+--- a/SCORECARD.md
++++ b/SCORECARD.md
+@@ -1499,3 +1499,12 @@ Two v1 waves. W1 build + first falsifiers, 44 seats (26 executor, 6 critic, 3 re
+   set, self-supersession refusal, 404 rows judged on status and first line) closing the round-29 wave-1
+   attack fixtures; s106 self-test cases for anchor uniqueness and byte count (surviving mutants, `w1/MutC1Baseline.md`).
+ - capabilities unchanged (gates are counters); saturation 8 / window 3; no axis retired.
++
++## Round 30 — corrections (append-only; each cites the stale line in its own document)
++
++Measured 2026-10-26 by the frozen doc-bound counter (`.ufo/waves/round-30/claims.json` C1); the
++stale lines stay as written, these lines supersede them (the round-30 kill-coverage cases raise the
++s106 and release-pin self-test tallies).
++
++- `scripts/check-s106-evidence.mjs` `--selftest` (10/10): correction — supersedes the stale tallies at `SCORECARD.md:1438`, `SCORECARD.md:1466` and `SCORECARD.md:1479`.
++- `scripts/check-release-pins.mjs` `--selftest` (29/29): correction — supersedes the stale tally at `SCORECARD.md:1485`.
+diff --git a/scripts/check-release-pins.mjs b/scripts/check-release-pins.mjs
+index cbb2388..6d8e391 100755
+--- a/scripts/check-release-pins.mjs
++++ b/scripts/check-release-pins.mjs
+@@ -353,6 +353,17 @@ const CASES = [
+   { id: "refetch-missing-unresolved", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001")]); d.receipt(receiptOf([{ id: "S001", _refetch: null, files: [fileEntry()] }])); } },
+   { id: "refetch-same-seat-unresolved", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001")]); d.receipt(receiptOf([{ id: "S001", fetched_by: "W2-fixture", files: [fileEntry()] }])); } },
+   { id: "copied-old-as-new-caught-by-refetch", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001")]); d.receipt(receiptOf([{ id: "S001", _refetch: REFETCH_FABRICATED, files: [fileEntry({ newText: OLD_TEXT })] }])); } },
++
++  // round-30 catalogue kill coverage (CASES/fixtures only; check lines untouched)
++  { id: "old-tag-not-on-row-unresolved", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001", { tag: "150.0.0.1" })]); d.receipt(receiptOf([{ id: "S001", files: [fileEntry()] }])); } },
++  { id: "dotdot-path-unresolved", exit: 1, unresolved: 1, build: (d) => { const p = "content/feature..cc"; d.reg([regLine("S001", { path: p })]); d.receipt(receiptOf([{ id: "S001", files: [fileEntry({ path: p })] }])); } },
++  { id: "old-bytes-absent-unresolved", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001")]); const f = fileEntry(); delete f._old; d.receipt(receiptOf([{ id: "S001", files: [f] }])); } },
++  { id: "range-lower-bound-zero-unresolved", exit: 1, unresolved: 1, build: (d) => { const h = sha256(Buffer.from(OLD_TEXT)); d.reg([regLine("S001", { anchor: `tag ${OLD}; feature.cc:0-1; sha256 ${h.slice(0, 8)}\u2026${h.slice(-4)}` })]); d.receipt(receiptOf([{ id: "S001", files: [fileEntry({ ranges: [[0, 1]] })] }])); } },
++  { id: "range-token-absent-unresolved", exit: 1, unresolved: 1, build: (d) => { const h = sha256(Buffer.from(OLD_TEXT)); d.reg([regLine("S001", { anchor: `tag ${OLD}; feature.cc; sha256 ${h.slice(0, 8)}\u2026${h.slice(-4)}` })]); d.receipt(receiptOf([{ id: "S001", files: [fileEntry()] }])); } },
++  { id: "drift-superseder-without-prefix-unresolved", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001"), regLine("S002", { tag: NEW, teaches: "replaces S001 \u2014 kThing disabled at the new tag" })]); d.receipt(receiptOf([{ id: "S001", superseded_by: "S002", files: [fileEntry({ newText: NEW_DRIFT })] }])); } },
++  { id: "drift-superseder-without-stable-tag-unresolved", exit: 1, unresolved: 1, build: (d) => { const h = sha256(Buffer.from(OLD_TEXT)); d.reg([regLine("S001"), `| S002 | Fixture without a tag cell | code | A | scope | feature.cc; sha256 ${h.slice(0, 8)}\u2026${h.slice(-4)} | supersedes S001 \u2014 kThing disabled at the new tag | mined | 2026-10-20 | 90d | \u2014 |`]); d.receipt(receiptOf([{ id: "S001", superseded_by: "S002", files: [fileEntry({ newText: NEW_DRIFT })] }])); } },
++  { id: "absence-now-present-with-token-drifts", exit: 1, unresolved: 1, build: (d) => { const nf = "NOT_FOUND: Requested entity was not found.\n"; d.reg([regLine("S001", { anchor: `HTTP 404; body sha256 ${sha256(Buffer.from(nf))}` })]); d.receipt(receiptOf([{ id: "S001", files: [fileEntry({ oldText: nf, newText: "int now_exists;\n// NOT_FOUND marker\n", ranges: [], oldStatus: 404, newStatus: 200 })] }])); } },
++  { id: "absence-404-body-without-token-drifts", exit: 1, unresolved: 1, build: (d) => { const nf = "NOT_FOUND: Requested entity was not found.\n"; d.reg([regLine("S001", { anchor: `HTTP 404; body sha256 ${sha256(Buffer.from(nf))}` })]); d.receipt(receiptOf([{ id: "S001", files: [fileEntry({ oldText: nf, newText: "gone\n", ranges: [], oldStatus: 404, newStatus: 404 })] }])); } },
+ ];
+ 
+ function makeFixture() {
+diff --git a/scripts/check-s106-evidence.mjs b/scripts/check-s106-evidence.mjs
+index 7ec5f5e..b03540a 100755
+--- a/scripts/check-s106-evidence.mjs
++++ b/scripts/check-s106-evidence.mjs
+@@ -236,6 +236,49 @@ const CASES = [
+     valid: null,
+     build: () => {},
+   },
++
++  // round-30 catalogue kill coverage (CASES/fixtures only; check lines untouched)
++  {
++    id: "sha-mismatch-same-length-invalid",
++    exit: 1,
++    valid: false,
++    field: "sha_match",
++    fieldValue: false,
++    build: (d) => {
++      d.bytes(FIXTURE_BYTES);
++      const measuredRev = d.commit();
++      d.bytes(FIXTURE_BYTES.replace("// tail", "// taiL"));
++      d.receipt(fixtureReceipt({ measured_rev: measuredRev }));
++      d.commit();
++    },
++  },
++  {
++    id: "anchor-not-unique-invalid",
++    exit: 1,
++    valid: false,
++    field: "anchor_unique",
++    fieldValue: false,
++    build: (d) => {
++      const dup = FIXTURE_BYTES.replace("// tail", `${FIXTURE_LINE}\n// tail`);
++      d.bytes(dup);
++      const measuredRev = d.commit();
++      d.receipt(fixtureReceipt({ measured_rev: measuredRev, decoded_bytes: Buffer.byteLength(dup), decoded_sha256: sha256(dup) }));
++      d.commit();
++    },
++  },
++  {
++    id: "byte-count-mismatch-invalid",
++    exit: 1,
++    valid: false,
++    field: "byte_count_match",
++    fieldValue: false,
++    build: (d) => {
++      d.bytes(FIXTURE_BYTES);
++      const measuredRev = d.commit();
++      d.receipt(fixtureReceipt({ measured_rev: measuredRev, decoded_bytes: Buffer.byteLength(FIXTURE_BYTES) + 1 }));
++      d.commit();
++    },
++  },
+ ];
+ 
+ function makeFixture() {

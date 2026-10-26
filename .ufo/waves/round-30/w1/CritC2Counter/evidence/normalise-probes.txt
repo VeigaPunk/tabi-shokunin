@@ -1,0 +1,34 @@
+# normalise() probes (copy of the frozen function; the copy differs only by the removed trailing main() call)
+
+unclosed <script> leaks JS text (closed one is stripped)
+  in : "<!DOCTYPE html><html><body><script>var q=\"secret policy words\";"
+  out: "var q=\"secret policy words\";"
+closed <script>
+  in : "<!DOCTYPE html><html><body><script>var q=\"secret policy words\";</script>"
+  out: ""
+HTML sniff is content-based: prose mentioning <html> is tag-stripped
+  in : "RFC text mentions <html> and then <code>X</code> tag syntax."
+  out: "RFC text mentions and then X tag syntax."
+fragment page (no doctype/<html>) is not normalised at all
+  in : "<p>A &amp; B</p>"
+  out: "<p>A &amp; B</p>"
+entities are decoded only in HTML mode
+  in : "plain A &amp; B and &copy; here"
+  out: "plain A &amp; B and &copy; here"
+unknown entity stays literal in HTML mode
+  in : "<!DOCTYPE html><html><p>A &copy; B</p>"
+  out: "A &copy; B"
+<br> separates words (no word join)
+  in : "<!DOCTYPE html><html><p>word<br>next</p>"
+  out: "word next"
+zero-width space survives collapse and breaks a copy-pasted quote
+  in : "<!DOCTYPE html><html><p>consistent​over a sequence</p>"
+  out: "consistent​over a sequence"
+nbsp is collapsed to a space
+  in : "<!DOCTYPE html><html><p>consistent&nbsp;over a sequence</p>"
+  out: "consistent over a sequence"
+
+Real allowed source: rfc6585.txt (fetched from www.rfc-editor.org)
+  raw contains <html> (in an example): true
+  normalised contains "Too Many Requests</title>": false  (stripped as a tag)
+  normalised contains the 429 sentence: true

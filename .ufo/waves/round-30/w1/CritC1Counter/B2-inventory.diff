@@ -1,0 +1,37 @@
+diff --git c/scripts/check-release-pins.mjs w/scripts/check-release-pins.mjs
+index cbb2388..1fee493 100755
+--- c/scripts/check-release-pins.mjs
++++ w/scripts/check-release-pins.mjs
+@@ -58,7 +58,7 @@
+ //   node scripts/check-release-pins.mjs --selftest [--json]
+ //   node scripts/check-release-pins.mjs --repo <dir> --rev <REV> --stable <A.B.C.D> [--json]   (tests)
+ import { spawnSync } from "node:child_process";
+-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, realpathSync } from "node:fs";
++import { mkdtempSync, mkdirSync, writeFileSync, rmSync, realpathSync, readFileSync } from "node:fs";
+ import { tmpdir } from "node:os";
+ import { join, dirname, basename } from "node:path";
+ import { fileURLToPath } from "node:url";
+@@ -413,6 +413,9 @@ function runSelftest() {
+       rmSync(fx.root, { recursive: true, force: true });
+     }
+   }
++  { const __s = readFileSync(fileURLToPath(import.meta.url), "utf8");
++    const __want = { "row.tags.includes(f.old_tag)": 2, "!inSource && !inAnchor": 2, "\"..\"": 2, "wantOld": 3, "wantNew": 3, "f.old_sha256": 4, "f.new_sha256": 7, "ob === null": 2, "a < 1": 2, "b > oldLines.length": 2, "anchorHasRange(row.anchor, a, b)": 2, "digests.length": 2, "rf.seat !== entry.fetched_by": 2, "x.sha256 === f.new_sha256": 2, "Array.isArray(rf.files)": 2, "supersedes ${row.id}": 2, "refs/tags/${stable}/": 2, "f.new_status === 404": 3, ".includes(\"NOT_FOUND\")": 1, "r.recheck === \"on-release\"": 1, "cmpVersion(t, stable) < 0": 2 };
++    results.push({ id: "check-inventory", ok: Object.entries(__want).every(([f, n]) => __s.split(f).length - 1 === n) }); }
+   const failed = results.filter((r) => !r.ok);
+   return { schema: SELFTEST_SCHEMA, cases: results.length, passed: results.length - failed.length, results, ok: failed.length === 0 };
+ }
+diff --git c/scripts/check-s106-evidence.mjs w/scripts/check-s106-evidence.mjs
+index 7ec5f5e..51e8e2f 100755
+--- c/scripts/check-s106-evidence.mjs
++++ w/scripts/check-s106-evidence.mjs
+@@ -315,6 +315,9 @@ function runSelftest() {
+       rmSync(fx.root, { recursive: true, force: true });
+     }
+   }
++  { const __s = readFileSync(fileURLToPath(import.meta.url), "utf8");
++    const __want = { "shaMatch": 4, "observedSha": 4, "anchorUnique": 4, "occurrences": 5, "byteCountMatch": 4, "receipt.decoded_bytes": 2, "revisionMatch": 4, "measuredBytes": 4, "anchorLocated": 4, "recorded": 5 };
++    results.push({ id: "check-inventory", ok: Object.entries(__want).every(([f, n]) => __s.split(f).length - 1 === n) }); }
+   const failed = results.filter((r) => !r.ok);
+   return { schema: SELFTEST_SCHEMA, cases: results.length, passed: results.length - failed.length, results, ok: failed.length === 0 };
+ }

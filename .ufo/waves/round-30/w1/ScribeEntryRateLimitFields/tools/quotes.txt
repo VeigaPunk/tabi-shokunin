@@ -1,0 +1,22 @@
+The field value SHOULD remain consistent over a sequence of HTTP responses.
+It is this characteristic that differentiates it from the RateLimit (Section 4) field that contains information that MAY change on every request.
+enables clients to control their own flow of requests based on policy information provided by the server
+The field is expressed as a List[SF] of Service Limit Items
+This REQUIRED parameter value conveys the available quota under the identified policy
+This OPTIONAL parameter value conveys the effective window under the identified policy
+A service limit is the currently available quota under a specific quota policy
+Clients MUST NOT assume that a positive available quota is a guarantee that further requests will be served
+it indicates that the server may soon throttle the client
+The client MUST NOT assume that all its service limit will be fully restored after the time indicated by the effective window parameter.
+are informative and MAY be ignored
+Quota policies can be advertised by servers, but they are not required to be
+A server MAY return RateLimit header fields independently of the response status code. This includes throttled responses.
+replying instead with a 4xx HTTP status code (e.g. 429 or 403)
+we use it just as an example of a throttled request, that could instead use even 403 or whatever status code
+If a response contains both the RateLimit and Retry-After fields, the Retry-After field MUST take precedence and the effective window MAY be ignored.
+Servers are not required to return RateLimit header fields in every response
+A client receiving RateLimit header fields MUST NOT assume that future responses will contain the same RateLimit header fields
+Malformed RateLimit header fields MUST be ignored.
+the number of seconds within which the client can use no more than the available quota
+It is inappropriate to use Internet-Drafts as reference material
+This specification does not prevent clients from making requests.

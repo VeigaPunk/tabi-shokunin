@@ -1,0 +1,21 @@
+diff --git a/corpus/lessons/round-29.md b/corpus/lessons/round-29.md
+index c23d20f..e30d421 100644
+--- a/corpus/lessons/round-29.md
++++ b/corpus/lessons/round-29.md
+@@ -262,3 +262,16 @@ Round-28 wave accounting (routed defect 4): `.ufo/waves/round-29/r28-wave-accoun
+ - Independent re-fetch: 23 records by seats Refetch<id> (wave 2), committed at
+   `corpus/evidence/round-29/release-pins/refetch/`; every record agrees with the receipt's `new_sha256`
+   (S094 after the documented nonce normalisation).
++
++## Appended mistake rows — M4 and M5 (round 30, 2026-10-26; append-only, seat `ScribeLesson29Addendum`)
++
++The §Mistakes table above has one row per mistake for M1–M3; M4 and M5 were written as prose only
++(`§M4` opens `:226`, `§M5` opens `:243`). The two rows below put them in the table's shape
++(`CORPUS.md` §5: class · evidence · captured-by · fix) without touching a line of the prose, which
++keeps the "able to fail" field. Evidence pointers are line numbers in the committed bytes (checked
++read-only at `061e62024c0523d3c6c7e819506a773ff2cd7d75`).
++
++| # | Class | Evidence pointer | Captured by | Fix |
++|---|---|---|---|---|
++| M4 | `vacuous` (secondary `survivor`) | `.ufo/waves/round-29/w1/CritC3Gaming.md:58` (§S1) and `:78` (§S14) — `unresolved=0` reachable from receipt-derived records with no fetch; `.ufo/waves/round-29/w1/CritSemanticDrift.md:27` (§1) — subset filing turns drifted rows into `holds`; `.ufo/waves/round-29/w1/MutC3.md:42` — score `9 killed / 9 survived of 18` with the nine survivors listed at `:44-56` (the §M4 prose at `:231` says "10 surviving mutants" and names nine — the source's score line and its survivor list both say 9); `.ufo/waves/round-29/w1/RevC3Code.md:22` (M1) and `:31` (M2) | `none` — criterion 69 (`corpus/QUALITY.md:374`) asks for paired controls, not an adversary; the criterion drafted from this row is 73 (`corpus/QUALITY.md:394`, added `e1e3a15`, lesson pointer `round-29.md#mistakes M4`) | not landed in round 29 (C3 frozen); the round verifies the stronger sentence on its own data through w2 (every row re-fetched at both tags by a seat other than its w1 fetcher, filing completeness checked per anchor); next round: counter v2 with anchor-derived span sets, exact-path binding, population id set, self-supersession refusal, 404 rows judged on status + first line |
++| M5 | `stale-premise` | `.ufo/waves/round-29/w1/CritSemanticDrift.md:154` (§4) — six fetches, six digests, only `request_id` differs; `corpus/SOURCES.md:108` (S094) records one 404 body sha256 (`9d640282…8b19`) as if it were a property of the URL; `corpus/evidence/round-29/release-pins/receipt.json:754-756` — S094 `new_sha256` `604d9798…4868` (normalised) against `raw_new_sha256` `03016b0d…a056` (unmodified fetch) | `none` — no criterion in `corpus/QUALITY.md` speaks to nonce-bearing responses | landed: the committed 156 body replaces the nonce value (receipt S094 `normalization`, `raw_new_sha256`) and the w2 re-fetch applies the same replacement; the red state is `§M5`'s own pair — an un-normalised re-fetch disagrees (`03016b0d…` vs `604d9798…`) |

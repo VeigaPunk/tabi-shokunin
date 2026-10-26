@@ -1,0 +1,45 @@
+diff --git c/scripts/check-release-pins.mjs w/scripts/check-release-pins.mjs
+index cbb2388..9ff0ab1 100755
+--- c/scripts/check-release-pins.mjs
++++ w/scripts/check-release-pins.mjs
+@@ -353,6 +353,40 @@ const CASES = [
+   { id: "refetch-missing-unresolved", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001")]); d.receipt(receiptOf([{ id: "S001", _refetch: null, files: [fileEntry()] }])); } },
+   { id: "refetch-same-seat-unresolved", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001")]); d.receipt(receiptOf([{ id: "S001", fetched_by: "W2-fixture", files: [fileEntry()] }])); } },
+   { id: "copied-old-as-new-caught-by-refetch", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001")]); d.receipt(receiptOf([{ id: "S001", _refetch: REFETCH_FABRICATED, files: [fileEntry({ newText: OLD_TEXT })] }])); } },
++  // ExecPinsCasesB (round-30 w1): the s1 supersession sub-checks and the two
++  // 404 NOT_FOUND sub-conditions, each with a refetch record matching the fixture.
++  {
++    id: "drift-superseder-teaches-without-prefix-unresolved", exit: 1, unresolved: 1, reasons: ["s1-drift-unsuperseded"],
++    build: (d) => {
++      d.reg([regLine("S001"), regLine("S002", { tag: NEW, teaches: "kThing reads disabled at the newer tag" })]);
++      d.receipt(receiptOf([{ id: "S001", superseded_by: "S002", files: [fileEntry({ newText: NEW_DRIFT })] }]));
++    },
++  },
++  {
++    id: "drift-superseder-not-at-stable-tag-unresolved", exit: 1, unresolved: 1, reasons: ["s1-drift-unsuperseded"],
++    build: (d) => {
++      d.reg([regLine("S001"), regLine("S002", { recheck: "90d", teaches: "supersedes S001 — kThing disabled at the new tag" })]);
++      d.receipt(receiptOf([{ id: "S001", superseded_by: "S002", files: [fileEntry({ newText: NEW_DRIFT })] }]));
++    },
++  },
++  {
++    id: "absence-404-present-with-marker-unresolved", exit: 1, unresolved: 1, reasons: ["s1-drift-unsuperseded"],
++    build: (d) => {
++      const nf = "NOT_FOUND: Requested entity was not found.\n";
++      const present = "NOT_FOUND: Requested entity was not found.\nint now_exists;\n";
++      d.reg([regLine("S001", { anchor: `HTTP 404; body sha256 ${sha256(Buffer.from(nf))}` })]);
++      d.receipt(receiptOf([{ id: "S001", files: [fileEntry({ oldText: nf, newText: present, ranges: [], oldStatus: 404, newStatus: 200, path: P })] }]));
++    },
++  },
++  {
++    id: "absence-404-body-lacks-marker-unresolved", exit: 1, unresolved: 1, reasons: ["s1-drift-unsuperseded"],
++    build: (d) => {
++      const nf = "NOT_FOUND: Requested entity was not found.\n";
++      const blank = "<html><head><title>Error 404</title></head></html>\n";
++      d.reg([regLine("S001", { anchor: `HTTP 404; body sha256 ${sha256(Buffer.from(nf))}` })]);
++      d.receipt(receiptOf([{ id: "S001", files: [fileEntry({ oldText: nf, newText: blank, ranges: [], oldStatus: 404, newStatus: 404, path: P })] }]));
++    },
++  },
+ ];
+ 
+ function makeFixture() {

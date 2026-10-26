@@ -1,0 +1,28 @@
+### B1 staged package anchor line 6 (the defect)
+REV -09 http_status=200 bytes=67876 sha256=e088940d… fetched_at=2026-10-26T07:06:06Z
+REV -10 http_status=200 bytes=67803 sha256=f40a2411… fetched_at=2026-10-26T07:06:06Z
+REV -11 http_status=200 bytes=67097 sha256=d6016dd0… fetched_at=2026-10-26T07:06:06Z
+REV -12 http_status=404 bytes=77297 sha256=db9919c0… fetched_at=2026-10-26T07:06:06Z
+CEILING_CLAIM contradicted: claim says -10 and later return 404; -10 returned 200 (67803 bytes), -11 returned 200 (67097 bytes)
+exit=1
+
+### B2 lane corrected anchor (pin -11, recheck 180d)
+CEILING_CLAIM none (no '-N and later ... 404' assertion in the claim)
+exit=0
+
+### B3 control true ceiling (-12 and later return 404)
+REV -09 http_status=200 bytes=67876 sha256=e088940d… fetched_at=2026-10-26T07:06:06Z
+REV -10 http_status=200 bytes=67803 sha256=f40a2411… fetched_at=2026-10-26T07:06:06Z
+REV -11 http_status=200 bytes=67097 sha256=d6016dd0… fetched_at=2026-10-26T07:06:06Z
+REV -12 http_status=404 bytes=77297 sha256=db9919c0… fetched_at=2026-10-26T07:06:06Z
+CEILING_CLAIM holds: every fetched revision >= -12 returned 404 (-12)
+exit=0
+
+### B4 control older ceiling (-09 and later return 404)
+REV -09 http_status=200 bytes=67876 sha256=e088940d… fetched_at=2026-10-26T07:06:06Z
+REV -10 http_status=200 bytes=67803 sha256=f40a2411… fetched_at=2026-10-26T07:06:06Z
+REV -11 http_status=200 bytes=67097 sha256=d6016dd0… fetched_at=2026-10-26T07:06:06Z
+REV -12 http_status=404 bytes=77297 sha256=db9919c0… fetched_at=2026-10-26T07:06:06Z
+CEILING_CLAIM contradicted: claim says -09 and later return 404; -09 returned 200 (67876 bytes), -10 returned 200 (67803 bytes), -11 returned 200 (67097 bytes)
+exit=1
+

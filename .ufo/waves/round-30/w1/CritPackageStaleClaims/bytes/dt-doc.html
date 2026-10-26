@@ -1,0 +1,3263 @@
+
+<!DOCTYPE html>
+
+
+
+
+
+
+<html data-bs-theme="auto" lang="en" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <head>
+        
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>
+            
+    
+        draft-ietf-httpapi-ratelimit-headers-11 - RateLimit header fields for HTTP
+    
+
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="traceparent" content="">
+        <link href="https://static.ietf.org/fonts/inter/import.css" rel="stylesheet">
+        <link href="https://static.ietf.org/fonts/noto-sans-mono/import.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://static.ietf.org/dt/12.82.1/ietf/css/ietf.css">
+        <link rel="stylesheet" href="https://static.ietf.org/dt/12.82.1/ietf/css/select2.css">
+        
+        <script src="https://static.ietf.org/dt/12.82.1/ietf/js/theme.js"></script>
+        <style>
+            .inline { display: inline; }
+        </style>
+        
+        
+    
+
+
+
+
+<meta property="og:title" content="RateLimit header fields for HTTP">
+<meta property="og:url" content="https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/">
+
+
+<link rel="canonical" href="https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/">
+
+<meta property="og:site_name" content="IETF Datatracker">
+<meta property="og:description" content="This document defines the RateLimit-Policy and RateLimit HTTP header fields for servers to advertise their quota policies and the current service limits, thereby allowing clients to avoid being throttled.">
+<meta property="og:type" content="article">
+
+<meta property="og:image" content="https://static.ietf.org/dt/12.82.1/ietf/images/ietf-logo-card.png">
+<meta property="og:image:alt" content="Logo of the IETF">
+<meta property="article:section" content="IETF - Internet Engineering Task Force">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<meta property="article:author" content="Roberto Polli">
+<meta property="article:author" content="Alex Martínez Ruiz">
+<meta property="article:author" content="Darrel Miller">
+
+
+
+    <link rel="alternate"
+          type="application/atom+xml"
+          title="Document changes"
+          href="/feed/document-changes/draft-ietf-httpapi-ratelimit-headers/">
+    <meta name="description"
+          content="RateLimit header fields for HTTP ">
+
+        <script type="module" crossorigin="" src="https://static.ietf.org/dt/12.82.1/assets/embedded-73a0c4fc.js"></script>
+<link href="https://static.ietf.org/dt/12.82.1/assets/create-pinia-singleton-03577dc2.js" type="text/javascript" crossorigin="anonymous" rel="modulepreload" as="script" />
+<link href="https://static.ietf.org/dt/12.82.1/assets/Scrollbar-3f2fb773.js" type="text/javascript" crossorigin="anonymous" rel="modulepreload" as="script" />
+        
+
+<link rel="apple-touch-icon"
+      sizes="180x180"
+      href="https://static.ietf.org/dt/12.82.1/ietf/images/ietf-logo-nor-180.png">
+<link rel="icon"
+      sizes="32x32"
+      href="https://static.ietf.org/dt/12.82.1/ietf/images/ietf-logo-nor-32.png">
+<link rel="icon"
+      sizes="16x16"
+      href="https://static.ietf.org/dt/12.82.1/ietf/images/ietf-logo-nor-16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon"
+      href="https://static.ietf.org/dt/12.82.1/ietf/images/ietf-logo-nor-mask.svg"
+      color="#ffffff">
+<meta name="msapplication-TileColor"
+      content="#ffffff">
+<meta name="theme-color"
+      content="#ffffff">
+        <script src="https://static.ietf.org/dt/12.82.1/ietf/js/ietf.js"></script>
+        
+    </head>
+    <body  class="navbar-offset position-relative"
+          data-group-menu-data-url="/group/groupmenu.json">
+        
+        <noscript><iframe class="status" title="Site status" src="/status/latest"></iframe></noscript>
+<div class="vue-embed" data-component="Status"></div>
+        <a class="visually-hidden visually-hidden-focusable" href="#content">Skip to main content</a>
+        <nav class="navbar navbar-expand-lg fixed-top bg-secondary-subtle">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    
+
+
+
+<img alt="IETF Logo"
+     class="d-lm-none me-2"
+     
+     
+        
+             src="https://static.ietf.org/dt/12.82.1/ietf/images/ietf-logo-nor-white.svg"
+        
+     
+     >
+
+<img alt="IETF Logo"
+     class="d-dm-none me-2"
+     
+     
+        
+             src="https://static.ietf.org/dt/12.82.1/ietf/images/ietf-logo-nor.svg"
+        
+     
+     >
+                    Datatracker
+                    
+                </a>
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav flex-nowrap">
+                        
+
+
+
+
+<li class="nav-item dropdown">
+    
+        <a href="#"
+           class="nav-link dropdown-toggle"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            Groups
+        </a>
+        <ul class="dropdown-menu mt-n1">
+        
+    <li class="dropdown-header">By area/parent</li>
+    
+
+
+
+    
+    <li class="dropend group-menu group-parent-2010">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#ART">
+            Apps &amp; Realtime
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1008">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#GEN">
+            General
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1052">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#INT">
+            Internet
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1193">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#OPS">
+            Ops &amp; Management
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1249">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#RTG">
+            Routing
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1260">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#SEC">
+            Security
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-2412">
+        <a class="dropdown-item dropdown-toggle "
+           href="/wg/#WIT">
+            Web and Internet Transport
+        </a>
+    </li>
+
+    
+        <li><a class="dropdown-item" href="/group/iesg/about/">IESG</a></li>
+    
+    <li class="dropend group-menu group-parent-7">
+        <a class="dropdown-item dropdown-toggle "
+           href="/program/">
+            IAB
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-3">
+        <a class="dropdown-item dropdown-toggle "
+           href="/rg/">
+            IRTF
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-2309">
+        <a class="dropdown-item dropdown-toggle "
+           href="/adm/">
+            IETF LLC
+        </a>
+    </li>
+
+    
+    <li class="dropend group-menu group-parent-1876">
+        <a class="dropdown-item dropdown-toggle "
+           href="/rfcedtyp/">
+            RFC Editor
+        </a>
+    </li>
+
+
+    <li class="dropend">
+        <a class="dropdown-item dropdown-toggle "
+           href="/group/">
+            Other
+        </a>
+        
+
+
+<ul class="dropdown-menu ms-n1">
+    
+        <li>
+            <a class="dropdown-item "
+               href="/ag/">Active AGs</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/area/">Active Areas</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/dir/">Active Directorates</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/iabworkshop/">Active IAB Workshops</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/program/">Active Programs</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/rag/">Active RAGs</a>
+        </li>
+    
+        <li>
+            <a class="dropdown-item "
+               href="/team/">Active Teams</a>
+        </li>
+    
+    
+</ul>
+
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    <li class="dropdown-header">New work</li>
+    <li>
+        <a class="dropdown-item"
+           href="/group/chartering/">
+            Chartering groups
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/wg/bofs/">
+            BOFs
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/doc/bof-requests">
+            BOF Requests
+        </a>
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    <li class="dropdown-header">Other groups</li>
+    <li>
+        <a class="dropdown-item"
+           href="/group/concluded/">
+            Concluded groups
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/list/nonwg">
+            Non-WG lists
+        </a>
+    </li>
+    
+    </ul>
+</li>
+
+<li class="nav-item dropdown">
+    
+        <a href="#"
+           class="nav-link dropdown-toggle"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            Documents
+        </a>
+        <ul class="dropdown-menu mt-n1">
+        
+    <li>
+        <a class="dropdown-item"
+           href="/doc/search">
+            Search
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/doc/recent">
+            Recent I-Ds
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/submit/">
+            Submit an Internet-Draft
+        </a>
+    </li>
+    
+    
+        <li><hr class="dropdown-divider">
+        </li>
+    
+    <li class="dropdown-header">
+        RFC streams
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/stream/iab/">
+            IAB
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/stream/irtf/">
+            IRTF
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/stream/ise/">
+            ISE
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/stream/editorial/">
+            Editorial
+        </a>
+    </li>
+    
+        <li><hr class="dropdown-divider">
+        </li>
+    
+    <li class="dropdown-header">
+        Subseries
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/doc/std">
+            STD
+        </a>
+        <a class="dropdown-item"
+           href="/doc/bcp">
+            BCP
+        </a>
+        <a class="dropdown-item"
+           href="/doc/fyi">
+            FYI
+        </a>
+    </li>
+    
+    </ul>
+</li>
+
+<li class="nav-item dropdown">
+    
+        <a href="#"
+           class="nav-link dropdown-toggle"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            Meetings
+        </a>
+        <ul class="dropdown-menu mt-n1">
+        
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/agenda">
+            Agenda
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/materials">
+            Materials
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/floor-plan">
+            Floor plan
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="https://www.ietf.org/how/meetings/register/">
+            Registration
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/important-dates/">
+            Important dates
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/session/request/">
+            Request a session
+        </a>
+    </li>
+    
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/requests">
+            Session requests
+        </a>
+    </li>
+    
+    
+        
+            <li><hr class="dropdown-divider">
+            </li>
+        
+        <li class="dropdown-header">
+            Upcoming meetings
+        </li>
+    
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/upcoming">
+            Upcoming meetings
+        </a>
+    </li>
+    
+        
+            <li><hr class="dropdown-divider">
+            </li>
+        
+        <li class="dropdown-header">
+            Past meetings
+        </li>
+    
+    <li>
+        <a class="dropdown-item"
+           href="/meeting/past">
+            Past meetings
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="https://www.ietf.org/how/meetings/past/">
+            Meeting proceedings
+        </a>
+    </li>
+    
+    </ul>
+</li>
+
+<li class="nav-item dropdown">
+    
+        <a href="#"
+           class="nav-link dropdown-toggle"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            Other
+        </a>
+        <ul class="dropdown-menu mt-n1">
+        
+    <li>
+        <a class="dropdown-item"
+           href="/ipr/">
+            IPR disclosures
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/liaison/">
+            Liaison statements
+        </a>
+    </li>
+    
+    <li>
+        <a class="dropdown-item"
+           href="/iesg/agenda/">
+            IESG agenda
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/nomcom/">
+            NomComs
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/doc/downref">
+            Downref registry
+        </a>
+    </li>
+    <li class="dropend">
+        <a class="dropdown-item dropdown-toggle" href="#">
+            Statistics
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item"
+                   href="/stats/document/">
+                    I-Ds/RFCs
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item"
+                   href="/stats/meeting/">
+                    Meetings
+                </a>
+            </li>
+            
+            
+        </ul>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/api/">
+            API Help
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href="/release/">
+            Release notes
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           target="_blank" href="https://status.ietf.org">
+            System status
+        </a>
+    </li>
+    
+        <li><hr class="dropdown-divider">
+        </li>
+    
+    <li>
+        <a class="dropdown-item text-danger "
+           target="_blank" href="https://github.com/ietf-tools/datatracker/issues/new/choose">
+            <i class="bi bi-bug">
+            </i>
+            Report a bug
+        </a>
+    </li>
+    
+    </ul>
+</li>
+
+
+    
+
+
+
+<li class="nav-item dropdown">
+    
+        <a href="#"
+           class="nav-link dropdown-toggle"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            
+                User
+            
+        </a>
+        <ul class="dropdown-menu  mt-n1 ">
+        
+    
+    
+        
+            <li>
+                <a class="dropdown-item "
+                   rel="nofollow"
+                   href="/accounts/login/?next=/doc/draft-ietf-httpapi-ratelimit-headers/">
+                    Sign in
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item "
+                   rel="nofollow"
+                   href="/accounts/reset/">
+                    Password reset
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item "
+                   href="/accounts/settings/"
+                   rel="nofollow">
+                    Preferences
+                </a>
+            </li>
+        
+    
+    
+        <li>
+            <a class="dropdown-item "
+               href="/accounts/create/">
+                New account
+            </a>
+        </li>
+    
+    <li class="dropend">
+      <a class="dropdown-item dropdown-toggle" href="#">
+        List subscriptions
+      </a>
+      <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item "
+                href="https://mailman3.ietf.org/mailman3/lists/">
+                    IETF Lists
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item "
+                href="https://mailman3.irtf.org/mailman3/lists/">
+                IRTF Lists
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item "
+                href="https://mailman3.iab.org/mailman3/lists/">
+                    IAB Lists
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item "
+                href="https://mailman3.rfc-editor.org/mailman3/lists/">
+                    RFC-Editor Lists
+                </a>
+            </li>
+        </ul>
+    </li>
+    
+    
+    
+    </ul></li>
+
+
+                    </ul>
+                </div>
+                <div class="d-flex align-items-center">
+                    <a class="nav-link text-danger d-none d-xl-inline me-xl-4"
+                       target="_blank"
+                       href="https://github.com/ietf-tools/datatracker/issues/new/choose">
+                        Report a bug
+                        <i class="bi bi-bug"></i>
+                    </a>
+
+                    
+                        <a class="btn me-1  btn-warning  d-none d-sm-block"
+                           rel="nofollow"
+                           href="/accounts/login/?next=/doc/draft-ietf-httpapi-ratelimit-headers/">
+                            Sign in
+                        </a>
+                    
+
+                    <div class="d-none d-md-block dropdown" id="navbar-doc-search-wrapper">
+                        <input class="form-control"
+                               id="navbar-doc-search"
+                               type="text"
+                               placeholder="Document search"
+                               autocomplete="off"
+                               data-ajax-url="/doc/select2search/document/all/"
+                               aria-label="Document search">
+                        <ul class="dropdown-menu" id="navbar-doc-search-results">
+                        </ul>
+                    </div>
+                </div>
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbar-collapse"
+                        aria-controls="navbar-collapse"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <i class="navbar-toggler-icon"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <main class="pt-3 container-fluid" id="main">
+            <div class="row">
+                
+                <div class="col mx-lg-3 ietf-auto-nav" id="content">
+                    <noscript data-nosnippet>
+                        <div class="alert alert-danger alert-ignore my-3">
+                            <b>Javascript disabled?</b> Like other modern websites, the IETF Datatracker relies on Javascript.
+                            Please enable Javascript for full functionality.
+                        </div>
+                    </noscript>
+                    
+                    
+    
+    
+
+
+
+<h1>
+    RateLimit header fields for HTTP
+    <br>
+    <small class="text-body-secondary">draft-ietf-httpapi-ratelimit-headers-11</small>
+</h1>
+<ul class="nav nav-tabs my-3">
+    
+        <li  class="nav-item">
+            <a class="nav-link active"
+               href="/doc/draft-ietf-httpapi-ratelimit-headers/">
+                Status
+            </a>
+        </li>
+    
+        <li  class="nav-item">
+            <a class="nav-link disabled"
+               >
+                IESG evaluation record
+            </a>
+        </li>
+    
+        <li  class="nav-item">
+            <a class="nav-link "
+               href="/doc/draft-ietf-httpapi-ratelimit-headers/writeup/">
+                IESG writeups
+            </a>
+        </li>
+    
+        <li  class="nav-item">
+            <a class="nav-link "
+               href="/doc/draft-ietf-httpapi-ratelimit-headers/email/">
+                Email expansions
+            </a>
+        </li>
+    
+        <li  class="nav-item">
+            <a class="nav-link "
+               href="/doc/draft-ietf-httpapi-ratelimit-headers/history/">
+                History
+            </a>
+        </li>
+    
+</ul>
+
+    
+
+
+
+    <label class="my-1 fw-bold">Versions:</label>
+    <nav class="mb-3">
+
+    <ul class="revision-list pagination pagination-sm text-center flex-wrap">
+        
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/00/"
+                        >
+                            00
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/01/"
+                        rel="nofollow">
+                            01
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/02/"
+                        rel="nofollow">
+                            02
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/03/"
+                        rel="nofollow">
+                            03
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/04/"
+                        rel="nofollow">
+                            04
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/05/"
+                        rel="nofollow">
+                            05
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/06/"
+                        rel="nofollow">
+                            06
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/07/"
+                        rel="nofollow">
+                            07
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/08/"
+                        rel="nofollow">
+                            08
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/09/"
+                        rel="nofollow">
+                            09
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item ">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/10/"
+                        rel="nofollow">
+                            10
+                        </a>
+                    </li>
+                
+            
+                 
+                    <li class="page-item active">
+                        <a class="page-link"
+                        href="/doc/draft-ietf-httpapi-ratelimit-headers/11/"
+                        >
+                            11
+                        </a>
+                    </li>
+                
+            
+            
+        
+    </ul>
+
+    </nav>
+
+    
+
+
+
+
+    
+
+
+    <div id="doc-timeline"></div>
+    
+        
+    
+    <table class="table table-sm table-borderless">
+        
+
+
+
+
+
+
+
+<tbody class="meta align-top  border-top">
+    <tr>
+        <th scope="row">Document</th>
+        <th scope="row">Type</th>
+        <td class="edit"></td>
+        <td>
+            
+
+
+
+
+
+
+
+    <span class="text-success">Active Internet-Draft</span>
+    (<a href="/wg/httpapi/about/">httpapi WG</a>)
+    
+
+            
+            
+            
+        </td>
+    </tr>
+    
+    <tr>
+        <td></td>
+        <th scope="row">Authors</th>
+        <td class="edit">
+            
+        </td>
+        <td>
+            
+            
+                <span ><a 
+           title="Datatracker profile of Roberto Polli"
+            href="/person/robipolli@gmail.com" >Roberto Polli</a> <a 
+               href="mailto:robipolli%40gmail.com"
+               aria-label="Compose email to robipolli@gmail.com"
+               title="Compose email to robipolli@gmail.com">
+                <i class="bi bi-envelope"></i></a></span>,
+            
+                <span ><a 
+           title="Datatracker profile of Alex Martínez Ruiz"
+            href="/person/alex@flawedcode.org" >Alex Martínez Ruiz</a> <a 
+               href="mailto:alex%40flawedcode.org"
+               aria-label="Compose email to alex@flawedcode.org"
+               title="Compose email to alex@flawedcode.org">
+                <i class="bi bi-envelope"></i></a></span>,
+            
+                <span ><a 
+           title="Datatracker profile of Darrel Miller"
+            href="/person/darrel@tavis.ca" >Darrel Miller</a> <a 
+               href="mailto:darrel%40tavis.ca"
+               aria-label="Compose email to darrel@tavis.ca"
+               title="Compose email to darrel@tavis.ca">
+                <i class="bi bi-envelope"></i></a></span>
+            
+            
+        </td>
+    </tr>
+    
+    
+    <tr>
+        <td></td>
+        <th scope="row">Last updated</th>
+        <td class="edit"></td>
+        <td>
+            2026-05-23
+            
+        </td>
+    </tr>
+    
+    
+        
+            <tr>
+                <td></td>
+                <th scope="row">Replaces</th>
+                <td class="edit">
+                    
+                </td>
+                <td>
+                    
+                        
+                            <a href="/doc/draft-polli-ratelimit-headers/" title="RateLimit Header Fields for HTTP">draft-polli-ratelimit-headers</a>
+                        
+                    
+                </td>
+            </tr>
+        
+        
+        
+    
+    <tr>
+        <td></td>
+        <th scope="row">
+            RFC stream
+        </th>
+        <td class="edit">
+            
+        </td>
+        <td >
+            
+                
+                
+                    Internet Engineering Task Force (IETF)
+                
+                
+            
+        </td>
+    </tr>
+    
+        <tr>
+            <td></td>
+            <th scope="row">
+                Intended RFC status
+            </th>
+            <td class="edit">
+                
+            </td>
+            <td>
+                
+                    <span class="text-body-secondary">
+                        (None)
+                    </span>
+                
+            </td>
+        </tr>
+    
+    <tr>
+        <td></td>
+        <th scope="row">
+            Formats
+        </th>
+        <td class="edit">
+        </td>
+        <td>
+            
+                
+    <div class="buttonlist">
+    
+        
+        <a class="btn btn-primary btn-sm"
+          
+          target="_blank"
+          href="https://www.ietf.org/archive/id/draft-ietf-httpapi-ratelimit-headers-11.txt">
+            
+                <i class="bi bi-file-text"></i> txt
+            
+        </a>
+        
+    
+        
+        <a class="btn btn-primary btn-sm"
+          
+          target="_blank"
+          href="https://www.ietf.org/archive/id/draft-ietf-httpapi-ratelimit-headers-11.html">
+            
+                <i class="bi bi-file-code"></i> html
+            
+        </a>
+        
+    
+        
+        <a class="btn btn-primary btn-sm"
+          
+          target="_blank"
+          href="https://www.ietf.org/archive/id/draft-ietf-httpapi-ratelimit-headers-11.xml">
+            
+                <i class="bi bi-file-code"></i> xml
+            
+        </a>
+        
+    
+        
+        <a class="btn btn-primary btn-sm"
+          
+          
+          href="/doc/html/draft-ietf-httpapi-ratelimit-headers-11">
+            
+                <i class="bi bi-file-code"></i> htmlized
+            
+        </a>
+        
+    
+        
+        <a class="btn btn-primary btn-sm"
+          
+          target="_blank"
+          href="/doc/draft-ietf-httpapi-ratelimit-headers/11/bibtex/">
+            
+                <i class="bi bi-file-ruled"></i> bibtex
+            
+        </a>
+        
+    
+        
+        <a class="btn btn-primary btn-sm"
+          
+          target="_blank"
+          href="/doc/bibxml3/draft-ietf-httpapi-ratelimit-headers-11.xml">
+            
+                <i class="bi bi-file-code"></i> bibxml
+            
+        </a>
+        
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+        
+    
+        
+            
+                <tr>
+                    <td></td>
+                    <th scope="row">
+                        Reviews
+                    </th>
+                    <td class="edit">
+                    </td>
+                    <td>
+                        
+                    
+<div class="review-assignment-summary">
+    
+        <a href="/doc/review-ietf-httpapi-ratelimit-headers-10-httpdir-early-pardue-2026-01-16/">
+            HTTPDIR Early review
+            
+                (of
+                
+                -10)
+            by Lucas Pardue</a>
+        
+        
+            
+                <span class="badge rounded-pill text-bg-danger text-wrap">
+                    <i class="bi bi-x-lg"></i> Not ready
+                </span>
+                
+        
+    
+</div>
+                
+                
+                        
+                        
+                    </td>
+                </tr>
+            
+            
+        
+    
+    
+        
+            <tr>
+                <td>
+                </td>
+                <th scope="row">
+                    Additional resources
+                </th>
+                <td class="edit">
+                    
+                </td>
+                <td>
+                    
+                        
+                            
+                                <a href="https://github.com/ietf-wg-httpapi/ratelimit-headers" title="GitHub Repository">
+                                    GitHub Repository
+                                </a>
+                                <br>
+                                
+                            
+                        
+                        
+                            
+                                <a href="https://mailarchive.ietf.org/arch/browse/httpapi/?q=draft-ietf-httpapi-ratelimit-headers">
+                                    Mailing list discussion
+                                </a>
+                            
+                        
+                    
+                </td>
+            </tr>
+        
+    
+</tbody>
+        <tbody class="meta border-top">
+            <tr>
+                <th scope="row">
+                    Stream
+                </th>
+                
+                    <th scope="row">
+                        
+                            <a href="/doc/help/state/draft-stream-ietf/">
+                                
+                                    WG
+                                
+                                state
+                            </a>
+                        
+                    </th>
+                    <td class="edit">
+                        
+                    </td>
+                    <td>
+                        
+                            <span class="">
+                                WG Document
+                            </span>
+                        
+                        
+                        
+                    </td>
+                
+            </tr>
+            
+            
+            
+            
+                <tr>
+                    <td></td>
+                    <th scope="row">
+                        Document shepherd
+                    </th>
+                    <td class="edit">
+                        
+                    </td>
+                    <td>
+                        
+                            <span class="text-body-secondary">
+                                    (None)
+                                </span>
+                        
+                    </td>
+                </tr>
+                
+            
+            
+        </tbody>
+        
+            <tbody class="meta border-top">
+                <tr>
+                    <th scope="row">
+                        IESG
+                    </th>
+                    <th scope="row">
+                        <a href="/doc/help/state/draft-iesg/">
+                            IESG state
+                        </a>
+                    </th>
+                    <td class="edit">
+                        
+                    </td>
+                    <td>
+                        <span class="">
+                            
+                                I-D Exists
+                            
+                        </span>
+                    </td>
+                </tr>
+                
+                    
+                        <tr>
+                            <td></td>
+                            <th scope="row">
+                                Consensus boilerplate
+                            </th>
+                            <td class="edit">
+                                
+                            </td>
+                            <td>
+                                <span class="text-danger"
+                                      title="Whether the document is the result of a community consensus process as defined in RFC 5741">
+                                    Unknown
+                                </span>
+                            </td>
+                        </tr>
+                    
+                    <tr>
+                        <td></td>
+                        <th scope="row">
+                            Telechat date
+                        </th>
+                        <td class="edit">
+                            
+                        </td>
+                        <td>
+                            
+                                <span class="text-body-secondary">
+                                    (None)
+                                </span>
+                            
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <th scope="row">
+                            Responsible AD
+                        </th>
+                        <td class="edit">
+                            
+                        </td>
+                        <td>
+                            
+                                <span class="text-body-secondary">
+                                    (None)
+                                </span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td></td>
+                        <th scope="row">
+                            Send notices to
+                        </th>
+                        <td class="edit">
+                            
+                        </td>
+                        <td>
+                            
+                                <span class="text-body-secondary">
+                                    (None)
+                                </span>
+                            
+                        </td>
+                    </tr>
+                </tbody>
+            
+            
+                
+            
+            
+        </table>
+        <div class="buttonlist">
+            <a class="btn btn-primary btn-sm"
+               href="mailto:draft-ietf-httpapi-ratelimit-headers@ietf.org?subject=Mail%20regarding%20draft-ietf-httpapi-ratelimit-headers">
+                <i class="bi bi-envelope">
+                </i>
+                Email authors
+            </a>
+            
+                <a class="btn btn-primary btn-sm"
+                   href="mailto:httpapi@ietf.org?subject=Mail%20regarding%20draft-ietf-httpapi-ratelimit-headers">
+                    <i class="bi bi-envelope">
+                    </i>
+                    Email WG
+                </a>
+            
+            <a class="btn btn-primary btn-sm"
+               href="/ipr/search/?submit=draft&amp;id=draft-ietf-httpapi-ratelimit-headers"
+               rel="nofollow">
+                <i class="bi bi-lightning">
+                </i>
+                IPR
+                
+            </a>
+            <a class="btn btn-primary btn-sm"
+               href="/doc/draft-ietf-httpapi-ratelimit-headers/references/"
+               rel="nofollow">
+                <i class="bi bi-arrow-left">
+                </i>
+                References
+            </a>
+            <a class="btn btn-primary btn-sm"
+               href="/doc/draft-ietf-httpapi-ratelimit-headers/referencedby/"
+               rel="nofollow">
+                <i class="bi bi-arrow-right">
+                </i>
+                Referenced by
+            </a>
+            <a class="btn btn-primary btn-sm"
+               href="https://author-tools.ietf.org/api/idnits?url=https://www.ietf.org/archive/id/draft-ietf-httpapi-ratelimit-headers-11.txt"
+               rel="nofollow"
+               target="_blank">
+                <i class="bi bi-exclamation">
+                </i>
+                Nits
+            </a>
+             <a class="btn btn-primary btn-sm"
+               href="https://author-tools.ietf.org/idnits3/results?url=https://www.ietf.org/archive/id/draft-ietf-httpapi-ratelimit-headers-11.txt"
+               rel="nofollow"
+               target="_blank">
+                <i class="bi bi-exclamation-diamond">
+                </i>
+                Nits v3
+            </a>           
+            <a class="btn btn-primary btn-sm"
+               href="https://mailarchive.ietf.org/arch/search/?q=%22draft-ietf-httpapi-ratelimit-headers%22"
+               rel="nofollow"
+               target="_blank">
+                <i class="bi bi-search">
+                </i>
+                Search email archive
+            </a>
+            
+            
+            
+            
+        </div>
+        
+            <div class="card mt-5">
+                <div class="card-header">
+                    
+                        draft-ietf-httpapi-ratelimit-headers-11
+                    
+                </div>
+                <div class="card-body">
+                    <pre>HTTPAPI                                                         R. Polli
+Internet-Draft                         Team Digitale, Italian Government
+Intended status: Standards Track                             A. Martinez
+Expires: 24 November 2026                                        Red Hat
+                                                               D. Miller
+                                                               Microsoft
+                                                             23 May 2026
+
+                    RateLimit header fields for HTTP
+                draft-ietf-httpapi-ratelimit-headers-11
+
+<span>Abstract</span>
+
+   This document defines the RateLimit-Policy and RateLimit HTTP header
+   fields for servers to advertise their quota policies and the current
+   service limits, thereby allowing clients to avoid being throttled.
+
+About This Document
+
+   This note is to be removed before publishing as an RFC.
+
+   Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-
+   headers/.
+
+   Discussion of this document takes place on the HTTPAPI Working Group
+   mailing list (mailto:httpapi@ietf.org), which is archived at
+   https://mailarchive.ietf.org/arch/browse/httpapi/.  Subscribe at
+   https://www.ietf.org/mailman/listinfo/httpapi/.  Working Group
+   information can be found at https://datatracker.ietf.org/wg/httpapi/
+   about/.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/ietf-wg-httpapi/ratelimit-headers.
+
+<span>Status of This Memo</span>
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+<span>Polli, et al.           Expires 24 November 2026                [Page 1]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as &quot;work in progress.&quot;
+
+   This Internet-Draft will expire on 24 November 2026.
+
+<span>Copyright Notice</span>
+
+   Copyright (c) 2026 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust&#x27;s Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+<span>Table of Contents</span>
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   4
+     1.1.  Goals . . . . . . . . . . . . . . . . . . . . . . . . . .   4
+     1.2.  Notational Conventions  . . . . . . . . . . . . . . . . .   5
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   5
+   3.  RateLimit-Policy Field  . . . . . . . . . . . . . . . . . . .   6
+     3.1.  Quota Policy Item . . . . . . . . . . . . . . . . . . . .   6
+       3.1.1.  Quota Parameter . . . . . . . . . . . . . . . . . . .   7
+       3.1.2.  Quota Unit Parameter  . . . . . . . . . . . . . . . .   7
+       3.1.3.  Window Parameter  . . . . . . . . . . . . . . . . . .   8
+       3.1.4.  Partition Key Parameter . . . . . . . . . . . . . . .   8
+     3.2.  RateLimit Policy Field Examples . . . . . . . . . . . . .   8
+   4.  RateLimit Field . . . . . . . . . . . . . . . . . . . . . . .   8
+     4.1.  Service Limit Item  . . . . . . . . . . . . . . . . . . .   9
+       4.1.1.  Available Quota Parameter . . . . . . . . . . . . . .   9
+       4.1.2.  Effective Window Parameter  . . . . . . . . . . . . .   9
+       4.1.3.  Partition Key Parameter . . . . . . . . . . . . . . .  10
+     4.2.  RateLimit Field Examples  . . . . . . . . . . . . . . . .  10
+   5.  Problem Types . . . . . . . . . . . . . . . . . . . . . . . .  10
+     5.1.  Quota Exceeded  . . . . . . . . . . . . . . . . . . . . .  10
+     5.2.  Temporary Reduced Capacity  . . . . . . . . . . . . . . .  11
+     5.3.  Abnormal Usage Detected . . . . . . . . . . . . . . . . .  11
+   6.  Server Behavior . . . . . . . . . . . . . . . . . . . . . . .  12
+     6.1.  Generating Partition Keys . . . . . . . . . . . . . . . .  12
+     6.2.  Performance Considerations  . . . . . . . . . . . . . . .  13
+   7.  Client Behavior . . . . . . . . . . . . . . . . . . . . . . .  13
+
+<span>Polli, et al.           Expires 24 November 2026                [Page 2]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+     7.1.  Consuming Partition Keys  . . . . . . . . . . . . . . . .  14
+     7.2.  Intermediaries  . . . . . . . . . . . . . . . . . . . . .  14
+     7.3.  Caching . . . . . . . . . . . . . . . . . . . . . . . . .  15
+   8.  Security Considerations . . . . . . . . . . . . . . . . . . .  15
+     8.1.  Throttling does not prevent clients from issuing
+           requests  . . . . . . . . . . . . . . . . . . . . . . . .  15
+     8.2.  Information disclosure  . . . . . . . . . . . . . . . . .  15
+     8.3.  Available quota units are not granted requests  . . . . .  16
+     8.4.  Variability of the effective window . . . . . . . . . . .  16
+     8.5.  Resource exhaustion . . . . . . . . . . . . . . . . . . .  16
+       8.5.1.  Denial of Service . . . . . . . . . . . . . . . . . .  17
+   9.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  18
+   10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  18
+     10.1.  Update HTTP Field Name Registry  . . . . . . . . . . . .  18
+     10.2.  Update HTTP Problem Type registry  . . . . . . . . . . .  18
+       10.2.1.  Registration of &quot;quota-exceeded&quot; Problem Type  . . .  18
+       10.2.2.  Registration of &quot;temporary-reduced-capacity&quot; Problem
+               Type  . . . . . . . . . . . . . . . . . . . . . . . .  19
+       10.2.3.  Registration of &quot;abnormal-usage-detected&quot; Problem
+               Type  . . . . . . . . . . . . . . . . . . . . . . . .  19
+     10.3.  RateLimit quota unit registry  . . . . . . . . . . . . .  19
+       10.3.1.  Registration Template  . . . . . . . . . . . . . . .  20
+   11. References  . . . . . . . . . . . . . . . . . . . . . . . . .  20
+     11.1.  Normative References . . . . . . . . . . . . . . . . . .  20
+     11.2.  Informative References . . . . . . . . . . . . . . . . .  21
+   Appendix A.  Rate-limiting and quotas . . . . . . . . . . . . . .  21
+     A.1.  Interoperability issues . . . . . . . . . . . . . . . . .  22
+   Appendix B.  Examples . . . . . . . . . . . . . . . . . . . . . .  23
+     B.1.  Responses without defining policies . . . . . . . . . . .  23
+       B.1.1.  Throttling information in responses . . . . . . . . .  23
+       B.1.2.  Multiple policies in response . . . . . . . . . . . .  24
+       B.1.3.  Use for limiting concurrency  . . . . . . . . . . . .  24
+       B.1.4.  Use in throttled responses  . . . . . . . . . . . . .  25
+     B.2.  Responses with defined policies . . . . . . . . . . . . .  26
+       B.2.1.  Throttling window specified via parameter . . . . . .  26
+       B.2.2.  Dynamic limits with parameterized windows . . . . . .  26
+       B.2.3.  Dynamic limits for pushing back and slowing down  . .  27
+     B.3.  Dynamic limits for pushing back with Retry-After and slow
+           down  . . . . . . . . . . . . . . . . . . . . . . . . . .  28
+       B.3.1.  Use with multiple windows . . . . . . . . . . . . . .  29
+   FAQ . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  29
+   RateLimit header fields currently used on the web . . . . . . . .  32
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .  33
+   Changes . . . . . . . . . . . . . . . . . . . . . . . . . . . . .  33
+     Since draft-ietf-httpapi-ratelimit-headers-08 . . . . . . . . .  33
+     Since draft-ietf-httpapi-ratelimit-headers-07 . . . . . . . . .  34
+     Since draft-ietf-httpapi-ratelimit-headers-03 . . . . . . . . .  34
+     Since draft-ietf-httpapi-ratelimit-headers-02 . . . . . . . . .  34
+
+<span>Polli, et al.           Expires 24 November 2026                [Page 3]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+     Since draft-ietf-httpapi-ratelimit-headers-01 . . . . . . . . .  34
+     Since draft-ietf-httpapi-ratelimit-headers-00 . . . . . . . . .  34
+   Authors&#x27; Addresses  . . . . . . . . . . . . . . . . . . . . . . .  34
+
+1.  Introduction
+
+   Rate limiting of HTTP clients has become a widespread practice,
+   especially for HTTP APIs.  Typically, servers who do so limit the
+   number of acceptable requests in a given time window (e.g. 10
+   requests per second).  See Appendix A for further information on the
+   current usage of rate limiting in HTTP.
+
+   Currently, there is no standard way for servers to communicate quotas
+   so that clients can throttle their requests to prevent errors.  This
+   document defines a set of standard HTTP header fields to enable rate
+   limiting:
+
+   *  RateLimit-Policy: a quota policy, defined by the server, that
+      client HTTP requests will consume.
+
+   *  RateLimit: the quota currently available under a specific policy.
+
+   These fields enable establishing complex rate limiting policies,
+   including using multiple and variable time windows and dynamic
+   quotas, and implementing concurrency limits.
+
+1.1.  Goals
+
+   The goals of this document are:
+
+   Interoperability:  Standardize the names and semantics of rate-limit
+      headers to ease their enforcement and adoption.
+
+   Resiliency:  Improve resiliency of HTTP infrastructure by providing
+      clients with information useful to throttle their requests and
+      prevent 4xx or 5xx responses.
+
+   Documentation:  Simplify API documentation by eliminating the need to
+      include detailed quota limits and related fields in API
+      documentation.
+
+   The following features are out of the scope of this document:
+
+   Authorization:  RateLimit header fields are not meant to support
+      authorization or other kinds of access controls.
+
+   Response status code:  RateLimit header fields may be returned in
+
+<span>Polli, et al.           Expires 24 November 2026                [Page 4]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+      both successful (see Section 15.3 of [HTTP]) and non-successful
+      responses.  This specification does not cover whether non
+      Successful responses count on quota usage, nor does it mandate any
+      correlation between the RateLimit values and the returned status
+      code.
+
+   Throttling algorithm:  This specification does not mandate a specific
+      throttling algorithm.  The values published in the fields,
+      including the window size, can be statically or dynamically
+      evaluated.
+
+   Service Level Agreement:  Conveyed quota hints do not imply any
+      service guarantee.  Server is free to throttle clients that adhere
+      to the server’s recommended limits under certain circumstances.
+
+1.2.  Notational Conventions
+
+   The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
+   &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;NOT RECOMMENDED&quot;, &quot;MAY&quot;, and
+   &quot;OPTIONAL&quot; in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+   The term Origin is to be interpreted as described in Section 7 of
+   [WEB-ORIGIN].
+
+   This document uses the terms List, Item and Integer from Section 3 of
+   [SF] to specify syntax and parsing, along with the concept of &quot;bare
+   item&quot;.
+
+   The term &quot;problem type&quot; in this document is to be interpreted as
+   described in [PROBLEM].
+
+2.  Terminology
+
+   Quota:  A quota is an allocation of capacity used by a resource
+      server to limit client requests.  That capacity is measured in
+      quota units that the client may consume within a time window.
+
+   Quota Unit:  A quota unit is the unit of measurement used to measure
+      the activity of a client.
+
+   Quota Partition:  A quota partition is a division of a server&#x27;s
+      capacity across different clients, users and owned resources.
+
+   Time Window:  A time window indicates a period of time associated to
+      the allocated quota.
+
+<span>Polli, et al.           Expires 24 November 2026                [Page 5]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   Quota Policy:  A quota policy is implemented by the server to
+      regulate the activity within a specified quota partition,
+      quantified in quota units, over a defined time window.  This
+      activity is restricted to a predefined limit, known as the quota.
+      Quota policies can be advertised by servers, but they are not
+      required to be, and more than one quota policy can affect a given
+      request from a client to a server.
+
+   Service Limit:  A service limit is the currently available quota
+      under a specific quota policy and, if defined, the effective time
+      window within which the client can use no more than the available
+      quota.
+
+   List:  A [SF] list of Items
+
+   Item:  A [SF] item with a set of associated parameters
+
+3.  RateLimit-Policy Field
+
+   The &quot;RateLimit-Policy&quot; response header field is a non-empty List[SF]
+   of Quota Policy Items (Section 3.1).  The Item[SF] value MUST be a
+   String[SF].
+
+   The field value SHOULD remain consistent over a sequence of HTTP
+   responses.  It is this characteristic that differentiates it from the
+   RateLimit (Section 4) field that contains information that MAY change
+   on every request.  The &quot;RateLimit-Policy&quot; field enables clients to
+   control their own flow of requests based on policy information
+   provided by the server.  Situations where throttling constraints are
+   highly dynamic are better served using the RateLimit field
+   (Section 4) that communicates the latest service information a client
+   can react to.  Both fields can be communicated by the server when
+   appropriate.
+
+   Lists of Quota Policy Items (Section 3.1) can be split over multiple
+   &quot;RateLimit-Policy&quot; fields in the same HTTP response as described in
+   Section 3.1 of [SF].
+
+      RateLimit-Policy: &quot;burst&quot;;q=100;w=60,&quot;daily&quot;;q=1000;w=86400
+
+3.1.  Quota Policy Item
+
+   A quota policy Item contains an identifier for the policy and a set
+   of Parameters[SF] that contain information about a server&#x27;s capacity
+   allocation for the policy.
+
+   The following parameters are defined:
+
+<span>Polli, et al.           Expires 24 November 2026                [Page 6]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   q:  The REQUIRED &quot;q&quot; parameter indicates the quota allocated by this
+      policy measured in quota units.
+
+   qu:  The OPTIONAL &quot;qu&quot; parameter value conveys the quota units
+      associated to the &quot;q&quot; parameter.  The default quota unit is
+      &quot;requests&quot;.
+
+   w:  The OPTIONAL &quot;w&quot; parameter value conveys a time window.
+
+   pk:  The OPTIONAL &quot;pk&quot; parameter value conveys the partition key
+      associated to the corresponding request.
+
+   Other parameters are allowed and can be regarded as comments.
+
+   Implementation- or service-specific parameters SHOULD be prefixed
+   parameters with a vendor identifier, e.g. acme-policy, acme-burst.
+
+   This field MUST NOT appear in a trailer section.
+
+3.1.1.  Quota Parameter
+
+   The &quot;q&quot; parameter value MUST be a non-negative Integer.  The value
+   indicates the quota allocated for client activity (measured in quota
+   units) for a given quota partition.
+
+3.1.2.  Quota Unit Parameter
+
+   The &quot;qu&quot; parameter value conveys the quota units applicable to the
+   quota (Section 3.1.1).  The value MUST be a String.  Allowed values
+   are listed in the RateLimit Quota Units registry (Section 10.3).
+   This specification defines three quota units:
+
+   requests:  This value indicates the quota is based on the number of
+      requests processed by the resource server.  Whether a specific
+      request actually consumes a quota unit is implementation-specific.
+
+   content-bytes:  This value indicates the quota is based on the number
+      of content bytes processed by the resource server.
+
+   concurrent-requests:  This value indicates the quota is based on the
+      number of concurrent requests processed by the resource server.
+
+<span>Polli, et al.           Expires 24 November 2026                [Page 7]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+3.1.3.  Window Parameter
+
+   The &quot;w&quot; parameter value conveys a time window applicable to the quota
+   (Section 3.1.1).  The time window MUST be a non-negative, non-zero,
+   Integer value expressing an interval in seconds, similar to the
+   &quot;delay-seconds&quot; rule defined in Section 10.2.3 of [HTTP].  Sub-second
+   precision is not supported.
+
+3.1.4.  Partition Key Parameter
+
+   The &quot;pk&quot; parameter value conveys the partition key associated to the
+   request.  The value MUST be a Byte Sequence.  Servers MAY use the
+   partition key to divide server capacity across different clients and
+   resources.  Quotas are allocated per partition key.
+
+3.2.  RateLimit Policy Field Examples
+
+   This field MAY convey the time window associated with the quota, as
+   shown in this example:
+
+      RateLimit-Policy: &quot;default&quot;;q=100;w=10
+
+   These examples show multiple policies being returned:
+
+      RateLimit-Policy: &quot;permin&quot;;q=50;w=60,&quot;perhr&quot;;q=1000;w=3600
+
+   The following example shows a policy with a partition key:
+
+      RateLimit-Policy: &quot;peruser&quot;;q=100;w=60;pk=:cHsdsRa894==:
+
+   The following example shows a policy with a partition key and a quota
+   unit:
+
+   RateLimit-Policy: &quot;peruser&quot;;q=65535;qu=&quot;content-bytes&quot;;w=10;pk=:sdfjLJUOUH==:
+
+4.  RateLimit Field
+
+   A server uses the &quot;RateLimit&quot; response header field to communicate
+   the current service limit for a quota policy for a particular
+   partition key.
+
+   The field is expressed as a List[SF] of Service Limit Items
+   (Section 4.1).
+
+   Lists of Service Limit Items can be split over multiple &quot;RateLimit&quot;
+   fields in the same HTTP response as described in Section 3.1 of [SF].
+
+      RateLimit: &quot;default&quot;;r=50;t=30
+
+<span>Polli, et al.           Expires 24 November 2026                [Page 8]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+4.1.  Service Limit Item
+
+   Each service limit Item[SF] identifies the quota policy (Section 3.1)
+   associated with the request and contains Parameters[SF] with
+   information about the current service limit.
+
+   The following parameters are defined in this specification:
+
+   r:  This REQUIRED parameter value conveys the available quota under
+      the identified policy (Section 4.1.1).
+
+   t:  This OPTIONAL parameter value conveys the effective window under
+      the identified policy: the time within which the client can use no
+      more than the available quota (Section 4.1.2).
+
+   pk:  The OPTIONAL &quot;pk&quot; parameter value conveys the partition key
+      associated to the corresponding request.
+
+   This field MUST NOT appear in a trailer section.  Other parameters
+   are allowed and can be regarded as comments.
+
+   Implementation- or service-specific parameters SHOULD be prefixed
+   parameters with a vendor identifier, e.g. acme-policy, acme-burst.
+
+4.1.1.  Available Quota Parameter
+
+   The &quot;r&quot; parameter indicates the available quota under the identified
+   policy.
+
+   It is a non-negative Integer expressed in quota units.  Clients MUST
+   NOT assume that a positive available quota is a guarantee that
+   further requests will be served.  When the available quota is low, it
+   indicates that the server may soon throttle the client (see
+   Section 6).
+
+4.1.2.  Effective Window Parameter
+
+   The &quot;t&quot; parameter indicates effective window under the identified
+   policy: the number of seconds within which the client can use no more
+   than the available quota.
+
+   It is a non-negative Integer compatible with the delay-seconds rule,
+   because:
+
+   *  it does not rely on clock synchronization and is resilient to
+      clock adjustment and clock skew between client and server (see
+      Section 5.6.7 of [HTTP]);
+
+<span>Polli, et al.           Expires 24 November 2026                [Page 9]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   *  it mitigates the risk related to thundering herd when too many
+      clients are serviced with the same timestamp.
+
+   The client MUST NOT assume that all its service limit will be fully
+   restored after the time indicated by the effective window parameter.
+   The server MAY arbitrarily alter the available quota and effective
+   window between subsequent requests; for example, in case of resource
+   saturation or to implement sliding window policies.
+
+4.1.3.  Partition Key Parameter
+
+   The &quot;pk&quot; parameter value conveys the partition key associated to the
+   request.  The value MUST be a Byte Sequence.  Servers MAY use the
+   partition key to divide server capacity across different clients and
+   resources.  Quotas are allocated per partition key.
+
+4.2.  RateLimit Field Examples
+
+   This example shows a RateLimit field with an available quota of 50
+   units and an effective window of 30 seconds:
+
+      RateLimit: &quot;default&quot;;r=50;t=30
+
+   This example shows an available quota of 999 requests for a partition
+   key that has no time window:
+
+      RateLimit: &quot;default&quot;;r=999;pk=:dHJpYWwxMjEzMjM=:
+
+   This example shows a 300MB available quota for an application in the
+   next 60 seconds:
+
+      RateLimit: &quot;default&quot;;r=300000000;t=60;pk=:QXBwLTk5OQ==:
+
+5.  Problem Types
+
+5.1.  Quota Exceeded
+
+   This section defines the &quot;https://iana.org/assignments/http-problem-
+   types#quota-exceeded&quot; problem type.  A server MAY use this problem
+   type if it wants to communicate to the client that the requests sent
+   by the client exceed one or more Quota Policies.  This problem type
+   defines the extension member &quot;violated-policies&quot; as an array of
+   strings, whose value is the names of policies where the quota was
+   exceeded.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 10]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   HTTP/1.1 429 Bad Request
+   Content-Type: application/problem+json
+
+   {
+     &quot;type&quot;: &quot;https://iana.org/assignments/http-problem-types#quota-exceeded&quot;,
+     &quot;title&quot;: &quot;Request cannot be satisfied as assigned quota has been exceeded&quot;,
+     &quot;violated-policies&quot;: [&quot;daily&quot;,&quot;bandwidth&quot;]
+   }
+
+5.2.  Temporary Reduced Capacity
+
+   This section defines the &quot;https://iana.org/assignments/http-problem-
+   types#temporary-reduced-capacity&quot; problem type.  A server MAY use
+   this problem type if it wants to communicate that the client’s
+   requests currently cannot be satisfied due to a temporary reduction
+   in server capacity.  The server MAY choose to include a RateLimit-
+   Policy field indicating the new temporarily lower quota.  This
+   problem type defines the extension member &quot;violated-policies&quot; as an
+   array of strings, whose value is the names of policies where the
+   quota was exceeded.
+
+   HTTP/1.1 503 Server Unavailable
+   Content-Type: application/problem+json
+
+   {
+     &quot;type&quot;: &quot;https://iana.org/assignments/http-problem-types#temporary-reduced-capacity&quot;,
+     &quot;title&quot;: &quot;Request cannot be satisfied due to temporary server capacity constraints&quot;,
+     &quot;violated-policies&quot;: [&quot;hourly&quot;]
+   }
+
+5.3.  Abnormal Usage Detected
+
+   This section defines the &quot;https://iana.org/assignments/http-problem-
+   types#abnormal-usage-detected&quot; problem type.  A server MAY use this
+   problem type to communicate to the client that it has detected a
+   pattern of requests that suggest unintentional or malicious behaviour
+   on the part of the client.  This problem type defines the extension
+   member &quot;violated-policies&quot; as an array of strings, whose value is the
+   names of policies where the quota was exceeded.
+
+   HTTP/1.1 429 Too Many Requests
+   Content-Type: application/problem+json
+
+   {
+     &quot;type&quot;: &quot;https://iana.org/assignments/http-problem-types#abnormal-usage-detected&quot;,
+     &quot;title&quot;: &quot;Request not satisifed due to detection of abnormal request pattern&quot;,
+     &quot;violated-policies&quot;: [&quot;hourly&quot;]
+   }
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 11]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+6.  Server Behavior
+
+   A server MAY return RateLimit header fields independently of the
+   response status code.  This includes throttled responses.  This
+   document does not mandate any correlation between the RateLimit
+   header field values and the returned status code.
+
+   Servers should be careful when returning RateLimit header fields in
+   redirection responses (i.e., responses with 3xx status codes) because
+   a low available quota could prevent the client from issuing requests.
+   For example, given the RateLimit header fields below, a client could
+   decide to wait 10 seconds before following the &quot;Location&quot; header
+   field (see Section 10.2.2 of [HTTP]), because the available quota is
+   0.
+
+   HTTP/1.1 301 Moved Permanently
+   Location: /foo/123
+   RateLimit: &quot;problemPolicy&quot;;r=0;t=10
+
+   If a response contains both the Retry-After and the RateLimit header
+   fields, the Retry-After field value SHOULD NOT reference a point in
+   time earlier than the end of the effective window.
+
+   A service using RateLimit header fields MUST NOT convey values
+   exposing an unwanted volume of requests and SHOULD implement
+   mechanisms to cap the ratio between the available quota and the
+   effective window values (see Section 8.5); this is especially
+   important when a quota policy uses a large time window.
+
+   Under certain conditions, a server MAY artificially lower RateLimit
+   header field values between subsequent requests, e.g. to respond to
+   Denial of Service attacks or in case of resource saturation.
+
+6.1.  Generating Partition Keys
+
+   Servers MAY choose to return partition keys that distinguish between
+   quota allocated to different consumers or different resources.  There
+   are a wide range of strategies for partitioning server capacity,
+   including per user, per application, per HTTP method, per resource,
+   or some combination of those values.  The server SHOULD document how
+   the partition key is generated so that clients can predict the key
+   value for a future request and determine if there is sufficient quota
+   available to execute the request.  Servers should avoid returning
+   partition keys that contain sensitive information.  Servers SHOULD
+   only use information that is present in the request to generate the
+   partition key.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 12]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+6.2.  Performance Considerations
+
+   Servers are not required to return RateLimit header fields in every
+   response, and clients need to take this into account.  For example,
+   an implementer concerned with performance might provide RateLimit
+   header fields only when a given quota is close to exhaustion.
+
+   Implementers concerned with response fields&#x27; size, might take into
+   account their ratio with respect to the content length, or use
+   header-compression HTTP features such as [HPACK].
+
+7.  Client Behavior
+
+   The RateLimit header fields can be used by clients to determine
+   whether the associated request respected the server&#x27;s quota policy,
+   and as an indication of whether subsequent requests will be
+   successful.  However, the server might apply other criteria when
+   servicing future requests, and so the quota policy may not completely
+   reflect whether requests will succeed.
+
+   For example, a successful response with the following fields:
+
+      RateLimit: &quot;default&quot;;r=1;t=7
+
+   does not guarantee that the next request will be successful.
+   Servers&#x27; behavior may be subject to other conditions.
+
+   A client is responsible for ensuring that RateLimit header field
+   values returned cause reasonable client behavior with respect to
+   throughput and latency (see Section 8.5 and Section 8.5.1).
+
+   A client receiving RateLimit header fields MUST NOT assume that
+   future responses will contain the same RateLimit header fields, or
+   any RateLimit header fields at all.
+
+   Malformed RateLimit header fields MUST be ignored.
+
+   A client SHOULD NOT exceed the available quota within the time
+   expressed in the effective window parameter.
+
+   The value of the effective window parameter is generated at response
+   time: a client aware of a significant network latency MAY behave
+   accordingly and use other information (e.g. the &quot;Date&quot; response
+   header field, or otherwise gathered metrics) to schedule requests.
+
+   The details provided in the RateLimit-Policy header field are
+   informative and MAY be ignored.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 13]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   If a response contains both the RateLimit and Retry-After fields, the
+   Retry-After field MUST take precedence and the effective window MAY
+   be ignored.
+
+   This specification does not mandate a specific throttling behavior
+   and implementers can adopt their preferred policies, including:
+
+   *  slowing down or pre-emptively back-off their request rate when
+      approaching quota limits;
+
+   *  consuming all the quota according to the exposed limits and then
+      wait.
+
+7.1.  Consuming Partition Keys
+
+   Partition keys are useful for a client if it is likely that single
+   client will make requests that consume different quota allocations.
+   E.g. a client making requests on behalf of different users or for
+   different resources that have independent quota allocations.
+
+   If a server documents the partition key generation algorithm, clients
+   MAY generate a partition key for a future request.  Using this key,
+   and comparing to the key returned by the server, the client can
+   determine if there is sufficient quota available to execute the
+   request.
+
+   For cases where the partition key generation algorithm of a server is
+   unknown, clients MAY use heuristics to guess if a future request will
+   be successful based on its similarity to previous requests.
+
+7.2.  Intermediaries
+
+   This section documents the considerations advised in Section 16.3.2
+   of [HTTP].
+
+   An intermediary that is not part of the originating service
+   infrastructure and is not aware of the quota policy semantic used by
+   the Origin Server SHOULD NOT alter the RateLimit header fields&#x27;
+   values in such a way as to communicate a more permissive quota
+   policy; this includes removing the RateLimit header fields.
+
+   An intermediary MAY alter the RateLimit header fields in such a way
+   as to communicate a more restrictive quota policy when:
+
+   *  it is aware of the quota unit semantic used by the Origin Server;
+
+   *  it implements this specification and enforces a quota policy which
+      is more restrictive than the one conveyed in the fields.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 14]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   An intermediary SHOULD forward a request even when presuming that it
+   might not be serviced; the service returning the RateLimit header
+   fields is the sole responsible of enforcing the communicated quota
+   policy, and it is always free to service incoming requests.
+
+   This specification does not mandate any behavior on intermediaries
+   with respect to retries, nor does it require that intermediaries have
+   any role in respecting quota policies.  For example, it is legitimate
+   for a proxy to retransmit a request without notifying the client, and
+   thus consuming quota units.
+
+   Privacy considerations (Section 9) provide further guidance on
+   intermediaries.
+
+7.3.  Caching
+
+   [HTTP-CACHING] defines how responses can be stored and reused for
+   subsequent requests, including those with RateLimit header fields.
+   Because the information in RateLimit header fields on a cached
+   response may not be current, they SHOULD be ignored on responses that
+   come from cache (i.e., those with a positive current_age; see
+   Section 4.2.3 of [HTTP-CACHING]).
+
+8.  Security Considerations
+
+8.1.  Throttling does not prevent clients from issuing requests
+
+   This specification does not prevent clients from making requests.
+   Servers should always implement mechanisms to prevent resource
+   exhaustion.
+
+8.2.  Information disclosure
+
+   Servers should not disclose to untrusted parties operational capacity
+   information that can be used to saturate its infrastructural
+   resources.
+
+   While this specification does not mandate whether non-successful
+   responses consume quota, if error responses (such as 401
+   (Unauthorized) and 403 (Forbidden)) count against quota, a malicious
+   client could probe the endpoint to get traffic information of another
+   user.
+
+   As intermediaries might retransmit requests and consume quota units
+   without prior knowledge of the user agent, RateLimit header fields
+   might reveal the existence of an intermediary to the user agent.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 15]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   Where partition keys contain identifying information, either of the
+   client application or the user, servers should be aware of the
+   potential for impersonation and apply the appropriate security
+   mechanisms.
+
+8.3.  Available quota units are not granted requests
+
+   RateLimit header fields convey hints from the server to the clients
+   in order to help them avoid being throttled out.
+
+   Clients MUST NOT consider the available quota parameter
+   (Section 4.1.1) as a service level agreement.
+
+   In case of resource saturation, the server MAY artificially lower the
+   returned values or not serve the request regardless of the advertised
+   quotas.
+
+8.4.  Variability of the effective window
+
+   The effective window parameter (Section 4.1.2) does not imply
+   anything about when the server will increase the available quota.
+   The effective window does not necessarily end at a fixed point in
+   time.
+
+   Subsequent requests might return a higher effective window value to
+   limit concurrency or implement dynamic or adaptive throttling
+   policies.
+
+8.5.  Resource exhaustion
+
+   When returning effective window values, servers must be aware that
+   many throttled clients may come back at the very moment specified.
+
+   This is true for Retry-After too.
+
+   For example, if the quota resets every day at 18:00:00 and your
+   server returns the effective window accordingly
+
+      Date: Tue, 15 Nov 1994 18:00:00 GMT
+      RateLimit: &quot;daily&quot;;r=1;t=86400
+
+   there&#x27;s a high probability that all clients will show up at 18:00:00.
+
+   This could be mitigated by adding some jitter to the effective
+   window.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 16]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   Resource exhaustion issues can be associated with quota policies
+   using a large time window, because a user agent by chance or on
+   purpose might consume most of its quota units in a significantly
+   shorter interval.
+
+   This behavior can be even triggered by the provided RateLimit header
+   fields.  The following example describes a service with an unconsumed
+   quota policy of 10000 quota units per 1000 seconds.
+
+   RateLimit-Policy: &quot;somepolicy&quot;;q=10000;w=1000
+   RateLimit: &quot;somepolicy&quot;;r=10000;t=10
+
+   A client implementing a simple ratio between available quota and
+   effective window could infer an average throughput of 1000 quota
+   units per second, while the policy&#x27;s quota and window parameters
+   convey an average of 10 quota units per second.  If the service
+   cannot handle such load, it should return either a lower available
+   quota or a higher effective window.  Moreover, complementing large
+   time window quota policies with a short time window one mitigates
+   those risks.
+
+8.5.1.  Denial of Service
+
+   RateLimit header fields may contain unexpected values by chance or on
+   purpose.  For example, an excessively high available quota may be:
+
+   *  used by a malicious intermediary to trigger a Denial of Service
+      attack or consume client resources boosting its requests;
+
+   *  passed by a misconfigured server;
+
+   or a large effective window could inhibit clients to contact the
+   server (e.g. similarly to receiving &quot;Retry-after: 1000000&quot;).
+
+   To mitigate this risk, clients can set thresholds that they consider
+   reasonable in terms of quota units, time window, concurrent requests
+   or throughput, and define a consistent behavior when the RateLimit
+   exceed those thresholds.  For example this means capping the maximum
+   number of request per second, or implementing retries when the
+   effective window exceeds ten minutes.
+
+   The considerations above are not limited to RateLimit header fields,
+   but apply to all fields affecting how clients behave in subsequent
+   requests (e.g. Retry-After).
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 17]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+9.  Privacy Considerations
+
+   Clients that act upon a request to rate limit are potentially re-
+   identifiable (see Section 5.2.1 of [PRIVACY]) because they react to
+   information that might only be given to them.  Note that this might
+   apply to other fields too (e.g. Retry-After).
+
+   Since rate limiting is usually implemented in contexts where clients
+   are either identified or profiled (e.g. assigning different quota
+   units to different users), this is rarely a concern.
+
+   Privacy enhancing infrastructures using RateLimit header fields can
+   define specific techniques to mitigate the risks of re-
+   identification.
+
+10.  IANA Considerations
+
+   IANA is requested to update two registries and create one new
+   registry.
+
+10.1.  Update HTTP Field Name Registry
+
+   Please add the following entries to the &quot;Hypertext Transfer Protocol
+   (HTTP) Field Name Registry&quot; registry ([HTTP]):
+
+    +==================+=================+===========+===============+
+    | Field Name       | Structured Type | Status    | Specification |
+    +==================+=================+===========+===============+
+    | RateLimit        | List            | permanent | Section 4 of  |
+    |                  |                 |           | RFC nnnn      |
+    +------------------+-----------------+-----------+---------------+
+    | RateLimit-Policy | List            | permanent | Section 3 of  |
+    |                  |                 |           | RFC nnnn      |
+    +------------------+-----------------+-----------+---------------+
+
+                                 Table 1
+
+10.2.  Update HTTP Problem Type registry
+
+   IANA is asked to register the following entries in the &quot;HTTP Problem
+   Types&quot; registry at https://www.iana.org/assignments/http-problem-
+   types.
+
+10.2.1.  Registration of &quot;quota-exceeded&quot; Problem Type
+
+   Type URI: https://iana.org/assignments/http-problem-types#quota-
+   exceeded
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 18]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   Title: Quota Exceeded
+
+   Recommended HTTP status code: 429
+
+   Reference: Section 5.1 of this document
+
+10.2.2.  Registration of &quot;temporary-reduced-capacity&quot; Problem Type
+
+   Type URI: https://iana.org/assignments/http-problem-types#temporary-
+   reduced-capacity
+
+   Title: Temporary Reduced Capacity
+
+   Recommended HTTP status code: 503
+
+   Reference: Section 5.2 of this document
+
+10.2.3.  Registration of &quot;abnormal-usage-detected&quot; Problem Type
+
+   Type URI: https://iana.org/assignments/http-problem-types#abnormal-
+   usage-detected
+
+   Title: Abnormal Usage Detected
+
+   Recommended HTTP status code: 429
+
+   Reference: Section 5.3 of this document
+
+10.3.  RateLimit quota unit registry
+
+   This specification establishes the registry &quot;Hypertext Transfer
+   Protocol (HTTP) RateLimit Quota Units&quot; registry to be located at
+   https://www.iana.org/assignments/http-ratelimit-quota-units.
+   Registration is done on the advice of a Designated Expert, appointed
+   by the IESG or their delegate.  All entries are Specification
+   Required ([IANA], Section 4.6).
+
+   The registry has the following initial content:
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 19]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+                +=====================+===========+=======+
+                | Quota Unit          | Reference | Notes |
+                +=====================+===========+=======+
+                | request             | RFC nnnn  |       |
+                +---------------------+-----------+-------+
+                | content-bytes       | RFC nnnn  |       |
+                +---------------------+-----------+-------+
+                | concurrent-requests | RFC nnnn  |       |
+                +---------------------+-----------+-------+
+
+                                  Table 2
+
+10.3.1.  Registration Template
+
+   The registration template for the RateLimit Quota Units registry is
+   as follows:
+
+   *  Quota Unit: The name of the quota unit.
+
+   *  Reference: A reference to the document that specifies the quota
+      unit.
+
+   *  Notes: Any additional notes about the quota unit.
+
+11.  References
+
+11.1.  Normative References
+
+   [HTTP]     Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
+              Ed., &quot;HTTP Semantics&quot;, STD 97, RFC 9110,
+              DOI 10.17487/RFC9110, June 2022,
+              &lt;https://www.rfc-editor.org/rfc/rfc9110&gt;.
+
+   [IANA]     Cotton, M., Leiba, B., and T. Narten, &quot;Guidelines for
+              Writing an IANA Considerations Section in RFCs&quot;, BCP 26,
+              RFC 8126, DOI 10.17487/RFC8126, June 2017,
+              &lt;https://www.rfc-editor.org/rfc/rfc8126&gt;.
+
+   [PROBLEM]  Nottingham, M., Wilde, E., and S. Dalal, &quot;Problem Details
+              for HTTP APIs&quot;, RFC 9457, DOI 10.17487/RFC9457, July 2023,
+              &lt;https://www.rfc-editor.org/rfc/rfc9457&gt;.
+
+   [RFC2119]  Bradner, S., &quot;Key words for use in RFCs to Indicate
+              Requirement Levels&quot;, BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              &lt;https://www.rfc-editor.org/rfc/rfc2119&gt;.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 20]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   [RFC8174]  Leiba, B., &quot;Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words&quot;, BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, &lt;https://www.rfc-editor.org/rfc/rfc8174&gt;.
+
+   [SF]       Nottingham, M. and P. Kamp, &quot;Structured Field Values for
+              HTTP&quot;, RFC 9651, DOI 10.17487/RFC9651, September 2024,
+              &lt;https://www.rfc-editor.org/rfc/rfc9651&gt;.
+
+   [WEB-ORIGIN]
+              Barth, A., &quot;The Web Origin Concept&quot;, RFC 6454,
+              DOI 10.17487/RFC6454, December 2011,
+              &lt;https://www.rfc-editor.org/rfc/rfc6454&gt;.
+
+11.2.  Informative References
+
+   [HPACK]    Peon, R. and H. Ruellan, &quot;HPACK: Header Compression for
+              HTTP/2&quot;, RFC 7541, DOI 10.17487/RFC7541, May 2015,
+              &lt;https://www.rfc-editor.org/rfc/rfc7541&gt;.
+
+   [HTTP-CACHING]
+              Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
+              Ed., &quot;HTTP Caching&quot;, STD 98, RFC 9111,
+              DOI 10.17487/RFC9111, June 2022,
+              &lt;https://www.rfc-editor.org/rfc/rfc9111&gt;.
+
+   [PRIVACY]  Cooper, A., Tschofenig, H., Aboba, B., Peterson, J.,
+              Morris, J., Hansen, M., and R. Smith, &quot;Privacy
+              Considerations for Internet Protocols&quot;, RFC 6973,
+              DOI 10.17487/RFC6973, July 2013,
+              &lt;https://www.rfc-editor.org/rfc/rfc6973&gt;.
+
+   [RFC3339]  Klyne, G. and C. Newman, &quot;Date and Time on the Internet:
+              Timestamps&quot;, RFC 3339, DOI 10.17487/RFC3339, July 2002,
+              &lt;https://www.rfc-editor.org/rfc/rfc3339&gt;.
+
+   [RFC6585]  Nottingham, M. and R. Fielding, &quot;Additional HTTP Status
+              Codes&quot;, RFC 6585, DOI 10.17487/RFC6585, April 2012,
+              &lt;https://www.rfc-editor.org/rfc/rfc6585&gt;.
+
+   [UNIX]     The Open Group, &quot;The Single UNIX Specification, Version 2
+              - 6 Vol Set for UNIX 98&quot;, February 1997.
+
+<span>Appendix A.  Rate-limiting and quotas</span>
+
+   Servers use quota mechanisms to avoid systems overload, to ensure an
+   equitable distribution of computational resources or to enforce other
+   policies - e.g. monetization.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 21]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   A basic quota mechanism limits the number of acceptable requests in a
+   given time window, e.g. 10 requests per second.
+
+   When quota is exceeded, servers usually do not serve the request
+   replying instead with a 4xx HTTP status code (e.g. 429 or 403) or
+   adopt more aggressive policies like dropping connections.
+
+   Quotas may be enforced on different basis (e.g. per user, per IP, per
+   geographic area, etc.) and at different levels.  For example, a user
+   may be allowed to issue:
+
+   *  10 requests per second;
+
+   *  limited to 60 requests per minute;
+
+   *  limited to 1000 requests per hour.
+
+   Moreover system metrics, statistics and heuristics can be used to
+   implement more complex policies, where the number of acceptable
+   requests and the time window are computed dynamically.
+
+   To help clients throttling their requests, servers may expose the
+   counters used to evaluate quota policies via HTTP header fields.
+
+   Those response headers may be added by HTTP intermediaries such as
+   API gateways and reverse proxies.
+
+   On the web we can find many different rate-limit headers, usually
+   containing the number of allowed requests in a given time window, and
+   when the window is reset.
+
+   The common choice is to return three headers containing:
+
+   *  the maximum number of allowed requests in the time window;
+
+   *  the number of remaining requests in the current window;
+
+   *  the time remaining in the current window expressed in seconds or
+      as a timestamp;
+
+A.1.  Interoperability issues
+
+   A major interoperability issue in throttling is the lack of standard
+   headers, because:
+
+   *  each implementation associates different semantics to the same
+      header field names;
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 22]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   *  header field names proliferates.
+
+   User agents interfacing with different servers may thus need to
+   process different headers, or the very same application interface
+   that sits behind different reverse proxies may reply with different
+   throttling headers.
+
+<span>Appendix B.  Examples</span>
+
+B.1.  Responses without defining policies
+
+   Some servers may not expose the policy limits in the RateLimit-Policy
+   header field.  Clients can still use the RateLimit header field to
+   throttle their requests.
+
+B.1.1.  Throttling information in responses
+
+   The client exhausted its quota for the next 50 seconds.  The limit
+   and time-window is communicated out-of-band.
+
+   Request:
+
+   GET /items/123 HTTP/1.1
+   Host: api.example
+
+   Response:
+
+   HTTP/1.1 200 Ok
+   Content-Type: application/json
+   RateLimit: &quot;default&quot;;r=0;t=50
+
+   {&quot;hello&quot;: &quot;world&quot;}
+
+   Since the field values are not necessarily correlated with the
+   response status code, a subsequent request is not required to fail.
+   The example below shows that the server decided to serve the request
+   even if the available quota is 0.  Another server, or the same server
+   under other load conditions, could have decided to throttle the
+   request instead.
+
+   Request:
+
+   GET /items/456 HTTP/1.1
+   Host: api.example
+
+   Response:
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 23]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   HTTP/1.1 200 Ok
+   Content-Type: application/json
+   RateLimit: &quot;default&quot;;r=0;t=48
+
+   {&quot;still&quot;: &quot;successful&quot;}
+
+B.1.2.  Multiple policies in response
+
+   The server uses two different policies to limit the client&#x27;s
+   requests:
+
+   *  5000 daily quota units;
+
+   *  1000 hourly quota units.
+
+   The client consumed 4900 quota units in the first 14 hours.
+
+   Despite the next hourly limit of 1000 quota units, the closest limit
+   to reach is the daily one.
+
+   The server then exposes the RateLimit header fields to inform the
+   client that:
+
+   *  it has only 100 quota units left in the daily quota and the window
+      will end in 10 hours;
+
+   The server MAY choose to omit returning the hourly policy as it uses
+   the same quota units as the daily policy and the daily policy is the
+   one that is closest to being exhausted.
+
+   Request:
+
+   GET /items/123 HTTP/1.1
+   Host: api.example
+
+   Response:
+
+   HTTP/1.1 200 Ok
+   Content-Type: application/json
+   RateLimit: &quot;dayLimit&quot;;r=100;t=36000
+
+   {&quot;hello&quot;: &quot;world&quot;}
+
+B.1.3.  Use for limiting concurrency
+
+   RateLimit header fields may be used to limit concurrency, advertising
+   limits that are lower than the usual ones in case of saturation, thus
+   increasing availability.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 24]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   The server adopted a basic policy of 100 quota units per minute, and
+   in case of resource exhaustion adapts the returned values reducing
+   both available quota and effective window values.
+
+   After 2 seconds the client consumed 40 quota units
+
+   Request:
+
+   GET /items/123 HTTP/1.1
+   Host: api.example
+
+   Response:
+
+   HTTP/1.1 200 Ok
+   Content-Type: application/json
+   RateLimit-Policy: &quot;basic&quot;;q=100;w=60
+   RateLimit: &quot;basic&quot;;r=60;t=58
+
+   {&quot;elapsed&quot;: 2, &quot;issued&quot;: 40}
+
+   At the subsequent request - due to resource exhaustion - the server
+   advertises only r=20.
+
+   Request:
+
+   GET /items/123 HTTP/1.1
+   Host: api.example
+
+   Response:
+
+   HTTP/1.1 200 Ok
+   Content-Type: application/json
+   RateLimit-Policy: &quot;basic&quot;;q=100;w=60
+   RateLimit: &quot;basic&quot;;r=20;t=56
+
+   {&quot;elapsed&quot;: 4, &quot;issued&quot;: 41}
+
+B.1.4.  Use in throttled responses
+
+   A client exhausted its quota and the server throttles it sending
+   Retry-After.
+
+   In this example, the values of Retry-After and RateLimit header field
+   reference the same moment, but this is not a requirement.
+
+   The 429 (Too Many Request) HTTP status code is just used as an
+   example.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 25]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   Request:
+
+   GET /items/123 HTTP/1.1
+   Host: api.example
+
+   Response:
+
+   HTTP/1.1 429 Too Many Requests
+   Content-Type: application/problem+json
+   Date: Mon, 05 Aug 2019 09:27:00 GMT
+   Retry-After: Mon, 05 Aug 2019 09:27:05 GMT
+   RateLimit: &quot;default&quot;;r=0;t=5
+
+   {
+   &quot;type&quot;: &quot;https://iana.org/assignments/http-problem-types#quota-exceeded&quot;
+   &quot;title&quot;: &quot;Too Many Requests&quot;,
+   &quot;status&quot;: 429,
+   &quot;violated-policies&quot;: [&quot;default&quot;]
+   }
+
+B.2.  Responses with defined policies
+
+B.2.1.  Throttling window specified via parameter
+
+   The client has 99 quota units left for the next 50 seconds.  The time
+   window is communicated by the w parameter, so we know the throughput
+   is 100 quota units per minute.
+
+   Request:
+
+   GET /items/123 HTTP/1.1
+   Host: api.example
+
+   Response:
+
+   HTTP/1.1 200 Ok
+   Content-Type: application/json
+   RateLimit: &quot;fixedwindow&quot;;r=99;t=50
+   RateLimit-Policy: &quot;fixedwindow&quot;;q=100;w=60
+   {&quot;hello&quot;: &quot;world&quot;}
+
+B.2.2.  Dynamic limits with parameterized windows
+
+   The policy conveyed by the RateLimit-Policy header field states that
+   the server accepts 100 quota units per minute.
+
+   To avoid resource exhaustion, the server artificially lowers the
+   actual limits returned in the throttling headers.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 26]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   The RateLimit header field then advertises only 9 quota units for the
+   next 50 seconds to slow down the client.
+
+   Note that the server could have lowered even the other values in the
+   RateLimit header field: this specification does not mandate any
+   relation between the field values contained in subsequent responses.
+
+   Request:
+
+   GET /items/123 HTTP/1.1
+   Host: api.example
+
+   Response:
+
+   HTTP/1.1 200 Ok
+   Content-Type: application/json
+   RateLimit-Policy: &quot;dynamic&quot;;q=100;w=60
+   RateLimit: &quot;dynamic&quot;;r=9;t=50
+
+   {
+     &quot;status&quot;: 200,
+     &quot;detail&quot;: &quot;Just slow down without waiting.&quot;
+   }
+
+B.2.3.  Dynamic limits for pushing back and slowing down
+
+   Continuing the previous example, let&#x27;s say the client waits 10
+   seconds and performs a new request which, due to resource exhaustion,
+   the server rejects and pushes back, advertising r=0 for the next 20
+   seconds.
+
+   The server advertises a smaller window with a lower limit to slow
+   down the client for the rest of its original window after the 20
+   seconds elapse.
+
+   Request:
+
+   GET /items/123 HTTP/1.1
+   Host: api.example
+
+   Response:
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 27]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   HTTP/1.1 429 Too Many Requests
+   Content-Type: application/json
+   RateLimit-Policy: &quot;dynamic&quot;;q=15;w=20
+   RateLimit: &quot;dynamic&quot;;r=0;t=20
+
+   {
+     &quot;status&quot;: 429,
+     &quot;detail&quot;: &quot;Wait 20 seconds, then slow down!&quot;
+   }
+
+B.3.  Dynamic limits for pushing back with Retry-After and slow down
+
+   Alternatively, given the same context where the previous example
+   starts, we can convey the same information to the client via Retry-
+   After, with the advantage that the server can now specify the
+   policy&#x27;s nominal limit and window that will apply after the retry
+   time, e.g. assuming the resource exhaustion is likely to be gone by
+   then, so the advertised policy does not need to be adjusted, yet we
+   managed to stop requests for a while and slow down the rest of the
+   current window.
+
+   Request:
+
+   GET /items/123 HTTP/1.1
+   Host: api.example
+
+   Response:
+
+   HTTP/1.1 429 Too Many Requests
+   Content-Type: application/json
+   Retry-After: 20
+   RateLimit-Policy: &quot;dynamic&quot;;q=100;w=60
+   RateLimit: &quot;dynamic&quot;;r=15;t=40
+
+   {
+     &quot;status&quot;: 429,
+     &quot;detail&quot;: &quot;Wait 20 seconds, then slow down!&quot;
+   }
+
+   Note that in this last response the client is expected to honor
+   Retry-After and perform no requests for the specified amount of time,
+   whereas the previous example would not force the client to stop
+   requests before the end of the effective window, as it would still be
+   free to query again the server even if it is likely to have the
+   request rejected.
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 28]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+B.3.1.  Use with multiple windows
+
+   This is a standardized way of describing the policy detailed in
+   Appendix B.1.2:
+
+   *  5000 daily quota units;
+
+   *  1000 hourly quota units.
+
+   The client consumed 4900 quota units in the first 14 hours.
+
+   Despite the next hourly limit of 1000 quota units, the closest limit
+   to reach is the daily one.
+
+   The server then exposes the RateLimit header fields to inform the
+   client that:
+
+   *  it has only 100 quota units left;
+
+   *  the effective window is 10 hours;
+
+   *  the expiring-limit is 5000.
+
+   Request:
+
+   GET /items/123 HTTP/1.1
+   Host: api.example
+
+   Response:
+
+   HTTP/1.1 200 OK
+   Content-Type: application/json
+   RateLimit-Policy: &quot;hour&quot;;q=1000;w=3600, &quot;day&quot;;q=5000;w=86400
+   RateLimit: &quot;day&quot;;r=100;t=36000
+
+   {&quot;hello&quot;: &quot;world&quot;}
+
+FAQ
+
+   This section is to be removed before publishing as an RFC.
+
+   1.  Why defining standard fields for throttling?
+
+       To simplify enforcement of throttling policies and enable clients
+       to constraint their requests to avoid being throttled.
+
+   2.  Can I use RateLimit header fields in throttled responses (e.g.
+       with status code 429)?
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 29]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+       Yes, you can.
+
+   3.  Are those specs tied to RFC 6585?
+
+       No.  [RFC6585] defines the 429 status code and we use it just as
+       an example of a throttled request, that could instead use even
+       403 or whatever status code.
+
+   4.  Why is the partition key necessary?
+
+       Without a partition key, a server can effectively only have one
+       scope (aka partition), which is impractical for most services, or
+       it needs to communicate the scopes out-of-band.  This prevents
+       the development of generic connector code that can be used to
+       prevent requests from being throttled.  Many APIs rely on API
+       keys, user identity or client identity to allocate quota.  As
+       soon as a single client processes requests for more than one
+       partition, the client needs to know the corresponding partition
+       key to properly track requests against allocated quota.
+
+   5.  Why using delay-seconds instead of a UNIX Timestamp?  Why not
+       using subsecond precision?
+
+       Using delay-seconds aligns with Retry-After, which is returned in
+       similar contexts, e.g. on 429 responses.
+
+       Timestamps require a clock synchronization protocol (see
+       Section 5.6.7 of [HTTP]).  This may be problematic (e.g. clock
+       adjustment, clock skew, failure of hardcoded clock
+       synchronization servers, IoT devices, etc.).  Moreover timestamps
+       may not be monotonically increasing due to clock adjustment.  See
+       Another NTP client failure story
+       (https://community.ntppool.org/t/another-ntp-client-failure-
+       story/1014/)
+
+       We did not use subsecond precision because:
+
+       *  that is more subject to system clock correction like the one
+          implemented via the adjtimex() Linux system call;
+
+       *  response-time latency may not make it worth.  A brief
+          discussion on the subject is on the httpwg ml
+          (https://lists.w3.org/Archives/Public/ietf-http-
+          wg/2019JulSep/0202.html)
+
+       *  almost all rate-limit headers implementations do not use it.
+
+   6.  Shouldn&#x27;t I limit concurrency instead of request rate?
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 30]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+       You can use this specification to limit concurrency at the HTTP
+       level (see {#use-for-limiting-concurrency}) and help clients to
+       shape their requests avoiding being throttled out.
+
+       A problematic way to limit concurrency is connection dropping,
+       especially when connections are multiplexed (e.g. HTTP/2) because
+       this results in client requests not being handled, which is
+       something we want to avoid.
+
+       A semantic way to limit concurrency is to return 503 + Retry-
+       After in case of resource saturation (e.g. thrashing, connection
+       queues too long, Service Level Objectives not meet, etc.).
+       Saturation conditions can be either dynamic or static: all this
+       is out of the scope for the current document.
+
+   7.  Do a positive value of remaining parameter imply any service
+       guarantee for my future requests to be served?
+
+       No.  FAQ integrated in Section 4.1.1.
+
+   8.  Is the quota-policy definition too complex?
+
+       You can always return the simplest form
+
+   RateLimit:&quot;default&quot;;r=50;t=60
+
+   The policy key clearly connects the current usage status of a policy
+   to the defined limits.  So for the following field:
+
+   RateLimit-Policy: &quot;sliding&quot;;q=100;w=60;burst=1000
+   RateLimit-Policy: &quot;fixed&quot;;q=5000;w=3600;burst=0
+   RateLimit: &quot;sliding&quot;;r=50;t=44
+
+   the value &quot;sliding&quot; identifies the policy being reported.
+
+   1.  Can intermediaries alter RateLimit header fields?
+
+       Generally, they should not because it might result in requests
+       not being handled.  There are reasonable use cases for
+       intermediaries mangling RateLimit header fields though, e.g. when
+       they enforce stricter quota-policies, or when they are an active
+       component of the service.  In those cases we will consider them
+       as part of the originating infrastructure.
+
+   2.  Why the w parameter is just informative?  Could it be used by a
+       client to determine the request rate?
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 31]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+       A non-informative w parameter might be fine in an environment
+       where clients and servers are tightly coupled.  Conveying
+       policies with this detail on a large scale would be very complex
+       and implementations would likely be not interoperable.  We thus
+       decided to leave w as an informational parameter and only rely on
+       the limit, remaining and reset parameters for defining the
+       throttling behavior.
+
+   3.  Can I use RateLimit fields in trailers?  Servers usually
+       establish whether the request is in-quota before creating a
+       response, so the RateLimit field values should be already
+       available in that moment.  Supporting trailers has the only
+       advantage that it allows to provide more up-to-date information
+       to the client in case of slow responses.  However, this
+       complicates client implementations with respect to combining
+       fields from headers and accounting for intermediaries that drop
+       trailers.  Since there are no current implementations that use
+       trailers, we decided to leave this as a future-work.
+
+RateLimit header fields currently used on the web
+
+   This section is to be removed before publishing as an RFC.
+
+   Commonly used header field names are:
+
+   *  X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset;
+
+   There are variants too, where the window is specified in the header
+   field name, e.g.:
+
+   *  x-ratelimit-limit-minute, x-ratelimit-limit-hour, x-ratelimit-
+      limit-day
+
+   *  x-ratelimit-remaining-minute, x-ratelimit-remaining-hour, x-
+      ratelimit-remaining-day
+
+   Here are some interoperability issues:
+
+   *  X-RateLimit-Remaining references different values, depending on
+      the implementation:
+
+      -  seconds remaining to the window expiration
+
+      -  milliseconds remaining to the window expiration
+
+      -  seconds since UTC, in UNIX Timestamp [UNIX]
+
+      -  a datetime, either IMF-fixdate [HTTP] or [RFC3339]
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 32]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   *  different headers, with the same semantic, are used by different
+      implementers:
+
+      -  X-RateLimit-Limit and X-Rate-Limit-Limit
+
+      -  X-RateLimit-Remaining and X-Rate-Limit-Remaining
+
+      -  X-RateLimit-Reset and X-Rate-Limit-Reset
+
+   The semantic of RateLimit depends on the windowing algorithm.  A
+   sliding window policy for example, may result in having a remaining
+   parameter value related to the ratio between the current and the
+   maximum throughput. e.g.
+
+   RateLimit-Policy: &quot;sliding&quot;;q=12;w=1
+   ; using 50% of throughput, that is 6 units/s
+   RateLimit: &quot;sliding&quot;;q=12;r=6;t=1
+
+   If this is the case, the optimal solution is to achieve
+
+   RateLimit-Policy: &quot;sliding&quot;;q=12;w=1
+   ; using 100% of throughput, that is 12 units/s
+   RateLimit: &quot;sliding&quot;;q=12;r=1;t=1
+
+   At this point you should stop increasing your request rate.
+
+<span>Acknowledgements</span>
+
+   Thanks to Willi Schoenborn, Alejandro Martinez Ruiz, Alessandro
+   Ranellucci, Amos Jeffries, Martin Thomson, Erik Wilde and Mark
+   Nottingham for being the initial contributors of these
+   specifications.  Kudos to the first community implementers: Aapo
+   Talvensaari, Nathan Friedly and Sanyam Dogra.
+
+   In addition to the people above, this document owes a lot to the
+   extensive discussion in the HTTPAPI workgroup, including Rich Salz,
+   and Julian Reschke.
+
+Changes
+
+   This section is to be removed before publishing as an RFC.
+
+Since draft-ietf-httpapi-ratelimit-headers-08
+
+   This section is to be removed before publishing as an RFC.
+
+   *  Added Problem Types
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 33]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   *  Clarified when to use RateLimit-Policy vs RateLimit fields
+
+Since draft-ietf-httpapi-ratelimit-headers-07
+
+   This section is to be removed before publishing as an RFC.
+
+   *  Refactored both fields to lists of Items that identify policy and
+      use parameters
+
+   *  Added quota unit parameter
+
+   *  Added partition key parameter
+
+Since draft-ietf-httpapi-ratelimit-headers-03
+
+   This section is to be removed before publishing as an RFC.
+
+   *  Split policy informatiom in RateLimit-Policy #81
+
+Since draft-ietf-httpapi-ratelimit-headers-02
+
+   This section is to be removed before publishing as an RFC.
+
+   *  Address throttling scope #83
+
+Since draft-ietf-httpapi-ratelimit-headers-01
+
+   This section is to be removed before publishing as an RFC.
+
+   *  Update IANA considerations #60
+
+   *  Use Structured fields #58
+
+   *  Reorganize document #67
+
+Since draft-ietf-httpapi-ratelimit-headers-00
+
+   This section is to be removed before publishing as an RFC.
+
+   *  Use I-D.httpbis-semantics, which includes referencing delay-
+      seconds instead of delta-seconds. #5
+
+<span>Authors&#x27; Addresses</span>
+
+   Roberto Polli
+   Team Digitale, Italian Government
+   Italy
+   Email: robipolli@gmail.com
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 34]</span>
+<span>Internet-Draft      RateLimit header fields for HTTP            May 2026</span>
+
+   Alejandro Martinez Ruiz
+   Red Hat
+   Email: alex@flawedcode.org
+
+   Darrel Miller
+   Microsoft
+   Email: darrel@tavis.ca
+
+<span>Polli, et al.           Expires 24 November 2026               [Page 35]</span>
+</pre>
+                </div>
+            </div>
+            
+        
+    
+                    
+                </div>
+            </div>
+        </main>
+        
+            <footer class="col-md-12 col-sm-12 border-top mt-5 py-5 bg-light-subtle text-center position-sticky">
+                <a href="https://www.ietf.org/" class="p-3">IETF</a>
+                <a href="https://www.ietf.org/iesg/" class="p-3">IESG</a>
+                <a href="https://www.iab.org/" class="p-3">IAB</a>
+                <a href="https://www.irtf.org/" class="p-3">IRTF</a>
+                <a href="https://www.ietf.org/llc/" class="p-3 text-nowrap">IETF LLC</a>
+                <a href="https://trustee.ietf.org/" class="p-3 text-nowrap">IETF Trust</a>
+                <a href="https://www.rfc-editor.org/" class="p-3 text-nowrap">RFC Editor</a>
+                <a href="https://www.iana.org/" class="p-3">IANA</a>
+                <a href="https://www.ietf.org/privacy-statement/" class="p-3 text-nowrap">Privacy Statement</a>
+                <div class="small text-body-secondary py-3">
+                    
+                        <a class="mx-2" href="/release/about">About IETF Datatracker</a>
+                        <span class="mx-2">
+                            
+                                <a href="https://github.com/ietf-tools/datatracker/releases/tag/12.82.1">
+                            
+                            Version 12.82.1
+                            (release - 3aa2f63)
+                            
+                                </a>
+                            
+                        </span>
+                    
+                    <a class="mx-2" href="https://status.ietf.org" target="_blank">System Status</a>
+                    <span class="mx-2 text-danger">
+                        <i class="bi bi-bug"></i>
+                        Report a bug:
+                        <a class="text-reset" target="_blank" href="https://github.com/ietf-tools/datatracker/issues/new/choose">GitHub</a>
+                        
+                            <a class="text-reset" href="mailto:tools-help@ietf.org">Email</a>
+                        
+                    </span>
+                    
+                </div>
+            </footer>
+        
+        
+        <script src="https://static.ietf.org/dt/12.82.1/ietf/js/d3.js">
+        </script>
+        <script src="https://static.ietf.org/dt/12.82.1/ietf/js/document_timeline.js">
+        </script>
+    
+        <script src="https://static.ietf.org/dt/12.82.1/ietf/js/select2.js"></script>
+        <script src="https://static.ietf.org/dt/12.82.1/ietf/js/navbar-doc-search.js"></script>
+      
+<script>
+  var _paq = window._paq || [];
+  
+  _paq.push(['disableCookies']);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//analytics.ietf.org/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', 7]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//analytics.ietf.org/matomo.php?idsite=7" style="border:0;" alt="" /></p></noscript>
+
+    <script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5077921ec33cb34',t:'MTc5Mjk5Njg2NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

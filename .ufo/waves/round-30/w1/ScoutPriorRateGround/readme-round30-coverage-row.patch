@@ -1,0 +1,33 @@
+diff --git c/corpus/README.md w/corpus/README.md
+index 199f320..30d3755 100644
+--- c/corpus/README.md
++++ w/corpus/README.md
+@@ -628,3 +628,28 @@ Append-only. One knowledge row; no earlier line is edited.
+ |---|---|---|
+ | On-release source freshness (Chromium tag pins) | held at 156.0.8078.47 for the 23 tag-pinned rows; counter `scripts/check-release-pins.mjs` measures it; known counter weaknesses routed (lesson round-29 M4) | `corpus/lessons/round-29.md` |
+ | Runtime behaviour on a 156 build | open — no 156 browser run; the post-fill detached-document arm is documented, not observed | `knowledge/chromium-156-release-pin-recheck.md` §Limits |
++
++## Round 30 — rate/ToS signal vocabulary (2026-10-26)
++
++Append-only. Two knowledge rows; no earlier line is edited.
++
++| Note | Holds | Sources |
++|---|---|---|
++| `knowledge/host-rate-limit-signal-classes-r14.md` *(round 30)* | Documented-upstream vocabulary for the rate-limit signal a server publishes: the IETF HTTPAPI RateLimit header-fields draft splits a stable `RateLimit-Policy` quota policy (`q=` quota, `w=` window; SHOULD stay consistent across responses) from the per-request `RateLimit` field (MAY change on every request). An Internet-Draft, not an RFC. Nothing in it was run, captured or observed in a browser. | S116 draft-ietf-httpapi-ratelimit-headers §3 (examples at lines 322 and 413 of -09); rows re-opened 2026-10-26; receipts `evidence/round-30/frontier/` |
++| `knowledge/host-rate-limit-header-set-r16.md` *(round 30)* | One real host's documented rate-limit header set (Discord developer docs): `X-RateLimit-Limit` / `-Remaining` / `-Reset` / `-Reset-After` / `-Bucket`, with the 429-only `X-RateLimit-Global` / `-Scope`, and the page's own caveat that quota for the per-guild emoji routes may be inaccurate. Documentation only; no request was sent to that host's API. | S117 Discord Developer Docs, Rate Limits; opened 2026-10-26; receipts `evidence/round-30/frontier/` |
++
++Frontier restatement (append-only; earlier rows keep their bytes): **Rate/ToS
++surface for site-interaction records** — documented vocabulary held, no measured
++real surface. The two entries above give the signal classes a record can name
++(published quota policy, per-request budget, `X-RateLimit-*` set, `Retry-After`
++shape from `knowledge/redirect-and-retry-after-semantics.md`); the approval table's
++C3 and C6 still decide from an absence (`knowledge/interaction-approval-table.md:62,
++:191-193`; U1 stays open) and a loopback 429 remains an instrument, never a C6 datum
++(`knowledge/external-class-fixture-v2.md:508-517`). The stop-and-report predicate
++(`:61-67`, status ∈ {429, 403}, `Retry-After` recorded as a shape, never acted on)
++is unchanged; the fixture does not record `RateLimit` or `X-RateLimit-*` fields,
++and no run has exercised them.
++
++| Frontier item | Status | Pointer |
++|---|---|---|
++| Rate/ToS surface for site-interaction records | docs-held — IETF `RateLimit-Policy`/`RateLimit` fields (Internet-Draft) and one host's `X-RateLimit-*` set documented; runtime open — no measured real-site rate or ToS datum, robots semantics beyond `Disallow` prefixes unexercised, approval table C3/C6 unchanged | `knowledge/host-rate-limit-signal-classes-r14.md`; `knowledge/host-rate-limit-header-set-r16.md`; `knowledge/external-class-fixture-v2.md` §4–§5, §8; `knowledge/interaction-approval-table.md` C2–C6, U1 |

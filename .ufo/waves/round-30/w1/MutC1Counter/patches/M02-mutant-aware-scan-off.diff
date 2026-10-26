@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r30/MutC1Counter/clone/scripts/check-gate-mutants.mjs	2026-10-26 03:42:08.149068576 -0300
++++ /fast/scratch/hyaku/tabi-r30/MutC1Counter/mutants/M02-mutant-aware-scan-off.mjs	2026-10-26 03:46:15.907321547 -0300
+@@ -191,7 +191,7 @@
+     const src = sources.get(m.script);
+     const n = occurrences(src, m.find);
+     if (n !== 1) throw new Refusal(`mutant ${m.id}: find string occurs ${n} times in ${m.script} (must be exactly 1)`);
+-    if (m.kind === "fault" && m.replace.replace(/\s+/g, "").length >= LITERAL_MIN) {
++    if (false && m.kind === "fault" && m.replace.replace(/\s+/g, "").length >= LITERAL_MIN) {
+       const outside = occurrences(src, m.replace) - occurrences(m.find, m.replace);
+       if (outside > 0) throw new Refusal(`mutant-aware literal: fault mutant ${m.id} replacement text occurs in ${m.script} outside its find site`);
+     }

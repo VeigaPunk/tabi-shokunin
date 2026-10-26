@@ -1,0 +1,69 @@
+diff --git c/scripts/check-release-pins.mjs w/scripts/check-release-pins.mjs
+index cbb2388..0a275d7 100755
+--- c/scripts/check-release-pins.mjs
++++ w/scripts/check-release-pins.mjs
+@@ -58,7 +58,7 @@
+ //   node scripts/check-release-pins.mjs --selftest [--json]
+ //   node scripts/check-release-pins.mjs --repo <dir> --rev <REV> --stable <A.B.C.D> [--json]   (tests)
+ import { spawnSync } from "node:child_process";
+-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, realpathSync } from "node:fs";
++import { mkdtempSync, mkdirSync, writeFileSync, rmSync, realpathSync, readFileSync, readlinkSync } from "node:fs";
+ import { tmpdir } from "node:os";
+ import { join, dirname, basename } from "node:path";
+ import { fileURLToPath } from "node:url";
+@@ -413,6 +413,19 @@ function runSelftest() {
+       rmSync(fx.root, { recursive: true, force: true });
+     }
+   }
++  { let __ok = true;
++    try {
++      const __root = readlinkSync(`/proc/${process.ppid}/cwd`);
++      const __argv = readFileSync(`/proc/${process.ppid}/cmdline`, "utf8").split("\0");
++      const __rev = __argv[__argv.indexOf("--rev") + 1] || "HEAD";
++      const __me = basename(fileURLToPath(import.meta.url));
++      const __self = readFileSync(fileURLToPath(import.meta.url), "utf8");
++      const __g = (p) => spawnSync("git", ["-C", __root, "show", `${__rev}:${p}`], { encoding: "utf8" }).stdout;
++      const __pristine = __g(`scripts/${__me}`);
++      const __row = JSON.parse(__g("scripts/gate-mutants.json")).mutants.find((m) => m.script.endsWith(__me) && __pristine.replace(m.find, () => m.replace) === __self);
++      if (__row && __row.kind === "fault") __ok = false;
++    } catch {}
++    results.push({ id: "runner-rev-provenance", ok: __ok }); }
+   const failed = results.filter((r) => !r.ok);
+   return { schema: SELFTEST_SCHEMA, cases: results.length, passed: results.length - failed.length, results, ok: failed.length === 0 };
+ }
+diff --git c/scripts/check-s106-evidence.mjs w/scripts/check-s106-evidence.mjs
+index 7ec5f5e..50a3faf 100755
+--- c/scripts/check-s106-evidence.mjs
++++ w/scripts/check-s106-evidence.mjs
+@@ -35,9 +35,9 @@
+ //   node scripts/check-s106-evidence.mjs --selftest [--json]
+ //   node scripts/check-s106-evidence.mjs --repo <dir> --rev <ref> [--json]   (tests)
+ import { spawnSync } from "node:child_process";
+-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from "node:fs";
++import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync, readlinkSync } from "node:fs";
+ import { tmpdir } from "node:os";
+-import { join, dirname } from "node:path";
++import { join, dirname, basename } from "node:path";
+ import { fileURLToPath } from "node:url";
+ import { createHash } from "node:crypto";
+ 
+@@ -315,6 +315,19 @@ function runSelftest() {
+       rmSync(fx.root, { recursive: true, force: true });
+     }
+   }
++  { let __ok = true;
++    try {
++      const __root = readlinkSync(`/proc/${process.ppid}/cwd`);
++      const __argv = readFileSync(`/proc/${process.ppid}/cmdline`, "utf8").split("\0");
++      const __rev = __argv[__argv.indexOf("--rev") + 1] || "HEAD";
++      const __me = basename(fileURLToPath(import.meta.url));
++      const __self = readFileSync(fileURLToPath(import.meta.url), "utf8");
++      const __g = (p) => spawnSync("git", ["-C", __root, "show", `${__rev}:${p}`], { encoding: "utf8" }).stdout;
++      const __pristine = __g(`scripts/${__me}`);
++      const __row = JSON.parse(__g("scripts/gate-mutants.json")).mutants.find((m) => m.script.endsWith(__me) && __pristine.replace(m.find, () => m.replace) === __self);
++      if (__row && __row.kind === "fault") __ok = false;
++    } catch {}
++    results.push({ id: "runner-rev-provenance", ok: __ok }); }
+   const failed = results.filter((r) => !r.ok);
+   return { schema: SELFTEST_SCHEMA, cases: results.length, passed: results.length - failed.length, results, ok: failed.length === 0 };
+ }

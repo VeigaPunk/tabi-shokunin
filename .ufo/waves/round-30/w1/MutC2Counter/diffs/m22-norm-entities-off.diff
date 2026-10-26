@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r30/MutC2Counter/clone/scripts/check-frontier-admission.mjs	2026-10-26 03:47:56.059192099 -0300
++++ /fast/scratch/hyaku/tabi-r30/MutC2Counter/mutants/m22-norm-entities-off.mjs	2026-10-26 03:49:39.630066275 -0300
+@@ -140,7 +140,7 @@
+   if (/<!doctype html|<html[\s>]/i.test(t)) {
+     t = t.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ");
+     t = t.replace(/&(#x[0-9a-f]+|#[0-9]+|[a-z]+[0-9]*);/gi, (m, e) => {
+-      const k = e.toLowerCase();
++      return m; const k = e.toLowerCase();
+       if (k.startsWith("#x")) return String.fromCodePoint(parseInt(k.slice(2), 16));
+       if (k.startsWith("#") && k !== "#39") return String.fromCodePoint(parseInt(k.slice(1), 10));
+       return ENTITIES[k] ?? m;

@@ -1,0 +1,35 @@
+# Guard span, committed 156 bytes (ground for the appended errata note)
+# file: corpus/evidence/round-29/release-pins/bytes/156.0.8078.47/third_party/blink/renderer/core/html/forms/html_form_element.cc
+# sha256: 2a96a97bfb4246b7a23895be7548533ce7adc32286f10df36831e370f8f86102
+# lines 199-214 with absolute line numbers ('N<TAB>text'):
+199	  }
+200	
+201	  // Filling out the form controls dispatches `input` and `change` events,
+202	  // whose handlers may have detached the document.
+203	  if (!form_->GetDocument().IsActive()) {
+204	    return std::move(done_callback)
+205	        .Run(base::unexpected(
+206	            ScriptToolError(ScriptToolErrorCode::kToolInvocationFailed,
+207	                            "The document was detached while filling out "
+208	                            "the form")));
+209	  }
+210	
+211	  // Success. Now we can either submit the form or focus the submit button.
+212	  // TODO(masonf): This should key off of the `autosubmit` attribute, and only
+213	  // submit here if the attribute is present. Else it should just focus the
+214	  // submit button and then signal the agent to allow user input again.
+
+# guard count check: 201..209 inclusive = 9 lines; line 210 is blank? [1 bytes incl newline]
+
+# mapping 154 -> 156 at the insertion (both committed):
+154:196	  if (error.has_value()) {
+154:197	    return std::move(done_callback).Run(base::unexpected(error.value()));
+154:198	  }
+154:199	
+154:200	  // Success. Now we can either submit the form or focus the submit button.
+154:201	  // TODO(masonf): This should key off of the `autosubmit` attribute, and only
+156:197	  if (error.has_value()) {
+156:198	    return std::move(done_callback).Run(base::unexpected(error.value()));
+156:199	  }
+154:200	  // Success. Now we can either submit the form or focus the submit button.
+156:211	  // Success. Now we can either submit the form or focus the submit button.

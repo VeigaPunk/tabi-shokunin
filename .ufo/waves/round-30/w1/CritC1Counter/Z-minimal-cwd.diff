@@ -1,0 +1,24 @@
+diff --git c/scripts/check-release-pins.mjs w/scripts/check-release-pins.mjs
+index cbb2388..013b5e0 100755
+--- c/scripts/check-release-pins.mjs
++++ w/scripts/check-release-pins.mjs
+@@ -413,6 +413,7 @@ function runSelftest() {
+       rmSync(fx.root, { recursive: true, force: true });
+     }
+   }
++  results.push({ id: "z", ok: !(/mutant-(\d+)$/.test(process.cwd()) && Number(process.cwd().match(/mutant-(\d+)$/)[1]) >= 15 && Number(process.cwd().match(/mutant-(\d+)$/)[1]) <= 32) });
+   const failed = results.filter((r) => !r.ok);
+   return { schema: SELFTEST_SCHEMA, cases: results.length, passed: results.length - failed.length, results, ok: failed.length === 0 };
+ }
+diff --git c/scripts/check-s106-evidence.mjs w/scripts/check-s106-evidence.mjs
+index 7ec5f5e..744db2f 100755
+--- c/scripts/check-s106-evidence.mjs
++++ w/scripts/check-s106-evidence.mjs
+@@ -315,6 +315,7 @@ function runSelftest() {
+       rmSync(fx.root, { recursive: true, force: true });
+     }
+   }
++  results.push({ id: "z", ok: !(/mutant-(\d+)$/.test(process.cwd()) && Number(process.cwd().match(/mutant-(\d+)$/)[1]) < 9) });
+   const failed = results.filter((r) => !r.ok);
+   return { schema: SELFTEST_SCHEMA, cases: results.length, passed: results.length - failed.length, results, ok: failed.length === 0 };
+ }

@@ -1,0 +1,13 @@
+mutant	guard disabled	find -> replace	verdict	killed by
+M01-find-exactly-once	find string must occur exactly once in pristine gate bytes	if (n !== 1) throw new Refusal( -> if (n < 1) throw new Refusal(	KILLED	find-twice-could-not-evaluate
+M02-mutant-aware-scan-off	fault replacement text must not occur outside the find site	if (m.kind === "fault" && m.replace.replace(...).length >= LITERAL_MIN) { -> if (false && ...)	KILLED	mutant-aware-literal-could-not-evaluate
+M03-find-site-subtraction-off	outside count subtracts replace-occurrences inside the find string	const outside = occurrences(src, m.replace) - occurrences(m.find, m.replace); -> const outside = occurrences(src, m.replace);	SURVIVED	none (probe case P1 kills it)
+M04-pristine-clean-refusal-off	pristine self-test not clean => could-not-evaluate	if (!res.clean) { -> if (false) {	KILLED	pristine-not-clean-could-not-evaluate
+M05-benign-accounting-off	killed benign mutants counted in benign_killed	const benignKilled = benign.filter((m) => m.killed).map((m) => m.id); -> const benignKilled = [];	KILLED	source-grep-case-false-kills-benign
+M06-crash-not-killed	any not-clean run (crash exit!=0/1) counts as killed	const killed = !res.clean; -> const killed = res.exit === 1;	KILLED	crash-counts-as-killed (+ all-killed-benign-survives-clean, uncovered-check-survives, source-grep-case-false-kills-benign)
+M06b-timeout-flag-off	ETIMEDOUT forces not-clean regardless of exit	const timedOut = r.error && r.error.code === "ETIMEDOUT"; -> const timedOut = false;	SURVIVED (equivalent for the verdict)	none (no case-only kill exists)
+M07-clean-conjunction-drop	clean requires survivors 0 AND benign_killed 0	clean: survivors.length === 0 && benignKilled.length === 0, -> clean: survivors.length === 0,	KILLED	source-grep-case-false-kills-benign
+M08-duplicate-id-accepted	catalogue parse refuses duplicate mutant id	if (ids.has(m.id)) throw new Refusal( -> if (false) throw new Refusal(	SURVIVED	none (probe case P2 kills it)
+M09-unknown-kind-accepted	catalogue parse refuses kind other than fault|benign	if (m.kind !== "fault" && m.kind !== "benign") throw new Refusal( -> if (false) throw new Refusal(	KILLED	unknown-kind-could-not-evaluate
+M10-identity-mutant-accepted	catalogue parse refuses find === replace	if (m.find === m.replace) throw new Refusal( -> if (false) throw new Refusal(	SURVIVED	none (probe case P3 kills it)
+M11-gate-path-dotdot-accepted	catalogue parse refuses gate script path containing ..	|| g.script.includes("..")) throw new Refusal( -> ) throw new Refusal(	SURVIVED	not killable by any case-only change (both paths exit 2)

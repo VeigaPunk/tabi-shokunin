@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r30/MutC1Counter/clone/scripts/check-gate-mutants.mjs	2026-10-26 03:42:08.149068576 -0300
++++ /fast/scratch/hyaku/tabi-r30/MutC1Counter/mutants/M11-gate-path-dotdot-accepted.mjs	2026-10-26 03:46:15.908403247 -0300
+@@ -118,7 +118,7 @@
+   if (!Array.isArray(doc.mutants) || doc.mutants.length === 0) throw new Refusal("catalogue mutants empty");
+   const scripts = new Set();
+   for (const g of doc.gates) {
+-    if (!g || typeof g.script !== "string" || !g.script || g.script.includes("..")) throw new Refusal("catalogue gate without a valid script path");
++    if (!g || typeof g.script !== "string" || !g.script ) throw new Refusal("catalogue gate without a valid script path");
+     if (scripts.has(g.script)) throw new Refusal(`catalogue gate listed twice: ${g.script}`);
+     scripts.add(g.script);
+   }

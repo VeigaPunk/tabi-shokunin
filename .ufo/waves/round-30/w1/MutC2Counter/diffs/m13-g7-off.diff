@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r30/MutC2Counter/clone/scripts/check-frontier-admission.mjs	2026-10-26 03:47:56.059192099 -0300
++++ /fast/scratch/hyaku/tabi-r30/MutC2Counter/mutants/m13-g7-off.mjs	2026-10-26 03:49:39.575066303 -0300
+@@ -216,7 +216,7 @@
+     const rfBytes = rf ? blob(repo, rev, rf.bytes_path) : null;
+     const rfOk = rf && rf.id === id && typeof rf.seat === "string" && rf.seat && typeof rc.fetched_by === "string" && rc.fetched_by &&
+       rf.seat !== rc.fetched_by && rf.http_status === 200 && rfBytes !== null && sha256(rfBytes) === rf.sha256 && normalise(rfBytes).includes(q);
+-    if (!rfOk) { res.reason = "g7-refetch"; cache.set(id, res); return res; }
++    if (false) { res.reason = "g7-refetch"; cache.set(id, res); return res; }
+     if (live) {
+       const lb = fetchLive(rc.url);
+       if (lb === null || !normalise(lb).includes(q)) { res.reason = "l1-live"; cache.set(id, res); return res; }
