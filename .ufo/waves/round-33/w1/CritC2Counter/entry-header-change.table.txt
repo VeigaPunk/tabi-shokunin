@@ -1,0 +1,7 @@
+
+| Row | Surface | BiDi command | Measured | Evidence |
+|---|---|---|---|---|
+| R1 | Browser identity at launch | classic `POST /session` with `webSocketUrl: true`, then any BiDi command | yes | caps `browserName` present, `browserVersion` equals the receipt's `browserVersion`, `webSocketUrl` matches `^ws://(127.0.0.1 or localhost):port/`, at least one successful command on the socket |
+| R2 | Target inventory | `browsingContext.getTree` | yes | a successful `getTree` whose `contexts` is non-empty and every entry has a string `context` |
+| R3 | Navigate | `browsingContext.navigate` + `browsingContext.load` | yes | a successful navigate to the loopback `/a.html` returns that same `url`, and a `browsingContext.load` event carries it |
+| R4 | Screenshot | `browsingContext.captureScreenshot` | yes | a successful screenshot decodes as a PNG whose IHDR is exactly 640x480 (the pinned viewport) |

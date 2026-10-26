@@ -1,58 +1,93 @@
 #!/usr/bin/env node
 // check-bidi-runtime.mjs — tabi lane gate: coverage (WebDriver BiDi surfaces
-// observed at runtime on this host, loopback only).
+// observed at runtime on this host, loopback only). v2, round 33.
 //
-// Verdict: 0 clean (population >= 1 matrix rows marked measured and every one
-//          admitted); 1 failed (entry absent, no new mined source row, or one
-//          or more rows not admitted); 2 could-not-evaluate (usage,
-//          unresolvable revision, registry absent, --live without chromedriver
-//          or chromium). Any other nonzero code is undeclared and reads as
-//          could-not-evaluate.
+// Verdict: 0 clean (population >= 1, at least one row admitted, no row finding);
+//          1 failed (entry absent, no admissible source row, or one or more row
+//          findings); 2 could-not-evaluate (usage, unresolvable revision,
+//          registry or lessons absent, --live without chromedriver or chromium).
+//          Any other nonzero code is undeclared and reads as could-not-evaluate.
 // Self-test: `--selftest` (isolated cases over temporary sandbox repositories
 //          under TMPDIR with synthetic transcripts; the live leg is exercised
 //          through an injected runner, never a browser; creates and removes
 //          its own trees).
-// Frozen by: .ufo/waves/round-32/claims.json claim C1 (counter sha256
-//          recorded there before any claim data).
-// Pinned values: FIXTURE, ROWS and the predicates in this file; the round's
-//          receipt at --receipt (default corpus/evidence/round-32/bidi/receipt.json).
-// Write scope: stdout/stderr only. Production reads committed git blobs
-//          (git show <rev>:<path>). With --live it starts chromedriver and a
-//          headless chromium with a throwaway profile under TMPDIR, serves
-//          FIXTURE on 127.0.0.1 only, never navigates off loopback, and
-//          removes the profile; never writes the lane, never reads
-//          credentials or session material.
+// Frozen by: .ufo/waves/round-32/claims.json claim C1 (v1 counter sha256
+//          recorded there before any claim data); v2 is round 33 claim C2.
 // Owner: tabi L1.
 //
-// What it decides
-// ---------------
-// Population: the data rows of the first Markdown table in --entry whose
+// Write scope: stdout/stderr only. Production reads committed git blobs
+//          (git show <rev>:<path>). With --live it starts chromedriver and a
+//          headless chromium with a throwaway profile, HOME and XDG config/cache
+//          dirs under TMPDIR (round 33: the operator's ~/.pki NSS store and
+//          ~/.config/chromium are never opened), serves FIXTURE on 127.0.0.1
+//          only, never navigates off loopback, and removes only the dirs it
+//          created; never writes the lane, never reads credentials or session
+//          material. The live leg launches the real browser binary
+//          (/usr/lib/chromium/chromium), not the /usr/bin/chromium launcher
+//          (which prepends ~/.config/chromium-flags.conf, host state this run
+//          does not own — S128) and never passes --no-sandbox (S129): if the
+//          sandbox cannot start, or no short directory exists for chromium's
+//          singleton socket, the gate refuses (exit 2) instead.
+//
+// What it decides (v2)
+// --------------------
+// Population: EVERY data row of the first Markdown table in --entry whose
 // header cells are exactly `Row | Surface | BiDi method | Measured | Evidence`
-// (case-insensitive) and whose Measured cell is `yes`. Row ids R1..R17 are the
-// seventeen rows of corpus/knowledge/webdriver-bidi-capability-matrix.md §2 in
-// order (ROWS). Entry-level checks (fail the whole population):
+// (case-insensitive) and whose Measured cell is non-empty. Row ids R1..R17 are
+// the seventeen rows of corpus/knowledge/webdriver-bidi-capability-matrix.md §2
+// in order (ROWS). A row whose Measured cell is not a bare `yes`, a bare `no`,
+// or `no` followed by a dash-introduced reason is a row finding: v1 dropped a
+// decorated cell (`yes (live)`) out of the population, which hid the row.
+// A duplicated row id is a row finding on every occurrence; a `no` row is
+// counted in the population and reported as unmeasured, never as admitted.
+//
+// Entry-level checks (fail the whole population):
 //   e1-entry-absent   --entry is not committed at --rev.
 //   s1-source-row     the entry's `source:` line cites no S-id whose registry
 //                     row (0-3 leading spaces, 11 cells) is `mined`, names the
-//                     entry in used-by, and is absent at --baseline (opened
-//                     after the baseline, i.e. this round).
+//                     entry in used-by, is absent at --baseline, AND has a
+//                     `## Gate` table row in a corpus/lessons/round-*.md at
+//                     --rev carrying an https URL and a 64-hex sha256 whose
+//                     host equals the registry row's source URL host. v1 read
+//                     the registry row alone, so a fabricated row passed.
+//
+// Receipt runs (t1-receipt, one finding fails every row):
+//   - the receipt is present, its schema is RECEIPT_SCHEMA, its fixtureSha256
+//     is this gate's FIXTURE digest, and it names a browserVersion;
+//   - the `driver` blob is present at --rev with the recorded sha256, is NOT
+//     this gate (its path, its bytes, a re-export of it, or an import of a
+//     symbol outside the allow-list below);
+//   - at least two runs, whose transcript paths are pairwise distinct and
+//     whose transcript sha256 are pairwise distinct (v1 admitted the same path
+//     twice and byte-identical copies);
+//   - each run's classic new-session body carries a sessionId of ChromeDriver's
+//     shape (32 lowercase hex) and a capabilities.webSocketUrl of
+//     `ws://127.0.0.1:<port>/session/<that sessionId>`; sessionIds are pairwise
+//     distinct; every browsing-context id the run mentions is ChromeDriver's
+//     context shape (32 uppercase hex), so the v1 generator's `X` / `C1`
+//     constants are refused (v1 could not tell a synthesised transcript from a
+//     recorded one).
+//   Driver import allow-list: FIXTURE, FIXTURE_SHA256, FIXTURE_HEADER, VIEWPORT,
+//   DATA_TEXT, serveFixture (the round-32 driver imports three of them:
+//   FIXTURE_SHA256, VIEWPORT, serveFixture). Any other gate symbol, a
+//   namespace/default import, a side-effect import, or an `export ... from`
+//   re-export of this gate is a t1 finding.
+//
 // Per row, first failing check by stable id:
 //   x1-row-unknown    the id is not one of R1..R17.
-//   x2-no-counterpart the matrix row has no BiDi command (R16, stop-loading).
-//   t1-receipt        the receipt is absent or malformed, its fixtureSha256 is
-//                     not FIXTURE's, its `driver` script blob is absent or its
-//                     sha256 is not `driverSha256`, it lists fewer than two
-//                     runs, or a run's transcript blob is absent or its sha256
-//                     differs.
+//   x3-duplicate-id   the id occurs more than once in the entry table.
+//   x4-measured-cell  the Measured cell is neither `yes` nor `no` (+ reason).
+//   x2-no-counterpart the matrix row has no BiDi command (R16, stop-loading)
+//                     and is marked `yes`.
+//   t1-receipt        as above.
 //   t3-binding        the runs are not bound to a real rendering: each run's
 //                     FIRST captureScreenshot (taken after setViewport 640x480,
 //                     navigate /a.html complete and window.__ready settled,
-//                     before any input action) must decode to the same bytes
-//                     in every run and carry a chromedriverVersion; with
-//                     --live those bytes and that version must equal this
-//                     counter's own session's (headless rendering of FIXTURE
-//                     is byte-deterministic on one host build). A transcript
-//                     synthesised without a browser fails here.
+//                     before any input action) must decode to the same bytes in
+//                     every run and carry a chromedriverVersion; with --live
+//                     those bytes and that version must equal this counter's own
+//                     session's (headless rendering of FIXTURE is
+//                     byte-deterministic on one host build).
 //   t2-run            the row predicate fails on a committed run transcript.
 //   l1-live           only with --live: the same predicate fails on this
 //                     counter's own BiDi session against FIXTURE (independent
@@ -63,7 +98,25 @@
 // {"seq":n,"dir":"send","frame":{id,method,params}} and
 // {"seq":n,"dir":"recv","frame":<response or event>} in wire order.
 //
-// Counted fields: population, admitted, failing.
+// Counted fields: population (every non-empty Measured row), admitted, failing
+// (rows with a finding), unmeasured (bare `no` rows), distinct (distinct ids
+// among measured rows).
+//
+// Limits (v2):
+//   - The battery is finite. A receipt whose runs are synthesised with
+//     real-shaped session ids, distinct bytes and a real-shaped context id is
+//     still not proven to have been executed: v2 binds shape and cross-run
+//     identity, not a driver-emitted log. The live leg re-tests every admitted
+//     row on a session this gate starts, which is what the capability verdict
+//     rests on.
+//   - The Gate-row check reads one table row's text; it does not verify that
+//     the URL was fetched. It closes a fabricated registry row, not a fetched
+//     page whose bytes are unread.
+//   - The driver import scan is line-based static text matching; a driver that
+//     reaches the gate through a computed specifier or a multi-line import is
+//     not detected by it.
+//   - `no` rows are unmeasured, not verified: the gate cannot tell a genuinely
+//     absent capability from an unmeasured one.
 //
 // Usage:
 //   node scripts/check-bidi-runtime.mjs --rev <REV> --baseline <REV> --entry <path>
@@ -71,21 +124,30 @@
 //   node scripts/check-bidi-runtime.mjs --selftest [--json]
 //   node scripts/check-bidi-runtime.mjs --repo <dir> ...   (tests)
 import { spawn, spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readdirSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, posix } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
 import { createServer } from "node:http";
 import { createServer as createNetServer } from "node:net";
 
-const SCHEMA = "tabi-bidi-runtime-v1";
-const SELFTEST_SCHEMA = "tabi-bidi-runtime-selftest-v1";
+const SCHEMA = "tabi-bidi-runtime-v2";
+const SELFTEST_SCHEMA = "tabi-bidi-runtime-selftest-v2";
 const RECEIPT_SCHEMA = "tabi-bidi-receipt-v1";
 const SOURCES_PATH = "corpus/SOURCES.md";
+const LESSONS_DIR = "corpus/lessons";
+const GATE_PATH = "scripts/check-bidi-runtime.mjs";
 const DEFAULT_RECEIPT = "corpus/evidence/round-32/bidi/receipt.json";
 const LANE = join(dirname(fileURLToPath(import.meta.url)), "..");
 const HEADER = ["row", "surface", "bidi method", "measured", "evidence"];
+const DRIVER_ALLOW = new Set(["FIXTURE", "FIXTURE_SHA256", "FIXTURE_HEADER", "VIEWPORT", "DATA_TEXT", "serveFixture"]);
+const SESSION_ID = /^[0-9a-f]{32}$/; // ChromeDriver 154 classic session id shape
+const CONTEXT_ID = /^[0-9A-F]{32}$/; // ChromeDriver 154 browsing-context id shape
+const WS_LOOPBACK = /^ws:\/\/(127\.0\.0\.1|localhost):\d+\/session\//;
+const WS_SESSION = /^ws:\/\/[^/]+\/session\/([0-9a-f]{32})$/;
+const MEASURED = /^(yes|no)(?:\s*[—–-]\s*\S[\s\S]*)?$/i;
+const HEX64 = /\b[0-9a-f]{64}\b/;
 
 class Refusal extends Error {
   constructor(message) {
@@ -217,7 +279,7 @@ export const PREDICATES = {
     if (!caps) return "no classic new-session response";
     if (!caps.browserName) return "no browserName";
     if (caps.browserVersion !== ctx.browserVersion) return `browserVersion ${caps.browserVersion} != ${ctx.browserVersion}`;
-    if (!/^ws:\/\/(127\.0\.0\.1|localhost):\d+\//.test(String(caps.webSocketUrl || ""))) return "webSocketUrl not a loopback ws url";
+    if (!WS_LOOPBACK.test(String(caps.webSocketUrl || ""))) return "webSocketUrl not a loopback ws url";
     if (!rec.cmds.some(ok)) return "no successful BiDi command on the socket";
     return null;
   },
@@ -300,6 +362,93 @@ export const PREDICATES = {
   },
 };
 
+// ---- receipt provenance helpers --------------------------------------------
+
+// The Measured cell's verdict: "yes" | "no" | null (a decorated/empty cell).
+function measuredVerdict(cell) {
+  const t = String(cell == null ? "" : cell).trim();
+  if (!t) return { verdict: null, measured: false, detail: "Measured cell is empty" };
+  const m = MEASURED.exec(t);
+  if (!m) return { verdict: null, measured: false, detail: `Measured cell is neither yes nor no-plus-reason: ${JSON.stringify(t)}` };
+  return { verdict: m[1].toLowerCase(), measured: true, detail: null };
+}
+
+// The classic new-session body's provenance: a ChromeDriver-shaped sessionId
+// bound to a loopback webSocketUrl that carries that same id.
+function sessionOf(rec) {
+  const v = rec.newSession && rec.newSession.value;
+  if (!v || typeof v !== "object") return { why: "no classic new-session value" };
+  const sid = v.sessionId;
+  if (typeof sid !== "string" || !SESSION_ID.test(sid)) return { why: `sessionId is not 32 lowercase hex: ${JSON.stringify(sid)}` };
+  const caps = v.capabilities;
+  const url = caps && caps.webSocketUrl;
+  if (typeof url !== "string") return { why: "no webSocketUrl capability" };
+  const m = WS_SESSION.exec(url);
+  if (!m) return { why: `webSocketUrl is not ws://<host>/session/<sessionId>: ${url}` };
+  if (m[1] !== sid) return { why: `webSocketUrl session segment ${m[1]} != sessionId ${sid}` };
+  if (!WS_LOOPBACK.test(url)) return { why: `webSocketUrl is not a loopback ws session url: ${url}` };
+  return { sid, url };
+}
+
+// Every browsing-context id a run mentions: command/event params and getTree results.
+function contextIds(rec) {
+  const ids = new Set();
+  const add = (v) => { if (typeof v === "string") ids.add(v); };
+  for (const c of rec.cmds) {
+    add(c.params && c.params.context);
+    const t = c.params && c.params.target;
+    if (t && typeof t === "object") add(t.context);
+    const r = (c.response && c.response.result) || {};
+    for (const x of Array.isArray(r.contexts) ? r.contexts : []) if (x && typeof x === "object") add(x.context);
+  }
+  for (const e of rec.events) add(e.params && e.params.context);
+  return [...ids];
+}
+
+// Static import/export specifiers of a driver blob (line-based; see Limits).
+function importSpecs(text) {
+  const out = [];
+  for (const line of text.split("\n")) {
+    const t = line.trim();
+    if (!t || t.startsWith("//")) continue;
+    let m = /^export\s+\*\s*(?:as\s+\w+\s*)?from\s*["']([^"']+)["']/.exec(t);
+    if (m) { out.push({ kind: "re-export", spec: m[1], names: null }); continue; }
+    m = /^export\s*\{([^}]*)\}\s*from\s*["']([^"']+)["']/.exec(t);
+    if (m) { out.push({ kind: "re-export", spec: m[2], names: m[1].split(",").map((x) => x.trim().split(/\s+as\s+/)[0]).filter(Boolean) }); continue; }
+    m = /^import\s+([^;]*?)\s*from\s*["']([^"']+)["']/.exec(t);
+    if (m) {
+      const clause = m[1].trim();
+      if (clause.startsWith("*")) { out.push({ kind: "namespace", spec: m[2], names: null }); continue; }
+      if (clause.startsWith("{")) { out.push({ kind: "named", spec: m[2], names: clause.replace(/^\{|\}$/g, "").split(",").map((x) => x.trim().split(/\s+as\s+/)[0]).filter(Boolean) }); continue; }
+      out.push({ kind: "default", spec: m[2], names: null });
+      continue;
+    }
+    m = /^import\s+["']([^"']+)["']/.exec(t);
+    if (m) out.push({ kind: "side-effect", spec: m[1], names: null });
+  }
+  return out;
+}
+
+function resolvesToGate(spec, driverPath) {
+  if (!spec) return false;
+  if (spec.startsWith(".")) return posix.normalize(posix.join(posix.dirname(driverPath), spec)) === GATE_PATH;
+  if (spec.startsWith("/")) return false;
+  return spec === "check-bidi-runtime.mjs" || spec.endsWith("/check-bidi-runtime.mjs");
+}
+
+function driverGateFinding(text, driverPath) {
+  for (const s of importSpecs(text)) {
+    if (!resolvesToGate(s.spec, driverPath)) continue;
+    if (s.kind === "named") {
+      const bad = (s.names || []).filter((n) => !DRIVER_ALLOW.has(n));
+      if (!bad.length) continue;
+      return `driver imports non-allow-listed gate symbol(s): ${bad.join(", ")}`;
+    }
+    return `driver has a ${s.kind} relation to this gate (${s.spec})`;
+  }
+  return null;
+}
+
 // ---- git (read-only) --------------------------------------------------------
 
 function git(repo, args) {
@@ -326,8 +475,8 @@ function parseRegistry(text) {
     const cells = line.trim().split("|");
     if (cells.length !== 13) continue;
     const c = cells.slice(1, 12).map((x) => x.trim());
-    const [id, , , , , , , status, opened, , usedBy] = c;
-    if (!rows.has(id)) rows.set(id, { id, status, opened, usedBy });
+    const [id, source, , , , , , status, opened, , usedBy] = c;
+    if (!rows.has(id)) rows.set(id, { id, source, status, opened, usedBy });
   }
   return rows;
 }
@@ -357,6 +506,41 @@ export function parseTable(text) {
   return null;
 }
 
+// The corpus/lessons/round-*.md `## Gate` table rows, keyed by S-id (v2's
+// provenance requirement: a registry row alone is not evidence of a fetch).
+function gateRows(repo, rev) {
+  const map = new Map();
+  const r = git(repo, ["ls-tree", "-r", "--name-only", rev, "--", LESSONS_DIR]);
+  if (r.status !== 0) return map;
+  const files = r.stdout.toString("utf8").split("\n").filter((p) => /^corpus\/lessons\/round-[^/]+\.md$/.test(p));
+  for (const f of files) {
+    const b = blob(repo, rev, f);
+    if (b === null) continue;
+    let inGate = false;
+    const lines = b.toString("utf8").split("\n");
+    for (let i = 0; i < lines.length; i += 1) {
+      if (/^#{1,6}\s/.test(lines[i])) { inGate = /^#{1,6}\s+Gate\s*$/.test(lines[i]); continue; }
+      if (!inGate) continue;
+      const cells = splitRow(lines[i]);
+      if (!cells) continue;
+      const id = (cells[0] || "").replace(/`/g, "").trim();
+      if (!/^S\d{3,}$/.test(id)) continue;
+      if (!map.has(id)) map.set(id, []);
+      map.get(id).push({ file: f, line: i + 1, text: lines[i] });
+    }
+  }
+  return map;
+}
+
+function firstHttps(text) {
+  const m = /https:\/\/[^\s)<>`|"']+/.exec(String(text || ""));
+  return m ? m[0] : null;
+}
+
+function urlHost(u) {
+  try { return new URL(u).hostname; } catch { return null; }
+}
+
 // ---- live leg: this counter's own BiDi client ------------------------------
 
 function freePort() {
@@ -369,25 +553,52 @@ function freePort() {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-export async function liveRecord({ chromedriver = "chromedriver", chromium = "/usr/bin/chromium", timeoutMs = 60000 } = {}) {
+// The live leg must run a sandboxed renderer. Chromium sandboxes through the
+// namespace sandbox (unprivileged user namespaces) or through the setuid helper
+// installed next to the binary. If neither is usable, launching with
+// --no-sandbox would produce a "live" transcript from an unsandboxed browser,
+// so the gate refuses instead.
+function sandboxStatus(binary) {
+  const helper = join(dirname(binary), "chrome-sandbox");
+  let setuidHelper = false;
+  try {
+    const st = statSync(helper);
+    setuidHelper = st.uid === 0 && (st.mode & 0o4000) !== 0;
+  } catch {}
+  if (setuidHelper) return { refuse: false, why: `setuid ${helper}` };
+  let userns = null;
+  try { userns = readFileSync("/proc/sys/kernel/unprivileged_userns_clone", "utf8").trim(); } catch {}
+  if (userns === "1") return { refuse: false, why: "kernel.unprivileged_userns_clone=1" };
+  if (userns === null) return { refuse: false, why: "no unprivileged_userns_clone sysctl on this kernel" };
+  return { refuse: true, why: `no setuid ${helper} and kernel.unprivileged_userns_clone=${userns}` };
+}
+
+export async function liveRecord({ chromedriver = "chromedriver", chromium = "/usr/lib/chromium/chromium", timeoutMs = 60000 } = {}) {
   const which = (bin) => spawnSync("sh", ["-c", `command -v "$1"`, "sh", bin], { encoding: "utf8" }).status === 0;
   if (!which(chromedriver) || !which(chromium)) throw new Refusal("chromedriver or chromium not found");
+  const sandbox = sandboxStatus(chromium);
+  if (sandbox.refuse) throw new Refusal(`chromium sandbox unavailable for ${chromium} (${sandbox.why}); refusing to launch the live leg unsandboxed`);
   const base = tmpdir();
   const scratch = mkdtempSync(join(base, "tabi-bidi-live-"));
   // Chromium creates its singleton socket under TMPDIR (`.org.chromium.Chromium.XXXXXX/SingletonSocket`,
   // ~46 bytes); a unix socket path over 108 bytes makes Chrome exit at launch. Hand chromium the
   // throwaway scratch as TMPDIR when it is short enough, else a throwaway dir under XDG_RUNTIME_DIR
-  // (the per-user runtime dir meant for sockets), else the caller's TMPDIR, removing the chromium
-  // entries that appear there during the run.
+  // (the per-user runtime dir meant for sockets); otherwise refuse. Round 33 (w1 SentinelLiveLeg S2):
+  // the old fallback to the caller's TMPDIR deleted chromium dirs other processes created there.
   const runtime = process.env.XDG_RUNTIME_DIR;
-  let chromeTmp = base;
+  let chromeTmp = null;
   let ownChromeTmp = false;
   if (scratch.length <= 60) chromeTmp = scratch;
   else if (runtime && runtime.length <= 40) { chromeTmp = mkdtempSync(join(runtime, "tabi-bidi-")); ownChromeTmp = true; }
-  const preexisting = new Set(readdirSync(chromeTmp));
+  else { rmSync(scratch, { recursive: true, force: true }); throw new Refusal(`no short directory for chromium's singleton socket (TMPDIR ${base.length} bytes, XDG_RUNTIME_DIR ${runtime ? runtime.length : "unset"}); set a TMPDIR of at most 40 bytes`); }
+  // Round 33 (w1 SentinelLiveLeg S1): chromium opens $HOME/.pki/nssdb and $XDG_CONFIG_HOME/chromium;
+  // point both at throwaway dirs inside the scratch so the operator's home is never touched.
+  const home = join(scratch, "home");
+  mkdirSync(join(home, ".config"), { recursive: true });
+  mkdirSync(join(home, ".cache"), { recursive: true });
   const fx = await serveFixture();
   const port = await freePort();
-  const cd = spawn(chromedriver, [`--port=${port}`], { stdio: "ignore", env: { ...process.env, TMPDIR: chromeTmp, TMP: chromeTmp, TEMP: chromeTmp } });
+  const cd = spawn(chromedriver, [`--port=${port}`], { stdio: "ignore", env: { ...process.env, TMPDIR: chromeTmp, TMP: chromeTmp, TEMP: chromeTmp, HOME: home, XDG_CONFIG_HOME: join(home, ".config"), XDG_CACHE_HOME: join(home, ".cache") } });
   const rec = { newSession: null, cmds: [], events: [] };
   let ws = null;
   let sessionId = null;
@@ -398,11 +609,15 @@ export async function liveRecord({ chromedriver = "chromedriver", chromium = "/u
       try {
         const r = await fetch(`http://127.0.0.1:${port}/session`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ capabilities: { alwaysMatch: {
           browserName: "chrome", webSocketUrl: true, unhandledPromptBehavior: "ignore",
-          "goog:chromeOptions": { binary: chromium, args: ["--headless=new", "--no-sandbox", "--no-first-run", "--disable-gpu", `--user-data-dir=${join(scratch, "profile")}`] } } } }) });
+          "goog:chromeOptions": { binary: chromium, args: ["--headless=new", "--no-first-run", "--disable-gpu", `--user-data-dir=${join(scratch, "profile")}`] } } } }) });
         body = await r.json();
       } catch { await sleep(200); }
     }
-    if (!body || !body.value || !body.value.capabilities) throw new Refusal(`new session failed: ${JSON.stringify(body && body.value && body.value.message || body).slice(0, 200)} (chromium TMPDIR ${chromeTmp.length} bytes)`);
+    if (!body || !body.value || !body.value.capabilities) {
+      const why = JSON.stringify((body && body.value && body.value.message) || body).slice(0, 200);
+      if (/sandbox|zygote|namespace/i.test(why)) throw new Refusal(`chromium sandbox failed to start (${why}); refusing to relaunch ${chromium} unsandboxed (chromium TMPDIR ${chromeTmp.length} bytes)`);
+      throw new Refusal(`new session failed: ${why} (chromium TMPDIR ${chromeTmp.length} bytes)`);
+    }
     rec.newSession = body;
     sessionId = body.value.sessionId;
     ws = new WebSocket(body.value.capabilities.webSocketUrl);
@@ -486,7 +701,6 @@ export async function liveRecord({ chromedriver = "chromedriver", chromium = "/u
     await fx.close();
     await sleep(300);
     if (ownChromeTmp) rmSync(chromeTmp, { recursive: true, force: true });
-    else if (chromeTmp === base) for (const n of readdirSync(base)) if (!preexisting.has(n) && /^\.?org\.chromium\.Chromium\./.test(n)) rmSync(join(base, n), { recursive: true, force: true });
     rmSync(scratch, { recursive: true, force: true });
   }
 }
@@ -501,22 +715,48 @@ export async function evaluate(repo, { rev: revArg, baseline: baseArg, entry, re
   if (reg === null) throw new Refusal(`${SOURCES_PATH} absent at ${rev}`);
   const regBase = blob(repo, baseline, SOURCES_PATH);
   if (regBase === null) throw new Refusal(`${SOURCES_PATH} absent at ${baseline}`);
-  const out = { schema: SCHEMA, rev, baseline, entry, receipt, live, population: 0, admitted: 0, failing: 0, entryFinding: null, rows: [], fixtureSha256: FIXTURE_SHA256 };
+  const out = {
+    schema: SCHEMA, rev, baseline, entry, receipt, live,
+    population: 0, admitted: 0, failing: 0, unmeasured: 0, distinct: 0, duplicates: [],
+    entryFinding: null, entryDetail: null, rows: [], provenance: [], driverImports: [],
+    fixtureSha256: FIXTURE_SHA256,
+  };
   const entryBuf = blob(repo, rev, entry);
   if (entryBuf === null) { out.entryFinding = "e1-entry-absent"; out.clean = false; return out; }
   const entryText = entryBuf.toString("utf8");
-  const rows = (parseTable(entryText) || []).filter((r) => (r.cells[3] || "").toLowerCase() === "yes");
-  out.population = rows.length;
+  const tableRows = parseTable(entryText) || [];
+  out.population = tableRows.filter((r) => String(r.cells[3] == null ? "" : r.cells[3]).trim() !== "").length;
+  const idCounts = new Map();
+  for (const r of tableRows) idCounts.set(r.cells[0], (idCounts.get(r.cells[0]) || 0) + 1);
+  out.duplicates = [...idCounts.entries()].filter(([, n]) => n > 1).map(([id]) => id);
   const regNow = parseRegistry(reg.toString("utf8"));
   const regThen = parseRegistry(regBase.toString("utf8"));
   const srcLine = (entryText.split("\n").find((l) => /^source:/i.test(l)) || "");
   const cited = [...srcLine.matchAll(/\bS\d{3,}\b/g)].map((m) => m[0]);
-  const newRow = cited.some((id) => { const r = regNow.get(id); return r && r.status === "mined" && r.usedBy.split(/[,;]/).map((x) => x.trim()).includes(entry) && !regThen.has(id); });
-  if (!newRow) out.entryFinding = "s1-source-row";
+  const newRows = cited.filter((id) => { const r = regNow.get(id); return r && r.status === "mined" && r.usedBy.split(/[,;]/).map((x) => x.trim()).includes(entry) && !regThen.has(id); });
+  if (!newRows.length) out.entryFinding = "s1-source-row";
+  else {
+    const gates = gateRows(repo, rev);
+    const why = [];
+    let witness = null;
+    for (const id of newRows) {
+      const row = regNow.get(id);
+      const regUrl = firstHttps(row.source);
+      const regHost = urlHost(regUrl);
+      const gateRow = (gates.get(id) || []).find((x) => firstHttps(x.text) && HEX64.test(x.text));
+      if (!gateRow) { why.push(`${id}: no corpus/lessons/round-*.md \`## Gate\` row with an https URL and a 64-hex sha256`); continue; }
+      const gateHost = urlHost(firstHttps(gateRow.text));
+      if (!regHost || !gateHost || regHost !== gateHost) { why.push(`${id}: registry source host ${regHost} != Gate URL host ${gateHost} (${gateRow.file}:${gateRow.line})`); continue; }
+      witness = { id, gate: `${gateRow.file}:${gateRow.line}`, host: gateHost };
+      break;
+    }
+    if (!witness) { out.entryFinding = "s1-source-row"; out.entryDetail = why.join("; "); }
+  }
   // receipt
   let receiptFinding = null;
   const runs = [];
   let receiptObj = null;
+  const gateBuf = blob(repo, rev, GATE_PATH);
   const rb = blob(repo, rev, receipt);
   if (rb === null) receiptFinding = "receipt absent";
   else {
@@ -525,21 +765,52 @@ export async function evaluate(repo, { rev: revArg, baseline: baseArg, entry, re
       if (receiptObj.schema !== RECEIPT_SCHEMA) receiptFinding = "receipt schema";
       else if (receiptObj.fixtureSha256 !== FIXTURE_SHA256) receiptFinding = "fixtureSha256 is not FIXTURE's";
       else if (typeof receiptObj.browserVersion !== "string" || !receiptObj.browserVersion) receiptFinding = "no browserVersion";
-      else if (typeof receiptObj.driver !== "string" || !receiptObj.driver || receiptObj.driver === "scripts/check-bidi-runtime.mjs" || (() => { const d = blob(repo, rev, receiptObj.driver); return d === null || sha256(d) !== receiptObj.driverSha256; })()) receiptFinding = "driver absent, is this counter, or its sha256 differs";
-      else if (!Array.isArray(receiptObj.runs) || receiptObj.runs.length < 2) receiptFinding = "fewer than two runs";
+      else if (typeof receiptObj.driver !== "string" || !receiptObj.driver) receiptFinding = "no driver path";
+      else if (receiptObj.driver === GATE_PATH) receiptFinding = "driver is this gate's own path";
       else {
-        for (const run of receiptObj.runs) {
-          const tb = blob(repo, rev, run.transcript);
-          if (tb === null) { receiptFinding = `transcript absent: ${run.transcript}`; break; }
-          if (sha256(tb) !== run.transcriptSha256) { receiptFinding = `transcript sha256 differs: ${run.transcript}`; break; }
-          try { runs.push({ name: run.name, rec: recordFromTranscript(tb.toString("utf8")) }); } catch (e) { receiptFinding = `transcript unreadable: ${e.message}`; break; }
+        const drv = blob(repo, rev, receiptObj.driver);
+        if (drv === null) receiptFinding = `driver absent: ${receiptObj.driver}`;
+        else if (sha256(drv) !== receiptObj.driverSha256) receiptFinding = `driver sha256 differs: ${receiptObj.driver}`;
+        else if (gateBuf !== null && sha256(drv) === sha256(gateBuf)) receiptFinding = "driver is a byte copy of this gate";
+        else {
+          out.driverImports = importSpecs(drv.toString("utf8")).map((s) => ({ kind: s.kind, spec: s.spec, names: s.names }));
+          const why = driverGateFinding(drv.toString("utf8"), receiptObj.driver);
+          if (why) receiptFinding = why;
         }
+      }
+      if (!receiptFinding) {
+        if (!Array.isArray(receiptObj.runs) || receiptObj.runs.length < 2) receiptFinding = "fewer than two runs";
+        else {
+          for (const run of receiptObj.runs) {
+            const tb = blob(repo, rev, run.transcript);
+            if (tb === null) { receiptFinding = `transcript absent: ${run.transcript}`; break; }
+            if (sha256(tb) !== run.transcriptSha256) { receiptFinding = `transcript sha256 differs: ${run.transcript}`; break; }
+            try { runs.push({ name: run.name, path: run.transcript, sha: sha256(tb), rec: recordFromTranscript(tb.toString("utf8")) }); } catch (e) { receiptFinding = `transcript unreadable: ${e.message}`; break; }
+          }
+        }
+      }
+      if (!receiptFinding) {
+        if (new Set(runs.map((r) => r.path)).size !== runs.length) receiptFinding = `transcript path repeated across runs: ${runs.map((r) => r.path).join(", ")}`;
+        else if (new Set(runs.map((r) => r.sha)).size !== runs.length) receiptFinding = "transcript sha256 repeated across runs (byte-identical copies)";
+      }
+      if (!receiptFinding) {
+        const sids = [];
+        for (const r of runs) {
+          const s = sessionOf(r.rec);
+          if (s.why) { receiptFinding = `${r.name}: ${s.why}`; break; }
+          const ctxs = contextIds(r.rec);
+          const bad = ctxs.filter((id) => !CONTEXT_ID.test(id));
+          if (bad.length) { receiptFinding = `${r.name}: browsing-context id not ChromeDriver-shaped: ${bad.join(", ")}`; break; }
+          sids.push(s.sid);
+          out.provenance.push({ name: r.name, sessionId: s.sid, webSocketUrl: s.url, contexts: ctxs });
+        }
+        if (!receiptFinding && new Set(sids).size !== sids.length) receiptFinding = `sessionId repeated across runs: ${sids.join(", ")}`;
       }
     }
   }
   let liveRec = null;
   let liveError = null;
-  if (live && rows.length) {
+  if (live && out.population) {
     try { liveRec = await liveRunner(); } catch (e) { if (e instanceof Refusal) throw e; liveError = String(e && e.message || e); }
   }
   const firstShot = (rec) => { const c = rec.cmds.find((x) => x.method === "browsingContext.captureScreenshot" && ok(x)); return c ? sha256(Buffer.from(String(res(c).data || ""), "base64")) : null; };
@@ -556,15 +827,23 @@ export async function evaluate(repo, { rev: revArg, baseline: baseArg, entry, re
   }
   out.binding = bindingFinding;
   const ctx = { browserVersion: receiptObj && receiptObj.browserVersion };
-  for (const r of rows) {
+  const yesIds = new Set();
+  for (const r of tableRows) {
     const id = r.cells[0];
-    const row = { line: r.line, id, admitted: false, reason: null, detail: null };
+    const cell = r.cells[3] == null ? "" : r.cells[3];
+    const mv = measuredVerdict(cell);
+    const row = { line: r.line, id, verdict: mv.verdict, measured: mv.measured, admitted: false, reason: null, detail: null };
     if (out.entryFinding) row.reason = out.entryFinding;
+    else if (!mv.measured) { row.reason = "x4-measured-cell"; row.detail = mv.detail; }
     else if (!Object.hasOwn(ROWS, id)) row.reason = "x1-row-unknown";
-    else if (id === "R16") row.reason = "x2-no-counterpart";
-    else if (receiptFinding) { row.reason = "t1-receipt"; row.detail = receiptFinding; }
+    else if ((idCounts.get(id) || 0) > 1) { row.reason = "x3-duplicate-id"; row.detail = `${id} appears ${idCounts.get(id)} times`; }
+    else if (id === "R16" && mv.verdict === "yes") row.reason = "x2-no-counterpart";
+    else if (mv.verdict === "no") {
+      // unmeasured: counted in the population, never admitted, not a finding
+    } else if (receiptFinding) { row.reason = "t1-receipt"; row.detail = receiptFinding; }
     else if (bindingFinding) { row.reason = "t3-binding"; row.detail = bindingFinding; }
     else {
+      yesIds.add(id);
       for (const run of runs) {
         const why = PREDICATES[id](run.rec, ctx);
         if (why) { row.reason = "t2-run"; row.detail = `${run.name}: ${why}`; break; }
@@ -574,20 +853,29 @@ export async function evaluate(repo, { rev: revArg, baseline: baseArg, entry, re
         if (why) { row.reason = "l1-live"; row.detail = why; }
       }
     }
-    row.admitted = row.reason === null;
+    row.admitted = row.reason === null && row.verdict === "yes" && mv.measured;
     out.rows.push(row);
   }
   out.admitted = out.rows.filter((r) => r.admitted).length;
-  out.failing = out.population - out.admitted;
-  out.clean = !out.entryFinding && out.population >= 1 && out.failing === 0;
+  out.failing = out.rows.filter((r) => r.reason !== null).length;
+  out.unmeasured = out.rows.filter((r) => r.reason === null && r.verdict === "no").length;
+  out.distinct = new Set(out.rows.filter((r) => r.verdict === "yes" && r.measured).map((r) => r.id)).size;
+  out.clean = !out.entryFinding && out.population >= 1 && out.admitted >= 1 && out.failing === 0;
   return out;
 }
 
 // ---- self-test ----------------------------------------------------------------
 
 // A synthetic record that satisfies every admittable predicate (test-only;
-// exported so the round's do-nothing controls can score a browserless forgery).
-export function goldenLines({ base = "http://127.0.0.1:40000", version = "154.0.8037.97", mutate = () => {}, shotTag = "", driverVersion = "154.0.8037.97 (fixture)" } = {}) {
+// exported so a round's controls can score a browserless forgery). v2 emits
+// ChromeDriver-shaped session and context ids derived from the seed, so two
+// calls with distinct `sessionTag` are two distinct sessions; `sessionId`,
+// `contextId` and `wsHost` are test hooks for the refusal cases.
+export function goldenLines({ base = "http://127.0.0.1:40000", version = "154.0.8037.97", mutate = () => {}, shotTag = "", driverVersion = "154.0.8037.97 (fixture)", sessionTag = "golden", sessionId = null, contextId = null, wsHost = "127.0.0.1", wsPort = 9515 } = {}) {
+  const seed = `${base}|${version}|${shotTag}|${sessionTag}|${driverVersion}`;
+  const sid = sessionId === null ? sha256(`tabi-bidi-v2-session:${seed}`).slice(0, 32) : sessionId;
+  const ctx = contextId === null ? sha256(`tabi-bidi-v2-context:${seed}`).toUpperCase().slice(0, 32) : contextId;
+  const wsUrl = `ws://${wsHost}:${wsPort}/session/${sid}`;
   const png = Buffer.alloc(24 + shotTag.length);
   png.write(shotTag, 24, "ascii");
   Buffer.from("89504e470d0a1a0a", "hex").copy(png, 0);
@@ -598,34 +886,34 @@ export function goldenLines({ base = "http://127.0.0.1:40000", version = "154.0.
   const S = (v) => ({ type: "string", value: v });
   const steps = [
     ["cmd", "session.subscribe", {}, {}],
-    ["cmd", "browsingContext.getTree", {}, { contexts: [{ context: "C1", url: "about:blank" }] }],
-    ["cmd", "browsingContext.setViewport", { context: "C1", viewport: VIEWPORT }, {}],
+    ["cmd", "browsingContext.getTree", {}, { contexts: [{ context: ctx, url: "about:blank" }] }],
+    ["cmd", "browsingContext.setViewport", { context: ctx, viewport: VIEWPORT }, {}],
     ["cmd", "network.addDataCollector", { dataTypes: ["response"], maxEncodedDataSize: 65536 }, { collector: "K1" }],
     ["ev", "network.beforeRequestSent", { request: { request: "Q1", url: a } }],
     ["ev", "network.responseCompleted", { request: { request: "Q1", url: a }, response: { url: a, status: 200, headers: [{ name: "X-Tabi-Fixture", value: S("r32") }] } }],
-    ["ev", "browsingContext.load", { context: "C1", url: a }],
-    ["cmd", "browsingContext.navigate", { context: "C1", url: a, wait: "complete" }, { navigation: "N1", url: a }],
+    ["ev", "browsingContext.load", { context: ctx, url: a }],
+    ["cmd", "browsingContext.navigate", { context: ctx, url: a, wait: "complete" }, { navigation: "N1", url: a }],
     ["cmd", "script.evaluate", { expression: "window.__ready", awaitPromise: true }, { type: "success", result: S("settled") }],
     ["cmd", "script.evaluate", { expression: "window.innerWidth" }, { type: "success", result: { type: "number", value: VIEWPORT.width } }],
-    ["cmd", "browsingContext.locateNodes", { context: "C1", locator: { type: "css", value: "#h" } }, { nodes: [{ type: "node", sharedId: "H", value: { localName: "h1" } }] }],
+    ["cmd", "browsingContext.locateNodes", { context: ctx, locator: { type: "css", value: "#h" } }, { nodes: [{ type: "node", sharedId: "H", value: { localName: "h1" } }] }],
     ["cmd", "input.performActions", { actions: [{ type: "key", id: "k", actions: [..."tabi"].map((c) => ({ type: "keyDown", value: c })) }] }, {}],
     ["cmd", "script.evaluate", { expression: "document.getElementById('t').value" }, { type: "success", result: S("tabi") }],
     ["cmd", "input.performActions", { actions: [{ type: "pointer", id: "m", actions: [{ type: "pointerDown", button: 0 }, { type: "pointerUp", button: 0 }] }] }, {}],
     ["cmd", "script.evaluate", { expression: "document.getElementById('out').textContent" }, { type: "success", result: S("clicked:tabi") }],
-    ["cmd", "browsingContext.captureScreenshot", { context: "C1" }, { data: png.toString("base64") }],
+    ["cmd", "browsingContext.captureScreenshot", { context: ctx }, { data: png.toString("base64") }],
     ["cmd", "network.getData", { dataType: "response", request: "Q2" }, { bytes: S(DATA_TEXT) }],
     ["cmd", "storage.getCookies", {}, { cookies: [{ name: "tabi_fixture", value: S("1") }] }],
     ["cmd", "network.addIntercept", { phases: ["beforeRequestSent"] }, { intercept: "I1" }],
     ["ev", "network.beforeRequestSent", { isBlocked: true, intercepts: ["I1"], request: { request: "Q3", url: `${base}/data.txt?held=1` } }],
     ["cmd", "network.continueRequest", { request: "Q3" }, {}],
-    ["cmd", "browsingContext.navigate", { context: "C1", url: `${base}/b.html` }, { url: `${base}/b.html` }],
-    ["cmd", "browsingContext.traverseHistory", { context: "C1", delta: -1 }, {}],
+    ["cmd", "browsingContext.navigate", { context: ctx, url: `${base}/b.html` }, { url: `${base}/b.html` }],
+    ["cmd", "browsingContext.traverseHistory", { context: ctx, delta: -1 }, {}],
     ["cmd", "script.evaluate", { expression: "location.pathname" }, { type: "success", result: S("/a.html") }],
-    ["ev", "browsingContext.userPromptOpened", { context: "C1", message: "tabi-alert" }],
-    ["cmd", "browsingContext.handleUserPrompt", { context: "C1", accept: true }, {}],
+    ["ev", "browsingContext.userPromptOpened", { context: ctx, message: "tabi-alert" }],
+    ["cmd", "browsingContext.handleUserPrompt", { context: ctx, accept: true }, {}],
   ];
   mutate(steps);
-  const lines = [{ dir: "http-res", path: "/session", body: { value: { sessionId: "X", capabilities: { browserName: "chrome", browserVersion: version, chrome: { chromedriverVersion: driverVersion }, webSocketUrl: "ws://127.0.0.1:9515/session/X" } } } }];
+  const lines = [{ dir: "http-res", path: "/session", body: { value: { sessionId: sid, capabilities: { browserName: "chrome", browserVersion: version, chrome: { chromedriverVersion: driverVersion }, webSocketUrl: wsUrl } } } }];
   let id = 0;
   for (const [kind, method, params, result] of steps) {
     if (kind === "ev") lines.push({ dir: "recv", frame: { type: "event", method, params } });
@@ -636,16 +924,46 @@ export function goldenLines({ base = "http://127.0.0.1:40000", version = "154.0.
 
 const ALL_OK = ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10", "R11", "R12", "R13", "R14", "R15", "R17"];
 const ENTRY = "corpus/knowledge/bidi-fixture.md";
+const LESSONS = "corpus/lessons/round-33.md";
+const GATE_IN_FIXTURE = GATE_PATH;
 
-function entryDoc(ids, source = "S002") {
-  return [`source: ${source} — fixture`, "verified-at: fixture", "recheck: fixture", "", "| Row | Surface | BiDi method | Measured | Evidence |", "|---|---|---|---|---|",
-    ...ids.map((id) => `| ${id} | ${ROWS[id] || "x"} | m | yes | receipt |`), ""].join("\n");
+function entryDoc(o) {
+  const rows = o.entryRows || (o.ids || ALL_OK).map((id, k) => [id, o.cell ? o.cell(id, k) : "yes"]);
+  const all = o.extraRows ? rows.concat(o.extraRows) : rows;
+  return [`source: ${o.source || "S002"} — fixture`, "verified-at: fixture", "recheck: fixture", "", "| Row | Surface | BiDi method | Measured | Evidence |", "|---|---|---|---|---|",
+    ...all.map(([id, cell]) => `| ${id} | ${ROWS[id] || "x"} | m | ${cell} | receipt |`), ""].join("\n");
 }
 
 function regDoc(rows) {
   return ["# SOURCES", "", "| id | source | kind | tier | scope | anchor | teaches | status | opened | recheck | used-by |", "|---|---|---|---|---|---|---|---|---|---|---|",
     ...rows.map(([id, usedBy]) => `| ${id} | t — https://e.test/ | spec | A | s | a | t | mined | 2026-10-26 | 90d | ${usedBy} |`), ""].join("\n");
 }
+
+// The round lesson's `## Gate` table: a row per S-id with an https URL and a
+// 64-hex sha256 in the same row (the shape corpus/lessons/round-32.md uses).
+function lessonsDoc(ids) {
+  return ["# fixture round lesson", "", "## Gate", "",
+    "| row | URL | accessed | receipt quote |",
+    "|---|---|---|---|",
+    ...ids.map((id) => `| ${id} | https://e.test/${id.toLowerCase()} | 2026-10-26T00:00:00Z (HTTP 200, 12 B, sha256 \`${"a".repeat(64)}\`) | "fixture receipt quote" |`), "",
+    "## Mistakes", "", "- none.", ""].join("\n");
+}
+
+function pngHeader(w, h) {
+  const b = Buffer.alloc(32);
+  Buffer.from("89504e470d0a1a0a", "hex").copy(b, 0);
+  b.write("IHDR", 12, "ascii");
+  b.writeUInt32BE(w, 16);
+  b.writeUInt32BE(h, 20);
+  return b.toString("base64");
+}
+
+const reorder = (expr, method) => (s) => {
+  const k = s.findIndex((x) => x[2] && x[2].expression === expr);
+  const [e] = s.splice(k, 1);
+  const j = s.findIndex((x) => x[1] === method);
+  s.splice(j, 0, e);
+};
 
 const CASES = [
   { id: "do-nothing-entry-absent", exit: 1, admitted: 0, reason: "e1-entry-absent", build: () => ({ noEntry: true }) },
@@ -671,7 +989,27 @@ const CASES = [
   { id: "live-chromedriver-differs", exit: 1, admitted: 0, reason: "t3-binding", build: () => ({ ids: ["R2"], live: "otherDriver" }) },
   { id: "run-screenshots-differ", exit: 1, admitted: 0, reason: "t3-binding", build: () => ({ ids: ["R2"], shotPerRun: true }) },
   { id: "driver-absent", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ noDriver: true }) },
-  { id: "driver-is-the-counter", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ driverPath: "scripts/check-bidi-runtime.mjs" }) },
+  { id: "driver-is-the-counter", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ driverPath: GATE_PATH }) },
+  // ---- v2 receipt-provenance cases: one per battery construction F1..F8 ----
+  { id: "v2-f1-golden-splice", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ run1: { sessionId: "X", contextId: "C1" }, run2: { sessionId: "X", contextId: "C1", base: "http://127.0.0.1:40001" } }) },
+  { id: "v2-f2-duplicate-ids", exit: 1, admitted: 0, reason: "x3-duplicate-id", build: () => ({ ids: Array(16).fill("R2") }) },
+  { id: "v2-f3-same-path-twice", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ samePath: true }) },
+  { id: "v2-f4-byte-copy", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ sameBytes: true }) },
+  { id: "v2-f5-driver-is-gate-copy", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ gateBlob: true, driverCopyOfGate: true }) },
+  { id: "v2-f6-driver-reexports-gate", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ driverPath: "corpus/evidence/round-32/bidi/f6-driver.mjs", driverText: 'export * from "../../../../scripts/check-bidi-runtime.mjs";\n' }) },
+  { id: "v2-f7-decorated-measured", exit: 1, admitted: 15, reason: "x4-measured-cell", build: () => ({ cell: (id, k) => (k === 0 ? "yes (live)" : "yes") }) },
+  { id: "v2-f8-junk-source-row", exit: 1, admitted: 0, reason: "s1-source-row", build: () => ({ source: "S990", regExtra: [["S990", ENTRY]] }) },
+  // ---- v2 cases: one per round-32 MutC1 survivor (M04, M06, M09, M10, M11,
+  //      M14, M17, M18, M19); each FAILS when that mutant is re-applied ----
+  { id: "v2-m04-runs-chromedriver-differ", exit: 1, admitted: 0, reason: "t3-binding", build: () => ({ run2: { driverVersion: "155.0.0.0 (other)" } }) },
+  { id: "v2-m06-error-frame-as-success", exit: 1, admitted: 0, reason: "t2-run", build: () => ({ ids: ["R2"], errorWithResult: "browsingContext.getTree" }) },
+  { id: "v2-m09-readout-before-typing", exit: 1, admitted: 0, reason: "t2-run", build: () => ({ ids: ["R9"], mutate: reorder("document.getElementById('t').value", "input.performActions") }) },
+  { id: "v2-m10-pathname-before-traverse", exit: 1, admitted: 0, reason: "t2-run", build: () => ({ ids: ["R14"], mutate: reorder("location.pathname", "browsingContext.traverseHistory") }) },
+  { id: "v2-m11-driver-sha-differs", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ driverSha: "0".repeat(64) }) },
+  { id: "v2-m14-browser-version-same-major", exit: 1, admitted: 0, reason: "t2-run", build: () => ({ ids: ["R1"], version: "154.9.9" }) },
+  { id: "v2-m17-ws-url-off-loopback", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ ids: ["R1"], run1: { wsHost: "10.0.0.1" }, run2: { wsHost: "10.0.0.1" } }) },
+  { id: "v2-m18-png-wrong-dimensions", exit: 1, admitted: 0, reason: "t2-run", build: () => ({ ids: ["R4"], mutate: (s) => { s.find((x) => x[1] === "browsingContext.captureScreenshot")[3] = { data: pngHeader(100, 100) }; } }) },
+  { id: "v2-m19-unmeasured-row-counted", exit: 0, admitted: 16, reason: null, population: 17, build: () => ({ extraRows: [["R16", "no"]] }) },
 ];
 
 function makeFixture() {
@@ -692,39 +1030,64 @@ function makeFixture() {
 
 async function runSelftest() {
   const results = [];
+  const gateSource = readFileSync(fileURLToPath(import.meta.url));
   for (const c of CASES) {
     const o = c.build();
     const fx = makeFixture();
     try {
       fx.put(SOURCES_PATH, regDoc([["S001", ENTRY]]));
+      fx.put(LESSONS, lessonsDoc(["S002"]));
       const baseline = fx.commit();
       const usedBy = o.usedBy || ENTRY;
-      fx.put(SOURCES_PATH, regDoc([["S001", ENTRY], ["S002", usedBy]]));
-      if (!o.noEntry) fx.put(ENTRY, entryDoc(o.ids || ALL_OK, o.source || "S002"));
+      const regAtRev = [["S001", ENTRY], ["S002", usedBy]].concat(o.regExtra || []);
+      fx.put(SOURCES_PATH, regDoc(regAtRev));
+      if (!o.noEntry) fx.put(ENTRY, entryDoc(o));
       const runsN = o.runs || 2;
-      const runs = [];
+      const texts = [];
       for (let k = 1; k <= runsN; k += 1) {
-        let text = goldenLines({ base: o.base, version: o.version, mutate: o.mutate, shotTag: o.shotPerRun ? `run${k}` : "" });
-        if (o.errorMethod) {
+        const opt = { base: o.base, version: o.version, mutate: o.mutate, shotTag: o.shotPerRun ? `run${k}` : "", sessionTag: `run${k}` };
+        if (k === 1 && o.run1) Object.assign(opt, o.run1);
+        if (k === 2 && o.run2) Object.assign(opt, o.run2);
+        let text = goldenLines(opt);
+        if (o.errorMethod || o.errorWithResult) {
           const ls = text.trim().split("\n").map((l) => JSON.parse(l));
-          const sent = ls.find((l) => l.dir === "send" && l.frame.method === o.errorMethod);
+          const method = o.errorMethod || o.errorWithResult;
+          const sent = ls.find((l) => l.dir === "send" && l.frame.method === method);
           const resp = ls.find((l) => l.dir === "recv" && l.frame.id === sent.frame.id);
-          resp.frame = { id: sent.frame.id, type: "error", error: "unknown command", message: "x" };
+          resp.frame = o.errorWithResult
+            ? { id: sent.frame.id, type: "error", error: "unknown command", message: "x", result: resp.frame.result }
+            : { id: sent.frame.id, type: "error", error: "unknown command", message: "x" };
           text = ls.map((l) => JSON.stringify(l)).join("\n") + "\n";
         }
+        texts.push(text);
+      }
+      if (o.samePath && runsN >= 2) texts[1] = texts[0];
+      if (o.sameBytes && runsN >= 2) texts[1] = texts[0];
+      const runs = [];
+      for (let k = 1; k <= runsN; k += 1) {
         const rel = `corpus/evidence/round-32/bidi/run${k}/transcript.jsonl`;
-        fx.put(rel, text);
-        runs.push({ name: `run${k}`, transcript: rel, transcriptSha256: o.tamper && k === 2 ? sha256("x") : sha256(Buffer.from(text)) });
+        const cite = o.samePath && k === 2 ? "corpus/evidence/round-32/bidi/run1/transcript.jsonl" : rel;
+        fx.put(rel, texts[k - 1]);
+        runs.push({ name: `run${k}`, transcript: cite, transcriptSha256: o.tamper && k === 2 ? sha256("x") : sha256(Buffer.from(texts[k - 1])) });
       }
       const driver = o.driverPath || "scripts/bidi-driver-fixture.mjs";
-      if (!o.noDriver) fx.put(driver, "// fixture driver\n");
-      fx.put(DEFAULT_RECEIPT, JSON.stringify({ schema: RECEIPT_SCHEMA, fixtureSha256: o.fixtureSha || FIXTURE_SHA256, browserVersion: "154.0.8037.97", driver, driverSha256: sha256(Buffer.from("// fixture driver\n")), runs }, null, 2));
+      const driverBytes = o.driverCopyOfGate ? gateSource : Buffer.from(o.driverText || "// fixture driver\n");
+      if (!o.noDriver) fx.put(driver, driverBytes);
+      if (o.gateBlob) fx.put(GATE_IN_FIXTURE, gateSource);
+      fx.put(DEFAULT_RECEIPT, JSON.stringify({
+        schema: RECEIPT_SCHEMA,
+        fixtureSha256: o.fixtureSha || FIXTURE_SHA256,
+        browserVersion: "154.0.8037.97",
+        driver,
+        driverSha256: o.driverSha || sha256(driverBytes),
+        runs,
+      }, null, 2));
       const rev = fx.commit();
       const liveRunner = async () => {
-        if (o.live === "golden") return recordFromTranscript(goldenLines({}));
-        if (o.live === "noCookies") return recordFromTranscript(goldenLines({ mutate: (s) => { s.splice(s.findIndex((x) => x[1] === "storage.getCookies"), 1); } }));
-        if (o.live === "otherShot") return recordFromTranscript(goldenLines({ shotTag: "live" }));
-        if (o.live === "otherDriver") return recordFromTranscript(goldenLines({ driverVersion: "155.0.0.0 (other)" }));
+        if (o.live === "golden") return recordFromTranscript(goldenLines({ sessionTag: "live" }));
+        if (o.live === "noCookies") return recordFromTranscript(goldenLines({ sessionTag: "live", mutate: (s) => { s.splice(s.findIndex((x) => x[1] === "storage.getCookies"), 1); } }));
+        if (o.live === "otherShot") return recordFromTranscript(goldenLines({ sessionTag: "live", shotTag: "live" }));
+        if (o.live === "otherDriver") return recordFromTranscript(goldenLines({ sessionTag: "live", driverVersion: "155.0.0.0 (other)" }));
         return { newSession: null, cmds: [], events: [] };
       };
       let out;
@@ -735,11 +1098,12 @@ async function runSelftest() {
       } catch (e) {
         if (!(e instanceof Refusal)) throw e;
         exit = 2;
-        out = { admitted: 0, rows: [], entryFinding: "refused" };
+        out = { admitted: 0, population: 0, rows: [], entryFinding: "refused" };
       }
       const reason = out.entryFinding || (out.rows.find((r) => !r.admitted) || {}).reason || null;
-      const pass = exit === c.exit && out.admitted === c.admitted && reason === c.reason;
-      results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedReason: c.reason, reason });
+      const pass = exit === c.exit && out.admitted === c.admitted && reason === c.reason
+        && (c.population === undefined || out.population === c.population);
+      results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason });
     } finally {
       rmSync(fx.root, { recursive: true, force: true });
     }
@@ -751,7 +1115,7 @@ async function runSelftest() {
     for (const [id, args] of [["refusal-bad-rev-syntax", { rev: "../x", baseline: rev, entry: ENTRY }], ["refusal-unresolvable-rev", { rev: "0".repeat(40), baseline: rev, entry: ENTRY }], ["refusal-no-entry-arg", { rev, baseline: rev }]]) {
       let exit = 0;
       try { await evaluate(fx.root, args); } catch (e) { if (!(e instanceof Refusal)) throw e; exit = 2; }
-      results.push({ id, ok: exit === 2, expectedExit: 2, exit, expectedAdmitted: 0, admitted: 0, expectedReason: "refused", reason: exit === 2 ? "refused" : null });
+      results.push({ id, ok: exit === 2, expectedExit: 2, exit, expectedAdmitted: 0, admitted: 0, expectedPopulation: null, population: 0, expectedReason: "refused", reason: exit === 2 ? "refused" : null });
     }
   } finally {
     rmSync(fx.root, { recursive: true, force: true });
@@ -787,7 +1151,7 @@ async function main() {
     const out = await runSelftest();
     if (o.json) console.log(JSON.stringify(out, null, 2));
     else {
-      for (const r of out.results) console.log(`CASE id=${r.id} expected_exit=${r.expectedExit} exit=${r.exit} expected_admitted=${r.expectedAdmitted} admitted=${r.admitted} expected_reason=${r.expectedReason ?? "-"} reason=${r.reason ?? "-"} ${r.ok ? "PASS" : "FAIL"}`);
+      for (const r of out.results) console.log(`CASE id=${r.id} expected_exit=${r.expectedExit} exit=${r.exit} expected_admitted=${r.expectedAdmitted} admitted=${r.admitted} expected_population=${r.expectedPopulation ?? "-"} population=${r.population} expected_reason=${r.expectedReason ?? "-"} reason=${r.reason ?? "-"} ${r.ok ? "PASS" : "FAIL"}`);
       console.log(`BIDI_RUNTIME_SELFTEST verdict=${out.ok ? "clean" : "failed"} cases=${out.cases} passed=${out.passed}`);
     }
     process.exit(out.ok ? 0 : 3);
@@ -801,8 +1165,8 @@ async function main() {
   }
   if (o.json) console.log(JSON.stringify(out, null, 2));
   else {
-    for (const r of out.rows) console.log(`ROW id=${r.id} line=${r.line} ${r.admitted ? "admitted" : `reason=${r.reason}${r.detail ? ` detail=${JSON.stringify(r.detail)}` : ""}`}`);
-    console.log(`BIDI_RUNTIME verdict=${out.clean ? "clean" : "failed"} rev=${out.rev} population=${out.population} admitted=${out.admitted} failing=${out.failing}${out.entryFinding ? ` entry=${out.entryFinding}` : ""} live=${out.live}`);
+    for (const r of out.rows) console.log(`ROW id=${r.id} line=${r.line} measured=${r.verdict ?? "-"} ${r.admitted ? "admitted" : r.reason === null ? "unmeasured" : `reason=${r.reason}${r.detail ? ` detail=${JSON.stringify(r.detail)}` : ""}`}`);
+    console.log(`BIDI_RUNTIME verdict=${out.clean ? "clean" : "failed"} rev=${out.rev} population=${out.population} admitted=${out.admitted} failing=${out.failing} unmeasured=${out.unmeasured} distinct=${out.distinct}${out.entryFinding ? ` entry=${out.entryFinding}` : ""} live=${out.live}`);
   }
   process.exit(out.clean ? 0 : 1);
 }

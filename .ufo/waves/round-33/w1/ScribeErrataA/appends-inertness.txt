@@ -1,0 +1,19 @@
+# Inertness of the drafted append blocks — measured in the scratch clone, never in the lane
+# Clone at e6b0a9074d434ccc307badd312ae7379d1193fea (status --porcelain = 0), three appends applied, committed:
+#   1fcbc2475ee6b6f6266cccdd21ae549f5dc3995d
+
+$ git -C "$C" diff --numstat e6b0a90 HEAD
+7	0	LOG.md
+11	0	corpus/SOURCES.md
+25	0	corpus/lessons/round-32.md
+# insertions only; 0 deletions in every file
+
+$ node scripts/check-selfassessment.mjs --rev HEAD --json ; echo exit=$?
+{"rev":"1fcbc2475ee6b6f6266cccdd21ae549f5dc3995d","mismatches":0,"clean":true,"findings":202}
+exit=0
+# baseline at e6b0a90 without the appends: mismatches 0, clean, findings 202 (unchanged -> no finding cleared, none created)
+
+$ node scripts/check-sources.mjs ; echo exit=$?
+SOURCES_GATE verdict=clean rows=126 tiers=A:111,B:6,C:9 status=queued:15,mined:102,rejected:9 findings=0 file=corpus/SOURCES.md
+exit=0
+# unchanged from the rev baseline (rows=126); the appended `## Corrections (append-only)` section is not parsed as registry rows

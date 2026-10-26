@@ -1,0 +1,130 @@
+[
+ {
+  "name": "M01-drop-h2-predicate",
+  "from": "out.honest.H0 && out.honest.H1 && out.honest.H2 && out.forgeriesAccepted === 0",
+  "to": "out.honest.H0 && out.honest.H1 && out.forgeriesAccepted === 0",
+  "line": 229,
+  "expect": "survivor-expected: no committed control constructs a gate that rejects only H2",
+  "sha256": "68f7c47158c9c464a722011659a5f891202a90b6d53b3e8ad513eca100f2c262"
+ },
+ {
+  "name": "M02-drop-h1-predicate",
+  "from": "out.honest.H0 && out.honest.H1 && out.honest.H2 && out.forgeriesAccepted === 0",
+  "to": "out.honest.H0 && out.honest.H2 && out.forgeriesAccepted === 0",
+  "line": 229,
+  "expect": "survivor-expected: no control rejects only H1",
+  "sha256": "5bc790698a5fc70d67b812e1e92a776942ee80e380c07d00bc1abe7effbbcc43"
+ },
+ {
+  "name": "M03-drop-digest-scan",
+  "from": "      digestLiterals: HONEST_DIGESTS.filter((d) => gateAtRev.toString('utf8').toLowerCase().includes(d.slice(0, 12))).map((d) => d.slice(0, 12)),",
+  "to": "      digestLiterals: [],",
+  "line": 222,
+  "expect": "killed-by-J3-expected: whitelist gate embeds the 5 honest digest literals; field flips 5 -> []",
+  "sha256": "bd545cb648198db91e0b55efe36c50c57f8f899581ddb3f621a937a0498c2a0a"
+ },
+ {
+  "name": "M04-drop-digest-clause",
+  "from": "st.status === 0 && out.digestLiterals.length === 0;",
+  "to": "st.status === 0;",
+  "line": 229,
+  "expect": "survivor-expected: J3 stays false via selftest=3; clause witnessed only by the reported field",
+  "sha256": "2df3486f3ae825212b1a33e8b8a6afcf7b257797a5bddce79332a137b630df1e"
+ },
+ {
+  "name": "M05-accept-exit-1",
+  "from": "accepted: r.status === 0,",
+  "to": "accepted: r.status === 0 || r.status === 1,",
+  "line": 207,
+  "expect": "killed-by-J2+J3-expected: reject-all gate exits 1 everywhere -> forgeriesAccepted 8",
+  "sha256": "dd627ab46aabf068e7dbe7f96ffd6084b6878523c414ecb5a5c3e82bc33e64a1"
+ },
+ {
+  "name": "M06-skip-gate-bytes-assert",
+  "from": "      const onDisk = readFileSync(join(clone, GATE));\n      if (sha256(onDisk) !== gateSha) throw new Refusal(`variant ${v} changed the gate bytes`);",
+  "to": "",
+  "line": 201,
+  "expect": "survivor-expected: no control tampers the gate between commit and run",
+  "sha256": "12885148114dac29597d4bf8694e9c6ecff13758838a49461e1aed3d095da723"
+ },
+ {
+  "name": "M07-worktree-gate",
+  "from": "run(process.execPath, [join(clone, GATE), '--repo', clone,",
+  "to": "run(process.execPath, [join(lane, GATE), '--repo', clone,",
+  "line": 203,
+  "expect": "survivor-expected: repo worktree gate is byte-identical to REV blob for all three controls",
+  "sha256": "b40fa87f2b2107b6e173f613a58f7f738c17a7667e478b54805fd8ee68b8a5b0"
+ },
+ {
+  "name": "M08-F7-decorates-no-row",
+  "from": "      F7: () => put(ENTRY, relabelYesRows(entryText, (cells, first) => (first ? rowLine([cells[0], cells[1], cells[2], 'yes (live)', cells[4]]) : rowLine(cells)))),",
+  "to": "      F7: () => put(ENTRY, entryText),",
+  "line": 189,
+  "expect": "killed-expected: degenerate construction commits nothing -> git commit fails -> battery exit 2",
+  "sha256": "7cfaa82980115243b87983d08c0eeca95f5f94a55cae290886680ee970616ad4"
+ },
+ {
+  "name": "M08b-F7-decorates-non-first-yes-row",
+  "from": "      F7: () => put(ENTRY, relabelYesRows(entryText, (cells, first) => (first ? rowLine([cells[0], cells[1], cells[2], 'yes (live)', cells[4]]) : rowLine(cells)))),",
+  "to": "      F7: () => put(ENTRY, relabelYesRows(entryText, (cells, first) => (first ? rowLine(cells) : rowLine([cells[0], cells[1], cells[2], 'yes (live)', cells[4]])))),",
+  "line": 189,
+  "expect": "survivor-expected: which yes-row F7 decorates is unobserved; every control receipt identical",
+  "sha256": "7f3b1efdd762514b36fa80972a279a2a3f2d0316f9ef256931d376f725fb9010"
+ },
+ {
+  "name": "M09-F3-distinct-paths",
+  "from": "      F3: () => putReceipt({ ...receipt, runs: [receipt.runs[0], { ...receipt.runs[0], name: 'run2' }] }),",
+  "to": "      F3: () => { const b = `${EVD}/f3/run2/transcript.jsonl`; put(b, t1); putReceipt({ ...receipt, runs: [receipt.runs[0], { ...receipt.runs[0], name: 'run2', transcript: b, transcriptSha256: sha256(t1) }] }); },",
+  "line": 181,
+  "expect": "survivor-expected: F3 collapses into F4 (byte copy); J1 v1 accepts, J2 rejects, J3 rejects on ds[0]==ds[1]",
+  "sha256": "a323c05dadb7a69815da2bf03ab387f8d85ce83e92f927bc1a4263f455932026"
+ },
+ {
+  "name": "M10-selftest-clause-drop",
+  "from": "out.forgeriesAccepted === 0 && st.status === 0 && out.digestLiterals.length === 0",
+  "to": "out.forgeriesAccepted === 0 && out.digestLiterals.length === 0",
+  "line": 229,
+  "expect": "survivor-expected: selftest still run and reported, but no control has a gate that fails selftest while otherwise clean",
+  "sha256": "0c47646cc7d1eae387f0ae2eb60955acad008b7fe86bc3d78386b53eaa718b52"
+ },
+ {
+  "name": "M11-admitted-relaxed",
+  "from": "const honestOk = (x) => x.accepted && x.admitted === HONEST_ADMITTED && x.failing === 0;",
+  "to": "const honestOk = (x) => x.accepted && x.admitted >= 1 && x.failing === 0;",
+  "line": 217,
+  "expect": "survivor-expected: no control presents a gate that admits only part of the honest runs",
+  "sha256": "ed7d369537bd42a88e620a4b06e4e7934046c2fae146335d797598df94ed3dbf"
+ },
+ {
+  "name": "M12-drop-forgery-clause",
+  "from": "out.honest.H2 && out.forgeriesAccepted === 0 && st.status === 0",
+  "to": "out.honest.H2 && st.status === 0",
+  "line": 229,
+  "expect": "killed-by-J1-expected: do-nothing lane flips predicate true (honest T/T/T, selftest 0, digests [])",
+  "sha256": "23b551cb433138d9d06f236cfed5bad423e6caa39381c4a6656bfec9da356f5b"
+ },
+ {
+  "name": "M13-golden-from-REV",
+  "from": "const goldenSrc = blob(lane, GOLDEN_REV, GATE);",
+  "to": "const goldenSrc = blob(lane, REV, GATE);",
+  "line": 141,
+  "expect": "killed-by-J2+J3-expected: golden gate sha assertion fails against patched control gates -> exit 2",
+  "sha256": "a3742fb65c06873f845aa8f300e63b78792cc1e32b01348e4251e1c67080b54c"
+ },
+ {
+  "name": "M14-H2-golden-transcripts",
+  "from": "        const r1 = blob(lane, GOLDEN_REV, `${RERUN}/run1/transcript.jsonl`); const r2 = blob(lane, GOLDEN_REV, `${RERUN}/run2/transcript.jsonl`);",
+  "to": "        const r1 = Buffer.from(golden('http://127.0.0.1:40002')); const r2 = Buffer.from(golden('http://127.0.0.1:40003'));",
+  "line": 169,
+  "expect": "killed-by-J3-expected: whitelist refuses golden digests -> honest.H2 false",
+  "sha256": "7d2f8299bd8344f84fa87f4cb62d6647c16e0c3749322970ab64a699ca60ac24"
+ },
+ {
+  "name": "M15-prefix-len-40",
+  "from": ".includes(d.slice(0, 12))).map((d) => d.slice(0, 12)),",
+  "to": ".includes(d.slice(0, 40))).map((d) => d.slice(0, 40)),",
+  "line": 222,
+  "expect": "survivor-expected: full 64-hex whitelist literals still contain their 40-hex prefix; prefix length unobserved",
+  "sha256": "2465e83c9b3d4ac2530f9227a5274a196523ba1cd8e560b82ea42ea981776416"
+ }
+]

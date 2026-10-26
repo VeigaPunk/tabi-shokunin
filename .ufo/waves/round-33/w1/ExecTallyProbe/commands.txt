@@ -1,0 +1,35 @@
+# seat ExecTallyProbe — C2 tally no-harm probe. All runs in the scratch clone.
+# S=/fast/scratch/hyaku/tabi-r33/ExecTallyProbe ; TMPDIR=$S/tmp (explicit export)
+# node v24.21.0 (recorded in nodever.txt)
+
+1  git clone -q --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"
+   git -C "$S/clone" checkout -q --detach e6b0a9074d434ccc307badd312ae7379d1193fea        exit 0  HEAD=e6b0a90
+2  node scripts/check-selfassessment.mjs --rev e6b0a907… --json                            exit 0  mismatches 0
+3  node scripts/check-gate-registry.mjs --rev e6b0a907… --json                             exit 0  nonconformant 0
+4  node scripts/check-gate-mutants.mjs --rev e6b0a907… --work "$S/mutwork" --json           exit 0  27/27 fault, 13/13 benign survived
+5  node scripts/check-bidi-runtime.mjs --selftest                                           exit 0  BIDI_RUNTIME_SELFTEST verdict=clean cases=27 passed=27
+
+# probe: 18 extra passing self-test rows -> v2 tally 45/45, evaluation path untouched
+6  git -c user.name=ExecTallyProbe -c user.email=ExecTallyProbe@scratch.local -C "$S/clone" commit -q -am "probe: bidi gate selftest tally 45/45"   HEAD=4f55b036
+7  node scripts/check-bidi-runtime.mjs --selftest                                           exit 0  BIDI_RUNTIME_SELFTEST verdict=clean cases=45 passed=45
+8  node scripts/check-selfassessment.mjs --rev 4f55b036… --json                             exit 1  mismatches 2
+9  node scripts/check-gate-registry.mjs --rev 4f55b036… --json                               exit 0  nonconformant 0
+10 node scripts/check-gate-mutants.mjs --rev 4f55b036… --work "$S/mutwork2" --json          exit 0  27/27, 13 benign survived
+
+# append-only corrections at the end of SCORECARD.md and SKILL.md (text = probe-corrections.patch)
+11 git -c user.name=… commit -q -am "probe: append-only round-33 corrections"                HEAD=75bc2bbb
+   git diff --numstat 4f55b036… 75bc2bbb…                                                   6 0 SCORECARD.md / 6 0 SKILL.md (deleted 0)
+12 node scripts/check-selfassessment.mjs --rev 75bc2bbb… --json                            exit 0  mismatches 0
+13 node scripts/check-gate-registry.mjs --rev 75bc2bbb… --json                             exit 0  nonconformant 0
+14 node scripts/check-gate-mutants.mjs --rev 75bc2bbb… --work "$S/mutwork3" --json          exit 0  27/27, 13 benign survived
+
+# falsifier A: correction written but not committed (dirty tree)
+15 printf '\n- probe dirt line\n' >> SCORECARD.md ; node scripts/check-selfassessment.mjs --rev 75bc2bbb… --json
+                                                                                           exit 1  mismatches 1 (m3-unlanded-paths, round 32 block, observed 1)
+   git checkout -q -- SCORECARD.md                                                         status clean (0 paths)
+
+# falsifier B: correction line in the colon tally shape (`cases: 45`) at the end of SCORECARD.md
+16 commit on detach 4f55b036 ; node scripts/check-selfassessment.mjs --rev <colon-commit>   exit 1  mismatches 2 (SCORECARD.md:1657 still stale)
+
+# falsifier C: SCORECARD.md corrected in the working shape, SKILL.md left stale
+17 commit on detach 4f55b036 ; node scripts/check-selfassessment.mjs --rev <partial-commit> exit 1  mismatches 1 (SKILL.md:2626 still stale, 27 vs 45)

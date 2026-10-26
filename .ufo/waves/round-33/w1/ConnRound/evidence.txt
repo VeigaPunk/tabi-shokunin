@@ -1,0 +1,34 @@
+ConnRound (round-33 w1) — evidence receipts
+============================================
+All reads are from committed lane bytes at the freeze e6b0a9074d434ccc307badd312ae7379d1193fea
+or baseline b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd. No browser run, no lane write.
+
+1. Candidate sweep size (baseline):
+$ wc -l .ufo/waves/round-33/baseline/c1-candidates.tsv
+52 .ufo/waves/round-33/baseline/c1-candidates.tsv
+
+2. Planned S127-S129 URL probes against corpus/SOURCES.md (grep -cF; exit codes):
+   session_commands.cc        -> exit=0 count=2  (row S125 at :139 + search-log prose at :183)
+   sandbox/linux/README.md    -> exit=1 count=0  (S129 URL is new)
+   gitlab.archlinux.org       -> exit=1 count=0  (S128 URL is new)
+   chromium-launcher          -> exit=1 count=0  (S128 URL is new)
+   webdriver-bidi-20261008    -> exit=0 count=1  (S124 row at :138)
+   S127/S129 rows already present? grep -nE '| S12[7-9] ' -> exit=1 (none)
+
+3. Claims frozen digests (claims.json :14-18): c1 counter da59d157…, c2 battery 51ace65f…,
+   check-adjacency pinned 4e2c2a64…
+
+4. Stale bidi selftest tally statements (will need append-only corrections when v2's tally lands):
+   SKILL.md:2626   registry row self-test cell  cases=27, passed=27
+   SCORECARD.md:1657  `scripts/check-bidi-runtime.mjs` `--selftest` (27/27)
+   LOG.md:2154     BIDI_RUNTIME_SELFTEST verdict=clean cases=27 passed=27
+
+5. Planned rows at SCORECARD.md:1687-1694 (round-32 plan): gate v2 (claimed this round as C2),
+   calibration counter v4 (carried, notClaimed), saturation 8/window 3.
+
+6. Round-32 closure spotcheck routed defects (& lines): gate v2 (:148); calibration v4 (:149);
+   S125 recheck cadence (:150); feasibilityDisclosed correction (:151); wave-2 precision defects (:152);
+   M9 fix cell (:153); control provenance (:154).
+
+7. noharm baseline gates (measure-at-baseline/noharm-at-b7d16fb.txt): 28 lines; registry rows=40 gates=22;
+   release-pins 23/23; sources 126 rows; selfassessment mismatches 0; selftests all exit 0.

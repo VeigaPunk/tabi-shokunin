@@ -1,0 +1,15 @@
+# commands and exit codes (seat AdjKaidoku, C1 build)
+S=/fast/scratch/hyaku/tabi-r33/AdjKaidoku ; CL=$S/clone ; LANE=/home/vgpnk/Projects/shokunin/tabi-shokunin
+git clone --shared $LANE "$CL"; git -C "$CL" checkout -q --detach e6b0a9074d434ccc307badd312ae7379d1193fea   # exit 0; rev-parse HEAD = e6b0a9074d434ccc307badd312ae7379d1193fea; toplevel == $CL
+node scripts/check-adjacency.mjs --at e6b0a907… --repo "$CL" --fleet /home/vgpnk/Projects/shokunin --json   # exit 0; verdict clean rows=10 verified=10
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show 8b9634ed…:PROVINCE.md | sed -n 137p | grep -F "self-launched CDP/V8-inspector targets (r3 recipe)"   # exit 0
+# quote shape: words=5 nonspace=46
+git -C "$CL" -c user.name=AdjKaidoku -c user.email=AdjKaidoku@scratch.local commit   # exit 0; REV=9163092f31f9cd4a1f82e5ebeaef40a36e3c8a2d (corpus/adjacency-screen.tsv, 2 insertions)
+node scripts/check-adjacency.mjs --at 9163092f… --repo "$CL" --fleet /home/vgpnk/Projects/shokunin --json   # exit 0; verdict clean rows=10 verified=10 selfRulings=[2]
+node .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs --rev 9163092f… --repo "$CL" --fleet /home/vgpnk/Projects/shokunin --json   # exit 1 (evaluated, predicate not met); candidates=52 mapped=5 screened=1 unaccounted=46 newMapped=0 screenFindings=[]
+# control E1: map row for kaidoku:137 under cdp-runtime-observation
+node scripts/check-adjacency.mjs --at 1d91f32f… --json   # exit 1; verdict failed; finding row=12 reason=duplicate_row detail="surface=cdp-runtime-observation sibling=kaidoku pin=kaidoku@PROVINCE.md:137 first_row=2"
+# control E2: map row for kaidoku:137 under minted surface javascript-runtime-observation
+node scripts/check-adjacency.mjs --at 92640aa8… --json   # exit 0; verdict clean rows=11 verified=11
+node .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs --rev 92640aa8… --json   # exit 1; newMapped=1 (row 12), unaccounted=46, predicate false
+pgrep -fa 'chromedriver|chromium'   # only pid 1371 /usr/bin/earlyoom (ppid 1, host daemon; "chromium" appears in its preference regex) — no browser/chromedriver started by this seat

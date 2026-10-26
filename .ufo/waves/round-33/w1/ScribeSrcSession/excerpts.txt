@@ -1,0 +1,92 @@
+## ChromeDriver 154 source excerpts (line numbers from decoded blobs at tag 154.0.8037.97)
+
+### chrome/test/chromedriver/util.cc:39-43 (generator)
+  39: std::string GenerateId() {
+  40:   uint64_t msb = base::RandUint64();
+  41:   uint64_t lsb = base::RandUint64();
+  42:   return base::StringPrintf("%016" PRIx64 "%016" PRIx64, msb, lsb);
+  43: }
+
+### chrome/test/chromedriver/util.h:22 (declaration)
+  22: std::string GenerateId();
+
+### chrome/test/chromedriver/commands.cc:91-97 (ExecuteCreateSession call site)
+  91: void ExecuteCreateSession(SessionThreadMap* session_thread_map,
+  92:                           const Command& init_session_cmd,
+  93:                           const base::DictValue& params,
+  94:                           const std::string& host,
+  95:                           const CommandCallback& callback) {
+  96:   std::string new_id = GenerateId();
+  97:   std::unique_ptr<Session> session = std::make_unique<Session>(new_id, host);
+
+### chrome/test/chromedriver/session_commands.cc:287-290 (webSocketUrl surface)
+ 287:   if (session->web_socket_url) {
+ 288:     caps.Set("webSocketUrl",
+ 289:              "ws://" + session->host + "/session/" + session->id);
+ 290:   }
+
+### chrome/test/chromedriver/session_commands.cc:370-374 (W3C sessionId surface)
+ 370:     base::DictValue body;
+ 371:     body.Set("capabilities", session->capabilities->Clone());
+ 372:     body.Set("sessionId", session->id);
+ 373:     *value = std::make_unique<base::Value>(std::move(body));
+ 374:   } else {
+
+### chrome/test/chromedriver/session_commands.cc:408-420 (mapper target + BiDi session.new boundary)
+ 408:     status = session->chrome->NewHiddenTarget(
+ 409:         session->window, session->w3c_compliant,
+ 410:         &session->bidi_mapper_web_view_id);
+ 411:     if (status.IsError()) {
+ 412:       return status;
+ 413:     }
+ 414: 
+ 415:     // Set the BiDi mapper web view to the new target.
+ 416:     session->chrome->GetWebViewById(session->bidi_mapper_web_view_id,
+ 417:                                     &bidi_mapper_web_view);
+ 418: 
+ 419:     // Wait until the initial navigation is over to prevent the mapper from
+ 420:     // being evicted by the navigation.
+
+### chrome/test/chromedriver/session_commands.cc:450-460 (session.new forwarded to mapper)
+ 450:     }
+ 451: 
+ 452:     // Execute session.new for the newly-created mapper instance.
+ 453:     base::DictValue bidi_cmd;
+ 454:     bidi_cmd.Set("goog:channel", "/init-bidi-session");
+ 455:     bidi_cmd.Set("id", 1);
+ 456:     bidi_cmd.Set("params", params.Clone());
+ 457:     bidi_cmd.Set("method", "session.new");
+ 458:     base::DictValue bidi_response;
+ 459:     status = bidi_mapper_web_view->SendBidiCommand(
+ 460:         std::move(bidi_cmd), Timeout(base::Seconds(20)), bidi_response);
+
+### chrome/test/chromedriver/chrome/web_view_info.cc:95-109 (WebView id from DevTools /json/list)
+  95: Status WebViewsInfo::FillFromTargetsInfo(const base::ListValue& target_infos) {
+  96:   std::vector<WebViewInfo> temp_views_info;
+  97:   for (const base::Value& info_value : target_infos) {
+  98:     if (!info_value.is_dict()) {
+  99:       return Status(kUnknownError, "DevTools contains non-dictionary item");
+ 100:     }
+ 101:     const base::DictValue& info = info_value.GetDict();
+ 102:     const std::string* id = info.FindString("id");
+ 103:     if (!id) {
+ 104:       id = info.FindString("targetId");
+ 105:     }
+ 106:     if (!id) {
+ 107:       return Status(kUnknownError,
+ 108:                     "DevTools did not include 'id' or 'targetId'");
+ 109:     }
+
+### chrome/test/chromedriver/chrome/devtools_http_client.cc:46-52 (list URL feed)
+  46: Status DevToolsHttpClient::GetWebViewsInfo(WebViewsInfo* views_info) {
+  47:   std::string data;
+  48:   if (!FetchUrlAndLog(endpoint_.GetListUrl(), &data))
+  49:     return Status(kChromeNotReachable);
+  50: 
+  51:   return ParseWebViewsInfo(data, *views_info);
+  52: }
+
+### chrome/test/chromedriver/chrome/web_view_impl.cc:685-687 (GetId returns target id)
+ 685: std::string WebViewImpl::GetId() {
+ 686:   return id_;
+ 687: }

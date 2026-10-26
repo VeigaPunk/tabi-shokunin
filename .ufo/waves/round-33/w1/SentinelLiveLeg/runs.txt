@@ -1,0 +1,62 @@
+# SentinelLiveLeg — commands and observed exit codes (round 33, w1)
+
+Scratch root: /fast/scratch/hyaku/tabi-r33/SentinelLiveLeg (removed after these receipts were copied).
+Clone: /fast/scratch/hyaku/tabi-r33/SentinelLiveLeg/clone  (git clone --shared of the lane,
+git -C clone rev-parse HEAD = e6b0a9074d434ccc307badd312ae7379d1193fea).
+Browser: /usr/bin/chromedriver 154.0.8037.97, chromium 154.0.8037.97 (Arch, headless).
+Navigations: only http://127.0.0.1:<ephemeral> served by the gate's own serveFixture().
+
+## clone / provenance
+git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"            -> exit 0
+git -C "$S/clone" checkout -q --detach e6b0a9074d434ccc307badd312ae7379d1193fea      -> exit 0
+sha256sum clone/.ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs
+  51ace65fcece8e794b80afdb386638c755b3aa137297c33a34ffce7fb24e812b   (= claims.json frozenDigests)
+sha256sum clone/scripts/check-bidi-runtime.mjs
+  2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393   (= gate-L1-v1-pristine.mjs)
+
+## (1) battery under strace
+TMPDIR=$S/tmp strace -f -e trace=connect,openat,unlink,unlinkat,mkdir,rename \
+  -o probe/battery.strace node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs \
+  --repo "$S/clone" --rev e6b0a9074d434ccc307badd312ae7379d1193fea --json
+  battery exit=1   predicate=false  honest H0/H1/H2=true  forgeriesAccepted=8/8
+  acceptedForgeries F1,F2,F3,F4,F5,F6,F7,F8  selftest.exit=0 (27/27 cases)  digestLiterals=[]
+  -> identical to .ufo/waves/round-33/baseline/c2-J1-do-nothing.json
+  trace: 17 connect() calls, all AF_UNIX or port 0; non-zero-port connects = 0
+  trace: 2043 write-intent openat(), all under /fast/scratch/hyaku + /dev/null (+ one ENXIO /dev/tty);
+         zero write-intent opens/unlinks/renames under the lane
+
+## (2) live leg variants (three scratch copies of the clone's gate, honest round-32 entry/receipt)
+node probe/gate-L1.mjs --repo "$S/clone" --rev e6b0a90… --baseline d805d1d6… \
+  --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md --live --json          -> exit 0 (admitted 16, binding null)
+node probe/gate-L2.mjs … --live --json   (no --no-sandbox)                            -> exit 0 (live-L2.exit)
+node probe/gate-L3.mjs … --live --json   (no --no-sandbox, /usr/lib/chromium/chromium)-> exit 0 (live-L3.exit)
+
+strace -f -e trace=connect -o probe/live-L1.strace node probe/gate-L1.mjs … --live    -> exit 0
+strace -f -e trace=connect,openat,unlink,unlinkat,mkdirat -o probe/live-L3.strace \
+  node probe/gate-L3.mjs … --live                                                     -> exit 0
+  writes outside scratch/TMPDIR/XDG_RUNTIME_DIR:
+    /home/vgpnk/.pki/nssdb/cert9.db
+    /home/vgpnk/.pki/nssdb/key4.db
+    /home/vgpnk/.config/chromium/Crash Reports/settings.dat
+
+env -u XDG_RUNTIME_DIR TMPDIR=$S/tmpX node probe/gate-L3.mjs … --live                 -> exit 0
+  6 planted foreign dirs .org.chromium.Chromium.V1..V6 -> 0 survive (probe/victim.txt)
+
+## (3) sandbox comparison under chromedriver (mid-run /proc/<pid>/status polling)
+probe seccomp-L1: renderers Seccomp=0, flat NSpid (v1 with --no-sandbox)
+probe seccomp-L2: renderers Seccomp=2, nested NSpid ("11  1") (same run, gate exit 0, admitted 16)
+
+## (4) launch surface
+/usr/bin/chromedriver --port=9519 &  ;  ss -ltnp 'sport = :9519'
+  127.0.0.1:9519 (fd 8) and [::1]:9519 (fd 7); local addresses not loopback = 0   (ss-chromedriver.txt)
+strace -f -e trace=execve /usr/bin/chromium --headless=new --version                  -> exit 0
+  execve("/usr/lib/chromium/chromium", …) carries the flags-file names
+  (wrapper-execve-flags.txt: --ozone-platform --ozone-platform-hint --enable-features
+   --load-extension --disable-features; values not recorded)
+stat /usr/bin/chromium = 14424 bytes; /usr/lib/chromium/chrome-sandbox = -rwsr-xr-x root:root
+/proc/sys/kernel/unprivileged_userns_clone = 1; apparmor_restrict_unprivileged_userns absent
+
+## hygiene
+pgrep -fa 'chromedriver|chromium'  -> only the host's /usr/bin/earlyoom (not mine); no chromedriver/chromium of mine
+$S/tmp empty; $S removed after receipts were copied into this directory
+no tool installs or upgrades; no network fetches (nothing needed)

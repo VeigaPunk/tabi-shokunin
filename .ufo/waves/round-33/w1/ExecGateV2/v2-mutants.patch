@@ -1,0 +1,99 @@
+--- scripts/check-bidi-runtime.mjs
++++ scripts/mutM04.mjs
+@@ -782,7 +782,7 @@
+   if (!receiptFinding && runs.length) {
+     const shots = runs.map((r) => firstShot(r.rec));
+     if (shots.some((s) => !s) || new Set(shots).size !== 1) bindingFinding = "first screenshots absent or differ between runs";
+-    else if (runs.some((r) => !cdv(r.rec)) || new Set(runs.map((r) => cdv(r.rec))).size !== 1) bindingFinding = "chromedriverVersion absent or differs between runs";
++    else if (runs.some((r) => !cdv(r.rec))) bindingFinding = "chromedriverVersion absent";
+     else if (live && liveRec) {
+       if (firstShot(liveRec) !== shots[0]) bindingFinding = "first screenshot differs from this counter's live session";
+       else if (cdv(liveRec) !== cdv(runs[0].rec)) bindingFinding = "chromedriverVersion differs from this counter's live session";
+--- scripts/check-bidi-runtime.mjs
++++ scripts/mutM06.mjs
+@@ -229,7 +229,7 @@
+   return rec;
+ }
+ 
+-const ok = (c) => c && c.response && c.response.type === "success";
++const ok = (c) => Boolean(c && c.response);
+ const res = (c) => (c && c.response && c.response.result) || {};
+ const strVal = (rv) => (rv && rv.type === "string" ? rv.value : undefined);
+ 
+--- scripts/check-bidi-runtime.mjs
++++ scripts/mutM09.mjs
+@@ -309,7 +309,7 @@
+     const keys = rec.cmds.filter((c) => c.method === "input.performActions" && ok(c) && (c.params.actions || []).some((s) => s.type === "key" && (s.actions || []).filter((a) => a.type === "keyDown").map((a) => a.value).join("").includes("tabi")));
+     if (!keys.length) return "no key performActions typing tabi";
+     const first = Math.min(...keys.map((c) => c.i));
+-    return evalCmds(rec, "document.getElementById('t').value").some((c) => c.i > first && strVal(res(c).result) === "tabi") ? null : "#t value is not tabi after typing";
++    return evalCmds(rec, "document.getElementById('t').value").some((c) => strVal(res(c).result) === "tabi") ? null : "#t value is not tabi after typing";
+   },
+   R10: (rec) => {
+     const base = navBase(rec);
+--- scripts/check-bidi-runtime.mjs
++++ scripts/mutM10.mjs
+@@ -344,7 +344,7 @@
+     const tr = rec.cmds.find((c) => c.method === "browsingContext.traverseHistory" && ok(c) && c.params.delta === -1);
+     if (!tr) return "no traverseHistory delta -1";
+     if (!rec.cmds.some((c) => c.method === "browsingContext.navigate" && ok(c) && c.i < tr.i && /\/b\.html$/.test(String(c.params.url)))) return "no navigate to /b.html before the traverse";
+-    return evalCmds(rec, "location.pathname").some((c) => c.i > tr.i && strVal(res(c).result) === "/a.html") ? null : "pathname is not /a.html after the traverse";
++    return evalCmds(rec, "location.pathname").some((c) => strVal(res(c).result) === "/a.html") ? null : "pathname is not /a.html after the traverse";
+   },
+   R15: (rec) => (rec.cmds.some((c) => c.method === "storage.getCookies" && ok(c) && (res(c).cookies || []).some((k) => k.name === "tabi_fixture" && strVal(k.value) === "1")) ? null : "no getCookies with tabi_fixture=1"),
+   R16: () => "no-bidi-counterpart",
+--- scripts/check-bidi-runtime.mjs
++++ scripts/mutM11.mjs
+@@ -733,7 +733,7 @@
+       else {
+         const drv = blob(repo, rev, receiptObj.driver);
+         if (drv === null) receiptFinding = `driver absent: ${receiptObj.driver}`;
+-        else if (sha256(drv) !== receiptObj.driverSha256) receiptFinding = `driver sha256 differs: ${receiptObj.driver}`;
++        else if (false) receiptFinding = `driver sha256 differs: ${receiptObj.driver}`;
+         else if (gateBuf !== null && sha256(drv) === sha256(gateBuf)) receiptFinding = "driver is a byte copy of this gate";
+         else {
+           out.driverImports = importSpecs(drv.toString("utf8")).map((s) => ({ kind: s.kind, spec: s.spec, names: s.names }));
+--- scripts/check-bidi-runtime.mjs
++++ scripts/mutM14.mjs
+@@ -271,7 +271,7 @@
+     const caps = rec.newSession && rec.newSession.value && rec.newSession.value.capabilities;
+     if (!caps) return "no classic new-session response";
+     if (!caps.browserName) return "no browserName";
+-    if (caps.browserVersion !== ctx.browserVersion) return `browserVersion ${caps.browserVersion} != ${ctx.browserVersion}`;
++    if (String(caps.browserVersion).split(".")[0] !== String(ctx.browserVersion).split(".")[0]) return `browserVersion ${caps.browserVersion} != ${ctx.browserVersion}`;
+     if (!WS_LOOPBACK.test(String(caps.webSocketUrl || ""))) return "webSocketUrl not a loopback ws url";
+     if (!rec.cmds.some(ok)) return "no successful BiDi command on the socket";
+     return null;
+--- scripts/check-bidi-runtime.mjs
++++ scripts/mutM17.mjs
+@@ -137,7 +137,7 @@
+ const DRIVER_ALLOW = new Set(["FIXTURE", "FIXTURE_SHA256", "FIXTURE_HEADER", "VIEWPORT", "DATA_TEXT", "serveFixture"]);
+ const SESSION_ID = /^[0-9a-f]{32}$/; // ChromeDriver 154 classic session id shape
+ const CONTEXT_ID = /^[0-9A-F]{32}$/; // ChromeDriver 154 browsing-context id shape
+-const WS_LOOPBACK = /^ws:\/\/(127\.0\.0\.1|localhost):\d+\/session\//;
++const WS_LOOPBACK = /^ws:\/\//;
+ const WS_SESSION = /^ws:\/\/[^/]+\/session\/([0-9a-f]{32})$/;
+ const MEASURED = /^(yes|no)(?:\s*[—–-]\s*\S[\s\S]*)?$/i;
+ const HEX64 = /\b[0-9a-f]{64}\b/;
+--- scripts/check-bidi-runtime.mjs
++++ scripts/mutM18.mjs
+@@ -288,7 +288,7 @@
+   R4: (rec) => {
+     const shots = rec.cmds.filter((c) => c.method === "browsingContext.captureScreenshot" && ok(c));
+     if (!shots.length) return "no captureScreenshot";
+-    return shots.some((c) => { const s = pngSize(res(c).data); return s && s.width === VIEWPORT.width && s.height === VIEWPORT.height; }) ? null : "screenshot is not a PNG of the pinned viewport";
++    return shots.some((c) => Boolean(pngSize(res(c).data))) ? null : "screenshot is not a PNG of the pinned viewport";
+   },
+   R5: (rec) => (rec.cmds.some((c) => c.method === "browsingContext.locateNodes" && ok(c) && c.params.locator && c.params.locator.type === "css" && c.params.locator.value === "#h"
+     && Array.isArray(res(c).nodes) && res(c).nodes.length === 1 && res(c).nodes[0].value && res(c).nodes[0].value.localName === "h1") ? null : "no locateNodes #h -> one h1"),
+--- scripts/check-bidi-runtime.mjs
++++ scripts/mutM19.mjs
+@@ -688,7 +688,7 @@
+   if (entryBuf === null) { out.entryFinding = "e1-entry-absent"; out.clean = false; return out; }
+   const entryText = entryBuf.toString("utf8");
+   const tableRows = parseTable(entryText) || [];
+-  out.population = tableRows.filter((r) => String(r.cells[3] == null ? "" : r.cells[3]).trim() !== "").length;
++  out.population = tableRows.filter((r) => String(r.cells[3] == null ? "" : r.cells[3]).trim().toLowerCase() === "yes").length;
+   const idCounts = new Map();
+   for (const r of tableRows) idCounts.set(r.cells[0], (idCounts.get(r.cells[0]) || 0) + 1);
+   out.duplicates = [...idCounts.entries()].filter(([, n]) => n > 1).map(([id]) => id);

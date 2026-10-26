@@ -1,0 +1,77 @@
+{
+  "M01-naming-rule-drop": {
+    "desc": "newMapped naming rule dropped: every verified new row mapping a candidate counts, any disposition",
+    "old": "    if (r.disposition === 'ruled' || r.disposition === 'contested-open') return true;\n    if (r.disposition === 'split-declared' || r.disposition === 'refused-route') {\n      return /\\btabi\\b/i.test(r.siblingQuote) || new RegExp(`\\\\b${r.sibling.replace(/[^a-z0-9-]/g, '')}\\\\b`, 'i').test(r.tabiQuote);\n    }\n    return false;",
+    "new": "    return true;"
+  },
+  "M02-baseKeys-drop": {
+    "desc": "newness check dropped: rows present at the baseline count toward newMapped",
+    "old": "    if (baseKeys.has(`${fold(r.surface)} ${r.sibling}`)) return false;\n",
+    "new": ""
+  },
+  "M03-target-gt": {
+    "desc": "predicate threshold '>=' -> '>' on NEW_TARGET (requires 5, not 4)",
+    "old": "out.predicate = gate.verdict === 'clean' && out.unaccounted === 0 && out.newMapped >= NEW_TARGET;",
+    "new": "out.predicate = gate.verdict === 'clean' && out.unaccounted === 0 && out.newMapped > NEW_TARGET;"
+  },
+  "M04-same-surface-drop": {
+    "desc": "same-surface screens no longer require a mapped-verified surface of the same sibling",
+    "old": "        if (reason === 'same-surface') {\n          if (!verifiedSurfaces.has(`${fold(surface)} ${c.lane}`)) { screenFindings.push({ row: rowNo, reason: 'screen-surface-unmapped', detail: `${surface} ${c.lane}` }); continue; }\n        } else if (surface !== '-') { screenFindings.push({ row: rowNo, reason: 'screen-surface-not-dash', detail: surface }); continue; }",
+    "new": "        if (reason !== 'same-surface' && surface !== '-') { screenFindings.push({ row: rowNo, reason: 'screen-surface-not-dash', detail: surface }); continue; }"
+  },
+  "M05-trim-drop": {
+    "desc": "candidate-side trim dropped in the mapped-text key (row side still trimmed)",
+    "old": "const mappedBy = (byText.get(`${c.lane}\\u0000${c.text.trim()}`) || []).map((r) => r.rowNo);",
+    "new": "const mappedBy = (byText.get(`${c.lane}\\u0000${c.text}`) || []).map((r) => r.rowNo);"
+  },
+  "M06-any-screen-reason": {
+    "desc": "closed screen-reason vocabulary dropped: any non-empty reason accepted",
+    "old": "        if (!SCREEN_REASONS.includes(reason)) { screenFindings.push({ row: rowNo, reason: 'screen-reason-unknown', detail: reason }); continue; }",
+    "new": "        if (reason === '') { screenFindings.push({ row: rowNo, reason: 'screen-reason-unknown', detail: reason }); continue; }"
+  },
+  "M07-ignore-flagged": {
+    "desc": "gate.flagged ignored: rows with check-adjacency findings counted as verified",
+    "old": "  const verifiedRows = mapNow.filter((r) => !gate.flagged.has(r.rowNo));",
+    "new": "  const verifiedRows = mapNow;"
+  },
+  "M08-regex-boundary-loss": {
+    "desc": "candidate REGEX word boundaries dropped",
+    "old": "const REGEX = /\\b(browsers?|chromium|chrome|cdp|devtools|playwright|puppeteer|webdriver|bidi|selenium|webbridge|tabi|crawl(er|ers|ing)?|scrap(e|er|ers|ing))\\b/i;",
+    "new": "const REGEX = /(browsers?|chromium|chrome|cdp|devtools|playwright|puppeteer|webdriver|bidi|selenium|webbridge|tabi|crawl(er|ers|ing)?|scrap(e|er|ers|ing))/i;"
+  },
+  "M09-target-zero": {
+    "desc": "NEW_TARGET lowered 4 -> 0",
+    "old": "const NEW_TARGET = 4;",
+    "new": "const NEW_TARGET = 0;"
+  },
+  "M10-predicate-unaccounted-drop": {
+    "desc": "unaccounted == 0 conjunct dropped from the predicate",
+    "old": "out.predicate = gate.verdict === 'clean' && out.unaccounted === 0 && out.newMapped >= NEW_TARGET;",
+    "new": "out.predicate = gate.verdict === 'clean' && out.newMapped >= NEW_TARGET;"
+  },
+  "M11-predicate-clean-drop": {
+    "desc": "adjacency verdict clean conjunct dropped from the predicate",
+    "old": "out.predicate = gate.verdict === 'clean' && out.unaccounted === 0 && out.newMapped >= NEW_TARGET;",
+    "new": "out.predicate = out.unaccounted === 0 && out.newMapped >= NEW_TARGET;"
+  },
+  "M12-screen-quote-weaken": {
+    "desc": "screen quote no longer required to be a verbatim substring of the candidate line",
+    "old": "        if (!goodQuote(quote) || !c.text.includes(quote)) { screenFindings.push({ row: rowNo, reason: 'screen-quote', detail: ref }); continue; }",
+    "new": "        if (!goodQuote(quote)) { screenFindings.push({ row: rowNo, reason: 'screen-quote', detail: ref }); continue; }"
+  },
+  "M13-duplicate-screen-drop": {
+    "desc": "duplicate sibling_ref screen rows accepted",
+    "old": "        if (screened.has(ref)) { screenFindings.push({ row: rowNo, reason: 'screen-duplicate', detail: ref }); continue; }\n        screened.set(ref, { rowNo, reason, surface });",
+    "new": "        screened.set(ref, { rowNo, reason, surface });"
+  },
+  "M14-header-check-drop": {
+    "desc": "screen ledger header no longer validated",
+    "old": "    if (ls[0] !== SCREEN_HEADER.join('\\t')) screenFindings.push({ row: 1, reason: 'screen-header' });",
+    "new": "    if (false) screenFindings.push({ row: 1, reason: 'screen-header' });"
+  },
+  "M15-naming-boundary-loss": {
+    "desc": "word boundaries dropped inside the split-declared/refused-route naming rule",
+    "old": "      return /\\btabi\\b/i.test(r.siblingQuote) || new RegExp(`\\\\b${r.sibling.replace(/[^a-z0-9-]/g, '')}\\\\b`, 'i').test(r.tabiQuote);",
+    "new": "      return /tabi/i.test(r.siblingQuote) || new RegExp(`${r.sibling.replace(/[^a-z0-9-]/g, '')}`, 'i').test(r.tabiQuote);"
+  }
+}

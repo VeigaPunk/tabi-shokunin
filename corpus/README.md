@@ -755,3 +755,32 @@ corpus/knowledge/ | grep -c '\.md$'` → 50.
   (w2 CritC1Claim 4)
 - The round-32 frontier row's "runtime-held" is a predicate verdict on this host build; the first-screenshot binding
   does not prove that the receipt's runs were executed (entry §Corrections — round 32 wave 2).
+
+## Round 33 — sibling-overlap sweep and BiDi receipt gate v2 (2026-10-26)
+
+Append-only. One knowledge row and one map file; no earlier line is edited.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/bidi-runtime-gate-v2-round-33.md` *(round 33)* | Which receipt forgeries gate v2 refuses (the frozen battery's F1–F8) and why, the stated driver import allow-list, and the live leg's launch rules (real binary, no `--no-sandbox`, throwaway HOME) | S127, S128, S129 |
+| `adjacency-screen.tsv` *(round 33, with `adjacency.tsv` rows 12–15)* | Every browser-domain line of the twenty sibling `PROVINCE.md` files at frozen pins, mapped or screened with a closed reason; four new kake overlaps (JS rendering, robots.txt, accessibility execution, crawl rate) | sibling `PROVINCE.md` lines at their pins; `SKILL.md` §Round 33 declarations |
+
+| Frontier item | Status | Pointer |
+|---|---|---|
+| Sibling overlaps outside `PROVINCE.md` | open — 34 real overlaps found in sibling `SKILL.md`/knowledge (kasegi CDP 9222, kumitate webbridge, kama CDP pins, kaidoku Playwright/a11y), not in the frozen sweep | `.ufo/waves/round-33/w1/ConnSiblingScan/leads.tsv`; lesson round-33 §Search log |
+| BiDi receipt provenance | v2 refuses the eight round-32 constructions; smarter forgeries (real-shaped ids, a real transcript with an edited session) are wave-2 limits | `knowledge/bidi-runtime-gate-v2-round-33.md` §5, §7 |
+
+## Round 32 — corrections to the round-32 text, precision (round-33 errata intake C; append-only)
+
+- `corpus/README.md:745`: "v3's CASES table holds 41 isolated scenarios" is false. The table holds 39 cases
+  (`grep -cE '^\s{4}id: "'` on `scripts/check-selfassessment.mjs` → 39) and the gate's run count is 39 table cases plus
+  the two refusal cases appended in `runSelftest` (`refusal-bad-rev-syntax`, `refusal-unresolvable-rev`;
+  `grep -c 'results.push('` → 2). The run-count figure at `:745` stands; the attribution to the table does not.
+  (w2 CritReadmeLog F2, re-verified at `e6b0a90`.)
+- The round-32 frontier restatement's "three contracts the matrix names as unmatched" (`corpus/README.md:725-729`) names
+  wire-truth parity, DOMSnapshot's columnar shape and the history-entry list. The three load-bearing contracts the entry
+  and the matrix name are DOMSnapshot's columnar shape, the history-entry list and `insertText`
+  (`corpus/knowledge/webdriver-bidi-runtime-round-32.md:149-151`; `webdriver-bidi-capability-matrix.md:100-102`);
+  wire-truth parity (CDP's raw `ExtraInfo` header block and a byte-exact status line) is a fourth §3 gap
+  (`webdriver-bidi-capability-matrix.md:84-86`), and the frontier row at `:735` already lists it as unmatched.
+  (w2 CritReadmeLog F4.)

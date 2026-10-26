@@ -1,0 +1,68 @@
+# CritC2Counter round 33 w1 — commands and exit codes (paste, not paraphrase)
+#
+# S=/fast/scratch/hyaku/tabi-r33/CritC2Counter
+# lane=/home/vgpnk/Projects/shokunin/tabi-shokunin
+# All seat runs: cwd = $S/clone (clean clone of the lane at e6b0a90), TMPDIR explicit under $S.
+
+# 0. frozen bytes
+sha256sum $lane/.ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs
+# 51ace65fcece8e794b80afdb386638c755b3aa137297c33a34ffce7fb24e812b  (== claims.json frozenDigests)
+sha256sum $lane/scripts/check-bidi-runtime.mjs
+# 2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393  (gate v1)
+# exit 0
+
+# 1. baseline reproduction (gate v1)
+cd "$S/clone" && TMPDIR="$S" node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs \
+  --repo "$S/clone" --rev b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd --json
+# exit 1; predicate false; forgeriesAccepted 8/8; H0/H1/H2 true; selftest exit 0
+# (matches $lane/.ufo/waves/round-33/baseline/c2-J1-do-nothing.json)
+
+# 2. stub gate d35bcdc5 (compact 18 lines; never reads receipt/transcript/entry/registry)
+cd "$S/clone" && TMPDIR="$S/tmp" node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs \
+  --repo "$S/cheat" --rev 735268c076a533c30b1daa9be4b0628e621222c8 --json
+# exit 0; predicate true; forgeriesAccepted 0/8; H0/H1/H2 accepted 16; selftest exit 0
+# (gate commit 735268c, gate sha256 d35bcdc5f9d237df3bccf4441005beca82c14dc7baa7965db305c3ef7801baed)
+
+# 3. tell gate 8553ff8a (= gate v1 + 6 lines refusing commit subject /^battery F/)
+cd "$S/clone" && TMPDIR="$S/tmp" node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs \
+  --repo "$S/cheat" --rev aa3c633279c6cd9dd686ac1b9f159308538875ef --json
+# exit 0; predicate true; F1..F8 exit 1 entryFinding=rejected-by-construction-metadata
+# (gate commit aa3c633, gate sha256 8553ff8a621e5950f4715b781d8c20b7a99f57f4239a25a636031425b2359f11)
+
+# 4. size/path whitelist gate 5f494ed7 (entry len 21454; transcript sizes 51715/51755/51685/51733;
+#    driver path literal; no hex digest literal)
+cd "$S/clone" && TMPDIR="$S/tmp" node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs \
+  --repo "$S/cheat" --rev b396e6d4d1d3b7f08b294608df40a93d0411d6ea --json
+# exit 0; predicate true; forgeriesAccepted 0/8; H0/H1/H2 accepted 16; selftest exit 0
+# rerun with --keep (same exit 0) materialized the variant commits in variant-detail.txt
+# (gate commit b396e6d, gate sha256 5f494ed706b33a9f9d872cdb043ec3a379e427d2f7bc8b47f497383063d905de)
+
+# 5. F7 is a truthful row: inclusive measured-cell filter 8d5c1b61 (= gate v1, filter /^yes/ instead of === yes)
+cd "$S/clone" && TMPDIR="$S/tmp" node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs \
+  --repo "$S/cheat" --rev 64cf2bbbe8c61b63eac58360eea0cc177d60ae56 --json
+# exit 1; predicate false; forgeriesAccepted 8 (F7 included)
+# F7: exit 0 population 16 admitted 16 failing 0 (the decorated R1 row is counted and checked, not dropped)
+# (gate commit 64cf2bb, gate sha256 8d5c1b61ad81ec5b0e6961db0e7ec5214de17f4d2e5ae73429f56bedcb4c1f5a)
+
+# 6. H2 is not honest at receipt level: observed-session <-> transcript binding 1896cb84
+cd "$S/clone" && TMPDIR="$S/tmp" node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs \
+  --repo "$S/cheat" --rev 92b619fdc5395bf61417110ed13aa98a679cc0d9 --json
+# exit 1; predicate false; honest H2 false (exit 1, t1-receipt); H0/H1 true; F4 killed as well
+# (gate commit 92b619f, gate sha256 1896cb848d19df0218c217861db747e8a1cac296e5cab2eeaa33a648cb9cf944)
+
+# 7. exit-2 path (a): symlinked TMPDIR
+mkdir -p "$S/realtmp"; ln -sfn "$S/realtmp" "$S/lnktmp"
+cd "$S/clone" && TMPDIR="$S/lnktmp" node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs \
+  --repo "$S/clone" --rev b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd --json
+# exit 2; stderr: C2_FORGERY_BATTERY verdict=could-not-evaluate detail=clone toplevel mismatch; stdout 0 bytes
+
+# 8. exit-2 path (b): entry table header changed in the fixture repo (BiDi method -> BiDi command)
+cd "$S/clone" && TMPDIR="$S/tmp" node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs \
+  --repo "$S/cheat" --rev 85a0200033113c22e7f7cae17ab43608de51b2c4 --json
+# exit 2; stderr: C2_FORGERY_BATTERY verdict=could-not-evaluate detail=entry table header not found; stdout 0 bytes
+
+# 9. process hygiene at yield
+pgrep -fa 'chromedriver|chromium'
+# 1371 /usr/bin/earlyoom ... (host monitor; no chromedriver/chromium started by this seat)
+
+# 10. no tools installed or upgraded (node v24.21.0, git, jq already present; pacman untouched)

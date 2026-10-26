@@ -1,0 +1,123 @@
+### git -C '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone' rev-parse HEAD
+e6b0a9074d434ccc307badd312ae7379d1193fea
+exit=0
+
+### sha256sum '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/corpus/knowledge/webdriver-bidi-runtime-round-32.md'
+c10189069bdf9195bdf8f9b8876e5669e3f9b42382cc16ab795de0133db630c5  /fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/corpus/knowledge/webdriver-bidi-runtime-round-32.md
+exit=0
+
+### wc -l '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/corpus/knowledge/webdriver-bidi-runtime-round-32.md'
+211 /fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/corpus/knowledge/webdriver-bidi-runtime-round-32.md
+exit=0
+
+### sha256sum '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/scripts/check-bidi-runtime.mjs'
+2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393  /fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/scripts/check-bidi-runtime.mjs
+exit=0
+
+### grep -n 'export const FIXTURE_SHA256\|export const FIXTURE_HEADER\|writeHead(404\|writeHead(200\|Every response carries' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/scripts/check-bidi-runtime.mjs'
+120:export const FIXTURE_SHA256 = sha256(JSON.stringify(Object.keys(FIXTURE).sort().map((k) => [k, FIXTURE[k].type, FIXTURE[k].body])));
+121:export const FIXTURE_HEADER = ["x-tabi-fixture", "r32"];
+125:// lookup. Every response carries FIXTURE_HEADER and `cache-control: no-store`.
+131:      if (!f) { res.writeHead(404, { "content-type": "text/plain", [FIXTURE_HEADER[0]]: FIXTURE_HEADER[1] }); res.end("not found\n"); return; }
+132:      res.writeHead(200, { "content-type": f.type, "cache-control": "no-store", [FIXTURE_HEADER[0]]: FIXTURE_HEADER[1] });
+exit=0
+
+### grep -n 'session_commands' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/.ufo/waves/round-32/w1/ScribeEntry/fetch-receipts.md'
+exit=1
+
+### grep -n '^| S124 \|^| S125 ' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/corpus/SOURCES.md' | cut -c1-160
+138:| S124 | W3C WebDriver BiDi dated Working Draft — https://www.w3.org/TR/2026/WD-webdriver-bidi-20261008/ | spec | A | Protocol semantics of the sixteen We
+139:| S125 | ChromeDriver 154's BiDi enabling path — session_commands.cc — https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/chrome/t
+exit=0
+
+### sed -n '1,2p' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/.ufo/waves/round-32/measure/c1-distinct-red-green.txt'
+== lane working tree (pre-commit; re-run at the measured revision in measure/)
+{
+exit=0
+
+### jq -c '{ok,rowsMarkedYes,distinctRowIds,distinctTranscriptDigests,driverEqualsGate,driverNames,driverReexports}' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/.ufo/waves/round-32/measure/c1-distinct-at-0808688.json'
+{"ok":true,"rowsMarkedYes":16,"distinctRowIds":16,"distinctTranscriptDigests":2,"driverEqualsGate":false,"driverNames":[],"driverReexports":false}
+exit=0
+
+### git -C '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone' log --oneline --diff-filter=A -- .ufo/waves/round-32/measure/c1-distinct-at-0808688.json
+8fa57d2 round-32: measurements at 0808688 (C1 16/16 live, C2 18->0), census end, wave-2 results
+exit=0
+
+### git -C '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone' merge-base --is-ancestor 8fa57d2 e6b0a9074d434ccc307badd312ae7379d1193fea
+exit=0
+
+### grep -o 'e\.[0-9]*"' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/corpus/evidence/round-32/bidi/run2/transcript.jsonl' | sort | uniq -c
+      2 e.1"
+      1 e.4"
+      1 e.5"
+      2 e.6"
+exit=0
+
+### sed -n '12p' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/corpus/evidence/round-32/bidi/run1/transcript.jsonl' | jq -c '.frame.params.response | {status,statusText,protocol,headersSize,bodySize,bytesReceived,mimeType,fromCache,hasContent:has("content")}'
+{"status":200,"statusText":"OK","protocol":"http/1.1","headersSize":198,"bodySize":703,"bytesReceived":703,"mimeType":"text/html","fromCache":false,"hasContent":true}
+exit=0
+
+### sed -n '15,16p' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/corpus/evidence/round-32/bidi/run1/transcript.jsonl' | cut -c1-260
+{"seq":15,"dir":"send","frame":{"id":6,"method":"script.evaluate","params":{"expression":"window.__ready","awaitPromise":true,"target":{"context":"31B8FE9C25C36020CBB175F250715903"}}}}
+{"seq":16,"dir":"recv","frame":{"id":6,"result":{"realm":"-5557482705395649225.-4539730934041801561","result":{"type":"string","value":"settled"},"type":"success"},"type":"success"}}
+exit=0
+
+### grep -n 'ws = new WebSocket' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/scripts/bidi-loopback-round32.mjs'
+108:    ws = new WebSocket(caps.webSocketUrl);
+exit=0
+
+### file /usr/bin/chromium; stat -c '%s bytes' /usr/bin/chromium
+/usr/bin/chromium: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=b60b9805a567483207ed7c08dc10d69a2b00aee4, for GNU/Linux 4.4.0, stripped
+14424 bytes
+exit=0
+
+### strings /usr/bin/chromium | grep -E 'chromium-flags.conf|XDG_CONFIG_HOME|/usr/lib/chromium/chromium'
+chromium-flags.conf
+XDG_CONFIG_HOME
+/usr/lib/chromium/chromium
+exit=0
+
+### cat -n /home/vgpnk/.config/chromium-flags.conf
+     1	--ozone-platform=wayland
+     2	--ozone-platform-hint=wayland
+     3	--enable-features=TouchpadOverscrollHistoryNavigation
+     4	--load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url
+     5	--disable-features=Vulkan
+exit=0
+
+### awk 'NR>=77&&NR<=92' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/.ufo/waves/round-32/w1/SentinelPerimeter.md'
+`/usr/bin/chromium` is the Arch launcher (ELF, strings: `chromium-flags.conf`, `XDG_CONFIG_HOME`,
+`/usr/lib/chromium/chromium`). `~/.config/chromium-flags.conf` on this host:
+`--ozone-platform=wayland`, `--ozone-platform-hint=wayland`,
+`--enable-features=TouchpadOverscrollHistoryNavigation`,
+`--load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url`,
+`--disable-features=Vulkan`.
+
+My own chromedriver session executed exactly that list **first**, then chromedriver's args
+(`probe-d-withsandboxflag.json`, first `procs[]` entry; same shape in the sibling
+`ExecInterceptPhases` run visible in `pgrep`):
+
+```
+/usr/lib/chromium/chromium --ozone-platform=wayland --ozone-platform-hint=wayland
+  --enable-features=TouchpadOverscrollHistoryNavigation
+  --load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url
+  --disable-features=Vulkan --allow-pre-commit-input … --headless=new … --user-data-dir=…
+exit=0
+
+### grep -n '^\*\*D[0-9]' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/clone/.ufo/waves/round-32/w1/CritC1Forgery.md' | cut -c1-140
+91:**D1 — transcript provenance is unbound (high).** `t3-binding` binds exactly two things:
+104:**D2 — `admitted` counts table instances, not distinct surfaces (high for the target).** The
+113:**D3 — two runs need not be two observations (high).** `:529` checks only
+122:**D4 — driver identity is a path-string check, and copies pass (medium).** `:528` rejects only
+132:**D5 — `s1` accepts fabricated registry rows (medium).** `:511-515` requires only an `S-id`
+142:**D6 — `clean` has no minimum population (informational).** `:582` is
+exit=0
+
+### grep -c 'id="command-session-subscribe"' '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/spec.html'
+1
+exit=0
+
+### sha256sum '/fast/scratch/hyaku/tabi-r33/ScribeErrataB/spec.html'
+dc1077db50fe784435fd57f2fa7005607937b5ee4293f6f12d8731bd6a1d24d4  /fast/scratch/hyaku/tabi-r33/ScribeErrataB/spec.html
+exit=0
+

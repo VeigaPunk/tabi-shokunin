@@ -1,0 +1,21 @@
+assemble.mjs — round-33 C1 draft merger + verifier (tabi-shokunin)
+
+node assemble.mjs --repo <lane|clone> --rev <40-hex> --draft <dir> [--draft <dir> ...]
+     [--fleet <dir>] [--l0 <file>] [--out <dir>] [--verify <clone>]
+     [--prefer <draft>] [--candidates <file>] [--json]
+
+  --repo      repository holding corpus/adjacency.tsv at --rev (must be a git toplevel)
+  --rev       40-hex merge base; the tabi side of every quote is read here
+  --draft     dir with rows.tsv (9 TAB cols) and/or screen.tsv (5 TAB cols), headerless
+  --fleet     sibling lane parent directory (default: parent of --repo)
+  --l0        TAB file: <draft>:<rowNo> | pin:<sibling_ref> | <sibling_ref>, then
+              fleet@<40hex>:.ufo/l0-questions.md:<line>, then quote
+  --out       write <out>/corpus/adjacency.tsv and adjacency-screen.tsv
+  --verify    scratch clone: write, commit, then run check-adjacency + C1 counter
+  --prefer    draft that wins a cross-draft conflict (default: report and withhold)
+  --candidates  frozen candidate list as key<TAB>text, used only when the frozen
+              counter cannot enumerate candidates from --fleet
+
+Exit: 0 merged clean; 1 withheld rows / gate findings / predicate not met;
+2 could not evaluate.
+exit=0

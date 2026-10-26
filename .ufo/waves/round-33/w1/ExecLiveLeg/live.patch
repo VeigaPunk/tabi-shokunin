@@ -1,0 +1,77 @@
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index a480a13..5cdd082 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -21,7 +21,11 @@
+ //          headless chromium with a throwaway profile under TMPDIR, serves
+ //          FIXTURE on 127.0.0.1 only, never navigates off loopback, and
+ //          removes the profile; never writes the lane, never reads
+-//          credentials or session material.
++//          credentials or session material. The live leg launches the real
++//          browser binary (/usr/lib/chromium/chromium), not the /usr/bin/chromium
++//          launcher (which injects ~/.config/chromium-flags.conf, host state this
++//          run does not own) and never passes --no-sandbox: if the sandbox cannot
++//          start the gate refuses (exit 2) instead of rendering unsandboxed.
+ // Owner: tabi L1.
+ //
+ // What it decides
+@@ -71,7 +75,7 @@
+ //   node scripts/check-bidi-runtime.mjs --selftest [--json]
+ //   node scripts/check-bidi-runtime.mjs --repo <dir> ...   (tests)
+ import { spawn, spawnSync } from "node:child_process";
+-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readdirSync } from "node:fs";
++import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readdirSync, readFileSync, statSync } from "node:fs";
+ import { tmpdir } from "node:os";
+ import { join, dirname } from "node:path";
+ import { fileURLToPath, pathToFileURL } from "node:url";
+@@ -369,9 +373,31 @@ function freePort() {
+ 
+ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+ 
+-export async function liveRecord({ chromedriver = "chromedriver", chromium = "/usr/bin/chromium", timeoutMs = 60000 } = {}) {
++// The live leg must run a sandboxed renderer. Chromium sandboxes through the
++// namespace sandbox (unprivileged user namespaces) or through the setuid helper
++// installed next to the binary. If neither is usable, launching with
++// --no-sandbox would produce a "live" transcript from an unsandboxed browser,
++// so the gate refuses instead.
++function sandboxStatus(binary) {
++  const helper = join(dirname(binary), "chrome-sandbox");
++  let setuidHelper = false;
++  try {
++    const st = statSync(helper);
++    setuidHelper = st.uid === 0 && (st.mode & 0o4000) !== 0;
++  } catch {}
++  if (setuidHelper) return { refuse: false, why: `setuid ${helper}` };
++  let userns = null;
++  try { userns = readFileSync("/proc/sys/kernel/unprivileged_userns_clone", "utf8").trim(); } catch {}
++  if (userns === "1") return { refuse: false, why: "kernel.unprivileged_userns_clone=1" };
++  if (userns === null) return { refuse: false, why: "no unprivileged_userns_clone sysctl on this kernel" };
++  return { refuse: true, why: `no setuid ${helper} and kernel.unprivileged_userns_clone=${userns}` };
++}
++
++export async function liveRecord({ chromedriver = "chromedriver", chromium = "/usr/lib/chromium/chromium", timeoutMs = 60000 } = {}) {
+   const which = (bin) => spawnSync("sh", ["-c", `command -v "$1"`, "sh", bin], { encoding: "utf8" }).status === 0;
+   if (!which(chromedriver) || !which(chromium)) throw new Refusal("chromedriver or chromium not found");
++  const sandbox = sandboxStatus(chromium);
++  if (sandbox.refuse) throw new Refusal(`chromium sandbox unavailable for ${chromium} (${sandbox.why}); refusing to launch the live leg unsandboxed`);
+   const base = tmpdir();
+   const scratch = mkdtempSync(join(base, "tabi-bidi-live-"));
+   // Chromium creates its singleton socket under TMPDIR (`.org.chromium.Chromium.XXXXXX/SingletonSocket`,
+@@ -398,11 +424,15 @@ export async function liveRecord({ chromedriver = "chromedriver", chromium = "/u
+       try {
+         const r = await fetch(`http://127.0.0.1:${port}/session`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ capabilities: { alwaysMatch: {
+           browserName: "chrome", webSocketUrl: true, unhandledPromptBehavior: "ignore",
+-          "goog:chromeOptions": { binary: chromium, args: ["--headless=new", "--no-sandbox", "--no-first-run", "--disable-gpu", `--user-data-dir=${join(scratch, "profile")}`] } } } }) });
++          "goog:chromeOptions": { binary: chromium, args: ["--headless=new", "--no-first-run", "--disable-gpu", `--user-data-dir=${join(scratch, "profile")}`] } } } }) });
+         body = await r.json();
+       } catch { await sleep(200); }
+     }
+-    if (!body || !body.value || !body.value.capabilities) throw new Refusal(`new session failed: ${JSON.stringify(body && body.value && body.value.message || body).slice(0, 200)} (chromium TMPDIR ${chromeTmp.length} bytes)`);
++    if (!body || !body.value || !body.value.capabilities) {
++      const why = JSON.stringify((body && body.value && body.value.message) || body).slice(0, 200);
++      if (/sandbox|zygote|namespace/i.test(why)) throw new Refusal(`chromium sandbox failed to start (${why}); refusing to relaunch ${chromium} unsandboxed (chromium TMPDIR ${chromeTmp.length} bytes)`);
++      throw new Refusal(`new session failed: ${why} (chromium TMPDIR ${chromeTmp.length} bytes)`);
++    }
+     rec.newSession = body;
+     sessionId = body.value.sessionId;
+     ws = new WebSocket(body.value.capabilities.webSocketUrl);

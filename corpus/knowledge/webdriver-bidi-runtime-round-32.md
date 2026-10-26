@@ -209,3 +209,42 @@ imports neither `liveRecord` nor `PREDICATES`.
   on this build a body far above `maxEncodedDataSize` is returned whole, and `getData` fails with `no such network data`
   only when the limit is below a threshold that tracks the response header block size, not the body; a
   `maxTotalCollectedSize` below the body still returns it. Only stream collectors and retrieval cost stay unmeasured.
+
+## Corrections — round 33 errata intake (append-only; the text above keeps its bytes)
+
+- §8, "The gate's frozen bytes admit four constructions" (`:183`): five. The cited report's D5
+  (`.ufo/waves/round-32/w1/CritC1Forgery.md:132-140`) adds a fabricated registry row — `s1` requires only an `S-id`
+  present at REV, absent at baseline, status `mined`, and used-by naming the entry — and its D6 (`:142`) records that
+  `clean` has no minimum population. None of the four counts listed at `:190-192` reads `s1`; the round-33 C2 battery
+  is required to refuse that construction (F8, junk mined source row).
+- §1 "Fixture", "Every response carries `x-tabi-fixture: r32` and `cache-control: no-store`" (`:39-40`): every **200**
+  response does. The 404 branch (`scripts/check-bidi-runtime.mjs:131`) sends `content-type` and the fixture header
+  only; `cache-control` is set on the 200 branch alone (`:132`). The gate's own comment at `:125` carries the same
+  overstatement.
+- §7 "Host launcher flags", "`/usr/bin/chromium` is the Arch launcher script" (`:163`): it is the Arch launcher, a
+  14,424-byte ELF (`file`: pie executable, BuildID `b60b9805a567483207ed7c08dc10d69a2b00aee4`), not a shell script;
+  its strings carry `chromium-flags.conf`, `XDG_CONFIG_HOME` and `/usr/lib/chromium/chromium`.
+- §7 flag list (`:165-167`): five flags, not four — `--ozone-platform-hint=wayland` is omitted. This host's
+  `~/.config/chromium-flags.conf` is exactly `--ozone-platform=wayland`, `--ozone-platform-hint=wayland`,
+  `--enable-features=TouchpadOverscrollHistoryNavigation`,
+  `--load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url`, `--disable-features=Vulkan`; the
+  executed argv (`.ufo/waves/round-32/w1/SentinelPerimeter.md:89-92`) puts `--ozone-platform-hint=wayland` second.
+- front-matter "verified-at" (`:6`): the per-fetch table at `.ufo/waves/round-32/w1/ScribeEntry/fetch-receipts.md`
+  has no `session_commands.cc` row (`grep -n session_commands` → no match). S125's receipt is `corpus/SOURCES.md:139`
+  (decoded blob sha256 `7b40e94cefe1b1d319cd054ff433470aad3944067f5a344b932e6ec068b7abb5`); S124's and S126's are in
+  both places.
+- front-matter "source:", "the §7.3–§7.9 command/event definitions named in each row below" (`:5`): the rows span
+  §7.1–§7.9 — R10's `session.subscribe` is §7.1.3.4 (`#command-session-subscribe`, "The session.subscribe Command",
+  in the WD 20261008 bytes whose sha256 equals S124's recorded `dc1077db…`).
+- §3 R1 (`:92`): "reachability outside the driver is untested" — it is exercised. Every BiDi frame in both committed
+  transcripts is sent by the Node client in `scripts/bidi-loopback-round32.mjs`
+  (`ws = new WebSocket(caps.webSocketUrl)`, `:108`) over loopback, not by chromedriver. What is untested is stability
+  across launches, ports, hosts and driver versions.
+- §3 R3 (`:94`): "an awaited DOM predicate" — the settle predicate is the page's own promise `window.__ready`, awaited
+  with `awaitPromise: true` (seq 15-16) after `browsingContext.load`: an awaited page promise, not a DOM read.
+- §3 R8 (`:99`): "one mouse pointer on one element" — two element-origin clicks on one mouse pointer source, `#t`
+  (sharedId `…e.1`, seq 27) and `#b` (`…e.6`, seq 33), the second firing the handler; the same in both committed runs.
+- §4 U2 (`:117-118`): "`ResponseData` status and serialized header fields" — the response object also carries
+  `statusText` (`OK`), `protocol` (`http/1.1`), `headersSize` (198), `bodySize` (703), `bytesReceived` (703),
+  `mimeType` (`text/html`), `fromCache` (false) and `content`; none is raw header-block or status-line bytes, so U2
+  stays open.

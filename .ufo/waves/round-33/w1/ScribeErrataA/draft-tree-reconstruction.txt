@@ -1,0 +1,29 @@
+# Round-32 ExecC2Apply draft tree — reconstruction from committed bytes only
+# Clone: /fast/scratch/hyaku/tabi-r33/ScribeErrataA/clone (scratch, deleted before yield)
+# Seat: ScribeErrataA (round 33 w1). No lane file touched.
+
+$ git -C "$C" show e6b0a90:.ufo/waves/round-32/w1/ExecC2Apply/corrections.patch > $S/corrections.patch
+$ sha256sum $S/corrections.patch
+7a61bfa6855d95d188fb77f7869e954cd308ecdd2a10e3fc45832655d7dfd879  corrections.patch
+$ grep -c '^diff --git' $S/corrections.patch      -> 3   (SCORECARD.md, SKILL.md, corpus/README.md)
+
+$ git -C "$C" checkout -q --detach 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6
+$ git -C "$C" rev-parse --short HEAD              -> 4181fff
+$ git -C "$C" status --porcelain | wc -l          -> 0
+$ git -C "$C" apply --check $S/corrections.patch  -> exit 0
+$ git -C "$C" apply $S/corrections.patch          -> exit 0
+$ git -C "$C" status --porcelain                   -> M SCORECARD.md / M SKILL.md / M corpus/README.md
+$ git -C "$C" -c user.name=ScribeErrataA -c user.email=ScribeErrataA@scratch.local add -A
+$ git -C "$C" -c user.name=ScribeErrataA -c user.email=ScribeErrataA@scratch.local commit -m "round-32 ExecC2Apply draft reconstruction at 4181fff"
+
+$ git -C "$C" rev-parse HEAD          -> ea60ceaaefa11e18da16a487c87753d1620dcf42   (scratch-only; deleted with the clone)
+$ git -C "$C" rev-parse HEAD^{tree}   -> f0d867c3a711f6c7c2176841aff92efef95233d5   (content-addressed; reproducible)
+
+$ node scripts/check-selfassessment.mjs --rev HEAD --json    (counter sha256 77b5c8ed503bd9bc93e8ef634a10627613672eaa39bca84cf7339d37b6d4c6a9 = frozen v3)
+{"rev":"ea60ceaaefa11e18da16a487c87753d1620dcf42","mismatches":0,"clean":true,"findings":198}
+exit=0
+
+# Compared with .ufo/waves/round-32/w1/ExecC2Apply/counter-after.json:
+#   {"rev":"363be55bb36cb77e0dce644c807804e1de1aeb40","mismatches":0,"clean":true,...}
+# and `git -C clone cat-file -t 363be55bb36cb77e0dce644c807804e1de1aeb40` -> fatal: not a valid object (exit 128).
+# The mismatches-0 reading reproduces at tree f0d867c3a711f6c7c2176841aff92efef95233d5.
