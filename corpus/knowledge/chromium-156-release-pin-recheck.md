@@ -91,3 +91,10 @@ naming the superseding row: `webmcp-invocation-round-17.md` (S042 → S109),
   common line is weak evidence (S074's `7035` is inside its held `7023-7050` block; S045's and
   S105's single lines are distinctive).
 - Source-level only: no 156 browser was run. Runtime claims at 156 need a new experiment.
+- S045 is the measured instance of the first limit: its two cited test lines hold verbatim,
+  but at 156 the test listens on `document.modelContext` (not `window`) and passes an object
+  to `executeTool`; the citing entry carries a note.
+- Gitiles 404 bodies carry a per-request `request_id`, so two fetches of the same missing file
+  never hash equal. The committed 156 body for S094 has that value replaced by
+  `<per-request id removed>` (receipt fields `normalization`, `raw_new_sha256`); its
+  independent re-fetch applies the same replacement before hashing.
