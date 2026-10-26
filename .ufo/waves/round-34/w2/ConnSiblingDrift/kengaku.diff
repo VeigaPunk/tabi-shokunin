@@ -1,0 +1,44 @@
+diff --git a/corpus/knowledge/tb2-constraints-scheduling-grader.md b/corpus/knowledge/tb2-constraints-scheduling-grader.md
+index f82341a..3a8c1bf 100644
+--- a/corpus/knowledge/tb2-constraints-scheduling-grader.md
++++ b/corpus/knowledge/tb2-constraints-scheduling-grader.md
+@@ -428,3 +428,39 @@ Appended by the L1 from wave-1 attack reports; the sections above are not rewrit
+    `read_text()` hole or of the earliest test passing invalid earlier slots. Not claimed as novelty this round; recorded
+    as a candidate for a later round's novelty claim with its own prior-art check.
+ 
++## Errata (round 41, wave 2)
++
++Appended after the falsify wave; the text above is not rewritten. Sources: `.ufo/waves/round-41/falsify/F41EntryQuotes.md`
++(W1–W9 wrong, U1–U3 unsupported, §G) and `F41CritOverclaim.md` (O1–O8). None of these changes a finding's truth value
++except W7's causal chain, whose conclusion stands.
++
++- **W1** §Summary: "reproduced the reward bit on 23 and was wrong on 2" → the probe matched the frozen prediction on 23
++  cases and left 2 mismatches, both the pilot's prediction errors carried verbatim; nothing measured the execution as wrong.
++- **W2** §Summary (and README §Frontier sub-bullet): "a one-event ICS file" → an ICS file; the task asks for one event and the
++  grader does not check the count (`decoy-first-vevent` is two VEVENTs, `PPP`).
++- **W3** §Summary (4): "the task's own CRLF line breaks pass" → RFC 5545's own CRLF line break passes; the task's files are LF.
++- **W4** §Findings 2: on Thu, Carol's 12-13 and Bob's 13-14 block 12:30 (Bob's 12-13 is Wednesday's).
++- **W5** §Findings 4: "every slot before it overlaps the same event" → no slot before Wed 10:59 passes both the model and
++  the conflict test (Mon/Tue have none; Wed 09:00-09:59 fail Bob's bound; 10:00-10:58 overlap Alice's 10-11).
++- **W6** §Findings 6: exact case is required for `SUMMARY:` only; `ATTENDEE` is matched with `re.I` (`:122`).
++- **W7** §What is graded, §Findings 9: `:200` is gated on a meeting ending after 16:45 (`:192`); `:207` is gated on a Carol
++  `DTEND` after 16:45 (`:202-204`); neither runs in any receipt case (Carol's latest `DTEND` is 14:00), so the buffer is vacuous.
++- **W8** §Corrections 2: "finding 7" → finding 10.
++- **W9** §Findings 8: `conflict-mon-1230` is rejected by test 2 (overlap) and by test 3's unconditional morning assert (`:188`).
++- **U1** §Findings 11: no valid 11:05 slot exists on the pinned data; the off-grid point is hypothetical.
++- **U2** §Summary: "(S122 is the same repository at the same commit)" applies to `benchmark-verifier-execution-model.md`
++  (S100), not to `benchmark-grader-semantics.md`.
++- **U3** §Summary: "interval arithmetic ... are old" is unsupported in this corpus; dropped.
++- **§G** §Requirement map: "no receipt case separates the two readings" is wrong — `conflict-mon-1230` fails test 3 on the
++  morning assert, which separates "unconditional assert" from "tie-breaker" (not the underlying preference question).
++- **O4** README coverage bullet: the minute-granularity scan is test 3's earliest loop (`:158-167`); `_hard_ok` reads no
++  calendar and `_overlap` has no minute loop.
++- **O5** README, §Frontier, SKILL: "computed, not asserted" is not a whole-grader dichotomy — test 1 is a fixed-artefact
++  assertion and alone decides four receipt cases; tests 2-3 compute.
++- **O6** §Prior art: PR #245 also adds a task-root `SPECIFICATION.md` (4 files, +253/−39), not `tests/` only.
++- **O3/O7** README index row: `wed-1059-overlaps-alice` passes `_hard_ok` and fails on conflict (its tags are
++  `no-conflict,earliest`); "a grader class new to this lane" means new to the lane's executed TB2 sample.
++- **O1/O2** PROVINCE round-41 paragraph: see the correction appended under it.
++- **S124 anchor** (`F41ReopenRows` F1): the quoted sentence sits in the PR body's preamble (`pr245-body.md:11`), not under
++  "§Proposed PR description"; the registry row's anchor cell was corrected in round 41 (lesson `## Gate`, old→new).
++

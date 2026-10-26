@@ -1,0 +1,316 @@
+
+===== SKILL.md:559 (lines 545-573) =====
+545	Use `corpus/knowledge/accessibility-review-packet.md` (S035) to prepare a
+546	publisher-side WCAG 2.2 A/AA review work item. Each criterion card supplies a
+547	manual check, needed evidence, failure example and explicit limitation.
+548	No page is assessed by this packet: every card stays `not-assessed`.
+549	Source inspection or a complete inventory is not WCAG conformance. Rendering,
+550	interaction and assistive-technology observations require separate authorized
+551	evaluation; browser execution remains adjacent ownership and publication
+552	remains operator-gated.
+553	
+554	| Name | Kind | Entry command | Verdict map | Self-test | Pinned values / frozen proof | Write scope | Owner |
+555	|---|---|---|---|---|---|---|---|
+556	| accessibility-packet | gate (packet structure only) | `python3 -B scripts/accessibility_packet.py --root . --json` | 0 structurally clean; 1 failed packet requirement; 2 could-not-evaluate input; 64 could-not-evaluate usage. Every JSON result keeps websiteConformance=not-assessed. | `python3 -B scripts/accessibility_packet.py --selftest`; focused CLI cases `python3 -B .ufo/waves/round-25/packet_selftest.py --root .` | `.ufo/waves/round-25/population.json`, source-wcag22.html and frozen/expected.json; revision-bound `measure.py` evidence in round25 lesson | ordinary path read-only; selftest synthetic in-memory fixtures; focused tests temporary fixtures; no network or website | kake |
+557	
+558	Round-25 current handoff: `corpus/handoffs/accessibility-preparation.md`.
+559	The operator authorizes a named property/build/process scope; tabi receives
+560	authorized browser/AT evaluation, kagi owns any credential custody, and
+561	publishing stays operator-owned. Display actual card instructions with
+562	`python3 -m json.tool corpus/knowledge/accessibility-review-cards.json`.
+563	The packet gate checks structure and quotation binding, not prose semantics
+564	or WCAG conformance. The finite counter pins the source-reviewed card bytes;
+565	new prose requires new source review rather than automatic admission.
+566	
+567	| Name | Kind | Entry command | Verdict map | Self-test | Pinned values / frozen proof | Write scope | Owner |
+568	|---|---|---|---|---|---|---|---|
+569	| accessibility-packet-counter | gate (round measurement) | `python3 -B .ufo/waves/round-25/measure.py --root . --revision <commit>` | 0 clean fixed packet; 1 capability/packet failed; 2 could-not-evaluate Git/input/pin/tool disagreement; 64 could-not-evaluate usage | same script `--selftest` invokes isolated counter_selftest.py | population/source/reviewed-card SHA256 constants; final corrected snapshot `frozen-final/expected.json`; original frozen/ remains historical structure evidence | read-only Git blobs; candidate execution temporary snapshot; selftest Git writes only a disposable temporary repository with isolated config, never lane index/jj | kake |
+570	
+571	The packet row's current frozen proof is
+572	`python3 -B .ufo/waves/round-25/frozen_replay.py --frozen .ufo/waves/round-25/frozen-final`.
+573	Its `--selftest` on that snapshot checks both a clean replay and
+
+===== SKILL.md:560 (lines 546-574) =====
+546	publisher-side WCAG 2.2 A/AA review work item. Each criterion card supplies a
+547	manual check, needed evidence, failure example and explicit limitation.
+548	No page is assessed by this packet: every card stays `not-assessed`.
+549	Source inspection or a complete inventory is not WCAG conformance. Rendering,
+550	interaction and assistive-technology observations require separate authorized
+551	evaluation; browser execution remains adjacent ownership and publication
+552	remains operator-gated.
+553	
+554	| Name | Kind | Entry command | Verdict map | Self-test | Pinned values / frozen proof | Write scope | Owner |
+555	|---|---|---|---|---|---|---|---|
+556	| accessibility-packet | gate (packet structure only) | `python3 -B scripts/accessibility_packet.py --root . --json` | 0 structurally clean; 1 failed packet requirement; 2 could-not-evaluate input; 64 could-not-evaluate usage. Every JSON result keeps websiteConformance=not-assessed. | `python3 -B scripts/accessibility_packet.py --selftest`; focused CLI cases `python3 -B .ufo/waves/round-25/packet_selftest.py --root .` | `.ufo/waves/round-25/population.json`, source-wcag22.html and frozen/expected.json; revision-bound `measure.py` evidence in round25 lesson | ordinary path read-only; selftest synthetic in-memory fixtures; focused tests temporary fixtures; no network or website | kake |
+557	
+558	Round-25 current handoff: `corpus/handoffs/accessibility-preparation.md`.
+559	The operator authorizes a named property/build/process scope; tabi receives
+560	authorized browser/AT evaluation, kagi owns any credential custody, and
+561	publishing stays operator-owned. Display actual card instructions with
+562	`python3 -m json.tool corpus/knowledge/accessibility-review-cards.json`.
+563	The packet gate checks structure and quotation binding, not prose semantics
+564	or WCAG conformance. The finite counter pins the source-reviewed card bytes;
+565	new prose requires new source review rather than automatic admission.
+566	
+567	| Name | Kind | Entry command | Verdict map | Self-test | Pinned values / frozen proof | Write scope | Owner |
+568	|---|---|---|---|---|---|---|---|
+569	| accessibility-packet-counter | gate (round measurement) | `python3 -B .ufo/waves/round-25/measure.py --root . --revision <commit>` | 0 clean fixed packet; 1 capability/packet failed; 2 could-not-evaluate Git/input/pin/tool disagreement; 64 could-not-evaluate usage | same script `--selftest` invokes isolated counter_selftest.py | population/source/reviewed-card SHA256 constants; final corrected snapshot `frozen-final/expected.json`; original frozen/ remains historical structure evidence | read-only Git blobs; candidate execution temporary snapshot; selftest Git writes only a disposable temporary repository with isolated config, never lane index/jj | kake |
+570	
+571	The packet row's current frozen proof is
+572	`python3 -B .ufo/waves/round-25/frozen_replay.py --frozen .ufo/waves/round-25/frozen-final`.
+573	Its `--selftest` on that snapshot checks both a clean replay and
+574	snapshot_tampered exit2. Quote and fixture-coverage proofs under round25
+
+===== SKILL.md:161 (lines 147-175) =====
+147	     Successful recreate/rebuild ends `liveAfter.stillDead:true` + claimed
+148	     version card — the live URL stays 404 until the human publish click.
+149	     Decoder table: `corpus/knowledge/fire-journal-codes.md`.
+150	   - **ds4cc.com/speedrun has its own gated lane.** Keeper:
+151	     `speedrun record → report → prep --write` (fail-closed schema check
+152	     vs authority `speedrun/data/run-*.json`, redaction denylist, stages
+153	     run/curve/manifest bodies under `<out>/prep/`). Operator: `cp` the
+154	     bodies into `ds4cc-marketplace/speedrun/data/`, append the manifest
+155	     entry, `git push origin main`; then `speedrun post` prints the X
+156	     draft (never posts). No HTTP upload API. Full runbook:
+157	     `~/Projects/webzites/docs/SPEEDRUN-PROTOCOL.md`; decoded: <!-- r18 re-census 2026-10-14: ~/Projects/webzites/docs/SPEEDRUN-PROTOCOL.md absent — gone in the 2026-10-12 ~/Projects prune/migration; cite retained as historical record. -->
+158	     `corpus/knowledge/speedrun-pipeline.md`.
+159	5. **Lease before browser.** `webzites lease acquire --owner <name>
+160	   --ttl-ms 900000`; release in `finally`. The shared burner chrome
+161	   (`the-musketeer` profile, CDP `127.0.0.1:9222`) serializes the whole
+162	   kimi fleet — one op at a time, machine-wide.
+163	6. **Re-pin markers after republish.** `expect.marker` literals are
+164	   deployment-scoped: canary/website-id pins churn per publish; beat-dated
+165	   charter markers (`2026-09-26 scribe beat`, `On 2026-09-18 the grok-web
+166	   scribe transcribed`) churn per scribe beat — 2026-09-28 evidence: the
+167	   `2026-09-26` pin has failed in **every full-universe row since the
+168	   09-27T06:22Z ENTER** (through 18:51:26Z; 22:47Z live re-reads agree),
+169	   i.e. beat pins die ~daily while beats land. **`observed: "absent"`
+170	   semantics:** the marker check is an exact-literal `includes()`
+171	   (`src/probe.mjs:55`) — "absent" means the *pin* wasn't found, never
+172	   that the beat line vanished (r13: live carried
+173	   `2026-09-28 scribe beat (` on every measured shape while pinned to
+174	   `2026-09-26`); pair it with the fuzzy read below before judging.
+175	   Procedure: on a FAIL
+
+===== corpus/knowledge/field-performance-cwv.md:153 (lines 137-169) =====
+137	3. Judge each metric at p75 against the S037 table, per form factor, and name
+138	   the 28-day window end date (S039) with the result.
+139	4. Do not convert a Lighthouse or other lab score into a Core Web Vitals
+140	   verdict (S036). Lab results may guide a fix; only field data closes it.
+141	5. CrUX API calls need a Google Cloud API key (S039). kake holds no key; by
+142	   lane policy it makes no API call without an operator-provisioned one.
+143	
+144	## Limits of this entry
+145	
+146	- Sourced from four documentation pages opened 2026-10-22. No CrUX or
+147	  PageSpeed API call was made and no lane property was measured; nothing here
+148	  says whether any kake property passes.
+149	- Browser-support and per-engine metric availability are outside this entry
+150	  (see the rejected S018 row in `corpus/SOURCES.md`).
+151	- Boundary: kake holds the thresholds and eligibility rules as publisher-side
+152	  knowledge. Running lab tools such as Lighthouse or DevTools is browser work
+153	  and routes to tabi. A CrUX API query needs a Google Cloud key, so key custody
+154	  routes to the operator and kagi. Whether web.dev pages rank as primary
+155	  sources is chousa's method question; here they are scoped tier A for
+156	  Google's own published thresholds only.
+157	- Field performance stays in kake's Frontier (`PROVINCE.md`): this entry is
+158	  knowledge without a gate, so it does not move the area to Core.
+
+===== corpus/knowledge/accessibility-review-packet.md:121 (lines 105-137) =====
+105	- Substituting a heading or one-character substring for a grounding quote:
+106	  require a 6–25-word case-sensitive word-boundary quote from normativeText,
+107	  with the same documented spacing normalization on quote and source.
+108	- Calling a complete checklist an accessibility audit: keep every card
+109	  `not-assessed`; packet validation is preparation only.
+110	
+111	Evidence of capability execution and fixed-population before/after
+112	measurements is recorded in `corpus/lessons/round-25.md` and the fleet report.
+113	Prior round-24 reconciliation/replay claims remain separate unadmitted debt;
+114	this packet neither repeats their interrupted probes nor resolves their
+115	policy-stop disposition.
+116	
+117	## Current handoff and measurement limits — round-25 review correction
+118	
+119	The concrete preparation handoff is
+120	`corpus/handoffs/accessibility-preparation.md`. The **operator** receives it
+121	and alone authorizes any later property evaluation. **tabi** receives
+122	authorized browser/assistive-technology work; **kagi** owns any credential
+123	custody. No card's imperative wording grants execution or account authority.
+124	The reusable card text is displayed with:
+125	
+126	```sh
+127	python3 -m json.tool corpus/knowledge/accessibility-review-cards.json
+128	```
+129	
+130	This supplements workflow steps 1–4 above: scope must include relied-upon
+131	technologies, accessibility-support combinations, any conforming alternate
+132	version and non-interference across all included content. Every later
+133	evaluation record needs reviewer, date, delivered build, full page/process
+134	scope, variants, methods, evidence, applicability and rationale, plus the
+135	operator's authorization. The shared handoff table applies to every card,
+136	in addition to its criterion-specific evidence instructions.
+137	
+
+===== corpus/knowledge/accessibility-review-packet.md:122 (lines 106-138) =====
+106	  require a 6–25-word case-sensitive word-boundary quote from normativeText,
+107	  with the same documented spacing normalization on quote and source.
+108	- Calling a complete checklist an accessibility audit: keep every card
+109	  `not-assessed`; packet validation is preparation only.
+110	
+111	Evidence of capability execution and fixed-population before/after
+112	measurements is recorded in `corpus/lessons/round-25.md` and the fleet report.
+113	Prior round-24 reconciliation/replay claims remain separate unadmitted debt;
+114	this packet neither repeats their interrupted probes nor resolves their
+115	policy-stop disposition.
+116	
+117	## Current handoff and measurement limits — round-25 review correction
+118	
+119	The concrete preparation handoff is
+120	`corpus/handoffs/accessibility-preparation.md`. The **operator** receives it
+121	and alone authorizes any later property evaluation. **tabi** receives
+122	authorized browser/assistive-technology work; **kagi** owns any credential
+123	custody. No card's imperative wording grants execution or account authority.
+124	The reusable card text is displayed with:
+125	
+126	```sh
+127	python3 -m json.tool corpus/knowledge/accessibility-review-cards.json
+128	```
+129	
+130	This supplements workflow steps 1–4 above: scope must include relied-upon
+131	technologies, accessibility-support combinations, any conforming alternate
+132	version and non-interference across all included content. Every later
+133	evaluation record needs reviewer, date, delivered build, full page/process
+134	scope, variants, methods, evidence, applicability and rationale, plus the
+135	operator's authorization. The shared handoff table applies to every card,
+136	in addition to its criterion-specific evidence instructions.
+137	
+138	The gate validates **structure, metadata and quotation binding only**. A
+
+===== corpus/knowledge/js-rendering-queue.md:77 (lines 61-93) =====
+61	> JavaScript。 (S138)
+62	
+63	> 200 HTTP ステータス コードのすべてのページは、ページに JavaScript が存在するかどうかに
+64	> 関係なく、レンダリング キューに送信されます。 (S139)
+65	
+66	They are locale evidence for a publisher working in those languages; they carry
+67	no additional rule and they are not a substitute for reading the documentation
+68	of another engine, which states different rules.
+69	
+70	## Boundary
+71	
+72	This entry holds the *queueing contract* for one engine. It does not say which
+73	canonical Google selects among duplicates — a declared canonical is a hint and
+74	the selection is the engine's decision, which the lane's own static preflight
+75	(`corpus/knowledge/static-canonical-preflight.md`) deliberately does not claim —
+76	and it says nothing about any other engine. Browser execution and client-side
+77	crawler discipline belong to `tabi` (PROVINCE.md, Adjacent); kake's side is the
+78	publisher's placement and status codes.
+
+===== corpus/knowledge/static-canonical-preflight.md:134 (lines 118-150) =====
+118	candidate reported six such pages clean (w1/FalsifyForeignContent); a base after
+119	the head was also silently accepted by the round-22 validator.
+120	
+121	Also tightened: raw C1 control characters (U+0080–U+009F) in a URL are rejected,
+122	not percent-escaped (w1/BoundaryURLAuthority); a manifest that repeats a page URL
+123	or file is `input_invalid` instead of being counted twice (w1/BoundaryManifestKeys).
+124	
+125	### Live snapshot handoff
+126	
+127	`python3 scripts/live_snapshot.py --population <pop.json> --out <dir>` issues one
+128	GET per surface (no credentials, cookies or body; ≤5 redirects, each http(s)
+129	without userinfo; 2 MiB; 20 s), stores `fetch.json`, `page.html` for a 2xx
+130	`text/html` response, and an `audit.json` from `canonical_audit.py`. Surface ids
+131	must be one safe path component. `--reaudit` re-runs only the audit over stored
+132	bytes (no network), which is how a validator change is applied without
+133	refetching. A receipt proves the policy result of the bytes served at
+134	`fetchedAt`, not current delivery, rendered DOM (tabi's ground) or search-engine
+135	selection. Round 23's 12 owned surfaces are in
+136	`.ufo/waves/round-23/live/`; `measure_c2.py` reproduces each receipt.
+137	
+138	### Corrections to earlier text in this entry
+139	
+140	- [r23-correction] "rejects fragment canonicals" overstates S021: Google says it
+141	  generally does not support fragment canonicals; rejecting them is this tool's
+142	  stricter local policy (w1/ReopenGoogleCanonical).
+143	- [r23-correction] "template descendants cannot supply a document-head
+144	  canonical" rests on S025 (template contents are not children of the template),
+145	  which the round-22 text did not cite; it holds for the static input bytes
+146	  only, not for script-cloned template content (w1/ReopenHTMLTemplate).
+147	
+148	
+149	### Round-23 falsifier clarifications
+150	
+
+===== corpus/knowledge/mirror-pitfalls.md:40 (lines 24-56) =====
+24	  and charter-ufo-fsd.kimi.page have no bound chat; `.kimi.pro` is
+25	  Function-Compute ingress where an unclaimed slot serves preview-404.
+26	
+27	## Name traps
+28	
+29	- `plazir27runson` (Night Trilogy) ≠ `plazir27runs-on` (charter doctrine) —
+30	  different sites, hyphen matters.
+31	- `ufo-fsd.kimi.page` = vault twin; `ufofsd.kimi.page` = frozen landing;
+32	  `ufo-fsd.kimi.pro` = 612B SPA shell. Three different artifacts.
+33	- `ufofsdbeta-kimi-review/` = non-git review snapshot, never a source —
+34	  **absent from FS since 2026-09-28T23:51:31Z** (r15 sweep).
+35	- `plazir-15-site/speedrun/` = frozen 3-run copy; canonical is
+36	  `ds4cc-marketplace/speedrun/` (`rel=canonical` in the plazir copy confirms).
+37	
+38	## Browser/CDP lane
+39	
+40	- Lease first: `webzites lease acquire --owner <n> --ttl-ms 900000`; release
+41	  in `finally`. One op at a time on the shared burner profile.
+42	- `t<N>` indices renumber on open/close — re-derive via `/json/list` URL match.
+43	- `agent-browser open --wait` is a silent no-op → `agent-browser wait <ms>`.
+44	- `[role=menu]` open swallows Enter — assert count 0 before submit.
+45	- Composer: `div.chat-input-editor` (sole contenteditable+textbox; zero
+46	  `textarea`). Send = click `.send-button-container` (disabled is a CSS class,
+47	  not attribute). Enter submit never verified.
+48	- Dead session can pass avatar check — `browser status` requires a 401
+49	  must-fail + 200 must-pass pair. Single mid-poll 401 = token-refresh flake;
+50	  retry once.
+51	- `SingletonLock` after chrome crash is tolerated; `browser ensure` rebinds.
+52	  `(musketeer-chrome &)` dies with the shell — `setsid -f musketeer-chrome`.
+53	- Chat fires are metered: ~1 per site update; `--fire --confirm=<id>`
+54	  double-gate; preflight path is free.
+55	
+56	## Live re-verification — round 23 (2026-10-21)
+
+===== corpus/knowledge/fire-journal-codes.md:27 (lines 9-45) =====
+9	2026-09-28) + `~/Projects/webzites/state/{update,recreate,rebuild}-*.json`
+10	run journals (09-26/09-27) + `state/rebuild-charter-fire.log`.
+11	
+12	Every metered run writes a journal JSON to `state/`. **Top-level keys, measured
+13	over all 28 journals (r16 union) — exactly six:** `site`, `mode`, `startedAt`,
+14	`steps[]`, `fire: bool`, and optionally `error: {message, code}` (12/28 have
+15	`error`). The r1–r15 text listed `newVersion`, `preview`, `operatorNext`,
+16	`liveAfter` as if top-level: they are **not** — `preview`/`liveAfter` appear as
+17	`steps[]` entry names, `operatorNext` only in `state/rebuild-charter-fire.log`,
+18	and `newVersion` nowhere as a key. **The exit code alone
+19	does not tell you if a metered fire was consumed — read `fire` + which step
+20	died.**
+21	
+22	## Exit codes (from throw sites, 2026-09-28)
+23	
+24	| code | Meaning | Fire consumed? | Next action |
+25	|---|---|---|---|
+26	| 1 | lease held / generic die() | no | wait for lease TTL or find holder; retry |
+27	| 2 | lane/preflight infrastructure (CDP down, no kimi tab, tab new, live fetch) | no | `browser ensure`, re-check live URL, retry |
+28	| 3 | binding/target safety refusal (not uuidv8, no chat binds url, ambiguous binding, non-owner chat, stale publishedUrl, slot not dead, vessel not pristine, chat already published) | no | resolve binding via `kimi-map`/`GetWebsiteByChatID`; pick correct verb; do not retry same args |
+29	| 4 | mid-prep DOM failure AFTER tab/attach (page never ready, draft in composer, insert failed, send click failed, send unconfirmed) | **check journal** — `fire:true` + error code 4 means send may have happened | journal `fired` step: if present, operator inspects chat before any retry; if died at ready/draft/insert, safe to retry |
+30	| 5 | abort-before-send guard (no transfer payload, require-zip failed, send never armed, both channels failed) | **no** — abort happened before send | fix payload/zip/attach and retry freely |
+31	| 6 | post-fire anomaly on new-chat flow (never navigated to /chat/uuid, could not read chat id, no description-matched version within 15min) | **yes — metered fire consumed** | do NOT refire blindly; inspect browser/chat for the version card; recover chat id manually |
+32	| 7 | auth expiry OR post-fire anomaly (session expired at RPC, baseline ListVersions failed, foreign versions on target, GATE FAILED liveAfter) | **yes if journal got past `fired`** | auth: operator re-login + `browser status`; anomaly: operator inspects card, never auto-retry |
+33	| 8 | transport failure (`Failed to fetch` at an RPC) | no | transient — retry once (kimiFetch already retries internally) |
+34	| 64 | usage/flag error (unknown site arg shape, missing --confirm, bad --canonical, rebuild without --chat) | no | fix invocation |
+35	
+36	## Journal anatomy (what each step proves)
+37	
+38	- `liveBefore` `{status,sha256,dead:true}` — proves the slot was the kimi
+39	  dead-slot page before firing (recreate gate).
+40	- `slugCheck` `{available:true}` — slug was free at fire time.
+41	- `zip` `{path,bytes,sha256}` — the payload sent; keep the path for audit.
+42	- `canonCheck` `{status:200,markerPresent:true}` — canonical fetch verified
+43	  (fallback transfer channel when zip attach fails).
+44	- `attach {ok,confirmed}` / `fired {sentConfirmed}` — the metered moment.
+45	  Anything before `fired` is free; anything after is post-fire.

@@ -88,7 +88,8 @@ against the gate's printed finding detail. No rule line changed: all 20 mutant f
 
 | id | class | evidence | captured-by | fix (and how it was shown able to fail) |
 |---|---|---|---|---|
-| M1 | `misroot` (L1 template) | the w1 wave context put the wave LABEL into the seat output-dir path (`{R}/w1 = build + first falsifiers/<seat>/`); seat AdjTameshiTsukuroiChousa wrote there; the L1 moved it to `.ufo/waves/round-34/w1/AdjTameshiTsukuroiChousa/` | none — the validator does not check context paths | the w2 context builds the path from the wave id; check `grep -c 'round-34/w[12] =' w*-dispatch.json` → 1 on w1 (fails), 0 on w2 (passes) |
+| M5 | `scope` (L1 integration) | the w1 integration `04f9623d` admitted four new rows; wave 2 withdrew three (rows 15, 17, 18): a census of tabi's own draft taken as a sibling-side split, a refusal neither side routes, a re-key of row 12 | QUALITY 91 (re-key) caught row 15 only in wave 2; nothing caught 17/18 before data | QUALITY 97: a `split-declared` row cites a sibling line in which the sibling itself states its side of the split; a `refused-route` row cites a tabi refusal that names the sibling as the destination. Shown able to fail: rows 17 and 18 at `04f9623d` (C1 counter newMapped 4, predicate true) fail both clauses; the final map does not |
+| M1 | `misroot` (L1 template) | the w1 wave context put the wave LABEL into the seat output-dir path (`{R}/w1 = build + first falsifiers/<seat>/`); seats AdjTameshiTsukuroiChousa and MutC1Counter wrote there (`w1-results.json` MutC1Counter output names the path); the L1 moved both into `.ufo/waves/round-34/w1/` before committing (the second after the w1 integration commit) | none — the validator does not check context paths | the w2 context builds the path from the wave id; check `grep -c 'round-34/w[12] =' w*-dispatch.json` → 1 on w1 (fails), 0 on w2 (passes) |
 | M2 | `stale-locator` (third-party lead list) | round-33 w1 ConnSiblingScan `leads.tsv` cites `mirror-pitfalls.md:39`, a blank line (quote at :40), and three leads whose quote wraps over two lines; the first C1 list build read an empty candidate and 3 unresolved leads | none in round 33 | the C1 counter anchors a lead by its quote (cited line, then ±2, then any 4-word window) and reports `leadsReanchored`/`leadsUnresolved`; shown able to fail: the L1's first pre-freeze list build (line number taken literally) produced an empty-text candidate that broke the control driver; the quote-exact anchor then left 3 leads unresolved; the frozen 4-word-window rule leaves 0 unresolved and 1 re-anchored (`baseline/c1-J1-do-nothing.json` `leadsReanchored`); QUALITY 94 |
 | M3 | `control-gap` (freeze) | w1 CritC1Claim probe A: three renamed surfaces on lines restating a mapped kake split + one new tabi line reach C1's predicate (exit 0, newMapped 3); round-33 lesson M5 had named the rename route, and the round-34 freeze built no control for it | prompt §6 item 9 (build the cheapest control) — not applied to the prior lesson's named constructions | QUALITY 96: the freeze's control set includes every cheap construction the previous round's lesson names, each scored; red state = this round's control set (no rename control) against CritC1Claim's receipt |
 | M4 | `premature-impossibility` | w1 ScribeSelftestNote declared M04, M05, M06 equivalent mutants (ceiling 17 of 20) | none | refuted by w1 ExecKillsA/B: pinning the printed finding detail kills each (`v3-b-m04…`, `v3-b-m05…`, `v3-a-m06…`); QUALITY 95; shown able to fail: without `detailIncludes` the same three fixtures pass on the mutant (ExecKillsB `mutant-outcomes.json`) |
@@ -99,6 +100,45 @@ dash-decorated and an upper-case Measured cell), U02/U03 (forgery constructions)
 U05/U07/U27/U28 (gate exit-class and H2 provenance), U08–U13/U16–U19 (precision items in round-33 text), U14/U15/U20/U21
 (criteria 87/88 and screen granularity), U22–U26 (coverage of R4, near-copy drivers, S125 carry). Round 34 lands none
 of them except where a round-34 item already covered the same bytes; each stays open for round 35.
+
+## C1 gate decisions — wave 2 (supersedes the wave-1 table above where they differ)
+
+| item | w1 integration | wave-2 finding | final |
+|---|---|---|---|
+| row 15 live-delivery-observation (kake `SKILL.md:408`) | map, split-declared | re-keys row 12 js-rendering (w2 CritRowLiveDelivery, CritAdjacencyHarm D1, medium) | withdrawn; screened same-surface `js-rendering-browser-execution` |
+| row 16 lab-performance-tool-runs (kake `SKILL.md:697`) | map, split-declared | holds (w2 CritRowLabPerf) | kept |
+| row 17 agent-facing-tool-text-craft (kotoba census49:171) | map, split-declared | not a split: kotoba rules the pair `none`; `PROVINCE.md:13` cited for a claim it does not carry (w2 CritRowKotoba, CritDeclarations; high) | withdrawn; census49 :171/:172/:173/:175 screened `third-lane-report` |
+| row 18 authenticated-consequential-driving (kasegi mission-control:119) | map, refused-route | neither side routes a surface; the row verified only because tabi_quote and ruling_quote sit on one tabi line (w2 CritRowKasegi; high) | withdrawn; kasegi :267/:119/:272 screened `third-lane-report` |
+| kaidoku r10-01-queue-ops.md:151 (recorded HAR), r10-02-queue-ops-2.md:117 (screenshot pair-compare) | L1 screened same-surface cdp-runtime-observation | the lines' own files remove the CDP subject; real overlaps screened (w2 CritReversalKaidoku; medium) | restored as map rows `recorded-har-producer-channel`, `screenshot-pair-compare-semantics` (split-declared, tabi sides at `SKILL.md` §"wave-2 additions"); not counted by the counter (the kaidoku quotes do not name tabi) |
+| kaidoku r3-runtime-observation.md:99 | L1 screened | reversal holds; ground re-recorded on kaidoku `PROVINCE.md:53` and the round-16 ruling | screen kept, note corrected |
+| kumitate :250/:278 | L1 screened | holds; ground re-recorded on `kimi-skills-plugins.md:318-321` (low) | screens kept, notes corrected |
+| low ledger defects | — | fire-journal reason (not-browser-sense → no-claim-declared), three kake pin notes, kotoba :136 provenance note, three kagi "row 6" notes (→ row 8) | corrected in the ledger |
+
+Result: newMapped 1 (row 16) against the frozen target 3 — **C1 not met, honest stop**. The three withdrawn rows are
+the measure of this round's integration error (M5 below); no row was kept against a wave-2 finding.
+
+## Wave-1 attacks on the frozen counters (limits; predicates unchanged)
+
+Seats scored after the freeze, so no counter clause changes this round (prompt §6 item 9: a rule changed after any
+seat has scored is not the claim's rule). Each finding is a limit the disposition must not hide:
+- C1 (w1 CritC1Counter K1/K2/K6, CritC1Claim probe A): one junk tabi line plus three `refused-route` rows with
+  arbitrary surfaces, or three renamed surfaces on lines restating a mapped split, reach the predicate. The counter
+  checks the shape of a declaration, never that it is one. Guard used: every new row and every screen group is
+  attacked in wave 2, and the L1 screened five seat-drafted rows rather than inflate the count.
+- C1 (w1 MutC1Counter): 9 of 12 counter mutants survive the five controls (target 3→2, sibling-token clause, dedupe
+  key, screen quote and same-surface checks, baseline fold); the controls pin only the new-declaration and
+  split-tabi clauses.
+- C2 (w1 CritC2Counter K1–K3): a whitespace/comment-normalised self-hash and two sibling constructions reach the
+  predicate with no rule-exercising case — the disclosed residual. Guard used: wave-2 RevSelftestCodeRead reads every
+  added self-test line.
+- C2 (w1 MutC2Counter): 9 of 10 counter mutants survive the four controls (kill exit-code strength, FAIL-line
+  requirement, decoy/neutral probes, occurrence check, battery leg); only the twin-probe removal is caught (by J3).
+- C2 (w1 SentinelCounters F1, high): the counter writes the gate path of a clone of REV with `writeFileSync`, which
+  follows a symlink committed at REV — a hostile REV could redirect the write outside the scratch. The lane's REV is
+  the L1's own commit; the measurement provenance records the gate's git mode at REV (`100644`, a regular file).
+  Routed: a counter amendment for round 35 (`lstat` refusal, scrubbed HOME).
+- C2 (w1 CritC2Axis, ScribeSelftestNote): M04/M05/M06 called equivalent (ceiling 17) — refuted by detail pinning
+  (M4 above); wave 2 RevKills seats attack the three cases.
 
 ## Errata intake (round-33 spot-check routed defects 1–7)
 

@@ -1,0 +1,27 @@
+--- tabi SKILL.md:403 HAR channel (rev 04f9623)
+| **Network** — "the page fetched X / got Y" | measured loopback recipe: a per-step CDP `Network.enable` slice on the run's own browser — client events + wire `ExtraInfo` + `finEnc` byte totals + optional `getResponseBody`; with `Fetch.enable` (Request stage) when a pre-settle state must be held. Also: webbridge `network` (start\|stop\|list\|detail); a real recorded HAR (Playwright `recordHar` precedent); REA connect-mode `capture:{events:["network"], network:{response_body:true}}` | entries + bodies only if explicitly requested (`response_body` defaults false in REA; captured bodies pin sha256 against the authored fixture — `async-step-evidence.md` §2); per-request `state` (issued/answered/failed); dropped count; **name the producer channel** (client slice vs server log — they can disagree, and either alone can mislead: an abandoned request has a server 200 line no client ever received, D4) | time-varying — assert as-of-capture with the snapshot attached; the wire path of a repeat is per-run measured (client re-serve / wire-304 variants with identical capture bytes — `multi-step-journey.md` §5 + its round-4 errata; `reports/r4-aud-tab1.md` §2) | `network-evidence-rung.md` §1,§4-§6,§9; `async-step-evidence.md` §2-§3; `kaidoku-shokunin/corpus/knowledge/2026-10-14-r10-01-queue-ops.md:23-25`; `kaidoku-shokunin/corpus/knowledge/2026-10-14-r11-01-queue-ops.md:29-32`; tool list `corpus/knowledge/webbridge-plugin-anatomy.md:85` |
+rc=0
+--- tabi SKILL.md:401 screenshot evidence + kaidoku determinism cross-ref
+| **Visual** — "the page renders X" | `screenshot` → file path (never base64); read it back. Raw form: `Page.captureScreenshot {format:"png", captureBeyondViewport:true}` | PNG file + sha256 + byte count + W×H; note that it was read back visually | byte-stable for static content *in this environment*; environment-scoped — do not generalize to real pages or other builds | `corpus/knowledge/webbridge-plugin-anatomy.md:84-85,106-108`; `cdp-evidence-patterns.md:68-73`; determinism cross-ref `kaidoku-shokunin/corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md:130-131` |
+rc=0
+--- tabi SKILL.md:437 pixel tools
+| visible rendered state | screenshot (pixel tools for machine checks) | D2 (:253-259 — hidden text: red band 0 px vs blue 17,079 px); D8 (:320-330 — `:visited`, 1,033 px, DOM byte-identical) |
+rc=0
+--- tabi SKILL.md:405-407 netlog-not-HAR citing kaidoku r10-01
+(`kaidoku-shokunin/corpus/knowledge/2026-10-14-r10-01-queue-ops.md:116,133-135,265`).
+rc=0
+--- ledger row 41 deferring comparison semantics to row 44
+kaidoku-shokunin@fa6a8a3f85ec65946b3a54d37c0ddd1d6748664f:corpus/knowledge/2026-10-13-r4-16-frontier-rescan.md:184	same-surface	cdp-runtime-observation	`capture-web-screenshot` / `compare-web-screenshots` / `compare-web-captures`	Verb queue row: screenshot capture and compare need the ruled CDP target plus prior captures; the capture side is the ruled boundary, the comparison semantics are row 44.
+rc=0
+--- ledger rows 38/40/42 identical reversal note
+1
+rc=0
+--- ruling clause browser-side mechanics
+- **kaidoku** keeps CDP only as an REA provider surface for shipped-artifact analysis (`kaidoku-shokunin/PROVINCE.md:53`, "Runtime observation (CDP)"). It cites tabi for browser-side mechanics.
+rc=0
+--- REA reference scope sentence (local skill file, read-only)
+the user's task. Observation with these tools is passive: never claim REA
+rc=0
+--- REA cli-command-map scenario family (local skill file)
+| `rea capture-browser-scenario <inputJson>` | Run one bounded Playwright browser scenario and return Evidence |
+rc=0

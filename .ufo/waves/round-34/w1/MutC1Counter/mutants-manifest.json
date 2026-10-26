@@ -1,0 +1,86 @@
+[
+ {
+  "id": "MU01-target-3-to-2",
+  "rule": "NEW_TARGET 3 -> 2 (newMapped boundary weakened)",
+  "find": "const NEW_TARGET = 3;",
+  "replace": "const NEW_TARGET = 2;",
+  "sha256": "d6828960c66705be7c8c06cc3f3f634768b369253d80ca819df757db2e6865de"
+ },
+ {
+  "id": "MU02-new-decl-removed",
+  "rule": "new-declaration check removed (existing tabi lines accepted)",
+  "find": "if (!decl || !decl.isNew || !sibTok.test(r.tabiQuote) || !decl.text.includes(r.tabiQuote)) return false;",
+  "replace": "if (!decl || !sibTok.test(r.tabiQuote) || !decl.text.includes(r.tabiQuote)) return false;",
+  "sha256": "b6c1d1e110ceb40f92b9cf1241f001aca095987171c24344f963ae6e5f40b303"
+ },
+ {
+  "id": "MU03-isNew-inverted",
+  "rule": "isNew inverted (existing lines count, new lines do not)",
+  "find": "return { text: t, isNew: !tabiBaseLines.get(m[1]).has(t.trim()) };",
+  "replace": "return { text: t, isNew: tabiBaseLines.get(m[1]).has(t.trim()) };",
+  "sha256": "17f38618669101ed1e68fde66bc79ca4885ec6ada7e563f5183e43b869bf98a7"
+ },
+ {
+  "id": "MU04-sibling-token-removed",
+  "rule": "sibling-token test removed (tabi side need not name the sibling)",
+  "find": "if (!decl || !decl.isNew || !sibTok.test(r.tabiQuote) || !decl.text.includes(r.tabiQuote)) return false;",
+  "replace": "if (!decl || !decl.isNew || !decl.text.includes(r.tabiQuote)) return false;",
+  "sha256": "5d0438a3eaf964f61d28d08d2d3dff64745c9c491d71a804cd29a043339b0d0e"
+ },
+ {
+  "id": "MU05-split-tabi-test-removed",
+  "rule": "split-declared sibling_quote /tabi/i test removed",
+  "find": "if (r.disposition === 'split-declared') return /\\btabi\\b/i.test(r.siblingQuote);",
+  "replace": "if (r.disposition === 'split-declared') return true;",
+  "sha256": "cbc583a403b8e963b481c65cc16358ca9eda0086c999729eddfd7efb2bfae702"
+ },
+ {
+  "id": "MU06-province-filter-removed",
+  "rule": "candidate path filter removed (PROVINCE.md leads back in scope)",
+  "find": "    if (m[1] === PROVINCE) continue;\n",
+  "replace": "",
+  "sha256": "f663d3f2b152c1ff16f9824b0e5b73a07aee53bbcfc45f048e60ede7f8a0ee80"
+ },
+ {
+  "id": "MU07-dedupe-key-no-text",
+  "rule": "dedupe key drops trimmed text (first tabi line per file wins)",
+  "find": "const k = `${c.lane}\\u0000${c.path}\\u0000${c.text.trim()}`;",
+  "replace": "const k = `${c.lane}\\u0000${c.path}`;",
+  "sha256": "ebe1ca5eea89a3216a82fdf7fb76009a69a35d41e09f40e0e2f8dbef909bd544"
+ },
+ {
+  "id": "MU08-screen-quote-unchecked",
+  "rule": "screen quote no longer need be a verbatim substring",
+  "find": "if (!goodQuote(quote) || !c.text.includes(quote)) {",
+  "replace": "if (!goodQuote(quote)) {",
+  "sha256": "94c750358393d34e4db734b56de917e302d03b6f80d7305b718d3ee29ebabfdf"
+ },
+ {
+  "id": "MU09-same-surface-unchecked",
+  "rule": "same-surface screens need not name a verified row",
+  "find": "if (!verifiedSurfaces.has(`${fold(surface)} ${c.lane}`)) { screenFindings.push({ row: rowNo, reason: 'screen-surface-unmapped', detail: `${surface} ${c.lane}` }); continue; }",
+  "replace": "",
+  "sha256": "9a87887bd4f9d4a5503fdf6df7d6a8a950fb090563565cb2efe2315a175f16c2"
+ },
+ {
+  "id": "MU10-baseline-fold-dropped",
+  "rule": "baseline (surface, sibling) key fold dropped (case-sensitive)",
+  "find": "const baseKeys = new Set(mapBase.map((r) => `${fold(r.surface)} ${r.sibling}`));",
+  "replace": "const baseKeys = new Set(mapBase.map((r) => `${r.surface} ${r.sibling}`));",
+  "sha256": "6614232750c9bd77e0b3d73633f64c27b5f087cf4ce5f5186b706404b479a65b"
+ },
+ {
+  "id": "MU11-baseline-key-check-removed",
+  "rule": "baseline-key exclusion removed (pre-existing surface+sibling recount as new)",
+  "find": "if (baseKeys.has(`${fold(r.surface)} ${r.sibling}`)) return false;",
+  "replace": "",
+  "sha256": "c4d8f98592e88570f5eb51504c9ae048967e30507109fe573bd376b3d4bf1432"
+ },
+ {
+  "id": "MU12-maps-candidate-check-removed",
+  "rule": "maps->=1-candidate check removed (rows mapping nothing count)",
+  "find": "if (!mappedRowNos.has(r.rowNo)) return false;",
+  "replace": "",
+  "sha256": "5f670614f171bf7687b2ceafee2978c68f51335c688ccd33631bca2969cf23ac"
+ }
+]

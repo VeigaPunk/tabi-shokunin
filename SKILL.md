@@ -2944,3 +2944,16 @@ The BiDi gate self-test grows from 44 to 56 cases in round 34 (twelve kill cases
 - `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SKILL.md:2817` (round-34 kill cases added).
 - `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SKILL.md:2894` (round-34 kill cases added).
 - `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SKILL.md:2907` (round-34 kill cases added).
+
+## Round 34 — wave-2 corrections to the sibling-overlap declarations (2026-10-26; append-only; each cites the line it withdraws)
+
+- Correction — withdraws `SKILL.md:2921` (live delivery, kake): kake `SKILL.md:408` routes nothing that map row 12 `js-rendering-browser-execution` does not already split (browser execution is tabi's, Google's selection is kake's); the line re-keys that boundary and backs no map row. The sibling line is screened same-surface `js-rendering-browser-execution` (w2 CritRowLiveDelivery; QUALITY 91).
+- Correction — withdraws `SKILL.md:2923` (agent-facing tool text, kotoba): kotoba's census line reports tabi's own round-16 draft and rules the pair `none`; kotoba states no split, and its `PROVINCE.md:13` names agent-definition and dispatch-prompt craft, not tool text. No map row; the census lines are screened `third-lane-report` (w2 CritRowKotoba, CritDeclarations).
+- Correction — withdraws `SKILL.md:2924` (authenticated consequential driving, kasegi): kasegi's lines record its fleet attaching to an operator-authenticated profile; neither side routes a surface to the other, and tabi's refusal is already its never-set. No map row; the three kasegi lines are screened `third-lane-report` (w2 CritRowKasegi).
+
+## Round 34 — sibling-overlap declarations, wave-2 additions (2026-10-26; append-only; never edit above)
+
+w2 CritReversalKaidoku showed two of the L1's kaidoku screens hid real overlaps (the lines' own files remove the CDP subject the screen cited); the w1 AdjKaidoku drafts are restored as map rows with these tabi sides.
+
+- Recorded HARs: a recorded HAR is one network channel here, admitted as an evidence artifact only when its producer is named and its bytes are pinned, because schema validity is not transport proof and a netlog is not a HAR (`SKILL.md:403-406`); kaidoku's Playwright `recordHar` run and its HAR-schema gate feed its own `inspect-web-network-capture` input (kaidoku `corpus/knowledge/2026-10-14-r10-01-queue-ops.md:151,161-166`) and stay kaidoku's.
+- Screenshot pair comparison: comparing two screenshots establishes rendered state here only through a visual read-back plus pixel evidence on the run's own captures, because byte-stability is environment-scoped (`SKILL.md:401`, `:437`); kaidoku's pair-compare splits an artifact differ from a capture differ with an honest `unknown` for incomplete dimensions (kaidoku `corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md:117`), and comparing stored evidence artifacts stays kaidoku's.

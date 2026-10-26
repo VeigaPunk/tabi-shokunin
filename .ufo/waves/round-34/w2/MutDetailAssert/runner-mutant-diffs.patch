@@ -1,0 +1,79 @@
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 58e461b..2ad4872 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1160,8 +1160,7 @@ async function runSelftest() {
+       // is still exercised. The detail is gate output, never the gate's bytes.
+       const firstDetail = out.entryDetail || (out.rows.find((r) => !r.admitted) || {}).detail || null;
+       const pass = exit === c.exit && out.admitted === c.admitted && reason === c.reason
+-        && (c.population === undefined || out.population === c.population)
+-        && (c.detailIncludes === undefined || (typeof firstDetail === "string" && firstDetail.includes(c.detailIncludes)));
++        && (c.population === undefined || out.population === c.population);
+       results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason, detail: firstDetail, expectedDetailIncludes: c.detailIncludes === undefined ? null : c.detailIncludes });
+     } finally {
+       rmSync(fx.root, { recursive: true, force: true });
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 58e461b..26e4aff 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1161,7 +1161,7 @@ async function runSelftest() {
+       const firstDetail = out.entryDetail || (out.rows.find((r) => !r.admitted) || {}).detail || null;
+       const pass = exit === c.exit && out.admitted === c.admitted && reason === c.reason
+         && (c.population === undefined || out.population === c.population)
+-        && (c.detailIncludes === undefined || (typeof firstDetail === "string" && firstDetail.includes(c.detailIncludes)));
++        && (c.detailIncludes === undefined || (typeof reason === "string" && reason.includes(c.detailIncludes)));
+       results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason, detail: firstDetail, expectedDetailIncludes: c.detailIncludes === undefined ? null : c.detailIncludes });
+     } finally {
+       rmSync(fx.root, { recursive: true, force: true });
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 58e461b..779ffa6 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1161,7 +1161,7 @@ async function runSelftest() {
+       const firstDetail = out.entryDetail || (out.rows.find((r) => !r.admitted) || {}).detail || null;
+       const pass = exit === c.exit && out.admitted === c.admitted && reason === c.reason
+         && (c.population === undefined || out.population === c.population)
+-        && (c.detailIncludes === undefined || (typeof firstDetail === "string" && firstDetail.includes(c.detailIncludes)));
++        && (c.detailIncludes === undefined || (typeof firstDetail === "string" && !firstDetail.includes(c.detailIncludes)));
+       results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason, detail: firstDetail, expectedDetailIncludes: c.detailIncludes === undefined ? null : c.detailIncludes });
+     } finally {
+       rmSync(fx.root, { recursive: true, force: true });
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 58e461b..3457be8 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1158,7 +1158,7 @@ async function runSelftest() {
+       // detail), so a rule that is only observable in the refusal's message —
+       // e.g. the session-id shape, which otherwise reads as a generic t1-receipt —
+       // is still exercised. The detail is gate output, never the gate's bytes.
+-      const firstDetail = out.entryDetail || (out.rows.find((r) => !r.admitted) || {}).detail || null;
++      const firstDetail = out.entryDetail || (out.rows.filter((r) => !r.admitted).pop() || {}).detail || null;
+       const pass = exit === c.exit && out.admitted === c.admitted && reason === c.reason
+         && (c.population === undefined || out.population === c.population)
+         && (c.detailIncludes === undefined || (typeof firstDetail === "string" && firstDetail.includes(c.detailIncludes)));
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 58e461b..3b9bd55 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1162,7 +1162,7 @@ async function runSelftest() {
+       const pass = exit === c.exit && out.admitted === c.admitted && reason === c.reason
+         && (c.population === undefined || out.population === c.population)
+         && (c.detailIncludes === undefined || (typeof firstDetail === "string" && firstDetail.includes(c.detailIncludes)));
+-      results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason, detail: firstDetail, expectedDetailIncludes: c.detailIncludes === undefined ? null : c.detailIncludes });
++      results.push({ id: c.id, ok: true, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason, detail: firstDetail, expectedDetailIncludes: c.detailIncludes === undefined ? null : c.detailIncludes });
+     } finally {
+       rmSync(fx.root, { recursive: true, force: true });
+     }
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 58e461b..059c140 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1162,7 +1162,7 @@ async function runSelftest() {
+       const pass = exit === c.exit && out.admitted === c.admitted && reason === c.reason
+         && (c.population === undefined || out.population === c.population)
+         && (c.detailIncludes === undefined || (typeof firstDetail === "string" && firstDetail.includes(c.detailIncludes)));
+-      results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason, detail: firstDetail, expectedDetailIncludes: c.detailIncludes === undefined ? null : c.detailIncludes });
++      results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason });
+     } finally {
+       rmSync(fx.root, { recursive: true, force: true });
+     }

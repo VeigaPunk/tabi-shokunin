@@ -1,0 +1,21 @@
+# selftest probe run — seat RevSelftestCodeRead, 2026-10-26
+clone: git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin $S/clone; git -C $S/clone checkout -q --detach 04f9623dde8ad35d470cecf766e421eafbcb47fa
+gate blob sha256: 370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87  (freeze blob sha256: eded1be04a47fbd2b87fbff42ef5187e0d473e6fe2bca55ac1c622ab8bde61c1 == claims.json pin eded1be0...61c1)
+node: v26.12.0; TMPDIR=$S/tmp; GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null LC_ALL=C
+variants written next to the gate in the scratch clone (deleted with scratch):
+  neutral.mjs  = gate + "\n// tabi-r34 neutral edit\n"
+  decoy.mjs    = gate + comment line per mutant quoting its replace text
+  twin-m19.mjs = gate with M19 find's first space doubled
+  mut-m19.mjs  = gate with M19 find->replace (assert count==1)
+  mut-m16.mjs  = gate with M16 find->replace (assert count==1)
+command per run: node <script> --selftest   (cwd = scratch clone)
+
+pristine   exit=0  cases=56 passed=56
+neutral    exit=0  cases=56 passed=56
+decoy      exit=0  cases=56 passed=56
+twin-m19   exit=0  cases=56 passed=56
+mut-m19    exit=3  FAIL line:
+  CASE id=v3-b-m19-sessionid-repeated expected_exit=1 exit=0 expected_admitted=0 admitted=16 expected_population=- population=16 expected_reason=t1-receipt reason=- FAIL
+mut-m16    exit=3  FAIL line:
+  CASE id=v3-b-m16-gate-row-without-sha expected_exit=1 exit=0 expected_admitted=0 admitted=16 expected_population=16 population=16 expected_reason=s1-source-row reason=- FAIL
+summary lines: BIDI_RUNTIME_SELFTEST verdict=clean|failed cases=56 passed=56|55

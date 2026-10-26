@@ -666,3 +666,10 @@
     the frozen counter before data; a named construction left unscored is a control gap, whatever the other controls
     show. Red state: round 34's freeze scored five C1 controls but not the rename route round-33 lesson M5 named, and
     w1 CritC1Claim's probe A reached the predicate with it (exit 0, newMapped 3). (source: corpus/lessons/round-34.md M3)
+
+97. A `split-declared` map row cites a sibling line in which the sibling itself states its side of the split (a
+    sibling's census or report of tabi's own text is a third-lane record, never the sibling's side); a `refused-route`
+    row cites a tabi refusal that names the sibling as the destination of the refused surface. check-adjacency verifies
+    quotes, not that either side states anything. Red state: the round-34 w1 integration `04f9623d` carried row 17
+    (kotoba census line ruling the pair `none`) and row 18 (a refusal routed nowhere) and read C1 newMapped 4; wave 2
+    withdrew both. (source: corpus/lessons/round-34.md M5)

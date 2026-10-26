@@ -225,3 +225,5 @@ findings with no landing line — this section and the round-33 plan are their l
   a new number: read `:192` as "27 carry the status marker `Carried`" and `:196-197`'s "not carried items" as "not
   carried items under that marker", with E3 named as split. (If E25's "as a counter v2 case" arm is read against the
   counter rather than the landed README row, the count is 22.)
+
+- Round 34 wave-2 correction — supersedes "`:194`'s \"20 of 27\" becomes 21 once E3 is counted" in the round-34 block above: that figure mixes the capital-marker denominator (27) with E3, a dual-marked item outside it; on one basis the count is 20 of 27 (capital markers), on the other 21 of 31 (capital plus dual-marked). The landing stays the basis statement, not a number (w2 CritCorrections F1).

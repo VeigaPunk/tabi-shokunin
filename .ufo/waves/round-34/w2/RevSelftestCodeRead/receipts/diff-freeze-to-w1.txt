@@ -1,0 +1,113 @@
+--- freeze-59f1b47:scripts/check-bidi-runtime.mjs
++++ w1-04f9623:scripts/check-bidi-runtime.mjs
+@@ -875,11 +875,11 @@
+ // ChromeDriver-shaped session and context ids derived from the seed, so two
+ // calls with distinct `sessionTag` are two distinct sessions; `sessionId`,
+ // `contextId` and `wsHost` are test hooks for the refusal cases.
+-export function goldenLines({ base = "http://127.0.0.1:40000", version = "154.0.8037.97", mutate = () => {}, shotTag = "", driverVersion = "154.0.8037.97 (fixture)", sessionTag = "golden", sessionId = null, contextId = null, wsHost = "127.0.0.1", wsPort = 9515 } = {}) {
++export function goldenLines({ base = "http://127.0.0.1:40000", version = "154.0.8037.97", mutate = () => {}, shotTag = "", driverVersion = "154.0.8037.97 (fixture)", sessionTag = "golden", sessionId = null, contextId = null, wsHost = "127.0.0.1", wsPort = 9515, bWsSessionSegment = null } = {}) {
+   const seed = `${base}|${version}|${shotTag}|${sessionTag}|${driverVersion}`;
+   const sid = sessionId === null ? sha256(`tabi-bidi-v2-session:${seed}`).slice(0, 32) : sessionId;
+   const ctx = contextId === null ? sha256(`tabi-bidi-v2-context:${seed}`).toUpperCase().slice(0, 32) : contextId;
+-  const wsUrl = `ws://${wsHost}:${wsPort}/session/${sid}`;
++  const wsUrl = `ws://${wsHost}:${wsPort}/session/${bWsSessionSegment === null ? sid : bWsSessionSegment}`;
+   const png = Buffer.alloc(24 + shotTag.length);
+   png.write(shotTag, 24, "ascii");
+   Buffer.from("89504e470d0a1a0a", "hex").copy(png, 0);
+@@ -945,11 +945,14 @@
+ 
+ // The round lesson's `## Gate` table: a row per S-id with an https URL and a
+ // 64-hex sha256 in the same row (the shape corpus/lessons/round-32.md uses).
+-function lessonsDoc(ids) {
++function lessonsDoc(ids, o = {}) {
++  // bGateRowNoSha: the `## Gate` row keeps its https URL and quote but loses the
++  // 64-hex sha256, so only the digest requirement can refuse it.
++  const accessed = (id) => (o.bGateRowNoSha ? "2026-10-26T00:00:00Z (HTTP 200, 12 B)" : `2026-10-26T00:00:00Z (HTTP 200, 12 B, sha256 \`${"a".repeat(64)}\`)`);
+   return ["# fixture round lesson", "", "## Gate", "",
+     "| row | URL | accessed | receipt quote |",
+     "|---|---|---|---|",
+-    ...ids.map((id) => `| ${id} | https://e.test/${id.toLowerCase()} | 2026-10-26T00:00:00Z (HTTP 200, 12 B, sha256 \`${"a".repeat(64)}\`) | "fixture receipt quote" |`), "",
++    ...ids.map((id) => `| ${id} | https://e.test/${id.toLowerCase()} | ${accessed(id)} | "fixture receipt quote" |`), "",
+     "## Mistakes", "", "- none.", ""].join("\n");
+ }
+ 
+@@ -1014,6 +1017,52 @@
+   { id: "v2-m17-ws-url-off-loopback", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ ids: ["R1"], run1: { wsHost: "10.0.0.1" }, run2: { wsHost: "10.0.0.1" } }) },
+   { id: "v2-m18-png-wrong-dimensions", exit: 1, admitted: 0, reason: "t2-run", build: () => ({ ids: ["R4"], mutate: (s) => { s.find((x) => x[1] === "browsingContext.captureScreenshot")[3] = { data: pngHeader(100, 100) }; } }) },
+   { id: "v2-m19-unmeasured-row-counted", exit: 0, admitted: 16, reason: null, population: 17, build: () => ({ extraRows: [["R16", "no"]] }) },
++  // ---- v3 (seat A): one case per round-33 w2 MutGateV2 survivor assigned to
++  //      this seat (M01, M03, M06, M08, M09, M10); each case FAILS when that
++  //      mutant is re-applied. A case observes the gate's runnable refusal
++  //      (exit, admitted, population, first finding id and detail), never the
++  //      gate's own source text.
++  // M01: the duplicate-id threshold is 2, not 3 — an id listed exactly TWICE is
++  //      a finding on both rows, not an admitted pair.
++  { id: "v3-a-m01-duplicate-id-twice", exit: 1, admitted: 0, reason: "x3-duplicate-id", population: 2, build: () => ({ ids: ["R2", "R2"] }) },
++  // M03: the Measured verdict is case-folded — `Yes` is a measured yes and the
++  //      only two rows are admitted (the mutant reads it as neither yes nor no,
++  //      leaving population without an admitted row).
++  { id: "v3-a-m03-measured-cell-uppercase", exit: 0, admitted: 2, reason: null, population: 2, build: () => ({ ids: ["R1", "R2"], cell: () => "Yes" }) },
++  // M06: an upper-case 32-hex sessionId is refused BY THE SESSION-SHAPE CHECK
++  //      (S127: ChromeDriver 154 mints 32 lower-case hex, util.cc GenerateId).
++  //      The synthesised webSocketUrl carries the same upper-case id, so a gate
++  //      that only widened the shape would refuse later, naming the ws url.
++  { id: "v3-a-m06-session-id-uppercase", exit: 1, admitted: 0, reason: "t1-receipt", population: 1, detailIncludes: "sessionId is not 32 lowercase hex", build: () => { const upper = sha256("tabi-v3-a-session").slice(0, 32).toUpperCase(); return { ids: ["R2"], run1: { sessionId: upper }, run2: { sessionId: upper } }; } },
++  // M08: a browsing-context id is 32 UPPER-case hex; a lower-case 32-hex id is
++  //      a synthesised transcript (round-32 evidence: "context":"31B8FE9C..."
++  //      in corpus/evidence/round-32/bidi/run1/transcript.jsonl) and refused.
++  { id: "v3-a-m08-context-id-lowercase", exit: 1, admitted: 0, reason: "t1-receipt", population: 16, build: () => { const lower = sha256("tabi-v3-a-context").slice(0, 32); return { run1: { contextId: lower }, run2: { contextId: lower } }; } },
++  // M09: the driver allow-list is closed — an import of the gate-internal ROWS
++  //      table is a t1 finding, whatever else the driver imports.
++  { id: "v3-a-m09-driver-imports-rows", exit: 1, admitted: 0, reason: "t1-receipt", population: 16, build: () => ({ driverText: 'import { FIXTURE, ROWS } from "./check-bidi-runtime.mjs";\n' }) },
++  // M10: the honest round-32 driver imports FIXTURE_SHA256, VIEWPORT and
++  //      serveFixture; all three stay admitted (the allow-list loses nothing).
++  { id: "v3-a-m10-driver-imports-servefixture", exit: 0, admitted: 16, reason: null, population: 16, build: () => ({ driverText: 'import { FIXTURE_SHA256, VIEWPORT, serveFixture } from "./check-bidi-runtime.mjs";\n' }) },
++  // ---- v3-B cases: one per round-34 C2 mutant assigned to seat ExecKillsB
++  //      (M04, M05, M07, M16, M18, M19). Each FAILS when that mutant is applied.
++  // M04: both runs cite one transcript path. The byte-identity rule behind it
++  // refuses the same fixture, so this case pins WHICH finding fired (detailIncludes).
++  { id: "v3-b-m04-transcript-path-repeated", exit: 1, admitted: 0, reason: "t1-receipt", detailIncludes: "transcript path repeated across runs", build: () => ({ samePath: true }) },
++  // M05: identical bytes under two distinct paths (the path rule is silent by design).
++  { id: "v3-b-m05-transcript-sha-repeated", exit: 1, admitted: 0, reason: "t1-receipt", detailIncludes: "transcript sha256 repeated across runs", build: () => ({ sameBytes: true }) },
++  // M07: run1's webSocketUrl carries a ChromeDriver-shaped session id (S127 shape,
++  // 32 lower-case hex) that is not that session's sessionId.
++  { id: "v3-b-m07-ws-session-segment-unbound", exit: 1, admitted: 0, reason: "t1-receipt", detailIncludes: "webSocketUrl session segment", build: () => ({ run1: { bWsSessionSegment: "b".repeat(32) } }) },
++  // M16: the `## Gate` row for the cited registry id keeps its https URL and quote
++  // but carries no 64-hex sha256.
++  { id: "v3-b-m16-gate-row-without-sha", exit: 1, admitted: 0, reason: "s1-source-row", population: 16, build: () => ({ bGateRowNoSha: true }) },
++  // M18: a valid receipt and entry whose every row is unmeasured ("no"), so the
++  // population is non-empty and nothing is admitted.
++  { id: "v3-b-m18-clean-with-zero-admitted", exit: 1, admitted: 0, reason: null, population: 16, build: () => ({ cell: () => "no" }) },
++  // M19: two runs whose sessions carry the same 32-lower-case-hex sessionId (S127
++  // shape) while their transcripts differ (distinct sessionTag ⇒ distinct bytes).
++  { id: "v3-b-m19-sessionid-repeated", exit: 1, admitted: 0, reason: "t1-receipt", detailIncludes: "sessionId repeated across runs", build: () => ({ run1: { sessionId: "0f1e2d3c4b5a69788796a5b4c3d2e1f0" }, run2: { sessionId: "0f1e2d3c4b5a69788796a5b4c3d2e1f0" } }) },
+ ];
+ 
+ function makeFixture() {
+@@ -1040,7 +1089,7 @@
+     const fx = makeFixture();
+     try {
+       fx.put(SOURCES_PATH, regDoc([["S001", ENTRY]]));
+-      fx.put(LESSONS, lessonsDoc(["S002"]));
++      fx.put(LESSONS, lessonsDoc(["S002"], o));
+       const baseline = fx.commit();
+       const usedBy = o.usedBy || ENTRY;
+       const regAtRev = [["S001", ENTRY], ["S002", usedBy]].concat(o.regExtra || []);
+@@ -1105,9 +1154,15 @@
+         out = { admitted: 0, population: 0, rows: [], entryFinding: "refused" };
+       }
+       const reason = out.entryFinding || (out.rows.find((r) => !r.admitted) || {}).reason || null;
++      // v3 (round 34, seats A and B): a case may also pin WHICH check refused (the first finding's
++      // detail), so a rule that is only observable in the refusal's message —
++      // e.g. the session-id shape, which otherwise reads as a generic t1-receipt —
++      // is still exercised. The detail is gate output, never the gate's bytes.
++      const firstDetail = out.entryDetail || (out.rows.find((r) => !r.admitted) || {}).detail || null;
+       const pass = exit === c.exit && out.admitted === c.admitted && reason === c.reason
+-        && (c.population === undefined || out.population === c.population);
+-      results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason });
++        && (c.population === undefined || out.population === c.population)
++        && (c.detailIncludes === undefined || (typeof firstDetail === "string" && firstDetail.includes(c.detailIncludes)));
++      results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason, detail: firstDetail, expectedDetailIncludes: c.detailIncludes === undefined ? null : c.detailIncludes });
+     } finally {
+       rmSync(fx.root, { recursive: true, force: true });
+     }

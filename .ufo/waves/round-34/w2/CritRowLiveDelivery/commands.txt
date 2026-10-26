@@ -1,0 +1,20 @@
+# round-34 w2 CritRowLiveDelivery — commands and exit codes (scratch clone; lane worktree untouched)
+git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"                                 rc 0
+git -C "$S/clone" checkout -q --detach 04f9623dde8ad35d470cecf766e421eafbcb47fa                           rc 0
+git -C "$S/clone" rev-parse --show-toplevel                                                               -> $S/clone (asserted equal)
+git -C "$S/clone" show 59f1b47aae277e1670e4a824173da8cde7e388ee:.ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs > c1.mjs
+  sha256sum c1.mjs -> 0dba816ccab0b7bf690c3a4da6d850ce4a5a092d9aec895e33c9e7fe75a8781e (= claims.json frozenDigests)   rc 0
+TMPDIR=$S/tmp node c1.mjs --rev 04f9623d… --repo "$S/clone" --fleet /home/vgpnk/Projects/shokunin --json   rc 0
+  predicate true · adjacency clean 17/17 · mapped 5 · screened 62 · unaccounted 0 · newMapped 4 · screenFindings []   -> c1-at-04f9623.json
+node "$S/clone/scripts/check-adjacency.mjs" --at 04f9623d… --repo "$S/clone" --fleet … --json              rc 0   clean 17/17  -> adj-at-04f9623.json
+# variant (my clone only): delete row 15, append one same-surface screen row
+git -C "$S/clone" -c user.name=CritRowLiveDelivery -c user.email=CritRowLiveDelivery@scratch.local commit …  rc 0  -> cb65edb7e0690f57b8006059aa6a8d69a20aaf95
+node "$S/clone/scripts/check-adjacency.mjs" --at cb65edb7… --repo "$S/clone" --fleet … --json             rc 0   clean 16/16  -> adj-variant.json
+TMPDIR=$S/tmp node c1.mjs --rev cb65edb7… --repo "$S/clone" --fleet … --json                               rc 0
+  predicate true · adjacency clean 16/16 · mapped 4 · screened 63 · unaccounted 0 · newMapped 3 · screenFindings []   -> c1-variant.json
+grep -cF -f sib.txt line-kake408.txt     -> 1
+grep -cF -f tab.txt line-tabi2921.txt    -> 1
+grep -cF -f rul.txt line-tabi2921.txt    -> 1
+git -C clone diff --numstat 15dfaccb… 04f9623d… -- <protected paths>   -> SKILL.md 31/0, SCORECARD 39/0, LOG 30/0, QUALITY 78/0, README 14/0, SOURCES 4/0, adjacency.tsv 4/0, adjacency-screen.tsv 4/4
+git -C clone diff --numstat 15dfaccb… cb65edb7… -- SKILL.md corpus/adjacency.tsv corpus/adjacency-screen-skill.tsv -> 31/0, 3/0, 64/0
+# read-only sibling reads: kake-shokunin show 04404859…:{SKILL.md,PROVINCE.md,corpus/knowledge/static-canonical-preflight.md}; 7c61c8cc…:PROVINCE.md

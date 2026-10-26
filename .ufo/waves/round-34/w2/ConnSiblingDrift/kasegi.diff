@@ -1,0 +1,186 @@
+diff --git a/corpus/knowledge/cisa-when-to-issue-vex.md b/corpus/knowledge/cisa-when-to-issue-vex.md
+new file mode 100644
+index 0000000..7bd4c78
+--- /dev/null
++++ b/corpus/knowledge/cisa-when-to-issue-vex.md
+@@ -0,0 +1,144 @@
++# CISA "When to Issue VEX Information" — issuance is a business decision, the under_investigation → final-status lifecycle, timestamp-only reaffirmation, and the upstream-status inheritance caution: the VEX publishing layer that the CSAF VEX profile does not carry
++
++source: S057 — https://www.cisa.gov/resources-tools/resources/when-issue-vex-information — capture corpus/source-snapshots/round-39/S057.txt (275 lines, 17,971 bytes; sha256 11c8d6d684448a1ae049ecf4881cd98172fad7333a9fd7829e6b12c9b5d64f2f): title L2, publication date L3, purpose L11-L15, business-decision sentence L12-L14, "not determined by a strict protocol" L79-L81, event triggers L84/L104/L114/L142/L153, status lifecycle L132-L135, timestamp reaffirmation L136-L138, exploitation degree plus action_statement L117-L122, KEV pointer L127-L130, CVD independence L143-L144, legal obligations L154-L157, inheritance caution L183-L186, inheritance allowance L187-L191, multiple supply chain paths L192-L199, trust L201-L212, open-source section L215-L227
++verified-at: 2026-10-26 (capture re-fetched and re-normalized this day: PDF https://www.cisa.gov/sites/default/files/2023-11/When-to-Issue-a-VEX-508c.pdf, HTTP 200, 235,270 bytes, sha256 cbcbd77af32c589eaf85aef4e3911b133fd95ccdedd80b56b40e9c0909450d99 at 2026-10-26T19:31:07Z; my `pdftotext` + whitespace-collapse run reproduced the landed capture byte for byte — `cmp` clean, 275 lines, 17,971 bytes, sha256 11c8d6d6…)
++ground: F22
++recheck: cd /home/vgpnk/Projects/shokunin/kasegi-shokunin && python3 corpus/instruments/source-recheck.py --manifest corpus/source-snapshots/round-39/manifest.json --source S057   # prints S057:sha256 OK then one S057:Q<n> OK line per pinned quote with its occurrences= count and anchor=N-ok note; exits 2 when the manifest or capture is absent and 1 when the digest differs or a pinned quote moved — a pinned-capture comparison under whitespace collapse, not a fresh network check
++
++## Attribution
++
++CISA guidance, not a standard. The document is titled "When to Issue VEX Information" with "Publication date: November 2023" (L2-L3), is marked "TLP:CLEAR. Disclosure is not limited." (L26), and is a working-group product: "This document was a product of the VEX Working Group, which grew out of the NTIA Multistakeholder Process" (L229-L230), work that "continued into 2023, facilitated by CISA" (L230-L231). It states its own genre: "This document seeks to explain the circumstances and events that could lead an entity to issue VEX information" (L11-L12).
++
++It carries no field definitions of its own; it defers them, pointing at "definitions of VEX data elements and other terminology used in this document" (L16) inside the Minimum Requirements document, then at the Status Justifications and Use Cases documents (L18-L19). A claim about a document field belongs to those documents, never to this one.
++
++## Why this is a separate layer from the CSAF VEX profile (F21 / S055)
++
++S055's profile fixes what a VEX document must contain — product_status categories, the five machine-readable not-affected justification flags, the impact-statement and action-statement obligations. This document never enumerates those flags: `component_not_present` occurs once (L189) and `vulnerable_code_not_present` once (L189), while `vulnerable_code_not_in_execute_path`, `vulnerable_code_cannot_be_controlled_by_adversary` and `inline_mitigations_already_exist` occur zero times each. Lane reading, not a quote: F21 is the document-content contract, F22 is the publishing-policy layer — when to issue, who may issue, how a status is reopened or reaffirmed, and when a downstream consumer may reuse an upstream status. Both are needed to read a supplier's VEX as evidence.
++
++## Claim 1 — issuance timing is a business decision, not a protocol step
++
++> "Whether, and when, to issue VEX information is a business decision for most suppliers and possibly a more individual decision for independent open source developers." — S057.txt:L12-L14
++
++> "The decisions and timing around providing VEX information are primarily business decisions and are not determined by a strict protocol." — S057.txt:L79-L81
++
++The trigger list is illustrative by its own terms: "These examples are not intended to be comprehensive and are not organized in any specific way." (L81-L82). The named events are an upstream vulnerability discovered (L84), significant public attention (L104), active exploitation (L114), coordinated vulnerability disclosure (L142) and legal requirements (L153). Consequence for a researcher: silence from a supplier is not a status.
++
++## Claim 2 — who may issue is a role list, not a vendor privilege
++
++> "Various roles may issue VEX information. This section offers some common examples, but it is not meant to be an exhaustive or limiting set." — S057.txt:L34-L35
++
++Suppliers (L36-L42), open-source maintainers or downstream community members (L43-L48), researchers and finders, including "professional bug bounty hunters" (L49-L53), vulnerability coordinators such as "publicly funded teams like CISA and JPCERT/CC" (L57-L59), detection and management tools (L65-L69), and other parties (L73-L77). Authority is role-relative, not absolute: a researcher's or coordinator's VEX "may be different than VEX information from suppliers" (L54-L55, L61-L62). Tools that consume VEX are told to verify it: "To reduce false positives, these tools should sufficiently validate the accuracy of VEX information, involving human analysts when necessary." (L70-L72).
++
++## Claim 3 — the status lifecycle runs under_investigation → a final status
++
++> "Ideally, when a new vulnerability is disclosed, an “under_investigation” status should be issued." — S057.txt:L132-L133
++
++> "When the investigation has concluded, status should be updated, for example, noting that the product is “affected” or “not_affected.”" — S057.txt:L134-L135
++
++An initial `under_investigation`, including one issued while the supplier is "surprised by the disclosure" (L110-L111), is the expected first move; it is superseded by an update, not left standing. Refinement is continuous: "As the supplier refines its understanding of the vulnerability, the supplier should update or issue additional VEX information." (L100-L101). Later changes are not limited to status: "VEX can also convey changes to remediation actions (“action_statement”) and further details about “not_affected” status (“impact_statement”)." (L139-L141).
++
++## Claim 4 — a timestamp-only update is a reaffirmation, not a new status
++
++> "VEX information includes timestamps to indicate when the information was first issued and most recently updated." — S057.txt:L136-L137
++
++> "By updating a timestamp but not changing status or other information, a VEX issuer can reaffirm that the current status remains accurate" — S057.txt:L137-L138
++
++Lane reading, not a quote: a fresh “most recently updated” stamp is evidence that the issuer still stands behind an old status; it is not evidence that the status was re-derived, and it changes nothing a consumer can test. Read the status value first, the timestamp second.
++
++## Claim 5 — VEX does not grade exploitation, but an action_statement may carry it
++
++> "VEX does not specifically describe threat or the degree to which a vulnerability is being exploited" — S057.txt:L120-L121
++
++> "such information could be included in the “action_statement” field" — S057.txt:L121-L122
++
++`affected` is likewise not a severity: "VEX “affected” status means that a vulnerability is exploitable," (L117) "subject to a variety of circumstances." (L120). The document points at exploitation catalogues without defining membership: "CISA maintains a publicly available database of exploited vulnerabilities in the Known Exploited Vulnerability (KEV) catalog." (L127-L130) — the F18/S052 ground. Anything a supplier writes about exploitation degree sits in free text, so it is quotable but not comparable across vendors.
++
++## Claim 6 — upstream status is not inherited by default, and the allowance is narrow
++
++> "VEX consumers should carefully evaluate if it is valid to inherit status from upstream components." — S057.txt:L183-L184
++
++> "Strictly speaking, consumers should not assume the status of an upstream component applies to a product that uses the component." — S057.txt:L184-L185
++
++> "Each component or product throughout a supply chain may require an independent VEX evaluation." — S057.txt:L185-L186
++
++> "“not_affected” with justification “component_not_present” or “vulnerable_code_not_present” could be inherited downstream, unless the vulnerable code is re-introduced elsewhere downstream." — S057.txt:L189-L191
++
++So exactly two of the five not-affected labels are named as inheritance candidates, and the allowance carries a re-introduction exception. An `affected` status, an `inline_mitigations_already_exist` claim, or a reachability claim is never offered for inheritance. Supply-chain paths must also be deconflicted: "VEX consumers should evaluate all supply chain paths and deconflict VEX information for multiple occurrences of the same upstream component." (L192-L194), which needs "Accurate SBOM information" (L197).
++
++## Claim 7 — trust in a VEX statement is the consumer's decision
++
++> "VEX conveys assertions from the author." — S057.txt:L201
++
++> "Digitally signing VEX information is recommended to support trust in the origin and integrity of the information." — S057.txt:L203-L204
++
++> "It is common and reasonable to treat VEX information from a supplier as authoritative for components and products produced or maintained by that supplier." — S057.txt:L209-L210
++
++> "VEX, however, does not dictate this or any trust policy." — S057.txt:L210-L211
++
++## Claim 8 — VEX and coordinated disclosure are independent
++
++> "Coordinated vulnerability disclosure (CVD) and VEX are independent concepts and VEX is neither required by CVD nor does VEX affect CVD." — S057.txt:L143-L144
++
++## Claim 9 — obligations can come from outside, and scale is unsolved
++
++> "There may be legal requirements that create an obligation to issue VEX information. Contract terms could require that a supplier provides VEX information." — S057.txt:L154-L155
++
++Guidance sections are explicitly optional: "While not strictly required for decisions to issue VEX information" (L159). The tooling story is three functional categories — creation, consumption, distribution (L162-L167) — with two open problems: "the analysis of whether the product is affected, might still need human interaction" (L172-L173) and product identity, "a lack of consensus around a global software identification system" (L174-L176).
++
++## Claim 10 — no open-source exception, and no no-VEX-means-safe reading
++
++> "For the purposes of VEX and the scope of this document, there are no meaningful differences between open source and proprietary software." — S057.txt:L219-L220
++
++> "independent VEX information should be issued for each use of any upstream component" — S057.txt:L222-L223
++
++> "no user of open source software should assume that the absence of VEX, or other vulnerability information, implies a lack of risk." — S057.txt:L225-L227
++
++## How a bounty or security researcher uses it
++
++1. **Do not read silence as not_affected.** Issuance is a business decision (L12-L14, L79-L81), so an unfixed component with no VEX has no status at all — and absence "implies a lack of risk" for nobody (L225-L227).
++2. **Separate the status from the timestamp.** Read `under_investigation` / `affected` / `not_affected` first (L132-L135), then treat the update stamp as a reaffirmation signal only (L136-L138).
++3. **Treat `under_investigation` as an open question, not a clean bill.** It is the expected first status (L132-L134) and is meant to be replaced when the analysis closes (L134-L135).
++4. **Do not accept an inherited not_affected without the two labels and the re-introduction test.** Only `component_not_present` and `vulnerable_code_not_present` are offered (L189), with the exception at L190-L191, and each downstream product "may require an independent VEX evaluation" (L185-L186).
++5. **Quote the action_statement if you need exploitation context.** The document says VEX does not grade exploitation (L120-L121); any such wording is free text in `action_statement` (L121-L122), and KEV is the catalogue it points to (L127-L130).
++6. **Weight the issuer by role and signature, not by the format.** Researchers, coordinators and suppliers can all issue, with different visibility (L49-L62), trust is not conveyed by the document (L201-L203), and signing is only "recommended" (L203-L204).
++7. **Expect VEX to appear under public pressure.** Significant public attention and reports of active exploitation are the events the document names (L104-L112, L114-L126), which is when a duplicate report is most likely to be answered with a status rather than an argument.
++8. **Never argue that CVD obliges a VEX.** The two are independent (L143-L144).
++
++## Sources overlap — S055 (document content), S053 (EPSS likelihood), S054 (SSVC decisions), S052 (KEV)
++
++On the capture `VEX` occurs 101 times, `KEV` once (L129), and `EPSS`, `SSVC`, `CSAF` and `CVSS` zero times each. Lane analysis, not a quote: this document never scores, estimates or prioritizes — it decides when the assertion exists and who may make it. S055 supplies the field-level contract for that assertion; S053's EPSS is an exploitation-probability estimate; S054's SSVC is a stakeholder decision; S052's KEV is catalogue membership. None of those is an issuance rule, and this document defines none of them.
++
++## Falsifiable rule and checks
++
++**Falsifiable rule.** A statement about CISA's issuance guidance is falsified by any of: (a) saying CISA mandates VEX issuance on a schedule, when timing is "primarily business decisions" (L79-L81) and even the guidance sections are "not strictly required" (L159); (b) saying a published status is final, when the document requires an update once the investigation concludes (L132-L135); (c) reading a changed timestamp as a changed status, when that is exactly the reaffirmation case (L136-L138); (d) inheriting any upstream status downstream, when only two justification labels are offered and re-introduction voids them (L189-L191); (e) saying this document defines the five justification labels, when three of the five occur zero times here and the definitions are delegated (L16-L19); (f) saying VEX rates exploitation, when it does not (L120-L121).
++
++**FC-1 — every quoted span is verbatim, ≤25 words, on its declared line.** Every quoted span is checked under whitespace collapse against the capture: each occurs, and each declared line lies inside its occurrence. Observed `spans=22 distinct=22 words_max=25 anchors_ok=22 of 22`; the 49 shorter inline quotes resolve the same way, with the one repeated phrase ("may be different than VEX information from suppliers") cited at both of its lines, L54-L55 and L61-L62.
++
++**FC-2 — vocabulary.** `grep -oF <word> S057.txt | wc -l` gives `VEX=101 KEV=1 EPSS=0 SSVC=0 CSAF=0 CVSS=0 inherit=4 action_statement=2 impact_statement=1 under_investigation=2 not_affected=3`; the two neighbour scoring systems and both standards acronyms are absent, so no overlap claim here rests on this document.
++
++**FC-3 — the flag enum is not defined here.** The same count gives `component_not_present=1`, `vulnerable_code_not_present=1`, `vulnerable_code_not_in_execute_path=0`, `vulnerable_code_cannot_be_controlled_by_adversary=0`, `inline_mitigations_already_exist=0`: the two hits are inside the inheritance sentence at L189, not a definition list.
++
++**FC-4 — the lifecycle is stated once, in one paragraph.** `grep -n 'under_investigation'` returns L111 and L133; L133 carries the issue-first instruction and L134-L135 the update instruction, so the paragraph at L132-L135 is the lifecycle authority.
++
++**FC-5 — the inheritance allowance names two labels and one exception.** `grep -n 'could be inherited downstream'` returns L190, and the exception "unless the vulnerable code is re-introduced elsewhere" continues on L190-L191.
++
++**FC-6 — the business-decision rule appears twice.** `grep -n 'business decision'` returns L13 (why an entity issues) and L80 (decisions and timing "not determined by a strict protocol"); no third occurrence weakens it.
++
++## Rejected over-generalizations
++
++1. **"CISA requires suppliers to publish VEX."** Rejected: "The decisions and timing around providing VEX information are primarily business decisions and are not determined by a strict protocol." (L79-L81); obligations are contingent — contract terms, sector guidance, governments (L154-L157).
++2. **"A VEX status, once issued, is final."** Rejected: "an “under_investigation” status should be issued" first (L133) and "status should be updated" when the investigation concludes (L134-L135).
++3. **"An updated date means the status was re-verified."** Rejected: the document describes exactly that case as reaffirmation of the current status (L136-L138).
++4. **"Downstream products inherit upstream VEX status."** Rejected: "consumers should not assume the status of an upstream component applies to a product that uses the component" (L184-L185), with a two-label, exception-bound allowance only (L189-L191).
++5. **"VEX states how exploitable a vulnerability is."** Rejected: "VEX does not specifically describe threat or the degree to which a vulnerability is being exploited" (L120-L121).
++6. **"This document defines the not-affected justification labels."** Rejected: no definition list exists here (FC-3); the definitions are delegated to the Minimum Requirements and Status Justifications documents (L16-L19).
++7. **"CVD mandates VEX."** Rejected: "VEX is neither required by CVD nor does VEX affect CVD" (L143-L144).
++8. **"Open-source components need no VEX."** Rejected: "there are no meaningful differences between open source and proprietary software" (L219-L220), and "no user of open source software should assume that the absence of VEX" (L225-L226) — the sentence continues at L226-L227 to name "other vulnerability information" and a "lack of risk".
++
++## Honest limit
++
++- **One publication, one snapshot.** This is the November 2023 CISA guidance (L3) as captured in the 275-line normalized text; a revised publication is a new pin, not a correction. Line numbers are lines of that capture, not PDF pages.
++- **Guidance, not requirements.** Nothing here is a conformance rule; the field-level requirements live in S055's profile, and a document can satisfy neither, one, or both.
++- **No vendor practice is asserted.** The document says suppliers *can* issue (L41-L42) and that consumers *may* trust a supplier's VEX for its own products (L209-L210); it makes no claim that any named supplier publishes VEX today.
++- **Quotes are whitespace-normalized.** Sentences wrap mid-line in the capture (for example L183-L184), so a quote matches the capture under collapsed whitespace, as declared in FC-1; typographic quotes are preserved as captured.
++- Documentation only: the capture holds public web text, no credential, session or private URL, and this entry quotes none.
+diff --git a/corpus/knowledge/considerthese-proposals-ledger.md b/corpus/knowledge/considerthese-proposals-ledger.md
+index 5e92241..9970da5 100644
+--- a/corpus/knowledge/considerthese-proposals-ledger.md
++++ b/corpus/knowledge/considerthese-proposals-ledger.md
+@@ -65,3 +65,31 @@ landing's completeness was re-measured. `open` on proposals 4 and 6 records an o
+ explicit no-change note, not a refusal; no proposal here is `declined`. This section is an end-of-file
+ append (R6/R9): the base table, the round-31 flip block and the re-pin note above are unedited, and a later
+ flip lands as a new section rather than as an edit to a row.
++
++## Round-39 dispositions (appended 2026-10-26)
++Correction (round 39): this file carries two numberings and the older sections do not say which is which. The
++base table at `:11-16` and the round-31 flip block at `:22-33` number the six proposals of
++`considerthese/2026-10-25.md`; the round-38 section at `:45-67` and this section number the seven proposals of
++`considerthese/2026-10-26.md`, so the label “1.” names different proposals in different tables. The round-38
++row at `:54` reports the distance-to-next-score thread as `open` before and after round 38 although that
++thread was already flipped `mined round 31 → corpus/instruments/score-gap.py` at `:28` under the 2026-10-25
++numbering: round 31 mined the measurement and round 39 mines the criteria text, so row 1 below records a
++round-39 landing and not a first mining.
++
++| proposal | status | evidence |
++|---|---|---|
++| 1. Make “distance to next score” explicit | **mined round 39** (criteria; the round-31 measurement stands) | The criteria block drafted at `.ufo/waves/round-39/wave1/ExecConsiderthese.scorecard.append.md` (heading `## Distance-to-next-score (round 39, mined from considerthese 2026-10-26 proposal 1)`) lands in `SCORECARD.md` §Saturation in the same commit as this append, stating the verifiability-5 bar (0 gated rechecks plus the `SCORECARD.md:331` audit bar) and the coverage-8 criterion `(20 + F_admitted) / (20 + F_total) = 1.000`. At base `480b1a5` both `grep -c 'Distance-to-next-score' SCORECARD.md` and `grep -c 'Threshold for 8' SCORECARD.md` return 0. The gap it makes explicit, measured read-only by `corpus/instruments/score-gap.py`: `gap: 24 of 50 rechecks still gated on a lost base; score 5 needs 0 gated unsupported claims`, with `recheck: lines=50 executes=26 gated=24 broken=0 exit=0` and `strict pass=50/50 cdroot_fail=0 instrument_fail=0 own_fail=0`; coverage counters at base are `frontier rows 21`, `registry rows 55` and frontier harness `entries=24 pass=24 exit=0` (`.ufo/waves/round-39/wave1/ExecScoreGap.gap.txt:23,36,92,100,101,160`). |
++| 2. Run one end-to-end domain task round | **open (unchanged)** | The frozen round-39 claims (`.ufo/waves/round-39/claims.json`: C1 the export-mode closure suite, C2 F22 VEX-issuance coverage) name no end-to-end domain task, and the box-2 evidence line `SHONEN.md:182-183` (round 38) keeps `[~]`. Nothing this round moves it. |
++| 3. Add a quiescence gate before `complete` | **carried: mined → landed r36, hardened r38, expanded round 39 to the phased-commit order check** | `corpus/QUALITY.md:292` (R33 closure order: every round artifact before the judged head, the judged head named only by reference to the gate receipt, the report filed after the last lane commit) plus the round-39 C1 limbs in `.ufo/waves/round-39/claims.json`: G2 requires the receipt's `export-ref` to be ancestor-or-equal of REF with `git diff --name-only <export-ref> REF` listing only the receipt, and G5 requires zero `Final lane commit:` lines in the `## Round 39` section and in the SHONEN round-39 lines. The round-38 seat-identity and scratch-quiescence limbs (G4/G6) are carried in `corpus/instruments/r38-closure.sh`. |
++| 4. Cap or externalise wave evidence | **open (unchanged; operator-owned)** | Measured at base `480b1a5`: `git ls-tree -r --name-only` → 7,479 tracked files, 7,190 under `.ufo/` (96.1 %); `git ls-tree -r -l` → 124,950,336 bytes, 118,529,503 under `.ufo/` (94.9 %); the lane tree at base carries no `.gitattributes` at all (`git ls-tree -r --name-only 480b1a5` → 0 paths matching `gitattributes`), so no LFS filter exists. The keep-or-externalise decision is operator-owned and no release, LFS or prune artefact is committed. |
++| 5. Land the owed F18 `PROVINCE.md` amendment | **landed r36 → resolved-landed (round 39)** | The amendment is present at `PROVINCE.md:77`, opening `[r36 Frontier amendment, appended 2026-10-26, end-of-file append per R6] F18 — CISA Known Exploited Vulnerabilities catalog` and naming `admitted round 35` plus the entry `corpus/knowledge/cisa-kev-catalog.md` (source S052). The round-38 section already read `unchanged (landed r36)` at `:58`; round 39 marks the row resolved-landed instead of carrying it as open work. |
++| 6. Re-tune my own cadence and depth | **open (unchanged)** | `considerthese/` holds 8 files, one per day `2026-10-19.md` … `2026-10-26.md`; the frozen round-39 claims name no second daily run, no standing per-round digest section and no weekly read-only cloud pass, so the cadence is unchanged this round. |
++| 7. Keep a proposal-status ledger | **mined → landed r37, filled round 38, extended round 39** | `corpus/QUALITY.md:278` (R31) names `corpus/knowledge/considerthese-proposals-ledger.md` as the disposition home; the round-38 section at `:45-67` filled the seven 2026-10-26 rows; this section rows all seven again (7 of 7 proposals rowed, none omitted), which is the round-39 fill. |
++
++Scope: statuses are documentary. The base figures were measured at `480b1a505a2dfc14a4f718d16d63808247214d0a`
++with `git ls-tree -r -l`, `python3 corpus/instruments/score-gap.py` and `grep` on `SCORECARD.md`,
++`PROVINCE.md` and `SHONEN.md`; the round-39 landing is cited by path and is not re-measured here. `mined`
++means a cited lane record names a corresponding landing; it does not establish that a proposal is closed.
++This section is an end-of-file append (R6/R9): the base table, the round-31 flip block, the re-pin note and
++the round-38 section above are unedited, and a later flip lands as a new section rather than as an edit to a
++row.

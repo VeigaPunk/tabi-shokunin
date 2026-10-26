@@ -1,0 +1,37 @@
+# CritScreenKaidoku — commands run and exit codes (2026-10-26)
+# S=/fast/scratch/hyaku/tabi-r34/CritScreenKaidoku, clone rev 04f9623dde8ad35d470cecf766e421eafbcb47fa
+
+1. git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone" && git -C "$S/clone" checkout -q --detach 04f9623dde8ad35d470cecf766e421eafbcb47fa && git -C "$S/clone" rev-parse HEAD
+   -> rc=0, 04f9623dde8ad35d470cecf766e421eafbcb47fa
+
+2. git -C tabi-shokunin show 59f1b47aae277e1670e4a824173da8cde7e388ee:.ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs > "$S/c1.mjs"; sha256sum "$S/c1.mjs"
+   -> 0dba816ccab0b7bf690c3a4da6d850ce4a5a092d9aec895e33c9e7fe75a8781e  (== claims.json frozenDigests)
+
+3. sha256sum "$S/clone/scripts/check-adjacency.mjs"
+   -> 4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac  (== pinned digest in C1 counter)
+
+4. TMPDIR="$S/tmp" node "$S/c1.mjs" --rev 04f9623dde8ad35d470cecf766e421eafbcb47fa --repo "$S/clone" --fleet /home/vgpnk/Projects/shokunin --json > "$S/c1-run.json"
+   -> exit 0; predicate true; candidates 67; mapped 5; screened 62; unaccounted 0; newMapped 4;
+      adjacency clean rows 17 verified 17; screenFindings []
+
+5. node .ufo/waves/round-34/w2/CritScreenKaidoku/quote-verbatim-check.mjs corpus/adjacency-screen-skill.tsv
+   -> exit 0; {"rows":62,"bad":[]}  (every screen quote is a verbatim substring of its cited line at its pin)
+
+6. awk -F'\t' '/^kaidoku-shokunin/{print NR, $1}' corpus/adjacency-screen-skill.tsv
+   -> 9 rows at ledger lines 37-45 (my six: 37, 39, 41, 43, 44, 45; L1 reversals: 38, 40, 42)
+
+7. node -e '<compare ledger kaidoku rows against .ufo/waves/round-34/w1/AdjKaidoku/screen.tsv>'
+   -> 6 byte-identical to w1; 3 differ (ledger 38/40/42 = L1 reversal rows)
+   -> no CR, no trailing whitespace, every row exactly 5 TAB columns, header == sibling_ref reason surface quote note
+
+8. git -C kaidoku-shokunin show <pin>:PROVINCE.md | sed -n '53p'   for pins 9011581d... and fa6a8a3f...
+   -> cmp rc=0, identical (sha256 f10c3de70722b66242e07a426cf74beec5ef08884c9419887fe9fbf336b0e262)
+
+9. git -C tabi-shokunin log -1 --format='%an <%ae>' 5859243183c4d7ac5429dfdb8a73ce0d9a43d583 -- corpus/lessons/round-16-verifier-spotcheck.md
+   -> protocol-shokunin <protocol@shokunin.local>  (ruling venue is not this lane)
+
+10. git -C tabi-shokunin status --porcelain
+   -> only the L1's in-progress `M corpus/lessons/round-34.md` and untracked .ufo/waves/round-34/ artifacts;
+      this seat touched no tracked lane file.
+
+Tools installed: none. Network fetches: none. Browser launches: none.

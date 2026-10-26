@@ -81,3 +81,19 @@ cases. Frozen counter readings are in `.ufo/waves/round-34/measure/c2-at-*.json`
 - Battery survivors CritForgeV2B (a fabricated second run with fresh real-shaped ids; a driver importing only
   allow-listed symbols that never ran) and CritForgeV2C (a junk Gate row with a made-up digest) stay open: v2's
   provenance rules are syntactic, and killing mutants does not change that.
+
+## 6. Wave-2 corrections (append-only; each cites the line it corrects)
+
+- §4 (`:73`): the measurement it names is committed after this entry's first revision, at
+  `.ufo/waves/round-34/measure/c2-at-*.json` with `provenance-*.txt` (w2 CritEntry F1); until that commit the
+  pointer resolved to nothing.
+- §5 CritForgeV2C (`:81-83`): read "a fabricated `mined` row admitted by a fabricated Gate row, and with no Gate row at
+  all when the entry's `source:` line co-cites one honest id, because the witness loop stops at the first grounded id"
+  — a control-flow gap, not only a syntactic limit; v2 binds shape and cross-run identity, not execution (w2 CritEntry
+  F2; `.ufo/waves/round-33/w2/CritForgeV2C.md:5-14`).
+- §5 addition: five cases (M04 M05 M06 M07 M19) assert the finding detail. For M04, M05 and M06 the mutated gate still
+  refuses the same fixture and only the printed message differs, so those three kills pin the checks' precedence and
+  message text; a message rewrite fails the self-test loudly, and a behaviour-preserving reorder of the checks would
+  make the three kills vanish (w2 CritEntry F3, MutDetailAssert).
+- §3 scope (`:66-67`): tab targets AND the nested-frame `frameId` shape were not opened, although the rule polices every
+  browsing-context id a run mentions (gate header; S131 names frame ids as CDP `frameId` verbatim) (w2 CritEntry F4).

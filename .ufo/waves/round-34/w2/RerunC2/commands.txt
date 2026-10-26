@@ -1,0 +1,53 @@
+# RerunC2 — commands and exit codes (all runs 2026-10-26, host clock -0300; 17:12Z-20:18Z UTC window)
+# S=/fast/scratch/hyaku/tabi-r34/RerunC2 ; TMPDIR=$S/tmp ; OUT=<lane>/.ufo/waves/round-34/w2/RerunC2
+# node v24.21.0
+
+# 0 scratch + one live clone
+mkdir -p /fast/scratch/hyaku/tabi-r34/RerunC2/tmp
+git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"                 # exit 0
+git -C "$S/clone" rev-parse --show-toplevel                                              # /fast/scratch/hyaku/tabi-r34/RerunC2/clone
+git -C "$S/clone" checkout -q --detach 04f9623dde8ad35d470cecf766e421eafbcb47fa           # exit 0
+git -C "$S/clone" rev-parse HEAD                                                          # 04f9623dde8ad35d470cecf766e421eafbcb47fa
+
+# 1 counter bytes from the freeze commit 59f1b47aae277e1670e4a824173da8cde7e388ee
+git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show \
+  59f1b47aae277e1670e4a824173da8cde7e388ee:.ufo/waves/round-34/counters/c2-gate-mutants.mjs > "$S/c2.mjs"
+sha256sum "$S/c2.mjs"
+# 3cf5eb699934eae48b77c991dae8761780c1c010da1121c1b9623a4d5d325b82  (== claims.json frozenDigests)
+git -C "$S/clone" show 04f9623dde8ad35d470cecf766e421eafbcb47fa:.ufo/waves/round-34/counters/c2-gate-mutants.mjs | sha256sum
+# 3cf5eb699934eae48b77c991dae8761780c1c010da1121c1b9623a4d5d325b82  (counter unchanged at REV)
+
+# 2 primary run, twice (TMPDIR under scratch)
+TMPDIR=$S/tmp node "$S/c2.mjs" --rev 04f9623dde8ad35d470cecf766e421eafbcb47fa --repo "$S/clone" --json > run1.json   # exit 0, 60.31 s
+TMPDIR=$S/tmp node "$S/c2.mjs" --rev 04f9623dde8ad35d470cecf766e421eafbcb47fa --repo "$S/clone" --json > run2.json   # exit 0, 62.24 s
+sha256sum run1.json run2.json
+# f0df510bb8349f9d813792718ba5f5ba0d2e33be2504b1598617f9e663bd479d  run1.json
+# f0df510bb8349f9d813792718ba5f5ba0d2e33be2504b1598617f9e663bd479d  run2.json   (byte-identical)
+
+# 3 counter at the baseline (before-reproduction)
+TMPDIR=$S/tmp node "$S/c2.mjs" --rev 15dfaccb34601c2d221c78501e2befd8998d600c --repo "$S/clone" --json > baseline-run.json   # exit 1, 50.19 s
+# predicate false; killed 8; survivors M01 M03 M04 M05 M06 M07 M08 M09 M10 M16 M18 M19; pristine cases=44
+
+# 4 round-33 forgery battery, run independently (bytes from commit e6b0a907, sha pinned inside the counter)
+git -C "$S/clone" show e6b0a9074d434ccc307badd312ae7379d1193fea:.ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs > battery.mjs
+sha256sum battery.mjs   # 51ace65fcece8e794b80afdb386638c755b3aa137297c33a34ffce7fb24e812b
+TMPDIR=$S/tmp node battery.mjs --rev 04f9623dde8ad35d470cecf766e421eafbcb47fa --repo "$S/clone" --json > battery-run.json   # exit 0, 5.25 s
+
+# 5 attribution probe: gate at REV + each single mutant, run the self-test directly and read each case's row
+git -C "$S/clone" show 04f9623dde8ad35d470cecf766e421eafbcb47fa:scripts/check-bidi-runtime.mjs > mod/gate-pristine.mjs
+# (python: apply each mutants.jsonl-verified find->replace once, write mod/gate-<id>.mjs)
+for m in pristine M01 M03 M04 M05 M06 M07 M08 M09 M10 M11 M14 M16 M18 M19; do
+  TMPDIR=$S/tmp node mod/gate-$m.mjs --selftest --json > mod/st-$m.json    # pristine exit 0, each mutant exit 3
+done
+
+# 6 integrity checks
+git -C "$S/clone" diff --numstat 15dfaccb... 04f9623d... -- scripts/check-bidi-runtime.mjs   # 62 insertions, 7 deletions
+#   all 7 deletions are inside goldenLines()/lessonsDoc() fixture builders and the runSelftest() harness;
+#   lines 1-877 (every rule line) are byte-identical between the two revs:
+#   sha256(gate lines 1-877 at baseline) == sha256(gate lines 1-877 at REV) == c30b13f09f500a82a7cbfc044752b223edb4bcca71cfe63f538bb1576c96edeb
+#   gate blob sha256 at REV 370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87
+#   gate blob sha256 at baseline eded1be04a47fbd2b87fbff42ef5187e0d473e6fe2bca55ac1c622ab8bde61c1
+#   20/20 counter mutants' id+area+find+replace are verbatim equal to round-33 MutGateV2/mutants.jsonl at REV
+#   all find sites at lines 144-867 (< 878, i.e. inside the identical rule region)
+#   gate self-source read: line 1086 only; used at 1127 (driverCopyOfGate fixture bytes) and 1129 (gateBlob fixture file) — no source-text sniffing
+#   after the runs: git -C "$S/clone" status --porcelain -> 0 lines; $S/tmp -> 0 entries (counter removed its clones)

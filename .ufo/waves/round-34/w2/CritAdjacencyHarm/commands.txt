@@ -1,0 +1,75 @@
+# Commands run — CritAdjacencyHarm (round-34 w2, adjacency no-harm attack)
+# scratch: S=/fast/scratch/hyaku/tabi-r34/CritAdjacencyHarm  (removed before yield; receipts in this dir)
+# clone at REV: git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin $S/clone; git -C $S/clone checkout --detach 04f9623d
+
+ 1. git -C /home/vgpnk/Projects/shokunin/tabi-shokunin diff --numstat 59f1b47a 04f9623d
+    rc=0  -> PROVINCE.md 0 lines; corpus/adjacency.tsv 4/0; corpus/adjacency-screen.tsv 4/4;
+            SKILL.md 31/0; SCORECARD.md 9/0; LOG.md 21/0; corpus/QUALITY.md 78/0;
+            corpus/README.md 14/0; corpus/SOURCES.md 4/0; scripts/check-adjacency.mjs 0 lines
+
+ 2. for r in 15dfaccb34601c2d221c78501e2befd8998d600c 59f1b47aae277e1670e4a824173da8cde7e388ee \
+         04f9623dde8ad35d470cecf766e421eafbcb47fa; do git show $r:PROVINCE.md | sha256sum; done
+    rc=0  -> all three 16c27b12a60dbbcc43903d40334c314f6587bd8703d1e890e076398eac1a946a
+
+ 3. git show 59f1b47aae277e1670e4a824173da8cde7e388ee:corpus/adjacency.tsv > adj-freeze.tsv; git show 04f9623dde8ad35d470cecf766e421eafbcb47fa:corpus/adjacency.tsv > adj-rev.tsv
+    cmp -n 4954 adj-freeze.tsv adj-rev.tsv                         rc=0  -> PREFIX-IDENTICAL
+    git show <rev>:corpus/adjacency.tsv | sed -n '2,14p' | sha256sum   (freeze and REV)
+    rc=0  -> both 2b1fc8c6091c7cb3db992f2907130c012c9e4b35871604b411d996cd7914a3d8
+
+ 4. python row-wise diff of corpus/adjacency-screen.tsv freeze vs REV
+    -> 45 lines both; changed file lines 31, 35, 39, 42 only
+       line 31 (:396) reason no-claim-declared -> same-surface, surface - -> robots-txt-publisher-audit-vs-client-obedience, note changed
+       line 35 (:411) note column only
+       line 39 (:422) reason -> same-surface, surface - -> crawler-discipline-vs-publishing, note changed
+       line 42 (:440) reason -> same-surface, surface - -> crawler-discipline-vs-publishing, note changed
+       quote column unchanged on all four
+
+ 5. python: every screen.tsv row whose sibling_ref is kake@04404859:PROVINCE.md:<n> re-checked against
+    `git -C /home/vgpnk/Projects/shokunin/kake-shokunin cat-file blob 04404859...:PROVINCE.md`
+    rc=0  -> 37 such rows, quote is a verbatim substring of the cited line in all 37;
+            rows 31/39/42 quotes 65/36/45 non-space chars, 14/10/11 words; all four surfaces
+            (robots-txt-publisher-audit-vs-client-obedience, crawler-discipline-vs-publishing)
+            are map rows verified for kake (adjacency.tsv rows 13 and 6)
+
+ 6. node .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs --rev 04f9623d --repo $S/clone \
+       --fleet /home/vgpnk/Projects/shokunin --json         (TMPDIR=$S)
+    rc=1  -> adjacency {verdict clean, rows 17, verified 17, findings 0}; candidates 52, mapped 8,
+            screened 44, unaccounted 0, newMapped 3, screenFindings []
+    same counter at the freeze 59f1b47a: rc=1 -> rows 13/13, candidates 52, mapped 8, screened 44,
+            unaccounted 0, newMapped 3, screenFindings []  (accounting identical: the relabel is inert)
+    counter bytes: sha256 da59d157c29ce53781fcfb6159149504a185b890d923efc6eecfe22d4b2c6380
+            = round-33 claims.json frozenDigests value
+
+ 7. git show 04f9623dde8ad35d470cecf766e421eafbcb47fa:scripts/check-adjacency.mjs | sha256sum
+    rc=0  -> 4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac (= pinned digest)
+    node scripts/check-adjacency.mjs --at 04f9623dde8ad35d470cecf766e421eafbcb47fa --repo $S/clone --fleet ... --json   rc=0
+    node scripts/check-adjacency.mjs --self-test    rc=0
+         -> ADJACENCY_SELFTEST verdict=clean cases=57 reasons=18 could_not_evaluate=6
+
+ 8. node .ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs --rev 04f9623dde8ad35d470cecf766e421eafbcb47fa \
+       --repo $S/clone --fleet /home/vgpnk/Projects/shokunin --json    rc=0
+    -> predicate true; candidates 67, mapped 5, screened 62, unaccounted 0, newMapped 4;
+       newMappedRows 15 live-delivery-observation, 16 lab-performance-tool-runs,
+       17 agent-facing-tool-text-craft, 18 authenticated-consequential-driving;
+       adjacency clean rows 17 verified 17
+
+ 9. counterfactual A ($S/cf, own scratch clone, commit 3df1297): delete adjacency.tsv row 15, append
+    adjacency-screen-skill.tsv row kake@04404859:SKILL.md:408 same-surface js-rendering-browser-execution
+    node ... c1-adjacency-sweep-v2.mjs --rev 3df1297 --repo $S/cf --fleet ... --json   rc=0
+    -> predicate true; mapped 4, screened 63, unaccounted 0, newMapped 3
+       (lab-performance-tool-runs, agent-facing-tool-text-craft, authenticated-consequential-driving);
+       adjacency clean 16/16; screenFindings []
+
+10. counterfactual B (commit 9edbdaa): also withdraw row 17 and screen
+    kotoba@65a5c7a6:corpus/knowledge/sibling-overlap-census-round49.md:171 third-lane-report
+    node ... --rev 9edbdaa --repo $S/cf --fleet ... --json
+    rc=1 (harness relayed no stdout on this invocation; JSON written) ->
+       predicate false, mapped 3, screened 61, unaccounted 3, newMapped 2,
+       screenFindings 3 x screen-surface-unmapped agent-facing-tool-text-craft kotoba
+       => zero slack: row 17 is load-bearing for C1
+
+11. git -C /home/vgpnk/Projects/shokunin/tabi-shokunin status --porcelain (read-only)
+    -> M corpus/lessons/round-34.md and untracked .ufo/waves/round-34/w1-results.json, w1/MutC1Counter*,
+       w2-dispatch.json: present when this seat started and it ran no write into the lane; not this seat's changes
+
+No network fetches were made. No browser was launched. No tool installed.

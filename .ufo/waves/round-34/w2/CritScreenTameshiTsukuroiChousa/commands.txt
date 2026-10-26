@@ -1,0 +1,8 @@
+# CritScreenTameshiTsukuroiChousa — commands and exit codes (2026-10-26)
+$ git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin $S/clone   # exit 0
+$ git -C $S/clone checkout -q --detach 04f9623dde8ad35d470cecf766e421eafbcb47fa; git -C $S/clone rev-parse --show-toplevel   # exit 0 -> $S/clone
+$ TMPDIR=$S/tmp node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs --rev 04f9623... --repo $S/clone --fleet /home/vgpnk/Projects/shokunin --json   # exit 0 predicate=true
+$ sha256sum /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/adjacency-screen-skill.tsv   # 4435bbcd2dffa3abca6e510636bbbbd80d0e3790029cd94008e438d369ed20e1
+$ git -C $S/clone show 04f9623:corpus/adjacency-screen-skill.tsv | sha256sum   # 4435bbcd... same bytes
+$ git -C <sibling> show <pin>:<path> | sed -n '<line-10>,<line+10>p'   # context read, exit 0 for all 3 repos
+$ python3 $S/check_screens.py   # exit 0: 8/8 keys in frozen candidates, text_trimmed_eq=true, quote substring true, 4<=words<=25, nonspace>=20
