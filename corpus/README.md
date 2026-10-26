@@ -650,3 +650,7 @@ not record `RateLimit` or `X-RateLimit-*` fields, and no run has exercised them.
 |---|---|---|
 | Rate/ToS surface for site-interaction records | docs-held — IETF `RateLimit-Policy`/`RateLimit` fields (Internet-Draft `-11`) and one host's `X-RateLimit-*` set documented; runtime open — no measured real-site rate or ToS datum; approval table C3/C6 unchanged | `knowledge/rate-limit-policy-fields.md`; `knowledge/host-published-rate-limit-headers.md`; counter `node scripts/check-frontier-admission.mjs --rev <REV> --frontier rate-tos-signal --since 2026-10-26 --live` |
 | Gate self-test kill coverage | held for two gates — every catalogued fault in `scripts/check-s106-evidence.mjs` and `scripts/check-release-pins.mjs` is killed by a self-test case and no equivalent rewrite is; known counter weakness (mutant identity visible to the code under test) routed (lesson round-30 M5) | `node scripts/check-gate-mutants.mjs --rev <REV>`; `scripts/gate-mutants.json` |
+
+Correction (round 30 wave 2, append-only; `.ufo/waves/round-30/w2/CritC2Surface.md` F1): the round-30 frontier row
+above marks "Rate/ToS surface for site-interaction records" `docs-held` on the **rate** half only — no ToS
+document was mined; the ToS half stays open, as does runtime for both halves.

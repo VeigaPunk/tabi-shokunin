@@ -239,3 +239,59 @@ naming duty general.
 No real-site interaction beyond read-only HTTPS GETs of public documentation, specifications and source
 (www.ietf.org, datatracker.ietf.org, docs.discord.com, chromium.googlesource.com, github.com). No API was called, no
 credential, cookie or session material was read or stored.
+
+## Wave-2 corrections (append-only; `.ufo/waves/round-30/w2/`)
+
+Registry in-place changes (CORPUS rule 2), old → new:
+
+| id | cell | old | new | why |
+|---|---|---|---|---|
+| S080 | status | `queued` | `mined` | now cited in `used-by` by `corpus/knowledge/chromium-156-release-pin-recheck.md` (RevUsedByChange) |
+| S081 | status | `queued` | `mined` | same |
+| S093 | status | `queued` | `mined` | same |
+| S098 | status | `queued` | `mined` | same |
+| S116 | recheck | `180d` | `2026-11-24` | the `-11` draft expires 2026-11-24 (CritEntryPolicyFields D4) |
+| S118 | used-by | `corpus/knowledge/webmcp-invocation-round-17.md` | `corpus/knowledge/webmcp-invocation-round-17.md, corpus/knowledge/source-recheck-round-18.md` | the second entry citing S044 now carries a pointer to S118 (RevS118) |
+
+Corrections to this lesson's own lines (the lines above keep their bytes):
+
+- §Gate, S116 row: the receipt quote spans `-11` lines 308–310, not 308–311 (CritC2Surface F3).
+- §Gate, S118 paragraph: S068 does not literally name the 404 path; its anchor's pathless `Model:249-257` implies it
+  only through the directory of its `WebMCPView.ts` URL (which returns 200). S118's `teaches` cell says the
+  panels/application path "S044 and its twin S068 name … returns 404"; the 404 path is
+  `front_end/panels/application/WebMCPModel.ts` (implied by both anchors), not the rows' `WebMCPView.ts` URL
+  (ExecCensusTip, RevS118). The cell is append-only; the wording is fixed when S118 is next superseded.
+- §Gate, S118 paragraph: two entries cite S044 — `webmcp-invocation-round-17.md` (correction appended) and
+  `source-recheck-round-18.md` (pointer appended this wave).
+
+Entry errata appended this wave: `corpus/knowledge/rate-limit-policy-fields.md` §Errata (D1–D7, F1),
+`corpus/knowledge/host-published-rate-limit-headers.md` §Errata (shared-scope 429 carve-out; receipt quote scope),
+`corpus/knowledge/chromium-156-release-pin-recheck.md` (first hunk line 156:126), `corpus/README.md` (the frontier
+row's `docs-held` covers the rate half only).
+
+Counter weaknesses found after the freeze (the frozen rules stay the claims' rules; these are disclosed, not repaired):
+
+- C1: the counter's run directory names the mutant (`mutant-<index>`), so a self-test can recognise it (w1
+  CritC1Counter; w1 CritClaimSizing control J5 reaches 27/27 killed, 0 benign killed). Independent re-derivation: the
+  same catalogue run by a scratch copy of the counter with random run-directory names gives fault_survivors 0,
+  benign_killed 0 at `072af95` (`.ufo/waves/round-30/measure/c1-identity-blind-*`); w2 RevC1KillAttribution reads each of
+  the 14 formerly-surviving faults' killing case and finds a fixture-building case that calls `evaluate()` — no self-test
+  code reads cwd, argv, env, /proc or its own source. One kill (`pins-f3-bytes-absent`) is a crash on `sha256(null)`,
+  not a named failing case (MeasureC1Clean §6). The C1 counter's own self-test misses five of twelve guard mutants
+  (w1 MutC1Counter).
+- C1 scope: claims.json's implementer note said only self-test cases and fixtures change; the landed diff also
+  changed the self-test runner (a per-case `reasons` assertion) and the self-test print line. Production code is
+  byte-identical (w2 RevC1Diff); w1 CritClaimSizing shows the new cases reach 0 survivors under the unmodified runner.
+- C2: `--live` shells to `curl` without `-q`, protocol or host pinning, accepts `file://`, and follows off-host
+  redirects (w1 SentinelFetchScope, CritC2Counter; w2 MeasureC2Clean shows a `~/.curlrc` remap forges a live 2/2);
+  `g7` checks a refetch's seat label and bytes, not its independence (w1 CritClaimSizing J5). For the committed
+  receipts: all urls are `https://` on the row's host (w2 SentinelReceipts); in a network namespace with no route the
+  live run fails `l1-live` on both (w2 MeasureC2Clean), so the recorded live reading reached the network; the refetch
+  records match independently logged fetches by other seats (w2 CritC2Fabrication), and a third seat's live fetch
+  normalises identically (w2 RefetchLiveS117, RefetchLiveS116).
+
+### Additional mistake row (wave 2)
+
+| # | class | evidence pointer | captured by | fix |
+|---|---|---|---|---|
+| M7 | `vacuous` | `.ufo/waves/round-30/w1/CritClaimSizing.md` (controls J5: `c1-control-J5-mutant-identity.json`, `c2-control-J5-copyrefetch-live.json` meet both frozen targets) | prompt §9 (the cheapest control that skips the work is built and scored before freezing) — partially: the freeze built do-nothing and junk controls against the *work*, none against the *counter's own observables* (run directory, refetch labels) | a freeze checklist item: for each counter, list what the code under test or the evidence writer can observe about the counter (paths, env, labels, schemes) and build one junk per observable before freezing; the w1 J5 controls are that junk for this round's counters and stay committed as the red state |

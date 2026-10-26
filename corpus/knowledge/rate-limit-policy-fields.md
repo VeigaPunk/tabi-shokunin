@@ -121,3 +121,27 @@ table and all three revisions' bytes:
 the S044 superseding row.
 
 ---
+
+## Errata — round 30 wave 2 (2026-10-26; append-only; `.ufo/waves/round-30/w2/CritEntryPolicyFields.md` D1–D7, `RefetchLiveS116.md` F1–F2)
+
+- **Ground attribution (D1).** The `ground:` line above says the 429/403 status class is held in
+  `corpus/knowledge/redirect-and-retry-after-semantics.md`; that note holds RFC 9110 `Retry-After` and the 3xx codes
+  only. The lane holds the 429/403 stop class at `SKILL.md:329` and `corpus/knowledge/external-class-fixture-v2.md`
+  §4–§5 (`STATUS_TRIP` 429/403).
+- **Service-limit definition (D2).** The §2 span quoted in §The two fields stops at `a specific quota policy`; the
+  draft's sentence continues with the effective time window within which the client can use no more than the
+  available quota (`-11` lines 293–296). The service limit is quota plus, if defined, that window.
+- **Sections read (D3, F2).** Besides the sections named on the `source:` line, spans are quoted from §2 Terminology,
+  §8.1 and the Status of This Memo boilerplate.
+- **Recheck (D4).** The `-11` draft expires 2026-11-24 (Internet-Drafts are valid for at most six months); 180d runs
+  past that. The recheck is due on publication of `-12` or later, and in any case by 2026-11-24; registry row S116's
+  recheck cell moved `180d` → `2026-11-24` (logged in `corpus/lessons/round-30.md`).
+- **Parameters (F1).** In §4.1 `r` is REQUIRED, `t` is OPTIONAL and `pk` is OPTIONAL; a record must accept a
+  `RateLimit` item without `t`.
+- **Package accounting (D5).** Three package clauses survive in `-11`, not two (lines 308–309, 309–311, 311–313); the
+  first two were widened to their full sentences.
+- **Retry-After precedence (D6).** The draft says the effective window MAY be ignored when `Retry-After` is present;
+  a record that stores `t` as the wait records the non-authoritative field, not necessarily a different number; `t`
+  under `-10` was a delay (seconds until more quota), never an instant.
+- **Evidence path (D7).** The `-09`/`-10` bytes named in §Limits and §Adopted from land in commit `af0664ed` under
+  `.ufo/waves/round-30/w1/ScribeEntryRateLimitFields/bytes/`, one commit after this entry.

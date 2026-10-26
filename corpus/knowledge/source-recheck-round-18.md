@@ -226,3 +226,8 @@ not an old historical “held” label, govern semantic support.
 Two rows this note replays drifted at the current Stable tag: S042 → **S109** (`model_context.cc` `528-580`, `748-811` no longer contiguous; now `527-577`, `744-807`) and S071 → **S110** (`html_form_element.cc` `192-258` now `193-269` with a 10-line detached-document guard at 156 `201-209`; `model_context.cc` `752-811` now `748-807`). `form_mcp_schema.cc` is byte-identical at 156, so the S071 substance (FillData rejects unknown parameters and invalid supported values) holds; the 154 line numbers shown here are history, not live pointers. Receipt and bytes: `corpus/evidence/round-29/release-pins/`; summary `corpus/knowledge/chromium-156-release-pin-recheck.md`. The 154 observations above stay true of the 154 build; earlier lines are not edited.
 
 Errata (wave-2 review `.ufo/waves/round-29/w2/RevKnowledge.md` F4, F5; append-only): the detached-document guard at 156 `201-209` is 9 lines, not 10; `model_context.cc` `752-811` → `748-807` is positional, not verbatim — 154:753 `const base::UnguessableToken& invocation_id,` reads `base::UnguessableToken invocation_id,` at 156:749.
+
+Round-30 pointer (2026-10-26; append-only): S044's anchor path `front_end/panels/application/WebMCPModel.ts` returns
+HTTP 404 at devtools `66df492…` and `bf69d041…`; the model is `front_end/models/web_mcp/WebMCPModel.ts` at the same
+line numbers. Superseding row S118; correction and bytes in `corpus/knowledge/webmcp-invocation-round-17.md`
+§Round-30 anchor correction and `corpus/evidence/round-30/s118/`.

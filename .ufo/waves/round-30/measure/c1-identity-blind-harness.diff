@@ -1,0 +1,20 @@
+--- /fast/scratch/hyaku/tabi-r30/L1/tipchk/scripts/check-gate-mutants.mjs	2026-10-26 04:13:13.130863155 -0300
++++ /fast/scratch/hyaku/tabi-r30/L1/neutral-counter.mjs	2026-10-26 04:24:59.961300673 -0300
+@@ -72,6 +72,8 @@
+ const LANE = join(dirname(SELF), "..");
+ const RUN_TIMEOUT_MS = 600000;
+ const LITERAL_MIN = 8;
++import { randomBytes as __rb } from "node:crypto";
++const require_rand = () => __rb(8).toString("hex");
+ 
+ class Refusal extends Error {
+   constructor(message) {
+@@ -139,7 +141,7 @@
+ // ---- self-test runner ------------------------------------------------------------
+ 
+ function runSelftestOf(work, runId, name, bytes) {
+-  const dir = join(work, runId);
++  const dir = join(work, require_rand());
+   const tmp = join(dir, "tmp");
+   mkdirSync(tmp, { recursive: true });
+   const file = join(dir, name);

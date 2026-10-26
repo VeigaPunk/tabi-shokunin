@@ -176,3 +176,12 @@ inaccurate. Corrected: the per-guild caveat is scoped to the emoji-control route
 records. Added here: the shape-only capture rules (§5), the mapping and its non-equivalences
 (§6), and the explicit limits (§7). Dropped: the package row's round provenance and its
 wave-1/wave-3 framing.
+
+## Errata — round 30 wave 2 (2026-10-26; append-only; `.ufo/waves/round-30/w2/RefetchLiveS117.md` F1–F2)
+
+- **Invalid-request limit carve-out (F1).** The same passage of the page states that 429 responses carrying
+  `X-RateLimit-Scope: shared` are not counted against the invalid-request limit; a receipt that tallies 401/403/429
+  outcomes toward that limit must exclude shared-scope 429s.
+- **Receipt quote scope (F2).** The S117 receipt and Gate quote begin mid-sentence (`limited on a per-guild basis …`);
+  the subject and scope — the emoji-control routes — are in the full passage quoted in §2, which is the reading this
+  entry uses.

@@ -149,3 +149,7 @@ population — `recheck == on-release` and a source cell carrying `refs/tags/<A.
 (`scripts/check-release-pins.mjs:178`). Not selected and not re-opened by this entry: six DEPS-pinned devtools rows
 (S036, S044, S068, S088, S089, S090) and three `main`-branch rows (S004, S028, S035); see
 `corpus/lessons/round-30.md` §Release-pin population rule.
+
+Errata (round 30 wave 2, append-only; `.ufo/waves/round-30/w2/RevAddenda.md` F1): the first hunk's added line
+(`is_connected_nested_form_(false),`) sits at 156:126, not 156:124; the line delta is 0 through 156:125 and +1 from
+old 126 / new 127. No other figure in this entry depends on it.
