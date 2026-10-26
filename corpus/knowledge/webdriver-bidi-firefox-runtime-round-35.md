@@ -12,7 +12,7 @@ chromium-bidi's CDP mapper. That left the lane's capability statement engine-sco
 `yes` was a statement about one driver's translation layer. This entry adds the same sixteen rows
 on a second engine whose BiDi path is not a CDP translation — geckodriver drives Firefox through
 Marionette for the HTTP WebDriver side (firefox-source-docs remote/index.html (unregistered page fetched this round; receipt `.ufo/waves/round-35/w1/ScribeFirefoxEntry/fetch-receipts.md`)), and the BiDi socket Firefox
-exposes is the browser's own remote agent (S007 MDN connection guide). It fills the same table
+exposes is the browser's own remote agent (S138; S007 supports only that the socket is reached directly). It fills the same table
 with the same predicates; it does not re-litigate the matrix's gap analysis, and it does not
 turn two builds into a support matrix.
 
@@ -46,15 +46,18 @@ turn two builds into a support matrix.
   (`.ufo/waves/round-35/baseline/c2-instrument-check.json`: sessions `59aa1fd4-…`, `df776540-…`,
   distinct loopback websocket ports, every gate predicate `null` for R1–R15 and R17, R16
   `no-bidi-counterpart`, zero errors), the engine-delta session
-  (`.ufo/waves/round-35/w1/ExecFirefoxDelta/firefox-raw.jsonl`, 28 successful commands), and both
-  receipt runs (`w1/ExecFirefoxDriver/run1.jsonl`, `run2.jsonl`: 28 commands and 20 events each,
-  session ids `bc272ba1-…` / `08b0adaa-…`, every one of the sixteen gate predicates re-evaluated
-  here with zero failures). All five sessions' first screenshot is
+  (`.ufo/waves/round-35/w1/ExecFirefoxDelta/firefox-raw.jsonl`, 28 successful commands), and the
+  wave-1 executor's two receipt runs (`w1/ExecFirefoxDriver/run1.jsonl`, `run2.jsonl`: 28 commands
+  and 20 events each, session ids `bc272ba1-…` / `08b0adaa-…`, every one of the sixteen gate
+  predicates re-evaluated here with zero failures). All five sessions' first screenshot is
   `sha256 7a3ae6a9b0d65497f52ec1ed6ddea1970e32025e0fb8a36d2debdfc201cbfd02` (9,451 bytes, 640×480).
+  The committed receipt is not those two runs: the L1 re-recorded both runs after adding the DNS-off
+  prefs (`corpus/evidence/round-35/bidi-firefox/run1.jsonl` / `run2.jsonl`, transcript sha256
+  `0ef2e7e5…` / `6754ec2d…`), with the same first-screenshot digest.
   What this does not license: the digest equality is a rendering-identity observation, not a
   provenance proof (see Limits), and the admission still belongs to the counter's reading at the
   measured revision — the executor recorded 16 admitted / 0 failing / 0 binding findings at
-  `245c4c61…`, in `w1/ExecFirefoxDriver/counter-check.json`.
+  `245c4c61…` (its scratch commit), in `w1/ExecFirefoxDriver/counter-check.json`.
 
 ## 2. Launch discipline on this host [observation, grounded in the flags documented above]
 
@@ -147,7 +150,7 @@ realm and hex ids — both are shape facts of this build, not a contract either 
 | Raw status line / header block | neither | no condition reaches it: the standard defines status, `statusText`, protocol and serialized header fields, not raw block bytes | wire-truth parity; U2 stays open |
 | A Firefox-specific behaviour question (setViewport geometry, prompt fields, cookie `sameSite` default, `userContext` fields) | Firefox 158.0.1 / geckodriver 0.37.1 | the question is about this engine, and the answer is published as build-scoped | anything about another Firefox version, headed mode, or another engine |
 | Launch isolation (profiles outside the system temp dir, scrubbed HOME/XDG) | Firefox / geckodriver | `--profile-root` is needed because profiles otherwise land in the system temporary directory with read-write access for both processes | an equivalent knob on the Chromium path; isolation there comes from `--user-data-dir` |
-| A cost or latency comparison between the engines | each engine on its own build, same recipe and fixture | every run is recorded and the sample size is stated; this round's delta records one run per engine | a benchmark: n=1 wall times (2,312 ms Firefox vs 1,104 ms Chromium for the same 28-command recipe, sibling artifact `w1/ExecFirefoxDelta/shapes.json`) are an observation, not a measurement of variance |
+| A cost or latency comparison between the engines | each engine on its own build, same recipe and fixture | every run is recorded and the sample size is stated; this round's delta records one run per engine | a benchmark: n=1 wall times (2,332 ms Firefox vs 1,054 ms Chromium for the same 28-command recipe, sibling artifact `w1/ExecFirefoxDelta/shapes.json`) are an observation, not a measurement of variance |
 | A claim about "the lane's BiDi evidence" without an engine qualifier | both engines, per row | every row the claim touches is admitted on both engines at the measured revision | a support matrix; the §2 row set is the gate's, not the spec's |
 
 ## 5. Engine differences
@@ -171,7 +174,7 @@ Firefox record outright, and the counter's `UUID` (counter line 81) refuses a Ch
 schema written from Chromium transcripts only, that validates `sharedId` against the
 `f.<ctx>.d.<doc>.e.<n>` grammar, will reject every Firefox node.
 
-### D2. Capability namespaces; the driver version lives in capabilities on Firefox only (R1)
+### D2. Capability namespaces; the driver version is a flat capability on Firefox only (R1)
 Chromium `caps` keys: `acceptInsecureCerts browserName browserVersion chrome fedcm:accounts
 goog:chromeOptions goog:processID networkConnectionEnabled pageLoadStrategy platformName proxy
 setWindowRect strictFileInteractability timeouts unhandledPromptBehavior webSocketUrl
@@ -179,11 +182,12 @@ webauthn:extension:* webauthn:virtualAuthenticators` (22 keys, `chromium-raw.jso
 Firefox: `… moz:accessibilityChecks moz:buildID moz:geckodriverVersion moz:headless
 moz:platformVersion moz:processID moz:profile moz:shutdownTimeout moz:webdriverClick
 moz:windowless … userAgent webSocketUrl` (22 keys, `firefox-raw.jsonl:1`).
-Firefox publishes `moz:geckodriverVersion` and `userAgent`; Chromium publishes **no**
-chromedriver-version capability at all. `moz:profile` is an absolute path — inside the recorder's
+Firefox publishes `moz:geckodriverVersion` and `userAgent` as flat keys; Chromium has no flat
+driver-version key — its driver version sits nested at `chrome.chromedriverVersion` (corrected by w2
+CritEntryDifferences). `moz:profile` is an absolute path — inside the recorder's
 throwaway scratch here, but it is a host path in a committed transcript unless the author strips or
-redacts it (the counter requires the profile to live under scratch; the receipt's transcript will
-carry whatever geckodriver reports).
+redacts it (the counter starts its own sessions with `--profile-root` under its scratch but does not
+check where a receipt's profile lived; the receipt's transcript carries whatever geckodriver reports).
 
 ### D3. `userContext` on every Firefox event; `goog:resource*` on every Chromium request (R3, R10, R13, R17)
 Firefox event params carry `userContext: "default"` on `browsingContext.load`
@@ -258,11 +262,13 @@ on **both** engines (`chromium-raw.jsonl:9`, `:46`; `firefox-raw.jsonl:9`, `:48`
 path for R12; a decoder that only accepts `type: "base64"` would be wrong on both engines.
 
 ### D10. Ids on the network side, and the fields that do match exactly
-`request.request` (the request id a `continueRequest`/`getData` must echo) is 32 uppercase hex on
-Chromium (`BD28158C69CE68AE137D56D77EE8F90A`, `chromium-raw.jsonl:12`) and `<int>-<uuid>` on Firefox
+`request.request` (the request id a `continueRequest`/`getData` must echo) has two shapes on
+Chromium — 32 uppercase hex for navigation requests (`BD28158C69CE68AE137D56D77EE8F90A`,
+`chromium-raw.jsonl:12`) and decimal-dotted for fetch/subresource requests (`"483282.3"` in the
+committed round-32 transcripts; corrected by w2 CritEntryDifferences) — and `<int>-<uuid>` on Firefox
 (`7-24915bfc-606c-4e0f-b9c7-8f9e6ac805b9`, `firefox-raw.jsonl:12`). By contrast `navigation` is a
 UUID on both (`chromium-raw.jsonl:11`, `firefox-raw.jsonl:11`), `browsingContext.getTree` returns
-the same eight keys on both (`children clientWindow context originalOpener parent url userContext`),
+the same seven keys on both (`children clientWindow context originalOpener parent url userContext`),
 `setViewport`, `traverseHistory` and `handleUserPrompt` return `{}` on both, `innerWidth` is 640 on
 both, and `#out` is `clicked:tabi` / `#t` is `tabi` on both. `timings` differ in kind, not just
 value: Chromium emits all-zero deltas with a non-zero integer `timeOrigin`, Firefox emits
@@ -308,7 +314,7 @@ With geckodriver's recommended automation prefs alone, the Firefox parent proces
   list has no navigation stop, and the gate refuses a `yes` on R16 (`x2-no-counterpart`).
 - **"Firefox's BiDi is a CDP path like Chromium's."** Rejected: Firefox's CDP-ish surface is the
   `moz:debuggerAddress` remote protocol, documented as a *subset* of CDP (S135 Capabilities.html);
-  the BiDi socket is the browser's own remote agent, reached directly (S007 MDN connection guide).
+  the BiDi socket is the browser's own remote agent (S138), reached directly (S007 MDN connection guide).
 - **"The 9222 default is convenient."** Rejected on this host: geckodriver's documented BiDi
   default (S134 Flags.html) is the operator's musketeer CDP lease port, so a run that does not
   pass `--websocket-port` is a collision waiting to happen.

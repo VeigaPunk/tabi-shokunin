@@ -90,13 +90,15 @@ nothing appended, so nothing renumbered; quarantine slice re-derived (38 rows), 
   frozen bytes are not edited; C2 is judged on the stricter declared sentence (admitted 16, which also satisfies the
   counter's 14), and a reading of 14–15 would be reported as not met whatever the counter prints. Fix: QUALITY 98 — a
   freeze carries, for each numeric predicate, a boundary control one step short of the target that must exit 1.
-  Shown able to fail: the boundary construction (the integration candidate with R17 marked `no`) scored on the frozen counter reads admitted 15, unmeasured 2, failing 0, predicate true, exit 0 while the declared predicate is false (`.ufo/waves/round-35/measure/c2-M1-boundary-15.json`) — the control QUALITY 98 requires would have exited 1 under the declared 16.
+  Shown able to fail: the boundary construction (the integration candidate with R17 marked `no`) scored on the frozen counter reads admitted 15, unmeasured 2, failing 0, predicate true, exit 0 while the declared predicate is false (`.ufo/waves/round-35/measure/c2-M1-boundary-15.json`) — the control QUALITY 98 requires would have exited 1 under the declared 16. The scratch commit it scored (`86d6df42…`) lives only in the L1's scratch clone; the construction is the one-line change above applied to the entry at `083c5c643be7aa5965a5de3458a32ed0d289ead3`, and w2 CritC2Boundary rebuilt it independently and reproduced admitted 15 / predicate true (`.ufo/waves/round-35/w2/CritC2Boundary/`), and with a TARGET-16 copy of the counter predicate false.
 - **M2 — instrument (screen rule unreachable for short lines).** Evidence: the first pre-freeze run of control J2
   (screen-all) left 31 candidates unaccounted with `screen-quote` findings, because the round-34 quote rule demands
   4–25 words and >= 20 non-space chars and 31 candidate lines (bare paths, headings) are shorter. Captured-by: the J2
   control itself (QUALITY 87's screen-all red state) — caught before data; fix landed in the freeze (whole trimmed line
   admitted as the quote when the line is that short). Shown able to fail: J2 31 → 0 findings between the two pre-freeze
-  runs.
+  runs — the 31-finding receipts were overwritten by the second pre-freeze run and are committed nowhere (w2
+  RevLessonMistakes); the re-derivable red state is w1 MutC1Counter's mutant that removes the short-line clause, which flips
+  control J8 (exit 0 → 1) on the frozen controls (`.ufo/waves/round-35/w1/MutC1Counter.md`).
 - **M3 — overclaim in a frozen instrument (loopback).** Evidence: `c2-firefox-bidi.mjs:57-58` says the live leg is
   "loopback FIXTURE only"; w1 SentinelFirefoxEgress measured three outbound TLS sockets per launch. Captured-by: none
   (no egress observation in any control). Fix: the lane driver sets the DNS-off prefs and the integration run sampled 0
@@ -124,3 +126,86 @@ nothing appended, so nothing renumbered; quarantine slice re-derived (38 rows), 
 7. Calibration counter v4 — not claimed; carried.
 8. Misroot — every w1 seat path was built from the wave id `w1` (context: "the wave id is exactly `w1`"); the misroot
    sweep result is in the round report.
+
+Note on `.ufo/waves/round-35/measure/driver-egress-sample.txt` (cited in §C2 above as "0 non-loopback sockets"): the file
+is 0 bytes because the sampler printed only non-loopback lines and saw none; it records neither that the sampler ran
+nor how many samples it took (w2 RevLessonMistakes, w2 SentinelDriverEgress). The driver's loopback-only claim rests on
+w2 SentinelDriverEgress instead: a clean-clone driver run with `ss -tnpH` sampled every 200 ms, 0 non-loopback
+firefox/geckodriver sockets, no write under `~/.mozilla`, `~/.cache/mozilla`, `~/.config/mozilla`, `~/.local/share/mozilla`
+(`.ufo/waves/round-35/w2/SentinelDriverEgress/`).
+
+S141 signature status (Gate supplement, w2 ReopenS140S141 D1-D2): the geckodriver v0.37.1 linux64 `.asc` verifies Good
+by subkey `09BEED63F3462A2DFFAB3B875ECB6497C1A20256`, which the Mozilla KEY served under S140's directory
+(`https://ftp.mozilla.org/pub/firefox/releases/158.0.1/KEY`, 31,916 B, sha256 prefix `b0c538f0`) marks revoked ("We no
+longer trust this key.", revocation signed 2026-08-06T11:14:10Z) — a local `gpg --verify` with a scratch GNUPGHOME
+(`.ufo/waves/round-35/w1/ScribeSrcMozRelease/verify-gpg.txt`). S141's `scope`/`teaches` were narrowed at the w2
+integration to the asset/digest facts its own page grounds; the trust fact is time-varying and recorded here only.
+Other w2 row fixes (cells of rows added this round): S135 anchor sweep count `moz:firefoxOptions` 1 → 0 (ReopenS134S135);
+S136 anchor rejection lines → `:309-312` (ReopenS136S137); S139 anchor gains the page's last-modified stamp and the
+`sharedId` line 1744 (ReopenS138S139). The S136 Gate quote above writes the source's `||` operator as `¦¦` so the
+lesson table parses.
+
+## C1 gate decisions — wave 2
+
+- The single new map row was attacked twice and the attackers disagreed: w2 CritRowKagiA — withdraw (kagi's line is its
+  own CLI rule, its refusal routes to no lane, the vault-DOM ban is shared; QUALITY 91, 97); w2 CritRowKagiB — holds
+  (tabi's side at `SKILL.md:2970` is truthful and the gate verifies the row). The integrator withdrew the row on kagi's
+  bytes (QUALITY 91: recorded reversal with its ground): `SKILL.md:40` at pin `69b61db4…` names no lane for the refusal,
+  and the w1 independent scan (ConnBoundaries watchlist 3) had already called it same-surface. Screened
+  `same-surface secrets-vault-ops`; `SKILL.md` §Round 35 carries an append-only withdrawal note.
+- Screens: eight attack seats re-read all 382 screen rows at their pins (CritScreenKaidokuA/B, Kumitate, Kagi, Kake,
+  KotobaMixed, MadoTsukuroi, ThirdNoClaim): 0 should-map, every quote verbatim; two low label notes (one kaidoku reason,
+  one kagi ledger note) do not change accounting. w2 ConnMissedBoundaries re-hunted all 382 for a defensible new
+  boundary and found none.
+- Result: unaccounted 0, newMapped 0 — the frozen target (newMapped >= 2) is missed; honest stop.
+
+## Census delta (moved here from `corpus/knowledge/browser-surface-census.md`)
+
+Firefox 158.0.1 is present on this host as a user-local unpack (`~/.local/opt/firefox-158.0.1`, `~/.local/bin/firefox`
+symlink; `firefox-bin` sha256 `46e2c204ab769f1cb49fea4918e134c84829d2ab38278fb087a072f77b6e7294`) and geckodriver 0.37.1 at
+`~/.local/bin/geckodriver` (sha256 `f831b7e61454804e8a307edd951bf8a5f373efe3f718e75454a6485a51f6e39f`); `pacman -Q firefox`
+still reports not found; `~/.mozilla` still holds only the 1Password NMH json; Firefox runs created empty shells under
+`~/.config/mozilla/firefox/` and `~/.cache/mozilla/firefox/` (w1 ScoutFirefoxCensus, before the DNS-off/driver scrub
+was measured). So `corpus/knowledge/browser-surface-census.md:34` and `:95-96` ("Firefox absent", "never profiled") are
+capture-scoped history, not live state. The append to the census file itself was withdrawn (M5).
+
+## Mistakes (wave 2)
+
+- **M5 — no-harm blind spot (a pinned file edited by a correction).** Evidence: the w1 integration `083c5c643be7aa5965a5de3458a32ed0d289ead3` appended a
+  census correction to `corpus/knowledge/browser-surface-census.md`; `scripts/check-freshness.mjs --worktree` reads
+  `clean 34/34` at the baseline and `content_drift` (exit 1) at `083c5c643be7aa5965a5de3458a32ed0d289ead3`, because
+  `corpus/evidence/fleet-round-1-freshness/pins.tsv:7` pins that file's bytes (w2 RevCorrections D1). The frozen
+  `measure.sh` runs check-freshness only through its `--self-test` loop, so the round's own no-harm sweep was green.
+  Captured-by: none in the frozen instrument; w2 RevCorrections caught it. Fix: the append was withdrawn (file bytes
+  equal the baseline again; `check-freshness --worktree` → clean 34/34 at the w2 integration) and QUALITY 101 makes the
+  production run of every gate with a production mode part of the no-harm reading. Shown able to fail: the
+  `083c5c643be7aa5965a5de3458a32ed0d289ead3` reading above (exit 1).
+
+## C2 gate decisions — wave 2
+
+- Re-measurement: w2 RerunC2 ran the frozen counter twice, minutes apart, at the w1 integration — admitted 16, failing
+  0, binding null both times; binaries' `--version` and sha256 equal the install receipts (QUALITY 99).
+- Holds: w2 CritReceiptTranscripts (receipt and transcripts consistent, two real sessions), w2 RevDriverCode (imports,
+  independence, wire order, 9222 refusal, scrub), w2 SentinelDriverEgress (0 non-loopback sockets, no home writes),
+  w2 CritEntryClaims (no unsupported sentence; one S007 attribution overreach fixed to S138), w2 CritEntryDifferences
+  (D1–D11 present in the committed transcripts; four precision defects fixed in the entry: Chromium request-id shapes,
+  getTree key count seven, Chromium's nested `chrome.chromedriverVersion`, the n=1 wall times 2,332 / 1,054 ms),
+  w2 CritCapabilityRow (a new capability, not the round-32 row re-parameterised; wording: "loopback-only" is a measured
+  outcome, so the row names the prefs and cites the sample), w2 ReopenS134–S141 (all URLs re-fetched byte-identical;
+  cell fixes above).
+- Limits recorded, routed to the next counter amendment (not fixed: the counter is frozen): w2 MutDriverReceipt M2 —
+  run2 replaced by a byte-copy of run1 with the session id and websocket segment rewritten still reads admitted 16
+  (the counter binds distinct paths, digests and session ids, not per-run content such as ports or request ids);
+  w2 RevDriverCode F1 — the driver's run deadline only closes the socket, so a hang can skip the process-group kill
+  (orphan path, not evidence-corrupting) and F2 — the driver header says it never writes the lane tree while its default
+  `--out` is the lane's evidence dir (accurate: it writes only `--out` and TMPDIR). The driver bytes are unchanged at the
+  w2 integration because the receipt binds `driverSha256`.
+
+## Adjacency: keep, split the meter (planning input)
+
+w2 ConnAdjacencySaturation: the axis is not saturated — the map grew 10 → 13 → 16 rows over rounds 33-34 and every
+sweep closed at unaccounted 0 — but the discovery meter on a frozen pool is: newMapped targets missed three rounds
+running (4→3, 3→1, 2→0 after this round's withdrawal), yield per candidate 5.8% → 1.5% → 0%. Planned: split the
+adjacency claim meter into completeness (every sibling line on the lane's ground accounted, re-swept on sibling drift)
+and delta discovery (new rows only from sibling commits after the pins), never again a fixed newMapped quota on a closed
+pool.

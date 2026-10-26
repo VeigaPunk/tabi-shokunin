@@ -700,3 +700,12 @@
     measured 0 (fixture on an IP literal). Red state: the frozen C2 counter's header claims its live leg is "loopback
     FIXTURE only" (`c2-firefox-bidi.mjs:57-58`) while w1 SentinelFirefoxEgress measured three outbound connections per
     launch. (source: corpus/lessons/round-35.md M3; `corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md` §5 D11)
+
+101. A no-harm reading runs every gate that has a production mode in that mode — not only its self-test — and a
+    correction appended to a file some gate pins by bytes is either carried with that pin's own append-only refresh or
+    placed elsewhere; a no-harm sweep that runs a gate only through its self-test cannot see the gate turn red on the
+    lane's own bytes. Red state: `scripts/check-freshness.mjs --worktree` reads `content_drift` at `083c5c643be7aa5965a5de3458a32ed0d289ead3` (the census
+    append moved bytes pinned at `corpus/evidence/fleet-round-1-freshness/pins.tsv:7`) while the frozen
+    `.ufo/waves/round-35/measure.sh` no-harm block, which runs check-freshness only with `--self-test`, stays 28/28 green
+    (w2 RevCorrections D1). (source: corpus/lessons/round-35.md M5)
+

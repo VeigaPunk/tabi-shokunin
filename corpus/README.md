@@ -825,3 +825,10 @@ is edited.
 | `adjacency-screen-browser.tsv` *(round 35, with `adjacency.tsv` line 18)* | The 383 sibling `SKILL.md`/`corpus/knowledge` lines on browser ground that do not name tabi and were not round-34 candidates, each mapped or screened with a closed reason (same-surface 225, not-browser-sense 119, third-lane-report 30, no-claim-declared 8, mapped 1) | sibling lines at the pins in `.ufo/waves/round-35/baseline/c1-pins.json`; `SKILL.md` §Round 35 declaration |
 | `knowledge/browser-surface-census.md` *(round-35 append)* | Firefox and geckodriver are now present as user-local installs (`~/.local/opt/firefox-158.0.1`, `~/.local/bin/geckodriver`); the round-1 "Firefox absent" rows stay as capture-scoped history | shell census, w1 ScoutFirefoxCensus |
 
+- Round 35 wave-2 corrections (append-only; cite the round-35 rows above): the `adjacency-screen-browser.tsv` row reads
+  383 screens and no new map row (same-surface 226) — the kagi `SKILL.md:40` row was withdrawn by w2 CritRowKagiA and
+  screened `same-surface secrets-vault-ops`, so "one new map row candidate" and "mapped 1" above are superseded; and the
+  `browser-surface-census.md` append listed above was withdrawn at the wave-2 integration because it moved that file's
+  bytes under the pin `corpus/evidence/fleet-round-1-freshness/pins.tsv:7` and turned `scripts/check-freshness.mjs
+  --worktree` red (w2 RevCorrections D1); the census delta lives in `corpus/lessons/round-35.md` §Census delta instead.
+

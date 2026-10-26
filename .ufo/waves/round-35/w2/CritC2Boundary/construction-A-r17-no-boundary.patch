@@ -1,0 +1,13 @@
+diff --git a/corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md b/corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+index 9dcea6b..39fe1c4 100644
+--- a/corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
++++ b/corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+@@ -118,7 +118,7 @@ the `recheck:` line above and `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs`
+ | R14 | Navigation history witness | `browsingContext.traverseHistory` with `delta: -1` | yes | after navigating `/b.html`, the traverse is followed by `location.pathname` reading `/a.html` — corpus/evidence/round-35/bidi-firefox/run1.jsonl + run2.jsonl; counter `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs` |
+ | R15 | Cookies | `storage.getCookies` | yes | the result contains a cookie named `tabi_fixture` whose value is `1` — corpus/evidence/round-35/bidi-firefox/run1.jsonl + run2.jsonl; counter `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs` |
+ | R16 | Stop loading / nav-cancel | none — the draft's `browsingContext` command list has no navigation stop | no — no BiDi command in the draft (§7.3.3) | none: there is no command to run, so no committed run (corpus/evidence/round-35/bidi-firefox/run1.jsonl, run2.jsonl) can carry it, and the gate refuses a `yes` here (`x2-no-counterpart`); only `browsingContext.stopScreencast` exists — counter `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs` reports the row unmeasured, never admitted |
+-| R17 | User prompts / dialogs | `browsingContext.userPromptOpened` then `browsingContext.handleUserPrompt` | yes | the `tabi-alert` prompt event is observed, then a successful `handleUserPrompt` follows it — corpus/evidence/round-35/bidi-firefox/run1.jsonl + run2.jsonl; counter `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs` |
++| R17 | User prompts / dialogs | `browsingContext.userPromptOpened` then `browsingContext.handleUserPrompt` | no — boundary | the `tabi-alert` prompt event is observed, then a successful `handleUserPrompt` follows it — corpus/evidence/round-35/bidi-firefox/run1.jsonl + run2.jsonl; counter `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs` |
+ 
+ ### What each `yes` does not show
+ 

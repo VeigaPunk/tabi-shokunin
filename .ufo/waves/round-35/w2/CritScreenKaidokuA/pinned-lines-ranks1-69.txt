@@ -1,0 +1,69 @@
+  chunks — `corpus/knowledge/2026-10-14-r12-01-queue-b-ready.md:67`); CDP and
+  census's `chromium --log-net-log` hint refuses typed against a real netlog;
+  the operative gate is a har-schema-valid capture (playwright `recordHar`
+| `GoApiSnapshot` WARN `Falling back from X to Y` | Lower patch data used; the next `GoRttiMapper` line still says `X` | Requested-label echo: never cite the mapper line as selection. Round 17 observed only fallback to the base (Y = M.m.0); round 18 observed an intermediate patch fallback (1.24.13 → 1.24.6, `.ufo/waves/round-18/runs/real-kimi-webbridge/logs/rea-ghidra-ZSUHpG/ghidra.log:68`) |
+| Swiss Go 1.24/1.25 carrier, bootstrap OK, `Go analysis failure` + `Invalid index: N` or `Unable to read past EOF: A, B` | Run `swiss-misread.py` on the carrier; an exact H1 match attributes the abort to the `OldMapType` binding | 3 carriers observed (aether calibrated; s1246-swiss-nethttp and kimi-webbridge held out); Ghidra 12.1.4, x86-64 ELF |
+| swiss-misread | probe / kaidoku | `python3 -I -B /home/vgpnk/Projects/shokunin/kaidoku-shokunin/.ufo/waves/round-18/tools/swiss-misread.py --carrier <PATH> --golang-root <GOLANG_DIR>` where `<GOLANG_DIR>` is `/home/vgpnk/.local/opt/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/data/typeinfo/golang`; 0 emitted, 2 unparseable | same command with `--selftest` | Pinned values: none external; predictions it emitted for round 18 are frozen under `.ufo/waves/round-18/predictions/` (`swiss-misread/<label>.json` hold the `predicted_*_h1/h0` keys). Write scope: none, reads the carrier and installed snapshot JSON, JSON on stdout, never executes the carrier. amd64 only; the `walk` channel has false positives (unmasked variadic bit, notesmd-cli, kimi-webbridge) and its gap scan misses `*struct {…}` names (w2 `EmulatorIndependence.md`, `Runs1246noswissnethttp.md`); predictions rest on the per-map channel |
+- suggested: admit — matters for runtime-observation candidates (`list_electron_targets` needs a CDP endpoint; bundled vs system electron change how you'd attach).
+## Candidate: crash corpus is dominated by chromium churn and deliberate self-crash test artifacts, not organic app failures
+- claim: of 175 entries, 133 are `/usr/lib/chromium/chromium` (SIGTRAP/SIGABRT renderer/sandbox churn across 2026-10-08/10) and 39 are recorded as EXE `/usr/bin/bash` but actually comm `crash-godot` — a script that kills itself (`kill_builtin` → `si_code: SI_USER`, SIGSEGV) from `/tmp/mint-game-dev-3d/.shokunin/` and `/tmp/g3d-controls/` corpora. Only 3 organic non-chromium crashes exist: godot SIGABRT (2026-10-13 06:40, user project verification script), waybar SIGABRT (2026-10-13 10:33, C++ exception → `__cxa_throw` → abort), localsearch-extractor-3 (2026-10-12 19:36).
+- claim: the oldest recorded entry (chromium SIGTRAP, 2026-10-08 14:01) lists COREFILE `missing` with no size, while its journal metadata persists — i.e., default vacuuming (MaxUse/KeepFree unset → compiled defaults) has already reaped at least one core; evidence degrades oldest-first.
+- suggested: admit — timeliness matters: an RE pass over the ~30+ chromium cores should run before vacuuming shrinks the window.
+Host plazir27 retains a rich, user-readable crash surface: systemd-coredump (sole collector, `core_pattern` piped, `ulimit -c` unlimited) holds 174 zstd ELF cores (~4.0 GB) over 5 days — 133 chromium, 39 deliberate `crash-godot` self-kills (SI_USER test noise), and 3 organic crashes (godot, waybar, localsearch) — all reachable unprivileged via `coredumpctl info/debug` + gdb/eu-stack; journal keeps 10 boots (165.3M) with no kernel panics and only sr0 I/O noise; retention is already decaying oldest-first.
+## Candidate: Runtime observation (CDP / Electron)
+- claim: Nothing bindable right now — zero CDP listeners and no process
+  carrying `--remote-debugging-port`. The *substrate* to self-provision a
+  target is fully present: `/usr/bin/chromium` (running user instance PID
+  25784 has no debug flag — cannot attach), `playwright` 1.64.0 global +
+  `~/.cache/ms-playwright/chromium-1248` + `chromium_headless_shell-1248`,
+  `agent-browser` 0.38.2 global, a stale `~/.local/share/burnerchrome/`
+  `electronToolContracts.js` defaults Electron CDP to `:9223` and counts
+  `pgrep -af remote-debugging` empty; `pgrep -af electron` only 1Password
+  `chromium --headless --remote-debugging-port=9222
+  --remote-debugging-port=9223 <tiny app with a file:// page>` →
+| Runtime observation | chromium + playwright cache + electron39/43 binaries; zero live CDP endpoints | **viable via self-launched CDP** | chromium `--remote-debugging-port=9222` → `list_browser_targets`; electron43 `:9223` file:// page → `list_electron_targets` |
+CDP `:9223`, not the browser `:9222`.
+| `rea list-browser-targets` | VALIDATION_ERROR | — | input validation | `--endpoint <string>` required (CDP endpoint); no default loopback scan |
+## Candidate: Passive browser/Electron observation is loopback-CDP-only with a fixed refusal list and deliberate data omissions
+- claim: `reconcile_javascript_runtime` is used only after static application Evidence AND passive browser/Electron Evidence both exist. Prefer captured-source digest identity; report path/digest disagreement as a mismatch and preserve ambiguity. Explicit path mappings are inference inputs and never broaden filesystem or CDP authority. A bundle observed at runtime does not prove every contained module executed.
+The four unread references contribute operational detail the r1 corpus lacks at three layers: (1) per-domain tool contracts — the Android five-tool chain with per-call APK paths and `overload_index`, JS module `node_id` item views, `trace_application_feature` seed/direction semantics, JS comparison identity rules (ordinals/minified names ≠ identity), and the `ev_<64hex>` retained-reference lifecycle cleared by `close_binary`; (2) host prerequisites — pinned JADX MCP JAR 0.7.1 + Java 17+/full JDK with env-var selectors outside doctor scope, JS analyzer heap/timeout knobs on the isolated analyzer (not the MCP process), and loopback-CDP-only passive observation with credential/body redaction and WebMCP-untrusted rules; (3) recovery procedures — a six-row observation→remedy table, 18 supported client IDs, the dry-run→`--yes`→verify setup sequence, Codex approval independence with per-tool `approval_mode`, sandbox-preserving environment fixes, evidence-provenance labeling for shell output, and the public-launcher-only CLI fallback with file-redirected JSON views.
+  playwright-cli pi ghui`, matching `omarchy-remove-preinstalls`' list). The
+# 05 — Runtime-observation surface: self-launched CDP endpoints
+r2 closed this axis as "viable via self-launched CDP" (14-frontier-scan.md:134)
+with zero live endpoints — nothing was bindable. r3 launches its own Chromium
+  on a caller-launched loopback CDP browser; `about:blank` and non-page targets
+- source: `chromium --headless --remote-debugging-port=9222
+  provider `rea-cdp-browser` v2, confidence `observed`. Browser product
+  page targets on a caller-launched Electron CDP endpoint with no file-root
+  --remote-debugging-port=9223` (minimal self-owned app: package.json +
+  `rea.electron-target-list`, provider `rea-cdp-electron` v1. Endpoint
+  scenario; `browser.mode:"connect"` attaches to a supplied loopback CDP
+  `rea-playwright-browser-scenario` v1, `browser.process_ownership:
+  `duration_ms:288`, `scenario_sha256` recorded. Playwright core +
+  chromium-1248/headless-shell cache present on this host.
+1. `mkdir -p /tmp/kaidoku-chrome`; `chromium --headless
+   --remote-debugging-port=9222 --user-data-dir=/tmp/kaidoku-chrome
+   HeadlessChrome UA. (System chromium also auto-injected
+   --remote-debugging-port=9223` → `/json/version` answers
+8. Cleanup: killed only the launched chromium tree (PIDs ~68819+children
+   (`--remote-debugging-port=9223` + xvfb-run wrapper), and the http.server
+CDP endpoints) was self-imposed — every verb bound on first contact against
+All are now executable: the binding recipe is `--remote-debugging-port` (+
+### C14 — Conditional Chromium sandbox weakening
+  (compat environments), the seccomp layer is off while Chromium sandbox stays on.
+- `chromium --headless --remote-debugging-port=9222
+  (HeadlessChrome, CDP protocol 1.3); page target
+  predicate `rea.web-observation-session`, provider `rea-cdp-browser` v2.
+  predicate `rea.observe-web-execution`, provider `rea-cdp-browser` v2.
+  Electron via Playwright `_electron.launch` (executablePath + cwd +
+  proven. Capture also failed: Provider rea-playwright-electron-active
+  Playwright's electron driver handshake may behave differently there.
+   `chromium --headless --remote-debugging-port=9222
+10. Cleanup: killed only my processes — chromium parent PID 102293
+    `/tmp/kaidoku-r4-{chromium,node,http,electron-manual}.log` +
+| `inspect-web-network-capture` | needs a HAR file — self-provisionable | chromium `--log-net-log` or mitmproxy HAR |
+| `capture-electron-scenario` | electron CDP :9223 self-launch (r3 pattern) | electron43 + xvfb |
+| `observe-web-session` / `observe-web-execution` | CDP endpoint :9222 self-launch | chromium headless |
+| `analyze-web-bundle` / `inspect-web-event-listeners` / `discover-webmcp-tools` | CDP target | same endpoint |
+application verbs, and the CDP/V8 self-launch family), ~45 operator-env-gated
+  hint is REFUTED — a real 1,310-event chromium `--log-net-log` capture

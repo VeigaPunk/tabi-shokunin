@@ -2968,3 +2968,11 @@ burner chrome, musketeer) that does not name tabi and was not a round-34 candida
 under the round-33 decision rule above (`SKILL.md:2861-2881`). Tabi-side declaration for the one new map row:
 
 - The 1Password native-messaging bridge is kagi's custody surface: the `open-popup` refusal kagi states at `kagi-shokunin/SKILL.md:40`, and the ban on scraping vault DOM, stay kagi's; tabi's CDP session discipline (PROVINCE.md:9) drives browsers and captures DOM/screenshot evidence without reading a vault DOM or a session value.
+
+Wave-2 correction (append-only; cites `SKILL.md:2970`): the map row this declaration backed (`cdp-bridge-vault-dom-refusal`,
+kagi `SKILL.md:40`) was withdrawn at the wave-2 integration — kagi's line is its own rule for its own CLI, its refusal
+routes to no lane and the vault-DOM ban is one tabi shares, so it is a fact on kagi's side of the mapped
+`secrets-vault-ops` split (w2 CritRowKagiA; QUALITY 91, 97) and is screened `same-surface` in
+`corpus/adjacency-screen-browser.tsv`. The sentence at `:2970` stays as tabi's statement of its own side; it backs no map
+row. w2 CritRowKagiB judged the row to hold; the integrator sided with CritRowKagiA and w1 ConnBoundaries on kagi's bytes.
+

@@ -2458,3 +2458,12 @@ two re-recorded cold runs and receipt `corpus/evidence/round-35/bidi-firefox/`, 
 98–100, round-34 corrections (README, lesson round-34), census correction for Firefox's presence. Motivating evidence:
 `.ufo/waves/round-35/w1/ConnBoundaries.md`, `.ufo/waves/round-35/w1/SentinelFirefoxEgress.md`,
 `.ufo/waves/round-35/w1/RevClaimsFreeze.md` (counter threshold 14 vs declared 16 — lesson M1).
+
+Round 35 wave-2 integration (2026-10-26). w2 34 seats, 34 non-empty results, 0 dead. C1: the one new map row
+(`cdp-bridge-vault-dom-refusal`, kagi `SKILL.md:40`) withdrawn on w2 CritRowKagiA (against w2 CritRowKagiB; recorded
+reversal, QUALITY 91) and screened `same-surface secrets-vault-ops`; eight screen-attack seats found 0 should-map among
+382 screens; newMapped 0 — C1 honest stop. C2: entry precision fixes (w2 CritEntryDifferences, CritEntryClaims), SOURCES
+cell fixes on S135/S136/S139/S141 (w2 Reopen*), driver and receipt unchanged. No-harm repair: the census append to
+`corpus/knowledge/browser-surface-census.md` withdrawn (it turned `check-freshness --worktree` red — w2 RevCorrections
+D1; lesson M5, QUALITY 101). Motivating evidence: `.ufo/waves/round-35/w2/CritRowKagiA.md`,
+`.ufo/waves/round-35/w2/RevCorrections.md`, `.ufo/waves/round-35/w2/MutDriverReceipt.md`.

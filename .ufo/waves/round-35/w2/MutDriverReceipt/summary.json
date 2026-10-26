@@ -1,0 +1,128 @@
+{
+  "seat": "MutDriverReceipt",
+  "wave": "w2",
+  "round": 35,
+  "milestone": "C2",
+  "question": "Does the frozen C2 counter actually depend on the committed runs?",
+  "instrument": {
+    "counter": ".ufo/waves/round-35/counters/c2-firefox-bidi.mjs",
+    "counterBytesFrom": "a4bfef0f75027c915e715649950b1d46dcb33d83",
+    "counterSha256": "7cc7f17fa0a86355b582f506af619dd2807e925fe836fe39e95a436d59cd954e",
+    "counterShaEqualsClaimsFrozenDigests": true,
+    "counterBytesEqualIntegrationRevBytes": true,
+    "gateSha256At083c5c6": "370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87",
+    "gateEqualsCounterGATE_SHA256": true,
+    "cloneBaseRev": "083c5c643be7aa5965a5de3458a32ed0d289ead3",
+    "node": "v24.21.0",
+    "geckodriver": "0.37.1 (300705c65d1b)",
+    "firefox": "/home/vgpnk/.local/opt/firefox-158.0.1/firefox",
+    "toolsInstalledThisRound": []
+  },
+  "baseline": {
+    "rev": "083c5c643be7aa5965a5de3458a32ed0d289ead3",
+    "admitted": 16,
+    "failing": 0,
+    "unmeasured": 1,
+    "binding": null,
+    "predicate": "met",
+    "exit": 0,
+    "log": "m0-baseline.log"
+  },
+  "mutants": [
+    {
+      "id": "M1",
+      "mutant": "run1.jsonl lines 52-53 deleted (send id=22 network.continueRequest + its success response; blocked beforeRequestSent at line 51 kept); receipt run1 transcriptSha256 0ef2e7e5... -> a5727f7e...",
+      "commit": "809d60f04b211c598f3e68eda2fd590a1f39ec82",
+      "expectedDetector": "gate R13 predicate (check-bidi-runtime.mjs:341-349) fails on run1 -> t2-run",
+      "counterResult": "R13 t2-run detail=\"run1: blocked request never continued\"; admitted 15, failing 1, binding -, predicate not-met",
+      "exit": 1,
+      "verdict": "killed",
+      "log": "m1-drop-r13-run1.log"
+    },
+    {
+      "id": "M2",
+      "mutant": "run2.jsonl replaced by byte-copy of run1.jsonl with sessionId and webSocketUrl session segment rewritten 0bbeca6a-dbcc-4219-a397-ea458e786a1d -> e6297406-986b-49a6-b29b-3dbc39810c84 (run2.jsonl line 1); receipt run2 transcriptSha256 6754ec2d... -> f3d14efc...",
+      "commit": "4e83bee9d601c994a498162f02caab1059af20af",
+      "expectedDetector": "none exists: counter checks only pairwise-distinct transcript paths/sha256s/sessionIds (counter:382-410) plus identity/binding equality; transcripts carry no timestamps or per-run nonce (gate recordFromTranscript:216-244)",
+      "counterResult": "predicate=met, admitted 16, failing 0, binding -, exit 0",
+      "exit": 0,
+      "verdict": "SURVIVED",
+      "log": "m2-run2-replay.log"
+    },
+    {
+      "id": "M3a",
+      "mutant": "one base64 char of run2.jsonl line 22 first-screenshot data changed (char 6000: 4E+I5... -> 5E+I5...); receipt run2 transcriptSha256 left stale",
+      "commit": "522a8e2ce04a18de7cc7b0191c18913c8c7d43f6",
+      "expectedDetector": "counter:394 transcript sha256 guard",
+      "counterResult": "receipt=\"transcript sha256 differs: corpus/evidence/round-35/bidi-firefox/run2.jsonl\"; admitted 0, failing 16, binding -, exit 1",
+      "exit": 1,
+      "verdict": "killed (integrity guard)",
+      "log": "m3a-shot-byte-stale-sha.log"
+    },
+    {
+      "id": "M3b",
+      "mutant": "same one-char screenshot change; receipt run2 transcriptSha256 updated to ed64607f... (isolates the binding clause)",
+      "commit": "e6d5e01b3a89b132ee43cea6eff24a72bb644d36",
+      "expectedDetector": "counter:428 first-screenshot byte equality across runs",
+      "counterResult": "binding=\"first screenshots absent or differ between runs\"; admitted 0, failing 16, exit 1",
+      "exit": 1,
+      "verdict": "killed",
+      "log": "m3b-shot-byte-sha-updated.log"
+    },
+    {
+      "id": "M4",
+      "mutant": "receipt.json top-level browserVersion \"158.0.1\" -> \"158.0\" (line 4; observed-array copies untouched)",
+      "commit": "a07734f8403c7cea39d9d0447519468df0e11e60",
+      "expectedDetector": "counter:430 browserVersion equality runs<->receipt (gate R1:277-289 also fails vs live)",
+      "counterResult": "binding=\"browserVersion differs between runs or from the receipt\"; admitted 0, failing 16, exit 1",
+      "exit": 1,
+      "verdict": "killed",
+      "log": "m4-browserversion-158.0.log"
+    },
+    {
+      "id": "M5",
+      "mutant": "driver scripts/bidi-firefox-loopback-round35.mjs line 50 import gains PREDICATES (outside DRIVER_ALLOW, counter:80); receipt driverSha256 fb8c5fdf... -> b80cbe9a... (isolates the independence clause)",
+      "commit": "3c0ef2afb203b816d6381b3ca64acb1fc26b2cf6",
+      "expectedDetector": "counter:161-186 driverFinding independence clause",
+      "counterResult": "receipt=\"driver has a named relation to the gate beyond the allow-list (./check-bidi-runtime.mjs)\"; admitted 0, failing 16, exit 1",
+      "exit": 1,
+      "verdict": "killed",
+      "log": "m5-driver-imports-gate.log"
+    },
+    {
+      "id": "M6",
+      "mutant": "entry corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md line 5 source: line stripped of all 9 S-id tokens (S134-S141, S007, S124, S125)",
+      "commit": "65a4c5cfe82bd26d3dbac95369a33eeb1de3c9fe",
+      "expectedDetector": "counter:366 s1-source clause",
+      "counterResult": "entry=s1-source-row; admitted 0, failing 17, exit 1 (binding spuriously \"live session failed: null\" via counter:431 because the live leg is skipped when entryFinding is set - cosmetic, verdict already false via entryFinding)",
+      "exit": 1,
+      "verdict": "killed",
+      "log": "m6-entry-source-ids-stripped.log"
+    },
+    {
+      "id": "M7",
+      "mutant": "entry line 120 R16 Measured cell \"no — no BiDi command in the draft (§7.3.3)\" -> \"yes\"",
+      "commit": "c06383eca99e6223e2b2bdcf36889cfa46e81fef",
+      "expectedDetector": "counter:448 x2-no-counterpart",
+      "counterResult": "R16 x2-no-counterpart; admitted 16, failing 1, binding -, exit 1",
+      "exit": 1,
+      "verdict": "killed",
+      "log": "m7-r16-yes.log"
+    }
+  ],
+  "tally": { "killed": 7, "survived": 1, "inconclusive": 0 },
+  "coverageFinding": {
+    "id": "MutDriverReceipt-F1",
+    "survivor": "M2",
+    "severity": "moderate (instrument coverage, not row truth)",
+    "statement": "The counter's \"two committed runs\" clause is satisfiable by one real run replayed with a rewritten session id: it verifies pairwise-distinct transcript paths, transcript sha256s and sessionIds plus identity/binding agreement, and nothing else binds a run to a distinct execution (transcripts carry no timestamps or per-run nonce). The receipt's two-cold-runs provenance therefore rests on the author, not the instrument.",
+    "notAFalseAdmission": "The replayed run still carries true predicate evidence for every row, and the counter's own live session independently re-tests all 16 admitted rows, so row admission does not hinge on run2's distinctness."
+  },
+  "restoration": {
+    "afterEachMutant": "git -C $S/clone reset -q --hard 083c5c643be7aa5965a5de3458a32ed0d289ead3; git status --porcelain empty each time",
+    "finalHead": "083c5c643be7aa5965a5de3458a32ed0d289ead3",
+    "finalStatus": "clean",
+    "orphanProcessCheck": "pgrep -af 'tabi-r35/MutDriverReceipt|tabi-r35-c2-live' -> no matches (exit 1)",
+    "scratchDeletedBeforeYield": true
+  }
+}

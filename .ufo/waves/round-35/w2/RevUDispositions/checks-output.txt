@@ -1,0 +1,127 @@
+# RevUDispositions — round-35 w2 — command transcript
+# Seat scratch S=/fast/scratch/hyaku/tabi-r35/RevUDispositions (deleted at yield; nothing installed;
+# no network fetch; no browser/driver process launched — the only node run is the gate's in-process --selftest).
+# All git/file reads are read-only, against the seat clone detached at the wave-1 integration rev.
+
+$ git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone" && git -C "$S/clone" checkout -q --detach 083c5c643be7aa5965a5de3458a32ed0d289ead3
+$ git -C "$S/clone" rev-parse HEAD && git -C "$S/clone" rev-parse --show-toplevel
+083c5c643be7aa5965a5de3458a32ed0d289ead3
+/fast/scratch/hyaku/tabi-r35/RevUDispositions/clone
+# exit 0; toplevel == clone
+
+$ sha256sum "$S/clone/scripts/check-bidi-runtime.mjs" "$S/clone/scripts/check-adjacency.mjs" "$S/clone/.ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs"
+370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87  scripts/check-bidi-runtime.mjs
+4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac  scripts/check-adjacency.mjs
+5707a93742565c17d24dd4df37d2289e1a9dfe4646e313108357770909b436b9  .ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs
+
+$ git -C "$S/clone" merge-base --is-ancestor a4bfef0f75027c915e715649950b1d46dcb33d83 083c5c643be7aa5965a5de3458a32ed0d289ead3; echo ancestor_rc=$?
+ancestor_rc=0
+
+$ git -C "$S/clone" log --format='%h %s' -1 b44b964
+b44b964 round-34: w2 integration — rows 15/17/18 withdrawn, kaidoku HAR/screenshot rows restored, ledger corrections, entry and lesson corrections, QUALITY 97
+$ git -C "$S/clone" log --format='%h %s' -1 04f9623d
+04f9623 round-34: w1 integration — four sibling boundaries outside PROVINCE, screen ledger, twelve gate kill cases, S130-S133, lesson, QUALITY 92-96
+$ git -C "$S/clone" log --oneline -S "Round 34 wave-2 correction" -- corpus/lessons/round-32.md
+b44b964 round-34: w2 integration — …            (only hit)
+$ git -C "$S/clone" log --oneline -S "v3-a-m03-measured-cell-uppercase" -- scripts/check-bidi-runtime.mjs
+04f9623 round-34: w1 integration — …             (only hit)
+
+$ git -C "$S/clone" show a4bfef0f75027c915e715649950b1d46dcb33d83:.ufo/waves/round-35/claims.json | sed -n '23,26p'
+  ".ufo/waves/round-35/baseline/controls.mjs": "32c0f6bc17060d9d71550961c5783b5293a08610760355fc81db22da7533d8b1",
+  ".ufo/waves/round-35/measure.sh": "1fdbe8c4125e737cbcaddea1fd428489254fc015a7a35e28db0cc57d15033188",
+  "scripts/check-adjacency.mjs (pinned inside C1; must stay unchanged)": "4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac",
+  "scripts/check-bidi-runtime.mjs (pinned inside C2; must stay unchanged)": "370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87"
+# grep (tool) '5707a937|c1-adjacency-sweep-v3' on claims.json -> :21 "…c1-adjacency-sweep-v3.mjs": "5707a93742565c17d24dd4df37d2289e1a9dfe4646e313108357770909b436b9",
+# => all three file digests at 083c5c6 equal the frozen pins.
+
+$ git -C "$S/clone" diff --name-status a4bfef0f… 083c5c64… | grep -v '^A\s*\.ufo/'; echo rc=$?   (rc=0)
+M	LOG.md
+M	SKILL.md
+M	corpus/QUALITY.md
+M	corpus/README.md
+M	corpus/SOURCES.md
+A	corpus/adjacency-screen-browser.tsv
+M	corpus/adjacency.tsv
+A	corpus/evidence/round-35/bidi-firefox/receipt.json
+A	corpus/evidence/round-35/bidi-firefox/run1.jsonl
+A	corpus/evidence/round-35/bidi-firefox/run2.jsonl
+M	corpus/knowledge/browser-surface-census.md
+A	corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+M	corpus/lessons/round-34.md
+A	corpus/lessons/round-35.md
+A	scripts/bidi-firefox-loopback-round35.mjs
+# corpus/lessons/round-33.md is NOT in the wave-1 delta: no sampled stale line in it was touched.
+
+# ---- U01: MEASURED battery, regex extracted from the frozen file and eval'd (node; node_rc=0) ----
+MEASURED "yes" true
+MEASURED "YES" true
+MEASURED "yes — live" true
+MEASURED "yes (live)" false
+MEASURED "no — reason" true
+# scripts/check-bidi-runtime.mjs:149 = const MEASURED = /^(yes|no)(?:\s*[—–-]\s*\S[\s\S]*)?$/i;
+# .ufo/waves/round-35/counters/c2-firefox-bidi.mjs:70 GATE_SHA256 = '370e8e95…'; :326 refuses any other byte.
+
+# ---- U04: fleet L0 line (node, same run) ----
+l0:65 len 559 L0_TABI_ROW true inclKake true cntKake 1
+# scripts/check-adjacency.mjs:919 if (!line.text.includes(sibling)) {   (:920 add l0LineAbsent; :921 return)
+# scripts/check-adjacency.mjs:231 const L0_TABI_ROW = /^tabi[ \t]*\|[ \t]*round-[0-9]+[ \t]*\|/;
+# c1-adjacency-sweep-v3.mjs:74 ADJ_GATE_SHA256 = '4e2c2a64…'; :181 refuses any other byte.
+# v3 counter map code (~:288-290): `if (r.disposition === 'ruled' || r.disposition === 'contested-open' ||
+#   r.disposition === 'refused-route') return true;`  — no quote condition for these dispositions.
+
+# ---- U19: population regex over kake PROVINCE.md at pin 0440485 ----
+# .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs:65 =
+# const REGEX = /\b(browsers?|chromium|chrome|cdp|devtools|playwright|puppeteer|webdriver|bidi|selenium|webbridge|tabi|crawl(er|ers|ing)?|scrap(e|er|ers|ing))\b/i;
+kake:67  match=false tabi=false
+kake:354 match=false tabi=false
+kake:355 match=false tabi=false
+kake:356 match=false tabi=false
+kake:357 match=false tabi=false
+kake:358 match=true  tabi=false
+kake:359 match=true  tabi=false
+kake:360 match=false tabi=false
+kake:361 match=false tabi=false
+kake:362 match=true  tabi=true
+kake:363 match=false tabi=false
+# claims.json:33 (C1 surface) confirms the declared population: "matches the frozen browser-ground regex BG
+# and not /\btabi\b/i, minus the 67 round-34 candidates".
+
+# ---- U10 ----
+$ printf '%s' 'path = g_build_filename(home, ".config", CHROMIUM_NAME "-flags.conf", NULL);' | wc -w
+7
+# grep (tool) '\(9 words\)' corpus/lessons/round-33.md -> :36 only (S128 row, same quote text).
+
+# ---- U16: term counts in corpus/lessons/round-33.md (grep tool, battery|forgeriesAccepted|whitelist) ----
+# hits at :15,:16,:18 (intro), :165-:170 region (M-rows), :183,:184,:185,:186,:187 (M1) —
+# range :24-:92 (§Gate) = 0 hits; range :173-:189 (M1) = 5 hits (:183-:187).
+
+# ---- U24: gate selftest at 083c5c6 (in-process, offline; TMPDIR under scratch) ----
+$ mkdir -p "$S/tmp" && TMPDIR="$S/tmp" node "$S/clone/scripts/check-bidi-runtime.mjs" --selftest
+CASE id=v3-a-m03-measured-cell-uppercase expected_exit=0 exit=0 expected_admitted=2 admitted=2 expected_population=2 population=2 expected_reason=- reason=- PASS
+BIDI_RUNTIME_SELFTEST verdict=clean cases=56 passed=56
+selftest_rc=0
+# scripts/check-bidi-runtime.mjs:1031 = { id: "v3-a-m03-measured-cell-uppercase", exit: 0, admitted: 2, … cell: () => "Yes" }
+# :373 return { verdict: m[1].toLowerCase(), … };  :860 row.admitted = … && row.verdict === "yes" && …;
+# .ufo/waves/round-34/counters/c2-gate-mutants.mjs:72-76 = M03 find "m[1].toLowerCase()" replace "m[1]".
+
+# ---- U08 ----
+# grep (tool) 'supported remain-count' LOG.md -> :2356 only: "(E28, …, E38) received none, and the round-32
+#   lesson's supported remain-count is 20 of 27."
+# grep (tool) 'Round 34 wave-2 correction' corpus/lessons/round-32.md -> :229 only (the adjudication bullet,
+#   verbatim as ScribeUDispositionsA quotes it).
+
+# ---- U21 ----
+# scripts/check-adjacency.mjs:728-731 quoteLengthProblems(quote,'sibling_quote',add); if (!line.text.includes(quote)) …
+# c1-adjacency-sweep-v3.mjs:242 if (!((goodQuote(quote) && c.text.includes(quote)) || (quote === c.text.trim() && …))
+# c1-adjacency-sweep-v3.mjs:131 const goodQuote = (q) => words(q).length >= 4 && words(q).length <= 25 && q.replace(/\s/g, '').length >= 20;
+
+# ---- finding-file existence (read tool, at 083c5c6) ----
+# .ufo/waves/round-33/w2/RevGateV2Code.md — "L1 — MEASURED accepts a decorated yes cell (and any letter case)…"
+# .ufo/waves/round-33/w2/MutC1Rows.md:60 (m1b/m10 substring) and :61 (m4b token-anywhere)
+# .ufo/waves/round-33/w2/RevLesson33.md:52 (D1 "(9 words)")
+# .ufo/waves/round-33/w2/RevQuality87.md:159-160 (F5 lesson pointer)
+# .ufo/waves/round-33/w2/CritAdjacencyHarm.md:117 (D2 README:766 population)
+# .ufo/waves/round-33/w2/MutGateV2.md:63 (M03 uppercase)
+# .ufo/waves/round-33/w2/CritCorrections.md:69 (D3 carried-set miscount)
+# .ufo/waves/round-33/w2/CritErrataLanded.md:66 region ("20 vs 21 (defect 3)")
+# all present verbatim.

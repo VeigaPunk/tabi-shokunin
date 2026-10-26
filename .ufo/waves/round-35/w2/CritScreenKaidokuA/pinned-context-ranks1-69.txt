@@ -1,0 +1,409 @@
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:98 =====
+         1	  `corpus/knowledge/2026-10-14-r12-02-queue-b-ledger.md:131-133`) and per-run
+         2	  UUIDs/provider_ids ride inside normalized_result (binwalk regions, unblob
+         3	  chunks — `corpus/knowledge/2026-10-14-r12-01-queue-b-ready.md:67`); CDP and
+         4	  process-capture envelopes are wall-clock-parameterized by design
+         5	  (`corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md:44-48`,
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:188 =====
+         1	  (`corpus/knowledge/2026-10-14-r12-01-queue-b-ready.md:105-108`).
+         2	- **Provisioning hints can be wrong — verify the gate, not the hint.** The
+         3	  census's `chromium --log-net-log` hint refuses typed against a real netlog;
+         4	  the operative gate is a har-schema-valid capture (playwright `recordHar`
+         5	  satisfies it) (`corpus/knowledge/2026-10-14-r10-01-queue-ops.md:138-142`).
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:189 =====
+         1	- **Provisioning hints can be wrong — verify the gate, not the hint.** The
+         2	  census's `chromium --log-net-log` hint refuses typed against a real netlog;
+         3	  the operative gate is a har-schema-valid capture (playwright `recordHar`
+         4	  satisfies it) (`corpus/knowledge/2026-10-14-r10-01-queue-ops.md:138-142`).
+         5	  Same class: an env gate invisible in the capability matrix — census gates
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:585 =====
+         1	|---|---|---|
+         2	| `GoApiSnapshot` INFO `Using Go API snapshot for X` | Base found; selected patch = X's patch, where X is the normalized version (rc/beta and `X:` suffixes dropped) | No file path, digest, or patched-content proof |
+         3	| `GoApiSnapshot` WARN `Falling back from X to Y` | Lower patch data used; the next `GoRttiMapper` line still says `X` | Requested-label echo: never cite the mapper line as selection. Round 17 observed only fallback to the base (Y = M.m.0); round 18 observed an intermediate patch fallback (1.24.13 → 1.24.6, `.ufo/waves/round-18/runs/real-kimi-webbridge/logs/rea-ghidra-ZSUHpG/ghidra.log:68`) |
+         4	| `Untested Go version [X]`, no snapshot line, `Missing Go bootstrap type info` (≥1; ×2 when no DWARF loads) | No installed base for X's minor (here 1.26.x/1.27.x) | Range check only logs; layout change neither shown nor excluded |
+         5	| `Invalid Go version string [S]` | Build-info version found but unparseable | Source-only on this host |
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:621 =====
+         1	| Signal in a bound `ghidra.log` | Decision | Limit |
+         2	|---|---|---|
+         3	| Swiss Go 1.24/1.25 carrier, bootstrap OK, `Go analysis failure` + `Invalid index: N` or `Unable to read past EOF: A, B` | Run `swiss-misread.py` on the carrier; an exact H1 match attributes the abort to the `OldMapType` binding | 3 carriers observed (aether calibrated; s1246-swiss-nethttp and kimi-webbridge held out); Ghidra 12.1.4, x86-64 ELF |
+         4	| Same signal on a `X:noswissmap` carrier | Not this mechanism | 0/6 noswiss carriers failed |
+         5	| Swiss carrier, no failure | Never read as "map types laid out correctly": the misread is silent unless the name at `types+SlotSize` has a pkgPath, and `Mcount` reads 0 (methods dropped) | Silent case is INFERENCE; no program export run |
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:652 =====
+         1	| revpin | probe / kaidoku | `python3 -I -B /home/vgpnk/Projects/shokunin/kaidoku-shokunin/.ufo/waves/round-18/tools/revpin.py --root <LANE>`; 0 tip resolved (HEAD equals tip, tip an ancestor of `refs/remotes/origin/main`), 2 finding `branch_missing`/`head_not_branch_tip`/`branch_not_pushed` (also usage errors) | same command with `--selftest` | Pinned values: none. Write scope: none, read-only git, JSON on stdout; module `resolve_source` used by `.ufo/waves/round-18/verify.py`. No dirty-worktree check |
+         2	| jj-red-before | gate / kaidoku | `python3 -I -B /home/vgpnk/Projects/shokunin/kaidoku-shokunin/.ufo/waves/round-18/tools/jj-red-before.py --out <RECEIPT>`; 0 every red/green expectation held, 1 any not held, 2 setup failure | same command with `--selftest` | Pinned values: baseline `9011581d84527ba34c675f9cf912e54d2e72d470` (baseline tool bytes via `git show`). Write scope: the receipt and a removed `/tmp` sandbox clone (origin remote removed, HOME/XDG isolated). Limits (round-18 w2 `JjSandboxSafety.md`): run only as `python3 -I -B` with no `GIT_*` in the environment (the selftest fixture builder does not scrub it), and a pointer-table entry naming a path outside the sandbox would be written (none of the 60 entries does); the receipt records no digest of the tools it ran Round 19 (carried): every git/jj subprocess runs with an explicit environment scrubbed of GIT_*/JJ_* variables, and pointer-table paths outside the mkdtemp clone are refused with exit 2 (selftest 9 cases). |
+         3	| swiss-misread | probe / kaidoku | `python3 -I -B /home/vgpnk/Projects/shokunin/kaidoku-shokunin/.ufo/waves/round-18/tools/swiss-misread.py --carrier <PATH> --golang-root <GOLANG_DIR>` where `<GOLANG_DIR>` is `/home/vgpnk/.local/opt/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/data/typeinfo/golang`; 0 emitted, 2 unparseable | same command with `--selftest` | Pinned values: none external; predictions it emitted for round 18 are frozen under `.ufo/waves/round-18/predictions/` (`swiss-misread/<label>.json` hold the `predicted_*_h1/h0` keys). Write scope: none, reads the carrier and installed snapshot JSON, JSON on stdout, never executes the carrier. amd64 only; the `walk` channel has false positives (unmasked variadic bit, notesmd-cli, kimi-webbridge) and its gap scan misses `*struct {…}` names (w2 `EmulatorIndependence.md`, `Runs1246noswissnethttp.md`); predictions rest on the per-map channel |
+         4	| go-carrier-run-r18 | probe / kaidoku | `bash /home/vgpnk/Projects/shokunin/kaidoku-shokunin/.ufo/waves/round-18/run-carriers.sh <LABEL>`; per label in `.ufo/waves/round-18/predictions/carriers.tsv` the round-17 `carrier-run.py`, `log-extract.py`, `compare.py`; 1 if any run or compare is nonzero, 2 if `carriers.tsv` is unusable | same command with `--selftest` (stub tools, forced-red proof) | Pinned values: carrier sha256 (synthetic `.ufo/waves/round-18/carriers/SHA256SUMS`, read from its deployed copy, else the TSV's 4th column), prediction, tools, Go data; `producer.json` per run records branch tip and tool digests. Write scope: deletes and recreates `.ufo/waves/round-18/runs/<LABEL>/` (or a `/tmp` `RUNS_DIR`); never executes a carrier. The all-label pass was run once without `<LABEL>` (argv in `runs/run-log.txt`, not in a retained receipt: an unexercised variant for `invocation-audit`) |
+         5	| round18-measure | probe / kaidoku | `python3 -I -B /home/vgpnk/Projects/shokunin/kaidoku-shokunin/.ufo/waves/round-18/measure.py <REV>`; 0 report emitted (claims may be could-not-evaluate), 2 revision unreadable | same command with `--selftest` | Pinned values: none. Write scope: none in the lane; materializes REV's tools into a removed mkdtemp; Git objects only |
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-asar-surface.md:68 =====
+         1	- verify: `head -5 /usr/bin/signal-desktop /usr/bin/obsidian`
+         2	- verified-at: 2026-10-13
+         3	- suggested: admit — matters for runtime-observation candidates (`list_electron_targets` needs a CDP endpoint; bundled vs system electron change how you'd attach).
+         4	
+         5	## Candidate: `asar extract-file` streams bytes to stdout — REJECTED
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-crash-evidence.md:21 =====
+         1	- suggested: admit — the reachability path for a reverse engineer: `coredumpctl list` → `coredumpctl info` → `coredumpctl debug` (gdb) or `zstd -d` + offline tooling.
+         2	
+         3	## Candidate: crash corpus is dominated by chromium churn and deliberate self-crash test artifacts, not organic app failures
+         4	- claim: of 175 entries, 133 are `/usr/lib/chromium/chromium` (SIGTRAP/SIGABRT renderer/sandbox churn across 2026-10-08/10) and 39 are recorded as EXE `/usr/bin/bash` but actually comm `crash-godot` — a script that kills itself (`kill_builtin` → `si_code: SI_USER`, SIGSEGV) from `/tmp/mint-game-dev-3d/.shokunin/` and `/tmp/g3d-controls/` corpora. Only 3 organic non-chromium crashes exist: godot SIGABRT (2026-10-13 06:40, user project verification script), waybar SIGABRT (2026-10-13 10:33, C++ exception → `__cxa_throw` → abort), localsearch-extractor-3 (2026-10-12 19:36).
+         5	- source: `coredumpctl list --no-pager | grep -oP '/usr/\S+' | sort | uniq -c`; `coredumpctl info 1150573` (kill_builtin, SI_USER); `coredumpctl info 2500243` (godot, `__cxa_pure_virtual`); `coredumpctl info 1728` (waybar).
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-crash-evidence.md:22 =====
+         1	
+         2	## Candidate: crash corpus is dominated by chromium churn and deliberate self-crash test artifacts, not organic app failures
+         3	- claim: of 175 entries, 133 are `/usr/lib/chromium/chromium` (SIGTRAP/SIGABRT renderer/sandbox churn across 2026-10-08/10) and 39 are recorded as EXE `/usr/bin/bash` but actually comm `crash-godot` — a script that kills itself (`kill_builtin` → `si_code: SI_USER`, SIGSEGV) from `/tmp/mint-game-dev-3d/.shokunin/` and `/tmp/g3d-controls/` corpora. Only 3 organic non-chromium crashes exist: godot SIGABRT (2026-10-13 06:40, user project verification script), waybar SIGABRT (2026-10-13 10:33, C++ exception → `__cxa_throw` → abort), localsearch-extractor-3 (2026-10-12 19:36).
+         4	- source: `coredumpctl list --no-pager | grep -oP '/usr/\S+' | sort | uniq -c`; `coredumpctl info 1150573` (kill_builtin, SI_USER); `coredumpctl info 2500243` (godot, `__cxa_pure_virtual`); `coredumpctl info 1728` (waybar).
+         5	- verify: `coredumpctl list --no-pager | tail -n +2 | grep -oP '/usr/\S+' | sort | uniq -c`
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-crash-evidence.md:43 =====
+         1	
+         2	## Candidate: coredump retention is unbounded-config but already decaying — earliest entry lost its file
+         3	- claim: the oldest recorded entry (chromium SIGTRAP, 2026-10-08 14:01) lists COREFILE `missing` with no size, while its journal metadata persists — i.e., default vacuuming (MaxUse/KeepFree unset → compiled defaults) has already reaped at least one core; evidence degrades oldest-first.
+         4	- source: first row of `coredumpctl list --no-pager`; `/etc/systemd/coredump.conf` (no MaxUse/KeepFree overrides).
+         5	- verify: `coredumpctl list --no-pager | head -3`
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-crash-evidence.md:47 =====
+         1	- verify: `coredumpctl list --no-pager | head -3`
+         2	- verified-at: 2026-10-13
+         3	- suggested: admit — timeliness matters: an RE pass over the ~30+ chromium cores should run before vacuuming shrinks the window.
+         4	
+         5	## Candidate: `coredumpctl debug` + gdb gives a complete on-host RE loop against retained cores
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-crash-evidence.md:57 =====
+         1	
+         2	## Summary
+         3	Host plazir27 retains a rich, user-readable crash surface: systemd-coredump (sole collector, `core_pattern` piped, `ulimit -c` unlimited) holds 174 zstd ELF cores (~4.0 GB) over 5 days — 133 chromium, 39 deliberate `crash-godot` self-kills (SI_USER test noise), and 3 organic crashes (godot, waybar, localsearch) — all reachable unprivileged via `coredumpctl info/debug` + gdb/eu-stack; journal keeps 10 boots (165.3M) with no kernel panics and only sr0 I/O noise; retention is already decaying oldest-first.
+         4	
+         5	## Errata (round 2)
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:38 =====
+         1	  (`REA_JADX_MCP_JAR` unset) — a clean refusal datum, not a failure.
+         2	
+         3	## Candidate: Runtime observation (CDP / Electron)
+         4	
+         5	- claim: Nothing bindable right now — zero CDP listeners and no process
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:40 =====
+         1	## Candidate: Runtime observation (CDP / Electron)
+         2	
+         3	- claim: Nothing bindable right now — zero CDP listeners and no process
+         4	  carrying `--remote-debugging-port`. The *substrate* to self-provision a
+         5	  target is fully present: `/usr/bin/chromium` (running user instance PID
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:41 =====
+         1	
+         2	- claim: Nothing bindable right now — zero CDP listeners and no process
+         3	  carrying `--remote-debugging-port`. The *substrate* to self-provision a
+         4	  target is fully present: `/usr/bin/chromium` (running user instance PID
+         5	  25784 has no debug flag — cannot attach), `playwright` 1.64.0 global +
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:42 =====
+         1	- claim: Nothing bindable right now — zero CDP listeners and no process
+         2	  carrying `--remote-debugging-port`. The *substrate* to self-provision a
+         3	  target is fully present: `/usr/bin/chromium` (running user instance PID
+         4	  25784 has no debug flag — cannot attach), `playwright` 1.64.0 global +
+         5	  `~/.cache/ms-playwright/chromium-1248` + `chromium_headless_shell-1248`,
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:43 =====
+         1	  carrying `--remote-debugging-port`. The *substrate* to self-provision a
+         2	  target is fully present: `/usr/bin/chromium` (running user instance PID
+         3	  25784 has no debug flag — cannot attach), `playwright` 1.64.0 global +
+         4	  `~/.cache/ms-playwright/chromium-1248` + `chromium_headless_shell-1248`,
+         5	  `agent-browser` 0.38.2 global, a stale `~/.local/share/burnerchrome/`
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:44 =====
+         1	  target is fully present: `/usr/bin/chromium` (running user instance PID
+         2	  25784 has no debug flag — cannot attach), `playwright` 1.64.0 global +
+         3	  `~/.cache/ms-playwright/chromium-1248` + `chromium_headless_shell-1248`,
+         4	  `agent-browser` 0.38.2 global, a stale `~/.local/share/burnerchrome/`
+         5	  profile whose `chrome.log` shows a prior `DevTools listening on
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:45 =====
+         1	  25784 has no debug flag — cannot attach), `playwright` 1.64.0 global +
+         2	  `~/.cache/ms-playwright/chromium-1248` + `chromium_headless_shell-1248`,
+         3	  `agent-browser` 0.38.2 global, a stale `~/.local/share/burnerchrome/`
+         4	  profile whose `chrome.log` shows a prior `DevTools listening on
+         5	  ws://127.0.0.1:9222/` run (script now points at a missing
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:54 =====
+         1	  `/json/version` + `/json/list` from a caller-supplied `cdp_endpoint`
+         2	  (default `http://127.0.0.1:9222` per `browserToolContracts.js`);
+         3	  `electronToolContracts.js` defaults Electron CDP to `:9223` and counts
+         4	  only `file://` page targets; passive path = `list_electron_targets` →
+         5	  `inspect_electron_page`, active path = provider-owned run with
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:59 =====
+         1	  caller-defined actions.
+         2	- verify: `ss -tln` shows no `:9222|:9223|:9229|:5858` listeners;
+         3	  `pgrep -af remote-debugging` empty; `pgrep -af electron` only 1Password
+         4	  helpers without the flag. So `list_browser_targets` /
+         5	  `list_electron_targets` would return an endpoint-unreachable/empty
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:65 =====
+         1	- verified-at: 2026-10-13T12:23-03:00
+         2	- suggested (smallest viable r3): launch
+         3	  `chromium --headless --remote-debugging-port=9222
+         4	  --user-data-dir=$(mktemp -d) about:blank`, then `list_browser_targets`
+         5	  on `http://127.0.0.1:9222` — exercises `/json/list` target enumeration
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:69 =====
+         1	  on `http://127.0.0.1:9222` — exercises `/json/list` target enumeration
+         2	  end-to-end. Electron leg: `/usr/lib/electron43/electron
+         3	  --remote-debugging-port=9223 <tiny app with a file:// page>` →
+         4	  `list_electron_targets` — both legs self-owned, no operator installs.
+         5	
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:136 =====
+         1	|---|---|---|---|
+         2	| Android APK | 2 real APKs (Godot 4.7.2); jadx-jar/apktool/adb absent; JDK 21 ok | **partial — inventory leg open now, decode leg operator-owned** | `inspect_artifact`/`open_binary` on `android_debug.apk`; record jadx `executable_missing` |
+         3	| Runtime observation | chromium + playwright cache + electron39/43 binaries; zero live CDP endpoints | **viable via self-launched CDP** | chromium `--remote-debugging-port=9222` → `list_browser_targets`; electron43 `:9223` file:// page → `list_electron_targets` |
+         4	| Mach-O/macOS | n/a | **closed — `unsupported_host` ×10 ops confirmed live** | none |
+         5	| EVM | no carrier/tooling, but bundled EVMole WASM needs nothing external | **viable with synthetic hex carrier** | `inspect_evm_interface` on `/tmp/probe.hex` (`encoding:"hex"`) |
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:144 =====
+         1	EVM needs caller-supplied pwntools — the shipped 6.4.0 contract shows
+         2	bundled EVMole 0.9.3/WASM instead. `list_electron_targets` defaults to
+         3	CDP `:9223`, not the browser `:9222`.
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-provider-capability-matrix.md:101 =====
+         1	| `rea inspect-jeb-client` | fail (exit 0) | `jeb` | `capability_unavailable` / `unsupported_provider` | start a JEB client serving MCP (default `http://127.0.0.1:8425/mcp`) or set `REA_JEB_MCP_URL`; live probe `fetch failed` |
+         2	| `rea inspect-binary-layout /usr/bin/jq` | fail (exit **1**) | `pwntools-elf` (sole candidate) | `provider_unavailable` / `unavailable`, `retryable:true` | set `REA_PWNTOOLS_PYTHON` to a caller-supplied Python with pwntools 4.15.0 + pyelftools 0.33 + Unicorn 2.1.2; "REA never installs Python or packages"; `candidate_ids:["pwntools-elf"]` shows per-op provider pinning |
+         3	| `rea list-browser-targets` | VALIDATION_ERROR | — | input validation | `--endpoint <string>` required (CDP endpoint); no default loopback scan |
+         4	
+         5	- Failure taxonomy nuance: `capability_unavailable`/`unsupported_provider` exits 0; `provider_unavailable` exits 1 and marks `retryable:true`. Total provider ids observed: **7** — ghidra, hopper, ida, adb, apktool, jeb, pwntools-elf. On this host only `ghidra` is bound-and-available.
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-skill-references-deep.md:71 =====
+         1	- suggested: admit — the reference notation's exact shape, connection binding, version floor, and the `close_binary` lifecycle hazard are all new.
+         2	
+         3	## Candidate: Passive browser/Electron observation is loopback-CDP-only with a fixed refusal list and deliberate data omissions
+         4	- claim: The caller supplies the existing instance's literal-port loopback CDP endpoint; no separate permission config or per-call approval flag exists. `list_browser_targets` lists eligible HTTP(S) pages (`allowed_origins` optionally filters; capture defaults to the page's current origin); `list_electron_targets` lists local `file://` targets with no file-root allowlist. Observation is passive — never claim REA clicked, navigated, evaluated page JS, invoked IPC, captured prior activity, or contained the page's network. Credentials, cookies, authorization headers, storage values, and raw WebSocket/JSON bodies are deliberately absent; local URLs keep query values/fragments but userinfo credentials are removed. Accessibility text, console primitives, value-free shapes, script sources, source maps, and storage key names are request-specific capture options; `capture_web_screenshot` when pixels are needed; page-declared WebMCP tools are untrusted inventory and never invoked.
+         5	- source: ~/.agents/skills/reverse-engineer-anything/references/runtime-observation.md lines 3-22
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-skill-references-deep.md:79 =====
+         1	
+         2	## Candidate: `reconcile_javascript_runtime` has hard preconditions — digest identity preferred, path mappings never broaden authority
+         3	- claim: `reconcile_javascript_runtime` is used only after static application Evidence AND passive browser/Electron Evidence both exist. Prefer captured-source digest identity; report path/digest disagreement as a mismatch and preserve ambiguity. Explicit path mappings are inference inputs and never broaden filesystem or CDP authority. A bundle observed at runtime does not prove every contained module executed.
+         4	- source: ~/.agents/skills/reverse-engineer-anything/references/runtime-observation.md lines 24-28
+         5	- verify: `sed -n '24,28p' ~/.agents/skills/reverse-engineer-anything/references/runtime-observation.md`
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r2-skill-references-deep.md:121 =====
+         1	
+         2	## Summary
+         3	The four unread references contribute operational detail the r1 corpus lacks at three layers: (1) per-domain tool contracts — the Android five-tool chain with per-call APK paths and `overload_index`, JS module `node_id` item views, `trace_application_feature` seed/direction semantics, JS comparison identity rules (ordinals/minified names ≠ identity), and the `ev_<64hex>` retained-reference lifecycle cleared by `close_binary`; (2) host prerequisites — pinned JADX MCP JAR 0.7.1 + Java 17+/full JDK with env-var selectors outside doctor scope, JS analyzer heap/timeout knobs on the isolated analyzer (not the MCP process), and loopback-CDP-only passive observation with credential/body redaction and WebMCP-untrusted rules; (3) recovery procedures — a six-row observation→remedy table, 18 supported client IDs, the dry-run→`--yes`→verify setup sequence, Codex approval independence with per-tool `approval_mode`, sandbox-preserving environment fixes, evidence-provenance labeling for shell output, and the public-launcher-only CLI fallback with file-redirected JSON views.
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-jq-provenance.md:106 =====
+         1	  (its `install/` tree uses pacman/AUR; `omarchy-npx-install` only writes the
+         2	  ~1.4 KB npx stubs seen at 17:44:35 — `codex gemini copilot opencode
+         3	  playwright-cli pi ghui`, matching `omarchy-remove-preinstalls`' list). The
+         4	  kimi install.sh merely *prefers* jq for JSON parsing when present
+         5	  (line ~173-177). `~/.omp` was born 19:10:34 — after the cohort. Timeline:
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:3 =====
+         1	<!-- corpus entry — kaidoku-shokunin round 3 (2026-10-13). Staging evidence: fleet .ufo/waves/kaidoku-r3/05-runtime-obs.md. -->
+         2	
+         3	# 05 — Runtime-observation surface: self-launched CDP endpoints
+         4	
+         5	r2 closed this axis as "viable via self-launched CDP" (14-frontier-scan.md:134)
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:5 =====
+         1	# 05 — Runtime-observation surface: self-launched CDP endpoints
+         2	
+         3	r2 closed this axis as "viable via self-launched CDP" (14-frontier-scan.md:134)
+         4	with zero live endpoints — nothing was bindable. r3 launches its own Chromium
+         5	(:9222) and Electron 43 (:9223, under `xvfb-run`) instances and binds REA verbs
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:6 =====
+         1	
+         2	r2 closed this axis as "viable via self-launched CDP" (14-frontier-scan.md:134)
+         3	with zero live endpoints — nothing was bindable. r3 launches its own Chromium
+         4	(:9222) and Electron 43 (:9223, under `xvfb-run`) instances and binds REA verbs
+         5	to them. All endpoints, pages, and app dirs were self-owned, loopback-only, and
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:14 =====
+         1	
+         2	- claim: `rea list-browser-targets <endpoint>` enumerates HTTP(S) page targets
+         3	  on a caller-launched loopback CDP browser; `about:blank` and non-page targets
+         4	  are excluded with named reasons.
+         5	- source: `chromium --headless --remote-debugging-port=9222
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:16 =====
+         1	  on a caller-launched loopback CDP browser; `about:blank` and non-page targets
+         2	  are excluded with named reasons.
+         3	- source: `chromium --headless --remote-debugging-port=9222
+         4	  --user-data-dir=/tmp/kaidoku-chrome about:blank`; page target created via
+         5	  `PUT /json/new?http://127.0.0.1:8877/` (page served by self-owned
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:25 =====
+         1	  "http://127.0.0.1:8877",attached:false}]`, `excluded:{disallowed_origin:0,
+         2	  unsupported_url:1,non_page:2}`; predicate `rea.browser-target-list`,
+         3	  provider `rea-cdp-browser` v2, confidence `observed`. Browser product
+         4	  `Chrome/152.0.7977.82` (HeadlessChrome).
+         5	- verified-at: 2026-10-13.
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:61 =====
+         1	
+         2	- claim: `rea list-electron-targets <endpoint>` enumerates local `file://`
+         3	  page targets on a caller-launched Electron CDP endpoint with no file-root
+         4	  allowlist.
+         5	- source: `xvfb-run -a /usr/lib/electron43/electron /tmp/kaidoku-electron
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:64 =====
+         1	  allowlist.
+         2	- source: `xvfb-run -a /usr/lib/electron43/electron /tmp/kaidoku-electron
+         3	  --remote-debugging-port=9223` (minimal self-owned app: package.json +
+         4	  main.js + index.html; `electron --version` → v43.6.0; xvfb needed — no
+         5	  display on this host).
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:71 =====
+         1	  "kaidoku-electron-probe",file_path:"/tmp/kaidoku-electron/index.html",
+         2	  attached:false}]`, `excluded:{unsupported_url:0,non_page:0}`; predicate
+         3	  `rea.electron-target-list`, provider `rea-cdp-electron` v1. Endpoint
+         4	  reports `Chrome/150.0.7871.250 ... Electron/43.6.0`.
+         5	- verified-at: 2026-10-13.
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:100 =====
+         1	
+         2	- claim: `rea capture-browser-scenario <inputJson>` runs an explicit Playwright
+         3	  scenario; `browser.mode:"connect"` attaches to a supplied loopback CDP
+         4	  endpoint+target, executes declared actions, and disconnects without owning
+         5	  the process.
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:113 =====
+         1	  actions:[{step_id:"wait-1",action:"wait_for_timeout",duration_ms:250}]}` →
+         2	  predicate `rea.browser-scenario-capture`, provider
+         3	  `rea-playwright-browser-scenario` v1, `browser.process_ownership:
+         4	  "external"`, `cleanup:"disconnected-external"`, steps `goto_start`+`wait-1`,
+         5	  `duration_ms:288`, `scenario_sha256` recorded. Playwright core +
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:115 =====
+         1	  `rea-playwright-browser-scenario` v1, `browser.process_ownership:
+         2	  "external"`, `cleanup:"disconnected-external"`, steps `goto_start`+`wait-1`,
+         3	  `duration_ms:288`, `scenario_sha256` recorded. Playwright core +
+         4	  chromium-1248/headless-shell cache present on this host.
+         5	- verified-at: 2026-10-13.
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:116 =====
+         1	  "external"`, `cleanup:"disconnected-external"`, steps `goto_start`+`wait-1`,
+         2	  `duration_ms:288`, `scenario_sha256` recorded. Playwright core +
+         3	  chromium-1248/headless-shell cache present on this host.
+         4	- verified-at: 2026-10-13.
+         5	- suggested: admit — active scenario capture is demonstrated end-to-end in
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:124 =====
+         1	## Run log
+         2	
+         3	1. `mkdir -p /tmp/kaidoku-chrome`; `chromium --headless
+         4	   --remote-debugging-port=9222 --user-data-dir=/tmp/kaidoku-chrome
+         5	   about:blank &` → `/json/version` answers `Chrome/152.0.7977.82`,
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:125 =====
+         1	
+         2	1. `mkdir -p /tmp/kaidoku-chrome`; `chromium --headless
+         3	   --remote-debugging-port=9222 --user-data-dir=/tmp/kaidoku-chrome
+         4	   about:blank &` → `/json/version` answers `Chrome/152.0.7977.82`,
+         5	   HeadlessChrome UA. (System chromium also auto-injected
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:127 =====
+         1	   --remote-debugging-port=9222 --user-data-dir=/tmp/kaidoku-chrome
+         2	   about:blank &` → `/json/version` answers `Chrome/152.0.7977.82`,
+         3	   HeadlessChrome UA. (System chromium also auto-injected
+         4	   `--ozone-platform=headless` + omarchy default flags; harmless.)
+         5	2. `/json/list` showed only `about:blank` + browser_ui/service_worker targets;
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:139 =====
+         1	5. `inspect-web-page` on the target, defaults only (see candidate 3).
+         2	6. `xvfb-run -a /usr/lib/electron43/electron /tmp/kaidoku-electron
+         3	   --remote-debugging-port=9223` → `/json/version` answers
+         4	   `Electron/43.6.0`/`Chrome/150.0.7871.250`; `list-electron-targets` and
+         5	   `inspect-electron-page` verified (candidates 4–5).
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:144 =====
+         1	7. `capture-browser-scenario` connect-mode scenario, one 250 ms
+         2	   `wait_for_timeout` action, loopback-only (candidate 7).
+         3	8. Cleanup: killed only the launched chromium tree (PIDs ~68819+children
+         4	   sharing `--user-data-dir=/tmp/kaidoku-chrome`), electron tree
+         5	   (`--remote-debugging-port=9223` + xvfb-run wrapper), and the http.server
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:146 =====
+         1	8. Cleanup: killed only the launched chromium tree (PIDs ~68819+children
+         2	   sharing `--user-data-dir=/tmp/kaidoku-chrome`), electron tree
+         3	   (`--remote-debugging-port=9223` + xvfb-run wrapper), and the http.server
+         4	   (PID 71424). Ports 9222/9223/8877 verified closed; no stray Xvfb. Removed
+         5	   `/tmp/kaidoku-chrome`, `/tmp/kaidoku-electron`, `/tmp/kaidoku-www`,
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:159 =====
+         1	
+         2	Runtime observation is **held**, no longer frontier. The r2 blocker (zero live
+         3	CDP endpoints) was self-imposed — every verb bound on first contact against
+         4	self-launched loopback instances:
+         5	
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r3-runtime-observation.md:177 =====
+         1	electron main process), `capture-electron-scenario`, `capture-web-screenshot`,
+         2	and `reconcile_javascript_runtime` (needs static + runtime evidence pair).
+         3	All are now executable: the binding recipe is `--remote-debugging-port` (+
+         4	`xvfb-run` for electron) against a self-owned instance.
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-06-1password-asar.md:225 =====
+         1	  is the interesting edge (handler=content-controlled file, OS-opened).
+         2	
+         3	### C14 — Conditional Chromium sandbox weakening
+         4	
+         5	- **claim:** `a().should_disable_seccomp()` (native core) gates
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-06-1password-asar.md:230 =====
+         1	  `app.commandLine.appendArgument("--disable-seccomp-filter-sandbox")` before
+         2	  `enableSandbox()` — the ONLY command-line override found. When the core returns true
+         3	  (compat environments), the seccomp layer is off while Chromium sandbox stays on.
+         4	- **source:** `main.js` startup `gc()`.
+         5	- **verify:** grep — single `appendArgument`, no `appendSwitch` hits elsewhere.
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-08-observe-verbs.md:11 =====
+         1	self-owned loopback endpoints:
+         2	
+         3	- `chromium --headless --remote-debugging-port=9222
+         4	  --user-data-dir=/tmp/kaidoku-r4-chrome` → `Chrome/152.0.7977.82`
+         5	  (HeadlessChrome, CDP protocol 1.3); page target
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-08-observe-verbs.md:13 =====
+         1	- `chromium --headless --remote-debugging-port=9222
+         2	  --user-data-dir=/tmp/kaidoku-r4-chrome` → `Chrome/152.0.7977.82`
+         3	  (HeadlessChrome, CDP protocol 1.3); page target
+         4	  `4FD99778D7FFAB5ED8DC9F222D7BAEB4` opened via
+         5	  `PUT /json/new?http://127.0.0.1:8878/` on a self-owned
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-08-observe-verbs.md:35 =====
+         1	  `allowedOrigins[]` (exact-origin filter), `observationMs` (default 10000).
+         2	- verify: `--observation-ms 2500 --format json` → `ev_ac51acb0…`,
+         3	  predicate `rea.web-observation-session`, provider `rea-cdp-browser` v2.
+         4	  Echoed parameters show `allowed_origins:["http://127.0.0.1:8878"]` — the
+         5	  verb self-scoped (contrast `observe-web-execution` below). `window`
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-08-observe-verbs.md:55 =====
+         1	- source: `--schema` → same arg/option shape as observe-web-session.
+         2	- verify: `--observation-ms 2500 --format json` → `ev_990bff76…`,
+         3	  predicate `rea.observe-web-execution`, provider `rea-cdp-browser` v2.
+         4	  Echoed `allowed_origins:[]` (no self-scoping — recorded asymmetry).
+         5	  `window` 2500 ms, `end_reason:"window_elapsed"`, producer start/sampled
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-08-observe-verbs.md:161 =====
+         1	  actions[]}` (strictObject; actions = click(selector), wait(duration_ms),
+         2	  renderer-reload, renderer-crash, deep-link) and launches an OWNED
+         3	  Electron via Playwright `_electron.launch` (executablePath + cwd +
+         4	  `-r electron-active-hook.cjs` + app path).
+         5	- source: `--schema` (`{inputJson}`) + npx cache
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-08-observe-verbs.md:176 =====
+         1	  "category":"execution_failure","message":"Electron cleanup could not be
+         2	  verified: owned Electron lineage was unavailable; helper cleanup was not
+         3	  proven. Capture also failed: Provider rea-playwright-electron-active
+         4	  adapter failed during capture_electron_scenario. Inspect the reported
+         5	  process resources before launching another capture.","retryable":false,
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-08-observe-verbs.md:198 =====
+         1	  leaked. Worth one retry probe only if a future lane has a packaged
+         2	  Electron app (`.asar`/dist build) rather than a source dir, since
+         3	  Playwright's electron driver handshake may behave differently there.
+         4	
+         5	## Run log
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-08-observe-verbs.md:203 =====
+         1	
+         2	1. `mkdir -p /tmp/kaidoku-r4-chrome /tmp/kaidoku-r4-www`; launched
+         3	   `chromium --headless --remote-debugging-port=9222
+         4	   --user-data-dir=/tmp/kaidoku-r4-chrome about:blank` →
+         5	   `Chrome/152.0.7977.82`; `node --inspect=0.0.0.0:9229 -e
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-08-observe-verbs.md:239 =====
+         1	   sibling r4 outputs sharing the `/tmp/kaidoku-r4-` prefix; NOT
+         2	   removed). `/tmp/.X0-lock` is the pre-existing host display.
+         3	10. Cleanup: killed only my processes — chromium parent PID 102293
+         4	    (whole tree, `--user-data-dir=/tmp/kaidoku-r4-chrome`), node
+         5	    inspector PID 113122, http.server PID 104053; ports
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-08-observe-verbs.md:247 =====
+         1	    `/tmp/kaidoku-r4-electron`, `~/.config/kaidoku-r4-electron`
+         2	    (electron-synthesized user-data), and my
+         3	    `/tmp/kaidoku-r4-{chromium,node,http,electron-manual}.log` +
+         4	    `{websession,webexec,jsrt,static,reconcile,reconcile-out,
+         5	    electron-cap,electron-cap2}{.json,.err}` files. Sibling files
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-16-frontier-rescan.md:180 =====
+         1	| `project-managed-application-graph` | needs managed evidence | **ev_f382333b (Pinta members)** (chained) |
+         2	| `compare-managed-members` round-2 | decode both sides first | two complete-decode assemblies (Pinta vs Pinta.Effects) |
+         3	| `inspect-web-network-capture` | needs a HAR file — self-provisionable | chromium `--log-net-log` or mitmproxy HAR |
+         4	| `capture-electron-scenario` | electron CDP :9223 self-launch (r3 pattern) | electron43 + xvfb |
+         5	| `reconcile-javascript-runtime` | runtime+static evidence | follow capture-electron-scenario |
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-16-frontier-rescan.md:181 =====
+         1	| `compare-managed-members` round-2 | decode both sides first | two complete-decode assemblies (Pinta vs Pinta.Effects) |
+         2	| `inspect-web-network-capture` | needs a HAR file — self-provisionable | chromium `--log-net-log` or mitmproxy HAR |
+         3	| `capture-electron-scenario` | electron CDP :9223 self-launch (r3 pattern) | electron43 + xvfb |
+         4	| `reconcile-javascript-runtime` | runtime+static evidence | follow capture-electron-scenario |
+         5	| `observe-web-session` / `observe-web-execution` | CDP endpoint :9222 self-launch | chromium headless |
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-16-frontier-rescan.md:183 =====
+         1	| `capture-electron-scenario` | electron CDP :9223 self-launch (r3 pattern) | electron43 + xvfb |
+         2	| `reconcile-javascript-runtime` | runtime+static evidence | follow capture-electron-scenario |
+         3	| `observe-web-session` / `observe-web-execution` | CDP endpoint :9222 self-launch | chromium headless |
+         4	| `capture-web-screenshot` / `compare-web-screenshots` / `compare-web-captures` | CDP + prior captures | chromium headless |
+         5	| `analyze-web-bundle` / `inspect-web-event-listeners` / `discover-webmcp-tools` | CDP target | same endpoint |
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-16-frontier-rescan.md:185 =====
+         1	| `observe-web-session` / `observe-web-execution` | CDP endpoint :9222 self-launch | chromium headless |
+         2	| `capture-web-screenshot` / `compare-web-screenshots` / `compare-web-captures` | CDP + prior captures | chromium headless |
+         3	| `analyze-web-bundle` / `inspect-web-event-listeners` / `discover-webmcp-tools` | CDP target | same endpoint |
+         4	| `export-web-scripts` → `trace-web-module-imports` → `trace-web-source-location` | chained on a saved capture | capture JSON from browser-scenario run |
+         5	| `list-javascript-runtime-targets` / `observe-javascript-runtime` | V8 Inspector endpoint | `node --inspect` self-launch |
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-16-frontier-rescan.md:264 =====
+         1	**r5 queue:** 26 self-provisionable CLI ops (Queue A, headed by
+         2	`resolve-native-call-targets` on libjq's GOT-indirect sites, the held-evidence
+         3	application verbs, and the CDP/V8 self-launch family), ~45 operator-env-gated
+         4	ops (Queue B), 8 terminal macOS-gated (C), 12 MCP-session + 7 standalone
+         5	official-proxy ops (D).
+===== kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:corpus/knowledge/2026-10-13-r4-16-frontier-rescan.md:521 =====
+         1	  `inspect-web-network-capture`: args `{capturePath, format:
+         2	  har|mitmproxy}` + `--record`/`--sensitive-value`; the census's first
+         3	  hint is REFUTED — a real 1,310-event chromium `--log-net-log` capture
+         4	  refuses typed (`invalid_request`/`invalid_format`, "HAR schema validation
+         5	  failed: required.", retryable, exit 1): the operative gate is
