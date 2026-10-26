@@ -1,0 +1,40 @@
+s106-sha-drop	fault	const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;	const valid = revisionMatch && anchorLocated && anchorUnique && byteCountMatch;
+s106-sha-true	fault	const shaMatch = observedSha === receipt.decoded_sha256;	const shaMatch = true;
+s106-anchor-unique-drop	fault	const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;	const valid = revisionMatch && shaMatch && anchorLocated && byteCountMatch;
+s106-anchor-unique-true	fault	const anchorUnique = occurrences === 1;	const anchorUnique = true;
+s106-byte-count-drop	fault	const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;	const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique;
+s106-byte-count-true	fault	const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;	const byteCountMatch = true;
+s106-revision-drop	fault	const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;	const valid = shaMatch && anchorLocated && anchorUnique && byteCountMatch;
+s106-revision-true	fault	const revisionMatch = measuredBytes !== null &&\n    sha256(measuredBytes) === receipt.decoded_sha256;	const revisionMatch = true;
+s106-anchor-located-true	fault	const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();	const anchorLocated = true;
+s106-valid-reorder	benign	const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;	const valid = (byteCountMatch && anchorUnique && anchorLocated && shaMatch && revisionMatch);
+s106-sha-eq-swap	benign	const shaMatch = observedSha === receipt.decoded_sha256;	const shaMatch = (receipt.decoded_sha256 === observedSha);
+s106-anchor-unique-eq-swap	benign	const anchorUnique = occurrences === 1;	const anchorUnique = (1 === occurrences);
+s106-byte-count-eq-swap	benign	const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;	const byteCountMatch = (receipt.decoded_bytes === Buffer.byteLength(bytesText));
+s106-revision-eq-swap	benign	const revisionMatch = measuredBytes !== null &&\n    sha256(measuredBytes) === receipt.decoded_sha256;	const revisionMatch = (measuredBytes !== null &&\n    receipt.decoded_sha256 === sha256(measuredBytes));
+s106-anchor-located-eq	benign	const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();	const anchorLocated = (recorded !== undefined && receipt.anchor.text.trim() === recorded.trim());
+pins-f1-old-tag	fault	if (!row.tags.includes(f.old_tag))	if (false)
+pins-f2-path-binding	fault	if (!inSource && !inAnchor)	if (false)
+pins-f2-path-traversal	fault	f.path.includes("..")	false
+pins-f3-bytes-path	fault	if (f.old_bytes !== wantOld || f.new_bytes !== wantNew)	if (false)
+pins-f3-bytes-sha	fault	if (sha256(ob) !== f.old_sha256 || sha256(nb) !== f.new_sha256)	if (false)
+pins-f3-bytes-absent	fault	if (ob === null || nb === null)	if (false)
+pins-f4-range-bounds	fault	a < 1 || b < a || b > oldLines.length || !anchorHasRange(row.anchor, a, b)	!anchorHasRange(row.anchor, a, b)
+pins-f4-anchor-token	fault	a < 1 || b < a || b > oldLines.length || !anchorHasRange(row.anchor, a, b)	a < 1 || b < a || b > oldLines.length
+pins-f5-digest	fault	if (digests.length && !digests.some((d) => oldShas.some((s) => digestMatches(d, s))))	if (false)
+pins-f6-refetch-seat	fault	rf.seat !== entry.fetched_by &&	true &&
+pins-f6-refetch-sha	fault	x.status === f.new_status && x.sha256 === f.new_sha256	x.status === f.new_status
+pins-f6-refetch-all	fault	const confirmed = rf && typeof rf.seat === "string" && rf.seat && typeof entry.fetched_by === "string" && entry.fetched_by && rf.seat !== entry.fetched_by &&\n        Array.isArray(rf.files) && rf.files.some((x) => x && x.path === f.path && x.tag === stable && x.status === f.new_status && x.sha256 === f.new_sha256);	const confirmed = true;
+pins-s1-supersession-prefix	fault	sup.teaches.startsWith(`supersedes ${row.id} —`) && 	
+pins-s1-supersession-tag	fault	 && sup.source.includes(`refs/tags/${stable}/`)	
+pins-notfound-status	fault	f.new_status === 404 && nb.toString("utf8").includes("NOT_FOUND")	nb.toString("utf8").includes("NOT_FOUND")
+pins-notfound-body	fault	f.new_status === 404 && nb.toString("utf8").includes("NOT_FOUND")	404 === f.new_status
+pins-population-on-release	fault	r.recheck === "on-release" && 	
+pins-population-tag-compare	fault	r.tags.some((t) => cmpVersion(t, stable) < 0)	r.tags.length > 0
+pins-f1-old-tag-eq	benign	if (!row.tags.includes(f.old_tag))	if (row.tags.includes(f.old_tag) === false)
+pins-f2-path-traversal-eq	benign	f.path.includes("..")	f.path.indexOf("..") !== -1
+pins-f3-bytes-absent-eq	benign	if (ob === null || nb === null)	if ((nb === null || ob === null))
+pins-f4-eq-reorder	benign	a < 1 || b < a || b > oldLines.length || !anchorHasRange(row.anchor, a, b)	(b > oldLines.length || a < 1 || b < a || !anchorHasRange(row.anchor, a, b))
+pins-s1-prefix-eq	benign	sup.teaches.startsWith(`supersedes ${row.id} —`)	sup.teaches.indexOf(`supersedes ${row.id} —`) === 0
+pins-s1-tag-eq	benign	sup.source.includes(`refs/tags/${stable}/`)	sup.source.indexOf(`refs/tags/${stable}/`) >= 0
+pins-notfound-eq-reorder	benign	f.new_status === 404 && nb.toString("utf8").includes("NOT_FOUND")	(nb.toString("utf8").includes("NOT_FOUND") && f.new_status === 404)

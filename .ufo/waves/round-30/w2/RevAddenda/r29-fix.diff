@@ -1,0 +1,169 @@
+diff --git a/corpus/QUALITY.md b/corpus/QUALITY.md
+index a20b7c7..d8e83fa 100644
+--- a/corpus/QUALITY.md
++++ b/corpus/QUALITY.md
+@@ -396,3 +396,58 @@
+     clause of the predicate sentence names the code line that enforces it, and a clause
+     no line enforces is dropped from the sentence or enforced before data. (lesson:
+     corpus/lessons/round-29.md#mistakes M4)
++
++74. A Gate quote is a contiguous substring of its own row's committed bytes under
++    whitespace collapse, never a sibling row's bytes and never a span assembled across a
++    boundary the source does not carry: adjacent C++ string literals, two table lines, an
++    ellipsis. It must also ground that row's own `teaches`; a located sentence about a
++    neighbouring row's subject is an attribution defect. Location is mechanical for a
++    frontier entry (`g5-quote-located` against the receipt's committed `bytes_path`,
++    `g6-gate` in the round lesson, `q1-entry-quote` for every >=4-word span of the
++    entry); grounding, and any Gate row no counter parses, is review. (lesson:
++    corpus/lessons/round-30.md#mistakes M1; routed round-29 defect 2;
++    `scripts/check-frontier-admission.mjs` cases=24)
++
++75. `used-by` reciprocity holds in both directions: every id an entry's `source:` line
++    names lists that entry's repo path in `used-by`, and the in-place append is logged
++    old→new in the round lesson (SOURCES contract rule 2). A one-way citation is a defect
++    even when every quote is located: the row reads `mined` with no consumer that cites
++    it. The frontier counter's `r3-used-by` rejects the absent direction for an admitted
++    entry; a `used-by` path that no longer exists is a census check; neither instrument
++    reads a row cited only outside the frontier surface, so that direction is reviewed.
++    (lesson: corpus/lessons/round-30.md#mistakes M4; routed round-29 defect 1;
++    `scripts/check-frontier-admission.mjs` cases=24)
++
++76. A self-test case names the check it targets — a finding id, or a sub-check field and
++    its expected value — and turns red when that one check is disrupted; a case that
++    asserts only an exit code and a tally is satisfied by a failure on a neighbouring
++    path and counts as no coverage. The mutant battery is the instrument: every
++    catalogued fault mutant must turn its case red and every benign rewrite at the same
++    site must stay green (27 fault, 13 benign). (lesson: corpus/lessons/round-30.md#mistakes
++    M3; routed round-29 defect 7; `scripts/check-gate-mutants.mjs` cases=12;
++    `scripts/check-s106-evidence.mjs` and `scripts/check-release-pins.mjs` case tables)
++
++77. A lesson that numbers its mistakes carries one table row and one subsection per
++    number; a mistake left in prose is not a numbered mistake and cannot be cited, and a
++    row with no subsection leaves its fix and its able-to-fail state unrecorded. Table
++    rows and subsections are counted and compared (`grep -c '^| M[0-9]'` against
++    `grep -c '^### M[0-9]'`); no lane instrument asserts this yet. (source: routed
++    round-29 defect 3, defect-derived; corpus/lessons/round-29-verifier-spotcheck.md)
++
++78. An appended correction cites its target by document and line, or by a quoted anchor;
++    "the bullet above" and any ordinal position is not a citation, because an append
++    between the two moves the target and leaves the earlier statement standing unmarked.
++    A described span also counts the lines it names: the guard block at 201-209 is nine
++    lines, and the "10-line insertion" the errata calls it is those nine plus the blank
++    at 210; a span that does not add up is corrected, not repeated. (source: routed
++    round-29 defect 4, defect-derived; recurrence of criteria 65 and 70;
++    corpus/lessons/round-29-verifier-spotcheck.md)
++
++79. A counted population is stated as the rule that selects its members, in the same
++    place as the count, with every class the rule excludes named and counted: "23
++    on-release rows" is not a predicate until it says the source cell carries a src tag
++    and that the two DEPS-pinned rows (S044, S068) fall outside the set by that rule. A
++    number whose rule lives only in the counter's code cannot be re-derived by a reader
++    and does not bind the next round. (source: routed round-29 defect 5, defect-derived;
++    no lane instrument prints the excluded class — the reader recomputes the id set by
++    the rule; `scripts/check-release-pins.mjs`)
+diff --git a/corpus/README.md b/corpus/README.md
+index 199f320..9b7202a 100644
+--- a/corpus/README.md
++++ b/corpus/README.md
+@@ -628,3 +628,25 @@ Append-only. One knowledge row; no earlier line is edited.
+ |---|---|---|
+ | On-release source freshness (Chromium tag pins) | held at 156.0.8078.47 for the 23 tag-pinned rows; counter `scripts/check-release-pins.mjs` measures it; known counter weaknesses routed (lesson round-29 M4) | `corpus/lessons/round-29.md` |
+ | Runtime behaviour on a 156 build | open — no 156 browser run; the post-fill detached-document arm is documented, not observed | `knowledge/chromium-156-release-pin-recheck.md` §Limits |
++
++## Round 30 — rate/ToS signal vocabulary (2026-10-26)
++
++Append-only. Two knowledge rows; no earlier line is edited.
++
++| Note | Holds | Sources |
++|---|---|---|
++| `knowledge/rate-limit-policy-fields.md` *(round 30)* | Documented-upstream vocabulary for the quota signal a server can publish: the IETF HTTPAPI RateLimit header-fields draft (`-11`) splits a stable `RateLimit-Policy` quota policy (`q`, `qu`, `w`, `pk`; SHOULD stay consistent across responses) from the per-request `RateLimit` service limit (`r` available quota, `t` effective window; MAY change on every request); the fields imply no status code, and `Retry-After` takes precedence when both appear. An Internet-Draft, not an RFC; `t` changed meaning between `-10` and `-11`. Nothing in it was run, captured or observed in a browser. | S116 draft-ietf-httpapi-ratelimit-headers-11 §3–§7; opened 2026-10-26; receipt `evidence/round-30/frontier/S116.json` |
++| `knowledge/host-published-rate-limit-headers.md` *(round 30)* | One real host's documented rate-limit header set (Discord developer docs): `X-RateLimit-Limit` / `-Remaining` / `-Reset` (epoch) / `-Reset-After` (delta) / `-Bucket`, the 429-only `X-RateLimit-Global` / `-Scope`, the 429 JSON body, the global and invalid-request limits, the emoji-route per-guild caveat (scoped as the page scopes it), a shape-only capture rule and the mapping onto the draft's fields. Documentation only; no request was sent to that host's API. | S117 Discord Developer Docs, Rate Limits; opened 2026-10-26; receipt `evidence/round-30/frontier/S117.json` |
++
++Frontier restatement (append-only; earlier rows keep their bytes): **Rate/ToS surface for site-interaction
++records** — documented vocabulary held, no measured real surface. The two entries give the signal classes a
++record can name (published quota policy, per-request budget, one host's `X-RateLimit-*` set, `Retry-After`
++shape from `knowledge/redirect-and-retry-after-semantics.md`); the approval table's C3 and C6 still decide from
++an absence (`knowledge/interaction-approval-table.md`, U1 stays open), and a loopback 429 remains an instrument,
++never a C6 datum (`knowledge/external-class-fixture-v2.md` §4–§5). The fixture's stop-and-report predicate does
++not record `RateLimit` or `X-RateLimit-*` fields, and no run has exercised them.
++
++| Frontier item | Status | Pointer |
++|---|---|---|
++| Rate/ToS surface for site-interaction records | docs-held — IETF `RateLimit-Policy`/`RateLimit` fields (Internet-Draft `-11`) and one host's `X-RateLimit-*` set documented; runtime open — no measured real-site rate or ToS datum; approval table C3/C6 unchanged | `knowledge/rate-limit-policy-fields.md`; `knowledge/host-published-rate-limit-headers.md`; counter `node scripts/check-frontier-admission.mjs --rev <REV> --frontier rate-tos-signal --since 2026-10-26 --live` |
++| Gate self-test kill coverage | held for two gates — every catalogued fault in `scripts/check-s106-evidence.mjs` and `scripts/check-release-pins.mjs` is killed by a self-test case and no equivalent rewrite is; known counter weakness (mutant identity visible to the code under test) routed (lesson round-30 M5) | `node scripts/check-gate-mutants.mjs --rev <REV>`; `scripts/gate-mutants.json` |
+diff --git a/corpus/knowledge/chromium-156-release-pin-recheck.md b/corpus/knowledge/chromium-156-release-pin-recheck.md
+index 70e1cc9..f19c1b7 100644
+--- a/corpus/knowledge/chromium-156-release-pin-recheck.md
++++ b/corpus/knowledge/chromium-156-release-pin-recheck.md
+@@ -116,3 +116,36 @@ naming the superseding row: `webmcp-invocation-round-17.md` (S042 → S109),
+ - Correction to the bullet above (wave-2 `RevSources.md`, S110): the inserted hunk is 10 lines — the
+   9-line guard 201-209 plus the blank line 210 — and with a separate one-line change above it, 154
+   lines from 198 on sit 11 lines lower at 156. "A second one-line change" explains the +1, not the +10.
++
++### Errata — round-30 scribe addendum (2026-10-26; append-only, seat `ScribeLesson29Addendum`)
++
++- **`:110-111` is superseded by `:117-118`.** The "+10 because of a second one-line change above it" is
++  wrong: the measured net delta below the guard is **+11**. Re-measured on the committed pair
++  `corpus/evidence/round-29/release-pins/bytes/{154.0.8037.97,156.0.8078.47}/third_party/blink/renderer/core/html/forms/html_form_element.cc`
++  (`diff -u`, exit 1) two hunks sit above the guard region: `@@ -123,6 +123,7 @@`
++  adds one line (`is_connected_nested_form_(false),`, 156:124) and `@@ -197,6 +198,16 @@` adds ten
++  (the guard plus blank 210). Above 156:124 the delta is 0, from 156:124 through 156:200 it is +1, and
++  from 156:211 (`  // Success. Now we can either submit the form or focus the submit button.`, which is
++  154:200) it is +11. Nine added guard lines plus one added blank line do not fit "+10" once the
++  earlier one-line change is counted; `:117-118` states the +11, though its "from 198 on" is loose at
++  the seam: 154:198 (`  }`) is 156:199 and 154:199 (blank) is 156:200, both still +1, because the
++  ten-line insertion begins after 154:199 — the +11 starts at 154:200 / 156:211.
++- **S110's guard span is 9 lines, not 10.** `corpus/SOURCES.md:124` (S110) says "a 10-line
++  detached-document guard inserted at 201-209"; the same count appears at `:129` (S115, "a 10-line guard
++  added at 201-210"). Verified against the committed 156 bytes
++  (`.../bytes/156.0.8078.47/third_party/blink/renderer/core/html/forms/html_form_element.cc`, 1761
++  lines, `sha256 2a96a97bfb4246b7a23895be7548533ce7adc32286f10df36831e370f8f86102` — the decoded digest
++  S110 itself records): `:201-202` the two comment lines, `:203` `if (!form_->GetDocument().IsActive()) {`,
++  `:204-208` the `return std::move(done_callback).Run(...)` spanning five lines, `:209` `}`. That is
++  nine lines; `:210` is the blank tenth line of the insertion hunk and `:211` resumes `// Success.`.
++  "10-line" counts the hunk, not the guard — read the guard as `201-209`, 9 lines.
++
++Errata (round 30, append-only; `.ufo/waves/round-30/w1/ScribeUsedBy23.md` F1): `:83` "S080 and S081 have no
++citing knowledge entry" is superseded — since round 30 this entry cites both through its `source:` line and is
++listed in their `used-by` cells (`corpus/lessons/round-30.md` §`used-by` changes).
++
++Population rule (round 30, append-only; round-29 routed defect 5): the 23 rows are the release-pin counter's
++population — `recheck == on-release` and a source cell carrying `refs/tags/<A.B.C.D>/` below Stable
++(`scripts/check-release-pins.mjs:178`). Not selected and not re-opened by this entry: six DEPS-pinned devtools rows
++(S036, S044, S068, S088, S089, S090) and three `main`-branch rows (S004, S028, S035); see
++`corpus/lessons/round-30.md` §Release-pin population rule.
+diff --git a/corpus/knowledge/webmcp-invocation-round-17.md b/corpus/knowledge/webmcp-invocation-round-17.md
+index 8c5d0f7..26d28d2 100644
+--- a/corpus/knowledge/webmcp-invocation-round-17.md
++++ b/corpus/knowledge/webmcp-invocation-round-17.md
+@@ -146,3 +146,9 @@ S042 drifted at the current Stable tag and is superseded by **S109**. Still true
+ S045 (wave-1 attack `.ufo/waves/round-29/w1/CritSemanticDrift.md` §2): both cited lines of `executeTool-abort.https.html` survive verbatim at 156 (154:87 → 156:108, 154:113 → 156:134), so the release-pin counter computes `holds`, but the contract they witness changed: at 156 the test listens on `document.modelContext` for `ToolActivatedEvent`/`toolcancel` instead of `window`, and calls `executeTool(tool, {})` with an object instead of the JSON string `'{}'`. The event-order assertion therefore describes model-context dispatch at 156; the window-dispatch reading above is a 154 statement only.
+ 
+ Errata (wave-2 review `.ufo/waves/round-29/w2/RevKnowledge.md` F2, F5, F6; append-only): the second S045 line maps 154:113 → 156:**143** (156:134 is a different line). The S042 block `528-580` → `527-577` is positional, not verbatim: inside it the signature takes the invocation id by value, the comment reads `toolactivated`, and the window dispatch is replaced by the ModelContext dispatch. The four "still true at 156" statements are source readings of the 156 bytes, not a 156 run: the id-before-events order is declared in `WebMCP.pdl` 156:70; the empty `errorText` comes from the rejection arm of `OnToolExecuted` (156:867-869); `input_schema` appears only on declarative paths, not in `ExecuteV8Tool` (156:744-807); `Canceled` via `cancelInvocation` is the imperative path only.
++
++## Round-30 anchor correction (2026-10-26; append-only)
++
++S044's anchor places `WebMCPModel.ts:128-139 and 249-258` under `front_end/panels/application/`; that path returns HTTP 404 at devtools `66df492aaa0129d090937e933dd44c5389ab24d2` (Chromium tag 154.0.8037.97, DEPS line 424) and at `bf69d041b0ad1f74730204a73bff29f3ef1d4ead` (M156), and the panel directory's 85 entries hold only `WebMCPView.ts`, `WebMCPView.test.ts`, `WebMCPTreeElement.ts` and `webMCPView.css`. The model is `front_end/models/web_mcp/WebMCPModel.ts` (8,553 B decoded, sha256 `c23d575e90f0e23b4d29010e3e0a062dd30d55976c83d3d0a88790191f08b632`, byte-identical at both commits): `invoke` (128-139) sends `toolName`/`frameId`/`input` and returns `response.invocationId`, and `toolResponded` (249-258) looks the call up by that id and dispatches with `status`/`output`/`errorText`. The View anchors S044 cites are unchanged at both commits (942-952 and 561-576; decoded sha256 `4b2fce64c708664f5f7c7953fea4fd2abba2998a29a629e10601a6c884a7540f`). Row **S118**; bytes, directory listings and fetch receipts in `.ufo/waves/round-30/w1/ExecS044Supersede/`.
++
++Committed copies of those bytes and receipts: `corpus/evidence/round-30/s118/`.
+diff --git a/corpus/lessons/round-29.md b/corpus/lessons/round-29.md
+index c23d20f..e30d421 100644
+--- a/corpus/lessons/round-29.md
++++ b/corpus/lessons/round-29.md
+@@ -262,3 +262,16 @@ Round-28 wave accounting (routed defect 4): `.ufo/waves/round-29/r28-wave-accoun
+ - Independent re-fetch: 23 records by seats Refetch<id> (wave 2), committed at
+   `corpus/evidence/round-29/release-pins/refetch/`; every record agrees with the receipt's `new_sha256`
+   (S094 after the documented nonce normalisation).
++
++## Appended mistake rows — M4 and M5 (round 30, 2026-10-26; append-only, seat `ScribeLesson29Addendum`)
++
++The §Mistakes table above has one row per mistake for M1–M3; M4 and M5 were written as prose only
++(`§M4` opens `:226`, `§M5` opens `:243`). The two rows below put them in the table's shape
++(`CORPUS.md` §5: class · evidence · captured-by · fix) without touching a line of the prose, which
++keeps the "able to fail" field. Evidence pointers are line numbers in the committed bytes (checked
++read-only at `061e62024c0523d3c6c7e819506a773ff2cd7d75`).
++
++| # | Class | Evidence pointer | Captured by | Fix |
++|---|---|---|---|---|
++| M4 | `vacuous` (secondary `survivor`) | `.ufo/waves/round-29/w1/CritC3Gaming.md:58` (§S1) and `:78` (§S14) — `unresolved=0` reachable from receipt-derived records with no fetch; `.ufo/waves/round-29/w1/CritSemanticDrift.md:27` (§1) — subset filing turns drifted rows into `holds`; `.ufo/waves/round-29/w1/MutC3.md:42` — score `9 killed / 9 survived of 18` with the nine survivors listed at `:44-56` (the §M4 prose at `:231` says "10 surviving mutants" and names nine — the source's score line and its survivor list both say 9); `.ufo/waves/round-29/w1/RevC3Code.md:22` (M1) and `:31` (M2) | `none` — criterion 69 (`corpus/QUALITY.md:374`) asks for paired controls, not an adversary; the criterion drafted from this row is 73 (`corpus/QUALITY.md:394`, added `e1e3a15`, lesson pointer `round-29.md#mistakes M4`) | not landed in round 29 (C3 frozen); the round verifies the stronger sentence on its own data through w2 (every row re-fetched at both tags by a seat other than its w1 fetcher, filing completeness checked per anchor); next round: counter v2 with anchor-derived span sets, exact-path binding, population id set, self-supersession refusal, 404 rows judged on status + first line |
++| M5 | `stale-premise` | `.ufo/waves/round-29/w1/CritSemanticDrift.md:154` (§4) — six fetches, six digests, only `request_id` differs; `corpus/SOURCES.md:108` (S094) records one 404 body sha256 (`9d640282…8b19`) as if it were a property of the URL; `corpus/evidence/round-29/release-pins/receipt.json:754-756` — S094 `new_sha256` `604d9798…4868` (normalised) against `raw_new_sha256` `03016b0d…a056` (unmodified fetch) | `none` — no criterion in `corpus/QUALITY.md` speaks to nonce-bearing responses | landed: the committed 156 body replaces the nonce value (receipt S094 `normalization`, `raw_new_sha256`) and the w2 re-fetch applies the same replacement; the red state is `§M5`'s own pair — an un-normalised re-fetch disagrees (`03016b0d…` vs `604d9798…`) |

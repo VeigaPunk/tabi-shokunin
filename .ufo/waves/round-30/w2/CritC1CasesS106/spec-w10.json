@@ -1,0 +1,14 @@
+{
+  "variants": [
+    {
+      "id": "W10-revision-measured-vs-rev",
+      "note": "revision_match compares measured bytes to rev bytes, not to the receipt digest",
+      "edits": [
+        {
+          "find": "  const measuredRev = resolveRev(repo, receipt.measured_rev);\n  const measuredBytes = readBlob(repo, measuredRev, receipt.bytes_path);\n  const revisionMatch = measuredBytes !== null &&\n    sha256(measuredBytes) === receipt.decoded_sha256;\n  const bytesText = readBlob(repo, rev, receipt.bytes_path);",
+          "replace": "  const measuredRev = resolveRev(repo, receipt.measured_rev);\n  const measuredBytes = readBlob(repo, measuredRev, receipt.bytes_path);\n  const bytesText = readBlob(repo, rev, receipt.bytes_path);\n  const revisionMatch = measuredBytes !== null && bytesText !== null &&\n    sha256(measuredBytes) === sha256(bytesText);"
+        }
+      ]
+    }
+  ]
+}

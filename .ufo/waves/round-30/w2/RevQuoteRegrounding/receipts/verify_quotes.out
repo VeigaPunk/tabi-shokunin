@@ -1,0 +1,242 @@
+/fast/scratch/hyaku/tabi-r30/RevQuoteRegrounding/verify_quotes.py:5: SyntaxWarning: "\s" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\s"? A raw string is also an option.
+  normalise = re.sub(r'\s+', ' ', t).strip(); words = collapse(q).split(' ') nonempty count.
+{
+ "S110": {
+  "quote": "if (it == name_to_controls_.end()) { return ScriptToolError( ScriptToolErrorCode::kInvalidInputArguments,",
+  "156": {
+   "stated": "215-217",
+   "exact_span_match": true,
+   "in_full_norm": true,
+   "words": 8
+  },
+  "154_215_217": {
+   "stated": "215-217",
+   "exact_span_match": true,
+   "in_full_norm": true,
+   "words": 8
+  },
+  "byte_identical_tags": true,
+  "lines_215_230": {
+   "215": "    if (it == name_to_controls_.end()) {",
+   "216": "      return ScriptToolError(",
+   "217": "          ScriptToolErrorCode::kInvalidInputArguments,",
+   "218": "          StrCat({\"Input contains a parameter \\\"\", parameter_name,",
+   "219": "                  \"\\\" but there is no such parameter for the tool\"}));",
+   "220": "    }",
+   "221": "    if (!ValidateParameterData(parameter_name, *entry.second)) {",
+   "222": "      String string_value;",
+   "223": "      if (ToString(*entry.second, string_value)) {",
+   "224": "        return ScriptToolError(ScriptToolErrorCode::kInvalidInputArguments,",
+   "225": "                               StrCat({\"Invalid value \\\"\", string_value,",
+   "226": "                                       \"\\\" for parameter \", parameter_name}));",
+   "227": "      }",
+   "228": "      return ScriptToolError(",
+   "229": "          ScriptToolErrorCode::kInvalidInputArguments,",
+   "230": "          StrCat({\"Invalid value for parameter \", parameter_name}));"
+  }
+ },
+ "S114": {
+  "quote": "executing_tool->CallDoneCallback(base::ok(String()));",
+  "156": {
+   "stated": "867-867",
+   "exact_span_match": true,
+   "in_full_norm": true,
+   "words": 1
+  },
+  "line_867_raw": "      executing_tool->CallDoneCallback(base::ok(String()));",
+  "occurrences_156_raw": 1,
+  "occurrences_156_norm": 1,
+  "154_line_numbers": [
+   829
+  ],
+  "154_raw_count": 1,
+  "line_862": "    ScheduleFormSubmission(event, submitter);",
+  "lines_201_202": [
+   "  // Filling out the form controls dispatches `input` and `change` events,",
+   "  // whose handlers may have detached the document."
+  ]
+ },
+ "S115": {
+  "quote": "if (!form_->GetDocument().IsActive()) { return std::move(done_callback) .Run(base::unexpected( ScriptToolError(ScriptToolErrorCode::kToolInvocationFailed,",
+  "156": {
+   "stated": "203-206",
+   "exact_span_match": true,
+   "in_full_norm": true,
+   "words": 7
+  },
+  "absent_from_154_norm": true,
+  "154_isactive_count": 0,
+  "154_ktoolinvocationfailed_count": 4,
+  "156_ktoolinvocationfailed_count": 5,
+  "lines_203_210": {
+   "203": "  if (!form_->GetDocument().IsActive()) {",
+   "204": "    return std::move(done_callback)",
+   "205": "        .Run(base::unexpected(",
+   "206": "            ScriptToolError(ScriptToolErrorCode::kToolInvocationFailed,",
+   "207": "                            \"The document was detached while filling out \"",
+   "208": "                            \"the form\")));",
+   "209": "  }",
+   "210": ""
+  }
+ },
+ "two_literal": {
+  "msg_len": 52,
+  "msg_raw_count": 0,
+  "msg_norm_count": 0,
+  "lit1_raw_count": 1,
+  "lit1_norm_count": 1,
+  "lit2_raw_count": 1,
+  "lit2_norm_count": 1,
+  "line_207": "                            \"The document was detached while filling out \"",
+  "line_208": "                            \"the form\")));",
+  "gap_repr": "'\"\\n                            \"the form\"'",
+  "gap_is_quote_nl_28sp_quote": true,
+  "gap_len_to_second_quote": 31
+ },
+ "diff_insertions": [
+  {
+   "op": "insert",
+   "old": null,
+   "new": [
+    126,
+    126
+   ],
+   "new_lines": [
+    "      is_connected_nested_form_(false),"
+   ],
+   "n_new": 1
+  },
+  {
+   "op": "insert",
+   "old": null,
+   "new": [
+    199,
+    208
+   ],
+   "new_lines": [
+    "  }",
+    ""
+   ],
+   "n_new": 10
+  },
+  {
+   "op": "insert",
+   "old": null,
+   "new": [
+    373,
+    379
+   ],
+   "new_lines": [
+    "  // Declarative WebMCP tools require script execution capability. Sandboxed",
+    "  // frames without `allow-scripts` cannot register tools, consistent with the"
+   ],
+   "n_new": 7
+  },
+  {
+   "op": "insert",
+   "old": null,
+   "new": [
+    486,
+    490
+   ],
+   "new_lines": [
+    "  if (insertion_point.isConnected() && FindFormAncestor()) {",
+    "    DCHECK(!is_connected_nested_form_);"
+   ],
+   "n_new": 5
+  },
+  {
+   "op": "insert",
+   "old": null,
+   "new": [
+    540,
+    554
+   ],
+   "new_lines": [
+    "",
+    "  // Stop counting this form as a connected nested form. This has to come"
+   ],
+   "n_new": 15
+  },
+  {
+   "op": "insert",
+   "old": null,
+   "new": [
+    1232,
+    1238
+   ],
+   "new_lines": [
+    "  if (is_connected_nested_form_ || !isConnected()) {",
+    "    // Outer forms list this form's elements for autofill"
+   ],
+   "n_new": 7
+  },
+  {
+   "op": "insert",
+   "old": null,
+   "new": [
+    1247,
+    1249
+   ],
+   "new_lines": [
+    "  if (is_connected_nested_form_ || !isConnected()) {",
+    "    InvalidateAncestorFormsForAutofill(parentNode());"
+   ],
+   "n_new": 3
+  }
+ ],
+ "shift_anchors": {
+  "190": {
+   "new": 191,
+   "delta": 1
+  },
+  "192": {
+   "new": 193,
+   "delta": 1
+  },
+  "196": {
+   "new": 197,
+   "delta": 1
+  },
+  "197": {
+   "new": 198,
+   "delta": 1
+  },
+  "198": {
+   "new": 209,
+   "delta": 11
+  },
+  "199": {
+   "new": 210,
+   "delta": 11
+  },
+  "200": {
+   "new": 211,
+   "delta": 11
+  },
+  "201": {
+   "new": 212,
+   "delta": 11
+  },
+  "202": {
+   "new": 213,
+   "delta": 11
+  },
+  "210": {
+   "new": 221,
+   "delta": 11
+  },
+  "258": {
+   "new": 269,
+   "delta": 11
+  },
+  "328": {
+   "new": 339,
+   "delta": 11
+  },
+  "339": {
+   "new": 350,
+   "delta": 11
+  }
+ }
+}

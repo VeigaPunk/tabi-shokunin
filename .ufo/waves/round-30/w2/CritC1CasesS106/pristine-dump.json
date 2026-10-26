@@ -1,0 +1,158 @@
+{
+  "schema": "tabi-s106-evidence-selftest-v1",
+  "cases": 10,
+  "passed": 10,
+  "results": [
+    {
+      "id": "clean-fixture-valid",
+      "ok": true,
+      "expectedExit": 0,
+      "exit": 0,
+      "valid": true,
+      "refusal": null,
+      "fields": {
+        "revision_match": true,
+        "sha_match": true,
+        "anchor_located": true,
+        "anchor_unique": true,
+        "byte_count_match": true,
+        "occurrences": 1
+      }
+    },
+    {
+      "id": "measured-revision-bytes-match",
+      "ok": true,
+      "expectedExit": 0,
+      "exit": 0,
+      "valid": true,
+      "refusal": null,
+      "fields": {
+        "revision_match": true,
+        "sha_match": true,
+        "anchor_located": true,
+        "anchor_unique": true,
+        "byte_count_match": true,
+        "occurrences": 1
+      }
+    },
+    {
+      "id": "measured-revision-bytes-mismatch",
+      "ok": true,
+      "expectedExit": 1,
+      "exit": 1,
+      "valid": false,
+      "refusal": null,
+      "fields": {
+        "revision_match": false,
+        "sha_match": true,
+        "anchor_located": true,
+        "anchor_unique": true,
+        "byte_count_match": true,
+        "occurrences": 1
+      }
+    },
+    {
+      "id": "sha-mismatch-invalid",
+      "ok": true,
+      "expectedExit": 1,
+      "exit": 1,
+      "valid": false,
+      "refusal": null,
+      "fields": {
+        "revision_match": false,
+        "sha_match": false,
+        "anchor_located": true,
+        "anchor_unique": true,
+        "byte_count_match": false,
+        "occurrences": 1
+      }
+    },
+    {
+      "id": "anchor-off-by-one-invalid",
+      "ok": true,
+      "expectedExit": 1,
+      "exit": 1,
+      "valid": false,
+      "refusal": null,
+      "fields": {
+        "revision_match": true,
+        "sha_match": true,
+        "anchor_located": false,
+        "anchor_unique": true,
+        "byte_count_match": true,
+        "occurrences": 1
+      }
+    },
+    {
+      "id": "same-length-tamper-invalid",
+      "ok": true,
+      "expectedExit": 1,
+      "exit": 1,
+      "valid": false,
+      "refusal": null,
+      "fields": {
+        "revision_match": true,
+        "sha_match": false,
+        "anchor_located": true,
+        "anchor_unique": true,
+        "byte_count_match": true,
+        "occurrences": 1
+      }
+    },
+    {
+      "id": "duplicate-anchor-invalid",
+      "ok": true,
+      "expectedExit": 1,
+      "exit": 1,
+      "valid": false,
+      "refusal": null,
+      "fields": {
+        "revision_match": true,
+        "sha_match": true,
+        "anchor_located": true,
+        "anchor_unique": false,
+        "byte_count_match": true,
+        "occurrences": 2
+      }
+    },
+    {
+      "id": "receipt-byte-count-mismatch-invalid",
+      "ok": true,
+      "expectedExit": 1,
+      "exit": 1,
+      "valid": false,
+      "refusal": null,
+      "fields": {
+        "revision_match": true,
+        "sha_match": true,
+        "anchor_located": true,
+        "anchor_unique": true,
+        "byte_count_match": false,
+        "occurrences": 1
+      }
+    },
+    {
+      "id": "missing-bytes-could-not-evaluate",
+      "ok": true,
+      "expectedExit": 2,
+      "exit": 2,
+      "valid": null,
+      "refusal": "decoded bytes absent at c377d3c7cd6e5042213f80ddcee405da744a5f6a: corpus/evidence/round-26/sources/content-features-154.0.8037.97.cc",
+      "fields": {
+        "occurrences": null
+      }
+    },
+    {
+      "id": "missing-receipt-could-not-evaluate",
+      "ok": true,
+      "expectedExit": 2,
+      "exit": 2,
+      "valid": null,
+      "refusal": "receipt absent at 6e28f146cf7c7d9083e10b5b91446332b3e91469",
+      "fields": {
+        "occurrences": null
+      }
+    }
+  ],
+  "ok": true
+}

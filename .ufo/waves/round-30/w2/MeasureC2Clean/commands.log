@@ -1,0 +1,50 @@
+# Commands run by seat MeasureC2Clean (round 30, w2, C2 attack). $S=/fast/scratch/hyaku/tabi-r30/MeasureC2Clean
+# git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"; git -C "$S/clone" checkout -q 072af95fe2822f0785a6ff88a578e2142dd258e5   -> HEAD 072af95…, porcelain 0
+# sha256sum "$S/clone/scripts/check-frontier-admission.mjs"                     -> cadef57e8d9627a02d7e8c5404689225cf5b4de361e816f62c4127b28a509eca (= frozenDigests)  exit 0
+
+# 1. offline at tip, clean clone
+node scripts/check-frontier-admission.mjs --rev 072af95… --frontier rate-tos-signal --since 2026-10-26 --json > measure/c2-offline.json
+#    exit 0; population 2, admitted 2, failing 0, clean true
+
+# 2. live at tip, clean clone, 5 runs
+node scripts/check-frontier-admission.mjs --rev 072af95… --frontier rate-tos-signal --since 2026-10-26 --live --json > measure/c2-live.json
+#    exit 0; live true, 2/2  (measure/c2-live-rep1..3.json also exit 0, 2/2; measure/c2-after-live-final.json exit 0, 2/2, 07:41:23Z)
+
+# 3. live with empty HOME and proxy env scrubbed
+env -u HTTPS_PROXY -u https_proxy -u HTTP_PROXY -u http_proxy -u ALL_PROXY -u all_proxy -u NO_PROXY -u no_proxy HOME=$S/emptyhome node … --live --json > measure/c2-live-emptyhome.json
+#    exit 0; 2/2  (host has no ~/.curlrc, ~/.netrc or /etc/curlrc — verified)
+
+# 4. live inside a network namespace with only lo, no routes
+unshare -Urn sh $S/netns-proof.sh   (log: measure/netns-proof.log)
+#    ip route wc -l = 0; external curl exit 7 / HTTP 000
+#    live counter  -> exit 1, admitted 0, reasons l1-live S117, l1-live S116   (measure/netns-live-tip.json)
+#    offline counter -> exit 0, 2/2                                          (measure/netns-offline-tip.json)
+
+# 5. live with a hostile ~/.curlrc (proxy to a dead port)
+HOME=$S/curlrc-home node … --live --json > measure/c2-live-hostilecurlrc.json
+#    exit 1, admitted 0, l1-live on both entries
+
+# 6. fixture t1: committed S116 bytes + marker appended, receipt sha updated
+node … --json        -> exit 0, 2/2 (offline admits the tampered bytes)          fixtures/t1-offline.json
+node … --live --json -> exit 1, admitted 1, l3-live-bytes S116                  fixtures/t1-live.json
+#    same fixture inside unshare -Urn, hostile .curlrc connect-to + local TLS server serving the tampered bytes:
+node … --live --json -> exit 0, 2/2  ("forged live pass")                        fixtures/t1-live-forged.json
+
+# 7. fixture t2: committed S116 bytes replaced by the entry's own text + the quote
+node … --json        -> exit 0, 2/2                                              fixtures/t2-offline.json
+node … --live --json -> exit 1, admitted 1, l3-live-bytes S116                   fixtures/t2-live.json
+
+# 8. fixture t3: both receipt urls re-pointed at file:// committed bytes (SOURCES rows updated)
+node … --json             -> exit 0, 2/2                                         fixtures/t3-offline.json
+node … --live --json      -> exit 0, 2/2 (network available)                     fixtures/t3-live-net.json
+unshare -Urn … --live     -> exit 0, 2/2 with external curl exit 7               fixtures/t3-live-netns.json
+
+# 9. fixture t4: tip commit, worktree dirtied on purpose (untracked change to an entry)
+node … --rev 072af95… --json -> exit 0, 2/2  (counter reads committed blobs)     fixtures/t4-offline.json
+
+# 10. fixture t5: committed+refetch bytes fabricated, quote absent from the real page
+node … --json        -> exit 0, 2/2 (offline admits)                            fixtures/t5-offline.json
+node … --live --json -> exit 1, admitted 1, l1-live S116 (real GET, quote absent) fixtures/t5-live.json
+
+# 11. counter self-test
+node scripts/check-frontier-admission.mjs --selftest --json -> exit 0, cases 24, passed 24   fixtures/selftest.json

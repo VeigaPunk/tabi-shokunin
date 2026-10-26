@@ -1,0 +1,57 @@
+seat: CritEntryPolicyFields  (round 30, wave w2, attack-only)
+lane root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+review revision (REV): 072af95fe2822f0785a6ff88a578e2142dd258e5
+clone: /fast/scratch/hyaku/tabi-r30/CritEntryPolicyFields/clone   (git status --porcelain -> 0 lines)
+lane checkout HEAD observed: af0664ed039af98a5d8c460cf99c71d726dd41af (w1-evidence commit; REV is its ancestor)
+network fetches: none (all bytes were local); tools installed: none
+
+# --- 0. clone and cleanliness
+git clone -q --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"; git -C "$S/clone" checkout -q 072af95...
+git -C "$C" rev-parse HEAD                                  -> 072af95fe2822f0785a6ff88a578e2142dd258e5
+git -C "$C" status --porcelain | wc -l                      -> 0
+sha256sum "$C/corpus/evidence/round-30/frontier/bytes/S116.txt"
+  -> d6016dd0db5a33ba3f1e6b6f4c84e9b5ecc00986822d5212bab831f6c2d1d412   (67097 B, matches entry source: line)
+
+# --- 1. every quoted span of the entry located in S116 bytes (22/22 under whitespace collapse)
+python3 (script in this dir's transcript) -> 22 spans, 0 MISS; receipt quote-map.tsv
+  undeclared-section spans: 4  (S116:289, S116:293 -> §2; S116:816 -> §8.1; S116:63 -> Status of This Memo)
+
+# --- 2. ground-line attribution (F1)
+grep -nE '\b429\b|\b403\b' corpus/knowledge/redirect-and-retry-after-semantics.md      -> rc=1 (no match)
+grep -nE 'Retry-After|503|15\.4' corpus/knowledge/redirect-and-retry-after-semantics.md -> rc=0 (Retry-After/§10.2.3 held)
+grep -c '429' corpus/knowledge/interaction-approval-table.md corpus/knowledge/external-class-fixture-v2.md
+  -> interaction-approval-table.md:2  external-class-fixture-v2.md:24                  -> rc=0
+
+# --- 3. §2 Service Limit definition truncation (F2)
+awk 'NR>=293 && NR<=296' $C/corpus/evidence/round-30/frontier/bytes/S116.txt
+  293:    Service Limit:  A service limit is the currently available quota
+  294:       under a specific quota policy and, if defined, the effective time
+  295:       window within which the client can use no more than the available
+  296:       quota.
+
+# --- 4. recheck vs expiry (F4)
+awk 'NR==8 || NR==56' S116.txt -> "Expires: 24 November 2026" / "Polli, et al.  Expires 24 November 2026"
+python3 -c 'verified 2026-10-26 + 180d = 2027-04-24; expiry 2026-11-24; days to expiry = 29'   -> rc=0
+
+# --- 5. package / provenance claims
+grep -n 'line 301\|lines 322 and 409' /home/vgpnk/Projects/shokuknow/merge/tabi/knowledge/corpus/knowledge/host-rate-limit-signal-classes-r14.md
+  -> 4: ... (line 301) and the examples at lines 322 and 409 ... draft-09 fetched 2026-10-23    rc=0
+  package recheck line, verbatim: "180d - the draft revision moves; -10 and later currently return 404 (not run in this round)"
+awk 'NR==308||NR==309||NR==311' S116.txt -> the entry's two declared surviving sentences / the third retained clause
+
+# --- 6. evidence pointer exists only after REV (F5b)
+git cat-file -e 072af95:.ufo/waves/round-30/w1/ScribeEntryRateLimitFields/bytes/ratelimit-headers-10.txt
+  -> fatal: path exists on disk, but not in '072af95...'   rc=128
+git -C "$C" ls-tree -r --name-only 072af95 -- .ufo/waves/round-30 | wc -l   -> 30   (no w1 entry)
+git cat-file -s af0664e:.ufo/.../ratelimit-headers-09.txt -> 67876   sha e088940d98218985c88a0693d71e9d979cc4b4aff58a353b558b1cf5d58173ee
+git cat-file -s af0664e:.ufo/.../ratelimit-headers-10.txt -> 67803   sha f40a241153d69329e2cbfee86cb39512d42007a2355769b35b1ce68cd16b7aa5
+git cat-file -s af0664e:.ufo/.../ratelimit-headers-11.txt -> 67097   sha d6016dd0db5a33ba3f1e6b6f4c84e9b5ecc00986822d5212bab831f6c2d1d412
+af0664e fetch-receipts.json statuses: -09 200/67876, -10 200/67803, -11 200/67097, -12 404/77297
+
+# --- 7. no measurement claim / no approval-table change
+grep -n 'measur\|queried\|no browser' corpus/knowledge/rate-limit-policy-fields.md -> only the three "not measured" lines
+git -C "$C" diff --stat f7c0317..072af95 -- corpus/knowledge/interaction-approval-table.md | wc -l -> 0
+grep -rn 'RateLimit-Policy' corpus/knowledge/ | grep -v rate-limit-policy-fields.md -> only the S117 cross-reference (host-published-rate-limit-headers.md:135)
+
+# --- 8. S118 reservation
+awk 'NR==132' corpus/SOURCES.md | grep -o 'supersede[^|]*' -> "supersedes S044 - the invocationId the panel keeps ..."   rc=0

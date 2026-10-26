@@ -1,0 +1,42 @@
+s106-sha-drop	exit=3	failed=same-length-tamper-invalid	MATCH
+s106-sha-true	exit=3	failed=sha-mismatch-invalid,same-length-tamper-invalid	MATCH
+s106-anchor-unique-drop	exit=3	failed=duplicate-anchor-invalid	MATCH
+s106-anchor-unique-true	exit=3	failed=duplicate-anchor-invalid	MATCH
+s106-byte-count-drop	exit=3	failed=receipt-byte-count-mismatch-invalid	MATCH
+s106-byte-count-true	exit=3	failed=receipt-byte-count-mismatch-invalid	MATCH
+s106-revision-drop	exit=3	failed=measured-revision-bytes-mismatch	MATCH
+s106-revision-true	exit=3	failed=measured-revision-bytes-mismatch	MATCH
+s106-anchor-located-true	exit=3	failed=anchor-off-by-one-invalid	MATCH
+pins-f1-old-tag	exit=3	failed=f1-old-tag-not-carried-by-row-unresolved	MATCH
+pins-f2-path-binding	exit=3	failed=path-not-bound-unresolved	MATCH
+pins-f2-path-traversal	exit=3	failed=f2-dotdot-inside-filename-unresolved	MATCH
+pins-f3-bytes-path	exit=3	failed=new-bytes-under-old-tag-unresolved	MATCH
+pins-f3-bytes-sha	exit=3	failed=sha-mismatch-unresolved	MATCH
+pins-f3-bytes-absent	exit=1	failed=-	MATCH
+pins-f4-range-bounds	exit=3	failed=f4-range-past-last-old-line-unresolved	MATCH
+pins-f4-anchor-token	exit=3	failed=f4-anchor-lacks-range-token-unresolved	MATCH
+pins-f5-digest	exit=3	failed=digest-binding-mismatch-unresolved	MATCH
+pins-f6-refetch-seat	exit=3	failed=refetch-same-seat-unresolved	MATCH
+pins-f6-refetch-sha	exit=3	failed=copied-old-as-new-caught-by-refetch	MATCH
+pins-f6-refetch-all	exit=3	failed=refetch-missing-unresolved,refetch-same-seat-unresolved,copied-old-as-new-caught-by-refetch	MATCH
+pins-s1-supersession-prefix	exit=3	failed=drift-superseder-teaches-without-prefix-unresolved	MATCH
+pins-s1-supersession-tag	exit=3	failed=drift-superseder-not-at-stable-tag-unresolved	MATCH
+pins-notfound-status	exit=3	failed=absence-404-present-with-marker-unresolved	MATCH
+pins-notfound-body	exit=3	failed=absence-404-body-lacks-marker-unresolved	MATCH
+pins-population-on-release	exit=3	failed=not-on-release-not-counted,drift-superseder-not-at-stable-tag-unresolved	MATCH
+pins-population-tag-compare	exit=3	failed=pinned-at-stable-not-counted,empty-population-could-not-evaluate,drift-with-supersession-resolved,drift-superseder-teaches-without-prefix-unresolved	MATCH
+
+# benign
+s106-valid-reorder	exit=0	cases=10/10	failed=-	survived(clean)
+s106-sha-eq-swap	exit=0	cases=10/10	failed=-	survived(clean)
+s106-anchor-unique-eq-swap	exit=0	cases=10/10	failed=-	survived(clean)
+s106-byte-count-eq-swap	exit=0	cases=10/10	failed=-	survived(clean)
+s106-revision-eq-swap	exit=0	cases=10/10	failed=-	survived(clean)
+s106-anchor-located-eq	exit=0	cases=10/10	failed=-	survived(clean)
+pins-f1-old-tag-eq	exit=0	cases=29/29	failed=-	survived(clean)
+pins-f2-path-traversal-eq	exit=0	cases=29/29	failed=-	survived(clean)
+pins-f3-bytes-absent-eq	exit=0	cases=29/29	failed=-	survived(clean)
+pins-f4-eq-reorder	exit=0	cases=29/29	failed=-	survived(clean)
+pins-s1-prefix-eq	exit=0	cases=29/29	failed=-	survived(clean)
+pins-s1-tag-eq	exit=0	cases=29/29	failed=-	survived(clean)
+pins-notfound-eq-reorder	exit=0	cases=29/29	failed=-	survived(clean)

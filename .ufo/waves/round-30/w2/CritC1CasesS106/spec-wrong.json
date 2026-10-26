@@ -1,0 +1,124 @@
+{
+  "variants": [
+    {
+      "id": "W1-drop-unique-and-bytes",
+      "note": "valid omits anchorUnique and byteCountMatch",
+      "edits": [
+        {
+          "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+          "replace": "const valid = revisionMatch && shaMatch && anchorLocated;"
+        }
+      ]
+    },
+    {
+      "id": "W2-untrimmed-occurrences",
+      "note": "anchor_unique computed on untrimmed lines",
+      "edits": [
+        {
+          "find": "const occurrences = lines.filter((l) => l.trim() === receipt.anchor.text.trim()).length;",
+          "replace": "const occurrences = lines.filter((l) => l === receipt.anchor.text).length;"
+        }
+      ]
+    },
+    {
+      "id": "W3-sha-latin1",
+      "note": "sha computed over a latin1 encoding",
+      "edits": [
+        {
+          "find": "  return createHash(\"sha256\").update(text).digest(\"hex\");",
+          "replace": "  return createHash(\"sha256\").update(Buffer.from(text, \"latin1\")).digest(\"hex\");"
+        }
+      ]
+    },
+    {
+      "id": "W4-substring-located",
+      "note": "anchor_located by substring on the recorded line",
+      "edits": [
+        {
+          "find": "const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();",
+          "replace": "const anchorLocated = recorded !== undefined && recorded.includes(receipt.anchor.text);"
+        }
+      ]
+    },
+    {
+      "id": "W5-code-unit-length",
+      "note": "byte count as JS string length (UTF-16 code units)",
+      "edits": [
+        {
+          "find": "const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;",
+          "replace": "const byteCountMatch = bytesText.length === receipt.decoded_bytes;"
+        }
+      ]
+    },
+    {
+      "id": "W6-crlf-normalised-sha",
+      "note": "sha computed after CRLF->LF normalisation",
+      "edits": [
+        {
+          "find": "  return createHash(\"sha256\").update(text).digest(\"hex\");",
+          "replace": "  return createHash(\"sha256\").update(text.replace(/\\r\\n/g, \"\\n\")).digest(\"hex\");"
+        }
+      ]
+    },
+    {
+      "id": "W7-sha-and-bytes-only",
+      "note": "valid omits revision, anchor_located, anchor_unique",
+      "edits": [
+        {
+          "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+          "replace": "const valid = shaMatch && byteCountMatch;"
+        }
+      ]
+    },
+    {
+      "id": "W8-one-side-trim-located",
+      "note": "anchor_located trims only the recorded line",
+      "edits": [
+        {
+          "find": "const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();",
+          "replace": "const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text;"
+        }
+      ]
+    },
+    {
+      "id": "W9-split-substring-occurrences",
+      "note": "anchor_unique by substring count over the whole text",
+      "edits": [
+        {
+          "find": "const occurrences = lines.filter((l) => l.trim() === receipt.anchor.text.trim()).length;",
+          "replace": "const occurrences = bytesText.split(receipt.anchor.text).length - 1;"
+        }
+      ]
+    },
+    {
+      "id": "W10-revision-measured-vs-rev",
+      "note": "revision_match compares measured bytes to rev bytes, not to the receipt digest",
+      "edits": [
+        {
+          "find": "  const revisionMatch = measuredBytes !== null &&\n    sha256(measuredBytes) === receipt.decoded_sha256;",
+          "replace": "  const revisionMatch = measuredBytes !== null &&\n    sha256(measuredBytes) === sha256(bytesText);"
+        }
+      ]
+    },
+    {
+      "id": "W11-sha-over-measured-bytes",
+      "note": "text analysis (sha, anchor, bytes) reads measured_rev bytes instead of rev bytes",
+      "edits": [
+        {
+          "find": "  const bytesText = readBlob(repo, rev, receipt.bytes_path);",
+          "replace": "  const bytesText = measuredBytes;"
+        }
+      ]
+    },
+    {
+      "id": "W12-byte-count-inequality",
+      "note": "byte_count_match uses >= instead of ===",
+      "edits": [
+        {
+          "find": "const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;",
+          "replace": "const byteCountMatch = Buffer.byteLength(bytesText) >= receipt.decoded_bytes;"
+        }
+      ]
+    }
+  ]
+}

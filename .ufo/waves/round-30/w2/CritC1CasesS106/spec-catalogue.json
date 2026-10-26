@@ -1,0 +1,154 @@
+{
+  "variants": [
+    {
+      "id": "cat-s106-sha-drop",
+      "note": "fault: MutC1Baseline M1: sha term dropped from valid",
+      "edits": [
+        {
+          "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+          "replace": "const valid = revisionMatch && anchorLocated && anchorUnique && byteCountMatch;"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-sha-true",
+      "note": "fault: MutC1Baseline M1b",
+      "edits": [
+        {
+          "find": "const shaMatch = observedSha === receipt.decoded_sha256;",
+          "replace": "const shaMatch = true;"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-anchor-unique-drop",
+      "note": "fault: MutC1Baseline M2",
+      "edits": [
+        {
+          "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+          "replace": "const valid = revisionMatch && shaMatch && anchorLocated && byteCountMatch;"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-anchor-unique-true",
+      "note": "fault: MutC1Baseline M2b",
+      "edits": [
+        {
+          "find": "const anchorUnique = occurrences === 1;",
+          "replace": "const anchorUnique = true;"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-byte-count-drop",
+      "note": "fault: MutC1Baseline M3",
+      "edits": [
+        {
+          "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+          "replace": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique;"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-byte-count-true",
+      "note": "fault: MutC1Baseline M3b",
+      "edits": [
+        {
+          "find": "const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;",
+          "replace": "const byteCountMatch = true;"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-revision-drop",
+      "note": "fault: MutC1Baseline M4",
+      "edits": [
+        {
+          "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+          "replace": "const valid = shaMatch && anchorLocated && anchorUnique && byteCountMatch;"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-revision-true",
+      "note": "fault: MutC1Baseline M4b",
+      "edits": [
+        {
+          "find": "const revisionMatch = measuredBytes !== null &&\n    sha256(measuredBytes) === receipt.decoded_sha256;",
+          "replace": "const revisionMatch = true;"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-anchor-located-true",
+      "note": "fault: anchor_located term (covered at round 29 by anchor-off-by-one-invalid)",
+      "edits": [
+        {
+          "find": "const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();",
+          "replace": "const anchorLocated = true;"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-valid-reorder",
+      "note": "benign: equivalent conjunct order, parenthesised (changes text and length)",
+      "edits": [
+        {
+          "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+          "replace": "const valid = (byteCountMatch && anchorUnique && anchorLocated && shaMatch && revisionMatch);"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-sha-eq-swap",
+      "note": "benign: equivalent operand order, parenthesised",
+      "edits": [
+        {
+          "find": "const shaMatch = observedSha === receipt.decoded_sha256;",
+          "replace": "const shaMatch = (receipt.decoded_sha256 === observedSha);"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-anchor-unique-eq-swap",
+      "note": "benign: equivalent operand order, parenthesised",
+      "edits": [
+        {
+          "find": "const anchorUnique = occurrences === 1;",
+          "replace": "const anchorUnique = (1 === occurrences);"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-byte-count-eq-swap",
+      "note": "benign: equivalent operand order, parenthesised",
+      "edits": [
+        {
+          "find": "const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;",
+          "replace": "const byteCountMatch = (receipt.decoded_bytes === Buffer.byteLength(bytesText));"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-revision-eq-swap",
+      "note": "benign: equivalent operand order, parenthesised",
+      "edits": [
+        {
+          "find": "const revisionMatch = measuredBytes !== null &&\n    sha256(measuredBytes) === receipt.decoded_sha256;",
+          "replace": "const revisionMatch = (measuredBytes !== null &&\n    receipt.decoded_sha256 === sha256(measuredBytes));"
+        }
+      ]
+    },
+    {
+      "id": "cat-s106-anchor-located-eq",
+      "note": "benign: equivalent operand order, parenthesised",
+      "edits": [
+        {
+          "find": "const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();",
+          "replace": "const anchorLocated = (recorded !== undefined && receipt.anchor.text.trim() === recorded.trim());"
+        }
+      ]
+    }
+  ]
+}

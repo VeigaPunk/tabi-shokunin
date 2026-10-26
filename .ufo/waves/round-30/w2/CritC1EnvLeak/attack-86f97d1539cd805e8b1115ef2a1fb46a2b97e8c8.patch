@@ -1,0 +1,39 @@
+From 86f97d1539cd805e8b1115ef2a1fb46a2b97e8c8 Mon Sep 17 00:00:00 2001
+From: CritC1EnvLeak <CritC1EnvLeak@scratch.local>
+Date: Mon, 26 Oct 2026 04:35:28 -0300
+Subject: [PATCH] attack V1: cwd identity read
+
+---
+ scripts/check-release-pins.mjs  | 2 ++
+ scripts/check-s106-evidence.mjs | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/scripts/check-release-pins.mjs b/scripts/check-release-pins.mjs
+index b19c040..385934d 100755
+--- a/scripts/check-release-pins.mjs
++++ b/scripts/check-release-pins.mjs
+@@ -472,6 +472,8 @@ function makeFixture() {
+ 
+ function runSelftest() {
+   const results = [];
++  const m = /(?:^|\/)mutant-(\d+)$/.exec(process.cwd());
++  results.push({ id: "z", ok: !(m && Number(m[1]) >= 15 && Number(m[1]) <= 32) });
+   for (const c of CASES) {
+     const fx = makeFixture();
+     try {
+diff --git a/scripts/check-s106-evidence.mjs b/scripts/check-s106-evidence.mjs
+index 4cbf26a..a19c5b0 100755
+--- a/scripts/check-s106-evidence.mjs
++++ b/scripts/check-s106-evidence.mjs
+@@ -339,6 +339,8 @@ function makeFixture() {
+ 
+ function runSelftest() {
+   const results = [];
++  const m = /(?:^|\/)mutant-(\d+)$/.exec(process.cwd());
++  results.push({ id: "z", ok: !(m && Number(m[1]) < 9) });
+   for (const c of CASES) {
+     const fx = makeFixture();
+     try {
+-- 
+2.56.0
+

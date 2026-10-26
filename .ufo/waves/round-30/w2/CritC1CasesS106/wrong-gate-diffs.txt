@@ -1,0 +1,58 @@
+### W1-drop-unique-and-bytes.mjs
+-  const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;
++  const valid = revisionMatch && shaMatch && anchorLocated;
+
+### W10-revision-measured-vs-rev.mjs
+-  const revisionMatch = measuredBytes !== null &&
+-    sha256(measuredBytes) === receipt.decoded_sha256;
++  const revisionMatch = measuredBytes !== null && bytesText !== null &&
++    sha256(measuredBytes) === sha256(bytesText);
+
+### W11-sha-over-measured-bytes.mjs
+-  const bytesText = readBlob(repo, rev, receipt.bytes_path);
++  const bytesText = measuredBytes;
+
+### W12-byte-count-inequality.mjs
+-  const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;
++  const byteCountMatch = Buffer.byteLength(bytesText) >= receipt.decoded_bytes;
+
+### W13-byte-count-only.mjs
+-  const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;
++  const valid = byteCountMatch;
+
+### W14-sha-only.mjs
+-  const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;
++  const valid = shaMatch;
+
+### W2-untrimmed-occurrences.mjs
+-  const occurrences = lines.filter((l) => l.trim() === receipt.anchor.text.trim()).length;
++  const occurrences = lines.filter((l) => l === receipt.anchor.text).length;
+
+### W3-sha-latin1.mjs
+-  return createHash("sha256").update(text).digest("hex");
++  return createHash("sha256").update(Buffer.from(text, "latin1")).digest("hex");
+
+### W4-substring-located.mjs
+-  const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();
++  const anchorLocated = recorded !== undefined && recorded.includes(receipt.anchor.text);
+
+### W5-code-unit-length.mjs
+-  const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;
++  const byteCountMatch = bytesText.length === receipt.decoded_bytes;
+
+### W6-crlf-normalised-sha.mjs
+-  return createHash("sha256").update(text).digest("hex");
++  return createHash("sha256").update(text.replace(/\r\n/g, "\n")).digest("hex");
+
+### W7-sha-and-bytes-only.mjs
+-  const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;
++  const valid = shaMatch && byteCountMatch;
+
+### W8-one-side-trim-located.mjs
+-  const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();
++  const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text;
+
+### W9-split-substring-occurrences.mjs
+-  const occurrences = lines.filter((l) => l.trim() === receipt.anchor.text.trim()).length;
++  const occurrences = bytesText.split(receipt.anchor.text).length - 1;
+

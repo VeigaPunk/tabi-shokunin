@@ -1,0 +1,11 @@
+--- v2/check-gate-mutants.mjs	2026-10-26 04:41:46.410130555 -0300
++++ v3/check-gate-mutants.mjs	2026-10-26 04:48:23.496652932 -0300
+@@ -149,7 +149,7 @@
+   mkdirSync(tmp, { recursive: true });
+   const file = join(dir, name);
+   writeFileSync(file, bytes);
+-  const r = spawnSync(process.execPath, [file, "--selftest", "--json"], {
++  const r = spawnSync("unshare", ["-pfr", "--mount-proc", process.execPath, file, "--selftest", "--json"], {
+     cwd: dir,
+     encoding: "utf8",
+     timeout: RUN_TIMEOUT_MS,

@@ -1,0 +1,101 @@
+--- clone/scripts/check-gate-mutants.mjs	2026-10-26 04:34:25.677426638 -0300
++++ v2/check-gate-mutants.mjs	2026-10-26 04:41:46.410130555 -0300
+@@ -61,7 +61,7 @@
+ import { tmpdir } from "node:os";
+ import { join, dirname, basename } from "node:path";
+ import { fileURLToPath } from "node:url";
+-import { createHash } from "node:crypto";
++import { createHash, randomBytes } from "node:crypto";
+ 
+ const SCHEMA = "tabi-gate-mutants-v1";
+ const SELFTEST_SCHEMA = "tabi-gate-mutants-selftest-v1";
+@@ -138,9 +138,14 @@
+ 
+ // ---- self-test runner ------------------------------------------------------------
+ 
+-function runSelftestOf(work, runId, name, bytes) {
+-  const dir = join(work, runId);
+-  const tmp = join(dir, "tmp");
++function rid() { return randomBytes(16).toString("hex"); }
++
++function runSelftestOf(work, _unusedRole, name, bytes) {
++  // counter-v2: the run directory carries no role and no catalogue index, and the
++  // child inherits no parent environment beyond PATH/HOME and a neutral TMPDIR.
++  const dir = join(work, "runs", rid());
++  const tmp = join(work, "t", rid());
++  mkdirSync(dir, { recursive: true });
+   mkdirSync(tmp, { recursive: true });
+   const file = join(dir, name);
+   writeFileSync(file, bytes);
+@@ -149,7 +154,7 @@
+     encoding: "utf8",
+     timeout: RUN_TIMEOUT_MS,
+     maxBuffer: 64 * 1024 * 1024,
+-    env: { ...process.env, TMPDIR: tmp, TMP: tmp, TEMP: tmp },
++    env: { PATH: process.env.PATH, HOME: process.env.HOME, TMPDIR: tmp, TMP: tmp, TEMP: tmp },
+   });
+   let report = null;
+   try { report = JSON.parse(r.stdout); } catch { report = null; }
+@@ -157,8 +162,13 @@
+   const exit = r.status;
+   const clean = !timedOut && exit === 0 && report !== null && report.ok === true &&
+     Number.isInteger(report.cases) && report.cases > 0 && report.cases === report.passed;
+-  const failing = report && Array.isArray(report.results) ? report.results.filter((x) => x && x.ok === false).map((x) => x.id) : [];
++  const results = report && Array.isArray(report.results) ? report.results : [];
++  const failing = results.filter((x) => x && x.ok === false).map((x) => x.id);
++  const caseIds = results.map((x) => (x && x.id) ?? null);
++  const uniqueIds = new Set(caseIds).size === caseIds.length;
++  const countMatches = report !== null && Array.isArray(report.results) && report.cases === report.results.length;
+   rmSync(dir, { recursive: true, force: true });
++  rmSync(tmp, { recursive: true, force: true });
+   return {
+     clean,
+     exit: exit ?? null,
+@@ -168,6 +178,9 @@
+     cases: report && Number.isInteger(report.cases) ? report.cases : null,
+     passed: report && Number.isInteger(report.passed) ? report.passed : null,
+     failing_cases: failing,
++    case_ids: caseIds,
++    ids_unique: uniqueIds,
++    count_matches_results: countMatches,
+   };
+ }
+ 
+@@ -200,7 +213,7 @@
+   const gates = [];
+   const pristine = new Map();
+   for (const g of doc.gates) {
+-    const res = runSelftestOf(work, `pristine-${gates.length}`, basename(g.script), sources.get(g.script));
++    const res = runSelftestOf(work, "pristine", basename(g.script), sources.get(g.script));
+     pristine.set(g.script, res);
+     gates.push({ script: g.script, sha256: sha256(Buffer.from(sources.get(g.script))), pristine_clean: res.clean, cases: res.cases, passed: res.passed, exit: res.exit, timed_out: res.timed_out });
+     if (!res.clean) {
+@@ -212,12 +225,15 @@
+   doc.mutants.forEach((m, i) => {
+     const src = sources.get(m.script);
+     const mutated = src.replace(m.find, () => m.replace);
+-    const res = runSelftestOf(work, `mutant-${i}`, basename(m.script), mutated);
++    const res = runSelftestOf(work, "mutant", basename(m.script), mutated);
+     const killed = !res.clean;
++    const pristineIds = pristine.get(m.script).case_ids;
+     mutants.push({
+       id: m.id, script: m.script, kind: m.kind, killed,
+       outcome: m.kind === "fault" ? (killed ? "killed" : "SURVIVED") : (killed ? "FALSE-KILL" : "survived"),
+       exit: res.exit, signal: res.signal, timed_out: res.timed_out, cases: res.cases, passed: res.passed, failing_cases: res.failing_cases,
++      ids_match_pristine: JSON.stringify(res.case_ids) === JSON.stringify(pristineIds),
++      ids_unique: res.ids_unique, count_matches_results: res.count_matches_results,
+     });
+   });
+ 
+@@ -241,6 +257,11 @@
+     benign_killed: benignKilled.length,
+     benign_killed_ids: benignKilled,
+     mutants,
++    killer_attribution: {
++      fault_killed_by: Object.fromEntries(faults.filter((m) => m.killed).map((m) => [m.id, m.failing_cases])),
++      unattributed_ids: mutants.filter((m) => !m.ids_match_pristine || !m.ids_unique || !m.count_matches_results).map((m) => m.id),
++      verdict_only_attributed: mutants.every((m) => m.ids_match_pristine && m.ids_unique && m.count_matches_results),
++    },
+     clean: survivors.length === 0 && benignKilled.length === 0,
+   };
+ }
