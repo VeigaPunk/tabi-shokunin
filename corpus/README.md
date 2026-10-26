@@ -654,3 +654,8 @@ not record `RateLimit` or `X-RateLimit-*` fields, and no run has exercised them.
 Correction (round 30 wave 2, append-only; `.ufo/waves/round-30/w2/CritC2Surface.md` F1): the round-30 frontier row
 above marks "Rate/ToS surface for site-interaction records" `docs-held` on the **rate** half only — no ToS
 document was mined; the ToS half stays open, as does runtime for both halves.
+
+Correction (round 30 wave 2, append-only; `.ufo/waves/round-30/w2/CritClaimVerdicts.md`): in the round-30 frontier row
+"Gate self-test kill coverage", 26 of the 27 catalogued faults are killed by a named failing self-test case; the
+27th (`pins-f3-bytes-absent`) is killed by the self-test aborting (`sha256(null)` throws), which the counter counts
+as a kill but no case names.

@@ -2022,3 +2022,40 @@ wave-2 re-fetch records and knowledge errata; `ab080992` wave-2 evidence, SCOREC
 `dcfb7a3c` final measurements (`.ufo/waves/round-29/measure/`, all three targets met at `ab080992`).
 Wave-1 duplicate fetch bytes under `.ufo/waves/round-29/w1/pins/*/bytes` were deleted uncommitted
 (identical to the committed `corpus/evidence/round-29/release-pins/bytes/`).
+
+## Round 30 — 2026-10-26 — gate mutation-kill coverage (operability) and the rate/ToS frontier (coverage)
+
+Claims frozen before data at `.ufo/waves/round-30/claims.json` in commit
+`061e62024c0523d3c6c7e819506a773ff2cd7d75` (baseline `f7c0317e4f8445502005e79e3d65767430912dab`), with do-nothing and
+junk controls scored per claim before any claim data (`.ufo/waves/round-30/baseline/`). C1 operability: the new
+counter `scripts/check-gate-mutants.mjs` runs each catalogued mutant (`scripts/gate-mutants.json`: 27 fault rows
+reproducing round 29's MutC1Baseline and MutC3 tables, 13 equivalent rewrites at the same sites) against the gate's
+own self-test; at the freeze 14 fault mutants survived (5 in the s106 gate, 9 in the release-pin gate). Wave-1 seats
+ExecS106Cases, ExecPinsCasesA and ExecPinsCasesB added three and nine behavioural self-test cases; 0 survive, 0
+equivalent rewrites are falsely killed. C2 coverage: two package entries from `merge/tabi/` (theme: rate/ToS signal
+vocabulary) were re-grounded on sources opened this round — the IETF RateLimit header-fields draft at its newest
+revision `-11` (S116; the package's "-10 and later return 404" was false) and Discord's developer documentation
+Rate Limits (S117) — with committed bytes, independent refetches and live checks; the frontier item "Rate/ToS
+surface for site-interaction records" (open since kaika round 1) moves to docs-held on its rate half.
+
+Both counters were shown gameable after the freeze (wave-1 CritC1Counter, CritClaimSizing, SentinelFetchScope;
+lesson round-30 M5–M7); the claims stay judged on the frozen rules, and the round adds independent evidence: an
+identity-blind re-run of the C1 catalogue (0/0), a per-fault kill attribution read (w2 RevC1KillAttribution), a
+no-network `--live` run that fails on the committed https receipts (w2 MeasureC2Clean), and third-seat live
+refetches (w2 RefetchLiveS116, RefetchLiveS117).
+
+Frontier curation (round-29 routed defects 1–6): 23 in-place `used-by` appends and four `queued → mined` status
+flips logged old→new; S110/S114/S115 Gate quotes re-grounded in their own bytes; the round-29 lesson's M4/M5 table
+rows and the chromium-156 entry's errata appended; S118 supersedes S044 (the cited `panels/application/WebMCPModel.ts`
+returns 404; the model is `models/web_mcp/WebMCPModel.ts`); the release-pin population rule named with its excluded
+rows; QUALITY criteria 74–79. Assimilation: 2 admitted, 2 rejected (staged S106/S110 and S147–S149 remain refused).
+
+Re-verification result: S116 `-11` bytes re-fetched live by three seats, byte-identical (sha256 `d6016dd0…d412`);
+S117 normalised text identical across four fetches; S110, S114, S115 re-opened at Chromium 156.0.8078.47 with their
+re-grounded quotes located; S044's path 404 confirmed at devtools `66df492…` and `bf69d041…`.
+
+Round-30 commit ledger (lane `master`): `061e6202` claims freeze, counters, catalogue, controls; `38891ca0` C1
+self-test cases, C2 entries, rows S116–S117 and receipts, used-by curation, lesson Gate, tally corrections;
+`072af95f` S118, mistakes and population rule, QUALITY 74–79, round-29 addenda, README frontier row; `af0664ed`
+wave-1 evidence; `e8720bcf` wave-2 corrections and the identity-blind C1 receipt; the measured commit, final
+measurements and wave-2 evidence follow and are named in the report.

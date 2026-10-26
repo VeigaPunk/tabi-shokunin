@@ -1506,3 +1506,39 @@ Round 30's C1 added self-test cases to two gates; the tallies stated above are s
 
 - `scripts/check-s106-evidence.mjs` `--selftest` (10/10): correction — supersedes the stale tallies at `SCORECARD.md:1438`, `SCORECARD.md:1466` and `SCORECARD.md:1479` (round 30 added three cases: same-length tamper, duplicate anchor, receipt byte-count mismatch).
 - `scripts/check-release-pins.mjs` `--selftest` (29/29): correction — supersedes the stale tally at `SCORECARD.md:1485` (round 30 added nine reason-pinned cases).
+
+## Round 30 — declared claims (frozen before data) and executed disposition
+
+Baseline `f7c0317e4f8445502005e79e3d65767430912dab`; claims, counters, catalogue and controls frozen in
+`061e62024c0523d3c6c7e819506a773ff2cd7d75` (`.ufo/waves/round-30/claims.json`, receipts `.ufo/waves/round-30/baseline/`).
+Axes at round start: depth 8, coverage 9, operability 8, freshness 9, calibration 9, adjacency 8; lowest-axis tie at
+8 — C1 works operability. Saturation 8 / window 3; nudge inactive; no axis retired. After-measurements in a clean
+checkout of the measured revision, raw outputs in `.ufo/waves/round-30/measure/` (the measured revision is named in
+the report and in `measure/README.txt`).
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 operability | `node scripts/check-gate-mutants.mjs --rev <REV> --json` (frozen counter sha256 `02945f88…3a55`, catalogue `cd1c27a2…3833`) | fault_survivors 14 → 0 of 27, benign_killed 0 → 0 of 13 | met under the frozen rule; counter weakness disclosed (lesson round-30 M5; an identity-blind re-run also reads 0/0); operability 8 → 9 (two new runnable gates, and every catalogued check of two existing gates now seen by their self-tests) |
+| C2 coverage | `node scripts/check-frontier-admission.mjs --rev <REV> --frontier rate-tos-signal --since 2026-10-26 --live --json` (frozen sha256 `cadef57e…9eca`) | population 0 → 2, admitted 0 → 2 | met under the frozen rule; `--live` weaknesses disclosed (lesson round-30 M6; the committed receipts are https and fail in a no-network namespace); coverage 9 → 9 (the Rate/ToS frontier item's rate half moves open → docs-held; runtime and the ToS half stay open) |
+| depth, freshness, calibration, adjacency | — | no claim | unchanged; no-harm matrix `.ufo/waves/round-30/w2/ExecNoHarmTip.md` (no gate green at the freeze and red at the tip); `check-selfassessment` mismatches 0 after the round-30 corrections above |
+
+Gate registry: two new gates (`gate-mutants`, `frontier-admission`) carry eight-field rows in SKILL.md's round-30
+section; `node scripts/check-gate-registry.mjs --rev <REV>` nonconformant 0. Self-test tallies at the tip:
+`scripts/check-gate-mutants.mjs` `--selftest` (12/12), `scripts/check-frontier-admission.mjs` `--selftest` (24/24),
+`scripts/check-s106-evidence.mjs` `--selftest` (10/10), `scripts/check-release-pins.mjs` `--selftest` (29/29).
+
+### Round 30 — waves and seats
+
+Two v1 waves. W1 build + first falsifiers, 32 seats (9 scribe, 7 executor, 5 critic, 3 reviewer, 3 connector,
+2 mutation-tester, 2 scout, 1 sentinel); W2 falsify, 34 seats (12 critic, 10 reviewer, 6 executor, 2 connector,
+2 scribe, 1 mutation-tester, 1 sentinel). Round total 66; no residual call. The L1 holds the canonical planner seat.
+
+### Planned / saturation / retired — round 30
+
+- planned: operability — counter v2 for `check-gate-mutants.mjs` (opaque run-directory names, a minimal child
+  environment, killer attribution in the kill rule, catalogue extended with the w2 MutC1Beyond survivors) and for
+  `check-frontier-admission.mjs` (https-only production fetch, same-host redirects, `curl -q`, calendar-valid dates,
+  independence evidence for refetch records); draft and attacks in `.ufo/waves/round-30/w2/ScribeV2Plan.md`.
+- planned: freshness — S116 recheck due 2026-11-24 (draft expiry) or on `-12`; release-pin counter v2 with a
+  DEPS-mapped population for S036, S044, S068, S088, S089, S090 (lesson round-30 §Release-pin population rule).
+- capabilities unchanged (gates are counters); saturation 8 / window 3; no axis retired.

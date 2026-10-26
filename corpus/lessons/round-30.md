@@ -295,3 +295,44 @@ Counter weaknesses found after the freeze (the frozen rules stay the claims' rul
 | # | class | evidence pointer | captured by | fix |
 |---|---|---|---|---|
 | M7 | `vacuous` | `.ufo/waves/round-30/w1/CritClaimSizing.md` (controls J5: `c1-control-J5-mutant-identity.json`, `c2-control-J5-copyrefetch-live.json` meet both frozen targets) | prompt §9 (the cheapest control that skips the work is built and scored before freezing) — partially: the freeze built do-nothing and junk controls against the *work*, none against the *counter's own observables* (run directory, refetch labels) | a freeze checklist item: for each counter, list what the code under test or the evidence writer can observe about the counter (paths, env, labels, schemes) and build one junk per observable before freezing; the w1 J5 controls are that junk for this round's counters and stay committed as the red state |
+
+### M5 — the C1 counter told the code under test which mutant it was
+
+- **Class:** `vacuous`.
+- **Evidence:** `.ufo/waves/round-30/w1/CritC1Counter.md` §1–§2 (a one-line `process.cwd()` case reaches the frozen
+  target); `.ufo/waves/round-30/w1/CritClaimSizing/c1-control-J5-mutant-identity.json` (27 killed, 0 benign killed,
+  exit 0 with frozen digests).
+- **Captured by:** `none`.
+- **Fix:** not landed (the counter is frozen for C1). Compensating evidence this round:
+  `.ufo/waves/round-30/measure/c1-identity-blind-at-072af95.json` (random run-directory names: 0 survivors, 0 benign
+  killed) and w2 RevC1KillAttribution / CritC1EnvLeak (no environment read in either gate's self-test). Red state for
+  the planned v2 rule: the J5 control above.
+
+### M6 — the C2 counter's live check accepted non-network evidence
+
+- **Class:** `scope`.
+- **Evidence:** `.ufo/waves/round-30/w1/SentinelFetchScope.md` Verdict (a)–(d); `.ufo/waves/round-30/w1/CritC2Counter.md`
+  Verdict and §F1 (`file://`); `.ufo/waves/round-30/w2/MeasureC2Clean.md` Verdict (a `~/.curlrc` remap forges a live
+  2/2).
+- **Captured by:** `none`.
+- **Fix:** not landed (frozen). Compensating evidence: the committed receipts are `https://` on their rows' hosts
+  (w2 SentinelReceipts) and the live run fails `l1-live` in a namespace with no route (w2 MeasureC2Clean). Red state for
+  v2: the `file://` and curlrc fixtures in those reports.
+
+### M7 — freeze controls attacked the work, not the counter
+
+- **Class:** `vacuous`.
+- **Evidence:** `.ufo/waves/round-30/w1/CritClaimSizing.md` (both J5 controls meet the frozen targets).
+- **Captured by:** prompt §9, partially (see the row above).
+- **Fix:** the freeze checklist item in the M7 row; shown able to fail by the two committed J5 controls, which a
+  freeze following it would have built and scored red-before.
+
+Corrections to the §Mistakes rows above (w2 CritMistakes D1–D3):
+
+- M1's pointer: the S114 Gate-quote defect is routed at `corpus/lessons/round-29-verifier-spotcheck.md:119` (routed
+  defect 2); `:118` is routed defect 1, M4's.
+- M6's pointer `CritC2Counter.md` §2 should read its Verdict and §F1 (`:80–101`); that file has no numbered §2.
+- M3's fix is narrower than written: 9 of the 29 release-pin self-test cases (the nine added this round) assert a
+  failure reason; the other 20 still assert exit + tally only, and 7 of the 10 s106 cases assert a field value. The
+  catalogued faults are all killed (C1), but uncatalogued checks may still be seen only through exit + tally
+  (w2 MutC1Beyond).
