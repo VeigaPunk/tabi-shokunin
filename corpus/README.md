@@ -802,3 +802,26 @@ Append-only. One knowledge row, one new screen ledger, four new map rows; no ear
 |---|---|---|
 | Sibling overlaps outside `PROVINCE.md` | bounded for lines naming tabi and the round-33 leads (67 of 67 accounted); browser-ground lines in sibling knowledge that neither name tabi nor were leads stay unswept | lesson round-34 §C1 gate decisions |
 | BiDi gate rule coverage | the self-test kills the 20 frozen mutants; rules outside those sites (live leg, replay semantics) and the CritForgeV2B/C constructions stay open | `knowledge/bidi-gate-selftest-round-34.md` §5 |
+
+## Round 34 — corrections to the round-34 rows (append-only; cites the stale lines in this document; round-35 errata intake 1)
+
+- `corpus/README.md:794` and `corpus/README.md:799`: correction — "four new map rows" (`:794`) and "`adjacency.tsv` rows
+  15–18 …, four new boundaries" (`:799`) are superseded. The final map carries three new rows, `adjacency.tsv` 15–17:
+  `lab-performance-tool-runs` (kake lab performance runs, Lighthouse/DevTools) and the two restored kaidoku rows
+  `recorded-har-producer-channel` and `screenshot-pair-compare-semantics`. Wave 1's rows 15 `live-delivery-observation`,
+  17 `agent-facing-tool-text-craft` and 18 `authenticated-consequential-driving` were withdrawn in wave 2 — row 15
+  re-keyed the mapped row 12 js-rendering, rows 17 and 18 are third-lane reports — and are screened in
+  `adjacency-screen-skill.tsv`. The section's "one knowledge row" and "one new screen ledger" stand. (Round-34
+  spot-check, routed defect 1; `corpus/lessons/round-34.md:104-111`.)
+
+## Round 35 — browser ground siblings write without naming tabi, and BiDi on a second engine (2026-10-26)
+
+Append-only. One knowledge row, one new screen ledger, one new map row candidate, one census correction; no earlier line
+is edited.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/webdriver-bidi-firefox-runtime-round-35.md` *(round 35)* | The matrix §2 rows on a second engine: Firefox 158.0.1 through geckodriver 0.37.1 on this host, loopback fixture, two committed cold runs (`corpus/evidence/round-35/bidi-firefox/`) plus the counter's own live session; launch discipline (free `--websocket-port`, never the 9222 default; DNS-off prefs for loopback-only runs); which engine for which evidence surface; eleven engine differences in shape (ids, capability namespaces, cookies, network fields, screenshots, favicon traffic, launch egress) | S134–S141 (geckodriver Flags/Capabilities docs, v0.37.1 `capabilities.rs`/`marionette.rs`, Firefox remote Prefs doc, MDN locateNodes, the 158.0.1 release directory, the geckodriver v0.37.1 release); S007, S124 |
+| `adjacency-screen-browser.tsv` *(round 35, with `adjacency.tsv` line 18)* | The 383 sibling `SKILL.md`/`corpus/knowledge` lines on browser ground that do not name tabi and were not round-34 candidates, each mapped or screened with a closed reason (same-surface 225, not-browser-sense 119, third-lane-report 30, no-claim-declared 8, mapped 1) | sibling lines at the pins in `.ufo/waves/round-35/baseline/c1-pins.json`; `SKILL.md` §Round 35 declaration |
+| `knowledge/browser-surface-census.md` *(round-35 append)* | Firefox and geckodriver are now present as user-local installs (`~/.local/opt/firefox-158.0.1`, `~/.local/bin/geckodriver`); the round-1 "Firefox absent" rows stay as capture-scoped history | shell census, w1 ScoutFirefoxCensus |
+

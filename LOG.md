@@ -2447,3 +2447,14 @@ predicates over two committed runs plus the counter's own live session. Motivati
 defect 2 (`corpus/lessons/round-34-verifier-spotcheck.md`), the host census's Firefox absence, and the pre-freeze
 instrument check (`.ufo/waves/round-35/baseline/c2-instrument-check.json`: 16/16 predicates, identical first screenshots
 on two sessions). Controls and the disclosed C1 residual J8: `.ufo/waves/round-35/baseline/controls-summary.json`.
+
+Round 35 wave-1 integration (2026-10-26). w1 51 seats, 51 non-empty results, 0 dead. C1: 383 candidates
+dispositioned — 382 screens in the new `corpus/adjacency-screen-browser.tsv` and one new map row
+(`cdp-bridge-vault-dom-refusal`, kagi `SKILL.md:40`, tabi declaration in `SKILL.md` §Round 35); an independent
+connector scan (w1 ConnBoundaries) found no second row it would defend. C2: lane driver
+`scripts/bidi-firefox-loopback-round35.mjs` (w1 ExecFirefoxDriver, plus DNS-off prefs after w1 SentinelFirefoxEgress),
+two re-recorded cold runs and receipt `corpus/evidence/round-35/bidi-firefox/`, entry
+`corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md`, SOURCES S134–S141. Frontier: lesson round-35, QUALITY
+98–100, round-34 corrections (README, lesson round-34), census correction for Firefox's presence. Motivating evidence:
+`.ufo/waves/round-35/w1/ConnBoundaries.md`, `.ufo/waves/round-35/w1/SentinelFirefoxEgress.md`,
+`.ufo/waves/round-35/w1/RevClaimsFreeze.md` (counter threshold 14 vs declared 16 — lesson M1).

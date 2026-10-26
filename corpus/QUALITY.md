@@ -675,3 +675,28 @@
     withdrew both. (source: corpus/lessons/round-34.md M5)
 
 - Round 34 wave-2 corrections (append-only; w2 RevQuality92): criterion 92's parenthetical "(…, one mismatch per porcelain path)" — read "one m3 finding for a non-empty porcelain, whatever the path count" (`scripts/check-selfassessment.mjs:419-423`). Criterion 95's gate line cites (`:1037` `gateSource`, `:1108-1110` the case comparison) are at the baseline gate `15dfaccb`; at the round-34 gate they are `:1086` and the `const pass = …` comparison of `runSelftest`.
+
+## Round 35 additions (append-only; never edit above)
+
+98. A freeze carries, for each numeric predicate it declares, a boundary control one step short of the target that
+    must exit 1, and the counter's threshold constant is read back against the declared sentence before the freeze
+    lands; a control set whose every member scores far from the threshold cannot see a threshold that disagrees with
+    the claim. Red state: round 35's C2 counter froze `TARGET = 14` (`.ufo/waves/round-35/counters/c2-firefox-bidi.mjs:54`,
+    `:77`) under a declared `admitted >= 16` (`.ufo/waves/round-35/claims.json`); all five C2 controls score admitted
+    0, and w1 MutC2Counter m11 (`TARGET 14→1`) survives them. (source: corpus/lessons/round-35.md M1; w1
+    RevClaimsFreeze F1-F2)
+
+99. A counter that launches binaries the caller can name is read only together with the provenance of the binaries it
+    ran: the measurement records each binary's path, `--version` line and sha256, and the reading counts only when
+    those equal the install receipt (signed checksum or release digest) the round registered. Red state: w1
+    CritC2Counter reached `admitted 16, failing 0, binding null` with a fake geckodriver and a `--version` stub passed
+    through `--firefox`/`--geckodriver` (`.ufo/waves/round-35/w1/CritC2Counter.md`). (source: corpus/lessons/round-35.md
+    M4; S140, S141)
+
+100. "Loopback only" is a socket observation, never an inference from the URLs a run navigates: a browser started for
+    loopback evidence is sampled for non-loopback peers during the run, and the receipt or entry that asserts loopback
+    cites that sample. Firefox 158 under geckodriver's recommended automation prefs opens TLS sockets to Mozilla
+    remote-settings and content-signature hosts within seconds of launch; `network.dns.disabled` + `network.trr.mode 5`
+    measured 0 (fixture on an IP literal). Red state: the frozen C2 counter's header claims its live leg is "loopback
+    FIXTURE only" (`c2-firefox-bidi.mjs:57-58`) while w1 SentinelFirefoxEgress measured three outbound connections per
+    launch. (source: corpus/lessons/round-35.md M3; `corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md` §5 D11)

@@ -1,0 +1,130 @@
+# gpg transcript — Mozilla release-key verification of the C2 install provenance
+# gpg: gpg (GnuPG) 2.4.9
+# fetched bytes: SHA256SUMS, SHA256SUMS.asc, KEY (ftp.mozilla.org), geckodriver-v0.37.1-linux64.tar.gz(.asc) (github releases)
+
+$ gpg --batch --import KEY
+gpg: keybox '/fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/gnupg2/pubring.kbx' created
+gpg: key 61B7B526D98F0353: 24 signatures not checked due to missing keys
+gpg: /fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/gnupg2/trustdb.gpg: trustdb created
+gpg: key 61B7B526D98F0353: public key "Mozilla Software Releases <release@mozilla.com>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+gpg: no ultimately trusted keys found
+exit=0
+
+$ gpg --batch --verify SHA256SUMS.asc SHA256SUMS
+gpg: Signature made Mon 19 Oct 2026 08:59:50 PM -03
+gpg:                using RSA key 827E658608679618CD349F93678E455D76767AA3
+gpg: Good signature from "Mozilla Software Releases <release@mozilla.com>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 14F2 6682 D091 6CDD 81E3  7B6D 61B7 B526 D98F 0353
+     Subkey fingerprint: 827E 6586 0867 9618 CD34  9F93 678E 455D 7676 7AA3
+exit=0
+
+$ gpg --batch --list-packets SHA256SUMS.asc | sed -n "1,10p"
+# off=0 ctb=89 tag=2 hlen=3 plen=563
+:signature packet: algo 1, keyid 678E455D76767AA3
+	version 4, created 1792454390, md5len 0, sigclass 0x00
+	digest algo 10, begin of digest ca 9a
+	hashed subpkt 33 len 21 (issuer fpr v4 827E658608679618CD349F93678E455D76767AA3)
+	hashed subpkt 2 len 4 (sig created 2026-10-19)
+	subpkt 16 len 8 (issuer key ID 678E455D76767AA3)
+	data: [4093 bits]
+
+$ gpg --batch --with-colons --list-keys | grep -E "^(pub|sub)"
+pub:-:4096:1:61B7B526D98F0353:1437155332:::-:::scSC::::::23::0:
+sub:-:4096:1:678E455D76767AA3:1786014372:1849086372:::::s::::::23:
+sub:e:4096:1:EBE41E90F6F12F6D:1621282261:1684354261:::::s::::::23:
+sub:e:4096:1:1C69C4E55E9905DB:1437155572:1500227572:::::s::::::23:
+sub:e:4096:1:BBBEBDBB24C6F355:1498143157:1561215157:::::s::::::23:
+sub:e:4096:1:F1A6668FBB7D572E:1559247338:1622319338:::::s::::::23:
+sub:e:4096:1:E36D3B13F3D93274:1683308659:1746380659:::::s::::::23:
+sub:r:4096:1:5ECB6497C1A20256:1741852797:1804924797:::::s::::::23:
+
+$ gpg --batch --list-packets geckodriver-linux64.tar.gz.asc | sed -n "1,9p"
+# off=0 ctb=89 tag=2 hlen=3 plen=563
+:signature packet: algo 1, keyid 5ECB6497C1A20256
+	version 4, created 1784280978, md5len 0, sigclass 0x00
+	digest algo 10, begin of digest 9b e7
+	hashed subpkt 33 len 21 (issuer fpr v4 09BEED63F3462A2DFFAB3B875ECB6497C1A20256)
+	hashed subpkt 2 len 4 (sig created 2026-07-17)
+	subpkt 16 len 8 (issuer key ID 5ECB6497C1A20256)
+	data: [4091 bits]
+
+$ gpg --batch --verify geckodriver-linux64.tar.gz.asc geckodriver-v0.37.1-linux64.tar.gz
+gpg: Signature made Fri 17 Jul 2026 06:36:18 AM -03
+gpg:                using RSA key 09BEED63F3462A2DFFAB3B875ECB6497C1A20256
+gpg: Good signature from "Mozilla Software Releases <release@mozilla.com>" [unknown]
+gpg: WARNING: This subkey has been revoked by its owner!
+gpg: reason for revocation: Key has been compromised
+gpg: revocation comment: We no longer trust this key.
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 14F2 6682 D091 6CDD 81E3  7B6D 61B7 B526 D98F 0353
+     Subkey fingerprint: 09BE ED63 F346 2A2D FFAB  3B87 5ECB 6497 C1A2 0256
+exit=0
+
+$ gpg --batch --list-packets KEY | sed -n "309,340p"   # subkey 5ECB6497C1A20256 and its revocation
+	data: [4096 bits]
+# off=20624 ctb=b9 tag=14 hlen=3 plen=525
+:public sub key packet:
+	version 4, algo 1, created 1741852797, expires 0
+	pkey[0]: [4096 bits]
+	pkey[1]: [17 bits]
+	keyid: 5ECB6497C1A20256
+# off=21152 ctb=89 tag=2 hlen=3 plen=1138
+:signature packet: algo 1, keyid 61B7B526D98F0353
+	version 4, created 1741852797, md5len 0, sigclass 0x18
+	digest algo 10, begin of digest 7f c0
+	hashed subpkt 33 len 21 (issuer fpr v4 14F26682D0916CDD81E37B6D61B7B526D98F0353)
+	hashed subpkt 2 len 4 (sig created 2025-03-13)
+	hashed subpkt 27 len 1 (key flags: 02)
+	hashed subpkt 9 len 4 (key expires after 2y0d0h0m)
+	subpkt 16 len 8 (issuer key ID 61B7B526D98F0353)
+	subpkt 32 len 563 (signature: v4, class 0x19, algo 1, digest algo 10)
+	data: [4096 bits]
+# off=22293 ctb=89 tag=2 hlen=3 plen=594
+:signature packet: algo 1, keyid 61B7B526D98F0353
+	version 4, created 1786014850, md5len 0, sigclass 0x28
+	digest algo 10, begin of digest 5d 47
+	hashed subpkt 33 len 21 (issuer fpr v4 14F26682D0916CDD81E37B6D61B7B526D98F0353)
+	hashed subpkt 2 len 4 (sig created 2026-08-06)
+	hashed subpkt 29 len 29 (revocation reason 0x02 (We no longer trust this key.))
+	subpkt 16 len 8 (issuer key ID 61B7B526D98F0353)
+	data: [4096 bits]
+
+$ sha256sum geckodriver-v0.37.1-linux64.tar.gz extract/geckodriver /home/vgpnk/.local/bin/geckodriver
+e815130ea95983e162ae91843b48d3a3ce991735635fce83a647afde21e09f7e  geckodriver-v0.37.1-linux64.tar.gz
+f831b7e61454804e8a307edd951bf8a5f373efe3f718e75454a6485a51f6e39f  extract/geckodriver
+f831b7e61454804e8a307edd951bf8a5f373efe3f718e75454a6485a51f6e39f  /home/vgpnk/.local/bin/geckodriver
+
+$ cmp extract/geckodriver /home/vgpnk/.local/bin/geckodriver   # tarball member vs installed binary
+exit=0
+
+$ /home/vgpnk/.local/bin/geckodriver --version | head -1
+geckodriver 0.37.1 (300705c65d1b 2026-07-17 09:25 +0000)
+
+$ grep -n "linux-x86_64/en-US/firefox-158.0.1.tar.xz" SHA256SUMS
+235:dce45470139242cf294eb6ada3d192a9bb334696842b02b71ade448a139eb41a  linux-x86_64/en-US/firefox-158.0.1.tar.xz
+
+$ grep -nE "SHA256SUMS|>KEY<" index.html
+113:                                <td><a href="/pub/firefox/releases/158.0.1/KEY">KEY</a></td>
+140:                                <td><a href="/pub/firefox/releases/158.0.1/SHA256SUMS">SHA256SUMS</a></td>
+149:                                <td><a href="/pub/firefox/releases/158.0.1/SHA256SUMS.asc">SHA256SUMS.asc</a></td>
+
+$ grep -n "0.37.1 (2026-07-20" geckodriver-release.html   # release-page date and commit
+164:0.37.1 (2026-07-20, 300705c65d1b)
+170:0.37.1 (2026-07-20, 300705c65d1b)
+175:0.37.1 (2026-07-20, 300705c65d1b)
+
+$ grep -n "geckodriver-v0.37.1-linux64.tar.gz" geckodriver-assets.html
+64:          <a href="/mozilla/geckodriver/releases/download/v0.37.1/geckodriver-v0.37.1-linux64.tar.gz" rel="nofollow" data-turbo="false" class="wb-break-all">
+65:            <span class="text-bold">geckodriver-v0.37.1-linux64.tar.gz</span>
+73:  <clipboard-copy id="clipboard-button-sha256:e815130ea95983e162ae91843b48d3a3ce991735635fce83a647afde21e09f7e" aria-label="Copy to clipboard digest for geckodriver-v0.37.1-linux64.tar.gz" type="button" value="sha256:
+91:          <a href="/mozilla/geckodriver/releases/download/v0.37.1/geckodriver-v0.37.1-linux64.tar.gz.asc" rel="nofollow" data-turbo="false" class="wb-break-all">
+92:            <span class="text-bold">geckodriver-v0.37.1-linux64.tar.gz.asc</span>
+100:  <clipboard-copy id="clipboard-button-sha256:ec49082e51f38f71d4df8b6fb826aa339c1c39d94088f2941e9bf4b6d7d49e3f" aria-label="Copy to clipboard digest for geckodriver-v0.37.1-linux64.tar.gz.asc" type="button" value="sh
+
+$ grep -n "Version 158.0.1, first offered" releasenotes.html
+2287:                    <div class="c-release-first-title fl-heading fl-heading-xs fl-u-font-semibold">Version 158.0.1, first offered to Release channel users on October 20, 2026</div>

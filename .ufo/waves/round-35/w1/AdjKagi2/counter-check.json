@@ -1,0 +1,51 @@
+{
+ "schema": "tabi-r35-w1-adjkagi2-counter-check-v1",
+ "seat": "AdjKagi2",
+ "lane": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+ "freeze": "a4bfef0f75027c915e715649950b1d46dcb33d83",
+ "scratchClone": "/fast/scratch/hyaku/tabi-r35/AdjKagi2/clone",
+ "commit": "5b4c9d4b28a9281fdccaf61767c76fc1888389c3",
+ "commitDiffVsFreeze": [
+  "15\t0\tcorpus/adjacency-screen-browser.tsv"
+ ],
+ "commands": [
+  "git clone -q --shared /home/vgpnk/Projects/shokunin/tabi-shokunin /fast/scratch/hyaku/tabi-r35/AdjKagi2/clone ; git -C /fast/scratch/hyaku/tabi-r35/AdjKagi2/clone checkout -q --detach a4bfef0f75027c915e715649950b1d46dcb33d83  => exit 0",
+  "node .ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs --list-candidates --repo /fast/scratch/hyaku/tabi-r35/AdjKagi2/clone --fleet /home/vgpnk/Projects/shokunin  => exit 0, 383 lines",
+  "node scripts/check-adjacency.mjs --at a4bfef0f75027c915e715649950b1d46dcb33d83 --repo /fast/scratch/hyaku/tabi-r35/AdjKagi2/clone --fleet /home/vgpnk/Projects/shokunin --json  => exit 0, verdict clean rows=16 verified=16 findings=0",
+  "git -C /fast/scratch/hyaku/tabi-r35/AdjKagi2/clone -c user.name=AdjKagi2 -c user.email=AdjKagi2@scratch.local commit -m 'r35 w1 AdjKagi2: screen ledger for 14 kagi candidates'  => exit 0, HEAD 5b4c9d4b28a9281fdccaf61767c76fc1888389c3",
+  "node .ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs --rev 5b4c9d4b28a9281fdccaf61767c76fc1888389c3 --repo /fast/scratch/hyaku/tabi-r35/AdjKagi2/clone --fleet /home/vgpnk/Projects/shokunin --json  => exit 1 (predicate not met; expected: 369 of 383 candidates belong to peer seats)",
+  "node scripts/check-adjacency.mjs --at 5b4c9d4b28a9281fdccaf61767c76fc1888389c3 --repo /fast/scratch/hyaku/tabi-r35/AdjKagi2/clone --fleet /home/vgpnk/Projects/shokunin  => exit 0, ADJACENCY verdict=clean rows=16 verified=16"
+ ],
+ "exitCodes": {
+  "counter": 1,
+  "adjacencyAtFreeze": 0,
+  "adjacencyAtCommit": 0,
+  "commit": 0
+ },
+ "counter": {
+  "rev": "5b4c9d4b28a9281fdccaf61767c76fc1888389c3",
+  "adjacency": {
+   "verdict": "clean",
+   "rows": 16,
+   "verified": 16,
+   "findings": 0
+  },
+  "candidates": 383,
+  "mapped": 0,
+  "screened": 14,
+  "unaccounted": 369,
+  "newMapped": 0,
+  "predicate": false,
+  "screenFindings": [],
+  "newMappedRows": [],
+  "newRowRefusals": []
+ },
+ "myKeys": {
+  "count": 14,
+  "allInFrozenCandidates": true,
+  "absentFromUnaccountedKeys": 14,
+  "stillUnaccounted": []
+ },
+ "screenLedgerSha256": "491e0aed4054397e9bbd85ae5c5cb19d4b7d614dafa186db0dea73e59e7a8fc7",
+ "note": "screened=14 is exactly this seat's chunk; the other 369 unaccounted keys belong to the wave's other Adj* chunks. newMapped=0 because this seat proposed no map rows: all 14 lines are on ground the baseline map already answers (kagi musketeer-cdp-9222-profile-lease) or are third-lane records (kagi adjacency-scope.md citation-gate evidence)."
+}

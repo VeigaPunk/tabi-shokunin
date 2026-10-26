@@ -1,0 +1,11 @@
+# observed non-loopback TLS peers during the frozen live leg (c2-firefox-bidi.mjs liveRecordFirefox) and probes
+# columns: run	pid	fd	peer	port	requested-name-attribution	evidence
+live-run1	3236768	86	2a04:4e42:3b::347	443	one of {firefox.settings.services.mozilla.com, firefox-settings-attachments.cdn.mozilla.net} (both map to this Fastly pair; per-socket name not separable)	evidence/sockets-run1.log (3 non-loopback ESTAB rows during the 2.0 s run)
+live-run1	3236768	45	2a04:4e42:3b::347	443	the other Fastly socket	evidence/sockets-run1.log
+live-run1	3236768	85	2600:1901:0:8d82::	443	content-signature-2.cdn.mozilla.net	evidence/sockets-run1.log
+live-run2	3398165	41	2a04:4e42:3b::347	443	Fastly pair (see run1)	evidence/sockets.log + evidence/strace-live-run2.log (connect EINPROGRESS)
+live-run2	3398165	73	2a04:4e42:3b::347	443	Fastly pair (see run1)	evidence/sockets.log + evidence/strace-live-run2.log
+live-run2	3398165	87	2600:1901:0:8d82::	443	content-signature-2.cdn.mozilla.net	evidence/sockets.log + evidence/strace-live-run2.log
+probe-control	-	71,73	2a04:4e42:2a::347	443	Fastly pair	evidence/trace-probe-control.log (4 connects; 5 s linger)
+probe-control	-	156	2a04:4e42:2a::787	443	archive.mozilla.org (browser.newtabpage.trainhopAddon.xpiBaseURL)	evidence/trace-probe-control.log
+probe-control	-	89	2600:1901:0:8d82::	443	content-signature-2.cdn.mozilla.net	evidence/trace-probe-control.log

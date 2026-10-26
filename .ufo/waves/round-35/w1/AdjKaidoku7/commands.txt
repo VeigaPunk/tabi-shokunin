@@ -1,0 +1,40 @@
+# AdjKaidoku7 — commands and exit codes (round 35, w1, C1 build)
+
+Scratch: `HYAKU_SCRATCH=/fast/scratch/hyaku`, `S=/fast/scratch/hyaku/tabi-r35/AdjKaidoku7`, `TMPDIR=$S/tmp`.
+Freeze rev `a4bfef0f75027c915e715649950b1d46dcb33d83`; candidate pin `kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f`.
+
+```
+git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"                      # exit 0
+git -C "$S/clone" checkout -q --detach a4bfef0f75027c915e715649950b1d46dcb33d83                # exit 0
+git -C "$S/clone" rev-parse --show-toplevel                                                    # exit 0 -> "$S/clone"
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show 49096c7e...:PROVINCE.md             # exit 0 (PROVINCE read at the pin)
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show 49096c7e...:corpus/knowledge/2026-10-14-r10-01-queue-ops.md   # exit 0 (325 lines, head + 240-320 read)
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show 49096c7e...:corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md # exit 0 (283 lines, 1-60 / 95-103 / 150-235 read)
+sed -n '144,335p' "$S/clone/.ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs"            # exit 0 (frozen definitions: candidates, screens, newMapped, output shape)
+grep -n 'r10-0' "$S/clone/corpus/adjacency.tsv" "$S/clone/corpus/adjacency-screen.tsv" "$S/clone/corpus/adjacency-screen-skill.tsv"  # exit 0 -> prior rows cite r10-01:151 (row 16) and r10-02:117 (row 17) only
+python3 "$S/build.py"                                                                          # exit 0
+    # asserts each of the 16 chunk keys resolves at the pin with byte-equal text to the chunk,
+    # each quote is a verbatim substring (or whole trimmed line), 4..25 words and >=20 non-space chars,
+    # each surface is a verified kaidoku map surface at the freeze, no TAB/CR/control chars
+git -C "$S/clone" -c user.name=AdjKaidoku7 -c user.email=AdjKaidoku7@scratch.local add corpus/adjacency-screen-browser.tsv   # exit 0
+git -C "$S/clone" -c user.name=AdjKaidoku7 -c user.email=AdjKaidoku7@scratch.local commit -q -m "round-35 AdjKaidoku7: screen ledger for the 16 C1 candidates"  # exit 0 -> f6a97a570ace286ecb8f4967a24d3fe7b2150b75
+git -C "$S/clone" show --stat --oneline HEAD                                                   # exit 0 -> 1 file changed, 17 insertions (header + 16 rows)
+git -C "$S/clone" status --porcelain                                                           # exit 0, empty
+TMPDIR="$S/tmp" node "$S/clone/.ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs" \
+  --rev f6a97a570ace286ecb8f4967a24d3fe7b2150b75 --repo "$S/clone" \
+  --fleet /home/vgpnk/Projects/shokunin --json > "$S/counter-check.json"                      # exit 1 (predicate not met: wave-1 partial)
+    # adjacency clean, rows 16, verified 16, findings 0
+    # candidates 383, mapped 0, screened 16, unaccounted 367, newMapped 0
+    # screenFindings [], newMappedRows [], newRowRefusals []
+    # none of this seat's 16 keys appears in unaccountedKeys; perLane.kaidoku 137
+git -C /home/vgpnk/Projects/shokunin/tabi-shokunin status --porcelain                          # exit 0 -> 8 lines, all `??` wave scratch under .ufo/waves/round-35/; no tracked lane file touched
+cmp "$S/clone/corpus/adjacency-screen-browser.tsv" <(printf 'sibling_ref\treason\tsurface\tquote\tnote\n'; cat "$OUT/screen.tsv")  # exit 0 -> LEDGER_MATCHES_COMMIT
+sha256sum screen.tsv counter-check.json decisions.md
+    # fefe374238c3dc2b2e048e327b6c5b0f80dc64b6f89f716c3b1446bf88cdcd3a  screen.tsv (16 rows, no header)
+    # 5d30f834b954ec6b542794934e5d5fbfebc2bd0f934e1b39ddc0107722f695ac  counter-check.json
+    # 750e6f3cc96dc76e924560bd0a96e6b10193566b3295f28a2943683aa74ca765  decisions.md
+rm -rf -- "$S"                                                                                 # exit 0 (after the receipts above were copied)
+```
+
+No tool was installed or upgraded; no browser or driver was launched; no network fetch was made; no subagent was
+dispatched; `agent://all` was never messaged.

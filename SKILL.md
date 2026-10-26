@@ -2957,3 +2957,14 @@ w2 CritReversalKaidoku showed two of the L1's kaidoku screens hid real overlaps 
 
 - Recorded HARs: a recorded HAR is one network channel here, admitted as an evidence artifact only when its producer is named and its bytes are pinned, because schema validity is not transport proof and a netlog is not a HAR (`SKILL.md:403-406`); kaidoku's Playwright `recordHar` run and its HAR-schema gate feed its own `inspect-web-network-capture` input (kaidoku `corpus/knowledge/2026-10-14-r10-01-queue-ops.md:151,161-166`) and stay kaidoku's.
 - Screenshot pair comparison: comparing two screenshots establishes rendered state here only through a visual read-back plus pixel evidence on the run's own captures, because byte-stability is environment-scoped (`SKILL.md:401`, `:437`); kaidoku's pair-compare splits an artifact differ from a capture differ with an honest `unknown` for incomplete dimensions (kaidoku `corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md:117`), and comparing stored evidence artifacts stays kaidoku's.
+
+## Round 35 — browser ground siblings write without naming tabi (2026-10-26; append-only; never edit above)
+
+The round-35 sweep (frozen counter `.ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs`) reads every sibling
+`SKILL.md` / `corpus/knowledge` line on browser ground (Playwright, Puppeteer, chromedriver, geckodriver, WebDriver,
+Selenium, chromium, headless browsers, CDP / DevTools protocol, remote debugging, browser automation, webbridge,
+burner chrome, musketeer) that does not name tabi and was not a round-34 candidate: 383 lines at the pins in
+`.ufo/waves/round-35/baseline/c1-pins.json`. Each is mapped or screened in `corpus/adjacency-screen-browser.tsv`
+under the round-33 decision rule above (`SKILL.md:2861-2881`). Tabi-side declaration for the one new map row:
+
+- The 1Password native-messaging bridge is kagi's custody surface: the `open-popup` refusal kagi states at `kagi-shokunin/SKILL.md:40`, and the ban on scraping vault DOM, stay kagi's; tabi's CDP session discipline (PROVINCE.md:9) drives browsers and captures DOM/screenshot evidence without reading a vault DOM or a session value.

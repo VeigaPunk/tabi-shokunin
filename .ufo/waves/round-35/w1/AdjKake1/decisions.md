@@ -1,0 +1,26 @@
+# Decisions — AdjKake1: 17 kake candidate lines (pin 044048597d62f3199494b63b36e90dd57825e350)
+
+Rule: SKILL.md:2861-2881 asked in order; kake `PROVINCE.md` at the pin read first (publisher-side web properties; browser execution is tabi's adjacent province at `PROVINCE.md:61`; the musketeer lease is contested scope at `PROVINCE.md:35`).
+No line reaches step 5: none states kake's own/refused/routed/leased/shared/contested side of a tabi PROVINCE surface. All 17 quotes were re-checked verbatim against the line bytes at the pin and for the counter's 4-25-word / >=20-non-space rule.
+
+| key | disposition | ground (both sides) |
+|---|---|---|
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:20` | screen:not-browser-sense | kake's property map row prices a served site (`https://burnerchrome.kimi.page/`) and its source dir; tabi's PROVINCE surface is a browser or driver, and "burnerchrome" here names the property. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:44` | screen:not-browser-sense | `burnerchrome-com` is one of three url-less rows of kake's own fleet registry, which `probe`/`status` never see; nothing on tabi's browser surface. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:131` | screen:no-claim-declared | kake records `kimi-webbridge` unsupported on this Linux host and DOM chat automation as not a site-ops channel: a boundary, not a claim on the webbridge surface tabi documents (SIDE does not match this line, so a split-declared row could not pass n4). |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:160` | screen:same-surface | the shared `the-musketeer` profile at CDP `127.0.0.1:9222` is the surface of verified row `musketeer-cdp-9222-profile-lease` (sibling kake, `PROVINCE.md:35`), which already answers it as contested-open. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:367` | screen:not-browser-sense | `burnerchrome/` is one source subtree of the ds4cc.com checkout listed beside `render.yaml` and `apps-sdk/`; a directory name. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:424` | screen:not-browser-sense | a property-map STALE audit decided by `test -e` over local source directories; tabi's surfaces are browser-side, not filesystem presence. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:431` | screen:not-browser-sense | one public GET of kake's own page for property liveness, which is kake's publisher-side check, not browser execution or capture. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:432` | screen:not-browser-sense | the correction swaps one local source path for another (`ds4cc-marketplace/burnerchrome` -> `~/Projects/burnerchrome`); kake-side source state. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:433` | screen:not-browser-sense | the observation is the served HTML head of one published page, read as kake property evidence. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:519` | screen:not-browser-sense | a dated path-reconciliation entry that a source directory is present (`test -e` exit 0); filesystem state, not browser ground. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:520` | screen:not-browser-sense | the same dated filesystem reconciliation, repeated for the same burnerchrome source directory. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:521` | screen:not-browser-sense | the same dated filesystem reconciliation, repeated for the same burnerchrome source directory. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:696` | screen:not-browser-sense | `Chromium` here is an audience excluded from CrUX field data (the S038 eligibility note), not a browser this lane drives. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:corpus/knowledge/drift-detection.md:53` | screen:not-browser-sense | `burnerchrome-kimi` is a kimi-surface `sync-check` row that matched by title and marker; kake's publisher-side mirror drift record. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:corpus/knowledge/field-performance-cwv.md:66` | screen:same-surface | a lab-tool capability fact (DevTools can measure INP) on kake's side of verified row `lab-performance-tool-runs` (`SKILL.md:697`, "Running the tool is tabi's work"); QUALITY 91 makes a fact on the sibling's side of an already-mapped split a screen. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:corpus/knowledge/field-performance-cwv.md:76` | screen:not-browser-sense | the line lists browser families that send no CrUX data, a field-data eligibility fact about audiences. |
+| `kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:corpus/knowledge/field-performance-cwv.md:134` | screen:not-browser-sense | the same eligibility point restated: `Chromium` is an audience class that sends no data, not a driver or capture surface. |
+
+BG matched every line (frozen BG regex of .ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs:35). SIDE matched only line 160 of the set; the other 16 lines carry no side-stating word, which is why no split-declared map row is proposed on them.

@@ -1,0 +1,96 @@
+# Census / validation receipt — S134-S137
+
+Seat `ScribeSrcGeckodriver`. Clone: `/fast/scratch/hyaku/tabi-r35/ScribeSrcGeckodriver/clone`
+(`git clone --shared`, `checkout -q --detach a4bfef0f75027c915e715649950b1d46dcb33d83`;
+`git rev-parse --show-toplevel` → the clone path, `git rev-parse HEAD` → `a4bfef0f7502…b33d83`).
+Rows appended in the clone only; the lane's tracked files are untouched.
+
+## 0. Duplicate-URL pre-check (CORPUS rule 2 / census E04) — all zero, run against the frozen registry
+
+```
+$ cd /home/vgpnk/Projects/shokunin/tabi-shokunin
+$ for u in 'firefox-source-docs.mozilla.org/testing/geckodriver/Flags.html' \
+           'firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html' \
+           'raw.githubusercontent.com/mozilla/geckodriver' 'github.com/mozilla/geckodriver' \
+           'mozilla-central' 'geckodriver/src'; do printf '== %s -> ' "$u"; grep -c -F "$u" corpus/SOURCES.md; done
+== firefox-source-docs.mozilla.org/testing/geckodriver/Flags.html -> 0
+== firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html -> 0
+== raw.githubusercontent.com/mozilla/geckodriver -> 0
+== github.com/mozilla/geckodriver -> 0
+== mozilla-central -> 0
+== geckodriver/src -> 0
+
+$ grep -cE '^\|[[:space:]]*S[0-9]{3,}[[:space:]]*\|' corpus/SOURCES.md
+133
+```
+
+133 rows before this batch (`S001`-`S133`), so `S134` is the next unused id and `S134`-`S137` were free.
+
+## 1. Validate with the four drafted rows (clone, exact draft)
+
+```
+$ /home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate \
+    --file "$S/clone/corpus/SOURCES.md"
+exit=1
+```
+
+Findings: **4 × E11, 0 other E-codes, 20 × W04**.
+
+- The four `E11` lines are all the same path, and it is the C2 deliverable that does not exist at the freeze:
+  ```
+  file	E11	S134 missing used-by corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+  file	E11	S135 missing used-by corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+  file	E11	S136 missing used-by corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+  file	E11	S137 missing used-by corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+  ```
+  `grep -c 'E[0-9][0-9]'` → 4; `awk '{print $2}' | sort -u` → `E11` only.
+  This is expected and is **not** a row defect: the knowledge entry
+  `corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md` is written by the C2 wave, so E11 resolves when
+  that entry lands. The lane's frozen no-harm clause makes `corpus/SOURCES.md` append-only this round, so this
+  seat cannot create the file and does not.
+- The 20 `W04` lines are pre-existing same-URL-different-scope warnings on rows `S058`-`S123`;
+  `grep 'W04' … | grep -cE 'S13[4-7]'` → 0, i.e. none of this batch's rows is among them.
+
+## 2. Isolation run — E11 is the only obstacle, the rows themselves are structurally clean
+
+Created a throwaway placeholder at the missing path **inside the scratch clone only**, re-ran, then deleted it:
+
+```
+$ cd "$S/clone" && printf 'placeholder for census E11 isolation only\n' \
+    > corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+$ /home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --file "$S/clone/corpus/SOURCES.md"
+exit=0
+$ grep -c 'E[0-9][0-9]' <output>
+0
+$ tail -1 <output>
+file	ok	/fast/scratch/hyaku/tabi-r35/ScribeSrcGeckodriver/clone/corpus/SOURCES.md
+$ rm -f corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+```
+
+So with the pending knowledge entry present, the registry validates clean: no malformed row, no duplicate id,
+no duplicate URL+scope, no enum violation, no dangling used-by. (The placeholder never left the scratch clone,
+which is deleted at the end of this seat; `census-validate-2.txt` is the raw output.)
+
+## 3. Frozen manual census examples (CORPUS `### Census`) on the clone with the rows in place
+
+```
+$ grep -cE '^\|[[:space:]]*S[0-9]{3,}[[:space:]]*\|' corpus/SOURCES.md
+137
+$ awk -F'|' '/^\|[[:space:]]*S[0-9][0-9][0-9]+[[:space:]]*\|/ && NF!=13 {n++} END{print n+0}' corpus/SOURCES.md
+0
+$ awk -F'|' '/^\|[[:space:]]*S[0-9][0-9][0-9]+[[:space:]]*\|/ {i=$2; gsub(/[[:space:]]/,"",i); print i}' corpus/SOURCES.md | sort | uniq -d
+(no output)
+$ awk -F'|' '/^\|[[:space:]]*S[0-9][0-9][0-9]+[[:space:]]*\|/ {t=$5; gsub(/[[:space:]]/,"",t); n[t]++} END{for(k in n) printf "%s=%d ", k, n[k]; print ""}' corpus/SOURCES.md
+A=122 B=6 C=9
+```
+
+133 → 137 rows: four added, none removed, none edited. Every new row has `NF=13` (11 columns) and tier `A`
+(primary/official for its scope: two Mozilla docs pages, two Mozilla source files at a release tag).
+
+## Files
+
+- `census-validate-1.txt` — first validate run, on the rows as first drafted (before the S134 anchor-wording
+  correction and before the S136/S137 line-number corrections); 4 × E11, 20 × W04
+- `census-validate-2.txt` — isolation run with the placeholder (same draft as -1; exit 0, no E-codes)
+- `census-validate-final.txt` — validate on the final row text (mtime after the last edit to the clone's
+  `corpus/SOURCES.md`; the file carries `build.rs:38-41`); identical findings, 4 × E11, 20 × W04

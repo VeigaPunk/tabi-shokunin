@@ -1,0 +1,61 @@
+# sources-census.sh validate + scripts/check-sources.mjs — S138 S139 S140 (seat ScribeSrcMozRelease, round 35 w1)
+# clone: /fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/clone at a4bfef0f75027c915e715649950b1d46dcb33d83 (detached, git clone --shared from the lane; lane checkout untouched)
+# validator: /home/vgpnk/Projects/shokunin/scripts/sources-census.sh sha256 3fb7261569f46423dd80ecc23e0a23789a7926f667c7a3fc559d2439d4a64e30
+# census workdir: /fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/clone (used-by paths resolve inside the clone root)
+
+## state 1 — pristine freeze file (133 rows, git checkout -- corpus/SOURCES.md)
+$ /home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --file /fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/clone/corpus/SOURCES.md --today 2026-10-26
+file	W04	S058 duplicate url chromewebstore.google.com/detail/webmcp-model-context-tool/gbpdfapgefenggkahomfgkhfehlcenpd across scopes
+file	W04	S065 duplicate url git-scm.com/docs/git-rev-parse across scopes
+file	W04	S066 duplicate url www.selenium.dev/documentation/webdriver/bidi across scopes
+file	W04	S068 duplicate url github.com/ChromeDevTools/devtools-frontend/blob/66df492aaa0129d090937e933dd44c5389ab24d2/front_end/panels/application/WebMCPView.ts across scopes
+file	W04	S069 duplicate url developer.chrome.com/blog/webdriver-bidi-2023 across scopes
+file	W04	S070 duplicate url raw.githubusercontent.com/nodejs/node/v24.21.0/doc/api/process.md across scopes
+file	W04	S073 duplicate url github.com/webmachinelearning/webmcp/blob/main/declarative-api-explainer.md across scopes
+file	W04	S074 duplicate url chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/platform/runtime_enabled_features.json5 across scopes
+file	W04	S075 duplicate url developer.chrome.com/docs/ai/webmcp/imperative-api across scopes
+file	W04	S076 duplicate url mpapad.github.io/publications/pdfs/ICST25.pdf across scopes
+file	W04	S077 duplicate url chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT across scopes
+file	W04	S095 duplicate url html.spec.whatwg.org/multipage/input.html across scopes
+file	W04	S096 duplicate url chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT across scopes
+file	W04	S098 duplicate url chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/form_mcp_schema.cc?format=TEXT across scopes
+file	W04	S099 duplicate url chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/public/devtools_protocol/domains/WebMCP.pdl across scopes
+file	W04	S100 duplicate url chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT across scopes
+file	W04	S114 duplicate url chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT across scopes
+file	W04	S115 duplicate url chromium.googlesource.com/chromium/src/+/refs/tags/156.0.8078.47/third_party/blink/renderer/core/html/forms/html_form_element.cc?format=TEXT across scopes
+file	W04	S118 duplicate url github.com/ChromeDevTools/devtools-frontend/blob/66df492aaa0129d090937e933dd44c5389ab24d2/front_end/models/web_mcp/WebMCPModel.ts across scopes
+file	W04	S123 duplicate url www.rfc-editor.org/rfc/rfc9309.txt across scopes
+file	ok	/fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/clone/corpus/SOURCES.md
+exit=0
+
+$ node scripts/check-sources.mjs --root /fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/clone --file corpus/SOURCES.md
+SOURCES_GATE verdict=clean rows=133 tiers=A:118,B:6,C:9 status=queued:15,mined:109,rejected:9 findings=0 file=corpus/SOURCES.md
+exit=0
+
+## state 2 — the three rows spliced after S133, used-by entry NOT yet written (expect E11 x3 only, no new W-code)
+$ /home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --file /fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/clone/corpus/SOURCES.md --today 2026-10-26 | grep -v 'W04'
+file	E11	S138 missing used-by corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+file	E11	S139 missing used-by corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+file	E11	S140 missing used-by corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+exit=1
+$ full exit code of the same run:
+exit=1
+
+$ node scripts/check-sources.mjs --root /fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/clone --file corpus/SOURCES.md
+FINDING id=used_by_missing fleet=E11 row=S138 detail=path_missing
+FINDING id=used_by_missing fleet=E11 row=S139 detail=path_missing
+FINDING id=used_by_missing fleet=E11 row=S140 detail=path_missing
+SOURCES_GATE verdict=failed rows=136 tiers=A:121,B:6,C:9 status=queued:15,mined:112,rejected:9 findings=3 file=corpus/SOURCES.md
+exit=1
+
+## state 3 — plus a scratch stub corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md carrying S138 S139 S140
+$ printf ... > corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md   # scratch clone only, content owned by the C2 entry seat
+$ /home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --file /fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/clone/corpus/SOURCES.md --today 2026-10-26 | grep -v 'W04'
+file	ok	/fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/clone/corpus/SOURCES.md
+exit=0
+$ full exit code of the same run:
+exit=0
+
+$ node scripts/check-sources.mjs --root /fast/scratch/hyaku/tabi-r35/ScribeSrcMozRelease/clone --file corpus/SOURCES.md
+SOURCES_GATE verdict=clean rows=136 tiers=A:121,B:6,C:9 status=queued:15,mined:112,rejected:9 findings=0 file=corpus/SOURCES.md
+exit=0

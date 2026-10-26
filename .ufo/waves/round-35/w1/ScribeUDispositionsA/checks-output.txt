@@ -1,0 +1,172 @@
+lane clone HEAD: a4bfef0f75027c915e715649950b1d46dcb33d83
+=== U01 gate MEASURED grammar (gate sha at freeze) ===
+$ sha256sum scripts/check-bidi-runtime.mjs
+370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87  scripts/check-bidi-runtime.mjs
+exit=0
+
+$ grep -n ^const MEASURED scripts/check-bidi-runtime.mjs
+149:const MEASURED = /^(yes|no)(?:\s*[—–-]\s*\S[\s\S]*)?$/i;
+exit=0
+
+"yes" -> measured:yes
+"YES" -> measured:yes
+"yes — live" -> measured:yes
+"yes (live)" -> unmeasured
+"no — reason" -> measured:no
+exit=0
+
+=== U02 absolute-specifier import + no dynamic-import scan ===
+$ grep -n function importSpecs\|function resolvesToGate\|spec.startsWith("/") scripts/check-bidi-runtime.mjs
+409:function importSpecs(text) {
+432:function resolvesToGate(spec, driverPath) {
+435:  if (spec.startsWith("/")) return false;
+exit=0
+
+$ grep -c import[[:space:]]*( scripts/check-bidi-runtime.mjs
+0
+exit=1
+
+=== U03 witness loop breaks on first grounded id ===
+$ grep -n for (const id of newRows)\|if (!witness) scripts/check-bidi-runtime.mjs
+746:    for (const id of newRows) {
+757:    if (!witness) { out.entryFinding = "s1-source-row"; out.entryDetail = why.join("; "); }
+exit=0
+
+$ sed -n 746,758p scripts/check-bidi-runtime.mjs
+    for (const id of newRows) {
+      const row = regNow.get(id);
+      const regUrl = firstHttps(row.source);
+      const regHost = urlHost(regUrl);
+      const gateRow = (gates.get(id) || []).find((x) => firstHttps(x.text) && HEX64.test(x.text));
+      if (!gateRow) { why.push(`${id}: no corpus/lessons/round-*.md \`## Gate\` row with an https URL and a 64-hex sha256`); continue; }
+      const gateHost = urlHost(firstHttps(gateRow.text));
+      if (!regHost || !gateHost || regHost !== gateHost) { why.push(`${id}: registry source host ${regHost} != Gate URL host ${gateHost} (${gateRow.file}:${gateRow.line})`); continue; }
+      witness = { id, gate: `${gateRow.file}:${gateRow.line}`, host: gateHost };
+      break;
+    }
+    if (!witness) { out.entryFinding = "s1-source-row"; out.entryDetail = why.join("; "); }
+  }
+exit=0
+
+=== U04 contested-open substring-anywhere test, re-run on fleet L0:65 ===
+$ grep -n L0_TABI_ROW = \|line.text.includes(sibling) scripts/check-adjacency.mjs
+231:const L0_TABI_ROW = /^tabi[ \t]*\|[ \t]*round-[0-9]+[ \t]*\|/;
+919:    if (!line.text.includes(sibling)) {
+exit=0
+
+l0:65 L0_TABI_ROW.test = true | includes(kake) = true | kake count = 1
+head: tabi | round-17 | Scope of the round-16 CDP ruling (tabi-shokunin corp
+exit=0
+
+=== U05/U06 live-leg scratch (no guard before try/finally) ===
+$ grep -n mkdtempSync(join(base\|mkdtempSync(join(runtime\|scratch.length <= 60\|at most 40 bytes\|liveError scripts/check-bidi-runtime.mjs
+582:  const scratch = mkdtempSync(join(base, "tabi-bidi-live-"));
+591:  if (scratch.length <= 60) chromeTmp = scratch;
+592:  else if (runtime && runtime.length <= 40) { chromeTmp = mkdtempSync(join(runtime, "tabi-bidi-")); ownChromeTmp = true; }
+593:  else { rmSync(scratch, { recursive: true, force: true }); throw new Refusal(`no short directory for chromium's singleton socket (TMPDIR ${base.length} bytes, XDG_RUNTIME_DIR ${runtime ? runtime.length : "unset"}); set a TMPDIR of at most 40 bytes`); }
+816:  let liveError = null;
+818:    try { liveRec = await liveRunner(); } catch (e) { if (e instanceof Refusal) throw e; liveError = String(e && e.message || e); }
+856:        const why = liveRec ? PREDICATES[id](liveRec, ctx) : `live session failed: ${liveError}`;
+exit=0
+
+TMPDIR len 38 -> scratch len 60 <=60? true
+TMPDIR len 39 -> scratch len 61 <=60? false
+TMPDIR len 40 -> scratch len 62 <=60? false
+exit=0
+
+=== U07 H2 receipt observed vs its own transcripts ===
+receipt run run1 observed ws://127.0.0.1:37279/session/10abbb479bdcc37a405098c5ea778bf0
+receipt run run2 observed ws://127.0.0.1:41011/session/6b30c7033f4821af5f94d9e75e85b234
+exit=0
+-- golden rerun run1 (the blob H2 substitutes) --
+ws://127.0.0.1:41417/session/8ff52a9d702b88169ed8a22d432173f9
+-- golden rerun run2 (the blob H2 substitutes) --
+ws://127.0.0.1:40495/session/7b505081d5eda29d7b7aaed980ba8a1f
+$ grep -c observed scripts/check-bidi-runtime.mjs
+1
+exit=0
+
+=== U08 carried-errata adjudication landed ===
+$ grep -n 20 of 27 LOG.md
+2356:(E28, E30, E31, E32, E33, E35, E37, E38) received none, and the round-32 lesson's supported remain-count is 20 of 27.
+exit=0
+
+$ git -C /fast/scratch/hyaku/tabi-r35/ScribeUDispositionsA/clone log --oneline -S20 of 27 (capital markers), on the other 21 of 31 -- corpus/lessons/round-32.md
+b44b964 round-34: w2 integration — rows 15/17/18 withdrawn, kaidoku HAR/screenshot rows restored, ledger corrections, entry and lesson corrections, QUALITY 97
+exit=0
+
+$ sed -n 229,230p corpus/lessons/round-32.md
+- Round 34 wave-2 correction — supersedes "`:194`'s \"20 of 27\" becomes 21 once E3 is counted" in the round-34 block above: that figure mixes the capital-marker denominator (27) with E3, a dual-marked item outside it; on one basis the count is 20 of 27 (capital markers), on the other 21 of 31 (capital plus dual-marked). The landing stays the basis statement, not a number (w2 CritCorrections F1).
+exit=0
+
+=== U09 declaration-line scope ===
+$ grep -c loopback or operator-approved only SKILL.md
+1
+exit=0
+
+$ sed -n 2887p SKILL.md
+- JS rendering: executing a page in a browser to see what a crawler would render is tabi's (dynamic-page evidence, loopback or operator-approved only); canonical declaration and selection stay kake's (kake `PROVINCE.md:60-61`).
+exit=0
+
+$ sed -n 15,19p PROVINCE.md
+**Refuses:** reverse engineering as forensics (→ revenger/kaidoku),
+web *publishing* (→ kake), secrets (→ kagi — session material is
+shape-only, never content-read). Never performs consequential actions on
+external sites (purchases, posts, deletions); observation and
+operator-approved interaction only.
+exit=0
+
+$ grep -n js-rendering-browser-execution corpus/adjacency.tsv
+12:js-rendering-browser-execution	kake	kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:PROVINCE.md:61	browser execution stays tabi's	SKILL.md:2887	executing a page in a browser to see what a crawler would render is tabi's	split-declared	-	canonical declaration and selection stay kake's
+exit=0
+
+=== U10 S128 word count ===
+$ sed -n 36p corpus/lessons/round-33.md
+| S128 | https://gitlab.archlinux.org/archlinux/packaging/packages/chromium/-/raw/871c2ad960ad54af03579cb90a1c9656485ea598/PKGBUILD and https://raw.githubusercontent.com/foutrelis/chromium-launcher/a7ed2cb89fe28c91199524c828866201c9d6b5e5/launcher.c | 2026-10-26T18:26:26Z and 2026-10-26T18:23:50Z (ScribeSrcLauncher; both HTTP 200; PKGBUILD 18,285 B sha256 `a6fd458b70bc4aa4abab0b64f003a03825a86e865a37b8543eb89dc54cd961be`, launcher.c 3,546 B sha256 `b2772fe008deb15b9cc7c4a42dab6ec73ccb1bf22674eea14dde3fc832182624`; launcher.c bytes at tag `v8` identical to the commit fetch) | `launcher.c:26`: "path = g_build_filename(home, \".config\", CHROMIUM_NAME \"-flags.conf\", NULL);" (9 words); `launcher.c:124`: "return execv(CHROMIUM_BINARY, exec_args);" with `Makefile:5`: "CHROMIUM_BINARY  = /usr/lib/$(CHROMIUM_NAME)/$(CHROMIUM_NAME)" |
+exit=0
+
+7
+exit=0
+
+=== U11 refused-route count ===
+$ sed -n 170p corpus/lessons/round-33.md
+| M5 | `vacuous` | `.ufo/waves/round-33/claims.json` C1 `feasibilityDisclosed` names one construction (four named-quote rows); w1 CritC1Counter (`D.json`: three `refused-route` rows reusing `PROVINCE.md:16` as the only naming quote; `A.json`: contested-open rows citing a round-17 L0 line the candidate never mentions) and CritC1Axis (four cosmetic renames of the mapped kake split) reach predicate true more cheaply | criterion 90 (written this round) | the M1 class recurring one round later: the sentence is bounded to the attacks run before the freeze. Criterion 88 records that naming is necessary, not sufficient; every new row is attacked in w2 and the closure samples them |
+exit=0
+
+newMappedRows 4 refused-route,refused-route,refused-route,refused-route
+exit=0
+
+=== U12 S128 pointer resolution ===
+$ sed -n 7p;10p;50p;53p .ufo/waves/round-33/w1/ScribeSrcLauncher/row-S128.md
+file also starts with the cell `| S128 |` and must not be copied into the registry.
+| S128 | Arch chromium PKGBUILD and the chromium-launcher v8 it builds at package 154.0.8037.97-1 — https://gitlab.archlinux.org/archlinux/packaging/packages/chromium/-/raw/871c2ad960ad54af03579cb90a1c9656485ea598/PKGBUILD | code | A | what the Arch chromium launcher does with chromium-flags.conf and which binary it execs at package 154.0.8037.97-1; not Chromium's own semantics for those flags and not other distros' wrappers | PKGBUILD:13,86,110,328,438,444 at commit 871c2ad960ad54af03579cb90a1c9656485ea598 (ref 154.0.8037.97-1, PKGBUILD sha256 a6fd458b70bc4aa4abab0b64f003a03825a86e865a37b8543eb89dc54cd961be; launcher tarball source line 86, sha256sums line 110 = 213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a); launcher.c:15,18-29,93-94,124 and Makefile:5,30 at chromium-launcher v8 commit a7ed2cb89fe28c91199524c828866201c9d6b5e5 (launcher.c sha256 b2772fe008deb15b9cc7c4a42dab6ec73ccb1bf22674eea14dde3fc832182624; Makefile sha256 1bed55f744e5506dd5d792f0cda9746238fe76566a074aa35e503660fbcb508c) | /usr/bin/chromium is the chromium-launcher v8 binary: it reads /etc/chromium-flags.conf then $XDG_CONFIG_HOME/chromium-flags.conf (else $HOME/.config/chromium-flags.conf), shell-splits each line, and prepends those flags to argv before execv of /usr/lib/chromium/chromium, so a recorded typed command is not the executed command | mined | 2026-10-26 | 90d | corpus/knowledge/bidi-runtime-gate-v2-round-33.md |
+
+| S128 | https://gitlab.archlinux.org/archlinux/packaging/packages/chromium/-/raw/871c2ad960ad54af03579cb90a1c9656485ea598/PKGBUILD and https://raw.githubusercontent.com/foutrelis/chromium-launcher/a7ed2cb89fe28c91199524c828866201c9d6b5e5/launcher.c | 2026-10-26T18:26:26Z and 2026-10-26T18:23:50Z (ScribeSrcLauncher; both HTTP 200; PKGBUILD 18,285 B sha256 `a6fd458b70bc4aa4abab0b64f003a03825a86e865a37b8543eb89dc54cd961be`, launcher.c 3,546 B sha256 `b2772fe008deb15b9cc7c4a42dab6ec73ccb1bf22674eea14dde3fc832182624`; launcher.c bytes at tag `v8` identical to the commit fetch) | `launcher.c:26`: "path = g_build_filename(home, \".config\", CHROMIUM_NAME \"-flags.conf\", NULL);" (9 words); `launcher.c:124`: "return execv(CHROMIUM_BINARY, exec_args);" with `Makefile:5`: "CHROMIUM_BINARY  = /usr/lib/$(CHROMIUM_NAME)/$(CHROMIUM_NAME)" |
+exit=0
+
+=== U13 five-land count and the superseding row ===
+$ grep -n five land corpus/lessons/round-33.md
+217:- Intake A (w1 ScribeErrataA: CritNewNumbers D1–D5, RevLesson F1–F5): five land and one lands strengthened, appended to
+exit=0
+
+$ grep -c supersedes S124 corpus/SOURCES.md
+0
+exit=1
+
+217:- Intake A (w1 ScribeErrataA: CritNewNumbers D1–D5, RevLesson F1–F5): five land and one lands strengthened, appended to
+exit=0
+`c2-J3-whitelist.json` kills the digest-whitelist gate (`forgeriesAccepted 0`, `honest true`, but `digestLiterals` 5 and
+`selftest` exit 3) — all three `predicate false` (R2, R3). The battery therefore can fail, and did, before any row was
+exit=0
+=== U14 criterion 87 omits the >=20 non-space conjunct ===
+$ grep -c non-space corpus/QUALITY.md
+0
+exit=1
+
+$ grep -n goodQuote =  .ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs
+131:const goodQuote = (q) => words(q).length >= 4 && words(q).length <= 25 && q.replace(/\s/g, '').length >= 20;
+exit=0
+
+"a b c deeeeeeeeeeeeeee" words=4 nonspace=19 good=false
+"ab cd ef ghijklmnopqrst" words=4 nonspace=20 good=true
+exit=0

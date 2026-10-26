@@ -163,3 +163,25 @@ seat has scored is not the claim's rule). Each finding is a limit the dispositio
 - Sources: Gitiles `?format=TEXT` at tag 154.0.8037.97 for token.cc, unguessable_token.h,
   render_frame_devtools_agent_host.cc, CdpTargetManager.ts, README.chromium, commands.cc, session_commands.cc,
   util.cc; 503 first responses retried (nothing inferred from a 503).
+
+## Corrections — round 35 errata intake 6 (append-only)
+
+- Round 35 correction — supersedes the S131 locator at `corpus/lessons/round-34.md:33` (`CdpTargetManager.ts:245-247`):
+  the quoted span is lines 244-248, so the locator reads `244-248`. Re-opened 2026-10-26T21:12:39Z from the row's own
+  URL with `?format=TEXT`: HTTP 200, 20,140 B raw sha256 `f3483993a72e09531b8efe322ca317727f8241c06b708ddc8270c88102c33599`
+  (equal to the row's `f3483993…c33599`), decoded 15,104 B — `:244` `// New context.`, `:245-247`
+  `BrowsingContextImpl.create(` / `targetInfo.targetId,` / `parentId,`, `:248` `userContext,`. The row's URL, receipt,
+  quote and admit decision are unchanged; only the locator moves. (Round-34 spot-check, routed defect 6.)
+- Round 35 correction — the frozen `noHarmRule` at `.ufo/waves/round-34/claims.json:75` names only the kake
+  `396`/`422`/`440` rows as relabelable, while the routed relabel also rewrote the note cell of the kake
+  `PROVINCE.md:411` row (`corpus/adjacency-screen.tsv`, screened row 35; §Errata intake 5 at `:151` names it). No harm:
+  the change is the fifth column only — columns 1-4 are byte-identical at `15dfaccb` and `71a87305`, and the screen
+  reason (same-surface `crawler-discipline-vs-publishing`) is unchanged. (Round-34 spot-check, routed defect 6.)
+- Round 35 correction — supersedes the round-34 report's "source drafts refused as duplicate URLs"
+  (`.ufo/reports/round-34/tabi.md:116`): only the two W3C drafts (BiDi WD §4 and WebDriver WD §Sessions — both URLs
+  already registered as S124 and S126) were refused as duplicates. RFC 4122, the same seat's S134
+  (`https://www.rfc-editor.org/rfc/rfc4122.txt`, 2026-10-26T19:48:03Z, HTTP 200, 59,319 B, sha256
+  `3825a334d337243035be8e2656508551a48e0cd42ae16cebf66f164ca66e0c31`), was refused as not needed by any kill case — the
+  ChromeDriver id is not a UUID string and the entry does not rely on one (`:45-46` above;
+  `.ufo/waves/round-34/w1/ScoutSessionBinding/rows.md:23,34`). The report is the fleet repository's file and is not
+  edited here. (Round-34 spot-check, routed defect 6.)

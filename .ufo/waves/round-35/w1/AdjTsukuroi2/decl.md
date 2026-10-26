@@ -1,0 +1,1 @@
+<!-- round-35 w1 AdjTsukuroi2: no DECL — none of this chunk's ten tsukuroi candidates states the sibling's side of a tabi browser surface; all ten are screened in corpus/adjacency-screen-browser.tsv. -->
