@@ -1601,3 +1601,65 @@ total 64; no residual call; dead seats 0. The L1 holds the canonical planner sea
   hermetic `--live`), and a superseding S119 row for the publication month; the 27 carried errata in
   `.ufo/waves/round-31/a2w1/ScribeErrata/errata.md` are the intake.
 - capabilities unchanged; saturation 8 / window 3; no axis retired.
+
+## Round 32 — corrections (append-only; each cites the stale line in its own document)
+
+Measured at the round-32 freeze `4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6` by the frozen v3 calibration counter
+(`.ufo/waves/round-32/baseline/c2-J1-do-nothing.json`); the stale lines stay as written, these lines supersede them.
+
+- `scripts/check-selfassessment.mjs` `--selftest` (41/41): correction — supersedes the stale tallies at `SCORECARD.md:1439`, `SCORECARD.md:1465`, `SCORECARD.md:1486` and `SCORECARD.md:1564`; v3 adds eleven cases (the m4 nudge-state class and the failed-self-test refusal), so the 17, 22, 22 and 30 figures those lines state are each an earlier tip's count. The gate prints `SELFASSESSMENT_SELFTEST verdict=clean cases=41 passed=41` (`.ufo/waves/round-32/baseline/c2-counter-selftest.txt`).
+
+Correction — supersedes the round-29 stagnation-nudge statement at `SCORECARD.md:1473`: the nudge was active. The same
+round group reads every axis at or above the saturation line at round start (depth 8, coverage 9, operability 8,
+freshness 8, calibration 9, adjacency 8 — `SCORECARD.md:1472`) with saturation 8 / window 3, and no capability entered
+the table in the window (rounds 26–28; the table's last entries are round 25, `SCORECARD.md:1306` and `:1314`), so
+`AXES.md` §The stagnation nudge derives active and the lowest-axis obligation was waived for round 29.
+
+Correction — supersedes the round-30 stagnation-nudge statement at `SCORECARD.md:1515`: the nudge was active. The same
+round group reads depth 8, coverage 9, operability 8, freshness 9, calibration 9, adjacency 8 at round start
+(`SCORECARD.md:1514`), saturation 8 / window 3, and no capability entered in rounds 27–29.
+
+Correction — supersedes the round-31 stagnation-nudge statement at `SCORECARD.md:1576`: the nudge was active. The same
+round group reads depth 8, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8 at round start
+(`SCORECARD.md:1574-1575`), saturation 8 / window 3, and no capability entered in rounds 28–30. The round-31
+`claims.json` reason "depth and adjacency sit at the line, not above it" narrows `AXES.md`'s "at or above"; that frozen
+file is not edited (lesson round-32 M1).
+
+Disclosure (round 32 wave 1, `.ufo/waves/round-32/w1/CritAxisCapability.md` F1): the derived state above depends on
+which rows count as capability entries. Rounds 24–25 entered four gates as capability rows (`SCORECARD.md:1243`,
+`:1249`, `:1306`, `:1314`); from round 27 the lane recorded the opposite rule — "gates are counters, not repertoire
+rows" (`SCORECARD.md:1403-1404`, `:1427`) — and entered no later gate. The table as written (the input `AXES.md` binds)
+has no entry after round 25, which is what the corrections above and the frozen counter read. Had the round-27 and
+round-31 gates been entered under the round-24/25 practice, round 29's and round 30's statements would hold and round 31's
+would still be false. The operative rule from round 32 on: a capability row names an operation the shokunin can run,
+never a gate or counter; the round-24/25 gate rows stay as written.
+
+## Round 32 — declared claims (frozen before data)
+
+Baseline `d805d1d6132430118b206a848b85753ab35d1014`; counters landed in `2f8535c5b3015fc5730c1076cbe57d1dc29e4fee`, fixed
+before the freeze in `5ad1fcbfbae947e56ed448c7d24af0632b534e80`; claims and controls frozen in
+`4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6` (`.ufo/waves/round-32/claims.json`, receipts `.ufo/waves/round-32/baseline/`).
+Axes at round start: depth 9, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8; lowest non-retired axis
+adjacency 8. Saturation 8 / window 3; stagnation nudge active — every axis sits at or above the line and no capability
+entered the table in rounds 29–31 (last entries round 25), so the lowest-axis obligation is waived and C1 is a
+frontier/capability move. No axis retired.
+
+| Claim / axis | Counting command | Before | Target |
+|---|---|---|---|
+| C1 coverage + capability acquisition (sourced: S124, S125, S126 opened this round) | `node scripts/check-bidi-runtime.mjs --rev <REV> --baseline d805d1d6132430118b206a848b85753ab35d1014 --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md --live --json` (frozen sha256 `2f25af5a…c393`) | population 0, admitted 0, exit 1 (entry absent) | admitted >= 14, failing 0 (live) |
+| C2 calibration | `node scripts/check-selfassessment.mjs --rev <REV> --json` (frozen sha256 `77b5c8ed…c6a9`) plus numstat of SKILL.md, corpus/README.md, SCORECARD.md, LOG.md from the freeze | mismatches 18 (3 m4-nudge-state + 15 m1 stale tallies of the v3 gate itself) | mismatches 0, deleted lines 0 |
+
+Command that shows C1's surface unmoved: the same counter at the baseline tree reads population 0, exit 1
+(`.ufo/waves/round-32/baseline/c1-J1-do-nothing.json`), and the matrix's seventeen §2 rows read `locally measured: no`
+(`corpus/knowledge/webdriver-bidi-capability-matrix.md:60-76`, unchanged bytes).
+
+Registry rows for the two counters: `SKILL.md` §"Round 32 — registry rows for the BiDi runtime gate and self-assessment v3".
+`scripts/check-bidi-runtime.mjs` `--selftest` (27/27).
+
+### Capabilities — round 32
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| webdriver-bidi-runtime | Drive a WebDriver BiDi session on this host (chromium and chromedriver 154.0.8037.97, classic `webSocketUrl: true` handshake, headless, throwaway profile, `127.0.0.1` fixtures only) and record per-surface runtime evidence for sixteen of the seventeen matrix §2 rows (R16 has no BiDi command), with two cold runs bound by identical first-screenshot bytes | `scripts/bidi-loopback-round32.mjs`; `corpus/evidence/round-32/bidi/receipt.json`; `corpus/knowledge/webdriver-bidi-runtime-round-32.md`; demonstration = the round report's measured C1 run | 32 |
+
+The row names the transport operation the shokunin runs, not the gate that checks it (QUALITY criterion 84).

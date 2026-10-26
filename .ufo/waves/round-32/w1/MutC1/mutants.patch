@@ -1,0 +1,199 @@
+=== MUTANT M01 scripts/mut01.mjs ===
+@@ -547,7 +547,7 @@
+   let bindingFinding = null;
+   if (!receiptFinding && runs.length) {
+     const shots = runs.map((r) => firstShot(r.rec));
+-    if (shots.some((s) => !s) || new Set(shots).size !== 1) bindingFinding = "first screenshots absent or differ between runs";
++    if (shots.some((s) => !s)) bindingFinding = "first screenshots absent or differ between runs";
+     else if (runs.some((r) => !cdv(r.rec)) || new Set(runs.map((r) => cdv(r.rec))).size !== 1) bindingFinding = "chromedriverVersion absent or differs between runs";
+     else if (live && liveRec) {
+       if (firstShot(liveRec) !== shots[0]) bindingFinding = "first screenshot differs from this counter's live session";
+=== MUTANT M02 scripts/mut02.mjs ===
+@@ -550,7 +550,7 @@
+     if (shots.some((s) => !s) || new Set(shots).size !== 1) bindingFinding = "first screenshots absent or differ between runs";
+     else if (runs.some((r) => !cdv(r.rec)) || new Set(runs.map((r) => cdv(r.rec))).size !== 1) bindingFinding = "chromedriverVersion absent or differs between runs";
+     else if (live && liveRec) {
+-      if (firstShot(liveRec) !== shots[0]) bindingFinding = "first screenshot differs from this counter's live session";
++      if (false) bindingFinding = "first screenshot differs from this counter's live session";
+       else if (cdv(liveRec) !== cdv(runs[0].rec)) bindingFinding = "chromedriverVersion differs from this counter's live session";
+     }
+   }
+=== MUTANT M03 scripts/mut03.mjs ===
+@@ -551,7 +551,7 @@
+     else if (runs.some((r) => !cdv(r.rec)) || new Set(runs.map((r) => cdv(r.rec))).size !== 1) bindingFinding = "chromedriverVersion absent or differs between runs";
+     else if (live && liveRec) {
+       if (firstShot(liveRec) !== shots[0]) bindingFinding = "first screenshot differs from this counter's live session";
+-      else if (cdv(liveRec) !== cdv(runs[0].rec)) bindingFinding = "chromedriverVersion differs from this counter's live session";
++      else if (false) bindingFinding = "chromedriverVersion differs from this counter's live session";
+     }
+   }
+   out.binding = bindingFinding;
+=== MUTANT M04 scripts/mut04.mjs ===
+@@ -548,7 +548,7 @@
+   if (!receiptFinding && runs.length) {
+     const shots = runs.map((r) => firstShot(r.rec));
+     if (shots.some((s) => !s) || new Set(shots).size !== 1) bindingFinding = "first screenshots absent or differ between runs";
+-    else if (runs.some((r) => !cdv(r.rec)) || new Set(runs.map((r) => cdv(r.rec))).size !== 1) bindingFinding = "chromedriverVersion absent or differs between runs";
++    else if (runs.some((r) => !cdv(r.rec))) bindingFinding = "chromedriverVersion absent or differs between runs";
+     else if (live && liveRec) {
+       if (firstShot(liveRec) !== shots[0]) bindingFinding = "first screenshot differs from this counter's live session";
+       else if (cdv(liveRec) !== cdv(runs[0].rec)) bindingFinding = "chromedriverVersion differs from this counter's live session";
+=== MUTANT M05 scripts/mut05.mjs ===
+@@ -526,7 +526,7 @@
+       else if (receiptObj.fixtureSha256 !== FIXTURE_SHA256) receiptFinding = "fixtureSha256 is not FIXTURE's";
+       else if (typeof receiptObj.browserVersion !== "string" || !receiptObj.browserVersion) receiptFinding = "no browserVersion";
+       else if (typeof receiptObj.driver !== "string" || !receiptObj.driver || receiptObj.driver === "scripts/check-bidi-runtime.mjs" || (() => { const d = blob(repo, rev, receiptObj.driver); return d === null || sha256(d) !== receiptObj.driverSha256; })()) receiptFinding = "driver absent, is this counter, or its sha256 differs";
+-      else if (!Array.isArray(receiptObj.runs) || receiptObj.runs.length < 2) receiptFinding = "fewer than two runs";
++      else if (!Array.isArray(receiptObj.runs)) receiptFinding = "fewer than two runs";
+       else {
+         for (const run of receiptObj.runs) {
+           const tb = blob(repo, rev, run.transcript);
+=== MUTANT M06 scripts/mut06.mjs ===
+@@ -174,7 +174,7 @@
+   return rec;
+ }
+ 
+-const ok = (c) => c && c.response && c.response.type === "success";
++const ok = (c) => c && c.response;
+ const res = (c) => (c && c.response && c.response.result) || {};
+ const strVal = (rv) => (rv && rv.type === "string" ? rv.value : undefined);
+ 
+=== MUTANT M07 scripts/mut07.mjs ===
+@@ -183,7 +183,7 @@
+     if (c.method !== "browsingContext.navigate" || !ok(c)) continue;
+     let u;
+     try { u = new URL(c.params.url); } catch { continue; }
+-    if (u.pathname === "/a.html" && u.protocol === "http:" && (u.hostname === "127.0.0.1" || u.hostname === "localhost")) return u.origin;
++    if (u.pathname === "/a.html" && u.protocol === "http:") return u.origin;
+   }
+   return null;
+ }
+=== MUTANT M08 scripts/mut08.mjs ===
+@@ -248,7 +248,7 @@
+     const clicks = rec.cmds.filter((c) => c.method === "input.performActions" && ok(c) && (c.params.actions || []).some((s) => s.type === "pointer" && (s.actions || []).some((a) => a.type === "pointerDown") && (s.actions || []).some((a) => a.type === "pointerUp")));
+     if (!clicks.length) return "no pointer down/up performActions";
+     const first = Math.min(...clicks.map((c) => c.i));
+-    return evalCmds(rec, "document.getElementById('out').textContent").some((c) => c.i > first && strVal(res(c).result) === "clicked:tabi") ? null : "#out is not clicked:tabi after the click";
++    return evalCmds(rec, "document.getElementById('out').textContent").some((c) => strVal(res(c).result) === "clicked:tabi") ? null : "#out is not clicked:tabi after the click";
+   },
+   R9: (rec) => {
+     const keys = rec.cmds.filter((c) => c.method === "input.performActions" && ok(c) && (c.params.actions || []).some((s) => s.type === "key" && (s.actions || []).filter((a) => a.type === "keyDown").map((a) => a.value).join("").includes("tabi")));
+=== MUTANT M09 scripts/mut09.mjs ===
+@@ -254,7 +254,7 @@
+     const keys = rec.cmds.filter((c) => c.method === "input.performActions" && ok(c) && (c.params.actions || []).some((s) => s.type === "key" && (s.actions || []).filter((a) => a.type === "keyDown").map((a) => a.value).join("").includes("tabi")));
+     if (!keys.length) return "no key performActions typing tabi";
+     const first = Math.min(...keys.map((c) => c.i));
+-    return evalCmds(rec, "document.getElementById('t').value").some((c) => c.i > first && strVal(res(c).result) === "tabi") ? null : "#t value is not tabi after typing";
++    return evalCmds(rec, "document.getElementById('t').value").some((c) => strVal(res(c).result) === "tabi") ? null : "#t value is not tabi after typing";
+   },
+   R10: (rec) => {
+     const base = navBase(rec);
+=== MUTANT M10 scripts/mut10.mjs ===
+@@ -289,7 +289,7 @@
+     const tr = rec.cmds.find((c) => c.method === "browsingContext.traverseHistory" && ok(c) && c.params.delta === -1);
+     if (!tr) return "no traverseHistory delta -1";
+     if (!rec.cmds.some((c) => c.method === "browsingContext.navigate" && ok(c) && c.i < tr.i && /\/b\.html$/.test(String(c.params.url)))) return "no navigate to /b.html before the traverse";
+-    return evalCmds(rec, "location.pathname").some((c) => c.i > tr.i && strVal(res(c).result) === "/a.html") ? null : "pathname is not /a.html after the traverse";
++    return evalCmds(rec, "location.pathname").some((c) => strVal(res(c).result) === "/a.html") ? null : "pathname is not /a.html after the traverse";
+   },
+   R15: (rec) => (rec.cmds.some((c) => c.method === "storage.getCookies" && ok(c) && (res(c).cookies || []).some((k) => k.name === "tabi_fixture" && strVal(k.value) === "1")) ? null : "no getCookies with tabi_fixture=1"),
+   R16: () => "no-bidi-counterpart",
+=== MUTANT M11 scripts/mut11.mjs ===
+@@ -525,7 +525,7 @@
+       if (receiptObj.schema !== RECEIPT_SCHEMA) receiptFinding = "receipt schema";
+       else if (receiptObj.fixtureSha256 !== FIXTURE_SHA256) receiptFinding = "fixtureSha256 is not FIXTURE's";
+       else if (typeof receiptObj.browserVersion !== "string" || !receiptObj.browserVersion) receiptFinding = "no browserVersion";
+-      else if (typeof receiptObj.driver !== "string" || !receiptObj.driver || receiptObj.driver === "scripts/check-bidi-runtime.mjs" || (() => { const d = blob(repo, rev, receiptObj.driver); return d === null || sha256(d) !== receiptObj.driverSha256; })()) receiptFinding = "driver absent, is this counter, or its sha256 differs";
++      else if (typeof receiptObj.driver !== "string" || !receiptObj.driver || receiptObj.driver === "scripts/check-bidi-runtime.mjs" || (() => { const d = blob(repo, rev, receiptObj.driver); return d === null; })()) receiptFinding = "driver absent, is this counter, or its sha256 differs";
+       else if (!Array.isArray(receiptObj.runs) || receiptObj.runs.length < 2) receiptFinding = "fewer than two runs";
+       else {
+         for (const run of receiptObj.runs) {
+=== MUTANT M12 scripts/mut12.mjs ===
+@@ -561,7 +561,7 @@
+     const row = { line: r.line, id, admitted: false, reason: null, detail: null };
+     if (out.entryFinding) row.reason = out.entryFinding;
+     else if (!Object.hasOwn(ROWS, id)) row.reason = "x1-row-unknown";
+-    else if (id === "R16") row.reason = "x2-no-counterpart";
++    else if (false) row.reason = "x2-no-counterpart";
+     else if (receiptFinding) { row.reason = "t1-receipt"; row.detail = receiptFinding; }
+     else if (bindingFinding) { row.reason = "t3-binding"; row.detail = bindingFinding; }
+     else {
+=== MUTANT M13 scripts/mut13.mjs ===
+@@ -511,7 +511,7 @@
+   const regThen = parseRegistry(regBase.toString("utf8"));
+   const srcLine = (entryText.split("\n").find((l) => /^source:/i.test(l)) || "");
+   const cited = [...srcLine.matchAll(/\bS\d{3,}\b/g)].map((m) => m[0]);
+-  const newRow = cited.some((id) => { const r = regNow.get(id); return r && r.status === "mined" && r.usedBy.split(/[,;]/).map((x) => x.trim()).includes(entry) && !regThen.has(id); });
++  const newRow = cited.some((id) => { const r = regNow.get(id); return r && r.status === "mined" && r.usedBy.split(/[,;]/).map((x) => x.trim()).includes(entry); });
+   if (!newRow) out.entryFinding = "s1-source-row";
+   // receipt
+   let receiptFinding = null;
+=== MUTANT M14 scripts/mut14.mjs ===
+@@ -216,7 +216,7 @@
+     const caps = rec.newSession && rec.newSession.value && rec.newSession.value.capabilities;
+     if (!caps) return "no classic new-session response";
+     if (!caps.browserName) return "no browserName";
+-    if (caps.browserVersion !== ctx.browserVersion) return `browserVersion ${caps.browserVersion} != ${ctx.browserVersion}`;
++    if (String(caps.browserVersion).split(".")[0] !== String(ctx.browserVersion).split(".")[0]) return `browserVersion ${caps.browserVersion} != ${ctx.browserVersion}`;
+     if (!/^ws:\/\/(127\.0\.0\.1|localhost):\d+\//.test(String(caps.webSocketUrl || ""))) return "webSocketUrl not a loopback ws url";
+     if (!rec.cmds.some(ok)) return "no successful BiDi command on the socket";
+     return null;
+=== MUTANT M15 scripts/mut15.mjs ===
+@@ -531,7 +531,6 @@
+         for (const run of receiptObj.runs) {
+           const tb = blob(repo, rev, run.transcript);
+           if (tb === null) { receiptFinding = `transcript absent: ${run.transcript}`; break; }
+-          if (sha256(tb) !== run.transcriptSha256) { receiptFinding = `transcript sha256 differs: ${run.transcript}`; break; }
+           try { runs.push({ name: run.name, rec: recordFromTranscript(tb.toString("utf8")) }); } catch (e) { receiptFinding = `transcript unreadable: ${e.message}`; break; }
+         }
+       }
+=== MUTANT M16 scripts/mut16.mjs ===
+@@ -523,7 +523,7 @@
+     try { receiptObj = JSON.parse(rb.toString("utf8")); } catch { receiptFinding = "receipt is not JSON"; }
+     if (receiptObj) {
+       if (receiptObj.schema !== RECEIPT_SCHEMA) receiptFinding = "receipt schema";
+-      else if (receiptObj.fixtureSha256 !== FIXTURE_SHA256) receiptFinding = "fixtureSha256 is not FIXTURE's";
++      else if (false) receiptFinding = "fixtureSha256 is not FIXTURE's";
+       else if (typeof receiptObj.browserVersion !== "string" || !receiptObj.browserVersion) receiptFinding = "no browserVersion";
+       else if (typeof receiptObj.driver !== "string" || !receiptObj.driver || receiptObj.driver === "scripts/check-bidi-runtime.mjs" || (() => { const d = blob(repo, rev, receiptObj.driver); return d === null || sha256(d) !== receiptObj.driverSha256; })()) receiptFinding = "driver absent, is this counter, or its sha256 differs";
+       else if (!Array.isArray(receiptObj.runs) || receiptObj.runs.length < 2) receiptFinding = "fewer than two runs";
+=== MUTANT M17 scripts/mut17.mjs ===
+@@ -217,7 +217,7 @@
+     if (!caps) return "no classic new-session response";
+     if (!caps.browserName) return "no browserName";
+     if (caps.browserVersion !== ctx.browserVersion) return `browserVersion ${caps.browserVersion} != ${ctx.browserVersion}`;
+-    if (!/^ws:\/\/(127\.0\.0\.1|localhost):\d+\//.test(String(caps.webSocketUrl || ""))) return "webSocketUrl not a loopback ws url";
++    if (!/^ws:\/\//.test(String(caps.webSocketUrl || ""))) return "webSocketUrl not a loopback ws url";
+     if (!rec.cmds.some(ok)) return "no successful BiDi command on the socket";
+     return null;
+   },
+=== MUTANT M18 scripts/mut18.mjs ===
+@@ -233,7 +233,7 @@
+   R4: (rec) => {
+     const shots = rec.cmds.filter((c) => c.method === "browsingContext.captureScreenshot" && ok(c));
+     if (!shots.length) return "no captureScreenshot";
+-    return shots.some((c) => { const s = pngSize(res(c).data); return s && s.width === VIEWPORT.width && s.height === VIEWPORT.height; }) ? null : "screenshot is not a PNG of the pinned viewport";
++    return shots.some((c) => { const s = pngSize(res(c).data); return s; }) ? null : "screenshot is not a PNG of the pinned viewport";
+   },
+   R5: (rec) => (rec.cmds.some((c) => c.method === "browsingContext.locateNodes" && ok(c) && c.params.locator && c.params.locator.type === "css" && c.params.locator.value === "#h"
+     && Array.isArray(res(c).nodes) && res(c).nodes.length === 1 && res(c).nodes[0].value && res(c).nodes[0].value.localName === "h1") ? null : "no locateNodes #h -> one h1"),
+=== MUTANT M19 scripts/mut19.mjs ===
+@@ -505,7 +505,7 @@
+   const entryBuf = blob(repo, rev, entry);
+   if (entryBuf === null) { out.entryFinding = "e1-entry-absent"; out.clean = false; return out; }
+   const entryText = entryBuf.toString("utf8");
+-  const rows = (parseTable(entryText) || []).filter((r) => (r.cells[3] || "").toLowerCase() === "yes");
++  const rows = (parseTable(entryText) || []).filter((r) => (r.cells[3] || "").toLowerCase() !== "");
+   out.population = rows.length;
+   const regNow = parseRegistry(reg.toString("utf8"));
+   const regThen = parseRegistry(regBase.toString("utf8"));
+=== MUTANT M20 scripts/mut20.mjs ===
+@@ -560,7 +560,7 @@
+     const id = r.cells[0];
+     const row = { line: r.line, id, admitted: false, reason: null, detail: null };
+     if (out.entryFinding) row.reason = out.entryFinding;
+-    else if (!Object.hasOwn(ROWS, id)) row.reason = "x1-row-unknown";
++    else if (false && !Object.hasOwn(ROWS, id)) row.reason = "x1-row-unknown";
+     else if (id === "R16") row.reason = "x2-no-counterpart";
+     else if (receiptFinding) { row.reason = "t1-receipt"; row.detail = receiptFinding; }
+     else if (bindingFinding) { row.reason = "t3-binding"; row.detail = bindingFinding; }

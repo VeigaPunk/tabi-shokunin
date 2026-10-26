@@ -1,0 +1,59 @@
+# ExecC2Apply verification (commands + exit codes)
+clone: /fast/scratch/hyaku/tabi-r32/ExecC2Apply/clone
+freeze: 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6
+rev: 363be55bb36cb77e0dce644c807804e1de1aeb40
+
+$ git -C "$D" status --porcelain | wc -l
+0
+exit=0
+
+$ node scripts/check-selfassessment.mjs --rev HEAD --json   (TMPDIR=$D/../)
+exit=0 (measured; stdout saved as counter-after.json: mismatches 0, clean true)
+$ node scripts/check-selfassessment.mjs --rev HEAD --json   (at the freeze, BEFORE)
+exit=1 (stdout saved as counter-before.json: mismatches 18 = 3 m4 + 15 m1)
+
+$ git -C "$D" diff --numstat 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6 HEAD -- SKILL.md corpus/README.md SCORECARD.md LOG.md
+10	0	SCORECARD.md
+8	0	SKILL.md
+7	0	corpus/README.md
+
+$ git -C "$D" diff --name-only 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6 HEAD -- scripts/check-bidi-runtime.mjs scripts/check-selfassessment.mjs   (expect empty)
+
+$ git -C "$D" show HEAD:scripts/check-selfassessment.mjs | sha256sum   (frozenDigests 77b5c8ed…c6a9)
+77b5c8ed503bd9bc93e8ef634a10627613672eaa39bca84cf7339d37b6d4c6a9  -
+$ git -C "$D" show HEAD:scripts/check-bidi-runtime.mjs | sha256sum   (frozenDigests 2f25af5a…e3516c393)
+2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393  -
+
+$ git -C "$D" diff -U0 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6 HEAD -- <doc> | grep -E "^(@@|\+\+\+)"   (one hunk per file, at EOF)
++++ b/SCORECARD.md
+@@ -1603,0 +1604,10 @@ total 64; no residual call; dead seats 0. The L1 holds the canonical planner sea
++++ b/SKILL.md
+@@ -2627,0 +2628,8 @@ self-test that did not pass as an oracle.
++++ b/corpus/README.md
+@@ -705,0 +706,7 @@ datum), the ToS half stays open, and no runtime observation exists for either ha
+
+$ appended lines vs delivered block files (diff, exit 0 = identical)
+SCORECARD.md vs scorecard-block.md -> exit=0
+SKILL.md vs skill-block.md -> exit=0
+corpus/README.md vs readme-block.md -> exit=0
+
+$ git -C "$D" diff 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6 HEAD -- SKILL.md corpus/README.md SCORECARD.md | grep -c "nudge inactive"   (expect 0)
+0
+grep exit=1 (1 = no match)
+
+$ pgrep -fa "chromedriver|chromium"   (C2 starts no browser)
+1371 /usr/bin/earlyoom -r 3600 --avoid (^|/)(Hyprland|Xwayland|sddm|init|systemd|sshd|pipewire|wireplumber|waybar)$ --prefer (^|/)(java|node|chromium|python3?)$
+4191529 /usr/bin/chromedriver --port=46741
+602878 /usr/bin/chromedriver --port=45991
+602969 /usr/lib/chromium/chromium --ozone-platform=wayland --ozone-platform-hint=wayland --enable-features=TouchpadOverscrollHistoryNavigation --load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url --disable-features=Vulkan --allow-pre-commit-input --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-client-side-phishing-detection --disable-default-apps --disable-features=IgnoreDuplicateNavs,Prewarm --disable-gpu --disable-hang-monitor --disable-popup-blocking --disable-prompt-on-repost --disable-sync --enable-automation --enable-logging --headless=new --log-level=0 --no-first-run --no-sandbox --no-service-autorun --password-store=basic --remote-debugging-port=0 --test-type=webdriver --use-mock-keychain --user-data-dir=/fast/scratch/hyaku/tabi-r32/ExecInterceptPhases/tmp/tabi-ei-p5afGX/profile --noerrdialogs --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl data:,
+603162 /usr/lib/chromium/chrome_crashpad_handler --monitor-self --monitor-self-annotation=ptype=crashpad-handler --database=/home/vgpnk/.config/chromium/Crash Reports --annotation=channel=Arch Linux --annotation=lsb-release=Arch Linux --annotation=plat=Linux --annotation=prod=Chrome_Linux --annotation=ver=154.0.8037.97 --initial-client-fd=6 --shared-client-connection
+603170 /usr/lib/chromium/chrome_crashpad_handler --no-periodic-tasks --monitor-self-annotation=ptype=crashpad-handler --database=/home/vgpnk/.config/chromium/Crash Reports --annotation=channel=Arch Linux --annotation=lsb-release=Arch Linux --annotation=plat=Linux --annotation=prod=Chrome_Linux --annotation=ver=154.0.8037.97 --initial-client-fd=4 --shared-client-connection
+603186 /usr/lib/chromium/chromium --type=zygote --no-zygote-sandbox --no-sandbox --enable-logging --headless=new --log-level=0 --crashpad-handler-pid=603162 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/fast/scratch/hyaku/tabi-r32/ExecInterceptPhases/tmp/tabi-ei-p5afGX/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+603194 /usr/lib/chromium/chromium --type=zygote --no-sandbox --enable-logging --headless=new --log-level=0 --crashpad-handler-pid=603162 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/fast/scratch/hyaku/tabi-r32/ExecInterceptPhases/tmp/tabi-ei-p5afGX/profile --change-stack-guard-on-fork=enable --no-first-run --ozone-platform=headless --ozone-override-screen-size=800,600 --use-angle=swiftshader-webgl
+603528 /usr/lib/chromium/chromium --type=gpu-process --gpu-recent-crash-count=0 --no-sandbox --headless=new --ozone-platform=headless --use-angle=swiftshader-webgl --crashpad-handler-pid=603162 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/fast/scratch/hyaku/tabi-r32/ExecInterceptPhases/tmp/tabi-ei-p5afGX/profile --change-stack-guard-on-fork=enable --gpu-preferences=YAAAAAAAAAAgAAAEAAAAAAAAAAAAAGAASAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAMAAAAAQAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --shared-files --field-trial-handle=3,i,941750675893768216,9894498258117104536,262144 --enable-features=SingleAxisScrollContainers,TouchpadOverscrollHistoryNavigation --disable-features=IgnoreDuplicateNavs,PaintHolding,Prewarm --variations-seed-version --pseudonymization-salt-handle=7,i,4633799902061688818,1106684284775106566,4 --trace-process-track-uuid=3190708988185955192 --enable-logging --log-level=0
+603610 /usr/lib/chromium/chromium --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --no-sandbox --use-angle=swiftshader-webgl --crashpad-handler-pid=603162 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/fast/scratch/hyaku/tabi-r32/ExecInterceptPhases/tmp/tabi-ei-p5afGX/profile --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,941750675893768216,9894498258117104536,262144 --enable-features=SingleAxisScrollContainers,TouchpadOverscrollHistoryNavigation --disable-features=IgnoreDuplicateNavs,PaintHolding,Prewarm --variations-seed-version --pseudonymization-salt-handle=7,i,4633799902061688818,1106684284775106566,4 --trace-process-track-uuid=3190708989122997041 --enable-logging --log-level=0
+604025 /usr/lib/chromium/chromium --type=utility --utility-sub-type=storage.mojom.StorageService --lang=en-US --service-sandbox-type=utility --no-sandbox --use-angle=swiftshader-webgl --crashpad-handler-pid=603162 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/fast/scratch/hyaku/tabi-r32/ExecInterceptPhases/tmp/tabi-ei-p5afGX/profile --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,941750675893768216,9894498258117104536,262144 --enable-features=SingleAxisScrollContainers,TouchpadOverscrollHistoryNavigation --disable-features=IgnoreDuplicateNavs,PaintHolding,Prewarm --variations-seed-version --pseudonymization-salt-handle=7,i,4633799902061688818,1106684284775106566,4 --trace-process-track-uuid=3190708990060038890 --enable-logging --log-level=0
+604400 /usr/lib/chromium/chromium --type=renderer --top-chrome-webui --crashpad-handler-pid=603162 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/fast/scratch/hyaku/tabi-r32/ExecInterceptPhases/tmp/tabi-ei-p5afGX/profile --change-stack-guard-on-fork=enable --no-sandbox --disable-background-timer-throttling --enable-automation --remote-debugging-port=0 --test-type=webdriver --allow-pre-commit-input --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=5 --launch-time-ticks=3433292341 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,941750675893768216,9894498258117104536,262144 --enable-features=SingleAxisScrollContainers,TouchpadOverscrollHistoryNavigation --disable-features=IgnoreDuplicateNavs,PaintHolding,Prewarm --variations-seed-version --pseudonymization-salt-handle=7,i,4633799902061688818,1106684284775106566,4 --trace-process-track-uuid=3190708990997080739 --enable-logging --log-level=0
+604791 /usr/lib/chromium/chromium --type=renderer --crashpad-handler-pid=603162 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/fast/scratch/hyaku/tabi-r32/ExecInterceptPhases/tmp/tabi-ei-p5afGX/profile --change-stack-guard-on-fork=enable --no-sandbox --disable-background-timer-throttling --enable-automation --remote-debugging-port=0 --test-type=webdriver --allow-pre-commit-input --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=8 --launch-time-ticks=3433320869 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,941750675893768216,9894498258117104536,262144 --enable-features=SingleAxisScrollContainers,TouchpadOverscrollHistoryNavigation --disable-features=IgnoreDuplicateNavs,PaintHolding,Prewarm --variations-seed-version --pseudonymization-salt-handle=7,i,4633799902061688818,1106684284775106566,4 --trace-process-track-uuid=3190708993808206286 --enable-logging --log-level=0
+605301 /usr/lib/chromium/chromium --type=renderer --crashpad-handler-pid=603162 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/fast/scratch/hyaku/tabi-r32/ExecInterceptPhases/tmp/tabi-ei-p5afGX/profile --change-stack-guard-on-fork=enable --no-sandbox --disable-background-timer-throttling --enable-automation --remote-debugging-port=0 --test-type=webdriver --allow-pre-commit-input --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=10 --launch-time-ticks=3433354851 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,941750675893768216,9894498258117104536,262144 --enable-features=SingleAxisScrollContainers,TouchpadOverscrollHistoryNavigation --disable-features=IgnoreDuplicateNavs,PaintHolding,Prewarm --variations-seed-version --pseudonymization-salt-handle=7,i,4633799902061688818,1106684284775106566,4 --trace-process-track-uuid=3190708995682289984 --enable-logging --log-level=0
+606031 /usr/lib/chromium/chromium --type=renderer --crashpad-handler-pid=603162 --enable-crash-reporter=,Arch Linux --noerrdialogs --user-data-dir=/fast/scratch/hyaku/tabi-r32/ExecInterceptPhases/tmp/tabi-ei-p5afGX/profile --change-stack-guard-on-fork=enable --no-sandbox --disable-background-timer-throttling --enable-automation --remote-debugging-port=0 --test-type=webdriver --allow-pre-commit-input --ozone-platform=headless --disable-gpu-compositing --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=11 --launch-time-ticks=3433406595 --shared-files=v8_context_snapshot_data:100 --field-trial-handle=3,i,941750675893768216,9894498258117104536,262144 --enable-features=SingleAxisScrollContainers,TouchpadOverscrollHistoryNavigation --disable-features=IgnoreDuplicateNavs,PaintHolding,Prewarm --variations-seed-version --pseudonymization-salt-handle=7,i,4633799902061688818,1106684284775106566,4 --trace-process-track-uuid=3190708996619331833 --enable-logging --log-level=0

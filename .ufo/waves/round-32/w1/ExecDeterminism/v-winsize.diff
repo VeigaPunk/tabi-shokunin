@@ -1,0 +1,20 @@
+--- clone/scripts/check-bidi-runtime.mjs	2026-10-26 13:01:59.653509478 -0300
++++ v-winsize.mjs	2026-10-26 13:10:02.374212127 -0300
+@@ -398,7 +398,7 @@
+       try {
+         const r = await fetch(`http://127.0.0.1:${port}/session`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ capabilities: { alwaysMatch: {
+           browserName: "chrome", webSocketUrl: true, unhandledPromptBehavior: "ignore",
+-          "goog:chromeOptions": { binary: chromium, args: ["--headless=new", "--no-sandbox", "--no-first-run", "--disable-gpu", `--user-data-dir=${join(scratch, "profile")}`] } } } }) });
++          "goog:chromeOptions": { binary: chromium, args: ["--headless=new", "--no-sandbox", "--no-first-run", "--disable-gpu", "--window-size=640,480", `--user-data-dir=${join(scratch, "profile")}`] } } } }) });
+         body = await r.json();
+       } catch { await sleep(200); }
+     }
+@@ -439,7 +439,7 @@
+     const tree = await send("browsingContext.getTree", {});
+     const context = res(tree).contexts && res(tree).contexts[0] && res(tree).contexts[0].context;
+     if (!context) throw new Refusal("no browsing context");
+-    await send("browsingContext.setViewport", { context, viewport: VIEWPORT, devicePixelRatio: 1 });
++    // variant: viewport pinned only via --window-size=640,480, no BiDi setViewport
+     await send("network.addDataCollector", { dataTypes: ["response"], maxEncodedDataSize: 65536 });
+     const a = `${fx.base}/a.html`;
+     await send("browsingContext.navigate", { context, url: a, wait: "complete" });

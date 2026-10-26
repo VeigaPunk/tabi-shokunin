@@ -1,0 +1,110 @@
+{
+ "claim": "C1",
+ "commands": [
+  {
+   "cmd": "uv run --no-project --with websockets python client.py --base http://127.0.0.1:33611 --out out/py --tmp $S/tmp",
+   "exit": 0
+  },
+  {
+   "cmd": "uv run --no-project --with websockets python client.py --base http://127.0.0.1:33611 --out out/py2 --tmp $S/tmp",
+   "exit": 0
+  },
+  {
+   "cmd": "uv run --no-project --with websockets python client.py --base http://127.0.0.1:33611 --out out/ctrl --tmp $S/tmp --viewport-width 800 --viewport-height 600",
+   "exit": 0
+  },
+  {
+   "cmd": "node node_values.mjs",
+   "exit": 0
+  },
+  {
+   "cmd": "node node_compare.mjs",
+   "exit": 0
+  },
+  {
+   "cmd": "node replay.mjs out/py/transcript.jsonl 154.0.8037.97 out/node-compare.json out/py/values.json",
+   "exit": 0
+  },
+  {
+   "cmd": "node replay.mjs out/py2/transcript.jsonl 154.0.8037.97 out/node-compare.json out/py2/values.json",
+   "exit": 0
+  },
+  {
+   "cmd": "node replay.mjs out/ctrl/transcript.jsonl 154.0.8037.97 out/node-compare.json out/ctrl/values.json",
+   "exit": 0
+  },
+  {
+   "cmd": "python3 compare.py out/py/values.json out/py2/values.json out/node-values.json out/compare.json out/compare.md",
+   "exit": 0
+  }
+ ],
+ "counter": {
+  "frozenExpected": "2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393",
+  "path": "scripts/check-bidi-runtime.mjs",
+  "sha256": "2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393"
+ },
+ "files": {
+  "client.py": "9d052b71b6205d3be47705f2979c3e81a76a898bea27735ca7deff0f6984bf06",
+  "compare.py": "a0c2ba87b34d81dacb970b5e9d93954a6d7642d460b6384fc997f1d9c103a0c3",
+  "evidence/compare.json": "71f56fafa5f7d20e2ab9db57b4ed38a66e9e3b811e74d668fa365dde974f4f0f",
+  "evidence/compare.md": "371f1aee87eb865345cfe80172998f9e5943b63e5171090e20e595b65fda3191",
+  "evidence/ctrl-800x600-transcript.jsonl": "0245794d1cb94d1eaa86c64a3415c4b95862e933e3a9f492d9127b358f54f4d6",
+  "evidence/ctrl-800x600-values.json": "4ed828112fb20095d254f08bcfb7aed7839abc5f83dde0230996975a2238bf2b",
+  "evidence/node-compare.json": "a1a80f47150dcc4a0dafb51e9eb6ca9d1e7fffddf85290a25bde93b065fa0737",
+  "evidence/node-values.json": "9d418dde59ab9f62d39b3b76b19dacd6420124ff3400e22354ec9723f79e74d5",
+  "evidence/py1-stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidence/py1-stdout.json": "fd40769dfe82fa5ea1b32470ec085c651e7a9a597089ec76a7ff5cb01035b88b",
+  "evidence/py1-transcript.jsonl": "e17a7ba8f88883e27b3b3ce30444ca6937d4b5e479eabc48cdb3deca0b460f29",
+  "evidence/py1-values.json": "6bcd395ddd415206e4dd8ccd883834fb6fc44e2f8cfab1c9472e53c6e5345fda",
+  "evidence/py2-stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidence/py2-stdout.json": "59b86e2cdce4981aded6ded4c5203bf9a2b8e93d1ae169caa0322bc0d72b6942",
+  "evidence/py2-transcript.jsonl": "bbe32e4e296fefd430820f36f62b5310f9cea8df9043e4c0745dd25d63599570",
+  "evidence/py2-values.json": "ce823fbd406a9822ecd61d1793f0f834a17a1e0d85bdee6a28e6699ba270b061",
+  "evidence/replay-ctrl.json": "d1a30743e147f35de5d9a58e469d7e3e533748470891f25a7964cc5b57fadbf8",
+  "evidence/replay-py1.json": "a4c61c3ba014b0052c58b44aa2965ab4d23c197620dba784ce6750bd98eb31fc",
+  "evidence/replay-py2.json": "a041dde92aed619415592d52ded4cb41dfd4db95420c8ede0c9cd1013d72e943",
+  "node_compare.mjs": "1231046132ab5b93094522eb74751b8a9f808e24442cac4209ef8baee3827501",
+  "node_values.mjs": "4a4d075bc54511287306632fb98caa64ce3ead5b38447c0ec0e49232b014175e",
+  "replay.mjs": "5efc840dea9e0068e6f2638fb88be46f4447d3c61fb215cbbd0fed9f8f892ee1",
+  "serve.mjs": "1b40497707984f9cd3641879c7e57b329b61ce53d1c93d50810103aecf2b0eab"
+ },
+ "fixture": {
+  "FIXTURE_SHA256_printed": "343cbcedd56f6fb1914d529119fadfd69cd7901ed919c6e1ae84d213bc112843",
+  "base": "http://127.0.0.1:33611",
+  "loopbackOnly": true,
+  "servedBy": "serve.mjs importing serveFixture() from the frozen counter",
+  "serviceExit": "supervised service 'tabi-r32-fixture' reported failed exit=1 at up 4m1s, after every capture command had exited 0; listener closed (ss -ltnp | grep 33611 empty). Exit code unexplained; no capture depends on it (three sessions agree).",
+  "serviceExitUnobservedCause": true
+ },
+ "host": {
+  "chromedriver": "ChromeDriver 154.0.8037.97 (b510e9d7cd3a2fbd78d0ddc42234103206c5f78d-refs/branch-heads/8037@{#1673})",
+  "chromium": "Chromium 154.0.8037.97 Arch Linux",
+  "node": "v24.21.0",
+  "pythonViaUv": "3.13.16",
+  "uv": "0.13.0",
+  "websockets": "17.3"
+ },
+ "laneRev": "4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6",
+ "results": {
+  "firstScreenshotSha256": {
+   "node_liveRecord": "ee0edebad5ace8f10cd1db964076ad60929d6b84de236ad0030c59e05d51eca5",
+   "python_run1": "ee0edebad5ace8f10cd1db964076ad60929d6b84de236ad0030c59e05d51eca5",
+   "python_run2": "ee0edebad5ace8f10cd1db964076ad60929d6b84de236ad0030c59e05d51eca5"
+  },
+  "negativeControl_800x600": {
+   "rowsFailing": [
+    "R4",
+    "R7"
+   ],
+   "screenshotSha256": "25e764edcc2d3d96900671e5347512e56f5eef7fc59d34cacbb902f9029649d0"
+  },
+  "predicateReplay": {
+   "python_run1": "16/16 admittable rows hold (R16 no-bidi-counterpart by design)",
+   "python_run2": "16/16"
+  }
+ },
+ "round": 32,
+ "schema": "tabi-python-bidi-client-run-v1",
+ "seat": "ExecPyClient",
+ "wave": "w1"
+}

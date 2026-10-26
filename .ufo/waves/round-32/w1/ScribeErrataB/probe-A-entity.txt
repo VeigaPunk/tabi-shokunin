@@ -1,0 +1,24 @@
+# E12 out-of-range numeric entity in receipt bytes
+# command: node /fast/scratch/hyaku/tabi-r32/ScribeErrataB/clone/scripts/check-decision-table.mjs --repo /fast/scratch/hyaku/tabi-r32/ScribeErrataB/fx/A-entity --rev 4448f1fc86a1bc4d052314f7bef926c98c312f4e --baseline 83d03a10bc8679c489d7d57ab44191c7967d8792 --entry corpus/knowledge/fx.md --json
+# exit: 1
+# --- stdout ---
+
+# --- stderr ---
+file:///fast/scratch/hyaku/tabi-r32/ScribeErrataB/clone/scripts/check-decision-table.mjs:141
+      if (k.startsWith("#") && k !== "#39") return String.fromCodePoint(parseInt(k.slice(1), 10));
+                                                          ^
+
+RangeError: Invalid code point 1114112
+    at String.fromCodePoint (<anonymous>)
+    at file:///fast/scratch/hyaku/tabi-r32/ScribeErrataB/clone/scripts/check-decision-table.mjs:141:59
+    at String.replace (<anonymous>)
+    at normalise (file:///fast/scratch/hyaku/tabi-r32/ScribeErrataB/clone/scripts/check-decision-table.mjs:138:11)
+    at loadReceipt (file:///fast/scratch/hyaku/tabi-r32/ScribeErrataB/clone/scripts/check-decision-table.mjs:255:25)
+    at evaluate (file:///fast/scratch/hyaku/tabi-r32/ScribeErrataB/clone/scripts/check-decision-table.mjs:280:15)
+    at main (file:///fast/scratch/hyaku/tabi-r32/ScribeErrataB/clone/scripts/check-decision-table.mjs:468:11)
+    at file:///fast/scratch/hyaku/tabi-r32/ScribeErrataB/clone/scripts/check-decision-table.mjs:482:1
+    at #evaluateSync (node:internal/modules/esm/module_job:702:24)
+    at ModuleJobSync.runSync (node:internal/modules/esm/module_job:717:43)
+
+Node.js v26.12.0
+

@@ -1,0 +1,192 @@
+
+### host
+$ sh -c uname -srm; node --version; git --version
+Linux 7.2.11-arch1-1 x86_64
+v24.21.0
+git version 2.56.0
+EXIT=0
+
+### clone revision
+$ git -C /fast/scratch/hyaku/tabi-r32/ScribeErrataA/clone rev-parse HEAD
+4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6
+EXIT=0
+
+### clone toplevel
+$ git -C /fast/scratch/hyaku/tabi-r32/ScribeErrataA/clone rev-parse --show-toplevel
+/fast/scratch/hyaku/tabi-r32/ScribeErrataA/clone
+EXIT=0
+
+### frozen counter digests
+$ sha256sum scripts/check-decision-table.mjs scripts/check-selfassessment.mjs
+d15f3bd7aef4423d4311c2402f2d01bac8c7ff140a2fdd448ad2500f482f6832  scripts/check-decision-table.mjs
+77b5c8ed503bd9bc93e8ef634a10627613672eaa39bca84cf7339d37b6d4c6a9  scripts/check-selfassessment.mjs
+EXIT=0
+
+### TALLY_PATTERNS readers in the frozen counter
+$ git -C /fast/scratch/hyaku/tabi-r32/ScribeErrataA/clone grep -n TALLY_PATTERNS -- scripts/
+scripts/check-selfassessment.mjs:130:const TALLY_PATTERNS = [
+EXIT=0
+
+### TALLY_PATTERNS declaration region
+$ sh -c awk 'NR>=130&&NR<=135{printf "%d: %s\n",NR,$0}' scripts/check-selfassessment.mjs
+130: const TALLY_PATTERNS = [
+131:   /`?--self-?test`?[^\n|]{0,24}?\(?(\d+)\s*\/\s*(\d+)\)?/g,
+132:   /(\d+)-case\b/g,
+133:   /\bcases\s*=\s*(\d+)/g,
+134:   /\b(\d+)\s+(?:isolated\s+)?(?:CLI\s+)?cases\b/g,
+135: ];
+EXIT=0
+
+### m1 tally forms (inline)
+$ sh -c awk 'NR==202||NR==212||NR==216{printf "%d: %s\n",NR,$0}' scripts/check-selfassessment.mjs
+202: function m1Findings(repo, rev, docText, cache) {
+212:       for (const m of line.matchAll(/`?--self-?test`?[^\n|]{0,24}?\(?(\d+)\s*\/\s*(\d+)\)?/g)) {
+216:       for (const re of [/(\d+)-case\b/g, /\bcases\s*=\s*(\d+)/g, /\b(\d+)\s+(?:isolated\s+)?(?:CLI\s+)?cases\b/g]) {
+EXIT=0
+
+### criterion 80 actor/example clauses
+$ sh -c awk 'NR>=461&&NR<=464{printf "%d: %s\n",NR,$0}' corpus/QUALITY.md
+461:     the derivation stated once in the entry's prose. A sample or example value (a specimen response
+462:     block, an illustrative figure) sources no row; an RFC example period kept as a row says
+463:     "example" in its own cells. The row names the actor and the scope the source binds the number to
+464:     (a vendor's policy is that vendor's, at the access date). The frozen counter checks only that the
+EXIT=0
+
+### criterion 81/82 present
+$ sh -c grep -n '^81\.\|^82\.' corpus/QUALITY.md
+472:81. The oracle for a gate's self-test tally is that gate's own summary line
+483:82. Supersedes the second clause of 81 ("a summary whose verdict is not `clean` is not a tally") and its
+EXIT=0
+
+### lesson M7 pointers
+$ sh -c awk 'NR==72||NR==212{printf "%d: %s\n",NR,$0}' corpus/lessons/round-31.md
+72: | M7 | `scope` | `SKILL.md:2474` states a self-test figure as `(cli_cases=36, helpers=4)`; the window's tally detector is `\bcases\s*=\s*(\d+)` (`scripts/check-selfassessment.mjs:122-127`), which cannot see a `_cases=` prefix, and no finding is emitted for that line in `baseline/c2-T0-reading.json`; independent probe `.ufo/waves/round-31/w1/ExecC2Oracle/oracle.tsv` row 2 (oracle could-not-evaluate: "no word boundary before cases") | w1 ExecC2Oracle (this round, after the freeze) | **not landed** — no detector alternative for `<name>_cases=N` and no `could-not-evaluate`-on-a-stated-tally rule. Red state to build: a fixture line whose `cli_cases` figure is stale → today it yields no finding at all |
+212:   The window's tally detector is `TALLY_PATTERNS` (`scripts/check-selfassessment.mjs:122-127`), whose `cases` form
+EXIT=0
+
+### lesson stale counter pointers (all)
+$ sh -c grep -n 'check-selfassessment.mjs:[0-9]' corpus/lessons/round-31.md
+66:| M1 | `number-drift` | `.ufo/waves/round-30/measure/noharm-at-d3cd62a.txt:1` — `{"mismatches":1,…"doc":"SCORECARD.md","line":1527,"claimed":12,"observed":2}`; `.ufo/waves/round-30/measure/noharm-at-0ffc6ea.txt:130` mismatches=3; row at `corpus/lessons/round-30.md:344` | `scripts/check-selfassessment.mjs` m1 (it emitted the false positive); adjudicated at `corpus/lessons/round-30-verifier-spotcheck.md:148` (routed defect 2) | **landed** — v2 summary-line oracle (`scripts/check-selfassessment.mjs:172-179`) + regression case `v2-oracle-reads-summary-line-not-first-cases-token` (`:685`). Red state proven: `baseline/m8-proof/old-oracle-selftest.txt` (`cases=29 passed=28`, exit 3) |
+67:| M2 | `scope` | the pre-freeze counter read only `SCORECARD.md` and `LOG.md` (`git show 96a2d1a3:scripts/check-selfassessment.mjs` → `readBlob(repo, rev, …)` calls at `:402`, `:405`, none for `SKILL.md`/`corpus/README.md`); nine stale tallies stood there — `baseline/c2-T0-reading.json` | `none` | **landed** — v2 windows (`scripts/check-selfassessment.mjs:422-425`, no-section-fallback association `:315-320`); red state: the same command at the T0 tree exits 1 with those nine (`baseline/c2-J1-do-nothing.json` + `.exit`) |
+72:| M7 | `scope` | `SKILL.md:2474` states a self-test figure as `(cli_cases=36, helpers=4)`; the window's tally detector is `\bcases\s*=\s*(\d+)` (`scripts/check-selfassessment.mjs:122-127`), which cannot see a `_cases=` prefix, and no finding is emitted for that line in `baseline/c2-T0-reading.json`; independent probe `.ufo/waves/round-31/w1/ExecC2Oracle/oracle.tsv` row 2 (oracle could-not-evaluate: "no word boundary before cases") | w1 ExecC2Oracle (this round, after the freeze) | **not landed** — no detector alternative for `<name>_cases=N` and no `could-not-evaluate`-on-a-stated-tally rule. Red state to build: a fixture line whose `cli_cases` figure is stale → today it yields no finding at all |
+73:| M8 | `vacuous` | `claims.json` §claims[0].controls (J1 do-nothing, J2 old rows, J3 self-quote offline/live, J4 invented thresholds, J5 package-as-is) and §claims[1].controls (J1 do-nothing, J2 delete lines, J3 uncited correction, J4 wrong-doc citation, gateEditJunk): every control attacks the **work**; none attacks an observable of the counter itself | `none` — the round-30 M7 row (`corpus/lessons/round-30.md:297`) asked for exactly this control class and round 31's freeze did not build one | **not landed** (freeze passed). Cheapest observable-junk named, unbuilt: a fixture gate that prints a different `…_SELFTEST … cases=N` when an ambient variable is set, run through `scripts/check-selfassessment.mjs:167` (parent env forwarded) |
+91:  (`scripts/check-selfassessment.mjs:172-179`); regression case
+123:  association (`scripts/check-selfassessment.mjs:286-320`, `:422-425`), plus the append-only corrections C2 lands.
+159:  `:175` (`spawnSync("curl", ["-sS", "-L", …])`, no `-q`, no proto pin); `scripts/check-selfassessment.mjs:167`
+212:  The window's tally detector is `TALLY_PATTERNS` (`scripts/check-selfassessment.mjs:122-127`), whose `cases` form
+236:  (`scripts/check-gate-mutants.mjs:142`), the environment it forwards (`check-selfassessment.mjs:167`,
+346:| M11 | `vacuous` | `corpus/QUALITY.md` criterion 81, clause "a summary whose verdict is not `clean` is not a tally"; `scripts/check-selfassessment.mjs:180-181` (summary pattern reads no `verdict=`), `gateTally` `:159-186` (status `measured` whatever the exit); probe `.ufo/waves/round-31/a2w1/RevQuality/probe2.json` (a `verdict=failed cases=13` gate read as tally 13; a summary-less gate as 9) | criterion 73 (a clause no line enforces is dropped or enforced) — not applied when 81 was written; caught by a2w1 RevQuality | **landed** — criterion 82 supersedes the clause and states it as a limit with a hand-read rule; red state is the committed probe. Counter enforcement carried to round 32 |
+EXIT=0
+
+### round-31 frozen claim sentence
+$ sh -c grep -c 'no entry gives a sourced numeric threshold for any decision' .ufo/waves/round-31/claims.json
+1
+EXIT=0
+
+### durable copies of the narrower sentence (outside wave artifacts)
+$ sh -c grep -rn 'no entry maps an observed signal' --include=*.md corpus SKILL.md SCORECARD.md LOG.md README.md 2>/dev/null; echo 'no hits above means none'
+no hits above means none
+EXIT=0
+
+### rate-limit sourced numbers
+$ sh -c awk 'NR==96||NR==97||NR==105{printf "%d: %s\n",NR,$0}' corpus/knowledge/host-published-rate-limit-headers.md
+96: > "All bots can make up to 50 requests per second to our API."
+97: > "Interaction endpoints are not bound to the bot’s Global Rate Limit."
+105: at a documented 10,000 per 10 minutes at the time of the fetch. A receipt that records
+EXIT=0
+
+### D12 row and its errata bullet
+$ sh -c awk 'NR==60||NR>=199&&NR<=201{printf "%d: %s\n",NR,$0}' corpus/knowledge/rate-signal-decision-table.md
+60: | D12 | `x-ratelimit-remaining` header is `0` | stop — make no further request until the instant in `x-ratelimit-reset` (UTC epoch seconds); SHOULD strength (GitHub REST API policy) | 0 requests | S122 | "If the x-ratelimit-remaining header is 0 , you should not make another request until after the time specified by the x-ratelimit-reset header." |
+199: - **D12 timing and force.** The source forbids requests until after the time in `x-ratelimit-reset`, not until the
+200:   instant itself; and its directive is the vendor's lower-case "you should not", which the cell renders as SHOULD
+201:   strength without RFC 2119 capitals in the quote. (a2w1 RowAttackD11D12 (d), ExecC1Distinct obs. 2)
+EXIT=0
+
+### curlFetch argv
+$ sh -c awk 'NR>=194&&NR<=201{printf "%d: %s\n",NR,$0}' scripts/check-decision-table.mjs
+194: function curlFetch(url) {
+195:   const r = spawnSync("curl", ["-q", "-sS", "--proto", "=https", "--proto-redir", "=https", "-L", "--max-redirs", "5", "--max-time", "60",
+196:     "-o", "-", "-w", "\n%{http_code} %{url_effective}", url], { encoding: "buffer", maxBuffer: 64 * 1024 * 1024 });
+197:   if (r.status !== 0) return null;
+198:   const buf = r.stdout;
+199:   const nl = buf.lastIndexOf(10);
+200:   const [code, effective] = buf.subarray(nl + 1).toString("utf8").trim().split(" ");
+201:   return { code: Number(code), effective: effective || "", body: buf.subarray(0, nl) };
+EXIT=0
+
+### hostOf and same-host guard
+$ sh -c awk 'NR>=204&&NR<=215{printf "%d: %s\n",NR,$0}' scripts/check-decision-table.mjs
+204: function hostOf(url) {
+205:   try { return new URL(url).host.toLowerCase(); } catch { return null; }
+206: }
+207: 
+208: function liveOk(url, quote, fetcher) {
+209:   if (!/^https:\/\//.test(url)) return false;
+210:   const res = fetcher(url);
+211:   if (!res || res.code !== 200) return false;
+212:   if (!/^https:\/\//.test(res.effective) || hostOf(res.effective) !== hostOf(url)) return false;
+213:   return normalise(res.body).includes(quote);
+214: }
+215: 
+EXIT=0
+
+### g2 url substring guard
+$ sh -c awk 'NR==251{printf "%d: %s\n",NR,$0}' scripts/check-decision-table.mjs
+251:     else if (typeof rc.url !== "string" || !/^https:\/\/\S+$/.test(rc.url) || !rows.get(id).source.includes(rc.url)) res.reason = "g2-url";
+EXIT=0
+
+### q1/n1 checks
+$ sh -c awk 'NR==283||NR==286{printf "%d: %s\n",NR,$0}' scripts/check-decision-table.mjs
+283:     if (spans.length !== 1 || words(spans[0]) < 6 || words(spans[0]) > 25) { fail("q1-quote-length"); continue; }
+286:     if (!numbersIn(quote).has(tnum)) { fail("n1-threshold-sourced"); continue; }
+EXIT=0
+
+### decision-table selftest
+$ node scripts/check-decision-table.mjs --selftest
+CASE id=admitted-clean expected_exit=0 exit=0 admitted=2 reason=- PASS
+CASE id=entry-absent-zero expected_exit=1 exit=1 admitted=0 reason=- PASS
+CASE id=table-header-wrong-zero expected_exit=1 exit=1 admitted=0 reason=- PASS
+CASE id=row-id-duplicate expected_exit=1 exit=1 admitted=1 reason=t1-row-id PASS
+CASE id=signal-without-token expected_exit=1 exit=1 admitted=0 reason=t2-signal PASS
+CASE id=decision-outside-set expected_exit=1 exit=1 admitted=0 reason=t3-decision PASS
+CASE id=threshold-prose expected_exit=1 exit=1 admitted=0 reason=t4-threshold PASS
+CASE id=threshold-unitless expected_exit=1 exit=1 admitted=0 reason=t4-threshold PASS
+CASE id=source-row-missing expected_exit=1 exit=1 admitted=0 reason=r1-row-missing PASS
+CASE id=source-two-ids expected_exit=1 exit=1 admitted=0 reason=r1-row-missing PASS
+CASE id=status-queued expected_exit=1 exit=1 admitted=0 reason=r2-status PASS
+CASE id=used-by-omits-entry expected_exit=1 exit=1 admitted=0 reason=r3-used-by PASS
+CASE id=row-present-at-baseline expected_exit=1 exit=1 admitted=0 reason=r4-new-row PASS
+CASE id=indented-row-found expected_exit=0 exit=0 admitted=1 reason=- PASS
+CASE id=receipt-missing expected_exit=1 exit=1 admitted=0 reason=g1-receipt PASS
+CASE id=receipt-url-http expected_exit=1 exit=1 admitted=0 reason=g2-url PASS
+CASE id=receipt-url-not-in-row expected_exit=1 exit=1 admitted=0 reason=g2-url PASS
+CASE id=bytes-sha-mismatch expected_exit=1 exit=1 admitted=0 reason=g3-bytes PASS
+CASE id=http-status-404 expected_exit=1 exit=1 admitted=0 reason=g3-bytes PASS
+CASE id=quote-too-short expected_exit=1 exit=1 admitted=0 reason=q1-quote-length PASS
+CASE id=quote-two-spans expected_exit=1 exit=1 admitted=0 reason=q1-quote-length PASS
+CASE id=quote-not-in-bytes expected_exit=1 exit=1 admitted=0 reason=q2-quote-located PASS
+CASE id=threshold-not-in-quote expected_exit=1 exit=1 admitted=0 reason=n1-threshold-sourced PASS
+CASE id=threshold-thousands-separator expected_exit=0 exit=0 admitted=1 reason=- PASS
+CASE id=number-word-needs-boundary expected_exit=1 exit=1 admitted=0 reason=n1-threshold-sourced PASS
+CASE id=html-normalised-located expected_exit=0 exit=0 admitted=1 reason=- PASS
+CASE id=html-script-text-not-located expected_exit=1 exit=1 admitted=0 reason=q2-quote-located PASS
+CASE id=live-located expected_exit=0 exit=0 admitted=2 reason=- PASS
+CASE id=live-self-quote-receipt expected_exit=1 exit=1 admitted=0 reason=l1-live PASS
+CASE id=live-offhost-redirect expected_exit=1 exit=1 admitted=0 reason=l1-live PASS
+CASE id=live-non-200 expected_exit=1 exit=1 admitted=0 reason=l1-live PASS
+CASE id=live-fetch-failed expected_exit=1 exit=1 admitted=0 reason=l1-live PASS
+CASE id=bad-rev-could-not-evaluate expected_exit=2 exit=2 admitted=- reason=- refusal=bad revision syntax: no such rev! PASS
+CASE id=malformed-entry-could-not-evaluate expected_exit=2 exit=2 admitted=- reason=- refusal=malformed --entry: ../SKILL.md PASS
+DECISION_TABLE_SELFTEST verdict=clean cases=34 passed=34
+EXIT=0
+
+### SKILL.md aria row cli_cases
+$ sh -c awk 'NR==2474{print substr($0,1,260)}' SKILL.md
+| aria-historical-metadata | gate | `node scripts/check-aria-metadata.mjs --check corpus/evidence/round-14/aria-metadata/corrected.json` | 0=clean; 1=failed (including semantic failed); 2=could-not-evaluate (including snapshot_tampered and snapshot_unavailable
+EXIT=0
+
+### control J4 receipt
+$ sh -c awk 'NR==14{printf "%d: %s\n",NR,$0}' .ufo/waves/round-31/baseline/README-receipts.md
+14: | c1-J4-invented-thresholds.json | genuine RFC 9309 bytes/quotes, own thresholds | admitted 0, n1-threshold-sourced |
+EXIT=0

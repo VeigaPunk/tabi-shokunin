@@ -1,0 +1,60 @@
+# ExecNoNetwork — C1 perimeter probe, commands as run (round 32 w1)
+
+S=/fast/scratch/hyaku/tabi-r32/ExecNoNetwork
+OUT=/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-32/w1/ExecNoNetwork
+Host tools: chromium 154.0.8037.97, chromedriver 154.0.8037.97, node (fnm multishell), strace 6.x, iproute2, jq.
+
+## 0. clone + provenance
+mkdir -p "$S" && git clone --shared -q /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"
+git -C "$S/clone" checkout -q --detach 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6      # exit 0
+git -C "$S/clone" rev-parse HEAD                                  # 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6
+git -C "$S/clone" status --porcelain | wc -l                      # 0
+chromium --version                                                # Chromium 154.0.8037.97 Arch Linux, exit 0
+chromedriver --version                                            # ChromeDriver 154.0.8037.97 (b510e9d7...), exit 0
+sha256(scripts/check-bidi-runtime.mjs) = 2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393
+  (equals .ufo/waves/round-32/claims.json frozenDigests["scripts/check-bidi-runtime.mjs"])
+
+## 1. loopback-only network namespace (rootless userns+netns)
+unshare -rn sh -c 'ip link set lo up && ip -brief addr'            # exit 0; only lo 127.0.0.1/8 ::1/128
+TMPDIR="$S" XDG_RUNTIME_DIR=/run/user/1000 unshare -rn sh -c \
+  'ip link set lo up; TMPDIR="$S" XDG_RUNTIME_DIR=/run/user/1000 node probe.mjs netns-loopback-only' \
+  > netns.json                                                     # exit 0; 16/16 admittable predicates hold
+same with topology capture (ip -brief link; ip route; ip -6 route; /proc/net/dev; /etc/resolv.conf) \
+  > netns2.txt                                                     # exit 0; 16/16 hold again; no routes
+  # inside netns: lo is the only interface, route4/route6 empty, /etc/resolv.conf still names 127.0.0.53
+  # (systemd-resolved stub not present in that netns, so resolution cannot leave the namespace either)
+
+## 2. host session under strace (connect+sendto+sendmsg), no namespace
+TMPDIR="$S" XDG_RUNTIME_DIR=/run/user/1000 PROBE_TIMEOUT=240000 strace -f \
+  -e trace=connect,sendto,sendmsg -s 200 -o trace.out node probe.mjs outside-host-strace \
+  > outside.json                                                   # exit 0; 16/16 hold
+  # 115 connect( lines; 11 loopback; 40 non-loopback; 6379 send* lines, 0 with a non-loopback inet address
+
+## 3. host sessions with netlog + socket/connect tracing, per flag set
+# variant.mjs = byte-copy of the frozen counter with one added spread of $EXTRA_ARGS into goog:chromeOptions.args
+./run-variant.sh <label> <tab-separated flags...>                  # each: strace exit 0, 16/16 hold
+  default      (no suppression flags; --log-net-log, --net-log-capture-mode=Everything)
+  suppress-all (--disable-background-networking --disable-component-update --disable-domain-reliability \
+                --disable-sync --no-pings --disable-client-side-phishing-detection \
+                --safebrowsing-disable-auto-update --metrics-recording-only --disable-default-apps \
+                --disable-breakpad --disable-features=OptimizationHints,OptimizationGuideModelDownloading,\
+AutofillServerCommunication,Translate,MediaRouter,InterestFeedContentSuggestions \
+                --host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1)
+  suppress-min (--disable-background-networking --disable-component-update)
+  resolver-pin (--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1)
+  resolver-pin-ipv6off (resolver-pin + --disable-ipv6 --disable-features=AsyncDns,DnsOverHttps)
+  resolver-pin-noquic  (resolver-pin + --disable-quic)
+
+## 4. analysis
+python3 parse of each trace (socket() fd table -> SOCK_STREAM vs SOCK_DGRAM per connect) and each netlog
+  (TCP_CONNECT_ATTEMPT / UDP_CONNECT / UDP_LOCAL_ADDRESS events; source_dependency chain to
+   HTTP_STREAM_JOB.destination to name the endpoint; SOCKET_BYTES_SENT/RECEIVED per socket source)
+  -> traffic-matrix.json, SHA256SUMS.txt
+
+## 5. cleanliness
+pgrep -fa 'user-data-dir=/fast/scratch/hyaku/tabi-r32/ExecNoNetwork'   # no output (none of mine alive)
+pgrep -fa 'tabi-bidi-live'                                             # no output
+ls -d /run/user/1000/tabi-bidi-*                                       # no such file (liveRecord removed its dirs)
+pgrep -fa 'chromedriver|chromium'     # one foreign /usr/bin/chromedriver --port=33721 pid 2395456,
+                                      # TMPDIR=/run/user/1000/tabi-ar-EO9ArE (another seat's; not mine; not touched)
+rm -rf "$S"                                                           # after copying receipts

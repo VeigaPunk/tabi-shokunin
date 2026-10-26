@@ -1,0 +1,10 @@
+import { createHash } from "node:crypto";
+import { liveRecord } from "./clone/scripts/check-bidi-runtime.mjs";
+const sha256 = (b) => createHash("sha256").update(b).digest("hex");
+const rec = await liveRecord({ chromedriver: "/usr/bin/chromedriver", chromium: "/usr/bin/chromium" });
+const ok = (c) => c.response && c.response.type === "success";
+const res = (c) => (c && c.response && c.response.result) || {};
+const c = rec.cmds.find((x) => x.method === "browsingContext.captureScreenshot" && ok(x));
+const png = Buffer.from(String(res(c).data || ""), "base64");
+const caps = rec.newSession.value.capabilities;
+console.log(JSON.stringify({ shotSha256: sha256(png), bytes: png.length, browserVersion: caps.browserVersion, chromedriverVersion: caps.chrome.chromedriverVersion, firstShotIndex: c.i, cmds: rec.cmds.length }));

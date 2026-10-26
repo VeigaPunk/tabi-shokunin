@@ -1,0 +1,9 @@
+## Round 32 — corrections (append-only; each cites the stale line in its own document)
+
+- `scripts/check-selfassessment.mjs` `--selftest` (41/41): correction — supersedes the stale tallies at `SCORECARD.md:1439`, `SCORECARD.md:1465`, `SCORECARD.md:1486` and `SCORECARD.md:1564`; v3's CASES table holds 41 isolated scenarios and the gate prints `SELFASSESSMENT_SELFTEST verdict=clean cases=41 passed=41`, so the 17, 22, 22 and 30 figures those lines state are each an earlier tip's count.
+
+Correction — supersedes the round-29 stagnation-nudge statement at `SCORECARD.md:1473`: the nudge was active. Round 29's own group reads every axis at or above the saturation line at round start (depth 9, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8) with saturation 8 / window 3, and no capability entered within the window (rounds 26-28 record none; the capabilities table's last entry is round 25), so the derived state is active.
+
+Correction — supersedes the round-30 stagnation-nudge statement at `SCORECARD.md:1515`: the nudge was active. Round 30's own group reads every axis at or above the saturation line at round start (depth 9, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8) with saturation 8 / window 3, and no capability entered within the window (rounds 27-29 record none; the capabilities table's last entry is round 25), so the derived state is active.
+
+Correction — supersedes the round-31 stagnation-nudge statement at `SCORECARD.md:1576`: the nudge was active. Round 31's own group reads every axis at or above the saturation line at round start (depth 9, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8) with saturation 8 / window 3, and no capability entered within the window (rounds 28-30 record none; the capabilities table's last entry is round 25), so the derived state is active.

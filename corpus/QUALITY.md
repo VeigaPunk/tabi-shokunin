@@ -489,3 +489,40 @@
     line enforces is stated as a limit, not as a rule (criterion 73). Red state: wave a2w1 RevQuality probe
     (`.ufo/waves/round-31/a2w1/RevQuality/`, a `verdict=failed cases=13` summary read as tally 13; a
     summary-less gate read as 9). (source: corpus/lessons/round-31.md M11)
+
+## Round 32 additions (append-only; never edit above)
+
+83. A statement a round makes about its own derived state — the stagnation-nudge state, a window position, a
+    lowest-axis tie — is re-derived in that round from the rule and its inputs, and the round names both: the rule
+    (`AXES.md` §The stagnation nudge: every axis "at or above" the line, no capability entered within the window)
+    and the inputs it read (axis scores at round start, saturation and window, the capability table's entry rounds).
+    A statement carried from the previous round is a finding even when the state is unchanged, and a reason that
+    narrows the rule ("sit at the line, not above it" against "at or above") is a second finding. The fix is an
+    append-only correction that cites the stale line as `DOC:N` and states the derived state (`nudge was active`).
+    Instrument: `scripts/check-selfassessment.mjs` v3 class `m4-nudge-state`, over `SCORECARD.md` round groups only;
+    the same statement in `LOG.md`, a frozen `claims.json` or a lesson is read by hand, and a round group without a
+    six-axis `Axes at round start:` line is unread, not correct. Red state at the round-32 freeze:
+    `.ufo/waves/round-32/baseline/c2-J1-do-nothing.json` (m4 at `SCORECARD.md:1473`, `:1515`, `:1576`, claimed
+    `inactive`, derived `active`). (source: corpus/lessons/round-32.md M1)
+
+84. A capability-table row names an operation the shokunin can now run, with its demonstration in the round report;
+    a gate or counter never enters the table, because the table feeds the stagnation nudge and a gate row would reset
+    the window by bookkeeping. The round-24/25 gate rows (`SCORECARD.md:1243`, `:1249`, `:1306`, `:1314`) stay as
+    written and are counted as entries by the nudge rule, which reads the table as committed. (source:
+    corpus/lessons/round-32.md M1; `.ufo/waves/round-32/w1/CritAxisCapability.md` F1)
+
+85. Supersedes criterion 82's limit clause for the frozen v3 counter: a self-test whose exit is nonzero or whose
+    `<NAME>_SELFTEST` summary verdict is not `clean` is not an oracle — the tally stated for that gate is
+    could-not-evaluate, never matched or mismatched. Check: `node scripts/check-selfassessment.mjs --selftest`
+    includes `v3-failed-summary-is-not-an-oracle` and `v3-nonzero-exit-is-not-an-oracle`; the gate with the refusal
+    removed fails them (`.ufo/waves/round-32/measure/c2-refusal-mutant.txt`, 39/41, exit 3). A gate that prints no summary line still falls back to
+    the first `cases=` or `N/M` token (criterion 82's remaining limit). (source: corpus/lessons/round-31.md M11;
+    corpus/lessons/round-32.md M4)
+
+86. A runtime-evidence row count is a count of distinct surfaces backed by distinct runs. When a gate counts table
+    instances (a row id listed twice scores twice), accepts one transcript cited as two runs, or accepts its own
+    bytes as the driver under another path, the round records the plain distinct counts beside the gate's reading:
+    distinct row ids admitted, distinct transcript digests, driver digest unequal to the gate's, and the driver's
+    imports. The gate's reading alone does not carry "two independent runs". Red state:
+    `.ufo/waves/round-32/w1/CritC1Forgery.md` (four constructions admitted 16 by the frozen
+    `scripts/check-bidi-runtime.mjs`). (source: corpus/lessons/round-32.md M2)

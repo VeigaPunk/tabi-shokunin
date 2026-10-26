@@ -1,0 +1,196 @@
+# Anchor receipt — verified byte ranges at lane HEAD 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6
+# read-only; every range quoted from the lane worktree (clean tracked tree)
+
+## scripts/check-decision-table.mjs (483 lines)
+--- scripts/check-decision-table.mjs:19-20 ---
+19: //          (git show <rev>:<path>); with --live it makes one read-only HTTPS
+20: //          GET per cited row url (curl -q, https only, redirects only to
+
+--- scripts/check-decision-table.mjs:100-102 ---
+100: function git(repo, args) {
+101:   return spawnSync("git", ["-C", repo, ...args], { encoding: "buffer", maxBuffer: 256 * 1024 * 1024 });
+102: }
+
+--- scripts/check-decision-table.mjs:124-124 ---
+124:     if (cells.length !== 13) continue;
+
+--- scripts/check-decision-table.mjs:138-142 ---
+138:     t = t.replace(/&(#x[0-9a-f]+|#[0-9]+|[a-z]+[0-9]*);/gi, (m, e) => {
+139:       const k = e.toLowerCase();
+140:       if (k.startsWith("#x")) return String.fromCodePoint(parseInt(k.slice(2), 16));
+141:       if (k.startsWith("#") && k !== "#39") return String.fromCodePoint(parseInt(k.slice(1), 10));
+142:       return ENTITIES[k] ?? m;
+
+--- scripts/check-decision-table.mjs:151-173 ---
+151: function splitRow(line) {
+152:   const t = line.trim();
+153:   if (!t.startsWith("|") || !t.endsWith("|")) return null;
+154:   return t.slice(1, -1).split("|").map((c) => c.trim());
+155: }
+156: 
+157: export function parseTable(text) {
+158:   const lines = text.split("\n");
+159:   for (let i = 0; i < lines.length; i += 1) {
+160:     const cells = splitRow(lines[i]);
+161:     if (!cells || cells.length !== HEADER.length) continue;
+162:     if (!cells.every((c, k) => c.toLowerCase() === HEADER[k])) continue;
+163:     const rows = [];
+164:     let j = i + 1;
+165:     if (j < lines.length && /^\s*\|[\s:|-]+\|\s*$/.test(lines[j])) j += 1;
+166:     for (; j < lines.length; j += 1) {
+167:       const rc = splitRow(lines[j]);
+168:       if (!rc) break;
+169:       rows.push({ line: j + 1, cells: rc });
+170:     }
+171:     return { headerLine: i + 1, rows };
+172:   }
+173:   return null;
+
+--- scripts/check-decision-table.mjs:182-190 ---
+182: function numbersIn(text) {
+183:   const out = new Set();
+184:   for (const m of text.matchAll(/\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?/g)) out.add(Number(m[0].replace(/,/g, "")));
+185:   const lower = text.toLowerCase();
+186:   for (const [w, n] of Object.entries(NUMBER_WORDS)) {
+187:     if (new RegExp(`(^|[^a-z-])${w}([^a-z-]|$)`).test(lower)) out.add(n);
+188:   }
+189:   return out;
+190: }
+
+--- scripts/check-decision-table.mjs:194-198 ---
+194: function curlFetch(url) {
+195:   const r = spawnSync("curl", ["-q", "-sS", "--proto", "=https", "--proto-redir", "=https", "-L", "--max-redirs", "5", "--max-time", "60",
+196:     "-o", "-", "-w", "\n%{http_code} %{url_effective}", url], { encoding: "buffer", maxBuffer: 64 * 1024 * 1024 });
+197:   if (r.status !== 0) return null;
+198:   const buf = r.stdout;
+
+--- scripts/check-decision-table.mjs:208-213 ---
+208: function liveOk(url, quote, fetcher) {
+209:   if (!/^https:\/\//.test(url)) return false;
+210:   const res = fetcher(url);
+211:   if (!res || res.code !== 200) return false;
+212:   if (!/^https:\/\//.test(res.effective) || hostOf(res.effective) !== hostOf(url)) return false;
+213:   return normalise(res.body).includes(quote);
+
+--- scripts/check-decision-table.mjs:288-290 ---
+288:       const key = `${g.url}\u0000${quote}`;
+289:       if (!liveCache.has(key)) liveCache.set(key, liveOk(g.url, quote, fetcher));
+290:       if (!liveCache.get(key)) { fail("l1-live"); continue; }
+
+--- scripts/check-decision-table.mjs:359-362 ---
+359:   { id: "live-self-quote-receipt", exit: 1, admitted: 0, reason: "l1-live", live: true, fetcher: okFetch("The real page says something else.\n"), build: (d) => std(d, [R5]) },
+360:   { id: "live-offhost-redirect", exit: 1, admitted: 0, reason: "l1-live", live: true, fetcher: (u) => ({ code: 200, effective: "https://evil.example.net/spec.txt", body: Buffer.from(SRC) }), build: (d) => std(d, [R5]) },
+361:   { id: "live-non-200", exit: 1, admitted: 0, reason: "l1-live", live: true, fetcher: (u) => ({ code: 404, effective: u, body: Buffer.from(SRC) }), build: (d) => std(d, [R5]) },
+362:   { id: "live-fetch-failed", exit: 1, admitted: 0, reason: "l1-live", live: true, fetcher: () => null, build: (d) => std(d, [R5]) },
+
+## scripts/check-selfassessment.mjs (1088 lines)
+--- scripts/check-selfassessment.mjs:88-88 ---
+88: const RUNNABLE_GATE = /^scripts\/(check-[a-z0-9-]+\.mjs|round-evidence-audit\.mjs)$/;
+
+--- scripts/check-selfassessment.mjs:104-104 ---
+104:     env: { ...process.env, GIT_CONFIG_GLOBAL: "/dev/null", GIT_CONFIG_SYSTEM: "/dev/null" },
+
+--- scripts/check-selfassessment.mjs:130-135 ---
+130: const TALLY_PATTERNS = [
+131:   /`?--self-?test`?[^\n|]{0,24}?\(?(\d+)\s*\/\s*(\d+)\)?/g,
+132:   /(\d+)-case\b/g,
+133:   /\bcases\s*=\s*(\d+)/g,
+134:   /\b(\d+)\s+(?:isolated\s+)?(?:CLI\s+)?cases\b/g,
+135: ];
+
+--- scripts/check-selfassessment.mjs:153-157 ---
+153: function gateTally(repo, rev, script, cache) {
+154:   if (cache.has(script)) return cache.get(script);
+155:   let result;
+156:   if (!RUNNABLE_GATE.test(script)) {
+157:     result = { status: "could-not-evaluate", why: "script outside the runnable gate set" };
+
+--- scripts/check-selfassessment.mjs:186-190 ---
+186:           // a nonzero exit or a summary line whose verdict is not `clean`
+187:           // (round-31 lesson M11) is could-not-evaluate, not a measured tally.
+188:           const verdict = summaries.length ? /\bverdict=([a-z-]+)/.exec(m[0]) : null;
+189:           if (!m) result = { status: "could-not-evaluate", why: "self-test printed no tally" };
+190:           else if (r.status !== 0 || (verdict && verdict[1] !== "clean")) result = { status: "could-not-evaluate", why: `self-test not clean (exit=${r.status}${verdict ? ` verdict=${verdict[1]}` : ""})` };
+
+--- scripts/check-selfassessment.mjs:517-540 ---
+517: export function evaluate(repo, revArg) {
+518:   const rev = resolveRev(repo, revArg);
+519:   const scorecard = readBlob(repo, rev, "SCORECARD.md");
+520:   if (scorecard === null) throw new Refusal(`SCORECARD.md absent at ${rev}`);
+521:   const cache = new Map();
+522:   const logText = readBlob(repo, rev, "LOG.md");
+523:   const logFindings = logText === null ? [] : m1LogFindings(repo, rev, logText, cache);
+524:   const skillText = readBlob(repo, rev, "SKILL.md");
+525:   const skillFindings = skillText === null ? [] : m1LogFindings(repo, rev, skillText, cache, "SKILL.md", true);
+526:   const readmeText = readBlob(repo, rev, "corpus/README.md");
+527:   const readmeFindings = readmeText === null ? [] : m1LogFindings(repo, rev, readmeText, cache, "corpus/README.md", true);
+528:   const findings = [...m1Findings(repo, rev, scorecard, cache), ...logFindings, ...skillFindings, ...readmeFindings, ...m2Findings(repo, rev), ...m3Findings(repo, scorecard), ...m4Findings(scorecard)];
+529:   const counted = findings.filter((f) => f.observed !== null && f.observed !== f.claimed && !f.superseded);
+530:   return {
+531:     schema: SCHEMA,
+532:     rev,
+533:     mismatches: counted.length,
+534:     findings,
+535:     counted: counted.map((f) => ({ class: f.class, doc: f.doc, line: f.line, claimed: f.claimed, observed: f.observed })),
+536:     couldNotEvaluate: findings.filter((f) => f.observed === null).length,
+537:     superseded: findings.filter((f) => f.superseded).length,
+538:     clean: counted.length === 0,
+539:   };
+540: }
+
+--- scripts/check-selfassessment.mjs:1082-1084 ---
+1082:     console.log(`SELFASSESSMENT verdict=${out.clean ? "clean" : "failed"} rev=${out.rev} mismatches=${out.mismatches} could_not_evaluate=${out.couldNotEvaluate} superseded=${out.superseded}`);
+1083:   }
+1084:   process.exit(out.clean ? 0 : 1);
+
+## SKILL.md (2628 lines)
+--- SKILL.md:2565-2575 ---
+2565: Round 31 adds one gate and revises one. `check-decision-table.mjs` counts the rows of a knowledge entry's
+2566: decision table (`Row | Signal | Decision | Threshold | Source | Located quote`) whose threshold is the
+2567: source's own number: each row cites one registry row opened after the baseline, its quote is located in
+2568: committed fetch bytes and, with `--live`, in the live page, and the threshold's number occurs in that quote.
+2569: `check-selfassessment.mjs` v2 reads a gate's own `<NAME>_SELFTEST … cases=N` summary line as the oracle
+2570: (round-30 lesson M8) and extends the stale-tally window to `SKILL.md` and `corpus/README.md`, with
+2571: same-document line citations and same-line script association.
+2572: 
+2573: | Name | Kind | Entry command | Verdict map | Self-test | Pinned-value path | Write scope | Owner |
+2574: |---|---|---|---|---|---|---|---|
+2575: | decision-table | gate | `node scripts/check-decision-table.mjs --rev REV --baseline REV --entry corpus/knowledge/X.md [--receipts DIR] [--live] [--json]` | 0=clean (population>=1, every table row admitted); 1=failed (entry or table absent, or a row not admitted); 2=could-not-evaluate (usage, unresolvable revision, registry absent at --rev or --baseline, malformed --entry) | `node scripts/check-decision-table.mjs --selftest` (cases=34, passed=34) | `scripts/check-decision-table.mjs` CASES table; `corpus/evidence/round-31/decision-table/`; `.ufo/waves/round-31/claims.json` C1 frozenDigests | stdout/stderr only; production reads committed git blobs; `--live` makes read-only HTTPS GETs (curl -q, https-only, same-host redirects) of receipt urls; self-test writes and deletes only its own temporary repositories under TMPDIR and never uses the network | tabi L1 |
+
+--- SKILL.md:2620-2627 ---
+2620: `check-selfassessment.mjs` v3 adds the `m4-nudge-state` class (a `nudge active|inactive` statement against the state
+2621: `AXES.md` derives from the same round's axis scores, saturation line, window and capability entry rounds) and refuses a
+2622: self-test that did not pass as an oracle.
+2623: 
+2624: | Name | Kind | Entry command | Verdict map | Self-test | Pinned-value path | Write scope | Owner |
+2625: |---|---|---|---|---|---|---|---|
+2626: | bidi-runtime | gate | `node scripts/check-bidi-runtime.mjs --rev REV --baseline REV --entry corpus/knowledge/X.md [--receipt PATH] [--live] [--json]` | 0=clean (population>=1, every measured row admitted); 1=failed (entry absent, no new mined source row, or a row not admitted); 2=could-not-evaluate (usage, unresolvable revision, registry absent, `--live` without chromedriver or chromium) | `node scripts/check-bidi-runtime.mjs --selftest` (cases=27, passed=27) | `scripts/check-bidi-runtime.mjs` FIXTURE, ROWS, PREDICATES and CASES; `corpus/evidence/round-32/bidi/`; `.ufo/waves/round-32/claims.json` C1 frozenDigests | stdout/stderr only; production reads committed git blobs; `--live` starts chromedriver and headless chromium with a throwaway profile under TMPDIR and serves the fixture on 127.0.0.1 only; self-test writes and deletes only its own temporary repositories under TMPDIR and never starts a browser | tabi L1 |
+2627: | selfassessment-counter | gate | `node scripts/check-selfassessment.mjs --rev REV [--json]` | 0=clean; 1=failed (one or more mismatches); 2=could-not-evaluate (usage, unreadable revision, git failure); 3=self-test disagreement | `node scripts/check-selfassessment.mjs --selftest` (cases=41, passed=41) | `scripts/check-selfassessment.mjs` CASES table; `.ufo/waves/round-32/claims.json` C2 frozenDigests | stdout/stderr only; executes lane scripts gates and read-only Git receipts; self-test writes and deletes only its own temporary repositories under TMPDIR | tabi L1 |
+
+## SCORECARD.md (1604 lines)
+--- SCORECARD.md:1581-1582 ---
+1581: | C1 depth (sourced: S119, S121, S122 opened this round) | `node scripts/check-decision-table.mjs --rev <REV> --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc --entry corpus/knowledge/rate-signal-decision-table.md --live --json` (frozen sha256 `d15f3bd7…f6832`) | population 0 → 13, admitted 0 → 13, failing 0 → 0 (live) | met under the frozen rule; counter holes disclosed (lesson M10; a2w1 CritC1Verdict reads twelve distinct sourced thresholds, ten at the harshest reading); depth 8 → 9 (the lane's first decision table whose every row carries the source's own number, against signal vocabulary only before) |
+1582: | C2 calibration | `node scripts/check-selfassessment.mjs --rev <REV> --json` (frozen sha256 `143d66ff…2fce`) plus numstat of SKILL.md, corpus/README.md, SCORECARD.md, LOG.md from the freeze | mismatches 9 → 0; deleted lines 0 | met under the frozen rule; window holes disclosed (word numerals, `cli_cases=`, failed-summary reading — lesson M7, M11); calibration 9 → 9 (two more self-description documents now counted; score held, holes remain) |
+
+--- SCORECARD.md:1602-1603 ---
+1602:   `.ufo/waves/round-31/a2w1/ScribeErrata/errata.md` are the intake.
+1603: - capabilities unchanged; saturation 8 / window 3; no axis retired.
+
+## corpus/lessons/round-31.md (357 lines)
+--- corpus/lessons/round-31.md:163-166 ---
+163:   `scripts/check-decision-table.mjs:194-213` (`curl -q -sS --proto =https --proto-redir =https -L`, rejecting a
+164:   final URL that is not https on the row's own host) — and its self-test case `live-offhost-redirect`
+165:   (`:360`) demands `l1-live`, so the refusal is exercised (frozen self-test receipt `baseline/c1-counter-selftest.txt`:
+166:   `DECISION_TABLE_SELFTEST verdict=clean cases=34 passed=34`, exit 0; not re-run by this seat). The three older
+
+## corpus/knowledge/rate-signal-decision-table.md (213 lines)
+--- corpus/knowledge/rate-signal-decision-table.md:150-152 ---
+150: - **Counting belongs to the counter.** The row count in this entry is the admitting
+151:   counter's `admitted` field, not the author's tally; a row that fails any of its checks is
+152:   not in the table whatever the prose says.
+
+## corpus/README.md (706 lines)
+--- corpus/README.md:685-686 ---
+685: | Rate/ToS surface for site-interaction records | docs-held with sourced thresholds on the rate half (decision table D1–D13); runtime open; ToS half open; approval table C3/C6 unchanged | `knowledge/rate-signal-decision-table.md`; counter `node scripts/check-decision-table.mjs --rev <REV> --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc --entry corpus/knowledge/rate-signal-decision-table.md --live` |
+686: | Self-assessment calibration | held for SCORECARD.md, LOG.md, SKILL.md and corpus/README.md — gate tallies compared with each gate's own summary line; a gate whose summary spells its count otherwise (`cli_cases=`) and multi-script lines stay unchecked | `scripts/check-selfassessment.mjs` (v2, round 31); QUALITY criteria 80–81 |
+

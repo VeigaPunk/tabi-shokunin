@@ -1,0 +1,114 @@
+{
+  "results": [
+    {
+      "label": "counter-shape",
+      "pattern": "http://127.0.0.1:35313/data.txt?held=1",
+      "response": {
+        "id": 4,
+        "result": {
+          "intercept": "38e4b317-5b66-4332-9574-6efe0e1586b9"
+        },
+        "type": "success"
+      }
+    },
+    {
+      "label": "exact-with-case",
+      "pattern": "http://127.0.0.1:35313/data.txt?case=x",
+      "response": {
+        "id": 6,
+        "result": {
+          "intercept": "fb4fee19-e6c2-4e8b-b43d-19e6ac4086c9"
+        },
+        "type": "success"
+      }
+    },
+    {
+      "label": "no-query",
+      "pattern": "http://127.0.0.1:35313/data.txt",
+      "response": {
+        "id": 8,
+        "result": {
+          "intercept": "8bb91d2c-f0a8-4cfb-a6bf-41fc1492fd91"
+        },
+        "type": "success"
+      }
+    },
+    {
+      "label": "trailing-star",
+      "pattern": "http://127.0.0.1:35313/data.txt*",
+      "response": {
+        "error": "invalid argument",
+        "id": 10,
+        "message": "Forbidden characters",
+        "type": "error"
+      }
+    },
+    {
+      "label": "base-star",
+      "pattern": "http://127.0.0.1:35313/*",
+      "response": {
+        "error": "invalid argument",
+        "id": 11,
+        "message": "Forbidden characters",
+        "type": "error"
+      }
+    },
+    {
+      "label": "star",
+      "pattern": "*",
+      "response": {
+        "error": "invalid argument",
+        "id": 12,
+        "message": "Forbidden characters",
+        "type": "error"
+      }
+    },
+    {
+      "label": "query-star",
+      "pattern": "http://127.0.0.1:35313/data.txt?case=*",
+      "response": {
+        "error": "invalid argument",
+        "id": 13,
+        "message": "Forbidden characters",
+        "type": "error"
+      }
+    },
+    {
+      "label": "never-star",
+      "pattern": "http://127.0.0.1:35313/never-*",
+      "response": {
+        "error": "invalid argument",
+        "id": 14,
+        "message": "Forbidden characters",
+        "type": "error"
+      }
+    },
+    {
+      "label": "plain-path",
+      "pattern": "/data.txt",
+      "response": {
+        "error": "invalid argument",
+        "id": 15,
+        "message": "Failed to construct 'URL': Invalid URL '/data.txt'",
+        "type": "error"
+      }
+    }
+  ],
+  "add": {
+    "id": 16,
+    "result": {
+      "intercept": "7c5aafc2-56bf-45ea-98a9-9474b713c3cb"
+    },
+    "type": "success"
+  },
+  "eventsForBlock": [
+    {
+      "method": "network.beforeRequestSent",
+      "isBlocked": true,
+      "url": "http://127.0.0.1:35313/data.txt?case=blockme",
+      "intercepts": [
+        "7c5aafc2-56bf-45ea-98a9-9474b713c3cb"
+      ]
+    }
+  ]
+}

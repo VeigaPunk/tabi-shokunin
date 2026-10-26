@@ -1,0 +1,92 @@
+# ConnFrontier — evidence transcript mirror (round 32 w1)
+
+Mirror of the command transcript in ../ConnFrontier.md. All commands read-only;
+cwd = /home/vgpnk/Projects/shokunin/tabi-shokunin unless noted. No lane scripts
+run, no browser launched, no fetches, no installs, no scratch created.
+
+## Counts
+$ sed -n '/^## 2\. The matrix/,/^## 3\./p' corpus/knowledge/webdriver-bidi-capability-matrix.md | grep -cE '^\| [^|]+ \| [^|]+ \| [^|]+ \| .* \| no \|$'
+17            exit=0
+$ grep -c 'locally measured' corpus/knowledge/webdriver-bidi-capability-matrix.md
+5             exit=0
+
+## Host binaries (match claims.json C1 surface)
+$ /usr/bin/chromium --version
+Chromium 154.0.8037.97 Arch Linux            exit=0
+$ /usr/bin/chromedriver --version
+ChromeDriver 154.0.8037.97 (b510e9d7cd3a2fbd78d0ddcc42234103206c5f78d-refs/branch-heads/8037@{#1673})   exit=0
+
+## Freeze commits present
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin log --oneline -3
+4181fff round-32: freeze claims C1 (coverage/capability: WebDriver BiDi runtime) and C2 (calibration: nudge-state), controls and receipts before data
+5ad1fcb round-32: counter fix before freeze — chromium singleton-socket path overflow under a deep TMPDIR (found by the pre-freeze control run)
+2f8535c round-32: freeze counters — check-bidi-runtime.mjs (C1) and check-selfassessment.mjs v3 (C2), registry rows
+exit=0
+
+## Evidence notes exist (Table A paths)
+$ ls corpus/knowledge/ | grep -E 'bfcache|rate|chromium-156|webmcp|webbridge|webdriver-bidi'
+bfcache-runtime-observed-round-25.md
+chromium-156-release-pin-recheck.md
+host-published-rate-limit-headers.md
+navigation-history-bfcache-evidence.md
+rate-limit-policy-fields.md
+rate-signal-decision-table.md
+webbridge-daemon-disposition.md
+webbridge-plugin-anatomy.md
+webbridge-revival-assessment.md
+webdriver-bidi-capability-matrix.md
+webmcp-chromium-loopback-round-16.md
+webmcp-completion-lifecycle-round-20.md
+webmcp-declarative-validation-round-19.md
+webmcp-invocation-round-17.md
+webmcp-lifecycle-oracle-round-22.md
+webmcp-nonautosubmit-round-21-corrected.md
+webmcp-nonautosubmit-round-21.md
+exit=0
+
+## Daemon state (extension-daemon link row)
+$ ss -ltn 2>/dev/null | grep ':10086' || echo 'daemon: not listening'
+daemon: not listening                        exit=0
+
+## Routed defect 3 (recheck cadence already ruled)
+$ grep -n '365d' corpus/knowledge/rate-signal-decision-table.md | head -1
+180:  (`corpus/SOURCES.md` S119, S120) and the lesson record 365d. The registry is the operative cadence: read 365d.
+exit=0
+
+## Routed defect 1 / C2 m4 lines (rounds 29-31 all say inactive)
+$ sed -n '1473p;1515p;1576p' SCORECARD.md
+lowest-axis tie at 8 — C1 works operability, C3 works freshness. Saturation 8 / window 3; nudge
+Saturation 8 / window 3; nudge inactive; no axis retired. After-measurements in a clean
+Saturation 8 / window 3; nudge inactive; no axis retired. After-measurements in a clean
+exit=0
+
+## AXES.md lives at fleet root
+$ find /home/vgpnk/Projects/shokunin -maxdepth 4 -name 'AXES.md' -not -path '*/.git/*'
+/home/vgpnk/Projects/shokunin/AXES.md      exit=0
+$ grep -n -A6 '## The stagnation nudge' /home/vgpnk/Projects/shokunin/AXES.md
+66:## The stagnation nudge
+68-When every axis the lane owns sits at or above the lane's saturation line and
+69-no capability has entered the table within the lane's stagnation window (…)
+70-…the lowest-axis obligation is waived: the round should be a frontier/capability move
+exit=0
+
+## Routed defect 4 denominator (first-hand)
+$ grep -cE '^- \*\*E[0-9]+' .ufo/waves/round-31/a2w1/ScribeErrata/errata.md
+43            exit=0
+$ grep -oE '\*\*(Carried|Corrected here|No action)\*\*' .ufo/waves/round-31/a2w1/ScribeErrata/errata.md | sort | uniq -c
+     21 **Carried**
+      8 **Corrected here**
+      4 **No action**
+exit=0
+$ grep -oE 'E[0-9]+ —' .ufo/waves/round-31/a2w1/ScribeErrata/errata.md | tail -3
+E41 —
+E42 —
+E43 —
+exit=0
+
+## Hygiene
+$ pgrep -fa 'chromedriver|chromium'
+1371 /usr/bin/earlyoom -r 3600 --avoid (^|/)(Hyprland|Xwayland|sddm|init|systemd|sshd|pipewire|wireplumber|waybar)$ --prefer (^|/)(java|node|chromium|python3?)$
+exit=0   (only the system earlyoom pattern mentions chromium; no seat-owned processes)
+$ ls -d /fast/scratch/hyaku/tabi-r32/ConnFrontier 2>/dev/null || echo 'no scratch dir created'
+no scratch dir created   (no lane scripts run → no clone needed)
