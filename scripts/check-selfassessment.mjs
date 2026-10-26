@@ -5,12 +5,13 @@
 // Verdict: 0 clean, 1 failed (>=1 mismatch), 2 could-not-evaluate (usage,
 //          unreadable revision, git failure). Any other nonzero code is
 //          undeclared and reads as could-not-evaluate.
-// Self-test: `--selftest` (17 isolated cases over temporary sandbox
+// Self-test: `--selftest` (30 isolated cases over temporary sandbox
 //          repositories; asserts exit code AND stable finding id; creates and
 //          removes its own temp trees, never touches the lane).
 // Pinned values: the expected exit/finding table is the CASES constant in this
 //          file; corpus/evidence/round-24/ carries the round's measured
-//          receipts (c2-measurements.json).
+//          receipts (c2-measurements.json). v2 (round 31) is frozen by
+//          .ufo/waves/round-31/claims.json claim C2 (sha256 recorded there).
 // Write scope: stdout/stderr only. Production reads committed git blobs plus
 //          the live working tree (m3), and executes ONLY lane `scripts/` gates
 //          with their declared self-test flag; every other command string is
@@ -168,7 +169,11 @@ function gateTally(repo, rev, script, cache) {
         if (r.error) result = { status: "could-not-evaluate", why: `spawn failed: ${r.error.message}` };
         else {
           const out = `${r.stdout || ""}\n${r.stderr || ""}`;
-          const m = /"?\bcases"?\s*[=:]\s*(\d+)/.exec(out) || /\b(\d+)\s*\/\s*(\d+)\b/.exec(out);
+          // v2 (round 31): a gate's own summary line (`<NAME>_SELFTEST ... cases=N`)
+          // is the oracle; per-case lines may carry other `cases=` tokens (round-30
+          // lesson M8: a refusal message `cases=2 passed=1` was read as the tally).
+          const summaries = [...out.matchAll(/^[A-Z][A-Z0-9_]*_SELFTEST\b[^\n]*?\bcases\s*[=:]\s*(\d+)/gm)];
+          const m = summaries.length ? summaries[summaries.length - 1] : (/"?\bcases"?\s*[=:]\s*(\d+)/.exec(out) || /\b(\d+)\s*\/\s*(\d+)\b/.exec(out));
           if (!m) result = { status: "could-not-evaluate", why: "self-test printed no tally" };
           else result = { status: "measured", tally: Number(m[1]), exit: r.status, flag };
         }
@@ -265,9 +270,10 @@ function paragraphs(docText) {
 }
 // A citation clears a stale tally only when it names the stale line's own
 // document and a line or range containing it (QUALITY 70; round-28 verifier
-// routed defect 3): `SCORECARD.md:N` never clears `LOG.md:N`, nor the reverse.
+// routed defect 3): `SCORECARD.md:N` never clears `LOG.md:N`, nor the reverse;
+// `README.md:N` (the lane root README) never clears `corpus/README.md:N`.
 function citesLine(text, doc, line) {
-  return [...text.matchAll(/\b(LOG|SCORECARD)\.md:(\d+)(?:-(\d+))?\b/g)]
+  return [...text.matchAll(/(?<![A-Za-z0-9_\/])((?:corpus\/)?(?:LOG|SCORECARD|SKILL|README))\.md:(\d+)(?:-(\d+))?\b/g)]
     .some((match) => {
       if (`${match[1]}.md` !== doc) return false;
       const first = Number(match[2]);
@@ -277,7 +283,16 @@ function citesLine(text, doc, line) {
 }
 
 
-function m1LogFindings(repo, rev, logText, cache) {
+// The paragraph-correction window (LOG.md since round 27; SKILL.md and
+// corpus/README.md since round 31, frozen claim C2): same association rule as
+// the SCORECARD window — except that in the round-31 windows (lineOnly) a
+// tally belongs only to the scripts named on its own line (no section
+// fallback: registry and frontier sections narrate several gates, and a
+// historical receipt count is not the section gate's tally); a later paragraph
+// clears a stale mention only when it names the same script, carries a
+// correction marker, cites the stale line in the same document and states the
+// oracle-correct number via a tally shape.
+function m1LogFindings(repo, rev, logText, cache, doc = "LOG.md", lineOnly = false) {
   const findings = [];
   for (const sec of sections(logText)) {
     const scripts = new Set();
@@ -296,7 +311,7 @@ function m1LogFindings(repo, rev, logText, cache) {
       }
       if (!claims.length) continue;
       if (!fractionOk) {
-        findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "malformed fraction claim (N !== M)" });
+        findings.push({ class: "m1-selftest-tally", doc, line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "malformed fraction claim (N !== M)" });
         continue;
       }
       // Association is per line, exactly as in the SCORECARD window: a tally
@@ -304,18 +319,18 @@ function m1LogFindings(repo, rev, logText, cache) {
       // single script, else it is ambiguous and is reported could-not-evaluate.
       const lineScripts = new Set();
       for (const m of line.matchAll(SCRIPT_IN_TEXT)) lineScripts.add(m[1].replace(/^\.\//, ""));
-      const targets = lineScripts.size ? [...lineScripts] : scripts.size === 1 ? [...scripts] : [];
+      const targets = lineScripts.size ? [...lineScripts] : !lineOnly && scripts.size === 1 ? [...scripts] : [];
       if (!targets.length) {
-        findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "ambiguous script association" });
+        findings.push({ class: "m1-selftest-tally", doc, line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "ambiguous script association" });
         continue;
       }
       for (const script of targets) {
         const oracle = gateTally(repo, rev, script, cache);
         if (oracle.status !== "measured") {
-          findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: oracle.why });
+          findings.push({ class: "m1-selftest-tally", doc, line: no, script, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: oracle.why });
           continue;
         }
-        findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script, claimed: claims[0], observed: oracle.tally, superseded: false, lineText: line });
+        findings.push({ class: "m1-selftest-tally", doc, line: no, script, claimed: claims[0], observed: oracle.tally, superseded: false, lineText: line });
       }
     }
   }
@@ -329,7 +344,7 @@ function m1LogFindings(repo, rev, logText, cache) {
       const namesScript = [...text.matchAll(SCRIPT_IN_TEXT)].some((m) => m[1].replace(/^\.\//, "") === f.script);
       return namesScript &&
         /supersed|correct/i.test(text) &&
-        citesLine(text, "LOG.md", f.line) &&
+        citesLine(text, doc, f.line) &&
         statedTallyNumbers(text).includes(f.observed);
     });
   }
@@ -404,7 +419,11 @@ export function evaluate(repo, revArg) {
   const cache = new Map();
   const logText = readBlob(repo, rev, "LOG.md");
   const logFindings = logText === null ? [] : m1LogFindings(repo, rev, logText, cache);
-  const findings = [...m1Findings(repo, rev, scorecard, cache), ...logFindings, ...m2Findings(repo, rev), ...m3Findings(repo, scorecard)];
+  const skillText = readBlob(repo, rev, "SKILL.md");
+  const skillFindings = skillText === null ? [] : m1LogFindings(repo, rev, skillText, cache, "SKILL.md", true);
+  const readmeText = readBlob(repo, rev, "corpus/README.md");
+  const readmeFindings = readmeText === null ? [] : m1LogFindings(repo, rev, readmeText, cache, "corpus/README.md", true);
+  const findings = [...m1Findings(repo, rev, scorecard, cache), ...logFindings, ...skillFindings, ...readmeFindings, ...m2Findings(repo, rev), ...m3Findings(repo, scorecard)];
   const counted = findings.filter((f) => f.observed !== null && f.observed !== f.claimed && !f.superseded);
   return {
     schema: SCHEMA,
@@ -421,6 +440,19 @@ export function evaluate(repo, revArg) {
 // ---- self-test --------------------------------------------------------------
 
 const GATE_SRC = `process.stdout.write("FIXTURE_SELFTEST verdict=clean cases=13 passed=13\\n");\n`;
+const NOISY_GATE_SRC = `process.stdout.write("CASE id=pristine refusal=pristine self-test is not clean (exit=3 cases=2 passed=1) PASS\\nFIXTURE_SELFTEST verdict=clean cases=13 passed=13\\n");\n`;
+
+function registryDoc(tally, correction = "") {
+  return [
+    "# SKILL",
+    "",
+    "## Round 30 — registry rows",
+    "",
+    `| fixture | gate | \`node scripts/check-fixture.mjs --rev REV\` | 0/1/2 | \`node scripts/check-fixture.mjs --selftest\` ${tally} | path | stdout | tabi L1 |`,
+    ...(correction ? ["", correction] : []),
+    "",
+  ].join("\n");
+}
 
 function fixtureDoc(tally, extra = "") {
   return [
@@ -649,6 +681,54 @@ const CASES = [
       d.commit();
     },
   },
+  {
+    id: "v2-oracle-reads-summary-line-not-first-cases-token",
+    exit: 0,
+    classes: [],
+    build: (d) => { d.gate("scripts/check-fixture.mjs", NOISY_GATE_SRC); d.scorecard(fixtureDoc("`--selftest` (13/13)")); },
+  },
+  {
+    id: "v2-skill-stale-tally",
+    exit: 1,
+    classes: ["m1-selftest-tally"],
+    build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("`--selftest` (13/13)")); d.skill(registryDoc("(cases=12, passed=12)")); },
+  },
+  {
+    id: "v2-skill-stale-then-corrected",
+    exit: 0,
+    classes: [],
+    build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("`--selftest` (13/13)")); d.skill(registryDoc("(cases=12, passed=12)", "Correction (supersedes SKILL.md:5): `scripts/check-fixture.mjs` `--selftest` (13/13).")); },
+  },
+  {
+    id: "v2-skill-crossdoc-citation-not-superseded",
+    exit: 1,
+    classes: ["m1-selftest-tally"],
+    build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("`--selftest` (13/13)")); d.skill(registryDoc("(cases=12, passed=12)", "Correction (supersedes SCORECARD.md:5): `scripts/check-fixture.mjs` `--selftest` (13/13).")); },
+  },
+  {
+    id: "v2-readme-stale-tally",
+    exit: 1,
+    classes: ["m1-selftest-tally"],
+    build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("`--selftest` (13/13)")); d.readme(registryDoc("cases=12")); },
+  },
+  {
+    id: "v2-readme-root-citation-not-corpus",
+    exit: 1,
+    classes: ["m1-selftest-tally"],
+    build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("`--selftest` (13/13)")); d.readme(registryDoc("cases=12", "Correction (supersedes README.md:5): `scripts/check-fixture.mjs` `--selftest` (13/13).")); },
+  },
+  {
+    id: "v2-readme-stale-then-corrected",
+    exit: 0,
+    classes: [],
+    build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("`--selftest` (13/13)")); d.readme(registryDoc("cases=12", "Correction (supersedes corpus/README.md:5): `scripts/check-fixture.mjs` `--selftest` (13/13).")); },
+  },
+  {
+    id: "v2-readme-no-section-fallback",
+    exit: 0,
+    classes: [],
+    build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("`--selftest` (13/13)")); d.readme(["# corpus", "", "## Round 16", "", "The gate is `scripts/check-fixture.mjs`.", "Historical receipts carried 43 cases from an earlier gate.", ""].join("\n")); },
+  },
 ];
 
 function makeFixture() {
@@ -661,19 +741,28 @@ function makeFixture() {
   run(["init", "-q"]);
   run(["config", "user.email", "fixture@tabi.local"]);
   run(["config", "user.name", "tabi-fixture"]);
+  const top = run(["rev-parse", "--show-toplevel"]).trim();
+  if (top !== root) throw new Error(`fixture root mismatch: ${top} != ${root}`);
   let committed = false;
   const d = {
     root,
-    gate(rel) {
+    gate(rel, src = GATE_SRC) {
       const abs = join(root, rel);
       mkdirSync(dirname(abs), { recursive: true });
-      writeFileSync(abs, GATE_SRC);
+      writeFileSync(abs, src);
     },
     scorecard(text) {
       writeFileSync(join(root, "SCORECARD.md"), text);
     },
     log(text) {
       writeFileSync(join(root, "LOG.md"), text);
+    },
+    skill(text) {
+      writeFileSync(join(root, "SKILL.md"), text);
+    },
+    readme(text) {
+      mkdirSync(join(root, "corpus"), { recursive: true });
+      writeFileSync(join(root, "corpus", "README.md"), text);
     },
     receipt(rel, obj) {
       const abs = join(root, rel);

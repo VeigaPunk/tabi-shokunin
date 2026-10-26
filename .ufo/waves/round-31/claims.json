@@ -1,0 +1,78 @@
+{
+  "schema": "tabi-round-claims-v1",
+  "lane": "tabi",
+  "round": 31,
+  "attempt": 1,
+  "frozenAt": "2026-10-26",
+  "frozenBeforeData": true,
+  "baseline": "96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc",
+  "priorClosure": "round 30 admitted (corpus/lessons/round-30-verifier-spotcheck.md: both claims improved, no axis harmed). Not a fresh-start round (round 29 was this lane's run-8 fresh start). Routed defects: (1) SCORECARD.md:1523 'mismatches 0' sentence -> appended correction, curation, not a claim; (2) calibration counter must read a gate's summary line -> part of C2's frozen counter v2 (round-30 lesson M8; regression case shown able to fail: baseline/m8-proof/); (3) counter-v2 items for check-gate-mutants.mjs / check-frontier-admission.mjs and (4) release-pin counter v2 -> named, not claimed (notClaimed).",
+  "axisScoresAtRoundStart": { "depth": 8, "coverage": 9, "operability": 9, "freshness": 9, "calibration": 9, "adjacency": 8 },
+  "lowestNonRetiredAxis": "tie at 8 (depth, adjacency); C1 works depth. Saturation 8 / window 3; stagnation nudge inactive (depth and adjacency sit at the line, not above it); no axis retired. Lane axes per prompt: coverage + calibration; C2 works calibration.",
+  "measurementRule": "Every after-measurement runs in a clean checkout (git status --porcelain empty) of the named lane branch revision REV with the frozen counter bytes (frozenDigests, byte-identical at REV), TMPDIR under $HYAKU_SCRATCH; raw output is committed under .ufo/waves/round-31/measure/ before the report. A counter not run is a claim not verified.",
+  "frozenDigests": {
+    "scripts/check-decision-table.mjs": "d15f3bd7aef4423d4311c2402f2d01bac8c7ff140a2fdd448ad2500f482f6832",
+    "scripts/check-selfassessment.mjs": "143d66ff2ba3fc2c113d461f1f2dd0555c94fb00b292e24eb4799e22dadb2fce"
+  },
+  "claims": [
+    {
+      "id": "C1",
+      "axis": "depth",
+      "surface": "a rate-and-crawl signal decision table for journey records (new entry corpus/knowledge/rate-signal-decision-table.md): each row maps an observable signal (status code, response header, robots.txt fetch condition) to a driver action with the source's own numeric threshold. Held ground before: signal vocabulary only (round-27 redirect/Retry-After semantics, round-30 RateLimit fields and one host's X-RateLimit-* set) and loopback 429/403/robots instruments (round 6); no entry gives a sourced numeric threshold for any decision (approval table C3/C6 still decide from an absence).",
+      "type": "sourced claim (frontier step 2b.4): every counted row cites a registry row opened this round (absent at baseline) whose quote, carrying the threshold number, is located in committed fetch bytes and in the live page",
+      "predicate": "In a clean checkout of REV, `node scripts/check-decision-table.mjs --rev REV --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc --entry corpus/knowledge/rate-signal-decision-table.md --live --json`, run with the counter whose sha256 is frozenDigests (byte-identical at REV), exits 0 and reports admitted >= 10 and failing = 0.",
+      "countingCommand": "node scripts/check-decision-table.mjs --rev <REV> --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc --entry corpus/knowledge/rate-signal-decision-table.md --live --json | jq '{population,admitted,failing}'",
+      "before": "population 0, admitted 0, exit 1 (entry absent) at the freeze tree (baseline/c1-J1-do-nothing.json)",
+      "target": "admitted >= 10 and failing = 0 (live)",
+      "killRule": "admitted < 10 or failing > 0 at REV -> failed. Counter exit 2, counter bytes differing from frozenDigests, or any change under scripts/ between the freeze commit and REV -> not verified. The offline reading alone does not verify (control J3).",
+      "controls": {
+        "doNothing": "population 0, admitted 0, exit 1 (baseline/c1-J1-do-nothing.json) -> does not meet target",
+        "oldRowsJunk": "two rows citing rows already in the registry at baseline (S107 RFC 9110, S116 draft -11) with the entry added to their used-by: population 2, admitted 0, reason r4-new-row (baseline/c1-J2-old-rows.json)",
+        "selfQuoteJunk": "two new rows whose receipt bytes are the entry's own text and whose quotes are invented: offline admitted 2 (baseline/c1-J3-selfquote-offline.json) but --live admitted 0, reason l1-live (baseline/c1-J3-selfquote-live.json) -> --live is part of the predicate",
+        "inventedThresholdJunk": "three rows with genuine RFC 9309 bytes and genuine located quotes but the author's own thresholds (10 redirects, 12 hours, 64 KiB): admitted 0, reason n1-threshold-sourced (baseline/c1-J4-invented-thresholds.json)",
+        "packageAsIsJunk": "merge/tabi host-rate-limit-signal-surface.md copied to the entry path with staged S126 appended unchanged: population 0 (no decision table) (baseline/c1-J5-package-as-is.json)"
+      }
+    },
+    {
+      "id": "C2",
+      "axis": "calibration",
+      "surface": "the lane's written self-description of its own gates outside SCORECARD.md/LOG.md: self-test tallies stated in SKILL.md gate-registry rows and corpus/README.md frontier rows, compared with each gate's own self-test summary line at REV. No instrument read these two documents before this round; round-30 lesson M8 showed the oracle itself misread a per-case `cases=` token.",
+      "type": "calibration counter window extension (frozen v2 of scripts/check-selfassessment.mjs: summary-line oracle, SKILL.md and corpus/README.md windows with same-document line citations and same-line script association) plus append-only corrections of the stale statements it finds",
+      "predicate": "In a clean checkout of REV, `node scripts/check-selfassessment.mjs --rev REV --json`, run with the counter whose sha256 is frozenDigests (byte-identical at REV), exits 0 and reports mismatches = 0; and `git diff --numstat <freeze> REV -- SKILL.md corpus/README.md SCORECARD.md LOG.md` shows 0 deleted lines.",
+      "countingCommand": "node scripts/check-selfassessment.mjs --rev <REV> --json | jq '{mismatches, counted}'   plus   git diff --numstat <freeze> <REV> -- SKILL.md corpus/README.md SCORECARD.md LOG.md | awk '{d+=$2} END{print d+0}'",
+      "before": "mismatches 9 at the freeze tree (baseline/c2-J1-do-nothing.json): SKILL.md:1614 (check-sources 25 vs 26), :2479 (selfassessment 13 vs 30), :2514 (s106 5 vs 10), :2515 (selfassessment 17 vs 30), :2529 (s106 7 vs 10), :2530 (selfassessment 20 vs 30), :2543 (release-pins 20 vs 29), :2544 (s106 7 vs 10); corpus/README.md:613 (selfassessment 17 vs 30). Each was already stale at the baseline against that gate's then-current tally (selfassessment 22, s106 10, release-pins 29, sources 26).",
+      "target": "mismatches = 0 with 0 deleted lines in the four documents",
+      "killRule": "mismatches > 0 at REV -> failed. Counter exit 2, counter bytes differing from frozenDigests, any change under scripts/ between the freeze commit and REV, or any deleted line in SKILL.md, corpus/README.md, SCORECARD.md or LOG.md between the freeze commit and REV -> not verified. Corrections are appended at the end of their document (an insertion above a cited line shifts every later citation).",
+      "freezeTimeCorrections": "The v2 counter adds eight self-test cases (22 -> 30). Four statements that were true at the round-30 tip (22 cases, or superseded there by a 22-case correction) turn stale by that change alone: SCORECARD.md:1439, :1465, :1486 and SKILL.md:2545. They are corrected in the freeze commit (SCORECARD.md §Round 31 — corrections; SKILL.md §Round 31 correction paragraph) so that the before value counts only statements stale at the baseline. Nothing else is corrected at freeze.",
+      "controls": {
+        "doNothing": "mismatches 9, exit 1 (baseline/c2-J1-do-nothing.json) -> does not meet target",
+        "deleteLinesJunk": "the nine stale lines deleted: mismatches 1 (a line shift breaks the freeze-time citation of SKILL.md:2545), numstat 9 deleted lines (baseline/c2-J2-delete-lines.json, .numstat) -> not verified under the kill rule even at 0",
+        "uncitedCorrectionJunk": "one blanket correction paragraph per document with every oracle-correct number and no line citation: mismatches 12 (baseline/c2-J3-uncited-correction.json)",
+        "wrongDocumentCitationJunk": "one correction per stale line citing SCORECARD.md:N / README.md:613 instead of SKILL.md:N / corpus/README.md:613: mismatches 9 (baseline/c2-J4-wrong-doc-citation.json)",
+        "gateEditJunk": "editing a gate's self-test to match a stale figure changes scripts/ after the freeze -> not verified (no run needed; the stale figures for one gate disagree with each other, e.g. s106 5 and 7)"
+      }
+    }
+  ],
+  "separability": "C1 changes corpus/knowledge/rate-signal-decision-table.md, corpus/SOURCES.md rows opened this round, corpus/evidence/round-31/decision-table/ and the round-31 lesson; its counter reads no SKILL.md/README.md line. C2 changes only appended corrections in SKILL.md and corpus/README.md; its counter reads no knowledge entry or registry row. Coupling disclosed: C1's gate registry row in SKILL.md states a self-test tally (cases=34) that C2's window reads — it is correct at freeze, and C1 adds no further tally statement; if C1's README frontier row carries a tally shape it must be oracle-correct.",
+  "noHarmChecks": [
+    "node scripts/check-gate-registry.mjs --rev REV -> nonconformant = 0 (two round-31 rows)",
+    "node scripts/check-release-pins.mjs --rev REV --stable 156.0.8078.47 -> unresolved = 0",
+    "node scripts/check-s106-evidence.mjs --rev REV -> valid = true",
+    "node scripts/check-frontier-admission.mjs --rev REV --frontier rate-tos-signal --since 2026-10-26 -> population 2, admitted 2 (round-30 C2 reading not disturbed)",
+    "node scripts/check-sources.mjs -> clean",
+    "/home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi -> exit 0"
+  ],
+  "assimilation": {
+    "package": "/home/vgpnk/Projects/shokuknow/merge/tabi/ (read-only)",
+    "decision": "Assimilation: none this round. The rate/ToS theme's remaining staged entries rest on staged S126 (GitHub REST rate limits; refused in round 27 because the register's recorded quotes are absent from that page — the register's id drift; the refusal stands until a ruling or a register fix clears it), S187/S199 (campaign-local work files under shokuknow/lanes/, not re-openable public sources) or S203. The lane opens the GitHub pages independently this round as its own rows (by document, own fetch, own quote); no package bytes, rows or entry text are used, and staged S126 stays refused.",
+    "collisionCheck": ".ufo/waves/round-31/assimilation/{reg-ids,staged-ids,collisions}: lane 118 ids, staged 148, collisions 17 (S102-S118)",
+    "quarantineSlice": ".ufo/waves/round-31/assimilation/quarantine-slice: 38 rows; register sha256 5afe1810…d833 (unchanged since round 27)"
+  },
+  "notClaimed": [
+    "counter v2 items for scripts/check-gate-mutants.mjs (opaque run dirs, minimal env, killer attribution, exit-2 work-dir leak) and scripts/check-frontier-admission.mjs (https-only, same-host redirects, curl -q, refetch independence) — round-30 routed defect 3, carried",
+    "release-pin counter v2 (id-set population, DEPS-pinned successors) — round-30 routed defect 4, carried",
+    "no runtime claim: nothing in the decision table is run against a real host; no request to api.github.com; read-only HTTPS GETs of public documentation and RFC text only",
+    "considerthese/ directory absent in this lane",
+    "the round-27 L0 question on S114/S140 stays open and is routed around"
+  ]
+}

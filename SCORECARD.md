@@ -1556,3 +1556,9 @@ The gate-mutants tally at `SCORECARD.md:1527` (12/12, observed by its own `--sel
 first `cases=` token in the output — here a refusal message inside the per-case lines (`… cases=2 passed=1 …` of
 the `pristine-not-clean-could-not-evaluate` case). Restating 2 would be false; the residual finding is an instrument
 misread, recorded as lesson round-30 M8.
+
+## Round 31 — corrections (append-only; each cites the stale line in its own document)
+
+The round-31 v2 of the calibration counter adds eight self-test cases; the tallies stated above for it are superseded here.
+
+- `scripts/check-selfassessment.mjs` `--selftest` (30/30): correction — supersedes the stale tallies at `SCORECARD.md:1439`, `SCORECARD.md:1465` and `SCORECARD.md:1486` (each true at the round-30 tip, 22 cases, or superseded there by a 22-case correction).
