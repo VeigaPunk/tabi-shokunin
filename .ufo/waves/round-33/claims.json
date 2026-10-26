@@ -1,0 +1,65 @@
+{
+ "schema": "tabi-round-claims-v1",
+ "lane": "tabi",
+ "round": 33,
+ "attempt": 1,
+ "frozenAt": "2026-10-26",
+ "frozenBeforeData": true,
+ "baseline": "b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd",
+ "priorClosure": "round 32 admitted (corpus/lessons/round-32-verifier-spotcheck.md: C1 coverage and C2 calibration improved, no axis harmed). Routed defects: (1) BiDi gate v2 -> claim C2 (distinct ids, distinct transcripts, driver != gate, splice detection, MutC1 survivors as cases; the driver's import of serveFixture/FIXTURE_SHA256/VIEWPORT is stated or removed by the v2 entry); (2) calibration counter v4 -> NOT claimed (notClaimed); (3) S125 recheck cadence -> curation (lesson Gate: release-pin receipt entry or a recorded reason for 90d); (4) round-32 claims.json C1 feasibilityDisclosed false as written -> named append-only correction (lesson + SCORECARD), mined as this round's mistake; (5) wave-2 precision defects (CritNewNumbers 5, CritEntry 10, RevLesson, CritReadmeLog, ConnRoutedLedger 19) -> wave-1 errata scribes disposition each; (6) M9 fix cell -> lesson round-33 records it landed; (7) control provenance -> every control of this round is rebuilt by the committed baseline/controls.mjs (sha256 pinned below) from the lane's own baseline commit, receipts carry the scratch commit and tree.",
+ "axisScoresAtRoundStart": {"depth": 9, "coverage": 9, "operability": 9, "freshness": 9, "calibration": 9, "adjacency": 8},
+ "lowestNonRetiredAxis": "adjacency 8 (unique). Saturation 8 / window 3. Stagnation nudge INACTIVE: the round-32 capability row webdriver-bidi-runtime (SCORECARD.md:1663, first-working round 32) restarts the window, so round 33 is position 1 (SCORECARD.md:1694). The lowest-axis obligation binds: C1 works adjacency.",
+ "measurementRule": "Every after-measurement runs .ufo/waves/round-33/measure.sh <REV> <OUT> <FREEZE> in a clean clone of the named lane branch revision REV; the two counters are taken from the FREEZE commit (git show FREEZE:<path>), never from the worktree, and their bytes must equal frozenDigests; scripts/check-adjacency.mjs at REV must equal the digest pinned inside the C1 counter. TMPDIR under $HYAKU_SCRATCH/tabi-r33/. Raw output is committed under .ufo/waves/round-33/measure/ before the report. A counter not run is a claim not verified.",
+ "frozenDigests": {
+  ".ufo/waves/round-33/counters/c1-adjacency-sweep.mjs": "da59d157c29ce53781fcfb6159149504a185b890d923efc6eecfe22d4b2c6380",
+  ".ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs": "51ace65fcece8e794b80afdb386638c755b3aa137297c33a34ffce7fb24e812b",
+  ".ufo/waves/round-33/baseline/controls.mjs": "2d0cf8416a35c2440cc1b6478f90b0f7a6d8a3436d617ea3527b0b8f3f5a451e",
+  ".ufo/waves/round-33/measure.sh": "ca6b830e1c9b685664da7db0ebb30674175c4c95f9fb11f8b2ce75a033784c7e",
+  "scripts/check-adjacency.mjs (pinned inside C1; must stay unchanged)": "4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac"
+ },
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "adjacency",
+   "type": "axis move on the lowest non-retired axis",
+   "surface": "the lane's sibling-overlap map: corpus/adjacency.tsv (round-17 map, 10 rows, gated by scripts/check-adjacency.mjs) and a new screen ledger corpus/adjacency-screen.tsv. Before this round no sweep bounds which sibling province lines the map must answer for: 47 of the 52 browser-domain lines in the twenty sibling PROVINCE.md files at their round-start tips are neither mapped nor screened.",
+   "predicate": "node .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs --rev REV --json (frozen bytes) reports predicate true: check-adjacency verdict clean at REV AND unaccounted == 0 AND newMapped >= 4 (verified map rows absent at the baseline that map a sweep candidate and name the other side: ruled / contested-open, or split-declared / refused-route whose sibling_quote names tabi or whose tabi_quote names the sibling).",
+   "countingCommand": "node .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs --rev <REV> --json | jq '{predicate,candidates,mapped,screened,unaccounted,newMapped,adjacency}'",
+   "before": "candidates 52, mapped 5, screened 0, unaccounted 47, newMapped 0, adjacency clean (rows 10, verified 10) — baseline/c1-J1-do-nothing.json",
+   "target": "unaccounted 0 AND newMapped >= 4 AND adjacency clean",
+   "commandShowingSurfaceUnmoved": "the same counter at the baseline: unaccounted 47, newMapped 0",
+   "killRule": "predicate false at REV -> failed. Counter exit 2, counter bytes != frozenDigests, or scripts/check-adjacency.mjs at REV != its pinned digest -> not verified.",
+   "controls": {
+    "doNothing": "unaccounted 47, newMapped 0, predicate false (baseline/c1-J1-do-nothing.json)",
+    "screenAll": "every unaccounted candidate screened not-browser-sense, no map row: unaccounted 0 but newMapped 0, predicate false (baseline/c1-J2-screen-all.json)",
+    "junkRows": "four split-declared rows on NON-candidate sibling lines (check-adjacency verifies all 14 rows clean): newMapped 0, predicate false (baseline/c1-J3-junk-rows.json) — shows check-adjacency alone verifies quotes, not overlap",
+    "mislabelUnnamed": "four split-declared rows on kake candidate lines whose quotes name neither side: mapped 9, newMapped 0, predicate false (baseline/c1-J4-mislabel-unnamed.json)"
+   },
+   "feasibilityDisclosed": "The counter cannot judge overlap semantics: four new rows on candidate lines whose quotes name the other side reach newMapped 4 whatever their disposition is worth, and a candidate screened with a wrong reason counts as accounted. The semantic guard is wave 2 (one attack per new row and per screen-reason group) and the closure's spot-check, not the counter. The target 4 was set from the L1's pre-freeze reading of the candidate list (baseline/c1-candidates.tsv), not from any drafted row."
+  },
+  {
+   "id": "C2",
+   "axis": "operability",
+   "type": "axis move (sourced, frontier step 2b.4: the v2 gate note cites registry rows opened this round)",
+   "surface": "the lane's runnable BiDi runtime gate scripts/check-bidi-runtime.mjs (receipt leg). At the baseline it is v1 (sha256 2f25af5a...c393) and accepts all eight receipt-forgery constructions of round 32 (CritC1Forgery D1-D5, MutC1Entry).",
+   "predicate": "node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs --rev REV --json (frozen bytes) reports predicate true: honest H0, H1, H2 accepted with admitted 16 and failing 0; forgeriesAccepted 0 of 8 (F1 golden-splice, F2 duplicate ids, F3 same path twice, F4 byte copy, F5 gate-copy driver, F6 re-export driver, F7 decorated Measured cell, F8 junk source row); REV's gate --selftest exit 0; REV's gate source carries none of the five honest digests nor a 12-hex prefix of one.",
+   "countingCommand": "node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs --rev <REV> --json | jq '{predicate,honest,forgeriesAccepted,acceptedForgeries,selftest,digestLiterals}'",
+   "before": "honest H0/H1/H2 true, forgeriesAccepted 8 of 8, selftest exit 0, digestLiterals [] — baseline/c2-J1-do-nothing.json",
+   "target": "forgeriesAccepted 0 with H0, H1, H2 true, selftest exit 0, digestLiterals []",
+   "commandShowingSurfaceUnmoved": "the same counter at the baseline: forgeriesAccepted 8",
+   "killRule": "predicate false at REV -> failed. Counter exit 2 or counter bytes != frozenDigests -> not verified. The --live leg is not part of this predicate (the battery is offline by construction); any live-leg change v2 makes is reported as no-harm evidence only.",
+   "controls": {
+    "doNothing": "forgeriesAccepted 8 (baseline/c2-J1-do-nothing.json)",
+    "rejectAll": "a gate that exits 1 on every evaluation: forgeriesAccepted 0 but H0/H1/H2 false, predicate false (baseline/c2-J2-reject-all.json)",
+    "whitelist": "v1 plus 'accept only the honest transcript/driver/entry/registry digests': forgeriesAccepted 0 and honest true, but digestLiterals 5 and selftest exit 3, predicate false (baseline/c2-J3-whitelist.json)"
+   },
+   "feasibilityDisclosed": "The battery is finite: a gate can refuse F1-F8 by construction-specific tells and still admit a smarter forgery (e.g. a golden transcript with real-shaped session ids and distinct bases). Wave 2 builds new constructions against v2 and reports survivors as limits; they do not change this frozen predicate. A whitelist that encodes the honest bytes other than as a hex literal (e.g. sizes) is not caught by the digest clause; the reviewer reads v2's code."
+  }
+ ],
+ "notClaimed": [
+  "calibration counter v4 (check-selfassessment.mjs) — planned at round 32, carried; check-selfassessment v3 is read as a no-harm instrument only (mismatches must stay 0 at REV, corrections append-only).",
+  "decision-table counter v2 — carried.",
+  "assimilation (§10): none — the lane's quarantine-first round (hand-check of its absent-defect register slice) has not run; it is not started inside this round's two claims."
+ ],
+ "noHarmRule": "At REV every offline gate and self-test of .ufo/waves/round-33/measure.sh noharm that exits 0 at the baseline (baseline/measure-at-baseline/noharm-*.txt) exits 0; check-selfassessment mismatches 0; census exit 0; every prior-round prose byte of SKILL.md, SCORECARD.md, LOG.md, corpus/README.md, corpus/QUALITY.md, corpus/SOURCES.md is append-only (git diff --numstat BASELINE REV deleted 0 for those paths). scripts/check-bidi-runtime.mjs is the one prior file C2 rewrites."
+}
