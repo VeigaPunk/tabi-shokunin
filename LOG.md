@@ -2426,3 +2426,11 @@ screen relabel (kake 396/411/422/440), three append-only corrections, QUALITY 92
 `.ufo/waves/round-34/w1/ConnBoundaries.md` (3 new boundaries by independent clustering), `.ufo/waves/round-34/w1/CritC1Claim.md`
 (the rename route reaches C1's predicate — lesson M3), `.ufo/waves/round-34/w1/ExecKillsB.md` (detail pinning kills
 M04/M05 — lesson M4). Wave 2 attacks every new row, screen group, kill case and source row before measurement.
+
+Round 34 disposition (2026-10-26), measured at `b44b964d1044996ed08f1079916592065dee3094` with the frozen counters from `59f1b47aae277e1670e4a824173da8cde7e388ee`. C1 adjacency **not
+met** — newMapped 0 → 1 against the frozen target 3 (unaccounted 66 → 0); wave 2 withdrew three of the four rows the
+w1 integration had admitted (lesson round-34 M5) and restored two kaidoku rows the L1 had screened. C2 operability
+**met** — the BiDi gate's own self-test kills 20 of 20 frozen mutants (8 at the baseline), neutral/decoy/twin probes
+pass, round-33 battery still met; entry `corpus/knowledge/bidi-gate-selftest-round-34.md` cites S130–S132. No-harm:
+28 of 28 offline gates and self-tests exit 0, `check-selfassessment` mismatches 0, census exit 0. Waves: w1 37, w2 39,
+total 76, dead 0. Re-verification: S130–S133 re-opened by w2 ReopenS130–S133, all hold.

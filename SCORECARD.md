@@ -1890,3 +1890,33 @@ The BiDi gate self-test grows from 44 to 56 cases in round 34 (twelve kill cases
 - `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SCORECARD.md:1784` (round-34 kill cases added).
 - `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SCORECARD.md:1787` (round-34 kill cases added).
 - `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SCORECARD.md:1805` (round-34 kill cases added).
+
+## Round 34 — executed disposition
+
+Measured at `b44b964d1044996ed08f1079916592065dee3094` in a clean clone with the frozen counter bytes taken from the freeze commit `59f1b47aae277e1670e4a824173da8cde7e388ee`
+(raw outputs `.ufo/waves/round-34/measure/*-at-b44b964*`; `provenance-b44b964.txt`: porcelain 0, both counter digests
+equal `claims.json` frozenDigests, `scripts/check-adjacency.mjs` equal to the pinned digest, gate git mode 100755).
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency | `node .ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs --rev <REV> --json` | candidates 67; mapped 1 → 4, screened 0 → 63, unaccounted 66 → 0, newMapped 0 → 1, adjacency clean (rows 13 → 16); predicate false | **not met** — target newMapped >= 3 missed. The w1 integration `04f9623d` read newMapped 4; wave 2 withdrew rows 15 (re-key of row 12), 17 (kotoba census, no sibling-side split) and 18 (a refusal routed nowhere) — lesson round-34 M5, QUALITY 97. One new boundary (kake lab-performance-tool-runs) and two restored kaidoku rows (not counted: their quotes do not name tabi) landed; every one of the 67 lines is accounted. Adjacency 8 → 8 |
+| C2 operability (sourced: S130, S131, S132) | `node .ufo/waves/round-34/counters/c2-gate-mutants.mjs --rev <REV> --json` | mutants killed by the gate's own self-test 8 → 20 of 20; survivors 12 → 0; unappliable 0 → 0; twins failing 0 → 0; pristine/neutral/decoy exit 0 → 0; round-33 battery true → true | **met** under the frozen rule; three kills (M04 M05 M06) rest on the printed finding detail (w2 MutDetailAssert); the counter's residuals (a whitespace-normalised self-sniff, 9 of 10 counter mutants unguarded by the controls, the symlink write path) are recorded limits, and w2 RevSelftestCodeRead found no added line that reads the gate's own bytes. Operability 9 → 9 |
+| depth, coverage, freshness, calibration | — | no claim | unchanged; no-harm `measure/noharm-at-b44b964.txt` 28 of 28 exit 0 (baseline 28 of 28), `check-selfassessment` mismatches 0, round-33 C1 counter unaccounted 0 and screenFindings [], census exit 0; `measure/numstat-at-b44b964.txt` deletes 0 lines in the append-only files; `corpus/adjacency-screen.tsv` changes only its four relabelled rows (4 out, 4 in); the gate's 7 removed lines are self-test lines (no mutant find text moved) |
+
+Capabilities: none entered (a self-test is not a repertoire row, criterion 84).
+
+### Round 34 — waves and seats
+
+Two v1 waves. W1 build + first falsifiers, 37 seats (18 scribe, 4 critic, 4 scout, 3 executor, 3 connector, 2 reviewer,
+2 mutation-tester, 1 sentinel); W2 falsify, 39 seats (17 critic, 10 reviewer, 4 scout, 3 executor, 2 mutation-tester,
+2 connector, 1 sentinel). Round total 76; no residual call; dead seats 0 (`w1-results.json` 37 of 37 outputs). The L1
+holds the canonical planner seat; the planning data-walk rode w1 ConnRound.
+
+### Planned / saturation / retired — round 34
+
+- planned: adjacency — browser-ground lines in sibling knowledge that neither name tabi nor were round-33 leads (w2
+  ConnSiblingDrift: no disposition-changing drift since the pins); a counter amendment that refuses a split row whose
+  sibling line does not state the sibling's side (QUALITY 97) before any target is set.
+- planned: operability — C2 counter amendment (symlink-safe write, scrubbed HOME, controls for the 9 unguarded counter
+  clauses); CritForgeV2C witness-loop gap; calibration counter v4 still carried; S125 recheck `on-release` proposal.
+- saturation 8 / window 3; no capability entered at round 34 (window position 3 at round 35); no axis retired.

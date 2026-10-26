@@ -135,7 +135,7 @@ seat has scored is not the claim's rule). Each finding is a limit the dispositio
   requirement, decoy/neutral probes, occurrence check, battery leg); only the twin-probe removal is caught (by J3).
 - C2 (w1 SentinelCounters F1, high): the counter writes the gate path of a clone of REV with `writeFileSync`, which
   follows a symlink committed at REV — a hostile REV could redirect the write outside the scratch. The lane's REV is
-  the L1's own commit; the measurement provenance records the gate's git mode at REV (`100644`, a regular file).
+  the L1's own commit; the measurement provenance records the gate's git mode at REV (`100755`, a regular file, not a `120000` symlink; `.ufo/waves/round-34/measure/provenance-b44b964.txt`).
   Routed: a counter amendment for round 35 (`lstat` refusal, scrubbed HOME).
 - C2 (w1 CritC2Axis, ScribeSelftestNote): M04/M05/M06 called equivalent (ceiling 17) — refuted by detail pinning
   (M4 above); wave 2 RevKills seats attack the three cases.

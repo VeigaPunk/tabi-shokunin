@@ -673,3 +673,5 @@
     quotes, not that either side states anything. Red state: the round-34 w1 integration `04f9623d` carried row 17
     (kotoba census line ruling the pair `none`) and row 18 (a refusal routed nowhere) and read C1 newMapped 4; wave 2
     withdrew both. (source: corpus/lessons/round-34.md M5)
+
+- Round 34 wave-2 corrections (append-only; w2 RevQuality92): criterion 92's parenthetical "(…, one mismatch per porcelain path)" — read "one m3 finding for a non-empty porcelain, whatever the path count" (`scripts/check-selfassessment.mjs:419-423`). Criterion 95's gate line cites (`:1037` `gateSource`, `:1108-1110` the case comparison) are at the baseline gate `15dfaccb`; at the round-34 gate they are `:1086` and the `const pass = …` comparison of `runSelftest`.
