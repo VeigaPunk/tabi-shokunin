@@ -1801,3 +1801,5 @@ rebuilds the gate against these constructions — at the round-33 baseline the f
 forgery accepted (`.ufo/waves/round-33/baseline/c2-J1-do-nothing.json`).
 
 Correction (round 33, named) — supersedes `.ufo/waves/round-33/claims.json` `notClaimed`'s assimilation reason, "the lane's quarantine-first round (hand-check of its absent-defect register slice) has not run": false as written. The 38-row slice was hand-checked in round 22 and re-opened row by row in round 27 (`corpus/lessons/round-27.md:30-39`; fleet `.ufo/l0-questions.md:165`). Round 33 takes no `merge/tabi/` theme because none touches the adjacency map or the BiDi gate (w1 ScoutAssimilation). The frozen file stays as written (lesson round-33 M4).
+
+- `scripts/check-bidi-runtime.mjs` `--selftest` (44/44): correction — supersedes the stale tally at `SCORECARD.md:1657` (a one-line restatement of the wrapped round-33 correction above: in this document the calibration counter reads a correction and its citation on one line; L1 measurement at `bf48b81c`, `.ufo/waves/round-33/measure/selfassessment-at-bf48b81.json`, mismatches 1).
