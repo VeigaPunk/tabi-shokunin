@@ -251,3 +251,14 @@ corpus/QUALITY.md:154 = criterion 37     (file ends at criterion 70, line 384)
 ## Scope note
 
 Round-28 wave accounting (routed defect 4): `.ufo/waves/round-29/r28-wave-accounting.md`.
+
+## Registry wording defects found in wave 2 (cells are append-only; no status/recheck/used-by change)
+
+- S110 and S115 `teaches` call the detached-document guard "10-line" / place it at `201-210`; the bytes put it at
+  156:201-209, 9 lines (`.ufo/waves/round-29/w2/RevKnowledge.md` F4). S114 `teaches` describes the shift boundary
+  inside `html_form_element.cc` incorrectly (F7: 154 lines ≤197 shift +1, 198-328 shift +11, 635-842 shift +38).
+  Corrected in the knowledge errata (`corpus/knowledge/chromium-156-release-pin-recheck.md` §Errata); a superseding
+  row is owed if a later round cites these cells for line positions (flip condition).
+- Independent re-fetch: 23 records by seats Refetch<id> (wave 2), committed at
+  `corpus/evidence/round-29/release-pins/refetch/`; every record agrees with the receipt's `new_sha256`
+  (S094 after the documented nonce normalisation).

@@ -98,3 +98,18 @@ naming the superseding row: `webmcp-invocation-round-17.md` (S042 → S109),
   never hash equal. The committed 156 body for S094 has that value replaced by
   `<per-request id removed>` (receipt fields `normalization`, `raw_new_sha256`); its
   independent re-fetch applies the same replacement before hashing.
+
+## Errata — wave-2 review (2026-10-26; append-only, `.ufo/waves/round-29/w2/RevKnowledge.md`)
+
+- The struct that gains `std::optional<bool> debugging;` at `script_tool_types.h` 156:46 is
+  `ScriptToolDeclaration` (opens 156:40), not `ScriptToolAnnotations` (F3; S112's row is right).
+- The post-fill detached-document guard is `html_form_element.cc` 156:**201-209**, 9 lines
+  (comment 201-202, `if` 203, return 204-208, `}` 209; 210 is blank). Where this note and the
+  appended notes in webmcp-completion-lifecycle-round-20, webmcp-nonautosubmit-round-21 and
+  -round-21-corrected say `201-210`, or source-recheck-round-18 and registry rows S110/S115 say
+  "10-line", read 201-209 / 9 lines; the file's line delta at that point is +10 because of a
+  second one-line change above it (F4).
+- The "16 rows hold, 7 drifted" line is the counter's output once the 23 independent re-fetch
+  records are committed (`corpus/evidence/round-29/release-pins/refetch/`); before that commit the
+  counter reports every row unresolved on `f6-refetch` (F1). Raw outputs:
+  `.ufo/waves/round-29/measure/`.
