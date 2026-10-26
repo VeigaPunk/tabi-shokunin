@@ -190,3 +190,22 @@ still re-tests every admitted row on a session the gate starts itself, so the ru
 are recorded with the round's measurement (`.ufo/waves/round-32/measure/`): sixteen distinct row
 ids, two distinct transcript digests, a driver digest different from the gate's, and a driver that
 imports neither `liveRecord` nor `PREDICATES`.
+
+## Corrections — round 32 wave 2 (append-only; the text above keeps its bytes)
+
+- §1 "Sessions", the sentence ending "the binding that distinguishes a real rendering from a synthesised transcript"
+  (`:47-49`): read instead — the binding ties a receipt to this host build's rendering of the fixture; it does not prove
+  that the receipt's runs were executed. A synthetic transcript carrying one real first screenshot (obtainable from any
+  one session, CDP included — the CDP render is byte-identical) passes the binding (`.ufo/waves/round-32/w1/CritC1Forgery.md`,
+  `.ufo/waves/round-32/w2/CritForgeryRecheck.md`).
+- §8, "the plain counts that close those four holes" (`:188-190`): three of the four. Distinct row ids, distinct
+  transcript digests and the driver checks close the duplicate, same-transcript and gate-as-driver constructions; the
+  spliced-screenshot construction passes the plain counts too (`.ufo/waves/round-32/w2/RerunDistinct.md`,
+  `CritForgeryRecheck.md`). The provenance of the committed runs rests on the driver being re-runnable: a third,
+  independent run of `scripts/bidi-loopback-round32.mjs` at `b234a589` reproduced the method sequence, the
+  predicate values and the first-screenshot digest (`.ufo/waves/round-32/w2/RerunDriver.md`).
+- §3 R12, "`maxEncodedDataSize` and total-storage behaviour, stream collectors and retrieval cost (U4) are unmeasured"
+  (`:103`): the size limits were measured in this round by w1 ExecCollectorTiming (`.ufo/waves/round-32/w1/ExecCollectorTiming/runs/out10`–`out12`):
+  on this build a body far above `maxEncodedDataSize` is returned whole, and `getData` fails with `no such network data`
+  only when the limit is below a threshold that tracks the response header block size, not the body; a
+  `maxTotalCollectedSize` below the body still returns it. Only stream collectors and retrieval cost stay unmeasured.

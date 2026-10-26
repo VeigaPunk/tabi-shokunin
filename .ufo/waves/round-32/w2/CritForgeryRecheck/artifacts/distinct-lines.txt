@@ -1,0 +1,12 @@
+9:import { readFileSync } from "node:fs";
+16:const GATE_SHA = "2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393";
+18:const entry = readFileSync(at(entryArg), "utf8").split("\n");
+25:const receipt = JSON.parse(readFileSync(at(receiptArg), "utf8"));
+27:const digests = paths.map((p) => { try { return sha(readFileSync(at(p))); } catch { return null; } });
+30:try { const b = readFileSync(at(receipt.driver)); driverSha = sha(b); driverText = b.toString("utf8"); } catch {}
+32:const names = ["liveRecord", "PREDICATES", "goldenLines"].filter((n) => driverCode.includes(n));
+34:const reexport = /export\s*\*\s*from|export\s*\{[^}]*\}\s*from/.test(driverText);
+38:  driver: receipt.driver, driverSha256: driverSha, driverEqualsGate: driverSha === GATE_SHA, driverNames: names, driverImportsFromGate: importsGate, driverReexports: reexport,
+40:out.ok = out.distinctRowIds === out.rowsMarkedYes && out.transcripts >= 2 && out.distinctTranscriptPaths === out.transcripts
+41:  && out.distinctTranscriptDigests === out.transcripts && driverSha !== null && !out.driverEqualsGate && names.length === 0 && !reexport;
+43:process.exit(out.ok ? 0 : 1);

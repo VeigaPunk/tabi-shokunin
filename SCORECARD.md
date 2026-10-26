@@ -1663,3 +1663,32 @@ Registry rows for the two counters: `SKILL.md` §"Round 32 — registry rows for
 | webdriver-bidi-runtime | Drive a WebDriver BiDi session on this host (chromium and chromedriver 154.0.8037.97, classic `webSocketUrl: true` handshake, headless, throwaway profile, `127.0.0.1` fixtures only) and record per-surface runtime evidence for sixteen of the seventeen matrix §2 rows (R16 has no BiDi command), with two cold runs bound by identical first-screenshot bytes | `scripts/bidi-loopback-round32.mjs`; `corpus/evidence/round-32/bidi/receipt.json`; `corpus/knowledge/webdriver-bidi-runtime-round-32.md`; demonstration = the round report's measured C1 run | 32 |
 
 The row names the transport operation the shokunin runs, not the gate that checks it (QUALITY criterion 84).
+
+## Round 32 — executed disposition
+
+Measured in a clean checkout of the lane revision named in the round report (raw outputs `.ufo/waves/round-32/measure/`,
+`provenance-*.txt` names the revision and the frozen digests). The pre-integration reading at `b234a589` gave the same
+counts (w2 RerunC1Live, RerunC2).
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 coverage + capability | `node scripts/check-bidi-runtime.mjs --rev <REV> --baseline d805d1d6132430118b206a848b85753ab35d1014 --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md --live --json` | population 0 → 16, admitted 0 → 16, failing 0, binding null (live) | met under the frozen rule; gate holes disclosed (lesson round-32 M2), plain distinct counts pass (`measure/c1-distinct-at-*.json`); coverage 9 → 9 (one frontier item docs-held → runtime-held; R16 has no BiDi command) |
+| C2 calibration | `node scripts/check-selfassessment.mjs --rev <REV> --json` plus numstat of SKILL.md, corpus/README.md, SCORECARD.md, LOG.md from the freeze | mismatches 18 → 0 (m4 3 → 0); deleted lines 0 | met under the frozen rule; 15 of the 18 were induced by v3's own case growth (claims.json beforeComposition); instrument holes disclosed (lesson round-32 M6); calibration 9 → 9 |
+| depth, operability, freshness, adjacency | — | no claim | unchanged; no-harm reading `measure/noharm-at-*.txt` (no gate green at the freeze and red at the tip) |
+
+Capability entered: `webdriver-bidi-runtime` (round 32 table above), demonstrated by the measured C1 run.
+
+### Round 32 — waves and seats
+
+Two v1 waves. W1 build + first falsifiers, 36 seats (12 scribe, 8 executor, 5 critic, 3 reviewer, 3 connector,
+2 scout, 2 mutation-tester, 1 sentinel); W2 falsify, 34 seats (18 critic, 6 reviewer, 3 executor, 3 mutation-tester,
+2 connector, 1 scout, 1 sentinel). Round total 70; no residual call. The L1 holds the canonical planner seat.
+
+### Planned / saturation / retired — round 32
+
+- planned: operability — gate v2 for `check-bidi-runtime.mjs` (distinct row ids, distinct transcript digests, driver
+  content unequal to the gate, splice detection, a selftest case per w1 MutC1 survivor; drop `--no-sandbox`; bypass the
+  host launcher flags file).
+- planned: calibration — counter v4 for `check-selfassessment.mjs` (m4 statement grammar and supersession bound to
+  a real correction; the five w1 MutC2 selftest survivors as cases; word-numeral and `<name>_cases=` tallies).
+- saturation 8 / window 3; the round-32 capability restarts the window (round 33 = position 1); no axis retired.

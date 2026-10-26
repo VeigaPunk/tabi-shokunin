@@ -2224,3 +2224,7 @@ axes at round start depth 8, coverage 9, operability 9, freshness 9, calibration
 3, and no capability entered the table in rounds 28–30 (`SCORECARD.md` round-32 corrections; lesson round-32 M1). The
 frozen `.ufo/waves/round-29/claims.json`, `round-30/claims.json` and `round-31/claims.json` carry the same statement
 at line 11 and are not edited.
+
+Round-32 disposition: C1 population 0 → 16, admitted 16, failing 0, live, binding null; C2 mismatches 18 → 0, deleted
+lines 0 — both met under the frozen rules at the revision named in the round report (`.ufo/waves/round-32/measure/`).
+Two v1 waves, 36 + 34 seats, round total 70, no residual call. Wave-2 dispositions: lesson round-32 §Wave 2.

@@ -1,0 +1,40 @@
+# used-by and Gate-location checks at REV
+
+## used-by cell of S123
+```
+ corpus/knowledge/rate-signal-decision-table.md 
+```
+
+## does that file exist and cite S123?
+```
+$ grep -n "S123" corpus/knowledge/rate-signal-decision-table.md
+227:- **The S119 publication-month erratum above now rests on a row, not on an assertion.** S123
+$ grep -n "^## Errata — round 32" corpus/knowledge/rate-signal-decision-table.md
+214:## Errata — round 32 wave w1 (append-only; the text above keeps its bytes)
+# the citation line 227 sits under that heading at line 214: 227 > 214
+```
+
+## any OTHER knowledge/ entry citing S123?
+```
+$ grep -rl "S123" corpus/knowledge/
+corpus/knowledge/rate-signal-decision-table.md
+```
+
+## paths that name S123 outside knowledge/ and the registry
+```
+$ grep -rln "S123" corpus/ --include=*.md
+corpus/SOURCES.md
+corpus/knowledge/rate-signal-decision-table.md
+corpus/lessons/round-32.md
+```
+
+## lesson Gate row for S123 (corpus/lessons/round-32.md:16)
+```
+| S123 | https://www.rfc-editor.org/rfc/rfc9309.txt | 2026-10-26T16:02:28Z (ScribeS119; HTTP 200, 25,265 B, sha256 `f633915daaa15b943cae56545d333bcf3ba4d156599e4555499686d6699fb207`, byte-identical to the round-31 S119 receipt) | header lines 6-11: "Request for Comments: 9309" and "September 2022"; `June 2022` occurs only at lines 554 and 559, inside the RFC 9110/9111 reference entries |
+```
+
+## admission sentence (round-32.md:21-22)
+```
+Admitted: S123 (supersedes S119's anchor month; rows D1–D5 keep citing S119, whose spans re-locate unchanged),
+S124, S125, S126 (each cited by `corpus/knowledge/webdriver-bidi-runtime-round-32.md`; S123 by
+```

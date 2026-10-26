@@ -1,0 +1,38 @@
+# Cell-by-cell byte check on the fetched RFC 9309 (25,265 B, sha256 f633915d…b207)
+
+$ /usr/bin/python3 verify.py ; echo EXIT=$?
+
+bytes=25265 sha256=f633915daaa15b943cae56545d333bcf3ba4d156599e4555499686d6699fb207
+PASS line 6    header: Request for Comments: 9309
+PASS line 11   header: September 2022
+PASS line 373  2.3.1.2 heading
+PASS line 377  five consecutive redirects
+PASS line 385  §2.3.1.2 last line
+PASS line 387  2.3.1.3 heading
+PASS line 392  400-499
+PASS line 396  §2.3.1.3 last line
+PASS line 398  2.3.1.4 heading
+PASS line 403  500-599
+PASS line 406  30 days
+PASS line 408  §2.3.1.4 last line
+PASS line 415  2.4 heading
+PASS line 419  24 hours
+PASS line 420  §2.4 last line
+PASS line 422  2.5 heading
+PASS line 425  500 kibibytes
+PASS line 554  June 2022 #1
+PASS line 559  June 2022 #2
+PASS line 7    Category Standards Track
+PASS line 14   title
+FAIL_COUNT=0
+sweep 'June 2022'     -> [554, 559]
+sweep 'September 2022' -> [11]
+sweep '2010'          -> []
+sweep 'June'          -> [554, 559]
+554 within [RFC9110] entry 552-555: True
+559 within [RFC9111] entry 557-560: True
+gate cell words=25
+quoted fragment words=6
+verbatim line6 exact: 'Request for Comments: 9309'
+
+EXIT=0

@@ -1,0 +1,64 @@
+# Receipts — CritErrataDispositions (round 32 w2)
+
+Revision under attack: b234a58920134424e0d104f137311ff54a16d26b (clean `--shared` clone, `git status --porcelain` 0 lines).
+Frozen counters at REV: check-selfassessment.mjs 77b5c8ed503bd9bc93e8ef634a10627613672eaa39bca84cf7339d37b6d4c6a9,
+check-bidi-runtime.mjs 2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393 (equal to claims.json .frozenDigests).
+check-decision-table.mjs d15f3bd7aef4423d4311c2402f2d01bac8c7ff140a2fdd448ad2500f482f6832 (round-31 digest, unchanged).
+
+## Composition of the two readings (frozen 4181fff vs REV b234a58)
+
+Frozen do-nothing reading (.ufo/waves/round-32/baseline/c2-J1-do-nothing.json), fields:
+findings/refused/superseded/agreeing/counted/mismatches = 195	104	21	52	18	18
+per class, total/refused/superseded/counted/agreeing:
+m1-selftest-tally	109	27	21	15	46
+m2-receipt-exit	77	76	0	0	1
+m4-nudge-state	9	1	0	3	5
+m1 refused reasons: ambiguous script association 24; script outside the runnable gate set 3
+  (LOG.md:972 selftest-measurement-binding claimed 59; SKILL.md:2027 freshness-witness claimed 8;
+   SKILL.md:2028 webmcp-invoke-round18 claimed 12)
+SCORECARD.md:1138 round-evidence-audit claimed 12 observed 13 superseded true
+
+REV reading (node scripts/check-selfassessment.mjs --rev b234a58 --json, exit 0; full JSON: c2-clean-at-b234a58.json):
+findings/refused/superseded/agreeing/counted/mismatches = 202	106	39	57	0	0
+m1 total 115, refused 29
+
+Lesson E24 enumeration (:112-116): 104 + 46 + 21 + 15 + 3 = 189, against the 195 named at :112.
+
+## Line anchors checked verbatim at REV (all exact)
+
+scripts/check-selfassessment.mjs
+  :5-7   verdict table 0/1/2 + "Any other nonzero code is undeclared and reads as could-not-evaluate"
+  :79    statSync import (single occurrence)
+  :88    RUNNABLE_GATE alternation
+  :104   env: GIT_CONFIG_GLOBAL/GIT_CONFIG_SYSTEM only
+  :130   const TALLY_PATTERNS (single occurrence, no reader)
+  :216   claim shapes (SCORECARD window)
+  :246   comment "(or restates the figure)"
+  :264-271 statedTallyNumbers ( :267 N-case, :268 cases: N, :270 bare N/M )
+  :322   claim shapes (LOG/SKILL/README window)
+  :399   m2 spawn, no env
+  :419   m3 git status --porcelain --untracked-files=all, no env
+  :528   m3Findings(repo, scorecard) — blob from readBlob(repo, rev, ...)
+  :1063  process.exit(out.ok ? 0 : 3)
+
+Documents
+  SCORECARD.md:1138  "12-case in-memory matrix"
+  SKILL.md:2027      freshness witness row (8 cases)
+  SKILL.md:2028      "real12-case/four-control receipt"
+  SKILL.md:2474      "(cli_cases=36, helpers=4)"
+  SKILL.md:2610      E22 correction citing SKILL.md:1559
+  LOG.md:972         check-measurement-binding / selftest-measurement-binding (59 cases)
+  corpus/README.md:699-703  E25 multi-script correction
+  corpus/QUALITY.md:463-464 actor/scope clause
+  corpus/QUALITY.md:514-521 criterion 85 ; :522 criterion 86
+  SCORECARD.md:1610  correction states 41 as "(41/41)" and as "cases=41 passed=41"
+  SKILL.md:2760, corpus/README.md:744  "(41/41)" once each
+  SCORECARD.md:1628-1635 disclosure paragraph ("round-24/25" -> accepted numbers 24, 25; cites no tally line)
+
+## Not-landed checks (carried bucket)
+
+git diff --numstat 4181fff b234a58 -- corpus/lessons/round-31.md        -> empty
+git diff --numstat 4181fff b234a58 -- corpus/knowledge/rate-signal-decision-table.md -> 20/0 (S123 + recheck errata only)
+git diff adds, grep -i 'no entry maps an observed signal|predates v3|RangeError|could_not_evaluate=1|lower-case modal|attests only that this host' -> no hits
+git diff adds, grep -- '-case' over SKILL/SCORECARD/LOG/README -> no hits (E26 forward rule holds)
+E23 seven (doc,line) pairs in the REV reading -> 0 findings (gap still live)

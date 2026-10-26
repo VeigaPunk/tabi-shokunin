@@ -1,0 +1,24 @@
+# Do RFC 9309 errata touch the spans S123 cites?
+
+Method: extract the four errata orig_text strings from the RFC Editor info page payload
+(https://www.rfc-editor.org/info/rfc9309/, 322,426 B, sha256 d44881fa…7445), then locate each in the
+fetched plain text with a whitespace-flexible search and read the matched RFC line numbers.
+
+\$ /usr/bin/python3 errata-probe.py
+
+errata 7124 (Reported, Technical) 'In the following case, /example/page/disallowed.gif ...'
+   -> RFC lines 508-510   'longest one is used for matching.  In the following case,'
+   -> inside a cited span? no
+errata 7128 'For example: +====+ Path | Encoded Path ...'
+   -> RFC lines 273-275   'For example:'
+   -> inside a cited span? no
+errata 7995 'path-pattern = "/" *UTF8-char-noctl'
+   -> RFC lines 149-149   'path-pattern = "/" *UTF8-char-noctl ; valid URI path pattern'
+   -> inside a cited span? no
+errata 8895 'Crawlers MUST try to parse each line ...'
+   -> RFC lines 412-413   'Crawlers MUST try to parse each line of the robots.txt file.'
+   -> inside a cited span? no
+
+cited spans of S123: [(373, 385), (387, 396), (398, 408), (415, 420), (422, 425)] ; header month line 11
+
+EXIT=0

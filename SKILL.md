@@ -2760,3 +2760,11 @@ after `traverseHistory` answered `Cannot find context with specified id`; wait f
   count for one gate. `scripts/check-selfassessment.mjs` `--selftest` (41/41) is the oracle-correct figure at the
   round-32 freeze: v3's CASES table holds 41 isolated scenarios and the gate prints its own clean summary, so the
   13, 17, 20, 22 and 30 figures those registry rows carry are each superseded.
+
+## Round 32 — correction found by wave w2 (append-only; cites the stale lines in its own document)
+
+- Correction (supersedes the rendering-binding wording at `SKILL.md:2636-2639`): the gate's first-screenshot binding
+  ties a receipt to this host build's rendering of its fixture; it does not show that the receipt's runs were executed
+  — a synthetic transcript with one real screenshot spliced in passes it (lesson round-32 M2; entry §Corrections — round
+  32 wave 2). What carries the runs is the re-runnable driver and the plain distinct counts, which close three of the
+  four known constructions.

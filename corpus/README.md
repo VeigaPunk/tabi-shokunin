@@ -744,3 +744,14 @@ corpus/knowledge/ | grep -c '\.md$'` → 50.
   earlier tip's count for one gate. `scripts/check-selfassessment.mjs` `--selftest` (41/41) is the oracle-correct
   figure at the round-32 freeze; v3's CASES table holds 41 isolated scenarios and the gate prints its own clean
   summary, so the 17 and 30 figures those rows carry are each superseded.
+
+## Round 32 — corrections to the round-32 rows (append-only; wave 2)
+
+- `corpus/README.md:716`, Holds cell, "no CDP endpoint": the driver opened no CDP connection of its own, but the
+  committed session advertises one — the classic new-session capabilities carry `goog:chromeOptions.debuggerAddress`
+  (entry §7). (w2 CritC1Claim 3)
+- `corpus/README.md:716`, "a non-loopback base fails the row predicate": only R3, R10 and R11 read the base; a receipt
+  whose bases are all non-loopback still admits 13 of the 16 rows, and the gate exits 1 only through those three.
+  (w2 CritC1Claim 4)
+- The round-32 frontier row's "runtime-held" is a predicate verdict on this host build; the first-screenshot binding
+  does not prove that the receipt's runs were executed (entry §Corrections — round 32 wave 2).

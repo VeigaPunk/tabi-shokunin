@@ -1,0 +1,30 @@
+== clone at REV and frozen structural gate (read-only for the lane)
+$ git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin /fast/scratch/hyaku/tabi-r32/ReopenS126/clone
+$ git -C /fast/scratch/hyaku/tabi-r32/ReopenS126/clone checkout -q --detach b234a58920134424e0d104f137311ff54a16d26b
+b234a58920134424e0d104f137311ff54a16d26b
+$ node scripts/check-sources.mjs   # cwd=/fast/scratch/hyaku/tabi-r32/ReopenS126/clone
+SOURCES_GATE verdict=clean rows=126 tiers=A:111,B:6,C:9 status=queued:15,mined:102,rejected:9 findings=0 file=corpus/SOURCES.md
+exit=0
+
+== w1 receipts for the same URL (cross-check of the row's and the Gate row's parenthetical)
+1:{"fetches":[{"url":"https://www.w3.org/TR/webdriver2/","utc":"2026-10-26T16:02:14Z","http":200,"bytes":1882653,"sha256":"929f2f0be15b73b0b3e33052f115a47fc1561ec42f0a8992d532780591ae919e","file":"wd2-dated.html","note":"dated version https://www.w3.org/TR/2026/WD-webdriver2-20260702/, W3C Working Draft 02 July 2026"},{"url":"https://w3c.github.io/webdriver/","utc":"2026-10-26T16:02:31Z","http":200,"bytes":1882259,"sha256":"d49b731e12c386b0fc16ea680d304f5c43bd26a3a506f4ec900a05f4ca1c4dd6","file":"wd-ed.html","note":"editor draft, webSocketUrl grep count 0"},{"url":"https://www.w3.org/TR/webdriver-bidi/","utc":"2026-10-26T16:02:37Z","http":200,"bytes":4235856,"sha256":"dc1077db50fe784435fd57f2fa7005607937b5ee4293f6f12d8731bd6a1d24d4","file":"bidi.html","note":"cross-reference only: webSocketUrl capability defined at 4.1 #establishing; S124 owns this row"}]}
+14:| 2026-10-26T16:02:34Z | 200 | 1882653 | 929f2f0be15b73b0b3e33052f115a47fc1561ec42f0a8992d532780591ae919e | https://www.w3.org/TR/webdriver2/ |
+
+== where S126 is cited
+5:source: S124 https://www.w3.org/TR/webdriver-bidi/ (dated Working Draft https://www.w3.org/TR/2026/WD-webdriver-bidi-20261008/, 8 October 2026, revision f922e6af669ead51496db85f37813f39438ef171: §4.1 "WebDriver clients opt in to a bidirectional connection by requesting the WebSocket URL capability with value true", the §7.3–§7.9 command/event definitions named in each row below); S125 https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/chrome/test/chromedriver/session_commands.cc (Chrome's own driver source at the measured tag: `caps.Set("webSocketUrl", "ws://" + session->host + "/session/" + session->id);` at :288-289 under `if (session->web_socket_url)` at :287, and "Create a hidden target for running  BiDi-CDP mapper in it" at :407 — the capability is issued by ChromeDriver itself and the mapper runs in a driver-created target); S126 https://www.w3.org/TR/webdriver2/ (dated Working Draft https://www.w3.org/TR/2026/WD-webdriver2-20260702/, 2 July 2026: §7 `unhandledPromptBehavior` default "dismiss and notify" and §16.1 the "ignore" handler, the lever that keeps chromedriver from answering the page dialog before BiDi `browsingContext.handleUserPrompt` can); receipt corpus/evidence/round-32/bidi/receipt.json (schema `tabi-bidi-receipt-v1`, at least two runs, each with a committed JSONL transcript digest and the driver's own blob digest)
+11:New registry rows S123–S126 (all opened 2026-10-26, status `mined`, tier A scoped to each row's `scope`). Each was
+19:| S126 | https://www.w3.org/TR/webdriver2/ (this-version https://www.w3.org/TR/2026/WD-webdriver2-20260702/) | 2026-10-26T16:02:14Z (ScribeSrcClassic; HTTP 200, 1,882,653 B, sha256 `929f2f0be15b73b0b3e33052f115a47fc1561ec42f0a8992d532780591ae919e`; ScribeEntry fetched the same bytes at 16:02:34Z) | §16.1 known handler table, HTML lines 11306-11307: "ignore" "All simple dialogs encountered should be left to the user to handle." (12 words); §7 capabilities table lines 1976-1980: "Describes the session's user prompt handler. Defaults to "dismiss and notify"." |
+22:S124, S125, S126 (each cited by `corpus/knowledge/webdriver-bidi-runtime-round-32.md`; S123 by
+31:- **The WebDriver classic editor's draft** (https://w3c.github.io/webdriver/, 1,882,259 B): same two claims as S126,
+58:| M3 | `attribution` | the w1 item text for S126 ("W3C WebDriver classic: the `webSocketUrl` capability …"), L1-authored; `.ufo/waves/round-32/w1/ScribeSrcClassic.md` F2 (0 matches in the dated classic WD) | CORPUS.md "A quote names its location" — caught by the seat before any row was written | S126 scoped to the classic prompt handler; `webSocketUrl` grounded in S124 §4.1 |
+
+== SOURCES.md row line
+140:| S126 | WebDriver — W3C Working Draft 02 July 2026 — https://www.w3.org
+
+== contract rule for corrections
+49:2. **Append-only.** Only `status`, `recheck` and `used-by` change in place, and each change
+
+== supersedes exemption in the frozen checker
+53:  { name: 'supersedes-correction', exit: 0, finding: 'none' },
+296:      if (seenUrls.has(url) && !/^supersedes\s+S[0-9]{3,}\b/.test(teaches)) {
+424:  if (name === 'supersedes-correction') return { rows: [row, makeRow({ id: 'S002', teaches: 'supersedes S001 — corrected anchor for the same source.' })] };

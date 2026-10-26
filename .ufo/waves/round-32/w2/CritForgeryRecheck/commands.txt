@@ -1,0 +1,75 @@
+CritForgeryRecheck — commands actually run and their exit codes (2026-10-26 UTC)
+Scratch: /fast/scratch/hyaku/tabi-r32/CritForgeryRecheck  (TMPDIR=$S/tmp passed explicitly)
+Clone:   $S/clone  = shared clone of /home/vgpnk/Projects/shokunin/tabi-shokunin
+         checked out --detach b234a58920134424e0d104f137311ff54a16d26b, status --porcelain empty
+
+# 0. Revision + frozen bytes
+git -C $S/clone rev-parse HEAD                                  -> b234a58920134424e0d104f137311ff54a16d26b
+sha256sum scripts/check-bidi-runtime.mjs                        -> 2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393  (claims.json frozenDigests)
+sha256sum scripts/check-selfassessment.mjs                      -> 77b5c8ed503bd9bc93e8ef634a10627613672eaa39bca84cf7339d37b6d4c6a9  (claims.json frozenDigests)
+
+# 1. Honest baseline (C1's own predicate) — clean checkout of b234a589
+node scripts/check-bidi-runtime.mjs --rev b234a58920134424e0d104f137311ff54a16d26b \
+  --baseline d805d1d6132430118b206a848b85753ab35d1014 \
+  --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md --live --json
+  -> exit 0; population 16, admitted 16, failing 0, binding null, clean true   [runs/honest-gate.json]
+node .ufo/waves/round-32/measure/c1-distinct.mjs . corpus/knowledge/webdriver-bidi-runtime-round-32.md \
+  corpus/evidence/round-32/bidi/receipt.json
+  -> exit 0; ids 16, transcripts 2, distinct paths 2, distinct digests 2, ok true
+
+# 2. One CDP render of the frozen fixture (no chromedriver, no BiDi), spliced into two synthetic transcripts
+node build/recheck-driver.mjs --out corpus/evidence/round-32/bidi \
+  --receipt corpus/evidence/round-32/bidi/receipt.json \
+  --driver scripts/bidi-loopback-round32.mjs --variant cited-honest-driver
+  -> exit 0; shotSha256 ee0edebad5ace8f10cd1db964076ad60929d6b84de236ad0030c59e05d51eca5
+sha256sum corpus/evidence/round-32/bidi/cdp-shot.png
+  -> ee0edebad5ace8f10cd1db964076ad60929d6b84de236ad0030c59e05d51eca5  (== the honest receipt runs' first shot)
+
+# 3. Commit F1 = 76f769e641e937203c8f7e263b99ac1c5a7e391f (identity CritForgeryRecheck, toplevel verified)
+node scripts/check-bidi-runtime.mjs --rev 76f769e… --baseline d805d1d… --entry <entry> --live --json   -> exit 0; admitted 16, failing 0
+node .ufo/waves/round-32/measure/c1-distinct.mjs . <entry> corpus/evidence/round-32/bidi/receipt.json    -> exit 0; ok true
+[runs/F1-gate.json, runs/F1-distinct.json]
+
+# 4. Variant set (F4 no browser at all; F2 forged driver; F3 golden session constants; DUP one transcript twice; FAKE header-only PNG)
+node build/variants.mjs
+  -> exit 0; shotSha ee0edeb…; variants F4, F2, F3, DUP, FAKE
+  -> F4 path never calls renderShot (grep -c renderShot build/variants.mjs = 0); it reads
+     `git show b234a589:corpus/evidence/round-32/bidi/run1/transcript.jsonl` and reuses that PNG.
+
+# 5. Commit 4ce0702c2ca2c4f5870d77f84ff537cbff5c7630
+#    git diff --name-only b234a589 4ce0702c -> only corpus/evidence/round-32/bidi/**; entry unchanged.
+
+for V in f4 f2 f3 dup fake; do
+  node scripts/check-bidi-runtime.mjs --rev 4ce0702c… --baseline d805d1d… --entry <entry> \
+    --receipt corpus/evidence/round-32/bidi/receipt-$V.json --live --json
+  node .ufo/waves/round-32/measure/c1-distinct.mjs . <entry> corpus/evidence/round-32/bidi/receipt-$V.json
+done
+
+  f4   gate exit 0  population 16 admitted 16 failing 0 binding null clean true
+       distinct exit 0  ids 16 paths 2 digests 2 driver 55dbef… names [] ok true
+  f2   gate exit 0  16 / 16 / 0 / null
+       distinct exit 0  driver corpus/evidence/round-32/bidi/recheck-driver.mjs names [] reexport false ok true
+  f3   gate exit 0  16 / 16 / 0 / null
+       distinct exit 0  ids 16 digests 2 ok true
+  dup  gate exit 0  16 / 16 / 0 / null
+       distinct exit 1  distinctTranscriptPaths 1 distinctTranscriptDigests 1 ok false
+  fake gate exit 1  population 16 admitted 0 failing 16
+       binding "first screenshot differs from this counter's live session" (t3-binding)
+       distinct exit 0  ids 16 digests 2 ok true
+
+# 6. Literal C1 counting command with the canonical receipt at the forged revision
+node scripts/check-bidi-runtime.mjs --rev 4ce0702c… --baseline d805d1d… --entry <entry> --live --json
+  -> exit 0; {"population":16,"admitted":16,"failing":0,"binding":null,"clean":true}
+node .ufo/waves/round-32/measure/c1-distinct.mjs . <entry> corpus/evidence/round-32/bidi/receipt.json
+  -> exit 0; ok true
+
+# 7. Offline control (the same forged receipt, no --live)
+node scripts/check-bidi-runtime.mjs --rev 4ce0702c… --baseline d805d1d… --entry <entry> --json
+  -> exit 0; admitted 16, failing 0, binding null   (C1 kills this leg; control J3)
+
+# 8. Processes
+pgrep -fa 'chromedriver|chromium'
+  -> one line only: 1371 /usr/bin/earlyoom -r 3600 --avoid …(chromium|python3?)… --prefer …chromium…
+     (earlyoom's own argv; no chromedriver or chromium of mine remains; the builder SIGKILLs its chromium).
+
+# 9. Network: none (no external fetch was needed or made). Tooling: none installed or upgraded.

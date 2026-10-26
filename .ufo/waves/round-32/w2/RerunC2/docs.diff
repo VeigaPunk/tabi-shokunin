@@ -1,0 +1,376 @@
+diff --git a/LOG.md b/LOG.md
+index b8de8c0..e84be12 100644
+--- a/LOG.md
++++ b/LOG.md
+@@ -2118,3 +2118,109 @@ did not fetch the receipt.
+ Round-31 commit ledger (lane `master`): `9505a10e` freeze; `48604835` C1 entry, rows, receipts, C2 corrections,
+ QUALITY 80–81, lesson; `ae15a37e` orchestrator salvage of attempt-1 wave state; the a2w1 integration commit, final
+ measurements and wave evidence follow and are named in the report.
++
++## Round 32 — 2026-10-26 — WebDriver BiDi moves from docs-held to runtime-held (coverage, capability) and the nudge-state class (calibration)
++
++Attempt 1. Claims frozen before data at `.ufo/waves/round-32/claims.json` in commit
++`4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6` (baseline `d805d1d6132430118b206a848b85753ab35d1014`), counters landed at
++`2f8535c5b3015fc5730c1076cbe57d1dc29e4fee` and frozen at `5ad1fcbfbae947e56ed448c7d24af0632b534e80` — `scripts/check-bidi-runtime.mjs` sha256
++`2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393`, `scripts/check-selfassessment.mjs` v3 sha256
++`77b5c8ed503bd9bc93e8ef634a10627613672eaa39bca84cf7339d37b6d4c6a9`, both re-hashed from the freeze tree this round
++and identical to `baseline/frozen-counter-sha256.txt`. A counter fix landed before the freeze: the pre-freeze control
++run failed every `--live` leg with `session not created: Chrome instance exited` (chromium's singleton socket path
++under a deep TMPDIR exceeds the 108-byte unix-socket limit), and `5ad1fcbf` changes `liveRecord`'s chromium TMPDIR
++choice only; the frozen digests are the `5ad1fcbf` bytes, the same tree the controls were scored against
++(`git diff --name-only 5ad1fcbf 4181fffb -- scripts/check-bidi-runtime.mjs scripts/check-selfassessment.mjs` empty,
++no document changed either). Axes at round start: depth 9, coverage 9, operability 9, freshness 9, calibration 9,
++adjacency 8. Lowest non-retired axis adjacency 8 and the stagnation nudge **ACTIVE** — every axis at or above the
++saturation line 8 and no capability entered in the window of 3 rounds (last capability entries
++`First-working round: 25`, `SCORECARD.md:1306,1314`) — so the lowest-axis obligation is waived and the round is
++a frontier/capability move (C1). C2 counts the three rounds that stated the opposite.
++
++Controls, scored per claim before any claim data (`.ufo/waves/round-32/baseline/`, `README-receipts.md`; every capture
++records its clone commit and tree digest in `<control>.provenance` — round-31 routed defect 5):
++
++| Control | Reading | Exit |
++|---|---|---|
++| c1-J1-do-nothing | population 0, admitted 0, `e1-entry-absent` | 1 |
++| c1-J2-docs-only | population 16, admitted 0, failing 16, `s1-source-row` | 1 |
++| c1-J3-forgery-offline | population 16, admitted 16, `live: false` | 0 |
++| c1-J3-forgery-live | population 16, admitted 0, failing 16, `t3-binding` ("first screenshot differs from this counter's live session") | 1 |
++| c1-J4-counter-as-driver | population 16, admitted 0, failing 16, `t1-receipt` ("driver absent, is this counter, or its sha256 differs") | 1 |
++| c2-J1-do-nothing | mismatches 18 (3 m4 + 15 m1) | 1 |
++| c2-J2-delete-words | mismatches 15, but numstat 3/3 `SCORECARD.md` — the deletion leg fails | 1 |
++| c2-J3-uncited-correction | mismatches 18 | 1 |
++
++Self-tests at the freeze: `BIDI_RUNTIME_SELFTEST verdict=clean cases=27 passed=27` (exit 0),
++`SELFASSESSMENT_SELFTEST verdict=clean cases=41 passed=41` (exit 0); `check-sources` census at round start `ok`
++(exit 0), 122 registry rows.
++
++C1 coverage + capability acquisition (sourced): `corpus/knowledge/webdriver-bidi-runtime-round-32.md`, table
++`| Row | Surface | BiDi method | Measured | Evidence |` with R1–R17 the matrix §2 rows in order (R16, stop loading /
++nav-cancel, has no BiDi command in the draft's `browsingContext` command list and is recorded as such). Transport:
++chromedriver 154.0.8037.97 (`ChromeDriver 154.0.8037.97 (b510e9d7cd3a2fbd78d0ddc42234103206c5f78d-refs/branch-heads/8037@{#1673})`)
++driving chromium 154.0.8037.97 headless over the classic `webSocketUrl: true` bootstrap, loopback fixture only;
++receipt `corpus/evidence/round-32/bidi/receipt.json`, schema `tabi-bidi-receipt-v1`, transcript JSONL, fixture served
++by the counter's `serveFixture()` (sha256 `343cbcedd56f6fb1914d529119fadfd69cd7901ed919c6e1ae84d213bc112843`). The
++target is admitted >= 14 and failing 0, set below the 16 admittable predicates the counter's own live leg held
++before the freeze; controls J3/J4 refuse a browserless forgery and the counter as driver, but wave 1 found four
++constructions the frozen gate admits (lesson round-32 M2), so the receipt's provenance is carried by plain distinct
++counts beside the gate's reading (QUALITY criterion 86). C2 calibration: the frozen self-assessment counter v3 adds class `m4-nudge-state` and
++refuses a failed self-test's summary as an oracle; at the freeze it reads 18 mismatches — 3 m4 (`SCORECARD.md:1473`,
++`:1515`, `:1576` state `nudge inactive` for rounds 29–31 while the AXES.md rule applied to the lane's own SCORECARD
++inputs gives active) and 15 m1 stale `check-selfassessment` tallies (`SCORECARD.md:1439,1465,1486,1564`;
++`SKILL.md:2479,2515,2530,2545,2576,2578,2590,2594,2598`; `corpus/README.md:613,668` — claimed 17/22/30 against
++observed 41, the 15 induced by v3's 11 added cases, 30 → 41). Target: 0 mismatches, 0 m4, 0 deleted lines, via
++append-only corrections at the end of each document citing each stale `DOC:N`.
++
++Counting commands (clean checkout, frozen counter digests verified; raw outputs under
++`.ufo/waves/round-32/measure/` before the report):
++
++- C1 — `node scripts/check-bidi-runtime.mjs --rev <REV> --baseline d805d1d6132430118b206a848b85753ab35d1014 --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md --live --json | jq '{population,admitted,failing,binding}'`.
++  Before (freeze tree): population 0, admitted 0, exit 1, `e1-entry-absent` (`baseline/c1-J1-do-nothing.json`).
++  After: the round-32 disposition at the end of this entry.
++- C2 — `node scripts/check-selfassessment.mjs --rev <REV> --json | jq '{mismatches, m4: [.counted[]|select(.class=="m4-nudge-state")]|length}'`
++  plus `git diff --numstat <freeze> <REV> -- SKILL.md corpus/README.md SCORECARD.md LOG.md`.
++  Before: mismatches 18, m4 3, exit 1 (`baseline/c2-J1-do-nothing.json`).
++  After: the round-32 disposition at the end of this entry.
++
++Frontier step: SOURCES rows S123–S126 (registry 122 → 126) — S123 the RFC 9309 row superseding S119 on its header
++date, S124 W3C WebDriver BiDi re-opened, S125 Chrome's own driver source at the measured tag (`session_commands.cc`: no Chrome docs page documents enabling BiDi — 21 docs pages fetched), S126 W3C WebDriver
++classic capabilities; each written only after opening it this round, `Gate` quotes in `corpus/lessons/round-32.md`.
++C1's `source:` cites a registry row opened this round and the counter's `s1` check enforces one. Lesson
++`corpus/lessons/round-32.md` carries `## Gate` and `## Mistakes`; the mistake mined is stale-premise — `nudge
++inactive` carried from rounds 26–28 into 29–31 without re-derivation, fix = the m4 class shown able to fail
++(`baseline/c2-J1-do-nothing.json`). Round-31 routed defects: (1) calibration counter v3 → C2 takes the failed-summary
++refusal (M11) and the m4 class; word-numeral and `<name>_cases=` tallies and the merged two-bullet correction
++survivor are **not claimed**; (2) decision-table counter v2 → not claimed; (3) S119 superseding row and the
++`recheck` alignment → curation (S123), not a claim; (4) the 27 carried errata → dispositioned by wave-1 scribes,
++curation; (5) control captures name a resolving revision → every control here records the clone commit and its tree
++digest over the frozen counter commit; (6) round-30 routed defects 3–4 → not claimed; (7) scratch hygiene → every
++seat prompt requires deleting its scratch, the L1 removes `$HYAKU_SCRATCH/tabi-r32` after landing. QUALITY criteria 83–86 land
++with lesson round-32 M1, M2 and M4. Assimilation: none — `merge/tabi/` is not read
++for C1/C2 and no `considerthese/` dir exists in this lane.
++
++Waves: w1 (attempt 1, build + first falsifiers) 36 seats — 12 scribe, 8 executor, 5 critic, 3 connector, 3 reviewer,
++2 mutation-tester, 2 scout, 1 sentinel (`.ufo/waves/round-32/w1/swarm-registry.json`, 36 items in `w1-spec.json`);
++w2 (falsify) follows inside the round shape of 64–128 seats, the L1 holding the planner seat. Report counts, dead
++seats and every wave's result are recorded in the round report.
++
++Re-verification result (freshness duty): this round re-verifies the docs-held WebDriver BiDi capability matrix —
++`corpus/knowledge/webdriver-bidi-capability-matrix.md` §2, the seventeen rows that entered coverage at kaika fleet
++round-1 (`LOG.md:492`, capability `sources-registry`, coverage 8→9) with `locally measured: no` on every row and the
++entry's own `verified-at: 2026-10-19`. Those rows are now observed on this host's BiDi endpoint, so §2's `locally
++measured: no` cells describe the 2026-10-19 state and the new entry carries the runtime verdicts; R16 has no BiDi
++command to observe. S123 additionally re-grounds S119's header date from fresh bytes.
++Verdicts: sixteen rows observed and admitted at the measured revision (round-32 disposition below); S123–S126 each
++opened this round with a located Gate quote (lesson round-32 §Gate).
++
++Round-32 commit ledger (lane `master`): `d805d1d6` round-31 verifier spot-check (baseline); `2f8535c5` both counters
++and registry rows; `5ad1fcbf` pre-freeze counter fix (chromium TMPDIR under a deep path); `4181fffb` claims, controls
++and baseline receipts; the C1 entry, receipts and rows, the C2 corrections, the lesson, QUALITY and the wave
++evidence follow and are named in the report.
++
++Correction (supersedes the round-31 stagnation-nudge statement at `LOG.md:2072`): the nudge was active for round 31 —
++axes at round start depth 8, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8, saturation 8 / window
++3, and no capability entered the table in rounds 28–30 (`SCORECARD.md` round-32 corrections; lesson round-32 M1). The
++frozen `.ufo/waves/round-29/claims.json`, `round-30/claims.json` and `round-31/claims.json` carry the same statement
++at line 11 and are not edited.
+diff --git a/SCORECARD.md b/SCORECARD.md
+index 62b159e..ea14b2c 100644
+--- a/SCORECARD.md
++++ b/SCORECARD.md
+@@ -1601,3 +1601,65 @@ total 64; no residual call; dead seats 0. The L1 holds the canonical planner sea
+   hermetic `--live`), and a superseding S119 row for the publication month; the 27 carried errata in
+   `.ufo/waves/round-31/a2w1/ScribeErrata/errata.md` are the intake.
+ - capabilities unchanged; saturation 8 / window 3; no axis retired.
++
++## Round 32 — corrections (append-only; each cites the stale line in its own document)
++
++Measured at the round-32 freeze `4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6` by the frozen v3 calibration counter
++(`.ufo/waves/round-32/baseline/c2-J1-do-nothing.json`); the stale lines stay as written, these lines supersede them.
++
++- `scripts/check-selfassessment.mjs` `--selftest` (41/41): correction — supersedes the stale tallies at `SCORECARD.md:1439`, `SCORECARD.md:1465`, `SCORECARD.md:1486` and `SCORECARD.md:1564`; v3 adds eleven cases (the m4 nudge-state class and the failed-self-test refusal), so the 17, 22, 22 and 30 figures those lines state are each an earlier tip's count. The gate prints `SELFASSESSMENT_SELFTEST verdict=clean cases=41 passed=41` (`.ufo/waves/round-32/baseline/c2-counter-selftest.txt`).
++
++Correction — supersedes the round-29 stagnation-nudge statement at `SCORECARD.md:1473`: the nudge was active. The same
++round group reads every axis at or above the saturation line at round start (depth 8, coverage 9, operability 8,
++freshness 8, calibration 9, adjacency 8 — `SCORECARD.md:1472`) with saturation 8 / window 3, and no capability entered
++the table in the window (rounds 26–28; the table's last entries are round 25, `SCORECARD.md:1306` and `:1314`), so
++`AXES.md` §The stagnation nudge derives active and the lowest-axis obligation was waived for round 29.
++
++Correction — supersedes the round-30 stagnation-nudge statement at `SCORECARD.md:1515`: the nudge was active. The same
++round group reads depth 8, coverage 9, operability 8, freshness 9, calibration 9, adjacency 8 at round start
++(`SCORECARD.md:1514`), saturation 8 / window 3, and no capability entered in rounds 27–29.
++
++Correction — supersedes the round-31 stagnation-nudge statement at `SCORECARD.md:1576`: the nudge was active. The same
++round group reads depth 8, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8 at round start
++(`SCORECARD.md:1574-1575`), saturation 8 / window 3, and no capability entered in rounds 28–30. The round-31
++`claims.json` reason "depth and adjacency sit at the line, not above it" narrows `AXES.md`'s "at or above"; that frozen
++file is not edited (lesson round-32 M1).
++
++Disclosure (round 32 wave 1, `.ufo/waves/round-32/w1/CritAxisCapability.md` F1): the derived state above depends on
++which rows count as capability entries. Rounds 24–25 entered four gates as capability rows (`SCORECARD.md:1243`,
++`:1249`, `:1306`, `:1314`); from round 27 the lane recorded the opposite rule — "gates are counters, not repertoire
++rows" (`SCORECARD.md:1403-1404`, `:1427`) — and entered no later gate. The table as written (the input `AXES.md` binds)
++has no entry after round 25, which is what the corrections above and the frozen counter read. Had the round-27 and
++round-31 gates been entered under the round-24/25 practice, round 29's and round 30's statements would hold and round 31's
++would still be false. The operative rule from round 32 on: a capability row names an operation the shokunin can run,
++never a gate or counter; the round-24/25 gate rows stay as written.
++
++## Round 32 — declared claims (frozen before data)
++
++Baseline `d805d1d6132430118b206a848b85753ab35d1014`; counters landed in `2f8535c5b3015fc5730c1076cbe57d1dc29e4fee`, fixed
++before the freeze in `5ad1fcbfbae947e56ed448c7d24af0632b534e80`; claims and controls frozen in
++`4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6` (`.ufo/waves/round-32/claims.json`, receipts `.ufo/waves/round-32/baseline/`).
++Axes at round start: depth 9, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8; lowest non-retired axis
++adjacency 8. Saturation 8 / window 3; stagnation nudge active — every axis sits at or above the line and no capability
++entered the table in rounds 29–31 (last entries round 25), so the lowest-axis obligation is waived and C1 is a
++frontier/capability move. No axis retired.
++
++| Claim / axis | Counting command | Before | Target |
++|---|---|---|---|
++| C1 coverage + capability acquisition (sourced: S124, S125, S126 opened this round) | `node scripts/check-bidi-runtime.mjs --rev <REV> --baseline d805d1d6132430118b206a848b85753ab35d1014 --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md --live --json` (frozen sha256 `2f25af5a…c393`) | population 0, admitted 0, exit 1 (entry absent) | admitted >= 14, failing 0 (live) |
++| C2 calibration | `node scripts/check-selfassessment.mjs --rev <REV> --json` (frozen sha256 `77b5c8ed…c6a9`) plus numstat of SKILL.md, corpus/README.md, SCORECARD.md, LOG.md from the freeze | mismatches 18 (3 m4-nudge-state + 15 m1 stale tallies of the v3 gate itself) | mismatches 0, deleted lines 0 |
++
++Command that shows C1's surface unmoved: the same counter at the baseline tree reads population 0, exit 1
++(`.ufo/waves/round-32/baseline/c1-J1-do-nothing.json`), and the matrix's seventeen §2 rows read `locally measured: no`
++(`corpus/knowledge/webdriver-bidi-capability-matrix.md:60-76`, unchanged bytes).
++
++Registry rows for the two counters: `SKILL.md` §"Round 32 — registry rows for the BiDi runtime gate and self-assessment v3".
++`scripts/check-bidi-runtime.mjs` `--selftest` (27/27).
++
++### Capabilities — round 32
++
++| Capability | What it can now do | Evidence pointer | First-working round |
++|---|---|---|---|
++| webdriver-bidi-runtime | Drive a WebDriver BiDi session on this host (chromium and chromedriver 154.0.8037.97, classic `webSocketUrl: true` handshake, headless, throwaway profile, `127.0.0.1` fixtures only) and record per-surface runtime evidence for sixteen of the seventeen matrix §2 rows (R16 has no BiDi command), with two cold runs bound by identical first-screenshot bytes | `scripts/bidi-loopback-round32.mjs`; `corpus/evidence/round-32/bidi/receipt.json`; `corpus/knowledge/webdriver-bidi-runtime-round-32.md`; demonstration = the round report's measured C1 run | 32 |
++
++The row names the transport operation the shokunin runs, not the gate that checks it (QUALITY criterion 84).
+diff --git a/SKILL.md b/SKILL.md
+index da52919..762bcfc 100644
+--- a/SKILL.md
++++ b/SKILL.md
+@@ -2625,3 +2625,138 @@ self-test that did not pass as an oracle.
+ |---|---|---|---|---|---|---|---|
+ | bidi-runtime | gate | `node scripts/check-bidi-runtime.mjs --rev REV --baseline REV --entry corpus/knowledge/X.md [--receipt PATH] [--live] [--json]` | 0=clean (population>=1, every measured row admitted); 1=failed (entry absent, no new mined source row, or a row not admitted); 2=could-not-evaluate (usage, unresolvable revision, registry absent, `--live` without chromedriver or chromium) | `node scripts/check-bidi-runtime.mjs --selftest` (cases=27, passed=27) | `scripts/check-bidi-runtime.mjs` FIXTURE, ROWS, PREDICATES and CASES; `corpus/evidence/round-32/bidi/`; `.ufo/waves/round-32/claims.json` C1 frozenDigests | stdout/stderr only; production reads committed git blobs; `--live` starts chromedriver and headless chromium with a throwaway profile under TMPDIR and serves the fixture on 127.0.0.1 only; self-test writes and deletes only its own temporary repositories under TMPDIR and never starts a browser | tabi L1 |
+ | selfassessment-counter | gate | `node scripts/check-selfassessment.mjs --rev REV [--json]` | 0=clean; 1=failed (one or more mismatches); 2=could-not-evaluate (usage, unreadable revision, git failure); 3=self-test disagreement | `node scripts/check-selfassessment.mjs --selftest` (cases=41, passed=41) | `scripts/check-selfassessment.mjs` CASES table; `.ufo/waves/round-32/claims.json` C2 frozenDigests | stdout/stderr only; executes lane scripts gates and read-only Git receipts; self-test writes and deletes only its own temporary repositories under TMPDIR | tabi L1 |
++
++## Round 32 — WebDriver BiDi runtime: transport choice per evidence row (2026-10-26; append-only; never edit above)
++
++WebDriver BiDi moved from docs-held to runtime-held on this host this round. The matrix entry
++`corpus/knowledge/webdriver-bidi-capability-matrix.md` §2 keeps its seventeen `locally measured: no`
++bytes as written; the runtime evidence is a separate entry,
++`corpus/knowledge/webdriver-bidi-runtime-round-32.md`, whose table `| Row | Surface | BiDi method |
++Measured | Evidence |` carries R1..R17 in matrix order (`:60` browser identity … `:76` user prompts),
++each `Measured: yes` row citing the committed receipt `corpus/evidence/round-32/bidi/receipt.json`
++(two cold runs) and its run transcripts. The gate is `scripts/check-bidi-runtime.mjs`; it admits a row
++only when the receipt binds both runs to a real rendering of its frozen loopback `FIXTURE` (identical
++first-screenshot bytes and `chromedriverVersion` across runs, and with `--live` equal to the gate's own
++session), the row's predicate (`PREDICATES.R<n>`) holds on every committed run and, with `--live`, on
++the gate's own session. R16 has no BiDi command and is never admitted (`x2-no-counterpart`). Host pins:
++chromium and chromedriver 154.0.8037.97, headless, throwaway profile, `127.0.0.1` fixtures only.
++
++Choose the transport per evidenced surface, never by protocol branding (matrix §3). The table below is
++the row-by-row ruling; `either` means both are admissible for that surface's evidence, with the
++qualifier in the why column being the condition that decides. Each row id is also the row id in the
++runtime entry's table, so a row's *measured* status is cited as `corpus/knowledge/webdriver-bidi-runtime-round-32.md`
++row R<n> plus the receipt that row names, while the matrix line cited in the why column is the
++spec-level contrast the row rules on.
++
++| Row | Surface | Transport | Why (matrix row / predicate / observed) |
++|---|---|---|---|
++| R1 | Browser identity at launch | either | The classic new-session capabilities (the `webSocketUrl` handshake) carry `browserName`, `browserVersion` and the loopback `webSocketUrl`; `PREDICATES.R1` requires `browserVersion` to equal the receipt's and a `ws://127.0.0.1\|localhost` URL, plus one successful command on the socket. `/json/version`'s product string and `Protocol-Version` have no BiDi field (matrix `:60`), so a capture that needs those stays CDP. Observed: `browserVersion 154.0.8037.97`, `chrome.chromedriverVersion` `154.0.8037.97 (b510e9d7…@#1673)`, `webSocketUrl ws://127.0.0.1:<port>/session/<id>` |
++| R2 | Target inventory | either | `browsingContext.getTree` returns browsing contexts, not `page`/`worker`/`service_worker` target types (matrix `:61`); `PREDICATES.R2` needs ≥1 context with a string `context` field. Worker or target-type inventory therefore stays CDP (`/json/list`, `Target.getTargets`); page-context inventory is either |
++| R3 | Navigate | either | `PREDICATES.R3` wants `browsingContext.navigate` whose result `url` is the loopback `/a.html` and a `browsingContext.load` event for that exact URL. Observed: navigate result `{navigation, url}` plus one `load` for the same URL. Milestone events still do not establish tabi's payload settle (matrix `:62`), so the `window.__ready` await below stays mandatory — the load event alone is not the settle |
++| R4 | Screenshot (rung L7) | either | `PREDICATES.R4` wants a PNG decoded at the pinned 640x480. Observed on this build: a shot taken before `setViewport` came back 780x437, after `setViewport` 640x480 — so the first shot must follow the viewport pin. The spec has `origin: viewport\|document` and `clip` and no `captureBeyondViewport` (matrix `:63`), so full-page/beyond-viewport geometry stays CDP |
++| R5 | DOM shape/state (rung L6) | CDP | `locateNodes` returns locator matches, and no command defines the columnar `documents`+`strings` snapshot schema (matrix `:64`); `PREDICATES.R5` admits `locateNodes {type: css, value: "#h"}` → exactly one node with `localName: "h1"`, i.e. a locator probe, not a snapshot. A caller-supplied `script.evaluate` serialization is caller-defined shape, not a contract equivalent |
++| R6 | Wait predicates / volatile readouts | either | `script.evaluate` with `awaitPromise: true` returned `"settled"` for `window.__ready`; `PREDICATES.R6` requires exactly that. This build refuses the call without the member (`invalid argument` / `Required in "awaitPromise".`), and `RemoteValue` differs from CDP `returnByValue` (matrix `:65`), so a predicate written against `RemoteObject` shapes does not port |
++| R7 | Viewport pin | either | `setViewport` takes `viewport` plus `devicePixelRatio` and has no `mobile` parameter (matrix `:66`); `PREDICATES.R7` needs `innerWidth` 640 measured after the pin. Observed: `setViewport` returns `{}` and the next screenshot decodes 640x480; the `innerWidth` read itself is the driver run's to record (pending below). Mobile emulation stays CDP |
++| R8 | Click input | either | `PREDICATES.R8` requires a pointer `performActions` with `pointerDown`+`pointerUp` and then `#out` reading `clicked:tabi` — the effect is the evidence, so the click must follow the typing test. BiDi actions are tick/action-list based and more verbose than `Input.dispatchMouseEvent` (matrix `:67`), so either transport is admissible but the recorded action list is part of the evidence |
++| R9 | Text fill | either | The dated draft defines no `input.insertText` (matrix `:68`); `PREDICATES.R9` requires key actions whose `keyDown` values concatenate to include `tabi` and `#t.value === "tabi"` afterwards. Fast insertion has no BiDi command, so a capture that needs CDP `Input.insertText` side-effects stays CDP; the typing effect against the frozen fixture is the driver run's to record |
++| R10 | Network client events | either | `PREDICATES.R10` requires `network.beforeRequestSent` and `network.responseCompleted` for the `/a.html` URL. Observed with a subscription made before the navigation: both events for every request, each carrying a `request.request` handle (two shapes on this build — a 32-hex id for the document request, `<pid>.<n>` for page-side `fetch`es), so always take the handle from the event. Subscribe first (matrix `:69`); event names and fields differ from CDP's |
++| R11 | Wire truth (raw status/headers) | CDP | `responseCompleted` carries `status`, `statusText`, protocol and serialized header fields — observed `status 200` and the header object `{name: "x-tabi-fixture", value: {type: "string", value: "r32"}}` — but no `ExtraInfo`-style raw header-block bytes or byte-exact status line (matrix `:70`). `PREDICATES.R11` uses the fixture-header marker as an identity check, not as wire truth; do not claim parity |
++| R12 | Byte truth | either | Collector-gated: a `response` data collector must exist when the response is created, not when it is read (matrix `:71` and its 2026-10-20 correction). Observed: `network.getData` with no collector → `no such network data`; `addDataCollector {dataTypes: ["response"], maxEncodedDataSize: 65536}` issued before the fetch → `getData` returned the served body verbatim (`tabi-bidi-body-0123456789\n`, the gate's `DATA_TEXT`, served by a scribe fixture). `PREDICATES.R12` needs the collector before the `getData`, on that collector's response, and the body equal to `DATA_TEXT`; the frozen `FIXTURE`'s own bytes are the receipt's to record |
++| R13 | Pre-settle hold | either | `network.addIntercept {phases: ["beforeRequestSent"]}` plus `network.continueRequest` is the only hold; `PREDICATES.R13` needs a blocked `beforeRequestSent` carrying the intercept id for `/data.txt` and a `continueRequest` for that request id afterwards. String `urlPatterns` must be exact absolute URLs on this build: `?held=1` accepted, `*` wildcards refused `invalid argument`/`Forbidden characters`, `"/data.txt"` refused `Failed to construct 'URL': Invalid URL '/data.txt'` (`.ufo/waves/round-32/w1/ExecInterceptPhases/pattern-probe.json`). Binding coverage varies (matrix `:72`) |
++| R14 | Navigation history witness | CDP | No command returns the history-entry list (matrix `:73`), so `Page.getNavigationHistory` remains the witness. `traverseHistory {delta: -1}` traverses only, and on empty history it returns success and leaves the context on `about:blank` (observed: `location.href` `about:blank`, new realm, a `load` event for `about:blank`). Use it only after a real forward navigation, and re-read `location.pathname` afterwards — `PREDICATES.R14` requires `/a.html` after the traversal |
++| R15 | Cookies | either | `storage.getCookies` returns `cookies` plus a partition descriptor (matrix `:74`); `PREDICATES.R15` needs the fixture cookie `tabi_fixture=1`. Match the partition/scope explicitly; browser-wide CDP parity is not implied |
++| R16 | Stop loading / nav-cancel | CDP | The draft has no navigation-stop command (`stopScreencast` stops screencasting only, matrix `:75`), and the gate marks the row `x2-no-counterpart`. A second `navigate` is a supersede, not a stop; the lane's own CDP stop evidence was weak (0/8 abort-marked) |
++| R17 | User prompts / dialogs | BiDi | `browsingContext.handleUserPrompt` is the only command, and the lane had no CDP anchor for dialogs (matrix `:76`). `PREDICATES.R17` requires `userPromptOpened` with `message: "tabi-alert"` and a `handleUserPrompt` after it. Keeps only with `unhandledPromptBehavior: "ignore"` (recipe step 1): under `dismiss and notify` the dialog was gone before the handler and the handle failed `no such alert` |
++
++### Session bootstrap recipe (BiDi over classic session)
++
++The order below is the gate's `liveRecord` order and the round's driver order; the surface rows above
++depend on it, so a capture that reorders it is not comparable evidence.
++
++1. Preconditions: chromium and chromedriver 154.0.8037.97 on PATH; a short `TMPDIR` for the driver and
++   browser (chromium's singleton socket path is capped at 108 bytes — under a deep scratch dir chromium
++   exits with `session not created: Chrome instance exited`, the round's freeze note), throwaway
++   `--user-data-dir`, and a fixture you serve yourself on `127.0.0.1`.
++2. Classic bootstrap: `POST /session` with `alwaysMatch: {browserName: "chrome", webSocketUrl: true,
++   unhandledPromptBehavior: "ignore", "goog:chromeOptions": {binary, args: ["--headless=new",
++   "--no-sandbox", "--no-first-run", "--disable-gpu", "--user-data-dir=<throwaway>"]}}`; retry the POST
++   while the driver is still binding its port. `unhandledPromptBehavior: "ignore"` is what keeps an
++   opened dialog available to R17 — the default `dismiss and notify` destroys it.
++3. Open the BiDi WebSocket at `capabilities.webSocketUrl`. Keep the classic session id: teardown is an
++   HTTP `DELETE /session/<id>`, not a socket close.
++4. `session.subscribe` **before any navigation**: `["browsingContext.load",
++   "browsingContext.userPromptOpened", "network.beforeRequestSent", "network.responseCompleted"]`.
++   Subscribe is all-or-nothing — one unknown name fails the whole call.
++5. `browsingContext.getTree` → first context id.
++6. `browsingContext.setViewport {context, viewport: {width: 640, height: 480}, devicePixelRatio: 1}` —
++   **before the first screenshot** (pre-pin shots come back window-sized, 780x437 observed).
++7. `network.addDataCollector {dataTypes: ["response"], maxEncodedDataSize: 65536}` — **before the
++   request whose body you want**; a collector added after `responseCompleted` recovers nothing.
++8. `browsingContext.navigate {context, url: <loopback /a.html>, wait: "complete"}`, then wait for
++   `browsingContext.load` for that exact URL.
++9. `script.evaluate "window.__ready", awaitPromise: true` → `"settled"`; then
++   `script.evaluate "window.innerWidth", awaitPromise: false` → 640.
++10. `browsingContext.captureScreenshot` — the **first** screenshot belongs here, after the settle and
++    the pin: the gate hashes it across runs for the rendering binding.
++11. `browsingContext.locateNodes` with a CSS locator for each element, then `input.performActions`
++    (pointer action with element origin for a click; key actions for text) and an evaluate after each
++    action to read the effect.
++12. Page-side `fetch` through `script.evaluate` (relative URLs resolve against the loopback document),
++    then `network.getData {dataType: "response", request: <request id from responseCompleted>}`.
++13. `storage.getCookies` for the fixture cookie.
++14. `network.addIntercept {phases: ["beforeRequestSent"], urlPatterns: [{type: "string", pattern:
++    "<exact absolute loopback URL including query>"}]}` → page-side fetch → wait the `isBlocked` event
++    with the returned intercept id → `network.continueRequest {request}`.
++15. Navigate to a second loopback page, `browsingContext.traverseHistory {context, delta: -1}`, wait
++    the `load`, poll `location.pathname` until `/a.html`.
++16. `script.evaluate "setTimeout(function(){alert('tabi-alert')},0),1"` → wait `userPromptOpened` with
++    that message → `browsingContext.handleUserPrompt {context, accept: true}`.
++17. Teardown: close the socket, `DELETE /session/<id>`, kill chromedriver, remove the profile and the
++    scratch tree. No driver or browser may outlive the run.
++
++### Error signatures observed on this build
++
++Five error codes and two silent failures, each observed in a **scribe-side probe** (not the receipt:
++`.ufo/waves/round-32/w1/ScribeSkillDistill/evidence/probe*.json`); the counter's predicates treat each as a
++missing witness, not as a retry cue.
++
++1. `no such alert` / `No dialog is showing` — `browsingContext.handleUserPrompt` when no dialog is
++   showing: on a fresh context with no prompt, after a prompt was already handled once, and under the
++   default `dismiss and notify` after the dialog auto-dismissed. A handle is single-use; never handle
++   twice, and take the context id from the `userPromptOpened` event.
++2. `invalid argument` / `Required in "awaitPromise".` — `script.evaluate` sent without the
++   `awaitPromise` member. Every evaluate in the recipe passes it explicitly, `false` when the result
++   is not a promise.
++3. `invalid argument` / `Unknown event: <name>` — `session.subscribe` with one unknown event name
++   fails the whole subscription; the four names in step 4 must be exact.
++4. `no such network data` / `No collected response data` — `network.getData` for a response no
++   collector holds. This is the collector-timing rule showing up as an error: collection is decided
++   when the response is created, so step 7 precedes step 8.
++5. `invalid argument` / `Forbidden characters` (and `Failed to construct 'URL': Invalid URL`) —
++   `network.addIntercept` string `urlPatterns`: exact absolute URLs pass, `*` wildcards and
++   root-relative paths do not. Patterns are exact-match, not globs.
++6. Silent: a **page exception inside a successful command**. `script.evaluate` returns
++   `type: "success"` with `result.type: "exception"` and a `TypeError: Failed to parse URL from
++   /data.txt` after a `traverseHistory` had left the context on `about:blank`. Read `result.type`, not
++   just the command's `type`; `PREDICATES.*` do (they require `res(c).type === "success"`).
++7. Silent: `browsingContext.traverseHistory {delta: -1}` with empty history returns success and moves
++   the context to `about:blank` (new realm, `load` for `about:blank`). Nothing errors; only the
++   pathname re-read catches it.
++
++Observed in the round's committed receipt (`corpus/evidence/round-32/bidi/receipt.json`, driver
++`scripts/bidi-loopback-round32.mjs`, two cold runs; `.ufo/waves/round-32/w1/ExecDriver.md`): `#out` reads
++`clicked:tabi` and `#t.value` reads `tabi` after the actions; `getData` on the frozen fixture's `/data.txt`
++returns `DATA_TEXT`; the `/data.txt?held=1` request is blocked with the intercept id and continued; the
++`tabi_fixture=1` cookie is returned; `/b.html` → `traverseHistory -1` → `/a.html`; and both runs' first
++screenshots decode to the same 6,626-byte PNG (sha256 `ee0edeba…51eca5`), equal to the gate's own live render.
++One realm race was seen while the driver was written (not in the committed runs): `script.evaluate` right
++after `traverseHistory` answered `Cannot find context with specified id`; wait for the post-traversal
++`load` and re-poll `location.pathname`.
++
++## Round 32 — corrections (append-only; each cites the stale line in its own document)
++
++- Correction — supersedes the nine stale tallies at `SKILL.md:2479`, `SKILL.md:2515`, `SKILL.md:2530`, `SKILL.md:2545`,
++  `SKILL.md:2576`, `SKILL.md:2578`, `SKILL.md:2590`, `SKILL.md:2594` and `SKILL.md:2598`; each states an earlier tip's
++  count for one gate. `scripts/check-selfassessment.mjs` `--selftest` (41/41) is the oracle-correct figure at the
++  round-32 freeze: v3's CASES table holds 41 isolated scenarios and the gate prints its own clean summary, so the
++  13, 17, 20, 22 and 30 figures those registry rows carry are each superseded.
+diff --git a/corpus/README.md b/corpus/README.md
+index a2dd767..ad6d510 100644
+--- a/corpus/README.md
++++ b/corpus/README.md
+@@ -703,3 +703,44 @@ datum), the ToS half stays open, and no runtime observation exists for either ha
+   (a2w1 CritReadmeRow F3; ScribeErrata E25)
+ - `corpus/README.md:686`, pointer cell — the calibration row traces to QUALITY criteria 81 and 82 only; criterion 80
+   is the decision-table rule of row 685. (a2w1 ConnFrontier #2)
++
++## Round 32 — WebDriver BiDi runtime measurement (2026-10-26)
++
++Append-only. One knowledge row; no earlier line is edited. The round-1 coverage row at
++`:168` and the round-1 frontier row at `:191` (its status cell begins `docs-held — spec
++map only; no BiDi session measured`) keep their bytes and describe the 2026-10-19
++documentation-only state; this block records the current-state reading.
++
++| Note | Holds | Sources |
++|---|---|---|
++| `knowledge/webdriver-bidi-runtime-round-32.md` *(round 32)* | R1–R15 and R17 of `webdriver-bidi-capability-matrix.md` §2 run and admitted on this host's chromium 154.0.8037.97 + chromedriver 154.0.8037.97 through a classic `webSocketUrl: true` session, against the counter's own 127.0.0.1 fixture (row bases must be loopback; a non-loopback base fails the row predicate; no CDP endpoint): identity from the classic new-session capabilities, `getTree`, `navigate` + `load`, a 640×480 PNG screenshot, `locateNodes` `#h`, awaited `window.__ready`, `setViewport` + `innerWidth`, pointer click → `clicked:tabi`, key actions → `tabi`, `beforeRequestSent`/`responseCompleted`, status 200 + fixture header, `addDataCollector` + `getData` body, `beforeRequestSent` intercept + `continueRequest`, `traverseHistory` −1, `tabi_fixture=1`, `userPromptOpened` + `handleUserPrompt`; R16 has no BiDi command. Admission is the frozen counter's (`admitted ≥ 14`, `failing 0`); observed counts and the two driver-run transcripts are in the receipt. **Not** measured: wire-truth parity, a columnar DOMSnapshot schema, a history-entry list, `insertText`, retroactive body retrieval. | S124 W3C WebDriver BiDi, S125 Chrome-owned BiDi/ChromeDriver doc, S126 W3C WebDriver classic capabilities — all opened 2026-10-26; receipt `evidence/round-32/bidi/receipt.json` |
++
++Frontier restatement (append-only; earlier rows keep their bytes): **WebDriver BiDi** —
++docs-held → **runtime-held on this host** at one pinned pair. The matrix's §2 rows no
++longer rest on a spec map alone for R1–R15 and R17: each has a BiDi command or event
++pair measured against a loopback fixture and admitted by a frozen counter, with the
++`locally measured: no` bytes of the original pass left in place and a dated 2026-10-26
++addendum recording the runtime state. R16 stays `no BiDi command` — the WD defines no
++navigation-stop command, so the lane's CDP `Page.stopLoading` witness has no BiDi
++counterpart to measure. The three contracts the matrix names as unmatched remain
++unmatched: no wire-truth parity (serialized `ResponseData` fields, not CDP `ExtraInfo`
++raw header-block bytes or a byte-exact status line), no columnar `DOMSnapshot` shape
++(`locateNodes` plus caller-supplied script serialization instead), no history-entry list
++(`traverseHistory` by delta only). One host, one browser build, one fixture: no
++cross-browser, cross-version, worker/realm, cost or binding-stability finding is added,
++and U1 is answered for 154.0.8037.97 only, not the 152.0.7977.82 build it names.
++
++| Frontier item | Status | Pointer |
++|---|---|---|
++| WebDriver BiDi | runtime-held on chromium 154.0.8037.97 + chromedriver 154.0.8037.97, loopback fixture only — R1–R15 and R17 measured and admitted; R16 has no BiDi command; wire-truth parity, DOMSnapshot columns, the history-entry list, `insertText` and retroactive body retrieval remain unmatched | `knowledge/webdriver-bidi-runtime-round-32.md`; `knowledge/webdriver-bidi-capability-matrix.md` dated correction 2026-10-26; counter `node scripts/check-bidi-runtime.mjs --rev <REV> --baseline d805d1d6132430118b206a848b85753ab35d1014 --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md --live --json` |
++
++Counting commands (2026-10-26): `ls corpus/knowledge/*.md | wc -l` → 50 at the freeze
++commit `4181fffb`, 51 once this round's entry lands; `git ls-tree --name-only 4181fffb
++corpus/knowledge/ | grep -c '\.md$'` → 50.
++
++## Round 32 — corrections (append-only; each cites the stale line in its own document)
++
++- Correction — supersedes the two stale tallies at `corpus/README.md:613` and `corpus/README.md:668`: both state an
++  earlier tip's count for one gate. `scripts/check-selfassessment.mjs` `--selftest` (41/41) is the oracle-correct
++  figure at the round-32 freeze; v3's CASES table holds 41 isolated scenarios and the gate prints its own clean
++  summary, so the 17 and 30 figures those rows carry are each superseded.

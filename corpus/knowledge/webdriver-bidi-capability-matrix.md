@@ -259,3 +259,13 @@ scope and provenance) is met for the sixteen rows at the granularity the counter
 not for the three contracts named above. A row marked yes here is a runtime observation of that
 row's admitted BiDi command/event pair on loopback; it is not a support claim for other
 builds, bindings, fixtures or evidence contracts.
+
+## Dated correction — 2026-10-26 (round 32 wave 2): collector size limits on this build
+
+The §2 "Byte truth" row (`:71`, "`maxEncodedDataSize` limits each item") and the round-13 correction's "with the body
+within that collector's `max encoded item size`" (`:157-161`) describe the draft, not this build's behaviour. Measured on
+chromium/chromedriver 154.0.8037.97 by w1 ExecCollectorTiming (`.ufo/waves/round-32/w1/ExecCollectorTiming.md`, case 3, and
+`runs/out10`–`out12`): a body larger than `maxEncodedDataSize` is collected and returned whole; the limit at which
+`getData` starts failing with `no such network data` tracks the size of the response header block, not the body; a
+`maxTotalCollectedSize` below the body size still returns it. The earlier bytes stay; a script that lowers the limit
+toward the body size gets silence and a misleading error, not a truncated body.

@@ -134,3 +134,54 @@ Carried at round end: 16 of 27 (E1, E3–E10, E12–E14, E17, E18, E19's `passed
   clears a stale tally when *any* accepted number in it equals the oracle tally — a date (`10/26`), a round
   range (`round-30/31`) or a denominator elsewhere can do the clearing. Round-32 corrections state the oracle
   tally once, in a parsed shape, and carry no second number that could equal it.
+
+## Wave 1 attack findings carried as limits (append-only)
+
+| # | class | evidence pointer | captured by | fix |
+|---|---|---|---|---|
+| M6 | `survivor` | `.ufo/waves/round-32/w1/CritC2Counter.md`: the m4 class parses a correction that quotes the stale phrase as a fresh statement; a capability cell whose first digits are 29–31 flips rounds 29–31; any paragraph with `correct`, a `SCORECARD.md:` range and `nudge active` clears a finding. `.ufo/waves/round-32/w1/MutC2.md`: 5 of 10 single-point mutants survive the frozen 41-case selftest (window off-by-one, prose-capability parsing, self-supersession, verdict-only refusal, section grouping) though each is killed by a w1 fixture | none | the round-32 corrections avoid all three shapes (w2 MutC2Corrections); counter v4 planned with these as cases |
+| M7 | `survivor` | `.ufo/waves/round-32/w1/MutC1.md`: 9 of 20 mutants of the C1 gate survive its 27-case selftest (driverSha256 equality and error-frame `ok()` the worst) | none | gate v2 planned with one case per survivor |
+| M8 | `scope` | `.ufo/waves/round-32/w1/ExecDeterminism.md`: the t3 binding is byte-deterministic within one environment (6/6) and red under `--force-device-scale-factor=2`, `LANG=ja_JP.UTF-8` or a window-size pin; `.ufo/waves/round-32/w1/SentinelPerimeter.md`: the host launcher prepends `~/.config/chromium-flags.conf` (incl. a `--load-extension`) and the browser contacts Google hosts in the background | none | recorded in the entry §7 and SKILL; the receipt is scoped to this host build and environment |
+| M9 | `stale-premise` | `.ufo/waves/round-32/w1/ExecCollectorTiming.md` case 3 contradicts the mechanism stated in the matrix's round-13 collector correction (`corpus/knowledge/webdriver-bidi-capability-matrix.md` §Dated correction 2026-10-20) | none | carried: an append-only correction of that paragraph is planned with gate v2 |
+| M10 | `landing` | `.ufo/waves/round-32/w2/RerunNoHarm.md`: at `b234a589` the frozen `scripts/check-release-pins.mjs` went green → red (`population=24 unresolved=1`, `UNRESOLVED id=S125 reasons=r1-entry missing`): S125 entered with `recheck: on-release` and a Chromium tag pin, which puts it in that gate's population without a release-pin receipt entry; the wave-1 integration ran no no-harm sweep after integrating (only at the freeze) | none | S125 `recheck` changed in place `on-release` → `90d` (contract rule 2 field; logged below); the measured revision re-runs the full no-harm sweep (`measure/noharm-at-*.txt`) |
+
+## Wave 2 — falsify (append-only)
+
+34 seats attacked `b234a58920134424e0d104f137311ff54a16d26b` (`.ufo/waves/round-32/w2/`). Held: both counting commands
+re-run independently (RerunC1Live: 16/16/0 live twice, byte-identical JSON; RerunC2: mismatches 0, 0 deletions), the
+census (RerunCensus: 122 → 126, exit 0), the driver's third independent run (RerunDriver: same method sequence and
+first-screenshot digest), S123 and S125 re-opened byte-identical, the decision-table errata (CritDecisionTableErrata:
+13/13 offline and live), the errata dispositions table (CritErrataDispositions), QUALITY 83–86 (RevQualityCriteria:
+85's red state reproduces 39/41, exit 3), the SCORECARD additions (RevScorecard), the capability row (CritCapabilityRow),
+no sibling ground absorbed (CritAdjacency), no secret class committed (SentinelReceipts).
+
+Dispositions of the defects found (each landed append-only in the integration that follows `b234a589`):
+
+- release-pins green → red (RerunNoHarm, high) → M10; S125 `recheck` `on-release` → `90d`.
+- entry §1 binding overclaim, §8 "four holes" (three closed), R12 limits "unmeasured" though measured in w1
+  (CritC1Claim, CritForgeryRecheck, RerunDistinct, CritTrendVerdicts) → entry §Corrections — round 32 wave 2; the
+  matrix's round-13 collector clause marked by a dated correction (M9 closed by that correction); SKILL correction of
+  `SKILL.md:2636-2639`; README corrections of `corpus/README.md:716`.
+- C2's movement (CritC2Claim): corrections substantively true; 3 genuine corrections plus 15 instrument-induced, as
+  `claims.json` beforeComposition states; clearance relies on the loose supersession rule (M6).
+- S124 `scope` cell and Gate word counts, S126 `anchor` placing the additional-capability slot at §7 line 1798 (it is
+  §6.7 Extensions, heading at line 1744): registry cells other than status/recheck/used-by are not edited in place
+  (contract rule 2); read the S124 scope as the protocol semantics of the commands the driver runs and the S126 slot as
+  §6.7 — superseding rows are planned with the next BiDi source round. (ReopenS124, ReopenS126)
+- MutC1Entry: a decorated `Measured` cell (`yes (live)`) silently leaves the population and the gate stays clean →
+  carried to gate v2 (M7).
+
+### Status / recheck / used-by changes (wave 2)
+
+- S125 `recheck`: `on-release` → `90d` (2026-10-26; reason M10: the release-pin gate reads every `on-release` row
+  pinned to a Chromium tag as part of its population, and S125 has no release-pin receipt entry).
+
+### Wave-2 precision defects carried (append-only)
+
+Not landed this round; the round-33 errata intake, each with its evidence in the named report:
+`.ufo/waves/round-32/w2/CritNewNumbers.md` (five stated numbers in the round-32 text that do not re-derive, the first
+reporting a routed round-31 defect as closed with a delta; none changes the C1 or C2 verdict),
+`.ufo/waves/round-32/w2/CritEntry.md` (ten precision/provenance defects in the entry, among them §8's "four
+constructions" where w1 CritC1Forgery rates a fifth), `.ufo/waves/round-32/w2/RevLesson.md`,
+`.ufo/waves/round-32/w2/CritReadmeLog.md` and `.ufo/waves/round-32/w2/ConnRoutedLedger.md` (19 medium-or-higher w1
+findings with no landing line — this section and the round-33 plan are their ledger).

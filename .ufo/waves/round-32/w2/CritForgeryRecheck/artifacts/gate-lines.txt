@@ -1,0 +1,18 @@
+47://   t3-binding        the runs are not bound to a real rendering: each run's
+506:  if (entryBuf === null) { out.entryFinding = "e1-entry-absent"; out.clean = false; return out; }
+528:      else if (typeof receiptObj.driver !== "string" || !receiptObj.driver || receiptObj.driver === "scripts/check-bidi-runtime.mjs" || (() => { const d = blob(repo, rev, receiptObj.driver); return d === null || sha256(d) !== receiptObj.driverSha256; })()) receiptFinding = "driver absent, is this counter, or its sha256 differs";
+529:      else if (!Array.isArray(receiptObj.runs) || receiptObj.runs.length < 2) receiptFinding = "fewer than two runs";
+545:  const firstShot = (rec) => { const c = rec.cmds.find((x) => x.method === "browsingContext.captureScreenshot" && ok(x)); return c ? sha256(Buffer.from(String(res(c).data || ""), "base64")) : null; };
+547:  let bindingFinding = null;
+549:    const shots = runs.map((r) => firstShot(r.rec));
+550:    if (shots.some((s) => !s) || new Set(shots).size !== 1) bindingFinding = "first screenshots absent or differ between runs";
+551:    else if (runs.some((r) => !cdv(r.rec)) || new Set(runs.map((r) => cdv(r.rec))).size !== 1) bindingFinding = "chromedriverVersion absent or differs between runs";
+553:      if (firstShot(liveRec) !== shots[0]) bindingFinding = "first screenshot differs from this counter's live session";
+554:      else if (cdv(liveRec) !== cdv(runs[0].rec)) bindingFinding = "chromedriverVersion differs from this counter's live session";
+557:  out.binding = bindingFinding;
+566:    else if (bindingFinding) { row.reason = "t3-binding"; row.detail = bindingFinding; }
+582:  out.clean = !out.entryFinding && out.population >= 1 && out.failing === 0;
+668:  { id: "live-session-empty", exit: 1, admitted: 0, reason: "t3-binding", build: () => ({ ids: ["R15"], live: "empty" }) },
+670:  { id: "live-screenshot-differs", exit: 1, admitted: 0, reason: "t3-binding", build: () => ({ ids: ["R2"], live: "otherShot" }) },
+671:  { id: "live-chromedriver-differs", exit: 1, admitted: 0, reason: "t3-binding", build: () => ({ ids: ["R2"], live: "otherDriver" }) },
+672:  { id: "run-screenshots-differ", exit: 1, admitted: 0, reason: "t3-binding", build: () => ({ ids: ["R2"], shotPerRun: true }) },

@@ -1,0 +1,33 @@
+# Decoded netlog bodies (round-32 wave-1 evidence)
+
+Source blobs are base64 in netlog-*.json. API-key values are redacted here; the
+finding cites their file:line so they can be inspected in place.
+
+## netlog-default.json:622 byte_count=756 -> Chrome update-check request (decoded)
+
+```json
+{"request":{"@os":"linux","@updater":"chromium","acceptformat":"crx3,download,puff,run,xz,zucc","apps":[{"appid":"ceofaddefefcbblgcgnibnonglccbfja","enabled":true,"installsource":"ondemand","lang":"en-US","manifest_channel":"","ping":{"r":-2},"updatecheck":{},"version":"0.0.0.0"}],"arch":"x64","dedup":"cr","hw":{"avx":true,"physmemory":30,"sse":true,"sse2":true,"sse3":true,"sse41":true,"sse42":true,"ssse3":true},"ismachine":false,"os":{"arch":"x86_64","platform":"Linux","version":"7.2.11-arch1-1"},"prodchannel":"Arch Linux","prodversion":"154.0.8037.97","protocol":"4.0","requestid":"{1d4769cc-5321-45c9-9722-e5ee21c7a4a3}","sessionid":"{cb1d2679-e7c6-4a67-bb45-214df19da27a}","updaterchannel":"Arch Linux","updaterversion":"154.0.8037.97"}}
+```
+
+## netlog-suppress-min.json:652 byte_count=756 -> show only fields that identify the host
+
+```
+{"request":{"@os":"linux","@updater":"chromium","acceptformat":"crx3,download,puff,run,xz,zucc","apps":[{"appid":"ceofaddefefcbblgcgnibnonglccbfja","enabled":true,"installsource":"ondemand","lang":"en-US","manifest_channel":"","ping":{"r":-2},"updatecheck":{},"version":"0.0.0.0"}],"arch":"x64","dedup":"cr","hw":{"avx":true,"physmemory":30,"sse":true,"sse2":true,"sse3":true,"sse41":true,"sse42":true,"ssse3":true},"ismachine":false,"os":{"arch":"x86_64","platform":"Linux","version":"7.2.11-arch1-1"},"prodchannel":"Arch Linux","prodversion":"154.0.8037.97","protocol":"4.0","requestid":"{7d43e5fb-2c26-47c5-bc07-6f5e6fb0194d}","sessionid":"{1db818b5-fef3-41e4-91cd-842dc4815fa7}","updaterchannel":"Arch Linux","updaterversion":"154.0.8037.97"}}
+```
+
+## netlog-suppress-min.json:1977 byte_count=1237 -> plaintext content-autofill service error (decoded)
+
+```
+�Autofill API has not been used in project 413772536636 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/autofill.googleapis.com/overview?project=413772536636 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.�
+(type.googleap
+```
+
+## autofill :path token (netlog-default.json:904 and 5 more lines) decoded
+
+```
+proto bytes: b'\n\x14Chrome/154.0.8037.97\x12,\tC\x82qwS\xe6\xec.\x12\r\rc\xd8 \xca*\x06\x08\x04\x18\x01H\x06!`\xb6j@L\xf8`!)\xbf$\x9a\x8e\x7f\x01\xca\xe12\x00'
+```
+
+Fields: a version string (`Chrome/154.0.8037.97`) plus 44 opaque bytes of
+page/form signature. No URL, account, email or identifier is recoverable; the
+token is the one Chromium's own autofill client sends.

@@ -1,0 +1,25 @@
+# RevLesson M5 repro — chromium singleton socket path (2026-10-26)
+
+Scratch clone at b234a58920134424e0d104f137311ff54a16d26b; runner `run-live.mjs` (copied beside this file)
+imports `liveRecord` from a given counter build and prints one line. TMPDIR is a throwaway dir under my
+scratch, padded to 77 bytes (the committed receipt used a 70-byte path; same failure mode, deeper path).
+
+```
+$ S=/fast/scratch/hyaku/tabi-r32/RevLesson
+$ P="$S/red-socket-path-check/deep-dir-padding"; while [ ${#P} -lt 70 ]; do P="$P/x"; done; mkdir -p "$P"; export TMPDIR="$P"
+TMPDIR_len=77
+$ git -C "$S/clone" show 2f8535c5b3015fc5730c1076cbe57d1dc29e4fee:scripts/check-bidi-runtime.mjs > "$S/counter-2f85.mjs"
+995e245ef176cf15808c906de295ded8c3ff2e303f68841de26e845c64b58ed1  /fast/scratch/hyaku/tabi-r32/RevLesson/counter-2f85.mjs
+2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393  /fast/scratch/hyaku/tabi-r32/RevLesson/clone/scripts/check-bidi-runtime.mjs
+XDG_RUNTIME_DIR=/run/user/1000
+== RED (2f8535c5):
+ERR new session failed: "session not created: Chrome instance exited. Examine ChromeDriver verbose log to determine the cause."
+red_exit=0            # runner exit; the failure signal is the ERR line, byte-identical to measure/c1-socket-path-red-green.txt
+== GREEN (5ad1fcbf bytes at HEAD):
+ok cmds=28 events=14
+green_exit=0
+```
+
+The red leg reproduces the committed red text exactly; the green leg matches the committed `ok cmds=28`.
+`pgrep -fa 'chromedriver|chromium' | grep -v earlyoom` after both runs: no lines (the counter's own
+finally-block killed every process it spawned).
