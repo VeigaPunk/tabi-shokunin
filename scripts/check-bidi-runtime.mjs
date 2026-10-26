@@ -71,7 +71,7 @@
 //   node scripts/check-bidi-runtime.mjs --selftest [--json]
 //   node scripts/check-bidi-runtime.mjs --repo <dir> ...   (tests)
 import { spawn, spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -372,10 +372,22 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 export async function liveRecord({ chromedriver = "chromedriver", chromium = "/usr/bin/chromium", timeoutMs = 60000 } = {}) {
   const which = (bin) => spawnSync("sh", ["-c", `command -v "$1"`, "sh", bin], { encoding: "utf8" }).status === 0;
   if (!which(chromedriver) || !which(chromium)) throw new Refusal("chromedriver or chromium not found");
-  const scratch = mkdtempSync(join(tmpdir(), "tabi-bidi-live-"));
+  const base = tmpdir();
+  const scratch = mkdtempSync(join(base, "tabi-bidi-live-"));
+  // Chromium creates its singleton socket under TMPDIR (`.org.chromium.Chromium.XXXXXX/SingletonSocket`,
+  // ~46 bytes); a unix socket path over 108 bytes makes Chrome exit at launch. Hand chromium the
+  // throwaway scratch as TMPDIR when it is short enough, else a throwaway dir under XDG_RUNTIME_DIR
+  // (the per-user runtime dir meant for sockets), else the caller's TMPDIR, removing the chromium
+  // entries that appear there during the run.
+  const runtime = process.env.XDG_RUNTIME_DIR;
+  let chromeTmp = base;
+  let ownChromeTmp = false;
+  if (scratch.length <= 60) chromeTmp = scratch;
+  else if (runtime && runtime.length <= 40) { chromeTmp = mkdtempSync(join(runtime, "tabi-bidi-")); ownChromeTmp = true; }
+  const preexisting = new Set(readdirSync(chromeTmp));
   const fx = await serveFixture();
   const port = await freePort();
-  const cd = spawn(chromedriver, [`--port=${port}`], { stdio: "ignore", env: { ...process.env, TMPDIR: scratch, TMP: scratch, TEMP: scratch } });
+  const cd = spawn(chromedriver, [`--port=${port}`], { stdio: "ignore", env: { ...process.env, TMPDIR: chromeTmp, TMP: chromeTmp, TEMP: chromeTmp } });
   const rec = { newSession: null, cmds: [], events: [] };
   let ws = null;
   let sessionId = null;
@@ -390,7 +402,7 @@ export async function liveRecord({ chromedriver = "chromedriver", chromium = "/u
         body = await r.json();
       } catch { await sleep(200); }
     }
-    if (!body || !body.value || !body.value.capabilities) throw new Refusal(`new session failed: ${JSON.stringify(body && body.value && body.value.message || body).slice(0, 200)}`);
+    if (!body || !body.value || !body.value.capabilities) throw new Refusal(`new session failed: ${JSON.stringify(body && body.value && body.value.message || body).slice(0, 200)} (chromium TMPDIR ${chromeTmp.length} bytes)`);
     rec.newSession = body;
     sessionId = body.value.sessionId;
     ws = new WebSocket(body.value.capabilities.webSocketUrl);
@@ -473,6 +485,8 @@ export async function liveRecord({ chromedriver = "chromedriver", chromium = "/u
     cd.kill("SIGTERM");
     await fx.close();
     await sleep(300);
+    if (ownChromeTmp) rmSync(chromeTmp, { recursive: true, force: true });
+    else if (chromeTmp === base) for (const n of readdirSync(base)) if (!preexisting.has(n) && /^\.?org\.chromium\.Chromium\./.test(n)) rmSync(join(base, n), { recursive: true, force: true });
     rmSync(scratch, { recursive: true, force: true });
   }
 }
