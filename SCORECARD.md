@@ -1499,3 +1499,10 @@ Two v1 waves. W1 build + first falsifiers, 44 seats (26 executor, 6 critic, 3 re
   set, self-supersession refusal, 404 rows judged on status and first line) closing the round-29 wave-1
   attack fixtures; s106 self-test cases for anchor uniqueness and byte count (surviving mutants, `w1/MutC1Baseline.md`).
 - capabilities unchanged (gates are counters); saturation 8 / window 3; no axis retired.
+
+## Round 30 — corrections (append-only; each cites the stale line in its own document)
+
+Round 30's C1 added self-test cases to two gates; the tallies stated above are superseded here.
+
+- `scripts/check-s106-evidence.mjs` `--selftest` (10/10): correction — supersedes the stale tallies at `SCORECARD.md:1438`, `SCORECARD.md:1466` and `SCORECARD.md:1479` (round 30 added three cases: same-length tamper, duplicate anchor, receipt byte-count mismatch).
+- `scripts/check-release-pins.mjs` `--selftest` (29/29): correction — supersedes the stale tally at `SCORECARD.md:1485` (round 30 added nine reason-pinned cases).

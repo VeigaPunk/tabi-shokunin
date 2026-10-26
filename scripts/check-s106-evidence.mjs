@@ -5,7 +5,7 @@
 //          2 could-not-evaluate (usage, unreadable revision, receipt or bytes
 //          absent at the measured revision, malformed receipt). Any other
 //          nonzero code is undeclared and reads as could-not-evaluate.
-// Self-test: `--selftest` (7 isolated cases over temporary sandbox
+// Self-test: `--selftest` (10 isolated cases over temporary sandbox
 //          repositories; asserts exit code, validity, and each declared
 //          field's expected value; creates and removes its own temp trees,
 //          never touches the lane).
@@ -158,6 +158,12 @@ const FIXTURE_BYTES = [
   "",
 ].join("\n");
 const FIXTURE_SHA = sha256(FIXTURE_BYTES);
+// Same byte length as FIXTURE_BYTES, different sha: the only fixture whose
+// verdict can see the sha term while the byte-count term still agrees.
+const FIXTURE_TAMPERED_BYTES = FIXTURE_BYTES.replace("// tail", "// tgil");
+// The anchor line appears twice (lines 187 and 188): line 187 still carries
+// it, so anchor_located holds while occurrences is 2 and anchor_unique does not.
+const FIXTURE_BYTES_DUPLICATE_ANCHOR = FIXTURE_BYTES.replace("// tail", `${FIXTURE_LINE}\n// tail`);
 
 function fixtureReceipt(over = {}) {
   return {
@@ -222,6 +228,52 @@ const CASES = [
       r.anchor = { ...r.anchor, line: 188 };
       d.receipt(r);
       d.bytes(FIXTURE_BYTES);
+    },
+  },
+  {
+    id: "same-length-tamper-invalid",
+    exit: 1,
+    valid: false,
+    field: "sha_match",
+    fieldValue: false,
+    build: (d) => {
+      d.bytes(FIXTURE_BYTES);
+      const measuredRev = d.commit();
+      d.bytes(FIXTURE_TAMPERED_BYTES);
+      d.receipt(fixtureReceipt({ measured_rev: measuredRev }));
+      d.commit();
+    },
+  },
+  {
+    id: "duplicate-anchor-invalid",
+    exit: 1,
+    valid: false,
+    field: "anchor_unique",
+    fieldValue: false,
+    build: (d) => {
+      d.bytes(FIXTURE_BYTES_DUPLICATE_ANCHOR);
+      const measuredRev = d.commit();
+      const receipt = fixtureReceipt({
+        measured_rev: measuredRev,
+        decoded_bytes: Buffer.byteLength(FIXTURE_BYTES_DUPLICATE_ANCHOR),
+        decoded_sha256: sha256(FIXTURE_BYTES_DUPLICATE_ANCHOR),
+      });
+      receipt.anchor = { ...receipt.anchor, occurrences_in_file: 2 };
+      d.receipt(receipt);
+      d.commit();
+    },
+  },
+  {
+    id: "receipt-byte-count-mismatch-invalid",
+    exit: 1,
+    valid: false,
+    field: "byte_count_match",
+    fieldValue: false,
+    build: (d) => {
+      d.bytes(FIXTURE_BYTES);
+      const measuredRev = d.commit();
+      d.receipt(fixtureReceipt({ measured_rev: measuredRev, decoded_bytes: Buffer.byteLength(FIXTURE_BYTES) + 7 }));
+      d.commit();
     },
   },
   {

@@ -353,6 +353,86 @@ const CASES = [
   { id: "refetch-missing-unresolved", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001")]); d.receipt(receiptOf([{ id: "S001", _refetch: null, files: [fileEntry()] }])); } },
   { id: "refetch-same-seat-unresolved", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001")]); d.receipt(receiptOf([{ id: "S001", fetched_by: "W2-fixture", files: [fileEntry()] }])); } },
   { id: "copied-old-as-new-caught-by-refetch", exit: 1, unresolved: 1, build: (d) => { d.reg([regLine("S001")]); d.receipt(receiptOf([{ id: "S001", _refetch: REFETCH_FABRICATED, files: [fileEntry({ newText: OLD_TEXT })] }])); } },
+  // round-30 w1 (ExecPinsCasesA): cases whose failing run is pinned to the reason string, so a
+  // check that is bypassed cannot fall through to a neighbouring failure path unnoticed.
+  {
+    id: "f1-old-tag-not-carried-by-row-unresolved", exit: 1, unresolved: 1, reasons: ["f1-old-tag"],
+    build: (d) => {
+      const other = "155.0.8037.97";
+      d.reg([regLine("S001")]);
+      const f = fileEntry();
+      f.old_tag = other;
+      f.old_bytes = `${BYTES_ROOT}/${other}/${P}`;
+      d.receipt(receiptOf([{ id: "S001", files: [f] }]));
+    },
+  },
+  {
+    id: "f2-dotdot-inside-filename-unresolved", exit: 1, unresolved: 1, reasons: ["f2-path-bound"],
+    build: (d) => {
+      const odd = "content/public/common/feature..cc";
+      d.reg([regLine("S001", { path: odd, anchor: `tag ${OLD}; feature.cc:3-4` })]);
+      d.receipt(receiptOf([{ id: "S001", files: [fileEntry({ path: odd })] }]));
+    },
+  },
+  {
+    id: "f3-old-bytes-never-committed-unresolved", exit: 1, unresolved: 1, reasons: ["f3-bytes absent"],
+    build: (d) => {
+      d.reg([regLine("S001", { anchor: `tag ${OLD}; feature.cc:3-4` })]);
+      const f = fileEntry();
+      delete f._old;
+      d.receipt(receiptOf([{ id: "S001", files: [f] }]));
+    },
+  },
+  {
+    id: "f4-range-past-last-old-line-unresolved", exit: 1, unresolved: 1, reasons: ["f4-ranges"],
+    build: (d) => {
+      const abbr = `${sha256(Buffer.from(OLD_TEXT)).slice(0, 8)}…${sha256(Buffer.from(OLD_TEXT)).slice(-4)}`;
+      d.reg([regLine("S001", { anchor: `tag ${OLD}; feature.cc:7-8; sha256 ${abbr}` })]);
+      d.receipt(receiptOf([{ id: "S001", files: [fileEntry({ ranges: [[7, 8]] })] }]));
+    },
+  },
+  {
+    id: "f4-anchor-lacks-range-token-unresolved", exit: 1, unresolved: 1, reasons: ["f4-ranges"],
+    build: (d) => {
+      const abbr = `${sha256(Buffer.from(OLD_TEXT)).slice(0, 8)}…${sha256(Buffer.from(OLD_TEXT)).slice(-4)}`;
+      d.reg([regLine("S001", { anchor: `tag ${OLD}; feature.cc; sha256 ${abbr}` })]);
+      d.receipt(receiptOf([{ id: "S001", files: [fileEntry({ ranges: [[4, 5]] })] }]));
+    },
+  },
+  // ExecPinsCasesB (round-30 w1): the s1 supersession sub-checks and the two
+  // 404 NOT_FOUND sub-conditions, each with a refetch record matching the fixture.
+  {
+    id: "drift-superseder-teaches-without-prefix-unresolved", exit: 1, unresolved: 1, reasons: ["s1-drift-unsuperseded"],
+    build: (d) => {
+      d.reg([regLine("S001"), regLine("S002", { tag: NEW, teaches: "kThing reads disabled at the newer tag" })]);
+      d.receipt(receiptOf([{ id: "S001", superseded_by: "S002", files: [fileEntry({ newText: NEW_DRIFT })] }]));
+    },
+  },
+  {
+    id: "drift-superseder-not-at-stable-tag-unresolved", exit: 1, unresolved: 1, reasons: ["s1-drift-unsuperseded"],
+    build: (d) => {
+      d.reg([regLine("S001"), regLine("S002", { recheck: "90d", teaches: "supersedes S001 — kThing disabled at the new tag" })]);
+      d.receipt(receiptOf([{ id: "S001", superseded_by: "S002", files: [fileEntry({ newText: NEW_DRIFT })] }]));
+    },
+  },
+  {
+    id: "absence-404-present-with-marker-unresolved", exit: 1, unresolved: 1, reasons: ["s1-drift-unsuperseded"],
+    build: (d) => {
+      const nf = "NOT_FOUND: Requested entity was not found.\n";
+      const present = "NOT_FOUND: Requested entity was not found.\nint now_exists;\n";
+      d.reg([regLine("S001", { anchor: `HTTP 404; body sha256 ${sha256(Buffer.from(nf))}` })]);
+      d.receipt(receiptOf([{ id: "S001", files: [fileEntry({ oldText: nf, newText: present, ranges: [], oldStatus: 404, newStatus: 200, path: P })] }]));
+    },
+  },
+  {
+    id: "absence-404-body-lacks-marker-unresolved", exit: 1, unresolved: 1, reasons: ["s1-drift-unsuperseded"],
+    build: (d) => {
+      const nf = "NOT_FOUND: Requested entity was not found.\n";
+      const blank = "<html><head><title>Error 404</title></head></html>\n";
+      d.reg([regLine("S001", { anchor: `HTTP 404; body sha256 ${sha256(Buffer.from(nf))}` })]);
+      d.receipt(receiptOf([{ id: "S001", files: [fileEntry({ oldText: nf, newText: blank, ranges: [], oldStatus: 404, newStatus: 404, path: P })] }]));
+    },
+  },
 ];
 
 function makeFixture() {
@@ -407,8 +487,11 @@ function runSelftest() {
         exit = 2;
         out = { unresolved: null, refusal: e.message };
       }
-      const ok = exit === c.exit && (c.unresolved === null ? out.unresolved === null : out.unresolved === c.unresolved);
-      results.push({ id: c.id, ok, expectedExit: c.exit, exit, expectedUnresolved: c.unresolved, unresolved: out.unresolved, refusal: out.refusal ?? null });
+      const row = Array.isArray(out.rows) && out.rows.length === 1 ? out.rows[0] : null;
+      const reasonsOk = c.reasons === undefined || (row !== null && Array.isArray(row.reasons) &&
+        row.reasons.length === c.reasons.length && c.reasons.every((p, i) => row.reasons[i].startsWith(p)));
+      const ok = exit === c.exit && (c.unresolved === null ? out.unresolved === null : out.unresolved === c.unresolved) && reasonsOk;
+      results.push({ id: c.id, ok, expectedExit: c.exit, exit, expectedUnresolved: c.unresolved, unresolved: out.unresolved, expectedReasons: c.reasons ?? null, reasons: row ? row.reasons : null, refusal: out.refusal ?? null });
     } finally {
       rmSync(fx.root, { recursive: true, force: true });
     }
@@ -451,7 +534,7 @@ function main() {
     const out = runSelftest();
     if (opts.json) console.log(JSON.stringify(out, null, 2));
     else {
-      for (const r of out.results) console.log(`CASE id=${r.id} expected_exit=${r.expectedExit} exit=${r.exit} expected_unresolved=${r.expectedUnresolved ?? "-"} unresolved=${r.unresolved ?? "-"}${r.refusal ? ` refusal=${r.refusal}` : ""} ${r.ok ? "PASS" : "FAIL"}`);
+      for (const r of out.results) console.log(`CASE id=${r.id} expected_exit=${r.expectedExit} exit=${r.exit} expected_unresolved=${r.expectedUnresolved ?? "-"} unresolved=${r.unresolved ?? "-"}${r.expectedReasons ? ` expected_reasons=${r.expectedReasons.join("|")} reasons=${(r.reasons ?? []).join("|")}` : ""}${r.refusal ? ` refusal=${r.refusal}` : ""} ${r.ok ? "PASS" : "FAIL"}`);
       console.log(`RELEASE_PINS_SELFTEST verdict=${out.ok ? "clean" : "failed"} cases=${out.cases} passed=${out.passed}`);
     }
     process.exit(out.ok ? 0 : 3);
