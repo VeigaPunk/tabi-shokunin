@@ -1,0 +1,10 @@
+# AdjKasegi commands (scratch=/fast/scratch/hyaku/tabi-r34/AdjKasegi, clone=/fast/scratch/hyaku/tabi-r34/AdjKasegi/clone, TMPDIR=/fast/scratch/hyaku/tabi-r34/AdjKasegi/tmp)
+git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin $S/clone; git -C $S/clone checkout -q --detach 59f1b47aae277e1670e4a824173da8cde7e388ee  # exit 0
+git -C $S/clone rev-parse HEAD -> af7ec475b20f6c4ae988e46122172f1b42d30738 (patch commit on top of 59f1b47)  # exit 0
+node $C/scripts/check-adjacency.mjs --at af7ec475b20f6c4ae988e46122172f1b42d30738 --repo $C --fleet /home/vgpnk/Projects/shokunin --json  # exit 0, verdict=clean rows=14 verified=14 findings=0
+node <lane>/.ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs --rev af7ec475b20f6c4ae988e46122172f1b42d30738 --repo $C --fleet /home/vgpnk/Projects/shokunin --json  # exit 1, predicate=false, candidates=67 mapped=2 screened=2 unaccounted=63 newMapped=1
+grep -cF sibling_quote on kasegi mission-control.md:119 -> 1
+grep -cF screen quote on kasegi SKILL.md:267 -> 1 ; ufo-workspaces.md:272 -> 1
+grep -cF tabi_quote on clone SKILL.md:2921 -> 1 ; ruling_quote -> 1 ; grep -cw kasegi -> 1
+git show 59f1b47:SKILL.md | grep -c "kasegi's claimer lane" -> 0 (line new); grep -c 'Round 34 — sibling-overlap declarations' -> 0 (section new)
+grep -ci tabi on each cited kasegi line -> 0 0 0

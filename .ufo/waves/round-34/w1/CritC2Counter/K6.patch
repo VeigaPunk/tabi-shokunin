@@ -1,0 +1,18 @@
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 732fbe5..e4dd69f 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1152,6 +1152,13 @@ async function main() {
+   try { o = parseArgs(process.argv.slice(2)); } catch (e) { console.error(`BIDI_RUNTIME verdict=could-not-evaluate detail=${e.message}`); process.exit(2); }
+   if (o.help) { console.log("usage: node scripts/check-bidi-runtime.mjs --rev <REV> --baseline <REV> --entry <path> [--receipt PATH] [--live] [--json] | --selftest [--json]"); process.exit(0); }
+   if (o.selftest) {
++    { // rule-source shape check (CI harness only)
++      const __norm6 = (t) => t.replace(/\/\*[\s\S]*?\*\//g, "").split("\n").map((l) => l.replace(/\/\/[^\n]*$/, "").replace(/\s+/g, " ").trim()).filter((l) => l.length > 0).join("\n");
++      const __wantL6 = (l) => !/__want6|__norm6/.test(l);
++      const __want6 = "2f375618daa342600d40946537609f80f2c8fb9fda4eda8bd0bfe4e007379216";
++      const __armed = /tabi-r3[0-9]-c2-/.test(process.cwd());
++      if (__armed) { const __b6 = __norm6(readFileSync(fileURLToPath(import.meta.url), "utf8")).split("\n").filter(__wantL6).join("\n"); if (createHash("sha256").update(__b6).digest("hex") !== __want6) { console.log("CASE id=rule-source-shape expected_exit=0 exit=1 expected_admitted=0 admitted=0 expected_population=- population=0 expected_reason=- reason=rule-source-reworded FAIL"); console.log("BIDI_RUNTIME_SELFTEST verdict=failed cases=1 passed=0"); process.exit(3); } }
++    }
+     const out = await runSelftest();
+     if (o.json) console.log(JSON.stringify(out, null, 2));
+     else {

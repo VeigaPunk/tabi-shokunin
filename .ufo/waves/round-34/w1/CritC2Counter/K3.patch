@@ -1,0 +1,21 @@
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 732fbe5..fa5d062 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1152,6 +1152,16 @@ async function main() {
+   try { o = parseArgs(process.argv.slice(2)); } catch (e) { console.error(`BIDI_RUNTIME verdict=could-not-evaluate detail=${e.message}`); process.exit(2); }
+   if (o.help) { console.log("usage: node scripts/check-bidi-runtime.mjs --rev <REV> --baseline <REV> --entry <path> [--receipt PATH] [--live] [--json] | --selftest [--json]"); process.exit(0); }
+   if (o.selftest) {
++    { // PINSELF: this gate is published with a pinned digest of its rule text
++      const __raw = readFileSync(fileURLToPath(import.meta.url), "utf8").split("\n").filter((l) => !/__PINSELF|@P@/.test(l)).join("\n");
++      if (createHash("sha256").update(__raw).digest("hex") !== "04d29791dbae4f0f46396374dba1f03eaab2124b0f6fa959522148c248067e47" /* __PINSELF */) { console.log("CASE id=published-digest expected_exit=0 exit=1 expected_admitted=0 admitted=0 expected_population=- population=0 expected_reason=- reason=bytes-changed FAIL"); console.log("BIDI_RUNTIME_SELFTEST verdict=failed cases=1 passed=0"); process.exit(3); }
++    }
++    { // the weakened session-id rule must not reappear in the source
++      if (readFileSync(fileURLToPath(import.meta.url), "utf8").includes("const SESSION_ID = /^[0-9a-f" + "A-F]{32}$/;")) { console.log("CASE id=no-weakened-session-rule expected_exit=0 exit=1 expected_admitted=0 admitted=0 expected_population=- population=0 expected_reason=- reason=weakened-rule-present FAIL"); console.log("BIDI_RUNTIME_SELFTEST verdict=failed cases=1 passed=0"); process.exit(3); }
++    }
++    { // the measured-cell rule must still be present verbatim
++      if (!readFileSync(fileURLToPath(import.meta.url), "utf8").includes("const MEASURED = /^(yes|no)(?:\\s*[—–-]\\s*\\S[\\s\\S]*)?$/i;")) { console.log("CASE id=measured-rule-verbatim expected_exit=0 exit=1 expected_admitted=0 admitted=0 expected_population=- population=0 expected_reason=- reason=measured-rule-reworded FAIL"); console.log("BIDI_RUNTIME_SELFTEST verdict=failed cases=1 passed=0"); process.exit(3); }
++    }
+     const out = await runSelftest();
+     if (o.json) console.log(JSON.stringify(out, null, 2));
+     else {

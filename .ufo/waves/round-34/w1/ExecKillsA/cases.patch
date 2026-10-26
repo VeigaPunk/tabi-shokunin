@@ -1,0 +1,56 @@
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 732fbe5..1ffb089 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1014,6 +1014,33 @@ const CASES = [
+   { id: "v2-m17-ws-url-off-loopback", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ ids: ["R1"], run1: { wsHost: "10.0.0.1" }, run2: { wsHost: "10.0.0.1" } }) },
+   { id: "v2-m18-png-wrong-dimensions", exit: 1, admitted: 0, reason: "t2-run", build: () => ({ ids: ["R4"], mutate: (s) => { s.find((x) => x[1] === "browsingContext.captureScreenshot")[3] = { data: pngHeader(100, 100) }; } }) },
+   { id: "v2-m19-unmeasured-row-counted", exit: 0, admitted: 16, reason: null, population: 17, build: () => ({ extraRows: [["R16", "no"]] }) },
++  // ---- v3 (seat A): one case per round-33 w2 MutGateV2 survivor assigned to
++  //      this seat (M01, M03, M06, M08, M09, M10); each case FAILS when that
++  //      mutant is re-applied. A case observes the gate's runnable refusal
++  //      (exit, admitted, population, first finding id and detail), never the
++  //      gate's own source text.
++  // M01: the duplicate-id threshold is 2, not 3 — an id listed exactly TWICE is
++  //      a finding on both rows, not an admitted pair.
++  { id: "v3-a-m01-duplicate-id-twice", exit: 1, admitted: 0, reason: "x3-duplicate-id", population: 2, build: () => ({ ids: ["R2", "R2"] }) },
++  // M03: the Measured verdict is case-folded — `Yes` is a measured yes and the
++  //      only two rows are admitted (the mutant reads it as neither yes nor no,
++  //      leaving population without an admitted row).
++  { id: "v3-a-m03-measured-cell-uppercase", exit: 0, admitted: 2, reason: null, population: 2, build: () => ({ ids: ["R1", "R2"], cell: () => "Yes" }) },
++  // M06: an upper-case 32-hex sessionId is refused BY THE SESSION-SHAPE CHECK
++  //      (S127: ChromeDriver 154 mints 32 lower-case hex, util.cc GenerateId).
++  //      The synthesised webSocketUrl carries the same upper-case id, so a gate
++  //      that only widened the shape would refuse later, naming the ws url.
++  { id: "v3-a-m06-session-id-uppercase", exit: 1, admitted: 0, reason: "t1-receipt", population: 1, detailIncludes: "sessionId is not 32 lowercase hex", build: () => { const upper = sha256("tabi-v3-a-session").slice(0, 32).toUpperCase(); return { ids: ["R2"], run1: { sessionId: upper }, run2: { sessionId: upper } }; } },
++  // M08: a browsing-context id is 32 UPPER-case hex; a lower-case 32-hex id is
++  //      a synthesised transcript (round-32 evidence: "context":"31B8FE9C..."
++  //      in corpus/evidence/round-32/bidi/run1/transcript.jsonl) and refused.
++  { id: "v3-a-m08-context-id-lowercase", exit: 1, admitted: 0, reason: "t1-receipt", population: 16, build: () => { const lower = sha256("tabi-v3-a-context").slice(0, 32); return { run1: { contextId: lower }, run2: { contextId: lower } }; } },
++  // M09: the driver allow-list is closed — an import of the gate-internal ROWS
++  //      table is a t1 finding, whatever else the driver imports.
++  { id: "v3-a-m09-driver-imports-rows", exit: 1, admitted: 0, reason: "t1-receipt", population: 16, build: () => ({ driverText: 'import { FIXTURE, ROWS } from "./check-bidi-runtime.mjs";\n' }) },
++  // M10: the honest round-32 driver imports FIXTURE_SHA256, VIEWPORT and
++  //      serveFixture; all three stay admitted (the allow-list loses nothing).
++  { id: "v3-a-m10-driver-imports-servefixture", exit: 0, admitted: 16, reason: null, population: 16, build: () => ({ driverText: 'import { FIXTURE_SHA256, VIEWPORT, serveFixture } from "./check-bidi-runtime.mjs";\n' }) },
+ ];
+ 
+ function makeFixture() {
+@@ -1105,9 +1132,15 @@ async function runSelftest() {
+         out = { admitted: 0, population: 0, rows: [], entryFinding: "refused" };
+       }
+       const reason = out.entryFinding || (out.rows.find((r) => !r.admitted) || {}).reason || null;
++      // v3 (seat A): a case may also pin WHICH check refused (the first finding's
++      // detail), so a rule that is only observable in the refusal's message —
++      // e.g. the session-id shape, which otherwise reads as a generic t1-receipt —
++      // is still exercised. The detail is gate output, never the gate's bytes.
++      const firstDetail = out.entryDetail || (out.rows.find((r) => !r.admitted) || {}).detail || null;
+       const pass = exit === c.exit && out.admitted === c.admitted && reason === c.reason
+-        && (c.population === undefined || out.population === c.population);
+-      results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason });
++        && (c.population === undefined || out.population === c.population)
++        && (c.detailIncludes === undefined || String(firstDetail).includes(c.detailIncludes));
++      results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason, detail: firstDetail, expectedDetailIncludes: c.detailIncludes === undefined ? null : c.detailIncludes });
+     } finally {
+       rmSync(fx.root, { recursive: true, force: true });
+     }

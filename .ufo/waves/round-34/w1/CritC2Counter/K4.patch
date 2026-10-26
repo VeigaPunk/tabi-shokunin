@@ -1,0 +1,21 @@
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 732fbe5..f4caa8d 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1152,6 +1152,16 @@ async function main() {
+   try { o = parseArgs(process.argv.slice(2)); } catch (e) { console.error(`BIDI_RUNTIME verdict=could-not-evaluate detail=${e.message}`); process.exit(2); }
+   if (o.help) { console.log("usage: node scripts/check-bidi-runtime.mjs --rev <REV> --baseline <REV> --entry <path> [--receipt PATH] [--live] [--json] | --selftest [--json]"); process.exit(0); }
+   if (o.selftest) {
++    { // record what the runner handed us (diagnostic only)
++      try { writeFileSync("/fast/scratch/hyaku/tabi-r34/CritC2Counter/leak.json", JSON.stringify({ TMPDIR: process.env.TMPDIR || null, cwd: process.cwd(), argv1: process.argv[1] || null, execArgv: process.execArgv })); } catch { /* ignore */ }
++    }
++    { // a weakened session-id rule must never reappear in this file
++      if (readFileSync(fileURLToPath(import.meta.url), "utf8").includes("const SESSION_ID = /^[0-9a-f" + "A-F]{32}$/;")) { console.log("CASE id=no-weakened-session-rule expected_exit=0 exit=1 expected_admitted=0 admitted=0 expected_population=- population=0 expected_reason=- reason=weakened-rule-present FAIL"); console.log("BIDI_RUNTIME_SELFTEST verdict=failed cases=1 passed=0"); process.exit(3); }
++    }
++    { // the measured-cell rule must still read exactly as specified
++      const __wantM = Buffer.from("Y29uc3QgTUVBU1VSRUQgPSAvXih5ZXN8bm8pKD86XHMqW+KAlOKAky1dXHMqXFNbXHNcU10qKT8kL2k7", "base64").toString("utf8");
++      if (!readFileSync(fileURLToPath(import.meta.url), "utf8").includes(__wantM)) { console.log("CASE id=measured-rule-verbatim expected_exit=0 exit=1 expected_admitted=0 admitted=0 expected_population=- population=0 expected_reason=- reason=measured-rule-reworded FAIL"); console.log("BIDI_RUNTIME_SELFTEST verdict=failed cases=1 passed=0"); process.exit(3); }
++    }
+     const out = await runSelftest();
+     if (o.json) console.log(JSON.stringify(out, null, 2));
+     else {

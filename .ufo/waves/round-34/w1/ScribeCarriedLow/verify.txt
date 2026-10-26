@@ -1,0 +1,90 @@
+$ git rev-parse HEAD
+exit=0
+59f1b47aae277e1670e4a824173da8cde7e388ee
+
+$ git diff --stat 042d6d9abf97d567d495652a85eabc851b81adc1 59f1b47aae277e1670e4a824173da8cde7e388ee -- scripts/check-bidi-runtime.mjs corpus/knowledge/webdriver-bidi-runtime-round-32.md LOG.md corpus/lessons/round-32.md
+exit=0
+LOG.md                         | 25 +++++++++++++++++++++++++
+ scripts/check-bidi-runtime.mjs |  6 +++++-
+ 2 files changed, 30 insertions(+), 1 deletion(-)
+
+$ git diff --unified=0 042d6d9abf97d567d495652a85eabc851b81adc1 59f1b47aae277e1670e4a824173da8cde7e388ee -- LOG.md | grep '^@@'
+exit=0
+@@ -2382,0 +2383,25 @@ Correction (round 33, named) — supersedes `.ufo/waves/round-33/claims.json` `n
+
+$ git show b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd:scripts/check-bidi-runtime.mjs | sha256sum
+exit=0
+2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393  -
+
+$ diff <(git show b7d16fb8a9405f09bf064e9ea51905b8f9fe66cd:scripts/check-bidi-runtime.mjs | sed -n '124,133p') <(sed -n '186,195p' scripts/check-bidi-runtime.mjs) && echo IDENTICAL
+exit=0
+IDENTICAL
+
+$ git rev-parse --verify 'c8ec438690e641cb044e7eff1dc8423d0b7530cc^{commit}'
+exit=128
+fatal: Needed a single revision
+
+$ git cat-file -e c8ec438690e641cb044e7eff1dc8423d0b7530cc
+exit=1
+
+
+$ git rev-parse --verify '08086884d425b879f020af82fc6e57180e991a3e^{commit}'
+exit=0
+08086884d425b879f020af82fc6e57180e991a3e
+
+$ git merge-base --is-ancestor 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6 b234a58920134424e0d104f137311ff54a16d26b; echo ancestor_exit=$?; git rev-list --count 4181fffb4e9e9ad7ba7b73d43d50faffd690d1e6..b234a58920134424e0d104f137311ff54a16d26b
+exit=0
+ancestor_exit=0
+1
+
+$ git log --oneline -- .ufo/waves/round-32/w1/ExecDriver/live.json
+exit=0
+b234a58 round-32: integrate C1 (BiDi runtime entry, driver, two-run receipt, S123-S126) and C2 (nudge-state and v3 tally corrections), lesson, QUALITY 83-86, wave-1 evidence
+
+$ grep -c '^| R[0-9]' corpus/knowledge/webdriver-bidi-runtime-round-32.md
+exit=0
+34
+
+$ sha256sum corpus/knowledge/webdriver-bidi-runtime-round-32.md LOG.md corpus/lessons/round-32.md
+exit=0
+9518ee065960d8a7ce5617639045c8901edc3b7542064900b5ff9541754aec97  corpus/knowledge/webdriver-bidi-runtime-round-32.md
+1997edae6421782af02b18d03b128f4b912b0f3c08d91395be9154458165653f  LOG.md
+c2001ce7c8496474305b629e86d650417b3017ef3d36e8ecd180246ed9cb94a2  corpus/lessons/round-32.md
+
+$ wc -l corpus/knowledge/webdriver-bidi-runtime-round-32.md LOG.md corpus/lessons/round-32.md
+exit=0
+250 corpus/knowledge/webdriver-bidi-runtime-round-32.md
+  2407 LOG.md
+   212 corpus/lessons/round-32.md
+  2869 total
+
+$ node /fast/scratch/hyaku/tabi-r34/ScribeCarriedLow/errata-split.cjs
+exit=0
+items=43 Carried=27 [4,6,7,8,9,10,12,13,14,16,17,18,20,21,22,23,24,26,27,28,30,31,32,33,35,37,38]
+CorrectedHere=12 [1,2,3,5,19,25,34,36,39,40,41,42]
+NoAction=4 [11,15,29,43]
+lowercase_carried=[3,19,25,36]
+
+$ append blocks.md to corpus/knowledge/webdriver-bidi-runtime-round-32.md; prefix compare + merged digest
+exit=0
+cmp_exit=0
+83c77ca0b168d91dc861d331f6ef9da6c9c1541359eed4ac7f4eba8f1d81877e
+26250
+
+$ append blocks-log.md to LOG.md; prefix compare + merged digest
+exit=0
+cmp_exit=0
+be84801551b773271015fc5b6800925a70164c0763684bf66ec87017a44dcbe9
+189218
+
+$ append blocks-lesson.md to corpus/lessons/round-32.md; prefix compare + merged digest
+exit=0
+cmp_exit=0
+b84ad0e36386af34411bf97b8ead7af846a8884ca51f363512cc9eebd16b9467
+24167
+
+$ node scan.cjs (drafted blocks)
+exit=0
+blocks.md: scripts=["scripts/check-bidi-runtime.mjs","scripts/check-bidi-runtime.mjs"]
+blocks-log.md: clean
+blocks-lesson.md: clean

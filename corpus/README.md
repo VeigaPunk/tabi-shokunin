@@ -788,3 +788,17 @@ Append-only. One knowledge row and one map file; no earlier line is edited.
 ## Round 33 — wave-2 correction (append-only)
 
 - `corpus/README.md:766`: correction — three new kake overlaps landed (JS rendering, robots.txt, accessibility execution); the crawl-rate row was withdrawn in wave 2 as a re-key of the mapped crawler split (lesson round-33 M6), and accessibility execution is held for accessible-tree capture only, assistive-technology runs being frontier (`SKILL.md` round-33 wave-2 corrections).
+
+## Round 34 — sibling ground outside PROVINCE and the BiDi gate self-test (2026-10-26)
+
+Append-only. One knowledge row, one new screen ledger, four new map rows; no earlier line is edited.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/bidi-gate-selftest-round-34.md` *(round 34)* | Which of the BiDi gate's own rules its self-test exercises: the 20 frozen round-33 mutants, the kill case for each, the rule for pinning which finding fired, and the id shapes the receipt rules rest on (session id 32 lower-case hex, browsingContext id = CDP targetId, 32 upper-case hex) | S125, S127, S130, S131, S132 |
+| `adjacency-screen-skill.tsv` *(round 34, with `adjacency.tsv` rows 15–18)* | The 67 sibling lines outside `PROVINCE.md` that name tabi or that round 33 logged as browser-ground leads, mapped or screened with a closed reason; four new boundaries: kake live delivery (headers, redirects), kake lab performance runs (Lighthouse/DevTools), kotoba agent-facing tool text, kasegi authenticated consequential driving (refused-route) | sibling `SKILL.md`/`corpus/knowledge` lines at their pins; `SKILL.md` §Round 34 declarations |
+
+| Frontier item | Status | Pointer |
+|---|---|---|
+| Sibling overlaps outside `PROVINCE.md` | bounded for lines naming tabi and the round-33 leads (67 of 67 accounted); browser-ground lines in sibling knowledge that neither name tabi nor were leads stay unswept | lesson round-34 §C1 gate decisions |
+| BiDi gate rule coverage | the self-test kills the 20 frozen mutants; rules outside those sites (live leg, replay semantics) and the CritForgeV2B/C constructions stay open | `knowledge/bidi-gate-selftest-round-34.md` §5 |

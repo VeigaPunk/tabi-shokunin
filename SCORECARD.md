@@ -1881,3 +1881,12 @@ production path (battery false).
 Feasibility disclosed (`claims.json`): C1's counter cannot judge overlap semantics — wave 2 attacks each new row and
 each screen-reason group; C2's probes do not refuse a self-test that sniffs a whitespace-normalised find text — wave 2
 reads the self-test code. Not claimed: calibration counter v4, battery v2, decision-table counter v2.
+
+## Round 34 — corrections (append-only; each cites the stale line in its own document)
+
+The BiDi gate self-test grows from 44 to 56 cases in round 34 (twelve kill cases, lesson round-34 §C2); each stale tally stays as written and the line below supersedes it.
+
+- `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SCORECARD.md:1657` (round-34 kill cases added).
+- `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SCORECARD.md:1784` (round-34 kill cases added).
+- `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SCORECARD.md:1787` (round-34 kill cases added).
+- `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SCORECARD.md:1805` (round-34 kill cases added).

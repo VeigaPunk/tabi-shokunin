@@ -1,0 +1,42 @@
+# Seat AdjTameshiTsukuroiChousa — commands and exit codes (round 34, w1, C1)
+# scratch: /fast/scratch/hyaku/tabi-r34/AdjTameshiTsukuroiChousa ; clone at 59f1b47aae277e1670e4a824173da8cde7e388ee
+
+## candidate text vs pin bytes (8 candidates, rows 32-38 + 67)
+git -C <lane>-shokunin show <pin>:<path> | sed -n '<line>p'      # 7 EQ, 1 EQ after strip (row 36 leading spaces in pin)
+exit=0
+
+## quote verification (every screen quote must be a verbatim substring of the candidate line's pin bytes)
+git -C <lane>-shokunin show <pin>:<path> | sed -n '<line>p' | grep -c -F -- '<quote>'   # 1 per row, all 8 rows
+exit=0 (8/8)
+
+## clone
+git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"                     exit=0
+git -C "$S/clone" checkout -q --detach 59f1b47aae277e1670e4a824173da8cde7e388ee               exit=0
+git -C "$S/clone" rev-parse --show-toplevel   -> /fast/scratch/hyaku/tabi-r34/AdjTameshiTsukuroiChousa/clone (equals clone dir)
+
+## install ledger + commit (only write: new file corpus/adjacency-screen-skill.tsv)
+git -C "$S/clone" commit ...   -> ddd52e18ffa8d0103af22379d864dddb9f3ca4fb                   exit=0
+git show --numstat -> 9  0  corpus/adjacency-screen-skill.tsv (append-only, no existing file touched)
+
+## instruments (bytes equal the frozen digests)
+sha256sum .ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs
+  -> 0dba816ccab0b7bf690c3a4da6d850ce4a5a092d9aec895e33c9e7fe75a8781e   (frozenDigests match)
+git -C "$S/clone" cat-file blob ddd52e18...:scripts/check-adjacency.mjs | sha256sum
+  -> 4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac   (pinned digest match)
+
+## gates at the commit
+cd "$S/clone"
+TMPDIR="$S/tmp" node scripts/check-adjacency.mjs --at ddd52e18ffa8d0103af22379d864dddb9f3ca4fb \
+  --repo "$S/clone" --fleet /home/vgpnk/Projects/shokunin --json                        exit=0
+  -> {"verdict":"clean","rows":13,"verified":13,"selfRulings":[2]}  (adj.json)
+TMPDIR="$S/tmp" node scripts/check-adjacency.mjs --at ddd52e18... --repo "$S/clone" \
+  --fleet /home/vgpnk/Projects/shokunin                                                exit=0
+  -> ADJACENCY verdict=clean rows=13 verified=13                       (adj.txt)
+TMPDIR="$S/tmp" node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs \
+  --rev ddd52e18ffa8d0103af22379d864dddb9f3ca4fb --repo "$S/clone" \
+  --fleet /home/vgpnk/Projects/shokunin --json                                         exit=1 (predicate not met on this seat's partition alone)
+  -> predicate=false candidates=67 mapped=1 screened=8 unaccounted=58 newMapped=0
+     screenFindings=[] adjacency={verdict:clean,rows:13,verified:13}   (c1.json)
+
+## per-key accounting
+none of the 8 seat keys appear in c1.json unaccountedKeys (58 remaining are other seats' partitions)

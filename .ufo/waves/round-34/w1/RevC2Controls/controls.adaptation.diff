@@ -1,0 +1,83 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-34/baseline/controls.mjs	2026-10-26 16:34:35.534442378 -0300
++++ /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-34/w1/RevC2Controls/controls.mjs	2026-10-26 16:54:10.294093646 -0300
+@@ -12,11 +12,11 @@
+ import { fileURLToPath } from 'node:url';
+ 
+ const HERE = dirname(fileURLToPath(import.meta.url));
+-const LANE = resolve(HERE, '../../../..');
++const LANE = process.env.CONTROLS_LANE || resolve(HERE, '../../../../..'); // RevC2Controls-2 copy: lives 5 levels deep, lane passed via CONTROLS_LANE
+ const FLEET = resolve(LANE, '..');
+ const BASELINE = '15dfaccb34601c2d221c78501e2befd8998d600c';
+-const C1 = join(HERE, '../counters/c1-adjacency-sweep-v2.mjs');
+-const C2 = join(HERE, '../counters/c2-gate-mutants.mjs');
++const C1 = join(HERE, 'c1-adjacency-sweep-v2.mjs'); // RevC2Controls-2 copy: frozen bytes copied beside this driver
++const C2 = join(HERE, 'c2-gate-mutants.mjs');
+ const TMP = process.env.TMPDIR;
+ if (!TMP || !TMP.startsWith('/fast/scratch/hyaku/tabi-r34/')) throw new Error('set TMPDIR under /fast/scratch/hyaku/tabi-r34/');
+ const sha = (b) => createHash('sha256').update(b).digest('hex');
+@@ -54,63 +54,9 @@
+   if (c.status !== 0) throw new Error(c.stderr);
+   if (g('rev-parse', '--show-toplevel') !== clone) throw new Error('clone toplevel mismatch');
+   g('checkout', '-q', '--detach', BASELINE);
+-  // J1 — do nothing
+-  const base = score('c1-J1-do-nothing', C1, BASELINE, LANE);
++  // RevC2Controls-2: the C1 half is intentionally not re-run (C2 reproduction scope)
+   score('c2-J1-do-nothing', C2, BASELINE, LANE);
+-  const list = run(process.execPath, [C1, '--list-candidates', '--repo', LANE, '--fleet', FLEET]).stdout;
+-  writeFileSync(join(HERE, 'c1-candidates.tsv'), list);
+-  const cands = list.trim().split('\n').map((l) => { const [key, set, text] = l.split('\t'); const m = /^(.+)-shokunin@([0-9a-f]{40}):(.+):(\d+)$/.exec(key); return { key, set, text, lane: m[1], pin: m[2], path: m[3], line: Number(m[4]) }; });
+-  const byKey = (k) => cands.find((x) => x.key.startsWith(k));
+-  const screenRows = (skip) => ['sibling_ref\treason\tsurface\tquote\tnote'].concat(base.unaccountedKeys.filter((k) => !skip.includes(k)).map((k) => `${k}\tnot-browser-sense\t-\t${win(cands.find((x) => x.key === k).text)}\tcontrol`)).join('\n') + '\n';
+-  const map = readFileSync(join(LANE, 'corpus/adjacency.tsv'), 'utf8').replace(/\n*$/, '\n');
+-  // C1 J2 — screen every unaccounted candidate not-browser-sense; map nothing
+-  reset();
+-  put('corpus/adjacency-screen-skill.tsv', screenRows([]));
+-  score('c1-J2-screen-all', C1, commit('control c1 J2 screen-all'), clone);
+-  // C1 J3 — four split-declared rows on NON-candidate sibling lines with a NEW tabi line naming each sibling
+-  reset();
+-  const decl = 'Round-34 control declaration (junk): tabi splits browser ground with kama mori souji tameshi here.';
+-  const skill = get('SKILL.md').replace(/\n*$/, '\n') + '\n' + decl + '\n';
+-  put('SKILL.md', skill);
+-  const declLine = skill.split('\n').indexOf(decl) + 1;
+-  const pinOf = (l) => run('git', ['-C', join(FLEET, `${l}-shokunin`), 'show', '-s', '--format=%H', 'HEAD']).stdout.trim();
+-  void pinOf;
+-  const PINS = JSON.parse(readFileSync(join(HERE, 'c1-pins.json'), 'utf8'));
+-  const junk = ['kama', 'mori', 'souji', 'tameshi'].map((l, i) => {
+-    const text = run('git', ['-C', join(FLEET, `${l}-shokunin`), 'show', `${PINS[l]}:SKILL.md`]).stdout.split('\n')[2];
+-    return `junk-surface-${i}\t${l}\t${l}-shokunin@${PINS[l]}:SKILL.md:3\t${win(text)}\tSKILL.md:${declLine}\tbrowser ground with kama mori souji tameshi\tsplit-declared\t-\tbrowser ground with kama mori souji tameshi`;
+-  });
+-  put('corpus/adjacency.tsv', map + junk.join('\n') + '\n');
+-  put('corpus/adjacency-screen-skill.tsv', screenRows([]));
+-  score('c1-J3-junk-noncandidate', C1, commit('control c1 J3 junk rows on non-candidate lines'), clone);
+-  // C1 J4 — split-declared rows on candidate lines that NAME tabi, tabi side = EXISTING tabi lines naming the sibling (no new declaration)
+-  reset();
+-  const tabiLines = get('SKILL.md').split('\n');
+-  const roster = tabiLines.findIndex((x) => x.includes('LANES="protocol aggregator kasegi kengaku kake kumitate kotoba kagi kama"')) + 1;
+-  const pub = tabiLines.findIndex((x) => x.includes('Refuse-and-route: RE forensics → revenger/kaidoku; publishing → kake; secrets → kagi')) + 1;
+-  if (!roster || !pub) throw new Error('tabi anchor lines not found');
+-  const picks = [
+-    [byKey('kotoba-shokunin@65a5c7a663249e0522cc49e4a148424200d9ddfe:corpus/knowledge/sibling-overlap-census-round49.md:171'), `SKILL.md:${roster}`, 'aggregator kasegi kengaku kake kumitate kotoba kagi kama'],
+-    [byKey('kotoba-shokunin@65a5c7a663249e0522cc49e4a148424200d9ddfe:corpus/knowledge/sibling-overlap-census-round74.md:150'), `SKILL.md:${roster}`, 'aggregator kasegi kengaku kake kumitate kotoba kagi kama'],
+-    [byKey('kumitate-shokunin@8d557f85312de4fcc82e09ff735d21436bc3746d:corpus/knowledge/kimi-skills-plugins.md:250'), `SKILL.md:${roster}`, 'aggregator kasegi kengaku kake kumitate kotoba kagi kama'],
+-    [byKey('kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:SKILL.md:408'), `SKILL.md:${pub}`, 'RE forensics → revenger/kaidoku; publishing → kake; secrets → kagi'],
+-  ];
+-  if (picks.some((p) => !p[0])) throw new Error('J4 candidate missing');
+-  const named = picks.map(([cd, tref, tq], i) => `named-existing-${i}\t${cd.lane}\t${cd.key}\t${win(cd.text, 'tabi')}\t${tref}\t${tq}\tsplit-declared\t-\t${tq}`);
+-  put('corpus/adjacency.tsv', map + named.join('\n') + '\n');
+-  put('corpus/adjacency-screen-skill.tsv', screenRows(picks.map((p) => p[0].key)));
+-  score('c1-J4-existing-tabi-lines', C1, commit('control c1 J4 named rows on existing tabi lines'), clone);
+-  // C1 J5 — split-declared rows on candidate lines that do NOT name tabi, with a NEW tabi line naming each sibling
+-  reset();
+-  const decl5 = 'Round-34 control declaration (junk): tabi splits browser ground with kasegi kagi kama here.';
+-  const skill5 = get('SKILL.md').replace(/\n*$/, '\n') + '\n' + decl5 + '\n';
+-  put('SKILL.md', skill5);
+-  const d5 = skill5.split('\n').indexOf(decl5) + 1;
+-  const unnamed = cands.filter((x) => x.set === 'B' && !/\btabi\b/i.test(x.text) && ['kasegi', 'kagi', 'kama'].includes(x.lane)).slice(0, 4);
+-  const mis = unnamed.map((cd, i) => `unnamed-${i}\t${cd.lane}\t${cd.key}\t${win(cd.text)}\tSKILL.md:${d5}\tbrowser ground with kasegi kagi kama\tsplit-declared\t-\tbrowser ground with kasegi kagi kama`);
+-  put('corpus/adjacency.tsv', map + mis.join('\n') + '\n');
+-  put('corpus/adjacency-screen-skill.tsv', screenRows(unnamed.map((x) => x.key)));
+-  score('c1-J5-unnamed-sibling-side', C1, commit('control c1 J5 split rows whose sibling side does not name tabi'), clone);
++  // (C1 J2..J5 blocks removed by RevC2Controls-2; C2 J2 below is unchanged from the frozen driver)
+   // C2 J2 — self-hash self-test: fails whenever its own bytes (minus the hash line) change
+   const G = readFileSync(join(LANE, 'scripts/check-bidi-runtime.mjs'), 'utf8');
+   const anchor = '  if (o.selftest) {\n';

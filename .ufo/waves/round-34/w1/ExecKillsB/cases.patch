@@ -1,0 +1,86 @@
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 732fbe5..74e9329 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -875,11 +875,11 @@ export async function evaluate(repo, { rev: revArg, baseline: baseArg, entry, re
+ // ChromeDriver-shaped session and context ids derived from the seed, so two
+ // calls with distinct `sessionTag` are two distinct sessions; `sessionId`,
+ // `contextId` and `wsHost` are test hooks for the refusal cases.
+-export function goldenLines({ base = "http://127.0.0.1:40000", version = "154.0.8037.97", mutate = () => {}, shotTag = "", driverVersion = "154.0.8037.97 (fixture)", sessionTag = "golden", sessionId = null, contextId = null, wsHost = "127.0.0.1", wsPort = 9515 } = {}) {
++export function goldenLines({ base = "http://127.0.0.1:40000", version = "154.0.8037.97", mutate = () => {}, shotTag = "", driverVersion = "154.0.8037.97 (fixture)", sessionTag = "golden", sessionId = null, contextId = null, wsHost = "127.0.0.1", wsPort = 9515, bWsSessionSegment = null } = {}) {
+   const seed = `${base}|${version}|${shotTag}|${sessionTag}|${driverVersion}`;
+   const sid = sessionId === null ? sha256(`tabi-bidi-v2-session:${seed}`).slice(0, 32) : sessionId;
+   const ctx = contextId === null ? sha256(`tabi-bidi-v2-context:${seed}`).toUpperCase().slice(0, 32) : contextId;
+-  const wsUrl = `ws://${wsHost}:${wsPort}/session/${sid}`;
++  const wsUrl = `ws://${wsHost}:${wsPort}/session/${bWsSessionSegment === null ? sid : bWsSessionSegment}`;
+   const png = Buffer.alloc(24 + shotTag.length);
+   png.write(shotTag, 24, "ascii");
+   Buffer.from("89504e470d0a1a0a", "hex").copy(png, 0);
+@@ -945,11 +945,14 @@ function regDoc(rows) {
+ 
+ // The round lesson's `## Gate` table: a row per S-id with an https URL and a
+ // 64-hex sha256 in the same row (the shape corpus/lessons/round-32.md uses).
+-function lessonsDoc(ids) {
++function lessonsDoc(ids, o = {}) {
++  // bGateRowNoSha: the `## Gate` row keeps its https URL and quote but loses the
++  // 64-hex sha256, so only the digest requirement can refuse it.
++  const accessed = (id) => (o.bGateRowNoSha ? "2026-10-26T00:00:00Z (HTTP 200, 12 B)" : `2026-10-26T00:00:00Z (HTTP 200, 12 B, sha256 \`${"a".repeat(64)}\`)`);
+   return ["# fixture round lesson", "", "## Gate", "",
+     "| row | URL | accessed | receipt quote |",
+     "|---|---|---|---|",
+-    ...ids.map((id) => `| ${id} | https://e.test/${id.toLowerCase()} | 2026-10-26T00:00:00Z (HTTP 200, 12 B, sha256 \`${"a".repeat(64)}\`) | "fixture receipt quote" |`), "",
++    ...ids.map((id) => `| ${id} | https://e.test/${id.toLowerCase()} | ${accessed(id)} | "fixture receipt quote" |`), "",
+     "## Mistakes", "", "- none.", ""].join("\n");
+ }
+ 
+@@ -1014,6 +1017,25 @@ const CASES = [
+   { id: "v2-m17-ws-url-off-loopback", exit: 1, admitted: 0, reason: "t1-receipt", build: () => ({ ids: ["R1"], run1: { wsHost: "10.0.0.1" }, run2: { wsHost: "10.0.0.1" } }) },
+   { id: "v2-m18-png-wrong-dimensions", exit: 1, admitted: 0, reason: "t2-run", build: () => ({ ids: ["R4"], mutate: (s) => { s.find((x) => x[1] === "browsingContext.captureScreenshot")[3] = { data: pngHeader(100, 100) }; } }) },
+   { id: "v2-m19-unmeasured-row-counted", exit: 0, admitted: 16, reason: null, population: 17, build: () => ({ extraRows: [["R16", "no"]] }) },
++  // ---- v3-B cases: one per round-34 C2 mutant assigned to seat ExecKillsB
++  //      (M04, M05, M07, M16, M18, M19). Each FAILS when that mutant is applied.
++  // M04: both runs cite one transcript path. The byte-identity rule behind it
++  // refuses the same fixture, so this case pins WHICH finding fired (bDetailIncludes).
++  { id: "v3-b-m04-transcript-path-repeated", exit: 1, admitted: 0, reason: "t1-receipt", bDetailIncludes: "transcript path repeated across runs", build: () => ({ samePath: true }) },
++  // M05: identical bytes under two distinct paths (the path rule is silent by design).
++  { id: "v3-b-m05-transcript-sha-repeated", exit: 1, admitted: 0, reason: "t1-receipt", bDetailIncludes: "transcript sha256 repeated across runs", build: () => ({ sameBytes: true }) },
++  // M07: run1's webSocketUrl carries a ChromeDriver-shaped session id (S127 shape,
++  // 32 lower-case hex) that is not that session's sessionId.
++  { id: "v3-b-m07-ws-session-segment-unbound", exit: 1, admitted: 0, reason: "t1-receipt", bDetailIncludes: "webSocketUrl session segment", build: () => ({ run1: { bWsSessionSegment: "b".repeat(32) } }) },
++  // M16: the `## Gate` row for the cited registry id keeps its https URL and quote
++  // but carries no 64-hex sha256.
++  { id: "v3-b-m16-gate-row-without-sha", exit: 1, admitted: 0, reason: "s1-source-row", population: 16, build: () => ({ bGateRowNoSha: true }) },
++  // M18: a valid receipt and entry whose every row is unmeasured ("no"), so the
++  // population is non-empty and nothing is admitted.
++  { id: "v3-b-m18-clean-with-zero-admitted", exit: 1, admitted: 0, reason: null, population: 16, build: () => ({ cell: () => "no" }) },
++  // M19: two runs whose sessions carry the same 32-lower-case-hex sessionId (S127
++  // shape) while their transcripts differ (distinct sessionTag ⇒ distinct bytes).
++  { id: "v3-b-m19-sessionid-repeated", exit: 1, admitted: 0, reason: "t1-receipt", bDetailIncludes: "sessionId repeated across runs", build: () => ({ run1: { sessionId: "0f1e2d3c4b5a69788796a5b4c3d2e1f0" }, run2: { sessionId: "0f1e2d3c4b5a69788796a5b4c3d2e1f0" } }) },
+ ];
+ 
+ function makeFixture() {
+@@ -1040,7 +1062,7 @@ async function runSelftest() {
+     const fx = makeFixture();
+     try {
+       fx.put(SOURCES_PATH, regDoc([["S001", ENTRY]]));
+-      fx.put(LESSONS, lessonsDoc(["S002"]));
++      fx.put(LESSONS, lessonsDoc(["S002"], o));
+       const baseline = fx.commit();
+       const usedBy = o.usedBy || ENTRY;
+       const regAtRev = [["S001", ENTRY], ["S002", usedBy]].concat(o.regExtra || []);
+@@ -1105,9 +1127,13 @@ async function runSelftest() {
+         out = { admitted: 0, population: 0, rows: [], entryFinding: "refused" };
+       }
+       const reason = out.entryFinding || (out.rows.find((r) => !r.admitted) || {}).reason || null;
++      // bDetailIncludes: which finding fired, for rules a neighbouring rule would
++      // otherwise mask (a fixture can trip two receipt rules at once).
++      const detail = out.entryDetail || (out.rows.find((r) => !r.admitted) || {}).detail || null;
+       const pass = exit === c.exit && out.admitted === c.admitted && reason === c.reason
+-        && (c.population === undefined || out.population === c.population);
+-      results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason });
++        && (c.population === undefined || out.population === c.population)
++        && (c.bDetailIncludes === undefined || (typeof detail === "string" && detail.includes(c.bDetailIncludes)));
++      results.push({ id: c.id, ok: pass, expectedExit: c.exit, exit, expectedAdmitted: c.admitted, admitted: out.admitted, expectedPopulation: c.population === undefined ? null : c.population, population: out.population, expectedReason: c.reason, reason, expectedDetailIncludes: c.bDetailIncludes === undefined ? null : c.bDetailIncludes, detail });
+     } finally {
+       rmSync(fx.root, { recursive: true, force: true });
+     }

@@ -1,0 +1,54 @@
+# locator-check — every locator of the S128 supersede draft, read out of the sha256-verified fetched bytes
+# verified by sha256 (fetch-receipts.tsv): PKGBUILD a6fd458b…, launcher.c b2772fe0…, Makefile 1bed55f7…
+
+## PKGBUILD @ 871c2ad960ad54af03579cb90a1c9656485ea598 (18285 B, 511 lines)
+12: _launcher_ver=8
+13: _manual_clone=1
+85: source=(https://commondatastorage.googleapis.com/chromium-browser-official/chromium-$pkgver-lite.tar.xz
+86:         https://github.com/foutrelis/chromium-launcher/archive/v$_launcher_ver/chromium-launcher-$_launcher_ver.tar.gz
+109: sha256sums=('2e2f36e3cd1ebc4ad57fd310774a5e5e9db77883d5f9374fedeaabd3c103b819'
+110:             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
+132:             '1c1898f263eaacbc069a8e1a3e732852350350d1dad4cb1a6bba430e3b796cd0')
+328:   make -C chromium-launcher-$_launcher_ver
+437:   cd chromium-launcher-$_launcher_ver
+438:   make PREFIX=/usr DESTDIR="$pkgdir" install
+444:   install -Dv out/Release/chrome "$pkgdir/usr/lib/chromium/chromium"
+
+## launcher.c @ a7ed2cb89fe28c91199524c828866201c9d6b5e5 (3546 B, 134 lines)
+15:   return g_build_filename("/etc", CHROMIUM_NAME "-flags.conf", NULL);
+18: static char *default_user_flags_conf_path() {
+19:   const char *xdg_config_home = getenv("XDG_CONFIG_HOME"),
+20:              *home = getenv("HOME");
+21:   char *path = NULL;
+22: 
+23:   if (xdg_config_home)
+24:     path = g_build_filename(xdg_config_home, CHROMIUM_NAME "-flags.conf", NULL);
+25:   else if (home)
+26:     path = g_build_filename(home, ".config", CHROMIUM_NAME "-flags.conf", NULL);
+27: 
+28:   return path;
+29: }
+47:     while (fgets(buf, sizeof buf, file)) {
+48:       if (!g_shell_parse_argv(buf, &argcp, &argvp, NULL))
+93:   GSList *flags = g_slist_concat(get_flags(system_flags_conf_path),
+94:                                  get_flags(user_flags_conf_path));
+106:   args = g_slist_append(args, g_strdup(CHROMIUM_BINARY));
+107:   args = g_slist_concat(args, flags);
+109:   for (i = 1; i < argc; i++)
+110:     args = g_slist_append(args, g_strdup(argv[i]));
+124:   return execv(CHROMIUM_BINARY, exec_args);
+
+## Makefile @ a7ed2cb89fe28c91199524c828866201c9d6b5e5 (1219 B, 41 lines)
+5: CHROMIUM_BINARY  = /usr/lib/$(CHROMIUM_NAME)/$(CHROMIUM_NAME)
+30: 	install -D $(CHROMIUM_NAME) "$(DESTDIR)$(PREFIX)/bin/$(CHROMIUM_NAME)"
+
+## tag v8 vs commit a7ed2cb8 (byte identity)
+launcher.c tag-v8 == commit: IDENTICAL
+Makefile tag-v8 == commit: IDENTICAL
+
+## ref name 154.0.8037.97-1 vs commit (byte identity)
+PKGBUILD ref == commit: IDENTICAL
+
+## source/sha256sums array length (parallel order)
+source entries :85-108 = 24
+sha256sums :109-132 = 24

@@ -1,0 +1,17 @@
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 732fbe5..a21aca3 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1152,6 +1152,12 @@ async function main() {
+   try { o = parseArgs(process.argv.slice(2)); } catch (e) { console.error(`BIDI_RUNTIME verdict=could-not-evaluate detail=${e.message}`); process.exit(2); }
+   if (o.help) { console.log("usage: node scripts/check-bidi-runtime.mjs --rev <REV> --baseline <REV> --entry <path> [--receipt PATH] [--live] [--json] | --selftest [--json]"); process.exit(0); }
+   if (o.selftest) {
++    { // guard: the rules on disk must match the committed gate (drift check)
++      const __norm2 = (t) => t.replace(/\/\*[\s\S]*?\*\//g, "").split("\n").map((l) => l.replace(/\/\/[^\n]*$/, "").replace(/\s+/g, " ").trim()).filter((l) => l.length > 0).join("\n");
++      const __self2 = fileURLToPath(import.meta.url);
++      const __head2 = spawnSync("git", ["-C", dirname(__self2), "show", "HEAD:scripts/check-bidi-runtime.mjs"], { encoding: "utf8" });
++      if (__head2.status === 0 && __head2.stdout && __norm2(__head2.stdout) !== __norm2(readFileSync(__self2, "utf8"))) { console.log("CASE id=rule-source-in-sync expected_exit=0 exit=1 expected_admitted=0 admitted=0 expected_population=- population=0 expected_reason=- reason=uncommitted-rule-drift FAIL"); console.log("BIDI_RUNTIME_SELFTEST verdict=failed cases=1 passed=0"); process.exit(3); }
++    }
+     const out = await runSelftest();
+     if (o.json) console.log(JSON.stringify(out, null, 2));
+     else {

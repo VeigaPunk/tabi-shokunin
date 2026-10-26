@@ -1,0 +1,27 @@
+## git show traversal (C1 blob()/citedLineText path injection), rev 15dfaccb, repo=/fast/scratch/hyaku/tabi-r34/SentinelCounters/clone
+path=../../../../etc/passwd                        exit=128 first=fatal: '../../../../etc/passwd' is outside repository at '/fast/scratch/hyaku/tabi-r34/SentinelCounters/clone'
+path=/etc/passwd                                   exit=128 first=fatal: path '/etc/passwd' exists on disk, but not in '15dfaccb34601c2d221c78501e2befd8998d600c'
+path=scripts/../../../../../../etc/passwd          exit=128 first=fatal: path 'scripts/../../../../../../etc/passwd' does not exist in '15dfaccb34601c2d221c78501e2befd8998d600c'
+path=corpus/../SKILL.md                            exit=128 first=fatal: path 'corpus/../SKILL.md' exists on disk, but not in '15dfaccb34601c2d221c78501e2befd8998d600c'
+
+## gate selftest sandbox: success path cleanup + no browser
+selftest: 44 cases, exit 0, TMPDIR leftovers 0, chromedriver procs 0 (selftest.out)
+
+## fixture leak on SIGKILL mid-run (baseline gate, TMPDIR=fresh dir)
+kill: invalid usage
+run1 leftovers=0 dir=
+kill: invalid usage
+run2 leftovers=0 dir=
+kill: invalid usage
+run3 leftovers=0 dir=
+
+## measure.sh failure mode: failed frozen-counter blob read -> exit=0
+show_exit=128 sim_bytes=0
+node_empty_counter_exit=0 recorded_json_bytes=0
+
+## synthetic hostile gate: 20 orphan processes survive the counter run
+(see c2-orphan.json; after the run: pgrep -fc '^sleep 240$' = 20; cleaned with pkill)
+## fixture leak on SIGKILL mid-run (baseline gate at 15dfaccb, TMPDIR=fresh dir), rerun
+run1 during=1 leftovers_after_SIGKILL=1 dir=tabi-bidi-runtime-fCCoY2
+run2 during=1 leftovers_after_SIGKILL=1 dir=tabi-bidi-runtime-UGAUlQ
+run3 during=1 leftovers_after_SIGKILL=1 dir=tabi-bidi-runtime-BlQugk

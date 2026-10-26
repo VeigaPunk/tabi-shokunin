@@ -1,0 +1,129 @@
+{
+ "repo": "/fast/scratch/hyaku/tabi-r34/MutC2Counter-2/clone",
+ "freeze": "59f1b47aae277e1670e4a824173da8cde7e388ee",
+ "gateFreezeSha": "eded1be04a47fbd2b87fbff42ef5187e0d473e6fe2bca55ac1c622ab8bde61c1",
+ "gateBaselineSha": "eded1be04a47fbd2b87fbff42ef5187e0d473e6fe2bca55ac1c622ab8bde61c1",
+ "pristine": {
+  "sha256": "3cf5eb699934eae48b77c991dae8761780c1c010da1121c1b9623a4d5d325b82",
+  "bytes": 14627
+ },
+ "mutants": [
+  {
+   "id": "A",
+   "label": "kill-exit-3-to-nonzero",
+   "needle": "killed: t.exit === 3 && t.failingCases.length > 0",
+   "replacement": "killed: t.exit !== 0 && t.failingCases.length > 0",
+   "file": "muts/mut-A.mjs",
+   "sha256": "3f230eefd8211305eafcaae334d4de391f17c26144ac1064873979463d658884",
+   "bytes": 14627
+  },
+  {
+   "id": "B",
+   "label": "fail-line-requirement-dropped",
+   "needle": "killed: t.exit === 3 && t.failingCases.length > 0",
+   "replacement": "killed: t.exit === 3",
+   "file": "muts/mut-B.mjs",
+   "sha256": "394482c83e57ae8918037786c4328651b2e8fc68a790d5c8529183e01f9ba594",
+   "bytes": 14598
+  },
+  {
+   "id": "C",
+   "label": "twin-probe-removed",
+   "needle": "m.applied && m.twinExit !== 0",
+   "replacement": "false",
+   "file": "muts/mut-C.mjs",
+   "sha256": "c905e42f0b62bfb7db66d488b6992a6a8185d000d8f59ca9b61a5085e71a72eb",
+   "bytes": 14603
+  },
+  {
+   "id": "D",
+   "label": "decoy-clause-removed",
+   "needle": "decoy.exit === 0 && ",
+   "replacement": "",
+   "file": "muts/mut-D.mjs",
+   "sha256": "95a8c440b358980154564f330152c113d0261fea654f5bdf39c51f48f692ea84",
+   "bytes": 14607
+  },
+  {
+   "id": "E",
+   "label": "neutral-clause-removed",
+   "needle": "neutral.exit === 0 && ",
+   "replacement": "",
+   "file": "muts/mut-E.mjs",
+   "sha256": "5d7db3a78b7cdbbdc01b3d310ca2bbc77caa781928e1221adc1ff83382d9e33f",
+   "bytes": 14605
+  },
+  {
+   "id": "F",
+   "label": "occurrence-1-to-atleast-1",
+   "needle": "if (n !== 1 || !m.find.includes",
+   "replacement": "if (n < 1 || !m.find.includes",
+   "file": "muts/mut-F.mjs",
+   "sha256": "090ad134604c3fd17f3ac870abef3b2a72a3053adef5dd0a8fff355e1f828317",
+   "bytes": 14625
+  },
+  {
+   "id": "G",
+   "label": "battery-clause-removed",
+   "needle": " && battery.predicate === true;",
+   "replacement": ";",
+   "file": "muts/mut-G.mjs",
+   "sha256": "dd4ffcac7f9506a40890a70c5e25941562fca55eca67daa3a851316f6cd66ec6",
+   "bytes": 14597
+  },
+  {
+   "id": "H",
+   "label": "survivors-filter-inverted",
+   "needle": "m.applied && !m.killed",
+   "replacement": "m.applied && m.killed",
+   "file": "muts/mut-H.mjs",
+   "sha256": "de5e8f7532d0e8a96a716747629a1fd32263c20749e38b2fe51d719f42472c90",
+   "bytes": 14626
+  },
+  {
+   "id": "I",
+   "label": "battery-sha-check-removed",
+   "needle": "if (sha256(bat.stdout) !== BATTERY_SHA256) throw new Refusal('battery bytes differ from pinned sha256');",
+   "replacement": "// battery sha256 check removed (mutant)",
+   "file": "muts/mut-I.mjs",
+   "sha256": "93a36cca859ca89f4db653d7fa073ba28fde67d96a69609cc5252c267c7eff83",
+   "bytes": 14563
+  },
+  {
+   "id": "J",
+   "label": "timeout-shortened",
+   "needle": "const TIMEOUT_MS = 180000;",
+   "replacement": "const TIMEOUT_MS = 200;",
+   "file": "muts/mut-J.mjs",
+   "sha256": "2fcd4337b4e32d1861e624624bc34de82c994c50d3c5a6eed5259ea70c793d1e",
+   "bytes": 14624
+  }
+ ],
+ "fixtures": {
+  "J1": {
+   "name": "do-nothing",
+   "rev": "59f1b47aae277e1670e4a824173da8cde7e388ee",
+   "tree": "60fa336fcbe2f995c01bbe06efac05993115655e"
+  },
+  "J2": {
+   "name": "selfhash",
+   "rev": "4974fff96cae481eca035c1a40484cc3b442409c",
+   "tree": "0fd8c01e95be46bdabd96b72d62a474b02c67d7c"
+  },
+  "J3": {
+   "name": "find-sniff",
+   "rev": "fc966ffc7bba906ae99fee716a0cce8de710a71b",
+   "tree": "42ddb868b01f6bd894aa7292bc3ba126ef664a45"
+  },
+  "J4": {
+   "name": "reject-all",
+   "rev": "04c7ec7df64ecc2e942e24ff15c94f5352fb4d99",
+   "tree": "6395dc84058b4181d3c70c8087d218012623213c"
+  },
+  "J5": {
+   "name": "kill-nothing (NEW probe fixture)",
+   "rev": "336a86d0c57db3da5d9e2d133ad772194d2bba9b",
+   "tree": "e889dc378a6303dd4e49a3bc9187acc1226f5940"
+  }
+ }
+}

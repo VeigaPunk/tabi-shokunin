@@ -210,3 +210,18 @@ findings with no landing line — this section and the round-33 plan are their l
   `7a61bfa6855d95d188fb77f7869e954cd308ecdd2a10e3fc45832655d7dfd879`, three files) to the freeze 4181fff yields
   tree `f0d867c3a711f6c7c2176841aff92efef95233d5`, and the frozen counter at that tree reads mismatches 0, clean,
   198 findings — the reading the receipt records.
+
+## Round 34 — correction (append-only; cites the stale lines in its own document)
+
+- **Marker basis for the carried-errata arithmetic, `corpus/lessons/round-32.md:192` and `:194-197`.** `:192`'s "27
+  are marked `Carried`" is the capital-C status-marker set; four further items are dual-marked — their blocks end
+  "**Corrected here** …; **carried** as …" — E3 (`.ufo/waves/round-31/a2w1/ScribeErrata/errata.md:33-35`), E19
+  (`:111-112`), E25 (`:140-142`) and E36 (`:193-194`), and under the errata's own vocabulary ("**carried** — round 32
+  owns it and it is not repaired here", `:4-5`) those four are partly carried too. Three do not move the count: E25 is
+  closed by the disposition table as already landed (`corpus/README.md:699-703`), and E19's and E36's carried arm is
+  the exit/verdict enforcement v3 landed under criterion 85 (`corpus/QUALITY.md:514-519`; the table's E19 row at
+  `:95`). E3's arm is the decision-table counter change that the same table refused (`:93`, the `E3, E6, E7, E8, E9`
+  row), so it stays carried and `:194`'s "20 of 27" becomes 21 once E3 is counted. The safe landing is the basis, not
+  a new number: read `:192` as "27 carry the status marker `Carried`" and `:196-197`'s "not carried items" as "not
+  carried items under that marker", with E3 named as split. (If E25's "as a counter v2 case" arm is read against the
+  counter rather than the landed README row, the count is 22.)

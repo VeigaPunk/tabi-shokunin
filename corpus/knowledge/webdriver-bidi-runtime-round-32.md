@@ -248,3 +248,16 @@ imports neither `liveRecord` nor `PREDICATES`.
   `statusText` (`OK`), `protocol` (`http/1.1`), `headersSize` (198), `bodySize` (703), `bytesReceived` (703),
   `mimeType` (`text/html`), `fromCache` (false) and `content`; none is raw header-block or status-line bytes, so U2
   stays open.
+
+## Round 34 — correction (append-only; cites the stale line in its own document)
+
+- §1 Fixture correction above (`:221-222`): its three gate pointers are the round-32 gate's line numbers, and the
+  bullet does not name that revision. At `b7d16fb` they are the overstating comment
+  (`scripts/check-bidi-runtime.mjs:125`), the 404 branch (`:131`) and the 200 branch (`:132`); at the current gate
+  the same three sites are `:187`, `:193` and `:194` — the served-fixture block is byte-identical, only its offset
+  moved. The substance holds at both revisions: the 404 branch sends `content-type` and the fixture header only,
+  `cache-control: no-store` is set on the 200 branch alone, and the comment overstates at both. Read `:221-222` as
+  "`…:125`, `…:131`, `…:132` at `b7d16fb`", or take the current gate's three pointers. This is catalogue class E30
+  (positional citations an insertion undoes); the convention the bullet breaks is the one
+  `corpus/knowledge/bidi-runtime-gate-v2-round-33.md:123` states — "The gate exports, at the round-32 revision:
+  `DATA_TEXT` (`scripts/check-bidi-runtime.mjs:101`)", where `:101` is v1's line and v2 has `DATA_TEXT` at `:163`.

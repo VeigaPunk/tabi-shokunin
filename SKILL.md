@@ -2913,3 +2913,34 @@ CritC1Overrides):
 - `SKILL.md:2888`: correction — tabi's robots obedience is measured on its own loopback fixture (`probe-robots`, `SKILL.md:327`) and documented upstream for real hosts (decision table D1–D5, tier line "documented upstream, not measured in this lane"); it is not a measurement of a real host's robots.txt.
 - `SKILL.md:2889`: correction — tabi holds browser execution of accessible-tree and role-locator capture on loopback (`corpus/knowledge/aria-loopback-round-13.md`, `playwright-accessible-locators-and-snapshots.md`), not assistive-technology runs: those notes disclaim keyboard, screen-reader and WCAG testing (`aria-loopback-round-13.md:45`). Assistive-technology execution for kake's review is a route tabi accepts as frontier, not a held surface, and kake's condition is a named property, build or process scope (kake `SKILL.md:559`).
 - `SKILL.md:2890`: correction — the crawl-rate bullet no longer backs a map row: the row `crawl-budget-vs-client-crawl-thresholds` was withdrawn in round-33 wave 2 because kake `PROVINCE.md:347` names no lane and restates kake's side of the split already mapped as `crawler-discipline-vs-publishing` (map row 6); the line is now screened `same-surface` on that row. The thresholds it names are documented upstream, not measured in this lane.
+
+## Round 34 — sibling-overlap declarations (outside PROVINCE) (2026-10-26; append-only; never edit above)
+
+These lines state this lane's side of overlaps the round-34 sweep found in sibling `SKILL.md` / `corpus/knowledge/` lines (outside `PROVINCE.md`); each backs one new row of `corpus/adjacency.tsv`, every other sweep line is screened in `corpus/adjacency-screen-skill.tsv`, and none absorbs sibling ground.
+
+- Live delivery: HTTP status, header bytes and redirect hop chains on a driven page are tabi's to observe with the network wire rung (`SKILL.md:327`, `SKILL.md:374`), loopback or operator-authorized properties only; the static declaration audit, Google's selection and every publishing or account action stay kake's and the operator's (kake `SKILL.md:408`).
+- Lab performance runs: Lighthouse or DevTools executed against a page is browser work tabi runs under its session and evidence rules (loopback or operator-authorized properties only; the score is an observation, and no Lighthouse run is yet a measured surface of this lane); the Core Web Vitals thresholds and the field-data verdict stay kake's (kake `SKILL.md:697`).
+- **Agent-facing tool text (kotoba):** tabi records the WebMCP `toolsAdded` tool `name`, `description` and `inputSchema` verbatim as page-declared, re-verifiable evidence (`PROVINCE.md:12-13`; `corpus/knowledge/webmcp-chromium-loopback-round-16.md:59-60`) and grades no wording; the craft of those names, descriptions and schemas as agent-facing text a model reads stays kotoba's (kotoba `PROVINCE.md:13`).
+- Authenticated consequential driving: tabi refuses to drive an operator-authenticated browser into a submission act — C4 third-party consequential and C5 login-required route the act out of this province (`SKILL.md:727-728`), session stores stay shape-only (A9, `SKILL.md:662-663`); kasegi's claimer lane owns its operator-authed CDP 9222 bounty submissions (`mission-control.md:119`), and tabi keeps only CDP observation and session-shape reporting.
+
+## Round 34 — BiDi gate self-test: what a kill case must show (2026-10-26; append-only; never edit above)
+
+`scripts/check-bidi-runtime.mjs --selftest` is this lane's runnable check that each receipt rule exists. A rule whose
+single-point mutant the self-test does not kill is not shown to exist. Decision rules for a kill case (entry
+`corpus/knowledge/bidi-gate-selftest-round-34.md`):
+
+| situation | do | never |
+|---|---|---|
+| adding a case for a rule | state the PRISTINE outcome (exit, admitted, population, first finding id); the case fails only when that rule is disabled | assert anything about the gate's own source bytes |
+| two rules refuse the same fixture with one finding id (path repeat ⇒ byte repeat ⇒ session repeat) | pin which check refused through the printed finding detail (`detailIncludes`) | call the mutant equivalent before trying a detail pin (lesson round-34 M4) |
+| an id-shape rule | build the fixture from the sourced shape: session id 32 lower-case hex (S127); context id = CDP targetId, 32 upper-case hex (S130, S131) | pick a shape because it makes the case pass |
+| checking the self-test itself | run `.ufo/waves/round-34/counters/c2-gate-mutants.mjs`: neutral, decoy and whitespace-twin probes must pass, every mutant must fail a case | count a crash or timeout as a kill |
+
+## Round 34 — corrections (2026-10-26; append-only; each cites the stale line in its own document)
+
+The BiDi gate self-test grows from 44 to 56 cases in round 34 (twelve kill cases, `corpus/lessons/round-34.md` §C2); each stale tally stays as written and the line below supersedes it.
+
+- `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SKILL.md:2626` (round-34 kill cases added).
+- `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SKILL.md:2817` (round-34 kill cases added).
+- `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SKILL.md:2894` (round-34 kill cases added).
+- `scripts/check-bidi-runtime.mjs` `--selftest` (56/56): correction — supersedes the stale tally at `SKILL.md:2907` (round-34 kill cases added).

@@ -1,0 +1,29 @@
+seat=ScribeQuality wave=tabi-r34-w1 date=2026-10-26
+clone=/fast/scratch/hyaku/tabi-r34/ScribeQuality/clone (git clone --shared lane; checkout -q --detach 59f1b47aae277e1670e4a824173da8cde7e388ee)
+toplevel=/fast/scratch/hyaku/tabi-r34/ScribeQuality/clone  rev=59f1b47aae277e1670e4a824173da8cde7e388ee
+gate sha256 (scripts/check-bidi-runtime.mjs) = eded1be04a47fbd2b87fbff42ef5187e0d473e6fe2bca55ac1c622ab8bde61c1
+script sha256 (scripts/check-selfassessment.mjs) = 77b5c8ed503bd9bc93e8ef634a10627613672eaa39bca84cf7339d37b6d4c6a9
+node v24.21.0   curl 8.23.0
+
+cmd: TMPDIR=$S/tmp node scripts/check-selfassessment.mjs --rev bf48b81c --repo "$S/clone"
+  exit 0   SELFASSESSMENT verdict=clean rev=bf48b81cbb5dd63bd3f5159dcba536ccd577e28e mismatches=0 could_not_evaluate=121 superseded=39
+cmd: TMPDIR=$S/tmp node scripts/check-selfassessment.mjs --rev 9f008f6c --repo "$S/clone" --json
+  exit 1   SELFASSESSMENT verdict=failed rev=9f008f6ccb228d39dbafbe5b65e9f0f66d7ffe12 mismatches=1 could_not_evaluate=115 superseded=41
+  counted: class=m1-selftest-tally doc=SCORECARD.md line=1829 script=scripts/check-adjacency.mjs claimed=44 observed=57
+cmd: TMPDIR=$S/tmp node scripts/check-selfassessment.mjs --rev 59f1b47a --repo "$S/clone"
+  exit 0   SELFASSESSMENT verdict=clean rev=59f1b47aae277e1670e4a824173da8cde7e388ee mismatches=0 could_not_evaluate=115 superseded=42
+
+cmd: curl -q -sS --proto =https -o body$i -w 'HTTP %{http_code} bytes %{size_download}' \
+  https://chromium.googlesource.com/chromium/src/+/refs/tags/154.0.8037.97/docs/linux/sandboxing.md?format=TEXT
+  run1 2026-10-26T19:47:51Z HTTP 404 233 B sha256 582edd5a4b2d4d5f87f7bda4dad4843c8494529421f3f406fb3e1c6a28816c42
+  run2 2026-10-26T19:47:52Z HTTP 404 233 B sha256 b427426b36d80b4805fde990bbf92a6b1b206ce1efbfd31095013527a8638e85
+  both bodies: first line "NOT_FOUND: Requested entity was not found"; request_id 6f1045c9c40241278b03705c0e0817ea vs d2dac4cd621845438ebb7093d83f80ad
+
+cmd: node build-sniff.mjs   (copies gate-sniff.mjs = freeze gate bytes + one normalised-source case, plus M01 mutant and M01 whitespace twin)
+  exit 0  pristine 22d957de... / mutant-M01 cfde67e6... / twin-M01 b436a68b...
+cmd: TMPDIR=$S/tmp node gate-pristine.mjs --selftest    exit 0  BIDI_RUNTIME_SELFTEST verdict=clean cases=45 passed=45
+cmd: TMPDIR=$S/tmp node gate-twin-M01.mjs --selftest    exit 0  BIDI_RUNTIME_SELFTEST verdict=clean cases=45 passed=45
+cmd: TMPDIR=$S/tmp node gate-mutant-M01.mjs --selftest  exit 3  CASE id=sniff-rule-present ... reason=rule text absent FAIL; verdict=failed cases=45 passed=44
+
+not run by this seat: .ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs, c2-gate-mutants.mjs (not this item; C2 target is another seat's).
+no tools installed or upgraded. no browser launched. scratch removed at yield.

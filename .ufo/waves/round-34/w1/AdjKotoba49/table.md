@@ -1,0 +1,12 @@
+Per-candidate decisions (pin kotoba 65a5c7a663249e0522cc49e4a148424200d9ddfe)
+
+| key | decision | one-sentence reason (both sides) |
+|---|---|---|
+| kotoba-shokunin@65a5c7a6…:corpus/knowledge/sibling-overlap-census-round49.md:171 | map row 15, surface `agent-facing-tool-text-craft`, split-declared | The line states a real boundary — kotoba owns "the craft of such text" over tool names, descriptions and schemas as agent-facing text (kotoba `PROVINCE.md:13`) — while tabi's side is fixed by `PROVINCE.md:12-13` (dynamic-page evidence: what to capture so a page claim is re-verifiable) and by tabi's measured `toolsAdded` `name`/`description`/`inputSchema` capture (`corpus/knowledge/webmcp-chromium-loopback-round-16.md:59-60`); the round-16 question at :175 is answered by landing the split as DECL1. |
+| …:sibling-overlap-census-round49.md:172 | screen: same-surface (`agent-facing-tool-text-craft`) | The line quotes the split's own text ("Route craft findings to kotoba", drafted at tabi `.ufo/waves/round-16/drafts/DraftAdjacency.md:39`), a restatement of the boundary now mapped at row 15, not a second surface. |
+| …:sibling-overlap-census-round49.md:173 | screen: same-surface (`agent-facing-tool-text-craft`) | The line names the same subject matter ("tool names, descriptions and schemas as agent-facing text") and only reports that the draft never reached tabi's scope, which is the state DECL1 now changes. |
+| …:sibling-overlap-census-round49.md:175 | screen: same-surface (`agent-facing-tool-text-craft`) | The deciding content is the pending ask ("a later round should ask tabi whether to land it"), i.e. the same undecided split; the second clause corrects kotoba's own build-seat sweep sentence, adding no claim on tabi ground. |
+| …:sibling-overlap-census-round49.md:86 | screen: third-lane-report | This is kotoba's census row about tabi (pin `e3cf4e0d…`, `SKILL.md | none | no | no`, a verbatim quote of tabi `PROVINCE.md:3`): a roster fact about the lane, asserting nothing on any tabi surface. |
+| kotoba-shokunin@65a5c7a6…:corpus/knowledge/fleet-skill-audit-round5.md:45 | screen: third-lane-report | The line reports kagi's and kake's own SKILL.md descriptions of CDP-bridge flows and that neither names the other — another lane's work, no claim on tabi ground; the CDP 9222/profile boundary it touches is already mapped for both kagi and kake as `musketeer-cdp-9222-profile-lease`. |
+
+Counts: 6 assigned candidates → 1 new map row (newMapped, verified at `1ffd51d`), 5 screen rows (screenFindings 0), unaccounted 0 for this slice.

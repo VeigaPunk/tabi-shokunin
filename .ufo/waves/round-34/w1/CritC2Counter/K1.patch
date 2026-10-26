@@ -1,0 +1,18 @@
+diff --git a/scripts/check-bidi-runtime.mjs b/scripts/check-bidi-runtime.mjs
+index 732fbe5..d7a63f7 100755
+--- a/scripts/check-bidi-runtime.mjs
++++ b/scripts/check-bidi-runtime.mjs
+@@ -1152,6 +1152,13 @@ async function main() {
+   try { o = parseArgs(process.argv.slice(2)); } catch (e) { console.error(`BIDI_RUNTIME verdict=could-not-evaluate detail=${e.message}`); process.exit(2); }
+   if (o.help) { console.log("usage: node scripts/check-bidi-runtime.mjs --rev <REV> --baseline <REV> --entry <path> [--receipt PATH] [--live] [--json] | --selftest [--json]"); process.exit(0); }
+   if (o.selftest) {
++    { // rule-source digests: the rules live in this file; pin their shape
++      const __normS = (t) => t.replace(/\/\*[\s\S]*?\*\//g, "").split("\n").map((l) => l.replace(/\/\/[^\n]*$/, "").replace(/\s+/g, " ").trim()).filter((l) => l.length > 0).join("\n");
++      const __wantL = (l) => !/__want|__KEEPSHAPE|__normS/.test(l);
++      const __want = "645bfe1010ca29455685e7f7406c6d17e12d42f12e4b1c0cf2f85e0ec941cf95";
++      const __body = __normS(readFileSync(fileURLToPath(import.meta.url), "utf8")).split("\n").filter(__wantL).join("\n");
++      if (createHash("sha256").update(__body).digest("hex") !== __want) { console.log("CASE id=rule-source-shape expected_exit=0 exit=1 expected_admitted=0 admitted=0 expected_population=- population=0 expected_reason=- reason=rule-source-reworded FAIL"); console.log("BIDI_RUNTIME_SELFTEST verdict=failed cases=1 passed=0"); process.exit(3); } // __KEEPSHAPE
++    }
+     const out = await runSelftest();
+     if (o.json) console.log(JSON.stringify(out, null, 2));
+     else {

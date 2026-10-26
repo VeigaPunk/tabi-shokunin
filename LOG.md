@@ -2405,3 +2405,24 @@ self-test kills 8 of 20 frozen mutants. Census at round start `tabi ok`, exit 0 
 Motivating evidence: round-33 spot-check routed defects 1-2 (`corpus/lessons/round-33-verifier-spotcheck.md:155-160`),
 `.ufo/waves/round-33/w1/ConnSiblingScan.md` (34 overlaps outside PROVINCE), `.ufo/waves/round-33/w2/MutGateV2.md`
 (11 survivors of both detectors).
+
+Correction (round 34, named) — supersedes the definite article in the round-33 F5 correction at `LOG.md:2370-2371`
+("the live 16-admitted reading is at the measured revision"): read "a live 16-admitted reading". A second committed
+reading admits 16 with none failing — `.ufo/waves/round-32/w1/ExecDriver/live.json`, schema
+`tabi-bidi-runtime-v1`, population 16, admitted 16, failing 0, clean true, fixture digest equal to the measured
+revision's — added by the round-32 integration `b234a58`, one commit after that round's freeze `4181fff`. Its `rev`
+field (`c8ec438690e641cb044e7eff1dc8423d0b7530cc`) does not resolve in the lane repo, which makes it the weaker
+witness, so the measured revision's reading stays the one to cite. The F5 conclusion — no live 16-admitted reading
+was recorded before the round-32 freeze — is unchanged, since both readings postdate it.
+
+Round 34 wave-1 integration (2026-10-26). C1: four new map rows (`corpus/adjacency.tsv` rows 15–18: kake
+live-delivery-observation, kake lab-performance-tool-runs, kotoba agent-facing-tool-text-craft, kasegi
+authenticated-consequential-driving), each backed by a new tabi declaration line (`SKILL.md` §"Round 34 —
+sibling-overlap declarations"), and 62 screens in the new `corpus/adjacency-screen-skill.tsv`; the L1 screened five
+seat-drafted rows (kaidoku 3, kumitate 2) as same-surface restatements of mapped boundaries (lesson round-34 §C1 gate
+decisions). C2: twelve self-test cases from w1 ExecKillsA/B merged into `scripts/check-bidi-runtime.mjs`; entry
+`corpus/knowledge/bidi-gate-selftest-round-34.md`; SOURCES S130–S133 (S133 supersedes S128). Carried round-33 items:
+screen relabel (kake 396/411/422/440), three append-only corrections, QUALITY 92–96. Motivating evidence:
+`.ufo/waves/round-34/w1/ConnBoundaries.md` (3 new boundaries by independent clustering), `.ufo/waves/round-34/w1/CritC1Claim.md`
+(the rename route reaches C1's predicate — lesson M3), `.ufo/waves/round-34/w1/ExecKillsB.md` (detail pinning kills
+M04/M05 — lesson M4). Wave 2 attacks every new row, screen group, kill case and source row before measurement.
