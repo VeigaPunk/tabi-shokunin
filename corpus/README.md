@@ -684,3 +684,22 @@ datum), the ToS half stays open, and no runtime observation exists for either ha
 |---|---|---|
 | Rate/ToS surface for site-interaction records | docs-held with sourced thresholds on the rate half (decision table D1–D13); runtime open; ToS half open; approval table C3/C6 unchanged | `knowledge/rate-signal-decision-table.md`; counter `node scripts/check-decision-table.mjs --rev <REV> --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc --entry corpus/knowledge/rate-signal-decision-table.md --live` |
 | Self-assessment calibration | held for SCORECARD.md, LOG.md, SKILL.md and corpus/README.md — gate tallies compared with each gate's own summary line; a gate whose summary spells its count otherwise (`cli_cases=`) and multi-script lines stay unchecked | `scripts/check-selfassessment.mjs` (v2, round 31); QUALITY criteria 80–81 |
+
+## Round 31 — corrections to the round-31 rows (append-only; cites the lines in this document; wave a2w1)
+
+- `corpus/README.md:685`, status cell — read: sourced thresholds on the rate half from rows D6–D13, and robots.txt
+  crawl bounds from rows D1–D5, filed under this item provisionally (no frontier item names a crawl half). The
+  admission pointer the item carries since round 30 (`scripts/check-frontier-admission.mjs --frontier rate-tos-signal`)
+  still reads only the two round-30 vocabulary notes: the decision-table entry carries no `frontier:` tag and its
+  receipts sit outside that counter's receipts root, so it is filed on the item by this row, not by that counter.
+  (a2w1 CritReadmeRow F1, F4)
+- `corpus/README.md:680-681` — read: C3 and C6 still decide from an absence — C3 from an unmeasured ToS/robots
+  surface and no scoped operator go-ahead, C6 from an unmeasured rate surface (`knowledge/interaction-approval-table.md`
+  C3/C6, U1 open); a rate datum alone would not lift C3. (a2w1 CritReadmeRow F2)
+- `corpus/README.md:686`, status cell — read: tally lines stay unchecked when the gate prints no
+  `<NAME>_SELFTEST … cases=N` summary, when the line does not name its own runnable gate (no section fallback in these
+  windows, so a single-script section does not help), or when the named script is outside the runnable gate set.
+  A line naming two gates is checked, not skipped: its first tally is paired with every gate on it.
+  (a2w1 CritReadmeRow F3; ScribeErrata E25)
+- `corpus/README.md:686`, pointer cell — the calibration row traces to QUALITY criteria 81 and 82 only; criterion 80
+  is the decision-table rule of row 685. (a2w1 ConnFrontier #2)

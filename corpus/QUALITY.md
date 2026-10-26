@@ -479,3 +479,13 @@
     (`scripts/check-aria-metadata.mjs` prints `cli_cases=`) is outside the oracle until a later
     counter reads it, and a tally stated for it is unchecked, not matched. (source:
     corpus/lessons/round-30.md M8; corpus/lessons/round-31.md M1, M7)
+
+82. Supersedes the second clause of 81 ("a summary whose verdict is not `clean` is not a tally") and its
+    "never the first `cases=` token" wording, which the frozen v2 counter does not enforce: its summary
+    pattern reads no `verdict=` token, a failed self-test's `cases=N` is read as the gate's tally, and a
+    gate that prints no `<NAME>_SELFTEST` line falls back to the first `cases=` or `N/M` token. Until a
+    counter enforces it, a tally stated for a gate whose self-test is not `clean`, or whose output has no
+    summary line, is read by hand against the gate's own run and recorded as such; a criterion clause no
+    line enforces is stated as a limit, not as a rule (criterion 73). Red state: wave a2w1 RevQuality probe
+    (`.ufo/waves/round-31/a2w1/RevQuality/`, a `verdict=failed cases=13` summary read as tally 13; a
+    summary-less gate read as 9). (source: corpus/lessons/round-31.md M11)

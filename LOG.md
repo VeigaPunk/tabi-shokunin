@@ -2059,3 +2059,62 @@ self-test cases, C2 entries, rows S116–S117 and receipts, used-by curation, le
 `072af95f` S118, mistakes and population rule, QUALITY 74–79, round-29 addenda, README frontier row; `af0664ed`
 wave-1 evidence; `e8720bcf` wave-2 corrections and the identity-blind C1 receipt; the measured commit, final
 measurements and wave-2 evidence follow and are named in the report.
+
+## Round 31 — 2026-10-26 — sourced rate/crawl decision thresholds (depth) and the calibration window over SKILL.md and corpus/README.md
+
+Attempt 2 (L1 TabiR31a2). Attempt 1 (L1 TabiR31) froze the claims and landed the work, then died with the
+orchestrator host crash (~08:50 -03) before its falsify wave spawned; the orchestrator salvage commit
+`ae15a37ee8aa43964179a676a087604368cd1c41` committed its wave state. Attempt 2 re-verified that state and ran the
+falsify wave as a2w1. Claims frozen before data at `.ufo/waves/round-31/claims.json` in commit
+`9505a10eb80b2a0b273ebaba3f7f872ad302192d` (baseline `96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc`), with a do-nothing
+and junk controls scored per claim before any claim data (`.ufo/waves/round-31/baseline/controls-summary.txt`). Axes
+at round start: depth 8, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8; lowest tie at 8 — C1
+works depth; C2 works calibration (a lane axis); nudge inactive; no axis retired.
+
+C1 depth (sourced): `corpus/knowledge/rate-signal-decision-table.md`, rows D1–D13 from an observable rate or crawl
+signal to one leading driver action, each carrying the source's own number — five rows from S119 (RFC 9309), six from
+S121 (GitHub REST rate limits), two from S122 (GitHub REST best practices); S120 (RFC 6585) is cited in prose only.
+Every row cites a registry row opened this round and a quote the counter re-locates in committed receipt bytes and in
+the live page. C2 calibration: the self-assessment counter (v2) reads `SKILL.md` and `corpus/README.md` tallies with
+same-document line citations, and takes a gate's tally from its own summary line; the nine stale statements it found
+were corrected by appended paragraphs, nothing above a cited line edited.
+
+Counting commands (clean checkout, frozen counter digests verified; raw outputs in `.ufo/waves/round-31/measure/`):
+
+- C1 — `node scripts/check-decision-table.mjs --rev <REV> --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc --entry corpus/knowledge/rate-signal-decision-table.md --live --json`.
+  Before (freeze tree): population 0, admitted 0, exit 1 (entry absent). After: population 13, admitted 13, failing
+  0, live, exit 0 at `48604835` and again at the salvage tip and the integration tip named in the report.
+- C2 — `node scripts/check-selfassessment.mjs --rev <REV> --json` plus the numstat of the four documents from the
+  freeze. Before: mismatches 9 (eight `SKILL.md` lines and one `corpus/README.md` line), exit 1. After: mismatches 0,
+  exit 0, zero deleted lines, no `scripts/` change since the freeze.
+
+Frontier step: rows S119–S122 opened 2026-10-26 (registry 118 → 122 rows), receipts and bytes under
+`corpus/evidence/round-31/decision-table/`; lesson `corpus/lessons/round-31.md` (Gate, Assimilation none, Mistakes
+M1–M11); QUALITY criteria 80–82; README round-31 rows and their corrections; the routed `SCORECARD.md:1523`
+correction. Mistake mined this attempt: M11 (criterion 81 asserted an enforcement no counter line performs; criterion
+82 supersedes the clause, red state the a2w1 RevQuality probe).
+
+Waves: w1 (attempt 1) 32 seats — 9 executor, 9 scribe, 5 critic, 3 reviewer, 2 connector, 2 mutation-tester, 1 scout,
+1 sentinel; 32 reports. a2w1 (attempt 2, falsify; the w2 items redispatched unchanged) 32 seats — 9 critic, 9
+executor, 7 reviewer, 2 mutation-tester, 2 connector, 2 scribe, 1 scout; 32 results. Round total 64; dead seats 0.
+
+a2w1 result: both claims re-measured and held by independent seats; all thirteen rows attacked live and held on their
+counted letters; four sources refetched independently; ten corrections each oracle-true; no gate green at the freeze
+and red at the landing. Defects found were prose and record defects, landed as append-only errata: the entry
+(recheck cadence, header overlap, retry-count attribution, version marker, D12/D13 wording, S119 publication month),
+the README round-31 rows (instrument divergence, C3/C6 evidence, disclosure wording, crawl rows under the rate half),
+criterion 81 (superseded by 82), the stale `SKILL.md:1559` word-numeral tally (appended correction), and 43 wave-1
+errata recorded in `.ufo/waves/round-31/a2w1/ScribeErrata/errata.md` (27 carried to round 32).
+
+Counter holes disclosed (frozen; carried, not claimed): C1 admits repetition and numbers that are not thresholds
+(lesson M10), `--live` trusts ambient proxy and certificate settings (w1 SentinelC1Live); C2 cannot see word-numeral
+or `cli_cases=` tallies, reads a failed self-test's count as a tally (M11), and a merged two-bullet correction still
+clears both findings (a2w1 MutC2Corrections).
+
+Re-verification result: S119 and S120 live bytes sha256-identical to the receipts; S121 and S122 normalised text
+identical to the receipts (S121 raw bytes differ only in a build id); every row quote re-located live by a seat that
+did not fetch the receipt.
+
+Round-31 commit ledger (lane `master`): `9505a10e` freeze; `48604835` C1 entry, rows, receipts, C2 corrections,
+QUALITY 80–81, lesson; `ae15a37e` orchestrator salvage of attempt-1 wave state; the a2w1 integration commit, final
+measurements and wave evidence follow and are named in the report.

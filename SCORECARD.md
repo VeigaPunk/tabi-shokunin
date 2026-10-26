@@ -1566,3 +1566,38 @@ The round-31 v2 of the calibration counter adds eight self-test cases; the talli
 ## Round 31 — correction to the round-30 disposition (append-only; cites the stale line in its own document)
 
 - `SCORECARD.md:1523`: correction — that row states `check-selfassessment` read mismatches 0 after the round-30 corrections above. The committed readings are 3 at `0ffc6ea0` and a residual of 1 at `d3cd62a1` (`.ufo/waves/round-30/measure/noharm-at-0ffc6ea.txt` line 130; `.ufo/waves/round-30/measure/noharm-at-d3cd62a.txt` line 1; `corpus/lessons/round-30-verifier-spotcheck.md` §Routed defects 1). The residual was an instrument misread, not a difference in lane state: at `d3cd62a1` the single finding is the round-30 gate-mutants figure at `SCORECARD.md:1527`, read as claimed 12 against an observed 2, because the counter took the first `cases` token in the output and a per-case refusal message inside that gate's self-test carried its own two-case tally, shadowing the gate's summary line (round-30 lesson M8). The round-31 v2 reads the `<NAME>_SELFTEST` summary line; this paragraph records the round-30 measurement as it stood, and the 0 in the row above is not evidence that the residual was 0.
+
+## Round 31 — declared claims (frozen before data) and executed disposition
+
+Baseline `96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc`; claims, counters and controls frozen in
+`9505a10eb80b2a0b273ebaba3f7f872ad302192d` (`.ufo/waves/round-31/claims.json`, receipts `.ufo/waves/round-31/baseline/`).
+Attempt 2 (attempt 1's L1 died in the host crash after landing `48604835`; salvage `ae15a37e`). Axes at round start:
+depth 8, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8; lowest tie at 8 — C1 works depth.
+Saturation 8 / window 3; nudge inactive; no axis retired. After-measurements in a clean checkout of the measured
+revision, raw outputs in `.ufo/waves/round-31/measure/` (the measured revision is named in the report).
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 depth (sourced: S119, S121, S122 opened this round) | `node scripts/check-decision-table.mjs --rev <REV> --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc --entry corpus/knowledge/rate-signal-decision-table.md --live --json` (frozen sha256 `d15f3bd7…f6832`) | population 0 → 13, admitted 0 → 13, failing 0 → 0 (live) | met under the frozen rule; counter holes disclosed (lesson M10; a2w1 CritC1Verdict reads twelve distinct sourced thresholds, ten at the harshest reading); depth 8 → 9 (the lane's first decision table whose every row carries the source's own number, against signal vocabulary only before) |
+| C2 calibration | `node scripts/check-selfassessment.mjs --rev <REV> --json` (frozen sha256 `143d66ff…2fce`) plus numstat of SKILL.md, corpus/README.md, SCORECARD.md, LOG.md from the freeze | mismatches 9 → 0; deleted lines 0 | met under the frozen rule; window holes disclosed (word numerals, `cli_cases=`, failed-summary reading — lesson M7, M11); calibration 9 → 9 (two more self-description documents now counted; score held, holes remain) |
+| coverage, operability, freshness, adjacency | — | no claim | unchanged; no-harm matrix `.ufo/waves/round-31/a2w1/ExecNoHarmTip.md` and the L1 re-run in `measure/` (no gate green at the freeze and red at the tip) |
+
+Gate registry: one new gate (`decision-table`) and one revised (`selfassessment` v2) carry rows in SKILL.md's round-31
+section; `node scripts/check-gate-registry.mjs --rev <REV>` reports nonconformant 0.
+
+### Round 31 — waves and seats
+
+Two v1 waves. W1 build + first falsifiers (attempt 1), 32 seats (9 executor, 9 scribe, 5 critic, 3 reviewer,
+2 connector, 2 mutation-tester, 1 scout, 1 sentinel); a2w1 falsify (attempt 2, the abandoned w2 items redispatched
+unchanged), 32 seats (9 critic, 9 executor, 7 reviewer, 2 mutation-tester, 2 connector, 2 scribe, 1 scout). Round
+total 64; no residual call; dead seats 0. The L1 holds the canonical planner seat.
+
+### Planned / saturation / retired — round 31
+
+- planned: calibration — counter v3 for `check-selfassessment.mjs` (verdict-aware summary oracle, word-numeral and
+  `<name>_cases=` tallies, paragraph-bound corrections), with the a2w1 RevQuality and MutC2Corrections red states as
+  regression cases.
+- planned: depth — decision-table counter v2 (distinct source-quote pairs, unit and bound word located in the quote,
+  hermetic `--live`), and a superseding S119 row for the publication month; the 27 carried errata in
+  `.ufo/waves/round-31/a2w1/ScribeErrata/errata.md` are the intake.
+- capabilities unchanged; saturation 8 / window 3; no axis retired.

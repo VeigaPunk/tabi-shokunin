@@ -2600,3 +2600,11 @@ below, run with its declared self-test flag; every figure quoted is the `cases=`
 - `scripts/check-release-pins.mjs` `--selftest` (29/29): correction — supersedes the stale tally at `SKILL.md:2543`. That line states the figure 20, the count the gate shipped with in round 29; round 30 added nine reason-pinned cases (drift superseder shapes, 404 absence shapes, anchor range, path escapes).
 
 - `scripts/check-s106-evidence.mjs` `--selftest` (10/10): correction — supersedes the stale tally at `SKILL.md:2544`. That line states the figure 7, the round-29 repair count; round 30 added three cases — same-length tamper, duplicate anchor, receipt byte-count mismatch.
+
+## Round 31 — correction found by wave a2w1 (append-only; cites the stale line in its own document)
+
+Measured 2026-10-26 at `ae15a37ee8aa43964179a676a087604368cd1c41` in a clean checkout; the figure is the `cases=` field
+of the gate's own `FRESHNESS_SELFTEST` summary line. The stale line above stays as written; the frozen calibration
+window cannot read it (the count is written as a word), so this correction is curation, not a counted mismatch.
+
+- `scripts/check-freshness.mjs` `--self-test` (12/12): correction — supersedes the stale tally at `SKILL.md:1559`. That line states the count as the word "eight"; the gate prints `FRESHNESS_SELFTEST verdict=clean cases=12`, the figure the round-24 registry row states in prose without citing that line.

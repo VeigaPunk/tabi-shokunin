@@ -292,3 +292,65 @@ None to existing rows. New rows only (S119–S122, recheck `365d` for the RFCs, 
 - `baseline/c2-T0-reading.json` and the C2 controls name scratch revisions (`befe2a3f…`) that are not lane commits;
   the freeze tree equals T0's tree outside `.ufo/waves/round-31/` (`192b0643…`), and the before value is re-measured at
   the freeze commit in `.ufo/waves/round-31/measure/`.
+
+## Attempt 2 — falsify wave a2w1 and integration (append-only; integrated by TabiR31a2)
+
+Correction to the header (line 5-6): the falsify wave is **a2w1** (`.ufo/waves/round-31/a2w1/`, 32 seats), not `w2`.
+Attempt 1's L1 (TabiR31) died with the orchestrator host crash (2026-10-26 ~08:50 -03) after landing `9505a10e` and
+`48604835`; its `w2` was abandoned unspawned (`w2.ready.dispatched` reads `ABANDONED`, `w2/` holds only a registry), and
+the orchestrator salvage commit `ae15a37e` committed the attempt-1 wave state. Attempt 2 re-verified that state —
+both frozen counters byte-identical, C1 live 13/13 failing 0 and C2 mismatches 0 at `ae15a37e`, all six no-harm checks
+green (`.ufo/waves/round-31/measure/a2-reverify-at-ae15a37.txt`) — and redispatched the w2 items unchanged as a2w1.
+Reused: claims, controls, freeze receipts, w1 reports, attempt-1 measurements at `9505a10e`/`48604835`. Discarded: the
+`w2` spec as a dispatch (its items live on in `a2w1-spec.json`); the `<MEASURED>` placeholders of the a2w1 LOG draft.
+
+### a2w1 dispositions
+
+Held (no defect): C1 re-measured live 13/13 failing 0 by ExecC1Measure and CritC1Verdict (12 distinct thresholds over
+13 rows; 10 under the harshest criterion-80 reading); all thirteen rows by the seven RowAttack seats (D1–D12 hold; D13
+low defects below); S119–S122 refetched independently (S119/S120 sha256-identical, S121/S122 normalised-identical; the
+S121 raw difference is 63 bytes of Next.js `buildId`); registry rows S119–S122 contract-valid (RevSourcesRows); C2
+re-measured mismatches 0 with zero deleted lines (ExecC2Measure, CritC2Vacuity, CritCalibrationHarm), the ten appended
+corrections each oracle-true (RevC2Corrections), six of seven correction mutants killed (MutC2Corrections); no gate
+green at the freeze and red at the landing (ExecNoHarmTip); census exit 0 (ExecCensus); criterion 80 holds (RevQuality).
+
+Defects and their disposition:
+
+| finding | seat | disposition |
+|---|---|---|
+| entry recheck 180d vs registry 365d (S119, S120) | ConnFrontier #1, RevLesson D-b | entry errata (appended) |
+| entry prose: S117 header overlap is three fields; "stated number of retries"; "no revision marker"; "exactly one action"; queue; four trip classes | CritEntryProse F1–F6 | entry errata (appended) |
+| D12 "until the instant" vs "until after"; SHOULD capitals for a lower-case directive; D13 drops "a large number of"; time base outside the Threshold cell; D7 per-IP scope; content-generating limit not tabled | RowAttackD11D12, RowAttackD13, ExecC1Distinct | entry errata (appended); no row edited, no count changes |
+| S119 anchor "June 2022" vs bytes "September 2022" | RefetchS119 | entry errata; anchor not edited in place (CORPUS.md rule 2); a superseding row is carried to round 32 |
+| criterion 81 verdict clause enforced by no line; summary-less fallback | RevQuality F1, F2 | M11 below; QUALITY criterion 82 |
+| README round-31 frontier row: instrument divergence (admission counter still reads the two round-30 notes), C3/C6 deciding evidence, multi-script disclosure, crawl rows under the rate half, criteria span 80–81 on the calibration row | CritReadmeRow F1–F4, ConnFrontier #2, ScribeErrata E25 | appended `corpus/README.md` §Round 31 — corrections to the round-31 rows |
+| `SKILL.md:1559` "eight isolated CLI cases" stale (gate prints twelve); invisible to the frozen window (word numeral) | ScribeErrata E22 (w1 CritC2Counter FN-1) | appended `SKILL.md` correction citing `:1559`; the window's word-numeral gap stays carried |
+| a merged two-bullet correction paragraph still clears both findings | MutC2Corrections F1 | carried (counter v2); the landed bullets are separate |
+| M4 subsection cites `check-gate-mutants.mjs:143`; the line is `:142`; bare `receipts/` pointers mean `.ufo/waves/round-31/w1/ScribeLessonMistakes/receipts/` | RevLesson D-a, D-c | corrected here |
+| lesson carries no sibling-adjacency line | ConnAdjacency Q3 | corrected here (below) |
+| C1 counter met by junk at the freeze (repetition, status code) | ScoutClaimsHistory | already recorded (M8, M10); the landed bytes do not repeat it (CritC1Verdict, ExecC1Distinct) |
+
+Wave-1 findings the attempt-1 integration did not record: 43 append-only errata drafted by a2w1 ScribeErrata
+(`.ufo/waves/round-31/a2w1/ScribeErrata/errata.md`, committed as wave evidence): 9 corrected in that block, 3 corrected
+as a rule with enforcement carried, 27 carried to round 32, 4 no action with reason. The carried set is this lane's
+round-32 intake; none changes a frozen counter, predicate or reading.
+
+Adjacency (ConnAdjacency): D1–D5 sit on RFC 9309 ground kake also holds publisher-side; the rows here are driver-side
+and re-sourced from the lane's own S119 fetch, per kake's declared split. mori's S041/S042 hold RFC 6585 and
+`Retry-After` for seat-terminal classification — a disjoint purpose, nothing absorbed. No contested surface is new.
+
+## Mistakes — attempt 2 (append-only)
+
+| # | class | evidence pointer | captured by | fix |
+|---|---|---|---|---|
+| M11 | `vacuous` | `corpus/QUALITY.md` criterion 81, clause "a summary whose verdict is not `clean` is not a tally"; `scripts/check-selfassessment.mjs:180-181` (summary pattern reads no `verdict=`), `gateTally` `:159-186` (status `measured` whatever the exit); probe `.ufo/waves/round-31/a2w1/RevQuality/probe2.json` (a `verdict=failed cases=13` gate read as tally 13; a summary-less gate as 9) | criterion 73 (a clause no line enforces is dropped or enforced) — not applied when 81 was written; caught by a2w1 RevQuality | **landed** — criterion 82 supersedes the clause and states it as a limit with a hand-read rule; red state is the committed probe. Counter enforcement carried to round 32 |
+
+### M11 — a quality criterion asserted an enforcement the counter does not perform
+
+- **Class:** `vacuous`.
+- **Evidence:** criterion 81 says a non-clean summary is not a tally; the frozen v2 counter's summary regex has no
+  `verdict` token and `m1Findings` never reads the gate's exit, so a failing self-test's `cases=N` is matched as the tally.
+- **Captured by:** criterion 73 states the rule for predicate sentences; it was not applied to a criterion's own text.
+- **Fix:** criterion 82 (appended) supersedes the clause; able to fail: the RevQuality probe gate printing
+  `verdict=failed cases=13` yields observed 13 under the frozen counter (`probe2.json`), which the criterion now names
+  as a hand-read case instead of a guarantee.

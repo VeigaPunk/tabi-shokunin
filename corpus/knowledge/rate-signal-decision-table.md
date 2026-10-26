@@ -170,3 +170,43 @@ journey record keeps.
   and a browser does not fetch `robots.txt` on its own; a row in that group applies only
   where a driver chooses to fetch the file, and treating an operator's browser journey as
   bound by those outcomes is an interpretation this entry does not make.
+
+## Errata — round 31, attempt-2 falsify wave a2w1 (append-only; the text above keeps its bytes)
+
+Found by wave a2w1 at `486048356f0712e4396588c9dab58cd419243120` (reports under `.ufo/waves/round-31/a2w1/`). None
+changes a row's number, quote, source or force as counted; each corrects a sentence or names a gap.
+
+- **Recheck cadence (header `recheck:` line).** The header says 180d for S119 and S120; their registry rows
+  (`corpus/SOURCES.md` S119, S120) and the lesson record 365d. The registry is the operative cadence: read 365d.
+  (a2w1 ConnFrontier #1, RevLesson D-b, ConnAdjacency obs. 1)
+- **"no revision marker or dated revision in the fetched bytes" (header).** The S121/S122 bytes carry no page-revision
+  date, but they do carry a dated API-version selector (`2026-03-10`, labelled latest). A change in that string is a
+  detectable signal that the documented surface moved; the 90d cadence is the guard for page edits, not the only
+  guard. (a2w1 CritEntryProse F3)
+- **"exactly one action drawn from a closed verb set".** Read "one leading action": D3's Decision cell also states
+  the before-the-period outcome (complete disallow), and five verbs of the set (retry, disallow, backoff, cache,
+  serialize) lead no row. The set is the vocabulary a row may draw on. (a2w1 CritEntryProse F4)
+- **"a stop after a stated number of retries".** Neither S121 nor S122 states a number: both say "throw an error after
+  a specific number of retries". The count is the implementer's, not the vendor's. (a2w1 CritEntryProse F2)
+- **"with a queue in between".** S122 recommends serial requests and offers a queue as one means ("you can implement a
+  queue system"); the queue is the page's suggestion, not the described practice. (a2w1 CritEntryProse F5)
+- **Header overlap with the held S117 set.** GitHub's header names overlap the S117 set on the limit, remaining and
+  reset fields — three, not two (`host-published-rate-limit-headers.md` holds `X-RateLimit-Limit`; S121 bytes list
+  `x-ratelimit-limit`). The headers that differ are `x-ratelimit-used` and `x-ratelimit-resource`. No vendor number
+  transfers between hosts either way. (a2w1 CritEntryProse F1)
+- **The fixture stop rule lists four trip classes.** The pinned driver stops at the first 429, 403, robots disallow or
+  interstitial shape (a marker at status 200), per `external-class-fixture-v2.md` §5. (a2w1 CritEntryProse F6)
+- **D12 timing and force.** The source forbids requests until after the time in `x-ratelimit-reset`, not until the
+  instant itself; and its directive is the vendor's lower-case "you should not", which the cell renders as SHOULD
+  strength without RFC 2119 capitals in the quote. (a2w1 RowAttackD11D12 (d), ExecC1Distinct obs. 2)
+- **D13 trigger.** The source's condition is "a large number of" POST, PATCH, PUT or DELETE requests; the row's
+  "in a series" drops that qualifier. (a2w1 RowAttackD13)
+- **D7, D8, D10, D11 time base and D7 scope.** The Threshold cells carry the count; the time base (per hour, per
+  minute, per 60 s of real time) sits in the Signal or Decision cell. S121 binds the unauthenticated budget to the
+  originating IP address, which D7 does not state. (a2w1 ExecC1Distinct obs. 3, RowAttackD13 notes)
+- **Omitted secondary limit.** S121's same secondary-limit list also states a content-generating limit (requests per
+  minute and per hour for content creation). It sources no row here — the lane's province is observation and sends
+  no content-creating request — but its absence is a choice, not a gap in the page. (a2w1 RowAttackD13)
+- **S119 publication month.** The S119 registry anchor says "RFC 9309 (June 2022)"; the fetched bytes' header reads
+  September 2022 (June 2022 belongs to the RFC 9110/9111 references). The anchor is not edited in place (`CORPUS.md`
+  rule 2); read September 2022. (a2w1 RefetchS119 defect 1)
