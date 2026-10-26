@@ -1542,3 +1542,17 @@ Two v1 waves. W1 build + first falsifiers, 32 seats (9 scribe, 7 executor, 5 cri
 - planned: freshness — S116 recheck due 2026-11-24 (draft expiry) or on `-12`; release-pin counter v2 with a
   DEPS-mapped population for S036, S044, S068, S088, S089, S090 (lesson round-30 §Release-pin population rule).
 - capabilities unchanged (gates are counters); saturation 8 / window 3; no axis retired.
+
+## Round 30 — corrections to the round-30 disposition (append-only; each cites the line in its own document)
+
+`SCORECARD.md:1527` and `SCORECARD.md:1528` state two self-test tallies per line; the frozen calibration counter pairs
+each line's first tally with every script named on it. Restated one script per line:
+
+- `scripts/check-frontier-admission.mjs` `--selftest` (24/24): correction — supersedes the two-script tally line at `SCORECARD.md:1527`.
+- `scripts/check-release-pins.mjs` `--selftest` (29/29): correction — supersedes the two-script tally line at `SCORECARD.md:1528`.
+
+The gate-mutants tally at `SCORECARD.md:1527` (12/12, observed by its own `--selftest` summary line
+`GATE_MUTANTS_SELFTEST verdict=clean cases=12 passed=12`) stays flagged by the calibration counter, which reads the
+first `cases=` token in the output — here a refusal message inside the per-case lines (`… cases=2 passed=1 …` of
+the `pristine-not-clean-could-not-evaluate` case). Restating 2 would be false; the residual finding is an instrument
+misread, recorded as lesson round-30 M8.

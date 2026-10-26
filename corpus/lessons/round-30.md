@@ -336,3 +336,17 @@ Corrections to the §Mistakes rows above (w2 CritMistakes D1–D3):
   failure reason; the other 20 still assert exit + tally only, and 7 of the 10 s106 cases assert a field value. The
   catalogued faults are all killed (C1), but uncatalogued checks may still be seen only through exit + tally
   (w2 MutC1Beyond).
+
+### Additional mistake row (landing)
+
+| # | class | evidence pointer | captured by | fix |
+|---|---|---|---|---|
+| M8 | `number-drift` | `.ufo/waves/round-30/measure/noharm-at-0ffc6ea.txt` (`check-selfassessment` mismatches 3 at `0ffc6ea0`: two from two-tally lines at `SCORECARD.md:1527-1528`, one from the counter reading `cases=2` out of a gate-mutants per-case refusal message) | `scripts/check-selfassessment.mjs` m1 (it caught it) | two tallies restated one script per line (`SCORECARD.md` round-30 corrections); the third is an instrument misread left standing and disclosed — v2 of the calibration counter should parse the gate's summary line, not the first `cases=` token |
+
+### M8 — two tallies on one line, and a counter that reads the first `cases=` it sees
+
+- **Class:** `number-drift`.
+- **Evidence:** `.ufo/waves/round-30/measure/noharm-at-0ffc6ea.txt`.
+- **Captured by:** the round-29 calibration counter, at landing.
+- **Fix:** restated tallies one script per line (red-before: the 0ffc6ea0 reading; after: the final measurement in
+  `.ufo/waves/round-30/measure/`); the gate-mutants misread stays as one disclosed finding.
