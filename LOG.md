@@ -2011,3 +2011,14 @@ Re-verification result: 23 of 23 release-pinned rows re-opened at 156.0.8078.47,
 drifted (`corpus/knowledge/chromium-156-release-pin-recheck.md`); gate registry
 `nonconformant` 2 at baseline → 0 at `59e8167aa5a4399e4115e7253fa0bab5e8dd773d`
 (`node scripts/check-gate-registry.mjs --rev <REV>`).
+
+Round-29 commit ledger (lane `master`): `97be89bc` claims freeze, doc-bound selfassessment
+counter, release-pin counter, baseline and control receipts; `190052c9` C3 receipt, bytes, rows
+S108–S115, summary entry and seven recheck notes; `59e8167a` C1 gate repair and mutation receipt,
+C2 SCORECARD corrections, SKILL gate rows; `35045d7d` this entry and the LOG.md:221 correction;
+`32008a45` S094 404-nonce normalisation, S045 semantic note, baseline receipt provenance;
+`e1e3a15f` wave-1 evidence, lesson round-29, QUALITY 71–73, README frontier; `9cc92b08` the 23
+wave-2 re-fetch records and knowledge errata; `ab080992` wave-2 evidence, SCORECARD disposition;
+`dcfb7a3c` final measurements (`.ufo/waves/round-29/measure/`, all three targets met at `ab080992`).
+Wave-1 duplicate fetch bytes under `.ufo/waves/round-29/w1/pins/*/bytes` were deleted uncommitted
+(identical to the committed `corpus/evidence/round-29/release-pins/bytes/`).
