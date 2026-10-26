@@ -2434,3 +2434,16 @@ w1 integration had admitted (lesson round-34 M5) and restored two kaidoku rows t
 pass, round-33 battery still met; entry `corpus/knowledge/bidi-gate-selftest-round-34.md` cites S130–S132. No-harm:
 28 of 28 offline gates and self-tests exit 0, `check-selfassessment` mismatches 0, census exit 0. Waves: w1 37, w2 39,
 total 76, dead 0. Re-verification: S130–S133 re-opened by w2 ReopenS130–S133, all hold.
+
+## Round 35 — 2026-10-26 — freeze: browser ground siblings write without naming tabi (adjacency) and WebDriver BiDi on Firefox (coverage, capability)
+
+Freeze entry (before any claim data). Baseline `2d2c8a77428f9c95c3cd0eb4a3bbf0c6fb4ab684`. C1 adjacency: the round-34
+planned row — sibling `SKILL.md`/`corpus/knowledge` lines on browser ground that do not name tabi (383 at the frozen pins;
+kaidoku 137, kumitate 66, kagi 56, kake 51) — swept by counter v3, which refuses split rows whose sibling quote states no
+side (QUALITY 97's mechanical floor) and rows on third-lane records; target unaccounted 0 and newMapped >= 2. C2
+coverage + capability: Firefox 158.0.1 and geckodriver 0.37.1 installed from Mozilla's official releases (verified
+against the signed SHA256SUMS); target: all 16 matrix rows with a BiDi command held on Firefox by the unchanged gate
+predicates over two committed runs plus the counter's own live session. Motivating evidence: round-34 closure routed
+defect 2 (`corpus/lessons/round-34-verifier-spotcheck.md`), the host census's Firefox absence, and the pre-freeze
+instrument check (`.ufo/waves/round-35/baseline/c2-instrument-check.json`: 16/16 predicates, identical first screenshots
+on two sessions). Controls and the disclosed C1 residual J8: `.ufo/waves/round-35/baseline/controls-summary.json`.

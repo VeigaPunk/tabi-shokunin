@@ -1920,3 +1920,39 @@ holds the canonical planner seat; the planning data-walk rode w1 ConnRound.
 - planned: operability — C2 counter amendment (symlink-safe write, scrubbed HOME, controls for the 9 unguarded counter
   clauses); CritForgeV2C witness-loop gap; calibration counter v4 still carried; S125 recheck `on-release` proposal.
 - saturation 8 / window 3; no capability entered at round 34 (window position 3 at round 35); no axis retired.
+
+## Round 35 — declared claims (frozen before data)
+
+Baseline `2d2c8a77428f9c95c3cd0eb4a3bbf0c6fb4ab684`; claims, both counters, `measure.sh`, the control driver, the
+383-line candidate list, the sibling pins, the C2 instrument check and every control receipt are frozen in the round-35
+freeze commit before any claim data (`.ufo/waves/round-35/claims.json`, receipts `.ufo/waves/round-35/baseline/`).
+Frozen counter bytes (sha256 in `claims.json:frozenDigests`): `.ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs`,
+`.ufo/waves/round-35/counters/c2-firefox-bidi.mjs`, `.ufo/waves/round-35/baseline/controls.mjs`,
+`.ufo/waves/round-35/measure.sh`. `scripts/check-adjacency.mjs` and `scripts/check-bidi-runtime.mjs` are pinned inside
+the counters and must not move. Every after-measurement runs `measure.sh <REV> <OUT> <FREEZE>` in a clean clone.
+
+Axes at round start: depth 9, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8. Lowest non-retired
+axis adjacency 8 (unique). Saturation 8 / window 3; window position 3 at round 35 (`SCORECARD.md:1922`): the window
+(rounds 32–34) holds the round-32 capability row, so the stagnation nudge is inactive and C1 works adjacency.
+
+| Claim / axis | Counting command | Before | Target |
+|---|---|---|---|
+| C1 adjacency (surface `corpus/adjacency.tsv` + new ledger `corpus/adjacency-screen-browser.tsv`, against browser ground siblings write without naming tabi) | `node .ufo/waves/round-35/counters/c1-adjacency-sweep-v3.mjs --rev <REV> --json` | candidates 383 (sibling `SKILL.md`/`corpus/knowledge` lines matching the frozen browser-ground regex, not naming tabi, not a round-34 candidate), mapped 0, screened 0, unaccounted 383, newMapped 0, adjacency clean 16/16, predicate false (`baseline/c1-J1-do-nothing.json`) | unaccounted 0 AND newMapped >= 2 AND adjacency clean; a new row counts only with a NEW tabi line naming the sibling and its file path (one per row), a sibling line no baseline row cites, no third-lane record path, and — for `split-declared` — a sibling quote carrying both browser ground and a side-stating word |
+| C2 coverage + capability, sourced (surface: WebDriver BiDi runtime evidence on Firefox 158.0.1 / geckodriver 0.37.1) | `node .ufo/waves/round-35/counters/c2-firefox-bidi.mjs --rev <REV> --json` | entry absent: population 0, admitted 0, predicate false (`baseline/c2-J1-do-nothing.json`) | admitted 16 (every matrix row with a BiDi command), failing 0, binding null — each row's unchanged gate predicate holds on two committed Firefox runs and on the counter's own live Firefox session |
+
+Controls, scored before any claim data (`.ufo/waves/round-35/baseline/controls-summary.json`): C1 screen-all
+(unaccounted 0, newMapped 0); junk rows on non-candidate lines (newMapped 0); rows on an existing tabi line (n1);
+split quotes without browser ground (n4); split quotes that state no side (n4); third-lane records (n3) — all exit 1.
+**J8 reaches the C1 predicate** (two junk rows with their own junk tabi lines and side words, every other line screened):
+the counter judges form, not overlap, so wave 2 attacks every new row and every screen-reason group and the kill rule
+withdraws any row a finding defeats (`claims.json` C1 `feasibilityDisclosed`, `killRule`). C2 copied Chromium receipt
+(t1), relabelled Chromium transcripts (t3 binding: first screenshot differs from the live Firefox session), one
+transcript at two paths (t1), a driver importing the counter (t1) — all exit 1. Instrument check: the counter's own live
+recorder holds all 16 predicates on two Firefox sessions with identical first screenshots
+(`baseline/c2-instrument-check.json`).
+
+Tool installs (operator authorization 2026-10-19, official channel "release binary into ~/.local"): Firefox 158.0.1
+(`ftp.mozilla.org` tarball, sha256 `dce45470…eb41a` equal to the signed SHA256SUMS, signature Good by Mozilla key
+`14F26682D0916CDD81E37B6D61B7B526D98F0353`) into `~/.local/opt/firefox-158.0.1` + `~/.local/bin/firefox`; geckodriver
+0.37.1 (GitHub `mozilla/geckodriver` release, sha256 `e815130e…09f7e`; its `.asc` verifies Good but by a subkey Mozilla
+marks revoked — recorded, not trusted beyond the HTTPS release) into `~/.local/bin`. Reason: C2's second engine.
