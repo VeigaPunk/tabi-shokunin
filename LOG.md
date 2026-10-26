@@ -1985,3 +1985,29 @@ and 107 at exit; census command exited 0 at both boundaries. No row was
 added, touched, or advanced. Source census warnings remained 16 W04 duplicate-URL
 warnings. The S106 source was opened this round; S125 was freshly reopened and
 remains rejected, with no row status change.
+
+## Round 29 — 2026-10-26 — fresh-start round: self-test repair, doc-bound calibration, Chromium 156 release-pin recheck
+
+Fresh-start round under run 8 (closures r26 rejected-honest-stop, r27 rejected-harmed, r28
+rejected-honest-stop). Claims frozen before data at `.ufo/waves/round-29/claims.json` in
+commit `97be89bc66139eb45526a04af59a35dccc006eb9`, baseline
+`856fa9e1202179f5cfbd28c1f0efdd4eb1f426bb`, with a do-nothing and a junk control scored per claim
+before any claim data (`.ufo/waves/round-29/baseline/`). C1 operability: the
+`scripts/check-s106-evidence.mjs` self-test crashed at baseline (ReferenceError, no tally); the
+wave-1 seat ExecC1Repair added the import, asserts each declared field value, and commits the
+mismatch receipt; a mutant with the revision comparison removed fails
+`measured-revision-bytes-mismatch` (`corpus/evidence/round-29/s106-selftest/mutation.txt`).
+C2 calibration: the selfassessment counter's supersession citation now has to name the stale
+line's own document; the cross-document junk control clears all six findings under the old
+matcher and none under the frozen one. C3 freshness: Chrome Stable on Linux is 156.0.8078.47
+(S108); the 23 on-release rows pinned at Chromium tag 154.0.8037.97 were re-opened at both tags
+(one wave-1 seat per row): 16 hold, 7 drifted and are superseded by S109–S115, and the seven
+knowledge entries citing a drifted row carry an appended round-29 recheck note.
+
+Correction (supersedes LOG.md:221): `scripts/check-freshness.mjs` `--selftest` measured
+`cases: 12` at the round-29 tip; the eight figure on that line predates four added cases.
+
+Re-verification result: 23 of 23 release-pinned rows re-opened at 156.0.8078.47, 16 hold, 7
+drifted (`corpus/knowledge/chromium-156-release-pin-recheck.md`); gate registry
+`nonconformant` 2 at baseline → 0 at `59e8167aa5a4399e4115e7253fa0bab5e8dd773d`
+(`node scripts/check-gate-registry.mjs --rev <REV>`).
