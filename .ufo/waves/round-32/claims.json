@@ -1,0 +1,100 @@
+{
+ "schema": "tabi-round-claims-v1",
+ "lane": "tabi",
+ "round": 32,
+ "attempt": 1,
+ "frozenAt": "2026-10-26",
+ "frozenBeforeData": true,
+ "baseline": "d805d1d6132430118b206a848b85753ab35d1014",
+ "counterCommits": {
+  "initial": "2f8535c5b3015fc5730c1076cbe57d1dc29e4fee",
+  "frozen": "5ad1fcbfbae947e56ed448c7d24af0632b534e80",
+  "note": "2f8535c5 landed both counters; the pre-freeze control run then failed every --live leg with `session not created: Chrome instance exited` (chromium's singleton socket path under a deep TMPDIR exceeds the 108-byte unix-socket limit). 5ad1fcbf fixes liveRecord's chromium TMPDIR choice only; the frozen digests below are the 5ad1fcbf bytes and every control receipt was scored with them."
+ },
+ "priorClosure": "round 31 admitted (corpus/lessons/round-31-verifier-spotcheck.md: C1 depth and C2 calibration improved, no axis harmed). Routed defects: (1) calibration counter v3 -> C2 takes the failed-summary refusal (M11) and adds the m4 class; word-numeral and `<name>_cases=` tallies and the merged two-bullet correction survivor are NOT claimed (notClaimed); (2) decision-table counter v2 -> not claimed; (3) S119 superseding row + recheck alignment -> curation (frontier step), not a claim; (4) the 27 carried errata -> dispositioned by wave-1 scribes, curation; (5) control captures name a resolving revision -> every control here records the clone commit AND its tree digest over the frozen counter commit (baseline/*.provenance); (6) round-30 carried defects 3-4 -> not claimed; (7) scratch hygiene -> every seat prompt requires deleting its scratch; the L1 removes $HYAKU_SCRATCH/tabi-r32 after landing.",
+ "axisScoresAtRoundStart": {
+  "depth": 9,
+  "coverage": 9,
+  "operability": 9,
+  "freshness": 9,
+  "calibration": 9,
+  "adjacency": 8
+ },
+ "lowestNonRetiredAxis": "adjacency 8 (unique). Saturation 8 / window 3. Stagnation nudge ACTIVE: every axis sits at or above the line (AXES.md: 'at or above') and no capability entered the table in rounds 29-31 (last capability entries: round 25, SCORECARD.md 'First-working round: 25'). The lowest-axis obligation is therefore waived and the round is a frontier/capability move (C1). Rounds 29-31 stated 'nudge inactive'; C2 counts those statements.",
+ "measurementRule": "Every after-measurement runs in a clean checkout (git status --porcelain empty) of the named lane branch revision REV with the frozen counter bytes (frozenDigests, byte-identical at REV), TMPDIR under $HYAKU_SCRATCH; raw output is committed under .ufo/waves/round-32/measure/ before the report. `git diff --name-only <freeze> REV -- scripts/check-bidi-runtime.mjs scripts/check-selfassessment.mjs` must be empty. A counter not run is a claim not verified.",
+ "frozenDigests": {
+  "scripts/check-bidi-runtime.mjs": "2f25af5a3c6326b9295f7fb191c3b76334dbb23a3403d39755d9e9ee3516c393",
+  "scripts/check-selfassessment.mjs": "77b5c8ed503bd9bc93e8ef634a10627613672eaa39bca84cf7339d37b6d4c6a9"
+ },
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "coverage",
+   "type": "capability acquisition + frontier move (sourced, frontier step 2b.4): WebDriver BiDi moves from docs-held (corpus/knowledge/webdriver-bidi-capability-matrix.md §2: all seventeen rows `locally measured: no`; corpus/README.md Frontier row 'WebDriver BiDi — docs-held, no BiDi session measured') to runtime-held on this host (chromium 154.0.8037.97 + chromedriver 154.0.8037.97, webSocketUrl, loopback fixture only). New tool (chromedriver BiDi transport) and new evidence operation class for the lane; a capabilities-table row enters with the round report's demonstration.",
+   "surface": "the transport layer of the lane's evidence pipeline: before this round every measured capture is CDP; no BiDi session has ever run on this host (matrix §2 `locally measured: no` x17; `grep -c 'locally measured' ...` of the matrix stays as written).",
+   "predicate": "In a clean checkout of REV, `node scripts/check-bidi-runtime.mjs --rev REV --baseline d805d1d6132430118b206a848b85753ab35d1014 --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md --live --json`, run with the counter whose sha256 is frozenDigests (byte-identical at REV), exits 0 and reports admitted >= 14 and failing = 0.",
+   "countingCommand": "node scripts/check-bidi-runtime.mjs --rev <REV> --baseline d805d1d6132430118b206a848b85753ab35d1014 --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md --live --json | jq '{population,admitted,failing,binding}'",
+   "before": "population 0, admitted 0, exit 1 (entry absent; baseline/c1-J1-do-nothing.json)",
+   "target": "admitted >= 14 and failing = 0 (live)",
+   "feasibilityDisclosed": "Before freezing the target the L1 ran the counter's own live leg (`liveRecord`) on this host: 16 of the 16 admittable predicates held (R16 has no BiDi command). The target (14) is set below 16 to allow one or two rows that an independent driver fails to record; it is not reachable without a committed receipt of two real runs from a driver other than the counter (controls J3/J4).",
+   "killRule": "admitted < 14 or failing > 0 at REV -> failed. Counter exit 2, counter bytes differing from frozenDigests, or any change to the two frozen counters between the freeze commit and REV -> not verified. The offline reading alone does not verify (control J3).",
+   "controls": {
+    "doNothing": "population 0, admitted 0, exit 1, e1-entry-absent (baseline/c1-J1-do-nothing.json)",
+    "docsOnlyJunk": "entry marking the 16 admittable rows yes, citing the round-1 spec row S005, no receipt: admitted 0, s1-source-row (baseline/c1-J2-docs-only.json)",
+    "browserlessForgery": "new junk row S900 + two synthetic transcripts (the counter's own goldenLines) + stub driver: OFFLINE admitted 16 (baseline/c1-J3-forgery-offline.json, exit 0) but --live admitted 0, t3-binding 'first screenshot differs from this counter's live session' (baseline/c1-J3-forgery-live.json) -> --live is part of the predicate",
+    "counterAsDriver": "two REAL sessions recorded by the counter's own client with driver = scripts/check-bidi-runtime.mjs: admitted 0, t1-receipt (baseline/c1-J4-counter-as-driver.json)"
+   }
+  },
+  {
+   "id": "C2",
+   "axis": "calibration",
+   "type": "calibration counter class extension (frozen v3 of scripts/check-selfassessment.mjs: class m4-nudge-state + refusal of a failed self-test as an oracle) plus append-only corrections of the statements it finds",
+   "surface": "the lane's written stagnation-nudge state (SCORECARD.md round blocks), which decides whether the lowest-axis obligation applies to a round. No instrument read it before; rounds 29-31 stated 'nudge inactive' while the rule AXES.md states, applied to the lane's own SCORECARD inputs, gives active.",
+   "predicate": "In a clean checkout of REV, `node scripts/check-selfassessment.mjs --rev REV --json`, run with the counter whose sha256 is frozenDigests (byte-identical at REV), exits 0 and reports mismatches = 0 (in particular zero counted m4-nudge-state findings); and `git diff --numstat <freeze> REV -- SKILL.md corpus/README.md SCORECARD.md LOG.md` shows 0 deleted lines.",
+   "countingCommand": "node scripts/check-selfassessment.mjs --rev <REV> --json | jq '{mismatches, m4: [.counted[]|select(.class==\"m4-nudge-state\")]|length}'   plus   git diff --numstat <freeze> <REV> -- SKILL.md corpus/README.md SCORECARD.md LOG.md",
+   "before": "mismatches 18 (3 m4-nudge-state + 15 m1-selftest-tally), exit 1 (baseline/c2-J1-do-nothing.json)",
+   "beforeItems": [
+    "m1-selftest-tally SCORECARD.md:1439 17->41",
+    "m1-selftest-tally SCORECARD.md:1465 22->41",
+    "m1-selftest-tally SCORECARD.md:1486 22->41",
+    "m1-selftest-tally SCORECARD.md:1564 30->41",
+    "m1-selftest-tally SKILL.md:2479 13->41",
+    "m1-selftest-tally SKILL.md:2515 17->41",
+    "m1-selftest-tally SKILL.md:2530 20->41",
+    "m1-selftest-tally SKILL.md:2545 22->41",
+    "m1-selftest-tally SKILL.md:2576 30->41",
+    "m1-selftest-tally SKILL.md:2578 30->41",
+    "m1-selftest-tally SKILL.md:2590 30->41",
+    "m1-selftest-tally SKILL.md:2594 30->41",
+    "m1-selftest-tally SKILL.md:2598 30->41",
+    "m1-selftest-tally corpus/README.md:613 17->41",
+    "m1-selftest-tally corpus/README.md:668 30->41",
+    "m4-nudge-state SCORECARD.md:1473 inactive->active",
+    "m4-nudge-state SCORECARD.md:1515 inactive->active",
+    "m4-nudge-state SCORECARD.md:1576 inactive->active"
+   ],
+   "beforeComposition": "The 3 m4 findings are pre-existing lane mis-statements (rounds 29-31). The 15 m1 findings are instrument-induced: v3 adds 11 self-test cases (30 -> 41), so every earlier statement of this gate's tally, including round 31's own corrections, is now stale against the gate's summary line. Both kinds are counted by the frozen rule; the report states the split.",
+   "target": "mismatches 0, m4 0, deleted lines 0",
+   "killRule": "mismatches > 0 or deleted lines > 0 at REV -> failed. Counter exit 2, counter bytes differing from frozenDigests, or any change to the frozen counters after the freeze -> not verified.",
+   "controls": {
+    "doNothing": "mismatches 18 (baseline/c2-J1-do-nothing.json)",
+    "deleteWords": "the three statements lose their state word: mismatches 15, but numstat 3 deleted lines in SCORECARD.md (baseline/c2-J2-delete-words.json, .numstat) -> fails the deletion leg",
+    "uncitedCorrection": "a true restatement 'the stagnation nudge was active for rounds 29, 30 and 31' citing no line: mismatches 18 (baseline/c2-J3-uncited-correction.json)"
+   }
+  }
+ ],
+ "notClaimed": [
+  "word-numeral and `<name>_cases=` tallies (round-31 routed defect 1, M7/M11 holes)",
+  "merged two-bullet correction survivor (a2w1 MutC2Corrections)",
+  "decision-table counter v2 (routed defect 2)",
+  "round-30 routed defects 3-4",
+  "adjacency (lowest axis; obligation waived by the active nudge)"
+ ],
+ "frontierStep": {
+  "sources": "S123 (supersedes S119: RFC 9309 header date), S124 W3C WebDriver BiDi (re-opened), S125 Chrome-owned BiDi/ChromeDriver doc, S126 W3C WebDriver classic capabilities — each written only after opening it this round; Gate quotes in corpus/lessons/round-32.md",
+  "sourcedClaim": "C1 (the entry's source: cites rows opened this round; the counter's s1 check enforces one)",
+  "mistake": "stale-premise: 'nudge inactive' carried from rounds 26-28 into 29-31 without re-derivation; fix = m4 class shown able to fail (baseline/c2-J1-do-nothing.json)"
+ },
+ "assimilation": "none this round — merge/tabi/ is not read for C1/C2; no considerthese/ dir exists in this lane",
+ "roundShape": "two v1 waves: w1 build + first falsifiers, w2 falsify; 64-128 seats total; the L1 holds the canonical planner seat"
+}
