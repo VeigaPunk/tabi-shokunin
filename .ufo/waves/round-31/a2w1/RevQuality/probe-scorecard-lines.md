@@ -1,0 +1,3 @@
+- `node scripts/check-revqbad.mjs --selftest` — cases=99
+- `node scripts/check-revqgood.mjs --selftest` — cases=13
+- `node scripts/check-revqnosum.mjs --selftest` — cases=99

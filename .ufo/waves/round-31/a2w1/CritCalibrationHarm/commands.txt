@@ -1,0 +1,68 @@
+# CritCalibrationHarm — commands run (all in the clean scratch clone at REV unless noted)
+
+clone: git clone --shared <lane> $S/clone; git -C $S/clone checkout -q 486048356f0712e4396588c9dab58cd419243120
+       git -C $S/clone status --porcelain   -> 0 lines (exit 0)
+
+sha256sum scripts/check-decision-table.mjs    -> d15f3bd7aef4423d4311c2402f2d01bac8c7ff140a2fdd448ad2500f482f6832 (== claims.frozenDigests)
+sha256sum scripts/check-selfassessment.mjs    -> 143d66ff2ba3fc2c113d461f1f2dd0555c94fb00b292e24eb4799e22dadb2fce (== claims.frozenDigests)
+
+node scripts/check-selfassessment.mjs --rev 4860483… --json > $S/c2.json
+  exit 0; mismatches 0  couldNotEvaluate 103  superseded 29  clean true
+node scripts/check-selfassessment.mjs --rev 9505a10… --json > $S/c2-freeze.json
+  exit 1; mismatches 9  couldNotEvaluate 103  superseded 20
+node scripts/check-selfassessment.mjs --rev 96a2d1a… --json > $S/c2-baseline.json
+  exit 1; mismatches 5  couldNotEvaluate 110
+
+node scripts/check-decision-table.mjs --rev 4860483… --baseline 96a2d1a… \
+  --entry corpus/knowledge/rate-signal-decision-table.md --live --json > $S/c1.json
+  exit 0; population 13  admitted 13  failing 0  clean true
+
+git diff --numstat 9505a10… 4860483… -- SKILL.md corpus/README.md SCORECARD.md LOG.md
+  exit 0; 4 0 SCORECARD.md / 22 0 SKILL.md / 25 0 corpus/README.md  (LOG.md absent)  => 0 deleted lines
+git diff --name-only 9505a10… 4860483… -- scripts/ | wc -l      -> 0
+
+node scripts/check-decision-table.mjs --selftest    exit 0  DECISION_TABLE_SELFTEST verdict=clean cases=34 passed=34
+node scripts/check-selfassessment.mjs --selftest    exit 0  SELFASSESSMENT_SELFTEST verdict=clean cases=30 passed=30
+node scripts/check-sources.mjs --self-test          exit 0  SOURCES_SELFTEST verdict=clean cases=26
+node scripts/check-release-pins.mjs --selftest      exit 0  RELEASE_PINS_SELFTEST verdict=clean cases=29 passed=29
+node scripts/check-s106-evidence.mjs --selftest     exit 0  S106_SELFTEST verdict=clean cases=10 passed=10
+node scripts/check-gate-registry.mjs --rev 4860483… exit 0  rows=38 gates=21 nonconformant=0
+node scripts/check-aria-metadata.mjs --self-test    exit 0  prints cli_cases=36 helpers=4
+
+historical tallies (checkout of the cited revision in the same clone, porcelain 0):
+  fd722a7  selfassessment --selftest -> cases=17 passed=17   exit 0
+  b4128c4  selfassessment --selftest -> cases=20 passed=20   exit 0
+  97be89b  selfassessment --selftest -> cases=22 passed=22   exit 0
+  b4128c4  s106 CASES array entries                          -> 7
+  ef8aa4a  s106 CASES array entries (round-27 close)         -> 5
+  f7c0317  release-pins --selftest  -> cases=20 passed=20    exit 0
+  96a2d1a  release-pins --selftest  -> cases=29 passed=29    exit 0
+  96a2d1a  s106 CASES array entries                          -> 10
+  5cdc976:scripts/check-sources.mjs blob == 4860483: same blob 3f96058fad6fd0163e9ec5f63347af4607e5646b
+  b4128c4  s106 --selftest -> uncaught error, exit 1 (environment); "7" therefore verified from CASES/header
+
+m8-proof probe:
+  sha256sum .ufo/waves/round-31/baseline/m8-proof/old-oracle.mjs -> bfc9682b692339acfd1647bbddca7a1569c1410968aa742ad2ae8e5ed3962855
+  diff -u scripts/check-selfassessment.mjs .ufo/…/old-oracle.mjs  -> exit 1, 6 hunks, 19 removed / 9 added
+  grep -c v2-readme-no-section-fallback old-oracle.mjs           -> 0
+  old-oracle-selftest.txt: SELFASSESSMENT_SELFTEST verdict=failed cases=29 passed=28 / exit=3; the only FAIL is
+  CASE id=v2-oracle-reads-summary-line-not-first-cases-token
+
+SCORECARD:1523 correction provenance:
+  .ufo/waves/round-30/measure/noharm-at-0ffc6ea.txt:130 -> SELFASSESSMENT verdict=failed rev=0ffc6ea0… mismatches=3 …
+  .ufo/waves/round-30/measure/noharm-at-d3cd62a.txt:1   -> {"mismatches":1,…"doc":"SCORECARD.md","line":1527,"claimed":12,"observed":2}
+  corpus/lessons/round-30-verifier-spotcheck.md:147      -> Routed defect 1 = the :1523 sentence
+
+D1 evidence at REV:
+  SCORECARD.md:1554-1557 present-tense "stays flagged … reads the first `cases=` token"
+  c2.json finding for SCORECARD.md:1527 -> {script: scripts/check-gate-mutants.mjs, claimed 12, observed 12, superseded false}
+  scripts/check-selfassessment.mjs:172-179 -> summary-line oracle (last `<NAME>_SELFTEST … cases=N`)
+  grep -c "SCORECARD.md:155[4-7]" SCORECARD.md SKILL.md corpus/README.md corpus/QUALITY.md -> 0,0,0,0
+
+D4 evidence:
+  ls .ufo/waves/round-31/w2/            -> swarm-registry.json only
+  .ufo/waves/round-31/w2.ready.dispatched -> "2026-10-26T09:04:54 ABANDONED … no seat was spawned"
+  corpus/lessons/round-31.md:5-6        -> "w2 falsify (`.ufo/waves/round-31/w2/`)"
+
+network: only the C1 counter's --live mode (4 receipt URLs; https-only, HTTP 200, same-host effective URL,
+quote located). --json emits no per-URL status/bytes/digest, so no per-fetch table is possible from it.

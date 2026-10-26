@@ -1,0 +1,23 @@
+#### RECEIPT window (chars 12480..14280)
+Hub processes API requests in multiple regions, rate limit values can vary from one response to
+the next based on the location handling the request. For example, x-ratelimit-remaining may be
+higher on a later response than on an earlier one within the same rate limit window. The
+x-ratelimit-* headers are the authoritative source for your current rate limit status and may
+differ from values reported by the GET /rate_limit endpoint. If the two disagree, rely on the
+response headers. Use the x-ratelimit-* response headers to pace and back off your requests, but
+avoid logic that depends on an exact remaining count. Ensure your integration handles 403 and
+429 responses as described in Exceeding the rate limit later in this article. There is not a way
+to check the status of your secondary rate limit. Exceeding the rate limit If you exceed your
+primary rate limit, you will receive a 403 or 429 response, and the x-ratelimit-remaining header
+will be 0 . You should not retry your request until after the time specified by the
+x-ratelimit-reset header. If you exceed a secondary rate limit, you will receive a 403 or 429
+response and an error message that indicates that you exceeded a secondary rate limit. If the
+retry-after response header is present, you should not retry your request until after that many
+seconds has elapsed. If the x-ratelimit-remaining header is 0 , you should not retry your
+request until after the time, in UTC epoch seconds, specified by the x-ratelimit-reset header.
+Otherwise, wait for at least one minute before retrying. If your request continues to fail due
+to a secondary rate limit, wait for an exponentially increasing amount of time between retries,
+and throw an error after a specific number of retries. Continuing to make requests while you are
+rate limited
+
+#### LIVE identical? true

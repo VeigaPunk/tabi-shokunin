@@ -1,0 +1,73 @@
+--- scripts/check-selfassessment.mjs	2026-10-26 05:25:31.104753758 -0300
++++ .ufo/waves/round-31/baseline/m8-proof/old-oracle.mjs	2026-10-26 05:31:37.805890283 -0300
+@@ -5,7 +5,7 @@
+ // Verdict: 0 clean, 1 failed (>=1 mismatch), 2 could-not-evaluate (usage,
+ //          unreadable revision, git failure). Any other nonzero code is
+ //          undeclared and reads as could-not-evaluate.
+-// Self-test: `--selftest` (30 isolated cases over temporary sandbox
++// Self-test: `--selftest` (29 isolated cases over temporary sandbox
+ //          repositories; asserts exit code AND stable finding id; creates and
+ //          removes its own temp trees, never touches the lane).
+ // Pinned values: the expected exit/finding table is the CASES constant in this
+@@ -173,7 +173,7 @@
+           // is the oracle; per-case lines may carry other `cases=` tokens (round-30
+           // lesson M8: a refusal message `cases=2 passed=1` was read as the tally).
+           const summaries = [...out.matchAll(/^[A-Z][A-Z0-9_]*_SELFTEST\b[^\n]*?\bcases\s*[=:]\s*(\d+)/gm)];
+-          const m = summaries.length ? summaries[summaries.length - 1] : (/"?\bcases"?\s*[=:]\s*(\d+)/.exec(out) || /\b(\d+)\s*\/\s*(\d+)\b/.exec(out));
++          const m = (/"?\bcases"?\s*[=:]\s*(\d+)/.exec(out) || /\b(\d+)\s*\/\s*(\d+)\b/.exec(out));
+           if (!m) result = { status: "could-not-evaluate", why: "self-test printed no tally" };
+           else result = { status: "measured", tally: Number(m[1]), exit: r.status, flag };
+         }
+@@ -285,14 +285,10 @@
+ 
+ // The paragraph-correction window (LOG.md since round 27; SKILL.md and
+ // corpus/README.md since round 31, frozen claim C2): same association rule as
+-// the SCORECARD window — except that in the round-31 windows (lineOnly) a
+-// tally belongs only to the scripts named on its own line (no section
+-// fallback: registry and frontier sections narrate several gates, and a
+-// historical receipt count is not the section gate's tally); a later paragraph
+-// clears a stale mention only when it names the same script, carries a
+-// correction marker, cites the stale line in the same document and states the
+-// oracle-correct number via a tally shape.
+-function m1LogFindings(repo, rev, logText, cache, doc = "LOG.md", lineOnly = false) {
++// the SCORECARD window; a later paragraph clears a stale mention only when it
++// names the same script, carries a correction marker, cites the stale line in
++// the same document and states the oracle-correct number via a tally shape.
++function m1LogFindings(repo, rev, logText, cache, doc = "LOG.md") {
+   const findings = [];
+   for (const sec of sections(logText)) {
+     const scripts = new Set();
+@@ -319,7 +315,7 @@
+       // single script, else it is ambiguous and is reported could-not-evaluate.
+       const lineScripts = new Set();
+       for (const m of line.matchAll(SCRIPT_IN_TEXT)) lineScripts.add(m[1].replace(/^\.\//, ""));
+-      const targets = lineScripts.size ? [...lineScripts] : !lineOnly && scripts.size === 1 ? [...scripts] : [];
++      const targets = lineScripts.size ? [...lineScripts] : scripts.size === 1 ? [...scripts] : [];
+       if (!targets.length) {
+         findings.push({ class: "m1-selftest-tally", doc, line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "ambiguous script association" });
+         continue;
+@@ -420,9 +416,9 @@
+   const logText = readBlob(repo, rev, "LOG.md");
+   const logFindings = logText === null ? [] : m1LogFindings(repo, rev, logText, cache);
+   const skillText = readBlob(repo, rev, "SKILL.md");
+-  const skillFindings = skillText === null ? [] : m1LogFindings(repo, rev, skillText, cache, "SKILL.md", true);
++  const skillFindings = skillText === null ? [] : m1LogFindings(repo, rev, skillText, cache, "SKILL.md");
+   const readmeText = readBlob(repo, rev, "corpus/README.md");
+-  const readmeFindings = readmeText === null ? [] : m1LogFindings(repo, rev, readmeText, cache, "corpus/README.md", true);
++  const readmeFindings = readmeText === null ? [] : m1LogFindings(repo, rev, readmeText, cache, "corpus/README.md");
+   const findings = [...m1Findings(repo, rev, scorecard, cache), ...logFindings, ...skillFindings, ...readmeFindings, ...m2Findings(repo, rev), ...m3Findings(repo, scorecard)];
+   const counted = findings.filter((f) => f.observed !== null && f.observed !== f.claimed && !f.superseded);
+   return {
+@@ -722,12 +718,6 @@
+     exit: 0,
+     classes: [],
+     build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("`--selftest` (13/13)")); d.readme(registryDoc("cases=12", "Correction (supersedes corpus/README.md:5): `scripts/check-fixture.mjs` `--selftest` (13/13).")); },
+-  },
+-  {
+-    id: "v2-readme-no-section-fallback",
+-    exit: 0,
+-    classes: [],
+-    build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("`--selftest` (13/13)")); d.readme(["# corpus", "", "## Round 16", "", "The gate is `scripts/check-fixture.mjs`.", "Historical receipts carried 43 cases from an earlier gate.", ""].join("\n")); },
+   },
+ ];
+ 

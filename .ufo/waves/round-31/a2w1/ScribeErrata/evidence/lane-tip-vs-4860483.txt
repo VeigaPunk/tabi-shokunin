@@ -1,0 +1,649 @@
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin diff --stat 4860483 ae15a37
+ .../waves/round-31/measure/c1-live-at-4860483.json |  120 +
+ .../waves/round-31/measure/c1-live-at-9505a10.json |   15 +
+ .../round-31/measure/c1-offline-at-4860483.json    |  120 +
+ .../round-31/measure/c1-offline-at-9505a10.json    |   15 +
+ .ufo/waves/round-31/measure/c2-at-4860483.json     | 1840 ++++++++++++
+ .ufo/waves/round-31/measure/c2-at-9505a10.json     | 1814 ++++++++++++
+ .../measure/c2-numstat-freeze-to-4860483.txt       |    3 +
+ .../waves/round-31/measure/measured-provenance.txt |    9 +
+ .ufo/waves/round-31/w1-dispatch.json               |  427 +++
+ .ufo/waves/round-31/w1-spec.json                   |  200 ++
+ .ufo/waves/round-31/w1-validate.stderr             |    0
+ .ufo/waves/round-31/w1.ready                       |    1 +
+ .ufo/waves/round-31/w1.ready.dispatched            |    1 +
+ .ufo/waves/round-31/w1/ConnClaims.md               |   88 +
+ .../round-31/w1/ConnClaims/c1-freeze-reading.json  |   15 +
+ .../round-31/w1/ConnClaims/c2-freeze-reading.json  | 1814 ++++++++++++
+ .../waves/round-31/w1/ConnClaims/census-freeze.txt |   20 +
+ .../exp1-merged-paragraph-stale-tally-shapes.json  | 1855 ++++++++++++
+ .../w1/ConnClaims/exp2-clean-corrections.json      | 1840 ++++++++++++
+ .../w1/ConnClaims/exp3-shift-merged-paragraph.json | 1883 ++++++++++++
+ .../exp4-shift-separated-paragraphs.json           | 1904 ++++++++++++
+ .../ConnClaims/gate-registry-freeze-reading.json   |  179 ++
+ .../waves/round-31/w1/ConnClaims/sources-clean.txt |    1 +
+ .ufo/waves/round-31/w1/ConnSiblings.md             |  118 +
+ .../waves/round-31/w1/ConnSiblings/ConnSiblings.md |  118 +
+ .ufo/waves/round-31/w1/CritC1Axis.md               |  115 +
+ .ufo/waves/round-31/w1/CritC1Axis/bogus-live.err   |    0
+ .ufo/waves/round-31/w1/CritC1Axis/bogus-live.json  |   24 +
+ .../waves/round-31/w1/CritC1Axis/fetch-receipts.md |   12 +
+ .../round-31/w1/CritC1Axis/fixture-entry-bogus.md  |    5 +
+ .../round-31/w1/CritC1Axis/fixture-entry-pad.md    |   14 +
+ .ufo/waves/round-31/w1/CritC1Axis/fixture-revs.txt |    3 +
+ .../w1/CritC1Axis/fixture-sources-rows.txt         |    2 +
+ .../w1/CritC1Axis/freeze-entry-absent.json         |   15 +
+ .ufo/waves/round-31/w1/CritC1Axis/pad-live.err     |    0
+ .ufo/waves/round-31/w1/CritC1Axis/pad-live.json    |   96 +
+ .ufo/waves/round-31/w1/CritC1Axis/pad-offline.err  |    0
+ .ufo/waves/round-31/w1/CritC1Axis/pad-offline.json |   96 +
+ .ufo/waves/round-31/w1/CritC1Axis/rfc6585.txt      |  563 ++++
+ .ufo/waves/round-31/w1/CritC1Axis/rfc9309.txt      |  607 ++++
+ .ufo/waves/round-31/w1/CritC1Counter.md            |   87 +
+ .../waves/round-31/w1/CritC1Counter/SHA256SUMS.txt |   26 +
+ .ufo/waves/round-31/w1/CritC1Counter/commands.txt  |   33 +
+ .../round-31/w1/CritC1Counter/fetch/S119.body      |  607 ++++
+ .../round-31/w1/CritC1Counter/fetch/S120.body      |  563 ++++
+ .../round-31/w1/CritC1Counter/fetch/S121.body      |  151 +
+ .../round-31/w1/CritC1Counter/fetch/S122.body      |  105 +
+ .../waves/round-31/w1/CritC1Counter/fetch/meta.txt |    4 +
+ .../redirect-target-github-getting-started.html    |  622 ++++
+ .../fetch/redirect-target-rfc6585-info.html        | 2149 ++++++++++++++
+ .../round-31/w1/CritC1Counter/fixtures/S119.json   |    9 +
+ .../round-31/w1/CritC1Counter/fixtures/S120.json   |    9 +
+ .../round-31/w1/CritC1Counter/fixtures/S121.json   |    9 +
+ .../fixtures/S122-receipt-swapped.json             |    9 +
+ .../round-31/w1/CritC1Counter/fixtures/S122.json   |    9 +
+ .../fixtures/entry-A-unit-bound-collisions.md      |   14 +
+ .../fixtures/entry-B-one-quote-ten-rows.md         |   18 +
+ .../fixtures/entry-CD-provenance-doc-number.md     |   10 +
+ .../fixtures/entry-E-section-number.md             |    9 +
+ .../w1/CritC1Counter/fixtures/sources-append.txt   |    4 +
+ .../round-31/w1/CritC1Counter/out/A-live.json      |   64 +
+ .../round-31/w1/CritC1Counter/out/A-offline.json   |   64 +
+ .../round-31/w1/CritC1Counter/out/B-live.json      |   96 +
+ .../round-31/w1/CritC1Counter/out/B-offline.json   |   96 +
+ .../round-31/w1/CritC1Counter/out/CD-live.json     |   32 +
+ .../round-31/w1/CritC1Counter/out/E-live.json      |   24 +
+ .../w1/CritC1Counter/out/doNothing-live.json       |   15 +
+ .../round-31/w1/CritC1Counter/out/selftest.json    |  314 ++
+ .ufo/waves/round-31/w1/CritC2Axis.md               |  119 +
+ .../receipts/base-check-release-pins.txt           |   30 +
+ .../receipts/base-check-s106-evidence.txt          |   11 +
+ .../receipts/base-check-selfassessment.txt         |   23 +
+ .../w1/CritC2Axis/receipts/base-check-sources.txt  |   27 +
+ .../w1/CritC2Axis/receipts/baseline-lines.txt      |   20 +
+ .../round-31/w1/CritC2Axis/receipts/commands.txt   |   59 +
+ .../w1/CritC2Axis/receipts/freeze-additions.patch  |   41 +
+ .../w1/CritC2Axis/receipts/freeze-selftest.txt     |   31 +
+ .../w1/CritC2Axis/receipts/v1-at-baseline.json     | 1348 +++++++++
+ .../w1/CritC2Axis/receipts/v2-at-freeze.json       | 1814 ++++++++++++
+ .../round-31/w1/CritC2Axis/receipts/v2-nocorr.json | 1792 +++++++++++
+ .ufo/waves/round-31/w1/CritC2Counter.md            |  222 ++
+ .../round-31/w1/CritC2Counter/aria-selftest.txt    |   63 +
+ .../round-31/w1/CritC2Counter/c2-freeze-run.json   | 1814 ++++++++++++
+ .../round-31/w1/CritC2Counter/c2-selftest-30.json  |  316 ++
+ .../round-31/w1/CritC2Counter/counter-sha256.txt   |    1 +
+ .../round-31/w1/CritC2Counter/fixtures/F1-SKILL.md |    7 +
+ .../round-31/w1/CritC2Counter/fixtures/F1.json     |   55 +
+ .../w1/CritC2Counter/fixtures/F10-SKILL.md         |   13 +
+ .../round-31/w1/CritC2Counter/fixtures/F10.json    |   61 +
+ .../w1/CritC2Counter/fixtures/F11-SKILL.md         |    5 +
+ .../round-31/w1/CritC2Counter/fixtures/F11.json    |   21 +
+ .../round-31/w1/CritC2Counter/fixtures/F2-SKILL.md |    5 +
+ .../round-31/w1/CritC2Counter/fixtures/F2.json     |   45 +
+ .../round-31/w1/CritC2Counter/fixtures/F3-SKILL.md |   10 +
+ .../round-31/w1/CritC2Counter/fixtures/F3.json     |   75 +
+ .../round-31/w1/CritC2Counter/fixtures/F4-SKILL.md |   10 +
+ .../round-31/w1/CritC2Counter/fixtures/F4.json     |   65 +
+ .../round-31/w1/CritC2Counter/fixtures/F5-SKILL.md |    5 +
+ .../round-31/w1/CritC2Counter/fixtures/F5.json     |   45 +
+ .../round-31/w1/CritC2Counter/fixtures/F6-SKILL.md |    9 +
+ .../round-31/w1/CritC2Counter/fixtures/F6.json     |   21 +
+ .../round-31/w1/CritC2Counter/fixtures/F7-SKILL.md |    9 +
+ .../round-31/w1/CritC2Counter/fixtures/F7.json     |   21 +
+ .../round-31/w1/CritC2Counter/fixtures/F8-SKILL.md |   12 +
+ .../round-31/w1/CritC2Counter/fixtures/F8.json     |   51 +
+ .../round-31/w1/CritC2Counter/fixtures/F9-SKILL.md |    9 +
+ .../round-31/w1/CritC2Counter/fixtures/F9.json     |   21 +
+ .../round-31/w1/CritC2Counter/gate-tallies.txt     |   20 +
+ .ufo/waves/round-31/w1/CritSourceChoice.md         |  243 ++
+ .../round-31/w1/CritSourceChoice/build-fx.mjs      |  113 +
+ .../round-31/w1/CritSourceChoice/build-honest.mjs  |   89 +
+ .../round-31/w1/CritSourceChoice/honest-live2.json |  104 +
+ .../round-31/w1/CritSourceChoice/honest-live3.json |  104 +
+ .../w1/CritSourceChoice/honest-offline3.json       |  104 +
+ .ufo/waves/round-31/w1/CritSourceChoice/live3.json |   79 +
+ .../round-31/w1/CritSourceChoice/offline2.json     |   71 +
+ .../w1/CritSourceChoice/probe-honest-table.md      |   21 +
+ .../w1/CritSourceChoice/probe-misread-table.md     |   19 +
+ .../waves/round-31/w1/CritSourceChoice/rfc6585.txt |  563 ++++
+ .../waves/round-31/w1/CritSourceChoice/rfc9309.txt |  607 ++++
+ .ufo/waves/round-31/w1/ExecAssimGuard.md           |   76 +
+ .ufo/waves/round-31/w1/ExecAssimGuard/collisions   |   17 +
+ .ufo/waves/round-31/w1/ExecAssimGuard/derive.sh    |   35 +
+ .../round-31/w1/ExecAssimGuard/derived-sha256.txt  |    4 +
+ .../guard-fixtures/collisions-indented-narrow      |    0
+ .../guard-fixtures/collisions-indented-wide        |    1 +
+ .../ExecAssimGuard/guard-fixtures/reg-colzero.md   |    1 +
+ .../ExecAssimGuard/guard-fixtures/reg-fourspace.md |    1 +
+ .../guard-fixtures/reg-indented-only.md            |    1 +
+ .../w1/ExecAssimGuard/guard-fixtures/reg-mixed.md  |    2 +
+ .../w1/ExecAssimGuard/guard-fixtures/registry.md   |    3 +
+ .../round-31/w1/ExecAssimGuard/guard-proof.txt     |   69 +
+ .ufo/waves/round-31/w1/ExecAssimGuard/guard.sh     |   59 +
+ .../round-31/w1/ExecAssimGuard/input-sha256.txt    |    3 +
+ .ufo/waves/round-31/w1/ExecAssimGuard/new-ids.txt  |   43 +
+ .../round-31/w1/ExecAssimGuard/quarantine-slice    |   38 +
+ .ufo/waves/round-31/w1/ExecAssimGuard/reg-ids      |  118 +
+ .../round-31/w1/ExecAssimGuard/register-sha256.txt |    1 +
+ .ufo/waves/round-31/w1/ExecAssimGuard/staged-ids   |  148 +
+ .ufo/waves/round-31/w1/ExecC2Oracle.md             |  127 +
+ .ufo/waves/round-31/w1/ExecC2Oracle/COMMANDS.md    |   45 +
+ .ufo/waves/round-31/w1/ExecC2Oracle/SHA256SUMS     |   57 +
+ .../round-31/w1/ExecC2Oracle/ambiguous-claims.tsv  |   25 +
+ .../w1/ExecC2Oracle/counted-mismatches.tsv         |   10 +
+ .../counter-selfassessment-rev-run2.json           | 1814 ++++++++++++
+ .../ExecC2Oracle/counter-selfassessment-rev.json   | 1814 ++++++++++++
+ .../w1/ExecC2Oracle/logs/check-adjacency.err       |    0
+ .../w1/ExecC2Oracle/logs/check-adjacency.exit      |    1 +
+ .../w1/ExecC2Oracle/logs/check-adjacency.out       |   58 +
+ .../w1/ExecC2Oracle/logs/check-aria-metadata.err   |    0
+ .../w1/ExecC2Oracle/logs/check-aria-metadata.exit  |    1 +
+ .../w1/ExecC2Oracle/logs/check-aria-metadata.out   |   63 +
+ .../w1/ExecC2Oracle/logs/check-bfcache-receipt.err |    0
+ .../ExecC2Oracle/logs/check-bfcache-receipt.exit   |    1 +
+ .../w1/ExecC2Oracle/logs/check-bfcache-receipt.out |    1 +
+ .../w1/ExecC2Oracle/logs/check-decision-table.err  |    0
+ .../w1/ExecC2Oracle/logs/check-decision-table.exit |    1 +
+ .../w1/ExecC2Oracle/logs/check-decision-table.out  |   35 +
+ .../w1/ExecC2Oracle/logs/check-freshness.err       |    0
+ .../w1/ExecC2Oracle/logs/check-freshness.exit      |    1 +
+ .../w1/ExecC2Oracle/logs/check-freshness.out       |   13 +
+ .../ExecC2Oracle/logs/check-frontier-admission.err |    0
+ .../logs/check-frontier-admission.exit             |    1 +
+ .../ExecC2Oracle/logs/check-frontier-admission.out |   25 +
+ .../w1/ExecC2Oracle/logs/check-gate-mutants.err    |    0
+ .../w1/ExecC2Oracle/logs/check-gate-mutants.exit   |    1 +
+ .../w1/ExecC2Oracle/logs/check-gate-mutants.out    |   13 +
+ .../w1/ExecC2Oracle/logs/check-gate-registry.err   |    0
+ .../w1/ExecC2Oracle/logs/check-gate-registry.exit  |    1 +
+ .../w1/ExecC2Oracle/logs/check-gate-registry.out   |   23 +
+ .../logs/check-measurement-binding.err             |    0
+ .../logs/check-measurement-binding.exit            |    1 +
+ .../logs/check-measurement-binding.out             |   77 +
+ .../w1/ExecC2Oracle/logs/check-release-pins.err    |    0
+ .../w1/ExecC2Oracle/logs/check-release-pins.exit   |    1 +
+ .../w1/ExecC2Oracle/logs/check-release-pins.out    |   30 +
+ .../w1/ExecC2Oracle/logs/check-round-contract.err  |    0
+ .../w1/ExecC2Oracle/logs/check-round-contract.exit |    1 +
+ .../w1/ExecC2Oracle/logs/check-round-contract.out  |   42 +
+ .../w1/ExecC2Oracle/logs/check-s106-evidence.err   |    0
+ .../w1/ExecC2Oracle/logs/check-s106-evidence.exit  |    1 +
+ .../w1/ExecC2Oracle/logs/check-s106-evidence.out   |   11 +
+ .../w1/ExecC2Oracle/logs/check-selfassessment.err  |    0
+ .../w1/ExecC2Oracle/logs/check-selfassessment.exit |    1 +
+ .../w1/ExecC2Oracle/logs/check-selfassessment.out  |   31 +
+ .../logs/check-source-reopen-receipt.err           |    0
+ .../logs/check-source-reopen-receipt.exit          |    1 +
+ .../logs/check-source-reopen-receipt.out           |    1 +
+ .../w1/ExecC2Oracle/logs/check-sources.err         |    0
+ .../w1/ExecC2Oracle/logs/check-sources.exit        |    1 +
+ .../w1/ExecC2Oracle/logs/check-sources.out         |   27 +
+ .../logs/check-user-round-contract.err             |    0
+ .../logs/check-user-round-contract.exit            |    1 +
+ .../logs/check-user-round-contract.out             |   46 +
+ .../w1/ExecC2Oracle/logs/round-evidence-audit.err  |    0
+ .../w1/ExecC2Oracle/logs/round-evidence-audit.exit |    1 +
+ .../w1/ExecC2Oracle/logs/round-evidence-audit.out  |  260 ++
+ .ufo/waves/round-31/w1/ExecC2Oracle/oracle.tsv     |   18 +
+ .ufo/waves/round-31/w1/ExecC2Verify.md             |  130 +
+ .../round-31/w1/ExecC2Verify/before-freeze.json    | 1814 ++++++++++++
+ .../round-31/w1/ExecC2Verify/c2-correct.patch      |   47 +
+ .ufo/waves/round-31/w1/ExecC2Verify/commands.txt   |   64 +
+ .ufo/waves/round-31/w1/ExecC2Verify/correct.json   | 1840 ++++++++++++
+ .../w1/ExecC2Verify/numstat-c2-correct.txt         |    2 +
+ .../waves/round-31/w1/ExecC2Verify/numstat-v-a.txt |    2 +
+ .../waves/round-31/w1/ExecC2Verify/numstat-v-b.txt |    2 +
+ .../waves/round-31/w1/ExecC2Verify/numstat-v-c.txt |    2 +
+ .../waves/round-31/w1/ExecC2Verify/numstat-v-d.txt |    2 +
+ .../w1/ExecC2Verify/probe-d-wrapped-tally.patch    |   47 +
+ .ufo/waves/round-31/w1/ExecC2Verify/sha256sums.txt |   15 +
+ .ufo/waves/round-31/w1/ExecC2Verify/summary.json   |  118 +
+ .ufo/waves/round-31/w1/ExecC2Verify/v-a.json       | 1967 ++++++++++++
+ .ufo/waves/round-31/w1/ExecC2Verify/v-b.json       | 1806 +++++++++++
+ .ufo/waves/round-31/w1/ExecC2Verify/v-c.json       | 1904 ++++++++++++
+ .ufo/waves/round-31/w1/ExecC2Verify/v-d.json       | 1840 ++++++++++++
+ .../w1/ExecC2Verify/variant-a-stale-number.patch   |   47 +
+ .../ExecC2Verify/variant-b-range-one-script.patch  |   26 +
+ .../w1/ExecC2Verify/variant-c-midfile.patch        |   50 +
+ .ufo/waves/round-31/w1/ExecLiveStability.md        |  158 +
+ .../round-31/w1/ExecLiveStability/analyse.mjs      |  119 +
+ .../check-decision-table.frozen.mjs                |  482 +++
+ .../round-31/w1/ExecLiveStability/fetch-meta.tsv   |   13 +
+ .ufo/waves/round-31/w1/ExecLiveStability/fetch.sh  |   29 +
+ .../w1/ExecLiveStability/live-stability.tsv        |   13 +
+ .../w1/ExecLiveStability/normalise-extracted.mjs   |   16 +
+ .../w1/ExecLiveStability/normalised-diffs.txt      |   36 +
+ .../w1/ExecLiveStability/normalised/S119.1.txt     |    1 +
+ .../w1/ExecLiveStability/normalised/S119.2.txt     |    1 +
+ .../w1/ExecLiveStability/normalised/S119.3.txt     |    1 +
+ .../w1/ExecLiveStability/normalised/S120.1.txt     |    1 +
+ .../w1/ExecLiveStability/normalised/S120.2.txt     |    1 +
+ .../w1/ExecLiveStability/normalised/S120.3.txt     |    1 +
+ .../w1/ExecLiveStability/normalised/S121.1.txt     |    1 +
+ .../w1/ExecLiveStability/normalised/S121.2.txt     |    1 +
+ .../w1/ExecLiveStability/normalised/S121.3.txt     |    1 +
+ .../w1/ExecLiveStability/normalised/S122.1.txt     |    1 +
+ .../w1/ExecLiveStability/normalised/S122.2.txt     |    1 +
+ .../w1/ExecLiveStability/normalised/S122.3.txt     |    1 +
+ .../w1/ExecLiveStability/quote-candidates.tsv      |   39 +
+ .../w1/ExecLiveStability/raw-fetch1/S119.1.bin     |  607 ++++
+ .../w1/ExecLiveStability/raw-fetch1/S120.1.bin     |  563 ++++
+ .../w1/ExecLiveStability/raw-fetch1/S121.1.bin     |  151 +
+ .../w1/ExecLiveStability/raw-fetch1/S122.1.bin     |  105 +
+ .../w1/ExecLiveStability/stability-summary.tsv     |    5 +
+ .ufo/waves/round-31/w1/ExecNoHarmBaseline.md       |  121 +
+ .../w1/ExecNoHarmBaseline/noharm-at-freeze.tsv     |   35 +
+ .../raw/before/c1-decision-table.json              |   15 +
+ .../w1/ExecNoHarmBaseline/raw/before/c1.err        |    0
+ .../raw/before/c2-selfassessment.json              | 1814 ++++++++++++
+ .../w1/ExecNoHarmBaseline/raw/before/c2.err        |    0
+ .../round-31/w1/ExecNoHarmBaseline/raw/census.txt  |   20 +
+ .../raw/claims-form/frontier.err                   |    0
+ .../raw/claims-form/frontier.out                   |    3 +
+ .../raw/claims-form/registry.err                   |    0
+ .../raw/claims-form/registry.out                   |   22 +
+ .../raw/claims-form/release-pins.err               |    0
+ .../raw/claims-form/release-pins.out               |    1 +
+ .../w1/ExecNoHarmBaseline/raw/claims-form/s106.err |    0
+ .../w1/ExecNoHarmBaseline/raw/claims-form/s106.out |    1 +
+ .../ExecNoHarmBaseline/raw/claims-form/sources.err |    0
+ .../ExecNoHarmBaseline/raw/claims-form/sources.out |    1 +
+ .../w1/ExecNoHarmBaseline/raw/frontier.err         |    0
+ .../w1/ExecNoHarmBaseline/raw/frontier.json        |   31 +
+ .../w1/ExecNoHarmBaseline/raw/registry.err         |    0
+ .../w1/ExecNoHarmBaseline/raw/registry.json        |  179 ++
+ .../w1/ExecNoHarmBaseline/raw/release-pins.err     |    0
+ .../w1/ExecNoHarmBaseline/raw/release-pins.json    |  153 +
+ .../round-31/w1/ExecNoHarmBaseline/raw/s106.err    |    0
+ .../round-31/w1/ExecNoHarmBaseline/raw/s106.json   |   21 +
+ .../raw/selftest/check-adjacency.err               |    0
+ .../raw/selftest/check-adjacency.out               |   58 +
+ .../raw/selftest/check-aria-metadata.err           |    0
+ .../raw/selftest/check-aria-metadata.out           |   63 +
+ .../raw/selftest/check-bfcache-receipt.err         |    0
+ .../raw/selftest/check-bfcache-receipt.out         |    1 +
+ .../raw/selftest/check-decision-table.err          |    0
+ .../raw/selftest/check-decision-table.out          |   35 +
+ .../raw/selftest/check-freshness.err               |    0
+ .../raw/selftest/check-freshness.out               |   13 +
+ .../raw/selftest/check-frontier-admission.err      |    0
+ .../raw/selftest/check-frontier-admission.out      |   25 +
+ .../raw/selftest/check-gate-mutants.err            |    0
+ .../raw/selftest/check-gate-mutants.out            |   13 +
+ .../raw/selftest/check-gate-registry.err           |    0
+ .../raw/selftest/check-gate-registry.out           |   23 +
+ .../raw/selftest/check-measurement-binding.err     |    0
+ .../raw/selftest/check-measurement-binding.out     |   77 +
+ .../raw/selftest/check-release-pins.err            |    0
+ .../raw/selftest/check-release-pins.out            |   30 +
+ .../raw/selftest/check-round-contract.err          |    0
+ .../raw/selftest/check-round-contract.out          |   42 +
+ .../raw/selftest/check-s106-evidence.err           |    0
+ .../raw/selftest/check-s106-evidence.out           |   11 +
+ .../raw/selftest/check-selfassessment.err          |    0
+ .../raw/selftest/check-selfassessment.out          |   31 +
+ .../raw/selftest/check-source-reopen-receipt.err   |    0
+ .../raw/selftest/check-source-reopen-receipt.out   |    1 +
+ .../raw/selftest/check-sources.err                 |    0
+ .../raw/selftest/check-sources.out                 |   27 +
+ .../raw/selftest/check-user-round-contract.err     |    0
+ .../raw/selftest/check-user-round-contract.out     |   46 +
+ .../w1/ExecNoHarmBaseline/raw/selftest/exit.tsv    |   22 +
+ .../raw/selftest/round-evidence-audit.err          |    0
+ .../raw/selftest/round-evidence-audit.out          |  260 ++
+ .../raw/selftest/wave-r12-claim-record.err         |    0
+ .../raw/selftest/wave-r12-claim-record.out         |   10 +
+ .../raw/selftest/wave-r21-measure-c1.err           |    0
+ .../raw/selftest/wave-r21-measure-c1.out           |    1 +
+ .../raw/selftest/wave-r22-measure-c1.err           |    0
+ .../raw/selftest/wave-r22-measure-c1.out           |    1 +
+ .../raw/selftest/wave-r22-review-chronology.err    |    0
+ .../raw/selftest/wave-r22-review-chronology.out    |    1 +
+ .../round-31/w1/ExecNoHarmBaseline/raw/sources.err |    0
+ .../round-31/w1/ExecNoHarmBaseline/raw/sources.txt |    1 +
+ .../w1/ExecNoHarmBaseline/selftest-runner.sh       |   51 +
+ .ufo/waves/round-31/w1/FetchS119.md                |  176 ++
+ .ufo/waves/round-31/w1/FetchS119/S119-fetch1.hdrs  |   13 +
+ .ufo/waves/round-31/w1/FetchS119/S119-fetch2.hdrs  |   13 +
+ .ufo/waves/round-31/w1/FetchS119/S119-fetches.tsv  |    5 +
+ .../w1/FetchS119/S119-quote-candidates.json        |   11 +
+ .../round-31/w1/FetchS119/S119-quote-presence.txt  |   11 +
+ .../w1/FetchS119/S119-recommended-rows.json        |    7 +
+ .../round-31/w1/FetchS119/S119-row-precheck.txt    |   26 +
+ .ufo/waves/round-31/w1/FetchS119/S119.json         |    9 +
+ .ufo/waves/round-31/w1/FetchS119/bytes/S119.txt    |  607 ++++
+ .../round-31/w1/FetchS119/normalise-reimpl.mjs     |   21 +
+ .../round-31/w1/FetchS119/quote-presence-check.mjs |   21 +
+ .ufo/waves/round-31/w1/FetchS119/row-precheck.mjs  |   39 +
+ .ufo/waves/round-31/w1/FetchS119/rows-pass1.json   |   10 +
+ .ufo/waves/round-31/w1/FetchS119/rows-pass2.json   |    6 +
+ .ufo/waves/round-31/w1/FetchS119/rows-pass3.json   |    5 +
+ .ufo/waves/round-31/w1/FetchS120.md                |  214 ++
+ .ufo/waves/round-31/w1/FetchS120/S120-fetch1.hdrs  |   13 +
+ .ufo/waves/round-31/w1/FetchS120/S120-fetch2.hdrs  |   13 +
+ .ufo/waves/round-31/w1/FetchS120/S120-fetches.tsv  |    5 +
+ .ufo/waves/round-31/w1/FetchS120/S120.json         |    9 +
+ .ufo/waves/round-31/w1/FetchS120/bytes/S120.txt    |  563 ++++
+ .ufo/waves/round-31/w1/FetchS120/normlib.mjs       |   17 +
+ .ufo/waves/round-31/w1/FetchS120/quote-verify.txt  |   16 +
+ .../round-31/w1/FetchS120/verify-report-quotes.mjs |   25 +
+ .ufo/waves/round-31/w1/FetchS121.md                |  205 ++
+ .../round-31/w1/FetchS121/S121-candidate-rows.md   |   26 +
+ .ufo/waves/round-31/w1/FetchS121/S121-fetches.tsv  |    3 +
+ .../w1/FetchS121/S121-normalised-identical.txt     |   14 +
+ .../round-31/w1/FetchS121/S121-normalised.txt      |    1 +
+ .../w1/FetchS121/S121-numeric-sentences.tsv        |   32 +
+ .../round-31/w1/FetchS121/S121-row-candidates.tsv  |   17 +
+ .ufo/waves/round-31/w1/FetchS121/S121.json         |    1 +
+ .ufo/waves/round-31/w1/FetchS121/build.mjs         |   58 +
+ .ufo/waves/round-31/w1/FetchS121/bytes/S121.html   |  151 +
+ .ufo/waves/round-31/w1/FetchS121/f1.hdrs           |   31 +
+ .ufo/waves/round-31/w1/FetchS121/f2.hdrs           |   31 +
+ .ufo/waves/round-31/w1/FetchS121/precheck.txt      |   18 +
+ .ufo/waves/round-31/w1/FetchS121/run-16.json       |  144 +
+ .ufo/waves/round-31/w1/FetchS121/run-all.json      |  151 +
+ .ufo/waves/round-31/w1/FetchS121/verify.mjs        |   17 +
+ .ufo/waves/round-31/w1/FetchS122.md                |  222 ++
+ .../w1/FetchS122/S122-article-body-normalised.txt  |    1 +
+ .../w1/FetchS122/S122-candidate-quotes.txt         |   30 +
+ .../round-31/w1/FetchS122/S122-fetch1.headers      |   31 +
+ .../round-31/w1/FetchS122/S122-fetch2.headers      |   31 +
+ .ufo/waves/round-31/w1/FetchS122/S122-fetches.tsv  |    8 +
+ .../round-31/w1/FetchS122/S122-quote-check.txt     |   31 +
+ .ufo/waves/round-31/w1/FetchS122/S122.json         |    9 +
+ .ufo/waves/round-31/w1/FetchS122/bytes/S122.html   |  105 +
+ .../w1/FetchS122/normalise-reimplementation.mjs    |   20 +
+ .ufo/waves/round-31/w1/MutC1Counter.md             |   75 +
+ .ufo/waves/round-31/w1/MutC1Counter/ENV.md         |   34 +
+ .ufo/waves/round-31/w1/MutC1Counter/MUTANTS.md     |  115 +
+ .../round-31/w1/MutC1Counter/diffs/g1-drop.diff    |   11 +
+ .../w1/MutC1Counter/diffs/g1-idcheck-drop.diff     |   11 +
+ .../round-31/w1/MutC1Counter/diffs/g1-invert.diff  |   11 +
+ .../w1/MutC1Counter/diffs/g2-https-drop.diff       |   11 +
+ .../w1/MutC1Counter/diffs/g2-inrow-drop.diff       |   11 +
+ .../round-31/w1/MutC1Counter/diffs/g2-invert.diff  |   11 +
+ .../w1/MutC1Counter/diffs/g3-bytesnull-drop.diff   |   11 +
+ .../round-31/w1/MutC1Counter/diffs/g3-invert.diff  |   11 +
+ .../w1/MutC1Counter/diffs/g3-sha-drop.diff         |   11 +
+ .../w1/MutC1Counter/diffs/g3-status-drop.diff      |   11 +
+ .../w1/MutC1Counter/diffs/hostof-hostname.diff     |   11 +
+ .../round-31/w1/MutC1Counter/diffs/l1-drop.diff    |   11 +
+ .../round-31/w1/MutC1Counter/diffs/l1-invert.diff  |   11 +
+ .../MutC1Counter/diffs/live-cachekey-urlonly.diff  |   11 +
+ .../w1/MutC1Counter/diffs/live-code200-drop.diff   |   11 +
+ .../w1/MutC1Counter/diffs/live-effhttps-drop.diff  |   11 +
+ .../w1/MutC1Counter/diffs/live-nullres-crash.diff  |   11 +
+ .../w1/MutC1Counter/diffs/live-reqhttps-drop.diff  |   11 +
+ .../w1/MutC1Counter/diffs/live-samehost-drop.diff  |   11 +
+ .../round-31/w1/MutC1Counter/diffs/n1-drop.diff    |   11 +
+ .../round-31/w1/MutC1Counter/diffs/n1-invert.diff  |   11 +
+ .../w1/MutC1Counter/diffs/nw-boundary-drop.diff    |   11 +
+ .../w1/MutC1Counter/diffs/nw-boundary-hyphen.diff  |   11 +
+ .../w1/MutC1Counter/diffs/pt-header-case-drop.diff |   11 +
+ .../w1/MutC1Counter/diffs/pt-length-drop.diff      |   11 +
+ .../w1/MutC1Counter/diffs/pt-separator-drop.diff   |   11 +
+ .../round-31/w1/MutC1Counter/diffs/q1-drop.diff    |   11 +
+ .../round-31/w1/MutC1Counter/diffs/q1-invert.diff  |   11 +
+ .../round-31/w1/MutC1Counter/diffs/q1-max-24.diff  |   11 +
+ .../round-31/w1/MutC1Counter/diffs/q1-max-26.diff  |   11 +
+ .../w1/MutC1Counter/diffs/q1-max-drop.diff         |   11 +
+ .../round-31/w1/MutC1Counter/diffs/q1-min-5.diff   |   11 +
+ .../round-31/w1/MutC1Counter/diffs/q1-min-7.diff   |   11 +
+ .../w1/MutC1Counter/diffs/q1-min-drop.diff         |   11 +
+ .../w1/MutC1Counter/diffs/q1-spans-drop.diff       |   11 +
+ .../round-31/w1/MutC1Counter/diffs/q2-drop.diff    |   11 +
+ .../round-31/w1/MutC1Counter/diffs/q2-invert.diff  |   11 +
+ .../round-31/w1/MutC1Counter/diffs/r1-drop.diff    |   11 +
+ .../w1/MutC1Counter/diffs/r1-has-drop.diff         |   11 +
+ .../round-31/w1/MutC1Counter/diffs/r1-invert.diff  |   11 +
+ .../w1/MutC1Counter/diffs/r1-regex-drop.diff       |   11 +
+ .../round-31/w1/MutC1Counter/diffs/r2-drop.diff    |   11 +
+ .../round-31/w1/MutC1Counter/diffs/r2-invert.diff  |   11 +
+ .../round-31/w1/MutC1Counter/diffs/r3-drop.diff    |   11 +
+ .../round-31/w1/MutC1Counter/diffs/r3-invert.diff  |   11 +
+ .../round-31/w1/MutC1Counter/diffs/r4-drop.diff    |   11 +
+ .../round-31/w1/MutC1Counter/diffs/r4-invert.diff  |   11 +
+ .../round-31/w1/MutC1Counter/diffs/t1-drop.diff    |   11 +
+ .../round-31/w1/MutC1Counter/diffs/t1-invert.diff  |   11 +
+ .../round-31/w1/MutC1Counter/diffs/t2-drop.diff    |   11 +
+ .../round-31/w1/MutC1Counter/diffs/t2-weaken.diff  |   11 +
+ .../round-31/w1/MutC1Counter/diffs/t3-drop.diff    |   11 +
+ .../round-31/w1/MutC1Counter/diffs/t3-invert.diff  |   11 +
+ .../round-31/w1/MutC1Counter/diffs/t4-drop.diff    |   11 +
+ .../round-31/w1/MutC1Counter/diffs/t4-invert.diff  |   11 +
+ .../MutC1Counter/diffs/unit-boundwords-drop.diff   |   11 +
+ .../MutC1Counter/diffs/unit-boundwords-weaken.diff |   11 +
+ .../MutC1Counter/diffs/unit-digits-alt-drop.diff   |   11 +
+ .../w1/MutC1Counter/diffs/unit-ksep-2.diff         |   11 +
+ .../w1/MutC1Counter/diffs/unit-unanchored.diff     |   11 +
+ .ufo/waves/round-31/w1/MutC1Counter/results.json   | 3131 ++++++++++++++++++++
+ .ufo/waves/round-31/w1/MutC2Counter.md             |  157 +
+ .../waves/round-31/w1/MutC2Counter/MANIFEST.sha256 |   36 +
+ .../round-31/w1/MutC2Counter/demo-m2-mutant.txt    |    2 +
+ .../round-31/w1/MutC2Counter/demo-m2-pristine.txt  |    2 +
+ .../round-31/w1/MutC2Counter/demo-m5-mutant.txt    |    3 +
+ .../round-31/w1/MutC2Counter/demo-m5-pristine.txt  |    3 +
+ .../round-31/w1/MutC2Counter/demo-m7a-json.diff    |    8 +
+ .../round-31/w1/MutC2Counter/demo-m7a-mutant.json  |   39 +
+ .../w1/MutC2Counter/demo-m7a-pristine.json         |   39 +
+ .ufo/waves/round-31/w1/MutC2Counter/demo-run.log   |   33 +
+ .../round-31/w1/MutC2Counter/demo-survivors.sh     |   80 +
+ .../w1/MutC2Counter/m1-summary-line-dropped.diff   |   12 +
+ .../w1/MutC2Counter/m1-summary-line-dropped.txt    |   31 +
+ .../round-31/w1/MutC2Counter/m2-first-summary.diff |   11 +
+ .../round-31/w1/MutC2Counter/m2-first-summary.txt  |   31 +
+ .../w1/MutC2Counter/m3-lineonly-ignored.diff       |   11 +
+ .../w1/MutC2Counter/m3-lineonly-ignored.txt        |   31 +
+ .../MutC2Counter/m4-citesline-readme-accepted.diff |   11 +
+ .../MutC2Counter/m4-citesline-readme-accepted.txt  |   31 +
+ .../m5-citesline-lookbehind-removed.diff           |   11 +
+ .../m5-citesline-lookbehind-removed.txt            |   31 +
+ .../w1/MutC2Counter/m6-windows-dropped.diff        |   14 +
+ .../w1/MutC2Counter/m6-windows-dropped.txt         |   31 +
+ .../w1/MutC2Counter/m7a-doc-field-log.diff         |   31 +
+ .../round-31/w1/MutC2Counter/m7a-doc-field-log.txt |   31 +
+ .../w1/MutC2Counter/m7b-doc-param-log.diff         |   10 +
+ .../round-31/w1/MutC2Counter/m7b-doc-param-log.txt |   31 +
+ .../mutants/m1-summary-line-dropped.mjs            |  899 ++++++
+ .../w1/MutC2Counter/mutants/m2-first-summary.mjs   |  900 ++++++
+ .../MutC2Counter/mutants/m3-lineonly-ignored.mjs   |  900 ++++++
+ .../mutants/m4-citesline-readme-accepted.mjs       |  900 ++++++
+ .../mutants/m5-citesline-lookbehind-removed.mjs    |  900 ++++++
+ .../w1/MutC2Counter/mutants/m6-windows-dropped.mjs |  900 ++++++
+ .../w1/MutC2Counter/mutants/m7a-doc-field-log.mjs  |  900 ++++++
+ .../w1/MutC2Counter/mutants/m7b-doc-param-log.mjs  |  901 ++++++
+ .../round-31/w1/MutC2Counter/pristine-selftest.err |    0
+ .../round-31/w1/MutC2Counter/pristine-selftest.txt |   31 +
+ .ufo/waves/round-31/w1/MutC2Counter/run-mutant.sh  |   25 +
+ .ufo/waves/round-31/w1/RevAssimDecision.md         |   60 +
+ .ufo/waves/round-31/w1/RevCountersCode.md          |  102 +
+ .../round-31/w1/RevCountersCode/c1-selftest.txt    |   35 +
+ .../round-31/w1/RevCountersCode/c2-at-freeze.err   |    0
+ .../round-31/w1/RevCountersCode/c2-at-freeze.json  | 1814 ++++++++++++
+ .../round-31/w1/RevCountersCode/c2-selftest.txt    |   31 +
+ .../waves/round-31/w1/RevCountersCode/p1-fixed.mjs |   28 +
+ .ufo/waves/round-31/w1/RevCountersCode/probes.json |   49 +
+ .ufo/waves/round-31/w1/RevFreeze.md                |   93 +
+ .../w1/RevFreeze/receipts/c1-J1-do-nothing.json    |   15 +
+ .../RevFreeze/receipts/c1-J1-do-nothing.json.exit  |    1 +
+ .../w1/RevFreeze/receipts/c1-J2-old-rows.json      |   30 +
+ .../w1/RevFreeze/receipts/c1-J2-old-rows.json.exit |    1 +
+ .../RevFreeze/receipts/c1-J3-selfquote-live.json   |   30 +
+ .../receipts/c1-J3-selfquote-live.json.exit        |    1 +
+ .../receipts/c1-J3-selfquote-offline.json          |   32 +
+ .../receipts/c1-J3-selfquote-offline.json.exit     |    1 +
+ .../receipts/c1-J4-invented-thresholds.json        |   37 +
+ .../receipts/c1-J4-invented-thresholds.json.exit   |    1 +
+ .../w1/RevFreeze/receipts/c1-J5-package-as-is.json |   15 +
+ .../receipts/c1-J5-package-as-is.json.exit         |    1 +
+ .../w1/RevFreeze/receipts/c2-J1-do-nothing.json    | 1814 ++++++++++++
+ .../RevFreeze/receipts/c2-J1-do-nothing.json.exit  |    1 +
+ .../w1/RevFreeze/receipts/c2-J2-delete-lines.json  | 1668 +++++++++++
+ .../receipts/c2-J2-delete-lines.json.exit          |    1 +
+ .../receipts/c2-J3-uncited-correction.json         | 1885 ++++++++++++
+ .../receipts/c2-J3-uncited-correction.json.exit    |    1 +
+ .../receipts/c2-J4-wrong-doc-citation.json         | 1904 ++++++++++++
+ .../receipts/c2-J4-wrong-doc-citation.json.exit    |    1 +
+ .../w1/RevFreeze/receipts/controls-summary.txt     |   10 +
+ .../w1/RevFreeze/receipts/fetch-rfc9309.txt        |    8 +
+ .../round-31/w1/RevFreeze/receipts/m8-rerun.txt    |   30 +
+ .ufo/waves/round-31/w1/ScoutProvince.md            |   57 +
+ .ufo/waves/round-31/w1/ScribeC2Corrections.md      |  151 +
+ .../w1/ScribeC2Corrections/c2-after-probe.json     | 1840 ++++++++++++
+ .../w1/ScribeC2Corrections/probe-transcript.txt    |   65 +
+ .../w1/ScribeC2Corrections/readme-corrections.md   |    6 +
+ .../w1/ScribeC2Corrections/scorecard-1523.md       |    3 +
+ .../w1/ScribeC2Corrections/skill-corrections.md    |   14 +
+ .ufo/waves/round-31/w1/ScribeEntryProse.md         |  170 ++
+ .../waves/round-31/w1/ScribeEntryProse/digests.txt |    3 +
+ .../round-31/w1/ScribeEntryProse/entry-prose.md    |  159 +
+ .../round-31/w1/ScribeEntryProse/fetch-log.tsv     |    7 +
+ .../w1/ScribeEntryProse/sourced-thresholds.md      |   59 +
+ .ufo/waves/round-31/w1/ScribeLessonMistakes.md     |  120 +
+ .../round-31/w1/ScribeLessonMistakes/mistakes.md   |  240 ++
+ .../receipts/baseline-window-absence.txt           |   10 +
+ .../receipts/env-forward-lines.txt                 |    4 +
+ .../ScribeLessonMistakes/receipts/freeze-1523.txt  |    5 +
+ .../receipts/frozen-vs-old-oracle.diff             |   73 +
+ .../receipts/oracle-coverage-rows.tsv              |    3 +
+ .../receipts/t0-mismatch-set.txt                   |   10 +
+ .ufo/waves/round-31/w1/ScribeQuality.md            |  133 +
+ .ufo/waves/round-31/w1/ScribeQuality/quality.md    |  148 +
+ .../round-31/w1/ScribeQuality/receipts/aria.out    |   63 +
+ .../round-31/w1/ScribeQuality/receipts/dated2.txt  |  330 +++
+ .../w1/ScribeQuality/receipts/dt-selftest.txt      |   35 +
+ .../ScribeQuality/receipts/mb-could-not-eval.out   |    2 +
+ .../w1/ScribeQuality/receipts/self-freeze.json     | 1814 ++++++++++++
+ .../w1/ScribeQuality/receipts/window-scripts.txt   |   27 +
+ .ufo/waves/round-31/w1/ScribeRowsGitHubLimits.md   |  106 +
+ .../receipts/S121.receipt.json                     |    8 +
+ .../w1/ScribeRowsGitHubLimits/receipts/extract.mjs |   26 +
+ .../receipts/fetch-provenance.txt                  |    7 +
+ .../receipts/fixture-entry.md                      |   22 +
+ .../receipts/gen-fixture.mjs                       |   33 +
+ .../receipts/live-final.json                       |  112 +
+ .../receipts/neg-control.json                      |  111 +
+ .../w1/ScribeRowsGitHubLimits/receipts/norm.mjs    |    6 +
+ .../receipts/offline-final.json                    |  112 +
+ .../receipts/rejected-proof.txt                    |   24 +
+ .../receipts/row-proof.stdout                      |   13 +
+ .../ScribeRowsGitHubLimits/receipts/row-proof.txt  |   13 +
+ .../w1/ScribeRowsGitHubLimits/receipts/rows.json   |   86 +
+ .../w1/ScribeRowsGitHubLimits/receipts/s121.html   |  151 +
+ .../w1/ScribeRowsGitHubLimits/receipts/s121.meta   |    1 +
+ .../w1/ScribeRowsGitHubLimits/receipts/s121.time   |    1 +
+ .../round-31/w1/ScribeRowsGitHubLimits/rejected.md |   36 +
+ .../round-31/w1/ScribeRowsGitHubLimits/rows.md     |   38 +
+ .ufo/waves/round-31/w1/ScribeRowsGitHubPractice.md |  139 +
+ .../w1/ScribeRowsGitHubPractice/evidence/fetch.log |   11 +
+ .../w1/ScribeRowsGitHubPractice/evidence/live.json |   40 +
+ .../ScribeRowsGitHubPractice/evidence/offline.json |   40 +
+ .../evidence/probe-table.md                        |   10 +
+ .../ScribeRowsGitHubPractice/evidence/probe.json   |   58 +
+ .../w1/ScribeRowsGitHubPractice/evidence/proof.txt |   12 +
+ .../evidence/rows-draft.md                         |    3 +
+ .../w1/ScribeRowsGitHubPractice/receipt/S122.json  |    9 +
+ .../receipt/bytes/S122.html                        |  105 +
+ .../w1/ScribeRowsGitHubPractice/rejected.md        |   35 +
+ .../round-31/w1/ScribeRowsGitHubPractice/rows.md   |    9 +
+ .ufo/waves/round-31/w1/ScribeRowsRetry.md          |  157 +
+ .../w1/ScribeRowsRetry/evidence/S120.receipt.json  |    1 +
+ .../w1/ScribeRowsRetry/evidence/SOURCES.md         |    6 +
+ .../ScribeRowsRetry/evidence/build-independent.mjs |   78 +
+ .../w1/ScribeRowsRetry/evidence/checks.json        |    6 +
+ .../round-31/w1/ScribeRowsRetry/evidence/live.json |   32 +
+ .../round-31/w1/ScribeRowsRetry/evidence/norm.mjs  |   53 +
+ .../w1/ScribeRowsRetry/evidence/offline.json       |   32 +
+ .../ScribeRowsRetry/evidence/probe-honest-table.md |   21 +
+ .../w1/ScribeRowsRetry/evidence/probe-live.json    |  104 +
+ .../w1/ScribeRowsRetry/evidence/probe-offline.json |  104 +
+ .../evidence/quote-checks-controls.txt             |    3 +
+ .../ScribeRowsRetry/evidence/quote-checks-rows.txt |    3 +
+ .../evidence/rate-signal-decision-table.md         |   10 +
+ .../w1/ScribeRowsRetry/evidence/rfc6585.txt        |  563 ++++
+ .../w1/ScribeRowsRetry/evidence/rfc9309.txt        |  607 ++++
+ .ufo/waves/round-31/w1/ScribeRowsRetry/rejected.md |   46 +
+ .ufo/waves/round-31/w1/ScribeRowsRetry/rows.md     |    6 +
+ .ufo/waves/round-31/w1/ScribeRowsRobots.md         |  229 ++
+ .../w1/ScribeRowsRobots/S119.receipt-draft.json    |    9 +
+ .../round-31/w1/ScribeRowsRobots/bytes/S119.txt    |  607 ++++
+ .../round-31/w1/ScribeRowsRobots/counter-live.json |   64 +
+ .../w1/ScribeRowsRobots/counter-offline.json       |   64 +
+ .../waves/round-31/w1/ScribeRowsRobots/counter.mjs |  482 +++
+ .ufo/waves/round-31/w1/ScribeRowsRobots/norm.mjs   |  481 +++
+ .ufo/waves/round-31/w1/ScribeRowsRobots/proof.mjs  |   46 +
+ .../waves/round-31/w1/ScribeRowsRobots/rejected.md |   36 +
+ .../waves/round-31/w1/ScribeRowsRobots/rfc9309.txt |  607 ++++
+ .ufo/waves/round-31/w1/ScribeRowsRobots/rows.md    |   15 +
+ .ufo/waves/round-31/w1/ScribeSourcesRows.md        |  167 ++
+ .../round-31/w1/ScribeSourcesRows/appended-rows.md |    5 +
+ .../round-31/w1/ScribeSourcesRows/bytes/S119.txt   |  607 ++++
+ .../round-31/w1/ScribeSourcesRows/bytes/S120.txt   |  563 ++++
+ .../round-31/w1/ScribeSourcesRows/bytes/S121.html  |  151 +
+ .../round-31/w1/ScribeSourcesRows/bytes/S122.html  |  105 +
+ .../w1/ScribeSourcesRows/fetch-receipts.tsv        |    4 +
+ .ufo/waves/round-31/w1/ScribeSourcesRows/gate.md   |   40 +
+ .../round-31/w1/ScribeSourcesRows/newrows.txt      |    4 +
+ .../round-31/w1/ScribeSourcesRows/quote-check.txt  |   21 +
+ .ufo/waves/round-31/w1/ScribeSourcesRows/rows.md   |   43 +
+ .../round-31/w1/ScribeSourcesRows/validate.txt     |   25 +
+ .ufo/waves/round-31/w1/SentinelC1Live.md           |  252 ++
+ .../round-31/w1/SentinelC1Live/S121.receipt.json   |   11 +
+ .ufo/waves/round-31/w1/SentinelC1Live/S121.text    |    1 +
+ .../w1/SentinelC1Live/arm-A1-cert-only.json        |   24 +
+ .../w1/SentinelC1Live/arm-A2-clean-env.json        |   23 +
+ .../w1/SentinelC1Live/arm-A3-proxy-and-cert.json   |   24 +
+ .../w1/SentinelC1Live/arm-A3b-proxy-only.json      |   23 +
+ .../w1/SentinelC1Live/arm-A4-direct-real.json      |   23 +
+ .../w1/SentinelC1Live/arm-A5-fake-curl-path.json   |   24 +
+ .../round-31/w1/SentinelC1Live/arm-A6-no-curl.json |   23 +
+ .../w1/SentinelC1Live/arm-I1-idn-via-proxy.json    |   24 +
+ .../w1/SentinelC1Live/arm-P1-port-change.json      |   23 +
+ .../w1/SentinelC1Live/arm-U1-userinfo.json         |   24 +
+ .ufo/waves/round-31/w1/SentinelC1Live/arms.json    |   80 +
+ .../waves/round-31/w1/SentinelC1Live/cert-sans.txt |    2 +
+ .../round-31/w1/SentinelC1Live/curl-semantics.txt  |   14 +
+ .../round-31/w1/SentinelC1Live/fx1.build.json      |    1 +
+ .../round-31/w1/SentinelC1Live/fx10.build.json     |    1 +
+ .../round-31/w1/SentinelC1Live/fx11.build.json     |    1 +
+ .../round-31/w1/SentinelC1Live/fx2.build.json      |    1 +
+ .../round-31/w1/SentinelC1Live/fx3.build.json      |    1 +
+ .../round-31/w1/SentinelC1Live/fx5.build.json      |    1 +
+ .../round-31/w1/SentinelC1Live/fx7.build.json      |    1 +
+ .../round-31/w1/SentinelC1Live/fx8.build.json      |    1 +
+ .../round-31/w1/SentinelC1Live/fx9.build.json      |    1 +
+ .../round-31/w1/SentinelC1Live/fx9b.build.json     |    1 +
+ .../round-31/w1/SentinelC1Live/hostmatrix.txt      |   19 +
+ .../round-31/w1/SentinelC1Live/proxy-connect.log   |   28 +
+ .../w1/SentinelC1Live/repro-build-fixture.mjs      |   59 +
+ .../w1/SentinelC1Live/repro-fakebin-curl.sh        |    4 +
+ .../round-31/w1/SentinelC1Live/repro-harness.mjs   |   31 +
+ .../round-31/w1/SentinelC1Live/repro-servers.mjs   |  101 +
+ .ufo/waves/round-31/w1/SentinelC1Live/selftest.txt |   35 +
+ .ufo/waves/round-31/w1/swarm-registry.json         |  233 ++
+ .ufo/waves/round-31/w2-dispatch.json               |  427 +++
+ .ufo/waves/round-31/w2-spec.json                   |  200 ++
+ .ufo/waves/round-31/w2-validate.stderr             |    0
+ .ufo/waves/round-31/w2.ready                       |    1 +
+ .ufo/waves/round-31/w2.ready.dispatched            |    1 +
+ .ufo/waves/round-31/w2/swarm-registry.json         |  233 ++
+ 640 files changed, 94270 insertions(+)
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin diff --name-only 4860483 ae15a37 -- ':!.ufo'
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin diff --stat 4860483 -- SKILL.md corpus/README.md corpus/QUALITY.md corpus/lessons/round-31.md SCORECARD.md
+exit=0

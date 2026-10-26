@@ -1,0 +1,22 @@
+# Seat CritC1Verdict — criterion-80 row audit at REV 486048356f0712e4396588c9dab58cd419243120
+# Every quote below verified present in (a) the committed receipt bytes at REV and (b) my own fresh fetch of the cited URL (2026-10-26T12:27:49-50Z).
+# columns: row	source	threshold_cell	quoted_number_phrase	bound_matches	unit_as_quoted	unit_in_cell	force_limb	derived_marker	verdict
+D1	S119	at least 5 redirects	"at least five consecutive redirects"	yes	redirects	redirects	SHOULD	no	admit
+D2	S119	more than 5 redirects	"more than five consecutive redirects"	yes	redirects	redirects	MAY	no	admit (same number+unit as D1)
+D3	S119	30 days	"(for example, 30 days)"	n/a (no bound in source)	days	days	MAY	no	admit, example-flagged in Signal+Decision cells (Q80 carve-out)
+D4	S119	more than 24 hours	"for more than 24 hours"	yes	hours	hours	SHOULD NOT	no	admit
+D5	S119	at least 500 KiB	"at least 500 kibibytes [KiB]"	yes	KiB	KiB	MUST	no	admit
+D6	S121	at least 1 minute	"at least one minute"	yes	minute	minute	directive "wait ... before retrying"	no	admit
+D7	S121	60 requests	"60 requests per hour"	declared limit (no bound)	requests/hour	requests only (window in Decision)	declared limit	yes	admit, cell incomplete
+D8	S121	5,000 requests	"5,000 requests per hour"	declared limit (no bound)	requests/hour	requests only (window in Decision)	declared limit	yes	admit, cell incomplete
+D9	S121	no more than 100 concurrent	"No more than 100 concurrent requests"	yes	concurrent requests	"concurrent" (noun truncated)	declared limit	yes	admit, cell truncated
+D10	S121	no more than 900 points	"No more than 900 points per minute"	yes	points/minute	points only (window in Decision)	declared limit	yes	admit, cell incomplete
+D11	S121	no more than 90 seconds	"No more than 90 seconds of CPU time per 60 seconds of real time"	yes	seconds (60 s window in Signal)	seconds	declared limit	yes	admit
+D12	S122	0 requests	"the x-ratelimit-remaining header is 0"	n/a	nothing stated after 0	"requests" supplied by author	directive "you should not make another request"	no	admit with unit defect; Decision prose says "SHOULD strength" for a lowercase directive
+D13	S122	at least 1 second	"wait at least one second between each request"	yes	second	second	directive "wait ..."	no	admit; quote fragment omits the "large number of POST/PATCH/PUT/DELETE" condition its Signal cell rests on
+
+# Distinct sourced thresholds (source, number, unit-as-quoted), D1/D2 merged: 12
+#   5 redirects | 30 days (example) | 24 hours | 500 KiB | 1 minute | 60 requests/hour | 5,000 requests/hour
+#   100 concurrent requests | 900 points/minute | 90 seconds CPU per 60 s | 0 remaining | 1 second
+# Harshest defensible floor: drop the example period (D3) and the unit-fabricated cell (D12) -> 10 distinct.
+# Rows admitted under Q80: 13 (12 with D12's unit held against it).

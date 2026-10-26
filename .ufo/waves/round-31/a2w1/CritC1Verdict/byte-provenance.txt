@@ -1,0 +1,32 @@
+# Seat CritC1Verdict — are the committed receipt bytes the cited documents?
+# Method: my own read-only GET of each cited URL (2026-10-26T12:27:49-50Z, curl -q -sS --proto =https -L --max-time 60),
+# byte-compared against corpus/evidence/round-31/decision-table/bytes/ at REV 486048356f0712e4396588c9dab58cd419243120.
+# The frozen counter's g3 check only ties a receipt's bytes_path to its own sha256, not to its url (wave-1 CritC1Counter item C);
+# this file closes that gap for the landed receipts independently.
+
+S119.txt  committed = fresh, byte-identical
+          committed sha256 f633915daaa15b943cae56545d333bcf3ba4d156599e4555499686d6699fb207 (25265 B)
+          my fetch    sha256 f633915daaa15b943cae56545d333bcf3ba4d156599e4555499686d6699fb207 (25265 B)
+
+S120.txt  committed = fresh, byte-identical
+          committed sha256 f6d55d1b491cd515c35827cf9181753b23b2a68c4df14e56d83dc445b3876e58 (17164 B)
+          my fetch    sha256 f6d55d1b491cd515c35827cf9181753b23b2a68c4df14e56d83dc445b3876e58 (17164 B)
+
+S121.html committed sha256 3a33f87b965a4af17078523dad091e35c41c69d7c9e6941140f91f4feefef755 (337116 B)
+          my fetch    sha256 47031376e510aeca24d6c088365460bf065e50386e7a77c3314f52a6b63173d9 (337116 B)
+          byte diff: 63 bytes in 3 contiguous spans, all the Next.js build id:
+            offset  7897-7917  /_next/static/ltuTboUIVptrdqXZZauaN/_buildManifest.js  vs  xU-2nvoRQaQJjVgNhAf2O
+            offset  7983-8003  /_next/static/ltuTboUIVptrdqXZZauaN/_ssgManifest.js    vs  xU-2nvoRQaQJjVgNhAf2O
+            offset 336885-336905  "buildId":"ltuTboUIVptrdqXZZauaN"                    vs  "buildId":"xU-2nvoRQaQJjVgNhAf2O"
+          (wave-1 SentinelC1Live and CritC1Axis fetched the same URL and recorded yet another sha256, ae5e1812…, at the
+          same 337116 B; the page rebuilds its build id per response, which is why three seats see three digests and one size.)
+
+S122.html committed sha256 b15c1c0ba8ca15fef43a89fa936a916e79717d7e4c1d85f170812d53c0dea33e (328088 B)
+          my fetch    sha256 e4050f6bab26d33a4f6e8cc633555bb55478f9cc0c2857e37e77ff7ba38147b0 (328088 B)
+          byte diff: same class, 3 spans, build id fLcjPgBz_YHwhrus9wIPY vs xU-2nvoRQaQJjVgNhAf2O (offsets 7955-7975,
+          8041-8061, 327857-327877).
+
+Conclusion: for all four receipts the committed bytes are the document at the cited URL, differing (where they differ) only in
+the page's own build id. The landed table does not exploit the g3 provenance hole. In addition, all 13 located quotes were
+found in my fresh fetches (independent of the counter's --live path, run from a shell with no HTTPS_PROXY/SSL_CERT_FILE/
+CURL_CA_BUNDLE/PATH override; env grep for proxy|cert|curl|ca_bundle exit 1).

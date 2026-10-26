@@ -1,0 +1,11 @@
+# Baseline recomputation at 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc (git archive extraction, no checkout of the clone)
+$ git -C clone archive 96a2d1a | tar -x -C base   # exit 0
+$ grep -cE '^\|[[:space:]]*S[0-9]{3,}[[:space:]]*\|' base/corpus/SOURCES.md
+118
+$ tier histogram
+A=103 B=6 C=9 
+$ status histogram
+mined=94 queued=15 rejected=9 
+$ sources-census.sh validate --file base/corpus/SOURCES.md
+[exit 0]
+$ grep -c W04  -> 19

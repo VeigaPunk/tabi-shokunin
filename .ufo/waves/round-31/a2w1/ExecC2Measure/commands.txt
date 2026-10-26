@@ -1,0 +1,56 @@
+# ExecC2Measure — C2 measurement, round 31 a2w1 (2026-10-26 UTC)
+# seat scratch: /fast/scratch/hyaku/tabi-r31/ExecC2Measure (TMPDIR=$S/tmp)
+# clone: git clone --shared <lane> "$S/clone"; git -C "$S/clone" checkout -q 486048356f0712e4396588c9dab58cd419243120
+# shell cwd for every run below: $S/clone (porcelain empty before and after)
+
+git -C "$S/clone" rev-parse HEAD                                      # 486048356f0712e4396588c9dab58cd419243120
+git -C "$S/clone" status --porcelain | wc -l                          # 0
+sha256sum scripts/check-selfassessment.mjs                            # 143d66ff…b2fce = frozenDigests
+sha256sum scripts/check-decision-table.mjs                            # d15f3bd7…f6832 = frozenDigests
+git show 9505a10…:scripts/check-selfassessment.mjs | sha256sum         # 143d66ff…b2fce (same bytes at freeze commit)
+
+# --- C2 counting command at REV (twice) ---
+TMPDIR="$S/tmp" node scripts/check-selfassessment.mjs --rev 4860483… --json > c2-rev.json       # exit 0
+TMPDIR="$S/tmp" node scripts/check-selfassessment.mjs --rev 4860483… --json > c2-rev-run2.json  # exit 0
+cmp c2-rev.json c2-rev-run2.json                                      # identical, sha256 aa5a7657…3abbb
+node -e '…' c2-rev.json                                               # mismatches 0, counted 0, couldNotEvaluate 103, superseded 29, clean true
+
+# --- before reading at the freeze commit ---
+TMPDIR="$S/tmp" node scripts/check-selfassessment.mjs --rev 9505a10… --json > c2-freeze.json     # exit 1
+# mismatches 9, counted 9, couldNotEvaluate 103, superseded 20, clean false; counted set == baseline/c2-J1-do-nothing.json
+
+# --- append-only + no gate edit ---
+git diff --numstat 9505a10… 4860483… -- SKILL.md corpus/README.md SCORECARD.md LOG.md  # 4/0, 22/0, 25/0; deleted total 0
+git diff --name-only 9505a10… 4860483… -- scripts/                                     # empty (0 files)
+
+# --- oracle: each gate's own summary line at REV ---
+node scripts/check-sources.mjs --self-test            # exit 0  SOURCES_SELFTEST verdict=clean cases=26
+node scripts/check-selfassessment.mjs --selftest      # exit 0  SELFASSESSMENT_SELFTEST verdict=clean cases=30 passed=30
+node scripts/check-s106-evidence.mjs --selftest       # exit 0  S106_SELFTEST verdict=clean cases=10 passed=10
+node scripts/check-release-pins.mjs --selftest        # exit 0  RELEASE_PINS_SELFTEST verdict=clean cases=29 passed=29
+node scripts/check-decision-table.mjs --selftest      # exit 0  DECISION_TABLE_SELFTEST verdict=clean cases=34 (C1 coupling, SKILL.md:2575)
+
+# --- historical tallies quoted by the correction paragraphs, run at the cited commits (worktrees in $S/wt) ---
+node wt/9e3b607/scripts/check-sources.mjs --self-test            # exit 0  cases=25 (no row-outside-registry case)
+node wt/5cdc976/scripts/check-sources.mjs --self-test            # exit 0  cases=26; blob identical to REV
+node wt/fd722a7/scripts/check-selfassessment.mjs --selftest      # exit 0  cases=17
+node wt/b4128c4/scripts/check-selfassessment.mjs --selftest      # exit 0  cases=20
+node wt/97be89b/scripts/check-selfassessment.mjs --selftest      # exit 0  cases=22
+node wt/bceb17d/scripts/check-s106-evidence.mjs --selftest       # exit 0  cases=5
+node wt/b4128c4/scripts/check-s106-evidence.mjs --selftest       # exit 1  ReferenceError: existsSync is not defined (gate crashes at that rev; 7 = CASES id count)
+node wt/59e8167/scripts/check-s106-evidence.mjs --selftest       # exit 0  cases=7
+node wt/38891ca/scripts/check-s106-evidence.mjs --selftest       # exit 0  cases=10
+node wt/97be89b/scripts/check-release-pins.mjs --selftest        # exit 0  cases=20
+node wt/38891ca/scripts/check-release-pins.mjs --selftest        # exit 0  cases=29 (round-30 +9)
+node wt/3254740/scripts/check-measurement-binding.mjs --self-test # exit 0 cases=59 (SKILL.md:1886 historical; REV = 76)
+git diff <(ids 97be89b:check-selfassessment.mjs) <(ids 4860483:…)  # +8 v2 case ids
+git diff <(ids 59e8167:check-s106-evidence.mjs) <(ids 38891ca:…)   # +3 case ids
+git diff <(ids 97be89b:check-release-pins.mjs) <(ids 38891ca:…)    # +9 case ids
+
+# --- provenance of the frozen "before" receipt ---
+git cat-file -t befe2a3f96f451e1fe797c3cab5f4c8dcf670f99         # exit 128, not a lane object
+git cat-file -t 5150611c                                         # exit 128 (hash quoted at corpus/README.md:358)
+
+# --- SCORECARD:1523 correction receipts (lane working tree, read-only) ---
+sed -n '130p' .ufo/waves/round-30/measure/noharm-at-0ffc6ea.txt  # mismatches=3
+sed -n '1p'   .ufo/waves/round-30/measure/noharm-at-d3cd62a.txt  # {"mismatches":1,…SCORECARD.md:1527, claimed 12, observed 2}

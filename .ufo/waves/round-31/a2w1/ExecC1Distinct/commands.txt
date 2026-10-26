@@ -1,0 +1,51 @@
+# ExecC1Distinct — commands, exit codes, digests (tabi round 31, a2w1)
+# Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin (read-only in this seat)
+# Scratch: /fast/scratch/hyaku/tabi-r31/ExecC1Distinct (HYAKU_SCRATCH=/fast/scratch/hyaku), TMPDIR=$S
+
+# 1. clone + pin (lane checkout never touched)
+git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"      # exit 0
+git -C "$S/clone" checkout -q 486048356f0712e4396588c9dab58cd419243120         # exit 0
+git -C "$S/clone" rev-parse HEAD -> 486048356f0712e4396588c9dab58cd419243120
+git -C "$S/clone" status --porcelain | wc -l -> 0
+
+# 2. counter bytes at the measured rev still match claims.json frozenDigests
+sha256sum "$S/clone/scripts/check-decision-table.mjs"
+  d15f3bd7aef4423d4311c2402f2d01bac8c7ff140a2fdd448ad2500f482f6832             # = frozenDigests["scripts/check-decision-table.mjs"]
+
+# 3. frozen counter, offline cross-check of the row set this report measures
+cd "$S/clone" && TMPDIR=$S node scripts/check-decision-table.mjs \
+  --rev 486048356f0712e4396588c9dab58cd419243120 \
+  --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc \
+  --entry corpus/knowledge/rate-signal-decision-table.md --json > "$S/counter-offline.json"   # exit 0
+  -> population 13, admitted 13, failing 0; every D1..D13 admitted (offline; the live leg is the L1's reading, not re-run here)
+
+# 4. supplementary row metrics, landed table
+cd "$S/clone" && TMPDIR=$S node "$OUT/row-metrics.mjs" --repo "$S/clone" \
+  --rev 486048356f0712e4396588c9dab58cd419243120 \
+  --entry corpus/knowledge/rate-signal-decision-table.md \
+  --json-out "$S/landed.json" > "$S/landed.stdout"                             # exit 0
+
+# 5. same metrics on the w1 pad control (one quote, ten rows)
+cp /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-31/w1/CritC1Axis/fixture-entry-pad.md "$OUT/"
+cd "$S/clone" && TMPDIR=$S node "$OUT/row-metrics.mjs" --repo "$S/clone" \
+  --rev 486048356f0712e4396588c9dab58cd419243120 \
+  --entry .ufo/waves/round-31/w1/CritC1Axis/fixture-entry-pad.md \
+  --entry-file "$OUT/fixture-entry-pad.md" --json-out "$S/pad.json" > "$S/pad.stdout"   # exit 0
+
+# 6. commit the output in the scratch clone (identity checked: rev-parse --show-toplevel = $S/clone)
+git -C "$S/clone" rev-parse --show-toplevel -> /fast/scratch/hyaku/tabi-r31/ExecC1Distinct/clone
+git -C "$S/clone" -c user.name=ExecC1Distinct -c user.email=ExecC1Distinct@scratch.local \
+  commit -m "a2w1 ExecC1Distinct: supplementary per-row metrics for C1 (landed table + pad control)"
+  -> bec68347dc6fec0f0830e85d3de37299eb975279  (path a2w1-exec-c1-distinct/)
+
+# digests (sha256)
+8ab86129c701b7332a872cd02156df9dd46ad1f9919253f2ba2eea69f8cccc40  row-metrics.mjs
+69b82d78aecf3eafbad382412b4b4180852e5ef6f6fd4b91ebd28092887bc6bc  landed.json
+e6a9f924d7cdfb27b98342338abef5a898111ebf686e92969af97e4345ef55f9  pad.json
+721ef7ed0cb3ac10f9c4d4be8e213ef5ab06dd58fff8f55495e106331e5a3d52  counter-offline.json
+7f2ee6575e5e285a89e22680a1b06ebb0ffec304e493d34ce6683df48a2572bf  fixture-entry-pad.md
+2371692dc50ca81124f8b451c816dd6331105bc78ee074caae4388b463951b86  corpus/knowledge/rate-signal-decision-table.md at 4860483 (entry_sha256)
+
+# no network fetch was made by this seat: the metrics read committed receipt bytes
+# under corpus/evidence/round-31/decision-table/ (S119.txt, S120.txt, S121.html,
+# S122.html) through `git show <rev>:<path>`; the live leg of the counter is untouched.

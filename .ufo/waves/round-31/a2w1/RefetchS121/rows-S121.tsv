@@ -1,0 +1,7 @@
+row	signal	quote_words	found_fresh_bytes	offset_fresh_committed_normalised	found_committed_bytes	offset_committed_normalised	occurrences_in_fresh	threshold	threshold_number_in_quote	force_marker	row_verdict
+D6	rate-limited 403/429, no retry-after, x-ratelimit-remaining != 0	9	yes	13955	yes	13955	1	at least 1 minute	yes ("at least one minute")	directive, no (derived)	holds
+D7	x-ratelimit-limit, unauthenticated request	12	yes	5015	yes	5015	1	60 requests	yes ("60 requests per hour")	declared limit, (derived)	holds
+D8	x-ratelimit-limit, personal access token	15	yes	5301	yes	5301	1	5,000 requests	yes ("5,000 requests per hour")	declared limit, (derived)	holds
+D9	parallel fan-out (concurrent requests)	8	yes	9496	yes	9496	1	no more than 100 concurrent	yes ("No more than 100 concurrent requests")	declared limit, (derived)	holds
+D10	weighted points per minute, REST endpoints	13	yes	9660	yes	9660	1	no more than 900 points	yes ("No more than 900 points per minute")	declared limit, (derived)	holds (quote is a clause fragment without ellipsis; GraphQL 2,000/min continuation disclosed in the decision cell)
+D11	summed response time as CPU-time proxy	16	yes	9938	yes	9938	1	no more than 90 seconds	yes ("No more than 90 seconds of CPU time")	declared limit, (derived)	holds (page also bounds "No more than 60 seconds of this CPU time ... for the GraphQL API"; not stated in the row, not contradicted)

@@ -1,0 +1,18 @@
+# Commands run (all under TMPDIR=/fast/scratch/hyaku/tabi-r31/RefetchS121, except writes into this output dir)
+git clone --shared -q /home/vgpnk/Projects/shokunin/tabi-shokunin $S/clone && git -C $S/clone checkout -q 486048356f0712e4396588c9dab58cd419243120
+  -> HEAD 486048356f0712e4396588c9dab58cd419243120, git status --porcelain = 0 lines, exit 0
+sha256sum scripts/check-decision-table.mjs  (in clone, at REV)
+  -> d15f3bd7aef4423d4311c2402f2d01bac8c7ff140a2fdd448ad2500f482f6832  == claims.json frozenDigests, exit 0
+git -C $S/clone show 4860483...:corpus/evidence/round-31/decision-table/bytes/S121.html | sha256sum
+  -> 3a33f87b965a4af17078523dad091e35c41c69d7c9e6941140f91f4feefef755  == receipt sha256, exit 0
+curl -q -sS --proto =https --proto-redir =https -L --max-redirs 5 -o f1.html -w '...' https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api   (12:26:33Z) exit 0
+curl ... -o f2.html ... (12:26:40Z) exit 0
+curl ... -o f3.html ... (12:28:11Z) exit 0
+sed 's/^main();$//' clone/scripts/check-decision-table.mjs > counter-lib.mjs   (counter's own normalise(), byte-copied; the CLI's trailing main() call removed)
+node norm.mjs committed.html f1.html f2.html f3.html   exit 0
+node locate.mjs   exit 0    (transcribed quotes -> offsets in fresh normalised text + context)
+node rows.mjs     exit 0    (quotes parsed from the entry table at REV -> offsets in fresh and committed normalised text)
+node anchor.mjs   exit 0    (13 anchor line numbers checked in committed.html and f1.html)
+node scripts/check-decision-table.mjs --rev 4860483... --baseline 96a2d1a... --entry corpus/knowledge/rate-signal-decision-table.md --json > $S/c1-offline.json   exit 0
+node scripts/check-decision-table.mjs --rev 4860483... --baseline 96a2d1a... --entry corpus/knowledge/rate-signal-decision-table.md --live --json > $S/c1-live.json   exit 0 (12:28:43Z)
+python3 (line-by-line diff committed.html vs f1.html)  -> 2 differing lines, Next.js buildId only

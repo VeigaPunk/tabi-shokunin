@@ -1,0 +1,24 @@
+# Fixture A: two rows, same URL (https://example.com/page vs https://www.example.com/page/), scopes one/two/three, no supersedes token.
+$ node scripts/check-sources.mjs --root "$S/fx" --file corpus/SOURCES.md
+FINDING id=missing_section fleet=- row=- detail=missing_paths (fixture omitted 3 required sections)
+FINDING id=missing_section fleet=- row=- detail=missing_search_log
+FINDING id=missing_section fleet=- row=- detail=missing_leads_unopened_
+FINDING id=duplicate_url fleet=E04 row=S002 detail=duplicate_url
+FINDING id=duplicate_url fleet=E04 row=S003 detail=duplicate_url
+SOURCES_GATE verdict=failed rows=3 tiers=A:3,B:0,C:0 status=queued:3,mined:0,rejected:0 findings=5 file=corpus/SOURCES.md
+[exit 1]
+
+# Fixture B: same URL in three scopes; S002 teaches opens "supersedes S999" (S999 does not exist); S003 has a mid-sentence supersedes token.
+$ node scripts/check-sources.mjs --root "$S/fx2" --file corpus/SOURCES.md
+FINDING id=duplicate_url fleet=E04 row=S003 detail=duplicate_url
+SOURCES_GATE verdict=failed rows=3 tiers=A:3,B:0,C:0 status=queued:3,mined:0,rejected:0 findings=1 file=corpus/SOURCES.md
+[exit 1]
+
+$ /home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --file "$S/fx2/corpus/SOURCES.md"
+file	W04	S002 duplicate url example.com/page across scopes
+file	W04	S003 duplicate url example.com/page across scopes
+file	ok	…/fx2/corpus/SOURCES.md
+[exit 0]
+
+Reading: check-sources E04 is URL-only (normalizeUrl strips www and one trailing slash, scripts/check-sources.mjs:180-187) and exempts only a teaches that OPENS with "supersedes S###" (:292-298) — so cross-scope duplication fails there, and a nonexistent supersedes target (S999) suppresses the finding (S002).
+The census treats cross-scope duplication as W04 only (:644-645), never E04, and its E04 is same-(url,scope) (:646-650) — so the same registry exits 0 there while check-sources exits 1.

@@ -1,0 +1,101 @@
+# ScribeErrata verification at 4860483 (lane /home/vgpnk/Projects/shokunin/tabi-shokunin); 2026-10-26T12:31:22Z
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin rev-parse 4860483
+486048356f0712e4396588c9dab58cd419243120
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:scripts/check-decision-table.mjs | sha256sum
+d15f3bd7aef4423d4311c2402f2d01bac8c7ff140a2fdd448ad2500f482f6832  -
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:scripts/check-selfassessment.mjs | sha256sum
+143d66ff2ba3fc2c113d461f1f2dd0555c94fb00b292e24eb4799e22dadb2fce  -
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin diff --name-only 9505a10eb80b2a0b273ebaba3f7f872ad302192d 4860483 -- scripts/ | wc -l
+0
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:scripts/check-selfassessment.mjs | grep -n TALLY_PATTERNS
+122:const TALLY_PATTERNS = [
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:scripts/check-selfassessment.mjs | sed -n '189p;199p;203p;216p;221p;223p;227p' | cut -c1-130
+function m1Findings(repo, rev, docText, cache) {
+      for (const m of line.matchAll(/`?--self-?test`?[^\n|]{0,24}?\(?(\d+)\s*\/\s*(\d+)\)?/g)) {
+      for (const re of [/(\d+)-case\b/g, /\bcases\s*=\s*(\d+)/g, /\b(\d+)\s+(?:isolated\s+)?(?:CLI\s+)?cases\b/g]) {
+      const targets = lineScripts.size ? [...lineScripts] : scripts.size === 1 ? [...scripts] : [];
+      for (const script of targets) {
+        if (oracle.status !== "measured") {
+        findings.push({ class: "m1-selftest-tally", doc: "SCORECARD.md", line: no, script, claimed: claims[0], observed: oracle.ta
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:SKILL.md | sed -n '1559p' | cut -c1-240
+| closeout-pin-witness | gate / tabi | `node scripts/check-freshness.mjs --worktree` (candidate only), or `node scripts/check-freshness.mjs --witness REV`; 0 clean, 1 failed, 2 could-not-evaluate | `node scripts/check-freshness.mjs --self-t
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:SKILL.md | sed -n '2469p' | cut -c1-320
+| closeout-pin-witness | gate | `node scripts/check-freshness.mjs --worktree` (candidate only) or `node scripts/check-freshness.mjs --witness REV` | 0=clean; 1=failed; 2=could-not-evaluate | `node scripts/check-freshness.mjs --self-test` (cases=12, measured round 24; the earlier "eight isolated CLI cases" figure is sup
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:corpus/knowledge/host-published-rate-limit-headers.md | sed -n '96,97p;105p'
+> "All bots can make up to 50 requests per second to our API."
+> "Interaction endpoints are not bound to the bot’s Global Rate Limit."
+at a documented 10,000 per 10 minutes at the time of the fetch. A receipt that records
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:corpus/knowledge/rate-signal-decision-table.md | grep -c '^| D'
+13
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:corpus/knowledge/rate-signal-decision-table.md | grep -n '^```' | wc -l
+0
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:corpus/knowledge/rate-signal-decision-table.md | grep -n '^frontier:'
+exit=1
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:corpus/README.md | sed -n '686p' | cut -c1-330
+| Self-assessment calibration | held for SCORECARD.md, LOG.md, SKILL.md and corpus/README.md — gate tallies compared with each gate's own summary line; a gate whose summary spells its count otherwise (`cli_cases=`) and multi-script lines stay unchecked | `scripts/check-selfassessment.mjs` (v2, round 31); QUALITY criteria 80–
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:corpus/QUALITY.md | grep -n '^80\.\|^81\.\|^82\.\|Round 31 additions'
+455:## Round 31 additions (append-only; never edit above)
+457:80. A decision-table row counts only when its threshold is the source's own number, located in a quote
+472:81. The oracle for a gate's self-test tally is that gate's own summary line
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:corpus/QUALITY.md | grep -cE '^[0-9]+\. '
+81
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:corpus/lessons/round-31.md | sha256sum
+00ac53a4b2e70313858eb1a34358886a5827fc4461ac676d849e9fc8ed8e98fd  -
+exit=0
+
+$ sha256sum /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/lessons/round-31.md
+00ac53a4b2e70313858eb1a34358886a5827fc4461ac676d849e9fc8ed8e98fd  /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/lessons/round-31.md
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:corpus/lessons/round-31.md | wc -l
+294
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:corpus/lessons/round-31.md | grep -c -- 'proxy\|SSL_CERT\|soft-404\|1559\|RangeError\|couldNotEvaluate\|RUNNABLE_GATE\|multi-script\|word numeral'
+0
+exit=1
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:SKILL.md | sed -n '/## Round 31 — corrections/,$p' | grep -c '^- `scripts/'
+8
+exit=0
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 4860483:SKILL.md | sed -n '/## Round 31 — corrections/,$p' | grep -c 'scripts/[a-z0-9-]*\.mjs.*scripts/'
+0
+exit=1
+
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin log --stat --oneline 9505a10eb80b2a0b273ebaba3f7f872ad302192d..4860483 -- corpus/lessons/round-31.md
+4860483 round-31: C1 decision table (13 rows, S119-S122, receipts), C2 appended tally corrections, routed SCORECARD:1523 correction, QUALITY 80-81, lesson
+ corpus/lessons/round-31.md | 294 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 294 insertions(+)
+exit=0
+

@@ -1,0 +1,77 @@
+# CritC2Vacuity — round 31 a2w1 — commands run and exit codes
+# seat scratch: S=/fast/scratch/hyaku/tabi-r31/CritC2Vacuity, TMPDIR=$S/tmp
+# lane root read-only: /home/vgpnk/Projects/shokunin/tabi-shokunin
+# REV=486048356f0712e4396588c9dab58cd419243120  FREEZE=9505a10eb80b2a0b273ebaba3f7f872ad302192d
+# BASELINE=96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc  branch tip=ae15a37e (salvage; .ufo only)
+
+git clone --shared <lane> $S/clone                                        exit 0
+git -C $S/clone checkout -q 486048356f0712e4396588c9dab58cd419243120      exit 0
+git -C $S/clone status --porcelain | wc -l  -> 0                          exit 0
+sha256sum $S/clone/scripts/check-selfassessment.mjs
+  -> 143d66ff2ba3fc2c113d461f1f2dd0555c94fb00b292e24eb4799e22dadb2fce  == claims.json frozenDigests   exit 0
+
+# --- C2 reading at REV (frozen counter v2, clean checkout) ---
+cd $S/clone && TMPDIR=$S/tmp node scripts/check-selfassessment.mjs \
+  --rev 486048356f0712e4396588c9dab58cd419243120 --json > $S/c2-rev.json
+  -> mismatches 0, couldNotEvaluate 103, superseded 29, findings 183, clean true   exit 0
+cd $S/clone && TMPDIR=$S/tmp node scripts/check-selfassessment.mjs \
+  --rev 9505a10eb80b2a0b273ebaba3f7f872ad302192d --json > $S/c2-freeze.json
+  -> mismatches 9, couldNotEvaluate 103, superseded 20, findings 174, clean false  exit 1
+node (diff of the two findings sets; artifact findings-diff.txt)
+  -> findings only at freeze 0; only at REV 9 (all nine correction bullets, claimed==observed);
+     changed at same key 9 (exactly the nine counted lines: superseded false -> true, claimed/observed identical);
+     could-not-evaluate set identical: true (103)
+
+node scripts/check-selfassessment.mjs --selftest --json                   exit 0
+  -> {"cases":30,"passed":30,"ok":true}
+
+# --- window integrity ---
+git -C <lane> diff --numstat FREEZE REV -- SKILL.md corpus/README.md SCORECARD.md LOG.md
+  -> 22/0, 25/0, 4/0  (LOG.md absent = unchanged); deleted=0                     exit 0
+git -C <lane> diff --stat FREEZE REV -- scripts/  -> empty (no output)           exit 0
+
+# --- gate tallies measured at REV / baseline / named historic commits ---
+node scripts/check-freshness.mjs --self-test
+  -> FRESHNESS_SELFTEST verdict=clean cases=12  (SKILL.md:1559 says eight)       exit 0
+node scripts/check-aria-metadata.mjs --self-test
+  -> ARIA_METADATA_SELFTEST verdict=clean cli_cases=36 helpers=4                 exit 0
+at BASELINE (git archive 96a2d1a | tar -x): sources cases=26, selfassessment cases=22,
+  s106 cases=10, release-pins cases=29                                           exit 0 each
+at fd722a7 (git archive): selfassessment cases=17                                exit 0
+at b4128c4 (git archive): selfassessment cases=20                                exit 0
+at 97be89b (git archive): selfassessment cases=22, release-pins cases=20         exit 0 each
+at b4128c4: node scripts/check-s106-evidence.mjs --selftest
+  -> ReferenceError: existsSync is not defined (gate broken at that rev)          exit 1
+git show b4128c4:scripts/check-s106-evidence.mjs | grep -c 'id: "' -> 7
+git rev-parse 5cdc976:scripts/check-sources.mjs  REV:scripts/check-sources.mjs
+  -> both 3f96058fad6fd0163e9ec5f63347af4607e5646b (byte-identical)              exit 0
+git show 5cdc976^:scripts/check-sources.mjs | grep -c "name: '" -> 25            exit 0
+node .ufo/waves/round-18/measure-c{1,2,3}.mjs --self-test
+  -> cases arrays 38, 26, 38 (SKILL.md:2030-2032)                               exit 0 each
+
+# --- mutation controls on a private fixture repo $S/fx (git init from REV tree) ---
+git -C $S/fx rev-parse --show-toplevel -> $S/fx                                  exit 0
+M1 remove BOTH round-31 correction sections:
+  node $S/clone/scripts/check-selfassessment.mjs --repo $S/fx --rev HEAD --json
+  -> mismatches 9, superseded 20 (the nine return)                               exit 1
+M2 sources bullet states (27/27) instead of (26/26):
+  -> mismatches 1: SKILL.md:2588 (the bullet) claimed 27 observed 26;
+     SKILL.md:1614 stayed superseded because the same paragraph's prose
+     still restates `cases=26`                                                   exit 1
+M3b one s106 bullet citing `SKILL.md:2514-2544`, other s106 bullets deleted:
+  -> mismatches 0, superseded 29; SKILL 2514 + 2529 + 2544 all superseded        exit 0
+M4 delete ONLY the README correction paragraph:
+  -> mismatches 1: corpus/README.md:613 claimed 17 observed 30                   exit 1
+
+# --- provenance of the correction prose (checked, not assumed) ---
+git log -1 fd722a7  -> "round-27 C1 (calibration): ... selftest 13->17"
+git log -1 38891ca  -> "round-30: C1 self-test cases (s106 +3, release-pins +9) ..."
+git log -1 0ffc6ea / d3cd62a  -> round-30 commits cited by the SCORECARD:1523 correction
+sed -n 130p .ufo/waves/round-30/measure/noharm-at-0ffc6ea.txt
+  -> SELFASSESSMENT verdict=failed rev=0ffc6ea… mismatches=3 …
+sed -n 1p .ufo/waves/round-30/measure/noharm-at-d3cd62a.txt
+  -> {"mismatches":1,...,"doc":"SCORECARD.md","line":1527,"claimed":12,"observed":2}
+tail -3 .ufo/waves/round-31/baseline/m8-proof/old-oracle-selftest.txt
+  -> SELFASSESSMENT_SELFTEST verdict=failed cases=29 passed=28 / exit=3
+
+# no network access; no tool installed or upgraded; no lane file written; no commit outside $S
