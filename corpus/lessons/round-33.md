@@ -373,3 +373,15 @@ Defects and their dispositions (each landed append-only in the integration that 
 | M6 | `scope` | the L1 reversed three w1 screen decisions (kake:79, :304, :347) during integration; each reversal was load-bearing for newMapped 4, and kake:347's had no sibling-side ground (`.ufo/waves/round-33/w2/CritC1Overrides.md`, `CritRowCrawlBudget.md`) | none — the counter counts surface strings; no rule asked the integrator to record reversals | criterion 91; row 15 withdrawn, so the target is missed rather than met on an aimed row. Shown able to fail: the C1 counter at the integration with row 15 reads predicate true, without it false (`measure/c1-at-bf48b81.json` vs the final measurement) |
 | M7 | `vacuous` | the frozen C2 battery accepts a stub gate keyed on the battery's own commit subjects (`.ufo/waves/round-33/w1/CritC2Counter.md`) | none at the freeze; criterion 89 names the populations, not construction tells | next battery randomises variant subjects, paths and ids; this round's C2 reading is read beside v2's per-variant reason ids |
 | M8 | `scope` | the live leg's home isolation covered HOME and XDG config/cache but not XDG data/state (`.ufo/waves/round-33/w2/SentinelLiveV2.md`) | none | redirect added; the strace check is the red/green (w2 receipt red, L1 re-run 0 hits) |
+
+Late wave-2 reports (landed after the integration `0aa2281a`): w2 RevGateV2Code holds — v2 refuses each battery variant
+for the construction-correct reason and keeps all 27 v1 behaviours, which answers M7 for this gate's bytes; w2 MutGateV2
+holds with limits — 9 of 20 mutants killed, 11 survive both the self-test and the battery (`.ufo/waves/round-33/w2/MutGateV2.md`),
+carried as cases for the next battery; w2 CritErrataLanded — three low precision items in the errata appends, carried to
+the next errata intake (`.ufo/waves/round-33/w2/CritErrataLanded.md`).
+
+## Misroot sweep
+
+`git -C /home/vgpnk/Projects/shokunin status --porcelain` at round end: ` M .scratch/goal-20261026-hyaku-run9.md`
+(orchestrator-owned), `?? .ufo/reports/round-33/souji.md` and `?? .ufo/reports/round-48/tameshi.md` (other lanes'
+reports). No file written by a tabi seat at the fleet root; nothing moved.

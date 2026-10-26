@@ -1816,3 +1816,36 @@ integration revision, not at the freeze, where the gate was still v1 (w2 CritCor
 
 Correction — supersedes `SCORECARD.md:1762`: `baseline/census-start.txt` carries the census validator output (`tabi ok`,
 exit 0); the `SOURCES_GATE … rows=126` line is in `baseline/measure-at-baseline/noharm-at-b7d16fb.txt` (w2 CritCorrections d).
+
+## Round 33 — executed disposition
+
+Measured at `0aa2281a4fe3df3d0e6d07f4cde6935e75de1fb7` in a clean clone with the frozen counter bytes taken from the freeze commit (raw outputs
+`.ufo/waves/round-33/measure/*-at-0aa2281*`, `provenance-0aa2281.txt`: porcelain 0, both counter digests equal
+`claims.json` frozenDigests, `scripts/check-adjacency.mjs` equal to the pinned digest).
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency | `node .ufo/waves/round-33/counters/c1-adjacency-sweep.mjs --rev <REV> --json` | candidates 52; mapped 5 → 8, screened 0 → 44, unaccounted 47 → 0, newMapped 0 → 3, adjacency clean (rows 10 → 13); predicate false | **not met** — target newMapped >= 4 missed. The integration `bf48b81c` read newMapped 4, but wave 2 showed the fourth row (kake:347, crawl budget) re-keys the mapped crawler split, and it was withdrawn (lesson round-33 M6). Three real new kake boundaries landed and every sweep line is accounted for; adjacency 8 → 8 |
+| C2 operability | `node .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs --rev <REV> --json` | forgeriesAccepted 8 → 0 of 8; honest H0/H1/H2 true → true (population 17, admitted 16, failing 0); selftest 27 → 44 cases, exit 0; digestLiterals [] → [] | **met** under the frozen rule; the predicate alone is satisfiable by a stub keyed on the battery's commit subjects (lesson M7), and v2's per-variant reason ids (w2 RevGateV2Code) carry the "refuses by rule" reading; survivors recorded as limits (v2 note §8; w2 MutGateV2 11 of 20 mutants survive both detectors); operability 9 → 9 |
+| depth, coverage, freshness, calibration | — | no claim | unchanged; no-harm `measure/noharm-at-0aa2281.txt` 28 of 28 exit 0 (baseline 28 of 28), `check-selfassessment` mismatches 0; `measure/numstat-at-0aa2281.txt` deletes 0 lines outside the BiDi gate, the one file C2 rewrites (481 lines added, 113 removed) |
+
+Live leg (no-harm only): `measure/c2-live-at-0aa2281.json` population 17, admitted 16, failing 0, binding null, exit 0,
+real binary, no `--no-sandbox`, throwaway HOME and XDG dirs.
+
+Capabilities: none entered (a gate is not a repertoire row, criterion 84).
+
+### Round 33 — waves and seats
+
+Two v1 waves. W1 build + first falsifiers, 36 seats (18 scribe, 5 critic, 4 executor, 3 connector, 2 reviewer,
+2 mutation-tester, 1 sentinel, 1 scout); W2 falsify, 38 seats (21 critic, 6 reviewer, 5 executor, 2 mutation-tester,
+2 connector, 1 scout, 1 sentinel). Round total 74; no residual call; dead seats 0 (w1 36 of 36 outputs; w2 38 reports).
+The L1 holds the canonical planner seat.
+
+### Planned / saturation / retired — round 33
+
+- planned: adjacency — re-run the sweep with the regex blind spots fixed and sibling `SKILL.md`/knowledge in scope
+  (w1 ConnSiblingScan: 34 overlaps outside `PROVINCE.md` — kasegi CDP 9222, kumitate webbridge, kama CDP pins, kaidoku
+  Playwright/a11y), with L0 questions for contested ones; the target counts boundaries, not surface strings.
+- planned: operability — battery v2 with randomised subjects, paths and ids, plus the w2 MutGateV2 survivors and the
+  CritForgeV2B/C constructions as cases; calibration counter v4 still carried.
+- saturation 8 / window 3; no capability entered at round 33 (window position 2 at round 34); no axis retired.

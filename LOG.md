@@ -2388,3 +2388,11 @@ digests and `scripts/check-adjacency.mjs`, plus `check-bidi-runtime.mjs` and `ch
 driver and `measure.sh` digests are in `claims.json` only (w2 CritCorrections e). Correction — supersedes `LOG.md:2355`:
 its "dispositioned 19 of the 27 carried items" is wrong; the w1 intake closed 7 of the 27 carried items and 20 remain
 carried, as the same paragraph's remain-count says (w2 CritCorrections c).
+
+Round-33 disposition (measured at `0aa2281a4fe3df3d0e6d07f4cde6935e75de1fb7`, `.ufo/waves/round-33/measure/`): C1 adjacency **not met** — unaccounted 47 → 0,
+newMapped 0 → 3 against a frozen target of 4, after wave 2 withdrew the kake:347 crawl-budget row as a re-key of the
+mapped crawler split (lesson round-33 M6; the integration `bf48b81c` had read 4 with that row). C2 operability **met** —
+forgeriesAccepted 8 → 0 of 8, honest H0/H1/H2 admitted 16, gate self-test 44/44, no digest literal; predicate holes
+recorded (M7; v2 note §8). No-harm: 28 of 28 offline gates and self-tests exit 0, `check-selfassessment` mismatches 0,
+census `tabi ok` exit 0 (126 → 129 rows), 0 deleted lines outside the rewritten gate. Waves: w1 36 seats, w2 38 seats,
+total 74, dead 0, no residual call. Re-verification: S127 and S129 re-opened byte-identical by w2 ReopenS127/S129.

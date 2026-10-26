@@ -1,0 +1,34 @@
+# RevGateV2Code — commands and exit codes (2026-10-26)
+
+Seat: RevGateV2Code (w2, C2 code review). Clone: /fast/scratch/hyaku/tabi-r33/RevGateV2Code/clone, detached at 042d6d9abf97d567d495652a85eabc851b81adc1, `git rev-parse --show-toplevel` = clone (verified).
+
+```
+mkdir -p $S/tmp $S/out
+git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"        # ok
+git -C "$S/clone" checkout -q --detach 042d6d9abf97d567d495652a85eabc851b81adc1  # HEAD = 042d6d9…
+cp .ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs "$S/counter.mjs"
+sha256sum "$S/counter.mjs"
+# 51ace65fcece8e794b80afdb386638c755b3aa137297c33a34ffce7fb24e812b  = claims.json frozenDigests
+TMPDIR=$S/tmp node "$S/counter.mjs" --repo "$S/clone" --rev 042d6d9abf97d567d495652a85eabc851b81adc1 --json
+# battery_exit=0  (wall 6.77 s; stderr 0 B) -> battery.json
+#   predicate true; H0/H1/H2 exit 0 population 17 admitted 16 failing 0; F1-F8 exit 1
+#   (t1,t1,t1,t1,t1 / x3 / x4 / s1); digestLiterals []; selftest exit 0 cases=44 passed=44
+cd "$S/clone" && TMPDIR=$S/tmp node scripts/check-bidi-runtime.mjs --selftest
+# selftest_exit=0; 44 CASE lines, 0 FAIL; "BIDI_RUNTIME_SELFTEST verdict=clean cases=44 passed=44" -> selftest.txt
+sha256sum clone/scripts/check-bidi-runtime.mjs        # 62453b55… = git blob 042d6d9:scripts/check-bidi-runtime.mjs
+python3 scan: five HONEST_DIGESTS + every 12-hex prefix vs v2 source  # no match (prefix-scan done: clean)
+node probe.mjs   # probe_exit=0 (stderr 0 B) -> probes.json
+#   P1 yes — live      exit 0 admitted 16 (cell verdict yes, admitted)
+#   P2 YES             exit 0 admitted 16 (cell verdict yes, admitted)
+#   P3 abs-spec import { PREDICATES } from "<abs gate>"   exit 0 admitted 16 (no t1)
+#   P4 resolving relative named import                    exit 1 t1 "driver imports non-allow-listed gate symbol(s): PREDICATES"
+#   P5 yes (live)      exit 1 admitted 15 x4-measured-cell
+#   P6 allow-listed named import (serveFixture, FIXTURE_SHA256) exit 0 admitted 16
+node scripts/check-bidi-runtime.mjs --rev 042d6d9… --baseline d805d1d6132430118b206a848b85753ab35d1014 \
+  --entry corpus/knowledge/webdriver-bidi-runtime-round-32.md --live --json
+# live_exit=0 (stderr 0 B) -> live.json: live=true population 17 admitted 16 failing 0 unmeasured 1 distinct 16 clean binding=null
+pgrep -fa 'chromedriver|chromium'   # only host earlyoom monitor; no process owned by this seat
+rm -rf -- "$S"                      # scratch deleted after receipts copied
+```
+
+No tools installed or upgraded. No network fetches. One gate-owned live browser session (loopback fixture, throwaway HOME/XDG_CONFIG_HOME/XDG_CACHE_HOME/profile, cleaned by the gate's finally).
