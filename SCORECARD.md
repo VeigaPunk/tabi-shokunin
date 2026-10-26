@@ -1454,3 +1454,13 @@ rode connector/scout items. No residual calls.
 
 - planned: freshness — re-verify on-release rows S104–S106 at the next browser-tag bump.
 - capabilities unchanged; no axis retired; saturation 8 / window 3; stagnation nudge inactive.
+
+## Round 29 — corrections (append-only; each cites the stale line in its own document)
+
+Measured 2026-10-26 by the frozen doc-bound counter (`.ufo/waves/round-29/claims.json` C2);
+the stale lines stay as written, these lines supersede them.
+
+- `scripts/check-sources.mjs` `--selftest` (26/26): correction — supersedes the stale tally at `SCORECARD.md:410`.
+- `scripts/round-evidence-audit.mjs` `--selftest` (13/13): correction — supersedes the stale tallies at `SCORECARD.md:1138-1139` and `SCORECARD.md:1151`.
+- `scripts/check-selfassessment.mjs` `--selftest` (22/22): correction — supersedes the stale tally at `SCORECARD.md:1439` (the doc-bound matcher added two cross-document cases this round).
+- `scripts/check-s106-evidence.mjs` `--selftest` (7/7): correction — supersedes the stale tally at `SCORECARD.md:1438` (its figure was the round-28 baseline count; at the round-28 tip the self-test crashed before printing a tally).

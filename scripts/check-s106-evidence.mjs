@@ -6,8 +6,9 @@
 //          absent at the measured revision, malformed receipt). Any other
 //          nonzero code is undeclared and reads as could-not-evaluate.
 // Self-test: `--selftest` (7 isolated cases over temporary sandbox
-//          repositories; asserts exit code AND the stable field set; creates
-//          and removes its own temp trees, never touches the lane).
+//          repositories; asserts exit code, validity, and each declared
+//          field's expected value; creates and removes its own temp trees,
+//          never touches the lane).
 // Frozen by: .ufo/waves/round-26/claims.json claim C2 (frozen 2026-10-25,
 //          executed round 27) — implements the predicate, counter, kill rule
 //          and target; also checks anchor uniqueness and decoded byte count.
@@ -34,7 +35,7 @@
 //   node scripts/check-s106-evidence.mjs --selftest [--json]
 //   node scripts/check-s106-evidence.mjs --repo <dir> --rev <ref> [--json]   (tests)
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -185,6 +186,7 @@ const CASES = [
     exit: 0,
     valid: true,
     field: "revision_match",
+    fieldValue: true,
     build: (d) => { d.receipt(fixtureReceipt()); d.bytes(FIXTURE_BYTES); },
   },
   {
@@ -192,11 +194,13 @@ const CASES = [
     exit: 1,
     valid: false,
     field: "revision_match",
+    fieldValue: false,
     build: (d) => {
       d.bytes(FIXTURE_BYTES.replace("// tail", "// prior source bytes"));
       const measuredRev = d.commit();
       d.bytes(FIXTURE_BYTES);
       d.receipt(fixtureReceipt({ measured_rev: measuredRev }));
+      d.commit();
     },
   },
   {
@@ -204,6 +208,7 @@ const CASES = [
     exit: 1,
     valid: false,
     field: "sha_match",
+    fieldValue: false,
     build: (d) => { d.receipt(fixtureReceipt()); d.bytes(FIXTURE_BYTES.replace("// tail", "// tampered")); },
   },
   {
@@ -211,6 +216,7 @@ const CASES = [
     exit: 1,
     valid: false,
     field: "anchor_located",
+    fieldValue: false,
     build: (d) => {
       const r = fixtureReceipt();
       r.anchor = { ...r.anchor, line: 188 };
@@ -298,7 +304,12 @@ function runSelftest() {
       }
       let ok = exit === c.exit;
       if (c.valid !== null) ok = ok && out.valid === c.valid;
-      if (c.field) ok = ok && out[c.field] === false;
+      if (c.field) {
+        if (!Object.prototype.hasOwnProperty.call(c, "fieldValue")) {
+          throw new Error(`case ${c.id} declares field ${c.field} without fieldValue`);
+        }
+        ok = ok && out[c.field] === c.fieldValue;
+      }
       results.push({ id: c.id, ok, expectedExit: c.exit, exit, valid: out.valid ?? null, refusal: out.refusal ?? null });
     } finally {
       rmSync(fx.root, { recursive: true, force: true });
