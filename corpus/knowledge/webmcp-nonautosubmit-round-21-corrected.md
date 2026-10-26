@@ -112,3 +112,7 @@ instructions. This run has no screenshot claim. The gate verifies finite recorde
 relationships and digests, not observation authenticity against a malicious author,
 all possible harness stubs, every feature-flag alteration, or universal semantics.
 The separate semantic review and outside admit/reject closure remain required.
+
+## Round-29 recheck at Chromium 156.0.8078.47 (2026-10-26; append-only)
+
+S100 drifted at the current Stable tag and is superseded by **S115**. Same consequences as the round-29 note on `webmcp-nonautosubmit-round-21.md`: runtime rows (S101, 154 build) unaffected; S100 line pointers are 154 numbers (`298-319`→`309-330`, `212-218`→`223-229`, anchor `175-339,673-880` at 156); the post-fill detached-document branch (156 `:201-210`) is unlisted. Receipt and bytes: `corpus/evidence/round-29/release-pins/`; summary `corpus/knowledge/chromium-156-release-pin-recheck.md`. The 154 observations above stay true of the 154 build; earlier lines are not edited.

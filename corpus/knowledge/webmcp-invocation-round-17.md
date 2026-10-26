@@ -138,3 +138,7 @@ root (exit 0 pass, 1 a case failed, 2 could not evaluate). Compare
 `.runtime.observed.chromium.version` and `realExecutableSha256` with this note; a change makes
 every row historical until re-run. Compare `producerSha256` with
 `sha256sum scripts/webmcp-invoke-round17.mjs`.
+
+## Round-29 recheck at Chromium 156.0.8078.47 (2026-10-26; append-only)
+
+S042 drifted at the current Stable tag and is superseded by **S109**. Still true at 156: the invocation id arrives before tool events, a throw/reject yields an empty `errorText`, `Canceled` only via `cancelInvocation`, and no `inputSchema` enforcement on imperative input. Stale: the S042 range `748-811` (`ExecuteV8Tool`) now sits at 156 `744-807` with the invocation id passed by value (old line 753), and `528-580` moved to `527-577`, where `toolactivated` is dispatched by `ModelContext::DispatchEvent(*ToolActivatedEvent::Create(...))` instead of a `WebMCPEvent` on the window (156 `:567-574`). Receipt and bytes: `corpus/evidence/round-29/release-pins/`; summary `corpus/knowledge/chromium-156-release-pin-recheck.md`. The 154 observations above stay true of the 154 build; earlier lines are not edited.

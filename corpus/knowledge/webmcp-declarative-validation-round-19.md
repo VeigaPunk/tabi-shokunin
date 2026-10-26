@@ -155,3 +155,7 @@ S099 (same Chromium-tag PDL URL/body as source S079 above, `WebMCP.pdl:59-69,109
 canonical-identity row for the `object input` declaration used in :66-67; it explicitly reuses S041 bytes.
 S098 similarly qualifies the queued schema-construction reading as S077 implementation reuse. Neither is
 claimed as an independent new publisher/source. Original rows remain historical; see round-19 Gate.
+
+## Round-29 recheck at Chromium 156.0.8078.47 (2026-10-26; append-only)
+
+S078 and S096 drifted at the current Stable tag and are superseded by **S111** and **S114**. Stale at 156: the two-error-class taxonomy is incomplete — a third, post-fill `kToolInvocationFailed` branch ("The document was detached while filling out the form", `html_form_element.cc` 156 `:201-209`) fires before the autosubmit decision; the S078 pointer `729-751` (`Form validation failed`) now sits at `767-789`, and the S096 anchors `729-758`/`818-842` at `767-796`/`856-880`. Receipt and bytes: `corpus/evidence/round-29/release-pins/`; summary `corpus/knowledge/chromium-156-release-pin-recheck.md`. The 154 observations above stay true of the 154 build; earlier lines are not edited.

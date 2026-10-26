@@ -198,3 +198,6 @@ outside its finite shape proof. The w1 all-actor settlement flags are withdrawn 
 `.ufo/waves/round-20/w1/ordering-correction.json`; r19 d4 remains unprovable. The w2
 return was frozen before repairs in commit `e0b5d02a6aef76b0d2799d92618f79f1bca40062`.
 
+## Round-29 recheck at Chromium 156.0.8078.47 (2026-10-26; append-only)
+
+S096 and S100 (and S078, same body) drifted at the current Stable tag and are superseded by **S114**, **S115** and **S111**. Stale at 156: the LC table is no longer exhaustive — a fill whose `input`/`change` handlers detach the document settles `kToolInvocationFailed` (156 `:201-210`) before LC04/LC05 is chosen; every `html_form_element.cc` pointer shifts (e.g. LC01 `181-186`→`182-187`, LC02 `189-210` split by the guard, LC04 `212-218`→`223-229`, LC12 `818-830`→`856-868`; spans `174-328`/`635-842` become `175-339`/`673-880`). Every 154 line inside those spans survives in order. Receipt and bytes: `corpus/evidence/round-29/release-pins/`; summary `corpus/knowledge/chromium-156-release-pin-recheck.md`. The 154 observations above stay true of the 154 build; earlier lines are not edited.

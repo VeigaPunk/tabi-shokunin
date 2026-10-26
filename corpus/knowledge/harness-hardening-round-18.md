@@ -87,3 +87,7 @@ The counter runs in a sandbox clone at REV and at B. Each probe uses a fresh TMP
   to imperative tools. Declarative form input has source-level parameter validation; unknown
   names and invalid supported values reject before execution. The round17 imperative mismatch
   observation remains valid, not evidence of every tool kind.
+
+## Round-29 recheck at Chromium 156.0.8078.47 (2026-10-26; append-only)
+
+S071 drifted at the current Stable tag and is superseded by **S110**. The narrowing above still holds at 156 (declarative form input keeps source-level parameter validation: `form_mcp_schema.cc` is byte-identical), but the authority for it at 156 is S110, and the call path gains a post-fill branch: a fill whose `input`/`change` handlers detach the document settles `kToolInvocationFailed` (`html_form_element.cc` 156 `:201-209`). Receipt and bytes: `corpus/evidence/round-29/release-pins/`; summary `corpus/knowledge/chromium-156-release-pin-recheck.md`. The 154 observations above stay true of the 154 build; earlier lines are not edited.

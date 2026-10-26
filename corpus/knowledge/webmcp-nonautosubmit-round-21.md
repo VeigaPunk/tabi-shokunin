@@ -116,3 +116,7 @@ JSON-LD object; post-navigation submit state remains unavailable, not zero.
 The initial wording and headers above are superseded, not silently re-admitted.
 This append preserves the entire original prefix from
 `1b5f449ad15525d281fda4558aeef1086f1e4a65`; only the corrected entry is measured.
+
+## Round-29 recheck at Chromium 156.0.8078.47 (2026-10-26; append-only)
+
+S100 drifted at the current Stable tag and is superseded by **S115**. The runtime rows here are S101 observations of the 154 build and are unaffected. Stale at 156: the S100 pointers are one tag behind (`212-218`→`223-229`, `218-221`→`229-232`, `290-319`→`301-330`, `720-815`→`758-853`, `729-758`→`767-796`, `834-842`→`872-880`; anchor `174-328,635-842` reads `175-339,673-880`), and the detached-document failure branch (156 `:201-210`) is a path this table does not list. Receipt and bytes: `corpus/evidence/round-29/release-pins/`; summary `corpus/knowledge/chromium-156-release-pin-recheck.md`. The 154 observations above stay true of the 154 build; earlier lines are not edited.
