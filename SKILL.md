@@ -2578,3 +2578,25 @@ same-document line citations and same-line script association.
 Correction (round 31, supersedes `SKILL.md:2545`): `scripts/check-selfassessment.mjs` `--selftest` (30/30) — the
 22-case tally on that line was the gate's own count at the round-30 tip; v2 adds eight cases (summary-line
 oracle, SKILL.md and corpus/README.md windows, same-document citations, no section fallback).
+
+## Round 31 — corrections (append-only; each cites the stale line in its own document)
+
+Measured 2026-10-26 at `9505a10eb80b2a0b273ebaba3f7f872ad302192d` in a clean checkout by each gate named
+below, run with its declared self-test flag; every figure quoted is the `cases=` field of that gate's own
+`<NAME>_SELFTEST` summary line. The stale lines above stay as written.
+
+- `scripts/check-sources.mjs` `--self-test` (26/26): correction — supersedes the stale tally at `SKILL.md:1614`. That line states the figure 25, which is what the gate printed before round 1's post-review commit added the `row-outside-registry` case; the script blob at `5cdc976` is byte-identical to the one at this revision and prints `SOURCES_SELFTEST verdict=clean cases=26`.
+
+- `scripts/check-selfassessment.mjs` `--selftest` (30/30): correction — supersedes the stale tally at `SKILL.md:2479`. That line states the figure 13, this gate's count before round 27's LOG-window extension took it to 17 (commit `fd722a7`); round 28's exact-citation cases took it to 20 (`b4128c4`), the round-29 freeze added the two cross-document cases (22, `97be89b`), and round 31's v2 added eight — summary-line oracle, `SKILL.md` and `corpus/README.md` windows, same-document citations, no section fallback.
+
+- `scripts/check-s106-evidence.mjs` `--selftest` (10/10): correction — supersedes the stale tally at `SKILL.md:2514`. That line states the figure 5, the count at the round-27 tip after `missing-receipt-could-not-evaluate` landed; round 28 added the two revision-binding cases (7) and round 30 added three — same-length tamper, duplicate anchor, receipt byte-count mismatch (10).
+
+- `scripts/check-selfassessment.mjs` `--selftest` (30/30): correction — supersedes the stale tally at `SKILL.md:2515`. That line states the figure 17, this gate's count at the round-27 tip; round 28's exact-citation cases took it to 20, the round-29 freeze to 22, and round 31's v2 added eight.
+
+- `scripts/check-s106-evidence.mjs` `--selftest` (10/10): correction — supersedes the stale tally at `SKILL.md:2529`. That line states the figure 7 as the CASES count at the round-28 tip and notes the self-test was not run; round 30 added three cases — same-length tamper, duplicate anchor, receipt byte-count mismatch — and the gate now prints its own tally.
+
+- `scripts/check-selfassessment.mjs` `--selftest` (30/30): correction — supersedes the stale tally at `SKILL.md:2530`. That line states the figure 20, this gate's count at the round-28 tip; the round-29 freeze added the two cross-document cases (22) and round 31's v2 added eight.
+
+- `scripts/check-release-pins.mjs` `--selftest` (29/29): correction — supersedes the stale tally at `SKILL.md:2543`. That line states the figure 20, the count the gate shipped with in round 29; round 30 added nine reason-pinned cases (drift superseder shapes, 404 absence shapes, anchor range, path escapes).
+
+- `scripts/check-s106-evidence.mjs` `--selftest` (10/10): correction — supersedes the stale tally at `SKILL.md:2544`. That line states the figure 7, the round-29 repair count; round 30 added three cases — same-length tamper, duplicate anchor, receipt byte-count mismatch.

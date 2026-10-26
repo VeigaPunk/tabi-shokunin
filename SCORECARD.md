@@ -1562,3 +1562,7 @@ misread, recorded as lesson round-30 M8.
 The round-31 v2 of the calibration counter adds eight self-test cases; the tallies stated above for it are superseded here.
 
 - `scripts/check-selfassessment.mjs` `--selftest` (30/30): correction — supersedes the stale tallies at `SCORECARD.md:1439`, `SCORECARD.md:1465` and `SCORECARD.md:1486` (each true at the round-30 tip, 22 cases, or superseded there by a 22-case correction).
+
+## Round 31 — correction to the round-30 disposition (append-only; cites the stale line in its own document)
+
+- `SCORECARD.md:1523`: correction — that row states `check-selfassessment` read mismatches 0 after the round-30 corrections above. The committed readings are 3 at `0ffc6ea0` and a residual of 1 at `d3cd62a1` (`.ufo/waves/round-30/measure/noharm-at-0ffc6ea.txt` line 130; `.ufo/waves/round-30/measure/noharm-at-d3cd62a.txt` line 1; `corpus/lessons/round-30-verifier-spotcheck.md` §Routed defects 1). The residual was an instrument misread, not a difference in lane state: at `d3cd62a1` the single finding is the round-30 gate-mutants figure at `SCORECARD.md:1527`, read as claimed 12 against an observed 2, because the counter took the first `cases` token in the output and a per-case refusal message inside that gate's self-test carried its own two-case tally, shadowing the gate's summary line (round-30 lesson M8). The round-31 v2 reads the `<NAME>_SELFTEST` summary line; this paragraph records the round-30 measurement as it stood, and the 0 in the row above is not evidence that the residual was 0.

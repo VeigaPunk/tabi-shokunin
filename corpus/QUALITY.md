@@ -451,3 +451,31 @@
     and does not bind the next round. (source: routed round-29 defect 5, defect-derived;
     no lane instrument prints the excluded class — the reader recomputes the id set by
     the rule; `scripts/check-release-pins.mjs`)
+
+## Round 31 additions (append-only; never edit above)
+
+80. A decision-table row counts only when its threshold is the source's own number, located in a quote
+    that also carries the force the row's decision rests on: the source's normative keyword as written
+    (`MUST`, `SHOULD`, `MAY`, RFC 2119/8174 sense), a directive the page addresses to its reader, or a
+    declared limit — and a row resting on a declared limit marks its Decision cell `(derived)`, with
+    the derivation stated once in the entry's prose. A sample or example value (a specimen response
+    block, an illustrative figure) sources no row; an RFC example period kept as a row says
+    "example" in its own cells. The row names the actor and the scope the source binds the number to
+    (a vendor's policy is that vendor's, at the access date). The frozen counter checks only that the
+    number occurs in a located, live quote: `node scripts/check-decision-table.mjs --rev <REV>
+    --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc --entry corpus/knowledge/rate-signal-decision-table.md
+    --live --json` — `failing 0` is necessary, not sufficient; unit, bound word, force and
+    distinctness are read row by row (round-31 wave-1 CritC1Axis and CritC1Counter admitted a
+    ten-row repetition and a status code as a "threshold" under the same counter). (source:
+    corpus/lessons/round-31.md M10; claim C1)
+
+81. The oracle for a gate's self-test tally is that gate's own summary line
+    (`<NAME>_SELFTEST … verdict=… cases=N`, the last such line), never the first `cases=` token in
+    its output, and a summary whose verdict is not `clean` is not a tally. Check:
+    `node scripts/check-selfassessment.mjs --selftest` includes the case
+    `v2-oracle-reads-summary-line-not-first-cases-token`, and the counter with the summary-line
+    rule removed fails that case (`.ufo/waves/round-31/baseline/m8-proof/old-oracle-selftest.txt`,
+    `verdict=failed`, exit 3). A gate whose summary spells its count differently
+    (`scripts/check-aria-metadata.mjs` prints `cli_cases=`) is outside the oracle until a later
+    counter reads it, and a tally stated for it is unchecked, not matched. (source:
+    corpus/lessons/round-30.md M8; corpus/lessons/round-31.md M1, M7)

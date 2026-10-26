@@ -659,3 +659,28 @@ Correction (round 30 wave 2, append-only; `.ufo/waves/round-30/w2/CritClaimVerdi
 "Gate self-test kill coverage", 26 of the 27 catalogued faults are killed by a named failing self-test case; the
 27th (`pins-f3-bytes-absent`) is killed by the self-test aborting (`sha256(null)` throws), which the counter counts
 as a kill but no case names.
+
+## Round 31 — corrections (append-only; cites the stale line in its own document)
+
+Measured 2026-10-26 at `9505a10eb80b2a0b273ebaba3f7f872ad302192d` in a clean checkout; the figure quoted is the
+`cases=` field of the gate's own `SELFASSESSMENT_SELFTEST` summary line. The frontier row above stays as written.
+
+- `scripts/check-selfassessment.mjs` `--selftest` (30/30): correction — supersedes the stale tally at `corpus/README.md:613`. That row states the figure 17, this gate's count at the round-27 tip; round 28's exact-citation cases took it to 20 (`b4128c4`), the round-29 freeze added the two cross-document cases (22, `97be89b`), and round 31's v2 added eight — summary-line oracle, `SKILL.md` and `corpus/README.md` windows, same-document citations, no section fallback. The row's status (`held`) and its pointer to the round-27 LOG entry are unchanged; only the tally is corrected.
+
+## Round 31 — rate and crawl decision thresholds (2026-10-26)
+
+Append-only. One knowledge row; no earlier line is edited.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/rate-signal-decision-table.md` *(round 31)* | A decision table (D1–D13) from observable rate and crawl signals to a driver action, each with the source's own number: RFC 9309 robots.txt redirect bound (at least five, more than five → may treat as unavailable), the 30-day example period, the 24-hour cache lifetime, the 500 KiB parse floor; GitHub's published REST policy — the one-minute fallback wait, 60 and 5,000 requests per hour, 100 concurrent requests, 900 points per minute, 90 s of CPU per 60 s (declared limits marked derived), stop at `x-ratelimit-remaining` 0, one second between mutative requests. RFC 6585 sources prose only (its numbers are specimen values). Documentation only; no request to any host's API; vendor numbers are that vendor's at the access date. | S119 RFC 9309, S120 RFC 6585, S121/S122 GitHub REST docs; opened 2026-10-26; receipts `evidence/round-31/decision-table/` |
+
+Frontier restatement (append-only; earlier rows keep their bytes): **Rate/ToS surface for site-interaction records** —
+the rate half now carries sourced numeric thresholds for the driver's next action, not only signal vocabulary; the
+approval table's C3/C6 dispositions are unchanged (still decided from an absence of any measured real-site rate
+datum), the ToS half stays open, and no runtime observation exists for either half.
+
+| Frontier item | Status | Pointer |
+|---|---|---|
+| Rate/ToS surface for site-interaction records | docs-held with sourced thresholds on the rate half (decision table D1–D13); runtime open; ToS half open; approval table C3/C6 unchanged | `knowledge/rate-signal-decision-table.md`; counter `node scripts/check-decision-table.mjs --rev <REV> --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc --entry corpus/knowledge/rate-signal-decision-table.md --live` |
+| Self-assessment calibration | held for SCORECARD.md, LOG.md, SKILL.md and corpus/README.md — gate tallies compared with each gate's own summary line; a gate whose summary spells its count otherwise (`cli_cases=`) and multi-script lines stay unchecked | `scripts/check-selfassessment.mjs` (v2, round 31); QUALITY criteria 80–81 |
