@@ -1851,3 +1851,33 @@ The L1 holds the canonical planner seat.
 - saturation 8 / window 3; no capability entered at round 33 (window position 2 at round 34); no axis retired.
 
 - `scripts/check-adjacency.mjs` `--self-test` (57/57): correction — supersedes the tally reading at `SCORECARD.md:1829`, where the calibration counter attributes that row's self-test figure (the BiDi gate's, stated in the round-33 corrections above) to this gate; this gate was not changed in round 33 (digest pinned inside the C1 counter).
+
+## Round 34 — declared claims (frozen before data)
+
+Baseline `15dfaccb34601c2d221c78501e2befd8998d600c`; claims, both counters, `measure.sh`, the control driver, the
+67-line candidate list, the sibling pins and every control receipt are frozen in the round-34 freeze commit before
+any claim data (`.ufo/waves/round-34/claims.json`, receipts `.ufo/waves/round-34/baseline/`). Frozen counter bytes
+(sha256 in `claims.json:frozenDigests`): `.ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs`,
+`.ufo/waves/round-34/counters/c2-gate-mutants.mjs`, `.ufo/waves/round-34/baseline/controls.mjs`,
+`.ufo/waves/round-34/measure.sh`. Every after-measurement runs `measure.sh <REV> <OUT> <FREEZE>` in a clean clone,
+counters taken from the freeze commit.
+
+Axes at round start: depth 9, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8. Lowest non-retired
+axis adjacency 8 (unique). Saturation 8 / window 3; window position 2 at round 34 (`SCORECARD.md:1851`), stagnation
+nudge inactive; the lowest-axis obligation binds and C1 works adjacency.
+
+| Claim / axis | Counting command | Before | Target |
+|---|---|---|---|
+| C1 adjacency (surface `corpus/adjacency.tsv` + new ledger `corpus/adjacency-screen-skill.tsv`, against sibling ground outside `PROVINCE.md`) | `node .ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs --rev <REV> --json` | candidates 67 (set A 38 lines naming tabi in sibling `SKILL.md`/`corpus/knowledge`, set B 29 round-33 ConnSiblingScan leads), mapped 1, screened 0, unaccounted 66, newMapped 0, adjacency clean 13/13, predicate false (`baseline/c1-J1-do-nothing.json`) | unaccounted 0 AND newMapped >= 3 AND adjacency clean; a new row counts only with a NEW tabi-side declaration line naming the sibling |
+| C2 operability, sourced (surface: the self-test of `scripts/check-bidi-runtime.mjs`) | `node .ufo/waves/round-34/counters/c2-gate-mutants.mjs --rev <REV> --json` | of the 20 frozen round-33 MutGateV2 mutants the gate's own self-test kills 8; survivors M01 M03 M04 M05 M06 M07 M08 M09 M10 M16 M18 M19; neutral, decoy and twin probes exit 0; round-33 battery predicate true; predicate false (`baseline/c2-J1-do-nothing.json`) | survivors 0 of 20 by the self-test alone, with pristine, neutral, decoy and every twin exit 0, no mutant unappliable, round-33 battery still true |
+
+Controls, scored before any claim data (`.ufo/waves/round-34/baseline/controls-summary.json`, nine receipts, all exit 1
+with predicate false): C1 screen-all (unaccounted 0, newMapped 0); junk rows on non-candidate lines (newMapped 0);
+rows on tabi-naming candidate lines whose tabi side is an EXISTING tabi line naming the sibling (mapped 5, newMapped 0
+— the new-declaration clause refuses it); rows on lines that do not name tabi (newMapped 0). C2 self-hash self-test
+(kills 20, fails the neutral, decoy and twin probes); find-presence sniff (kills 20, fails all 20 twins); reject-all
+production path (battery false).
+
+Feasibility disclosed (`claims.json`): C1's counter cannot judge overlap semantics — wave 2 attacks each new row and
+each screen-reason group; C2's probes do not refuse a self-test that sniffs a whitespace-normalised find text — wave 2
+reads the self-test code. Not claimed: calibration counter v4, battery v2, decision-table counter v2.

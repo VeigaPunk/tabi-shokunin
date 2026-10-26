@@ -2396,3 +2396,12 @@ forgeriesAccepted 8 → 0 of 8, honest H0/H1/H2 admitted 16, gate self-test 44/4
 recorded (M7; v2 note §8). No-harm: 28 of 28 offline gates and self-tests exit 0, `check-selfassessment` mismatches 0,
 census `tabi ok` exit 0 (126 → 129 rows), 0 deleted lines outside the rewritten gate. Waves: w1 36 seats, w2 38 seats,
 total 74, dead 0, no residual call. Re-verification: S127 and S129 re-opened byte-identical by w2 ReopenS127/S129.
+
+## Round 34 — 2026-10-26 — freeze: sibling ground outside PROVINCE (adjacency) and the BiDi gate self-test against 20 frozen mutants (operability)
+
+Claims, counters and nine control receipts frozen before data (`.ufo/waves/round-34/claims.json`,
+`.ufo/waves/round-34/baseline/`). C1 baseline: 67 candidates, unaccounted 66, newMapped 0. C2 baseline: the gate's
+self-test kills 8 of 20 frozen mutants. Census at round start `tabi ok`, exit 0 (`baseline/census-start.txt`).
+Motivating evidence: round-33 spot-check routed defects 1-2 (`corpus/lessons/round-33-verifier-spotcheck.md:155-160`),
+`.ufo/waves/round-33/w1/ConnSiblingScan.md` (34 overlaps outside PROVINCE), `.ufo/waves/round-33/w2/MutGateV2.md`
+(11 survivors of both detectors).

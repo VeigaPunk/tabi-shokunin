@@ -1,0 +1,76 @@
+{
+ "schema": "tabi-round-claims-v1",
+ "lane": "tabi",
+ "round": 34,
+ "attempt": 1,
+ "frozenAt": "2026-10-26",
+ "frozenBeforeData": true,
+ "baseline": "15dfaccb34601c2d221c78501e2befd8998d600c",
+ "priorClosure": "round 33 rejected-honest-stop (corpus/lessons/round-33-verifier-spotcheck.md: C1 adjacency missed newMapped>=4 at 3; C2 operability met; no axis harmed). Routed defects: (1) adjacency carried claim -> C1 (sibling SKILL.md + corpus/knowledge in scope, count boundaries, record integrator reversals per criterion 91); (2) operability battery v2 -> C2 takes the MutGateV2 survivor half (the 20 frozen single-point mutants; the 12 the self-test misses at the baseline) — randomised-subject battery and CritForgeV2B/C remain limits, not claimed; (3) calibration counter v4 -> NOT claimed (notClaimed); (4) integration hygiene -> run check-selfassessment before each integration commit (L1 rule this round, QUALITY criterion drafted); (5) carried precision items -> wave-1 errata intake; (6) S125 cadence -> curation; (7) M3 residual -> this round's controls read sibling pins from baseline/c1-pins.json, never branch heads.",
+ "axisScoresAtRoundStart": {
+  "depth": 9,
+  "coverage": 9,
+  "operability": 9,
+  "freshness": 9,
+  "calibration": 9,
+  "adjacency": 8
+ },
+ "lowestNonRetiredAxis": "adjacency 8 (unique). Saturation 8 / window 3; the round-32 capability row webdriver-bidi-runtime restarts the window, round 33 = position 1, round 34 = position 2 (SCORECARD.md:1851): stagnation nudge INACTIVE. The lowest-axis obligation binds: C1 works adjacency.",
+ "measurementRule": "Every after-measurement runs .ufo/waves/round-34/measure.sh <REV> <OUT> <FREEZE> in a clean clone of the named lane branch revision REV; the counters are taken from the FREEZE commit (git show FREEZE:<path>), never from the worktree, and their bytes must equal frozenDigests; scripts/check-adjacency.mjs at REV must equal the digest pinned inside the C1 counter. TMPDIR under $HYAKU_SCRATCH/tabi-r34/. Raw output is committed under .ufo/waves/round-34/measure/ before the report. A counter not run is a claim not verified.",
+ "frozenDigests": {
+  ".ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs": "0dba816ccab0b7bf690c3a4da6d850ce4a5a092d9aec895e33c9e7fe75a8781e",
+  ".ufo/waves/round-34/counters/c2-gate-mutants.mjs": "3cf5eb699934eae48b77c991dae8761780c1c010da1121c1b9623a4d5d325b82",
+  ".ufo/waves/round-34/baseline/controls.mjs": "18c95d673c55f3d3521dd08d418b8ef894dc5c8f89233e57417565576bcf035e",
+  ".ufo/waves/round-34/measure.sh": "0a11973daf308e6f5af59698568d561e537e6bb3f1959de31ece9fb28a08602c",
+  "scripts/check-adjacency.mjs (pinned inside C1; must stay unchanged)": "4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac",
+  ".ufo/waves/round-33/counters/c2-bidi-forgery-battery.mjs (pinned inside C2 at e6b0a907; no-harm leg of the predicate)": "51ace65fcece8e794b80afdb386638c755b3aa137297c33a34ffce7fb24e812b"
+ },
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "adjacency",
+   "type": "axis move on the lowest non-retired axis",
+   "surface": "the sibling-overlap map corpus/adjacency.tsv (13 verified rows at the baseline, gated by scripts/check-adjacency.mjs) and a NEW screen ledger corpus/adjacency-screen-skill.tsv, against sibling ground OUTSIDE PROVINCE.md: the 67 candidate lines of sibling SKILL.md / corpus/knowledge that name tabi (set A, 38) or that round-33 w1 ConnSiblingScan logged as browser-ground leads (set B, 29 after dedupe). At the baseline 66 of 67 are neither mapped nor screened (one, kama listener-census.md:355, is mapped by row 11).",
+   "predicate": "node .ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs --rev REV --json (frozen bytes) reports predicate true: check-adjacency verdict clean at REV AND unaccounted == 0 AND newMapped >= 3, where a newMapped row has a (surface, sibling) key absent at the baseline, maps >= 1 candidate, carries a NEW tabi-side declaration line (absent from that tabi file at the baseline) that contains tabi_quote naming the sibling, and is ruled / contested-open / refused-route, or split-declared with a sibling_quote naming tabi.",
+   "countingCommand": "node .ufo/waves/round-34/counters/c1-adjacency-sweep-v2.mjs --rev <REV> --json | jq '{predicate,candidates,mapped,screened,unaccounted,newMapped,newMappedRows,adjacency,screenFindings}'",
+   "before": "candidates 67 (A 38, B 29), mapped 1, screened 0, unaccounted 66, newMapped 0, adjacency clean (rows 13, verified 13), predicate false, exit 1 — baseline/c1-J1-do-nothing.json",
+   "target": "unaccounted 0 AND newMapped >= 3 AND adjacency clean",
+   "commandShowingSurfaceUnmoved": "the same counter at the baseline: unaccounted 66, newMapped 0",
+   "killRule": "predicate false at REV -> failed. Counter exit 2, counter bytes != frozenDigests, or scripts/check-adjacency.mjs at REV != its pinned digest -> not verified. A row the L1 keeps against a wave-2 finding that it re-keys a mapped surface is recorded per QUALITY criterion 91; a withdrawn row is not re-counted.",
+   "controls": {
+    "doNothing": "unaccounted 66, newMapped 0, predicate false (baseline/c1-J1-do-nothing.json)",
+    "screenAll": "every unaccounted candidate screened not-browser-sense: unaccounted 0, newMapped 0, predicate false (baseline/c1-J2-screen-all.json)",
+    "junkNonCandidate": "four split-declared rows on sibling SKILL.md:3 lines (non-candidates) with a new junk tabi declaration naming each sibling, all else screened: newMapped 0, predicate false; check-adjacency flags 1 of the 4 junk rows, the other 3 verify (baseline/c1-J3-junk-noncandidate.json)",
+    "existingTabiLines": "four split-declared rows on candidate lines that name tabi (kotoba census 49:171, 74:150, kumitate kimi-skills-plugins:250, kake SKILL.md:408) with tabi sides on EXISTING tabi lines that name the sibling (the round-12 LANES roster string, the refuse-and-route line), all else screened: mapped 5, newMapped 0, predicate false — the new-declaration clause is what refuses this construction (baseline/c1-J4-existing-tabi-lines.json)",
+    "unnamedSiblingSide": "four split-declared rows on set-B lines that do not name tabi (kagi, kama, kasegi) with a new junk tabi declaration naming them: mapped 5, newMapped 0, predicate false (baseline/c1-J5-unnamed-sibling-side.json)"
+   },
+   "feasibilityDisclosed": "The counter cannot judge overlap semantics: three new rows whose new tabi declaration names the sibling reach newMapped 3 whatever the declarations are worth (a refused-route row needs no sibling-side naming), and a candidate screened with a wrong reason counts as accounted. The semantic guard is wave 2 (one attack per new row and per screen-reason group) and the closure spot-check. The target 3 is set from the L1's pre-freeze reading of the candidate list (baseline/c1-candidates.tsv): kake delegations of lab-performance runs (SKILL.md:697, field-performance-cwv.md:153) and of live-delivery observation (SKILL.md:408), kasegi's authenticated burnerchrome driving (mission-control.md:119), and kotoba's open agent-facing-text split addressed to tabi (census round 49:171-175) read as candidate boundaries; any of them may turn out same-surface or not-browser-sense under attack. Round 33 lead mirror-pitfalls.md:39 is off by one (the quote is on :40); the counter re-anchors leads by their quote and reports it (leadsReanchored)."
+  },
+  {
+   "id": "C2",
+   "axis": "operability",
+   "type": "axis move (sourced, frontier step 2b.4: the new self-test note cites registry rows opened this round)",
+   "surface": "the self-test of the lane's runnable BiDi runtime gate scripts/check-bidi-runtime.mjs (v2, sha256 eded1be0...61c1 at the baseline). Of the 20 frozen single-point mutants of its rules built by round-33 w2 MutGateV2, the gate's own --selftest kills 8 at the baseline; 12 (M01 M03 M04 M05 M06 M07 M08 M09 M10 M16 M18 M19) survive — the rules they disable (duplicate-id threshold, verdict case-folding, transcript path/sha distinctness, session/context id shape, webSocketUrl binding, driver allow-list, s1 Gate-row digest, clean guard, sessionId distinctness) are untested by the gate's own runnable check.",
+   "predicate": "node .ufo/waves/round-34/counters/c2-gate-mutants.mjs --rev REV --json (frozen bytes) reports predicate true: REV's gate --selftest exits 0 pristine, after a neutral trailing comment, after a decoy comment quoting every mutant replacement, and after each mutant site's whitespace twin; every one of the 20 mutants applies exactly once to REV's gate and makes its --selftest exit 3 with >= 1 CASE FAIL line; and the round-33 frozen forgery battery reads predicate true at REV (honest H0/H1/H2 admitted, forgeries 0 of 8).",
+   "countingCommand": "node .ufo/waves/round-34/counters/c2-gate-mutants.mjs --rev <REV> --json | jq '{predicate,killedCount,survivors,unappliable,twinsFailing,pristine:.pristine.exit,neutral:.neutral.exit,decoy:.decoy.exit,battery:.battery.predicate}'",
+   "before": "killed 8 of 20, survivors M01 M03 M04 M05 M06 M07 M08 M09 M10 M16 M18 M19, unappliable none, twins all exit 0, pristine/neutral/decoy exit 0, battery true, predicate false, exit 1 — baseline/c2-J1-do-nothing.json",
+   "target": "survivors 0 of 20 with pristine, neutral, decoy and every twin exit 0, unappliable 0, battery predicate true",
+   "commandShowingSurfaceUnmoved": "the same counter at the baseline: killed 8, survivors 12",
+   "killRule": "predicate false at REV -> failed. Counter exit 2 or counter bytes != frozenDigests -> not verified. A mutant made unappliable by rewording its find text counts as failed, not killed.",
+   "controls": {
+    "doNothing": "killed 8, survivors 12 (baseline/c2-J1-do-nothing.json)",
+    "selfHash": "a self-test that fails whenever its own bytes change: killed 20, but neutral exit 3, decoy exit 3 and all 20 twins fail, predicate false (baseline/c2-J2-selfhash.json)",
+    "findSniff": "a self-test that fails when any mutant's find text is absent from its own source: killed 20, neutral/decoy 0, but all 20 twins fail, predicate false (baseline/c2-J3-find-sniff.json)",
+    "rejectAll": "production path exits 1 on every evaluation, self-test untouched: survivors 12 and battery false, predicate false (baseline/c2-J4-reject-all.json)"
+   },
+   "feasibilityDisclosed": "The mutant set is finite and fixed (20 single-point mutants of v2's rule lines); killing them proves the self-test exercises those 20 sites, not that the gate is forgery-proof (CritForgeV2B/C stay limits). A self-test that reads its own source and checks a whitespace-normalised find text passes every probe of this counter; the guard for that construction is the wave-2 code read. M03 (verdict case-folding) and M10 (serveFixture allow-list) need a fixture the gate's selftest does not build today (an upper-case Measured verdict; a driver importing serveFixture); if one turns out equivalent under the gate's other rules, the target is missed, not narrowed."
+  }
+ ],
+ "notClaimed": [
+  "calibration counter v4 (check-selfassessment.mjs) — carried since round 32; v3 stays a no-harm instrument (mismatches must stay 0 at REV, corrections append-only).",
+  "battery v2 (randomised subjects/paths/ids, CritForgeV2B/C constructions) — carried; v2's survivors stay recorded limits.",
+  "decision-table counter v2 — carried.",
+  "assimilation (§10): none unless wave-1 ScoutAssimilation finds a merge/tabi/ theme touching the adjacency map or the BiDi gate self-test; this lane has no considerthese/ dir."
+ ],
+ "noHarmRule": "At REV every offline gate and self-test of .ufo/waves/round-34/measure.sh noharm that exits 0 at the baseline exits 0; check-selfassessment mismatches 0; census exit 0; the round-33 C1 counter (frozen bytes) at REV keeps unaccounted 0 over its 52 PROVINCE candidates; every prior-round prose byte of SKILL.md, SCORECARD.md, LOG.md, corpus/README.md, corpus/QUALITY.md, corpus/SOURCES.md, corpus/adjacency.tsv is append-only (git diff --numstat BASELINE REV deleted 0 for those paths); corpus/adjacency-screen.tsv (round-33 ledger) may change only by the routed relabel of its kake 396/422/440 rows (round-33 spot-check routed defect 5), each change listed in the round lesson. scripts/check-bidi-runtime.mjs changes only by added self-test cases/fixture options; its rule lines (every mutant find text) stay byte-identical (the C2 counter's unappliable clause)."
+}
