@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r31/MutC2Counter/pristine/check-selfassessment.mjs	2026-10-26 05:40:03.771942671 -0300
++++ /fast/scratch/hyaku/tabi-r31/MutC2Counter/mut/m2-first-summary.mjs	2026-10-26 05:40:39.370689623 -0300
+@@ -173,7 +173,7 @@
+           // is the oracle; per-case lines may carry other `cases=` tokens (round-30
+           // lesson M8: a refusal message `cases=2 passed=1` was read as the tally).
+           const summaries = [...out.matchAll(/^[A-Z][A-Z0-9_]*_SELFTEST\b[^\n]*?\bcases\s*[=:]\s*(\d+)/gm)];
+-          const m = summaries.length ? summaries[summaries.length - 1] : (/"?\bcases"?\s*[=:]\s*(\d+)/.exec(out) || /\b(\d+)\s*\/\s*(\d+)\b/.exec(out));
++          const m = summaries.length ? summaries[0] : (/"?\bcases"?\s*[=:]\s*(\d+)/.exec(out) || /\b(\d+)\s*\/\s*(\d+)\b/.exec(out));
+           if (!m) result = { status: "could-not-evaluate", why: "self-test printed no tally" };
+           else result = { status: "measured", tally: Number(m[1]), exit: r.status, flag };
+         }

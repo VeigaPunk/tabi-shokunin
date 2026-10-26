@@ -1,0 +1,26 @@
+# admissibility pre-check of candidate S119 rows (mirrors frozen counter constants)
+# cmd: node rows.mjs f1.txt <candidates>.json
+# --- pass 1 (broad candidates, including two that lean on an author-chosen unit)
+PASS	D1	20w	at least 5 redirects	-
+PASS	D2	17w	more than 5 redirects	-
+PASS	D3	18w	24 hours	-
+PASS	D4	17w	30 days	-
+PASS	D5	10w	500 KiB	-
+PASS	D6	11w	500 attempts	-
+PASS	D7	8w	400 requests	-
+PASS	D8	18w	24 hours	-
+candidates=8 pass=8 fail=0
+# exit=0
+# --- pass 2 (refined verbatim spans)
+FAIL	D4a	26w	30 days	q1-quote-length(26w)
+FAIL	D4b	33w	30 days	q1-quote-length(33w)
+PASS	D9	21w	5 redirects	-
+PASS	D5b	10w	at least 500 KiB	-
+candidates=4 pass=2 fail=2
+# exit=0
+# --- pass 3 (30-day span sizing)
+PASS	D4c	21w	30 days	-
+PASS	D4d	20w	30 days	-
+PASS	D4e	25w	30 days	-
+candidates=3 pass=3 fail=0
+# exit=0

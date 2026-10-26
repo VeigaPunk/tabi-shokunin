@@ -1,0 +1,11 @@
+--- pristine/scripts/check-decision-table.mjs
++++ mutant/g2-inrow-drop.mjs
+@@ -248,7 +248,7 @@
+     let rc = null;
+     if (rb !== null) { try { rc = JSON.parse(rb.toString("utf8")); } catch { rc = null; } }
+     if (!rc || rc.id !== id) res.reason = "g1-receipt";
+-    else if (typeof rc.url !== "string" || !/^https:\/\/\S+$/.test(rc.url) || !rows.get(id).source.includes(rc.url)) res.reason = "g2-url";
++    else if (typeof rc.url !== "string" || !/^https:\/\/\S+$/.test(rc.url)) res.reason = "g2-url";
+     else {
+       const bytes = blob(repo, rev, rc.bytes_path);
+       if (bytes === null || rc.http_status !== 200 || sha256(bytes) !== rc.sha256) res.reason = "g3-bytes";

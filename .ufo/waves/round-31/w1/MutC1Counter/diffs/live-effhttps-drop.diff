@@ -1,0 +1,11 @@
+--- pristine/scripts/check-decision-table.mjs
++++ mutant/live-effhttps-drop.mjs
+@@ -209,7 +209,7 @@
+   if (!/^https:\/\//.test(url)) return false;
+   const res = fetcher(url);
+   if (!res || res.code !== 200) return false;
+-  if (!/^https:\/\//.test(res.effective) || hostOf(res.effective) !== hostOf(url)) return false;
++  if (hostOf(res.effective) !== hostOf(url)) return false;
+   return normalise(res.body).includes(quote);
+ }
+ 

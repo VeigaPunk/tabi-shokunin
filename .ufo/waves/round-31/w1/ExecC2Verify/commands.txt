@@ -1,0 +1,64 @@
+# ExecC2Verify — command transcript (commands as run, exit codes observed)
+
+All runs: clone /fast/scratch/hyaku/tabi-r31/ExecC2Verify/clone (git clone --shared of the lane),
+TMPDIR=/fast/scratch/hyaku/tabi-r31/ExecC2Verify/tmp, cwd = the clone. Read-only git in the lane;
+scratch commits carry -c user.name=ExecC2Verify -c user.email=ExecC2Verify@scratch.local.
+
+## setup
+$ mkdir -p "$S/tmp"
+$ git clone -q --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"                      # exit 0
+$ git -C "$S/clone" checkout -q 9505a10eb80b2a0b273ebaba3f7f872ad302192d                            # exit 0
+$ git -C "$S/clone" status --porcelain | wc -l                                                      # 0
+$ sha256sum "$S/clone/scripts/check-selfassessment.mjs"
+143d66ff2ba3fc2c113d461f1f2dd0555c94fb00b292e24eb4799e22dadb2fce   (= claims.json frozenDigests C2)  # exit 0
+
+## freeze reading (do-nothing)
+$ node scripts/check-selfassessment.mjs --rev HEAD --json > before-freeze.json                      # exit 1
+  mismatches 9; the 9 counted findings are the 8 SKILL.md lines + the corpus/README.md:613 line named in claims.json.
+
+## correct append-only corrections
+$ git checkout -q -B c2-correct                                                                     # exit 0
+$ git commit -qam "scratch C2: append-only corrections for the 9 stale tallies"                     # exit 0, HEAD daa9381b6
+$ node scripts/check-selfassessment.mjs --rev HEAD --json > correct.json                            # exit 0
+  mismatches 0, counted [], findings 183 (174 + 9 appended self-consistent findings), cne 103 (unchanged),
+  SKILL.md:2545 still superseded by the freeze-time correction.
+$ git diff --numstat 9505a10e..HEAD -- SKILL.md corpus/README.md SCORECARD.md LOG.md                # exit 0
+  26  0  SKILL.md
+   5  0  corpus/README.md
+  deleted_total = 0
+$ git diff 9505a10e..HEAD -- scripts/ | wc -l                                                       # 0
+
+## variant a — right line, stale number
+$ git checkout -q -B v-a 9505a10e                                                                   # exit 0
+$ git commit -qam "scratch C2 variant a: right lines, stale numbers"                                # exit 0, HEAD 88a8c3a8f
+$ node scripts/check-selfassessment.mjs --rev HEAD --json > v-a.json                                # exit 1
+  mismatches 18 = the 9 originals + 9 new mismatches, one per correction paragraph (SKILL.md:2584..2605,
+  corpus/README.md:665), because each wrong-number paragraph is itself a tally claim.
+
+## variant b — one paragraph, range SKILL.md:1614-2544, one script named
+$ git checkout -q -B v-b 9505a10e                                                                   # exit 0
+$ git commit -qam "scratch C2 variant b: one range paragraph, one script named"                     # exit 0, HEAD 4817404
+$ node scripts/check-selfassessment.mjs --rev HEAD --json > v-b.json                                # exit 1
+  mismatches 5; superseded SKILL findings 2479, 2515, 2530 (+ the pre-existing 2545);
+  counted: SKILL.md:1614 (sources), :2514 (s106), :2529 (s106), :2543 (release-pins), :2544 (s106).
+  corpus/README.md:613 cleared by its own appended correction. No other script's line was cleared.
+
+## variant c — corrections inserted mid-file (before line 1059)
+$ git checkout -q -B v-c 9505a10e                                                                   # exit 0
+$ git commit -qam "scratch C2 variant c: corrections inserted mid-file"                             # exit 0, HEAD 68dab7e0c
+$ node scripts/check-selfassessment.mjs --rev HEAD --json > v-c.json                                # exit 1
+  mismatches 9, superseded SKILL findings []: all 8 stale lines remain (now at :1640, :2505, :2540, :2541,
+  :2555, :2556, :2569, :2570) and the former :2545 line is counted at :2571 because the shift invalidated
+  the freeze-time citation `SKILL.md:2545`.
+$ git diff --numstat 9505a10e..HEAD -- SKILL.md corpus/README.md                                    # 26 0 / 5 0, exit 0
+
+## probe d (extra) — script name and tally on different lines of one paragraph
+$ git checkout -q -B v-d 9505a10e                                                                   # exit 0
+$ git commit -qam "scratch C2 probe d: script name and tally on different lines"                    # exit 0, HEAD 8c90932d7
+$ node scripts/check-selfassessment.mjs --rev HEAD --json > v-d.json                                # exit 0
+  mismatches 0; one could-not-evaluate finding SKILL.md:2588 (ambiguous script association) — the
+  paragraph-level supersession still cleared :2479. Not counted, exit stays 0.
+
+## artifacts
+$ git diff 9505a10e <branch> > <branch>.patch        (four requested variants + probe d)
+$ sha256sum *.patch *.json > sha256sums.txt

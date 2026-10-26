@@ -1,0 +1,31 @@
+--- /fast/scratch/hyaku/tabi-r31/MutC2Counter/pristine/check-selfassessment.mjs	2026-10-26 05:40:03.771942671 -0300
++++ /fast/scratch/hyaku/tabi-r31/MutC2Counter/mut/m7a-doc-field-log.mjs	2026-10-26 05:40:39.394418034 -0300
+@@ -311,7 +311,7 @@
+       }
+       if (!claims.length) continue;
+       if (!fractionOk) {
+-        findings.push({ class: "m1-selftest-tally", doc, line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "malformed fraction claim (N !== M)" });
++        findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "malformed fraction claim (N !== M)" });
+         continue;
+       }
+       // Association is per line, exactly as in the SCORECARD window: a tally
+@@ -321,16 +321,16 @@
+       for (const m of line.matchAll(SCRIPT_IN_TEXT)) lineScripts.add(m[1].replace(/^\.\//, ""));
+       const targets = lineScripts.size ? [...lineScripts] : !lineOnly && scripts.size === 1 ? [...scripts] : [];
+       if (!targets.length) {
+-        findings.push({ class: "m1-selftest-tally", doc, line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "ambiguous script association" });
++        findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script: null, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: "ambiguous script association" });
+         continue;
+       }
+       for (const script of targets) {
+         const oracle = gateTally(repo, rev, script, cache);
+         if (oracle.status !== "measured") {
+-          findings.push({ class: "m1-selftest-tally", doc, line: no, script, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: oracle.why });
++          findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script, claimed: claims[0], observed: null, superseded: false, couldNotEvaluate: oracle.why });
+           continue;
+         }
+-        findings.push({ class: "m1-selftest-tally", doc, line: no, script, claimed: claims[0], observed: oracle.tally, superseded: false, lineText: line });
++        findings.push({ class: "m1-selftest-tally", doc: "LOG.md", line: no, script, claimed: claims[0], observed: oracle.tally, superseded: false, lineText: line });
+       }
+     }
+   }

@@ -1,0 +1,32 @@
+section	sentence	words
+About primary rate limits > Primary rate limit for unauthenticated users	The primary rate limit for unauthenticated requests is 60 requests per hour.	12
+About primary rate limits > Primary rate limit for authenticated users	All of these requests count towards your personal rate limit of 5,000 requests per hour.	15
+About primary rate limits > Primary rate limit for authenticated users	Requests made on your behalf by a GitHub App that is owned by a GitHub Enterprise Cloud organization have a higher rate limit of 15,000 requests per hour.	28
+About primary rate limits > Primary rate limit for authenticated users	Similarly, requests made on your behalf by a OAuth app that is owned or approved by a GitHub Enterprise Cloud organization have a higher rate limit of 15,000 requests per hour if you are a member of the GitHub Enterprise Cloud organization.	42
+About primary rate limits > Primary rate limit for authenticated users	For example, if an app with a 15,000 request limit makes 10,000 requests on your behalf, you will have exhausted the 5,000 request budget for your personal access tokens, even though the app has 5,000 requests remaining.	37
+About primary rate limits > Primary rate limit for Git LFS access	These count towards a separate rate limiting bucket with a limit of 300 requests per minute for unauthenticated requests and 3,000 requests per minute for authenticated requests.	27
+About primary rate limits > Primary rate limit for Git LFS access	Git LFS uses a batch API which processes 100 Git LFS objects per API request by default.	17
+About primary rate limits > Primary rate limit for Git LFS access	That means unauthenticated users can download 30,000 Git LFS objects per minute and authenticated users can upload/download 300,000 Git LFS objects per minute.	23
+About primary rate limits > Primary rate limit for GitHub App installations	GitHub Apps authenticating with an installation access token use the installation's minimum rate limit of 5,000 requests per hour.	19
+About primary rate limits > Primary rate limit for GitHub App installations	If the installation is on a GitHub Enterprise Cloud organization, the installation has a rate limit of 15,000 requests per hour.	21
+About primary rate limits > Primary rate limit for GitHub App installations	Installations that have more than 20 repositories receive another 50 requests per hour for each repository.	16
+About primary rate limits > Primary rate limit for GitHub App installations	Installations that are on an organization that have more than 20 users receive another 50 requests per hour for each user.	21
+About primary rate limits > Primary rate limit for GitHub App installations	The rate limit cannot increase beyond 12,500 requests per hour.	10
+About primary rate limits > Primary rate limit for OAuth apps	For these requests, the rate limit is 5,000 requests per hour per OAuth app.	14
+About primary rate limits > Primary rate limit for OAuth apps	If the app is owned by a GitHub Enterprise Cloud organization, the rate limit is 15,000 requests per hour.	19
+About primary rate limits > Primary rate limit for GITHUB_TOKEN in GitHub Actions	The rate limit for GITHUB_TOKEN is 1,000 requests per hour per repository.	12
+About primary rate limits > Primary rate limit for GITHUB_TOKEN in GitHub Actions	For requests to resources that belong to a GitHub Enterprise Cloud account, the limit is 15,000 requests per hour per repository.	21
+About secondary rate limits	No more than 100 concurrent requests are allowed.	8
+About secondary rate limits	No more than 900 points per minute are allowed for REST API endpoints, and no more than 2,000 points per minute are allowed for the GraphQL API endpoint.	28
+About secondary rate limits	No more than 90 seconds of CPU time per 60 seconds of real time is allowed.	16
+About secondary rate limits	No more than 60 seconds of this CPU time may be for the GraphQL API.	15
+About secondary rate limits	In general, no more than 80 content-generating requests per minute and no more than 500 content-generating requests per hour are allowed.	21
+About secondary rate limits	No more than 2,000 OAuth access token requests per hour are allowed for GitHub Apps and OAuth apps.	18
+About secondary rate limits > Calculating points for the secondary rate limit	GraphQL requests without mutations 1	5
+About secondary rate limits > Calculating points for the secondary rate limit	GraphQL requests with mutations 5	5
+About secondary rate limits > Calculating points for the secondary rate limit	Most REST API GET , HEAD , and OPTIONS requests 1	11
+About secondary rate limits > Calculating points for the secondary rate limit	Most REST API POST , PATCH , PUT , or DELETE requests 5	13
+Checking the status of your rate limit	Ensure your integration handles 403 and 429 responses as described in Exceeding the rate limit later in this article.	19
+Exceeding the rate limit	If you exceed your primary rate limit, you will receive a 403 or 429 response, and the x-ratelimit-remaining header will be 0 .	23
+Exceeding the rate limit	If you exceed a secondary rate limit, you will receive a 403 or 429 response and an error message that indicates that you exceeded a secondary rate limit.	28
+Exceeding the rate limit	If the x-ratelimit-remaining header is 0 , you should not retry your request until after the time, in UTC epoch seconds, specified by the x-ratelimit-reset header.	26

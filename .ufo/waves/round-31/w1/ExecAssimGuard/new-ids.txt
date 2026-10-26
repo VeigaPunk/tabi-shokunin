@@ -1,0 +1,43 @@
+ExecAssimGuard — round 31 — new registry ids vs staged ids
+Lane tree: scratch clone at 9505a10eb80b2a0b273ebaba3f7f872ad302192d (= freeze commit).
+
+1. Lane registry at the freeze tree (corpus/SOURCES.md)
+   rows 118, ids S001..S118 contiguous, 0 duplicate ids, 0 rows with 1-3 leading spaces.
+   grep -nE '\| *S11[9]|\| *S12[0-2]' corpus/SOURCES.md -> no match (exit 1):
+   S119, S120, S121, S122 are NOT in the lane registry at the freeze.
+   Observed again on the live lane working tree at 2026-10-26T08:40:17Z: still 118 rows,
+   no S119-S122 row (git status showed only untracked .ufo wave files).
+
+2. Staged package at those ids (SOURCES.append.md lines 24-27) — all four ids exist
+   S119  Chromium 146 runtime enabled features — .../refs/tags/146.0.7680.177/third_party/blink/renderer/platform/runtime_enabled_features.json5   code A
+   S120  Chromium 147 runtime enabled features — .../refs/tags/147.0.7727.137/.../runtime_enabled_features.json5                                  code A
+   S121  Chromium 148 runtime enabled features — .../refs/tags/148.0.7778.215/.../runtime_enabled_features.json5                                  code A
+   S122  Chromium 149 runtime enabled features — .../refs/tags/149.0.7827.200/.../runtime_enabled_features.json5                                  code A
+   used-by for all four: the staged entry corpus/knowledge/webmcp-version-floor-source-resolution.md
+   (present in the package under knowledge/corpus/knowledge/, absent from the lane's corpus/knowledge/).
+   None of S119-S122 appears in the ABSENT register's tabi slice (no quote failure recorded).
+
+3. Round-31 lane rows that will take those ids (assignment §C1)
+   S119  RFC 9309 (robots.txt)      https://www.rfc-editor.org/rfc/rfc9309.txt
+   S120  RFC 6585 (429)             https://www.rfc-editor.org/rfc/rfc6585.txt
+   S121  GitHub REST rate limits    https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
+   S122  GitHub REST best practices https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api
+
+4. By-id confusion test
+   Every staged row at S119-S122 is a DIFFERENT document from the lane row at the same id:
+   staged S119-S122 are Chromium runtime_enabled_features.json5 at tags 146/147/148/149;
+   lane S119-S122 are two RFCs and two GitHub documentation pages. A by-id join or a
+   by-id "already staged" test would therefore confuse all four. Identity must be by
+   document (URL + tag/page + fetch bytes), as it already is for S102-S118.
+   After the four rows land, the id collision set grows 17 -> 21 (S102-S122).
+
+5. Document-level counterpart (same source already staged under a DIFFERENT id)
+   lane S119 RFC 9309      == staged S106 document (spec A)  [staged S106 is also in the quarantine slice: payload-absent]
+   lane S120 RFC 6585      == staged S110 document (spec A)  [staged S110 is also in the quarantine slice: payload-absent]
+   lane S121 GitHub rate-limits == staged S126 document (docs B) [staged S126 is refused per claims.json; register S126 cites this URL with quotes from another page]
+   lane S122 GitHub best-practices == no staged row (grep of SOURCES.append.md: 0 rows cite that URL)
+   The lane registry at the freeze holds none of the four documents under any id
+   (grep -cE '9309|6585' -> 0; 'rate-limits-for-the-rest-api' -> 0;
+   'best-practices-for-using-the-rest-api' -> 0; 'robots.txt' -> 0), so the rows are
+   new documents to the lane, but three of them duplicate a staged source under another
+   id. Recording only; no repair, no adoption.

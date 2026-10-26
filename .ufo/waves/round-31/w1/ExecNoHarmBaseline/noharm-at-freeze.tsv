@@ -1,0 +1,35 @@
+gate	command	exit	reading
+noHarm/check-gate-registry	node scripts/check-gate-registry.mjs --rev 9505a10eb80b2a0b273ebaba3f7f872ad302192d	0	rows=38 gates=21 nonconformant=0 findings=0 (claim: nonconformant = 0)
+noHarm/check-release-pins	node scripts/check-release-pins.mjs --rev 9505a10eb80b2a0b273ebaba3f7f872ad302192d --stable 156.0.8078.47	0	population=23 resolved=23 unresolved=0 holds=16 drifted=7 (claim: unresolved = 0)
+noHarm/check-s106-evidence	node scripts/check-s106-evidence.mjs --rev 9505a10eb80b2a0b273ebaba3f7f872ad302192d	0	verdict=valid present=true sha_match=true anchor_located=true valid=true (claim: valid = true)
+noHarm/check-frontier-admission	node scripts/check-frontier-admission.mjs --rev 9505a10eb80b2a0b273ebaba3f7f872ad302192d --frontier rate-tos-signal --since 2026-10-26	0	population=2 admitted=2 failing=0 (claim: population 2, admitted 2)
+noHarm/check-frontier-admission (--json)	node scripts/check-frontier-admission.mjs --rev 9505a10eb80b2a0b273ebaba3f7f872ad302192d --frontier rate-tos-signal --since 2026-10-26 --json	0	clean=true population=2 admitted=2 failing=0 live=false lesson=corpus/lessons/round-30.md
+noHarm/check-sources	node scripts/check-sources.mjs	0	verdict=clean rows=118 tiers=A:103,B:6,C:9 status=queued:15,mined:94,rejected:9 findings=0 (claim: clean)
+noHarm/sources-census	/home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi	0	tabi ok (clean-lane-ok line present); 19 W04 duplicate-url-across-scopes warnings; 0 E-codes (claim: exit 0)
+selftest/check-adjacency	node scripts/check-adjacency.mjs --self-test	0	ADJACENCY_SELFTEST verdict=clean cases=57 reasons=18 could_not_evaluate=6
+selftest/check-aria-metadata	node scripts/check-aria-metadata.mjs --self-test	0	cases=36 ok=true (every case ok, exit=0)
+selftest/check-bfcache-receipt	node scripts/check-bfcache-receipt.mjs --selftest	0	cases=17 passed=17
+selftest/check-decision-table	node scripts/check-decision-table.mjs --selftest	0	DECISION_TABLE_SELFTEST verdict=clean cases=34 passed=34
+selftest/check-freshness	node scripts/check-freshness.mjs --self-test	0	FRESHNESS_SELFTEST verdict=clean cases=12
+selftest/check-frontier-admission	node scripts/check-frontier-admission.mjs --selftest	0	FRONTIER_ADMISSION_SELFTEST verdict=clean cases=24 passed=24
+selftest/check-gate-mutants	node scripts/check-gate-mutants.mjs --selftest	0	GATE_MUTANTS_SELFTEST verdict=clean cases=12 passed=12
+selftest/check-gate-registry	node scripts/check-gate-registry.mjs --selftest	0	GATE_REGISTRY_SELFTEST verdict=clean cases=22 passed=22
+selftest/check-measurement-binding	node scripts/check-measurement-binding.mjs --self-test	0	MEASUREMENT_BINDING_SELFTEST verdict=clean cases=76 reasons=13
+selftest/check-release-pins	node scripts/check-release-pins.mjs --selftest	0	RELEASE_PINS_SELFTEST verdict=clean cases=29 passed=29
+selftest/check-round-contract	node scripts/check-round-contract.mjs --self-test	0	ROUND_CONTRACT_SELFTEST verdict=clean cases=38 alias_checks=1
+selftest/check-s106-evidence	node scripts/check-s106-evidence.mjs --selftest	0	S106_SELFTEST verdict=clean cases=10 passed=10
+selftest/check-selfassessment	node scripts/check-selfassessment.mjs --selftest	0	SELFASSESSMENT_SELFTEST verdict=clean cases=30 passed=30
+selftest/check-source-reopen-receipt	node scripts/check-source-reopen-receipt.mjs --selftest	0	cases=18 passed=18
+selftest/check-sources	node scripts/check-sources.mjs --self-test	0	SOURCES_SELFTEST verdict=clean cases=26
+selftest/check-user-round-contract	node scripts/check-user-round-contract.mjs --self-test	0	USER_ROUND_CONTRACT_SELFTEST verdict=clean cases=45 fixtures=35 alias=1
+selftest/round-evidence-audit	node scripts/round-evidence-audit.mjs --selftest	0	cases=13 passed=13 inventoryOk=true clean=true
+selftest/wave-r21-measure-c1	node .ufo/waves/round-21/measure-c1.mjs --selftest	0	verdict=clean cases=83 passed=83
+selftest/wave-r22-review-chronology	node .ufo/waves/round-22/check-review-chronology.mjs --selftest	0	verdict=pass cases=17 all case checks pass
+selftest/wave-r22-measure-c1	node .ufo/waves/round-22/measure-c1.mjs --selftest	0	verdict=clean cases=45 passed=45
+selftest/wave-r12-claim-record	node .ufo/waves/round-12/w1/mistake/check-claim-record.mjs --self-test	0	CLAIM_SELFTEST verdict=clean cases=9/9
+state/clone-clean-before	git -C <clone> status --porcelain	0	0 lines (clean checkout of REV 9505a10eb80b2a0b273ebaba3f7f872ad302192d)
+state/clone-clean-after	git -C <clone> status --porcelain	0	0 lines after all 21 gate self-tests and all production checks
+state/frozen-counter-digests	sha256sum scripts/check-decision-table.mjs scripts/check-selfassessment.mjs	0	d15f3bd7aef4423d4311c2402f2d01bac8c7ff140a2fdd448ad2500f482f6832 and 143d66ff2ba3fc2c113d461f1f2dd0555c94fb00b292e24eb4799e22dadb2fce = claims.json frozenDigests
+state/network	(none used)	0	every run offline; frontier-admission reported live=false; no --live invocation, no fetch receipt written
+reference-before/c1-decision-table	node scripts/check-decision-table.mjs --rev 9505a10eb80b2a0b273ebaba3f7f872ad302192d --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc --entry corpus/knowledge/rate-signal-decision-table.md --json	1	entryPresent=false tablePresent=false population=0 admitted=0 failing=0 clean=false (expected before value; not a no-harm row)
+reference-before/c2-selfassessment	node scripts/check-selfassessment.mjs --rev 9505a10eb80b2a0b273ebaba3f7f872ad302192d --json	1	mismatches=9 couldNotEvaluate=103 superseded=20 clean=false; counted = SKILL.md:1614 25->26, :2479 13->30, :2514 5->10, :2515 17->30, :2529 7->10, :2530 20->30, :2543 20->29, :2544 7->10, corpus/README.md:613 17->30 (expected before value; not a no-harm row)

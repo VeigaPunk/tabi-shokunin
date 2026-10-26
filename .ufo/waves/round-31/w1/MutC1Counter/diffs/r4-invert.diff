@@ -1,0 +1,11 @@
+--- pristine/scripts/check-decision-table.mjs
++++ mutant/r4-invert.mjs
+@@ -276,7 +276,7 @@
+     const reg = rows.get(source);
+     if (reg.status !== "mined") { fail("r2-status"); continue; }
+     if (!reg.usedBy.split(/[,;]/).map((p) => p.trim()).includes(entry)) { fail("r3-used-by"); continue; }
+-    if (baseRows.has(source)) { fail("r4-new-row"); continue; }
++    if (!baseRows.has(source)) { fail("r4-new-row"); continue; }
+     const g = loadReceipt(source);
+     if (g.reason) { fail(g.reason); continue; }
+     const spans = quoteSpans(quoteCell);

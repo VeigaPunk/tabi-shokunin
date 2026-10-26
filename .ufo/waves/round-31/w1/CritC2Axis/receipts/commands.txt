@@ -1,0 +1,59 @@
+# CritC2Axis — commands and exit codes (round 31, w1)
+# S=/fast/scratch/hyaku/tabi-r31/CritC2Axis ; TMPDIR=$S/tmp (explicit)
+# Clone: git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"  -> exit 0
+# Toplevel verified; git status --porcelain -> 0 lines before every counter run.
+
+[1] git -C "$S/clone" checkout -q 9505a10eb80b2a0b273ebaba3f7f872ad302192d
+    -> exit 0 ; rev-parse HEAD = 9505a10eb80b2a0b273ebaba3f7f872ad302192d
+
+[2] git show 9505a10:scripts/check-selfassessment.mjs | sha256sum
+    -> 143d66ff2ba3fc2c113d461f1f2dd0555c94fb00b292e24eb4799e22dadb2fce  -   exit 0
+    sha256sum scripts/check-selfassessment.mjs (working copy at freeze)
+    -> 143d66ff...db2fce   exit 0
+    (equals claims.json frozenDigests)
+
+[3] node scripts/check-selfassessment.mjs --rev 9505a10... --json > v2-at-freeze.json
+    -> exit 1 ; mismatches 9 ; counted = SKILL.md 1614/2479/2514/2515/2529/2530/2543/2544,
+      corpus/README.md 613 ; findings 174 ; superseded 20 ; couldNotEvaluate 103 ; clean false
+
+[4] git checkout -q 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc   -> exit 0
+    node scripts/check-sources.mjs --selftest      -> exit 2 (bad_arguments; wrong flag spelling)
+    node scripts/check-sources.mjs --self-test     -> exit 0 ; SOURCES_SELFTEST verdict=clean cases=26
+    node scripts/check-s106-evidence.mjs --selftest -> exit 0 ; S106_SELFTEST verdict=clean cases=10 passed=10
+    node scripts/check-release-pins.mjs --selftest  -> exit 0 ; RELEASE_PINS_SELFTEST verdict=clean cases=29 passed=29
+    node scripts/check-selfassessment.mjs --selftest-> exit 0 ; SELFASSESSMENT_SELFTEST verdict=clean cases=22 passed=22
+
+[5] node scripts/check-selfassessment.mjs --rev 96a2d1a3... --json  (v1 counter, baseline tree)
+    -> exit 1 ; mismatches 1 ; the one counted finding is SCORECARD.md:1527 claimed 12 observed 2
+       (the round-30 M8 first-cases= misread; v2's summary-line oracle reads 12 and clears it)
+
+[6] git checkout -q 9505a10...
+    node scripts/check-selfassessment.mjs --selftest
+    -> exit 0 ; SELFASSESSMENT_SELFTEST verdict=clean cases=30 passed=30
+
+[7] Probe: docs at freeze with the four freeze-time corrections reverted
+    git diff 96a2d1a3 9505a10 -- SKILL.md SCORECARD.md > freeze-additions.patch
+    git checkout -q -B probe-nocorr ; git apply -R freeze-additions.patch   -> exit 0
+    git -c user.name=CritC2Axis -c user.email=CritC2Axis@scratch.local commit -qam "probe: freeze docs without round-31 corrections"
+    -> exit 0 ; HEAD a51d5f08049391ff6008ebca5d7e635860b33335 ; git status --porcelain -> 0 lines
+    node scripts/check-selfassessment.mjs --rev a51d5f0... --json > v2-nocorr.json
+    -> exit 1 ; mismatches 13 = the nine + SCORECARD.md:1439 (17/30), :1465 (22/30), :1486 (22/30),
+       SKILL.md:2545 (22/30)
+
+[8] git cat-file -t befe2a3f96f451e1fe797c3cab5f4c8dcf670f99   (rev in baseline/c2-J1-do-nothing.json)
+    -> exit 128 ; "fatal: git cat-file: could not get object info" (not an object in the lane)
+
+[9] git diff --numstat 96a2d1a3 9505a10 -- SKILL.md corpus/README.md SCORECARD.md LOG.md
+    -> 6  0  SCORECARD.md
+       19 0  SKILL.md          (README.md and LOG.md absent = 0/0)
+[10] diff <(git show 96a2d1a3:SKILL.md | sed -n '1,2545p') <(git show 9505a10:SKILL.md | sed -n '1,2545p')
+    -> exit 0 (the nine cited lines and SKILL.md:2545 are byte-identical at both revisions)
+    diff <(git show 96a2d1a3:corpus/README.md) <(git show 9505a10:corpus/README.md) -> exit 0
+[11] git diff --numstat 96a2d1a3 9505a10 -- . ':!.ufo'
+    -> 6/0 SCORECARD.md ; 19/0 SKILL.md ; 482/0 scripts/check-decision-table.mjs (new) ;
+       104/15 scripts/check-selfassessment.mjs (v2 edit of the counter itself)
+[12] Nine stale lines read at 96a2d1a3 and at 9505a10 (sed -n); see receipts/baseline-lines.txt.
+    Ten-line control: SKILL.md:2545 at baseline states cases=22, matching the baseline oracle 22 (not stale).
+
+Network: none (no HTTP fetch in this seat). Tool installs/upgrades: none.
+Scratch: $S removed after receipts were copied into the output dir.

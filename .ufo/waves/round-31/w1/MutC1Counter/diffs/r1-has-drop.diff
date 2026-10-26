@@ -1,0 +1,11 @@
+--- pristine/scripts/check-decision-table.mjs
++++ mutant/r1-has-drop.mjs
+@@ -272,7 +272,7 @@
+     const tm = UNIT_RE.exec(threshold);
+     if (!tm) { fail("t4-threshold"); continue; }
+     const tnum = Number(tm[1].replace(/,/g, ""));
+-    if (!/^S[0-9]{3,}$/.test(source) || !rows.has(source)) { fail("r1-row-missing"); continue; }
++    if (!/^S[0-9]{3,}$/.test(source)) { fail("r1-row-missing"); continue; }
+     const reg = rows.get(source);
+     if (reg.status !== "mined") { fail("r2-status"); continue; }
+     if (!reg.usedBy.split(/[,;]/).map((p) => p.trim()).includes(entry)) { fail("r3-used-by"); continue; }

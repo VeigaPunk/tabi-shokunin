@@ -1,0 +1,69 @@
+ExecAssimGuard — round 31 wave w1 — §10 assimilation guard proof
+Seat: ExecAssimGuard. Observations 2026-10-26T08:30Z–08:45Z.
+Adoption decision this round: none (claims.json §assimilation). The §10 checks still run.
+
+Inputs (all read-only; nothing under shokuknow was written, no campaign tool was run)
+  lane tree ...... scratch clone at 9505a10eb80b2a0b273ebaba3f7f872ad302192d
+                   git -C clone status --porcelain -> 0 lines
+  staged package . /home/vgpnk/Projects/shokuknow/merge/tabi/SOURCES.append.md
+                   sha256 7f646b3b787350d96125faed95f8d6d49daca529b7df4098196954823a86cab6
+  defect register /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md
+                   sha256 5afe1810a6c3d62f37987b575a954f5b1197daa23005d4bb2f1d982f64bad833
+                   (= claims.json "5afe1810…d833"; = round-30 register-sha256.txt, unchanged)
+
+Extractors under test (id = grep -oE 'S[0-9]+' | sort -u; collisions = comm -12 registry staged)
+  WIDE   '^ {0,3}\|[[:space:]]*S[0-9]{3,}'   fleet CORPUS.md parser clause: 0-3 leading ASCII
+                                             spaces are accepted before a table row, 4+ are code
+  NARROW '^\|[[:space:]]*S[0-9]{3,}'        column-zero only
+
+Fixture bytes (scratch only, $S/guard2)
+  reg-indented-only.md  = "  | S102 | indented scratch registry row |"      (two leading spaces)
+  reg-colzero.md        = "| S102 | column-zero scratch registry row |"     (control)
+  reg-fourspace.md      = "    | S103 | four-space scratch row |"           (boundary: code)
+  reg-mixed.md          = "| S001 | column-zero control row |" + "\n  | S102 | indented row |"
+  staged side in every case = the real SOURCES.append.md (148 ids)
+
+Command: FX=$S/guard2 CLONE=$S/clone sh guard.sh   -> exit 0
+Output (verbatim):
+
+  F1 indented 2-space row, 0-3-space pattern:
+    reg=[S102 ] collisions=[S102 ] lines=1
+  F1 indented 2-space row, column-zero-only pattern:
+    reg=[] collisions=[] lines=0
+  F2 column-zero control row, column-zero-only pattern:
+    reg=[S102 ] collisions=[S102 ] lines=1
+  F3 four-space row, 0-3-space pattern:
+    reg=[] lines=0
+  F4 mixed column-zero + indented, 0-3-space pattern:
+    reg=[S001 S102 ] collisions=[S102 ] lines=1
+  F4 mixed column-zero + indented, column-zero-only pattern:
+    reg=[S001 ] collisions=[] lines=0
+  F5 real lane registry rows with 1-3 leading spaces (expect 0):
+  0
+  F5 real staged append rows with 1-3 leading spaces (expect 0):
+  0
+
+Readings
+  - F1 proves the guard: a row pasted as "  | S102 |" is caught by the 0-3-space pattern
+    (nonempty collisions file, S102) and produces an EMPTY collisions file under the
+    column-zero-only pattern — the false green, on the same bytes.
+  - F2 / F4 prove non-vacuity: the narrow extractor is not dead; it extracts column-zero
+    ids (S102 / S001) and reports a collision when the row really is at column zero, so
+    the empty result in F1 is a blind spot, not a broken reader.
+  - F3 shows the wide pattern stays bounded: a four-space row is indented code and is
+    ignored, matching the fleet parser clause rather than "anything indented".
+  - F5 shows the false green is latent, not active, on this round's real inputs: the lane
+    registry and the staged append both carry 0 rows with 1-3 leading spaces. The derived
+    reg-ids (118) and staged-ids (148) are therefore the full id sets, not a truncation.
+  - The lane's own scripts/check-sources.mjs:25 still carries the column-zero-only form
+    `const rowPattern = /^\|[ \t\v\f\r]*S[0-9]{3,}[ \t\v\f\r]*\|/;` (read statically, not
+    run). That gate would not see an indented duplicate row; the assimilation derivation
+    above is correct independently because it uses the 0-3-space form.
+
+Re-derivation cross-check (derive.sh, OUT=<own output dir> sh derive.sh -> exit 0)
+  reg-ids 118 / staged-ids 148 / collisions 17 / quarantine-slice 38
+  cmp against the committed round-31 assimilation files: all four IDENTICAL
+    reg-ids          0b6a17f52f241e9957f5e4fe78ae9a5cf17104e4a6b59074d1576ee04afa7446
+    staged-ids       82d68117e103d92e93c30a303c2347bd31da7b181085a2663d376b461f2d858e
+    collisions       d9a19be0309c2890e2b8d7b67a75100ecd8a5e73c7e2ab1dfc334f19eb7626d9
+    quarantine-slice 79ea7557572ff6ff81c9c70fc582ae39ce35d35f437e44ec5d901b98d9fd3772

@@ -1,0 +1,11 @@
+--- pristine/scripts/check-decision-table.mjs
++++ mutant/t2-drop.mjs
+@@ -266,7 +266,7 @@
+     const fail = (reason) => out.push({ row: rowId, line, source, admitted: false, reason });
+     if (!/^D[0-9]+$/.test(rowId) || seen.has(rowId)) { seen.add(rowId); fail("t1-row-id"); continue; }
+     seen.add(rowId);
+-    if (!/`[^`]+`/.test(signal)) { fail("t2-signal"); continue; }
++    
+     const verb = (decision.toLowerCase().match(/^[a-z]+/) || [""])[0];
+     if (!DECISIONS.has(verb)) { fail("t3-decision"); continue; }
+     const tm = UNIT_RE.exec(threshold);

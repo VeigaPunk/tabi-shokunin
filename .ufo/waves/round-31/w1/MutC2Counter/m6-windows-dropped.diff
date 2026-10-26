@@ -1,0 +1,14 @@
+--- /fast/scratch/hyaku/tabi-r31/MutC2Counter/pristine/check-selfassessment.mjs	2026-10-26 05:40:03.771942671 -0300
++++ /fast/scratch/hyaku/tabi-r31/MutC2Counter/mut/m6-windows-dropped.mjs	2026-10-26 05:40:46.178838002 -0300
+@@ -420,9 +420,9 @@
+   const logText = readBlob(repo, rev, "LOG.md");
+   const logFindings = logText === null ? [] : m1LogFindings(repo, rev, logText, cache);
+   const skillText = readBlob(repo, rev, "SKILL.md");
+-  const skillFindings = skillText === null ? [] : m1LogFindings(repo, rev, skillText, cache, "SKILL.md", true);
++  const skillFindings = [];
+   const readmeText = readBlob(repo, rev, "corpus/README.md");
+-  const readmeFindings = readmeText === null ? [] : m1LogFindings(repo, rev, readmeText, cache, "corpus/README.md", true);
++  const readmeFindings = [];
+   const findings = [...m1Findings(repo, rev, scorecard, cache), ...logFindings, ...skillFindings, ...readmeFindings, ...m2Findings(repo, rev), ...m3Findings(repo, scorecard)];
+   const counted = findings.filter((f) => f.observed !== null && f.observed !== f.claimed && !f.superseded);
+   return {

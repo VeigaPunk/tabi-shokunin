@@ -1,0 +1,11 @@
+--- pristine/scripts/check-decision-table.mjs
++++ mutant/r3-drop.mjs
+@@ -275,7 +275,7 @@
+     if (!/^S[0-9]{3,}$/.test(source) || !rows.has(source)) { fail("r1-row-missing"); continue; }
+     const reg = rows.get(source);
+     if (reg.status !== "mined") { fail("r2-status"); continue; }
+-    if (!reg.usedBy.split(/[,;]/).map((p) => p.trim()).includes(entry)) { fail("r3-used-by"); continue; }
++    
+     if (baseRows.has(source)) { fail("r4-new-row"); continue; }
+     const g = loadReceipt(source);
+     if (g.reason) { fail(g.reason); continue; }

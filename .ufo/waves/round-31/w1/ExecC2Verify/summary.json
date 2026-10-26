@@ -1,0 +1,118 @@
+{
+  "seat": "ExecC2Verify",
+  "milestone": "C2",
+  "lane": "tabi",
+  "round": 31,
+  "wave": "w1",
+  "freeze": "9505a10eb80b2a0b273ebaba3f7f872ad302192d",
+  "baseline": "96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc",
+  "counter": {
+    "path": "scripts/check-selfassessment.mjs",
+    "sha256_at_freeze": "143d66ff2ba3fc2c113d461f1f2dd0555c94fb00b292e24eb4799e22dadb2fce",
+    "frozen_digest_match": true,
+    "invocation": "node scripts/check-selfassessment.mjs --rev HEAD --json"
+  },
+  "readings": [
+    {
+      "id": "freeze-do-nothing",
+      "commit": "9505a10eb80b2a0b273ebaba3f7f872ad302192d",
+      "exit": 1,
+      "mismatches": 9,
+      "deleted_lines": null,
+      "script_diff_lines": 0,
+      "counted": [
+        "SKILL.md:1614 scripts/check-sources.mjs 25->26",
+        "SKILL.md:2479 scripts/check-selfassessment.mjs 13->30",
+        "SKILL.md:2514 scripts/check-s106-evidence.mjs 5->10",
+        "SKILL.md:2515 scripts/check-selfassessment.mjs 17->30",
+        "SKILL.md:2529 scripts/check-s106-evidence.mjs 7->10",
+        "SKILL.md:2530 scripts/check-selfassessment.mjs 20->30",
+        "SKILL.md:2543 scripts/check-release-pins.mjs 20->29",
+        "SKILL.md:2544 scripts/check-s106-evidence.mjs 7->10",
+        "corpus/README.md:613 scripts/check-selfassessment.mjs 17->30"
+      ]
+    },
+    {
+      "id": "correct-append-only",
+      "commit": "daa9381b6325cc8f937f99440af19625d35c1440",
+      "exit": 0,
+      "mismatches": 0,
+      "deleted_lines": 0,
+      "numstat": "26\t0\tSKILL.md; 5\t0\tcorpus/README.md; SCORECARD.md and LOG.md absent from the diff",
+      "script_diff_lines": 0,
+      "appended_findings_self_consistent": 9,
+      "superseded_freezing_correction_2545_still_true": true,
+      "could_not_evaluate_before": 103,
+      "could_not_evaluate_after": 103
+    },
+    {
+      "id": "variant-a-stale-number-in-correction",
+      "commit": "88a8c3a8f9ee83fa2d492735797be051fb3e3886",
+      "exit": 1,
+      "mismatches": 18,
+      "deleted_lines": 0,
+      "meaning": "A citation of the right line with the stale number clears nothing (statedTallyNumbers lacks the oracle number) and each such paragraph is itself a fresh mismatch: 9 original + 9 new."
+    },
+    {
+      "id": "variant-b-one-range-one-script",
+      "commit": "4817404334af59b4acfe6fc549e04adec77d476e",
+      "exit": 1,
+      "mismatches": 5,
+      "deleted_lines": 0,
+      "superseded": [
+        "SKILL.md:2479",
+        "SKILL.md:2515",
+        "SKILL.md:2530",
+        "SKILL.md:2545 (pre-existing freeze correction)"
+      ],
+      "counted": [
+        "SKILL.md:1614 sources",
+        "SKILL.md:2514 s106",
+        "SKILL.md:2529 s106",
+        "SKILL.md:2543 release-pins",
+        "SKILL.md:2544 s106"
+      ],
+      "answered_question": "No: a range paragraph naming only scripts/check-selfassessment.mjs did not clear any line of another script. namesScript is per finding."
+    },
+    {
+      "id": "variant-c-midfile-insertions",
+      "commit": "68dab7e0c31e2ecc90720702bde9d65e10467af0",
+      "exit": 1,
+      "mismatches": 9,
+      "deleted_lines": 0,
+      "meaning": "Insertions above the stale lines shift them; every correction paragraph now starts before its cited line (p.start <= f.line) so nothing is superseded, and the shift also breaks the freeze-time correction for the former SKILL.md:2545 (now counted at :2571).",
+      "counted": [
+        "SKILL.md:1640",
+        "SKILL.md:2505",
+        "SKILL.md:2540",
+        "SKILL.md:2541",
+        "SKILL.md:2555",
+        "SKILL.md:2556",
+        "SKILL.md:2569",
+        "SKILL.md:2570",
+        "SKILL.md:2571"
+      ]
+    },
+    {
+      "id": "probe-d-script-and-tally-on-different-lines",
+      "commit": "8c90932d743113eea64474be271b782560caa3a7",
+      "exit": 0,
+      "mismatches": 0,
+      "deleted_lines": 0,
+      "meaning": "Supersession joins the whole paragraph, so a wrapped correction still clears its line; the tally line alone becomes one could-not-evaluate finding (ambiguous script association, SKILL.md:2588) that is not counted and does not change the exit code. Reachable, but it leaves a cne finding behind."
+    }
+  ],
+  "artifacts": {
+    "c2-correct.patch": "e874dd3873241360496f7b2a34a3a09aafbc10a8030d11a691001fcee7dae38b",
+    "variant-a-stale-number.patch": "f39bb613fe158c9f0c41112b6085a205db1b0daba89aaabe42067e26d28ba68a",
+    "variant-b-range-one-script.patch": "cc941eba735708dbe0efa3a27ae9ace739a99c25a036018b53948f7a59cfa37e",
+    "variant-c-midfile.patch": "40d64355ac93f1313235e172161411969ece0f0c58dde2d182357d301b4baee7",
+    "before-freeze.json": "b5ec0f1933941cda012e254fe36d2ca99e0ae5d3792a6db9f9a67b40a907cf84",
+    "correct.json": "9b20b7ca7c5054406f58ee91fe08bb3027977a0e79aa1e1bcd79d6b746f0253b",
+    "v-a.json": "9f34a3bdb3215d1de8141b859552f12545cbf9ff4d578effa02937567875cb6a",
+    "v-b.json": "f7664e1273d77d067331b7b913da82acc581470309c77be7a3aa1b58900cd0bd",
+    "v-c.json": "75d5e0f2503b3a1393123df697c269a7ee260186cb81fd2bdfcaf49ae6c9de3a",
+    "probe-d-wrapped-tally.patch": "9d817ac208a6b8a7618b02354f6501525b33f5f58c7859ea49a9a34e83953756",
+    "v-d.json": "bc766b71ad5ad7bc5fe076a7a8f4673b6b1f6bdb6fa32bc75f8c26bf0471f757"
+  }
+}

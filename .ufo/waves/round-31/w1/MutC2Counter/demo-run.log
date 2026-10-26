@@ -1,0 +1,33 @@
+===== demo m2: gate prints TWO summary lines (9 then 13) =====
+m2 pristine exit=0
+m2 mutant exit=1
+===== demo m5: correction cites a slash-qualified path docs/LOG.md:6 =====
+m5 pristine exit=1
+m5 mutant exit=0
+===== demo m7a: SKILL.md stale tally, JSON doc label =====
+m7a pristine exit=1
+m7a mutant exit=1
+===== demo outputs =====
+--- demo-m2-pristine ---
+FINDING class=m1-selftest-tally doc=SCORECARD.md line=5 claimed=13 observed=13
+SELFASSESSMENT verdict=clean rev=728e76f13a3983fc47145bedcb34e6609291fab6 mismatches=0 could_not_evaluate=0 superseded=0
+--- demo-m2-mutant ---
+FINDING class=m1-selftest-tally doc=SCORECARD.md line=5 claimed=13 observed=9
+SELFASSESSMENT verdict=failed rev=728e76f13a3983fc47145bedcb34e6609291fab6 mismatches=1 could_not_evaluate=0 superseded=0
+--- demo-m5-pristine ---
+FINDING class=m1-selftest-tally doc=SCORECARD.md line=5 claimed=13 observed=13
+FINDING class=m1-selftest-tally doc=LOG.md line=6 claimed=12 observed=13
+SELFASSESSMENT verdict=failed rev=a0bbd2a851e1ecff4d8b08518950eac9fbf8c16e mismatches=1 could_not_evaluate=0 superseded=0
+--- demo-m5-mutant ---
+FINDING class=m1-selftest-tally doc=SCORECARD.md line=5 claimed=13 observed=13
+FINDING class=m1-selftest-tally doc=LOG.md line=6 claimed=12 observed=13 superseded
+SELFASSESSMENT verdict=clean rev=a0bbd2a851e1ecff4d8b08518950eac9fbf8c16e mismatches=0 could_not_evaluate=0 superseded=1
+--- demo-m7a json diff ---
+18c18
+<       "doc": "SKILL.md",
+---
+>       "doc": "LOG.md",
+30c30
+<       "doc": "SKILL.md",
+---
+>       "doc": "LOG.md",

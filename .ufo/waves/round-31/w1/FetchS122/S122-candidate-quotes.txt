@@ -1,0 +1,30 @@
+You should subscribe to webhook events instead of polling the API for data.
+If a response includes an x-poll-interval header, wait at least that many seconds before you poll the same endpoint again.
+Make authenticated conditional requests, so that unchanged data does not count against your primary rate limit.
+Request only the data that you need, and keep responses stable, so that more of your polls return 304 Not Modified .
+Authenticated requests have a higher primary rate limit than unauthenticated requests.
+To avoid exceeding secondary rate limits, you should make requests serially instead of concurrently.
+If you are making a large number of POST , PATCH , PUT , or DELETE requests, wait at least one second between each request.
+If the retry-after response header is present, you should not retry your request until after that many seconds has elapsed.
+If the x-ratelimit-remaining header is 0 , you should not make another request until after the time specified by the x-ratelimit-reset header.
+The x-ratelimit-reset header is in UTC epoch seconds.
+Otherwise, wait for at least one minute before retrying.
+If your request continues to fail due to a secondary rate limit, wait for an exponentially increasing amount of time between retries, and throw an error after a specific number of retries.
+You should assume that any request may result in a redirection.
+Receiving an HTTP redirection is not an error, and you should follow the redirect.
+A 301 status code indicates permanent redirection.
+A 302 or 307 status code indicates temporary redirection.
+Other redirection status codes may be used in accordance with HTTP specifications.
+Making a conditional request does not count against your primary rate limit if a 304 response is returned and the request was made while correctly authorized with an Authorization header.
+This makes conditional requests especially useful when you poll an endpoint, because each 304 Not Modified response is fast and does not use your rate limit.
+Conditional requests for unsafe methods, such as POST , PUT , PATCH , and DELETE are not supported unless otherwise noted in the documentation for a specific endpoint.
+A conditional request only saves you time and rate limit if the endpoint returns 304 Not Modified .
+The endpoint returns 304 when the representation that you requested has not changed since you saved its etag or last-modified value; unrelated response headers, such as the date, can still differ.
+A different page size, page number, or filter produces a different response with a different etag .
+If you page through a list, use a stable sort order.
+You should not ignore repeated 4xx and 5xx error codes.
+If you are polling and a resource repeatedly returns a 404 Not Found response, do not keep requesting it on every poll.
+GitHub returns a 404 Not Found response instead of a 403 Forbidden response for some private resources when your credentials do not grant access, so a 404 does not always mean that the resource is absent.
+Once you have confirmed that your credentials are correct, wait much longer before you check again, or check again only when you have a reason to believe that the resource now exists.
+Repeatedly requesting a missing resource wastes your rate limit and can trigger a secondary rate limit.
+Intentionally ignoring repeated validation errors may result in the suspension of your app for abuse.

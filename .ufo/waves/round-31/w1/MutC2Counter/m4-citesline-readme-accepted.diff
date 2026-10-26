@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r31/MutC2Counter/pristine/check-selfassessment.mjs	2026-10-26 05:40:03.771942671 -0300
++++ /fast/scratch/hyaku/tabi-r31/MutC2Counter/mut/m4-citesline-readme-accepted.mjs	2026-10-26 05:40:39.377175176 -0300
+@@ -275,7 +275,7 @@
+ function citesLine(text, doc, line) {
+   return [...text.matchAll(/(?<![A-Za-z0-9_\/])((?:corpus\/)?(?:LOG|SCORECARD|SKILL|README))\.md:(\d+)(?:-(\d+))?\b/g)]
+     .some((match) => {
+-      if (`${match[1]}.md` !== doc) return false;
++      if (`${match[1]}.md` !== doc && !(doc === "corpus/README.md" && `${match[1]}.md` === "README.md")) return false;
+       const first = Number(match[2]);
+       const last = Number(match[3] || match[2]);
+       return first <= line && line <= last;

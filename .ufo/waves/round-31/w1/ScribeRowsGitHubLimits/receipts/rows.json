@@ -1,0 +1,86 @@
+[
+ {
+  "row": "D1",
+  "signal": "secondary-limit `403` or `429` with no `retry-after` and `x-ratelimit-remaining` not `0`",
+  "decision": "wait at least one minute before retrying (vendor policy: GitHub REST API, last-resort branch of the secondary-limit remedy)",
+  "threshold": "at least 1 minute",
+  "quote": "Otherwise, wait for at least one minute before retrying."
+ },
+ {
+  "row": "D2",
+  "signal": "`x-ratelimit-limit` reads 60 on an unauthenticated request",
+  "decision": "cap pacing at 60 requests per hour (vendor policy: GitHub REST API, unauthenticated)",
+  "threshold": "60 requests",
+  "quote": "The primary rate limit for unauthenticated requests is 60 requests per hour."
+ },
+ {
+  "row": "D3",
+  "signal": "`x-ratelimit-limit` reads 5000 with a personal access token",
+  "decision": "cap pacing at 5,000 requests per hour (vendor policy: GitHub REST API, personal token)",
+  "threshold": "5,000 requests",
+  "quote": "All of these requests count towards your personal rate limit of 5,000 requests per hour."
+ },
+ {
+  "row": "D4",
+  "signal": "`x-ratelimit-limit` with an installation access token",
+  "decision": "cap assumptions at the installation minimum of 5,000 requests per hour (vendor policy: GitHub App installations)",
+  "threshold": "5,000 requests",
+  "quote": "GitHub Apps authenticating with an installation access token use the installation's minimum rate limit of 5,000 requests per hour."
+ },
+ {
+  "row": "D5",
+  "signal": "`x-ratelimit-limit` reads 1000 under `GITHUB_TOKEN`",
+  "decision": "cap pacing at 1,000 requests per hour per repository (vendor policy: GitHub Actions `GITHUB_TOKEN`)",
+  "threshold": "1,000 requests",
+  "quote": "The rate limit for GITHUB_TOKEN is 1,000 requests per hour per repository."
+ },
+ {
+  "row": "D6",
+  "signal": "`x-ratelimit-limit` above 12500 on a non-Enterprise installation",
+  "decision": "cap the scaled installation budget at 12,500 requests per hour (vendor policy: GitHub REST API, non-Enterprise Cloud installations)",
+  "threshold": "at most 12,500 requests",
+  "quote": "The rate limit cannot increase beyond 12,500 requests per hour."
+ },
+ {
+  "row": "D7",
+  "signal": "parallel fan-out to one host (`concurrent requests`)",
+  "decision": "cap concurrent requests at 100 (vendor policy: GitHub secondary limit, shared across REST and GraphQL)",
+  "threshold": "no more than 100 concurrent",
+  "quote": "No more than 100 concurrent requests are allowed."
+ },
+ {
+  "row": "D8",
+  "signal": "weighted `points` burst on one REST endpoint",
+  "decision": "cap weighted points at 900 per minute (vendor policy: GitHub secondary point limit, REST endpoints)",
+  "threshold": "no more than 900 points",
+  "quote": "No more than 900 points per minute are allowed for REST API endpoints"
+ },
+ {
+  "row": "D9",
+  "signal": "summed `CPU time` proxy (total response time) over 60 s of wall clock",
+  "decision": "cap estimated CPU time at 90 seconds per 60 seconds (vendor policy: GitHub secondary compute limit)",
+  "threshold": "no more than 90 seconds",
+  "quote": "No more than 90 seconds of CPU time per 60 seconds of real time is allowed."
+ },
+ {
+  "row": "D10",
+  "signal": "content-creating `POST` `PATCH` `DELETE` calls",
+  "decision": "cap content-generating requests at 80 per minute (vendor policy, general case: some endpoints have lower limits)",
+  "threshold": "no more than 80 requests",
+  "quote": "In general, no more than 80 content-generating requests per minute"
+ },
+ {
+  "row": "D11",
+  "signal": "`OAuth access token` request burst",
+  "decision": "cap OAuth access token requests at 2,000 per hour (vendor policy: GitHub Apps and OAuth apps)",
+  "threshold": "no more than 2,000 requests",
+  "quote": "No more than 2,000 OAuth access token requests per hour are allowed for GitHub Apps and OAuth apps."
+ },
+ {
+  "row": "D12",
+  "signal": "Git LFS batch request `429`",
+  "decision": "cap the LFS bucket at 300 requests per minute unauthenticated (vendor policy: separate LFS bucket)",
+  "threshold": "300 requests",
+  "quote": "a limit of 300 requests per minute for unauthenticated requests and 3,000 requests per minute for authenticated requests"
+ }
+]

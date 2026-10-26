@@ -1,0 +1,33 @@
+# CritC1Counter — commands, revisions, exit codes (2026-10-26)
+
+clone: git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin $S/clone; git checkout 9505a10eb80b2a0b273ebaba3f7f872ad302192d
+counter blob sha256 at every REV: d15f3bd7aef4423d4311c2402f2d01bac8c7ff140a2fdd448ad2500f482f6832
+
+## fixtures (scratch commits in the clone; scripts/ untouched: git diff 9505a10e..HEAD -- scripts/ is empty)
+468199a20922b68a46f1be9c00f0d98f7a57dc26  A: unit/bound/status-code/number-word collisions (6 rows)
+a73c89c8e778826b9c40f847742e3f337b5ca1ca  B: one quote reused for 10 rows (S121 only)
+7a9dde077a0518b54973bd368dcf2eb96c8ab00f  C/D: S122 receipt bytes set to the S121 page; RFC-number threshold (2 rows)
+9cb716c9680667738956987b6a87a031b52d56e4  E: table-of-contents section number as threshold (1 row)
+
+## runs (argv as executed; --baseline 96a2d1a3e04a1d482a1bd8bfa97343bcc2acf3bc; --entry corpus/knowledge/rate-signal-decision-table.md)
+A offline: node scripts/check-decision-table.mjs --rev 468199a2 --baseline ... --entry ... --json              exit 0  population 6 admitted 6 failing 0
+A live   : node scripts/check-decision-table.mjs --rev 468199a2 --baseline ... --entry ... --live --json       exit 0  population 6 admitted 6 failing 0
+B offline: node scripts/check-decision-table.mjs --rev a73c89c8 --baseline ... --entry ... --json              exit 0  population 10 admitted 10 failing 0
+B live   : node scripts/check-decision-table.mjs --rev a73c89c8 --baseline ... --entry ... --live --json       exit 0  population 10 admitted 10 failing 0
+C/D live : node scripts/check-decision-table.mjs --rev 7a9dde07 --baseline ... --entry ... --live --json       exit 0  population 2 admitted 2 failing 0
+E live   : node scripts/check-decision-table.mjs --rev 9cb716c9 --baseline ... --entry ... --live --json       exit 0  population 1 admitted 1 failing 0
+J1 live  : node scripts/check-decision-table.mjs --rev 9505a10e --baseline ... --entry ... --live --json       exit 1  population 0 admitted 0 (entry absent)
+selftest : node scripts/check-decision-table.mjs --selftest --json                                            exit 0  cases 34 passed 34
+
+## claim counting command shape on fixture B
+node scripts/check-decision-table.mjs --rev a73c89c8 --baseline 96a2d1a3... --entry corpus/knowledge/rate-signal-decision-table.md --live --json | jq '{population,admitted,failing}'
+{"population":10,"admitted":10,"failing":0}
+
+## reads (README of the counter)
+line 86 UNIT_RE; line 87 NUMBER_WORDS; line 182 numbersIn; line 186 number-word scan; line 208 liveOk; line 212 same-host final-url test; line 254 g3 bytes self-consistency; line 271 t3 decision verb; line 286 n1 number-only threshold test
+
+## network fetches of this seat (curl -q -sS --proto =https -L; read-only GET)
+S119 2026-10-26T08:36:59Z 200 25265 f633915daaa15b943cae56545d333bcf3ba4d156599e4555499686d6699fb207 https://www.rfc-editor.org/rfc/rfc9309.txt https://www.rfc-editor.org/rfc/rfc9309.txt
+S120 2026-10-26T08:37:00Z 200 17164 f6d55d1b491cd515c35827cf9181753b23b2a68c4df14e56d83dc445b3876e58 https://www.rfc-editor.org/rfc/rfc6585.txt https://www.rfc-editor.org/rfc/rfc6585.txt
+S121 2026-10-26T08:37:00Z 200 337116 ae5e1812e43a380b5d33d91d42e07d225068fbe629ba84f55ccd13b9b6084c18 https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
+S122 2026-10-26T08:37:00Z 200 328088 b15c1c0ba8ca15fef43a89fa936a916e79717d7e4c1d85f170812d53c0dea33e https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api

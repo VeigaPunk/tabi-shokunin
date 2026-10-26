@@ -1,0 +1,65 @@
+C2 correction draft — probe transcript (ScribeC2Corrections, round 31 w1)
+Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin (read-only; only `git show` and file reads)
+Scratch clone: $HYAKU_SCRATCH/tabi-r31/ScribeC2Corrections/clone, checked out at
+9505a10eb80b2a0b273ebaba3f7f872ad302192d, `git status --porcelain` = 0 lines before the probe commit.
+TMPDIR=$HYAKU_SCRATCH/tabi-r31/ScribeC2Corrections/tmp on every node run.
+
+A. Gate tallies at the freeze commit 9505a10 (declared flags, TMPDIR set)
+  node scripts/check-sources.mjs --self-test          -> SOURCES_SELFTEST verdict=clean cases=26                    exit 0
+  node scripts/check-selfassessment.mjs --selftest    -> SELFASSESSMENT_SELFTEST verdict=clean cases=30 passed=30  exit 0
+  node scripts/check-s106-evidence.mjs --selftest     -> S106_SELFTEST verdict=clean cases=10 passed=10            exit 0
+  node scripts/check-release-pins.mjs --selftest      -> RELEASE_PINS_SELFTEST verdict=clean cases=29 passed=29    exit 0
+  node scripts/check-gate-mutants.mjs --selftest      -> GATE_MUTANTS_SELFTEST verdict=clean cases=12 passed=12    exit 0
+  (check-sources run with --selftest instead of its declared --self-test returns
+   `SOURCES_GATE verdict=could-not-evaluate detail=bad_arguments`, exit 2 — the flag is --self-test.)
+
+B. Historic tallies (old blob written to scripts/__probe-*.mjs inside the clone, run, deleted; tree clean after)
+  a4115fa check-sources --self-test      -> cases=25  (gate creation, round 1)
+  5cdc976 check-sources                  -> blob 3f96058fad6fd0163e9ec5f63347af4607e5646b, same blob as 9505a10;
+                                            adds case `row-outside-registry` (25 -> 26)
+  fd722a7 check-selfassessment           -> cases=17  (round-27 C1, LOG window)
+  b4128c4 check-selfassessment           -> cases=20  (round-28 tip; +m1-scorecard-unrelated-citation-not-superseded,
+                                            +m1-log-unrelated-citation-not-superseded, +m1-log-timestamp-not-citation)
+  97be89b check-selfassessment           -> cases=22  (round-29 freeze; +m1-scorecard-crossdoc-citation-not-superseded,
+                                            +m1-log-crossdoc-citation-not-superseded)
+  9505a10 check-selfassessment           -> cases=30  (+8 v2 ids: v2-oracle-reads-summary-line-not-first-cases-token,
+                                            v2-skill-stale-tally, v2-skill-stale-then-corrected,
+                                            v2-skill-crossdoc-citation-not-superseded, v2-readme-stale-tally,
+                                            v2-readme-root-citation-not-corpus, v2-readme-stale-then-corrected,
+                                            v2-readme-no-section-fallback)
+  5577d1b check-s106-evidence            -> cases=4   (round-27 creation)
+  eb23c0b check-s106-evidence            -> cases=5   (round-27 tip; +missing-receipt-could-not-evaluate)
+  b4128c4 check-s106-evidence            -> cases=7   (round 28; +measured-revision-bytes-match, +…-mismatch)
+  38891ca check-s106-evidence            -> cases=10  (round 30; +same-length-tamper-invalid, +duplicate-anchor-invalid,
+                                            +receipt-byte-count-mismatch-invalid)
+  59e8167 check-release-pins             -> cases=20  (round-29 creation)
+  38891ca check-release-pins             -> cases=29  (round 30; +9 reason-pinned ids: f1-old-tag-not-carried-by-row,
+                                            f2-dotdot-inside-filename, f3-old-bytes-never-committed,
+                                            f4-range-past-last-old-line, f4-anchor-lacks-range-token,
+                                            drift-superseder-teaches-without-prefix, drift-superseder-not-at-stable-tag,
+                                            absence-404-present-with-marker, absence-404-body-lacks-marker)
+
+C. Append-only probe, final delivered text
+  applied: SKILL.md += skill-corrections.md, corpus/README.md += readme-corrections.md,
+           SCORECARD.md += scorecard-1523.md (each after one blank line at the document end)
+  commit: e92a6b548b8b66b7b8bf24b89ec19a03e91c6546 (clone only, identity ScribeC2Corrections@scratch.local)
+  cd clone && node scripts/check-selfassessment.mjs --rev e92a6b548b8b66b7b8bf24b89ec19a03e91c6546 --json
+    -> exit 0, mismatches 0, clean true, counted []   (full output: c2-after-probe.json)
+    -> findings superseded=true: 29, including all nine stale lines
+       SKILL.md 1614 25->26, 2479 13->30, 2514 5->10, 2515 17->30, 2529 7->10, 2530 20->30, 2543 20->29, 2544 7->10,
+       corpus/README.md 613 17->30
+    -> could-not-evaluate rows (observed null, not mismatches): SKILL.md 1886, 2027, 2028, 2092, 2471, 2579;
+       corpus/README.md 358, 359, 422
+  git diff --numstat 9505a10 e92a6b5 -- SKILL.md corpus/README.md SCORECARD.md LOG.md
+    -> 15 0 SKILL.md | 7 0 corpus/README.md | 4 0 SCORECARD.md ; deleted total = 0
+  git diff --name-only 9505a10 e92a6b5 -- scripts/  -> 0 files
+  (an earlier probe, ab6f47c, ran the first draft of scorecard-1523.md and also read mismatches 0; the paragraph was
+   then grounded in the round-30 receipts and the run repeated on the final text, above)
+
+D. Round-30 routed-defect receipts, read directly from the lane
+  .ufo/waves/round-30/measure/noharm-at-0ffc6ea.txt:130
+    SELFASSESSMENT verdict=failed rev=0ffc6ea01fea2943e4f3516eaa9a0fbb7e6062d3 mismatches=3 could_not_evaluate=92 superseded=15
+  .ufo/waves/round-30/measure/noharm-at-d3cd62a.txt:1
+    {"mismatches":1,"counted":[{"class":"m1-selftest-tally","doc":"SCORECARD.md","line":1527,"claimed":12,"observed":2}]}
+  -> the residual 1 at d3cd62a1 is the SCORECARD.md:1527 pairing read as 12 against 2 (round-30 lesson M8); the
+     gate's own summary line reads cases=12 passed=12 (section A above).

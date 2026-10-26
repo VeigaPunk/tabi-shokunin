@@ -1,0 +1,11 @@
+--- pristine/scripts/check-decision-table.mjs
++++ mutant/live-code200-drop.mjs
+@@ -208,7 +208,7 @@
+ function liveOk(url, quote, fetcher) {
+   if (!/^https:\/\//.test(url)) return false;
+   const res = fetcher(url);
+-  if (!res || res.code !== 200) return false;
++  if (!res) return false;
+   if (!/^https:\/\//.test(res.effective) || hostOf(res.effective) !== hostOf(url)) return false;
+   return normalise(res.body).includes(quote);
+ }

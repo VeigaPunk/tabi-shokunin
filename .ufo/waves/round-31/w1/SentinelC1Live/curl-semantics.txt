@@ -1,0 +1,14 @@
+http-input-refused | exit=1 | stdout='000' | stderr=curl: (1) Protocol "http" is disabled
+file-input-refused | exit=1 | stdout='' | stderr=curl: (1) Protocol "file" is disabled
+https-to-http-downgrade-refused | exit=1 | stdout='302 http://127.0.0.1:18444/plain' | stderr=curl: (1) Protocol "http" is disabled (in redirect)
+downgrade-without-proto-redir-followed | exit=0 | stdout='plain http reached\\n\\n200' | stderr=
+same-host-https-redirect-followed | exit=0 | stdout='RFC text: Crawlers MUST follow at least five consecutive redirects per request sequence. End.\\n\\n200 https://localhost:1' | stderr=
+cross-host-redirect-reported-resolved | exit=0 | stdout='SERVED-BY-127.0.0.2 Crawlers MUST follow at least five consecutive redirects per request sequence. End.\\n\\n200 https://1' | stderr=
+port-only-change-reported | exit=0 | stdout='SERVED-BY-18447 Crawlers MUST follow at least five consecutive redirects per request sequence. End.\\n\\n200 https://local' | stderr=
+blackhole-max-time-shortened | exit=28 | stdout='000' | stderr=curl: (28) Connection timed out after 3002 milliseconds
+authority-node-cannot-parse | exit=3 | stdout='000' | stderr=curl: (3) URL rejected: Port number was not a decimal number between 0 and 65535
+curlrc-honoured-without-q | exit=0 | stdout='ua=FROM-CURLRC' | stderr=
+curlrc-ignored-with-q | exit=0 | stdout='ua=curl/8.23.0' | stderr=
+curlhome-ignored-with-q | exit=0 | stdout='ua=curl/8.23.0' | stderr=
+idn-effective-url | exit=0 | stdout='<!DOCTYPE html><html><head><title>Something went wrong</title><script>var s="search"</script></head><body><h1>We could not find that page</h1><p>Your query matched: Crawlers MUST follow at least five consecutive redirects per request sequence</p><p>Try the index.</p></body></html>\\n200 https://bücher.example/ok' | stderr=
+proxy-mitm-200-for-a-real-source-url | exit=0 | stdout='<!DOCTYPE html><html><head><title>Something went wrong</title><script>var s="search"</script></head><body><h1>We could not find that page</h1><p>Your query matched: Crawlers MUST follow at least five consecutive redirects per request sequence</p><p>Try the index.</p></body></html>\\n200 https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api' | stderr=

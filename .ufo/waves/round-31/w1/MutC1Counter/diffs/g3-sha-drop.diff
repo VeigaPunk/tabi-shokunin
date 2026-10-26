@@ -1,0 +1,11 @@
+--- pristine/scripts/check-decision-table.mjs
++++ mutant/g3-sha-drop.mjs
+@@ -251,7 +251,7 @@
+     else if (typeof rc.url !== "string" || !/^https:\/\/\S+$/.test(rc.url) || !rows.get(id).source.includes(rc.url)) res.reason = "g2-url";
+     else {
+       const bytes = blob(repo, rev, rc.bytes_path);
+-      if (bytes === null || rc.http_status !== 200 || sha256(bytes) !== rc.sha256) res.reason = "g3-bytes";
++      if (bytes === null || rc.http_status !== 200) res.reason = "g3-bytes";
+       else { res.norm = normalise(bytes); res.url = rc.url; }
+     }
+     receiptCache.set(id, res);

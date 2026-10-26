@@ -1,0 +1,11 @@
+--- pristine/scripts/check-decision-table.mjs
++++ mutant/g1-drop.mjs
+@@ -247,7 +247,7 @@
+     const rb = blob(repo, rev, `${receipts}/${id}.json`);
+     let rc = null;
+     if (rb !== null) { try { rc = JSON.parse(rb.toString("utf8")); } catch { rc = null; } }
+-    if (!rc || rc.id !== id) res.reason = "g1-receipt";
++    if (false) res.reason = "g1-receipt";
+     else if (typeof rc.url !== "string" || !/^https:\/\/\S+$/.test(rc.url) || !rows.get(id).source.includes(rc.url)) res.reason = "g2-url";
+     else {
+       const bytes = blob(repo, rev, rc.bytes_path);

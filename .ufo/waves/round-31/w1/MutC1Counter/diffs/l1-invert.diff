@@ -1,0 +1,11 @@
+--- pristine/scripts/check-decision-table.mjs
++++ mutant/l1-invert.mjs
+@@ -287,7 +287,7 @@
+     if (live) {
+       const key = `${g.url}\u0000${quote}`;
+       if (!liveCache.has(key)) liveCache.set(key, liveOk(g.url, quote, fetcher));
+-      if (!liveCache.get(key)) { fail("l1-live"); continue; }
++      if (liveCache.get(key)) { fail("l1-live"); continue; }
+     }
+     out.push({ row: rowId, line, source, admitted: true, reason: null, threshold: tnum });
+   }
