@@ -1,0 +1,334 @@
+{
+  "schema": "tabi-gate-mutants-catalogue-v1",
+  "frozen": "round 30 (2026-10-26), before claim data; fault rows reproduce round-29 w1 MutC1Baseline §5 (s106 M1-M4 both forms, plus anchor_located) and MutC3 #1-#18 (release-pins) exactly; benign rows are equivalent rewrites at the same sites that change both the site text and the file length, so a self-test keyed on source text or file size is caught as a false kill",
+  "gates": [
+    {
+      "script": "scripts/check-s106-evidence.mjs"
+    },
+    {
+      "script": "scripts/check-release-pins.mjs"
+    }
+  ],
+  "mutants": [
+    {
+      "id": "s106-sha-drop",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "fault",
+      "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+      "replace": "const valid = revisionMatch && anchorLocated && anchorUnique && byteCountMatch;",
+      "note": "MutC1Baseline M1: sha term dropped from valid"
+    },
+    {
+      "id": "s106-sha-true",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "fault",
+      "find": "const shaMatch = observedSha === receipt.decoded_sha256;",
+      "replace": "const shaMatch = true;",
+      "note": "MutC1Baseline M1b"
+    },
+    {
+      "id": "s106-anchor-unique-drop",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "fault",
+      "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+      "replace": "const valid = revisionMatch && shaMatch && anchorLocated && byteCountMatch;",
+      "note": "MutC1Baseline M2"
+    },
+    {
+      "id": "s106-anchor-unique-true",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "fault",
+      "find": "const anchorUnique = occurrences === 1;",
+      "replace": "const anchorUnique = true;",
+      "note": "MutC1Baseline M2b"
+    },
+    {
+      "id": "s106-byte-count-drop",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "fault",
+      "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+      "replace": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique;",
+      "note": "MutC1Baseline M3"
+    },
+    {
+      "id": "s106-byte-count-true",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "fault",
+      "find": "const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;",
+      "replace": "const byteCountMatch = true;",
+      "note": "MutC1Baseline M3b"
+    },
+    {
+      "id": "s106-revision-drop",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "fault",
+      "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+      "replace": "const valid = shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+      "note": "MutC1Baseline M4"
+    },
+    {
+      "id": "s106-revision-true",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "fault",
+      "find": "const revisionMatch = measuredBytes !== null &&\n    sha256(measuredBytes) === receipt.decoded_sha256;",
+      "replace": "const revisionMatch = true;",
+      "note": "MutC1Baseline M4b"
+    },
+    {
+      "id": "s106-anchor-located-true",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "fault",
+      "find": "const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();",
+      "replace": "const anchorLocated = true;",
+      "note": "anchor_located term (covered at round 29 by anchor-off-by-one-invalid)"
+    },
+    {
+      "id": "s106-valid-reorder",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "benign",
+      "find": "const valid = revisionMatch && shaMatch && anchorLocated && anchorUnique && byteCountMatch;",
+      "replace": "const valid = (byteCountMatch && anchorUnique && anchorLocated && shaMatch && revisionMatch);",
+      "note": "equivalent conjunct order, parenthesised (changes text and length)"
+    },
+    {
+      "id": "s106-sha-eq-swap",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "benign",
+      "find": "const shaMatch = observedSha === receipt.decoded_sha256;",
+      "replace": "const shaMatch = (receipt.decoded_sha256 === observedSha);",
+      "note": "equivalent operand order, parenthesised"
+    },
+    {
+      "id": "s106-anchor-unique-eq-swap",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "benign",
+      "find": "const anchorUnique = occurrences === 1;",
+      "replace": "const anchorUnique = (1 === occurrences);",
+      "note": "equivalent operand order, parenthesised"
+    },
+    {
+      "id": "s106-byte-count-eq-swap",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "benign",
+      "find": "const byteCountMatch = Buffer.byteLength(bytesText) === receipt.decoded_bytes;",
+      "replace": "const byteCountMatch = (receipt.decoded_bytes === Buffer.byteLength(bytesText));",
+      "note": "equivalent operand order, parenthesised"
+    },
+    {
+      "id": "s106-revision-eq-swap",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "benign",
+      "find": "const revisionMatch = measuredBytes !== null &&\n    sha256(measuredBytes) === receipt.decoded_sha256;",
+      "replace": "const revisionMatch = (measuredBytes !== null &&\n    receipt.decoded_sha256 === sha256(measuredBytes));",
+      "note": "equivalent operand order, parenthesised"
+    },
+    {
+      "id": "s106-anchor-located-eq",
+      "script": "scripts/check-s106-evidence.mjs",
+      "kind": "benign",
+      "find": "const anchorLocated = recorded !== undefined && recorded.trim() === receipt.anchor.text.trim();",
+      "replace": "const anchorLocated = (recorded !== undefined && receipt.anchor.text.trim() === recorded.trim());",
+      "note": "equivalent operand order, parenthesised"
+    },
+    {
+      "id": "pins-f1-old-tag",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "if (!row.tags.includes(f.old_tag))",
+      "replace": "if (false)",
+      "note": "MutC3 #1"
+    },
+    {
+      "id": "pins-f2-path-binding",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "if (!inSource && !inAnchor)",
+      "replace": "if (false)",
+      "note": "MutC3 #2"
+    },
+    {
+      "id": "pins-f2-path-traversal",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "f.path.includes(\"..\")",
+      "replace": "false",
+      "note": "MutC3 #3"
+    },
+    {
+      "id": "pins-f3-bytes-path",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "if (f.old_bytes !== wantOld || f.new_bytes !== wantNew)",
+      "replace": "if (false)",
+      "note": "MutC3 #4"
+    },
+    {
+      "id": "pins-f3-bytes-sha",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "if (sha256(ob) !== f.old_sha256 || sha256(nb) !== f.new_sha256)",
+      "replace": "if (false)",
+      "note": "MutC3 #5"
+    },
+    {
+      "id": "pins-f3-bytes-absent",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "if (ob === null || nb === null)",
+      "replace": "if (false)",
+      "note": "MutC3 #6"
+    },
+    {
+      "id": "pins-f4-range-bounds",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "a < 1 || b < a || b > oldLines.length || !anchorHasRange(row.anchor, a, b)",
+      "replace": "!anchorHasRange(row.anchor, a, b)",
+      "note": "MutC3 #7"
+    },
+    {
+      "id": "pins-f4-anchor-token",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "a < 1 || b < a || b > oldLines.length || !anchorHasRange(row.anchor, a, b)",
+      "replace": "a < 1 || b < a || b > oldLines.length",
+      "note": "MutC3 #8"
+    },
+    {
+      "id": "pins-f5-digest",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "if (digests.length && !digests.some((d) => oldShas.some((s) => digestMatches(d, s))))",
+      "replace": "if (false)",
+      "note": "MutC3 #9"
+    },
+    {
+      "id": "pins-f6-refetch-seat",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "rf.seat !== entry.fetched_by &&",
+      "replace": "true &&",
+      "note": "MutC3 #10"
+    },
+    {
+      "id": "pins-f6-refetch-sha",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "x.status === f.new_status && x.sha256 === f.new_sha256",
+      "replace": "x.status === f.new_status",
+      "note": "MutC3 #11"
+    },
+    {
+      "id": "pins-f6-refetch-all",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "const confirmed = rf && typeof rf.seat === \"string\" && rf.seat && typeof entry.fetched_by === \"string\" && entry.fetched_by && rf.seat !== entry.fetched_by &&\n        Array.isArray(rf.files) && rf.files.some((x) => x && x.path === f.path && x.tag === stable && x.status === f.new_status && x.sha256 === f.new_sha256);",
+      "replace": "const confirmed = true;",
+      "note": "MutC3 #12"
+    },
+    {
+      "id": "pins-s1-supersession-prefix",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "sup.teaches.startsWith(`supersedes ${row.id} —`) && ",
+      "replace": "",
+      "note": "MutC3 #13"
+    },
+    {
+      "id": "pins-s1-supersession-tag",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": " && sup.source.includes(`refs/tags/${stable}/`)",
+      "replace": "",
+      "note": "MutC3 #14"
+    },
+    {
+      "id": "pins-notfound-status",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "f.new_status === 404 && nb.toString(\"utf8\").includes(\"NOT_FOUND\")",
+      "replace": "nb.toString(\"utf8\").includes(\"NOT_FOUND\")",
+      "note": "MutC3 #15"
+    },
+    {
+      "id": "pins-notfound-body",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "f.new_status === 404 && nb.toString(\"utf8\").includes(\"NOT_FOUND\")",
+      "replace": "404 === f.new_status",
+      "note": "MutC3 #16"
+    },
+    {
+      "id": "pins-population-on-release",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "r.recheck === \"on-release\" && ",
+      "replace": "",
+      "note": "MutC3 #17"
+    },
+    {
+      "id": "pins-population-tag-compare",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "fault",
+      "find": "r.tags.some((t) => cmpVersion(t, stable) < 0)",
+      "replace": "r.tags.length > 0",
+      "note": "MutC3 #18"
+    },
+    {
+      "id": "pins-f1-old-tag-eq",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "benign",
+      "find": "if (!row.tags.includes(f.old_tag))",
+      "replace": "if (row.tags.includes(f.old_tag) === false)",
+      "note": "equivalent negation"
+    },
+    {
+      "id": "pins-f2-path-traversal-eq",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "benign",
+      "find": "f.path.includes(\"..\")",
+      "replace": "f.path.indexOf(\"..\") !== -1",
+      "note": "equivalent substring test"
+    },
+    {
+      "id": "pins-f3-bytes-absent-eq",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "benign",
+      "find": "if (ob === null || nb === null)",
+      "replace": "if ((nb === null || ob === null))",
+      "note": "equivalent disjunct order, parenthesised"
+    },
+    {
+      "id": "pins-f4-eq-reorder",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "benign",
+      "find": "a < 1 || b < a || b > oldLines.length || !anchorHasRange(row.anchor, a, b)",
+      "replace": "(b > oldLines.length || a < 1 || b < a || !anchorHasRange(row.anchor, a, b))",
+      "note": "equivalent pure-disjunct order, parenthesised"
+    },
+    {
+      "id": "pins-s1-prefix-eq",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "benign",
+      "find": "sup.teaches.startsWith(`supersedes ${row.id} —`)",
+      "replace": "sup.teaches.indexOf(`supersedes ${row.id} —`) === 0",
+      "note": "equivalent prefix test"
+    },
+    {
+      "id": "pins-s1-tag-eq",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "benign",
+      "find": "sup.source.includes(`refs/tags/${stable}/`)",
+      "replace": "sup.source.indexOf(`refs/tags/${stable}/`) >= 0",
+      "note": "equivalent substring test"
+    },
+    {
+      "id": "pins-notfound-eq-reorder",
+      "script": "scripts/check-release-pins.mjs",
+      "kind": "benign",
+      "find": "f.new_status === 404 && nb.toString(\"utf8\").includes(\"NOT_FOUND\")",
+      "replace": "(nb.toString(\"utf8\").includes(\"NOT_FOUND\") && f.new_status === 404)",
+      "note": "equivalent conjunct order, parenthesised"
+    }
+  ]
+}

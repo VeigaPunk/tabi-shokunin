@@ -1,0 +1,75 @@
+{
+  "schema": "tabi-round-claims-v1",
+  "lane": "tabi",
+  "round": 30,
+  "attempt": 1,
+  "frozenAt": "2026-10-26",
+  "frozenBeforeData": true,
+  "baseline": "f7c0317e4f8445502005e79e3d65767430912dab",
+  "priorClosure": "round 29 admitted (MANIFEST.json tabi lane_round 29; corpus/lessons/round-29-verifier-spotcheck.md). Not a fresh-start round. Routed defects 1-6 are handled as curation inside the frontier step (not claims); routed defect 7 (s106 sha-drop / anchor-uniqueness / byte-count fixtures; release-pin self-test survivors) is claim C1. Release-pin counter v2 semantics (id-set population, DEPS-pinned rows S044/S068, refetch provenance) are NOT claimed this round.",
+  "axisScoresAtRoundStart": {"depth": 8, "coverage": 9, "operability": 8, "freshness": 9, "calibration": 9, "adjacency": 8},
+  "lowestNonRetiredAxis": "tie at 8 (depth, operability, adjacency); C1 works operability. Saturation 8 / window 3; stagnation nudge inactive; no axis retired.",
+  "measurementRule": "Every after-measurement runs at the named lane branch tip in a clean checkout of that revision (git status --porcelain empty) with the frozen counter bytes, and its raw output is committed under .ufo/waves/round-30/measure/ before the report is written. A counter not run is a claim not verified.",
+  "frozenDigests": {
+    "scripts/check-gate-mutants.mjs": "02945f882ea9c62a3f42934f13b4dc52887ebd93a5a69dd6526d20f01cec3a55",
+    "scripts/gate-mutants.json": "cd1c27a2a971f8a4d4208fd53efe3adbc776efacb7072201af8bb55b93853833",
+    "scripts/check-frontier-admission.mjs": "cadef57e8d9627a02d7e8c5404689225cf5b4de361e816f62c4127b28a509eca"
+  },
+  "claims": [
+    {
+      "id": "C1",
+      "axis": "operability",
+      "surface": "the self-tests of two lane gates (scripts/check-s106-evidence.mjs, scripts/check-release-pins.mjs): which of the checks each gate claims to make a failing case can actually see",
+      "type": "gate self-test kill coverage over a frozen mutant catalogue (round-29 closure routed defect 7; round-29 w1 MutC1Baseline §5-6 and MutC3 survivors)",
+      "predicate": "In a clean checkout of REV, `node scripts/check-gate-mutants.mjs --rev REV --json` run with the counter and catalogue whose sha256 are frozenDigests (byte-identical at REV) exits 0 and reports fault_total = 27, fault_survivors = 0, benign_total = 13, benign_killed = 0, with both gates' pristine self-tests clean.",
+      "countingCommand": "node scripts/check-gate-mutants.mjs --rev <REV> --json | jq '{fault_total,fault_survivors,benign_total,benign_killed,survivors}'   (clean checkout of REV; TMPDIR under $HYAKU_SCRATCH)",
+      "before": "fault_survivors = 14 at baseline + counters (s106-sha-drop, s106-anchor-unique-drop, s106-anchor-unique-true, s106-byte-count-drop, s106-byte-count-true, pins-f1-old-tag, pins-f2-path-traversal, pins-f3-bytes-absent, pins-f4-range-bounds, pins-f4-anchor-token, pins-s1-supersession-prefix, pins-s1-supersession-tag, pins-notfound-status, pins-notfound-body); benign_killed = 0 (baseline/c1-control-J1-do-nothing.json)",
+      "target": "fault_survivors = 0 and benign_killed = 0 (fault_total 27, benign_total 13)",
+      "killRule": "fault_survivors > 0 or benign_killed > 0 at REV -> failed; counter exit 2 (a catalogue find string no longer present exactly once, a mutant-aware literal, a pristine self-test not clean) or counter/catalogue bytes differing from frozenDigests -> not verified. Consequence for implementers: only self-test cases and fixtures may change; the catalogued check lines stay byte-identical.",
+      "controls": {
+        "doNothing": "fault_survivors = 14, benign_killed = 0, exit 1 (baseline/c1-control-J1-do-nothing.json) -> does not meet target",
+        "lengthFingerprintJunk": "a self-test result asserting the gate file's own byte length, added to both gates (baseline/c1-control-J2-length-fingerprint.diff): fault_survivors = 0 but benign_killed = 13, exit 1 (baseline/c1-control-J2-length-fingerprint.json) -> does not meet target",
+        "siteGrepJunk": "a self-test result asserting the s106 check lines are present in its own source, literals split (baseline/c1-control-J3-site-grep.diff): fault_survivors = 9, benign_killed = 3, exit 1 -> does not meet target",
+        "literalBlacklistJunk": "a self-test result asserting the source lacks `const anchorUnique = true;` (baseline/c1-control-J4-literal.diff): exit 2 mutant-aware literal (baseline/c1-control-J4-literal.txt) -> not verified"
+      }
+    },
+    {
+      "id": "C2",
+      "axis": "coverage",
+      "surface": "frontier item 'Rate/ToS surface for site-interaction records' (corpus/README.md:182, status open since kaika round 1): the documented rate-limit signal vocabulary a journey records against (RateLimit / RateLimit-Policy fields; one real host's published X-RateLimit-* header set)",
+      "type": "§10 assimilation of one merge/tabi theme (rate/ToS signal vocabulary): 2 package entries re-grounded in-round; sourced claim (rows opened this round)",
+      "predicate": "In a clean checkout of REV, `node scripts/check-frontier-admission.mjs --rev REV --frontier rate-tos-signal --since 2026-10-26 --live --json` run with the counter whose sha256 is frozenDigests (byte-identical at REV) exits 0 and reports population = 2 and admitted = 2: two corpus/knowledge entries tagged `frontier: rate-tos-signal`, each citing only mined rows opened on or after 2026-10-26 whose used-by names the entry, each row backed by a committed fetch receipt (HTTP 200, sha256-matched bytes, a <=25-word quote located in the normalised bytes and recorded in corpus/lessons/round-30.md), an independent refetch by a different seat whose committed bytes also contain the quote, every >=4-word quoted span of the entry located in its cited bytes, and the live source at measurement time still containing the quote with normalised text equal to the committed bytes.",
+      "countingCommand": "node scripts/check-frontier-admission.mjs --rev <REV> --frontier rate-tos-signal --since 2026-10-26 --live --json | jq '{population,admitted,failing}'   (clean checkout of REV)",
+      "before": "population = 0, admitted = 0, exit 1 at baseline + counters (baseline/c2-control-J1-do-nothing.json)",
+      "target": "population = 2, admitted = 2",
+      "killRule": "admitted < 2 or population != 2 at REV -> failed; counter exit 2 or counter bytes differing from frozenDigests -> not verified. Measured with --live; the offline reading alone does not verify (see selfQuoteJunk).",
+      "controls": {
+        "doNothing": "population 0, admitted 0 (baseline/c2-control-J1-do-nothing.json)",
+        "packageAsIsJunk": "the two package entries copied byte-exact plus the frontier tag, staged rows S159/S182 appended unchanged: population 2, admitted 0 (r4-opened) (baseline/c2-control-J2-package-as-is.json)",
+        "dateBumpJunk": "same, with opened bumped to 2026-10-26 and no receipts: admitted 0 (g1-receipt) (baseline/c2-control-J3-date-bump.json)",
+        "selfQuoteJunk": "receipts whose 'source bytes' are the entry's own text, a refetch record under a second seat label and a matching lesson Gate: offline admitted 2 (the offline counter is gameable — baseline/c2-control-J4-selfquote-offline.json), with --live admitted 0 (l3-live-bytes) (baseline/c2-control-J4-selfquote-live.json) -> --live is part of the predicate"
+      }
+    }
+  ],
+  "separability": "C1 changes only the self-test sections of scripts/check-s106-evidence.mjs and scripts/check-release-pins.mjs (catalogued check lines frozen byte-identical); its counter reads no corpus file. C2 changes corpus/knowledge (two new entries), corpus/SOURCES.md rows, corpus/evidence/round-30/frontier/ and corpus/lessons/round-30.md; its counter reads no script. Either verifies with the other reverted.",
+  "noHarmChecks": [
+    "node scripts/check-selfassessment.mjs --rev REV --json -> mismatches = 0 (self-test tallies that C1 changes are restated by same-document appended corrections)",
+    "node scripts/check-gate-registry.mjs --rev REV -> nonconformant = 0 (two new gates carry eight-field rows)",
+    "node scripts/check-release-pins.mjs --rev REV --stable 156.0.8078.47 -> unresolved = 0 (the round-29 C3 reading is not disturbed)",
+    "node scripts/check-s106-evidence.mjs --rev REV -> valid = true",
+    "scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi -> exit 0"
+  ],
+  "assimilation": {
+    "package": "/home/vgpnk/Projects/shokuknow/merge/tabi/ (read-only)",
+    "theme": "rate/ToS signal vocabulary",
+    "candidateAdmits": ["knowledge/corpus/knowledge/host-rate-limit-signal-classes-r14.md (staged S159, draft-ietf-httpapi-ratelimit-headers-09; live archive now carries -10 and -11, contradicting the staged anchor's '-10 and later return 404')", "knowledge/corpus/knowledge/host-rate-limit-header-set-r16.md (staged S182, Discord developer docs Rate Limits)"],
+    "plannedRejects": ["knowledge/corpus/knowledge/rate-and-tos-signal-vocabulary.md (cites staged S106/S110, refused by the round-27 quarantine hand-check: register quotes absent from the cited RFCs)", "knowledge/corpus/knowledge/host-rate-limit-signal-classes-r13.md (cites staged S147/S148/S149, refused round 27: quotes drifted across sibling rows)"],
+    "idPlan": "adopted rows take the next lane ids in append order (S116...), re-pointed by document; collisions file .ufo/waves/round-30/assimilation/collisions lists S102-S115 (none is an adopted staged id)"
+  },
+  "notClaimed": [
+    "release-pin counter v2 semantics (id-set population, DEPS-pinned rows S044/S068, refetch provenance) — named, not claimed",
+    "no real-site interaction beyond read-only HTTPS GETs of public documentation and specs; no credentials or session material",
+    "considerthese/ directory absent at baseline",
+    "the round-27 L0 question on S114/S140 (staged ids) stays open; neither is adopted"
+  ]
+}

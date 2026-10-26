@@ -1,0 +1,38 @@
+diff --git a/scripts/check-release-pins.mjs b/scripts/check-release-pins.mjs
+index 88d3cf5..cbb2388 100755
+--- a/scripts/check-release-pins.mjs
++++ b/scripts/check-release-pins.mjs
+@@ -1,5 +1,4 @@
+ #!/usr/bin/env node
+-import { readFileSync as __junkRead } from "node:fs";
+ // check-release-pins.mjs — tabi lane gate: freshness (release-pinned source rows).
+ //
+ // Verdict: 0 clean (population >= 1 and unresolved = 0), 1 failed (any
+@@ -414,7 +413,6 @@ function runSelftest() {
+       rmSync(fx.root, { recursive: true, force: true });
+     }
+   }
+-  results.push({ id: "junk-length-fingerprint", ok: __junkRead(fileURLToPath(import.meta.url)).length === 25087 });
+   const failed = results.filter((r) => !r.ok);
+   return { schema: SELFTEST_SCHEMA, cases: results.length, passed: results.length - failed.length, results, ok: failed.length === 0 };
+ }
+diff --git a/scripts/check-s106-evidence.mjs b/scripts/check-s106-evidence.mjs
+index 8cb61f7..6996286 100755
+--- a/scripts/check-s106-evidence.mjs
++++ b/scripts/check-s106-evidence.mjs
+@@ -1,5 +1,4 @@
+ #!/usr/bin/env node
+-import { readFileSync as __junkRead } from "node:fs";
+ // check-s106-evidence.mjs — tabi lane gate: depth (routed source-evidence admission).
+ //
+ // Verdict: 0 valid, 1 invalid (receipt present but committed bytes disagree),
+@@ -316,7 +315,8 @@ function runSelftest() {
+       rmSync(fx.root, { recursive: true, force: true });
+     }
+   }
+-  results.push({ id: "junk-length-fingerprint", ok: __junkRead(fileURLToPath(import.meta.url)).length === 14283 });
++  { const __s = readFileSync(fileURLToPath(import.meta.url), "utf8");
++    results.push({ id: "junk-site-grep", ok: __s.includes("shaMatch && anchor" + "Located && anchorUnique && byteCountMatch") && __s.includes("occurrences " + "=== 1") && __s.includes("Buffer.byteLength(bytesText) " + "=== receipt.decoded_bytes") }); }
+   const failed = results.filter((r) => !r.ok);
+   return { schema: SELFTEST_SCHEMA, cases: results.length, passed: results.length - failed.length, results, ok: failed.length === 0 };
+ }
