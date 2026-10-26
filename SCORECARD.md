@@ -1849,3 +1849,5 @@ The L1 holds the canonical planner seat.
 - planned: operability — battery v2 with randomised subjects, paths and ids, plus the w2 MutGateV2 survivors and the
   CritForgeV2B/C constructions as cases; calibration counter v4 still carried.
 - saturation 8 / window 3; no capability entered at round 33 (window position 2 at round 34); no axis retired.
+
+- `scripts/check-adjacency.mjs` `--self-test` (57/57): correction — supersedes the tally reading at `SCORECARD.md:1829`, where the calibration counter attributes that row's self-test figure (the BiDi gate's, stated in the round-33 corrections above) to this gate; this gate was not changed in round 33 (digest pinned inside the C1 counter).
