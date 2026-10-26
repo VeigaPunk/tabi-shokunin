@@ -2608,3 +2608,20 @@ of the gate's own `FRESHNESS_SELFTEST` summary line. The stale line above stays 
 window cannot read it (the count is written as a word), so this correction is curation, not a counted mismatch.
 
 - `scripts/check-freshness.mjs` `--self-test` (12/12): correction — supersedes the stale tally at `SKILL.md:1559`. That line states the count as the word "eight"; the gate prints `FRESHNESS_SELFTEST verdict=clean cases=12`, the figure the round-24 registry row states in prose without citing that line.
+
+## Round 32 — registry rows for the BiDi runtime gate and self-assessment v3 (2026-10-26; append-only; never edit above)
+
+Round 32 adds one gate and revises one. `check-bidi-runtime.mjs` counts the rows of a knowledge entry's runtime table
+(`Row | Surface | BiDi method | Measured | Evidence`) marked `yes`, each one of the seventeen rows of
+`corpus/knowledge/webdriver-bidi-capability-matrix.md` §2 (R1–R17), and admits a row only when the committed receipt
+binds two run transcripts to a real rendering of the gate's frozen loopback fixture (identical first screenshot bytes,
+and with `--live` equal to the gate's own independent BiDi session), the row's predicate holds on every committed run
+and, with `--live`, on the gate's own session. R16 (stop-loading) has no BiDi command and is never admitted.
+`check-selfassessment.mjs` v3 adds the `m4-nudge-state` class (a `nudge active|inactive` statement against the state
+`AXES.md` derives from the same round's axis scores, saturation line, window and capability entry rounds) and refuses a
+self-test that did not pass as an oracle.
+
+| Name | Kind | Entry command | Verdict map | Self-test | Pinned-value path | Write scope | Owner |
+|---|---|---|---|---|---|---|---|
+| bidi-runtime | gate | `node scripts/check-bidi-runtime.mjs --rev REV --baseline REV --entry corpus/knowledge/X.md [--receipt PATH] [--live] [--json]` | 0=clean (population>=1, every measured row admitted); 1=failed (entry absent, no new mined source row, or a row not admitted); 2=could-not-evaluate (usage, unresolvable revision, registry absent, `--live` without chromedriver or chromium) | `node scripts/check-bidi-runtime.mjs --selftest` (cases=27, passed=27) | `scripts/check-bidi-runtime.mjs` FIXTURE, ROWS, PREDICATES and CASES; `corpus/evidence/round-32/bidi/`; `.ufo/waves/round-32/claims.json` C1 frozenDigests | stdout/stderr only; production reads committed git blobs; `--live` starts chromedriver and headless chromium with a throwaway profile under TMPDIR and serves the fixture on 127.0.0.1 only; self-test writes and deletes only its own temporary repositories under TMPDIR and never starts a browser | tabi L1 |
+| selfassessment-counter | gate | `node scripts/check-selfassessment.mjs --rev REV [--json]` | 0=clean; 1=failed (one or more mismatches); 2=could-not-evaluate (usage, unreadable revision, git failure); 3=self-test disagreement | `node scripts/check-selfassessment.mjs --selftest` (cases=41, passed=41) | `scripts/check-selfassessment.mjs` CASES table; `.ufo/waves/round-32/claims.json` C2 frozenDigests | stdout/stderr only; executes lane scripts gates and read-only Git receipts; self-test writes and deletes only its own temporary repositories under TMPDIR | tabi L1 |

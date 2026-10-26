@@ -5,7 +5,7 @@
 // Verdict: 0 clean, 1 failed (>=1 mismatch), 2 could-not-evaluate (usage,
 //          unreadable revision, git failure). Any other nonzero code is
 //          undeclared and reads as could-not-evaluate.
-// Self-test: `--selftest` (30 isolated cases over temporary sandbox
+// Self-test: `--selftest` (41 isolated cases over temporary sandbox
 //          repositories; asserts exit code AND stable finding id; creates and
 //          removes its own temp trees, never touches the lane).
 // Pinned values: the expected exit/finding table is the CASES constant in this
@@ -60,8 +60,16 @@
 //                      in the lane contradicts that assertion. Counted once per
 //                      run with the porcelain path count.
 //
+// m4 (v3, round 32) is the stagnation-nudge class: see the m4 section below
+// (statement `nudge active|inactive` vs the state AXES.md derives from the
+// same round group's axis scores, saturation line, window and the
+// capability entry rounds). v3 also refuses a self-test that did not pass
+// as an m1 oracle (nonzero exit or a summary verdict other than `clean`).
+// v3 is frozen by .ufo/waves/round-32/claims.json claim C2.
+//
 // Findings are stable ids: m1-selftest-tally, m2-receipt-exit,
-// m3-unlanded-paths. The counted field is `mismatches` (integer).
+// m3-unlanded-paths, m4-nudge-state. The counted field is `mismatches`
+// (integer).
 //
 // Usage:
 //   node scripts/check-selfassessment.mjs --rev <40-hex-or-ref> [--json]
@@ -174,7 +182,12 @@ function gateTally(repo, rev, script, cache) {
           // lesson M8: a refusal message `cases=2 passed=1` was read as the tally).
           const summaries = [...out.matchAll(/^[A-Z][A-Z0-9_]*_SELFTEST\b[^\n]*?\bcases\s*[=:]\s*(\d+)/gm)];
           const m = summaries.length ? summaries[summaries.length - 1] : (/"?\bcases"?\s*[=:]\s*(\d+)/.exec(out) || /\b(\d+)\s*\/\s*(\d+)\b/.exec(out));
+          // v3 (round 32): a self-test that did not pass is never an oracle —
+          // a nonzero exit or a summary line whose verdict is not `clean`
+          // (round-31 lesson M11) is could-not-evaluate, not a measured tally.
+          const verdict = summaries.length ? /\bverdict=([a-z-]+)/.exec(m[0]) : null;
           if (!m) result = { status: "could-not-evaluate", why: "self-test printed no tally" };
+          else if (r.status !== 0 || (verdict && verdict[1] !== "clean")) result = { status: "could-not-evaluate", why: `self-test not clean (exit=${r.status}${verdict ? ` verdict=${verdict[1]}` : ""})` };
           else result = { status: "measured", tally: Number(m[1]), exit: r.status, flag };
         }
       } finally {
@@ -410,6 +423,95 @@ function m3Findings(repo, docText) {
   return [{ class: "m3-unlanded-paths", doc: "SCORECARD.md", line: null, round: newest.round, claimed: "landed", observed: paths.length, superseded: false }];
 }
 
+// ---- m4: stagnation-nudge state (v3, round 32) --------------------------------
+//
+// AXES.md §The stagnation nudge: the nudge is ACTIVE for round N when every
+// axis sits at or above the saturation line AND no capability entered the table
+// within the stagnation window (rounds N-W .. N-1). A round group is every `##`
+// section whose heading starts `Round N` (also `RoundN`). Inputs come from the
+// same group's own text (whitespace collapsed across lines): `Axes at round
+// start:` followed by all six `<axis> <score>` pairs, and `Saturation S /
+// window W`. Capability entry rounds come from the whole SCORECARD.md: prose
+// `First-working round: N` and the last cell of rows under a table header
+// naming `First-working round`. Each statement `nudge [is] active|inactive` in
+// the group is compared with the derived state; a statement whose group lacks
+// the axis or saturation inputs is could-not-evaluate (never a mismatch). A
+// later paragraph clears a stale statement only when it carries a correction
+// marker, cites the statement's line (`SCORECARD.md:N` or a range containing
+// it) and states the derived state (`nudge [was|is] <state>`).
+
+const AXIS_NAMES = ["depth", "coverage", "operability", "freshness", "calibration", "adjacency"];
+
+export function capabilityRounds(docText) {
+  const out = new Set();
+  for (const m of docText.matchAll(/First-working round:\s*(\d+)/gi)) out.add(Number(m[1]));
+  const lines = docText.split("\n");
+  for (let i = 0; i < lines.length; i += 1) {
+    if (!/^\s*\|.*First-working round\s*\|\s*$/i.test(lines[i])) continue;
+    for (let j = i + 1; j < lines.length && /^\s*\|/.test(lines[j]); j += 1) {
+      if (/^\s*\|[\s:|-]+\|\s*$/.test(lines[j])) continue;
+      const cells = lines[j].trim().replace(/^\||\|$/g, "").split("|");
+      const m = /(\d+)/.exec(cells[cells.length - 1] || "");
+      if (m) out.add(Number(m[1]));
+    }
+  }
+  return [...out].sort((a, b) => a - b);
+}
+
+export function m4Findings(docText) {
+  const lines = docText.split("\n");
+  const caps = capabilityRounds(docText);
+  const groups = new Map();
+  let cur = null;
+  lines.forEach((line, i) => {
+    if (/^##\s/.test(line)) {
+      const m = /^##\s+Round\s*(\d+)\b/i.exec(line);
+      cur = m ? Number(m[1]) : null;
+      if (cur !== null && !groups.has(cur)) groups.set(cur, []);
+    }
+    if (cur !== null) groups.get(cur).push({ line, no: i + 1 });
+  });
+  const paras = paragraphs(docText);
+  const findings = [];
+  for (const [round, gl] of groups) {
+    let flat = "";
+    const offsets = [];
+    for (const { line, no } of gl) { offsets.push({ at: flat.length, no }); flat += `${line} `; }
+    const lineAt = (pos) => { let no = offsets[0].no; for (const o of offsets) { if (o.at <= pos) no = o.no; else break; } return no; };
+    const text = flat.replace(/\s/g, " ");
+    const axesM = /Axes at round start:\s*([^]{0,240})/i.exec(text);
+    const scores = {};
+    if (axesM) for (const m of axesM[1].matchAll(/\b(depth|coverage|operability|freshness|calibration|adjacency)\s+(\d+)/gi)) { const k = m[1].toLowerCase(); if (!(k in scores)) scores[k] = Number(m[2]); }
+    const satM = /\bsaturation\s+(?:line\s*)?\**(\d+)\**\s*\/\s*(?:stagnation\s+)?window\s*(?:N\s*=\s*)?\**(\d+)\**/i.exec(text);
+    for (const m of text.matchAll(/\bnudge\s+(?:is\s+)?(inactive|active)\b/gi)) {
+      const no = lineAt(m.index);
+      const claimed = m[1].toLowerCase();
+      let observed = null;
+      let why = null;
+      if (!AXIS_NAMES.every((a) => a in scores)) why = "no `Axes at round start:` with all six axes in the round group";
+      else if (!satM) why = "no `Saturation S / window W` in the round group";
+      else {
+        const line = Number(satM[1]);
+        const window = Number(satM[2]);
+        const allAtLine = AXIS_NAMES.every((a) => scores[a] >= line);
+        const recent = caps.some((c) => c >= round - window && c <= round - 1);
+        observed = allAtLine && !recent ? "active" : "inactive";
+      }
+      const f = { class: "m4-nudge-state", doc: "SCORECARD.md", line: no, round, claimed, observed, superseded: false };
+      if (why) f.couldNotEvaluate = why;
+      if (observed !== null && observed !== claimed) {
+        f.superseded = paras.some((p) => {
+          if (p.start <= no) return false;
+          const pt = p.lines.join(" ");
+          return /supersed|correct/i.test(pt) && citesLine(pt, "SCORECARD.md", no) && new RegExp(`\\bnudge\\s+(?:was\\s+|is\\s+)?${observed}\\b`, "i").test(pt);
+        });
+      }
+      findings.push(f);
+    }
+  }
+  return findings;
+}
+
 // ---- verdict ----------------------------------------------------------------
 
 export function evaluate(repo, revArg) {
@@ -423,7 +525,7 @@ export function evaluate(repo, revArg) {
   const skillFindings = skillText === null ? [] : m1LogFindings(repo, rev, skillText, cache, "SKILL.md", true);
   const readmeText = readBlob(repo, rev, "corpus/README.md");
   const readmeFindings = readmeText === null ? [] : m1LogFindings(repo, rev, readmeText, cache, "corpus/README.md", true);
-  const findings = [...m1Findings(repo, rev, scorecard, cache), ...logFindings, ...skillFindings, ...readmeFindings, ...m2Findings(repo, rev), ...m3Findings(repo, scorecard)];
+  const findings = [...m1Findings(repo, rev, scorecard, cache), ...logFindings, ...skillFindings, ...readmeFindings, ...m2Findings(repo, rev), ...m3Findings(repo, scorecard), ...m4Findings(scorecard)];
   const counted = findings.filter((f) => f.observed !== null && f.observed !== f.claimed && !f.superseded);
   return {
     schema: SCHEMA,
@@ -476,6 +578,25 @@ function logDoc(tallyLine, correction = "") {
     tallyLine,
     ...(correction ? ["", correction] : []),
     "",
+  ].join("\n");
+}
+
+// Statement line is always 9 (corrections cite `SCORECARD.md:9`); round 5,
+// saturation 8 / window 3, so a capability at round 1 is outside the window.
+function nudgeDoc({ cap, said, adjacency = 8, wrap = false, correction = "" }) {
+  const axes = `Axes at round start: depth 8, coverage 9, operability 8, freshness 8, calibration 9, adjacency ${adjacency}; Saturation 8 / window 3; nudge`;
+  return [
+    "# scorecard",
+    "",
+    "| Capability | What it can now do | Evidence pointer | First-working round |",
+    "|---|---|---|---|",
+    `| fixture-cap | x | y | ${cap} |`,
+    "",
+    "## Round 5 — declared claims",
+    "",
+    ...(wrap ? [axes, `${said}; no axis retired.`] : [`${axes} ${said}; no axis retired.`]),
+    "",
+    ...(correction ? ["## Round 6 — corrections", "", correction, ""] : []),
   ].join("\n");
 }
 
@@ -728,6 +849,72 @@ const CASES = [
     exit: 0,
     classes: [],
     build: (d) => { d.gate("scripts/check-fixture.mjs"); d.scorecard(fixtureDoc("`--selftest` (13/13)")); d.readme(["# corpus", "", "## Round 16", "", "The gate is `scripts/check-fixture.mjs`.", "Historical receipts carried 43 cases from an earlier gate.", ""].join("\n")); },
+  },
+  {
+    id: "v3-failed-summary-is-not-an-oracle",
+    exit: 0,
+    classes: [],
+    build: (d) => { d.gate("scripts/check-fixture.mjs", `process.stdout.write("FIXTURE_SELFTEST verdict=failed cases=12 passed=11\\n"); process.exit(3);\n`); d.scorecard(fixtureDoc("`--selftest` (13/13)")); },
+  },
+  {
+    id: "v3-nonzero-exit-is-not-an-oracle",
+    exit: 0,
+    classes: [],
+    build: (d) => { d.gate("scripts/check-fixture.mjs", `process.stdout.write("FIXTURE_SELFTEST verdict=clean cases=12 passed=12\\n"); process.exit(1);\n`); d.scorecard(fixtureDoc("`--selftest` (13/13)")); },
+  },
+  {
+    id: "m4-stale-inactive",
+    exit: 1,
+    classes: ["m4-nudge-state"],
+    build: (d) => { d.scorecard(nudgeDoc({ cap: 1, said: "inactive" })); },
+  },
+  {
+    id: "m4-inactive-capability-in-window",
+    exit: 0,
+    classes: [],
+    build: (d) => { d.scorecard(nudgeDoc({ cap: 4, said: "inactive" })); },
+  },
+  {
+    id: "m4-inactive-axis-below-line",
+    exit: 0,
+    classes: [],
+    build: (d) => { d.scorecard(nudgeDoc({ cap: 1, said: "inactive", adjacency: 7 })); },
+  },
+  {
+    id: "m4-active-claim-capability-in-window",
+    exit: 1,
+    classes: ["m4-nudge-state"],
+    build: (d) => { d.scorecard(nudgeDoc({ cap: 3, said: "active" })); },
+  },
+  {
+    id: "m4-wrapped-statement-stale",
+    exit: 1,
+    classes: ["m4-nudge-state"],
+    build: (d) => { d.scorecard(nudgeDoc({ cap: 1, said: "inactive", wrap: true })); },
+  },
+  {
+    id: "m4-stale-then-corrected",
+    exit: 0,
+    classes: [],
+    build: (d) => { d.scorecard(nudgeDoc({ cap: 1, said: "inactive", correction: "Correction (supersedes `SCORECARD.md:9`): the stagnation nudge was active for round 5." })); },
+  },
+  {
+    id: "m4-correction-uncited",
+    exit: 1,
+    classes: ["m4-nudge-state"],
+    build: (d) => { d.scorecard(nudgeDoc({ cap: 1, said: "inactive", correction: "Correction: the stagnation nudge was active for round 5." })); },
+  },
+  {
+    id: "m4-correction-wrong-state",
+    exit: 1,
+    classes: ["m4-nudge-state"],
+    build: (d) => { d.scorecard(nudgeDoc({ cap: 1, said: "inactive", correction: "Correction (supersedes `SCORECARD.md:9`): the stagnation nudge was inactive for round 5, as stated." })); },
+  },
+  {
+    id: "m4-inputs-missing-not-counted",
+    exit: 0,
+    classes: [],
+    build: (d) => { d.scorecard(["# scorecard", "", "## Round 5 — waves", "", "- saturation 8 / window 3; stagnation nudge inactive.", ""].join("\n")); },
   },
 ];
 
