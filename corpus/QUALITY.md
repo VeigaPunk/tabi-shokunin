@@ -396,3 +396,58 @@
     clause of the predicate sentence names the code line that enforces it, and a clause
     no line enforces is dropped from the sentence or enforced before data. (lesson:
     corpus/lessons/round-29.md#mistakes M4)
+
+74. A Gate quote is a contiguous substring of its own row's committed bytes under
+    whitespace collapse, never a sibling row's bytes and never a span assembled across a
+    boundary the source does not carry: adjacent C++ string literals, two table lines, an
+    ellipsis. It must also ground that row's own `teaches`; a located sentence about a
+    neighbouring row's subject is an attribution defect. Location is mechanical for a
+    frontier entry (`g5-quote-located` against the receipt's committed `bytes_path`,
+    `g6-gate` in the round lesson, `q1-entry-quote` for every >=4-word span of the
+    entry); grounding, and any Gate row no counter parses, is review. (lesson:
+    corpus/lessons/round-30.md#mistakes M1; routed round-29 defect 2;
+    `scripts/check-frontier-admission.mjs` cases=24)
+
+75. `used-by` reciprocity holds in both directions: every id an entry's `source:` line
+    names lists that entry's repo path in `used-by`, and the in-place append is logged
+    old→new in the round lesson (SOURCES contract rule 2). A one-way citation is a defect
+    even when every quote is located: the row reads `mined` with no consumer that cites
+    it. The frontier counter's `r3-used-by` rejects the absent direction for an admitted
+    entry; a `used-by` path that no longer exists is a census check; neither instrument
+    reads a row cited only outside the frontier surface, so that direction is reviewed.
+    (lesson: corpus/lessons/round-30.md#mistakes M4; routed round-29 defect 1;
+    `scripts/check-frontier-admission.mjs` cases=24)
+
+76. A self-test case names the check it targets — a finding id, or a sub-check field and
+    its expected value — and turns red when that one check is disrupted; a case that
+    asserts only an exit code and a tally is satisfied by a failure on a neighbouring
+    path and counts as no coverage. The mutant battery is the instrument: every
+    catalogued fault mutant must turn its case red and every benign rewrite at the same
+    site must stay green (27 fault, 13 benign). (lesson: corpus/lessons/round-30.md#mistakes
+    M3; routed round-29 defect 7; `scripts/check-gate-mutants.mjs` cases=12;
+    `scripts/check-s106-evidence.mjs` and `scripts/check-release-pins.mjs` case tables)
+
+77. A lesson that numbers its mistakes carries one table row and one subsection per
+    number; a mistake left in prose is not a numbered mistake and cannot be cited, and a
+    row with no subsection leaves its fix and its able-to-fail state unrecorded. Table
+    rows and subsections are counted and compared (`grep -c '^| M[0-9]'` against
+    `grep -c '^### M[0-9]'`); no lane instrument asserts this yet. (source: routed
+    round-29 defect 3, defect-derived; corpus/lessons/round-29-verifier-spotcheck.md)
+
+78. An appended correction cites its target by document and line, or by a quoted anchor;
+    "the bullet above" and any ordinal position is not a citation, because an append
+    between the two moves the target and leaves the earlier statement standing unmarked.
+    A described span also counts the lines it names: the guard block at 201-209 is nine
+    lines, and the "10-line insertion" the errata calls it is those nine plus the blank
+    at 210; a span that does not add up is corrected, not repeated. (source: routed
+    round-29 defect 4, defect-derived; recurrence of criteria 65 and 70;
+    corpus/lessons/round-29-verifier-spotcheck.md)
+
+79. A counted population is stated as the rule that selects its members, in the same
+    place as the count, with every class the rule excludes named and counted: "23
+    on-release rows" is not a predicate until it says the source cell carries a src tag
+    and that the two DEPS-pinned rows (S044, S068) fall outside the set by that rule. A
+    number whose rule lives only in the counter's code cannot be re-derived by a reader
+    and does not bind the next round. (source: routed round-29 defect 5, defect-derived;
+    no lane instrument prints the excluded class — the reader recomputes the id set by
+    the rule; `scripts/check-release-pins.mjs`)

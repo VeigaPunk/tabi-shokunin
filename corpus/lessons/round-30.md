@@ -14,6 +14,7 @@ New registry rows (both opened 2026-10-26; status `mined`; tier scoped to each r
 |---|---|---|---|
 | S116 | https://www.ietf.org/archive/id/draft-ietf-httpapi-ratelimit-headers-11.txt | 2026-10-26T06:39:52Z (FetchS159; refetch ScribeEntryRateLimitFields 06:40:26Z, byte-identical) | §3 "RateLimit-Policy Field", -11 lines 308–311: "The field value SHOULD remain consistent over a sequence of HTTP responses. It is this characteristic that differentiates it from the RateLimit (Section 4) field" |
 | S117 | https://docs.discord.com/developers/topics/rate-limits | 2026-10-26T06:40:02Z (FetchS182; refetch ScribeEntryDiscordHeaders 06:40:32Z, normalised text identical) | the per-guild exception paragraph: "limited on a per-guild basis to prevent abuse. This means that the quota returned by our APIs may be inaccurate, and you may encounter 429s." |
+| S118 | https://github.com/ChromeDevTools/devtools-frontend/blob/66df492aaa0129d090937e933dd44c5389ab24d2/front_end/models/web_mcp/WebMCPModel.ts | 2026-10-26T07:02:46Z (Gitiles TEXT, 11,404 B served / 8,553 B decoded, sha256 `c23d575e…b632`; directory listing 07:02:04Z) | `WebMCPModel.ts:249-250` "toolResponded(params: Protocol.WebMCP.ToolRespondedEvent): void { const call = this.#calls.get(params.invocationId);" |
 
 Further located spans (ScribeRows, `.ufo/waves/round-30/w1/ScribeRows/gate-block.md`): S116 §3 "It is this
 characteristic that differentiates it from the RateLimit (Section 4) field that contains information that MAY change
@@ -34,6 +35,22 @@ Transform notes (staged → lane schema): staged S159's anchor named draft `-09`
 `180d`. Staged S182's recheck "90d" kept; its teaches generalised the per-guild caveat to the whole API, corrected in the
 entry (§2) to the emoji-control routes the page scopes it to. No staged row was appended as-is
 (control `.ufo/waves/round-30/baseline/c2-control-J2-package-as-is.json`).
+
+S118 (round-29 routed defect 6; ExecS044Supersede) supersedes S044: its anchor's `front_end/panels/application/WebMCPModel.ts` returns HTTP 404 at devtools `66df492…` (Chromium 154 DEPS line 424) and `bf69d041…` (M156); the model the row describes is `front_end/models/web_mcp/WebMCPModel.ts` at the same line numbers. Same-URL twin S068 names the same path and is covered by the same correction (S118 teaches). Supporting spans (same decoded bytes, each verified contiguous and unique by
+`re.search` over whitespace-collapsed text; see `receipts/quote-check.txt`):
+
+- `WebMCPModel.ts:130-133` "const response = await target?.webMCPAgent().invoke_invokeTool({ toolName: this.name, frameId: this.#protocolTool.frameId, input," (10 words) — the invoke request the panel's `invoke` sends.
+- `WebMCPView.ts:575-576` "${call.result?.output !== undefined ? JSON.stringify(call.result.output) : call.result?.errorText ?? ''}" (9 words) — the panel renders output/errorText, i.e. the status and output rendering S044's scope names.
+
+Correction this row records: S044's anchor places `WebMCPModel.ts:128-139, 249-258` under
+`front_end/panels/application/`; that path returned HTTP 404 at 66df492 (Chromium tag 154.0.8037.97,
+DEPS line 424) and at bf69d041 (M156) — `bytes/NOT_FOUND.panels-application.WebMCPModel.ts@*.b64`.
+The panel directory (85 entries) holds `WebMCPView.ts`, `WebMCPView.test.ts`, `WebMCPTreeElement.ts`,
+`webMCPView.css` only; its BUILD.gn lists those and no model. The model is
+`front_end/models/web_mcp/WebMCPModel.ts` (BUILD.gn `sources = [ "WebMCPModel.ts" ]`; barrel
+`import * as WebMCPModel from './WebMCPModel.js';`), 8,553 B, sha256
+`c23d575e90f0e23b4d29010e3e0a062dd30d55976c83d3d0a88790191f08b632`, byte-identical at both commits.
+Committed bytes and receipts: `corpus/evidence/round-30/s118/`. The knowledge entry citing S044 (`corpus/knowledge/webmcp-invocation-round-17.md`) carries an appended round-30 anchor correction citing S118; its header `source:` lines were not edited.
 
 ### Assimilation (§10)
 
@@ -109,3 +126,116 @@ them is exactly `"` + `\n` + 28 spaces + `"` — the closing quote of the first 
 indentation and the opening quote of the second — so no quote may span it without including those four characters. Consequence for
 every future citation of this message: quote one literal, or quote around the boundary, never across it. The three
 replacement quotes above respect that; S115's in particular stops at `kToolInvocationFailed,` on line 206.
+
+## Mistakes
+
+Mined from this round's own build and from round-29's routed defects 1 and 2 (`corpus/lessons/round-29-verifier-spotcheck.md:118`):
+one row per mistake, in the `CORPUS.md` §5 vocabulary (`vacuous`, `survivor`, `stale-premise`, `reference-drift`,
+`number-drift`, `scope`, `attribution`, `landing`, `provider`). Each fix names a red state that a stored command turns on;
+the receipts (commands, exit codes, bytes and live-fetch records) are under `.ufo/waves/round-30/w1/ScribeMistakes/`.
+
+| # | class | evidence pointer | captured by | fix |
+|---|---|---|---|---|
+| M1 | `attribution` | `corpus/lessons/round-29.md:20` (S114 Gate quote is S111's, the detached-document comment) — routed at `corpus/lessons/round-29-verifier-spotcheck.md:118` | `none` | round-30.md §"Re-grounded Gate quotes for S110, S114, S115" gives S114 its own span (`html_form_element.cc:867`); the frozen frontier counter's `g5-quote-located` requires a receipt quote to be a substring of **that row's** committed bytes |
+| M2 | `stale-premise` | `/home/vgpnk/Projects/shokuknow/merge/tabi/knowledge/corpus/knowledge/host-rate-limit-signal-classes-r14.md:6` (sha256 `844ef05f…9c42a`): "`-10` and later currently return 404" | `none` | lane row S116 re-pins the draft at `-11` with `recheck: 180d` and drops the ceiling claim; `ScribeMistakes/anchor-ceiling-probe.mjs` fails on any ceiling a fetched revision contradicts |
+| M3 | `survivor` | `.ufo/waves/round-29/w1/MutC3.md` mutant row 8 and survivor note 5 (f4-anchor-token survived: the case failed through the drift path, and the self-test asserted only exit + unresolved count) | `none` | round-30's `check-release-pins.mjs` self-test pins `reasons` per case (and `check-s106-evidence.mjs` pins `field`/`fieldValue`), so a case cannot be satisfied by a neighbouring failure path |
+| M4 | `attribution` | `corpus/lessons/round-29-verifier-spotcheck.md:118` (routed defect 1): `corpus/knowledge/chromium-156-release-pin-recheck.md:3` cites 23 rows whose `used-by` omit the entry | `none` | the 23 in-place `used-by` appends logged old→new in round-30.md §"`used-by` changes"; the frontier counter's `r3-used-by` rejects a row whose `used-by` omits the citing entry |
+| M5 | `vacuous` | `.ufo/waves/round-30/w1/CritC1Counter.md` §1–§2: the frozen C1 counter runs each mutant copy in `<work>/mutant-<catalogue index>`, so a one-line self-test case reading `process.cwd()` "kills" every fault mutant without exercising any check — `fault_survivors 0`, `benign_killed 0`, exit 0 with frozen digests | `none` (the round-30 freeze controls caught length-fingerprint, site-grep and literal-blacklist junk, not environment leaks) | not landed this round (the counter is frozen for C1). Compensating check: the wave-2 kill-attribution audit reads `failing_cases` per fault at the tip and certifies each killing case builds a fixture and calls the gate's `evaluate()` (`.ufo/waves/round-30/w2/`). Counter v2 (next round, planned in SCORECARD): neutral run-directory names, killer attribution in the kill rule |
+| M6 | `scope` | `.ufo/waves/round-30/w1/SentinelFetchScope.md` and `CritC2Counter.md` §2: the frozen C2 counter's `fetchLive` accepts `file://` (added for its own offline self-test), follows redirects off-host, and inherits `~/.curlrc`/`~/.netrc`; a self-quoting junk receipt with a `file://` url reaches admitted 2 with `--live` and no network | `none` | not landed this round (the counter is frozen for C2). Compensating check: the committed receipts' urls are all `https://` and equal the rows' source urls (wave-2 sentinel audit), and the claim's live reading is re-taken inside a network namespace with no network, where the https receipts must fail `l1-live`. Counter v2: https-only production fetch, same-host redirects only, `curl -q` |
+
+### M1 — a row's Gate quote was another row's quote
+
+- **Class:** `attribution`.
+- **Evidence:** `corpus/lessons/round-29.md:20` records S114's located quote as "`:201-202` same comment as S111 (same blob,
+  different scope: navigation sentinel)" — a pointer, not a quote; the span it points at is S111's, and S114's scope is the
+  navigation sentinel (`html_form_element.cc:767-796,856-880`). Routed at `corpus/lessons/round-29-verifier-spotcheck.md:118`
+  (defect 2).
+- **Captured by:** `none` — no criterion in force at round 29 required a Gate quote to be locatable in the row's own bytes.
+- **Fix:** round-30.md §"Re-grounded Gate quotes for S110, S114, S115" replaces the cell with
+  `executing_tool->CallDoneCallback(base::ok(String()));` at `html_form_element.cc:867`
+  (`corpus/evidence/round-29/release-pins/bytes/156.0.8078.47/…/html_form_element.cc`), and the frozen frontier counter's
+  `g5-quote-located` rejects a receipt quote that is not a substring of the normalised bytes of that receipt's own
+  `bytes_path`.
+- **Able to fail** (`ScribeMistakes/a-demo.out`; frozen counter `cadef57e…9eca`, fixtures under scratch):
+  - the round-29 Gate cell text as the receipt quote → `reasons: ["g5-quote-located S114"]`, exit 1;
+  - S111's 17-word quote as S114's receipt quote → **also** `g5-quote-located`, exit 1: the quote is not contiguous in the
+    156 bytes either, because line 202 re-opens with `//` ("…events, // whose handlers…"); the first line alone is present;
+  - S114's own-scope quote (`If this form already made a request to navigate another frame which is`, line 857) → exit 0,
+    admitted 1, so the fixture is not failing for an unrelated reason.
+
+### M2 — a package anchor asserted a draft revision ceiling the archive contradicts
+
+- **Class:** `stale-premise`.
+- **Evidence:** `host-rate-limit-signal-classes-r14.md:6` (package file sha256 `844ef05f5d2531b2cf96958a0fa305b86d30e92c4cecab48d5c17fef7ea9c42a`)
+  states "recheck: 180d — the draft revision moves; -10 and later currently return 404 (not run in this round)". Live on
+  2026-10-26T07:06:06Z: `-09` 200 (67,876 B), `-10` 200 (67,803 B), `-11` 200 (67,097 B), `-12` 404 (77,297 B);
+  receipts under `ScribeMistakes/receipts/draft-*.json`. The `-11` live bytes are byte-identical to the lane's committed
+  S116 bytes (`d6016dd0…d412`).
+- **Captured by:** `none` — no criterion required a staged anchor's negative ("N and later return 404") to be run, and the
+  package row itself marks it "not run in this round".
+- **Fix:** lane row S116 pins `-11` and states `recheck: 180d`; the ceiling claim is dropped
+  (round-30.md §Gate, "Transform notes"). `ScribeMistakes/anchor-ceiling-probe.mjs` re-checks a `-N and later … 404`
+  claim against live-fetch receipts.
+- **Able to fail** (`ScribeMistakes/b-demo.out`):
+  - staged line 6 → `CEILING_CLAIM contradicted: … -10 returned 200 (67803 bytes), -11 returned 200 (67097 bytes)`, exit 1;
+  - the lane's corrected recheck text → `CEILING_CLAIM none`, exit 0;
+  - control `-12 and later currently return 404` → `holds`, exit 0; control `-09 and later …` → `contradicted`, exit 1
+    (the probe reads statuses, it does not always fail).
+
+### M3 — a self-test that asserted exit + count let a mutant pass through the wrong path
+
+- **Class:** `survivor`.
+- **Evidence:** `.ufo/waves/round-29/w1/MutC3.md` mutant row 8 (`f4-anchor-token`, SURVIVED) and survivor note 5: the only
+  anchor-token case was still unresolved through the drift path, and "the self-test asserts only exit + unresolved count,
+  not the reason".
+- **Captured by:** `none` — round-29's self-test format had no per-case expectation of the failure path.
+- **Fix:** round-30's `scripts/check-release-pins.mjs` self-test carries `reasons: [...]` per case and the runner compares
+  them (`reasonsOk`); `scripts/check-s106-evidence.mjs` gains `field`/`fieldValue` cases (`same-length-tamper-invalid`,
+  `duplicate-anchor-invalid`, `receipt-byte-count-mismatch-invalid`). New case
+  `f4-anchor-lacks-range-token-unresolved` (ranges `[[4,5]]`, anchor without a range token) makes the bypass change the
+  verdict, not only the reason.
+- **Able to fail** (`ScribeMistakes/e-demo.out`, `ScribeMistakes/c-demo.out`; catalogue mutant `pins-f4-anchor-token`,
+  find string occurs exactly once):
+  - frozen round-29 self-test bytes (`061e620:scripts/check-release-pins.mjs`, sha256 `56763720…3770`) + mutant →
+    `verdict=clean cases=20 passed=20`, exit 0 — the survivor reproduces;
+  - the same bytes with `reasons: ["f4-ranges"]` on `range-not-in-anchor-unresolved` and the reason comparison → pristine
+    clean, mutant `verdict=failed`: the row is `exit 1 unresolved 1 expected_reasons ["f4-ranges"] rowReasons
+    ["s1-drift-unsuperseded"]`, i.e. the reason is the only discriminator and the pin catches it;
+  - round-30 bytes (`38891ca:scripts/check-release-pins.mjs`) + mutant → exit 3, case
+    `f4-anchor-lacks-range-token-unresolved` FAIL.
+
+### M4 — a citing entry's rows did not name it back
+
+- **Class:** `attribution`.
+- **Evidence:** `corpus/lessons/round-29-verifier-spotcheck.md:118` (routed defect 1): `corpus/knowledge/chromium-156-release-pin-recheck.md:3`
+  cites 23 re-opened rows in `source:`, but their `used-by` cells omit the entry (e.g. `SOURCES.md:47` S033, `:59` S045).
+- **Captured by:** `none` — `r3-used-by` was enforced only for frontier-tagged entries, and none of the 23 rows was on a
+  frontier surface at round 29.
+- **Fix:** 23 in-place `used-by` appends, logged old→new in round-30.md §"`used-by` changes"; `corpus/SOURCES.md` at the
+  lane tip names the entry in 31 cells. The frontier counter's `r3-used-by` rejects a row whose `used-by` omits the citing
+  entry path.
+- **Able to fail** (`ScribeMistakes/a-demo.out`, case `a4-used-by-omits-entry`): a registry row whose `used-by` is
+  `corpus/knowledge/other.md` while the tagged entry is `corpus/knowledge/fx-entry.md` → `reasons: ["r3-used-by S114"]`,
+  exit 1, population 1, admitted 0.
+- **Scope limit:** `r3-used-by` runs only on entries carrying a `frontier:` tag, so reciprocity between a non-frontier
+  entry and its rows is still unchecked; the round-30 fix for those 23 rows is the curation edit, not a gate.
+
+## Release-pin population rule (round-29 routed defect 5)
+
+Round 29's "23 on-release rows pinned to 154.0.8037.97" is a true count of the rule
+`scripts/check-release-pins.mjs:178` evaluates, not a statement of it. The rule: a row enters the population iff its
+recheck cell is `on-release` and its **source** cell carries `refs/tags/<A.B.C.D>/` for a tag below `--stable`. Rows
+that are `on-release` and coupled to the Chromium release but outside that rule are, by name: six rows pinned only
+through the DEPS-selected devtools-frontend commit `66df492aaa0129d090937e933dd44c5389ab24d2` (S036, S044, S068, S088,
+S089, S090 — the Chromium tag appears in their anchor cell, not their source cell) and three `main`-branch rows (S004,
+S028, S035). Measured at `061e62024c0523d3c6c7e819506a773ff2cd7d75`: 23 of 89 `on-release` rows selected
+(`.ufo/waves/round-30/w1/ScribePopulationRule/population-split.json`). Decision this round: name the rule and the
+excluded rows; do not widen the round-29 claim after the fact (its frozen record stays as written); a counter v2 that
+maps DEPS-pinned rows through the tag's committed `DEPS` line is planned, not built. QUALITY criterion 79 makes the
+naming duty general.
+
+## Scope note
+
+No real-site interaction beyond read-only HTTPS GETs of public documentation, specifications and source
+(www.ietf.org, datatracker.ietf.org, docs.discord.com, chromium.googlesource.com, github.com). No API was called, no
+credential, cookie or session material was read or stored.

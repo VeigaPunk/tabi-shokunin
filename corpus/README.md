@@ -628,3 +628,25 @@ Append-only. One knowledge row; no earlier line is edited.
 |---|---|---|
 | On-release source freshness (Chromium tag pins) | held at 156.0.8078.47 for the 23 tag-pinned rows; counter `scripts/check-release-pins.mjs` measures it; known counter weaknesses routed (lesson round-29 M4) | `corpus/lessons/round-29.md` |
 | Runtime behaviour on a 156 build | open — no 156 browser run; the post-fill detached-document arm is documented, not observed | `knowledge/chromium-156-release-pin-recheck.md` §Limits |
+
+## Round 30 — rate/ToS signal vocabulary (2026-10-26)
+
+Append-only. Two knowledge rows; no earlier line is edited.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/rate-limit-policy-fields.md` *(round 30)* | Documented-upstream vocabulary for the quota signal a server can publish: the IETF HTTPAPI RateLimit header-fields draft (`-11`) splits a stable `RateLimit-Policy` quota policy (`q`, `qu`, `w`, `pk`; SHOULD stay consistent across responses) from the per-request `RateLimit` service limit (`r` available quota, `t` effective window; MAY change on every request); the fields imply no status code, and `Retry-After` takes precedence when both appear. An Internet-Draft, not an RFC; `t` changed meaning between `-10` and `-11`. Nothing in it was run, captured or observed in a browser. | S116 draft-ietf-httpapi-ratelimit-headers-11 §3–§7; opened 2026-10-26; receipt `evidence/round-30/frontier/S116.json` |
+| `knowledge/host-published-rate-limit-headers.md` *(round 30)* | One real host's documented rate-limit header set (Discord developer docs): `X-RateLimit-Limit` / `-Remaining` / `-Reset` (epoch) / `-Reset-After` (delta) / `-Bucket`, the 429-only `X-RateLimit-Global` / `-Scope`, the 429 JSON body, the global and invalid-request limits, the emoji-route per-guild caveat (scoped as the page scopes it), a shape-only capture rule and the mapping onto the draft's fields. Documentation only; no request was sent to that host's API. | S117 Discord Developer Docs, Rate Limits; opened 2026-10-26; receipt `evidence/round-30/frontier/S117.json` |
+
+Frontier restatement (append-only; earlier rows keep their bytes): **Rate/ToS surface for site-interaction
+records** — documented vocabulary held, no measured real surface. The two entries give the signal classes a
+record can name (published quota policy, per-request budget, one host's `X-RateLimit-*` set, `Retry-After`
+shape from `knowledge/redirect-and-retry-after-semantics.md`); the approval table's C3 and C6 still decide from
+an absence (`knowledge/interaction-approval-table.md`, U1 stays open), and a loopback 429 remains an instrument,
+never a C6 datum (`knowledge/external-class-fixture-v2.md` §4–§5). The fixture's stop-and-report predicate does
+not record `RateLimit` or `X-RateLimit-*` fields, and no run has exercised them.
+
+| Frontier item | Status | Pointer |
+|---|---|---|
+| Rate/ToS surface for site-interaction records | docs-held — IETF `RateLimit-Policy`/`RateLimit` fields (Internet-Draft `-11`) and one host's `X-RateLimit-*` set documented; runtime open — no measured real-site rate or ToS datum; approval table C3/C6 unchanged | `knowledge/rate-limit-policy-fields.md`; `knowledge/host-published-rate-limit-headers.md`; counter `node scripts/check-frontier-admission.mjs --rev <REV> --frontier rate-tos-signal --since 2026-10-26 --live` |
+| Gate self-test kill coverage | held for two gates — every catalogued fault in `scripts/check-s106-evidence.mjs` and `scripts/check-release-pins.mjs` is killed by a self-test case and no equivalent rewrite is; known counter weakness (mutant identity visible to the code under test) routed (lesson round-30 M5) | `node scripts/check-gate-mutants.mjs --rev <REV>`; `scripts/gate-mutants.json` |
