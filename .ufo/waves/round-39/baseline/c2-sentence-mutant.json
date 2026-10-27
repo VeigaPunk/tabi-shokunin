@@ -1,0 +1,25 @@
+{
+ "schema": "tabi-r39-c2-sentence-mutant-receipt-v1",
+ "purpose": "Do-nothing control for round-39 C2: a claims.json whose C2 predicate sentence is mutated by one token (23 ok 11 finding -> 23 ok 12 finding) must be refused by the frozen v2 counter itself; the round-38 v1 counter has no sentence-identity check and cannot kill this class.",
+ "command": "node .ufo/waves/round-39/counters/c2-routed-defects-v2.mjs --rev 1f4260aeb3af186e84444cbb417a31b8a35bdb55 --repo <lane> --claims .ufo/waves/round-39/baseline/c2-mutant-claims.json",
+ "observedExit": 1,
+ "frozenClaimsSha256": "6d2e5655cc2880932309005271a26a4c0d776fd1b11d062ca2aabb129be641ed",
+ "mutantClaimsSha256": "5985c6730894e2adc1f7d848a7e8cf99f2c7081c25f2c65b2f05bfb4ad276d19",
+ "mutantPredicateSentence": "D1 stale-line-present AND superseding-correction-present AND re-derived seats == 34 AND w2-artifacts absent AND D2 tally stated == recomputed 23 ok 12 finding AND D3 every round-37 hash present and ancestor with the freeze landing stated at 34ed508c AND D4 captured-by row present AND the round-39 sentence-mutant receipt records a nonzero exit with a predicate sentence different from the frozen sentence AND D5 round-39 census receipt counts equal this counter's parse AND D6 the round-39 numstat receipt names baseline 3f42a5c7cc19 and REV AND the round-39 claims predicate is byte-identical to this counter's sentence",
+ "v2Findings": [
+  "d7-sentence-mismatch"
+ ],
+ "v2OutputTail": [
+  "FINDING d7-sentence-mismatch claims predicate is not byte-identical to the counter sentence (mutated-sentence control must be refused)",
+  "C2_ROUTED_DEFECTS_V2 predicate=not-met rev=1f4260aeb3af186e84444cbb417a31b8a35bdb55 findings=4 seats=34 tally=23/11 census=undefined d7=false"
+ ],
+ "v1Control": {
+  "command": "node .ufo/waves/round-38/counters/c1-routed-defects.mjs --rev 1f4260aeb3af186e84444cbb417a31b8a35bdb55 --repo <lane>",
+  "observedExit": 1,
+  "v1Findings": [
+   "d4-receipt",
+   "d6-file"
+  ],
+  "note": "v1 exit 1 is carried by the round-38 residuals it already had; its findings contain no sentence-identity class (v1 schema has no d7 check), so a mutated-sentence claims.json that otherwise fixes D4/D6 would pass v1."
+ }
+}
