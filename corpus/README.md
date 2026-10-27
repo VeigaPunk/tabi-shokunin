@@ -841,3 +841,12 @@ is edited.
   `.ufo/waves/round-35/w2/SentinelDriverEgress/evidence/sockets-summary.txt` (27 samples, 0
   non-loopback); the entry carries an appended correction re-pointing it. The 0-byte file stays as
   evidence of the defect.
+
+## Round 36 — adjacency drift audit (2026-10-27)
+
+Append-only. The new note documents a sourced method for re-auditing pinned sibling screen rows
+when sibling heads move; its measured claim and limits are in `corpus/lessons/round-36.md`.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/adjacency-drift-audit-r36.md` | How the frozen counter derives `unchanged` / `moved` / `stale` against a pinned delta head, verifies relocation notes, and checks the delta pool; the 307-row ledger and post-freeze note-drift limits are tied to the round-36 measurement rather than treated as standing facts. | S142 (`git show` object/revision addressing); `.ufo/waves/round-36/measure/`; w2 `ExecDeltaLive` correction at the entry's appended §Correction. |

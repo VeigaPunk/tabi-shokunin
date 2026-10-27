@@ -169,3 +169,23 @@ objects; refuses unresolvable revisions) or re-derive with
 --fleet /home/vgpnk/Projects/shokunin --json`, then re-read §4's three class counts. On any
 sibling head moving, on a new pin set, or at the 180d S142 recheck, this entry's §4 table is
 superseded — the method in §3 survives until the counter's definitions change.
+
+## Correction — §6.7 post-freeze sibling movement (round 36, wave 2)
+
+This clarification supersedes §6.7's wording that a sibling commit landing after the freeze
+"changes nothing in this ledger." The frozen counter reads the delta pins committed at `REV`;
+post-freeze sibling commits therefore do not alter the measured ledger or predicate while those
+pins stay fixed. A later re-derivation against live sibling tips can, however, change relocation
+notes and make that re-derived ledger fail against the frozen counter.
+
+Measured by w2 `ExecDeltaLive` (`.ufo/waves/round-36/w2/ExecDeltaLive/report.md`): 7 of the 12
+frozen drifted lanes advanced after the freeze, plus `souji` (outside that 12-lane set), for 51
+post-freeze commits across the 20 lanes. With the frozen pins, the counter remains true at the
+wave-1 landing and the later lane tip. Re-deriving at live sibling tips leaves all 307 status
+classes unchanged (304 `unchanged`, 3 `moved`, 0 `stale`) and the delta pool empty, but the three
+kaidoku relocation notes shift from `:748/:784/:815` to `:752/:788/:819`; the counter with those
+live-tip pins refuses the re-derived ledger with three `audit-moved-wrong-relocation` findings.
+`souji` contributes no cited screen rows or browser-ground delta lines in this measurement.
+
+Recheck by re-deriving both the status classes and relocation notes at the declared pins; do not
+infer note stability from unchanged class counts.
