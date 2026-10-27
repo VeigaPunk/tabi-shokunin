@@ -869,3 +869,11 @@ Append-only. One host/build-scoped knowledge note; no real-site or all-protocol 
 |---|---|---|
 | Session-bound TCP socket observation | Host/build-scoped evidence recorded; UDP/QUIC, namespace equality, later descendants, and comprehensive egress remain unheld | `knowledge/playwright-firefox-session-bound-tcp-round-39.md` §Limits |
 
+## Round 41 — environment-injection measurement integrity (2026-10-28)
+
+Append-only. One knowledge note on the forgery class; no capability claim.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/environment-injection-measurement-integrity-round-41.md` | The environment-injection forgery class for loopback browser measurement: the round-40 F4-full attack replayed and refused; `/proc/pid/environ` as the tamper-resistant detection channel; an 8-row vector→detection→refusal decision table; declared residuals (caller-realm hooks, sub-env native attacks). | S146, S147; `scripts/measure-c1-round41.mjs`; `scripts/playwright-firefox-egress-round41.mjs`; `.ufo/waves/round-41/counters/c1-session-bound-v4.mjs`; `.ufo/waves/round-41/fixtures/`; `.ufo/waves/round-41/measure/`. |
+
