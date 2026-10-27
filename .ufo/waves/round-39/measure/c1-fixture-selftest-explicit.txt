@@ -1,0 +1,12 @@
+Scratch root: `/fast/scratch/hyaku/tabi-r39/c1-selftest-explicit/repo`.
+Fixture guard: `git -C "$D/repo" rev-parse --show-toplevel` → `/fast/scratch/hyaku/tabi-r39/c1-selftest-explicit/repo`, exact match checked before first fixture commit.
+All fixture git operations used explicit `git -C "$D/repo"`.
+
+1) V1-only fixture, revision `1ff533de584597966cb484b4aeba8b487fbc9a5c`:
+`node .ufo/waves/round-39/counters/c1-egress-session-bound.mjs --repo "$D/repo" --rev "$R1"` → `C1_EGRESS_SESSION_BOUND predicate=not-met ... findings=1 controlRefused=true`; finding `receipt-absent`; exit 1.
+2) Honest v2 receipt + v1 control, revision `3d13868d3a68b76054ed3d6084daf150e1094d3b`:
+Same command → `C1_EGRESS_SESSION_BOUND predicate=met ... findings=0 controlRefused=true`; exit 0.
+3) Mutated empty owned trees, revision `8e9b677353e6decb95edf29495ea32391504bf9f`:
+Same command → `run1-owned` and `run2-owned` findings; `predicate=not-met`; exit 1.
+
+The tests use the committed round-38 v1 receipt as the do-nothing control and the copied round-39 receipt-test2.json as the honest synthetic input; the empty-tree mutation is the only changed receipt field in case 3.
