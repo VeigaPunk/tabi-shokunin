@@ -8,6 +8,11 @@
     "kind": "pre-data counter hardening",
     "reason": "The first counter treated placeholder ss/proc objects marked unavailable with ticks=0 as present when their nonLoopback value was numeric zero. No wave was dispatched and no seat scored data. Revision 2 requires positive observation ticks and refuses `unavailable:true` on every sample and final sweep."
   },
+  "selftestCorrection": {
+    "supersedes": "5/5 unavailable-surface selftest at predata state",
+    "reason": "Each unavailable mutation in that run also failed sample-span, so it did not isolate the counter change. The revised 10-case test uses a synthetic positive control that both counter versions admit, then mutates one unavailable surface at a time; old counter v1 remains green and amended v2 is red for each case.",
+    "predicateUnchanged": true
+  },
   "axesAtRoundStart": {"adjacency": 8, "operability": 9, "depth": 9, "coverage": 9, "freshness": 9, "calibration": 9},
   "lowestAxis": "adjacency",
   "stagnationNudge": "All owned axes are at or above saturation 8 and no capability has entered within the three-round window (rounds 37-39); the lowest-axis obligation is waived. C1 is a coverage capability/frontier move.",
@@ -28,7 +33,7 @@
   ],
   "frozenDigests": {
     ".ufo/waves/round-40/counters/c1-sample-span-v2.mjs": "d6a224b2dc247529bad333fcfdee1f044eb7aec265ed0196c005602f9799ee7f",
-    ".ufo/waves/round-40/counters/selftest-c1-sample-span-v2.mjs": "f6a3537ec9032489973aeb8465d8bfaf15a253b37465c17b921e8df0c130cefc"
+    ".ufo/waves/round-40/counters/selftest-c1-sample-span-v2.mjs": "9a9aa3976f10e26e41677a9cb7125860bba745f1d4b45777723cbd8ff1637c79"
   },
   "controls": [
     {
@@ -39,10 +44,10 @@
     },
     {
       "name": "c1-unavailable-surface-selftest-v2",
-      "command": "node .ufo/waves/round-40/counters/selftest-c1-sample-span-v2.mjs corpus/evidence/round-39/playwright-egress/receipt.json .ufo/waves/round-40/counters/c1-sample-span-v2.mjs <scratch>",
+      "command": "node .ufo/waves/round-40/counters/selftest-c1-sample-span-v2.mjs corpus/evidence/round-39/playwright-egress/receipt.json .ufo/waves/round-40/counters/c1-sample-span.mjs .ufo/waves/round-40/counters/c1-sample-span-v2.mjs <scratch>",
       "receipt": ".ufo/waves/round-40/controls/c1-selftest-v2.json",
-      "result": "5/5 cases passed, exit 0; each unavailable ss/proc placeholder case fails with its specific finding",
-      "purpose": "Red control for `unavailable:true,ticks:0,nonLoopback:0` on each per-sample and final-sweep surface."
+      "result": "10/10 cases passed, exit 0: synthetic positive control passes both counters; for each sample/final ss/proc placeholder mutant, old counter v1 exits 0 while amended v2 exits 1 with the exact unavailable finding; the committed round-39 receipt remains exit 1.",
+      "purpose": "Isolated red-before/green-after proof for `unavailable:true,ticks:0,nonLoopback:0`, with the old counter as same-fixture red-before and v2 as sole changed detector."
     }
   ],
   "supersededFreezeControls": ["cb35339d81b425f486f9cb34a08111996be61b8a: c1-round39-noop.json; valid span red, but unavailable-placeholder false green not tested"],
