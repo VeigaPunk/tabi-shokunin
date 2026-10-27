@@ -1,0 +1,85 @@
+{
+ "schema": "tabi-round-claims-v2",
+ "lane": "tabi",
+ "round": 37,
+ "frozenAt": "ed8ccfc00ad3784bc424aa118e056f8edf4ee803",
+ "baseline": "ed8ccfc00ad3784bc424aa118e056f8edf4ee803",
+ "axesAtRoundStart": {
+  "adjacency": 8,
+  "operability": 9,
+  "depth": 9,
+  "coverage": 9,
+  "freshness": 9,
+  "calibration": 9
+ },
+ "lowestAxis": "adjacency",
+ "saturation": {
+  "line": 8,
+  "window": 3
+ },
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "adjacency",
+   "kind": "instrument-repair",
+   "title": "C1 adjacency counter amendment v5: digest-bound delta pins, canonical moved-note parsing, one predicate sentence, repaired build tool",
+   "surface": "the lane's adjacency drift-verification instruments (.ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs family)",
+   "predicate": "check-adjacency verdict clean at REV AND completeness.unaccounted == 0 AND drift.total >= 1 AND drift.auditCoverage == drift.total AND drift.auditFindings == 0 AND drift.staleFindings == 0 AND delta.unaccounted == 0 AND delta.screenFindings == 0 AND delta pins digest == frozen delta pins digest",
+   "predicateSites": [
+    "claims.json",
+    "c1-adjacency-sweep-v5.mjs header + PREDICATE_SENTENCE",
+    "receipt.predicateSentence"
+   ],
+   "countingCommand": "node .ufo/waves/round-37/counters/c1-adjacency-sweep-v5.mjs --rev <REV> --repo <clean clone> --fleet /home/vgpnk/Projects/shokunin --json",
+   "before": {
+    "instrument": "v4 absent pins digest-binding (c1r37-J1: v4 exit 0 predicate true over semantically-identical UNFROZEN pins); v4 refuses a truthful decoy-token moved note (c1r37-J2: exit 1, audit-moved-wrong-relocation); frozen build tool carries a 39-hex kama pin; the enforced predicate is not one byte-identical sentence",
+    "receipts": [
+     "baseline/c1r37-J1-pins-reorder-v4.json",
+     "baseline/c1r37-J1-pins-reorder-v5.json",
+     "baseline/c1r37-J2-decoy-note-v4.json",
+     "baseline/c1r37-J2-decoy-note-v5.json",
+     "baseline/c1r37-J3-honest-v5.json"
+    ]
+   },
+   "target": "at the measured REV: v5 predicate true on the honest state AND v5 refuses the reordered-pins fixture (exit 2, digest mismatch) AND v5 admits the decoy-note fixture (exit 0) AND the v5 predicate sentence is byte-identical across its three sites AND c1-drift-audit-build-v2.mjs resolves every PINS entry (exit 0 run receipt)",
+   "killRule": "v5 refuses the honest state; v5 admits the reordered-pins or any non-frozen pins bytes; v5 refuses the truthful decoy-note fixture; the three sentence sites differ by one byte; the build tool still cannot resolve kama"
+  },
+  {
+   "id": "C2",
+   "axis": "operability",
+   "kind": "instrument-hardening",
+   "title": "C2 BiDi-runtime counter v3: replace-ref refusal + GIT_NO_REPLACE_OBJECTS, teardown survivor check, observed-decoration binding; harness v2",
+   "surface": "the lane's Firefox BiDi operability counter (.ufo/waves/round-36/counters/c2-firefox-bidi-v2.mjs) and the round measurement harness",
+   "predicate": "no entry finding AND no receipt finding AND no binding finding AND failing == 0 AND admitted >= 16 AND live.egressNonLoopback == 0 AND live.survivors == 0",
+   "predicateSites": [
+    "claims.json",
+    "c2-firefox-bidi-v3.mjs header + PREDICATE_SENTENCE",
+    "receipt.predicateSentence"
+   ],
+   "countingCommand": "node .ufo/waves/round-37/counters/c2-firefox-bidi-v3.mjs --rev <REV> --repo <clean clone> --json",
+   "source": "S143 (git-replace manual, opened this round; grounds the replace-ref mechanism B1)",
+   "before": {
+    "instrument": "v2 admits an honest-tree clone whose receipt blob is grafted via refs/replace (c2r37-J1: exit 0 predicate true \u2014 the forged decoration rides through); v2 admits an observed-decoration tamper (c2r37-J2: exit 0 predicate true); v2 has no teardown survivor check; the round-36 measure.sh wrote its numstat to a stale path and invoked check-freshness outside its usage contract",
+    "receipts": [
+     "baseline/c2r37-J1-replace-ref-v2.json",
+     "baseline/c2r37-J1-replace-ref-v3.json",
+     "baseline/c2r37-J2-observed-tamper-v2.json",
+     "baseline/c2r37-J2-observed-tamper-v3.json",
+     "baseline/c2r37-J3-honest-v3.json"
+    ]
+   },
+   "target": "at the measured REV: v3 predicate true on the honest state (admitted >= 16, survivors 0, egress 0) AND v3 refuses the replace-graft clone (exit 2) AND v3 receipt-finds the observed-tamper fixture (exit 1) AND the v3 predicate sentence is byte-identical across its three sites AND measure.sh v2 writes numstat and runs check-freshness per contract",
+   "killRule": "v3 admits the replace-graft clone or reads through any refs/replace; v3 admits the observed-tamper fixture; v3 refuses the honest state; survivors are uncounted; the three sentence sites differ by one byte"
+  }
+ ],
+ "frozenDigests": {
+  "c1": "9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c",
+  "c2": "eda339eb270dae19f093ff071454d973c86e02d93e0ec41bb48fe2706b62e019",
+  "buildTool": "a85152cdb8c0201e2ec08e8694b567f9ebb9735203e540a5b37f0207762a9a96",
+  "measure": "9f89697c0509a93bfe748db7a72a9303c429f4dc680707b2dab503c3d6843302",
+  "controls": "3a08367f9c11eb1e05aedc0a9c45dfc6e11aa5d0b041e1dfd74ac78eeed4f25e"
+ },
+ "measurementRule": "every after-measurement runs .ufo/waves/round-37/measure.sh <REV> <OUT> <FREEZE> in a clean clone; counters taken from the FREEZE commit, not the worktree; no counter or claim byte amended after any seat scores",
+ "noHarmRule": "at REV every offline gate/self-check that exits 0 at the baseline still exits 0; check-selfassessment mismatches stay 0; census exits 0; every prior-round prose byte of SKILL.md, SCORECARD.md, LOG.md, corpus/README.md, corpus/QUALITY.md, corpus/SOURCES.md is append-only",
+ "controlsDoNothingNote": "the do-nothing lane keeps v4/v2: c1r37-J1/J2 and c2r37-J1/J2 receipts show the old instruments admitting the attack fixtures (v4 exit 0 over unfrozen pins; v2 exit 0 over the replace graft and the observed tamper) \u2014 the frozen v5/v3 targets are unreachable without the amendments"
+}
