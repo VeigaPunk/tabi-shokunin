@@ -2167,3 +2167,13 @@ saturation remains 8 / window 3.
 | quality | improved | The `/proc` endian false count is corrected by a red→green receipt pair (12 false positives → 0); QUALITY criteria 102–103 and an append-only note correction preserve the measurement and D6 limits. No prior admitted entry was found false or stale this round. |
 | discernment | unchanged | Admit/reject decisions exist, but no outside non-author spot-check was completed; dispatched seats remain the lane. |
 
+
+## Round 40 — declared claim (frozen before wave data)
+
+Baseline `a1b1e939048885d2793759b7f49b10c5c820d70d`; freeze `cb35339d81b425f486f9cb34a08111996be61b8a`.
+
+| Claim / axis | Counting command | Before → target |
+|---|---|---|
+| C1 coverage capability — Playwright Firefox loopback TCP observation with actual sample-span and fail-closed socket evidence | `node .ufo/waves/round-40/counters/c1-sample-span.mjs <receipt.json>` | At baseline, round-39 receipt: exit 1 with schema and both `sample-span` findings (799 ms / 701 ms). Target: new round-40 receipt predicate true / exit 0; the old receipt remains refused. No numerical axis score changes without a later score rubric. |
+
+Do-nothing control receipt: `.ufo/waves/round-40/controls/c1-round39-noop.json`; frozen predicate, counter digest and kill rule: `.ufo/waves/round-40/claims.json`. The claim is not admitted until independently falsified and measured at delivered revision.
