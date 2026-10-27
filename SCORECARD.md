@@ -2100,7 +2100,6 @@ No new capability row; the round remeasures and hardens the instruments behind
 ## Round 38 — corrections and capability candidate
 
 - Round-37 verifier correction: the old scorecard wave block says 68 seats; round-37 w2 was not dispatched. The committed round-37 result object records 34 w1 seats. This append-only correction supersedes the old tally; it does not remove historical text.
-- Claim C1 (calibration): round-37 routed defects D1–D6 are measured by `.ufo/waves/round-38/counters/c1-routed-defects.mjs`; result pending integration and frozen measurement.
-- Claim C2 (coverage capability): Playwright Firefox/Juggler loopback evidence, driver `scripts/playwright-firefox-loopback-round38.mjs`, receipt `corpus/evidence/round-38/playwright-firefox/receipt.json`; two runs have matching first-screenshot hashes, observed egress 0 and survivors 0. The claim's frozen verification and non-author review are pending.
-- Capability row: `playwright-firefox-loopback` — drive Playwright 1.64.0's patched Firefox 157.0 on loopback and capture page, interaction and network evidence; demonstrated in `scripts/playwright-firefox-loopback-round38.mjs` and `corpus/evidence/round-38/playwright-firefox/receipt.json`; first-working round 38. Source: S144.
-- Axis scores held until the frozen counter is measured; saturation 8 / window 3. Tool install: Playwright Firefox 157.0, official Playwright CLI browser installation; Playwright 1.64.0 npm-global was already present. No pacman transaction.
+- Claim C1 (calibration): round-37 routed defects D1–D6 are measured by `.ufo/waves/round-38/counters/c1-routed-defects.mjs`; measured at the final integration tip, predicate false (D4 and D6 findings remain).
+- Claim C2 (coverage capability candidate): Playwright Firefox/Juggler loopback driver and receipt are retained, but the frozen claim is **not admitted** because the runtime evidence is not session-bound against the falsifiers; no capability row enters the table.
+- Axis scores held; saturation 8 / window 3. Playwright 1.64.0 was already globally installed; Firefox 157.0 was installed from the official Playwright CLI browser channel. No pacman transaction.
