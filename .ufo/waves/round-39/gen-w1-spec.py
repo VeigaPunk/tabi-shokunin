@@ -6,7 +6,7 @@ from collections import Counter
 LANE = '/home/vgpnk/Projects/shokunin/tabi-shokunin'
 FLEET = '/home/vgpnk/Projects/shokunin'
 WAVE = 'w1'
-FREEZE = '1f4260aeb3af186e84444cbb417a31b8a35bdb55'
+FREEZE = '9c09ebb1e2ff594c70ce72093b5d4133c1734dca'
 BASELINE = '5bc56a81d196caeb8d24551928b883802697aabb'
 SCRATCH = '/fast/scratch/hyaku/tabi-r39'
 GODSPEED = open('/home/vgpnk/.agents/skills/godspeed/directive.md').read().rstrip('\n')
