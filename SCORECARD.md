@@ -2096,3 +2096,11 @@ No new capability row; the round remeasures and hardens the instruments behind
 | expansion | unchanged | No new knowledge entry; the registry gains one row (S143) cited by the C2 counter — instrument ground, not new domain coverage. |
 | quality | improved | All eight round-36 routed defects land as frozen amendments with red controls; the v4/v2 attack receipts (exit 0 on grafted/tampered inputs) become v5/v3 refusals (exit 2/1) on the same fixtures. |
 | discernment | unchanged | No outside non-author admit/reject spot-check at lane filing; dispatched seats do not qualify. |
+
+## Round 38 — corrections and capability candidate
+
+- Round-37 verifier correction: the old scorecard wave block says 68 seats; round-37 w2 was not dispatched. The committed round-37 result object records 34 w1 seats. This append-only correction supersedes the old tally; it does not remove historical text.
+- Claim C1 (calibration): round-37 routed defects D1–D6 are measured by `.ufo/waves/round-38/counters/c1-routed-defects.mjs`; result pending integration and frozen measurement.
+- Claim C2 (coverage capability): Playwright Firefox/Juggler loopback evidence, driver `scripts/playwright-firefox-loopback-round38.mjs`, receipt `corpus/evidence/round-38/playwright-firefox/receipt.json`; two runs have matching first-screenshot hashes, observed egress 0 and survivors 0. The claim's frozen verification and non-author review are pending.
+- Capability row: `playwright-firefox-loopback` — drive Playwright 1.64.0's patched Firefox 157.0 on loopback and capture page, interaction and network evidence; demonstrated in `scripts/playwright-firefox-loopback-round38.mjs` and `corpus/evidence/round-38/playwright-firefox/receipt.json`; first-working round 38. Source: S144.
+- Axis scores held until the frozen counter is measured; saturation 8 / window 3. Tool install: Playwright Firefox 157.0, official Playwright CLI browser installation; Playwright 1.64.0 npm-global was already present. No pacman transaction.
