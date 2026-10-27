@@ -8,7 +8,7 @@
 
 ## Mistakes
 
-- **M1, class `self-assessment-overclaim` — round-37 verifier spot-check, routed defect 1, `corpus/lessons/round-37-verifier-spotcheck.md` §Routed defects. Captured-by: none at round 37; the prose correction rule did not require a counter-derived seat count. Fix: retain the stale SCORECARD line and append a correction only when it names the true wave result; re-derive from committed `w1-results.json` (34 seats) and absence of w2 dispatch/results.** The old 68-seat claim remains historical and is not silently erased.
+- **M2, class `surface-mismatch` — round-37 verifier spot-check routed defect 4. Captured-by: W2 RevFrozenDigests at `corpus/lessons/round-36.md`'s routed defect 4. Fix attempted: add a mutated-sentence red control for predicate text identity. This attempt did not land a counter that enforces the byte-identity check and did not produce `.ufo/waves/round-38/baseline/m3-sentence-mutant.json`; the defect remains open and C1 is not met.**
 
 ## Census
 
@@ -17,3 +17,5 @@ Round-start command: `/home/vgpnk/Projects/shokunin/scripts/sources-census.sh va
 ## Assimilation and frontier
 
 Assimilation: none. Package quarantined rows remain closed pending the required hand-check; no staged theme was opened/adopted for these claims. No `considerthese/` directory exists in this lane.
+
+
