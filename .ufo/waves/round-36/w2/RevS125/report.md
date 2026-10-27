@@ -1,0 +1,7 @@
+# RevS125 — S125 landing attack
+
+VERDICT ok — all requested S125 falsifiers are supported by the committed landing: cell-reverted leaves population 23; twin-seat refetch fails f6; old-as-new bytes fail f3 and f5. In the committed receipt, `fetched_by` is `ScribeRoutedDefects` while refetch `seat` is `ExecS125`. Both committed blob SHA-256 values match their receipt digests. All six normalized receipt blocks occur in the stable blob at the named starts (287, 332, 378, 411, 440, 521); the single-line range at 378 is non-discriminating, with additional occurrences at 843 and 944, but does not falsify the pin. No actionable finding.
+
+Evidence: `.ufo/waves/round-36/w1/ExecS125/gate/ctl-cell-reverted.json`, `ctl-refetch-seat-twin.json`, `ctl-old-bytes-as-new.json`, and `gate-B-cell-plus-companions.json` show respectively population 23 clean, f6 unresolved, f3+f5 unresolved, and population 24/resolved 24/holds 17 clean. Independently extracted both blob objects from commit `f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7`; SHA-256 results exactly match receipt row S125. Hand normalization (`trim`, collapse internal whitespace) finds all six ranges at the stated locations. The row/refetch identity fields match the required twin-seat distinction.
+
+Verification gap: the requested controls are documented as scratch-mirror runs in the integration report and their committed JSON outputs were checked here; I did not independently replay the mutation-generating controls. No tools installed.

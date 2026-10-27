@@ -1,0 +1,1 @@
+VERDICT could-not-evaluate — fixture was not completed; no counter verdict claimed. See `.ufo/waves/round-36/w2/RevStaleAsym/report.md` for evidence and limitation.

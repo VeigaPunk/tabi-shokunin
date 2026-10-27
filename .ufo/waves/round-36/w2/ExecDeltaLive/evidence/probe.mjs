@@ -1,0 +1,16 @@
+import { deltaCandidates, pinLines } from './c1-counter.mjs';
+import { readFileSync } from 'node:fs';
+const FLEET='/home/vgpnk/Projects/shokunin';
+const frozen=JSON.parse(readFileSync('./freeze-pins.json','utf8'));
+const live=JSON.parse(readFileSync('./live-pins.json','utf8'));
+const f=deltaCandidates(FLEET, frozen);
+const l=deltaCandidates(FLEET, live);
+console.log('delta pool at FROZEN heads:', f.length);
+console.log('delta pool at LIVE   heads:', l.length);
+const fk=new Set(f.map(c=>c.key)), lk=new Set(l.map(c=>c.key));
+const added=l.filter(c=>!fk.has(c.key));
+const removed=f.filter(c=>!lk.has(c.key));
+console.log('--- delta candidates present at live but not frozen:', added.length);
+for(const c of added) console.log('  +', c.key, '::', c.text.trim().slice(0,110));
+console.log('--- present at frozen but not live:', removed.length);
+for(const c of removed) console.log('  -', c.key);

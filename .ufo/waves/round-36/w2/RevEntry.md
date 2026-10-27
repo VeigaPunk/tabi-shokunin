@@ -1,0 +1,1 @@
+VERDICT ok — audited the requested method-entry figures against committed bytes at f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7; no actionable discrepancy found. Full evidence: `.ufo/waves/round-36/w2/RevEntry/report.md`.

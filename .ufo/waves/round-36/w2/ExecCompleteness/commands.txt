@@ -1,0 +1,61 @@
+# ExecCompleteness — exact commands (S=/fast/scratch/hyaku/tabi-r36/ExecCompleteness, deleted at seat end)
+# Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin   FLEET: /home/vgpnk/Projects/shokunin
+# FREEZE=2e7b7a8920bff47fae6f75c3d06e48e37767099e  TIP=f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7
+
+mkdir -p $S/tmp $S/out
+git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 2e7b7a8920bff47fae6f75c3d06e48e37767099e:.ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs > $S/c1.mjs
+sha256sum $S/c1.mjs
+# -> 8a223faf5e109fc05dac1373a4a4979b65f9ec2ffef40f86ae9bf40ba1aad385  == claims.frozenDigests
+git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 2e7b7a8920bff47fae6f75c3d06e48e37767099e:.ufo/waves/round-36/measure.sh > $S/measure.sh
+sha256sum $S/measure.sh
+# -> 6a652aca6a487ae4459c986243befc09412924d3a41945eb3c446f4adff35afa  == claims.frozenDigests
+
+export TMPDIR=$S/tmp
+git clone --shared -q /home/vgpnk/Projects/shokunin/tabi-shokunin $S/c
+git -C $S/c checkout --detach -q f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7
+git -C $S/c rev-parse --show-toplevel          # $S/c   (asserted)
+git -C $S/c rev-parse HEAD                     # f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7
+sha256sum $S/c/scripts/check-adjacency.mjs     # 4e2c2a64… == pin inside C1
+git -C $S/c status --porcelain                 # 0 lines
+
+# --- claim counting command at the wave-1 landing (exit 0) ---
+node $S/c1.mjs --rev f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7 --repo $S/c --fleet /home/vgpnk/Projects/shokunin --json > $S/out/run-tip.json 2> $S/out/run-tip.stderr
+# exit 0, stderr 0 bytes, sha256 9ad9f6602733efd66dda62e991d0bab424428a79d88476ef31d81834a026314f
+node $S/c1.mjs --rev f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7 --repo $S/c --fleet /home/vgpnk/Projects/shokunin --json > $S/out/run-tip-repeat.json
+# byte-identical (same sha256) -> deterministic
+
+# --- list modes ---
+node $S/c1.mjs --list-candidates --repo $S/c --fleet /home/vgpnk/Projects/shokunin > $S/out/list-candidates.txt  # 383, exit 0
+node $S/c1.mjs --list-drift      --repo $S/c --fleet /home/vgpnk/Projects/shokunin > $S/out/list-drift.txt       # 307, exit 0
+node $S/c1.mjs --list-delta      --repo $S/c --fleet /home/vgpnk/Projects/shokunin > $S/out/list-delta.txt       # 0,   exit 0
+
+# --- independent recount (own enumeration; imports only the frozen BG regex, parses PINS from the counter) ---
+node $S/recount.mjs $S/c $S/out/recount-candidate-keys.txt > $S/out/recount.json
+# candidates 383, priorSkipped 22, pinLines 405, deltaPool 0, driftedLanes 12
+diff <(sort $S/out/list-candidates.txt) <(sort $S/out/recount-candidate-keys.txt)   # identical (383 keys)
+diff <(sort $S/out/list-drift.txt)      <(sort $S/out/drift-refs-independent.txt)   # identical (307 refs)
+
+# --- drift/audit set equality from ledger bytes at TIP ---
+git -C $S/c show f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7:corpus/adjacency-screen-browser.tsv \
+ | awk -F'\t' -v L='chousa kaidoku kake kama kasegi kengaku kumitate mado mori revenger tameshi tsukuroi' \
+   'BEGIN{n=split(L,a," ");for(i=1;i<=n;i++)d[a[i]]=1} NR>1&&$1!=""{ref=$1;sub(/-shokunin@.*/,"",ref); if(ref in d) print $1}' \
+ | sort > $S/out/drift-refs-independent.txt                                   # 307
+git -C $S/c show f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7:corpus/adjacency-screen-drift.tsv \
+ | awk -F'\t' 'NR>1&&$1!=""{print $1}' | sort > $S/out/audit-refs.txt         # 307, uniq -d -> 0
+git -C $S/c show f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7:corpus/adjacency-screen-drift.tsv \
+ | awk -F'\t' 'NR>1{c[$2]++}END{for(k in c)print k,c[k]}'                     # unchanged 304, moved 3
+
+# --- post-landing invariance ---
+git -C $S/c diff --name-only 2e7b7a8920bff47fae6f75c3d06e48e37767099e f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7 \
+  -- corpus/adjacency.tsv corpus/adjacency-screen-browser.tsv corpus/adjacency-screen-drift.tsv \
+     corpus/adjacency-screen-delta.tsv .ufo/waves/round-36/baseline/ .ufo/waves/round-36/counters/   # empty
+for p in corpus/adjacency-screen-drift.tsv corpus/adjacency-screen-browser.tsv corpus/adjacency.tsv \
+         .ufo/waves/round-36/baseline/c1-delta-pins.json; do
+  git -C $S/c show 2e7b7a89…:$p | sha256sum; git -C $S/c show f2f3f14…:$p | sha256sum; done   # SAME each
+# lane HEAD moved past the landing (dispatch-only commits):
+node $S/c1.mjs --rev 1ee2ab1aaee3c29681d553c3a353d6ee5c4930f1 --repo $S/c --fleet /home/vgpnk/Projects/shokunin --json > $S/out/run-laneHEAD.json  # exit 0, identical summary
+node $S/c1.mjs --rev 1ee2ab1 --repo $S/c --fleet /home/vgpnk/Projects/shokunin --json   # exit 2: revision must be 40-hex (expected)
+
+# --- scratch teardown ---
+ls -A $S/tmp | wc -l        # 0 (counter's own scratch removed)
+rm -rf -- $S

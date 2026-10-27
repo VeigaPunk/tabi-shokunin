@@ -1,0 +1,13 @@
+# MutGateBidi — C2 gate mutation probe
+
+Mutant target: `scripts/check-bidi-runtime.mjs`, pristine SHA-256 `370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87` (matches frozen GATE_SHA256). Scratch copies only; no lane files changed. `TMPDIR` was the seat scratch `.../tmp`; scratch removed on exit. Restored/pristine lane file SHA-256 after all probes remains `370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87`.
+
+Baseline detector: `node pristine.mjs --selftest` exited 0. Requested direct gate command on f2f3... vs baseline d805... exited 2. Its stdout was `CASE id=do-nothing-entry-absent ...` rather than JSON, indicating this direct invocation is a test-style/could-not-evaluate path, not a clean honest-tree gate result. Thus no mutant gate-run result can be treated as a valid honest-tree flip; baseline failure is inconclusive.
+
+Mutants and observed detector results:
+- m1, removed R17 from the 17-row `ROWS` recipe: self-test exited 3; direct gate run exited 2. The self-test emitted no JSON summary in this invocation, so specific red-state cannot be attributed from output. Self-test detector is nonzero (mutation detected/inconclusive exact leg); run leg is baseline-inconclusive.
+- m2, changed `VIEWPORT.width` 640→641: self-test exited 0; direct gate run exited 2. Self-test does not detect this recipe drift (survived). Run leg baseline-inconclusive.
+- m3, changed fixture server listen host `127.0.0.1`→`0.0.0.0`: NOT executed, per safety constraint. Static source shows the sole fixture listener configuration is `server.listen(0, "127.0.0.1", ...)` at line 198; the counter's live driver starts this imported fixture via `serveFixture`. Mutant would bind all interfaces and expose fixture responses beyond loopback; gate must not run this mutation.
+- m4, attempted to drop transcript command-ordering check by deleting `reorder` declaration. The mutation was syntactically invalid (left dangling invocation/closure); node exited 1 before either detector. This probe is inconclusive, not a killed mutant. No restored bytes were needed; pristine remained untouched.
+
+Verdict: C2 mutation adequacy is inconclusive overall. Observed finding: m2 survived the self-test, which does not detect viewport constant drift. The requested direct gate detector did not establish a clean baseline (exit 2), so cannot score gate-run mutant flips. m1 self-test nonzero is evidence of rejection but its actual leg/output was not legible enough to report a particular red-state. Smallest correction indicated by this probe: add an explicit self-test assertion binding VIEWPORT to the required 640×480 contract. No code change made.

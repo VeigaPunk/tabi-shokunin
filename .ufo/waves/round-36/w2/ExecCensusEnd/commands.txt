@@ -1,0 +1,32 @@
+# ExecCensusEnd — commands actually run (fleet root F=/home/vgpnk/Projects/shokunin, lane L=$F/tabi-shokunin,
+# scratch S=/fast/scratch/hyaku/tabi-r36/ExecCensusEnd, C=$F/scripts/sources-census.sh)
+# read-only throughout; no git/jj mutation anywhere; fixtures/temp files under $S only.
+
+# 1. assigned command at the current state (worktree = HEAD 1ee2ab1, SOURCES bytes == f2f3f14)
+$C validate --root $F tabi > $D/after-validate.txt 2> $D/after-validate.stderr ; echo $? > $D/after-validate.exit
+$C census   --root $F tabi > $D/after-census.tsv ; echo $? > $D/after-census.exit
+$C overdue  --root $F tabi > $D/after-overdue.tsv ; echo $? > $D/after-overdue.exit
+
+# 2. baseline from the frozen tips, never from a worktree copy
+git -C $L show 11c64b96f357de106c30a71c5e21ca44a3eacdc0:corpus/SOURCES.md > $S/SOURCES-baseline-11c64b9.md
+git -C $L show 2e7b7a8920bff47fae6f75c3d06e48e37767099e:corpus/SOURCES.md > $S/SOURCES-freeze-2e7b7a8.md
+git -C $L show f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7:corpus/SOURCES.md > $S/SOURCES-landing-f2f3f14.md
+# baseline-lane fixture: own SOURCES bytes + symlinked sibling corpus children so E11 resolves as in-lane
+mkdir -p $S/baseline-lane/corpus ; cp $S/SOURCES-baseline-11c64b9.md $S/baseline-lane/corpus/SOURCES.md
+for p in $L/corpus/*; do b=$(basename "$p"); [ "$b" = SOURCES.md ] && continue; ln -sfn "$p" "$S/baseline-lane/corpus/$b"; done
+$C census   --file $S/baseline-lane/corpus/SOURCES.md > $D/before-census.tsv ; echo $? > $D/before-census.exit
+$C validate --file $S/baseline-lane/corpus/SOURCES.md > $D/before-validate.txt ; echo $? > $D/before-validate.exit
+$C overdue  --file $S/baseline-lane/corpus/SOURCES.md > $D/before-overdue.tsv ; echo $? > $D/before-overdue.exit
+
+# 3. receipt comparison / identity / cell diff / clock probe / E11-vs-git / shared
+cmp $L/.ufo/waves/round-36/baseline/census-start.txt $D/after-validate.txt          # -> receipt-comparison.txt
+sha256sum ...                                                                       # ditto
+git -C $L diff --numstat 2e7b7a8 f2f3f14 -- corpus/SOURCES.md                       # -> sources-identity.txt
+awk -F'|' per-row 11-cell dump at 2e7b7a8 and f2f3f14, then diff                    # -> cell-diff.txt
+$C validate --file $L/corpus/SOURCES.md --today 2026-10-26 | 2026-10-27 | 2026-10-28  # -> clock-probe.txt
+$C validate --file $S/baseline-lane/corpus/SOURCES.md --today 2026-10-26 | 2026-10-27
+# E11 re-derived against git objects: for every mined row's used-by path, -e on disk AND git cat-file -e HEAD:path
+$C shared --root $F | awk -F'\t' '$3 ~ /(^|,)tabi(,|$)/'                            # -> fleet-shared-tabi.tsv
+# prior-round receipt shape (why the validate-only receipt cannot witness a row delta)
+cmp $L/.ufo/waves/round-35/baseline/census-start.txt $L/.ufo/waves/round-35/measure/census-end.txt
+git show a4bfef0f75027c915e715649950b1d46dcb33d83:corpus/SOURCES.md | grep -cE '^\| *S[0-9]{3,} *\|'   # 133
