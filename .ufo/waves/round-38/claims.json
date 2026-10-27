@@ -1,0 +1,59 @@
+{
+ "schema": "tabi-round-claims-v2",
+ "lane": "tabi",
+ "round": 38,
+ "frozenAt": "98239d0396ff32c3feb14638b3214fe688e8b122",
+ "baseline": "98239d0396ff32c3feb14638b3214fe688e8b122",
+ "axesAtRoundStart": {
+  "adjacency": 8,
+  "operability": 9,
+  "depth": 9,
+  "coverage": 9,
+  "freshness": 9,
+  "calibration": 9
+ },
+ "lowestAxis": "adjacency",
+ "stagnationNudge": "At round 38, saturation line 8 and window 3; the preceding completed round window 35-37 contains capability round 35, so nudge is inactive by prior SCORECARD precedent. However this round includes a capability move as frontier work; adjacency remains the lowest axis and is not claimed because the closed candidate/delta pool has no do-nothing-resistant adjacency move. This is a known protocol tension, reported honestly.",
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "calibration",
+   "kind": "instrument-repair",
+   "title": "Round-37 routed-defect calibration counter",
+   "surface": "SCORECARD/LOG/round-37 seat verdict and census/numstat receipts",
+   "predicate": "D1-D6 all re-derived and corrected at REV by c1-routed-defects.mjs; predicate true",
+   "countingCommand": "node .ufo/waves/round-38/counters/c1-routed-defects.mjs --rev <REV> --repo <clean clone> --json",
+   "before": "Six routed defects listed in corpus/lessons/round-37-verifier-spotcheck.md; counter absent",
+   "target": "Frozen counter predicate true at measured REV; baseline control must fail",
+   "killRule": "Any stated number differs from counter-derived evidence; missing correction; absent source receipt; baseline reaches predicate",
+   "source": "S144 (Playwright docs) is only for C2; C1 source is round-37 verifier spot-check."
+  },
+  {
+   "id": "C2",
+   "axis": "coverage",
+   "kind": "capability-acquisition",
+   "title": "Playwright Firefox Juggler loopback evidence capability",
+   "surface": "Playwright 1.64.0 + Firefox 157.0 via Juggler against loopback fixture",
+   "predicate": "Two cold runs; same first screenshot SHA; loopback-only requests; zero observed non-loopback sockets; zero survivors; click/navigation/evaluation evidence verified",
+   "countingCommand": "node scripts/playwright-firefox-loopback-round38.mjs --out <receipt> --runs 2",
+   "before": "No Playwright Firefox/Juggler capability row; browser absent from Playwright cache",
+   "target": "Driver runs twice and commits receipt and knowledge row citing opened S144; capability row enters SCORECARD",
+   "killRule": "No run output, differing first-shot hashes, non-loopback egress, survivor, or no cited newly opened source row."
+  }
+ ],
+ "frozenDigests": {
+  ".ufo/waves/round-38/counters/c1-routed-defects.mjs": "209d86a0cc6fd35f9f87d0e74a769df8666d952a5e9fdec8a75df60b149d57f7",
+  ".ufo/waves/round-38/counters/c1-adjacency-sweep-v6.mjs": "704da8068783b6c1debcefcf31a46cf503438e8974a27ebde73ade5053a890bb",
+  ".ufo/waves/round-38/counters/c2-firefox-bidi-v4.mjs": "6a14d8ca9200270e1fbd8537ddd74b986c181112eb97a9cfbc98dbb64047fecf",
+  ".ufo/waves/round-38/counters/c2-battery-mutants.mjs": "6d7a925b563cdb1dcf30828087f9600d0b0f9deb98df21deb54d2a7cf91e503c",
+  "scripts/playwright-firefox-loopback-round38.mjs": "4cf3a8499ad30158dd03d0b518ce8a79967bd0afafd2ea0f8b5730b0b02e75c1"
+ },
+ "toolInstalls": [
+  {
+   "tool": "Playwright",
+   "version": "1.64.0",
+   "channel": "npm global already present; official Playwright CLI browser install",
+   "reason": "probe/run Firefox Juggler capability; no pacman transaction"
+  }
+ ]
+}
