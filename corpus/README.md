@@ -850,3 +850,9 @@ when sibling heads move; its measured claim and limits are in `corpus/lessons/ro
 | Note | Holds | Sources |
 |---|---|---|
 | `knowledge/adjacency-drift-audit-r36.md` | How the frozen counter derives `unchanged` / `moved` / `stale` against a pinned delta head, verifies relocation notes, and checks the delta pool; the 307-row ledger and post-freeze note-drift limits are tied to the round-36 measurement rather than treated as standing facts. | S142 (`git show` object/revision addressing); `.ufo/waves/round-36/measure/`; w2 `ExecDeltaLive` correction at the entry's appended §Correction. |
+
+## Round 38 — Playwright Firefox loopback capability
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/playwright-firefox-loopback-round-38.md` | Host/build-scoped Playwright 1.64.0 Firefox 157.0 Juggler run on loopback; two cold-run screenshot binding, interaction and network observations, egress and cleanup evidence. | S144; `corpus/evidence/round-38/playwright-firefox/receipt.json`; `scripts/playwright-firefox-loopback-round38.mjs`. |
