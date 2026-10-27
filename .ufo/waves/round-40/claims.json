@@ -1,0 +1,36 @@
+{
+  "schema": "tabi-round-claims-v2",
+  "lane": "tabi",
+  "round": 40,
+  "baseline": "a1b1e939048885d2793759b7f49b10c5c820d70d",
+  "axesAtRoundStart": {"adjacency": 8, "operability": 9, "depth": 9, "coverage": 9, "freshness": 9, "calibration": 9},
+  "lowestAxis": "adjacency",
+  "stagnationNudge": "All owned axes are at or above saturation 8 and no capability has entered within the three-round window (rounds 37-39); the lowest-axis obligation is waived. C1 is a coverage capability/frontier move.",
+  "claims": [
+    {
+      "id": "C1",
+      "axis": "coverage",
+      "kind": "capability-acquisition",
+      "title": "Playwright Firefox loopback TCP observation with sample-span and fail-closed evidence",
+      "surface": "The existing Playwright Firefox/Juggler loopback capture, two independent runs, and the round-40 C1 counter over the committed receipt.",
+      "predicate": "two unrefused runs AND each run has >=8 strictly increasing samples whose first-to-last observed timestamp span is >=1000ms AND both ss and proc observations exist on every sample and final sweep AND all observed nonLoopback counts are zero AND per-run owned tree is nonempty AND both runs have identical firstShotSha256 AND both runs have zero survivors and closed fixture port AND browserVersion is bound AND counter rejects the round-39 receipt whose sample spans are below 1000ms",
+      "countingCommand": "node .ufo/waves/round-40/counters/c1-sample-span.mjs <receipt.json>",
+      "before": "At baseline a1b1e939048885d2793759b7f49b10c5c820d70d, the last committed round-39 receipt is refused by the round-40 counter: exit 1, findings schema, run1-sample-span, run2-sample-span. Its first-to-last sample spans are 799 ms and 701 ms (the tail-inclusive coverageMs is not the frozen predicate).",
+      "target": "A new committed round-40 receipt scores predicate=true / exit 0 at the delivered revision; the round-39 receipt remains refused / exit 1. Only then may the capability row enter SCORECARD.md.",
+      "killRule": "Either run has fewer than 8 samples, non-increasing/missing sample timestamps, observed first-to-last span under 1000 ms, unavailable ss/proc surface, any nonLoopback observation, empty owned tree, differing firstShotSha256, nonzero/unlisted survivors, open fixture port, unbound browser version, or the round-39 receipt reaches exit 0.",
+      "source": "S145 (proc_pid_net(5), reopened 2026-10-27; DESCRIPTION /proc/net/tcp), cited by the run receipt; quote and location are retained in corpus/lessons/round-40.md §Gate."
+    }
+  ],
+  "frozenDigests": {
+    ".ufo/waves/round-40/counters/c1-sample-span.mjs": "b9498e63b8b5c3cff54f76b081b33eedc98d67089db91643118b14a71416460c"
+  },
+  "controls": [
+    {
+      "name": "c1-round39-noop",
+      "receipt": ".ufo/waves/round-40/controls/c1-round39-noop.json",
+      "result": "predicate=false; exit 1; findings include both run1-sample-span and run2-sample-span",
+      "purpose": "Do-nothing control: re-score the latest committed receipt without running the improved driver. It cannot reach the target because both observed spans are below 1000 ms."
+    }
+  ],
+  "toolInstalls": []
+}
