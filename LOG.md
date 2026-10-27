@@ -2499,3 +2499,17 @@ Trend verdicts: expansion **improved** (new sourced method entry on uncovered dr
 - **M1, class `scope`:** the new method entry's original §6.7 generalized that post-freeze movement “changes nothing in this ledger.” W2 ExecDeltaLive re-derived at live sibling tips and found three changed relocation notes and a counter refusal. Captured-by: none. The appendix correction in `corpus/knowledge/adjacency-drift-audit-r36.md` clarifies the frozen-REV versus live-tip distinction; its red state is the 3 `audit-moved-wrong-relocation` findings.
 - **M2, class `reference-drift` (open):** the frozen C1 counter does not bind `.ufo/waves/round-36/baseline/c1-delta-pins.json` to its frozen digest; CritC1 T8 passes with three moved rows mis-audited. Captured-by: none. Fix is a round-37 counter amendment, with T8/T6 as red controls; this round's out-of-band receipt is not a permanent repair.
 - Planned next: C1 counter pins/predicate/build-tool repair and C2 git/process/receipt hardening before new claim data; correct the frozen measurement harness's numstat path and invalid freshness invocation.
+
+## Round 36 — landed-commit ledger (append-only)
+
+The Round 36 work above is carried by these lane commits, all landed with `jj-lane.sh --as tabi`:
+
+- `2e7b7a8920bff47fae6f75c3d06e48e37767099e` — frozen claims, C1/C2 counters and controls.
+- `e6959879c87f2504e699c00c5e4ab869b4effb20` — D11 correction plus w1 spec/dispatch/early seat evidence; `bd688fc` is the attempt-1 state handoff.
+- `72e19a51b9679c2b2c5d050ce2a6ae7ab2ba3dd5` and `53937aa651880cf58dbd29a332bded12e26ec4d7` — late w1 seat evidence and the complete `w1-results.json`.
+- `f2f3f14555ec1db6d8c3a6dc9e4059ef9489b8c7` — S125 `on-release` plus four companion files; S142 and its sourced method entry.
+- `12915bc33a611362324d4f66f3763002aad2e5ba` and `1ee2ab1aaee3c29681d553c3a353d6ee5c4930f1` — validated w2 spec/ready and rendered dispatch payload/registry.
+- `badc697386896d3cbfb624fb94652e9a9e9fb4d3` — w2 results and seat evidence.
+- `20a69e0ae33292a71504e40be326f1513cd5a81b` — append-only post-freeze clarification in the method entry and README coverage row.
+- `410e91b75784391a14b34c780d237b6a6b5d106e` — round-36 lesson, scorecard/log disposition and measurement receipts.
+- `ac2160c771f30e7b3057d13b5813916142d02535` — final census and measured-input-stability receipts.
