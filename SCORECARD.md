@@ -2179,3 +2179,7 @@ Baseline `a1b1e939048885d2793759b7f49b10c5c820d70d`; freeze `cb35339d81b425f486f
 Do-nothing control receipt: `.ufo/waves/round-40/controls/c1-round39-noop.json`; frozen predicate, counter digest and kill rule: `.ufo/waves/round-40/claims.json`. The claim is not admitted until independently falsified and measured at delivered revision.
 
 Only C1 is declared this round. The planned C2 repair of the round-39 D6 self-reference is not claimed or amended; it remains an explicit open routed defect. The remaining package quarantine is hand-check-only until every row has lane-local source evidence; no adoption is authorized by this claim.
+
+### Round 40 — pre-dispatch freeze amendment
+
+The initial freeze `cb35339d81b425f486f9cb34a08111996be61b8a` is retained as history and superseded before any dispatch/data after its counter failed closed only on object absence, not the driver's explicit unavailable placeholder (`unavailable:true`, `ticks:0`, numeric `nonLoopback:0`). Amended C1 predicate additionally requires available ss/proc samples and final sweeps with positive observation ticks. Counter: `node .ufo/waves/round-40/counters/c1-sample-span-v2.mjs <receipt.json>`. The prior round-39 receipt remains refused; unavailable-surface counter selftest is 5/5. Revised claim digest and controls are at `.ufo/waves/round-40/claims.json` and `controls/c1-selftest-v2.json`. No seat has scored the claim.
