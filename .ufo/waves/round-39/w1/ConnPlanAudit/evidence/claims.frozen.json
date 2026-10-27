@@ -1,0 +1,51 @@
+{
+ "schema": "tabi-round-claims-v2",
+ "lane": "tabi",
+ "round": 39,
+ "frozenAt": "1f4260aeb3af186e84444cbb417a31b8a35bdb55",
+ "baseline": "5bc56a81d196caeb8d24551928b883802697aabb",
+ "axesAtRoundStart": {
+  "adjacency": 8,
+  "operability": 9,
+  "depth": 9,
+  "coverage": 9,
+  "freshness": 9,
+  "calibration": 9
+ },
+ "lowestAxis": "adjacency",
+ "stagnationNudge": "At round 39 the saturation line is 8 and the stagnation window is 3; no capability entered in rounds 36-38 (the round-38 Playwright capability was not admitted), so the window is exceeded and the nudge waives the lowest-axis obligation. The round is a frontier/capability move: C1 is a capability acquisition on coverage.",
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "coverage",
+   "kind": "capability-acquisition",
+   "title": "Playwright Firefox session-bound egress loopback capability",
+   "surface": "Playwright 1.64.0 + Firefox 157.0 via Juggler against the loopback fixture, observed by scripts/playwright-firefox-egress-round39.mjs",
+   "predicate": "schema v2 AND two unrefused runs AND identical first-shot sha256 across runs AND per-run owned tree nonempty rooted at a child of the driver node process AND at least 8 socket samples per run over at least 1000 ms AND zero non-loopback socket observations on both the ss and /proc surfaces including the post-close final sweep AND zero survivors AND the fixture port closed AND the firefox version bound from the live session AND the round-38 v1 receipt refused by this counter",
+   "countingCommand": "node .ufo/waves/round-39/counters/c1-egress-session-bound.mjs --rev <REV> --repo <clean clone> --json",
+   "before": "No session-bound receipt: the round-38 v1 receipt (corpus/evidence/round-38/playwright-firefox/receipt.json) is refused by the frozen counter (global executable grep pid discovery, 2 samples at 400 ms, empty pid set not refused, firefoxVersion null)",
+   "target": "Frozen counter predicate true at the measured integration REV; the round-38 v1 receipt refused as the do-nothing control; capability row enters SCORECARD.md",
+   "killRule": "Any stated number differing from the receipt; missing dual-surface agreement; empty or unbound owned set admitted; fewer than 8 samples or 1000 ms coverage; any non-loopback observation; survivors; unbound version; the do-nothing control reaching the predicate",
+   "source": "S145 (proc(5) man page, /proc socket observation) opened this round and cited by the knowledge entry"
+  },
+  {
+   "id": "C2",
+   "axis": "calibration",
+   "kind": "instrument-repair",
+   "title": "Round-38 routed residuals: sentence-mutation red control + numstat window protocol",
+   "surface": "c1-routed-defects v2 counter, .ufo/waves/round-39/baseline/c2-sentence-mutant.json, .ufo/waves/round-39/measure/{census-end.txt,numstat-at-<REV>.txt}",
+   "predicate": "D1 stale-line-present AND superseding-correction-present AND re-derived seats == 34 AND w2-artifacts absent AND D2 tally stated == recomputed 23 ok 11 finding AND D3 every round-37 hash present and ancestor with the freeze landing stated at 34ed508c AND D4 captured-by row present AND the round-39 sentence-mutant receipt records a nonzero exit with a predicate sentence different from the frozen sentence AND D5 round-39 census receipt counts equal this counter's parse AND D6 the round-39 numstat receipt names baseline 3f42a5c7cc19 and REV and its body byte-matches git diff --numstat baseline..REV excluding the receipt itself AND the round-39 claims predicate is byte-identical to this counter's sentence",
+   "countingCommand": "node .ufo/waves/round-39/counters/c2-routed-defects-v2.mjs --rev <REV> --repo <clean clone> --json",
+   "before": "Round-38 tip: v1 counter predicate false (d4-receipt m3-sentence-mutant.json absent; d6-file no round-38 numstat receipt); v1 never checks the predicate sentence, so a mutated-sentence claims.json is invisible to it",
+   "target": "Frozen counter predicate true at the measured integration REV; the counter itself refuses the mutated-claims fixture (exit non-zero, d7 finding) and the receipt records it; numstat receipt window and body equal git diff --numstat baseline 3f42a5c7cc19..REV excluding the receipt itself",
+   "killRule": "Any D1-D3 re-derivation differing; a fabricated mutant receipt (no recorded counter run, sha pair equal, or exit 0); census receipt counts differing from the counter parse; numstat window/body not equal to baseline..REV excluding itself; claims predicate not byte-identical",
+   "source": "Round-38 verifier spot-check routed defects 1-2 (corpus/lessons/round-38-verifier-spotcheck.md)"
+  }
+ ],
+ "frozenDigests": {
+  ".ufo/waves/round-39/counters/c1-egress-session-bound.mjs": "75e823e45bcaff817fb93d677df5dba714560b3be77e62103c73e1a0937c3b6e",
+  ".ufo/waves/round-39/counters/c2-routed-defects-v2.mjs": "eefc8997f9952a4f2fe9cdef0da3929cb46d14b54bc5d98b379826aa32058c7c",
+  "scripts/playwright-firefox-egress-round39.mjs": "3fba8b680cb1a415517266d722640aebf38e280a929d3ae5335054a3f09a33fc"
+ },
+ "toolInstalls": []
+}

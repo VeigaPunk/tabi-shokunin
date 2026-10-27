@@ -1,0 +1,3 @@
+Independent C1 recheck against clean shared clone at lane tip `1ace2fdeca7b9f81b8e4cf48f1a0f88e308bc0e4`: frozen counter returned exit 0, `predicate:true`, no findings. Committed v2 receipt satisfies two-run schema/refusal, matching first-shot hashes, nonempty child-rooted ownership, required sample/time coverage, zero non-loopback observations across ss/proc and post-close sweep, zero survivors, closed ports, and session-bound Firefox 157.0/version/userAgent/binary. The round-38 v1 control was present and refused. Exact output and predicate fields are in `w1/RevC1Receipt/report.md`.
+
+VERDICT ok — C1 frozen predicate met; v1 control refused

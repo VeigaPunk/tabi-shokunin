@@ -1,0 +1,24 @@
+### Counter self-test fixtures (isolated scratch clones; lane untouched)
+
+--- C1 fixture c1-v1only (rev f8f34d3f91903b7c4991cbe2f1ecec90e1b67556) ---
+FINDING receipt-absent corpus/evidence/round-39/playwright-egress/receipt.json absent at REV
+C1_EGRESS_SESSION_BOUND predicate=not-met rev=f8f34d3f91903b7c4991cbe2f1ecec90e1b67556 findings=1 controlRefused=true
+EXIT=1
+--- C1 fixture c1-honest (rev dfec88a7603de1ce9b5b84bf36deabbc5f4d8a0e) ---
+C1_EGRESS_SESSION_BOUND predicate=met rev=dfec88a7603de1ce9b5b84bf36deabbc5f4d8a0e findings=0 controlRefused=true
+EXIT=0
+--- C1 fixture c1-emptyowned (rev 3c18bbde3b44dd363e00caa13acc707ed0bd3c9b) ---
+FINDING run1-owned owned tree/roots/nodePid missing, empty, or not session-bound to the driver node process
+C1_EGRESS_SESSION_BOUND predicate=not-met rev=3c18bbde3b44dd363e00caa13acc707ed0bd3c9b findings=1 controlRefused=true
+EXIT=1
+--- C2 fixture c2-mutantclaims (rev 6505ce726363d7b0d057a1dd4f2ada3ec66cb64b), claims read from REV blob ---
+FINDING d5-receipt .ufo/waves/round-39/measure/census-end.txt absent at REV
+FINDING d6-file .ufo/waves/round-39/measure/numstat-at-6505ce72.txt absent at REV
+FINDING d7-sentence-mismatch claims[1].predicate is not byte-identical to the counter sentence (mutated-sentence control must be refused)
+C2_ROUTED_DEFECTS_V2 predicate=not-met rev=6505ce726363d7b0d057a1dd4f2ada3ec66cb64b findings=3 seats=34 tally=23/11 census=undefined d7=false
+EXIT=1
+--- C2 fixture c2-honest (rev dfec88a7603de1ce9b5b84bf36deabbc5f4d8a0e) ---
+FINDING d5-receipt .ufo/waves/round-39/measure/census-end.txt absent at REV
+FINDING d6-file .ufo/waves/round-39/measure/numstat-at-dfec88a7.txt absent at REV
+C2_ROUTED_DEFECTS_V2 predicate=not-met rev=dfec88a7603de1ce9b5b84bf36deabbc5f4d8a0e findings=2 seats=34 tally=23/11 census=undefined d7=true
+EXIT=1

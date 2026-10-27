@@ -1,0 +1,41 @@
+# red/green counter comparison — receipts differ only in /proc loopback classification
+# fixture: /fast/scratch/hyaku/tabi-r39/ScribeLesson/redgreen/repo  (toplevel guard asserted before every commit)
+# receipt path in fixture: corpus/evidence/round-39/playwright-egress/receipt.json
+# control path: corpus/evidence/round-38/playwright-firefox/receipt.json (copied from lane HEAD)
+# commits:
+4e65071 green: post-fix endian parser receipt
+ .../round-39/playwright-egress/receipt.json        | 198 ++++++++++++---------
+ 1 file changed, 112 insertions(+), 86 deletions(-)
+2d4f10d red: pre-fix endian parser receipt
+ .../round-38/playwright-firefox/receipt.json       | 382 +++++++++++
+ .../round-39/playwright-egress/receipt.json        | 707 +++++++++++++++++++++
+ 2 files changed, 1089 insertions(+)
+
+## RED rev 2d4f10d6e8fca948072546f91b34e601971f44b8 (measure/proc-endian-before.json as receipt)
+$ node .ufo/waves/round-39/counters/c1-egress-session-bound.mjs --repo /fast/scratch/hyaku/tabi-r39/ScribeLesson/redgreen/repo --rev 2d4f10d6e8fca948072546f91b34e601971f44b8
+FINDING run1-egress non-loopback sockets ss=0 proc=6
+FINDING run1-egress-total egressNonLoopback 6 != 0
+FINDING run2-egress non-loopback sockets ss=0 proc=6
+FINDING run2-egress-total egressNonLoopback 6 != 0
+FINDING egress-total receipt egressNonLoopback 12 != 0
+C1_EGRESS_SESSION_BOUND predicate=not-met rev=2d4f10d6e8fca948072546f91b34e601971f44b8 findings=5 controlRefused=true
+RED_EXIT=1
+
+## GREEN rev 4e650710a21aa78a55c86b6d257b2149dcbf230c (measure/proc-endian-after.json as receipt)
+$ node .ufo/waves/round-39/counters/c1-egress-session-bound.mjs --repo /fast/scratch/hyaku/tabi-r39/ScribeLesson/redgreen/repo --rev 4e650710a21aa78a55c86b6d257b2149dcbf230c
+C1_EGRESS_SESSION_BOUND predicate=met rev=4e650710a21aa78a55c86b6d257b2149dcbf230c findings=0 controlRefused=true
+GREEN_EXIT=0
+
+## single-file difference RED..GREEN
+ .../round-39/playwright-egress/receipt.json        | 198 ++++++++++++---------
+ 1 file changed, 112 insertions(+), 86 deletions(-)
+
+## endian receipts differ where:
+run1 serverPort before= 37333 after= 46347
+run1 owned before= {"nodePid": 2343123, "roots": [{"pid": 2343135, "argv0": "/home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/firefox"}], "tree": [2343135, 2343214, 2343217, 2343227, 2343236], "source": "children of this node process naming ms-playwright/firefox + ps -eo pid=,ppid= descendant walk"} after= {"nodePid": 2348119, "roots": [{"pid": 2348131, "argv0": "/home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/firefox"}], "tree": [2348131, 2348217, 2348220, 2348229, 2348238], "source": "children of this node process naming ms-playwright/firefox + ps -eo pid=,ppid= descendant walk"}
+run1 coverageMs before= 1467 after= 1519
+run1 sampleCount before= 8 after= 9
+run1 finalSweep before= {"t": 1793119318043, "ss": {"ticks": 1, "lines": 0, "nonLoopback": 0}, "proc": {"ticks": 1, "inodes": 0, "nonLoopback": 0}} after= {"t": 1793119488395, "ss": {"ticks": 1, "lines": 0, "nonLoopback": 0}, "proc": {"ticks": 1, "inodes": 0, "nonLoopback": 0}}
+run1 sockets before= {"ss": {"observations": 6, "nonLoopback": 0}, "proc": {"observations": 6, "nonLoopback": 6}, "finalSweep": {"t": 1793119318043, "ss": {"ticks": 1, "lines": 0, "nonLoopback": 0}, "proc": {"ticks": 1, "inodes": 0, "nonLoopback": 0}}} after= {"ss": {"observations": 6, "nonLoopback": 0}, "proc": {"observations": 6, "nonLoopback": 0}, "finalSweep": {"t": 1793119488395, "ss": {"ticks": 1, "lines": 0, "nonLoopback": 0}, "proc": {"ticks": 1, "inodes": 0, "nonLoopback": 0}}}
+run1 egressNonLoopback before= 6 after= 0
+top egressNonLoopback before= 12 after= 0

@@ -1,0 +1,122 @@
+# ScribeLog — round-39 measured inputs (2026-10-27, lane tip HEAD 1ace2fd)
+
+All commands run with cwd `/home/vgpnk/Projects/shokunin/tabi-shokunin`. No pacman, no installs.
+
+## 1. Frozen instrument digests (worktree)
+
+    sha256sum .ufo/waves/round-39/counters/c1-egress-session-bound.mjs \
+              .ufo/waves/round-39/counters/c2-routed-defects-v2.mjs \
+              scripts/playwright-firefox-egress-round39.mjs
+
+    75e823e45bcaff817fb93d677df5dba714560b3be77e62103c73e1a0937c3b6e  .ufo/waves/round-39/counters/c1-egress-session-bound.mjs
+    eefc8997f9952a4f2fe9cdef0da3929cb46d14b54bc5d98b379826aa32058c7c  .ufo/waves/round-39/counters/c2-routed-defects-v2.mjs
+    3fba8b680cb1a415517266d722640aebf38e280a929d3ae5335054a3f09a33fc  scripts/playwright-firefox-egress-round39.mjs
+
+All three equal `claims.frozenDigests`.
+
+## 2. Claims bytes vs the named freeze commit
+
+    git show 9c09ebb:.ufo/waves/round-39/claims.json | sha256sum   -> 40740f82aee080b9a1cd2c002d31c8f36455622c8b37b95bb03e101086fcc009
+    sha256sum .ufo/waves/round-39/claims.json                      -> ed88855a29ed9054ef6dced6f63d32c62eaa292706394b220b6d426e7fde89b6
+    git show HEAD:.ufo/waves/round-39/claims.json | sha256sum      -> ed88855a29ed9054ef6dced6f63d32c62eaa292706394b220b6d426e7fde89b6
+
+    git diff --stat 9c09ebb..HEAD -- .ufo/waves/round-39/claims.json \
+        .ufo/waves/round-39/counters scripts/playwright-firefox-egress-round39.mjs .ufo/waves/round-39/baseline
+
+     .ufo/waves/round-39/baseline/c2-sentence-mutant.json | 22 ++++++++++------------
+     .ufo/waves/round-39/claims.json                      |  2 +-
+     2 files changed, 11 insertions(+), 13 deletions(-)
+
+    git diff 9c09ebb..HEAD -- .ufo/waves/round-39/claims.json
+
+    - "frozenAt": "1f4260aeb3af186e84444cbb417a31b8a35bdb55",
+    + "frozenAt": "9c09ebb1e2ff594c70ce72093b5d4133c1734dca",
+
+Only the `frozenAt` line differs; the C2 predicate sentence is untouched (see §4).
+
+## 3. Counter digest by commit (why the pointer is an instrument pointer)
+
+    for c in 1f4260a 9c09ebb dc695dc HEAD; do git show $c:.ufo/waves/round-39/counters/c2-routed-defects-v2.mjs | sha256sum; done
+
+    1f4260a  891c1e9d4b1fb31d8a019bcdfb6270d7fc9a68d2d2d16ed0901ce26d3ea10166
+    9c09ebb  eefc8997f9952a4f2fe9cdef0da3929cb46d14b54bc5d98b379826aa32058c7c
+    dc695dc  eefc8997f9952a4f2fe9cdef0da3929cb46d14b54bc5d98b379826aa32058c7c
+    HEAD     eefc8997f9952a4f2fe9cdef0da3929cb46d14b54bc5d98b379826aa32058c7c
+
+    C1 counter at 1f4260a / 9c09ebb / HEAD -> 75e823e4…3b6e (unchanged)
+
+## 4. C2 predicate sentence byte-identity (claims vs counter constant)
+
+    python3 -c "…json.load claims, extract C2 predicate; regex-extract PREDICATE_SENTENCE from the counter…"
+
+    counter len 709 / claims len 709 / identical bytes: True
+    counter sha b535dd0cbb94cd86ea040fc98cfbcc4555b2585808c1bc479aa2a86f4cac448f
+    claims  sha b535dd0cbb94cd86ea040fc98cfbcc4555b2585808c1bc479aa2a86f4cac448f
+
+## 5. Before-measurement and pre-integration receipts (read, not re-run)
+
+    .ufo/waves/round-39/measure/c1-before.txt
+      FINDING receipt-absent corpus/evidence/round-39/playwright-egress/receipt.json absent at REV
+      C1_EGRESS_SESSION_BOUND predicate=not-met rev=5bc56a81d196caeb8d24551928b883802697aabb findings=1 controlRefused=true
+    .ufo/waves/round-39/measure/c2-before.txt
+      FINDING d4-receipt m3-sentence-mutant.json absent
+      FINDING d6-file no numstat receipt under .ufo/waves/round-38/measure
+      C1_ROUTED_DEFECTS predicate=not-met rev=5bc56a81d196caeb8d24551928b883802697aabb findings=2 seats=34 tally=23/11 census=144
+    .ufo/waves/round-39/measure/census-start-counts.txt
+      rows=144 / status. mined =120 / status. queued =15 / status. rejected =9 / tier. A =128 / tier. B =7 / tier. C =9
+    .ufo/waves/round-39/measure/pre-integration-counters.txt  (REV d3232d5)
+      C1 predicate=met findings=0 ; C1_EXIT=0
+      C2 predicate=not-met ; findings d5-receipt ("census-end.txt absent at REV"), d6-file ("numstat-at-d3232d56.txt absent at REV") ; C2_EXIT=1
+      C2 d1 seats=34 stalePresent/supersedingCorrection/w2Absent true; d2 stated 23/11 == recomputed 23/11/0/0 reports 34;
+      d3 six round-37 hashes present+ancestor+freezeLandingStated; d4 mutantExit 1 sentenceDiffers shaPair refused true; d7 sentenceMatch true
+
+## 6. C1 receipt (recorded fields)
+
+    sha256sum corpus/evidence/round-39/playwright-egress/receipt.json
+      e894f1d5950eeff25dbf98fb3f951ab2eea8484f2049b88b25252bf45ff8f493
+    git log --oneline -3 -- corpus/evidence/round-39/playwright-egress/receipt.json
+      690b050 round-39: control receipts and session-bound egress receipt
+
+    playwrightVersion 1.64.0 / browserVersion 157.0 / binding true / refused false
+    run1: sampleCount 9, coverageMs 1560, serverPort 34321, owned.tree 5 pids, nodePid 2430191
+    run2: sampleCount 8, coverageMs 1461, serverPort 39777, owned.tree 5 pids, nodePid 2430191
+    firstShotSha256 (both) ebfae99c33fa602d5e68bdaa0265e5bf29ad69e7c94f26c731dfc3976c56cbf0 (25382 B)
+    sockets.ss.observations 6 / sockets.proc.observations 6 / nonLoopback 0 / nonLoopback 0
+    finalSweep ss ticks 1 lines 0 / proc ticks 1 inodes 0 / nonLoopback 0
+    survivors 0 / portClosed true / egressNonLoopback 0 / fixture sha fe5564b6… 1261 B
+
+## 7. Frontier / source registration
+
+    grep -c "S145" corpus/SOURCES.md        -> 0
+    grep -c "S144" corpus/SOURCES.md        -> 1
+    grep -cE '^ {0,3}\|[[:space:]]*S[0-9]{3,}[[:space:]]*\|' corpus/SOURCES.md -> 144
+
+## 8. Wave state at draft time (in-flight snapshot, not a tally)
+
+    python3 -c "json w1-dispatch.json counts"            -> {"spawn": 64, "resume": 0, "total": 64}
+    python3 -c "json w1/swarm-registry.json members"     -> reviewer 17, critic 12, scout 9,
+                                                            mutation-tester 8, executor 7, scribe 6,
+                                                            connector 3, sentinel 1, revenger 1  (= 64)
+    find .ufo/waves/round-39/w1 -name report.md | wc -l  -> 25
+    grep -rh '^VERDICT' .ufo/waves/round-39/w1/*/report.md | awk '{print $2}' | sort | uniq -c
+        2 could-not-evaluate / 23 finding / 1 finding: / 5 ok   (= 31 verdict lines)
+
+## 9. LOG.md state
+
+    grep -n '^## ' LOG.md | tail -8   -> last heading "## Round 38 — 2026-10-27 — calibration corrections and Playwright Firefox capability"
+    grep -n "Round 38" LOG.md         -> one line only: the round-38 entry; no round-38 landed-commit ledger
+
+## 10. Round-39 commit timeline
+
+    git log --format='%h %ad %s' --date=format:'%H:%M:%S' --grep='round-39' -20
+
+    1ace2fd 14:30:32 round-39: preserve isolated C1 counter self-test
+    03322e9 14:25:52 round-39: preserve proc loopback parser red-green evidence
+    25d4f53 14:19:38 round-39: land source and collision guard evidence, ready wave
+    d3232d5 14:11:44 round-39: verify C2 sentence-mutation red control
+    3fdf16f 14:11:13 round-39: align mutant fixture to frozen claims bytes
+    dc695dc 14:10:10 round-39: finalize amended C2 freeze and validated 64-seat wave
+    9c09ebb 14:08:34 round-39: amend C2 pre-data predicate binding and quarantine slices
+    11662da 13:58:50 round-39: census start and before-measurement receipts
+    690b050 13:58:17 round-39: control receipts and session-bound egress receipt
+    1f4260a 13:29:44 round-39: freeze claims, session-bound egress driver, C1/C2 frozen counters

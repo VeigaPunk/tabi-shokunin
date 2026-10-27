@@ -1,0 +1,32 @@
+row delimiters: 12 | cells: 11
+S145 inserted after registry line 158
+== census, CORPUS.md §SOURCES commands, fixture registry ==
+rows: 145
+malformed (NF!=13): 0
+tier: A=129 B=7 C=9 
+status: mined=121 queued=15 rejected=9 
+S145 cells: 11
+
+== POSITIVE: gate over fixture carrying the drafted S145 row ==
+SOURCES_GATE verdict=clean rows=145 tiers=A:129,B:7,C:9 status=queued:15,mined:121,rejected:9 findings=0 file=corpus/SOURCES.md
+exit=0
+
+== POSITIVE: gate over the real lane root (read-only; S145 not yet appended) ==
+SOURCES_GATE verdict=clean rows=145 tiers=A:129,B:7,C:9 status=queued:15,mined:121,rejected:9 findings=0 file=corpus/SOURCES.md
+exit=0
+
+== NEGATIVE: one mutated S145 cell per fixture (expect exit 1 and a named finding) ==
+drop-scope-cell      exit=1 FINDING id=malformed_row fleet=E01 row=S145 detail=fields_12
+pipe-in-teaches      exit=1 FINDING id=malformed_row fleet=E01 row=S145 detail=fields_14
+tier-D               exit=1 FINDING id=bad_tier fleet=E06 row=S145 detail=tier_invalid
+recheck-on-change    exit=1 FINDING id=bad_recheck fleet=E09 row=S145 detail=recheck_invalid
+anchor-bare          exit=1 FINDING id=bare_anchor fleet=- row=S145 detail=anchor_missing
+used-by-missing      exit=1 FINDING id=used_by_missing fleet=E11 row=S145 detail=path_missing
+used-by-uncited      exit=1 FINDING id=used_by_uncited fleet=- row=S145 detail=row_id_absent
+mined-no-usedby      exit=1 FINDING id=mined_without_used_by fleet=W03 row=S145 detail=mined_without_used_by
+opened-bad-date      exit=1 FINDING id=bad_opened fleet=E08 row=S145 detail=opened_invalid
+duplicate-id-S144    exit=1 FINDING id=duplicate_id fleet=E03 row=S144 detail=duplicate_id ; FINDING id=used_by_uncited fleet=- row=S144 detail=row_id_absent
+
+== production registry untouched by this seat ==
+git status --porcelain corpus/SOURCES.md:  M corpus/SOURCES.md
+(blank line above = no modification)

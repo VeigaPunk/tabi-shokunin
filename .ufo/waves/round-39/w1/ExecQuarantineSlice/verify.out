@@ -1,0 +1,81 @@
+### 1. Which SECTION does each extracted tabi row live in?
+178	## Rows	S102
+179	## Rows	S106
+180	## Rows	S109
+181	## Rows	S110
+182	## Rows	S111
+183	## Rows	S114
+184	## Rows	S117
+185	## Rows	S118
+186	## Rows	S124
+187	## Rows	S125
+188	## Rows	S126
+189	## Rows	S130
+190	## Rows	S131
+191	## Rows	S133
+192	## Rows	S134
+193	## Rows	S135
+194	## Rows	S137
+195	## Rows	S138
+196	## Rows	S140
+197	## Rows	S142
+198	## Rows	S143
+199	## Rows	S144
+200	## Rows	S145
+201	## Rows	S147
+202	## Rows	S148
+203	## Rows	S149
+204	## Rows	S153
+205	## Rows	S154
+206	## Rows	S158
+207	## Rows	S163
+208	## Rows	S164
+209	## Rows	S165
+210	## Rows	S166
+211	## Rows	S167
+212	## Rows	S174
+213	## Rows	S175
+214	## Rows	S176
+362	## Rows whose quotes were NEVER CHECKED	S171
+SECTION_COUNT	## Rows	37
+SECTION_COUNT	## Rows whose quotes were NEVER CHECKED	1
+
+### 2. Strict id-cell test WITHOUT stripping backticks (raw cell must be exactly S<digits>)
+RAW_NOT_PURE_SID: [S171`] line 362
+pure_sid_rows=37  non_pure_sid_rows=1
+
+### 3. Summary rows in the register that could contaminate the slice (all summary tables)
+-- Totals section tables (lines 16-24) and By lane table (lines 232-254):
+14:| `tabi` | 37 |
+
+-- does the By-lane tabi summary row match the data predicate?
+0
+   (0 = the By-lane summary row was NOT matched; matching lines printed above would be data rows only)
+
+### 4. Negative control: inject a synthetic summary row that LOOKS like the By-lane row
+-- original slice count:      38
+-- injected-file slice count: 38
+   (equal => the predicate ignores By-lane-style summary rows)
+
+### 5. Negative control: inject a summary row that DOES carry round+S-id in the wrong cells
+-- injected2 slice count: 39 (expect 39 => the predicate is positional, not semantic)
+| `tabi` | round9 | S999 |
+
+### 6. Round-39 generator partition vs derived row order (8 x deterministic row-order partition)
+derived rows: 38
+partition 1: expected=['S102', 'S106', 'S109', 'S110', 'S111'] gen=['S102', 'S106', 'S109', 'S110', 'S111'] match=True
+partition 2: expected=['S114', 'S117', 'S118', 'S124', 'S125'] gen=['S114', 'S117', 'S118', 'S124', 'S125'] match=True
+partition 3: expected=['S126', 'S130', 'S131', 'S133', 'S134'] gen=['S126', 'S130', 'S131', 'S133', 'S134'] match=True
+partition 4: expected=['S135', 'S137', 'S138', 'S140', 'S142'] gen=['S135', 'S137', 'S138', 'S140', 'S142'] match=True
+partition 5: expected=['S143', 'S144', 'S145', 'S147', 'S148'] gen=['S143', 'S144', 'S145', 'S147', 'S148'] match=True
+partition 6: expected=['S149', 'S153', 'S154', 'S158', 'S163'] gen=['S149', 'S153', 'S154', 'S158', 'S163'] match=True
+partition 7: expected=['S164', 'S165', 'S166', 'S167', 'S174'] gen=['S164', 'S165', 'S166', 'S167', 'S174'] match=True
+partition 8: expected=['S175', 'S176', 'S171'] gen=['S175', 'S176', 'S171'] match=True
+PARTITION_MISMATCHES: 0
+
+### 7. Register hash re-check after all reads (must be unchanged)
+5afe1810a6c3d62f37987b575a954f5b1197daa23005d4bb2f1d982f64bad833  /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md
+
+### 8. Class-token classification hazard: token-only counter would report
+NON_TOKEN_CLASS: [the cited source could not be fetched, so no quote was checked] id=[ S171` ]
+payload-absent=37  other=1

@@ -1,0 +1,9 @@
+Hypothesis: frozen C2 D6 is self-referential because it requires a numstat receipt committed at REV whose path and content name the full hash of REV.
+
+Scratch clone: `/fast/scratch/hyaku/tabi-r39/c2-selfref-probe-TabiR39/repo`; `git -C "$D/repo" rev-parse --show-toplevel` matched `$D/repo` before the fixture commit. All later Git calls used `-C "$D/repo"`.
+
+Before: candidate REV `03322e9d6da8a22f739529680db392b4f3d39697`, no receipt; counter exit 1, findings `d5-receipt`, `d6-file`.
+Fixture: added `.ufo/waves/round-39/measure/numstat-at-03322e9d.txt` whose header names the prior candidate REV; committed in scratch.
+After: carrier commit `5c13c8462fe986af7b512140b5a0005b44ef79b0`; the frozen counter resolves `REV` to the new carrier and expects `numstat-at-5c13c846.txt`, while the committed receipt can name only its parent. Counter again exits 1 with `d5-receipt`, `d6-file`.
+
+Observed self-reference: adding the receipt changes the commit hash D6 requires the receipt itself to name. This is a claim-design defect; the frozen counter/claim were not amended after data dispatch. Fix for a future freeze: name a pre-receipt candidate REV and read committed receipt bytes from a distinct evidence-carrier tree, or otherwise remove the receipt's own commit from its counted input while preserving a reproducible revision binding.
