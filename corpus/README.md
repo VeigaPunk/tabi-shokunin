@@ -856,3 +856,16 @@ when sibling heads move; its measured claim and limits are in `corpus/lessons/ro
 | Note | Holds | Sources |
 |---|---|---|
 | `knowledge/playwright-firefox-loopback-round-38.md` | Host/build-scoped Playwright 1.64.0 Firefox 157.0 Juggler run on loopback; two cold-run screenshot binding, interaction and network observations, egress and cleanup evidence. | S144; `corpus/evidence/round-38/playwright-firefox/receipt.json`; `scripts/playwright-firefox-loopback-round38.mjs`. |
+
+## Round 39 — Playwright Firefox TCP socket observation (2026-10-27)
+
+Append-only. One host/build-scoped knowledge note; no real-site or all-protocol egress claim.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/playwright-firefox-session-bound-tcp-round-39.md` | Two cold Playwright Firefox 157.0 loopback runs with identical first-shot hashes and zero TCP observations on both recorded `ss` and `/proc` summaries; the note preserves the `/proc` little-endian red→green correction and limits the claim to the observed process tree/namespace and TCP tables. | S145; `corpus/evidence/round-39/playwright-egress/receipt.json`; `scripts/playwright-firefox-egress-round39.mjs`; `.ufo/waves/round-39/measure/proc-endian-before.json` and `proc-endian-after.json`. |
+
+| Frontier item | Status | Pointer |
+|---|---|---|
+| Session-bound TCP socket observation | Host/build-scoped evidence recorded; UDP/QUIC, namespace equality, later descendants, and comprehensive egress remain unheld | `knowledge/playwright-firefox-session-bound-tcp-round-39.md` §Limits |
+
