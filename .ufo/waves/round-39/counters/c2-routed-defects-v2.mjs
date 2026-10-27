@@ -24,7 +24,8 @@
 //     (.ufo/waves/round-39/measure/census-end.txt) carries parsed counts equal to this
 //     counter's own parse of corpus/SOURCES.md at REV;
 //   - D6 (amended): the numstat receipt under this round's measure dir names the frozen
-//     round-38 start baseline 3f42a5c7cc19 and REV (window == baseline..REV).
+//     round-38 start baseline 3f42a5c7cc19 and REV, and its data body byte-matches
+//     `git diff --numstat BASELINE..REV` re-derived by this counter, excluding this receipt file.
 //
 // Usage: node c2-routed-defects-v2.mjs --rev <40-hex REV> [--repo <lane>] [--claims <path>] [--json]
 // Exit: 0 predicate met; 1 evaluated, predicate not met; 2 could-not-evaluate.
@@ -33,7 +34,7 @@
 // REV and exists only so the red control can run the frozen counter on a fixture.
 // Write scope: stdout/stderr only.
 // Predicate (frozen) — the same sentence in claims.json and this constant:
-//   D1 stale-line-present AND superseding-correction-present AND re-derived seats == 34 AND w2-artifacts absent AND D2 tally stated == recomputed 23 ok 11 finding AND D3 every round-37 hash present and ancestor with the freeze landing stated at 34ed508c AND D4 captured-by row present AND the round-39 sentence-mutant receipt records a nonzero exit with a predicate sentence different from the frozen sentence AND D5 round-39 census receipt counts equal this counter's parse AND D6 the round-39 numstat receipt names baseline 3f42a5c7cc19 and REV AND the round-39 claims predicate is byte-identical to this counter's sentence
+//   D1 stale-line-present AND superseding-correction-present AND re-derived seats == 34 AND w2-artifacts absent AND D2 tally stated == recomputed 23 ok 11 finding AND D3 every round-37 hash present and ancestor with the freeze landing stated at 34ed508c AND D4 captured-by row present AND the round-39 sentence-mutant receipt records a nonzero exit with a predicate sentence different from the frozen sentence AND D5 round-39 census receipt counts equal this counter's parse AND D6 the round-39 numstat receipt names baseline 3f42a5c7cc19 and REV and its body byte-matches git diff --numstat baseline..REV excluding the receipt itself AND the round-39 claims predicate is byte-identical to this counter's sentence
 import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
@@ -46,7 +47,7 @@ const CLAIMS_PATH = '.ufo/waves/round-39/claims.json';
 const MUTANT_RECEIPT = '.ufo/waves/round-39/baseline/c2-sentence-mutant.json';
 const CENSUS_RECEIPT = '.ufo/waves/round-39/measure/census-end.txt';
 const NUMSTAT_PREFIX = 'numstat-at-';
-const PREDICATE_SENTENCE = "D1 stale-line-present AND superseding-correction-present AND re-derived seats == 34 AND w2-artifacts absent AND D2 tally stated == recomputed 23 ok 11 finding AND D3 every round-37 hash present and ancestor with the freeze landing stated at 34ed508c AND D4 captured-by row present AND the round-39 sentence-mutant receipt records a nonzero exit with a predicate sentence different from the frozen sentence AND D5 round-39 census receipt counts equal this counter's parse AND D6 the round-39 numstat receipt names baseline 3f42a5c7cc19 and REV AND the round-39 claims predicate is byte-identical to this counter's sentence";
+const PREDICATE_SENTENCE = "D1 stale-line-present AND superseding-correction-present AND re-derived seats == 34 AND w2-artifacts absent AND D2 tally stated == recomputed 23 ok 11 finding AND D3 every round-37 hash present and ancestor with the freeze landing stated at 34ed508c AND D4 captured-by row present AND the round-39 sentence-mutant receipt records a nonzero exit with a predicate sentence different from the frozen sentence AND D5 round-39 census receipt counts equal this counter's parse AND D6 the round-39 numstat receipt names baseline 3f42a5c7cc19 and REV and its body byte-matches git diff --numstat baseline..REV excluding the receipt itself AND the round-39 claims predicate is byte-identical to this counter's sentence";
 
 class Refusal extends Error {}
 const git = (repo, args) => spawnSync('git', ['-C', repo, ...args], { encoding: 'utf8', maxBuffer: 64 << 20 });
@@ -183,7 +184,7 @@ export function evaluate({ repo, rev, claimsPath }) {
       const srcs = (blob(repo, REV, 'corpus/SOURCES.md') || '').split('\n');
       const mine = { rows: 0, tier: {}, status: {} };
       for (const l of srcs) {
-        if (/^\|\s*S\d{3,}\s*\|/.test(l)) {
+        if (/^ {0,3}\|\s*S\d{3,}\s*\|/.test(l)) {
           mine.rows += 1;
           const c = l.split('|').map((x) => x.trim());
           if (c.length >= 10) { mine.tier[c[4]] = (mine.tier[c[4]] || 0) + 1; mine.status[c[8]] = (mine.status[c[8]] || 0) + 1; }
@@ -209,19 +210,22 @@ export function evaluate({ repo, rev, claimsPath }) {
 
   // ---------- D6: round-39 numstat window precision ----------
   {
-    const list = git(repo, ['ls-tree', '--name-only', REV, '.ufo/waves/round-39/measure/']);
-    const names = (list.stdout || '').split('\n').filter((n) => new RegExp(`^${NUMSTAT_PREFIX}[0-9a-f]+\\.txt$`).test(n));
-    if (!names.length) { F('d6-file', 'no numstat receipt under .ufo/waves/round-39/measure'); }
+    const file = `${NUMSTAT_PREFIX}${REV.slice(0, 8)}.txt`;
+    const path = `.ufo/waves/round-39/measure/${file}`;
+    const text = blob(repo, REV, path);
+    if (text === null) { F('d6-file', `${path} absent at REV`); }
     else {
-      const wanted = `${NUMSTAT_PREFIX}${REV.slice(0, 8)}.txt`;
-      const file = names.includes(wanted) ? wanted : names[0];
-      const text = blob(repo, REV, `.ufo/waves/round-39/measure/${file}`) || '';
       out.d6.file = file;
-      out.d6.namesBaseline = text.includes(BASELINE.slice(0, 12));
-      out.d6.namesRev = text.includes(REV.slice(0, 8)) || text.includes(REV);
-      out.d6.nonempty = text.split('\n').filter((l) => l.trim() && !/^#/.test(l)).length > 0;
+      out.d6.namesBaseline = text.includes(BASELINE);
+      out.d6.namesRev = text.includes(REV);
+      const data = text.split('\n').filter((l) => l.trim() && !/^#/.test(l)).join('\n');
+      out.d6.nonempty = data.length > 0;
+      const expected = git(repo, ['diff', '--numstat', `${BASELINE}..${REV}`, '--', '.', `:(exclude)${path}`]);
+      out.d6.diffCommandExit = expected.status;
+      out.d6.bodyMatches = expected.status === 0 && data === expected.stdout.trimEnd();
       if (!out.d6.namesBaseline || !out.d6.namesRev) F('d6-window', `receipt names baseline=${out.d6.namesBaseline} rev=${out.d6.namesRev} (window must be baseline..REV)`);
       if (!out.d6.nonempty) F('d6-empty', 'numstat receipt has no data lines');
+      if (!out.d6.bodyMatches) F('d6-body', 'numstat data body does not byte-match git diff --numstat BASELINE..REV');
     }
   }
 
@@ -240,9 +244,10 @@ export function evaluate({ repo, rev, claimsPath }) {
       let d = null;
       try { d = JSON.parse(claimsText); } catch { F('d7-claims-unparseable', 'claims.json not JSON'); }
       if (d) {
-        out.d7.claimsPredicate = typeof d.predicate === 'string' ? d.predicate : null;
-        out.d7.sentenceMatch = d.predicate === PREDICATE_SENTENCE;
-        if (!out.d7.sentenceMatch) F('d7-sentence-mismatch', 'claims predicate is not byte-identical to the counter sentence (mutated-sentence control must be refused)');
+        const claim = d && Array.isArray(d.claims) ? d.claims[1] : null;
+        out.d7.claimsPredicate = claim && typeof claim.predicate === 'string' ? claim.predicate : null;
+        out.d7.sentenceMatch = out.d7.claimsPredicate === PREDICATE_SENTENCE;
+        if (!out.d7.sentenceMatch) F('d7-sentence-mismatch', 'claims[1].predicate is not byte-identical to the counter sentence (mutated-sentence control must be refused)');
       }
     }
   }
@@ -254,7 +259,7 @@ export function evaluate({ repo, rev, claimsPath }) {
     && Object.values(out.d3.hashes).every((h) => h.presentInR38Section && h.isCommit && h.ancestorOfRev) && out.d3.freezeLandingStated
     && out.d4.mistakes && out.d4.capturedBy && out.d4.mutantRefused
     && out.d5.receiptRows === out.d5.counterRows
-    && out.d6.namesBaseline && out.d6.namesRev && out.d6.nonempty
+    && out.d6.namesBaseline && out.d6.namesRev && out.d6.nonempty && out.d6.bodyMatches
     && out.d7.sentenceMatch === true;
   return out;
 }
