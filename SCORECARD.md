@@ -2177,3 +2177,5 @@ Baseline `a1b1e939048885d2793759b7f49b10c5c820d70d`; freeze `cb35339d81b425f486f
 | C1 coverage capability — Playwright Firefox loopback TCP observation with actual sample-span and fail-closed socket evidence | `node .ufo/waves/round-40/counters/c1-sample-span.mjs <receipt.json>` | At baseline, round-39 receipt: exit 1 with schema and both `sample-span` findings (799 ms / 701 ms). Target: new round-40 receipt predicate true / exit 0; the old receipt remains refused. No numerical axis score changes without a later score rubric. |
 
 Do-nothing control receipt: `.ufo/waves/round-40/controls/c1-round39-noop.json`; frozen predicate, counter digest and kill rule: `.ufo/waves/round-40/claims.json`. The claim is not admitted until independently falsified and measured at delivered revision.
+
+Only C1 is declared this round. The planned C2 repair of the round-39 D6 self-reference is not claimed or amended; it remains an explicit open routed defect. The remaining package quarantine is hand-check-only until every row has lane-local source evidence; no adoption is authorized by this claim.
