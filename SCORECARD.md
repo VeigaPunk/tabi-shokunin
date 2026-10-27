@@ -2189,3 +2189,5 @@ Before dispatch, the selftest was strengthened to isolate the exact unavailable-
 ### Round 40 — live measurement command amendment
 
 The synthetic parser-positive could reach a green counter without running Firefox, so the operative counting command is now `node scripts/measure-c1-round40.mjs --out <fresh receipt> --scratch <dir>`; it launches the Firefox driver itself with two runs, a fresh invocation nonce, an exclusive output path, and then scores the produced receipt with counter v3. The pre-existing synthetic receipt control and nonce replay tests are `.ufo/waves/round-40/controls/c1-measure-selftest-v2.json` (7/7). The earlier parser-only synthetic pass is not a capability measurement. No seat has scored the claim.
+
+Append-only correction to the initial round-40 table: the operative C1 predicate/counting command is the nonce-bound live measurement in `.ufo/waves/round-40/claims.json`, frozen at `07e99cf1e2f67c5679aa5ba1ccb19a8f59b228e4`. Its 64-seat validated spec/dispatch is frozen at `250a38056438dc62a8ddcfbdfcdc065bfab9a048`. The earlier direct-receipt command and parser-only synthetic positives are superseded pre-data evidence, not the claim.
