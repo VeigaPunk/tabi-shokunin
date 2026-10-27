@@ -1,0 +1,22 @@
+base-drift :: exit=0 :: lines=307 :: stderr=
+c14-drift :: exit=0 :: lines=308 :: stderr=
+CASE14 drift=308 vs base=307  (308 => the SCREEN ledger is read at HEAD, not at --rev)
+c14-pred :: exit=1 :: lines=1 :: stderr=
+CASE15 build tool sha256=a85152cdb8c0201e2ec08e8694b567f9ebb9735203e540a5b37f0207762a9a96
+39:const DELTA_PINS_PATH = '.ufo/waves/round-36/baseline/c1-delta-pins.json';
+67:  let pinsBuf = null;
+68:  const p = spawnSync('git', ['-C', repo, 'show', `${head}:${DELTA_PINS_PATH}`], { encoding: 'buffer', env: ENV });
+69:  if (p.status === 0) pinsBuf = p.stdout;
+70:  else pinsBuf = readFileSync(join(repo, DELTA_PINS_PATH));
+71:  const deltaPins = JSON.parse(pinsBuf.toString('utf8'));
+CASE15 build tool on de-pinned clone: exit=0 :: drift-audit: 306 rows (303 unchanged, 3 moved, 0 stale) -> /fast/scratch/hyaku/tabi-r37/w1/LabratC1/out/ledger-depinned.tsv
+CASE15 build tool on honest lane:      exit=0 :: drift-audit: 307 rows (304 unchanged, 3 moved, 0 stale) -> /fast/scratch/hyaku/tabi-r37/w1/LabratC1/out/ledger-honest.tsv
+CASE15 ledger differs? DIFFERS
+3c3
+<     304 unchanged
+---
+>     303 unchanged
+c15-pred :: exit=2 :: lines=0 :: stderr=C1_ADJACENCY_SWEEP_V5 verdict=could-not-evaluate detail=.ufo/waves/round-36/baseline/c1-delta-pins.json at 542ab10f175c5147a29ed28ac5eaa51aabb12843 sha256 c5ae40f7ab19516e8f6123c9198d139c33932722153b9
+c16-drift :: exit=1 :: lines=0 :: stderr=<anonymous_script>:1 not json {{{ 
+CASE16 stderr head: <anonymous_script>:1 not json {{{  ^ 
+=== probe3 done ===

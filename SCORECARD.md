@@ -2043,3 +2043,56 @@ No new capability entered; preserve `webdriver-bidi-runtime-firefox` (the round 
 | expansion | improved | New `corpus/knowledge/adjacency-drift-audit-r36.md` on previously unheld sibling-drift audit ground; source row S142 is mined and the note is indexed in `corpus/README.md`. |
 | quality | improved | W2 `ExecDeltaLive` falsified the method entry's broad post-freeze wording; an append-only correction now distinguishes the frozen-pin measurement from live-tip re-derivation and records the 3 relocation-note shifts. |
 | discernment | unchanged | No outside non-author admit/reject spot-check at lane filing; w1/w2 seats were dispatched by the lane and do not qualify. |
+
+## Round 37 — declared claims (frozen before data)
+
+Freeze `99437d29de036415a9f2d0524343617a3b19988a`; round-start baseline
+`ed8ccfc00ad3784bc424aa118e056f8edf4ee803`. The frozen `claims.json` records axis scores
+at round start: adjacency 8 (lowest non-retired), operability 9, all others 9; saturation
+8 / window 3. The round executes the eight round-36 closure routed defects as two
+instrument-repair claims; both predicates are one byte-identical sentence across
+claims.json, the counter constant and the counter header (round-36 routed defect 4).
+
+| Claim / axis | Counting command | Before | Target |
+|---|---|---|---|
+| C1 adjacency — counter amendment v5 (pins digest binding; canonical moved-note parse; sentence discipline; build tool v2) | `node .ufo/waves/round-37/counters/c1-adjacency-sweep-v5.mjs --rev <REV> --repo <clean clone> --fleet /home/vgpnk/Projects/shokunin --json` | v4 admits semantically-identical UNFROZEN pins (c1r37-J1: exit 0, predicate true) and refuses a truthful decoy-token moved note (c1r37-J2: exit 1); the frozen build tool's kama pin is 39 hex; the enforced predicate is not one byte-identical sentence | Predicate true at measured REV AND v5 refuses the reordered-pins fixture (exit 2, digest mismatch) AND v5 admits the decoy-note fixture (exit 0) AND the sentence is byte-identical at its three sites AND c1-drift-audit-build-v2.mjs resolves every PINS entry |
+| C2 operability — counter amendment v3 (replace-ref refusal; teardown survivors; observed binding) + harness v2 | `node .ufo/waves/round-37/counters/c2-firefox-bidi-v3.mjs --rev <REV> --repo <clean clone> --json` | v2 admits an honest-tree clone whose receipt blob is grafted via refs/replace (c2r37-J1: exit 0, predicate true) and admits an observed-decoration tamper (c2r37-J2: exit 0); no survivor check; harness wrote numstat to a stale path and invoked check-freshness outside its usage contract | Predicate true at measured REV (admitted ≥ 16, survivors 0, egress 0) AND v3 refuses the replace-graft clone (exit 2) AND v3 receipt-finds the observed-tamper fixture (exit 1) AND the sentence is byte-identical at its three sites AND measure.sh v2 runs numstat + check-freshness per contract |
+
+Controls and feasibility receipts were frozen in `.ufo/waves/round-37/baseline/` before
+claim data; the do-nothing receipts (v4/v2 against the attack fixtures) show the frozen
+targets are unreachable without the amendments. Tool installs: none.
+
+## Round 37 — executed disposition
+
+Measured at the round's integration tip in a clean clone with counter bytes taken from the
+freeze `99437d29de036415a9f2d0524343617a3b19988a` (`.ufo/waves/round-37/measure/`;
+provenance records porcelain 0 and counter digests equal to the frozen pins).
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency | `node .ufo/waves/round-37/counters/c1-adjacency-sweep-v5.mjs --rev <REV> --repo <clean clone> --fleet /home/vgpnk/Projects/shokunin --json` | v4: admits unfrozen pins / refuses truthful decoy note / 39-hex kama pin / sentence mismatch → v5 at measured REV: predicate true on the honest state; pins digest bound (`81019362…`); reordered-pins fixture refused exit 2; decoy-note fixture admitted exit 0; build tool v2 regenerates the ledger byte-identical with every PINS entry resolving; one sentence byte-identical at three sites | **met under the frozen counter predicate**; adjacency score held at 8 → 8 (the metric moved; no rubric authorizes an automatic scalar bump — same discipline as rounds 35–36) |
+| C2 operability | `node .ufo/waves/round-37/counters/c2-firefox-bidi-v3.mjs --rev <REV> --repo <clean clone> --json` | v2: admits the replace-graft clone and the observed-tamper receipt (both exit 0) → v3 at measured REV: predicate true on the honest state (admitted 16, failing 0, survivors 0, egress 0); replace-graft refused exit 2; observed-tamper receipt-found exit 1; harness v2 numstat + freshness legs per contract | **met under the frozen counter predicate**; operability score held at 9 → 9 (recorded ceiling; the amendment hardens the instrument that carries the capability evidence) |
+
+### Round 37 — waves and seats
+
+Two v1 waves; the round contains **68 seats** (w1 34 + w2 34; see the report for the
+settled counts, role mix and any dead/incomplete seats — this block is completed at
+integration and never pads).
+
+### Round 37 — capabilities / planned / saturation / retired
+
+No new capability row; the round remeasures and hardens the instruments behind
+`webdriver-bidi-runtime-firefox` (round 35). No axis retired; saturation stays 8 / window 3.
+
+- Planned for round 38: the survivors-mutation test gap (a mutant zeroing
+  `rec.survivors` has no deterministic control — the term is honest-run-observable only;
+  classify or build a fixture), the v5 list-mode pins read (LabratC1's display-only
+  classification), and any w2-surviving limits named by the falsify wave.
+
+### Round 37 — trend verdicts
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | unchanged | No new knowledge entry; the registry gains one row (S143) cited by the C2 counter — instrument ground, not new domain coverage. |
+| quality | improved | All eight round-36 routed defects land as frozen amendments with red controls; the v4/v2 attack receipts (exit 0 on grafted/tampered inputs) become v5/v3 refusals (exit 2/1) on the same fixtures. |
+| discernment | unchanged | No outside non-author admit/reject spot-check at lane filing; dispatched seats do not qualify. |

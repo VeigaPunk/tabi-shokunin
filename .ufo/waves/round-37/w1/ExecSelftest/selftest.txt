@@ -1,0 +1,122 @@
+round-37 w1 seat ExecSelftest — instrument self-test receipt
+generated: 2026-10-27T10:38:32-03:00
+node: v24.21.0
+freeze commit: 99437d29de036415a9f2d0524343617a3b19988a
+baseline commit: ed8ccfc00ad3784bc424aa118e056f8edf4ee803
+lane: /home/vgpnk/Projects/shokunin/tabi-shokunin (read-only for this seat)
+
+------------------------------------------------------------
+SECTION 1 — frozenDigests: sha256 of committed bytes at 99437d29de036415a9f2d0524343617a3b19988a
+
+command template:
+  git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 99437d29de036415a9f2d0524343617a3b19988a:<path> | sha256sum
+
+expected values are claims.json .frozenDigests (read from the committed claims.json at 99437d29de036415a9f2d0524343617a3b19988a)
+
+  c1         .ufo/waves/round-37/counters/c1-adjacency-sweep-v5.mjs
+    expected 9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c
+    observed 9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c   match=true
+  c2         .ufo/waves/round-37/counters/c2-firefox-bidi-v3.mjs
+    expected eda339eb270dae19f093ff071454d973c86e02d93e0ec41bb48fe2706b62e019
+    observed eda339eb270dae19f093ff071454d973c86e02d93e0ec41bb48fe2706b62e019   match=true
+  buildTool  .ufo/waves/round-37/counters/c1-drift-audit-build-v2.mjs
+    expected a85152cdb8c0201e2ec08e8694b567f9ebb9735203e540a5b37f0207762a9a96
+    observed a85152cdb8c0201e2ec08e8694b567f9ebb9735203e540a5b37f0207762a9a96   match=true
+  measure    .ufo/waves/round-37/measure.sh
+    expected 9f89697c0509a93bfe748db7a72a9303c429f4dc680707b2dab503c3d6843302
+    observed 9f89697c0509a93bfe748db7a72a9303c429f4dc680707b2dab503c3d6843302   match=true
+  controls   .ufo/waves/round-37/baseline/run-controls.sh
+    expected 3a08367f9c11eb1e05aedc0a9c45dfc6e11aa5d0b041e1dfd74ac78eeed4f25e
+    observed 3a08367f9c11eb1e05aedc0a9c45dfc6e11aa5d0b041e1dfd74ac78eeed4f25e   match=true
+  ALL_FIVE_MATCH=true
+
+------------------------------------------------------------
+SECTION 2 — node --check on both counters and the build tool
+
+command template: node --check <path>   (run in a clean clone checked out at 99437d29de036415a9f2d0524343617a3b19988a)
+
+  clone toplevel=/fast/scratch/hyaku/tabi-r37/w1/ExecSelftest/lane  head=99437d29de036415a9f2d0524343617a3b19988a
+
+  node --check .ufo/waves/round-37/counters/c1-adjacency-sweep-v5.mjs :: exit=0 :: <no output>
+  node --check .ufo/waves/round-37/counters/c2-firefox-bidi-v3.mjs :: exit=0 :: <no output>
+  node --check .ufo/waves/round-37/counters/c1-drift-audit-build-v2.mjs :: exit=0 :: <no output>
+
+------------------------------------------------------------
+SECTION 3 — v5 list modes (line counts)
+
+command template:
+  node .ufo/waves/round-37/counters/c1-adjacency-sweep-v5.mjs <MODE> --repo <lane> --fleet /home/vgpnk/Projects/shokunin | wc -l
+
+  --list-candidates :: wc -l = 383 :: exit=0 :: stderr=<empty>
+  --list-drift :: wc -l = 307 :: exit=0 :: stderr=<empty>
+  --list-delta :: wc -l = 0 :: exit=0 :: stderr=<empty>
+  expected: --list-candidates=383  --list-drift=307  --list-delta=0
+
+------------------------------------------------------------
+SECTION 4 — every scripts/check-*.mjs exposing --self-test exits 0 (measure.sh loop)
+
+loop as measure.sh does:
+  for g in scripts/check-*.mjs scripts/round-evidence-audit.mjs; do
+    f=$(grep -oE -- '--self-?test' "$g" | head -1); [ -n "$f" ] || continue
+    out=$(node "$g" "$f" 2>&1); rc=$?; echo "$g $f :: exit=$rc :: $(...)"
+  done
+
+  scripts/check-adjacency.mjs --self-test :: exit=0 :: ADJACENCY_SELFTEST verdict=clean cases=57 reasons=18 could_not_evaluate=6
+  scripts/check-aria-metadata.mjs --self-test :: exit=0 :: ARIA_METADATA_JSON {"schema":"tabi-aria-metadata-selftest-v1","ok":true,"exit":0,"cases":[{"id":"clean-perworker-listening","ok":true,"expectedExit":0,"exit":0,
+  scripts/check-bfcache-receipt.mjs --selftest :: exit=0 :: {"schema":"tabi-bfcache-selftest-v1","cases":17,"passed":17,"results":[{"name":"clean-valid-receipt","expectedExit":0,"expectedFinding":null,"gotExit":0,"gotFin
+  scripts/check-bidi-runtime.mjs --selftest :: exit=0 :: BIDI_RUNTIME_SELFTEST verdict=clean cases=56 passed=56
+  scripts/check-decision-table.mjs --selftest :: exit=0 :: DECISION_TABLE_SELFTEST verdict=clean cases=34 passed=34
+  scripts/check-freshness.mjs --self-test :: exit=0 :: FRESHNESS_SELFTEST verdict=clean cases=12
+  scripts/check-frontier-admission.mjs --selftest :: exit=0 :: FRONTIER_ADMISSION_SELFTEST verdict=clean cases=24 passed=24
+  scripts/check-gate-mutants.mjs --selftest :: exit=0 :: GATE_MUTANTS_SELFTEST verdict=clean cases=12 passed=12
+  scripts/check-gate-registry.mjs --selftest :: exit=0 :: GATE_REGISTRY_SELFTEST verdict=clean cases=22 passed=22
+  scripts/check-measurement-binding.mjs --self-test :: exit=0 :: MEASUREMENT_BINDING_SELFTEST verdict=clean cases=76 reasons=13
+  scripts/check-release-pins.mjs --selftest :: exit=0 :: RELEASE_PINS_SELFTEST verdict=clean cases=29 passed=29
+  scripts/check-round-contract.mjs --self-test :: exit=0 :: ROUND_CONTRACT_SELFTEST verdict=clean cases=38 alias_checks=1
+  scripts/check-s106-evidence.mjs --selftest :: exit=0 :: S106_SELFTEST verdict=clean cases=10 passed=10
+  scripts/check-selfassessment.mjs --selftest :: exit=0 :: SELFASSESSMENT_SELFTEST verdict=clean cases=41 passed=41
+  scripts/check-source-reopen-receipt.mjs --selftest :: exit=0 :: {"schema":"tabi-source-reopen-selftest-v1","cases":18,"passed":18,"results":[{"name":"clean-6-6","expectedExit":0,"expectedFinding":null,"gotExit":0,"gotFinding
+  scripts/check-sources.mjs --self-test :: exit=0 :: SOURCES_SELFTEST verdict=clean cases=26
+  scripts/check-user-round-contract.mjs --self-test :: exit=0 :: USER_ROUND_CONTRACT_SELFTEST verdict=clean cases=45 fixtures=35 alias=1 committedCounts=6 countWitness=1 diagnosticWitness=1 reasonControls=1
+  scripts/round-evidence-audit.mjs --selftest :: exit=0 ::   "cases": 13,
+
+  check-*.mjs scripts exposing --self-test : 17   exit-0: 17
+  full measure.sh loop (incl. round-evidence-audit.mjs) : 18   exit-0: 18   nonzero: 0
+
+------------------------------------------------------------
+SECTION 5 — check-selfassessment at the baseline revision
+
+command: node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-selfassessment.mjs --rev ed8ccfc00ad3784bc424aa118e056f8edf4ee803
+
+  [5a] clean clone at 99437d29de036415a9f2d0524343617a3b19988a (worktree porcelain=0) :: exit=0
+       SELFASSESSMENT verdict=clean rev=ed8ccfc00ad3784bc424aa118e056f8edf4ee803 mismatches=0 could_not_evaluate=116 superseded=48
+
+  [5b] live lane worktree at f76da094f0ff0ad9856d2232858241e3f7841379 :: exit=1
+       SELFASSESSMENT verdict=failed rev=ed8ccfc00ad3784bc424aa118e056f8edf4ee803 mismatches=1 could_not_evaluate=116 superseded=48
+       porcelain(--untracked-files=all) = 71 (concurrent sibling-seat artifacts)
+       counted (clone): []
+       mismatches=0 clean=True couldNotEvaluate=116 superseded=48
+       counted (live worktree): [{"class": "m3-unlanded-paths", "doc": "SCORECARD.md", "line": null, "claimed": "landed", "observed": 81}]
+       mismatches=1 clean=False couldNotEvaluate=116 superseded=48
+
+------------------------------------------------------------
+SECTION 6 — build tool v2 (operability of the repaired instrument)
+
+  node c1-drift-audit-build-v2.mjs --repo <clone> --fleet <fleet> --out <scratch> :: exit=0
+       drift-audit: 307 rows (304 unchanged, 3 moved, 0 stale) -> /fast/scratch/hyaku/tabi-r37/w1/ExecSelftest/tmp/drift.tsv
+       regenerated ledger is byte-identical to the committed corpus/adjacency-screen-drift.tsv at 99437d29de036415a9f2d0524343617a3b19988a
+
+------------------------------------------------------------
+SECTION 7 — supplementary: v5 predicate on the honest state (lane HEAD)
+
+  node c1-adjacency-sweep-v5.mjs --rev f76da094f0ff0ad9856d2232858241e3f7841379 --repo <lane> --fleet <fleet> :: exit=0
+       C1_ADJACENCY_SWEEP_V5 predicate=met rev=f76da094f0ff0ad9856d2232858241e3f7841379 adjacency=clean completeness.unaccounted=0 drift.total=307 drift.auditCoverage=307 drift.auditFindings=0 drift.staleFindings=0 delta.total=0 delta.unaccounted=0 delta.screenFindings=0 newMapped=0
+
+------------------------------------------------------------
+SUMMARY
+  1 frozenDigests (5/5) .................. MATCH
+  2 node --check (3 files) ................ exit 0 / exit 0 / exit 0
+  3 v5 list modes 383 / 307 / 0 .......... MATCH expectations
+  4 self-test scripts ..................... 17 check-*.mjs (17 exit 0); 18 in measure.sh loop (18 exit 0, 0 nonzero)
+  5 check-selfassessment --rev ed8ccfc00ad3784bc424aa118e056f8edf4ee803 .. clone: mismatches=0 exit 0; live worktree: mismatches=1 exit 1 (m3-unlanded-paths, concurrent sibling artifacts)
+

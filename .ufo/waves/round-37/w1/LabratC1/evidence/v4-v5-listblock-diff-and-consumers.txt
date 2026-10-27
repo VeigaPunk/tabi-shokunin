@@ -1,0 +1,30 @@
+### The list-mode block is BYTE-IDENTICAL v4 -> v5: B1 bound the predicate path only.
+
+--- diff of the list block (empty output == identical) ---
+(exit 0 ; no output above == byte-identical)
+
+--- the ONE line B1 added to the predicate path (v5 387-389) ---
+387:  // B1: the pins file is bound to its frozen digest at REV.
+388:  const pinsDigest = sha256(pinsBuf);
+389:  if (pinsDigest !== DELTA_PINS_SHA256) throw new Refusal(`${DELTA_PINS_PATH} at ${REV} sha256 ${pinsDigest} != frozen ${DELTA_PINS_SHA256}`);
+
+--- v4's equivalent pins block (no digest) ---
+369:  // ---- delta pins (frozen heads) ----
+370:  const pinsBuf = blob(lane, REV, DELTA_PINS_PATH);
+371:  if (pinsBuf === null) throw new Refusal(`${DELTA_PINS_PATH} absent at ${REV}`);
+372:  let deltaPins;
+373:  try { deltaPins = JSON.parse(pinsBuf.toString('utf8')); } catch { throw new Refusal(`${DELTA_PINS_PATH} is not JSON`); }
+
+### consumers of the list modes (grep over the whole lane)
+--- scripts/ (gates) ---
+NONE in scripts/
+--- .ufo/waves/round-37/measure.sh ---
+NONE in measure.sh
+--- .ufo/waves/round-37/baseline/run-controls.sh ---
+NONE in run-controls.sh
+--- .ufo/waves/round-36/baseline/controls.mjs (historical consumer) ---
+73:  const driftRefs = run(process.execPath, [C1, '--list-drift', '--repo', LANE]).stdout.trim().split('\n').filter(Boolean);
+--- .ufo/waves/round-37/gen-w1-spec.py (the round-37 seat that CONSUMES the counts) ---
+48:items.append(item('CritC1a', 'critic', f"""Item: ATTACK C1-B1 (the pins digest binding). The frozen v5 counter: {LANE}/.ufo/waves/round-37/counters/c1-adjacency-sweep-v5.mjs (frozen bytes at {FREEZE}). Avenues: (a) the counter's --list-delta/--list-drift diagnostic modes read the pins from lane HEAD or the DISK file, not from a digest-bound REV blob — classify: can they influence any predicate evaluation, or are they display-only? (b) the digest is computed over the blob at REV — could a tree carry pins bytes that are equal after some normalization (CRLF, trailing newline) but different raw? Test: fixture with CRLF-line-ended pins JSON — does v5 refuse (good) and does v4 admit? (c) multi-key JSON with duplicate keys — does JSON.parse keep the last (git blob is what it is; classify). (d) can the refusal be downgraded to exit 1 anywhere (score the difference between exit 1 and exit 2 semantics in the receipts). Work in scratch clones; never mutate the lane.
+93:items.append(item('ExecSelftest', 'executor', f"""Item: instrument self-test receipt. From committed bytes: (1) sha256 each frozenDigests path via `git -C {LANE} show {FREEZE}:<path>` — all five match claims.json; (2) node --check both counters and the build tool; (3) v5 list modes: --list-candidates | wc -l (expect 383), --list-drift | wc -l (expect 307), --list-delta | wc -l (expect 0); (4) every {LANE}/scripts/check-*.mjs exposing --self-test exits 0 (loop as measure.sh does) — record the count; (5) `node {LANE}/scripts/check-selfassessment.mjs --rev {TIP}` -> mismatches 0. Write selftest.txt with each command + exit + key output line.
+99:items.append(item('LabratC1', 'executor', f"""Item: one bounded probe — v5's diagnostic read paths. Hypothesis: v5's --list-delta/--list-drift modes read the delta pins from lane HEAD or the on-disk file WITHOUT the digest binding, so a caller could be misled by unfrozen pins in a display context. Probe: (1) in a scratch clone with a reordered-pins worktree file, run `node $S/v5.mjs --list-delta --repo <clone>` — does it list using the unfrozen bytes? (2) classify the impact: does any predicate evaluation use these modes (read evaluate()'s code path) or are they strictly display? (3) verdict: acceptable display-only divergence (documented in the counter header) or a routed defect requiring the L1 to bind the list modes too. Your report must quote the code lines.

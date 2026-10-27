@@ -1,0 +1,17 @@
+# MutC1a — round 37 C1 v5 mutation probe
+
+Detector: `node <counter> --rev <REV> --repo <clone> --fleet /home/vgpnk/Projects/shokunin --json`, honest tip `ed8ccfc00ad3784bc424aa118e056f8edf4ee803`; TMPDIR explicitly set in scratch. Frozen pristine SHA-256 `9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c`. Pristine honest output: exit 0, predicate true, clean adjacency (16/16), completeness unaccounted 0, drift 307/307 audited, no audit/stale findings, delta unaccounted 0. Restored-copy hash equaled pristine; no repository counter bytes changed.
+
+| Mutant | Mutation | Honest / control outcomes | Verdict |
+|---|---|---|---|
+| m1 | `DELTA_PINS_SHA256` → 64 zeros | Honest exit 2, frozen pins digest mismatch. J1 and J2 also exit 2 because mismatch refusal preempts their behavior. | Killed by honest control as expected. |
+| m2 | Both full digest equality checks shortened to first 8 hex characters | Honest exit 0 / predicate true. J2 with actual scratch-generated rev `668e32f20dd0c6af2b7084c2d577d2d2424595f5` exit 0 / predicate true. J1 exit 2 because reordered file digest prefix differs. Kaidoku object census: 1,313 commits; only commit beginning with pinned `1ed29de2` prefix was the pin itself. | Survives exercised J2; requested J1 smuggled-head fixture not constructible from available kaidoku commits. The actual J1 fixture is a different-prefix pins file and correctly refuses; this does not prove prefix collision security. Classify requested attack as unavailable/inconclusive. |
+| m3 | Restore v4 first-`:digits` parser | Honest exit 0. J2 decoy fixture exit 1 (predicate false), as intended. | Killed by J2 control. |
+| m4 | Remove predicate's final `&& pinsDigest === DELTA_PINS_SHA256` | Honest exit 0. J1 still exit 2 at the earlier unconditional digest refusal. J2 exit 0. | Predicate-term mutation survives behaviorally on J1 because the earlier digest refusal catches the fixture. J1 therefore remains refused; this is redundant predicate enforcement rather than an admitted attack. |
+| m5 | Reword constant `PREDICATE_SENTENCE` | Honest exit 0; frozen byte compare claims/header/constant all equal. Mutated constant differs from claims and header; byte-identity comparison fails. | Killed by external byte-identity detector; counter behavior alone does not fail. |
+
+Fixture revisions were generated in isolated scratch clones (top-level assertion passed): J1 `fb4ff88fa18a947aa2b57771dcd7846a20e147ec`; J2 `668e32f20dd0c6af2b7084c2d577d2d2424595f5`. Initial attempts with frozen receipt IDs `c7f0…` / `f8c0…` were invalid (`unresolvable revision`); all summarized outcomes above use the valid generated revisions. The original control J1 bytes were based on semantic reorder and had exit 2 under m2; its digest begins `ef7ca6…`, not the frozen `81019362…` prefix.
+
+Before/after source hashes: pristine/frozen `9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c`; restored copy identical. Scratch removed after the probe. No tools installed.
+
+VERDICT finding m4 predicate-term deletion survives as an unobservable redundancy on J1 (caught by earlier digest refusal); m1/m3/m5 killed. Requested m2 kaidoku 8-hex-prefix-equal moved-head attack fixture was unavailable, so that attack-specific assessment is inconclusive.

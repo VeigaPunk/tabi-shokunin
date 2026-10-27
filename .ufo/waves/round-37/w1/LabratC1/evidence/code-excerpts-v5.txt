@@ -1,0 +1,72 @@
+### v5 counter (frozen bytes sha256 9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c)
+### claims.json frozenDigests.c1 = 9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c
+
+--- lines 384-397: PREDICATE path, digest-BOUND ---
+384:  // ---- delta pins (frozen heads) ----
+385:  const pinsBuf = blob(lane, REV, DELTA_PINS_PATH);
+386:  if (pinsBuf === null) throw new Refusal(`${DELTA_PINS_PATH} absent at ${REV}`);
+387:  // B1: the pins file is bound to its frozen digest at REV.
+388:  const pinsDigest = sha256(pinsBuf);
+389:  if (pinsDigest !== DELTA_PINS_SHA256) throw new Refusal(`${DELTA_PINS_PATH} at ${REV} sha256 ${pinsDigest} != frozen ${DELTA_PINS_SHA256}`);
+390:  let deltaPins;
+391:  try { deltaPins = JSON.parse(pinsBuf.toString('utf8')); } catch { throw new Refusal(`${DELTA_PINS_PATH} is not JSON`); }
+392:  if (typeof deltaPins !== 'object' || deltaPins === null || Array.isArray(deltaPins)) throw new Refusal(`${DELTA_PINS_PATH} must be a JSON object lane -> 40-hex head`);
+393:  for (const [sib, head] of Object.entries(deltaPins)) {
+394:    if (!/^[0-9a-f]{40}$/.test(String(head))) throw new Refusal(`delta head for ${sib} is not 40-hex`);
+395:    if (!(sib in PINS)) throw new Refusal(`delta pin names an unknown sibling: ${sib}`);
+396:    resolveCommit(join(fleet, `${sib}-shokunin`), String(head));
+397:  }
+
+--- lines 606-628: LIST modes, NOT bound ---
+606:    if (o.list) { for (const c of candidates(o.fleet, lane)) console.log(`${c.key}\t${c.text.trim()}`); process.exit(0); }
+607:    if (o.listDelta || o.listDrift) {
+608:      const headRev = git(lane, ['rev-parse', 'HEAD']).stdout.toString('utf8').trim();
+609:      let pinsBuf = blob(lane, headRev, DELTA_PINS_PATH, { optional: true });
+610:      if (pinsBuf === null) {
+611:        try { pinsBuf = spawnSync('cat', [join(lane, DELTA_PINS_PATH)], { encoding: 'buffer' }).stdout; } catch { /* below */ }
+612:      }
+613:      if (pinsBuf === null) throw new Refusal(`${DELTA_PINS_PATH} absent at lane HEAD and on disk`);
+614:      const deltaPins = JSON.parse(pinsBuf.toString('utf8'));
+615:      if (o.listDelta) {
+616:        for (const c of deltaCandidates(o.fleet, deltaPins)) console.log(`${c.key}\t${c.text.trim()}`);
+617:      } else {
+618:        const drifted = new Set(Object.entries(deltaPins).filter(([sib, head]) => head !== PINS[sib]).map(([sib]) => sib));
+619:        const sb = blob(lane, headRev, SCREEN);
+620:        for (const l of lines(sb).slice(1)) {
+621:          if (!l) continue;
+622:          const ref = l.split('\t')[0];
+623:          const m = refRe.exec(ref);
+624:          if (m && drifted.has(m[1])) console.log(ref);
+625:        }
+626:      }
+627:      process.exit(0);
+628:    }
+
+--- line 587: predicate term ---
+586:    && deltaScreenFindings.length === 0
+587:    && pinsDigest === DELTA_PINS_SHA256;
+588:  return out;
+
+--- lines 35-49: header Usage + Inputs paragraph (the false claim) ---
+35:// Usage:
+36://   node c1-adjacency-sweep-v4.mjs --rev <REV> [--repo <lane>] [--fleet <dir>] [--json]
+37://   node c1-adjacency-sweep-v4.mjs --list-candidates [--repo <lane>] [--fleet <dir>]
+38://   node c1-adjacency-sweep-v4.mjs --list-drift [--repo <lane>] [--fleet <dir>]
+39://   node c1-adjacency-sweep-v4.mjs --list-delta [--repo <lane>] [--fleet <dir>]
+40:// Exit: 0 predicate met; 1 evaluated, predicate not met; 2 could not evaluate.
+41://
+42:// Inputs are git objects only: the lane at --rev and at BASELINE; each sibling at its frozen
+43:// round-35 pin (completeness) and at its frozen round-36 delta head (drift leg — heads are
+44:// read from .ufo/waves/round-36/baseline/c1-delta-pins.json at REV and verified resolvable;
+45:// a sibling working tree is never touched). scripts/check-adjacency.mjs is taken from --rev,
+46:// must equal ADJ_GATE_SHA256, is written to a scratch file under $TMPDIR (lstat-refused on
+47:// any symlink component) and run `--at REV --repo <lane> --fleet <fleet> --json`; the
+48:// scratch file is removed on exit.
+49://
+
+--- lines 92-96: DELTA_PINS_SHA256 constant ---
+93:const DRIFT_AUDIT = 'corpus/adjacency-screen-drift.tsv';
+94:const DELTA_PINS_PATH = '.ufo/waves/round-36/baseline/c1-delta-pins.json';
+95:// B1: digest of the round-36 frozen delta pins file, bound here (round-37 freeze).
+96:const DELTA_PINS_SHA256 = '810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655';
+97:const DELTA_SCREEN = 'corpus/adjacency-screen-delta.tsv';

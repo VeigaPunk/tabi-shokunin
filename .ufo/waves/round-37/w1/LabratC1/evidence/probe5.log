@@ -1,0 +1,16 @@
+scan exit=0
+[]
+fatal: ambiguous argument 'master': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+unfrozen-built ledger rows=307 (honest ledger rows=308)
+D pins blob sha256=810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655 (frozen=81019362...)
+PREDICATE with FROZEN pins + UNFROZEN-built ledger: exit=1 :: 
+predicate= False drift.total= 307 auditCoverage= 306 auditFindings= 0 staleFindings= 0
+--- predicate path pins read (v5 line 385-389) vs build tool (v2 line 65-71) ---
+385:  const pinsBuf = blob(lane, REV, DELTA_PINS_PATH);
+386:  if (pinsBuf === null) throw new Refusal(`${DELTA_PINS_PATH} absent at ${REV}`);
+387:  // B1: the pins file is bound to its frozen digest at REV.
+388:  const pinsDigest = sha256(pinsBuf);
+389:  if (pinsDigest !== DELTA_PINS_SHA256) throw new Refusal(`${DELTA_PINS_PATH} at ${REV} sha256 ${pinsDigest} != frozen ${DELTA_PINS_SHA256}`);
+=== probe5 done ===

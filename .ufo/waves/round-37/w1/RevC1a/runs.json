@@ -1,0 +1,76 @@
+{
+  "seat": "RevC1a",
+  "task": "independent C1 re-derivation (tabi round 37 w1)",
+  "frozenAt": "99437d29de036415a9f2d0524343617a3b19988a",
+  "measuredRev": "ed8ccfc00ad3784bc424aa118e056f8edf4ee803",
+  "env": {
+    "node": "v24.21.0 (preinstalled; nothing installed this seat)",
+    "v5Sha256": "9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c (== claims.json frozenDigests.c1)",
+    "v4Sha256": "8a223faf5e109fc05dac1373a4a4979b65f9ec2ffef40f86ae9bf40ba1aad385 (git show 99437d29:.ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs)",
+    "pinsBlobAtRev": {
+      "path": ".ufo/waves/round-36/baseline/c1-delta-pins.json",
+      "bytes": 1109,
+      "sha256": "810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655",
+      "note": "independently computed over git show ed8ccfc0:<path>; equals v5 DELTA_PINS_SHA256 and the honest-run deltaPinsSha256"
+    }
+  },
+  "fixtures": {
+    "base": "ed8ccfc0 (detached; = the TIP run-controls.sh used, per c1r37-J3 fixtureRev). Master has since advanced to f76da09 which adds ONLY .ufo/waves/round-37 files (git diff --stat ed8ccfc0..f76da09: 22 files, +2864, 0 deletions; zero changes under corpus/, scripts/, .ufo/waves/round-34, .ufo/waves/round-36) so base choice is immaterial for every path v4/v5 read at REV.",
+    "topLevelAssert": "git rev-parse --show-toplevel == fixture dir before each commit; clone --shared from lane; no lane mutation",
+    "B_decoy": {
+      "rev": "c48c46ff9d43fc277a34bd087a9e55531c59e7b7",
+      "edit": "corpus/adjacency-screen-drift.tsv data row 6 note 'verbatim at :748' -> 'pin :585 moved verbatim at :748' (exactly 1 row matched, asserted)",
+      "recipe": "byte-identical to frozen run-controls.sh fixture B python"
+    },
+    "A_reorder": {
+      "rev": "c5ec9fdcbe7d135b46d1dda5fa300e333772ca08",
+      "edit": "c1-delta-pins.json rewritten as json.dumps(dict(sorted(d.items())), indent=1) + newline (frozen recipe)",
+      "pinsBlobSha256": "ef7ca6acc01605cd9e24116ae948bea7f29ea3ebf4ef78a2149e4bace259f7c4",
+      "note": "extends the frozen receipt c1r37-J1-pins-reorder-v5 summary 'sha256 ef7ca' byte-for-byte; fixture reproduces the frozen attack tree exactly"
+    }
+  },
+  "runs": [
+    {
+      "name": "honest-v5",
+      "cmd": "TMPDIR=$S/tmp node v5.mjs --rev ed8ccfc0... --repo <lane> --fleet /home/vgpnk/Projects/shokunin --json",
+      "exit": 0, "predicate": true,
+      "key": {"deltaPinsSha256": "810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655", "adjacency": "clean 16/16, 0 findings", "completeness": {"candidates": 383, "unaccounted": 0}, "drift": {"total": 307, "auditCoverage": 307, "auditFindings": 0, "staleFindings": 0, "observed": {"unchanged": 304, "moved": 3, "stale": 0}}, "delta": {"total": 0, "unaccounted": 0, "screenFindings": 0}},
+      "receipt": "baseline/c1r37-J3-honest-v5.json", "agree": true
+    },
+    {
+      "name": "decoy-v5",
+      "cmd": "node v5.mjs --rev c48c46ff... --repo $S/B --fleet ... --json",
+      "exit": 0, "predicate": true,
+      "key": {"deltaPinsSha256": "81019362...", "drift": {"total": 307, "auditCoverage": 307, "auditFindings": 0, "staleFindings": 0}},
+      "receipt": "baseline/c1r37-J2-decoy-note-v5.json", "agree": true
+    },
+    {
+      "name": "decoy-v4",
+      "cmd": "node v4.mjs --rev c48c46ff... --repo $S/B --fleet ... --json",
+      "exit": 1, "predicate": false,
+      "key": {"drift": {"total": 307, "auditCoverage": 306, "auditFindings": [{"row": 6, "reason": "audit-moved-wrong-relocation", "detail": ":585"}]}},
+      "receipt": "baseline/c1r37-J2-decoy-note-v4.json", "agree": true,
+      "note": "finding reason + decoy line number confirm the first-:<digits> parser (v4.mjs:438 /:([1-9][0-9]*)\\b/) grabbing the :585 decoy"
+    },
+    {
+      "name": "reorder-v5",
+      "cmd": "node v5.mjs --rev c5ec9fdc... --repo $S/A --fleet ... --json",
+      "exit": 2, "predicate": null,
+      "key": {"refusal": ".ufo/waves/round-36/baseline/c1-delta-pins.json at c5ec9fdc... sha256 ef7ca6acc01605cd9e24116ae948bea7f29ea3ebf4ef78a2149e4bace259f7c4 != frozen 810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655"},
+      "receipt": "baseline/c1r37-J1-pins-reorder-v5.json", "agree": true
+    },
+    {
+      "name": "reorder-v4",
+      "cmd": "node v4.mjs --rev c5ec9fdc... --repo $S/A --fleet ... --json",
+      "exit": 0, "predicate": true,
+      "key": {"drift": {"total": 307, "auditCoverage": 307, "auditFindings": 0}},
+      "receipt": "baseline/c1r37-J1-pins-reorder-v4.json", "agree": true
+    }
+  ],
+  "predicateSentence": {
+    "sites": ["claims.json claims[C1].predicate", "v5.mjs header comment", "v5.mjs PREDICATE_SENTENCE const"],
+    "byteIdentical": true,
+    "lengthChars": 295
+  },
+  "rawArtifacts": ["honest-v5.json", "decoy-v5.json", "decoy-v4.json", "reorder-v4.json", "reorder-v5-refusal.txt"]
+}

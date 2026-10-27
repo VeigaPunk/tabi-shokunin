@@ -1,0 +1,13 @@
+--- /fast/scratch/hyaku/tabi-r37/w1/MutC1b/pristine.mjs	2026-10-27 10:42:04.662618559 -0300
++++ /fast/scratch/hyaku/tabi-r37/w1/MutC1b/m3.mjs	2026-10-27 10:43:52.689003354 -0300
+@@ -453,9 +453,7 @@
+           if (!DRIFT_STATUSES.includes(status)) { auditFindings.push({ row: rowNo, reason: 'audit-status-unknown', detail: status }); continue; }
+           if (status !== obs.status) { auditFindings.push({ row: rowNo, reason: 'audit-status-mismatch', detail: `${status} != observed ${obs.status}` }); continue; }
+           if (status === 'moved') {
+-            // B2: the relocation must parse from the canonical `verbatim at :N` clause —
+-            // never from the first `:<digits>` token anywhere in the note.
+-            const mnote = /\bverbatim at :([1-9][0-9]*)\b/.exec(note || '');
++            const mnote = /:([1-9][0-9]*)\b/.exec(note || '');
+             if (!mnote) { auditFindings.push({ row: rowNo, reason: 'audit-moved-no-relocation', detail: note }); continue; }
+             const hl = headLines(m[1], deltaPins[m[1]], m[3]);
+             const cited = lines(blob(join(fleet, `${m[1]}-shokunin`), m[2], m[3]))[Number(m[4]) - 1].trim();

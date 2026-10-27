@@ -1,0 +1,258 @@
+# freeze-integrity receipt — tabi round 37 (attempt 1), wave w1, seat ExecFreezeIntegrity
+# lane: /home/vgpnk/Projects/shokunin/tabi-shokunin
+# freeze commit: 99437d29de036415a9f2d0524343617a3b19988a
+# baseline (claims.json frozenAt/baseline): ed8ccfc00ad3784bc424aa118e056f8edf4ee803
+# all git calls read-only; no mutating git/jj command was run in any repo
+# date: 2026-10-27
+
+===== (1) origin master tip =====
+$ git ls-remote origin refs/heads/master
+f76da094f0ff0ad9856d2232858241e3f7841379	refs/heads/master
+--- exit=0   [ls-remote origin refs/heads/master]
+
+$ git rev-parse HEAD
+f76da094f0ff0ad9856d2232858241e3f7841379
+--- exit=0   [local HEAD]
+
+$ git merge-base --is-ancestor 99437d29de036415a9f2d0524343617a3b19988a f76da094f0ff0ad9856d2232858241e3f7841379
+--- exit=0   [is freeze an ancestor of origin master?]
+
+$ git log --oneline 99437d29de036415a9f2d0524343617a3b19988a..f76da094f0ff0ad9856d2232858241e3f7841379
+f76da09 round-37: validated w1 spec, dispatch payload and ready handoff (34 seats)
+--- exit=0   [commits freeze..origin-master]
+
+$ git diff-tree -r --no-renames --name-only 99437d29de036415a9f2d0524343617a3b19988a f76da094f0ff0ad9856d2232858241e3f7841379
+.ufo/waves/round-37/gen-w1-spec.py
+.ufo/waves/round-37/w1-dispatch.json
+.ufo/waves/round-37/w1-dispatch.stderr
+.ufo/waves/round-37/w1-spec.json
+.ufo/waves/round-37/w1.ready
+--- exit=0   [files changed freeze..origin-master]
+
+$ git diff --name-only 99437d29de036415a9f2d0524343617a3b19988a f76da094f0ff0ad9856d2232858241e3f7841379 -- .ufo/waves/round-37/counters .ufo/waves/round-37/claims.json .ufo/waves/round-37/measure.sh .ufo/waves/round-37/baseline
+--- exit=0   [frozen subtree diff freeze..origin-master (claims/counters/measure/baseline)]
+
+===== (2) freeze builds on the round-start tip =====
+$ git merge-base --is-ancestor ed8ccfc00ad3784bc424aa118e056f8edf4ee803 99437d29de036415a9f2d0524343617a3b19988a
+--- exit=0   [merge-base --is-ancestor ed8ccfc.. 99437d29..]
+
+$ git log --format=%P -1 99437d29de036415a9f2d0524343617a3b19988a
+ed8ccfc00ad3784bc424aa118e056f8edf4ee803
+--- exit=0   [freeze commit parents]
+
+===== (3) freeze commit touches only .ufo/waves/round-37/ =====
+$ git diff-tree --no-renames --name-only ed8ccfc00ad3784bc424aa118e056f8edf4ee803 99437d29de036415a9f2d0524343617a3b19988a
+.ufo
+--- exit=0   [diff-tree --name-only (as specified, tree-level)]
+
+$ git diff-tree -r --no-renames --name-only ed8ccfc00ad3784bc424aa118e056f8edf4ee803 99437d29de036415a9f2d0524343617a3b19988a
+.ufo/waves/round-37/baseline/c1r37-J1-pins-reorder-v4.json
+.ufo/waves/round-37/baseline/c1r37-J1-pins-reorder-v5.json
+.ufo/waves/round-37/baseline/c1r37-J2-decoy-note-v4.json
+.ufo/waves/round-37/baseline/c1r37-J2-decoy-note-v5.json
+.ufo/waves/round-37/baseline/c1r37-J3-honest-v5.json
+.ufo/waves/round-37/baseline/c2r37-J1-replace-ref-v2.json
+.ufo/waves/round-37/baseline/c2r37-J1-replace-ref-v3.json
+.ufo/waves/round-37/baseline/c2r37-J2-observed-tamper-v2.json
+.ufo/waves/round-37/baseline/c2r37-J2-observed-tamper-v3.json
+.ufo/waves/round-37/baseline/c2r37-J3-honest-v3.json
+.ufo/waves/round-37/baseline/census-start.txt
+.ufo/waves/round-37/baseline/run-controls.sh
+.ufo/waves/round-37/claims.json
+.ufo/waves/round-37/counters/c1-adjacency-sweep-v5.mjs
+.ufo/waves/round-37/counters/c1-drift-audit-build-v2.mjs
+.ufo/waves/round-37/counters/c2-firefox-bidi-v3.mjs
+.ufo/waves/round-37/measure.sh
+--- exit=0   [diff-tree -r --name-only (full path list)]
+
+$ git show --stat --oneline 99437d29de036415a9f2d0524343617a3b19988a
+99437d2 round-37: freeze claims, C1 v5 + C2 v3 counters, build tool v2, harness v2, controls receipts (before data)
+ .../baseline/c1r37-J1-pins-reorder-v4.json         |   1 +
+ .../baseline/c1r37-J1-pins-reorder-v5.json         |   1 +
+ .../round-37/baseline/c1r37-J2-decoy-note-v4.json  |   1 +
+ .../round-37/baseline/c1r37-J2-decoy-note-v5.json  |   1 +
+ .../round-37/baseline/c1r37-J3-honest-v5.json      |   1 +
+ .../round-37/baseline/c2r37-J1-replace-ref-v2.json |   1 +
+ .../round-37/baseline/c2r37-J1-replace-ref-v3.json |   1 +
+ .../baseline/c2r37-J2-observed-tamper-v2.json      |   1 +
+ .../baseline/c2r37-J2-observed-tamper-v3.json      |   1 +
+ .../round-37/baseline/c2r37-J3-honest-v3.json      |   1 +
+ .ufo/waves/round-37/baseline/census-start.txt      |  21 +
+ .ufo/waves/round-37/baseline/run-controls.sh       | 171 +++++
+ .ufo/waves/round-37/claims.json                    |  85 +++
+ .../round-37/counters/c1-adjacency-sweep-v5.mjs    | 640 ++++++++++++++++++
+ .../round-37/counters/c1-drift-audit-build-v2.mjs  | 102 +++
+ .../waves/round-37/counters/c2-firefox-bidi-v3.mjs | 713 +++++++++++++++++++++
+ .ufo/waves/round-37/measure.sh                     |  70 ++
+ 17 files changed, 1812 insertions(+)
+--- exit=0   [show --stat]
+
+===== (4) lane worktree clean =====
+$ git status --porcelain
+?? .ufo/waves/round-37/L1-notes/
+?? .ufo/waves/round-37/w1.ready.dispatched
+?? .ufo/waves/round-37/w1/
+--- exit=0   [git status --porcelain]
+
+$ git status --porcelain -uall
+?? .ufo/waves/round-37/L1-notes/s143-gate-evidence.txt
+?? .ufo/waves/round-37/w1.ready.dispatched
+?? .ufo/waves/round-37/w1/ConnPattern.md
+?? .ufo/waves/round-37/w1/ConnPattern/report.md
+?? .ufo/waves/round-37/w1/RevC2a/honest-v3.result.json
+?? .ufo/waves/round-37/w1/RevC2a/honest-v3.stderr.txt
+?? .ufo/waves/round-37/w1/RevC2a/honest-v3.stdout.json
+?? .ufo/waves/round-37/w1/RevC2a/observed-tamper-v2.result.json
+?? .ufo/waves/round-37/w1/RevC2a/observed-tamper-v2.stderr.txt
+?? .ufo/waves/round-37/w1/RevC2a/observed-tamper-v2.stdout.json
+?? .ufo/waves/round-37/w1/RevC2a/observed-tamper-v3.result.json
+?? .ufo/waves/round-37/w1/RevC2a/observed-tamper-v3.stderr.txt
+?? .ufo/waves/round-37/w1/RevC2a/observed-tamper-v3.stdout.json
+?? .ufo/waves/round-37/w1/RevC2a/replace-graft-v2.result.json
+?? .ufo/waves/round-37/w1/RevC2a/replace-graft-v2.stderr.txt
+?? .ufo/waves/round-37/w1/RevC2a/replace-graft-v2.stdout.json
+?? .ufo/waves/round-37/w1/RevC2a/replace-graft-v3.result.json
+?? .ufo/waves/round-37/w1/RevC2a/replace-graft-v3.stderr.txt
+?? .ufo/waves/round-37/w1/RevC2a/replace-graft-v3.stdout.json
+?? .ufo/waves/round-37/w1/RevControls.md
+?? .ufo/waves/round-37/w1/RevControls/report.md
+?? .ufo/waves/round-37/w1/RevFrozenDigests/report.md
+?? .ufo/waves/round-37/w1/RevHarness/measure-smoke/c1-at-ed8ccfc.json
+?? .ufo/waves/round-37/w1/RevHarness/measure-smoke/c1-at-ed8ccfc.stderr
+?? .ufo/waves/round-37/w1/RevHarness/measure-smoke/c2-at-ed8ccfc.json
+?? .ufo/waves/round-37/w1/RevHarness/measure-smoke/c2-at-ed8ccfc.stderr
+?? .ufo/waves/round-37/w1/RevHarness/measure-smoke/provenance-ed8ccfc.txt
+?? .ufo/waves/round-37/w1/RevHarness/measure-smoke/r35c1-at-ed8ccfc.json
+?? .ufo/waves/round-37/w1/RevHarness/measure-smoke/r35c1-at-ed8ccfc.stderr
+?? .ufo/waves/round-37/w1/RevHarness/measure-smoke/r36c1-at-ed8ccfc.json
+?? .ufo/waves/round-37/w1/RevHarness/measure-smoke/r36c1-at-ed8ccfc.stderr
+?? .ufo/waves/round-37/w1/RevHarness/measure-smoke/r36c2-at-ed8ccfc.json
+?? .ufo/waves/round-37/w1/RevHarness/measure-smoke/r36c2-at-ed8ccfc.stderr
+?? .ufo/waves/round-37/w1/ScoutAssim.md
+?? .ufo/waves/round-37/w1/ScoutAssim/report.md
+?? .ufo/waves/round-37/w1/ScoutSrc.md
+?? .ufo/waves/round-37/w1/ScoutSrc/report.md
+?? .ufo/waves/round-37/w1/ScoutSrc/s143-evidence.md
+?? .ufo/waves/round-37/w1/ScribeLesson/round-37-draft.md
+?? .ufo/waves/round-37/w1/ScribeScorecard.md
+?? .ufo/waves/round-37/w1/ScribeScorecard/report.md
+?? .ufo/waves/round-37/w1/ScribeScorecard/scorecard-draft.md
+?? .ufo/waves/round-37/w1/ScribeSources/S143-row.md
+?? .ufo/waves/round-37/w1/swarm-registry.json
+--- exit=0   [git status --porcelain -uall]
+
+$ git status --porcelain --untracked-files=no
+--- exit=0   [git status --porcelain (tracked only)]
+
+$ git diff --stat HEAD
+--- exit=0   [git diff --stat HEAD]
+
+===== (5) node --check on the frozen counters, from the freeze bytes =====
+extracted from freeze commit: .ufo/waves/round-37/counters/c1-adjacency-sweep-v5.mjs
+extracted from freeze commit: .ufo/waves/round-37/counters/c2-firefox-bidi-v3.mjs
+extracted from freeze commit: .ufo/waves/round-37/counters/c1-drift-audit-build-v2.mjs
+extracted from freeze commit: .ufo/waves/round-37/measure.sh
+
+$ node --version
+v24.21.0
+--- exit=0   [node --version]
+
+$ node --check /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/c1-adjacency-sweep-v5.mjs
+--- exit=0   [node --check c1-adjacency-sweep-v5.mjs (freeze bytes)]
+
+$ node --check /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/c2-firefox-bidi-v3.mjs
+--- exit=0   [node --check c2-firefox-bidi-v3.mjs (freeze bytes)]
+
+$ node --check /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/c1-drift-audit-build-v2.mjs
+--- exit=0   [node --check c1-drift-audit-build-v2.mjs (freeze bytes)]
+
+$ bash -n /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/measure.sh
+--- exit=0   [bash -n measure.sh (freeze bytes)]
+
+===== (5b) claims.json frozenDigests vs the frozen bytes =====
+$ sha256sum /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/c1-adjacency-sweep-v5.mjs /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/c2-firefox-bidi-v3.mjs /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/c1-drift-audit-build-v2.mjs /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/measure.sh
+9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c  /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/c1-adjacency-sweep-v5.mjs
+eda339eb270dae19f093ff071454d973c86e02d93e0ec41bb48fe2706b62e019  /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/c2-firefox-bidi-v3.mjs
+a85152cdb8c0201e2ec08e8694b567f9ebb9735203e540a5b37f0207762a9a96  /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/c1-drift-audit-build-v2.mjs
+9f89697c0509a93bfe748db7a72a9303c429f4dc680707b2dab503c3d6843302  /fast/scratch/hyaku/tabi-r37/w1/ExecFreezeIntegrity/tmp/freeze/measure.sh
+--- exit=0   [sha256 of frozen bytes]
+
+claims.json frozenDigests:
+  c1        9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c  -> counters/c1-adjacency-sweep-v5.mjs
+  c2        eda339eb270dae19f093ff071454d973c86e02d93e0ec41bb48fe2706b62e019  -> counters/c2-firefox-bidi-v3.mjs
+  buildTool a85152cdb8c0201e2ec08e8694b567f9ebb9735203e540a5b37f0207762a9a96  -> counters/c1-drift-audit-build-v2.mjs
+  measure   9f89697c0509a93bfe748db7a72a9303c429f4dc680707b2dab503c3d6843302  -> measure.sh
+  controls  3a08367f9c11eb1e05aedc0a9c45dfc6e11aa5d0b041e1dfd74ac78eeed4f25e  -> baseline/run-controls.sh
+
+$ bash -c git show 99437d29de036415a9f2d0524343617a3b19988a:.ufo/waves/round-37/baseline/run-controls.sh | sha256sum
+3a08367f9c11eb1e05aedc0a9c45dfc6e11aa5d0b041e1dfd74ac78eeed4f25e  -
+--- exit=0   [sha256 of frozen baseline/run-controls.sh]
+
+===== (6) worktree bytes of the frozen artifacts == freeze-commit bytes =====
+IDENTICAL  .ufo/waves/round-37/claims.json  wt=eade07a2ee89dec65f2101a345d2050901d608688251f45056a65e018e6c8f48  freeze=eade07a2ee89dec65f2101a345d2050901d608688251f45056a65e018e6c8f48
+IDENTICAL  .ufo/waves/round-37/counters/c1-adjacency-sweep-v5.mjs  wt=9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c  freeze=9c6289b70d67bb6da1bf5578e66ccfa2c40ea33c307adb33c454dc7bdd91752c
+IDENTICAL  .ufo/waves/round-37/counters/c2-firefox-bidi-v3.mjs  wt=eda339eb270dae19f093ff071454d973c86e02d93e0ec41bb48fe2706b62e019  freeze=eda339eb270dae19f093ff071454d973c86e02d93e0ec41bb48fe2706b62e019
+IDENTICAL  .ufo/waves/round-37/counters/c1-drift-audit-build-v2.mjs  wt=a85152cdb8c0201e2ec08e8694b567f9ebb9735203e540a5b37f0207762a9a96  freeze=a85152cdb8c0201e2ec08e8694b567f9ebb9735203e540a5b37f0207762a9a96
+IDENTICAL  .ufo/waves/round-37/measure.sh  wt=9f89697c0509a93bfe748db7a72a9303c429f4dc680707b2dab503c3d6843302  freeze=9f89697c0509a93bfe748db7a72a9303c429f4dc680707b2dab503c3d6843302
+
+===== (7) embedded pins/digests inside the frozen counters resolve against frozen objects =====
+$ bash -c git show 99437d29de036415a9f2d0524343617a3b19988a:.ufo/waves/round-36/baseline/c1-delta-pins.json | sha256sum
+810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655  -
+--- exit=0   [c1 v5 DELTA_PINS blob sha256 at freeze]
+
+  embedded DELTA_PINS_SHA256 (c1 v5) = 810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655
+$ bash -c git show 99437d29de036415a9f2d0524343617a3b19988a:scripts/check-adjacency.mjs | sha256sum
+4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac  -
+--- exit=0   [check-adjacency.mjs sha256 at freeze]
+
+  embedded ADJ_GATE_SHA256 (c1 v5) = 4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac
+$ bash -c git show 99437d29de036415a9f2d0524343617a3b19988a:scripts/check-bidi-runtime.mjs | sha256sum
+370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87  -
+--- exit=0   [check-bidi-runtime.mjs sha256 at freeze]
+
+  embedded GATE_SHA256 (c2 v3) = 370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87
+$ git cat-file -t 11c64b96f357de106c30a71c5e21ca44a3eacdc0
+commit
+--- exit=0   [c1 v5 BASELINE rev type]
+
+$ git cat-file -t 2d2c8a77428f9c95c3cd0eb4a3bbf0c6fb4ab684
+commit
+--- exit=0   [c2 v3 BASELINE rev type]
+
+===== (8) no replace refs / grafts in the measured lane (B1 ground for C2) =====
+$ git for-each-ref refs/replace
+--- exit=0   [git for-each-ref refs/replace]
+
+$ git replace -l
+--- exit=0   [git replace -l]
+
+  (no .git/info/grafts, no .git/objects/info/alternates)
+===== (9) predicate sentence: three-site byte identity =====
+C1 site1 claims.json.predicate == site2 header-comment : true
+C1 site2 header-comment   == site3 PREDICATE_SENTENCE : true
+C1 receipt field emitted: out.predicateSentence = PREDICATE_SENTENCE (c1 v5 line 539 / c2 v3 line 682)
+C2 site1 claims.json.predicate == site2 header-comment : true
+C2 site2 header-comment   == site3 PREDICATE_SENTENCE : true
+C2 receipt field emitted: out.predicateSentence = PREDICATE_SENTENCE (c1 v5 line 539 / c2 v3 line 682)
+
+===== (10) frozen control receipts: exits/predicates as recorded at the freeze =====
+--- c1r37-J1-pins-reorder-v4.json
+{"control":"c1r37-J1-pins-reorder-v4","counter":"c1-adjacency-sweep-v4","fixtureRev":"c7f0b424f9ffea812645e6aaf829128b9b764103","exit":0,"predicate":true,"summary":"v4 over reordered-pins clone: exit=0 predicate=true (admits unfrozen pins)"}
+--- c1r37-J1-pins-reorder-v5.json
+{"control":"c1r37-J1-pins-reorder-v5","counter":"c1-adjacency-sweep-v5","fixtureRev":"c7f0b424f9ffea812645e6aaf829128b9b764103","exit":2,"predicate":null,"summary":"C1_ADJACENCY_SWEEP_V5 verdict=could-not-evaluate detail=.ufo/waves/round-36/baseline/c1-delta-pins.json at c7f0b424f9ffea812645e6aaf829128b9b764103 sha256 ef7ca"}
+--- c1r37-J2-decoy-note-v4.json
+{"control":"c1r37-J2-decoy-note-v4","counter":"c1-adjacency-sweep-v4","fixtureRev":"f8c0f42da37f2ee973191323bd103a846bf3d7d6","exit":1,"predicate":false,"summary":"v4 over decoy-note clone: exit=1 predicate=false (truthful note refused: first-:digits parser)"}
+--- c1r37-J2-decoy-note-v5.json
+{"control":"c1r37-J2-decoy-note-v5","counter":"c1-adjacency-sweep-v5","fixtureRev":"f8c0f42da37f2ee973191323bd103a846bf3d7d6","exit":0,"predicate":true,"summary":"v5 over decoy-note clone: exit=0 predicate=true (verbatim-at clause parses)"}
+--- c1r37-J3-honest-v5.json
+{"control":"c1r37-J3-honest-v5","counter":"c1-adjacency-sweep-v5","fixtureRev":"ed8ccfc00ad3784bc424aa118e056f8edf4ee803","exit":0,"predicate":true,"summary":"v5 at round-start tip: exit=0 predicate=true pinsDigest bound"}
+--- c2r37-J1-replace-ref-v2.json
+{"control":"c2r37-J1-replace-ref-v2","counter":"c2-firefox-bidi-v2","fixtureRev":"ed8ccfc00ad3784bc424aa118e056f8edf4ee803","exit":0,"predicate":true,"summary":"v2 over replace-graft clone (honest tree, forged receipt via refs/replace): exit=0 predicate=true (v2 honours the graft and, ignoring observed decoration, admits)"}
+--- c2r37-J1-replace-ref-v3.json
+{"control":"c2r37-J1-replace-ref-v3","counter":"c2-firefox-bidi-v3","fixtureRev":"ed8ccfc00ad3784bc424aa118e056f8edf4ee803","exit":2,"predicate":null,"summary":"C2_FIREFOX_BIDI_V3 verdict=could-not-evaluate detail=refs/replace present in measured clone (refs/replace/88f73cf28e07795427af90edc7e671981d0384a7); refusing"}
+--- c2r37-J2-observed-tamper-v2.json
+{"control":"c2r37-J2-observed-tamper-v2","counter":"c2-firefox-bidi-v2","fixtureRev":"192cda5cf9af5b743e3c0068367ee6dcc770d745","exit":0,"predicate":true,"summary":"v2 over observed-tampered clone: exit=0 predicate=true (decoration unauthenticated)"}
+--- c2r37-J2-observed-tamper-v3.json
+{"control":"c2r37-J2-observed-tamper-v3","counter":"c2-firefox-bidi-v3","fixtureRev":"192cda5cf9af5b743e3c0068367ee6dcc770d745","exit":1,"predicate":false,"summary":"v3 over observed-tampered clone: exit=1 predicate=false receiptFinding=run1: observed captureScreenshot.sha256 != transcript first screenshot"}
+--- c2r37-J3-honest-v3.json
+{"control":"c2r37-J3-honest-v3","counter":"c2-firefox-bidi-v3","fixtureRev":"ed8ccfc00ad3784bc424aa118e056f8edf4ee803","exit":0,"predicate":null,"summary":"v3 at round-start tip: {\"predicate\": true, \"admitted\": 16, \"survivors\": 0, \"egress\": 0, \"receiptFinding\": null, \"binding\": null}"}

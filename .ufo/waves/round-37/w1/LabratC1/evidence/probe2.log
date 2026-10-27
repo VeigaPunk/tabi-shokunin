@@ -1,0 +1,37 @@
+base-delta :: exit=0 :: lines=0 :: stderr=
+base-drift :: exit=0 :: lines=307 :: stderr=
+BASE delta=0 drift=307
+CASE7 rev=5004d9d5f52a97e5065612c4d255c3f9d2971a8f HEADpins=c5ae40f7ab19516e8f6123c9198d139c33932722153b94535ed0c2aeab252e50
+c7-drift :: exit=0 :: lines=306 :: stderr=
+c7-delta :: exit=0 :: lines=0 :: stderr=
+CASE7 drift=306 vs base=307  DELTAVERS=DIFFERS
+CASE7 rows dropped: 0
+c7-predicate :: exit=2 :: lines=0 :: stderr=C1_ADJACENCY_SWEEP_V5 verdict=could-not-evaluate detail=.ufo/waves/round-36/baseline/c1-delta-pins.json at 5004d9d5f52a97e5065612c4d255c3f9d2971a8f sha256 c5ae40f7ab19516e8f6123c9198d139c33932722153b94535ed0c2aeab252e50 != frozen 810193620393f6e8b76faac4b60697
+CASE8 HEAD=11c64b96f357de106c30a71c5e21ca44a3eacdc0 on-disk pins=c5ae40f7ab19516e8f6123c9198d139c33932722153b94535ed0c2aeab252e50
+c8-drift :: exit=0 :: lines=306 :: stderr=
+CASE8 drift=306 vs base=307  DELTAVERS=DIFFERS
+c9-drift :: exit=0 :: lines=306 :: stderr=
+CASE9 drift=306 vs base=307  DELTAVERS=DIFFERS
+c10-drift :: exit=0 :: lines=0 :: stderr=
+CASE10 drift=0 vs base=307  DELTAVERS=DIFFERS
+CASE10 the injected row is NOT a drifted lane -> count unchanged means the ledger IS read from HEAD
+c11-drift-oldrev :: exit=0 :: lines=307 :: stderr=
+CASE11 drift=307 vs base=307  (same => --rev ignored, HEAD used)
+CASE12 exit=1 (documented: 2 = could-not-evaluate) stderr:
+<anonymous_script>:1
+
+
+SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at main (file:///fast/scratch/hyaku/tabi-r37/w1/LabratC1/v5.mjs:614:30)
+    at file:///fast/scratch/hyaku/tabi-r37/w1/LabratC1/v5.mjs:640:85
+    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)
+    at async node:internal/modules/esm/loader:647:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.21.0
+c13-marker-list :: exit=0 :: lines=0 :: stderr=
+c13-marker-drift :: exit=0 :: lines=307 :: stderr=
+c13-marker-pred :: exit=2 :: lines=0 :: stderr=MARKER:evaluate-reached C1_ADJACENCY_SWEEP_V5 verdict=could-not-evaluate detail=revision must be 40-hex: master 
+CASE13 marker present in list stderr? /fast/scratch/hyaku/tabi-r37/w1/LabratC1/out/c13-marker-list.stderr:0 /fast/scratch/hyaku/tabi-r37/w1/LabratC1/out/c13-marker-drift.stderr:0   in predicate stderr? 1
+=== probe2 done ===

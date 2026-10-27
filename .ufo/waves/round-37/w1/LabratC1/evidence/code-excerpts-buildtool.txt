@@ -1,0 +1,35 @@
+### c1-drift-audit-build-v2.mjs (frozen bytes sha256 a85152cdb8c0201e2ec08e8694b567f9ebb9735203e540a5b37f0207762a9a96)
+### claims.json frozenDigests.buildTool = a85152cdb8c0201e2ec08e8694b567f9ebb9735203e540a5b37f0207762a9a96
+
+--- lines 1-12: header (claims 'digest-bound delta pins file') ---
+1:#!/usr/bin/env node
+2:// c1-drift-audit-build-v2.mjs — tabi round 37 C1 tool: derive corpus/adjacency-screen-drift.tsv
+3:// (the drift-verification ledger the frozen counters re-check). Repair of the round-36
+4:// frozen builder (round-36 closure routed defect 2: its kama pin literal was 39 characters,
+5:// silently inert). This v2 corrects the pin to the round-35 baseline's 40-hex value AND
+6:// resolves every PINS entry against its sibling repo at startup, so any future transcription
+7:// error is loud (refusal), never silent. Delta heads still come from the digest-bound delta
+8:// pins file. Usage:
+9://   node c1-drift-audit-build-v2.mjs [--repo <lane>] [--fleet <dir>] [--out <path>]
+10:// Exit 0 always on success; refuses on unresolvable revisions.
+11:import { spawnSync } from 'node:child_process';
+12:import { writeFileSync, readFileSync } from 'node:fs';
+
+--- lines 60-73: the UNBOUND pins read ---
+60:  fleet = fleet || resolve(repo, '..');
+61:  out = out || join(repo, 'corpus', 'adjacency-screen-drift.tsv');
+62:  // v2 repair: every frozen PINS entry must resolve in its sibling repo — a transcription
+63:  // error is a refusal, not a silent constant (round-36 routed defect 2).
+64:  for (const [sib, pin] of Object.entries(PINS)) git(join(fleet, `${sib}-shokunin`), ['rev-parse', '--verify', '--quiet', `${pin}^{commit}`]);
+65:  const head = git(repo, ['rev-parse', 'HEAD']).toString('utf8').trim();
+66:  // delta pins: prefer the git object at HEAD, fall back to the worktree file
+67:  let pinsBuf = null;
+68:  const p = spawnSync('git', ['-C', repo, 'show', `${head}:${DELTA_PINS_PATH}`], { encoding: 'buffer', env: ENV });
+69:  if (p.status === 0) pinsBuf = p.stdout;
+70:  else pinsBuf = readFileSync(join(repo, DELTA_PINS_PATH));
+71:  const deltaPins = JSON.parse(pinsBuf.toString('utf8'));
+72:  const drifted = new Set(Object.entries(deltaPins).filter(([s, h]) => h !== PINS[s]).map(([s]) => s));
+73:  const screenLines = lines(git(repo, ['show', `${head}:${SCREEN}`]));
+
+--- grep for any digest primitive in the whole file (expect NONE) ---
+(no digest primitive anywhere in this file)
