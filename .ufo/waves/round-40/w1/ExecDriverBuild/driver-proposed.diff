@@ -1,0 +1,346 @@
+--- a/scripts/playwright-firefox-egress-round39.mjs
++++ b/scripts/playwright-firefox-egress-round39.mjs
+@@ -16,6 +16,14 @@
+ //      page userAgent, and the binary spawnfile path;
+ //   5. keeps the round-38 binding artifact: two cold runs, identical first-screenshot
+ //      sha256; records per-step evidence, cleanup proof (survivors 0, port closed).
++//   Round-40 (--round40) additions, all fail-closed:
++//   6. per-sample timestamps stamped from one monotonic base (fields t/m/tEnd) and a
++//      coverage gate that waits for BOTH >=8 samples and a >=1000 ms observed span;
++//   7. the owned pid set is re-derived from `ps` on every tick (roots + descendant
++//      walk) with /proc start-time identity, so processes spawned after launch are
++//      observed and a recycled pid is never mistaken for a survivor;
++//   8. an unavailable ss or /proc surface refuses the run at pre-flight, mid-session
++//      AND at the post-close final sweep, instead of only being recorded.
+ //
+ // Usage: node scripts/playwright-firefox-egress-round39.mjs --out <receipt.json> [--runs 2]
+ // Writes: the receipt JSON to --out; scratch only under
+@@ -38,6 +46,26 @@
+ const SCHEMA = ROUND40 ? 'tabi-pw-firefox-egress-receipt-r40' : 'tabi-pw-firefox-egress-receipt-v2';
+ const SAMPLE_MS = 100;
+ const POST_CLOSE_TAIL_MS = 600;
++// Round-40 coverage floors come from the frozen counter predicate: >=8 strictly
++// increasing samples whose observed first-to-last span is >=1000 ms.
++const MIN_SAMPLES = 8;
++const MIN_SPAN_MS = 1000;
++const COVERAGE_BUDGET_MS = 8000;
++// Sample wall timestamps are derived from one monotonic base, so consecutive t
++// values are strictly increasing by construction and their span is real elapsed
++// time rather than two reads of a clock that can step backwards.
++const CLOCK0 = Date.now();
++const MONO0 = process.hrtime.bigint();
++const monoMs = () => Number(process.hrtime.bigint() - MONO0) / 1e6;
++const nowT = () => CLOCK0 + Math.round(monoMs());
++let lastSampleT = 0;
++function stamp() {
++  const m = monoMs();
++  const t = CLOCK0 + Math.round(m);
++  const ordered = t > lastSampleT;
++  if (ordered) lastSampleT = t;
++  return { t, m, ordered };
++}
+ 
+ class FailClosed extends Error {}
+ 
+@@ -79,21 +107,42 @@
+ // Playwright-managed Firefox binary, plus their full descendant tree from
+ // `ps -eo pid=,ppid=`. Session-bound by construction: nothing outside this
+ // process's own spawn set can enter the owned set.
++// null means "the process table could not be read" — never conflate that with an
++// empty owned set, which is the only case that is a real launch failure.
+ function pidPpidTable() {
+-  const out = sh('ps -eo pid=,ppid=,args= --no-headers');
++  const r = spawnSync('ps', ['-eo', 'pid=,ppid=,args=', '--no-headers'], { encoding: 'utf8', maxBuffer: 16 << 20 });
++  if (r.error || r.status !== 0) return null;
+   const rows = [];
+-  for (const line of out.split('\n')) {
++  for (const line of r.stdout.split('\n')) {
+     const m = line.trim().split(/\s+/);
+     if (m.length >= 3 && /^\d+$/.test(m[0]) && /^\d+$/.test(m[1])) rows.push([Number(m[0]), Number(m[1]), m.slice(2).join(' ')]);
+   }
+   return rows;
+ }
+-function ownedRoots(nodePid) {
+-  const rows = pidPpidTable();
+-  return rows.filter(([pid, ppid, args]) => ppid === nodePid && /ms-playwright\/firefox-\d+\//.test(args)).map(([pid, , args]) => ({ pid, argv0: args.split(' ')[0] }));
++// /proc/<pid>/stat field 22 (starttime) binds a pid to one process instance.
++function procStartTime(pid) {
++  try {
++    const raw = readFileSync(`/proc/${pid}/stat`, 'utf8');
++    const fields = raw.slice(raw.lastIndexOf(')') + 2).split(' ');
++    const start = Number(fields[19]);
++    return Number.isFinite(start) ? start : null;
++  } catch { return null; }
+ }
+-function ownedTree(roots) {
++const OWNED_SOURCE = 'children of this node process naming ms-playwright/firefox + ps -eo pid=,ppid= descendant walk, re-derived every sample with /proc start-time identity';
++// One refresh = one fresh `ps` snapshot. The pid set is rebuilt from this node
++// process outwards on every call, so a content/utility process that appears after
++// launch is observed on the next tick instead of never.
++function refreshOwned(nodePid, state) {
+   const rows = pidPpidTable();
++  if (rows === null) return { available: false, reason: 'process table unreadable (ps exited nonzero)', roots: [], tree: [] };
++  const roots = rows.filter(([pid, ppid, args]) => ppid === nodePid && /ms-playwright\/firefox-\d+\//.test(args)).map(([pid, , args]) => ({ pid, argv0: args.split(' ')[0] }));
++  const tree = ownedTreeFromRows(rows, roots.map((r) => r.pid));
++  state.refreshes += 1;
++  if (roots.length === 0 || tree.length === 0) return { available: false, reason: 'owned pid set empty on refresh', roots, tree };
++  for (const pid of tree) if (!state.seen.has(pid)) state.seen.set(pid, procStartTime(pid));
++  return { available: true, roots, tree };
++}
++function ownedTreeFromRows(rows, roots) {
+   const children = new Map();
+   for (const [pid, ppid] of rows) {
+     if (!children.has(ppid)) children.set(ppid, []);
+@@ -124,16 +173,38 @@
+     txt = sh('ss -Htnp 2>/dev/null');
+     if (!txt) return null;
+   }
+-  const pidRe = new RegExp(`pid=(?:${tree.join('|')})[,\\)]`);
++  const pids = tree.filter((p) => Number.isInteger(p) && p > 0);
++  if (pids.length === 0) return null; // nothing owned to observe is not an observation
++  const pidRe = new RegExp(`pid=(?:${pids.join('|')})[,\\)]`);
+   const lines = txt.split('\n').filter((l) => l.trim() && pidRe.test(l));
+   let nonLoopback = 0;
++  let nonLoopbackBind = 0;
++  let listeners = 0;
+   for (const l of lines) {
+     const f = l.trim().split(/\s+/);
++    const state = f[0] || '';
++    const local = f[3] || '';
+     const peer = f[4] || '';
++    if (state === 'LISTEN') {
++      // A listening socket has no peer: ss prints 0.0.0.0:* / [::]:*. Score the bind
++      // address separately so a wildcard bind stays visible without being mistaken
++      // for outbound traffic — the same split observeProc makes by skipping st 0A.
++      listeners += 1;
++      if (!isLoopbackBind(local)) nonLoopbackBind += 1;
++      continue;
++    }
+     if (!isLoopbackPeer(peer)) nonLoopback += 1;
+   }
+-  return { ticks: 1, lines: lines.length, nonLoopback };
++  return { ticks: 1, lines: lines.length, pidCount: pids.length, listeners, nonLoopback, nonLoopbackBind };
+ }
++function isLoopbackBind(local) {
++  const addr = local.replace(/:\d+$/, '');
++  if (/^127\./.test(addr)) return true;
++  if (/^\[::1\]$/.test(addr)) return true;
++  if (/^\[0:0:0:0:0:0:0:1\]$/.test(addr)) return true;
++  if (/^\[::ffff:127\./.test(addr)) return true;
++  return false; // 0.0.0.0, [::], *: a wildcard or external bind
++}
+ function isLoopbackPeer(peer) {
+   // peer forms: 127.0.0.1:443, [::1]:443, [::ffff:127.0.0.1]:443, hostnames are not
+   // produced by ss for IP sockets; treat anything else as non-loopback.
+@@ -149,7 +220,10 @@
+   const fds = `/proc/${pid}/fd`;
+   const inodes = new Set();
+   let names = null;
+-  try { names = readdirSync(fds); } catch { return null; } // pid gone -> null
++  try { names = readdirSync(fds); } catch (e) {
++    // An exited pid is not a surface failure; a denied or unreadable fd table is.
++    return { gone: !!(e && (e.code === 'ENOENT' || e.code === 'ESRCH')), inodes, code: (e && e.code) || 'EIO' };
++  }
+   for (const fd of names) {
+     try {
+       const link = readlinkSync(join(fds, fd));
+@@ -157,7 +231,7 @@
+       if (m) inodes.add(m[1]);
+     } catch {}
+   }
+-  return inodes;
++  return { gone: false, inodes };
+ }
+ function parseProcNet(path) {
+   let txt = null;
+@@ -206,13 +280,17 @@
+   if (ROUND40 && nets.some((n) => n === null)) return null;
+   const anyReadable = nets.some((n) => n !== null);
+   if (!anyReadable) return null;
++  let denied = 0;
++  let live = 0;
+   for (const pid of tree) {
+     const s = socketInodesOfPid(pid);
+-    if (s === null) continue; // exited mid-sample
++    if (s.gone) continue; // exited mid-sample
++    if (s.code) { denied += 1; continue; } // fd table unreadable, not "no sockets"
++    live += 1;
+     for (const n of nets) {
+       if (n === null) continue;
+       for (const row of n) {
+-        if (!s.has(row.inode)) continue;
++        if (!s.inodes.has(row.inode)) continue;
+         if (row.st === '0A') continue; // LISTEN has no remote endpoint
+         if (row.rem === '00000000:0000' || row.rem === '00000000000000000000000000000000:0000') continue;
+         inodes += 1;
+@@ -220,16 +298,28 @@
+       }
+     }
+   }
+-  return { ticks: 1, inodes, nonLoopback };
++  // Everything we still owned was unreadable and nothing was scannable: that is an
++  // unavailable surface, not an empty observation.
++  if (live === 0 && denied > 0) return null;
++  return { ticks: 1, inodes, nonLoopback, livePids: live, denied };
+ }
+ 
+ function sampleSockets(tree) {
++  const { t, m, ordered } = stamp();
+   const ss = observeSs(tree);
+   const pr = observeProc(tree);
+-  if (ROUND40 && (ss === null || pr === null)) return { unavailable: true };
+-  if (ss === null && pr === null) return { unavailable: true };
++  const missing = [];
++  if (ss === null) missing.push('ss');
++  if (pr === null) missing.push('proc');
++  if (ROUND40) {
++    if (missing.length) return { t, m, ordered, unavailable: true, missing, pids: tree.length };
++  } else if (missing.length === 2) return { t, m, ordered, unavailable: true, missing, pids: tree.length };
+   return {
+-    t: Date.now(),
++    t,
++    m,
++    ordered,
++    tEnd: nowT(),
++    pids: tree.length,
+     ss: ss || { ticks: 0, lines: 0, nonLoopback: 0, unavailable: true },
+     proc: pr || { ticks: 0, inodes: 0, nonLoopback: 0, unavailable: true },
+   };
+@@ -251,21 +341,24 @@
+   const browser = await firefox.launch({ headless: true, firefoxUserPrefs: { 'network.dns.disablePrefetch': true } });
+   // give the browser a moment to exec, then bind the owned set to this node process
+   await sleep(400);
+-  const roots = ownedRoots(process.pid);
+-  const tree0 = ownedTree(roots.map((r) => r.pid));
+-  rec.binary = roots.length ? roots[0].argv0 : FIREFOX_BIN;
++  const ownedState = { seen: new Map(), refreshes: 0 };
++  const firstOwned = refreshOwned(process.pid, ownedState);
++  rec.binary = firstOwned.available && firstOwned.roots.length ? firstOwned.roots[0].argv0 : FIREFOX_BIN;
+ 
+   // session start: pre-flight observation must be possible and the owned set nonempty
+-  const preflight = sampleSockets(tree0);
+-  if (roots.length === 0 || tree0.length === 0) {
+-    rec.refused = true; rec.refuseReason = 'owned pid set empty at launch (no child of this node process names ms-playwright/firefox)';
++  const preflight = firstOwned.available ? sampleSockets(firstOwned.tree) : { unavailable: true, missing: [firstOwned.reason] };
++  if (!firstOwned.available) {
++    rec.refused = true;
++    rec.refuseReason = `owned process identity unavailable at launch: ${firstOwned.reason}`;
++    rec.owned = { nodePid: process.pid, roots: [], tree: [], liveTree: [], refreshes: ownedState.refreshes, treeSizeBySample: [], source: OWNED_SOURCE };
+     try { await browser.close(); } catch {}
+     if (ROUND40) await new Promise((resolveClose) => server.close(resolveClose)); else server.close();
+     return rec;
+   }
+-  rec.owned = { nodePid: process.pid, roots, tree: tree0, source: 'children of this node process naming ms-playwright/firefox + ps -eo pid=,ppid= descendant walk' };
++  rec.owned = { nodePid: process.pid, roots: firstOwned.roots, tree: firstOwned.tree, liveTree: firstOwned.tree, refreshes: ownedState.refreshes, treeSizeBySample: [], source: OWNED_SOURCE };
+   if (preflight.unavailable) {
+-    rec.refused = true; rec.refuseReason = 'no socket observation surface readable (ss and /proc/net both unavailable)';
++    rec.refused = true;
++    rec.refuseReason = `socket observation surface unavailable at pre-flight (${(preflight.missing || []).join(',')})`;
+     try { await browser.close(); } catch {}
+     if (ROUND40) await new Promise((resolveClose) => server.close(resolveClose)); else server.close();
+     return rec;
+@@ -273,11 +366,20 @@
+ 
+   rec.samples = [];
+   const t0 = Date.now();
++  const spanMs = () => (rec.samples.length >= 2 ? rec.samples.at(-1).t - rec.samples[0].t : 0);
+   let sampleError = null;
+   const sampler = setInterval(() => {
+     try {
+-      const s = sampleSockets(rec.owned.tree);
+-      if (s.unavailable) { sampleError = new FailClosed('socket observation became unavailable mid-session'); clearInterval(sampler); return; }
++      // Re-derive the owned set from a fresh `ps` snapshot before every observation,
++      // so a process spawned after launch is observed on the next tick.
++      const own = refreshOwned(process.pid, ownedState);
++      if (!own.available) { sampleError = new FailClosed(`owned process identity refresh failed: ${own.reason}`); clearInterval(sampler); return; }
++      rec.owned.liveTree = own.tree;
++      rec.owned.roots = own.roots;
++      rec.owned.treeSizeBySample.push(own.tree.length);
++      const s = sampleSockets(own.tree);
++      if (s.unavailable) { sampleError = new FailClosed(`socket observation became unavailable mid-session (${(s.missing || []).join(',')})`); clearInterval(sampler); return; }
++      if (!s.ordered) { sampleError = new FailClosed('sample timestamp did not strictly increase'); clearInterval(sampler); return; }
+       rec.samples.push(s);
+     } catch (e) { sampleError = e; clearInterval(sampler); }
+   }, SAMPLE_MS);
+@@ -320,35 +422,67 @@
+     rec.httpLog = rec.events.filter((e) => e.method === 'request' || e.method === 'response');
+     step('http.witnessed', { requests: rec.httpLog.length });
+     step('console.quiet', { errors: rec.events.filter((e) => e.method === 'console' && (e.type === 'error')).length });
+-    step('tree.size', { owned: rec.owned.tree.length });
++    step('tree.size', { owned: rec.owned.liveTree.length });
+     if (ROUND40) {
+-      const spanDeadline = Date.now() + 4000;
+-      while (!sampleError && (rec.samples.length < 2 || rec.samples.at(-1).t - rec.samples[0].t < 1000) && Date.now() < spanDeadline) await sleep(20);
+-      if (!sampleError && (rec.samples.length < 2 || rec.samples.at(-1).t - rec.samples[0].t < 1000)) sampleError = new FailClosed('observed sample span did not reach 1000 ms');
++      const spanDeadline = Date.now() + COVERAGE_BUDGET_MS;
++      // Both floors come from the frozen predicate: enough samples AND real elapsed span.
++      while (!sampleError && (rec.samples.length < MIN_SAMPLES || spanMs() < MIN_SPAN_MS) && Date.now() < spanDeadline) await sleep(20);
++      if (!sampleError && (rec.samples.length < MIN_SAMPLES || spanMs() < MIN_SPAN_MS)) {
++        sampleError = new FailClosed(`sample coverage short: n=${rec.samples.length} span=${spanMs()}ms (need n>=${MIN_SAMPLES} and span>=${MIN_SPAN_MS}ms)`);
++      }
+     }
+   } finally {
++    // The observation window ends when shutdown starts: refreshing a live owned set
++    // after browser.close() has begun would report a legitimate teardown as a failed
++    // refresh. Stop sampling first, then close.
++    clearInterval(sampler);
+     try { await browser.close(); } catch {}
+-    clearInterval(sampler);
+     if (ROUND40) await new Promise((resolveClose) => server.close(resolveClose));
+     else server.close();
+     await sleep(POST_CLOSE_TAIL_MS);
+   }
+   rec.coverageMs = Date.now() - t0;
+   rec.sampleCount = rec.samples.length;
+-  if (sampleError) {
+-    rec.refused = true;
+-    rec.refuseReason = `sampling aborted: ${sampleError.message}`;
+-    return rec;
+-  }
+-  // final sweep AFTER close: survivors and their sockets
+-  rec.finalSweep = sampleSockets(rec.owned.tree);
+-  rec.survivorPids = rec.owned.tree.filter((p) => existsSync(`/proc/${p}`));
++  rec.sampleSpanMs = spanMs();
++  rec.sampleIntervalsMs = rec.samples.slice(1).map((s, i) => s.t - rec.samples[i].t);
++  rec.owned.refreshes = ownedState.refreshes;
++  rec.owned.union = [...ownedState.seen.keys()].sort((a, b) => a - b);
++  if (rec.owned.union.length) rec.owned.tree = rec.owned.union; // counter: owned tree nonempty
++  // Cleanup evidence is recorded even for a refused run, so a refusal still shows what
++  // survived and whether the fixture port closed. The final sweep targets the LAST live
++  // owned tree (processes spawned after launch included), sampled after close.
++  rec.finalSweep = sampleSockets(rec.owned.liveTree);
++  // Survivor identity is pid + /proc start time: a recycled pid is not a survivor.
++  rec.survivorPids = [...ownedState.seen.entries()]
++    .filter(([pid, start]) => start !== null && procStartTime(pid) === start)
++    .map(([pid]) => pid);
+   rec.survivors = rec.survivorPids.length;
+   if (ROUND40) {
+     const l = spawnSync('ss', ['-Hlt'], { encoding: 'utf8', maxBuffer: 8 << 20 });
+     rec.portClosed = !l.error && l.status === 0 && !l.stdout.split('\n').some((line) => line.includes(`:${port}`));
+-    if (!rec.portClosed) { rec.refused = true; rec.refuseReason = 'fixture listen-port closure unavailable or still listening'; }
+   } else rec.portClosed = (sh(`ss -ltn 2>/dev/null | grep -c ':${port} '`) || '0') === '0';
++  // Fail-closed ladder: each refusal below reports a missing or unusable observation,
++  // never a favourable verdict.
++  if (sampleError) {
++    rec.refused = true;
++    rec.refuseReason = `sampling aborted: ${sampleError.message}`;
++    return rec;
++  }
++  if (rec.finalSweep.unavailable) {
++    rec.refused = true;
++    rec.refuseReason = `final sweep socket observation unavailable (${(rec.finalSweep.missing || []).join(',')})`;
++    return rec;
++  }
++  if (ROUND40 && !(rec.finalSweep.ss.ticks > 0 && rec.finalSweep.proc.ticks > 0)) {
++    rec.refused = true;
++    rec.refuseReason = 'final sweep ticks nonpositive on ss and/or proc';
++    return rec;
++  }
++  if (ROUND40 && !rec.portClosed) {
++    rec.refused = true;
++    rec.refuseReason = 'fixture listen-port closure unavailable or still listening';
++    return rec;
++  }
+   const sum = (k, f) => rec.samples.reduce((a, s) => a + (s[k] ? s[k][f] : 0), 0);
+   rec.sockets = {
+     ss: { observations: sum('ss', 'lines'), nonLoopback: sum('ss', 'nonLoopback') },

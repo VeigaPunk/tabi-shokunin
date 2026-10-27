@@ -1,0 +1,78 @@
+exit=0 pred=true | A-control-dense-9@125ms(span1000)
+   ts=[0,125,250,375,500,625,750,875,1000]
+   findings=[]
+exit=0 pred=true | B-sparse-8@143ms(span1001)
+   ts=[0,143,286,429,572,715,858,1001]
+   findings=[]
+exit=0 pred=true | C-sparse-gap:7 samples in 0..600 then one at 1000
+   ts=[0,100,200,300,400,500,600,1000]
+   findings=[]
+exit=0 pred=true | D-sparse-gap:one at 0, 6 clustered 500-505, one at 1000
+   ts=[0,500,501,502,503,504,505,1000]
+   findings=[]
+exit=1 pred=false | E-span-exactly-999
+   ts=[0,100,200,300,400,500,600,999]
+   findings=["run1-sample-span","run2-sample-span"]
+exit=0 pred=true | F-span-exactly-1000(8 samples)
+   ts=[0,100,200,300,400,500,600,1000]
+   findings=[]
+exit=1 pred=false | G-sampled-window<=999 (r39-like 9@100ms span800)
+   ts=[0,100,200,300,400,500,600,700,800]
+   findings=["run1-sample-span","run2-sample-span"]
+exit=1 pred=false | H-dup-timestamp
+   ts=[0,200,400,600,800,1000,1200,1200]
+   findings=["run1-sample-order","run2-sample-order"]
+exit=1 pred=false | I-decreasing-last
+   ts=[0,200,400,600,800,1000,1200,500]
+   findings=["run1-sample-order","run1-sample-span","run2-sample-order","run2-sample-span"]
+exit=1 pred=false | J-decreasing-middle(but last-first>=1000)
+   ts=[0,300,200,600,800,1000,1200,1400]
+   findings=["run1-sample-order","run2-sample-order"]
+exit=1 pred=false | K-missing-t(undefined) in middle
+   ts=[0,200,400,null,800,1000,1200,1400]
+   findings=["run1-sample-order","run2-sample-order"]
+exit=1 pred=false | L-NaN
+   ts=[0,200,400,null,800,1000,1200,1400]
+   findings=["run1-sample-order","run2-sample-order"]
+exit=1 pred=false | M-string-numeric
+   ts=[0,200,400,"1793120277600",800,1000,1200,1400]
+   findings=["run1-sample-order","run2-sample-order"]
+exit=1 pred=false | N-all-strings
+   ts=["1793120277000","1793120277200","1793120277400","1793120277600","1793120277800","1793120278000","1793120278200","1793120278400"]
+   findings=["run1-sample-order","run2-sample-order"]
+exit=1 pred=false | O-null-t
+   ts=[null,200,400,600,800,1000,1200,1400]
+   findings=["run1-sample-order","run2-sample-order"]
+exit=1 pred=false | P-Infinity-last (JSON->null)
+   ts=[0,100,200,300,400,500,600,null]
+   findings=["run1-sample-order","run1-sample-span","run2-sample-order","run2-sample-span"]
+exit=1 pred=false | Q-7-samples-span-1200
+   ts=[0,200,400,600,800,1000,1200]
+   findings=["run1-sample-count","run2-sample-count"]
+exit=1 pred=false | R-seconds-unit (t in s, 9 samples span 0.8s... 8 samples 0..1400 as s*1000?)
+   ts=[-1791327156723,-1791327156722.8,-1791327156722.6,-1791327156722.4,-1791327156722.2,-1791327156722,-1791327156721.8,-1791327156721.6]
+   findings=["run1-sample-span","run2-sample-span"]
+exit=1 pred=false | S-tail-inclusive: samples span 800 (r39) + finalSweep.t at +1560, coverageMs 1560
+   ts=[0,100,200,300,400,500,600,700,800]
+   findings=["run1-sample-span","run2-sample-span"]
+exit=1 pred=false | T-tail-inclusive: sampleCount field=20 lie, samples=8 span 700
+   ts=[0,100,200,300,400,500,600,700]
+   findings=["run1-sample-span","run2-sample-span"]
+exit=1 pred=false | U-run1 good, run2 span 700 (asymmetric)
+   ts=[0,150,300,450,600,750,900,1050]
+   findings=["run2-sample-span"]
+exit=0 pred=true | V-run1 dense, run2 sparse gap w/ span 1000
+   ts=[0,125,250,375,500,625,750,875,1000]
+   findings=[]
+exit=1 pred=false | W-unit mismatch: t in seconds, 8 samples span 7s (=7 units<1000)
+   ts=[-1793120277000,-1793120276999,-1793120276998,-1793120276997,-1793120276996,-1793120276995,-1793120276994,-1793120276993]
+   findings=["run1-sample-span","run2-sample-span"]
+exit=0 pred=true | X-negative/epoch-0 finite timestamps span>=1000 (not Date.now-like)
+   ts=[-1793120282000,-1793120281500,-1793120281000,-1793120280500,-1793120280000,-1793120279500,-1793120279000,-1793120278500]
+   findings=[]
+exit=0 pred=true | Y-future timestamps / not anchored to measuredAt
+   ts=[8998206879723000,8998206879723200,8998206879723400,8998206879723600,8998206879723800,8998206879724000,8998206879724200,8998206879724400]
+   findings=[]
+exit=1 pred=false | Z-extra sample fields missing t but finalSweep ok; samples array has non-object (number)
+   ts=[0,200,400,600,800,1000,1200,1400]
+   findings=["run1-sample-order","run1-sample3-ss-unavailable","run1-sample3-proc-unavailable"]

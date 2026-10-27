@@ -1,0 +1,4 @@
+#!/bin/bash
+# mutant: ss -Htnp unavailable only once the marker exists (post-close final sweep)
+if [ -f "${SS_MARKER:?}" ] && [ "$1" = "-Htnp" ]; then exit 1; fi
+exec /usr/bin/ss "$@"

@@ -1,0 +1,42 @@
+K2-missing-t-key-absent-mid
+  run1.t(as serialized)=[0,200,400,"<absent>",800,1000,1200,1400]
+  exit=1 predicate=false findings=["run1-sample-order","run2-sample-order"]
+K3-missing-t-key-absent-first-and-last-only-6-timestamped
+  run1.t(as serialized)=["<absent>",200,400,600,800,1000,1200,"<absent>"]
+  exit=1 predicate=false findings=["run1-sample-order","run2-sample-order"]
+D2-dup-final-pair
+  run1.t(as serialized)=[0,200,400,600,800,1000,1200,1200]
+  exit=1 predicate=false findings=["run1-sample-order","run2-sample-order"]
+D3-exact-dup-first-two
+  run1.t(as serialized)=[0,0,250,500,750,1000,1250,1500]
+  exit=1 predicate=false findings=["run1-sample-order","run2-sample-order"]
+R2-seconds-unit-8samples-span-1.4s
+  run1.t(as serialized)=[-1791327156723,-1791327156722.8,-1791327156722.6,-1791327156722.4,-1791327156722.2,-1791327156722,-1791327156721.8,-1791327156721.6]
+  exit=1 predicate=false findings=["run1-sample-span","run2-sample-span"]
+R3-seconds-unit-span-1400-s(absurd)
+  run1.t(as serialized)=[-1793120277000,-1793120077000,-1793119877000,-1793119677000,-1793119477000,-1793119277000,-1793119077000,-1793118877000]
+  exit=0 predicate=true findings=[]
+TT-tail-appended-post-close: 7 live samples 0..600ms + 1 tail sample at 1000
+  run1.t(as serialized)=[0,100,200,300,400,500,600,1000]
+  exit=0 predicate=true findings=[]
+TT2-tail-appended: 7 live 0..300ms (window 300ms) + tail sample at 1000
+  run1.t(as serialized)=[0,50,100,150,200,250,300,1000]
+  exit=0 predicate=true findings=[]
+TT3-tail-appended: 7 live samples in 1ms + tail at 1000 (only 1ms live coverage)
+  run1.t(as serialized)=[0,0.0009765625,0.001953125,0.0029296875,0.00390625,0.0048828125,0.006103515625,1000]
+  exit=0 predicate=true findings=[]
+WIN999-8samples-window-999
+  run1.t(as serialized)=[0,100,200,300,400,500,600,999]
+  exit=1 predicate=false findings=["run1-sample-span","run2-sample-span"]
+WIN999b-fractional-999.999
+  run1.t(as serialized)=[0,100,200,300,400,500,600,999.9990234375]
+  exit=1 predicate=false findings=["run1-sample-span","run2-sample-span"]
+WIN1000-fractional-1000.0
+  run1.t(as serialized)=[0,100,200,300,400,500,600,1000]
+  exit=0 predicate=true findings=[]
+NEG0-t-negative-finite-anchor-free
+  run1.t(as serialized)=[-1793120377000,-1793120376800,-1793120376600,-1793120376400,-1793120376200,-1793120376000,-1793120375800,-1793120375600]
+  exit=0 predicate=true findings=[]
+ZERO-t-zero-based
+  run1.t(as serialized)=[-1793120277000,-1793120276800,-1793120276600,-1793120276400,-1793120276200,-1793120276000,-1793120275800,-1793120275600]
+  exit=0 predicate=true findings=[]

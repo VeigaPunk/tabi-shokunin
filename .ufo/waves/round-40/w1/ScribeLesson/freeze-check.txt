@@ -1,0 +1,74 @@
+# freeze/digest/timeline/census facts — produced 2026-10-27T19:37:56Z by ScribeLesson
+
+$ git rev-parse 07e99cf1e2f67c5679aa5ba1ccb19a8f59b228e4 a1b1e939048885d2793759b7f49b10c5c820d70d
+07e99cf1e2f67c5679aa5ba1ccb19a8f59b228e4
+a1b1e939048885d2793759b7f49b10c5c820d70d
+
+$ for f in <frozen paths>; do git show 07e99cf:<f> | sha256sum; done
+1f8a15f00a85c7a88214a768dbf89e4bc54a01893cd9158ecb0ac6396994545b  scripts/playwright-firefox-egress-round39.mjs
+a0e564c7d18bf75d709a6105119a7849a6f78d3364b24f12a3d26981d4ca0735  scripts/measure-c1-round40.mjs
+5a0b702d90c37628ff03168112ab585c8a60e6981cc22f6fcbb6a52313995d82  scripts/selftest-measure-c1-round40.mjs
+0b452eac242803532d81cc2c01025b08ce3b704c74129f8912e7ad2002ef253c  .ufo/waves/round-40/counters/c1-sample-span-v3.mjs
+
+$ git show 07e99cf:.ufo/waves/round-40/claims.json | sha256sum ; sha256sum .ufo/waves/round-40/claims.json
+3e304b2c55d03f20aa6b1ad6e8f86ceec80dfa5ec9f41d58ce98f9d55ebe0246  -
+3e304b2c55d03f20aa6b1ad6e8f86ceec80dfa5ec9f41d58ce98f9d55ebe0246  .ufo/waves/round-40/claims.json
+
+$ python3 -c "print(claims.frozenDigests)"
+{
+ "scripts/playwright-firefox-egress-round39.mjs": "1f8a15f00a85c7a88214a768dbf89e4bc54a01893cd9158ecb0ac6396994545b",
+ "scripts/measure-c1-round40.mjs": "a0e564c7d18bf75d709a6105119a7849a6f78d3364b24f12a3d26981d4ca0735",
+ "scripts/selftest-measure-c1-round40.mjs": "5a0b702d90c37628ff03168112ab585c8a60e6981cc22f6fcbb6a52313995d82",
+ ".ufo/waves/round-40/counters/c1-sample-span-v3.mjs": "0b452eac242803532d81cc2c01025b08ce3b704c74129f8912e7ad2002ef253c"
+}
+
+$ git log -1 --format="%H %ci %s" <revs>
+07e99cf1e2f67c5679aa5ba1ccb19a8f59b228e4 2026-10-27 15:58:51 -0300 round-40: freeze live nonce-bound Playwright measurement
+250a38056438dc62a8ddcfbdfcdc065bfab9a048 2026-10-27 15:59:40 -0300 round-40: pin nonce-bound live measurement command into wave
+
+$ ls -l --time-style=full-iso .ufo/waves/round-40/w1.ready .ufo/waves/round-40/w1.ready.dispatched
+-rw-r--r-- 1 vgpnk vgpnk  150 2026-10-27 15:59:36.886039572 -0300 .ufo/waves/round-40/w1.ready
+-rw-r--r-- 1 vgpnk vgpnk 2645 2026-10-27 16:34:07.269898711 -0300 .ufo/waves/round-40/w1.ready.dispatched
+
+$ cat .ufo/waves/round-40/w1.ready
+{"lane":"tabi","round":40,"wave":"w1","dispatch":"/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-40/w1-dispatch.json","l1":"TabiR40a2"}
+
+$ git log --format="%h %ci %s" --diff-filter=A --name-only -- .ufo/waves/round-40/measure/
+f8e89d7 2026-10-27 16:02:05 -0300 round-40: retain census start exit status
+
+.ufo/waves/round-40/measure/census-start-exit.txt
+cb35339 2026-10-27 15:28:38 -0300 round-40: freeze C1 sample-span capability claim and no-op control
+
+.ufo/waves/round-40/measure/census-start.txt
+
+$ sha256sum .ufo/waves/round-40/measure/census-start.txt .ufo/waves/round-40/measure/census-start-exit.txt
+4b08af7292fd2d014fff214c03bdb6415e34bec7fe01e521dca82f8191baf96d  .ufo/waves/round-40/measure/census-start.txt
+29b4976a019a21689c5a870f17c62f61d000c0d5851510901bab9d8c89535dc2  .ufo/waves/round-40/measure/census-start-exit.txt
+$ wc -lc .ufo/waves/round-40/measure/census-start.txt ; grep -c W04 ...
+  21 2805 .ufo/waves/round-40/measure/census-start.txt
+20
+
+$ find .ufo/waves/round-40 -iname "*census*" -printf "%p %s\n"
+.ufo/waves/round-40/measure/census-start.txt 2805
+.ufo/waves/round-40/measure/census-start-exit.txt 124
+
+$ sha256sum .ufo/waves/round-40/sources/proc_pid_net.html ; wc -c
+5e1700fff5cbaf4a1875387f6052cc0b2f35694fc25bc051c23b8f4de55f726f  .ufo/waves/round-40/sources/proc_pid_net.html
+17119
+$ grep -n rem_address .ufo/waves/round-40/sources/proc_pid_net.html
+162:              The "rem_address" is the remote address and port number
+176:              The "rem_address" is the remote address and port number
+184:              sl  local_address rem_address   st tx_queue rx_queue tr rexmits  tm-&gt;when uid
+
+$ sha256sum corpus/evidence/round-39/playwright-egress/receipt.json
+e894f1d5950eeff25dbf98fb3f951ab2eea8484f2049b88b25252bf45ff8f493  corpus/evidence/round-39/playwright-egress/receipt.json
+
+$ ls -la corpus/evidence/round40 ; find /fast/scratch/hyaku/tabi-r40/TabiR40a2 -maxdepth 1
+total 0
+drwxr-xr-x 1 vgpnk vgpnk    0 Oct 27 15:27 .
+drwxr-xr-x 1 vgpnk vgpnk 2404 Oct 27 15:27 ..
+/fast/scratch/hyaku/tabi-r40/TabiR40a2
+/fast/scratch/hyaku/tabi-r40/TabiR40a2/counter-selftest
+/fast/scratch/hyaku/tabi-r40/TabiR40a2/selftest-redgreen
+/fast/scratch/hyaku/tabi-r40/TabiR40a2/measure-selftest
+/fast/scratch/hyaku/tabi-r40/TabiR40a2/live-wrapper-selftest

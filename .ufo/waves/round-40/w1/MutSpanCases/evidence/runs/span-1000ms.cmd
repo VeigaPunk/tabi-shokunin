@@ -1,0 +1,1 @@
+cd /home/vgpnk/Projects/shokunin/tabi-shokunin && node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-40/counters/c1-sample-span-v3.mjs /fast/scratch/hyaku/tabi-r40/MutSpanCases/cases/span-1000ms.json --nonce 08559f185ee5cb1dce9f1523ae055814381999fa7304c146719428d670b99c12

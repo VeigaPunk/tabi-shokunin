@@ -1,0 +1,159 @@
+[
+ {
+  "name": "F1-counter-alone-minimal-edit-attacker-nonce",
+  "exit": 0,
+  "secs": 0.02,
+  "expect": "exit0 (counter alone is not live-bound)",
+  "stderr": "",
+  "findings": null,
+  "predicate": true
+ },
+ {
+  "name": "F1b-only-nonce-edits (no schema/span)",
+  "exit": 1,
+  "secs": 0.02,
+  "expect": "exit1",
+  "stderr": "",
+  "findings": [
+   "schema",
+   "run1-sample-span",
+   "run2-sample-span"
+  ],
+  "predicate": false
+ },
+ {
+  "name": "F2-summary-and-secondary-field-override",
+  "exit": 0,
+  "secs": 0.02,
+  "expect": "exit0 = counter ignores top-level/run summaries",
+  "stderr": "",
+  "findings": null,
+  "predicate": true
+ },
+ {
+  "name": "F2b-binding-false-only",
+  "exit": 0,
+  "secs": 0.02,
+  "expect": "exit0?",
+  "stderr": "",
+  "findings": null,
+  "predicate": true
+ },
+ {
+  "name": "F3-schema-schema-r39",
+  "exit": 1,
+  "secs": 0.02,
+  "expect": "exit1",
+  "stderr": "",
+  "findings": [
+   "schema"
+  ],
+  "predicate": false
+ },
+ {
+  "name": "F3-schema-schema-missing",
+  "exit": 1,
+  "secs": 0.02,
+  "expect": "exit1",
+  "stderr": "",
+  "findings": [
+   "schema"
+  ],
+  "predicate": false
+ },
+ {
+  "name": "F3-schema-refused-true-top",
+  "exit": 1,
+  "secs": 0.02,
+  "expect": "exit1",
+  "stderr": "",
+  "findings": [
+   "run-set"
+  ],
+  "predicate": false
+ },
+ {
+  "name": "F3-schema-3-runs",
+  "exit": 1,
+  "secs": 0.02,
+  "expect": "exit1",
+  "stderr": "",
+  "findings": [
+   "run-set"
+  ],
+  "predicate": false
+ },
+ {
+  "name": "F3-nonhex-nonce",
+  "exit": 1,
+  "secs": 0.02,
+  "expect": "exit1",
+  "stderr": "",
+  "findings": [
+   "run-nonce-mismatch"
+  ],
+  "predicate": false
+ },
+ {
+  "name": "F4-wrapper-NODE_OPTIONS-preload-full",
+  "exit": 0,
+  "secs": 0.06,
+  "expect": "exit0 w/o browser",
+  "stderr": "",
+  "findings": null,
+  "predicate": true
+ },
+ {
+  "name": "F4-wrapper-NODE_OPTIONS-preload-exit1",
+  "exit": 1,
+  "secs": 0.05,
+  "expect": "exit1",
+  "stderr": "",
+  "findings": null,
+  "predicate": true
+ },
+ {
+  "name": "F4-wrapper-NODE_OPTIONS-preload-noop",
+  "exit": 2,
+  "secs": 0.03,
+  "expect": "exit2",
+  "stderr": "{\"schema\":\"tabi-r40-c1-measure\",\"finding\":\"driver-receipt-unreadable\",\"message\":\"ENOENT: no such file or directory, open '/fast/scratch/hyaku/tabi-r40/CritControlReach/w-noop/receipt.json'\",\"driverExit\":0,\"driverStdout\":\"\",\"driverStderr\":\"\",\"driverSha256\":\"1f8a15f00a85c7a88214a768dbf89e4bc54a01893cd"
+ },
+ {
+  "name": "F5a-out-preexisting",
+  "exit": 1,
+  "secs": 0.01,
+  "expect": "exit1 refuse",
+  "stderr": "{\"schema\":\"tabi-r40-c1-measure\",\"finding\":\"output-already-exists\",\"path\":\"/fast/scratch/hyaku/tabi-r40/CritControlReach/p/exist.json\"}"
+ },
+ {
+  "name": "F5b-out-symlink-to-r39-receipt",
+  "exit": 1,
+  "secs": 0.02,
+  "expect": "exit1 refuse",
+  "stderr": "{\"schema\":\"tabi-r40-c1-measure\",\"finding\":\"output-already-exists\",\"path\":\"/fast/scratch/hyaku/tabi-r40/CritControlReach/p/link39.json\"}"
+ },
+ {
+  "name": "F5c-out-dotdot-to-r39-receipt",
+  "exit": 1,
+  "secs": 0.02,
+  "expect": "exit1 refuse (note: mkdir of corpus/evidence/round40 not reached)",
+  "stderr": "{\"schema\":\"tabi-r40-c1-measure\",\"finding\":\"output-already-exists\",\"path\":\"/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round-39/playwright-egress/receipt.json\"}"
+ },
+ {
+  "name": "F5d-out-dangling-symlink-fake-driver",
+  "exit": 0,
+  "secs": 0.05,
+  "expect": "info: dangling symlink passes exists check",
+  "stderr": "",
+  "findings": null,
+  "predicate": true
+ },
+ {
+  "name": "F5e-relative-out-other-cwd",
+  "exit": 1,
+  "secs": 0.02,
+  "expect": "exit1 refuse",
+  "stderr": "{\"schema\":\"tabi-r40-c1-measure\",\"finding\":\"output-already-exists\",\"path\":\"/fast/scratch/hyaku/tabi-r40/CritControlReach/p/exist.json\"}"
+ }
+]

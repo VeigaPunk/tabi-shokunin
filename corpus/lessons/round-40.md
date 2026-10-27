@@ -1,0 +1,80 @@
+# Round 40 — nonce-bound Firefox TCP measurement
+
+## Gate
+
+### Claim C1 — coverage capability
+
+Frozen claim: `.ufo/waves/round-40/claims.json`, final pre-data freeze `07e99cf1e2f67c5679aa5ba1ccb19a8f59b228e4`, baseline `a1b1e939048885d2793759b7f49b10c5c820d70d`. The operative counting command performs two real Playwright Firefox loopback runs via `scripts/measure-c1-round40.mjs`, issues a fresh invocation nonce, refuses an output path that already exists, checks the nonce in the produced receipt and both runs, then runs the frozen C1 counter.
+
+- **Observed measured command:** `node scripts/measure-c1-round40.mjs --out corpus/evidence/round40/playwright-egress/receipt.json --scratch /fast/scratch/hyaku/tabi-r40/TabiR40a2/measure` → exit 0; driver exit 0; counter exit 0; `nonceMatches=true`; counter `predicate=true`, `findings=[]`. Durable output: `corpus/evidence/round40/playwright-egress/{receipt.json,measure.json,MANIFEST.txt}`. The receipt sha256 is `a72f4eea8a9a9245dff1760b4de2f3e3e8de84a7755e0ceba1e8699d830c3722`.
+- **Run metrics from the committed receipt:** run1 13 samples, first-to-last 1204 ms, 9 ss lines / 9 proc inodes summed; run2 13 samples, 1202 ms, 10 ss lines / 10 proc inodes; both had zero recorded non-loopback counts, zero survivors, closed fixture port, browser version 157.0, and equal first-shot SHA256 `ebfae99c…6cbf0`. Final sweeps reported both surfaces usable with zero rows. These facts describe this one host/build/fixture run; they are not comprehensive egress isolation.
+- **Claim admission: not admitted / unprovable.** W1 `CritControlReach` finding F4-full demonstrates that `NODE_OPTIONS=--require <shim>` can replace the driver, read the fresh nonce from argv, write a nonce-bound forged receipt, exit 0 in 0.06 s without launching Firefox, and cause the frozen wrapper/counter to return predicate true. Evidence: `.ufo/waves/round-40/w1/CritControlReach/report.md` and its `forged-receipt-F4.json` / `results.json`. The committed selftest covers pre-existing output and stale replay, but not environment-level driver substitution. Thus the actual measured invocation did run and satisfy the literal counter, yet a do-nothing control can reach the target; no capability row or coverage score increase is admitted. The frozen files are not amended after seat data.
+- **Counterfactual limitations:** `CritSamplingGap` observes a 5 ms non-loopback connection missed by 53 ms polling, a 3 s late-descendant connection missed by the one-shot tree, and a 993 ms inter-sample gap accepted. `CritTreeOwnership` finds the counter accepts stale/unrelated/nonexistent PIDs and zero-observation receipts because `owned.tree` is checked only as a nonempty array and `ticks` is a constant 1. `ExecDriverBuild` also observes a Firefox connection to `[2a04:4e42:3b::347]:443` under a 250 ms ss-contention probe (24 IPv6 :443 rows); the driver then records egress=106 and the counter refuses. No comprehensive egress guarantee is claimed.
+- **Source grounding:** reopened S145, `https://man7.org/linux/man-pages/man5/proc_pid_net.5.html`, HTTP 200, 17,119 B, sha256 `5e1700fff5cbaf4a1875387f6052cc0b2f35694fc25bc051c23b8f4de55f726f`; DESCRIPTION `/proc/net/tcp` says “the ‘rem_address’ is the remote address and port number pair (if connected)” (12 whitespace-separated words in this extended quotation). Exact S145 registry wording without the leading “the” is “rem_address is the remote address and port number pair (if connected)” (11 words). The committed `S145-open.txt` word count is corrected append-only by `S145-open-recount.txt`. Scope: TCP remote-endpoint semantics only, not UDP, continuous visibility, process ownership, or egress isolation. The round-40 receipt itself contains no source-citation field; the claim cites S145 and this Gate records the source link.
+- `corpus/SOURCES.md` S145 `used-by` transition: `corpus/knowledge/playwright-firefox-session-bound-tcp-round-39.md` → `corpus/knowledge/playwright-firefox-session-bound-tcp-round-39.md, corpus/lessons/round-40.md`; no other source row changed.
+- Outside non-author admit/reject spot-check: **pending**. All dispatched seats are lane-authored and do not qualify.
+
+### Quarantine-first adjudication — full 38-row staged slice, no package adoption
+
+The slice was rederived from the read-only `absent-defect-register.md` into `.ufo/waves/round-40/assimilation/quarantine-slice` (38 data rows). Each seat report records the opened URL/status/quote details. These are source-row decisions only; none is a new lane `SOURCES.md` row or a knowledge admission. “Staged S145” is the SameSite draft row and is distinct from lane-registry S145 (proc_pid_net(5)).
+
+| Staged ID | Round-40 disposition | Evidence |
+|---|---|---|
+| S102 | Absent as staged: `Last updated 2026-10-05 UTC` not found in opened Chromium protocol README. | `w1/ScoutQuarantine102/report.md` |
+| S106 | Absent/misbound as registered: Chinese WebMCP headings are not in RFC 9309; those headings belong to S107. S106’s own RFC quotes are present, so this is an attribution defect, not fabrication of S106’s own content. | `w1/ScoutQuarantine106/report.md` |
+| S109 | Absent as staged: both 429 phrases absent from the cited ChromeDevTools MCP tool-reference source. | `w1/ScoutQuarantine109/report.md` |
+| S110 | Absent as staged: all three WebMCP UI phrases absent from cited RFC 6585. This staged S110 claim is distinct from the prior round-39 S110 verified-source candidate; no package row adopted. | `w1/ScoutQuarantine110/report.md` |
+| S111 | Partial: “Add hints to your tools” absent; Chinese sentence present only in the `?hl=zh-cn` locale, not the staged English representation. | `w1/ScoutQuarantine111/report.md` |
+| S114 | Partial/near-verbatim: passage present in the abstract, but `set-of-marks` differs from source `set-of mark`. | `w1/ScoutQuarantine114/report.md` |
+| S117 | Absent as staged: the cited WebMCP page has no “User awareness” phrase; other gate text is not the staged quote. | `w1/ScoutQuarantine117/report.md` |
+| S118 | Present in the full-text arXiv PDF (§2.3 “User awareness”); the abstract page alone was insufficient. | `w1/ScoutQuarantine118/report.md` |
+| S124 | Absent verbatim / misbound: Q1 is a paraphrase of RFC 9110 §10.2.3; Q2 is a table-cell spill from S125. Substance of Q1 is supported, but the quoted wording is not verbatim. | `w1/ScoutQuarantine124/report.md` |
+| S125 | Absent: both rate-limit phrases absent from the cited RFC6265bis draft. | `w1/ScoutQuarantine125/report.md` |
+| S126 | Absent: Native-messaging phrases absent from the cited GitHub rate-limit page. | `w1/ScoutQuarantine126/report.md` |
+| S130 | Absent: staged Japanese Chrome-149 phrase absent from the cited WebMCP test file. | `w1/ScoutQuarantine130/report.md` |
+| S131 | Absent: staged Japanese user-journey text absent from the opened Chrome page. | `w1/ScoutQuarantine131/report.md` |
+| S133 | Absent: staged “Agent security considerations for WebMCP” heading absent from the cited evals page. | `w1/ScoutQuarantine133/report.md` |
+| S134 | Present as staged: both actual S134 gate quotes are in the cited security page; the absent-defect register’s Chinese quote is S135’s anchor misbound to S134. | `w1/ScoutQuarantine134/report.md` |
+| S135 | Absent: `tools/list` absent from the cited Chinese best-practices page. | `w1/ScoutQuarantine135/report.md` |
+| S137 | Absent/misbound: “Run and load” absent from the cited Cloudflare source; this appears to be a different source phrase. | `w1/ScoutQuarantine137/report.md` |
+| S138 | Absent: “Testing WebMCP tools” absent from the cited README. | `w1/ScoutQuarantine138/report.md` |
+| S140 | Present as staged: quote located under “Test the complete path”; register’s absent label is a false positive. Same-ID Tameshi row remains only partial/unverifiable and was not adopted. | `w1/ScoutQuarantine140/report.md` |
+| S142 | Absent: “which tool list do I see” absent from RFC 9110. | `w1/ScoutQuarantine142/report.md` |
+| S143 | Absent: Chrome-151/`--enable-features=WebMCP` phrase absent from the cited Puppeteer source. | `w1/ScoutQuarantine143/report.md` |
+| S144 | Absent: both CSRF phrases absent from the cited Puppeteer Page API source. | `w1/ScoutQuarantine144/report.md` |
+| S145 (staged SameSite row) | Absent: both headings absent from draft-ietf-httpbis-rfc6265bis-13. This does not alter lane S145 (proc_pid_net(5)). | `w1/ScoutQuarantine145/report.md` |
+| S147 | Absent at the cited error-1015 URL; “Error 1020” is present on the neighboring error-1020 page, so the URL is misbound. | `w1/ScoutQuarantine147/report.md` |
+| S148 | Absent: `Crawl-delay` and `Sitemap` absent from the cited error-1020 page. | `w1/ScoutQuarantine148/report.md` |
+| S149 | Absent/misbound: “The daemon” and `/status JSON fields` belong to adjacent S150; S149’s own robots.txt anchors are present. | `w1/ScoutQuarantine149/report.md` |
+| S153 | Absent: staged Chinese strings absent from the cited agentic-JavaScript guide. | `w1/ScoutQuarantine153/report.md` |
+| S154 | Absent: `WebMCPNotSupportedError` absent from both opened language variants. | `w1/ScoutQuarantine154/report.md` |
+| S158 | Absent: “RateLimit-Policy Field” absent from the cited WebMCP TypeScript source. | `w1/ScoutQuarantine158/report.md` |
+| S163 | Present as staged: both S163 quotes are in agent-browser.dev; register’s payload-absent row is an S164 column splice. | `w1/ScoutQuarantine163/report.md` |
+| S164 | Present as staged: both Chinese S164 quotes are in the cited Chrome compare-MCP page; register’s English quote is S165’s, misbound. | `w1/ScoutQuarantine164/report.md` |
+| S165 | Absent: staged phrase is editorial summary text and is not source prose on the cited demo page. | `w1/ScoutQuarantine165/report.md` |
+| S166 | Present as staged: all four S166 quotes are in WEEL; register’s `evaluate_webmcp` quote belongs to S167, a false-positive absent label. | `w1/ScoutQuarantine166/report.md` |
+| S167 | Absent: both staged Japanese quotes absent from the cited evaluator connector page. | `w1/ScoutQuarantine167/report.md` |
+| S174 | Absent: staged Chinese rate-limit/security phrases absent from the cited blog. | `w1/ScoutQuarantine174/report.md` |
+| S175 | Partial: main Chinese quote present with one-character register typo (`佪` vs source `佇`); “Explicit Tool Registration” absent from this page. | `w1/ScoutQuarantine175/report.md` |
+| S176 | Absent/misbound: origin-trial quotes absent from the cited security guide and belong to S177; S176’s own anchors are present. | `w1/ScoutQuarantine176/report.md` |
+| S171 | Unreachable as staged (HTTP 404 on `/features/`); not fabrication. The lane Gate’s alternate API URL returns the record and staged quotes, but the malformed register row remains quarantined. | `w1/ScoutQuarantine171/report.md` |
+
+No package payload or `merge/tabi/` row was appended. Reasons: the first Tabi round under the quarantine-first rule is adjudication-only; multiple staged rows are absent, misbound, or partial; “present” verdicts above do not authorize a package append. The registry and lane knowledge remain unchanged. `considerthese/` is absent.
+
+## Mistakes
+
+| Class | Evidence | Captured-by | Fix / status |
+|---|---|---|---|
+| sample-span proxy | Round-39 claim used `coverageMs` including tail time; committed timestamps span only 799/701 ms (`corpus/evidence/round-39/playwright-egress/receipt.json`; `round-39-verifier-spotcheck.md` routed defect). | Round-39 verifier defect 1; it named last-minus-first sample timestamps but the prior run did not close it. | C1 v3 reads actual sample timestamps; the round-39 receipt is refused with both `runN-sample-span` findings. Red-before is the receipt, exit 1. Claim remains unadmitted for the separate wrapper bypass. |
+| unavailable-as-zero | First C1 counter accepted `{unavailable:true,ticks:0,nonLoopback:0}`; predata 10-case v1/v2 control showed old counter exit 0, v2 exit 1 (`controls/c1-selftest-v2.json`). | `corpus/QUALITY.md:97-110` (criteria 25/27: counter self-certification and declared mutation shapes). | v2 `usable()` refuses unavailable/nonpositive ticks; red-before and green-after are isolated in the committed selftest. |
+| self-certifying live wrapper | `CritControlReach` F4-full used `NODE_OPTIONS=--require` to replace driver, read nonce from argv, forge timestamps and exit 0 in 0.06s without Firefox; counter v3 says predicate true. | `corpus/QUALITY.md:97-110` (criteria 25/27 should have exercised the wrapper’s environment dependency); the selftest only checked pre-existing outputs and stale nonce. | No fix landed after freeze. Route as open: scrub `NODE_OPTIONS`/`NODE_PATH`/loader variables, assert driver/counter digests, and add the F4 preload as a negative control. The finding is an observed red case; future correction needs same-command red→green proof. C1 is not admitted. |
+| static ownership tree / sampling gaps | `ExecDriverBuild` measured 5→6 owned pids after navigation; `CritTreeOwnership` found stale/unrelated/nonexistent nonempty pid arrays accepted; `CritSamplingGap` missed a 5ms non-loopback socket at 53ms polling and a later descendant’s 3s connection. | Round-39 verifier spotcheck routed refreshed/identity-bound ownership; `SCORECARD.md` round-39 planned item said to refresh identity. | No frozen amendment or driver fix after dispatch. Keep as open residual; future fix must refresh/identity-bind at each sample and demonstrate short-lived/later-descendant red cases. |
+| coordination scope | One `agent://all` message was broadcast while seeking the dispatcher; tool output showed 140 recipients. No cross-lane artifacts were modified; messaging then switched to `agent://Main`. | Round prompt addendum explicitly says never use `agent://all`. | No automated guard. Fix applied procedurally: route only to Main or owned seats. Do not count as claim improvement. |
+| source-access receipt word count | `S145-open.txt` labels an extended quotation 11 words; it has 12 whitespace tokens. `S145-open-recount.txt` corrects this append-only without changing source bytes. | CORPUS sources quote-location/word-limit rule; the error was a manual tally. | Corrected pointer retained; use the registry’s exact 11-word quote (without the leading “the”) in any future excerpt. |
+| census exit transcription timing | `census-start.txt` output was retained before freeze, but `census-start-exit.txt` was committed after freeze; the exit file is a later transcription, not same-time capture. | CORPUS count command requirement and Evidence standard; ScribeLesson `round-40` audit. | Report the command output’s observed `CENSUS_EXIT=0` as the session result and label the later file honestly. Next round capture stdout/stderr/exit in a single receipt invocation. |
+
+## Census
+
+- Start command: `/home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi`; stdout `.ufo/waves/round-40/measure/census-start.txt`; observed exit 0, `tabi ok`, 20 W04 duplicate-URL warnings, no E findings. The separate exit file was transcribed after freeze and is not treated as contemporaneous.
+- End command: same; stdout `.ufo/waves/round-40/measure/census-end.txt`, `.ufo/waves/round-40/measure/census-end-exit.txt`; exit 0, `tabi ok`, same 20 W04 warnings.
+- Manual row count command: `grep -cE '^\\|[[:space:]]*S[0-9]{3,}[[:space:]]*\\|' corpus/SOURCES.md`; baseline `a1b1e939` = 145, current = 145. Tiers: A129/B7/C9; status: mined121/queued15/rejected9. Added rows by tier: none. Old rows touched: S145 `used-by` changed from `corpus/knowledge/playwright-firefox-session-bound-tcp-round-39.md` to that path plus `corpus/lessons/round-40.md`; no `status` or `recheck` changed. Frontier rows advanced: none (S145 reopened for claim grounding only). No staged package adoption.

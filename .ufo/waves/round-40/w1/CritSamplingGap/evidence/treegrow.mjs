@@ -1,0 +1,17 @@
+import { firefox } from '/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright/index.mjs';
+import { createServer } from 'node:http';
+import { ownedTree } from './obs.mjs';
+import { spawnSync } from 'node:child_process';
+const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+const rows=()=>spawnSync('ps',['-eo','pid=,ppid=,args=','--no-headers'],{encoding:'utf8'}).stdout.split('\n').map(l=>l.trim().split(/\s+/)).filter(m=>m.length>2).map(m=>[+m[0],+m[1],m.slice(2).join(' ')]);
+const roots=()=>rows().filter(([p,pp,a])=>pp===process.pid&&/ms-playwright\/firefox-\d+\//.test(a)).map(r=>r[0]);
+const srv=createServer((q,s)=>s.end('<html><body>hi</body></html>')); await new Promise(r=>srv.listen(0,'127.0.0.1',r));
+const port=srv.address().port;
+const b=await firefox.launch({headless:true}); await sleep(400);
+const t0=ownedTree(roots());
+const pg=await b.newPage(); await pg.goto(`http://127.0.0.1:${port}/`); await sleep(300);
+const t1=ownedTree(roots());
+const pg2=await b.newPage(); await pg2.goto(`http://127.0.0.1:${port}/?2`); await sleep(300);
+const t2=ownedTree(roots());
+console.log(JSON.stringify({treeAt400msPostLaunch:t0.length,afterFirstPageGoto:t1.length,afterSecondPage:t2.length,missedByStaticSnapshot:t2.filter(p=>!t0.includes(p)).length}));
+await b.close(); srv.close();

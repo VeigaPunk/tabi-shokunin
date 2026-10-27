@@ -1,0 +1,6 @@
+#!/bin/bash
+# logging mutant: slow (250 ms) ss that appends every -Htnp result for later peer analysis
+sleep 0.25
+out=$(/usr/bin/ss "$@")
+if [ "$1" = "-Htnp" ]; then printf '%s\n' "$out" >> "${SS_LOG:?}"; fi
+printf '%s\n' "$out"

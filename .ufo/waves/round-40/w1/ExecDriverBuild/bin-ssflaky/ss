@@ -1,0 +1,8 @@
+#!/bin/bash
+# mutant: ss surface available for the first 3 invocations, then unavailable
+f="${SS_COUNT_FILE:?}"
+c=$(cat "$f" 2>/dev/null || echo 0)
+c=$((c + 1))
+echo "$c" > "$f"
+if [ "$c" -ge 4 ]; then exit 1; fi
+exec /usr/bin/ss "$@"
