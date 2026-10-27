@@ -1,0 +1,9 @@
+Command: awk -F'|' '/^ {0,3}\|[[:space:]]*S[0-9][0-9][0-9]+[[:space:]]*\|/ {n++; t[$5]++; s[$9]++} END {printf "rows=%d\n", n; for(k in t) printf "tier.%s=%d\n", k, t[k]; for(k in s) printf "status.%s=%d\n", k, s[k]}' corpus/SOURCES.md | sort
+Measured at round-start baseline 5bc56a81d196caeb8d24551928b883802697aabb (lane repo).
+rows=144
+status. mined =120
+status. queued =15
+status. rejected =9
+tier. A =128
+tier. B =7
+tier. C =9
