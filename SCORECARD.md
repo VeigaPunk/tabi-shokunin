@@ -2103,3 +2103,67 @@ No new capability row; the round remeasures and hardens the instruments behind
 - Claim C1 (calibration): round-37 routed defects D1–D6 are measured by `.ufo/waves/round-38/counters/c1-routed-defects.mjs`; measured at the final integration tip, predicate false (D4 and D6 findings remain).
 - Claim C2 (coverage capability candidate): Playwright Firefox/Juggler loopback driver and receipt are retained, but the frozen claim is **not admitted** because the runtime evidence is not session-bound against the falsifiers; no capability row enters the table.
 - Axis scores held; saturation 8 / window 3. Playwright 1.64.0 was already globally installed; Firefox 157.0 was installed from the official Playwright CLI browser channel. No pacman transaction.
+
+## Round 39 — declared claims (frozen before data)
+
+Round-start baseline `5bc56a81d196caeb8d24551928b883802697aabb`. C1's counter and
+driver were frozen at `1f4260aeb3af186e84444cbb417a31b8a35bdb55`; C2's pre-data
+amendment and final counter digest were frozen at
+`9c09ebb1e2ff594c70ce72093b5d4133c1734dca`. The frozen predicate strings are in
+`.ufo/waves/round-39/claims.json`. Saturation 8 / window 3; the stagnation nudge
+waived the lowest-axis obligation because no capability entered in rounds 36–38,
+and C1 was the frontier/capability move.
+
+| Claim / axis | Counting command | Before | Target |
+|---|---|---|---|
+| C1 coverage — Playwright Firefox session-bound TCP observation | `node .ufo/waves/round-39/counters/c1-egress-session-bound.mjs --rev <REV> --repo <clean clone> --json` | Baseline `5bc56a81…`: exit 1, `receipt-absent`; v1 control refused. | Frozen C1 predicate true and a new capability row admitted. |
+| C2 calibration — round-38 residuals D4/D6, round-39 counter v2 | `node .ufo/waves/round-39/counters/c2-routed-defects-v2.mjs --rev <REV> --repo <clean clone> --json` | Round-38/v1: exit 1, D4 mutant receipt absent and D6 numstat receipt absent; v1 does not test sentence identity. | Frozen C2 predicate true, with the executed sentence-mutant refusal and a reproducible baseline..REV numstat receipt. |
+
+## Round 39 — executed disposition
+
+Measured at candidate revision `75d0e6427bd00c9e702d69116768e670bd94427d` in a
+clean shared clone; frozen counter bytes are those named above.
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 coverage | `node .ufo/waves/round-39/counters/c1-egress-session-bound.mjs --rev 75d0e6427bd00c9e702d69116768e670bd94427d --repo <clean clone> --json` | exit 1 / `receipt-absent` at baseline → frozen counter exit 0 / `predicate=true`, `controlRefused=true`; however the committed sample timestamps span only 799 ms and 701 ms (both < 1000 ms), while `coverageMs` includes close/tail time. The frozen predicate sentence is therefore not established by the counter's proxy. | **not met**; coverage score held 9 → 9. No capability row admitted. |
+| C2 calibration | `node .ufo/waves/round-39/counters/c2-routed-defects-v2.mjs --rev 75d0e6427bd00c9e702d69116768e670bd94427d --repo <clean clone> --json` | v1 exit 1 with D4/D6 missing → v2 exit 1: D1–D5 and D7 re-derive (census 145 rows, A129/B7/C9, mined121/queued15/rejected9; mutant control exit 1); D6 `numstat-at-75d0e642.txt` absent at REV. The frozen D6 rule is self-referential: adding a receipt at REV changes REV (scratch probe `c2-self-reference-probe.txt`). | **not met**; calibration score held 9 → 9. |
+
+No automatic scalar score follows from a passing counter; no numerical axis
+score changed. The round does not admit because neither frozen claim is verified
+as worded. The C1 receipt records a bounded host/build TCP observation, not
+general egress; C2's exact frozen D6 target is not constructible as an ordinary
+committed file.
+
+### Round 39 — waves and seats
+
+One v2 wave: 64 seats, one dispatch call, one result file, no residual call,
+round total 64. Role counts: 17 reviewer, 12 critic, 8 mutation-tester, 9 scout,
+7 executor, 6 scribe, 3 connector, 1 sentinel, 1 revenger. All 64 produced a
+nonempty result; no seat was reported dead. L1 held the canonical planner seat;
+cross-surface planning rode the three connector items. See
+`.ufo/waves/round-39/w1-results.json` and `.ufo/waves/round-39/w1/`.
+
+### Round 39 — capabilities / planned / saturation / retired
+
+No capability entered: C1's weak counter returns met, but the independent sample
+timeline shows both committed runs below the frozen 1000 ms sampled-window
+condition, and additional counter/driver falsifiers remain open. No axis retired;
+saturation remains 8 / window 3.
+
+- Planned for round 40: re-freeze a TCP-only C1 predicate that requires observed
+  sample span, both surfaces available, refreshed/identity-bound process
+  ownership, and fail-closed cleanup; re-freeze C2 with a non-self-referential
+  evidence-carrier protocol and controls that bind actual execution.
+- Complete the remaining 13 quarantine rows before any package adoption; the
+  source package remains closed. Obtain a fresh non-author admit/reject
+  spot-check.
+
+### Round 39 — trend verdicts
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | New host-scoped TCP socket-observation note on previously unheld Playwright Firefox process/socket instrumentation, citing newly opened mined S145; the note explicitly limits the scope (`corpus/knowledge/playwright-firefox-session-bound-tcp-round-39.md`). |
+| quality | improved | The `/proc` endian false count is corrected by a red→green receipt pair (12 false positives → 0); QUALITY criteria 102–103 and an append-only note correction preserve the measurement and D6 limits. No prior admitted entry was found false or stale this round. |
+| discernment | unchanged | Admit/reject decisions exist, but no outside non-author spot-check was completed; dispatched seats remain the lane. |
+
