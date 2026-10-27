@@ -1,0 +1,58 @@
+# Round 36 — lesson (tabi, 2026-10-27)
+
+Claims frozen before data at `.ufo/waves/round-36/claims.json` in `2e7b7a8920bff47fae6f75c3d06e48e37767099e` (baseline `11c64b96f357de106c30a71c5e21ca44a3eacdc0`). C1 works the lowest-scoring non-retired axis, adjacency (frozen start score 8); C2 works operability (frozen start score 9). Both counters were measured at `20a69e0ae33292a71504e40be326f1513cd5a81b` from the frozen counter bytes. Raw outputs are in `.ufo/waves/round-36/measure/`.
+
+## Gate
+
+Source row opened this round (seat receipts in `.ufo/waves/round-36/w1/ScribeSrcGitDocs/`; w2 `RevS142` reopened the primary source at 2026-10-27T11:44:56Z and found the same bytes):
+
+| id | URL | accessed (UTC) | status | bytes | SHA-256 | located quote (≤25 words) | location / decision |
+|---|---|---|---:|---:|---|---|---|
+| S142 | https://git-scm.com/docs/git-show | 2026-10-27T09:29:57Z | 200 | 246,608 | `0a95cbcd8868054d851eedb192864798092c597592851989f5d1bb392730168a` | “Shows one or more objects (blobs, trees, tags and commits).” (10 words) | `git-show.html:3272`, §DESCRIPTION; re-opened by w2 `RevS142` at the same digest. |
+
+`corpus/SOURCES.md` change log: 141 → 142 rows; S142 is tier A, `mined`, opened `2026-10-27`, recheck `180d`, used by `corpus/knowledge/adjacency-drift-audit-r36.md`. S125 recheck changed `90d` → `on-release`; no other prior row cell changed. S142’s entry documents git-diff only as supporting context; the source row’s primary teaching is git-show’s revision-addressed object read. No separate source row was added for the support fetch. No source row was rejected this round.
+
+Assimilation: none. `w1/ScoutAssim.md` found no `merge/tabi/` theme on either frozen claim surface; the external package remains read-only. `considerthese/` is absent in this lane. Quarantine slice re-derived from the read-only register: 38 rows (37 `payload-absent`, retained as refused; 1 prose/unreachable S171, retained as unverifiable), matching the round-22 verdict set; no package rows were adopted or renumbered. Prior quarantine hand-check evidence is in `.ufo/waves/round-22/assimilation/quarantine-verdicts.json`; w1 `ScribeQuarantine` and `ScoutAssim` re-derived the count/membership and did not re-fetch those URLs.
+
+Census receipts: `measure/census-start-rederived.txt` records the round-start baseline `11c64b96…` run against a scratch fleet checkout, exit 0; `measure/census-end.txt` records the round-36 lane census at the measured tree, exit 0. Both report 20 pre-existing W04 duplicate-URL warnings, no E-codes, and `tabi ok`. Count-mode receipts from w2 `ExecCensusEnd` (`before-census.tsv` / `after-census.tsv`, both exit 0) record rows 141 → 142; tier A/B/C 125/7/9 → 126/7/9; mined/queued/rejected 117/15/9 → 118/15/9. The registry’s validate-only output does not itself count rows; the committed census-mode receipts do.
+
+## C1 — adjacency
+
+Counting command: `node .ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs --rev <REV> --repo <clean clone> --fleet /home/vgpnk/Projects/shokunin --json`.
+
+Before: the counter was absent at the round-start tip; with the frozen instrument and no drift ledger, c1-J1 read `auditCoverage=0/307`, `auditMissing=307`, predicate false (`baseline/c1-J1-do-nothing.json`). The honest-floor c1-J5 control was reachable and passed with the derived ledger. After at measured revision `20a69e0…`: predicate true; adjacency clean 16/16; 383 candidates, 383 screened, `unaccounted=0`; drift `307` rows, `auditCoverage=307`, `auditFindings=0`, `staleFindings=0`, classes 304 unchanged / 3 moved / 0 stale; delta total 0, unaccounted 0, screen findings 0 (`measure/c1-at-20a69e0.json`). The 16 w1 `AdjDrift` chunks re-derived all 307 rows with no reported mismatch; `AdjDriftKaidoku`, `RevC1`, and `ConnDeltaScan` independently corroborated the three frozen kaidoku relocations and empty delta pool.
+
+W2 `ExecCompleteness` re-ran the counting command at the w1 landing and got the same 383 / 307 / 0 readings. W2 `RevLedgerSample` found no mismatch in its blind sample. The live-head attack did not falsify the measured frozen-pins result, but it found an inaccurate limit statement and two frozen-instrument issues described below.
+
+## C2 — operability
+
+Counting command: `node .ufo/waves/round-36/counters/c2-firefox-bidi-v2.mjs --rev <REV> --repo <clean clone> --json`.
+
+Before: v2 was absent at the round-start tip; the previous instrument is round-35 v1. After at `20a69e0…`: predicate true; population 17, admitted 16, failing 0, unmeasured 1, entry/receipt/binding findings null; live Firefox 158.0.1 / geckodriver 0.37.1, 28 commands, 20 events, 3 egress samples / 9 sampled pids / 0 non-loopback sockets (`measure/c2-at-20a69e0.json`). Frozen C2 controls and w1 seat findings remain in `baseline/c2-J0..J6` and `w1/`; w1 `MutC2` killed 4/5 mutation legs, and `CritC2` confirmed the declared rewritten-id transcript limit. W2 `RevC2b` and `MutC2b` did not complete their assigned second batteries; they are not additional evidence.
+
+## Disposition and instrument findings
+
+- C1 and C2 measured predicates are true at `20a69e0…`; the eight frozen digests still match at that revision (`measure/pins-binding-at-20a69e0.txt`, all eight equal and freeze→REV diffs empty). This out-of-band pin check protects this measurement only; the frozen C1 counter itself still reads `c1-delta-pins.json` at REV without enforcing its frozen digest.
+- W1 `CritC1` reproduced T8: substituting the kaidoku delta head and regenerating the ledger lets the frozen counter return predicate true while the three moved rows are classified against substituted heads. W2 `ExecPinsAssertion` independently confirmed the digest check kills T8/T6 substitutions. Counter amendment is deferred because counter/claims bytes were frozen before data; round 37 must bind the pins digest in the counter before new data.
+- W2 `ExecDeltaLive` found 51 post-freeze sibling commits: 7/12 frozen drifted lanes advanced, plus souji outside the frozen 12-lane set. Re-deriving at live tips leaves status counts and delta pool unchanged but shifts the three kaidoku relocation notes `:748/:784/:815` → `:752/:788/:819`; the counter with live-tip pins refuses those notes. The counter using the frozen pin file at the lane’s measured REV remains true. An append-only correction was added to the method entry to distinguish these two cases.
+- W1 `RevC1` and w2 `CritBuildTool`/`ExecDeltaLive` found the frozen build tool’s kama pin is a 39-character typo (missing `d`) while the counter has the valid 40-character pin. It is inert on this round’s pin set and the honest generated ledger is byte-identical, but a future kama re-pin makes the tool and counter disagree. Frozen build-tool amendment is deferred to round 37.
+- W2 `CritC1b` found the frozen moved-note parser takes the first `:<digits>` token, so a truthful note with an earlier decoy token can be refused. The current generator emits `verbatim at :N` first, so the committed ledger is unaffected. Counter amendment is deferred.
+- W2 `RevFrozenDigests` found the C1 claim’s predicate sentence is not verbatim-identical to the frozen counter header / predicate implementation (the counter also enforces stale-row redisposition, delta accounting, and resolvable frozen heads). C2’s core condition matches, with only a terminal-period / explanatory-suffix textual difference. These are frozen-contract conformance findings; neither was silently amended after seats scored. The measured output remains true, and all declared C1 terms are independently present in the JSON.
+- W2 `SentinelScope2` showed `refs/replace` can redirect C2’s `git show` reads in a repo carrying replace refs; the canonical `measure.sh` `--shared` clone carried none, and this round’s pin/evidence checks match. It also measured normal teardown clean but abnormal SIGTERM can leave three browser processes and a scratch directory. `CritC2b` statically confirmed receipt `observed` blocks are not consumed by the frozen counter; its requested dynamic tamper run did not complete. These are disclosed next-round hardening issues, not measured predicate failures on this canonical run.
+- W2 `RevBinaryDrift` found the pinned Firefox path is an ELF executable rather than a wrapper script; its path digest, Firefox version, firefox-bin digest and geckodriver digest all match the counter pins/round-35 receipts. No predicate impact.
+- W2 `RevD11` alleged the correction path was `corpus/evidence/...`; that is not the committed text. `git show 20a69e0:corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md` and `git show 20a69e0:corpus/README.md` both point to `.ufo/waves/round-35/w2/SentinelDriverEgress/evidence/sockets-summary.txt`, 1,765 bytes. The alleged path fails `git cat-file -e`; the actual path resolves. The D11 correction already landed in `e6959879c87f2504e699c00c5e4ab869b4effb20`; no further D11 edit was warranted.
+- The frozen `measure.sh` completed C1/C2 and wrote the other receipts, but line 61’s `numstat` output failed because its command group had changed cwd into the clone while `$OUT` remained relative. The exact `git diff --numstat` was re-run at the measured revision and retained as `measure/numstat-at-20a69e0.txt`; the frozen harness is not amended after data.
+- No-harm summary: 27/29 commands exit 0. `check-frontier-admission` exits 1 on the two unadmitted S116/S117 entries and `check-freshness --worktree --rev HEAD` exits 2 (invalid combined flags); both exact outputs/exit codes reproduce at round-start baseline `11c64b96…` (`measure/noharm-baseline-compare.txt`). All 18 gate self-tests exit 0; `check-selfassessment` at the measured revision reads mismatches 0. The lane census, release-pins gate (population 24 / resolved 24 / holds 17), sources gate, and all other no-harm gates pass.
+
+## Mistakes
+
+- **M1 — scope overclaim.** Evidence: the original method-entry §6.7 at the w1 landing said post-freeze sibling movement “changes nothing in this ledger”; w2 `ExecDeltaLive` re-derived 307 rows at live tips and found three changed relocation notes and a counter refusal. Captured-by: `none` — the drafting/review pass did not compare frozen pins with later sibling tips. Fix: appended a correction to `corpus/knowledge/adjacency-drift-audit-r36.md` distinguishing a fixed-REV/frozen-pins measurement from a live-tip re-derivation. Shown able to fail by the 3 `audit-moved-wrong-relocation` live-pin findings; the measured frozen-pin run remains true.
+- **M2 — unbound frozen input (open, not repaired).** Evidence: w1 `CritC1/report.md` T8 and w2 `ExecDeltaLive/report.md` F1 show a substituted `c1-delta-pins.json` can produce predicate true with three mis-audited moved rows. Captured-by: `none` — the frozen counter has no digest check for this file. Fix: add the frozen digest check in a round-37 counter amendment before data; T8 is the red case the fix must refuse. The current out-of-band receipt protects only this measured revision and is not a permanent counter fix.
+
+## Trend verdicts
+
+- **expansion: improved.** One sourced method entry on adjacency drift auditing is now indexed in `corpus/README.md` and cites mined S142; the underlying drift ledger and its method were absent at the round-start baseline.
+- **quality: improved.** The new method note’s post-freeze overclaim is corrected by an appended, evidence-backed clarification; no measured claim or frozen artifact was edited after data.
+- **discernment: unchanged.** No outside non-author admit/reject spot-check was available at lane filing. W1/W2 seats were dispatched by this lane and do not count as non-author verification.
+
+Assimilation: none. Tool installs/upgrades: none. No pacman transaction was run.

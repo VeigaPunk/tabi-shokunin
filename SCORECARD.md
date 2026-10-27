@@ -1999,3 +1999,47 @@ non-empty outputs). The L1 holds the canonical planner seat; the planning data-w
   companion files; calibration counter v4 still carried.
 - saturation 8 / window 3; the round-35 capability row `webdriver-bidi-runtime-firefox` restarts the window (round 36 =
   position 1); no axis retired.
+
+## Round 36 — declared claims (frozen before data)
+
+Freeze `2e7b7a8920bff47fae6f75c3d06e48e`; round-start baseline `11c64b96f357de106c30a71c5e21ca44a3eacdc0`. The frozen `claims.json` records axis scores at round start as adjacency 8 and operability 9; the L1 did not auto-increment a numeric score from a passing predicate.
+
+| Claim / axis | Counting command | Before | Target |
+|---|---|---|---|
+| C1 adjacency, sourced via S142 (split meter: completeness + drift verification + delta discovery) | `node .ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs --rev <REV> --repo <clean clone> --fleet /home/vgpnk/Projects/shokunin --json` | Baseline instrument absent; c1-J1 do-nothing with instrument reads `auditCoverage=0/307`, `auditMissing=307`, predicate false. | Predicate true at measured REV: closed 383-candidate pool accounted, 307 drift rows re-derived at the frozen delta heads, no drift/delta findings, empty delta pool. |
+| C2 operability (amendment of the existing Firefox BiDi counter; no new capability) | `node .ufo/waves/round-36/counters/c2-firefox-bidi-v2.mjs --rev <REV> --repo <clean clone> --json` | v2 absent at round-start tip; the prior instrument is the round-35 v1 counter. | Predicate true at measured REV: no entry/receipt/binding findings, failing 0, admitted ≥16, fresh live Firefox session with non-loopback egress 0. |
+
+Controls and feasibility receipts were frozen in `.ufo/waves/round-36/baseline/` before claim data. C1 J1 misses the no-ledger case; C1 J5 honest floor is reachable. C2 J1 re-admits the honest evidence; J3 is the 15-row boundary; J2/J4/J5 refuse the committed attack examples; J6 detects non-loopback egress when DNS-off prefs are dropped. No counter or claim bytes were amended after any seat scored.
+
+Tool installs: none.
+
+## Round 36 — executed disposition
+
+Measured at `20a69e0ae33292a71504e40be326f1513cd5a81b` in a clean clone with counter bytes taken from the freeze `2e7b7a8920bff47fae6f75c3d06e48e37767099e` (`.ufo/waves/round-36/measure/`; provenance records porcelain 0 and both counter/gate digests equal their frozen pins).
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency | `node .ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs --rev <REV> --repo <clean clone> --fleet /home/vgpnk/Projects/shokunin --json` | do-nothing audit coverage `0/307`, missing `307` → `307/307` audited; 383 candidates / 383 screened / unaccounted 0; drift 304 unchanged / 3 moved / 0 stale; delta 0; adjacency clean 16/16; predicate false → true | **met on the measured frozen inputs**; adjacency score held at 8 → 8 (measured metric improved; no rubric authorizes an automatic scalar bump). Residual input-binding and predicate-text findings are recorded in the lesson/report. |
+| C2 operability | `node .ufo/waves/round-36/counters/c2-firefox-bidi-v2.mjs --rev <REV> --repo <clean clone> --json` | v2 absent at baseline → population 17, admitted 16, failing 0, unmeasured 1, binding null; Firefox 158.0.1 / geckodriver 0.37.1; live egress 0; predicate true | **met under the frozen counter predicate**; operability score held at 9 → 9 (the axis was already at its recorded ceiling; no new capability row). |
+
+No-harm at the measured REV: 27/29 commands exit 0. The two nonzero commands (`check-frontier-admission` exit 1; `check-freshness --worktree --rev HEAD` exit 2 due its usage contract) reproduce at the round-start baseline, so neither is introduced by this round. All 18 gate self-tests exit 0; `check-selfassessment` reads mismatches 0. The release-pins gate is clean at population 24 / resolved 24 / holds 17. The full-lane sources census exits 0 with 20 pre-existing W04 warnings and `tabi ok`.
+
+### Round 36 — waves and seats
+
+Two v1 waves; the round contains **65 seats**. W1 build + first falsifiers: 33 seats (21 executor, 3 scribe, 2 critic, 2 mutation-tester, 2 reviewer, 1 connector, 1 scout, 1 sentinel), all 33 have reports. W2 falsify: 32 seats (15 reviewer, 5 critic, 5 mutation-tester, 5 executor, 1 connector, 1 sentinel); 28 have completed reports and 4 are incomplete/dead in the result evidence: `RevF1` (no report; final output stops at “Need only make the first mutation commit and generated-led…”), `RevC2b` (aborted: J4/J5 fixture and report incomplete), `MutC2b` (aborted: mutation battery still ongoing), and `ExecEgressLive` (no report; final output stops before its clean timing check). Those four do not supply verification credit. No residual call; round total 65. The L1 held the canonical planner seat; planning data-walk rode the connector/reviewer items. W2 attack roles are 25/32 seats (reviewer + critic + mutation-tester).
+
+### Round 36 — capabilities / planned / saturation / retired
+
+No new capability entered; preserve `webdriver-bidi-runtime-firefox` (the round remeasures its existing evidence, not a distinct operation). No axis retired; saturation remains 8 / window 3.
+
+- Planned for round 37: adjacency counter amendment binding the frozen delta-pins digest and aligning the declared predicate with the counter; repair the frozen build tool’s kama pin and moved-note parsing before data; run the stale-class synthetic case. The round-36 out-of-band pins receipt protects only this measurement and is not the counter fix.
+- Planned for round 37: operability hardening of C2 git reads (`GIT_NO_REPLACE_OBJECTS`, replace-ref evidence) and abnormal-exit process cleanup; specify whether receipt `observed` fields are display-only or bound.
+- Planned for round 37: correct the frozen measurement harness’s relative `numstat` output path and its invalid `check-freshness` invocation; preserve the baseline frontier-admission exit as an unchanged pre-existing condition unless its owning evidence changes.
+
+### Round 36 — trend verdicts
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | New `corpus/knowledge/adjacency-drift-audit-r36.md` on previously unheld sibling-drift audit ground; source row S142 is mined and the note is indexed in `corpus/README.md`. |
+| quality | improved | W2 `ExecDeltaLive` falsified the method entry's broad post-freeze wording; an append-only correction now distinguishes the frozen-pin measurement from live-tip re-derivation and records the 3 relocation-note shifts. |
+| discernment | unchanged | No outside non-author admit/reject spot-check at lane filing; w1/w2 seats were dispatched by the lane and do not qualify. |
