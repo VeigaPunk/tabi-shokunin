@@ -20,3 +20,12 @@ The round-39 driver launches Playwright Firefox against its own loopback fixture
 - This method observes TCP tables only; UDP, QUIC, Unix-domain sockets, packet-level traffic, and other network namespaces are not covered. `/proc/net` is viewed from the driver process's namespace, and the owned PID tree is captured once shortly after launch; later descendants are not re-enumerated by this driver. Do not generalize the receipt to “no egress.”
 - The driver's session profile path is not bound by the receipt: the locally-created `profile` directory is not passed to `firefox.launch`. The result is a fixture observation, not a reusable system-wide assurance or an external-site authorization.
 - The frozen C1 counter checks receipt summaries and the round-38 v1 refusal; its output is not an independent non-author spot-check. See the round-39 claim report for the adversarial verdict and scope limits.
+
+## Round 39 audit correction (append-only)
+
+This supersedes only the preceding phrase “8–9 socket samples over more than 1 s.” `coverageMs` is not the
+sampled window: the committed timestamps span 799 ms in run1 and 701 ms in run2, while the receipt declares
+1560 ms and 1461 ms because its clock includes startup/close/tail time. Thus both committed runs have fewer
+than 1000 ms of socket sampling; the C1 counter's `coverageMs >= 1000` proxy does not establish the frozen
+predicate's “samples over at least 1000 ms” clause. Evidence: `.ufo/waves/round-39/w1/ExecDriverSampleAudit/report.md`
+§2.1 and F1; counter output at the measured revision remains a frozen-counter reading, not an admission.

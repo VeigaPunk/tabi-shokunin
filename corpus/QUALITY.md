@@ -709,3 +709,10 @@
     `.ufo/waves/round-35/measure.sh` no-harm block, which runs check-freshness only with `--self-test`, stays 28/28 green
     (w2 RevCorrections D1). (source: corpus/lessons/round-35.md M5)
 
+
+## Round 39 additions (append-only; never edit above)
+
+102. A `/proc/net/tcp{,6}` loopback classifier decodes Linux's little-endian 32-bit words before testing the remote address and cross-checks `ss` output; disagreement is a finding, not a clean loopback reading. Red state: `.ufo/waves/round-39/measure/proc-endian-before.json` records 12 false non-loopback observations for 127.0.0.1 while `ss` records 0; after decoding, both surfaces record 0 in `.ufo/waves/round-39/measure/proc-endian-after.json`. (source: `corpus/lessons/round-39.md` M1; S145)
+
+103. A frozen counter must test whether its measurement receipt can exist at the revision it is required to name; a receipt that embeds the full hash of the commit containing its own bytes creates an unreachable fixed point. Red state: C2 D6 requires `.ufo/waves/round-39/measure/numstat-at-REV.txt` in REV and `text.includes(REV)`; adding the receipt changes REV, confirmed by `.ufo/waves/round-39/measure/c2-self-reference-probe.txt`. Freeze a non-self-referential candidate/evidence-carrier protocol before data. (source: `corpus/lessons/round-39.md` M2; round-39 C2 counter)
+
