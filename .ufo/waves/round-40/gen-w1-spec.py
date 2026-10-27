@@ -6,11 +6,11 @@ LANE='/home/vgpnk/Projects/shokunin/tabi-shokunin'
 FLEET='/home/vgpnk/Projects/shokunin'
 ROUND=40
 BASE='a1b1e939048885d2793759b7f49b10c5c820d70d'
-FREEZE='cb35339d81b425f486f9cb34a08111996be61b8a'
+FREEZE='c451a3c401741e5cc34239e0df63d113d86267e5'
 SCRATCH='/fast/scratch/hyaku/tabi-r40'
 GODSPEED='''You are a Godspeed-enabled subagent.\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don\'t aim — let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.'''
 CONTEXT=f'''# Goal
-Tabi round 40, attempt 2. One v2 wave of 64 seats. C1 is the sole frozen claim: coverage capability, round-40 Playwright Firefox loopback TCP evidence with >=8 strictly increasing samples whose actual first-to-last timestamp span is >=1000ms, both ss/proc surfaces available on every sample and final sweep, zero observed non-loopback counts, nonempty owned process tree, identical first-shot hashes, no survivors, closed fixture port, and browser version bound. Frozen claim/counter/control commit: {FREEZE}; round-start baseline: {BASE}. Read {LANE}/.ufo/waves/round-40/claims.json and the exact frozen counter before work; never widen or amend the predicate.
+Tabi round 40, attempt 2. One v2 wave of 64 seats. C1 is the sole amended pre-data frozen claim: coverage capability, round-40 Playwright Firefox loopback TCP evidence with >=8 strictly increasing samples whose actual first-to-last timestamp span is >=1000ms, both ss/proc surfaces available with positive observation ticks on every sample and final sweep, zero observed non-loopback counts, nonempty owned process tree, identical first-shot hashes, no survivors, closed fixture port, and browser version bound. The amended claim/counter/control commit: {FREEZE}; it supersedes the first freeze before dispatch/data; round-start baseline: {BASE}. Read {LANE}/.ufo/waves/round-40/claims.json and the exact amended frozen counter before work; never widen or amend the predicate.
 
 Scope: your reports only under {LANE}/.ufo/waves/round-40/w1/<SeatName>/report.md. Production tree, fleet, siblings and shokuknow source repo are read-only. No commits/pushes, no git/jj mutation, no agents spawned, no external site interaction. For quarantine seats, read the source register and fetch only your assigned cited public source; do not edit or write anywhere under /home/vgpnk/Projects/shokuknow. Every Report trailer path is relative to {LANE}: write it at {LANE}/<that path>.
 
