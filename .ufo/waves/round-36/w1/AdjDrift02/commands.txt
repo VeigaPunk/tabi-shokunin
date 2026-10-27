@@ -1,0 +1,53 @@
+# AdjDrift02 — exact commands (all read-only git; no mutation anywhere; scratch under /fast/scratch/hyaku/tabi-r36/AdjDrift02)
+# NOTE: seat-scratch derive.sh is retained verbatim below as the first (bash) implementation; the authoritative
+#       derivation is derive.py (exact undefined-vs-empty semantics, mirrors counter lines 391-415).
+
+# 0. setup
+mkdir -p /fast/scratch/hyaku/tabi-r36/AdjDrift02/tmp /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/w1/AdjDrift02
+
+# 1. objects resolve, and the pin is an ancestor of the frozen delta head
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin cat-file -t 1ed29de2cdd6061315fb2f5478d5029b7d570675   # commit
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin cat-file -t 49096c7e6f226af0c750c4b003be58883cb6049f   # commit
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin merge-base --is-ancestor \
+  49096c7e6f226af0c750c4b003be58883cb6049f 1ed29de2cdd6061315fb2f5478d5029b7d570675 && echo pin-ancestor-of-head
+
+# 2. per-row derivation (K1 = cited text at pin line; K2 = head line / relocation search; K3 = ledger row)
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show <pin>:<path> | sed -n '<line>p'
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show 1ed29de2cdd6061315fb2f5478d5029b7d570675:<path>
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show 1ed29de2cdd6061315fb2f5478d5029b7d570675:<path> | awk -v want="<cited>" '{t=$0; sub(/^[ \t]+/,"",t); sub(/[ \t]+$/,"",t); if (t==want) print NR}'
+awk -F'\t' -v r='<sibling_ref>' '$1==r{print; exit}' /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/adjacency-screen-drift.tsv
+
+# 2b. batched, exact-semantics derivation over the 20-row chunk (authoritative)
+TMPDIR=/fast/scratch/hyaku/tabi-r36/AdjDrift02/tmp python3 derive.py \
+  /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/w1-chunks/AdjDrift02.tsv \
+  /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/adjacency-screen-drift.tsv \
+  /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/baseline/c1-delta-pins.json \
+  receipt.tsv    # -> rows=20 mismatches=0
+
+# 3. two-implementation parity (bash derive.sh vs python derive.py, status+note columns)
+diff <(cut -f1,2,3 receipt2.tsv | tail -n +2 | grep -v '^#') <(cut -f1,2,3 receipt.tsv | tail -n +2 | grep -v '^#')
+# -> identical
+
+# 4. instrument falsification A — known relocations must be detected (claim names 585->748, 621->784, 652->815)
+for ln in 585 621 652; do CITED=$(git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show 49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md | sed -n "${ln}p" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'); \
+  git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show 1ed29de2cdd6061315fb2f5478d5029b7d570675:SKILL.md | \
+  awk -v want="$CITED" '{t=$0; sub(/^[ \t]+/,"",t); sub(/[ \t]+$/,"",t); if (t==want) printf "%s ", NR}'; echo; done
+# -> 748 / 784 / 815, i.e. the instrument detects moved rows and agrees with the committed ledger notes "verbatim at :N"
+
+# 5. instrument falsification B — scratch fixture repo (NOT a sibling; created inside my scratch root)
+D=$(mktemp -d -p /fast/scratch/hyaku/tabi-r36/AdjDrift02) && git -C "$D" init -q
+git -C "$D" rev-parse --show-toplevel   # asserted == $D before any commit
+# fixture pin: f.txt = alpha/blank/"   "/beta/gamma ; g.txt = alpha/moveddelta/beta ; empty.txt = 0 bytes
+# fixture head: f.txt = zero/alpha/blank/"   "/gamma/beta ; g.txt = alpha/beta
+# branches exercised: moved (:2, :6, :3,:4), unchanged, stale-cited-absent, stale-pin-line-absent,
+#                     stale-pin-file-absent  -> 10/11 PASS, 1 expectation corrected (whitespace-only same-index line)
+
+# 6. evidence: blob identity + cited-text digest per row
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin rev-parse <pin>:<path>
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin rev-parse <head>:<path>
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show <pin>:<path> | sed -n '<line>p' | sha256sum
+
+# 7. falsifiers on my own chunk: no blank citations, no duplicate refs, every ref present in the ledger
+git -C ... show <pin>:<path> | sed -n '<line>p' | tr -d '[:space:]'    # empty output for none
+cut -f1 .ufo/waves/round-36/w1-chunks/AdjDrift02.tsv | sort | uniq -d    # 0
+cut -f1 corpus/adjacency-screen-drift.tsv | sort | uniq -d              # 0 (whole ledger)

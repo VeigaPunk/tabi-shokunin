@@ -333,3 +333,12 @@ With geckodriver's recommended automation prefs alone, the Firefox parent proces
 - **U5 (binding stability)** — open. The client is a plain Node WebSocket client; no binding
   stability promise is measured.
 - **U6 (Firefox egress on this host)** — not measured here; the round's sentinel seat owns it.
+
+## Corrections
+
+- 2026-10-27 (round 36): §5 D11's sentence "its integration run sampled 0 non-loopback
+  firefox/geckodriver sockets" cited `.ufo/waves/round-35/measure/driver-egress-sample.txt`,
+  which is committed but empty (0 bytes) — the committed sample lives at
+  `.ufo/waves/round-35/w2/SentinelDriverEgress/evidence/sockets-summary.txt` (27 samples, 0
+  non-loopback). Re-pointed by the round-35 verifier spot-check routed defect 1; the 0-byte
+  file is left in place as evidence of the defect.

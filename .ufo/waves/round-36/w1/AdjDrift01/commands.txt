@@ -1,0 +1,45 @@
+# AdjDrift01 — exact commands executed (all read-only; no git mutation anywhere)
+# scratch root: /fast/scratch/hyaku/tabi-r36/AdjDrift01 (TMPDIR=/fast/scratch/hyaku/tabi-r36/AdjDrift01/tmp)
+# fleet root: /home/vgpnk/Projects/shokunin ; lane: tabi-shokunin
+
+# --- inputs
+cat /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/claims.json
+cat /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/w1-chunks/AdjDrift01.tsv
+cat /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/baseline/c1-delta-pins.json
+cat /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/adjacency-screen-drift.tsv
+
+# --- per row (sibling_ref = <lane>-shokunin@<pin>:<path>:<line>), 20 rows
+git -C /home/vgpnk/Projects/shokunin/<lane>-shokunin show <pin>:<path>      # cited line = line <line>, trimmed
+git -C /home/vgpnk/Projects/shokunin/<lane>-shokunin show <H>:<path>        # H = c1-delta-pins.json[<lane>]
+#   line <line> at H equal to cited            -> unchanged
+#   else exact-trimmed match at head line(s) N -> moved :N   (all hits enumerated, none ambiguous)
+#   no exact match                             -> stale
+
+# literal instances of the two pins/H values in this chunk:
+git -C /home/vgpnk/Projects/shokunin/chousa-shokunin rev-parse --verify 00f8c7f5272a1d98b6d34913985fa4537e00aaf9^{commit}
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin rev-parse --verify 49096c7e6f226af0c750c4b003be58883cb6049f^{commit}
+git -C /home/vgpnk/Projects/shokunin/chousa-shokunin rev-parse --verify f9736a39a0344a0aed63a65dfaddf7db624303d9^{commit}
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin rev-parse --verify 1ed29de2cdd6061315fb2f5478d5029b7d570675^{commit}
+
+git -C /home/vgpnk/Projects/shokunin/chousa-shokunin show 00f8c7f5272a1d98b6d34913985fa4537e00aaf9:corpus/knowledge/archived-export-intake.md
+git -C /home/vgpnk/Projects/shokunin/chousa-shokunin show f9736a39a0344a0aed63a65dfaddf7db624303d9:corpus/knowledge/archived-export-intake.md
+git -C /home/vgpnk/Projects/shokunin/chousa-shokunin diff --stat 00f8c7f5272a1d98b6d34913985fa4537e00aaf9..f9736a39a0344a0aed63a65dfaddf7db624303d9 -- corpus/knowledge/archived-export-intake.md
+git -C /home/vgpnk/Projects/shokunin/chousa-shokunin rev-list --count 00f8c7f5272a1d98b6d34913985fa4537e00aaf9..f9736a39a0344a0aed63a65dfaddf7db624303d9
+
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show 49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show 1ed29de2cdd6061315fb2f5478d5029b7d570675:SKILL.md
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin diff --stat 49096c7e6f226af0c750c4b003be58883cb6049f..1ed29de2cdd6061315fb2f5478d5029b7d570675 -- SKILL.md
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin rev-list --count 49096c7e6f226af0c750c4b003be58883cb6049f..1ed29de2cdd6061315fb2f5478d5029b7d570675
+
+# kaidoku knowledge files in this chunk (same show pair per path, pin vs H):
+#   corpus/knowledge/2026-10-13-asar-surface.md
+#   corpus/knowledge/2026-10-13-crash-evidence.md
+#   corpus/knowledge/2026-10-13-r2-frontier-prereqs.md
+
+# --- negative / discrimination controls
+git -C /home/vgpnk/Projects/shokunin/kaidoku-shokunin show 49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md.nope   # -> exit 128 (absent-file path)
+# line 9999 on a 1405-line file -> "stale: pin line absent" path exercised by bounds check
+
+# --- artifacts written (seat dir only)
+/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/w1/AdjDrift01/{receipt.tsv,derive.log,commands.txt,report.md}
+rm -rf -- /fast/scratch/hyaku/tabi-r36/AdjDrift01

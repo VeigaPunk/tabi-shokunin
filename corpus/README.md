@@ -832,3 +832,12 @@ is edited.
   bytes under the pin `corpus/evidence/fleet-round-1-freshness/pins.tsv:7` and turned `scripts/check-freshness.mjs
   --worktree` red (w2 RevCorrections D1); the census delta lives in `corpus/lessons/round-35.md` §Census delta instead.
 
+
+## Round 36 — corrections (append-only)
+
+- `knowledge/webdriver-bidi-firefox-runtime-round-35.md` §5 D11 cited
+  `.ufo/waves/round-35/measure/driver-egress-sample.txt`, committed at 0 bytes (round-35 verifier
+  spot-check routed defect 1). The committed socket sample is
+  `.ufo/waves/round-35/w2/SentinelDriverEgress/evidence/sockets-summary.txt` (27 samples, 0
+  non-loopback); the entry carries an appended correction re-pointing it. The 0-byte file stays as
+  evidence of the defect.

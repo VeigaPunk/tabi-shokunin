@@ -1,0 +1,50 @@
+# AdjDrift09 — exact commands (C1 drift re-derivation, 20 rows, kake@04404859 -> head 437f53b1)
+# All git use is READ-ONLY. No mutating git/jj anywhere. Scratch: /fast/scratch/hyaku/tabi-r36/AdjDrift09 (deleted at exit).
+
+# --- setup ---
+mkdir -p /fast/scratch/hyaku/tabi-r36/AdjDrift09/tmp /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/w1/AdjDrift09
+
+# --- contract + inputs (read) ---
+read /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/claims.json
+read /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/baseline/c1-delta-pins.json      # kake -> 437f53b1f6cd22dbf307f1187f41d1c0850a1ac2
+read /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/w1-chunks/AdjDrift09.tsv          # 20 input rows
+read /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/adjacency-screen-drift.tsv                    # committed ledger, 307 data rows
+
+# --- object resolvability at freeze ---
+git -C /home/vgpnk/Projects/shokunin/kake-shokunin rev-parse --show-toplevel
+git -C /home/vgpnk/Projects/shokunin/kake-shokunin cat-file -t 044048597d62f3199494b63b36e90dd57825e350   # commit
+git -C /home/vgpnk/Projects/shokunin/kake-shokunin cat-file -t 437f53b1f6cd22dbf307f1187f41d1c0850a1ac2   # commit
+git -C /home/vgpnk/Projects/shokunin/kake-shokunin log -1 --format='%H %ci %s' 437f53b1f6cd22dbf307f1187f41d1c0850a1ac2
+
+# --- per-row derivation (driven by scratch/derive.py; identical to these literals) ---
+# for each row sibling_ref = <lane>-shokunin@<pin>:<path>:<line>:
+git -C /home/vgpnk/Projects/shokunin/<lane>-shokunin show <pin>:<path>        # take line <line>, .strip() -> CITED
+git -C /home/vgpnk/Projects/shokunin/<lane>-shokunin show 437f53b1f6cd22dbf307f1187f41d1c0850a1ac2:<path>
+#   line <line> strip() == CITED -> unchanged
+#   else any line whose strip() == CITED at line(s) N -> moved :N
+#   else -> stale ;  pin line absent -> "stale: pin line absent" ;  head file absent -> "stale: head file absent"
+TMPDIR=/fast/scratch/hyaku/tabi-r36/AdjDrift09/tmp python3 /fast/scratch/hyaku/tabi-r36/AdjDrift09/derive.py
+
+# --- independent second witness: blob identity pin vs head for every cited file ---
+for p in corpus/knowledge/free-read-verbs.md corpus/knowledge/js-rendering-queue.md corpus/knowledge/kimi-subpath-audit.md corpus/knowledge/link-preview-metadata.md corpus/knowledge/mirror-pitfalls.md corpus/knowledge/ops-automation.md corpus/knowledge/origin-repos.md; do
+  git -C /home/vgpnk/Projects/shokunin/kake-shokunin rev-parse 044048597d62f3199494b63b36e90dd57825e350:$p
+  git -C /home/vgpnk/Projects/shokunin/kake-shokunin rev-parse 437f53b1f6cd22dbf307f1187f41d1c0850a1ac2:$p
+done
+git -C /home/vgpnk/Projects/shokunin/kake-shokunin log --oneline 044048597d62f3199494b63b36e90dd57825e350..437f53b1f6cd22dbf307f1187f41d1c0850a1ac2 | wc -l   # 32
+git -C /home/vgpnk/Projects/shokunin/kake-shokunin diff --stat 044048597d62f3199494b63b36e90dd57825e350 437f53b1f6cd22dbf307f1187f41d1c0850a1ac2 -- corpus/knowledge/   # 4 new files, 735 insertions, 0 deletions
+
+# --- ledger integrity checks ---
+awk -F'\t' 'NR>1{print $1}' corpus/adjacency-screen-drift.tsv | sort | uniq -d          # no duplicate sibling_ref
+awk -F'\t' 'NR>1{n++; s[$2]++} END{...}' corpus/adjacency-screen-drift.tsv              # data_rows=307 unchanged=304 moved=3
+awk -F'\t' '$1 ~ /^kake-shokunin@044048597d62f3199494b63b36e90dd57825e350:/{c[$2]++} END{...}'   # kake0440 unchanged=51
+
+# --- ambiguity / degeneracy check on the 20 cited lines ---
+python3 -   # per row: occurrences of CITED (stripped) inside its pin file, blank?, length
+#   result: occ_in_pin=1 for all 20; blank=False for all 20
+
+# --- instrument self-test (moved / stale / pin-absent branches), fixture under scratch ---
+cd /fast/scratch/hyaku/tabi-r36/AdjDrift09
+D=$(mktemp -d -p /fast/scratch/hyaku/tabi-r36/AdjDrift09/tmp); git -C "$D" init -q
+test "$(git -C "$D" rev-parse --show-toplevel)" = "$D"
+TMPDIR=/fast/scratch/hyaku/tabi-r36/AdjDrift09/tmp bash selftest.sh    # 8 cases, 0 failures
+# fixture repo deleted by trap at script exit; scratch root removed at seat exit.

@@ -1,0 +1,35 @@
+# AdjDrift16 — exact commands (read-only git; TMPDIR=/fast/scratch/hyaku/tabi-r36/AdjDrift16/tmp)
+# inputs
+#   chunk   : tabi-shokunin/.ufo/waves/round-36/w1-chunks/AdjDrift16.tsv
+#   pins    : tabi-shokunin/.ufo/waves/round-36/baseline/c1-delta-pins.json  (tsukuroi -> 3629c46a0e787121f1e1d4ccb53bc830e4a7633f)
+#   ledger  : tabi-shokunin/corpus/adjacency-screen-drift.tsv
+# all 7 rows: lane tsukuroi-shokunin, pin a968393c678171f8a5a2907da5015735396da4cc
+
+# 0. frozen pin/head resolvability, delta relationship, blob identity
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin cat-file -t a968393c678171f8a5a2907da5015735396da4cc
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin cat-file -t 3629c46a0e787121f1e1d4ccb53bc830e4a7633f
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin merge-base --is-ancestor a968393c678171f8a5a2907da5015735396da4cc 3629c46a0e787121f1e1d4ccb53bc830e4a7633f
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin rev-parse a968393c678171f8a5a2907da5015735396da4cc:corpus/knowledge/oom-event-plane.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin rev-parse 3629c46a0e787121f1e1d4ccb53bc830e4a7633f:corpus/knowledge/oom-event-plane.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin rev-parse HEAD:corpus/knowledge/oom-event-plane.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin rev-parse a968393c678171f8a5a2907da5015735396da4cc:corpus/knowledge/update-safety-v2.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin rev-parse 3629c46a0e787121f1e1d4ccb53bc830e4a7633f:corpus/knowledge/update-safety-v2.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin rev-parse HEAD:corpus/knowledge/update-safety-v2.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin diff --name-only a968393c678171f8a5a2907da5015735396da4cc 3629c46a0e787121f1e1d4ccb53bc830e4a7633f | wc -l   # 3375 files moved; neither cited file among them
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin diff --stat a968393c678171f8a5a2907da5015735396da4cc 3629c46a0e787121f1e1d4ccb53bc830e4a7633f -- corpus/knowledge/oom-event-plane.md corpus/knowledge/update-safety-v2.md   # empty
+
+# 1./2. per row: cited text at pin, compare at frozen delta head (line n, trimmed)
+for L in 205 304 332 349 386; do
+  git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin show a968393c678171f8a5a2907da5015735396da4cc:corpus/knowledge/oom-event-plane.md | sed -n "${L}p"
+  git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin show 3629c46a0e787121f1e1d4ccb53bc830e4a7633f:corpus/knowledge/oom-event-plane.md | sed -n "${L}p"
+done
+for L in 59 230; do
+  git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin show a968393c678171f8a5a2907da5015735396da4cc:corpus/knowledge/update-safety-v2.md | sed -n "${L}p"
+  git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin show 3629c46a0e787121f1e1d4ccb53bc830e4a7633f:corpus/knowledge/update-safety-v2.md | sed -n "${L}p"
+done
+# equality executed by the driver below (strip + byte-compare; printed len per cited line)
+# driver:  /fast/scratch/hyaku/tabi-r36/AdjDrift16/derive.py   (deleted with the scratch root)
+
+# 3. ledger comparison + duplicate check
+grep -nF 'a968393c678171f8a5a2907da5015735396da4cc' /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/adjacency-screen-drift.tsv
+cut -f1 /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/adjacency-screen-drift.tsv | sort | uniq -d | wc -l   # 0 -> no duplicate sibling_ref

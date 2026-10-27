@@ -1,0 +1,154 @@
+{
+  "schema": "tabi-r36-w1-execdriftedge-probe-v1",
+  "seat": "ExecDriftEdge",
+  "lane": "tabi",
+  "round": 36,
+  "attempt": 1,
+  "wave": "w1",
+  "milestone": "C1",
+  "judgedOn": "adjacency",
+  "freezeRev": "2e7b7a8920bff47fae6f75c3d06e48e37767099e",
+  "counterPath": ".ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs",
+  "counterSha256AtFreeze": "8a223faf5e109fc05dac1373a4a4979b65f9ec2ffef40f86ae9bf40ba1aad385",
+  "counterSha256Expected": "8a223faf5e109fc05dac1373a4a4979b65f9ec2ffef40f86ae9bf40ba1aad385",
+  "counterBytesMatchFrozen": true,
+  "counterRunFrom": "freeze blob written to scratch counter/c1-adjacency-sweep-v4.mjs (never from the worktree)",
+  "clone": "/fast/scratch/hyaku/tabi-r36/ExecDriftEdge/clone (git clone of tabi-shokunin, detached at freezeRev; every variant is a commit inside this clone)",
+  "fleet": "/home/vgpnk/Projects/shokunin",
+  "tmpdir": "/fast/scratch/hyaku/tabi-r36/ExecDriftEdge/tmp",
+  "command": "TMPDIR=<scratch>/tmp node <scratch>/counter/c1-adjacency-sweep-v4.mjs --rev <variant-rev> --repo <scratch>/clone --fleet /home/vgpnk/Projects/shokunin --json",
+  "regenerated": "nothing — no build tool (c1-drift-audit-build.mjs) was run for any variant",
+  "probes": [
+    {
+      "id": "baseline",
+      "rev": "2e7b7a8920bff47fae6f75c3d06e48e37767099e",
+      "mutation": "none (frozen honest ledger, no edits)",
+      "exit": 0,
+      "predicate": true,
+      "stackTrace": false,
+      "adjacency": { "verdict": "clean", "rows": 16, "verified": 16, "findings": 0 },
+      "completeness": { "candidates": 383, "mapped": 0, "screened": 383, "unaccounted": 0, "newMapped": 0 },
+      "drift": { "total": 307, "observed": { "unchanged": 304, "moved": 3, "stale": 0 }, "auditCoverage": 307, "auditFindings": [], "auditMissing": 0, "staleFindings": 0 },
+      "delta": { "total": 0, "unaccounted": 0, "screenFindings": 0 },
+      "output": "baseline.json",
+      "outputSha256": "94e3d653eb161d1e7c8630f31efa3e6e89a3abc6679a38e2b42f1165262124dd"
+    },
+    {
+      "id": "A-line99999",
+      "rev": "3bdfdc6e7b8040cb456b8d4d96510d62750cbb08",
+      "mutation": "corpus/adjacency-screen-browser.tsv line 2 (the FIRST drifted-lane screen row, chousa, corpus/knowledge/archived-export-intake.md:141 -> :99999) rewritten to cite line 99999; nothing else changed",
+      "exit": 1,
+      "predicate": false,
+      "stackTrace": false,
+      "stderrBytes": 0,
+      "adjacency": { "verdict": "clean", "findings": 0 },
+      "completeness": {
+        "unaccounted": 1,
+        "screenFindings": [
+          { "row": 2, "reason": "screen-not-a-candidate", "detail": "chousa-shokunin@00f8c7f5272a1d98b6d34913985fa4537e00aaf9:corpus/knowledge/archived-export-intake.md:99999" }
+        ]
+      },
+      "drift": {
+        "total": 307,
+        "observed": { "unchanged": 303, "moved": 3, "stale": 1 },
+        "auditCoverage": 306,
+        "auditFindings": [
+          { "row": 2, "reason": "audit-not-a-drift-row", "detail": "chousa-shokunin@00f8c7f5272a1d98b6d34913985fa4537e00aaf9:corpus/knowledge/archived-export-intake.md:141" }
+        ],
+        "auditMissing": ["chousa-shokunin@00f8c7f5272a1d98b6d34913985fa4537e00aaf9:corpus/knowledge/archived-export-intake.md:99999"],
+        "staleFindings": 0
+      },
+      "delta": { "total": 0, "unaccounted": 0, "screenFindings": 0 },
+      "observation": "out-of-range citation is re-derived as status=stale ('pin line absent') without indexing or throwing; the loss is caught twice by adjacent gates (completeness.unaccounted 1 and drift.auditMissing 1 / audit-not-a-drift-row) so the row cannot pass silently",
+      "output": "A-line99999.json",
+      "outputSha256": "e146853719391e04c19b30da199c5abcd49ddaff873197e7271eaee187991605"
+    },
+    {
+      "id": "B1-nondrifted-audit",
+      "rev": "0de15e79141aa2c5932b43dc5dbe1a4e160ad5fe",
+      "mutation": "corpus/adjacency-screen-drift.tsv gains one audit row for a non-drifted lane: audio-shokunin@7a2fcd4f08831154686e4e323031f41fffdb077f:corpus/QUALITY.md:1 <TAB> unchanged <TAB> -",
+      "exit": 1,
+      "predicate": false,
+      "stackTrace": false,
+      "stderrBytes": 0,
+      "drift": {
+        "total": 307,
+        "auditCoverage": 307,
+        "auditFindings": [ { "row": 309, "reason": "audit-not-a-drift-ref", "detail": "audio-shokunin@7a2fcd4f08831154686e4e323031f41fffdb077f:corpus/QUALITY.md:1" } ],
+        "auditMissing": [],
+        "staleFindings": 0
+      },
+      "completeness": { "unaccounted": 0, "screenFindings": 0 },
+      "delta": { "unaccounted": 0, "screenFindings": 0 },
+      "output": "B1-nondrifted-audit.json",
+      "outputSha256": "d4b3b8b15cdc5e03e6df19896ed821cc0b41dccd73a6841c185cb4797344b2d8"
+    },
+    {
+      "id": "B2-duplicate-audit",
+      "rev": "ff26dc54a728ac8705a8be7060f69fc81a7d053a",
+      "mutation": "corpus/adjacency-screen-drift.tsv gains a byte-identical duplicate of the existing chousa audit row (archived-export-intake.md:141, unchanged, -) appended as row 309",
+      "exit": 1,
+      "predicate": false,
+      "stackTrace": false,
+      "stderrBytes": 0,
+      "drift": {
+        "total": 307,
+        "auditCoverage": 307,
+        "auditFindings": [ { "row": 309, "reason": "audit-duplicate", "detail": "chousa-shokunin@00f8c7f5272a1d98b6d34913985fa4537e00aaf9:corpus/knowledge/archived-export-intake.md:141" } ],
+        "auditMissing": [],
+        "staleFindings": 0
+      },
+      "completeness": { "unaccounted": 0 },
+      "delta": { "unaccounted": 0 },
+      "output": "B2-duplicate-audit.json",
+      "outputSha256": "94bc38ad604e84b8ef814cf23252fb1e6ad2fb7abf44a2ebfd725641354f3b31"
+    },
+    {
+      "id": "C-malformed-audit",
+      "rev": "550848de9461a87ea29819008bd74b737165fa6c",
+      "mutation": "corpus/adjacency-screen-drift.tsv gains five malformed audit rows: (1) status 'verified' on an unchanged drift ref, (2) a 2-column row, (3) ref 'garbage-ref', (4) 'unchanged' asserted on a row the counter observes as moved (kaidoku SKILL.md:585), (5) 'moved' with relocation :99999 (head SKILL.md is 1568 lines)",
+      "exit": 1,
+      "predicate": false,
+      "stackTrace": false,
+      "stderrBytes": 0,
+      "drift": {
+        "total": 307,
+        "auditCoverage": 307,
+        "auditFindings": [
+          { "row": 309, "reason": "audit-status-unknown", "detail": "verified" },
+          { "row": 310, "reason": "audit-columns" },
+          { "row": 311, "reason": "audit-not-a-drift-ref", "detail": "garbage-ref" },
+          { "row": 312, "reason": "audit-status-mismatch", "detail": "unchanged != observed moved" },
+          { "row": 313, "reason": "audit-moved-wrong-relocation", "detail": ":99999" }
+        ],
+        "auditMissing": 0,
+        "staleFindings": 0
+      },
+      "output": "C-malformed-audit.json",
+      "outputSha256": "21d28589c5c4602fee0249d9bebd123b27b784dc85c36d7103050240936be66c"
+    },
+    {
+      "id": "D-duplicate-screen-row",
+      "rev": "1638ee8ed5ade6b68be0453b4ca08a79ce5cbf9a",
+      "mutation": "corpus/adjacency-screen-browser.tsv gains a duplicated screen row for the NON-drifted kagi lane (kagi SKILL.md:11, row 385) — the completeness leg's own duplicate surface",
+      "exit": 0,
+      "predicate": true,
+      "stackTrace": false,
+      "stderrBytes": 0,
+      "completeness": {
+        "candidates": 383,
+        "screened": 383,
+        "unaccounted": 0,
+        "screenFindings": [
+          { "row": 385, "reason": "screen-duplicate", "detail": "kagi-shokunin@69b61db46be4ed955994f6f1d1cba522bc5f4e97:SKILL.md:11" }
+        ]
+      },
+      "drift": { "total": 307, "auditCoverage": 307, "auditFindings": 0, "auditMissing": 0 },
+      "delta": { "unaccounted": 0, "screenFindings": 0 },
+      "observation": "PREDICATE GAP (in the frozen sentence, not in the counter): completeness.screenFindings is not a predicate conjunct (counter line 558-563 and claims.json predicate sentence agree), so a duplicated screen row for a non-drifted lane exits 0 with a live screen-duplicate finding",
+      "output": "D-duplicate-screen-row.json",
+      "outputSha256": "7cfff27873b80853c2c14073ae4534d7e26ccb9f456df58165b065be9da23023"
+    }
+  ],
+  "noInstall": "no tools installed or upgraded; node v24.21.0 and git 2.56.0 as present"
+}

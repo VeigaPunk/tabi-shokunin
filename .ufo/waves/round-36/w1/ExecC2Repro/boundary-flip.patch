@@ -1,0 +1,13 @@
+diff --git a/corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md b/corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+index a6cf16e..fc30c20 100644
+--- a/corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
++++ b/corpus/knowledge/webdriver-bidi-firefox-runtime-round-35.md
+@@ -105,7 +105,7 @@ the `recheck:` line above and `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs`
+ 
+ | Row | Surface | BiDi method | Measured | Evidence |
+ |---|---|---|---|---|
+-| R1 | Browser identity at launch | classic `POST /session` with `webSocketUrl: true`, then any BiDi command | yes | caps `browserName: "firefox"`, `browserVersion` equal to the receipt's, `moz:geckodriverVersion` present, `webSocketUrl` matching `^ws://` on `127.0.0.1` or `localhost`, ending `:<port>/session/<sessionId>`, ≥1 successful command — corpus/evidence/round-35/bidi-firefox/run1.jsonl + run2.jsonl; counter `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs` |
++| R1 | Browser identity at launch | classic `POST /session` with `webSocketUrl: true`, then any BiDi command | no | caps `browserName: "firefox"`, `browserVersion` equal to the receipt's, `moz:geckodriverVersion` present, `webSocketUrl` matching `^ws://` on `127.0.0.1` or `localhost`, ending `:<port>/session/<sessionId>`, ≥1 successful command — corpus/evidence/round-35/bidi-firefox/run1.jsonl + run2.jsonl; counter `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs` |
+ | R2 | Target inventory | `browsingContext.getTree` | yes | a successful `getTree` whose `contexts` is non-empty and whose every `context` is a string (UUID here) — corpus/evidence/round-35/bidi-firefox/run1.jsonl + run2.jsonl; counter `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs` |
+ | R3 | Navigate | `browsingContext.navigate` + `browsingContext.load` | yes | a successful navigate to the loopback `/a.html` returning that same `url`, plus a `browsingContext.load` event carrying it — corpus/evidence/round-35/bidi-firefox/run1.jsonl + run2.jsonl; counter `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs` |
+ | R4 | Screenshot | `browsingContext.captureScreenshot` | yes | a successful screenshot decoding as a PNG whose IHDR is exactly 640×480 (the pinned viewport) — corpus/evidence/round-35/bidi-firefox/run1.jsonl + run2.jsonl; counter `.ufo/waves/round-35/counters/c2-firefox-bidi.mjs` |

@@ -1,0 +1,74 @@
+# AdjDrift07 — exact commands (read-only git only; no mutations anywhere)
+# Host: cwd /home/vgpnk/Projects/shokunin. Scratch root S=/fast/scratch/hyaku/tabi-r36/AdjDrift07 (deleted at end).
+# Tooling: stock git 2.x, jq (/home/vgpnk/.local/bin/jq), awk/sed/diff/sha256sum. NO installs, no upgrades, no pacman.
+
+S=/fast/scratch/hyaku/tabi-r36/AdjDrift07
+FLEET=/home/vgpnk/Projects/shokunin
+export TMPDIR=$S/tmp
+mkdir -p "$S/tmp"
+
+# --- 1. inputs (read-only) -------------------------------------------------
+cat  $FLEET/tabi-shokunin/.ufo/waves/round-36/claims.json
+cat  $FLEET/tabi-shokunin/.ufo/waves/round-36/w1-chunks/AdjDrift07.tsv
+cat  $FLEET/tabi-shokunin/.ufo/waves/round-36/baseline/c1-delta-pins.json
+head -5 $FLEET/tabi-shokunin/corpus/adjacency-screen-drift.tsv
+wc  -l  $FLEET/tabi-shokunin/corpus/adjacency-screen-drift.tsv          # 308 = header + 307 data rows
+cut -f2 $FLEET/tabi-shokunin/corpus/adjacency-screen-drift.tsv | sort | uniq -c   # 304 unchanged, 3 moved
+grep -n moved $FLEET/tabi-shokunin/corpus/adjacency-screen-drift.tsv
+
+# --- 2. frozen refs used (lane -> pin / delta head) ------------------------
+# kaidoku-shokunin  pin 49096c7e6f226af0c750c4b003be58883cb6049f   head 1ed29de2cdd6061315fb2f5478d5029b7d570675
+# kake-shokunin     pin 044048597d62f3199494b63b36e90dd57825e350   head 437f53b1f6cd22dbf307f1187f41d1c0850a1ac2
+
+git -C $FLEET/kaidoku-shokunin rev-parse --show-toplevel
+git -C $FLEET/kaidoku-shokunin log -1 --format='%H %s' 49096c7e6f226af0c750c4b003be58883cb6049f
+git -C $FLEET/kaidoku-shokunin log -1 --format='%H %s' 1ed29de2cdd6061315fb2f5478d5029b7d570675
+git -C $FLEET/kaidoku-shokunin rev-list --count 49096c7e6f226af0c750c4b003be58883cb6049f..1ed29de2cdd6061315fb2f5478d5029b7d570675   # 23
+git -C $FLEET/kake-shokunin    log -1 --format='%H %s' 044048597d62f3199494b63b36e90dd57825e350
+git -C $FLEET/kake-shokunin    log -1 --format='%H %s' 437f53b1f6cd22dbf307f1187f41d1c0850a1ac2
+git -C $FLEET/kake-shokunin    rev-list --count 044048597d62f3199494b63b36e90dd57825e350..437f53b1f6cd22dbf307f1187f41d1c0850a1ac2   # 32
+
+# --- 3. the derivation (driver: derive.sh, copy committed at
+#        .ufo/waves/round-36/w1/AdjDrift07/derive.sh) -----------------------
+# per row: ref -> lane/pin/path/line, H = c1-delta-pins.json[lane]
+#   git -C $FLEET/<lane>-shokunin cat-file -e <pin>:<path>     # absent -> stale: pin file absent
+#   git -C $FLEET/<lane>-shokunin show <pin>:<path> > pin.txt
+#   cited = sed -n '<line>p' pin.txt | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//'
+#   line > NR(pin.txt)                                          # -> stale: pin line absent
+#   git -C $FLEET/<lane>-shokunin show <H>:<path> > head.txt    # absent -> stale: head file absent
+#   head  <line> trimmed == cited                               # -> unchanged
+#   else awk scan head.txt for trimmed-equal line numbers       # -> moved :<first>
+#   else                                                        # -> stale
+bash $S/derive.sh                     # writes $S/derived.tsv (20 rows)
+
+# --- 4. controls (prove the method discriminates, not vacuous) -------------
+# A. positive moved: kaidoku SKILL.md@49096c7e:585 -> head line 748 verbatim
+git -C $FLEET/kaidoku-shokunin show 49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md > $S/cA_pin.txt
+git -C $FLEET/kaidoku-shokunin show 1ed29de2cdd6061315fb2f5478d5029b7d570675:SKILL.md > $S/cA_head.txt
+c=$(sed -n '585p' $S/cA_pin.txt | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')
+sed -n '748p' $S/cA_head.txt | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//' | diff - <(printf '%s\n' "$c")   # identical
+awk -v want="$c" '{t=$0; sub(/^[ \t]+/,"",t); sub(/[ \t]+$/,"",t); if(t==want) print NR}' $S/cA_head.txt      # 748
+sed -n '585p' $S/cA_head.txt                                                                                  # different text at the pin number
+# B. kake SKILL.md pin 1280 lines -> head 1358 lines, but first 100 lines byte-identical
+git -C $FLEET/kake-shokunin show 044048597d62f3199494b63b36e90dd57825e350:SKILL.md > $S/cB_pin.txt
+git -C $FLEET/kake-shokunin show 437f53b1f6cd22dbf307f1187f41d1c0850a1ac2:SKILL.md > $S/cB_head.txt
+awk 'END{print NR}' $S/cB_pin.txt ; awk 'END{print NR}' $S/cB_head.txt    # 1280 / 1358
+diff <(sed -n '1,100p' $S/cB_pin.txt) <(sed -n '1,100p' $S/cB_head.txt)  # no diff
+diff <(sed -n '20p' $S/cB_pin.txt) <(sed -n '20p' $S/cB_head.txt)        # same
+diff <(sed -n '44p' $S/cB_pin.txt) <(sed -n '44p' $S/cB_head.txt)        # same
+# C. stale branch: a pin line deleted at head (kaidoku SKILL.md:333)
+grep -n 'mislabels mixed-link images' $S/cA_pin.txt                      # 333
+bash $S/derive_syn.sh    # synthetic rows: :333 -> "stale  cited text not present in head file"; :99999 -> "stale  pin line absent (pin has 1405 lines)"
+# D. content-identity corroboration for the 18 kaidoku rows: the 4 cited files are blob-identical pin -> head
+for f in corpus/knowledge/2026-10-14-r11-01-queue-ops.md corpus/knowledge/2026-10-16-l7-03-inspect-electron-fuses.md corpus/knowledge/2026-10-20-r17-go-carrier-diagnostics.md corpus/knowledge/2026-10-20-r18-swiss-map-replay.md; do
+  git -C $FLEET/kaidoku-shokunin diff --numstat 49096c7e6f226af0c750c4b003be58883cb6049f 1ed29de2cdd6061315fb2f5478d5029b7d570675 -- "$f" | wc -l   # 0
+  echo "$f $(git -C $FLEET/kaidoku-shokunin rev-parse 49096c7e6f226af0c750c4b003be58883cb6049f:$f) $(git -C $FLEET/kaidoku-shokunin rev-parse 1ed29de2cdd6061315fb2f5478d5029b7d570675:$f)"
+done
+
+# --- 5. ledger join -> receipt ---------------------------------------------
+# 20 input refs x grep -cF "<ref>\t" corpus/adjacency-screen-drift.tsv  -> each exactly 1
+cut -f1 $FLEET/tabi-shokunin/corpus/adjacency-screen-drift.tsv | sort | uniq -d   # no duplicate sibling_ref
+awk -F'\t' 'NR==FNR{...st[$1]=$2;nt[$1]=$3;next}{...}' \
+  $FLEET/tabi-shokunin/corpus/adjacency-screen-drift.tsv $S/derived.tsv > $SEAT/receipt.tsv
+# (full join expression is in derive.sh's sibling file; agreement = status class equal,
+#  and for moved the relocation line must appear in the ledger note as ":<N>")

@@ -1,0 +1,69 @@
+=== 0. objects and ancestry ===
+pin  type: commit  head type: commit
+pin is ancestor of head: YES
+line counts: pin=1405 head=1568  (worktree HEAD is dirty; not used)
+
+=== 1. ledger row: line 5-8 of the drift ledger, status column ===
+sibling_ref	status	note
+kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:189	unchanged	-
+kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:585	moved	verbatim at :748
+kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:621	moved	verbatim at :784
+kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:652	moved	verbatim at :815
+status histogram over 307 data rows:       3 moved     304 unchanged 
+
+=== 2. side-by-side: pin line vs head line (line numbers printed) ===
+--- pin SKILL.md:585  ==  head SKILL.md:748 (shift +163) ---
+PIN :585 | | `GoApiSnapshot` WARN `Falling back from X to Y` | Lower patch data used; the next `GoRttiMapper` line still says `X` | Requested-label echo: never cite the mapper line as selection. Round 17 observed only fallback to the base (Y = M.m.0); round 18 observed an intermediate patch fallback (1.24.13 → 1.24.6, `.ufo/waves/round-18/runs/real-kimi-webbridge/logs/rea-ghidra-ZSUHpG/ghidra.log:68`) |
+HEAD:748 | | `GoApiSnapshot` WARN `Falling back from X to Y` | Lower patch data used; the next `GoRttiMapper` line still says `X` | Requested-label echo: never cite the mapper line as selection. Round 17 observed only fallback to the base (Y = M.m.0); round 18 observed an intermediate patch fallback (1.24.13 → 1.24.6, `.ufo/waves/round-18/runs/real-kimi-webbridge/logs/rea-ghidra-ZSUHpG/ghidra.log:68`) |
+--- pin SKILL.md:621  ==  head SKILL.md:784 (shift +163) ---
+PIN :621 | | Swiss Go 1.24/1.25 carrier, bootstrap OK, `Go analysis failure` + `Invalid index: N` or `Unable to read past EOF: A, B` | Run `swiss-misread.py` on the carrier; an exact H1 match attributes the abort to the `OldMapType` binding | 3 carriers observed (aether calibrated; s1246-swiss-nethttp and kimi-webbridge held out); Ghidra 12.1.4, x86-64 ELF |
+HEAD:784 | | Swiss Go 1.24/1.25 carrier, bootstrap OK, `Go analysis failure` + `Invalid index: N` or `Unable to read past EOF: A, B` | Run `swiss-misread.py` on the carrier; an exact H1 match attributes the abort to the `OldMapType` binding | 3 carriers observed (aether calibrated; s1246-swiss-nethttp and kimi-webbridge held out); Ghidra 12.1.4, x86-64 ELF |
+--- pin SKILL.md:652  ==  head SKILL.md:815 (shift +163) ---
+PIN :652 | | swiss-misread | probe / kaidoku | `python3 -I -B /home/vgpnk/Projects/shokunin/kaidoku-shokunin/.ufo/waves/round-18/tools/swiss-misread.py --carrier <PATH> --golang-root <GOLANG_DIR>` where `<GOLANG_DIR>` is `/home/vgpnk/.local/opt/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/data/typeinfo/golang`; 0 emitted, 2 unparseable | same command with `--selftest` | Pinned values: none external; predictions it emitted for round 18 are frozen under `.ufo/waves/round-18/predictions/` (`swiss-misread/<label>.json` hold the `predicted_*_h1/h0` keys). Write scope: none, reads the carrier and installed snapshot JSON, JSON on stdout, never executes the carrier. amd64 only; the `walk` channel has false positives (unmasked variadic bit, notesmd-cli, kimi-webbridge) and its gap scan misses `*struct {…}` names (w2 `EmulatorIndependence.md`, `Runs1246noswissnethttp.md`); predictions rest on the per-map channel |
+HEAD:815 | | swiss-misread | probe / kaidoku | `python3 -I -B /home/vgpnk/Projects/shokunin/kaidoku-shokunin/.ufo/waves/round-18/tools/swiss-misread.py --carrier <PATH> --golang-root <GOLANG_DIR>` where `<GOLANG_DIR>` is `/home/vgpnk/.local/opt/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/data/typeinfo/golang`; 0 emitted, 2 unparseable | same command with `--selftest` | Pinned values: none external; predictions it emitted for round 18 are frozen under `.ufo/waves/round-18/predictions/` (`swiss-misread/<label>.json` hold the `predicted_*_h1/h0` keys). Write scope: none, reads the carrier and installed snapshot JSON, JSON on stdout, never executes the carrier. amd64 only; the `walk` channel has false positives (unmasked variadic bit, notesmd-cli, kimi-webbridge) and its gap scan misses `*struct {…}` names (w2 `EmulatorIndependence.md`, `Runs1246noswissnethttp.md`); predictions rest on the per-map channel |
+
+=== 3. byte identity (sha256 of the line incl. trailing newline) + trim equality ===
+pin:585 head:748  pin_sha=4a011a192b38c0e3a04e433384e19a7fbbea30fb86fb8c01ec978ff4a7095536  head_sha=4a011a192b38c0e3a04e433384e19a7fbbea30fb86fb8c01ec978ff4a7095536  bytes=398/398  trim-equal=yes  raw-equal=yes
+pin:621 head:784  pin_sha=c936a4cf28e373f473df4d2b2dcf7dab80fd858f2d9ea9e1d8624c2e6456278c  head_sha=c936a4cf28e373f473df4d2b2dcf7dab80fd858f2d9ea9e1d8624c2e6456278c  bytes=350/350  trim-equal=yes  raw-equal=yes
+pin:652 head:815  pin_sha=d8b8cdd83a63733fa41f6f7c70cbe9ee96b87988302626616c97efad60e84b2a  head_sha=d8b8cdd83a63733fa41f6f7c70cbe9ee96b87988302626616c97efad60e84b2a  bytes=906/906  trim-equal=yes  raw-equal=yes
+
+=== 4. is the relocated line the ONLY verbatim occurrence at head? (grep -nxF, whole line) ===
+pin line 585 -> head occurrences: 748 
+pin line 585 -> occurrences in the PIN file itself: 585 
+pin line 621 -> head occurrences: 784 
+pin line 621 -> occurrences in the PIN file itself: 621 
+pin line 652 -> head occurrences: 815 
+pin line 652 -> occurrences in the PIN file itself: 652 
+
+=== 5. screen-ledger row 62-64 quoted text located at head (grep -nF) ===
+-- drift/browser rows 62-64 (browser ledger) --
+kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:585	Lower patch data used; the next `GoRttiMapper` line still says `X`
+kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:621	Run `swiss-misread.py` on the carrier; an exact H1 match attributes the abort to the `OldMapType` binding
+kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:652	reads the carrier and installed snapshot JSON, JSON on stdout, never executes the carrier
+quote -> head lines: 748 | quote=[Lower patch data used; the next `GoRttiMapper` line still says `X`]
+quote -> head lines: 784 | quote=[Run `swiss-misread.py` on the carrier; an exact H1 match attributes the abort to the `OldMapType` binding]
+quote -> head lines: 815 | quote=[reads the carrier and installed snapshot JSON, JSON on stdout, never executes the carrier]
+
+=== 6. kimi-webbridge still present on each relocated head line (count) ===
+head:748 count=1
+head:784 count=1
+head:815 count=1
+
+=== 7. diff geometry pin..head (why the lines shifted) ===
+ SKILL.md | 171 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 167 insertions(+), 4 deletions(-)
+hunk old-side headers: 328,10 357,6 374,6 
+added lines: 167 (blank lines included, '+++' header excluded)  deleted lines: 4 ('---' header excluded)
+deleted lines (all four, unrelated sqfs-triage text) at old ~328:
+-  (interpreter `tools/round-39/sqfs-triage.py`). Superseded for routing by rule
+-  block 19 (table v2, round 40); this v1 table stays as the round-39 record and
+-  mislabels mixed-link images, partial failures, empty trees and non-firmware
+-  envelopes (`corpus/knowledge/2026-10-26-r40-sqfs-triage-v2.md:27-36`).
+hunks overlapping [585,652]: 0 (0 = the three rows sit in untouched regions)
+shift arithmetic: 748-585=163 784-621=163 815-652=163 = net insertions ((167-4))
+diff lines whose text is one of the three relocated lines: 0 (0 = no add/delete of that text)
+
+=== 8. independent re-derivation of ALL 307 ledger rows from git objects ===
+data rows=307 checked=307 missing_at_head=0 status_mismatches=0
+moved rows in ledger: 3
+=== end ===

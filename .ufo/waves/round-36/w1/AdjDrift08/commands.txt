@@ -1,0 +1,57 @@
+# AdjDrift08 — exact commands (read-only git; derivation over git objects only)
+# lane repo: /home/vgpnk/Projects/shokunin/kake-shokunin
+# pin P     : 044048597d62f3199494b63b36e90dd57825e350  (from every chunk row's sibling_ref)
+# delta head H: 437f53b1f6cd22dbf307f1187f41d1c0850a1ac2 (kake entry of
+#              tabi-shokunin/.ufo/waves/round-36/baseline/c1-delta-pins.json)
+
+T=/home/vgpnk/Projects/shokunin/tabi-shokunin
+D=/home/vgpnk/Projects/shokunin/kake-shokunin
+P=044048597d62f3199494b63b36e90dd57825e350
+H=437f53b1f6cd22dbf307f1187f41d1c0850a1ac2
+
+# 0. pins resolve; pin is ancestor of head
+git -C "$D" cat-file -t "$P"                       # -> commit
+git -C "$D" cat-file -t "$H"                       # -> commit
+git -C "$D" merge-base --is-ancestor "$P" "$H" && echo "pin is ancestor of head"
+git -C "$D" log --oneline -1 "$H"
+
+# 1. per-row derivation (script kept verbatim as derive.sh in this seat dir)
+#    cited text  : git show P:path | awk -v n=<line> 'NR==n'   (then trim leading/trailing space)
+#    head line   : git show H:path | awk -v n=<line> 'NR==n'   (then trim)
+#    equal       -> unchanged
+#    else search : git show H:path | awk '{l=$0; sub(/^[ \t]+/,"",l); sub(/[ \t]+$/,"",l); if (l==cited) print NR}'
+#                  any hit -> moved :N ; no hit -> stale
+#    absent pin file -> "stale: pin line absent" ; absent head file -> "stale: head file absent"
+bash /fast/scratch/hyaku/tabi-r36/AdjDrift08/derive.sh /fast/scratch/hyaku/tabi-r36/AdjDrift08/receipt.body.tsv
+
+# 2. independent raw (untrimmed) equality cross-check, one row at a time
+while IFS=$'\t' read -r ref st note; do
+  path=${ref#*shokunin@*:}; path=${path%:*}; line=${ref##*:}
+  a=$(git -C "$D" show "$P:$path" | awk -v n=$line 'NR==n')
+  b=$(git -C "$D" show "$H:$path" | awk -v n=$line 'NR==n')
+  [ "$a" = "$b" ] && echo "identical-raw $path:$line" || echo "RAWDIFF $path:$line"
+done < "$T/.ufo/waves/round-36/w1-chunks/AdjDrift08.tsv"
+# -> 20 x identical-raw, 0 RAWDIFF  (evidence/rows-cited.txt holds cited vs head text per row)
+
+# 3. line-count / hunk-position corroboration (evidence/pin-to-head-hunks.txt)
+for f in SKILL.md corpus/knowledge/drift-detection.md corpus/knowledge/field-performance-cwv.md \
+         corpus/knowledge/fleet-registry.md corpus/knowledge/free-read-verbs.md; do
+  git -C "$D" diff --numstat "$P" "$H" -- "$f"
+  git -C "$D" diff -U0 "$P" "$H" -- "$f" | grep '^@@' || echo "(no hunks)"
+done
+# SKILL.md 88+/10-, hunks only at 213, 1215-1216, 1233-1234, 1254, 1273-1276, +1281-1358;
+# the other four cited files: 0+/0- (no hunks).
+
+# 4. ledger comparison (status read from the committed ledger, found by sibling_ref)
+L="$T/corpus/adjacency-screen-drift.tsv"
+while IFS=$'\t' read -r ref my st; do
+  lrow=$(awk -F'\t' -v r="$ref" '$1==r{print $2}' "$L" | paste -sd, -)
+  [ "$lrow" = "$my" ] && a=agree || a=MISMATCH
+  printf '%s\t%s\t%s\t%s\t%s\n' "$ref" "$my" "$st" "$lrow" "$a"
+done < /fast/scratch/hyaku/tabi-r36/AdjDrift08/receipt.body.tsv
+# ledger identities / duplicates / coverage
+git -C "$T" show 2e7b7a8920bff47fae6f75c3d06e48e37767099e:corpus/adjacency-screen-drift.tsv | sha256sum
+sha256sum "$L"                                      # equal bytes (bde87e24...1debf2)
+git -C "$T" diff --quiet 2e7b7a8920bff47fae6f75c3d06e48e37767099e -- corpus/adjacency-screen-drift.tsv
+cut -f1 "$L" | sort | uniq -d                      # -> none (no duplicate sibling_ref)
+LC_ALL=C comm -23 <(cut -f1 chunk.tsv | sort -u) <(cut -f1 "$L" | sort -u)   # -> none (every chunk ref present)

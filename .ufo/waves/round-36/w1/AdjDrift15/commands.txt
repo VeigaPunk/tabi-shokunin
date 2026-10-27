@@ -1,0 +1,67 @@
+# AdjDrift15 — exact commands (read-only git; every invocation names -C <repo>)
+# seat files: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/w1/AdjDrift15
+# scratch:    /fast/scratch/hyaku/tabi-r36/AdjDrift15  (created by this seat; rm -rf'd on exit)
+# lane HEAD at run time: 2e7b7a8920bff47fae6f75c3d06e48e37767099e (the freeze commit)
+
+## 0. frozen inputs read (sha256)
+sha256sum .ufo/waves/round-36/baseline/c1-delta-pins.json      # 810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655 == claims.frozenDigests
+sha256sum .ufo/waves/round-36/claims.json                      # 3c6fe2705d1062f6f6dfc9cdc521de2c64f02b1d493ac3026f3e8b6e60c09245
+sha256sum .ufo/waves/round-36/w1-chunks/AdjDrift15.tsv         # 71b71ec5ff8356a76371b58d2e47ceb60574537098801af67d6ddf51496815f1
+sha256sum corpus/adjacency-screen-drift.tsv                    # bde87e24da7daace476270e5f7c052df591094613ee27f231a879e7e9b1debf2 (== HEAD copy)
+sha256sum corpus/adjacency-screen-browser.tsv                  # f4fc43f0588dd0272dac5484f7c54f7056fefb0b2084d7e7454010f46d8cb3b8
+git -C . rev-parse HEAD                                        # 2e7b7a8...
+git -C . cat-file -e HEAD:corpus/adjacency-screen-drift.tsv    # committed
+diff <(git -C . show HEAD:corpus/adjacency-screen-drift.tsv) corpus/adjacency-screen-drift.tsv   # identical
+
+## 1. primary derivation (writes receipt.tsv, derivation.json, git-invocations.txt)
+GIT_NO_REPLACE_OBJECTS=1 TMPDIR=/fast/scratch/hyaku/tabi-r36/AdjDrift15/tmp \
+  python3 <seat>/derive.py
+# rule implemented, identical to .ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs:399-414:
+#   pin file absent        -> stale (pin file absent)
+#   pin line absent        -> stale: pin line absent
+#   head file absent       -> stale: head file absent
+#   head[n-1].trim()==cited-> unchanged
+#   else all head lines whose trim == cited -> moved :N1,N2   (first is named)
+#   else                   -> stale
+# statuses compared to corpus/adjacency-screen-drift.tsv by sibling_ref -> agree|MISMATCH
+
+## 2. per-row git invocations issued by the driver, in order
+git -C /home/vgpnk/Projects/shokunin/mado-shokunin show e0be61e4f6e34896f8b1c329f9c6d129e5af81f7:corpus/knowledge/theme-wallpaper-plane.md
+git -C /home/vgpnk/Projects/shokunin/mado-shokunin show b4a79843cc2545bbe800db9322e58f6e00436629:corpus/knowledge/theme-wallpaper-plane.md
+git -C /home/vgpnk/Projects/shokunin/mori-shokunin show aa3af1ec3118ee7766dfce1d9709ce3c0c3f6bfd:corpus/knowledge/observability-census-r1.md
+git -C /home/vgpnk/Projects/shokunin/mori-shokunin show 5b295eeebd87ebd610d8d39bfe2035742f740cfa:corpus/knowledge/observability-census-r1.md
+git -C /home/vgpnk/Projects/shokunin/tameshi-shokunin show f181a961ae44061af486f600e5ea257d2baf78f8:corpus/knowledge/gates-survey-kagi.md
+git -C /home/vgpnk/Projects/shokunin/tameshi-shokunin show 6db1d220b337c35ff1e25bf9cfd74abc9db1498d:corpus/knowledge/gates-survey-kagi.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin show a968393c678171f8a5a2907da5015735396da4cc:SKILL.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin show 3629c46a0e787121f1e1d4ccb53bc830e4a7633f:SKILL.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin show a968393c678171f8a5a2907da5015735396da4cc:corpus/knowledge/kill-event-deep-r8.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin show 3629c46a0e787121f1e1d4ccb53bc830e4a7633f:corpus/knowledge/kill-event-deep-r8.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin show a968393c678171f8a5a2907da5015735396da4cc:corpus/knowledge/oom-event-plane.md
+git -C /home/vgpnk/Projects/shokunin/tsukuroi-shokunin show 3629c46a0e787121f1e1d4ccb53bc830e4a7633f:corpus/knowledge/oom-event-plane.md
+
+## 3. non-vacuity / advisory pass -> advisory.json (inline python3 -, same git show calls)
+#   per row: cited length, sha256(cited)[:12], raw pin-line bytes == raw head-line bytes,
+#            every head line whose trim == cited (duplicate ambiguity), lane pin != frozen head
+## 4. independent second route -> crosscheck.json (inline python3 -, git plumbing not git show)
+#   git -C <repo> cat-file blob <rev>:<path>            (pin and head; trimmed compare again)
+#   git -C <repo> merge-base --is-ancestor <pin> <H>    -> true for mado/mori/tameshi/tsukuroi
+#   git -C <repo> cat-file -e <pin> ; git -C <repo> cat-file -e <H>   -> true
+#   git -C <repo> rev-list --count <pin>..<H>           -> mado 39, mori 46, tameshi 41, tsukuroi 55
+## 5. replace-ref / graft hardening
+git -C <lane>-shokunin replace -l          # empty for mado, mori, tameshi, tsukuroi, tabi
+test -f <lane>-shokunin/.git/info/grafts   # absent for all four lanes
+GIT_NO_REPLACE_OBJECTS=1 ... python3 <seat>/derive.py   # receipt byte-identical to the plain run
+
+## 6. pool membership (each chunk ref must also be a row of the closed screen pool)
+#   cwd = /home/vgpnk/Projects/shokunin/tabi-shokunin
+cut -f1 corpus/adjacency-screen-browser.tsv | LC_ALL=C sort -u > pool_refs.txt
+cut -f1 .ufo/waves/round-36/w1-chunks/AdjDrift15.tsv | LC_ALL=C sort -u > my_refs.txt
+LC_ALL=C comm -12 my_refs.txt pool_refs.txt | wc -l    # 20
+LC_ALL=C comm -23 my_refs.txt pool_refs.txt | wc -l    # 0
+awk -F'\t' 'NR>1{print $1}' corpus/adjacency-screen-drift.tsv | LC_ALL=C sort | uniq -d   # empty (307 rows, no dup ref)
+# per row: grep -x -F '<sibling_ref>' corpus/adjacency-screen-drift.tsv
+
+## 7. self-test (proves the driver reaches moved / stale / absent classes and flags a wrong row)
+S=$(mktemp -d -p "$TMPDIR") bash <seat>/selftest/build-fixture.sh
+#   7 synthetic rows -> 5 status classes; deliberately wrong ledger row doc.md:5 reported MISMATCH
+#   expected, hash-independent matrix: selftest/expected-statuses.tsv

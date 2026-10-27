@@ -1,0 +1,552 @@
+# ConnDeltaScan — Independent Delta Pool Scan (Round 36, Wave w1)
+
+Seat: `ConnDeltaScan`
+Milestone: C1 (Adjacency)
+Named Browser-Ground Regex: `BG_CONN_SCAN_V1` = `\b(?:webdriver|geckodriver|playwright|puppeteer|chromium|chromedriver|selenium|cdp|devtools(?:-protocol)?|chrome-devtools|chrome devtools|remote-debugging|musketeer|webbridge|burner[- ]?chrome|browser automation|headless[ -](?:chrome|chromium|browser|firefox))\b` (flags: `i`)
+Construction: `git -C <lane>-shokunin log --oneline <pin>..<head>` and `git -C <lane>-shokunin diff --unified=0 <pin> <head> -- SKILL.md corpus/knowledge`
+
+## Summary Table
+
+| Lane | Round-35 Pin | Round-36 Delta Head | Commits | Added Lines (SKILL/knowledge) | BG Hits |
+|---|---|---|---|---|---|
+| `chousa` | `00f8c7f527` | `f9736a39a0` | 52 | 396 | 0 |
+| `kaidoku` | `49096c7e6f` | `1ed29de2cd` | 23 | 587 | 0 |
+| `kake` | `044048597d` | `437f53b1f6` | 32 | 823 | 0 |
+| `kama` | `e8fa87ef19` | `3a600d2f72` | 67 | 183 | 0 |
+| `kasegi` | `752e476d8c` | `96dbd5f427` | 17 | 1294 | 0 |
+| `kengaku` | `ff14d76d32` | `0f77f9b279` | 55 | 1768 | 0 |
+| `kumitate` | `8d557f8531` | `d23892ad44` | 12 | 0 | 0 |
+| `mado` | `e0be61e4f6` | `b4a79843cc` | 39 | 783 | 0 |
+| `mori` | `aa3af1ec31` | `5b295eeebd` | 46 | 907 | 0 |
+| `revenger` | `6da884c670` | `b7abcd875c` | 2 | 29 | 0 |
+| `tameshi` | `f181a961ae` | `6db1d220b3` | 41 | 523 | 0 |
+| `tsukuroi` | `a968393c67` | `3629c46a0e` | 55 | 1347 | 0 |
+| **Total (12 lanes)** | — | — | **441** | **8640** | **0** |
+
+## Per-Lane Drift Details and Commit Subjects
+
+### `chousa` (52 commits, 396 added lines, 0 BG hits)
+- Round-35 pin: `00f8c7f5272a1d98b6d34913985fa4537e00aaf9`
+- Round-36 delta head: `f9736a39a0344a0aed63a65dfaddf7db624303d9`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 396
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `f9736a3 round-57: L1 re-fetch pass 1 — 47 pinned captures attempted, 43 stored lane-owned (38 REPRODUCED / 5 DRIFTED / 4 pending retry); tools/capture-fetch.py (recipe-frozen, 3-attempt cap); refetch.tsv; misroot sweep of the tool's first run recorded in the round lesson`
+  - `b022b13 hyaku run9 wrap-up: remaining round-57 captures`
+  - `fd95724 round-57: freeze R57-C3 (normative-reference chain counter, before receipt, controls)`
+  - `c2f914c round-57: freeze R57-C2 (freshness re-fetch counter, before receipt, controls, egress table, census start)`
+  - `6656f07 round-56 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `b804147 round-56: census end (exit 0, five pre-existing W04; rows 126 -> 130); misroot sweep clean`
+  - `9d402b0 round-56: W1 settled — w1-results.json (69 seats), all seat reports, ready/dispatched markers; lesson Mistakes row 4 and the capture-cache deletion incident; QUALITY 110; round-55 r43 Gate narrowing; SCORECARD post-wave notes`
+  - `751edb3 round-56: round-55 lesson correction line for the later carried W2 reports (builder-mutant, wave-settled, pdf-crosscheck, ledger-check and r40 shape findings; routed to round 57)`
+  - `e129c9e round-56: C2 re-measured after the 表7 fix (lane master 98977070, C2=PASS); SCORECARD round-56 verdict, capability row and round-57 plan; LOG Round 56; README Round56 coverage and frontier`
+  - `9897707 round-56: W1 integration — 表7 attribution fix (entry, S129 row, quotes/spans), lesson Mistakes rows 1-3, QUALITY 106-109, SKILL rows (build-spans re-registered as a gate; round-56 counters), r40 corrections and round-55 lesson corrections from the carried W2 items`
+  - `2ceb404 round-56: C1 and C2 after-measurements at lane master 99eff0ec (C1 KILLED=9/9 DENIED=2/2 CANDIDATE=2/2 x2; C2=PASS)`
+  - `99eff0e round-56: C2 integration — entry grey-literature-field-china-r42 by document (rows S127-S130, S118 used-by), quotes/spans via tools/build-spans.py (23 bound + 1 held), lesson Gate draft; round-55 lesson corrections for closure D3 and D4`
+  - `0c2f4ce round-56: W1 spec/dispatch (69 seats, one v2 wave validated under policy v2: 33 round-56 items + the 36 never-dispatched round-55 W2 items)`
+  - `46e1758 round-56: C1 candidate — the build-spans gate battery (seven violator builders, one unpinned-oracle copy), one per round-55 counter clause no control exercised`
+  - `41c5892 round-56: freeze — claims C1 (build-spans gate: clause coverage of the nine R55MutC1Counter mutants + two hook bypass probes) and C2 (grey-literature row of the drug clinical comprehensive evaluation workflow standard, by document); counters, gate, probes, before/control receipts, census start, section-10 collision scratch`
+  - `e5a3795 round-55: late w1-results.json (48 seats; written by the orchestrator dispatcher after the round-55 report and salvage f2b15b48), committed under round 55 by the round-56 L1`
+  - `f2b15b4 round-55: hyaku run-9 orchestrator salvage of w1 seat output written after the round's report landed (closure rounds[799]); one seat was still running at salvage`
+  - `98484fb round-55 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `53f1ce6 round-55: SCORECARD verdict + capability row, LOG entry, lesson Mistakes row 4 (filed before W1 settled, budget wrap), census end, C2/C3 after-measurements, wave-settled receipt, 35 W1 reports, W2 spec prepared and not dispatched`
+  - `29cfb12 round-55: r37 corrections (three round-54 W2 entailment findings), recurring-weakness table (RW-1 streak 7, routed to the round-55 counter)`
+  - `5a35ebd round-55: W1 integration — C2 entry grey-literature-and-chinese-search-record-r40 by document (rows S124-S126, quotes/spans via tools/build-spans.py, lesson Gate and quarantine), C3 errata E01-E11 in SCORECARD with r36 corrections and QUALITY 101, QUALITY 102-105, ledger/pdf check successors, wave-settled check, C1 after-measurement and seed sweep, SKILL/README rows`
+  - `d501874 round-55: W1 spec/dispatch (48 seats; validated under policy v1)`
+  - `6ca9249 round-55: C1 candidate — tools/build-spans.py reads every capture through its defined text form (OLE/zip raw via tools/capture-text.py; no UTF-16LE fallback)`
+  - `1fc5d92 round-55: freeze — claims C1 (OLE-aware span builder), C2 (NMPA grey-literature field by document), C3 (W2-falsified statements, anchored errata); counters, before/control receipts, census start, section-10 assimilation scratch`
+  - `dba605d round-53: hyaku run-9 orchestrator salvage - mark the never-taken w2 wave abandoned so no dispatcher spawns it`
+  - `78ebc25 round-54: hyaku run-9 orchestrator salvage of w2 seat output written after the round's report landed (w2 killed in the orchestrator session exit 2026-10-26 23:57:36 -03), plus the w2 results record; closure rounds[795] routed its integration to round 55`
+  - `714cf55 round-54 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `25abbe8 round-54: SCORECARD verdict + capability row, LOG entry, census end, W2 markers and early W2 reports`
+  - `178667d round-54: W1 reports and results (44 reports; 3 seats cancelled, 2 dead), W1 markers; W2 spec/dispatch (38 seats)`
+  - `447cf7e round-54: capture-text drops OLE tracked-deletion runs (E2), fixture + check, SKILL rows, erratum, re-measure`
+  - `6af11e9 round-54: W1 integration — GB/T 7714 entries r36/r37, rows S121-S123, spans, lesson, QUALITY 97-100, SKILL/README rows, S100/S101 anchored corrections, capture-text Prc bound (E2), C1 supplement + forge control (E1), considerthese ledger, pdf crosscheck, after-measurement`
+  - `9caf8fc round-54: W1 spec/dispatch (49 seats) and section-10 assimilation scratch (ids, collisions, quarantine slice)`
+  - `8a7d0f1 round-54: C1 candidate — capture-text OLE Word 97+ .doc text form (CFB reader, piece table, field results, ole-* refusals)`
+  - `5a1a206 round-54: freeze R54-C1 (OLE .doc text form) and R54-C2 (GB/T 7714 theme) with counters, controls, before receipts, census start; inherit round-53 W2 registry`
+  - `c49ffc6 round-53 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `d21eb28 round-53: final lane verdict, LOG, erratum, census end and frozen-vs-postfreeze disclosures`
+  - `934975e round-53: W2 falsification spec and dispatch (43 seats)`
+  - `f434316 round-53: W1 integration — three search-record instrument entries, S117–S120, spans and lesson; CJK polarity window; anchored corrections; C1 supplement; QUALITY 91–96; SKILL Gates; README; erratum`
+  - `6365f15 round-53: wave-1 spec and dispatch (49 seats)`
+  - `32aab5e round-53: C1 candidate — adopter v4 twin label, recheck pre-pass, registry-first refusal; self-test cases (r52 W1 R52ExecAdopterTwin patch)`
+  - `a6ff732 round-53: freeze claims C1 (adopter twin/order) and C2 (search-record instruments) with counters, controls and before receipts`
+  - `5b55013 round-52 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `f80a9a2 round-52: wave-2 reports and results`
+  - `1a170f5 round-52: after-measurement receipt (tool-rev pinned)`
+  - `643ac77 round-52: post-W2 integration — entries narrowed, tool refuses corrupt streams and size lies, lesson/README/search log/erratum, SCORECARD verdict, LOG`
+  - `d1d972c round-52: wave-2 spec and validated dispatch (38 seats)`
+  - `e769c03 round-52: W1 reports and results; capture-text refusals after W1 review (encrypted member, percent-decoded target, empty --locate); erratum E2(e)`
+  - `01c17ce round-52: integrate W1 — capture-text hardening, C1 supplement, C2 adoption (entries, S113-S116, spans), lesson, QUALITY 87-90, README, SKILL Gates, verdict-gap, erratum`
+  - `13bc280 round-52: wave-1 spec and validated dispatch (45 seats)`
+  - `804a453 round-52: C1 candidate tools/capture-text.py (OOXML docx text form, --locate, refusals)`
+  - `37468ea round-52: frozen claims C1 (capture-text docx form) and C2 (search-record theme by document), counters, controls, before receipts, census start`
+  - `9b99ede considerthese: 2026-10-26 daily review (rounds 48-51)`
+
+### `kaidoku` (23 commits, 587 added lines, 0 BG hits)
+- Round-35 pin: `49096c7e6f226af0c750c4b003be58883cb6049f`
+- Round-36 delta head: `1ed29de2cdd6061315fb2f5478d5029b7d570675`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 587
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `1ed29de2 round-43: amend draft C2 landing path to the prepared round-42 destination`
+  - `d22686e1 round-43: draft claims, wave-1 spec/dispatch, start census`
+  - `6b9e64fe round-42 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `af50af81 round-42: lesson pointer to the round-41 wave report made lane-absolute (prefile gate d)`
+  - `46486e7a round-42: lesson, QUALITY 85, SCORECARD Round 42 + capability row, LOG, SHONEN, block-21 citation (command A), end census`
+  - `d4b4b4fb round-42: scores at eb8215ac — C1 4/4 met exit 0; C2 78/78 matched but observed_features_match_declared false (combo C02 declared gap set lacks depth-limited), exit 1 — honest stop`
+  - `eb8215ac round-42: C1 landing — PROVINCE Round-42 Core row + frontier note, entry 2026-10-26-r42-squashfs-v3-core, README rows, SOURCES S131-S134`
+  - `d5e22b51 round-42: data — C1 after-receipts/extract-env/unblob logs on the four carriers (REA 6.5.0, --max-depth 1); C2 held-out set seeded by the freeze d1681696`
+  - `b024051c round-42: controls scored at the freeze d1681696 (CTL-C1-0 0/4, CTL-C1-1 r41 receipts relabelled 0/4, C2 counter at freeze exit 2 no_manifest)`
+  - `d1681696 round-42: FREEZE — final claims (C1 SquashFS v3 Frontier->Core on four published carriers; C2 triage table v4 A1), all round-42 tools, carrier specs/fetch receipts/oracles, C2 fixtures and dev arm, controls, SKILL rule block 21 + entry, S130, dry runs, wave-1 evidence`
+  - `fdabdfa4 round-42: draft claims (not frozen), start census, wave-1 spec/generator/dispatch`
+  - `ae5dc3f3 round-41: wave-2 settled — remaining reports, results ledger, lesson wave-2 section`
+  - `c4a38ea2 round-41 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `74064474 round-41: lesson, QUALITY 84, SCORECARD Round 41 + owned/capability rows, LOG, SHONEN, entry citation fix (w2 F1), end census, mistake checks, wave-2 reports landed so far`
+  - `e1c83313 round-41: assimilation — admit binwalk v3 upstream identity (staged firmware-region-vocabulary, S109 -> S129 by document), README rows`
+  - `7a24ff74 round-41: wave-1 evidence — large DevCore/Interp artifacts named as files; R41C1Counter post-freeze rewrites kept aside, freeze bytes restored`
+  - `bf5286c9 round-41: scores at e9a24d07 — R41-C1 4/4 exit 0 (+extra met); R41-C2 52/52 pairs but observed_features_match_declared false (combo declared-tuple key mismatch), exit 1`
+  - `e9a24d07 round-41: R41-C1 V4 receipt after.json (2.8 MB; skipped by the directory commit's 1 MiB rule at 5ca6941b, named as a file here)`
+  - `042b8769 round-41: R41-C1 landing documents — PROVINCE Round-41 Core row and frontier note, entry r41-avm-be-squashfs-core, README rows, S127-S128`
+  - `8a1f4c73 round-41: R41-C2 held-out data (seed = freeze d764389e, 52 carriers, 52/52 declared tuples)`
+  - `5ca6941b round-41: R41-C1 REA receipts V3, V4, L3, L4 (V4 run.json not written: c1-run.sh jq ARG_MAX on a 615-link summary, log kept)`
+  - `9a8fb260 round-41: pre-data controls (C1 do-nothing 0/4, C1 relabelled round-40 receipts 0/4, C2 counter exit 2 at freeze, selftests) and wave-1 results`
+  - `d764389e round-41: freeze — claims R41-C1 (AVM-BE Core on V3/V4/L3/L4, exact-path counter) and R41-C2 (triage table v3 vs independent evaluator), tools, carriers, controls, wave-1 evidence`
+
+### `kake` (32 commits, 823 added lines, 0 BG hits)
+- Round-35 pin: `044048597d62f3199494b63b36e90dd57825e350`
+- Round-36 delta head: `437f53b1f6cd22dbf307f1187f41d1c0850a1ac2`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 823
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `437f53b round-60 attempt-2: T1 re-measurement at 9f671056 (C1 met 28/0/3, C2 24/24, C3 9/9), selftest receipts v3 (84/84, 54/54, 140/140), real-lane guard files=53 findings=0, census-after exit 0 (167 rows, W04 15), SCORECARD and LOG T1 entries`
+  - `9f67105 round-60 attempt-2: wave-2 integration — C1 counter v3 (fence closer, never-met overlap, timed_out class, exception exit 2, selftest 84/84 with M02/M09/M25 isolations), guard selftest 54 (foreign-round tag, ? scope, bad base), SKILL c53 map + crawler-identity C5/C7 disclosure, robots-txt-limits six location fixes, contract v3, QUALITY w2 criteria, lesson attempt-2 section, w2-results.json, pycache removed`
+  - `592c2ae hyaku run9 wrap-up: round-60 w2 wave state for inheritance`
+  - `7c0d9b0 round-60: T0 measurements at 8001f8d5 (C1 mismatches 14->0 met, C2 0/24->24/24, C3 0/9->9/9), census-after (167 rows, exit 0), SCORECARD round-60 section and capability row, LOG and lesson wave-2 sections`
+  - `8001f8d round-60: build fixes from wave 2 — append_guard NUL ls-tree, paragraph-level code spans, zero-coverage exit 2, validated root (selftest 51/51); correction and S428 entry overreach fixes`
+  - `983826b round-60: counters version 2 frozen after wave 2, before the after-state is measured (C1 inline-comment cells, C2 sub-fixtures; predicates unchanged), v2 base/selftest receipts, B1 tool under v2 22/24`
+  - `45f46fb round-60: w2 falsify-wave spec and validated dispatch (38 attack seats on build 8b33fd24, counters v1 1ea30590)`
+  - `8b33fd2 round-60: build — scripts/append_guard.py (new tool), rows S427-S429, entries google-user-triggered-fetchers.md (S428) and robots-txt-limits.md (S429, staged S415 re-grounded), append-only [r60-correction] in googlebot-verification.md, SKILL registry: 12 member rows, 3 relabels (c53 never met, receipt-pin pin 20217f23, c59 quote-truth historical), round-60 rows and gate-status ledger, lesson round-60, QUALITY round-60 criteria, README coverage`
+  - `81db050 round-60: C7 append-block census validation before the registry append (scratch mirror at 97cdc122 + S427-S429 + admitted files, exit 0), validate/mirror-pin scripts, R59-D2 red-before score-mutant receipt`
+  - `1ea3059 round-60: counters version 1 frozen before any after-state is scored (c60_gate_status, c60_guard_cases, c60_quote_truth + derive), contract amendments A1-A9/A3a and stated limits, base receipts (C1 mismatches=14, C2 0/24, C3 0/9) and selftest receipts (76/76, 6 controls, 140/140), wave-1 reports and results (44/44)`
+  - `b3b9e29 round-60: contract v1 (claims C1 calibration gate-status ledger, C2 operability append guard, C3 freshness S427-S429), census-before, assimilation lists and pre-append mirror, retained sources, w1 spec and validated dispatch (44 seats)`
+  - `97cdc12 round-59 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `31df3aa round-59: T0 measurements (C1 met, C2 21/21, C3 9/9 at b322cca), census-after, earlier-gates receipt, SCORECARD and LOG round-59 sections`
+  - `b322cca round-59: attempt-2 a2r1 residual results and fixes (S426/S425 entry fidelity, correction general-fact clause, superseded v2 numbers, legacy-origin cells, c55 readme-index historical marking, lesson mistakes, QUALITY gate-collision criterion, C7 re-validation), selftest re-run receipt`
+  - `1474b29 round-59: attempt-2 residual a2r1 dispatch (re-dispatch of abandoned r1, 8 reviewer/critic seats on build ab6e100e)`
+  - `7eff1fa round-59: hyaku run-9 orchestrator salvage of the unlanded attempt-1 r1 wave (2/8 seats spawned, marked abandoned) and its results record (L1 died in the orchestrator session exit 2026-10-26 23:57:36 -03, SIGHUP during an operator omp update; not a landed round)`
+  - `e1e4794 round-59: residual r1 dispatch (8 reviewer/critic seats on build ab6e100e)`
+  - `ab6e100 round-59: build — id_resolver K8-K14 + hardening, S425/S426 entries and rows, crawler-identity correction, axis-table evidence cells, lesson, QUALITY/SKILL/README, C7 validation, wave-1 results`
+  - `cdf089b round-59: counters version 2 frozen after wave 1 (before any claim measured), v2 base and selftest receipts, wave-1 reports`
+  - `cb68527 round-59: w1 spec and validated dispatch (66-seat v2 wave)`
+  - `45a92b6 round-59: frozen contract v1, counters, base controls, retained sources, mirror`
+  - `fd6303c round-58 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `9892ea4 round-58: hand-check quarantine slice and record frozen-claim conflict`
+  - `f72c285 round-58: record pending outside discernment check`
+  - `1b009b7 round-58: T1 C1 receipt, measured claims, scorecard and log, residual reviews`
+  - `de7d96e round-58: T0 measurements and C2/C3 receipts`
+  - `8d340c1 round-58: fidelity corrections, historical receipt-pin gate note, lesson erratum`
+  - `0ffbabf round-58: r1 residual attack dispatch, eight reviewers/critics`
+  - `c1e39ef round-58: build — resolver fence/NUL fix, receipt ledger (19 events), Baidu identification/unblocking entries S423/S424, lesson, QUALITY, SKILL historical marks, README, PROVINCE`
+  - `1c0aa21 round-58: w1 results (68 reports); counters v2 frozen before data, v2 base controls and selftests, contract amendment`
+  - `cc8da16 round-58: w1 spec/dispatch (one v2 wave, 68 seats), span helper`
+  - `fff3eea round-58: frozen contract, counters v1, base controls, retained sources, pre-append mirror`
+
+### `kama` (67 commits, 183 added lines, 0 BG hits)
+- Round-35 pin: `e8fa87ef19ec5eb28f5fd9701a0a42da45bd688d`
+- Round-36 delta head: `3a600d2f729828419aaea34cc402c8b0d20fb720`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 183
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `3a600d2f round-54 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `1406a91e round-54 honest stop: point head Planned section at the round-54 plan (r42 regression green)`
+  - `9a3104c7 round-54 honest stop (run wrap-up): hardened counters built, integration reds repaired; claims unfrozen, no waves dispatched`
+  - `0b75a84c round-53 w1: late K4Cheat artifacts after closure`
+  - `2f88b357 round-53 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `93333d98 round-53 w1: late seat outputs after report (M2Replay, M3Live reruns, M6Ledger)`
+  - `2a7b3ba2 round-53: capture late mutation and ledger attack receipts`
+  - `96615c35 round-53: capture late live-tool mutation outputs`
+  - `e81d90e6 round-53: integrate code identity, curation, falsification and report evidence`
+  - `bc8e6e7f round-53: wave kama-r53-w1 spec (66 seats, v2) and build receipts`
+  - `c22602bd round-53: build - per-mapping code identity (C1), cited-path corrections (C2), S506-S509, lesson`
+  - `d01b2b6d round-53: freeze - preregistration, C1/C2 counters, base controls, start census`
+  - `4229ea1b round-52 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `eb7b16cf round-52: wave w1 results record (70/70 settled, WAVE-DONE), late seat outputs, end census (exit 0), pointer receipt at ade21a45, misroot sweep clean`
+  - `ade21a45 round-52: measured results (35e3b1dc), measurement receipts, wave markers, w1 seat outputs in hand`
+  - `35e3b1dc round-52: integration — SCORECARD round-52 section, authority banner (round-51 banner appended), Planned (round 53), head re-anchors; LOG; lesson Gate/Errata/Mistakes; QUALITY KQ89-KQ93; README frontier; SOURCES S501-S505; replay MFD_EXEC, sealed-byte re-hash and five selftest cases; live sealed_fd selftest, F_SEAL_EXEC refusal, launch errno; check-receipt fd mode; kama-probe TMPDIR; SKILL registry rows; D3 pointer and freeze receipts`
+  - `34d82600 round-52: wave w1 spec (70 seats, v2 validated), build battery receipts at 5dacf2c7`
+  - `5dacf2c7 round-52: build — C1 replay server from a sealed memfd (live --server-fd, replay sealed_member, S500), C2 155 lost A-corr lines re-appended verbatim and their ledger rows removed, SKILL round-52 registry, head re-anchors, hexrun rows, lesson; D1 X7Regen.md restored to its committed bytes (late rewrite filed beside it)`
+  - `8551ba7f round-52: freeze — preregistration (C1 sealed-memfd replay server, C2 A-corr restoration with independent region logic), frozen counters, base controls, start census`
+  - `9ff76b1f round-51: hyaku run-9 orchestrator salvage of a2w1 seat output written after the round's report landed (closure rounds[802], defect D1), plus the wave results record`
+  - `9c603f39 round-51 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `b1d7b7ae round-51: end census (exit 0), misroot sweep`
+  - `1ab1de39 round-51: measured results (be8169a6), measurement receipts, wave a2w1 seat outputs (50/66 reports at filing)`
+  - `be8169a6 round-51: post-wave fixes — server_exe read errors recorded (V2Review LOW-1), digest-ledger in-scope selftest (M5Digest)`
+  - `c5ec93d5 round-51: integration — SCORECARD round-51 section and re-anchors, SKILL round-51 registry, LOG, lesson, QUALITY KQ85-KQ88, README frontier, ledger cutoff + replay member hold/nlink + --out hardening, selftest cases, hexrun ledger rows, ledger regenerated (round-49 banner restored)`
+  - `4eca4892 round-51: wave a2w1 spec (66 seats, v2 validated), build battery receipts`
+  - `138af25b round-51: build-fix 2 — digest-ledger leaves registry/append-only-disclosures.tsv out of scope (line keys, re-derived by append-only-audit v6), selftest case`
+  - `73bf2a7a round-51: build-fix — disclosure ledger regenerated at the build (the S499 build restored the blank separator 97c864be removed, so its row was an over-count)`
+  - `b6bed925 round-51: build — server_exe record and own-member replay check (C1), append-only-audit v6 + disclosure ledger (C2), S499, freeze receipts`
+  - `804bde75 round-51: freeze — C1/C2 counters, preregistration, base controls, start census, proc_pid_exe(5) capture`
+  - `57a2e25b round-50 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `5a1e29a1 round-50: assimilation pre-check evidence (id collisions, guard proof, quarantine verdicts)`
+  - `f0b5b27f round-50: R3Provenance model receipt file`
+  - `db6bfa8d round-50: measured results filled into scorecard section`
+  - `cc80bec2 round-50: measured results at final tip, end census, misroot sweep, r41/r42 re-checks`
+  - `8370e39c round-50: integration-fix - SKILL line count 1522 in depth row`
+  - `1c030f18 round-50: integration - SCORECARD round-50 section + authority, SKILL round-50 registry, LOG entry, lesson round-50, QUALITY KQ80-84, README frontier, wave evidence w1`
+  - `3b79eadd round-50: build regression battery receipts (measure.sh + *-build.out)`
+  - `3d42897b round-50: build-fix - S498 row markdown tick parity so sources-append-only row parser accepts it`
+  - `6f3bd322 round-50: wave spec kama-r50-w1 (66 seats), dispatch, validate exit 0, build receipts`
+  - `97c864be round-50: build - replay isolation + parent-death teardown, live model-mapping record, append-only-audit v5 (birth-DAG origin, fence-aware sections, CRLF-normalized keys), S496-S498`
+  - `601c8889 round-50: freeze - C1 replay-bind and C2 append-audit-v5 counters, preregistration, base controls, start census, source captures`
+  - `26ecba64 round-49 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `5b395257 round-49: two large seat receipts (V2Sample, X2Seven) named as files`
+  - `19c07aa9 round-49: wave results, seat yield, late seat reports and mutation findings`
+  - `7fab24e7 round-49: measured results at 24e906f0, end census, misroot sweep`
+  - `24e906f0 round-49: integration - wave findings folded (witness-dir hardening, TOCTOU, parent-death hold end, negation widening, selftest cases), SKILL registry, QUALITY KQ76-79, README frontier and lessons declaration, contract re-anchor, knowledge paragraph, lesson, LOG, SCORECARD round 49, hexrun ledger rows, wave reports`
+  - `122c4ee9 round-49: wave spec kama-r49-w1 (71 seats, policy v2) and freeze-time check`
+  - `74558c71 round-49: build - replay execution witness (--witness-dir), bounded archive-member verification, append-only-audit v4 definitions, SOURCES S494-S495`
+  - `36d5ed26 round-49: freeze - C1 replay-witness and C2 append-audit-v4 counters, preregistration, controls, start census, C1 source captures`
+  - `438127bc round-48 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `4d8334af round-48: wave results (69/69 settled), seat yield, late Sen2Live report`
+  - `f5c60787 round-48: final-tip receipts at 1541a0dd (both claims met, regressions green), end census, misroot sweep, late seat reports`
+  - `1541a0dd round-48: measured results, head Planned pointer to round 49, measured receipts`
+  - `c4b2175d round-48: integration (measured) - SCORECARD r48 section, banners r42-r44 and r47, head re-anchors, capability rows; lesson, KQ72-KQ75, README frontier, LOG, SKILL r48 registry, knowledge paragraph, PROVINCE cell; contract rows (K1Binding, K1Contract); replay hardening (V2Replay, K2Selftest), v5 readers, sources guard repair, shortcut tally, hexrun row, preamble selftest; wave reports`
+  - `b85783e8 round-48: wave spec kama-r48-w1 (69 seats, policy v2) and dispatch`
+  - `380bcdff round-48: build - append-only-audit v3 + v3 contract with bound regions (C1), superseded r45/r46 SCORECARD banners appended (v3 regressed finding); live tool v5 record-time provenance, replay v5 + stable projection + --compare, three v5 b11909 receipts, S492-S493 (C2); freeze-time receipt`
+  - `12284ba3 round-48: freeze - counters (C1 append-only-audit v3, C2 live replay v5), preregistration, controls, start census, pinned HF revision record`
+  - `33e00582 round-47 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `6b7e6cf8 round-47: late seat report revisions (S9Cap, S9Scorecard)`
+  - `76a7aaff round-47: measured results, wave results, end census, misroot sweep, fix-commit receipts`
+  - `3442d707 round-47: post-measure fixes - replay checks the archive member digest before executing (Sen2Replay); hexrun ledger b0fd7b7f repo text and ec82db00 row; SKILL re-pin; measured receipts`
+  - `383f1fc7 round-47: integration (measured) - SOURCES S488-S491, lesson, KQ69-KQ71, SKILL round-47 registry, capability live-receipt-replay, head re-anchors, PROVINCE cell, hexrun/digest ledger rows, v4 validators, post-wave tool hardening, wave reports`
+  - `46a924e0 round-47: wave spec kama-r47-w1 (65 seats, policy v2) and dispatch`
+  - `3a09a1d9 round-47: build - append-only-audit v2 + contract (C1); live v4 provenance, kama-live-replay, three b11909 receipts (C2); freeze-time receipt`
+  - `bbcc6dc2 round-47: freeze - counters, preregistration, controls, start census, b11909 release record`
+  - `172b8ad0 round-46 verifier spot-check (integrator, hyaku): non-author admit/reject`
+
+### `kasegi` (17 commits, 1294 added lines, 0 BG hits)
+- Round-35 pin: `752e476d8c5d0f74ef80ea89b6916e7af99a2721`
+- Round-36 delta head: `96dbd5f4276fcf8f93552fb97554485904cc0488`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 1294
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `96dbd5f round-41: freeze errata (40-char base hash; I11 = 8 committed CritKillRule states F1-F8) + mid-wave correction note`
+  - `b3b08b2 round-41: wave-1 build spec (60 seats) + dispatch`
+  - `fbba3d9 round-41: claims freeze (C1 r41-closure.sh I1-I12; C2 F24 RFC 9116) + do-nothing controls + census baseline`
+  - `5b29ea1 round-40 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `b01cbd5 round-40: closure blocks (SCORECARD/LOG/SHONEN)`
+  - `d0fe34d round-40: receipt Y (all-gates at J7)`
+  - `c7aea5e round-40: J7 - refresh declared-blocks for wave-2 artifacts`
+  - `8040db9 round-40: integrate falsify wave 2 (results, receipts, lesson section, S022/S024 teaches restore)`
+  - `3074c76 round-40: J5 — drop the self-referential declared-blocks entry`
+  - `94abbff round-40: J4 — drop empty-file declarations and fix self-entry in declared-blocks`
+  - `8717b8b round-40: J3 — regenerate declared-blocks excluding the receipt path and fixing the self-entry`
+  - `bfca9ae round-40: J2 — add the four R2 correction blocks (SCORECARD/LOG/SHONEN) and refresh declared-blocks line counts`
+  - `4766b9d round-40: integrate wave1 (C1 suite H1-H10, C2 nine-row decisions + F23/S060+, frontier records, lesson, corrections, controls)`
+  - `5e985b7 round-40: freeze claims C1/C2 + control receipts`
+  - `a7af2ce round-39 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `8371e7a round-39: record final-head closure results`
+  - `ee5ae5e round-39: label non-transcript measurements honestly`
+
+### `kengaku` (55 commits, 1768 added lines, 0 BG hits)
+- Round-35 pin: `ff14d76d32d662f7b7073a2acb049594cb740d84`
+- Round-36 delta head: `0f77f9b27931b3c76b3d095fc0fa70edb79556d9`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 1768
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `0f77f9b hyaku run9 wrap-up: round-47 spec state for inheritance`
+  - `ce6d90e round-47 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `f139f52 round-46 verifier spot-check axis table`
+  - `2c81f38 round-46 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `a68afb2 round-46: final-tip receipt (C1 pass, C2 pass, C3 fail V7/V8 at 264b7757)`
+  - `264b775 round-46: wave-2 evidence (32 seats, 4 recovered outputs) + verdicts (C1 not admitted by kill rule, C2 predicate met, C3 not admitted), appended corrections, census after`
+  - `42d5043 round-46: wave-1 results, ready markers, late report amendments`
+  - `85a40be round-46: integration bookkeeping — lesson round-46, QUALITY Q40, LOG D1 correction + round-46 entry, SCORECARD round-46, routed ledger rows, plans/log_appendonly.py, README lesson index`
+  - `f1871ac round-46: wave-1 evidence (35 reports, spec, dispatch) + landing receipts (C1 pass, C2 pass, C3 fail V7/V8) + no-harm`
+  - `e9d2014 round-46: C3 — polyglot-c-py package (entry, rows S166-S172, README index/coverage/frontier 12 of 89, PROVINCE, round-46 evidence index)`
+  - `420eec9 round-46: C1 — repaired plans/fixture_fence.py (wave-1 variant A: allowlist, lstat only, no git child)`
+  - `7768716 round-46: C1 stage-2 control receipts (21 controls, all PREDICATE C1 fail; base fence contradicted=22/32) — before the repaired fence is scored`
+  - `c1ec334 round-46: C2 — superseding rows S157-S165 (Q34) and the password-recovery entry repaired (universal-newline predictor, source ranges, Errata round 46)`
+  - `8d7f74c round-46: C3 first recorded probe run (polyglot-c-py, 18 cases, mismatches=0) + receipt digest in spec`
+  - `4fdeeba round-46: stage-2 freeze amendment (C1 P=65 R=20 S=12, C3 V=13; C2/C3 control receipts, control runner)`
+  - `cf7de6a round-46: stage-2 instruments for C1/C3 (counters pinned, refusals46 20, sealed46 12, polyglot captures/probe/dry/spec/filler) — before any work is scored`
+  - `fd4129e round-46: freeze C2 whole and C1/C3 stage 1 (claims, anchor-line gate, C2 counter, controls)`
+  - `64ba838 round-45 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `3d9ea54 round-45: attempt 3 - a3w1 seat reports/receipts + results (34 settled, 2 reportless), held-out tally 8/10, lesson/SCORECARD/LOG sync, census after`
+  - `f660ae0 round-45: attempt 3 - keyed C1 control + name-blinded dev counter, tip re-measure, no-harm, verdicts rewritten from a3w1 (C1 not admitted on its counter; C2 routed defects), Q39, lesson/SCORECARD/LOG corrections, a3w1 dispatch`
+  - `fbad1c5 round-45: hyaku run-9 orchestrator salvage of unlanded attempt-2 w2 seat output and the w2 results record (L1 died in the orchestrator session exit 2026-10-26 23:57:36 -03, SIGHUP during an operator omp update; not a landed round)`
+  - `a448a47 round-45: w1 report recovery (2 reportless seats) + landed seat artifacts + w1-results`
+  - `d4c0cdf round-45: lesson + README lesson row`
+  - `4290d64 round-45: SCORECARD + LOG sections, integrate measure-final, w1 seat reports + w2 spec/dispatch`
+  - `8f9a898 round-45: C1 lands - plans/fixture_fence.py (variant A), PREDICATE C1 pass 10 clean 104 honest`
+  - `6decc71 round-45: C2 execute-phase receipts - gate defects=0, counter A+B PREDICATE C2 pass`
+  - `0ac30a1 round-45: w1 seat reports + counter receipts stage 1`
+  - `9271dda round-45: freeze amendments (flat captures, bare-stdout receipt, re-pinned spec/counter, V10 quote fixes, claims note) + w1 seat reports`
+  - `7d062c0 round-45: C2 package - password-recovery grader entry S149-S156, receipt reframed to bare stdout, flat captures, gate defects=0`
+  - `05b02e2 round-45: first recorded probe run — password-recovery 16 cases, mismatches=0, regrade differ=0`
+  - `52d7486 round-45: C2 spec to 8 rows (S149-S156; gitignore is the reject), counter re-pinned, controls refreshed`
+  - `b4fcd35 round-45: freeze claims, C1 fence counter + hostile/control evidence, C2 password-recovery instruments`
+  - `9d5f971 round-44 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `7857ce5 round-44: wave reports and results (68 seats), tip re-measure, lesson close notes (reportless seat recurred)`
+  - `c2ff211 round-44: lesson, SCORECARD/LOG round-44 sections, README lesson row, landing measurement and census, residual reports`
+  - `02287ee round-44: closure R1/R2 (round-43 flip lines, entry errata, S147/S148 tier B, flip-verdict check 27/27), Q36-Q38, README index parity (62/62 lessons), SKILL registry + section, routed closures (15 field changes), S140 scope phrase fix`
+  - `256cc66 round-44: residual call dispatch (8 reviewer/critic seats)`
+  - `2a263e5 round-44: battery44 (10 modules, 33 fixtures) and the feal-linear-cryptanalysis package (entry, S138-S146, README, PROVINCE) integrated from wave seats`
+  - `5e3d3aa round-44: v2 wave spec + validated dispatch (68 seats)`
+  - `45dc0bc round-44: first recorded feal-linear probe run (14 cases, mismatches=0)`
+  - `5f16ed0 round-44: freeze C1 (5 u-row mutants, fences F1-F6) and C2 (TB2 feal-linear-cryptanalysis, V11 predictor) with controls; round-43 wave control residue (closure R3)`
+  - `0cb2e22 round-43 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `1838be9 round-43: close — tip re-measure, lesson/SCORECARD close-out (wave 2 not dispatched, 38-seat round)`
+  - `2a3e29c round-43: wave-1 results and last reports, entry/PROVINCE errata (L1 self-review)`
+  - `ac339b2 round-43: wave-1 reports (36 of 38 at commit), registry rows round43-c1-mutants/round43-c2/feal-probe, wave-2 spec (not dispatched)`
+  - `8adf76c round-43: SCORECARD/LOG round-43 sections, routed ledger closures (clean-clone observe), landing measurement, census`
+  - `77ea425 round-43: land battery43, feal package (entry, S129-S137), routed R1-R6 (errata, S135, flip check Q35, routed ledger), round-42 corrections, lesson`
+  - `d33350f round-43: wave-1 spec and dispatch (38 seats)`
+  - `6b49694 round-43: first recorded feal probe run (receipt)`
+  - `02753f2 round-43: freeze claims, C1/C2 counters, feal probe, spec, dry table, captures, controls`
+  - `317148c round-42 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `f9bbee6 round-42: wave-2 reports/results (33 seats), SCORECARD wave-2 outcome, tip re-measure at 3e8a2e5e`
+  - `3e8a2e5 round-42: tip re-measure at 508434ad (verdicts equal), lesson mistake (wave-2 route mix), falsify ready marker`
+  - `445e81f round-42: wave-1 reports/results (39 seats), planned round 43, wave-2 spec and dispatch (33 seats)`
+  - `508434a round-42: docs — SCORECARD/LOG round-42 sections, lesson, landing measurement and census`
+
+### `kumitate` (12 commits, 0 added lines, 0 BG hits)
+- Round-35 pin: `8d557f85312de4fcc82e09ff735d21436bc3746d`
+- Round-36 delta head: `d23892ad44b41e1af63b3edb949d265ca1dd812d`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 0
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `d23892ad hyaku run9 wrap-up: last staged-claims capture`
+  - `993a7b16 hyaku run9 wrap-up: r67 freeze drafts and last capture`
+  - `e9ff2719 hyaku run9 wrap-up: final late-seat outputs`
+  - `f9fcd4b6 round-67 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `f29eb699 round-66 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `a3d76c03 round-66 w1: seat outputs and build artifacts (salvage after honest-stop report)`
+  - `5b02f807 round-66: record honest stop and unmet claim measurements`
+  - `6c79d68c round-66: capture opened sources and record r65 D1 correction evidence`
+  - `88041bc9 round-66: commit w1 ready marker`
+  - `273202ba round-66: commit validated 66-seat v2 wave dispatch`
+  - `621212ba round-66: freeze — plan, L66/M66 counters, controls, base receipts, routed-ledger v1, D7 README row + pin`
+  - `ec9d28d1 considerthese: 2026-10-26 daily reflection`
+
+### `mado` (39 commits, 783 added lines, 0 BG hits)
+- Round-35 pin: `e0be61e4f6e34896f8b1c329f9c6d129e5af81f7`
+- Round-36 delta head: `b4a79843cc2545bbe800db9322e58f6e00436629`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 783
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `b4a79843 round-50: wave-done gate integration receipts (r49 OK, r50 OK at 8dbbf61a)`
+  - `8dbbf61a round-50: restore w1-results.json agent field (seat role) from w1-dispatch.json after run-9 wrap-up nulling; lossy record now contract-valid (output null + note)`
+  - `470bfd77 round-50: freeze (registration, frozen-counter receipts at 906178b6, do-nothing controls, wave-done/state-cite receipts)`
+  - `906178b6 round-50: C1 data (bind key match entry, rows S352-S363, pins, live receipt) + C2 data (session-material gate v3) + wave-done/state-cite/deliverables instruments + hostguard + QUALITY 100-102 + lesson`
+  - `d7c33df8 hyaku run9 wrap-up: round-50 counter drafts for inheritance`
+  - `1b37a59e hyaku run9 wrap-up: round-49/50 wave state for inheritance`
+  - `13631f24 round-50: claims declared (C1 bind key match entry, C2 session-material gate v3) + round-start receipts`
+  - `8ae47b95 round-49 w1: late seat output after closure (ExecControlsC1 check-quotes.py)`
+  - `c0d847ce round-49 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `8a370cd4 round-49: axis at tip receipt (checked=3 mismatched=0)`
+  - `602e39e3 round-49: records - lesson, SCORECARD/LOG round 49, C1/C2 receipts at data, census after, operator state after`
+  - `430d2569 round-49: C1 data - tools/mado-keysym.py (how-to-type parity, w1 reference A)`
+  - `dd2e827e round-49: freeze (registration, C1/C2 counters + fixtures, w1 evidence, pins, candidates) + commit the 47 round-48 ExecSessionMarker sidecars`
+  - `5f37c1b8 round-49: claims, w1 spec + dispatch, census before, operator-owned state digest before`
+  - `03e4ae76 round-48 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `b361c846 round-48: final tip receipts at 627914f6 (C1/C2 v2 TARGET_MET, axis 3/3, outcome-first PASS, census exit 0)`
+  - `627914f6 round-48: a4r1 evidence (8 seats, 4 reports, results), lesson a4r1 routing + M48-13, README locator fix, LOG a4r1 line, tip receipts at f029de3a`
+  - `f029de3a round-48: attempt-4 harm watch (round-47 counters at d8e3d600, 3/4 C1 runs MET + 1 bwrap-noise flake = M48-12), do-nothing controls, axis at scorecard, a4r1 residual dispatch, S340-S351 range fixes in SKILL/lesson`
+  - `d8e3d600 round-48: SCORECARD/LOG Round 48 (axis publication), after-data receipts (C1/C2 v2 and v1 TARGET_MET at e5d0130d), base and salvage receipts`
+  - `e5d0130d round-48: data (attempt 4) - entry xkb-keymap-compile-r48 (C2; rows S340-S351 landed in salvage cf3deeec), lesson round-48 (M48-1..11, attempt-4 re-verification), QUALITY 96/99 instruments, session-material waivers, census after, pre-data mirror receipts`
+  - `cf3deeec round-48: hyaku run-9 orchestrator salvage of unlanded attempt-3 integration drafts (SKILL, corpus, tools, quality) and w2 receipts (L1 died in the orchestrator session exit 2026-10-26 23:57:36 -03, SIGHUP during an operator omp update; not a landed round)`
+  - `02165600 round-48: freeze v2 before data - registration-v2, PRED-C1-r48-v2 (write/fork tripwire, links schema, 228 warm fixtures, foreign-root capture) and PRED-C2-r48-v2 (pin mode, quote length, pinned replay judge), S351 pin, v2 control candidates, w2 evidence`
+  - `3e6c848a round-48: freeze v1 - registration, counters c1-r48/c2-r48 + warm fixtures, XKB pins+receipt, w1 evidence (41 seats), controls, L1 reference + drafts`
+  - `5ff16742 round-48: claims, w1 spec + dispatch, census before`
+  - `579f694b round-47 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `d40189c9 round-47: w2 evidence (44 seat reports, results), tip receipts (C1/C2 MET, axis 3/3)`
+  - `f2b8568b round-47: SCORECARD/LOG Round 47 (axis publication, R4c errata lines), after-data receipts, lesson census line`
+  - `0c699605 round-47: data - tools/mado-terminal.py, entry xdg-terminal-selection-r47, rows S326-S339 (S332-S339 supersede S290-S297), lesson, QUALITY 91-95, README row + Frontier, SKILL section, R1 erratum, live receipts`
+  - `9bddd6ac round-47: w1 evidence (41 seat reports, results), w2 ready, R2 removal receipt, L1 fuzz receipt`
+  - `6605f5f1 round-47: v1 control receipts (C1 PASS 0 of 28, C2 PASS), w2 falsify spec and dispatch (44 seats, policy v1)`
+  - `d7527d60 round-47: v1 freeze - registration, C1/C2 counters, 190 C1 fixtures, pins, L1 reference, controls runners, base receipts`
+  - `c24adef2 round-47: claims declared, w1 build spec and dispatch (41 seats, policy v1), census before`
+  - `60edb66e round-46 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `edc14789 round-46: tip receipts (axis 3/3 match, C1 and C2 MET at 9879964)`
+  - `9879964f round-46: SCORECARD/LOG Round 46, after-data receipts`
+  - `1001bda0 round-46: data - tools/mado-devices.py, input-device entry, rows S316-S325, lesson, README row + Frontier, SKILL section + session-material registry row, PROVINCE refinement, QUALITY 87-90, live host receipt`
+  - `fb6a1fee round-46: C1 v3 controls at the v3 freeze (PASS, 0 of 40 met)`
+  - `7f793280 round-46: v2 controls (C1 FAIL 2 of 40 -> v3 tripwire; C2 PASS 0 of 22), freeze C1 v3 before data, w1 evidence (66 reports, results), round-45 D4 digest`
+  - `2bcc335f round-46: freeze v2 before data (PRED-C1-r46-v2: allowlist sandbox, pipe tripwire, 110 fixtures, v2 contract; PRED-C2-r46-v2: clause k, OK token; v2 entry draft)`
+
+### `mori` (46 commits, 907 added lines, 0 BG hits)
+- Round-35 pin: `aa3af1ec3118ee7766dfce1d9709ce3c0c3f6bfd`
+- Round-36 delta head: `5b295eeebd87ebd610d8d39bfe2035742f740cfa`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 907
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `5b295eee round-55 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `d27d943a round-55: measured verdicts (C1 unmet voted=0, C2 unmet entailed=15 dissent=8), scorecard/log entries, vote-arm findings`
+  - `a27ec482 round-55: integrate w1 settlement, registry anchor/scope fixes, D6 prose reconciliation, S244 flip, lesson verdicts`
+  - `b8a70adf round-55: publish w1 ready marker`
+  - `96d888f5 round-55: validate 64-seat v2 swarm dispatch`
+  - `b8b7064c round-55: capture host and quarantine evidence`
+  - `f70051dd round-55: locate complete filesystem source statements`
+  - `51ebd3d3 round-55: tighten ENOSPC claims to source text`
+  - `121093e2 round-55: land release recheck and ENOSPC runway entries`
+  - `c9b908f0 round-55: freeze claims, counters, sources and controls`
+  - `ca52426e round-54: commit untracked w1.ready.dispatched marker (closure route)`
+  - `de5595c5 round-54 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `0c926fdf round-54: correct control-replay limitation from settled receipts (12 of 14 revisions unavailable)`
+  - `4e587052 round-54: scorecard and LOG measurements, final counter/census receipts, corrected ledger movement prose`
+  - `f111d4b0 round-54: integrate 74-seat v2 wave, C1 line/vote recheck and C2 memory-failure evidence, round lesson, corpus gates, host scope and misroot relocation`
+  - `c71d088a round-54: C2 row 4 reworded after Mo54En02 re-vote overclaim (action-optional scope from the task_early_kill comment); re-vote pending`
+  - `782c6e7d round-54: post-wave data corrections — C2 rows 1,4,5,7,10,11,12,16,20,21 reworded after ENTAILMENT overclaims (new hashes, re-vote pending), entry prose (early-kill gate, forced-kill condition, host channels), ledger prose (shift cause, anchors, normalisation), SOURCES S508/S520 anchors and round-54 search-log notes`
+  - `2d0347a3 round-54: wave w1 spec (74 seats, v2 validated: 24 voters, 39 attack seats), dispatch payload, at-data receipts`
+  - `78295c76 round-54: data correction before any seat — C2 row 1 reworded and decision-table counting note (QUALITY 15: kernel lines are attribution, never a count); per-row claim files for the voters`
+  - `1116c092 round-54: data — C1 ledger kernel-v7.3-recheck-r54 (31 rows, S515-S520, S508/S514 used-by), C2 entry memory-failure-kills-r54 (21 rows, S521-S524, S502/S507 used-by), leads; D3 lane-root strays relocated under rounds 28/38`
+  - `6830f3af round-54: freeze — contract, counters C1 (v7.3 recheck of the 31 remaining v7.2-pinned rows, line arm, results-bound voters) and C2 (memory-failure kills at v7.3), controls, receipts, census-start, sweeps, ten v7.3 copies`
+  - `39dcf4d7 round-53 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `28401324 round-53: receipts at final integration tip 0b36d23e — c1-at-landed (C1 met), c2-at-landed (C2 met n=31 agree=80), census-end (rc 0, 23 W04), pin-check-at-landed (met, 37 tally pins), mori-commit-runway selftest 31/31`
+  - `0b36d23e round-53: attempt 2 — a2r1 settled (8/8): Mo53a2RevLedgerProse report, a2r1-results.json; ledger change-table cells corrected (show_mem local_pcp unit, mm_inline call sites rewritten); lesson a2r1 findings and round total 75`
+  - `7b90a3c6 round-53: attempt 2 — residual a2r1 dispatch (8 seats) and 7 returned reports; integrate: band entry/SKILL rows tightened (stable batch, boot/policy recompute, generic vs vm_committed_as batch, mode-0 per-request check, S514 scope), PROVINCE boundary, lesson M2 wording, LOG receipt pointers + attempt-2 note, SHONEN pointers`
+  - `34d97cd3 round-53: attempt 2 (MoriR53a2) — salvage re-verified: freeze sha256 clean, C1/C2 met at 0df80303 (at-salvage receipts); SCORECARD round-52 correction and round-53 section; lesson M6 and attempt-2 section`
+  - `0df80303 round-53: hyaku run-9 orchestrator salvage of unlanded attempt-1 w1 wave state, integration drafts (LOG, PROVINCE, SHONEN, corpus) and the w1 results record (L1 died in the orchestrator session exit 2026-10-26 23:57:36 -03, SIGHUP during an operator omp update; not a landed round)`
+  - `fd86307a round-53: data corrections from w1 — tool bounded reads/strict parsing/case-id guard (+3 cases, 5 hostile checks), two-sided band reading, CPU-hotplug limit, S514 mm_init.c v7.3, dated host sentence`
+  - `95cf78ee round-53: wave w1 spec (67 seats, policy v2, validated), dispatch payload, receipts at data`
+  - `2a4213bf round-53: data — v7.3 recheck ledger (C1), mori-commit-runway tool + fixtures + SKILL Round53 registry row and band entry (C2), rows S502-S513, S499 used-by`
+  - `f4da3fd4 round-53: freeze — contract, C1/C2 counters with selftests, controls and receipts, census-start, sweeps, v7.3 and band source copies`
+  - `20edafa5 round-52 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `37af57f2 round-52: receipts at landed tip e7e056b8 — c1-at-landed, c2-at-landed, census-end`
+  - `e7e056b8 round-52: wave close — Mo52MutC1Controls report, w1-results.json, at-landed receipts (re-run at final tip)`
+  - `2f245af7 round-52: integration — SKILL Round52, SHONEN boxes, QUALITY 141-143, README corrections+coverage, LOG and SCORECARD round 52, lesson and erratum, entry rows 3/27/28 replacements, S497-S501 anchors, wave w1 reports (67), L1 wave artifacts`
+  - `075436b1 round-52: wave w1 spec (68 seats, v2 validated; copy-on-change amend for the refused labrat role), dispatch, receipts at data`
+  - `8524904a round-52: data — C1 Axes cells lead with round 51, SHONEN round-52 receipts, QUALITY 141-142 and README supersession of stale living pins, freshness locator; C2 overcommit entry and S497-S501`
+  - `d3a8ea59 round-52: freeze — contract, C1/C2 counters with selftests, C1 controls and receipts, census-start, sweep, five v7.2 source copies`
+  - `4f266ef2 round-51 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `8e3df7e5 round-51: SHONEN LOG pointer covers the whole Round 51 entry (2765-2805)`
+  - `a5087527 round-51: at-landed receipts at 70e68cdd (C1 met, C2 met entailed=21 dissent=0) and census end (rc 0, 23 W04)`
+  - `70e68cdd round-51: wave w1 integration part 2 — all 68 reports and results, LOG/SCORECARD round 51, SHONEN pointers, lesson additions, vote audit and residue receipts`
+  - `7c0b6232 round-51: wave w1 integration part 1 — entry rows 6/12/14/15 replaced by the voters' entailed text and prose fixes, pin-check v5.1, SKILL Round51, QUALITY 137-140, README round-51 additions, lesson, Axes cells for the round-50 closure, w1 reports so far`
+  - `b504cb17 round-51: wave w1 spec/dispatch (68 seats, v2 validated rc 0) and at-data receipts (C1 met, C2 unmet on entailment only)`
+  - `87e0c374 round-51: data — C1 pin-check v5 (scratch export as shared clone, env/stale classes) and conform.py path fix, SKILL/SHONEN pins; C2 MemAvailable entry and rows S492-S496`
+  - `4677910e round-51: freeze — contract, C1/C2 counters, controls and receipts, five source copies (before any seat)`
+
+### `revenger` (2 commits, 29 added lines, 0 BG hits)
+- Round-35 pin: `6da884c6708fa25a7af013b6fc6802492e3264fa`
+- Round-36 delta head: `b7abcd875c84f4e1d6c8df966b6bd20f4154c53f`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 29
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `b7abcd8 bounty-triage training module (operator-directed, non-round): MODULE.md, check_package.py, offline exercises, S050/S051, lesson M54-M57`
+  - `59d5c80 considerthese: 2026-10-26 daily reflection`
+
+### `tameshi` (41 commits, 523 added lines, 0 BG hits)
+- Round-35 pin: `f181a961ae44061af486f600e5ea257d2baf78f8`
+- Round-36 delta head: `6db1d220b337c35ff1e25bf9cfd74abc9db1498d`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 523
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `6db1d22 round-52 w3: commit wave markers and integrate script (closure salvage)`
+  - `c1d49d7 round-52 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `f1a3246 round-52: wave-3 spec; re-key instrument (from T52W1ExecRefresh); CAND1 precheck`
+  - `7ff81a5 round-52: wave-2 fix-reads applied in-line (59), round21 row cell, shrink-case scope; QUALITY 103; S274; lesson; wave-2 evidence`
+  - `0de8515 round-52: wave-1 evidence (36 seats) and wave-2 spec`
+  - `bcba892 round-52: C1 registry row 10/10 + fleet-bound round21 self-test; C2 SKILL corrections, kill-rate supersession, 20 ledger correction records; SCORECARD pre-registration`
+  - `1f72d7d round-52: controls scored at amendment-1 freeze bytes (11/11 as pre-registered), before wave 1`
+  - `8827f31 round-52: amendment 1 — controls harness runs in a fleet mirror with a branch per control (no counter change)`
+  - `acc27ab round-52: freeze C1 (operability) and C2 (calibration) counters, controls, no-harm, deciding script`
+  - `ef19d8e round-51 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `6a0d5d1 round-51: deciding receipts at 7e548bee (C1 PASS, C2 PASS depth 9->10, C3 FALSE covered=29/30), attempt-3 lesson section (salvage disposition, mistakes, routed R51.1-5), SCORECARD deciding section, LOG, placeholder guard with red/green receipt, census end`
+  - `7e548be round-51: cold-read re-key at 02ec217c — 20 ledger entries trace-bound to the w2 reader rows (reading-bound, not blind cold-read); refresh receipts`
+  - `02ec217 round-51: attempt 3 content revision — discard attempt-2 uncommitted SKILL.md pointer draft (restored to f133b47 bytes: the w2 readers read those sections, an unread edit would void the re-key), copy the 20 w2 reader rows into coldread/reads, name the attempt-3 L1 in refresh entries, census start a3`
+  - `53afb4a round-51: hyaku run-9 orchestrator salvage of unlanded attempt-2 w2 seat output, integration probes, SKILL draft and the w2 results record (L1 died in the orchestrator session exit 2026-10-26 23:57:36 -03, SIGHUP during an operator omp update; not a landed round)`
+  - `f133b47 round-51: append lesson on measured oracle leak and sources, disclose registry failure, add cold-read rekey instrument`
+  - `2140478 round-51: commit validated wave-2 spec/dispatch, reader map and sources census end`
+  - `6d8c11e round-51: integrate frontier/S022 correction, sourced tenth case, registry rows, runner panel and controls`
+  - `f846ef9 round-51: record frozen counter selftests, census start, L1 correction and wave-1 evidence in LOG`
+  - `9d023ae round-51: amendment 2 — no-harm tools-scope names the four tools that pin the runner's leg panel (wave-1 finding T51Row19); claim counters unchanged`
+  - `4e095c9 round-51: SCORECARD pre-registration section`
+  - `f0129a5 round-51: control receipts at freeze bytes (10/10 as pre-registered), tenth-leg sweep receipts (2/10 killed, 7/10 predictions held), wave-1 spec and validated dispatch`
+  - `84aa673 round-51: amendment 1 — controls harness env fix (crashed before any control was scored); counters, spec and predicates unchanged`
+  - `fe33538 round-51: pre-registration — contract, frozen C1/C2/C3 counters, frontier expectations, tenth-leg spec with predictions (before any mutant), base tool set, controls harness, no-harm, deciding script, census start`
+  - `9962033 round-50 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `616dee6 round-50: deciding receipts (C1 and C2 PASS), census end, SCORECARD deciding section and capability row`
+  - `b28a978 round-50: content (deciding) revision — wave-2 integration (S022 status restored for no-harm, cost decomposition marked as inference, README F6 cost wording, R40.4 re-pointed, ledger lines re-located), wave-2 results and reports, Planned carry-overs, hidden panel revealed`
+  - `4efa5cf round-50: wave-2 spec, builder and validated dispatch (35 seats, v1 policy)`
+  - `80ea77e round-50: C1 ledger corpus/routed-defects.json (31 fixed / 7 open / 11 declined), integration records, SCORECARD Planned (round 51), LOG entry, wave-1 results and seat reports`
+  - `79f44b5 round-50: content — F6 entries (pilot + admitted DD contract), S271 and S022/S024 cells, README round-50 F6 line, round-50 lesson, QUALITY 100-101, routed fixes (R40.2/R40.3/R40.4 corrections, R46.4 appended fold, R45.2/R47.2 receipts, R49.2 successor counters)`
+  - `43bfa7a round-50: tools/shrink-case.py (F6 ddmin shrinker, seat T50ExecShrinker, byte-exact) and the generator error-path fix (routed R49.1, seat T50ExecGenFix, byte-exact; capability line unchanged)`
+  - `4afb060 round-50: SCORECARD pre-registration section and the standing axis table restated with round-49 values (routed R49.4); no-harm at base`
+  - `65a2215 round-50: wave-1 spec, builder and validated dispatch (50 seats, v1 policy)`
+  - `f87910f round-50: control receipts and counter selftest receipts scored at freeze cdbf24c0 (before any seat)`
+  - `cdbf24c round-50: pre-registration — contract, frozen C1 (routed-defect ledger) and C2 (F6 shrinker) counters, defect set, controls harnesses, no-harm, deciding script, census start`
+  - `e3729de round-49 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `7d3d977 round-49: w2 results and the late generator code review (receipts only)`
+  - `143d91e round-49: deciding receipts (C1 and C2 PASS), census end, SCORECARD deciding section and capability row`
+  - `bda6076 round-49: final content revision — lesson fixes from wave-2 review, precheck receipt at fc5ac743, panel and witness revealed for the deciding run`
+  - `fc5ac74 round-49: C1 re-key at 54a52365 (per-pass receipts dir), reads.json with L1 overrides, late wave-1 reports and w1-results`
+  - `54a5236 round-49: wave-2 integration — two SKILL clauses narrowed, S269/S270 cells corrected, pilot entry oracle provenance and limits, README F10 wording, lesson routing, L1 excerpt overrides`
+  - `5f597fa round-49: candidate precheck receipt (57 -> 64, lost 0); wave-2 falsify spec and dispatch (33 seats) against candidate f181a961`
+
+### `tsukuroi` (55 commits, 1347 added lines, 0 BG hits)
+- Round-35 pin: `a968393c678171f8a5a2907da5015735396da4cc`
+- Round-36 delta head: `3629c46a0e787121f1e1d4ccb53bc830e4a7633f`
+- Added lines in `SKILL.md` / `corpus/knowledge`: 1347
+- `BG_CONN_SCAN_V1` hits: 0
+- Commits:
+  - `3629c46a round-47: C2 TMPDIR-space selftest fix + R47-C2 cases; GR2 amended per r46 residual critic; r47 admission counter; S252; declaration`
+  - `91601905 round-46: late w1-results.json and C1SimplifyIdentity report (after closure)`
+  - `3c738a87 round-46 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `26fada30 round-46 w1: late seat outputs landed after report (C1ExecPriorA, C1ExecPriorB, C1MutIdentity)`
+  - `102cf670 round-46: C2 final receipt at b2eafc38; kill-rule receipts so far`
+  - `b2eafc38 round-46: r1 results and late seat reports; sources census and self-assessment final receipts`
+  - `b313963c round-46: outcome — C1 PASS, C2 FAIL (verdicts_ok 2); lesson, LOG, SCORECARD outcome/axes/capabilities, entry gate status, wave w1/r1 evidence and L1 receipts`
+  - `c7e4d7d9 round-46: SKILL census-identity section, D1 round-44 status notes (SKILL, README), round46 gate registry table, README round-46 coverage note`
+  - `61e06740 round-46: C1 identity hardening from wave w1 — O_CLOEXEC + unique-descriptor rule (C1LabUlimit wrong-digest reproducer), --identity --help refused (C1RevImpl), selftest planes pipeline guarded; two new (R46-C1) cases; entry updated`
+  - `b57740c2 round-46: GR2/GR3 narrowed per counted partly findings (V46CritGR2a/b, V46CritGR3a, V46RevGR3a); D2/D3 correction notes appended`
+  - `a4477049 round-46: C1 census --identity (D12) with (R46-C1) selftest cases; entry census-identity-r46; SOURCES S250/S251`
+  - `72cc2609 round-46: declaration, frozen counters (census identity, scrub admission), pre-data controls, round-start receipts, S250/S251 snapshots`
+  - `2042117c round-45 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `2e46142d round-45: self-assessment receipt at the outcome commit bb1a24e5 (27 checks, 0 mismatches, PASS)`
+  - `bb1a24e5 round-45: measured outcome (C1 PASS, C2 FAIL verdicts_ok 0), axes and capabilities tables (round 45), planned row; lesson corpus/lessons/round-45.md; LOG round-45 entry; final and before receipts (C1/C2 at 44560592, gate sweep, sources census, C2 at base)`
+  - `44560592 round-45: a2r1 evidence (5 seat reports, results, ready marker) and SKILL fixes from ResRevSkill F1/F3-F7 (residual seat names, masked-reader wording, round-41 bn form, per-site strip wording, quote-size rule, padding sizes); C1 counter check receipt at 194a4523`
+  - `cd1b3a03 round-45: a2r1 integration — GR2 suspended-replace progress clause narrowed (ResCritGR2 F1, dev-replace.c:1143-1144, scrub.c:3336), exclusive_operation ioctl path named (S240 ioctl.c:3190), Limits registration list corrected (ResRevGR2, ResRevGR3Triage D1); S247 declared ranges widened to the quoted lines; SKILL GR2 row follows; QUALITY 93 (R45-C2-BINDING-CHANNEL); a2r1 dispatch and ready`
+  - `194a4523 round-45: a2w1 wave evidence (66 seat reports and receipts, orchestrator results with 41 outputs lost at a kernel restart, ready markers), L1 recovery of the six counted seats' yields from transcripts and both C2 scorings (verdicts_ok 0 as recorded and as recovered); gate-status marks: GR1-GR3 pending (entry, SKILL, README)`
+  - `0503400b round-45: a2w1 integration — GR2 narrowed after two counted partly verdicts (earlier -ENODEV/-EROFS/-EIO checks, suspended replace, unprivileged sysfs replace view), GR3 SIGCONT quote 114-115, triage and Limits corrections, QUALITY 14 evaluation; r44 entry stop-outcome qualification; README round-45 coverage note; SKILL round-45 sections, D2 correction block and round45 registry (72 rows); S246 teaches overflow clause`
+  - `3c42f556 round-45: attempt-2 wave a2w1 — generator (derived from make-w1-spec.py: wave name, report paths, L1 id, rebinding pointer), spec, validated v2 dispatch (66 seats), registry`
+  - `057c1804 round-45: attempt-2 rebinding — C2 counter counted-seat wave names w1/r1 -> a2w1/a2r1 (before any seat scored; predicate unchanged), C2 control battery re-run (30/30 field-identical) and salvage-tip receipts in controls-a2/, SCORECARD rebinding note`
+  - `5b3029bf round-45: hyaku run-9 orchestrator salvage of the unlanded attempt-1 w1 wave spec (14/66 seats spawned, marked abandoned) and its results record (L1 died in the orchestrator session exit 2026-10-26 23:57:36 -03, SIGHUP during an operator omp update; not a landed round)`
+  - `18389f44 round-45: implementation — C1 census first-line readers by parameter expansion + six (R45-C1) selftest cases (148->154); C2 entry btrfs-scrub-grounding-r45 GR1-GR3, SOURCES S246-S249 + used-by, round-44 entry appended gate status (D3) and grounding pointer`
+  - `ea6e0ee3 round-45: declaration + frozen counters (C1 score-census-readers-r45, C2 check-scrub-grounding-r45), pre-data control batteries (C1 K0-K10, C2 K0-K29; should_fail_accepted 0 both), frozen sources S246-S249, base gate receipts; D1 IN-109 repin 2468->2582; D7 round-44 untracked evidence committed (gz) with .ready markers`
+  - `5bbd5ff5 round-44 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `e9ca7ef6 round-44: capabilities table (round 44; census 148 cases, SCRUB line)`
+  - `ae337aab round-44: measured outcome (C1 PASS, C2 FAIL), round-44 axes table, final receipts, LOG`
+  - `fbfef071 round-44: w2 integration — SR8/SR9 host/memparse narrowings after counted reads, g1 glob mutant guard; w2 reports + results`
+  - `3a1c6b5c round-44: registry table carries all 70 rows (68 verbatim + scrub-arm-r44, scrub-record-r44)`
+  - `efbffe08 round-44: registry table shape (restore r43 section under its own heading)`
+  - `8728e8bc round-44: promotion notes (PROVINCE/README), SKILL sections and registry table, lesson draft`
+  - `0f8c07a5 round-44: w2 spec, generator and validated dispatch (32 seats)`
+  - `8eee79db round-44: timers case guards plain btrfs-scrub.timer (mutant k); w1 C1MutArm + SentMisroot reports`
+  - `9608ebc3 round-44: fix timers branch (loop moved to listable-branch; unreadable wants blocks) after wave-1 repair`
+  - `071ab0d1 round-44: wave-1 integration — census arm hardening (sysfs:not-directory, timer-dir exclusion, 7 new R44-C1 selftest cases; 141 -> 148), SR7/SR8 narrowings; w1 seat reports`
+  - `ff2c264a round-44: w1 spec, generator and validated dispatch (46 seats)`
+  - `7e081698 round-44: C2 SR7 narrowed before wave 1 (btrfs_scrub_dev also serves device replace); C1 after receipt at ab8aae1`
+  - `ab8aae16 round-44: C1 scrub-record census arm + 9 selftest cases; C2 draft entry SR7-SR9, S242-S245, S237/S240 used-by, r43 pointer and SR1 Limits correction; before receipts`
+  - `1d2afffe round-44: declaration, frozen C1/C2 counters, control batteries + receipts, pinned sources and host capture`
+  - `98020ece round-43 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `5f8b3c58 round-43: self-assessment receipt at the outcome commit (27 checks, 0 mismatches)`
+  - `a87249c7 round-43: measured outcome (C1 verified, C2 verified), axes and capabilities tables (one header), LOG entry, after receipts, sources census`
+  - `c3954913 round-43: residual call (C2ResSR3 holds on narrowed SR3; ResFixCheck), QUALITY 92 (R43-CAP-HEADER-DUP), lesson mislabel fix`
+  - `d950df34 round-43: residual call dispatch (C2ResSR3 counted residual read of narrowed SR3; ResFixCheck)`
+  - `5647d4ff round-43: integrate w2 (34 seats; counted reads SR1 holds/holds, SR3 holds/partly, SR6 holds/holds) — SR3 skip condition narrowed per C2CritSR3, SKILL/lesson reference fixes, w2 reports and results`
+  - `64646d6e round-43: w2 spec and validated dispatch (34 seats, six counted C2 reads at 8acf0b02)`
+  - `8acf0b02 round-43: registry row bootinputs-r43 names one tool (REGISTRY-ROW-AMBIGUOUS fix)`
+  - `9b974f2a round-43: integrate w1 (44 seats) — entry SR1/SR3/SR6 narrowed per checked source lines, R43-C1 stderr selftest case (49), SKILL sections + round43 registry rows, PROVINCE/README notes, lesson draft, w1 reports and results`
+  - `7d0ed1c2 round-43: C1 after receipt at 717b716; w1 spec and validated dispatch`
+  - `717b716a round-43: C1 boot_inputs_newer reads find output (R43-C1); C2 draft entry SR1/SR3/SR6, S240/S241, r42 pointer; before receipts`
+  - `fe357001 round-43: declaration, frozen C1/C2 counters, pre-data controls, pinned sources`
+  - `6951ead9 round-42 verifier spot-check (integrator, hyaku): non-author admit/reject`
+  - `12421a73 round-42: self-assessment receipt at the outcome commit (27 checked, 0 mismatches)`
+  - `e2407a9d round-42: measured outcome (C1 verified under the frozen predicate, sufficiency falsified; C2 not verified — bound fails on SC1/SC3), entry wave-2 corrections, r38 packaging note, SKILL notes, lesson, QUALITY 90-91, LOG entry, axes table, after receipts`
+  - `342d1049 round-42: w2 reports and orchestrator results (34 seats; counted C2 verdicts: SC1 fails/holds, SC2 holds/holds, SC3 fails/fails, SC4 holds/partly, SC5 holds/partly)`
+

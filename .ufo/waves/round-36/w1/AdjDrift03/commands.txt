@@ -1,0 +1,68 @@
+# AdjDrift03 — exact commands run (C1 drift re-derivation, git objects only)
+# scratch root: /fast/scratch/hyaku/tabi-r36/AdjDrift03 (deleted before yield)
+# lane repo (read-only): /home/vgpnk/Projects/shokunin/{tabi,kaidoku}-shokunin
+# No mutating git command was issued anywhere. No package installs.
+
+# 0. scratch + env
+S=/fast/scratch/hyaku/tabi-r36/AdjDrift03; mkdir -p "$S/tmp"; export TMPDIR=$S/tmp
+
+# 1. inputs read
+cat /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/w1-chunks/AdjDrift03.tsv
+cat /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/baseline/c1-delta-pins.json
+wc -l /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/adjacency-screen-drift.tsv
+
+# 2. pins resolve / delta head
+K=/home/vgpnk/Projects/shokunin/kaidoku-shokunin
+git -C "$K" rev-parse --verify --quiet 49096c7e6f226af0c750c4b003be58883cb6049f
+git -C "$K" rev-parse --verify --quiet 1ed29de2cdd6061315fb2f5478d5029b7d570675
+git -C "$K" log --oneline -1 49096c7e6f226af0c750c4b003be58883cb6049f   # round-40 verifier spot-check
+git -C "$K" log --oneline -1 1ed29de2cdd6061315fb2f5478d5029b7d570675   # round-43: amend draft C2 landing path
+
+# 3. derivation (per row: cited at pin -> compare at frozen head -> ledger row)
+#    $S/derive.sh (full source kept verbatim in this seat dir as derive.sh)
+TRACE=$S/real-trace.txt bash $S/derive.sh
+#   prints: rows=20 mismatches=0 ; writes receipt.tsv (20 rows + summary line)
+#   TRACE lines record, per row: pin, head, path, line, htrim=[], cited=[], hits=[], mine, ledger, verdict
+
+# 4. per-row evidence: citation text at pin
+i=0; while IFS=$'\t' read -r ref st nt; do i=$((i+1)); lane=${ref%%-shokunin@*}; \
+  rest=${ref#*-shokunin@}; pin=${rest%%:*}; tail=${rest#*:}; line=${tail##*:}; path=${tail%:*}; \
+  git -C /home/vgpnk/Projects/shokunin/$lane-shokunin show "$pin:$path" | awk -v L=$line 'NR==L{print}'; \
+done < /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/w1-chunks/AdjDrift03.tsv
+
+# 5. decisive identity check for the three cited files: pin blob == delta-head blob
+for p in corpus/knowledge/2026-10-13-r3-runtime-observation.md \
+         corpus/knowledge/2026-10-13-r4-06-1password-asar.md \
+         corpus/knowledge/2026-10-13-r4-08-observe-verbs.md; do
+  echo "$p pin_blob=$(git -C "$K" rev-parse 49096c7e6f226af0c750c4b003be58883cb6049f:$p) \
+head_blob=$(git -C "$K" rev-parse 1ed29de2cdd6061315fb2f5478d5029b7d570675:$p)"
+done
+git -C "$K" diff --stat 49096c7e6f226af0c750c4b003be58883cb6049f 1ed29de2cdd6061315fb2f5478d5029b7d570675 -- \
+  corpus/knowledge/2026-10-13-r3-runtime-observation.md \
+  corpus/knowledge/2026-10-13-r4-06-1password-asar.md \
+  corpus/knowledge/2026-10-13-r4-08-observe-verbs.md      # empty output = zero changed lines
+git -C "$K" diff --numstat 49096c7e6f226af0c750c4b003be58883cb6049f 1ed29de2cdd6061315fb2f5478d5029b7d570675 -- <same three paths>   # empty
+
+# 6. instrument self-checks (falsifiers against my own derivation)
+# 6a. positive control — the ledger's 3 known moved rows (SKILL.md 585->748, 621->784, 652->815)
+printf 'kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:585\tmoved\tverbatim at :748\nkaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:621\tmoved\tverbatim at :784\nkaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:652\tmoved\tverbatim at :815\n' > $S/selftest-input.tsv
+IN=$S/selftest-input.tsv OUT=$S/selftest-out2.tsv TRACE=$S/selftest-trace.txt bash $S/derive.sh
+#   => moved :748 / :784 / :815, ledger moved "verbatim at :748/:784/:815": 3/3 agree
+#   (the pre-fix version of the script reported :748 for all three: the state-leak bug)
+
+# 6b. negative control — doctored pin map with kaidoku head := pin commit
+node -e "const p=require('/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/baseline/c1-delta-pins.json');p.kaidoku='49096c7e6f226af0c750c4b003be58883cb6049f';require('fs').writeFileSync('$S/pins-selfref.json',JSON.stringify(p,null,1))"
+PINS=$S/pins-selfref.json IN=$S/selftest-input.tsv OUT=$S/neg1.tsv TRACE=/dev/null bash $S/derive.sh
+#   => unchanged vs ledger moved: 3 MISMATCH (disagreement detection works)
+
+# 6c. negative control — nonexistent line / path / pin
+printf 'kaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:SKILL.md:99999\tx\t-\nkaidoku-shokunin@49096c7e6f226af0c750c4b003be58883cb6049f:no/such/file.md:1\tx\t-\nkaidoku-shokunin@deadbeef:SKILL.md:1\tx\t-\n' > $S/neg2-in.tsv
+IN=$S/neg2-in.tsv OUT=$S/neg2.tsv TRACE=/dev/null bash $S/derive.sh
+#   => stale: pin line absent / stale: pin file absent / stale: pin file absent ; 3 MISMATCH vs absent ledger rows
+
+# 7. independent second implementation (Node, different parsing/loops), same rule
+TMPDIR=$S/tmp node $S/cross.mjs
+#   => "cross-check: 20 rows, 0 disagreements with committed ledger"
+
+# 8. receipt digest
+sha256sum /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-36/w1/AdjDrift03/receipt.tsv

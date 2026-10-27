@@ -1,0 +1,69 @@
+# round-36 w1 ExecSelftest — instrument self-test receipt
+# lane: tabi-shokunin  freeze rev: 2e7b7a8920bff47fae6f75c3d06e48e37767099e  date: 2026-10-27
+# host: linux 7.2.11-arch1-1 x64  node v24.21.0
+# scratch: /fast/scratch/hyaku/tabi-r36/ExecSelftest  TMPDIR=/fast/scratch/hyaku/tabi-r36/ExecSelftest/tmp
+# clean clone: /fast/scratch/hyaku/tabi-r36/ExecSelftest/c
+#   git clone -q --shared LANE c && git -C c checkout -q --detach 2e7b7a89...
+#   assert: git -C c rev-parse --show-toplevel == c ; HEAD == 2e7b7a8920bff47fae6f75c3d06e48e37767099e ; status --porcelain == 0 lines
+# counters are taken from the FREEZE commit (git -C LANE show FREEZE:<path> > k/<name>), never from the worktree, as measure.sh does.
+
+## (1) frozenDigests — git bytes at the freeze commit vs claims.json
+# command shape: git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 2e7b7a89...:<path> | sha256sum
+# format: <path> :: exit=<rc> :: git=<sha256> expected=<sha256> MATCH|MISMATCH worktree=<sha256>
+.ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs :: exit=0 :: git=8a223faf5e109fc05dac1373a4a4979b65f9ec2ffef40f86ae9bf40ba1aad385 expected=8a223faf5e109fc05dac1373a4a4979b65f9ec2ffef40f86ae9bf40ba1aad385 MATCH worktree=8a223faf5e109fc05dac1373a4a4979b65f9ec2ffef40f86ae9bf40ba1aad385
+.ufo/waves/round-36/counters/c2-firefox-bidi-v2.mjs :: exit=0 :: git=15910c59d40a8e7b708e73b206dca3dfcc2db38ef29a9a81d668b07ef9e2b764 expected=15910c59d40a8e7b708e73b206dca3dfcc2db38ef29a9a81d668b07ef9e2b764 MATCH worktree=15910c59d40a8e7b708e73b206dca3dfcc2db38ef29a9a81d668b07ef9e2b764
+.ufo/waves/round-36/baseline/controls.mjs :: exit=0 :: git=27dba3eab9debc2712997e25280df933e3c73c573fe88101cb4a5dd7c259b061 expected=27dba3eab9debc2712997e25280df933e3c73c573fe88101cb4a5dd7c259b061 MATCH worktree=27dba3eab9debc2712997e25280df933e3c73c573fe88101cb4a5dd7c259b061
+.ufo/waves/round-36/measure.sh :: exit=0 :: git=6a652aca6a487ae4459c986243befc09412924d3a41945eb3c446f4adff35afa expected=6a652aca6a487ae4459c986243befc09412924d3a41945eb3c446f4adff35afa MATCH worktree=6a652aca6a487ae4459c986243befc09412924d3a41945eb3c446f4adff35afa
+.ufo/waves/round-36/baseline/c1-drift-audit-build.mjs :: exit=0 :: git=c8153a5a6d9e29a3991a0d753c482d2963aaa0e224978386d96ad661c62a2be1 expected=c8153a5a6d9e29a3991a0d753c482d2963aaa0e224978386d96ad661c62a2be1 MATCH worktree=c8153a5a6d9e29a3991a0d753c482d2963aaa0e224978386d96ad661c62a2be1
+.ufo/waves/round-36/baseline/c1-delta-pins.json :: exit=0 :: git=810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655 expected=810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655 MATCH worktree=810193620393f6e8b76faac4b606977508198de1b9ffd00d3a7440e8f1910655
+scripts/check-adjacency.mjs :: exit=0 :: git=4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac expected=4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac MATCH worktree=4e2c2a64b9eae9c10b9e92022e9b33661bba8e3b45b149e6354ecc9592324aac
+scripts/check-bidi-runtime.mjs :: exit=0 :: git=370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87 expected=370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87 MATCH worktree=370e8e95417e16dd3535f2dd5015a0b820655934200d489434fb642db7d86c87
+# 8/8 frozenDigests MATCH on both the frozen git bytes and the current worktree bytes (worktree == freeze for all eight).
+# note: the two annotated keys ("scripts/check-*.mjs (pinned inside C1/C2; must stay unchanged)") resolve to the bare paths above.
+# counter-internal pins agree with the claim file: c1-adjacency-sweep-v4.mjs:79 ADJ_GATE_SHA256 = 4e2c2a64... ; c2-firefox-bidi-v2.mjs:71 GATE_SHA256 = 370e8e95...
+
+## (2) syntax — node --check on both counters
+node --check .ufo/waves/round-36/counters/c1-adjacency-sweep-v4.mjs :: exit=0 :: (no output; syntax ok)
+node --check .ufo/waves/round-36/counters/c2-firefox-bidi-v2.mjs :: exit=0 :: (no output; syntax ok)
+
+## (3) C1 list modes — run from the frozen bytes of the counter against the clean clone at the freeze rev
+# cd /fast/scratch/hyaku/tabi-r36/ExecSelftest/c ; node k/c1.mjs --list-<mode> --repo <clone> --fleet /home/vgpnk/Projects/shokunin | wc -l
+node k/c1.mjs --list-candidates --repo c --fleet ... | wc -l :: exit=0 :: 383   (expected 383: MATCH)
+node k/c1.mjs --list-drift --repo c --fleet ... | wc -l :: exit=0 :: 307        (expected 307: MATCH)
+node k/c1.mjs --list-delta --repo c --fleet ... | wc -l :: exit=0 :: 0          (expected 0:   MATCH)
+# sample candidate row (first line, truncated): chousa-shokunin@00f8c7f5272a1d98b6d34913985fa4537e00aaf9:corpus/knowledge/archived-export-intake.md:141
+# sample drift row (first line): chousa-shokunin@00f8c7f5272a1d98b6d34913985fa4537e00aaf9:corpus/knowledge/archived-export-intake.md:141
+
+## (4) C1 counter at the freeze rev in the clean clone — predicate leg
+node k/c1.mjs --rev 2e7b7a8920bff47fae6f75c3d06e48e37767099e --repo c --fleet /home/vgpnk/Projects/shokunin --json :: exit=0 :: predicate=true
+  summary: adjacency=clean completeness.unaccounted=0 drift.total=307 drift.auditCoverage=307 drift.auditFindings=0 drift.staleFindings=0 delta.total=0 delta.unaccounted=0 delta.screenFindings=0 newMapped=0
+  stderr bytes: 0
+node k/c1.mjs --rev 2e7b7a8920bff47fae6f75c3d06e48e37767099e --repo c --fleet /home/vgpnk/Projects/shokunin :: exit=0 :: C1_ADJACENCY_SWEEP_V4 predicate=met rev=2e7b7a8920bff47fae6f75c3d06e48e37767099e adjacency=clean completeness.unaccounted=0 drift.total=307 drift.auditCoverage=307 drift.auditFindings=0 drift.staleFindings=0 delta.total=0 delta.unaccounted=0 delta.screenFindings=0 newMapped=0
+# determinism (extra): same command re-run :: exit=0 :: byte-identical JSON to the first run (cmp -s clean); 15 top-level keys in both.
+
+## (5) gate self-tests — loop exactly as measure.sh does
+#   for g in scripts/check-*.mjs scripts/round-evidence-audit.mjs; do f=$(grep -oE -- '--self-?test' "$g" | head -1); [ -n "$f" ] || continue; node "$g" "$f"; done
+# run from the clean clone at the freeze rev; 18 scripts, 18 exit 0, 0 skipped (every scripts/check-*.mjs exposes a self-test flag)
+scripts/check-adjacency.mjs --self-test :: exit=0 :: ADJACENCY_SELFTEST verdict=clean cases=57 reasons=18 could_not_evaluate=6
+scripts/check-aria-metadata.mjs --self-test :: exit=0 :: ARIA_METADATA_SELFTEST verdict=clean cli_cases=36 helpers=4
+scripts/check-bfcache-receipt.mjs --selftest :: exit=0 :: {"schema":"tabi-bfcache-selftest-v1","cases":17,"passed":17,...}
+scripts/check-bidi-runtime.mjs --selftest :: exit=0 :: BIDI_RUNTIME_SELFTEST verdict=clean cases=56 passed=56
+scripts/check-decision-table.mjs --selftest :: exit=0 :: DECISION_TABLE_SELFTEST verdict=clean cases=34 passed=34
+scripts/check-freshness.mjs --self-test :: exit=0 :: FRESHNESS_SELFTEST verdict=clean cases=12
+scripts/check-frontier-admission.mjs --selftest :: exit=0 :: FRONTIER_ADMISSION_SELFTEST verdict=clean cases=24 passed=24
+scripts/check-gate-mutants.mjs --selftest :: exit=0 :: GATE_MUTANTS_SELFTEST verdict=clean cases=12 passed=12
+scripts/check-gate-registry.mjs --selftest :: exit=0 :: GATE_REGISTRY_SELFTEST verdict=clean cases=22 passed=22
+scripts/check-measurement-binding.mjs --self-test :: exit=0 :: MEASUREMENT_BINDING_SELFTEST verdict=clean cases=76 reasons=13
+scripts/check-release-pins.mjs --selftest :: exit=0 :: RELEASE_PINS_SELFTEST verdict=clean cases=29 passed=29
+scripts/check-round-contract.mjs --self-test :: exit=0 :: ROUND_CONTRACT_SELFTEST verdict=clean cases=38 alias_checks=1
+scripts/check-s106-evidence.mjs --selftest :: exit=0 :: S106_SELFTEST verdict=clean cases=10 passed=10
+scripts/check-selfassessment.mjs --selftest :: exit=0 :: SELFASSESSMENT_SELFTEST verdict=clean cases=41 passed=41
+scripts/check-source-reopen-receipt.mjs --selftest :: exit=0 :: {"schema":"tabi-source-reopen-selftest-v1","cases":18,"passed":18,...}
+scripts/check-sources.mjs --self-test :: exit=0 :: SOURCES_SELFTEST verdict=clean cases=26
+scripts/check-user-round-contract.mjs --self-test :: exit=0 :: USER_ROUND_CONTRACT_SELFTEST verdict=clean cases=45 fixtures=35 alias=1 committedCounts=6 countWitness=1 diagnosticWitness=1 reasonControls=1
+scripts/round-evidence-audit.mjs --selftest :: exit=0 :: } (json; schema=tabi-round-evidence-audit-v1-selftest cases=13 passed=13)
+
+## scope of this receipt
+# covered: the five items above, all at the freeze rev 2e7b7a8920bff47fae6f75c3d06e48e37767099e in a clean clone.
+# not covered by this seat (other seats' instruments): C2's live Firefox/geckodriver leg, the C1 control receipts
+# (c1-J0..J5), the C2 attack battery (c2-J2..J6), and any post-w1 measurement of a revision other than the freeze rev.
