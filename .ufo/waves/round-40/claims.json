@@ -4,52 +4,50 @@
   "round": 40,
   "baseline": "a1b1e939048885d2793759b7f49b10c5c820d70d",
   "amendment": {
-    "supersedesFreeze": "cb35339d81b425f486f9cb34a08111996be61b8a",
-    "kind": "pre-data counter hardening",
-    "reason": "The first counter treated placeholder ss/proc objects marked unavailable with ticks=0 as present when their nonLoopback value was numeric zero. No wave was dispatched and no seat scored data. Revision 2 requires positive observation ticks and refuses `unavailable:true` on every sample and final sweep."
-  },
-  "selftestCorrection": {
-    "supersedes": "5/5 unavailable-surface selftest at predata state",
-    "reason": "Each unavailable mutation in that run also failed sample-span, so it did not isolate the counter change. The revised 10-case test uses a synthetic positive control that both counter versions admit, then mutates one unavailable surface at a time; old counter v1 remains green and amended v2 is red for each case.",
-    "predicateUnchanged": true
+    "supersedesFreezes": ["cb35339d81b425f486f9cb34a08111996be61b8a", "c451a3c401741e5cc34239e0df63d113d86267e5", "8a387c0ca0428cedf6399d097f1fd24321764123"],
+    "kind": "pre-data measured-command provenance hardening",
+    "reason": "Structural receipt scoring alone admitted a synthetic positive copied from the round-39 receipt with timestamp edits. The measured command now invokes the Firefox driver itself for two runs, generates a one-use nonce, checks that the produced receipt and both runs carry it, scores the exact produced receipt, and refuses pre-existing output paths. No seat has been dispatched or scored during these pre-data revisions."
   },
   "axesAtRoundStart": {"adjacency": 8, "operability": 9, "depth": 9, "coverage": 9, "freshness": 9, "calibration": 9},
   "lowestAxis": "adjacency",
-  "stagnationNudge": "All owned axes are at or above saturation 8 and no capability has entered within the three-round window (rounds 37-39); the lowest-axis obligation is waived. C1 is a coverage capability/frontier move.",
+  "stagnationNudge": "All owned axes are at or above saturation 8 and no capability has entered within the three-round window (rounds 37-39); the lowest-axis obligation is waived. C1 is the sole coverage capability/frontier move.",
   "claims": [
     {
       "id": "C1",
       "axis": "coverage",
       "kind": "capability-acquisition",
-      "title": "Playwright Firefox loopback TCP observation with sample-span and fail-closed evidence",
-      "surface": "The Playwright Firefox/Juggler loopback capture, two independent runs, and the round-40 C1 counter over the committed receipt.",
-      "predicate": "two unrefused runs AND each run has >=8 strictly increasing samples whose first-to-last observed timestamp span is >=1000ms AND both ss and proc observations are available with positive ticks on every sample and final sweep AND all observed nonLoopback counts are zero AND per-run owned tree is nonempty AND both runs have identical firstShotSha256 AND both runs have zero survivors and closed fixture port AND browserVersion is bound AND counter rejects the round-39 receipt whose sample spans are below 1000ms",
-      "countingCommand": "node .ufo/waves/round-40/counters/c1-sample-span-v2.mjs <receipt.json>",
-      "before": "At baseline a1b1e939048885d2793759b7f49b10c5c820d70d, the last committed round-39 receipt is refused: exit 1, findings schema, run1-sample-span, run2-sample-span. Its actual first-to-last sample spans are 799 ms and 701 ms; tail-inclusive coverageMs does not satisfy the predicate.",
-      "target": "A new committed round-40 receipt scores predicate=true / exit 0 at delivered revision; the round-39 receipt remains refused / exit 1. Only then may the capability row enter SCORECARD.md.",
-      "killRule": "Either run has fewer than 8 samples, non-increasing/missing timestamps, span below 1000 ms, an unavailable ss/proc object or nonpositive observation ticks, any observed nonLoopback count, empty owned tree, differing firstShotSha256, nonzero/unlisted survivors, open fixture port, unbound browser version, or round-39 receipt reaches exit 0.",
-      "source": "S145 (proc_pid_net(5), reopened 2026-10-27; DESCRIPTION /proc/net/tcp), cited by the run receipt; exact quote/location in corpus/lessons/round-40.md §Gate."
+      "title": "Playwright Firefox loopback TCP observation with actual sample-span and fail-closed evidence",
+      "surface": "The Playwright Firefox/Juggler loopback capture, launched and scored by the round-40 measurement wrapper with two cold runs and per-invocation nonce binding.",
+      "predicate": "measure-c1-round40 invokes the Firefox driver for exactly two Playwright Firefox loopback runs with a fresh 64-hex nonce AND the produced receipt and each run carry that exact invocation nonce AND each run has >=8 strictly increasing samples whose first-to-last observed timestamp span is >=1000ms AND both ss and proc observations are available with positive ticks on every sample and final sweep AND all observed nonLoopback counts are zero AND per-run owned tree is nonempty AND both runs have identical firstShotSha256 AND both runs have zero survivors and closed fixture port AND browserVersion is bound AND the round-39 receipt without the current invocation nonce and with sample spans below 1000ms is refused",
+      "countingCommand": "node scripts/measure-c1-round40.mjs --out corpus/evidence/round40/playwright-egress/receipt.json --scratch /fast/scratch/hyaku/tabi-r40/TabiR40a2/measure",
+      "before": "At baseline a1b1e939048885d2793759b7f49b10c5c820d70d, the committed round-39 receipt lacks a current invocation nonce and has observed sample spans of 799 ms and 701 ms; it is refused by the frozen counter. The old driver has no round-40 fresh-run command.",
+      "target": "The counted command actually runs two new loopback browser sessions, writes a fresh nonce-bound receipt to an exclusive output path, and scores predicate=true / exit 0. Replaying a prior or pre-existing synthetic receipt is refused; only then may the capability row enter SCORECARD.md.",
+      "killRule": "No live driver invocation; absent, stale or mismatched invocation nonce; reused output path; fewer than 8 samples; non-increasing timestamps or observed span below 1000 ms; unavailable ss/proc or nonpositive ticks on any sample/final sweep; nonzero observed nonLoopback count; empty owned tree; differing firstShotSha256; survivors; fixture port not verifiably closed; unbound browserVersion; or round-39 receipt reaches exit 0.",
+      "source": "S145 (proc_pid_net(5), reopened 2026-10-27; DESCRIPTION /proc/net/tcp), cited by the round-40 receipt and lesson Gate."
     }
   ],
   "frozenDigests": {
-    ".ufo/waves/round-40/counters/c1-sample-span-v2.mjs": "d6a224b2dc247529bad333fcfdee1f044eb7aec265ed0196c005602f9799ee7f",
-    ".ufo/waves/round-40/counters/selftest-c1-sample-span-v2.mjs": "9a9aa3976f10e26e41677a9cb7125860bba745f1d4b45777723cbd8ff1637c79"
+    "scripts/playwright-firefox-egress-round39.mjs": "1f8a15f00a85c7a88214a768dbf89e4bc54a01893cd9158ecb0ac6396994545b",
+    "scripts/measure-c1-round40.mjs": "a0e564c7d18bf75d709a6105119a7849a6f78d3364b24f12a3d26981d4ca0735",
+    "scripts/selftest-measure-c1-round40.mjs": "5a0b702d90c37628ff03168112ab585c8a60e6981cc22f6fcbb6a52313995d82",
+    ".ufo/waves/round-40/counters/c1-sample-span-v3.mjs": "0b452eac242803532d81cc2c01025b08ce3b704c74129f8912e7ad2002ef253c"
   },
   "controls": [
     {
-      "name": "c1-round39-noop-v2",
-      "receipt": ".ufo/waves/round-40/controls/c1-round39-noop-v2.json",
-      "result": "predicate=false; exit 1; findings schema, run1-sample-span, run2-sample-span",
-      "purpose": "Re-score the last committed receipt without the claimed round-40 work."
+      "name": "round39-replay-v3",
+      "command": "node .ufo/waves/round-40/counters/c1-sample-span-v3.mjs corpus/evidence/round-39/playwright-egress/receipt.json --nonce <fresh invocation nonce>",
+      "receipt": ".ufo/waves/round-40/controls/c1-round39-replay-v3.json",
+      "result": "exit 1; `run-nonce-mismatch` plus schema and both sample-span findings",
+      "purpose": "The last committed receipt is not output by this run's live driver invocation."
     },
     {
-      "name": "c1-unavailable-surface-selftest-v2",
-      "command": "node .ufo/waves/round-40/counters/selftest-c1-sample-span-v2.mjs corpus/evidence/round-39/playwright-egress/receipt.json .ufo/waves/round-40/counters/c1-sample-span.mjs .ufo/waves/round-40/counters/c1-sample-span-v2.mjs <scratch>",
-      "receipt": ".ufo/waves/round-40/controls/c1-selftest-v2.json",
-      "result": "10/10 cases passed, exit 0: synthetic positive control passes both counters; for each sample/final ss/proc placeholder mutant, old counter v1 exits 0 while amended v2 exits 1 with the exact unavailable finding; the committed round-39 receipt remains exit 1.",
-      "purpose": "Isolated red-before/green-after proof for `unavailable:true,ticks:0,nonLoopback:0`, with the old counter as same-fixture red-before and v2 as sole changed detector."
+      "name": "synthetic-replay-and-counter-selftest-v3",
+      "command": "node scripts/selftest-measure-c1-round40.mjs <explicit scratch>",
+      "receipt": ".ufo/waves/round-40/controls/c1-measure-selftest-v2.json",
+      "result": "7/7 cases passed: parser-only synthetic positive is selftest-only; four unavailable surface mutants are refused; stale round-39 nonce is refused; wrapper refuses a pre-existing synthetic output before starting the browser.",
+      "purpose": "Proves the measured command cannot treat a pre-existing receipt as a new browser run."
     }
   ],
-  "supersededFreezeControls": ["cb35339d81b425f486f9cb34a08111996be61b8a: c1-round39-noop.json; valid span red, but unavailable-placeholder false green not tested"],
+  "supersededProbe": "The earlier structural-counter synthetic positive (v1/v2) is retained as a parser-only selftest. It is not a claim pass; the operative claim counts only the live measurement wrapper invocation and nonce-bound receipt.",
   "toolInstalls": []
 }

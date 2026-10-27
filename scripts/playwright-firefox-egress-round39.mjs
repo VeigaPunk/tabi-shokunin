@@ -34,7 +34,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const PLAYWRIGHT = '/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/lib/node_modules/playwright';
 const PW_VERSION = JSON.parse(readFileSync(join(PLAYWRIGHT, 'package.json'), 'utf8')).version;
 const FIREFOX_BIN = '/home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/firefox';
-const SCHEMA = 'tabi-pw-firefox-egress-receipt-v2';
+const ROUND40 = process.argv.includes('--round40');
+const SCHEMA = ROUND40 ? 'tabi-pw-firefox-egress-receipt-r40' : 'tabi-pw-firefox-egress-receipt-v2';
 const SAMPLE_MS = 100;
 const POST_CLOSE_TAIL_MS = 600;
 
@@ -114,9 +115,16 @@ function ownedTree(roots) {
 // --- socket observation, surface 1: ss -Htnp --------------------------------
 // Returns { ticks, lines, nonLoopback, byPid } for the owned pid set.
 function observeSs(tree) {
-  const txt = sh('ss -Htnp 2>/dev/null');
-  if (!txt) return null; // surface unavailable
-  const pidRe = new RegExp(`pid=(?:${tree.join('|')})[,\)]`);
+  let txt;
+  if (ROUND40) {
+    const r = spawnSync('ss', ['-Htnp'], { encoding: 'utf8', maxBuffer: 8 << 20 });
+    if (r.error || r.status !== 0) return null;
+    txt = r.stdout;
+  } else {
+    txt = sh('ss -Htnp 2>/dev/null');
+    if (!txt) return null;
+  }
+  const pidRe = new RegExp(`pid=(?:${tree.join('|')})[,\\)]`);
   const lines = txt.split('\n').filter((l) => l.trim() && pidRe.test(l));
   let nonLoopback = 0;
   for (const l of lines) {
@@ -192,11 +200,11 @@ function isLoopbackHexRem(rem) {
 }
 // Returns { ticks, inodes, nonLoopback } or null when the surface is unavailable.
 function observeProc(tree) {
-  let anyReadable = false;
   let inodes = 0;
   let nonLoopback = 0;
   const nets = [parseProcNet('/proc/net/tcp'), parseProcNet('/proc/net/tcp6')];
-  for (const n of nets) if (n !== null) anyReadable = true;
+  if (ROUND40 && nets.some((n) => n === null)) return null;
+  const anyReadable = nets.some((n) => n !== null);
   if (!anyReadable) return null;
   for (const pid of tree) {
     const s = socketInodesOfPid(pid);
@@ -218,6 +226,7 @@ function observeProc(tree) {
 function sampleSockets(tree) {
   const ss = observeSs(tree);
   const pr = observeProc(tree);
+  if (ROUND40 && (ss === null || pr === null)) return { unavailable: true };
   if (ss === null && pr === null) return { unavailable: true };
   return {
     t: Date.now(),
@@ -226,8 +235,8 @@ function sampleSockets(tree) {
   };
 }
 
-async function runOnce({ runName, profileRoot }) {
-  const rec = { name: runName, cmds: [], events: [], refused: false, refuseReason: null };
+async function runOnce({ runName, profileRoot, runNonce }) {
+  const rec = { name: runName, cmds: [], events: [], refused: false, refuseReason: null, runNonce };
   const server = createServer((req, res) => {
     rec.events.push({ method: 'http.request', url: req.url });
     if (req.url === '/' || req.url === '/a.html') { res.end(FIXTURE); return; }
@@ -251,14 +260,14 @@ async function runOnce({ runName, profileRoot }) {
   if (roots.length === 0 || tree0.length === 0) {
     rec.refused = true; rec.refuseReason = 'owned pid set empty at launch (no child of this node process names ms-playwright/firefox)';
     try { await browser.close(); } catch {}
-    server.close();
+    if (ROUND40) await new Promise((resolveClose) => server.close(resolveClose)); else server.close();
     return rec;
   }
   rec.owned = { nodePid: process.pid, roots, tree: tree0, source: 'children of this node process naming ms-playwright/firefox + ps -eo pid=,ppid= descendant walk' };
   if (preflight.unavailable) {
     rec.refused = true; rec.refuseReason = 'no socket observation surface readable (ss and /proc/net both unavailable)';
     try { await browser.close(); } catch {}
-    server.close();
+    if (ROUND40) await new Promise((resolveClose) => server.close(resolveClose)); else server.close();
     return rec;
   }
 
@@ -312,10 +321,16 @@ async function runOnce({ runName, profileRoot }) {
     step('http.witnessed', { requests: rec.httpLog.length });
     step('console.quiet', { errors: rec.events.filter((e) => e.method === 'console' && (e.type === 'error')).length });
     step('tree.size', { owned: rec.owned.tree.length });
+    if (ROUND40) {
+      const spanDeadline = Date.now() + 4000;
+      while (!sampleError && (rec.samples.length < 2 || rec.samples.at(-1).t - rec.samples[0].t < 1000) && Date.now() < spanDeadline) await sleep(20);
+      if (!sampleError && (rec.samples.length < 2 || rec.samples.at(-1).t - rec.samples[0].t < 1000)) sampleError = new FailClosed('observed sample span did not reach 1000 ms');
+    }
   } finally {
     try { await browser.close(); } catch {}
     clearInterval(sampler);
-    server.close();
+    if (ROUND40) await new Promise((resolveClose) => server.close(resolveClose));
+    else server.close();
     await sleep(POST_CLOSE_TAIL_MS);
   }
   rec.coverageMs = Date.now() - t0;
@@ -329,7 +344,11 @@ async function runOnce({ runName, profileRoot }) {
   rec.finalSweep = sampleSockets(rec.owned.tree);
   rec.survivorPids = rec.owned.tree.filter((p) => existsSync(`/proc/${p}`));
   rec.survivors = rec.survivorPids.length;
-  rec.portClosed = (sh(`ss -ltn 2>/dev/null | grep -c ':${port} '`) || '0') === '0';
+  if (ROUND40) {
+    const l = spawnSync('ss', ['-Hlt'], { encoding: 'utf8', maxBuffer: 8 << 20 });
+    rec.portClosed = !l.error && l.status === 0 && !l.stdout.split('\n').some((line) => line.includes(`:${port}`));
+    if (!rec.portClosed) { rec.refused = true; rec.refuseReason = 'fixture listen-port closure unavailable or still listening'; }
+  } else rec.portClosed = (sh(`ss -ltn 2>/dev/null | grep -c ':${port} '`) || '0') === '0';
   const sum = (k, f) => rec.samples.reduce((a, s) => a + (s[k] ? s[k][f] : 0), 0);
   rec.sockets = {
     ss: { observations: sum('ss', 'lines'), nonLoopback: sum('ss', 'nonLoopback') },
@@ -343,26 +362,31 @@ async function runOnce({ runName, profileRoot }) {
 
 async function main() {
   const argv = process.argv.slice(2);
-  let out = null, runs = 2;
+  let out = null, runs = 2, scratchArg = null, nonce = null;
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--out') out = argv[++i];
     else if (argv[i] === '--runs') runs = Number(argv[++i]);
+    else if (argv[i] === '--scratch') scratchArg = argv[++i];
+    else if (argv[i] === '--nonce') nonce = argv[++i];
   }
-  if (!out) { console.error('usage: --out <receipt.json> [--runs N]'); process.exit(64); }
-  const S = mkdtempSync(join(process.env.HYAKU_SCRATCH || tmpdir(), 'tabi-r39-pwegress-'));
+  if (!out || (ROUND40 && (!scratchArg || !/^[0-9a-f]{64}$/.test(nonce || '') || runs !== 2 || existsSync(out)))) { console.error('usage: --out <fresh receipt.json> [--runs 2] [--round40 --scratch <dir> --nonce <64-hex one-use-token>]'); process.exit(64); }
+  const scratchRoot = ROUND40 ? scratchArg : (process.env.HYAKU_SCRATCH || tmpdir());
+  if (ROUND40) mkdirSync(scratchRoot, { recursive: true });
+  const S = mkdtempSync(join(scratchRoot, ROUND40 ? 'tabi-r40-pwegress-' : 'tabi-r39-pwegress-'));
   const profiles = join(S, 'profiles'); mkdirSync(profiles, { recursive: true });
   process.on('exit', () => { try { rmSync(S, { recursive: true, force: true }); } catch {} });
   const receipt = {
     schema: SCHEMA,
-    driver: 'scripts/playwright-firefox-egress-round39.mjs',
+    driver: ROUND40 ? 'scripts/playwright-firefox-egress-round39.mjs --round40' : 'scripts/playwright-firefox-egress-round39.mjs',
     measuredAt: new Date().toISOString(),
     playwrightVersion: PW_VERSION,
     fixture: { sha256: FIXTURE_SHA, bytes: FIXTURE.length },
+    ...(ROUND40 ? { runNonce: nonce } : {}),
     runs: [],
   };
   let anyRefused = false;
   for (let i = 0; i < runs; i += 1) {
-    const r = await runOnce({ runName: `run${i + 1}`, profileRoot: profiles });
+    const r = await runOnce({ runName: `run${i + 1}`, profileRoot: profiles, runNonce: nonce });
     receipt.runs.push(r);
     if (r.refused) anyRefused = true;
   }
@@ -376,8 +400,8 @@ async function main() {
     receipt.userAgent = receipt.runs[0].userAgent;
     receipt.binary = receipt.runs[0].binary;
   }
-  writeFileSync(out, JSON.stringify(receipt, null, 1) + '\n');
-  console.log(JSON.stringify({ wrote: out, runs: receipt.runs.length, refused: receipt.refused, binding: receipt.binding, egress: receipt.egressNonLoopback, survivors: receipt.survivors, firstShot: receipt.runs.map((r) => r.firstShotSha256) }));
+  writeFileSync(out, JSON.stringify(receipt, null, 1) + '\n', ROUND40 ? { flag: 'wx' } : undefined);
+  console.log(JSON.stringify({ wrote: out, runs: receipt.runs.length, refused: receipt.refused, binding: receipt.binding, egress: receipt.egressNonLoopback, survivors: receipt.survivors, firstShot: receipt.runs.map((r) => r.firstShotSha256), runNonce: receipt.runNonce }));
   process.exit(anyRefused ? 1 : 0);
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((e) => { console.error(e); process.exit(1); });
