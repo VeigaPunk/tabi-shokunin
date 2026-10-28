@@ -2240,3 +2240,56 @@ this round's work. Wave w1 (one policy-v2 wave, 64 seats, attack 23/64) was vali
 and dispatched through the ready handoff at 12:20 -03 with the dispatch JSON carrying
 `taskCall` (the r41 defect); results and dispositions land after WAVE-DONE. No
 predicate is amended after any seat scores.
+
+## Round 42 — executed disposition (both claims refused under the frozen rules; admission false)
+
+Measured at integration revision `435b64c90406e46a0e3573a36744110420f862f4` (wave
+results, TSV, lesson, QUALITY 104–105, registry flips, census end); final counter
+receipts `.ufo/waves/round-42/controls/c2-final-r42.json`. Freeze `9b6de3a19de11abdb80e82a1310abc64a40215bb`
+was never amended after seat data; baseline `34e177959d1b7ce04afb85a001420e02631ce79e`.
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 coverage capability | `node scripts/measure-c1-round41.mjs --out corpus/evidence/round42/playwright-egress/receipt.json --scratch /fast/scratch/hyaku/tabi-r42/L1-measure/run` | Baseline tree count 0 + r41-replay refusal → live run exit 0, predicate true, spans 16,356/17,790 ms, battery 6/6, replays refuse — then four seats (CritC1Reach, CritC1Witness, RevWitnessProbe, MutC1Counter) demonstrated the frozen counter greens nonce-relabeled committed receipts and fully synthetic receipt+witness pairs with zero browser runs | **not admitted — kill rule fired** (do-nothing reach); coverage held 9 → 9; no capability row; authenticity fix routed to r43 (QUALITY criterion 104) |
+| C2 calibration | `node .ufo/waves/round-42/counters/check-routed-defects-round42.mjs --rev 435b64c90406e46a0e3573a36744110420f862f4 --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json` | Baseline red (7 findings) → exit 0, predicate true, findings [] at `435b64c` (D1–D4 closed in committed bytes; all 38 TSV evidence paths verified blobs) — but CritPredicateSentence/RevC2Freeze showed the counter accepts tree objects where the sentence says "committed blob", and CritC2Ledger V0 greens a self-consistent fabrication | **not met as worded** (counter-proxy defect + fabrication limb; exit 0 recorded as instrument pass, not admission); calibration held 9 → 9; blob check + pinned measure blob + verdict-probe routed to r43 |
+
+The routed-defect VALUE is real and landed regardless of claim admission: r41
+verifier defects D1–D4 are closed in committed bytes, each seat-verified
+(`RevReceiptBytes`, `ExecQuoteVerify`, `ExecBaselineCount`, 38 fresh quarantine
+verdicts with `RevQuarCross` 7/8 independent agreement). `check-sources.mjs` is
+clean; `check-c2-knowledge-round41.mjs` is recorded red (frozen pins vs the routed
+D2 fix — operator ruling requested; see lesson Mistakes 6).
+
+### Round 42 — waves and seats
+
+One policy-v2 wave `w1`: **64 seats, one dispatch, WAVE-DONE, zero dead seats, 64/64
+nonempty reports with VERDICT lines (21 ok / 43 finding).** Role mix exact: scout 20,
+mutation-tester 9, executor 9, reviewer 8, critic 6, scribe 5, connector 4, sentinel
+1, simplifier 1, revenger 1; attack share 23/64 (35.9%). L1 held the canonical
+planner seat. The orchestrator consumed the ready file manually after the inline
+dispatcher stalled ~18 min (kama r61 precedent); dispatch JSON carried `taskCall`
+(`ExecWaveAudit` verified — the r41 defect class did not recur). Round total 64; no
+residual call. Evidence: `w1-results.json`, `w1-parse-summary.json`, `w1/<Seat>/`.
+
+### Round 42 — capabilities / planned / saturation / retired
+
+No capability row entered (C1 refused). No axis retired; saturation stays 8 / window 3.
+The stagnation nudge remains active for round 43 (no capability entered rounds 39–42).
+
+- Planned for round 43 (routed, from this round's seats): (1) C1 receipt authenticity
+  — wrapper signs the receipt with a per-invocation key, public half pinned in
+  claims.json; counter refuses unpinned `--pins` and substituted counter copies
+  (criterion 104); (2) C2 hardening — `cat-file -t blob` before size floors, pinned
+  measure blob id `8ff64d69…`, CritC2Ledger's verdict-probe (0/38 on V0); (3) the
+  r41 standing-gate conflict (`check-c2-knowledge-round41` pins vs the routed D2
+  fix) needs an operator ruling — file with the r27 L0 question; (4) RevC1Battery's
+  gate vectors beyond the 18 named ones; (5) r43 claims must be re-frozen fresh —
+  this round's instruments may not be widened post-data.
+
+### Round 42 — trend verdicts
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | New admitted note `corpus/knowledge/committed-bytes-verification-round-42.md` on ground the coverage map did not hold (committed-bytes verification instrument class), citing newly opened mined S149; S148 correction row added; coverage row appended. `ls corpus/knowledge/*.md \| wc -l` 58 → 59. |
+| quality | improved | r41 verifier defects D1–D4 closed with red→green proofs (baseline red control → committed repairs, checker findings 7 → 0); S146 superseded by S148 (non-verbatim quote corrected); D3 control populated; no admitted entry failed a re-check; QUALITY criteria 104–105 added from observed failures. |
+| discernment | unchanged | The 38-row re-adjudication and RevQuarCross's 7/8 independent agreement are lane-internal; the outside non-author admit/reject spot-check remains the closure's duty (pending as of filing). The S135 disagreement is captured as criterion 105 rather than smoothed. |
