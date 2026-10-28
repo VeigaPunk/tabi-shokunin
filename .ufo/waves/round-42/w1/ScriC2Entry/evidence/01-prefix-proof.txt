@@ -1,0 +1,39 @@
+# Prefix-preservation proof — corpus/knowledge/environment-injection-measurement-integrity-round-41.md
+# subject rev HEAD: 0081bfdb93b6bd1bf2853bb128996f1a976b7218
+# baseline rev:    34e177959d1b7ce04afb85a001420e02631ce79e
+
+$ git show 34e1779...:corpus/knowledge/...md | wc -c
+6642
+$ wc -c corpus/knowledge/...md
+7459 corpus/knowledge/environment-injection-measurement-integrity-round-41.md
+
+$ sha256sum <baseline blob>
+b039365670f915ef7d99df47c708e44ec110ab1bad9f9d868b26503d507adb05  -
+$ sha256sum <current file>
+6d34d4555d913906bcb485694bc1eb6c04acd744a96de8525dde58d463352056  corpus/knowledge/environment-injection-measurement-integrity-round-41.md
+$ head -c 6642 <current> | sha256sum   # prefix of current file
+b039365670f915ef7d99df47c708e44ec110ab1bad9f9d868b26503d507adb05  -
+
+$ git show <baseline> > base.md; cmp -l base.md <current>
+cmp: EOF on /fast/scratch/hyaku/tabi-r42/ScriC2Entry/base.md after byte 6642
+cmp_exit=1
+
+$ head -c 6642 <current> | cmp base.md -
+PREFIX_IDENTICAL_6642
+
+APPEND_START: 0-based byte offset 6642 / 1-based byte 6643 (cmp reports EOF on baseline after byte 6642: every byte 1..6642 matches)
+$ git diff --numstat 34e1779..HEAD -- <file>   # additions<TAB>deletions
+13	0	corpus/knowledge/environment-injection-measurement-integrity-round-41.md
+$ git diff --unified=0 34e1779..HEAD -- <file>   # hunk headers only
+@@ -71,0 +72,13 @@ in 0.06 s, and the frozen wrapper + counter returned `predicate=true`.
++## Errata (round 42, 2026-10-28 — quote fidelity, r41 verifier defect D2)
++The registry quote first carried for S146 ("A space-separated list of
++command-line options; interpreted before command-line options") spliced two
++source fragments with a semicolon and is not a verbatim substring of the
++committed staged copy (`.ufo/waves/round-41/sources/node-cli-v24.21.0.html`,
++§`NODE_OPTIONS=options...`). Per the SOURCES append-only contract the
++correction is a new row: **S148** (`supersedes S146 — A space-separated list
++of command-line options.`, verbatim, 7 words); S146 status changed
++`mined` → `rejected` and its `used-by` moved to `corpus/lessons/round-42.md`
++(old→new logged in the round-42 lesson). This entry's loader-channel source
++is S148; S147 is unchanged. No measured claim in this entry changes.

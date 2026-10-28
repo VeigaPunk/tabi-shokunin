@@ -1,0 +1,34 @@
+# lane facts, tabi-shokunin @ 0081bfdb93b6bd1bf2853bb128996f1a976b7218, 2026-10-28, read-only
+
+$ git ls-tree -r -l HEAD -- corpus/evidence/round41/playwright-egress/
+100644 blob 7b2ece05dc30cf1ba33724c8f8bb41e002ff7aff 1167198	corpus/evidence/round41/playwright-egress/receipt.json
+100644 blob 5930d20f82348be349e64565a3df74b20642d0a1 1153988	corpus/evidence/round41/playwright-egress/receipt.witness.json
+
+$ git ls-tree -r --name-only 34e177959d1b7ce04afb85a001420e02631ce79e -- corpus/evidence/round41/ | wc -l
+0
+
+$ git ls-tree -r --name-only ef41e539 -- corpus/evidence/round41/playwright-egress | wc -l
+0
+
+$ jj config list --repo | grep -i snapshot
+snapshot.auto-track = "none()"
+
+$ jj config get snapshot.max-new-file-size
+1MiB
+
+$ git rev-parse --abbrev-ref HEAD
+HEAD
+
+$ git ls-remote origin | grep -E 'refs/heads/(main|master)'
+0081bfdb93b6bd1bf2853bb128996f1a976b7218	refs/heads/master
+
+$ git for-each-ref refs/replace | wc -l
+0
+
+$ ls -la corpus/knowledge/knowledge
+lrwxrwxrwx 1 vgpnk vgpnk 61 Oct 28 12:39 corpus/knowledge/knowledge -> /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/
+
+$ for r in HEAD 9b6de3a19de11abdb80e82a1310abc64a40215bb 34e177959d1b7ce04afb85a001420e02631ce79e; do printf '%s -> ' $r; git ls-tree -r --name-only $r -- corpus/lessons/round-42.md | wc -l; done
+HEAD -> 0
+9b6de3a19de11abdb80e82a1310abc64a40215bb -> 0
+34e177959d1b7ce04afb85a001420e02631ce79e -> 0

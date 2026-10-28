@@ -1,0 +1,23 @@
+# replace-ref experiment, scratch clone (--no-local --depth 1) of tabi-shokunin
+# lane HEAD under test:
+0081bfdb93b6bd1bf2853bb128996f1a976b7218
+
+$ git cat-file -s HEAD:.ufo/waves/round-42/sources/git-ls-tree.html
+38955
+
+$ git replace $(git rev-parse HEAD:.ufo/waves/round-42/sources/git-ls-tree.html) 01118cde139fe950b32dea4d1e6105d56afd0d88
+
+$ git for-each-ref refs/replace
+01118cde139fe950b32dea4d1e6105d56afd0d88 blob	refs/replace/690e385e36085dbea505c08b9c4f8fe873928fa2
+
+$ git cat-file -s HEAD:.ufo/waves/round-42/sources/git-ls-tree.html
+18
+
+$ GIT_NO_REPLACE_OBJECTS=1 git cat-file -s HEAD:.ufo/waves/round-42/sources/git-ls-tree.html
+38955
+
+$ git show HEAD:.ufo/waves/round-42/sources/git-ls-tree.html | sha256sum
+48fb0fdb40ea54c0c14578e93c110373c2d1f58f77a59893823ba5f24f64217c  -
+
+$ GIT_NO_REPLACE_OBJECTS=1 git show HEAD:.ufo/waves/round-42/sources/git-ls-tree.html | sha256sum
+2c298383476164238c6e25ba804412a335c405ab9540650bb603778e2f4f8b64  -

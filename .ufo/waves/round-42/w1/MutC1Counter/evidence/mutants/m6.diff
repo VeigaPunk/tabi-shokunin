@@ -1,0 +1,12 @@
+--- pristine.mjs	2026-10-28 12:38:00.697660343 -0300
++++ m6.mjs	2026-10-28 12:39:10.358663383 -0300
+@@ -27,7 +27,8 @@
+   const runs = Array.isArray(receipt.runs) ? receipt.runs : [];
+ 
+   if (receipt.schema !== SCHEMA) findings.push('schema');
+-  if (!/^[0-9a-f]{64}$/.test(nonce || '') || receipt.runNonce !== nonce || runs.some((r) => r.runNonce !== nonce)) findings.push('run-nonce-mismatch');
++  // M6: nonce equality against receipt and runs skipped
++  if (!/^[0-9a-f]{64}$/.test(nonce || '')) findings.push('run-nonce-mismatch');
+   if (receipt.refused !== false || runs.length !== 2) findings.push('run-set');
+ 
+   // F4: the driver's exec-time environment was clean and nonce-bound.

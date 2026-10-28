@@ -1,0 +1,70 @@
+# tabi's own frozen measurement-binding gate vs the frozen C2 checker, on identical bytes
+
+instrument: scripts/check-measurement-binding.mjs (SKILL.md:2476, kind=gate, self-test cases=76,
+            reasons=13; registry-conformant at 0081bfdb93b6bd1bf2853bb128996f1a976b7218)
+C2 checker: .ufo/waves/round-42/counters/check-routed-defects-round42.mjs
+            sha256 b1d05df17137bfcf4db9c6d2851108e1313cf2229167b8b521fee2aa1c76b4a8
+
+All manifests below are NEW files in scratch. They add an attestation; they do not change the
+checker, claims.json, the predicate sentence, or the kill rule.
+
+## 1. Attestation passes on the lane's real bytes (the move is available, not hypothetical)
+
+$ node scripts/check-measurement-binding.mjs --check <c2-binding> --at 0081bfdb93b6bd1bf2853bb128996f1a976b7218 --json --repo /home/vgpnk/Projects/shokunin/tabi-shokunin
+clean bound=1 findings=[]
+exit=0
+
+declared counter : .ufo/waves/round-42/counters/check-routed-defects-round42.mjs @ measuredRevision 9b6de3a
+declared inputs  : the 7 committed blobs the r1/r2/r3/r4 clauses actually read
+                   (receipt.json, receipt.witness.json, c1-measure.json, staged node-cli html,
+                    c1-baseline-noop.out, corpus/SOURCES.md, quarantine/slice-ids.txt)
+checked          : counter digest at measuredRevision AND at REV, measuredRevision ancestry,
+                   counted-input drift measuredRevision->REV, argv shape
+
+## 2. Measured limit: --reproduce cannot be used on a findings-counter
+
+$ ... --check <c2-binding> --at 0081bfdb93b6bd1bf2853bb128996f1a976b7218 --reproduce --json
+counter_failed :: arm=0081bfdb93b6bd1bf2853bb128996f1a976b7218 argv=["node",".ufo/waves/round-42/counters/check-routed-defects-round42.mjs","--rev","{REV}","--repo","/h
+counter_failed :: arm=34e177959d1b7ce04afb85a001420e02631ce79e argv=["node",".ufo/waves/round-42/counters/check-routed-defects-round42.mjs","--rev","{REV}","--repo","/h
+reason: the reproduce arm requires exit 0 on BOTH arms; a findings-counter exits 1 on a red arm
+(verify: `--rev 34e1779` -> findingCount 7, exit 1). So this attestation is digest-and-drift only,
+NOT re-execution. Stated, not hidden.
+
+## 3. Teeth: a post-freeze edit of the checker is caught
+
+fixture /fast/scratch/hyaku/tabi-r42/ConnSiblingLedger/teeth : commit1 = the exact freeze bytes; commit2 = one appended comment line.
+$ ... --check <teeth-binding> --at 85b48bbcff48f5db16eeae4b3dc1d7d611bf165b --json --repo <teeth>
+counted_input_changed :: paths=.ufo/waves/round-42/counters/check-routed-defects-round42.mjs
+counter_changed_since_measurement :: counter=.ufo/waves/round-42/counters/check-routed-defects-round42.mjs recorded=b1d05df17137bfcf4db9c6d2851108e1313cf2229167b8b521fee2aa1c76b4a8 blob_at_at=3d8532e0b675905
+exit=1
+
+## 4. Head-to-head on the same forged revision: C2 greens, binding gate refuses
+
+fixture /fast/scratch/hyaku/tabi-r42/ConnSiblingLedger/forge2:
+  commit1 = the lane's REAL committed r41 receipt, witness, measure record, staged html,
+            baseline control, SOURCES.md, slice-ids.txt, and the frozen C2 checker (genuine)
+  commit2 = fabricated receipt/witness ({"browser_runs": [], "note": "no browser ran"} + pad),
+            c1-measure.json rewritten to the fabricated digests, plus a 38-row junk TSV
+
+  $ node .ufo/waves/round-42/counters/check-routed-defects-round42.mjs --rev 99a276ca0847978eb46903a3050a0c94bcc3eee9 --repo <forge2> --json
+  predicate=True  exit=0
+  -> the frozen C2 predicate is TRUE on a revision where no browser ever ran
+
+  $ node scripts/check-measurement-binding.mjs --check <forge2-binding> --at 99a276ca0847978eb46903a3050a0c94bcc3eee9 --json --repo <forge2>
+counted_input_changed :: paths=.ufo/waves/round-41/measure/c1-measure.json,.ufo/waves/round-42/quarantine/re-adjudication.tsv,corpus/evidence/round41/playwright-egress/receipt.json,corpus/evidenc
+counted_inputs_undeclared :: countedInput=.ufo/waves/round-42/quarantine/re-adjudication.tsv resolves to no tree entry at measuredRevision=1e66a468b9edf9785f83900edf855ac5aba3e275
+  exit=1
+
+## 5. Same, on the earlier forged fixture (also refused)
+
+  $ ... --check <forge-binding> --at 9536e09eea44320c9535d35775516dfde3511a3f --json --repo <forge>
+counted_input_changed :: paths=.ufo/waves/round-41/measure/c1-measure.json,corpus/evidence/round41/playwright-egress/receipt.json,corpus/evidence/round41/playwright-egress/rec
+counter_changed_since_measurement :: counter=.ufo/waves/round-42/counters/check-routed-defects-round42.mjs recorded=b1d05df17137bfcf4db9c6d2851108e1313cf2229167b8b521fee2aa1c76b4a8 blob_a
+counter_digest_mismatch :: counter=.ufo/waves/round-42/counters/check-routed-defects-round42.mjs recorded=b1d05df17137bfcf4db9c6d2851108e1313cf2229167b8b521fee2aa1c76b4a8 blob_a
+
+## reading
+
+tabi already owns a frozen, registered, self-tested instrument that refuses the exact revision its
+own round-42 C2 checker accepts. That is the sibling-overlap finding in its sharpest form: the
+missing check is not a missing capability, it is an unapplied one. The attestation is an added
+evidence file, so it closes the r1 self-reference without amending a frozen byte.

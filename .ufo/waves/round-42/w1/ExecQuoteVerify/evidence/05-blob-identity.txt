@@ -1,0 +1,16 @@
+# The three inputs used for extraction are byte-identical to the committed blobs at REV,
+# so every quote above is measured against committed bytes, not a working tree.
+# cmd:
+cd /home/vgpnk/Projects/shokunin/tabi-shokunin && for p in corpus/SOURCES.md .ufo/waves/round-41/sources/node-cli-v24.21.0.html .ufo/waves/round-42/sources/git-ls-tree.html; do a=$(git rev-parse 9b6de3a19de11abdb80e82a1310abc64a40215bb:$p); echo "blob $a $p"; done
+blob 962773c3786de0ddc0eb10c47fdafc4f7e738d5e corpus/SOURCES.md
+blob 2f1f21a2c2b46a1a35dbed751ee932c97a36d1df .ufo/waves/round-41/sources/node-cli-v24.21.0.html
+blob 690e385e36085dbea505c08b9c4f8fe873928fa2 .ufo/waves/round-42/sources/git-ls-tree.html
+
+# cmd:
+git hash-object /fast/scratch/hyaku/tabi-r42/ExecQuoteVerify/SOURCES.md /fast/scratch/hyaku/tabi-r42/ExecQuoteVerify/node-cli.html /fast/scratch/hyaku/tabi-r42/ExecQuoteVerify/git-ls-tree.html
+962773c3786de0ddc0eb10c47fdafc4f7e738d5e
+2f1f21a2c2b46a1a35dbed751ee932c97a36d1df
+690e385e36085dbea505c08b9c4f8fe873928fa2
+# identical, in order.
+
+# sizes: node-cli-v24.21.0.html 281098 bytes; git-ls-tree.html 38955 bytes; SOURCES.md 16384 bytes (file listing)

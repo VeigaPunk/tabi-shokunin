@@ -1,0 +1,13 @@
+# fontconfig attacker config reach (FONTCONFIG_FILE is allowlisted -> reaches the Firefox child)
+$ env -i PATH=/usr/bin:/bin HOME=/home/vgpnk FONTCONFIG_FILE=/fast/scratch/hyaku/tabi-r42/RevC1Battery/fonts.conf fc-match
+Fontconfig error: Cannot load config file "/fast/scratch/hyaku/tabi-r42/RevC1Battery/included-by-attacker.conf": File not found: /fast/scratch/hyaku/tabi-r42/RevC1Battery/included-by-attacker.conf
+Fontconfig error: Cannot load config file from /fast/scratch/hyaku/tabi-r42/RevC1Battery/fonts.conf
+LiberationSans-Regular.ttf: "Liberation Sans" "Regular"
+exit=0
+
+# attacker config bytes:
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+<fontconfig>
+  <include ignore_missing="no">/fast/scratch/hyaku/tabi-r42/RevC1Battery/included-by-attacker.conf</include>
+</fontconfig>

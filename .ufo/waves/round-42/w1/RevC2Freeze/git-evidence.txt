@@ -1,0 +1,242 @@
+
+===== A1. commit ordering (newest first) =====
+0081bfdb93b6bd1bf2853bb128996f1a976b7218 2026-10-28T12:26:20-03:00 round-42: SCORECARD declared-claims section (frozen predicates, C1/C2)
+236c4f49f6cf8be7fd2efc71c7e89b7465b47a27 2026-10-28T12:23:38-03:00 round-42: C1 live measurement (predicate true, spans 16356/17790ms) + battery/replay controls; C1/C2 pre-data controls; wave w1 spec+dispatch(64 seats, attack 23/64)+registry+ready; LOG pre-dispatch entry
+9b6de3a19de11abdb80e82a1310abc64a40215bb 2026-10-28T12:07:26-03:00 round-42: freeze C1 (capability admission attempt) + C2 (routed-defects ledger) claims and checker; land r41 defects D1 (commit receipt/witness bytes), D2 (S148 supersedes S146, S146 rejected), D3 (baseline control populated); open S149; baseline red control 34e1779
+34e177959d1b7ce04afb85a001420e02631ce79e 2026-10-28T08:58:58-03:00 round-41 verifier spot-check (integrator, hyaku): non-author admit/reject
+
+===== A1. ancestry: freeze -> dispatch -> HEAD =====
+PASS: freeze is an ancestor of dispatch 236c4f49f6cf8be7fd2efc71c7e89b7465b47a27
+PASS: freeze is an ancestor of HEAD
+
+===== A1. commits between freeze and dispatch (reverse) =====
+236c4f49f6cf8be7fd2efc71c7e89b7465b47a27 2026-10-28T12:23:38-03:00 round-42: C1 live measurement (predicate true, spans 16356/17790ms) + battery/replay controls; C1/C2 pre-data controls; wave w1 spec+dispatch(64 seats, attack 23/64)+registry+ready; LOG pre-dispatch entry
+
+===== A1. round-42 w1 seat data present in the freeze tree (must be empty) =====
+[end of listing]
+
+===== A1. round-42 files present at the freeze commit =====
+.ufo/waves/round-42/claims.json
+.ufo/waves/round-42/controls/c1-baseline-tree-count.txt
+.ufo/waves/round-42/controls/c2-baseline-red.exit
+.ufo/waves/round-42/controls/c2-baseline-red.json
+.ufo/waves/round-42/counters/check-routed-defects-round42.mjs
+.ufo/waves/round-42/measure/census-start.err
+.ufo/waves/round-42/measure/census-start.exit
+.ufo/waves/round-42/measure/census-start.out
+.ufo/waves/round-42/quarantine/slice-derivation.txt
+.ufo/waves/round-42/quarantine/slice-ids.txt
+.ufo/waves/round-42/quarantine/slice-raw.txt
+.ufo/waves/round-42/sources/git-ls-tree.html
+
+===== A2. frozen blob identities: claims.json =====
+freeze   53445f632acf24d3a816514b89268144122cc898
+HEAD     53445f632acf24d3a816514b89268144122cc898
+worktree 53445f632acf24d3a816514b89268144122cc898
+sha256(worktree bytes) ce7b56799cae7593d315330ffce460ac9236c1f343e40cf7212f334f7fd41d7a
+
+===== A2. frozen blob identities: counter =====
+freeze   df98d84e765c69a6db50781e4eff4c7d88abfa47
+HEAD     df98d84e765c69a6db50781e4eff4c7d88abfa47
+worktree df98d84e765c69a6db50781e4eff4c7d88abfa47
+
+===== A2. every commit on every ref that touched claims.json or the counter =====
+6cc6826748d4762279f72329cfbca50668a91e04 2026-10-28T12:07:26-03:00 
+9b6de3a19de11abdb80e82a1310abc64a40215bb 2026-10-28T12:07:26-03:00 round-42: freeze C1 (capability admission attempt) + C2 (routed-defects ledger) claims and checker; land r41 defects D1 (commit receipt/witness bytes), D2 (S148 supersedes S146, S146 rejected), D3 (baseline control populated); open S149; baseline red control 34e1779
+0ddc6f79232bdca9a0615e6f152135f817aece10 2026-10-28T12:07:25-03:00 
+c4bea528c4aaf460a717a0c91913107dd63d4885 2026-10-28T12:07:25-03:00 
+--
+6cc6826748d4762279f72329cfbca50668a91e04 2026-10-28T12:07:26-03:00 
+9b6de3a19de11abdb80e82a1310abc64a40215bb 2026-10-28T12:07:26-03:00 round-42: freeze C1 (capability admission attempt) + C2 (routed-defects ledger) claims and checker; land r41 defects D1 (commit receipt/witness bytes), D2 (S148 supersedes S146, S146 rejected), D3 (baseline control populated); open S149; baseline red control 34e1779
+0ddc6f79232bdca9a0615e6f152135f817aece10 2026-10-28T12:07:25-03:00 
+c4bea528c4aaf460a717a0c91913107dd63d4885 2026-10-28T12:07:25-03:00 
+-- claims.json blob per such commit (all must equal the freeze blob):
+6cc6826748d4762279f72329cfbca50668a91e04 53445f632acf24d3a816514b89268144122cc898
+9b6de3a19de11abdb80e82a1310abc64a40215bb 53445f632acf24d3a816514b89268144122cc898
+0ddc6f79232bdca9a0615e6f152135f817aece10 53445f632acf24d3a816514b89268144122cc898
+c4bea528c4aaf460a717a0c91913107dd63d4885 53445f632acf24d3a816514b89268144122cc898
+
+===== A2. C2 predicate sentence as frozen (claims.json -> claims[C2].predicate) =====
+At the measured revision the checker exits 0: (r1a) corpus/evidence/round41/playwright-egress/receipt.json is a committed blob of at least 1000 bytes whose sha256 equals receiptSha256 in the committed .ufo/waves/round-41/measure/c1-measure.json and whose bytes parse as JSON; (r1b) receipt.witness.json likewise equals witnessSha256 and parses; (r2) corpus/SOURCES.md at the revision carries row S148 whose teaches cell begins `supersedes S146` and whose remainder is a verbatim substring of the committed .ufo/waves/round-41/sources/node-cli-v24.21.0.html of at most 25 words, and row S146's status cell is `rejected`; (r3) .ufo/waves/round-41/controls/c1-baseline-noop.out is a committed nonempty blob recording the ls-tree counting command and the digit 0; (r4) .ufo/waves/round-42/quarantine/re-adjudication.tsv is committed with exactly the 38 identifiers of the committed .ufo/waves/round-42/quarantine/slice-ids.txt, no duplicates, every verdict in {present, absent, misbound, partial, unreachable}, and every evidence path a committed blob of at least 200 bytes.
+
+===== A2. checker header comment, lines 6-29 =====
+//
+// Predicate (one sentence, frozen in .ufo/waves/round-42/claims.json before
+// any seat scored — this code and that sentence are the same conditions):
+//   (r1a) corpus/evidence/round41/playwright-egress/receipt.json committed at
+//         REV, >=1000 bytes, valid JSON, sha256 == receiptSha256 recorded in
+//         the committed .ufo/waves/round-41/measure/c1-measure.json;
+//   (r1b) receipt.witness.json likewise == witnessSha256 and valid JSON;
+//   (r2)  SOURCES.md at REV has row S148 whose teaches cell begins
+//         `supersedes S146` and whose remainder is a verbatim substring of
+//         the committed .ufo/waves/round-41/sources/node-cli-v24.21.0.html
+//         of at most 25 words, and S146's status cell is `rejected`;
+//   (r3)  .ufo/waves/round-41/controls/c1-baseline-noop.out committed
+//         nonempty, recording the ls-tree counting command and the digit 0;
+//   (r4)  .ufo/waves/round-42/quarantine/re-adjudication.tsv committed with
+//         exactly the 38 ids of the committed quarantine/slice-ids.txt, no
+//         duplicates, verdict in {present,absent,misbound,partial,unreachable},
+//         evidence path a committed blob >=200 bytes.
+// The committed-bytes checks are built on S149 (git-ls-tree documentation,
+// opened 2026-10-28); the verbatim-quote check enforces the S148 discipline.
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+
+const RECEIPT = 'corpus/evidence/round41/playwright-egress/receipt.json';
+
+===== A2. SOURCES.md column header (defines teaches=cell 7, status=cell 8) =====
+| id | source | kind | tier | scope | anchor | teaches | status | opened | recheck | used-by |
+|---|---|---|---|---|---|---|---|---|---|---|
+
+===== A2. S146/S148 teaches and status cells =====
+ S146  teaches=[ A space-separated list of command-line options; interpreted before command-line options ] status=[ rejected ]
+ S148  teaches=[ supersedes S146 — A space-separated list of command-line options. ] status=[ mined ]
+
+===== A3. diff of frozen paths, freeze..HEAD (must be empty) =====
+diff bytes: 0
+
+===== A3. status of frozen paths in the worktree (must be empty) =====
+[end of status]
+
+===== A3. every round-42 change since the freeze that is NOT a pure addition =====
+[end: empty means additions only]
+
+===== A3. frozen C2 control blob, freeze vs HEAD =====
+freeze   767c2cb7710e95ee5861c9fa6acd6a5faeee668c
+HEAD     767c2cb7710e95ee5861c9fa6acd6a5faeee668c
+
+===== A4. committed baseline red control (c2-baseline-red.json) =====
+{
+ "schema": "tabi-r42-routed-defects",
+ "rev": "34e177959d1b7ce04afb85a001420e02631ce79e",
+ "predicate": false,
+ "findingCount": 7,
+ "findings": [
+  {
+   "id": "r1a-receipt-absent",
+   "detail": "corpus/evidence/round41/playwright-egress/receipt.json not committed at REV"
+  },
+  {
+   "id": "r1b-witness-absent",
+   "detail": "corpus/evidence/round41/playwright-egress/receipt.witness.json not committed at REV"
+  },
+  {
+   "id": "r2-s146-not-rejected",
+   "detail": "S146 status is 'mined', expected 'rejected'"
+  },
+  {
+   "id": "r2-supersession-absent",
+   "detail": "row S148 not found at REV"
+  },
+  {
+   "id": "r3-baseline-file-empty",
+   "detail": ".ufo/waves/round-41/controls/c1-baseline-noop.out committed blob is 0 bytes"
+  },
+  {
+   "id": "r4-slice-absent",
+   "detail": ".ufo/waves/round-42/quarantine/slice-ids.txt not committed at REV"
+  },
+  {
+   "id": "r4-quarantine-absent",
+   "detail": ".ufo/waves/round-42/quarantine/re-adjudication.tsv not committed at REV"
+  }
+ ]
+}
+
+===== A4. committed baseline red control exit record (c2-baseline-red.exit) =====
+predicate False
+r1a-receipt-absent
+r1b-witness-absent
+r2-s146-not-rejected
+r2-supersession-absent
+r3-baseline-file-empty
+r4-slice-absent
+r4-quarantine-absent
+
+===== A4. live checker at baseline 34e177959d1b7ce04afb85a001420e02631ce79e =====
+{
+ "schema": "tabi-r42-routed-defects",
+ "rev": "34e177959d1b7ce04afb85a001420e02631ce79e",
+ "predicate": false,
+ "findingCount": 7,
+ "findings": [
+  {
+   "id": "r1a-receipt-absent",
+   "detail": "corpus/evidence/round41/playwright-egress/receipt.json not committed at REV"
+  },
+  {
+   "id": "r1b-witness-absent",
+   "detail": "corpus/evidence/round41/playwright-egress/receipt.witness.json not committed at REV"
+  },
+  {
+   "id": "r2-s146-not-rejected",
+   "detail": "S146 status is 'mined', expected 'rejected'"
+  },
+  {
+   "id": "r2-supersession-absent",
+   "detail": "row S148 not found at REV"
+  },
+  {
+   "id": "r3-baseline-file-empty",
+   "detail": ".ufo/waves/round-41/controls/c1-baseline-noop.out committed blob is 0 bytes"
+  },
+  {
+   "id": "r4-slice-absent",
+   "detail": ".ufo/waves/round-42/quarantine/slice-ids.txt not committed at REV"
+  },
+  {
+   "id": "r4-quarantine-absent",
+   "detail": ".ufo/waves/round-42/quarantine/re-adjudication.tsv not committed at REV"
+  }
+ ]
+}
+exit=1
+
+===== A4b. frozen blob of the checker, run at baseline (control reproduction) =====
+exit=1
+PASS: frozen-blob output is byte-identical to the committed control
+
+===== A5. checker at the freeze revision (design: only r4 red) =====
+{
+ "schema": "tabi-r42-routed-defects",
+ "rev": "9b6de3a19de11abdb80e82a1310abc64a40215bb",
+ "predicate": false,
+ "findingCount": 1,
+ "findings": [
+  {
+   "id": "r4-quarantine-absent",
+   "detail": ".ufo/waves/round-42/quarantine/re-adjudication.tsv not committed at REV"
+  }
+ ]
+}
+exit=1
+
+===== A5. c2-at-freeze control committed with the dispatch =====
+{
+ "schema": "tabi-r42-routed-defects",
+ "rev": "9b6de3a19de11abdb80e82a1310abc64a40215bb",
+ "predicate": false,
+ "findingCount": 1,
+ "findings": [
+  {
+   "id": "r4-quarantine-absent",
+   "detail": ".ufo/waves/round-42/quarantine/re-adjudication.tsv not committed at REV"
+  }
+ ]
+}
+C2_AT_FREEZE_EXIT=1
+
+===== A5. S149 staged copy digest vs the digest frozen in claims.json =====
+actual   2c298383476164238c6e25ba804412a335c405ab9540650bb603778e2f4f8b64
+in claims 2c298383476164238c6e25ba804412a335c405ab9540650bb603778e2f4f8b64
+
+===== A6. slice-ids.txt line count at the freeze (expect 38) =====
+38
+
+===== A7. checker write surface (grep for filesystem mutation) =====
+[end: no matches means the checker writes nothing]
+
+===== A7. git invocations the checker makes =====
+56:  const r = spawnSync('git', ['-C', repo, 'show', `${rev}:${revPath}`], { encoding: 'buffer', maxBuffer: 64 << 20 });
+61:  const r = spawnSync('git', ['-C', repo, 'cat-file', '-s', `${rev}:${revPath}`], { encoding: 'utf8' });

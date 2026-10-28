@@ -1,0 +1,22 @@
+# argv-level injection channel: node <flag> <wrapper> --battery-probe (frozen wrapper, read-only)
+# node: v24.21.0
+
+$ node --require /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/forger-round39.cjs <wrapper> --battery-probe
+contaminated=True finding=environment-loader-contamination execArgv=['--require', '/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/forger-round39.cjs'] execArgvClean=False
+exit=2
+
+$ node --experimental-loader /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/loader.mjs <wrapper> --battery-probe
+contaminated=True finding=environment-loader-contamination execArgv=['--experimental-loader', '/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/loader.mjs'] execArgvClean=False
+exit=2
+
+$ node --import /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/forger-round39.cjs <wrapper> --battery-probe
+contaminated=True finding=environment-loader-contamination execArgv=['--import', '/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/forger-round39.cjs'] execArgvClean=False
+exit=2
+
+$ node --inspect --inspect-publish-uid=stderr <wrapper> --battery-probe
+contaminated=True finding=environment-loader-contamination execArgv=['--inspect', '--inspect-publish-uid=stderr'] execArgvClean=False
+exit=2
+
+$ node --env-file /fast/scratch/hyaku/tabi-r42/RevC1Battery/envfile.env <wrapper> --battery-probe
+contaminated=True finding=environment-loader-contamination execArgv=['--env-file', '/fast/scratch/hyaku/tabi-r42/RevC1Battery/envfile.env'] execArgvClean=False
+exit=2

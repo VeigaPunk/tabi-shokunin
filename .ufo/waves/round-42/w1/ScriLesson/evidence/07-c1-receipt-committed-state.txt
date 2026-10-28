@@ -1,0 +1,25 @@
+# C1: round-42 receipt committed-state at HEAD
+HEAD 0081bfdb93b6bd1bf2853bb128996f1a976b7218
+$ git ls-tree -r --name-only HEAD -- corpus/evidence/round42
+(no output) -> 0 files
+$ git status --porcelain -- corpus/evidence/round42
+?? corpus/evidence/round42/
+$ git check-ignore -v corpus/evidence/round42/playwright-egress/receipt.json  -> exit 1
+$ ls -l corpus/evidence/round42/playwright-egress/
+total 2216
+-rw-r--r-- 1 vgpnk vgpnk 1145258 Oct 28 12:09 receipt.json
+-rw-r--r-- 1 vgpnk vgpnk 1122212 Oct 28 12:09 receipt.witness.json
+
+# measure record (already committed at the freeze commit 9b6de3a)
+driverExit 0
+counterExit 0
+nonceMatches true
+elapsedMs 38384
+receiptSha256 3984455276a5b54a0a7652fc76923eb46d446f0630556d6775abc7c1fd317b7e
+witnessSha256 163f4eba7f8b6c93daa0e5742b0ade81ee16ff716cc27bc578fb76795a57d339
+counter.predicate true
+counter.findings []
+counted-digest check:
+  sha256(scripts/measure-c1-round41.mjs) -> 4563e5deccc9bcba8e75c72867c88b8f65de0241a4726c81659d9d82e9895c76  match=true
+  sha256(scripts/playwright-firefox-egress-round41.mjs) -> fb279c74b82abe6202680c214fd087b45b1134a19c5e21b028abeae3549180a3  match=true
+  sha256(.ufo/waves/round-41/counters/c1-session-bound-v4.mjs) -> cd71a59efa575fc260c4e487b7d52f69a9cd9f3b98bc6d4333abdb9a0cff126a  match=true

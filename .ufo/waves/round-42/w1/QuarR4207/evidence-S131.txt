@@ -1,0 +1,60 @@
+id: tabi / round2 / S131
+class (register): payload-absent
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md line 190
+registered URL: https://developer.chrome.com/blog/ai-webmcp-origin-trial?hl=ja
+anchor cell: none (whole-page URL)
+staged quotes (exact, two spans joined by <br> in the register):
+  1. WebMCP のユーザー ジャーニー
+  2. 重要なユーザー ジャーニー （CUJ）をサポートするために提供できるツールの推奨事項を示します
+
+fetch (registered URL):
+  command: curl -sSL -D s131.hdr -o s131.body -w 's131_http=%{http_code} s131_url=%{url_effective} s131_size=%{size_download} s131_redir=%{num_redirects}\n' --max-time 60 'https://developer.chrome.com/blog/ai-webmcp-origin-trial?hl=ja'
+  observed: s131_http=200 s131_url=https://developer.chrome.com/blog/ai-webmcp-origin-trial?hl=ja s131_size=102822 s131_redir=0
+  final URL after redirects: https://developer.chrome.com/blog/ai-webmcp-origin-trial?hl=ja (0 redirects)
+  HTTP status: 200
+  bytes: 102822
+  sha256: c0a8114b3e45bb0323d2e0d9e89c7e7d4abe44a07ed763846c3a9a94e1761ff7
+  Last-Modified: Tue, 09 Jun 2026 07:00:00 GMT
+  content-type: text/html; charset=utf-8
+  date: Wed, 28 Oct 2026 15:36:43 GMT
+  body nonce (per-response, also the CSP nonce): nonce="J5OjdBZ2wysaq1JE5dZOYD2oLQU4n9"
+  receipt: .ufo/waves/round-42/w1/QuarR4207/s131.body and s131.hdr
+
+located on the registered body:
+  exact index of quote 1: -1
+  whitespace-normalized index of quote 1 (tags stripped, whitespace collapsed): -1
+  exact index of quote 2: -1
+  whitespace-normalized index of quote 2: -1
+  token counts in the registered body: ジャーニー=0, CUJ=0, 推奨事項=0, 重要な=0
+  page title: WebMCP オリジン トライアルに参加する | Blog | Chrome for Developers
+  The page's own gate quotes from lanes/tabi/round2/SOURCES-PROPOSED.md Gate — S131 ARE in this body (whitespace-normalized):
+    "Chrome 149 では、 WebMCP オリジン トライアルに登録できます 。"
+    "オリジン トライアルは、試験運用版のプラットフォーム機能への早期アクセスを提供する期間限定のプログラムです。"
+  Surrounding sentence (registered page, tag-stripped): "Chrome 149 では、 WebMCP オリジン トライアルに登録できます 。 オリジン トライアルは、試験運用版のプラットフォーム機能への早期アクセスを提供する期間限定のプログラムです。 使用制限がある場合もありますが、デベロッパーはこれらの機能を統合してライブテストを実施し、ユーザー フィードバックを収集して、API の今後のイテレーションに役立てることができます。"
+
+where the staged quotes actually are (different registered source — not substituted as the cited URL):
+  sibling row S132, lanes/tabi/round2/SOURCES-PROPOSED.md:
+    URL https://developer.chrome.com/docs/ai/webmcp/use-cases?hl=ja
+    anchor cell: §"WebMCP のユーザー ジャーニー" and §"重要なユーザー ジャーニー （CUJ）をサポートするために提供できるツールの推奨事項を示します"
+    Gate — S132 quote: "重要なユーザー ジャーニー （CUJ）をサポートするために提供できるツールの推奨事項を示します。"
+  census quote-lint-full-v5.json binds both absent quotes to S131's URL but sets "line" to the S132 table row (binding: id spill).
+  fetch of that sibling (classification only):
+    command: curl -sSL -D s132.hdr -o s132.body ... 'https://developer.chrome.com/docs/ai/webmcp/use-cases?hl=ja'
+    HTTP 200, final URL unchanged, 0 redirects, bytes 149703
+    sha256 b0c52c7f9b96ca1c3d500890fe120894382eac1b3fe484458267ad073bcf2bdb
+    receipt: s132.body / s132.hdr
+  quote 1 exact match in s132.body at offset 68278, in the docs nav (not the article h1):
+    <span class="devsite-nav-text" tooltip>WebMCP のユーザー ジャーニー</span>
+    followed by the link href="/docs/ai/webmcp/use-cases".
+    The article h1/title is the different string "ユーザー ジャーニーにおける WebMCP の役割".
+    The same nav string is also in the S133 evals HTML (offset 68138); it is not in the S131 blog.
+  quote 2 exact raw match: -1, because the live HTML wraps the first clause in <em>:
+    …このプロセスをユーザーとエージェントの視点から説明し、<em>重要なユーザー ジャーニー</em>（CUJ）をサポートするために提供できるツールの推奨事項を示します。</p>
+  quote 2 whitespace-normalized (tags stripped) match: present, index 2482 in the normalized S132 text.
+  Surrounding sentence (S132, tag-stripped): "このドキュメントでは、ユーザーとそのエージェントをサポートするために WebMCP を実装する方法について説明します。このプロセスをユーザーとエージェントの視点から説明し、 重要なユーザー ジャーニー （CUJ）をサポートするために提供できるツールの推奨事項を示します。 重要な用語: CUJ は、必要なコンテキストを含め、ユーザーが目標を達成するためのパスを定義します。"
+
+verdict: misbound
+
+justification: The registered origin-trial URL opened (HTTP 200, 102822 bytes) and neither staged span is in it, exactly or whitespace-normalized. Those spans are S132's anchor and gate text, not S131's. S131's own gate sentences about the Chrome 149 origin trial are on the cited blog. Quote 2 is in the S132 use-cases article once <em> tags are stripped; quote 1 is the S132 nav label "WebMCP のユーザー ジャーニー", verbatim in that page's HTML. This is the same id-binding spill the census records (quote checked against S131's URL, line = the S132 row). It is not a fabrication of text that exists nowhere, and it is not present on the registered URL.
+
+delta vs round-40 (ScoutQuarantine131, 2026-10-27): r40 verdict absent. r40 recorded HTTP 200, 102822 bytes, sha256 17e5814eb48fe366e0350b0f38d33d94fc9fb60425f604d9645a87a5dfca0741, Last-Modified Tue, 09 Jun 2026 07:00:00 GMT, and 0 hits for ジャーニー/CUJ/推奨. Today the byte count and Last-Modified are unchanged; sha256 differs (c0a8114b…). The body contains one per-response nonce attribute of fixed-looking length (nonce="J5OjdBZ2wysaq1JE5dZOYD2oLQU4n9"), which is enough to move the digest without an article edit; r40's body was deleted, so the nonce is the observed volatile token, not a byte-level diff. The staged quotes are still absent from this URL (same zero counts). What changed is the classification, not the cited article: r40 did not open the neighboring registered source; today that source (S132) holds both spans. The live cited page did not gain the quotes.

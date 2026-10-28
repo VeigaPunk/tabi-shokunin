@@ -1,0 +1,25 @@
+# Seat: ExecScrubRepro  (r42 w1, r41 control reproducibility sweep)
+# cwd for all commands: /home/vgpnk/Projects/shokunin/tabi-shokunin
+# Nonces (fresh, node crypto.randomBytes(32)):
+#   N1=52a45b8c78686d9fdb6dfecf9f499e6e09d21c4ecc2e1c2e4c63dce3649034ca
+#   N2=5e403d83bb128d69817c94a7875898a5f95e73263ba4c9bfdd82b41d8b7b1307
+#   N3=6005b6614d1371615634ea1cdf70146dea5bac243f7d7cfb3f3b23dc337e7292
+#   N4=5898853a81b76265dbc281cd38f0775caef15ee640e9cb952a1faa598784dcf2
+#   N5=2e6e613e1a288f8511d2b2975e2e2e76cad6402b8bfc86b832cd15841b7feb8c
+#   N6=9a454be9a88cc51318c44b1264e82975e9249789f4692e5d34e8aacc7a163a16
+# S=/fast/scratch/hyaku/tabi-r42/ExecScrubRepro
+
+1  node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round-39/playwright-egress/receipt.json --nonce N1 > $S/a-r39-claims-exact.json   # exit 1
+2  node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round40/playwright-egress/receipt.json --nonce N2 > $S/a-r40-claims-exact.json      # exit 1
+3  node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round-39/playwright-egress/receipt.json --nonce N3 --witness $S/nonexistent-witness.json --pins .ufo/waves/round-42/claims.json > $S/b-r39-assigned-r42pins.json  # exit 1
+4  node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round40/playwright-egress/receipt.json --nonce N3 --witness $S/nonexistent-witness.json --pins .ufo/waves/round-42/claims.json > $S/b-r40-assigned-r42pins.json        # exit 1
+5  node scripts/measure-c1-round41.mjs --battery > $S/battery.json                                                                                              # exit 0
+6  node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round-39/playwright-egress/receipt.json --nonce N4 > $S/c-r39-second-nonce.json     # exit 1
+7  node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round-39/playwright-egress/receipt.json --nonce N4 --witness $S/nonexistent-witness.json > $S/d-r39-witness-only.json   # exit 1
+8  node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round-39/playwright-egress/receipt.json --nonce N4 --pins .ufo/waves/round-41/claims.json > $S/e-r39-r41pins-only.json # exit 1
+9  node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round-39/playwright-egress/receipt.json --nonce N4 --witness $S/nonexistent-witness.json --pins .ufo/waves/round-41/claims.json > $S/f-r39-witness-r41pins.json # exit 1
+10 node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round40/playwright-egress/receipt.json --nonce N4 --pins .ufo/waves/round-41/claims.json > $S/g-r40-r41pins-only.json # exit 1
+11 node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round40/playwright-egress/receipt.json --nonce N4 --witness $S/nonexistent-witness.json --pins .ufo/waves/round-41/claims.json > $S/j-r40-witness-r41pins.json # exit 1
+12 node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round-39/playwright-egress/receipt.json --nonce N5 > $S/h-r39-third.json   # exit 1
+13 node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs corpus/evidence/round40/playwright-egress/receipt.json --nonce N6 > $S/i-r40-second.json     # exit 1
+14 node scripts/measure-c1-round41.mjs --battery > $S/battery2.json                                                                                            # exit 0

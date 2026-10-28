@@ -1,0 +1,57 @@
+id: tabi / round2 / S133
+class (register): payload-absent
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md line 191
+registered URL: https://developer.chrome.com/docs/ai/webmcp/evals?hl=ja
+anchor cell: none (whole-page URL)
+staged quote (exact): Agent security considerations for WebMCP
+
+fetch (registered URL):
+  command: curl -sSL -D s133.hdr -o s133.body -w 's133_http=%{http_code} s133_url=%{url_effective} s133_size=%{size_download} s133_redir=%{num_redirects}\n' --max-time 60 'https://developer.chrome.com/docs/ai/webmcp/evals?hl=ja'
+  observed: s133_http=200 s133_url=https://developer.chrome.com/docs/ai/webmcp/evals?hl=ja s133_size=162162 s133_redir=0
+  final URL after redirects: https://developer.chrome.com/docs/ai/webmcp/evals?hl=ja (0 redirects)
+  HTTP status: 200
+  bytes: 162162
+  sha256: de17559ca5937af21817bfb153f989e99f8919134cec6709d9d19d2999d13493
+  Last-Modified: Tue, 19 May 2026 07:00:00 GMT
+  content-type: text/html; charset=utf-8
+  date: Wed, 28 Oct 2026 15:36:44 GMT
+  receipt: .ufo/waves/round-42/w1/QuarR4207/s133.body and s133.hdr
+
+located on the registered body:
+  exact index: -1
+  whitespace-normalized index (tags stripped, whitespace collapsed): -1
+  token counts: "Agent security"=0, "security considerations"=0
+  page title: Evals を使用して WebMCP をテストする | AI in Chrome | Chrome for Developers
+  h1: Evals を使用して WebMCP をテストする
+  The page's own gate quotes from lanes/tabi/round2/SOURCES-PROPOSED.md Gate — S133 ARE in this body (whitespace-normalized):
+    "1 つの入力から、精度が異なる数千もの回答が得られる可能性があります。このテスト手法は、評価（eval）と呼ばれます。" (also exact in the raw HTML)
+    "expectedCall は、ルールベースの決定的テストの実行に使用されます。" (normalized; raw has markup around the code sample)
+  Surrounding sentence (registered page, tag-stripped): "生成 AI を使用するシステムをテストするには、テストで確率的結果をサポートする必要があります。1 つの入力から、精度が異なる数千もの回答が得られる可能性があります。このテスト手法は、評価（eval）と呼ばれます。"
+  Security text on this page is nav only ("プライバシーとセキュリティ", "WebMCP ツールのセキュリティ"), not the staged English title.
+
+where the staged quote actually is (different registered source — not substituted as the cited URL):
+  sibling row S134, lanes/tabi/round2/SOURCES-PROPOSED.md line 129:
+    | S134 | Agent security considerations for WebMCP — Chrome for Developers — https://developer.chrome.com/docs/agents/security | ...
+    anchor cell: §"Agent security considerations for WebMCP"
+  census quote-lint-full-v5.json binds the absent quote to S133's evals URL but sets "line" to the S134 table row (binding: id spill). Round-40 ScoutQuarantine134 already named this spill ("the S133 record picking up S134's title").
+  fetch of that sibling (classification only):
+    command: curl -sSL ... 'https://developer.chrome.com/docs/agents/security'
+    HTTP 200, final URL unchanged, 0 redirects, bytes 111895
+    sha256 009a51c245a6986be4dbb01556538c2edfff82fff08929f4db3bf6a164c43f21
+    Last-Modified not required for the verdict; receipt s134.body / s134.hdr
+    Japanese twin (not the registered S134 URL; fetched only as a locale check):
+      https://developer.chrome.com/docs/agents/security?hl=ja HTTP 200, 118722 bytes
+      sha256 67db62ad5a9edcf8ed25c775d263a90cf5a90a1e8dded0db9ee0e173f1f94795
+      title: WebMCP のエージェント セキュリティに関する考慮事項
+      the English staged string is NOT in the ja twin (exact and normalized -1)
+  quote exact match in the English S134 body at offset 7677, and as the h1:
+    <title>Agent security considerations for WebMCP &nbsp;|&nbsp; AI in Chrome &nbsp;|&nbsp; Chrome for Developers</title>
+    <h1 class="devsite-page-title" tabindex="-1"> Agent security considerations for WebMCP
+    JSON-LD headline: "Agent security considerations for WebMCP"
+  Surrounding (tag-stripped, start of normalized text): "Agent security considerations for WebMCP | AI in Chrome | Chrome for Developers Skip to main content ..."
+
+verdict: misbound
+
+justification: The registered evals URL opened (HTTP 200, 162162 bytes) and the English title is not in it, exactly or whitespace-normalized. That string is S134's row title, anchor, <title>, and h1 on https://developer.chrome.com/docs/agents/security, which was fetched separately and not treated as the registered URL. S133's own Japanese gate sentences about evals are on the cited page. The register's payload-absent note is true of the cited URL and false as a claim that the words exist in no registered source.
+
+delta vs round-40 (ScoutQuarantine133, 2026-10-27): r40 verdict absent. r40 recorded HTTP 200, 162162 bytes, Last-Modified Tue, 19 May 2026, 0 hits for the quote, and sha256 was printed then deleted with scratch, so no digest comparison is possible. Today the byte count and Last-Modified match; the quote is still absent from the evals page. r40 inferred the quote belonged to a sibling security page and did not fetch it. Today that page was fetched: the quote is the verbatim title and h1 of the registered S134 English URL. The cited evals page did not gain the English string. The verdict change absent → misbound is that location, not a change in the evals article.

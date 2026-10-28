@@ -1,0 +1,59 @@
+# verified adjacency rows already exist - production map untouched
+
+## The move is a verified gate run, not a proposal on paper
+
+faithful clone of the lane at tip 0081bfdb93b6bd1bf2853bb128996f1a976b7218
+(`git clone --shared` so the map's pinned self-ruling commit resolves; `git archive` alone drops
+history and makes row 2 spuriously `ruling_unresolved` - measured, see below).
+
+### control - the map exactly as committed (16 rows)
+$ node scripts/check-adjacency.mjs --repo <clone> --at 0081bfdb93b6bd1bf2853bb128996f1a976b7218 --fleet /home/vgpnk/Projects/shokunin
+ADJACENCY verdict=clean rows=16 verified=16
+exit=0
+
+### with the three candidate rows appended, nothing else changed (19 rows)
+$ node scripts/check-adjacency.mjs --repo <clone> --at 55ab38316a7c0b73f71ce0b4e5f8b49c709fa15d --fleet /home/vgpnk/Projects/shokunin
+ADJACENCY verdict=clean rows=19 verified=19
+exit=0
+
+### the three rows, verbatim (tab-separated, 9 columns)
+routed-ledger-item-quote-identity	kumitate	kumitate-shokunin@14057f3e3899180c95713bace088fb9c0d0046e3:scripts/routed-ledger.mjs:17	every row binds to its item by a located quote	SKILL.md:1840	counter blob sha256 at `measuredRevision` and at REV, ancestry	split-declared	-	Rule (QUALITY 22): a claim's count is admissible only with a recorded counter
+routed-defect-recurrence-counting	kumitate	kumitate-shokunin@14057f3e3899180c95713bace088fb9c0d0046e3:scripts/routed-ledger.mjs:45	class seen in >= 4 distinct spot-check rounds	corpus/lessons/round-41-verifier-spotcheck.md:20	No uncommitted round work	split-declared	-	two files, 1.17 MB + 1.15 MB
+uncommitted-evidence-ledger	kotoba	kotoba-shokunin@47dbe8781657de563ff867caca6244d28e3db504:corpus/lessons/round-69-verifier-spotcheck.md:173	K69-5 (uncommitted round work, M112 class recurrence)	corpus/lessons/round-41-verifier-spotcheck.md:20	No uncommitted round work	split-declared	-	two files, 1.17 MB + 1.15 MB
+
+## Harness caveat measured, stated rather than hidden
+
+`git archive <tip> | tar -x` into a fresh repo drops history, so row 2
+(`reverse-engineering-of-shipped-artifacts`, `refused-route`) reports
+`ruling_unresolved: self ruling 5859243183c4d7ac5429dfdb8a73ce0d9a43d583 is absent from this lane`
+on an UNMODIFIED map. That is a harness artifact; the faithful clone is clean. Any seat re-running
+this must use a clone with history, not `git archive`.
+
+## What each row asserts, and the scope it does NOT assert
+
+row 1 `routed-ledger-item-quote-identity` (kumitate, split-declared)
+  sibling claims: a routed item's ledger row is bound by a located <=25-word quote found in that
+                  item's own text, and a closed row is bound by `path:line` plus a located quote.
+  tabi claims   : its claim counters are admissible on a recorded counter blob digest at the
+                  measured revision, count-input drift and argv shape (measurement-binding).
+  the split     : tabi does NOT adopt kumitate's routed ledger. Nothing here says tabi keeps one.
+  what is shared: both refuse to let an instrument certify itself from a same-revision blob.
+
+row 2 `routed-defect-recurrence-counting` (kumitate, split-declared)
+  sibling claims: a class seen in >= 4 distinct spot-check rounds wants a structural fix.
+  tabi claims   : the tabi run's r41 spot-check already records uncommitted round work as D1.
+  the split     : tabi has no routed ledger and no recurrence key, so it cannot count the class;
+                  kumitate's threshold is cited as the metric, not imported as tabi capability.
+  measured      : tabi's own committed record crosses that threshold twice - see the recurrence
+                  table in the report (uncommitted-evidence in 11 of 28 spot-checks; quote-fidelity
+                  in 17 of 28).
+
+row 3 `uncommitted-evidence-ledger` (kotoba, split-declared)
+  sibling claims: kotoba routed its own uncommitted-round-work recurrence as K69-5 (M112 class).
+  tabi claims   : the same class as D1, on the same row-20 evidence quote.
+  the split     : kotoba owns the promoted-checklist semantics; tabi owns its own report
+                  preconditions. No checklist merges.
+
+All three are `split-declared`, so `ruling_ref` is `-` and `ruling_quote` is a verbatim substring of
+the cited tabi line (the gate verified this, above). No row claims a ruling, so none needs the
+integrator to arbitrate a decision; they make the contested scope legible.

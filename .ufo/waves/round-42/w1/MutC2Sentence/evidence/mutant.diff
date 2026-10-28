@@ -1,0 +1,33 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-42/counters/check-routed-defects-round42.mjs	2026-10-28 12:03:24.384242165 -0300
++++ /fast/scratch/hyaku/tabi-r42/MutC2Sentence/check-routed-defects-round42.mjs	2026-10-28 12:39:22.639343220 -0300
+@@ -38,6 +38,21 @@
+ 
+ const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
+ 
++// MUTANT (MutC2Sentence, round 42, C2 calibration): the r2 quote test relaxed from
++// a verbatim substring to whitespace/case-insensitive fuzzy containment -- tags
++// stripped, whitespace/case/punctuation normalized, quote word tokens matched as
++// an ordered token subsequence of the staged source (contiguity dropped).
++const quoteTokens = (s) => s.toString('utf8').replace(/<[^>]*>/g, ' ').toLowerCase().replace(/[^0-9a-z]+/g, ' ').split(' ').filter(Boolean);
++function fuzzyContains(haystackBuf, quote) {
++  const want = quoteTokens(quote);
++  if (want.length === 0) return true;
++  let i = 0;
++  for (const t of quoteTokens(haystackBuf)) {
++    if (t === want[i]) { if (++i === want.length) return true; }
++  }
++  return false;
++}
++
+ function die(msg) {
+   console.error(JSON.stringify({ schema: 'tabi-r42-routed-defects', error: msg }));
+   process.exit(2);
+@@ -112,7 +127,7 @@
+         if (words < 1 || words > 25) add('r2-quote-word-count', `S148 quote has ${words} words, need 1..25`);
+         const html = gitShow(STAGED_HTML);
+         if (html === null) add('r2-staged-html-absent', `${STAGED_HTML} not committed at REV`);
+-        else if (quote.length > 0 && !html.toString('utf8').includes(quote)) add('r2-quote-not-verbatim', 'S148 quote is not a verbatim substring of the committed staged source copy');
++        else if (quote.length > 0 && !fuzzyContains(html, quote)) add('r2-quote-not-verbatim', 'S148 quote is not a fuzzy containment match of the committed staged source copy');
+       }
+     }
+   }

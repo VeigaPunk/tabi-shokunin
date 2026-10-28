@@ -1,0 +1,41 @@
+### restore: scratch working copy checker-mutant.mjs <- pristine bytes
+$ sha256sum checker-mutant.mjs checker-pristine.mjs
+b1d05df17137bfcf4db9c6d2851108e1313cf2229167b8b521fee2aa1c76b4a8  ./checker-mutant.mjs
+b1d05df17137bfcf4db9c6d2851108e1313cf2229167b8b521fee2aa1c76b4a8  ./checker-pristine.mjs
+
+$ node checker-mutant.mjs --rev 4fe69459dc0c8f2b8ea0ec3b656e2d17354058fa --repo fixtureA --json  (post-restore)
+{
+ "schema": "tabi-r42-routed-defects",
+ "rev": "4fe69459dc0c8f2b8ea0ec3b656e2d17354058fa",
+ "predicate": false,
+ "findingCount": 5,
+ "findings": [
+  {
+   "id": "r4-verdict-enum",
+   "detail": "S102: verdict 'ok' not in enum"
+  },
+  {
+   "id": "r4-verdict-enum",
+   "detail": "S118: verdict 'ok' not in enum"
+  },
+  {
+   "id": "r4-verdict-enum",
+   "detail": "S135: verdict 'ok' not in enum"
+  },
+  {
+   "id": "r4-verdict-enum",
+   "detail": "S153: verdict 'ok' not in enum"
+  },
+  {
+   "id": "r4-verdict-enum",
+   "detail": "S167: verdict 'ok' not in enum"
+  }
+ ]
+}
+EXIT=1
+
+### lane bytes (never the mutation target)
+$ sha256sum /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-42/counters/check-routed-defects-round42.mjs
+b1d05df17137bfcf4db9c6d2851108e1313cf2229167b8b521fee2aa1c76b4a8  /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-42/counters/check-routed-defects-round42.mjs
+$ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin status --porcelain .ufo/waves/round-42/counters/
+(empty above = counters/ clean)

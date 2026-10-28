@@ -1,0 +1,52 @@
+id: S175
+lane: tabi
+round: round5
+register_class: payload-absent
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md line 213
+anchor: none (no anchor column; cited URL is the only locator)
+registered_url: https://www.np.com.tw/modules/news/article.php?storyid=20
+final_url: https://www.np.com.tw/modules/news/article.php?storyid=20
+redirects: 0
+http_status: 200
+content_type: text/html; charset=UTF-8
+content_encoding: gzip
+date_header: Wed, 28 Oct 2026 15:37:24 GMT
+canonical: https://www.np.com.tw/modules/news/article.php?storyid=20
+wire_size_download: 27500
+decoded_body_bytes: 73627
+sha256_decoded_body: 119f69dcb30a3b7de4d0672f587300962a963a08a2b6cc356c9c7a54a9f7a2c4
+body_file: .ufo/waves/round-42/w1/QuarR4218/S175.body
+title: WebMCP 完整解析：當 AI 代理不再需要「猜」你的網站 - 最新訊息 - 新聞訊息 - NP網頁設計公司
+staged_quotes:
+  QA: WebMCP 沒有繞過任何既有防護。它吃的是瀏覽器當下的登入狀態，你的驗證碼、CSRF token、審核佪列、速率限制全部照常運作。
+    (register character 佪 is U+4F6A, count 1 on the register line)
+  QB: Explicit Tool Registration
+located: QA located with one-character substitution 佪→佇. QB absent.
+verdict: partial
+
+Command:
+  curl -sS -L --max-redirs 10 --compressed --max-time 60 \
+    -A 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \
+    -D S175.headers -o S175.body \
+    -w '%{http_code}\t%{url_effective}\t%{size_download}\t%{num_redirects}\t%{content_type}' \
+    'https://www.np.com.tw/modules/news/article.php?storyid=20'
+Observed meta line:
+  200	https://www.np.com.tw/modules/news/article.php?storyid=20	27500	0	text/html; charset=UTF-8
+%{size_download} is the gzip wire size. The hashed body is the decoded HTML (73627 bytes). An anonymous PHPSESSID set-cookie was redacted in the saved headers file; it is not part of the body hash.
+
+Search:
+  QA with the register's 佪 (U+4F6A): exact false in raw and in tag-stripped text.
+  QA with 佇 (U+4F47) substituted: exact true in the raw HTML (no whitespace fold required).
+  The four characters 審核佇列 are U+5BE9 U+6838 U+4F47 U+5217. 佪 U+4F6A count in the body is 0. 佇列 count is 1.
+  QB: case-insensitive raw counts of "explicit" and "registration" are both 0. "Explicit Tool Registration" is not in the document.
+
+Surrounding sentence (FAQ, question 「會不會被拿來灌垃圾留言或洗訂單？」):
+  「WebMCP 沒有繞過任何既有防護。它吃的是瀏覽器當下的登入狀態，你的驗證碼、CSRF token、審核佇列、速率限制全部照常運作。但它確實降低了自動化操作的門檻，所以開放寫入類工具之前，把既有防護重新檢查一遍是必要的。」
+The only difference from staged QA is 佇 versus 佪, one token inside 審核佇列.
+
+The same body also contains staged S174 Q1 verbatim:
+  「敏感動作留一道人工關卡：涉及付款、刪除、送出的工具，不要加 toolautosubmit，讓使用者親手按下去。」
+
+Justification: The registered source opened (HTTP 200, no redirect, canonical URL equals the cited URL). Staged QA is the FAQ answer above, not a fabrication; the register's 佪 is a one-character typo for the page's 佇. Staged QB does not occur anywhere in the HTML. The row is therefore partial: one quote present modulo a one-token typo, one quote absent. The register note that the quote is in none of the checked sources is false for QA.
+
+Delta vs round-40 (ScoutQuarantine175, partial, same 佪/佇 finding): the staged spans did not change. Round-40's decoded sha256 was a8bb5f3bb3c0f37c479200e28a35eb2d65e3d3736c2a65d015a6465fc4879065 at the same 73627-byte length; today's saved body sha256 is 119f69dcb30a3b7de4d0672f587300962a963a08a2b6cc356c9c7a54a9f7a2c4. The HTML is not byte-stable: a later fetch the same hour (not retained; scratch deleted) was also HTTP 200, 73627 bytes, sha256 c6c97eb748e3a53af1867f03126eb0fbf0075f22a5412560ba792758e7e0a504, and SequenceMatcher against the saved body returned exactly two replace hunks, both the view-counter digit (saved 1430, later 1432) in two places, character-length delta 0. An intervening fetch hashed to 5374ceaf4fd096de8bbced7d28518255f01bbabaedfd31d5397dd8ea66c6da47 at 73627 bytes with the counter at 1431; that body was not retained, so it is not claimed as a complete opcode diff. Quote A with 佇, and S174's Q1, were exact in both the saved body and the later fetch. QB stayed absent ("explicit" case-insensitive count 0). Verdict stays partial.

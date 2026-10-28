@@ -1,0 +1,20 @@
+--- pristine.mjs	2026-10-28 12:38:00.697660343 -0300
++++ m3.mjs	2026-10-28 12:39:14.287663461 -0300
+@@ -98,7 +98,7 @@
+   if (typeof receipt.egressNonLoopback !== 'number' || receipt.egressNonLoopback !== runs.reduce((a, r) => a + (r.egressNonLoopback || 0), 0)) findings.push('summary-egress-mismatch');
+ 
+   // Witness: independent observation of the measure process's descendants.
+-  if (witnessFile) {
++  if (false) { // M3: witness verification skipped entirely
+     let witness = null;
+     try { witness = JSON.parse(fs.readFileSync(witnessFile, 'utf8')); } catch { }
+     if (!witness || witness.schema !== 'tabi-r41-witness') findings.push('witness-unreadable');
+@@ -127,7 +127,7 @@
+       if (ownedFfSamples < 10) findings.push('witness-no-owned-firefox');
+       if (!sawOverlap) findings.push('witness-no-overlap');
+     }
+-  } else findings.push('witness-missing');
++  } else { /* M3: witness-missing finding dropped */ }
+ 
+   // Producer digests: producer files and binaries equal the frozen pins.
+   if (pins) {

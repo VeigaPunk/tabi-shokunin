@@ -1,0 +1,42 @@
+--- jsonl line 379 [2026-10-28T11:20:03.112Z] bash command ---
+cd /home/vgpnk/Projects/shokunin/tabi-shokunin && python3 .ufo/waves/round-41/gen-w1-spec.py && UFO_CONFIG_PATH=/home/vgpnk/Projects/shokunin/scripts/hyaku/ufo-wave-policy-v2.json UFO_FLEET_ALLOW_EXTERNAL_TOOLS=1 UFO_PROJECT_ROOT=/home/vgpnk/Projects/shokunin/tabi-shokunin node ~/Projects/ufo-fsd-alpha/scripts/ufo-swarm-wave.mjs run --spec .ufo/waves/round-41/w1-spec.json 2>&1 | tail -20
+
+--- jsonl line 392 [2026-10-28T11:20:50.999Z] bash command ---
+cd /home/vgpnk/Projects/shokunin/tabi-shokunin && python3 .ufo/waves/round-41/gen-w1-spec.py && UFO_CONFIG_PATH=/home/vgpnk/Projects/shokunin/scripts/hyaku/ufo-wave-policy-v2.json UFO_FLEET_ALLOW_EXTERNAL_TOOLS=1 UFO_PROJECT_ROOT=/home/vgpnk/Projects/shokunin/tabi-shokunin node ~/Projects/ufo-fsd-alpha/scripts/ufo-swarm-wave.mjs run --spec .ufo/waves/round-41/w1-spec.json 2>&1 | tail -25
+
+--- jsonl line 404 [2026-10-28T11:21:06.773Z] bash command ---
+cd /home/vgpnk/Projects/shokunin/tabi-shokunin && python3 - <<'EOF'
+import re
+p='.ufo/waves/round-41/gen-w1-spec.py'
+s=open(p).read()
+s=s.replace("for n,t in labrats: items.append(add(n,'labrat'","for n,t in labrats: items.append(add(n,'critic'")
+s=s.replace("items.append(add('SonicDigestCheck','sonic'","items.append(add('SonicDigestCheck','reviewer'")
+s=s.replace("x['role'] in ('reviewer','critic','mutation-tester','labrat')","x['role'] in ('reviewer','critic','mutation-tester')")
+open(p,'w').write(s)
+EOF
+python3 .ufo/waves/round-41/gen-w1-spec.py && UFO_CONFIG_PATH=/home/vgpnk/Projects/shokunin/scripts/hyaku/ufo-wave-policy-v2.json UFO_FLEET_ALLOW_EXTERNAL_TOOLS=1 UFO_PROJECT_ROOT=/home/vgpnk/Projects/shokunin/tabi-shokunin node ~/Projects/ufo-fsd-alpha/scripts/ufo-swarm-wave.mjs run --spec .ufo/waves/round-41/w1-spec.json 2>&1 | tail -15
+
+Traceback (most recent call last):
+  File "<stdin>", line 8, in <module>
+KeyError: 'message'
+
+## tool result for the final compile (jsonl line 406, 2026-10-28T11:21:06.829Z) — the L1 saw only this tail
+first 300 chars:
+items 64 roles {'reviewer': 16, 'critic': 14, 'mutation-tester': 10, 'scout': 8, 'executor': 6, 'scribe': 4, 'connector': 3, 'sentinel': 1, 'revenger': 1, 'simplifier': 1}
+attack seats 40 (62%)
+      {
+        "name": "SonicDigestCheck",
+        "agent": "reviewer",
+        "task": "/skill:godspeed\
+
+last 300 chars:
+swarm-per-wave). Then one hub send per resumeSends entry: hub send --to <entry.resume> --message <entry.message> (entry.name is bookkeeping, not a hub field)."
+}
+
+
+[Some lines truncated to 768 bytes. Use artifact://97983:raw:6-6 to read line 6 whole; cut lines run to line 11, each read the same way]
+
+## timing (git commit times, lane repo)
+8c84417652f7602886dcc85f74bffdadd9c3a281  2026-10-28T08:21:13-03:00  round-41 w1 spec+ready (spec, ready, registry, generator — NO dispatch file)
+9fa5ad61 (FLEET repo)                     2026-10-28T08:54:32-03:00  round-41 report, queued-wave disposition
+ef41e539c017797bce97001e7c9ed2e8a7666a90  2026-10-28T08:56:05-03:00  round-41 wave markers (the tombstone .dispatched)

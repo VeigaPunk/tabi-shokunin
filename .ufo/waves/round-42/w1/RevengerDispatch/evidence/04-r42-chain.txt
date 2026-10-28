@@ -1,0 +1,57 @@
+$ sha256sum .ufo/waves/round-42/w1-dispatch.json .ufo/waves/round-42/w1.ready
+9f4ac9a0a7ee248a61947a60fdd2d8220fb3c662095c77a761cbd56aca9f87c4  .ufo/waves/round-42/w1-dispatch.json
+442696871d75681d40a892246c71f97b66eae4b9c440c68aecb96979e6a2af5e  .ufo/waves/round-42/w1.ready
+
+$ git show HEAD:.ufo/waves/round-42/w1-dispatch.json | sha256sum   # committed == worktree
+9f4ac9a0a7ee248a61947a60fdd2d8220fb3c662095c77a761cbd56aca9f87c4  -
+
+$ cat .ufo/waves/round-42/w1.ready
+{"lane":"tabi","round":42,"wave":"w1","dispatch":"/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-42/w1-dispatch.json","l1":"TabiR42"}
+
+$ cat .ufo/waves/round-42/w1.ready.dispatched   (untracked runtime marker)
+1793201876.0697021
+
+$ stat -c "%y %s %n" .ufo/waves/round-42/w1.ready.dispatched
+2026-10-28 12:37:56.069738851 -0300 19 .ufo/waves/round-42/w1.ready.dispatched
+
+## structural check
+$ python3 - <<'PY'
+import json
+sp=json.load(open('.ufo/waves/round-42/w1-spec.json'))
+dp=json.load(open('.ufo/waves/round-42/w1-dispatch.json'))
+reg=json.load(open('.ufo/waves/round-42/w1/swarm-registry.json'))
+rd=json.load(open('.ufo/waves/round-42/w1.ready'))
+print('dispatch top-level keys:', list(dp))
+print('taskCall keys:', list(dp['taskCall']))
+print('taskCall.tasks len:', len(dp['taskCall']['tasks']))
+print('taskCall.context len:', len(dp['taskCall']['context']))
+sn=[i['name'] for i in sp['items']]; tn=[t['name'] for t in dp['taskCall']['tasks']]
+print('spec names == dispatch names (order-sensitive):', sn==tn)
+print('registry members:', len(reg['members']), '== dispatch names:', set(reg['members'])==set(tn))
+print('ready.dispatch:', rd['dispatch'])
+print('ready.dispatch is the DISPATCH file:', rd['dispatch'].endswith('/.ufo/waves/round-42/w1-dispatch.json'))
+print('ready names a spec file:', rd['dispatch'].endswith('-spec.json'))
+print('every task begins /skill:godspeed:', all(t['task'].startswith('/skill:godspeed') for t in dp['taskCall']['tasks']))
+print('task keys union:', sorted({k for t in dp['taskCall']['tasks'] for k in t}))
+PY
+dispatch top-level keys: ['schema', 'wave', 'policy', 'counts', 'registry', 'compaction', 'taskCall', 'resumeSends', 'note']
+taskCall keys: ['context', 'tasks']
+taskCall.tasks len: 64
+taskCall.context len: 3305
+spec names == dispatch names (order-sensitive): True
+registry members: 64 == dispatch names: True
+ready.dispatch: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-42/w1-dispatch.json
+ready.dispatch is the DISPATCH file: True
+ready names a spec file: False
+every task begins /skill:godspeed: True
+task keys union: ['agent', 'name', 'task']
+
+## spawn evidence: seat dirs created under the wave reportDir
+$ ls -d .ufo/waves/round-42/w1/*/ | wc -l
+59
+$ ls -d .ufo/waves/round-42/w1/*/ | head -5
+.ufo/waves/round-42/w1/ConnSelfOverlap/
+.ufo/waves/round-42/w1/ConnSiblingLedger/
+.ufo/waves/round-42/w1/ConnSiblingProc/
+.ufo/waves/round-42/w1/ConnSiblingQuar/
+.ufo/waves/round-42/w1/CritAdmissionPolicy/

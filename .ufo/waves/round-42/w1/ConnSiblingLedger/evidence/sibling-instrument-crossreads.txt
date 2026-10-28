@@ -1,0 +1,50 @@
+# Sibling-instrument cross-reads (read-only; no sibling byte written)
+
+## A. tabi's own frozen adjacency gate accepts the three overlap rows
+
+method: a scratch replica of tabi at lane tip 0081bfdb9 is seeded from `git archive`,
+corpus/adjacency.tsv replaced with ONLY the three candidate rows, committed in the replica,
+and the lane's frozen instrument run with --repo <replica> --fleet /home/vgpnk/Projects/shokunin.
+
+$ node scripts/check-adjacency.mjs --repo /fast/scratch/hyaku/tabi-r42/ConnSiblingLedger/adjtest2 --at 7ee7bda9d95ae82d67e64b432b6337e38f9df1e4 --fleet /home/vgpnk/Projects/shokunin
+ADJACENCY verdict=clean rows=3 verified=3
+exit=0
+
+rows under test (9 TAB columns each):
+surface	sibling	sibling_ref	sibling_quote	tabi_ref	tabi_quote	disposition	ruling_ref	ruling_quote
+routed-ledger-item-quote-identity	kumitate	kumitate-shokunin@14057f3e3899180c95713bace088fb9c0d0046e3:scripts/routed-ledger.mjs:17	every row binds to its item by a located quote	SKILL.md:1840	counter blob sha256 at `measuredRevision` and at REV, ancestry	split-declared	-	Rule (QUALITY 22): a claim's count is admissible only with a recorded counter
+routed-defect-recurrence-counting	kumitate	kumitate-shokunin@14057f3e3899180c95713bace088fb9c0d0046e3:scripts/routed-ledger.mjs:45	class seen in >= 4 distinct spot-check rounds	corpus/lessons/round-41-verifier-spotcheck.md:20	No uncommitted round work	split-declared	-	two files, 1.17 MB + 1.15 MB
+uncommitted-evidence-ledger	kotoba	kotoba-shokunin@47dbe8781657de563ff867caca6244d28e3db504:corpus/lessons/round-69-verifier-spotcheck.md:173	K69-5 (uncommitted round work, M112 class recurrence)	corpus/lessons/round-41-verifier-spotcheck.md:20	No uncommitted round work	split-declared	-	two files, 1.17 MB + 1.15 MB
+
+NOTE: the lane's own corpus/adjacency.tsv was NOT touched; this is a scratch replica.
+      The 16 production rows stay byte-identical (see the gate run on the real lane in the report).
+
+## B. kumitate's routed-ledger gate read against tabi's committed corpus
+
+method: tabi's 28 committed corpus/lessons/round-*-verifier-spotcheck.md copied read-only
+(`git archive HEAD corpus/lessons`) into a scratch root, plus an empty
+corpus/routed-ledger.md (the shape the gate expects), then kumitate's frozen instrument run
+with --root <scratch>.
+
+$ node kumitate-shokunin/scripts/routed-ledger.mjs --root <scratch> --from 1 --to 60
+ROUTED_LEDGER: DRIFT spotchecks=28 sections=24 items=126 rows=0 open=0 closed=0 wontfix=0 findings=126 first=UNLEDGERED:round-13-item-1
+exit=1
+first 8 UNLEDGERED items:
+FINDING UNLEDGERED round-13-item-1
+FINDING UNLEDGERED round-13-item-2
+FINDING UNLEDGERED round-13-item-3
+FINDING UNLEDGERED round-13-item-4
+FINDING UNLEDGERED round-13-item-5
+FINDING UNLEDGERED round-13-item-6
+FINDING UNLEDGERED round-14-item-1
+FINDING UNLEDGERED round-14-item-2
+
+reading: tabi has 24 routed-defect sections carrying 126 routed items and zero ledger rows.
+kumitate's recurrence key would fire RECURRENT at >= 4 distinct spot-check rounds; tabi's own
+committed record crosses that threshold on two classes (see the recurrence table in the report).
+
+## C. kumitate's handled instrument selftest (unchanged sibling bytes)
+
+$ node kumitate-shokunin/scripts/routed-ledger.mjs --selftest
+ROUTED_LEDGER_SELFTEST: PASS (33/33)
+exit=0

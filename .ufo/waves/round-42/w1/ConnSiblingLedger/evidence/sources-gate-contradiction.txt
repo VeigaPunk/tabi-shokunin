@@ -1,0 +1,63 @@
+# CONTRADICTION: C2's r2 clause is satisfiable only by a state tabi's own registered
+# sources gate declares FAILED
+
+tabi's registered gate `sources-census` (SKILL.md:2470; gate-registry row conformant) is
+scripts/check-sources.mjs. Its own rule (scripts/check-sources.mjs:325-327,338):
+
+  if (status === 'rejected' && (!teaches.includes('REJECTED:') || !teaches.includes('flip:')))
+      addFinding(..., 'rejected_without_flip', ...)
+  ... for (const path of usedPaths) if (checked.kind === 'missing')
+      addFinding(..., 'used_by_missing', ...)
+
+C2's frozen r2 clause requires: row S148 teaches begins `supersedes S146` AND
+row S146's status cell is `rejected`.
+
+## The lane's own gate at the naive baseline (nothing from D2 yet)
+
+$ git archive 34e1779 | tar -x -C <scratch>/base && cd <scratch>/base && node scripts/check-sources.mjs
+SOURCES_GATE verdict=clean rows=147 tiers=A:131,B:7,C:9 status=queued:15,mined:123,rejected:9 findings=0 file=corpus/SOURCES.md
+exit=0
+
+## The lane's own gate AT THE FREEZE COMMIT 9b6de3a, i.e. after the D2 repair landed
+
+$ git archive 9b6de3a | tar -x -C <scratch>/freeze && cd <scratch>/freeze && node scripts/check-sources.mjs
+FINDING id=rejected_without_flip fleet=- row=S146 detail=rejection_requires_reason_and_flip
+FINDING id=used_by_missing fleet=E11 row=S146 detail=path_missing
+SOURCES_GATE verdict=failed rows=149 tiers=A:133,B:7,C:9 status=queued:15,mined:124,rejected:10 findings=2 file=corpus/SOURCES.md
+exit=1
+
+## The lane's own gate at the current lane tip
+
+$ node scripts/check-sources.mjs          # from /home/vgpnk/Projects/shokunin/tabi-shokunin
+FINDING id=rejected_without_flip fleet=- row=S146 detail=rejection_requires_reason_and_flip
+FINDING id=used_by_missing fleet=E11 row=S146 detail=path_missing
+SOURCES_GATE verdict=failed rows=149 tiers=A:133,B:7,C:9 status=queued:15,mined:124,rejected:10 findings=2 file=corpus/SOURCES.md
+exit=1
+
+## The S146 row cells that produce this, at the tip
+
+status cell            : rejected
+teaches cell           : contains 'REJECTED:' = False, contains 'flip:' = False
+used-by cell           : corpus/lessons/round-42.md   -> that path DOES NOT EXIST
+                          ($ ls corpus/lessons/round-42.md -> No such file or directory)
+
+## Why this is a sibling-overlap finding and not a C2 defect claim
+
+The C2 checker's r2 clause reads only the `status` cell. It cannot see that the status value it
+demands also trips tabi's own sources gate, because `check-sources.mjs` is a *different*
+instrument with a *different* rule set over the *same* cell. kotoba's
+`verifiers/check_gate_finding_delta.py` exists for exactly this shape:
+
+  "Why: a gate that is already red at base cannot report a new defect by exit
+   code. ... Exit 1 when head has a DRIFT id base did not have."
+  (kotoba-shokunin verifiers/check_gate_finding_delta.py:3-9)
+
+Here the direction is reversed and equally invisible: a *green in one instrument* newly reddens
+another registered gate, and nothing in the round's no-harm evidence records it.
+`check_gate_finding_delta` on this pair would report new ids
+{used_by_missing, rejected_without_flip} at 9b6de3a that were absent at 34e1779.
+
+Do NOT file this as a C2 amendment. C2's predicate and kill rule are frozen post-freeze; this is
+ground routed back to the lane (the r2 row needs its teaches cell to carry the REJECTED:/flip:
+text check-sources requires, and a used-by that resolves), plus a note that tabi has no gate that
+reports "this repair reddened another registered gate".

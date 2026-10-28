@@ -1,0 +1,20 @@
+--- pristine.mjs	2026-10-28 12:38:00.697660343 -0300
++++ m5.mjs	2026-10-28 12:39:14.293663461 -0300
+@@ -67,7 +67,7 @@
+         }
+         if (isFirefoxExe(p?.exe)) hasFf = true;
+       }
+-      if (!hasFf) findings.push(`${N}-sample${j + 1}-no-firefox-exe`);
++      if (!hasFf && !tree.some((p) => typeof p?.exe === 'string' && p.exe)) findings.push(`${N}-sample${j + 1}-no-firefox-exe`);
+     }
+     // F1: a run that never observed an owned socket on either surface is blind.
+     if (ssObsSum < 1) findings.push(`${N}-zero-ss-observation`);
+@@ -81,7 +81,7 @@
+     const roots = r.owned?.roots;
+     if (!Array.isArray(roots) || roots.length === 0) findings.push(`${N}-owned-empty`);
+     else for (const root of roots) {
+-      if (!isFirefoxExe(root?.exe)) findings.push(`${N}-root-exe`);
++      if (typeof root?.exe !== 'string' || !root.exe) findings.push(`${N}-root-exe`);
+       if (Number.isFinite(r.runStartTicks) && Number.isFinite(root?.startTicks) && root.startTicks < r.runStartTicks - START_SLACK_TICKS) findings.push(`${N}-root-stale`);
+     }
+     if (r.survivors !== 0 || !Array.isArray(r.survivorPids) || r.survivorPids.length !== 0) findings.push(`${N}-survivors`);

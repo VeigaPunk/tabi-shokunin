@@ -2676,3 +2676,71 @@ stagnation nudge waives the lowest-axis obligation and C1 is the capability move
 - Census start (2026-10-28): exit 0, `tabi ok`, 20 pre-existing W04 warnings
   (`measure/census-start.{out,err,exit}`). Registry working-tree state: 149 rows
   (A131/B7/C9; mined 122 / queued 15 / rejected 10) — S146 flip + S148/S149 arrivals.
+
+## Round 42 — wave-1 integration and honest disposition (both claims refused; ledger closed)
+
+WAVE-DONE received from the orchestrator (manual fill loop; the inline dispatcher
+stalled ~18 min on the ready file — kama r61 precedent — before Main consumed it).
+**64/64 seats settled with nonempty reports and VERDICT lines; zero dead seats; role
+mix exact: scout 20, mutation-tester 9, executor 9, reviewer 8, critic 6, scribe 5,
+connector 4, sentinel 1, simplifier 1, revenger 1; attack share 23/64 (35.9%). L1
+held the canonical planner seat. Results: `.ufo/waves/round-42/w1-results.json`
+(entries carry status/note; per-seat output is the seat report file), parse summary
+`w1-parse-summary.json`, reports `w1/<Seat>/report.md`.** Verdict kinds: 21 ok / 43
+finding. Round total: 64 seats, one policy-v2 wave, no residual call.
+
+**C1 (coverage capability): NOT ADMITTED — kill rule fired.** The live measurement
+was clean (2026-10-28: exit 0, predicate true, findings empty; two real Firefox runs,
+spans 16,356/17,790 ms; `measure/c1-measure.json`), and all pre-data controls held
+(battery 6/6; r39/r40/r41 replay refusals). Four seats then demonstrated the frozen
+counter's do-nothing reach over committed bytes: `CritC1Reach` (three zero-browser
+reaches: r41 bytes relabeled, r42 bytes relabeled, hand-written receipt naming pid 1),
+`CritC1Witness` (4-scalar nonce patch and a 6.7 KB synthetic pair → predicate true),
+`RevWitnessProbe` (P2f/P2g/P2g′), `MutC1Counter` (unpinned `--pins`, counter-copy
+substitution). The in-process nonce binds only the live wrapper invocation. No
+capability row; coverage holds 9 → 9; no post-data amendment. Routed to r43: receipt
+authenticity binding (per-invocation signature, pinned public half) + pins-path
+binding. QUALITY criterion 104 added.
+
+**C2 (calibration): NOT MET AS WORDED — repairs landed, instrument does not
+establish the frozen sentence.** The four r41 routed defects are closed in committed
+bytes and seat-verified (D1 receipt+witness committed at `9b6de3a` with matching
+sha256s; D2 S148 supersedes S146 verbatim + S146 rejected with the gate-required
+REJECTED teaches form; D3 baseline control populated; D4 the 38-row TSV). The frozen
+checker passed all seven mutation attacks (every clause load-bearing), the
+adversarial CLI battery, and the synthetic selftest (32/34 finding ids). It is
+refused as a claim because (a) `CritPredicateSentence`/`RevC2Freeze` demonstrated the
+checker accepts tree objects where the sentence says "committed blob" (counter-proxy
+defect, r39 class), and (b) `CritC2Ledger` V0 demonstrated a self-consistent hostile
+committer greens all four rules (fabrication limb). Checker exit 0 at the final
+revision is recorded as instrument pass, not admission. Calibration holds 9 → 9;
+routed to r43: `cat-file -t` blob check, pinned measure blob id (8ff64d69…),
+verdict-probe. QUALITY criterion 105 added from the RevQuarCross S135 disagreement.
+
+**Quarantine (D4):** 38/38 fresh verdicts (`quarantine/re-adjudication.tsv`):
+misbound 25, absent 6, partial 4, present 2, unreachable 1; `RevQuarCross`
+independently reproduced 7/8 sampled letters (the S135 divergence is a standard
+difference, captured as a criterion). Package adoption stays closed; assimilation:
+none. `considerthese/` absent.
+
+**Sources & census:** S149 opened by the L1 (git-ls-tree docs, HTTP 200, 38,955 B,
+sha256 `2c298383476164238c6e25ba804412a335c405ab9540650bb603778e2f4f8b64`); S148
+opened (same URL as S146, verbatim quote at byte 243279 of the committed staged
+copy); new admitted note `corpus/knowledge/committed-bytes-verification-round-42.md`
+(S149) with a README coverage row; errata append to the r41 entry (quote-fidelity
+correction). Registry old→new: S146 status mined→rejected + used-by →
+`corpus/lessons/round-42.md` + teaches → REJECTED form (gate-required, old quote
+preserved here and in git history); S148/S149 used-by gained the lesson path. Census
+end (2026-10-28): exit 0, `tabi ok`, 21 W04 warnings; 149 rows, A133/B7/C9, mined
+124 / queued 15 / rejected 10 (`measure/census-end.*`; `w1/ExecCensus` expected-vs-
+observed exact — my pre-dispatch LOG entry's tier/status figures were wrong and are
+corrected by this entry).
+
+**Standing-gate conflict recorded:** `scripts/check-c2-knowledge-round41.mjs` exits 1
+(`registry-status:S146:rejected`, `registry-usedby:S146`) because its frozen pins
+describe the pre-D2 state the round-41 closure routed as a defect; left unamended
+per no-post-data-amendment; operator ruling requested (r27 L0 question stands).
+`check-sources.mjs` is clean (0 findings) after the lesson landed.
+
+No tool installs; no pacman transactions. Final dispositions and wave accounting are
+in `SCORECARD.md` (round-42 disposition commit) and `corpus/lessons/round-42.md`.

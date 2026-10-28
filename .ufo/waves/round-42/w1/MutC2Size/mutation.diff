@@ -1,0 +1,15 @@
+--- /fast/scratch/hyaku/tabi-r42/MutC2Size/check-pristine-copy.mjs	2026-10-28 12:38:36.337848872 -0300
++++ /fast/scratch/hyaku/tabi-r42/MutC2Size/check-mutant.mjs	2026-10-28 12:38:56.543663032 -0300
+@@ -77,12 +77,8 @@
+ for (const [id, p, key] of [['r1a', RECEIPT, 'receiptSha256'], ['r1b', WITNESS, 'witnessSha256']]) {
+   const size = gitBlobSize(p);
+   if (size === null) { add(`${id}-${p.includes('witness') ? 'witness' : 'receipt'}-absent`, `${p} not committed at REV`); continue; }
+-  if (size < 1000) { add(`${id}-too-small`, `${p} committed blob is ${size} bytes (<1000)`); continue; }
+   const raw = gitShow(p);
+   if (raw === null) { add(`${id}-unreadable`, `${p} unreadable at REV`); continue; }
+-  let doc = null;
+-  try { doc = JSON.parse(raw.toString('utf8')); } catch { add(`${id}-unparseable`, `${p} does not parse as JSON`); continue; }
+-  if (!doc || typeof doc !== 'object') { add(`${id}-unparseable`, `${p} is not a JSON object`); continue; }
+   const want = measureDoc && measureDoc[key];
+   if (!want) { if (!findings.some((f) => f.id.startsWith('r1-measure'))) add(`${id}-binding-unavailable`, `no ${key} in committed ${MEASURE}`); continue; }
+   const got = sha256(raw);

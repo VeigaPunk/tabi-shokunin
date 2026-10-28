@@ -1,0 +1,35 @@
+$ cd /home/vgpnk/Projects/shokunin/tabi-shokunin
+$ git rev-parse HEAD
+0081bfdb93b6bd1bf2853bb128996f1a976b7218
+
+## r41 handoff bytes at HEAD (committed)
+$ git show HEAD:.ufo/waves/round-41/w1.ready | sha256sum
+3048d43a02eede57c3bb699c680bd18657f3872f1a944cc6db7a8318c7fe6ee1  -
+$ git show HEAD:.ufo/waves/round-41/w1.ready.dispatched | sha256sum
+d864e6dd010668356f9819b01459a657f85ba38e1ad62d02afbd839ae3a3145b  -
+$ git show HEAD:.ufo/waves/round-41/w1-spec.json | sha256sum
+2562e34043b321bf63d64d2ef1d66fc44842dc0bdaa170927062da2d89a01d62  -
+
+$ cat .ufo/waves/round-41/w1.ready
+{
+  "lane": "tabi",
+  "round": 41,
+  "wave": "w1",
+  "dispatch": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/w1-spec.json",
+  "l1": "TabiR41"
+}
+
+$ cat .ufo/waves/round-41/w1.ready.dispatched
+never-dispatched: ready pointed at w1-spec.json (no taskCall; swarm compile skipped); dispatcher KeyError(taskCall) 08:53+; L1 filed report 9fa5ad61 with queued-wave disposition (orchestrator 2026-10-28)
+
+$ python3 -c "import json; print(list(json.load(open(\".ufo/waves/round-41/w1-spec.json\")).keys()))"
+['wave', 'maxLanes', 'reportDir', 'context', 'items']
+
+$ python3 -c "import json; d=json.load(open(\".ufo/waves/round-41/w1-spec.json\")); print(len(d[\"items\"]), d[\"wave\"], d[\"maxLanes\"])"
+64 tabi-r41-w1 64
+
+## r41 seats that ever existed on disk
+$ ls .ufo/waves/round-41/w1/
+swarm-registry.json
+$ python3 registry agentIds
+members 64 non-null agentId 0

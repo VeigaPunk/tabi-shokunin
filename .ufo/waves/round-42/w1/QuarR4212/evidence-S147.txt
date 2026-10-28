@@ -1,0 +1,51 @@
+id: S147
+lane: tabi
+round: round3
+register class: payload-absent
+registered URL: https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1015/
+final URL (after redirects): https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1015/
+canonical: https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1015/
+redirects: 0
+HTTP status: 200
+content-type: text/html
+bytes: 115841
+sha256: 4265cc554a1266beedb1eb160546f42ef64dca9dc33d4bbc43a2e8dfadabea25
+fetched: 2026-10-28 (response date Wed, 28 Oct 2026 15:37:02 GMT)
+
+staged quote (exactly as registered):
+Error 1020: Access denied
+
+location in the REGISTERED body:
+- exact "Error 1020: Access denied": 0
+- casefold of that full string: 0
+- exact "Access denied": 0
+- exact "Error 1020": 1, and it is not the article
+- exact "error-1020": 1, the href of that same sidebar link
+
+The single "Error 1020" hit is sidebar navigation, not the staged sentence:
+
+  <a href="/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1020/" data-nb-sidebar-link><span class="break-words">Error 1020</span></a>
+
+Article identity on the registered page:
+- <title>Error 1015 · Cloudflare Support docs</title>
+- H1: Error 1015
+- H2: Error 1015: You are being rate limited
+- surrounding sentence: "The website you are trying to visit has received too many requests and has temporarily blocked you from accessing it."
+- next sentence: "The website owner has configured rate limiting rules that restrict how many requests a visitor can make to their site in a given time period. When you exceed this limit, Cloudflare returns a 1015 error."
+
+Classification probe (NOT substituted as the registered URL). Sibling registered source is tabi round3 S148:
+URL: https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1020/
+HTTP status: 200
+redirects: 0
+final URL: https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1020/
+canonical: https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1020/
+bytes: 121181
+sha256: d2107de58ddee762bedf261912ed89bd8636d389ff0f5a4193a751d70c0ca48c
+exact "Error 1020: Access denied": 3 (on-this-page select option, article H2, sidebar anchor)
+
+Surrounding sentence on that other registered source, immediately after the H2 id="error-1020-access-denied":
+"Error 1020: Access denied. This error indicates that a Cloudflare security feature configured by the website owner blocked the request. Cloudflare returns it with an HTTP 403 status code."
+
+verdict: misbound
+
+justification: The registered error-1015 URL opened (HTTP 200, no redirect) and its article is the rate-limit page titled "Error 1015: You are being rate limited". The staged string "Error 1020: Access denied" is not in that body, including casefold; the only "Error 1020" token is a sidebar link to a different page, and "Access denied" occurs zero times, so this is not a partial quote and not a one-token typo of the 1015 heading. The same string is the level-h2 heading of a different registered source, tabi round3 S148's error-1020 URL, fetched only to separate misbound from absent and not treated as S147's cited URL. Delta vs round-40: r40's disposition was "absent at cited URL (misbound 1015/1020)". The cited page still lacks the quote, so the absence-at-cited-URL fact did not change today. The enum here is misbound rather than absent because the quote belongs verbatim to that other registered source; no live insertion or deletion of the sentence was observed.

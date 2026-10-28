@@ -1,0 +1,39 @@
+id: S149
+lane: tabi
+round: round3
+register class: payload-absent
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md (line 203)
+registered URL: https://en.wikipedia.org/robots.txt
+staged quotes (exact cells): `The daemon` ; `/status JSON fields`
+final URL after redirects: https://en.wikipedia.org/robots.txt
+redirects: 0
+HTTP status: 200
+content-type: text/plain; charset=utf-8
+response Date: Wed, 28 Oct 2026 15:14:30 GMT (cache hit; Age ~1408s on the second fetch)
+Last-Modified: Tue, 06 Oct 2026 02:21:00 GMT
+bytes: 28275
+sha256: 48b98d80c8444d37cdf50cc9a4d2257b66039477e581066d2356062a4cbd678f
+UTF-8 BOM: present (file(1) and decode utf-8-sig; body starts EF BB BF)
+command: curl -sS -L --max-redirs 5 -A 'QuarR4213-r42-readonly/1.0' -D s149.headers -o s149.body -w 'http=%{http_code} url=%{url_effective} bytes=%{size_download} redirects=%{num_redirects}' --max-time 60 'https://en.wikipedia.org/robots.txt'
+observed: http=200 url=https://en.wikipedia.org/robots.txt bytes=28275 redirects=0
+content-length header: 28275 (matches wc -c)
+
+located on the registered body:
+- exact `The daemon`: 0; whitespace-normalized: absent
+- exact `/status JSON fields`: 0; whitespace-normalized: absent
+- exact `daemon`: 0; exact `JSON fields`: 0; exact `status`: not required, and no `/status` path
+surrounding sentences of the file that did open (not the staged quotes): line 1 "# robots.txt for http://www.wikipedia.org/ and friends"; line 9 "# and ignoring 429 ratelimit responses, claims to respect robots:"; line 130 "Crawl-delay: 5"; line 424 "Sitemap: https://en.wikipedia.org/w/rest.php/site/v1/sitemap/0". Those Crawl-delay/Sitemap lines are S148's staged tokens, not S149's.
+
+carrier (different registered source — tabi round3 S150, lane-local, not an HTTP substitute for the registered URL):
+path: /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md
+bytes: 2422
+sha256: b811d9c23dfdafa0b751b23acef25b02a324490a3389efdd5c17319a646734fc
+L5: ## The daemon
+L7: The `kimi-webbridge` binary lives at `~/.kimi-webbridge/bin/kimi-webbridge` ... and serves a local HTTP daemon on `127.0.0.1:10086`.
+L28: ## /status JSON fields
+L30: - `running` (bool) — daemon listening on `:10086`
+census-adjudication.json (tabi/round3/S149) stores both quote cells with url=https://en.wikipedia.org/robots.txt and line="| S150 | kimi-webbridge operations reference — /home/vgpnk/.kimi-code/plugins/managed/kimi-webbridge/skills/kimi-webbridge/references/operations.md | ...". lanes/tabi/round3/SOURCES-PROPOSED.md Gate S149 quotes the robots.txt 429 comment, "Crawl-delay: 5", and the Sitemap line. The S150 row's anchor cells are §"The daemon" and §"/status JSON fields".
+
+verdict: misbound
+
+justification: The registered URL opened cleanly (HTTP 200, text/plain, no redirect) and is Wikipedia's robots.txt, including the UTF-8 BOM noted in the lane channel notes. Neither staged quote is in those bytes, exactly or whitespace-normalized, and the substring `daemon` is also absent, so this is not a one-token typo or a partial. Both strings are markdown headings in the next row's registered source, the lane-local operations.md, read locally and not fetched as a replacement URL. Versus round-40's "absent/misbound (daemons text belongs to S150)": the live robots.txt still lacks both quotes (Last-Modified still 2026-10-06; sha256 recorded above). Nothing on that URL changed into containing the daemon headings. The single enum verdict is misbound; the absent-from-URL fact is unchanged and is why it is not present.

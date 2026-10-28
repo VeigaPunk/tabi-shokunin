@@ -1,0 +1,59 @@
+=== PART 1: committed r42 evidence ===
+committed nonce: 94c0f0efa48293b3ed923bd9717b5c2702b5f89f3fd45ffd51c980ba8e4e21ab
+receipt sha256: 3984455276a5b54a0a7652fc76923eb46d446f0630556d6775abc7c1fd317b7e measure record: 3984455276a5b54a0a7652fc76923eb46d446f0630556d6775abc7c1fd317b7e
+witness sha256: 163f4eba7f8b6c93daa0e5742b0ade81ee16ff716cc27bc578fb76795a57d339 measure record: 163f4eba7f8b6c93daa0e5742b0ade81ee16ff716cc27bc578fb76795a57d339
+witness schema/nonce/samples: tabi-r41-witness 94c0f0efa48293b3ed923bd9717b5c2702b5f89f3fd45ffd51c980ba8e4e21ab 754 rootPid: 2764370
+receipt runs[0].owned.nodePid: 2765128 witness samples observing it directly: 749 / 754
+witness samples with firefox-exe descendant of nodePid: 715 / 754
+
+### P1a committed r42, own nonce + measure record
+$ node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs <json:receipt.json> --nonce 94c0f0efa48293b3ed923bd9717b5c2702b5f89f3fd45ffd51c980ba8e4e21ab --witness <json:receipt.witness.json> --pins /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/claims.json --measure /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-42/measure/c1-measure.json
+EXIT=0
+{"predicate":true,"findings":[],"receiptSha256":"3984455276a5b54a0a7652fc76923eb46d446f0630556d6775abc7c1fd317b7e"}
+
+### P1b committed r42, FRESH nonce
+$ node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs <json:receipt.json> --nonce 86ddbcd88dee25fba7f7d1ad1a000e7b2a25813fb9489deec8fcab418e2d2bbf --witness <json:receipt.witness.json> --pins /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/claims.json --measure /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-42/measure/c1-measure.json
+EXIT=1
+{"predicate":false,"findings":["run-nonce-mismatch","witness-nonce-mismatch"],"receiptSha256":"3984455276a5b54a0a7652fc76923eb46d446f0630556d6775abc7c1fd317b7e"}
+
+### P2a fabricated-pid witness, receipt copy untouched, fresh nonce 38052541791ca78fce4d1515c39a777a6369c15033d8564b61bfe54f7734487f
+$ node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs <json:r41-copy.json> --nonce 38052541791ca78fce4d1515c39a777a6369c15033d8564b61bfe54f7734487f --witness <json:witness-A-fabricated-pids.json> --pins /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/claims.json
+EXIT=1
+{"predicate":false,"findings":["run-nonce-mismatch","witness-no-owned-firefox","witness-no-overlap"],"receiptSha256":"593d15996bcb10d93c8af93b450fa870706a08386253609a85db512e6e6e5a72"}
+
+### P2b genuine r41 witness, nonce rewritten, receipt copy UNTOUCHED, fresh nonce bd1832c067ca5437cc9663a42e72fd47c10c9f6bf66424aedcb1388b8f22933f
+$ node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs <json:r41-copy.json> --nonce bd1832c067ca5437cc9663a42e72fd47c10c9f6bf66424aedcb1388b8f22933f --witness <json:witness-B-r41-nonce-rewritten.json> --pins /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/claims.json
+EXIT=1
+{"predicate":false,"findings":["run-nonce-mismatch"],"receiptSha256":"593d15996bcb10d93c8af93b450fa870706a08386253609a85db512e6e6e5a72"}
+
+### P2c hand-built witness (receipt pids only), receipt copy UNTOUCHED, fresh nonce 7248cf89815f8cd7bfbdf6d7ecada4fff81a9af0d94e88bebfdfdcfebfbff774
+$ node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs <json:r41-copy.json> --nonce 7248cf89815f8cd7bfbdf6d7ecada4fff81a9af0d94e88bebfdfdcfebfbff774 --witness <json:witness-D-handbuilt.json> --pins /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/claims.json
+EXIT=1
+{"predicate":false,"findings":["run-nonce-mismatch"],"receiptSha256":"593d15996bcb10d93c8af93b450fa870706a08386253609a85db512e6e6e5a72"}
+
+### P2d witness with no driver and no firefox, receipt copy UNTOUCHED, fresh nonce e45616c5d1627308067ddc7b5cec4e82fbff62706ab6b6a97854fd28faad59c1
+$ node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs <json:r41-copy.json> --nonce e45616c5d1627308067ddc7b5cec4e82fbff62706ab6b6a97854fd28faad59c1 --witness <json:witness-E1-no-ff-no-node.json> --pins /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/claims.json
+EXIT=1
+{"predicate":false,"findings":["run-nonce-mismatch","witness-no-owned-firefox","witness-no-overlap"],"receiptSha256":"593d15996bcb10d93c8af93b450fa870706a08386253609a85db512e6e6e5a72"}
+
+### P2e witness never observing driver pid, out-of-window startTicks, receipt copy UNTOUCHED, fresh nonce 4b396d2c1969e2a3412f9f1232aa8b9b288c0029d2e508e454e0915ea365ba3a
+$ node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs <json:r41-copy.json> --nonce 4b396d2c1969e2a3412f9f1232aa8b9b288c0029d2e508e454e0915ea365ba3a --witness <json:witness-E2-node-never-observed.json> --pins /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/claims.json
+EXIT=1
+{"predicate":false,"findings":["run-nonce-mismatch"],"receiptSha256":"593d15996bcb10d93c8af93b450fa870706a08386253609a85db512e6e6e5a72"}
+
+### P2f receipt nonce rewritten + r41 witness nonce rewritten + forged measure doc, fresh nonce 152752ed28117d75e5ee2d9e37b84d6b77374c2b1f6655b4faf831aa1ab06355
+$ node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs <json:r41-copy-nonce-rewritten.json> --nonce 152752ed28117d75e5ee2d9e37b84d6b77374c2b1f6655b4faf831aa1ab06355 --witness <json:witness-C-r41-nonce-rewritten.json> --pins /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/claims.json --measure <json:forged-measure.json>
+EXIT=0
+{"predicate":true,"findings":[],"receiptSha256":"99eeab0b2b483fd3a1b7f0a02fa41974fa27d0c47fa53aa5a34be9f4c082edf9"}
+
+### P2g receipt nonce rewritten + HAND-BUILT witness + forged measure doc, fresh nonce e5d9aca6e187e12b3f8568310576536274c248e093afbe43005f0a989d280705
+$ node .ufo/waves/round-41/counters/c1-session-bound-v4.mjs <json:r41-copy-final.json> --nonce e5d9aca6e187e12b3f8568310576536274c248e093afbe43005f0a989d280705 --witness <json:witness-FINAL-handbuilt.json> --pins /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/claims.json --measure <json:forged-measure.json>
+EXIT=0
+{"predicate":true,"findings":[],"receiptSha256":"200071967289b3c28fcb2061e5defa7e425cdd6f5a8369064e4baa34ef78489c"}
+
+### Provenance
+node: v24.21.0 /home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node 7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c
+counter: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/counters/c1-session-bound-v4.mjs cd71a59efa575fc260c4e487b7d52f69a9cd9f3b98bc6d4333abdb9a0cff126a
+pins firefoxBinSha256: 1f637a7cfe8f1a3ec814a7da7e38c360a3e3c39553b8c7245ac5d6643fd495eb
+counter source spawn calls: 0
+r41 run1 window ticks: 16008847 .. 16011587  run2 window ticks: 16011705 .. 16014516

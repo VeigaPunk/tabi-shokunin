@@ -1,0 +1,35 @@
+--- a/.ufo/waves/round-42/counters/check-routed-defects-round42.mjs
++++ b/.ufo/waves/round-42/counters/check-routed-defects-round42.mjs
+@@ -22,7 +22,6 @@
+ //         evidence path a committed blob >=200 bytes.
+ // The committed-bytes checks are built on S149 (git-ls-tree documentation,
+ // opened 2026-10-28); the verbatim-quote check enforces the S148 discipline.
+-import fs from 'node:fs';
+ import crypto from 'node:crypto';
+ import { spawnSync } from 'node:child_process';
+ 
+@@ -44,13 +43,12 @@
+ }
+ 
+ const argv = process.argv.slice(2);
+-let rev = null, repo = null, jsonOut = false;
++let rev = null, repo = null;
+ for (let i = 0; i < argv.length; i++) {
+   if (argv[i] === '--rev') rev = argv[++i];
+   else if (argv[i] === '--repo') repo = argv[++i];
+-  else if (argv[i] === '--json') jsonOut = true;
+ }
+-if (!rev || !repo || !/^[0-9a-f]{40}$/.test(rev)) die('usage: node check-routed-defects-round42.mjs --rev <40-hex rev> --repo <lane repo> [--json]');
++if (!repo || !/^[0-9a-f]{40}$/.test(rev)) die('usage: node check-routed-defects-round42.mjs --rev <40-hex rev> --repo <lane repo> [--json]');
+ 
+ function gitShow(revPath) {
+   const r = spawnSync('git', ['-C', repo, 'show', `${rev}:${revPath}`], { encoding: 'buffer', maxBuffer: 64 << 20 });
+@@ -112,7 +110,7 @@
+         if (words < 1 || words > 25) add('r2-quote-word-count', `S148 quote has ${words} words, need 1..25`);
+         const html = gitShow(STAGED_HTML);
+         if (html === null) add('r2-staged-html-absent', `${STAGED_HTML} not committed at REV`);
+-        else if (quote.length > 0 && !html.toString('utf8').includes(quote)) add('r2-quote-not-verbatim', 'S148 quote is not a verbatim substring of the committed staged source copy');
++        else if (!html.toString('utf8').includes(quote)) add('r2-quote-not-verbatim', 'S148 quote is not a verbatim substring of the committed staged source copy');
+       }
+     }
+   }

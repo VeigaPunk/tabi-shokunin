@@ -716,3 +716,24 @@
 
 103. A frozen counter must test whether its measurement receipt can exist at the revision it is required to name; a receipt that embeds the full hash of the commit containing its own bytes creates an unreachable fixed point. Red state: C2 D6 requires `.ufo/waves/round-39/measure/numstat-at-REV.txt` in REV and `text.includes(REV)`; adding the receipt changes REV, confirmed by `.ufo/waves/round-39/measure/c2-self-reference-probe.txt`. Freeze a non-self-referential candidate/evidence-carrier protocol before data. (source: `corpus/lessons/round-39.md` M2; round-39 C2 counter)
 
+
+## Round 42 additions (append-only; never edit above)
+
+104. A counter that scores a receipt from committed bytes must refuse bytes it cannot
+    authenticate: a nonce relabel of a genuinely-produced receipt, or a fully
+    synthetic receipt+witness pair, must not reach predicate true. The live wrapper's
+    in-process nonce binds only the live invocation; scored-over-committed-bytes it
+    authenticates nothing. Red state: round-42 wave — `CritC1Reach` reached counter
+    exit 0 / predicate true three ways with zero browser runs (r41 bytes relabeled,
+    r42 bytes relabeled, hand-written receipt naming pid 1 as firefox);
+    `CritC1Witness`/`RevWitnessProbe` greened a 4-scalar nonce patch and a 6.7 KB
+    synthetic pair; `MutC1Counter` added the unpinned `--pins` hole. Fix (sign the
+    receipt with a per-invocation key, public half pinned) is routed to round 43,
+    not amended post-data. (source: `corpus/lessons/round-42.md` Mistakes 1)
+105. Quarantine classification standard: `misbound` requires the registered quote
+    located verbatim in a DIFFERENT registered source's document; `absent` means the
+    registered document opens and the quote is not in it; a classification that
+    changes another round's letter names the standard, not just the letter.
+    Red state: round-42 `RevQuarCross` vs `QuarR4208` disagreed on S135 (absent vs
+    misbound) — a standard divergence, not a fabrication. (source:
+    `corpus/lessons/round-42.md` Gate spot-check)

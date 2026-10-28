@@ -1,0 +1,40 @@
+# git state at attack time (read-only queries; no mutation)
+HEAD: 0081bfdb93b6bd1bf2853bb128996f1a976b7218
+
+$ git status --porcelain corpus/evidence/round42 .ufo/waves/round-42/measure
+?? corpus/evidence/round42/
+
+$ git log --oneline --all -- corpus/evidence/round42   # any commit at all
+(empty above = path never committed)
+
+$ git ls-tree -r --name-only HEAD -- corpus/evidence/round42
+(empty above)
+
+$ git check-ignore -v corpus/evidence/round42/playwright-egress/receipt.json
+exit=1
+
+$ git cat-file -e 9b6de3a19de11abdb80e82a1310abc64a40215bb:corpus/evidence/round42/playwright-egress/receipt.json
+fatal: path 'corpus/evidence/round42/playwright-egress/receipt.json' exists on disk, but not in '9b6de3a19de11abdb80e82a1310abc64a40215bb'
+exit=128
+
+$ git ls-tree -r --name-only HEAD -- .ufo/waves/round-42/measure
+.ufo/waves/round-42/measure/c1-measure.exit
+.ufo/waves/round-42/measure/c1-measure.json
+.ufo/waves/round-42/measure/c1-measure.stderr.txt
+.ufo/waves/round-42/measure/census-start.err
+.ufo/waves/round-42/measure/census-start.exit
+.ufo/waves/round-42/measure/census-start.out
+
+$ sha256sum corpus/evidence/round42/playwright-egress/receipt.json corpus/evidence/round42/playwright-egress/receipt.witness.json
+3984455276a5b54a0a7652fc76923eb46d446f0630556d6775abc7c1fd317b7e  corpus/evidence/round42/playwright-egress/receipt.json
+163f4eba7f8b6c93daa0e5742b0ade81ee16ff716cc27bc578fb76795a57d339  corpus/evidence/round42/playwright-egress/receipt.witness.json
+
+$ git show HEAD:.ufo/waves/round-42/measure/c1-measure.json | jq-keys
+{
+ "receiptSha256": "3984455276a5b54a0a7652fc76923eb46d446f0630556d6775abc7c1fd317b7e",
+ "witnessSha256": "163f4eba7f8b6c93daa0e5742b0ade81ee16ff716cc27bc578fb76795a57d339",
+ "driverExit": 0,
+ "counterExit": 0,
+ "predicate": true,
+ "findings": []
+}

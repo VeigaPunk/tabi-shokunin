@@ -1,0 +1,13 @@
+## NEGATIVE CONTROL — replay the dispatcher line `tc = d["taskCall"]` against the r41 ready target (w1-spec.json)
+$ python3 -c "import json; d=json.load(open(\".ufo/waves/round-41/w1-spec.json\")); print(len(d[\"taskCall\"][\"tasks\"]))"
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import json; d=json.load(open('.ufo/waves/round-41/w1-spec.json')); print(len(d['taskCall']['tasks']))
+                                                                                  ~^^^^^^^^^^^^
+KeyError: 'taskCall'
+exit=1
+
+## POSITIVE CONTROL — same line against the r42 ready target (w1-dispatch.json)
+$ python3 -c "import json; d=json.load(open(\".ufo/waves/round-42/w1-dispatch.json\")); print(len(d[\"taskCall\"][\"tasks\"]))"
+64
+exit=0

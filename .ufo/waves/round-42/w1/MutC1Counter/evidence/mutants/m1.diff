@@ -1,0 +1,11 @@
+--- pristine.mjs	2026-10-28 12:38:00.697660343 -0300
++++ m1.mjs	2026-10-28 12:39:10.353663383 -0300
+@@ -44,7 +44,7 @@
+     if (s.length < 8) findings.push(`${N}-sample-count`);
+     const ts = s.map((x) => x?.t);
+     if (ts.some((t, j) => !Number.isFinite(t) || (j > 0 && t <= ts[j - 1]))) findings.push(`${N}-sample-order`);
+-    if (ts.length < 2 || ts.at(-1) - ts[0] < 1000) findings.push(`${N}-sample-span`);
++    // M1: sample-span check dropped
+     let ssObsSum = 0, ssNlSum = 0, procObsSum = 0, procNlSum = 0;
+     for (const [j, x] of s.entries()) {
+       for (const k of ['ss', 'proc']) {

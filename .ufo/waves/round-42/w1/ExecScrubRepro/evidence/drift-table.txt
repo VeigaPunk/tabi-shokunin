@@ -1,0 +1,73 @@
+### committed (round-41 controls)
+c1-round39-replay.json predicate=False n=53 receiptSha256=e894f1d5950eeff25dbf98fb3f951ab2eea8484f2049b88b25252bf45ff8f493
+c1-round40-replay.json predicate=False n=69 receiptSha256=a72f4eea8a9a9245dff1760b4de2f3e3e8de84a7755e0ceba1e8699d830c3722
+c1-battery.json allPass=True cases=6
+
+### control 1 - round-39 replay
+CONTROL r39 variant=claims-exact (documented recipe), N1         n_new=53 n_base=53 predicate=False receiptSha256=e894f1d5950eeff25dbf98fb3f951ab2eea8484f2049b88b25252bf45ff8f493
+  set_equal=True seq_equal=True
+  added  =[]
+  removed=[]
+CONTROL r39 variant=rerun N4                                     n_new=53 n_base=53 predicate=False receiptSha256=e894f1d5950eeff25dbf98fb3f951ab2eea8484f2049b88b25252bf45ff8f493
+  set_equal=True seq_equal=True
+  added  =[]
+  removed=[]
+CONTROL r39 variant=rerun N5                                     n_new=53 n_base=53 predicate=False receiptSha256=e894f1d5950eeff25dbf98fb3f951ab2eea8484f2049b88b25252bf45ff8f493
+  set_equal=True seq_equal=True
+  added  =[]
+  removed=[]
+CONTROL r39 variant=assigned: --witness nonexistent + --pins round-42 n_new=53 n_base=53 predicate=False receiptSha256=e894f1d5950eeff25dbf98fb3f951ab2eea8484f2049b88b25252bf45ff8f493
+  set_equal=False seq_equal=False
+  added  =['witness-unreadable']
+  removed=['witness-missing']
+CONTROL r39 variant=--witness nonexistent only                   n_new=53 n_base=53 predicate=False receiptSha256=e894f1d5950eeff25dbf98fb3f951ab2eea8484f2049b88b25252bf45ff8f493
+  set_equal=False seq_equal=False
+  added  =['witness-unreadable']
+  removed=['witness-missing']
+CONTROL r39 variant=--pins round-41 only                         n_new=54 n_base=53 predicate=False receiptSha256=e894f1d5950eeff25dbf98fb3f951ab2eea8484f2049b88b25252bf45ff8f493
+  set_equal=False seq_equal=False
+  added  =['firefox-bin-unbound']
+  removed=[]
+CONTROL r39 variant=--witness nonexistent + --pins round-41      n_new=54 n_base=53 predicate=False receiptSha256=e894f1d5950eeff25dbf98fb3f951ab2eea8484f2049b88b25252bf45ff8f493
+  set_equal=False seq_equal=False
+  added  =['firefox-bin-unbound', 'witness-unreadable']
+  removed=['witness-missing']
+
+### control 2 - round-40 replay
+CONTROL r40 variant=claims-exact (documented recipe), N2         n_new=69 n_base=69 predicate=False receiptSha256=a72f4eea8a9a9245dff1760b4de2f3e3e8de84a7755e0ceba1e8699d830c3722
+  set_equal=True seq_equal=True
+  added  =[]
+  removed=[]
+CONTROL r40 variant=rerun N6                                     n_new=69 n_base=69 predicate=False receiptSha256=a72f4eea8a9a9245dff1760b4de2f3e3e8de84a7755e0ceba1e8699d830c3722
+  set_equal=True seq_equal=True
+  added  =[]
+  removed=[]
+CONTROL r40 variant=assigned: --witness nonexistent + --pins round-42 n_new=69 n_base=69 predicate=False receiptSha256=a72f4eea8a9a9245dff1760b4de2f3e3e8de84a7755e0ceba1e8699d830c3722
+  set_equal=False seq_equal=False
+  added  =['witness-unreadable']
+  removed=['witness-missing']
+CONTROL r40 variant=--pins round-41 only                         n_new=70 n_base=69 predicate=False receiptSha256=a72f4eea8a9a9245dff1760b4de2f3e3e8de84a7755e0ceba1e8699d830c3722
+  set_equal=False seq_equal=False
+  added  =['firefox-bin-unbound']
+  removed=[]
+CONTROL r40 variant=--witness nonexistent + --pins round-41      n_new=70 n_base=69 predicate=False receiptSha256=a72f4eea8a9a9245dff1760b4de2f3e3e8de84a7755e0ceba1e8699d830c3722
+  set_equal=False seq_equal=False
+  added  =['firefox-bin-unbound', 'witness-unreadable']
+  removed=['witness-missing']
+
+### control 3 - battery
+run1 allPass=True cases_deep_equal_committed=True
+run2 allPass=True cases_deep_equal_committed=True run1==run2=True
+  case0 forger-r39-verbatim    exit=2 finding=environment-loader-contamination pass=True identical_to_committed=True
+  case1 forger-r41-retargeted  exit=2 finding=environment-loader-contamination pass=True identical_to_committed=True
+  case2 node-path              exit=2 finding=environment-loader-contamination pass=True identical_to_committed=True
+  case3 ld-preload             exit=2 finding=environment-loader-contamination pass=True identical_to_committed=True
+  case4 esm-loader             exit=2 finding=environment-loader-contamination pass=True identical_to_committed=True
+  case5 clean                  exit=0 finding=None pass=True identical_to_committed=True
+
+### witness finding placement
+r39 witness-unreadable index=52 of 53
+r39 committed witness-missing index=52 of 53
+r40 witness-unreadable index=68 of 69
+r40 committed witness-missing index=68 of 69
+r39 r41pins-only firefox-bin-unbound index=53 of 54 (after witness leg)

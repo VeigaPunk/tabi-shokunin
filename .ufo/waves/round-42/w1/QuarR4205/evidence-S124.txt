@@ -1,0 +1,49 @@
+id: S124
+lane: tabi
+round: round2
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md line 186
+class (register): payload-absent
+registered URL: https://www.rfc-editor.org/rfc/rfc9110.txt
+final URL: https://www.rfc-editor.org/rfc/rfc9110.txt
+redirects: 0
+HTTP status: 200
+bytes: 502941
+sha256: 21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a
+content-type: text/plain;charset=utf-8
+response date: Wed, 28 Oct 2026 15:36:48 GMT
+etag: W/"7c9fc097e78bd883e559172c885e074c"
+
+staged quotes (register cell, exact):
+Q1: Retry-After can be used with a 3xx (Redirection) or 503 (Service Unavailable) status code
+Q2: enforcement), §8.8 (SameSite Cookies); draft-13 | Default enforcement is
+
+census origin (census-adjudication.json, read-only):
+Q1 line: - quote (section 10.2.3): "Retry-After can be used with a 3xx (Redirection) or 503 (Service Unavailable) status code"
+Q2 line starts with the S125 staging row (pipe-split), URL https://www.ietf.org/archive/id/draft-ietf-httpbis-rfc6265bis-13.txt
+Q2 is a pipe-split of the adjacent S125 staging row, not a sentence of RFC 9110.
+
+match (exact and whitespace-normalized, full body):
+Q1 exact=false ws_norm=false
+Q2 exact=false ws_norm=false
+same checks against the fetched rfc6265bis-13 body: both false
+
+located detail:
+Q1 is not a contiguous sentence. The cited section is present. Surrounding text, body lines 4799-4807:
+
+10.2.3.  Retry-After
+
+   Servers send the "Retry-After" header field to indicate how long the
+   user agent ought to wait before making a follow-up request.  When
+   sent with a 503 (Service Unavailable) response, Retry-After indicates
+   how long the service is expected to be unavailable to the client.
+   When sent with any 3xx (Redirection) response, Retry-After indicates
+   the minimum time that the user agent is asked to wait before issuing
+   the redirected request.
+
+Phrase counts in this body: "Retry-After" 17, "3xx (Redirection)" 6, "503 (Service Unavailable)" 2, "can be used with" 2. Both "can be used with" hits are If-Match / If-Unmodified-Since lost-update text, not Retry-After. "SameSite Cookies", "draft-13", and "Default enforcement" are 0 in this body.
+
+Q2 is absent from this body. In the rfc6265bis-13 body the contiguous Q2 string is also absent. That draft has the heading "8.8.  SameSite Cookies" (2) and the separate phrases "default enforcement" (2: a default enforcement mode that is equivalent to Lax, and Add a default enforcement value to the same-site-flag) and: Let enforcement be "Default". It does not contain "draft-13" or "Default enforcement is".
+
+verdict: partial
+
+justification: The registered source opened (HTTP 200, no redirect, 502941 bytes). Q1, the quote the lane actually wrote against section 10.2.3, is not verbatim and not a one-token typo: the section states the same two status classes in two "When sent with" sentences, so some phrases are present and the registered sentence is absent. That is partial, not present and not a clean absent. Q2 is not RFC 9110 text; the census line is the S125 staging row, and the contiguous string is also absent from the cookie draft, so Q2 is an extraction spill rather than a passage of that other source. Versus round 40 (absent verbatim / misbound): the live RFC bytes did not change (same 502941 bytes and sha256 21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a recorded for the 2026-10-25 fetch). The label moves only because this round's enum has partial for the split r40 already described in prose.

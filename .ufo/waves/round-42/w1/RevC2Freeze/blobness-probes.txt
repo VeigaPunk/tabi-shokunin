@@ -1,0 +1,25 @@
+=== reference: predicate-satisfying fixture tree ===
+green rev = 4249b6edd0c521ca1eb942773aea205332060a90
+G  green tree (all four clauses met by real blobs)
+  checker exit=0 predicate=True findings=[]
+  expectation: exit 0 -> OK
+
+=== B1: r4 evidence path names a TREE, not a blob ===
+  evidence object type=tree size=1368
+  frozen predicate r4: 'every evidence path a committed blob of at least 200 bytes'
+  checker exit=0 predicate=True findings=[]
+  expectation: exit 0 -> OK
+
+=== B2: r3 control path names a TREE whose entry names carry 'ls-tree' and '0' ===
+  control object type=tree size=64 contains b'ls-tree'=True standalone '0'=True
+  frozen predicate r3: 'a committed nonempty blob recording the ls-tree counting command and the digit 0'
+  checker exit=0 predicate=True findings=[]
+  expectation: exit 0 -> OK
+
+=== B3: r1a receipt path names a TREE (expected fail-closed) ===
+  receipt object type=tree size=38
+  r1a tree substitution (JSON parse must refuse)
+  checker exit=1 predicate=False findings=['r1a-too-small']
+  expectation: exit 1 -> OK
+
+RESULT: all probes behave as reported

@@ -1,0 +1,37 @@
+id: S148
+lane: tabi
+round: round3
+register class: payload-absent
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md (line 202)
+registered URL: https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1020/
+staged quotes (exact cells): `Crawl-delay` ; `Sitemap`
+final URL after redirects: https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1020/
+redirects: 0
+HTTP status: 200
+content-type: text/html
+response Date: Wed, 28 Oct 2026 15:37:59 GMT
+bytes: 121181
+sha256: d2107de58ddee762bedf261912ed89bd8636d389ff0f5a4193a751d70c0ca48c
+command: curl -sS -L --max-redirs 5 -A 'QuarR4213-r42-readonly/1.0' -D s148.headers -o s148.body -w 'http=%{http_code} url=%{url_effective} bytes=%{size_download} redirects=%{num_redirects}' --max-time 60 'https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1020/'
+observed: http=200 url=https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1020/ bytes=121181 redirects=0
+page title: Error 1020 · Cloudflare Support docs
+
+located on the registered body:
+- exact `Crawl-delay`: 0 line hits; whitespace-normalized: absent
+- exact `Sitemap`: 0 line hits; whitespace-normalized: absent
+- case-folded `sitemap`: 2 hits, both inside one head element, not body text: <link rel="sitemap" href="/sitemap-index.xml">
+- case-folded `crawl-delay`: 0. The only `crawl` hits are the sidebar link "Troubleshoot crawl errors" (href .../troubleshooting-crawl-errors/).
+surrounding sentence of the page that did open (not the staged quotes): "Error 1020: Access denied. This error indicates that a Cloudflare security feature configured by the website owner blocked the request."
+
+carrier (different registered source — tabi round3 S149, same absent-defect register line 203):
+URL: https://en.wikipedia.org/robots.txt
+HTTP 200, redirects 0, content-type text/plain; charset=utf-8, bytes 28275, sha256 48b98d80c8444d37cdf50cc9a4d2257b66039477e581066d2356062a4cbd678f
+Last-Modified: Tue, 06 Oct 2026 02:21:00 GMT
+L130: Crawl-delay: 5
+L137: # bot supports such a thing using the 'Crawl-delay' or another
+L424: Sitemap: https://en.wikipedia.org/w/rest.php/site/v1/sitemap/0
+census-adjudication.json (tabi/round3/S148) stores both quote cells with url=the error-1020 page and line="| S149 | robots.txt for wikipedia.org — https://en.wikipedia.org/robots.txt | ...". The lane gate for S149 (lanes/tabi/round3/SOURCES-PROPOSED.md) quotes "Crawl-delay: 5" and the Sitemap line, not the error-1020 page.
+
+verdict: misbound
+
+justification: The registered URL opened cleanly (HTTP 200, no redirect) and is the Error 1020 support page, but neither staged token is in that body, exactly or whitespace-normalized. The lowercase sitemap hits are one HTML link-rel in the document head, not the staged `Sitemap` token. Both staged tokens are verbatim in the next row's registered source, en.wikipedia.org/robots.txt, at the same line numbers the round-3 gate recorded (130 and 424). That is a quote/URL off-by-one, not a fabrication and not a partial hit on the cited page. Versus round-40's label "absent": the registered page still does not contain either quote (exact counts remain 0; no present-flip). The live carrier file's Last-Modified is 2026-10-06 and still has those two lines. The label moves from absent to misbound because those bytes, fetched today, are the sibling registered source, not because the Cloudflare page gained the tokens.

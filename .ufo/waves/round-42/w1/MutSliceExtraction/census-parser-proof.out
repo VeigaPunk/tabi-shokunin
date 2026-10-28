@@ -1,0 +1,33 @@
+=== CENSUS-PARSER ANGLE (kumitate lesson) — fixture: /fast/scratch/hyaku/tabi-r42/MutSliceExtraction/fixture/SOURCES.md ===
+--- fixture bytes (cat -A) ---
+# SOURCES fixture (census-parser angle, kumitate lesson)$
+$
+| lane | id | class |$
+|---|---|---|$
+| `tabi` | S001 | `payload-absent` |$
+  | S002 |  | `unreachable` |$
+| `tabi` | S003 | `payload-absent` |$
+$
+note: the S002 row above is indented by two spaces (list-nested / comment-wrapped census row)$
+
+--- detector 1: column-zero-only '^|' ---
+4
+3:| lane | id | class |
+4:|---|---|---|
+5:| `tabi` | S001 | `payload-absent` |
+7:| `tabi` | S003 | `payload-absent` |
+
+--- detector 2: '^ {0,3}|' (CommonMark up-to-3-space indent) ---
+5
+3:| lane | id | class |
+4:|---|---|---|
+5:| `tabi` | S001 | `payload-absent` |
+6:  | S002 |  | `unreachable` |
+7:| `tabi` | S003 | `payload-absent` |
+
+--- membership probe for S002 ---
+ZERO-COLUMN: MISS — S002 row invisible
+INDENT-TOLERANT: HIT — S002 row visible
+
+--- delta ---
+zero-column finds 4 table lines; indent-tolerant finds 5

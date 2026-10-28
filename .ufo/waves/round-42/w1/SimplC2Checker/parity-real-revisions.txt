@@ -1,0 +1,20 @@
+# real-revision parity: orig vs candidate, committed bytes only
+# date: 2026-10-28T15:41:51Z
+# node: v24.21.0
+rev=0081bfdb93b6bd1bf2853bb128996f1a976b7218 orig_exit=1 cand_exit=1 stdout=IDENTICAL sha256=fcf5e248764b64656c0b5052a637ad5ee4d87e13d5c55219133e2ef0f73aa616 findings=1 [r4-quarantine-absent]
+rev=34e177959d1b7ce04afb85a001420e02631ce79e orig_exit=1 cand_exit=1 stdout=IDENTICAL sha256=16d8cdca9a00d0b471508f9a7e74b2ac5178d6d259414ed3ebbdf491d9827f53 findings=7 [r1a-receipt-absent,r1b-witness-absent,r2-s146-not-rejected,r2-supersession-absent,r3-baseline-file-empty,r4-slice-absent,r4-quarantine-absent]
+rev=9b6de3a19de11abdb80e82a1310abc64a40215bb orig_exit=1 cand_exit=1 stdout=IDENTICAL sha256=a4c33e4dfd576efb8717ec4b1e076b4b02a76f70aba931df4f4a3936fa91870d findings=1 [r4-quarantine-absent]
+
+# control cross-checks (committed controls, untouched)
+c2-baseline-red: orig BYTE-IDENTICAL to committed control
+c2-baseline-red: cand BYTE-IDENTICAL to committed control
+c2-at-freeze: orig BYTE-IDENTICAL to committed control
+c2-at-freeze: cand BYTE-IDENTICAL to committed control
+
+# usage/flag parity
+args=[] orig_exit=2 cand_exit=2 err=IDENTICAL out=IDENTICAL
+args=[--rev 0081bfdb93b6bd1bf2853bb128996f1a976b7218] orig_exit=2 cand_exit=2 err=IDENTICAL out=IDENTICAL
+args=[--rev deadbeef --repo /x] orig_exit=2 cand_exit=2 err=IDENTICAL out=IDENTICAL
+args=[--json --rev 34e177959d1b7ce04afb85a001420e02631ce79e --repo /home/vgpnk/Projects/shokunin/tabi-shokunin] orig_exit=1 cand_exit=1 err=IDENTICAL out=IDENTICAL
+args=[--rev 34e177959d1b7ce04afb85a001420e02631ce79e --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --bogus] orig_exit=1 cand_exit=1 err=IDENTICAL out=IDENTICAL
+args=[--rev --json --repo /x] orig_exit=2 cand_exit=2 err=IDENTICAL out=IDENTICAL

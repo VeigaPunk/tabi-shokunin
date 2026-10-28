@@ -1,0 +1,11 @@
+# ExecSelftestSynthetic — exact commands executed (lane checker read-only, fixtures in scratch)
+CHECKER=/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-42/counters/check-routed-defects-round42.mjs
+sha256sum $CHECKER
+#  b1d05df17137bfcf4db9c6d2851108e1313cf2229167b8b521fee2aa1c76b4a8
+mkdir -p /fast/scratch/hyaku/tabi-r42/ExecSelftestSynthetic/fixture
+python3 /fast/scratch/hyaku/tabi-r42/ExecSelftestSynthetic/build_and_run.py
+python3 /fast/scratch/hyaku/tabi-r42/ExecSelftestSynthetic/run_extra.py
+# per case: node $CHECKER --rev <fixture head> --repo <fixture dir> --json
+# grounding on real lane bytes (read-only):
+node $CHECKER --rev 0081bfdb93b6bd1bf2853bb128996f1a976b7218 --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json
+node $CHECKER --rev 34e177959d1b7ce04afb85a001420e02631ce79e --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json

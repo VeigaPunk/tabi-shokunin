@@ -1,0 +1,47 @@
+id: S143
+lane: tabi
+round: round3
+class (register): payload-absent
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md line 198
+registered quote: Requires Chrome 151+ with the `--enable-features=WebMCP` flag enabled
+registered URL: https://raw.githubusercontent.com/puppeteer/puppeteer/main/packages/puppeteer-core/src/cdp/WebMCP.ts
+final URL: https://raw.githubusercontent.com/puppeteer/puppeteer/main/packages/puppeteer-core/src/cdp/WebMCP.ts
+redirects: 0
+HTTP status: 200
+bytes: 10681
+sha256: ee7b6fd89e0080754ad1d17b288a4c2a806728761908fd79291a778524f979f5
+etag: 24417a1899b63c1a52629736f18f76674c0b6648279c48fe82c40d392cd9efa2
+date: Wed, 28 Oct 2026 15:37:04 GMT
+content-type: text/plain; charset=utf-8
+
+locate on registered body:
+exact: not found (index -1)
+whitespace-normalized: not found
+token counts: "151"=0, "enable-features"=0, "Requires Chrome"=0, "CSRF"=0
+nearest class comment (lines 235-240, 252), which does not contain the quote:
+  235|/**
+  236| * The experimental WebMCP class provides an API for the WebMCP API.
+  237| *
+  238| * See the
+  239| * {@link https://pptr.dev/guides/webmcp|WebMCP guide}
+  240| * for more details.
+  252| * @experimental
+
+quote located in a different registered source (not substituted as this row's URL):
+URL: https://raw.githubusercontent.com/puppeteer/puppeteer/main/packages/puppeteer-core/src/api/Page.ts
+(this is tabi round3 S144's registered URL; fetched in the same pass, HTTP 200, 111019 bytes, sha256 b446b70c6543026e66bc6da7c1abdefbd1c6a0b12bceb8b44d2e479ece9863bf, 0 redirects)
+exact index in that body: 26680
+newline line 1085, verbatim including the backticks, followed by a period outside the registered quote:
+  1084|   * Experimental API for {@link https://github.com/webmachinelearning/webmcp| WebMCP}.
+  1085|   * Requires Chrome 151+ with the `--enable-features=WebMCP` flag enabled.
+  1086|   *
+  1087|   * @experimental
+  1088|   */
+  1089|  abstract get webmcp(): WebMCP;
+
+census line for this absent record (quote-lint-full-v5.json, tabi/round3/S143, binding "id") is the source-table row for Page.ts, not WebMCP.ts:
+| S144 | Puppeteer Page WebMCP accessor — https://github.com/puppeteer/puppeteer/blob/main/packages/puppeteer-core/src/api/Page.ts | ...
+
+verdict: misbound
+
+justification: The registered WebMCP.ts URL opened cleanly and the staged quote is not in it, exactly or whitespace-normalized, and the file has no Chrome version or feature-flag text. The same quote is a verbatim substring of Page.ts line 1085, inside the experimental webmcp accessor comment, and Page.ts is a different row's registered source (tabi round3 S144). That is a mis-binding, not a fabrication and not a hit on the URL this row cites. Versus round-40 (absent, 2026-10-27): the registered body did not change — same byte count 10681, same sha256 ee7b6fd89e0080754ad1d17b288a4c2a806728761908fd79291a778524f979f5, same etag. The verdict change is the classification after locating the quote in Page.ts, which the round-40 S143 check explicitly did not open. Page.ts itself is also byte-identical to the round-40 S144 fetch, so the sentence was already on that file yesterday.

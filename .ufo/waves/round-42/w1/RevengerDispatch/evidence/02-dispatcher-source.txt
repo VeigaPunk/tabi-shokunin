@@ -1,0 +1,77 @@
+## dispatcher expectation: register() body (committed, scripts/hyaku/inline-dispatcher.py @ fleet HEAD)
+fleet repo HEAD e2fdc5fe95af081995a1cd394761f08259c0a392 2026-10-28T11:09:42-03:00 hyaku run11: start - goal file, addendum run-11 block, all-m_flash routing (scout m_grok), L1 prompt run-11 pointer
+
+$ sed -n "231,278p" scripts/hyaku/inline-dispatcher.py
+async def register(ready, run, occupied):
+    """Spawn a wave's seats incrementally as host slots free up. Returns (registered, seats spawned now):
+    registered is True once every seat is spawned (wave in WAVES, .dispatched written).
+
+    Disk and host gates: an unregistered wave is the cheapest thing to hold — on disk
+    pressure we sweep once and defer; on host pressure we defer. A deferred or partial
+    wave keeps <ready>.partial fresh, which tells ready-watch.sh it is being driven."""
+    mine = PARTIAL.setdefault(ready, {})
+    if not await asyncio.to_thread(disk_ok):
+        await asyncio.to_thread(disk_sweep)
+        if not await asyncio.to_thread(disk_ok):
+            dlog('disk-defer', ready)      # wave stays unregistered; retried next tick
+            _save_partial(ready, mine)
+            return False, 0
+    if not host_ok():
+        dlog('host-defer', ready)
+        _save_partial(ready, mine)
+        return False, 0
+    meta = json.load(open(ready)); d = json.load(open(meta['dispatch']))
+    tc = d['taskCall']; tasks = tc['tasks']
+    todo = [t for t in tasks if t['name'] not in mine]
+    room = SEAT_CEILING - occupied
+    n = 0
+    for t in todo[:max(room, 0)]:
+        prompt = tc.get('context', '') + f"\n\n# Seat {t['name']}\n" + t['task'] + SEAT_GUARD
+        try:
+            h = agent(prompt, agent=t['agent'], label=t['name'])
+        except RuntimeError as e:          # host cap hit mid-batch; resume next tick
+            dlog('spawn-cap', ready, t['name'], repr(e)); break
+        mine[t['name']] = h; HANDLES[t['name']] = h; n += 1
+        _save_partial(ready, mine)         # each agent() spawn takes ~1 s: an interrupted tick keeps its fill
+    if len(mine) < len(tasks):
+        _save_partial(ready, mine)
+        dlog('partial', meta['lane'], meta['round'], meta['wave'], len(mine), len(tasks))
+        return False, n
+    with open(ready + '.dispatched', 'w') as f:
+        f.write(time.strftime('%Y-%m-%dT%H:%M:%S') + '\n' + json.dumps(_ids(mine)) + '\n')
+    WAVES[ready] = {'meta': meta, 'names': [t['name'] for t in tasks],
+                    'agents': {t['name']: t['agent'] for t in tasks}, 'handles': dict(mine),
+                    'done': False, 'adopted': False}
+    PARTIAL.pop(ready, None)
+    try:
+        os.remove(ready + '.partial')
+    except OSError:
+        pass
+    dlog('spawned', meta['lane'], meta['round'], meta['wave'], len(tasks))
+    return True, n
+
+
+$ sed -n "306,322p" scripts/hyaku/inline-dispatcher.py   # tick(): where wave-error is logged
+
+async def tick():
+    run, occupied = await proc_state()
+    orphans = []
+    for ready in sorted(glob.glob(f'{FLEET}/*-shokunin/.ufo/waves/round-*/*.ready')):
+        if ready not in WAVES and not os.path.exists(ready + '.dispatched'):
+            try:
+                if not live(json.load(open(ready)).get('l1', ''), run):
+                    orphans.append(ready); continue
+                done, n = await register(ready, run, occupied)
+                if done:
+                    run, occupied = await proc_state()
+                else:
+                    occupied += n
+                    dlog('cap-defer', ready, 'occupied', occupied)
+            except Exception as e:
+                dlog('wave-error', ready, repr(e))
+
+## marker write (canonical dispatcher format)
+$ sed -n "266,268p" scripts/hyaku/inline-dispatcher.py
+    with open(ready + '.dispatched', 'w') as f:
+        f.write(time.strftime('%Y-%m-%dT%H:%M:%S') + '\n' + json.dumps(_ids(mine)) + '\n')
+    WAVES[ready] = {'meta': meta, 'names': [t['name'] for t in tasks],

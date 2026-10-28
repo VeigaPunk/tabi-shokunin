@@ -1,0 +1,50 @@
+id: S125
+lane: tabi
+round: round2
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md line 187
+class (register): payload-absent
+registered URL: https://www.ietf.org/archive/id/draft-ietf-httpbis-rfc6265bis-13.txt
+final URL: https://www.ietf.org/archive/id/draft-ietf-httpbis-rfc6265bis-13.txt
+redirects: 0
+HTTP status: 200
+bytes: 146976
+sha256: 062239316659673b9373865352e8ec5cb710c3d5fe66eedceacfaa6d34d85fbf
+content-type: text/plain; charset=utf-8
+response date: Wed, 28 Oct 2026 15:36:49 GMT
+last-modified: Wed, 15 Nov 2023 20:05:12 GMT
+etag: "65552478-23e20"
+content-length: 146976
+
+staged quotes (register cell, exact):
+Q1: Rate limits for the REST API
+Q2: About secondary rate limits
+
+census origin (census-adjudication.json, read-only): both quotes are bound to the rfc6265bis-13 URL, but the census line for both is the S126 staging row, whose registered URL is https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
+
+match on the registered body (exact and whitespace-normalized):
+Q1 exact=false ws_norm=false
+Q2 exact=false ws_norm=false
+probe counts in that body: "Rate limits" 0, "secondary rate" 0, "REST API" 0
+
+sibling registered source, fetched only to separate misbound from absent (not substituted as the registered URL):
+URL: https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
+final URL: same (0 redirects)
+HTTP status: 200
+bytes: 337811
+sha256: 4c14562d807f13203572167ef8c06a2a3469b512de81ec41b2c9f6fa3c9c2195
+content-type: text/html; charset=utf-8
+Q1 count: 10 (first hit is the document title: Rate limits for the REST API - GitHub Docs)
+Q2 count: 5 (first hit is the in-page nav label About secondary rate limits, href="#about-secondary-rate-limits")
+
+located detail on the registered draft: neither string occurs. Surrounding text at the SameSite heading (not these quotes):
+
+8.8.  SameSite Cookies
+
+8.8.1.  Defense in depth
+
+   "SameSite" cookies offer a robust defense against CSRF attack when
+   deployed in strict mode, and when supported by the client.
+
+verdict: misbound
+
+justification: The registered draft opened cleanly (HTTP 200, 146976 bytes, Last-Modified 15 Nov 2023) and neither quote is in it, exact or whitespace-normalized, so this is not unreachable and not present. Both strings are verbatim on the different registered source of tabi round2 S126, the GitHub REST rate-limits page, which is also the census line those quotes were cut from. That is misbound, not a fabrication of text that exists nowhere. Versus round 40 (absent, GitHub alignment left unverified): the draft itself did not change (same 146976 bytes, still zero hits). What changed is the check: today's GET of the S126 URL returned 200 and 337811 bytes with both quotes present. A round-40 sibling had opened that page at 337116 bytes; the page size moved and the two headings did not.

@@ -1,0 +1,11 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-42/counters/check-routed-defects-round42.mjs
++++ /fast/scratch/hyaku/tabi-r42/MutC2TinyStub/check-mutant.mjs
+@@ -125,7 +125,7 @@
+   else if (size < 10) add('r3-baseline-file-empty', `${BASELINE_OUT} committed blob is ${size} bytes`);
+   else {
+     const raw = gitShow(BASELINE_OUT).toString('utf8');
+-    if (!/ls-tree/.test(raw)) add('r3-command-not-recorded', 'baseline control does not record its ls-tree counting command');
++    // MUTATED(M): r3 ls-tree-command-mentioned requirement dropped; nonempty+digit retained
+     if (!/(^|[^0-9])0([^0-9]|$)/m.test(raw)) add('r3-zero-not-recorded', 'baseline control does not record the digit 0');
+   }
+ }

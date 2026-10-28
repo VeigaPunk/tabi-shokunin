@@ -1,0 +1,58 @@
+# Self-referential r1 binding - fabricated receipt + witness with the measure record rewritten to match
+seed: scratch git fixture carrying the lane's REAL committed blobs; each variant is one commit.
+frozen checker: .ufo/waves/round-42/counters/check-routed-defects-round42.mjs sha256 b1d05df17137bfcf4db9c6d2851108e1313cf2229167b8b521fee2aa1c76b4a8
+
+## control: real receipt + real measure record, no TSV
+$ node check-routed-defects-round42.mjs --rev 46dea08... --repo <fixture> --json
+{
+ "schema": "tabi-r42-routed-defects",
+ "rev": "46dea08314a9282ab55463581e2b919da172a6a1",
+ "predicate": false,
+ "findingCount": 1,
+ "findings": [
+  {
+   "id": "r4-quarantine-absent",
+   "detail": ".ufo/waves/round-42/quarantine/re-adjudication.tsv not committed at REV"
+  }
+ ]
+}
+
+exit=1
+
+## forgery commit 9536e09: receipt.json = {"browser_runs":[], pad}, witness = {"schema":"fake-witness", pad};
+##                       c1-measure.json receiptSha256/witnessSha256 rewritten to the fabricated digests
+$ git -C forge rev-parse HEAD
+9536e09eea44320c9535d35775516dfde3511a3f
+$ git show HEAD:corpus/evidence/round41/playwright-egress/receipt.json | sha256sum
+59ea22b3802d95be4182d2ac9a5ecdb4f0c34693baedaa9e6ee6c8a5c21a39ae  receipt.json
+$ jq -r .receiptSha256 .ufo/waves/round-41/measure/c1-measure.json  (committed at the same rev)
+59ea22b3802d95be4182d2ac9a5ecdb4f0c34693baedaa9e6ee6c8a5c21a39ae
+$ jq -r .witnessSha256 ...
+28f418162620a2f5417415bd57cc747bde3739ccc0bb9cf65550dddc43763f12
+--- receipt.json bytes (fabricated; no browser run, no nonce, no witness attestation) ---
+{
+ "schema": "totally-fabricated",
+ "browser_runs": [],
+ "note": "no browser ever ran",
+ "pad": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+}
+--- checker ---
+$ node check-routed-defects-round42.mjs --rev 9536e09eea44320c9535d35775516dfde3511a3f --repo <forge> --json
+{
+ "schema": "tabi-r42-routed-defects",
+ "rev": "9536e09eea44320c9535d35775516dfde3511a3f",
+ "predicate": true,
+ "findingCount": 0,
+ "findings": []
+}
+
+exit=0
+
+## reading
+r1a/r1b compare sha256(blob at REV) against a digest read from ANOTHER blob at the same REV
+(c1-measure.json). Both are authored in one commit, so the pair is self-consistent and greens.
+The rule is self-consistency, not provenance: nothing binds c1-measure.json to the r41 run, to
+producer digests, or to the counter that produced it. Contrast tabi's own frozen instrument for this
+class at SKILL.md:2476 (check-measurement-binding.mjs): counter blob sha256 AT measuredRevision,
+ancestry of the measured revision, and countedInputs drift -- i.e. the measure record itself is pinned
+to an older revision. C2's r1 has no such anchor.

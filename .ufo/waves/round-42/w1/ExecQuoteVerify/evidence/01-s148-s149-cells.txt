@@ -1,0 +1,31 @@
+# S148 / S149 / S146 cell extraction from committed bytes
+# rev 9b6de3a19de11abdb80e82a1310abc64a40215bb
+# method: `git show <rev>:corpus/SOURCES.md` -> SOURCES.md (blob 962773c3786de0ddc0eb10c47fdafc4f7e738d5e),
+# then the SAME table-cell semantics the frozen checker uses:
+#   row = line matched by /^\|\s*S\d{3,}\s*\|/ ; cell(row,n) = row.split('|')[n].trim()
+#   header: 1=id 2=source 3=kind 4=tier 5=scope 6=anchor 7=teaches 8=status 9=opened 10=recheck 11=used-by
+
+S148 teaches cell repr: 'supersedes S146 — A space-separated list of command-line options.'
+stripped repr: 'A space-separated list of command-line options.'
+exact match to target: True
+whitespace tokens: 6 => ['A', 'space-separated', 'list', 'of', 'command-line', 'options.']
+hyphen-split tokens: 8
+S148 status: 'mined'
+
+S146 status: 'rejected'
+S146 teaches cell:  A space-separated list of command-line options; interpreted before command-line options
+
+S149 teaches repr: 'Lists the contents of a given tree object, like what "/bin/ls -a" does'
+S149 ws tokens: 13
+S149 quote exact target: True
+
+# byte counts (printf '%s' | wc -w -c on the stripped quote)
+      6      47     # 6 whitespace tokens, 47 bytes
+# byte count of the whole S148 teaches cell, trimmed
+67
+
+# duplicate-row audit (no second S148 / S149 row exists at REV)
+--- S148 rows count:
+1
+--- S149 rows count:
+1

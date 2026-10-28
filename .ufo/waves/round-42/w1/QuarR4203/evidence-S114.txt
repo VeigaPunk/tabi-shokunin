@@ -1,0 +1,36 @@
+id: S114
+lane: tabi
+round: round1
+register_line: 183
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md
+class: payload-absent
+anchor: none (columns are lane | round | id | class | cited source | quote(s) | note)
+registered URL: https://www.juse.jp/sqip/symposium/2025/timetable/files/B1-2_ronbun.pdf
+final URL: https://www.juse.jp/sqip/symposium/2025/timetable/files/B1-2_ronbun.pdf
+redirects: 0
+HTTP status: 200
+bytes: 787690
+sha256: 9c2bdd5f015355478a637c0d6155f49ff8a49d96842ed03abcdea55877e67b55
+content-type: application/pdf
+last-modified: Fri, 05 Dec 2025 12:30:30 GMT
+etag: "c04ea-645339c75c93a"
+date: Wed, 28 Oct 2026 15:36:59 GMT
+access: 2026-10-28 curl 8.23.0 -sSL; file(1) says PDF 1.7, 8 pages
+extractor: pdftotext 26.08.0 -layout -enc UTF-8 (33115 bytes, sha256 e0d72eb1dc8d2c837fd209a005f4bdd82dee9ea12ea6893b39a149146cd52ac4) and pdftotext -bbox-layout word boxes
+
+staged quote (exactly as registered):
+achieves better web element identification accuracy compared to naive set-of-marks prompting technique
+
+located/absent:
+Exact match: no. Whitespace-normalized match: no. The literal bytes set-of-marks, set-of-mark, and set-of mark are not in the PDF file (text is not stored as a plain UTF-8 string).
+pdftotext -raw and -layout both render the English abstract as:
+"and achieves better web element identification accuracy compared to naive set-of mark prompting technique."
+Word boxes on that line (yMin=397.38): "set-of" x=432.55-455.33, then "mark" x=458.94-479.50. The gap is 3.61pt. The previous gap, "naive" xMax 428.82 to "set-of" xMin 432.55, is 3.73pt, so this is a normal word space, not a hyphen pdftotext dropped. "technique." is the next line (y=411.42).
+Surrounding sentence (abstract, page 1): "Our evaluation demonstrates that our tool enables higher abstraction and reuse in test generation, and achieves better web element identification accuracy compared to naive set-of mark prompting technique."
+Other SoM spellings in the same PDF, none of them "set-of-marks": a later word box "SoM（set-of-mark" (y=436.68); "Set-of-Mark" (y=262.06); bibliography "Set-of-Mark Prompting" (y=713.19, Yang et al.).
+
+verdict: partial
+
+justification: The registered PDF opened (HTTP 200, 787690 bytes, no redirect), so this is not unreachable. The staged sentence is the abstract sentence except one token: the source has two words "set-of mark" (singular, space, no second hyphen) where the register has "set-of-marks". Everything before that token matches verbatim, including "achieves better web element identification accuracy compared to naive". That is a one-token wording variance, not a missing passage, so not absent and not present. The quote is this paper's abstract, not a different registered source, so not misbound. partial.
+
+delta vs r40 (2026-10-27, class partial/near-verbatim, "set-of mark" vs "set-of-marks"): verdict class unchanged. Live source today is the same object r40 measured: HTTP 200, 787690 bytes, Last-Modified Fri, 05 Dec 2025 12:30:30 GMT, 8 pages. Nothing in the wording changed. This pass adds the bbox proof that "set-of" and "mark" are separate glyphs with a word-space gap; r40 had only pdftotext and did not inspect positions.

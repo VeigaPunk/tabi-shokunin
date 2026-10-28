@@ -1,0 +1,20 @@
+# Anomaly check — untracked self-referential symlinks appeared in the lane tree mid-session
+$ ls -la corpus/knowledge/knowledge corpus/lessons/lessons
+lrwxrwxrwx 1 vgpnk vgpnk 61 Oct 28 12:39 corpus/knowledge/knowledge -> /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/
+lrwxrwxrwx 1 vgpnk vgpnk 59 Oct 28 12:39 corpus/lessons/lessons -> /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/lessons/
+
+  both are symlinks to their own parent directory; mtime 2026-10-28 12:39
+  this seat issued no ln/symlink command; scripts/check-sources.mjs self-test writes only
+  inside mkdtempSync(tmpdir()) (line 493) and cleans up (line 526), so it cannot create these.
+
+  effect on this seat's measurement: none — the gate resolves only corpus/SOURCES.md and the
+  paths named in used-by cells; corpus/knowledge/knowledge is cited by no row.
+
+$ node scripts/check-sources.mjs   # re-measured after the symlinks appeared
+FINDING id=rejected_without_flip fleet=- row=S146 detail=rejection_requires_reason_and_flip
+FINDING id=used_by_missing fleet=E11 row=S146 detail=path_missing
+SOURCES_GATE verdict=failed rows=149 tiers=A:133,B:7,C:9 status=queued:15,mined:124,rejected:10 findings=2 file=corpus/SOURCES.md
+EXIT=1
+
+  identical to evidence/04-gate-head.txt: 2 findings, both S146.
+  NOT deleted by this seat (not this seat's write; a peer's in-flight escape fixture may own it).

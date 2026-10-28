@@ -1,0 +1,51 @@
+id: S144
+lane: tabi
+round: round3
+class (register): payload-absent
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md line 199
+registered quotes (two, split by <br> in the register cell):
+  1. Defense in depth
+  2. is not the extent of a site's defense against CSRF
+registered URL: https://raw.githubusercontent.com/puppeteer/puppeteer/main/packages/puppeteer-core/src/api/Page.ts
+final URL: https://raw.githubusercontent.com/puppeteer/puppeteer/main/packages/puppeteer-core/src/api/Page.ts
+redirects: 0
+HTTP status: 200
+bytes: 111019
+sha256: b446b70c6543026e66bc6da7c1abdefbd1c6a0b12bceb8b44d2e479ece9863bf
+etag: 8367afa09d2d3832a0d1b9ffd4d4211f59ee305957463a965fd3a999738da83f
+date: Wed, 28 Oct 2026 15:37:05 GMT
+content-type: text/plain; charset=utf-8
+
+locate on registered body:
+quote 1 exact: not found; whitespace-normalized: not found
+quote 2 exact: not found; whitespace-normalized: not found
+token counts: "Defense"=0, "CSRF"=0, "SameSite"=0, "extent of a site"=0, "151"=1
+The single "151" hit is the other row's quote, Page.ts line 1085:
+  1084|   * Experimental API for {@link https://github.com/webmachinelearning/webmcp| WebMCP}.
+  1085|   * Requires Chrome 151+ with the `--enable-features=WebMCP` flag enabled.
+That sentence is S143's staged quote, not either S144 quote.
+
+classification fetch of the other registered source named by this row's census line (NOT used as this row's registered URL):
+URL: https://www.ietf.org/archive/id/draft-ietf-httpbis-rfc6265bis-13.txt
+(tabi round3 S145's registered URL; also the URL inside the quote-lint-full-v5.json line field for both S144 absent quotes, binding "id")
+final URL: same (0 redirects)
+HTTP status: 200
+bytes: 146976
+sha256: 062239316659673b9373865352e8ec5cb710c3d5fe66eedceacfaa6d34d85fbf
+date: Wed, 28 Oct 2026 15:38:00 GMT
+quote 1 exact, newline lines 164 (TOC) and 2813 (section heading):
+  2813|8.8.1.  Defense in depth
+quote 2 exact: not found (RFC hard-wrap)
+quote 2 whitespace-normalized: found. Newline lines 2815-2820 join to the surrounding sentence:
+  2815|   "SameSite" cookies offer a robust defense against CSRF attack when
+  2816|   deployed in strict mode, and when supported by the client.  It is,
+  2817|   however, prudent to ensure that this designation is not the extent of
+  2818|   a site's defense against CSRF, as same-site navigations and
+  2819|   submissions can certainly be executed in conjunction with other
+  2820|   attack vectors such as cross-site scripting.
+Joined: It is, however, prudent to ensure that this designation is not the extent of a site's defense against CSRF, as same-site navigations and submissions can certainly be executed in conjunction with other attack vectors such as cross-site scripting.
+The registered fragment "is not the extent of a site's defense against CSRF" is inside that sentence once the newline and the three leading spaces on line 2818 are collapsed.
+
+verdict: misbound
+
+justification: Page.ts opened cleanly and neither staged quote is in it, exactly or whitespace-normalized; the file never mentions CSRF, SameSite, or "defense". Both quotes are in draft-ietf-httpbis-rfc6265bis-13 §8.8.1, which is a different row's registered source (tabi round3 S145): "Defense in depth" is the section heading verbatim, and the CSRF fragment is present after whitespace normalization because the draft wraps the sentence across lines 2817-2818. That is a mis-binding of RFC prose onto the Puppeteer Page API file, not a partial hit on Page.ts and not an unreachable source. Versus round-40 (absent, 2026-10-27): the registered Page.ts body did not change — same byte count 111019, same sha256 b446b70c6543026e66bc6da7c1abdefbd1c6a0b12bceb8b44d2e479ece9863bf, same etag. The verdict change is the classification after fetching the draft, which the round-40 S144 check explicitly did not open. Nothing in the cited Page.ts text appeared or disappeared since that check.

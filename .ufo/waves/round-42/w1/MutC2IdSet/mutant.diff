@@ -1,0 +1,16 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-42/counters/check-routed-defects-round42.mjs	2026-10-28 12:03:24.384242165 -0300
++++ check-mutant.mjs	2026-10-28 12:38:36.207636446 -0300
+@@ -149,10 +149,9 @@
+     const dup = ids.filter((v, i) => ids.indexOf(v) !== i);
+     if (dup.length) add('r4-duplicate-ids', `duplicate staged ids: ${[...new Set(dup)].join(',')}`);
+     if (sliceIds.length !== 38) add('r4-slice-size', `slice-ids has ${sliceIds.length} ids, expected 38`);
+-    const missing = sliceIds.filter((id) => !ids.includes(id));
+-    const extra = ids.filter((id) => !sliceIds.includes(id));
+-    if (missing.length) add('r4-ids-missing', `tsv misses staged ids: ${missing.join(',')}`);
+-    if (extra.length) add('r4-ids-extra', `tsv has unknown ids: ${extra.join(',')}`);
++    // MUTATION M (id-set equality dropped): the r4 requirement "committed with
++    // exactly the 38 ids of the committed quarantine/slice-ids.txt" is no
++    // longer enforced; any TSV whose rows are individually valid is accepted.
+     for (const r of rows) {
+       if (!VERDICTS.has(r.verdict)) { add('r4-verdict-enum', `${r.id}: verdict '${r.verdict}' not in enum`); continue; }
+       const esize = gitBlobSize(r.evidence);

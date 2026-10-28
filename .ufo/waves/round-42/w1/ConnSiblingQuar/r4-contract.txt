@@ -1,0 +1,42 @@
+# r4 frozen TSV contract — extracted from the frozen checker
+# source: .ufo/waves/round-42/counters/check-routed-defects-round42.mjs
+b1d05df17137bfcf4db9c6d2851108e1313cf2229167b8b521fee2aa1c76b4a8  .ufo/waves/round-42/counters/check-routed-defects-round42.mjs
+
+## verdict enum (line 37)
+37:const VERDICTS = new Set(['present', 'absent', 'misbound', 'partial', 'unreachable']);
+
+## row shape / evidence rules (lines 143-162)
+    for (const [i, line] of lines.entries()) {
+      const c = line.split('\t');
+      if (c.length !== 3) { add('r4-row-malformed', `line ${i + 1}: expected 3 tab-separated cells, got ${c.length}`); continue; }
+      rows.push({ id: c[0].trim(), verdict: c[1].trim(), evidence: c[2].trim() });
+    }
+    const ids = rows.map((r) => r.id);
+    const dup = ids.filter((v, i) => ids.indexOf(v) !== i);
+    if (dup.length) add('r4-duplicate-ids', `duplicate staged ids: ${[...new Set(dup)].join(',')}`);
+    if (sliceIds.length !== 38) add('r4-slice-size', `slice-ids has ${sliceIds.length} ids, expected 38`);
+    const missing = sliceIds.filter((id) => !ids.includes(id));
+    const extra = ids.filter((id) => !sliceIds.includes(id));
+    if (missing.length) add('r4-ids-missing', `tsv misses staged ids: ${missing.join(',')}`);
+    if (extra.length) add('r4-ids-extra', `tsv has unknown ids: ${extra.join(',')}`);
+    for (const r of rows) {
+      if (!VERDICTS.has(r.verdict)) { add('r4-verdict-enum', `${r.id}: verdict '${r.verdict}' not in enum`); continue; }
+      const esize = gitBlobSize(r.evidence);
+      if (esize === null) add('r4-evidence-absent', `${r.id}: evidence ${r.evidence} not committed at REV`);
+      else if (esize < 200) add('r4-evidence-thin', `${r.id}: evidence ${r.evidence} is ${esize} bytes (<200)`);
+    }
+  }
+
+## builder filename + seat-dir patterns (build-quarantine-tsv.mjs)
+59a43d108a33fd2962096a316d03681e0ba5be531789b88f154535dccd2e0df4  .ufo/waves/round-42/quarantine/build-quarantine-tsv.mjs
+5:// Row: staged_id \t verdict \t evidence_path (repo-relative). Verdicts come from the
+13:const VERDICTS = new Set(['present', 'absent', 'misbound', 'partial', 'unreachable']);
+23:const seats = fs.readdirSync(W1).filter((d) => /^QuarR42\d+$/.test(d));
+28:    const m = f.match(/^evidence-(S\d{3})\.txt$/);
+
+## seat prompt evidence contract (w1-spec.json QuarR4201)
+For each id, in order:
+1. Read its full row from the READ-ONLY register /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md (derive: lane cell `tabi`, round cell, id cell). Record the row's source URL/anchor cells and the staged quote exactly as registered.
+2. Fetch the cited source NOW with a read-only HTTP GET (curl -sSL or browser-free fetch). Record HTTP status, byte count, sha256 of the body, and the accessed URL after redirects. Never write inside /home/vgpnk/Projects/shokuknow.
+3. Locate the staged quote in the fetched body (exact match first; then whitespace-normalized). If the exact URL 404s, try the obvious corrected location ONLY to classify misbound vs absent (the r40 round documented several misbindings); do not silently substitute a different URL as if it were the registered one.
+4. Verdict, one of: present (quote verbatim in the registered source), absent (source opens, quote not in it), misbound (the quote/text belongs to a different registered source), partial (some phrase present, some absent, or a one-token register typo), unreach

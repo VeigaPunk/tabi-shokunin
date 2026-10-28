@@ -1,0 +1,47 @@
+# Peer quarantine verdict vocabularies, as landed (read-only)
+# extracted 2026-10-28T15:42:49Z
+
+== chousa round-42 (corpus/evidence/round42/quarantine-verdicts.tsv) header + 2 rows ==
+id	verdict	reason	flip
+S077	unverifiable	the local capture of the cited DOI is a 265-char bot-challenge page ('Client Challenge'), not the cited article; the three quoted passages were never checked against the source	a capture of the cited article carrying the quoted passages turns the row into a present judgement; the r
+S080	absent	the 3591-char capture of the cited GB detail page carries a longest contiguous run of 19 of the quote's 50 chars: the right document is on disk but the quoted line is not quoted as the page reads it; the row's quote is refused as written	a re-read of the cited page showing the quoted lin
+-- verdict histogram --
+     15 absent
+      9 unverifiable
+
+== chousa frozen decision rule vocabulary (tools/quarantine-check.py:288-295) ==
+#                (a capture shorter than the quote cannot contain it)
+#   located    = number of the row's quarantined quotes found in that capture
+#   verdict:
+#     present            located == n_quotes        -> adoptable later; adoption closed this round
+#     absent             located == 0              -> refuse (fabrication class)
+#     mixed              0 < located < n_quotes    -> refuse-with-correction
+#     unverifiable       not checkable, or the register's unchecked family
+#     unverifiable is never a fabrication.
+
+== kotodama round-71 (reports/round-71/telemetry/quarantine-verdicts.md) ==
+14:| S776 | PRESENT | SAMR GB/T 33661-2017 record metadata contains the quoted span; lane registry S776 is a different source (Penn Museum) — register id mismatch recorded |
+15:| S778 | PRESENT | page declares EUC-JP; decoded as EUC-JP both quoted spans are present (UTF-8 misdecode produced garbage) |
+16:| S779 | REFUSED | NAOJ page is a Japanese calendar announcement; quoted spans absent |
+17:| S786 | REFUSED | cited PDF (Conlanging 101) contains quote 1 but not the Chinese quote — multi-quote row fails |
+-- tally line --
+36:Tally: PRESENT 10 · REFUSED 7 · UNVERIFIABLE 4 = 21 (re-derived by RevQuarantine; S816→REFUSED, S778→PRESENT). Adoption stays CLOSED;
+
+== revenger round-69 roll-up (corpus/lessons/round-69.md:149-155) ==
+| seat | rows | PRESENT | ABSENT | UNREACHABLE | UNVERIFIED-REACHABLE / other |
+|---|---|---|---|---|---|
+| `R69QuarA` | S053, S054, S055, S058, S060, S061, S062, S063, S064 | 1 (S055) | 7 | 1 (S054, auth-gated 302 loop) | 0 |
+| `R69QuarB` | S075, S081, S083, S085, S087, S089, S090, S092, S093 | 2 (S090, S092) | 3 (S075, S083, S093 partial) | 1 (S085 — the census `url` cell is truncated at 140 chars, so the cited URL cannot resolve) | 3 UNVERIFIED-REACHABLE (S081, S087, S089: quote verbatim in a neighbouring document, not in the cited one) |
+| `R69QuarC` | S094, S095, S098, S099, S100, S107, S108, S111, S113 | 4 (S107 literal, S111 under JSON re-serialization, S113 at the article's canonical URL, S108 under whitespace fold) | 3 (S094, S095, S098) | 0 | S099 UNVERIFIED-REACHABLE; S100 NO-ROW |
+| `R69QuarD` | the slice itself (26 rows) + the 24 quoted rows re-checked | 4 (S055, S107, S108, S111) | 17 | 2 (S061 upstream 502, S085 upstream 404) | 1 PARTIAL (S083 — filename only, in `Content-Disposition`) |
+
+
+== tabi round-22 own precedent (its last quarantine pass) ==
+117:    if (row.cls === 'unreachable') verdict = 'unverifiable-unreachable';
+118:    else if (row.quotes.length === 0) verdict = 'unverifiable-register-malformed';
+119:    else if (!fetched.ok) verdict = 'unverifiable-unreachable';
+120:    else if (missing.length === 0) verdict = 'present-locatable';
+121:    else verdict = 'absent-refused';
+146:writeFileSync(resolve(HERE, 'quarantine-verdicts.tsv'),
+147-  ['id\tround\tverdict\tclass\tlocated/missing\tsource',
+148-    ...verdicts.map((v) => `${v.id}\t${v.round}\t${v.verdict}\t${v.registerClass}\t${v.located}/${v.missing}\t${v.source}`)].join('\n') + '\n');

@@ -1,0 +1,47 @@
+id: S118
+lane: tabi
+round: round1
+register class: payload-absent
+register row: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md line 185
+registered URL: https://arxiv.org/abs/2305.11506
+anchor cell: none on the register URL (no fragment). Quote cell, exactly, three <br>-separated items: `User awareness` ; `Chromium notifies users by rendering an infobar across all open browser tabs` ; `User awareness`. Note cell: "cited source, companion URLs and local artifacts were all checked; the quote is in none of them". Lane gate (not substituted for the register) anchors the infobar sentence at §2.3 "User awareness" and names the PDF as the full text.
+staged quotes:
+  1. User awareness
+  2. Chromium notifies users by rendering an infobar across all open browser tabs
+  3. User awareness
+
+fetch A — registered URL
+final URL (after redirects): https://arxiv.org/abs/2305.11506
+HTTP status: 200
+redirects: 0
+content-type: text/html; charset=utf-8
+bytes: 43266
+sha256: 2a18e1490de5ffda080e1c9698502f8b42b6892186ad2566f7b8fc8955a20e32
+last-modified: Mon, 24 Aug 2026 21:28:44 GMT
+response date: Wed, 28 Oct 2026 15:37:07 GMT
+title: [2305.11506] Chrowned by an Extension: Abusing the Chrome DevTools Protocol through the Debugger API
+quote search on this HTML: exact and whitespace-normalized hits for both distinct strings = 0. Token counts: awareness 0, infobar 0, notifies 0. The abs page is the abstract landing page; og:url is https://arxiv.org/abs/2305.11506v2. It links the full text at /pdf/2305.11506.
+
+fetch B — full text of the same arXiv id (not a silent substitute; recorded because the abs HTML has no body)
+final URL: https://arxiv.org/pdf/2305.11506
+HTTP status: 200
+redirects: 0
+content-type: application/pdf
+bytes: 563856
+sha256: e8131e4ec1e694c3c3d168553bd05688f663b76e244fd94416a972ee9739d469
+last-modified: Sat, 03 Jun 2023 00:05:59 GMT
+response date: Wed, 28 Oct 2026 15:37:28 GMT
+content-disposition filename: 2305.11506v2.pdf
+link rel=canonical: https://arxiv.org/pdf/2305.11506
+pdfinfo: 15 pages, A4, PDF 1.5, CreationDate Wed May 31 22:33:31 2023 -03, Producer pdfTeX-1.40.25. file(1) printed "3 page(s)"; pdfinfo's 15 is the count used here. pdftotext (reading order) wrote 83451 bytes.
+
+located:
+Section heading in the extracted text: "2.3. The Debugger extension API". Later in that section, before "3. Threat model", the run-in and the following sentence (newlines from pdftotext collapsed to spaces) are:
+"User awareness. When a debugging extension successfully attaches to a target, Chromium notifies users by rendering an infobar across all open browser tabs [74] as shown in Figure 2.8 This notification will not go away until there are no attached debuggers left."
+Whitespace-normalized exact count of the infobar sentence: 1. The line break in pdftotext is after "by", so a raw newline-sensitive search misses it; the collapsed text matches the register verbatim, including no terminal period inside the staged span (the PDF continues " [74]").
+Case-sensitive collapsed counts: "User awareness" 1 (the §2.3 run-in, followed by a period), "User Awareness" 1 (later "SR01 – User Awareness"), "user awareness" 2 (lowercase, in attack prose). The register lists "User awareness" twice around the infobar sentence; both listings match that one §2.3 run-in. The second listing is not a second distinct sentence.
+
+verdict: present
+
+justification:
+Every distinct staged string is in the full text of arXiv 2305.11506, in §2.3, verbatim after whitespace normalization. The abs HTML of the registered URL does not contain them; that is a landing page, and the false payload-absent flag holds only for that HTML. The PDF bytes match the round-40 full-text fetch (sha256 e8131e4ec1e694c3c3d168553bd05688f663b76e244fd94416a972ee9739d469, 563856 bytes, Last-Modified Sat, 03 Jun 2023 00:05:59 GMT, v2), and the abs HTML hash matches too (2a18e1490de5ffda080e1c9698502f8b42b6892186ad2566f7b8fc8955a20e32, 43266 bytes). Nothing on the live source changed since r40. r40's disposition "present in arXiv PDF §2.3" still holds on today's independent extract.

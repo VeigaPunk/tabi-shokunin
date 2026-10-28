@@ -1,0 +1,119 @@
+== C2 claims beforeState enumeration (claims.json C2.beforeState) ==
+At baseline 34e177959d1b7ce04afb85a001420e02631ce79e the checker exits 1 with findings r1a-receipt-absent, r1b-witness-absent, r2-supersession-absent, r3-baseline-file-empty, r4-quarantine-absent (red control committed pre-data at .ufo/waves/round-42/controls/c2-baseline-red.json).
+
+== fresh run at the same baseline rev 34e1779 (this seat) ==
+{
+ "findingCount": 7,
+ "ids": [
+  "r1a-receipt-absent",
+  "r1b-witness-absent",
+  "r2-s146-not-rejected",
+  "r2-supersession-absent",
+  "r3-baseline-file-empty",
+  "r4-slice-absent",
+  "r4-quarantine-absent"
+ ]
+}
+
+== committed red control .ufo/waves/round-42/controls/c2-baseline-red.json ==
+{
+ "findingCount": 7,
+ "ids": [
+  "r1a-receipt-absent",
+  "r1b-witness-absent",
+  "r2-s146-not-rejected",
+  "r2-supersession-absent",
+  "r3-baseline-file-empty",
+  "r4-slice-absent",
+  "r4-quarantine-absent"
+ ]
+}
+
+== commit that introduced the control (freeze) ==
+9b6de3a 2026-10-28 12:07:26 -0300 round-42: freeze C1 (capability admission attempt) + C2 (routed-defects ledger) claims and checker; land r41 defects D1 (commit receipt/witness bytes), D2 (S148 supersedes S146, S146 rejected), D3 (baseline control populated); open S149; baseline red control 34e1779
+
+
+== freeze tree membership (9b6de3a) ==
+.ufo/waves/round-42/claims.json
+.ufo/waves/round-42/controls/c1-baseline-tree-count.txt
+.ufo/waves/round-42/controls/c2-baseline-red.exit
+.ufo/waves/round-42/controls/c2-baseline-red.json
+.ufo/waves/round-42/counters/check-routed-defects-round42.mjs
+corpus/evidence/round41/playwright-egress/receipt.json
+corpus/evidence/round41/playwright-egress/receipt.witness.json
+
+
+== C1 beforeState-cited controls: first commit containing them ==
+.ufo/waves/round-42/controls/c1-r41-replay-refused.json -> 236c4f4 2026-10-28 12:23:38 -0300 round-42: C1 live measurement (predicate true, spans 16356/17790ms) + battery/replay controls; C1/C2 pre-data controls; wave w1 spec+dispatch(64 seats, attack 23/64)+registry+ready; LOG pre-dispatch entry
+.ufo/waves/round-42/controls/c1-battery-r42.json -> 236c4f4 2026-10-28 12:23:38 -0300 round-42: C1 live measurement (predicate true, spans 16356/17790ms) + battery/replay controls; C1/C2 pre-data controls; wave w1 spec+dispatch(64 seats, attack 23/64)+registry+ready; LOG pre-dispatch entry
+.ufo/waves/round-42/controls/c1-baseline-tree-count.txt -> 9b6de3a 2026-10-28 12:07:26 -0300 round-42: freeze C1 (capability admission attempt) + C2 (routed-defects ledger) claims and checker; land r41 defects D1 (commit receipt/witness bytes), D2 (S148 supersedes S146, S146 rejected), D3 (baseline control populated); open S149; baseline red control 34e1779
+
+== C2 checker countingCommand (claims) ==
+node .ufo/waves/round-42/counters/check-routed-defects-round42.mjs --rev <REV> --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json
+
+== C2 checker output schema ==
+{"schema": "tabi-r42-routed-defects"}
+
+== C1 countingCommand (claims) ==
+node scripts/measure-c1-round41.mjs --out corpus/evidence/round42/playwright-egress/receipt.json --scratch /fast/scratch/hyaku/tabi-r42/L1-measure/run
+
+== r42 C1 artifacts: paths committed at HEAD + internal schema labels ==
+
+{
+ "r42 receipt schema": "tabi-pw-firefox-egress-receipt-r41",
+ "r42 witness schema": "tabi-r41-witness",
+ "r42 measure schema": "tabi-r41-c1-measure",
+ "r41 measure schema": "tabi-r41-c1-measure",
+ "counter v4 output schema": "tabi-r41-c1-measured-v4",
+ "claims-declared receipt schema": null
+}
+
+== C1 battery control summary ==
+{
+ "cases": 6,
+ "allPass": true,
+ "perCase": [
+  [
+   "forger-r39-verbatim",
+   2,
+   "environment-loader-contamination",
+   true
+  ],
+  [
+   "forger-r41-retargeted",
+   2,
+   "environment-loader-contamination",
+   true
+  ],
+  [
+   "node-path",
+   2,
+   "environment-loader-contamination",
+   true
+  ],
+  [
+   "ld-preload",
+   2,
+   "environment-loader-contamination",
+   true
+  ],
+  [
+   "esm-loader",
+   2,
+   "environment-loader-contamination",
+   true
+  ],
+  [
+   "clean",
+   0,
+   null,
+   true
+  ]
+ ]
+}
+
+== WAVE-DONE instrument search ==
+parse-w1-results.mjs emits/checks WAVE-DONE: False
+parse-w1-results.mjs enforces >=64: False
+w1-spec items: 64
+w1-results.json present: False

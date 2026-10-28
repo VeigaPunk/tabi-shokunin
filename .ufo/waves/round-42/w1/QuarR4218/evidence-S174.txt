@@ -1,0 +1,50 @@
+id: S174
+lane: tabi
+round: round5
+register_class: payload-absent
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md line 212
+anchor: none (columns are lane, round, id, class, cited source, quote(s), note; no anchor cell)
+registered_url: https://fullstackladder.dev/blog/2026/07/15/webmcp-basic-concepts/
+final_url: https://fullstackladder.dev/blog/2026/07/15/webmcp-basic-concepts/
+redirects: 0
+http_status: 200
+content_type: text/html; charset=utf-8
+content_encoding: zstd
+date_header: Wed, 28 Oct 2026 15:37:22 GMT
+last_modified: Sun, 26 Jul 2026 11:32:40 GMT
+wire_size_download: 95725
+decoded_body_bytes: 605319
+sha256_decoded_body: 81db2cc3981781d7eaac4205e847ff4baef8604c66e3ae87271e2fbad214a8f9
+body_file: .ufo/waves/round-42/w1/QuarR4218/S174.body
+staged_quotes:
+  Q1: 敏感動作留一道人工關卡
+  Q2: 你的驗證碼、CSRF token、審核佪列、速率限制全部照常運作
+    (register character 佪 is U+4F6A, count 1 on the register line)
+located: absent from the registered URL. Q1 is verbatim on the other registered source (S175). Q2 is that same source modulo the one-character 佪/佇 typo.
+verdict: misbound
+
+Command (decoded body; curl --compressed follows zstd and writes the uncompressed HTML):
+  curl -sS -L --max-redirs 10 --compressed --max-time 60 \
+    -A 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \
+    -D S174.headers -o S174.body \
+    -w '%{http_code}\t%{url_effective}\t%{size_download}\t%{num_redirects}\t%{content_type}' \
+    'https://fullstackladder.dev/blog/2026/07/15/webmcp-basic-concepts/'
+Observed meta line:
+  200	https://fullstackladder.dev/blog/2026/07/15/webmcp-basic-concepts/	95725	0	text/html; charset=utf-8
+A second fetch minutes later was byte-identical (same sha256, 605319 bytes). %{size_download} is the zstd wire size; the hashed body is the decoded HTML.
+
+Search (UTF-8, exact, then whitespace removed) on raw HTML and on tag-stripped text:
+  Q1 exact: false. Q2 exact: false. Q2 with 佇 (U+4F47) substituted for 佪: false.
+  Raw counts zero for 敏感動作, 人工關卡, 驗證碼, CSRF, 速率限制, 審核佪列, 審核佇列, 審核隊列, 沒有繞過.
+Nearest passage on this page (安全性議題 §3, not a match):
+  「3. 敏感操作保留使用者確認 付款、刪除資料、公開發布、變更權限等操作，不應該因為是 Agent 呼叫就跳過確認。WebMCP 的價值是減少猜測，不是取消授權。」
+
+Cross-check against the S175 registered source fetched in this same seat (https://www.np.com.tw/modules/news/article.php?storyid=20, HTTP 200):
+  Q1 is an exact substring of that body. Surrounding sentence:
+  「敏感動作留一道人工關卡：涉及付款、刪除、送出的工具，不要加 toolautosubmit，讓使用者親手按下去。」
+  (toolautosubmit is the text of a <code> element.)
+  Q2 is not exact there either, because that page has 審核佇列 (佇 U+4F47) rather than 審核佪列 (佪 U+4F6A). With that one character restored, Q2 is an exact substring of the S175 FAQ sentence quoted in evidence-S175.txt.
+
+Justification: The cited fullstackladder post opened cleanly and contains neither staged span, including after whitespace folding and the 佪/佇/隊 variants. That is not a free-floating absence. Q1 sits verbatim in the np.com.tw article that the register already cites as S175, and Q2 is the tail of that article's FAQ sentence with the same one-character register typo (佪 for 佇). The row quotes source B under source A's URL. Verdict is misbound, not absent and not partial: partial would require some of the phrase to be present on the cited page, and it is not.
+
+Delta vs round-40 (ScoutQuarantine174, absent): the live cited document did not change. last-modified is still Sun, 26 Jul 2026 11:32:40 GMT; decoded length is still 605319; sha256 81db2cc3981781d7… matches the round-27 receipt prefix and was stable across two fetches today. Round-40 recorded the same URL, HTTP 200, and 605319 bytes, and did not open the S175 URL. The class change absent → misbound is that cross-check, not a page edit.

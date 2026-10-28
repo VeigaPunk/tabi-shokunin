@@ -1,0 +1,40 @@
+# SOURCES registry cells — baseline 34e1779 vs HEAD 0081bfd
+# column order: id|source|kind|tier|scope|anchor|teaches|status|opened|recheck|used-by
+
+## baseline rows (34e1779)
+S146  rows=1
+S147  rows=1
+S148  rows=0
+S149  rows=0
+
+## HEAD rows (present counts)
+S146  rows=1
+S147  rows=1
+S148  rows=1
+S149  rows=1
+
+## parsed cells at HEAD
+S146: status='rejected' recheck='on-release' used-by='corpus/lessons/round-42.md'
+      teaches[:110]='A space-separated list of command-line options; interpreted before command-line options'
+S147: status='mined' recheck='180d' used-by='corpus/knowledge/environment-injection-measurement-integrity-round-41.md'
+      teaches[:110]='This file contains the initial environment that was set when the currently executing program was started via e'
+S148: status='mined' recheck='on-release' used-by='corpus/knowledge/environment-injection-measurement-integrity-round-41.md'
+      teaches[:110]='supersedes S146 — A space-separated list of command-line options.'
+S149: status='mined' recheck='180d' used-by='corpus/knowledge/committed-bytes-verification-round-42.md'
+      teaches[:110]='Lists the contents of a given tree object, like what "/bin/ls -a" does'
+
+## baseline S146 cells
+status='mined' used-by='corpus/knowledge/environment-injection-measurement-integrity-round-41.md'
+teaches='A space-separated list of command-line options; interpreted before command-line options'
+
+## r2 prefix regex on S148 teaches (frozen checker semantics)
+teaches= 'supersedes S146 — A space-separated list of command-line options.'
+matches ^supersedes S146\b : True
+residual quote= 'A space-separated list of command-line options.'
+words= 6
+
+## S147 row byte-identical across baseline..HEAD?
+S147_ROW_BYTE_IDENTICAL
+
+## target of S146 used-by exists?
+  ls: cannot access 'corpus/lessons/round-42.md': No such file or directory

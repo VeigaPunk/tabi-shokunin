@@ -1,0 +1,22 @@
+# Frozen checker run, single capture (writes nothing; reads committed bytes only)
+# cmd:
+cd /home/vgpnk/Projects/shokunin/tabi-shokunin && node .ufo/waves/round-42/counters/check-routed-defects-round42.mjs --rev 9b6de3a19de11abdb80e82a1310abc64a40215bb --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json
+
+# exit: 1
+# stderr: 0 bytes
+# stdout (verbatim):
+{
+ "schema": "tabi-r42-routed-defects",
+ "rev": "9b6de3a19de11abdb80e82a1310abc64a40215bb",
+ "predicate": false,
+ "findingCount": 1,
+ "findings": [
+  {
+   "id": "r4-quarantine-absent",
+   "detail": ".ufo/waves/round-42/quarantine/re-adjudication.tsv not committed at REV"
+  }
+ ]
+}
+
+# An earlier, identical invocation in this seat (interactive) produced the same bytes and exit 1.
+# Only r4 is red; r1a/r1b, r2, r3 produced no findings, so the checker's r2 = true.

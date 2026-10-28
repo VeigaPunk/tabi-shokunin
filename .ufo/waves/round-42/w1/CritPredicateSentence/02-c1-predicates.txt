@@ -1,0 +1,15 @@
+r42 C1 predicate len=716
+
+The counting command exits 0 on a fresh nonce with driver exit 0, counter exit 0, predicate true and empty findings AND the produced receipt.json and receipt.witness.json are committed at the measured revision AND node scripts/measure-c1-round41.mjs --battery reports all six cases pass (five contamination vectors exit 2 with environment-loader-contamination, clean probe exit 0) AND direct counter v4 replay of the committed r39, r40 and r41 receipts each refuses (nonzero exit) AND the round's validated policy-v2 wave settled with WAVE-DONE over at least 64 seats and no settled seat report demonstrates a do-nothing reach of this predicate (a forgery or counter hole that produces exit 0 without a browser run).
+
+============================================================
+
+r41 C1 predicate len=1221
+
+measure-c1-round41 launches the round-41 Playwright Firefox loopback driver for exactly two runs under a loader-clean environment (exec-time /proc environ free of injection variables, execArgv without preload flags) AND producer digests equal the frozen pins AND the fresh 64-hex nonce is carried by the receipt and both runs AND each run has >=8 strictly increasing samples whose first-to-last observed timestamp span is >=1000ms AND both ss and proc surfaces are available with positive ticks on every sample and final sweep AND each run records at least one owned socket observation on each surface AND all observed nonLoopback counts are zero AND every sample carries a refreshed identity-bound owned tree with firefox-binary root executables and every pid startTicks inside the run window AND the independent witness observed the driver pid and a firefox-binary descendant of it on at least 10 samples AND both runs have identical firstShotSha256 AND zero survivors and closed fixture port AND browserVersion is bound AND socket summaries agree with per-sample counts AND measured wall-clock elapsed covers both sample spans AND the round-39 and round-40 receipts without this invocation nonce and schema are refused
+
+============================================================
+
+checker v4 PREDICATE byte-equal to r41 claims predicate: True
+r42 C1 === r41 C1 bytes: False
+longest common substring (r42C1, r41C1): 'measure-c1-round41' (len 18)

@@ -1,0 +1,31 @@
+### scratch git fixture provenance
+$ mktemp -d under /fast/scratch/hyaku/tabi-r42/MutC2Enum -> fixtureA , fixtureB-control
+--- fixtureA ---
+$ git -C /fast/scratch/hyaku/tabi-r42/MutC2Enum/fixtureA rev-parse --show-toplevel
+/fast/scratch/hyaku/tabi-r42/MutC2Enum/fixtureA
+$ realpath /fast/scratch/hyaku/tabi-r42/MutC2Enum/fixtureA
+/fast/scratch/hyaku/tabi-r42/MutC2Enum/fixtureA
+$ git -C ... log --oneline
+21f14f2 narrowness control: drop one evidence blob
+4fe6945 fixtureA: fixture
+$ git -C ... ls-tree -r --name-only HEAD | wc -l
+45
+--- fixtureB-control ---
+$ git -C /fast/scratch/hyaku/tabi-r42/MutC2Enum/fixtureB-control rev-parse --show-toplevel
+/fast/scratch/hyaku/tabi-r42/MutC2Enum/fixtureB-control
+$ realpath /fast/scratch/hyaku/tabi-r42/MutC2Enum/fixtureB-control
+/fast/scratch/hyaku/tabi-r42/MutC2Enum/fixtureB-control
+$ git -C ... log --oneline
+100ffd6 fixtureB-control: fixture
+$ git -C ... ls-tree -r --name-only HEAD | wc -l
+46
+--- narrowness control commit in fixtureA ---
+21f14f2 narrowness control: drop one evidence blob
+4fe6945 fixtureA: fixture
+$ wc -l slice-ids.txt / re-adjudication.tsv (fixtureA)
+  38 /fast/scratch/hyaku/tabi-r42/MutC2Enum/fixtureA/.ufo/waves/round-42/quarantine/slice-ids.txt
+  38 /fast/scratch/hyaku/tabi-r42/MutC2Enum/fixtureA/.ufo/waves/round-42/quarantine/re-adjudication.tsv
+  76 total
+$ evidence blob sizes (fixtureA, min/max)
+32
+2283

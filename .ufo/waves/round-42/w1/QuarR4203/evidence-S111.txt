@@ -1,0 +1,34 @@
+id: S111
+lane: tabi
+round: round1
+register_line: 182
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md
+class: payload-absent
+anchor: none (columns are lane | round | id | class | cited source | quote(s) | note)
+registered URL: https://developer.chrome.com/docs/ai/webmcp/secure-tools
+final URL: https://developer.chrome.com/docs/ai/webmcp/secure-tools
+redirects: 0
+HTTP status: 200
+bytes: 140264
+sha256: 88b660bcf123a7f5f76883043a6e29d88fa68073e99e0e1041093de103818181
+content-type: text/html; charset=utf-8
+last-modified: Tue, 01 Sep 2026 07:00:00 GMT
+date: Wed, 28 Oct 2026 15:36:57 GMT
+access: 2026-10-28 curl 8.23.0 -sSL (UA QuarR4203-recheck/1.0)
+
+staged quotes (exactly as registered, two spans separated by <br>):
+1. Add hints to your tools
+2. 默认情况下，其他网站或跨源 iframe 无法观察或与您的工具互动。
+
+located/absent:
+- Quote 1 exact and whitespace-normalized: ABSENT in the registered body. Nearest heading is the h2 "Use annotation hints" (id=use_annotation_hints). Surrounding sentence: "There are a few hints you should add when building your tools:". That is not a one-token typo of "Add hints to your tools".
+- Quote 2 exact and whitespace-normalized: ABSENT as Chinese in the registered English body (lang=en, 22 CJK characters, all language-picker labels). The same section does contain the English source sentence: "By default, other websites or cross-origin iframes can't observe or interact with your tools." Full paragraph: "The WebMCP document.modelContext.registerTool API only exposes the tool's functionality to agents. By default, other websites or cross-origin iframes can't observe or interact with your tools."
+- Companion fetch, not a substitute for the registered URL: the page's own <link rel="alternate" hreflang="zh-Hans" href="https://developer.chrome.com/docs/ai/webmcp/secure-tools?hl=zh-cn">. HTTP 200, final URL that href, 131145 bytes, sha256 e4037aac36f2476f98087133c5d123e56dda46f81fbc4f2e93ca7198e2c6e497, last-modified Tue, 01 Sep 2026 07:00:00 GMT, html lang="zh-CN-x-mtfrom-en", canonical is the ?hl=zh-cn URL. Quote 2 is an exact match (one hit) under h2 "谨慎公开您的工具" (id=expose_your_tools_carefully). Surrounding sentence: "WebMCP document.modelContext.registerTool API 仅向智能体公开工具的功能。默认情况下，其他网站或跨源 iframe 无法观察或与您的工具互动。" Quote 1 is absent there too; the zh heading is "使用注释提示" and the nearby sentence is "构建工具时，您应添加一些提示：".
+
+hash stability: a second GET of each URL kept the byte counts (140264 and 131145) but not the sha256 (en 60c30a3c9550fce92049dba4bdf0d9f463bfca236bc2dc31174fab89b4d5f633; zh 57dc9291fe1640baeb2d35c2fe12def5d07e64e7b131cf69d380b3a936777aea). The English bodies are identical through byte 133000; diffs after that are the CSP nonce and a feature-flag JSON blob. Both English copies contain the cross-origin sentence; both zh copies contain quote 2. The recorded sha256 is this fetch, not a content id.
+
+verdict: partial
+
+justification: The registered URL opened (HTTP 200, no redirect) and neither staged string is in that body, so this is not present and not unreachable. Quote 2 is verbatim on the document's own zh-Hans alternate, so the Chinese span is not text from a different registered source (not misbound) and not missing from the document. Quote 1 is in neither rendering; the live heading is "Use annotation hints" / "使用注释提示". One span present on the linked locale and one span absent is partial. The English sentence on the registered URL is a translation of quote 2, not the staged Chinese, so it does not make quote 2 present at the registered URL.
+
+delta vs r40 (2026-10-27, class partial, zh-cn only): verdict class unchanged. Byte counts match r40 (140264 en, 131145 zh). Last-Modified is still 2026-09-01, before that fetch. r40 wrote that the English page had no "other sites or cross-origin" phrase; both fetches today contain "By default, other websites or cross-origin iframes can't observe or interact with your tools." in the stable prefix (before the per-request tail). Because Last-Modified predates r40 and the sha256 is request-variant, that sentence is not demonstrated as a post-r40 edit. [INFERENCE] r40 stopped at "functionality" and missed the next sentence. It does not change the class: quote 2 remains Chinese-only on ?hl=zh-cn, and quote 1 remains absent.

@@ -1,0 +1,37 @@
+id: S167
+lane: tabi
+round: round4
+register: /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md line 211
+register class: payload-absent
+anchor cell: none (register columns are lane, round, id, class, cited source, quote(s), note). Staging anchor on the S167 SOURCES row is §"evaluate_webmcp", which is not either registered quote.
+registered quotes (exactly as registered, two cells joined by <br> in the register):
+  1. エージェント対応のウェブサイトを監査、改善、デバッグする
+  2. 予測可能で機械可読なシグナル
+registered URL: https://claude.com/ja/marketplace/connectors/webmcp-evaluator
+final URL: https://claude.com/ja/marketplace/connectors/webmcp-evaluator
+redirects: 0
+HTTP status: 200
+content-type: text/html; charset=utf-8
+bytes: 381413
+sha256: 542b4778b27ca62d3b3604c49533e788a1130326f4fd58bb0ce2bcd5589d103a
+server Date: Wed, 28 Oct 2026 15:37:19 GMT
+fetch: curl -sS -L --max-redirs 10 --max-time 45 -A "Mozilla/5.0 (compatible; tabi-quarantine-read/1.0; +research)" -D s167.hdr -o s167.body -w 'http_code=%{http_code} size=%{size_download} url_effective=%{url_effective} redirects=%{num_redirects} content_type=%{content_type}' https://claude.com/ja/marketplace/connectors/webmcp-evaluator
+observed curl -w: S167 http_code=200 size=381413 url_effective=https://claude.com/ja/marketplace/connectors/webmcp-evaluator redirects=0 content_type=text/html; charset=utf-8
+
+located/absent on the registered URL:
+- Quote 1 exact, NFKC, and whitespace-stripped: 0. Fragments ウェブサイトを監査, 監査、改善, 改善、デバッグ, 機械可読: 0. デバッグする: 0.
+- Quote 2 exact, NFKC, and whitespace-stripped: 0. 機械可読: 0. シグナル: 0.
+- Unrelated hits only: 予測可能 x2 inside boilerplate ("シートごとの予測可能な使用量"; "コストの予測可能性のバランスを調整できます"). 監査 x2 inside "監査ログ", not the heading.
+- What the page does say, meta description: 「公開ページのエージェント対応状況を確認できます。検出済みのツール、追加すべきツール、公開してはならない情報を明示します。」 Body sentence containing the real S167 anchor: 「HTTPS URL を 1 つ指定して evaluate_webmcp を呼び出すと、ページの目的、機能、登録済みツール、推奨ツール、および公開禁止リスト（チェックアウト、注文確定、カード情報取得は対象外）が返されます。」
+- quote-lint-full-v5.json both S167 ABSENT records have binding=id and line= the S168 SOURCES row (Chrome ja blog), url= the Claude connector URL.
+
+classification-only fetch (not substituted as the registered URL): https://developer.chrome.com/blog/agent-ready-toolkit?hl=ja
+  curl -w: S168 http_code=200 size=119257 url_effective=https://developer.chrome.com/blog/agent-ready-toolkit?hl=ja redirects=0 content_type=text/html; charset=utf-8
+  sha256: 1aa486a405b3cc290e41c7071c926f32d980d637b178bbeb1364ed780175d1ce
+  server Date: Wed, 28 Oct 2026 15:38:24 GMT; last-modified: Mon, 22 Jun 2026 07:00:00 GMT
+  Quote 1 count: 2 (data-text attribute and the h2 text). Surrounding: heading id=audit_improve_and_debug_your_agent-ready_website 「エージェント対応のウェブサイトを監査、改善、デバッグする」 immediately followed by 「AI エージェントがサイトで予約や注文などのフローを確実に完了するには、予測可能で機械可読なシグナルが必要です。」
+  Quote 2 count: 1, inside that same sentence. Neither quote appears in the WEEL body (S166).
+
+verdict: misbound
+
+justification: The registered Claude URL opened (HTTP 200, no redirect, 381413 bytes) and neither registered quote is in that body, raw or whitespace-normalized. Both quotes are verbatim on a different registered source, the tabi S168 Chrome blog URL named by the quote-lint line field, which was fetched only to separate misbound from absent and is not treated as S167's cited URL. Round-40's label was absent, and the registered page still does not contain the quotes, so that absence did not flip. The Claude body sha256 changed versus the round-40 receipt (r40 23894fcff3dc9150df5fc47099407ae4366ff5a3083b3a2fc1eefb6448badbe4, today 542b4778b27ca62d3b3604c49533e788a1130326f4fd58bb0ce2bcd5589d103a) while the byte count stayed 381413; quote counts on that URL stayed zero. The label changes from absent to misbound because the strings belong to S168, not because the Claude page gained them. A separate kotoba S167 row exists in the register and was not classified.

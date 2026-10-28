@@ -1,0 +1,43 @@
+# dangling evidence pointer check: corpus/lessons/round-42.md
+
+## does the file exist at HEAD?
+(empty = absent)
+## on disk?
+ls: cannot access 'corpus/lessons/round-42.md': No such file or directory
+## tracked lessons at HEAD
+corpus/lessons/round-9.md
+corpus/lessons/training-round-11.md
+corpus/lessons/user-20261015-r01.md
+corpus/lessons/user-20261015-r02.md
+corpus/lessons/user-20261015-r03.md
+corpus/lessons/user-20261015-r04.md
+corpus/lessons/user-20261015-r05.md
+corpus/lessons/user-20261015-r06.md
+
+## changed files citing corpus/lessons/round-42.md
+corpus/README.md:879:| `knowledge/committed-bytes-verification-round-42.md` | Committed-bytes verification discipline from r41 defect D1: evidence exists when a revision addresses it (ls-tree/cat-file/ls-remote decision table); rules for evidence pointers, control files, verbatim quotes and >1 MiB file commits; the r42 routed-defects checker as the falsifier. | S149; `corpus/lessons/round-42.md`; `.ufo/waves/round-42/counters/check-routed-defects-round42.mjs`; `.ufo/waves/round-42/controls/c2-baseline-red.json`. |
+corpus/SOURCES.md:160:| S146 | Node.js CLI documentation — https://nodejs.org/docs/latest-v24.x/api/cli.html | docs | A | the `NODE_OPTIONS` environment-variable loader channel: how node options (incl. `--require`/`--experimental-loader`) enter a process through its environment rather than argv | §`NODE_OPTIONS=options...`, Added in v8.0.0, docs for the v24.x line, opened 2026-10-28 | A space-separated list of command-line options; interpreted before command-line options | rejected | 2026-10-28 | on-release | corpus/lessons/round-42.md |
+corpus/knowledge/environment-injection-measurement-integrity-round-41.md:82:`mined` → `rejected` and its `used-by` moved to `corpus/lessons/round-42.md`
+
+## D2 claim text (LOG/README)
+diff --git a/corpus/knowledge/environment-injection-measurement-integrity-round-41.md b/corpus/knowledge/environment-injection-measurement-integrity-round-41.md
+index 0692905..383922e 100644
+--- a/corpus/knowledge/environment-injection-measurement-integrity-round-41.md
++++ b/corpus/knowledge/environment-injection-measurement-integrity-round-41.md
+@@ -69,3 +69,16 @@ in 0.06 s, and the frozen wrapper + counter returned `predicate=true`.
+   `prctl`/debugger-level control is outside this entry's threat model.
+ - Socket sampling at 100 ms (driver) and tree sampling at 50 ms (witness)
+   bound, but do not eliminate, short-lived-connection blindness.
++
++## Errata (round 42, 2026-10-28 — quote fidelity, r41 verifier defect D2)
++
++The registry quote first carried for S146 ("A space-separated list of
++command-line options; interpreted before command-line options") spliced two
++source fragments with a semicolon and is not a verbatim substring of the
++committed staged copy (`.ufo/waves/round-41/sources/node-cli-v24.21.0.html`,
++§`NODE_OPTIONS=options...`). Per the SOURCES append-only contract the
++correction is a new row: **S148** (`supersedes S146 — A space-separated list
++of command-line options.`, verbatim, 7 words); S146 status changed
++`mined` → `rejected` and its `used-by` moved to `corpus/lessons/round-42.md`
++(old→new logged in the round-42 lesson). This entry's loader-channel source
++is S148; S147 is unchanged. No measured claim in this entry changes.

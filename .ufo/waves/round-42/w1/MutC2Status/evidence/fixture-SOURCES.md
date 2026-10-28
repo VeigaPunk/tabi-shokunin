@@ -1,0 +1,6 @@
+# SOURCES — fixture (MutC2Status, round 42)
+
+| id | source | kind | tier | scope | anchor | teaches | status | opened | recheck | used-by |
+|---|---|---|---|---|---|---|---|---|---|---|
+| S146 | Node.js CLI documentation — https://nodejs.org/docs/latest-v24.x/api/cli.html | docs | A | the `NODE_OPTIONS` environment-variable loader channel: how node options (incl. `--require`/`--experimental-loader`) enter a process through its environment rather than argv | §`NODE_OPTIONS=options...`, Added in v8.0.0, docs for the v24.x line, opened 2026-10-28 | A space-separated list of command-line options; interpreted before command-line options | mined | 2026-10-28 | on-release | corpus/lessons/round-42.md |
+| S148 | Node.js CLI documentation — https://nodejs.org/docs/latest-v24.x/api/cli.html | docs | A | supersedes S146 — the `NODE_OPTIONS` loader channel, with the quote corrected to a verbatim substring (round-41 verifier defect D2) | §`NODE_OPTIONS=options...`, Added in: v8.0.0, node v24.21.0 docs; opened 2026-10-28 | supersedes S146 — A space-separated list of command-line options. | mined | 2026-10-28 | on-release | corpus/knowledge/environment-injection-measurement-integrity-round-41.md |

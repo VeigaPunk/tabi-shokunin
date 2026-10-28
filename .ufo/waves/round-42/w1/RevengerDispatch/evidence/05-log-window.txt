@@ -1,0 +1,21 @@
+## inline-dispatcher.log — tabi r41 retry loop
+$ grep -c "wave-error .*tabi-shokunin/.ufo/waves/round-41/w1.ready" .ufo/state/inline-dispatcher.log
+23209
+$ grep "wave-error .*tabi.../round-41/w1.ready" | sed -n "1p;$p"
+2026-10-28T08:21:20 wave-error /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/w1.ready KeyError('taskCall')
+2026-10-28T08:54:40 wave-error /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/w1.ready KeyError('taskCall')
+$ awk "\$1 > \"2026-10-28T08:56\" && /tabi.../round-41/w1.ready/" | wc -l   # zero after the tombstone marker landed
+0
+
+## same failure shape, kasegi r42 w2 (run-start repair note)
+$ grep -c "wave-error .*kasegi-shokunin/.ufo/waves/round-42/w2.ready"
+392
+$ ... | sed -n "1p;$p"
+2026-10-28T09:20:02 wave-error /home/vgpnk/Projects/shokunin/kasegi-shokunin/.ufo/waves/round-42/w2.ready KeyError('taskCall')
+2026-10-28T09:57:57 wave-error /home/vgpnk/Projects/shokunin/kasegi-shokunin/.ufo/waves/round-42/w2.ready KeyError('taskCall')
+
+## no register() activity for tabi r42 in that log (log last write 11:53; dispatch 12:19-12:37)
+$ stat -c "%y %n" .ufo/state/inline-dispatcher.log
+2026-10-28 11:53:34.378970585 -0300 .ufo/state/inline-dispatcher.log
+$ grep -c "tabi.*42" over that log excluding wave-error
+2

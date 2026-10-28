@@ -1,0 +1,11 @@
+--- pristine.mjs	2026-10-28 12:38:00.697660343 -0300
++++ m2.mjs	2026-10-28 12:39:10.356663383 -0300
+@@ -13,7 +13,7 @@
+ const FORBIDDEN_ENV = /^(NODE_OPTIONS|NODE_PATH|NODE_EXTRA_CA_CERTS|NODE_PENDING_DEPRECATION|LD_.*|DYLD_.*|BUN_.*|PYTHONPATH|PYTHONHOME|PYTHONSTARTUP|RUBYOPT|RUBYLIB|PERL5OPT|PERL5LIB|JAVA_TOOL_OPTIONS|_JAVA_OPTIONS|JDK_JAVA_OPTIONS)$/;
+ 
+ const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
+-const usable = (x) => !!x && x.unavailable !== true && Number.isFinite(x.ticks) && x.ticks > 0 && Number.isFinite(x.nonLoopback);
++const usable = (x) => !!x && x.unavailable !== true && Number.isFinite(x.ticks) && x.ticks >= 0 && Number.isFinite(x.nonLoopback);
+ 
+ function isFirefoxExe(exe) {
+   if (typeof exe !== 'string' || !exe) return false;

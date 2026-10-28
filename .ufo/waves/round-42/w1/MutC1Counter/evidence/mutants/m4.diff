@@ -1,0 +1,20 @@
+--- pristine.mjs	2026-10-28 12:38:00.697660343 -0300
++++ m4.mjs	2026-10-28 12:39:14.290663461 -0300
+@@ -50,7 +50,7 @@
+       for (const k of ['ss', 'proc']) {
+         const o = x?.[k];
+         if (!usable(o)) findings.push(`${N}-sample${j + 1}-${k}-unavailable`);
+-        else if (o.nonLoopback !== 0) findings.push(`${N}-sample${j + 1}-${k}-egress`);
++        // M4: per-sample egress check dropped
+       }
+       if (Number.isFinite(x?.ss?.ssObs)) { ssObsSum += x.ss.ssObs; ssNlSum += x.ss.nonLoopback || 0; }
+       if (Number.isFinite(x?.proc?.procObs)) { procObsSum += x.proc.procObs; procNlSum += x.proc.nonLoopback || 0; }
+@@ -75,7 +75,7 @@
+     for (const k of ['ss', 'proc']) {
+       const o = r.finalSweep?.[k];
+       if (!usable(o)) findings.push(`${N}-final-${k}-unavailable`);
+-      else if (o.nonLoopback !== 0) findings.push(`${N}-final-${k}-egress`);
++      // M4: final-sweep egress check dropped
+     }
+     // F3 roots: firefox binaries started inside the run window.
+     const roots = r.owned?.roots;

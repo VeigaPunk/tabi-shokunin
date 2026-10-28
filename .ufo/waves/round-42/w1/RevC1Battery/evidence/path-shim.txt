@@ -1,0 +1,8 @@
+# PATH shim: wrapper + driver resolve 'getconf' through the caller-controlled PATH (gate passes)
+probe: {"exit": 0, "contaminated": false, "shimLog": ["caller=MainThread pid=2222530 ppid=2222509 args=CLK_TCK"]}
+driver(no args): {"exit": 64, "stdout": "", "stderr": "usage: --out <fresh receipt.json> --scratch <dir> --nonce <64-hex one-use-token> [--runs 2]\n", "shimLog": ["caller=MainThread pid=2222745 ppid=2222611 args=CLK_TCK"]}
+
+# shim:
+#!/bin/sh
+echo "caller=$(cat /proc/$PPID/comm 2>/dev/null) pid=$$ ppid=$PPID args=$*" >> /fast/scratch/hyaku/tabi-r42/RevC1Battery/shim-log.txt
+exec /usr/bin/getconf "$@"

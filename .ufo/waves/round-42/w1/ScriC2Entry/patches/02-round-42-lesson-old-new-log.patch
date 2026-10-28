@@ -1,0 +1,39 @@
+--- a/corpus/lessons/round-42.md
++++ b/corpus/lessons/round-42.md
+@@ -0,0 +1,36 @@
++# Round 42 — C2 routed-defect calibration (draft patch artifact)
++
++> Draft produced by seat `ScriC2Entry` for the round-42 errata-compliance check. It exists
++> only to satisfy two SOURCES contract v1 requirements that the round-42 errata names but
++> no committed file currently discharges: (a) Rule 2's "logged old→new in the round lesson"
++> for every in-place `status`/`used-by` change, and (b) the `used-by` target that S146 now
++> names (`corpus/lessons/round-42.md`). It is a patch payload, never a landed lesson.
++
++## Gate
++
++### SOURCES in-place changes (contract v1, Rule 2)
++
++Every in-place change to `corpus/SOURCES.md` this round, old→new:
++
++| Row | Cell | Old | New |
++|---|---|---|---|
++| S146 | `status` | `mined` | `rejected` |
++| S146 | `used-by` | `corpus/knowledge/environment-injection-measurement-integrity-round-41.md` | `corpus/lessons/round-42.md` (this file) |
++| S146 | `teaches` | `A space-separated list of command-line options; interpreted before command-line options` | `REJECTED: …; flip: …` (rejection reason and flip recorded in the row) |
++
++The `teaches` change is the one *not* authorised by Rule 2 ("only `status`, `recheck` and
++`used-by` change in place"). It is required by the `teaches` shape rule for rejected rows and
++by `scripts/check-sources.mjs` (`rejected_without_flip`); the two contract rules cannot both
++hold for an in-place `mined`→`rejected` flip on a row whose `teaches` carries a quote. This
++conflict is routed as a finding in the round-42 wave; it is not amended here.
++
++### Source opened for the correction
++
++- S148, Node.js CLI documentation, https://nodejs.org/docs/latest-v24.x/api/cli.html,
++  opened 2026-10-28, §`NODE_OPTIONS=options...`: "A space-separated list of command-line
++  options." — verbatim from the committed staged copy
++  `.ufo/waves/round-41/sources/node-cli-v24.21.0.html`; it supersedes S146's spliced quote
++  (round-41 verifier defect D2).
++
++S147 is unchanged. No measured claim in
++`corpus/knowledge/environment-injection-measurement-integrity-round-41.md` changes.
