@@ -1,0 +1,54 @@
+{
+  "schema": "tabi-round-claims-v2",
+  "lane": "tabi",
+  "round": 42,
+  "baseline": "34e177959d1b7ce04afb85a001420e02631ce79e",
+  "declaredAt": "2026-10-28",
+  "axesAtRoundStart": {
+    "adjacency": 8,
+    "operability": 9,
+    "depth": 9,
+    "coverage": 9,
+    "freshness": 9,
+    "calibration": 9
+  },
+  "saturation": 8,
+  "stagnationWindow": 3,
+  "lowestAxis": "adjacency",
+  "stagnationNudge": "All owned axes sit at or above saturation 8 and no capability entered the table in rounds 39-41 (three rounds = the window); the lowest-axis obligation is waived and C1 is the required frontier/capability move. C2 is an independent instrument/calibration repair on the r41 verifier's routed defects.",
+  "freshStartNote": "Third consecutive rejected closure (r39 proxy counter + self-referential D6; r40 F4 wrapper bypass; r41 wave never dispatched - ready pointed at the spec without taskCall - plus routed defects D1 uncommitted evidence, D2 non-verbatim S146 quote, D3 empty baseline control, D4 quarantine re-adjudication owed). All three closures and the round-41 verifier spot-check were read before declaring. Claims are sized so a do-nothing control cannot reach them: C1 requires a fresh nonce-bound browser run plus a settled attack wave; C2 requires four concrete repairs a no-op tree cannot contain.",
+  "causalSeparation": "C2's checker reads only round-41 evidence, the registry, the r41 controls and the round-42 quarantine TSV; it never reads round-42 C1 receipts. C1's counter reads only its own receipt/witness/pins; it never reads the quarantine ledger or the registry. Each claim verifies without the other having landed.",
+  "claims": [
+    {
+      "id": "C1",
+      "axis": "coverage",
+      "kind": "capability-acquisition",
+      "title": "Playwright Firefox loopback TCP observation - admission attempt of the r41 hardened chain on committed bytes with a settled attack wave",
+      "capabilityRowName": "playwright-firefox-loopback-tcp",
+      "surface": "The frozen round-41 measurement chain (scripts/measure-c1-round41.mjs + scripts/playwright-firefox-egress-round41.mjs + .ufo/waves/round-41/counters/c1-session-bound-v4.mjs, all digest-pinned in .ufo/waves/round-41/claims.json): two Playwright Firefox loopback runs under a loader-clean environment boundary, pinned producer digests, an independent witness child, identity-bound refreshed process trees, per-run owned-socket observation on ss and /proc surfaces, fresh nonce bound to receipt and runs.",
+      "restsOn": "S145 (proc_pid_net(5), opened 2026-10-27), S148 (Node.js CLI docs, superseding S146, opened 2026-10-28)",
+      "countingCommand": "node scripts/measure-c1-round41.mjs --out corpus/evidence/round42/playwright-egress/receipt.json --scratch /fast/scratch/hyaku/tabi-r42/L1-measure/run",
+      "beforeState": "At baseline 34e177959d1b7ce04afb85a001420e02631ce79e: git ls-tree -r --name-only <baseline> -- corpus/evidence/round42 lists 0 files (control .ufo/waves/round-42/controls/c1-baseline-tree-count.txt); the committed round-41 receipt replayed under a fresh nonce is refused (control .ufo/waves/round-42/controls/c1-r41-replay-refused.json).",
+      "predicate": "The counting command exits 0 on a fresh nonce with driver exit 0, counter exit 0, predicate true and empty findings AND the produced receipt.json and receipt.witness.json are committed at the measured revision AND node scripts/measure-c1-round41.mjs --battery reports all six cases pass (five contamination vectors exit 2 with environment-loader-contamination, clean probe exit 0) AND direct counter v4 replay of the committed r39, r40 and r41 receipts each refuses (nonzero exit) AND the round's validated policy-v2 wave settled with WAVE-DONE over at least 64 seats and no settled seat report demonstrates a do-nothing reach of this predicate (a forgery or counter hole that produces exit 0 without a browser run).",
+      "killRule": "If any settled seat demonstrates a do-nothing reach, or any control refuses, or the receipt bytes are not committed at the measured revision, the claim is not admitted: no capability row enters the SCORECARD table, coverage holds its score, and the finding is routed to the next round. The predicate, kill rule and counting command are frozen before any seat scores; they are never amended after wave data.",
+      "admission": "On pass only: one capabilities-table row `playwright-firefox-loopback-tcp - observe a loopback browser session's TCP sockets from both ss and /proc/net/tcp with a nonce-bound, loader-clean, witness-attested receipt` whose evidence pointer names the committed round-42 receipt and counter output, first-working round 42.",
+      "verdict": "pending",
+      "measuredRevision": null
+    },
+    {
+      "id": "C2",
+      "axis": "calibration",
+      "kind": "instrument-repair",
+      "title": "Round-41 routed-defect ledger closure (D1-D4) measured by a frozen checker",
+      "surface": "The lane's self-assessment vs observed repo state: the round-41 report, SCORECARD and lesson cited a durable receipt that was never committed (D1); SOURCES row S146 carried a non-verbatim quote (D2); the committed baseline control file was empty (D3); the 38-row quarantine re-adjudication was not redone with a clean identifier extraction (D4). The checker counts these as findings over committed bytes at a revision.",
+      "restsOn": "S149 (git-ls-tree documentation, opened 2026-10-28; opened copy .ufo/waves/round-42/sources/git-ls-tree.html, sha256 2c298383476164238c6e25ba804412a335c405ab9540650bb603778e2f4f8b64) - the committed-bytes instrument this checker's R1 and R4 checks are built on; and S148 (superseding S146) for the verbatim-quote discipline the checker's R2 enforces.",
+      "countingCommand": "node .ufo/waves/round-42/counters/check-routed-defects-round42.mjs --rev <REV> --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json",
+      "beforeState": "At baseline 34e177959d1b7ce04afb85a001420e02631ce79e the checker exits 1 with findings r1a-receipt-absent, r1b-witness-absent, r2-supersession-absent, r3-baseline-file-empty, r4-quarantine-absent (red control committed pre-data at .ufo/waves/round-42/controls/c2-baseline-red.json).",
+      "predicate": "At the measured revision the checker exits 0: (r1a) corpus/evidence/round41/playwright-egress/receipt.json is a committed blob of at least 1000 bytes whose sha256 equals receiptSha256 in the committed .ufo/waves/round-41/measure/c1-measure.json and whose bytes parse as JSON; (r1b) receipt.witness.json likewise equals witnessSha256 and parses; (r2) corpus/SOURCES.md at the revision carries row S148 whose teaches cell begins `supersedes S146` and whose remainder is a verbatim substring of the committed .ufo/waves/round-41/sources/node-cli-v24.21.0.html of at most 25 words, and row S146's status cell is `rejected`; (r3) .ufo/waves/round-41/controls/c1-baseline-noop.out is a committed nonempty blob recording the ls-tree counting command and the digit 0; (r4) .ufo/waves/round-42/quarantine/re-adjudication.tsv is committed with exactly the 38 identifiers of the committed .ufo/waves/round-42/quarantine/slice-ids.txt, no duplicates, every verdict in {present, absent, misbound, partial, unreachable}, and every evidence path a committed blob of at least 200 bytes.",
+      "killRule": "No post-data predicate amendment. Any mutation seat that greens a weakened checker copy without the real repairs, or any accepted fabricated/empty evidence, refuses admission the same way: calibration holds its score and the hole is routed.",
+      "admission": "On pass only: calibration verdict improved via ledger closure is recorded in the round report and SCORECARD disposition; no numeric score changes without a later rubric.",
+      "verdict": "pending",
+      "measuredRevision": null
+    }
+  ]
+}

@@ -69,3 +69,16 @@ in 0.06 s, and the frozen wrapper + counter returned `predicate=true`.
   `prctl`/debugger-level control is outside this entry's threat model.
 - Socket sampling at 100 ms (driver) and tree sampling at 50 ms (witness)
   bound, but do not eliminate, short-lived-connection blindness.
+
+## Errata (round 42, 2026-10-28 — quote fidelity, r41 verifier defect D2)
+
+The registry quote first carried for S146 ("A space-separated list of
+command-line options; interpreted before command-line options") spliced two
+source fragments with a semicolon and is not a verbatim substring of the
+committed staged copy (`.ufo/waves/round-41/sources/node-cli-v24.21.0.html`,
+§`NODE_OPTIONS=options...`). Per the SOURCES append-only contract the
+correction is a new row: **S148** (`supersedes S146 — A space-separated list
+of command-line options.`, verbatim, 7 words); S146 status changed
+`mined` → `rejected` and its `used-by` moved to `corpus/lessons/round-42.md`
+(old→new logged in the round-42 lesson). This entry's loader-channel source
+is S148; S147 is unchanged. No measured claim in this entry changes.

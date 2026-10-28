@@ -1,0 +1,5 @@
+# tabi round-42 quarantine slice derivation (fixed extraction — r41 D4)
+# Command (run 2026-10-28):
+# awk -F'|' -v l='tabi' '$2 ~ ("`" l "`") && $3 ~ /round[0-9]+/ && $4 ~ /S[0-9]+/ {id=$4; gsub(/[^A-Za-z0-9]/,"",id); print id, $5}' /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md
+# The gsub strips non-alphanumerics, fixing the r41 trailing-backtick extraction (S171``).
+# Dedup: cut -d" " -f1 slice-raw.txt | sort -u > slice-ids.txt
