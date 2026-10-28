@@ -2217,3 +2217,26 @@ The claims remain causally separate; neither is scored or admitted without the r
 | expansion | unchanged | C1/C2 artifacts exist, but no capability or knowledge admission is made before WAVE-DONE. |
 | quality | unchanged | C1's live receipt and counter pass are recorded; the full falsification and no-harm review did not run. |
 | discernment | unchanged | No non-author wave output or spot-check is available. |
+
+## Round 42 — declared claims (frozen before data)
+
+Fresh-start round (third consecutive rejected closure). The r39–r41 reports and the
+round-41 verifier spot-check were read first; both claims are sized so a do-nothing
+control cannot reach them. Freeze `9b6de3a19de11abdb80e82a1310abc64a40215bb`;
+round-start baseline `34e177959d1b7ce04afb85a001420e02631ce79e`; axes at start
+adjacency 8 (lowest), others 9; saturation 8 / window 3; no capability entered rounds
+39–41 → the stagnation nudge waives the lowest-axis obligation and C1 is the
+capability/frontier move. Predicates, kill rules and counting commands are in
+`.ufo/waves/round-42/claims.json` (one sentence, three sites: claims.json, checker
+header, checker code for C2).
+
+| Claim / axis | Counting command | Before | Target |
+|---|---|---|---|
+| C1 coverage capability — Playwright Firefox loopback TCP observation admitted on committed bytes with a settled attack wave | `node scripts/measure-c1-round41.mjs --out corpus/evidence/round42/playwright-egress/receipt.json --scratch /fast/scratch/hyaku/tabi-r42/L1-measure/run` | At baseline: `git ls-tree -r --name-only 34e177959d1b7ce04afb85a001420e02631ce79e -- corpus/evidence/round42 \| wc -l` → 0 (`controls/c1-baseline-tree-count.txt`); committed r41 receipt replayed under a fresh nonce refused (`controls/c1-r41-replay-refused.json`, exit 1) | Frozen predicate true at a fresh nonce-bound live run (measured 2026-10-28: exit 0, spans 16,356/17,790 ms) AND receipt+witness committed at the measured revision AND battery all-pass AND r39/r40/r41 replays refuse AND the validated 64-seat wave settles with no do-nothing reach; then one capabilities-table row |
+| C2 calibration — round-41 routed-defect ledger closure (verifier D1–D4) | `node .ufo/waves/round-42/counters/check-routed-defects-round42.mjs --rev <REV> --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json` | Baseline red control committed pre-data (`controls/c2-baseline-red.json`): exit 1, 7 findings (r1a/r1b receipt+witness uncommitted, S146 not rejected, no S148, baseline file empty, no quarantine TSV) | Checker exit 0 at the measured revision: D1 evidence committed + sha-bound to the committed r41 measure record; S148 supersedes S146 with a verbatim ≤25-word quote and S146 rejected; baseline control carries its command and the 0; 38-row re-adjudication TSV over committed evidence paths |
+
+Do-nothing controls are the committed red states above; both are unreachable without
+this round's work. Wave w1 (one policy-v2 wave, 64 seats, attack 23/64) was validated
+and dispatched through the ready handoff at 12:20 -03 with the dispatch JSON carrying
+`taskCall` (the r41 defect); results and dispositions land after WAVE-DONE. No
+predicate is amended after any seat scores.
