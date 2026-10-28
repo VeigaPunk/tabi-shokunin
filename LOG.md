@@ -2623,3 +2623,56 @@ Sources census: start receipt `.ufo/waves/round-41/measure/census-start.json` (1
 The full 38-row quarantine re-adjudication was not completed this round; do not treat partial source reopens as a verdict table. The prior complete round-40 record is `corpus/lessons/round-40.md` §§Quarantine-first adjudication/Mistakes. Current extraction is `.ufo/waves/round-41/assimilation/quarantine-slice`; S171 retains its malformed trailing backtick and the `/features/` URL returned 404, so it remains unverifiable rather than fabrication.
 
 Trend verdicts: expansion unchanged, quality unchanged, discernment unchanged. No tools were installed. Final wrap-up was requested while the wave remained queued; this log does not claim W1 completion.
+
+## Round 42 — 2026-10-28 — fresh-start: frozen claims, routed-defect repairs, live C1 measurement, wave w1 dispatched
+
+Fresh-start round (third consecutive rejected closure r39–r41). The round-41 verifier
+spot-check and the r39/r40 reports were read first; claims are frozen before any seat
+data in `.ufo/waves/round-42/claims.json` at freeze commit `9b6de3a19de11abdb80e82a1310abc64a40215bb`,
+baseline `34e177959d1b7ce04afb85a001420e02631ce79e`. Axes at start: adjacency 8
+(lowest), others 9; saturation 8 / window 3; no capability entered rounds 39–41, so the
+stagnation nudge waives the lowest-axis obligation and C1 is the capability move.
+
+- **C1 (coverage capability)** — admission attempt of the frozen r41 hardened
+  Playwright Firefox loopback TCP chain on committed bytes: counting command
+  `node scripts/measure-c1-round41.mjs --out corpus/evidence/round42/playwright-egress/receipt.json --scratch /fast/scratch/hyaku/tabi-r42/L1-measure/run`
+  (2026-10-28) → exit 0, driver 0, counter 0, predicate true, findings empty,
+  nonceMatches true, elapsed 38,384 ms; run spans 16,356 ms / 17,790 ms (126/134
+  samples); receipt sha256 `3984455276a5b54a0a7652fc76923eb46d446f0630556d6775abc7c1fd317b7e`,
+  witness sha256 `163f4eba7f8b6c93daa0e5742b0ade81ee16ff716cc27bc578fb76795a57d339`.
+  Admission additionally requires the settled 64-seat wave with no do-nothing reach.
+- **Pre-data controls (2026-10-28)** — `--battery` all 6 cases pass (5 vectors exit 2,
+  clean exit 0; `controls/c1-battery-r42.json`); counter v4 replays refuse with fresh
+  nonces: r39 exit 1, r40 exit 1, r41-committed-receipt exit 1
+  (`controls/c1-r39-replay-r42.json`, `c1-r40-replay-r42.json`,
+  `c1-r41-replay-refused.json`); baseline tree count 0 (`controls/c1-baseline-tree-count.txt`).
+- **C2 (calibration)** — r41 routed-defect ledger: frozen checker
+  `.ufo/waves/round-42/counters/check-routed-defects-round42.mjs`. Baseline red
+  control committed (`controls/c2-baseline-red.json`, exit 1, findings
+  r1a/r1b/r2/r3/r4 classes). Repairs landed at the freeze commit: D1 —
+  `corpus/evidence/round41/playwright-egress/{receipt,receipt.witness}.json` committed
+  as explicit files (sha256s equal the committed r41 measure record); D2 — SOURCES S148
+  `supersedes S146` with the verbatim quote, S146 status `mined`→`rejected`,
+  S146 used-by → `corpus/lessons/round-42.md` (old→new logged in the round-42 lesson);
+  D3 — `.ufo/waves/round-41/controls/c1-baseline-noop.out` populated with its counting
+  command and the 0 (re-derived at the r41 baseline); D4 — fixed slice extraction
+  (gsub strips the trailing backtick; `quarantine/slice-ids.txt` 38 clean ids) and the
+  fresh 38-row re-adjudication TSV is this wave's deliverable. Checker at the freeze
+  rev: exit 1 with only `r4-quarantine-absent` (pending wave data).
+- **Sourced claim** — S149 opened this round by the L1
+  (https://git-scm.com/docs/git-ls-tree, HTTP 200, 38,955 B,
+  sha256 `2c298383476164238c6e25ba804412a335c405ab9540650bb603778e2f4f8b64`, quote
+  "Lists the contents of a given tree object, like what \"/bin/ls -a\" does", 13 words);
+  cited by `corpus/knowledge/committed-bytes-verification-round-42.md` and the C2
+  checker's R1/R4 instrument. Assimilation: none (quarantine re-adjudication, not
+  adoption). `considerthese/` absent.
+- **Wave w1** — one policy-v2 wave of 64 seats, attack share 23/64 (35.9%): scout 20,
+  mutation-tester 9, executor 9, reviewer 8, critic 6, scribe 5, connector 4, sentinel 1,
+  simplifier 1, revenger 1; L1 holds the canonical planner seat. Spec/dispatch/registry:
+  `w1-spec.json`, `w1-dispatch.json` (contains taskCall.context + 64 tasks, every task
+  leads with /skill:godspeed — the r41 ready-pointed-at-spec defect is checked),
+  `w1/swarm-registry.json`; handoff `w1.ready` written 12:20 -03. Results pending
+  WAVE-DONE; no admission is claimed before it.
+- Census start (2026-10-28): exit 0, `tabi ok`, 20 pre-existing W04 warnings
+  (`measure/census-start.{out,err,exit}`). Registry working-tree state: 149 rows
+  (A131/B7/C9; mined 122 / queued 15 / rejected 10) — S146 flip + S148/S149 arrivals.
