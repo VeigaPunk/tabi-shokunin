@@ -2609,3 +2609,17 @@ Quarantine-first adjudication: all 38 staged rows in the lane slice were hand-ch
 Trend verdicts: expansion unchanged (no new admitted knowledge/capability); quality unchanged (existing entries were not reverified or deepened; a new receipt was measured but C1 remains unadmitted); discernment unchanged (no outside non-author admit/reject check). Additional route and measurement process mistakes are recorded in `corpus/lessons/round-40.md`; no cross-lane artifacts were changed.
 
 Measurement revision binding: `corpus/evidence/round40/measurement-binding.json` binds `c1_live_runs` 0 at baseline `a1b1e939` → 1 at measured revision `22883df61d8deb55e03a1afebc81f7290c3a3cfc`, using `scripts/count-c1-round40-binding.mjs` and the frozen producer/receipt bytes. `node scripts/check-measurement-binding.mjs --check corpus/evidence/round40/measurement-binding.json --at 93fdd032d0531737a788c3c67d3427d1a7720aa8 --reproduce --json` returned `verdict=clean`, `claims=1`, `bound=1`, `findings=[]`.
+
+## Round 41 — 2026-10-28 — C1 measurement chain (coverage) and environment-injection entry (depth)
+
+Baseline `fecbdf0a3aa79ce17bce3ef7338f69112f604f88`. Claims C1/C2 were frozen before data in `.ufo/waves/round-41/claims.json`; freeze landed at `8c32528dd3ab04b75739a077d60884c22a085129`. The validated policy-v2 handoff is `.ufo/waves/round-41/w1-spec.json` + `w1.ready`, landed at `8c84417652f7602886dcc85f74bffdadd9c3a281`.
+
+Controls before measurement: C1 battery all-pass (five contaminated environment probes refused with exit 2; clean probe exit 0); synthetic counter mutants all-pass; round-39/40 replay controls exit 1; C2 baseline no-op exits 1 with missing-entry/coverage/registry findings. Receipts: `.ufo/waves/round-41/controls/`. Baseline C1 tree count is zero under `corpus/evidence/round41` (`controls/c1-baseline-noop.out`, exit 0).
+
+The live C1 measurement command ran twice in separate attempts; the durable run is `corpus/evidence/round41/playwright-egress/receipt.json`, with measure/witness hashes and predicate result in `.ufo/waves/round-41/measure/c1-measure.json`. It exited 0; driver and counter exits are 0, predicate true, findings empty. C2 checker exits 0 at the working tree; baseline control remains red. Neither claim is admitted: the 64-seat wave is queued at 0 spawned and no WAVE-DONE/non-author findings exist. No numeric score or capability row is added.
+
+Sources census: start receipt `.ufo/waves/round-41/measure/census-start.json` (10:58:50Z, exit 0); end command stdout/stderr/exit and receipt are in `measure/census-end.{out,err,exit,json}` (exit 0, `tabi ok`, 20 W04 duplicate-URL warnings). Registry transition: baseline 145 rows → current 147; S146/S147 are the two mined tier-A rows used by the C2 knowledge entry; no other row was touched. Assimilation: none; quarantine-first adoption remains closed. `considerthese/` is absent.
+
+The full 38-row quarantine re-adjudication was not completed this round; do not treat partial source reopens as a verdict table. The prior complete round-40 record is `corpus/lessons/round-40.md` §§Quarantine-first adjudication/Mistakes. Current extraction is `.ufo/waves/round-41/assimilation/quarantine-slice`; S171 retains its malformed trailing backtick and the `/features/` URL returned 404, so it remains unverifiable rather than fabrication.
+
+Trend verdicts: expansion unchanged, quality unchanged, discernment unchanged. No tools were installed. Final wrap-up was requested while the wave remained queued; this log does not claim W1 completion.

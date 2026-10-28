@@ -2198,3 +2198,22 @@ Measured command at integration evidence revision `22883df61d8deb55e03a1afebc81f
 `node scripts/measure-c1-round40.mjs --out corpus/evidence/round40/playwright-egress/receipt.json --scratch /fast/scratch/hyaku/tabi-r40/TabiR40a2/measure` → exit 0, C1 structural predicate true (run1/2 sample spans 1204/1202 ms; counter no findings). Measurement binding: `corpus/evidence/round40/measurement-binding.json`, count `c1_live_runs` 0→1. However the frozen no-op control is falsified by W1 `CritControlReach` F4-full: a `NODE_OPTIONS=--require` preload substitutes a receipt-producing shim and the same wrapper exits 0 with no Firefox launch. **C1 is unprovable/not admitted; coverage remains 9→9 held; no capability row.** No numerical score changed.
 
 Stagnation line 8 / window 3 remains; no axis retired. The planned round-39 C2 D6 self-reference repair was not claimed. Keep the F4 environment-injection path, F1 zero-observation blind condition, and F3 stale process-tree ownership open; no freeze was amended after W1 data.
+
+## Round 41 — declared disposition
+
+Baseline `fecbdf0a3aa79ce17bce3ef7338f69112f604f88`; C1 (coverage capability) and C2 (depth) were frozen in `.ufo/waves/round-41/claims.json` at `8c32528dd3ab04b75739a077d60884c22a085129`.
+
+| Claim / axis | Counting command | Before → observed result |
+|---|---|---|
+| C1 coverage capability — Firefox loopback TCP observation under a loader-clean measurement chain | `node scripts/measure-c1-round41.mjs --out corpus/evidence/round41/playwright-egress/receipt.json --scratch /fast/scratch/hyaku/tabi-r41/L1-final-measure/run` | Baseline tree contains no `corpus/evidence/round41` files (`.ufo/waves/round-41/controls/c1-baseline-noop.out`, exit 0). Live command at `8c84417652f7602886dcc85f74bffdadd9c3a281`: exit 0, counter predicate true, findings empty; two measured runs and witness are recorded. **Not admitted:** the required 64-seat wave remains queued with 0 spawned; no non-author review or WAVE-DONE. No capability row or score delta. |
+| C2 depth — sourced environment-injection forgery-class entry | `node scripts/check-c2-knowledge-round41.mjs --root /home/vgpnk/Projects/shokunin/tabi-shokunin` | Baseline control exits 1 (`entry-absent`, `coverage-row-absent`, `registry-row:S146`, `registry-row:S147`); current checker exits 0. **Not admitted:** the required wave did not return; no non-author review or final no-harm gate. No score delta. |
+
+The claims remain causally separate; neither is scored or admitted without the required independent review. No axis is numerically re-scored or retired. Round 41's wave is one validated policy-v2 wave of 64 seats, with 0/64 spawned at the last recorded scheduler state; the handoff is queued, not completed.
+
+### Round 41 — trend verdicts
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | unchanged | C1/C2 artifacts exist, but no capability or knowledge admission is made before WAVE-DONE. |
+| quality | unchanged | C1's live receipt and counter pass are recorded; the full falsification and no-harm review did not run. |
+| discernment | unchanged | No non-author wave output or spot-check is available. |
