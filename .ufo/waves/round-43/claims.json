@@ -1,0 +1,131 @@
+{
+ "schema": "tabi-round-claims-v2",
+ "lane": "tabi",
+ "round": 43,
+ "baseline": "ab592825cd195599822ca227f7768914df208201",
+ "declaredAt": "2026-10-29",
+ "axesAtRoundStart": {
+  "adjacency": 8,
+  "operability": 9,
+  "depth": 9,
+  "coverage": 9,
+  "freshness": 9,
+  "calibration": 9
+ },
+ "saturation": 8,
+ "stagnationWindow": 3,
+ "lowestAxis": "adjacency",
+ "stagnationNudge": "All owned axes sit at or above saturation 8 and no capability entered the table in rounds 39-42 (four rounds, window 3); the lowest-axis obligation is waived and C1 is the required frontier/capability move. C2 is an independent instrument/calibration repair on the round-42 closure routed defects.",
+ "freshStartNote": "Fresh-start discipline applied: the last three rejected closures (r40 F4 wrapper bypass; r41 undispatched wave + D1-D4; r42 kill-rule refusals on receipt authenticity and the tree/blob + fabrication limbs) and their non-author verifier spot-checks were read before declaring. Both claims are sized so a do-nothing control cannot reach them, and every control named below is committed with its sha256 and a verbatim quote line before any seat scores.",
+ "causalSeparation": "C1's counter reads only its own invocation's receipt, witness and signed measure record plus the frozen pins; it never reads the quarantine ledger, the registry or round-41 evidence. C2's checker reads only round-41/42 committed evidence, the registry, the round-43 freeze and its committed controls; it never reads round-43 C1 receipts. Each claim verifies without the other having landed.",
+ "producerPins": {
+  "firefoxBinSha256": "1f637a7cfe8f1a3ec814a7da7e38c360a3e3c39553b8c7245ac5d6643fd495eb",
+  "firefoxBinPath": "/home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/firefox",
+  "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+  "nodePath": "fnm-managed node v24.21.0 (process.execPath at freeze)"
+ },
+ "frozenDigests": {
+  "scripts/measure-c1-round43.mjs": "23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0",
+  "scripts/playwright-firefox-egress-round43.mjs": "3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e",
+  ".ufo/waves/round-43/counters/c1-signature-bound-v5.mjs": "6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c",
+  ".ufo/waves/round-43/counters/check-routed-defects-round43.mjs": "2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743",
+  ".ufo/waves/round-43/fixtures/v0-fabrication.mjs": "b87470625b11aa5b13d72cf1ac888ed004bff7b1d2ef7501f746d2142cb0b80c",
+  ".ufo/waves/round-43/fixtures/tree-vs-blob.mjs": "7407f6cd498362658fb0c78b61698489c373444ff3ce6982824ded877259ab6d"
+ },
+ "sentenceIdentity": {
+  "C1": {
+   "sites": [
+    ".ufo/waves/round-43/claims.json claims[0].counterPredicate",
+    ".ufo/waves/round-43/counters/c1-signature-bound-v5.mjs header PREDICATE-SENTENCE comment",
+    ".ufo/waves/round-43/counters/c1-signature-bound-v5.mjs const PREDICATE"
+   ],
+   "byteIdentical": true
+  },
+  "C2": {
+   "sites": [
+    ".ufo/waves/round-43/claims.json claims[1].predicate",
+    ".ufo/waves/round-43/counters/check-routed-defects-round43.mjs header PREDICATE-SENTENCE comment",
+    ".ufo/waves/round-43/counters/check-routed-defects-round43.mjs const PREDICATE"
+   ],
+   "byteIdentical": true
+  }
+ },
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "coverage",
+   "kind": "capability-acquisition",
+   "title": "Playwright Firefox loopback TCP observation admitted under a signature-authenticated measurement chain",
+   "capabilityRowName": "playwright-firefox-loopback-tcp",
+   "surface": "The round-43 signature-authenticated chain (scripts/measure-c1-round43.mjs + scripts/playwright-firefox-egress-round43.mjs + .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs, digest-pinned in this file): two Playwright Firefox loopback runs under the loader-clean environment boundary, a per-invocation Ed25519 run key whose private half never persists, an independent witness child attesting under its own per-invocation key, a signed measure record binding receipt/witness bytes, a counter challenge-response, fresh nonce binding, identity-bound refreshed process trees, per-run owned-socket observation on ss and /proc.",
+   "restsOn": "S150 (node:crypto API index, opened 2026-10-29 - the generateKeyPair/sign/verify primitives the signing chain is built on), S145 (proc_pid_net(5), 2026-10-27), S148 (Node.js CLI NODE_OPTIONS channel, superseding S146, 2026-10-28).",
+   "countingCommand": "node scripts/measure-c1-round43.mjs --out corpus/evidence/round43/playwright-egress/receipt.json --measure-out .ufo/waves/round-43/measure/c1-measure-r43.json --scratch /fast/scratch/hyaku/tabi-r43/L1-measure/run",
+   "beforeState": "At baseline ab592825cd195599822ca227f7768914df208201: git ls-tree -r --name-only <baseline> -- corpus/evidence/round43 lists 0 files (control .ufo/waves/round-43/controls/c1-baseline-tree-count.txt); the committed round-42 receipt scored by counter v5 in a direct invocation is refused (control .ufo/waves/round-43/controls/c1-replay-r42-refused.json); a self-signed synthetic pair is refused by the challenge-response (control .ufo/waves/round-43/controls/c1-synthetic-refused.json); a tampered measure record is refused by its signature (control .ufo/waves/round-43/controls/c1-relabel-refused.json).",
+   "counterPredicate": "measure-c1-round43 launches the round-43 Playwright Firefox loopback driver for exactly two runs under a loader-clean environment (exec-time /proc environ free of injection variables, execArgv without preload flags) AND producer digests equal the frozen pins AND the fresh 64-hex nonce is carried by the receipt, both runs, the witness and the Ed25519-signed measure record AND the measure record verifies under its own Ed25519 wrapper signature over the canonical unsigned form AND the witness attestation verifies under the witness's own Ed25519 key AND the counter's fresh in-invocation challenge verifies under the wrapper public key from the signed measure record AND the committed receipt and witness bytes hash to the measure record's bindings AND each run has >=8 strictly increasing samples whose first-to-last observed timestamp span is >=1000ms AND both ss and proc surfaces are available with positive ticks on every sample and final sweep AND each run records at least one owned socket observation on each surface AND all observed nonLoopback counts are zero AND every sample carries a refreshed identity-bound owned tree with firefox-binary root executables AND the witness independently observed the driver and owned firefox processes AND no private half of either per-invocation signing key is persisted by any chain component.",
+   "predicate": "measure-c1-round43 launches the round-43 Playwright Firefox loopback driver for exactly two runs under a loader-clean environment (exec-time /proc environ free of injection variables, execArgv without preload flags) AND producer digests equal the frozen pins AND the fresh 64-hex nonce is carried by the receipt, both runs, the witness and the Ed25519-signed measure record AND the measure record verifies under its own Ed25519 wrapper signature over the canonical unsigned form AND the witness attestation verifies under the witness's own Ed25519 key AND the counter's fresh in-invocation challenge verifies under the wrapper public key from the signed measure record AND the committed receipt and witness bytes hash to the measure record's bindings AND each run has >=8 strictly increasing samples whose first-to-last observed timestamp span is >=1000ms AND both ss and proc surfaces are available with positive ticks on every sample and final sweep AND each run records at least one owned socket observation on each surface AND all observed nonLoopback counts are zero AND every sample carries a refreshed identity-bound owned tree with firefox-binary root executables AND the witness independently observed the driver and owned firefox processes AND no private half of either per-invocation signing key is persisted by any chain component. THE CLAIM: the counting command exits 0 on a fresh nonce AND the produced receipt.json, receipt.witness.json and signed measure record are committed at the measured revision AND node scripts/measure-c1-round43.mjs --battery reports all cases pass (contamination vectors exit 2 with environment-loader-contamination, clean probe exit 0) AND direct counter-v5 invocations refuse the committed r42 receipt and self-authored synthetic pairs (controls above) AND the round's validated policy-v2 wave settled with WAVE-DONE over at least 64 seats AND no settled seat demonstrates an in-model do-nothing reach (exit 0 without a browser run) under the declared residual model.",
+   "residualModel": "Declared before data: (i) harvesting a per-invocation private half requires a prior honest chain run (a browser run happened - not a do-nothing reach); rescoring a genuine prior pair re-proves that same honest run and binds no new claim content; (ii) process-memory and kernel-level attacks against the wrapper remain out of scope as in rounds 40-42; (iii) on-disk tampering of committed pins or receipts is out of model - committed-byte re-derivation at the closure catches it. Attacks inside this model that produce exit 0 without a browser run fire the kill rule.",
+   "killRule": "If any settled seat demonstrates an in-model do-nothing reach, or any control refuses, or the receipt/measure bytes are not committed at the measured revision, the claim is not admitted: no capability row enters the SCORECARD table, coverage holds its score, and the finding is routed to round 44. The predicate, kill rule and counting command are frozen before any seat scores; they are never amended after wave data.",
+   "admission": "On pass only: one capabilities-table row `playwright-firefox-loopback-tcp - observe a loopback browser session's TCP sockets from both ss and /proc/net/tcp under a signature-authenticated chain (per-invocation Ed25519 run key, witness-attested, challenge-bound receipt)` whose evidence pointer names the committed round-43 receipt and measure record, first-working round 43.",
+   "verdict": "pending",
+   "measuredRevision": null
+  },
+  {
+   "id": "C2",
+   "axis": "calibration",
+   "kind": "instrument-repair",
+   "title": "Round-42 routed-defect checker hardened: blob-type discipline, pinned measure blob id, V0 refusal, freeze-binds-controls",
+   "surface": "The lane's self-assessment vs observed repo state: the round-42 checker accepted tree objects where its sentence said committed blob (CritPredicateSentence P-A), greened a self-consistent fabrication (CritC2Ledger V0), and the round-42 freeze enumerated five baseline finding ids while its committed control carried seven (closure conformance defect 1). The round-43 checker closes all three defect classes over committed bytes at a revision.",
+   "restsOn": "S151 (git-cat-file manual, opened 2026-10-29 - `git cat-file -t` distinguishes blob from tree, the type gate behind rule r1), S149 (git-ls-tree, 2026-10-28), and the r42 wave evidence CritPredicateSentence/CritC2Ledger.",
+   "countingCommand": "node .ufo/waves/round-43/counters/check-routed-defects-round43.mjs --rev <REV> --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json",
+   "beforeState": "At baseline ab592825cd195599822ca227f7768914df208201 the round-43 checker exits 1: the round-43 claims freeze and its controls are not yet committed (control .ufo/waves/round-43/controls/c2-baseline-red-r43.json records the red state). The r42 checker bytes green the rebuilt V0 fabrication and name no type violation on the tree fixture (controls c2-v0-probe.json, c2-tree-fixture.json).",
+   "predicate": "check-routed-defects-round43 counts zero findings at the measured revision where (r1a) corpus/evidence/round41/playwright-egress/receipt.json is committed as a blob at REV, >=1000 bytes, valid JSON, sha256 equal to the receiptSha256 recorded in the committed .ufo/waves/round-41/measure/c1-measure.json whose object id at REV equals the pinned measure blob id 8ff64d691f5c09569a50f2a5a038bb23774c3d35 AND (r1b) receipt.witness.json likewise as a blob with sha256 equal to the recorded witnessSha256 AND (r2) SOURCES.md at REV has row S148 whose teaches cell begins supersedes S146 with a verbatim remainder of at most 25 words inside the committed staged node CLI copy and row S146 status cell rejected AND (r3) the baseline control is committed nonempty recording its ls-tree command and the digit 0 AND (r4) the 38-row re-adjudication TSV is committed with exactly the committed slice ids, no duplicates, verdicts inside the frozen enum, and every evidence path a committed blob of >=200 bytes AND (r5) the round-43 claims freeze binds every control it names with the control sha256 and a verbatim quote line present in the committed control bytes AND (r6) the committed V0-fabrication probe receipt refuses the self-consistent fabrication with the measure-blob-pin finding and names the frozen generator digest.",
+   "killRule": "If any settled seat demonstrates, within the committed bytes and the declared model, that a rule accepts what its sentence denies (a tree scored as blob, a fabricated measure record greened, a forged control binding, a quote line absent from the control bytes), the claim is not met as worded: calibration holds its score and the repair routes to round 44. No rule or sentence is amended after any seat scores.",
+   "admission": "On pass only: calibration evidence pointer updated to the round-43 checker receipt at the measured revision; no numeric score change without a later score rubric.",
+   "verdict": "pending",
+   "measuredRevision": null
+  }
+ ],
+ "controlBindings": [
+  {
+   "path": ".ufo/waves/round-43/controls/c1-baseline-tree-count.txt",
+   "sha256": "23983f216328d232ecfe988cfc0718698a8a2aede3cdad740176420d436211e3",
+   "quote": "git ls-tree -r --name-only ab592825cd195599822ca227f7768914df208201 -- corpus/evidence/round43 | wc -l"
+  },
+  {
+   "path": ".ufo/waves/round-43/controls/c1-battery-r43.json",
+   "sha256": "6cb61f1150406e490ec9ba8f54353bf0b8d7ce02ccd31df8388d17d813ef9aed",
+   "quote": "{\"schema\":\"tabi-r43-battery\",\"cases\":[{\"case\":\"forger-r39-verbatim\",\"vector\":\"NODE_OPTIONS=--require /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/forger-round39.cjs\",\"exit\":2,\"finding\":\"environment-loader-contamination\",\"pass\":true},{\"case\":\"forger-r41-retargeted\",\"vector\":\"NODE_OPTIONS=--require /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/forger-round41.cjs\",\"exit\":2,\"finding\":\"environment-loader-contamination\",\"pass\":true},{\"case\":\"node-path\",\"vector\":\"NODE_PATH=/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/shadow_modules\",\"exit\":2,\"finding\":\"environment-loader-contamination\",\"pass\":true},{\"case\":\"ld-preload\",\"vector\":\"LD_PRELOAD=/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/libforger.so\",\"exit\":2,\"finding\":\"environment-loader-contamination\",\"pass\":true},{\"case\":\"esm-loader\",\"vector\":\"NODE_OPTIONS=--experimental-loader /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/loader.mjs\",\"exit\":2,\"finding\":\"environment-loader-contamination\",\"pass\":true},{\"case\":\"esm-import\",\"vector\":\"NODE_OPTIONS=--import /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/loader.mjs\",\"exit\":2,\"finding\":\"environment-loader-contamination\",\"pass\":true},{\"case\":\"clean\",\"vector\":null,\"exit\":0,\"finding\":null,\"pass\":true}],\"allPass\":true}"
+  },
+  {
+   "path": ".ufo/waves/round-43/controls/c1-replay-r42-refused.json",
+   "sha256": "6640e2087bef2cdf8d7b3b7e2473e760d90169126bfb82e976f68db30dac0a4c",
+   "quote": " \"refusalLayers\": ["
+  },
+  {
+   "path": ".ufo/waves/round-43/controls/c1-synthetic-refused.json",
+   "sha256": "6b1052ad2023d346195531af122f35961388ab6c9c0475cbbcce23923708d5c3",
+   "quote": " \"refusalLayers\": ["
+  },
+  {
+   "path": ".ufo/waves/round-43/controls/c1-relabel-refused.json",
+   "sha256": "eeec71d70f8799081bab464a941afb77b9c2c0b1482baecc6e3e0100b0e5f0ef",
+   "quote": "   \"measure-signature-invalid\","
+  },
+  {
+   "path": ".ufo/waves/round-43/controls/c2-baseline-red-r43.json",
+   "sha256": "eecba100c680be5a74821ffbdbdc2399c89a99f654e0b754fcbd566f415a40a5",
+   "quote": " \"findingIds\": ["
+  },
+  {
+   "path": ".ufo/waves/round-43/controls/c2-v0-probe.json",
+   "sha256": "c24d24f8e39a61c2bdb072ff9d1006296a236d6551b0a6fd572d3cb9772e9a6c",
+   "quote": " \"refused\": true,"
+  },
+  {
+   "path": ".ufo/waves/round-43/controls/c2-tree-fixture.json",
+   "sha256": "3443ad72fc05b0390d577be8ad9dc88b9ac903dbfb2b7e8d07124f7ec12ac3bf",
+   "quote": " \"typeViolationNamed\": true,"
+  }
+ ],
+ "controlBindingRule": "Every control the freeze names is bound by its sha256 and one verbatim quote line from the control bytes (r42 closure conformance defect 1); C2 rule r5 verifies these bindings over committed bytes at the measured revision, and quote lines of fewer than 8 characters are malformed by construction."
+}

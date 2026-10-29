@@ -2744,3 +2744,56 @@ per no-post-data-amendment; operator ruling requested (r27 L0 question stands).
 
 No tool installs; no pacman transactions. Final dispositions and wave accounting are
 in `SCORECARD.md` (round-42 disposition commit) and `corpus/lessons/round-42.md`.
+## Round 43 — 2026-10-29 — fresh-start: signature-authenticated C1 chain, hardened routed-defect checker, S150/S151 opened, wave w1 dispatched
+
+Fresh-start discipline: the r40/r41/r42 reports, their non-author verifier spot-checks and the round-42
+lesson were read before declaring. Both claims are sized so a do-nothing control cannot reach them, and
+every named control is committed with its sha256 plus a verbatim quote line (r42 closure conformance
+defect 1 closed at the freeze layer this time).
+
+**Claims frozen pre-data** in `.ufo/waves/round-43/claims.json` at baseline
+`ab592825cd195599822ca227f7768914df208201`: **C1 (coverage capability)** — admission attempt of the
+round-43 signature-authenticated Playwright Firefox loopback TCP chain; **C2 (calibration)** — the
+round-42 routed-defect checker hardened (blob-type gate via S151, pinned measure blob id
+`8ff64d691f5c09569a50f2a5a038bb23774c3d35` per CritC2Ledger's routed fix, V0-fabrication probe
+receipt, freeze-binds-controls rule). The stagnation nudge is active (no capability entered rounds
+39–42, window 3), so C1 is the required frontier/capability move; adjacency stays lowest at 8.
+
+**Instruments (digest-pinned in the freeze):** `scripts/measure-c1-round43.mjs` (per-invocation
+Ed25519 run key, never persisted; signed measure record; challenge-response with the counter over
+fd3/fd4; witness child attests under its own key), `scripts/playwright-firefox-egress-round43.mjs`
+(r41 chain plus per-sample/final-sweep `nonLoopbackRemotes` recording), counter
+`c1-signature-bound-v5.mjs` (strict argv — no `--pins`/`--nonce`; wrapper-signature, witness-
+attestation and challenge verification; all r41 structural clauses), checker
+`check-routed-defects-round43.mjs` (six rules r1–r6), fixture generators `v0-fabrication.mjs` and
+`tree-vs-blob.mjs`.
+
+**Controls, all red before data (committed receipts in `.ufo/waves/round-43/controls/`):** baseline
+tree count 0; battery 7/7 (five r41 vectors plus a new `NODE_OPTIONS=--import` vector); r42-receipt
+replay refused (measure-schema + unsigned challenge, exit 1); self-signed synthetic pair refused
+(challenge-response, no run key exists); tampered measure record refused (`measure-signature-invalid`
++ `receipt-binding-mismatch`); C2 baseline red (exit 1: `r5-claims-absent`, `r6-probe-absent`);
+V0 fabrication rebuilt in scratch — v2 refuses with `r1-measure-blob-pin-mismatch` while the r42
+checker bytes still green it (exit 0, zero findings) — the documented hole, now closed; tree fixture —
+v2 names `r1a-not-a-blob` where r42 bytes named no type violation.
+
+**Live measurement (pre-dispatch, first clean run):** the first attempt failed its counter with 46
+real `*-egress` findings — one non-loopback owned socket, samples 111–133 of run 1, gone by run 2
+(`failed-run-1/` archived under scratch; the driver counted but recorded no remotes). Instrument
+hardened BEFORE the freeze: driver + counter now record and surface `nonLoopbackRemotes` (disclosed
+here; no predicate was loosened — "all observed nonLoopback counts are zero" stands). Second run:
+exit 0, predicate true, findings [], spans 18,588/25,649 ms, egress 0, survivors 0,
+challenge/signature/attestation verified, nonce `d2c85f6e…`, measure record sha256
+`c67a1096e5cc32b0c935ca133c67d8b485c8fff11e44a288f6e62d6abb97b258`.
+
+**Sources:** S150 (node:crypto API index line — generateKeyPair/sign/verify, the C1 signing chain's
+primitives; opened 2026-10-29, flat-byte quote verified in the staged copy) and S151 (git-cat-file
+`-t` — the blob/tree type gate behind C2 r1; opened 2026-10-29) appended to the registry; staged
+copies under `.ufo/waves/round-43/sources/`. C1 is the round's sourced claim (restsOn S150); C1's
+knowledge entry `corpus/knowledge/receipt-authenticity-signing-round-43.md` lands at integration.
+Census start receipt: exit 0, `tabi ok`, 21 W04 warnings, 149 rows.
+
+**Assimilation: none planned** — the r42 fresh re-adjudication (misbound 25/absent 6 of 38) keeps
+package adoption closed; `considerthese/` still absent. Wave w1 (one policy-v2 wave, 64 seats,
+≥25% attack share) dispatches next through the ready handoff; results and dispositions land after
+WAVE-DONE. No tool installs; no pacman transactions (pause honored).

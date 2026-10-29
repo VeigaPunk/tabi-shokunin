@@ -2293,3 +2293,29 @@ The stagnation nudge remains active for round 43 (no capability entered rounds 3
 | expansion | improved | New admitted note `corpus/knowledge/committed-bytes-verification-round-42.md` on ground the coverage map did not hold (committed-bytes verification instrument class), citing newly opened mined S149; S148 correction row added; coverage row appended. `ls corpus/knowledge/*.md \| wc -l` 58 → 59. |
 | quality | improved | r41 verifier defects D1–D4 closed with red→green proofs (baseline red control → committed repairs, checker findings 7 → 0); S146 superseded by S148 (non-verbatim quote corrected); D3 control populated; no admitted entry failed a re-check; QUALITY criteria 104–105 added from observed failures. |
 | discernment | unchanged | The 38-row re-adjudication and RevQuarCross's 7/8 independent agreement are lane-internal; the outside non-author admit/reject spot-check remains the closure's duty (pending as of filing). The S135 disagreement is captured as criterion 105 rather than smoothed. |
+
+## Round 43 — declared claims (frozen before data)
+
+Fresh-start round (fourth consecutive rejected closure r39–r42). The r39–r42 reports and the
+round-40/41/42 verifier spot-checks were read before declaring; both claims are sized so a
+do-nothing control cannot reach them, and every named control is committed with its sha256 and a
+verbatim quote line in the freeze (`.ufo/waves/round-43/claims.json`, baseline
+`ab592825cd195599822ca227f7768914df208201`). Axes at start: adjacency 8 (lowest), others 9;
+saturation 8 / window 3; no capability entered rounds 39–42 → the stagnation nudge waives the
+lowest-axis obligation and C1 is the frontier/capability move.
+
+| Claim / axis | Counting command | Before | Target |
+|---|---|---|---|
+| C1 coverage capability (sourced: S150) — Playwright Firefox loopback TCP observation under a signature-authenticated chain | `node scripts/measure-c1-round43.mjs --out corpus/evidence/round43/playwright-egress/receipt.json --measure-out .ufo/waves/round-43/measure/c1-measure-r43.json --scratch /fast/scratch/hyaku/tabi-r43/L1-measure/run2` | Baseline tree count 0 (`controls/c1-baseline-tree-count.txt`); r42-receipt replay refused (`c1-replay-r42-refused.json`); synthetic self-signed pair refused (`c1-synthetic-refused.json`); tampered record refused (`c1-relabel-refused.json`); battery 7/7 (`c1-battery-r43.json`); first live attempt refused by its own counter (46 real egress findings, run-1 transient — remotes now recorded) | Frozen v5 predicate true at a fresh nonce (signature, witness attestation and counter challenge verified) AND receipt + witness + signed measure record committed at the measured revision AND battery all-pass AND replays refused AND the policy-v2 wave settled (≥64 seats, WAVE-DONE) with no in-model do-nothing reach |
+| C2 calibration — round-42 routed-defect checker hardened (blob type via S151, pinned measure blob id, V0 refusal, freeze-binds-controls) | `node .ufo/waves/round-43/counters/check-routed-defects-round43.mjs --rev <REV> --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json` | Baseline red control `controls/c2-baseline-red-r43.json`: exit 1 (`r5-claims-absent`, `r6-probe-absent`); r42 checker bytes green the rebuilt V0 fabrication (exit 0, 0 findings) and name no type violation on the tree fixture (`c2-v0-probe.json`, `c2-tree-fixture.json`) | Checker exit 0 at the measured revision: r1–r4 re-derive, r5 bindings verify, r6 probe receipt refuses V0 with `r1-measure-blob-pin-mismatch`; any settled seat demonstration that a rule accepts what its sentence denies refuses the claim |
+
+Residual model (C1, declared before data): harvesting a per-invocation private half requires a prior
+honest chain run; rescoring a genuine prior pair re-proves that honest run only; process-memory and
+kernel-level attacks stay out of scope (rounds 40–42); on-disk tampering of committed pins is caught
+by committed-byte re-derivation at closure. In-model do-nothing reach = kill rule.
+
+Pre-dispatch disclosures: the first live attempt (pre-freeze) was refused by the round's own counter
+with 46 `*-egress` findings — one non-loopback owned socket late in run 1, absent by run 2; the
+instrument was hardened before the freeze (driver/counter now record `nonLoopbackRemotes`; no
+predicate loosened). Fixture/counter edits before any seat scored are reflected in the frozen
+digests. No tool installs; no pacman transactions.
