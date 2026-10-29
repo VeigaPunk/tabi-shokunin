@@ -1,0 +1,36 @@
+$ git -C souji-shokunin diff --stat 131ea87..HEAD -- corpus tools | tail -27
+ corpus/QUALITY.md                                  |  56 +++
+ corpus/README.md                                   |  47 ++-
+ corpus/SOURCES.md                                  |  35 +-
+ .../docstring-class-continuation-lines-r40.md      |  59 ++++
+ ...ing-class-continuation-source-correction-r40.md |  25 ++
+ corpus/knowledge/drift-record-invalid-utf8-r40.md  |  58 ++++
+ ...ft-record-invalid-utf8-source-correction-r40.md |  20 ++
+ .../git-strict-descendant-relation-r40.md          |  43 +++
+ corpus/knowledge/jj-colocation-receipts.md         |   2 +-
+ corpus/knowledge/origin-record-format-gvfs-r40.md  |  68 ++++
+ .../origin-record-format-gvfs-read-boundary-r40.md |  22 ++
+ corpus/lessons/round-36.md                         |   4 +
+ corpus/lessons/round-37-verifier-spotcheck.md      | 187 ++++++++++
+ corpus/lessons/round-37.md                         |  28 +-
+ corpus/lessons/round-38-verifier-spotcheck.md      | 225 +++++++++++++
+ corpus/lessons/round-38.md                         | 289 ++++++++++++++++
+ corpus/lessons/round-39-verifier-spotcheck.md      | 162 +++++++++
+ corpus/lessons/round-39.md                         | 140 ++++++++
+ corpus/lessons/round-40-verifier-spotcheck.md      |  79 +++++
+ corpus/lessons/round-40.md                         | 186 ++++++++++
+ corpus/lessons/round-41-verifier-spotcheck.md      |  92 +++++
+ corpus/lessons/round-41.md                         | 239 +++++++++++++
+ corpus/lessons/round-42.md                         | 230 +++++++++++++
+ tools/souji-citation-reconcile.py                  | 163 ++++++++-
+ tools/souji-freeze-check.py                        | 375 +++++++++++++++++++++
+ tools/souji-worktree-drift.py                      | 121 ++++++-
+ 26 files changed, 2920 insertions(+), 35 deletions(-)
+
+$ instrumentation grep over ALL changed souji corpus+tools files
+souji-changed-files-grep exit=123 (1 = zero hits)
+
+$ grep -rn -E "proc/net|/proc/<pid>/fd|socket inode|socket:\[" souji-shokunin/corpus | wc -l
+1
+$ git -C souji-shokunin log -1 --date=iso --pretty="%h %ad %s" -- corpus/knowledge/process-residue-observations.md
+4eb2fda5 2026-10-21 10:18:04 -0300 round-21: complete claims, independent oracle and scoped falsification evidence

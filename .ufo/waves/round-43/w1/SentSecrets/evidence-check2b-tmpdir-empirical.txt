@@ -1,0 +1,30 @@
+# scan timestamp: 2026-10-29T18:01:10-03:00
+# TMPDIR-honoring behaviour of Playwright's browser profile dir (empirical, this host)
+
+=== node os.tmpdir() honors TMPDIR ===
+unset -> /tmp
+set   -> /fast/scratch/hyaku/tabi-r43/SentSecrets/tmpdecisive
+
+=== firefox -profile arg, TMPDIR set to a scratch dir ===
+(controlled launch; profile arg read from /proc/<pid>/cmdline)
+  FIREFOX -profile ARG = /fast/scratch/hyaku/tabi-r43/SentSecrets/tmpdecisive/playwright_firefoxdev_profile-74oRJn
+=== firefox -profile arg, TMPDIR unset ===
+  FIREFOX -profile ARG = /tmp/playwright_firefoxdev_profile-2NF1tV
+
+=> Playwright's browser profile dir follows the ambient TMPDIR. The round-43 driver
+   does not set TMPDIR for the browser child, does not pass its --scratch profile dir to
+   firefox.launch (the 'profile' local at line 285 is created and never used), so the browser
+   profile lands in the ambient temp dir (/tmp when TMPDIR is unset).
+
+=== driver: 'profile' identifier occurrences (dead local) ===
+285:  const profile = mkdtempSync(join(profileRoot, 'profile-'));
+=== driver: tmpdir import (unused) ===
+26:import { tmpdir } from 'node:os';
+
+=== measure wrapper: child env (TMPDIR inherited, not set from --scratch) ===
+51:const ENV_ALLOW = ['PATH', 'HOME', 'LANG', 'TZ', 'TMPDIR', 'XDG_RUNTIME_DIR', 'DBUS_SESSION_BUS_ADDRESS', 'HYAKU_SCRATCH', 'TABI_RUN_NONCE', 'USER', 'LOGNAME', 'SHELL', 'DISPLAY', 'WAYLAND_DISPLAY', 'XAUTHORITY', 'FONTCONFIG_PATH', 'FONTCONFIG_FILE', 'LC_ALL', 'LC_CTYPE', 'XDG_DATA_DIRS', 'XDG_CONFIG_DIRS', 'XDG_CACHE_HOME', 'XDG_CONFIG_HOME', 'XDG_STATE_HOME', 'SSH_AUTH_SOCK'];
+104:  for (const k of ENV_ALLOW) if (process.env[k] !== undefined) env[k] = process.env[k];
+
+=== committed round-43 receipt records the ambient /tmp profile dirs (264 occurrences) ===
+    132 /tmp/playwright_firefoxdev_profile-7Aj7Us
+    132 /tmp/playwright_firefoxdev_profile-jUJmiQ

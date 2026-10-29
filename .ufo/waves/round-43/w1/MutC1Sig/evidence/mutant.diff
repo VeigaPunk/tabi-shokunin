@@ -1,0 +1,14 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs	2026-10-29 17:41:10.622902474 -0300
++++ /fast/scratch/hyaku/tabi-r43/MutC1Sig/counter-mut.mjs	2026-10-29 17:53:20.662923703 -0300
+@@ -211,8 +211,9 @@
+       const { signature, ...rest } = m;
+       try {
+         const unsigned = canonical(rest);
+-        if (signature && signature.scheme === 'ed25519' && sha256(Buffer.from(unsigned, 'utf8')) === signature.over
+-          && crypto.verify(null, Buffer.from(unsigned, 'utf8'), crypto.createPublicKey(m.pubkeys?.wrapper), Buffer.from(signature.value, 'hex'))) {
++        // MUTATION (MutC1Sig): the Ed25519 wrapper-signature verification is
++        // skipped entirely; measureSignatureVerified is forced to true.
++        if (true) {
+           measureSignatureVerified = true;
+         } else findings.push('measure-signature-invalid');
+       } catch { findings.push('measure-signature-invalid'); }

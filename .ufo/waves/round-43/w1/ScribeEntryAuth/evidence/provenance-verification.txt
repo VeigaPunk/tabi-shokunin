@@ -1,0 +1,96 @@
+# ScribeEntryAuth — provenance trio verification (own checks, 2026-10-29)
+# Every command below was run by this seat. stdout is verbatim.
+
+## 1. S150 — node:crypto API index line (opened 2026-10-29)
+
+$ sha256sum .ufo/waves/round-43/sources/crypto.html
+4b7024df06e31080d4caa20b21aafb68a56d0481781633d7b5f7dc7ec50c42af  .ufo/waves/round-43/sources/crypto.html
+$ wc -c .ufo/waves/round-43/sources/crypto.html
+681625 .ufo/waves/round-43/sources/crypto.html
+$ grep -boF 'createPrivateKey, createPublicKey, generateKeyPair, sign, verify,' .ufo/waves/round-43/sources/crypto.html
+85163:createPrivateKey, createPublicKey, generateKeyPair, sign, verify,
+   -> exactly one occurrence; quote is a flat-byte substring of the staged copy.
+$ printf '%s\n' 'createPrivateKey, createPublicKey, generateKeyPair, sign, verify,' | wc -w
+5
+
+Live re-open (read-only GET, named URL, no login/form):
+$ curl -sS -o crypto-live.html -w '%{http_code}' https://nodejs.org/docs/latest-v24.x/api/crypto.html
+200
+$ sha256sum crypto-live.html
+4b7024df06e31080d4caa20b21aafb68a56d0481781633d7b5f7dc7ec50c42af  crypto-live.html
+   -> live bytes == staged bytes == pinned digest; no drift.
+
+Registry row (corpus/SOURCES.md line 164): 11 cells; tier A; status mined;
+used-by = corpus/knowledge/receipt-authenticity-signing-round-43.md;
+anchor cell records the same sha256 and 681,625 B; opened 2026-10-29.
+Word count of the quote: 5 (the lesson file says "7 words" — see finding F3).
+
+## 2. S151 — git-cat-file -t (opened 2026-10-29)
+
+$ sha256sum .ufo/waves/round-43/sources/git-cat-file.html
+624464ef7a3d64de06038200bff85ac09389a9d217d379dd660aa6b5165048d7  .ufo/waves/round-43/sources/git-cat-file.html
+$ wc -c .ufo/waves/round-43/sources/git-cat-file.html
+79360 .ufo/waves/round-43/sources/git-cat-file.html
+$ grep -boF 'Instead of the content, show the object type identified by' .ufo/waves/round-43/sources/git-cat-file.html
+43922:Instead of the content, show the object type identified by
+   -> exactly one occurrence; flat-byte substring of the staged copy.
+
+Live re-open:
+$ curl -sS -o catfile-live.html -w '%{http_code}' https://git-scm.com/docs/git-cat-file
+200
+$ sha256sum catfile-live.html
+624464ef7a3d64de06038200bff85ac09389a9d217d379dd660aa6b5165048d7  catfile-live.html
+   -> live bytes == staged bytes == pinned digest; no drift.
+
+Context around the quote (tags stripped): the quote sits under the "-t" option
+heading, between "-t" and "-s", in the OPTIONS section of the git-cat-file
+manual; it reads "Instead of the content, show the object type identified by
+<object>.".
+
+Word count of the quote: 10 (the lesson file says "11 words" — see finding F3).
+
+Behavioural check of the S151 claim (the type gate the C2 checker implements):
+$ git cat-file -t HEAD:corpus/evidence/round43/playwright-egress/receipt.json
+blob
+$ git cat-file -t HEAD:corpus/evidence/round41/playwright-egress
+tree
+   -> a file path and a directory path resolve to distinct object types, so
+      `cat-file -t` distinguishes them exactly as the r1a blob gate needs.
+
+## 3. S145 — proc_pid_net(5) (opened 2026-10-27)
+
+Staged copy lives under the round-40 wave dir (not round-43):
+$ sha256sum .ufo/waves/round-40/sources/proc_pid_net.html
+5e1700fff5cbaf4a1875387f6052cc0b2f35694fc25bc051c23b8f4de55f726f  .ufo/waves/round-40/sources/proc_pid_net.html
+$ wc -c .ufo/waves/round-40/sources/proc_pid_net.html
+17119 .ufo/waves/round-40/sources/proc_pid_net.html
+   -> matches the sha256 and byte count recorded in
+      .ufo/waves/round-40/sources/S145-open.txt and S145-open-recount.txt.
+
+Live re-open:
+$ curl -sS -o procpidnet-live.html -w '%{http_code}' https://man7.org/linux/man-pages/man5/proc_pid_net.5.html
+200
+$ sha256sum procpidnet-live.html
+5e1700fff5cbaf4a1875387f6052cc0b2f35694fc25bc051c23b8f4de55f726f  procpidnet-live.html
+   -> live bytes == staged bytes; no drift.
+
+Quote location — the registry cell uses curly quotes and the source uses
+straight quotes, so the cell text is NOT a flat-byte substring:
+  flat bytes of the staged copy contain:
+    The "rem_address" is the remote address and port number
+              pair (if connected).
+  i.e. straight double quotes around rem_address, and a line break between
+  "number" and "pair".
+  registry cell 7 =  “rem_address” is the remote address and port number pair (if connected)
+  flat-byte substring test on the cell text: FALSE
+  after whitespace-collapse + curly->straight quote normalisation: TRUE
+  (same normalisation the house normalise() in scripts/check-frontier-admission.mjs
+   and scripts/check-decision-table.mjs performs: strip tags, decode entities,
+   collapse whitespace — note their ENTITIES map does NOT fold curly quotes,
+   so the cell's curly-quoted form is not located by either gate's normaliser.)
+
+Word count of the registry cell: 11 (matches the recount file's corrected 11).
+
+Registry row (line 159): 11 cells; tier A; status mined; opened 2026-10-27;
+used-by = corpus/knowledge/playwright-firefox-session-bound-tcp-round-39.md,
+corpus/lessons/round-40.md  (see finding F4).

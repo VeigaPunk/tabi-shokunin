@@ -1,0 +1,46 @@
+{
+ "experiment": "LIVE DIFFERENTIAL — the FULL genuine chain (wrapper per-invocation key, real Firefox, real witness, real fd3/fd4 challenge) run twice in the SAME egress-producing window on this host: once with the PRISTINE driver as producer, once with the MUTATED (lying) driver as producer. claims pins in each mirror tree are blessed to that tree own producer bytes, so the byte-pin layer is satisfied in both arms and the producer BEHAVIOUR is the only difference.",
+ "arms": [
+  {
+   "arm": "PRISTINE producer",
+   "driverSha256": "3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e",
+   "driverExit": 0,
+   "counterExit": 1,
+   "challengeVerified": true,
+   "witnessAttestationVerified": true,
+   "predicate": false,
+   "egressClauseFindings": 45,
+   "otherFindings": [],
+   "receipt": {
+    "egressNonLoopback": 45,
+    "nonzeroSampleObservations": 45,
+    "samplesPerRun": [
+     133,
+     130
+    ],
+    "refused": false
+   }
+  },
+  {
+   "arm": "LYING producer (mutated)",
+   "driverSha256": "cbd8d65e2a0ac8d0e6f54fede992dd2303f73beaa9c1f9cdf1ae9c6734e41d77",
+   "driverExit": 0,
+   "counterExit": 0,
+   "challengeVerified": true,
+   "witnessAttestationVerified": true,
+   "predicate": true,
+   "egressClauseFindings": 0,
+   "otherFindings": [],
+   "receipt": {
+    "egressNonLoopback": 0,
+    "nonzeroSampleObservations": 0,
+    "samplesPerRun": [
+     132,
+     133
+    ],
+    "refused": false
+   }
+  }
+ ],
+ "interpretation": "In a window where this host genuinely produced non-loopback egress, the PRISTINE producer observed 45 real non-loopback observations, its receipt was REFUSED (counter exit 1, predicate false, 45 egress-clause findings), and the LYING producer reported 0 observations and its receipt was ADMITTED (counter exit 0, predicate true, 0 findings) through the identical genuine chain with its own per-invocation key and a verified fd3/fd4 challenge. The egress-count clause is the ONLY clause that spoke about the egress, and zeroing the counts removed every trace of it from the admitted receipt."
+}

@@ -1,0 +1,19 @@
+# 01 — primary receipt: git rev-parse <rev>:.ufo/waves/round-41/measure/c1-measure.json
+# cwd: /home/vgpnk/Projects/shokunin/tabi-shokunin
+$ git rev-parse 123e55c   # full hash of the short rev named in the r42 evidence
+123e55c77bb101be008db4cbf8ffca626423335a
+$ for r in <five revs>; do git -C $LANE rev-parse $r:.ufo/waves/round-41/measure/c1-measure.json; done
+123e55c77bb101be008db4cbf8ffca626423335a  8ff64d691f5c09569a50f2a5a038bb23774c3d35
+9b6de3a19de11abdb80e82a1310abc64a40215bb  8ff64d691f5c09569a50f2a5a038bb23774c3d35
+15b75a7337089ed42208555a71ed89a966b21932  8ff64d691f5c09569a50f2a5a038bb23774c3d35
+ab592825cd195599822ca227f7768914df208201  8ff64d691f5c09569a50f2a5a038bb23774c3d35
+7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc  8ff64d691f5c09569a50f2a5a038bb23774c3d35
+$ git -C $LANE rev-parse HEAD   # lane HEAD at seat time
+ba433c94b14a0e0d5ecf2eba1be0a8ee3064491c
+HEAD  8ff64d691f5c09569a50f2a5a038bb23774c3d35
+$ git -C $LANE cat-file -t 8ff64d691f5c09569a50f2a5a038bb23774c3d35
+blob
+$ git -C $LANE cat-file -s 8ff64d691f5c09569a50f2a5a038bb23774c3d35
+3284
+$ git -C $LANE cat-file blob 8ff64d691f5c09569a50f2a5a038bb23774c3d35 | sha256sum
+5e2a83ac02b9a4ec3f7d0ebec21f5fa9b3469d4110ac23f8e78af18b43913f13  -

@@ -1,0 +1,28 @@
+# ScribeLessonSkel — authenticity of the recovered failed-run-1 bytes
+archive: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/w1/SentEgressAudit/failed-run-1
+node: v24.21.0
+
+## 1. failed run measure record — wrapper Ed25519 signature
+signature.scheme: ed25519
+sha256(canonical(unsigned)) == signature.over: true
+Ed25519 verify under the embedded wrapper public key: true
+pubkeys.wrapper: -----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAhC9nGkrhKkESKdqnjU8Xb8pzAKmHfP8jlbcKyt20gDQ=\n-----END PUBLIC KEY-----\n
+
+## 2. failed run witness attestation
+attestation keys: ["scheme","publicKey","over","value"]
+sha256(canonical(signed)) == attestation.over: true
+Ed25519 verify under the witness's own public key: true
+
+## 3. archived receipt.json vs the failed measure record bindings
+sha256(receipt.json)      = c9ee082e2929d290150a1be21acfb0323d46d2250c4efedde087cd2520d36a6f
+measureRecord.receiptSha256 = c9ee082e2929d290150a1be21acfb0323d46d2250c4efedde087cd2520d36a6f
+match: true
+sha256(receipt.witness.json) = 006e165e2f625fc88483677818684d0a3a69cabce6bd1f5a9156a29778c38b70
+measureRecord.witnessSha256  = 006e165e2f625fc88483677818684d0a3a69cabce6bd1f5a9156a29778c38b70
+match: true
+
+## 4. the committed clean run, same three checks (control)
+sha256(canonical(unsigned)) == signature.over: true
+Ed25519 verify under the embedded wrapper public key: true
+committed receipt.json sha256 == clean measure record binding: true
+committed receipt.witness.json sha256 == clean measure record binding: true

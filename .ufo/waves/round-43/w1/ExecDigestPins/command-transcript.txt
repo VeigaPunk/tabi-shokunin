@@ -1,0 +1,72 @@
+# ExecDigestPins — exact command transcript
+
+## 0. Environment
+```
+$ node --version
+v24.21.0
+$ git --version
+git version 2.56.0
+$ node -e 'process.stdout.write(process.execPath)'
+/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node
+```
+
+## 1. Clean shared clone at the frozen revision
+```
+$ S=/fast/scratch/hyaku/tabi-r43/ExecDigestPins; mkdir -p "$S"
+$ git clone --quiet --no-checkout /home/vgpnk/Projects/shokunin/tabi-shokunin "$S/clone"
+$ git -C "$S/clone" checkout --quiet 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc
+$ git -C "$S/clone" rev-parse HEAD
+7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc
+$ git -C "$S/clone" status --porcelain   # (empty: clean worktree)
+```
+
+## 2. Committed blob types at the frozen revision (git cat-file -t)
+```
+scripts/measure-c1-round43.mjs -> blob
+scripts/playwright-firefox-egress-round43.mjs -> blob
+.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs -> blob
+.ufo/waves/round-43/counters/check-routed-defects-round43.mjs -> blob
+.ufo/waves/round-43/fixtures/v0-fabrication.mjs -> blob
+.ufo/waves/round-43/fixtures/tree-vs-blob.mjs -> blob
+.ufo/waves/round-43/claims.json -> blob
+```
+
+## 3. sha256sum over the checked-out worktree copies (frozen revision)
+```
+23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0  scripts/measure-c1-round43.mjs
+3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e  scripts/playwright-firefox-egress-round43.mjs
+6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c  .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs
+2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743  .ufo/waves/round-43/counters/check-routed-defects-round43.mjs
+b87470625b11aa5b13d72cf1ac888ed004bff7b1d2ef7501f746d2142cb0b80c  .ufo/waves/round-43/fixtures/v0-fabrication.mjs
+7407f6cd498362658fb0c78b61698489c373444ff3ce6982824ded877259ab6d  .ufo/waves/round-43/fixtures/tree-vs-blob.mjs
+```
+
+## 4. sha256sum over committed bytes (git cat-file blob <rev>:<path> | sha256sum)
+```
+23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0  scripts/measure-c1-round43.mjs
+3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e  scripts/playwright-firefox-egress-round43.mjs
+6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c  .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs
+2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743  .ufo/waves/round-43/counters/check-routed-defects-round43.mjs
+b87470625b11aa5b13d72cf1ac888ed004bff7b1d2ef7501f746d2142cb0b80c  .ufo/waves/round-43/fixtures/v0-fabrication.mjs
+7407f6cd498362658fb0c78b61698489c373444ff3ce6982824ded877259ab6d  .ufo/waves/round-43/fixtures/tree-vs-blob.mjs
+```
+
+## 5. Producer pins from the live filesystem
+```
+$ sha256sum /home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/firefox
+1f637a7cfe8f1a3ec814a7da7e38c360a3e3c39553b8c7245ac5d6643fd495eb  /home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/firefox
+$ readlink -f $(node -e 'process.stdout.write(process.execPath)')
+/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node
+$ sha256sum $(readlink -f $(node -e 'process.stdout.write(process.execPath)'))
+7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c  /home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node
+```
+
+## 6. Claims drift between the frozen revision and current HEAD
+```
+$ git diff --stat 7ca6f018 ba433c94 -- .ufo/waves/round-43/claims.json
+(no output = claims.json byte-identical freeze..HEAD)
+$ sha256sum .ufo/waves/round-43/claims.json  # worktree
+290c87d5c8916d2ee761181c1291365572068b7ad87c16839526df1526e73029  .ufo/waves/round-43/claims.json
+$ git cat-file blob 7ca6f018:.ufo/waves/round-43/claims.json | sha256sum  # committed
+290c87d5c8916d2ee761181c1291365572068b7ad87c16839526df1526e73029  -
+```

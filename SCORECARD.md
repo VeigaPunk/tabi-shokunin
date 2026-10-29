@@ -2319,3 +2319,48 @@ with 46 `*-egress` findings — one non-loopback owned socket late in run 1, abs
 instrument was hardened before the freeze (driver/counter now record `nonLoopbackRemotes`; no
 predicate loosened). Fixture/counter edits before any seat scored are reflected in the frozen
 digests. No tool installs; no pacman transactions.
+
+## Round 43 — executed disposition (both claims refused under the frozen rules; admission false)
+
+Wave w1: one policy-v2 wave, 64/64 seats settled, 0 dead, 0 empty outputs; verdicts on
+seat-written files 34 ok / 30 finding (`w1-results.json`, `w1-parse-summary.json`). Freeze
+`7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc`; baseline `ab592825cd195599822ca227f7768914df208201`;
+no predicate, kill rule or counter amended after any seat scored.
+
+| Claim / axis | Counting command | Before → after | Verdict / score |
+|---|---|---|---|
+| C1 coverage capability | see declared table | live signature-authenticated run clean (exit 0, v5 predicate true, spans 18,588/25,649 ms, egress 0, challenge/attestation/signature verified) → four seats demonstrated in-model do-nothing reaches (self-signed pairs answering the counter's fresh challenge with the pair's own key — the wall authenticates key-possession against the record's self-selected pubkey, not chain provenance); `CritResidualModel` added the copied-counter reach | **not admitted — kill rule fired**; coverage held 9 → 9; no capability row; the instrument value is real (r42's relabel/synthetic/unpinned-pins/replay holes each now have a named refusal) and routes to r44 with the seats' own correction sketches |
+| C2 calibration | see declared table | checker exit 0 / 0 findings at the freeze with the baseline red control reproducing exactly; every r42 hole closed and mutation-proven load-bearing → `CritFreezeBindings`/`CritFreezeAudit`/`CritPredC2` demonstrated r5 false-greens (5-of-8 binding set; substring quote; unpinned freeze) | **not met as worded — kill rule fired** on the forged-binding/quote-line limbs; calibration held 9 → 9; exit 0 recorded as instrument pass, not admission |
+
+Sourced claim: C1 rested on S150 (opened 2026-10-29, re-opened byte-identical by `RevS150`);
+`corpus/knowledge/receipt-authenticity-signing-round-43.md` landed (S150+S151 cited), README
+coverage row appended. No numeric score changed; no axis retired; saturation stays 8 / window 3;
+the stagnation nudge stays active for round 44 (no capability entered rounds 39–43).
+
+### Round 43 — waves and seats
+
+One policy-v2 wave `w1`: 64 seats, one dispatch through the ready handoff (dispatch JSON carried
+`taskCall`; `ExecWaveAudit` verified — the r41 defect class excluded), WAVE-DONE received;
+round total 64; no residual call. Role mix: critic 16, executor 16, mutation-tester 8, reviewer
+6, scout 5, scribe 5, connector 4, sentinel 2, simplifier 1, revenger 1; attack share (reviewer+
+critic+mutation-tester) 30/64 = 46.9% ≥ 25%. Dead seats 0. Evidence: `w1-results.json`,
+`w1-parse-summary.json`, `w1/<Seat>/`. The L1 held the canonical planner seat; four connector
+items carried the overlap/planning work.
+
+### Round 43 — capabilities / planned / saturation / retired
+
+No capability row entered (C1 refused). No axis retired. Planned for round 44 (routed, from this
+round's seats): (1) C1 trust anchor not selected by the candidate measure record + supervised
+pinned-wrapper execution binding + synthetic control re-cut to the challenge-answering class;
+(2) two deterministic browser-free egress controls (plant non-zero → refuse; zeroed twin) for
+the honest-run-observable egress clause (`MutDriverEgress`); (3) C2 r5 set-equality + line-quoted
+quotes + claims.json blob pin + `b.path` type check; (4) Simplifier dead-code + ENV_ALLOW trim
+and refuse() exit-code distinction as a pre-data amendment.
+
+### Round 43 — trend verdicts
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | New admitted note `corpus/knowledge/receipt-authenticity-signing-round-43.md` on ground the coverage map did not hold (receipt-authenticity instrument class), citing newly opened mined S150/S151; knowledge notes 59 → 60 (`ls corpus/knowledge/*.md \| wc -l`); registry 149 → 151. |
+| quality | improved | The r42 routed defects closed in committed bytes with red controls (V0 fabrication now refused via the pinned blob id — the r42 checker bytes still green it; tree objects now named `r1a-not-a-blob`; freeze binds controls by sha256+quote); the wave's falsifiers then re-validated each closure (mutations load-bearing) and routed the NEXT defect class with false-green demonstrations; no admitted entry failed a re-check; QUALITY criteria 106–107 added from observed failures. |
+| discernment | unchanged | The 64-seat wave is lane-internal (dispatched seats remain the lane); the outside non-author admit/reject spot-check is the closure's duty, pending at filing. The lane's own refusals of both claims under pre-declared kill rules are recorded, not smoothed. |

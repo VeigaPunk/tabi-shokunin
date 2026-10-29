@@ -1,0 +1,44 @@
+# Observed commands — ConnAdjacency r43 completeness pass (reconstructed from session heredocs)
+# All run with cwd=/home/vgpnk/Projects/shokunin (fleet root; read-only against siblings).
+# Pins: tabi-shokunin/.ufo/waves/round-36/baseline/c1-delta-pins.json (r37 digest-bound delta heads).
+
+# 1. Per-lane commit scan (SHONEN.md / LOG.md since pin) + head resolution
+python3 - <<'EOF'
+import json, subprocess, os
+pins = json.load(open('tabi-shokunin/.ufo/waves/round-36/baseline/c1-delta-pins.json'))
+root = '/home/vgpnk/Projects/shokunin'
+for lane, pin in sorted(pins.items()):
+    repo = os.path.join(root, lane + '-shokunin')
+    head = subprocess.run(['git','-C',repo,'rev-parse','HEAD'],capture_output=True,text=True).stdout.strip()
+    log = subprocess.run(['git','-C',repo,'log','--format=%h %ci %s','%s..HEAD'%pin,'--','SHONEN.md','LOG.md'],capture_output=True,text=True)
+    print(lane, head != pin, [l for l in log.stdout.strip().split('\n') if l])
+EOF
+
+# 2. Frozen BG delta pool (r37 counter line-105 regex; TABI exclusion; head text absent from pin text)
+python3 - <<'EOF'
+import json, re, subprocess, os
+pins = json.load(open('tabi-shokunin/.ufo/waves/round-36/baseline/c1-delta-pins.json'))
+BG = re.compile(r'\b(?:playwright|puppeteer|chromedriver|geckodriver|webdriver|selenium|chromium|headless[ -](?:chrome|chromium|browser|firefox)|devtools protocol|chrome devtools|chrome-devtools|cdp|remote-debugging|browser automation|webbridge|burner[- ]?chrome|musketeer)\b', re.I)
+TABI = re.compile(r'\btabi\b', re.I)
+root = '/home/vgpnk/Projects/shokunin'
+n = 0
+for lane, pin in sorted(pins.items()):
+    repo = os.path.join(root, lane + '-shokunin')
+    for path in ('SHONEN.md','LOG.md'):
+        pinlines = {l.strip() for l in subprocess.run(['git','-C',repo,'show',f'{pin}:{path}'],capture_output=True,text=True).stdout.split('\n') if l.strip()}
+        for l in subprocess.run(['git','-C',repo,'show',f'HEAD:{path}'],capture_output=True,text=True).stdout.split('\n'):
+            t = l.strip()
+            if t and t not in pinlines and BG.search(t) and not TABI.search(t): n += 1
+print('new BG lines:', n)   # -> 0
+EOF
+
+# 3. Widened ground-sense sweep over net-added lines (evidence/ground-added-lines.tsv -> 9 rows)
+#    per-lane: git diff <pin>..HEAD -- SHONEN.md LOG.md ; +lines matched against tabi-province vocabulary.
+
+# 4. Broad sweep (46 hits), tabi-mention sweep (0 hits), electron/REA sweep (firmware-only hits)
+#    same diff input, different regexes; outputs in evidence/broad-hits.txt.
+
+# 5. Independent per-lane BG verify table (evidence/bg-verify.txt):
+#    per lane per file count BG&&non-tabi lines at HEAD and how many are absent from pin text -> all 0.
+
+# No installs/upgrades (system git + python3 only). No git/jj mutation anywhere.

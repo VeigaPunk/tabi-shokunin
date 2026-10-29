@@ -1,0 +1,82 @@
+### C1 — ready file (the r41 defect locus)
+$ cat .ufo/waves/round-43/w1.ready
+{"lane":"tabi","round":43,"wave":"w1","dispatch":"/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/w1-dispatch.json","l1":"TabiR43"}
+
+$ python3 -c "import json;d=json.load(open(\".ufo/waves/round-43/w1.ready\"));print({k:d[k] for k in (\"lane\",\"round\",\"wave\",\"dispatch\",\"l1\")})"
+{'lane': 'tabi', 'round': 43, 'wave': 'w1', 'dispatch': '/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/w1-dispatch.json', 'l1': 'TabiR43'}
+
+### C2 — dispatch file has taskCall (r41 KeyError(taskCall) guard)
+$ python3 -c "import json;d=json.load(open(\".ufo/waves/round-43/w1-dispatch.json\"));print(list(d.keys()));print(type(d[\"taskCall\"]), len(d[\"taskCall\"][\"tasks\"]))"
+['schema', 'wave', 'policy', 'counts', 'registry', 'compaction', 'taskCall', 'resumeSends', 'note']
+<class 'dict'> 64
+
+### C3 — dispatcher consumed the wave (marker present, all 64 seat ids)
+$ head -2 .ufo/waves/round-43/w1.ready.dispatched | cut -c1-120
+2026-10-29T17:52:19
+{"CritPredC1": "CritPredC1", "CritPredC2": "CritPredC2", "CritC1ReachDirect": "CritC1ReachDirect", "CritC1ReachSynth": "
+$ python3 -c "... len(ids) and set(ids)==set(task names) ..."
+marker seats 64 names match True
+
+### C4 — names unique / roles match spec / godspeed block prefix
+names unique: True | count 64 | set==spec True | order==spec True
+role mismatches vs spec: 0
+role hist dispatch: {'connector': 4, 'critic': 16, 'executor': 16, 'mutation-tester': 8, 'revenger': 1, 'reviewer': 6, 'scout': 5, 'scribe': 5, 'sentinel': 2, 'simplifier': 1}
+role hist spec    : {'connector': 4, 'critic': 16, 'executor': 16, 'mutation-tester': 8, 'revenger': 1, 'reviewer': 6, 'scout': 5, 'scribe': 5, 'sentinel': 2, 'simplifier': 1}
+tasks not beginning with the godspeed block: []
+spec items not beginning with the godspeed block: []
+godspeed skill body sha256: db88963cbdf5a0db22b460b284bf6f1d1f4abac9eaadb28bdb5e9bffe27be3bb
+dispatch task == spec prompt + trailer for all 64: True
+
+### C5 — committed bytes == worktree bytes (dispatch/spec/ready)
+dispatch_worktree_sha256 = 7ee041fc12e38c5cddf973d68d8c6a3525f8479ede81ca44402e273551fbe64e
+dispatch_committed_HEAD_sha256 = 7ee041fc12e38c5cddf973d68d8c6a3525f8479ede81ca44402e273551fbe64e
+dispatch_worktree_eq_committed = True
+spec_worktree_sha256 = 0b895a2ba53a066b0aae1ded9bfa95dd916ca90656f01a63b8ed6f8ac8105cd8
+spec_committed_HEAD_sha256 = 0b895a2ba53a066b0aae1ded9bfa95dd916ca90656f01a63b8ed6f8ac8105cd8
+spec_worktree_eq_committed = True
+ready_worktree_sha256 = ed7640439134c3bfcc4944211dbd036166b4cb00a5478dc608fa85caed386a18
+ready_committed_HEAD_sha256 = ed7640439134c3bfcc4944211dbd036166b4cb00a5478dc608fa85caed386a18
+ready_worktree_eq_committed = True
+
+$ git -C <lane> rev-parse b77e84a0:<path> vs HEAD:<path>
+.ufo/waves/round-43/w1-dispatch.json b77e84a0=9d09aa6c681a3dbc19cec6cda165f6a9bd29d6a7 HEAD=9d09aa6c681a3dbc19cec6cda165f6a9bd29d6a7 same=YES
+.ufo/waves/round-43/w1-spec.json b77e84a0=f3a9e84bf56b3aa4659401c04d79679254f0802a HEAD=f3a9e84bf56b3aa4659401c04d79679254f0802a same=YES
+.ufo/waves/round-43/w1.ready b77e84a0=11486acda812596fed69f584f59965b466bddb4e HEAD=11486acda812596fed69f584f59965b466bddb4e same=YES
+
+### C6 — context absolute paths
+under lane repo:
+   /home/vgpnk/Projects/shokunin/tabi-shokunin
+   /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/claims.json:
+   /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/w1/<YourSeatName>/
+   /home/vgpnk/Projects/shokunin/tabi-shokunin/<that
+outside lane repo (read-only prohibitions / tooling rules):
+   /home/vgpnk/.omp/agent/RULES.md exists= True
+   /home/vgpnk/Projects/shokuknow exists= True
+   /home/vgpnk/Projects/shokunin exists= True
+context mentions shokuknow only as read-only: True
+
+### C7 — per-seat Report trailer paths
+missing: [] | multi: [] | all under .ufo/waves/round-43/w1/: True | unique: True | count 64
+
+### C8 — malformed absolute paths in seat prompts (colon for slash)
+/home/vgpnk/Projects/shokunin/tabi-shokunin:corpus/evidence/round41/playwright-egress/receipt.json
+/home/vgpnk/Projects/shokunin/tabi-shokunin:.ufo/waves/round-42/quarantine/re-adjudication.tsv;
+intended targets (slash form) exist:
+-rw-r--r-- 1 vgpnk vgpnk    2455 Oct 28 12:59 .ufo/waves/round-42/quarantine/re-adjudication.tsv
+-rw-r--r-- 1 vgpnk vgpnk 1167198 Oct 28 08:37 corpus/evidence/round41/playwright-egress/receipt.json
+
+### C9 — r41-closure hash pointer resolvable?
+123e55c
+123e55c77bb101be008db4cbf8ffca626423335a
+
+### C10 — roles routable in ~/.omp/agent/config.yml
+connector        MAPPED
+critic           MAPPED
+executor         MAPPED
+mutation-tester  MAPPED
+revenger         MAPPED
+reviewer         MAPPED
+scout            MAPPED
+scribe           MAPPED
+sentinel         MAPPED
+simplifier       MAPPED

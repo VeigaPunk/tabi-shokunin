@@ -1,0 +1,83 @@
+# ExecTsvBlobs — r4 evidence-blob gate: discrimination probes on a synthetic fixture repo
+# Fixture repo: /fast/scratch/hyaku/tabi-r43/ExecTsvBlobs/fixture.FazCYK (scratch, deleted at yield)
+#   git -C "$D" init -q ; assert rev-parse --show-toplevel == $D  (TOPLEVEL_OK printed)
+# Frozen checker copied/read-only; mutated copies run from scratch only.
+# Every probe: TSV has one row 'S901 <verdict> <path>' + slice-ids.txt 'S901' so the
+# r4 branch is reached (r4-slice and r4-tsv are blobs) and only r4-ev-* findings are of interest.
+
+=== probe 1: evidence path is a TREE (mode 040000) ===
+$ git -C "$D" cat-file -t $REV:ev/treedir      -> tree
+$ git -C "$D" cat-file -s $REV:ev/treedir      -> 37
+$ node .../check-routed-defects-round43.mjs --rev $REV --repo "$D" --json
+  r4 findings: [{"id":"r4-ev-S900-not-a-blob","detail":"ev/treedir resolves to object type 'tree', frozen sentence requires blob"}]
+  => type gate fires (S151 discipline)
+
+=== probe 2: evidence path is a blob of 5 bytes ===
+$ git -C "$D" cat-file -t $REV:ev/small.txt    -> blob
+$ git -C "$D" cat-file -s $REV:ev/small.txt    -> 5
+  r4 findings: [{"id":"r4-ev-S900-too-small","detail":"ev/small.txt is 5 bytes (<200)"}]
+  => size floor fires
+
+=== probe 3: evidence path is a blob of 300 bytes ===
+$ git -C "$D" cat-file -t $REV:ev/big.txt      -> blob
+$ git -C "$D" cat-file -s $REV:ev/big.txt      -> 300
+  r4 findings: []   (other findings r1a/r1b/r2/r3/r5/r6-absent are expected in a bare fixture)
+  => 300-byte blob passes the r4 branch
+
+=== probe 4: evidence path not committed at REV ===
+$ git -C "$D" cat-file -t $REV:ev/nope.txt     -> fatal: path ... does not exist
+  r4 findings: [{"id":"r4-ev-S900-absent","detail":"ev/nope.txt not committed at REV"}]
+  => absence is reported as a finding, not silently skipped
+
+=== probe 5: size floor boundary (199 / 200 / 201 bytes) ===
+N=199  blobsize=199  r4 findings: [{"id":"r4-ev-S901-too-small","detail":"ev/sz.txt is 199 bytes (<200)"}]
+N=200  blobsize=200  r4 findings: []
+N=201  blobsize=201  r4 findings: []
+  => floor is exactly ">= 200 passes"; 199 is the largest rejecting size.
+
+=== probe 6: malformed / degenerate TSV shapes ===
+empty evidence column ('S901\tpresent\t')
+  r4 findings: [{"id":"r4-row-malformed",...}, {"id":"r4-id-set-mismatch",...}]
+whitespace-only evidence column ('S901\tpresent\t ')
+  r4 findings: [{"id":"r4-row-malformed",...}, {"id":"r4-id-set-mismatch",...}]
+duplicate row id (same id twice)
+  r4 findings: [{"id":"r4-id-set-mismatch",...}, {"id":"r4-duplicate-ids",...}]
+path-escape evidence path ('../outside.txt')
+  r4 findings: [{"id":"r4-ev-S901-absent","detail":"../outside.txt not committed at REV"}]
+fourth column present ('S901\tpresent\tev/big.txt\textra')
+  r4 findings: []   (extra columns are ignored; only cols[0..2] are consumed)
+
+=== probe 7: two DISTINCT ids sharing one evidence path ===
+TSV rows S901 and S902 both pointing at ev/big.txt; slice-ids.txt = S901,S902
+  r4 findings: []
+  => NOT rejected by the checker. See report §4 (observation, not a defect against the frozen sentence:
+     the frozen predicate says "every evidence path a committed blob of >=200 bytes" and says nothing
+     about path uniqueness or 1:1 row->path binding).
+
+=== probe 8: symlink (mode 120000) evidence path, 257-byte link text ===
+$ git -C "$D" ls-tree HEAD -- ev/link.txt  -> 120000 blob 23f2d2eb... ev/link.txt
+$ git -C "$D" cat-file -t $REV:ev/link.txt -> blob
+$ git -C "$D" cat-file -s $REV:ev/link.txt -> 257
+  r4 findings: []
+  => a symlink blob satisfies "type == blob" and "size >= 200" even though it points at a
+     non-existent target. See report §4 (observation).
+
+=== probe 9: gitlink (mode 160000, submodule-style) evidence path ===
+$ git -C "$D" ls-tree HEAD -- ev/gitlink -> 160000 commit 0000...0001 ev/gitlink
+$ git -C "$D" cat-file -t $REV:ev/gitlink -> fatal: git cat-file: could not get object info
+  r4 findings: [{"id":"r4-ev-S901-absent","detail":"ev/gitlink not committed at REV"}]
+  => refused (as absent), not accepted.
+
+=== probe 10: MUTATED FLOOR on the REAL data (proves the r4 branch is live at the freeze rev) ===
+copy of frozen checker with `size < 200` -> `size < 5000`, run at the freeze rev:
+  node /fast/scratch/.../checker-mut-floor5000.mjs --rev 7ca6f018... --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json
+  total findingCount 36 | r4 findings: 36
+  (each of the 36 rows below 5000 bytes reported; S131=6838 and S133=5536 stay under the 5000 floor
+   and are therefore not reported — the branch demonstrably iterates the real rows)
+  e.g. r4-ev-S102-too-small :: .ufo/waves/round-42/w1/QuarR4201/evidence-S102.txt is 4307 bytes (<200)
+  Full listing: evidence-mut-floor5000.json
+  => the r4 branch is not vacuous on the real TSV: it reads every row and applies both gates.
+
+NOTE on probe 10 detail string: the mutated copy prints "(<200)" in the detail because only the
+numeric constant was changed; the detail text is not part of the frozen predicate and is not
+relied on by any other check.

@@ -1,0 +1,132 @@
+
+### $ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin rev-parse HEAD
+ba433c94b14a0e0d5ecf2eba1be0a8ee3064491c
+### exit=0
+
+### $ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin merge-base --is-ancestor 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc HEAD && echo 'freeze is ancestor of HEAD: YES'
+freeze is ancestor of HEAD: YES
+### exit=0
+
+### $ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin log --oneline -3
+ba433c94 round-43: C1 receipt+witness committed as explicit files (1.18/1.20 MiB — directory commits skip >1MiB new files; r41 D1 class caught by ls-tree before citing)
+b77e84a0 round-43: w1 spec (64 seats, attack 30/64) + validated dispatch (taskCall) + ready handoff
+7ca6f018 round-43: freeze C1 signature-authenticated chain + C2 hardened checker; controls red pre-data; S150/S151 opened; live measurement clean
+### exit=0
+
+### $ mkdir -p /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen /fast/scratch/hyaku/tabi-r43/ExecSentence/run
+### exit=0
+
+### $ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin cat-file -p 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc:.ufo/waves/round-43/claims.json > /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/claims.json
+### exit=0
+
+### $ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin cat-file -p 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs > /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/c1-signature-bound-v5.mjs
+### exit=0
+
+### $ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin cat-file -p 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc:.ufo/waves/round-43/counters/check-routed-defects-round43.mjs > /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/check-routed-defects-round43.mjs
+### exit=0
+
+### $ sha256sum /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/claims.json /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/check-routed-defects-round43.mjs
+290c87d5c8916d2ee761181c1291365572068b7ad87c16839526df1526e73029  /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/claims.json
+6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c  /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/c1-signature-bound-v5.mjs
+2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743  /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/check-routed-defects-round43.mjs
+### exit=0
+
+### $ sha256sum /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/claims.json /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/check-routed-defects-round43.mjs
+290c87d5c8916d2ee761181c1291365572068b7ad87c16839526df1526e73029  /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/claims.json
+6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c  /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs
+2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743  /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/check-routed-defects-round43.mjs
+### exit=0
+
+### $ git -C /home/vgpnk/Projects/shokunin/tabi-shokunin log --oneline 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc..HEAD -- .ufo/waves/round-43/claims.json .ufo/waves/round-43/counters/ ; echo '(empty = unchanged since freeze)'
+(empty = unchanged since freeze)
+### exit=0
+
+### $ python3 - <<'EOF'
+import hashlib,subprocess
+c=__import__('json').loads(subprocess.run(['git','-C','/home/vgpnk/Projects/shokunin/tabi-shokunin','cat-file','-p','7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc:.ufo/waves/round-43/claims.json'],capture_output=True).stdout)
+for p,d in c['frozenDigests'].items():
+    b=subprocess.run(['git','-C','/home/vgpnk/Projects/shokunin/tabi-shokunin','cat-file','-p','7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc:'+p],capture_output=True).stdout
+    a=hashlib.sha256(b).hexdigest()
+    print(('OK  ' if a==d else 'MISMATCH '), p, d, a)
+EOF
+OK   scripts/measure-c1-round43.mjs 23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0 23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0
+OK   scripts/playwright-firefox-egress-round43.mjs 3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e 3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e
+OK   .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs 6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c 6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c
+OK   .ufo/waves/round-43/counters/check-routed-defects-round43.mjs 2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743 2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743
+OK   .ufo/waves/round-43/fixtures/v0-fabrication.mjs b87470625b11aa5b13d72cf1ac888ed004bff7b1d2ef7501f746d2142cb0b80c b87470625b11aa5b13d72cf1ac888ed004bff7b1d2ef7501f746d2142cb0b80c
+OK   .ufo/waves/round-43/fixtures/tree-vs-blob.mjs 7407f6cd498362658fb0c78b61698489c373444ff3ce6982824ded877259ab6d 7407f6cd498362658fb0c78b61698489c373444ff3ce6982824ded877259ab6d
+### exit=0
+
+### $ python3 /fast/scratch/hyaku/tabi-r43/ExecSentence/extract.py /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen /fast/scratch/hyaku/tabi-r43/ExecSentence/out
+[C1] verdict=IDENTICAL distinct_sha256=1
+  9bc9545343000b4806cd9628d97ba63e390fdda64104da62a250a8ea2fe75598  claims.json claims[0].counterPredicate  (1343 bytes)
+  9bc9545343000b4806cd9628d97ba63e390fdda64104da62a250a8ea2fe75598  c1-signature-bound-v5.mjs header PREDICATE-SENTENCE comment  (1343 bytes)
+  9bc9545343000b4806cd9628d97ba63e390fdda64104da62a250a8ea2fe75598  c1-signature-bound-v5.mjs const PREDICATE (\' unescaped)  (1343 bytes)
+[C2] verdict=IDENTICAL distinct_sha256=1
+  49f7a1e787fd226157c0b9aed72b5d6936dc750392b2f72f4839bb79160cb969  claims.json claims[1].predicate  (1314 bytes)
+  49f7a1e787fd226157c0b9aed72b5d6936dc750392b2f72f4839bb79160cb969  check-routed-defects-round43.mjs header PREDICATE-SENTENCE comment  (1314 bytes)
+  49f7a1e787fd226157c0b9aed72b5d6936dc750392b2f72f4839bb79160cb969  check-routed-defects-round43.mjs const PREDICATE (\' unescaped)  (1314 bytes)
+### exit=0
+
+### $ node /fast/scratch/hyaku/tabi-r43/ExecSentence/out/eval-const.mjs /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen
+C1 file=c1-signature-bound-v5.mjs bytes=1343 sha256=9bc9545343000b4806cd9628d97ba63e390fdda64104da62a250a8ea2fe75598
+C1 tail=" no private half of either per-invocation signing key is persisted by any chain component."
+C2 file=check-routed-defects-round43.mjs bytes=1314 sha256=49f7a1e787fd226157c0b9aed72b5d6936dc750392b2f72f4839bb79160cb969
+C2 tail="stent fabrication with the measure-blob-pin finding and names the frozen generator digest."
+### exit=0
+
+### $ grep -c 'PREDICATE-SENTENCE' /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/check-routed-defects-round43.mjs
+/fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/c1-signature-bound-v5.mjs:1
+/fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/check-routed-defects-round43.mjs:1
+### exit=0
+
+### $ grep -c 'const PREDICATE' /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/check-routed-defects-round43.mjs
+/fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/c1-signature-bound-v5.mjs:1
+/fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/check-routed-defects-round43.mjs:1
+### exit=0
+
+### $ grep -rn 'PREDICATE-SENTENCE' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/ /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/ | cut -c1-120
+/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs:8:// PREDICATE-SENTEN
+/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/check-routed-defects-round43.mjs:19:// PREDICAT
+### exit=0
+
+### $ cd /fast/scratch/hyaku/tabi-r43/ExecSentence/run && node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/check-routed-defects-round43.mjs --rev ba433c94b14a0e0d5ecf2eba1be0a8ee3064491c --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json > c2-head.json; echo exit=$?; python3 -c "import json,hashlib;d=json.load(open('c2-head.json'));p=d['predicateSentence'];print('rev',d['rev'],'findingCount',d['findingCount']);print('runtime predicateSentence bytes',len(p.encode()),'sha256',hashlib.sha256(p.encode()).hexdigest());print('findings',[f.get('id') for f in d['findings']])"
+exit=0
+rev ba433c94b14a0e0d5ecf2eba1be0a8ee3064491c findingCount 0
+runtime predicateSentence bytes 1314 sha256 49f7a1e787fd226157c0b9aed72b5d6936dc750392b2f72f4839bb79160cb969
+findings []
+### exit=0
+
+### $ cd /fast/scratch/hyaku/tabi-r43/ExecSentence/run && node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round43/playwright-egress/receipt.json --measure /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/measure/c1-measure-r43.json > c1-offline.json; echo exit=$?; python3 -c "import json,hashlib;d=json.load(open('c1-offline.json'));p=d['predicateSentence'];print('runtime predicateSentence bytes',len(p.encode()),'sha256',hashlib.sha256(p.encode()).hexdigest());print('challengeVerified',d.get('challengeVerified'),'challengeError',d.get('challengeError'),'predicate',d.get('predicate'))"
+exit=1
+runtime predicateSentence bytes 1343 sha256 9bc9545343000b4806cd9628d97ba63e390fdda64104da62a250a8ea2fe75598
+challengeVerified False challengeError EINVAL predicate False
+### exit=0
+
+### $ python3 - <<'EOF'
+import json,hashlib
+c=json.load(open('/fast/scratch/hyaku/tabi-r43/ExecSentence/frozen/claims.json'))
+c1=[x for x in c['claims'] if x['id']=='C1'][0]
+print('C1 claims-side members:')
+for k in ('counterPredicate','predicate'):
+    v=c1[k]; print(' ',k,len(v.encode()),hashlib.sha256(v.encode()).hexdigest())
+print('predicate startsWith counterPredicate:',c1['predicate'].startswith(c1['counterPredicate']))
+print('appended suffix len:',len(c1['predicate'])-len(c1['counterPredicate']))
+print('suffix head:',repr(c1['predicate'][len(c1['counterPredicate']):][:60]))
+EOF
+C1 claims-side members:
+  counterPredicate 1343 9bc9545343000b4806cd9628d97ba63e390fdda64104da62a250a8ea2fe75598
+  predicate 2012 a618794009af6b528b6698db91a2a9372ff8b22f65dcffc25694d77369f22205
+predicate startsWith counterPredicate: True
+appended suffix len: 669
+suffix head: ' THE CLAIM: the counting command exits 0 on a fresh nonce AN'
+### exit=0
+
+### $ grep -rn 'sentenceIdentity\|counterPredicate\|predicateSentence' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/*.mjs | cut -c1-160
+/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs:234:  return { schema: 'tabi-r43-c1-measured-v5', predicateSe
+/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/check-routed-defects-round43.mjs:222:const out = { schema: 'tabi-r43-routed-defects', p
+### exit=0
+
+### $ grep -rn 'byteIdentical\|sentenceIdentity' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/controls/ /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/measure/ ; echo '(empty = no control asserts the three-site identity)'
+(empty = no control asserts the three-site identity)
+### exit=0

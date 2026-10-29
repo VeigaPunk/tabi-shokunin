@@ -1,0 +1,71 @@
+built frozen-nopin and mutant-nopin
+=== diff(frozen-nopin, mutant-nopin) — must be exactly the assigned mutation ===
+--- /fast/scratch/hyaku/tabi-r43/MutC1Nonce/frozen-nopin/c1-signature-bound-v5.mjs	2026-10-29 18:07:54.476195117 -0300
++++ /fast/scratch/hyaku/tabi-r43/MutC1Nonce/mutant-nopin/c1-signature-bound-v5.mjs	2026-10-29 18:07:54.476275507 -0300
+@@ -52,7 +52,6 @@
+ 
+   if (receipt.schema !== SCHEMA) findings.push('schema');
+   if (!/^[0-9a-f]{64}$/.test(nonce || '')) findings.push('measure-nonce-shape');
+-  if (receipt.runNonce !== nonce || runs.some((r) => r.runNonce !== nonce)) findings.push('run-nonce-mismatch');
+   if (receipt.refused !== false || runs.length !== 2) findings.push('run-set');
+ 
+   // F4: the driver's exec-time environment was clean and nonce-bound.
+@@ -136,7 +135,6 @@
+   let witnessAttestationVerified = false;
+   if (!witness || witness.schema !== WITNESS_SCHEMA) findings.push('witness-unreadable');
+   else {
+-    if (witness.nonce !== nonce) findings.push('witness-nonce-mismatch');
+     const wenv = Array.isArray(witness.environ) ? witness.environ : [];
+     if (wenv.some((n) => FORBIDDEN_ENV.test(n))) findings.push('witness-env-contaminated');
+     const ws = Array.isArray(witness.samples) ? witness.samples : [];
+removed: 2  added: 0
+########## pair=consistent
+=== consistent-frozen
+--- consistent-frozen
+    exit: 0 challengeBytes: 32
+    findings: []
+    predicate: true challengeVerified: true measureSignatureVerified: true witnessAttestationVerified: true
+    named: run-nonce-mismatch=false
+=== consistent-mutant
+--- consistent-mutant
+    exit: 1 challengeBytes: 32
+    findings: ["digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    predicate: false challengeVerified: true measureSignatureVerified: true witnessAttestationVerified: true
+    named: run-nonce-mismatch=false
+=== consistent-frozen-nopin
+--- consistent-frozen-nopin
+    exit: 1 challengeBytes: 32
+    findings: ["digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    predicate: false challengeVerified: true measureSignatureVerified: true witnessAttestationVerified: true
+    named: run-nonce-mismatch=false
+=== consistent-mutant-nopin
+--- consistent-mutant-nopin
+    exit: 1 challengeBytes: 32
+    findings: ["digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    predicate: false challengeVerified: true measureSignatureVerified: true witnessAttestationVerified: true
+    named: run-nonce-mismatch=false
+########## pair=nonceonly
+=== nonceonly-frozen
+--- nonceonly-frozen
+    exit: 1 challengeBytes: 32
+    findings: ["run-nonce-mismatch"]
+    predicate: false challengeVerified: true measureSignatureVerified: true witnessAttestationVerified: true
+    named: run-nonce-mismatch=true
+=== nonceonly-mutant
+--- nonceonly-mutant
+    exit: 1 challengeBytes: 32
+    findings: ["digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    predicate: false challengeVerified: true measureSignatureVerified: true witnessAttestationVerified: true
+    named: run-nonce-mismatch=false
+=== nonceonly-frozen-nopin
+--- nonceonly-frozen-nopin
+    exit: 1 challengeBytes: 32
+    findings: ["run-nonce-mismatch","digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    predicate: false challengeVerified: true measureSignatureVerified: true witnessAttestationVerified: true
+    named: run-nonce-mismatch=true
+=== nonceonly-mutant-nopin
+--- nonceonly-mutant-nopin
+    exit: 1 challengeBytes: 32
+    findings: ["digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    predicate: false challengeVerified: true measureSignatureVerified: true witnessAttestationVerified: true
+    named: run-nonce-mismatch=false

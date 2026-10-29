@@ -1,0 +1,32 @@
+# Candidate row S154 — git cat-file §--batch-check: type+size in ONE call (C2 instrument candidate)
+# Extends S151 (same pinned page, §-t only); freeze forbids amending S151, so a NEW row.
+
+page: https://git-scm.com/docs/git-cat-file, 79,360 B,
+sha256 624464ef7a3d64de06038200bff85ac09389a9d217d379dd660aa6b5165048d7
+live fetch byte-identical to staged tabi-shokunin/.ufo/waves/round-43/sources/git-cat-file.html
+(cmp exit 0) — i.e. today's re-open of S151's pin.
+
+QUOTE (flat-byte contiguous):
+  "Print object information for each object provided on stdin."
+byte offset: 52468; location: §--batch-check definition (anchor
+id="Documentation/git-cat-file.txt---batch-check", raw line 2342); the sentence continues
+"May not be combined with any other options or arguments except --textconv, --filters or
+--use-mailmap." (option names are span/code-fragmented in raw HTML).
+wc -w = 9; pipe chars = 0
+
+related contiguous anchors verified present in the same bytes:
+- §-s: "Instead of the content, show the object size identified by" — pairs with S151's
+  §-t quote "Instead of the content, show the object type identified by"
+- §BATCH OUTPUT (raw line 2590): cat-file reads objects from stdin, one per line, same-order
+
+RUN OBSERVATION (scratch fixture; git 2.56.0; full transcript: batch-check-demo-receipt.txt):
+- git init -q under scratch; `git rev-parse --show-toplevel` asserted == fixture dir
+- blob 05befef3d2572fb83755fdcec4ccef0a278f8833 = hash-object of "tabi-r43-c2-blob\n" (17 B)
+- `printf '%s\n' $B | git cat-file --batch-check`  ->  "05befef3d2572fb83755fdcec4ccef0a278f8833 blob 17"
+  (object name + type + size in ONE call)
+- two-call equivalent for comparison: `git cat-file -t` -> blob, `git cat-file -s` -> 17
+- `printf 'tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904\n' | git cat-file --batch-check`
+  ->  "tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904 missing"
+  CAVEAT for the instrument: batch-check does NOT fail closed on a missing object — it
+  prints the type field as the literal "missing". A C2 gate must therefore match the TYPE
+  FIELD (blob vs tree — the r1 blob-type discipline), never call success/exit alone.

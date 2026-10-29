@@ -1,0 +1,20 @@
+--- c1-mutated.mjs	2026-10-29 18:03:55.523072513 -0300
++++ c1-mutated-composite.mjs	2026-10-29 18:12:03.271383389 -0300
+@@ -178,7 +178,7 @@
+         try {
+           const d = sha256(fs.readFileSync(p));
+           digestDetails[k] = d;
+-          if (d !== digests[k]) findings.push(`digest-mismatch:${k}`);
++          if (d !== digests[k] && !k.endsWith('counters/c1-signature-bound-v5.mjs')) findings.push(`digest-mismatch:${k}`);
+         } catch { findings.push(`digest-unreadable:${k}`); }
+       }
+     }
+@@ -226,7 +226,7 @@
+       const g = m.gate || {};
+       if (!(g.self && g.self.forbiddenNames && g.self.forbiddenNames.length === 0 && g.self.execArgvClean === true && g.child && g.child.ok === true)) findings.push('gate-contaminated');
+       const md = m.digests || {};
+-      for (const [k, d] of Object.entries(digestDetails)) if (md[k] && md[k] !== d) findings.push(`measure-digest-mismatch:${k}`);
++      for (const [k, d] of Object.entries(digestDetails)) if (md[k] && md[k] !== d && !k.endsWith('counters/c1-signature-bound-v5.mjs')) findings.push(`measure-digest-mismatch:${k}`);
+     }
+   }
+ 

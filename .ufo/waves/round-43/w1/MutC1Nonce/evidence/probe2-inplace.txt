@@ -1,0 +1,28 @@
+########## (1) in-place committed counter, zero self-digest confound
+=== in-place committed counter :: inplace-base
+    cmd: (cd /home/vgpnk/Projects/shokunin/tabi-shokunin && node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/base/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/base/measure.json) 3<measure
+--- inplace-base : exit=1
+    findings: []
+    named: run-nonce-mismatch=false witness-nonce-mismatch=false measure-signature-invalid=false
+    nonceMatched: true predicate: false challengeVerified: false challengeError: EBADF
+=== in-place committed counter :: inplace-relrec
+    cmd: (cd /home/vgpnk/Projects/shokunin/tabi-shokunin && node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-receipt/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-receipt/measure.json) 3<measure
+--- inplace-relrec : exit=1
+    findings: ["run-nonce-mismatch","receipt-binding-mismatch"]
+    named: run-nonce-mismatch=true witness-nonce-mismatch=false measure-signature-invalid=false
+    nonceMatched: false predicate: false challengeVerified: false challengeError: EBADF
+=== in-place committed counter :: inplace-relmea
+    cmd: (cd /home/vgpnk/Projects/shokunin/tabi-shokunin && node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-measure/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-measure/measure.json) 3<measure
+--- inplace-relmea : exit=1
+    findings: ["run-nonce-mismatch","witness-nonce-mismatch","measure-signature-invalid"]
+    named: run-nonce-mismatch=true witness-nonce-mismatch=true measure-signature-invalid=true
+    nonceMatched: false predicate: false challengeVerified: false challengeError: EBADF
+=== in-place committed counter :: inplace-relwit
+    cmd: (cd /home/vgpnk/Projects/shokunin/tabi-shokunin && node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-witness/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-witness/measure.json) 3<measure
+--- inplace-relwit : exit=1
+    findings: ["witness-nonce-mismatch","witness-attestation-invalid","witness-binding-mismatch"]
+    named: run-nonce-mismatch=false witness-nonce-mismatch=true measure-signature-invalid=false
+    nonceMatched: true predicate: false challengeVerified: false challengeError: EBADF
+########## (2) committed control scenario: measure record tampered in the nonce field only
+    top-level keys identical: true
+    differing top-level fields: ["nonce"]

@@ -1,0 +1,17 @@
+Blob-type gate (r1, cat-file -t) and size gate (>=1000 bytes) at the freeze rev:
+$ git cat-file -t 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc:corpus/evidence/round41/playwright-egress/receipt.json
+blob
+$ git cat-file -t 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc:corpus/evidence/round41/playwright-egress/receipt.witness.json
+blob
+$ git cat-file -s (sizes)
+receipt.json  1167198
+receipt.witness.json  1153988
+
+receipt/witness blob ids across every rev carrying them (first committed at r42 freeze 9b6de3a):
+$ for r in 9b6de3a19de11abdb80e82a1310abc64a40215bb 15b75a7337089ed42208555a71ed89a966b21932 ab592825cd195599822ca227f7768914df208201 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc ba433c94b14a0e0d5ecf2eba1be0a8ee3064491c; do git rev-parse "$r:<path>"; done
+9b6de3a19de11abdb80e82a1310abc64a40215bb 7b2ece05dc30cf1ba33724c8f8bb41e002ff7aff 5930d20f82348be349e64565a3df74b20642d0a1 
+15b75a7337089ed42208555a71ed89a966b21932 7b2ece05dc30cf1ba33724c8f8bb41e002ff7aff 5930d20f82348be349e64565a3df74b20642d0a1 
+ab592825cd195599822ca227f7768914df208201 7b2ece05dc30cf1ba33724c8f8bb41e002ff7aff 5930d20f82348be349e64565a3df74b20642d0a1 
+7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc 7b2ece05dc30cf1ba33724c8f8bb41e002ff7aff 5930d20f82348be349e64565a3df74b20642d0a1 
+ba433c94b14a0e0d5ecf2eba1be0a8ee3064491c 7b2ece05dc30cf1ba33724c8f8bb41e002ff7aff 5930d20f82348be349e64565a3df74b20642d0a1 
+(receipt blob 7b2ece05dc30cf1ba33724c8f8bb41e002ff7aff, witness blob 5930d20f82348be349e64565a3df74b20642d0a1 — constant)

@@ -737,3 +737,23 @@
     Red state: round-42 `RevQuarCross` vs `QuarR4208` disagreed on S135 (absent vs
     misbound) — a standard divergence, not a fabrication. (source:
     `corpus/lessons/round-42.md` Gate spot-check)
+
+## Round 43 additions (append-only; never edit above)
+
+106. A refusal control must exercise the strongest attack in its class: a control that refuses
+    only because the attack channel is absent does not cover an attacker who supplies the
+    channel. Red state: `c1-synthetic-refused.json` refused the synthetic pair via the
+    channel-absent variant (no fd3/fd4), while round-43 wave seats answered the counter's fresh
+    challenge from the pair's own key — `CritC1ReachSynth` (three variants incl. a second-process
+    relay), `CritC1ReachDirect`, `CritC1Witness`, `CritC1ReachReplay` — reaching exit 0 /
+    predicate true with zero browser runs; the C1 kill rule fired. (source:
+    `corpus/lessons/round-43.md` Mistakes 1)
+107. A binding rule must enforce set equality against the exact set it claims to bind and anchor
+    quotes to complete lines; a length floor plus substring matching accepts a freeze that names
+    controls it does not bind. Red state: round-43 wave `CritFreezeBindings` — a scratch fixture
+    binding only 5 of the 8 controls its beforeState names greens (`binds.length < 5` floor) and
+    a 19-character quote fragment greens (`includes`, not whole-line), exit 0 / predicate true /
+    zero findings against the frozen sentence "binds every control it names ... a verbatim quote
+    line"; `CritFreezeAudit` independently found r5 does not enforce beforeState-to-bindings
+    completeness; all five required negative mutations still refused (the rule is not vacuous,
+    it is narrower than its sentence). (source: `corpus/lessons/round-43.md` Mistakes 2)

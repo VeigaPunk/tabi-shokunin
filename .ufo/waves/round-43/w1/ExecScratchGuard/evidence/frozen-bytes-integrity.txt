@@ -1,0 +1,33 @@
+# receipt 6: frozen-byte integrity re-derivation (independent of the pack rewrite)
+$ git rev-parse 7ca6f018:.ufo/waves/round-41/measure/c1-measure.json   # C2 pinned measure blob id
+8ff64d691f5c09569a50f2a5a038bb23774c3d35
+expected pin: 8ff64d691f5c09569a50f2a5a038bb23774c3d35
+
+$ git cat-file -p 7ca6f018:corpus/evidence/round41/playwright-egress/receipt.json | sha256sum   # r1a receipt digest
+416f6e4bb893bd31208106005dcd2b53689a6f74ada2e987b98b247277446db1  -
+recorded receiptSha256 (from committed r41 measure record): 4166e4bb893bd31208106005dcd2b53689a6f74ada2e987b98b247277446db1
+
+$ git cat-file -p 7ca6f018:.ufo/waves/round-43/claims.json | sha256sum   # frozen claims bytes
+290c87d5c8916d2ee761181c1291365572068b7ad87c16839526df1526e73029  -
+$ sha256sum .ufo/waves/round-43/claims.json   # worktree copy
+290c87d5c8916d2ee761181c1291365572068b7ad87c16839526df1526e73029  .ufo/waves/round-43/claims.json
+
+$ for i in .git/objects/pack/*.idx; do git verify-pack -s $i; done   # all 5 packs verify
+pack-1d7c8ce26594dd9b1ddec9281eb1dbe5da18fb83.idx OK
+pack-58681c191a077cec89480e6e53064d022bbf8398.idx OK
+pack-86e480793c967983546a9b173fcba3509e38dc57.idx OK
+pack-da21e1de24c6a7fcd0d794185378b6c23de8172a.idx OK
+pack-f60cba609bc85beda99944aea3b534afcf95eac9.idx OK
+
+$ git fsck --connectivity-only   # exit status
+exit=0
+
+$ git count-objects -v
+count: 89
+size: 964
+in-pack: 20245
+packs: 5
+size-pack: 38155
+prune-packable: 0
+garbage: 0
+size-garbage: 0

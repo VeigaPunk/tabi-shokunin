@@ -1,0 +1,29 @@
+# ScribeLessonSkel — failed-run measure record: signature mismatch diagnosis
+archived file bytes: 1950, sha256 8efbf192c017441ea49e9ff35882d52aeebce16e4bfe7c7285e0d266b295624c
+stdout.measureRecordSha256: 8efbf192c017441ea49e9ff35882d52aeebce16e4bfe7c7285e0d266b295624c
+file sha256 == stdout.measureRecordSha256: true
+
+sha256(canonical(unsigned)) = 2388855c0c8e3c01b6855ec626ad7570d8c1176167d5282fda28a046dd063c10
+signature.over            = 2388855c0c8e3c01b6855ec626ad7570d8c1176167d5282fda28a046dd063c10
+
+elapsedMs: IDENTICAL
+driverExit: IDENTICAL
+gate: IDENTICAL
+digests: IDENTICAL
+nonce: DIFFERENT
+  record: "7be40389dde8dd41dd07b14e84e2d208722782c11ab2e699502752dc97610f44"
+  stdout: undefined
+
+## brute force: drop one top-level key from the unsigned form
+## brute force: replace one top-level key with the value from the stdout copy
+  MATCH when 'elapsedMs' is replaced by the stdout copy
+  MATCH when 'driverExit' is replaced by the stdout copy
+  MATCH when 'gate' is replaced by the stdout copy
+  MATCH when 'digests' is replaced by the stdout copy
+## brute force: replace each nested leaf with the stdout copy (one level deep)
+  MATCH when digests.scripts/measure-c1-round43.mjs is replaced by the stdout copy
+  MATCH when digests.scripts/playwright-firefox-egress-round43.mjs is replaced by the stdout copy
+  MATCH when digests..ufo/waves/round-43/counters/c1-signature-bound-v5.mjs is replaced by the stdout copy
+  MATCH when gate.self is replaced by the stdout copy
+  MATCH when gate.child is replaced by the stdout copy
+(no MATCH line above means none of these single-field hypotheses reproduces signature.over)

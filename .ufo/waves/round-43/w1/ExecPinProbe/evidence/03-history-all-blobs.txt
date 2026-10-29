@@ -1,0 +1,26 @@
+# 03 — every blob ever committed at the measure path, across all refs and all history
+$ git -C $LANE rev-list --all --count
+992
+$ git -C $LANE log --all --format='%H %ad %s' --date=short -- .ufo/waves/round-41/measure/c1-measure.json
+123e55c77bb101be008db4cbf8ffca626423335a 2026-10-28 round-41: record measured results and honest queued-wave disposition
+59f21592db6ab6250e4d42d6f5db92d70163b31a 2026-10-28 
+$ git -C $LANE log --all --format='%H' --name-status -- .ufo/waves/round-41/measure/c1-measure.json
+123e55c77bb101be008db4cbf8ffca626423335a
+
+A	.ufo/waves/round-41/measure/c1-measure.json
+59f21592db6ab6250e4d42d6f5db92d70163b31a
+
+A	.ufo/waves/round-41/measure/c1-measure.json
+$ git -C $LANE rev-list --all --objects -- .ufo/waves/round-41/measure/c1-measure.json
+123e55c77bb101be008db4cbf8ffca626423335a
+59f21592db6ab6250e4d42d6f5db92d70163b31a
+c3b50cc632dbbf5400b39af5d07856b772ec634a 
+b0d326fcdee9f180932406bb77740481e9bcf2e9 .ufo
+7151a86dc252f3230abedd570927a6baaac4e8df .ufo/waves
+d97597c486e184c587a39643634aba2a9a9601e7 .ufo/waves/round-41
+300227707b8bdbe31097b7365cea28f3d994408c .ufo/waves/round-41/measure
+8ff64d691f5c09569a50f2a5a038bb23774c3d35 .ufo/waves/round-41/measure/c1-measure.json
+$ for r in 8c84417652f7602886dcc85f74bffdadd9c3a281 123e55c...^ 59f2159...^; do git rev-parse $r:<path>; done
+8c84417652f7602886dcc85f74bffdadd9c3a281 -> fatal: path '.ufo/waves/round-41/measure/c1-measure.json' exists on disk, but not in '8c84417652f7602886dcc85f74bffdadd9c3a281'
+123e55c77bb101be008db4cbf8ffca626423335a^ -> fatal: path '.ufo/waves/round-41/measure/c1-measure.json' exists on disk, but not in '123e55c77bb101be008db4cbf8ffca626423335a^'
+59f21592db6ab6250e4d42d6f5db92d70163b31a^ -> fatal: path '.ufo/waves/round-41/measure/c1-measure.json' exists on disk, but not in '59f21592db6ab6250e4d42d6f5db92d70163b31a^'

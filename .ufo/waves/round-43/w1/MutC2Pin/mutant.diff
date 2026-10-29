@@ -1,0 +1,12 @@
+--- /fast/scratch/hyaku/tabi-r43/MutC2Pin/checker-frozen.mjs	2026-10-29 17:52:29.929252913 -0300
++++ /fast/scratch/hyaku/tabi-r43/MutC2Pin/checker-mutant.mjs	2026-10-29 17:52:29.941397596 -0300
+@@ -88,8 +88,7 @@
+ let measureDoc = null;
+ {
+   if (requireBlob('r1-measure', MEASURE)) {
+-    const id = gitBlobId(MEASURE);
+-    if (id !== MEASURE_BLOB_PIN) add('r1-measure-blob-pin-mismatch', `${MEASURE} object id ${id} != pinned ${MEASURE_BLOB_PIN}`);
++    // MUTATION MutC2Pin: the r1 measure blob pin comparison has been REMOVED.
+     const raw = gitShow(MEASURE);
+     try { measureDoc = JSON.parse(raw.toString('utf8')); } catch { add('r1-measure-unparseable', `${MEASURE} does not parse as JSON`); }
+   }

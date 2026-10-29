@@ -1,0 +1,51 @@
+Round 43 C1 battery-vector experiment — CritBatteryVectors
+
+Scope: read-only execution of the frozen measure script's --battery-probe and --battery modes. Scratch root was /fast/scratch/hyaku/tabi-r43/CritBatteryVectors and was removed by the shell EXIT trap after the run. No repository files were edited by the experiment.
+
+Frozen-byte identity observed before the test:
+MEASURE_SHA256=23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0  /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/measure-c1-round43.mjs
+NODE_SHA256=7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c  /home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node
+Both digests match round-43 claims.json pins.
+
+Runner bindings: S=/fast/scratch/hyaku/tabi-r43/CritBatteryVectors; ROOT=/home/vgpnk/Projects/shokunin/tabi-shokunin; NODE=/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node; SCRIPT=$ROOT/scripts/measure-c1-round43.mjs; HOME=/home/vgpnk; PATH was inherited as printed in the original tool transcript. Each case used `env -i PATH="$PATH" HOME="$HOME" <case-variable> "$NODE" "$SCRIPT" <mode>`. The OpenSSL config fixture contained:
+openssl_conf = openssl_init
+[openssl_init]
+providers = provider_sect
+[provider_sect]
+default = default_sect
+[default_sect]
+activate = 1
+The BASH_ENV fixture appended `BASH_ENV_SOURCED` to `$S/bashenv.marker` if sourced.
+
+1) NODE_OPTIONS redirect-warnings
+Exact command:
+env -i PATH="$PATH" HOME="$HOME" NODE_OPTIONS="--redirect-warnings=$S/redirect-warnings.log" "$NODE" "$SCRIPT" --battery-probe
+Exit: 2
+Exact stdout:
+{"schema":"tabi-r43-battery-probe","contaminated":true,"finding":"environment-loader-contamination","self":{"procEnvironReadable":true,"nameCount":4,"forbiddenNames":["NODE_OPTIONS"],"execArgv":[],"execArgvClean":true,"execPath":"/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node","nodeSha256":"7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c"},"child":{"schema":"tabi-r43-env-gate","self":{"readable":true,"forbidden":[]},"parent":{"ppid":4122399,"readable":true,"forbidden":["NODE_OPTIONS"]},"execArgvLen":2,"execArgvFlag":["--eval"],"execArgvClean":true,"ok":false}}
+
+2) NODE_OPTIONS openssl-config
+Exact command:
+env -i PATH="$PATH" HOME="$HOME" NODE_OPTIONS="--openssl-config=$S/openssl.cnf" "$NODE" "$SCRIPT" --battery-probe
+Exit: 2
+Exact stdout:
+{"schema":"tabi-r43-battery-probe","contaminated":true,"finding":"environment-loader-contamination","self":{"procEnvironReadable":true,"nameCount":4,"forbiddenNames":["NODE_OPTIONS"],"execArgv":[],"execArgvClean":true,"execPath":"/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node","nodeSha256":"7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c"},"child":{"schema":"tabi-r43-env-gate","self":{"readable":true,"forbidden":[]},"parent":{"ppid":4123033,"readable":true,"forbidden":["NODE_OPTIONS"]},"execArgvLen":2,"execArgvFlag":["--eval"],"execArgvClean":true,"ok":false}}
+
+3) NODE_COMPILE_CACHE (new vector; direct --battery-probe)
+Exact command:
+env -i PATH="$PATH" HOME="$HOME" NODE_COMPILE_CACHE="$S/node-compile-cache" "$NODE" "$SCRIPT" --battery-probe
+Exit: 0
+Exact stdout:
+{"schema":"tabi-r43-battery-probe","contaminated":false,"finding":null,"self":{"procEnvironReadable":true,"nameCount":4,"forbiddenNames":[],"execArgv":[],"execArgvClean":true,"execPath":"/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node","nodeSha256":"7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c"},"child":{"schema":"tabi-r43-env-gate","self":{"readable":true,"forbidden":[]},"parent":{"ppid":4123642,"readable":true,"forbidden":[]},"execArgvLen":2,"execArgvFlag":["--eval"],"execArgvClean":true,"ok":true}}
+
+4) BASH_ENV delivered to the battery process; battery spawns the probe cases
+Exact command:
+env -i PATH="$PATH" HOME="$HOME" BASH_ENV="$S/bashenv.sh" "$NODE" "$SCRIPT" --battery
+Exit: 0
+Exact stdout:
+{"schema":"tabi-r43-battery","cases":[{"case":"forger-r39-verbatim","vector":"NODE_OPTIONS=--require /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/forger-round39.cjs","exit":2,"finding":"environment-loader-contamination","pass":true},{"case":"forger-r41-retargeted","vector":"NODE_OPTIONS=--require /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/forger-round41.cjs","exit":2,"finding":"environment-loader-contamination","pass":true},{"case":"node-path","vector":"NODE_PATH=/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/shadow_modules","exit":2,"finding":"environment-loader-contamination","pass":true},{"case":"ld-preload","vector":"LD_PRELOAD=/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/libforger.so","exit":2,"finding":"environment-loader-contamination","pass":true},{"case":"esm-loader","vector":"NODE_OPTIONS=--experimental-loader /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/loader.mjs","exit":2,"finding":"environment-loader-contamination","pass":true},{"case":"esm-import","vector":"NODE_OPTIONS=--import /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-41/fixtures/loader.mjs","exit":2,"finding":"environment-loader-contamination","pass":true},{"case":"clean","vector":null,"exit":0,"finding":null,"pass":true}],"allPass":true}
+Additional observed output: BASH_ENV_MARKER=absent. This confirms that the test marker was not sourced by the battery's shell children under this invocation; the battery uses `scrubEnv()` for its spawned bash env.
+
+Relevant frozen source evidence read: measure script line 50 FORBIDDEN_ENV excludes NODE_COMPILE_CACHE; line 51 ENV_ALLOW excludes it too; selfEnvCheck lines 109-120 flags only names matching FORBIDDEN_ENV (plus unreadable /proc and execArgv conditions). Battery cases lines 346-353 cover six named vectors plus clean. No byte mutation was attempted.
+
+No tools installed or upgraded. RULES.md was read as instructed; PACMAN was not invoked.

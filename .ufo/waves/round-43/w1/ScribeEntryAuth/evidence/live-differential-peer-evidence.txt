@@ -1,0 +1,93 @@
+# ScribeEntryAuth — the peer's LIVE paired differential (verified for consistency, not re-measured)
+
+Peer seat MutDriverEgress ran the full genuine chain twice in a window where this host
+genuinely produced non-loopback egress: once with the PRISTINE driver as producer, once with
+the MUTATED (lying) driver, each in its own mirror tree whose claims pins are blessed to that
+tree's own producer bytes (so the byte-pin layer is satisfied in both arms and the producer's
+BEHAVIOUR is the only difference).
+
+Their evidence files (in .ufo/waves/round-43/w1/MutDriverEgress/evidence/):
+  LIVE-DIFFERENTIAL-lying-vs-pristine-full-chain.json
+  wrapper-chain-pristine-twin-seq.json      (the REFUSED arm, raw wrapper output)
+  wrapper-chain-lying-producer-egress-window.json (the ADMITTED arm, raw wrapper output)
+
+## What I verified from their raw files (consistency, not re-measurement)
+
+PRISTINE arm (wrapper-chain-pristine-twin-seq.json):
+  driverExit 0, counterExit 1, challengeVerified TRUE, witnessAttestationVerified TRUE
+  counter predicate FALSE, total findings 45, egress findings 45, other findings []
+  driver digest 3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e (the committed one)
+  receipt egressNonLoopback 45, nonzeroSampleObservations 45, samplesPerRun [133, 130]
+
+LYING arm (LIVE-DIFFERENTIAL-lying-vs-pristine-full-chain.json):
+  driverExit 0, counterExit 0, challengeVerified TRUE, witnessAttestationVerified TRUE
+  counter predicate TRUE, egressClauseFindings 0, otherFindings []
+  driver digest cbd8d65e2a0ac8d0e6f54fede992dd2303f73beaa9c1f9cdf1ae9c6734e41d77 (the mutant)
+  receipt egressNonLoopback 0, nonzeroSampleObservations 0, samplesPerRun [132, 133]
+
+Both arms: a genuinely wrapper-signed measure record, a genuinely verified fd3/fd4 challenge,
+no forger key. The honest producer's receipt is REFUSED with 45 egress-clause findings; the lying
+producer's receipt is ADMITTED with none. The egress-count clause is the only clause that spoke
+about egress, and zeroing the counts removed every trace of it.
+
+## What I reproduced, and what I did NOT
+
+REPRODUCED: I rebuilt both mirror trees independently — pristine driver sha256 3718235934… and
+lying driver sha256 cbd8d65e… — byte-identical to the peer's, so the arms are the same artefacts.
+I confirmed the pins are blessed to each tree's own bytes, and that the driver's navigation target
+is loopback-only (127.0.0.1) before running it.
+
+NOT REPRODUCED (honest limitation): I did not land the differential myself. My own pristine-arm
+run fell in a NO-EGRESS window — the receipt recorded egressNonLoopback 0 and 0 nonzero sample
+observations, and the counter therefore scored it GREEN (counterExit 0, challengeVerified true,
+predicate true, 0 findings). The egress window is intermittent on this host (the sibling
+SentEgressAudit run captured 46 such observations in one of its windows), so my single run did not
+present a window in which the pristine producer would have been refused. My result neither
+confirms nor contradicts the peer's; it is simply a run outside the condition that separates the
+two arms.
+
+Their two caveats, recorded rather than smoothed over:
+  (a) the arms ran SEQUENTIALLY in the same window rather than at one shared instant (a
+      concurrent version was abandoned when host load hit ~214);
+  (b) the claims pins were RE-BLESSED to each tree's producer bytes — an out-of-model change to
+      the pins under the declared residual model. In the frozen chain the byte-pin refuses
+      producer-digest-mismatch at wrapper stage 1, before the browser spawns. Hence: a control-set
+      calibration gap (F8), NOT an in-model do-nothing reach. The property worth preserving is
+      that a closure re-deriving the pins from committed bytes rather than trusting a re-blessed
+      copy keeps the byte-pin holding.
+
+## Relation to F1
+
+Different and stronger class. Here the key is genuinely the wrapper's own, the challenge genuinely
+verifies, and the browser genuinely ran — what is wrong is that a receipt's FIELDS are wrong and
+the clause that would have spoken about them cannot tell. In F1 the DOCUMENT ITSELF is the
+forger's: the measure record, its public key and the challenge answer all come from the forger,
+so the chain admits bytes with no browser run and no honest producer at all.
+
+## ADDENDUM — my no-egress run is a CONTROL for the peer's differential
+
+The peer has taken my non-reproduction as a third data point, and it is worth stating why it
+helps rather than merely hedging. My pristine-arm run used the SAME mirror construction as the
+peer's refused arm (own tree, pins blessed to that tree's own producer bytes, real wrapper, real
+per-invocation key, real Firefox, real witness, real fd3/fd4 challenge) and it scored GREEN with
+zero findings — because the host produced no non-loopback egress in that window.
+
+That makes the mirror construction itself an exonerated variable: the construction does not
+manufacture refusals. So the refusal in the peer's PRISTINE arm is attributable to the 45 genuine
+non-loopback observations and to nothing incidental to the mirror tree — the egress clause spoke
+because there was egress to speak about. Symmetrically, the ADMITTED arm in the same window is
+attributable to the producer's behaviour (zeroed counts) and to nothing else, since the two arms
+share the construction, the chain, the key discipline and the challenge discipline.
+
+Practical consequence for the lane: the live arm is a CONFIRMATION of the deterministic
+receipt-level paired differential, which is the form to re-run, because the egress window on this
+host is intermittent and not reproducible on demand. The peer's report now says exactly this.
+
+My run, in full:
+  driverExit 0, counterExit 0, challengeVerified true, predicate true
+  total findings 0, egress findings 0, other findings []
+  receipt egressNonLoopback 0, nonzeroSampleObservations 0, samplesPerRun [130, 135]
+  driver digest 3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e (committed)
+  measure record: the wrapper's own (schema tabi-r43-c1-measure-record, ed25519), bindings match
+  this run's receipt and witness bytes, gate clean
+Raw: evidence/egress/my-pristine-arm-no-egress-window.json, evidence/egress/pristine.receipt.json

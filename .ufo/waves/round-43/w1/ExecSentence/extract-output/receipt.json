@@ -1,0 +1,55 @@
+{
+  "schema": "tabi-round43-three-site-sentence-identity-receipt-v1",
+  "seat": "ExecSentence",
+  "frozenCommit": "7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc",
+  "baseline": "ab592825cd195599822ca227f7768914df208201",
+  "method": [
+    "git cat-file -p <frozen>:<path> > scratch/frozen/<name>  (bytes taken from the frozen commit, not the worktree)",
+    "claims side: JSON.parse(claims.json) -> claims[i].counterPredicate / claims[i].predicate",
+    "header side: single line matching /^\\/\\/\\s*PREDICATE-SENTENCE:\\s*(.*)$/, sentence = group(1)",
+    "const side: /const\\s+PREDICATE\\s*=\\s*'((?:[^'\\\\]|\\\\.)*)'/ with \\' unescaped to '",
+    "sha256 over the UTF-8 bytes of each extracted sentence"
+  ],
+  "crossChecks": [
+    "shell-only re-extraction (awk/sed/grep) reproduced the same sentences",
+    "node eval() of the extracted literal reproduced the same sha256 (runtime value of const PREDICATE)",
+    "C2 checker executed at HEAD ba433c94 emitted predicateSentence with sha256 49f7a1e7... == claims member",
+    "frozen commit is an ancestor of HEAD; claims.json and both counters are byte-identical between the freeze and HEAD (sha256 below)",
+    "all six frozenDigests in claims.json re-derive at the frozen commit"
+  ],
+  "frozenDigestsReverified": {
+    "claims.json": "290c87d5c8916d2ee761181c1291365572068b7ad87c16839526df1526e73029",
+    ".ufo/waves/round-43/counters/c1-signature-bound-v5.mjs": "6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c",
+    ".ufo/waves/round-43/counters/check-routed-defects-round43.mjs": "2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743"
+  },
+  "claims": {
+    "C1": {
+      "threeSiteSha256": {
+        "claims.json claims[0].counterPredicate": "9bc9545343000b4806cd9628d97ba63e390fdda64104da62a250a8ea2fe75598",
+        "c1-signature-bound-v5.mjs header PREDICATE-SENTENCE comment": "9bc9545343000b4806cd9628d97ba63e390fdda64104da62a250a8ea2fe75598",
+        "c1-signature-bound-v5.mjs const PREDICATE (\\' unescaped)": "9bc9545343000b4806cd9628d97ba63e390fdda64104da62a250a8ea2fe75598"
+      },
+      "distinctSha256Count": 1,
+      "diffVerdict": "IDENTICAL",
+      "byteLength": 1343,
+      "pairwiseIdentical": true,
+      "divergences": []
+    },
+    "C2": {
+      "threeSiteSha256": {
+        "claims.json claims[1].predicate": "49f7a1e787fd226157c0b9aed72b5d6936dc750392b2f72f4839bb79160cb969",
+        "check-routed-defects-round43.mjs header PREDICATE-SENTENCE comment": "49f7a1e787fd226157c0b9aed72b5d6936dc750392b2f72f4839bb79160cb969",
+        "check-routed-defects-round43.mjs const PREDICATE (\\' unescaped)": "49f7a1e787fd226157c0b9aed72b5d6936dc750392b2f72f4839bb79160cb969"
+      },
+      "distinctSha256Count": 1,
+      "diffVerdict": "IDENTICAL",
+      "byteLength": 1314,
+      "pairwiseIdentical": true,
+      "divergences": []
+    }
+  },
+  "observations": [
+    "claims.json C1 carries BOTH claims[0].counterPredicate (1343 B) and claims[0].predicate (2012 B). The frozen sentenceIdentity block names counterPredicate as the claims-side site, and that member is byte-identical to the two counter sites. claims[0].predicate = counterPredicate + the 669-byte suffix ' THE CLAIM: ...' appended; it is NOT one of the three declared sites.",
+    "No round-43 counter or checker compares its claims-side sentence to its own const PREDICATE at runtime; both only EMIT predicateSentence. The declared sentenceIdentity.byteIdentical=true is therefore a freeze-time assertion with no instrumented re-check in this round."
+  ]
+}

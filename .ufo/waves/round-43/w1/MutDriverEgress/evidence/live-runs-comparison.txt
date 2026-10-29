@@ -1,0 +1,35 @@
+LIVE DRIVER RUNS FROM SCRATCH (loopback fixture only, no public internet)
+=====================================================================
+Command (all arms):
+  env -i PATH HOME LANG TZ TABI_RUN_NONCE=<fresh 64-hex> \
+    node <driver copy> --out <fresh receipt.json> --scratch <dir> --nonce <nonce> --runs 2
+
+arm                        exit  refused  binding  egressNonLoopback  samples(run1/run2)
+pristine driver.mjs         0   false    true          0                  71 / 64
+mutant   driver.mjs (run A) 0   false    true          0                  25 / 15
+mutant   driver.mjs (run B) 0   false    true          0                 130 / 131
+
+All three runs carry ZERO non-loopback observations: this host's honest
+environment produced no egress to hide, so the LIVE arms cannot by themselves
+discriminate the mutation. (The discriminating instrument is the receipt-level
+paired differential P16/P17 on a receipt with 46 REAL egress observations.)
+
+The sample-count spread (25/15 vs 130/131 for the SAME mutant bytes) is a
+wall-clock artifact: the sampler ticks every 100 ms for the whole browser
+session, so the count tracks session duration and machine load. The mutation
+changes two returned field VALUES only - never control flow, timing, or the
+observation counts - so it cannot cause it. The mutant still clears the
+counter's structural gates comfortably (>=8 samples, >=1000 ms span, strictly
+increasing, >=1 owned-socket observation per surface).
+
+Structural check of the live MUTANT receipt against the frozen counter's
+requirements (counter lines 74-146):
+  run1 {samples_ge_8:true, span_ge_1000:true, strictly_increasing:true,
+        ssObsSum_ge_1:true, procObsSum_ge_1:true, all_nonLoopback_zero:true}
+  run2 {samples_ge_8:true, span_ge_1000:true, strictly_increasing:true,
+        ssObsSum_ge_1:true, procObsSum_ge_1:true, all_nonLoopback_zero:true}
+  refused=false  binding=true  survivors=0  portClosed=[true,true]
+
+=> the live mutant receipt satisfies every structural gate of the frozen
+   counter. The egress-count clause is what would have spoken about the
+   (hidden) egress; nothing else in the counter does.

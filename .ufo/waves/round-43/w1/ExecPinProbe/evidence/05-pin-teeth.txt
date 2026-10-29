@@ -1,0 +1,22 @@
+# 05 — teeth of the measure-blob pin (scratch clone of the lane; lane untouched)
+# fixture repo: /fast/scratch/hyaku/tabi-r43/ExecPinProbe/lane-clone (git clone --shared of the lane, HEAD ba433c94b14a0e0d5ecf2eba1be0a8ee3064491c)
+$ git -C /fast/scratch/hyaku/tabi-r43/ExecPinProbe/lane-clone rev-parse --show-toplevel
+/fast/scratch/hyaku/tabi-r43/ExecPinProbe/lane-clone
+$ git -C /fast/scratch/hyaku/tabi-r43/ExecPinProbe/lane-clone config user.email exec-pin-probe@fixture.local ; user.name ExecPinProbe  # throwaway, fixture-local
+control: unmodified clone HEAD
+exit=0
+predicate=true count=0 ids=[]
+
+variant A2: valid-JSON self-authored replacement measure record (one added field)
+$ git -C $S/lane-clone rev-parse HEAD:.ufo/waves/round-41/measure/c1-measure.json
+4ce083ae29cdbf742138a2912f35aee8d1c644ef
+exit=1
+predicate=false count=1
+  r1-measure-blob-pin-mismatch :: .ufo/waves/round-41/measure/c1-measure.json object id 4ce083ae29cdbf742138a2912f35aee8d1c644ef != pinned 8ff64d691f5c09569a50f2a5a038bb23774c3d35
+
+variant B: the measure path replaced by a TREE object
+$ git -C $S/lane-clone cat-file -t 5e0420465660e5c4a47971bce3cdad690026b381:.ufo/waves/round-41/measure/c1-measure.json
+tree
+exit=1
+predicate=false count=1
+  r1-measure-not-a-blob :: .ufo/waves/round-41/measure/c1-measure.json resolves to object type 'tree', frozen sentence requires blob

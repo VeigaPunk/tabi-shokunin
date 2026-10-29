@@ -1,0 +1,22 @@
+$ head -3 souji new knowledge files + round-42 lesson (subjects)
+source: S252 Python `inspect.cleandoc` (https://docs.python.org/3/library/inspect.html#inspect.cleandoc; snapshot census/round-40/sources/inspect.html, sha256 9e740c60462d2648ecd5b9ae1cf5ee96f2fed5e312fb56cae639385c5415a0d6; installed interpreter Python 3.14.8, snapshot census/round-40/sources/inspect-cleandoc.txt, sha256 aab0711daa22215875bf559d3ce8d641062646d9946ad232dee70484e7b9a093)
+verified-at: 2026-10-28 — Python 3.14.8 on kernel 7.2.11-arch1-1; read-only (`inspect.getdoc` on the installed module, no import of the lane's tools)
+recheck: 365d — re-read the `inspect.cleandoc` documentation after a Python release: `python3 -c "import inspect; print(inspect.getdoc(inspect.cleandoc))"`
+---
+source: S253 Python `codecs` error handlers (https://docs.python.org/3/library/codecs.html#error-handlers; snapshot census/round-40/sources/codecs.html, sha256 023ec448648e7089efe4b4c25a167e491fa7f93d1cbf116662c6596e71158a4c; installed interpreter Python 3.14.8)
+verified-at: 2026-10-28 — Python 3.14.8 on kernel 7.2.11-arch1-1; read-only (the record bytes were written under a scratch root; no lane record was touched)
+recheck: 365d — re-read the `replace` handler entry after a Python release: `python3 -c "print(b'a\xffb'.decode('utf-8','replace'))"`
+---
+source: S251 git-merge-base(1) § OPERATION MODES `--is-ancestor` (https://git-scm.com/docs/git-merge-base; installed man page git 2.56.0-1, snapshot census/round-40/sources/git-merge-base.1.txt)
+verified-at: 2026-10-28 — git 2.56.0-1 on kernel 7.2.11-arch1-1; read-only (`git merge-base --is-ancestor` only, no write, no history rewrite)
+recheck: 365d — re-check the man page's `--is-ancestor` exit-status contract after a git release: `MANWIDTH=100 man git-merge-base | grep -A3 -- '--is-ancestor'`
+---
+source: S254 GNOME/gvfs 1.62.0 daemon/trashlib/trashitem.c — https://raw.githubusercontent.com/GNOME/gvfs/1.62.0/daemon/trashlib/trashitem.c (tag 1.62.0, lines 158, 173, 180, 182, 193; snapshot census/round-40/sources/gvfs-trashitem-1.62.0.c sha256 3a8f8cbb057ac3bb8d4ba4901d43f8fd1abcd89b9ff095ef927999154af3d25b; opened 2026-10-28) — assimilated from the shokuknow campaign package `merge/souji/` (staged id S146), re-pointed by document to this lane's id space
+verified-at: 2026-10-28 — GVFS tag 1.62.0; the file was fetched and the quoted lines read; the normative specification the lane already holds is S022 (FreeDesktop.org Trash Specification)
+recheck: 365d — re-fetch the file at tag 1.62.0: `curl -sS https://raw.githubusercontent.com/GNOME/gvfs/1.62.0/daemon/trashlib/trashitem.c | sha256sum`
+---
+#!/usr/bin/env python3
+"""tools/souji-freeze-check.py - the pre-dispatch freeze checklist as one command.
+
+  python3 -B tools/souji-freeze-check.py --root LANE --prereg PATH --rev FULL40
+  python3 -B tools/souji-freeze-check.py --selftest

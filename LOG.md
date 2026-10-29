@@ -2797,3 +2797,63 @@ Census start receipt: exit 0, `tabi ok`, 21 W04 warnings, 149 rows.
 package adoption closed; `considerthese/` still absent. Wave w1 (one policy-v2 wave, 64 seats,
 ≥25% attack share) dispatches next through the ready handoff; results and dispositions land after
 WAVE-DONE. No tool installs; no pacman transactions (pause honored).
+
+## Round 43 — wave-1 integration and honest disposition (both claims refused; instruments landed and hardened)
+
+Wave w1 settled: **64/64 seats, WAVE-DONE received, 0 dead, 0 empty outputs; verdicts on
+seat-written files 34 ok / 30 finding** (`.ufo/waves/round-43/w1-results.json`;
+`w1-parse-summary.json` binds verdicts on report files because results.json finalText wraps
+them — run-9 parser lesson applied). Round total 64 (one policy-v2 wave), no residual call;
+attack share 30/64 = 46.9%.
+
+**C1 (coverage capability): NOT ADMITTED — kill rule fired (5th consecutive honest stop on this
+capability).** The live signature-authenticated run was clean (2026-10-29: exit 0, v5 predicate
+true, spans 18,588/25,649 ms, egress 0; measure record sha256 `c67a1096…97b258` committed), and
+the r42 attack class is closed (relabels, self-signed pairs without the channel, unpinned
+--pins, substituted counters all refuse; `MutC1Sig`/`MutC1Challenge`/`MutC1Nonce`/`MutC1Witness`
+prove the clauses load-bearing against the controls they name). Four seats then demonstrated the
+remaining in-model reach: **the challenge-response verifies against the record's own
+self-selected public key, so an attacker who authors the pair answers the fresh challenge**
+(`CritC1ReachSynth` three variants incl. second-process relay; `CritC1ReachDirect`;
+`CritC1Witness`; `CritC1ReachReplay`), and `CritResidualModel` added the copied-counter reach.
+No capability row; coverage holds 9 → 9; routed to r44 with the seats' own smallest-safe
+corrections (trust anchor not selected by the candidate record; supervised pinned-wrapper
+execution binding; synthetic control re-cut to the challenge-answering class). QUALITY 106.
+
+**C2 (calibration): NOT MET AS WORDED — kill rule fired on the r5 limbs.** The r42 holes are
+closed in committed bytes and independently verified: the pinned measure blob id refuses the
+rebuilt V0 fabrication (the r42 checker bytes still green it — `ExecC2V0Probe`), tree objects
+are named `r1a-not-a-blob` before any size floor (`ExecC2TreeFixture`, `CritC2Blob` adds
+commit/tag object classes), all 38 TSV evidence paths verify as blobs ≥200 B (`ExecTsvBlobs`),
+and `MutC2Pin`/`MutC2Blob`/`MutC2Bind` prove the new clauses load-bearing. `CritFreezeBindings`
+then demonstrated two false-greens against r5's sentence (a freeze binding 5 of its 8 named
+controls greens via the length floor; a 19-char quote fragment greens via substring matching),
+`CritFreezeAudit` found beforeState-to-bindings completeness unenforced, and `CritPredC2` routed
+the r4/r5/r6 sentence-code gaps. Calibration holds 9 → 9; exit 0 at the measured revision is an
+instrument pass, not admission; routed to r44 (set equality, whole-line quotes, pinned freeze
+document, `b.path` type check). QUALITY 107.
+
+**Also routed:** the egress-count clause is honest-run-observable only — `MutDriverEgress` ran a
+live differential through the genuine chain in a real host-egress window (pristine receipt
+refused with 45 findings; lying-driver receipt admitted) and sketched the two deterministic
+browser-free controls that close it; `SentSecrets` F2 (browser child never gets a scrubbed
+TMPDIR — profile may escape the declared scratch root); `RevC1Wrapper` degenerate refuse() exit
+codes; `SimplifierC1` six dead paths + unused ENV_ALLOW entries; `ScoutSibling`/`ConnSiblingProc`
+— kama r64 routes citation/regression duties onto tabi's playwright/chromium knowledge files
+(reported, not absorbed). Clean re-derivations: sentence identity at all six sites
+(`CritPredC1`/`ExecSentence`), digest pins 8/8 (`ExecDigestPins`), replay refusals 4/4
+(`ExecReplayAll`), battery 7/7 re-run, fixture determinism, causal separation
+(`ConnCrossClaim`), misroot clean (`ExecScratchGuard`), freshness pins 34/34, S150/S151 re-opened
+byte-identical (`RevS150`/`RevS151`).
+
+**Sources & census:** S150/S151 used-by gained the entry + this lesson; the sourced entry
+`corpus/knowledge/receipt-authenticity-signing-round-43.md` landed with its README coverage row
+(knowledge notes 59 → 60). Registry 149 → 151 (A133→A135, mined 124→126). Census end receipt:
+`.ufo/waves/round-43/measure/census-end.*`. `check-sources.mjs` was red at the freeze clone
+(2× E11 used_by_missing — the entry/lesson had not landed yet; `ExecNoHarm` routed it) and is
+clean at the integration tip by construction; confirmed at the final-tip gate run below.
+
+**Standing-gate conflict unchanged:** `scripts/check-c2-knowledge-round41.mjs` stays red
+(pre-existing, r42 L0 stands); `check-frontier-admission.mjs` stays red (pre-existing since
+r36). No tool installs; no pacman transactions. Assimilation: none (r42 fresh re-adjudication
+keeps package adoption closed); `considerthese/` absent.

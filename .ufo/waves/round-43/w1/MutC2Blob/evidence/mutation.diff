@@ -1,0 +1,12 @@
+--- /fast/scratch/hyaku/tabi-r43/MutC2Blob/checker-pristine.mjs	2026-10-29 17:51:45.119008759 -0300
++++ /fast/scratch/hyaku/tabi-r43/MutC2Blob/checker-mutated.mjs	2026-10-29 17:52:41.763975857 -0300
+@@ -76,7 +76,8 @@
+ function requireBlob(id, p) {
+   const t = gitObjectType(p);
+   if (t === null) { add(`${id}-absent`, `${p} not committed at REV`); return false; }
+-  if (t !== 'blob') { add(`${id}-not-a-blob`, `${p} resolves to object type '${t}', frozen sentence requires blob`); return false; }
++  // MUTATION (MutC2Blob): the object-type gate is removed — any existing
++  // object (tree, commit, ...) is treated as a blob.
+   return true;
+ }
+ 

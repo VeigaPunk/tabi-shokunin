@@ -1,0 +1,21 @@
+--- c1-frozen.mjs	2026-10-29 17:57:41.806187755 -0300
++++ c1-mutated.mjs	2026-10-29 18:03:55.523072513 -0300
+@@ -133,7 +133,7 @@
+   const witnessFile = file.replace(/\.json$/, '.witness.json');
+   let witness = null;
+   try { witness = JSON.parse(fs.readFileSync(witnessFile, 'utf8')); } catch { }
+-  let witnessAttestationVerified = false;
++  let witnessAttestationVerified = true;
+   if (!witness || witness.schema !== WITNESS_SCHEMA) findings.push('witness-unreadable');
+   else {
+     if (witness.nonce !== nonce) findings.push('witness-nonce-mismatch');
+@@ -144,8 +144,7 @@
+     const a = witness.attestation || {};
+     try {
+       const signed = canonical({ rootPid: witness.rootPid, nonce: witness.nonce, startedTicks: witness.startedTicks, endedTicks: witness.endedTicks, samples: witness.samples });
+-      if (sha256(Buffer.from(signed, 'utf8')) === a.over
+-        && crypto.verify(null, Buffer.from(signed, 'utf8'), crypto.createPublicKey(a.publicKey), Buffer.from(a.value, 'hex'))) {
++      if (sha256(Buffer.from(signed, 'utf8')) === a.over) {
+         witnessAttestationVerified = true;
+       } else findings.push('witness-attestation-invalid');
+     } catch { findings.push('witness-attestation-invalid'); }

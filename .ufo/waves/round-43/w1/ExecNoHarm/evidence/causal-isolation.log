@@ -1,0 +1,17 @@
+# Causal isolation experiment for the check-sources E11 finding (ExecNoHarm).
+# clone 'tip' = lane tip ba433c94 (the file is still uncommitted there) -> expect RED
+# clone 'fix' = freeze 7ca6f018 + the one untracked file copied in -> expect CLEAN
+
+$ (cd $S/tip && node scripts/check-sources.mjs)    # tip commit ba433c94, file absent from the tree
+FINDING id=used_by_missing fleet=E11 row=S150 detail=path_missing
+FINDING id=used_by_missing fleet=E11 row=S151 detail=path_missing
+SOURCES_GATE verdict=failed rows=151 tiers=A:135,B:7,C:9 status=queued:15,mined:126,rejected:10 findings=2 file=corpus/SOURCES.md
+### EXIT: 1
+
+$ (cd $S/fix && node scripts/check-sources.mjs)    # freeze 7ca6f018 with the untracked file copied in
+SOURCES_GATE verdict=clean rows=151 tiers=A:135,B:7,C:9 status=queued:15,mined:126,rejected:10 findings=0 file=corpus/SOURCES.md
+### EXIT: 0
+
+# Result: the sole cause of the two E11 findings is that
+# corpus/knowledge/receipt-authenticity-signing-round-43.md is not committed
+# at the freeze (nor at the tip); with it present the same bytes are clean.

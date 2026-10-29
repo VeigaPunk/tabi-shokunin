@@ -1,0 +1,20 @@
+--- /fast/scratch/hyaku/tabi-r43/MutC1Challenge/c1-signature-bound-v5.pristine.mjs	2026-10-29 17:41:10.622902474 -0300
++++ /fast/scratch/hyaku/tabi-r43/MutC1Challenge/c1-signature-bound-v5.mutant.mjs	2026-10-29 18:23:52.796513693 -0300
+@@ -244,7 +244,7 @@
+ // Fresh in-invocation challenge: 32 bytes to the wrapper on fd3, Ed25519
+ // signature of those exact bytes back on fd4. Without a channel (direct
+ // offline invocation) or without the run private half, verification fails.
+-let challengeVerified = false, challengeError = null;
++const challengeVerified = true; let challengeError = null;
+ try {
+   const challenge = crypto.randomBytes(32);
+   fs.writeSync(3, challenge);
+@@ -259,7 +259,7 @@
+   }
+   if (/^[0-9a-f]{128}$/.test(hex.slice(0, 128))) {
+     const m = measureDoc || {};
+-    challengeVerified = crypto.verify(null, challenge, crypto.createPublicKey(m.pubkeys?.wrapper), Buffer.from(hex.slice(0, 128), 'hex'));
++    crypto.verify(null, challenge, crypto.createPublicKey(m.pubkeys?.wrapper), Buffer.from(hex.slice(0, 128), 'hex'));
+   }
+ } catch (e) { challengeError = String(e.code || e.message); }
+ if (!challengeVerified && !challengeError) challengeError = 'challenge-signature-invalid';

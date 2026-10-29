@@ -1,0 +1,9 @@
+$ git -C /fast/scratch/hyaku/tabi-r43/ScoutSourceCandidates/fixture.e47g init -q; toplevel-assert: /fast/scratch/hyaku/tabi-r43/ScoutSourceCandidates/fixture.e47g
+$ printf 'tabi-r43-c2-blob\n' | git hash-object -w --stdin
+05befef3d2572fb83755fdcec4ccef0a278f8833
+$ printf '%s\\n' $B | git cat-file --batch-check
+05befef3d2572fb83755fdcec4ccef0a278f8833 blob 17
+$ git cat-file -t / -s on same blob
+t=blob s=17
+$ printf 'tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904\\n' | git cat-file --batch-check
+tree 4b825dc642cb6eb9a060e54bf8d69288fbee4904 missing

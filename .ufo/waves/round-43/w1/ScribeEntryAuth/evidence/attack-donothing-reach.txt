@@ -1,0 +1,177 @@
+# ScribeEntryAuth — C1 do-nothing reach against the frozen counter v5
+# Counter under test: the COMMITTED, UNMODIFIED, FROZEN file
+#   /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs
+#   sha256 6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c
+#   (== claims.json frozenDigests entry; re-derived by this seat from
+#    `git cat-file blob 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc:<path>`)
+# The attack scripts live beside this file and were run from scratch only.
+# NO browser was launched, NO wrapper was invoked, NO driver was run, NO
+# Firefox binary was executed. Only `node <counter>` was spawned.
+
+## The mechanism, in the counter's own words (frozen source)
+
+The counter authenticates the measure record against the public key that the
+measure record itself carries, and it answers its own challenge by verifying
+the fd4 signature against that same self-declared key:
+
+  counter v5 line 215:  crypto.verify(null, unsigned, crypto.createPublicKey(m.pubkeys?.wrapper), signature.value)
+  counter v5 line 262:  challengeVerified = crypto.verify(null, challenge, crypto.createPublicKey(m.pubkeys?.wrapper), hex)
+
+There is no pin of the wrapper public key anywhere: claims.json contains no
+pubkey field at all (verified: `producerPins` keys are firefoxBinSha256 /
+firefoxBinPath / nodeSha256 / nodePath; `frozenDigests` holds only file
+digests; zero occurrences of "pubkey" in the file). The counter also reads no
+git and spawns no child (verified: zero occurrences of "git" and of
+"child_process" in the file), so it cannot check that the measure record
+came from the wrapper.
+
+Consequence: whoever authors the measure record chooses the public key, and
+whoever holds the matching private half answers the challenge. The pair is
+self-consistent by construction. The challenge proves only "the author of the
+measure record also holds its own private key" — it does not prove that a
+browser ran.
+
+## Attack A — fully synthetic receipt + witness + measure record, no browser
+
+forge.mjs writes three JSON files from scratch: a receipt claiming two runs
+with per-sample ss/proc observations, a refreshed identity-bound tree with a
+firefox-binary root, and a witness; then generates TWO fresh Ed25519 keypairs
+(one "wrapper", one "witness"), signs the witness attestation with the
+witness key, and signs the canonical unsigned measure form with the wrapper
+key. The measure record's digests field is filled with the TRUE frozen digests
+of the three producer files, and its bindings with the sha256 of its own
+fabricated receipt/witness bytes.
+
+attack.mjs then spawns the frozen counter with pipes on fd3/fd4 exactly as the
+wrapper does, reads the counter's fresh 32-byte challenge off fd3, signs it
+with the forger's own wrapper private half, and writes the hex signature to
+fd4.
+
+$ node attack.mjs
+challenge bytes received: 32
+counter exit: 0
+{
+ "schema": "tabi-r43-c1-measured-v5",
+ "receiptSha256": "52ff5b08f40f01870a51f02afcc9b33a40242660eecdacd3451439a272020ccd",
+ "nonceMatched": true,
+ "measureSignatureVerified": true,
+ "witnessAttestationVerified": true,
+ "egressDetail": [],
+ "predicate": true,
+ "findings": [],
+ "challengeVerified": true,
+ "challengeError": null
+}
+
+EXIT 0, predicate TRUE, findings EMPTY, with no browser run anywhere.
+Reproduced 5/5 independent attempts (fresh keypair and fresh nonce each time);
+receiptSha256 differs per attempt because the fabrication is re-randomised,
+the verdict does not.
+
+## Controls — the challenge is doing real work, but only against a mismatched key
+
+control2.mjs answers the SAME challenge with a DIFFERENT key:
+  mode wrong-key -> exit 1, challengeVerified false, predicate false
+  mode right-key -> exit 0, challengeVerified true,  predicate true
+So the fd3/fd4 channel is live and the counter does reject a wrong answer;
+what it cannot do is tell an honest wrapper's key from a forger's key,
+because the key travels inside the document being authenticated.
+
+## Attack B — honest committed receipt + witness BYTES, forger-signed measure record
+
+attack2.mjs reuses the COMMITTED honest round-43 receipt.json and
+receipt.witness.json byte-for-byte (they are not rewritten), but authors a
+NEW measure record over them, signed with the forger's own key. It then
+answers the challenge with that same key.
+
+$ node attack2.mjs
+{
+ "variant": "B: honest bytes, forger-signed measure record",
+ "exit": 0,
+ "schema": "tabi-r43-c1-measured-v5",
+ "receiptSha256": "1b33d6a6b25681045bebf80bf371faa4c94db7ecc49298a7fe2f68536fe2d9bf",
+ "nonceMatched": true,
+ "measureSignatureVerified": true,
+ "witnessAttestationVerified": true,
+ "egressDetail": [],
+ "predicate": true,
+ "findings": [],
+ "challengeVerified": true,
+ "challengeError": null
+}
+
+So the "committed receipt and witness bytes hash to the measure record's
+bindings" clause is satisfied by a forger who writes the measure record: the
+bindings are computed over whatever bytes are on disk. The receipt bytes
+being honest does not make the AUTHENTICATION honest, because the thing that
+authenticates them is the forger's own signature over a forger's own
+document.
+
+## Why this is inside the declared residual model
+
+claims.json residualModel, verbatim:
+  (i) "harvesting a per-invocation private half requires a prior honest chain
+       run (a browser run happened - not a do-nothing reach)"
+  (ii) "process-memory and kernel-level attacks against the wrapper remain
+       out of scope as in rounds 40-42"
+  (iii) "on-disk tampering of committed pins or receipts is out of model -
+       committed-byte re-derivation at the closure catches it"
+
+Neither attack harvests anything (no private half of a prior run is taken:
+the forger mints its own), touches process memory or the kernel, or tampers
+with any committed pin or receipt byte on disk (attack B reads the committed
+receipt/witness read-only and writes its new measure record into scratch).
+So the reach is NOT excluded by (i), (ii), or (iii): it is inside the declared
+model, and the model says "Attacks inside this model that produce exit 0
+without a browser run fire the kill rule."
+
+The kill rule, verbatim from claims.json C1:
+  "If any settled seat demonstrates an in-model do-nothing reach (exit 0
+   without a browser run), the claim is not admitted: no capability row enters
+   the SCORECARD table, coverage holds its score, and the finding is routed
+   to round 44."
+
+This is exactly that: exit 0, predicate true, no browser run.
+
+## Honest counter-check — the chain IS sound when the wrapper answers
+
+This seat also ran the honest chain end to end (scratch out paths):
+$ node scripts/measure-c1-round43.mjs --out <scratch>/live/receipt.json --measure-out <scratch>/live/measure.json --scratch <scratch>/live/run
+exit 0; counterExit 0; challengeVerified true; witnessAttestationVerified true;
+elapsedMs 53835; egress 0; two runs; digests == the three frozen pins.
+
+The finding is therefore NOT "the wrapper is broken". The wrapper and driver
+are sound. The finding is that the SCORING INSTRUMENT (counter v5) cannot
+distinguish an honest measure record from a forger's, so it cannot be used to
+authenticate committed bytes after the fact — which is the property C1 was
+declared to buy ("A counter that scores a receipt from committed bytes must
+refuse bytes it cannot authenticate", QUALITY criterion 104).
+
+## What would close it (for the round-44 repair; NOT applied here)
+
+The counter needs an anchor it does not control. The cheapest shape, using
+the r42 lesson's own wording ("wrapper signs with a per-invocation key,
+public half pinned in claims" — corpus/lessons/round-42.md:128), is to pin
+the wrapper's public key in claims.json and have the counter verify the
+measure record's signature against THAT pinned key rather than the key the
+document carries. A per-invocation key cannot be pre-pinned, so the pin has
+to be on something stable across invocations (e.g. a long-lived lane signing
+key whose private half lives outside the receipt-producing chain), or the
+counter must re-derive the binding from a source it does not control (the
+wrapper's own process, or a committed artefact).
+
+I did NOT amend any frozen byte: claims.json, both counters, both fixtures,
+and all eight controls are untouched by this seat.
+
+## Scope note
+
+This seat's assignment is a drafting seat (sections 1-3 of the knowledge
+entry). The attack above was run because section 2's table must not record a
+refusal that does not happen: the committed control
+.ufo/waves/round-43/controls/c1-synthetic-refused.json records a refusal
+whose stated cause ("challenge-response: no run private half -> challengeVerified
+false") is only true under the direct-invocation mode it was captured in
+(fd3 not open -> EINVAL). With a real fd3/fd4 pipe and a self-chosen key the
+same synthetic pair is accepted. The draft below therefore states the refusal
+as observed and marks the reach as a finding, rather than repeating the
+control's claim as a general property.

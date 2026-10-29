@@ -1,0 +1,18 @@
+--- /fast/scratch/hyaku/tabi-r43/MutC1Nonce/frozen-nopin2/c1-signature-bound-v5.mjs	2026-10-29 18:10:59.026873814 -0300
++++ /fast/scratch/hyaku/tabi-r43/MutC1Nonce/mutant-nopin2/c1-signature-bound-v5.mjs	2026-10-29 18:10:59.027006164 -0300
+@@ -52,7 +52,6 @@
+ 
+   if (receipt.schema !== SCHEMA) findings.push('schema');
+   if (!/^[0-9a-f]{64}$/.test(nonce || '')) findings.push('measure-nonce-shape');
+-  if (receipt.runNonce !== nonce || runs.some((r) => r.runNonce !== nonce)) findings.push('run-nonce-mismatch');
+   if (receipt.refused !== false || runs.length !== 2) findings.push('run-set');
+ 
+   // F4: the driver's exec-time environment was clean and nonce-bound.
+@@ -136,7 +135,6 @@
+   let witnessAttestationVerified = false;
+   if (!witness || witness.schema !== WITNESS_SCHEMA) findings.push('witness-unreadable');
+   else {
+-    if (witness.nonce !== nonce) findings.push('witness-nonce-mismatch');
+     const wenv = Array.isArray(witness.environ) ? witness.environ : [];
+     if (wenv.some((n) => FORBIDDEN_ENV.test(n))) findings.push('witness-env-contaminated');
+     const ws = Array.isArray(witness.samples) ? witness.samples : [];

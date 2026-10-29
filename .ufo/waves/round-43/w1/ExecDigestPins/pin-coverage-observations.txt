@@ -1,0 +1,54 @@
+# ExecDigestPins — supplementary: what the firefox producer pin covers
+
+## The pinned binary is the launcher stub, not the browser engine payload
+```
+$ file /home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/firefox
+/home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/firefox: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=7cc4d1e8a98aed95cb009cd35ec9237fbeca477b, stripped
+$ ldd /home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/firefox | grep -i xul   # (no output: not a link-time dependency)
+exit=1
+$ strings -a .../firefox | grep -m3 libxul   # (dlopen at runtime)
+libxul.so
+libxul.sJ
+$ sha256sum .../firefox/libxul.so   # engine payload, NOT in claims.json producerPins
+13290f667a6ba71cddd3394d38a546f86b2c602d73bccfe6cf1bc0f5afb2d3bc  /home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/libxul.so
+```
+
+## Runtime confirmation: the engine library is mapped into the live browser processes
+```
+$ /home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/firefox --headless --profile /tmp/ffprof about:blank &
+$ grep -o 'libxul[^ ]*' /proc/<pid>/maps   # for each ms-playwright pid
+== pid 785258 ==
+libxul.so
+== pid 785549 ==
+libxul.so
+(5 of 5 sampled pids mapped libxul.so; see section above for the exact command)
+```
+
+## The counter's firefox-pin check hashes only the owned-root exe path
+```
+counter file: .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs (frozen)
+  const exes = new Set();
+  for (const r of runs) for (const root of r.owned?.roots || []) if (root.exe) exes.add(root.exe.replace(/ \(deleted\)$/, ''));
+  for (const e of exes) { sha256(fs.readFileSync(e)) !== ffPin -> 'digest-mismatch:firefox-bin' }
+observed owned-root exe set in the committed round-43 receipt:
+  /home/vgpnk/.cache/ms-playwright/firefox-1555/firefox/firefox
+observed sha256 of that path = 1f637a7cfe8f1a3ec814a7da7e38c360a3e3c39553b8c7245ac5d6643fd495eb  (== claims pin)
+```
+
+## Node: the pin holds only for the fnm-managed v24.21.0 binary
+```
+$ which -a node
+/run/user/1000/fnm_multishells/3090301_1793303840413/bin/node
+/home/vgpnk/.local/share/mise/installs/node/latest/bin/node
+/home/vgpnk/.local/share/mise/shims/node
+/run/user/1000/fnm_multishells/3084984_1793303695801/bin/node
+/run/user/1000/fnm_multishells/1551_1793027319464/bin/node
+/usr/bin/node
+$ sha256sum /usr/bin/node /home/vgpnk/.local/share/mise/installs/node/latest/bin/node
+6dcdb9bbe2bf22bd053ba06d5ba7b8a2d92b2d3d8c714f3b2670be3d2728c9c8  /usr/bin/node
+caa24debe02770c92a70677e2a62ca98890150e7ac1c17bcfe31bcc98cc89943  /home/vgpnk/.local/share/mise/installs/node/latest/bin/node
+$ /usr/bin/node --version ; /home/vgpnk/.local/share/mise/installs/node/latest/bin/node --version
+v26.12.0
+v26.12.0
+claims producerPins.nodeSha256 = 7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c (fnm v24.21.0)
+```

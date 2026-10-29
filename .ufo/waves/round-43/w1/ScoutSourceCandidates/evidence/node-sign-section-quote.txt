@@ -1,0 +1,31 @@
+# Candidate row S152 — node:crypto §crypto.sign API section (deeper than S150's index line)
+# URL identical to S150's pinned page; bytes proven equal to the staged pin today.
+
+page: https://nodejs.org/docs/latest-v24.x/api/crypto.html, 681,625 B,
+sha256 4b7024df06e31080d4caa20b21aafb68a56d0481781633d7b5f7dc7ec50c42af
+live fetch byte-identical to staged tabi-shokunin/.ufo/waves/round-43/sources/crypto.html (cmp exit 0)
+
+QUOTE (flat-byte contiguous, single raw line):
+  "Add support for Ed25519 context parameter."
+byte offset: 617178 (first occurrence; second at 628779 lies in §crypto.verify)
+wc -w = 6; pipe chars = 0
+
+section bracket proof:
+  616857  id="cryptosignalgorithm-data-key-callback"   (§crypto.sign heading)
+  628434  id="cryptoverifyalgorithm-data-key-signature-callback"  (§crypto.verify heading)
+  616857 < 617178 < 628434  => the quote lies inside §crypto.sign(algorithm, data, key[, callback]),
+  History table, v24.16.0 row ("Add support for Ed25519 context parameter.").
+
+flattened context observed in the same section (tags stripped; NOT the registry quote):
+- raw line 6768: <p><code>algorithm</code> is required to be <code>null</code> or
+  <code>undefined</code> for Ed25519, Ed448, and / ML-DSA.</p>
+  => "algorithm is required to be null or undefined for Ed25519, Ed448, and ML-DSA."
+  (the sentence is dfn/code-tag-fragmented in raw HTML, so it cannot be a flat quote)
+- §crypto.sign key-object `context` option, raw lines 6804-6805:
+  "For Ed25519 (using Ed25519ctx from RFC 8032), Ed448, ML-DSA, and SLH-DSA,"
+- runtime note: instrument host runs node v24.21.0 >= v24.16.0, so the documented
+  context parameter is present in the C1 signing runtime (observed `node --version`).
+
+why deeper than S150: S150's quote (import destructure line) sits at byte offset 85163
+in the docs' top code sample; this quote sits at 617178 inside the §crypto.sign section
+itself and anchors an Ed25519-specific signing parameter.

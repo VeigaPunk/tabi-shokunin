@@ -1,0 +1,56 @@
+# scan timestamp: 2026-10-29T17:59:08-03:00
+
+=== CHECK 2a: /tmp literal in the 6 new instruments ===
+(exit 1; grep exit 1 = no /tmp literal in any instrument)
+
+=== CHECK 2b: /tmp literal across ALL added lines of the round diff (11,894 lines) ===
+0
+(0 = none)
+
+=== CHECK 2c: scratch/work plumbing in the new instruments ===
+scripts/measure-c1-round43.mjs:34://        --measure-out <fresh measure-record.json> --scratch <dir>
+scripts/measure-c1-round43.mjs:190:  let out = null, scratch = null, measureOut = null;
+scripts/measure-c1-round43.mjs:193:    else if (argv[i] === '--scratch') scratch = argv[++i];
+scripts/measure-c1-round43.mjs:196:  if (!out || !scratch || !measureOut) { console.error('usage: node scripts/measure-c1-round43.mjs --out <fresh rec...
+scripts/measure-c1-round43.mjs:197:  const outPath = path.resolve(out), scratchPath = path.resolve(scratch), measurePath = path.resolve(measureOut);
+scripts/measure-c1-round43.mjs:240:  fs.mkdirSync(scratchPath, { recursive: true });
+scripts/measure-c1-round43.mjs:243:  const run = spawnSync(process.execPath, [DRIVER, '--out', outPath, '--runs', '2', '--scratch', scratchPath, '--no...
+scripts/measure-c1-round43.mjs:244:    cwd: ROOT, encoding: 'utf8', env: scrubEnv({ TABI_RUN_NONCE: nonce, HYAKU_SCRATCH: scratchPath }), maxBuffer: 1...
+scripts/playwright-firefox-egress-round43.mjs:21://        --scratch <dir> --nonce <64-hex> [--runs 2]
+scripts/playwright-firefox-egress-round43.mjs:24:import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, readlinkSync, rmSync, writeFi...
+scripts/playwright-firefox-egress-round43.mjs:272:async function runOnce({ runName, profileRoot, runNonce }) {
+scripts/playwright-firefox-egress-round43.mjs:285:  const profile = mkdtempSync(join(profileRoot, 'profile-'));
+scripts/playwright-firefox-egress-round43.mjs:399:  let out = null, runs = 2, scratchArg = null, nonce = null;
+scripts/playwright-firefox-egress-round43.mjs:403:    else if (argv[i] === '--scratch') scratchArg = argv[++i];
+scripts/playwright-firefox-egress-round43.mjs:406:  if (!out || !scratchArg || !/^[0-9a-f]{64}$/.test(nonce || '') || runs !== 2 || existsSync(out)) {...
+scripts/playwright-firefox-egress-round43.mjs:407:    console.error('usage: --out <fresh receipt.json> --scratch <dir> --nonce <64-hex one-use-token> ...
+scripts/playwright-firefox-egress-round43.mjs:427:  const scratchRoot = scratchArg;
+scripts/playwright-firefox-egress-round43.mjs:428:  mkdirSync(scratchRoot, { recursive: true });
+scripts/playwright-firefox-egress-round43.mjs:429:  const S = mkdtempSync(join(scratchRoot, 'tabi-r43-pwegress-'));
+scripts/playwright-firefox-egress-round43.mjs:444:    const r = await runOnce({ runName: `run${i + 1}`, profileRoot: profiles, runNonce: nonce });
+.ufo/waves/round-43/fixtures/tree-vs-blob.mjs:3:// 43, C2 rule r1). Builds a scratch git fixture where the checked receipt
+.ufo/waves/round-43/fixtures/tree-vs-blob.mjs:8:// `r1a-not-a-blob`. Fixture repo lives under --work; every git call names
+.ufo/waves/round-43/fixtures/tree-vs-blob.mjs:10:// Usage: node tree-vs-blob.mjs --out <receipt.json> --work <scratch dir>
+.ufo/waves/round-43/fixtures/tree-vs-blob.mjs:26:  else if (args[i] === '--work') work = args[++i];
+.ufo/waves/round-43/fixtures/tree-vs-blob.mjs:28:if (!out || !work) die('usage: node tree-vs-blob.mjs --out <receipt.json> --work <dir>');
+.ufo/waves/round-43/fixtures/v0-fabrication.mjs:5:// executed command — as a scratch git fixture, then runs BOTH checkers over
+.ufo/waves/round-43/fixtures/v0-fabrication.mjs:8:// The fixture repo is created under --work (scratch); every git call names
+.ufo/waves/round-43/fixtures/v0-fabrication.mjs:10:// throwaway local to the fixture. This script writes ONLY under --work plus
+.ufo/waves/round-43/fixtures/v0-fabrication.mjs:12:// Usage: node v0-fabrication.mjs --out <probe.json> --work <scratch dir> \
+.ufo/waves/round-43/fixtures/v0-fabrication.mjs:30:  else if (args[i] === '--work') work = args[++i];
+.ufo/waves/round-43/fixtures/v0-fabrication.mjs:33:if (!out || !work || !slice) die('usage: node v0-fabrication.mjs --out <probe.json> --work <dir> --...
+
+=== CHECK 2d: /tmp in the committed round-43 evidence (Playwright's OWN profile dir, not the instrument's) ===
+    132 /tmp/playwright_firefoxdev_profile-7Aj7Us
+    132 /tmp/playwright_firefoxdev_profile-jUJmiQ
+
+=== CHECK 3a: pacman / install-channel invocation in the 6 new instruments ===
+(grep exit 1 = none)
+
+=== CHECK 3b: pacman mentions in the whole added-lines set ===
+11073:+WAVE-DONE. No tool installs; no pacman transactions (pause honored).
+11094:+digests. No tool installs; no pacman transactions.
+(both hits are prose 'no pacman transactions', not invocations)
+
+=== CHECK 3c: install-channel invocation across ALL added lines ===
+(grep exit 1 = none)

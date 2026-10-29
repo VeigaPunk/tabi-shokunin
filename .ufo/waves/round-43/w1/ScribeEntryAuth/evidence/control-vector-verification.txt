@@ -1,0 +1,143 @@
+# ScribeEntryAuth — per-committed-control verification (own runs, 2026-10-29)
+# Frozen claim/control bytes at 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc.
+# Every command below was run by this seat; stdout is verbatim.
+
+## A. Freeze bindings re-derived by this seat
+
+$ for f in scripts/measure-c1-round43.mjs scripts/playwright-firefox-egress-round43.mjs \
+    .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs \
+    .ufo/waves/round-43/counters/check-routed-defects-round43.mjs \
+    .ufo/waves/round-43/fixtures/v0-fabrication.mjs \
+    .ufo/waves/round-43/fixtures/tree-vs-blob.mjs; do
+    git cat-file blob 7ca6f018:$f | sha256sum; done
+23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0  scripts/measure-c1-round43.mjs
+3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e  scripts/playwright-firefox-egress-round43.mjs
+6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c  .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs
+2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743  .ufo/waves/round-43/counters/check-routed-defects-round43.mjs
+b87470625b11aa5b13d72cf1ac888ed004bff7b1d2ef7501f746d2142cb0b80c  .ufo/waves/round-43/fixtures/v0-fabrication.mjs
+7407f6cd498362658fb0c78b61698489c373444ff3ce6982824ded877259ab6d  .ufo/waves/round-43/fixtures/tree-vs-blob.mjs
+   -> all six match claims.json frozenDigests exactly.
+
+All 8 control sha256s and their bound quote lines re-verified against the
+control bytes (python): 8/8 sha256 match, 8/8 quote strings present verbatim
+in the control bytes, every quote >= 8 chars.
+
+## B. Predicate sentence identity (claims.json <-> counter header <-> const)
+
+Extracted the header "PREDICATE-SENTENCE:" comment and the `const PREDICATE`
+string from each counter, un-escaped the JS string literal, and compared:
+  C1 claims.counterPredicate == C1 header comment  : True
+  C1 claims.counterPredicate == C1 const PREDICATE  : True  (after un-escaping
+       the literal's leading quote and its \' escapes; the string VALUE is
+       byte-identical, sha256 prefix 9bc9545343000b48 on both sides)
+  C2 claims.predicate      == C2 header comment  : True
+  C2 claims.predicate      == C2 const PREDICATE  : True  (sha256 prefix
+       49f7a1e787fd2261 on both sides)
+claims.json sentenceIdentity.byteIdentical = true is CONFIRMED for both claims.
+(claims.json stores the full sentence; the grep-visible "…" in a truncated
+console dump is a display truncation, not a byte in the file: the file contains
+0 occurrences of U+2026.)
+
+## C. C2 checker, this seat's own runs
+
+$ node .ufo/waves/round-43/counters/check-routed-defects-round43.mjs --rev ab592825cd195599822ca227f7768914df208201 --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json
+exit 1; findings: r5-claims-absent, r6-probe-absent   (findingCount 2)
+   -> matches control c2-baseline-red-r43.json exactly (same rev, exit 1,
+      same two finding ids, same findingCount).
+
+$ node .ufo/waves/round-43/counters/check-routed-defects-round43.mjs --rev 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --json
+exit 0; findingCount 0; predicate true
+   -> the C2 checker is green at the freeze revision.
+
+$ node .ufo/waves/round-43/fixtures/v0-fabrication.mjs --out <scratch>/v0-repro.json --work <scratch>/v0work --slice .ufo/waves/round-42/quarantine/slice-ids.txt
+exit 0; refused true; checkerExit 1; findingIds [r1-measure-blob-pin-mismatch,
+r5-claims-absent, r6-probe-absent]; r42CheckerExit 0; r42FindingCount 0
+   -> reproduces control c2-v0-probe.json field-for-field (generatorDigest
+      b87470625b11aa5b13d72cf1ac888ed004bff7b1d2ef7501f746d2142cb0b80c matches).
+
+$ node .ufo/waves/round-43/fixtures/tree-vs-blob.mjs --out <scratch>/tree-repro.json --work <scratch>/treework
+exit 0; typeViolationNamed true; v2 exit 1 with [r1-measure-blob-pin-mismatch,
+r1a-not-a-blob, r1b-too-small, r2-sources-absent, r3-baseline-absent,
+r4-slice-absent, r5-claims-absent, r6-probe-absent]; r42 exit 1 with
+[r1a-unparseable, r1b-too-small, r2-sources-absent, r3-baseline-file-absent,
+r4-slice-absent, r4-quarantine-absent]
+   -> reproduces control c2-tree-fixture.json field-for-field.
+
+## D. C1 battery re-run (7/7)
+
+$ node scripts/measure-c1-round43.mjs --battery
+allPass true; forger-r39-verbatim 2 / forger-r41-retargeted 2 / node-path 2 /
+ld-preload 2 / esm-loader 2 / esm-import 2 (all
+environment-loader-contamination) / clean 0 (null)
+   -> matches control c1-battery-r43.json case-for-case.
+
+## E. C1 counter refusals re-run on the frozen bytes
+
+$ node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs <r42 receipt> --measure <r41 measure>
+exit 1; predicate false; challengeVerified false; challengeError EINVAL;
+findings [schema, measure-nonce-shape, run-nonce-mismatch, witness-unreadable,
+measure-schema, measure-signature-invalid, receipt-binding-mismatch,
+witness-binding-mismatch]
+   -> reproduces control c1-replay-r42-refused.json (exit 1, predicate false).
+   NOTE: the committed control additionally lists two digest-mismatch findings
+   for the driver and the counter that do NOT reproduce now, because the
+   working-tree bytes equal the frozen pins (see the finding F2 note).
+
+$ node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs <committed r43 receipt> --measure <committed r43 measure>
+exit 1; predicate false; challengeVerified false; challengeError EINVAL;
+findings [] (all static layers pass)
+   -> the committed honest pair scores statically clean but is refused offline,
+      because fd3 is not a pipe in a direct invocation (EINVAL on write).
+
+$ node .../c1-signature-bound-v5.mjs <receipt> --measure <measure> --pins x
+$ node .../c1-signature-bound-v5.mjs <receipt> --measure <measure> --nonce deadbeef
+   -> both exit 2 with the strict-argv usage error. The r42 --pins hole is closed.
+
+## F. Honest-chain live run (this seat's own)
+
+$ node scripts/measure-c1-round43.mjs --out <scratch>/live/receipt.json --measure-out <scratch>/live/measure.json --scratch <scratch>/live/run
+exit 0; counterExit 0; challengeVerified true; witnessAttestationVerified true;
+elapsedMs 53835; driverExit 0; egress 0; runs 2; firstShot identical across
+both runs; digests == the three frozen pins; gate.self.forbiddenNames [];
+gate.child.ok true
+   -> the honest chain is green when the wrapper answers the challenge.
+
+## G. Control-name vs recorded-case audit (finding F7)
+
+Each control's own "command" field names the case it actually recorded. Read against the
+file name they do not always agree:
+
+$ python3 -c "import json;d=json.load(open('.ufo/waves/round-43/controls/c1-relabel-refused.json'));print(d['command'])"
+same synthetic pair with one tampered field in the measure record (signature not renewed)
+
+  -> c1-relabel-refused.json records the TAMPER case on a synthetic base pair, not a
+     nonce-relabel of honest bytes. Its "findings" list also carries the two
+     digest-mismatch entries that no longer reproduce (see F2), because it was
+     captured while the working-tree producer bytes still differed from the pins.
+
+$ python3 -c "import json;d=json.load(open('.ufo/waves/round-43/controls/c1-synthetic-refused.json'));print(d['command'])"
+node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs <synthetic self-signed pair> --measure <synthetic measure> (direct invocation)
+
+  -> the synthetic control names its mode explicitly: DIRECT INVOCATION. In that mode
+     fd3 is not a pipe, so the counter's challenge write fails EINVAL and
+     challengeVerified is false without any key comparison happening at all.
+     The control's stated refusal layer ("challenge-response: no run private half ->
+     challengeVerified false") describes a cause the mode, not the cryptography,
+     produced.
+
+Consequence for the table: the honest-byte relabel vector (nonce rewritten on a
+genuinely-produced receipt) is NOT covered by any committed control. This seat
+evidenced it directly instead:
+
+$ node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs <scratch>/relabel-receipt.json --measure <committed r43 measure>
+exit 1; predicate false; challengeVerified false; challengeError EINVAL;
+findings [run-nonce-mismatch, receipt-binding-mismatch]
+   (relabel-receipt.json = the committed honest r43 receipt with its runNonce
+    replaced by 64 x 'f'; its committed witness copied alongside unchanged)
+
+And the tamper vector against committed HONEST bytes:
+$ node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs <committed r43 receipt> --measure <scratch>/honest-tampered-measure.json
+exit 1; predicate false; findings [measure-signature-invalid]
+   (honest-tampered-measure.json = the committed honest r43 measure record with
+    elapsedMs incremented by 1; receipt and witness bytes untouched, so the
+    sha256 bindings still hold and only the signature layer fires)

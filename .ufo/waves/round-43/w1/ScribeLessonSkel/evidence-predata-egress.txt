@@ -1,0 +1,34 @@
+# ScribeLessonSkel — pre-data egress event, re-derived from the recovered run-1 bytes
+archive: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/w1/SentEgressAudit/failed-run-1
+
+- receipt.json: 1171017 bytes, sha256 c9ee082e2929d290150a1be21acfb0323d46d2250c4efedde087cd2520d36a6f
+- receipt.witness.json: 1268515 bytes, sha256 006e165e2f625fc88483677818684d0a3a69cabce6bd1f5a9156a29778c38b70
+- c1-measure-r43.json: 1950 bytes, sha256 8efbf192c017441ea49e9ff35882d52aeebce16e4bfe7c7285e0d266b295624c
+- measure.stdout: 5139 bytes, sha256 9e22b0e36be53b54445b20c0c4b23f6484df3f9059757b27def3af7a4a565846
+
+receipt schema: tabi-pw-firefox-egress-receipt-r43
+receipt refused: false
+receipt runNonce: 7be40389dde8dd41dd07b14e84e2d208722782c11ab2e699502752dc97610f44
+runs: 2
+
+## run1: samples=133 span=34503 ms
+  samples with nonLoopback != 0 (per surface): 46 -> counter finding ids = 46
+  flagged sample indices: 111..133 (distinct 23)
+  distinct surfaces flagged: ["ss","proc"]
+  distinct nonLoopbackRemotes values (driver did NOT record remotes pre-hardening?): 1
+    null
+  nonLoopback counts seen: [1]
+  finalSweep.ss: nonLoopback=0 remotes=null
+  finalSweep.proc: nonLoopback=0 remotes=null
+  run egressNonLoopback: 46
+## run2: samples=133 span=29823 ms
+  samples with nonLoopback != 0 (per surface): 0 -> counter finding ids = 0
+  finalSweep.ss: nonLoopback=0 remotes=null
+  finalSweep.proc: nonLoopback=0 remotes=null
+  run egressNonLoopback: 0
+
+TOTAL counter-style egress findings across both runs = 46
+
+## measure.stdout (the run-1 invocation output)
+{"schema":"tabi-r43-c1-measure","out":"/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round43/playwright-egress/receipt.json","witness":"/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round43/playwright-egress/receipt.witness.json","measureRecord":"/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/measure/c1-measure-r43.json","driverPath":"scripts/playwright-firefox-egress-round43.mjs","counterPath":".ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","digests":{"scripts/measure-c1-round43.mjs":"23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0","scripts/playwright-firefox-egress-round43.mjs":"b70e2c145390cc4c1c79b93aad87f13319f32f77c85ba972a973352e9843082a",".ufo/waves/round-43/counters/c1-signature-bound-v5.mjs":"bbdf1234ab0e5e0f7446218830d97a326cf87de171cfdc520f6c4e4e3731b6a8"},"elapsedMs":71470,"measureRecordSha256":"8efbf192c017441ea49e9ff35882d52aeebce16e4bfe7c7285e0d266b295624c","driverExit":0,"driverStdout":"{\"wrote\":\"/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round43/playwright-egress/receipt.json\",\"runs\":2,\"refused\":false,\"binding\":true,\"egress\":46,\"survivors\":0,\"firstShot\":[\"a792a1e3aba89324429ce55b92966178967e56c2b63a880441b0f5ca7ced7a4e\",\"a792a1e3aba89324429ce55b92966178967e56c2b63a880441b0f5ca7ced7a4e\"],\"runNonce\":\"7be40389dde8dd41dd07b14e84e2d208722782c11ab2e699502752dc97610f44\"}\n","driverStderr":"","nonceMatches":true,"counterExit":1,"receiptSha256":"c9ee082e2929d290150a1be21acfb0323d46d2250c4efedde087cd2520d36a6f","witnessSha256":"006e165e2f625fc88483677818684d0a3a69cabce6bd1f5a9156a29778c38b70","witnessAttestationVerified":true,"challengeVerified":true,"gate":{"self":{"procEnvironReadable":true,"nameCount":267,"forbiddenNames":[],"execArgv":[],"execArgvClean":true,"execPath":"/home/vgpnk/.local/share/fnm/node-versions/v24.21.0/installation/bin/node","nodeSha256":"7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c"},"child":{"schema":"tabi-r43-env-gate","self":{"readable":true,"forbidden":[]},"parent":{"ppid":2168132,"readable":true,"forbidden":[]},"execArgvLen":2,"execArgvFlag":["--eval"],"execArgvClean":true,"ok":true}},"counter":{"schema":"tabi-r43-c1-measured-v5","predicateSentence":"measure-c1-round43 launches the round-43 Playwright Firefox loopback driver for exactly two runs under a loader-clean environment (exec-time /proc environ free of injection variables, execArgv without preload flags) AND producer digests equal the frozen pins AND the fresh 64-hex nonce is carried by the receipt, both runs, the witness and the Ed25519-signed measure record AND the measure record verifies under its own Ed25519 wrapper signature over the canonical unsigned form AND the witness attestation verifies under the witness's own Ed25519 key AND the counter's fresh in-invocation challenge verifies under the wrapper public key from the signed measure record AND the committed receipt and witness bytes hash to the measure record's bindings AND each run has >=8 strictly increasing samples whose first-to-last observed timestamp span is >=1000ms AND both ss and proc surfaces are available with positive ticks on every sample and final sweep AND each run records at least one owned socket observation on each surface AND all observed nonLoopback counts are zero AND every sample carries a refreshed identity-bound owned tree with firefox-binary root executables AND the witness independently observed the driver and owned firefox processes AND no private half of either per-invocation signing key is persisted by any chain component.","receiptSha256":"c9ee082e2929d290150a1be21acfb0323d46d2250c4efedde087cd2520d36a6f","nonceMatched":true,"measureSignatureVerified":true,"witnessAttestationVerified":true,"predicate":false,"findings":["run1-sample111-ss-egress","run1-sample111-proc-egress","run1-sample112-ss-egress","run1-sample112-proc-egress","run1-sample113-ss-egress","run1-sample113-proc-egress","run1-sample114-ss-egress","run
+...[truncated]

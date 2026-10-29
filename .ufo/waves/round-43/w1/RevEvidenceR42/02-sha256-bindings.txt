@@ -1,0 +1,14 @@
+$ git cat-file -t 8ff64d691f5c09569a50f2a5a038bb23774c3d35
+blob
+$ git cat-file blob 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc:corpus/evidence/round41/playwright-egress/receipt.json | sha256sum
+416f6e4bb893bd31208106005dcd2b53689a6f74ada2e987b98b247277446db1  -
+$ git cat-file blob 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc:corpus/evidence/round41/playwright-egress/receipt.witness.json | sha256sum
+d3c9972e2724e8737027c8a511434d780eff661aa2b2d70e70e848e2240f39d3  -
+$ git cat-file blob 8ff64d691f5c09569a50f2a5a038bb23774c3d35 | sha256sum   (measure file bytes)
+5e2a83ac02b9a4ec3f7d0ebec21f5fa9b3469d4110ac23f8e78af18b43913f13  -
+$ node -e "const m=require(...); console.log(m.receiptSha256, m.witnessSha256)" over the committed measure record
+receiptSha256: 416f6e4bb893bd31208106005dcd2b53689a6f74ada2e987b98b247277446db1
+witnessSha256: d3c9972e2724e8737027c8a511434d780eff661aa2b2d70e70e848e2240f39d3
+
+receipt 416f6e4bb893bd31208106005dcd2b53689a6f74ada2e987b98b247277446db1 == measure.receiptSha256 : YES
+witness d3c9972e2724e8737027c8a511434d780eff661aa2b2d70e70e848e2240f39d3 == measure.witnessSha256 : YES

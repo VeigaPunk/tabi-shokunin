@@ -1,0 +1,16 @@
+# exit-code semantics — live runs against the production counter bytes (read-only invocations)
+$ node check-routed-defects-round43.mjs            (no args)
+{"schema":"tabi-r43-routed-defects","error":"usage: node check-routed-defects-round43.mjs --rev <40-hex rev> --repo <lane repo> [--json]"}
+exit=2
+$ node check-routed-defects-round43.mjs --rev <39-hex> --repo <lane>
+{"schema":"tabi-r43-routed-defects","error":"usage: node check-routed-defects-round43.mjs --rev <40-hex rev> --repo <lane repo> [--json]"}
+exit=2
+$ node check-routed-defects-round43.mjs --rev <40-hex>            (missing --repo)
+{"schema":"tabi-r43-routed-defects","error":"usage: node check-routed-defects-round43.mjs --rev <40-hex rev> --repo <lane repo> [--json]"}
+exit=2
+$ node check-routed-defects-round43.mjs --rev 0000...0000 --repo <lane>   (unknown rev)
+exit=1
+$ node check-routed-defects-round43.mjs --rev <freeze> --repo <lane> --json   (clean run)
+exit=0
+$ node check-routed-defects-round43.mjs --rev <baseline ab592825...> --repo <lane> --json
+exit=1

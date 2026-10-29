@@ -1,0 +1,40 @@
+# ScoutSourceCandidates — fetched artifacts, 2026-10-29, curl 8.23.0 (read-only GETs only)
+
+# (a) node:crypto v24.x API docs — same URL as S150's pinned page
+node-crypto.html   https://nodejs.org/docs/latest-v24.x/api/crypto.html  681625 B
+sha256 4b7024df06e31080d4caa20b21aafb68a56d0481781633d7b5f7dc7ec50c42af
+== staged tabi-shokunin/.ufo/waves/round-43/sources/crypto.html (cmp exit 0, byte-identical)
+
+# (b) git cat-file docs — same URL as S151's pinned page
+git-cat-file.html  https://git-scm.com/docs/git-cat-file  79360 B
+sha256 624464ef7a3d64de06038200bff85ac09389a9d217d379dd660aa6b5165048d7
+== staged tabi-shokunin/.ufo/waves/round-43/sources/git-cat-file.html (cmp exit 0, byte-identical)
+
+# (c) MDN SubtleCrypto.sign() — live page (full copy: mdn-subtlecrypto-sign.html)
+subtlecrypto-sign.html https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign  171569 B  http 200
+
+# (c') mdn/content markdown source of that page (full copy: mdn-sign-index.md)
+mdn-sign-index.md https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/api/subtlecrypto/sign/index.md  13353 B  http 200
+sha256 5ba25f2568f7a2c6b0961938e8b9ad744b3e40186aeb6cd063b35627fd52abc3
+latest mdn/content commit touching the path: 77d90a23ee0a3b5486a7963f68ad4e56efb06a7b (2025-04-27T18:17:43Z)
+
+# (d) WebDriver BiDi Living Standard
+webdriver-bidi.html https://w3c.github.io/webdriver-bidi/  4235329 B  http 200 (after -L)
+sha256 d07f85f8afd9e2d2ee616832f4f280ffd2c9ba06ff00b5ad9591eb5ad2b8e1bb
+(full bytes transient in scratch, deleted at cleanup; sha + offsets recorded here)
+
+# (e) MDN BiDi Network module page — REJECTED candidate
+bidi-network-mdn.html https://developer.mozilla.org/en-US/docs/Web/WebDriver/Reference/BiDi/Modules/network
+155226 B  http 200 after 301 redirect to lowercase .../Modules/network
+sha256 5367f4f9e62c22eabc9a278b191e34e120eabd633b913673f2548746e0ac7576
+0 occurrences of "intercept" (case-insensitive) in the fetched bytes; 91 lit-part markers;
+only Modules/* navigation links present -> client-rendered body.
+
+# 404 probes (candidate URL discovery)
+https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/Ed25519  http 404
+https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API/Ed25519  http 404
+https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/api/subtlecrypto/ed25519/index.md  http 404
+(no dedicated MDN Ed25519 page exists; the Ed25519 surface lives inside SubtleCrypto.sign)
+https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API  http 200, 161730 B (overview only, not proposed)
+
+# tooling observed: curl 8.23.0, git 2.56.0, node v24.21.0, jq present — no installs performed

@@ -1,0 +1,78 @@
+built frozen-nopin2: self-digest entry removed
+built mutant-nopin2: self-digest entry removed
+=== diff(frozen-nopin2, mutant-nopin2) — must be exactly the assigned nonce mutation ===
+--- /fast/scratch/hyaku/tabi-r43/MutC1Nonce/frozen-nopin2/c1-signature-bound-v5.mjs	2026-10-29 18:10:59.026873814 -0300
++++ /fast/scratch/hyaku/tabi-r43/MutC1Nonce/mutant-nopin2/c1-signature-bound-v5.mjs	2026-10-29 18:10:59.027006164 -0300
+@@ -52,7 +52,6 @@
+ 
+   if (receipt.schema !== SCHEMA) findings.push('schema');
+   if (!/^[0-9a-f]{64}$/.test(nonce || '')) findings.push('measure-nonce-shape');
+-  if (receipt.runNonce !== nonce || runs.some((r) => r.runNonce !== nonce)) findings.push('run-nonce-mismatch');
+   if (receipt.refused !== false || runs.length !== 2) findings.push('run-set');
+ 
+   // F4: the driver's exec-time environment was clean and nonce-bound.
+@@ -136,7 +135,6 @@
+   let witnessAttestationVerified = false;
+   if (!witness || witness.schema !== WITNESS_SCHEMA) findings.push('witness-unreadable');
+   else {
+-    if (witness.nonce !== nonce) findings.push('witness-nonce-mismatch');
+     const wenv = Array.isArray(witness.environ) ? witness.environ : [];
+     if (wenv.some((n) => FORBIDDEN_ENV.test(n))) findings.push('witness-env-contaminated');
+     const ws = Array.isArray(witness.samples) ? witness.samples : [];
+removed: 2  added: 0
+=== sanity: no self-digest entry remains in either copy ===
+/fast/scratch/hyaku/tabi-r43/MutC1Nonce/frozen-nopin2/c1-signature-bound-v5.mjs:1
+/fast/scratch/hyaku/tabi-r43/MutC1Nonce/mutant-nopin2/c1-signature-bound-v5.mjs:1
+########## pair=consistent
+=== consistent-v2-frozen
+    exit: 0 challengeBytes: 32
+    findings: []
+    predicate: true challengeVerified: true
+    named run-nonce-mismatch=false
+=== consistent-v2-mutant
+    exit: 1 challengeBytes: 32
+    findings: ["digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    predicate: false challengeVerified: true
+    named run-nonce-mismatch=false
+=== consistent-v2-frozen-nopin
+    exit: 0 challengeBytes: 32
+    findings: []
+    predicate: true challengeVerified: true
+    named run-nonce-mismatch=false
+=== consistent-v2-mutant-nopin
+    exit: 0 challengeBytes: 32
+    findings: []
+    predicate: true challengeVerified: true
+    named run-nonce-mismatch=false
+########## pair=nonceonly
+=== nonceonly-v2-frozen
+    exit: 1 challengeBytes: 32
+    findings: ["run-nonce-mismatch"]
+    predicate: false challengeVerified: true
+    named run-nonce-mismatch=true
+=== nonceonly-v2-mutant
+    exit: 1 challengeBytes: 32
+    findings: ["digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    predicate: false challengeVerified: true
+    named run-nonce-mismatch=false
+=== nonceonly-v2-frozen-nopin
+    exit: 1 challengeBytes: 32
+    findings: ["run-nonce-mismatch"]
+    predicate: false challengeVerified: true
+    named run-nonce-mismatch=true
+=== nonceonly-v2-mutant-nopin
+    exit: 0 challengeBytes: 32
+    findings: []
+    predicate: true challengeVerified: true
+    named run-nonce-mismatch=false
+########## LANE counter (committed bytes, read-only invocation) vs the pairs
+=== consistent-v2-LANE-counter
+    exit: 0 challengeBytes: 32
+    findings: []
+    predicate: true challengeVerified: true
+    named run-nonce-mismatch=false
+=== nonceonly-v2-LANE-counter
+    exit: 1 challengeBytes: 32
+    findings: ["run-nonce-mismatch"]
+    predicate: false challengeVerified: true
+    named run-nonce-mismatch=true

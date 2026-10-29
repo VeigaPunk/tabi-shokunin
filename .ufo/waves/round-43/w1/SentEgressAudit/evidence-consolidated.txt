@@ -1,0 +1,84 @@
+# SentEgressAudit — consolidated evidence (round 43, C1 live-run environment audit)
+generated: 2026-10-29T18:11:49-03:00  host: plazir27  kernel: 7.2.11-arch1-1  boot_id: bcbf8b48-25bb-4aa5-b379-018848f39361
+
+## A. Committed measurement digests (git object bytes at HEAD = ba433c94b14a0e0d5ecf2eba1be0a8ee3064491c)
+1b33d6a6b25681045bebf80bf371faa4c94db7ecc49298a7fe2f68536fe2d9bf    receipt.json (committed blob)
+0728d338f3b53a672b3404f548a2ed9bf982394c8660fcdf7a5c5789eeef2b2b    receipt.witness.json (committed blob)
+c67a1096e5cc32b0c935ca133c67d8b485c8fff11e44a288f6e62d6abb97b258    c1-measure-r43.json (committed blob)
+
+## B. Producer digests (frozen pins in claims.json vs on-disk vs committed)
+23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0  scripts/measure-c1-round43.mjs
+3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e  scripts/playwright-firefox-egress-round43.mjs
+6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c  .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs
+--- claims.json frozenDigests ---
+{"scripts/measure-c1-round43.mjs":"23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0","scripts/playwright-firefox-egress-round43.mjs":"3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e",".ufo/waves/round-43/counters/c1-signature-bound-v5.mjs":"6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c",".ufo/waves/round-43/counters/check-routed-defects-round43.mjs":"2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743",".ufo/waves/round-43/fixtures/v0-fabrication.mjs":"b87470625b11aa5b13d72cf1ac888ed004bff7b1d2ef7501f746d2142cb0b80c",".ufo/waves/round-43/fixtures/tree-vs-blob.mjs":"7407f6cd498362658fb0c78b61698489c373444ff3ce6982824ded877259ab6d"}
+
+## C. Archived attempt-1 bytes (copied into seat dir failed-run-1/)
+8efbf192c017441ea49e9ff35882d52aeebce16e4bfe7c7285e0d266b295624c  .ufo/waves/round-43/w1/SentEgressAudit/failed-run-1/c1-measure-r43.json
+9e22b0e36be53b54445b20c0c4b23f6484df3f9059757b27def3af7a4a565846  .ufo/waves/round-43/w1/SentEgressAudit/failed-run-1/measure.stdout
+c9ee082e2929d290150a1be21acfb0323d46d2250c4efedde087cd2520d36a6f  .ufo/waves/round-43/w1/SentEgressAudit/failed-run-1/receipt.json
+006e165e2f625fc88483677818684d0a3a69cabce6bd1f5a9156a29778c38b70  .ufo/waves/round-43/w1/SentEgressAudit/failed-run-1/receipt.witness.json
+--- digests the attempt-1 counter actually scored (from archived measure.stdout) ---
+receiptSha256: c9ee082e2929d290150a1be21acfb0323d46d2250c4efedde087cd2520d36a6f
+witnessSha256: 006e165e2f625fc88483677818684d0a3a69cabce6bd1f5a9156a29778c38b70
+measureRecordSha256: 8efbf192c017441ea49e9ff35882d52aeebce16e4bfe7c7285e0d266b295624c
+counterExit: 1
+findings: 46
+
+## D. Frozen counter re-run against the ARCHIVED attempt-1 receipt (read-only)
+command: node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs .ufo/waves/round-43/w1/SentEgressAudit/failed-run-1/receipt.json --measure .ufo/waves/round-43/w1/SentEgressAudit/failed-run-1/c1-measure-r43.json
+{"predicate":false,"challengeVerified":false,"challengeError":"EINVAL","measureSignatureVerified":true,"witnessAttestationVerified":true,"findingsCount":48,"egressFindings":46,"nonEgressFindings":["measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"],"egressDetailCount":46,"egressDetailRemotesSample":[{"run":"run1","sample":111,"surface":"ss","remotes":null},{"run":"run1","sample":111,"surface":"proc","remotes":null}]}
+
+## E. Frozen counter re-run against the COMMITTED receipt (read-only; challenge fails by design outside a wrapper invocation)
+{"predicate":false,"challengeVerified":false,"challengeError":"EINVAL","measureSignatureVerified":true,"witnessAttestationVerified":true,"findings":[],"egressDetail":[]}
+
+## F. Reproduction with the FROZEN driver (records nonLoopbackRemotes)
+-- .ufo/waves/round-43/w1/SentEgressAudit/evidence-repro-run1.json
+{"egressNonLoopback":0,"survivors":0,"refused":false,"binding":true,"runEgress":[0,0],"runSamples":[131,133],"anyRemotes":[]}
+-- .ufo/waves/round-43/w1/SentEgressAudit/evidence-repro2-run1.json
+{"egressNonLoopback":0,"survivors":0,"refused":false,"binding":true,"runEgress":[0,0],"runSamples":[132,131],"anyRemotes":[]}
+-- .ufo/waves/round-43/w1/SentEgressAudit/evidence-repro2-run2.json
+{"egressNonLoopback":0,"survivors":0,"refused":false,"binding":true,"runEgress":[0,0],"runSamples":[132,131],"anyRemotes":[]}
+-- .ufo/waves/round-43/w1/SentEgressAudit/evidence-repro2-run3.json
+{"egressNonLoopback":0,"survivors":0,"refused":false,"binding":true,"runEgress":[0,0],"runSamples":[111,87],"anyRemotes":[]}
+
+## G. Exact finding breakdown of the frozen counter on the archived attempt-1 bytes
+$ jq -r '.findings[] | select(test("^run[0-9]+-sample[0-9]+-(ss|proc)-egress$")|not)' counter-on-failed.json
+measure-digest-mismatch:scripts/playwright-firefox-egress-round43.mjs
+measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs
+
+$ jq '{total:(.findings|length), sampleEgress:([.findings[]|select(test("^run[0-9]+-sample[0-9]+-(ss|proc)-egress$"))]|length), egressDetail:(.egressDetail|length)}' counter-on-failed.json
+{"total":48,"sampleEgress":46,"egressDetail":46}
+
+Both non-egress findings are digest mismatches, expected because the archived
+attempt-1 measure record pins the PRE-freeze producer digests (driver b70e2c14...,
+counter bbdf1234...). The frozen counter is stricter against the archived bytes than
+attempt 1's counter was, not looser.
+(The substring "egress" also occurs inside the driver PATH
+scripts/playwright-firefox-egress-round43.mjs, which is why an unanchored jq count
+reports 47; the anchored sample-level pattern gives the exact 46.)
+
+## H. Frozen-driver reproduction: 4 invocations / 8 browser runs, all egress=0
+See files evidence-repro-run1.json, evidence-repro2-run{1,2,3}.json in this directory.
+
+## I. Predicate-sentence byte equality (attempt1 == attempt2 == frozen == claims)
+$ node pred-diff.mjs
+frozen == attempt1 counter : true
+frozen == attempt2 counter : true
+claims.counterPredicate == frozen PREDICATE : true
+sha256 frozen/attempt1/attempt2/claims (all equal):
+  9bc9545343000b4806cd9628d97ba63e390fdda64104da62a250a8ea2fe75598
+
+## J. Attempt-1 driver byte reconstruction (exact)
+Attempt-1 driver sha256 (recorded in the archived attempt-1 measure.stdout):
+  b70e2c145390cc4c1c79b93aad87f13319f32f77c85ba972a973352e9843082a
+
+Reconstruction: copy scripts/playwright-firefox-egress-round41.mjs, apply
+  sed -i 's/round41/round43/g; s/R41/R43/g; s/r41/r43/g'
+  -> sha256 = b70e2c145390cc4c1c79b93aad87f13319f32f77c85ba972a973352e9843082a
+  -> EXACT MATCH (re-verified after scratch deletion, 2026-10-29).
+
+diff <reconstruction> <frozen driver 3718235934d1...> = 23 changed lines, ALL of
+them the nonLoopbackRemotes diagnostic (see report section 3.4 for the full diff).
+The loopback classification functions isLoopbackPeer / isLoopbackHexRem are
+byte-identical between the two (verified in classifier-test.mjs output).

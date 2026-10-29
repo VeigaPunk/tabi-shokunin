@@ -1,0 +1,125 @@
+# ScribeLessonSkel — committed-bytes verification
+repo: /home/vgpnk/Projects/shokunin/tabi-shokunin
+freeze: 7ca6f018280b08dcc6a519e11ecc2c1ccbfc62bc
+node: v24.21.0
+
+## 1. registry rows at the freeze (raw cells)
+| S150 | Node.js Crypto documentation — https://nodejs.org/docs/latest-v24.x/api/crypto.html | docs | A | receipt-authenticity instrument: the node:crypto primitives (generateKeyPair, sign, verify) the round-43 Ed25519 receipt-signing chain is built on | §Crypto API index line, node v24.x docs page (681,625 B, sha256 4b7024df06e31080d4caa20b21aafb68a56d0481781633d7b5f7dc7ec50c42af); opened 2026-10-29 | createPrivateKey, createPublicKey, generateKeyPair, sign, verify, | mined | 2026-10-29 | on-release | corpus/knowledge/receipt-authenticity-signing-round-43.md |
+| S151 | git-cat-file manual — https://git-scm.com/docs/git-cat-file | docs | A | committed-bytes type discipline: `git cat-file -t` distinguishes a blob from a tree, the fix surface for the r42 checker tree-object defect (CritPredicateSentence P-A) | §-t option, git site render (79,360 B, sha256 624464ef7a3d64de06038200bff85ac09389a9d217d379dd660aa6b5165048d7); opened 2026-10-29 | Instead of the content, show the object type identified by | mined | 2026-10-29 | on-release | corpus/knowledge/receipt-authenticity-signing-round-43.md |
+registry row count at freeze (rows matching | SNNN |): 151
+
+## 2. staged source copies (committed at the freeze) — sha256 and verbatim quote location
+### S150 — .ufo/waves/round-43/sources/crypto.html
+bytes: 681625
+sha256(committed bytes): 4b7024df06e31080d4caa20b21aafb68a56d0481781633d7b5f7dc7ec50c42af
+sha256 recorded in the registry row: 4b7024df06e31080d4caa20b21aafb68a56d0481781633d7b5f7dc7ec50c42af
+sha256 match: true
+quote: "createPrivateKey, createPublicKey, generateKeyPair, sign, verify,"
+quote word count (whitespace-split): 5
+verbatim occurrences in the staged copy: 1; byte offsets: 85109
+context: "<span class=\"hljs-string\">'node:util'</span>;\n<span class=\"hljs-keyword\">const</span> {\n  createPrivateKey, createPublicKey, generateKeyPair, sign, verify,\n} = <span class=\"hljs-keyword\">await</span> <span class=\"hl"
+
+### S151 — .ufo/waves/round-43/sources/git-cat-file.html
+bytes: 79360
+sha256(committed bytes): 624464ef7a3d64de06038200bff85ac09389a9d217d379dd660aa6b5165048d7
+sha256 recorded in the registry row: 624464ef7a3d64de06038200bff85ac09389a9d217d379dd660aa6b5165048d7
+sha256 match: true
+quote: "Instead of the content, show the object type identified by"
+quote word count (whitespace-split): 10
+verbatim occurrences in the staged copy: 1; byte offsets: 43851
+context: ".txt--t\"><a class=\"anchor\" href=\"#Documentation/git-cat-file.txt--t\"></a>-t </dt>\n<dd>\n<p>Instead of the content, show the object type identified by\n<span class='synopsis'><em><span class=\"hover-term\" data-te"
+
+## 3. sentence identity (claims.json vs instrument PREDICATE const)
+C1 counterPredicate === counter PREDICATE (byte-identical): true
+  counterPredicate length: 1343; PREDICATE length: 1343
+C2 predicate === checker PREDICATE (byte-identical): true
+  predicate length: 1314; PREDICATE length: 1314
+C1 claims[0].predicate present and equal to counterPredicate: false
+
+## 4. frozen digests re-derived from committed bytes
+scripts/measure-c1-round43.mjs
+  claims.json: 23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0
+  re-derived : 23afa29d5def9d4043f19e8be020ef0a50b3565f92ee5965facf70c4a95992a0
+  match: true
+scripts/playwright-firefox-egress-round43.mjs
+  claims.json: 3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e
+  re-derived : 3718235934d1fd06ffef2b976cfe09fabdc5af75d295bd78ee4d95b04e487c7e
+  match: true
+.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs
+  claims.json: 6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c
+  re-derived : 6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c
+  match: true
+.ufo/waves/round-43/counters/check-routed-defects-round43.mjs
+  claims.json: 2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743
+  re-derived : 2f150b8422c1c70c816a49129eb0709ef759c82b3fa19733673f2314f8911743
+  match: true
+.ufo/waves/round-43/fixtures/v0-fabrication.mjs
+  claims.json: b87470625b11aa5b13d72cf1ac888ed004bff7b1d2ef7501f746d2142cb0b80c
+  re-derived : b87470625b11aa5b13d72cf1ac888ed004bff7b1d2ef7501f746d2142cb0b80c
+  match: true
+.ufo/waves/round-43/fixtures/tree-vs-blob.mjs
+  claims.json: 7407f6cd498362658fb0c78b61698489c373444ff3ce6982824ded877259ab6d
+  re-derived : 7407f6cd498362658fb0c78b61698489c373444ff3ce6982824ded877259ab6d
+  match: true
+
+## 5. pre-data disclosure (first live attempt refused by the round-43 counter)
+LOG.md context (verbatim, wrapped lines joined): ng-mismatch`); C2 baseline red (exit 1: `r5-claims-absent`, `r6-probe-absent`); V0 fabrication rebuilt in scratch — v2 refuses with `r1-measure-blob-pin-mismatch` while the r42 checker bytes still green it (exit 0, zero findings) — the documented hole, now closed; tree fixture — v2 names `r1a-not-a-blob` where r42 bytes named no type violation. **Live measurement (pre-dispatch, first clean run):** the first attempt failed its counter with 46 real `*-egress` findings — one non-loopback owned socket, samples 111–133 of run 1, gone by run 2 (`failed-run-1/` archived under scratch; the driver counted but recorded no remotes). Instrument hardened BEFORE the freeze: driver + counter now record and surface `nonLoopbackRemotes` (disclosed here; no predicate was loosened — "all observed nonLoopback counts are zero" stands). Second run:
+SCORECARD.md context (verbatim, wrapped lines joined): rivate half requires a prior honest chain run; rescoring a genuine prior pair re-proves that honest run only; process-memory and kernel-level attacks stay out of scope (rounds 40–42); on-disk tampering of committed pins is caught by committed-byte re-derivation at closure. In-model do-nothing reach = kill rule. Pre-dispatch disclosures: the first live attempt (pre-freeze) was refused by the round's own counter with 46 `*-egress` findings — one non-loopback owned socket late in run 1, absent by run 2; the instrument was hardened before the freeze (driver/counter now record `nonLoopbackRemotes`; no predicate loosened). Fixture/counter edits before any seat scored are reflected in the frozen digests. No tool installs; no pacman transactions.
+counter egress finding-id templates (committed bytes): ["${N}-sample${j + 1}-${k}-egress","${N}-final-${k}-egress"]
+counter surface tuples (committed bytes): ["'ss', 'proc'"]
+disclosed sample range: 111–133 => 23 samples
+surfaces per sample: 2 (ss, proc) => 46 findings
+arithmetic consistent with the disclosed total of 46: true
+
+## 6. hardening claimed pre-freeze (nonLoopbackRemotes recorded) present in frozen bytes
+driver occurrences of nonLoopbackRemotes: 10
+  166: const nonLoopbackRemotes = [];
+  170: if (!isLoopbackPeer(peer)) { nonLoopback += 1; nonLoopbackRemotes.push(peer); }
+  172: return { ticks: 1, lines: lines.length, nonLoopback, nonLoopbackRemotes };
+  229: const nonLoopbackRemotes = [];
+  246: nonLoopbackRemotes.push(`${b ? b.join('.') : iphex}:${parseInt(porthex, 16)}`);
+  251: return { ticks: 1, inodes, nonLoopback, nonLoopbackRemotes };
+  266: ss: { ticks: ss.ticks, lines: ss.lines, nonLoopback: ss.nonLoopback, ssObs: ss.lines, nonLoopbackRemotes: ss.nonLoopbackRemotes },
+  267: proc: { ticks: pr.ticks, inodes: pr.inodes, nonLoopback: pr.nonLoopback, procObs: pr.inodes, nonLoopbackRemotes: pr.nonLoopbackRemotes },
+  377: ss: fss === null ? { ticks: 0, lines: 0, nonLoopback: 0, ssObs: 0, unavailable: true } : { ticks: fss.ticks, lines: fss.lines, nonLoopback: fss.nonLoopback, ssObs: fss.lines, nonLoopbackRemotes: fss.nonLoopbackRemotes },
+  378: proc: fpr === null ? { ticks: 0, inodes: 0, nonLoopback: 0, procObs: 0, unavailable: true } : { ticks: fpr.ticks, inodes: fpr.inodes, nonLoopback: fpr.nonLoopback, procObs: fpr.inodes, nonLoopbackRemotes: fpr.nonLoopbackRemotes },
+counter occurrences of nonLoopbackRemotes/egressDetail: 4
+  47: const egressDetail = [];
+  80: egressDetail.push({ run: N, sample: j + 1, surface: k, remotes: o.nonLoopbackRemotes || null });
+  108: egressDetail.push({ run: N, final: true, surface: k, remotes: o.nonLoopbackRemotes || null });
+  234: return { schema: 'tabi-r43-c1-measured-v5', predicateSentence: PREDICATE, receiptSha256: sha256(raw), nonceMatched: !findings.includes('run-nonce-mismatch'), measureSignatureVerified, witnessAttestationVerified, egressDetail, predicate: findings.length === 0, findings };
+
+## 6b. claims.json C1 object: `counterPredicate` vs the sibling `predicate` key
+keys on claims[0]: ["id","axis","kind","title","capabilityRowName","surface","restsOn","countingCommand","beforeState","counterPredicate","predicate","residualModel","killRule","admission","verdict","measuredRevision"]
+claims[0].counterPredicate === counter PREDICATE: true
+claims[0].predicate === counter PREDICATE: false
+claims[0].predicate === claims[0].counterPredicate: false
+lengths: counterPredicate=1343 predicate=2012 PREDICATE=1343
+common prefix length: 1343
+counterPredicate tail: ""
+predicate tail      : " THE CLAIM: the counting command exits 0 on a fresh nonce AND the produced receipt.json, receipt.witness.json and signed measure record are committed at the measured revision AND node scripts/measure-c1-round43.mjs --battery reports all cases pass (contamination vectors exit 2 with environment-loader-contamination, clean probe exit 0) AND direct counter-v5 invocations refuse the committed r42 receipt and self-authored synthetic pairs (controls above) AND the round's validated policy-v2 wave settled with WAVE-DONE over at least 64 seats AND no settled seat demonstrates an in-model do-nothing reach (exit 0 without a browser run) under the declared residual model."
+C2 has a sibling duplicate key: predicate
+
+## 7. is the failed run-1 archive committed?
+committed round-43 files at the freeze: 19
+  .ufo/waves/round-43/claims.json
+  .ufo/waves/round-43/controls/c1-baseline-tree-count.txt
+  .ufo/waves/round-43/controls/c1-battery-r43.json
+  .ufo/waves/round-43/controls/c1-relabel-refused.json
+  .ufo/waves/round-43/controls/c1-replay-r42-refused.json
+  .ufo/waves/round-43/controls/c1-synthetic-refused.json
+  .ufo/waves/round-43/controls/c2-baseline-red-r43.json
+  .ufo/waves/round-43/controls/c2-tree-fixture.json
+  .ufo/waves/round-43/controls/c2-v0-probe.json
+  .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs
+  .ufo/waves/round-43/counters/check-routed-defects-round43.mjs
+  .ufo/waves/round-43/fixtures/tree-vs-blob.mjs
+  .ufo/waves/round-43/fixtures/v0-fabrication.mjs
+  .ufo/waves/round-43/measure/c1-measure-r43.json
+  .ufo/waves/round-43/measure/census-start.err
+  .ufo/waves/round-43/measure/census-start.exit
+  .ufo/waves/round-43/measure/census-start.out
+  .ufo/waves/round-43/sources/crypto.html
+  .ufo/waves/round-43/sources/git-cat-file.html
+any committed artifact naming the failed run-1 archive: 0
+

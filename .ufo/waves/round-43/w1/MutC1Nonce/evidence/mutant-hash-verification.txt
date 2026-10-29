@@ -1,0 +1,22 @@
+# Pre-restore mutant hash, reconstructed and cross-verified
+
+The mutated scratch copy was restored to pristine bytes at the end of the probe
+(see restore.txt §1), so its pre-restore hash was re-derived deterministically from
+the pristine bytes by removing exactly the two assigned lines, and cross-checked
+against the independently derived mutant-nopin2 copy.
+
+## reconstructed mutant (frozen minus the two assigned lines)
+bccee53c5d707473f87becc4642803a039c12736a333d4debe3bc384512f46d8  /fast/scratch/hyaku/tabi-r43/MutC1Nonce/recon-mutant.mjs
+
+## cross-check: recon-mutant with the self-digest array entry removed == mutant-nopin2 (byte-identical)
+match: True
+
+## the committed evidence/mutant.diff and the reconstruction diff are content-identical
+# (they differ only in the ---/+++ path header lines):
+c0892a3eaf575eda3d5f8f57852393b0  -
+c0892a3eaf575eda3d5f8f57852393b0  -
+# the two md5 sums above are equal -> the same 2 lines removed, nothing else
+
+## removed lines, verbatim
+-  if (receipt.runNonce !== nonce || runs.some((r) => r.runNonce !== nonce)) findings.push('run-nonce-mismatch');
+-    if (witness.nonce !== nonce) findings.push('witness-nonce-mismatch');

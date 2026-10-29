@@ -1,0 +1,55 @@
+=========== BASE (committed r43 receipt/witness/measure, direct invocation)
+--- base-frozen : exit=1
+    cmd: node /fast/scratch/hyaku/tabi-r43/MutC1Nonce/frozen/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/base/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/base/measure.json  (fd3 read-only)
+    findings: []
+    named: run-nonce-mismatch=false witness-nonce-mismatch=false measure-nonce-shape=false
+    nonceMatched: true predicate: false challengeVerified: false challengeError: EBADF
+--- base-mutant : exit=1
+    cmd: node /fast/scratch/hyaku/tabi-r43/MutC1Nonce/mutant/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/base/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/base/measure.json  (fd3 read-only)
+    findings: ["digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    named: run-nonce-mismatch=false witness-nonce-mismatch=false measure-nonce-shape=false
+    nonceMatched: true predicate: false challengeVerified: false challengeError: EBADF
+=========== RELABEL-RECEIPT (receipt.runNonce + runs[].runNonce relabeled)
+--- relrec-frozen : exit=1
+    cmd: node /fast/scratch/hyaku/tabi-r43/MutC1Nonce/frozen/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-receipt/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-receipt/measure.json  (fd3 read-only)
+    findings: ["run-nonce-mismatch","receipt-binding-mismatch"]
+    named: run-nonce-mismatch=true witness-nonce-mismatch=false measure-nonce-shape=false
+    nonceMatched: false predicate: false challengeVerified: false challengeError: EBADF
+--- relrec-mutant : exit=1
+    cmd: node /fast/scratch/hyaku/tabi-r43/MutC1Nonce/mutant/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-receipt/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-receipt/measure.json  (fd3 read-only)
+    findings: ["digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","receipt-binding-mismatch","measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    named: run-nonce-mismatch=false witness-nonce-mismatch=false measure-nonce-shape=false
+    nonceMatched: true predicate: false challengeVerified: false challengeError: EBADF
+=========== RELABEL-MEASURE (measure.nonce relabeled, receipt+witness untouched)
+--- relmea-frozen : exit=1
+    cmd: node /fast/scratch/hyaku/tabi-r43/MutC1Nonce/frozen/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-measure/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-measure/measure.json  (fd3 read-only)
+    findings: ["run-nonce-mismatch","witness-nonce-mismatch","measure-signature-invalid"]
+    named: run-nonce-mismatch=true witness-nonce-mismatch=true measure-nonce-shape=false
+    nonceMatched: false predicate: false challengeVerified: false challengeError: EBADF
+--- relmea-mutant : exit=1
+    cmd: node /fast/scratch/hyaku/tabi-r43/MutC1Nonce/mutant/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-measure/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-measure/measure.json  (fd3 read-only)
+    findings: ["digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","measure-signature-invalid","measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    named: run-nonce-mismatch=false witness-nonce-mismatch=false measure-nonce-shape=false
+    nonceMatched: true predicate: false challengeVerified: false challengeError: EBADF
+=========== RELABEL-WITNESS (witness.nonce relabeled, receipt+measure untouched)
+--- relwit-frozen : exit=1
+    cmd: node /fast/scratch/hyaku/tabi-r43/MutC1Nonce/frozen/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-witness/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-witness/measure.json  (fd3 read-only)
+    findings: ["witness-nonce-mismatch","witness-attestation-invalid","witness-binding-mismatch"]
+    named: run-nonce-mismatch=false witness-nonce-mismatch=true measure-nonce-shape=false
+    nonceMatched: true predicate: false challengeVerified: false challengeError: EBADF
+--- relwit-mutant : exit=1
+    cmd: node /fast/scratch/hyaku/tabi-r43/MutC1Nonce/mutant/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-witness/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/relabel-witness/measure.json  (fd3 read-only)
+    findings: ["witness-attestation-invalid","digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","witness-binding-mismatch","measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    named: run-nonce-mismatch=false witness-nonce-mismatch=false measure-nonce-shape=false
+    nonceMatched: true predicate: false challengeVerified: false challengeError: EBADF
+=========== COMMITTED CONTROL REPLAY (r42 committed receipt + r41 measure record)
+--- replay42-frozen : exit=1
+    cmd: node /fast/scratch/hyaku/tabi-r43/MutC1Nonce/frozen/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/replay42/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/replay42/measure.json  (fd3 read-only)
+    findings: ["schema","measure-nonce-shape","run-nonce-mismatch","witness-unreadable","measure-schema","measure-signature-invalid","receipt-binding-mismatch","witness-binding-mismatch"]
+    named: run-nonce-mismatch=true witness-nonce-mismatch=false measure-nonce-shape=true
+    nonceMatched: false predicate: false challengeVerified: false challengeError: EBADF
+--- replay42-mutant : exit=1
+    cmd: node /fast/scratch/hyaku/tabi-r43/MutC1Nonce/mutant/c1-signature-bound-v5.mjs /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/replay42/receipt.json --measure /fast/scratch/hyaku/tabi-r43/MutC1Nonce/fixtures/replay42/measure.json  (fd3 read-only)
+    findings: ["schema","measure-nonce-shape","witness-unreadable","digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs","measure-schema","measure-signature-invalid","receipt-binding-mismatch","witness-binding-mismatch"]
+    named: run-nonce-mismatch=false witness-nonce-mismatch=false measure-nonce-shape=true
+    nonceMatched: true predicate: false challengeVerified: false challengeError: EBADF

@@ -1,0 +1,10 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-43/counters/check-routed-defects-round43.mjs	2026-10-29 17:31:23.690827929 -0300
++++ /fast/scratch/hyaku/tabi-r43/MutC2Bind/check-routed-defects-round43.MUT.mjs	2026-10-29 17:53:03.240947061 -0300
+@@ -197,7 +197,6 @@
+       if (!b.path || !/^[0-9a-f]{64}$/.test(b.sha256 || '')) { add('r5-binding-malformed', tag); continue; }
+       if (!requireBlob(`r5-ctl-${tag}`, b.path)) continue;
+       const raw = gitShow(b.path);
+-      if (sha256(raw) !== b.sha256) add('r5-binding-sha-mismatch', `${b.path} sha256 ${sha256(raw)} != frozen ${b.sha256}`);
+       if (typeof b.quote !== 'string' || b.quote.length < 8 || !raw.toString('utf8').includes(b.quote)) add('r5-binding-quote-absent', `${b.path} quote line not found verbatim in committed control bytes`);
+     }
+   }

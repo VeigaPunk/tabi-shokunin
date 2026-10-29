@@ -1,0 +1,20 @@
+--- /fast/scratch/hyaku/tabi-r43/MutDriverEgress/pristine/driver.mjs	2026-10-29 17:58:46.576819782 -0300
++++ /fast/scratch/hyaku/tabi-r43/MutDriverEgress/mutant/driver.mjs	2026-10-29 18:06:01.529903568 -0300
+@@ -169,7 +169,7 @@
+     const peer = f[4] || '';
+     if (!isLoopbackPeer(peer)) { nonLoopback += 1; nonLoopbackRemotes.push(peer); }
+   }
+-  return { ticks: 1, lines: lines.length, nonLoopback, nonLoopbackRemotes };
++  return { ticks: 1, lines: lines.length, nonLoopback: 0, nonLoopbackRemotes: [] };
+ }
+ 
+ // --- socket observation, surface 2: /proc fd inodes x /proc/net/tcp{,6} ------
+@@ -248,7 +248,7 @@
+       }
+     }
+   }
+-  return { ticks: 1, inodes, nonLoopback, nonLoopbackRemotes };
++  return { ticks: 1, inodes, nonLoopback: 0, nonLoopbackRemotes: [] };
+ }
+ 
+ // One sample: fresh identity-bound tree + both socket surfaces + owned counts.

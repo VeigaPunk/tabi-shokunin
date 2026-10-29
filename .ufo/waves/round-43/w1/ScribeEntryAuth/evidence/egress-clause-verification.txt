@@ -1,0 +1,100 @@
+# ScribeEntryAuth — egress-count clause verification (own runs, 2026-10-29)
+# Context: peer seat MutDriverEgress reported that the round-43 knowledge entry's
+# "the egress-count clause remains honest-run-observable" bullet is wrong in its
+# first half. I re-verified their sub-claims myself before adopting the correction.
+# Frozen counter: .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs
+#   sha256 6b8c875037b64ab5c9bb4735e2dc5b668ecf7f2ee9b407328658efca8c27126c
+
+## 1. The GENUINE-egress receipt is refused by the egress clause
+
+Input: .ufo/waves/round-43/measure/failed-run-1/receipt.json (a real run that recorded
+46 genuine non-loopback observations; confirmed by reading the receipt: 46 samples with
+non-zero nonLoopback across the ss and proc surfaces).
+
+$ node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs <scratch>/receipt.json --measure <scratch>/egress-measure.json
+EXIT=1
+predicate: False
+findings: 48 total
+  - 46 per-sample egress findings (run1-sampleNNN-ss-egress / -proc-egress)
+  - 1 measure-digest-mismatch:scripts/playwright-firefox-egress-round43.mjs
+    (the working-tree driver bytes differ from the frozen pin at this point)
+  - 1 witness-unreadable
+egressDetail entries: 46
+
+## 2. A CONSISTENT lie (counts zeroed, every aggregate recomputed) fires NO summary clause
+
+I built the lie directly at the receipt level: zero every per-sample nonLoopback and
+nonLoopbackRemotes, zero the finalSweep values, and recompute every aggregate
+(sockets.ss.nonLoopback, sockets.proc.nonLoopback, run egressNonLoopback, receipt
+egressNonLoopback) so the receipt is internally consistent — the exact shape a driver
+that zeroes at the observe*() source produces.
+
+$ node .ufo/waves/round-43/counters/c1-signature-bound-v5.mjs <scratch>/receipt-zeroed.json --measure <scratch>/egress-measure.json
+EXIT=1
+findings: [witness-unreadable, receipt-binding-mismatch, witness-binding-mismatch,
+           measure-digest-mismatch:scripts/playwright-firefox-egress-round43.mjs,
+           measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs]
+predicate: False   (here only because the receipt bytes changed, so the honest measure
+                    record's bindings no longer match — the EGRESS clause itself fired
+                    on nothing)
+
+=> Confirms the peer's claim: the summary-consistency clauses do not catch a consistent
+   lie. They only catch a PARTIAL lie (per-sample zeroed, aggregates left true), because
+   the aggregates then disagree with the per-sample sums.
+
+## 3. The clause's FAILING state is plantable with no browser run
+
+I planted a non-zero count into ONE sample of a hand-crafted receipt and re-ran the
+frozen counter (direct invocation; no wrapper, no driver, no browser):
+
+(a) PARTIAL lie (one sample planted, aggregates left alone):
+    findings: [run1-sample1-ss-egress, run1-sample1-proc-egress,
+               run1-summary-ss-mismatch, run1-summary-proc-mismatch,
+               run1-summary-egress-mismatch]
+    egressDetail: [{run: run1, sample: 1, surface: ss,  remotes: [203.0.113.7:443]},
+                    {run: run1, sample: 1, surface: proc, remotes: [203.0.113.7:443]}]
+
+(b) CONSISTENT lie (same plant, all aggregates recomputed):
+    findings: [run1-sample1-ss-egress, run1-sample1-proc-egress]
+    egressDetail: same two entries
+
+=> (a) shows the summary clauses DO fire on a partial lie; (b) shows they do NOT fire
+   on a consistent lie. And in both, the egress clause itself emits its named findings
+   and populates egressDetail — with no browser run anywhere. So the clause is testable
+   offline in BOTH directions, which is what makes the two browser-free controls the
+   peer proposes buildable.
+
+## 4. The byte-pin is what stops the mutated bytes (peer's claim, accepted)
+
+The peer's wrapper run with a mutated driver refuses before the browser spawns:
+    finding: producer-digest-mismatch
+    digestFindings: [digest-mismatch:scripts/playwright-firefox-egress-round43.mjs]
+    digests show the mutant driver sha256 cbd8d65e... != the frozen pin.
+So the egress-count gap is a CONTROL-SET calibration gap, not a kill-rule trigger on
+its own. F1 (the do-nothing reach against the scoring instrument) is a separate and
+stronger class: there the DOCUMENT is the forger's, not merely a field in it.
+
+## 5. Reproduction scripts (saved alongside this file)
+
+evidence/egress/plant-egress.mjs   — builds planted-partial.json and planted-consistent.json
+                                      from a base receipt.json (browser-free)
+evidence/egress/zero-consistent.mjs — builds receipt-zeroed.json from receipt.json
+                                      (zero counts + recompute every aggregate)
+
+Both were re-run from a FRESH scratch directory against the frozen counter and reproduced
+the findings above exactly. One reading caveat worth recording: a filter on the substring
+"egress" hides run1-summary-ss-mismatch and run1-summary-proc-mismatch (those strings do
+not contain "egress"), which makes a partial lie look like it fires only the egress
+summary clause. The FULL findings lists are:
+
+  planted-partial.json   -> [run1-sample1-ss-egress, run1-sample1-proc-egress,
+                             run1-summary-ss-mismatch, run1-summary-proc-mismatch,
+                             run1-summary-egress-mismatch, witness-unreadable,
+                             receipt-binding-mismatch, witness-binding-mismatch]
+  planted-consistent.json -> [run1-sample1-ss-egress, run1-sample1-proc-egress,
+                             witness-unreadable, receipt-binding-mismatch,
+                             witness-binding-mismatch]
+  receipt-zeroed.json     -> no egress or summary finding at all
+
+So: the partial lie fires three summary clauses; the consistent lie fires none; the
+fully zeroed receipt fires none either. That is the whole of F8.

@@ -1,0 +1,23 @@
+# receipt 7: the in-place pack rewrite at 17:53:43 in the lane object store
+
+## lane repo packs (inode, nlink, mtime, ctime) — mtime==ctime, inode/size unchanged
+ino=10933444 nlink=2 mtime=2026-10-29 17:53:43.399893219 -0300 ctime=2026-10-29 17:53:43.399893219 -0300 size=1129754 .git/objects/pack/pack-1d7c8ce26594dd9b1ddec9281eb1dbe5da18fb83.pack
+ino=43219439 nlink=2 mtime=2026-10-29 17:53:43.164893534 -0300 ctime=2026-10-29 17:53:43.164893534 -0300 size=386117 .git/objects/pack/pack-58681c191a077cec89480e6e53064d022bbf8398.pack
+ino=43187634 nlink=2 mtime=2026-10-29 17:53:43.401893216 -0300 ctime=2026-10-29 17:53:43.401893216 -0300 size=1862121 .git/objects/pack/pack-86e480793c967983546a9b173fcba3509e38dc57.pack
+ino=43200207 nlink=2 mtime=2026-10-29 17:53:43.402893215 -0300 ctime=2026-10-29 17:53:43.402893215 -0300 size=471506 .git/objects/pack/pack-da21e1de24c6a7fcd0d794185378b6c23de8172a.pack
+ino=245695392 nlink=1 mtime=2026-10-29 17:53:43.394893225 -0300 ctime=2026-10-29 17:53:43.394893225 -0300 size=34649696 .git/objects/pack/pack-f60cba609bc85beda99944aea3b534afcf95eac9.pack
+
+## the same four inodes are hardlinked into the stale round-28 clone inside the production tree
+ino=10933444 nlink=2 mtime=2026-10-29 17:53:43.399893219 -0300 ctime=2026-10-29 17:53:43.399893219 -0300 size=1129754 .ufo/waves/round-28/scratch/Exec12/dnclone/.git/objects/pack/pack-1d7c8ce26594dd9b1ddec9281eb1dbe5da18fb83.pack
+ino=43219439 nlink=2 mtime=2026-10-29 17:53:43.164893534 -0300 ctime=2026-10-29 17:53:43.164893534 -0300 size=386117 .ufo/waves/round-28/scratch/Exec12/dnclone/.git/objects/pack/pack-58681c191a077cec89480e6e53064d022bbf8398.pack
+ino=43187634 nlink=2 mtime=2026-10-29 17:53:43.401893216 -0300 ctime=2026-10-29 17:53:43.401893216 -0300 size=1862121 .ufo/waves/round-28/scratch/Exec12/dnclone/.git/objects/pack/pack-86e480793c967983546a9b173fcba3509e38dc57.pack
+ino=43200207 nlink=2 mtime=2026-10-29 17:53:43.402893215 -0300 ctime=2026-10-29 17:53:43.402893215 -0300 size=471506 .ufo/waves/round-28/scratch/Exec12/dnclone/.git/objects/pack/pack-da21e1de24c6a7fcd0d794185378b6c23de8172a.pack
+
+## the stale clone is gitignored and untracked:
+.gitignore:5:.ufo/waves/*/scratch/	.ufo/waves/round-28/scratch/Exec12/dnclone
+Did you forget to 'git add'?
+136M	.ufo/waves/round-28/scratch/Exec12/dnclone
+
+## the stale clone still resolves and fsck is clean:
+eb23c0b84668afc48ebab8bd7e4a8a4457407cc4
+stale-clone fsck exit=0

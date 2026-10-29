@@ -1,0 +1,8 @@
+# 08 — exhaustive stability sweep over EVERY commit in EVERY ref of the lane repo
+# refs present: 902 (heads, remotes, refs/jj/keep/*, refs/stash)
+# commits: 992
+$ for c in $(git -C $LANE rev-list --all); do git -C $LANE rev-parse --verify --quiet $c:.ufo/waves/round-41/measure/c1-measure.json; done | sort | uniq -c
+     60 8ff64d691f5c09569a50f2a5a038bb23774c3d35
+    932 ABSENT
+# read: 60 commits carry the path, and EVERY one of them carries blob id 8ff64d691f5c09569a50f2a5a038bb23774c3d35;
+#       932 commits predate the path (ABSENT). No other blob id has ever existed at that path.

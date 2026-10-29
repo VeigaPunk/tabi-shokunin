@@ -1,0 +1,26 @@
+=== resigned-frozen-nopin
+    exit: 1 challengeBytes: 32
+    findings: ["run-nonce-mismatch","witness-nonce-mismatch"]
+    predicate: false challengeVerified: true measureSignatureVerified: true witnessAttestationVerified: true
+    named: run-nonce-mismatch=true witness-nonce-mismatch=true measure-signature-invalid=false
+=== resigned-mutant-nopin
+    exit: 0 challengeBytes: 32
+    findings: []
+    predicate: true challengeVerified: true measureSignatureVerified: true witnessAttestationVerified: true
+    named: run-nonce-mismatch=false witness-nonce-mismatch=false measure-signature-invalid=false
+=== resigned-frozen
+    exit: 1 challengeBytes: 32
+    findings: ["run-nonce-mismatch","witness-nonce-mismatch","measure-digest-mismatch:.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs"]
+    predicate: false challengeVerified: true measureSignatureVerified: true witnessAttestationVerified: true
+    named: run-nonce-mismatch=true witness-nonce-mismatch=true measure-signature-invalid=false
+=== sanity: the pair is otherwise clean (measure record signature + bindings verify) ===
+    measure sig over-match: true
+    measure sig verify: true
+    receiptSha256 binding ok: true
+    witnessSha256 binding ok: true
+    measure.nonce: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    receipt.runNonce: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc runs nonces: [
+  'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc',
+  'cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc'
+]
+    witness.nonce: f649d0cb67c9bf728db39ba0f258fff74373e67984cc8d9f09c53b9d90c4ae4c
