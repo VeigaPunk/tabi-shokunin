@@ -1,0 +1,157 @@
+{
+ "note": "hand-declared refusal/green fixtures for webview2-receipt-r50.mjs. runtimeProbe with-exe/without-exe materialize a deterministic EdgeWebView/Application/156.0.4314.50 folder under a temp dir for the case (the counter reads the receipt's runtimeFolder field); asis uses the receipt bytes verbatim (d3-asis pins the REAL removed runtime — its could-not-evaluate expectation is derived from the host state per the declared contract, non-empty iff the folder is absent). Expected findings are exact-match; expected couldNotEvaluate is the declared rule itself (only ever runtime-pin-host-drift, iff folder absent, never a finding).",
+ "cases": [
+  {
+   "name": "green-rel",
+   "receipt": "green-rel.json",
+   "shots": {
+    "main": "fixture-main.png"
+   },
+   "findings": [],
+   "runtimeProbe": "with-exe"
+  },
+  {
+   "name": "green-journey",
+   "receipt": "green-journey.json",
+   "shots": {
+    "main": "fixture-main.png",
+    "a": "fixture-step.png",
+    "b": "fixture-step.png",
+    "c": "fixture-step.png"
+   },
+   "findings": [],
+   "runtimeProbe": "with-exe"
+  },
+  {
+   "name": "d3-asis-real-removed-runtime",
+   "receipt": "d3-asis.json",
+   "shots": {
+    "main": "fixture-main.png"
+   },
+   "findings": [],
+   "runtimeProbe": "asis"
+  },
+  {
+   "name": "runtime-without-exe-refused",
+   "receipt": "runtime-without-exe.json",
+   "shots": {
+    "main": "fixture-main.png"
+   },
+   "findings": [
+    "runtime-msedgewebview2-absent"
+   ],
+   "runtimeProbe": "without-exe"
+  },
+  {
+   "name": "runtime-identity-mismatch-refused",
+   "receipt": "runtime-identity-mismatch.json",
+   "shots": {
+    "main": "fixture-main.png"
+   },
+   "findings": [
+    "runtime-identity-mismatch"
+   ],
+   "runtimeProbe": "with-exe"
+  },
+  {
+   "name": "paths-block-missing-refused",
+   "receipt": "paths-block-missing.json",
+   "shots": {
+    "main": "fixture-main.png"
+   },
+   "findings": [
+    "paths-block-missing"
+   ],
+   "runtimeProbe": "with-exe"
+  },
+  {
+   "name": "resolution-not-applied-refused",
+   "receipt": "resolution-not-applied.json",
+   "shots": {
+    "main": "fixture-main.png"
+   },
+   "findings": [
+    "paths-resolution-not-applied",
+    "paths-resolved-not-absolute",
+    "profile-outside-resolved-scratch"
+   ],
+   "runtimeProbe": "with-exe"
+  },
+  {
+   "name": "tampered-shot-refused",
+   "receipt": "tampered-shot.json",
+   "shots": {
+    "main": "fixture-main.png"
+   },
+   "findings": [
+    "shot-digest-mismatch",
+    "shot-length-mismatch"
+   ],
+   "runtimeProbe": "with-exe"
+  },
+  {
+   "name": "chrome-relabel-refused",
+   "receipt": "chrome-relabel.json",
+   "shots": {
+    "main": "fixture-main.png"
+   },
+   "findings": [
+    "surface-identity-mismatch"
+   ],
+   "runtimeProbe": "with-exe"
+  },
+  {
+   "name": "journey-one-page-refused",
+   "receipt": "journey-one-page.json",
+   "shots": {
+    "main": "fixture-step.png"
+   },
+   "findings": [
+    "journey-steps"
+   ],
+   "runtimeProbe": "with-exe"
+  },
+  {
+   "name": "journey-history-wrong-refused",
+   "receipt": "journey-history-wrong.json",
+   "shots": {
+    "main": "fixture-main.png",
+    "a": "fixture-step.png",
+    "b": "fixture-step.png",
+    "c": "fixture-step.png"
+   },
+   "findings": [
+    "journey-history"
+   ],
+   "runtimeProbe": "with-exe"
+  },
+  {
+   "name": "journey-back-wrong-refused",
+   "receipt": "journey-back-wrong.json",
+   "shots": {
+    "main": "fixture-main.png",
+    "a": "fixture-step.png",
+    "b": "fixture-step.png",
+    "c": "fixture-step.png"
+   },
+   "findings": [
+    "journey-back-leg"
+   ],
+   "runtimeProbe": "with-exe"
+  },
+  {
+   "name": "cross-schema-r49-refused",
+   "receipt": "cross-schema-r49.json",
+   "shots": {
+    "main": "fixture-main.png"
+   },
+   "findings": [
+    "schema",
+    "nonce-shape",
+    "profile-not-throwaway",
+    "driver-pin-mismatch"
+   ],
+   "runtimeProbe": "with-exe"
+  }
+ ]
+}
