@@ -245,11 +245,26 @@ if (port) {
     const ver = await (await fetch(`http://127.0.0.1:${port}/json/version`)).json();
     receipt.jsonVersion = ver;
     note('json-version', { Browser: ver.Browser });
-    const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
-    const page = (Array.isArray(targets) ? targets : []).find((t) => t.type === 'page' && t.url.startsWith('data:'));
+    // the initial data: page target is POLLED, not read once: the first live
+    // run at the freeze bytes hit the race (the single target was still
+    // about:blank when /json/list was read — exit 1, no-page-target; the red
+    // receipt is kept at .ufo/waves/round-50/controls/), so the target list
+    // is polled until the data: page target appears, bounded.
+    let page = null, targets = [], pollAttempts = 0;
+    for (let i = 0; i < 40 && !page; i++) {
+      targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+      pollAttempts = i + 1;
+      page = (Array.isArray(targets) ? targets : []).find((t) => t.type === 'page' && t.url.startsWith('data:'));
+      if (!page) await sleep(250);
+    }
     receipt.pageTargetCount = Array.isArray(targets) ? targets.length : -1;
+    receipt.targetPoll = {
+      attempts: pollAttempts,
+      found: !!page,
+      observedTargets: (Array.isArray(targets) ? targets : []).slice(0, 4).map((t) => ({ type: t.type, url: String(t.url).slice(0, 60) })),
+    };
     if (!page || !page.webSocketDebuggerUrl) {
-      fail('no-page-target', { count: receipt.pageTargetCount });
+      fail('no-page-target', { count: receipt.pageTargetCount, polled: pollAttempts });
     } else {
       const ws = new WebSocket(page.webSocketDebuggerUrl);
       await new Promise((res, rej) => { ws.onopen = res; ws.onerror = () => rej(new Error('ws error')); });
