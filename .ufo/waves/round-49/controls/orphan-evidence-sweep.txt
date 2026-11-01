@@ -1,0 +1,44 @@
+# orphan-evidence-sweep — tabi round 49, carry-in item 2 (the r48 non-author
+# closure's routed hygiene duty: land prior-round cited-but-uncommitted receipts
+# via treecommit explicit paths). Sweep taken at round open 2026-11-01, before
+# any lane write this round, at lane HEAD 10ea3d96c0eed6d0e7240f57f7a30d8ef73689b1.
+#
+# METHOD
+# 1. citation universe: every `.ufo/waves/round-N/...` and
+#    `corpus/evidence/roundN/...` path cited by
+#      (a) committed lane bytes at HEAD: corpus/lessons/round-48.md,
+#          corpus/lessons/round-48-verifier-spotcheck.md, LOG.md, SCORECARD.md,
+#          PROVINCE.md, corpus/knowledge/*.md, corpus/README.md (git grep -ohE)
+#          -> 579 unique cited paths;
+#      (b) the fleet-side tabi round reports r44-r48
+#          (<fleet>/.ufo/reports/round-{44,45,46,47,48}/tabi.md) -> 42 unique
+#          cited paths.
+# 2. working-tree census: git ls-files --others --exclude-standard -> 208 paths.
+# 3. classification of the 208: git cat-file -e "HEAD:<path>" per path ->
+#      205 paths ARE blobs at HEAD (the host's git index is stale — the same
+#      broken-index artifact the lane contract has routed around since r44;
+#      treecommit exists because index ops are forbidden here);
+#        3 paths are NOT at HEAD:
+#          .ufo/waves/round-44/measure/c1-r43-on-pathtype-at-freeze.json
+#          .ufo/waves/round-44/measure/c1-v2-on-none-at-freeze.json
+#          .ufo/waves/round-44/measure/selfassess-selftest.txt
+# 4. cited-and-uncommitted intersection (the routed duty's literal set):
+#      EMPTY — every cited receipt is a blob at HEAD (step-1 lists checked
+#      against the 3-path step-3 remainder and against the 205-path in-HEAD set;
+#      the only fleet-report citation needing resolution was the r44 report's
+#      glob `.ufo/waves/round-44/measure/census-end.*`, and census-end.err/.out/
+#      .exit are all blobs at HEAD).
+# 5. the three uncited r44 receipts are landed this round anyway (they are
+#    prior-round work products orphaned in the working tree — the closest real
+#    members of the routed class), by treecommit with explicit paths, in a
+#    dedicated hygiene commit.
+# 6. the standing selfassessment mismatch this sweep explains:
+#      node scripts/check-selfassessment.mjs --rev HEAD
+#      -> SELFASSESSMENT verdict=failed rev=10ea3d96… mismatches=1
+#         could_not_evaluate=179 superseded=23
+#      the single mismatch is m3-unlanded-paths observed=425: the instrument
+#      reads `git status --porcelain --untracked-files=all`, which on this host
+#      lists the stale-index entries (205+ in-HEAD blobs among them) as
+#      untracked. The class is an index artifact, not unlanded evidence; the
+#      instrument is frozen (r31 claims sha) and index ops are forbidden by the
+#      round contract — disclosed here and routed to the operator, not edited.
