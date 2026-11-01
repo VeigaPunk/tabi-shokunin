@@ -1,0 +1,141 @@
+{
+ "schema": "tabi-round-claims-v2",
+ "lane": "tabi",
+ "round": 45,
+ "baseline": "d252ea17bf8d39ea2e1da9770316146f264f8a0e",
+ "declaredAt": "2026-10-31",
+ "axesAtRoundStart": {
+  "adjacency": 8,
+  "operability": 9,
+  "depth": 9,
+  "coverage": 9,
+  "freshness": 9,
+  "calibration": 9
+ },
+ "saturation": 8,
+ "stagnationWindow": 3,
+ "lowestAxis": "adjacency",
+ "stagnationNote": "The capability chrome-cdp-loopback-windows entered at round 44, restarting the stagnation window (round 45 = position 1): the nudge is INACTIVE, so the lowest-axis obligation returns and C3 works adjacency (8), the lowest non-retired owned axis.",
+ "freshStartNote": "Fresh-start discipline maintained from r44 (r41/r42/r43 rejected closures re-spot-checked this round: the r41 untracked receipt is committed as blobs at HEAD; the r42 nonce-relabel false-green class is closed by the r44 counter clauses; the r43 false-green/crash class closes this round via the D3 crash receipt). Ruled out for r45: (1) a Firefox/BiDi/WebGL move - that surface is ABSENT on this host (PROVINCE r44 correction, host-probe.txt); (2) any wave-settled claim - no dispatch surface, L0 open (r44 line), routed around, predicates complete without waves; (3) knowledge-note-count claims - do-nothing reachable; (4) the D1 repin alone as a claim - a file edit a do-nothing control can reach, so D1 is carried as protocol work and folded into C1s byte-binding counter; (5) reusing the r36 adjacency meter v4 as-is - its fleet path and delta pins bind the old Linux host and lanes absent here (kaidoku, revenger), so its counting command cannot run here.",
+ "hostSurfaceNote": "Edge probe (pre-data control c2-probe-edge.json): Microsoft Edge 156.0.4314.50 at C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe answers /json/version with Browser \"Edg/156.0.4314.50\", Protocol-Version 1.3, and prints NO stderr DevTools line on this host - the endpoint is discovered from the throwaway profiles DevToolsActivePort file (port + /devtools/browser/ path). Chrome probe (c2-probe-chrome.json): Chrome/156.0.8078.74 keeps the stderr discovery leg. The runner records discoveryVia per invocation; the counter binds it.",
+ "causalSeparation": "C1s checker reads only the round-44 freeze blob, the amendment file and committed bytes at REV; it never reads C2 receipts or C3 ledgers. C2s runner and counter read only their own invocation and the receipt/screenshot/runner bytes they are pointed at; they never read C1 or C3 artifacts. C3s meter reads only the ruled map, its two ledgers and the sibling trees at --fleet; it never reads C1 or C2 artifacts. Each claim verifies without the others having landed.",
+ "frozenDigests": {
+  "scripts/chrome-cdp-loopback-round45.mjs": "c2abfccf68f0b204b25fa0339377f8d3bdde4111f44423f21a2bd2d0e6d15d82",
+  ".ufo/waves/round-45/counters/chrome-cdp-receipt-r45.mjs": "9a1e81ca1433c3119b3c7c0e657a8d8ff905d70ab6e5935bd4d612b15854c3dc",
+  ".ufo/waves/round-45/counters/check-r44-freeze-round45.mjs": "3e41e64996ac7be3c554c8fd90a2df55f0b44d91a5313c9c578d0d50e18079e1",
+  ".ufo/waves/round-45/counters/c1-adjacency-host-v5.mjs": "d197ffb62b5477db6b5cd1ea77275ab2bb71d82c25f55fd3bf65277d5bcaa193",
+  ".ufo/waves/round-44/claims-amendments.json": "18035d30e2fe08b0f105cc0dd4ab30c0c0de9bbcff2897a0f0a7df8ae96bd224"
+ },
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "calibration",
+   "kind": "instrument-repair",
+   "title": "The r5 hardening applied to the round-44 freeze itself: the stale frozenDigests pin (r44 routed defect D1) closed by an append-only amendment enforced against committed bytes",
+   "surface": ".ufo/waves/round-45/counters/check-r44-freeze-round45.mjs: pins the r44 freeze blob id a38b24ee66108fb8c55e7f08463732c378bc28f6 (the freeze is never rewritten), byte-checks every frozenDigests entry against the committed bytes at REV, admits a differing entry only through exactly one append-only amendment row in .ufo/waves/round-44/claims-amendments.json whose oldDigest equals the freeze pin and whose newDigest equals the sha256 of the actual committed bytes (a relabel is refused), refuses invented repins, and applies the r5 clauses (typed path, sha256 binding, whole-line quotes, no duplicate bindings, named-control coverage) to the r44 freezes controlBindings.",
+   "restsOn": "The r44 non-author verifier spot-check section 6 defect D1 (stale pin d994ab71... vs committed f796ae84...) and the r44 QUALITY-107 discipline. No new external source row is claimed for C1.",
+   "countingCommand": "node .ufo/waves/round-45/counters/check-r44-freeze-round45.mjs --rev <REV> --repo <lane> ; node .ufo/waves/round-45/counters/check-r44-freeze-round45.mjs --selftest",
+   "beforeState": "At baseline d252ea17bf8d39ea2e1da9770316146f264f8a0e: no amendment file exists and the freeze pins the stale counter digest - the checker (frozen bytes) exits 1 with amendment-missing and frozen-digest-stale naming .ufo/waves/round-44/counters/chrome-cdp-receipt-r44.mjs: pinned d994ab716df4 != committed f796ae840850 (pre-data control c1-baseline-red.json); selftest 11/11.",
+   "predicate": "THE CLAIM: at the measured revision the checker exits 0 on the honest lane state (the amendment file committed, every other frozen digest byte-true, the r5 clauses green on the r44 freezes controlBindings), exits 1 at the baseline revision with the frozen-digest-stale finding, and --selftest reports 11/11. The checkers selftest refuses: a relabeled amendment (newDigest = the stale digest), an invented repin, a duplicate binding, a fragment quote, an untyped path, a digest mismatch, a named control unbound, and a freeze blob rewrite.",
+   "killRule": "If the checker refuses the honest state at the measured revision, or greens any state whose amendment relabels a digest or invents a repin, the claim is not admitted: calibration holds its score and the finding routes to round 46. The predicate, kill rule and counting command are frozen before any review data; never amended after.",
+   "admission": "On pass only: the r44 routed defect D1 is closed in committed bytes under amendment discipline (append-only, old->new, bound to actual committed bytes); the SCORECARD calibration row gains the evidence pointer at the measured revision; no numeric score change without a later score rubric.",
+   "residualModel": "Declared before review data: the checker binds the amendment to committed bytes, not to operator intent - a future amendment with a REASONABLE-looking reason repinning to bytes that genuinely hash true still passes (that is the repin working as designed); the protection is that the freeze blob itself is pinned, so predicate edits are always caught, and every repin is visible in one append-only file. A second stale entry appearing after this round is refused (no amendment entry covers it) - which is the desired ratchet.",
+   "verdict": "pending",
+   "measuredRevision": null
+  },
+  {
+   "id": "C2",
+   "axis": "coverage",
+   "kind": "capability-acquisition",
+   "title": "Drive a second declared Chromium-class surface on this host - Microsoft Edge - over raw CDP through the same candidate-chain discipline as round 44s Chrome run",
+   "surface": "scripts/chrome-cdp-loopback-round45.mjs: the r44 runner discipline (throwaway profile under the declared scratch, loopback-only fixture server and DevTools socket, invocation-bound DOM nonce, Page.captureScreenshot PNG, fail-closed teardown with exit-listener at spawn plus taskkill tree fallback) with the surface DECLARED per invocation (--browser chrome|edge, distinct candidate lists and profile names) and a second endpoint-discovery leg: where the browser prints no stderr DevTools line (Edge on this host), the DevToolsActivePort file in the throwaway profile is read, bound to 127.0.0.1, and confirmed by a successful /json/version read; the receipt records discoveryVia and the devtools browser path. Counter chrome-cdp-receipt-r45.mjs binds the declared surface end to end: identity grammar (Chrome/ vs Edg/), installed browserPath family, per-surface throwaway profile name, discovery leg, loopback hosts, invocation binding, PNG digest, teardown - and refuses the round-44 chrome receipt outright (schema), so the new counter does not loosen the old one.",
+   "restsOn": "S154 (Microsoft Edge DevTools Protocol page, opened 2026-10-31, staged copy committed: The Microsoft Edge DevTools Protocol matches the APIs of the Chrome DevTools Protocol. + the msedge.exe --remote-debugging-port launch contract), plus prior rows S152/S153 (headless mode, Page.captureScreenshot) and S001/S002 (profile boundary, /json endpoint contract).",
+   "countingCommand": "node scripts/chrome-cdp-loopback-round45.mjs --browser edge --out <receipt.json> --shot <shot.png> --scratch <dir> ; node .ufo/waves/round-45/counters/chrome-cdp-receipt-r45.mjs <receipt.json> --shot <shot.png> --runner scripts/chrome-cdp-loopback-round45.mjs ; git ls-tree -r --name-only <REV> -- corpus/evidence/round45 | wc -l",
+   "beforeState": "At baseline d252ea17bf8d39ea2e1da9770316146f264f8a0e: git ls-tree -r --name-only <baseline> -- corpus/evidence/round45 lists 0 files (control c2-baseline-count.txt); the launches are probed working pre-data on both surfaces (controls c2-probe-edge.json: Edg/156.0.4314.50 via devtools-active-port; c2-probe-chrome.json: Chrome/156.0.8078.74 via stderr); the r45 counter refuses the r44 chrome receipt with 5 findings (control c2-counter-refuses-r44-receipt.json) - no cross-admission.",
+   "predicate": "THE CLAIM: a fresh live invocation with --browser edge exits 0 (fresh fixture nonce, invocation-bound DOM nonce, Edg/156 identity, discoveryVia devtools-active-port with a /devtools/browser/ path, loopback-only endpoints, chromeTerminated true); the produced receipt.json and screenshot.png are committed as explicit files at the measured revision; the counter exits 0 on those committed bytes; the counter still refuses the r44 chrome receipt (the committed cross-refusal control); one reproduction run exits 0 with fresh nonces; and a capabilities-table row edge-cdp-loopback-windows enters the SCORECARD table this round with first-working round 45.",
+   "killRule": "If the counter refuses an honest live edge run, admits a receipt whose identity grammar does not match its declared surface, admits the r44 chrome receipt, or an independent re-run of the committed runner fails on this host, the claim is not admitted: no capability row enters, coverage holds its score, and the finding routes to round 46.",
+   "admission": "On pass only: capabilities-table row edge-cdp-loopback-windows - drive Microsoft Edge over raw CDP on this Windows host (declared-surface launch, DevToolsActivePort discovery, /json/version identity, /json/new PUT target, invocation-bound DOM extraction, Page.captureScreenshot, fail-closed teardown) with a throwaway profile; evidence pointer names the committed receipt, counter, runner and the S154 row.",
+   "residualModel": "Declared before review data (same class as r44): the counter binds receipt shape and committed bytes; it does not by itself prove a browser ran - the re-derivation path is re-running the committed runner, whose fixture nonce differs per invocation. No zero-egress claim is made; the DevTools socket and the fixture URL are the only endpoints the receipt records, both 127.0.0.1. The DevToolsActivePort leg accepts a file only together with a live /json/version answer on the port it names; a stale file alone cannot stand in for a socket.",
+   "verdict": "pending",
+   "measuredRevision": null
+  },
+  {
+   "id": "C3",
+   "axis": "adjacency",
+   "kind": "frontier-rebase",
+   "title": "Host-roster re-base of the adjacency ledger: the r36 split meter (completeness + drift + delta) re-grounded on this host, where the sibling roster itself changed",
+   "surface": ".ufo/waves/round-45/counters/c1-adjacency-host-v5.mjs over the ruled map (corpus/adjacency.tsv, 16 rows, 6 sibling names): P1 audits every map row exactly once in corpus/adjacency-host-audit-r45.tsv, re-deriving each status from the sibling tree at --fleet (sibling-absent / unchanged / moved with a verbatim line note / stale / file-absent) and refusing a misclaimed status; P2 requires every sibling lane directory at --fleet other than tabi-shokunin to be covered by the map or the delta ledger; P3 screens each uncovered lanes PROVINCE.md with the frozen owned-ground keyword list (cdp, devtools, remote-debugging, headless, webdriver, geckodriver, selenium, playwright, bidi, crawl, screenshot, recordhar, record-har), binds the screened bytes (provinceSha256, lines, bgHits, head) in corpus/adjacency-host-delta-r45.tsv lane rows, and requires every hit line to carry a verbatim whole-line row dispositioned in the frozen vocabulary {no-tabi-ground, overlap-declared, contested-open}.",
+   "restsOn": "The r35-r36 split-meter design (SCORECARD rounds 35-36) re-based on the current host roster; the fleet L0 line fleet@b6b3b5e42044b7cd7307d1d923ee054bf98eeb43:.ufo/l0-questions.md:65 (revenger/tab i browser-runtime contested scope, still open) for the contested-open dispositions. No new external source row is claimed for C3.",
+   "countingCommand": "node .ufo/waves/round-45/counters/c1-adjacency-host-v5.mjs --rev <REV> --repo <lane> --fleet <fleetdir> --json",
+   "beforeState": "At baseline d252ea17bf8d39ea2e1da9770316146f264f8a0e: the ledgers do not exist - the meter exits 1 with 28 findings (16 audit-missing over the map rows, 12 roster-lane-uncovered over the never-covered lanes: chousa, kasegi, kengaku, kotoba, kotodama, mado, mori, shokunin-binary-forensics, shokunin-repo-hygiene, shokunin-reverse-engineering, tameshi, tsukuroi) (pre-data control c3-baseline-red.json). The r36 meter v4 cannot run on this host: its fleet path and delta pins bind the old host and absent lanes (freshStartNote 5).",
+   "predicate": "THE CLAIM: at the measured revision the meter exits 0 on the committed ledgers - all 16 map rows audited with honestly claimed statuses (observed drift recorded as the result: 6 sibling-absent, 9 stale, 1 moved), every roster lane covered (6 by the map, 12 by delta lane rows whose provinceSha256, lines, bgHits and head equal the meters own re-derivation from the current trees), and every browser-ground hit line (14) carried as a verbatim whole-line row in the frozen vocabulary, including the two contested-open rows naming the CDP runtime-observation ground in shokunin-reverse-engineering (the revenger successor) - and the meter still exits 1 at the baseline revision (the committed red control).",
+   "killRule": "If the meters re-derivation finds any claimed status wrong, any head/sha binding stale at the measured revision, or any hit line undispositioned, the ledgers are corrected as data and re-measured before admission; if any finding persists at the measured revision, the claim is not admitted: adjacency holds its score and the finding routes to round 46. A sibling head that moves AFTER the measured commit is not a claim failure - the lane rows record the heads current at measurement.",
+   "admission": "On pass only: the adjacency ledger is re-based on the real host roster with the drift named per row (never smoothed), the contested CDP ground is routed to the integrator (reported, not absorbed), the SCORECARD adjacency row gains the evidence pointer at the measured revision; no numeric score change without a later score rubric.",
+   "residualModel": "Declared before review data: the meter screens PROVINCE.md only (one file per uncovered lane) - SKILL.md and corpus drift in covered siblings stays governed by the r36 v4 pool on the old host and is carried, not claimed; the keyword list is owned-ground-narrow by design (the broad draft matched generic browser prose in every lane - 265+ lines on the non-map lanes - which would make per-line disposition noise); the delta screen binds bytes and heads at measurement time, so it dates like any census.",
+   "verdict": "pending",
+   "measuredRevision": null
+  }
+ ],
+ "controlBindings": [
+  {
+   "path": "scripts/chrome-cdp-loopback-round45.mjs",
+   "sha256": "c2abfccf68f0b204b25fa0339377f8d3bdde4111f44423f21a2bd2d0e6d15d82",
+   "quote": "const TITLE = 'tabi r45 cdp loopback fixture';"
+  },
+  {
+   "path": ".ufo/waves/round-45/counters/chrome-cdp-receipt-r45.mjs",
+   "sha256": "9a1e81ca1433c3119b3c7c0e657a8d8ff905d70ab6e5935bd4d612b15854c3dc",
+   "quote": "const RUNNER_PIN = 'c2abfccf68f0b204b25fa0339377f8d3bdde4111f44423f21a2bd2d0e6d15d82';"
+  },
+  {
+   "path": ".ufo/waves/round-45/counters/check-r44-freeze-round45.mjs",
+   "sha256": "3e41e64996ac7be3c554c8fd90a2df55f0b44d91a5313c9c578d0d50e18079e1",
+   "quote": "const FREEZE_BLOB_PIN = 'a38b24ee66108fb8c55e7f08463732c378bc28f6';"
+  },
+  {
+   "path": ".ufo/waves/round-45/counters/c1-adjacency-host-v5.mjs",
+   "sha256": "d197ffb62b5477db6b5cd1ea77275ab2bb71d82c25f55fd3bf65277d5bcaa193",
+   "quote": "const MAP_REL = 'corpus/adjacency.tsv';"
+  },
+  {
+   "path": ".ufo/waves/round-44/claims-amendments.json",
+   "sha256": "18035d30e2fe08b0f105cc0dd4ab30c0c0de9bbcff2897a0f0a7df8ae96bd224",
+   "quote": " \"schema\": \"tabi-claims-amendments-v1\","
+  },
+  {
+   "path": ".ufo/waves/round-45/controls/c2-probe-edge.json",
+   "sha256": "91d2c8b4238e1235ffeae8ba5082955e69dc86426970967e16764cac100f223d",
+   "quote": " \"declaredSurface\": \"edge\","
+  },
+  {
+   "path": ".ufo/waves/round-45/controls/c2-probe-chrome.json",
+   "sha256": "925d19b7ba12f2b77916e5cb867c94e3dd18671dbc3a1913180e29e50d5c7d8f",
+   "quote": " \"declaredSurface\": \"chrome\","
+  },
+  {
+   "path": ".ufo/waves/round-45/controls/c1-baseline-red.json",
+   "sha256": "d3f0d23d84def2be23dbacb68a12495c24b8679b4d6b9a1a840e8854fac268b8",
+   "quote": "   \"id\": \"frozen-digest-stale\","
+  },
+  {
+   "path": ".ufo/waves/round-45/controls/c2-baseline-count.txt",
+   "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+   "quote": "0"
+  },
+  {
+   "path": ".ufo/waves/round-45/controls/c3-baseline-red.json",
+   "sha256": "ecea35885763aa734d6d001d549c51b22a61b25c42094cae1236570616454903",
+   "quote": " \"findingCount\": 28,"
+  },
+  {
+   "path": ".ufo/waves/round-45/controls/c2-counter-refuses-r44-receipt.json",
+   "sha256": "33e204392da5aea14c986457c585a701e0f828428cf082e639d6532db92f17e1",
+   "quote": "   \"id\": \"declared-surface\""
+  },
+  {
+   "path": "corpus/adjacency.tsv",
+   "sha256": "7a16a2e663f3437b0cbb835f2ee0b353b89b9be3efaa9b7e3dc5d1e697bac6e8",
+   "quote": "surface\tsibling\tsibling_ref\tsibling_quote\ttabi_ref\ttabi_quote\tdisposition\truling_ref\truling_quote"
+  }
+ ]
+}

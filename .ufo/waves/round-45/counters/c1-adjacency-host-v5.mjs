@@ -1,0 +1,320 @@
+#!/usr/bin/env node
+// c1-adjacency-host-v5.mjs — tabi round 45, claim C1 (adjacency — the lowest
+// owned axis, 8). The host-roster re-base of the adjacency ledger: the r36
+// split meter (completeness + drift + delta) re-grounded on THIS host, where
+// the sibling roster itself changed (the ledger pins kaidoku-shokunin and
+// revenger-shokunin — absent here — while chousa/kasegi/kengaku/kotodama/mado/
+// mori/tameshi/tsukuroi and the three shokunin-* specialty lanes have no row
+// on any ledger). Frozen question, three legs:
+//   P1 completeness+drift over the ruled map (corpus/adjacency.tsv): every data
+//      row is audited exactly once in corpus/adjacency-host-audit-r45.tsv; the
+//      audit's claimed status must equal the status the meter re-derives from
+//      the sibling's CURRENT tree at --fleet:
+//        sibling-absent  the sibling lane dir does not exist on this host;
+//        unchanged       the cited text (trimmed) is the current line at the
+//                        pinned line number;
+//        moved           the cited text appears verbatim at >=1 other line
+//                        (the audit note must name one as `:<N>`);
+//        stale           the file is absent at the current tree or the cited
+//                        text appears nowhere;
+//        file-absent     the sibling exists but the cited file does not.
+//   P2 roster completeness: every sibling lane dir at --fleet (git repos other
+//      than tabi-shokunin) is covered by the ruled map OR the delta ledger.
+//   P3 delta screen (bounded): each uncovered roster lane's PROVINCE.md is
+//      screened with the frozen browser-ground keyword list; a `lane` row in
+//      corpus/adjacency-host-delta-r45.tsv binds the screened bytes
+//      (provinceSha256, lines, bgHits, head) and every BG hit line carries a
+//      `line` row whose quote is a verbatim whole line with a disposition in
+//      the frozen vocabulary {no-tabi-ground, overlap-declared, contested-open}.
+//
+//   PREDICATE-SENTENCE: c1-adjacency-host-v5 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r45.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling tree at --fleet (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r45.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation from the current tree AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.
+// Usage:
+//   node c1-adjacency-host-v5.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
+//   node c1-adjacency-host-v5.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses)
+//   node c1-adjacency-host-v5.mjs --selftest
+// Exit: 0 predicate met; 1 evaluated, predicate not met; 2 could not evaluate.
+import { spawnSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+const MAP_REL = 'corpus/adjacency.tsv';
+const AUDIT_REL = 'corpus/adjacency-host-audit-r45.tsv';
+const DELTA_REL = 'corpus/adjacency-host-delta-r45.tsv';
+const SELF_LANE = 'tabi-shokunin';
+const BG_WORDS = ['cdp', 'devtools', 'remote-debugging', 'headless', 'webdriver', 'geckodriver', 'selenium', 'playwright', 'bidi', 'crawl', 'screenshot', 'recordhar', 'record-har'];
+const DISPOSITIONS = ['no-tabi-ground', 'overlap-declared', 'contested-open'];
+
+const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
+
+function die(msg) {
+  console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v5', error: msg }));
+  process.exit(2);
+}
+
+const tsvParse = (raw, cols) => raw.toString('utf8').split('\n')
+  .map((l) => l.replace(/\r$/, ''))
+  .filter((l, i) => l.length > 0 && !(i === 0))
+  .filter((l) => l !== '')
+  .map((l) => l.split('\t'))
+  .filter((parts) => parts.length === cols)
+  .map((parts) => parts);
+
+// parse `<lane>@<rev>:<path>:<line>` — path is between the first ':' after the
+// rev and the final ':'
+function parseRef(ref) {
+  const at = ref.indexOf('@');
+  if (at === -1) return null;
+  const lane = ref.slice(0, at);
+  const c1 = ref.indexOf(':', at);
+  const c2 = ref.lastIndexOf(':');
+  if (c1 === -1 || c2 <= c1) return null;
+  const p = ref.slice(c1 + 1, c2);
+  const ln = Number(ref.slice(c2 + 1));
+  if (!/^\d+$/.test(ref.slice(c2 + 1))) return null;
+  return { lane, rev: ref.slice(at + 1, c1), path: p, line: ln };
+}
+
+const observedStatus = (sibText, lineNo, citedText, noteLineRef) => {
+  if (sibText === null) return 'sibling-absent';
+  if (sibText === undefined) return 'file-absent';
+  const lines = sibText.split('\n').map((l) => l.replace(/\r$/, ''));
+  const cited = citedText;
+  if (lines[lineNo - 1] === cited) return 'unchanged';
+  const idx = lines.indexOf(cited);
+  if (idx !== -1) { noteLineRef.lineNo = idx + 1; return 'moved'; }
+  return 'stale';
+};
+
+// --- pure core -----------------------------------------------------------------
+// inputs: mapRows (array of 9-col arrays), auditRows (array of 3-col arrays),
+// deltaRows (array of 8-col arrays), roster (array of lane names), self lane,
+// sibRef({lane,path}) -> string|null|undefined (null = no lane dir; undefined =
+// no such file), headOf(lane) -> string|null
+export function verify(inputs) {
+  const findings = [];
+  const add = (id, detail) => findings.push({ id, detail });
+
+  // P1 — one audit row per map row, status honestly claimed
+  const auditByKey = new Map();
+  for (const r of inputs.auditRows) {
+    if (auditByKey.has(r[0])) add('audit-duplicate', r[0]);
+    else auditByKey.set(r[0], { status: r[1], note: r[2] });
+  }
+  for (const row of inputs.mapRows) {
+    const ref = row[2];
+    const parsed = parseRef(ref);
+    if (!parsed) { add('map-ref-unparseable', ref); continue; }
+    const a = auditByKey.get(ref);
+    if (!a) { add('audit-missing', ref); continue; }
+    const noteRef = { lineNo: null };
+    const sibText = inputs.sibRef(parsed.lane, parsed.path);
+    const obs = observedStatus(sibText, parsed.line, row[3].replace(/\r$/, ''), noteRef);
+    if (obs === 'moved') {
+      const m = /:(\d+)\b/.exec(a.note || '');
+      if (!m) add('audit-note-moved-line', ref);
+      else if (Number(m[1]) !== noteRef.lineNo) add('audit-note-moved-line', `${ref}: note :${m[1]} != derived :${noteRef.lineNo}`);
+    }
+    if (a.status !== obs) add('audit-status-mismatch', `${ref}: claimed ${a.status} observed ${obs}`);
+  }
+
+  // P2 — roster completeness: covered by map (present sibling names) or delta
+  const mapSibs = new Set(inputs.mapRows.map((r) => parseRef(r[2])?.lane).filter(Boolean));
+  const deltaLanes = new Set(inputs.deltaRows.filter((r) => r[0] === 'lane').map((r) => r[1]));
+  const rosterSet = new Set(inputs.roster);
+  for (const lane of inputs.roster) {
+    if (!mapSibs.has(lane) && !deltaLanes.has(lane)) add('roster-lane-uncovered', lane);
+  }
+  // delta lanes must be real roster lanes (no invented coverage)
+  for (const lane of deltaLanes) {
+    if (!rosterSet.has(lane)) add('delta-lane-not-on-roster', lane);
+  }
+
+  // P3 — delta screen honesty per lane row
+  for (const r of inputs.deltaRows) {
+    const [type, lane, relPath, provSha, lines, bgHits, quote, disposition, head] = r;
+    if (!rosterSet.has(lane)) continue; // already flagged
+    if (type === 'lane') {
+      const text = inputs.sibRef(lane, relPath);
+      if (text === null) {
+        if (provSha !== '-') add('lane-screen-sha-mismatch', `${lane}: sibling absent but sha ${provSha}`);
+      } else if (text === undefined) {
+        if (provSha !== '-') add('lane-screen-sha-mismatch', `${lane}: file absent but sha ${provSha}`);
+      } else {
+        if (provSha !== sha256(Buffer.from(text, 'utf8'))) add('lane-screen-sha-mismatch', lane);
+        const linesArr = text.replace(/\n$/, '').split('\n').map((l) => l.replace(/\r$/, ''));
+        if (Number(lines) !== linesArr.length) add('lane-screen-lines-mismatch', lane);
+        const hits = [];
+        linesArr.forEach((l, i) => {
+          const low = l.toLowerCase();
+          if (BG_WORDS.some((w) => low.includes(w))) hits.push(i + 1);
+        });
+        if (Number(bgHits) !== hits.length) add('lane-screen-hits-mismatch', `${lane}: claimed ${bgHits} derived ${hits.length}`);
+        const lineRows = inputs.deltaRows.filter((d) => d[0] === 'line' && d[1] === lane);
+        for (const ln of hits) {
+          const rowFor = lineRows.find((d) => d[2] === `${relPath}:${ln}`);
+          if (!rowFor) { add('delta-line-missing', `${lane}:${relPath}:${ln}`); continue; }
+          if (rowFor[6] !== linesArr[ln - 1]) add('delta-quote-not-whole-line', `${lane}:${relPath}:${ln}`);
+          if (!DISPOSITIONS.includes(rowFor[7])) add('delta-disposition', `${lane}:${ln}: ${rowFor[7]}`);
+        }
+        // a line row naming a non-hit line is invented coverage
+        for (const d of lineRows) {
+          const m = /:(\d+)$/.exec(d[2] || '');
+          if (m && !hits.includes(Number(m[1]))) add('delta-line-invented', `${lane}:${d[2]}`);
+        }
+        if (inputs.headOf) {
+          const cur = inputs.headOf(lane);
+          if (cur !== null && head !== cur) add('lane-screen-head-mismatch', lane);
+        }
+      }
+    } else if (type !== 'line') add('delta-row-type', type);
+  }
+
+  return { findings, counts: { roster: inputs.roster.length, mapRows: inputs.mapRows.length, auditRows: inputs.auditRows.length, deltaLanes: [...deltaLanes].length } };
+}
+
+// --- host layer ------------------------------------------------------------------
+function laneExists(fleet, lane) { return fs.existsSync(path.join(fleet, lane, '.git')) || fs.existsSync(path.join(fleet, lane, 'HEAD')); }
+function sibRefFs(fleet, lane, p) {
+  if (!laneExists(fleet, lane)) return null;
+  const fp = path.join(fleet, lane, p);
+  try { return fs.readFileSync(fp, 'utf8'); } catch { return undefined; }
+}
+function headOf(fleet, lane) {
+  if (!laneExists(fleet, lane)) return null;
+  const r = spawnSync('git', ['-C', path.join(fleet, lane), 'rev-parse', 'HEAD'], { maxBuffer: 1024 * 1024 });
+  return r.status === 0 ? r.stdout.toString('utf8').trim() : null;
+}
+function rosterScan(fleet) {
+  return fs.readdirSync(fleet, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && laneExists(fleet, d.name) && d.name !== SELF_LANE)
+    .map((d) => d.name).sort();
+}
+
+function laneBytes(repo, rev, rel) {
+  const r = spawnSync('git', ['-C', repo, 'cat-file', '-p', `${rev}:${rel}`], { maxBuffer: 64 * 1024 * 1024 });
+  return r.status === 0 ? r.stdout.toString('utf8') : null;
+}
+
+function runAt(repo, rev, fleet) {
+  const mapRaw = laneBytes(repo, rev, MAP_REL);
+  if (mapRaw === null) die(`cannot read ${MAP_REL} at ${rev}`);
+  const auditRaw = laneBytes(repo, rev, AUDIT_REL);
+  const deltaRaw = laneBytes(repo, rev, DELTA_REL);
+  const roster = rosterScan(fleet);
+  return verify({
+    mapRows: tsvParse(mapRaw, 9),
+    auditRows: auditRaw === null ? [] : tsvParse(auditRaw, 3),
+    deltaRows: deltaRaw === null ? [] : tsvParse(deltaRaw, 9),
+    roster,
+    sibRef: (lane, p) => sibRefFs(fleet, lane, p),
+    headOf: (lane) => headOf(fleet, lane),
+  });
+}
+
+// --- authoring aid: print observed statuses for every map row --------------------
+function listObserved(fleet) {
+  const mapRaw = fs.readFileSync(path.join(process.cwd(), MAP_REL), 'utf8');
+  const out = [];
+  for (const row of tsvParse(mapRaw, 9)) {
+    const parsed = parseRef(row[2]);
+    const noteRef = { lineNo: null };
+    const text = sibRefFs(fleet, parsed.lane, parsed.path);
+    const st = observedStatus(text, parsed.line, row[3].replace(/\r$/, ''), noteRef);
+    out.push({ ref: row[2], lane: parsed.lane, path: parsed.path, line: parsed.line, observed: st, derivedLine: noteRef.lineNo, surface: row[0] });
+  }
+  console.log(JSON.stringify(out, null, 1));
+}
+
+// --- selftest ---------------------------------------------------------------------
+function selftest() {
+  const mapHeader = 'surface\tsibling\tsibling_ref\tsibling_quote\ttabi_ref\ttabi_quote\tdisposition\truling_ref\truling_quote';
+  const auditHeader = 'sibling_ref\tstatus\tnote';
+  const deltaHeader = 'type\tlane\tpath\tprovinceSha256\tlines\tbgHits\tquote\tdisposition';
+  const provA = '# mado province\nWe drive it over CDP for tests.\nNothing else.\n';
+  const provB = '# quiet province\nNo test ground here at all.\n';
+  const refA = 'mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md:2';
+  const refAbsent = 'kaidoku-shokunin@2222222222222222222222222222222222222222:PROVINCE.md:3';
+  const HEAD = 'a'.repeat(40);
+  const provShaA = sha256(Buffer.from(provA, 'utf8'));
+  const bgHitsA = 1;
+  const mapRows = (extra = []) => [
+    ['browser-ground-x', 'mado-shokunin', refA, 'We drive it over CDP for tests.', '-', '-', 'split-declared', '-', '-'],
+    ['rea-evidence-y', 'kaidoku-shokunin', refAbsent, 'some cited text', '-', '-', 'ruled', '-', '-'],
+    ...extra,
+  ];
+  const roster = ['mado-shokunin', 'quiet-lane', 'kaidoku-shokunin'];
+  const sibRef = (lane, p) => {
+    if (lane === 'kaidoku-shokunin') return null; // absent on this host
+    if (lane === 'mado-shokunin' && p === 'PROVINCE.md') return provA;
+    if (lane === 'quiet-lane' && p === 'PROVINCE.md') return provB;
+    return undefined;
+  };
+  const deltaRows = (over = {}) => [
+    ['lane', 'mado-shokunin', 'PROVINCE.md', over.provSha ?? provShaA, over.lines ?? 3, over.bgHits ?? bgHitsA, '-', '-', over.head ?? HEAD],
+    ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'We drive it over CDP for tests.', 'overlap-declared', '-'],
+    ['lane', 'quiet-lane', 'PROVINCE.md', sha256(Buffer.from(provB, 'utf8')), 2, 0, '-', '-', HEAD],
+  ];
+  const cases = [
+    { name: 'honest-green', expect: 0, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', 'probed absent 2026-10-31']], deltaRows: deltaRows(), roster, sibRef, headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'audit-missing', expect: 1, ids: ['audit-missing'], run: () => verify({ mapRows: mapRows(), auditRows: [[refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef, headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'status-mismatch-moved', expect: 1, ids: ['audit-status-mismatch', 'audit-note-moved-line'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef: (l, p) => (l === 'mado-shokunin' && p === 'PROVINCE.md' ? '# mado province\nExtra line first.\nWe drive it over CDP for tests.\nNothing else.\n' : sibRef(l, p)), headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'stale-misclaimed', expect: 1, ids: ['audit-status-mismatch'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'unchanged', '-']], deltaRows: deltaRows(), roster, sibRef, headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'moved-note-wrong-line', expect: 1, ids: ['audit-note-moved-line'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'moved', 'text now at :99'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef: (l, p) => (l === 'mado-shokunin' && p === 'PROVINCE.md' ? '# mado province\nExtra line first.\nWe drive it over CDP for tests.\nNothing else.\n' : sibRef(l, p)), headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'roster-lane-uncovered', expect: 1, ids: ['roster-lane-uncovered'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows().filter((r) => r[1] !== 'quiet-lane'), roster, sibRef, headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'delta-quote-spliced', expect: 1, ids: ['delta-quote-not-whole-line'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows().map((r) => (r[0] === 'line' ? ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'drive the browser', 'overlap-declared'] : r)), roster, sibRef, headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'lane-screen-sha-mismatch', expect: 1, ids: ['lane-screen-sha-mismatch'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows({ provSha: '0'.repeat(64) }), roster, sibRef, headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'lane-screen-hits-mismatch', expect: 1, ids: ['lane-screen-hits-mismatch'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows({ bgHits: 0 }), roster, sibRef, headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'delta-line-missing', expect: 1, ids: ['delta-line-missing'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows().filter((r) => r[0] !== 'line'), roster, sibRef, headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'delta-line-invented', expect: 1, ids: ['delta-line-invented'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: [...deltaRows(), ['line', 'mado-shokunin', 'PROVINCE.md:3', '-', '-', '-', 'Nothing else.', 'no-tabi-ground']], roster, sibRef, headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'audit-duplicate', expect: 1, ids: ['audit-duplicate'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef, headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+    { name: 'lane-screen-head-mismatch', expect: 1, ids: ['lane-screen-head-mismatch'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows({ head: 'b'.repeat(40) }), roster, sibRef, headOf: (lane) => (lane === 'kaidoku-shokunin' ? null : HEAD) }) },
+  ];
+  let pass = 0;
+  const results = cases.map((c) => {
+    const { findings } = c.run();
+    const ok = c.expect === 0
+      ? findings.length === 0
+      : (c.ids || []).every((id) => findings.some((f) => f.id === id));
+    if (ok) pass++;
+    return { name: c.name, ok, findings: findings.map((f) => `${f.id}: ${f.detail}`) };
+  });
+  return { allPass: pass === cases.length, cases: cases.length, pass, results };
+}
+
+// --- cli (only when invoked as main; the pure core is importable as an authoring aid) --
+const IS_MAIN = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+const args = process.argv.slice(2);
+if (!IS_MAIN) {
+  // imported as a module (authoring aid): expose the pure core, run no CLI
+} else {
+if (args[0] === '--selftest') {
+  const st = selftest();
+  console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v5-selftest', ...st }, null, 1));
+  process.exit(st.allPass ? 0 : 1);
+}
+if (args[0] === '--list-observed') {
+  const fleet = args[args.indexOf('--fleet') + 1];
+  if (!fleet) die('usage: --list-observed --fleet <dir>');
+  listObserved(fleet);
+  process.exit(0);
+}
+let repo = null, rev = null, fleet = null, json = false;
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === '--repo') repo = args[++i];
+  else if (args[i] === '--rev') rev = args[++i];
+  else if (args[i] === '--fleet') fleet = args[++i];
+  else if (args[i] === '--json') json = true;
+}
+if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v5.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
+const { findings, counts } = runAt(repo, rev, fleet);
+const out = {
+  schema: 'tabi-adjacency-host-v5',
+  predicateSentence: 'c1-adjacency-host-v5 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r45.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling tree at --fleet (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r45.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the current tree AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',
+  rev, repo: path.resolve(repo), fleet: path.resolve(fleet), counts,
+  predicate: findings.length === 0, findingCount: findings.length, findings,
+};
+console.log(JSON.stringify(out, null, 1));
+process.exit(out.predicate ? 0 : 1);
+}
