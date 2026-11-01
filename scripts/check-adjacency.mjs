@@ -172,7 +172,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, lstatSync, mkdirSync, mkdtempSync, realpathSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve as resolvePath } from 'node:path';
+import { delimiter, dirname, isAbsolute, join, resolve as resolvePath } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const SCRIPT = fileURLToPath(import.meta.url);
@@ -305,7 +305,18 @@ function minimalEnv() {
     TZ: 'UTC',
   };
   if (process.env.PATH !== undefined) {
-    env.PATH = process.env.PATH.split(':').filter((entry) => entry.startsWith('/')).join(':');
+    // Host-portable absolute-entry filter (round 47, claim C2; S157): split on
+    // the platform delimiter and keep entries that are absolute on THIS host's
+    // convention. The r46 Linux-only form split on ':' and kept entries
+    // starting with '/', which emptied PATH on Windows and left every git
+    // child a spawn failure (status=spawn) — recorded with cause at
+    // .ufo/waves/round-46/measure/c2-check-adjacency-hostbound.json and routed
+    // to this round. The kept-property is unchanged: a relative entry stays
+    // filtered (a cwd-dependent PATH is a control surface).
+    env.PATH = process.env.PATH
+      .split(delimiter)
+      .filter((entry) => entry.length > 0 && isAbsolute(entry))
+      .join(delimiter);
   }
   if (process.env.HOME !== undefined) env.HOME = process.env.HOME;
   return env;
