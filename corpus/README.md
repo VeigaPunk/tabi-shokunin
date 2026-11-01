@@ -916,3 +916,17 @@ gate repair) and carry no new note ground.
 | Note | Holds | Sources |
 |---|---|---|
 | `knowledge/webview2-cdp-loopback-round-48.md` | The WebView2 runtime (`msedgewebview2.exe`) as the third Chromium-class CDP surface on this host (r48 capability webview2-cdp-loopback-windows): the runtime is NOT a standalone surface (7 launcher variants exit cleanly with no CDP endpoint — probes bundle); the documented host-side route (S158) via `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` + a minimal C# 5 COM host declaring the SDK header's ABI (S159); `EBWebView\DevToolsActivePort` discovery one level below the profile root; `Edg/<runtime version>` identity; host-death tears the browser down (measured); chrome/edge/webview2 decision table; declared residuals. | S158; S159; `scripts/webview2-host-round48.cs`; `scripts/webview2-cdp-loopback-round48.mjs`; `corpus/evidence/round48/webview2-cdp/receipt.json`; `.ufo/waves/round-48/counters/webview2-receipt-r48.mjs`; `.ufo/waves/round-48/controls/webview2-standalone-probes/`. |
+
+## Round 49 — the routed scratch-path repair, cross-page navigation, the re-bind through two corrections (2026-11-01)
+
+No new knowledge note: the round's coverage move extends the r48 WebView2 note
+(dated round-49 append: the r48 runner takes ABSOLUTE `--scratch`/`--out` only —
+S160's exe-dir UDF anchor measured red on the frozen bytes; the r49 runner
+resolves at launch and adds `--nav`) and adds a capability row
+(`webview2-http-cross-page-nav-windows`, first-working 49). The r48 note's
+declared residual (no `http://` fixture, no cross-page navigation) is
+superseded by the same append, with committed evidence.
+
+| Note | Holds (this round's delta) | Sources |
+|---|---|---|
+| `knowledge/webview2-cdp-loopback-round-48.md` (round-49 append) | The relative-`--scratch` foot-gun measured on the frozen r48 bytes (exit 1 `no-devtools-active-port`; the real profile at `<cwd>/relscratch/relscratch/<token>-profile` with a live `DevToolsActivePort` — the S160 anchor); the versioned r49 runner (resolve-at-launch, `paths` block in the receipt, `--nav`); the residual superseded: cross-page anchor-click navigation over an inline loopback HTTP fixture with per-page URL/title/PNG evidence (`corpus/evidence/round49/webview2-nav/`). | S160; S157; `scripts/webview2-cdp-loopback-round49.mjs`; `.ufo/waves/round-49/counters/webview2-receipt-r49.mjs`; `corpus/evidence/round49/webview2-nav/receipt.json`; `corpus/evidence/round49/webview2-relscratch/receipt.json` |

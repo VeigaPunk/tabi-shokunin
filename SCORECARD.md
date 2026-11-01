@@ -2650,3 +2650,65 @@ not-standalone finding). Census start AND end exit 0.
   freeze.
 - saturation 8 / window 3 retained; the r48 capability row RESTARTS the window (round 49 = position
   1). No axis retired; no score moved (no rubric authorizes one).
+
+
+## Round 49 — declared claims (frozen before data at 7700daf8) and executed disposition (all three verified)
+
+Round 49 on the Windows host. Baseline `10ea3d96c0eed6d0e7240f57f7a30d8ef73689b1`; freeze
+`7700daf8e1168648c6cb2608880617817b0dda62` (claims.json + instruments + round-open controls, BEFORE
+any data commit); orphan-hygiene `6e080c17f8e568446a535c845c4387b795b3a1f6`; C1 data
+`eb89957ff39e645de813c75033fc7828117e0c5a` -> correction 1 `44dde54f354693838076bc4532a93b693693a7ce`
+-> correction 2 `5fa183842a9925b3e18ea5f9df039984d47d5666` (**cited measured revision for C1**); C2
+data `b026dc34368e06eb46ebdd925b132595751ffa4c`; C3 data `36f8579bf2fbabd71d8a15142e1c9cf29e27bb02`.
+Axes at start: adjacency 8 (lowest), others 9; saturation 8 / window 3 — the r48 capability row
+RESTARTED the window (round 49 = position 1), so the stagnation nudge is inactive and the
+lowest-axis obligation applies: C1 works adjacency. Fresh-start ruling honored: the r42/r43/r47
+refused claim classes (nonce-relabeled synthetic-receipt counters; four-seat do-nothing waves;
+reasoned-not-measured after-states) are named in the freeze's freshStartNote and ruled out — both
+r49 counters pin committed-byte digests and ship hand-declared refusal fixtures; no wave/seat claim
+is declared; every after-state is a live instrument output at a named revision. Carry-in from the
+r48 non-author closure: item 1 performed as claim C2 (sourced S160, opened this round); item 2 —
+the orphaned-evidence sweep found the literal cited-but-uncommitted set EMPTY and landed the three
+uncited r44 orphans it found (receipt `controls/orphan-evidence-sweep.txt` at the freeze); item 3 —
+the `tabi | round-44` L2-floor L0 stays open and routed around (L1-inline round).
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis; the regression-gate re-bind) — VERIFIED | `node .ufo/waves/round-48/counters/c1-adjacency-host-v8.mjs --rev 10ea3d96… --repo <lane> --fleet <fleet> --json` (red control, round open); `node .ufo/waves/round-49/counters/c1-adjacency-host-v9.mjs --rev 5fa18384… --repo <lane> --fleet <fleet> --json`; `--selftest`; `diff` v8 v9 (`.ufo/waves/round-49/controls/v8-v9-retarget.diff`) | before: at round open the committed r48 ledger generation measures RED against the advanced fleet — exit 1, **15 findings** (11 lane-screen-head-mismatch + 2 lane-screen-sha-mismatch + 2 lane-screen-lines-mismatch; kasegi + mado provinces changed bytes; control `.ufo/waves/round-49/controls/c1-meter-red-at-round-open.json`, taken before any lane write; a do-nothing control reaches exactly this red) -> after: audit-r49 (16 rows = 10 unchanged + 6 sibling-absent) and delta-r49 (12 lane rows + 16 line rows) re-bound at ONE fresh snapshot, dispositions carried from delta-r48 by exact whole-line quote match, 0 new adjudications; the meter raced twice under the frozen correction flow (data `eb89957f` and correction 1 `44dde54f` each read 2 head mismatches; correction 1's raced receipt is committed at `measure/c1-meter-red-at-data.json`, the first race's receipt was overwritten in place by the re-run — disclosed) and went **GREEN at correction 2 `5fa18384`: exit 0, predicate true, 0 findings**, within the frozen two-cycle rule; v9 selftest 16/16; the v8->v9 diff is comment/const/schema hunks only | **met** under the frozen rule (two correction cycles consumed, the allowed maximum); adjacency held 8 -> 8 |
+| C2 operability (the r48-closure-routed scratch-path foot-gun; sourced S160 opened this round) — VERIFIED | `node scripts/webview2-cdp-loopback-round48.mjs --scratch relscratch --out r.json` (red control, round open, cwd scratch); `node scripts/webview2-cdp-loopback-round49.mjs --scratch relgreen --out r.json`; `node .ufo/waves/round-49/counters/webview2-receipt-r49.mjs <receipt> --shot <png> --driver <v2> --hostsrc <cs>`; `--selftest`; `--path-selftest` | before: the routed invocation (RELATIVE `--scratch`) fails on the frozen r48 bytes — exit 1, `no-devtools-active-port` (waitedMs 15568), and the real profile landed at `<cwd>/relscratch/relscratch/<token>-profile` with a live `EBWebView/DevToolsActivePort` the runner never polled — the S160 exe-dir anchor, measured (receipts `controls/c2-v1-relative-scratch-red-*`, committed at the freeze); the knowledge note carried no absolute-path warning -> after: `scripts/webview2-cdp-loopback-round49.mjs` (frozen sha `9b6fa47f…`) resolves `--scratch`/`--out` at launch and records given-vs-resolved under `receipt.paths`; the SAME relative shape exits 0 at `b026dc34` (invocation-bound nonce, Edg/156.0.4314.50, PNG 7,617 B, sweep 0, `relInvocation: true`, profile under the resolved scratch); counter green **0 findings** on the committed bytes; counter selftest **8/8** (refusal fixtures incl. missing-paths-block, resolution-not-applied, cross-schema r48 receipt, tampered shot, chrome relabel); `--path-selftest` **6/6**; absolute-equivalence control counter-green (no `paths-absolute-not-identity` — the resolution is identity for the r48-documented usage); cross-refusals: r49 counter refuses the r44 chrome receipt (**19 findings**), the r48 counter refuses the r49 receipt (**4 findings**); the frozen r48 bytes documented absolute-only via dated appends (knowledge note round-49 section + PROVINCE) | **met** under the frozen kill rules; operability held 9 -> 9 |
+| C3 coverage (capability extension — the r48 note's declared residual exercised; capability row enters the table below) — VERIFIED | `git ls-tree -r --name-only <REV> -- corpus/evidence/round49/webview2-nav \| wc -l` (0 -> 3); `node .ufo/waves/round-49/counters/webview2-receipt-r49.mjs corpus/evidence/round49/webview2-nav/receipt.json --shot …page-b.png --shot-a …page-a.png --driver <v2> --hostsrc <cs>` | before: the webview2 surface's measured page model is a single data:-URL nonce page; the residual is committed text in the r48 note ("A `file://` or `http://` fixture page and cross-page navigation were not exercised"); `corpus/evidence/round49/webview2-nav` holds 0 files -> after: at `36f8579b` the surface navigates — an inline loopback HTTP fixture (ephemeral port 61114, two static pages served from the driver's own bytes), `Page.navigate` to `/a.html`, then the page's OWN anchor clicked to `/b.html` (mechanism `anchor-click`), per-page URL/title/PNG pins (6,781 B / 7,002 B), invocation-bound nonce, Edg/ identity, teardown sweep 0 (fixture server closed before teardown accounting); counter green **0 findings** with both nav legs; the r48 note's residual superseded by a dated append | **met** under the frozen rule; coverage held 9 -> 9 |
+
+### Capabilities — round 49
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| webview2-http-cross-page-nav-windows | Navigate the WebView2 surface across real pages over HTTP: an inline loopback HTTP fixture (ephemeral port, pages served from the committed driver's own bytes), Page.navigate to page A, cross-page via the page's own anchor click to page B, per-page URL/title/PNG evidence in a counter-checked receipt with invocation-bound nonce and a keyed teardown to 0 | `scripts/webview2-cdp-loopback-round49.mjs` (`--nav`); `corpus/evidence/round49/webview2-nav/receipt.json` + `receipt-page-a.png` + `receipt-page-b.png`; `.ufo/waves/round-49/counters/webview2-receipt-r49.mjs` (nav legs) | 49 |
+
+### Round 49 — sources, frontier, trend verdicts
+
+Registry 159 -> 160 (S160 WebView2 user-data-folder concepts page — the exe-dir UDF anchor, the
+ground C2's repair rests on; opened this round, raw-fetched, staged, 18-word quote disclosed at 3
+verbatim hits across the page's platform sections). Knowledge notes stay 65 (the r48 note grew a
+dated append; the round's coverage move is the nav surface + the capability row). PROVINCE gains
+the round-49 runner line. Census start AND end exit 0.
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | The measured surface grew twice: the webview2 page model now covers cross-page HTTP navigation (0 -> 3 evidence files; a live anchor-click hop recorded and counter-checked), and the capability row `webview2-http-cross-page-nav-windows` enters the table; S160 moves the UDF path contract from a measured-but-undocumented behavior to a held, recheckable source row (159 -> 160). |
+| quality | improved | The routed foot-gun is closed with a versioned repair whose failure mode is now measured on both sides (v1-relative red with the exe-dir anchor listed; v2-relative green with the paths block) and an absolute-equivalence control proving the repair changes nothing else; the counter family grew refusal fixtures (8 cases) and demonstrated two symmetric cross-refusals; the adjacency gate survived two live head races inside its frozen correction budget and reads green; no admitted entry failed a re-check. |
+| discernment | improved | Every after-state is an instrument output at a named revision, never an arithmetic assertion (the r47 discipline held); the fixture selftest caught two real counter defects BEFORE any data relied on the counter, and the catches are disclosed as mistakes with the failing first reads; the orphan-evidence duty was answered with a sweep that refused to find work that wasn't there (the cited-but-uncommitted set is empty) while still landing the three genuinely orphaned receipts; the head races were routed through the frozen correction flow and stopped inside it, with both raced receipts committed rather than overwritten. |
+
+### Planned / saturation / retired — round 49
+
+- planned: coverage — the nav surface's next residuals: a multi-step journey (A -> B -> C with
+  history-length and back-navigation evidence, the r3 journey model over the webview2 surface), and
+  form interaction (fill + submit) on the fixture.
+- planned: adjacency — the r49 snapshot heads date like any census; re-run meter v9 as the
+  regression gate after any sibling roster change; the six sibling-absent rows and the
+  contested-open families (sre :53/:137, binfor :30/:33, kama :355, revenger :5) stay routed to the
+  open fleet L0 (`b6b3b5e4…` :65).
+- planned: operability — the r48 runner's absolute-only caveat now lives in the knowledge note and
+  PROVINCE; if the r48 bytes ever need to run relatively they must not — a wrapper, not an edit, if
+  the operator ever asks; the gate's honest residue stays zero on the present roster.
+- saturation 8 / window 3 retained; the r49 capability row keeps the window RESTARTED (round 50 =
+  position 1). No axis retired; no score moved (no rubric authorizes one).

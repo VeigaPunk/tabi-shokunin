@@ -85,3 +85,45 @@ probes 2026-11-01): `/json/version` → `Browser: "Edg/156.0.4314.50"`.
   exercised (the data:-URL nonce page is the measured surface).
 - The loader DLL path is host-specific (declared per invocation via `--loader`);
   a host without any redistributable copy cannot run this surface.
+
+## Round 49 append (2026-11-01) — the relative-path foot-gun fixed in a versioned runner; the nav residual exercised
+
+Append-only (the r48 bytes above are never edited).
+
+1. **The r48 runner's usage takes ABSOLUTE `--scratch`/`--out` only.** A
+   relative `--scratch` makes the r48 runner pass a relative
+   `WEBVIEW2_USER_DATA_FOLDER`, and the runtime resolves it against the HOST
+   EXE's directory (S160: the UDF location anchors at the directory the app
+   `.exe` runs in), while the runner polls the path CWD-relative — measured at
+   the r49 round open on the frozen r48 bytes (driver sha `074490f3…`): exit 1,
+   `no-devtools-active-port` after 15,568 ms, and the real profile at
+   `<cwd>/relscratch/relscratch/<token>-profile` with a live
+   `EBWebView/DevToolsActivePort` the runner never read (receipts
+   `.ufo/waves/round-49/controls/c2-v1-relative-scratch-red-*.json/txt`,
+   committed at the r49 freeze `7700daf8`). This was first hit live by the r48
+   non-author closure during its own re-run (routed to r49 as a fix duty).
+2. **The fix is versioned, not in-place:** `scripts/webview2-cdp-loopback-round49.mjs`
+   (frozen sha `9b6fa47f…`) resolves `--scratch`/`--out` ONCE at launch
+   (`path.resolve`, the S157 primitives), records given-vs-resolved under the
+   receipt's `paths` block, and adds `--nav` (below). The absolute-equivalence
+   control shows the resolution is identity for the r48-documented invocation
+   (absolute `--scratch` in, same path out; counter-clean,
+   `.ufo/waves/round-49/controls/c2-v2-absolute-equivalence-receipt.json`).
+3. **`recheck:` for the r49 runner** (supersedes the header recheck for new
+   work): `node scripts/webview2-cdp-loopback-round49.mjs --scratch <dir>
+   --out <receipt.json> [--nav]` then
+   `node .ufo/waves/round-49/counters/webview2-receipt-r49.mjs <receipt>
+   --shot <png> [--shot-a <pngA>] --driver scripts/webview2-cdp-loopback-round49.mjs
+   --hostsrc scripts/webview2-host-round48.cs` (exit 0; fresh nonce and, with
+   `--nav`, a fresh fixture port per invocation). The r48 runner/counter pair
+   stays valid for the committed r48 evidence with ABSOLUTE paths only.
+4. **Declared residual item superseded** ("A `file://` or `http://` fixture
+   page and cross-page navigation were not exercised"): round 49 exercised it —
+   an inline loopback HTTP fixture (ephemeral port, two static pages served
+   from the driver's own bytes), `Page.navigate` to `/a.html`, then the page's
+   OWN anchor clicked (`Runtime.evaluate` of `el.click()`) to `/b.html`,
+   per-page URL/title/PNG evidence committed at
+   `corpus/evidence/round49/webview2-nav/` and counter-green (nav legs
+   included); capability `webview2-http-cross-page-nav-windows` (first-working
+   49). The residual text above is kept for the record; the surface's page
+   model is no longer a single data:-URL page.

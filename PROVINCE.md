@@ -49,3 +49,10 @@ This province was written for the previous Linux host. Probed on the current hos
 - The r35–r43 Firefox/geckodriver instruments and the `/proc`/`ss` socket
   surfaces are Linux-host-bound and do not run here; receipts they produced
   remain committed evidence, re-derivable only on a host that has the surface.
+- Round 49 (2026-11-01): the webview2 runner is now `scripts/webview2-cdp-loopback-round49.mjs`
+  (resolve-at-launch `--scratch`/`--out`, optional `--nav`); the r48 runner above stays frozen and
+  takes ABSOLUTE paths only (S160: a relative `WEBVIEW2_USER_DATA_FOLDER` anchors at the host exe's
+  directory — the routed r48-closure foot-gun, measured red at the r49 round open and fixed in the
+  versioned runner; see `corpus/knowledge/webview2-cdp-loopback-round-48.md` round-49 append). The
+  webview2 surface now also navigates: cross-page over an inline loopback HTTP fixture
+  (`corpus/evidence/round49/webview2-nav/`).

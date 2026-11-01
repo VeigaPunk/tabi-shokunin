@@ -3106,3 +3106,63 @@ move), note-count claims.
   and re-run)". The census stamp in the same entry ("census END exit 0")
   describes the FINAL receipt (post-fix); the failed intermediate census output
   is disclosed in the lesson's Mistakes row 5.
+
+## Round 49 — 2026-11-01 (tabi, Windows host; freeze-first; three claims, all measured at data revisions)
+
+- Baseline `10ea3d96c0eed6d0e7240f57f7a30d8ef73689b1`. Freeze `7700daf8e1168648c6cb2608880617817b0dda62`
+  BEFORE any data commit: claims.json (3 frozen predicates + kill rules + frozenDigests; freshStartNote
+  naming the r42/r43/r47 refused classes and why this round's claims cannot reach them), meter v9
+  (const/comment/schema retarget of v8, selftest 16/16, 47-line diff), webview2 runner v2
+  (resolve-at-launch + `--nav` + `--path-selftest` 6/6), receipt counter r49 (paths contract + nav
+  legs, 8/8 refusal-fixture selftest), round-open controls (C1 meter red 15 findings at the baseline,
+  taken before any lane write; C2 v1-relative-scratch red on the committed r48 bytes — exit 1
+  `no-devtools-active-port`, the real profile anchored at the host exe dir per S160 with a live
+  DevToolsActivePort the runner never polled), census START exit 0 (22 W04 pre-existing), and the
+  orphan-evidence sweep receipt.
+- Carry-in from the r48 non-author closure, all three routed items addressed: (1) the webview2
+  relative-`--scratch` foot-gun performed as claim C2 (sourced S160, opened this round: the UDF
+  anchors at the host exe's directory); (2) the orphaned-evidence hygiene duty — the sweep found the
+  literal cited-but-uncommitted set EMPTY (every receipt cited by committed lane bytes and by the
+  fleet-side tabi reports r44–r48 is a blob at HEAD) and landed the three genuinely-uncommitted r44
+  receipts it did find (hygiene commit `6e080c17f8e568446a535c845c4387b795b3a1f6`); the standing
+  selfassessment m3-unlanded-paths mismatch is disclosed as the host's stale-index artifact
+  (205+ status entries are in-HEAD blobs; index ops are forbidden by the round contract and the
+  instrument is frozen); (3) the `tabi | round-44` L2-floor L0 stays open, routed around (L1-inline).
+- C1 adjacency (lowest axis, 8): red 15 at round open on the inherited r48 generation → ledgers
+  re-bound at one fresh snapshot (audit-r49: 10 unchanged + 6 sibling-absent; delta-r49: 12 lanes +
+  16 line rows; 0 new adjudications — kasegi/mado provinces changed bytes but their BG-hit line sets
+  are unchanged) → the meter head-raced twice under the frozen correction flow (data `eb89957f` and
+  correction 1 `44dde54f`: 2 findings each; correction 1's receipt committed at
+  `measure/c1-meter-red-at-data.json`, the first overwritten in place — disclosed) → **GREEN at correction 2
+  `5fa183842a9925b3e18ea5f9df039984d47d5666`** (exit 0, predicate true, 0 findings) — the two
+  allowed cycles, no more.
+- C2 operability (routed item 1, S160-grounded): v2 runner resolves `--scratch`/`--out` at launch;
+  the SAME relative invocation that fails on the frozen r48 bytes exits 0 on the r49 bytes at
+  `b026dc34368e06eb46ebdd925b132595751ffa4c` (paths block, invocation-bound nonce, PNG 7,617 B,
+  sweep 0); counter green 0 findings; 8/8 refusal-fixture selftest; `--path-selftest` 6/6;
+  absolute-equivalence control counter-green; cross-refusals both directions (r44 chrome receipt
+  refused with 19 findings; the r48 counter refuses the r49 receipt with 4); the frozen r48 bytes
+  documented absolute-only via dated appends (knowledge note + PROVINCE), never edited.
+- C3 coverage (the r48 note's declared residual, exercised): cross-page navigation over an inline
+  loopback HTTP fixture — `Page.navigate` to `/a.html`, the page's OWN anchor clicked to `/b.html`
+  (mechanism anchor-click), per-page URL/title/PNG evidence committed at `36f8579bf2fbabd71d8a15142e1c9cf29e27bb02`,
+  counter green 0 findings with both nav legs; capability row `webview2-http-cross-page-nav-windows`
+  (first-working 49) enters the SCORECARD table.
+- SOURCES: S160 (Microsoft Learn, User data folder — the UDF exe-dir anchor, raw-fetched 87,802 B +
+  staged + 18-word quote disclosed at 3 verbatim hits across the page's platform sections) opened
+  this round; registry 159 → 160, inserted INSIDE the Registry table after S159 (the r48 E12 lesson
+  applied pre-emptively). Knowledge notes stay 65 (the r48 note grew a dated round-49 append:
+  the absolute-paths caveat, the r49 recheck surface, the residual supersession). PROVINCE gains the
+  round-49 runner line.
+- SCORECARD: the round-49 block records C1/C2/C3 VERIFIED with before→after and counting commands;
+  the capabilities table gains `webview2-http-cross-page-nav-windows` (first-working 49); no scalar
+  moved (no rubric authorizes one); the capability row keeps the stagnation window restarted
+  (round 50 = position 1). Assimilation: none — `considerthese/` absent; shokuknow unreachable.
+  Lesson `corpus/lessons/round-49.md` carries the Gate (S160 with command and quote; admits S160 +
+  C1 + C2 + C3; rejects the counter's two pre-freeze defects and the failing path-selftest draft,
+  both fixed before any data relied on them), five Mistakes (the two counter defects caught by the fixture selftest before the freeze; the ledger summarizer misread; the path-selftest case bug; the selfassessment gate's EPERM temp-cleanup crash, re-run and both receipts kept), and the census stamps.
+- Mistakes mined this round (lesson rows): two counter defects caught by the fixture selftest before
+  the freeze (block-scoped `norm`; port-blind loopback-origin compare); the ledger summarizer
+  misread (strings vs objects — the artifact was right, the print was wrong); a `--path-selftest`
+  case asserting on the whole resolved path (CWD letters) — all four disclosed with their failing
+  first reads.
