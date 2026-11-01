@@ -355,12 +355,17 @@ if (port) {
           urls: (histC.entries || []).map((e) => e.url),
           readAt: stepC.url,
         };
-        // leg 4 — back-navigation via Page.navigateToHistoryEntry to entry 1
-        const target = (histC.entries || [])[1];
+        // leg 4 — back-navigation via Page.navigateToHistoryEntry to the /b.html
+        // entry. MEASURED SURFACE MODEL (the first --journey live run at the
+        // pre-amendment bytes mispredicted this — receipt kept at
+        // controls/c2-journey-history-model-red.json): the initial data: page
+        // OCCUPIES history slot 0, so the entries at C are [data:, a, b, c]
+        // (entriesLength 4, currentIndex 3) and the /b.html entry is index 2.
+        const target = (histC.entries || [])[2];
         if (!target) {
           fail('journey-back-target-missing', { entries: journey.history.entriesLength });
         } else {
-          journey.backLeg = { mechanism: 'navigateToHistoryEntry', targetIndex: 1, targetEntryId: target.id, targetUrl: target.url };
+          journey.backLeg = { mechanism: 'navigateToHistoryEntry', targetIndex: 2, targetEntryId: target.id, targetUrl: target.url };
           await send('Page.navigateToHistoryEntry', { entryId: target.id });
           if (!await waitPath('/b.html', 'document.title')) fail('journey-back-not-ready', {});
           const stepBack = await recordStep('navigateToHistoryEntry', '/b.html', 'journey-b-back');
@@ -422,9 +427,9 @@ if (journeyMode) {
   ok = ok && receipt.journey
     && Array.isArray(receipt.journey.steps) && receipt.journey.steps.length === 4
     && receipt.journey.nonceOnPageA === true
-    && receipt.journey.history && receipt.journey.history.entriesLength === 3 && receipt.journey.history.currentIndex === 2
+    && receipt.journey.history && receipt.journey.history.entriesLength === 4 && receipt.journey.history.currentIndex === 3
     && receipt.journey.backLeg && receipt.journey.backLeg.urlAfter && receipt.journey.backLeg.urlAfter.endsWith('/b.html')
-    && receipt.journey.backLeg.entriesLengthAfter === 3 && receipt.journey.backLeg.currentIndexAfter === 1;
+    && receipt.journey.backLeg.entriesLengthAfter === 4 && receipt.journey.backLeg.currentIndexAfter === 2;
 }
 fs.writeFileSync(outReceipt, JSON.stringify(receipt, null, 1));
 console.log(JSON.stringify({

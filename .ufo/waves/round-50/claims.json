@@ -52,13 +52,13 @@
       "id": "C2",
       "axis": "coverage (capability extension — the r49 planned residual)",
       "type": "axis-move (frontier: the measured surface extends from two-page single-hop navigation to a multi-step journey with history-length and back-navigation evidence — the r3 journey model over the webview2 surface); capability row webview2-multi-step-journey-windows enters the table this round",
-      "name": "multi-step journey over a loopback HTTP fixture on the webview2 surface: Page.navigate to /a.html, anchor-click to /b.html, anchor-click to /c.html, Page.getNavigationHistory read at C, Page.navigateToHistoryEntry back to entry 1, four per-step URL/title/PNG pins",
+      "name": "multi-step journey over a loopback HTTP fixture on the webview2 surface: Page.navigate to /a.html, anchor-click to /b.html, anchor-click to /c.html, Page.getNavigationHistory read at C, Page.navigateToHistoryEntry back to the /b.html entry, four per-step URL/title/PNG pins",
       "sourced": "S161 — ChromeDevTools/devtools-protocol json/browser_protocol.json (the canonical CDP protocol definition, opened THIS round): getNavigationHistory 'Returns navigation history for the current page.' (returns currentIndex + entries) and navigateToHistoryEntry 'Navigates current page to the given history entry.' (param entryId) are the two primitives the history and back legs are built on; the host route is held ground (S158/S159)",
-      "frozenPredicate": "C2 is met at the r50 data revision REV where (a) the before-state is committed text and an empty tree: the r49 SCORECARD planned section names the residual ('a multi-step journey (A -> B -> C with history-length and back-navigation evidence, the r3 journey model over the webview2 surface)') and git ls-tree -r --name-only <BASELINE> -- corpus/evidence/round50 reads 0 files; (b) after: a receipt committed at corpus/evidence/round50/webview2-journey/receipt.json records journey.steps length 4 with legs Page.navigate (/a.html), anchor-click (/b.html), anchor-click (/c.html), navigateToHistoryEntry (/b.html), journey.history {entriesLength 3, currentIndex 2, urls /a.html,/b.html,/c.html, readAt /c.html}, journey.backLeg {mechanism navigateToHistoryEntry, targetIndex 1, urlAfter /b.html, entriesLengthAfter 3, currentIndexAfter 1}, nonceOnPageA true (the invocation-bound nonce rides a #nonce marker on the fixture pages), per-step titles and per-step PNG pins, an Edg/ identity, and postKillSweepCount 0, with the four PNGs committed beside it; (c) node .ufo/waves/round-50/counters/webview2-receipt-r50.mjs corpus/evidence/round50/webview2-journey/receipt.json --shot …journey-b-back.png --png-a …journey-a.png --png-b …journey-b.png --png-c …journey-c.png --driver scripts/webview2-cdp-loopback-round50.mjs --hostsrc scripts/webview2-host-round48.cs exits 0 with 0 findings; (d) the runner's --path-selftest is 6/6 (measure/c2-path-selftest-at-freeze.json, committed at the freeze); (e) the capability row webview2-multi-step-journey-windows enters the SCORECARD capabilities table at this round's integration commit (first-working 50); (f) the counter selftest is 13/13 (measure/c3-counter-selftest-at-freeze.json, committed at the freeze).",
+      "frozenPredicate": "C2 is met at the r50 data revision REV where (a) the before-state is committed text and an empty tree: the r49 SCORECARD planned section names the residual ('a multi-step journey (A -> B -> C with history-length and back-navigation evidence, the r3 journey model over the webview2 surface)') and git ls-tree -r --name-only <BASELINE> -- corpus/evidence/round50 reads 0 files; (b) after: a receipt committed at corpus/evidence/round50/webview2-journey/receipt.json records journey.steps length 4 with legs Page.navigate (/a.html), anchor-click (/b.html), anchor-click (/c.html), navigateToHistoryEntry (/b.html), journey.history {entriesLength 4, currentIndex 3, urls data:,/a.html,/b.html,/c.html — the initial data: page occupies history slot 0 (the measured surface model, amendment 2), readAt /c.html}, journey.backLeg {mechanism navigateToHistoryEntry, targetIndex 2, urlAfter /b.html, entriesLengthAfter 4, currentIndexAfter 2}, nonceOnPageA true (the invocation-bound nonce rides a #nonce marker on the fixture pages), per-step titles and per-step PNG pins, an Edg/ identity, and postKillSweepCount 0, with the four PNGs committed beside it; (c) node .ufo/waves/round-50/counters/webview2-receipt-r50.mjs corpus/evidence/round50/webview2-journey/receipt.json --shot …journey-b-back.png --png-a …journey-a.png --png-b …journey-b.png --png-c …journey-c.png --driver scripts/webview2-cdp-loopback-round50.mjs --hostsrc scripts/webview2-host-round48.cs exits 0 with 0 findings; (d) the runner's --path-selftest is 6/6 (measure/c2-path-selftest-at-freeze.json, committed at the freeze); (e) the capability row webview2-multi-step-journey-windows enters the SCORECARD capabilities table at this round's integration commit (first-working 50); (f) the counter selftest is 13/13 (measure/c3-counter-selftest-at-freeze.json, committed at the freeze).",
       "killRules": [
         "REFUSAL if the counter finds any finding on the round's own committed receipt (including any journey-* leg)",
         "REFUSAL if the back hop was made by a direct Page.navigate to /b.html while the receipt still claims mechanism navigateToHistoryEntry — the honest alternatives are a truthful mechanism record (declared, refused as fabricated) or the claim not landing",
-        "REFUSAL if the driver bytes at the data revision differ from the amended frozen sha 80084750… (amendment 1: the 05a4f77e… freeze bytes failed their first live run on the page-target race, red receipt committed; the receipts pin the amended bytes)",
+        "REFUSAL if the driver bytes at the data revision differ from the amended frozen sha 2152d292… (amendments 1-2: the 05a4f77e… freeze bytes failed their first live run on the page-target race; the amendment-1 bytes ran the designed-but-wrong history model — both red receipts committed; the receipts pin the amended bytes)",
         "declared residual (the r44/r45/r48/r49 class, pre-data): the journey fields are driver-reported and the driver bytes are sha-pinned in the receipt and re-hashed by the counter; a hand-forged receipt is outside any shape counter's reach — the re-derivation path is re-running the committed runner (fresh nonce and fresh fixture port per invocation)"
       ],
       "countingCommands": [
@@ -90,8 +90,8 @@
   ],
   "frozenDigests": {
     "counters/c1-adjacency-host-v10.mjs": "214b6ebf9a32b31d852427d3d6b1e91115aba28db803193e665fac848de1d0e3",
-    "scripts/webview2-cdp-loopback-round50.mjs": "80084750b687cc5d767bf0ef5fd29a6f32f8122fc65b8906a9468d0571cdf9e0",
-    "counters/webview2-receipt-r50.mjs": "8372402ce9bdd93c47480704269da4d1fb48a8977635d03c5aa8f8e34ca883a8",
+    "scripts/webview2-cdp-loopback-round50.mjs": "2152d292f51d25a69827445525a0d02b0cc1994b558d7b94d2c12ae5415eb46d",
+    "counters/webview2-receipt-r50.mjs": "b7f54586fb90a825024c2553d88823020e6db11a4eb112c182071e4bfba5389f",
     "controls/v9-v10-retarget.diff": "594b6e41c092ae5e69ea7f91b490494cca6c788700b7f467487b13f87a8b0179",
     "controls/c1-meter-v9-red-at-round-open.json": "8e19a8c0531bc85537eead80a44df5965a36b507f053f8ac0ce733eca2101baa",
     "controls/c3-r49counter-selftest-today.json": "8e4b4914123b7a146814cdc94e2485913774bb53027f1b1035f10066783c7c4e",
@@ -103,7 +103,9 @@
     "measure/c3-counter-selftest-at-freeze.json": "5d4b3d0ff883f5bd4d9b8b55c6a82621f812a64a81b670c8aa519bd37ea96fdb",
     "measure/census-start.txt": "0a6f42b5945d23be6f145a1f408b2ffeba5cb0ccd80dd9097ab8c12d43d65a43",
     "counters/webview2-receipt-r50-fixtures/manifest.json": "bcedc5c944305fce2c4ffc4ec7581922c8dc22fcfb5944e37a2eda4b269ae8d3",
-    "controls/c2-first-live-run-red-target-race.json": "59e7fb084e2b8ea4257f21ae4efdf430cc05c475e92265be87157ae2089022b6"
+    "controls/c2-first-live-run-red-target-race.json": "59e7fb084e2b8ea4257f21ae4efdf430cc05c475e92265be87157ae2089022b6",
+    ".ufo/waves/round-50/counters/webview2-receipt-r50.mjs": "b7f54586fb90a825024c2553d88823020e6db11a4eb112c182071e4bfba5389f",
+    "controls/c2-journey-history-model-red.json": "34c92ec2475e3e53b51bac01e32837cc9d8ef4739c5d268cdf3de8aeab4de688"
   },
   "amendments": [
     {
@@ -113,6 +115,20 @@
       "why": "a runner defect caught by its first live run, before any data was committed — the amendment is the sanctioned path (r45 discipline)",
       "digestBefore": "05a4f77e33896d059f5c40eb8f49576ebe3f40f6efec0eede7a71cbb1f681b85",
       "digestAfter": "80084750b687cc5d767bf0ef5fd29a6f32f8122fc65b8906a9468d0571cdf9e0"
+    },
+    {
+      "n": 2,
+      "at": "2026-11-01T20:05:00Z",
+      "what": "the journey HISTORY MODEL corrected to the measured surface truth: the initial data: page OCCUPIES history slot 0, so the entries at C are [data:, a, b, c] — entriesLength 4, currentIndex 3, and the /b.html back entry is index 2 (backLeg targetIndex 2, currentIndexAfter 2, entriesLengthAfter 4). The first --journey live run at the amendment-1 bytes ran the designed-but-wrong model (entry[1] = /a.html), waited for /b.html, exited 1 journey-back-not-ready with the full measured history block recorded — receipt kept as controls/c2-journey-history-model-red.json (+ its four per-step PNGs at controls/c2-model-red-pngs/). Runner, counter journey checks, fixtures and this predicate updated to the measured model; nothing else changed.",
+      "why": "a design misprediction about CDP history semantics, caught by the live surface itself before any data was committed; the measured model is strictly more evidence (the data: entry is part of the journey's history)",
+      "digestsBefore": {
+        "scripts/webview2-cdp-loopback-round50.mjs": "80084750b687cc5d767bf0ef5fd29a6f32f8122fc65b8906a9468d0571cdf9e0",
+        ".ufo/waves/round-50/counters/webview2-receipt-r50.mjs": "8372402ce9bdd93c47480704269da4d1fb48a8977635d03c5aa8f8e34ca883a8"
+      },
+      "digestsAfter": {
+        "scripts/webview2-cdp-loopback-round50.mjs": "2152d292f51d25a69827445525a0d02b0cc1994b558d7b94d2c12ae5415eb46d",
+        ".ufo/waves/round-50/counters/webview2-receipt-r50.mjs": "b7f54586fb90a825024c2553d88823020e6db11a4eb112c182071e4bfba5389f"
+      }
     }
   ]
 }

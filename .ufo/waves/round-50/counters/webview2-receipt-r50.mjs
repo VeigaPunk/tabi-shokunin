@@ -33,12 +33,13 @@
 //   when receipt.journey is present, exactly four journey steps with legs
 //   Page.navigate (/a.html), anchor-click (/b.html), anchor-click (/c.html),
 //   navigateToHistoryEntry (/b.html), all same-port http://127.0.0.1 pages
-//   with distinct URLs and present titles, nonceOnPageA true, a history block
-//   read at /c.html with entriesLength 3, currentIndex 2 and entry urls
-//   /a.html,/b.html,/c.html, a back leg with targetIndex 1 landing on /b.html
-//   with entriesLengthAfter 3 and currentIndexAfter 1, per-step committed PNGs
-//   hashing to the per-step pins, and the main shot equal to the FINAL step's
-//   capture.
+//   with present titles, nonceOnPageA true, a history block read at /c.html
+//   with entriesLength 4, currentIndex 3 and entry urls data:,/a.html,/b.html,
+//   /c.html (the initial data: page occupies history slot 0 — the measured
+//   surface model, amendment 2), a back leg with targetIndex 2 landing on
+//   /b.html with entriesLengthAfter 4 and currentIndexAfter 2, per-step
+//   committed PNGs hashing to the per-step pins, and the main shot equal to
+//   the FINAL step's capture.
 // Declared residual (the r44/r45/r48/r49 class, pre-declared): this counter
 // binds receipt shape and committed bytes; it cannot by itself prove a browser
 // ran — the re-derivation path is re-running the committed runner (fresh nonce
@@ -199,21 +200,24 @@ function checkReceipt(receiptPath, shots, driverPath, hostSrcPath) {
       }
       const recMain = receipt.screenshot || {};
       if (JSON.stringify(recMain) !== JSON.stringify(steps[3].screenshot || {})) add('main-shot-not-final-step', JSON.stringify({ recMain, last: steps[3].screenshot }).slice(0, 160));
-      // history block, read at C
+      // history block, read at C. MEASURED SURFACE MODEL (amendment 2): the
+      // initial data: page occupies history slot 0, so the entries at C are
+      // [data:, a, b, c] — entriesLength 4, currentIndex 3.
       const h = j.history || {};
       const hUrls = Array.isArray(h.urls) ? h.urls : [];
       const endsWith = (u, sfx) => { try { return new URL(u).pathname.endsWith(sfx); } catch { return false; } };
-      if (h.entriesLength !== 3 || h.currentIndex !== 2
+      if (h.entriesLength !== 4 || h.currentIndex !== 3
           || !endsWith(h.readAt || '', '/c.html')
-          || hUrls.length !== 3
-          || !endsWith(hUrls[0] || '', '/a.html') || !endsWith(hUrls[1] || '', '/b.html') || !endsWith(hUrls[2] || '', '/c.html')) {
+          || hUrls.length !== 4
+          || !String(hUrls[0] || '').startsWith('data:')
+          || !endsWith(hUrls[1] || '', '/a.html') || !endsWith(hUrls[2] || '', '/b.html') || !endsWith(hUrls[3] || '', '/c.html')) {
         add('journey-history', JSON.stringify(h).slice(0, 200));
       }
-      // back leg
+      // back leg (to the /b.html entry, index 2 of [data:, a, b, c])
       const bl = j.backLeg || {};
-      if (bl.mechanism !== 'navigateToHistoryEntry' || bl.targetIndex !== 1
+      if (bl.mechanism !== 'navigateToHistoryEntry' || bl.targetIndex !== 2
           || !endsWith(bl.urlAfter || '', '/b.html')
-          || bl.entriesLengthAfter !== 3 || bl.currentIndexAfter !== 1) {
+          || bl.entriesLengthAfter !== 4 || bl.currentIndexAfter !== 2) {
         add('journey-back-leg', JSON.stringify(bl).slice(0, 200));
       }
     }
