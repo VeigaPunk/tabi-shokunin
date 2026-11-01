@@ -202,3 +202,17 @@ and the position is named because of D2).
 `considerthese/` does not exist in the lane repo (checked 2026-11-01). Shokuknow
 register not reachable from this host. Assimilation: none — shokuknow
 unreachable.
+
+## Post-integration appendix (2026-11-01, same day)
+
+The selfassessment gate at the integration commit `ed701bf7` crashed ONCE on
+the r49-known class (rmSync EPERM cleaning its own temp sandbox
+`tabi-selfassessment-japzZl` — a Windows temp file-lock race, not a verdict;
+the crashed receipt kept at
+`measure/selfassessment-at-integration-crashed-eperm.txt`) and re-ran to
+completion: `SELFASSESSMENT verdict=failed rev=ed701bf7… mismatches=1
+could_not_evaluate=182 superseded=23` (receipt
+`measure/selfassessment-at-integration.txt`) — the same single standing
+mismatch class as r44-r49 (the m3 stale-index artifact; `git status`-based
+instruments read the host's broken index's in-HEAD blobs as untracked). No
+number in this lesson quotes the crashed run.
