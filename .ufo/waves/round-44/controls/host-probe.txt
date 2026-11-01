@@ -1,0 +1,29 @@
+# tabi round-44 host surface probes (2026-10-31, win32 10.0.26200 x64, Git Bash)
+
+probe: chrome version
+command: powershell -NoProfile -Command "(Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe').VersionInfo.ProductVersion"
+output: 156.0.8078.74
+
+probe: firefox
+command: which firefox
+output: (not found)
+
+probe: playwright cache (old-host path)
+command: ls $HOME/AppData/Local/ms-playwright
+output: (missing)
+
+probe: kimi-webbridge plugin (PROVINCE primary substrate)
+command: ls ~/.kimi-code/plugins/managed/kimi-webbridge
+output: No such file or directory
+
+probe: CDP bridge on 9222
+command: curl -s --max-time 3 http://127.0.0.1:9222/json/version
+output: (no response - no CDP bridge)
+
+probe: ms-edge
+command: ls 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'
+output: present
+
+probe: headless CDP loopback smoke (pre-freeze, scratch profile)
+command: node scripts/chrome-cdp-loopback-round44.mjs --probe --scratch <scratch>/prof-probe
+output: ok:true browser:Chrome/156.0.8078.74 wsHost:127.0.0.1:<ephemeral> (controls/c2-cdp-probe.json)
