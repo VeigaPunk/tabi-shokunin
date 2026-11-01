@@ -30,10 +30,13 @@ This province was written for the previous Linux host. Probed on the current hos
   named above — recorded absent with date; the substrate documentation the lane
   holds stays valid as documentation), Firefox, geckodriver, Playwright
   (`ms-playwright` cache), any CDP bridge on `127.0.0.1:9222`.
-- PRESENT: Google Chrome 156.0.8078.74, Microsoft Edge, node v24.21.0,
-  Python 3.13.15. The lane's browser surface here is a self-launched
-  Chromium-class browser on an ephemeral loopback CDP port with a throwaway
-  profile (`scripts/chrome-cdp-loopback-round44.mjs`); public web surfaces are
+- PRESENT: Google Chrome 156.0.8078.74, Microsoft Edge 156.0.4314.50, node v24.21.0,
+  Python 3.13.15. The lane's browser surfaces here are self-launched Chromium-class
+  browsers on ephemeral loopback CDP ports with throwaway profiles, the surface
+  declared per invocation (`scripts/chrome-cdp-loopback-round45.mjs --browser chrome|edge`;
+  branded Chrome exposes the stderr DevTools line, branded Edge is stderr-silent and is
+  discovered via the profile's `DevToolsActivePort` file — see
+  `corpus/knowledge/chrome-cdp-loopback-round-45.md`); public web surfaces are
   reached via raw HTTP fetch (curl/WebFetch) for source opens.
 - The r35–r43 Firefox/geckodriver instruments and the `/proc`/`ss` socket
   surfaces are Linux-host-bound and do not run here; receipts they produced

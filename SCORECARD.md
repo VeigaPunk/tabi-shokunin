@@ -2418,3 +2418,54 @@ round's defects were caught by existing instruments and are recorded in the less
   from r35-r36, re-based on sibling drift since the pins.
 - saturation 8 / window 3 retained; the capability row restarts the window (round 45 = position
   1). No axis retired; no score moved (no rubric authorizes one).
+
+
+## Round 45 — declared claims (frozen before data) and executed disposition (all three verified)
+
+Round 45 on the Windows host. Baseline `d252ea17bf8d39ea2e1da9770316146f264f8a0e`; freeze
+`51ee19219427497b69bbd4567d21c5478f4efbad`; measured `fb8e2435000df47d86fbab8ce89c1e8f3d0a733f`;
+data-corrected under the frozen kill rule (a sibling head moved mid-measurement) to
+`0360b069c5f8465c0a230638b24229e774df7ea3` — the cited measured revision, instrument bytes
+unchanged since the freeze. Axes at start: adjacency 8 (lowest), others 9; saturation 8 / window 3;
+the r44 capability restarted the window, so the nudge is inactive and the lowest-axis obligation
+applies (C3 works adjacency). Carry-in from the r44 closure addressed in-round: D1 repinned
+append-only + ratcheted by C1; D2 correction of record (lesson); D3 receipted (lesson + measure);
+D4 routed around (L0 open; no wave clause in any predicate).
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 calibration (r44 routed defect D1) | `node .ufo/waves/round-45/counters/check-r44-freeze-round45.mjs --rev <REV> --repo <lane>`; `--selftest` | baseline `d252ea17…`: exit 1 (`amendment-missing` + `frozen-digest-stale` naming the counter path, pin `d994ab71…` vs committed `f796ae84…`) -> measured rev `0360b069…`: exit 0 with the append-only amendment bound to committed bytes; selftest 11/11 (relabel, invented repin, duplicate binding, fragment quote, untyped path, digest mismatch, named-control-unbound, blob rewrite all refused) | **met** under the frozen rule; the r44 freeze blob stays byte-identical (`a38b24ee…`); calibration held 9 -> 9 |
+| C2 coverage capability (sourced: S154) | `node scripts/chrome-cdp-loopback-round45.mjs --browser edge …`; `node .ufo/waves/round-45/counters/chrome-cdp-receipt-r45.mjs <receipt> --shot <png> --runner <runner>`; `git ls-tree -r --name-only <rev> -- corpus/evidence/round45 \| wc -l` | baseline tree count 0 -> live run exit 0 (Edg/156.0.4314.50, `discoveryVia: devtools-active-port` — Edge prints no stderr DevTools line on this host; invocation-bound; PNG 8,194 B sha `7dfce09d…`), receipt+shot committed as explicit files, counter exit 0 on committed bytes, repro run fresh nonces (receipt `7543027b…`/`10bc2096…`, fixture `2a3f9a27…`/`76926454…`) with byte-identical screenshot, cross-refusal: the counter refuses the r44 chrome receipt with 5 findings | **met** under the frozen rule; same residual model as r44 (browser-ness re-derived by re-running the committed runner); coverage held 9 -> 9 |
+| C3 adjacency (lowest owned axis) | `node .ufo/waves/round-45/counters/c1-adjacency-host-v5.mjs --rev <REV> --repo <lane> --fleet <fleet>` | baseline: exit 1, 28 findings (16 audit-missing, 12 roster-lane-uncovered) -> measured rev: exit 0, counts roster 16 / map 16 / audit 16 / delta lanes 12; drift recorded as the result: 6 sibling-absent (kaidoku x4, revenger x2), 9 stale (kake x5, kagi x2, kumitate, kama), 1 moved (kake :79 -> :85); 14 hit lines dispositioned (12 no-tabi-ground, 2 contested-open: CDP runtime observation in shokunin-reverse-engineering :53/:137 — the revenger successor of fleet L0 `b6b3b5e…:65`, routed not absorbed); the meter caught a real sibling head move mid-round and the kill-rule data-correction flow re-measured | **met** under the frozen rule; adjacency held 8 -> 8 |
+
+### Capabilities — round 45
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| edge-cdp-loopback-windows | Drive Microsoft Edge over raw CDP on this Windows host with the declared-surface discipline: headless=new launch with a throwaway profile, endpoint discovered from the profile's DevToolsActivePort file (Edge is stderr-silent here) and confirmed by /json/version, /json/new PUT target, invocation-bound DOM extraction, Page.captureScreenshot PNG, fail-closed teardown | `scripts/chrome-cdp-loopback-round45.mjs`; `corpus/evidence/round45/edge-cdp/receipt.json`; `.ufo/waves/round-45/counters/chrome-cdp-receipt-r45.mjs`; `corpus/knowledge/chrome-cdp-loopback-round-45.md` | 45 |
+
+### Round 45 — sources, frontier, trend verdicts
+
+Registry 153 -> 154 (S154 opened this round, raw-fetched with sha256, staged copy committed; mined;
+census start AND end exit 0). Knowledge notes 61 -> 62. PROVINCE host-surface line updated (the
+second declared surface + the Edge discovery leg). No QUALITY criterion added: the round's defects
+were caught by existing instruments and the freeze discipline, recorded in the lesson Mistakes.
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | New capability row `edge-cdp-loopback-windows` (second Chromium-class surface demonstrated on this host, with its own source-scoped receipt S154); new note on ground the coverage map did not hold; registry 153 -> 154; notes 61 -> 62; evidence tree round45 0 -> 2. |
+| quality | improved | The r44 routed defects D1-D3 closed in committed bytes (D1 with a byte-binding checker + append-only amendment; D2 as a correction of record; D3 with a captured crash receipt on a deterministically rebuilt fixture); the head binding caught a real sibling move mid-measurement; no admitted entry failed a re-check. |
+| discernment | improved | The lane's own instruments refused its own outputs twice before admission (the first C3 measurement red on a stale head; the broad keyword list rejected pre-freeze on a measured burden of 265+ noise lines) and the round recorded both refusals instead of smoothing them; fresh-start spot-checks re-derived three prior rounds' refusal classes from committed bytes. |
+
+### Planned / saturation / retired — round 45
+
+- planned: coverage — the S154/S152/S153 90d rechecks land round 47+ (opened 2026-10-31); a third
+  declared surface only if a host probe shows one (WebView2 chrome.exe candidate noted in the Edge
+  docs is the lead).
+- planned: adjacency — the stale/moved map rows (kake x5, kagi x2, kumitate, kama) now name their
+  drift; re-pin or re-disposition them against the current trees, and re-run the meter as the
+  regression gate after any sibling roster change.
+- planned: calibration — a second stale-pin would be refused by C1's checker today; if a future
+  freeze amends instruments, the amendment file is the single sanctioned path.
+- saturation 8 / window 3 retained (capability at 45 keeps the window restarted: round 46 =
+  position 2). No axis retired; no score moved (no rubric authorizes one).

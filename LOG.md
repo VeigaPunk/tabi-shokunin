@@ -2897,3 +2897,42 @@ move), note-count claims.
   (first-working 44). No scalar moved. Assimilation: none — `considerthese/` absent; shokuknow
   unreachable. Lesson `corpus/lessons/round-44.md` carries the Gate, three Mistakes (teardown
   race; the r43-routed annotation-drift mining; the fixture-guard catch) and the census stamps.
+
+## Round 45 — 2026-10-31 — carry-in D1-D3 closed, second declared surface (Edge), adjacency host-roster re-base
+
+- Fresh-start discipline held: the r41/r42/r43 rejected closures re-spot-checked in committed
+  bytes (r41 receipt blobs present at HEAD; r42 false-green class closed by the r44 counter
+  clauses; r43 false-green/crash class closed via the D3 crash receipt). Ruled out (recorded in
+  `claims.json` freshStartNote): Firefox/BiDi (absent surface), wave-settled claims (no dispatch
+  surface, L0 open — routed around, D4), note-count claims and the bare D1 file edit
+  (do-nothing reachable), r36 meter v4 reuse (old-host bound).
+- Carry-in: D1 repinned append-only (`.ufo/waves/round-44/claims-amendments.json`,
+  `d994ab71…` -> `f796ae84…`, freeze blob `a38b24ee…` untouched) with C1's checker as the
+  ratchet; D2 correction of record in the lesson (per-revision baselines: instruments at
+  `8c238799…`, evidence at `844a5b3a…`); D3 receipted (r43 checker bytes sha `2f150b84…` exit 1
+  uncaught `TypeError: b.path.replace is not a function` at :196:35 on the deterministically
+  rebuilt pathtype fixture `7c558d5e…`); D4 routed around (no wave clause in any predicate).
+- FREEZE `51ee19219427497b69bbd4567d21c5478f4efbad`: claims.json (3 claims: C1 calibration
+  r44-freeze r5-hardening; C2 coverage capability edge-cdp-loopback-windows; C3 adjacency
+  host-roster re-base — the lowest owned axis, nudge inactive), 3 instruments (checker 11/11,
+  counter, meter 13/13), runner, amendment, 7 pre-data controls (surface probes
+  Chrome/Edge, baseline reds: c1 frozen-digest-stale, c3 28 findings, c2 count 0,
+  r44-receipt cross-refusal 5 findings), S154 staged.
+- MEASURED `fb8e2435000df47d86fbab8ce89c1e8f3d0a733f`, data-corrected (adjacency heads under the
+  frozen kill rule: chousa moved mid-measurement, head binding caught it) to
+  `0360b069c5f8465c0a230638b24229e774df7ea3` — the cited measured revision, instruments
+  byte-identical to the freeze. C1 green at the measured rev / red at baseline / selftest 11/11.
+  C2 live Edge run exit 0 (Edg/156.0.4314.50, DevToolsActivePort discovery — Edge prints no
+  stderr DevTools line on this host), counter 0 findings on committed bytes, repro fresh nonces +
+  byte-identical PNG. C3 green at the measured rev: 16/16 map rows audited (6 sibling-absent,
+  9 stale, 1 moved — recorded, not smoothed), roster 16 lanes covered (6 map + 12 delta), 14 hit
+  lines dispositioned, 2 contested-open (CDP runtime observation in shokunin-reverse-engineering,
+  the revenger successor — routed to the integrator).
+- SOURCES: S154 (Edge DevTools Protocol, 13-word quote verbatim) opened by the L1 with raw fetch
+  + sha256; registry 153 -> 154; knowledge note `chrome-cdp-loopback-round-45.md` (notes 61 -> 62);
+  census start and end exit 0; check-sources clean at this tip.
+- SCORECARD: the round-45 block + capabilities row `edge-cdp-loopback-windows` (first-working 45).
+  No scalar moved. Assimilation: none — `considerthese/` absent; shokuknow unreachable. Lesson
+  `corpus/lessons/round-45.md` carries the Gate, the D1/D2/D3 carry-in rows, four Mistakes
+  (stale-pin mining, revision-wording mining, broad keyword list narrowed pre-freeze, import-guard
+  bug) and the census stamps.
