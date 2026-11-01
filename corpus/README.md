@@ -906,3 +906,13 @@ are the adjacency ledger re-bind (C1) and the routed operability repair (C2).
 | `knowledge/chrome-cdp-teardown-round-46.md` and the round-46 row above | `knowledge/chrome-cdp-teardown-round-46-corrected.md` is the canonical entry (r46 closure defect V2: no provenance trio). The original retains a supersession append; it is historical, not a second admission. |
 | The S155 anchor byte count "104,251 B" (round-46 row above and the r46 lesson Gate row) | Corrected by S156 to **104,255 B** with its command (`git cat-file -s 859d441f…` → 104255); the sha256 was unchanged — the bytes were right, the count drifted (r46 closure defect V1, number-drift). |
 | The r46 selfassessment disclosure's "all five m1-selftest-tally readings are pre-existing" | Superseded wording, not derivable from the receipt's own summary (r46 closure defect V3); the round-47 disclosure derives every number from the fresh receipt's summary line (see `corpus/lessons/round-47.md` and the SCORECARD round-47 block). |
+
+## Round 48 — the WebView2 runtime over raw CDP, the third declared surface (2026-11-01)
+
+Append-only. One new knowledge note (capability acquisition; the r48 freeze's
+C3). The round's other moves are ledger/instrument work (adjacency re-bind,
+gate repair) and carry no new note ground.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/webview2-cdp-loopback-round-48.md` | The WebView2 runtime (`msedgewebview2.exe`) as the third Chromium-class CDP surface on this host (r48 capability webview2-cdp-loopback-windows): the runtime is NOT a standalone surface (7 launcher variants exit cleanly with no CDP endpoint — probes bundle); the documented host-side route (S158) via `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` + a minimal C# 5 COM host declaring the SDK header's ABI (S159); `EBWebView\DevToolsActivePort` discovery one level below the profile root; `Edg/<runtime version>` identity; host-death tears the browser down (measured); chrome/edge/webview2 decision table; declared residuals. | S158; S159; `scripts/webview2-host-round48.cs`; `scripts/webview2-cdp-loopback-round48.mjs`; `corpus/evidence/round48/webview2-cdp/receipt.json`; `.ufo/waves/round-48/counters/webview2-receipt-r48.mjs`; `.ufo/waves/round-48/controls/webview2-standalone-probes/`. |

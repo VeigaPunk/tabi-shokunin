@@ -3040,3 +3040,56 @@ move), note-count claims.
   quotes), the carry-in rows, three Mistakes (the stale-premise frozen predicate — refusal keyed
   to classes next freeze; the d76eb5bb commit-message overclaim — scope-check before the helper;
   the r46 number-drift mined per the section 2b duty) and the census stamps.
+
+## Round 48 — 2026-11-01 (hyaku; Windows host; the owed re-bind, the re-declared repair, the third surface)
+
+- Baseline `8ccf0a82087d950c0ad0fc5d0e4723a4311a1765`; freeze `f4288c0e9a4b675f2e86e25c34e9a09af25d67b4`
+  (claims + instruments + controls, BEFORE any data commit); C1 data `04dfee6443bd98fe335ebe95623277e9928ec909`;
+  C2 data `710c7143c2d52c43cbe1c168236ff4076e72f7a5`; C3 data `f623ce5d1696df4a64ef9d29cd8568375ae50c57`.
+  Carry-in from the r47 non-author closure addressed in-round: N1 (the owed ledger re-bind) performed
+  as claim C1; D1 (the r47 lesson's quote_too_long mislist) closed as an append-only erratum in
+  `corpus/lessons/round-48.md` Mistakes row 1 and the SCORECARD round-48 block — superseded text
+  "kagi :64 / kama :355 / kake :310", correct enumeration kagi PROVINCE.md:64 / kake PROVINCE.md:310 /
+  kake SKILL.md:697; the r47 spotcheck read in full before declaring; the tabi | round-44 L2-floor L0
+  stays open and routed around (L1-inline round, no wave clause in any predicate).
+- MEASURED: C1 (adjacency, lowest owned axis 8) — round-open red control at the r47 cited revision:
+  exit 1, 15 findings (9 head + 3 sha + 3 lines mismatches; the closure judge had read 9 at closure);
+  audit-r48 (16 rows = 10 unchanged + 6 sibling-absent) + delta-r48 (12 lanes + 16 line rows, 0 new
+  adjudications, dispositions carried by exact whole-line quote match) re-bound at ONE fresh snapshot;
+  meter v8 (retarget of v7; committed diff comment/const/schema-only; selftest 16/16) at 04dfee64:
+  exit 0, predicate true, 0 findings. **C1 VERIFIED** under its frozen predicate (a)-(f).
+- MEASURED: C2 (operability — the r47-refused claim re-declared under the closure's sanction) — the
+  two honest finding classes repaired in the owned gate: `--fleet-repo <dir>` resolves the `fleet`
+  ruling venue at the real fleet repo (this host splits the fleet repo from the sibling parent;
+  fails closed — the wrong-venue selftest case refuses) and whole-line quote acceptance (a quote that
+  IS the complete cited line drops only the 25-word cap; substring quotes stay capped; min checks
+  unchanged). Predicates MEASURED pre-data: before-control verified=5 (6+4+3) at the inherited bytes;
+  prediction receipt over the repair bytes (sha-pinned 19bcd7d9…) reads verified=10, findings exactly
+  6 x sibling_unresolved; the landed blob re-hashes to the pin; the data-time run at 710c7143 EQUALS
+  THE PREDICTION (programmatic compare); without-flag control verified=7 proves the flag load-bearing;
+  selftest 64/64 (7 new cases). **C2 VERIFIED** under its class-keyed kill rules. The residual six
+  findings are the genuinely-absent siblings (kaidoku x4, revenger x2), matching the audit-r48
+  sibling-absent rows 1:1 — operator ground, reported not absorbed.
+- MEASURED: C3 (coverage — capability acquisition, the move the expired stagnation window asks for) —
+  webview2-cdp-loopback-windows: the WebView2 runtime (msedgewebview2 156.0.4314.50) driven over raw
+  CDP through a minimal COM host (scripts/webview2-host-round48.cs, C# 5, Framework 4.8 csc.exe,
+  ABI transcribed from the SDK header S159; driver scripts/webview2-cdp-loopback-round48.mjs). The
+  standalone route is refuted by the round's own probes (7 variants exit cleanly, no CDP endpoint) —
+  the runtime is a HOSTED surface (S158's env-var route). Live run: EBWebView\DevToolsActivePort
+  discovery ~0.5 s, Edg/156.0.4314.50 identity, invocation-bound nonce read back over the CDP
+  WebSocket, Page.captureScreenshot 8,063 B committed, keyed teardown sweep 0 (browser exits with the
+  host — measured); post-freeze repro (fresh nonce) counter-green; counter refuses the r44 chrome
+  receipt with 18 findings; counter selftest 6/6. **C3 VERIFIED**; the capability row enters the
+  SCORECARD table this round.
+- SOURCES: S158 (Microsoft Learn WebView2 debugging docs — the host-side remote-debugging route,
+  raw-fetched 65,545 B + staged + 23-word 1-hit quote) and S159 (Microsoft.Web.WebView2 SDK header
+  WebView2.h — the COM ABI, package fetched, 2,951,155 B staged; 4-word 1-hit quote under the pinned
+  MIDL_INTERFACE) opened this round; registry 157 -> 159; knowledge note
+  webview2-cdp-loopback-round-48.md (notes 64 -> 65); PROVINCE gains the third declared surface line.
+- SCORECARD: the round-48 block records C1/C2/C3 VERIFIED; the capabilities table gains
+  webview2-cdp-loopback-windows (first-working 48); no scalar moved (no rubric authorizes one); the
+  stagnation window restarts at the r48 capability. Assimilation: none — `considerthese/` absent;
+  shokuknow unreachable. Lesson `corpus/lessons/round-48.md` carries the Gate (S158/S159 with
+  commands and quotes), the carry-in rows, four Mistakes (the D1 erratum; the reasoned-predicate risk
+  defused by the prediction-receipt discipline; the standalone-launch dead end read honestly; the
+  cp-overwrite producer slip caught and re-run) and the census stamps.

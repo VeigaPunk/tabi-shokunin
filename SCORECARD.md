@@ -2587,3 +2587,66 @@ AND end exit 0.
   position 3: if no capability enters the table by the r48 freeze, the stagnation nudge waives the
   lowest-axis obligation and the round should be a frontier/capability move). No axis retired; no
   score moved (no rubric authorizes one).
+
+## Round 48 — declared claims (frozen before data, every predicate MEASURED) and executed disposition (all three verified)
+
+Round 48 on the Windows host. Baseline `8ccf0a82087d950c0ad0fc5d0e4723a4311a1765`; freeze
+`f4288c0e9a4b675f2e86e25c34e9a09af25d67b4` (claims.json + instruments + round-open controls, BEFORE
+any data commit); C1 data `04dfee6443bd98fe335ebe95623277e9928ec909` (**cited measured revision**);
+C2 data `710c7143c2d52c43cbe1c168236ff4076e72f7a5`; C3 data `f623ce5d1696df4a64ef9d29cd8568375ae50c57`.
+Axes at start: adjacency 8 (lowest), others 9; saturation 8 / window 3 — the window EXPIRED entering
+round 48 (position 4), so the stagnation nudge fired unless a capability entered the table: C3 is
+that capability move, and C1 still works the lowest axis. The r47 lesson's durable fix (a predicate's
+numeric after-state is measured pre-data or keyed to classes) is applied throughout: C2's after-state
+exists as a sha-pinned PREDICTION RECEIPT measured over the repair bytes before the freeze, and the
+data-time run is compared to it programmatically. Carry-in from the r47 closure: N1 performed as C1;
+D1 closed as the append-only erratum below; the r47 spotcheck read in full before declaring; the
+tabi | round-44 L2-floor L0 stays open and routed around.
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis; the r47-closure-owed ledger re-bind) — VERIFIED | `node .ufo/waves/round-47/counters/c1-adjacency-host-v7.mjs --rev 524910a9… --repo <lane> --fleet <fleet>` (red control, round open); `node .ufo/waves/round-48/counters/c1-adjacency-host-v8.mjs --rev 04dfee64… --repo <lane> --fleet <fleet>`; `--selftest`; `diff` v7 v8 | before: at round open the committed r47 ledger generation measures RED against the advanced fleet — exit 1, **15 findings** (9 lane-screen-head-mismatch + 3 lane-screen-sha-mismatch + 3 lane-screen-lines-mismatch; the closure judge's live re-run at closure had read 9, all the same correction-flow class — the drift continued between closure and round open; control `.ufo/waves/round-48/controls/c1-meter-red-at-round-open.json`, taken before any lane write; a do-nothing control reaches exactly this red) -> after: audit-r48 (16 rows = 10 unchanged + 6 sibling-absent; all cited lines verified still present) and delta-r48 (12 lanes, 16 line rows) re-bound at ONE fresh snapshot, dispositions carried by exact whole-line quote match, 0 new adjudications; meter v8 at `04dfee64` -> **exit 0, predicate true, 0 findings**, counts {roster:16, mapRows:16, auditRows:16, deltaLanes:12}; selftest allPass=true 16/16; the v7->v8 retarget diff is comment/const/schema/usage hunks only (`.ufo/waves/round-48/controls/v7-v8-retarget.diff`) | **met** under the frozen rule; adjacency held 8 -> 8 |
+| C2 operability (the r47-refused claim re-declared, MEASURED predicates) — VERIFIED | `node scripts/check-adjacency.mjs --repo <lane> --fleet <fleet> --json` (before control); same + `--fleet-repo <fleet-checkout>` (prediction + green); `--self-test`; `git cat-file -p 710c7143…:scripts/check-adjacency.mjs \| sha256sum` | before: the inherited r47 bytes read exit 1, verdict=failed, rows=16, **verified=5**, findings exactly {6 x sibling_unresolved (absent siblings) + 4 x ruling_unresolved (fleet-venue split: the gate required one dir to be both fleet repo and sibling parent; this host splits them) + 3 x quote_too_long (legacy 25-word substring cap vs meter-era whole-line quotes)} — reproducing the r47 honest verdict file 1:1 (control `.ufo/waves/round-48/controls/c2-gate-before-at-r48-open.json`) -> the repair: `--fleet-repo` resolves the `fleet` ruling venue at the real fleet repo (fails closed on a wrong venue — the selftest's wrong-dir case refuses) and whole-line quotes are accepted (a quote that IS the complete cited line drops only the cap; substrings stay capped); prediction receipt measured PRE-DATA over the repair bytes (sha256 `19bcd7d9…` pinned) reads **verified=10, findings EXACTLY 6 x sibling_unresolved**; the landed blob re-hashes to the pin; the data-time run at `710c7143` **EQUALS THE PREDICTION** (programmatic compare); the without-flag control reads verified=**7** (6+4) — the flag is load-bearing; selftest `ADJACENCY_SELFTEST verdict=clean cases=64 reasons=18 could_not_evaluate=6` (7 new cases: 3 whole-line-green, 1 long-substring-still-fails, 3 fleet-repo incl. fails-closed) | **met** under the class-keyed frozen kill rules; operability held 9 -> 9; the residual six findings are the genuinely-absent siblings, matching audit-r48's sibling-absent rows 1:1 (operator ground, reported not absorbed) |
+| C3 coverage (capability acquisition — the frontier move the expired window asks for) — VERIFIED | `git ls-tree -r --name-only <REV> -- corpus/evidence/round48/webview2-cdp \| wc -l` (0 -> 2); `node .ufo/waves/round-48/counters/webview2-receipt-r48.mjs <receipt> --shot <png> --driver <mjs> --hostsrc <cs>`; `--selftest`; the same counter on the r44 receipt | before: no WebView2 surface — the capabilities table holds chrome (44) and edge (45) only; the round's own standalone probes (7 launcher variants, `.ufo/waves/round-48/controls/webview2-standalone-probes/`) show msedgewebview2.exe exits cleanly with no CDP endpoint without a host — the runtime is NOT a standalone surface -> after: the committed minimal COM host (`scripts/webview2-host-round48.cs`, C# 5 + Framework 4.8 csc.exe, ABI from S159) driven by the committed runner (`scripts/webview2-cdp-loopback-round48.mjs`) with the S158 env-var route: live run green (Edg/156.0.4314.50 at /json/version; discovery via `<profile>\EBWebView\DevToolsActivePort` in ~0.5 s; invocation-bound nonce read back over the CDP WebSocket; Page.captureScreenshot 8,063 B committed; keyed teardown sweep 0 — the browser subprocess exits when the host dies, measured); post-freeze repro (fresh nonce) counter-green; the counter exits 0 on the committed bytes, refuses the r44 chrome receipt with 18 findings, and its selftest is 6/6 | **met** under the frozen rule; the capability row enters the table below (first-working 48); coverage held 9 -> 9 |
+
+### Erratum (r47 closure defect D1) — append-only
+
+Superseded text: the r47 lesson's REJECT — C2-as-frozen reason enumerated the three quote_too_long
+rows as "kagi :64 / kama :355 / kake :310". Correct enumeration per the authoritative verdict file
+(r47 `measure/c2-gate-green-at-data.json`, blob `6734b4c5`): kagi `PROVINCE.md:64` (56 w), kake
+`PROVINCE.md:310` (32 w), **kake `SKILL.md:697` (28 w)**; kama `listener-census.md:355` (11 w, row 11)
+is a `ruling_unresolved` row, not a quote_too_long row. The receipt was authoritative; the r47 lesson
+bytes are not edited (append-only contract).
+
+### Capabilities — round 48
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| webview2-cdp-loopback-windows | Drive the Microsoft WebView2 runtime (msedgewebview2 156.0.4314.50) over raw CDP on this Windows host through a minimal COM host: compile the committed C# 5 host with the in-box csc.exe, spawn it with the documented WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS route (S158) over a throwaway tokened profile, discover the endpoint from `<profile>\EBWebView\DevToolsActivePort`, confirm the Edg/ identity at /json/version, read the invocation-bound nonce back over the CDP WebSocket, capture a PNG, tear the host down with a keyed sweep to 0 (the browser subprocess follows the host — measured) | `scripts/webview2-host-round48.cs`; `scripts/webview2-cdp-loopback-round48.mjs`; `corpus/evidence/round48/webview2-cdp/receipt.json`; `.ufo/waves/round-48/counters/webview2-receipt-r48.mjs`; `corpus/knowledge/webview2-cdp-loopback-round-48.md` | 48 |
+
+### Round 48 — sources, frontier, trend verdicts
+
+Registry 157 -> 159 (S158 WebView2 debugging docs, S159 the SDK's WebView2.h ABI header; both opened
+this round, raw-fetched, staged, quotes verbatim 1-hit). Knowledge notes 64 -> 65 (the WebView2 note;
+trio-first). PROVINCE gains the third declared surface line (the webview2 host route + the
+not-standalone finding). Census start AND end exit 0.
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | New capability row `webview2-cdp-loopback-windows` (the third Chromium-class surface demonstrated on this host, with its own staged sources S158/S159, a committed receipt+PNG and a digest-pinned counter); new sourced note on ground the coverage map did not hold (registry 157 -> 159; notes 64 -> 65); PROVINCE frontier moved to the real host surface. |
+| quality | improved | The r47-closure debt closed in committed bytes with live red/green receipts (the owed re-bind measured red 15 -> green 0 under an instrument whose retarget diff is comment/const-only); the C2 re-declaration carried the r47 durable fix into practice — the after-state was a sha-pinned pre-data prediction receipt, the landed blob was verified against the pin, and the data-time run EQUALS THE PREDICTION; the gate selftest grew 57 -> 64 with the wrong-venue fails-closed case; no admitted entry failed a re-check. |
+| discernment | improved | Every predicate this round was MEASURED before the freeze (the r47 refusal's cause, repaired as a discipline rather than a promise): C2's after-state existed as a prediction receipt before the freeze and was compared programmatically at data time; the standalone-launch dead end was read honestly (the probes bundle refutes the surface the lane hoped for) and the capability was built on the documented host route instead; the r47 closure's D1 defect is corrected by a named erratum, never an in-place rewrite. |
+
+### Planned / saturation / retired — round 48
+
+- planned: coverage — the r48 capability's residuals: a `file://`/`http://` fixture page and
+  cross-page navigation over the webview2 surface (the data:-URL nonce page is the measured
+  surface), and a probe for a fourth surface only if the host shows one.
+- planned: adjacency — the r48 snapshot heads date like any census; re-run meter v8 as the
+  regression gate after any sibling roster change; the six sibling-absent rows and the binfor
+  contested-open lines stay routed (the fleet L0 `b6b3b5e4…` :65 still open).
+- planned: operability — the gate's remaining honest residue is zero on this host's present roster;
+  if kaidoku/revenger return, re-run the C2 green and re-measure the prediction before any new
+  freeze.
+- saturation 8 / window 3 retained; the r48 capability row RESTARTS the window (round 49 = position
+  1). No axis retired; no score moved (no rubric authorizes one).
