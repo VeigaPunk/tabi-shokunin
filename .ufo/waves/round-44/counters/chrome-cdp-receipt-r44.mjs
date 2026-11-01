@@ -2,7 +2,7 @@
 // chrome-cdp-receipt-r44.mjs — tabi round 44, claim C2 counter (coverage
 // capability). Scores a committed chrome-cdp-loopback-round44 receipt and its
 // screenshot bytes on committed-shape grounds:
-//   PREDICATE-SENTENCE: chrome-cdp-receipt-r44 admits a receipt where the schema is tabi-chrome-cdp-round44, the runner digest equals the frozen scripts/chrome-cdp-loopback-round44.mjs pin 5c31bcc1f907d38e2d7b967c363829155421c1fe9822106bd409644ed567f906 and the runner file bytes hash to the same value, the nonce is fresh 64-hex, the DevTools socket host and the fixture URL are both 127.0.0.1 loopback with explicit ports, the profile dir is a non-default throwaway path under the declared scratch, the browser identity matches Chrome-slash-version, the recorded fixture nonce equals the nonce the live DOM reported, the page title equals the fixture title, the marker is found, the committed screenshot bytes hash to the receipt screenshotSha256 and carry the PNG magic, and the four timestamps are strictly increasing with chromeTerminated true.
+//   PREDICATE-SENTENCE: chrome-cdp-receipt-r44 admits a receipt where the schema is tabi-chrome-cdp-round44, the runner digest equals the frozen scripts/chrome-cdp-loopback-round44.mjs pin 9b2855f09e4b72f1e3250089c2e3d3341fd98b50bf2ea86291953e3a97c6f655 and the runner file bytes hash to the same value, the nonce is fresh 64-hex, the DevTools socket host and the fixture URL are both 127.0.0.1 loopback with explicit ports, the profile dir is a non-default throwaway path under the declared scratch, the browser identity matches Chrome-slash-version, the recorded fixture nonce equals the nonce the live DOM reported, the page title equals the fixture title, the marker is found, the committed screenshot bytes hash to the receipt screenshotSha256 and carry the PNG magic, and the four timestamps are strictly increasing with chromeTerminated true.
 // Declared residual (claims.json): this counter binds receipt shape and
 // committed bytes; it does not and cannot prove by itself that a browser ran —
 // the re-derivation path for Chrome-ness is re-running the runner (fixture
@@ -10,7 +10,7 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 
-const RUNNER_PIN = '5c31bcc1f907d38e2d7b967c363829155421c1fe9822106bd409644ed567f906';
+const RUNNER_PIN = '9b2855f09e4b72f1e3250089c2e3d3341fd98b50bf2ea86291953e3a97c6f655';
 const TITLE = 'tabi r44 cdp loopback fixture';
 
 const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
@@ -61,7 +61,7 @@ if (shot) {
 
 const out = {
   schema: 'tabi-chrome-cdp-receipt-r44',
-  predicateSentence: 'chrome-cdp-receipt-r44 admits a receipt where the schema is tabi-chrome-cdp-round44, the runner digest equals the frozen scripts/chrome-cdp-loopback-round44.mjs pin 5c31bcc1f907d38e2d7b967c363829155421c1fe9822106bd409644ed567f906 and the runner file bytes hash to the same value, the nonce is fresh 64-hex, the DevTools socket host and the fixture URL are both 127.0.0.1 loopback with explicit ports, the profile dir is a non-default throwaway path under the declared scratch, the browser identity matches Chrome-slash-version, the recorded fixture nonce equals the nonce the live DOM reported, the page title equals the fixture title, the marker is found, the committed screenshot bytes hash to the receipt screenshotSha256 and carry the PNG magic, and the four timestamps are strictly increasing with chromeTerminated true.',
+  predicateSentence: 'chrome-cdp-receipt-r44 admits a receipt where the schema is tabi-chrome-cdp-round44, the runner digest equals the frozen scripts/chrome-cdp-loopback-round44.mjs pin 9b2855f09e4b72f1e3250089c2e3d3341fd98b50bf2ea86291953e3a97c6f655 and the runner file bytes hash to the same value, the nonce is fresh 64-hex, the DevTools socket host and the fixture URL are both 127.0.0.1 loopback with explicit ports, the profile dir is a non-default throwaway path under the declared scratch, the browser identity matches Chrome-slash-version, the recorded fixture nonce equals the nonce the live DOM reported, the page title equals the fixture title, the marker is found, the committed screenshot bytes hash to the receipt screenshotSha256 and carry the PNG magic, and the four timestamps are strictly increasing with chromeTerminated true.',
   receipt: receiptPath, shot: shotPath, runnerDigest,
   predicate: findings.length === 0, findingCount: findings.length, findings,
 };

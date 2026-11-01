@@ -115,6 +115,8 @@ const flags = [
   'about:blank',
 ];
 const child = spawn(browserPath, flags, { stdio: ['ignore', 'ignore', 'pipe'], windowsHide: true });
+let childExit = null;
+child.on('exit', (code, sig) => { childExit = { code, sig }; });
 let stderrTail = '';
 child.stderr.on('data', (d) => { stderrTail = (stderrTail + d.toString()).slice(-2000); });
 
@@ -198,9 +200,18 @@ if (probe) {
   // --- teardown ----------------------------------------------------------------
   try { await fetch(`http://${wsHost}/json/close/${target.id}`); } catch { }
   child.kill('SIGKILL');
+  // Windows belt-and-suspenders: kill the process tree by pid (no-op if the
+  // exit event already fired and the tree is gone).
+  try {
+    const { spawnSync } = await import('node:child_process');
+    spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { windowsHide: true });
+  } catch { }
   const exited = await new Promise((resolve) => {
-    const t = setTimeout(() => resolve(false), 5000);
-    child.on('exit', () => { clearTimeout(t); resolve(true); });
+    const t0 = Date.now();
+    const iv = setInterval(() => {
+      if (childExit !== null) { clearInterval(iv); resolve(true); }
+      else if (Date.now() - t0 > 5000) { clearInterval(iv); resolve(false); }
+    }, 100);
   });
   server.close();
   const shotBuf = Buffer.from(shotB64, 'base64');
@@ -224,6 +235,7 @@ if (probe) {
     screenshotSha256: sha256(shotBuf),
     pngByteLength: shotBuf.length,
     chromeTerminated: exited,
+    childExit,
     t0Ms, tDomMs, tShotMs, tEndMs,
     hostOs: `${os.type()} ${os.release()}`,
     nodeVersion: process.version,
