@@ -880,3 +880,11 @@ Append-only. One knowledge note on the forgery class; no capability claim.
 | `knowledge/receipt-authenticity-signing-round-43.md` | Receipt authenticity by per-invocation Ed25519 signing (r42 criterion 104 closed): forgery→refusal decision table over the committed controls, the declared residual model, strict-argv counter with a challenge wall, witness self-attestation, freeze-binds-controls, and the >1 MiB explicit-file rule walked into and caught at the freeze. | S150; S151; `.ufo/waves/round-43/claims.json`; `.ufo/waves/round-43/controls/`; `.ufo/waves/round-43/counters/c1-signature-bound-v5.mjs`. |
 | `knowledge/chrome-cdp-loopback-round-44.md` | Raw-CDP drive of a real Chromium browser on the Windows host (r44 capability chrome-cdp-loopback-windows): headless=new launch behind a throwaway profile (S001 boundary), loopback ws endpoint from stderr, /json/new PUT target, Runtime.evaluate DOM extraction invocation-bound to a fixture-server nonce, Page.captureScreenshot, fail-closed teardown; runner-digest-pinned receipt counter and the declared re-run residual. | S152; S153; S001; S002; `.ufo/waves/round-44/claims.json`; `corpus/evidence/round44/chrome-cdp/receipt.json`; `.ufo/waves/round-44/counters/chrome-cdp-receipt-r44.mjs`. |
 
+
+## Round 46 — CDP teardown keyed to the launch (2026-10-31)
+
+Append-only. One knowledge note on the teardown repair; the capability surface is unchanged (the round's move is operability).
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/chrome-cdp-teardown-round-46.md` | The r45 teardown-orphan mechanism reproduced live (16 Edge launch processes outlived the legacy teardown; `taskkill /T` a no-op at exit 128 after the main died) and repaired by a PID-group kill keyed to the launch: unique per-run profile token, pre-launch freshness sweep (0), nonempty mid-run census, post-kill sweep to 0 with per-PID kills; decision table incl. the not-taken job-object route; declared residuals. | S155; `scripts/chrome-cdp-loopback-round46.mjs`; `.ufo/waves/round-46/claims.json`; `corpus/evidence/round46/edge-cdp/receipt.json`; `corpus/evidence/round46/chrome-cdp/receipt.json`; `.ufo/waves/round-46/measure/c1-legacy-edge.json`; `.ufo/waves/round-46/measure/c1-mech-redgreen.json`; `.ufo/waves/round-46/counters/chrome-cdp-receipt-r46.mjs`. |

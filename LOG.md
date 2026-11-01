@@ -2944,3 +2944,50 @@ move), note-count claims.
   Recorded as a fifth Mistake in `corpus/lessons/round-45.md`; the runner repair (post-run
   profile-token sweep or job-object kill) routes to round 46. No frozen byte amended post-data;
   no claim verdict changes (the frozen predicates held as measured).
+
+## Round 46 — 2026-10-31 — the r45 teardown-orphan carry-in closed (keyed PID-group kill), adjacency ledger re-pinned
+
+- Fresh-start discipline held: the r41/r42/r43 rejected closures re-spot-checked in committed bytes
+  (r41 receipt blobs `7b2ece05`/`5930d20f` at HEAD; r42 false-green class closed by the committed
+  counter clause family — this round's counter selftest exercises 16 refusal mutants + 2 benign
+  controls; r43 false-green/crash class closed via the committed D3 crash receipt). Ruled out
+  (recorded in `claims.json` freshStartNote): Firefox/BiDi (absent surface), wave-settled claims
+  (r44 L0 line still open — routed around, no wave clause in any predicate), note/registry-count
+  claims and the census-START receipt alone (do-nothing reachable — carried as protocol work), the
+  job-object variant as a second claim (same axis/fix family as C1; Node has no job-object surface
+  here), re-running r45's receipts (do-nothing reachable), sweep-green-by-luck (the red limb is
+  evidence-carried).
+- Carry-in addressed: (1) the teardown repair LANDED as C1 — runner
+  `scripts/chrome-cdp-loopback-round46.mjs` (unique per-run profile token; pre-launch freshness
+  sweep 0; nonempty mid-run census; post-kill sweep to 0 with per-PID kills; legacy `taskkill /T`
+  recorded with its no-op output) — listed explicitly in the SCORECARD round-46 block; (2) the
+  census-START receipt committed in the freeze (`measure/census-start.txt`); (3) the L2-floor L0
+  stays open and routed around (no wave clause in any predicate).
+- FREEZE `79b297f1d33df8c9b92bc423c2102d6712817662`: claims.json (2 claims, predicates, kill rules,
+  6 frozen digests, 6 whole-line control bindings), r46 runner, counter + selftest, meter v6 +
+  selftest, mechanism fixture, legacy control, pre-data controls (edge/chrome probes with sweep
+  fields, counter cross-refusal of the r45 receipt 8 findings, meter baseline red 28 findings,
+  legacy pilot, mech pilot), S155 staged copy, census-START receipt, selftest receipts.
+- MEASURED `951f70d33d9e3af208fb414e3079680c08dc66ba`, data-corrected under the frozen kill-rule
+  flow (sibling heads racing: sre `lane-screen-head-mismatch`; then the kama-rebind audit-key
+  correction; kasegi) to **`e2d59f729615e1c671ce44d1f4bed28e51f78a4f`** — the cited measured
+  revision, instruments byte-identical from freeze to tip. C1: live red — the legacy control's r45
+  teardown left 16 Edge launch processes with `taskkill /T` a no-op (exit 128); green — the keyed
+  kill swept them to 0, and all three repaired full runs (edge, edge repro fresh launch-key with a
+  byte-identical screenshot, chrome) ended at `postKillSweepCount: 0` with nonempty mid-run
+  censuses; counter exit 0 on all committed byte sets (blob equality verified), selftest 18/18,
+  r45-receipt cross-refusal 8 findings. C2: meter v6 exit 0 at the cited revision (predicate true,
+  0 findings; roster 16 / mapRows 16 / auditRows 16 / deltaLanes 12), the 10 drifted rows re-pinned
+  at recorded heads with full current lines (audit-r46: 10 unchanged + 6 sibling-absent; stale 0,
+  moved 0), selftest 16/16, baseline red 28 findings committed.
+- SOURCES: S155 (Win32_Process — the CommandLine enumeration surface the keyed sweep matches,
+  10-word quote verbatim, 1 hit in the raw bytes) opened by the L1 with raw fetch + sha256;
+  registry 154 -> 155; knowledge note `chrome-cdp-teardown-round-46.md` (notes 62 -> 63); census
+  start AND end exit 0 (the START receipt committed in the freeze); check-sources clean at this
+  tip.
+- SCORECARD: the round-46 block lists the teardown repair explicitly (C1 row); no capabilities row
+  (repair, not acquisition — QUALITY 84); no scalar moved. Assimilation: none — `considerthese/`
+  absent; shokuknow unreachable. Lesson `corpus/lessons/round-46.md` carries the Gate, the
+  carry-in rows, five Mistakes (the correction-2 audit-key drift; the counter selftest 1/18 catch;
+  the fixture helper exit-9 catch; the host-bound check-adjacency gate recorded with cause; the
+  r45 orphan class mined and closed) and the census stamps.

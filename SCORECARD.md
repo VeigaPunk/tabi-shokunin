@@ -2469,3 +2469,59 @@ were caught by existing instruments and the freeze discipline, recorded in the l
   freeze amends instruments, the amendment file is the single sanctioned path.
 - saturation 8 / window 3 retained (capability at 45 keeps the window restarted: round 46 =
   position 2). No axis retired; no score moved (no rubric authorizes one).
+
+
+## Round 46 — declared claims (frozen before data) and executed disposition (both verified)
+
+Round 46 on the Windows host. Baseline `fe16cf6631e44ad0962cecf4c7c099b8d72efde5`; freeze
+`79b297f1d33df8c9b92bc423c2102d6712817662`; measured `951f70d33d9e3af208fb414e3079680c08dc66ba`;
+data-corrected under the frozen kill-rule flow (sibling heads racing mid-measurement) through
+`3b8a68dc47b0d578e67dcd0faaf42dd100cdc59a` and `fd44a1b30e607bda0523f9464b6689399cbd651b` to the
+**cited measured revision `e2d59f729615e1c671ce44d1f4bed28e51f78a4f`** — instrument bytes
+byte-identical from freeze to tip. Axes at start: adjacency 8 (lowest), others 9; saturation 8 /
+window 3; the r45 capability kept the window restarted (round 46 = position 2), so the nudge is
+inactive and the lowest-axis obligation applies (C2 works adjacency). **Carry-in from the r45
+non-author closure: the teardown repair is landed and listed here explicitly** — the runner
+teardown was repaired from kill-the-main-and-hope (`child.kill` + a no-op-after-death
+`taskkill /T`) into a PID-group kill keyed to the launch, with red/green receipts and every
+post-kill sweep reaching 0 (C1 row below; the census-START receipt was committed in the freeze as
+the second carry-in item; the L2-floor L0 stays open and routed around).
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 operability — **the r45 carry-in teardown repair** (sourced: S155) | `node .ufo/waves/round-46/controls/legacy-teardown-control-r46.mjs --browser edge …`; `node .ufo/waves/round-46/controls/teardown-mechanism-fixture.mjs <out>`; `node scripts/chrome-cdp-loopback-round46.mjs --browser edge\|chrome …`; `node .ufo/waves/round-46/counters/chrome-cdp-receipt-r46.mjs <receipt> --shot <png> --runner <runner>`; `--selftest` | before: no keyed sweep in any instrument (`git grep -c Win32_Process fe16cf66… -- scripts` -> 0); the r45 class reproduced LIVE — the legacy control's teardown left **16 Edge launch processes** alive with the tree kill a no-op (exit 128, "process not found") -> after: the keyed PID-group kill (unique per-run profile token; pre-launch sweep 0; mid-run census 16/16/14 edge and 10 chrome — every observed process carried the token, `identity_helper.exe` included) reached `postKillSweepCount: 0` on every repaired run (edge, edge repro with a fresh launch-key and a byte-identical screenshot, chrome), the mechanism fixture shows red (1 survivor after the no-op tree kill, real OS processes) and green (keyed kill to 0), the counter exits 0 on all committed receipt byte sets, refuses the r45 receipt with 8 findings, and its selftest is verdict=clean 18/18 | **met** under the frozen rule; the repair residual declared pre-data (a helper rewriting its command line to drop the token would leave the keyed group — none observed); operability held 9 -> 9 |
+| C2 adjacency (lowest owned axis; ledger re-pin) | `node .ufo/waves/round-46/counters/c1-adjacency-host-v6.mjs --rev <REV> --repo <lane> --fleet <fleet>`; `grep -c '^stale' corpus/adjacency-host-audit-r46.tsv`; `grep -c '^moved' corpus/adjacency-host-audit-r46.tsv`; `--selftest` | before: the r45 audit recorded 9 stale (kake x5, kagi x2, kumitate, kama) + 1 moved (kake :79 -> :85) + 6 sibling-absent; the meter at the r46 baseline -> exit 1, 28 findings (control `controls/c2-meter-red-at-baseline.json`) -> after: the 10 drifted rows re-pinned at recorded snapshot heads with the FULL current line quoted (kake x5 @ `1772f82c`, kagi x2 @ `bc2f3fd6`, kumitate @ `89cbd998`, kama @ `22b9c16d`), audit-r46 = 10 unchanged + 6 sibling-absent, **stale 0, moved 0**; delta-r46 regenerated at the snapshot (12 lanes, 14 hit lines, dispositions carried by exact quote); meter exit 0 at the cited revision, predicate true, 0 findings, counts {roster 16, mapRows 16, auditRows 16, deltaLanes 12}; selftest verdict=clean 16/16; the v6 hardening reads every sibling byte through git at a per-run snapshot head (all 16 sibling worktrees are dirty — the worktree is never read) and caught two real head races mid-measurement (`lane-screen-head-mismatch` sre; then the kama/kasegi corrections) under the frozen data-correction flow | **met** under the frozen rule; adjacency held 8 -> 8 |
+
+No new capabilities row: the round's move is an instrument repair — the capability driven is the
+r44/r45 chrome/edge-cdp-loopback surface, whose teardown now holds the keyed-sweep discipline
+(`corpus/knowledge/chrome-cdp-teardown-round-46.md`); a gate/counter never enters the
+capabilities table (QUALITY 84).
+
+### Round 46 — sources, frontier, trend verdicts
+
+Registry 154 -> 155 (S155 opened this round, raw-fetched with sha256, staged copy committed; mined;
+census start AND end exit 0; the census-START receipt file committed in the freeze). Knowledge notes
+62 -> 63. No QUALITY criterion added: the round's defects were caught by existing instruments and
+the freeze discipline (recorded in the lesson Mistakes); the host-bound check-adjacency failure is
+recorded with cause (r44 legacy-gate class), its repair routed.
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | unchanged | No new surface, note ground is the repair of an owned instrument (notes 62 -> 63 documents it); registry 154 -> 155 (the enumeration surface S155); no new capability row (repair, not acquisition). |
+| quality | improved | The r45 carry-in defect closed in committed bytes with live red and green receipts (16 orphans reproduced, then swept to 0 — and every repaired run ends at sweep 0); the v6 meter hardening (git-at-snapshot-head) turned the sibling head race from a mid-measurement surprise into a caught finding twice; no admitted entry failed a re-check. |
+| discernment | improved | The lane's own instruments refused its own outputs four times before admission (counter selftest 1/18 on a broken check; fixture survivors 0 on crashed helpers; two meter runs red on head/audit drift) and every refusal is recorded with its fix instead of smoothed; the red limb of C1 is carried by evidence, not by luck. |
+
+### Planned / saturation / retired — round 46
+
+- planned: operability — the host-portable repair of `scripts/check-adjacency.mjs`'s `minimalEnv`
+  PATH pruning (recorded with cause at `measure/c2-check-adjacency-hostbound.json`), claimed only
+  with a red/green receipt pair on this host and a quote-verification cross-check against the v6
+  meter.
+- planned: adjacency — the sibling heads recorded this round (kake `1772f82c`, kagi `bc2f3fd6`,
+  kumitate `89cbd998`, kama `22b9c16d`, delta lanes at the meter snapshot) date like any census;
+  re-run the meter as the regression gate after any sibling roster change; the 6 sibling-absent
+  rows stay routed to the delta ledger.
+- planned: coverage — the S155/S154/S152/S153 90d rechecks land round 47+ (S155 opened 2026-10-31);
+  a third declared surface only if a host probe shows one.
+- saturation 8 / window 3 retained (the r45 capability keeps the window restarted: round 47 =
+  position 3). No axis retired; no score moved (no rubric authorizes one).

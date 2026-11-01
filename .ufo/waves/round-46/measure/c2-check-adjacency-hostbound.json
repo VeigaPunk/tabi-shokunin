@@ -1,0 +1,21 @@
+{
+ "schema": "tabi-r46-no-harm-check-adjacency-hostbound",
+ "gate": "scripts/check-adjacency.mjs",
+ "invokedAt": "integration candidate e2d59f729615e1c671ce44d1f4bed28e51f78a4f (tip)",
+ "argv": [
+  "node",
+  "scripts/check-adjacency.mjs",
+  "--repo",
+  "<lane>",
+  "--fleet",
+  "<fleet>"
+ ],
+ "exit": 2,
+ "verdict": "could_not_evaluate",
+ "finding": {
+  "reason": "git_failed",
+  "detail": "git rev-parse --show-toplevel failed (status=spawn)"
+ },
+ "cause": "minimalEnv() (scripts/check-adjacency.mjs:307-309) rebuilds PATH by splitting on \":\" and keeping only entries that start with \"/\" - the old Linux host convention. On this Windows host PATH is semicolon-separated with drive-letter paths, so the rebuilt PATH is empty and git.exe cannot be spawned (status=spawn). Same legacy-gate host-bound class as the r44 no-harm receipts.",
+ "coverageNote": "For every row this round changed, the quote-at-pinned-rev verification duty is carried by the v6 meter at the measured revision: full-line equality between the map quote cell and the sibling git bytes at the pinned rev (the pinned rev equals the meter snapshot head for every re-pinned row), which is strictly stronger than the gate substring check. The gate repair (host-portable PATH or env passthrough) routes to a later round; no frozen byte amended post-data."
+}
