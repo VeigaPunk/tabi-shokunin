@@ -2857,3 +2857,43 @@ clean at the integration tip by construction; confirmed at the final-tip gate ru
 (pre-existing, r42 L0 stands); `check-frontier-admission.mjs` stays red (pre-existing since
 r36). No tool installs; no pacman transactions. Assimilation: none (r42 fresh re-adjudication
 keeps package adoption closed); `considerthese/` absent.
+
+
+## Round 44 — fresh-start round on the Windows host: three claims frozen, measured and verified; capability chrome-cdp-loopback-windows entered
+
+New host (win32 10.0.26200, Git Bash): probed before declaring — Chrome 156.0.8078.74 and Edge
+present; Firefox/geckodriver/Playwright, the kimi-webbridge plugin and any 9222 CDP bridge absent
+(`.ufo/waves/round-44/controls/host-probe.txt`). PROVINCE corrected accordingly. Read first: the
+r41/r42/r43 rejected-closure reports and the r43 non-author verifier spot-check; the routing
+(routed defects 1-3) is this round's C3/C1 surface. Ruled out: a fifth Firefox-loopback attempt
+(surface absent), a 64-seat wave (no dispatch surface — L0 filed `tabi | round-44 | …`, routed
+around; the claims carry no wave clause), an adjacency move (nudge active; C2 is the frontier
+move), note-count claims.
+
+- FREEZE `d3d314721c812df0e51a3e73100e10be28f71e27`: claims.json (3 claims, predicates, kill
+  rules, 12 control bindings by sha256+whole-line quotes, trust anchor pinned by SPKI sha256
+  `868c0d89…`), C1 checker v2, C2 runner+counter, C3 supervisor v6, fixture builder +
+  selfauth generator, 13 pre-data controls (fixture false-greens under the r43 bytes, v5-blind
+  documentation, selfauth pair, probe, baseline counts), S152/S153 + staged raw copies.
+- AMENDMENT (pre-data, r40 precedent) `8c23879945882dc13c62cdc6d3f5917bfe8b60ac`: the first
+  live C2 attempt exit 1 — the runner's teardown reported `chromeTerminated false` because the
+  exit listener attached after the process had already exited; the round's own counter refused
+  the run. Runner repaired (listener at spawn + taskkill tree fallback), digest re-pinned at
+  all sites, failed-attempt stdout retained at `measure/c2-live-run-stdout.json`.
+- MEASURED `844a5b3af07902f47751efcc61b02a90cd4d4c68`: C1 — v2 honest green (no-harm), drop3/
+  fragment/pathtype fixtures each refused with the named finding where the r43 bytes false-green
+  or crash, selftest 8/8. C2 — live run exit 0 (nonce `96316efa…`), counter clean on committed
+  bytes, reproduction run exit 0 with fresh nonces and a byte-identical screenshot
+  (deterministic render; nonces, not bytes, carry invocation identity). C3 — honest pair green
+  under the pinned anchor, failedrun refused (anchor + 46 consistency findings), selfauth pair
+  refused, the SAME fixture greens under `anchor-self-select` (the r43 kill class, deterministic
+  and browser-free), selftest 9/9.
+- SOURCES: S152 (headless docs, 8-word quote) and S153 (browser_protocol.json, "Capture page
+  screenshot.") opened by the L1 with raw fetches + sha256; registry 151 -> 153; knowledge note
+  `chrome-cdp-loopback-round-44.md` + README row (notes 60 -> 61); census start and end exit 0;
+  check-sources red at the freeze (2x E11 used_by_missing, note/lesson not yet landed —
+  disclosed) and clean at this tip.
+- SCORECARD: the round-44 block + the capabilities row `chrome-cdp-loopback-windows`
+  (first-working 44). No scalar moved. Assimilation: none — `considerthese/` absent; shokuknow
+  unreachable. Lesson `corpus/lessons/round-44.md` carries the Gate, three Mistakes (teardown
+  race; the r43-routed annotation-drift mining; the fixture-guard catch) and the census stamps.

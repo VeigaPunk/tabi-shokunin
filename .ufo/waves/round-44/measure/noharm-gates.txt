@@ -1,0 +1,15 @@
+% gate: node scripts/check-freshness.mjs --worktree
+exit=2
+FRESHNESS_GATE verdict=could-not-evaluate finding=could_not_evaluate detail=ENOENT: no such file or directory, lstat 'C:\home'
+% gate: node scripts/check-selfassessment.mjs
+exit=2
+SELFASSESSMENT verdict=could-not-evaluate detail=usage: --rev <REV> or --selftest
+% gate: node scripts/check-round-contract.mjs
+exit=2
+ROUND_CONTRACT verdict=could-not-evaluate finding=could_not_evaluate detail=Lane root is not the repository toplevel
+% gate: node scripts/check-sources.mjs --self-test
+exit=0
+SOURCES_SELFTEST verdict=clean cases=26
+% gate: node scripts/check-bidi-runtime.mjs --selftest
+exit=1
+Node.js v24.21.0

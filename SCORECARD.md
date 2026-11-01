@@ -2364,3 +2364,57 @@ and refuse() exit-code distinction as a pre-data amendment.
 | expansion | improved | New admitted note `corpus/knowledge/receipt-authenticity-signing-round-43.md` on ground the coverage map did not hold (receipt-authenticity instrument class), citing newly opened mined S150/S151; knowledge notes 59 → 60 (`ls corpus/knowledge/*.md \| wc -l`); registry 149 → 151. |
 | quality | improved | The r42 routed defects closed in committed bytes with red controls (V0 fabrication now refused via the pinned blob id — the r42 checker bytes still green it; tree objects now named `r1a-not-a-blob`; freeze binds controls by sha256+quote); the wave's falsifiers then re-validated each closure (mutations load-bearing) and routed the NEXT defect class with false-green demonstrations; no admitted entry failed a re-check; QUALITY criteria 106–107 added from observed failures. |
 | discernment | unchanged | The 64-seat wave is lane-internal (dispatched seats remain the lane); the outside non-author admit/reject spot-check is the closure's duty, pending at filing. The lane's own refusals of both claims under pre-declared kill rules are recorded, not smoothed. |
+
+
+## Round 44 — declared claims (frozen before data) and executed disposition (all three verified)
+
+Fresh-start round (fifth consecutive rejected closure r39-r43) on a NEW Windows host. The
+r41-r43 rejected reports and the r43 non-author verifier spot-check were read before declaring;
+what was ruled out and why is recorded in `.ufo/waves/round-44/claims.json` `freshStartNote`
+(Firefox chain absent here; no wave dispatch surface; adjacency waived by the active nudge;
+note-count claims do-nothing-reachable). Freeze `d3d31472` superseded PRE-DATA by amendment
+`8c238799` (C2 runner teardown defect caught by the round's own counter; r40 precedent, disclosed);
+measured at `844a5b3af07902f47751efcc61b02a90cd4d4c68`. Axes at start: adjacency 8 (lowest),
+others 9; saturation 8 / window 3; no capability entered rounds 39-43, so the stagnation nudge
+waived the lowest-axis obligation and C2 is the frontier/capability move. The 64-seat wave
+obligation could not be met on this host (no dispatch surface; L0 filed, routed around; the
+claims deliberately carry NO wave-settled clause - the predicates below are complete).
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 calibration (routed defect 3; QUALITY 107) | `node .ufo/waves/round-44/counters/check-routed-defects-round44.mjs --rev 844a5b3a... --repo <lane> --json`; fixtures via `.ufo/waves/round-44/fixtures/build-r5-fixtures.mjs` (deterministic revs) | r43 bytes: drop3 FALSE GREEN exit 0, fragment FALSE GREEN exit 0, pathtype uncaught TypeError crash, honest exit 0 -> v2: honest exit 0 (no harm), drop3 exit 1 `r5-binding-set-missing`, fragment exit 1 `r5-binding-quote-not-whole-line`, pathtype exit 1 `r5-binding-path-type`; selftest 8/8 | **met** under the frozen rule; the blob pin `f3036d9e` refuses any rewritten r43 freeze; calibration held 9 -> 9 |
+| C2 coverage capability (sourced: S152, S153) | `node scripts/chrome-cdp-loopback-round44.mjs --out corpus/evidence/round44/chrome-cdp/receipt.json --shot ... --scratch <dir>`; `node .ufo/waves/round-44/counters/chrome-cdp-receipt-r44.mjs <receipt> --shot <png> --runner <runner>` | baseline tree count 0 -> live run exit 0 (Chrome/156.0.8078.74, ws 127.0.0.1:51901, invocation-bound fixture nonce, PNG 7,908 B sha 4ee1806f), receipt+shot committed as explicit files, counter exit 0, repro run fresh nonces | **met** under the frozen rule; residual (receipt does not self-authenticate; Chrome-ness re-derived by re-running the committed runner) declared pre-data; coverage held 9 -> 9 |
+| C3 operability (routed defects 1-2 deterministic halves) | `node .ufo/waves/round-44/counters/c1-anchor-bound-v6.mjs --rev 844a5b3a... --repo <lane> [--target failedrun | --measure <selfauth> | --mutation anchor-self-select | --selftest]` | v5 wall keyed to the record's own pubkey (r43 kill class) -> v6 honest exit 0 under the PINNED anchor 868c0d89; failedrun exit 1 (anchor-pin-mismatch + 46 egress-count-without-remotes); selfauth exit 1; the SAME fixture greens under anchor-self-select (the deterministic do-nothing reach, reproduced browser-free); selftest 9/9 | **met** under the frozen rule; the fully-zeroed lying run stays honestly unbindable (declared residual); operability held 9 -> 9 |
+
+### Capabilities — round 44
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| chrome-cdp-loopback-windows | Drive a real Chromium-class browser over raw CDP on this Windows host: headless=new launch with a throwaway profile (S001 boundary), loopback ws endpoint from stderr, /json/version identity, /json/new PUT target, Runtime.evaluate DOM extraction invocation-bound to a fixture-server nonce, Page.captureScreenshot PNG, fail-closed teardown with tree kill | `scripts/chrome-cdp-loopback-round44.mjs`; `corpus/evidence/round44/chrome-cdp/receipt.json`; `.ufo/waves/round-44/counters/chrome-cdp-receipt-r44.mjs`; `corpus/knowledge/chrome-cdp-loopback-round-44.md` | 44 |
+
+### Round 44 — sources, frontier, trend verdicts
+
+Registry 151 -> 153 (S152/S153 opened this round, raw-fetched with sha256, staged copies
+committed; mined; census start AND end exit 0). Knowledge notes 60 -> 61. PROVINCE corrected to
+the real host surfaces (kimi-webbridge, Firefox chain, 9222-CDP recorded absent with date;
+Chrome/Edge recorded present) - protocol work, not a failure. No QUALITY criterion added: the
+round's defects were caught by existing instruments and are recorded in the lesson Mistakes.
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | New capability row `chrome-cdp-loopback-windows` (first browser capability demonstrated on THIS host); new sourced note on ground the coverage map did not hold; registry 151 -> 153; knowledge 60 -> 61; PROVINCE frontier corrected to the real host. |
+| quality | improved | The r43 routed defects 1-3 closed in committed bytes with red controls (each fixture false-greens/crashes the r43 bytes and is refused with a named finding by the new bytes; the anchor-self-select mutation proves the pin clause load-bearing); the round's own instruments caught two producer defects pre-data (teardown race, fixture guard); no admitted entry failed a re-check. |
+| discernment | unchanged | No outside non-author admit/reject spot-check at lane filing (the closure's duty, pending); the round's refusals (first live attempt rejected by the counter; the egress blind spot declared, not claimed closed) are recorded, not smoothed. |
+
+### Planned / saturation / retired — round 44
+
+- planned: coverage — a second Chromium surface on this host (Edge) through the same runner's
+  candidate chain, claimed only with its own source-scoped receipt (S004 discipline).
+- planned: calibration — the r5 hardening for the r44 freeze itself at round 45 (the v2 rule
+  applies to the r43 freeze; the r44 freeze's own blob id gets pinned when a round-45 checker
+  inherits it), plus the S152/S153 90d rechecks.
+- planned: adjacency — if the nudge is inactive next round (a capability entered at 44),
+  return to the lowest-axis obligation (adjacency 8) with the split completeness/delta meter
+  from r35-r36, re-based on sibling drift since the pins.
+- saturation 8 / window 3 retained; the capability row restarts the window (round 45 = position
+  1). No axis retired; no score moved (no rubric authorizes one).

@@ -19,3 +19,22 @@ external sites (purchases, posts, deletions); observation and
 operator-approved interaction only.
 
 **Out of province → report, never absorb.**
+
+## Host surfaces — corrected 2026-10-31 (round 44, new Windows host)
+
+This province was written for the previous Linux host. Probed on the current host
+(win32 10.0.26200 x64, Git Bash; probes committed at
+`.ufo/waves/round-44/controls/host-probe.txt`):
+
+- ABSENT: `~/.kimi-code/plugins/managed/kimi-webbridge/` (the primary substrate
+  named above — recorded absent with date; the substrate documentation the lane
+  holds stays valid as documentation), Firefox, geckodriver, Playwright
+  (`ms-playwright` cache), any CDP bridge on `127.0.0.1:9222`.
+- PRESENT: Google Chrome 156.0.8078.74, Microsoft Edge, node v24.21.0,
+  Python 3.13.15. The lane's browser surface here is a self-launched
+  Chromium-class browser on an ephemeral loopback CDP port with a throwaway
+  profile (`scripts/chrome-cdp-loopback-round44.mjs`); public web surfaces are
+  reached via raw HTTP fetch (curl/WebFetch) for source opens.
+- The r35–r43 Firefox/geckodriver instruments and the `/proc`/`ss` socket
+  surfaces are Linux-host-bound and do not run here; receipts they produced
+  remain committed evidence, re-derivable only on a host that has the surface.

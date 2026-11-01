@@ -1,0 +1,20 @@
+# round-44 no-harm gate set (host: win32, Git Bash)
+
+portable + clean:
+  census (fleet script) start exit 0 / end exit 0, tabi ok, 21 pre-existing W04 warnings
+  check-sources.mjs                exit 0  SOURCES_GATE clean rows=153 findings=0
+  check-sources.mjs --self-test    exit 0  26 cases
+  check-routed-defects-round44 (honest, at HEAD) exit 0
+  c1-anchor-bound-v6 (honest, at HEAD) exit 0; selftest 9/9; chrome-cdp-receipt counter exit 0
+
+host-bound (Linux-built legacy gates; causes recorded, none introduced by this round):
+  check-freshness --worktree       exit 2  could_not_evaluate ENOENT C:\home (gate resolves a Linux absolute path)
+  check-round-contract             exit 2  'Lane root is not the repository toplevel' (path-case/separator compare); --self-test 'git init failed' in its sandbox step
+  check-bidi-runtime --selftest    exit 1  fixture root mismatch at :1076 (toplevel path compare on win32)
+  check-selfassessment --rev HEAD  exit 1  mismatches=1 = m3-unlanded-paths observed=121, PRE-EXISTING (baseline 5c3f4cca: same finding, observed=123; this round added zero unlanded references and landed two); could_not_evaluate=173 tallies (self-tests crash on win32); superseded=23 (the r34 correction rows, as landed)
+
+standing red (pre-existing, prior L0s stand):
+  check-c2-knowledge-round41.mjs (r42 L0)
+  check-frontier-admission.mjs (red since r36)
+
+not run (surface absent on this host): the Linux Firefox chain gates; the 64-seat wave.
