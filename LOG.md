@@ -3093,3 +3093,16 @@ move), note-count claims.
   commands and quotes), the carry-in rows, four Mistakes (the D1 erratum; the reasoned-predicate risk
   defused by the prediction-receipt discipline; the standalone-launch dead end read honestly; the
   cp-overwrite producer slip caught and re-run) and the census stamps.
+
+## Round 48 correction — 2026-11-01 (append-only; corrects the entry above)
+
+- The round-48 entry says the lesson carries "four Mistakes"; the landed
+  `corpus/lessons/round-48.md` carries **FIVE** — the fifth is the E12 census
+  catch (the two new SOURCES rows were appended at the file end, outside the
+  `## Registry` table; the round-end census read exit 1 with E12 for both rows
+  and the uncommitted rows were moved inside the table; the re-run census reads
+  exit 0). Superseded text: "four Mistakes (the D1 erratum; the
+  prediction-receipt discipline; the standalone dead end; the cp slip caught
+  and re-run)". The census stamp in the same entry ("census END exit 0")
+  describes the FINAL receipt (post-fix); the failed intermediate census output
+  is disclosed in the lesson's Mistakes row 5.
