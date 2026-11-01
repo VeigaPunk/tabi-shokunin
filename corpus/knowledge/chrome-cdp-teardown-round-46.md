@@ -100,3 +100,10 @@ cases); `.ufo/waves/round-46/controls/teardown-mechanism-fixture.mjs`;
 `.ufo/waves/round-46/claims.json` (frozen predicates, kill rules, residual
 model); prior ground: `corpus/knowledge/chrome-cdp-loopback-round-45.md`,
 `corpus/lessons/round-45.md` Mistake 5.
+
+## Supersession (round 47, append-only)
+
+This note is superseded by `chrome-cdp-teardown-round-46-corrected.md` (r46 closure defect V2:
+the entry carried no machine-readable `source:`/`verified-at:`/`recheck:` trio; the corrected entry
+opens with it and cites S156, which corrects this round's S155 anchor byte count 104,251 → 104,255 B).
+The bytes above are unchanged; the corrected entry carries this body verbatim.

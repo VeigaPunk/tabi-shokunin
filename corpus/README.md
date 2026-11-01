@@ -888,3 +888,21 @@ Append-only. One knowledge note on the teardown repair; the capability surface i
 | Note | Holds | Sources |
 |---|---|---|
 | `knowledge/chrome-cdp-teardown-round-46.md` | The r45 teardown-orphan mechanism reproduced live (16 Edge launch processes outlived the legacy teardown; `taskkill /T` a no-op at exit 128 after the main died) and repaired by a PID-group kill keyed to the launch: unique per-run profile token, pre-launch freshness sweep (0), nonempty mid-run census, post-kill sweep to 0 with per-PID kills; decision table incl. the not-taken job-object route; declared residuals. | S155; `scripts/chrome-cdp-loopback-round46.mjs`; `.ufo/waves/round-46/claims.json`; `corpus/evidence/round46/edge-cdp/receipt.json`; `corpus/evidence/round46/chrome-cdp/receipt.json`; `.ufo/waves/round-46/measure/c1-legacy-edge.json`; `.ufo/waves/round-46/measure/c1-mech-redgreen.json`; `.ufo/waves/round-46/counters/chrome-cdp-receipt-r46.mjs`. |
+
+## Round 47 — the regression gate re-run, the routed gate repair, and the r46 closure corrections (2026-11-01)
+
+Append-only. One corrected knowledge entry (trio-first per the r21-corrected precedent); the
+original r46 note keeps a supersession append and is historical. No new surface: the round's moves
+are the adjacency ledger re-bind (C1) and the routed operability repair (C2).
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/chrome-cdp-teardown-round-46-corrected.md` | The r46 teardown note with the machine-readable provenance trio (`source:` S156, `verified-at:`, `recheck:`) opening the entry; the body is the original note verbatim. | S156 (supersedes S155's anchor byte count); the r46 instruments cited in the body. |
+
+### Round 47 correction index
+
+| Superseded pointer | Current entry / disposition |
+|---|---|
+| `knowledge/chrome-cdp-teardown-round-46.md` and the round-46 row above | `knowledge/chrome-cdp-teardown-round-46-corrected.md` is the canonical entry (r46 closure defect V2: no provenance trio). The original retains a supersession append; it is historical, not a second admission. |
+| The S155 anchor byte count "104,251 B" (round-46 row above and the r46 lesson Gate row) | Corrected by S156 to **104,255 B** with its command (`git cat-file -s 859d441f…` → 104255); the sha256 was unchanged — the bytes were right, the count drifted (r46 closure defect V1, number-drift). |
+| The r46 selfassessment disclosure's "all five m1-selftest-tally readings are pre-existing" | Superseded wording, not derivable from the receipt's own summary (r46 closure defect V3); the round-47 disclosure derives every number from the fresh receipt's summary line (see `corpus/lessons/round-47.md` and the SCORECARD round-47 block). |

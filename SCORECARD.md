@@ -2525,3 +2525,65 @@ recorded with cause (r44 legacy-gate class), its repair routed.
   a third declared surface only if a host probe shows one.
 - saturation 8 / window 3 retained (the r45 capability keeps the window restarted: round 47 =
   position 3). No axis retired; no score moved (no rubric authorizes one).
+
+## Round 47 — declared claims (frozen before data) and executed disposition (C1 verified; C2 refused under its frozen kill rule)
+
+Round 47 on the Windows host. Baseline `b95b546949e71f34bfaa1e63de44aff4b4d29371`; freeze
+`80325bd8e977a2730cb7b2bbd16ae26d4b022648`; data `d76eb5bbf84276d0f0d568d6918e1e571555a441`;
+correction 1 `524910a98abe7d21ed81bfffb1366d43eea0e8a5` (**cited measured revision for C1**);
+C2 repair `c2711c47fb12c88c401268fbcdd5a41ed9adddae`. Axes at start: adjacency 8 (lowest), others
+9; saturation 8 / window 3; the r45 capability keeps the window restarted (round 47 = position 3),
+nudge inactive — the lowest-axis obligation applies and C1 works adjacency. Instruments
+byte-identical from freeze to tip where frozen (meter blob `168e1ecc…` equal at freeze and at the
+measured revision; receipt `.ufo/waves/round-47/measure/c1-committed-bytes-at-cited-rev.txt`).
+**Round admission: FALSE** — C2 is refused under its own pre-declared kill rule and a round
+admits only when every claim verifies; reported honestly, not re-declared post-data.
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis; the regression-gate re-run) — VERIFIED | `node .ufo/waves/round-46/counters/c1-adjacency-host-v6.mjs --rev b95b5469… --repo <lane> --fleet <fleet>` (red control, round open); `node .ufo/waves/round-47/counters/c1-adjacency-host-v7.mjs --rev 524910a9… --repo <lane> --fleet <fleet>`; `--selftest`; `diff` v6 v7 | before: at round open the committed r46 ledger generation measures RED against the advanced fleet — exit 1, **17 findings** (3 province-byte changes [kasegi, mado, binfor], 3 lines mismatches, 1 hits mismatch, 2 delta-line-missing = binfor's two new browser-ground lines, 8 stale delta-head binds; ten sibling heads advanced since the r46 snapshot; control `.ufo/waves/round-47/controls/c1-meter-red-at-round-open.json`, taken before any lane write) -> after: audit-r47 (16 rows: 10 unchanged + 6 sibling-absent) and delta-r47 (12 lanes, 16 line rows) regenerated at ONE fresh snapshot; binfor's 2 new browser-ground lines (`:30` rea-cdp-browser over the host's own Chrome/Edge, `:33` list-browser-targets/inspect-web-page over a loopback CDP endpoint) adjudicated **contested-open** — the same family as the sre `:53` row (fleet L0 `b6b3b5e4…` :65 still open); all other dispositions carried from r46 by exact whole-line quote match; meter v7 at `524910a9…` -> **exit 0, predicate true, 0 findings**; one head-race correction under the frozen flow (sre + tsukuroi advanced between data commit and meter run -> correction 1); selftest allPass=true 16/16; the v7 retarget diff is comment/const/schema hunks only | **met** under the frozen rule; adjacency held 8 -> 8 |
+| C2 operability (the r46-routed minimalEnv repair, sourced S157) — **claim REFUSED, repair landed** | `node scripts/check-adjacency.mjs --repo <lane> --fleet <fleet> --json` (red at round open; green at `c2711c47`); `--self-test`; `git diff 80325bd8..c2711c47 -- scripts/check-adjacency.mjs` | before: the gate cannot evaluate on this host at all — exit 2 could_not_evaluate, `git_failed (status=spawn)` on every run (control `.ufo/waves/round-47/controls/c2-gate-red-at-round-open.json`; the committed r46 receipt `measure/c2-check-adjacency-hostbound.json` corroborates) -> after: the repaired gate (PATH split/join on `path.delimiter`, keep `isAbsolute` — the only functional delta vs the freeze blob) **evaluates**: exit 1, verdict=failed, rows=16, verified=5, findings 6 × sibling_unresolved (exactly the four kaidoku + two revenger absent-sibling rows, 1:1 with the audit-r47 sibling-absent rows — the one cross-check limb that held) + 4 × ruling_unresolved + 3 × quote_too_long; self-test `ADJACENCY_SELFTEST verdict=clean cases=57 reasons=18 could_not_evaluate=6` on this host | **REFUSED** under the frozen kill rule ("any finding other than the six absent-sibling sibling_unresolved fires"): the frozen after-state (verified=10, exactly-6 findings) was reasoned, not measured — a stale-premise freeze (lesson Mistake 1); the routed repair itself is landed, live-verified (exit 2 -> exit 1 evaluated, selftest clean), and re-declarable in round 48 with an honestly-predicted predicate; operability is not harmed (the gate went from cannot-run to runs) but the claim does not verify, so the round does not admit on it |
+
+The r46 carry-in items are all addressed in the round-47 commits: V1 as S156 (supersedes S155 —
+104,251 -> 104,255 B with its command; sha unchanged); V2 as the trio-first corrected entry
+`knowledge/chrome-cdp-teardown-round-46-corrected.md` (r21-corrected precedent; original keeps a
+supersession append; knowledge 63 -> 64); V3 as a fresh selfassessment receipt
+(`.ufo/waves/round-47/measure/selfassessment-precommit.txt` — `verdict=failed rev=c2711c47…
+mismatches=1 could_not_evaluate=171 superseded=24`; the 1 is the pre-commit `m3-unlanded-paths`
+artifact; the r46 receipt reads `mismatches=1 could_not_evaluate=175 superseded=23` — the same
+single m3 class at both revisions) and a disclosure that quotes only receipt summary lines; the
+superseded "all five m1-selftest-tally readings" wording is named, never rewritten in place. The
+L2-floor L0 stays open and routed around (no wave clause in any predicate; L1-inline round).
+
+### Round 47 — sources, frontier, trend verdicts
+
+Registry 155 -> 157 (S156 correction supersedes S155's anchor count; S157 Node path docs opened
+this round, raw-fetched, staged, quote 1-hit). Knowledge notes 63 -> 64 (the corrected entry). No
+new surface: S156 corrects held ground; S157 documents the repair's own primitives. Census start
+AND end exit 0.
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | unchanged | No new coverage-map ground: the C1 move re-binds held ledger ground; C2 repairs an owned instrument; S156 is a correction, S157 the repair's primitives; the corrected entry (63 -> 64) documents already-held teardown ground. |
+| quality | improved | The routed defect closed in committed bytes with live red (exit 2, spawn failure) and green (exit 1 evaluated, selftest clean 57/57) receipts; the C1 regression gate went red 17 -> green 0 with the two genuinely new browser-ground lines adjudicated rather than smoothed; S155's drifted count found and corrected as S156 without editing the original row; no admitted entry failed a re-check. |
+| discernment | improved | The lane's own frozen kill rule refused its own claim at data time (C2) and the refusal is recorded with its rationale instead of a post-data re-declaration; the head-race correction ran under the frozen data flow, not ad hoc; every disclosure number this round is quoted from a receipt's own summary line. |
+
+### Planned / saturation / retired — round 47
+
+- planned: operability — RE-DECLARE the gate repair claim in round 48 with an honestly-predicted
+  predicate: the repair bytes are landed at `c2711c47`; the r48 freeze must either measure the
+  predicted after-state pre-data over the same bytes or key the refusal to classes (persisting
+  could_not_evaluate; repair-regression findings), and should also disposition the two honest
+  finding classes this round surfaced: the fleet-venue split (ruling_unresolved — the gate
+  requires one dir to be both fleet repo and sibling parent; this host splits them) and the
+  25-word quote cap vs the meter-era whole-line quotes (a legacy-vs-meter interplay the r46 record
+  already carried).
+- planned: adjacency — the r47 snapshot heads date like any census; re-run meter v7 as the
+  regression gate after any sibling roster change; the binfor contested-open lines join the sre
+  :53/:137 family awaiting the open fleet L0 (b6b3b5e4… :65).
+- planned: coverage — S152–S155 90d rechecks due 2027-01-29 (opened 2026-10-31; not due this
+  round); S156/S157 recheck 90d / on-release respectively.
+- saturation 8 / window 3 retained (round 48 = position 4 — the window EXPIRES after round 47's
+  position 3: if no capability enters the table by the r48 freeze, the stagnation nudge waives the
+  lowest-axis obligation and the round should be a frontier/capability move). No axis retired; no
+  score moved (no rubric authorizes one).

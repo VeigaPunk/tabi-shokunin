@@ -2991,3 +2991,52 @@ move), note-count claims.
   carry-in rows, five Mistakes (the correction-2 audit-key drift; the counter selftest 1/18 catch;
   the fixture helper exit-9 catch; the host-bound check-adjacency gate recorded with cause; the
   r45 orphan class mined and closed) and the census stamps.
+
+## Round 47 — 2026-11-01 — C1 adjacency regression gate VERIFIED (red 17 -> green 0); C2 gate repair landed but the claim REFUSED under its frozen kill rule (admission false)
+
+- Fresh-start discipline held: r41/r42/r43 rejected closures re-spot-checked in committed bytes at
+  HEAD (r41 receipt blobs `7b2ece05`/`5930d20f`; r42 counter `5c45c4d5` + selftest receipt
+  `ec0c238e` verdict=clean 18/18 + signing note `72e6b85f`; r43 D3 crash receipt `54ea155a`).
+  Ruled out (claims.json freshStartNote): re-running r46 receipts (do-nothing); the meter re-run
+  alone with a stationary fleet (do-nothing — frozen pre-data: had the round-open meter been
+  green, C1 would have been refused and replaced; it measured 17 findings, the work was real);
+  the V1/V2/V3 corrections as axis claims (routed protocol work); S152-S155 90d rechecks (due
+  2027-01-29, not due); a third claim (job-object absent in Node; two red+green claims plus three
+  routed corrections is the honest size); Firefox/BiDi/wave-settled claims (absent surface; r44
+  L2-floor L0 open — routed around, no wave clause in any predicate); widening the gate repair
+  beyond minimalEnv (semantic change smuggled into a routed fix).
+- FREEZE `80325bd8e977a2730cb7b2bbd16ae26d4b022648`: claims.json (2 claims, predicates, kill
+  rules, 6 frozen digests, fresh-start note, carry-in routing), meter v7 (pure core byte-identical
+  to v6; committed retarget diff `controls/v6-v7-retarget.diff`; selftest receipt 16/16), the two
+  round-open red controls (v6 meter at baseline vs live fleet: exit 1, 17 findings; pre-repair
+  gate: exit 2 could_not_evaluate git_failed status=spawn), census-START receipt (exit 0).
+- MEASURED: data `d76eb5bbf84276d0f0d568d6918e1e571555a441` (audit-r47 16 rows = 10 unchanged +
+  6 sibling-absent; delta-r47 12 lanes + 16 line rows at ONE snapshot; binfor's 2 new
+  browser-ground lines :30/:33 adjudicated contested-open, the sre :53 family; dispositions
+  carried from r46 by exact whole-line quote match) -> first green run caught a head race
+  (sre + tsukuroi, lane-screen-head-mismatch x2) -> correction 1 `524910a98abe7d21ed81bfffb1366d43eea0e8a5`
+  re-binds both ledgers at a fresh snapshot -> meter v7 exit 0, predicate true, 0 findings.
+  **C1 VERIFIED** under its frozen predicate (a)-(f). Repair commit `c2711c47fb12c88c401268fbcdd5a41ed9adddae`
+  lands the C2 minimalEnv host-portable PATH repair; the repaired gate evaluates (exit 2 -> exit 1),
+  selftest clean 57/57 — but the gate's honest verdict (verified=5; 4 ruling_unresolved fleet-venue
+  split + 3 quote_too_long legacy-cap findings) contradicts the frozen after-state
+  (verified=10, exactly-6 findings), the kill rule fired, and **C2 is REFUSED** — the predicate
+  was reasoned, not measured (lesson Mistake 1); the repair itself is landed, live-verified and
+  re-declarable in r48. **Round admission: FALSE** — one of two claims refused; reported honestly,
+  not re-declared post-data; no axis harmed.
+- SOURCES: S156 (supersedes S155 — anchor count corrected 104,251 -> 104,255 B, command carried,
+  sha unchanged; r46 closure V1) and S157 (Node path API — path.delimiter/path.isAbsolute, the
+  repair's primitives, raw-fetched + staged + 1-hit quote; r47 sourced claim) opened this round;
+  registry 155 -> 157; knowledge note chrome-cdp-teardown-round-46-corrected.md (notes 63 -> 64,
+  trio-first per the r21-corrected precedent; original keeps a supersession append; r46 closure
+  V2); README round-47 section + correction index; fresh selfassessment receipt
+  (verdict=failed rev=c2711c47 mismatches=1 could_not_evaluate=171 superseded=24; the 1 is the
+  pre-commit m3 artifact; r46 receipt reads mismatches=1 could_not_evaluate=175 superseded=23 —
+  same single m3 class at both revisions) supersedes the r46 "all five m1-selftest-tally readings"
+  wording (r46 closure V3). L2-floor L0 stays open and routed around.
+- SCORECARD: the round-47 block records C1 VERIFIED and C2 REFUSED with the refusal rationale; no
+  capabilities row; no scalar moved. Assimilation: none — `considerthese/` absent; shokuknow
+  unreachable. Lesson `corpus/lessons/round-47.md` carries the Gate (S156/S157 with commands and
+  quotes), the carry-in rows, three Mistakes (the stale-premise frozen predicate — refusal keyed
+  to classes next freeze; the d76eb5bb commit-message overclaim — scope-check before the helper;
+  the r46 number-drift mined per the section 2b duty) and the census stamps.
