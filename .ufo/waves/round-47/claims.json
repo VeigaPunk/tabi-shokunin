@@ -1,0 +1,81 @@
+{
+  "round": 47,
+  "lane": "tabi-shokunin",
+  "host": "win32 10.0.26200 x64 (Git Bash; node v24.21.0)",
+  "baseline": "b95b546949e71f34bfaa1e63de44aff4b4d29371",
+  "frozenAt": "2026-11-01T08:06:05Z",
+  "axesAtStart": { "adjacency": 8, "others": 9, "note": "adjacency lowest owned non-retired axis; saturation 8 / window 3; the r45 capability keeps the window restarted (round 47 = position 3, nudge inactive; the lowest-axis obligation applies)" },
+  "claims": [
+    {
+      "id": "C1",
+      "axis": "adjacency (lowest owned axis)",
+      "name": "the r46-planned regression-gate re-run became real: the adjacency ledgers re-bound at one fresh snapshot",
+      "frozenPredicate": "C1 is met at the r47 data revision REV where (a) the round-open red control — the committed v6 meter run at the baseline against the live fleet — exited 1 with >=1 finding and the receipt is committed (observed at freeze: predicate=false, findingCount=17; 3 lanes' province bytes changed [kasegi, mado, shokunin-binary-forensics], 8 delta-head binds stale, 2 new BG-hit lines missing line rows); (b) corpus/adjacency-host-audit-r47.tsv carries exactly one row per corpus/adjacency.tsv data row keyed by sibling_ref, and corpus/adjacency-host-delta-r47.tsv re-binds every screened roster lane at ONE snapshot; (c) node .ufo/waves/round-47/counters/c1-adjacency-host-v7.mjs --rev <REV> --repo <lane> --fleet <fleet> exits 0 with predicate=true and findingCount=0; (d) the meter's own head snapshot at that green run equals the head bound in every delta lane row; (e) the v7 selftest exits 0 with allPass=true cases=16 pass=16 (committed receipt); (f) diff(v6, v7) names ONLY the header comment, the two ledger-filename consts, the schema strings and the usage lines (committed retarget diff) — the pure core is byte-identical, the instrument is not weakened.",
+      "killRules": [
+        "a lane-screen-head-mismatch or ANY finding at the green run routes through the frozen data-correction flow (re-snapshot -> re-bind BOTH ledgers -> commit -> re-run), as in round 46; it is a correction, not a claim refusal",
+        "REFUSAL if a map row's cited text is gone from its sibling at the snapshot head (stale) with no honest disposition, or the green run cannot reach predicate true after two correction cycles, or any ledger cell quotes bytes not present at the bound head"
+      ],
+      "countingCommands": [
+        "node .ufo/waves/round-47/counters/c1-adjacency-host-v7.mjs --rev <REV> --repo <lane> --fleet <fleet>  (exit 0, predicate true, findingCount 0)",
+        "node .ufo/waves/round-46/counters/c1-adjacency-host-v6.mjs --rev b95b5469… --repo <lane> --fleet <fleet>  (red control: exit 1, 17 findings)",
+        "node .ufo/waves/round-47/counters/c1-adjacency-host-v7.mjs --selftest  (exit 0, cases=16 pass=16)",
+        "awk -F'\\t' 'NR>1{n[$1]++} END{for(k in n) print k, n[k]}' corpus/adjacency-host-audit-r47.tsv  (status histogram: 10 unchanged + 6 sibling-absent)",
+        "diff .ufo/waves/round-46/counters/c1-adjacency-host-v6.mjs .ufo/waves/round-47/counters/c1-adjacency-host-v7.mjs  (retarget-only diff, committed)"
+      ],
+      "before": "at the baseline the committed r46 ledger generation measures RED against the advanced fleet: exit 1, 17 findings (control receipt committed at round open, before any lane write this round)",
+      "after": "at the data revision the r47 ledger generation measures GREEN: exit 0, predicate true, 0 findings",
+      "sourced": "own-work (the lane's re-runnable meter output); no external source row is load-bearing for C1"
+    },
+    {
+      "id": "C2",
+      "axis": "operability",
+      "name": "the r46-routed host-bound repair of scripts/check-adjacency.mjs minimalEnv PATH pruning (r46 SCORECARD planned item)",
+      "sourced": "S157 — Node.js path docs (path.delimiter / path.isAbsolute), opened this round; the repair's primitives",
+      "frozenPredicate": "C2 is met at the r47 data revision REV where (a) the round-open red control — the committed pre-repair gate bytes — exits 2 could_not_evaluate (git_failed, status=spawn) on this host (receipt committed at round open; the r46 hostbound receipt measure/c2-check-adjacency-hostbound.json corroborates the same class); (b) after the repair — minimalEnv() splits process.env.PATH on path.delimiter and keeps entries path.isAbsolute(entry) accepts, joined by path.delimiter; the ONLY functional change in the file, verified by the data commit's diff — the same command exits an EVALUATED class (0 or 1), with verdict=failed, rows=16, verified=10, and findings EXACTLY 6 x sibling_unresolved whose details name the six absent-sibling dirs (kaidoku-shokunin x4 rows, revenger-shokunin x2 rows); (c) cross-check: the gate's 10 verified rows are exactly the rows whose audit-r47 status is 'unchanged', and the gate's 6 unresolved rows are exactly the audit-r47 'sibling-absent' rows, at the same revision; (d) node scripts/check-adjacency.mjs --self-test exits 0 printing ADJACENCY_SELFTEST verdict=clean (every finding reason and every could-not-evaluate reason covered) on this host — the repaired gate can fail.",
+      "killRules": [
+        "REFUSAL if the repaired gate still exits could_not_evaluate with git_failed (status=spawn), or any finding other than the six absent-sibling sibling_unresolved fires (a quote_absent or unresolved-elsewhere finding means the repair or the map regressed), or the self-test reports any failed case",
+        "the repair touches ONLY the minimalEnv PATH block; any other byte change in the data commit refuses the claim"
+      ],
+      "countingCommands": [
+        "node scripts/check-adjacency.mjs --repo <lane> --fleet <fleet> --json  (before: exit 2 git_failed status=spawn; after: exit 1, verdict=failed, verified=10, 6 sibling_unresolved)",
+        "node scripts/check-adjacency.mjs --self-test  (after: exit 0, ADJACENCY_SELFTEST verdict=clean)",
+        "git diff <freeze>..<data> -- scripts/check-adjacency.mjs  (the only functional delta is the minimalEnv PATH block)"
+      ],
+      "before": "the gate cannot evaluate on this host at all: exit 2 could_not_evaluate on every run (r46 recorded with cause; reproduced fresh at round open)",
+      "after": "the gate evaluates: exit 1 verdict=failed with exactly the six absent-sibling findings and 10 verified rows, self-test clean — evaluated-clean on the map content awaits a host where kaidoku/revenger exist; the six findings are the honest host state, matching the meter's sibling-absent dispositions 1:1"
+    }
+  ],
+  "carryIn": {
+    "note": "routed by the r46 non-author closure (corpus/lessons/round-46-verifier-spotcheck.md section 7); carried as protocol/corpus corrections in this round's commits — correction work the lane owes, not axis claims (a do-nothing control cannot claim a routed defect as a move)",
+    "items": [
+      "V1 (number-drift, SOURCES anchor): the S155 anchor cell and the r46 lesson Gate row record 104,251 B; the committed staged blob is 104,255 B (git cat-file -s 859d441f… -> 104255; sha256 matches, the bytes were right, the count drifted). Fix: new row S156 whose teaches opens 'supersedes S155 —', carrying the corrected count with its command; lesson erratum names the superseded text; S155 keeps its status (its bytes and quote verified).",
+      "V2 (provenance trio missing): corpus/knowledge/chrome-cdp-teardown-round-46.md carries no machine-readable source:/verified-at:/recheck:. Fix per the round-21-corrected precedent: new entry chrome-cdp-teardown-round-46-corrected.md opening with the trio; the original keeps an appended supersession note; README index rows land for the corrected file and the correction.",
+      "V3 (wording drift, non-claim disclosure): the r46 selfassessment receipt's baseline-comparison note says 'all five m1-selftest-tally readings are pre-existing' — not derivable from the receipt's own summary (mismatches=1 could_not_evaluate=175 superseded=23). Fix: a fresh selfassessment receipt at the r47 rev and a corrected disclosure deriving every number from the receipt's own summary line; the superseded wording is named, never rewritten in place.",
+      "L2-floor L0 (tabi | round-44 line): still open — routed around; no wave-settled clause in any predicate; the round runs L1-inline."
+    ]
+  },
+  "freshStartNote": {
+    "spotChecks": [
+      "r41 untracked-receipt limb closed: corpus/evidence/round41/playwright-egress/ receipt.json 7b2ece05 + receipt.witness.json 5930d20f are blobs at HEAD (git ls-tree, re-run at freeze)",
+      "r42 nonce-relabel/synthetic-receipt false-green class closed: the committed counter clause family — chrome-cdp-receipt-r46.mjs 5c45c4d5 + selftest receipt ec0c238e (verdict=clean cases=18 passed=18) + receipt-authenticity-signing-round-43.md 72e6b85f, all blobs at HEAD",
+      "r43 false-green/crash class closed in r45: .ufo/waves/round-45/measure/d3-r43-pathtype-crash.json 54ea155a is a blob at HEAD"
+    ],
+    "ruledOut": [
+      "re-running r46's receipts as r47 evidence — do-nothing reachable",
+      "the meter re-run alone with a stationary fleet — do-nothing reachable; frozen pre-data: had the round-open meter been green, C1 would have been refused as do-nothing-reachable and replaced (it measured 17 findings — the work was real)",
+      "declaring the V1/V2/V3 corrections as axis claims — routed corpus corrections are owed protocol work, not moves",
+      "S152–S155 90d rechecks — opened 2026-10-31, due 2027-01-29; not due",
+      "a third claim (job-object teardown variant or a further browser-surface probe) — the job-object surface stays absent in Node; two claims each with live red+green plus the three routed corrections is the round's honest size; a genuine third would have been inflated",
+      "Firefox/BiDi/wave-settled claims — Firefox absent on this host; the r44 L2-floor L0 line is open and no wave clause appears in any predicate",
+      "widening the gate repair beyond minimalEnv (e.g. a sibling-absent status in the gate's closed vocabulary) — a semantic change to a legacy instrument, not the routed defect; needs its own falsification design and is not smuggled in"
+    ]
+  },
+  "frozenDigests": {
+    "counters/c1-adjacency-host-v7.mjs": "ffd0abca257cf658783ab7400033432565a992706d3e5b141eb86ed3ad556a62",
+    "controls/c1-meter-red-at-round-open.json": "e5cb67783ee4f5f5e950106ad4aa67a2f36d6dac86cfa946dd42d9b16cb1c47a",
+    "controls/c2-gate-red-at-round-open.json": "94897acbeab0f893240a8738b4afff640e50638b02e48418302cd20f56d80420",
+    "controls/v6-v7-retarget.diff": "21d73163dbe8182506fad3028f82ef5bf02fab1bcc4ce9960a6121e9e82cc9c4",
+    "measure/census-start.txt": "76353dfbcfdd841fc738ede274bfea4e3273929aed5fbcf548f1b18ff7a1cf49",
+    "measure/c1-meter-v7-selftest.json": "bf10f003e4c1c8ede0aef4f6800bea98e3ac43104ce98bb3fd9ca6af16a002fa"
+  }
+}
