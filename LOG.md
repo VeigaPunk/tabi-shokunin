@@ -2936,3 +2936,11 @@ move), note-count claims.
   `corpus/lessons/round-45.md` carries the Gate, the D1/D2/D3 carry-in rows, four Mistakes
   (stale-pin mining, revision-wording mining, broad keyword list narrowed pre-freeze, import-guard
   bug) and the census stamps.
+- ROUND-CLOSE hygiene (same round, after the integration commit): the scratch deletion failed
+  busy on `cdp-edge-run1/edge-profile` — three re-parented msedge orphan trees survived the
+  runner's `taskkill /T` although every receipt recorded `chromeTerminated: true` (that clause
+  binds the MAIN child; Edge helpers re-parent on this host). Killed the three roots PID-scoped
+  (never by image name), CimInstance sweep = 0 tabi-r45 msedge processes, scratch deleted.
+  Recorded as a fifth Mistake in `corpus/lessons/round-45.md`; the runner repair (post-run
+  profile-token sweep or job-object kill) routes to round 46. No frozen byte amended post-data;
+  no claim verdict changes (the frozen predicates held as measured).
