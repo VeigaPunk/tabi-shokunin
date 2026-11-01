@@ -13,9 +13,20 @@
 // overlaps found by sweep.
 //
 // Usage:
-//   node scripts/check-adjacency.mjs [--at REV] [--json] [--fleet <dir>] [--repo <dir>]
+//   node scripts/check-adjacency.mjs [--at REV] [--json] [--fleet <dir>] [--repo <dir>] [--fleet-repo <dir>]
 //   node scripts/check-adjacency.mjs --self-test
 //   node scripts/check-adjacency.mjs --reasons
+//
+// --fleet-repo names the FLEET REPOSITORY for the `fleet` ruling token
+// (decisions/round-notes venues and the contested-open L0 file). Default: the
+// --fleet directory itself (the historical layout, where the sibling parent is
+// the fleet git repo). On hosts where the fleet repository and the sibling
+// parent are DIFFERENT directories (r47: the r48 round-open receipts measured
+// every fleet ruling `ruling_unresolved` because the sibling parent is not a
+// git toplevel), pass --fleet-repo <fleet checkout> so `fleet@...` ruling refs
+// resolve at the real fleet repo. The venue must still be exactly a git
+// toplevel with its git dir at <dir>/.git; anything else fails closed with
+// ruling_unresolved — a wrong --fleet-repo can never silently pass.
 //
 // --repo defaults to the git toplevel of the cwd (the lane). --at defaults to
 // the LANE TIP, never HEAD: a jj-colocated lane detaches git HEAD, which may
@@ -68,7 +79,11 @@
 //                  cited once: a second row reusing it is duplicate_row even
 //                  under another surface.
 //   sibling_quote  verbatim substring, 4..25 whitespace-separated words and at
-//                  least 20 non-space characters.
+//                  least 20 non-space characters — OR the complete cited line
+//                  (modulo surrounding whitespace), which the r46+ meter era
+//                  quotes verbatim whole; a whole-line quote carries no word
+//                  cap. A quote longer than 25 words that is NOT the complete
+//                  line still fails quote_too_long.
 //   tabi_ref       <path>:<line> in this lane, resolved at the evaluated
 //                  revision; the quote must be on that exact line. The map
 //                  itself (corpus/adjacency.tsv) and every path under .ufo/
@@ -87,10 +102,12 @@
 //                  sibling lane.
 //                  split-declared / refused-route: `-`.
 //   ruling_quote   ruled / contested-open: verbatim substring of the cited
-//                  ruling line. split-declared / refused-route: verbatim
-//                  substring of the tabi file named by tabi_ref (there is no
-//                  third file to pin, so the committed refinement of "both
-//                  quotes state the split" is exact verbatim existence).
+//                  ruling line, or that complete line (no word cap for a
+//                  whole-line quote, same rule as sibling_quote).
+//                  split-declared / refused-route: verbatim substring of the
+//                  tabi file named by tabi_ref (there is no third file to pin,
+//                  so the committed refinement of "both quotes state the
+//                  split" is exact verbatim existence).
 // This lane never counts as its own sibling, and it cannot rule on itself:
 // a `ruled` self-venue ruling is only a tabi
 // `corpus/lessons/*-verifier-spotcheck.md` line whose last touching commit at
@@ -659,8 +676,12 @@ function readMapAt(lane, atRev) {
   return blob.text;
 }
 
-function quoteLengthProblems(quote, label, add) {
-  if (wordCount(quote) > MAX_QUOTE_WORDS) {
+// The 25-word cap bounds SUBSTRING quotes; a quote that IS the complete cited
+// line (the r46+ meter-era whole-line discipline — the meter's delta rows and
+// the map's unchanged-status comparison both quote whole lines) is accepted at
+// any length: `wholeLine` is computed by the caller as quote === text.trim().
+function quoteLengthProblems(quote, label, add, wholeLine = false) {
+  if (!wholeLine && wordCount(quote) > MAX_QUOTE_WORDS) {
     add(REASON.quoteTooLong, `${label} words=${wordCount(quote)} max=${MAX_QUOTE_WORDS}`);
   }
   if (wordCount(quote) < MIN_QUOTE_WORDS || nonSpaceCount(quote) < MIN_QUOTE_CHARS) {
@@ -668,6 +689,11 @@ function quoteLengthProblems(quote, label, add) {
       `${label} words=${wordCount(quote)} non_space=${nonSpaceCount(quote)} ` +
       `min=${MIN_QUOTE_WORDS}/${MIN_QUOTE_CHARS}`);
   }
+}
+
+// True when quote is the complete cited line modulo surrounding whitespace.
+function isWholeLine(quote, text) {
+  return text !== null && typeof text === 'string' && text.trim() === quote;
 }
 
 function checkSibling({ lane, fleet, sibling, ref, quote, quoteBanned, add }) {
@@ -736,7 +762,7 @@ function checkSibling({ lane, fleet, sibling, ref, quote, quoteBanned, add }) {
     if (quote.length === 0) {
       add(REASON.siblingQuoteAbsent, 'sibling_quote is empty');
     } else {
-      quoteLengthProblems(quote, 'sibling_quote', add);
+      quoteLengthProblems(quote, 'sibling_quote', add, isWholeLine(quote, line.text));
       if (!line.text.includes(quote)) {
         add(REASON.siblingQuoteAbsent, `sibling_quote not on ${laneToken}@${commit}:${path}:${lineNo}`);
       }
@@ -776,7 +802,7 @@ function checkTabi({ lane, atRev, ref, quote, quoteBanned, add }) {
     if (quote.length === 0) {
       add(REASON.tabiQuoteAbsent, 'tabi_quote is empty');
     } else {
-      quoteLengthProblems(quote, 'tabi_quote', add);
+      quoteLengthProblems(quote, 'tabi_quote', add, isWholeLine(quote, line.text));
       if (!line.text.includes(quote)) {
         add(REASON.tabiQuoteAbsent, `tabi_quote not on ${where}`);
       }
@@ -796,7 +822,7 @@ function lastAuthor(repo, commit, path) {
 }
 
 function checkRuling({
-  lane, fleet, atRev, disposition, sibling, ref, quote, quoteBanned, tabiText, tabiRef, add, onSelfRuling,
+  lane, fleet, fleetRepo, atRev, disposition, sibling, ref, quote, quoteBanned, tabiText, tabiRef, add, onSelfRuling,
 }) {
   if (SPLIT_DISPOSITIONS.has(disposition)) {
     if (ref !== '-') {
@@ -807,7 +833,7 @@ function checkRuling({
       if (quote.length === 0) {
         add(REASON.rulingQuoteAbsent, 'ruling_quote is empty');
       } else {
-        quoteLengthProblems(quote, 'ruling_quote', add);
+        quoteLengthProblems(quote, 'ruling_quote', add, isWholeLine(quote, tabiText));
         if (tabiText !== null && !tabiText.includes(quote)) {
           add(REASON.rulingQuoteAbsent, `split ruling_quote not in tabi_ref=${tabiRef} at ${atRev}`);
         }
@@ -859,7 +885,11 @@ function checkRuling({
       `*-verifier-spotcheck.md line; got ${token}@...:${path}`);
     return;
   }
-  const dir = token === 'fleet' ? fleet : join(fleet, token);
+  // The `fleet` ruling token resolves at the fleet REPOSITORY: --fleet-repo
+  // when given (hosts where the fleet repo and the sibling parent are
+  // different directories), the --fleet directory otherwise (the historical
+  // layout the fixtures model).
+  const dir = token === 'fleet' ? (fleetRepo ?? fleet) : join(fleet, token);
   const identity = repoIdentity(dir);
   if (identity === null) {
     add(REASON.rulingUnresolved, `ruling repo ${dir} is absent or not a git toplevel`);
@@ -937,7 +967,7 @@ function checkRuling({
     add(REASON.rulingQuoteAbsent, 'ruling_quote is empty');
     return;
   }
-  quoteLengthProblems(quote, 'ruling_quote', add);
+  quoteLengthProblems(quote, 'ruling_quote', add, isWholeLine(quote, line.text));
   if (!line.text.includes(quote)) {
     add(REASON.rulingQuoteAbsent, `ruling_quote not on ${token}@${commit}:${path}:${lineNo}`);
     return;
@@ -951,7 +981,7 @@ function checkRuling({
   if (selfVenue) onSelfRuling();
 }
 
-function evaluateRow({ lane, fleet, atRev, rowNo, fields, onSelfRuling }) {
+function evaluateRow({ lane, fleet, fleetRepo, atRev, rowNo, fields, onSelfRuling }) {
   const findings = [];
   const add = (reason, detail) => findings.push({ row: rowNo, reason, detail: cleanDetail(detail) });
   if (fields.length !== COLUMNS.length) {
@@ -1003,7 +1033,7 @@ function evaluateRow({ lane, fleet, atRev, rowNo, fields, onSelfRuling }) {
     add(REASON.dispositionUnknown, `disposition=${cleanDetail(disposition)}`);
   } else {
     checkRuling({
-      lane, fleet, atRev, disposition, sibling, ref: rulingRef, quote: rulingQuote,
+      lane, fleet, fleetRepo, atRev, disposition, sibling, ref: rulingRef, quote: rulingQuote,
       quoteBanned: quoteBanned(8), tabiText, tabiRef, add, onSelfRuling,
     });
   }
@@ -1016,7 +1046,7 @@ function foldSurface(surface) {
 
 // Verify every data row of the map at one revision. The header is a schema:
 // a mismatch or a map with no data rows cannot be evaluated.
-function evaluateMap({ lane, fleet, atRev, text }) {
+function evaluateMap({ lane, fleet, fleetRepo, atRev, text }) {
   const lines = splitLines(text);
   if (lines.length === 0) refuse(FAILURE_REASON.mapSchemaInvalid, `${MAP_PATH} at ${atRev} is empty`);
   const header = stripCr(lines[0]);
@@ -1040,7 +1070,7 @@ function evaluateMap({ lane, fleet, atRev, text }) {
     const fields = stripCr(lines[index]).split('\t');
     rows += 1;
     findings.push(...evaluateRow({
-      lane, fleet, atRev, rowNo, fields,
+      lane, fleet, fleetRepo, atRev, rowNo, fields,
       onSelfRuling: () => selfRulings.push(rowNo),
     }));
     if (fields.length !== COLUMNS.length) continue;
@@ -1088,7 +1118,7 @@ function emitText(verdict, rows, verified, findings) {
   }
 }
 
-function emitResult({ mode, repo, fleet, atRev, verdict, rows, verified, findings, selfRulings, tips, json }) {
+function emitResult({ mode, repo, fleet, fleetRepo, atRev, verdict, rows, verified, findings, selfRulings, tips, json }) {
   if (json) {
     console.log(JSON.stringify({
       schema: RESULT_SCHEMA,
@@ -1096,6 +1126,7 @@ function emitResult({ mode, repo, fleet, atRev, verdict, rows, verified, finding
       map: MAP_PATH,
       repo,
       fleet,
+      ...(fleetRepo !== null && fleetRepo !== undefined ? { fleetRepo } : {}),
       at: atRev,
       verdict,
       rows,
@@ -1121,14 +1152,14 @@ function emitCouldNotEvaluate({ mode, repo, fleet, atRev, error, json }) {
 function usage() {
   return [
     'ADJACENCY usage:',
-    '  node scripts/check-adjacency.mjs [--at REV] [--json] [--fleet <dir>] [--repo <dir>]',
+    '  node scripts/check-adjacency.mjs [--at REV] [--json] [--fleet <dir>] [--repo <dir>] [--fleet-repo <dir>]',
     '  node scripts/check-adjacency.mjs --self-test',
     '  node scripts/check-adjacency.mjs --reasons',
   ].join('\n');
 }
 
 function parseArguments(argv) {
-  const options = { mode: null, at: null, json: false, fleet: null, repo: null, help: false };
+  const options = { mode: null, at: null, json: false, fleet: null, fleetRepo: null, repo: null, help: false };
   const nextValue = (flag, index) => {
     const value = argv[index + 1];
     if (value === undefined || value.startsWith('--')) throw new Error(`${flag} requires a value`);
@@ -1150,6 +1181,9 @@ function parseArguments(argv) {
     } else if (arg === '--fleet') {
       options.fleet = nextValue('--fleet', index);
       index += 1;
+    } else if (arg === '--fleet-repo') {
+      options.fleetRepo = nextValue('--fleet-repo', index);
+      index += 1;
     } else if (arg === '--repo') {
       options.repo = nextValue('--repo', index);
       index += 1;
@@ -1161,11 +1195,11 @@ function parseArguments(argv) {
   }
   if (!options.help) {
     if (options.mode === 'reasons'
-        && (options.at !== null || options.json || options.fleet !== null || options.repo !== null)) {
+        && (options.at !== null || options.json || options.fleet !== null || options.fleetRepo !== null || options.repo !== null)) {
       throw new Error('--reasons accepts no other arguments');
     }
     if (options.mode === 'self-test'
-        && (options.at !== null || options.json || options.fleet !== null || options.repo !== null)) {
+        && (options.at !== null || options.json || options.fleet !== null || options.fleetRepo !== null || options.repo !== null)) {
       throw new Error('--self-test accepts no other arguments');
     }
   }
@@ -1596,6 +1630,41 @@ function selfTest() {
     runMap('quote-too-long-ruling',
       [[...cleanRuledFleet.slice(0, 7), `fleet@${fleetSha}:decisions.md:2`, LONG_QUOTE]],
       { exit: 1, reasons: [REASON.quoteTooLong] });
+    // Whole-line quotes (the r46+ meter-era discipline): a quote that IS the
+    // complete cited line carries no word cap. These three cases fail on the
+    // pre-r48 bytes (quote_too_long) and must go green on the repaired gate —
+    // the r47 host finding class (56/32/28-word whole lines), now covered.
+    const wholeSiblingLine = `${LONG_QUOTE} for browser-side mechanics.`;
+    const wholeRulingLine = `note: ${LONG_QUOTE}.`;
+    runMap('whole-line-quote-sibling-green',
+      [row({ 2: `kaidoku-shokunin@${siblingSha}:PROVINCE.md:4`, 3: wholeSiblingLine })],
+      { exit: 0, reasons: [], rows: 1, verified: 1 });
+    runMap('whole-line-quote-tabi-green',
+      [row({ 4: 'PROVINCE.md:5', 5: wholeSiblingLine })],
+      { exit: 0, reasons: [], rows: 1, verified: 1 });
+    runMap('whole-line-quote-ruling-green',
+      [[...cleanRuledFleet.slice(0, 7), `fleet@${fleetSha}:decisions.md:2`, wholeRulingLine]],
+      { exit: 0, reasons: [], rows: 1, verified: 1 });
+    // A >25-word quote that is NOT the whole line still fails (the cap bounds
+    // substrings; the whole-line exemption is not a general cap raise).
+    runMap('long-substring-quote-still-fails',
+      [row({ 2: `kaidoku-shokunin@${siblingSha}:PROVINCE.md:4`,
+        3: `${wholeSiblingLine} extended beyond the line` })],
+      { exit: 1, reasons: [REASON.quoteTooLong, REASON.siblingQuoteAbsent] });
+    // --fleet-repo: the fleet ruling venue is redirected explicitly (hosts
+    // where the fleet repo and the sibling parent are different directories).
+    // Explicit == default must stay green; a WRONG venue must fail closed
+    // (ruling_unresolved), never silently pass; a missing directory is usage.
+    cases.push(checkCase('fleet-repo-explicit-green',
+      runCli(lane, ['--at', cleanSha, '--fleet', root, '--fleet-repo', root, '--json']),
+      { exit: 0, reasons: [], rows: 4, verified: 4 }));
+    cases.push(checkCase('fleet-repo-wrong-dir-fails-closed',
+      runCli(lane, ['--at', cleanSha, '--fleet', root, '--fleet-repo', outside, '--json']),
+      { exit: 1, reasons: [REASON.rulingUnresolved, REASON.rulingUnresolved, REASON.rulingUnresolved],
+        rows: 4, verified: 1 }));
+    cases.push(checkCase('fleet-repo-missing-dir-usage',
+      runCli(lane, ['--at', cleanSha, '--fleet', root, '--fleet-repo', join(outside, 'absent'), '--json']),
+      { exit: 2, reasons: [FAILURE_REASON.usage] }));
     // duplicate_row: same folded surface + sibling.
     runMap('duplicate-row', [cleanRuledFleet,
       [...cleanRuledFleet.slice(0, 2),
@@ -1712,16 +1781,18 @@ function main() {
 
   let repo = null;
   let fleet = null;
+  let fleetRepo = null;
   let atRev = null;
   try {
     repo = resolveRepo(options.repo);
     fleet = resolveFleet(options.fleet, repo);
+    fleetRepo = options.fleetRepo === null ? null : resolveFleet(options.fleetRepo, repo);
     const laneTip = options.at === null
       ? resolveLaneTip(repo, LANE_TIP_FALLBACKS, 'lane tip')
       : null;
     atRev = laneTip === null ? resolveAt(repo, options.at) : laneTip.commit;
     const text = readMapAt(repo, atRev);
-    const evaluated = evaluateMap({ lane: repo, fleet, atRev, text });
+    const evaluated = evaluateMap({ lane: repo, fleet, fleetRepo, atRev, text });
     const verdict = evaluated.findings.length === 0 ? 'clean' : 'failed';
     const tips = {};
     if (laneTip !== null) tips.lane = laneTip.ref;
@@ -1729,7 +1800,7 @@ function main() {
       if (tip.ok) tips[dir] = tip.ref;
     }
     emitResult({
-      mode: 'check', repo, fleet, atRev, verdict,
+      mode: 'check', repo, fleet, fleetRepo, atRev, verdict,
       rows: evaluated.rows, verified: evaluated.verified,
       findings: evaluated.findings, selfRulings: evaluated.selfRulings, tips, json: options.json,
     });
