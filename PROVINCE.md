@@ -56,3 +56,12 @@ This province was written for the previous Linux host. Probed on the current hos
   versioned runner; see `corpus/knowledge/webview2-cdp-loopback-round-48.md` round-49 append). The
   webview2 surface now also navigates: cross-page over an inline loopback HTTP fixture
   (`corpus/evidence/round49/webview2-nav/`).
+- Round 50 (2026-11-01): the webview2 surface now carries a journey — `scripts/webview2-cdp-loopback-round50.mjs
+  --journey` drives A -> B -> C over the pages' own anchor clicks with CDP history evidence
+  (`Page.getNavigationHistory` + `Page.navigateToHistoryEntry`, S153 re-opened byte-identical this
+  round; the measured model: the initial data: page occupies history slot 0 — `corpus/evidence/round50/webview2-journey/`).
+  Runtime drift is the standing host condition: WebView2 auto-update REMOVED fixed-version folder
+  156.0.4314.50 after round 49 (the host now offers 155.0.4283.62 / 156.0.4314.58), so the r50
+  runner takes `--runtime` with NO default, and the r50 counter grades a missing pinned runtime as
+  the DECLARED could-not-evaluate class `runtime-pin-host-drift` (disclosed, never a finding) while
+  a folder present WITHOUT its exe stays a hard finding (`corpus/knowledge/webview2-journey-round-50.md`).

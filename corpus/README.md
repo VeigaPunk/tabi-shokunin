@@ -916,6 +916,7 @@ gate repair) and carry no new note ground.
 | Note | Holds | Sources |
 |---|---|---|
 | `knowledge/webview2-cdp-loopback-round-48.md` | The WebView2 runtime (`msedgewebview2.exe`) as the third Chromium-class CDP surface on this host (r48 capability webview2-cdp-loopback-windows): the runtime is NOT a standalone surface (7 launcher variants exit cleanly with no CDP endpoint — probes bundle); the documented host-side route (S158) via `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` + a minimal C# 5 COM host declaring the SDK header's ABI (S159); `EBWebView\DevToolsActivePort` discovery one level below the profile root; `Edg/<runtime version>` identity; host-death tears the browser down (measured); chrome/edge/webview2 decision table; declared residuals. | S158; S159; `scripts/webview2-host-round48.cs`; `scripts/webview2-cdp-loopback-round48.mjs`; `corpus/evidence/round48/webview2-cdp/receipt.json`; `.ufo/waves/round-48/counters/webview2-receipt-r48.mjs`; `.ufo/waves/round-48/controls/webview2-standalone-probes/`. |
+| `knowledge/webview2-journey-round-50.md` | The webview2 surface's multi-step journey model (r50 capability `webview2-multi-step-journey-windows`): a 3-page loopback HTTP fixture whose pages carry the invocation-bound nonce, Page.navigate A -> the pages' own anchor clicks B then C -> Page.navigateToHistoryEntry back to the B entry (S153's getNavigationHistory/navigateToHistoryEntry primitives, re-opened byte-identical this round); the MEASURED history model — the initial data: page occupies history slot 0, so the entries at C are [data:, A, B, C] (entriesLength 4, currentIndex 3) and the back leg targets index 2 (forward entry retained); the runtime-drift contract (auto-update removed 156.0.4314.50; the r50 runner takes --runtime with no default; the r50 counter grades a missing pinned runtime as the declared could-not-evaluate class `runtime-pin-host-drift`, never a finding); declared residuals (driver-reported fields; form interaction still unexercised on this surface). | S153 (re-opened); S158; S159; S160; `scripts/webview2-cdp-loopback-round50.mjs`; `.ufo/waves/round-50/counters/webview2-receipt-r50.mjs`; `corpus/evidence/round50/webview2-journey/receipt.json` |
 
 ## Round 49 — the routed scratch-path repair, cross-page navigation, the re-bind through two corrections (2026-11-01)
 
@@ -930,3 +931,19 @@ superseded by the same append, with committed evidence.
 | Note | Holds (this round's delta) | Sources |
 |---|---|---|
 | `knowledge/webview2-cdp-loopback-round-48.md` (round-49 append) | The relative-`--scratch` foot-gun measured on the frozen r48 bytes (exit 1 `no-devtools-active-port`; the real profile at `<cwd>/relscratch/relscratch/<token>-profile` with a live `DevToolsActivePort` — the S160 anchor); the versioned r49 runner (resolve-at-launch, `paths` block in the receipt, `--nav`); the residual superseded: cross-page anchor-click navigation over an inline loopback HTTP fixture with per-page URL/title/PNG evidence (`corpus/evidence/round49/webview2-nav/`). | S160; S157; `scripts/webview2-cdp-loopback-round49.mjs`; `.ufo/waves/round-49/counters/webview2-receipt-r49.mjs`; `corpus/evidence/round49/webview2-nav/receipt.json`; `corpus/evidence/round49/webview2-relscratch/receipt.json` |
+
+## Round 50 — the journey residual with the measured history model, the D3 carry-in adopted, the re-bind through one correction (2026-11-01)
+
+New knowledge note `knowledge/webview2-journey-round-50.md` (notes 65 -> 66) and a
+capability row (`webview2-multi-step-journey-windows`, first-working 50). Registry
+UNCHANGED at 160: the round drafted a new S161 row for the CDP protocol definition
+and the check-sources gate refused it E04 duplicate_url — the URL is already
+registered as S153 and the fresh fetch is byte-identical to the registered anchor
+(sha256 f60f0c02... on both); S153 re-opened instead, with the two history-primitive
+descriptions located verbatim in the opened bytes. Two pre-data amendments carried
+committed red receipts (the page-target race; the journey history model corrected
+to the measured surface truth — the initial data: page occupies history slot 0).
+
+| Note | Holds (this round's delta) | Sources |
+|---|---|---|
+| `knowledge/webview2-journey-round-50.md` | The journey receipt contract (4 legs, history block, back leg, nonce-on-page, 4 PNG pins); the measured history model; the runtime-drift contract (declared could-not-evaluate class `runtime-pin-host-drift`, never a finding; folder-present-without-exe stays a hard finding; runtime-identity consistency); declared residuals. | S153 (re-opened); `scripts/webview2-cdp-loopback-round50.mjs`; `.ufo/waves/round-50/counters/webview2-receipt-r50.mjs`; `corpus/evidence/round50/webview2-journey/receipt.json` |

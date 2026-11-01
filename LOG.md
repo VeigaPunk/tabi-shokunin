@@ -3166,3 +3166,76 @@ move), note-count claims.
   misread (strings vs objects — the artifact was right, the print was wrong); a `--path-selftest`
   case asserting on the whole resolved path (CWD letters) — all four disclosed with their failing
   first reads.
+
+## Round 50 — 2026-11-01 (tabi, Windows host; freeze-first with two pre-data amendments; three claims, all measured at data revisions)
+
+- Baseline `a9b47d6a1ea2a2f649c0177dac90dd5e992b9274`. Freeze `2febf9b23cfd6d2b7f9ce6de145c5edf1b4a1c46`
+  (claims.json + meter v10 + webview2 runner r50 + receipt counter r50 with 13 hand-declared fixtures +
+  round-open controls, BEFORE any data). Amendment 1 `2604c1d984dcc1d0daba87ba29d75393ed44fa87`: the
+  runner's initial data: page target is POLLED (bounded 40x250ms) instead of read once — the FIRST live
+  run at the freeze bytes hit the target race (exit 1 no-page-target; red receipt
+  `controls/c2-first-live-run-red-target-race.json`). Amendment 2 `5c7019944eee9c6bae56f076765685bb8ba1865f`:
+  the journey HISTORY MODEL corrected to the measured surface truth — the initial data: page occupies
+  history slot 0 (entries [data:, a, b, c], entriesLength 4, currentIndex 3 at C; the /b.html back entry
+  is index 2) — the first `--journey` live run at the amendment-1 bytes ran the designed-but-wrong model
+  and exited 1 journey-back-not-ready with the measured history block recorded (red receipt
+  `controls/c2-journey-history-model-red.json` + `controls/c2-model-red-pngs/`). Both amendments landed
+  BEFORE any data commit, each with its red receipt committed.
+- C1 adjacency (lowest owned axis 8): at round open the committed r49 ledger generation measured RED
+  exit 1 / 24 findings (11 lanes' heads advanced; kasegi/kengaku/mado provinces changed bytes; kotoba's
+  BG-line set restructured — control `controls/c1-meter-v9-red-at-round-open.json`, taken before any
+  lane write). audit-r50 (16 rows = 10 unchanged + 6 sibling-absent) + delta-r50 (12 lane + 16 line
+  rows) re-bound at ONE fresh snapshot at `1ea714f5a39452bb39d61404b7d87e2a27fc4d6a`: kotoba's three
+  BG-hit lines moved one line down with text byte-verbatim, dispositions carried by exact whole-line
+  quote match, 0 new adjudications. One head race under the frozen correction flow (tsukuroi; raced
+  receipt `measure/c1-meter-red-at-data.json`), GREEN at correction 1 `bceb21140583e1a4126c681b1ca2e691b6485a15`:
+  meter v10 exit 0, predicate true, 0 findings, counts {roster:16, mapRows:16, auditRows:16,
+  deltaLanes:12} (receipt `measure/c1-meter-green-at-correction1.json`, committed `f3364aaa9ad7612f7fe154bbcbfead1612de3527`);
+  v10 selftest 16/16; the v9->v10 diff is comment/const/schema hunks only (62 lines).
+- C2 coverage (capability extension, the r49 planned journey residual): live 4-leg journey on the
+  webview2 surface at `196367606e51417f27165ceec5c4fb0db3734a62` — inline loopback HTTP fixture on
+  ephemeral port 58873, `Page.navigate` /a.html -> anchor-click /b.html -> anchor-click /c.html ->
+  `Page.navigateToHistoryEntry` back to the /b.html entry (targetIndex 2), history read at C
+  ([data:, a, b, c]) and re-read after the hop (entriesLengthAfter 4, currentIndexAfter 2 — the
+  forward entry is retained), a nonce marker riding every fixture page (nonceOnPageA true), per-step
+  titles + four PNG pins (8,241/8,316/7,523/8,389 B), Edg/156.0.4314.58 identity, keyed teardown
+  sweep 0; counter r50 green exit 0 / 0 findings / couldNotEvaluate [] on the committed bytes;
+  cross-refusal: the r49 counter refuses the r50 receipt with 4 findings; `--path-selftest` 6/6.
+  Capability row `webview2-multi-step-journey-windows` (first-working 50) enters the SCORECARD table.
+- C3 operability (the r49-closure D3 carry-in, adopted as the closure suggested): before — the r49
+  counter's selftest TODAY exits 1 with 0/8, every case polluted with `runtime-msedgewebview2-absent`
+  (WebView2 auto-update removed runtime 156.0.4314.50; control `controls/c3-r49counter-selftest-today.json`),
+  and the same counter on the committed r49 receipts exits 1 with ONLY that finding; after — the r50
+  counter grades a missing pinned runtime as the DECLARED class `runtime-pin-host-drift` under
+  `couldNotEvaluate` (never a finding), keeps folder-present-without-exe as the hard
+  `runtime-msedgewebview2-absent` finding, adds `runtime-identity-mismatch` (Browser identity vs
+  runtime-folder version tail); selftest 13/13 at the data revision
+  (`measure/c3-counter-selftest-at-data.json`), the d3-asis case pinning the REAL removed runtime and
+  passing on this host, deterministic with-exe/without-exe probes covering both branches on any host;
+  the counter's draft defect carried by a committed red/green pair (draft bytes red 10/13 over the
+  final fixtures, `controls/c3-counter-selftest-draft-counter-red.json`).
+- SOURCES: registry UNCHANGED 160 -> 160 — the round drafted a new S161 row for the CDP protocol
+  definition and the check-sources gate refused it E04 duplicate_url (the URL is already registered
+  as S153; today's fresh fetch is BYTE-IDENTICAL to the registered anchor, sha256 f60f0c02...);
+  S153 RE-OPENED instead with the getNavigationHistory/navigateToHistoryEntry descriptions located
+  verbatim in the opened bytes (catch record `controls/sources-duplicate-row-catch.txt`; the frozen
+  claims.json's "S161" provenance label corrected of record in the SCORECARD erratum D4 — no
+  measured predicate binds a registry count). Staged copy `.ufo/waves/round-50/sources/browser-protocol.json`.
+  Census start AND end exit 0 (22 W04 pre-existing). Knowledge notes 65 -> 66 (the journey note);
+  PROVINCE gains the round-50 runner line + the runtime-drift note; corpus/README gains the note row
+  and the round-50 section.
+- SCORECARD: the round-50 block records C1/C2/C3 VERIFIED with before->after and counting commands;
+  the erratum block records the r49-closure D1 (residual-grep number drift: line-based grep -c is 0
+  at baseline / 1 at tip — the sentence is line-wrapped; the revision-stable join+squeeze form reads
+  1 at baseline / 2 at tip) and D2 (S160 sits BETWEEN S158 and S159, not "after S159") corrections
+  of record, plus D4 (the S161->S153 provenance correction); no scalar moved (no rubric authorizes
+  one); the capability row keeps the stagnation window restarted (round 51 = position 1).
+  Assimilation: none — `considerthese/` absent; shokuknow unreachable.
+- Mistakes mined this round (lesson rows): the flag-less live run (plain mode instead of --journey,
+  caught by the stdout summary before commit); the runner's single-read page-target race (caught by
+  the first live run, red receipt kept, amended pre-data); the journey history-model misprediction
+  (caught by the live surface, red receipt + PNGs kept, amended pre-data); the counter's wrong global
+  duplicate-URL rule (caught by the fixture selftest's 2/13 first run; red reproducible from the
+  committed named reproduction); the fixture authoring path inconsistency (same selftest red); the
+  duplicate S161 registry row (caught by the check-sources gate E04 pre-commit); one expected head
+  race through the frozen correction flow.

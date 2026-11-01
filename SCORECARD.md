@@ -2712,3 +2712,95 @@ the round-49 runner line. Census start AND end exit 0.
   the operator ever asks; the gate's honest residue stays zero on the present roster.
 - saturation 8 / window 3 retained; the r49 capability row keeps the window RESTARTED (round 50 =
   position 1). No axis retired; no score moved (no rubric authorizes one).
+
+
+## Round 50 — declared claims (frozen before data at 2febf9b2, amended twice before any data) and executed disposition (all three verified)
+
+Round 50 on the Windows host. Baseline `a9b47d6a1ea2a2f649c0177dac90dd5e992b9274`; freeze
+`2febf9b23cfd6d2b7f9ce6de145c5edf1b4a1c46` (claims.json + instruments + round-open controls, BEFORE
+any data commit); amendment 1 `2604c1d984dcc1d0daba87ba29d75393ed44fa87` (the runner's page-target
+race, caught by the first live run — red receipt committed, bounded poll added); amendment 2
+`5c7019944eee9c6bae56f076765685bb8ba1865f` (the journey history model corrected to the measured
+surface truth — the initial data: page occupies history slot 0; red receipt + PNGs committed); C2+C3
+data `196367606e51417f27165ceec5c4fb0db3734a62`; C1 data `1ea714f5a39452bb39d61404b7d87e2a27fc4d6a`
+-> correction 1 `bceb21140583e1a4126c681b1ca2e691b6485a15` (**cited measured revision for C1**, meter
+v10 GREEN); green receipt `f3364aaa9ad7612f7fe154bbcbfead1612de3527`; integration (this commit).
+Axes at start: adjacency 8 (lowest), others 9; saturation 8 / window 3 — the r49 capability row
+RESTARTED the window (round 50 = position 1), so the nudge is inactive and the lowest-axis obligation
+applies: C1 works adjacency. Fresh-start ruling honored: the r42/r43/r47 refused claim classes are
+named in the freeze's freshStartNote and ruled out (no wave/seat claims; no reasoned-not-measured
+after-states; counters pin committed-byte digests and ship hand-declared refusal fixtures). Carry-in
+from the r49 non-author closure: D1 and D2 performed as the append-only erratum below; D3 performed
+as claim C3 (the closure's suggested declared could-not-evaluate class, adopted in a versioned
+counter this round as suggested); the `tabi | round-44` L2-floor L0 stays open and routed around
+(L1-inline round). Both pre-data amendments carry committed red receipts — the freeze discipline
+(amend BEFORE data, never after) was applied when the live surface refuted the design.
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis; the regression-gate re-bind) — VERIFIED | `node .ufo/waves/round-49/counters/c1-adjacency-host-v9.mjs --rev a9b47d6a… --repo <lane> --fleet <fleet> --json` (red control, round open); `node .ufo/waves/round-50/counters/c1-adjacency-host-v10.mjs --rev bceb2114… --repo <lane> --fleet <fleet> --json`; `--selftest`; `diff` v9 v10 (`.ufo/waves/round-50/controls/v9-v10-retarget.diff`) | before: at round open the committed r49 ledger generation measures RED against the advanced fleet — exit 1, **24 findings** (11 lanes' heads advanced, kasegi/kengaku/mado provinces changed bytes, and kotoba's BG-line set restructured: 2 delta-line-missing (:59,:62), 1 delta-quote-not-whole-line (:61), 2 delta-line-invented (:58,:60); control `.ufo/waves/round-50/controls/c1-meter-v9-red-at-round-open.json`, taken before any lane write; a do-nothing control reaches exactly this red) -> after: audit-r50 (16 rows = 10 unchanged + 6 sibling-absent) and delta-r50 (12 lane rows + 16 line rows) re-bound at ONE fresh snapshot; kotoba's three BG-hit lines moved one line down (:58->:59, :60->:61, :61->:62, a non-BG chousa row inserted between audio and game-dev-2d) with text byte-verbatim and dispositions carried by exact whole-line quote match, **0 new adjudications**; kasegi 199->201 / kengaku 698->732 / mado 241->257 bytes re-pinned with BG-hit line sets unchanged; one head race under the frozen correction flow (tsukuroi advanced between the 1ea714f5 snapshot and the meter run; raced receipt `measure/c1-meter-red-at-data.json`) -> **GREEN at correction 1 `bceb2114`: exit 0, predicate true, 0 findings**, counts {roster:16, mapRows:16, auditRows:16, deltaLanes:12}, one cycle of the two-cycle budget; v10 selftest 16/16; the v9->v10 diff is comment/const/schema hunks only | **met** under the frozen rule (one correction cycle); adjacency held 8 -> 8 |
+| C2 coverage (capability extension — the r49 planned journey residual, sourced S153 re-opened byte-identical this round; the freeze's S161 label corrected of record, erratum D4) — VERIFIED | `git ls-tree -r --name-only <REV> -- corpus/evidence/round50 \| wc -l` (0 -> 5); `node .ufo/waves/round-50/counters/webview2-receipt-r50.mjs corpus/evidence/round50/webview2-journey/receipt.json --shot …journey-b-back.png --png-a …journey-a.png --png-b …journey-b.png --png-c …journey-c.png --driver <r50> --hostsrc <cs>` | before: the webview2 surface's measured page model is two-page single-hop navigation (r49); the journey residual is committed text in the r49 SCORECARD planned section; `corpus/evidence/round50` holds 0 files -> after: at `19636760` the surface carries a journey — an inline loopback HTTP fixture (ephemeral port 58873), legs `Page.navigate` /a.html -> `anchor-click` /b.html -> `anchor-click` /c.html -> `Page.navigateToHistoryEntry` back to the /b.html entry (targetIndex 2; the S153-grounded Page.navigateToHistoryEntry primitive), the history block read at C ([data:, a, b, c] — entriesLength 4, currentIndex 3, the measured surface model) and re-read after the hop (entriesLengthAfter 4, currentIndexAfter 2 — the forward entry is retained), a nonce marker riding every fixture page (nonceOnPageA true), per-step titles + four PNG pins (7,523-8,389 B), Edg/156.0.4314.58 identity, teardown sweep 0; counter green **exit 0, 0 findings, couldNotEvaluate []** on the committed bytes; cross-refusal: the r49 counter refuses the r50 receipt with **4 findings**; `--path-selftest` 6/6; two committed red controls carried the pre-data amendments (target race `controls/c2-first-live-run-red-target-race.json`; history model `controls/c2-journey-history-model-red.json` + `controls/c2-model-red-pngs/`) | **met** under the frozen rule; coverage held 9 -> 9; the capability row enters the table below (first-working 50) |
+| C3 operability (the r49-closure D3 carry-in: the runtime-existence check becomes a declared could-not-evaluate class) — VERIFIED | `node .ufo/waves/round-49/counters/webview2-receipt-r49.mjs --selftest .ufo/waves/round-49/counters/webview2-receipt-r49-fixtures` (before, at round open); `node .ufo/waves/round-50/counters/webview2-receipt-r50.mjs --selftest .ufo/waves/round-50/counters/webview2-receipt-r50-fixtures` (after, at data) | before: the r49 counter's selftest TODAY exits 1 with **0/8** — every case polluted with `runtime-msedgewebview2-absent` because WebView2 auto-update removed runtime 156.0.4314.50 (host now offers 155.0.4283.62 / 156.0.4314.58; control `controls/c3-r49counter-selftest-today.json`), and the same counter on the two committed r49 receipts exits 1 with ONLY that finding (`controls/c3-r49counter-on-r49-{rel,nav}receipt-today.json` — every content check passes; intents 8/8 modulo the environmental finding, exactly as the closure routed) -> after: the r50 counter (frozen sha `b7f54586…`) grades a missing pinned runtime folder as the DECLARED class `runtime-pin-host-drift` under `couldNotEvaluate` (never a finding), keeps `runtime-msedgewebview2-absent` as a hard finding when the folder exists WITHOUT its exe, and adds a receipt-internal `runtime-identity-mismatch` check (Browser identity vs runtime-folder version tail); selftest **13/13 at the data revision** (`measure/c3-counter-selftest-at-data.json`) with the d3-asis case pinning the REAL removed runtime and passing on this host, and deterministic with-exe/without-exe probes exercising both runtime branches on any host; the counter's own draft defect is carried by a committed red/green pair (draft bytes red **10/13** over the final fixtures, `controls/c3-counter-selftest-draft-counter-red.json`; final bytes green 13/13); the counter exits 0 on the round's own journey receipt with couldNotEvaluate [] (the live runtime exists today) | **met** under the frozen rule; operability held 9 -> 9 |
+
+### Erratum (r49 closure defects D1, D2) — append-only
+
+- **D1 (number drift).** Superseded text: the r49 report, SCORECARD C3 row and lesson Measurements
+  quote `grep -c 'cross-page navigation were not exercised' corpus/knowledge/webview2-cdp-loopback-round-48.md`
+  as "1 at baseline". Measured today from committed bytes: the command prints **0 at baseline**
+  `10ea3d96` (the residual sentence is line-wrapped across lines 84-85: "…were not\n  exercised") and
+  **1 at tip** (the supersession quote itself). The revision-stable form prints the substantive truth:
+  `git show <REV>:corpus/knowledge/webview2-cdp-loopback-round-48.md | tr '\n' ' ' | tr -s ' ' | grep -o 'cross-page navigation were not exercised' | wc -l`
+  -> **1 at baseline, 2 at tip** (the residual + the supersession append quoting it). The r49
+  before-state (residual committed at baseline) and the supersession append are real and were
+  verified by the closure; only the quoted command/output pair was wrong. These bytes are not edited.
+- **D2 (wording drift).** Superseded text: the r49 report and commit message say the S160 row was
+  inserted "inside the Registry table after S159". The row actually sits **between S158 and S159**
+  (the r49 lesson's Census section carries the same wording). The substantive requirement — inside
+  the Registry table, never appended at file end — IS met (census and check-sources clean at 160
+  rows; the closure verified both). This round's S161 row was inserted **after the S160 row, before
+  the S159 row**, and this erratum names that position explicitly. These bytes are not edited.
+- **D4 (this round's provenance-label correction).** The frozen claims.json names the journey
+  claim's source as "S161 — opened THIS round" (a new-row plan written at the freeze). The
+  check-sources gate refused the drafted S161 row as an E04 duplicate: the URL is already registered
+  as **S153** (opened 2026-10-31) and this round's fresh fetch is byte-identical to the registered
+  anchor (sha256 `f60f0c02…` on both). The row was withdrawn pre-commit and the claim's ground is
+  **S153 re-opened byte-identical this round** (the two history-primitive descriptions located
+  verbatim in the opened bytes; catch record `.ufo/waves/round-50/controls/sources-duplicate-row-catch.txt`).
+  No frozen predicate leg binds a registry count, so no measured number changes; the S153 row's
+  bytes are not edited.
+
+### Capabilities — round 50
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| webview2-multi-step-journey-windows | Carry the webview2 surface through a multi-step journey with CDP history evidence: a 3-page loopback HTTP fixture whose pages carry the invocation-bound nonce, Page.navigate to A, the pages' own anchor clicks B then C, the navigation history read at C (entries [data:, A, B, C] — the initial data: page occupies slot 0), a real back hop via Page.navigateToHistoryEntry to the B entry (forward entry retained), four per-step URL/title/PNG pins in a counter-checked receipt with a keyed teardown to 0 | `scripts/webview2-cdp-loopback-round50.mjs` (`--journey`); `corpus/evidence/round50/webview2-journey/receipt.json` + 4 per-step PNGs; `.ufo/waves/round-50/counters/webview2-receipt-r50.mjs` (journey legs + declared could-not-evaluate class); `corpus/knowledge/webview2-journey-round-50.md` | 50 |
+
+### Round 50 — sources, frontier, trend verdicts
+
+Registry 160 -> 160 (UNCHANGED: the round first drafted a new S161 row for the canonical CDP
+protocol definition browser_protocol.json and the check-sources gate refused it E04 duplicate_url —
+the URL is already registered as S153 and the fresh fetch is byte-identical to the registered
+anchor; the row was withdrawn pre-commit and S153 re-opened with the getNavigationHistory and
+navigateToHistoryEntry descriptions located verbatim in the opened bytes). Knowledge notes 65 -> 66
+(the journey note). PROVINCE gains the round-50 runner line + the runtime-drift note. Census start AND end
+exit 0 (22 pre-existing W04).
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | The measured surface grew again: the webview2 page model now covers a multi-step journey with history-length and back-navigation evidence (0 -> 5 evidence files; a live navigateToHistoryEntry hop recorded and counter-checked), and the capability row `webview2-multi-step-journey-windows` enters the table; S153's re-open (byte-identical fresh fetch) extends a held source row's located ground to the two CDP history primitives (the getNavigationHistory and navigateToHistoryEntry descriptions, verbatim 1 hit each); notes 65 -> 66. |
+| quality | improved | Two pre-data instrument defects were caught by live red receipts and repaired under named amendments BEFORE any data committed (the page-target race; the history-model misprediction) — the freeze discipline held under pressure from the live surface; the r49-closure D3 environmental pollution is closed in a versioned counter with the declared class, a hard-defect branch that still refuses, and a committed red/green selftest pair; the adjacency gate survived one live head race inside its frozen budget and reads green; no admitted entry failed a re-check. |
+| discernment | improved | Every after-state is an instrument output at a named revision; the round refused its own first design twice (the target race, the history model) and kept both red receipts instead of quietly re-running; the D1/D2 corrections of record quantify the drift from committed bytes rather than re-stating the r49 numbers; the counter's draft defect is disclosed with its failing first read and a reproduced red receipt; the declared could-not-evaluate class is bounded by a named rule (never a finding, only ever one code) that the fixture manifest asserts. |
+
+### Planned / saturation / retired — round 50
+
+- planned: coverage — the journey surface's next residuals: form interaction (fill + submit) on the
+  fixture (the r49/r50 planned list's second residual, still unexercised on this surface), and a
+  fourth-surface probe only if the host shows one.
+- planned: adjacency — the r50 snapshot heads date like any census; re-run meter v10 as the
+  regression gate after any sibling roster change; the six sibling-absent rows and the contested-open
+  families stay routed to the open fleet L0 (`b6b3b5e4…` :65).
+- planned: operability — the declared could-not-evaluate class is adopted; if a future counter
+  generation supersedes r50 bytes, keep the rule (missing pinned runtime = named disclosure, never a
+  finding) and extend the deterministic branch probes rather than re-pinning host versions.
+- saturation 8 / window 3 retained; the r50 capability row keeps the window RESTARTED (round 51 =
+  position 1). No axis retired; no score moved (no rubric authorizes one).

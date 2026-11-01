@@ -1,0 +1,36 @@
+sources-duplicate-row-catch.txt — round-50 disclosure record (lane-written)
+
+The round first wrote a NEW registry row S161 for the CDP protocol definition
+the journey claim rests on. The lane gates refused it three times before any
+integration commit landed; every finding below is quoted verbatim from the run
+output observed at the time (the interim receipts were overwritten in place by
+the later runs — this record is the named disclosure of those runs).
+
+Run 1 (SOURCES row drafted with a split location column):
+  census validate -> exit 1: "tabi	E01	S161 fields=12"
+Run 2 (columns rebuilt, shifted):
+  census validate -> exit 1: "tabi	E09	S161 recheck=.ufo/waves/round-50/claims.json, corpus/lessons/round-50.md, corpus/knowledge/webview2-journey-round-50.md"
+  check-sources -> exit 1: "SOURCES_GATE verdict=failed rows=161 tiers=A:145,B:7,C:9 status=queued:15,mined:136,rejected:10 findings=6 file=corpus_SOURCES.md"
+Run 3 (columns fixed, trailing pipe fixed):
+  census validate -> exit 0 (tabi ok, 22 W04)
+  check-sources -> exit 1: "FINDING id=duplicate_url fleet=E04 row=S161 detail=duplicate_url"
+  (the real catch: the SAME URL is already registered as S153 — opened
+  2026-10-31, tier A, mined, and today's fresh fetch is BYTE-IDENTICAL to the
+  registered anchor: sha256 f60f0c0263c6f8801c1a3058a88aad0aef2c8f78242c3cfb4e8c6f5e915eb3f2
+  on both fetches; master unchanged between the two dates)
+
+Disposition: the S161 row was withdrawn PRE-COMMIT (registry back to 160 rows;
+a duplicate row is an E04 finding by the gate's own contract). The claim's
+ground is S153 RE-OPENED this round: fresh fetch byte-identical, the
+getNavigationHistory / navigateToHistoryEntry descriptions located verbatim in
+the same opened bytes (each 1 hit), staged copy at
+.ufo/waves/round-50/sources/browser-protocol.json (bytes equal to the S153
+anchor). The frozen claims.json names the source as "S161" — a provenance
+label written before the E04 catch; the frozen predicate legs bind the
+counter, the receipt, the tree counts and the capability row, never a registry
+count, so no measured number changes. The correction of record is the
+round-50 lesson Gate + the SCORECARD erratum.
+
+Final gates at the integration (both committed receipts):
+  check-sources: "SOURCES_GATE verdict=clean rows=160 tiers=A:144,B:7,C:9 status=queued:15,mined:135,rejected:10 findings=0 file=corpus_SOURCES.md"
+  census validate: exit 0, "tabi	ok", 22 W04 pre-existing
