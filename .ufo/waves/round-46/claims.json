@@ -1,0 +1,96 @@
+{
+ "schema": "tabi-round-claims-v2",
+ "lane": "tabi",
+ "round": 46,
+ "baseline": "fe16cf6631e44ad0962cecf4c7c099b8d72efde5",
+ "declaredAt": "2026-10-31",
+ "axesAtRoundStart": {
+  "adjacency": 8,
+  "operability": 9,
+  "depth": 9,
+  "coverage": 9,
+  "freshness": 9,
+  "calibration": 9
+ },
+ "saturation": 8,
+ "stagnationWindow": 3,
+ "lowestAxis": "adjacency",
+ "stagnationNote": "The capability edge-cdp-loopback-windows entered at round 45, keeping the stagnation window restarted (round 46 = position 2 of 3): the nudge is INACTIVE, so the lowest-axis obligation applies and C2 works adjacency (8), the lowest non-retired owned axis. Derived this round from the rule (AXES.md §The stagnation nudge) and its inputs: the six axis scores above, saturation 8, window 3, and the capability table entry rounds (chrome-cdp-loopback-windows at 44, edge-cdp-loopback-windows at 45).",
+ "freshStartNote": "Fresh-start discipline (binding §7; the r41/r42/r43 rejected closures re-spot-checked in committed bytes this round): r41's untracked-receipt limb closed (corpus/evidence/round41/playwright-egress/receipt.json + receipt.witness.json are blobs at HEAD: 7b2ece05, 5930d20f); r42's nonce-relabel/synthetic false-green class stays closed by the committed counter clauses (nonce-shape, invocation-binding, runner-pin checks; this round's counter carries the same clause family and its selftest exercises 16 of them); r43's false-green/crash class closed in r45 (D3 crash receipt committed at .ufo/waves/round-45/measure/d3-r43-pathtype-crash.json). Ruled out for r46, with reasons: (1) a Firefox/BiDi/WebGL move - that surface is ABSENT on this host (PROVINCE r44 correction, host-probe.txt); (2) any wave-settled claim - no dispatch surface, the r44 L0 line (fleet .ufo/l0-questions.md:231) is still open, routed around, never treated as answered, and no predicate carries a wave clause; (3) knowledge-note-count or registry-count claims - do-nothing reachable; (4) the census-START receipt alone as a claim - a file commit a do-nothing control reaches, so the r45 carry-in item is carried as protocol work in the round's census duty, not declared as an axis move; (5) the job-object variant of the teardown repair as a second claim - same axis and same fix family as C1 (two claims on one axis = one claim); the keyed PID-GROUP route was chosen over a job object because Node has no job-object surface on this host and a PowerShell Add-Type wrapper would move the browser launch outside the instrumented process - the r45 carry-in sanctions either mechanism; (6) re-running r45's committed receipts as r46 evidence - do-nothing reachable, so every C1 predicate requires a fresh invocation-bound run with fresh nonces; (7) reading the keyed sweep's green while a legacy control happens to show 0 orphans - the red limb is carried by the live legacy control AND the deterministic mechanism fixture on real OS processes, never by luck.",
+ "hostSurfaceNote": "Both declared Chromium-class surfaces probed working pre-data with the round-46 runner (controls c1-probe-edge.json: Edg/156.0.4314.50 via devtools-active-port, mid-run keyed census 16, post-kill sweep 0; c1-probe-chrome.json: Chrome/156.0.8078.74 via stderr, mid-run census 10, post-kill sweep 0).",
+ "causalSeparation": "C1's runner, counter and controls read only their own invocation, their own receipts and the sibling r45 receipt bytes for the cross-refusal; they never read C2's map, ledgers or meter. C2's meter reads only the ruled map, the two r46 ledgers and the sibling git repos at --fleet (git bytes at per-run snapshot heads, never tabi worktree claims); it never reads C1's receipts or runner. Each claim verifies without the others having landed.",
+ "frozenDigests": {
+  "scripts/chrome-cdp-loopback-round46.mjs": "557a3f0633357216ec199f59d7b6f356ad02d888fe28218d16390e73c89bb9a4",
+  ".ufo/waves/round-46/counters/chrome-cdp-receipt-r46.mjs": "acd1e9e31a16a943cb2b28afb73d12c4c7f8dae98aacd3ecb90e2fc79f5fc6ec",
+  ".ufo/waves/round-46/counters/chrome-cdp-receipt-r46-selftest.mjs": "c65c781d909ec0d15382dbadcbe2e6f9c3c55a298ef88fd6903e18ac9cf16a9b",
+  ".ufo/waves/round-46/counters/c1-adjacency-host-v6.mjs": "e3d074e3234c0d29bf9bc8cc8233ec170690806837ffd9ccefc53e7a076e6aaa",
+  ".ufo/waves/round-46/controls/teardown-mechanism-fixture.mjs": "5588c022b0fe44e9fea4d6f0cb203f27e8a3db90d95d9ff941f8e560b38252f4",
+  ".ufo/waves/round-46/controls/legacy-teardown-control-r46.mjs": "6d433da60778534d9b3e30ecfb88220b82f4e1166e2b384a96dd742af87a961a"
+ },
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "operability",
+   "kind": "instrument-repair-sourced",
+   "title": "The r45 teardown-orphan class closed in committed bytes: the runner teardown repaired from kill-the-main-and-hope into a PID-group kill keyed to the launch, with post-kill sweep receipts reaching 0",
+   "surface": "scripts/chrome-cdp-loopback-round46.mjs: the r45 launch/discovery/drive discipline unchanged (throwaway profile, loopback-only fixture and DevTools socket, invocation-bound DOM nonce, Page.captureScreenshot PNG) with the teardown REPLACED: the launch owns a unique per-run profile token (12 fresh hex chars in the profile dir basename, e.g. edge-profile-3f9a2b7c1d0e) which the browser and every helper carry verbatim in their command line; the runner sweeps the live process table via PowerShell Get-CimInstance Win32_Process filtered by that token (own pid excluded, never an image name) at three points - pre-launch (must be 0, else refuse to start), mid-run (must be >= 1: proof the token group binds the live launch), post-kill (kill each survivor BY PID with taskkill /PID <pid> /F /T, re-sweep until 0, bounded at 15 rounds, fail-closed) - and records preLaunchSweepCount, the midRunSweep census with pids and image names, every keyedSweep round, the legacy taskkill /T attempt WITH ITS OUTPUT (the structural no-op: after the main is dead the tree walk has nothing to walk), and postKillSweepCount; receipt.ok requires chromeTerminated true AND postKillSweepCount 0. Counter .ufo/waves/round-46/counters/chrome-cdp-receipt-r46.mjs scores the committed receipt bytes against the frozen runner pin and refuses: a stale r45 schema, a cross-surface relabel, a wrong runner pin, a receipt whose bytes do not carry their named runner digest, a nonzero or stripped post-kill sweep, a stripped or empty mid-run census, a non-fresh pre-launch key, a wrong-surface launch key, a broken invocation binding, an unrecorded legacy tree-kill, and a shot-digest mismatch (selftest 18 cases: 16 mutants refused at their named finding + 2 benign rewrites green). Controls: teardown-mechanism-fixture.mjs (deterministic red/green on real OS processes - main plus two token-carrying helpers, main SIGKILLed, legacy taskkill /T replica recorded as a no-op, survivors observed, keyed kill reaches 0) and legacy-teardown-control-r46.mjs (a REAL branded-browser launch in the r45 shape torn down with the r45 legacy teardown, the orphan census recorded honestly, every survivor killed BY PID, final sweep 0).",
+   "restsOn": "S155 (Win32_Process class, WMI documentation, opened 2026-10-31, staged copy committed: the CommandLine property is the 'Command line used to start a specific process, if applicable.' the keyed sweep matches), plus the r45 lesson Mistake 5 (three re-parented msedge orphan trees survived with chromeTerminated true - the class this claim closes).",
+   "countingCommand": "node scripts/chrome-cdp-loopback-round46.mjs --browser edge --out <receipt.json> --shot <shot.png> --scratch <dir> ; node .ufo/waves/round-46/counters/chrome-cdp-receipt-r46.mjs <receipt.json> --shot <shot.png> --runner scripts/chrome-cdp-loopback-round46.mjs ; node .ufo/waves/round-46/controls/legacy-teardown-control-r46.mjs --browser edge --out <receipt.json> --scratch <dir> ; node .ufo/waves/round-46/controls/teardown-mechanism-fixture.mjs <out.json> ; node .ufo/waves/round-46/counters/chrome-cdp-receipt-r46.mjs --selftest",
+   "beforeState": "At baseline fe16cf6631e44ad0962cecf4c7c099b8d72efde5: no keyed sweep exists in any instrument (git grep -c Win32_Process fe16cf66 -- scripts is 0) and the r45 runner's teardown is child.kill('SIGKILL') plus taskkill /T on the main pid only, with chromeTerminated truthful about the main child only; the r45 round-close observed the defect live (three re-parented msedge orphan trees, lesson round-45 Mistake 5); no round-46 receipt exists (git ls-tree fe16cf66 -- corpus/evidence/round46 lists 0 files); the r45 carry-in routed the repair to this round.",
+   "predicate": "THE CLAIM: (a) the live legacy control on Edge reproduces the orphan class - orphansAfterLegacyTeardown >= 1 with the legacy tree-kill recorded as its no-op - and its keyed recovery reaches finalSweepCount 0; (b) the mechanism fixture shows the red limb (survivors >= 1 after the legacy replica, the no-op output recorded) and the green limb (postKeyedKillSweepCount 0) on real OS processes; (c) a live full run per declared surface (edge AND chrome) exits 0 with a nonempty mid-run census, chromeTerminated true and postKillSweepCount 0 recorded; (d) the counter exits 0 on the committed receipt bytes for both runs, exits 1 on the r45 receipt (the committed cross-refusal control), and --selftest reports verdict=clean 18/18.",
+   "killRule": "If the counter refuses an honest live run, greens any receipt with postKillSweepCount > 0, stripped sweep fields, an empty mid-run census, a stale schema, a cross-surface relabel or a wrong runner pin; or a recovery fails to reach sweep 0 (leave-no-trace); or an honest live full run exits nonzero on this host; or the mechanism fixture's green limb fails - the claim is not admitted: operability holds its score and the finding routes to round 47. The predicate, kill rule and counting commands are frozen before any review data; never amended after.",
+   "admission": "On pass only: the r45 carry-in teardown repair is closed in committed bytes with red and green receipts and the post-kill sweep reaching 0; the SCORECARD round-46 block lists the teardown repair explicitly; no numeric score change without a later score rubric.",
+   "residualModel": "Declared before review data: the keyed group is the set of processes whose command line carries the launch token; a helper that rewrote its command line to drop the token would be outside the group (none observed - every observed launch process carried it, including identity_helper and the crashpad/database children whose --database path sits under the profile dir). The counter binds receipt shape and committed bytes; it cannot by itself prove a browser ran or that the recorded pids were real - the re-derivation path is re-running the committed runner, whose fixture nonce and launch token differ per invocation. The sweep itself is a live observation recorded in receipts, not re-derivable from committed bytes alone. No zero-egress claim is made; the DevTools socket and the fixture URL are the only endpoints the receipt records, both 127.0.0.1.",
+   "verdict": "pending",
+   "measuredRevision": null
+  },
+  {
+   "id": "C2",
+   "axis": "adjacency",
+   "kind": "frontier-repin",
+   "title": "The drifted adjacency ledger rows re-pinned: the 9 stale + 1 moved map rows re-grounded at the siblings' current heads (never smoothed), audited by the v6 meter whose byte reads go through git at per-run snapshot heads",
+   "surface": ".ufo/waves/round-46/counters/c1-adjacency-host-v6.mjs over the ruled map (corpus/adjacency.tsv, 16 rows): the v5 P1/P2/P3 logic (audit each map row exactly once in corpus/adjacency-host-audit-r46.tsv with an honestly claimed status re-derived from the sibling; roster completeness over the map or the delta ledger; the owned-ground PROVINCE screen bound byte-for-byte in corpus/adjacency-host-delta-r46.tsv with every hit line dispositioned in the frozen vocabulary) with ONE host-layer hardening this round's fleet state demands: all 16 sibling working trees are dirty and sibling heads move mid-round, so v6 reads every sibling byte through git at a PER-RUN HEAD SNAPSHOT (one rev-parse per lane at meter start, then git cat-file <head>:<path>) - the working tree is never read - and prints the snapshot heads in its receipt, which the delta ledger rows must equal (the r45 lane-screen-head-mismatch race, still a finding). The map re-pin updates ONLY the sibling_ref (to lane@<snapshot-head>:<path>:<line>) and the sibling_quote cell (to the full current line at that ref) of rows whose cited text still exists in the current tree; a row whose text vanished would be re-dispositioned, never forced to unchanged.",
+   "restsOn": "The r35-r36 split-meter design and the r45 host-roster re-base (v5) re-grounded on the current roster; the sibling bytes at the recorded heads. No new external source row is claimed for C2.",
+   "countingCommand": "node .ufo/waves/round-46/counters/c1-adjacency-host-v6.mjs --rev <REV> --repo <lane> --fleet <fleetdir> --json ; node .ufo/waves/round-46/counters/c1-adjacency-host-v6.mjs --selftest ; grep -c '^stale' corpus/adjacency-host-audit-r46.tsv ; grep -c '^moved' corpus/adjacency-host-audit-r46.tsv",
+   "beforeState": "At the r45 measured revision 0360b069c5f8465c0a230638b24229e774df7ea3 the committed audit ledger (corpus/adjacency-host-audit-r45.tsv) records the drift as the result: 9 stale (kake x5, kagi x2, kumitate, kama) + 1 moved (kake accessibility :79 -> :85) + 6 sibling-absent (kaidoku x4, revenger x2), measured against the then-current sibling heads; at the r46 baseline fe16cf66 the meter v6 exits 1 with 28 findings (16 audit-missing, 12 roster-lane-uncovered) on the absent r46 ledgers (the committed red control c2-meter-red-at-baseline.json).",
+   "predicate": "THE CLAIM: at the measured revision the meter exits 0 on the committed ledgers; the r46 audit records 0 stale and 0 moved - the 10 drifted rows re-pinned 'unchanged' at recorded snapshot heads with the full current line as the quote cell, each re-pin verified against the sibling's git bytes at the recorded head - while the 6 sibling-absent rows stay honestly absent; the meter's own snapshot heads equal the heads recorded in the re-pinned map refs and the delta ledger rows; selftest verdict=clean 16/16; and the meter still exits 1 at the baseline revision (the committed red control).",
+   "killRule": "If the meter's re-derivation disagrees with any claimed status at the measured snapshot, or a head binding mismatches at measure time and the frozen data-correction flow (regenerate ledgers and re-pins against the new heads, then re-measure) cannot reach a consistent snapshot, the claim is not admitted: adjacency holds its score and the finding routes to round 47. A sibling head moving AFTER the measured commit is not a claim failure - the snapshot heads are recorded in the meter receipt and the ledgers date them (r45 precedent). The predicate, kill rule and counting commands are frozen before any review data; never amended after.",
+   "admission": "On pass only: the stale/moved drift is resolved at recorded heads with every re-pin quoted from the sibling's own current bytes (never smoothed, never absorbed); the SCORECARD adjacency row gains the evidence pointer at the measured revision; no numeric score change without a later score rubric.",
+   "residualModel": "Declared before review data: the meter screens PROVINCE.md only for the 12 uncovered lanes (SKILL/corpus drift in covered siblings stays governed by the r36 pool on the old host and is carried, not claimed); the git-at-head hardening removes worktree dirt from the reading but still dates like any census (heads move on); the keyword list is the r45 frozen owned-ground-narrow list; a re-pinned row proves the QUOTE moved with its text, not that the underlying split was re-negotiated - dispositions and rulings are carried, not re-litigated.",
+   "verdict": "pending",
+   "measuredRevision": null
+  }
+ ],
+ "controlBindings": [
+  {
+   "path": "scripts/chrome-cdp-loopback-round46.mjs",
+   "sha256": "557a3f0633357216ec199f59d7b6f356ad02d888fe28218d16390e73c89bb9a4",
+   "quote": "const keyedSweep = sweepToZero(launchToken);"
+  },
+  {
+   "path": ".ufo/waves/round-46/counters/chrome-cdp-receipt-r46.mjs",
+   "sha256": "acd1e9e31a16a943cb2b28afb73d12c4c7f8dae98aacd3ecb90e2fc79f5fc6ec",
+   "quote": "const RUNNER_PIN = '557a3f0633357216ec199f59d7b6f356ad02d888fe28218d16390e73c89bb9a4';"
+  },
+  {
+   "path": ".ufo/waves/round-46/counters/chrome-cdp-receipt-r46-selftest.mjs",
+   "sha256": "c65c781d909ec0d15382dbadcbe2e6f9c3c55a298ef88fd6903e18ac9cf16a9b",
+   "quote": "cases.push({ id: 'postkill-sweep-not-zero', expect: ['postkill-sweep-not-zero'], got: ids(mutate((r) => { r.teardown.postKillSweepCount = 1; })) });"
+  },
+  {
+   "path": ".ufo/waves/round-46/counters/c1-adjacency-host-v6.mjs",
+   "sha256": "e3d074e3234c0d29bf9bc8cc8233ec170690806837ffd9ccefc53e7a076e6aaa",
+   "quote": "const AUDIT_REL = 'corpus/adjacency-host-audit-r46.tsv';"
+  },
+  {
+   "path": ".ufo/waves/round-46/controls/teardown-mechanism-fixture.mjs",
+   "sha256": "5588c022b0fe44e9fea4d6f0cb203f27e8a3db90d95d9ff941f8e560b38252f4",
+   "quote": "receipt.mechanismRed = survivors.count >= 1;"
+  },
+  {
+   "path": ".ufo/waves/round-46/controls/legacy-teardown-control-r46.mjs",
+   "sha256": "6d433da60778534d9b3e30ecfb88220b82f4e1166e2b384a96dd742af87a961a",
+   "quote": "orphansAfterLegacyTeardown: { count: orphans.error ? null : orphans.count, pids: orphans.error ? null : orphans.pids, procs: orphans.error ? null : orphans.procs, error: orphans.error || null },"
+  }
+ ]
+}
