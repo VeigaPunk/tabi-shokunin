@@ -1,0 +1,26 @@
+== round-53 C2 authoring-time defect (amendment 1): the first live run crashed at the ok-chain — receipt unwritten ==
+-- runner line 583 at the crash bytes (freeze digest 949384b3...): ReferenceError: f is not defined
+-- cause: the r52->r53 transform replaced the formMode ok-chain starting AT the 'const f = receipt.journey && receipt.journey.form;' anchor line, so the replacement chain referenced f without declaring it (node --check passes: f parses as a possible global; the defect surfaced only at execution, after the journey completed and after teardown — the receipt write never ran)
+-- the live surface itself was NOT refuted: the crash is lane-side authoring; the journey steps had already executed (stderr shows the crash, stdout summary never printed)
+-- stderr (the kept-and-named red receipt):
+{"step":"fixture-listening","url":"http://127.0.0.1:54244/a.html"}
+{"step":"host-compiled","hostExe":"C:\\Users\\jpvei\\.zcode\\workspace\\95b1ba4d-5089-47a4-9fd8-54adebbce2ae\\scratch\\tabi-r53\\wv2drv-run\\webview2-host-round48.exe"}
+{"step":"host-spawned","pid":14276}
+{"step":"json-version","Browser":"Edg/156.0.4314.58"}
+{"step":"runtime-evaluate","titleEcho":"tabi-r53-c1c2dbf500d59a80","matches":true}
+{"step":"journey-step","leg":"Page.navigate","url":"http://127.0.0.1:54244/a.html","title":"tabi-r53 journey fixture A","bytes":8120}
+{"step":"journey-step","leg":"anchor-click","url":"http://127.0.0.1:54244/b.html","title":"tabi-r53 journey fixture B","bytes":8698}
+{"step":"journey-step","leg":"anchor-click","url":"http://127.0.0.1:54244/c.html","title":"tabi-r53 journey fixture C","bytes":7401}
+{"step":"journey-step","leg":"navigateToHistoryEntry","url":"http://127.0.0.1:54244/b.html","title":"tabi-r53 journey fixture B","bytes":9046}
+{"step":"journey-step","leg":"anchor-click","url":"http://127.0.0.1:54244/form.html","title":"tabi-r53 form fixture","bytes":7699}
+{"step":"journey-step","leg":"form-submit","url":"http://127.0.0.1:54244/echo?field=tabi-r53-c1c2dbf500d59a80&mixed=TABI-R53-C1C2DBF500D59A80","title":"tabi-r53 echo","bytes":6930}
+{"step":"form-complete","fieldValue":"tabi-r53-c1c2dbf500d59a80","keyEvents":50,"allPrefix":true,"chordValue":"TABI-R53-C1C2DBF500D59A80","chordEvents":74,"allChordPrefixes":true,"echoPage":"tabi-r53-c1c2dbf500d59a80","mixedEchoPage":"TABI-R53-C1C2DBF500D59A80","serverSaw":true,"serverSawMixed":true}
+{"step":"journey-complete","steps":6,"entriesLength":4,"backLeg":"http://127.0.0.1:54244/b.html"}
+file:///C:/Users/jpvei/.zcode/workspace/95b1ba4d-5089-47a4-9fd8-54adebbce2ae/fleet/tabi-shokunin/scripts/webview2-cdp-loopback-round53.mjs:583
+    ok = ok && f
+               ^
+
+ReferenceError: f is not defined
+    at file:///C:/Users/jpvei/.zcode/workspace/95b1ba4d-5089-47a4-9fd8-54adebbce2ae/fleet/tabi-shokunin/scripts/webview2-cdp-loopback-round53.mjs:583:16
+
+Node.js v24.21.0

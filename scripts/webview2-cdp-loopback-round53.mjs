@@ -580,6 +580,7 @@ if (journeyMode) {
     && receipt.journey.backLeg && receipt.journey.backLeg.urlAfter && receipt.journey.backLeg.urlAfter.endsWith('/b.html')
     && receipt.journey.backLeg.entriesLengthAfter === 4 && receipt.journey.backLeg.currentIndexAfter === 2;
   if (formMode) {
+    const f = receipt.journey && receipt.journey.form;
     ok = ok && f
       && f.nonceOnFormPage === true
       && f.filledValue === nonce

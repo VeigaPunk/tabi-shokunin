@@ -4,6 +4,10 @@
   "host": "win32 10.0.26200 x64 (Git Bash; node v24.21.0; Framework 4.8 csc.exe)",
   "baseline": "3abdeba6faa574edd8120661341a8a15c181ad55",
   "frozenAt": "2026-11-02T00:00:00Z",
+  "amendment1": {
+    "what": "PRE-DATA amendment (the r50 sanctioned pattern): the runner's formMode ok-chain was generated WITHOUT its leading 'const f = receipt.journey && receipt.journey.form;' declaration (the r52->r53 transform spliced FROM that anchor line), so the FIRST live run crashed at the ok-chain after the journey - ReferenceError: f is not defined, receipt unwritten; node --check passed because f parses as a possible global, the defect surfaced only at execution. The live surface was NOT refuted: the crash is lane-side authoring. Fixed: the declaration restored (runner bytes change 949384b3... -> 4e80a2e0...); fixtures regenerated against the fixed runner (green digests re-embedded; the manifest is byte-identical, digest ac74e7b8... unchanged); the counter selftest re-run 85/85 and the path selftest re-run 6/6 at the amendment bytes. Red receipt kept and named: controls/c2-live-run1-crash-f-undefined.txt. The runner is otherwise byte-identical: the only changed line is the restored declaration.",
+    "redReceipt": ".ufo/waves/round-53/controls/c2-live-run1-crash-f-undefined.txt"
+  },
   "axesAtStart": {
     "adjacency": 8,
     "coverage": 9,
@@ -64,7 +68,7 @@
         "REFUSAL if the counter finds any finding on the round's own committed receipt (including any chords-* or typing-* check)",
         "REFUSAL if either fill was made by any non-key-event path (Runtime.evaluate value set, Input.insertText, or JS injection) while the receipt claims mechanism dispatchKeyEvent+shift-chords+submit-click - the honest alternatives are a truthful mechanism record (declared, refused) or the claim not landing",
         "REFUSAL if a trace is complete but the prefix witness is not per-keystroke (valueAfter recorded only after the full trace would be the r51 evidence shape, refused here too)",
-        "REFUSAL if the driver bytes at the data revision differ from the frozen digest (the freeze bytes; a pre-data amendment with a committed red receipt is the sanctioned path if the live surface refutes a design)",
+        "REFUSAL if the driver bytes at the data revision differ from the frozen digest (the amendment-1 bytes 4e80a2e0...; the freeze-to-amendment delta is the restored const-f declaration only, red receipt committed; a pre-data amendment with a committed red receipt is the sanctioned path if the live surface refutes a design)",
         "declared residual (the r44/r45/r48/r49/r51/r52 class, pre-declared): the journey/typing/chords fields are driver-reported and the driver bytes are sha-pinned in the receipt and re-hashed by the counter; a hand-forged receipt is outside any shape counter's reach - the re-derivation path is re-running the committed runner (fresh nonce and fresh fixture port per invocation) and re-compiling the host from the committed .cs"
       ],
       "countingCommands": [
@@ -79,7 +83,7 @@
   ],
   "frozenDigests": {
     ".ufo/waves/round-53/counters/c1-adjacency-host-v13.mjs": "87d08cffe193b56877f7bd8928d01a8abd9d089a53e4801fc00f766eb822e5b9",
-    "scripts/webview2-cdp-loopback-round53.mjs": "949384b35d301e4b4465d99da951b87bbb34cf91a6a911c320fdebd0c5e150df",
+    "scripts/webview2-cdp-loopback-round53.mjs": "4e80a2e0823fd10812fd55880ad02a9a42a2ed354026eb38b7ac48116ff35b97",
     ".ufo/waves/round-53/counters/webview2-receipt-r53.mjs": "1265dc88e2102df9c88cc289a2bf0e00fd4e0e91c9b550b59a00e0bb5a7d662f",
     "scripts/webview2-host-round48.cs": "13b2bc3de8a6e51c401d283e8a751fd47cfb8352faca02ba82cec44ed2a47cd6",
     ".ufo/waves/round-53/counters/webview2-receipt-r53-fixtures/manifest.json": "ac74e7b8a636d62c9506ec24f898b61d70e4208b744f87edbd7685afca28db43",
