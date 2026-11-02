@@ -1,0 +1,63 @@
+2c2
+< // c1-adjacency-host-v14.mjs — tabi round 53, claim C1 (adjacency — the lowest
+---
+> // c1-adjacency-host-v15.mjs — tabi round 55, claim C1 (adjacency — the lowest
+95c95
+< // schema: "tabi-adjacency-host-v14" consistently. Pure core (verify +
+---
+> // schema: "tabi-adjacency-host-v15" consistently. Pure core (verify +
+97a98,115
+> // Round 55 delta (the generation rebind, the r46-r54 pattern — pure core
+> // byte-identical to v14): the ledgers this meter reads are the round-55
+> // generation (audit-r55 / delta-r55); at round open the committed r54
+> // generation measured RED against the live fleet (6 findings,
+> // controls/c1-meter-v14-red-at-round-open.json) — four delta-lane heads
+> // advanced since the r54 snapshot (kengaku, mori, shokunin-binary-forensics,
+> // tameshi) AND ONE SCREENED PROVINCE CHANGED BYTES AGAIN: kengaku's
+> // PROVINCE.md re-derives to a different provinceSha256 and line count (the
+> // second consecutive screened-province byte change on kengaku), so this
+> // round's re-bind re-screens kengaku and carries every surviving hit line's
+> // disposition by exact whole-line quote match. ONE COMMENT-ONLY
+> // NAME-LEFTOVER is FIXED in this generation: v14's header comment named
+> // "tabi round 53" while v14 is the round-54 generation (the D2
+> // name-leftover class, comment-only — no schema string, sentence token or
+> // output field was involved; found by this round's diff review); v15's
+> // header names round 55. Pure core (verify + selftest cases + parse
+> // helpers) is byte-identical to v14; the committed diff names every changed
+> // line.
+99c117
+< //   PREDICATE-SENTENCE: c1-adjacency-host-v14 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r54.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r54.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.
+---
+> //   PREDICATE-SENTENCE: c1-adjacency-host-v15 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r55.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r55.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.
+101,103c119,121
+< //   node c1-adjacency-host-v14.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
+< //   node c1-adjacency-host-v14.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses at the current heads)
+< //   node c1-adjacency-host-v14.mjs --selftest
+---
+> //   node c1-adjacency-host-v15.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
+> //   node c1-adjacency-host-v15.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses at the current heads)
+> //   node c1-adjacency-host-v15.mjs --selftest
+112,113c130,131
+< const AUDIT_REL = 'corpus/adjacency-host-audit-r54.tsv';
+< const DELTA_REL = 'corpus/adjacency-host-delta-r54.tsv';
+---
+> const AUDIT_REL = 'corpus/adjacency-host-audit-r55.tsv';
+> const DELTA_REL = 'corpus/adjacency-host-delta-r55.tsv';
+121c139
+<   console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v14', error: msg }));
+---
+>   console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v15', error: msg }));
+396c414
+<   console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v14-selftest', ...st }, null, 1));
+---
+>   console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v15-selftest', ...st }, null, 1));
+412c430
+< if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v14.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
+---
+> if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v15.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
+415,416c433,434
+<   schema: 'tabi-adjacency-host-v14',
+<   predicateSentence: 'c1-adjacency-host-v14 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r54.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r54.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',
+---
+>   schema: 'tabi-adjacency-host-v15',
+>   predicateSentence: 'c1-adjacency-host-v15 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r55.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r55.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',
