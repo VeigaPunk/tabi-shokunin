@@ -3423,3 +3423,13 @@ position 1, nudge inactive, the lowest-axis obligation applies — C1 works adja
   six rows had graded could-not-evaluate in the r51 passes and measured here — the
   oracle sits near the gate's 180-second spawn timeout on this host; disclosed in the
   lesson appendix.
+- Final gate verdict (the round's receipts-only commit): after the two disclosed repairs
+  (the doubling at `24efa072` -> repair `9d0757b7`; the wrapped clearing line ->
+  repair `3ae7b891`, both mined as lesson Mistakes rows), the gate re-measured at
+  `3ae7b8913680050e6757e9c0e926edcaea00d430` with a fully committed tree and its output
+  outside the tree: `SELFASSESSMENT verdict=clean mismatches=0 could_not_evaluate=178
+  superseded=43`, exit 0 — the standing environmental verdict stays closed and the six
+  pre-r48 adjacency tallies are superseded; receipt
+  `.ufo/waves/round-52/measure/c3-gate-v4-at-final.txt`; the three failed passes are
+  kept and named (`c3-gate-at-work.txt`, `c3-gate-at-addendum.txt`,
+  `c3-gate-at-repair.txt`), never quoted as verdicts.

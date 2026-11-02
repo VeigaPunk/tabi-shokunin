@@ -190,23 +190,34 @@ register not reachable from this host. Assimilation: none — shokuknow unreacha
 
 The v4 gate's first complete host-side pass at the work commit `9bda1741` read
 `SELFASSESSMENT verdict=failed rev=9bda1741... mismatches=7 could_not_evaluate=167
-superseded=43` (receipt `measure/c3-gate-at-work.txt`, committed at the addendum commit)
-— six stale `check-adjacency.mjs` self-test tallies the r48 57 -> 64 case-count change
-had orphaned across the SCORECARD and SKILL m1 windows (the same class the r51 chain
-mined for the check-selfassessment 41 -> 45 change), plus m3 itself counting the gate's
-own in-flight receipt file (the honest reading: it was unlanded at that instant; this
-time the output path sits outside the tree at measurement — the r51 R5 pattern — after
-the failed receipt was landed first, kept and named). Notable: the six adjacency rows
-graded could-not-evaluate in the r51 passes and MEASURED here — the oracle's own
-self-test sits near the gate's 180-second spawn timeout on this host (a bare
-`--self-test` run took minutes while the fleet was busy; it printed
-`ADJACENCY_SELFTEST verdict=clean cases=64 reasons=18 could_not_evaluate=6` at
-`.ufo/waves/round-52/measure/adjacency-selftest-at-work.txt`), so the stale tallies were
-real and unmarked since r48 either way, and the gate did its job in both states. The
-tally-supersession addenda landed (the SCORECARD single-line form for the line-scoped
-window at the block tail; the SKILL paragraph form for the lineOnly window at the file
-tail); the gate re-measures at that rev with a fully committed tree and its output
-outside the tree, and the resulting verdict receipt lands in the round's receipts-only
-final commit naming the rev it measured (the r50/r51 `ea11da95` pattern). No number in
-this appendix quotes an uncommitted or crashed run; every quoted line is from a
-committed receipt.
+superseded=43` (receipt `measure/c3-gate-at-work.txt`, committed at the addendum commit
+`24efa072`) — six stale `check-adjacency.mjs` self-test tallies the r48 57 -> 64
+case-count change had orphaned across the SCORECARD and SKILL m1 windows (the same class
+the r51 chain mined for the check-selfassessment 41 -> 45 change), plus m3 itself
+counting the gate's own in-flight receipt file (the honest reading: it was unlanded at
+that instant). Notable: the six adjacency rows graded could-not-evaluate in the r51
+passes and MEASURED here — the oracle's own self-test sits near the gate's 180-second
+spawn timeout on this host (a bare `--self-test` run took minutes while the fleet was
+busy; it printed `ADJACENCY_SELFTEST verdict=clean cases=64 reasons=18
+could_not_evaluate=6` at `.ufo/waves/round-52/measure/adjacency-selftest-at-work.txt`),
+so the stale tallies were real and unmarked since r48 either way, and the gate did its
+job in both states.
+
+The closure then took two repairs, both caught by the gate's own subsequent passes and
+mined as Mistakes rows: (1) the addendum script doubled SCORECARD.md and SKILL.md
+(append mode + full-content rewrite) and the doubled bytes landed at `24efa072` — the
+second pass read mismatches=43 with findings past the true end of file
+(`measure/c3-gate-at-addendum.txt`, kept and named, never quoted as a verdict); the
+repair at `9d0757b7` rebuilt both files from the `9bda1741` pre-addendum blobs plus
+exactly one addendum (prefix equality verified). (2) the rebuilt SCORECARD clearing line
+wrapped its citations onto continuation lines, so the line-scoped window cleared nothing
+— the third pass read mismatches=4 (`measure/c3-gate-at-repair.txt`, kept and named)
+while the SKILL paragraph clears worked; the repair at `3ae7b891` put the tally, the
+marker and all four citations on ONE physical line (the r51 `8e2fe015` single-line form,
+re-learned). The gate re-measured at `3ae7b891` with a fully committed tree and its
+output outside the tree:
+`SELFASSESSMENT verdict=clean rev=3ae7b8913680050e6757e9c0e926edcaea00d430
+mismatches=0 could_not_evaluate=178 superseded=43` (exit 0) — that receipt is
+`measure/c3-gate-v4-at-final.txt`, landed in the round's receipts-only final commit
+naming the rev it measured (the r50/r51 `ea11da95` pattern). No number in this appendix
+quotes an uncommitted or crashed run; every quoted line is from a committed receipt.
