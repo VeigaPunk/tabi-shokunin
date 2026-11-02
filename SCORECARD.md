@@ -2962,11 +2962,4 @@ end exit 0 (22 pre-existing W04).
 
 ### Round 52 - tally-supersession addendum (the at-R gate pass surfaced six pre-r48 adjacency-gate tallies the 57 -> 64 case-count change had orphaned)
 
-- `scripts/check-adjacency.mjs` `--self-test` (64/64): correction — supersedes the stale
-  tallies at `SCORECARD.md:1195` and `SCORECARD.md:1829`, `SCORECARD.md:1853` and
-  `SCORECARD.md:2545` (each states the pre-r48 count as oracle-correct at its own tip:
-  the 57-case and 44-case figures belong to the r17/r46-era generations; the r48
-  `--fleet-repo` and whole-line-quote repairs added seven cases). The gate prints
-  `ADJACENCY_SELFTEST verdict=clean cases=64 reasons=18 could_not_evaluate=6`
-  (`.ufo/waves/round-52/measure/adjacency-selftest-at-work.txt`); 64 is the
-  oracle-correct figure at this round's tip.
+- `scripts/check-adjacency.mjs` `--self-test` (64/64): correction — supersedes the stale tallies at `SCORECARD.md:1195`, `SCORECARD.md:1829`, `SCORECARD.md:1853` and `SCORECARD.md:2545` (each states a pre-r48 generation's count as oracle-correct at its own tip; the r48 `--fleet-repo` and whole-line-quote repairs added seven cases); the gate prints `ADJACENCY_SELFTEST verdict=clean cases=64 reasons=18 could_not_evaluate=6` (`.ufo/waves/round-52/measure/adjacency-selftest-at-work.txt`); 64 is the oracle-correct figure at this round's tip. The tally, the marker and all four citations share this one physical line — the SCORECARD window's supersession is line-scoped and reads the clearing line's own text only (the r51 `8e2fe015` lesson, re-learned here after the first wrapped attempt failed to clear).
