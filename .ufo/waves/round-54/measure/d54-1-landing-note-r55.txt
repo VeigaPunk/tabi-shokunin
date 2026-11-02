@@ -1,0 +1,25 @@
+D54-1 landing note (2026-11-02, tabi round 55)
+
+The r54 non-author closure routed D54-1: the three counter receipts cited by the
+round-54 report/lesson/SCORECARD were cited but never committed here — the author's
+scratch was cleaned at round end, so the author's original receipts are unrecoverable
+and are disclosed as LOST (never silently replaced).
+
+What round 55 landed instead, at the exact paths the r54 citations name:
+
+- c2-counter-green-at-data.json      — the committed r54 counter (frozen bytes) re-run
+  THIS round against the committed r54 receipt + committed PNG bytes + the committed
+  r54 driver + hostsrc: exit 0, predicate true, 0 findings, couldNotEvaluate [].
+- c2-r53counter-refuses-r54.json     — the committed r53 counter on the same committed
+  r54 receipt: exit 1, 5 findings (schema, profile-not-throwaway, nonce-shape,
+  driver-pin-mismatch, form-mechanism) — the exact finding set the r54 report cites.
+- c2-r54counter-refuses-r53.json     — the committed r54 counter on the committed r53
+  receipt with the r54 driver passed as --driver: exit 1, 7 findings incl.
+  chord-domain-missing and keylog-missing — the exact finding set the r54 report cites
+  (the closure's observation that the 7-finding figure corresponds to the r54 driver
+  is reproduced by this landing).
+
+These are r55 RE-MEASURES of the r54 claims over committed bytes, not the r54 author's
+original outputs (r54 scratch is deleted per the round contract). The class fix — a
+post-commit `git show <new>:<path>` landing check for every cited receipt — is recorded
+in corpus/lessons/round-55.md.
