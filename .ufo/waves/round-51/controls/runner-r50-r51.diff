@@ -1,0 +1,242 @@
+--- C:/Users/jpvei/.zcode/workspace/95b1ba4d-5089-47a4-9fd8-54adebbce2ae/scratch/tabi-r51/runner-r50-baseline.mjs	2026-11-01 17:01:30.218305200 -0800
++++ scripts/webview2-cdp-loopback-round51.mjs	2026-11-01 16:28:22.426792400 -0800
+@@ -1,31 +1,36 @@
+ #!/usr/bin/env node
+-// webview2-cdp-loopback-round50.mjs — tabi round 50, claim C2 (coverage:
+-// capability extension — the r3 journey model over the webview2 surface, the
+-// r49 planned residual: a multi-step journey with history-length and
+-// back-navigation evidence).
++// webview2-cdp-loopback-round51.mjs — tabi round 51, claim C2 (coverage:
++// capability extension — the form-interaction residual on the webview2
++// surface, the r49/r50 planned list's second residual: fill + submit).
+ //
+-// Round 50 deltas vs the committed r49 runner (everything else byte-equivalent
+-// in structure):
+-//   (1) --journey: the inline loopback HTTP fixture serves THREE static pages
+-//       (A -> B -> C, anchors only), the nonce rides ON the fixture pages
+-//       (a #nonce marker, so the invocation binding survives navigation), and
+-//       the journey is: Page.navigate to /a.html, the page's OWN anchor click
+-//       to /b.html, anchor click to /c.html, then Page.getNavigationHistory
+-//       (S161: "Returns navigation history for the current page") read at C,
+-//       then Page.navigateToHistoryEntry back to entry 1 (S161: "Navigates
+-//       current page to the given history entry") — four legs, four PNGs, the
+-//       history block recorded at C and after the back-hop. Per-step URL,
+-//       title, screenshot under receipt.journey.
+-//   (2) The runtime default is a placeholder: the WebView2 auto-update removed
+-//       156.0.4314.50 from this host (r49 closure D3), so --runtime MUST be
+-//       passed explicitly (the usage line exits 2 without it); there is no
+-//       version assumption anywhere in the runner.
++// Round 51 deltas vs the committed r50 runner (everything else
++// structure-identical):
++//   (1) --form: the full r50 four-leg journey (Page.navigate /a.html, the
++//       pages' own anchor clicks to /b.html and /c.html, the measured-model
++//       history read at C and the Page.navigateToHistoryEntry back hop to the
++//       /b.html entry) PLUS two form legs, driven with the CDP Input domain
++//       (S153's Input.insertText / Input.dispatchMouseEvent descriptions are
++//       the ground): anchor-click to /form.html, a real mouse click INTO the
++//       field (mousePressed/mouseReleased at the element center),
++//       Input.insertText of the invocation-bound nonce, the field's value read
++//       back from the DOM, a second mouse click on the form's own submit
++//       button, the GET form navigation to /echo observed SERVER-SIDE by the
++//       inline fixture (served request log carries /echo?field=<nonce>) and
++//       CLIENT-SIDE by the echo page rendering the received value — six legs,
++//       six PNGs, receipt.form carries the whole chain. The nonce riding the
++//       form page, the inserted value, the echo page rendering and the server
++//       log entry are four independent witnesses of one invocation-bound
++//       fill+submit round trip.
++//   (2) /b.html gains a second anchor (#form) to the form page; the r50 pages'
++//       bytes are otherwise unchanged in shape (each round's fixture is its
++//       own; the r50 counter still pins the r50 bytes).
++//   (3) The runtime default stays a placeholder: --runtime MUST be passed
++//       explicitly (the r50 contract, unchanged — the auto-update drift is the
++//       standing host condition).
+ //
+ // Usage:
+-//   node scripts/webview2-cdp-loopback-round50.mjs --runtime <runtimeDir> \
+-//        --loader <WebView2Loader.dll> --scratch <dir> --out <receipt.json> \
+-//        [--csc <csc.exe>] [--journey]
+-//   node scripts/webview2-cdp-loopback-round50.mjs --path-selftest
++//   node scripts/webview2-cdp-loopback-round51.mjs --runtime <runtimeDir> //        --loader <WebView2Loader.dll> --scratch <dir> --out <receipt.json> //        [--csc <csc.exe>] [--journey] [--form]
++//   node scripts/webview2-cdp-loopback-round51.mjs --path-selftest
+ // Exit: 0 receipt written and every step green; 1 a step failed (receipt still
+ // written with the failure recorded); 2 usage / selftest failure.
+ import { spawnSync, spawn } from 'node:child_process';
+@@ -57,7 +62,7 @@
+ // --- --path-selftest: the resolver, unit-tested without a browser -----------
+ if (hasFlag('path-selftest')) {
+   const os = await import('node:os');
+-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'tabi-r50-pathselftest-'));
++  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'tabi-r51-pathselftest-'));
+   const cases = [];
+   const t = (name, fn) => {
+     try { fn(); cases.push({ name, ok: true }); }
+@@ -75,7 +80,7 @@
+   });
+   t('profile-stays-under-resolved-scratch', () => {
+     const r = resolveAtLaunch('nested/scratch');
+-    const profile = path.join(r.resolved, 'tabi-r50-wv2drv-abcd123456-profile');
++    const profile = path.join(r.resolved, 'tabi-r51-wv2drv-abcd123456-profile');
+     if (!profile.toLowerCase().startsWith(r.resolved.toLowerCase())) throw new Error('profile outside scratch');
+     if (!path.win32.isAbsolute(profile)) throw new Error('profile not absolute');
+   });
+@@ -107,24 +112,25 @@
+ const runtimeArg = opt('runtime');
+ const loaderDll = path.win32.normalize(opt('loader') || DEFAULT_LOADER);
+ const cscExe = opt('csc') || DEFAULT_CSC;
+-const journeyMode = hasFlag('journey');
++const journeyMode = hasFlag('journey') || hasFlag('form');
++const formMode = hasFlag('form');
+ if (!scratchR.given || !outR.given || !runtimeArg) {
+-  console.error('usage: node webview2-cdp-loopback-round50.mjs --runtime <dir> --loader <dll> --scratch <dir> --out <receipt.json> [--csc <csc.exe>] [--journey] | --path-selftest');
++  console.error('usage: node webview2-cdp-loopback-round51.mjs --runtime <dir> --loader <dll> --scratch <dir> --out <receipt.json> [--csc <csc.exe>] [--journey] | --path-selftest');
+   process.exit(2);
+ }
+ const runtimeFolder = path.win32.normalize(runtimeArg);
+ const scratchDir = scratchR.resolved;
+ const outReceipt = outR.resolved;
+ 
+-const nonce = `tabi-r50-${crypto.randomBytes(8).toString('hex')}`;
+-const token = `tabi-r50-wv2drv-${crypto.randomBytes(5).toString('hex')}`;
++const nonce = `tabi-r51-${crypto.randomBytes(8).toString('hex')}`;
++const token = `tabi-r51-wv2drv-${crypto.randomBytes(5).toString('hex')}`;
+ const profile = path.join(scratchDir, `${token}-profile`);
+ fs.mkdirSync(profile, { recursive: true });
+ fs.mkdirSync(path.dirname(outReceipt), { recursive: true });
+ 
+ const receipt = {
+-  schema: 'tabi-webview2-cdp-r50',
+-  generatedBy: 'scripts/webview2-cdp-loopback-round50.mjs',
++  schema: 'tabi-webview2-cdp-r51',
++  generatedBy: 'scripts/webview2-cdp-loopback-round51.mjs',
+   driverSha256: sha256(fs.readFileSync(selfPath)),
+   hostCsSha256: sha256(fs.readFileSync(hostSrc)),
+   hostCsPath: 'scripts/webview2-host-round48.cs',
+@@ -153,19 +159,37 @@
+ // --- inline loopback fixture server (journey mode): three static pages ------
+ // The nonce rides on every page (a #nonce marker), so the invocation binding
+ // survives the whole journey; anchors are the only links between pages.
+-const mkPage = (letter, title, withAnchor) => `<!doctype html><html><head><title>tabi-r50 journey fixture ${title}</title></head>` +
++const mkPage = (letter, title, anchors) => `<!doctype html><html><head><title>tabi-r51 journey fixture ${title}</title></head>` +
+   `<body><h1 id="pg">fixture-page-${letter}</h1><p id="nonce">${nonce}</p>` +
+-  (withAnchor ? `<a id="next" href="/${letter.toLowerCase() === 'a' ? 'b' : 'c'}.html">next page</a>` : '') +
++  anchors +
+   `</body></html>`;
++const mkFormPage = () => `<!doctype html><html><head><title>tabi-r51 form fixture</title></head>` +
++  `<body><h1 id="pg">fixture-page-F</h1><p id="nonce">${nonce}</p>` +
++  `<form id="f" method="GET" action="/echo">` +
++  `<input id="field" name="field" value="" size="40">` +
++  `<button id="go" type="submit">go</button>` +
++  `</form></body></html>`;
+ const PAGES = {
+-  '/a.html': mkPage('A', 'A', true),
+-  '/b.html': mkPage('B', 'B', true),
+-  '/c.html': mkPage('C', 'C', false),
++  '/a.html': mkPage('A', 'A', '<a id="next" href="/b.html">next page</a>'),
++  '/b.html': mkPage('B', 'B', '<a id="next" href="/c.html">next page</a> <a id="form" href="/form.html">form page</a>'),
++  '/c.html': mkPage('C', 'C', ''),
++  '/form.html': mkFormPage(),
+ };
+ let fixtureServer = null;
+ let fixture = null;
+ if (journeyMode) {
+   fixtureServer = (await import('node:http')).createServer((req, res) => {
++    const u = new URL(req.url, 'http://127.0.0.1');
++    if (u.pathname === '/echo') {
++      // the echo endpoint: the SERVER-SIDE witness of the form submit. The
++      // received field is rendered back into the page (#echoed) so the client
++      // DOM and the server log carry the same value independently.
++      const field = u.searchParams.get('field') || '';
++      fixture.served.push(req.url);
++      res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
++      res.end(`<!doctype html><html><head><title>tabi-r51 echo</title></head><body><h1 id="pg">echo</h1><p id="echoed">${field}</p></body></html>`);
++      return;
++    }
+     const body = PAGES[req.url] || PAGES['/a.html'];
+     fixture.served.push(req.url);
+     res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+@@ -307,7 +331,7 @@
+       } else {
+         // --- C2: the multi-step journey over the loopback fixture -----------
+         const base = `http://127.0.0.1:${fixture.port}`;
+-        const journey = { mechanism: 'anchor-click+navigateToHistoryEntry', steps: [], fixturePages: 3 };
++        const journey = { mechanism: formMode ? 'anchor-click+navigateToHistoryEntry+form-submit' : 'anchor-click+navigateToHistoryEntry', steps: [], fixturePages: formMode ? 4 : 3 };
+         const waitPath = async (suffix, extraExpr) => {
+           for (let i = 0; i < 40; i++) {
+             const href = String(await evalStr('location.href') || '');
+@@ -375,6 +399,54 @@
+           journey.backLeg.entriesLengthAfter = (histAfter.entries || []).length;
+           journey.backLeg.currentIndexAfter = histAfter.currentIndex;
+         }
++        // --- legs 5+6 (formMode): the form-interaction residual --------------
++        // The r49/r50 planned residual: fill + submit on the fixture, driven
++        // with the CDP Input domain (S153 Input.insertText /
++        // Input.dispatchMouseEvent): a real mouse click into the field,
++        // Input.insertText of the invocation-bound nonce, the value read back
++        // from the DOM, a second mouse click on the form's own submit button,
++        // the GET navigation to /echo witnessed SERVER-SIDE (fixture served
++        // log) and CLIENT-SIDE (the echo page renders the received value).
++        if (formMode) {
++          const waitEcho = async () => {
++            for (let i = 0; i < 40; i++) {
++              const href = String(await evalStr('location.href') || '');
++              const ready = (await evalStr('document.readyState')) === 'complete';
++              if (href.includes('/echo?field=') && ready) return true;
++              await sleep(250);
++            }
++            return false;
++          };
++          const clickAt = async (x, y) => {
++            for (const type of ['mousePressed', 'mouseReleased']) {
++              await send('Input.dispatchMouseEvent', { type, x, y, button: 'left', clickCount: 1 });
++            }
++          };
++          const centerOf = (id) => evalStr(`(() => { const b = document.getElementById('${id}').getBoundingClientRect(); return [Math.round(b.x + b.width / 2), Math.round(b.y + b.height / 2)]; })()`);
++          // leg 5 — the /b.html page's own anchor to the form page
++          await evalStr(`document.getElementById('form').click()`);
++          if (!await waitPath('/form.html')) fail('journey-form-page-not-ready', {});
++          const stepForm = await recordStep('anchor-click', '/form.html', 'journey-form');
++          const form = { mechanism: 'dispatchMouseEvent+insertText+submit-click' };
++          form.nonceOnFormPage = stepForm.nonceMarker === nonce;
++          // leg 6 — real input-domain fill + submit
++          const [fx, fy] = await centerOf('field');
++          await clickAt(fx, fy);
++          await send('Input.insertText', { text: nonce });
++          form.filledValue = nonce;
++          form.fieldValueAfterInsert = await evalStr(`document.getElementById('field').value`);
++          const [bx, by] = await centerOf('go');
++          await clickAt(bx, by);
++          if (!await waitEcho()) fail('form-echo-not-ready', {});
++          const stepEcho = await recordStep('form-submit', '/echo', 'journey-echo');
++          form.urlAfter = stepEcho.url;
++          form.valueOnEchoPage = await evalStr(`(document.getElementById('echoed')||{}).textContent`) || null;
++          const wantedQuery = '/echo?field=' + encodeURIComponent(nonce);
++          form.servedEchoEntry = fixture.served.includes(wantedQuery) ? wantedQuery : (fixture.served.find((u) => String(u).startsWith('/echo?')) || null);
++          form.serverSawField = Boolean(form.servedEchoEntry === wantedQuery);
++          journey.form = form;
++          note('form-complete', { fieldValue: form.fieldValueAfterInsert, echoPage: form.valueOnEchoPage, serverSaw: form.serverSawField });
++        }
+         receipt.screenshot = journey.steps[journey.steps.length - 1].screenshot; // the main shot is the FINAL page
+         receipt.journey = journey;
+         note('journey-complete', {
+@@ -425,11 +497,20 @@
+   && receipt.teardown.postKillSweepCount === 0;
+ if (journeyMode) {
+   ok = ok && receipt.journey
+-    && Array.isArray(receipt.journey.steps) && receipt.journey.steps.length === 4
++    && Array.isArray(receipt.journey.steps) && receipt.journey.steps.length === (formMode ? 6 : 4)
+     && receipt.journey.nonceOnPageA === true
+     && receipt.journey.history && receipt.journey.history.entriesLength === 4 && receipt.journey.history.currentIndex === 3
+     && receipt.journey.backLeg && receipt.journey.backLeg.urlAfter && receipt.journey.backLeg.urlAfter.endsWith('/b.html')
+     && receipt.journey.backLeg.entriesLengthAfter === 4 && receipt.journey.backLeg.currentIndexAfter === 2;
++  if (formMode) {
++    const f = receipt.journey && receipt.journey.form;
++    ok = ok && f
++      && f.nonceOnFormPage === true
++      && f.filledValue === nonce && f.fieldValueAfterInsert === nonce
++      && typeof f.urlAfter === 'string' && f.urlAfter.includes('/echo?field=' + encodeURIComponent(nonce))
++      && f.valueOnEchoPage === nonce
++      && f.serverSawField === true;
++  }
+ }
+ fs.writeFileSync(outReceipt, JSON.stringify(receipt, null, 1));
+ console.log(JSON.stringify({

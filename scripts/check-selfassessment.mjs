@@ -5,7 +5,7 @@
 // Verdict: 0 clean, 1 failed (>=1 mismatch), 2 could-not-evaluate (usage,
 //          unreadable revision, git failure). Any other nonzero code is
 //          undeclared and reads as could-not-evaluate.
-// Self-test: `--selftest` (41 isolated cases over temporary sandbox
+// Self-test: `--selftest` (45 isolated cases over temporary sandbox
 //          repositories; asserts exit code AND stable finding id; creates and
 //          removes its own temp trees, never touches the lane).
 // Pinned values: the expected exit/finding table is the CASES constant in this
@@ -68,6 +68,23 @@
 // v3 is frozen by .ufo/waves/round-32/claims.json claim C2.
 //
 // Findings are stable ids: m1-selftest-tally, m2-receipt-exit,
+// v4 (round 51): m3 classifies each status row by BYTE TRUTH against the
+// measured revision's tree. A row is the DECLARED host-index artifact (class
+// m3-index-artifact, recorded under couldNotEvaluate, NEVER a mismatch) when
+// the path's worktree bytes hash equal to the revision's blob, or the path is
+//                      tree with an NTFS-unrepresentable name, or the path
+//                      case-fold-collides in the tree with a sibling spelling
+//                      whose committed bytes are what the one materializable
+//                      on-disk file carries (this lane's Linux-built tree has
+//                      two such pairs; a case-insensitive filesystem holds
+//                      exactly one spelling of each) — all win32 branches.
+// cannot exist on this filesystem). Bytes that differ, paths absent from disk
+// AND representable, and paths in neither tree nor disk stay real unlanded
+// rows (aggregate, counted once per block). Ground: this host's lane index is
+// broken (NTFS-uncheckoutable paths) and has reported the same in-HEAD blobs
+// as untracked/deleted since round 44 — the standing single m3 mismatch every
+// round since; measured 2026-11-01 at c5474922: 648 of 656 status rows are
+// byte-identical-or-illegal, 2 real modified + 6 real new.
 // m3-unlanded-paths, m4-nudge-state. The counted field is `mismatches`
 // (integer).
 //
@@ -78,7 +95,7 @@
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 
@@ -191,7 +208,13 @@ function gateTally(repo, rev, script, cache) {
           else result = { status: "measured", tally: Number(m[1]), exit: r.status, flag };
         }
       } finally {
-        rmSync(tmp, { recursive: true, force: true });
+        // v4 (round 51): the temp cleanup is not a verdict datum. The r49/r50
+        // rounds each crashed once on the Windows EPERM file-lock race while
+        // rmSync cleaned the sandbox (crashed receipts kept and named, never
+        // quoted as verdicts). A cleanup failure now leaves the temp dir for
+        // the OS to sweep and lets the measured result stand; the sandbox is
+        // per-invocation TMPDIR, never the lane tree.
+        try { rmSync(tmp, { recursive: true, force: true }); } catch { /* disclosed host race, not a finding */ }
       }
     }
   }
@@ -409,18 +432,84 @@ function m2Findings(repo, rev) {
   return findings;
 }
 
-// ---- m3: unlanded paths -----------------------------------------------------
+// ---- m3: unlanded paths (v4, round 51: byte-truth against the measured tree) --
 
-function m3Findings(repo, docText) {
+const NTFS_ILLEGAL = /[<>:"|?*\u0000-\u001f]/;
+
+function m3ClassifyRow(repo, rev, rowPath, buildFold, foldMap) {
+  // "real" | "artifact" for one porcelain row's path, reading only git blobs
+  // at the measured revision and the worktree bytes (never the index).
+  const absPath = resolve(repo, rowPath);
+  const wt = existsSync(absPath) ? readFileSync(absPath) : null;
+  const inTree = spawnSync("git", ["-C", repo, "cat-file", "-e", `${rev}:${rowPath}`], { maxBuffer: 1024 * 1024 }).status === 0;
+  const digest = (b) => createHash("sha256").update(b).digest("hex");
+  const variants = () => {
+    if (process.platform !== "win32") return [];
+    buildFold();
+    return foldMap.get(rowPath.toLowerCase()) || [];
+  };
+  if (wt !== null) {
+    if (!inTree) return "real";
+    const blob = spawnSync("git", ["-C", repo, "cat-file", "-p", `${rev}:${rowPath}`], { maxBuffer: 64 * 1024 * 1024 });
+    if (blob.status !== 0) return "real";
+    if (digest(wt) === digest(blob.stdout)) return "artifact";
+    // v4 case-collision branch: this lane's Linux-built tree holds sibling
+    // spellings of one path (sandbox_readme.md AND sandbox_README.md) that
+    // cannot coexist on a case-insensitive filesystem; the on-disk file is
+    // exactly ONE spelling's bytes. If those bytes equal a sibling variant's
+    // blob, the physical file IS landed bytes and this row is the collision
+    // artifact, not unlanded work (win32 scoring host only).
+    for (const v of variants()) {
+      if (v === rowPath) continue;
+      const b2 = spawnSync("git", ["-C", repo, "cat-file", "-p", `${rev}:${v}`], { maxBuffer: 64 * 1024 * 1024 });
+      if (b2.status === 0 && digest(wt) === digest(b2.stdout)) return "artifact";
+    }
+    return "real";
+  }
+  if (!inTree) return "real";
+  if (process.platform === "win32") {
+    if (variants().length > 1) return "artifact"; // a case-colliding pair cannot both materialize
+    if (NTFS_ILLEGAL.test(rowPath)) return "artifact";
+  }
+  return "real";
+}
+
+function m3Findings(repo, docText, rev) {
   const newest = [...docText.matchAll(/^##\s+Round\s+(\d+)\s+—\s+executed disposition/gm)]
     .map((m) => ({ round: Number(m[1]), index: m.index }))
     .sort((a, b) => b.round - a.round)[0];
   if (!newest) return [];
   const r = spawnSync("git", ["-C", repo, "status", "--porcelain", "--untracked-files=all"], { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 });
   if (r.error) throw new Refusal(`git status failed: ${r.error.message}`);
-  const paths = r.stdout.split("\n").filter(Boolean);
-  if (!paths.length) return [];
-  return [{ class: "m3-unlanded-paths", doc: "SCORECARD.md", line: null, round: newest.round, claimed: "landed", observed: paths.length, superseded: false }];
+  const rows = r.stdout.split("\n").filter(Boolean).map((l) => l.slice(3));
+  if (!rows.length) return [];
+  const foldMap = new Map();
+  const buildFold = () => {
+    if (foldMap.size) return;
+    const t = spawnSync("git", ["-C", repo, "ls-tree", "-r", "--name-only", rev], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+    if (t.status === 0) {
+      for (const q of t.stdout.split("\n")) {
+        if (!q) continue;
+        const k = process.platform === "win32" ? q.toLowerCase() : q;
+        if (!foldMap.has(k)) foldMap.set(k, []);
+        foldMap.get(k).push(q);
+      }
+    }
+  };
+  let real = 0, artifact = 0;
+  for (const p of rows) {
+    let cls;
+    try { cls = m3ClassifyRow(repo, rev, p, buildFold, foldMap); } catch { cls = "real"; }
+    if (cls === "real") real += 1; else artifact += 1;
+  }
+  const findings = [];
+  if (real > 0) findings.push({ class: "m3-unlanded-paths", doc: "SCORECARD.md", line: null, round: newest.round, claimed: "landed", observed: real, superseded: false });
+  if (artifact > 0) {
+    // the declared host-index artifact class (v4): disclosed by name, never a
+    // mismatch — observed stays null so the counted set never sees it.
+    findings.push({ class: "m3-index-artifact", doc: "SCORECARD.md", line: null, round: newest.round, claimed: "landed", observed: null, superseded: false, couldNotEvaluate: `${artifact} status rows are byte-identical to the measured tree or NTFS-unrepresentable names (host index artifact, disclosed not counted)` });
+  }
+  return findings;
 }
 
 // ---- m4: stagnation-nudge state (v3, round 32) --------------------------------
@@ -525,7 +614,7 @@ export function evaluate(repo, revArg) {
   const skillFindings = skillText === null ? [] : m1LogFindings(repo, rev, skillText, cache, "SKILL.md", true);
   const readmeText = readBlob(repo, rev, "corpus/README.md");
   const readmeFindings = readmeText === null ? [] : m1LogFindings(repo, rev, readmeText, cache, "corpus/README.md", true);
-  const findings = [...m1Findings(repo, rev, scorecard, cache), ...logFindings, ...skillFindings, ...readmeFindings, ...m2Findings(repo, rev), ...m3Findings(repo, scorecard), ...m4Findings(scorecard)];
+  const findings = [...m1Findings(repo, rev, scorecard, cache), ...logFindings, ...skillFindings, ...readmeFindings, ...m2Findings(repo, rev), ...m3Findings(repo, scorecard, rev), ...m4Findings(scorecard)];
   const counted = findings.filter((f) => f.observed !== null && f.observed !== f.claimed && !f.superseded);
   return {
     schema: SCHEMA,
@@ -599,6 +688,8 @@ function nudgeDoc({ cap, said, adjacency = 8, wrap = false, correction = "" }) {
     ...(correction ? ["## Round 6 — corrections", "", correction, ""] : []),
   ].join("\n");
 }
+
+const NTFS_HOST = process.platform === "win32";
 
 const CASES = [
   {
@@ -916,6 +1007,75 @@ const CASES = [
     classes: [],
     build: (d) => { d.scorecard(["# scorecard", "", "## Round 5 — waves", "", "- saturation 8 / window 3; stagnation nudge inactive.", ""].join("\n")); },
   },
+
+  {
+    // v4 (round 51): the declared host-index artifact class — the index forgets
+    // a committed path; the worktree bytes stay identical to the blob at the
+    // measured revision. git status reads it untracked; byte-truth classifies
+    // it artifact: disclosed under couldNotEvaluate, never a mismatch.
+    id: "m3-index-artifact-untracked-byte-identical",
+    exit: 0,
+    classes: [],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (13/13)"));
+      writeFileSync(join(d.root, "tracked.txt"), "same bytes" + String.fromCharCode(10));
+      d.commit();
+      const r = spawnSync("git", ["-C", d.root, "rm", "--cached", "tracked.txt"], { encoding: "utf8" });
+      if (r.status !== 0) throw new Error("rm --cached failed: " + r.stderr);
+    },
+  },
+  {
+    // v4 hard branch kept: worktree bytes that DIFFER from the measured tree's
+    // blob are real unlanded drift, whatever the index says.
+    id: "m3-real-modified-bytes-vs-tree",
+    exit: 1,
+    classes: ["m3-unlanded-paths"],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (13/13)"));
+      writeFileSync(join(d.root, "tracked.txt"), "committed bytes" + String.fromCharCode(10));
+      d.commit();
+      writeFileSync(join(d.root, "tracked.txt"), "unlanded drift" + String.fromCharCode(10));
+    },
+  },
+  {
+    // v4 declared artifact branch: a committed path whose name cannot exist on
+    // a win32 filesystem (colon) reads as a worktree-deleted row; on the win32
+    // scoring host it is the artifact class (the file can never materialize),
+    // on a host that can represent the name it is a real unlanded deletion.
+    // core.protectNTFS=false mirrors the artifact's provenance (the real lane
+    // tree carries these names from Linux-built history).
+    id: "m3-ntfs-unrepresentable-name",
+    exit: NTFS_HOST ? 0 : 1,
+    classes: NTFS_HOST ? [] : ["m3-unlanded-paths"],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (13/13)"));
+      d.commit();
+      const sha = spawnSync("git", ["-C", d.root, "hash-object", "-w", "--stdin"], { input: "colon-named" + String.fromCharCode(10), encoding: "utf8" });
+      if (sha.status !== 0) throw new Error("hash-object failed: " + sha.stderr);
+      const up = spawnSync("git", ["-C", d.root, "-c", "core.protectNTFS=false", "update-index", "--add", "--cacheinfo", "100644," + sha.stdout.trim() + ",weird:colon.txt"], { encoding: "utf8" });
+      if (up.status !== 0) throw new Error("update-index failed: " + up.stderr);
+      const c = spawnSync("git", ["-C", d.root, "commit", "-q", "-m", "colon"], { encoding: "utf8" });
+      if (c.status !== 0) throw new Error("commit failed: " + c.stderr);
+    },
+  },
+  {
+    // v4 hard branch kept: a committed path with a representable name that is
+    // genuinely absent from the worktree stays a real unlanded row.
+    id: "m3-real-gone-representable-name",
+    exit: 1,
+    classes: ["m3-unlanded-paths"],
+    build: (d) => {
+      d.gate("scripts/check-fixture.mjs");
+      d.scorecard(fixtureDoc("`--selftest` (13/13)"));
+      writeFileSync(join(d.root, "gone.txt"), "committed" + String.fromCharCode(10));
+      d.commit();
+      rmSync(join(d.root, "gone.txt"));
+    },
+  },
+
 ];
 
 function makeFixture() {
@@ -929,7 +1089,16 @@ function makeFixture() {
   run(["config", "user.email", "fixture@tabi.local"]);
   run(["config", "user.name", "tabi-fixture"]);
   const top = run(["rev-parse", "--show-toplevel"]).trim();
-  if (top !== root) throw new Error(`fixture root mismatch: ${top} != ${root}`);
+  // v4 host fix (round 51): on this Windows host `git rev-parse --show-toplevel`
+  // prints the temp dir in forward-slash form while node:os tmpdir() uses
+  // backslashes, so the byte-equality check refused every fixture and the
+  // gate's own self-test could not run here at all. Compare path-normalized
+  // (separators unified, case-folded on win32) — same assertion, host-neutral.
+  const normP = (x) => {
+    const u = String(x).replace(/[\\//]+/g, "/");
+    return process.platform === "win32" ? u.toLowerCase() : u;
+  };
+  if (normP(top) !== normP(root)) throw new Error(`fixture root mismatch: ${top} != ${root}`);
   let committed = false;
   const d = {
     root,
