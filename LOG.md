@@ -3413,3 +3413,13 @@ position 1, nudge inactive, the lowest-axis obligation applies — C1 works adja
   clean before the freeze); the receipt birth-name drift (two "green"-named receipts
   hold FAILED runs — one disclosed in place, one removed pre-commit; next generation
   names correction-flow receipts by outcome).
+- Addendum (the at-R gate pass): the v4 gate's first at-work-rev pass read mismatches=7
+  — six pre-r48 `check-adjacency.mjs` self-test tallies (57/44 vs the oracle-correct 64,
+  orphaned by the r48 case-count change, superseded this round in the SCORECARD and
+  SKILL windows per the supersede-with-citation pattern) plus m3 counting the gate's own
+  in-flight receipt; the failed receipt is kept and named
+  (`.ufo/waves/round-52/measure/c3-gate-at-work.txt`), the gate re-measures with a fully
+  committed tree and its output outside the tree (the r50/r51 `ea11da95` pattern); the
+  six rows had graded could-not-evaluate in the r51 passes and measured here — the
+  oracle sits near the gate's 180-second spawn timeout on this host; disclosed in the
+  lesson appendix.

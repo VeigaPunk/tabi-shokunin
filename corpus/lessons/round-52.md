@@ -183,3 +183,28 @@ rows.
 
 `considerthese/` does not exist in the lane repo (checked 2026-11-02). Shokuknow
 register not reachable from this host. Assimilation: none — shokuknow unreachable.
+
+## Post-integration appendix (2026-11-02, same day)
+
+The v4 gate's first complete host-side pass at the work commit `9bda1741` read
+`SELFASSESSMENT verdict=failed rev=9bda1741... mismatches=7 could_not_evaluate=167
+superseded=43` (receipt `measure/c3-gate-at-work.txt`, committed at the addendum commit)
+— six stale `check-adjacency.mjs` self-test tallies the r48 57 -> 64 case-count change
+had orphaned across the SCORECARD and SKILL m1 windows (the same class the r51 chain
+mined for the check-selfassessment 41 -> 45 change), plus m3 itself counting the gate's
+own in-flight receipt file (the honest reading: it was unlanded at that instant; this
+time the output path sits outside the tree at measurement — the r51 R5 pattern — after
+the failed receipt was landed first, kept and named). Notable: the six adjacency rows
+graded could-not-evaluate in the r51 passes and MEASURED here — the oracle's own
+self-test sits near the gate's 180-second spawn timeout on this host (a bare
+`--self-test` run took minutes while the fleet was busy; it printed
+`ADJACENCY_SELFTEST verdict=clean cases=64 reasons=18 could_not_evaluate=6` at
+`.ufo/waves/round-52/measure/adjacency-selftest-at-work.txt`), so the stale tallies were
+real and unmarked since r48 either way, and the gate did its job in both states. The
+tally-supersession addenda landed (the SCORECARD single-line form for the line-scoped
+window at the block tail; the SKILL paragraph form for the lineOnly window at the file
+tail); the gate re-measures at that rev with a fully committed tree and its output
+outside the tree, and the resulting verdict receipt lands in the round's receipts-only
+final commit naming the rev it measured (the r50/r51 `ea11da95` pattern). No number in
+this appendix quotes an uncommitted or crashed run; every quoted line is from a
+committed receipt.
