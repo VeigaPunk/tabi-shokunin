@@ -229,3 +229,21 @@ the final state; the final state was and is registry 160, no S161 row.
 
 `considerthese/` does not exist in the lane repo (checked 2026-11-01). Shokuknow
 register not reachable from this host. Assimilation: none — shokuknow unreachable.
+
+## Post-integration appendix (2026-11-01, same day)
+
+The v4 gate's first complete host-side pass at the work commit `b3abd0ba` read
+`SELFASSESSMENT verdict=failed rev=b3abd0ba… mismatches=19 could_not_evaluate=169
+superseded=25` (receipt `measure/c3-gate-v4-at-R.txt`, committed at `3ed86e6a`) — 19
+stale self-test tallies across the four m1 windows orphaned by the case-count change,
+while m3 itself read zero real unlanded rows. The tally-supersession addenda landed at
+`3ed86e6a` (paragraph-based windows cleared: superseded 25 -> 38, mismatches 19 -> 6)
+and the SCORECARD window's line-scoped supersession needed the single-line form at
+`8e2fe015` (superseded 38 -> 43, mismatches 6 -> 1). The last mismatch at `8e2fe015`
+was m3 itself counting the six in-flight receipt files (the measurement receipts this
+appendix commits) — the honest reading: they were unlanded at that instant. This
+appendix and those receipts land in the final content commit; the gate re-measures at
+that rev with a fully committed tree, and the resulting verdict receipt
+(`measure/c3-gate-v4-at-R4.txt`) lands in the round's receipts-only final commit, naming
+the rev it measured (the r50 `ea11da95` pattern). No number in this appendix quotes an
+uncommitted or crashed run; every quoted line is from a committed receipt.
