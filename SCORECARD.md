@@ -2963,3 +2963,78 @@ end exit 0 (22 pre-existing W04).
 ### Round 52 - tally-supersession addendum (the at-R gate pass surfaced six pre-r48 adjacency-gate tallies the 57 -> 64 case-count change had orphaned)
 
 - `scripts/check-adjacency.mjs` `--self-test` (64/64): correction — supersedes the stale tallies at `SCORECARD.md:1195`, `SCORECARD.md:1829`, `SCORECARD.md:1853` and `SCORECARD.md:2545` (each states a pre-r48 generation's count as oracle-correct at its own tip; the r48 `--fleet-repo` and whole-line-quote repairs added seven cases); the gate prints `ADJACENCY_SELFTEST verdict=clean cases=64 reasons=18 could_not_evaluate=6` (`.ufo/waves/round-52/measure/adjacency-selftest-at-work.txt`); 64 is the oracle-correct figure at this round's tip. The tally, the marker and all four citations share this one physical line — the SCORECARD window's supersession is line-scoped and reads the clearing line's own text only (the r51 `8e2fe015` lesson, re-learned here after the first wrapped attempt failed to clear).
+
+## Round 53 - declared claims (frozen before data at eec453d9, amended once before any data) and executed disposition (both verified)
+
+Round 53 on the Windows host. Baseline `3abdeba6faa574edd8120661341a8a15c181ad55`; freeze
+`eec453d99fd3821a4d10f5a3c437cfc478f58b36` (claims.json + three instruments + round-open
+controls + census start, BEFORE any data); PRE-DATA AMENDMENT 1
+`1d0f07931b91e30c608e00c3799df6e76427f049` (the runner's formMode ok-chain was generated
+without its leading `const f` declaration - the FIRST live run crashed at the ok-chain
+after the journey; red receipt kept and named `controls/c2-live-run1-crash-f-undefined.txt`;
+the fix restores the one declaration, fixtures regenerated, selftests re-run - the
+sanctioned r50 pattern, disclosed in the lesson); C2 data
+`1bb1ca43fe643b6403384d06479d7fcb6238fbdb`; C1 data
+`e87c695847a49403034ba3db3e8eda77cd8f6533`; C1 correction 1
+`99ff0c6b51d02a117c0cc5dc055c7e45e56d19e3` (the cited green revision); work commit (this
+block's commit). Axes at round start: adjacency 8, coverage 9, depth 9, operability 9,
+freshness 9, calibration 9; saturation 8 / window 3; the r52 capability row
+(`webview2-keyevent-typing-windows`, first-working 52) keeps the stagnation window
+RESTARTED (round 53 = position 1) - the nudge is inactive, the lowest-axis obligation
+applies, and C1 works adjacency. Fresh-start ruling honored: the r42/r43/r47 refused
+claim classes re-read and ruled out in the freeze's freshStartNote (no wave/seat claims;
+no reasoned-not-measured after-states - both after-states are committed instrument
+outputs at named revisions; counters pin committed-byte digests and ship hand-declared
+refusal fixtures). Carry-in from the r52 non-author closure (all three routed, none is a
+claim): item 1 - the r52 claims.json "9 vs 10" typing-refusal prose drift corrected as a
+Correction of record, the fixture oracle measured at 10
+(`.ufo/waves/round-53/measure/c2-r52-typing-count-check.txt`), no frozen r52 byte edited,
+forward prose carries 10; item 2 - the SHONEN promotion-review note is operator-owned,
+routed around (boxes stay [~]); item 3 - the receipt-counter selftest repo-root layout
+sensitivity PINNED inside the r53 counter (named error `selftest-repo-root-layout`, exit 2
+before any case runs; `controls/selftest-layout-pin.txt`).
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis; the regression-gate re-bind + the v13 meter generation bump, no routed meter-token carry-in this round) - VERIFIED | `node .ufo/waves/round-52/counters/c1-adjacency-host-v12.mjs --rev 3abdeba6... --repo <lane> --fleet <fleet> --json` (red control, round open); `node .ufo/waves/round-53/counters/c1-adjacency-host-v13.mjs --rev 99ff0c6b... --repo <lane> --fleet <fleet> --json`; `--selftest`; `diff` v12 v13 (`controls/v12-v13-meter.diff`); `measure/c1-token-check-r53.txt` | before: at round open the committed r52 ledger generation measures RED - exit 1, **5 findings** (5 lane-screen-head-mismatch: kengaku, mori, shokunin-binary-forensics, shokunin-reverse-engineering, tameshi - the heads advanced since the r52 snapshot); ZERO sha/lines/quote findings, so no screened province byte moved (control `controls/c1-meter-v12-red-at-round-open.json` taken before any lane write - a do-nothing control reaches exactly this red, and green requires the re-bind work the do-nothing control does not perform) -> the versioned v13 meter (frozen digest 87d08cff...) differs from v12 ONLY in comments, the r53 ledger rebind, schema strings and the emitted predicateSentence + header PREDICATE-SENTENCE token (`c1-adjacency-host-v12 admits` -> `c1-adjacency-host-v13 admits`) - pure core byte-identical to v12, selftest 16/16, the Round 52 delta paragraph's historical numbers quoted verbatim (the r52 corrupted-quotation class guarded, `measure/c1-token-check-r53.txt`); audit-r53 (16 rows = 9 unchanged + 6 sibling-absent + 1 moved - the kumitate row honestly moved with the meter-derived note `text now at :1736`) and delta-r53 (12 lane rows + 16 line rows) re-bound at one fresh snapshot, dispositions carried by exact whole-line quote match, **0 new adjudications, 0 dropped stale quotes**; the green run raced ONCE on a concurrent sibling commit (tameshi at correction 0 - the raced receipt named by OUTCOME `measure/c1-meter-raced-at-correction0.json`, the r52 lesson's birth-name class fix applied) and the frozen correction flow re-bound -> **GREEN at `99ff0c6b`: exit 0, predicate true, 0 findings**, counts {roster:16, mapRows:16, auditRows:16, deltaLanes:12}; one of the two correction cycles consumed, receipt committed | **met** under the frozen rule; adjacency held 8 -> 8 |
+| C2 coverage (capability extension - the r52 planned residual: keyboard-modifier chords on the per-key key-event trace; sourced S153 re-opened byte-identical a FIFTH time with the modifiers bit-field description located) - VERIFIED | `git ls-tree -r --name-only <REV> -- corpus/evidence/round53 | wc -l` (0 -> 7); `node .ufo/waves/round-53/counters/webview2-receipt-r53.mjs <receipt> --shot ... --png-a ... --png-b ... --png-c ... --png-form ... --png-echo ... --driver scripts/webview2-cdp-loopback-round53.mjs --hostsrc scripts/webview2-host-round48.cs`; cross-refusals `measure/c2-r52counter-refuses-r53.json` + `measure/c2-r53counter-refuses-r52.json` | before: the surface's measured key-event model ended at the r52 plain per-key trace (lowercase nonce only, modifiers: 0 throughout - no modifier-key coverage); the Shift-chord residual was committed text in the r52 SCORECARD planned section; `corpus/evidence/round53` held 0 files -> after: at `1bb1ca43` the receipt records the 6-leg journey with the fill driven as TWO real per-key key-event traces - the r52 plain trace into #field (25 keyDown/keyUp pairs, keyEventCount 50, 25 per-keystroke prefix witnesses, allPrefixTrue true) AND the Shift-chord trace into #field2: the invocation-bound nonce UPPERCASED typed with real Shift rides (ShiftLeft VK 16 keyDown/keyUp around every uppercase letter's pair, the letter's event carrying **modifiers: 8** - S153's Input.dispatchKeyEvent modifiers bit field, Shift=8, the round's located ground - and the shifted key/text; digits and hyphen unshifted at modifiers 0), 25 chord entries with per-keystroke DOM prefix witnesses (allPrefixTrue true), keyEventCount **70** = 10 shifted chars x 4 + 15 unshifted x 2; the GET submit through the form's own button carrying BOTH parameters (`/echo?field=<nonce>&mixed=<uppercased>`), witnessed SERVER-SIDE (fixture served log) and CLIENT-SIDE (echo page renders both values); nonce `tabi-r53-281215ca50c47cd8`, Edg/156.0.4314.58, history at C 4/3 and back leg 4/2 reproduced a fourth time; six per-step URL/title/PNG pins; keyed teardown sweep 0; host-exe-reused with provenance pinned (the per-blob spawn-verdict host condition - three blocked fresh compiles kept and named in the lesson, the positive r52-control run recorded); counter r53 green **exit 0, 0 findings, couldNotEvaluate []** - the counter re-derives both traces' code/VK/shiftRide/modifiers from the receipt's own nonce and checks every prefix on both fields; cross-refusal SYMMETRIC: the r52 counter refuses the r53 receipt with **7 findings** and the r53 counter refuses the committed r52 receipt with **10 findings incl. chords-missing**; counter selftest **85/85** (82 refusals covering every harness-expressible finding id incl. 16 chord-refusal cases and the 10-id r52 typing chain; manifest asserts exact findings + the declared cne rule per case); `--path-selftest` 6/6; the selftest repo-root layout expectation PINNED (wrong layout exit 2, `selftest-repo-root-layout` - the r52-closure carry-in item 3) | **met** under the frozen rule; coverage held 9 -> 9; the capability row enters the table below (first-working 53) |
+
+### Capabilities - round 53
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| webview2-keyevent-modifier-chords-windows | Drive the webview2 surface's form fill as TWO per-key key-event traces: the r52 plain trace (every nonce character rides a real keyDown/keyUp pair with per-keystroke prefix witnesses) PLUS a Shift-chord trace - the invocation-bound nonce UPPERCASED typed into the form's second field where every uppercase letter rides a real Shift keyDown/keyUp (ShiftLeft, VK 16) around its keyDown/keyUp pair, the letter's event carrying modifiers 8 (S153's Shift=8 bit) and the shifted key/text, digits/hyphen unshifted - with the field's DOM value read back after EACH keystroke on BOTH fields; the submit carries both query parameters and is witnessed server-side and client-side; the counter re-derives both traces incl. shiftRide/modifiers and checks every prefix, and an 85-case hand-declared fixture set exercises every harness-expressible finding id including sixteen chord refusals; the selftest pins its repo-root layout expectation (named error, exit 2) | `scripts/webview2-cdp-loopback-round53.mjs` (`--form`); `corpus/evidence/round53/webview2-modifier-chords/receipt.json` + 6 per-step PNGs; `.ufo/waves/round-53/counters/webview2-receipt-r53.mjs` + `webview2-receipt-r53-fixtures/` (85 cases); `corpus/knowledge/webview2-keyevent-modifier-chords-round-53.md` | 53 |
+
+### Round 53 - sources, frontier, trend verdicts
+
+Registry 160 -> 160 (UNCHANGED: S153 re-opened byte-identical - FIFTH consecutive
+identical fetch, sha256 f60f0c02... equals the registered anchor; the located ground
+this round is the Input.dispatchKeyEvent modifiers parameter description "Bit field
+representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8 (default:
+0)." (12 words, carried as one JSON string with a \n wrap in the opened bytes) and the
+command description still verbatim 1 hit; the row's used-by column extended in place
+per the contract, old->new logged in the lesson). Knowledge notes 68 -> 69 (the
+modifier-chords note). PROVINCE gains the round-53 runner line and the standing
+per-blob spawn-verdict host note. Census start AND end exit 0 (22 pre-existing W04).
+`node scripts/check-sources.mjs` -> SOURCES_GATE verdict=clean rows=160 findings=0
+(`.ufo/waves/round-53/measure/check-sources-at-work.txt`).
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | The measured surface grew again: the webview2 key-event model now covers MODIFIER CHORDS (0 -> 7 evidence files; two real per-key traces in one fill with per-keystroke prefix witnesses on both fields, live and counter-checked), and the capability row `webview2-keyevent-modifier-chords-windows` enters the table; S153's re-open (byte-identical fifth fetch) extends a held source row's located ground to the modifiers bit field; notes 68 -> 69. |
+| quality | improved | The regression gate absorbed another concurrent sibling-commit race inside its pre-declared correction flow (the raced receipt named by OUTCOME per the r52 lesson's class fix, green at `99ff0c6b` with zero byte drift in the screened provinces); the generation bump is isolated to comments/ledger names/schema strings/token with the pure core byte-identical (diff committed, diff-reviewed before any run - and the diff review of the RUNNER missed nothing while its ok-chain splice did, which the amendment caught and mined); the new counter ships 85 hand-declared fixtures with exact-findings assertions, both cross-generation refusals measured symmetric, and the routed layout-pin carry-in landed inside the counter generation. |
+| discernment | improved | Every after-state is an instrument output at a named revision (the green names `99ff0c6b`, the receipt names `1bb1ca43`); the ok-chain crash, the three blocked fresh compiles, and the correction race are all disclosed with kept-and-named receipts and mined as Mistakes rows (including the one PASS recorded to show the r52 birth-name class fix working); the pre-data amendment names its own red receipt and the byte it supersedes; the lane did not self-check its SHONEN boxes (the operator-owned gate routed around per the closure's routing). |
+
+### Planned / saturation / retired - round 53
+
+- planned: coverage - the webview2 surface's next residuals: Ctrl/Alt/Meta chords
+  (modifiers 2/1/4 on the key-event trace - Shift only this round) and a
+  fourth-surface probe only if the host shows one; the C1 pattern continues: re-run
+  the current meter generation as the regression gate after any sibling roster change.
+- planned: adjacency - keep the dispositions carried by exact whole-line quote match;
+  if a screened province's bytes ever change, adjudicate the genuinely new BG lines
+  within the frozen vocabulary and count them in the claims.
+- planned: operability - keep the four m1 windows' tallies oracle-correct at every tip
+  (the supersede-with-citation pattern); no gate generation change is planned.
+- saturation 8 / window 3 retained; the r53 capability row keeps the window RESTARTED
+  (round 54 = position 1). No axis retired; no score moved (no rubric authorizes one).

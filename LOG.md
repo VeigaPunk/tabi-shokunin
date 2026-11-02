@@ -3433,3 +3433,94 @@ position 1, nudge inactive, the lowest-axis obligation applies — C1 works adja
   `.ufo/waves/round-52/measure/c3-gate-v4-at-final.txt`; the three failed passes are
   kept and named (`c3-gate-at-work.txt`, `c3-gate-at-addendum.txt`,
   `c3-gate-at-repair.txt`), never quoted as verdicts.
+
+## Round 53 (2026-11-02) — the Shift modifier-chord key-event trace (coverage capability), the meter v13 generation rebind (adjacency gate), and the routed carry-ins
+
+Baseline `3abdeba6faa574edd8120661341a8a15c181ad55` → freeze `eec453d9` → PRE-DATA
+AMENDMENT 1 `1d0f0793` (the runner ok-chain `const f` authoring defect; red kept and
+named) → C2 data `1bb1ca43` → C1 data `e87c6958` → C1 correction 1 `99ff0c6b` (the
+green) → work commit (this entry's commit). Two declared claims, both VERIFIED under
+their frozen predicates; every after-state is a committed instrument output at a named
+revision. Full detail: SCORECARD round-53 block, `corpus/lessons/round-53.md`.
+- C1 adjacency (lowest owned axis; the r46–r52 regression-gate re-bind pattern): the
+  round-open red control on the inherited v12/r52 generation exited 1 with **5
+  findings** (5 lane-screen-head-mismatch: kengaku, mori, shokunin-binary-forensics,
+  shokunin-reverse-engineering, tameshi; ZERO sha/lines/quote findings — no screened
+  province byte moved; receipt `controls/c1-meter-v12-red-at-round-open.json` taken
+  before any lane write); the versioned v13 meter (frozen digest `87d08cff…`, pure core
+  byte-identical to v12, selftest 16/16, the emitted sentence + header token naming
+  v13 — no routed meter-token carry-in this round, measured at
+  `measure/c1-token-check-r53.txt`); audit-r53 (16 rows = 9 unchanged + 6
+  sibling-absent + 1 moved — the kumitate row honestly moved, note `text now at
+  :1736`) and delta-r53 (12 lane rows + 16 line rows) re-bound at ONE fresh snapshot,
+  16 dispositions carried by exact whole-line quote match, 0 new adjudications, 0
+  dropped stale quotes; the green raced ONCE (tameshi advanced mid-round; raced receipt
+  named by OUTCOME `measure/c1-meter-raced-at-correction0.json` — the r52 lesson's
+  birth-name class fix applied at rename time) and the frozen correction flow re-bound
+  → GREEN at `99ff0c6b`: exit 0, predicate true, 0 findings, counts {roster:16,
+  mapRows:16, auditRows:16, deltaLanes:12}; one of two correction cycles consumed.
+- C2 coverage (the r52 planned residual — keyboard-modifier chords): the live 6-leg
+  journey at `1bb1ca43` with the fill driven as TWO real per-key key-event traces — the
+  r52 plain trace into #field (25 keyDown/keyUp pairs, keyEventCount 50, 25
+  per-keystroke prefix witnesses, allPrefixTrue true) AND the Shift-chord trace into
+  #field2: the invocation-bound nonce UPPERCASED typed with real Shift rides
+  (ShiftLeft VK 16 around every uppercase letter's pair, the letter's event carrying
+  **modifiers: 8** — S153's Input.dispatchKeyEvent modifiers bit field, Shift=8, the
+  round's located ground; digits/hyphen unshifted), 25 chord entries with
+  per-keystroke DOM prefix witnesses, keyEventCount **70** = 10 letters × 4 + 15
+  unshifted × 2, allPrefixTrue true; the GET submit carrying both parameters witnessed
+  SERVER-SIDE (fixture served log) and CLIENT-SIDE (the echo page renders both values);
+  nonce `tabi-r53-281215ca50c47cd8`, Edg/156.0.4314.58, history 4/3 and back leg 4/2
+  reproduced a fourth time; six per-step URL/title/PNG pins; keyed teardown sweep 0;
+  host-exe-reused with provenance pinned (the NEW standing host condition: a freshly
+  csc-compiled exe may be refused by spawn with UNKNOWN errno -4094 — per-BLOB
+  verdicts; three blocked fresh compiles disclosed in the lesson, the r52-control run
+  as the positive control; PROVINCE gains the standing note); counter r53 GREEN exit 0
+  / 0 findings / couldNotEvaluate [] — the counter re-derives both traces'
+  code/VK/shiftRide/modifiers from the receipt nonce and checks every prefix on both
+  fields; cross-refusals SYMMETRIC: the r52 counter refuses the r53 receipt with 7
+  findings and the r53 counter refuses the committed r52 receipt with 10 findings incl.
+  chords-missing; counter selftest **85/85** (3 green incl. one declared-cne green +
+  82 refusals covering every harness-expressible finding id incl. 16 chord-refusal
+  cases and the 10-id r52 typing chain; exact-findings manifest + declared cne rule
+  per case); `--path-selftest` 6/6.
+- PRE-DATA AMENDMENT 1 (`1d0f0793`): the runner's formMode ok-chain was generated
+  WITHOUT its leading `const f` declaration (the r52→r53 transform spliced FROM the
+  anchor that declared f) — the FIRST live run crashed at the ok-chain after the
+  journey (`ReferenceError: f is not defined`, receipt unwritten; `node --check` had
+  passed — execution-only defect); the red receipt is kept and named
+  (`controls/c2-live-run1-crash-f-undefined.txt`); the fix restores the one declaration
+  (runner `949384b3…` → `4e80a2e0…`, otherwise byte-identical), fixtures regenerated
+  (manifest byte-identical), selftests re-run at the amendment bytes; mined as a
+  Mistakes row (class fix: a transform splicing FROM a declaration anchor must re-emit
+  the declaration; preflight-bind the ok-chain names before the journey).
+- Carry-in performed (r52 non-author closure, all three routed items; none is a
+  claim): item 1 — the r52 claims.json "9 vs 10" typing-refusal prose drift corrected
+  as a Correction of record; the fixture oracle measured at 10
+  (`measure/c2-r52-typing-count-check.txt`: claims.json says 9 in 2 places, the
+  manifest has 10 typing-* cases/ids, SCORECARD+LOG say 10); no frozen r52 byte
+  edited; forward prose carries 10. Item 2 — the SHONEN promotion-review note is
+  operator-owned, routed around (boxes stay [~] with resolvable pointers; no [x]
+  self-written). Item 3 — the receipt-counter selftest repo-root layout sensitivity
+  PINNED inside the r53 counter: the layout expectation is checked at selftest start
+  and a wrong layout dies exit 2 with the named error `selftest-repo-root-layout`
+  before any case runs (`controls/selftest-layout-pin.txt`: right layout exit 0 85/85,
+  wrong layout exit 2). The `tabi | round-44` L2-floor L0 stays open and routed around
+  per its standing PROVINCE.md disposition line.
+- SOURCES: registry UNCHANGED 160 → 160 — S153 re-opened byte-identical a FIFTH time
+  (fresh fetch sha256 f60f0c02… == the registered anchor; staged
+  `sources/browser-protocol.json`; the located ground: the dispatchKeyEvent modifiers
+  parameter description "Bit field representing pressed modifier keys. Alt=1, Ctrl=2,
+  Meta/Command=4, Shift=8 (default: 0)." — 12 words, one JSON string with a \n wrap;
+  the command description still verbatim 1 hit); the S153 used-by column extended in
+  place per the contract (old→new logged in the lesson). Knowledge notes 68 → 69 (the
+  modifier-chords note). Census start AND end exit 0 (22 W04 pre-existing);
+  check-sources clean rows=160 findings=0.
+- Mistakes mined this round (lesson rows): the ok-chain transform authoring defect
+  (execution-only, receipt unwritten — the amendment-1 red receipt; class fix recorded);
+  the per-blob spawn-verdict host condition (three blocked fresh compiles kept and
+  named; the deterministic reuse-if-exists path used for the data run with provenance
+  pinned; PROVINCE standing note + knowledge note); one PASS recorded (the r52
+  birth-name class fix working: the correction-0 raced receipt renamed by outcome
+  before any commit).
+- Assimilation: none — `considerthese/` absent; shokuknow unreachable.

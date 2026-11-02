@@ -80,6 +80,16 @@ This province was written for the previous Linux host. Probed on the current hos
   mid-round on this host, so the meter's green run can race a head that moved after the ledger snapshot — the
   frozen correction flow (re-snapshot -> re-bind -> commit -> re-run, two cycles) is the designed answer (r52
   consumed both cycles; r50 consumed one).
+- Round 53 (2026-11-02): the webview2 surface now carries Shift modifier chords — `scripts/webview2-cdp-loopback-round53.mjs
+  --form` extends the r52 per-key trace with a second trace: the invocation-bound nonce UPPERCASED typed into the form's
+  second field with real Shift keyDown/keyUp rides around every uppercase letter's pair (the letter's event carrying
+  `modifiers: 8` — S153's dispatchKeyEvent modifiers bit field, Shift=8, re-opened byte-identical a fifth time this round),
+  digits/hyphen unshifted, the DOM value read back after EVERY keystroke on BOTH fields, the GET submit carrying both
+  query parameters witnessed server-side and client-side (`corpus/evidence/round53/webview2-modifier-chords/`). Standing
+  host note: a freshly `csc`-compiled host exe may be refused by `spawn` with UNKNOWN (errno -4094) — the refusal follows
+  the compiled blob (per-blob verdicts, e.g. Defender real-time), not the path; the runner's reuse-if-exists branch is the
+  deterministic answer (seed the scratch with a blob that already spawned; provenance pinned by hostExeSha256 + the
+  committed source's hostCsSha256) — see `corpus/knowledge/webview2-keyevent-modifier-chords-round-53.md`.
 - Standing disposition — the L2-floor L0 (`tabi | round-44`, open since round 44, routed around every round since):
   this host has no AgentSwarm/Kimi L2 dispatch surface, so the >=8-L2-subagents floor is not satisfiable here; tabi
   rounds run L1-inline, disclose that in every predicate and claims.json, and route around the open question without

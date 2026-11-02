@@ -989,3 +989,16 @@ byte-identical a fourth time; used-by extended in place). Census start AND end e
 | Note | What it records | Ground |
 |---|---|---|
 | `knowledge/webview2-keyevent-typing-round-52.md` | The per-key typing model (r52 capability `webview2-keyevent-typing-windows`): every nonce character rides a real Input.dispatchKeyEvent keyDown (text/key/code/windowsVirtualKeyCode derived per character) + keyUp pair — 2n events for an n-character nonce — with the field's DOM value read back after EACH keystroke (the per-keystroke prefix witness the r51 before/after shape could not carry); the r52 counter re-derives the code/VK mapping from the receipt nonce and checks every prefix; 10 typing-* finding ids each exercised by a hand-declared refusal fixture (50-case selftest); symmetric cross-generation refusal (typing-missing is the class the r51 receipts cannot carry); the journey/history/back-leg model reproduced a third time; the runtime-drift contract carried. | S153 (re-opened); `scripts/webview2-cdp-loopback-round52.mjs`; `.ufo/waves/round-52/counters/webview2-receipt-r52.mjs`; `corpus/evidence/round52/webview2-keyevent-typing/receipt.json` |
+
+## Round 53 — the Shift modifier-chord key-event trace (2026-11-02)
+
+New knowledge note `knowledge/webview2-keyevent-modifier-chords-round-53.md` (notes
+68 -> 69) and a note row below. The r52 planned residual exercised: the webview2
+surface's key-event model now covers modifier chords. Registry UNCHANGED 160 -> 160
+(S153 re-opened byte-identical a fifth time; the modifiers bit-field description
+located; used-by extended in place). Census start AND end exit 0 (22 pre-existing
+W04).
+
+| Note | What it records | Ground |
+|---|---|---|
+| `knowledge/webview2-keyevent-modifier-chords-round-53.md` | The modifier-chord model (r53 capability `webview2-keyevent-modifier-chords-windows`): the invocation-bound nonce UPPERCASED typed into the form's second field where every uppercase letter rides a real Shift keyDown/keyUp (ShiftLeft, VK 16) around its keyDown/keyUp pair — the letter's event carrying modifiers 8 (S153's dispatchKeyEvent modifiers bit field, Shift=8) and the shifted key/text, digits/hyphen unshifted — with the DOM value read back after EACH keystroke on BOTH fields (the r52 plain trace intact beside it); the submit carries both query parameters, witnessed server-side and client-side; the r53 counter re-derives both traces incl. shiftRide/modifiers and checks every prefix (16 chord-refusal finding ids each exercised by a hand-declared refusal fixture, 85-case selftest); the selftest's repo-root layout expectation PINNED (named error, exit 2 — the r52-closure routed harness note); the per-blob spawn-verdict host condition (a fresh csc exe may be spawn-refused UNKNOWN per blob; the reuse-if-exists branch with pinned provenance is the deterministic answer). | S153 (re-opened); `scripts/webview2-cdp-loopback-round53.mjs`; `.ufo/waves/round-53/counters/webview2-receipt-r53.mjs`; `corpus/evidence/round53/webview2-modifier-chords/receipt.json` |
