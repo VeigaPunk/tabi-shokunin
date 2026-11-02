@@ -1,0 +1,165 @@
+2,4c2,5
+< // webview2-cdp-loopback-round51.mjs — tabi round 51, claim C2 (coverage:
+< // capability extension — the form-interaction residual on the webview2
+< // surface, the r49/r50 planned list's second residual: fill + submit).
+---
+> // webview2-cdp-loopback-round52.mjs — tabi round 52, claim C2 (coverage:
+> // capability extension — the r51 planned residual: a PER-KEY typing trace as
+> // the alternative form-fill mechanism, driven with the CDP Input domain's
+> // key events).
+6c7
+< // Round 51 deltas vs the committed r50 runner (everything else
+---
+> // Round 52 deltas vs the committed r51 runner (everything else
+8,29c9,33
+< //   (1) --form: the full r50 four-leg journey (Page.navigate /a.html, the
+< //       pages' own anchor clicks to /b.html and /c.html, the measured-model
+< //       history read at C and the Page.navigateToHistoryEntry back hop to the
+< //       /b.html entry) PLUS two form legs, driven with the CDP Input domain
+< //       (S153's Input.insertText / Input.dispatchMouseEvent descriptions are
+< //       the ground): anchor-click to /form.html, a real mouse click INTO the
+< //       field (mousePressed/mouseReleased at the element center),
+< //       Input.insertText of the invocation-bound nonce, the field's value read
+< //       back from the DOM, a second mouse click on the form's own submit
+< //       button, the GET form navigation to /echo observed SERVER-SIDE by the
+< //       inline fixture (served request log carries /echo?field=<nonce>) and
+< //       CLIENT-SIDE by the echo page rendering the received value — six legs,
+< //       six PNGs, receipt.form carries the whole chain. The nonce riding the
+< //       form page, the inserted value, the echo page rendering and the server
+< //       log entry are four independent witnesses of one invocation-bound
+< //       fill+submit round trip.
+< //   (2) /b.html gains a second anchor (#form) to the form page; the r50 pages'
+< //       bytes are otherwise unchanged in shape (each round's fixture is its
+< //       own; the r50 counter still pins the r50 bytes).
+< //   (3) The runtime default stays a placeholder: --runtime MUST be passed
+< //       explicitly (the r50 contract, unchanged — the auto-update drift is the
+< //       standing host condition).
+---
+> //   (1) --form now fills the field with the PER-KEY key-event trace instead
+> //       of Input.insertText: the same real mouse click INTO the field focuses
+> //       it, then for EVERY nonce character the runner dispatches a real
+> //       Input.dispatchKeyEvent keyDown (text/unmodifiedText/key/code/
+> //       windowsVirtualKeyCode derived per character: digits -> Digit<N> + VK
+> //       48+N, letters -> Key<X> + VK 65+, hyphen -> Minus + VK 189) followed
+> //       by the matching keyUp — 2n key events for an n-character nonce — and
+> //       reads the field's DOM value back after EACH keystroke. The receipt's
+> //       journey.form.typing[] is the per-key prefix trace: entry i records the
+> //       character, its derived code/VK and the DOM value after keystroke i,
+> //       which must equal the nonce prefix of length i+1 (per-key delivery
+> //       witness: exactly one character per keystroke, in order, no dropped or
+> //       duplicated keys). journey.form.keyEventCount records the dispatched
+> //       event count; valueBeforeFirstKey must be empty; the value after the
+> //       full trace must equal the invocation-bound nonce; the submission and
+> //       its witnesses (form-page nonce marker, rendered echo page, fixture
+> //       server's served log) are the r51 chain unchanged.
+> //   (2) S153's Input.dispatchKeyEvent description is the round's located
+> //       source ground (re-opened byte-identical this round; the r51
+> //       insertText/dispatchMouseEvent ground carries the click and the prior
+> //       fill mechanism).
+> //   (3) The runtime contract is unchanged: --runtime MUST be passed
+> //       explicitly (auto-update drift is the standing host condition); the
+> //       nonce/profile/token prefixes move to tabi-r52 so cross-generation
+> //       receipts refuse by shape.
+32,33c36,39
+< //   node scripts/webview2-cdp-loopback-round51.mjs --runtime <runtimeDir> //        --loader <WebView2Loader.dll> --scratch <dir> --out <receipt.json> //        [--csc <csc.exe>] [--journey] [--form]
+< //   node scripts/webview2-cdp-loopback-round51.mjs --path-selftest
+---
+> //   node scripts/webview2-cdp-loopback-round52.mjs --runtime <runtimeDir>
+> //        --loader <WebView2Loader.dll> --scratch <dir> --out <receipt.json>
+> //        [--csc <csc.exe>] [--journey] [--form]
+> //   node scripts/webview2-cdp-loopback-round52.mjs --path-selftest
+65c71
+<   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'tabi-r51-pathselftest-'));
+---
+>   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'tabi-r52-pathselftest-'));
+83c89
+<     const profile = path.join(r.resolved, 'tabi-r51-wv2drv-abcd123456-profile');
+---
+>     const profile = path.join(r.resolved, 'tabi-r52-wv2drv-abcd123456-profile');
+106c112
+<   console.log(JSON.stringify({ schema: 'tabi-webview2-cdp-r50-path-selftest', allPass, cases: cases.length, pass: cases.filter((c) => c.ok).length, cases }, null, 1));
+---
+>   console.log(JSON.stringify({ schema: 'tabi-webview2-cdp-r52-path-selftest', allPass, cases: cases.length, pass: cases.filter((c) => c.ok).length, cases }, null, 1));
+118c124
+<   console.error('usage: node webview2-cdp-loopback-round51.mjs --runtime <dir> --loader <dll> --scratch <dir> --out <receipt.json> [--csc <csc.exe>] [--journey] | --path-selftest');
+---
+>   console.error('usage: node webview2-cdp-loopback-round52.mjs --runtime <dir> --loader <dll> --scratch <dir> --out <receipt.json> [--csc <csc.exe>] [--journey] | --path-selftest');
+125,126c131,132
+< const nonce = `tabi-r51-${crypto.randomBytes(8).toString('hex')}`;
+< const token = `tabi-r51-wv2drv-${crypto.randomBytes(5).toString('hex')}`;
+---
+> const nonce = `tabi-r52-${crypto.randomBytes(8).toString('hex')}`;
+> const token = `tabi-r52-wv2drv-${crypto.randomBytes(5).toString('hex')}`;
+132,133c138,139
+<   schema: 'tabi-webview2-cdp-r51',
+<   generatedBy: 'scripts/webview2-cdp-loopback-round51.mjs',
+---
+>   schema: 'tabi-webview2-cdp-r52',
+>   generatedBy: 'scripts/webview2-cdp-loopback-round52.mjs',
+162c168
+< const mkPage = (letter, title, anchors) => `<!doctype html><html><head><title>tabi-r51 journey fixture ${title}</title></head>` +
+---
+> const mkPage = (letter, title, anchors) => `<!doctype html><html><head><title>tabi-r52 journey fixture ${title}</title></head>` +
+166c172
+< const mkFormPage = () => `<!doctype html><html><head><title>tabi-r51 form fixture</title></head>` +
+---
+> const mkFormPage = () => `<!doctype html><html><head><title>tabi-r52 form fixture</title></head>` +
+190c196
+<       res.end(`<!doctype html><html><head><title>tabi-r51 echo</title></head><body><h1 id="pg">echo</h1><p id="echoed">${field}</p></body></html>`);
+---
+>       res.end(`<!doctype html><html><head><title>tabi-r52 echo</title></head><body><h1 id="pg">echo</h1><p id="echoed">${field}</p></body></html>`);
+430c436
+<           const form = { mechanism: 'dispatchMouseEvent+insertText+submit-click' };
+---
+>           const form = { mechanism: 'dispatchKeyEvent+submit-click' };
+432c438,447
+<           // leg 6 — real input-domain fill + submit
+---
+>           // leg 6 — the PER-KEY typing trace (the r52 fill mechanism): after
+>           // the same real mouse click into the field, every nonce character
+>           // rides a real Input.dispatchKeyEvent keyDown (with per-character
+>           // text/key/code/windowsVirtualKeyCode) + keyUp pair, and the field's
+>           // DOM value is read back after EACH keystroke — the per-key prefix
+>           // witness (value after keystroke i must be the nonce prefix of
+>           // length i+1). S153's Input.dispatchKeyEvent description is the
+>           // round's located ground (re-opened byte-identical this round).
+>           const vkFor = (ch) => (/[0-9]/.test(ch) ? 48 + Number(ch) : /[a-z]/.test(ch) ? 65 + (ch.charCodeAt(0) - 97) : ch === '-' ? 189 : null);
+>           const codeFor = (ch) => (/[0-9]/.test(ch) ? 'Digit' + ch : /[a-z]/.test(ch) ? 'Key' + ch.toUpperCase() : ch === '-' ? 'Minus' : null);
+435c450,465
+<           await send('Input.insertText', { text: nonce });
+---
+>           form.valueBeforeFirstKey = await evalStr(`document.getElementById('field').value`);
+>           form.typing = [];
+>           let keyEvents = 0;
+>           for (let i = 0; i < nonce.length; i++) {
+>             const ch = nonce[i];
+>             const vk = vkFor(ch), code = codeFor(ch);
+>             if (vk === null || code === null) { fail('keyevent-mapping-missing', { i, ch }); break; }
+>             await send('Input.dispatchKeyEvent', { type: 'keyDown', modifiers: 0, key: ch, text: ch, unmodifiedText: ch, code, windowsVirtualKeyCode: vk, nativeVirtualKeyCode: vk });
+>             keyEvents++;
+>             await send('Input.dispatchKeyEvent', { type: 'keyUp', modifiers: 0, key: ch, code, windowsVirtualKeyCode: vk, nativeVirtualKeyCode: vk });
+>             keyEvents++;
+>             const valueAfter = await evalStr(`document.getElementById('field').value`);
+>             form.typing.push({ i, char: ch, code, windowsVirtualKeyCode: vk, valueAfter });
+>           }
+>           form.keyEventCount = keyEvents;
+>           form.fieldValueAfterTyping = await evalStr(`document.getElementById('field').value`);
+437c467,468
+<           form.fieldValueAfterInsert = await evalStr(`document.getElementById('field').value`);
+---
+>           form.allPrefixTrue = form.typing.length === nonce.length
+>             && form.typing.every((t, i) => t.valueAfter === nonce.slice(0, i + 1));
+448c479
+<           note('form-complete', { fieldValue: form.fieldValueAfterInsert, echoPage: form.valueOnEchoPage, serverSaw: form.serverSawField });
+---
+>           note('form-complete', { fieldValue: form.fieldValueAfterTyping, keyEvents: form.keyEventCount, allPrefix: form.allPrefixTrue, echoPage: form.valueOnEchoPage, serverSaw: form.serverSawField });
+509c540,546
+<       && f.filledValue === nonce && f.fieldValueAfterInsert === nonce
+---
+>       && f.filledValue === nonce
+>       && f.valueBeforeFirstKey === ''
+>       && Array.isArray(f.typing) && f.typing.length === nonce.length
+>       && f.typing.every((t, i) => t.char === nonce[i] && t.valueAfter === nonce.slice(0, i + 1))
+>       && f.keyEventCount === 2 * nonce.length
+>       && f.fieldValueAfterTyping === nonce
+>       && f.allPrefixTrue === true
