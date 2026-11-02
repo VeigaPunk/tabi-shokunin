@@ -210,3 +210,22 @@ End (round close): same command → exit 0 (receipt
 
 `considerthese/` does not exist in the lane repo (checked 2026-11-02). Shokuknow
 register not reachable from this host. Assimilation: none — shokuknow unreachable.
+
+## Post-integration appendix (2026-11-02, same day)
+
+The v4 gate's pass at the work commit `7fa7efeb4422c53e9664c542cc9244fab83cf17e`
+read `SELFASSESSMENT verdict=clean rev=7fa7efeb4422c53e9664c542cc9244fab83cf17e
+mismatches=0 could_not_evaluate=180 superseded=43` (exit 0) — the first invocation
+that named a rev (the usage note: bare `node scripts/check-selfassessment.mjs` is
+exit 2 could-not-evaluate usage; `--rev <REV>` is the measured form). Measured with
+a fully committed tree and the gate output outside the tree (scratch-side), the
+receipt landed by the round's receipts-only final commit naming the rev it measured
+(the r50/r51 `ea11da95` pattern):
+`.ufo/waves/round-53/measure/c3-gate-v4-at-final.txt`. No failed gate pass occurred
+this round; nothing was superseded by this round's SCORECARD append (the new block
+adds no m1-window tallies and orphans none — the pre-existing supersession set of
+43 is unchanged). The gate run took minutes on this host while the fleet was busy
+(the r52 lesson's oracle-near-the-spawn-timeout observation, reproduced: the
+backgrounded run completed after several minutes). No number in this appendix
+quotes an uncommitted or crashed run; every quoted line is from the committed
+receipt.

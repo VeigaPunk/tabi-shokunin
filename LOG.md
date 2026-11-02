@@ -3524,3 +3524,4 @@ revision. Full detail: SCORECARD round-53 block, `corpus/lessons/round-53.md`.
   birth-name class fix working: the correction-0 raced receipt renamed by outcome
   before any commit).
 - Assimilation: none — `considerthese/` absent; shokuknow unreachable.
+- Final gate verdict (the round's receipts-only commit): SELFASSESSMENT verdict=clean rev=7fa7efeb4422c53e9664c542cc9244fab83cf17e mismatches=0 could_not_evaluate=180 superseded=43, exit 0 - measured with a fully committed tree and the gate output outside the tree; receipt `.ufo/waves/round-53/measure/c3-gate-v4-at-final.txt` names the rev it measured (the r50/r51 ea11da95 pattern); no failed pass this round; the pre-existing supersession set (43) unchanged by this round's append.
