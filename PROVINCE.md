@@ -71,6 +71,15 @@ This province was written for the previous Linux host. Probed on the current hos
   read back, a second mouse click on the form's own submit button), the submission witnessed by the fixture server's
   served log as well as the rendered echo page (`corpus/evidence/round51/webview2-form-journey/`; S153 re-opened
   byte-identical with the Input-domain quotes verbatim).
+- Round 52 (2026-11-02): the webview2 surface now carries a per-key typing trace — `scripts/webview2-cdp-loopback-round52.mjs
+  --form` replaces the r51 insertText fill with real `Input.dispatchKeyEvent` keyDown/keyUp pairs, one per nonce
+  character with a per-character-derived `code`/`windowsVirtualKeyCode` (digits Digit<N>+48+N, letters Key<X>+65+,
+  hyphen Minus+189), reading the field's DOM value back after EVERY keystroke (the per-keystroke prefix witness —
+  `corpus/evidence/round52/webview2-keyevent-typing/`; S153 re-opened byte-identical a fourth time, the
+  dispatchKeyEvent description located verbatim). Standing note for the adjacency gate: sibling lanes commit
+  mid-round on this host, so the meter's green run can race a head that moved after the ledger snapshot — the
+  frozen correction flow (re-snapshot -> re-bind -> commit -> re-run, two cycles) is the designed answer (r52
+  consumed both cycles; r50 consumed one).
 - Standing disposition — the L2-floor L0 (`tabi | round-44`, open since round 44, routed around every round since):
   this host has no AgentSwarm/Kimi L2 dispatch surface, so the >=8-L2-subagents floor is not satisfiable here; tabi
   rounds run L1-inline, disclose that in every predicate and claims.json, and route around the open question without

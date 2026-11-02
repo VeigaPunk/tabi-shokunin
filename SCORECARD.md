@@ -2895,3 +2895,67 @@ addendum supersedes every one of them with the oracle-correct figure:
   mentions in the other three windows via the addenda landed beside this block
   (`LOG.md`, `SKILL.md`, `corpus/README.md`).
 - `scripts/check-selfassessment.mjs` `--selftest` (45/45): correction — supersedes the stale tallies at `SCORECARD.md:1439`, `SCORECARD.md:1465`, `SCORECARD.md:1486`, `SCORECARD.md:1564` and `SCORECARD.md:1610` (the pre-v4 correction chain — the 17, 22, 22, 30 and 41 figures those lines state are each an earlier tip's count, and the chain's final oracle-correct claim was itself the v3-era count); the gate prints `SELFASSESSMENT_SELFTEST verdict=clean cases=45 passed=45` (`.ufo/waves/round-51/measure/c3-selftest-v4-at-instrument.txt`); 45 is the oracle-correct figure at this round's tip; the wrapped addendum above carries the same supersession for the paragraph-based windows, this single-line form carries it for the SCORECARD window whose supersession is line-scoped.
+
+## Round 52 - declared claims (frozen before data at 8016e67e) and executed disposition (both verified)
+
+Round 52 on the Windows host. Baseline `d24d31ea2c7a28f74ae41145446bb98e75b4bd0d`; freeze
+`8016e67ea5d9ee9ef10710602d9293b86e397987` (claims.json + three instruments + round-open
+controls + census start, BEFORE any data); C1 data
+`62d0cd6e8d0e20d643adbe88349ef0a27b339c82`; C1 correction 1
+`c58469826af2b4a6d4a5ff59919d1d6cd39768f9`; C2 data
+`11d6aeb3f5e626d09320521646b994dafa7651e2`; C1 correction 2
+`7d91d5e31d448230578a06f63f566188c39706a2` (the cited green revision); work commit (this
+block's commit). Axes at round start: adjacency 8, coverage 9, depth 9, operability 9,
+freshness 9, calibration 9; saturation 8 / window 3; the r51 capability row
+(`webview2-form-journey-windows`, first-working 51) keeps the stagnation window
+RESTARTED (round 52 = position 1) - the nudge is inactive, the lowest-axis obligation
+applies, and C1 works adjacency. Fresh-start ruling honored: the r42/r43/r47 refused
+claim classes re-read and ruled out in the freeze's freshStartNote (no wave/seat claims;
+no reasoned-not-measured after-states - both after-states are committed instrument
+outputs at named revisions; counters pin committed-byte digests and ship hand-declared
+refusal fixtures). Carry-in from the r51 non-author closure: R51-V1 (the emitted
+predicateSentence token) fixed by the v12 bump and measured at the freeze
+(`measure/c1-emitted-token-check.txt`); the L2-floor L0 routed around per the standing
+PROVINCE.md disposition line.
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis; the regression-gate re-bind + the v12 meter bump landing the routed R51-V1 token fix) - VERIFIED | `node .ufo/waves/round-51/counters/c1-adjacency-host-v11.mjs --rev d24d31ea... --repo <lane> --fleet <fleet> --json` (red control, round open); `node .ufo/waves/round-52/counters/c1-adjacency-host-v12.mjs --rev 7d91d5e3... --repo <lane> --fleet <fleet> --json`; `--selftest`; `diff` v11 v12 (`controls/v11-v12-meter.diff`); `measure/c1-emitted-token-check.txt` | before: at round open the committed r51 ledger generation measures RED - exit 1, **9 findings** (7 lane-screen-head-mismatch: chousa, kengaku, mori, shokunin-binary-forensics, shokunin-reverse-engineering, tameshi, tsukuroi - the heads advanced since the r51 snapshot; + the kumitate audit pair: claimed unchanged, observed moved at SCORECARD.md:1723); ZERO sha/lines/quote findings, so no screened province byte moved (control `controls/c1-meter-v11-red-at-round-open.json` taken before any lane write - a do-nothing control reaches exactly this red, and green requires the re-bind work the do-nothing control does not perform) -> the versioned v12 meter (frozen digest 8789ac3f...) differs from v11 ONLY in comments, the r52 ledger rebind, schema strings and the emitted predicateSentence token (`c1-adjacency-host-v10 admits` -> `c1-adjacency-host-v12 admits`; the header comment v7 -> v12) - the routed R51-V1 fix, measured at the freeze (`measure/c1-emitted-token-check.txt`); pure core byte-identical to v11, selftest 16/16; audit-r52 (16 rows = 9 unchanged + 6 sibling-absent + 1 moved - the kumitate row honestly moved with the meter-derived note `text now at :1736`) and delta-r52 (12 lane rows + 16 line rows) re-bound at one fresh snapshot, dispositions carried by exact whole-line quote match, **0 new adjudications**; the green run raced TWICE on concurrent sibling commits (tsukuroi at correction 0; kengaku+mori at correction 1) and the frozen correction flow re-bound both times -> **GREEN at `7d91d5e3`: exit 0, predicate true, 0 findings**, counts {roster:16, mapRows:16, auditRows:16, deltaLanes:12}; both correction cycles of the frozen two-cycle budget consumed, both raced receipts committed | **met** under the frozen rule; adjacency held 8 -> 8 |
+| C2 coverage (capability extension - the r51 planned residual: the per-key key-event typing trace as the alternative fill mechanism; sourced S153 re-opened byte-identical a fourth time with the dispatchKeyEvent description verbatim) - VERIFIED | `git ls-tree -r --name-only <REV> -- corpus/evidence/round52 | wc -l` (0 -> 7); `node .ufo/waves/round-52/counters/webview2-receipt-r52.mjs <receipt> --shot ... --png-a ... --png-b ... --png-c ... --png-form ... --png-echo ... --driver scripts/webview2-cdp-loopback-round52.mjs --hostsrc scripts/webview2-host-round48.cs`; cross-refusals `measure/c2-r51counter-refuses-r52.json` + `measure/c2-r52counter-refuses-r51.json` | before: the surface's measured fill mechanism ended at the r51 insertText (one synthetic insertion, before/after witness); the per-key typing trace was committed residual text in the r51 SCORECARD planned section; `corpus/evidence/round52` held 0 files -> after: at `11d6aeb3` the receipt records the 6-leg journey (Page.navigate /a.html -> anchor-click /b.html -> /c.html -> navigateToHistoryEntry back to /b.html, targetIndex 2 -> anchor-click /form.html -> form-submit /echo?field=<nonce>) with the fill driven as **25 real `Input.dispatchKeyEvent` keyDown/keyUp pairs** (per-character derived code/VK: digits Digit<N>+48+N, letters Key<X>+65+, hyphen Minus+189; `keyEventCount` 50) and the DOM value read back after EVERY keystroke (`typing[]` 25 per-keystroke prefix witnesses, `allPrefixTrue` true, `valueBeforeFirstKey` '') - the per-keystroke delivery evidence the r51 before/after shape cannot carry (a dropped or duplicated key, or a value-set fill, is distinguishable); the invocation-bound nonce `tabi-r52-48b62c227a28283d` witnessed four ways (form-page marker, typed value, rendered echo page, fixture served log) plus the trace; history at C [data:, a, b, c] 4/3 and back leg 4/2 reproduced a third time; six per-step URL/title/PNG pins; Edg/156.0.4314.58; keyed teardown sweep 0; counter r52 green **exit 0, 0 findings, couldNotEvaluate []** - the counter re-derives every typing entry's code/VK from the receipt's own nonce; cross-refusal SYMMETRIC: the r51 counter refuses the r52 receipt with **6 findings** and the r52 counter refuses the committed r51 receipt with **6 findings incl. typing-missing**; counter selftest 50/50 at the freeze (48 refusal fixtures incl. 10 typing-trace refusals; first authoring run 49/50, fixed before the freeze, disclosed); `--path-selftest` 6/6 | **met** under the frozen rule; coverage held 9 -> 9; the capability row enters the table below (first-working 52) |
+
+### Capabilities - round 52
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| webview2-keyevent-typing-windows | Drive the webview2 surface's form fill as a PER-KEYSTROKE key-event trace: every nonce character rides a real Input.dispatchKeyEvent keyDown (text/key/code/windowsVirtualKeyCode derived per character) + keyUp pair, with the field's DOM value read back after EACH keystroke - a per-keystroke prefix witness proving one character delivered per keystroke, in order - then the submit through the form's own button with the four r51-class witnesses (form-page marker, typed value, rendered echo, fixture server's served log); the counter re-derives the code/VK mapping from the receipt nonce and checks every prefix, and a 50-case hand-declared fixture set exercises every finding id including ten typing-trace refusals | `scripts/webview2-cdp-loopback-round52.mjs` (`--form`); `corpus/evidence/round52/webview2-keyevent-typing/receipt.json` + 6 per-step PNGs; `.ufo/waves/round-52/counters/webview2-receipt-r52.mjs` + `webview2-receipt-r52-fixtures/` (50 cases); `corpus/knowledge/webview2-keyevent-typing-round-52.md` | 52 |
+
+### Round 52 - sources, frontier, trend verdicts
+
+Registry 160 -> 160 (UNCHANGED: S153 re-opened byte-identical - fourth consecutive
+identical fetch, sha256 f60f0c02... equals the registered anchor; the dispatchKeyEvent
+description "Dispatches a key event to the page." located verbatim 1 hit in the opened
+bytes; the row's used-by column extended in place per the contract, old->new logged in
+the lesson). Knowledge notes 67 -> 68 (the keyevent-typing note). PROVINCE gains the
+round-52 runner line and the standing concurrent-fleet head-race note. Census start AND
+end exit 0 (22 pre-existing W04).
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | The measured surface grew again: the webview2 fill model now carries per-keystroke delivery evidence (0 -> 7 evidence files; 50 real key events with 25 prefix witnesses, live and counter-checked), and the capability row `webview2-keyevent-typing-windows` enters the table; S153's re-open (byte-identical fourth fetch) extends a held source row's located ground to the dispatchKeyEvent primitive; notes 67 -> 68. |
+| quality | improved | The regression gate absorbed another host reality - concurrent sibling commits racing the green run - inside its pre-declared correction flow (both cycles consumed, both raced receipts committed, the green reached at `7d91d5e3` with zero byte drift in the screened provinces across all three snapshots); the routed R51-V1 instrument-output drift is fixed in a versioned bump with the fix isolated to the emitted sentence (pure core byte-identical, diff committed, fix measured at the freeze); the new counter ships 48 refusal fixtures covering every finding id it can emit, and both cross-generation refusals measured symmetric. |
+| discernment | improved | Every after-state is an instrument output at a named revision (the green names `7d91d5e3`, the receipt names `11d6aeb3`); the two head races are disclosed with their raced receipts instead of being silently re-run into a clean story; the fixture authoring drift (49/50 first run) and the receipt birth-name drift (two "green"-named receipts holding failed runs) are mined as Mistakes rows instead of being smoothed; the v12 header generation defect (the corrupted historical quotation, the dropped P1/P2/P3 block) was caught by diff review before any run and mined. |
+
+### Planned / saturation / retired - round 52
+
+- planned: coverage - the webview2 surface's next residuals: keyboard-modifier chords
+  (Shift/Ctrl rides on the key-event trace: modifier flags + capitalized-letter VKs) and
+  a fourth-surface probe only if the host shows one; the C1 pattern continues: re-run
+  the current meter generation as the regression gate after any sibling roster change
+  (the concurrent-fleet standing note now in PROVINCE).
+- planned: adjacency - keep the dispositions carried by exact whole-line quote match;
+  if a screened province's bytes ever change, adjudicate the genuinely new BG lines
+  within the frozen vocabulary and count them in the claims.
+- planned: operability - keep the four m1 windows' tallies oracle-correct at every tip
+  (the supersede-with-citation pattern); no gate generation change is planned.
+- saturation 8 / window 3 retained; the r52 capability row keeps the window RESTARTED
+  (round 53 = position 1). No axis retired; no score moved (no rubric authorizes one).

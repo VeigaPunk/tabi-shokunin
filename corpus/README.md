@@ -977,3 +977,15 @@ byte-truth against the measured tree (artifact rows disclosed under the declared
   `SELFASSESSMENT_SELFTEST verdict=clean cases=45 passed=45`
   (`.ufo/waves/round-51/measure/c3-selftest-v4-at-instrument.txt`); 45 is the
   oracle-correct figure at this round's tip.
+
+## Round 52 — the per-key key-event typing trace (2026-11-02)
+
+New knowledge note `knowledge/webview2-keyevent-typing-round-52.md` (notes 67 -> 68) and a
+note row below. The r51 planned residual exercised: the webview2 surface's fill mechanism
+is now a per-keystroke key-event trace. Registry UNCHANGED 160 -> 160 (S153 re-opened
+byte-identical a fourth time; used-by extended in place). Census start AND end exit 0
+(22 pre-existing W04).
+
+| Note | What it records | Ground |
+|---|---|---|
+| `knowledge/webview2-keyevent-typing-round-52.md` | The per-key typing model (r52 capability `webview2-keyevent-typing-windows`): every nonce character rides a real Input.dispatchKeyEvent keyDown (text/key/code/windowsVirtualKeyCode derived per character) + keyUp pair — 2n events for an n-character nonce — with the field's DOM value read back after EACH keystroke (the per-keystroke prefix witness the r51 before/after shape could not carry); the r52 counter re-derives the code/VK mapping from the receipt nonce and checks every prefix; 10 typing-* finding ids each exercised by a hand-declared refusal fixture (50-case selftest); symmetric cross-generation refusal (typing-missing is the class the r51 receipts cannot carry); the journey/history/back-leg model reproduced a third time; the runtime-drift contract carried. | S153 (re-opened); `scripts/webview2-cdp-loopback-round52.mjs`; `.ufo/waves/round-52/counters/webview2-receipt-r52.mjs`; `corpus/evidence/round52/webview2-keyevent-typing/receipt.json` |

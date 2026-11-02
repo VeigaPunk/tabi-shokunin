@@ -3335,3 +3335,81 @@ move), note-count claims.
   figure supersedes the stale tallies the v4 gate's first at-R run surfaced in
   `SCORECARD.md:1439-1610`, `SKILL.md:2479-2760` and `corpus/README.md:613-668` (the
   addenda landed beside this line).
+
+## Round 52 (2026-11-02) — the per-key key-event typing trace (C2 coverage), the v12 meter bump with the routed R51-V1 token fix and the concurrent-fleet re-bind (C1 adjacency)
+
+Baseline `d24d31ea2c7a28f74ae41145446bb98e75b4bd0d` -> freeze
+`8016e67ea5d9ee9ef10710602d9293b86e397987` (claims.json + three instruments + round-open
+controls + census start, BEFORE any data) -> C1 data `62d0cd6e8d0e20d643adbe88349ef0a27b339c82`
+-> C1 correction 1 `c58469826af2b4a6d4a5ff59919d1d6cd39768f9` -> C2 data
+`11d6aeb3f5e626d09320521646b994dafa7651e2` -> C1 correction 2
+`7d91d5e31d448230578a06f63f566188c39706a2` -> work commit. Two declared claims, frozen
+before any data; axes at round start: adjacency 8 (lowest owned non-retired), others 9;
+saturation 8 / window 3, the r51 capability row keeps the window restarted (round 52 =
+position 1, nudge inactive, the lowest-axis obligation applies — C1 works adjacency).
+
+- C1 adjacency (the regression-gate re-bind through the versioned v12 meter bump, which
+  lands the r51-closure routed carry-in R51-V1): before — at round open the committed
+  v11 meter on the r51 ledger generation measured RED exit 1 / 9 findings (7
+  lane-screen-head-mismatch: chousa, kengaku, mori, binary-forensics,
+  reverse-engineering, tameshi, tsukuroi; + the kumitate audit pair: claimed unchanged,
+  observed moved at SCORECARD.md:1723), ZERO sha/lines/quote findings — the screened
+  provinces are byte-identical, only heads moved (control
+  `controls/c1-meter-v11-red-at-round-open.json`, taken before any lane write); v12
+  differs from v11 only in comments, the r52 ledger rebind, schema strings and the
+  emitted-sentence token (pure core byte-identical, diff
+  `controls/v11-v12-meter.diff`; selftest 16/16); the ledgers re-bound at ONE fresh
+  snapshot (16 dispositions carried by exact whole-line quote match, 0 new
+  adjudications; the kumitate row honestly moved with the meter-derived note
+  `text now at :1736`); the green run raced TWICE on concurrent sibling commits
+  (tsukuroi at correction 0; kengaku+mori at correction 1) and the frozen correction
+  flow re-bound both times (cycle 2 taken after two consecutive stable head polls with
+  re-bind->commit->run chained in one command) — GREEN at `7d91d5e3`: exit 0, predicate
+  true, 0 findings, counts {roster:16, mapRows:16, auditRows:16, deltaLanes:12}; both
+  correction cycles of the frozen two-cycle budget consumed, both raced receipts
+  committed.
+- C2 coverage (the r51 planned residual: the per-key key-event typing trace as the
+  alternative fill mechanism; capability acquisition): before — the surface's measured
+  fill mechanism ended at the r51 insertText (one synthetic insertion, before/after
+  witness), `corpus/evidence/round52` held 0 files; after — at `11d6aeb3` the receipt
+  records the 6-leg journey with the fill as 25 real `Input.dispatchKeyEvent`
+  keyDown/keyUp pairs (per-character derived code/VK, keyEventCount 50) and the DOM
+  value read back after EVERY keystroke (25 per-keystroke prefix witnesses,
+  allPrefixTrue true, valueBeforeFirstKey empty) — the nonce
+  `tabi-r52-48b62c227a28283d` typed key-by-key and witnessed by the form-page marker,
+  the typed value, the rendered echo page AND the fixture server's served log; history
+  at C [data:, a, b, c] 4/3 and back leg 4/2 reproduced a third time; six per-step
+  URL/title/PNG pins; Edg/156.0.4314.58; keyed teardown sweep 0; counter r52 green
+  exit 0 / 0 findings / couldNotEvaluate [] on the committed bytes; cross-refusals
+  SYMMETRIC: the r51 counter refuses the r52 receipt with 6 findings and the r52
+  counter refuses the committed r51 receipt with 6 findings incl. typing-missing (the
+  class the r51 evidence shape cannot carry); counter selftest 50/50 at the freeze
+  (48 refusal fixtures incl. 10 typing-trace refusals; first authoring run 49/50 — the
+  paths-absolute-not-identity fixture produced no finding, fixed before the freeze,
+  disclosed); `--path-selftest` 6/6.
+- SOURCES: registry UNCHANGED 160 -> 160 — S153 re-opened byte-identical a fourth time
+  (fresh fetch sha256 f60f0c02… == the registered anchor; staged
+  `sources/browser-protocol.json`; the dispatchKeyEvent description "Dispatches a key
+  event to the page." located verbatim 1 hit in the opened bytes); the S153 used-by
+  column extended in place per the contract (old->new logged in the lesson). Knowledge
+  notes 67 -> 68 (the keyevent-typing note). Census start AND end exit 0 (22 W04
+  pre-existing); check-sources clean rows=160.
+- Carry-in performed (r51 non-author closure, both routed items): R51-V1 — the v11
+  meter's emitted predicateSentence led with `c1-adjacency-host-v10 admits…` (header
+  comment v7); measured at the freeze on committed bytes
+  (`measure/c1-emitted-token-check.txt`: v11 emitted line 374 -> v10, v12 emitted line
+  380 -> v12) and fixed by the v12 bump exactly as the routing named (the one v10-name
+  occurrence left inside v12 is the delta comment quoting the historical defect); item
+  2 — the `tabi | round-44` L2-floor L0 stays open and routed around per its standing
+  PROVINCE.md disposition line. Assimilation: none — `considerthese/` absent;
+  shokuknow unreachable.
+- Mistakes mined this round (lesson rows): the two mid-round head races (expected
+  class; the meter's own green runs caught them; the correction flow is the designed
+  answer, now also a PROVINCE standing note); the fixture authoring drift 49/50 first
+  run (r51 class, new instance; fixed before the freeze, overwritten receipt
+  disclosed); the authoring-time self-inflicted v12 header defect (a global token
+  replace corrupted the historical v10 quotation and dropped the P1/P2/P3 block —
+  caught by diff review before any run); the receipt authoring mojibake (rewritten
+  clean before the freeze); the receipt birth-name drift (two "green"-named receipts
+  hold FAILED runs — one disclosed in place, one removed pre-commit; next generation
+  names correction-flow receipts by outcome).
