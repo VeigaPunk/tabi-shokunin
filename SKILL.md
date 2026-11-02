@@ -2989,3 +2989,14 @@ row. w2 CritRowKagiB judged the row to hold; the integrator sided with CritRowKa
   `SELFASSESSMENT_SELFTEST verdict=clean cases=45 passed=45`
   (`.ufo/waves/round-51/measure/c3-selftest-v4-at-instrument.txt`). The registry row
   above stays as landed; the entry command and write scope are unchanged.
+
+## Round 51 — corrections, addendum (2026-11-01; append-only; each citation names the stale line's own document and line)
+
+- `scripts/check-selfassessment.mjs` `--selftest` (45/45): correction — supersedes the
+  stale tallies at `SKILL.md:2479-2760` (the registry rows and the round-28/29/31/32
+  correction chain: the 13, 17, 20, 22, 30 and 41 figures those lines state are each an
+  earlier tip's count; v4 adds four m3 byte-truth cases, so 45 is the oracle-correct
+  figure at this round's tip). The gate prints
+  `SELFASSESSMENT_SELFTEST verdict=clean cases=45 passed=45`
+  (`.ufo/waves/round-51/measure/c3-selftest-v4-at-instrument.txt`). Registry rows keep
+  their landed bytes; the entry commands and write scopes are unchanged.

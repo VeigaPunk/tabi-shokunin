@@ -3326,3 +3326,12 @@ move), note-count claims.
   r50 byte edited); the L2-floor L0 (`tabi | round-44`, fifth round routed around)
   CONSOLIDATED into the standing PROVINCE.md line this round per the routing note.
   Assimilation: none — `considerthese/` absent; shokuknow unreachable.
+
+- Correction (supersedes the tally-shape reading at `LOG.md:3311`): the phrase
+  naming the historical pre-v4 case-count figures in the round-51 entry above reads as a
+  tally shape but names no live claim; the oracle-correct figure at this round's tip is
+  `scripts/check-selfassessment.mjs` `--selftest` (45/45)
+  (`.ufo/waves/round-51/measure/c3-selftest-v4-at-instrument.txt`). The same 45/45
+  figure supersedes the stale tallies the v4 gate's first at-R run surfaced in
+  `SCORECARD.md:1439-1610`, `SKILL.md:2479-2760` and `corpus/README.md:613-668` (the
+  addenda landed beside this line).

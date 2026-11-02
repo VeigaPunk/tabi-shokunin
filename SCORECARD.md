@@ -2876,3 +2876,21 @@ pre-existing W04).
   families stay routed to the open fleet L0 (`b6b3b5e4…` :65).
 - saturation 8 / window 3 retained; the r51 capability row keeps the window RESTARTED
   (round 52 = position 1). No axis retired; no score moved (no rubric authorizes one).
+
+### Round 51 — tally-supersession addendum (the final receipt commit; the m1 oracle's first host-side run caught these)
+
+The first at-R run of the v4 gate (rev `b3abd0ba44e4b5420d9b91de64d207a6be202b1e`,
+receipt `.ufo/waves/round-51/measure/c3-gate-v4-at-R.txt`) surfaced 19 stale
+self-test-tally mentions the 41 -> 45 case-count change orphaned across the four m1
+windows — the gate's own first complete host-side pass doing exactly its job. This
+addendum supersedes every one of them with the oracle-correct figure:
+
+- `scripts/check-selfassessment.mjs` `--selftest` (45/45): correction — supersedes the
+  stale tallies at `SCORECARD.md:1439-1610` (the pre-v4 correction chain: the 17, 22,
+  22, 30 and 41 figures each named an earlier tip's count and the chain's final
+  oracle-correct claim was itself the v3-era count). The gate prints
+  `SELFASSESSMENT_SELFTEST verdict=clean cases=45 passed=45`
+  (`.ufo/waves/round-51/measure/c3-selftest-v4-at-instrument.txt`); 45 is the
+  oracle-correct figure at this round's tip, and the same figure supersedes the stale
+  mentions in the other three windows via the addenda landed beside this block
+  (`LOG.md`, `SKILL.md`, `corpus/README.md`).
