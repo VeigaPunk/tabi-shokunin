@@ -776,3 +776,22 @@
     spawn-verdict control commits its compile/spawn bytes inside the receipt
     (`controls/hostexe-fresh-compile-spawn-verdict.json`). (source:
     `corpus/lessons/round-54.md` Corrections item 1)
+
+## Round 55 additions (append-only; never edit above)
+
+109. The cited-receipt landing rule: every receipt a committed text (lesson, report,
+    SCORECARD cell, claims.json) cites as evidence must EXIST in the committed tree at
+    the citing round — verified post-commit with `git diff-tree --no-commit-id
+    --name-status -r <rev>` / `git show <rev>:<path>`, never from the working tree
+    alone; scratch is never citable (extends criterion 108 to instrument receipts,
+    not just stderr). Red state: the r54 report/lesson/SCORECARD cited three counter
+    receipts (`measure/c2-counter-green-at-data.json` + the cross-refusal pair) that
+    were never committed under `.ufo/waves/round-54/measure/` — the r54 scratch was
+    cleaned at round end and the author's originals are unrecoverable (the r54
+    non-author closure's D54-1; the loss disclosed, never silently replaced). The
+    rule was applied in the round it was named: r55 re-measured all three outputs on
+    the committed r54 bytes and landed them at the exact cited paths with a
+    provenance note (`measure/d54-1-landing-note-r55.txt`), and every r55 commit was
+    landing-checked with diff-tree before use — the same check that caught the CRLF
+    empty-commit class the same round. (source: `corpus/lessons/round-55.md`
+    Corrections item 1 + Mistakes 2)

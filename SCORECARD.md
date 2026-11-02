@@ -3113,3 +3113,79 @@ the round-54 runner line. Census start AND end exit 0 (22 pre-existing W04).
   (the supersede-with-citation pattern); no gate generation change is planned.
 - saturation 8 / window 3 retained; the r54 capability row keeps the window RESTARTED
   (round 55 = position 1). No axis retired; no score moved (no rubric authorizes one).
+
+## Round 55 - declared claims (frozen before data at db6f4225) and executed disposition (both verified)
+
+Round 55 on the Windows host. Baseline `793d947e`; freeze `db6f4225` (claims.json + three
+instruments at the pinned digests + round-open controls + census start, BEFORE any data; the
+freeze needed four commits on this host - two EMPTY path-carrier commits and a claims-only
+probe, all disclosed in the carrier's message and in the round-55 lesson Mistakes 2: CRLF
+line endings in the commit path list defeated treecommit's isfile resolution, caught by the
+post-commit diff-tree landing check and fixed in the same round); C2 data `c1e64885` (the
+live control-domain receipt + six per-step PNGs + counter green + both cross-refusals, with
+the b-back PNG pin completed at `81b2fdbd`) + the D54-1 landing receipts; C1 data `103bf06f`
+(the ledgers bound at one fresh snapshot; the raced correction-0 receipt kept) → correction 1
+`216b1cf2` (delta-r55 re-bound; GREEN, one cycle of the frozen two consumed); work commit
+(this block). Axes at round start: adjacency 8, coverage 9, depth 9, operability 9,
+freshness 9, calibration 9; saturation 8 / window 3; the r54 capability row keeps the window
+RESTARTED (round 55 = position 1) - the nudge is inactive, the lowest-axis obligation
+applies, and C1 works adjacency. Fresh-start ruling honored: the r42/r43/r47 refused claim
+classes re-read and ruled out in claims.json's freshStartNote (no wave/seat claims; both
+after-states are committed instrument outputs at named revisions; the do-nothing-control
+test explicit - C1's red control IS the do-nothing state, C2's baseline evidence tree is
+EMPTY). Carry-in from the r54 non-author closure (all three routed, none is a claim):
+D54-1 - the three cited counter receipts LANDED at the exact cited paths as r55 re-measures
+on the committed r54 bytes (the r54 originals disclosed LOST), the cited-receipt landing
+rule named and landed as QUALITY.md criterion 109 citing the round-55 lesson;
+D54-2 - the S161 anchor cell corrected of record (§5.3 → §3.5.1, verified against the
+staged bytes, old→new logged); D54-3 - the L2-floor L0 standing referred to only.
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis; the regression-gate re-bind + the v15 meter generation bump, which also FIXES a v14 comment-only header name-leftover found by this round's diff review) - VERIFIED (one correction cycle consumed: tameshi raced the correction-0 green run; the raced receipt kept) | `node .ufo/waves/round-54/counters/c1-adjacency-host-v14.mjs --rev 793d947e... --repo <lane> --fleet <fleet> --json` (red control, round open); `node .ufo/waves/round-55/counters/c1-adjacency-host-v15.mjs --rev 216b1cf2... --repo <lane> --fleet <fleet> --json`; `--selftest`; `diff` v14 v15 (`controls/v14-v15-meter.diff`); `controls/c1-token-check-r55.txt` | before: at round open the committed v14 meter generation measures RED at the baseline - exit 1, **6 findings** (4 lane-screen-head-mismatch: kengaku, mori, shokunin-binary-forensics, tameshi - the heads that advanced since the r54 snapshot; PLUS lane-screen-sha-mismatch AND lane-screen-lines-mismatch BOTH on kengaku - its PROVINCE.md bytes changed since the r54 snapshot, the second consecutive screened-province byte change; ZERO audit findings, so no map row moved as of round open; control `controls/c1-meter-v14-red-at-round-open.json` taken before any lane write - a do-nothing control reaches exactly this red, and green requires the re-bind work) -> after: GREEN at `216b1cf2` at correction 1 - exit 0, predicate true, **0 findings**, counts {roster:16, mapRows:16, auditRows:16, deltaLanes:12}; ONE correction cycle consumed (tameshi committed between the rebind snapshot and the green run; raced receipt kept `measure/c1-meter-raced-at-correction0.json`; both ledgers re-bound at ONE fresh snapshot per cycle, `measure/c1-snapshot-at-rebind.json` + `measure/c1-snapshot-at-correction1.json`); audit-r55 carries the r54 statuses verbatim (0 audit findings); delta-r55: 11 provinces byte-identical at their new heads, kengaku RE-SCREENED at its new head a6cd337d (892 lines, was 847; ZERO browser-ground hits - no line row changed, **0 new adjudications**), 16 line rows carried by exact whole-line quote match; the v15 generation is pure-core byte-identical to v14 (diff committed) and FIXES the v14 header comment naming "tabi round 53" (comment-only, disclosed at `controls/c1-token-check-r55.txt`; v14 bytes never edited), v15 emits v15 in all four token places; selftest 16/16 (`measure/c1-meter-v15-selftest.json`); receipt named by OUTCOME `measure/c1-meter-green-at-correction1.json` | **met** under the frozen rule; adjacency held 8 -> 8 |
+| C2 coverage (capability acquisition - the r54 planned residual: the KEY-DOMAIN control keys on the trace - End caret-anchor with the negative edit witness, Backspace edit + exact restore, Tab focus traversal witnessed by the page's own activeElement, Enter keyboard-submit via the implicit submission - S153 re-opened a SEVENTH time for the key-event contract, S083 RE-OPENED this round for the implicit-submission default-button ground; S162's duplicate-URL draft honestly DROPPED when check-sources E04 caught it, the ground routed to the S083 re-open per the registry contract) - VERIFIED | `git ls-tree -r --name-only <REV> -- corpus/evidence/round55 | wc -l` (0 -> 7); `node .ufo/waves/round-55/counters/webview2-receipt-r55.mjs <receipt> --shot ... --png-a ... --png-b ... --png-c ... --png-form ... --png-echo ... --driver scripts/webview2-cdp-loopback-round55.mjs --hostsrc scripts/webview2-host-round48.cs`; cross-refusals `measure/c2-r54counter-refuses-r55.json` + `measure/c2-r55counter-refuses-r54.json` | before: the surface's measured key-event model ended at the r54 modifier domain (bits 8/2/1/4); the control-key residual was committed text in the r54 SCORECARD planned section; `corpus/evidence/round55` held 0 files -> after: at `c1e64885` (+`81b2fdbd` for the b-back pin) the receipt records the 6-leg journey with the fill driven as the r52 plain trace + r53 Shift chords + r54 chord-domain leg ALL UNCHANGED, PLUS the control-domain leg: the nonce `tabi-r55-5a70384367c4b44b`, fresh compile SPAWNED first try with the compile bytes inside the receipt (the per-blob spawn-verdict condition did NOT recur), End (VK 35, 2 events) with `valueAfterEnd` == nonce (the negative edit witness - a movement key edits nothing; the pre-freeze smoke run's caret defect caught and fixed BEFORE the freeze, red control `controls/c2-smoke-caret-midtext-red.json`), Backspace (VK 8, 2 events) with `valueAfterBackspace` == nonce minus EXACTLY its last character and the removed character re-typed to an exact restore (`valueAfterRestore` == nonce), Tab (VK 9, 2 events) with the page's OWN activeElement witness moving field -> field2, Enter (VK 13, ONE keyDown WITH \r FROM the tabbed-to field) driving the implicit submission to the SAME /echo?field=&mixed= query, witnessed SERVER-SIDE (fixture served log) and CLIENT-SIDE (echo page renders both) - S083 §4.10.22.2 grounds the default-button contract; keylog window +4; `journey.form.pageKeylog` = the page's complete 69-entry keydown record re-derived END TO END by the counter from the receipt's own nonce (the Enter keydown's own DOM record NOT witnessed - the implicit submission navigates the document and the keylog dies with it; DISCLOSED in runner header, claims.json and counter sentence); counter r55 green **exit 0, 0 findings, couldNotEvaluate []**; cross-refusal SYMMETRIC: the r54 counter refuses the r55 receipt with **6 findings** (schema, profile-shape, nonce-shape, driver-pin, form-mechanism, keylog-length) and th 7 findings (the same five PLUS control-domain-missing AND keylog-length — the frozen
+predicate's corrected expectation, derived from the counter's actual check flow before the
+freeze); counter selftest **103/103** at the frozen bytes (100 refusals covering every
+harness-expressible finding id incl. seven new round-55 control-domain cases; exact-findings
+manifest + declared cne rule per case); `--path-selftest` 6/6 | **met** under the frozen
+rule; coverage held 9 -> 9; the capability row enters the table below (first-working 55) |
+
+### Capabilities - round 55
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| webview2-keyevent-control-keys-windows | Drive the webview2 surface's form fill with the KEY-DOMAIN control keys, each witnessed by the page's own DOM state: End re-anchors the caret with the NEGATIVE EDIT WITNESS (the field value read back UNCHANGED — the smoke run's caret-defect red control is committed), Backspace deletes exactly the last character (the residue re-derived by the counter from the receipt's own nonce) and the removed character is re-typed to an exact restore, Tab moves focus field -> field2 witnessed by document.activeElement, and ONE Enter keyDown from the tabbed-to field submits the form via the implicit submission — witnessed server-side and client-side, the spec ground S083 §4.10.22.2 (the default button in tree order) re-opened this round; the counter ships 103 hand-declared fixtures including seven new control-domain refusal cases | `scripts/webview2-cdp-loopback-round55.mjs` (`--form`); `corpus/evidence/round55/webview2-control-keys/receipt.json` + 6 per-step PNGs; `.ufo/waves/round-55/counters/webview2-receipt-r55.mjs` + `webview2-receipt-r55-fixtures/` (103 cases); `corpus/knowledge/webview2-control-keys-round-55.md` | 55 |
+
+### Round 55 - sources, frontier, trend verdicts
+
+Registry 161 -> **161** rows (the S162 duplicate-URL draft DROPPED before landing —
+check-sources E04 caught it while authoring, and the registry contract routed the ground to
+an S083 RE-OPEN with an extended located ground: fresh fetch 466,321 B, sha256 dc7c3088…,
+staged `.ufo/waves/round-55/sources/`; the Implicit-submission quote greps verbatim 1 hit in
+the raw bytes; used-by extended in place, old->new logged in the lesson). S153 re-opened
+byte-identical a SEVENTH time (sha256 f60f0c02… == the registered anchor; used-by extended in
+place, old->new logged). S161 re-verified from the staged bytes for the D54-2 anchor
+correction. Knowledge notes 70 -> **71** (the control-keys note). Census start AND end exit 0
+(22 pre-existing W04). `node scripts/check-sources.mjs` -> SOURCES_GATE verdict=clean
+rows=161 findings=0 (`.ufo/waves/round-55/measure/check-sources-at-work.txt`).
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | The measured surface grew again: the webview2 key-event model now covers the control-key domain (End caret-anchor with the negative edit witness, Backspace edit with exact restore, Tab focus traversal with the page's own activeElement witness, Enter keyboard-submit with the implicit-submission default-button ground) with the counter re-deriving the complete keylog from the receipt's own nonce (0 -> 7 evidence files; four trace plans in one fill), and the capability row `webview2-keyevent-control-keys-windows` enters the table; a NEW located ground entered an existing row (S083 re-opened to the Implicit-submission section) with the duplicate-URL draft honestly dropped; the seven round-55 refusal cases joined the counter's exact-findings manifest; knowledge notes 70 -> 71. |
+| quality | improved | The regression gate absorbed the second consecutive kengaku byte change AND a mid-round tameshi commit race at ONE correction cycle (the frozen flow working as designed; the raced receipt kept and named by OUTCOME); the v15 generation bump is isolated to comments/ledger names/schema strings/usage/token with the pure core byte-identical (diff committed and diff-reviewed BEFORE any run — the review CAUGHT the v14 comment-only name-leftover, fixed in v15, v14 bytes never edited); the pre-freeze smoke run caught the caret-placement defect and the End anchor landed BEFORE the freeze with the red control committed at the citing round (criterion-108 discipline); the new counter ships 103 exact-findings fixtures; the CRLF empty-commit class was caught by the post-commit landing check, named, and fixed in the same round (criterion 109 landed citing the lesson). |
+| discernment | improved | Every after-state is an instrument output at a named revision (the green names `216b1cf2`, the receipt names `c1e64885`/`81b2fdbd`); the r54-closure carry-ins were corrected of record with measured oracles (D54-1's three receipts re-measured on committed bytes and landed at the cited paths with provenance disclosed and the originals named LOST; D54-2's anchor correction verified against the staged bytes; D54-3 referred to per the standing line); the duplicate-URL source draft was dropped the moment the gate flagged it rather than argued around; the frozen cross-refusal expectation was corrected pre-data by walking the counter's check flow; the lane did not self-check its SHONEN boxes (the operator-owned gate routed around per the standing routing). |
+
+### Planned / saturation / retired - round 55
+
+- planned: coverage - the webview2 surface's next residuals: a branded-Chrome/Edge port of
+  the control-keys leg only if a round shows a form-journey demand on those surfaces (the
+  Chrome r45 and Edge r45 surfaces have not carried a form journey), and pointer-domain keys
+  only if a fixture demands them; the C1 pattern continues: re-run the current meter
+  generation as the regression gate after any sibling roster change.
+- planned: adjacency - keep the dispositions carried by exact whole-line quote match; the
+  kengaku re-screen discipline holds (two consecutive byte changes; the meter re-derives
+  0 BG hits each time).
+- planned: operability - keep the four m1 windows' tallies oracle-correct at every tip
+  (the supersede-with-citation pattern); no gate generation change is planned.
+- saturation 8 / window 3 retained; the r55 capability row keeps the window RESTARTED
+  (round 56 = position 1). No axis retired; no score moved (no rubric authorizes one).

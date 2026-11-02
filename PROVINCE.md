@@ -110,6 +110,23 @@ This province was written for the previous Linux host. Probed on the current hos
   of the fill — re-derived end to end by the r54 counter from the receipt's own nonce and matched entry by entry
   (`corpus/evidence/round54/webview2-modifier-chords/`;
   `corpus/knowledge/webview2-modifier-domain-round-54.md`).
+- Round 55 (2026-11-02): the webview2 surface now carries the KEY-DOMAIN control keys with
+  page-side witnesses — `scripts/webview2-cdp-loopback-round55.mjs --form` carries the r52
+  plain trace, r53 Shift chords and r54 chord-domain leg unchanged and adds the control-domain
+  leg: End (VK 35) re-anchors the caret with the NEGATIVE EDIT WITNESS (the field value read
+  back UNCHANGED — a mouse click into a non-empty input places the caret at the click point;
+  the pre-freeze smoke run's red control is committed at
+  `.ufo/waves/round-55/controls/c2-smoke-caret-midtext-red.json`), Backspace (VK 8) deletes
+  exactly the last character (the residue re-derived by the r55 counter from the receipt's own
+  nonce) with the removed character re-typed to an exact restore, Tab (VK 9) moves focus
+  field -> field2 witnessed by document.activeElement, and ONE Enter keyDown (VK 13, text \r)
+  from the tabbed-to field drives the implicit submission — the default-button contract is
+  S083 re-opened this round (§4.10.22.2); the keylog gains exactly +4 entries and
+  journey.form.pageKeylog is re-derived end to end by the r55 counter from the receipt's own
+  nonce (the Enter keydown's own DOM record is not witnessed — the submission navigates the
+  document; disclosed) (`corpus/evidence/round55/webview2-control-keys/`;
+  `corpus/knowledge/webview2-control-keys-round-55.md`; the r55 counter ships 103 fixtures
+  incl. seven new control-domain refusal cases).
 - Standing disposition — the L2-floor L0 (`tabi | round-44`, open since round 44, routed around every round since):
   this host has no AgentSwarm/Kimi L2 dispatch surface, so the >=8-L2-subagents floor is not satisfiable here; tabi
   rounds run L1-inline, disclose that in every predicate and claims.json, and route around the open question without
