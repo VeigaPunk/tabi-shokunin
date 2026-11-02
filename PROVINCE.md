@@ -90,6 +90,26 @@ This province was written for the previous Linux host. Probed on the current hos
   the compiled blob (per-blob verdicts, e.g. Defender real-time), not the path; the runner's reuse-if-exists branch is the
   deterministic answer (seed the scratch with a blob that already spawned; provenance pinned by hostExeSha256 + the
   committed source's hostCsSha256) — see `corpus/knowledge/webview2-keyevent-modifier-chords-round-53.md`.
+  ROUND-54 DISCLOSURE SHAPE CORRECTION: the reuse is disclosed by the receipt's
+  `{"step": "host-exe-reused"}` note step plus the hostExeSha256/hostCsSha256 pins — there is NO `compileReuse` key
+  in any receipt (the r53 lesson's prose name-leftover, corrected of record in `corpus/lessons/round-54.md`;
+  measured at `.ufo/waves/round-54/measure/d2-receipt-shape-check.txt`). The spawn-verdict condition RECURRED at the
+  r54 data run and the committed-stderr rule (QUALITY.md criterion 108, named in the round-54 lesson) applied: the
+  blocked run's full stderr is committed at `.ufo/waves/round-54/controls/c2-live-run1-spawn-unknown.txt`; cited
+  run stderr always resolves to committed bytes from this round forward.
+- Round 54 (2026-11-02): the webview2 surface now carries the FULL modifier domain with a page-side witness —
+  `scripts/webview2-cdp-loopback-round54.mjs --form` carries the r52 plain trace and r53 Shift chords unchanged and
+  adds the chord-domain leg: the form fixture page embeds an inline keydown recorder (`window.__keylog` — the page's
+  OWN record of every delivered keydown with its modifier booleans), three real chords Control/Alt/Meta
+  (S153's dispatchKeyEvent modifiers bits 2/1/4 — Shift=8 rode in r53; S153 re-opened byte-identical a sixth time;
+  the DOM booleans are S161 NEW: the W3C UI Events KeyboardEvent attribute definitions) on the nonce-derived letter
+  (first [a-f] of the hex tail) into a never-submitted third field (no name attribute), 12 key events, the
+  bit↔boolean correspondence measured live (2↔ctrlKey, 1↔altKey, 4↔metaKey; shiftKey false; the modifier keys' own
+  keydowns delivered Control/ControlLeft/17, Alt/AltLeft/18, Meta/MetaLeft/91), the field staying EMPTY (a modifier
+  chord inserts nothing — the negative witness), and `journey.form.pageKeylog` — the page's complete keydown record
+  of the fill — re-derived end to end by the r54 counter from the receipt's own nonce and matched entry by entry
+  (`corpus/evidence/round54/webview2-modifier-chords/`;
+  `corpus/knowledge/webview2-modifier-domain-round-54.md`).
 - Standing disposition — the L2-floor L0 (`tabi | round-44`, open since round 44, routed around every round since):
   this host has no AgentSwarm/Kimi L2 dispatch surface, so the >=8-L2-subagents floor is not satisfiable here; tabi
   rounds run L1-inline, disclose that in every predicate and claims.json, and route around the open question without

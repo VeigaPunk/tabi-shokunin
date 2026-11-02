@@ -757,3 +757,22 @@
     line"; `CritFreezeAudit` independently found r5 does not enforce beforeState-to-bindings
     completeness; all five required negative mutations still refused (the rule is not vacuous,
     it is narrower than its sentence). (source: `corpus/lessons/round-43.md` Mistakes 2)
+
+## Round 54 additions (append-only; never edit above)
+
+108. The committed-stderr rule: run stderr (or any interim instrument output)
+    cited as evidence in a lesson, receipt, or report must resolve to committed
+    bytes — or be quoted verbatim in the citing text — at the round that cites
+    it; lane scratch is ephemeral and never citable (the round prompt's
+    "/tmp is never citable" line extends to scratch). Red state: the r53
+    lesson's Mistakes row cited the three spawn-blocked compiles' stderr as
+    "kept: scratch live-run2/3/4-stderr"; lane scratch is deleted at round end
+    per the round contract, so those bytes were unrecoverable at the r53
+    closure (the r53 non-author closure's D1; this round's survey confirmed
+    the loss — only the closure's own verifier scratch survives). The rule was
+    applied in the same round it was named: the r54 data run's own
+    spawn-blocked first attempt has its full stderr committed at the round
+    that cites it (`controls/c2-live-run1-spawn-unknown.txt`), and the
+    spawn-verdict control commits its compile/spawn bytes inside the receipt
+    (`controls/hostexe-fresh-compile-spawn-verdict.json`). (source:
+    `corpus/lessons/round-54.md` Corrections item 1)
