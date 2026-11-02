@@ -2804,3 +2804,75 @@ exit 0 (22 pre-existing W04).
   finding) and extend the deterministic branch probes rather than re-pinning host versions.
 - saturation 8 / window 3 retained; the r50 capability row keeps the window RESTARTED (round 51 =
   position 1). No axis retired; no score moved (no rubric authorizes one).
+
+## Round 51 — declared claims (frozen before data at 1ecb86bf) and executed disposition (all three verified)
+
+Round 51 on the Windows host. Baseline `c54749228e3b71f3d3c2d1f6a8167d89c2233a8e`; freeze
+`1ecb86bf1be4ab88a8ebc99534a3f818346405e8` (claims.json + four instruments + round-open
+controls + census start, BEFORE any data); C1 data `33967b108af1ae9f85c96b50dc9b3bebd5a91d62`;
+C2 data `08cc4b72552f266cff0bd60a435f7cbcbf430748`; work commit (this block's commit);
+final receipt commit (the C3 at-R verdict, post-commit per the r50 `ea11da95` pattern).
+Axes at round start: depth 9, coverage 9, operability 9, freshness 9, calibration 9, adjacency 8; Saturation 8 / window 3; the stagnation nudge is inactive (the r50 capability row `webview2-multi-step-journey-windows`, first-working 50, sits inside rounds 48–50) — the lowest-axis obligation applies and C1 works adjacency. Fresh-start ruling honored: the r42/r43/r47 refused claim classes are named in the freeze's freshStartNote and ruled out (no wave/seat claims; no reasoned-not-measured after-states — C3's after-state is a receipt measured against the committed tree post-commit; counters pin committed-byte digests and ship hand-declared refusal fixtures). Carry-in from the r50 non-author closure: D-1, D-2 and D-3 performed as corrections of record (the round-51 lesson's Corrections section governs; no r50 byte edited); item 4, the `tabi | round-44` L2-floor L0 — still open, and its standing mentions are CONSOLIDATED into one PROVINCE.md line this round per the routing note.
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis; the regression-gate re-bind + the meter's host-shape fix) — VERIFIED | `node .ufo/waves/round-50/counters/c1-adjacency-host-v10.mjs --rev c5474922… --repo <lane> --fleet <fleet> --json` (red control, round open); `node .ufo/waves/round-51/counters/c1-adjacency-host-v11.mjs --rev 33967b10… --repo <lane> --fleet <fleet> --json`; `--selftest`; `diff` v10 v11 (`controls/v10-v11-meter.diff`); isolation control `controls/c1-meter-v11-rosterfix-on-r50-ledgers.json` | before: at round open the committed r50 ledger generation measures RED — exit 1, **23 findings** in a NEW class shape (10 audit-status-mismatch + 1 roster-lane-uncovered `.git` + 12 delta-lane-not-on-roster): the fleet root became itself a git worktree and the sibling links are NTFS symlinks, so v10's readdir-isDirectory roster scan derived the roster as {.git} and dropped all 16 siblings; control `controls/c1-meter-v10-red-at-round-open.json` taken before any lane write (a do-nothing control reaches exactly this red, and no re-bind can reach green through it — the meter itself must be fixed) -> after: the versioned v11 meter (rosterScan follows symlinked lanes, skips dot-entries; pure core byte-identical to v10, diff committed) re-reads the SAME r50 ledgers as {roster:16, auditRows:16, deltaLanes:12} with exactly **7 findings, all lane-screen-head-mismatch** (the real staleness; zero sha/lines/quote findings — no province byte moved since r50); audit-r51 (16 rows = 10 unchanged + 6 sibling-absent) and delta-r51 (12 lane rows + 16 line rows) re-bound at ONE fresh snapshot, dispositions carried by exact whole-line quote match, **0 new adjudications** (kengaku's province advanced 732 -> 778 lines with its BG-hit set unchanged at 0), heads re-pinned for the 7 advanced lanes -> **GREEN at `33967b10`: exit 0, predicate true, 0 findings**, counts {roster:16, mapRows:16, auditRows:16, deltaLanes:12}, no correction cycle consumed; v11 selftest 16/16 | **met** under the frozen rule; adjacency held 8 -> 8 |
+| C2 coverage (capability extension — the r49/r50 planned form residual, sourced S153 re-opened byte-identical with the Input-domain quotes verbatim) — VERIFIED | `git ls-tree -r --name-only <REV> -- corpus/evidence/round51 \| wc -l` (0 -> 7); `node .ufo/waves/round-51/counters/webview2-receipt-r51.mjs <receipt> --shot … --png-a … --png-b … --png-c … --png-form … --png-echo … --driver scripts/webview2-cdp-loopback-round51.mjs --hostsrc scripts/webview2-host-round48.cs`; cross-refusal `measure/c2-r50counter-refuses-r51.json` | before: the webview2 surface's measured page model ends at the r50 journey; form interaction is committed residual text in the r50 SCORECARD planned section; `corpus/evidence/round51` holds 0 files -> after: at `08cc4b72` the surface carries real form interaction — the 6-leg journey (Page.navigate /a.html -> anchor-click /b.html -> anchor-click /c.html -> Page.navigateToHistoryEntry back to the /b.html entry, targetIndex 2, the measured model) then anchor-click /form.html and a form leg driven with the CDP Input domain (S153): `Input.dispatchMouseEvent` click INTO the field, `Input.insertText` of the invocation-bound nonce `tabi-r51-81bda5e52cf6fee7`, the DOM value read back equal, a second mouse click on the form's own submit button; the GET submit witnessed SERVER-SIDE (fixture served log `/echo?field=<nonce>`, serverSawField true) and CLIENT-SIDE (the echo page renders the received value); history at C [data:, a, b, c] 4/3 and back leg 4/2 reproduced; six per-step URL/title/PNG pins (5,358-9,058 B), Edg/156.0.4314.58, teardown sweep 0; counter r51 green **exit 0, 0 findings, couldNotEvaluate []** on the committed bytes; cross-refusal: the r50 counter refuses the r51 receipt with **5 findings**; counter selftest 17/17 and `--path-selftest` 6/6 at the freeze | **met** under the frozen rule; coverage held 9 -> 9; the capability row enters the table below (first-working 51) |
+| C3 operability (the standing environmental selfassessment verdict + the gate's own selftest, both broken on this host since the migration) — VERIFIED | `node scripts/check-selfassessment.mjs --repo <lane> --rev c5474922…` (before, round-baseline bytes); `node scripts/check-selfassessment.mjs --selftest` (45/45); `node scripts/check-selfassessment.mjs --repo <lane> --rev R` (after, at the final content rev R; receipt in the final commit) | before: the round-baseline gate bytes read verdict=failed **mismatches=1** (could_not_evaluate=182 superseded=23) — the single standing m3 class counting 656 status rows of which the measured byte-truth is **650 artifact** (648 byte-identical-or-NTFS-illegal + 2 case-collision spellings) and only the round's own in-progress files real; and the gate's own selftest cannot run on this host at all (`fixture root mismatch` on every fixture) -> after: the v4 gate grades each status row by BYTE TRUTH against the measured tree — byte-identical rows, NTFS-unrepresentable names, and case-collision spellings are the DECLARED class `m3-index-artifact` under couldNotEvaluate (observed null, never a mismatch) while bytes that differ, representable-name absences, and not-in-tree paths stay REAL unlanded rows (aggregate, counted); the separation was measured pre-data over the real tree (`measure/c3-gate-v4-at-baseline-predata.txt`: 650 disclosed vs only round-work rows real); the selftest fix (path-normalized fixture-root comparison; the r49-known EPERM cleanup hardened — cleanup is not a verdict datum) lets the gate's own selftest run here for the first time since the migration: **45/45** with four new cases (artifact-untracked-byte-identical; real-modified-bytes-vs-tree; ntfs-unrepresentable-name, win32-conditional; real-gone-representable-name); sandbox red/green: the baseline v3 bytes read the artifact sandbox mismatches=1 (`controls/c3-v3-baseline-artifact-sandbox-red.txt`), the v4 bytes read the same sandbox clean with the artifact disclosed; the two genuinely-modified inherited worktree files (r33/r42 seat era) restored to their committed bytes under the uncommitted-round-work clause BEFORE the after-measurement; the at-R verdict **exit 0, mismatches=0** with the class disclosed — measured post-commit and landed in the final receipt commit naming R | **met** under the frozen rule (the at-R receipt is the governed after-state); operability held 9 -> 9 |
+
+### Corrections of record (r50-closure D-1/D-2/D-3; the r50 bytes are not edited)
+
+The round-51 lesson's **Corrections of record** section governs all three: D-1 — the v9
+red receipt's own Counter (11 head / 4 sha / 4 lines / 2 missing / 1 quote / 2 invented
+= 24) supersedes the r50 prose decomposition ("12+3+3…+1"); D-2 — the r50 census-end
+sentence describing an S161 row inside the Registry table describes the withdrawn draft
+(registry ended at 160, no S161 row); D-3 — the r50 claims.json C3 parenthetical sha
+8372402c… is the amendment-2-superseded freeze-time counter sha; the frozenDigests pin
+b7f54586… governs and no measured predicate binds 8372402c.
+
+### Tallies this round supersedes (the selfassessment gate v4 case count 41 -> 45)
+
+- `scripts/check-selfassessment.mjs` `--selftest` (45/45): correction — supersedes the
+  stale tallies at `SCORECARD.md:1610` and `SCORECARD.md:2760` (each stated the v3-era
+  41-case count as oracle-correct at its own tip); v4 adds four m3 byte-truth cases, so
+  45 is the oracle-correct figure at this round's tip. The gate prints
+  `SELFASSESSMENT_SELFTEST verdict=clean cases=45 passed=45`
+  (`.ufo/waves/round-51/measure/c3-selftest-v4-at-instrument.txt`).
+
+### Capabilities — round 51
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| webview2-form-journey-windows | Carry the webview2 surface through real form interaction: the r50 four-leg journey extended by an anchor-click to a GET form page and an input-domain fill+submit — Input.dispatchMouseEvent click into the field, Input.insertText of the invocation-bound nonce, the DOM value read back, a second mouse click on the form's own submit button — with the submission witnessed four ways (form-page nonce marker, DOM value after insert, the rendered echo page, the fixture server's served log) and six per-step URL/title/PNG pins in a counter-checked receipt with a keyed teardown to 0 | `scripts/webview2-cdp-loopback-round51.mjs` (`--form`); `corpus/evidence/round51/webview2-form-journey/receipt.json` + 6 per-step PNGs; `.ufo/waves/round-51/counters/webview2-receipt-r51.mjs` (form checks + declared could-not-evaluate class); `corpus/knowledge/webview2-form-journey-round-51.md` | 51 |
+
+### Round 51 — sources, frontier, trend verdicts
+
+Registry 160 -> 160 (UNCHANGED: S153 re-opened byte-identical — fresh fetch sha256
+f60f0c02… equals the registered anchor; the Input.insertText and Input.dispatchMouseEvent
+descriptions located verbatim 1 hit each in the opened bytes; the row's used-by column
+extended in place per the contract, old->new logged in the lesson). Knowledge notes 66 ->
+67 (the form-journey note). PROVINCE gains the round-51 runner line and the standing
+L2-floor L0 disposition line (the consolidation). Census start AND end exit 0 (22
+pre-existing W04).
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | The measured surface grew again: the webview2 page model now covers real form interaction (0 -> 7 evidence files; a live input-domain fill+submit with a server-side witness recorded and counter-checked), and the capability row `webview2-form-journey-windows` enters the table; S153's re-open (byte-identical fresh fetch) extends a held source row's located ground to the two Input-domain primitives; notes 66 -> 67. |
+| quality | improved | The regression gate survived a genuine host-shape change with the fix isolated from the staleness by a committed control (same ledgers, v10 -> roster {.git}/23 findings, v11 -> the 7 real head races); the standing environmental false-failure of the calibration gate is closed in a versioned gate with a sandbox red/green pair and deterministic probes; the gate's own selftest went from cannot-run to 45/45 on this host; no admitted entry failed a re-check (S153 byte-identical third open). |
+| discernment | improved | Every after-state is an instrument output at a named revision; the round's three stale-tally supersedes name the exact lines they correct; the fixture authoring drift (14/17 first selftest run) is disclosed with the overwritten-receipt caveat instead of being silently re-run; the two inherited genuinely-modified worktree files were restored to committed bytes under the uncommitted-work clause and disclosed, not smoothed; the meter's fix is scoped by an isolation control so the reader can see fix vs staleness separately. |
+
+### Planned / saturation / retired — round 51
+
+- planned: coverage — the webview2 surface's next depth residual: a per-key typing trace
+  (Input.dispatchKeyEvent) as an alternative fill mechanism, and a fourth-surface probe
+  only if the host shows one; the C1 pattern continues: re-run meter v11 as the
+  regression gate after any sibling roster change.
+- planned: operability — the m3 byte-truth rule is adopted in v4; if a future gate
+  generation supersedes v4 bytes, keep the declared class (artifact rows disclosed,
+  never a mismatch) and extend the deterministic probes rather than re-pinning host
+  behavior; the m1 selftest-oracle now runs on this host — keep the four docs' tallies
+  oracle-correct at every tip (the supersede-with-citation pattern).
+- planned: adjacency — the r51 snapshot heads date like any census; the contested-open
+  families stay routed to the open fleet L0 (`b6b3b5e4…` :65).
+- saturation 8 / window 3 retained; the r51 capability row keeps the window RESTARTED
+  (round 52 = position 1). No axis retired; no score moved (no rubric authorizes one).

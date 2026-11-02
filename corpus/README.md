@@ -947,3 +947,25 @@ to the measured surface truth — the initial data: page occupies history slot 0
 | Note | Holds (this round's delta) | Sources |
 |---|---|---|
 | `knowledge/webview2-journey-round-50.md` | The journey receipt contract (4 legs, history block, back leg, nonce-on-page, 4 PNG pins); the measured history model; the runtime-drift contract (declared could-not-evaluate class `runtime-pin-host-drift`, never a finding; folder-present-without-exe stays a hard finding; runtime-identity consistency); declared residuals. | S153 (re-opened); `scripts/webview2-cdp-loopback-round50.mjs`; `.ufo/waves/round-50/counters/webview2-receipt-r50.mjs`; `corpus/evidence/round50/webview2-journey/receipt.json` |
+
+## Round 51 — the form-interaction residual with a server-side witness, the meter's host-shape fix, the standing m3 verdict closed (2026-11-01)
+
+New knowledge note `knowledge/webview2-form-journey-round-51.md` (notes 66 -> 67) and a
+capability row (`webview2-form-journey-windows`, first-working 51). Registry UNCHANGED
+at 160: S153 re-opened byte-identical (third open; fresh fetch sha256 f60f0c02… equals
+the registered anchor) with the Input-domain primitive descriptions located verbatim in
+the opened bytes. The C1 regression gate caught a real host-shape change at round open
+(the fleet root became a git worktree; sibling links are symlinks) and the versioned v11
+meter re-bound both ledgers green with 0 new adjudications. The calibration gate v4
+closes the standing environmental m3 false-failure by grading each status row by
+byte-truth against the measured tree (artifact rows disclosed under the declared class
+`m3-index-artifact`, never a mismatch), and its own selftest now runs on this host (45/45).
+
+- Correction (append-only; cites `corpus/README.md:744`): `scripts/check-selfassessment.mjs`
+  `--selftest` (45/45) — the `(41/41)` figure at `:744` was the v3-era count at that
+  round's tip; v4 adds four m3 byte-truth cases; receipt
+  `.ufo/waves/round-51/measure/c3-selftest-v4-at-instrument.txt`.
+
+| Note | Holds (this round's delta) | Sources |
+|---|---|---|
+| `knowledge/webview2-form-journey-round-51.md` | The form-interaction model (r51 capability `webview2-form-journey-windows`): the r50 journey extended by an anchor-click to a GET form page and an input-domain fill+submit — Input.dispatchMouseEvent click into the field, Input.insertText of the invocation-bound nonce, the DOM value read back, a second mouse click on the form's own submit button; the four independent witnesses of one fill+submit round trip (form-page nonce marker, DOM value after insert, the rendered echo page, the fixture server's served log — the new server-side evidence class); the r51 counter contract (form-* finding ids, the carried declared could-not-evaluate class); declared residuals (driver-reported fields; per-key dispatchKeyEvent typing unexercised). | S153 (re-opened); `scripts/webview2-cdp-loopback-round51.mjs`; `.ufo/waves/round-51/counters/webview2-receipt-r51.mjs`; `corpus/evidence/round51/webview2-form-journey/receipt.json` |

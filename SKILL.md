@@ -2976,3 +2976,16 @@ routes to no lane and the vault-DOM ban is one tabi shares, so it is a fact on k
 `corpus/adjacency-screen-browser.tsv`. The sentence at `:2970` stays as tabi's statement of its own side; it backs no map
 row. w2 CritRowKagiB judged the row to hold; the integrator sided with CritRowKagiA and w1 ConnBoundaries on kagi's bytes.
 
+
+## Round 51 — corrections (2026-11-01; append-only; each cites the stale line in its own document)
+
+- `scripts/check-selfassessment.mjs` `--selftest` (45/45): correction — supersedes the
+  stale tally at `SKILL.md:2627` (the registry row's self-test column states
+  `(cases=41, passed=41)`, the v3-era count at the round-32 tip). The v4 gate adds four
+  m3 byte-truth cases (artifact-untracked-byte-identical; real-modified-bytes-vs-tree;
+  ntfs-unrepresentable-name, win32-conditional; real-gone-representable-name) and its
+  self-test now runs on this host (the fixture-root comparison is path-normalized), so
+  45 is the oracle-correct figure at this round's tip; the gate prints
+  `SELFASSESSMENT_SELFTEST verdict=clean cases=45 passed=45`
+  (`.ufo/waves/round-51/measure/c3-selftest-v4-at-instrument.txt`). The registry row
+  above stays as landed; the entry command and write scope are unchanged.

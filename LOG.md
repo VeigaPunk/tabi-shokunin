@@ -3239,3 +3239,90 @@ move), note-count claims.
   committed named reproduction); the fixture authoring path inconsistency (same selftest red); the
   duplicate S161 registry row (caught by the check-sources gate E04 pre-commit); one expected head
   race through the frozen correction flow.
+
+## Round 51 — 2026-11-01 (tabi L1, Windows host)
+
+- Frozen at `1ecb86bf1be4ab88a8ebc99534a3f818346405e8` (claims.json + instruments +
+  round-open controls + census start, BEFORE any data); baseline `c54749228e3b71f3d3c2d1f6a8167d89c2233a8e`.
+  Fresh-start spot-checks re-read (r42/r43/r47 SCORECARD blocks + the contract digests);
+  the refused classes ruled out in the freeze's freshStartNote. Axes at start: adjacency 8
+  (lowest), others 9; saturation 8 / window 3; the r50 capability row keeps the window
+  restarted (round 51 = position 1) so the lowest-axis obligation applies.
+- C1 adjacency (lowest axis): at round open the committed r50 meter generation measured
+  RED exit 1 / 23 findings in a NEW class shape — the fleet root became itself a git
+  worktree and the sibling links are NTFS symlinks, so v10's readdir-isDirectory roster
+  scan derived the roster as {.git} and dropped all 16 siblings (control
+  `controls/c1-meter-v10-red-at-round-open.json`, before any lane write). The versioned
+  v11 meter fixes the roster scan (follow symlinks, skip dot-entries; pure core
+  byte-identical, diff `controls/v10-v11-meter.diff`); the isolation control
+  `controls/c1-meter-v11-rosterfix-on-r50-ledgers.json` shows the same ledgers reading
+  {roster:16, auditRows:16, deltaLanes:12} with exactly 7 real head races and zero byte
+  drift. audit-r51 (16 rows) + delta-r51 (12 lane + 16 line rows) re-bound at ONE fresh
+  snapshot at `33967b108af1ae9f85c96b50dc9b3bebd5a91d62`: 16 dispositions carried by
+  exact whole-line quote match, 0 new adjudications (kengaku province 732 -> 778 lines,
+  BG-hit set unchanged at 0); meter v11 GREEN exit 0 / predicate true / 0 findings, no
+  correction cycle consumed (receipt `measure/c1-meter-green-at-data.json`); selftest 16/16.
+- C2 coverage (the r49/r50 planned form residual): live 6-leg journey at `08cc4b72552f266cff0bd60a435f7cbcbf430748`
+  — `Page.navigate` /a.html -> anchor-click /b.html -> anchor-click /c.html ->
+  `Page.navigateToHistoryEntry` back to the /b.html entry (targetIndex 2) -> anchor-click
+  /form.html -> form-submit /echo?field=<nonce>; the form legs driven with the CDP Input
+  domain (S153 re-opened byte-identical, Input.insertText + Input.dispatchMouseEvent
+  quotes verbatim 1 hit each in the opened bytes): real mouse click into the field,
+  insertText of the invocation-bound nonce, the DOM value read back, a second mouse
+  click on the form's own submit button; the GET submit witnessed SERVER-SIDE (fixture
+  served log) and CLIENT-SIDE (the rendered echo page); history at C [data:, a, b, c]
+  4/3 and back leg 4/2 reproduced; six PNG pins; Edg/156.0.4314.58; teardown sweep 0;
+  counter r51 green exit 0 / 0 findings / couldNotEvaluate []; cross-refusal
+  r50-counter-refuses-r51 5 findings; counter selftest 17/17 and --path-selftest 6/6 at
+  the freeze. Capability row `webview2-form-journey-windows` (first-working 51) enters
+  the SCORECARD table.
+- C3 operability (the standing environmental verdict closed): before — the round-baseline
+  gate bytes read verdict=failed mismatches=1 (control `controls/c3-gate-v3baseline-at-round-open.txt`)
+  counting 656 status rows of which the measured byte-truth is 650 artifact (648
+  byte-identical-or-NTFS-illegal + 2 case-collision spellings whose on-disk file carries
+  the sibling spelling's committed bytes), and the gate's own selftest could not run on
+  this host at all (fixture root mismatch on every fixture); after — the v4 gate grades
+  each row by BYTE TRUTH vs the measured tree (declared class `m3-index-artifact` under
+  couldNotEvaluate, never a mismatch; real drift still refuses), the selftest now runs
+  here (path-normalized fixture-root comparison; the r49-known EPERM cleanup hardened —
+  cleanup is not a verdict datum) and passes 45/45 with four new cases
+  (`measure/c3-selftest-v4-at-instrument.txt`); sandbox red/green
+  (`controls/c3-v3-baseline-artifact-sandbox-red.txt` vs the same sandbox clean under
+  v4); the two genuinely-modified inherited worktree files (r33/r42 seat era) RESTORED
+  to their committed bytes under the uncommitted-round-work clause before the
+  after-measurement, disclosed; the at-R verdict exit 0 / mismatches=0 with the class
+  disclosed — measured post-commit at the final content rev and landed in the final
+  receipt commit (the r50 ea11da95 pattern), receipt `measure/c3-gate-v4-at-R.txt`.
+- SOURCES: registry UNCHANGED 160 -> 160 — S153 re-opened byte-identical (fresh fetch
+  sha256 f60f0c02… == the registered anchor; staged `sources/browser-protocol.json`); the
+  S153 used-by column extended in place per the contract:
+  `chrome-cdp-loopback-round-44.md, lessons/round-44.md` -> `…round-44.md,
+  knowledge/webview2-journey-round-50.md, lessons/round-50.md,
+  knowledge/webview2-form-journey-round-51.md, lessons/round-51.md`. Knowledge notes
+  66 -> 67 (the form-journey note). Census start AND end exit 0 (22 W04 pre-existing).
+  PROVINCE gains the round-51 runner line and the standing L2-floor L0 disposition line
+  (the consolidation the r50 closure routed).
+- SCORECARD: the round-51 block records C1/C2/C3 VERIFIED with before->after and
+  counting commands; the corrections-of-record section lands the r50-closure D-1 (the v9
+  red receipt's own Counter: 11 head / 4 sha / 4 lines / 2 missing / 1 quote / 2
+  invented = 24, superseding the r50 prose split), D-2 (the r50 census-end S161 sentence
+  described the withdrawn draft) and D-3 (the superseded freeze-time counter sha
+  8372402c…; frozenDigests b7f54586… governs); the tally-correction section supersedes
+  the v3-era 41-case tallies at `SCORECARD.md:1610` and `SCORECARD.md:2760` with the
+  oracle-correct 45/45; no scalar moved (no rubric authorizes one); the capability row
+  keeps the stagnation window restarted (round 52 = position 1).
+- Correction (supersedes the tally at `LOG.md:2155`): `scripts/check-selfassessment.mjs`
+  `--selftest` (45/45) — the `cases=41 passed=41` figure at LOG.md:2155 was the v3-era
+  count at that round's tip; v4 adds four m3 byte-truth cases; receipt
+  `.ufo/waves/round-51/measure/c3-selftest-v4-at-instrument.txt`.
+- Mistakes mined this round (lesson rows): the host-shape drift the round-open red caught
+  (roster {.git}); the m3 phantom-row blindness (standing, closed); the selftest's
+  fixture-root path-shape refusal (found by opening the selftest); the EPERM
+  temp-cleanup recurrence (crashed run kept and named); the fixture authoring drift
+  (14/17 first run, fixed before the freeze, overwritten receipt disclosed); the
+  case-collision surprise (restoring one spelling leaves the sibling spelling reading
+  modified — the tree holds both spellings).
+- Carry-in performed: D-1/D-2/D-3 corrections of record (lesson Corrections section; no
+  r50 byte edited); the L2-floor L0 (`tabi | round-44`, fifth round routed around)
+  CONSOLIDATED into the standing PROVINCE.md line this round per the routing note.
+  Assimilation: none — `considerthese/` absent; shokuknow unreachable.

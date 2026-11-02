@@ -65,3 +65,14 @@ This province was written for the previous Linux host. Probed on the current hos
   runner takes `--runtime` with NO default, and the r50 counter grades a missing pinned runtime as
   the DECLARED could-not-evaluate class `runtime-pin-host-drift` (disclosed, never a finding) while
   a folder present WITHOUT its exe stays a hard finding (`corpus/knowledge/webview2-journey-round-50.md`).
+- Round 51 (2026-11-01): the webview2 surface now carries real form interaction — `scripts/webview2-cdp-loopback-round51.mjs
+  --form` extends the r50 journey with an anchor-click to a GET form page and an input-domain fill+submit
+  (`Input.dispatchMouseEvent` click into the field, `Input.insertText` of the invocation-bound nonce, the DOM value
+  read back, a second mouse click on the form's own submit button), the submission witnessed by the fixture server's
+  served log as well as the rendered echo page (`corpus/evidence/round51/webview2-form-journey/`; S153 re-opened
+  byte-identical with the Input-domain quotes verbatim).
+- Standing disposition — the L2-floor L0 (`tabi | round-44`, open since round 44, routed around every round since):
+  this host has no AgentSwarm/Kimi L2 dispatch surface, so the >=8-L2-subagents floor is not satisfiable here; tabi
+  rounds run L1-inline, disclose that in every predicate and claims.json, and route around the open question without
+  treating it as answered. This standing line replaces the per-round re-statements (the r50 closure's consolidation
+  routing); later rounds refer here instead of restating it. The question stays open for the operator.
