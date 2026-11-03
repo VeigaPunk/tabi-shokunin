@@ -1008,3 +1008,11 @@ W04).
 | Note | Holds | Sources |
 |---|---|---|
 | `knowledge/chromium-modifier-chords-round-57.md` | The Linux host's Chromium 155 surface carries the modifier-chord domain: the Shift-chord trace (nonce UPPERCASED into field2, every uppercase letter riding a real Shift keyDown/keyUp with modifiers 8 + shifted key/text, per-keystroke DOM read-backs on BOTH fields), the chord-domain leg (Control/Alt/Meta chords, bits 2/1/4 per S153, on the nonce-derived letter into the never-submitted field3, the page's own __keylogFull recording every keydown/keyup with its booleans, the bit↔boolean correspondence measured live, field3 staying EMPTY as the negative witness), the r56 plain trace + control legs unchanged, Enter LAST with the submit carrying field=nonce AND field2=nonce.toUpperCase(); the r57 counter re-derives both traces and the keylog plan from the receipt's own nonce. | S153 (re-opened ninth, byte-identical to the r56 anchor); S161 (re-opened, byte-identical); `scripts/chrome-cdp-loopback-round57.mjs`; `.ufo/waves/round-57/counters/chromium-receipt-r57.mjs`; `corpus/evidence/round57/chromium-modifier-chords/receipt.json` |
+
+## Round 58 coverage addition — preventDefault swallow on keydown (2026-11-03, Linux host)
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/chromium-preventdefault-swallow-round-58.md` | The Linux host's Chromium 155 surface carries the accelerator-swallowing class: a page keydown swallower (capture phase, registered before the recorders) cancels a declared key set; the cancelled Backspace and digit are delivered to the page (cancelable true, defaultPrevented true) and leave the field unchanged; a Control+Enter chord is delivered and does not submit; the carried Enter with the swallow off remains the only submission (one `/echo`). Grounded in S161 §4.3.4 (default-action cancelation) and §3.5.6.1 (Cancelable/Yes) and S153 (modifier bits). Records that S161 does NOT define `defaultPrevented`/`preventDefault()` (DOM-Standard cross-references). Limits named: no positive control for the Ctrl+Enter leg; the frozen counter does not compare page-keylog cancelable/defaultPrevented values (R58-S1). | S161, S153, S083 |
+
+Registry UNCHANGED 161 -> 161 (S153 and S161 used-by extended old→new, see the round-58 lesson). Census start AND end exit 0 (22 pre-existing W04).

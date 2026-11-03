@@ -1,0 +1,66 @@
+{
+ "schema": "r58sentinel-swallow-flag-source-boundary-v1",
+ "legs": [
+  {
+   "leg": "B1-page-cancelable-false-block-true",
+   "touched": 1,
+   "exit": 0,
+   "predicate": true,
+   "findings": []
+  },
+  {
+   "leg": "B2-page-dp-false-block-true",
+   "touched": 1,
+   "exit": 0,
+   "predicate": true,
+   "findings": []
+  },
+  {
+   "leg": "B3-page-control-dp-true",
+   "controlChar": "4",
+   "touched": 1,
+   "exit": 0,
+   "predicate": true,
+   "findings": []
+  },
+  {
+   "leg": "B4-block-entry-key-swapped",
+   "exit": 1,
+   "predicate": false,
+   "findings": [
+    "swallow-plan-mismatch"
+   ]
+  },
+  {
+   "leg": "B5-page-entry-absent",
+   "removed": 1,
+   "exit": 1,
+   "predicate": false,
+   "findings": [
+    "keylog-entry-mismatch"
+   ]
+  },
+  {
+   "leg": "B0-unmodified-control",
+   "exit": 0,
+   "predicate": true,
+   "findings": []
+  }
+ ],
+ "findings": [
+  {
+   "id": "page-cancelable-value-never-checked",
+   "detail": "B1: the page keylog says cancelable=false while the block says true; the counter stayed green"
+  },
+  {
+   "id": "page-defaultprevented-value-never-checked",
+   "detail": "B2: the page keylog says defaultPrevented=false while the block says true; the counter stayed green"
+  },
+  {
+   "id": "page-control-defaultprevented-never-checked",
+   "detail": "B3: the page keylog says the CONTROL (gate OFF) digit was defaultPrevented=true; the counter stayed green"
+  }
+ ],
+ "findingCount": 3,
+ "predicate": false
+}

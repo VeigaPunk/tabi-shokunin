@@ -1,0 +1,54 @@
+{
+ "schema": "r58sentinel-page-vs-recorded-attack-v1",
+ "legs": [
+  {
+   "leg": "F1-page-keylog-says-not-prevented",
+   "pageEntriesTouched": 1,
+   "exit": 0,
+   "predicate": true,
+   "findings": []
+  },
+  {
+   "leg": "F2-page-keylog-omits-backspace",
+   "removed": 1,
+   "exit": 1,
+   "predicate": false,
+   "findings": [
+    "keylog-entry-mismatch"
+   ]
+  },
+  {
+   "leg": "F3-page-keylog-omits-digit",
+   "digitChar": "1",
+   "removed": 1,
+   "exit": 1,
+   "predicate": false,
+   "findings": [
+    "keylog-entry-mismatch"
+   ]
+  },
+  {
+   "leg": "F4-page-keylog-omits-enter-chord",
+   "removed": 1,
+   "exit": 1,
+   "predicate": false,
+   "findings": [
+    "keylog-entry-mismatch"
+   ]
+  },
+  {
+   "leg": "F0-unmodified-control",
+   "exit": 0,
+   "predicate": true,
+   "findings": []
+  }
+ ],
+ "findings": [
+  {
+   "id": "counter-green-when-page-keylog-contradicts",
+   "detail": "F1: the page keylog records defaultPrevented=false for the swallowed Backspace but the counter stayed green (predicate=true)"
+  }
+ ],
+ "findingCount": 1,
+ "predicate": false
+}

@@ -3312,3 +3312,47 @@ markup; used-by extended in place old->new, logged in the lesson). Knowledge not
   S124 staged entry's fabrication-class quote must be refused or re-anchored.
 - saturation 8 / window 3 retained; the r57 capability row keeps the window RESTARTED
   (round 58 = position 1). No axis retired; no score moved (no rubric authorizes one).
+
+## Round 58 - declared claims (frozen before data at 484bde50's claims.json, freeze commit d131223c) and executed disposition (both verified)
+
+Round 58 on the Linux host. Baseline `051f433d`; claims freeze `484bde50` (claims.json,
+round-open controls, w1 dispatch evidence); instrument freeze `d131223c` (code only: v18 meter
++ both kills, the r58 rebind tool, the C2 runner at driver sha `9935ed98…`, the C2 counter at
+`632e62e4…`, smoke receipts); C1 data `34dc6b9b` (ledgers re-bound at one fresh snapshot,
+green at the first attempt); C2 live receipt + counter green at the data revision; then the
+work commit (this block). Axes at round start: adjacency 8, coverage 9, depth 9,
+operability 9, freshness 9, calibration 9; saturation 8 / window 3; the r57 capability row
+keeps the window RESTARTED (round 58 = position 1) — the nudge is inactive, the lowest-axis
+obligation applies, and C1 works adjacency. Fresh-start: rounds 55–57 ADMITTED, none owed.
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis; the v18 meter generation = v17 + the declared relabel + the ROUTED m4b kill (map-ref-unparseable selftest case) + the ROUTED mG kill (caseOk extraction + harness-guard case); diff audit 104 lines, zero unaccounted; ledgers re-bound at one snapshot `adj/rebind-snapshot.json`) - VERIFIED (no correction cycle consumed) | `node .ufo/waves/round-58/counters/c1-adjacency-host-v18.mjs --rev 34dc6b9b… --repo <lane> --fleet <fleet> --json`; `--selftest` (20/20); kills `adj/m4b-kill.json`, `adj/mG-kill.json` | before: v17 at baseline red — exit 1, predicate false, 1 finding (lane-screen-head-mismatch kengaku-shokunin), `controls/c1-meter-v17-at-round-open.json`; after: exit 0, predicate true, 0 findings, counts roster 20 / map 16 / audit 16 / delta 16 (`measure/c1-meter-green-at-data.json`) | VERIFIED; adjacency score held at 8 (instrument-hardening claim, as r56/r57; no rubric authorizes a move) |
+| C2 coverage (capability acquisition `chromium-keyevent-preventdefault-swallow-linux` — the Linux Chromium 155 surface carries the accelerator-swallowing class: a page keydown swallower calls preventDefault on a declared set; the delivered-but-cancelled keystrokes leave the field unchanged; the page's own keylog records cancelable and defaultPrevented; the one submission is the carried final Enter) - VERIFIED, with the R58-S1 guard gap disclosed (below) | `git ls-tree -r --name-only 051f433d… -- corpus/evidence/round58 \| wc -l` (0 → the receipt + 12 PNGs at the landing commit); `node .ufo/waves/round-58/counters/chromium-receipt-r58.mjs corpus/evidence/round58/chromium-preventdefault-swallow/receipt.json --driver scripts/chrome-cdp-loopback-round58.mjs --expect-driver-sha256 9935ed98… --shot corpus/evidence/round58/chromium-preventdefault-swallow --json`; cross-refusals both exit 1 (schema-wrong first); the one-off page-vs-block check (6/6 agree; forged copy 1 mismatch) | before: evidence tree 0 files; the r58 counter on an absent receipt refuses (`receipt-missing`); after: counter exit 0, predicate true, 0 findings, 0 couldNotEvaluate (`measure/c2-counter-green-at-data.json`) | VERIFIED; coverage score held at 9 (capability row enters the table; the axis is not re-scored up by a capability claim) |
+
+### Capabilities - round 58
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| chromium-keyevent-preventdefault-swallow-linux | Drive the Linux host's Chromium 155 headless surface (loopback CDP, throwaway profile, throwaway HOME/XDG, --disable-extensions) through a page-side keydown swallower: with the swallow gate ON for a declared set, the Backspace and digit keystrokes are DELIVERED (the page's keylog records cancelable true and defaultPrevented true) and the field value reads back UNCHANGED; a Control+Enter chord is delivered with defaultPrevented true and does not submit; the carried Enter with the gate OFF remains the run's only submission (one /echo request, carrying field and field2). | `corpus/evidence/round58/chromium-preventdefault-swallow/receipt.json` (counter `.ufo/waves/round-58/counters/chromium-receipt-r58.mjs`, green at the data revision) | 58 |
+
+### Round 58 - sources, frontier, trend verdicts
+
+Registry 161 -> **161** rows (no new row: S153 and S161 re-opened this round — S153 `@master`
+UNMOVED (1,423,170 B, sha `d6737c31…`), S161 byte-identical (920,762 B, sha `8ded5eaf…`); used-by
+extended in place old→new, logged in the lesson). Knowledge notes 73 -> **74**
+(`chromium-preventdefault-swallow-round-58.md`). Census start AND end exit 0 (22 pre-existing
+W04); `node scripts/check-sources.mjs` → SOURCES_GATE verdict=clean rows=161 findings=0.
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | The measured surface grew: the key-event model now covers accelerator-swallowing on the Linux Chromium 155 surface (0 → 12 evidence files), the capability row `chromium-keyevent-preventdefault-swallow-linux` enters the table, and knowledge notes 73 → 74 on ground the r57 map did not hold (the default-action cancelation semantics). |
+| quality | unchanged | No admitted entry failed its re-check: the r58 knowledge note is grounded in S161's own definitions (§4.3.4, §3.5.6.1) and scopes `defaultPrevented`/`preventDefault()` to the DOM Standard, correcting the frozen claim's wording rather than admitting it; C1's instrument gained two kills (m4b, mG) while the counter's kill-rule coverage gap (R58-S1, MEDIUM — page-keylog cancelable/defaultPrevented values not compared) is disclosed, routed and measured by a one-off check instead. No non-author `unprovable-but-better` judgment is on record, so this trend is not claimed as better. |
+| discernment | unchanged | Self-attested so far: the attacks that caught the counter crash (A13), the S161 wording overstatement (scribe F1), the R58-S1 page/block gap (sentinel) and the C1 predicate-scope holes (reviewer A4/A5) were dispatched by this lane and therefore count as the lane (LEARNING.md). The admit/reject decisions (S161 and S153 admits; the S161 DOM-definition reject; the C1 and C2 admits) await the non-author closure spot-check, which the round's lesson `## Gate` is written to be checked against. |
+
+### Planned / saturation / retired - round 58
+
+- planned: calibration/operability — the counter generation after r58 compares the page keylog's cancelable/defaultPrevented against the derived plan (R58-S1), and the runner gains a declared swallow-OFF Ctrl+Enter positive control on a separate form (scribe F4) so "no submit" is separable.
+- planned: adjacency — meter v19: a screened set derived from the map (closing the A4 scope hole), a findings-mismatch row in harness-guard (N1), malformed-suffix selftest fixtures (N2).
+- planned: assimilation — adoption stays CLOSED until the campaign corrects the register's quote-column shift (L0 `tabi | round-57`).
+- saturation 8 / window 3 retained; the r58 capability row keeps the window RESTARTED (round 59 = position 1). No axis retired; no score moved (no rubric authorizes one).

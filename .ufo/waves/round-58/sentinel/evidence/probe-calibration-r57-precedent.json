@@ -1,0 +1,252 @@
+{
+ "schema": "r58sentinel-runner-audit-v1",
+ "checks": [
+  {
+   "id": "remote-debugging-address-loopback",
+   "ok": true,
+   "detail": "804: '--remote-debugging-address=127.0.0.1',"
+  },
+  {
+   "id": "fixture-server-loopback-only",
+   "ok": true,
+   "detail": "726: await new Promise((resolve) => fixtureServer.listen(0, '127.0.0.1', resolve));"
+  },
+  {
+   "id": "user-data-dir-from-scratch-profile",
+   "ok": true,
+   "detail": "805: '--user-data-dir=' + profileDir,"
+  },
+  {
+   "id": "throwaway-home",
+   "ok": true,
+   "detail": "616: const runHome = path.join(scratchDir, 'home-' + launchToken); | 617: const runXdgConfig = path.join(runHome, '.config'); | 621: usage('cannot prepare the throwaway HOME ' + runHome + ': ' + String((e && e.message) || e));"
+  },
+  {
+   "id": "throwaway-xdg-config-home",
+   "ok": true,
+   "detail": "82: // Chromium profile is never read. Throwaway HOME/XDG_CONFIG_HOME under the | 610: // Throwaway HOME/XDG_CONFIG_HOME under the scratch (sentinel RISK 1/RISK 3): | 823: env: { ...process.env, HOME: runHome, XDG_CONFIG_HOME: runXdgConfig, TMPDIR: scratchDir },"
+  },
+  {
+   "id": "disable-extensions",
+   "ok": true,
+   "detail": "83: // scratch and --disable-extensions are mandatory (the r56 sentinel | 813: '--disable-extensions',"
+  },
+  {
+   "id": "keyed-pid-group-kill",
+   "ok": true,
+   "detail": "groupKill=2 sweep=3"
+  },
+  {
+   "id": "no-pkill-invocation",
+   "ok": true,
+   "detail": "clean (only the \"never pkill\" prose)"
+  },
+  {
+   "id": "zero-survivor-closure-probe",
+   "ok": true,
+   "detail": "52: //       /proc sweep reach zero survivors, the fixture port and the DevTools | 67: //   post-kill   survivors are killed BY PID (never pkill -f, never an image | 660: if (!last.pids.length) return { postKillSweepCount: 0, survivors: [], rounds: round };"
+  },
+  {
+   "id": "port-probes",
+   "ok": true,
+   "detail": "portProbe=9 netConnect=1"
+  },
+  {
+   "id": "argv-shape-only-redaction",
+   "ok": true,
+   "detail": "819: receipt.host.argv = childArgv.map((a) => String(a).replace(/\\/home\\/[^/\\s\"]+(?=\\/)/g, '__USER_HOME__').replace(/(^|[=])~\\//g, '$1__USER_HOME__/'));"
+  },
+  {
+   "id": "no-external-url-in-runner",
+   "ok": true,
+   "detail": "clean"
+  },
+  {
+   "id": "no-launch-flag-removed-vs-r57",
+   "ok": true,
+   "detail": "none removed"
+  },
+  {
+   "id": "no-new-launch-flag-vs-r57",
+   "ok": true,
+   "detail": "none added"
+  },
+  {
+   "id": "fixture-js-no-location-read",
+   "ok": true,
+   "detail": "clean (the browser-executed fixture reads no location member)"
+  },
+  {
+   "id": "swallow-state-not-url-derived",
+   "ok": true,
+   "detail": "clean (no __swallowOn/__swallowSet assignment derives from a URL/query)"
+  },
+  {
+   "id": "no-navigation-with-swallow-query",
+   "ok": true,
+   "detail": "clean"
+  },
+  {
+   "id": "set-swallow-exposed",
+   "ok": false,
+   "detail": ""
+  },
+  {
+   "id": "fixture-inline-js-no-external-url",
+   "ok": true,
+   "detail": "clean"
+  },
+  {
+   "id": "swallower-registered-before-recorder",
+   "ok": false,
+   "detail": "swallow@0 recorder@0"
+  },
+  {
+   "id": "recorder-records-cancelable",
+   "ok": false,
+   "detail": ""
+  },
+  {
+   "id": "recorder-records-defaultprevented",
+   "ok": false,
+   "detail": ""
+  },
+  {
+   "id": "counter-never-executes-driver",
+   "ok": true,
+   "detail": "clean (no child_process / spawn / exec / dynamic import of the driver)"
+  },
+  {
+   "id": "counter-reads-driver-bytes-for-sha",
+   "ok": true,
+   "detail": "414: let driverBytes = null; | 417: try { driverBytes = fs.readFileSync(driverPath); } catch { add('driver-missing', path.resolve(driverPath)); } | 419: if (driverBytes) { | 420: const got = sha256(driverBytes);"
+  },
+  {
+   "id": "counter-honours-driver-sha-pin",
+   "ok": true,
+   "detail": "17: // driver bytes AND of --expect-driver-sha256 when that pin is given, whose | 198: //        [--expect-driver-sha256 <hex>] [--shot <dir|png...>] [--json] | 375: // input: {receiptPath} | {inline, baseDir}; opts: {driverPath, expectSha} | 423: if (opts.expectSha && rec.driverSha256 !== opts.expectSha) {"
+  },
+  {
+   "id": "counter-no-external-url",
+   "ok": true,
+   "detail": "clean"
+  },
+  {
+   "id": "counter-fixtures-no-network-code",
+   "ok": true,
+   "detail": "clean (no fixture performs network I/O)"
+  },
+  {
+   "id": "counter-fixtures-no-external-url",
+   "ok": true,
+   "detail": "clean"
+  },
+  {
+   "id": "counter-fixtures-no-real-driver-copy",
+   "ok": true,
+   "detail": "none"
+  }
+ ],
+ "findings": [
+  {
+   "id": "set-swallow-exposed",
+   "detail": ""
+  },
+  {
+   "id": "swallower-registered-before-recorder",
+   "detail": "swallow@0 recorder@0"
+  },
+  {
+   "id": "recorder-records-cancelable",
+   "detail": ""
+  },
+  {
+   "id": "recorder-records-defaultprevented",
+   "detail": ""
+  }
+ ],
+ "runner": {
+  "path": "/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round57.mjs",
+  "lines": 1373,
+  "bytes": 75143,
+  "urls": [
+   {
+    "line": 705,
+    "url": "http://127.0.0.1"
+   },
+   {
+    "line": 728,
+    "url": "http://127.0.0.1:"
+   },
+   {
+    "line": 863,
+    "url": "http://127.0.0.1:"
+   },
+   {
+    "line": 890,
+    "url": "http://127.0.0.1:"
+   }
+  ],
+  "externalUrls": [],
+  "flags": {
+   "r57": [
+    "--disable-background-networking",
+    "--disable-component-update",
+    "--disable-dev-shm-usage",
+    "--disable-extensions",
+    "--disable-search-engine-choice-screen",
+    "--disable-sync",
+    "--headless",
+    "--no-default-browser-check",
+    "--no-first-run",
+    "--remote-debugging-address",
+    "--remote-debugging-port",
+    "--user-data-dir",
+    "--window-size"
+   ],
+   "r58": [
+    "--disable-background-networking",
+    "--disable-component-update",
+    "--disable-dev-shm-usage",
+    "--disable-extensions",
+    "--disable-search-engine-choice-screen",
+    "--disable-sync",
+    "--headless",
+    "--no-default-browser-check",
+    "--no-first-run",
+    "--remote-debugging-address",
+    "--remote-debugging-port",
+    "--user-data-dir",
+    "--window-size"
+   ],
+   "removed": [],
+   "added": []
+  },
+  "fixtureBlock": {
+   "startLine": 493,
+   "endLine": 528
+  },
+  "swallowListenerLine": 0,
+  "recorderLine": 0
+ },
+ "counter": {
+  "path": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-57/counters/chromium-receipt-r57.mjs",
+  "lines": 1034,
+  "bytes": 57848
+ },
+ "fixtures": {
+  "dir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-57/counters/chromium-receipt-r57-fixtures",
+  "fileCount": 153,
+  "extHistogram": {
+   ".json": 137,
+   ".png": 14,
+   ".mjs": 1,
+   ".bin": 1
+  },
+  "codeFiles": [
+   "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-57/counters/chromium-receipt-r57-fixtures/driver-stub.mjs"
+  ]
+ },
+ "findingCount": 4,
+ "predicate": false
+}

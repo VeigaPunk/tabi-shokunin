@@ -1,0 +1,97 @@
+{
+ "schema": "tabi-r58-mutant-counter-probe",
+ "id": "m5",
+ "description": "drop the per-entry recorder-fields check (a swallow-leg entry without cancelable/defaultPrevented is no longer refused)",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-58/counters/chromium-receipt-r58.mjs",
+ "counterSha256": "632e62e447bd66204c6db2bf03bb3897a99fcbd3c6503baa81d43794c41a4f52",
+ "fixturesDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-58/counters/chromium-receipt-r58-fixtures",
+ "workdir": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m5",
+ "edits": [
+  {
+   "old": "    if (typeof e.cancelable !== 'boolean' || typeof e.defaultPrevented !== 'boolean') {\n      add('swallow-recorder-fields-missing', 'swallow-leg entry ' + JSON.stringify(e.key) + ' lacks cancelable/defaultPrevented booleans');\n    }",
+   "new": "",
+   "occurrences": 1,
+   "ok": true
+  }
+ ],
+ "mutatedSha256": "3fa29fd35d7d9f3a4dc9dbdfc9f353d3c52c04896dbb3cd7fb26cf6326042311",
+ "expectId": "swallow-recorder-fields-missing",
+ "baseline": {
+  "status": 0,
+  "allPass": true,
+  "pass": 78,
+  "cases": 78,
+  "uncovered": [],
+  "failing": []
+ },
+ "baselineAllPass": true,
+ "mutated": {
+  "status": 1,
+  "allPass": false,
+  "pass": 77,
+  "cases": 78,
+  "failing": [
+   {
+    "name": "swallow-recorder-fields-missing",
+    "got": [],
+    "want": [
+     "swallow-recorder-fields-missing"
+    ]
+   }
+  ]
+ },
+ "lostId": {
+  "name": "swallow-recorder-fields-missing",
+  "file": "swallow-recorder-fields-missing.json",
+  "want": [
+   "swallow-recorder-fields-missing"
+  ],
+  "got": [],
+  "orderOk": null
+ },
+ "seededCase": "swallow-recorder-fields-missing.json",
+ "fixtureRun": {
+  "pristine": {
+   "caseFile": "swallow-recorder-fields-missing.json",
+   "receiptPath": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m5/chromium-receipt-r58-fixtures/receipts/new-r58-swallow-recorder-fields-missing.receipt.json",
+   "args": [
+    "--driver",
+    "<work>/chromium-receipt-r58-fixtures/driver-stub.mjs",
+    "--json"
+   ],
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findingCount": 1,
+   "findings": [
+    "swallow-recorder-fields-missing"
+   ],
+   "stderrTail": ""
+  },
+  "mutant": {
+   "caseFile": "swallow-recorder-fields-missing.json",
+   "receiptPath": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m5/chromium-receipt-r58-fixtures/receipts/new-r58-swallow-recorder-fields-missing.receipt.json",
+   "args": [
+    "--driver",
+    "<work>/chromium-receipt-r58-fixtures/driver-stub.mjs",
+    "--json"
+   ],
+   "exit": 0,
+   "parseOk": true,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": [],
+   "stderrTail": ""
+  }
+ },
+ "restore": {
+  "afterRestoreSha256": "632e62e447bd66204c6db2bf03bb3897a99fcbd3c6503baa81d43794c41a4f52",
+  "equalsPristine": true,
+  "repoBytesUntouched": true
+ },
+ "verdict": "KILLED",
+ "killedBy": {
+  "selftest": true,
+  "fixture": true
+ }
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "tabi-r58-critic-verification-v1",
+  "seat": "R58Critic",
+  "takenAt": "2026-11-03",
+  "methods": "read-only git (log/cat-file/diff) in kengaku-shokunin; node smoke run of the r57 counter into scratch; no mutating git command; no corpus write; no browser",
+  "c1b_kengaku_province_bytes": {
+    "ledger_row_r57": { "type": "lane", "lane": "kengaku-shokunin", "path": "PROVINCE.md", "provinceSha256": "f0b82513f781a803502f2c6c85e80eb8a8f6541c148afd19170ff7c094bba736", "lines": 971, "bgHits": 1, "head": "21b13dc70fae6645ce0d6c7cdec5117ca397d071" },
+    "heads": [
+      { "rev": "21b13dc70fae6645ce0d6c7cdec5117ca397d071", "committedAt": "2026-11-03T16:41:52-03:00", "subject": "round-64: tip re-run receipt for the R64-C3 sweep (files=66 after the kv-store entry landed; frozen 29 all addended)", "provinceSha256": "f0b82513f781a803502f2c6c85e80eb8a8f6541c148afd19170ff7c094bba736", "provinceLines": 971 },
+      { "rev": "12a6255170bcc466029bf82037885fd69e20370f", "committedAt": "2026-11-03T16:50:37-03:00", "subject": "round-64 verifier spot-check (integrator, hyaku): non-author admit/reject", "provinceSha256": "f0b82513f781a803502f2c6c85e80eb8a8f6541c148afd19170ff7c094bba736", "provinceLines": 971 },
+      { "rev": "b5032ff8391dcb5939c3be53516b31a50ab340a0", "committedAt": "2026-11-03T17:04:37-03:00", "subject": "round-65: freeze (claims doc, pre-freeze captures g1/g2/g4/g5+c2+census, S232-S234, w1 spec+dispatch)", "provinceSha256": "f0b82513f781a803502f2c6c85e80eb8a8f6541c148afd19170ff7c094bba736", "provinceLines": 971 }
+    ],
+    "diff_12a62551_to_b5032ff8": { "filesChanged": 13, "insertions": 956, "provinceMdChanged": false },
+    "verdict": "real sibling head movement, screened bytes identical at all three heads; the round-open red is not a file-absent artifact"
+  },
+  "c2d_counter_absent_receipt_smoke": {
+    "command": "node .ufo/waves/round-57/counters/chromium-receipt-r57.mjs <scratch>/absent-receipt.json --driver scripts/chrome-cdp-loopback-round57.mjs --json",
+    "exitCode": 1,
+    "output": {
+      "schema": "tabi-chromium-receipt-r57",
+      "predicate": false,
+      "findingCount": 1,
+      "findings": [ { "id": "receipt-missing", "detail": "<scratch>/absent-receipt.json", "occurrences": 1 } ],
+      "couldNotEvaluate": []
+    },
+    "counter_spawn_surface": "grep for spawnSync/execFile/spawn( in chromium-receipt-r57.mjs: zero matches (pure receipt grader; SCHEMA constant is its only const hit)",
+    "verdict": "the counter family refuses an absent receipt with exit 1 and no side effects; the r58 counter inherits this by its dispatch contract (keep every r57 id/check with the same semantics)"
+  },
+  "code_grounds": {
+    "meter": ".ufo/waves/round-57/counters/c1-adjacency-host-v17.mjs (verify() P1/P2/P3, parseRef, predicateFrom, selftest cases, run loop okFindings/okPredicate/okCount)",
+    "driver": "scripts/chrome-cdp-loopback-round57.mjs (recorders registered document capture: keydown-only __keylog at ~line 496; __keylogFull rec at ~lines 518-519; http fixture server ~line 704)",
+    "counter": ".ufo/waves/round-57/counters/chromium-receipt-r57.mjs (evaluate() ENOENT -> receipt-missing; SCHEMA 'tabi-chrome-cdp-r57'; exit predicate?0:1)"
+  }
+}

@@ -1,0 +1,97 @@
+{
+ "schema": "tabi-r58-mutant-counter-probe",
+ "id": "m3",
+ "description": "drop the one-submission /echo server check (a chord-submitted duplicate /echo is no longer refused)",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-58/counters/chromium-receipt-r58.mjs",
+ "counterSha256": "632e62e447bd66204c6db2bf03bb3897a99fcbd3c6503baa81d43794c41a4f52",
+ "fixturesDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-58/counters/chromium-receipt-r58-fixtures",
+ "workdir": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m3",
+ "edits": [
+  {
+   "old": "  if (echoes.length !== 1 || submissions.length !== 1) {\n    add('swallow-enter-chord-leak', 'serverRequests /echo ' + echoes.length + ' (field+field2 submissions ' + submissions.length + ') != exactly one (the chord submitted, or the one submit is missing)');\n  }",
+   "new": "",
+   "occurrences": 1,
+   "ok": true
+  }
+ ],
+ "mutatedSha256": "7e74e201b659575215c17568d6fa6582c211286a1bcad525402f1c01aff25ed1",
+ "expectId": "swallow-enter-chord-leak",
+ "baseline": {
+  "status": 0,
+  "allPass": true,
+  "pass": 78,
+  "cases": 78,
+  "uncovered": [],
+  "failing": []
+ },
+ "baselineAllPass": true,
+ "mutated": {
+  "status": 1,
+  "allPass": false,
+  "pass": 77,
+  "cases": 78,
+  "failing": [
+   {
+    "name": "swallow-enter-chord-leak",
+    "got": [],
+    "want": [
+     "swallow-enter-chord-leak"
+    ]
+   }
+  ]
+ },
+ "lostId": {
+  "name": "swallow-enter-chord-leak",
+  "file": "swallow-enter-chord-leak.json",
+  "want": [
+   "swallow-enter-chord-leak"
+  ],
+  "got": [],
+  "orderOk": null
+ },
+ "seededCase": "swallow-enter-chord-leak.json",
+ "fixtureRun": {
+  "pristine": {
+   "caseFile": "swallow-enter-chord-leak.json",
+   "receiptPath": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m3/chromium-receipt-r58-fixtures/receipts/new-r58-swallow-enter-chord-leak.receipt.json",
+   "args": [
+    "--driver",
+    "<work>/chromium-receipt-r58-fixtures/driver-stub.mjs",
+    "--json"
+   ],
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findingCount": 1,
+   "findings": [
+    "swallow-enter-chord-leak"
+   ],
+   "stderrTail": ""
+  },
+  "mutant": {
+   "caseFile": "swallow-enter-chord-leak.json",
+   "receiptPath": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m3/chromium-receipt-r58-fixtures/receipts/new-r58-swallow-enter-chord-leak.receipt.json",
+   "args": [
+    "--driver",
+    "<work>/chromium-receipt-r58-fixtures/driver-stub.mjs",
+    "--json"
+   ],
+   "exit": 0,
+   "parseOk": true,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": [],
+   "stderrTail": ""
+  }
+ },
+ "restore": {
+  "afterRestoreSha256": "632e62e447bd66204c6db2bf03bb3897a99fcbd3c6503baa81d43794c41a4f52",
+  "equalsPristine": true,
+  "repoBytesUntouched": true
+ },
+ "verdict": "KILLED",
+ "killedBy": {
+  "selftest": true,
+  "fixture": true
+ }
+}

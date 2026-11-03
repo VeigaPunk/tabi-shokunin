@@ -1,0 +1,255 @@
+{
+ "schema": "r58sentinel-runner-audit-v1",
+ "checks": [
+  {
+   "id": "remote-debugging-address-loopback",
+   "ok": true,
+   "detail": "1050: '--remote-debugging-address=127.0.0.1',"
+  },
+  {
+   "id": "fixture-server-loopback-only",
+   "ok": true,
+   "detail": "916: await new Promise((resolve) => fixtureServer.listen(0, '127.0.0.1', resolve));"
+  },
+  {
+   "id": "user-data-dir-from-scratch-profile",
+   "ok": true,
+   "detail": "1051: '--user-data-dir=' + profileDir,"
+  },
+  {
+   "id": "throwaway-home",
+   "ok": true,
+   "detail": "806: const runHome = path.join(scratchDir, 'home-' + launchToken); | 807: const runXdgConfig = path.join(runHome, '.config'); | 811: usage('cannot prepare the throwaway HOME ' + runHome + ': ' + String((e && e.message) || e));"
+  },
+  {
+   "id": "throwaway-xdg-config-home",
+   "ok": true,
+   "detail": "100: // Chromium profile is never read. Throwaway HOME/XDG_CONFIG_HOME under the | 800: // Throwaway HOME/XDG_CONFIG_HOME under the scratch (sentinel RISK 1/RISK 3): | 1069: env: { ...process.env, HOME: runHome, XDG_CONFIG_HOME: runXdgConfig, TMPDIR: scratchDir },"
+  },
+  {
+   "id": "disable-extensions",
+   "ok": true,
+   "detail": "101: // scratch and --disable-extensions are mandatory (the r56 sentinel | 1059: '--disable-extensions',"
+  },
+  {
+   "id": "keyed-pid-group-kill",
+   "ok": true,
+   "detail": "groupKill=2 sweep=3"
+  },
+  {
+   "id": "no-pkill-invocation",
+   "ok": true,
+   "detail": "clean (only the \"never pkill\" prose)"
+  },
+  {
+   "id": "zero-survivor-closure-probe",
+   "ok": true,
+   "detail": "70: //       sweep to zero survivors, port probes on the fixture port and the | 85: //   post-kill   survivors are killed BY PID (never pkill -f, never an image | 850: if (!last.pids.length) return { postKillSweepCount: 0, survivors: [], rounds: round };"
+  },
+  {
+   "id": "port-probes",
+   "ok": true,
+   "detail": "portProbe=9 netConnect=1"
+  },
+  {
+   "id": "argv-shape-only-redaction",
+   "ok": true,
+   "detail": "1065: receipt.host.argv = childArgv.map((a) => String(a).replace(/\\/home\\/[^/\\s\"]+(?=\\/)/g, '__USER_HOME__').replace(/(^|[=])~\\//g, '$1__USER_HOME__/'));"
+  },
+  {
+   "id": "no-external-url-in-runner",
+   "ok": true,
+   "detail": "clean"
+  },
+  {
+   "id": "no-launch-flag-removed-vs-r57",
+   "ok": true,
+   "detail": "none removed"
+  },
+  {
+   "id": "no-new-launch-flag-vs-r57",
+   "ok": true,
+   "detail": "none added"
+  },
+  {
+   "id": "fixture-js-no-location-read",
+   "ok": true,
+   "detail": "clean (the browser-executed fixture reads no location member)"
+  },
+  {
+   "id": "swallow-state-not-url-derived",
+   "ok": true,
+   "detail": "clean (no __swallowOn/__swallowSet assignment in the shipped fixture derives from a URL/query)"
+  },
+  {
+   "id": "no-navigation-with-swallow-query",
+   "ok": true,
+   "detail": "clean"
+  },
+  {
+   "id": "set-swallow-exposed",
+   "ok": true,
+   "detail": "20: //       event.key. window.__setSwallow(on, keys) is the only way to reach it | 237: swallowApi: /window\\.__setSwallow\\s*=\\s*function/.test(s) | 668: window.__setSwallow = function (on, keys) { | 950: swallowGate: { on: 'window.__swallowOn', set: 'window.__swallowSet', api: 'window.__setSwallow(on, keys) — idempotent, clears then sets' }, | 1258: // the page's OWN gate state, read back after every __setSwallow call"
+  },
+  {
+   "id": "fixture-inline-js-no-external-url",
+   "ok": true,
+   "detail": "clean"
+  },
+  {
+   "id": "swallower-registered-before-recorder",
+   "ok": true,
+   "detail": "swallowerCall@672 allKeydownListenerCalls=[\"672(swallower)\",\"676(recorder)\",\"701(recorder)\"]"
+  },
+  {
+   "id": "recorder-records-cancelable",
+   "ok": true,
+   "detail": "24: //       exactly two ADDITIVE fields — `cancelable` (from the event) and | 36: //            them), both keylog entries carry cancelable true and | 39: //            keylog entry with cancelable true) with defaultPrevented TRUE and"
+  },
+  {
+   "id": "recorder-records-defaultprevented",
+   "ok": true,
+   "detail": "25: //       `defaultPrevented` (the event's flag AFTER the swallower ran) — so a | 37: //            defaultPrevented false; | 39: //            keylog entry with cancelable true) with defaultPrevented TRUE and"
+  },
+  {
+   "id": "counter-never-executes-driver",
+   "ok": true,
+   "detail": "clean (no child_process / spawn / exec / dynamic import of the driver)"
+  },
+  {
+   "id": "counter-reads-driver-bytes-for-sha",
+   "ok": true,
+   "detail": "742: let driverBytes = null; | 745: try { driverBytes = fs.readFileSync(driverPath); } catch { add('driver-missing', path.resolve(driverPath)); } | 747: if (driverBytes) { | 748: const got = sha256(driverBytes);"
+  },
+  {
+   "id": "counter-honours-driver-sha-pin",
+   "ok": true,
+   "detail": "17: // driver bytes AND of --expect-driver-sha256 when that pin is given, whose | 308: //        [--expect-driver-sha256 <hex>] [--shot <dir|png...>] [--json] | 695: // input: {receiptPath} | {inline, baseDir}; opts: {driverPath, expectSha} | 751: if (opts.expectSha && rec.driverSha256 !== opts.expectSha) {"
+  },
+  {
+   "id": "counter-no-external-url",
+   "ok": true,
+   "detail": "clean"
+  },
+  {
+   "id": "counter-fixtures-no-network-code",
+   "ok": true,
+   "detail": "clean (no fixture performs network I/O)"
+  },
+  {
+   "id": "counter-fixtures-no-external-url",
+   "ok": true,
+   "detail": "clean"
+  },
+  {
+   "id": "counter-fixtures-no-real-driver-copy",
+   "ok": true,
+   "detail": "none"
+  }
+ ],
+ "findings": [],
+ "runner": {
+  "path": "/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round58.mjs",
+  "lines": 1904,
+  "bytes": 110081,
+  "urls": [
+   {
+    "line": 895,
+    "url": "http://127.0.0.1"
+   },
+   {
+    "line": 918,
+    "url": "http://127.0.0.1:"
+   },
+   {
+    "line": 1109,
+    "url": "http://127.0.0.1:"
+   },
+   {
+    "line": 1136,
+    "url": "http://127.0.0.1:"
+   }
+  ],
+  "externalUrls": [],
+  "flags": {
+   "r57": [
+    "--disable-background-networking",
+    "--disable-component-update",
+    "--disable-dev-shm-usage",
+    "--disable-extensions",
+    "--disable-search-engine-choice-screen",
+    "--disable-sync",
+    "--headless",
+    "--no-default-browser-check",
+    "--no-first-run",
+    "--remote-debugging-address",
+    "--remote-debugging-port",
+    "--user-data-dir",
+    "--window-size"
+   ],
+   "r58": [
+    "--disable-background-networking",
+    "--disable-component-update",
+    "--disable-dev-shm-usage",
+    "--disable-extensions",
+    "--disable-search-engine-choice-screen",
+    "--disable-sync",
+    "--headless",
+    "--no-default-browser-check",
+    "--no-first-run",
+    "--remote-debugging-address",
+    "--remote-debugging-port",
+    "--user-data-dir",
+    "--window-size"
+   ],
+   "removed": [],
+   "added": []
+  },
+  "fixtureBlock": {
+   "startLine": 658,
+   "endLine": 711
+  },
+  "keydownListenerCalls": [
+   {
+    "line": 672,
+    "isSwallower": true,
+    "body": "document.addEventListener('keydown', function (e) { if (window.__swallowOn === true && window.__swallowSet.indexOf(e.key"
+   },
+   {
+    "line": 676,
+    "isSwallower": false,
+    "body": "document.addEventListener('keydown', function (e) { window.__keylog.push({ key: e.key, code: e.code, keyCode: e.keyCode,"
+   },
+   {
+    "line": 701,
+    "isSwallower": false,
+    "body": " document.addEventListener('keydown', rec, true); document.addEventListener('keyup', rec, true); })(); </script></head>"
+   }
+  ],
+  "swallowListenerLine": 672,
+  "recorderCallLines": [
+   676,
+   701
+  ]
+ },
+ "counter": {
+  "path": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-58/counters/chromium-receipt-r58.mjs",
+  "lines": 1421,
+  "bytes": 83630
+ },
+ "fixtures": {
+  "dir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-58/counters/chromium-receipt-r58-fixtures",
+  "fileCount": 169,
+  "extHistogram": {
+   ".json": 153,
+   ".png": 14,
+   ".mjs": 1,
+   ".bin": 1
+  },
+  "codeFiles": [
+   "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-58/counters/chromium-receipt-r58-fixtures/driver-stub.mjs"
+  ]
+ },
+ "findingCount": 0,
+ "predicate": true
+}

@@ -1,0 +1,109 @@
+{
+ "schema": "tabi-r58-mutant-counter-probe",
+ "id": "m4",
+ "description": "weaken the nonce binding: accept any tabi-r58-* nonce (the 12-hex shape no longer binds the swallow plan derivation)",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-58/counters/chromium-receipt-r58.mjs",
+ "counterSha256": "632e62e447bd66204c6db2bf03bb3897a99fcbd3c6503baa81d43794c41a4f52",
+ "fixturesDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-58/counters/chromium-receipt-r58-fixtures",
+ "workdir": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m4",
+ "edits": [
+  {
+   "old": "const NONCE_RE = /^tabi-r58-[0-9a-f]{12}$/;",
+   "new": "const NONCE_RE = /^tabi-r58-/;",
+   "occurrences": 1,
+   "ok": true
+  }
+ ],
+ "mutatedSha256": "3c66e7e38b8e5c17596ab01c07b138fd0df06c542990e64bcf30fcacc601e846",
+ "expectId": "nonce-shape",
+ "baseline": {
+  "status": 0,
+  "allPass": true,
+  "pass": 78,
+  "cases": 78,
+  "uncovered": [],
+  "failing": []
+ },
+ "baselineAllPass": true,
+ "mutated": {
+  "status": 1,
+  "allPass": false,
+  "pass": 77,
+  "cases": 78,
+  "failing": [
+   {
+    "name": "nonce-shape",
+    "got": [
+     "field3-not-empty",
+     "swallow-plan-mismatch",
+     "swallow-recorder-fields-missing"
+    ],
+    "want": [
+     "nonce-shape"
+    ]
+   }
+  ]
+ },
+ "lostId": {
+  "name": "nonce-shape",
+  "file": "nonce-shape.json",
+  "want": [
+   "nonce-shape"
+  ],
+  "got": [
+   "field3-not-empty",
+   "swallow-plan-mismatch",
+   "swallow-recorder-fields-missing"
+  ],
+  "orderOk": null
+ },
+ "seededCase": "nonce-shape.json",
+ "fixtureRun": {
+  "pristine": {
+   "caseFile": "nonce-shape.json",
+   "receiptPath": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m4/chromium-receipt-r58-fixtures/receipts/nonce-shape.receipt.json",
+   "args": [
+    "--driver",
+    "<work>/chromium-receipt-r58-fixtures/driver-stub.mjs",
+    "--json"
+   ],
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findingCount": 1,
+   "findings": [
+    "nonce-shape"
+   ],
+   "stderrTail": ""
+  },
+  "mutant": {
+   "caseFile": "nonce-shape.json",
+   "receiptPath": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m4/chromium-receipt-r58-fixtures/receipts/nonce-shape.receipt.json",
+   "args": [
+    "--driver",
+    "<work>/chromium-receipt-r58-fixtures/driver-stub.mjs",
+    "--json"
+   ],
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findingCount": 3,
+   "findings": [
+    "swallow-recorder-fields-missing",
+    "swallow-plan-mismatch",
+    "field3-not-empty"
+   ],
+   "stderrTail": ""
+  }
+ },
+ "restore": {
+  "afterRestoreSha256": "632e62e447bd66204c6db2bf03bb3897a99fcbd3c6503baa81d43794c41a4f52",
+  "equalsPristine": true,
+  "repoBytesUntouched": true
+ },
+ "verdict": "KILLED",
+ "killedBy": {
+  "selftest": true,
+  "fixture": true
+ }
+}

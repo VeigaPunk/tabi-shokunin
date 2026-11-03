@@ -1,0 +1,103 @@
+{
+ "schema": "tabi-r58-mutant-counter-probe",
+ "id": "m2",
+ "description": "weaken the value-unchanged negative-edit witness to a prefix match (suffix drift passes)",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-58/counters/chromium-receipt-r58.mjs",
+ "counterSha256": "632e62e447bd66204c6db2bf03bb3897a99fcbd3c6503baa81d43794c41a4f52",
+ "fixturesDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-58/counters/chromium-receipt-r58-fixtures",
+ "workdir": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m2",
+ "edits": [
+  {
+   "old": "bs.valueAfter !== pre",
+   "new": "!(typeof bs.valueAfter === 'string' && bs.valueAfter.startsWith(pre))",
+   "occurrences": 1,
+   "ok": true
+  },
+  {
+   "old": "dg.valueAfter !== pre",
+   "new": "!(typeof dg.valueAfter === 'string' && dg.valueAfter.startsWith(pre))",
+   "occurrences": 1,
+   "ok": true
+  }
+ ],
+ "mutatedSha256": "0692c6a07f6cac351b7ee7d73e288f2cbd39182a9e63365da00a27af037bfe96",
+ "expectId": "swallow-value-changed",
+ "baseline": {
+  "status": 0,
+  "allPass": true,
+  "pass": 78,
+  "cases": 78,
+  "uncovered": [],
+  "failing": []
+ },
+ "baselineAllPass": true,
+ "mutated": {
+  "status": 1,
+  "allPass": false,
+  "pass": 77,
+  "cases": 78,
+  "failing": [
+   {
+    "name": "swallow-value-changed",
+    "got": [],
+    "want": [
+     "swallow-value-changed"
+    ]
+   }
+  ]
+ },
+ "lostId": {
+  "name": "swallow-value-changed",
+  "file": "swallow-value-changed.json",
+  "want": [
+   "swallow-value-changed"
+  ],
+  "got": [],
+  "orderOk": null
+ },
+ "seededCase": "swallow-value-changed.json",
+ "fixtureRun": {
+  "pristine": {
+   "caseFile": "swallow-value-changed.json",
+   "receiptPath": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m2/chromium-receipt-r58-fixtures/receipts/new-r58-swallow-value-changed.receipt.json",
+   "args": [
+    "--driver",
+    "<work>/chromium-receipt-r58-fixtures/driver-stub.mjs",
+    "--json"
+   ],
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findingCount": 1,
+   "findings": [
+    "swallow-value-changed"
+   ],
+   "stderrTail": ""
+  },
+  "mutant": {
+   "caseFile": "swallow-value-changed.json",
+   "receiptPath": "/fast/scratch/hyaku/tabi-r58/R58MutCounter/m2/chromium-receipt-r58-fixtures/receipts/new-r58-swallow-value-changed.receipt.json",
+   "args": [
+    "--driver",
+    "<work>/chromium-receipt-r58-fixtures/driver-stub.mjs",
+    "--json"
+   ],
+   "exit": 0,
+   "parseOk": true,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": [],
+   "stderrTail": ""
+  }
+ },
+ "restore": {
+  "afterRestoreSha256": "632e62e447bd66204c6db2bf03bb3897a99fcbd3c6503baa81d43794c41a4f52",
+  "equalsPristine": true,
+  "repoBytesUntouched": true
+ },
+ "verdict": "KILLED",
+ "killedBy": {
+  "selftest": true,
+  "fixture": true
+ }
+}
