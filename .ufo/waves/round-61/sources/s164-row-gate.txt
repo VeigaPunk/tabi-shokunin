@@ -1,0 +1,55 @@
+# S164 proposed-row structural gate transcript (scratch root copy of the lane at 2026-11-03)
+# scratch root: /fast/scratch/hyaku/tabi-r61/R61Scout/gate-root (removed at yield; reproducible from these commands)
+# fixture: corpus copy + .ufo/waves/round-37/counters + .ufo/waves/round-49/claims.json
+
+$ node scripts/check-sources.mjs --root "$G"   # baseline, row not yet inserted
+SOURCES_GATE verdict=clean rows=163 tiers=A:147,B:7,C:9 status=queued:15,mined:138,rejected:10 findings=0 file=corpus/SOURCES.md
+exit=0
+
+$ # row inserted immediately after the last Registry row (S163, real line 177)
+$ node scripts/check-sources.mjs --root "$G"   # with S164 row
+SOURCES_GATE verdict=clean rows=164 tiers=A:148,B:7,C:9 status=queued:16,mined:138,rejected:10 findings=0 file=corpus/SOURCES.md
+exit=0
+
+$ # negative control: one pipe injected into the S164 scope cell
+FINDING id=malformed_row fleet=E01 row=S164 detail=fields_14
+SOURCES_GATE verdict=failed rows=164 tiers=A:148,B:7,C:9 status=queued:15,mined:138,rejected:10 findings=1 file=corpus/SOURCES.md
+exit=1
+
+# exit measured by wrapping the gate call with || RC=$? (the shell runs with -e)
+
+## Instrument checks
+
+$ node scripts/check-sources.mjs   # real registry, read-only, lane root
+SOURCES_GATE verdict=clean rows=163 tiers=A:147,B:7,C:9 status=queued:15,mined:138,rejected:10 findings=0 file=corpus/SOURCES.md
+exit=0
+
+$ node scripts/check-sources.mjs --self-test
+SELFTEST name=clean expected_exit=0 actual_exit=0 expected_finding=none result=PASS
+SELFTEST name=no-rows expected_exit=1 actual_exit=1 expected_finding=no_rows result=PASS
+SELFTEST name=malformed-row expected_exit=1 actual_exit=1 expected_finding=malformed_row result=PASS
+SELFTEST name=bad-id expected_exit=1 actual_exit=1 expected_finding=bad_id result=PASS
+SELFTEST name=duplicate-id expected_exit=1 actual_exit=1 expected_finding=duplicate_id result=PASS
+SELFTEST name=duplicate-url expected_exit=1 actual_exit=1 expected_finding=duplicate_url result=PASS
+SELFTEST name=supersedes-correction expected_exit=0 actual_exit=0 expected_finding=none result=PASS
+SELFTEST name=bad-kind expected_exit=1 actual_exit=1 expected_finding=bad_kind result=PASS
+SELFTEST name=bad-tier expected_exit=1 actual_exit=1 expected_finding=bad_tier result=PASS
+SELFTEST name=bad-status expected_exit=1 actual_exit=1 expected_finding=bad_status result=PASS
+SELFTEST name=bad-opened expected_exit=1 actual_exit=1 expected_finding=bad_opened result=PASS
+SELFTEST name=bad-recheck expected_exit=1 actual_exit=1 expected_finding=bad_recheck result=PASS
+SELFTEST name=tier-inflation expected_exit=1 actual_exit=1 expected_finding=tier_inflation result=PASS
+SELFTEST name=used-by-missing expected_exit=1 actual_exit=1 expected_finding=used_by_missing result=PASS
+SELFTEST name=mined-without-used-by expected_exit=1 actual_exit=1 expected_finding=mined_without_used_by result=PASS
+SELFTEST name=used-by-uncited expected_exit=1 actual_exit=1 expected_finding=used_by_uncited result=PASS
+SELFTEST name=used-by-id-boundary expected_exit=1 actual_exit=1 expected_finding=used_by_uncited result=PASS
+SELFTEST name=used-by-escape expected_exit=1 actual_exit=1 expected_finding=used_by_escape result=PASS
+SELFTEST name=rejected-without-flip expected_exit=1 actual_exit=1 expected_finding=rejected_without_flip result=PASS
+SELFTEST name=missing-section expected_exit=1 actual_exit=1 expected_finding=missing_section result=PASS
+SELFTEST name=credential-material expected_exit=1 actual_exit=1 expected_finding=credential_material result=PASS
+SELFTEST name=bare-anchor expected_exit=1 actual_exit=1 expected_finding=bare_anchor result=PASS
+SELFTEST name=row-outside-registry expected_exit=1 actual_exit=1 expected_finding=row_outside_registry result=PASS
+SELFTEST name=symlinked-registry expected_exit=2 actual_exit=2 expected_finding=could_not_evaluate result=PASS
+SELFTEST name=non-regular-registry expected_exit=2 actual_exit=2 expected_finding=could_not_evaluate result=PASS
+SELFTEST name=missing-file expected_exit=2 actual_exit=2 expected_finding=could_not_evaluate result=PASS
+SOURCES_SELFTEST verdict=clean cases=26
+exit=0

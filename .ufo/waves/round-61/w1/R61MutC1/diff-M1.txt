@@ -1,0 +1,13 @@
+--- v20.mjs	2026-11-03 20:08:05.885749125 -0300
++++ v20-M1.mjs	2026-11-03 20:08:46.839538108 -0300
+@@ -332,7 +332,9 @@
+   const auditRaw = audit ? fs.readFileSync(audit, 'utf8') : laneBytes(repo, rev, AUDIT_REL);
+   const deltaRaw = delta ? fs.readFileSync(delta, 'utf8') : laneBytes(repo, rev, DELTA_REL);
+   const roster = rosterScan(fleet);
+-  const heads = readSnapshot(snapshot);
++  const snapshotHeads = readSnapshot(snapshot);
++  const heads = new Map();
++  for (const lane of snapshotHeads.keys()) { const r = spawnSync('git', ['-C', path.join(fleet, lane), 'rev-parse', 'HEAD']); heads.set(lane, r.status === 0 ? r.stdout.toString('utf8').trim() : snapshotHeads.get(lane)); }
+   const sibRef = makeSibRefGit(fleet, heads);
+   const res = verify({
+     mapRows: tsvParse(mapRaw, 9),

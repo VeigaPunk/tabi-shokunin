@@ -1,0 +1,116 @@
+{
+ "laneRoot": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+ "source": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/chromium-receipt-r61.mjs",
+ "sourceSha256": "f615a2f9c2b2cf438321d54f1a6ac6364c22d6d7a7e7c3b7a823e7c2f3ea027e",
+ "fixturesLink": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/chromium-receipt-r61-fixtures",
+ "fixture": {
+  "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/chromium-receipt-r61-fixtures/live/r61-pointer-fixture.receipt.json",
+  "driver": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/chromium-receipt-r61-fixtures/live/chrome-cdp-loopback-round59.mjs",
+  "sha256": "b16ddb443d5bd1b101cfcdb55cbf2d5ffcb3f39d38064a661ab82bb9a152ff86",
+  "shot": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/chromium-receipt-r61-fixtures/live"
+ },
+ "probes": {
+  "f1": {
+   "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/measure/f-probes/probe-f1.receipt.json",
+   "sha256": "028861210ea316086f556dd51fcb38afb88a3251687b68ac6e619bf6237a9e43",
+   "shot": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/chromium-receipt-r61-fixtures/live"
+  },
+  "f2": {
+   "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/measure/f-probes/probe-f2.receipt.json",
+   "sha256": "70e85d04d7cddfafb2195765d34ee2c954c2069fc2fb22f97a7aeb4ccbf20d81",
+   "shot": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/chromium-receipt-r61-fixtures/live"
+  },
+  "f3": {
+   "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/measure/f-probes/probe-f3.receipt.json",
+   "sha256": "21fec12011f8cae2cf1d2c2f535e3d269ddd20941a131eaf0eb2069c6ddfde10",
+   "shot": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/chromium-receipt-r61-fixtures/live"
+  },
+  "f4": {
+   "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/measure/f-probes/probe-f4.receipt.json",
+   "sha256": "1f0ec49e6e260fb6fbd1e3a194eacd9fcb786cc4f32ea8c81d3b7ef2eec87742",
+   "shot": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/chromium-receipt-r61-fixtures/live"
+  },
+  "f5": {
+   "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/measure/f-probes/probe-f5.receipt.json",
+   "sha256": "9bc26897326dc231ee8597bdeab4804163b20efcb7558ab9742b2aeb6d852155",
+   "shot": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/chromium-receipt-r61-fixtures/live"
+  }
+ },
+ "mutants": [
+  {
+   "id": "C1p",
+   "probe": "f1",
+   "mutation": "drop the pointerType check: the per-entry rule 'pointerType must be mouse' is removed; every other pointer rule is untouched.",
+   "replacements": [
+    {
+     "from": "    if (e.pointerType !== 'mouse') add('pointer-type-wrong', 'ptrlog[' + i + '] pointerType must be mouse');\n",
+     "to": ""
+    }
+   ]
+  },
+  {
+   "id": "C2p",
+   "probe": "f2",
+   "mutation": "check only the first pointer entry: per-entry validation covers ptrlog[0] only, an absent first pointerdown no longer adds a finding, and the press/release count+pairing rules stop at the first press.",
+   "replacements": [
+    {
+     "from": "  for (const [i, e] of log.entries()) {",
+     "to": "  for (const [i, e] of log.slice(0, 1).entries()) {"
+    },
+    {
+     "from": "  if (!firstDown || !log.some((e) => isObj(e) && e.type === 'pointermove' && e.seq < firstDown.seq)) {",
+     "to": "  if (firstDown && !log.some((e) => isObj(e) && e.type === 'pointermove' && e.seq < firstDown.seq)) {"
+    },
+    {
+     "from": "  if (downs.length === 0 || ups.length !== downs.length || mouseDowns.length !== downs.length || mouseUps.length !== downs.length) {",
+     "to": "  if (downs.length > 0 && (ups.length !== downs.length || mouseDowns.length !== downs.length || mouseUps.length !== downs.length)) {"
+    },
+    {
+     "from": "  for (let i = 0; i < downs.length; i += 1) {",
+     "to": "  for (let i = 0; i < Math.min(downs.length, 1); i += 1) {"
+    }
+   ]
+  },
+  {
+   "id": "C3p",
+   "probe": "f3",
+   "mutation": "accept a string or absent pointerId: the per-entry rule refuses only a present non-string non-numeric id, and the release-id equality is enforced only when both ids are numeric.",
+   "replacements": [
+    {
+     "from": "    if (typeof e.pointerId !== 'number' || !Number.isFinite(e.pointerId) || e.pointerId < 0) add('pointer-id-wrong', 'ptrlog[' + i + '] pointerId must be numeric and nonnegative');",
+     "to": "    if (has(e, 'pointerId') && typeof e.pointerId !== 'string' && (typeof e.pointerId !== 'number' || !Number.isFinite(e.pointerId) || e.pointerId < 0)) add('pointer-id-wrong', 'ptrlog[' + i + '] pointerId must be numeric and nonnegative');"
+    },
+    {
+     "from": "        || u.pointerId !== d.pointerId || u.button !== d.button",
+     "to": "        || (typeof d.pointerId === 'number' && typeof u.pointerId === 'number' && u.pointerId !== d.pointerId) || u.button !== d.button"
+    }
+   ]
+  },
+  {
+   "id": "C4p",
+   "probe": "f4",
+   "mutation": "drop the isTrusted presence check: the per-entry rule requiring isTrusted:true is removed.",
+   "replacements": [
+    {
+     "from": "    if (!has(e, 'isTrusted') || e.isTrusted !== true) add('pointer-trust-wrong', 'ptrlog[' + i + '] requires isTrusted:true');\n",
+     "to": ""
+    }
+   ]
+  },
+  {
+   "id": "C5p",
+   "probe": "f5",
+   "mutation": "drop the nonce binding of typed field values: the pointer-schema complete-trace rederivation (pointer-nonce-wrong) is removed and the carried plainTrace prefix rule no longer compares valueAfter to the nonce (its string-type rule stays).",
+   "replacements": [
+    {
+     "from": "  const entries = isObj(rec.plainTrace) ? rec.plainTrace.entries : null;\n  if (typeof rec.nonce !== 'string' || !Array.isArray(entries) || entries.length !== rec.nonce.length\n      || entries.some((e, i) => !isObj(e) || e.i !== i || e.char !== rec.nonce[i] || e.valueAfter !== rec.nonce.slice(0, i + 1))) {\n    add('pointer-nonce-wrong', 'complete typed field-value trace must rederive from nonce');\n  }\n",
+     "to": ""
+    },
+    {
+     "from": "    if (nonceStr === null || v.length > nonceStr.length || v !== nonceStr.slice(0, v.length)) {\n      add('plain-trace-wrong', 'i=' + (isObj(e) ? e.i : '?') + ' valueAfter=' + JSON.stringify(v));\n    }\n",
+     "to": "    if (false) {\n      add('plain-trace-wrong', 'i=' + (isObj(e) ? e.i : '?') + ' valueAfter=' + JSON.stringify(v));\n    }\n"
+    }
+   ]
+  }
+ ]
+}

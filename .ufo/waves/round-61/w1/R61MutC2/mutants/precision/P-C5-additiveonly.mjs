@@ -1,0 +1,2720 @@
+#!/usr/bin/env node
+// r61 ADDITIVE contract: r59 receipts retain their exact r60 checks. The
+// pointer schema is tabi-chrome-cdp-r61. ptrlog contains pointer-only records;
+// mouselog is the mouse recorder. Both arrays carry page-stamped globally
+// unique monotonic seq integers; those stamps alone establish cross-log order.
+// focus is the activeElement id read immediately after the pointer press.
+// The nonce-derived plainTrace is complete on the pointer schema only.
+// chromium-receipt-r60.mjs — tabi round 60 counter, claim C2 (calibration:
+// the lane's own chromium receipt gate must not green forged receipts).
+//
+// BASE: .ufo/waves/round-59/counters/chromium-receipt-r59.mjs (2193 lines,
+// sha256 b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136,
+// selftest 91/91), copied. The r59 file is never edited. This generation
+// implements the DECLARED change set (a)-(e) of .ufo/waves/round-60/claims.json
+// C2 and nothing else. It scores the r59 RECEIPT SHAPE (schema
+// tabi-chrome-cdp-r59, nonce ^tabi-r59-[0-9a-f]{12}$) because the live
+// receipt it must keep green is an r59 receipt: the schema and nonce are
+// CARRIED, never renamed (kill rule K2).
+//
+// DECLARED CHANGE SET (a)-(e):
+//   (a) cancelable on EVERY CapsLock and letter delivered-shape event, in
+//       BOTH leg recordings (journey.form.capsLockLeg AND the top-level
+//       capslockTrace mirror) and in the leg's chronological `trace` array.
+//       KEYDOWN: cancelable must be the JSON boolean true. KEYUP: the
+//       presence and boolean type of cancelable are required (the claim binds
+//       the keydown value; a keyup may record either boolean). The r59 f6 gap:
+//       r59 shape-checked `leg` only, and `leg` prefers the form leg, so
+//       capslockTrace.press1.keydownEntry with cancelable:false (probe A) or
+//       with cancelable deleted (probe B) went GREEN.
+//   (b) trace-vs-keylog: a CapsLock leg event's cancelable/defaultPrevented
+//       must EQUAL the page keylog entry it cites, positionally — the r59 D1
+//       positional rule (the contiguous derived run, never an equal-valued
+//       twin), extended to the keydown+keyup pairs and to the leg's `trace`
+//       array. Probe D.
+//   (c) the `type` key must be present on every CapsLock leg event and every
+//       journey.form.capsLockLeg.trace entry. Probe E.
+//   (d) cancelable must be a JSON boolean — the string "true"/"false" or any
+//       other non-boolean is refused. Mutant C9.
+//   (e) cancelable is read on EACH CapsLock event, never only on the first
+//       keydownEntry. Mutant C8.
+// The finding ids are the CARRIED r59 ids (missing-delivered-shape-field for
+// the cancelable/shape class, keylog-flag-mismatch for the trace-vs-keylog
+// class): the frozen id list and its fixture coverage are unchanged, and the
+// 91 r59 selftest cases are carried byte-for-byte.
+//
+// ---------------------------------------------------------------------------
+// CARRIED r59 HEADER (the r59 generation's; this file implements the same
+// receipt contract and every r59 finding id with the same semantics):
+// chromium-receipt-r59.mjs — tabi round 59 counter for claim C2 (coverage:
+// capability chromium-keyevent-capslock-toggle-linux — the CapsLock TOGGLE
+// modifier domain on the Linux host's Chromium 155 headless surface,
+// witnessed page-side, plus the routed D4 positive control (form2) and the
+// routed D1/D2 counter-side checks).
+//
+// BASE: the frozen r58 counter (.ufo/waves/round-58/counters/
+// chromium-receipt-r59.mjs), copied and extended. Every r58 finding id is
+// kept with the same semantics; r58 bytes are never edited and the r58
+// counter still scores r58 receipts. This file is the r59 generation, and it
+// implements the DECLARED change set (a)-(e) of .ufo/waves/round-59/claims.json
+// C2 and nothing else:
+//   (a) D1 page-vs-block cross-check  -> keylog-flag-mismatch
+//   (b) D2 step-plan check            -> step-plan-mismatch
+//   (c) the CapsLock toggle domain    -> capslock-* ids + form2/echo2 ids
+//   (d) the selftest extension (r58's cases carried + one case per new id)
+//   (e) cross-refusal readiness (the committed r57 and r58 receipts both
+//       refuse on schema-wrong FIRST; the receipts live in counters/)
+// The r58 header below is carried verbatim as the r56/r57/r58 contract the
+// r59 generation still enforces.
+//
+// PREDICATE-SENTENCE (frozen in .ufo/waves/round-59/claims.json, restated
+// pre-data at 8e740a08 BEFORE any seat scored — the L1's ruling on the
+// runner's live probe: CDP Input.dispatchKeyEvent cannot set Blink's
+// caps-lock state bit, so the claim is the KEY-EVENT DELIVERY-BOUNDARY and
+// the latch is a MEASURED NEGATIVE. This file implements the restated
+// sentence and never amends it): the counter admits a receipt with schema
+// tabi-chrome-cdp-r59 whose nonce matches ^tabi-r59-[0-9a-f]{12}$ AND is
+// invocation-bound (present in the server log or in the typed values), whose
+// driverSha256 equals the sha256 of the driver bytes AND of
+// --expect-driver-sha256 when that pin is given, whose child argv carries an
+// absolute --user-data-dir naming a throwaway profile-<launchToken> dir,
+// whose plain trace re-derives as nonce prefixes, whose control domain
+// witnesses End (negative edit), Backspace (exact residue), restore (exact
+// nonce), Tab (field -> field2 by document.activeElement) and one Enter
+// implicit submission seen server-side, whose page keylog window has the
+// length the control domain implies, whose server log carries exactly one
+// /echo entry, whose DECLARED 18-STEP PLAN is present exactly (recorded
+// steps equal the embedded plan, missing/extra/reordered refused under
+// step-plan-mismatch) with committed PNG bytes hashing to their pins and
+// carrying the PNG signature and a non-degenerate IHDR, whose teardown left
+// no survivor; whose r57 modifier domain is carried end to end; whose r58
+// preventDefault-swallow domain is carried end to end on #field3 AND is
+// cross-checked page-vs-block (D1: every swallow-block entry's (key,
+// cancelable, defaultPrevented) triple must match an entry in
+// journey.form.pageKeylog BY VALUE — keylog-flag-mismatch); AND — the r59
+// generation — whose CapsLock DELIVERY-BOUNDARY domain is witnessed
+// page-side from both sides: (i) the CapsLock leg (key CapsLock, code
+// CapsLock, windowsVirtualKeyCode 20, no text; keyDown+keyUp, TWICE, around
+// the nonce letters) delivers events the page records with the full
+// delivered shape — key, code, keyCode, cancelable present, keyCode 20 and
+// cancelable true and defaultPrevented false on the CapsLock events, and the
+// letters' derived identity with cancelable true and defaultPrevented false
+// (a missing or non-conforming field is missing-delivered-shape-field);
+// (ii) the ABSENCE witness: the receipt names capsLatchExpected:false and
+// getModifierState('CapsLock') reads FALSE on EVERY recorded keydown/keyup —
+// any true ANYWHERE in the keylog (or a capsLatchExpected that is not the
+// boolean false) is caps-flag-true, the unforged-state guard; (iii) the DOM
+// field value is read back after EVERY keystroke (capslock-readback-missing
+// when not); AND the routed D4 positive control: journey.form2 is the same
+// fixture shape with no swallower, its Control+Enter chord DOES submit
+// (client-side AND server-side), exactly one /echo2 request carries the
+// nonce while form1 keeps exactly one /echo; and the receipt's own predicate
+// flag is true.
+//
+// CARRIED r58 predicate sentence (the r58 generation's; this file keeps
+// enforcing it, re-derived for the r59 nonce and receipt):
+// PREDICATE-SENTENCE (frozen in .ufo/waves/round-58/claims.json before any
+// seat ran; this file implements it and never amends it): the counter admits
+// a receipt with schema tabi-chrome-cdp-r58 whose nonce matches
+// ^tabi-r58-[0-9a-f]{12}$ AND is invocation-bound (present in the server log
+// or in the typed values), whose driverSha256 equals the sha256 of the
+// driver bytes AND of --expect-driver-sha256 when that pin is given, whose
+// child argv carries an absolute --user-data-dir naming a throwaway
+// profile-<launchToken> dir, whose plain trace re-derives as nonce prefixes,
+// whose control domain witnesses End (negative edit), Backspace (exact
+// residue), restore (exact nonce), Tab (field -> field2 by
+// document.activeElement) and one Enter implicit submission seen
+// server-side, whose page keylog window has the length the control domain
+// implies, whose server log carries exactly one /echo entry, whose six named
+// steps are present in order with committed PNG bytes hashing to their pins
+// and carrying the PNG signature and a non-degenerate IHDR, whose teardown
+// left no survivor; whose r57 modifier domain is carried end to end (the
+// Shift-chord trace of the nonce UPPERCASED into #field2 with every
+// uppercase letter's recorded real Shift keyDown/keyUp pair and modifiers 8,
+// #field2 ending exactly at the uppercased nonce, the chord leg on the first
+// [a-f] of the nonce hex tail with recorded modifier bits 2/1/4 and the
+// matching page-side booleans, #field3 carrying no name attribute); AND —
+// the r58 generation — whose preventDefault-swallow domain is witnessed end
+// to end on #field3 AFTER the chord leg and BEFORE the carried final Enter
+// submit: (s1) gate OFF, the first two characters of the nonce hex tail are
+// inserted (valueAfter equals them, defaultPrevented false recorded on both
+// keystrokes); (s2) gate ON {Backspace}, the delivered Backspace keydown
+// records cancelable true and defaultPrevented true and the field value is
+// UNCHANGED; (s3) gate ON {<third hex-tail character>}, its delivered
+// keydown records defaultPrevented true and the value is UNCHANGED; (s4)
+// gate ON {Enter}, ONE Control+Enter chord is delivered with modifier bit 2
+// on the Enter event and defaultPrevented true and does NOT submit (the
+// fixture server sees exactly ONE request carrying field and field2 and NOT
+// field3, and none carrying field3); every swallow-leg keylog entry carries
+// the recorder's two new fields cancelable and defaultPrevented; the
+// receipt discloses fixtureDelta; #field3 was empty when the swallow leg
+// began (swallowLeg.control.valueBefore) and the chord-leg negative witness
+// chordLeg.field3ValueAfter stayed empty, while the top-level
+// field3Value/field3Final (read after the swallow leg) equal that typed
+// two-character prefix; and journey.form.pageKeylog is cross-checked ENTRY
+// BY ENTRY against the sequence this counter RE-DERIVES from the receipt's
+// own nonce (the r52..r58 defence), with the swallow section, when recorded,
+// matching the same re-derivation; and the receipt's own predicate flag is
+// true.
+//
+// RECEIPT CONTRACT (r58; the counter is the scoring authority for it; the r57
+// contract below is carried verbatim and the r58 block extends it):
+//   top level, unchanged from r56: schema, nonce, driverSha256,
+//     host{chromium,argv,launchToken}, fixture{formSha256,origin,
+//     field3NameAttribute?}, plainTrace{entries[]},
+//     controlDomain{end,backspace,restore,tab,enter}, keylog{entries,
+//     length,window}, serverLog[], field3Value, steps[], teardown,
+//     predicate.
+//   r57 additions:
+//     field3Final                "" — #field3 after the whole modifier leg
+//     journey.form.shiftTrace    { value, valueBeforeFirstKey,
+//                                  typing[] | entries[],
+//                                  field2ValueAfterTyping,
+//                                  fieldValueAfterTyping?, keyEventCount? }
+//        each trace entry: { i, char, key?, code?, windowsVirtualKeyCode?,
+//                            shiftRide, modifiers, valueAfter,
+//                            valueAfterField, ride? }
+//        ride (uppercase entries ONLY): { keyDown:{key:'Shift',
+//                            code:'ShiftLeft',keyCode:16,modifiers:8,
+//                            shiftKey:true}, keyUp:{...} }
+//     journey.form.chordLeg      { derivation?, hexTail?, letter,
+//                                  letterCode?, letterWindowsVirtualKeyCode?,
+//                                  chords:[{name,bit,key?,code?,keyEvents...,
+//                                  domEvents?[2]}], field3TargetId?,
+//                                  field3ValueAfter }
+//     journey.form.field3NameAttribute  null|"" (absent) | "<name>" (finding)
+//     journey.form.pageKeylog    ARRAY of entries covering the WHOLE run in
+//                                  leg order plain,control,shift,chord —
+//                                  OR { legs:['plain'|'control'|'shift'|
+//                                  'chord'...], entries:[...] } (declared
+//                                  legs MUST include shift and chord).
+//                                  Every entry:
+//                                    { type:'keyDown'|'keyUp', key, code,
+//                                      keyCode, modifiers, ctrlKey, altKey,
+//                                      metaKey, shiftKey, targetId }
+//                                  — `modifiers` is the S153 bit mirror the
+//                                  fixture recorder computes from the DOM
+//                                  booleans (Alt=1, Ctrl=2, Meta=4, Shift=8),
+//                                  `targetId` is the element the event was
+//                                  delivered to ('field' | 'field2' |
+//                                  field3TargetId, default 'field3').
+//                                  The r56 `keylog` block stays the
+//                                  keydown-only control-domain slice of
+//                                  window.__keylog (r56 semantics intact);
+//                                  pageKeylog is the r57 full record.
+//   r58 additions (all r57 fields carried; the two recorder fields are
+//   ADDITIVE and appear on EVERY entry the r58 page recorder writes):
+//     journey.form.swallowLeg   { control:{ valueBefore, typed, valueAfter,
+//                                  defaultPrevented },
+//                                  backspaceSwallow:{ valueBefore,
+//                                  valueAfter, defaultPrevented,
+//                                  cancelable?, keylogEntry?|keylogEntries? },
+//                                  digitSwallow:{ key?, valueBefore,
+//                                  valueAfter, defaultPrevented,
+//                                  cancelable?, keylogEntry?|keylogEntries? },
+//                                  enterChordSwallow:{ ctrlKeylogEntry,
+//                                  enterKeylogEntry, submitted,
+//                                  valueBefore?, valueAfter?, queryKeys? },
+//                                  restore? }
+//        Every entry recorded by the r58 recorder carries, in addition to
+//        the r57 fields, `cancelable` and `defaultPrevented` (read AFTER the
+//        page's own capture-phase swallower ran).
+//     fixtureDelta               object — the disclosed fixture delta (the
+//        swallower + the two additive recorder fields). The runner records it
+//        at the RECEIPT TOP LEVEL; a journey.form copy is also admitted.
+//        Presence is REQUIRED; when it names the new fields they must
+//        include cancelable AND defaultPrevented.
+//     journey.form.serverRequests ARRAY of { path, query } — the fixture
+//        server's own request log (/form, /favicon.ico, the /echo).
+//        Exactly ONE row with path '/echo' may carry `field` and `field2`
+//        (and must not carry `field3`); no row may carry `field3`.
+//     journey.form.declaredStepNames? — the driver's declared step list.
+//     stepsExtended[]            chronological evidence log; when present,
+//        every entry that pins a png is hashed with the same PNG geometry
+//        witness (the four swallow shots ride beside the six carried steps
+//        and the r57 shots).
+//     top-level field3Value/field3Final — read at the carried point (now
+//        AFTER the swallow leg): the typed two-character prefix, never a
+//        submitted value.
+//
+// RECEIPT CONTRACT — r59 additions (all r58 fields carried; the counter is
+// the scoring authority for this block and R59Runner's frozen interface is
+// the implementation; the 18 plan names are embedded below):
+//   schema            "tabi-chrome-cdp-r59"
+//   nonce             ^tabi-r59-[0-9a-f]{12}$
+//   declaredStepNames string[] — the driver's declared 18-step list, EXACTLY
+//                     the counter's embedded DECLARED_STEP_PLAN (same order).
+//   steps[]           { name, png, sha256, bytes? } — the SAME 18 entries in
+//                     the same order (R59Runner assembles them BY NAME); each
+//                     step's png basename must also be <name>.png (the shot
+//                     set is the plan; a shot-set that differs is
+//                     step-plan-mismatch under the same id, f8).
+//   stepsExtended[]   the chronological/physical order; its pins are hashed
+//                     with the same PNG witness but it is NOT the plan.
+//   capsLatchExpected false — the named expectation (the measured negative).
+//                     Absent or not the boolean false is caps-flag-true.
+//   capslockTrace     top-level mirror of the leg:
+//                     { target:'field3',
+//                       derivation:'the [a-f] chars of the nonce hex tail
+//                                    in order, cycled to 4',
+//                       letters:[l0..l3], letters1:[l0,l1], letters2:[l2,l3],
+//                       press1:{key,code,windowsVirtualKeyCode,keydownEntry,
+//                               keyupEntry,capsKeydown,capsKeyup},
+//                       press2:{...},
+//                       letters1:[{char,key,code,windowsVirtualKeyCode,text,
+//                                  valueAfter,capsLock}], letters2:[...],
+//                       latch:{beforePress1, afterPress1, acrossLetters1,
+//                              afterPress2, sequence:[...]},
+//                       capsLatchOk, trace:[{phase,type,key,code,keyCode,
+//                                            capsLock,valueAfter?}] }
+//   journey.form.capsLockLeg  the detailed leg (same blocks; target
+//                     'field3', valueBefore = the r58 swallow control
+//                     prefix, valueAfter = prefix + letters.join('')).
+//   Both page recorders carry `capsLock: e.getModifierState('CapsLock')
+//   === true` on EVERY keydown AND keyup; the counter requires the field on
+//   every pageKeylog entry (missing-getModifierState-record) and requires it
+//   to be FALSE everywhere (caps-flag-true on any true).
+//   Delivered shape: every CapsLock event (key 'CapsLock', code 'CapsLock',
+//   keyCode 20) and every caps-leg letter event must carry key, code,
+//   keyCode, cancelable; the CapsLock events must read keyCode 20,
+//   cancelable true, defaultPrevented false, and the letters their derived
+//   key/code/keyCode with cancelable true, defaultPrevented false. Missing
+//   or non-conforming is missing-delivered-shape-field (f6).
+//   The caps leg's page keydown tail after the r58 swallow chord is exactly
+//   [CapsLock, l0, l1, CapsLock, l2, l3].
+//   journey.form2     the D4 positive control (same fixture shape, NO
+//                     swallower): { url, nonceOnPage, mechanism,
+//                       chord:{name:'Control',bit:2,key:'Control',
+//                              code:'ControlLeft',windowsVirtualKeyCode:17,
+//                              letterKeydown:{key:'Enter',code:'Enter',
+//                                             windowsVirtualKeyCode:13,
+//                                             text:'\r'}, events, domEvents},
+//                       typed:{...}, serverRequestsBefore/After,
+//                       newRequests:[{path,query}],
+//                       echo2:{submitted:true,count:1,path:'/echo2',
+//                              field:<nonce>,field2:'',queryKeys,
+//                              field3Param:'absent',url},
+//                       echoPage:{...}, shots:[q-form2-chord,r-form2-echo] }
+//   echo2Witness      top-level mirror: { submitted, requestCount,
+//                     serverRequests:[all /echo2 entries], clientPath,
+//                     clientField, clientField2, field3Param, queryKeys }.
+//   journey.form.serverRequests and receipt.serverLog stay the fixture
+//   server's WHOLE log: exactly one /echo (field+field2, never field3) AND
+//   exactly one /echo2 (carrying the nonce) — one submission per form.
+//
+// DERIVATION RULES (the r52..r59 defence, restated for r59): the r58 rules
+// below are carried; r59 adds: the caps-leg letters are derived from the
+// receipt's own nonce hex tail (its [a-f] characters in order, cycled to
+// four) — the leg's `letters` must equal that derivation, so the leg is
+// anchored to the invocation, never free-form; the D1 cross-check compares
+// the swallow block records against the page record BY VALUE (a matching key
+// with a different cancelable/defaultPrevented is keylog-flag-mismatch).
+//
+// CARRIED r58 DERIVATION RULES:
+//   * every expected value is derived from the receipt's own nonce: the
+//     per-keystroke #field prefixes (plain), the residue (Backspace), the
+//     uppercased string (shift leg), the chord letter (first [a-f] of the
+//     nonce hex tail), the swallow control's two characters (the FIRST TWO
+//     hex-tail characters), the swallowed insertion character (the THIRD
+//     hex-tail character), the per-character key/code/keyCode and the
+//     modifiers/boolean plan of every dispatched keydown.
+//   * the Shift plan is derived per character: /[A-Z]/ rides Shift
+//     (modifiers 8, a Shift keyDown/keyUp pair, key = the uppercase char,
+//     code = KeyX, VK = 65+(char-65)); digits and '-' do not (modifiers 0,
+//     no ride). A digit or '-' carrying modifiers 8 (or any other shifted
+//     shape) is a finding.
+//   * the chord plan is derived per chord: Control bit 2, Alt bit 1, Meta
+//     bit 4 (S153's Input.dispatchKeyEvent modifiers bit field); the page's
+//     booleans are the S161 ground (ctrlKey/altKey/metaKey/shiftKey).
+//   * the SWALLOW plan is derived from the same hex tail: the control leg's
+//     two characters are tail[0], tail[1] (target #field3, modifiers 0, the
+//     page's swallower OFF); the swallowed insertion is tail[2]; the
+//     swallowed Backspace is the Backspace key (modifiers 0); the swallowed
+//     chord is Control then Enter with modifiers bit 2. The swallow-ON
+//     entries must record defaultPrevented TRUE (S161: the default action
+//     was cancelled); the control entries must record FALSE. The value read
+//     back after a swallowed edit must EQUAL the pre-step value — a prefix
+//     match or a boolean claim is not the witness.
+//   * pageKeylog is re-derived from the nonce and compared entry by entry:
+//     key/code/keyCode -> keylog-entry-mismatch; the chord entries'
+//     booleans -> boolean-mismatch; every other entry's booleans ->
+//     keylog-entry-mismatch. When the record continues past the four
+//     carried legs, the continuation must equal the re-derived swallow
+//     plan EXACTLY (same order, identities, modifiers bit, target); an
+//     absent continuation is admitted because the swallow witnesses are
+//     also recorded per block in journey.form.swallowLeg (never weaken a
+//     recorded continuation).
+//   * when the nonce is unusable (absent or shape-wrong) the nonce-derived
+//     comparisons cannot evaluate: the shape checks still run and the
+//     derivation is recorded in couldNotEvaluate as nonce-unusable (never
+//     silently passed).
+//   * a nonce whose 12-hex tail carries no [a-f] cannot derive the chord
+//     letter: that receipt is refused with chord-char-mismatch naming the
+//     underivable tail (the runner's nonce generator must reject such a
+//     tail — a 1-in-285 draw at 12 hex chars).
+//
+// FINDING IDS — EXACT, FROZEN r58 (a fixture asserts the exact set):
+//   carried from r56 unchanged (29):
+//   receipt-missing, receipt-unparseable, schema-wrong, nonce-shape,
+//   nonce-not-invocation-bound, driver-sha-mismatch, driver-missing,
+//   profile-not-throwaway, host-browser-mismatch, host-argv-home-leak,
+//   plain-trace-wrong, plain-trace-missing,
+//   control-domain-missing, control-end-witness-wrong,
+//   control-backspace-witness-wrong, control-restore-witness-wrong,
+//   control-tab-focus-wrong, control-enter-submit-wrong, field3-not-empty,
+//   keylog-missing, keylog-length-wrong, server-log-missing,
+//   server-log-echo-count, steps-missing,
+//   png-missing, png-sha-mismatch, png-not-png, teardown-survivor,
+//   predicate-false.
+//   new in r57 (14), carried unchanged:
+//   shift-trace-missing, shift-prefix-mismatch, shift-modifiers-wrong,
+//   shift-ride-missing, shift-unshifted-char-wrong, field2-final-mismatch,
+//   chord-missing, chord-modifiers-wrong, keylog-absent,
+//   keylog-entry-mismatch, boolean-mismatch, chord-char-mismatch,
+//   field3-named, server-field2-mismatch.
+//   new in r58 (6):
+//   swallow-control-inserted-wrong, swallow-defaultprevented-missing,
+//   swallow-value-changed, swallow-enter-chord-leak, swallow-plan-mismatch,
+//   swallow-recorder-fields-missing.
+//   new in r59 (9) — the restated C2's boundary checks and the routed D1/D2
+//   checks; each has an exact-findings selftest fixture and the f1-f8
+//   forgery-probe shapes map onto them:
+//   keylog-flag-mismatch           (f4/D1: a swallow-block entry's
+//                                   (key,cancelable,defaultPrevented) triple
+//                                   has no BY-VALUE match in pageKeylog)
+//   step-plan-mismatch             (f2/f8/D2: recorded steps or
+//                                   declaredStepNames differ from the
+//                                   embedded 18-step plan — missing, extra,
+//                                   reordered — or a step's png basename is
+//                                   not <name>.png)
+//   caps-flag-true                 (f5: getModifierState('CapsLock') reads
+//                                   true ANYWHERE in the keylog, or the
+//                                   receipt's capsLatchExpected is not the
+//                                   boolean false; the unforged-state guard)
+//   missing-delivered-shape-field  (f6: a CapsLock/letter event lacks
+//                                   key/code/keyCode/cancelable, or its
+//                                   delivered shape is not the required one)
+//   missing-getModifierState-record (a keydown/keyup lacks the recorder's
+//                                   capsLock boolean)
+//   capslock-readback-missing      (c/iii: no DOM value read-back after a
+//                                   caps-leg keystroke, or a read-back that
+//                                   is not the disclosed accumulation)
+//   form2-missing                  (D4: journey.form2 absent, its submitted
+//                                   witness not true, or the chord not the
+//                                   derived Control (bit 2) + Enter chord)
+//   echo2-count-wrong              (f7/D4: the logs do not carry exactly one
+//                                   /echo2 with the nonce, or the /echo2
+//                                   leaks field3)
+//   shift-detector-negative        (R1/f9: a page event where the DOM says
+//                                   Shift is held does not read
+//                                   getModifierState('Shift') true — the
+//                                   detector-positive that makes the CapsLock
+//                                   all-false record a MEASURED boundary; a
+//                                   constant-false recorder fails here)
+//
+// PRE-FREEZE AMENDMENTS (R57Critic items 1 and 2, sanctioned by the L1 before
+// the freeze commit and disclosed in the wave report):
+//   * (1) the runner runs the Enter leg LAST, so #field2 legitimately carries
+//     the UPPERCASED nonce at submit time. The r56 clause that required
+//     serverSawField2 === '' is therefore REPLACED by server-field2-mismatch
+//     with the strengthened expectation serverSawField2 === nonce.toUpperCase().
+//     control-enter-submit-wrong keeps `submitted` and `serverSawField`.
+//   * (2) the page keylog entries carry the event type, the S153 modifiers
+//     bit mirror and the target identity, and the counter checks ENTRY
+//     CONTENT, not only length/window: the keyDown subsequence must equal the
+//     re-derived sequence (identity, booleans, modifiers bit, targetId), and
+//     every uppercase letter's keydown must be BRACKETED by a Shift
+//     keyDown/keyUp pair in the raw record, in order. A missing type,
+//     modifiers or target identity field is itself keylog-entry-mismatch —
+//     the check is never weakened to fit a missing field.
+//     (the r56 keylog window check keeps its keydown-only semantics: the
+//     fixture's r56 recorder window.__keylog stays keydown-only; the r57
+//     witness is the separate journey.form.pageKeylog record, which carries
+//     both types.)
+//
+// ID SEMANTICS THAT NEED A SENTENCE (the rest are documented at their check):
+//   * field3-not-empty (r58 semantics, carried id): #field3 is NEVER
+//     submitted and its witnesses are consistent at every recorded point.
+//     The chord-leg witness (journey.form.chordLeg.field3ValueAfter or
+//     rec.field3Final when the chord leg is where it is read) must be EMPTY,
+//     the swallow leg must START empty (swallowLeg.control.valueBefore ===
+//     '') and the top-level field3Value/field3Final (read AFTER the swallow
+//     leg) must equal the derived two-character prefix. Anything else — an
+//     unexpected value at any of those points, or no post-chord / start
+//     witness at all — is refused under the same id. When the nonce is
+//     unusable the r56 clause is carried unchanged (both top-level values
+//     must be ''), since no prefix can be derived.
+//   * field3-named fires when a recorded #field3 name attribute is a
+//     non-empty string (fixture echo or form record) AND when NO such
+//     record exists at all: the frozen claim's witness is the ABSENCE of a
+//     name attribute, and an absent witness cannot establish it.
+//   * shift-modifiers-wrong covers the shifted keystroke's event identity
+//     (key/code/VK) AND its modifiers: an uppercase letter whose recorded
+//     event is not the shifted one is the same failure class.
+//   * shift-trace-missing covers an absent/incomplete trace: missing block,
+//     missing entry array, wrong length, wrong index or wrong character at
+//     an index. The per-keystroke prefix chain has its own id.
+//   * chord-missing covers an absent chordLeg, a chords array that is not
+//     exactly the three named chords, and a named chord whose recorded
+//     modifier key identity is not that modifier.
+//   * swallow-control-inserted-wrong (s1) covers the gate-OFF control
+//     insertion: swallowLeg.control absent, `typed` not the derived first two
+//     hex-tail characters, `valueAfter` not equal to them, or the two
+//     control keylog entries missing / carrying the wrong key identity.
+//   * swallow-defaultprevented-missing covers the witness VALUE on a
+//     swallow-leg keylog entry: TRUE is required on the swallowed
+//     Backspace, the swallowed insertion and the Enter of the swallowed
+//     chord; FALSE is required on the gate-OFF control entries and on the
+//     chord's Control keydown (the declared swallow set is {Enter}). A
+//     recorded cancelable=false is the same failure class — a
+//     non-cancelable keydown cannot carry the preventDefault witness. A
+//     missing field is the recorder defect below, not this id.
+//   * swallow-value-changed covers the negative edit witness: the value
+//     read back after the swallowed Backspace or the swallowed insertion
+//     differs from the pre-step value (the control leg's valueAfter).
+//   * swallow-enter-chord-leak covers s4's no-submission witness: the chord
+//     block records submitted !== false; no serverRequests log is recorded;
+//     the number of requests whose query carries `field` and `field2` (and
+//     not `field3`) is not exactly one; or any request carries `field3`.
+//   * swallow-plan-mismatch covers the swallow plan as re-derived from the
+//     nonce: journey.form.swallowLeg absent; a required block absent; a
+//     required keylog entry absent from both the block and the pageKeylog
+//     continuation; a recorded swallow entry whose key/code/keyCode,
+//     modifiers bit or targetId differs from the derivation; or a pageKeylog
+//     continuation that is not exactly the derived swallow sequence.
+//   * swallow-recorder-fields-missing covers the disclosure/witness surface:
+//     journey.form.fixtureDelta absent (or, when it names the new fields,
+//     naming fewer than cancelable AND defaultPrevented), and any swallow-leg
+//     keylog entry lacking `cancelable` or `defaultPrevented` as booleans.
+//
+// ID SEMANTICS — the r59 additions (the restated C2's boundary checks):
+//   * keylog-flag-mismatch (f4, D1) is the page-vs-block cross-check. For
+//     EVERY keyDown entry recorded inside a swallowLeg block (control.typed,
+//     backspaceSwallow, digitSwallow, enterChordSwallow), the triple
+//     (key, cancelable, defaultPrevented) must match the pageKeylog
+//     occurrence THAT THE BLOCK DESCRIBES. The occurrence is POSITIONAL: the
+//     contiguous swallow run (the block sequence's identities key/code/keyCode
+//     in derived step order, located from the record's tail) pairs the j-th
+//     block entry with the j-th run keydown, and their exact
+//     cancelable/defaultPrevented must agree. This closes the d6 maskability
+//     class (R59Probes): a forged flag on the control digit/letter or on the
+//     chord's Control — keys that also occur in the carried legs with the
+//     same (cancelable, defaultPrevented) — can no longer hide behind an
+//     equal-valued twin. When the run is not recorded the fallback is
+//     DISTINCT occurrence matching: each block entry consumes a distinct page
+//     occurrence of its triple (stronger than existence, still
+//     order-independent). When pageKeylog is absent the cross-check has no
+//     subject and keylog-absent names the absence. The pre-freeze
+//     strengthening is disclosed in the wave report; it is not a claim
+//     change.
+//   * step-plan-mismatch (f2/f8, D2): the receipt's recorded
+//     `steps[].name` sequence and its `declaredStepNames` must each EQUAL
+//     the counter's embedded DECLARED_STEP_PLAN exactly (same names, same
+//     order, same length), AND each step's `png` basename must be
+//     `<name>.png` (the shot set is the plan). Missing, extra, reordered and
+//     a renamed shot are one id. An absent `steps` array is the carried
+//     steps-missing id (the more specific witness for "no steps at all"); a
+//     present-but-different array is this id. A receipt whose
+//     declaredStepNames names a different plan than its steps is also this
+//     id (the plan and the record must agree).
+//   * caps-flag-true (f5) is the unforged-state guard: the receipt must
+//     NAME capsLatchExpected:false (a missing or non-false expectation is
+//     the same violation — the measured negative must be declared), and
+//     EVERY recorded page keydown/keyup must read getModifierState
+//     ('CapsLock') === false. A single true ANYWHERE is this id: the live
+//     surface cannot set Blink's kCapsLockOn over CDP, so an unexplained
+//     true is forged page state or an unmodeled surface change — either
+//     kills the claim. The counter never weakens this because a runner
+//     cannot reach it.
+//   * missing-delivered-shape-field (f6): every CapsLock event (key
+//     'CapsLock', code 'CapsLock', keyCode 20) and every caps-leg letter
+//     event must carry key, code, keyCode and cancelable; the CapsLock
+//     events must read keyCode 20, cancelable true, defaultPrevented false;
+//     the letters their derived key/code/keyCode with cancelable true and
+//     defaultPrevented false. Missing OR non-conforming is this one id (the
+//     claim's "full delivered shape" is the required shape).
+//   * missing-getModifierState-record: the page recorders record
+//     getModifierState('CapsLock') on EVERY keydown/keyup; any pageKeylog
+//     entry lacking the boolean `capsLock` field is this id (the absence
+//     witness cannot rest on a partial record).
+//   * capslock-readback-missing: every caps-leg press and letter must carry
+//     a string `valueAfter`; the presses read the pre-leg value (the swallow
+//     control prefix) and each letter's read-back equals
+//     prefix + letters.slice(0, i+1) — the DOM field value after EVERY
+//     keystroke. A missing or non-matching read-back is this id.
+//   * form2-missing (D4) is the positive control's structured witness:
+//     journey.form2 absent; its submitted witness not true (client-side);
+//     its chord not the derived Control (bit 2) + Enter pair (key/code/VK
+//     and the letter keydown). The D4 separation is "the chord never
+//     submits" vs "the swallow suppressed it": the block records the chord
+//     that DID submit.
+//   * echo2-count-wrong (f7/D4) is the server-side half: the whole fixture
+//     server log (receipt.serverLog and journey.form.serverRequests), and
+//     form2's own newRequests/echo2Witness view, must each carry exactly ONE
+//     request whose path is '/echo2' and whose query carries the nonce
+//     (invocation binding), and no /echo2 row may carry field3 — exactly one
+//     /echo AND exactly one /echo2 for the whole run.
+//   * shift-detector-negative (R1/f9) is the detector-positive: every page
+//     event whose DOM `shiftKey` is true (the Shift keydown and every
+//     uppercase letter that rides it) must also read a DEDICATED
+//     getModifierState('Shift') boolean true (field names: shift, shiftState,
+//     shiftModifier, getModifierStateShift — never the DOM shiftKey itself).
+//     A receipt with no Shift-held event at all is refused under the same id:
+//     the detector cannot prove a true read. This is what makes the CapsLock
+//     all-false record a measured boundary instead of a dead recorder — a
+//     constant-false recorder fails here.
+//
+//
+// DEDUPE: one entry per id, first detail retained, `occurrences` counted —
+// so a fixture's expected set is a set, not a multiset.
+//
+// Cross-generation refusals BY CONSTRUCTION (r59; both directions shipped as
+// receipts so the L1 can re-run them on the committed bytes):
+//   * this counter refuses the COMMITTED r57 receipt and the COMMITTED r58
+//     receipt with schema-wrong FIRST (the schema check is the first check
+//     after load; every other check still runs, but schema-wrong leads the
+//     findings list) — receipts in
+//     .ufo/waves/round-59/counters/cross-refusal-r57.json and
+//     -r58.json;
+//   * the r57 and r58 counters refuse an r59 receipt on their own schema
+//     (tabi-chrome-cdp-r57/r58 counter's schema check) — run by the L1 at
+//     the data pass, not fabricated here;
+//   * an r56/r57/r58-SHAPED receipt relabelled to the r59 schema trips the
+//     new checks (step-plan-mismatch, capslock-latch-missing,
+//     form2-missing) alongside the carried ones — the carried fixtures keep
+//     their EXACT r58 finding sets by injecting the valid r59 domains, so
+//     each carried refusal still proves the old checks fire.
+//
+// Declared residual (the r44..r59 class, pre-declared, NOT a predicate
+// change): a counter over committed bytes cannot by itself prove a browser
+// ran. The re-derivation path is re-running the committed runner (fresh
+// nonce, fresh fixture port per invocation) and re-hashing the committed
+// PNGs. Second residual: the r56 plain-trace clause still admits a trace
+// that stops early (each valueAfter is a prefix of the nonce of its own
+// length); it is caught only by the control-domain witnesses and the
+// invocation binding — unchanged from r56 and not strengthened here. Third
+// residual (r59): the CapsLock latch is witnessed page-side, but a receipt
+// could in principle be forged wholesale; D1's page-vs-block cross-check and
+// the invocation binding make a forged page record self-contradictory, and
+// the only accepted receipt is the one the L1 runs live against the pinned
+// driver sha.
+//
+// Usage:
+//   node chromium-receipt-r60.mjs <receipt.json> --driver <driver.mjs>
+//        [--expect-driver-sha256 <hex>] [--shot <dir|png...>] [--json]
+//   node chromium-receipt-r60.mjs --selftest      (path-based fixtures)
+//   node chromium-receipt-r60.mjs --path-selftest (alias: asserts every case
+//                                                  is path-backed, then runs)
+//   node chromium-receipt-r60.mjs --self-check
+// Exit: 0 predicate met (no finding); 1 any finding; 2 usage.
+// Writes nothing but stdout. Paths are resolved against cwd.
+//
+// FIXTURES (chromium-receipt-r60-fixtures/): the 91 r59 cases carried
+// byte-for-byte plus the r60 cases (probes A, B, D, E, the string-typed
+// cancelable, the second-event cancelable:false and the live-receipt green
+// case). The r59 fixtures dir is never written.
+// The 91 carried r59 cases keep their case ids and exact finding sets: each
+// r59 case is carried with its base receipt unchanged (the r59 derivation
+// domains — the 18-step plan + declaredStepNames, the capsLock/shift recorder
+// fields, the caps-leg tail and blocks, the form2 leg and the /echo2
+// request), so the carry isolates the one check the case names. The r60
+// additions are: probe A (capslockTrace.press1.keydownEntry cancelable:false),
+// probe B (the same key deleted), probe D (the leg's trace[0] gains
+// cancelable:false, disagreeing with the page keylog entry it cites), probe E
+// (trace[0].type deleted), a string-typed cancelable ("true"), a
+// second-event cancelable:false (capslockTrace.press2.keydownEntry), and the
+// live r59 receipt as a GREEN case. D and E are DERIVED by the selftest from
+// the live receipt bytes with one declared key edit each (see `derive`
+// below); A and B are byte copies of the frozen r59 f6 probes. --selftest
+// asserts the EXACT finding set of every case and the full id coverage; see
+// the fixture spec shape below.
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+
+const SCHEMA = 'tabi-chrome-cdp-r59';
+const NONCE_RE = /^tabi-r59-[0-9a-f]{12}$/;
+const STEP_NAMES = ['a-start', 'b-typed', 'c-end-witness', 'd-backspace', 'e-tab', 'f-enter-echo'];
+// D2: the DECLARED STEP PLAN of the r59 driver, embedded verbatim from
+// R59Runner's frozen interface message (2026-11-03, "I will not add steps
+// after this"): the r58 driver's twelve PNG names are carried and the r59
+// legs append six — the two CapsLock presses and their letter runs, then the
+// form2 chord and its echo page. `receipt.steps[].name` must equal this
+// array exactly (R59Runner assembles steps BY NAME; `stepsExtended` carries
+// the chronological order and is NOT the plan). Any difference — missing,
+// extra, reordered — is step-plan-mismatch.
+const DECLARED_STEP_PLAN = [
+  'a-start', 'b-typed', 'c-end-witness', 'd-backspace', 'e-tab', 'f-enter-echo',
+  'g-shift-typed', 'h-chord-domain', 'i-swallow-control', 'j-swallow-backspace',
+  'k-swallow-digit', 'l-swallow-enter',
+  'm-capslock-press1', 'n-capslock-letters1', 'o-capslock-press2',
+  'p-capslock-letters2', 'q-form2-chord', 'r-form2-echo',
+];
+const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const TOKEN_RE = /^[A-Za-z0-9._-]{4,}$/;
+const CONTROL_LEGS = ['end', 'backspace', 'restore', 'tab'];
+const CHORD_MODS = [
+  { name: 'Control', bit: 2, key: 'Control', code: 'ControlLeft', vk: 17 },
+  { name: 'Alt', bit: 1, key: 'Alt', code: 'AltLeft', vk: 18 },
+  { name: 'Meta', bit: 4, key: 'Meta', code: 'MetaLeft', vk: 91 },
+];
+const KEYLOG_LEGS = ['plain', 'control', 'shift', 'chord'];
+// r58: the swallow leg's declared names (a pageKeylog legs declaration may
+// name them, all mapped to the one nonce-derived swallow plan).
+const SWALLOW_LEG_NAMES = ['swallow', 'swallow-control', 'swallow-backspace', 'swallow-digit', 'swallow-enter', 'swallow-chord'];
+// r59: the extra pageKeylog legs the CapsLock and form2 witnesses may declare.
+const CAPSLOCK_LEG_NAMES = ['capslock', 'caps-lock', 'capslock-letters'];
+const FORM2_LEG_NAMES = ['form2', 'form2-enter', 'form2-chord'];
+const SWALLOW_FINDING_IDS = [
+  'swallow-control-inserted-wrong', 'swallow-defaultprevented-missing',
+  'swallow-value-changed', 'swallow-enter-chord-leak',
+  'swallow-plan-mismatch', 'swallow-recorder-fields-missing',
+];
+const CAPSLOCK_FINDING_IDS = [
+  'caps-flag-true', 'missing-delivered-shape-field',
+  'missing-getModifierState-record', 'capslock-readback-missing',
+  'shift-detector-negative',
+];
+const R59_FINDING_IDS = [
+  'keylog-flag-mismatch', 'step-plan-mismatch',
+  ...CAPSLOCK_FINDING_IDS,
+  'form2-missing', 'echo2-count-wrong',
+];
+
+// The frozen id list, verbatim and exhaustive — the selftest asserts every one
+// of them is exercised by at least one fixture.
+const FINDING_IDS = [
+  // carried from r56, unchanged
+  'receipt-missing', 'receipt-unparseable', 'schema-wrong', 'nonce-shape',
+  'nonce-not-invocation-bound', 'driver-sha-mismatch', 'driver-missing',
+  'profile-not-throwaway', 'host-browser-mismatch', 'host-argv-home-leak',
+  'plain-trace-wrong', 'plain-trace-missing',
+  'control-domain-missing', 'control-end-witness-wrong',
+  'teardown-port-open', 'teardown-curl-live',
+  'control-backspace-witness-wrong', 'control-restore-witness-wrong',
+  'control-tab-focus-wrong', 'control-enter-submit-wrong', 'field3-not-empty',
+  'keylog-missing', 'keylog-length-wrong', 'server-log-missing',
+  'server-log-echo-count', 'steps-missing',
+  'png-missing', 'png-sha-mismatch', 'png-not-png', 'teardown-survivor',
+  'predicate-false',
+  // new in r57
+  'shift-trace-missing', 'shift-prefix-mismatch', 'shift-modifiers-wrong',
+  'shift-ride-missing', 'shift-unshifted-char-wrong', 'field2-final-mismatch',
+  'chord-missing', 'chord-modifiers-wrong', 'keylog-absent',
+  'keylog-entry-mismatch', 'boolean-mismatch', 'chord-char-mismatch',
+  'field3-named', 'server-field2-mismatch',
+  // new in r58
+  ...SWALLOW_FINDING_IDS,
+  // new in r59
+  ...R59_FINDING_IDS,
+  'pointer-log-wrong', 'pointer-type-wrong', 'pointer-id-wrong',
+  'pointer-trust-wrong', 'pointer-order-wrong', 'pointer-buttons-wrong',
+  'pointer-focus-wrong', 'pointer-nonce-wrong',
+];
+
+const SELF = fileURLToPath(import.meta.url);
+const FIXTURES_DIR = path.join(path.dirname(SELF), 'chromium-receipt-r61-fixtures');
+const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
+
+function die(msg) {
+  console.error(JSON.stringify({ schema: 'tabi-chromium-receipt-r61', error: msg }));
+  process.exit(2);
+}
+
+function newFindings() {
+  const list = [];
+  const byId = new Map();
+  const add = (id, detail) => {
+    const prev = byId.get(id);
+    if (prev) { prev.occurrences += 1; return; }
+    const f = { id, detail: String(detail === undefined ? '' : detail).slice(0, 400), occurrences: 1 };
+    byId.set(id, f);
+    list.push(f);
+  };
+  return { list, add };
+}
+
+const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
+const argvText = (argv) => (Array.isArray(argv) ? argv.map((x) => String(x)).join(' ') : typeof argv === 'string' ? argv : '');
+const has = (o, k) => isObj(o) && Object.prototype.hasOwnProperty.call(o, k);
+
+// --user-data-dir extraction: both `--user-data-dir=PATH` and
+// `--user-data-dir PATH` forms, first match wins.
+function userDataDirArg(text) {
+  const m = /--user-data-dir(?:=|\s+)(?:"([^"]+)"|'([^']+)'|(\S+))/.exec(text);
+  if (!m) return null;
+  return m[1] || m[2] || m[3] || null;
+}
+
+function impliedKeydowns(cd) {
+  if (!cd) return 4;
+  let n = 0;
+  for (const leg of CONTROL_LEGS) if (isObj(cd[leg])) n += 1;
+  return n;
+}
+
+// PNG presence check: file exists, sha256 equals the pin, signature present,
+// and the IHDR chunk is structurally sane (r58 carry of the PNG geometry
+// witness: a 8-byte signature alone is not a PNG).
+function checkStepPng(step, baseDir, add, overrideAbs) {
+  const rel = step && typeof step.png === 'string' ? step.png : null;
+  if (!rel && !overrideAbs) { add('png-missing', 'step ' + JSON.stringify(step && step.name) + ' has no png path'); return; }
+  const abs = overrideAbs || path.resolve(baseDir, rel);
+  let buf = null;
+  try { buf = fs.readFileSync(abs); } catch { add('png-missing', abs); return; }
+  const got = sha256(buf);
+  if (typeof step.sha256 !== 'string' || got !== step.sha256) {
+    add('png-sha-mismatch', abs + ' sha ' + got + ' != pin ' + step.sha256);
+  }
+  if (!(buf.length >= 8 && buf.subarray(0, 8).equals(PNG_MAGIC))) { add('png-not-png', abs); return; }
+  // IHDR must be the first chunk, 13 bytes, with non-zero geometry.
+  if (buf.length < 33 || buf.toString('latin1', 12, 16) !== 'IHDR' || buf.readUInt32BE(8) !== 13) {
+    add('png-not-png', abs + ' has no first IHDR chunk');
+    return;
+  }
+  const w = buf.readUInt32BE(16);
+  const h = buf.readUInt32BE(20);
+  if (!(w > 0 && h > 0)) add('png-not-png', abs + ' IHDR geometry ' + w + 'x' + h);
+}
+
+// --- key identity derivation (S153's Windows virtual-key model) -------------
+function vkFor(ch) {
+  if (/[0-9]/.test(ch)) return 48 + Number(ch);
+  if (/[a-zA-Z]/.test(ch)) return 65 + (ch.toUpperCase().charCodeAt(0) - 65);
+  if (ch === '-') return 189;
+  return null;
+}
+function codeFor(ch) {
+  if (/[0-9]/.test(ch)) return 'Digit' + ch;
+  if (/[a-zA-Z]/.test(ch)) return 'Key' + ch.toUpperCase();
+  if (ch === '-') return 'Minus';
+  return null;
+}
+const boolsFor = (bit) => ({ ctrlKey: bit === 2, altKey: bit === 1, metaKey: bit === 4, shiftKey: false });
+const NO_MODS = { ctrlKey: false, altKey: false, metaKey: false, shiftKey: false };
+
+// The uppercased nonce is the Shift leg's target.
+const mixedOf = (nonceStr) => (typeof nonceStr === 'string' ? nonceStr.toUpperCase() : null);
+// The chord letter: first [a-f] of the nonce hex tail (split('-')[2]); null
+// when the tail has none (underivable — see the header).
+function chordLetterOf(nonceStr) {
+  if (typeof nonceStr !== 'string') return null;
+  const tail = nonceStr.split('-')[2] || '';
+  const m = /([a-f])/.exec(tail);
+  return m ? m[1] : null;
+}
+function hexTailOf(nonceStr) {
+  return typeof nonceStr === 'string' && nonceStr.split('-').length > 2 ? (nonceStr.split('-')[2] || '') : '';
+}
+
+// The complete page KEYDOWN plan, re-derived from the nonce for the declared
+// legs, in the frozen leg order. `leg` tags each entry so the chord entries'
+// booleans get their own finding id; `modifiers` is the S153 bit mirror the
+// fixture recorder computes from the DOM booleans (Alt=1, Ctrl=2, Meta=4,
+// Shift=8); `targetId` is the element the event was delivered to.
+const bitOfBools = (b) => (b.altKey ? 1 : 0) | (b.ctrlKey ? 2 : 0) | (b.metaKey ? 4 : 0) | (b.shiftKey ? 8 : 0);
+function derivePageKeylog(nonceStr, legs, letter, f3Target) {
+  const out = [];
+  const push = (leg, o) => out.push({ leg, type: 'keyDown', ...o, modifiers: bitOfBools(o) });
+  if (legs.includes('plain')) {
+    for (const ch of nonceStr) push('plain', { key: ch, code: codeFor(ch), keyCode: vkFor(ch), ...NO_MODS, targetId: 'field' });
+  }
+  if (legs.includes('control')) {
+    push('control', { key: 'End', code: 'End', keyCode: 35, ...NO_MODS, targetId: 'field' });
+    push('control', { key: 'Backspace', code: 'Backspace', keyCode: 8, ...NO_MODS, targetId: 'field' });
+    const last = nonceStr[nonceStr.length - 1];
+    push('control', { key: last, code: codeFor(last), keyCode: vkFor(last), ...NO_MODS, targetId: 'field' });
+    push('control', { key: 'Tab', code: 'Tab', keyCode: 9, ...NO_MODS, targetId: 'field' });
+  }
+  if (legs.includes('shift')) {
+    for (const ch of mixedOf(nonceStr)) {
+      const ride = /[A-Z]/.test(ch);
+      if (ride) push('shift', { key: 'Shift', code: 'ShiftLeft', keyCode: 16, ...NO_MODS, shiftKey: true, targetId: 'field2' });
+      push('shift', { key: ch, code: codeFor(ch), keyCode: vkFor(ch), ...NO_MODS, shiftKey: ride, targetId: 'field2' });
+    }
+  }
+  if (legs.includes('chord') && letter) {
+    for (const cm of CHORD_MODS) {
+      push('chord', { key: cm.key, code: cm.code, keyCode: cm.vk, ...boolsFor(cm.bit), targetId: f3Target });
+      push('chord', { key: letter, code: 'Key' + letter.toUpperCase(), keyCode: 65 + (letter.charCodeAt(0) - 97), ...boolsFor(cm.bit), targetId: f3Target });
+    }
+  }
+  return out;
+}
+
+// r58: the swallow leg's KEYDOWN plan, re-derived from the same nonce hex
+// tail. Gate OFF inserts the first two tail characters into #field3; gate ON
+// swallows the Backspace, the third tail character and one Control+Enter
+// chord (S153 modifier bit 2), all on f3Target.
+function deriveSwallowKeydowns(nonceStr, f3Target) {
+  const tail = hexTailOf(nonceStr);
+  const out = [];
+  const push = (o) => out.push({ leg: 'swallow', type: 'keyDown', ...o, modifiers: bitOfBools(o) });
+  const d1 = tail[0];
+  const d2 = tail[1];
+  const d3 = tail[2];
+  push({ key: d1, code: codeFor(d1), keyCode: vkFor(d1), ...NO_MODS, targetId: f3Target });
+  push({ key: d2, code: codeFor(d2), keyCode: vkFor(d2), ...NO_MODS, targetId: f3Target });
+  push({ key: 'Backspace', code: 'Backspace', keyCode: 8, ...NO_MODS, targetId: f3Target });
+  push({ key: d3, code: codeFor(d3), keyCode: vkFor(d3), ...NO_MODS, targetId: f3Target });
+  push({ key: 'Control', code: 'ControlLeft', keyCode: 17, ...boolsFor(2), targetId: f3Target });
+  push({ key: 'Enter', code: 'Enter', keyCode: 13, ...boolsFor(2), targetId: f3Target });
+  return out;
+}
+
+// Every keylog entry a swallowLeg block may embed (the runner records the
+// per-block copies the same way the r57 chordLeg.domEvents does).
+const ENTRY_KEYS = ['keylogEntry', 'keylogEntries', 'keylog', 'entries', 'keydowns', 'keyEvents', 'domEvents', 'ctrlKeylogEntry', 'enterKeylogEntry', 'event'];
+function entriesOfBlock(b) {
+  const out = [];
+  if (!isObj(b)) return out;
+  for (const k of ENTRY_KEYS) {
+    const v = b[k];
+    if (isObj(v) && (v.type === 'keyDown' || v.type === 'keyUp')) out.push(v);
+    else if (Array.isArray(v)) for (const e of v) if (isObj(e) && (e.type === 'keyDown' || e.type === 'keyUp')) out.push(e);
+  }
+  return out;
+}
+
+const requestPathOf = (e) => (isObj(e) && typeof e.path === 'string' ? e.path : '');
+const requestQueryOf = (e) => (isObj(e) ? String(typeof e.query === 'string' ? e.query : '') : String(e || ''));
+const queryHas = (s, k) => new RegExp('(?:^|&)' + k + '=').test(s);
+
+// r58 swallow domain (k1..k5). Every expected value/identity is derived from
+// the receipt's own nonce; recorded entries are only ever the SUBJECT of the
+// comparison, never its source of truth.
+function checkSwallow(rec, form, nonceStr, f3Target, pageKd, add) {
+  const tail = hexTailOf(nonceStr);
+  const wantPrefix = tail.slice(0, 2);
+  const d1 = tail[0];
+  const d2 = tail[1];
+  const d3 = tail[2];
+  const sl = form && isObj(form.swallowLeg) ? form.swallowLeg : null;
+
+  // k5 (disclosure): fixtureDelta is REQUIRED whenever a nonce can derive the
+  // leg, independently of whether the leg blocks were recorded. The runner
+  // records it at the receipt top level; a form-level copy is also admitted.
+  const fd = (form && isObj(form.fixtureDelta)) ? form.fixtureDelta
+    : (isObj(rec.fixtureDelta) ? rec.fixtureDelta : null);
+  if (!fd) add('swallow-recorder-fields-missing', 'fixtureDelta absent (the fixture delta is not disclosed)');
+  else {
+    const names = [];
+    for (const k of ['recorderFields', 'additiveRecorderFields', 'newFields', 'addedFields']) {
+      if (Array.isArray(fd[k])) names.push(...fd[k]);
+    }
+    if (names.length > 0 && !(names.includes('cancelable') && names.includes('defaultPrevented'))) {
+      add('swallow-recorder-fields-missing', 'fixtureDelta names ' + JSON.stringify(names) + ' but not cancelable AND defaultPrevented');
+    }
+    if (isObj(fd.witness) && fd.witness.allCarryAdditiveFields === false) {
+      add('swallow-recorder-fields-missing', 'fixtureDelta.witness.allCarryAdditiveFields=false');
+    }
+  }
+
+  if (!sl) {
+    add('swallow-plan-mismatch', 'journey.form.swallowLeg absent (no preventDefault-swallow domain recorded)');
+    return;
+  }
+
+  const ctl = isObj(sl.control) ? sl.control : null;
+  const bs = isObj(sl.backspaceSwallow) ? sl.backspaceSwallow : null;
+  const dg = isObj(sl.digitSwallow) ? sl.digitSwallow : null;
+  const en = isObj(sl.enterChordSwallow) ? sl.enterChordSwallow : null;
+
+  // ---- k1: the gate-OFF control insertion ------------------------------
+  if (!ctl) add('swallow-plan-mismatch', 'swallowLeg.control absent');
+  else {
+    const typedOk = Array.isArray(ctl.typed)
+      ? (ctl.typed.length === 2 && String(ctl.typed[0]) === d1 && String(ctl.typed[1]) === d2)
+      : ctl.typed === wantPrefix;
+    if (!typedOk) add('swallow-control-inserted-wrong', 'control.typed ' + JSON.stringify(ctl.typed) + ' != ' + JSON.stringify([d1, d2]));
+    if (ctl.valueAfter !== wantPrefix) add('swallow-control-inserted-wrong', 'control.valueAfter ' + JSON.stringify(ctl.valueAfter) + ' != ' + JSON.stringify(wantPrefix));
+    if (ctl.swallowOn !== undefined && ctl.swallowOn !== false) add('swallow-plan-mismatch', 'control.swallowOn=' + JSON.stringify(ctl.swallowOn) + ' (the control leg runs with the gate OFF)');
+    if (typeof ctl.valueBefore === 'string' && ctl.valueBefore !== '') add('field3-not-empty', '#field3 not empty when the swallow leg began: ' + JSON.stringify(ctl.valueBefore));
+  }
+
+  // ---- the recorded keylog entries -------------------------------------
+  const pool = [];
+  for (const src of [ctl, bs, dg, en]) for (const e of entriesOfBlock(src)) pool.push(e);
+  for (const e of pageKd) pool.push(e);
+  for (const e of pool) {
+    if (typeof e.cancelable !== 'boolean' || typeof e.defaultPrevented !== 'boolean') {
+      add('swallow-recorder-fields-missing', 'swallow-leg entry ' + JSON.stringify(e.key) + ' lacks cancelable/defaultPrevented booleans');
+    }
+  }
+
+  const expected = [
+    { where: 'control', key: d1, code: codeFor(d1), keyCode: vkFor(d1), bit: 0, dp: false, block: ctl },
+    { where: 'control', key: d2, code: codeFor(d2), keyCode: vkFor(d2), bit: 0, dp: false, block: ctl },
+    { where: 'backspaceSwallow', key: 'Backspace', code: 'Backspace', keyCode: 8, bit: 0, dp: true, block: bs },
+    { where: 'digitSwallow', key: d3, code: codeFor(d3), keyCode: vkFor(d3), bit: 0, dp: true, block: dg },
+    { where: 'enterChordSwallow', key: 'Control', code: 'ControlLeft', keyCode: 17, bit: 2, dp: false, block: en },
+    { where: 'enterChordSwallow', key: 'Enter', code: 'Enter', keyCode: 13, bit: 2, dp: true, block: en },
+  ];
+  for (const exp of expected) {
+    const kd = (e) => objType(e) === 'keyDown';
+    const ownAll = entriesOfBlock(exp.block).filter(kd);
+    const own = ownAll.filter((e) => e.key === exp.key && e.code === exp.code && e.keyCode === exp.keyCode);
+    const any = pool.filter((e) => kd(e) && e.key === exp.key && e.code === exp.code && e.keyCode === exp.keyCode);
+    if (ownAll.length > 0 && own.length === 0) {
+      add('swallow-plan-mismatch', exp.where + ' block records ' + ownAll.length + ' keydown(s), none keyed ' + JSON.stringify(exp.key) + ' (' + exp.code + '/' + exp.keyCode + ')');
+      continue;
+    }
+    const found = own.length ? own : any;
+    if (!found.length) {
+      add('swallow-plan-mismatch', 'no recorded keylog entry for ' + exp.where + ' key ' + JSON.stringify(exp.key) + ' (' + exp.code + '/' + exp.keyCode + ')');
+      continue;
+    }
+    const e = found[0];
+    if (typeof e.modifiers !== 'number' || e.modifiers !== exp.bit) {
+      add('swallow-plan-mismatch', exp.where + ' key ' + exp.key + ' modifiers ' + JSON.stringify(e.modifiers) + ' != ' + exp.bit);
+    }
+    const boolOk = e.ctrlKey === (exp.bit === 2) && e.altKey === false && e.metaKey === false && e.shiftKey === false;
+    if (['ctrlKey', 'altKey', 'metaKey', 'shiftKey'].some((k) => typeof e[k] !== 'boolean') || !boolOk) {
+      add('swallow-plan-mismatch', exp.where + ' key ' + exp.key + ' booleans ' + JSON.stringify({ ctrlKey: e.ctrlKey, altKey: e.altKey, metaKey: e.metaKey, shiftKey: e.shiftKey }) + ' != bit ' + exp.bit);
+    }
+    if (typeof e.targetId !== 'string' || e.targetId !== f3Target) {
+      add('swallow-plan-mismatch', exp.where + ' key ' + exp.key + ' targetId ' + JSON.stringify(e.targetId) + ' != ' + JSON.stringify(f3Target));
+    }
+    if (e.cancelable === false) {
+      add('swallow-defaultprevented-missing', exp.where + ' key ' + exp.key + ' recorded cancelable=false: the default action could not be cancelled');
+    }
+    if (typeof e.defaultPrevented === 'boolean' && e.defaultPrevented !== exp.dp) {
+      add('swallow-defaultprevented-missing', exp.where + ' key ' + exp.key + ' defaultPrevented=' + e.defaultPrevented + ' != ' + exp.dp);
+    }
+  }
+
+  // ---- k2/k3: the negative edit witness --------------------------------
+  if (!bs) add('swallow-plan-mismatch', 'swallowLeg.backspaceSwallow absent');
+  if (!dg) add('swallow-plan-mismatch', 'swallowLeg.digitSwallow absent');
+  const pre = ctl && typeof ctl.valueAfter === 'string' ? ctl.valueAfter : null;
+  if (bs) {
+    if (bs.swallowOn !== undefined && bs.swallowOn !== true) add('swallow-plan-mismatch', 'backspaceSwallow.swallowOn=' + JSON.stringify(bs.swallowOn) + ' (the swallowed Backspace runs with the gate ON)');
+    if (pre !== null && bs.valueAfter !== pre) add('swallow-value-changed', 'backspaceSwallow.valueAfter ' + JSON.stringify(bs.valueAfter) + ' != pre-step ' + JSON.stringify(pre));
+    if (bs.defaultPrevented !== true) add('swallow-defaultprevented-missing', 'backspaceSwallow.defaultPrevented=' + JSON.stringify(bs.defaultPrevented) + ' != true');
+  }
+  if (dg) {
+    const dgKey = typeof dg.key === 'string' ? dg.key : typeof dg.char === 'string' ? dg.char : undefined;
+    if (dgKey !== undefined && dgKey !== d3) add('swallow-plan-mismatch', 'digitSwallow key ' + JSON.stringify(dgKey) + ' != derived ' + JSON.stringify(d3));
+    if (dg.swallowOn !== undefined && dg.swallowOn !== true) add('swallow-plan-mismatch', 'digitSwallow.swallowOn=' + JSON.stringify(dg.swallowOn) + ' (the swallowed insertion runs with the gate ON)');
+    if (pre !== null && dg.valueAfter !== pre) add('swallow-value-changed', 'digitSwallow.valueAfter ' + JSON.stringify(dg.valueAfter) + ' != pre-step ' + JSON.stringify(pre));
+    if (dg.defaultPrevented !== true) add('swallow-defaultprevented-missing', 'digitSwallow.defaultPrevented=' + JSON.stringify(dg.defaultPrevented) + ' != true');
+  }
+
+  // ---- k4: the swallowed Enter chord must not submit -------------------
+  if (!en) add('swallow-plan-mismatch', 'swallowLeg.enterChordSwallow absent');
+  else {
+    if (en.swallowOn !== undefined && en.swallowOn !== true) add('swallow-plan-mismatch', 'enterChordSwallow.swallowOn=' + JSON.stringify(en.swallowOn) + ' (the swallowed chord runs with the gate ON)');
+    if (typeof en.enterModifiers === 'number' && en.enterModifiers !== 2) add('swallow-plan-mismatch', 'enterChordSwallow.enterModifiers ' + en.enterModifiers + ' != 2');
+    if (en.defaultPrevented !== undefined && en.defaultPrevented !== true) add('swallow-defaultprevented-missing', 'enterChordSwallow.defaultPrevented=' + JSON.stringify(en.defaultPrevented) + ' != true');
+    if (en.submitted !== false) add('swallow-enter-chord-leak', 'enterChordSwallow.submitted=' + JSON.stringify(en.submitted) + ' != false');
+    if (typeof en.valueAfter === 'string' && pre !== null && en.valueAfter !== pre) add('swallow-value-changed', 'enterChordSwallow.valueAfter ' + JSON.stringify(en.valueAfter) + ' != pre-step ' + JSON.stringify(pre));
+  }
+  const rows = form && Array.isArray(form.serverRequests) ? form.serverRequests : null;
+  if (!rows) {
+    add('swallow-enter-chord-leak', 'journey.form.serverRequests absent (no server-side one-submission witness)');
+    return;
+  }
+  const q = requestQueryOf;
+  const pathOf = requestPathOf;
+  const hasQ = queryHas;
+  const withField3 = rows.filter((e) => hasQ(q(e), 'field3'));
+  // The runner records the fixture server's WHOLE log (/form, /favicon.ico,
+  // the /echo): the submission witness is the /echo count, never a count of
+  // all rows.
+  const echoes = rows.filter((e) => pathOf(e) === '/echo');
+  const submissions = echoes.filter((e) => hasQ(q(e), 'field') && hasQ(q(e), 'field2') && !hasQ(q(e), 'field3'));
+  if (withField3.length > 0) {
+    add('swallow-enter-chord-leak', 'serverRequests carries ' + withField3.length + ' request(s) with field3 (a chord-submitted #field3)');
+  }
+  if (echoes.length !== 1 || submissions.length !== 1) {
+    add('swallow-enter-chord-leak', 'serverRequests /echo ' + echoes.length + ' (field+field2 submissions ' + submissions.length + ') != exactly one (the chord submitted, or the one submit is missing)');
+  }
+}
+
+const objType = (e) => (isObj(e) && typeof e.type === 'string' ? e.type : null);
+
+// ===========================================================================
+// r59 checks: D2 step plan, D1 page-vs-block flags, the CapsLock delivery
+// boundary (delivered shape + absence witness + DOM read-backs), form2/echo2.
+// ===========================================================================
+
+// The runner's frozen CapsLock derivation: the [a-f] characters of the nonce's
+// 12-hex tail in order, cycled until four letters exist. A tail with no [a-f]
+// is underivable; the runner's nonce generator rejects such a draw, so the
+// null branch is a refusal path, never a silent pass.
+function capsLockLettersOf(nonceStr) {
+  const hits = (hexTailOf(nonceStr).match(/[a-f]/g) || []);
+  if (hits.length === 0) return null;
+  const out = [];
+  for (let i = 0; i < 4; i += 1) out.push(hits[i % hits.length]);
+  return out;
+}
+
+// getModifierState('CapsLock') as the recorder writes it: undefined when the
+// entry carries no field at all (the absence witness is incomplete), null when
+// present but not a boolean.
+const CAPS_FIELD_KEYS = ['capsLock', 'capsLockState', 'capsLockOn', 'modifierCapsLock'];
+function capsFlagOf(e) {
+  for (const k of CAPS_FIELD_KEYS) {
+    if (!has(e, k)) continue;
+    return typeof e[k] === 'boolean' ? e[k] : null;
+  }
+  return undefined;
+}
+
+// getModifierState('Shift') as the recorder writes it. The detector-positive
+// rests on a DEDICATED field: the DOM `shiftKey` boolean is set by the driver
+// and would let a dead getModifierState pass, so it is never accepted here.
+const SHIFT_FIELD_KEYS = ['shift', 'shiftState', 'shiftModifier', 'getModifierStateShift'];
+function shiftFlagOf(e) {
+  for (const k of SHIFT_FIELD_KEYS) {
+    if (!has(e, k)) continue;
+    return typeof e[k] === 'boolean' ? e[k] : null;
+  }
+  return undefined;
+}
+
+// The raw page record, independent of the legs declaration (the CapsLock
+// checks read the record itself; keylog-absent names an absent record).
+function pageEntriesOf(form) {
+  if (!isObj(form)) return null;
+  const pk = form.pageKeylog;
+  if (Array.isArray(pk)) return pk;
+  if (isObj(pk) && Array.isArray(pk.entries)) return pk.entries;
+  return null;
+}
+
+const SHAPE_KEYS = ['key', 'code', 'cancelable'];
+// The delivered shape of a CapsLock/letter event: key, code, cancelable and
+// the Windows virtual-key code must be present AND the identity values must be
+// the required ones (the claim's "full delivered shape"). The VK is admitted
+// under either name — `keyCode` on the page record, `windowsVirtualKeyCode` on
+// the structured leg (R59Runner's frozen shapes use both) — but it must be the
+// derived value under whichever name is used, and at least one must exist.
+function deliveredShapeProblem(e, want) {
+  if (!isObj(e)) return 'not an object';
+  for (const k of SHAPE_KEYS) if (!has(e, k)) return 'no ' + k;
+  const type = e.type === 'keyDown' ? 'keydown' : (e.type === 'keyUp' ? 'keyup' : null);
+  if (want.type !== undefined) {
+    if (type === null) return 'no type (keydown/keyup) on the event';
+    if (type !== want.type) return 'type ' + JSON.stringify(e.type) + ' != the ' + want.type + ' event';
+  }
+  if (e.key !== want.key) return 'key ' + JSON.stringify(e.key) + ' != ' + JSON.stringify(want.key);
+  if (e.code !== want.code) return 'code ' + JSON.stringify(e.code) + ' != ' + JSON.stringify(want.code);
+  const vk = has(e, 'keyCode') ? e.keyCode : (has(e, 'windowsVirtualKeyCode') ? e.windowsVirtualKeyCode : undefined);
+  if (vk === undefined) return 'no keyCode/windowsVirtualKeyCode';
+  if (vk !== want.keyCode) return 'VK ' + JSON.stringify(vk) + ' != ' + want.keyCode;
+  // r60 (a)/(d): cancelable must be a JSON boolean — a string "true", a
+  // string "false" or any other truthy non-boolean is refused (mutant C9).
+  // On a KEYDOWN the boolean must be TRUE (the r59 f6 gap: the delivered
+  // shape's cancelable value was never enforced on the top-level
+  // capslockTrace mirror, so cancelable:false / a deleted cancelable there
+  // went green — probes A and B).
+  // On a KEYUP the r60 rule is the PRESENCE and BOOLEAN TYPE of cancelable
+  // only: the claim binds the keydown value (a keyup's default action is not
+  // what the boundary measures), so a recorded keyup cancelable may be true
+  // or false but must be a boolean field, never absent and never a string.
+  // (want.type is undefined for the letter events, which are keydowns; they
+  // therefore fall under the keydown rule.)
+  if (typeof e.cancelable !== 'boolean') return 'cancelable ' + JSON.stringify(e.cancelable) + ' is not a JSON boolean';
+  if (want.type !== 'keyup' && e.cancelable !== true) return 'cancelable ' + JSON.stringify(e.cancelable) + ' != true';
+  // r60 (b) closure (R60Critic P2): defaultPrevented is part of the delivered
+  // shape, not an optional extra. r59 tested it only "when present", so a
+  // CapsLock event with defaultPrevented DELETED went green — and the
+  // trace-vs-keylog equality could not be established either, because
+  // checkCapsTraceFlags only judges pairs that are both booleans. Required:
+  // a JSON boolean, and the contract's FALSE (no default action was
+  // prevented on the CapsLock/letter events; the swallow legs carry their own
+  // true witnesses under their own ids).
+  if (!has(e, 'defaultPrevented')) return 'no defaultPrevented';
+  if (typeof e.defaultPrevented !== 'boolean') return 'defaultPrevented ' + JSON.stringify(e.defaultPrevented) + ' is not a JSON boolean';
+  if (e.defaultPrevented !== false) {
+    return 'defaultPrevented ' + JSON.stringify(e.defaultPrevented) + ' != false';
+  }
+  return null;
+}
+
+// D2 (f2/f8): the recorded step plan and the declared plan must both equal the
+// embedded 18-step plan; the shot set is the plan (each png is <name>.png).
+function checkStepPlan(rec, add) {
+  const plan = DECLARED_STEP_PLAN;
+  const declared = Array.isArray(rec.declaredStepNames) ? rec.declaredStepNames.map((x) => String(x)) : null;
+  if (!declared) add('step-plan-mismatch', 'declaredStepNames absent (the driver must declare the plan it ran)');
+  else if (JSON.stringify(declared) !== JSON.stringify(plan)) {
+    add('step-plan-mismatch', 'declaredStepNames ' + JSON.stringify(declared) + ' != the embedded 18-step plan');
+  }
+  const steps = Array.isArray(rec.steps) ? rec.steps : null;
+  if (!steps) return; // steps-missing (carried, more specific) names the absence
+  const names = steps.map((s) => (isObj(s) && typeof s.name === 'string' ? s.name : null));
+  if (JSON.stringify(names) !== JSON.stringify(plan)) {
+    add('step-plan-mismatch', 'steps names ' + JSON.stringify(names) + ' != the embedded 18-step plan');
+  }
+  steps.forEach((s, i) => {
+    if (!isObj(s) || typeof s.name !== 'string') return;
+    const png = typeof s.png === 'string' ? s.png : null;
+    if (png !== null && path.basename(png) !== s.name + '.png') {
+      add('step-plan-mismatch', 'step ' + s.name + ' png ' + JSON.stringify(png) + ' != the shot-set basename ' + s.name + '.png');
+    }
+  });
+}
+
+// The swallow blocks' keyDown entries in the DERIVED step order
+// [control d1, control d2, Backspace, digit, Control, Enter] — the same order
+// the derived page continuation must have. Missing blocks yield null slots
+// (their own swallow-plan-mismatch reports them).
+function swallowBlockSequence(form) {
+  const sl = isObj(form) && isObj(form.swallowLeg) ? form.swallowLeg : null;
+  if (!sl) return null;
+  const kd = (b) => entriesOfBlock(b).filter((e) => objType(e) === 'keyDown');
+  const ctl = kd(sl.control);
+  const en = kd(sl.enterChordSwallow);
+  return [ctl[0] || null, ctl[1] || null, kd(sl.backspaceSwallow)[0] || null,
+    kd(sl.digitSwallow)[0] || null, en[0] || null, en[1] || null];
+}
+
+// The swallow continuation as a CONTIGUOUS run of page keydowns: the block
+// sequence's identities (key/code/keyCode) in order. The run is located from
+// the record's tail (the last matching window), which is where the swallow leg
+// lives in both generations — no nonce derivation is needed, so the positional
+// check also works on a nonce-unusable receipt (the r58 corpus case). Returns
+// { start, entries } or null when the continuation is not recorded.
+function locateSwallowRun(pageKd, blockSeq) {
+  const seq = (blockSeq || []).filter((e) => e && typeof e.key === 'string'
+    && typeof e.code === 'string' && typeof e.keyCode === 'number');
+  if (seq.length === 0 || pageKd.length < seq.length) return null;
+  let found = null;
+  for (let start = 0; start + seq.length <= pageKd.length; start += 1) {
+    let ok = true;
+    for (let j = 0; j < seq.length; j += 1) {
+      const p = pageKd[start + j];
+      if (p.key !== seq[j].key || p.code !== seq[j].code || p.keyCode !== seq[j].keyCode) { ok = false; break; }
+    }
+    if (ok) found = { start, entries: pageKd.slice(start, start + seq.length) };
+  }
+  return found;
+}
+
+// D1 (f4): every swallow-block keyDown entry's (key, cancelable,
+// defaultPrevented) triple must be accounted for by the pageKeylog occurrence
+// THAT THE BLOCK DESCRIBES — the positional one, never an equal-valued twin
+// elsewhere (the R59Probes d6 maskability class). The position is the
+// contiguous swallow run (locateSwallowRun); when that run is not recorded the
+// fallback is DISTINCT occurrence matching (each block entry consumes a
+// distinct page occurrence), which is still stronger than existence. An
+// absent page record is keylog-absent's subject, not this check's.
+function checkKeylogFlags(form, add) {
+  if (!isObj(form) || !isObj(form.swallowLeg)) return;
+  const pageEntries = pageEntriesOf(form);
+  if (!pageEntries) return;
+  const pageKd = pageEntries.filter((e) => objType(e) === 'keyDown');
+  const blockSeq = swallowBlockSequence(form);
+  const run = locateSwallowRun(pageKd, blockSeq);
+  if (run) {
+    // Positional: the k-th non-null block entry describes the k-th keydown of
+    // the contiguous swallow run. Compare the exact flags there.
+    let k = 0;
+    for (const blk of (blockSeq || [])) {
+      if (!blk) continue;
+      const p = run.entries[k];
+      k += 1;
+      if (!p) break;
+      if (typeof blk.cancelable !== 'boolean' || typeof blk.defaultPrevented !== 'boolean') continue;
+      if (p.cancelable !== blk.cancelable || p.defaultPrevented !== blk.defaultPrevented) {
+        add('keylog-flag-mismatch', 'the swallow run occurrence key ' + JSON.stringify(p.key)
+          + ' flags (cancelable=' + JSON.stringify(p.cancelable) + ', defaultPrevented=' + JSON.stringify(p.defaultPrevented)
+          + ') != the block record for that step (cancelable=' + JSON.stringify(blk.cancelable)
+          + ', defaultPrevented=' + JSON.stringify(blk.defaultPrevented) + ')');
+      }
+    }
+    return;
+  }
+  const used = new Set();
+  const blockIds = ['control', 'backspaceSwallow', 'digitSwallow', 'enterChordSwallow'];
+  for (const b of blockIds) {
+    for (const e of entriesOfBlock(form.swallowLeg[b])) {
+      if (objType(e) !== 'keyDown') continue;
+      // A triple whose booleans are absent is swallow-recorder-fields-missing's
+      // subject; D1 only judges triples that CAN be matched by value.
+      if (typeof e.cancelable !== 'boolean' || typeof e.defaultPrevented !== 'boolean') continue;
+      const all = pageKd.filter((p) => p.key === e.key).length;
+      const occ = [];
+      pageKd.forEach((p, idx) => {
+        if (used.has(idx)) return;
+        if (p.key === e.key && p.cancelable === e.cancelable && p.defaultPrevented === e.defaultPrevented) occ.push(idx);
+      });
+      if (occ.length === 0) {
+        add('keylog-flag-mismatch', b + ' key ' + JSON.stringify(e.key) + ' (cancelable=' + JSON.stringify(e.cancelable)
+          + ', defaultPrevented=' + JSON.stringify(e.defaultPrevented) + ') has no UNCONSUMED BY-VALUE occurrence in journey.form.pageKeylog ('
+          + all + ' page occurrence(s) of that key)');
+        continue;
+      }
+      used.add(occ[0]);
+    }
+  }
+}
+
+// R1/f9: the DETECTOR-POSITIVE. Every page event where the DOM says Shift is
+// held must also read getModifierState('Shift') === true. A constant-false
+// recorder therefore FAILS here — which is what turns the CapsLock all-false
+// record into a measured boundary instead of a dead detector.
+function checkShiftDetector(pageEntries, add) {
+  const held = pageEntries.filter((e) => isObj(e) && e.shiftKey === true);
+  if (held.length === 0) {
+    add('shift-detector-negative', 'no page entry records shiftKey true: the Shift leg is absent, so the detector cannot prove a true read');
+    return;
+  }
+  const bad = [];
+  for (const e of held) {
+    const f = shiftFlagOf(e);
+    if (f !== true && bad.length < 4) bad.push(String(e.key));
+  }
+  if (bad.length > 0) {
+    add('shift-detector-negative', bad.length + ' of ' + held.length + ' Shift-held page event(s) do not read getModifierState(\'Shift\') true (' + JSON.stringify(bad) + ')');
+  }
+}
+
+// ===========================================================================
+// r60 (a)-(e): the cancelable and trace-shape checks on the CapsLock leg.
+//
+// The r59 generation shape-checked ONE of the leg's two recordings: `leg`
+// prefers journey.form.capsLockLeg, so the top-level capslockTrace mirror was
+// never read at all — capslockTrace.press1.keydownEntry with cancelable:false
+// (probe A), with cancelable deleted (probe B), with `type` deleted (probe E)
+// or with a string cancelable all went GREEN (measured: the frozen r59
+// counter exits 0 on each). r60 reads EVERY recorded event of BOTH mirrors,
+// requires cancelable to be a JSON boolean (TRUE on keydown, presence+type on
+// keyup), and cross-checks each event's cancelable/defaultPrevented against
+// the page keylog occurrence it cites.
+// ===========================================================================
+
+// The derived 12-event caps run the page record must carry: the r59 keydown
+// tail [CapsLock, l0, l1, CapsLock, l2, l3] interleaved with its keyups, which
+// is the order the page recorder writes (the delivered pair per key).
+function capsRunPlan(letters) {
+  const ev = (type, key) => ({ type, key, code: key === 'CapsLock' ? 'CapsLock' : codeFor(key), keyCode: key === 'CapsLock' ? 20 : vkFor(key) });
+  return [
+    ev('keyDown', 'CapsLock'), ev('keyUp', 'CapsLock'),
+    ev('keyDown', letters[0]), ev('keyUp', letters[0]),
+    ev('keyDown', letters[1]), ev('keyUp', letters[1]),
+    ev('keyDown', 'CapsLock'), ev('keyUp', 'CapsLock'),
+    ev('keyDown', letters[2]), ev('keyUp', letters[2]),
+    ev('keyDown', letters[3]), ev('keyUp', letters[3]),
+  ];
+}
+
+// The LAST contiguous run of page entries whose (type, key, code) triple
+// equals the derived run (the caps leg is the tail of the form-1 record; the
+// last match is the leg's). -1 when the record carries no such run.
+function locateCapsRun(pageAll, run) {
+  for (let start = pageAll.length - run.length; start >= 0; start -= 1) {
+    let ok = true;
+    for (let j = 0; j < run.length; j += 1) {
+      const p = pageAll[start + j];
+      if (!isObj(p) || p.type !== run[j].type || p.key !== run[j].key || p.code !== run[j].code) { ok = false; break; }
+    }
+    if (ok) return start;
+  }
+  return -1;
+}
+
+// One mirror's recorded events, each with the run index it cites. The slots
+// are those of the leg contract: the two press pairs (keydown/keyup) and the
+// four letters (keydown; the letter keyups have no trace counterpart).
+function capsMirrorSlots(m, letters) {
+  const slots = [];
+  const lettersOf = [];
+  for (const k of ['letters1', 'letters2']) if (Array.isArray(m[k])) lettersOf.push(...m[k]);
+  if (lettersOf.length === 0 && Array.isArray(m.letters)) lettersOf.push(...m.letters);
+  lettersOf.forEach((e, i) => {
+    if (!isObj(e)) {
+      // a recorded slot replaced by a non-object is a shape defect of the
+      // mirror, never a silent skip (the delivered shape is unreadable)
+      slots.push({ where: 'letter i=' + i, ev: e, type: 'keyDown', key: null, runIndex: 0, bad: true });
+      return;
+    }
+    const ch = letters && i < letters.length ? letters[i] : (typeof e.char === 'string' ? e.char : (typeof e.key === 'string' ? e.key : null));
+    if (ch === null) return;
+    slots.push({ where: 'letter i=' + i, ev: e, type: 'keyDown', key: ch, runIndex: i < 2 ? 2 + 2 * i : 8 + 2 * (i - 2) });
+  });
+  const presses = [];
+  for (const [k, i] of [['press1', 0], ['press2', 1]]) {
+    if (isObj(m[k])) presses.push([k, m[k], i]);
+    else if (has(m, k)) slots.push({ where: k, ev: m[k], type: 'keyDown', key: 'CapsLock', runIndex: i === 0 ? 0 : 6, bad: true, press: true });
+  }
+  if (Array.isArray(m.presses)) m.presses.forEach((p, i) => { if (isObj(p)) presses.push(['presses[' + i + ']', p, i]); });
+  for (const [name, p, idx] of presses) {
+    const kd = isObj(p.keydownEntry) ? p.keydownEntry : (isObj(p.keydown) ? p.keydown : null);
+    const ku = isObj(p.keyupEntry) ? p.keyupEntry : (isObj(p.keyup) ? p.keyup : null);
+    const base = idx === 0 ? 0 : 6;
+    if (isObj(kd)) slots.push({ where: name + ' keydown', ev: kd, type: 'keyDown', key: 'CapsLock', runIndex: base, press: true });
+    if (isObj(ku)) slots.push({ where: name + ' keyup', ev: ku, type: 'keyUp', key: 'CapsLock', runIndex: base + 1, press: true });
+  }
+  return slots;
+}
+
+// r60 (a)/(c)/(d)/(e): the delivered shape of EVERY recorded event of a caps
+// mirror. Press slots are judged as CapsLock keydown/keyup (type present, key
+// and code 'CapsLock', VK 20, no text); letter slots as their derived key.
+// An absent slot is not judged here: the leg's own r59 checks require both
+// press slots on the leg copy, and the mirror is a second recording, not the
+// witness the contract names. DOM read-backs (valueAfter) stay the leg's.
+function checkCapsMirrorShape(m, where, letters, add) {
+  const slots = capsMirrorSlots(m, letters);
+  for (const slot of slots) {
+    if (slot.bad) { add('missing-delivered-shape-field', where + ' ' + slot.where + ' is not an object'); continue; }
+    const e = slot.ev;
+    if (slot.press) {
+      const bad = deliveredShapeProblem(e, { type: slot.type === 'keyDown' ? 'keydown' : 'keyup', key: 'CapsLock', code: 'CapsLock', keyCode: 20 });
+      if (bad) add('missing-delivered-shape-field', where + ' ' + slot.where + ': ' + bad);
+      if (typeof e.text === 'string' && e.text !== '') {
+        add('missing-delivered-shape-field', where + ' ' + slot.where + ' carries text ' + JSON.stringify(e.text) + ' (the claim: no text)');
+      }
+      if (e.capsLock === true) add('caps-flag-true', where + ' ' + slot.where + ' records capsLock=true');
+      continue;
+    }
+    const ch = slot.key;
+    const bad = deliveredShapeProblem(e, { key: ch, code: codeFor(ch), keyCode: vkFor(ch) });
+    if (bad) add('missing-delivered-shape-field', where + ' ' + slot.where + ': ' + bad);
+    if (typeof e.text === 'string' && e.text !== ch) {
+      add('missing-delivered-shape-field', where + ' ' + slot.where + ' text ' + JSON.stringify(e.text) + ' != the sent char ' + JSON.stringify(ch));
+    }
+    if (e.capsLock === true) add('caps-flag-true', where + ' ' + slot.where + ' records capsLock=true');
+  }
+}
+
+// r60 (b): trace-vs-keylog. Each recorded caps event CITES the page keylog
+// occurrence at its position in the derived run (the r59 D1 positional rule:
+// the contiguous run, never an equal-valued twin elsewhere); the event's
+// cancelable and defaultPrevented must EQUAL that occurrence's. A broken run
+// falls back to DISTINCT occurrence matching by (type, key) — still stronger
+// than existence. An event whose own flags are not both booleans is skipped:
+// the delivered-shape checks own that defect, and this check never invents a
+// position it cannot ground.
+function checkCapsTraceFlags(m, where, letters, pageAll, add) {
+  const run = capsRunPlan(letters);
+  const start = locateCapsRun(pageAll, run);
+  const used = new Set();
+  for (const slot of capsMirrorSlots(m, letters)) {
+    const ev = slot.ev;
+    if (slot.bad || !isObj(ev)) continue;
+    if (typeof ev.cancelable !== 'boolean' || typeof ev.defaultPrevented !== 'boolean') continue;
+    let p = null;
+    if (start >= 0) {
+      p = pageAll[start + slot.runIndex];
+      if (!isObj(p)) continue;
+    } else {
+      for (let k = 0; k < pageAll.length; k += 1) {
+        if (used.has(k)) continue;
+        const q = pageAll[k];
+        if (isObj(q) && q.type === slot.type && q.key === slot.key) { used.add(k); p = q; break; }
+      }
+      if (!p) continue; // no page occurrence: keylog-entry-mismatch's subject
+    }
+    if (typeof p.cancelable !== 'boolean' || typeof p.defaultPrevented !== 'boolean') {
+      add('keylog-flag-mismatch', where + ' ' + slot.where + ' key ' + JSON.stringify(slot.key)
+        + ' records flags the page keylog occurrence it cites does not carry as booleans');
+      continue;
+    }
+    if (p.cancelable !== ev.cancelable || p.defaultPrevented !== ev.defaultPrevented) {
+      add('keylog-flag-mismatch', where + ' ' + slot.where + ' key ' + JSON.stringify(slot.key)
+        + ' flags (cancelable=' + JSON.stringify(ev.cancelable) + ', defaultPrevented=' + JSON.stringify(ev.defaultPrevented)
+        + ') != the page keylog occurrence it cites (cancelable=' + JSON.stringify(p.cancelable)
+        + ', defaultPrevented=' + JSON.stringify(p.defaultPrevented) + ')');
+    }
+  }
+}
+
+// r60 (b)/(c): the form leg's chronological `trace` array — the 12-entry
+// record {phase,type,key,code,keyCode,capsLock,valueAfter} the contract
+// documents at journey.form.capsLockLeg.trace. r59 never read it, so the
+// frozen probes D (trace[0] gains cancelable:false, the opposite of the page
+// keylog entry it cites) and E (trace[0].type deleted) both went GREEN.
+// Rules: (c) every entry carries an event `type` (keyDown|keyUp); (a)/(d) an
+// entry that carries cancelable carries a JSON boolean and, on a keydown,
+// TRUE — the recorder does not write cancelable here, so a present value is a
+// claim; (b) a present cancelable/defaultPrevented must equal the page
+// keylog occurrence at the entry's position — its index in the array is its
+// index in the derived 12-event run (the leg's keylogWindow.start is the
+// run's first page index; the located run wins when the record carries one).
+function checkCapsLegTrace(leg, letters, pageAll, add) {
+  const arr = Array.isArray(leg.trace) ? leg.trace : null;
+  if (!arr) return;
+  const run = Array.isArray(letters) ? capsRunPlan(letters) : null;
+  const located = run ? locateCapsRun(pageAll, run) : -1;
+  const win = isObj(leg.keylogWindow) && typeof leg.keylogWindow.start === 'number' ? leg.keylogWindow.start : null;
+  const start = located >= 0 ? located : win;
+  arr.forEach((e, k) => {
+    if (!isObj(e)) { add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + '] is not an object'); return; }
+    const want = run && k < run.length ? run[k] : null;
+    const wantType = want ? want.type : (e.type === 'keyUp' ? 'keyUp' : 'keyDown');
+    // (c): the event type is present and names an event
+    if (!has(e, 'type')) add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + ']: no type (keyDown|keyUp)');
+    else if (e.type !== 'keyDown' && e.type !== 'keyUp') add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + ']: type ' + JSON.stringify(e.type) + ' is not keyDown/keyUp');
+    // the recorded getModifierState('CapsLock') on this event: the absence
+    // witness is FALSE everywhere, so a true is the unforged-state violation
+    // (same id and same rule as the leg's press/letter records and the page
+    // record; the trace array carried a capsLock field r59 never read)
+    if (e.capsLock === true) add('caps-flag-true', 'capsLockLeg.trace[' + k + '] records capsLock=true');
+    // (a)/(d): a present cancelable is a JSON boolean, TRUE on a keydown
+    if (has(e, 'cancelable')) {
+      if (typeof e.cancelable !== 'boolean') {
+        add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + ']: cancelable ' + JSON.stringify(e.cancelable) + ' is not a JSON boolean');
+      } else if (wantType !== 'keyUp' && e.cancelable !== true) {
+        add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + ']: cancelable ' + JSON.stringify(e.cancelable) + ' != true on a ' + wantType);
+      }
+    }
+    // (b): cross-check the flags the entry claims against the cited occurrence
+    if (start === null || !isObj(pageAll[start + k])) return;
+    const p = pageAll[start + k];
+    for (const field of ['cancelable', 'defaultPrevented']) {
+      if (!has(e, field) || typeof e[field] !== 'boolean') continue;
+      if (typeof p[field] !== 'boolean') {
+        add('keylog-flag-mismatch', 'capsLockLeg.trace[' + k + '] ' + field + ' ' + JSON.stringify(e[field])
+          + ': the page keylog occurrence it cites (' + (start + k) + ') carries no boolean ' + field);
+        continue;
+      }
+      if (p[field] !== e[field]) {
+        add('keylog-flag-mismatch', 'capsLockLeg.trace[' + k + '] ' + field + ' ' + JSON.stringify(e[field])
+          + ' != the page keylog occurrence it cites (' + (start + k) + ') ' + field + ' ' + JSON.stringify(p[field]));
+      }
+    }
+  });
+}
+
+// r60 (post-freeze closure, same id): the four scalar caps mirrors the
+// top-level capslockTrace records (press1DownCaps / press1UpCaps /
+// press2DownCaps / press2UpCaps) are raw getModifierState('CapsLock') reads.
+// A true there is the same unforged-state violation the latch block and the
+// page record reject; r59 read none of them.
+function checkCapsScalars(m, where, add) {
+  for (const k of ['press1DownCaps', 'press1UpCaps', 'press2DownCaps', 'press2UpCaps']) {
+    if (m[k] === true) add('caps-flag-true', where + '.' + k + ' records capsLock=true');
+  }
+}
+
+// The CapsLock delivery boundary: the absence witness (getModifierState false
+// everywhere), the named expectation, the delivered shape on every CapsLock
+// and letter event, and the DOM read-back after every keystroke.
+function checkCapsLock(rec, form, nonceStr, nonceOk, pageEntries, pageAdmitted, add) {
+  if (rec.capsLatchExpected !== false) {
+    add('caps-flag-true', 'capsLatchExpected ' + JSON.stringify(rec.capsLatchExpected)
+      + ' != false (the measured negative must be named by the receipt)');
+  }
+  if (!pageEntries || !pageAdmitted) return;
+  // (ii) getModifierState('CapsLock') recorded on EVERY keydown/keyup, and
+  // false everywhere. Any true is the unforged-state guard.
+  let missing = 0;
+  let trues = 0;
+  const trueKeys = [];
+  pageEntries.forEach((e, i) => {
+    const f = isObj(e) ? capsFlagOf(e) : undefined;
+    if (f === undefined || f === null) {
+      missing += 1;
+      if (missing === 1) add('missing-getModifierState-record', 'page entry i=' + i + ' carries no boolean capsLock (getModifierState) record');
+    } else if (f === true) {
+      trues += 1;
+      if (trueKeys.length < 4) trueKeys.push(String(e.key));
+    }
+  });
+  if (trues > 0) add('caps-flag-true', trues + ' page entr(y/ies) read getModifierState(\'CapsLock\') true (' + JSON.stringify(trueKeys) + ')');
+  checkShiftDetector(pageEntries, add);
+  // The declared latch mirror, when present, must not claim a latch either.
+  const trace = isObj(rec.capslockTrace) ? rec.capslockTrace : null;
+  const latch = (form && isObj(form.capsLockLeg) && isObj(form.capsLockLeg.latch)) ? form.capsLockLeg.latch
+    : (trace && isObj(trace.latch) ? trace.latch : null);
+  if (latch) {
+    // Polarity (R59Sentinel / L1): beforePress1/afterPress1/afterPress2 are RAW
+    // caps booleans — true is a violation. acrossLetters1/acrossLetters2 are
+    // DERIVED "every letter read false" booleans — true means the measured
+    // negative HOLDS, so FALSE is the violation. anyTrue/allFalse are the
+    // unambiguous mirrors; sequence is the four raw reads.
+    const seq = Array.isArray(latch.sequence) ? latch.sequence : [];
+    for (const v of seq) if (v === true) { add('caps-flag-true', 'the declared latch sequence claims a true: ' + JSON.stringify(seq)); break; }
+    for (const k of ['beforePress1', 'afterPress1', 'afterPress2']) {
+      if (latch[k] === true) add('caps-flag-true', 'the declared latch.' + k + ' is true (a raw caps boolean cannot latch on this surface)');
+    }
+    for (const k of ['acrossLetters1', 'acrossLetters2']) {
+      if (latch[k] === false) add('caps-flag-true', 'the declared latch.' + k + ' is false (a letter read capsLock true)');
+    }
+    if (latch.anyTrue === true) add('caps-flag-true', 'the declared latch.anyTrue is true');
+    if (latch.allFalse === false) add('caps-flag-true', 'the declared latch.allFalse is false (the measured negative does not hold)');
+  }
+  const leg = (form && isObj(form.capsLockLeg)) ? form.capsLockLeg : trace;
+  if (!leg) { add('missing-delivered-shape-field', 'no capsLock leg recorded (journey.form.capsLockLeg)'); return; }
+  const letters = nonceOk ? capsLockLettersOf(nonceStr) : null;
+  const prefix = nonceOk ? hexTailOf(nonceStr).slice(0, 2) : null;
+  if (nonceOk && letters === null) {
+    add('missing-delivered-shape-field', 'nonce hex tail ' + JSON.stringify(hexTailOf(nonceStr)) + ' carries no [a-f]: the caps-leg letters are underivable');
+  }
+  // The leg's letters (letters1 + letters2, or a flat letters array).
+  const legLetters = [];
+  for (const k of ['letters1', 'letters2']) if (Array.isArray(leg[k])) legLetters.push(...leg[k]);
+  if (legLetters.length === 0 && Array.isArray(leg.letters)) legLetters.push(...leg.letters);
+  if (legLetters.length !== 4) add('missing-delivered-shape-field', 'caps leg letters ' + legLetters.length + ' != 4');
+  legLetters.forEach((e, i) => {
+    if (!isObj(e)) { add('missing-delivered-shape-field', 'caps letter i=' + i + ' is not an object'); return; }
+    const ch = letters && i < letters.length ? letters[i] : (typeof e.char === 'string' ? e.char : null);
+    if (ch === null) { add('missing-delivered-shape-field', 'caps letter i=' + i + ' has no derivable char'); return; }
+    const bad = deliveredShapeProblem(e, { key: ch, code: codeFor(ch), keyCode: vkFor(ch) });
+    if (bad) add('missing-delivered-shape-field', 'caps letter i=' + i + ': ' + bad);
+    if (typeof e.text === 'string' && e.text !== ch) {
+      add('missing-delivered-shape-field', 'caps letter i=' + i + ' text ' + JSON.stringify(e.text) + ' != the sent char ' + JSON.stringify(ch));
+    }
+    if (e.capsLock === true) add('caps-flag-true', 'caps letter i=' + i + ' records capsLock=true');
+    if (typeof e.valueAfter !== 'string') add('capslock-readback-missing', 'caps letter i=' + i + ' has no valueAfter DOM read-back');
+    else if (prefix !== null && letters) {
+      const wantV = prefix + letters.slice(0, i + 1).join('');
+      if (e.valueAfter !== wantV) {
+        add('capslock-readback-missing', 'caps letter i=' + i + ' valueAfter ' + JSON.stringify(e.valueAfter) + ' != ' + JSON.stringify(wantV));
+      }
+    }
+  });
+  // The two press pairs: delivered shape (key/code/keyCode 20/cancelable), no
+  // text, the false flag, and a read-back that shows the latch inserted
+  // nothing.
+  const presses = [];
+  for (const k of ['press1', 'press2']) if (isObj(leg[k])) presses.push([k, leg[k]]);
+  if (Array.isArray(leg.presses)) leg.presses.forEach((p, i) => presses.push(['presses[' + i + ']', p]));
+  if (presses.length !== 2) add('missing-delivered-shape-field', 'caps presses ' + presses.length + ' != 2 (the leg is keyDown+keyUp TWICE)');
+  for (let pi = 0; pi < presses.length; pi += 1) {
+    const [name, p] = presses[pi];
+    // press1 happens before any caps letter (the field reads the pre-leg
+    // value); press2 happens after letters1, so it reads prefix + l0 + l1.
+    const wantRead = prefix === null ? null
+      : (pi === 0 ? prefix : prefix + (letters ? letters.slice(0, 2).join('') : ''));
+    const kd = isObj(p.keydownEntry) ? p.keydownEntry : (isObj(p.keydown) ? p.keydown : null);
+    const ku = isObj(p.keyupEntry) ? p.keyupEntry : (isObj(p.keyup) ? p.keyup : null);
+    for (const [which, ev] of [['keydown', kd], ['keyup', ku]]) {
+      if (!ev) { add('missing-delivered-shape-field', name + ' ' + which + ' absent'); continue; }
+      const bad = deliveredShapeProblem(ev, { type: which, key: 'CapsLock', code: 'CapsLock', keyCode: 20 });
+      if (bad) add('missing-delivered-shape-field', name + ' ' + which + ': ' + bad);
+      if (typeof ev.text === 'string' && ev.text !== '') {
+        add('missing-delivered-shape-field', name + ' ' + which + ' carries text ' + JSON.stringify(ev.text) + ' (the claim: no text)');
+      }
+      if (ev.capsLock === true) add('caps-flag-true', name + ' ' + which + ' records capsLock=true');
+    }
+    if (typeof p.valueAfter === 'string') {
+      if (wantRead !== null && p.valueAfter !== wantRead) {
+        add('capslock-readback-missing', name + ' valueAfter ' + JSON.stringify(p.valueAfter) + ' != ' + JSON.stringify(wantRead));
+      }
+    } else if (wantRead !== null) {
+      add('capslock-readback-missing', name + ' has no valueAfter DOM read-back');
+    }
+  }
+  // r60 (a)/(c)/(d)/(e): the top-level capslockTrace is the SAME leg recorded
+  // a second time. The r59 generation read only `leg` (the form leg when it
+  // exists), which is exactly the f6 gap probes A, B and E exploit; every
+  // press and letter event of the mirror is now shape-checked under the same
+  // rules (keyup: cancelable present and boolean; keydown: the boolean TRUE).
+  if (trace && trace !== leg) checkCapsMirrorShape(trace, 'capslockTrace', letters, add);
+  // r60: the scalar caps reads the mirror duplicates (press1DownCaps ...)
+  checkCapsScalars(leg, 'journey.form.capsLockLeg', add);
+  if (trace && trace !== leg) checkCapsScalars(trace, 'capslockTrace', add);
+  // r60 (b): each recorded event of BOTH mirrors must agree with the page
+  // keylog occurrence it cites, on cancelable AND defaultPrevented; the
+  // form-leg `trace` array is checked the same way (probe D cites there).
+  if (nonceOk && letters) {
+    checkCapsTraceFlags(leg, 'journey.form.capsLockLeg', letters, pageEntries, add);
+    checkCapsLegTrace(leg, letters, pageEntries, add);
+    if (trace && trace !== leg) {
+      checkCapsTraceFlags(trace, 'capslockTrace', letters, pageEntries, add);
+      checkCapsLegTrace(trace, letters, pageEntries, add);
+    }
+  }
+  // The page record of the leg: the keydown tail after the swallow chord is
+  // exactly [CapsLock, l0, l1, CapsLock, l2, l3]; its delivered shape is the
+  // page-side half of the boundary. (The false flag is covered globally.)
+  if (nonceOk && letters) {
+    const tail = [
+      { type: 'keydown', key: 'CapsLock', code: 'CapsLock', keyCode: 20 },
+      { type: 'keydown', key: letters[0], code: codeFor(letters[0]), keyCode: vkFor(letters[0]) },
+      { type: 'keydown', key: letters[1], code: codeFor(letters[1]), keyCode: vkFor(letters[1]) },
+      { type: 'keydown', key: 'CapsLock', code: 'CapsLock', keyCode: 20 },
+      { type: 'keydown', key: letters[2], code: codeFor(letters[2]), keyCode: vkFor(letters[2]) },
+      { type: 'keydown', key: letters[3], code: codeFor(letters[3]), keyCode: vkFor(letters[3]) },
+    ];
+    const kd = pageEntries.filter((e) => objType(e) === 'keyDown');
+    const last = kd.slice(-tail.length);
+    if (last.length !== tail.length) add('missing-delivered-shape-field', 'page keydown tail ' + last.length + ' < ' + tail.length + ' (the caps leg is not recorded page-side)');
+    else tail.forEach((want, i) => {
+      const got = last[i];
+      const bad = deliveredShapeProblem(got, want);
+      if (bad) add('missing-delivered-shape-field', 'page caps tail i=' + i + ' (' + want.key + '): ' + bad);
+    });
+    // r60 (a) on the KEYUP half (R60Reviewer's named residual, Pre-Data
+    // finding class): the page record's delivered shape is the whole 12-event
+    // caps run — the six keydowns above interleaved with their keyups (the
+    // r59 contract says "every CapsLock event ... and every caps-leg letter
+    // event"). r59 and the first r60 cut shape-checked the keydowns only, so a
+    // forged letter KEYUP (its defaultPrevented deleted, or its key corrupted)
+    // went green: no trace slot cites those four occurrences, so the
+    // trace-vs-keylog check cannot reach them. Compared positionally against
+    // the derived run at the TAIL of the page record (the leg is the last leg
+    // of form 1); the keyup cancelable VALUE stays unbound by the claim's
+    // keyup rule (presence + boolean type only), so a keyup cancelable:false
+    // is admitted by design and pinned by its own selftest case.
+    const run12 = capsRunPlan(letters);
+    const tailAll = pageEntries.slice(-run12.length);
+    if (tailAll.length === run12.length) {
+      tailAll.forEach((got, i) => {
+        const w = run12[i];
+        const bad = deliveredShapeProblem(got, { type: w.type === 'keyDown' ? 'keydown' : 'keyup', key: w.key, code: w.code, keyCode: w.keyCode });
+        if (bad) add('missing-delivered-shape-field', 'page caps run i=' + i + ' (' + w.type + ' ' + w.key + '): ' + bad);
+      });
+    }
+  }
+}
+
+// form2 (D4): the same fixture shape with NO swallower; the SAME
+// Control+Enter chord must submit. Client-side (submitted) and server-side
+// (exactly one /echo2 carrying the nonce).
+function checkForm2(rec, journey, nonceStr, add) {
+  const f2 = journey && isObj(journey.form2) ? journey.form2 : null;
+  if (!f2) add('form2-missing', 'journey.form2 absent (the D4 positive control is not recorded)');
+  else {
+    const chord = isObj(f2.chord) ? f2.chord : null;
+    if (!chord) add('form2-missing', 'journey.form2.chord absent');
+    else {
+      const bit = typeof chord.bit === 'number' ? chord.bit : (typeof chord.modifiers === 'number' ? chord.modifiers : null);
+      if (bit !== 2) add('form2-missing', 'chord modifier bit ' + JSON.stringify(bit) + ' != 2 (Control)');
+      if (typeof chord.key === 'string' && chord.key !== 'Control') add('form2-missing', 'chord key ' + JSON.stringify(chord.key));
+      if (typeof chord.code === 'string' && chord.code !== 'ControlLeft') add('form2-missing', 'chord code ' + JSON.stringify(chord.code));
+      if (typeof chord.windowsVirtualKeyCode === 'number' && chord.windowsVirtualKeyCode !== 17) add('form2-missing', 'chord vk ' + chord.windowsVirtualKeyCode);
+      const lk = isObj(chord.letterKeydown) ? chord.letterKeydown : null;
+      if (!lk) add('form2-missing', 'chord.letterKeydown absent (no Enter witness)');
+      else {
+        if (lk.key !== 'Enter') add('form2-missing', 'chord.letterKeydown key ' + JSON.stringify(lk.key));
+        if (has(lk, 'code') && lk.code !== 'Enter') add('form2-missing', 'chord.letterKeydown code ' + JSON.stringify(lk.code));
+        if (has(lk, 'windowsVirtualKeyCode') && lk.windowsVirtualKeyCode !== 13) add('form2-missing', 'chord.letterKeydown vk ' + lk.windowsVirtualKeyCode);
+      }
+    }
+    const e2 = isObj(f2.echo2) ? f2.echo2 : null;
+    const wit = isObj(rec.echo2Witness) ? rec.echo2Witness : null;
+    const submitted = (e2 && e2.submitted === true) || f2.submitted === true || (wit && wit.submitted === true);
+    if (!submitted) add('form2-missing', 'no client-side submitted:true witness for form2 (the chord must submit)');
+  }
+  const wit = isObj(rec.echo2Witness) ? rec.echo2Witness : null;
+  if (wit && typeof wit.requestCount === 'number' && wit.requestCount !== 1) {
+    add('echo2-count-wrong', 'echo2Witness.requestCount ' + wit.requestCount + ' != 1');
+  }
+  const views = [];
+  if (f2) {
+    if (Array.isArray(f2.newRequests)) views.push(['journey.form2.newRequests', f2.newRequests]);
+    if (Array.isArray(f2.serverRequests)) views.push(['journey.form2.serverRequests', f2.serverRequests]);
+  }
+  if (wit && Array.isArray(wit.serverRequests)) views.push(['echo2Witness.serverRequests', wit.serverRequests]);
+  if (journey && isObj(journey.form) && Array.isArray(journey.form.serverRequests)) {
+    views.push(['journey.form.serverRequests', journey.form.serverRequests]);
+  }
+  if (Array.isArray(rec.serverLog)) views.push(['receipt.serverLog', rec.serverLog]);
+  if (views.length === 0) { add('echo2-count-wrong', 'no form2 server log recorded (no /echo2 witness)'); return; }
+  for (const [where, rows] of views) {
+    const rows2 = rows.filter((r) => requestPathOf(r) === '/echo2');
+    if (rows2.length !== 1) {
+      add('echo2-count-wrong', where + ' /echo2 count ' + rows2.length + ' != exactly one');
+      continue;
+    }
+    const q = requestQueryOf(rows2[0]);
+    if (nonceStr && !q.includes(nonceStr)) add('echo2-count-wrong', where + ' /echo2 query does not carry the nonce (not invocation-bound)');
+    if (queryHas(q, 'field3')) add('echo2-count-wrong', where + ' /echo2 carries field3 (a swallowed field must never submit)');
+  }
+}
+
+const pickStr = (o, keys) => {
+  for (const k of keys) if (isObj(o) && typeof o[k] === 'string') return o[k];
+  return undefined;
+};
+
+
+// input: {receiptPath} | {inline, baseDir}; opts: {driverPath, expectSha}
+
+function checkPointerDomain(rec, add) {
+  const log = rec.ptrlog;
+  if (!Array.isArray(log) || log.length === 0) {
+    add('pointer-log-wrong', 'ptrlog absent or empty');
+    return;
+  }
+  for (const [i, e] of log.entries()) {
+    if (!isObj(e) || !['pointermove', 'pointerdown', 'pointerup'].includes(e.type)) {
+      add('pointer-log-wrong', 'ptrlog[' + i + '] has no allowed pointer type');
+      continue;
+    }
+    if (e.pointerType !== 'mouse') add('pointer-type-wrong', 'ptrlog[' + i + '] pointerType must be mouse');
+    if (typeof e.pointerId !== 'number' || !Number.isFinite(e.pointerId) || e.pointerId < 0) add('pointer-id-wrong', 'ptrlog[' + i + '] pointerId must be numeric and nonnegative');
+    if (!has(e, 'isTrusted') || e.isTrusted !== true) add('pointer-trust-wrong', 'ptrlog[' + i + '] requires isTrusted:true');
+    if (typeof e.button !== 'number' || !Number.isFinite(e.button) || typeof e.buttons !== 'number' || !Number.isFinite(e.buttons)) add('pointer-buttons-wrong', 'ptrlog[' + i + '] button/buttons must be numbers');
+    if ((e.type === 'pointerdown' && e.buttons !== 1) || (e.type === 'pointerup' && e.buttons !== 0)) add('pointer-buttons-wrong', 'ptrlog[' + i + '] press/release buttons must be 1/0');
+  }
+  const mouse = rec.mouselog;
+  const seenSeq = new Set();
+  for (const [name, events] of [['ptrlog', log], ['mouselog', mouse]]) {
+    if (!Array.isArray(events)) { add('pointer-order-wrong', name + ' absent'); continue; }
+    let previous = 0;
+    for (const e of events) {
+      if (!isObj(e) || !Number.isSafeInteger(e.seq) || e.seq <= previous || seenSeq.has(e.seq)) {
+        add('pointer-order-wrong', name + ' seq must be positive, unique and increasing');
+      }
+      if (isObj(e)) { previous = e.seq; seenSeq.add(e.seq); }
+    }
+  }
+  const firstDown = log.find((e) => isObj(e) && e.type === 'pointerdown');
+  if (!firstDown || !log.some((e) => isObj(e) && e.type === 'pointermove' && e.seq < firstDown.seq)) {
+    add('pointer-order-wrong', 'pointermove.seq must precede the first pointerdown.seq');
+  }
+  const downs = log.filter((e) => isObj(e) && e.type === 'pointerdown');
+  const ups = log.filter((e) => isObj(e) && e.type === 'pointerup');
+  const mouseDowns = Array.isArray(mouse) ? mouse.filter((e) => isObj(e) && e.type === 'mousedown') : [];
+  const mouseUps = Array.isArray(mouse) ? mouse.filter((e) => isObj(e) && e.type === 'mouseup') : [];
+  if (downs.length === 0 || ups.length !== downs.length || mouseDowns.length !== downs.length || mouseUps.length !== downs.length) {
+    add('pointer-order-wrong', 'pointer/mouse press-release counts differ or are empty');
+  }
+  for (let i = 0; i < downs.length; i += 1) {
+    const d = downs[i], u = ups[i], md = mouseDowns[i], mu = mouseUps[i];
+    if (!u || !md || !mu || !(d.seq < md.seq && md.seq < u.seq && u.seq < mu.seq)
+        || (i + 1 < downs.length && mu.seq >= downs[i + 1].seq)
+        || u.pointerId !== d.pointerId || u.button !== d.button
+        || md.button !== d.button || mu.button !== d.button || md.buttons !== 1 || mu.buttons !== 0) {
+      add('pointer-order-wrong', 'require matching pointerdown < mousedown < pointerup < mouseup seq');
+    }
+  }
+  if (rec.focus !== 'field') add('pointer-focus-wrong', 'focus must equal fixture input id field');
+}
+
+function checkReceipt(input, opts) {
+  const { list, add } = newFindings();
+  return evaluate(input, opts, list, add);
+}
+
+function evaluate(input, opts, findings, add) {
+  const couldNotEvaluate = [];
+  const done = (receipt) => ({ receipt, findings, couldNotEvaluate });
+  let rec;
+  let baseDir;
+  if (input && Object.prototype.hasOwnProperty.call(input, 'inline')) {
+    rec = input.inline;
+    baseDir = input.baseDir || FIXTURES_DIR;
+    if (!isObj(rec)) rec = {};
+  } else {
+    const receiptPath = input.receiptPath;
+    baseDir = path.dirname(path.resolve(receiptPath));
+    let buf;
+    try { buf = fs.readFileSync(receiptPath); } catch (e) {
+      if (e && e.code === 'ENOENT') {
+        add('receipt-missing', path.resolve(receiptPath));
+        couldNotEvaluate.push({ check: 'receipt-load', code: 'receipt-absent', detail: 'no receipt bytes at ' + path.resolve(receiptPath) });
+        return done(null);
+      }
+      add('receipt-unparseable', 'unreadable: ' + (e && e.code));
+      couldNotEvaluate.push({ check: 'receipt-load', code: 'receipt-unreadable', detail: 'cannot read ' + path.resolve(receiptPath) + ': ' + (e && e.code) });
+      return done(null);
+    }
+    try { rec = JSON.parse(buf.toString('utf8')); } catch (e) {
+      add('receipt-unparseable', String((e && e.message) || e).slice(0, 200));
+      couldNotEvaluate.push({ check: 'receipt-load', code: 'receipt-unparseable', detail: String((e && e.message) || e).slice(0, 200) });
+      return done(null);
+    }
+    if (!isObj(rec)) rec = {};
+  }
+
+  // ---- receipt identity -------------------------------------------------
+  if (rec.schema !== SCHEMA && rec.schema !== 'tabi-chrome-cdp-r61') add('schema-wrong', String(rec.schema));
+  if (rec.schema === 'tabi-chrome-cdp-r61') checkPointerDomain(rec, add);
+
+  const nonce = rec.nonce;
+  const nonceStr = typeof nonce === 'string' ? nonce : null;
+  const nonceOk = nonceStr !== null && (rec.schema === 'tabi-chrome-cdp-r61'
+    ? /^tabi-r61-[0-9a-f]{16}$/.test(nonceStr) : NONCE_RE.test(nonceStr));
+  if (!nonceOk) add('nonce-shape', String(nonce));
+
+  // ---- driver binding ---------------------------------------------------
+  const driverPath = opts.driverPath || null;
+  let driverBytes = null;
+  if (!driverPath) add('driver-missing', 'no --driver given');
+  else {
+    try { driverBytes = fs.readFileSync(driverPath); } catch { add('driver-missing', path.resolve(driverPath)); }
+  }
+  if (driverBytes) {
+    const got = sha256(driverBytes);
+    if (rec.driverSha256 !== got) add('driver-sha-mismatch', 'receipt ' + rec.driverSha256 + ' != bytes ' + got);
+  }
+  if (opts.expectSha && rec.driverSha256 !== opts.expectSha) {
+    add('driver-sha-mismatch', 'receipt ' + rec.driverSha256 + ' != --expect-driver-sha256 ' + opts.expectSha);
+  }
+
+  // ---- throwaway profile ------------------------------------------------
+  const host = isObj(rec.host) ? rec.host : {};
+  const token = typeof host.launchToken === 'string' ? host.launchToken : '';
+  const udd = userDataDirArg(argvText(host.argv));
+  const profileOk = udd !== null
+    && path.isAbsolute(udd)
+    && TOKEN_RE.test(token)
+    && !/[\\/]/.test(token)
+    && path.basename(udd) === 'profile-' + token;
+  if (!profileOk) add('profile-not-throwaway', 'argv=' + argvText(host.argv) + ' token=' + JSON.stringify(token));
+
+  // ---- host browser identity (frozen claim names Chromium 155) ----------
+  if (!isObj(rec.host) || typeof host.chromium !== 'string' || !host.chromium.includes('155.')) {
+    add('host-browser-mismatch', 'host.chromium=' + JSON.stringify(isObj(rec.host) ? host.chromium : rec.host));
+  }
+  // ---- shape-only host state: no user-home path in the recorded argv ----
+  const argvStr = argvText(host.argv);
+  if (/\/home\/[A-Za-z0-9._-]+\//.test(argvStr) || argvStr.includes('~/')) {
+    add('host-argv-home-leak', 'argv=' + argvStr);
+  }
+
+  // ---- plain typing trace ----------------------------------------------
+  const pt = rec.plainTrace;
+  const ptEntries = isObj(pt) && Array.isArray(pt.entries) ? pt.entries : null;
+  if (!ptEntries || ptEntries.length === 0) add('plain-trace-missing', 'plainTrace.entries absent or empty');
+  else for (const e of ptEntries) {
+    if (!isObj(e) || typeof e.valueAfter !== 'string') {
+      add('plain-trace-wrong', 'i=' + (isObj(e) ? e.i : '?') + ' valueAfter not a string'); continue;
+    }
+    const v = e.valueAfter;
+    if (nonceStr === null || v.length > nonceStr.length || v !== nonceStr.slice(0, v.length)) {
+      add('plain-trace-wrong', 'i=' + (isObj(e) ? e.i : '?') + ' valueAfter=' + JSON.stringify(v));
+    }
+  }
+
+  // ---- tabi-chrome-cdp-r61 pointer-schema path ---------------------------
+  // The r61 pointer receipt carries the shared envelope (driver binding,
+  // throwaway profile, host identity, argv hygiene, plain typing trace — all
+  // checked above) plus the pointer domain (checkPointerDomain ran above).
+  // The r59 control-domain / modifier / swallow / capslock / form2 / echo
+  // legs are r59-JOURNEY checks and do not apply to this schema; this path
+  // runs the pointer-specific witness checks and returns.
+  if (rec.schema === 'tabi-chrome-cdp-r61') {
+    const kl61 = isObj(rec.keylog) && Array.isArray(rec.keylog.entries) ? rec.keylog : null;
+    if (!kl61) add('keylog-missing', 'keylog.entries absent');
+    else if (nonceOk) {
+      if (kl61.length !== nonceStr.length) add('keylog-length-wrong', 'length ' + JSON.stringify(kl61.length) + ' != nonce length ' + nonceStr.length);
+      if (kl61.length !== kl61.entries.length) add('keylog-length-wrong', 'length ' + JSON.stringify(kl61.length) + ' != entries ' + kl61.entries.length);
+      for (let i = 0; i < Math.min(kl61.entries.length, nonceStr.length); i += 1) {
+        const ch = nonceStr[i], e = kl61.entries[i];
+        if (!isObj(e)) { add('keylog-entry-mismatch', 'entry ' + i + ' not an object'); continue; }
+        if (e.type !== 'keyDown') add('keylog-entry-mismatch', 'entry ' + i + ' type ' + JSON.stringify(e.type));
+        if (e.key !== ch || e.code !== codeFor(ch) || e.keyCode !== vkFor(ch) || e.windowsVirtualKeyCode !== vkFor(ch)) {
+          add('keylog-entry-mismatch', 'entry ' + i + ' identity != the nonce-derived character ' + JSON.stringify(ch));
+        }
+        if (e.targetId !== 'field') add('keylog-entry-mismatch', 'entry ' + i + ' targetId ' + JSON.stringify(e.targetId));
+        if (e.isTrusted !== true) add('keylog-entry-mismatch', 'entry ' + i + ' isTrusted != true');
+        if (e.modifiers !== 0) add('keylog-entry-mismatch', 'entry ' + i + ' modifiers ' + JSON.stringify(e.modifiers));
+      }
+    }
+    const journey61 = isObj(rec.journey) ? rec.journey : null;
+    const form61 = journey61 && isObj(journey61.form) ? journey61.form : null;
+    if (!form61) add('steps-missing', 'journey.form absent');
+    else {
+      if (form61.keylogMatchesPlan !== true) add('keylog-entry-mismatch', 'journey.form.keylogMatchesPlan != true');
+      if (form61.pageKeylogLength !== nonceStr.length * 2) add('keylog-length-wrong', 'pageKeylogLength ' + JSON.stringify(form61.pageKeylogLength) + ' != 2x nonce length');
+      if (form61.expectedKeylogLength !== nonceStr.length) add('keylog-length-wrong', 'expectedKeylogLength ' + JSON.stringify(form61.expectedKeylogLength) + ' != nonce length');
+      if (form61.valueAfterTyping !== nonceStr) add('pointer-nonce-wrong', 'valueAfterTyping ' + JSON.stringify(form61.valueAfterTyping) + ' != nonce');
+      if (form61.field2Value !== '') add('pointer-focus-wrong', 'field2Value ' + JSON.stringify(form61.field2Value) + ' != ""');
+      if (form61.field2Focused !== false) add('pointer-focus-wrong', 'field2Focused ' + JSON.stringify(form61.field2Focused) + ' != false');
+      if (form61.activeAfterTyping !== 'field') add('pointer-focus-wrong', 'activeAfterTyping ' + JSON.stringify(form61.activeAfterTyping) + ' != field');
+    }
+    const log61 = Array.isArray(rec.serverLog) ? rec.serverLog : null;
+    if (!log61 || !log61.some((e) => requestPathOf(e) === '/form')) add('server-log-missing', 'no /form fixture GET recorded');
+    if (log61 && log61.some((e) => requestPathOf(e) === '/echo')) add('server-log-echo-count', 'undeclared /echo submission on the pointer journey');
+    const names61 = Array.isArray(rec.declaredStepNames) ? rec.declaredStepNames.map((x) => String(x)) : null;
+    const steps61 = Array.isArray(rec.steps) ? rec.steps : null;
+    if (!names61 || JSON.stringify(names61) !== JSON.stringify(['a-pointer-press', 'b-typed'])) {
+      add('steps-missing', 'declaredStepNames ' + JSON.stringify(names61) + ' != the two pointer shots');
+    }
+    if (!steps61 || steps61.length === 0) add('steps-missing', 'steps absent');
+    else {
+      const overrides61 = Array.isArray(opts.shotFiles) ? opts.shotFiles : [];
+      steps61.forEach((s, i) => checkStepPng(isObj(s) ? s : {}, opts.shotDir || baseDir, add, overrides61[i] || null));
+    }
+    const jp = journey61 && isObj(journey61.pointer) ? journey61.pointer : null;
+    if (!jp) add('pointer-log-wrong', 'journey.pointer absent');
+    else {
+      if (!isObj(jp.moved) || jp.moved.type !== 'pointermove') add('pointer-log-wrong', 'journey.pointer.moved absent');
+      if (typeof jp.pressedAt !== 'number' || typeof jp.releasedAt !== 'number') add('pointer-log-wrong', 'pressedAt/releasedAt not numeric');
+      if (!isObj(jp.rect) || typeof jp.rect.x !== 'number' || typeof jp.rect.width !== 'number') add('pointer-log-wrong', 'journey.pointer.rect absent');
+    }
+    const td61 = isObj(rec.teardown) ? rec.teardown : null;
+    const survivors61 = td61 ? td61.survivors : undefined;
+    const swept61 = td61 ? td61.postKillSweepCount : undefined;
+    if (!td61 || !Array.isArray(survivors61) || survivors61.length > 0 || swept61 !== 0) {
+      add('teardown-survivor', 'survivors=' + JSON.stringify(survivors61) + ' postKillSweepCount=' + JSON.stringify(swept61));
+    }
+    const pp61 = td61 && isObj(td61.portProbes) ? td61.portProbes : null;
+    if (!pp61 || pp61.fixture !== 'closed' || pp61.devtools !== 'closed') add('teardown-port-open', JSON.stringify(pp61));
+    const pc61 = td61 && isObj(td61.postKillCurl) ? td61.postKillCurl : null;
+    if (!pc61 || pc61.fixture !== 7 || pc61.devtools !== 7) add('teardown-curl-live', JSON.stringify(pc61));
+    if (nonceOk && ptEntries && !ptEntries.some((e) => isObj(e) && e.valueAfter === nonceStr)) {
+      add('nonce-not-invocation-bound', 'nonce absent from the typed trace');
+    }
+    return done(rec);
+  }
+
+  // ---- control domain ---------------------------------------------------
+  const cd = isObj(rec.controlDomain) ? rec.controlDomain : null;
+  if (!cd) add('control-domain-missing', 'controlDomain absent');
+  else {
+    const end = isObj(cd.end) ? cd.end : null;
+    if (!end) add('control-end-witness-wrong', 'end block absent');
+    else if (end.negativeWitness !== true) add('control-end-witness-wrong', 'negativeWitness=' + JSON.stringify(end.negativeWitness));
+    else if (end.valueAfter !== end.valueBefore) add('control-end-witness-wrong', 'valueAfter ' + JSON.stringify(end.valueAfter) + ' != valueBefore ' + JSON.stringify(end.valueBefore));
+
+    const bs = isObj(cd.backspace) ? cd.backspace : null;
+    const expectedResidue = nonceStr === null ? null : nonceStr.slice(0, -1);
+    if (!bs) add('control-backspace-witness-wrong', 'backspace block absent');
+    else if (expectedResidue === null || bs.valueAfter !== expectedResidue) {
+      add('control-backspace-witness-wrong', 'valueAfter ' + JSON.stringify(bs.valueAfter) + ' != ' + JSON.stringify(expectedResidue));
+    }
+
+    const rs = isObj(cd.restore) ? cd.restore : null;
+    if (!rs) add('control-restore-witness-wrong', 'restore block absent');
+    else if (nonceStr === null || rs.valueAfter !== nonceStr) {
+      add('control-restore-witness-wrong', 'valueAfter ' + JSON.stringify(rs.valueAfter) + ' != ' + JSON.stringify(nonceStr));
+    }
+
+    const tab = isObj(cd.tab) ? cd.tab : null;
+    if (!tab) add('control-tab-focus-wrong', 'tab block absent');
+    else if (tab.activeBefore !== 'field' || tab.activeAfter !== 'field2') {
+      add('control-tab-focus-wrong', 'activeBefore ' + JSON.stringify(tab.activeBefore) + ' activeAfter ' + JSON.stringify(tab.activeAfter));
+    }
+
+    const en = isObj(cd.enter) ? cd.enter : null;
+    if (!en) add('control-enter-submit-wrong', 'enter block absent');
+    else if (en.submitted !== true) add('control-enter-submit-wrong', 'submitted=' + JSON.stringify(en.submitted));
+    else if (nonceStr === null || en.serverSawField !== nonceStr) {
+      add('control-enter-submit-wrong', 'serverSawField ' + JSON.stringify(en.serverSawField) + ' != ' + JSON.stringify(nonceStr));
+    }
+    // R57Critic item 1 (pre-freeze amendment): the Enter leg runs LAST, so
+    // #field2 legitimately carries the UPPERCASED nonce at submit time — the
+    // r56 `serverSawField2 === ''` clause is replaced by this strengthened
+    // witness under its own id.
+    const wantField2 = nonceOk ? mixedOf(nonceStr) : null;
+    if (en && wantField2 !== null && en.serverSawField2 !== wantField2) {
+      add('server-field2-mismatch', 'serverSawField2 ' + JSON.stringify(en.serverSawField2) + ' != ' + JSON.stringify(wantField2));
+    }
+  }
+
+  // ---- #field3 -----------------------------------------------------------
+  // r58: the top-level field3Value/field3Final are read AFTER the swallow
+  // leg and must equal the derived two-character prefix (the r56 clause
+  // `=== ''` is carried for receipts whose nonce derives no prefix). The
+  // check runs in the swallow dispatch below; the chord-leg witness is
+  // checked in the chord section.
+
+  // ---- page keylog (control-domain slice, r56 semantics) ----------------
+  const kl = rec.keylog;
+  if (!isObj(kl) || !Array.isArray(kl.entries)) add('keylog-missing', 'keylog.entries absent');
+  else {
+    const implied = impliedKeydowns(cd);
+    if (kl.length !== implied) add('keylog-length-wrong', 'length ' + JSON.stringify(kl.length) + ' != implied ' + implied);
+    if (kl.length !== kl.entries.length) add('keylog-length-wrong', 'length ' + JSON.stringify(kl.length) + ' != entries ' + kl.entries.length);
+    const win = isObj(kl.window) ? kl.window : null;
+    if (!win) add('keylog-length-wrong', 'keylog.window absent');
+    else if (typeof win.start !== 'number' || typeof win.end !== 'number') add('keylog-length-wrong', 'window not numeric');
+    else if (win.end - win.start !== implied || win.start < 0 || win.end < win.start) {
+      add('keylog-length-wrong', 'window [' + win.start + ',' + win.end + ') span ' + (win.end - win.start) + ' != implied ' + implied);
+    }
+    // r60 pre-freeze strengthening (L1 ruling 2026-11-03; the same class as
+    // the r59 D1 page-vs-block cross-check, and NOT a new predicate clause):
+    // the top-level r56 control-domain slice is a SECOND recording of the
+    // control window's keydowns. Its identity is re-derived from the receipt's
+    // own nonce (End, Backspace, the last nonce character, Tab) and, WHERE THE
+    // SLICE RECORDS THEM, its flags must be the delivered shape's (cancelable
+    // true, defaultPrevented false). Absent flags are admitted: the synthetic
+    // generation records this slice without them and every carried case must
+    // stay unchanged. Closes R60Critic's P3 (cancelable:false in the slice) and
+    // P3b (corrupted key), both of which went green before this check.
+    if (nonceOk && Array.isArray(kl.entries)) {
+      const cplan = derivePageKeylog(nonceStr, ['control'], null, 'field3');
+      const cn = Math.min(kl.entries.length, cplan.length);
+      for (let ci = 0; ci < cn; ci += 1) {
+        const e = kl.entries[ci];
+        const w = cplan[ci];
+        if (!isObj(e)) continue;
+        if (e.key !== w.key || e.code !== w.code || e.keyCode !== w.keyCode) {
+          add('keylog-entry-mismatch', 'keylog.entries[' + ci + '] identity '
+            + JSON.stringify({ key: e.key, code: e.code, keyCode: e.keyCode })
+            + ' != the nonce-derived control window ' + JSON.stringify({ key: w.key, code: w.code, keyCode: w.keyCode }));
+        }
+        if (has(e, 'cancelable') && e.cancelable !== true) {
+          add('keylog-entry-mismatch', 'keylog.entries[' + ci + '] cancelable ' + JSON.stringify(e.cancelable) + ' != true');
+        }
+        if (has(e, 'defaultPrevented') && e.defaultPrevented !== false) {
+          add('keylog-entry-mismatch', 'keylog.entries[' + ci + '] defaultPrevented ' + JSON.stringify(e.defaultPrevented) + ' != false');
+        }
+      }
+    }
+  }
+
+  // ---- server log -------------------------------------------------------
+  // r59: the count is the EXACT path '/echo' — the r59 run adds a second form
+  // endpoint '/echo2', and a substring test would count it as a second form1
+  // submission. The invariant is unchanged (exactly one form1 /echo) and is
+  // now per-form.
+  const log = Array.isArray(rec.serverLog) ? rec.serverLog : null;
+  const logText = log ? JSON.stringify(log) : '';
+  if (!log || !/\/echo(?!2)/.test(logText)) add('server-log-missing', log ? 'no /echo entry' : 'serverLog absent');
+  if (log) {
+    const echoCount = log.filter((e) => requestPathOf(e) === '/echo'
+      || (!isObj(e) && /\/echo(?!2)/.test(String(e)))).length;
+    if (echoCount !== 1) add('server-log-echo-count', 'echoCount=' + echoCount);
+  }
+
+  // ---- invocation binding ----------------------------------------------
+  const typed = [];
+  if (ptEntries) for (const e of ptEntries) if (isObj(e) && typeof e.valueAfter === 'string') typed.push(e.valueAfter);
+  if (cd) {
+    for (const leg of CONTROL_LEGS) {
+      const b = isObj(cd[leg]) ? cd[leg] : null;
+      if (!b) continue;
+      for (const k of ['valueBefore', 'valueAfter']) if (typeof b[k] === 'string') typed.push(b[k]);
+    }
+    if (isObj(cd.enter) && typeof cd.enter.serverSawField === 'string') typed.push(cd.enter.serverSawField);
+  }
+  const haystack = [logText, ...typed].join('\u0000');
+  if (nonceStr === null || !haystack.includes(nonceStr)) {
+    add('nonce-not-invocation-bound', 'nonce ' + JSON.stringify(nonce) + ' absent from server log and typed values');
+  }
+
+  // ---- steps + committed PNG bytes -------------------------------------
+  const steps = Array.isArray(rec.steps) ? rec.steps : null;
+  const names = steps ? steps.map((s) => (isObj(s) ? s.name : null)) : null;
+  // The six r56 steps must be present, in order, at positions 0..5 (carried
+  // r56 wording; the r59 plan keeps them as its prefix). The r59 D2 check
+  // below requires the WHOLE recorded plan to equal the embedded 18-step list.
+  const sixOk = names !== null && names.length >= STEP_NAMES.length
+    && STEP_NAMES.every((n, i) => names[i] === n);
+  if (!sixOk) add('steps-missing', names === null ? 'steps absent' : JSON.stringify(names));
+  checkStepPlan(rec, add);
+  if (steps) {
+    const overrides = Array.isArray(opts.shotFiles) ? opts.shotFiles : [];
+    steps.forEach((s, i) => checkStepPng(isObj(s) ? s : {}, opts.shotDir || baseDir, add, overrides[i] || null));
+  }
+  // r58: the chronological evidence log carries the four swallow shots beside
+  // the carried steps; every recorded shot that pins its bytes is hashed with
+  // the same PNG geometry witness. An absent log adds nothing (the r57 carry
+  // has no stepsExtended), but a recorded one is never taken on trust.
+  if (Array.isArray(rec.stepsExtended)) {
+    for (const s of rec.stepsExtended) if (isObj(s)) checkStepPng(s, opts.shotDir || baseDir, add, null);
+  }
+
+  // ---- teardown ---------------------------------------------------------
+  const td = isObj(rec.teardown) ? rec.teardown : null;
+  const survivors = td ? td.survivors : undefined;
+  const swept = td ? td.postKillSweepCount : undefined;
+  if (!td || !Array.isArray(survivors) || survivors.length > 0 || swept !== 0) {
+    add('teardown-survivor', 'survivors=' + JSON.stringify(survivors) + ' postKillSweepCount=' + JSON.stringify(swept));
+  }
+
+  // =======================================================================
+  // ---- the r57 modifier domain (new checks) -----------------------------
+  // =======================================================================
+  const journey = isObj(rec.journey) ? rec.journey : null;
+  const form = journey && isObj(journey.form) ? journey.form : null;
+  const mixed = nonceOk ? mixedOf(nonceStr) : null;
+  const hexTail = nonceOk ? hexTailOf(nonceStr) : '';
+  const chordLetter = nonceOk ? chordLetterOf(nonceStr) : null;
+
+  if (!nonceOk) {
+    couldNotEvaluate.push({
+      check: 'modifier+swallow-domain-derivation',
+      code: 'nonce-unusable',
+      detail: 'nonce ' + JSON.stringify(nonce) + ' cannot derive the shift/chord/swallow plan; only shape checks below ran',
+    });
+  }
+
+  // ---- (1) the Shift-chord trace ----------------------------------------
+  const st = form && isObj(form.shiftTrace) ? form.shiftTrace : null;
+  if (!st) add('shift-trace-missing', 'journey.form.shiftTrace absent');
+  else {
+    const entries = Array.isArray(st.typing) ? st.typing : Array.isArray(st.entries) ? st.entries : null;
+    if (!entries || entries.length === 0) add('shift-trace-missing', 'shiftTrace typing/entries absent or empty');
+    else {
+      if (mixed !== null && entries.length !== mixed.length) {
+        add('shift-trace-missing', 'trace length ' + entries.length + ' != uppercased nonce ' + mixed.length);
+      }
+      const n = mixed !== null ? Math.min(entries.length, mixed.length) : entries.length;
+      for (let i = 0; i < entries.length; i += 1) {
+        const e = entries[i];
+        if (!isObj(e)) { add('shift-trace-missing', 'entry i=' + i + ' not an object'); continue; }
+        if (e.i !== i) add('shift-trace-missing', 'entry ' + i + ' names i=' + e.i);
+        const ch = typeof e.char === 'string' ? e.char : null;
+        if (ch === null) { add('shift-trace-missing', 'entry i=' + i + ' has no char'); continue; }
+        if (i < n && mixed !== null && ch !== mixed[i]) add('shift-trace-missing', 'i=' + i + ': char ' + JSON.stringify(ch) + ' != ' + JSON.stringify(mixed[i]));
+        const ride = /[A-Z]/.test(ch);
+        // modifiers (S153 bit 8) — derived from the entry's own char so the
+        // check still runs when the nonce is unusable.
+        if (e.modifiers !== (ride ? 8 : 0)) {
+          add(ride ? 'shift-modifiers-wrong' : 'shift-unshifted-char-wrong', 'i=' + i + ' char=' + ch + ' modifiers=' + JSON.stringify(e.modifiers));
+        }
+        // the shifted key/text (uppercase) or the unshifted key (digit/hyphen)
+        if (typeof e.key === 'string' && e.key !== ch) {
+          add(ride ? 'shift-modifiers-wrong' : 'shift-unshifted-char-wrong', 'i=' + i + ' key=' + JSON.stringify(e.key) + ' != char ' + JSON.stringify(ch));
+        }
+        if (typeof e.code === 'string' && e.code !== codeFor(ch)) {
+          add(ride ? 'shift-modifiers-wrong' : 'shift-unshifted-char-wrong', 'i=' + i + ' code=' + JSON.stringify(e.code) + ' != ' + codeFor(ch));
+        }
+        if (typeof e.windowsVirtualKeyCode === 'number' && e.windowsVirtualKeyCode !== vkFor(ch)) {
+          add(ride ? 'shift-modifiers-wrong' : 'shift-unshifted-char-wrong', 'i=' + i + ' vk=' + e.windowsVirtualKeyCode + ' != ' + vkFor(ch));
+        }
+        if (typeof e.shiftRide === 'boolean' && e.shiftRide !== ride) {
+          add(ride ? 'shift-ride-missing' : 'shift-unshifted-char-wrong', 'i=' + i + ' shiftRide=' + e.shiftRide + ' != ' + ride);
+        }
+        // per-keystroke #field2 prefix (needs the nonce)
+        if (mixed !== null && i < n && e.valueAfter !== mixed.slice(0, i + 1)) {
+          add('shift-prefix-mismatch', 'i=' + i + ' valueAfter=' + JSON.stringify(e.valueAfter) + ' != ' + JSON.stringify(mixed.slice(0, i + 1)));
+        }
+        // both-field read-back: #field1 is untouched by these keystrokes, so
+        // its read-back must still be the nonce, every single time.
+        const f1 = pickStr(e, ['valueAfterField', 'fieldValueAfter', 'field1ValueAfter', 'valueAfterField1']);
+        if (f1 === undefined) add('shift-prefix-mismatch', 'i=' + i + ': #field read-back missing (both-field witness)');
+        else if (nonceOk && f1 !== nonceStr) add('shift-prefix-mismatch', 'i=' + i + ': #field read-back ' + JSON.stringify(f1) + ' != nonce');
+        // the Shift ride around the letter's key pair
+        if (ride) {
+          const rr = e.ride;
+          const evs = isObj(rr) ? rr : null;
+          const kd = evs && isObj(evs.keyDown) ? evs.keyDown : null;
+          const ku = evs && isObj(evs.keyUp) ? evs.keyUp : null;
+          if (!kd || !ku) {
+            add('shift-ride-missing', 'i=' + i + ' char=' + ch + ': no Shift keyDown/keyUp pair recorded');
+          } else {
+            for (const [which, ev] of [['keyDown', kd], ['keyUp', ku]]) {
+              if (ev.key !== 'Shift') add('shift-ride-missing', 'i=' + i + ' ' + which + '.key=' + JSON.stringify(ev.key));
+              if (has(ev, 'code') && ev.code !== 'ShiftLeft') add('shift-ride-missing', 'i=' + i + ' ' + which + '.code=' + JSON.stringify(ev.code));
+              if (has(ev, 'keyCode') && ev.keyCode !== 16) add('shift-ride-missing', 'i=' + i + ' ' + which + '.keyCode=' + JSON.stringify(ev.keyCode));
+              if (which === 'keyDown' && has(ev, 'shiftKey') && ev.shiftKey !== true) add('shift-ride-missing', 'i=' + i + ' keyDown.shiftKey=' + JSON.stringify(ev.shiftKey));
+              if (has(ev, 'modifiers') && ev.modifiers !== 8) add('shift-modifiers-wrong', 'i=' + i + ' ' + which + '.modifiers=' + JSON.stringify(ev.modifiers));
+            }
+          }
+        } else if (e.ride !== undefined && e.ride !== null) {
+          // a ride on an UNSHIFTED character means the Shift key was held
+          // where none may be: the same class as a shifted digit/hyphen.
+          add('shift-unshifted-char-wrong', 'i=' + i + ' char=' + ch + ' carries a Shift ride');
+        }
+      }
+      // declared target and the final #field2 value
+      if (typeof st.value === 'string' && mixed !== null && st.value !== mixed) {
+        add('field2-final-mismatch', 'shiftTrace.value ' + JSON.stringify(st.value) + ' != ' + JSON.stringify(mixed));
+      }
+      const final2 = pickStr(st, ['field2ValueAfterTyping', 'field2Value', 'field2Final']);
+      if (final2 === undefined) add('field2-final-mismatch', 'no final #field2 read-back recorded');
+      else if (mixed !== null && final2 !== mixed) add('field2-final-mismatch', '#field2 ' + JSON.stringify(final2) + ' != ' + JSON.stringify(mixed));
+      const final1 = pickStr(st, ['fieldValueAfterTyping', 'fieldValue', 'field1ValueAfterTyping']);
+      if (final1 !== undefined && nonceOk && final1 !== nonceStr) add('shift-prefix-mismatch', '#field final ' + JSON.stringify(final1) + ' != nonce');
+    }
+  }
+
+  // ---- (2) the chord leg -------------------------------------------------
+  const cg = form && isObj(form.chordLeg) ? form.chordLeg : null;
+  if (!cg) add('chord-missing', 'journey.form.chordLeg absent');
+  else {
+    if (nonceOk && chordLetter === null) {
+      add('chord-char-mismatch', 'nonce hex tail ' + JSON.stringify(hexTail) + ' carries no [a-f]: the chord letter is underivable');
+    } else if (chordLetter !== null) {
+      const letterCode = 'Key' + chordLetter.toUpperCase();
+      const letterVk = 65 + (chordLetter.charCodeAt(0) - 97);
+      if (typeof cg.hexTail === 'string' && nonceOk && cg.hexTail !== hexTail) add('chord-char-mismatch', 'hexTail ' + JSON.stringify(cg.hexTail) + ' != ' + JSON.stringify(hexTail));
+      if (cg.letter !== chordLetter) add('chord-char-mismatch', 'letter ' + JSON.stringify(cg.letter) + ' != derived ' + JSON.stringify(chordLetter));
+      if (typeof cg.letterCode === 'string' && cg.letterCode !== letterCode) add('chord-char-mismatch', 'letterCode ' + JSON.stringify(cg.letterCode) + ' != ' + letterCode);
+      if (typeof cg.letterWindowsVirtualKeyCode === 'number' && cg.letterWindowsVirtualKeyCode !== letterVk) add('chord-char-mismatch', 'letterVk ' + cg.letterWindowsVirtualKeyCode + ' != ' + letterVk);
+    }
+    const cds = Array.isArray(cg.chords) ? cg.chords : null;
+    if (!cds || cds.length !== CHORD_MODS.length) add('chord-missing', 'chordLeg.chords ' + (cds ? cds.length : 'absent') + ' != ' + CHORD_MODS.length);
+    else {
+      cds.forEach((c, i) => {
+        const cm = CHORD_MODS[i];
+        if (!isObj(c)) { add('chord-missing', 'chord i=' + i + ' not an object'); return; }
+        if (typeof c.name === 'string' && c.name !== cm.name) { add('chord-missing', 'chord i=' + i + ' name ' + JSON.stringify(c.name) + ' != ' + cm.name); return; }
+        if (typeof c.key === 'string' && c.key !== cm.key) { add('chord-missing', 'chord ' + cm.name + ' key ' + JSON.stringify(c.key)); return; }
+        if (typeof c.code === 'string' && c.code !== cm.code) add('chord-missing', 'chord ' + cm.name + ' code ' + JSON.stringify(c.code));
+        if (typeof c.windowsVirtualKeyCode === 'number' && c.windowsVirtualKeyCode !== cm.vk) add('chord-missing', 'chord ' + cm.name + ' vk ' + c.windowsVirtualKeyCode);
+        // the recorded modifier BIT is the CDP-side half of the correspondence
+        const bit = typeof c.bit === 'number' ? c.bit : typeof c.modifiers === 'number' ? c.modifiers : null;
+        if (bit === null) add('chord-modifiers-wrong', 'chord ' + cm.name + ': no modifiers bit recorded');
+        else if (bit !== cm.bit) add('chord-modifiers-wrong', 'chord ' + cm.name + ': bit ' + bit + ' != ' + cm.bit);
+        // the chord's own page-side echo, when the runner records it: its
+        // BOOLEANS are the bit correspondence (identity is the pageKeylog's
+        // job). Two keydowns: the modifier's, then the letter's.
+        if (has(c, 'domEvents')) {
+          const de = Array.isArray(c.domEvents) ? c.domEvents : null;
+          if (!de || de.length !== 2) add('chord-missing', 'chord ' + cm.name + ': domEvents ' + (de ? de.length : 'not an array') + ' != 2');
+          else {
+            const want = [{ what: 'modifier keydown', exp: boolsFor(cm.bit) }, { what: 'letter keydown', exp: boolsFor(cm.bit) }];
+            for (let j = 0; j < 2; j += 1) {
+              const ev = de[j];
+              if (!isObj(ev)) { add('boolean-mismatch', 'chord ' + cm.name + ' ' + want[j].what + ' not an object'); continue; }
+              for (const k of ['ctrlKey', 'altKey', 'metaKey', 'shiftKey']) {
+                if (ev[k] !== want[j].exp[k]) add('boolean-mismatch', 'chord ' + cm.name + ' ' + want[j].what + ' ' + k + '=' + JSON.stringify(ev[k]) + ' != ' + want[j].exp[k]);
+              }
+            }
+          }
+        }
+      });
+    }
+    // the negative witness: #field3 EMPTY at the end of the chord leg. In
+    // r58 the top-level field3Final is read AFTER the swallow leg and is no
+    // longer a post-chord witness, so a derived-prefix receipt must record
+    // chordLeg.field3ValueAfter; the r57 fallback survives only when the
+    // nonce derives nothing.
+    const after3 = typeof cg.field3ValueAfter === 'string' ? cg.field3ValueAfter
+      : (!nonceOk && typeof rec.field3Final === 'string' ? rec.field3Final : undefined);
+    if (after3 === undefined) add('field3-not-empty', 'no post-chord #field3 witness recorded (chordLeg.field3ValueAfter)');
+    else if (after3 !== '') add('field3-not-empty', 'post-chord #field3 ' + JSON.stringify(after3));
+  }
+
+  // ---- (3) the #field3 name-attribute witness ---------------------------
+  const nameCands = [];
+  if (has(rec.fixture, 'field3NameAttribute')) nameCands.push(['fixture.field3NameAttribute', rec.fixture.field3NameAttribute]);
+  if (form) {
+    if (has(form, 'field3NameAttribute')) nameCands.push(['journey.form.field3NameAttribute', form.field3NameAttribute]);
+    if (has(form, 'field3Name')) nameCands.push(['journey.form.field3Name', form.field3Name]);
+  }
+  if (cg) {
+    if (has(cg, 'field3NameAttribute')) nameCands.push(['journey.form.chordLeg.field3NameAttribute', cg.field3NameAttribute]);
+    if (has(cg, 'field3Name')) nameCands.push(['journey.form.chordLeg.field3Name', cg.field3Name]);
+  }
+  if (nameCands.length === 0) {
+    add('field3-named', 'no #field3 name-attribute witness recorded (fixture echo / form record)');
+  } else {
+    for (const [where, v] of nameCands) {
+      if (typeof v === 'string' && v !== '') add('field3-named', where + '=' + JSON.stringify(v));
+      else if (v !== null && typeof v !== 'string') add('field3-named', where + ' is ' + JSON.stringify(v) + ', not null/""');
+    }
+  }
+
+  // ---- (4) the page keydown record, re-derived from the nonce -----------
+  const declared3 = cg ? pickStr(cg, ['field3TargetId', 'targetId']) : undefined;
+  const declaredForm3 = form ? pickStr(form, ['field3TargetId']) : undefined;
+  const f3Target = declared3 !== undefined ? declared3 : (declaredForm3 !== undefined ? declaredForm3 : 'field3');
+  const pkRaw = form ? form.pageKeylog : undefined;
+  let klLegs = null;
+  let klEntries = null;
+  let pageSwallowKd = [];
+  if (pkRaw === undefined || pkRaw === null) {
+    add('keylog-absent', 'journey.form.pageKeylog absent');
+  } else if (Array.isArray(pkRaw)) {
+    klLegs = KEYLOG_LEGS.slice();
+    klEntries = pkRaw;
+  } else if (isObj(pkRaw) && Array.isArray(pkRaw.entries)) {
+    const declared = Array.isArray(pkRaw.legs) ? pkRaw.legs : null;
+    const allowed = KEYLOG_LEGS.concat(SWALLOW_LEG_NAMES, CAPSLOCK_LEG_NAMES);
+    const bad = declared === null
+      || !declared.includes('shift') || !declared.includes('chord')
+      || declared.some((l) => !allowed.includes(l));
+    if (bad) {
+      add('keylog-absent', 'pageKeylog legs declaration invalid (needs shift+chord, only ' + JSON.stringify(KEYLOG_LEGS) + ' plus the r58 swallow and r59 capslock names): ' + JSON.stringify(declared));
+    } else {
+      klLegs = KEYLOG_LEGS.filter((l) => declared.includes(l));
+      klEntries = pkRaw.entries;
+    }
+  } else {
+    add('keylog-absent', 'journey.form.pageKeylog has no entries array');
+  }
+  if (klEntries) {
+    // R57Critic item 2 (pre-freeze amendment): ENTRY CONTENT, not only
+    // length/window. Every entry must carry its event type and its target
+    // identity; a missing field is itself a finding — the check is never
+    // weakened to fit a missing field.
+    const rawKd = [];
+    klEntries.forEach((a, i) => {
+      if (!isObj(a)) { add('keylog-entry-mismatch', 'entry i=' + i + ' not an object'); return; }
+      if (a.type !== 'keyDown' && a.type !== 'keyUp') {
+        add('keylog-entry-mismatch', 'entry i=' + i + ' lacks the event type (keyDown|keyUp)');
+        return;
+      }
+      if (typeof a.targetId !== 'string' || a.targetId === '') {
+        add('keylog-entry-mismatch', 'entry i=' + i + ' lacks the target identity (targetId)');
+      }
+      if (a.type === 'keyDown') rawKd.push({ i, ev: a });
+    });
+    if (nonceOk) {
+      const want = derivePageKeylog(nonceStr, klLegs, chordLetter, f3Target);
+      const swPlan = deriveSwallowKeydowns(nonceStr, f3Target);
+      // r59: the caps leg appends six keydowns after the swallow chord —
+      // CapsLock, l0, l1, CapsLock, l2, l3 (the runner's frozen tail). Their
+      // identities are re-derived here; the delivered shape and the absence
+      // witness are checkCapsLock's job.
+      const capsLetters = capsLockLettersOf(nonceStr);
+      const capsPlan = capsLetters === null ? [] : ['CapsLock', capsLetters[0], capsLetters[1], 'CapsLock', capsLetters[2], capsLetters[3]]
+        .map((k) => ({
+          leg: 'capslock',
+          type: 'keyDown',
+          key: k,
+          code: k === 'CapsLock' ? 'CapsLock' : codeFor(k),
+          keyCode: k === 'CapsLock' ? 20 : vkFor(k),
+          modifiers: 0,
+          ctrlKey: false, altKey: false, metaKey: false, shiftKey: false,
+          targetId: f3Target,
+        }));
+      const planTail = swPlan.concat(capsPlan);
+      const extra = rawKd.length > want.length ? rawKd.slice(want.length) : [];
+      if (rawKd.length < want.length || (extra.length > 0 && extra.length !== planTail.length)) {
+        add('keylog-entry-mismatch', 'pageKeylog keydowns ' + rawKd.length + ' != derived ' + want.length + ' (+ swallow ' + swPlan.length + ' + capslock ' + capsPlan.length + ') for legs ' + JSON.stringify(klLegs));
+      }
+      const n = Math.min(rawKd.length, want.length);
+      const shiftKdPositions = [];
+      for (let j = 0; j < n; j += 1) {
+        const { i, ev: a } = rawKd[j];
+        const e = want[j];
+        if (e.leg === 'shift' && /[A-Z]/.test(e.key) && e.key !== 'Shift') shiftKdPositions.push({ j, rawI: i, char: e.key });
+        if (a.key !== e.key || a.code !== e.code || a.keyCode !== e.keyCode) {
+          add('keylog-entry-mismatch', 'i=' + i + ' (' + e.leg + ') got ' + JSON.stringify({ key: a.key, code: a.code, keyCode: a.keyCode }) + ' want ' + JSON.stringify({ key: e.key, code: e.code, keyCode: e.keyCode }));
+          continue;
+        }
+        if (typeof a.modifiers !== 'number') {
+          add('keylog-entry-mismatch', 'entry i=' + i + ' (' + e.leg + ') lacks the S153 modifiers bit');
+        }
+        if (typeof a.targetId === 'string' && a.targetId !== e.targetId) {
+          add('keylog-entry-mismatch', 'entry i=' + i + ' (' + e.leg + ') targetId ' + JSON.stringify(a.targetId) + ' != ' + JSON.stringify(e.targetId));
+        }
+        const boolsDiffer = ['ctrlKey', 'altKey', 'metaKey', 'shiftKey'].some((k) => a[k] !== e[k]);
+        const detailBools = JSON.stringify({ ctrlKey: a.ctrlKey, altKey: a.altKey, metaKey: a.metaKey, shiftKey: a.shiftKey }) + ' want ' + JSON.stringify({ ctrlKey: e.ctrlKey, altKey: e.altKey, metaKey: e.metaKey, shiftKey: e.shiftKey });
+        if (e.leg === 'chord') {
+          if (boolsDiffer) add('boolean-mismatch', 'entry i=' + i + ' chord ' + detailBools);
+          if (typeof a.modifiers === 'number' && a.modifiers !== e.modifiers) {
+            add('boolean-mismatch', 'entry i=' + i + ' chord modifiers bit ' + a.modifiers + ' != ' + e.modifiers);
+          }
+        } else {
+          if (boolsDiffer) add('keylog-entry-mismatch', 'entry i=' + i + ' (' + e.leg + ') booleans ' + detailBools);
+          if (typeof a.modifiers === 'number' && a.modifiers !== e.modifiers) {
+            add('keylog-entry-mismatch', 'entry i=' + i + ' (' + e.leg + ') modifiers bit ' + a.modifiers + ' != ' + e.modifiers);
+          }
+        }
+      }
+      // the Shift pair BRACKETS each uppercase letter's pair in the raw
+      // record, in order: [Shift keyDown][letter keyDown][letter keyUp]
+      // [Shift keyUp].
+      if (klLegs.includes('shift')) {
+        for (const { rawI, char } of shiftKdPositions) {
+          const before = klEntries[rawI - 1];
+          const afterKd = klEntries[rawI + 1];
+          const afterShift = klEntries[rawI + 2];
+          const ok = isObj(before) && before.type === 'keyDown' && before.key === 'Shift'
+            && isObj(afterKd) && afterKd.type === 'keyUp' && afterKd.key === char
+            && isObj(afterShift) && afterShift.type === 'keyUp' && afterShift.key === 'Shift';
+          if (!ok) {
+            add('shift-ride-missing', 'raw ' + rawI + ' char ' + JSON.stringify(char) + ': Shift keyDown/keyUp does not bracket the letter pair ('
+              + JSON.stringify([before && before.key, afterKd && afterKd.key, afterShift && afterShift.key]) + ')');
+          }
+        }
+      }
+      // r58: when the record continues past the four carried legs, the
+      // continuation must START with the re-derived swallow plan (identity,
+      // order, modifiers bit, target); the r59 caps tail may follow it. An
+      // absent continuation is admitted: the swallow witnesses are also
+      // recorded per block in swallowLeg, and a recorded continuation is
+      // never weakened.
+      const swExtra = extra.slice(0, Math.min(extra.length, swPlan.length));
+      const blockSeq = swallowBlockSequence(form);
+      if (swExtra.length === swPlan.length && swExtra.length > 0) {
+        for (let j = 0; j < swExtra.length; j += 1) {
+          const { i, ev: a } = swExtra[j];
+          const e = swPlan[j];
+          // D1, strengthened: the page occurrence at this DERIVED position is
+          // the one the block entry for this step describes — compare its
+          // cancelable/defaultPrevented to the block's, never to a lookalike
+          // elsewhere in the record (the d6 maskability class).
+          const blk = blockSeq ? blockSeq[j] : null;
+          if (blk && typeof blk.cancelable === 'boolean' && typeof blk.defaultPrevented === 'boolean') {
+            if (a.cancelable !== blk.cancelable || a.defaultPrevented !== blk.defaultPrevented) {
+              add('keylog-flag-mismatch', 'pageKeylog continuation i=' + i + ' key ' + JSON.stringify(e.key)
+                + ' flags (cancelable=' + JSON.stringify(a.cancelable) + ', defaultPrevented=' + JSON.stringify(a.defaultPrevented)
+                + ') != the block record for that step (cancelable=' + JSON.stringify(blk.cancelable)
+                + ', defaultPrevented=' + JSON.stringify(blk.defaultPrevented) + ')');
+            }
+          }
+          if (a.key !== e.key || a.code !== e.code || a.keyCode !== e.keyCode) {
+            add('swallow-plan-mismatch', 'pageKeylog continuation i=' + i + ' got ' + JSON.stringify({ key: a.key, code: a.code, keyCode: a.keyCode }) + ' want ' + JSON.stringify({ key: e.key, code: e.code, keyCode: e.keyCode }));
+            continue;
+          }
+          if (typeof a.modifiers !== 'number' || a.modifiers !== e.modifiers) {
+            add('swallow-plan-mismatch', 'pageKeylog continuation i=' + i + ' modifiers ' + JSON.stringify(a.modifiers) + ' != ' + e.modifiers);
+          }
+          if (typeof a.targetId === 'string' && a.targetId !== e.targetId) {
+            add('swallow-plan-mismatch', 'pageKeylog continuation i=' + i + ' targetId ' + JSON.stringify(a.targetId) + ' != ' + JSON.stringify(e.targetId));
+          }
+          if (['ctrlKey', 'altKey', 'metaKey', 'shiftKey'].some((k) => a[k] !== e[k])) {
+            add('swallow-plan-mismatch', 'pageKeylog continuation i=' + i + ' booleans ' + JSON.stringify({ ctrlKey: a.ctrlKey, altKey: a.altKey, metaKey: a.metaKey, shiftKey: a.shiftKey }) + ' != bit ' + e.modifiers);
+          }
+          pageSwallowKd.push(a);
+        }
+      }
+    }
+  }
+
+  // ---- (5) the r58 preventDefault-swallow domain ------------------------
+  if (nonceOk) {
+    checkSwallow(rec, form, nonceStr, f3Target, pageSwallowKd, add);
+    const wantPrefix = hexTailOf(nonceStr).slice(0, 2);
+    // r59: the caps leg types its four derived letters into #field3 after the
+    // swallow leg, so the top-level read-backs are the prefix + those letters.
+    const capsLetters = capsLockLettersOf(nonceStr) || [];
+    const wantF3 = wantPrefix + capsLetters.join('');
+    if (rec.field3Value !== wantF3) {
+      add('field3-not-empty', 'field3Value ' + JSON.stringify(rec.field3Value) + ' != the derived field value ' + JSON.stringify(wantF3));
+    }
+    if (typeof rec.field3Final === 'string' && rec.field3Final !== wantF3) {
+      add('field3-not-empty', 'field3Final ' + JSON.stringify(rec.field3Final) + ' != the derived field value ' + JSON.stringify(wantF3));
+    }
+  } else {
+    // r56 clause carried: no prefix is derivable, so both values must be ''.
+    if (rec.field3Value !== '') add('field3-not-empty', JSON.stringify(rec.field3Value));
+    if (typeof rec.field3Final === 'string' && rec.field3Final !== '') {
+      add('field3-not-empty', 'field3Final ' + JSON.stringify(rec.field3Final));
+    }
+  }
+
+  // ---- (6) the r59 checks: D1, the CapsLock boundary, form2/echo2 -------
+  checkKeylogFlags(form, add);
+  checkCapsLock(rec, form, nonceStr, nonceOk, pageEntriesOf(form), klEntries !== null, add);
+  checkForm2(rec, journey, nonceOk ? nonceStr : null, add);
+
+  // ---- the receipt's own flag ------------------------------------------
+  if (findings.length === 0 && rec.predicate !== true) add('predicate-false', JSON.stringify(rec.predicate));
+
+  return done(rec);
+}
+
+// ---------------------------------------------------------------------------
+// selftest: every fixture in chromium-receipt-r60-fixtures/ that carries an
+// expectFindings key. Fixture shape:
+//   { name, note?, receiptPath? | receipt?, expectFindings: [ids] | "GREEN",
+//     driver?, expectDriverSha256?, shotFiles?,
+//     derive?: [{ path, set? | delete?: true }],
+//     expectOrder?: [ids]            — optional exact emission order
+//     expectCouldNotEvaluate?: [codes] — optional exact unevaluable codes }
+// receiptPath/driver/shotFiles are relative to the fixtures dir (absolute
+// accepted). expectFindings is the EXACT set; "GREEN" means the empty set.
+// r60 `derive`: READ receiptPath from disk, apply the declared one-key edits,
+// and score the result through the SAME checkReceipt/evaluate path with the
+// receipt file's own directory as baseDir (so the copied commit PNGs resolve
+// exactly as they do for a plain path-backed case). The probes are therefore
+// built from the live receipt BYTES, not from a second free-hand copy.
+// ---------------------------------------------------------------------------
+function applyDerive(root, ed, name) {
+  if (!isObj(ed) || typeof ed.path !== 'string' || ed.path === '') die('selftest: ' + name + ' derive entry needs a path');
+  const keys = String(ed.path).split('.');
+  let o = root;
+  for (let i = 0; i + 1 < keys.length; i += 1) {
+    const k = keys[i];
+    o = Array.isArray(o) ? o[Number(k)] : isObj(o) ? o[k] : null;
+    if (!isObj(o) && !Array.isArray(o)) die('selftest: ' + name + ' derive path ' + ed.path + ' does not resolve at ' + k);
+  }
+  const last = keys[keys.length - 1];
+  // A bracket key works for objects and arrays alike ('0' indexes an array);
+  // `delete (cond ? o[k] : o[k])` would delete nothing (a conditional is not a
+  // Reference), so the key is resolved FIRST and deleted by name.
+  if (ed.delete === true) delete o[last];
+  else o[last] = ed.set;
+}
+
+function runSelftest() {
+  if (!fs.existsSync(FIXTURES_DIR)) die('selftest: fixtures dir absent at ' + FIXTURES_DIR);
+  const files = fs.readdirSync(FIXTURES_DIR).filter((f) => f.endsWith('.json')).sort();
+  const cases = [];
+  for (const f of files) {
+    const p = path.join(FIXTURES_DIR, f);
+    let obj;
+    try { obj = JSON.parse(fs.readFileSync(p, 'utf8')); } catch { continue; }
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, 'expectFindings')) continue;
+    cases.push({ file: f, spec: obj });
+  }
+  if (cases.length === 0) die('selftest: no fixture case found in ' + FIXTURES_DIR);
+
+  const results = [];
+  let pass = 0;
+  for (const { file, spec } of cases) {
+    const name = typeof spec.name === 'string' ? spec.name : file;
+    const driverRel = typeof spec.driver === 'string' ? spec.driver : 'driver-stub.mjs';
+    const driverPath = path.resolve(FIXTURES_DIR, driverRel);
+    const opts = {
+      driverPath,
+      expectSha: typeof spec.expectDriverSha256 === 'string' ? spec.expectDriverSha256 : null,
+      shotFiles: Array.isArray(spec.shotFiles) ? spec.shotFiles.map((x) => path.resolve(FIXTURES_DIR, x)) : null,
+    };
+    let input;
+    if (Object.prototype.hasOwnProperty.call(spec, 'receipt')) input = { inline: spec.receipt, baseDir: FIXTURES_DIR };
+    else if (typeof spec.receiptPath === 'string') {
+      const rp = path.resolve(FIXTURES_DIR, spec.receiptPath);
+      if (Array.isArray(spec.derive) && spec.derive.length > 0) {
+        let obj;
+        try { obj = JSON.parse(fs.readFileSync(rp, 'utf8')); } catch (e) {
+          die('selftest: ' + name + ' cannot read its derive base ' + rp + ': ' + String((e && e.message) || e));
+        }
+        for (const ed of spec.derive) applyDerive(obj, ed, name);
+        input = { inline: obj, baseDir: path.dirname(rp) };
+      } else {
+        input = { receiptPath: rp };
+      }
+    } else input = { receiptPath: path.resolve(FIXTURES_DIR, 'absent-by-construction.json') };
+
+    const out = checkReceipt(input, opts);
+    const got = out.findings.map((f) => f.id).sort();
+    const gotOrder = out.findings.map((f) => f.id);
+    const want = spec.expectFindings === 'GREEN' ? [] : Array.isArray(spec.expectFindings) ? spec.expectFindings.slice().sort() : null;
+    let ok = want !== null && JSON.stringify(got) === JSON.stringify(want);
+    let orderOk;
+    if (Array.isArray(spec.expectOrder)) {
+      orderOk = JSON.stringify(gotOrder) === JSON.stringify(spec.expectOrder);
+      if (!orderOk) ok = false;
+    }
+    let cneOk;
+    if (Array.isArray(spec.expectCouldNotEvaluate)) {
+      const codes = out.couldNotEvaluate.map((c) => c.code).sort();
+      cneOk = JSON.stringify(codes) === JSON.stringify(spec.expectCouldNotEvaluate.slice().sort());
+      if (!cneOk) ok = false;
+    }
+    if (ok) pass += 1;
+    results.push({ name, file, ok, got, want, ...(orderOk === undefined ? {} : { orderOk, gotOrder }), ...(cneOk === undefined ? {} : { cneOk, gotCne: out.couldNotEvaluate.map((c) => c.code) }) });
+  }
+  const seen = new Set();
+  for (const r of results) for (const id of r.want) seen.add(id);
+  const uncovered = FINDING_IDS.filter((id) => !seen.has(id));
+  const stray = [...seen].filter((id) => !FINDING_IDS.includes(id));
+  const coverageOk = uncovered.length === 0 && stray.length === 0;
+  const allPass = pass === results.length && coverageOk;
+  if (!coverageOk) {
+    results.push({ name: 'fixture-id-coverage', ok: false, uncovered, stray });
+  }
+  const out = {
+    schema: 'tabi-chromium-receipt-r61-selftest',
+    fixturesDir: FIXTURES_DIR,
+    cases: results.length,
+    pass,
+    allPass,
+    idCoverage: { required: FINDING_IDS.length, covered: FINDING_IDS.length - uncovered.length, uncovered, stray },
+    failing: results.filter((r) => !r.ok).map((r) => ({ name: r.name, got: r.got, want: r.want })),
+    results,
+  };
+  console.log(JSON.stringify(out, null, 1));
+  console.log(pass + '/' + results.length);
+  process.exit(allPass ? 0 : 1);
+}
+
+// --path-selftest: the path-backed form of the selftest. Every case must
+// resolve its receipt from a fixture FILE (receiptPath), never an inline
+// object — the r59 fixtures are all path-backed, and the mode refuses to pass
+// on an inline-only set so the L1 can re-run the same bytes the counter reads.
+function runPathSelftest() {
+  if (!fs.existsSync(FIXTURES_DIR)) die('--path-selftest: fixtures dir absent at ' + FIXTURES_DIR);
+  const files = fs.readdirSync(FIXTURES_DIR).filter((f) => f.endsWith('.json')).sort();
+  let cases = 0;
+  const inline = [];
+  for (const f of files) {
+    let obj = null;
+    try { obj = JSON.parse(fs.readFileSync(path.join(FIXTURES_DIR, f), 'utf8')); } catch { continue; }
+    if (!isObj(obj) || !Object.prototype.hasOwnProperty.call(obj, 'expectFindings')) continue;
+    cases += 1;
+    if (!Object.prototype.hasOwnProperty.call(obj, 'receiptPath')) inline.push(f);
+  }
+  if (cases === 0) die('--path-selftest: no fixture case found in ' + FIXTURES_DIR);
+  if (inline.length > 0) die('--path-selftest: ' + inline.length + ' case(s) are inline rather than path-backed: ' + JSON.stringify(inline));
+  runSelftest();
+}
+
+function runSelfCheck() {
+  const bytes = fs.readFileSync(SELF);
+  const files = fs.existsSync(FIXTURES_DIR) ? fs.readdirSync(FIXTURES_DIR).filter((f) => f.endsWith('.json')) : [];
+  let count = 0;
+  for (const f of files) {
+    try {
+      const o = JSON.parse(fs.readFileSync(path.join(FIXTURES_DIR, f), 'utf8'));
+      if (o && typeof o === 'object' && !Array.isArray(o) && Object.prototype.hasOwnProperty.call(o, 'expectFindings')) count += 1;
+    } catch { /* not a case */ }
+  }
+  console.log(JSON.stringify({
+    schema: 'tabi-chromium-receipt-r61-selfcheck',
+    counter: SELF,
+    sha256: sha256(bytes),
+    bytes: bytes.length,
+    fixturesDir: FIXTURES_DIR,
+    fixtureCount: count,
+    status: 'ok',
+  }, null, 1));
+  process.exit(0);
+}
+
+// ---------------------------------------------------------------------------
+const argv = process.argv.slice(2);
+if (argv.length === 0) die('usage: chromium-receipt-r60.mjs <receipt.json> --driver <driver.mjs> [--expect-driver-sha256 <hex>] [--json] | --selftest | --self-check');
+if (argv.includes('--selftest')) {
+  if (argv.length !== 1) die('--selftest takes no other argument');
+  runSelftest();
+}
+if (argv.includes('--path-selftest')) {
+  if (argv.length !== 1) die('--path-selftest takes no other argument');
+  runPathSelftest();
+}
+if (argv.includes('--self-check')) {
+  if (argv.length !== 1) die('--self-check takes no other argument');
+  runSelfCheck();
+}
+
+let receiptArg = null;
+let driverArg = null;
+let expectSha = null;
+let shotDir = null;
+let shotGiven = false;
+const extraPos = [];
+let jsonOut = false;
+for (let i = 0; i < argv.length; i += 1) {
+  const a = argv[i];
+  if (a === '--json') { jsonOut = true; continue; }
+  if (a === '--driver') { const v = argv[i + 1]; if (!v) die('--driver needs a path'); driverArg = v; i += 1; continue; }
+  // --shot is accepted for command compatibility with the frozen claims text:
+  // a path names the directory the per-step PNGs sit in; a bare flag is a
+  // no-op (the PNGs already resolve against dirname(receipt)). --shot NEVER
+  // relaxes a check.
+  if (a === '--shot') {
+    shotGiven = true;
+    const v = argv[i + 1];
+    if (v && !v.startsWith('--')) {
+      let st = null;
+      try { st = fs.statSync(path.resolve(v)); } catch { st = null; }
+      if (st && st.isDirectory()) { shotDir = path.resolve(v); i += 1; }
+    }
+    continue;
+  }
+  if (a === '--expect-driver-sha256') {
+    const v = argv[i + 1];
+    if (!v || !/^[0-9a-f]{64}$/.test(v)) die('--expect-driver-sha256 needs 64 lowercase hex chars');
+    expectSha = v; i += 1; continue;
+  }
+  if (a.startsWith('--')) die('unknown flag ' + a);
+  if (receiptArg === null) { receiptArg = a; continue; }
+  extraPos.push(a);
+}
+let shotFiles = null;
+if (extraPos.length > 0) {
+  if (!shotGiven) die('more than one receipt path given');
+  shotFiles = extraPos.map((x) => path.resolve(x));
+}
+if (!receiptArg) die('usage: chromium-receipt-r60.mjs <receipt.json> --driver <driver.mjs> [--expect-driver-sha256 <hex>] [--shot <dir>] [--json]');
+if (!driverArg) die('usage: chromium-receipt-r60.mjs <receipt.json> --driver <driver.mjs> [--expect-driver-sha256 <hex>] [--shot <dir>] [--json]');
+
+const receiptPath = path.resolve(receiptArg);
+const driverPath = path.resolve(driverArg);
+const out = checkReceipt({ receiptPath }, { driverPath, expectSha, shotDir, shotFiles });
+const result = {
+  schema: 'tabi-chromium-receipt-r61',
+  receipt: receiptPath,
+  driver: driverPath,
+  shotDir: shotDir || path.dirname(receiptPath),
+  nonce: out.receipt ? out.receipt.nonce : null,
+  predicate: out.findings.length === 0,
+  findingCount: out.findings.length,
+  findings: out.findings,
+  couldNotEvaluate: out.couldNotEvaluate,
+};
+if (jsonOut) {
+  console.log(JSON.stringify(result, null, 1));
+} else {
+  console.log('receipt:   ' + result.receipt);
+  console.log('driver:    ' + result.driver);
+  console.log('predicate: ' + result.predicate);
+  console.log('findings:  ' + result.findingCount);
+  for (const f of result.findings) console.log('  - ' + f.id + (f.occurrences > 1 ? ' x' + f.occurrences : '') + ': ' + f.detail);
+  for (const c of result.couldNotEvaluate) console.log('  ~ ' + c.code + ': ' + c.detail);
+}
+process.exit(result.predicate ? 0 : 1);

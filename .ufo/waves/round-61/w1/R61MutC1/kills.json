@@ -1,0 +1,270 @@
+{
+ "schema": "tabi-r61-c1-mutation-kills",
+ "round": 61,
+ "wave": "w1",
+ "seat": "R61MutC1",
+ "axis": "adjacency",
+ "milestone": "v20 meter mutants M1-M5",
+ "target": ".ufo/waves/round-61/counters/c1-adjacency-host-v20.mjs",
+ "target_sha256_tested": "b76d972e47cbb32fc3e9fd21385aaa627aed223e8c54d50a9f55b817920cebc7",
+ "target_sha256_committed_before_and_after": "b76d972e47cbb32fc3e9fd21385aaa627aed223e8c54d50a9f55b817920cebc7",
+ "detector_command": "node <file> --selftest",
+ "kill_rule": "KILL iff selftest exits nonzero and/or any case ok=false; SURVIVOR iff allPass true (all 42 cases green); blocked if target absent.",
+ "control": {
+  "command": "node /fast/scratch/hyaku/tabi-r61/R61MutC1/v20.mjs --selftest",
+  "copy_sha256": "b76d972e47cbb32fc3e9fd21385aaa627aed223e8c54d50a9f55b817920cebc7",
+  "exit": 0,
+  "allPass": true,
+  "cases": 42,
+  "pass": 42,
+  "failing": [],
+  "output_sha256": "fea89517ce38c8e449c5829e30132c21391e3f8d7ef33a0cd6acd69fd9eaba31",
+  "restored_run": {
+   "command": "node /fast/scratch/hyaku/tabi-r61/R61MutC1/v20.mjs --selftest (after all mutants)",
+   "exit": 0,
+   "allPass": true,
+   "cases": 42,
+   "pass": 42,
+   "copy_sha256": "b76d972e47cbb32fc3e9fd21385aaa627aed223e8c54d50a9f55b817920cebc7",
+   "output_sha256": "0b03eb853fc5a1b9fa2c11fb2c9924118b96ce404687b433c07fe07ab2ab94c5"
+  },
+  "invalidates_run_if_red": true
+ },
+ "carried_cases": {
+  "v19_cases": 38,
+  "v20_cases": 42,
+  "missing_from_v20": [],
+  "new_in_v20": [
+   "moved-sibling-snapshot-green-with-drift",
+   "missing-snapshot-exits-2",
+   "unresolvable-head-refused",
+   "r61-ledger-generation-mismatch"
+  ]
+ },
+ "mutants": [
+  {
+   "id": "M1",
+   "mutation": "runAt() head source \u2014 revert the head source to a per-run rev-parse (live state)",
+   "patch": {
+    "site": "runAt() head source",
+    "old": "  const heads = readSnapshot(snapshot);",
+    "new": "  const snapshotHeads = readSnapshot(snapshot);\\n  const heads = new Map();\\n  for (const lane of snapshotHeads.keys()) { ... rev-parse HEAD ... }"
+   },
+   "expected_catcher": "moved-sibling-snapshot-green-with-drift (collateral: unresolvable-head-refused)",
+   "sha256": "eed573d4e8d8d022337b19541c5ddb504b32f4938a2bb53203c4d3f7cd728caa",
+   "diff_sha256": "041d0239dd093dcbeeacf70e752354aed36838a80cef006888ecfd69f060867a",
+   "exit": 1,
+   "allPass": false,
+   "cases": 42,
+   "pass": 40,
+   "selftestFailures": [
+    "moved-sibling-snapshot-green-with-drift",
+    "unresolvable-head-refused"
+   ],
+   "evidence": {
+    "moved-sibling-snapshot-green-with-drift": {
+     "exit": 1,
+     "predicate": false,
+     "drift_len": 0,
+     "finding_ids": [
+      "lane-screen-sha-mismatch",
+      "lane-screen-lines-mismatch",
+      "lane-screen-hits-mismatch",
+      "delta-line-missing",
+      "lane-screen-head-mismatch"
+     ]
+    },
+    "unresolvable-head-refused": {
+     "exit": 1,
+     "predicate": false,
+     "drift_len": 0,
+     "finding_ids": [
+      "lane-screen-sha-mismatch",
+      "lane-screen-lines-mismatch",
+      "lane-screen-hits-mismatch",
+      "delta-line-missing",
+      "lane-screen-head-mismatch"
+     ]
+    }
+   },
+   "stderr_empty": true,
+   "verdict": "KILLED"
+  },
+  {
+   "id": "M2",
+   "mutation": "discloseDrift() return \u2014 drop the drift disclosure",
+   "patch": {
+    "site": "discloseDrift() return",
+    "old": "    if (liveHead !== snapshotHead) drift.push({ lane, snapshotHead, liveHead });\\n  }\\n  return drift;",
+    "new": "    if (liveHead !== snapshotHead) { /* never disclosed */ }\\n  }\\n  return [];"
+   },
+   "expected_catcher": "moved-sibling-snapshot-green-with-drift",
+   "sha256": "7e2783b3324502f888299eaaf14d9532a8edeb4b8e6f6e60750640c0ff586e6e",
+   "diff_sha256": "2ab86a57e036d49d26bd7dd9da6ce0568a01179a7fe9117800bd4b476a774ab5",
+   "exit": 1,
+   "allPass": false,
+   "cases": 42,
+   "pass": 41,
+   "selftestFailures": [
+    "moved-sibling-snapshot-green-with-drift"
+   ],
+   "evidence": {
+    "moved-sibling-snapshot-green-with-drift": {
+     "exit": 0,
+     "predicate": true,
+     "drift_len": 0,
+     "finding_ids": []
+    }
+   },
+   "stderr_empty": true,
+   "verdict": "KILLED"
+  },
+  {
+   "id": "M3",
+   "mutation": "CLI missing --snapshot guard \u2014 default a missing --snapshot to per-run heads",
+   "patch": {
+    "site": "CLI missing --snapshot guard",
+    "old": "if (!snapshot) die('--snapshot <tsv> is required');",
+    "new": "if (!snapshot) { build a per-run-heads TSV from roster rev-parse and assign snapshot }"
+   },
+   "expected_catcher": "missing-snapshot-exits-2",
+   "sha256": "4df198413f8ee1f3402925712816bcd016077fc7acd670de6540ccf56ab86583",
+   "diff_sha256": "57db1f2377bea4bb2de9f013fb2ec83a68a4a6a78c4999c2faea6df1da685786",
+   "exit": 1,
+   "allPass": false,
+   "cases": 42,
+   "pass": 41,
+   "selftestFailures": [
+    "missing-snapshot-exits-2"
+   ],
+   "evidence": {
+    "missing-snapshot-exits-2": {
+     "exit": 1,
+     "predicate": false,
+     "drift_len": 0,
+     "finding_ids": [
+      "lane-screen-sha-mismatch",
+      "lane-screen-lines-mismatch",
+      "lane-screen-hits-mismatch",
+      "delta-line-missing",
+      "lane-screen-head-mismatch"
+     ]
+    }
+   },
+   "stderr_empty": true,
+   "verdict": "KILLED"
+  },
+  {
+   "id": "M4",
+   "mutation": "snapshotFindings() unresolvable loop \u2014 treat an unresolvable snapshot head as zero files",
+   "patch": {
+    "site": "snapshotFindings() unresolvable loop",
+    "old": "  for (const [lane, head] of heads) { ... cat-file -e ... push unresolvable-head }",
+    "new": "  // unresolvable head treated as zero files (no finding)"
+   },
+   "expected_catcher": "unresolvable-head-refused",
+   "sha256": "5ecbefed0031d3af8c5028159e454b93b9d883ff41679aee6b0409c5073a752f",
+   "diff_sha256": "814197b3ffce6484cda03d41e29c0c6aa81a88d246ba9080df473da129dd385d",
+   "exit": 1,
+   "allPass": false,
+   "cases": 42,
+   "pass": 41,
+   "selftestFailures": [
+    "unresolvable-head-refused"
+   ],
+   "evidence": {
+    "unresolvable-head-refused": {
+     "exit": 1,
+     "predicate": false,
+     "drift_len": 1,
+     "finding_ids": [
+      "lane-screen-sha-mismatch"
+     ]
+    }
+   },
+   "stderr_empty": true,
+   "verdict": "KILLED"
+  },
+  {
+   "id": "M5",
+   "mutation": "verify() P1 audit binding \u2014 audit rows no longer bound one-to-one (P1 once-per-row dropped)",
+   "patch": {
+    "site": "verify() P1 audit binding",
+    "old": "  for (const r of inputs.auditRows) {\\n    if (auditByKey.has(r[0])) add('audit-duplicate', r[0]);\\n    else auditByKey.set(r[0], { status: r[1], note: r[2] });\\n  }",
+    "new": "  for (const r of inputs.auditRows) auditByKey.set(r[0], { status: r[1], note: r[2] });"
+   },
+   "expected_catcher": "audit-duplicate (carried v19 case)",
+   "sha256": "55ac4de467fce5e12e13f2f8a1ef475f6edc76a8056d6f7a095e60c7db5a4cd4",
+   "diff_sha256": "da3b87569766620d28ecbfd93e057868145b278786fccb1e69a705d169f1bb24",
+   "exit": 1,
+   "allPass": false,
+   "cases": 42,
+   "pass": 41,
+   "selftestFailures": [
+    "audit-duplicate"
+   ],
+   "evidence": {
+    "audit-duplicate": {
+     "core_case": {
+      "findings": [],
+      "predicate": true,
+      "findingCount": 0
+     }
+    }
+   },
+   "stderr_empty": true,
+   "verdict": "KILLED"
+  }
+ ],
+ "verdicts": {
+  "KILLED": [
+   "M1",
+   "M2",
+   "M3",
+   "M4",
+   "M5"
+  ],
+  "SURVIVOR": [],
+  "blocked": []
+ },
+ "restoration": {
+  "pristine_scratch_copy_sha256_before": "b76d972e47cbb32fc3e9fd21385aaa627aed223e8c54d50a9f55b817920cebc7",
+  "pristine_scratch_copy_sha256_after": "b76d972e47cbb32fc3e9fd21385aaa627aed223e8c54d50a9f55b817920cebc7",
+  "committed_file_sha256_before": "b76d972e47cbb32fc3e9fd21385aaa627aed223e8c54d50a9f55b817920cebc7",
+  "committed_file_sha256_after": "b76d972e47cbb32fc3e9fd21385aaa627aed223e8c54d50a9f55b817920cebc7",
+  "committed_file_never_written": true,
+  "note": "Mutations applied only to copies v20-M{1..5}.mjs in /fast/scratch/hyaku/tabi-r61/R61MutC1; the committed instrument was read once and copied, never edited."
+ },
+ "findings": [
+  {
+   "id": "I1",
+   "severity": "instrument-defect",
+   "detail": ".ufo/waves/round-61/counters/c1-adjacency-host-v20.mjs --list-observed throws ReferenceError: headSnapshots is not defined (line 358). v20 deleted headSnapshots() but listObserved() still calls it; the authoring aid is dead. Reproduced: node <v20> --list-observed --fleet /home/vgpnk/Projects/shokunin --snapshot .ufo/waves/round-61/c1/snapshot-r61.tsv -> exit 1, ReferenceError. Does not affect the frozen run path (--rev/--repo/--fleet/--snapshot). Evidence: list-observed2.err."
+  },
+  {
+   "id": "I2",
+   "severity": "instrument-quality",
+   "detail": "hostSelftest() hardcodes scratch /fast/scratch/hyaku/tabi-r61/R61Exec1, so every --selftest run (control and mutants) creates and removes a fixture dir under another seat's scratch path; on this seat it created an empty dir there. Read-only for the meter logic but a cross-seat side effect; a path under os.tmpdir() (as v19/r60 fixtures use mktemp) would be cleaner."
+  },
+  {
+   "id": "I3",
+   "severity": "observation",
+   "detail": "Mutant M1 is caught twice: the moved-sibling case fails (predicate false + drift 0) and the unresolvable-head case fails collaterally (the live rev-parse replaces the recorded 000...0 head, so no unresolvable-head finding). Primary catcher is moved-sibling."
+  },
+  {
+   "id": "I4",
+   "severity": "observation",
+   "detail": "M2 is the sharpest kill: predicate true, findings [], drift [] \u2014 exactly the r60 K7 silence the case exists to catch; only the drift>=1 assertion reddens it (1 failing case, 41/42 pass)."
+  },
+  {
+   "id": "I5",
+   "severity": "observation",
+   "detail": "The v20 file was byte-unstable during authoring (sha 9471026a... -> b76d972e... within 25 s). All five mutants and both controls ran against b76d972e..., which matches R61Exec1 pins.json and the committed bytes; at probe time the counters/ dir is still untracked (instrument freeze commit not observed)."
+  },
+  {
+   "id": "I6",
+   "severity": "frozen-input-drift",
+   "detail": ".ufo/waves/round-61/c1/snapshot-r61.tsv changed bytes AFTER this seat's probes: freeze pin 8b175b27ca00e212b9e4cd776542c132d812f2e9e193bfb3083f14cc251efc27 (claims.json + R61Exec1 pins) -> c41599788d7a917d6a6760842c19202d36e7c9229e51ae292eb1f22282aa6a7c at mtime 2026-11-03 20:11:12 (1153 -> 1157 bytes, +4). The only change is the header cell: \"lane<TAB>\" -> \"lane<TAB>head\"; all 20 lane rows are byte-identical (verified by prefix diff and full row dump). v20 readSnapshot accepts both spellings, so behavior is unchanged, but a FROZEN control file's bytes no longer match its freeze pin and no claims amendment exists (claims are unamendable). This seat did not write the file (read-only sha256sum and --list-observed probe only)."
+  }
+ ]
+}

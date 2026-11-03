@@ -1,0 +1,340 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs	2026-11-03 18:15:56.593078242 -0300
++++ /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/c1-adjacency-host-v20.mjs	2026-11-03 20:06:07.220581162 -0300
+@@ -1,73 +1,19 @@
+ #!/usr/bin/env node
+-// c1-adjacency-host-v19.mjs — tabi round 59, claim C1 (adjacency — the lowest
+-// owned axis, 8). The v19 generation of the adjacency meter: the v18 design
++// c1-adjacency-host-v20.mjs — tabi round 59, claim C1 (adjacency — the lowest
++// owned axis, 8). The v20 generation of the adjacency meter: the v18 design
+ // (P1 audit re-derivation, P2 roster completeness, P3 delta screen over
+ // git-at-snapshot-head bytes — never the worktree) plus the r58-closure routed
+ // change set (a)-(e) frozen in .ufo/waves/round-59/claims.json C1.
+ //
+-// Lineage, unchanged core mechanics (r51-r58): every sibling working tree on
+-// this host is DIRTY and sibling heads move mid-round, so the meter reads every
+-// sibling byte through git at a PER-RUN HEAD SNAPSHOT (one `rev-parse HEAD` per
+-// lane at meter start, then `git cat-file -p <head>:<path>` for every byte
+-// read — the working tree is never read). The snapshot heads are printed in the
+-// output receipt, and every delta lane row must bind exactly those heads (a
+-// sibling that moved between ledger regeneration and the meter run is
+-// `lane-screen-head-mismatch`). Runtime-vocabulary notes carried from v18:
+-//   P1 completeness+drift over the ruled map (corpus/adjacency.tsv): every data
+-//      row is audited exactly once in the r59 audit ledger; the audit's claimed
+-//      status must equal the status the meter re-derives from the sibling's
+-//      bytes at its snapshot head (sibling-absent, unchanged, moved with a note
+-//      naming a verbatim line, stale, file-absent).
+-//   P2 roster completeness: every sibling lane dir at --fleet (git repos other
+-//      than tabi-shokunin) is covered by the ruled map OR the delta ledger.
+-//   P3 bounded delta screen: one `lane` row binds the screened bytes
+-//      (provinceSha256, lines, bgHits, head — all at the snapshot head) and
+-//      every BG hit line carries a `line` row whose quote is a verbatim whole
+-//      line with a disposition in the frozen vocabulary. The r51 host-shape fix
+-//      (symlinked lane entries, dot-entries skipped) and the r56 raw-byte sha
+-//      discipline are unchanged.
+-//
+-// Round 59 delta (C1's FROZEN declared change set (a)-(e)); verify() differs
+-// from v18 only by these hunks:
+-//   (a) generation relabel: AUDIT_REL/DELTA_REL point at
+-//       corpus/adjacency-host-{audit,delta}-r59.tsv, every schema string is
+-//       tabi-adjacency-host-v19 (die, selftest, run output), the predicate
+-//       sentence names the r59 ledgers and the new (d)/(e) clauses, and the
+-//       usage lines and this header name round 59.
+-//   (b) ROUTED r58-closure D5/N1: the harness truth table gains the
+-//       findings-mismatch rows — a mismatched finding expectation returns false
+-//       even when the predicate term matches and even when the count term
+-//       matches. Two new selftest cases assert those rows against caseOk, the
+-//       ONE verdict function the run loop uses, so a findings-term drop in the
+-//       harness can no longer survive.
+-//   (c) ROUTED D5/N2: map-ref parse hardening. parseRef accepts a suffix only
+-//       when it is an all-digit, positive, safe integer; the alpha-only x,
+-//       empty, signed -1, no-@ and no-second-colon shapes are
+-//       map-ref-unparseable. Five new selftest cases pin each shape and its
+-//       exact single-finding set.
+-//   (d) ROUTED D5/A4+N3 (THE NEW SCREENED SURFACE): the BG screen set is ALL
+-//       roster siblings other than tabi — for every sibling the meter
+-//       enumerates browser-ground word hits in its PROVINCE.md AND in every
+-//       file its map rows reference, at the snapshot head. Every present
+-//       screened file must carry a `lane` row binding its
+-//       provinceSha256/lines/bgHits/head (bg-screen-missing otherwise); a hit
+-//       line in a file with no lane row is bg-hit-unadjudicated. counts gains
+-//       bgScreenSiblings, derived from the roster+map re-derivation (never
+-//       hardcoded). Reads are memoized within one verify() so the bounded-cost
+-//       discipline holds (one git read per (lane, path) per run).
+-//   (e) ROUTED D5/A5+N4: line rows are keyed by (lane, relPath) — a line row
+-//       whose lane has no lane row is orphan-line-row; a line row whose relPath
+-//       was never screened for that lane is line-row-unscreened-file; a line
+-//       row on a screened file whose line is not a hit is delta-line-invented.
+-//       The predicate sentence states no invented rows.
+-// The committed diff (counters/v18-v19-meter.diff) names every differing line
+-// and adj/v19-line-audit.txt accounts for each non-comment line against (a)-(e).
+-//
+-//   PREDICATE-SENTENCE: c1-adjacency-host-v19 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r59.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is browser-ground-screened at that same snapshot over its PROVINCE.md and every file its map rows reference, so that every present screened file carries a corpus/adjacency-host-delta-r59.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation and every browser-ground hit line carries a line row keyed by (lane, relPath:line) whose quote is that complete line and whose disposition is in the frozen vocabulary, with no unadjudicated hit line, no orphan line row, no line row on an unscreened file and no invented row AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r59.tsv lane row, with no uncovered lane and no duplicate keys.
++// Frozen r61 delta: required TSV snapshot replaces live head acquisition.
++// P1/P2/P3 and all carried truth-table cases are unchanged.
++// --audit/--delta read explicit candidate files; defaults read r61 ledgers at --rev.
++// Live HEAD is read once per sibling AFTER audit, solely for drift disclosure.
++//   PREDICATE-SENTENCE: c1-adjacency-host-v20 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r61.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the frozen snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is browser-ground-screened at that same snapshot over its PROVINCE.md and every file its map rows reference, so that every present screened file carries a corpus/adjacency-host-delta-r61.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation and every browser-ground hit line carries a line row keyed by (lane, relPath:line) whose quote is that complete line and whose disposition is in the frozen vocabulary, with no unadjudicated hit line, no orphan line row, no line row on an unscreened file and no invented row AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r61.tsv lane row, with no uncovered lane and no duplicate keys.
+ // Usage:
+-//   node c1-adjacency-host-v19.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
+-//   node c1-adjacency-host-v19.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses at the current heads)
+-//   node c1-adjacency-host-v19.mjs --selftest
++//   node c1-adjacency-host-v20.mjs --rev <REV> --repo <lane> --fleet <dir> --snapshot <tsv> [--audit <path>] [--delta <path>] [--json]
++//   node c1-adjacency-host-v20.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses at the supplied snapshot heads)
++//   node c1-adjacency-host-v20.mjs --selftest
+ // Exit: 0 predicate met; 1 evaluated, predicate not met; 2 could not evaluate.
+ import { spawnSync } from 'node:child_process';
+ import { pathToFileURL } from 'node:url';
+@@ -76,8 +22,8 @@
+ import crypto from 'node:crypto';
+ 
+ const MAP_REL = 'corpus/adjacency.tsv';
+-const AUDIT_REL = 'corpus/adjacency-host-audit-r59.tsv';
+-const DELTA_REL = 'corpus/adjacency-host-delta-r59.tsv';
++const AUDIT_REL = 'corpus/adjacency-host-audit-r61.tsv';
++const DELTA_REL = 'corpus/adjacency-host-delta-r61.tsv';
+ const SELF_LANE = 'tabi-shokunin';
+ const PROVINCE_REL = 'PROVINCE.md';
+ const BG_WORDS = ['cdp', 'devtools', 'remote-debugging', 'headless', 'webdriver', 'geckodriver', 'selenium', 'playwright', 'bidi', 'crawl', 'screenshot', 'recordhar', 'record-har'];
+@@ -92,7 +38,7 @@
+ export const predicateFrom = (findings) => findings.length === 0;
+ 
+ function die(msg) {
+-  console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v19', error: msg }));
++  console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v20', error: msg }));
+   process.exit(2);
+ }
+ 
+@@ -313,18 +259,39 @@
+ // --- host layer: git-at-snapshot-head (never the worktree) ----------------------
+ function laneExists(fleet, lane) { return fs.existsSync(path.join(fleet, lane, '.git')) || fs.existsSync(path.join(fleet, lane, 'HEAD')); }
+ 
+-// ONE head snapshot per lane per meter run: every byte read and every head
+-// comparison in the run describes this single revision.
+-function headSnapshots(fleet, lanes) {
++export function readSnapshot(file) {
++  const rows = fs.readFileSync(file, 'utf8').trimEnd().split('\n').map((l) => l.replace(/\r$/, '').split('\t'));
++  // The frozen r61 input has a blank second header cell; accept that legacy
++  // spelling as well as the documented lane<TAB>head header, without editing it.
++  if (rows[0]?.[0] !== 'lane' || !['head', ''].includes(rows[0]?.[1]) || rows[0].length !== 2) throw new Error('snapshot header must be lane TAB head');
+   const heads = new Map();
+-  for (const lane of lanes) {
+-    if (!laneExists(fleet, lane)) { heads.set(lane, null); continue; }
+-    const r = spawnSync('git', ['-C', path.join(fleet, lane), 'rev-parse', 'HEAD'], { maxBuffer: 1024 * 1024 });
+-    heads.set(lane, r.status === 0 ? r.stdout.toString('utf8').trim() : null);
++  for (const [lane, head, ...extra] of rows.slice(1)) {
++    if (!lane || !head || extra.length || heads.has(lane) || lane === '.' || lane === '..' || /[\/\\]/.test(lane)) throw new Error('invalid or duplicate snapshot row');
++    heads.set(lane, head);
+   }
+   return heads;
+ }
+ 
++function snapshotFindings(fleet, roster, heads) {
++  const findings = [];
++  for (const lane of roster) if (!heads.has(lane)) findings.push({ id: 'unresolvable-head', detail: lane + ': snapshot head missing' });
++  for (const [lane, head] of heads) {
++    const r = spawnSync('git', ['-C', path.join(fleet, lane), 'cat-file', '-e', head + '^{commit}']);
++    if (r.status !== 0) findings.push({ id: 'unresolvable-head', detail: lane + ': ' + head });
++  }
++  return findings;
++}
++
++function discloseDrift(fleet, heads) {
++  const drift = [];
++  for (const [lane, snapshotHead] of heads) {
++    const r = spawnSync('git', ['-C', path.join(fleet, lane), 'rev-parse', 'HEAD']);
++    const liveHead = r.status === 0 ? r.stdout.toString('utf8').trim() : null;
++    if (liveHead !== snapshotHead) drift.push({ lane, snapshotHead, liveHead });
++  }
++  return drift;
++}
++
+ function makeSibRefGit(fleet, heads) {
+   return (lane, p) => {
+     const head = heads.get(lane);
+@@ -359,13 +326,13 @@
+   return r.status === 0 ? r.stdout.toString('utf8') : null;
+ }
+ 
+-function runAt(repo, rev, fleet) {
++function runAt(repo, rev, fleet, snapshot, audit = null, delta = null) {
+   const mapRaw = laneBytes(repo, rev, MAP_REL);
+   if (mapRaw === null) die(`cannot read ${MAP_REL} at ${rev}`);
+-  const auditRaw = laneBytes(repo, rev, AUDIT_REL);
+-  const deltaRaw = laneBytes(repo, rev, DELTA_REL);
++  const auditRaw = audit ? fs.readFileSync(audit, 'utf8') : laneBytes(repo, rev, AUDIT_REL);
++  const deltaRaw = delta ? fs.readFileSync(delta, 'utf8') : laneBytes(repo, rev, DELTA_REL);
+   const roster = rosterScan(fleet);
+-  const heads = headSnapshots(fleet, roster);
++  const heads = readSnapshot(snapshot);
+   const sibRef = makeSibRefGit(fleet, heads);
+   const res = verify({
+     mapRows: tsvParse(mapRaw, 9),
+@@ -377,11 +344,15 @@
+   });
+   const headSnapshot = {};
+   for (const [lane, head] of heads) headSnapshot[lane] = head;
+-  return { ...res, headSnapshot };
++  res.findings.push(...snapshotFindings(fleet, roster, heads));
++  if (auditRaw === null) res.findings.push({ id: 'ledger-generation-mismatch', detail: AUDIT_REL + ' missing at ' + rev });
++  if (deltaRaw === null) res.findings.push({ id: 'ledger-generation-mismatch', detail: DELTA_REL + ' missing at ' + rev });
++  res.counts.unresolvableHead = res.findings.filter((f) => f.id === 'unresolvable-head').length;
++  return { ...res, headSnapshot, drift: discloseDrift(fleet, heads) };
+ }
+ 
+ // --- authoring aid: print observed statuses for every map row -------------------
+-function listObserved(fleet) {
++function listObserved(fleet, snapshot) {
+   const mapRaw = fs.readFileSync(path.join(process.cwd(), MAP_REL), 'utf8');
+   const roster = rosterScan(fleet);
+   const heads = headSnapshots(fleet, roster);
+@@ -415,6 +386,84 @@
+ }
+ 
+ // --- selftest (pure core; the host layer's git reads are exercised by the run receipts) ---
++function hostSelftest() {
++  const scratch = '/fast/scratch/hyaku/tabi-r61/R61Exec1';
++  fs.mkdirSync(scratch, { recursive: true });
++  const dir = fs.mkdtempSync(path.join(scratch, 'snapshot-fixture-'));
++  const results = [];
++  const fixtureCommands = [];
++  const check = (name, ok, evidence) => results.push({ name, ok, evidence });
++  try {
++    const fleet = path.join(dir, 'fleet');
++    const repo = path.join(dir, 'lane');
++    const sibling = path.join(fleet, 'quiet-lane');
++    fs.mkdirSync(sibling, { recursive: true });
++    fs.mkdirSync(repo);
++    const git = (cwd, argv, input) => {
++      const r = spawnSync('git', ['-C', cwd, ...argv], { input, encoding: 'utf8', env: { ...process.env, GIT_AUTHOR_NAME: 'fixture', GIT_AUTHOR_EMAIL: 'fixture@example.invalid', GIT_COMMITTER_NAME: 'fixture', GIT_COMMITTER_EMAIL: 'fixture@example.invalid' } });
++      fixtureCommands.push({ argv: ['git', '-C', cwd, ...argv], exit: r.status });
++      if (r.status !== 0) throw new Error(r.stderr);
++      return r.stdout.trim();
++    };
++    git(sibling, ['init', '-q']);
++    git(repo, ['init', '-q']);
++    // Guard every object/ref mutation, not just fixture initialization.
++    const mutate = (cwd, argv, input) => {
++      if (git(cwd, ['rev-parse', '--show-toplevel']) !== cwd) throw new Error('fixture root mismatch');
++      return git(cwd, argv, input);
++    };
++    const blob = (cwd, text) => mutate(cwd, ['hash-object', '-w', '--stdin'], text);
++    const commit = (cwd, entries) => {
++      const tree = mutate(cwd, ['mktree'], entries);
++      const head = mutate(cwd, ['commit-tree', tree], 'fixture\n');
++      mutate(cwd, ['update-ref', 'HEAD', head]);
++      return head;
++    };
++    const text = '# quiet province\nNo test ground here.\n';
++    const oldHead = commit(sibling, `100644 blob ${blob(sibling, text)}\tPROVINCE.md\n`);
++    const mapHeader = 'surface\tlane\tsibling_ref\tquote\tx\ty\tstatus\tz\tw\n';
++    const auditHeader = 'sibling_ref\tstatus\tnote\n';
++    const deltaText = 'type\tlane\tpath\tprovinceSha256\tlines\tbgHits\tquote\tdisposition\thead\n' +
++      ['lane', 'quiet-lane', 'PROVINCE.md', sha256(Buffer.from(text)), 2, 0, '-', '-', oldHead].join('\t') + '\n';
++    const corpus = mutate(repo, ['mktree'], [
++      `100644 blob ${blob(repo, mapHeader)}\tadjacency.tsv`,
++      `100644 blob ${blob(repo, auditHeader)}\tadjacency-host-audit-r61.tsv`,
++      `100644 blob ${blob(repo, deltaText)}\tadjacency-host-delta-r61.tsv`,
++    ].sort().join('\n') + '\n');
++    const rev = commit(repo, `040000 tree ${corpus}\tcorpus\n`);
++    const snapshot = path.join(dir, 'snapshot.tsv');
++    fs.writeFileSync(snapshot, `lane\thead\nquiet-lane\t${oldHead}\n`);
++    commit(sibling, `100644 blob ${blob(sibling, 'Changed live province with CDP.\n')}\tPROVINCE.md\n`);
++    const invoke = (extra) => {
++      const r = spawnSync(process.execPath, [import.meta.filename, '--repo', repo, '--rev', rev, '--fleet', fleet, ...extra, '--json'], { encoding: 'utf8' });
++      let out = null;
++      try { out = JSON.parse(r.stdout); } catch {}
++      return { status: r.status, out, stderr: r.stderr };
++    };
++    const moved = invoke(['--snapshot', snapshot]);
++    check('moved-sibling-snapshot-green-with-drift', moved.status === 0 && moved.out?.predicate === true && moved.out?.drift?.length >= 1, moved);
++    const missing = invoke([]);
++    check('missing-snapshot-exits-2', missing.status === 2 && missing.stderr.includes('--snapshot'), missing);
++    fs.writeFileSync(snapshot, `lane\thead\nquiet-lane\t${'0'.repeat(40)}\n`);
++    const bad = invoke(['--snapshot', snapshot]);
++    check('unresolvable-head-refused', bad.status === 1 && bad.out?.findings?.some((f) => f.id === 'unresolvable-head'), bad);
++    fs.writeFileSync(snapshot, `lane\thead\nquiet-lane\t${oldHead}\n`);
++    const oldCorpus = mutate(repo, ['mktree'], [
++      `100644 blob ${blob(repo, mapHeader)}\tadjacency.tsv`,
++      `100644 blob ${blob(repo, auditHeader)}\tadjacency-host-audit-r59.tsv`,
++      `100644 blob ${blob(repo, deltaText)}\tadjacency-host-delta-r59.tsv`,
++    ].sort().join('\n') + '\n');
++    const oldRev = commit(repo, `040000 tree ${oldCorpus}\tcorpus\n`);
++    const mismatch = spawnSync(process.execPath, [import.meta.filename, '--repo', repo, '--rev', oldRev, '--fleet', fleet, '--snapshot', snapshot, '--json'], { encoding: 'utf8' });
++    const mismatchOut = JSON.parse(mismatch.stdout);
++    check('r61-ledger-generation-mismatch', mismatch.status === 1 && mismatchOut.findings.some((f) => f.id === 'ledger-generation-mismatch'), { status: mismatch.status, out: mismatchOut });
++    results[0].fixtureCommands = fixtureCommands;
++  } finally {
++    fs.rmSync(dir, { recursive: true, force: true });
++  }
++  return results;
++}
++
+ function selftest() {
+   const provA = '# mado province\nWe drive it over CDP for tests.\nNothing else.\n';
+   const provB = '# quiet province\nNo test ground here at all.\n';
+@@ -540,7 +589,7 @@
+     { name: 'map-ref-no-at', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ mapRows: mapRows([['bogus-ground', 'mado-shokunin', 'mado-shokunin:PROVINCE.md:2', 'We drive it over CDP for tests.', '-', '-', 'split-declared', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
+     { name: 'map-ref-no-second-colon', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ mapRows: mapRows([['bogus-ground', 'mado-shokunin', 'mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md', 'We drive it over CDP for tests.', '-', '-', 'split-declared', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
+     // r59 declared change (d) — ROUTED D5/A4+N3: a map-covered lane carrying BG
+-    // hits with no delta screen at all. v18 admits it; v19 must not: the missing
++    // hits with no delta screen at all. v18 admits it; v20 must not: the missing
+     // screen record is bg-screen-missing and every unadjudicated hit line is
+     // bg-hit-unadjudicated (here one of each).
+     { name: 'bg-hit-unadjudicated-map-lane', expect: 1, ids: ['bg-screen-missing', 'bg-hit-unadjudicated'], assertPredicate: false, assertFindingCount: 2, run: () => {
+@@ -691,7 +740,10 @@
+     if (ok) pass++;
+     return { name: c.name, ok, direct, predicate: emitted, findingCount: findings.length, findings: findings.map((f) => `${f.id}: ${f.detail}`) };
+   });
+-  return { allPass: pass === cases.length, cases: cases.length, pass, results };
++  const hostResults = hostSelftest();
++  results.push(...hostResults);
++  pass += hostResults.filter((r) => r.ok).length;
++  return { allPass: pass === results.length, cases: results.length, pass, results };
+ }
+ 
+ // --- cli (only when invoked as main; the pure core is importable as an authoring aid) --
+@@ -702,28 +754,36 @@
+ } else {
+ if (args[0] === '--selftest') {
+   const st = selftest();
+-  console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v19-selftest', ...st }, null, 1));
++  console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v20-selftest', ...st }, null, 1));
+   process.exit(st.allPass ? 0 : 1);
+ }
+ if (args[0] === '--list-observed') {
+   const fleet = args[args.indexOf('--fleet') + 1];
+   if (!fleet) die('usage: --list-observed --fleet <dir>');
+-  listObserved(fleet);
++  const snapshot = args[args.indexOf('--snapshot') + 1];
++  if (!args.includes('--snapshot') || !snapshot) die('--snapshot <tsv> is required');
++  listObserved(fleet, snapshot);
+   process.exit(0);
+ }
+-let repo = null, rev = null, fleet = null, json = false;
++let repo = null, rev = null, fleet = null, snapshot = null, audit = null, delta = null, json = false;
+ for (let i = 0; i < args.length; i++) {
+   if (args[i] === '--repo') repo = args[++i];
+   else if (args[i] === '--rev') rev = args[++i];
+   else if (args[i] === '--fleet') fleet = args[++i];
++  else if (args[i] === '--snapshot') snapshot = args[++i];
++  else if (args[i] === '--audit') audit = args[++i];
++  else if (args[i] === '--delta') delta = args[++i];
+   else if (args[i] === '--json') json = true;
+ }
+-if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v19.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
+-const { findings, counts, headSnapshot } = runAt(repo, rev, fleet);
++if (!snapshot) die('--snapshot <tsv> is required');
++if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v20.mjs --rev <REV> --repo <lane> --fleet <dir> --snapshot <tsv> [--audit <path>] [--delta <path>] [--json] | --selftest | --list-observed --fleet <dir>');
++let result;
++try { result = runAt(repo, rev, fleet, snapshot, audit, delta); } catch (e) { die(e.message); }
++const { findings, counts, headSnapshot, drift } = result;
+ const out = {
+-  schema: 'tabi-adjacency-host-v19',
+-  predicateSentence: 'c1-adjacency-host-v19 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r59.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is browser-ground-screened at that same snapshot over its PROVINCE.md and every file its map rows reference, so that every present screened file carries a corpus/adjacency-host-delta-r59.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation and every browser-ground hit line carries a line row keyed by (lane, relPath:line) whose quote is that complete line and whose disposition is in the frozen vocabulary, with no unadjudicated hit line, no orphan line row, no line row on an unscreened file and no invented row AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r59.tsv lane row, with no uncovered lane and no duplicate keys.',
+-  rev, repo: path.resolve(repo), fleet: path.resolve(fleet), counts, headSnapshot,
++  schema: 'tabi-adjacency-host-v20',
++  predicateSentence: 'c1-adjacency-host-v20 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r61.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the frozen snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is browser-ground-screened at that same snapshot over its PROVINCE.md and every file its map rows reference, so that every present screened file carries a corpus/adjacency-host-delta-r61.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation and every browser-ground hit line carries a line row keyed by (lane, relPath:line) whose quote is that complete line and whose disposition is in the frozen vocabulary, with no unadjudicated hit line, no orphan line row, no line row on an unscreened file and no invented row AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r61.tsv lane row, with no uncovered lane and no duplicate keys.',
++  rev, repo: path.resolve(repo), fleet: path.resolve(fleet), counts, headSnapshot, drift,
+   predicate: predicateFrom(findings), findingCount: findings.length, findings,
+ };
+ console.log(JSON.stringify(out, null, 1));

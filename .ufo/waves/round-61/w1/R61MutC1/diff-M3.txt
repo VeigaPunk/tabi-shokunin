@@ -1,0 +1,11 @@
+--- v20.mjs	2026-11-03 20:08:05.885749125 -0300
++++ v20-M3.mjs	2026-11-03 20:08:47.195867480 -0300
+@@ -775,7 +775,7 @@
+   else if (args[i] === '--delta') delta = args[++i];
+   else if (args[i] === '--json') json = true;
+ }
+-if (!snapshot) die('--snapshot <tsv> is required');
++if (!snapshot) { const tmp = path.join('/fast/scratch/hyaku/tabi-r61/R61MutC1', 'm3-per-run-' + process.pid + '.tsv'); const rr = rosterScan(fleet); fs.writeFileSync(tmp, 'lane\thead\n' + rr.map((l) => { const h = spawnSync('git', ['-C', path.join(fleet, l), 'rev-parse', 'HEAD']); return l + '\t' + (h.status === 0 ? h.stdout.toString('utf8').trim() : ''); }).join('\n') + '\n'); snapshot = tmp; }
+ if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v20.mjs --rev <REV> --repo <lane> --fleet <dir> --snapshot <tsv> [--audit <path>] [--delta <path>] [--json] | --selftest | --list-observed --fleet <dir>');
+ let result;
+ try { result = runAt(repo, rev, fleet, snapshot, audit, delta); } catch (e) { die(e.message); }

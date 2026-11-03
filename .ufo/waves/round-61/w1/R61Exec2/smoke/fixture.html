@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><title>tabi-r61 pointer fixture</title>
+<script>
+window.__ptrlog = [];
+for (const type of ['pointermove','pointerdown','pointerup','mousedown','mouseup','click']) {
+  document.addEventListener(type, function(e) {
+    window.__ptrlog.push({type:e.type,pointerType:e.pointerType,pointerId:e.pointerId,
+      isTrusted:e.isTrusted,button:e.button,buttons:e.buttons,ts:e.timeStamp});
+  }, true);
+}
+window.__keylog = [];
+for (const type of ['keydown','keyup']) {
+  document.addEventListener(type,function(e) {
+    window.__keylog.push({type:e.type === 'keydown' ? 'keyDown' : 'keyUp',
+      key:e.key,code:e.code,keyCode:e.keyCode,windowsVirtualKeyCode:e.keyCode,
+      modifiers:(e.altKey?1:0)|(e.ctrlKey?2:0)|(e.metaKey?4:0)|(e.shiftKey?8:0),
+      cancelable:e.cancelable,defaultPrevented:e.defaultPrevented,
+      capsLock:e.getModifierState('CapsLock'),shift:e.getModifierState('Shift'),
+      ctrlKey:e.ctrlKey,altKey:e.altKey,metaKey:e.metaKey,shiftKey:e.shiftKey,
+      targetId:e.target.id || e.target.tagName,isTrusted:e.isTrusted});
+  },true);
+}
+window.__field2Focused = false;
+document.addEventListener('focusin',function(e){if(e.target.id === 'field2')window.__field2Focused=true;},true);
+</script></head><body><h1>Pointer domain</h1><p id="nonce">tabi-r61-smoke-ccf4a47bf6bc</p>
+<form id="f"><input id="field" name="field" value="" size="40">
+<input id="field2" name="field2" value="" size="40"></form></body></html>

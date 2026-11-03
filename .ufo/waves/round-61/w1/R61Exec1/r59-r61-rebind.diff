@@ -1,0 +1,208 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/adj/rebind-r59.mjs	2026-11-03 18:10:35.042116168 -0300
++++ /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-61/counters/rebind-r61.mjs	2026-11-03 20:04:50.993321662 -0300
+@@ -1,80 +1,21 @@
+ #!/usr/bin/env node
+-// rebind-r59.mjs — tabi round 59, claim C1's ledger rebind tool. Authored as the
+-// round-58 rebind-r58.mjs copied to the r59 generation by the round-59 seat
+-// R59Rebind (the r58 lesson, Mistakes row 3: the rebind tool is
+-// generation-hardcoded; this is the same class of adaptation). EXECUTED BY THE
+-// L1 AFTER THE FROZEN INSTRUMENT COMMIT — this tool never writes a corpus/ path
+-// itself.
+-//
+-// Changes vs r58 (declared adaptation, same class):
+-//   (1) r59 generation: output names corpus/adjacency-host-{audit,delta}-r59.tsv,
+-//       every schema string tabi-adjacency-r59-*, PREV_DELTA ->
+-//       corpus/adjacency-host-delta-r58.tsv, meter import -> the v19 meter.
+-//   (2) v19 declared change (d) (claims.json C1): the screen set is ALL roster
+-//       sibling lanes other than tabi (not only lanes absent from the ruled map
+-//       plus --also-screen), and each lane is screened over its PROVINCE.md AND
+-//       every file its corpus/adjacency.tsv rows reference. One `lane` row is
+-//       written per screened (lane, path); every browser-ground hit line gets a
+-//       `line` row whose quote is the complete line.
+-//   (3) new --dry-run / --preflight-out: step 1-4 of the normal pass (snapshot,
+-//       audit rows, delta rows, v19 pure-core preflight) with NO ledger write.
+-//       The L1 uses it to exercise the preflight before the data pass; the real
+-//       pass is still the normal mode at ONE fresh snapshot at data time.
+-//
+-// What it does, in one pass:
+-//   1. ONE head snapshot: `git -C <lane> rev-parse HEAD` for every sibling lane
+-//      at --fleet (roster derivation identical to the meter's rosterScan:
+-//      non-dot directory entries that are dirs or symlinks-to-dirs carrying
+-//      .git or HEAD, minus tabi-shokunin), read once and recorded in
+-//      --snapshot-out (default: adj/rebind-snapshot.json next to this file).
+-//   2. AUDIT rows: every corpus/adjacency.tsv data row's sibling_ref is
+-//      re-derived against the snapshot-head bytes with the meter's own status
+-//      vocabulary — sibling-absent | unchanged | moved (note names the derived
+-//      line number AND quotes the verbatim line) | stale | file-absent.
+-//   3. DELTA rows: for every roster sibling, its PROVINCE.md and every file its
+-//      map rows reference are hashed from RAW bytes (execFileSync without an
+-//      encoding; the Buffer itself is hashed — the r56 trimEnd correction), the
+-//      line count and browser-ground hit lines are re-derived with the meter's
+-//      keyword list, and EVERY hit line gets a `line` row whose quote is the
+-//      complete line and whose disposition comes from the frozen vocabulary
+-//      {no-tabi-ground, overlap-declared, contested-open}. Dispositions are
+-//      never invented: they are carried from the previous generation's delta
+-//      ledger by exact whole-line quote match, overridden only by an explicit
+-//      --adjudications file. An unresolved hit line aborts the rebind (exit 3)
+-//      and no ledger is written — a half-adjudicated ledger cannot be committed.
+-//   4. PREFLIGHT: the candidate rows are run through the v19 meter's own pure
+-//      core (verify + predicateFrom) against the same snapshot before any byte
+-//      is written. A non-empty finding list aborts (exit 5).
+-//
+-// Write scope: only --out (the two TSVs, or unresolved.json on exit 3),
+-// --snapshot-out (normal mode; dry-run only when passed explicitly),
+-// --preflight-out (dry-run report), and optionally --scratch (byte-identical
+-// ledger copies for inspection). No temporary files are created; TMPDIR is
+-// never consulted.
+-//
+-// Usage:
+-//   node rebind-r59.mjs --repo <lane> --fleet <dir> --out <dir> [--rev <REV>]
+-//        [--snapshot-out <file>] [--prev-delta <rel-or-abs-path>]
+-//        [--adjudications <json>] [--dry-run] [--preflight-out <json>]
+-//        [--scratch <dir>] [--json]
+-// Exit: 0 ledgers written + preflight green (or dry-run preflight green);
+-//       2 usage; 3 unresolved hit lines (no ledger written); 4 environment /
+-//       source-pin failure; 5 preflight findings (no ledger written).
++// r61: r59 rebind mechanics, frozen --snapshot input instead of live heads.
++// Candidate ledgers and snapshot metadata are written only under --out by default.
+ import { execFileSync } from 'node:child_process';
+ import fs from 'node:fs';
+ import path from 'node:path';
+ import crypto from 'node:crypto';
+-import { verify, predicateFrom } from '../counters/c1-adjacency-host-v19.mjs';
++import { verify, predicateFrom, readSnapshot } from './c1-adjacency-host-v20.mjs';
+ 
+-const SCHEMA_REBIND = 'tabi-adjacency-r59-rebind';
++const SCHEMA_REBIND = 'tabi-adjacency-r61-rebind';
+ const SELF_LANE = 'tabi-shokunin';
+ const MAP_REL = 'corpus/adjacency.tsv';
+ const PREV_DELTA_REL = 'corpus/adjacency-host-delta-r58.tsv';
+-const METER_REL = '../counters/c1-adjacency-host-v19.mjs';
+-const OUT_AUDIT = 'adjacency-host-audit-r59.tsv';
+-const OUT_DELTA = 'adjacency-host-delta-r59.tsv';
++const METER_REL = './c1-adjacency-host-v20.mjs';
++const OUT_AUDIT = 'adjacency-host-audit-r61.tsv';
++const OUT_DELTA = 'adjacency-host-delta-r61.tsv';
+ const PROVINCE = 'PROVINCE.md';
+-// The two frozen lists are DUPLICATED from the meter (the v19 declared change
++// The two frozen lists are DUPLICATED from the meter (the v20 declared change
+ // set does not touch them). pinSourceLists() below fails the run if the meter's
+ // literal lines ever drift from these.
+ const BG_WORDS = ['cdp', 'devtools', 'remote-debugging', 'headless', 'webdriver', 'geckodriver', 'selenium', 'playwright', 'bidi', 'crawl', 'screenshot', 'recordhar', 'record-har'];
+@@ -121,12 +62,11 @@
+     .map((d) => d.name).sort();
+ }
+ 
+-function headSnapshot(fleet) {
++function headSnapshot(fleet, file) {
+   const roster = rosterScan(fleet);
+-  const heads = {};
+-  for (const lane of roster) {
+-    const out = gitBuf(path.join(fleet, lane), ['rev-parse', 'HEAD']);
+-    heads[lane] = out === null ? null : out.toString('utf8').trim() || null;
++  const heads = Object.fromEntries(readSnapshot(file));
++  for (const lane of new Set([...roster, ...Object.keys(heads)])) {
++    if (!heads[lane] || gitBuf(path.join(fleet, lane), ['cat-file', '-e', heads[lane] + '^{commit}']) === null) die(4, 'unresolvable-head: ' + lane);
+   }
+   return { roster, heads };
+ }
+@@ -202,7 +142,7 @@
+   const argv = process.argv.slice(2);
+   const opts = {
+     rev: 'HEAD', json: false, prevDelta: PREV_DELTA_REL, adjudications: null,
+-    scratch: null, snapshotOut: path.join(import.meta.dirname, 'rebind-snapshot.json'),
++    scratch: null, snapshotOut: path.join(argv.includes('--out') ? argv[argv.indexOf('--out') + 1] : import.meta.dirname, 'rebind-snapshot.json'),
+     snapshotOutGiven: false, dryRun: false, preflightOut: null,
+   };
+   for (let i = 0; i < argv.length; i++) {
+@@ -211,6 +151,7 @@
+     else if (a === '--fleet') opts.fleet = argv[++i];
+     else if (a === '--out') opts.out = argv[++i];
+     else if (a === '--rev') opts.rev = argv[++i];
++    else if (a === '--snapshot') opts.snapshot = argv[++i];
+     else if (a === '--snapshot-out') { opts.snapshotOut = argv[++i]; opts.snapshotOutGiven = true; }
+     else if (a === '--prev-delta') opts.prevDelta = argv[++i];
+     else if (a === '--adjudications') opts.adjudications = argv[++i];
+@@ -220,7 +161,7 @@
+     else if (a === '--json') opts.json = true;
+     else die(2, `unknown argument ${a}`);
+   }
+-  if (!opts.repo || !opts.fleet || !opts.out) die(2, 'usage: node rebind-r59.mjs --repo <lane> --fleet <dir> --out <dir> [--rev <REV>] [--snapshot-out <file>] [--prev-delta <path>] [--adjudications <json>] [--dry-run] [--preflight-out <json>] [--scratch <dir>] [--json]');
++  if (!opts.repo || !opts.fleet || !opts.out || !opts.snapshot) die(2, 'usage: node rebind-r61.mjs --repo <lane> --fleet <dir> --out <dir> --snapshot <tsv> [--rev <REV>] [--snapshot-out <file>] [--prev-delta <path>] [--adjudications <json>] [--dry-run] [--preflight-out <json>] [--scratch <dir>] [--json]');
+   if (opts.preflightOut && !opts.dryRun) die(2, '--preflight-out is a --dry-run option');
+   pinSourceLists();
+   // Provenance: the exact meter bytes this candidate ledger was preflighted
+@@ -241,7 +182,7 @@
+   const mapRows = tsvParse(mapRaw, 9);
+   if (mapRows.length === 0) die(4, `${MAP_REL} at ${rev} has no data rows`);
+ 
+-  const { roster, heads } = headSnapshot(fleet);
++  const { roster, heads } = headSnapshot(fleet, opts.snapshot);
+   const sibRaw = makeReader(fleet, heads);
+ 
+   // ---- audit rows -------------------------------------------------------------
+@@ -262,7 +203,7 @@
+   }
+ 
+   // ---- delta rows -------------------------------------------------------------
+-  // v19 (d): ALL roster siblings; each over PROVINCE.md + every map-referenced file.
++  // v20 (d): ALL roster siblings; each over PROVINCE.md + every map-referenced file.
+   const refFiles = new Map();
+   for (const row of mapRows) {
+     const p = parseRef(row[2]);
+@@ -342,15 +283,16 @@
+   const laneSet = new Set(deltaRows.filter((r) => r[0] === 'lane').map((r) => r[1]));
+   const lineRows = deltaRows.filter((r) => r[0] === 'line');
+   const snapshot = {
+-    schema: 'tabi-adjacency-r59-snapshot',
+-    round: 59,
++    schema: 'tabi-adjacency-r61-snapshot',
++    round: 61,
+     claim: 'C1',
+     meterSha256,
+     snapshotAt: new Date().toISOString(),
+     fleet,
+     repo,
+     rev,
+-    method: 'git -C <lane> rev-parse HEAD, one pass in sorted lane order over the meter\'s roster derivation (non-dot dir/symlink-to-dir entries at --fleet carrying .git or HEAD, minus tabi-shokunin)',
++    method: 'required frozen --snapshot TSV; git cat-file at each recorded head',
++    snapshotInput: path.resolve(opts.snapshot),
+     rosterCount: roster.length,
+     roster,
+     heads,
+@@ -361,7 +303,7 @@
+ 
+   if (unresolved.length > 0) {
+     fs.mkdirSync(outDir, { recursive: true });
+-    fs.writeFileSync(path.join(outDir, 'unresolved.json'), JSON.stringify({ schema: 'tabi-adjacency-r59-rebind-unresolved', snapshotAt: snapshot.snapshotAt, unresolved, carriedRows: carried.size, explicitRows: explicit.size }, null, 1) + '\n');
++    fs.writeFileSync(path.join(outDir, 'unresolved.json'), JSON.stringify({ schema: 'tabi-adjacency-r61-rebind-unresolved', snapshotAt: snapshot.snapshotAt, unresolved, carriedRows: carried.size, explicitRows: explicit.size }, null, 1) + '\n');
+     if (!opts.dryRun) writeOut(opts.snapshotOut, JSON.stringify({ ...snapshot, unresolved: unresolved.length }, null, 1) + '\n');
+     const report = {
+       schema: SCHEMA_REBIND, ok: false, dryRun: opts.dryRun, error: 'unresolved', meterSha256,
+@@ -374,7 +316,7 @@
+     die(3, `${unresolved.length} browser-ground hit line(s) have no disposition in the frozen vocabulary — adjudicate and re-run with --adjudications; no ledger was written`, { unresolved: unresolved.length, unresolvedFile: report.unresolvedFile });
+   }
+ 
+-  // ---- preflight: the v19 pure core over the candidate rows -------------------
++  // ---- preflight: the v20 pure core over the candidate rows -------------------
+   const pre = verify({
+     mapRows,
+     auditRows,
+@@ -410,7 +352,7 @@
+   };
+   if (!preOk) {
+     if (opts.preflightOut) writeOut(opts.preflightOut, JSON.stringify(preflightReport, null, 1) + '\n');
+-    die(5, 'preflight: the v19 meter core rejects the candidate ledgers — no ledger was written', { findings: pre.findings.map((f) => `${f.id}: ${f.detail}`) });
++    die(5, 'preflight: the v20 meter core rejects the candidate ledgers — no ledger was written', { findings: pre.findings.map((f) => `${f.id}: ${f.detail}`) });
+   }
+ 
+   if (opts.dryRun) {
+@@ -450,7 +392,7 @@
+     screened: screenDetail,
+     dispositionSources: { carried: carried.size, explicit: explicit.size },
+     preflight: { findings: 0, predicate: true, counts: pre.counts },
+-    next: 'copy the two TSVs to corpus/adjacency-host-{audit,delta}-r59.tsv, commit the data, then run counters/c1-adjacency-host-v19.mjs at the data rev',
++    next: 'copy the two TSVs to corpus/adjacency-host-{audit,delta}-r61.tsv, commit the data, then run counters/c1-adjacency-host-v20.mjs at the data rev',
+   };
+   if (opts.preflightOut) writeOut(opts.preflightOut, JSON.stringify(out, null, 1) + '\n');
+   if (opts.json) console.log(JSON.stringify(out, null, 1));

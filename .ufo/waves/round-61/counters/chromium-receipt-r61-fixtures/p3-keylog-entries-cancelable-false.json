@@ -1,0 +1,9 @@
+{
+ "name": "p3-keylog-entries-cancelable-false",
+ "note": "R60Critic P3 (empirical green at 1408dd90, ruled IN SCOPE for round 60 by the L1 as a pre-freeze strengthening): receipt.keylog.entries[0].cancelable set false in the top-level r56 control-domain slice (End/Backspace/last-nonce-char/Tab). The slice is a second recording of the control window; the r60 narrow check re-derives its identity from the nonce and requires cancelable true / defaultPrevented false WHERE THE SLICE RECORDS THEM. The critic's exact forgery (green before this check) must now be refused.",
+ "receiptPath": "live/corpus-live-receipt.json",
+ "derive": [{"path": "keylog.entries.0.cancelable", "set": false}],
+ "driver": "live/chrome-cdp-loopback-round59.mjs",
+ "expectDriverSha256": "b16ddb443d5bd1b101cfcdb55cbf2d5ffcb3f39d38064a661ab82bb9a152ff86",
+ "expectFindings": ["keylog-entry-mismatch"]
+}
