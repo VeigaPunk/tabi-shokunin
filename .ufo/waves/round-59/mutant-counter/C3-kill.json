@@ -1,0 +1,146 @@
+{
+ "schema": "tabi-r59-mutant-counter-probe",
+ "id": "C3",
+ "description": "relax the CapsLock absence guard to accept any caps reading (the restated claim has no latch order to relax: every true read is admitted)",
+ "killRule": "killRules.C2 f5",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59.mjs",
+ "counterSha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+ "counterBytes": 131074,
+ "fixturesDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures",
+ "workdir": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/C3",
+ "edits": [
+  {
+   "old": "    } else if (f === true) {\n      trues += 1;\n      if (trueKeys.length < 4) trueKeys.push(String(e.key));\n    }",
+   "new": "    } else if (f === true) {\n      // C3: any caps read is accepted (the absence guard is relaxed away)\n    }",
+   "occurrences": 1,
+   "found": 1,
+   "ok": true
+  }
+ ],
+ "editsAllOk": true,
+ "mutatedSha256": "6978fdf71ec3648ba20e43378af95898edae7a1a2b97d9e761d29d49240e8b4e",
+ "mutatedBytes": 131070,
+ "expectId": "caps-flag-true",
+ "seededCase": "caps-flag-true.json",
+ "baseline": {
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "uncovered": [],
+  "failing": [],
+  "tail": "91/91"
+ },
+ "baselineAllPass": true,
+ "mutated": {
+  "status": 1,
+  "allPass": false,
+  "pass": 90,
+  "cases": 91,
+  "failing": [
+   {
+    "name": "caps-flag-true",
+    "got": [],
+    "want": [
+     "caps-flag-true"
+    ]
+   }
+  ],
+  "tail": "90/91",
+  "stderrTail": ""
+ },
+ "lostId": null,
+ "failingCases": [
+  {
+   "name": "caps-flag-true",
+   "got": [],
+   "want": [
+    "caps-flag-true"
+   ]
+  }
+ ],
+ "fixtureRun": {
+  "caseFile": "caps-flag-true.json",
+  "caseExpect": [
+   "caps-flag-true"
+  ],
+  "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures/receipts/caps-flag-true.receipt.json",
+  "receiptSha256": "e65bb949a970337bab2f7205da0798f3eb88fe1b9f87731e218304c76f848938",
+  "pristine": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C3/pristine.mjs",
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findings": [
+    "caps-flag-true"
+   ],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "mutant": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C3/mutant.mjs",
+   "exit": 0,
+   "parseOk": true,
+   "predicate": true,
+   "findings": [],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "killed": true
+ },
+ "forgedRun": [
+  {
+   "forge": "f5-caps-true",
+   "receiptSha256": "e2145a9484508392b6d8b5b8e657fbc463e3a9d455eda85029be86fbba3e5d7f",
+   "canonical": {
+    "exit": 1,
+    "findings": [
+     "caps-flag-true"
+    ]
+   },
+   "mutant": {
+    "exit": 0,
+    "findings": []
+   },
+   "killed": true
+  }
+ ],
+ "restore": {
+  "sha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+  "matchesCanonical": true,
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "tail": "91/91"
+ },
+ "verdict": "KILLED",
+ "overallVerdict": "KILLED",
+ "killedBy": {
+  "reason": "mutant selftest fails where pristine passes",
+  "mutantExit": 1,
+  "failingCases": [
+   "caps-flag-true"
+  ],
+  "lostExpectation": null
+ },
+ "history": {
+  "note": "An earlier run of the same mutant set executed on counter sha256 35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332 (125756 B) with the then-current 90-case fixture set, before the author applied the L1-requested pre-freeze D1 positional strengthening (R59Probes d6 maskability) that produced the froze bytes cited above. That fixture set no longer exists on disk; those runs are superseded and are not the authoritative receipts.",
+  "priorCounterSha256": "35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332",
+  "priorSelftest": {
+   "cases": 90,
+   "pass": 90,
+   "allPass": true
+  },
+  "priorVerdicts": {
+   "C1": "KILLED",
+   "C2": "KILLED",
+   "C3": "KILLED",
+   "C4": "KILLED",
+   "C5": "KILLED",
+   "C6": "SURVIVED(selftest)",
+   "C7": "KILLED"
+  },
+  "priorNote": "same edit text as recorded here"
+ }
+}

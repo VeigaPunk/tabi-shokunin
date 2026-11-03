@@ -1,0 +1,184 @@
+--- canonical-35461bbe.mjs	2026-11-03 18:24:52.272641628 -0300
++++ canonical-b287cfa2.mjs	2026-11-03 18:24:52.272986778 -0300
+@@ -444,14 +444,22 @@
+ //   * keylog-flag-mismatch (f4, D1) is the page-vs-block cross-check. For
+ //     EVERY keyDown entry recorded inside a swallowLeg block (control.typed,
+ //     backspaceSwallow, digitSwallow, enterChordSwallow), the triple
+-//     (key, cancelable, defaultPrevented) must match SOME pageKeylog entry
+-//     BY VALUE. The match is global, never positional: a page record in a
+-//     different order is still a witness; a page record that omits or
+-//     re-flags the entry is not. When pageKeylog is absent the cross-check
+-//     has no subject and keylog-absent names the absence — but a block entry
+-//     with no BY-VALUE match in a PRESENT page log is this id, including a
+-//     forged page log whose flags disagree with the block record (the kill
+-//     rule's stripped/forged-page-keylog mutant).
++//     (key, cancelable, defaultPrevented) must match the pageKeylog
++//     occurrence THAT THE BLOCK DESCRIBES. The occurrence is POSITIONAL: the
++//     contiguous swallow run (the block sequence's identities key/code/keyCode
++//     in derived step order, located from the record's tail) pairs the j-th
++//     block entry with the j-th run keydown, and their exact
++//     cancelable/defaultPrevented must agree. This closes the d6 maskability
++//     class (R59Probes): a forged flag on the control digit/letter or on the
++//     chord's Control — keys that also occur in the carried legs with the
++//     same (cancelable, defaultPrevented) — can no longer hide behind an
++//     equal-valued twin. When the run is not recorded the fallback is
++//     DISTINCT occurrence matching: each block entry consumes a distinct page
++//     occurrence of its triple (stronger than existence, still
++//     order-independent). When pageKeylog is absent the cross-check has no
++//     subject and keylog-absent names the absence. The pre-freeze
++//     strengthening is disclosed in the wave report; it is not a claim
++//     change.
+ //   * step-plan-mismatch (f2/f8, D2): the receipt's recorded
+ //     `steps[].name` sequence and its `declaredStepNames` must each EQUAL
+ //     the counter's embedded DECLARED_STEP_PLAN exactly (same names, same
+@@ -554,7 +562,7 @@
+ // Exit: 0 predicate met (no finding); 1 any finding; 2 usage.
+ // Writes nothing but stdout. Paths are resolved against cwd.
+ //
+-// FIXTURES (chromium-receipt-r59-fixtures/): 90 cases. Every r58 case is
++// FIXTURES (chromium-receipt-r59-fixtures/): 91 cases. Every r58 case is
+ // carried with its case id (its base receipt relabelled to the r59
+ // schema/nonce — including the generation digit in the keystroke identities —
+ // and given the valid r59 domains: the 18-step plan + declaredStepNames, the
+@@ -568,8 +576,10 @@
+ // unbound nonce cannot bind /echo2); swallow-pagekeylog-continuation gains
+ // keylog-flag-mismatch (D1 catches the same page-side tamper). One case per
+ // new r59 id (the f1-f9 probe shapes among them) is seeded from the green
+-// receipt. --selftest asserts the EXACT finding set of every case and the full
+-// id coverage; see the fixture spec shape below.
++// receipt, plus keylog-flag-mismatch-masked-control (the d6 maskability class:
++// a forged flag on the swallow control digit whose equal-valued twins sit in
++// the carried legs). --selftest asserts the EXACT finding set of every case and
++// the full id coverage; see the fixture spec shape below.
+ import fs from 'node:fs';
+ import path from 'node:path';
+ import crypto from 'node:crypto';
+@@ -1074,14 +1084,77 @@
+   });
+ }
+ 
++// The swallow blocks' keyDown entries in the DERIVED step order
++// [control d1, control d2, Backspace, digit, Control, Enter] — the same order
++// the derived page continuation must have. Missing blocks yield null slots
++// (their own swallow-plan-mismatch reports them).
++function swallowBlockSequence(form) {
++  const sl = isObj(form) && isObj(form.swallowLeg) ? form.swallowLeg : null;
++  if (!sl) return null;
++  const kd = (b) => entriesOfBlock(b).filter((e) => objType(e) === 'keyDown');
++  const ctl = kd(sl.control);
++  const en = kd(sl.enterChordSwallow);
++  return [ctl[0] || null, ctl[1] || null, kd(sl.backspaceSwallow)[0] || null,
++    kd(sl.digitSwallow)[0] || null, en[0] || null, en[1] || null];
++}
++
++// The swallow continuation as a CONTIGUOUS run of page keydowns: the block
++// sequence's identities (key/code/keyCode) in order. The run is located from
++// the record's tail (the last matching window), which is where the swallow leg
++// lives in both generations — no nonce derivation is needed, so the positional
++// check also works on a nonce-unusable receipt (the r58 corpus case). Returns
++// { start, entries } or null when the continuation is not recorded.
++function locateSwallowRun(pageKd, blockSeq) {
++  const seq = (blockSeq || []).filter((e) => e && typeof e.key === 'string'
++    && typeof e.code === 'string' && typeof e.keyCode === 'number');
++  if (seq.length === 0 || pageKd.length < seq.length) return null;
++  let found = null;
++  for (let start = 0; start + seq.length <= pageKd.length; start += 1) {
++    let ok = true;
++    for (let j = 0; j < seq.length; j += 1) {
++      const p = pageKd[start + j];
++      if (p.key !== seq[j].key || p.code !== seq[j].code || p.keyCode !== seq[j].keyCode) { ok = false; break; }
++    }
++    if (ok) found = { start, entries: pageKd.slice(start, start + seq.length) };
++  }
++  return found;
++}
++
+ // D1 (f4): every swallow-block keyDown entry's (key, cancelable,
+-// defaultPrevented) triple must match a pageKeylog entry BY VALUE. An absent
+-// page record is keylog-absent's subject, not this check's.
++// defaultPrevented) triple must be accounted for by the pageKeylog occurrence
++// THAT THE BLOCK DESCRIBES — the positional one, never an equal-valued twin
++// elsewhere (the R59Probes d6 maskability class). The position is the
++// contiguous swallow run (locateSwallowRun); when that run is not recorded the
++// fallback is DISTINCT occurrence matching (each block entry consumes a
++// distinct page occurrence), which is still stronger than existence. An
++// absent page record is keylog-absent's subject, not this check's.
+ function checkKeylogFlags(form, add) {
+   if (!isObj(form) || !isObj(form.swallowLeg)) return;
+   const pageEntries = pageEntriesOf(form);
+   if (!pageEntries) return;
+   const pageKd = pageEntries.filter((e) => objType(e) === 'keyDown');
++  const blockSeq = swallowBlockSequence(form);
++  const run = locateSwallowRun(pageKd, blockSeq);
++  if (run) {
++    // Positional: the k-th non-null block entry describes the k-th keydown of
++    // the contiguous swallow run. Compare the exact flags there.
++    let k = 0;
++    for (const blk of (blockSeq || [])) {
++      if (!blk) continue;
++      const p = run.entries[k];
++      k += 1;
++      if (!p) break;
++      if (typeof blk.cancelable !== 'boolean' || typeof blk.defaultPrevented !== 'boolean') continue;
++      if (p.cancelable !== blk.cancelable || p.defaultPrevented !== blk.defaultPrevented) {
++        add('keylog-flag-mismatch', 'the swallow run occurrence key ' + JSON.stringify(p.key)
++          + ' flags (cancelable=' + JSON.stringify(p.cancelable) + ', defaultPrevented=' + JSON.stringify(p.defaultPrevented)
++          + ') != the block record for that step (cancelable=' + JSON.stringify(blk.cancelable)
++          + ', defaultPrevented=' + JSON.stringify(blk.defaultPrevented) + ')');
++      }
++    }
++    return;
++  }
++  const used = new Set();
+   const blockIds = ['control', 'backspaceSwallow', 'digitSwallow', 'enterChordSwallow'];
+   for (const b of blockIds) {
+     for (const e of entriesOfBlock(form.swallowLeg[b])) {
+@@ -1089,12 +1162,19 @@
+       // A triple whose booleans are absent is swallow-recorder-fields-missing's
+       // subject; D1 only judges triples that CAN be matched by value.
+       if (typeof e.cancelable !== 'boolean' || typeof e.defaultPrevented !== 'boolean') continue;
+-      const match = pageKd.some((p) => p.key === e.key
+-        && p.cancelable === e.cancelable && p.defaultPrevented === e.defaultPrevented);
+-      if (!match) {
++      const all = pageKd.filter((p) => p.key === e.key).length;
++      const occ = [];
++      pageKd.forEach((p, idx) => {
++        if (used.has(idx)) return;
++        if (p.key === e.key && p.cancelable === e.cancelable && p.defaultPrevented === e.defaultPrevented) occ.push(idx);
++      });
++      if (occ.length === 0) {
+         add('keylog-flag-mismatch', b + ' key ' + JSON.stringify(e.key) + ' (cancelable=' + JSON.stringify(e.cancelable)
+-          + ', defaultPrevented=' + JSON.stringify(e.defaultPrevented) + ') has no BY-VALUE match in journey.form.pageKeylog');
++          + ', defaultPrevented=' + JSON.stringify(e.defaultPrevented) + ') has no UNCONSUMED BY-VALUE occurrence in journey.form.pageKeylog ('
++          + all + ' page occurrence(s) of that key)');
++        continue;
+       }
++      used.add(occ[0]);
+     }
+   }
+ }
+@@ -1832,10 +1912,24 @@
+       // recorded per block in swallowLeg, and a recorded continuation is
+       // never weakened.
+       const swExtra = extra.slice(0, Math.min(extra.length, swPlan.length));
++      const blockSeq = swallowBlockSequence(form);
+       if (swExtra.length === swPlan.length && swExtra.length > 0) {
+         for (let j = 0; j < swExtra.length; j += 1) {
+           const { i, ev: a } = swExtra[j];
+           const e = swPlan[j];
++          // D1, strengthened: the page occurrence at this DERIVED position is
++          // the one the block entry for this step describes — compare its
++          // cancelable/defaultPrevented to the block's, never to a lookalike
++          // elsewhere in the record (the d6 maskability class).
++          const blk = blockSeq ? blockSeq[j] : null;
++          if (blk && typeof blk.cancelable === 'boolean' && typeof blk.defaultPrevented === 'boolean') {
++            if (a.cancelable !== blk.cancelable || a.defaultPrevented !== blk.defaultPrevented) {
++              add('keylog-flag-mismatch', 'pageKeylog continuation i=' + i + ' key ' + JSON.stringify(e.key)
++                + ' flags (cancelable=' + JSON.stringify(a.cancelable) + ', defaultPrevented=' + JSON.stringify(a.defaultPrevented)
++                + ') != the block record for that step (cancelable=' + JSON.stringify(blk.cancelable)
++                + ', defaultPrevented=' + JSON.stringify(blk.defaultPrevented) + ')');
++            }
++          }
+           if (a.key !== e.key || a.code !== e.code || a.keyCode !== e.keyCode) {
+             add('swallow-plan-mismatch', 'pageKeylog continuation i=' + i + ' got ' + JSON.stringify({ key: a.key, code: a.code, keyCode: a.keyCode }) + ' want ' + JSON.stringify({ key: e.key, code: e.code, keyCode: e.keyCode }));
+             continue;

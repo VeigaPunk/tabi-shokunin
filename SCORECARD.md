@@ -3356,3 +3356,24 @@ W04); `node scripts/check-sources.mjs` → SOURCES_GATE verdict=clean rows=161 f
 - planned: adjacency — meter v19: a screened set derived from the map (closing the A4 scope hole), a findings-mismatch row in harness-guard (N1), malformed-suffix selftest fixtures (N2).
 - planned: assimilation — adoption stays CLOSED until the campaign corrects the register's quote-column shift (L0 `tabi | round-57`).
 - saturation 8 / window 3 retained; the r58 capability row keeps the window RESTARTED (round 59 = position 1). No axis retired; no score moved (no rubric authorizes one).
+
+## Round 59 — declared claims (frozen at dd337bb3; pre-data corrections in claims.json) and executed disposition
+
+Round 59 on the Linux host. Baseline `4e7fb89d`; instrument freeze `73b52e0f`; C1 data `09b22bcd`;
+C2 data `69194768`; the work commit (this block). Axes at round start: adjacency 8, coverage 9,
+depth 9, operability 9, freshness 9, calibration 9; saturation 8 / window 3; the r58 capability row
+keeps the window RESTARTED at round 58, so round 59 is position 1 (stagnation nudge inactive; the
+lowest-axis obligation applies to C1). Round 59 enters NO capability row (C2 was killed; see below).
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis, 8): the v19 meter with the newly screened kagi/kake/kama browser-ground rows (D8) | `node .ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs --rev 09b22bcd… --repo <lane> --fleet <fleet> --json`; `grep -c kagi-shokunin corpus/adjacency-host-delta-r59.tsv` (5), kake (66), kama (7) | before: v18 at baseline exit 1, predicate false, 4 findings; the three lanes unheld (0 rows). after: exit 0, predicate true, 0 findings, counts roster 20 / mapRows 16 / auditRows 16 / deltaLanes 20 / bgScreenSiblings 20 | VERIFIED on its frozen predicate; round not admitted, **score held at 8** (the round is not admitted; an unadmitted round moves no score) |
+| C2 coverage (capability `chromium-keyevent-delivery-boundary-linux`): CapsLock delivers over CDP; the caps flag never sets | `node .ufo/waves/round-59/counters/chromium-receipt-r59.mjs corpus/evidence/round59/chromium-capslock-boundary/receipt.json --driver scripts/chrome-cdp-loopback-round59.mjs --expect-driver-sha256 b16ddb44… --shot … --json` (exit 0 green); forged f6 probes (lesson Mistakes 1) | before: evidence tree 0 files. after: 19 files; the counter green on the live receipt, BUT the canonical counter greens a forged missing-`cancelable` CapsLock receipt (f6) | **KILLED by its own frozen kill rule f6**; not admitted; **no capability row enters**; score held at 9 |
+
+### Planned / saturation / retired — round 59
+
+- planned: coverage — the counter generation that enforces the f6 `cancelable` shape and cross-checks CapsLock trace entries against the page keylog (a NEW claim; lesson Mistakes 1). The Blink-internal caps constant is an unsourced limit (a S163 row if the operator rules it in scope).
+- planned: adjacency — the screen scope beyond PROVINCE.md ∪ map-referenced files (lesson Mistakes 12; R59Reviewer A6: 18,869 unscreened BG-word lines in sibling `.md` files).
+- planned: adjacency — the 37 kaidoku `overlap-declared` rulings await a non-author check (L0 `tabi | round-59`).
+- saturation 8 / window 3: round 59 entered no capability; the stagnation window moves to position 2 of 3 (rounds 58 and 59 carry none, the r58 row's window restarted at 58). No axis retired; no score moved.
+- D10 (capability-only claims hold the axis score): a capability entering the table does not move a scored axis; AXES.md keeps capabilities separate from the six scored axes.

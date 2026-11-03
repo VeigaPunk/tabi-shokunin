@@ -1,0 +1,134 @@
+{
+ "schema": "tabi-r59-mutant-counter-probe",
+ "id": "C5",
+ "description": "an absent receipt exits 0: receipt-missing is no longer a finding (the load still short-circuits)",
+ "killRule": "C2 before-state refusal / the D3 receipt-load shape",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59.mjs",
+ "counterSha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+ "counterBytes": 131074,
+ "fixturesDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures",
+ "workdir": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/C5",
+ "edits": [
+  {
+   "old": "        add('receipt-missing', path.resolve(receiptPath));",
+   "new": "        // C5: an absent receipt is no longer a finding",
+   "occurrences": 1,
+   "found": 1,
+   "ok": true
+  }
+ ],
+ "editsAllOk": true,
+ "mutatedSha256": "a653b39f7db6da8d4756ca7bac59f8b838e2162e6ebadbcce009b14724353a44",
+ "mutatedBytes": 131071,
+ "expectId": "receipt-missing",
+ "seededCase": "receipt-missing.json",
+ "baseline": {
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "uncovered": [],
+  "failing": [],
+  "tail": "91/91"
+ },
+ "baselineAllPass": true,
+ "mutated": {
+  "status": 1,
+  "allPass": false,
+  "pass": 90,
+  "cases": 91,
+  "failing": [
+   {
+    "name": "receipt-missing",
+    "got": [],
+    "want": [
+     "receipt-missing"
+    ]
+   }
+  ],
+  "tail": "90/91",
+  "stderrTail": ""
+ },
+ "lostId": null,
+ "failingCases": [
+  {
+   "name": "receipt-missing",
+   "got": [],
+   "want": [
+    "receipt-missing"
+   ]
+  }
+ ],
+ "fixtureRun": {
+  "caseFile": "receipt-missing.json",
+  "caseExpect": [
+   "receipt-missing"
+  ],
+  "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures/absent-by-construction.json",
+  "receiptSha256": null,
+  "pristine": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C5/pristine.mjs",
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findings": [
+    "receipt-missing"
+   ],
+   "couldNotEvaluate": [
+    "receipt-absent"
+   ],
+   "stderrTail": ""
+  },
+  "mutant": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C5/mutant.mjs",
+   "exit": 0,
+   "parseOk": true,
+   "predicate": true,
+   "findings": [],
+   "couldNotEvaluate": [
+    "receipt-absent"
+   ],
+   "stderrTail": ""
+  },
+  "killed": true
+ },
+ "forgedRun": [],
+ "restore": {
+  "sha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+  "matchesCanonical": true,
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "tail": "91/91"
+ },
+ "verdict": "KILLED",
+ "overallVerdict": "KILLED",
+ "killedBy": {
+  "reason": "mutant selftest fails where pristine passes",
+  "mutantExit": 1,
+  "failingCases": [
+   "receipt-missing"
+  ],
+  "lostExpectation": null
+ },
+ "history": {
+  "note": "An earlier run of the same mutant set executed on counter sha256 35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332 (125756 B) with the then-current 90-case fixture set, before the author applied the L1-requested pre-freeze D1 positional strengthening (R59Probes d6 maskability) that produced the froze bytes cited above. That fixture set no longer exists on disk; those runs are superseded and are not the authoritative receipts.",
+  "priorCounterSha256": "35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332",
+  "priorSelftest": {
+   "cases": 90,
+   "pass": 90,
+   "allPass": true
+  },
+  "priorVerdicts": {
+   "C1": "KILLED",
+   "C2": "KILLED",
+   "C3": "KILLED",
+   "C4": "KILLED",
+   "C5": "KILLED",
+   "C6": "SURVIVED(selftest)",
+   "C7": "KILLED"
+  },
+  "priorNote": "same edit text as recorded here"
+ }
+}

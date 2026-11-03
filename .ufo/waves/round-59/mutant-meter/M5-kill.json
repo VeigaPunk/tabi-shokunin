@@ -1,0 +1,180 @@
+{
+ "schema": "tabi-adjacency-r59-M5-kill",
+ "claim": "C1 declared change set (e) \u2014 routed r58-closure D5/A5+N4",
+ "instrument": ".ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs",
+ "instrumentSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+ "instrumentBytes": 53384,
+ "instrumentUntouched": "the canonical file was read and copied only; its sha256 re-checked after every mutant and before this receipt",
+ "mutant": "M5: relax the lineRows (lane, relPath) filter back to lane-only (routed A5/N4) - killed by an unscreened-file fixture",
+ "mutantSha256": "5fbf184c89930ab7fbff116980a1e133398df1435b1fcc45a80e62748722369c",
+ "hunk": "in the (e) stray-line-row loop, the row's own relPath is destructured only as `ownRelPath`, and the validated relPath is re-bound to the lane's FIRST lane-row path (`inputs.deltaRows.find((d) => d[0] === 'lane' && d[1] === lane)[2]`) \u2014 a lane-only scope, placed after the orphan guard (one contiguous hunk, nothing else).",
+ "diff": "--- a/c1-adjacency-host-v19.mjs\n+++ b/c1-adjacency-host-v19.mjs\n@@ -278,11 +278,12 @@\n   for (const r of inputs.deltaRows) {\n     if (r[0] !== 'line') continue;\n     const lane = r[1];\n-    const { relPath, line } = linePathOf(r[2]);\n+    const { relPath: ownRelPath, line } = linePathOf(r[2]);\n     if (!inputs.deltaRows.some((d) => d[0] === 'lane' && d[1] === lane)) {\n       add('orphan-line-row', `${lane}:${r[2]}`);\n       continue;\n     }\n+    const relPath = inputs.deltaRows.find((d) => d[0] === 'lane' && d[1] === lane)[2];\n     if (!laneRowAt.has(`${lane}\\t${relPath}`) || line === null) {\n       add('line-row-unscreened-file', `${lane}:${r[2]}`);\n       continue;\n",
+ "expectedDetector": "selftest case line-row-unscreened-file (a kake-shaped lane with a screened PROVINCE.md and a line row naming OTHER-UNSCREENED.md:2 whose number equals a PROVINCE.md hit); plus scratch fixture F5-line-row-unscreened-file. Under the mutant the foreign row is validated against PROVINCE.md, finds line 2 is a hit and emits nothing.",
+ "selftestCases": {
+  "total": 38,
+  "baselinePass": 38,
+  "mutantPass": 32,
+  "restoredPass": 38,
+  "failedCaseIds": [
+   "line-row-unscreened-file",
+   "kama-invented-row",
+   "kama-quote-spliced",
+   "kama-head-citation",
+   "kama-mixed-forgery",
+   "kaidoku-multi-file-keyed-green"
+  ]
+ },
+ "failedCaseIds": [
+  "line-row-unscreened-file",
+  "kama-invented-row",
+  "kama-quote-spliced",
+  "kama-head-citation",
+  "kama-mixed-forgery",
+  "kaidoku-multi-file-keyed-green"
+ ],
+ "mutantRun": {
+  "command": "node /fast/scratch/hyaku/tabi-r59/R59MutMeter/M5.mjs --selftest",
+  "exit": 1,
+  "allPass": false,
+  "cases": 38,
+  "pass": 32,
+  "failing": [
+   {
+    "name": "line-row-unscreened-file",
+    "predicate": true,
+    "findingCount": 0,
+    "findings": [],
+    "direct": null
+   },
+   {
+    "name": "kama-invented-row",
+    "predicate": false,
+    "findingCount": 2,
+    "findings": [
+     "delta-line-invented: kama-shokunin:corpus/knowledge/listener-census.md:4",
+     "delta-line-invented: kama-shokunin:corpus/knowledge/listener-census.md:2"
+    ],
+    "direct": null
+   },
+   {
+    "name": "kama-quote-spliced",
+    "predicate": false,
+    "findingCount": 2,
+    "findings": [
+     "delta-quote-not-whole-line: kama-shokunin:corpus/knowledge/listener-census.md:4",
+     "delta-line-invented: kama-shokunin:corpus/knowledge/listener-census.md:4"
+    ],
+    "direct": null
+   },
+   {
+    "name": "kama-head-citation",
+    "predicate": false,
+    "findingCount": 2,
+    "findings": [
+     "lane-screen-head-mismatch: kama-shokunin",
+     "delta-line-invented: kama-shokunin:corpus/knowledge/listener-census.md:4"
+    ],
+    "direct": null
+   },
+   {
+    "name": "kama-mixed-forgery",
+    "predicate": false,
+    "findingCount": 3,
+    "findings": [
+     "delta-line-invented: kama-shokunin:corpus/knowledge/listener-census.md:4",
+     "delta-line-invented: kama-shokunin:corpus/knowledge/listener-census.md:2",
+     "delta-line-invented: kama-shokunin:PROVINCE.md:2"
+    ],
+    "direct": null
+   },
+   {
+    "name": "kaidoku-multi-file-keyed-green",
+    "predicate": false,
+    "findingCount": 2,
+    "findings": [
+     "delta-line-invented: kaidoku-shokunin:corpus/knowledge/2026-10-14-r10-01-queue-ops.md:3",
+     "delta-line-invented: kaidoku-shokunin:corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md:4"
+    ],
+    "direct": null
+   }
+  ],
+  "failedCaseIds": [
+   "line-row-unscreened-file",
+   "kama-invented-row",
+   "kama-quote-spliced",
+   "kama-head-citation",
+   "kama-mixed-forgery",
+   "kaidoku-multi-file-keyed-green"
+  ]
+ },
+ "baseline": {
+  "command": "node .ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs --selftest",
+  "exit": 0,
+  "allPass": true,
+  "cases": 38,
+  "pass": 38
+ },
+ "fixtureProbe": {
+  "script": ".ufo/waves/round-59/mutant-meter/fixture-probe.mjs",
+  "baseline": {
+   "allPass": true,
+   "cases": 5,
+   "pass": 5
+  },
+  "mutant": {
+   "targetSha256": "5fbf184c89930ab7fbff116980a1e133398df1435b1fcc45a80e62748722369c",
+   "exit": 1,
+   "allPass": false,
+   "cases": 5,
+   "pass": 4,
+   "failing": [
+    {
+     "name": "F5-line-row-unscreened-file",
+     "expect": [
+      "line-row-unscreened-file"
+     ],
+     "got": [],
+     "findings": []
+    }
+   ],
+   "failedFixtureIds": [
+    "F5-line-row-unscreened-file"
+   ]
+  },
+  "restored": {
+   "targetSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+   "exit": 0,
+   "allPass": true,
+   "cases": 5,
+   "pass": 5,
+   "failing": [],
+   "failedFixtureIds": []
+  }
+ },
+ "killedBy": [
+  "selftest:line-row-unscreened-file",
+  "selftest:kama-invented-row",
+  "selftest:kama-quote-spliced",
+  "selftest:kama-head-citation",
+  "selftest:kama-mixed-forgery",
+  "selftest:kaidoku-multi-file-keyed-green",
+  "fixture:F5-line-row-unscreened-file"
+ ],
+ "verdict": "KILLED",
+ "restoration": {
+  "note": "the scratch copy was overwritten with the pristine v19 bytes and re-run with both detectors; the canonical instrument was never modified",
+  "restoredSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+  "pristineSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+  "equalsPristine": true,
+  "bytesRestoredFromCommitted": true,
+  "selftestExit": 0,
+  "selftestAllPass": true,
+  "selftestCases": "38/38",
+  "probeExit": 0,
+  "probeAllPass": true,
+  "probeCases": "5/5",
+  "repoBytesUntouched": true
+ },
+ "method": "the (e) loop was re-scoped to lane-only in a SCRATCH copy only; the copy was run with --selftest and the fixture probe, then overwritten with the pristine bytes and re-run. The committed instrument was never modified.",
+ "disclosure": "The first M5 draft dereferenced the lane's first lane row BEFORE the orphan guard and threw a TypeError on orphan rows (non-JSON output, no verdict); that draft was discarded and M5 rebuilt with the guard order preserved and a safe lookup. The recorded sha is the rebuilt version. As expected for a lane-only scope, M5 also fails the multi-file kama/kaidoku cases (5 extra cases) because foreign-file rows collapse onto the first lane row; those extra failures are disclosed, not used as the declared detector."
+}

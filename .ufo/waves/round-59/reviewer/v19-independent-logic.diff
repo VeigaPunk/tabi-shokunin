@@ -1,0 +1,381 @@
+--- v18.nocom.js	2026-11-03 18:06:16.762345078 -0300
++++ v19b.nocom.js	2026-11-03 18:11:22.720806266 -0300
+@@ -5,15 +5,16 @@
+ import path from 'node:path';
+ import crypto from 'node:crypto';
+ const MAP_REL = 'corpus/adjacency.tsv';
+-const AUDIT_REL = 'corpus/adjacency-host-audit-r58.tsv';
+-const DELTA_REL = 'corpus/adjacency-host-delta-r58.tsv';
++const AUDIT_REL = 'corpus/adjacency-host-audit-r59.tsv';
++const DELTA_REL = 'corpus/adjacency-host-delta-r59.tsv';
+ const SELF_LANE = 'tabi-shokunin';
++const PROVINCE_REL = 'PROVINCE.md';
+ const BG_WORDS = ['cdp', 'devtools', 'remote-debugging', 'headless', 'webdriver', 'geckodriver', 'selenium', 'playwright', 'bidi', 'crawl', 'screenshot', 'recordhar', 'record-har'];
+ const DISPOSITIONS = ['no-tabi-ground', 'overlap-declared', 'contested-open'];
+ const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
+ export const predicateFrom = (findings) => findings.length === 0;
+ function die(msg) {
+-  console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v18', error: msg }));
++  console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v19', error: msg }));
+   process.exit(2);
+ }
+ const tsvParse = (raw, cols) => raw.toString('utf8').split('\n')
+@@ -24,6 +25,7 @@
+   .filter((parts) => parts.length === cols)
+   .map((parts) => parts);
+ function parseRef(ref) {
++  if (typeof ref !== 'string') return null;
+   const at = ref.indexOf('@');
+   if (at === -1) return null;
+   const lane = ref.slice(0, at);
+@@ -31,8 +33,10 @@
+   const c2 = ref.lastIndexOf(':');
+   if (c1 === -1 || c2 <= c1) return null;
+   const p = ref.slice(c1 + 1, c2);
+-  const ln = Number(ref.slice(c2 + 1));
+-  if (!/^\d+$/.test(ref.slice(c2 + 1))) return null;
++  const suffix = ref.slice(c2 + 1);
++  if (!/^\d+$/.test(suffix)) return null;
++  const ln = Number(suffix);
++  if (!Number.isSafeInteger(ln) || ln < 1) return null;
+   return { lane, rev: ref.slice(at + 1, c1), path: p, line: ln };
+ }
+ const observedStatus = (sibText, lineNo, citedText, noteLineRef) => {
+@@ -48,6 +52,12 @@
+ export function verify(inputs) {
+   const findings = [];
+   const add = (id, detail) => findings.push({ id, detail });
++  const readCache = new Map();
++  const read = (lane, p) => {
++    const k = `${lane}\t${p}`;
++    if (!readCache.has(k)) readCache.set(k, inputs.sibRef(lane, p));
++    return readCache.get(k);
++  };
+   const auditByKey = new Map();
+   for (const r of inputs.auditRows) {
+     if (auditByKey.has(r[0])) add('audit-duplicate', r[0]);
+@@ -60,7 +70,7 @@
+     const a = auditByKey.get(ref);
+     if (!a) { add('audit-missing', ref); continue; }
+     const noteRef = { lineNo: null };
+-    const sibText = inputs.sibRef(parsed.lane, parsed.path);
++    const sibText = read(parsed.lane, parsed.path);
+     const obs = observedStatus(sibText, parsed.line, row[3].replace(/\r$/, ''), noteRef);
+     if (obs === 'moved') {
+       const m = /:(\d+)\b/.exec(a.note || '');
+@@ -78,44 +88,115 @@
+   for (const lane of deltaLanes) {
+     if (!rosterSet.has(lane)) add('delta-lane-not-on-roster', lane);
+   }
++  const screenTargets = new Map();
++  for (const lane of inputs.roster) screenTargets.set(lane, new Set([PROVINCE_REL]));
++  for (const row of inputs.mapRows) {
++    const parsed = parseRef(row[2]);
++    if (!parsed || !screenTargets.has(parsed.lane)) continue;
++    screenTargets.get(parsed.lane).add(parsed.path);
++  }
++  const laneRowAt = new Map();
++  const lineRowAt = new Map();
++  const linePathOf = (cell) => {
++    const cut = (cell || '').lastIndexOf(':');
++    if (cut === -1) return { relPath: cell || '', line: null };
++    const suffix = cell.slice(cut + 1);
++    return {
++      relPath: cell.slice(0, cut),
++      line: /^\d+$/.test(suffix) ? Number(suffix) : null,
++    };
++  };
++  for (const r of inputs.deltaRows) {
++    if (r[0] === 'lane') {
++      const key = `${r[1]}\t${r[2]}`;
++      if (!laneRowAt.has(key)) laneRowAt.set(key, r);
++    } else if (r[0] === 'line') {
++      const { relPath, line } = linePathOf(r[2]);
++      const key = `${r[1]}\t${relPath}\t${line}`;
++      if (!lineRowAt.has(key)) lineRowAt.set(key, r);
++    }
++  }
+   for (const r of inputs.deltaRows) {
+     const [type, lane, relPath, provSha, lines, bgHits, quote, disposition, head] = r;
++    if (type === 'line') continue;
++    if (type !== 'lane') { add('delta-row-type', type); continue; }
+     if (!rosterSet.has(lane)) continue; 
+-    if (type === 'lane') {
+-      const text = inputs.sibRef(lane, relPath);
+-      if (text === null) {
+-        if (provSha !== '-') add('lane-screen-sha-mismatch', `${lane}: sibling absent but sha ${provSha}`);
+-      } else if (text === undefined) {
+-        if (provSha !== '-') add('lane-screen-sha-mismatch', `${lane}: file absent but sha ${provSha}`);
+-      } else {
+-        if (provSha !== sha256(Buffer.from(text, 'utf8'))) add('lane-screen-sha-mismatch', lane);
+-        const linesArr = text.replace(/\n$/, '').split('\n').map((l) => l.replace(/\r$/, ''));
+-        if (Number(lines) !== linesArr.length) add('lane-screen-lines-mismatch', lane);
+-        const hits = [];
+-        linesArr.forEach((l, i) => {
+-          const low = l.toLowerCase();
+-          if (BG_WORDS.some((w) => low.includes(w))) hits.push(i + 1);
+-        });
+-        if (Number(bgHits) !== hits.length) add('lane-screen-hits-mismatch', `${lane}: claimed ${bgHits} derived ${hits.length}`);
+-        const lineRows = inputs.deltaRows.filter((d) => d[0] === 'line' && d[1] === lane);
+-        for (const ln of hits) {
+-          const rowFor = lineRows.find((d) => d[2] === `${relPath}:${ln}`);
+-          if (!rowFor) { add('delta-line-missing', `${lane}:${relPath}:${ln}`); continue; }
+-          if (rowFor[6] !== linesArr[ln - 1]) add('delta-quote-not-whole-line', `${lane}:${relPath}:${ln}`);
+-          if (!DISPOSITIONS.includes(rowFor[7])) add('delta-disposition', `${lane}:${ln}: ${rowFor[7]}`);
+-        }
+-        for (const d of lineRows) {
+-          const m = /:(\d+)$/.exec(d[2] || '');
+-          if (m && !hits.includes(Number(m[1]))) add('delta-line-invented', `${lane}:${d[2]}`);
+-        }
+-        if (inputs.headOf) {
+-          const cur = inputs.headOf(lane);
+-          if (cur !== null && head !== cur) add('lane-screen-head-mismatch', lane);
+-        }
+-      }
+-    } else if (type !== 'line') add('delta-row-type', type);
++    const text = read(lane, relPath);
++    if (text === null) {
++      if (provSha !== '-') add('lane-screen-sha-mismatch', `${lane}: sibling absent but sha ${provSha}`);
++      continue;
++    }
++    if (text === undefined) {
++      if (provSha !== '-') add('lane-screen-sha-mismatch', `${lane}: file absent but sha ${provSha}`);
++      continue;
++    }
++    if (provSha !== sha256(Buffer.from(text, 'utf8'))) add('lane-screen-sha-mismatch', `${lane}:${relPath}`);
++    const linesArr = text.replace(/\n$/, '').split('\n').map((l) => l.replace(/\r$/, ''));
++    if (Number(lines) !== linesArr.length) add('lane-screen-lines-mismatch', `${lane}:${relPath}`);
++    const hits = [];
++    linesArr.forEach((l, i) => {
++      const low = l.toLowerCase();
++      if (BG_WORDS.some((w) => low.includes(w))) hits.push(i + 1);
++    });
++    if (Number(bgHits) !== hits.length) add('lane-screen-hits-mismatch', `${lane}:${relPath}: claimed ${bgHits} derived ${hits.length}`);
++    for (const ln of hits) {
++      const rowFor = lineRowAt.get(`${lane}\t${relPath}\t${ln}`);
++      if (!rowFor) { add('delta-line-missing', `${lane}:${relPath}:${ln}`); continue; }
++      if (rowFor[6] !== linesArr[ln - 1]) add('delta-quote-not-whole-line', `${lane}:${relPath}:${ln}`);
++      if (!DISPOSITIONS.includes(rowFor[7])) add('delta-disposition', `${lane}:${relPath}:${ln}: ${rowFor[7]}`);
++    }
++    if (inputs.headOf) {
++      const cur = inputs.headOf(lane);
++      if (cur !== null && head !== cur) add('lane-screen-head-mismatch', lane);
++    }
++  }
++  for (const [lane, files] of screenTargets) {
++    for (const relPath of files) {
++      const text = read(lane, relPath);
++      if (text === null || text === undefined) continue;
++      if (laneRowAt.has(`${lane}\t${relPath}`)) continue;
++      add('bg-screen-missing', `${lane}:${relPath}`);
++      const linesArr = text.replace(/\n$/, '').split('\n').map((l) => l.replace(/\r$/, ''));
++      linesArr.forEach((l, i) => {
++        const low = l.toLowerCase();
++        if (!BG_WORDS.some((w) => low.includes(w))) return;
++        const ln = i + 1;
++        if (!lineRowAt.has(`${lane}\t${relPath}\t${ln}`)) add('bg-hit-unadjudicated', `${lane}:${relPath}:${ln}`);
++      });
++    }
++  }
++  for (const r of inputs.deltaRows) {
++    if (r[0] !== 'line') continue;
++    const lane = r[1];
++    const { relPath, line } = linePathOf(r[2]);
++    if (!inputs.deltaRows.some((d) => d[0] === 'lane' && d[1] === lane)) {
++      add('orphan-line-row', `${lane}:${r[2]}`);
++      continue;
++    }
++    if (!laneRowAt.has(`${lane}\t${relPath}`) || line === null) {
++      add('line-row-unscreened-file', `${lane}:${r[2]}`);
++      continue;
++    }
++    const text = read(lane, relPath);
++    if (text === null || text === undefined) {
++      add('line-row-unscreened-file', `${lane}:${r[2]}`);
++      continue;
++    }
++    const linesArr = text.replace(/\n$/, '').split('\n').map((l) => l.replace(/\r$/, ''));
++    const whole = linesArr[line - 1];
++    const isHit = whole !== undefined && BG_WORDS.some((w) => whole.toLowerCase().includes(w));
++    if (!isHit) add('delta-line-invented', `${lane}:${r[2]}`);
+   }
+-  return { findings, counts: { roster: inputs.roster.length, mapRows: inputs.mapRows.length, auditRows: inputs.auditRows.length, deltaLanes: [...deltaLanes].length } };
++  return {
++    findings,
++    counts: {
++      roster: inputs.roster.length,
++      mapRows: inputs.mapRows.length,
++      auditRows: inputs.auditRows.length,
++      deltaLanes: [...deltaLanes].length,
++      bgScreenSiblings: [...screenTargets.keys()].length,
++    },
++  };
+ }
+ function laneExists(fleet, lane) { return fs.existsSync(path.join(fleet, lane, '.git')) || fs.existsSync(path.join(fleet, lane, 'HEAD')); }
+ function headSnapshots(fleet, lanes) {
+@@ -223,6 +304,24 @@
+     ['lane', 'quiet-lane', 'PROVINCE.md', sha256(Buffer.from(provB, 'utf8')), 2, 0, '-', '-', HEAD],
+   ];
+   const bgHitsA = 1;
++  const provKama = '# kama province\nListener census lane.\n';
++  const censusKama = '# listener census\nline2\nline3\nWe use playwright for the census.\nline5\n';
++  const refKamaCensus = 'kama-shokunin@6666666666666666666666666666666666666666:corpus/knowledge/listener-census.md:1';
++  const kamaDelta = (over = {}) => [
++    ...deltaRows(),
++    ['lane', 'kama-shokunin', 'PROVINCE.md', sha256(Buffer.from(provKama, 'utf8')), 2, 0, '-', '-', HEAD],
++    ['lane', 'kama-shokunin', 'corpus/knowledge/listener-census.md', over.censusSha ?? sha256(Buffer.from(censusKama, 'utf8')), 5, 1, '-', '-', over.censusHead ?? HEAD],
++  ];
++  const kamaInput = (delta, over = {}) => ({
++    mapRows: mapRows([['cdp-live-target-census', 'kama-shokunin', refKamaCensus, '# listener census', '-', '-', 'ruled', '-', '-']]),
++    auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-'], [refKamaCensus, 'unchanged', '-']],
++    deltaRows: delta,
++    roster: [...roster, 'kama-shokunin'],
++    sibRef: (l, p) => (l === 'kama-shokunin' && p === 'PROVINCE.md' ? provKama
++      : l === 'kama-shokunin' && p === 'corpus/knowledge/listener-census.md' ? (over.censusText ?? censusKama)
++        : sibRef(l, p)),
++    headOf,
++  });
+   const cases = [
+     { name: 'honest-green', expect: 0, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', 'probed absent 2026-10-31']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
+     { name: 'audit-missing', expect: 1, ids: ['audit-missing'], run: () => verify({ mapRows: mapRows(), auditRows: [[refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
+@@ -243,7 +342,15 @@
+     { name: 'predicate-assert-green', expect: 0, assertPredicate: true, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', 'probed absent 2026-10-31']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
+     { name: 'predicate-assert-partial', expect: 1, ids: ['delta-quote-not-whole-line'], assertPredicate: false, assertFindingCount: 1, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows().map((r) => (r[0] === 'line' ? ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'drive the browser', 'overlap-declared'] : r)), roster, sibRef, headOf }) },
+     { name: 'map-ref-unparseable', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ mapRows: mapRows([['bogus-ground', 'mado-shokunin', refMalformed, 'We drive it over CDP for tests.', '-', '-', 'split-declared', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-'], [refMalformed, 'unchanged', '-']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
+-    { name: 'harness-guard', expect: 0, run: () => {
++    { name: 'harness-guard', expect: 0, direct: () => {
++      const rows = [
++        caseOk({ expect: 0, assertPredicate: false }, [], true),
++        caseOk({ expect: 0, assertFindingCount: 1 }, [], true),
++        caseOk({ expect: 0, assertPredicate: true, assertFindingCount: 0 }, [], true),
++      ];
++      const want = [false, false, true];
++      return rows.every((v, i) => v === want[i]);
++    }, run: () => {
+       const rows = [
+         caseOk({ expect: 0, assertPredicate: false }, [], true),
+         caseOk({ expect: 0, assertFindingCount: 1 }, [], true),
+@@ -252,14 +359,97 @@
+       const want = [false, false, true];
+       return { findings: rows.every((v, i) => v === want[i]) ? [] : [{ id: 'harness-guard', detail: `caseOk truth table ${JSON.stringify(rows)} != ${JSON.stringify(want)}` }] };
+     } },
++    { name: 'harness-guard-findings-predicate-match', expect: 0, direct: () => caseOk({ expect: 1, ids: ['alpha'], assertPredicate: false }, [{ id: 'beta' }], false) === false, run: () => {
++      const ok = caseOk({ expect: 1, ids: ['alpha'], assertPredicate: false }, [{ id: 'beta' }], false);
++      return { findings: ok ? [{ id: 'harness-guard-findings', detail: 'findings-mismatch + predicate-match returned true' }] : [] };
++    } },
++    { name: 'harness-guard-findings-count-match', expect: 0, direct: () => caseOk({ expect: 1, ids: ['alpha'], assertFindingCount: 1 }, [{ id: 'beta' }], false) === false, run: () => {
++      const ok = caseOk({ expect: 1, ids: ['alpha'], assertFindingCount: 1 }, [{ id: 'beta' }], false);
++      return { findings: ok ? [{ id: 'harness-guard-findings', detail: 'findings-mismatch + count-match returned true' }] : [] };
++    } },
++    { name: 'map-ref-alpha-suffix', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ mapRows: mapRows([['bogus-ground', 'mado-shokunin', 'mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md:x', 'We drive it over CDP for tests.', '-', '-', 'split-declared', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
++    { name: 'map-ref-empty-suffix', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ mapRows: mapRows([['bogus-ground', 'mado-shokunin', 'mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md:', 'We drive it over CDP for tests.', '-', '-', 'split-declared', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
++    { name: 'map-ref-signed-suffix', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ mapRows: mapRows([['bogus-ground', 'mado-shokunin', 'mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md:-1', 'We drive it over CDP for tests.', '-', '-', 'split-declared', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
++    { name: 'map-ref-no-at', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ mapRows: mapRows([['bogus-ground', 'mado-shokunin', 'mado-shokunin:PROVINCE.md:2', 'We drive it over CDP for tests.', '-', '-', 'split-declared', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
++    { name: 'map-ref-no-second-colon', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ mapRows: mapRows([['bogus-ground', 'mado-shokunin', 'mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md', 'We drive it over CDP for tests.', '-', '-', 'split-declared', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
++    { name: 'bg-hit-unadjudicated-map-lane', expect: 1, ids: ['bg-screen-missing', 'bg-hit-unadjudicated'], assertPredicate: false, assertFindingCount: 2, run: () => {
++      const provK = '# kagi province\nAll secrets stay in the vault; no CDP here.\n';
++      const refKagi = 'kagi-shokunin@3333333333333333333333333333333333333333:PROVINCE.md:1';
++      const rosterK = [...roster, 'kagi-shokunin'];
++      const sibK = (l, p) => (l === 'kagi-shokunin' && p === 'PROVINCE.md' ? provK : sibRef(l, p));
++      return verify({ mapRows: mapRows([['secrets-vault-ops', 'kagi-shokunin', refKagi, '# kagi province', '-', '-', 'ruled', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-'], [refKagi, 'unchanged', '-']], deltaRows: deltaRows(), roster: rosterK, sibRef: sibK, headOf });
++    } },
++    { name: 'bg-screen-missing-zero-hit', expect: 1, ids: ['bg-screen-missing'], assertPredicate: false, assertFindingCount: 1, run: () => {
++      const provC = '# chousa province\nQuiet research lane.\n';
++      const refC = 'chousa-shokunin@5555555555555555555555555555555555555555:PROVINCE.md:1';
++      const rosterC = [...roster, 'chousa-shokunin'];
++      const sibC = (l, p) => (l === 'chousa-shokunin' && p === 'PROVINCE.md' ? provC : sibRef(l, p));
++      return verify({ mapRows: mapRows([['research-lane', 'chousa-shokunin', refC, '# chousa province', '-', '-', 'ruled', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-'], [refC, 'unchanged', '-']], deltaRows: deltaRows(), roster: rosterC, sibRef: sibC, headOf });
++    } },
++    { name: 'orphan-line-row', expect: 1, ids: ['orphan-line-row'], assertPredicate: false, assertFindingCount: 1, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: [...deltaRows(), ['line', 'ghost-lane', 'PROVINCE.md:2', '-', '-', '-', 'ghost line', 'no-tabi-ground', '-']], roster, sibRef, headOf }) },
++    { name: 'line-row-unscreened-file', expect: 1, ids: ['line-row-unscreened-file'], assertPredicate: false, assertFindingCount: 1, run: () => {
++      const provKake = '# kake province\nWe publish pages; CDP is out of scope here.\nNothing else.\n';
++      const refKake = 'kake-shokunin@4444444444444444444444444444444444444444:PROVINCE.md:1';
++      const shaKake = sha256(Buffer.from(provKake, 'utf8'));
++      const rosterK = [...roster, 'kake-shokunin'];
++      const sibK = (l, p) => (l === 'kake-shokunin' && p === 'PROVINCE.md' ? provKake : sibRef(l, p));
++      return verify({ mapRows: mapRows([['crawler-discipline-vs-publishing', 'kake-shokunin', refKake, '# kake province', '-', '-', 'ruled', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-'], [refKake, 'unchanged', '-']], deltaRows: [...deltaRows(), ['lane', 'kake-shokunin', 'PROVINCE.md', shaKake, 3, 1, '-', '-', HEAD], ['line', 'kake-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'We publish pages; CDP is out of scope here.', 'overlap-declared', '-'], ['line', 'kake-shokunin', 'OTHER-UNSCREENED.md:2', '-', '-', '-', 'We publish pages; CDP is out of scope here.', 'no-tabi-ground', '-']], roster: rosterK, sibRef: sibK, headOf });
++    } },
++    { name: 'cross-file-hit-number-wrong-file', expect: 1, ids: ['delta-line-missing', 'delta-line-invented'], assertPredicate: false, assertFindingCount: 2, run: () => {
++      const provKake = '# kake province\nWe publish pages; CDP is out of scope here.\nNothing else.\n';
++      const provSkill = '# skill\ns2\ns3\ns4\nWe run CDP here.\n';
++      const refKake = 'kake-shokunin@4444444444444444444444444444444444444444:PROVINCE.md:1';
++      const refSkill = 'kake-shokunin@4444444444444444444444444444444444444444:SKILL.md:1';
++      const rosterK = [...roster, 'kake-shokunin'];
++      const sibK = (l, p) => (l === 'kake-shokunin' && p === 'PROVINCE.md' ? provKake : l === 'kake-shokunin' && p === 'SKILL.md' ? provSkill : sibRef(l, p));
++      return verify({
++        mapRows: mapRows([
++          ['crawler-discipline-vs-publishing', 'kake-shokunin', refKake, '# kake province', '-', '-', 'ruled', '-', '-'],
++          ['lab-performance-tool-runs', 'kake-shokunin', refSkill, '# skill', '-', '-', 'ruled', '-', '-'],
++        ]),
++        auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-'], [refKake, 'unchanged', '-'], [refSkill, 'unchanged', '-']],
++        deltaRows: [
++          ...deltaRows(),
++          ['lane', 'kake-shokunin', 'PROVINCE.md', sha256(Buffer.from(provKake, 'utf8')), 3, 1, '-', '-', HEAD],
++          ['lane', 'kake-shokunin', 'SKILL.md', sha256(Buffer.from(provSkill, 'utf8')), 5, 1, '-', '-', HEAD],
++          ['line', 'kake-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'We publish pages; CDP is out of scope here.', 'overlap-declared', '-'],
++          ['line', 'kake-shokunin', 'PROVINCE.md:5', '-', '-', '-', 'We run CDP here.', 'overlap-declared', '-'],
++        ],
++        roster: rosterK, sibRef: sibK, headOf,
++      });
++    } },
++    { name: 'kama-invented-row', expect: 1, ids: ['delta-line-invented'], assertPredicate: false, assertFindingCount: 1, run: () => verify(kamaInput([
++      ...kamaDelta(),
++      ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:4', '-', '-', '-', 'We use playwright for the census.', 'no-tabi-ground', '-'],
++      ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:2', '-', '-', '-', 'line2', 'no-tabi-ground', '-'],
++    ])) },
++    { name: 'kama-quote-spliced', expect: 1, ids: ['delta-quote-not-whole-line'], assertPredicate: false, assertFindingCount: 1, run: () => verify(kamaInput([
++      ...kamaDelta(),
++      ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:4', '-', '-', '-', 'use playwright', 'no-tabi-ground', '-'],
++    ])) },
++    { name: 'kama-head-citation', expect: 1, ids: ['lane-screen-head-mismatch'], assertPredicate: false, assertFindingCount: 1, run: () => verify(kamaInput([
++      ...kamaDelta({ censusHead: 'b'.repeat(40) }),
++      ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:4', '-', '-', '-', 'We use playwright for the census.', 'no-tabi-ground', '-'],
++    ])) },
++    { name: 'kama-mixed-forgery', expect: 1, ids: ['delta-line-invented'], assertPredicate: false, assertFindingCount: 2, run: () => verify(kamaInput([
++      ...kamaDelta(),
++      ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:4', '-', '-', '-', 'We use playwright for the census.', 'no-tabi-ground', '-'],
++      ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:2', '-', '-', '-', 'line2', 'no-tabi-ground', '-'],
++      ['line', 'kama-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'Listener census lane.', 'no-tabi-ground', '-'],
++    ])) },
++    { name: 'kama-screen-weakening-observable', expect: 1, ids: ['bg-screen-missing', 'bg-hit-unadjudicated'], assertPredicate: false, assertFindingCount: 2, run: () => verify(kamaInput([
++      ...deltaRows(),
++      ['lane', 'kama-shokunin', 'PROVINCE.md', sha256(Buffer.from(provKama, 'utf8')), 2, 0, '-', '-', HEAD],
++    ])) },
+   ];
+   let pass = 0;
+   const results = cases.map((c) => {
+     const { findings } = c.run();
+     const emitted = predicateFrom(findings);
+-    const ok = caseOk(c, findings, emitted);
++    const direct = c.direct === undefined ? null : c.direct();
++    const ok = caseOk(c, findings, emitted) && (direct === null || direct);
+     if (ok) pass++;
+-    return { name: c.name, ok, predicate: emitted, findingCount: findings.length, findings: findings.map((f) => `${f.id}: ${f.detail}`) };
++    return { name: c.name, ok, direct, predicate: emitted, findingCount: findings.length, findings: findings.map((f) => `${f.id}: ${f.detail}`) };
+   });
+   return { allPass: pass === cases.length, cases: cases.length, pass, results };
+ }
+@@ -269,7 +459,7 @@
+ } else {
+ if (args[0] === '--selftest') {
+   const st = selftest();
+-  console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v18-selftest', ...st }, null, 1));
++  console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v19-selftest', ...st }, null, 1));
+   process.exit(st.allPass ? 0 : 1);
+ }
+ if (args[0] === '--list-observed') {
+@@ -285,11 +475,11 @@
+   else if (args[i] === '--fleet') fleet = args[++i];
+   else if (args[i] === '--json') json = true;
+ }
+-if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v18.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
++if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v19.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
+ const { findings, counts, headSnapshot } = runAt(repo, rev, fleet);
+ const out = {
+-  schema: 'tabi-adjacency-host-v18',
+-  predicateSentence: 'c1-adjacency-host-v18 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r58.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r58.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',
++  schema: 'tabi-adjacency-host-v19',
++  predicateSentence: 'c1-adjacency-host-v19 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r59.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is browser-ground-screened at that same snapshot over its PROVINCE.md and every file its map rows reference, so that every present screened file carries a corpus/adjacency-host-delta-r59.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation and every browser-ground hit line carries a line row keyed by (lane, relPath:line) whose quote is that complete line and whose disposition is in the frozen vocabulary, with no unadjudicated hit line, no orphan line row, no line row on an unscreened file and no invented row AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r59.tsv lane row, with no uncovered lane and no duplicate keys.',
+   rev, repo: path.resolve(repo), fleet: path.resolve(fleet), counts, headSnapshot,
+   predicate: predicateFrom(findings), findingCount: findings.length, findings,
+ };

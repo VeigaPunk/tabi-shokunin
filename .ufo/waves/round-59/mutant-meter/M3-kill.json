@@ -1,0 +1,144 @@
+{
+ "schema": "tabi-adjacency-r59-M3-kill",
+ "claim": "C1 declared change set (d) \u2014 routed r58-closure D5/A4+N3",
+ "instrument": ".ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs",
+ "instrumentSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+ "instrumentBytes": 53384,
+ "instrumentUntouched": "the canonical file was read and copied only; its sha256 re-checked after every mutant and before this receipt",
+ "mutant": "M3: remove or short-circuit the bg-hit-unadjudicated check (routed A4/N3) - killed by an unadjudicated-hit fixture",
+ "mutantSha256": "1be2db562306a9883b35d04b300056b2998571b0a15365a0b1ce800536a7ad21",
+ "hunk": "the universal-screen body's `if (!lineRowAt.has(`${lane}\\t${relPath}\\t${ln}`)) add('bg-hit-unadjudicated', ...)` line is deleted (the hit enumeration and bg-screen-missing emission remain) \u2014 one line, nothing else.",
+ "diff": "--- a/c1-adjacency-host-v19.mjs\n+++ b/c1-adjacency-host-v19.mjs\n@@ -269,7 +269,6 @@\n         const low = l.toLowerCase();\n         if (!BG_WORDS.some((w) => low.includes(w))) return;\n         const ln = i + 1;\n-        if (!lineRowAt.has(`${lane}\\t${relPath}\\t${ln}`)) add('bg-hit-unadjudicated', `${lane}:${relPath}:${ln}`);\n       });\n     }\n   }\n",
+ "expectedDetector": "selftest cases bg-hit-unadjudicated-map-lane and kama-screen-weakening-observable (each expects [bg-screen-missing, bg-hit-unadjudicated], findingCount 2); plus scratch fixture F3-bg-hit-unadjudicated (smallest map-covered lane, one CDP hit line, no delta screen). The mutant emits bg-screen-missing only.",
+ "selftestCases": {
+  "total": 38,
+  "baselinePass": 38,
+  "mutantPass": 36,
+  "restoredPass": 38,
+  "failedCaseIds": [
+   "bg-hit-unadjudicated-map-lane",
+   "kama-screen-weakening-observable"
+  ]
+ },
+ "failedCaseIds": [
+  "bg-hit-unadjudicated-map-lane",
+  "kama-screen-weakening-observable"
+ ],
+ "mutantRun": {
+  "command": "node /fast/scratch/hyaku/tabi-r59/R59MutMeter/M3.mjs --selftest",
+  "exit": 1,
+  "allPass": false,
+  "cases": 38,
+  "pass": 36,
+  "failing": [
+   {
+    "name": "bg-hit-unadjudicated-map-lane",
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     "bg-screen-missing: kagi-shokunin:PROVINCE.md"
+    ],
+    "direct": null
+   },
+   {
+    "name": "kama-screen-weakening-observable",
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     "bg-screen-missing: kama-shokunin:corpus/knowledge/listener-census.md"
+    ],
+    "direct": null
+   }
+  ],
+  "failedCaseIds": [
+   "bg-hit-unadjudicated-map-lane",
+   "kama-screen-weakening-observable"
+  ]
+ },
+ "baseline": {
+  "command": "node .ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs --selftest",
+  "exit": 0,
+  "allPass": true,
+  "cases": 38,
+  "pass": 38
+ },
+ "fixtureProbe": {
+  "script": ".ufo/waves/round-59/mutant-meter/fixture-probe.mjs",
+  "baseline": {
+   "allPass": true,
+   "cases": 5,
+   "pass": 5
+  },
+  "mutant": {
+   "targetSha256": "1be2db562306a9883b35d04b300056b2998571b0a15365a0b1ce800536a7ad21",
+   "exit": 1,
+   "allPass": false,
+   "cases": 5,
+   "pass": 3,
+   "failing": [
+    {
+     "name": "F3-bg-hit-unadjudicated",
+     "expect": [
+      "bg-screen-missing",
+      "bg-hit-unadjudicated"
+     ],
+     "got": [
+      "bg-screen-missing"
+     ],
+     "findings": [
+      "bg-screen-missing: bg-lane:PROVINCE.md"
+     ]
+    },
+    {
+     "name": "F6-screen-vocabulary",
+     "expect": [
+      "bg-screen-missing",
+      "bg-hit-unadjudicated"
+     ],
+     "got": [
+      "bg-screen-missing"
+     ],
+     "findings": [
+      "bg-screen-missing: v:PROVINCE.md"
+     ]
+    }
+   ],
+   "failedFixtureIds": [
+    "F3-bg-hit-unadjudicated",
+    "F6-screen-vocabulary"
+   ]
+  },
+  "restored": {
+   "targetSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+   "exit": 0,
+   "allPass": true,
+   "cases": 5,
+   "pass": 5,
+   "failing": [],
+   "failedFixtureIds": []
+  }
+ },
+ "killedBy": [
+  "selftest:bg-hit-unadjudicated-map-lane",
+  "selftest:kama-screen-weakening-observable",
+  "fixture:F3-bg-hit-unadjudicated",
+  "fixture:F6-screen-vocabulary"
+ ],
+ "verdict": "KILLED",
+ "restoration": {
+  "note": "the scratch copy was overwritten with the pristine v19 bytes and re-run with both detectors; the canonical instrument was never modified",
+  "restoredSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+  "pristineSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+  "equalsPristine": true,
+  "bytesRestoredFromCommitted": true,
+  "selftestExit": 0,
+  "selftestAllPass": true,
+  "selftestCases": "38/38",
+  "probeExit": 0,
+  "probeAllPass": true,
+  "probeCases": "5/5",
+  "repoBytesUntouched": true
+ },
+ "method": "the single bg-hit-unadjudicated emission was deleted in a SCRATCH copy only; the copy was run with --selftest and the fixture probe, then overwritten with the pristine bytes and re-run. The committed instrument was never modified.",
+ "disclosure": "none: the fixture is the smallest one that reaches the universal screen (one roster lane, one map row, one hit line, zero delta rows) and is green on pristine."
+}

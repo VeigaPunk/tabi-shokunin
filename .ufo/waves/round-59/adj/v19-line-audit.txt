@@ -1,0 +1,498 @@
+v19 line audit — c1-adjacency-host-v19.mjs
+Round 59, claim C1 (adjacency). Frozen rule: counters/v18-v19-meter.diff —
+every differing NON-COMMENT line is accounted against the declared change
+set (a)-(e) of .ufo/waves/round-59/claims.json C1. Comment-only lines are
+excluded from the table by design; the header rewrite (hunk @@ -1,194 +1,73 @@)
+and the two comment hunks (@@ -365,7 +342,7 @@, @@ -421,9 +398,10 @@) carry no
+logic. DEL 320 is the one comment line inside the replaced P3 block; it is
+not listed.
+
+Artifacts under audit:
+  base   .ufo/waves/round-58/counters/c1-adjacency-host-v18.mjs  sha256 3afade4ea188d5b8420ff7494a8bdb70724dab2aa6cf56e13a885cc9d27c45b2
+  meter  .ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs  sha256 0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c
+  diff   .ufo/waves/round-59/counters/v18-v19-meter.diff         sha256 82eec49616f6aa3df143419e55049d93bd987da7920112ebf5c9410b1e419422
+
+Coverage: 318 differing non-comment lines (47 DEL / 271 ADD);
+0 unaccounted; 0 mapped-but-unchanged. Per rule: (a) 14, (b) 23, (c) 12, (d) 80, (e) 189.
+
+Rule legend:
+  (a) r58->r59 generation relabel: ledger paths, every schema string, the
+      predicate sentence (r59 ledgers + (d)/(e) clauses), usage/header names.
+  (b) ROUTED D5/N1: harness truth table findings-mismatch rows + the direct
+      observable that a findings-term drop cannot self-mask (M1 pin).
+  (c) ROUTED D5/N2: map-ref parse hardening (all-digit, positive, safe
+      integer) + the five malformed-suffix cases.
+  (d) ROUTED D5/A4+N3: the ALL-sibling BG screen (PROVINCE.md + every
+      map-referenced file), bg-screen-missing / bg-hit-unadjudicated, the
+      memoized bounded screen reads, counts.bgScreenSiblings, M6 fixture.
+  (e) ROUTED D5/A5+N4: line rows keyed by (lane, relPath); orphan-line-row,
+      line-row-unscreened-file, keyed delta-line-invented; the kama trio,
+      the cross-file cases and the multi-file (3-relPath) green pin.
+
+Block accounting (one row per contiguous change block; a DEL block has a v18
+range, an ADD block a v19 range):
+
+block  kind   v18 lines   v19 lines    n  rule  reason
+   1  DEL     200-201           -    2  (a)  AUDIT_REL/DELTA_REL moved from the r58 to the r59 ledgers
+   2  DEL         215           -    1  (a)  die() error schema tabi-adjacency-host-v18 -> v19
+   3  DEL     237-238           -    2  (c)  old suffix parse (regex test after Number) replaced by the hardened block
+   4  DEL         271           -    1  (d)  P1 byte read routed through the memoized read() (bounded-cost screen discipline)
+   5  DEL     297-319           -   23  (e)  v18 P3 body replaced: per-lane line-row filtering becomes (lane, relPath)-keyed; path-suffixed detail strings; hit-row lookup keyed
+   6  DEL     321-330           -   10  (e)  v18 invented-row check (line-number only) and the lane-row nesting brace replaced by the keyed row loop
+   7  DEL         333           -    1  (d)  counts return replaced to add the derived bgScreenSiblings
+   8  DEL         507           -    1  (b)  harness-guard gains its direct truth-table observable (M1 pin)
+   9  DEL         521           -    1  (b)  run-loop verdict gains the direct term (M1 pin)
+  10  DEL         523           -    1  (b)  per-case receipt gains the direct verdict field
+  11  DEL         536           -    1  (a)  selftest schema tabi-adjacency-host-v18-selftest -> v19
+  12  DEL         552           -    1  (a)  usage string names the v19 file
+  13  DEL     555-556           -    2  (a)  run schema and predicateSentence relabelled to v19 / r59
+  14  ADD           -       79-80    2  (a)  AUDIT_REL/DELTA_REL now point at corpus/adjacency-host-{audit,delta}-r59.tsv
+  15  ADD           -          82    1  (d)  PROVINCE_REL: the mandatory screen member for every roster sibling
+  16  ADD           -          95    1  (a)  die() error schema is tabi-adjacency-host-v19
+  17  ADD           -         112    1  (c)  non-string refs are unparseable instead of throwing
+  18  ADD           -     120-123    4  (c)  suffix must be all digits AND a positive safe integer; finite-integer hardening
+  19  ADD           -     146-151    6  (d)  one memoized read per (lane, path): the 20-lane/25-file screen stays bounded and internally consistent
+  20  ADD           -         166    1  (d)  P1 uses the memoized read (same bytes as the screen within one run)
+  21  ADD           -     190-196    7  (d)  screenTargets: every roster sibling over PROVINCE.md + every map-referenced file
+  22  ADD           -     201-221   21  (e)  (lane, relPath) lane-row index and (lane, relPath, line) line-row index; relPath parsed from the final :<digits> suffix
+  23  ADD           -     226-227    2  (d)  P3 now visits every delta row: line rows skipped, unknown row types still delta-row-type (the screen is no longer nested under a lane row)
+  24  ADD           -     229-256   28  (e)  v18 row-validation body carried for every lane row (sha/lines/bgHits/head, quote-whole-line, disposition), with the line-row lookup keyed by (lane, relPath, line)
+  25  ADD           -     261-275   15  (d)  the universal screen: present file without a lane row -> bg-screen-missing; its hit lines without line rows -> bg-hit-unadjudicated
+  26  ADD           -     278-299   22  (e)  stray line rows: orphan-line-row, line-row-unscreened-file, and the keyed delta-line-invented check
+  27  ADD           -     301-310   10  (d)  counts gains bgScreenSiblings, derived from screenTargets (== roster by construction), never hardcoded
+  28  ADD           -     451-468   18  (d)  kama-shaped fixture (map-referenced non-PROVINCE file) used by the M6-observable screen case and the (e) trio
+  29  ADD           -     504-512    9  (b)  harness-guard truth table re-read directly outside the caseOk verdict path (M1)
+  30  ADD           -     526-533    8  (b)  the two findings-mismatch rows: findings-mismatch + predicate-match -> false; findings-mismatch + count-match -> false
+  31  ADD           -     537-541    5  (c)  five malformed-suffix cases: alpha-only x, empty, signed -1, no-@, no-second-colon
+  32  ADD           -     546-552    7  (d)  H1-shaped unadjudicated-hit fixture (map-only lane, BG hits, no delta row)
+  33  ADD           -     555-561    7  (d)  zero-hit present file without a lane row -> bg-screen-missing alone
+  34  ADD           -         564    1  (e)  H2-shaped orphan line row fixture
+  35  ADD           -     568-575    8  (e)  H3b-shaped cross-file line row with a hit number -> line-row-unscreened-file
+  36  ADD           -     580-602   23  (e)  cross-file acceptance killed: a hit in SKILL.md is not satisfied by a PROVINCE.md row (delta-line-missing + invented)
+  37  ADD           -     606-610    5  (e)  kama-shaped invented row (real hit row + junk non-hit row)
+  38  ADD           -     613-616    4  (e)  kama-shaped spliced quote -> delta-quote-not-whole-line
+  39  ADD           -     619-622    4  (e)  kama-shaped row citing bytes not at the snapshot head -> lane-screen-head-mismatch
+  40  ADD           -     625-630    6  (e)  kama-shaped mixed forgery (real rows + junk rows) stays red
+  41  ADD           -     637-640    4  (d)  M6-observable: a playwright-only hit in a map-covered lane’s non-PROVINCE file, no screen row -> bg-screen-missing + bg-hit-unadjudicated
+  42  ADD           -     647-680   34  (e)  R59Connector pin: ONE lane, THREE relPaths (kaidoku PROVINCE.md + two queue-ops knowledge files) with correctly quoted rows each -> GREEN; lane-only keying emits spurious delta-line-invented
+  43  ADD           -     689-690    2  (b)  the run-loop verdict ANDs the direct term (M1 pin)
+  44  ADD           -         692    1  (b)  per-case receipt records the direct verdict
+  45  ADD           -         705    1  (a)  selftest schema is tabi-adjacency-host-v19-selftest
+  46  ADD           -         721    1  (a)  usage string names c1-adjacency-host-v19.mjs
+  47  ADD           -     724-725    2  (a)  run schema is tabi-adjacency-host-v19; predicate sentence names the r59 ledgers and the (d)/(e) clauses
+
+Per-line enumeration (every differing non-comment line):
+
+-- block 1 [(a)] DEL 200-201: AUDIT_REL/DELTA_REL moved from the r58 to the r59 ledgers
+   DEL  200  const AUDIT_REL = 'corpus/adjacency-host-audit-r58.tsv';
+   DEL  201  const DELTA_REL = 'corpus/adjacency-host-delta-r58.tsv';
+
+-- block 2 [(a)] DEL 215-215: die() error schema tabi-adjacency-host-v18 -> v19
+   DEL  215    console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v18', error: msg }));
+
+-- block 3 [(c)] DEL 237-238: old suffix parse (regex test after Number) replaced by the hardened block
+   DEL  237    const ln = Number(ref.slice(c2 + 1));
+   DEL  238    if (!/^\d+$/.test(ref.slice(c2 + 1))) return null;
+
+-- block 4 [(d)] DEL 271-271: P1 byte read routed through the memoized read() (bounded-cost screen discipline)
+   DEL  271      const sibText = inputs.sibRef(parsed.lane, parsed.path);
+
+-- block 5 [(e)] DEL 297-319: v18 P3 body replaced: per-lane line-row filtering becomes (lane, relPath)-keyed; path-suffixed detail strings; hit-row lookup keyed
+   DEL  297      if (type === 'lane') {
+   DEL  298        const text = inputs.sibRef(lane, relPath);
+   DEL  299        if (text === null) {
+   DEL  300          if (provSha !== '-') add('lane-screen-sha-mismatch', `${lane}: sibling absent but sha ${provSha}`);
+   DEL  301        } else if (text === undefined) {
+   DEL  302          if (provSha !== '-') add('lane-screen-sha-mismatch', `${lane}: file absent but sha ${provSha}`);
+   DEL  303        } else {
+   DEL  304          if (provSha !== sha256(Buffer.from(text, 'utf8'))) add('lane-screen-sha-mismatch', lane);
+   DEL  305          const linesArr = text.replace(/\n$/, '').split('\n').map((l) => l.replace(/\r$/, ''));
+   DEL  306          if (Number(lines) !== linesArr.length) add('lane-screen-lines-mismatch', lane);
+   DEL  307          const hits = [];
+   DEL  308          linesArr.forEach((l, i) => {
+   DEL  309            const low = l.toLowerCase();
+   DEL  310            if (BG_WORDS.some((w) => low.includes(w))) hits.push(i + 1);
+   DEL  311          });
+   DEL  312          if (Number(bgHits) !== hits.length) add('lane-screen-hits-mismatch', `${lane}: claimed ${bgHits} derived ${hits.
+   DEL  313          const lineRows = inputs.deltaRows.filter((d) => d[0] === 'line' && d[1] === lane);
+   DEL  314          for (const ln of hits) {
+   DEL  315            const rowFor = lineRows.find((d) => d[2] === `${relPath}:${ln}`);
+   DEL  316            if (!rowFor) { add('delta-line-missing', `${lane}:${relPath}:${ln}`); continue; }
+   DEL  317            if (rowFor[6] !== linesArr[ln - 1]) add('delta-quote-not-whole-line', `${lane}:${relPath}:${ln}`);
+   DEL  318            if (!DISPOSITIONS.includes(rowFor[7])) add('delta-disposition', `${lane}:${ln}: ${rowFor[7]}`);
+   DEL  319          }
+
+-- block 6 [(e)] DEL 321-330: v18 invented-row check (line-number only) and the lane-row nesting brace replaced by the keyed row loop
+   DEL  321          for (const d of lineRows) {
+   DEL  322            const m = /:(\d+)$/.exec(d[2] || '');
+   DEL  323            if (m && !hits.includes(Number(m[1]))) add('delta-line-invented', `${lane}:${d[2]}`);
+   DEL  324          }
+   DEL  325          if (inputs.headOf) {
+   DEL  326            const cur = inputs.headOf(lane);
+   DEL  327            if (cur !== null && head !== cur) add('lane-screen-head-mismatch', lane);
+   DEL  328          }
+   DEL  329        }
+   DEL  330      } else if (type !== 'line') add('delta-row-type', type);
+
+-- block 7 [(d)] DEL 333-333: counts return replaced to add the derived bgScreenSiblings
+   DEL  333    return { findings, counts: { roster: inputs.roster.length, mapRows: inputs.mapRows.length, auditRows: inputs.auditRows
+
+-- block 8 [(b)] DEL 507-507: harness-guard gains its direct truth-table observable (M1 pin)
+   DEL  507      { name: 'harness-guard', expect: 0, run: () => {
+
+-- block 9 [(b)] DEL 521-521: run-loop verdict gains the direct term (M1 pin)
+   DEL  521      const ok = caseOk(c, findings, emitted);
+
+-- block 10 [(b)] DEL 523-523: per-case receipt gains the direct verdict field
+   DEL  523      return { name: c.name, ok, predicate: emitted, findingCount: findings.length, findings: findings.map((f) => `${f.id}
+
+-- block 11 [(a)] DEL 536-536: selftest schema tabi-adjacency-host-v18-selftest -> v19
+   DEL  536    console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v18-selftest', ...st }, null, 1));
+
+-- block 12 [(a)] DEL 552-552: usage string names the v19 file
+   DEL  552  if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v18.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
+
+-- block 13 [(a)] DEL 555-556: run schema and predicateSentence relabelled to v19 / r59
+   DEL  555    schema: 'tabi-adjacency-host-v18',
+   DEL  556    predicateSentence: 'c1-adjacency-host-v18 admits the lane state at REV where every corpus/adjacency.tsv data row has e
+
+-- block 14 [(a)] ADD 79-80: AUDIT_REL/DELTA_REL now point at corpus/adjacency-host-{audit,delta}-r59.tsv
+   ADD   79  const AUDIT_REL = 'corpus/adjacency-host-audit-r59.tsv';
+   ADD   80  const DELTA_REL = 'corpus/adjacency-host-delta-r59.tsv';
+
+-- block 15 [(d)] ADD 82-82: PROVINCE_REL: the mandatory screen member for every roster sibling
+   ADD   82  const PROVINCE_REL = 'PROVINCE.md';
+
+-- block 16 [(a)] ADD 95-95: die() error schema is tabi-adjacency-host-v19
+   ADD   95    console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v19', error: msg }));
+
+-- block 17 [(c)] ADD 112-112: non-string refs are unparseable instead of throwing
+   ADD  112    if (typeof ref !== 'string') return null;
+
+-- block 18 [(c)] ADD 120-123: suffix must be all digits AND a positive safe integer; finite-integer hardening
+   ADD  120    const suffix = ref.slice(c2 + 1);
+   ADD  121    if (!/^\d+$/.test(suffix)) return null;
+   ADD  122    const ln = Number(suffix);
+   ADD  123    if (!Number.isSafeInteger(ln) || ln < 1) return null;
+
+-- block 19 [(d)] ADD 146-151: one memoized read per (lane, path): the 20-lane/25-file screen stays bounded and internally consistent
+   ADD  146    const readCache = new Map();
+   ADD  147    const read = (lane, p) => {
+   ADD  148      const k = `${lane}\t${p}`;
+   ADD  149      if (!readCache.has(k)) readCache.set(k, inputs.sibRef(lane, p));
+   ADD  150      return readCache.get(k);
+   ADD  151    };
+
+-- block 20 [(d)] ADD 166-166: P1 uses the memoized read (same bytes as the screen within one run)
+   ADD  166      const sibText = read(parsed.lane, parsed.path);
+
+-- block 21 [(d)] ADD 190-196: screenTargets: every roster sibling over PROVINCE.md + every map-referenced file
+   ADD  190    const screenTargets = new Map();
+   ADD  191    for (const lane of inputs.roster) screenTargets.set(lane, new Set([PROVINCE_REL]));
+   ADD  192    for (const row of inputs.mapRows) {
+   ADD  193      const parsed = parseRef(row[2]);
+   ADD  194      if (!parsed || !screenTargets.has(parsed.lane)) continue;
+   ADD  195      screenTargets.get(parsed.lane).add(parsed.path);
+   ADD  196    }
+
+-- block 22 [(e)] ADD 201-221: (lane, relPath) lane-row index and (lane, relPath, line) line-row index; relPath parsed from the final :<digits> suffix
+   ADD  201    const laneRowAt = new Map();
+   ADD  202    const lineRowAt = new Map();
+   ADD  203    const linePathOf = (cell) => {
+   ADD  204      const cut = (cell || '').lastIndexOf(':');
+   ADD  205      if (cut === -1) return { relPath: cell || '', line: null };
+   ADD  206      const suffix = cell.slice(cut + 1);
+   ADD  207      return {
+   ADD  208        relPath: cell.slice(0, cut),
+   ADD  209        line: /^\d+$/.test(suffix) ? Number(suffix) : null,
+   ADD  210      };
+   ADD  211    };
+   ADD  212    for (const r of inputs.deltaRows) {
+   ADD  213      if (r[0] === 'lane') {
+   ADD  214        const key = `${r[1]}\t${r[2]}`;
+   ADD  215        if (!laneRowAt.has(key)) laneRowAt.set(key, r);
+   ADD  216      } else if (r[0] === 'line') {
+   ADD  217        const { relPath, line } = linePathOf(r[2]);
+   ADD  218        const key = `${r[1]}\t${relPath}\t${line}`;
+   ADD  219        if (!lineRowAt.has(key)) lineRowAt.set(key, r);
+   ADD  220      }
+   ADD  221    }
+
+-- block 23 [(d)] ADD 226-227: P3 now visits every delta row: line rows skipped, unknown row types still delta-row-type (the screen is no longer nested under a lane row)
+   ADD  226      if (type === 'line') continue;
+   ADD  227      if (type !== 'lane') { add('delta-row-type', type); continue; }
+
+-- block 24 [(e)] ADD 229-256: v18 row-validation body carried for every lane row (sha/lines/bgHits/head, quote-whole-line, disposition), with the line-row lookup keyed by (lane, relPath, line)
+   ADD  229      const text = read(lane, relPath);
+   ADD  230      if (text === null) {
+   ADD  231        if (provSha !== '-') add('lane-screen-sha-mismatch', `${lane}: sibling absent but sha ${provSha}`);
+   ADD  232        continue;
+   ADD  233      }
+   ADD  234      if (text === undefined) {
+   ADD  235        if (provSha !== '-') add('lane-screen-sha-mismatch', `${lane}: file absent but sha ${provSha}`);
+   ADD  236        continue;
+   ADD  237      }
+   ADD  238      if (provSha !== sha256(Buffer.from(text, 'utf8'))) add('lane-screen-sha-mismatch', `${lane}:${relPath}`);
+   ADD  239      const linesArr = text.replace(/\n$/, '').split('\n').map((l) => l.replace(/\r$/, ''));
+   ADD  240      if (Number(lines) !== linesArr.length) add('lane-screen-lines-mismatch', `${lane}:${relPath}`);
+   ADD  241      const hits = [];
+   ADD  242      linesArr.forEach((l, i) => {
+   ADD  243        const low = l.toLowerCase();
+   ADD  244        if (BG_WORDS.some((w) => low.includes(w))) hits.push(i + 1);
+   ADD  245      });
+   ADD  246      if (Number(bgHits) !== hits.length) add('lane-screen-hits-mismatch', `${lane}:${relPath}: claimed ${bgHits} derived 
+   ADD  247      for (const ln of hits) {
+   ADD  248        const rowFor = lineRowAt.get(`${lane}\t${relPath}\t${ln}`);
+   ADD  249        if (!rowFor) { add('delta-line-missing', `${lane}:${relPath}:${ln}`); continue; }
+   ADD  250        if (rowFor[6] !== linesArr[ln - 1]) add('delta-quote-not-whole-line', `${lane}:${relPath}:${ln}`);
+   ADD  251        if (!DISPOSITIONS.includes(rowFor[7])) add('delta-disposition', `${lane}:${relPath}:${ln}: ${rowFor[7]}`);
+   ADD  252      }
+   ADD  253      if (inputs.headOf) {
+   ADD  254        const cur = inputs.headOf(lane);
+   ADD  255        if (cur !== null && head !== cur) add('lane-screen-head-mismatch', lane);
+   ADD  256      }
+
+-- block 25 [(d)] ADD 261-275: the universal screen: present file without a lane row -> bg-screen-missing; its hit lines without line rows -> bg-hit-unadjudicated
+   ADD  261    for (const [lane, files] of screenTargets) {
+   ADD  262      for (const relPath of files) {
+   ADD  263        const text = read(lane, relPath);
+   ADD  264        if (text === null || text === undefined) continue;
+   ADD  265        if (laneRowAt.has(`${lane}\t${relPath}`)) continue;
+   ADD  266        add('bg-screen-missing', `${lane}:${relPath}`);
+   ADD  267        const linesArr = text.replace(/\n$/, '').split('\n').map((l) => l.replace(/\r$/, ''));
+   ADD  268        linesArr.forEach((l, i) => {
+   ADD  269          const low = l.toLowerCase();
+   ADD  270          if (!BG_WORDS.some((w) => low.includes(w))) return;
+   ADD  271          const ln = i + 1;
+   ADD  272          if (!lineRowAt.has(`${lane}\t${relPath}\t${ln}`)) add('bg-hit-unadjudicated', `${lane}:${relPath}:${ln}`);
+   ADD  273        });
+   ADD  274      }
+   ADD  275    }
+
+-- block 26 [(e)] ADD 278-299: stray line rows: orphan-line-row, line-row-unscreened-file, and the keyed delta-line-invented check
+   ADD  278    for (const r of inputs.deltaRows) {
+   ADD  279      if (r[0] !== 'line') continue;
+   ADD  280      const lane = r[1];
+   ADD  281      const { relPath, line } = linePathOf(r[2]);
+   ADD  282      if (!inputs.deltaRows.some((d) => d[0] === 'lane' && d[1] === lane)) {
+   ADD  283        add('orphan-line-row', `${lane}:${r[2]}`);
+   ADD  284        continue;
+   ADD  285      }
+   ADD  286      if (!laneRowAt.has(`${lane}\t${relPath}`) || line === null) {
+   ADD  287        add('line-row-unscreened-file', `${lane}:${r[2]}`);
+   ADD  288        continue;
+   ADD  289      }
+   ADD  290      const text = read(lane, relPath);
+   ADD  291      if (text === null || text === undefined) {
+   ADD  292        add('line-row-unscreened-file', `${lane}:${r[2]}`);
+   ADD  293        continue;
+   ADD  294      }
+   ADD  295      const linesArr = text.replace(/\n$/, '').split('\n').map((l) => l.replace(/\r$/, ''));
+   ADD  296      const whole = linesArr[line - 1];
+   ADD  297      const isHit = whole !== undefined && BG_WORDS.some((w) => whole.toLowerCase().includes(w));
+   ADD  298      if (!isHit) add('delta-line-invented', `${lane}:${r[2]}`);
+   ADD  299    }
+
+-- block 27 [(d)] ADD 301-310: counts gains bgScreenSiblings, derived from screenTargets (== roster by construction), never hardcoded
+   ADD  301    return {
+   ADD  302      findings,
+   ADD  303      counts: {
+   ADD  304        roster: inputs.roster.length,
+   ADD  305        mapRows: inputs.mapRows.length,
+   ADD  306        auditRows: inputs.auditRows.length,
+   ADD  307        deltaLanes: [...deltaLanes].length,
+   ADD  308        bgScreenSiblings: [...screenTargets.keys()].length,
+   ADD  309      },
+   ADD  310    };
+
+-- block 28 [(d)] ADD 451-468: kama-shaped fixture (map-referenced non-PROVINCE file) used by the M6-observable screen case and the (e) trio
+   ADD  451    const provKama = '# kama province\nListener census lane.\n';
+   ADD  452    const censusKama = '# listener census\nline2\nline3\nWe use playwright for the census.\nline5\n';
+   ADD  453    const refKamaCensus = 'kama-shokunin@6666666666666666666666666666666666666666:corpus/knowledge/listener-census.md:1';
+   ADD  454    const kamaDelta = (over = {}) => [
+   ADD  455      ...deltaRows(),
+   ADD  456      ['lane', 'kama-shokunin', 'PROVINCE.md', sha256(Buffer.from(provKama, 'utf8')), 2, 0, '-', '-', HEAD],
+   ADD  457      ['lane', 'kama-shokunin', 'corpus/knowledge/listener-census.md', over.censusSha ?? sha256(Buffer.from(censusKama, 'u
+   ADD  458    ];
+   ADD  459    const kamaInput = (delta, over = {}) => ({
+   ADD  460      mapRows: mapRows([['cdp-live-target-census', 'kama-shokunin', refKamaCensus, '# listener census', '-', '-', 'ruled',
+   ADD  461      auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-'], [refKamaCensus, 'unchanged', '-']],
+   ADD  462      deltaRows: delta,
+   ADD  463      roster: [...roster, 'kama-shokunin'],
+   ADD  464      sibRef: (l, p) => (l === 'kama-shokunin' && p === 'PROVINCE.md' ? provKama
+   ADD  465        : l === 'kama-shokunin' && p === 'corpus/knowledge/listener-census.md' ? (over.censusText ?? censusKama)
+   ADD  466          : sibRef(l, p)),
+   ADD  467      headOf,
+   ADD  468    });
+
+-- block 29 [(b)] ADD 504-512: harness-guard truth table re-read directly outside the caseOk verdict path (M1)
+   ADD  504      { name: 'harness-guard', expect: 0, direct: () => {
+   ADD  505        const rows = [
+   ADD  506          caseOk({ expect: 0, assertPredicate: false }, [], true),
+   ADD  507          caseOk({ expect: 0, assertFindingCount: 1 }, [], true),
+   ADD  508          caseOk({ expect: 0, assertPredicate: true, assertFindingCount: 0 }, [], true),
+   ADD  509        ];
+   ADD  510        const want = [false, false, true];
+   ADD  511        return rows.every((v, i) => v === want[i]);
+   ADD  512      }, run: () => {
+
+-- block 30 [(b)] ADD 526-533: the two findings-mismatch rows: findings-mismatch + predicate-match -> false; findings-mismatch + count-match -> false
+   ADD  526      { name: 'harness-guard-findings-predicate-match', expect: 0, direct: () => caseOk({ expect: 1, ids: ['alpha'], asser
+   ADD  527        const ok = caseOk({ expect: 1, ids: ['alpha'], assertPredicate: false }, [{ id: 'beta' }], false);
+   ADD  528        return { findings: ok ? [{ id: 'harness-guard-findings', detail: 'findings-mismatch + predicate-match returned tru
+   ADD  529      } },
+   ADD  530      { name: 'harness-guard-findings-count-match', expect: 0, direct: () => caseOk({ expect: 1, ids: ['alpha'], assertFin
+   ADD  531        const ok = caseOk({ expect: 1, ids: ['alpha'], assertFindingCount: 1 }, [{ id: 'beta' }], false);
+   ADD  532        return { findings: ok ? [{ id: 'harness-guard-findings', detail: 'findings-mismatch + count-match returned true' }
+   ADD  533      } },
+
+-- block 31 [(c)] ADD 537-541: five malformed-suffix cases: alpha-only x, empty, signed -1, no-@, no-second-colon
+   ADD  537      { name: 'map-ref-alpha-suffix', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ 
+   ADD  538      { name: 'map-ref-empty-suffix', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ 
+   ADD  539      { name: 'map-ref-signed-suffix', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({
+   ADD  540      { name: 'map-ref-no-at', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ mapRows
+   ADD  541      { name: 'map-ref-no-second-colon', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify
+
+-- block 32 [(d)] ADD 546-552: H1-shaped unadjudicated-hit fixture (map-only lane, BG hits, no delta row)
+   ADD  546      { name: 'bg-hit-unadjudicated-map-lane', expect: 1, ids: ['bg-screen-missing', 'bg-hit-unadjudicated'], assertPredic
+   ADD  547        const provK = '# kagi province\nAll secrets stay in the vault; no CDP here.\n';
+   ADD  548        const refKagi = 'kagi-shokunin@3333333333333333333333333333333333333333:PROVINCE.md:1';
+   ADD  549        const rosterK = [...roster, 'kagi-shokunin'];
+   ADD  550        const sibK = (l, p) => (l === 'kagi-shokunin' && p === 'PROVINCE.md' ? provK : sibRef(l, p));
+   ADD  551        return verify({ mapRows: mapRows([['secrets-vault-ops', 'kagi-shokunin', refKagi, '# kagi province', '-', '-', 'ru
+   ADD  552      } },
+
+-- block 33 [(d)] ADD 555-561: zero-hit present file without a lane row -> bg-screen-missing alone
+   ADD  555      { name: 'bg-screen-missing-zero-hit', expect: 1, ids: ['bg-screen-missing'], assertPredicate: false, assertFindingCo
+   ADD  556        const provC = '# chousa province\nQuiet research lane.\n';
+   ADD  557        const refC = 'chousa-shokunin@5555555555555555555555555555555555555555:PROVINCE.md:1';
+   ADD  558        const rosterC = [...roster, 'chousa-shokunin'];
+   ADD  559        const sibC = (l, p) => (l === 'chousa-shokunin' && p === 'PROVINCE.md' ? provC : sibRef(l, p));
+   ADD  560        return verify({ mapRows: mapRows([['research-lane', 'chousa-shokunin', refC, '# chousa province', '-', '-', 'ruled
+   ADD  561      } },
+
+-- block 34 [(e)] ADD 564-564: H2-shaped orphan line row fixture
+   ADD  564      { name: 'orphan-line-row', expect: 1, ids: ['orphan-line-row'], assertPredicate: false, assertFindingCount: 1, run: 
+
+-- block 35 [(e)] ADD 568-575: H3b-shaped cross-file line row with a hit number -> line-row-unscreened-file
+   ADD  568      { name: 'line-row-unscreened-file', expect: 1, ids: ['line-row-unscreened-file'], assertPredicate: false, assertFind
+   ADD  569        const provKake = '# kake province\nWe publish pages; CDP is out of scope here.\nNothing else.\n';
+   ADD  570        const refKake = 'kake-shokunin@4444444444444444444444444444444444444444:PROVINCE.md:1';
+   ADD  571        const shaKake = sha256(Buffer.from(provKake, 'utf8'));
+   ADD  572        const rosterK = [...roster, 'kake-shokunin'];
+   ADD  573        const sibK = (l, p) => (l === 'kake-shokunin' && p === 'PROVINCE.md' ? provKake : sibRef(l, p));
+   ADD  574        return verify({ mapRows: mapRows([['crawler-discipline-vs-publishing', 'kake-shokunin', refKake, '# kake province'
+   ADD  575      } },
+
+-- block 36 [(e)] ADD 580-602: cross-file acceptance killed: a hit in SKILL.md is not satisfied by a PROVINCE.md row (delta-line-missing + invented)
+   ADD  580      { name: 'cross-file-hit-number-wrong-file', expect: 1, ids: ['delta-line-missing', 'delta-line-invented'], assertPre
+   ADD  581        const provKake = '# kake province\nWe publish pages; CDP is out of scope here.\nNothing else.\n';
+   ADD  582        const provSkill = '# skill\ns2\ns3\ns4\nWe run CDP here.\n';
+   ADD  583        const refKake = 'kake-shokunin@4444444444444444444444444444444444444444:PROVINCE.md:1';
+   ADD  584        const refSkill = 'kake-shokunin@4444444444444444444444444444444444444444:SKILL.md:1';
+   ADD  585        const rosterK = [...roster, 'kake-shokunin'];
+   ADD  586        const sibK = (l, p) => (l === 'kake-shokunin' && p === 'PROVINCE.md' ? provKake : l === 'kake-shokunin' && p === '
+   ADD  587        return verify({
+   ADD  588          mapRows: mapRows([
+   ADD  589            ['crawler-discipline-vs-publishing', 'kake-shokunin', refKake, '# kake province', '-', '-', 'ruled', '-', '-']
+   ADD  590            ['lab-performance-tool-runs', 'kake-shokunin', refSkill, '# skill', '-', '-', 'ruled', '-', '-'],
+   ADD  591          ]),
+   ADD  592          auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-'], [refKake, 'unchanged', '-'], [refSkill
+   ADD  593          deltaRows: [
+   ADD  594            ...deltaRows(),
+   ADD  595            ['lane', 'kake-shokunin', 'PROVINCE.md', sha256(Buffer.from(provKake, 'utf8')), 3, 1, '-', '-', HEAD],
+   ADD  596            ['lane', 'kake-shokunin', 'SKILL.md', sha256(Buffer.from(provSkill, 'utf8')), 5, 1, '-', '-', HEAD],
+   ADD  597            ['line', 'kake-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'We publish pages; CDP is out of scope here.', 'over
+   ADD  598            ['line', 'kake-shokunin', 'PROVINCE.md:5', '-', '-', '-', 'We run CDP here.', 'overlap-declared', '-'],
+   ADD  599          ],
+   ADD  600          roster: rosterK, sibRef: sibK, headOf,
+   ADD  601        });
+   ADD  602      } },
+
+-- block 37 [(e)] ADD 606-610: kama-shaped invented row (real hit row + junk non-hit row)
+   ADD  606      { name: 'kama-invented-row', expect: 1, ids: ['delta-line-invented'], assertPredicate: false, assertFindingCount: 1,
+   ADD  607        ...kamaDelta(),
+   ADD  608        ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:4', '-', '-', '-', 'We use playwright for the censu
+   ADD  609        ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:2', '-', '-', '-', 'line2', 'no-tabi-ground', '-'],
+   ADD  610      ])) },
+
+-- block 38 [(e)] ADD 613-616: kama-shaped spliced quote -> delta-quote-not-whole-line
+   ADD  613      { name: 'kama-quote-spliced', expect: 1, ids: ['delta-quote-not-whole-line'], assertPredicate: false, assertFindingC
+   ADD  614        ...kamaDelta(),
+   ADD  615        ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:4', '-', '-', '-', 'use playwright', 'no-tabi-groun
+   ADD  616      ])) },
+
+-- block 39 [(e)] ADD 619-622: kama-shaped row citing bytes not at the snapshot head -> lane-screen-head-mismatch
+   ADD  619      { name: 'kama-head-citation', expect: 1, ids: ['lane-screen-head-mismatch'], assertPredicate: false, assertFindingCo
+   ADD  620        ...kamaDelta({ censusHead: 'b'.repeat(40) }),
+   ADD  621        ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:4', '-', '-', '-', 'We use playwright for the censu
+   ADD  622      ])) },
+
+-- block 40 [(e)] ADD 625-630: kama-shaped mixed forgery (real rows + junk rows) stays red
+   ADD  625      { name: 'kama-mixed-forgery', expect: 1, ids: ['delta-line-invented'], assertPredicate: false, assertFindingCount: 2
+   ADD  626        ...kamaDelta(),
+   ADD  627        ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:4', '-', '-', '-', 'We use playwright for the censu
+   ADD  628        ['line', 'kama-shokunin', 'corpus/knowledge/listener-census.md:2', '-', '-', '-', 'line2', 'no-tabi-ground', '-'],
+   ADD  629        ['line', 'kama-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'Listener census lane.', 'no-tabi-ground', '-'],
+   ADD  630      ])) },
+
+-- block 41 [(d)] ADD 637-640: M6-observable: a playwright-only hit in a map-covered lane’s non-PROVINCE file, no screen row -> bg-screen-missing + bg-hit-unadjudicated
+   ADD  637      { name: 'kama-screen-weakening-observable', expect: 1, ids: ['bg-screen-missing', 'bg-hit-unadjudicated'], assertPre
+   ADD  638        ...deltaRows(),
+   ADD  639        ['lane', 'kama-shokunin', 'PROVINCE.md', sha256(Buffer.from(provKama, 'utf8')), 2, 0, '-', '-', HEAD],
+   ADD  640      ])) },
+
+-- block 42 [(e)] ADD 647-680: R59Connector pin: ONE lane, THREE relPaths (kaidoku PROVINCE.md + two queue-ops knowledge files) with correctly quoted rows each -> GREEN; lane-only keying emits spurious delta-line-invented
+   ADD  647      { name: 'kaidoku-multi-file-keyed-green', expect: 0, assertPredicate: true, assertFindingCount: 0, run: () => {
+   ADD  648        const kaiProv = '# kaidoku province\nREA lane; CDP here.\nNothing else.\n';
+   ADD  649        const kaiA = '# queue ops\nline2\nWe use playwright for the queue\nline4\n';
+   ADD  650        const kaiB = '# queue ops 2\nline2\nline3\nrecordHar used here\nline5\n';
+   ADD  651        const refP = 'kaidoku-shokunin@7777777777777777777777777777777777777777:PROVINCE.md:1';
+   ADD  652        const refA2 = 'kaidoku-shokunin@7777777777777777777777777777777777777777:corpus/knowledge/2026-10-14-r10-01-queue-
+   ADD  653        const refB2 = 'kaidoku-shokunin@7777777777777777777777777777777777777777:corpus/knowledge/2026-10-14-r10-02-queue-
+   ADD  654        const rosterM = ['mado-shokunin', 'kaidoku-shokunin'];
+   ADD  655        const sibM = (l, p) => (l === 'kaidoku-shokunin' && p === 'PROVINCE.md' ? kaiProv
+   ADD  656          : l === 'kaidoku-shokunin' && p === 'corpus/knowledge/2026-10-14-r10-01-queue-ops.md' ? kaiA
+   ADD  657            : l === 'kaidoku-shokunin' && p === 'corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md' ? kaiB
+   ADD  658              : sibRef(l, p));
+   ADD  659        return verify({
+   ADD  660          mapRows: [
+   ADD  661            ['browser-ground-x', 'mado-shokunin', refA, 'We drive it over CDP for tests.', '-', '-', 'split-declared', '-'
+   ADD  662            ['rea-queue-ops', 'kaidoku-shokunin', refP, '# kaidoku province', '-', '-', 'ruled', '-', '-'],
+   ADD  663            ['rea-queue-ops', 'kaidoku-shokunin', refA2, '# queue ops', '-', '-', 'ruled', '-', '-'],
+   ADD  664            ['rea-queue-ops', 'kaidoku-shokunin', refB2, '# queue ops 2', '-', '-', 'ruled', '-', '-'],
+   ADD  665          ],
+   ADD  666          auditRows: [[refA, 'unchanged', '-'], [refP, 'unchanged', '-'], [refA2, 'unchanged', '-'], [refB2, 'unchanged', 
+   ADD  667          deltaRows: [
+   ADD  668            ['lane', 'mado-shokunin', 'PROVINCE.md', provShaA, 3, 1, '-', '-', HEAD],
+   ADD  669            ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'We drive it over CDP for tests.', 'overlap-declared
+   ADD  670            ['lane', 'kaidoku-shokunin', 'PROVINCE.md', sha256(Buffer.from(kaiProv, 'utf8')), 3, 1, '-', '-', HEAD],
+   ADD  671            ['lane', 'kaidoku-shokunin', 'corpus/knowledge/2026-10-14-r10-01-queue-ops.md', sha256(Buffer.from(kaiA, 'utf8
+   ADD  672            ['lane', 'kaidoku-shokunin', 'corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md', sha256(Buffer.from(kaiB, 'ut
+   ADD  673            ['line', 'kaidoku-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'REA lane; CDP here.', 'no-tabi-ground', '-'],
+   ADD  674            ['line', 'kaidoku-shokunin', 'corpus/knowledge/2026-10-14-r10-01-queue-ops.md:3', '-', '-', '-', 'We use playw
+   ADD  675            ['line', 'kaidoku-shokunin', 'corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md:4', '-', '-', '-', 'recordHar 
+   ADD  676          ],
+   ADD  677          roster: rosterM, sibRef: sibM,
+   ADD  678          headOf: (l) => (l === 'kaidoku-shokunin' ? HEAD : headOf(l)),
+   ADD  679        });
+   ADD  680      } },
+
+-- block 43 [(b)] ADD 689-690: the run-loop verdict ANDs the direct term (M1 pin)
+   ADD  689      const direct = c.direct === undefined ? null : c.direct();
+   ADD  690      const ok = caseOk(c, findings, emitted) && (direct === null || direct);
+
+-- block 44 [(b)] ADD 692-692: per-case receipt records the direct verdict
+   ADD  692      return { name: c.name, ok, direct, predicate: emitted, findingCount: findings.length, findings: findings.map((f) => 
+
+-- block 45 [(a)] ADD 705-705: selftest schema is tabi-adjacency-host-v19-selftest
+   ADD  705    console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v19-selftest', ...st }, null, 1));
+
+-- block 46 [(a)] ADD 721-721: usage string names c1-adjacency-host-v19.mjs
+   ADD  721  if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v19.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
+
+-- block 47 [(a)] ADD 724-725: run schema is tabi-adjacency-host-v19; predicate sentence names the r59 ledgers and the (d)/(e) clauses
+   ADD  724    schema: 'tabi-adjacency-host-v19',
+   ADD  725    predicateSentence: 'c1-adjacency-host-v19 admits the lane state at REV where every corpus/adjacency.tsv data row has e
+
+No differing non-comment line falls outside (a)-(e).

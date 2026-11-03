@@ -1,0 +1,443 @@
+{
+ "schema": "tabi-r59-mutant-counter-probe",
+ "id": "C2",
+ "description": "drop the D2 step-plan check (the declared open-loop plan and the recorded steps are never compared)",
+ "killRule": "killRules.C2 f2/f8",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59.mjs",
+ "counterSha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+ "counterBytes": 131074,
+ "fixturesDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures",
+ "workdir": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/C2",
+ "edits": [
+  {
+   "old": "function checkStepPlan(rec, add) {\n  const plan = DECLARED_STEP_PLAN;",
+   "new": "function checkStepPlan(rec, add) {\n  return; // C2: D2 dropped (the recorded plan is never compared)\n  const plan = DECLARED_STEP_PLAN;",
+   "occurrences": 1,
+   "found": 1,
+   "ok": true
+  }
+ ],
+ "editsAllOk": true,
+ "mutatedSha256": "0325dbe6adfd83c0f6c35a1bd0e08de366e68d1f75915669cd4c938f471f64d9",
+ "mutatedBytes": 131140,
+ "expectId": "step-plan-mismatch",
+ "seededCase": "step-plan-reordered.json",
+ "baseline": {
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "uncovered": [],
+  "failing": [],
+  "tail": "91/91"
+ },
+ "baselineAllPass": true,
+ "mutated": {
+  "status": 1,
+  "allPass": false,
+  "pass": 84,
+  "cases": 91,
+  "failing": [
+   {
+    "name": "crossgen-r56-receipt",
+    "got": [
+     "caps-flag-true",
+     "chord-missing",
+     "echo2-count-wrong",
+     "field3-named",
+     "form2-missing",
+     "keylog-absent",
+     "nonce-shape",
+     "schema-wrong",
+     "shift-trace-missing"
+    ],
+    "want": [
+     "caps-flag-true",
+     "chord-missing",
+     "echo2-count-wrong",
+     "field3-named",
+     "form2-missing",
+     "keylog-absent",
+     "nonce-shape",
+     "schema-wrong",
+     "shift-trace-missing",
+     "step-plan-mismatch"
+    ]
+   },
+   {
+    "name": "crossgen-r56-shaped",
+    "got": [
+     "caps-flag-true",
+     "chord-missing",
+     "echo2-count-wrong",
+     "field3-named",
+     "field3-not-empty",
+     "form2-missing",
+     "keylog-absent",
+     "nonce-shape",
+     "shift-trace-missing"
+    ],
+    "want": [
+     "caps-flag-true",
+     "chord-missing",
+     "echo2-count-wrong",
+     "field3-named",
+     "field3-not-empty",
+     "form2-missing",
+     "keylog-absent",
+     "nonce-shape",
+     "shift-trace-missing",
+     "step-plan-mismatch"
+    ]
+   },
+   {
+    "name": "crossgen-r57-receipt-to-r56-counter",
+    "got": [
+     "caps-flag-true",
+     "echo2-count-wrong",
+     "form2-missing",
+     "missing-delivered-shape-field",
+     "missing-getModifierState-record",
+     "nonce-shape",
+     "schema-wrong",
+     "shift-detector-negative"
+    ],
+    "want": [
+     "caps-flag-true",
+     "echo2-count-wrong",
+     "form2-missing",
+     "missing-delivered-shape-field",
+     "missing-getModifierState-record",
+     "nonce-shape",
+     "schema-wrong",
+     "shift-detector-negative",
+     "step-plan-mismatch"
+    ]
+   },
+   {
+    "name": "do-nothing-empty-object",
+    "got": [
+     "caps-flag-true",
+     "chord-missing",
+     "control-domain-missing",
+     "driver-sha-mismatch",
+     "echo2-count-wrong",
+     "field3-named",
+     "field3-not-empty",
+     "form2-missing",
+     "host-browser-mismatch",
+     "keylog-absent",
+     "keylog-missing",
+     "nonce-not-invocation-bound",
+     "nonce-shape",
+     "plain-trace-missing",
+     "profile-not-throwaway",
+     "schema-wrong",
+     "server-log-missing",
+     "shift-trace-missing",
+     "steps-missing",
+     "teardown-survivor"
+    ],
+    "want": [
+     "caps-flag-true",
+     "chord-missing",
+     "control-domain-missing",
+     "driver-sha-mismatch",
+     "echo2-count-wrong",
+     "field3-named",
+     "field3-not-empty",
+     "form2-missing",
+     "host-browser-mismatch",
+     "keylog-absent",
+     "keylog-missing",
+     "nonce-not-invocation-bound",
+     "nonce-shape",
+     "plain-trace-missing",
+     "profile-not-throwaway",
+     "schema-wrong",
+     "server-log-missing",
+     "shift-trace-missing",
+     "step-plan-mismatch",
+     "steps-missing",
+     "teardown-survivor"
+    ]
+   },
+   {
+    "name": "step-plan-extra-step",
+    "got": [],
+    "want": [
+     "step-plan-mismatch"
+    ]
+   },
+   {
+    "name": "step-plan-reordered",
+    "got": [],
+    "want": [
+     "step-plan-mismatch"
+    ]
+   },
+   {
+    "name": "step-plan-shot-set",
+    "got": [],
+    "want": [
+     "step-plan-mismatch"
+    ]
+   }
+  ],
+  "tail": "84/91",
+  "stderrTail": ""
+ },
+ "lostId": null,
+ "failingCases": [
+  {
+   "name": "crossgen-r56-receipt",
+   "got": [
+    "caps-flag-true",
+    "chord-missing",
+    "echo2-count-wrong",
+    "field3-named",
+    "form2-missing",
+    "keylog-absent",
+    "nonce-shape",
+    "schema-wrong",
+    "shift-trace-missing"
+   ],
+   "want": [
+    "caps-flag-true",
+    "chord-missing",
+    "echo2-count-wrong",
+    "field3-named",
+    "form2-missing",
+    "keylog-absent",
+    "nonce-shape",
+    "schema-wrong",
+    "shift-trace-missing",
+    "step-plan-mismatch"
+   ]
+  },
+  {
+   "name": "crossgen-r56-shaped",
+   "got": [
+    "caps-flag-true",
+    "chord-missing",
+    "echo2-count-wrong",
+    "field3-named",
+    "field3-not-empty",
+    "form2-missing",
+    "keylog-absent",
+    "nonce-shape",
+    "shift-trace-missing"
+   ],
+   "want": [
+    "caps-flag-true",
+    "chord-missing",
+    "echo2-count-wrong",
+    "field3-named",
+    "field3-not-empty",
+    "form2-missing",
+    "keylog-absent",
+    "nonce-shape",
+    "shift-trace-missing",
+    "step-plan-mismatch"
+   ]
+  },
+  {
+   "name": "crossgen-r57-receipt-to-r56-counter",
+   "got": [
+    "caps-flag-true",
+    "echo2-count-wrong",
+    "form2-missing",
+    "missing-delivered-shape-field",
+    "missing-getModifierState-record",
+    "nonce-shape",
+    "schema-wrong",
+    "shift-detector-negative"
+   ],
+   "want": [
+    "caps-flag-true",
+    "echo2-count-wrong",
+    "form2-missing",
+    "missing-delivered-shape-field",
+    "missing-getModifierState-record",
+    "nonce-shape",
+    "schema-wrong",
+    "shift-detector-negative",
+    "step-plan-mismatch"
+   ]
+  },
+  {
+   "name": "do-nothing-empty-object",
+   "got": [
+    "caps-flag-true",
+    "chord-missing",
+    "control-domain-missing",
+    "driver-sha-mismatch",
+    "echo2-count-wrong",
+    "field3-named",
+    "field3-not-empty",
+    "form2-missing",
+    "host-browser-mismatch",
+    "keylog-absent",
+    "keylog-missing",
+    "nonce-not-invocation-bound",
+    "nonce-shape",
+    "plain-trace-missing",
+    "profile-not-throwaway",
+    "schema-wrong",
+    "server-log-missing",
+    "shift-trace-missing",
+    "steps-missing",
+    "teardown-survivor"
+   ],
+   "want": [
+    "caps-flag-true",
+    "chord-missing",
+    "control-domain-missing",
+    "driver-sha-mismatch",
+    "echo2-count-wrong",
+    "field3-named",
+    "field3-not-empty",
+    "form2-missing",
+    "host-browser-mismatch",
+    "keylog-absent",
+    "keylog-missing",
+    "nonce-not-invocation-bound",
+    "nonce-shape",
+    "plain-trace-missing",
+    "profile-not-throwaway",
+    "schema-wrong",
+    "server-log-missing",
+    "shift-trace-missing",
+    "step-plan-mismatch",
+    "steps-missing",
+    "teardown-survivor"
+   ]
+  },
+  {
+   "name": "step-plan-extra-step",
+   "got": [],
+   "want": [
+    "step-plan-mismatch"
+   ]
+  },
+  {
+   "name": "step-plan-reordered",
+   "got": [],
+   "want": [
+    "step-plan-mismatch"
+   ]
+  },
+  {
+   "name": "step-plan-shot-set",
+   "got": [],
+   "want": [
+    "step-plan-mismatch"
+   ]
+  }
+ ],
+ "fixtureRun": {
+  "caseFile": "step-plan-reordered.json",
+  "caseExpect": [
+   "step-plan-mismatch"
+  ],
+  "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures/receipts/step-plan-reordered.receipt.json",
+  "receiptSha256": "05bf2902f8077b66b9e8969241bf0e73905995e9c936406c1b23f117df007832",
+  "pristine": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C2/pristine.mjs",
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findings": [
+    "step-plan-mismatch"
+   ],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "mutant": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C2/mutant.mjs",
+   "exit": 0,
+   "parseOk": true,
+   "predicate": true,
+   "findings": [],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "killed": true
+ },
+ "forgedRun": [
+  {
+   "forge": "f2-step-reorder",
+   "receiptSha256": "0f2a80ff223ff0cc5d7727d98845aa96fc7576de7a787418c6c259e18b2af44b",
+   "canonical": {
+    "exit": 1,
+    "findings": [
+     "step-plan-mismatch"
+    ]
+   },
+   "mutant": {
+    "exit": 0,
+    "findings": []
+   },
+   "killed": true
+  },
+  {
+   "forge": "f8-shot-set",
+   "receiptSha256": "85cfa006aec8fae876006e868352869dd2f2312e72a3613ad1fb05f2ed83e020",
+   "canonical": {
+    "exit": 1,
+    "findings": [
+     "step-plan-mismatch"
+    ]
+   },
+   "mutant": {
+    "exit": 0,
+    "findings": []
+   },
+   "killed": true
+  }
+ ],
+ "restore": {
+  "sha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+  "matchesCanonical": true,
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "tail": "91/91"
+ },
+ "verdict": "KILLED",
+ "overallVerdict": "KILLED",
+ "killedBy": {
+  "reason": "mutant selftest fails where pristine passes",
+  "mutantExit": 1,
+  "failingCases": [
+   "crossgen-r56-receipt",
+   "crossgen-r56-shaped",
+   "crossgen-r57-receipt-to-r56-counter",
+   "do-nothing-empty-object",
+   "step-plan-extra-step",
+   "step-plan-reordered",
+   "step-plan-shot-set"
+  ],
+  "lostExpectation": null
+ },
+ "history": {
+  "note": "An earlier run of the same mutant set executed on counter sha256 35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332 (125756 B) with the then-current 90-case fixture set, before the author applied the L1-requested pre-freeze D1 positional strengthening (R59Probes d6 maskability) that produced the froze bytes cited above. That fixture set no longer exists on disk; those runs are superseded and are not the authoritative receipts.",
+  "priorCounterSha256": "35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332",
+  "priorSelftest": {
+   "cases": 90,
+   "pass": 90,
+   "allPass": true
+  },
+  "priorVerdicts": {
+   "C1": "KILLED",
+   "C2": "KILLED",
+   "C3": "KILLED",
+   "C4": "KILLED",
+   "C5": "KILLED",
+   "C6": "SURVIVED(selftest)",
+   "C7": "KILLED"
+  },
+  "priorNote": "same edit text as recorded here"
+ }
+}

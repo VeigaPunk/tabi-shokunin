@@ -1,0 +1,146 @@
+{
+ "schema": "tabi-r59-mutant-counter-probe",
+ "id": "C4",
+ "description": "relax the per-form single-submission invariant: any positive /echo2 count is accepted (two submissions to form2 pass)",
+ "killRule": "killRules.C2 f7",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59.mjs",
+ "counterSha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+ "counterBytes": 131074,
+ "fixturesDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures",
+ "workdir": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/C4",
+ "edits": [
+  {
+   "old": "if (rows2.length !== 1) {",
+   "new": "if (rows2.length < 1) { // C4: any positive /echo2 count is accepted",
+   "occurrences": 1,
+   "found": 1,
+   "ok": true
+  }
+ ],
+ "editsAllOk": true,
+ "mutatedSha256": "f6471cee8c9d8b1edc60b3fbd1fdb78ce9fc12cb4d8989f62237f30fa25d7d8e",
+ "mutatedBytes": 131117,
+ "expectId": "echo2-count-wrong",
+ "seededCase": "echo2-double.json",
+ "baseline": {
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "uncovered": [],
+  "failing": [],
+  "tail": "91/91"
+ },
+ "baselineAllPass": true,
+ "mutated": {
+  "status": 1,
+  "allPass": false,
+  "pass": 90,
+  "cases": 91,
+  "failing": [
+   {
+    "name": "echo2-double",
+    "got": [],
+    "want": [
+     "echo2-count-wrong"
+    ]
+   }
+  ],
+  "tail": "90/91",
+  "stderrTail": ""
+ },
+ "lostId": null,
+ "failingCases": [
+  {
+   "name": "echo2-double",
+   "got": [],
+   "want": [
+    "echo2-count-wrong"
+   ]
+  }
+ ],
+ "fixtureRun": {
+  "caseFile": "echo2-double.json",
+  "caseExpect": [
+   "echo2-count-wrong"
+  ],
+  "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures/receipts/echo2-double.receipt.json",
+  "receiptSha256": "929e3f29acf2a0ae0372dcb5461f17568b3b45a733f715e7370392b565dcce28",
+  "pristine": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C4/pristine.mjs",
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findings": [
+    "echo2-count-wrong"
+   ],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "mutant": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C4/mutant.mjs",
+   "exit": 0,
+   "parseOk": true,
+   "predicate": true,
+   "findings": [],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "killed": true
+ },
+ "forgedRun": [
+  {
+   "forge": "f7-two-echo2",
+   "receiptSha256": "beba40681141ce5dfcece418fdf157523b72770ad627f66d2abfd2e727420593",
+   "canonical": {
+    "exit": 1,
+    "findings": [
+     "echo2-count-wrong"
+    ]
+   },
+   "mutant": {
+    "exit": 0,
+    "findings": []
+   },
+   "killed": true
+  }
+ ],
+ "restore": {
+  "sha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+  "matchesCanonical": true,
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "tail": "91/91"
+ },
+ "verdict": "KILLED",
+ "overallVerdict": "KILLED",
+ "killedBy": {
+  "reason": "mutant selftest fails where pristine passes",
+  "mutantExit": 1,
+  "failingCases": [
+   "echo2-double"
+  ],
+  "lostExpectation": null
+ },
+ "history": {
+  "note": "An earlier run of the same mutant set executed on counter sha256 35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332 (125756 B) with the then-current 90-case fixture set, before the author applied the L1-requested pre-freeze D1 positional strengthening (R59Probes d6 maskability) that produced the froze bytes cited above. That fixture set no longer exists on disk; those runs are superseded and are not the authoritative receipts.",
+  "priorCounterSha256": "35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332",
+  "priorSelftest": {
+   "cases": 90,
+   "pass": 90,
+   "allPass": true
+  },
+  "priorVerdicts": {
+   "C1": "KILLED",
+   "C2": "KILLED",
+   "C3": "KILLED",
+   "C4": "KILLED",
+   "C5": "KILLED",
+   "C6": "SURVIVED(selftest)",
+   "C7": "KILLED"
+  },
+  "priorNote": "same edit text as recorded here"
+ }
+}

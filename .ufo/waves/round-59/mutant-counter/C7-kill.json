@@ -1,0 +1,195 @@
+{
+ "schema": "tabi-r59-mutant-counter-probe",
+ "id": "C7",
+ "description": "force the Shift detector positive (a constant-false getModifierState(Shift) recorder can no longer refuse)",
+ "killRule": "killRules.C2 f9",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59.mjs",
+ "counterSha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+ "counterBytes": 131074,
+ "fixturesDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures",
+ "workdir": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/C7",
+ "edits": [
+  {
+   "old": "    const f = shiftFlagOf(e);",
+   "new": "    const f = true; // C7: the Shift detector is forced positive",
+   "occurrences": 1,
+   "found": 1,
+   "ok": true
+  }
+ ],
+ "editsAllOk": true,
+ "mutatedSha256": "bc8e7822c135ee153699c5c766d621d3efa68d9f73c0cc13827a8c67eb2e714d",
+ "mutatedBytes": 131109,
+ "expectId": "shift-detector-negative",
+ "seededCase": "shift-detector-negative.json",
+ "baseline": {
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "uncovered": [],
+  "failing": [],
+  "tail": "91/91"
+ },
+ "baselineAllPass": true,
+ "mutated": {
+  "status": 1,
+  "allPass": false,
+  "pass": 89,
+  "cases": 91,
+  "failing": [
+   {
+    "name": "crossgen-r57-receipt-to-r56-counter",
+    "got": [
+     "caps-flag-true",
+     "echo2-count-wrong",
+     "form2-missing",
+     "missing-delivered-shape-field",
+     "missing-getModifierState-record",
+     "nonce-shape",
+     "schema-wrong",
+     "step-plan-mismatch"
+    ],
+    "want": [
+     "caps-flag-true",
+     "echo2-count-wrong",
+     "form2-missing",
+     "missing-delivered-shape-field",
+     "missing-getModifierState-record",
+     "nonce-shape",
+     "schema-wrong",
+     "shift-detector-negative",
+     "step-plan-mismatch"
+    ]
+   },
+   {
+    "name": "shift-detector-negative",
+    "got": [],
+    "want": [
+     "shift-detector-negative"
+    ]
+   }
+  ],
+  "tail": "89/91",
+  "stderrTail": ""
+ },
+ "lostId": null,
+ "failingCases": [
+  {
+   "name": "crossgen-r57-receipt-to-r56-counter",
+   "got": [
+    "caps-flag-true",
+    "echo2-count-wrong",
+    "form2-missing",
+    "missing-delivered-shape-field",
+    "missing-getModifierState-record",
+    "nonce-shape",
+    "schema-wrong",
+    "step-plan-mismatch"
+   ],
+   "want": [
+    "caps-flag-true",
+    "echo2-count-wrong",
+    "form2-missing",
+    "missing-delivered-shape-field",
+    "missing-getModifierState-record",
+    "nonce-shape",
+    "schema-wrong",
+    "shift-detector-negative",
+    "step-plan-mismatch"
+   ]
+  },
+  {
+   "name": "shift-detector-negative",
+   "got": [],
+   "want": [
+    "shift-detector-negative"
+   ]
+  }
+ ],
+ "fixtureRun": {
+  "caseFile": "shift-detector-negative.json",
+  "caseExpect": [
+   "shift-detector-negative"
+  ],
+  "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures/receipts/shift-detector-negative.receipt.json",
+  "receiptSha256": "e996522d1b3a4e1f94ef9d768fe692d6257722f8f72e7500ba0eb0d948cefdf9",
+  "pristine": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C7/pristine.mjs",
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findings": [
+    "shift-detector-negative"
+   ],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "mutant": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C7/mutant.mjs",
+   "exit": 0,
+   "parseOk": true,
+   "predicate": true,
+   "findings": [],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "killed": true
+ },
+ "forgedRun": [
+  {
+   "forge": "f9-shift-constant-false",
+   "receiptSha256": "0dcf9b82336d4e5d10e9e332372c993555fb7134ca0968eb2dae5f2786d09f38",
+   "canonical": {
+    "exit": 1,
+    "findings": [
+     "shift-detector-negative"
+    ]
+   },
+   "mutant": {
+    "exit": 0,
+    "findings": []
+   },
+   "killed": true
+  }
+ ],
+ "restore": {
+  "sha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+  "matchesCanonical": true,
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "tail": "91/91"
+ },
+ "verdict": "KILLED",
+ "overallVerdict": "KILLED",
+ "killedBy": {
+  "reason": "mutant selftest fails where pristine passes",
+  "mutantExit": 1,
+  "failingCases": [
+   "crossgen-r57-receipt-to-r56-counter",
+   "shift-detector-negative"
+  ],
+  "lostExpectation": null
+ },
+ "history": {
+  "note": "An earlier run of the same mutant set executed on counter sha256 35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332 (125756 B) with the then-current 90-case fixture set, before the author applied the L1-requested pre-freeze D1 positional strengthening (R59Probes d6 maskability) that produced the froze bytes cited above. That fixture set no longer exists on disk; those runs are superseded and are not the authoritative receipts.",
+  "priorCounterSha256": "35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332",
+  "priorSelftest": {
+   "cases": 90,
+   "pass": 90,
+   "allPass": true
+  },
+  "priorVerdicts": {
+   "C1": "KILLED",
+   "C2": "KILLED",
+   "C3": "KILLED",
+   "C4": "KILLED",
+   "C5": "KILLED",
+   "C6": "SURVIVED(selftest)",
+   "C7": "KILLED"
+  },
+  "priorNote": "same edit text as recorded here"
+ }
+}

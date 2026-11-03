@@ -1,0 +1,181 @@
+{
+ "schema": "tabi-adjacency-r59-M2-kill",
+ "claim": "C1 declared change set (c) \u2014 routed r58-closure D5/N2",
+ "instrument": ".ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs",
+ "instrumentSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+ "instrumentBytes": 53384,
+ "instrumentUntouched": "the canonical file was read and copied only; its sha256 re-checked after every mutant and before this receipt",
+ "mutant": "M2: weaken the map-ref integer assertion to accept alpha/empty/signed/no-@/no-colon suffixes (routed N2) - killed by the malformed-suffix cases",
+ "mutantSha256": "1f6e05c7d04ac28975c556d0284fdfe7577b034889f4f85f83295250d2320fad",
+ "hunk": "parseRef body: the `at === -1`, `c1/c2` structural rejects, `/^\\d+$/` suffix test and the finite/safe-integer test are replaced by permissive extraction (lane/rev/path defaults, `Math.max(1, parseInt(..., 10) || 1)` line fallback) \u2014 one contiguous function-body hunk, nothing else.",
+ "diff": "--- a/c1-adjacency-host-v19.mjs\n+++ b/c1-adjacency-host-v19.mjs\n@@ -111,17 +111,13 @@\n function parseRef(ref) {\n   if (typeof ref !== 'string') return null;\n   const at = ref.indexOf('@');\n-  if (at === -1) return null;\n-  const lane = ref.slice(0, at);\n   const c1 = ref.indexOf(':', at);\n   const c2 = ref.lastIndexOf(':');\n-  if (c1 === -1 || c2 <= c1) return null;\n-  const p = ref.slice(c1 + 1, c2);\n-  const suffix = ref.slice(c2 + 1);\n-  if (!/^\\d+$/.test(suffix)) return null;\n-  const ln = Number(suffix);\n-  if (!Number.isSafeInteger(ln) || ln < 1) return null;\n-  return { lane, rev: ref.slice(at + 1, c1), path: p, line: ln };\n+  const lane = at === -1 ? ref : ref.slice(0, at);\n+  const rev = at === -1 ? '' : ref.slice(at + 1, c1 === -1 ? ref.length : c1);\n+  const p = c1 === -1 ? ref : ref.slice(c1 + 1, c2 <= c1 ? ref.length : c2);\n+  const ln = Math.max(1, parseInt(ref.slice(c2 + 1), 10) || 1);\n+  return { lane, rev, path: p, line: ln };\n }\n \n const observedStatus = (sibText, lineNo, citedText, noteLineRef) => {\n",
+ "expectedDetector": "selftest cases map-ref-unparseable (12x), map-ref-alpha-suffix, map-ref-empty-suffix, map-ref-signed-suffix, map-ref-no-at, map-ref-no-second-colon; plus fixture F2-map-ref-alpha-suffix. Each expects EXACTLY [map-ref-unparseable]; the lenient parser accepts all five malformed shapes, so the id disappears.",
+ "selftestCases": {
+  "total": 38,
+  "baselinePass": 38,
+  "mutantPass": 32,
+  "restoredPass": 38,
+  "failedCaseIds": [
+   "map-ref-unparseable",
+   "map-ref-alpha-suffix",
+   "map-ref-empty-suffix",
+   "map-ref-signed-suffix",
+   "map-ref-no-at",
+   "map-ref-no-second-colon"
+  ]
+ },
+ "failedCaseIds": [
+  "map-ref-unparseable",
+  "map-ref-alpha-suffix",
+  "map-ref-empty-suffix",
+  "map-ref-signed-suffix",
+  "map-ref-no-at",
+  "map-ref-no-second-colon"
+ ],
+ "mutantRun": {
+  "command": "node /fast/scratch/hyaku/tabi-r59/R59MutMeter/M2.mjs --selftest",
+  "exit": 1,
+  "allPass": false,
+  "cases": 38,
+  "pass": 32,
+  "failing": [
+   {
+    "name": "map-ref-unparseable",
+    "predicate": false,
+    "findingCount": 2,
+    "findings": [
+     "audit-note-moved-line: mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md:12x",
+     "audit-status-mismatch: mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md:12x: claimed unchanged observed moved"
+    ],
+    "direct": null
+   },
+   {
+    "name": "map-ref-alpha-suffix",
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     "audit-missing: mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md:x"
+    ],
+    "direct": null
+   },
+   {
+    "name": "map-ref-empty-suffix",
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     "audit-missing: mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md:"
+    ],
+    "direct": null
+   },
+   {
+    "name": "map-ref-signed-suffix",
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     "audit-missing: mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md:-1"
+    ],
+    "direct": null
+   },
+   {
+    "name": "map-ref-no-at",
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     "audit-missing: mado-shokunin:PROVINCE.md:2"
+    ],
+    "direct": null
+   },
+   {
+    "name": "map-ref-no-second-colon",
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     "audit-missing: mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md"
+    ],
+    "direct": null
+   }
+  ],
+  "failedCaseIds": [
+   "map-ref-unparseable",
+   "map-ref-alpha-suffix",
+   "map-ref-empty-suffix",
+   "map-ref-signed-suffix",
+   "map-ref-no-at",
+   "map-ref-no-second-colon"
+  ]
+ },
+ "baseline": {
+  "command": "node .ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs --selftest",
+  "exit": 0,
+  "allPass": true,
+  "cases": 38,
+  "pass": 38
+ },
+ "fixtureProbe": {
+  "script": ".ufo/waves/round-59/mutant-meter/fixture-probe.mjs",
+  "baseline": {
+   "allPass": true,
+   "cases": 5,
+   "pass": 5
+  },
+  "mutant": {
+   "targetSha256": "1f6e05c7d04ac28975c556d0284fdfe7577b034889f4f85f83295250d2320fad",
+   "exit": 1,
+   "allPass": false,
+   "cases": 5,
+   "pass": 4,
+   "failing": [
+    {
+     "name": "F2-map-ref-alpha-suffix",
+     "expect": [
+      "map-ref-unparseable"
+     ],
+     "got": [
+      "audit-missing"
+     ],
+     "findings": [
+      "audit-missing: m@4444444444444444444444444444444444444444:PROVINCE.md:x"
+     ]
+    }
+   ],
+   "failedFixtureIds": [
+    "F2-map-ref-alpha-suffix"
+   ]
+  },
+  "restored": {
+   "targetSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+   "exit": 0,
+   "allPass": true,
+   "cases": 5,
+   "pass": 5,
+   "failing": [],
+   "failedFixtureIds": []
+  }
+ },
+ "killedBy": [
+  "selftest:map-ref-unparseable",
+  "selftest:map-ref-alpha-suffix",
+  "selftest:map-ref-empty-suffix",
+  "selftest:map-ref-signed-suffix",
+  "selftest:map-ref-no-at",
+  "selftest:map-ref-no-second-colon",
+  "fixture:F2-map-ref-alpha-suffix"
+ ],
+ "verdict": "KILLED",
+ "restoration": {
+  "note": "the scratch copy was overwritten with the pristine v19 bytes and re-run with both detectors; the canonical instrument was never modified",
+  "restoredSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+  "pristineSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+  "equalsPristine": true,
+  "bytesRestoredFromCommitted": true,
+  "selftestExit": 0,
+  "selftestAllPass": true,
+  "selftestCases": "38/38",
+  "probeExit": 0,
+  "probeAllPass": true,
+  "probeCases": "5/5",
+  "repoBytesUntouched": true
+ },
+ "method": "parseRef was replaced in a SCRATCH copy only with a lenient parser that accepts every malformed shape the claim names; the copy was run with --selftest and the fixture probe, then overwritten with the pristine bytes and re-run. The committed instrument was never modified.",
+ "disclosure": "This is deliberately the STRONG form of M2 (accepts all five malformed shapes). It is not the r58 m4b `/^\\d+/` weakening; under that weaker mutant only the digit-led `12x` shape dies. The five new shape-specific cases are proven kill-capable only against this accepting mutant; the strong form kills all six, so the cases are not individually distinguished here."
+}

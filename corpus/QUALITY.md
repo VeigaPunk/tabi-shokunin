@@ -811,3 +811,21 @@
     (`.ufo/waves/round-56/gate/red-at-545b251d.txt`), including the whole
     `sources/` byte store the r55 docs cite. (source: `corpus/lessons/round-56.md`
     Corrections item 1 + Mistakes 3)
+
+## Round 59 additions (append-only; never edit above)
+
+111. The definition-site sweep rule: a claim that cites a source for a named term runs
+    a grep for that term's definition site in the staged bytes BEFORE the instrument
+    freeze, and classifies each term as definition site (a local `<dfn>` / `data-dfn`
+    / WebIDL member declaration with a line number), prose (a normative sentence
+    without a dfn), cross-reference (an external link), or absent. A term classified
+    as prose or absent is cited as prose-grounded or as measured, never as a
+    definition site. Red state: the r58 C2 claim cited S161 for `defaultPrevented`;
+    the sweep on the staged bytes finds only cross-reference anchors and no local
+    definition (`.ufo/waves/round-59/probes/d9-red-before-defaultprevented.txt`,
+    verdict RED: the criterion is able to fail). Green state on the r59 terms
+    (`.ufo/waves/round-59/probes/d9-green-capslock.txt`): `getModifierState` is a
+    local dfn (S161 raw 3327); `CapsLock` has no dfn (prose raw 4791, key-code table
+    raw 6370-6371, and the `modifierCapsLock` initializer dfn raw 3569, a different
+    term); the S162 staged bytes carry no CapsLock occurrence. (source:
+    `corpus/lessons/round-59.md` Gate + Corrections D9)

@@ -1,0 +1,112 @@
+{
+ "schema": "tabi-adjacency-r59-M1-kill",
+ "claim": "C1 declared change set (b) \u2014 routed r58-closure D5/N1",
+ "instrument": ".ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs",
+ "instrumentSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+ "instrumentBytes": 53384,
+ "instrumentUntouched": "the canonical file was read and copied only; its sha256 re-checked after every mutant and before this receipt",
+ "mutant": "M1: drop the findings term from the harness guard's caseOk (routed N1) - killed by the new findings-mismatch cases",
+ "mutantSha256": "8ee919f13023d24d1bb9f3333b095ac5271c07d51d99379a43e87fa90c801549",
+ "hunk": "caseOk verdict: `return okFindings && okPredicate && okCount;` -> `return okPredicate && okCount;` (one line, nothing else)",
+ "diff": "--- a/c1-adjacency-host-v19.mjs\n+++ b/c1-adjacency-host-v19.mjs\n@@ -411,7 +411,7 @@\n   // \"exactly one clause failed\" is measured, not assumed.\n   const okPredicate = c.assertPredicate === undefined ? true : emitted === c.assertPredicate;\n   const okCount = c.assertFindingCount === undefined ? true : findings.length === c.assertFindingCount;\n-  return okFindings && okPredicate && okCount;\n+  return okPredicate && okCount;\n }\n \n // --- selftest (pure core; the host layer's git reads are exercised by the run receipts) ---\n",
+ "expectedDetector": "selftest cases harness-guard-findings-predicate-match and harness-guard-findings-count-match (their `direct` term re-reads caseOk outside the per-case verdict path); allPass goes false. The verify() fixture probe is not applicable to a harness-level mutant and passes.",
+ "selftestCases": {
+  "total": 38,
+  "baselinePass": 38,
+  "mutantPass": 36,
+  "restoredPass": 38,
+  "failedCaseIds": [
+   "harness-guard-findings-predicate-match",
+   "harness-guard-findings-count-match"
+  ]
+ },
+ "failedCaseIds": [
+  "harness-guard-findings-predicate-match",
+  "harness-guard-findings-count-match"
+ ],
+ "mutantRun": {
+  "command": "node /fast/scratch/hyaku/tabi-r59/R59MutMeter/M1.mjs --selftest",
+  "exit": 1,
+  "allPass": false,
+  "cases": 38,
+  "pass": 36,
+  "failing": [
+   {
+    "name": "harness-guard-findings-predicate-match",
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     "harness-guard-findings: findings-mismatch + predicate-match returned true"
+    ],
+    "direct": false
+   },
+   {
+    "name": "harness-guard-findings-count-match",
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     "harness-guard-findings: findings-mismatch + count-match returned true"
+    ],
+    "direct": false
+   }
+  ],
+  "failedCaseIds": [
+   "harness-guard-findings-predicate-match",
+   "harness-guard-findings-count-match"
+  ]
+ },
+ "baseline": {
+  "command": "node .ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs --selftest",
+  "exit": 0,
+  "allPass": true,
+  "cases": 38,
+  "pass": 38
+ },
+ "fixtureProbe": {
+  "script": ".ufo/waves/round-59/mutant-meter/fixture-probe.mjs",
+  "baseline": {
+   "allPass": true,
+   "cases": 5,
+   "pass": 5
+  },
+  "mutant": {
+   "targetSha256": "8ee919f13023d24d1bb9f3333b095ac5271c07d51d99379a43e87fa90c801549",
+   "exit": 0,
+   "allPass": true,
+   "cases": 5,
+   "pass": 5,
+   "failing": [],
+   "failedFixtureIds": []
+  },
+  "restored": {
+   "targetSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+   "exit": 0,
+   "allPass": true,
+   "cases": 5,
+   "pass": 5,
+   "failing": [],
+   "failedFixtureIds": []
+  }
+ },
+ "killedBy": [
+  "selftest:harness-guard-findings-predicate-match",
+  "selftest:harness-guard-findings-count-match"
+ ],
+ "verdict": "KILLED",
+ "restoration": {
+  "note": "the scratch copy was overwritten with the pristine v19 bytes and re-run with both detectors; the canonical instrument was never modified",
+  "restoredSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+  "pristineSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+  "equalsPristine": true,
+  "bytesRestoredFromCommitted": true,
+  "selftestExit": 0,
+  "selftestAllPass": true,
+  "selftestCases": "38/38",
+  "probeExit": 0,
+  "probeAllPass": true,
+  "probeCases": "5/5",
+  "repoBytesUntouched": true
+ },
+ "method": "the one verdict-return line was edited in a SCRATCH copy only; the copy was run with --selftest and the fixture probe, then overwritten with the pristine bytes and re-run. The committed instrument was never modified.",
+ "disclosure": "none: the mutant is the pinned M1 identity; both new findings-mismatch rows fail and the two older harness-guard rows still pass, because the count/predicate terms remain."
+}

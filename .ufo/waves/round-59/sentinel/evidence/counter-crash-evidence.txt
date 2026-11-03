@@ -1,0 +1,32 @@
+=== R59Sentinel counter-crash evidence (captured 2026-11-03T18:10:25-03:00) ===
+counter under test: /fast/scratch/hyaku/tabi-r59/R59Counter/chromium-receipt-r59.mjs
+counter sha256 at capture: bf609392598404205bfc710876fb9cc58860b89172c7e445942b8218ca50d7f5
+counter mtime: 2026-11-03 18:10:03.511021934 -0300
+
+--- DEF (line 1114) ---
+function checkCapsLock(rec, form, nonceStr, nonceOk, pageEntries, pageAdmitted, add) {
+--- CALL (line 1856) ---
+  checkCapsLock(rec, form, nonceStr, nonceOk, pageEntriesOf(form), add);
+
+--- reproduction 1: genuine smoke2 receipt ---
+file:///fast/scratch/hyaku/tabi-r59/R59Counter/chromium-receipt-r59.mjs:1098
+    add('shift-detector-negative', bad.length + ' of ' + held.length + ' Shift-held page event(s) do not read getModifierState(\'Shift\') true (' + JSON.stringify(bad) + ')');
+    ^
+
+TypeError: add is not a function
+    at checkShiftDetector (file:///fast/scratch/hyaku/tabi-r59/R59Counter/chromium-receipt-r59.mjs:1098:5)
+exit=1, stdout empty (no JSON verdict)
+
+--- reproduction 2: receipt with the capsLock leg REMOVED ---
+file:///fast/scratch/hyaku/tabi-r59/R59Counter/chromium-receipt-r59.mjs:1149
+  if (!leg) { add('missing-delivered-shape-field', 'no capsLock leg recorded (journey.form.capsLockLeg)'); return; }
+              ^
+
+exit=1, stdout empty (no JSON verdict)
+
+--- reproduction 3: forged receipt (acrossLetters1=false) ---
+file:///fast/scratch/hyaku/tabi-r59/R59Counter/chromium-receipt-r59.mjs:1145
+        add('capslock-readback-missing', name + ' valueAfter ' + JSON.stringify(p.valueAfter) + ' != the pre-leg value ' + JSON.stringify(prefix));
+        ^
+
+TypeError: add is not a function

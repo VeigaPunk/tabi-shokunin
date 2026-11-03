@@ -1,0 +1,33 @@
+=== R59Sentinel residual finding: counter's press2 read-back check is unsatisfiable ===
+captured 2026-11-03T18:11:43-03:00
+counter sha256: bea30e2e09df7f09eb5af32babf24d98edbaf490495dc3e83582aa8928c61363
+counter mtime: 2026-11-03 18:11:11.548669647 -0300
+
+COUNTER (line 1207-1209) checks BOTH presses' valueAfter against the PRE-LEG prefix:
+    if (typeof p.valueAfter === 'string') {
+      if (prefix !== null && p.valueAfter !== prefix) {
+        add('capslock-readback-missing', name + ' valueAfter ' + JSON.stringify(p.valueAfter) + ' != the pre-leg value ' + JSON.stringify(prefix));
+
+DRIVER semantics (chrome-cdp-loopback-round59.mjs):
+  press1.valueAfter = fieldValue('field3') right after the press1 CapsLock keyUp (pre-letters1) -> == prefix  OK
+  press2.valueAfter = fieldValue('field3') right after the press2 CapsLock keyUp (POST-letters1) -> != prefix
+    // press 2
+    const capsP2 = await pressKey({ key: 'CapsLock', code: 'CapsLock', vk: 20 });
+    cap.press2 = capsPair(capsP2, await fieldValue('field3'));
+    capTrace.press2 = { ...cap.press2 };
+    capsTracePush('press2', capsP2, cap.press2.valueAfter);
+
+=> press2.valueAfter necessarily != the pre-leg prefix (the letters1 text is already in the field).
+   On the GENUINE smoke2 receipt the counter therefore emits capslock-readback-missing:
+   press2 valueAfter "48cd" != the pre-leg value "48"
+   This is a FALSE POSITIVE: the receipt is correct, the check is not.
+
+IMPACT: C2's after-state (exit 0, findings []) is unreachable with a genuine receipt -> the
+  claim cannot go green on honest bytes, and a forger could satisfy the check by
+  setting press2.valueAfter back to the prefix. The falsifier is inverted.
+
+SUGGESTED SMALLEST FIX (the counter seat's to land):
+  - compare press1.valueAfter against the pre-leg prefix (it IS the pre-letters1 value), and
+  - compare press2.valueAfter against prefix + letters1.join('') (the post-letters1 value),
+  OR drop press2 from the prefix comparison and rely on the per-letter read-back checks
+  (which already assert each letter's valueAfter == prefix + letters[0..i]).

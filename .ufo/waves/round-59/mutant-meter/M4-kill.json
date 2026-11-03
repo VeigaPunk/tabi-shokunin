@@ -1,0 +1,115 @@
+{
+ "schema": "tabi-adjacency-r59-M4-kill",
+ "claim": "C1 declared change set (e) \u2014 routed r58-closure D5/A5+N4",
+ "instrument": ".ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs",
+ "instrumentSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+ "instrumentBytes": 53384,
+ "instrumentUntouched": "the canonical file was read and copied only; its sha256 re-checked after every mutant and before this receipt",
+ "mutant": "M4: remove the orphan-line-row check (routed A5/N4) - killed by an orphan fixture",
+ "mutantSha256": "b2f37d918f622f6ee15f650096cdbad9f56942d6d06dc9dc340c711a406124a2",
+ "hunk": "the (e) stray-line-row block's `if (!inputs.deltaRows.some((d) => d[0] === 'lane' && d[1] === lane)) { add('orphan-line-row', ...); continue; }` is deleted (four lines, nothing else).",
+ "diff": "--- a/c1-adjacency-host-v19.mjs\n+++ b/c1-adjacency-host-v19.mjs\n@@ -279,10 +279,6 @@\n     if (r[0] !== 'line') continue;\n     const lane = r[1];\n     const { relPath, line } = linePathOf(r[2]);\n-    if (!inputs.deltaRows.some((d) => d[0] === 'lane' && d[1] === lane)) {\n-      add('orphan-line-row', `${lane}:${r[2]}`);\n-      continue;\n-    }\n     if (!laneRowAt.has(`${lane}\\t${relPath}`) || line === null) {\n       add('line-row-unscreened-file', `${lane}:${r[2]}`);\n       continue;\n",
+ "expectedDetector": "selftest case orphan-line-row (expects exactly [orphan-line-row], findingCount 1); plus scratch fixture F4-orphan-line-row (one map-covered lane with a correct zero-hit screen, plus one line row for a lane with no lane row). The mutant reclassifies the orphan as line-row-unscreened-file.",
+ "selftestCases": {
+  "total": 38,
+  "baselinePass": 38,
+  "mutantPass": 37,
+  "restoredPass": 38,
+  "failedCaseIds": [
+   "orphan-line-row"
+  ]
+ },
+ "failedCaseIds": [
+  "orphan-line-row"
+ ],
+ "mutantRun": {
+  "command": "node /fast/scratch/hyaku/tabi-r59/R59MutMeter/M4.mjs --selftest",
+  "exit": 1,
+  "allPass": false,
+  "cases": 38,
+  "pass": 37,
+  "failing": [
+   {
+    "name": "orphan-line-row",
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     "line-row-unscreened-file: ghost-lane:PROVINCE.md:2"
+    ],
+    "direct": null
+   }
+  ],
+  "failedCaseIds": [
+   "orphan-line-row"
+  ]
+ },
+ "baseline": {
+  "command": "node .ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs --selftest",
+  "exit": 0,
+  "allPass": true,
+  "cases": 38,
+  "pass": 38
+ },
+ "fixtureProbe": {
+  "script": ".ufo/waves/round-59/mutant-meter/fixture-probe.mjs",
+  "baseline": {
+   "allPass": true,
+   "cases": 5,
+   "pass": 5
+  },
+  "mutant": {
+   "targetSha256": "b2f37d918f622f6ee15f650096cdbad9f56942d6d06dc9dc340c711a406124a2",
+   "exit": 1,
+   "allPass": false,
+   "cases": 5,
+   "pass": 4,
+   "failing": [
+    {
+     "name": "F4-orphan-line-row",
+     "expect": [
+      "orphan-line-row"
+     ],
+     "got": [
+      "line-row-unscreened-file"
+     ],
+     "findings": [
+      "line-row-unscreened-file: ghost-lane:PROVINCE.md:2"
+     ]
+    }
+   ],
+   "failedFixtureIds": [
+    "F4-orphan-line-row"
+   ]
+  },
+  "restored": {
+   "targetSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+   "exit": 0,
+   "allPass": true,
+   "cases": 5,
+   "pass": 5,
+   "failing": [],
+   "failedFixtureIds": []
+  }
+ },
+ "killedBy": [
+  "selftest:orphan-line-row",
+  "fixture:F4-orphan-line-row"
+ ],
+ "verdict": "KILLED",
+ "restoration": {
+  "note": "the scratch copy was overwritten with the pristine v19 bytes and re-run with both detectors; the canonical instrument was never modified",
+  "restoredSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+  "pristineSha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+  "equalsPristine": true,
+  "bytesRestoredFromCommitted": true,
+  "selftestExit": 0,
+  "selftestAllPass": true,
+  "selftestCases": "38/38",
+  "probeExit": 0,
+  "probeAllPass": true,
+  "probeCases": "5/5",
+  "repoBytesUntouched": true
+ },
+ "method": "the orphan guard was deleted in a SCRATCH copy only; the copy was run with --selftest and the fixture probe, then overwritten with the pristine bytes and re-run. The committed instrument was never modified.",
+ "disclosure": "The mutant does not crash: the orphan row falls through to the (lane, relPath) unscreened-file check, so the emitted id flips rather than disappearing \u2014 exactly the coverage regression the case measures."
+}

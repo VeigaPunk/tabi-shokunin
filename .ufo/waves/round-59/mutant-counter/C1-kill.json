@@ -1,0 +1,189 @@
+{
+ "schema": "tabi-r59-mutant-counter-probe",
+ "id": "C1",
+ "description": "drop the D1 page-vs-block cross-check (both call sites: the positional/distinct-occurrence block comparison and the continuation-loop block comparison)",
+ "killRule": "killRules.C2 f4 / the D1 implementation",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59.mjs",
+ "counterSha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+ "counterBytes": 131074,
+ "fixturesDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures",
+ "workdir": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/C1",
+ "edits": [
+  {
+   "old": "function checkKeylogFlags(form, add) {\n  if (!isObj(form) || !isObj(form.swallowLeg)) return;",
+   "new": "function checkKeylogFlags(form, add) {\n  return; // C1: D1 dropped (no swallow block is compared against the page record)\n  if (!isObj(form) || !isObj(form.swallowLeg)) return;",
+   "occurrences": 1,
+   "found": 1,
+   "ok": true
+  },
+  {
+   "old": "          const blk = blockSeq ? blockSeq[j] : null;",
+   "new": "          const blk = null; // C1: D1 continuation check dropped",
+   "occurrences": 1,
+   "found": 1,
+   "ok": true
+  }
+ ],
+ "editsAllOk": true,
+ "mutatedSha256": "2d723b9d28d4c0fab685bc18a6f59f77086de01988c19fae18dd653bdefb50f3",
+ "mutatedBytes": 131169,
+ "expectId": "keylog-flag-mismatch",
+ "seededCase": "keylog-flag-mismatch.json",
+ "baseline": {
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "uncovered": [],
+  "failing": [],
+  "tail": "91/91"
+ },
+ "baselineAllPass": true,
+ "mutated": {
+  "status": 1,
+  "allPass": false,
+  "pass": 88,
+  "cases": 91,
+  "failing": [
+   {
+    "name": "keylog-flag-mismatch-masked-control",
+    "got": [],
+    "want": [
+     "keylog-flag-mismatch"
+    ]
+   },
+   {
+    "name": "keylog-flag-mismatch",
+    "got": [],
+    "want": [
+     "keylog-flag-mismatch"
+    ]
+   },
+   {
+    "name": "swallow-pagekeylog-continuation",
+    "got": [
+     "swallow-plan-mismatch"
+    ],
+    "want": [
+     "keylog-flag-mismatch",
+     "swallow-plan-mismatch"
+    ]
+   }
+  ],
+  "tail": "88/91",
+  "stderrTail": ""
+ },
+ "lostId": null,
+ "failingCases": [
+  {
+   "name": "keylog-flag-mismatch-masked-control",
+   "got": [],
+   "want": [
+    "keylog-flag-mismatch"
+   ]
+  },
+  {
+   "name": "keylog-flag-mismatch",
+   "got": [],
+   "want": [
+    "keylog-flag-mismatch"
+   ]
+  },
+  {
+   "name": "swallow-pagekeylog-continuation",
+   "got": [
+    "swallow-plan-mismatch"
+   ],
+   "want": [
+    "keylog-flag-mismatch",
+    "swallow-plan-mismatch"
+   ]
+  }
+ ],
+ "fixtureRun": {
+  "caseFile": "keylog-flag-mismatch.json",
+  "caseExpect": [
+   "keylog-flag-mismatch"
+  ],
+  "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures/receipts/keylog-flag-mismatch.receipt.json",
+  "receiptSha256": "8852f04170385b676f3bd04d3a1514a6675cce5d49b6d19a41e84f2dc9d8d078",
+  "pristine": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C1/pristine.mjs",
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findings": [
+    "keylog-flag-mismatch"
+   ],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "mutant": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C1/mutant.mjs",
+   "exit": 0,
+   "parseOk": true,
+   "predicate": true,
+   "findings": [],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "killed": true
+ },
+ "forgedRun": [
+  {
+   "forge": "f4-forged-page-flag",
+   "receiptSha256": "d0809af82441dbd013bca72bf4d8430e4a87c9df9d4940d6619e384ab4fd6aa7",
+   "canonical": {
+    "exit": 1,
+    "findings": [
+     "keylog-flag-mismatch"
+    ]
+   },
+   "mutant": {
+    "exit": 0,
+    "findings": []
+   },
+   "killed": true
+  }
+ ],
+ "restore": {
+  "sha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+  "matchesCanonical": true,
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "tail": "91/91"
+ },
+ "verdict": "KILLED",
+ "overallVerdict": "KILLED",
+ "killedBy": {
+  "reason": "mutant selftest fails where pristine passes",
+  "mutantExit": 1,
+  "failingCases": [
+   "keylog-flag-mismatch-masked-control",
+   "keylog-flag-mismatch",
+   "swallow-pagekeylog-continuation"
+  ],
+  "lostExpectation": null
+ },
+ "history": {
+  "note": "An earlier run of the same mutant set executed on counter sha256 35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332 (125756 B) with the then-current 90-case fixture set, before the author applied the L1-requested pre-freeze D1 positional strengthening (R59Probes d6 maskability) that produced the froze bytes cited above. That fixture set no longer exists on disk; those runs are superseded and are not the authoritative receipts.",
+  "priorCounterSha256": "35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332",
+  "priorSelftest": {
+   "cases": 90,
+   "pass": 90,
+   "allPass": true
+  },
+  "priorVerdicts": {
+   "C1": "KILLED",
+   "C2": "KILLED",
+   "C3": "KILLED",
+   "C4": "KILLED",
+   "C5": "KILLED",
+   "C6": "SURVIVED(selftest)",
+   "C7": "KILLED"
+  },
+  "priorNote": "C1 used the then-valid one-line blockIds=[] edit against 35461bbe; the frozen bytes need the two-site edit recorded here."
+ }
+}

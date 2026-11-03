@@ -1,0 +1,84 @@
+# R59Reviewer — independent v18→v19 meter re-diff (routed cross-check, critic pin)
+
+Seat: R59Reviewer. Method: byte copies of both generations taken into reviewer scratch
+(`/fast/scratch/hyaku/tabi-r59/R59Reviewer/cur/`), comment-stripped
+(`sed -E 's|^\s*//.*||; s|//.*$||'` + blank-line removal), unified-diffed.
+- v18 snapshot sha256 `3afade4ea188d5b8420ff7494a8bdb70724dab2aa6cf56e13a885cc9d27c45b2`
+  (= the committed r58 freeze bytes).
+- v19 FINAL bytes analyzed: sha256 `7c4e4b5d2c909f68803454bc4c3338f2846a6d98839d3470398989b6c3641073`,
+  stable across two checks 65 s apart. (An EARLIER copy, sha `cc11af86…`,
+  taken 18:06 -03, was superseded at 18:08 by the `direct`-term fix — see
+  the pre-freeze sequence note at the end. All attacks re-run on the final bytes.)
+- Comment-stripped sizes: v18 298 lines, v19 488 lines; logic diff = 381 lines.
+- Full diff committed as `reviewer/v19-independent-logic.diff` (sha256 of the
+  copy: `7b824bde78d8b500974fb2c12337254ab8aea9ba0639d6590596637cec5435d9`).
+
+## Verdict
+
+**No differing non-comment line is outside the declared change set (a)–(e) plus the
+critic pins (P1 gloss, P2 full-row-validation + kama cases, P3 M1..M6 mapping).**
+All hunks classify; the host layer (laneExists/headSnapshots/makeSibRefGit/
+rosterScan/laneBytes/runAt/listObserved) is untouched — every hunk is inside the
+pure core, the selftest, or the CLI strings. The meter seat's own audit
+(`adj/v19-line-audit.txt`: 284 differing non-comment lines, 47 DEL / 237 ADD,
+0 unaccounted; (a) 14, (b) 23, (c) 12, (d) 80, (e) 155) is CONCORDANT with this
+independent account, including its (b) inclusion of the `direct` term and its
+(d) inclusion of the memoized screen reads.
+
+## Hunk-by-hunk account (final bytes)
+
+| class | lines |
+|---|---|
+| (a) relabel | AUDIT_REL/DELTA_REL → r59; die/selftest/run-output schemas v19; usage line v19; predicateSentence names the r59 ledgers + the (d)/(e) clauses ("no unadjudicated hit line, no orphan line row, no line row on an unscreened file and no invented row") |
+| (b) N1 guard | two new cases `harness-guard-findings-predicate-match` / `-count-match`; PLUS the `direct` term on the three guard cases, evaluated OUTSIDE the caseOk verdict path (`ok = caseOk(...) && (direct === null || direct)`), so a findings-term drop cannot mask its own guard (M1 pin) |
+| (c) N2 parse hardening | `typeof ref !== 'string'` guard; suffix `/^\d+$/` before `Number()`; `Number.isSafeInteger(ln) && ln >= 1`; five malformed-suffix cases (alpha/empty/signed/no-@/no-second-colon) each expecting exactly `map-ref-unparseable` |
+| (d) A4/N3 all-sibling screen | `PROVINCE_REL`; screenTargets = PROVINCE ∪ map refs for ALL roster lanes; P3 per-lane-row loop reworked per FILE (details `lane:relPath`); new screen loop emitting `bg-screen-missing` + `bg-hit-unadjudicated`; memoized `read()` cache; counts gains `bgScreenSiblings = screenTargets.size` (structural, == roster, per pin P1); cases `bg-hit-unadjudicated-map-lane`, `bg-screen-missing-zero-hit`, `kama-screen-weakening-observable` |
+| (e) A5/N4 stray rows | laneRowAt/lineRowAt keyed (lane, relPath[, line]); final line-row loop emitting `orphan-line-row` / `line-row-unscreened-file` / re-derived `delta-line-invented` per the row's OWN file bytes; cases `orphan-line-row`, `line-row-unscreened-file`, `cross-file-hit-number-wrong-file` + P2 kama trio (`kama-invented-row`, `kama-quote-spliced`, `kama-head-citation`, `kama-mixed-forgery`) |
+
+Selftest on final bytes: 37/37, allPass true (`reviewer/v19-selftest-2.json`).
+Live attacks on final bytes: all reproduce (`reviewer/mixed-forgery-attack.json`,
+meterSha256 pinned to 7c4e4b5d…).
+
+## Observations (not defects; for the round record)
+
+1. **Pre-freeze sequence (the one real defect this office found in v19).** The FIRST
+   v19 bytes (sha `cc11af86…`, copied 18:06) implemented the guard cases as run()-only:
+   a findings-term drop in caseOk (`okPredicate && okCount`) evaluates the synthetic
+   guard finding through the very mutant under test, so the case verdict stays true —
+   **M1 survived the first version's selftest by construction**. The 18:08 revision
+   adds the `direct` term outside that path; this office rebuilt the M1 mutant on the
+   final bytes (mutant sha `802e4c05…`, builder `reviewer/m1-current.mjs`): 35/37,
+   failing exactly `harness-guard-findings-predicate-match` and
+   `harness-guard-findings-count-match` → KILLED
+   (`reviewer/m1-current-selftest.json`). Evidence of the first state:
+   `v19-selftest-1.json` (guard cases carry no `direct` field) and the superseded
+   first-copy diff retained in scratch history of this seat. The frozen kill clause
+   "a findings-term drop survives the harness guard (N1 not actually killed)" was
+   satisfiable only after the fix; the fix landed PRE-FREEZE (no data had scored).
+2. **M6 spot-check (independent).** Vocabulary gut (drop selenium/playwright/headless,
+   mutant sha `82e4f2f7…`): 32/37, failing exactly the five kama cases → KILLED
+   (`reviewer/m6-current-selftest.json`). The D8 surface's enumerating power is
+   kill-pinned by the P2 cases.
+3. **M2′ SURVIVOR — named for the NEXT generation (not a C1 kill).** Weakening only
+   the finite-integer assertion to `Number.isNaN(ln)` (keeping the `/^\d+$/` regex,
+   mutant sha `e4910de9…`) passes 37/37 (`reviewer/m2-current-selftest.json`): no
+   case feeds a digits-only-but-unsafe suffix (e.g. 20+ digits) or a `:0` suffix, the
+   two inputs where `isSafeInteger/≥1` differs from the regex. The FROZEN (c) case
+   list (alpha/empty/signed/no-@/no-colon) is still killed because those die on the
+   regex, and the frozen M2 definition is exactly that weakening — so the claim's
+   obligation is met as written. Next generation: one extra case with a huge-digit
+   (or `:0`) suffix would pin the assertion itself.
+4. **Id nuance on (d):** a screened file WITH a lane row whose hit line lacks its line
+   row emits the carried `delta-line-missing`; `bg-hit-unadjudicated` is reserved for
+   the lane-row-absent path. Predicate direction unaffected; M3's kill surface
+   (`bg-hit-unadjudicated-map-lane`) intact.
+5. **Ledger-trust direction is safe.** laneRowAt is built from ledger lane rows, so a
+   FORGED lane row for a never-screened file EXTENDS the validated set (P3 binds its
+   sha/lines/bgHits and all its hits); the meter's own screenTargets is the floor.
+   Live proof: `mf-extend` green with full honest adjudication vs `mf-j3` red
+   (`line-row-unscreened-file`).
+
+Independent cross-check of the diff audit is thereby FURNISHED for the C1 kill-rule
+clause ("the diff audit … independent v18->v19 re-diff by a second seat") —
+concordant, 0 unaccounted lines, with one pre-freeze defect (observation 1) found
+and fixed before the freeze.

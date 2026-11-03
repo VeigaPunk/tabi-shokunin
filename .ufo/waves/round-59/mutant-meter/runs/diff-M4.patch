@@ -1,0 +1,13 @@
+--- a/c1-adjacency-host-v19.mjs
++++ b/c1-adjacency-host-v19.mjs
+@@ -279,10 +279,6 @@
+     if (r[0] !== 'line') continue;
+     const lane = r[1];
+     const { relPath, line } = linePathOf(r[2]);
+-    if (!inputs.deltaRows.some((d) => d[0] === 'lane' && d[1] === lane)) {
+-      add('orphan-line-row', `${lane}:${r[2]}`);
+-      continue;
+-    }
+     if (!laneRowAt.has(`${lane}\t${relPath}`) || line === null) {
+       add('line-row-unscreened-file', `${lane}:${r[2]}`);
+       continue;

@@ -1,0 +1,139 @@
+{
+ "schema": "tabi-r59-mutant-counter-probe",
+ "id": "C6",
+ "description": "drop the delivered-shape cancelable requirement (the SHAPE_KEYS presence loop and the strict cancelable!==true return) - the mutant greens a forged-but-consistent f6 receipt",
+ "killRule": "killRules.C2 f6",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59.mjs",
+ "counterSha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+ "counterBytes": 131074,
+ "fixturesDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures",
+ "workdir": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/C6",
+ "edits": [
+  {
+   "old": "  for (const k of SHAPE_KEYS) if (!has(e, k)) return 'no ' + k;\n",
+   "new": "",
+   "occurrences": 1,
+   "found": 1,
+   "ok": true
+  },
+  {
+   "old": "  if (e.cancelable !== true) return 'cancelable ' + JSON.stringify(e.cancelable) + ' != true';",
+   "new": "",
+   "occurrences": 1,
+   "found": 1,
+   "ok": true
+  }
+ ],
+ "editsAllOk": true,
+ "mutatedSha256": "4f7417218e2df13cb0bd471d8735e065e2c3f4df1be08cbc6e263a1719297d6c",
+ "mutatedBytes": 130916,
+ "expectId": "missing-delivered-shape-field",
+ "seededCase": "missing-delivered-shape-field.json",
+ "baseline": {
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "uncovered": [],
+  "failing": [],
+  "tail": "91/91"
+ },
+ "baselineAllPass": true,
+ "mutated": {
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "failing": [],
+  "tail": "91/91",
+  "stderrTail": ""
+ },
+ "lostId": null,
+ "failingCases": [],
+ "fixtureRun": {
+  "caseFile": "missing-delivered-shape-field.json",
+  "caseExpect": [
+   "missing-delivered-shape-field"
+  ],
+  "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59-fixtures/receipts/missing-delivered-shape-field.receipt.json",
+  "receiptSha256": "f5bb82f4f07322ee379e0ddc5d218edc6be5ed8a9ccf7ed2873296eb7caa0682",
+  "pristine": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C6/pristine.mjs",
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findings": [
+    "missing-delivered-shape-field"
+   ],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "mutant": {
+   "counter": "/fast/scratch/hyaku/tabi-r59/R59MutCounter/fx-C6/mutant.mjs",
+   "exit": 1,
+   "parseOk": true,
+   "predicate": false,
+   "findings": [
+    "missing-delivered-shape-field"
+   ],
+   "couldNotEvaluate": [],
+   "stderrTail": ""
+  },
+  "killed": false
+ },
+ "forgedRun": [
+  {
+   "forge": "f6-missing-cancelable",
+   "receiptSha256": "4b0a31248cd9d07c3f79607eeb8f1405cafcb15b0eb017992ace816ba12656b0",
+   "canonical": {
+    "exit": 1,
+    "findings": [
+     "missing-delivered-shape-field"
+    ]
+   },
+   "mutant": {
+    "exit": 0,
+    "findings": []
+   },
+   "killed": true
+  }
+ ],
+ "restore": {
+  "sha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+  "matchesCanonical": true,
+  "status": 0,
+  "allPass": true,
+  "pass": 91,
+  "cases": 91,
+  "tail": "91/91"
+ },
+ "verdict": "SURVIVED",
+ "overallVerdict": "KILLED-BY-FORGED-RECEIPT",
+ "killedBy": {
+  "reason": "mutant selftest still all-pass"
+ },
+ "history": {
+  "note": "An earlier run of the same mutant set executed on counter sha256 35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332 (125756 B) with the then-current 90-case fixture set, before the author applied the L1-requested pre-freeze D1 positional strengthening (R59Probes d6 maskability) that produced the froze bytes cited above. That fixture set no longer exists on disk; those runs are superseded and are not the authoritative receipts.",
+  "priorCounterSha256": "35461bbeb9e26981941d5b597b16c8138181ebdb919c06d53dbdc44f81bf9332",
+  "priorSelftest": {
+   "cases": 90,
+   "pass": 90,
+   "allPass": true
+  },
+  "priorVerdicts": {
+   "C1": "KILLED",
+   "C2": "KILLED",
+   "C3": "KILLED",
+   "C4": "KILLED",
+   "C5": "KILLED",
+   "C6": "SURVIVED(selftest)",
+   "C7": "KILLED"
+  },
+  "priorNote": "same edit text as recorded here"
+ },
+ "variantFinding": {
+  "id": "missing-delivered-shape-field",
+  "selftest": "SURVIVED (91/91 still all-pass: no author fixture exercises the cancelable-absence branch of SHAPE_KEYS)",
+  "independentDetector": "the forged f6 receipt is refused by the canonical counter with exactly [missing-delivered-shape-field] and greened by the mutant; the author keyCode variant is still refused by the mutant, so the mutant hole is exactly the cancelable requirement"
+ }
+}
