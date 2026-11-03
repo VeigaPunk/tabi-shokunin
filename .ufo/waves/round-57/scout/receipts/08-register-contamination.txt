@@ -1,0 +1,72 @@
+# Independent re-parse of the census gate-block model (my own script; quote-lint.py was NOT executed)
+$ python3 08-probe-contamination.py
+blocks 147 with foreign spans 54 foreign span count 92
+
+# census-internal classification: each tabi ABSENT finding's `line` field shape
+ABSENT quotes: 65 {'next-row-table-line': 54, 'quote-line': 11}
+
+# per-row split: next-row contamination vs own quote line (my re-parse, cross-checked against the census line field)
+round   id    absent own nextrow  class
+round1  S102       1   0       1  next-row-only
+round1  S106       2   0       2  next-row-only
+round1  S109       2   0       2  next-row-only
+round1  S110       3   0       3  next-row-only
+round1  S111       2   2       0  own-only
+round1  S114       1   1       0  own-only
+round1  S117       1   0       1  next-row-only
+round1  S118       5   5       0  own-only
+round2  S124       2   1       1  mixed
+round2  S125       2   0       2  next-row-only
+round2  S126       3   0       3  next-row-only
+round2  S130       1   0       1  next-row-only
+round2  S131       2   0       2  next-row-only
+round2  S133       1   0       1  next-row-only
+round2  S134       1   0       1  next-row-only
+round2  S135       1   0       1  next-row-only
+round2  S137       1   0       1  next-row-only
+round2  S138       1   0       1  next-row-only
+round2  S140       1   1       0  own-only
+round3  S142       1   0       1  next-row-only
+round3  S143       1   0       1  next-row-only
+round3  S144       2   0       2  next-row-only
+round3  S145       2   0       2  next-row-only
+round3  S147       1   0       1  next-row-only
+round3  S148       2   0       2  next-row-only
+round3  S149       2   0       2  next-row-only
+round3  S153       2   0       2  next-row-only
+round3  S154       1   0       1  next-row-only
+round4  S158       1   0       1  next-row-only
+round4  S163       3   0       3  next-row-only
+round4  S164       1   0       1  next-row-only
+round4  S165       1   0       1  next-row-only
+round4  S166       1   0       1  next-row-only
+round4  S167       2   0       2  next-row-only
+round5  S174       2   0       2  next-row-only
+round5  S175       2   1       1  mixed
+round5  S176       5   0       5  next-row-only
+rows whose whole ABSENT set is next-row contamination: 31
+['round1/S102', 'round1/S106', 'round1/S109', 'round1/S110', 'round1/S117', 'round2/S125', 'round2/S126', 'round2/S130', 'round2/S131', 'round2/S133', 'round2/S134', 'round2/S135', 'round2/S137', 'round2/S138', 'round3/S142', 'round3/S143', 'round3/S144', 'round3/S145', 'round3/S147', 'round3/S148', 'round3/S149', 'round3/S153', 'round3/S154', 'round4/S158', 'round4/S163', 'round4/S164', 'round4/S165', 'round4/S166', 'round4/S167', 'round5/S174', 'round5/S176']
+
+# the 11 own-quote-line ABSENT fragments (the only row-attributable ones)
+round1 S111 url=https://developer.chrome.com/docs/ai/webmcp/secure-tools
+   quote: 'Add hints to your tools'
+round1 S111 url=https://developer.chrome.com/docs/ai/webmcp/secure-tools
+   quote: '默认情况下，其他网站或跨源 iframe 无法观察或与您的工具互动。'
+round1 S114 url=https://www.juse.jp/sqip/symposium/2025/timetable/files/B1-2
+   quote: 'achieves better web element identification accuracy compared to naive set-of-marks prompting technique'
+round1 S118 url=https://arxiv.org/abs/2305.11506
+   quote: 'User awareness'
+round1 S118 url=https://arxiv.org/abs/2305.11506
+   quote: 'Chromium notifies users by rendering an infobar across all open browser tabs'
+round1 S118 url=https://arxiv.org/abs/2305.11506
+   quote: 'User awareness'
+round1 S118 url=https://arxiv.org/abs/2305.11506
+   quote: 'user can click on the cancel button to force all debuggers from an extension to be detached from their respective targets'
+round1 S118 url=https://arxiv.org/abs/2305.11506
+   quote: 'extensions can reattach immediately afterwards and that no rate-limit protection exists against this behavior'
+round2 S124 url=https://www.rfc-editor.org/rfc/rfc9110.txt
+   quote: 'Retry-After can be used with a 3xx (Redirection) or 503 (Service Unavailable) status code'
+round2 S140 url=https://docs.copilotkit.ai/webmcp
+   quote: 'The `tools` permissions policy defaults to `self` ; cross-origin iframes also need `allow=\\"tools\\"` .'
+round5 S175 url=https://www.np.com.tw/modules/news/article.php?storyid=20
+   quote: 'WebMCP 沒有繞過任何既有防護。它吃的是瀏覽器當下的登入狀態，你的驗證碼、CSRF token、審核佪列、速率限制全部照常運作。'

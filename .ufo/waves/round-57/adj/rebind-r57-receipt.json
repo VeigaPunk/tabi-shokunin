@@ -1,0 +1,119 @@
+{
+ "schema": "tabi-adjacency-r57-rebind-receipt",
+ "round": 57,
+ "claim": "C1",
+ "seat": "R57Adj",
+ "tool": {
+  "path": ".ufo/waves/round-57/adj/rebind-r57.mjs",
+  "sha256": "29e7a010b49d88e05cb2061c7cd9e4b8d3eb596ef906fc1566afa14b59c83805",
+  "imports": "verify + predicateFrom from ../counters/c1-adjacency-host-v17.mjs (the preflight runs the meter's own pure core)",
+  "tempFiles": "none — no temporary file is created and TMPDIR is never consulted; only --out, --snapshot-out and the optional --scratch are written",
+  "guards": [
+   "refuses --out inside <repo>/corpus (exit 2)",
+   "source-pin: fails if the meter's BG_WORDS/DISPOSITIONS literals drift (exit 4)",
+   "refuses a province that is not UTF-8 round-trip clean (a raw-byte sha could not match the meter's re-encoding path, exit 4)",
+   "refuses a TSV cell carrying a tab or newline"
+  ]
+ },
+ "authoring_tests": {
+  "fresh_run": {
+   "command": "node .ufo/waves/round-57/adj/rebind-r57.mjs --repo <lane> --fleet <fleet> --json (default --rev HEAD, default --snapshot-out adj/rebind-snapshot.json)",
+   "snapshotAt": "2026-11-03T19:07:22.002Z",
+   "exit": 0,
+   "counts": {
+    "roster": 20,
+    "mapRows": 16,
+    "auditRows": 16,
+    "deltaLanes": 16,
+    "deltaLineRows": 30
+   },
+   "auditStatuses": {
+    "stale": 5,
+    "unchanged": 10,
+    "moved": 1
+   },
+   "dispositionSources": {
+    "carried": 30,
+    "explicit": 0
+   },
+   "preflight": "green (verify findings [], predicateFrom true)",
+   "ledgerSha256": {
+    "audit": "4bf4183aba2e2b3b3117b5b7b6dde968e26367f2f3290fdac04c3434bf8fb9ad",
+    "delta": "562570d1ba15816a22ad2a39126041ef1e159ecd9f0866b76814a183d256a3eb"
+   },
+   "screenedLanes": 16,
+   "note": "--rev defaults to the lane HEAD (the freeze commit at the L1's run); the map is read from that rev, never from the worktree"
+  },
+  "meter_dryrun": {
+   "receipt": "adj/rebind-dryrun-meter-green.json",
+   "command": "node counters/c1-adjacency-host-v17.mjs --rev <scratch-fixture-commit> --repo <scratch-fixture-repo> --fleet /home/vgpnk/Projects/shokunin --json",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "counts": {
+    "roster": 20,
+    "mapRows": 16,
+    "auditRows": 16,
+    "deltaLanes": 16
+   },
+   "note": "the fixture repo is a scratch-only git repo holding corpus/adjacency.tsv at ef43ece plus the two candidate ledgers; the meter reads them by rev through git, exactly as it will read the data commit. Run against the FINAL v17 bytes (sha256 7305b672…)."
+  },
+  "status_equivalence": {
+   "command": "node counters/c1-adjacency-host-v17.mjs --list-observed --fleet <fleet> vs the rebind's audit rows",
+   "mapRows": 16,
+   "statusMismatches": 0,
+   "missingAuditRows": 0,
+   "note": "the moved-row note was also checked against the meter's own derived line number (kumitate SCORECARD.md:1723 -> :1736, note regex first match)"
+  },
+  "determinism_and_snapshot_binding": {
+   "runs": 5,
+   "observation": "five rebind runs (19:00:27Z … 19:07:22Z): the audit ledger was BYTE-IDENTICAL in all five (sha 4bf4183a…). The delta ledger differed only in the souji-shokunin lane-row head cell, twice, because that lane head moved twice (ab8c1fc -> 5b34efe7 -> 8ec412c6) while its PROVINCE.md bytes stayed identical (c60046df, 323 lines, 0 hits) — the snapshot binding working as designed, and the reason the L1's run re-derives everything at its own snapshot."
+  },
+  "refusal_path": {
+   "command": "--prev-delta /nonexistent-prev-delta.tsv (no carried dispositions)",
+   "exit": 3,
+   "wrote": [
+    "rebind-snapshot.json",
+    "unresolved.json"
+   ],
+   "ledgersWritten": false,
+   "unresolvedLines": 30,
+   "note": "a half-adjudicated ledger cannot be committed: the tool writes nothing but the pending list"
+  },
+  "explicit_adjudications_path": {
+   "command": "--prev-delta /nonexistent --adjudications <30-row json>",
+   "exit": 0,
+   "note": "the explicit path yields the same 47 delta rows; forcing every line to no-tabi-ground differs from the carried run in exactly the 4 contested-open rows (kaidoku PROVINCE.md:53 and :137, revenger PROVINCE.md:30 and :33) — proof the carry is actually read"
+  },
+  "corpus_guard": {
+   "command": "--out <lane>/corpus",
+   "exit": 2,
+   "stderr": "--out must not be inside /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus: this tool writes candidates only"
+  },
+  "r56_to_r57_drift_at_the_authoring_snapshot": {
+   "lineRows": {
+    "r56": 30,
+    "r57": 30,
+    "new": 0,
+    "dropped": 0,
+    "dispositionChanges": 0
+   },
+   "laneRows": {
+    "laneSetEqual": true,
+    "changedShaLinesHits": 0
+   },
+   "note": "the two head movements since the r56 snapshot that matter to C1 (kengaku -> 5f517fe, souji -> 5b34efe7) do not change either PROVINCE.md (kengaku fd1ad05b / 952 lines / 0 hits; souji c60046df / 323 lines / 0 hits), so every delta row is carried verbatim; the L1's post-freeze run re-derives everything at its own fresh snapshot regardless"
+  }
+ },
+ "post_freeze_command": "see adj/README.md (the L1 runs it after the FREEZE commit; the ledgers are DATA and are not shipped in the freeze commit)",
+ "snapshots": {
+  "authoringTest": "adj/rebind-snapshot.authoring-test.json",
+  "canonical": "adj/rebind-snapshot.json — written by the L1's post-freeze run (the tool's default --snapshot-out)"
+ },
+ "instrument": {
+  "path": ".ufo/waves/round-57/counters/c1-adjacency-host-v17.mjs",
+  "sha256": "7305b6726ff5da8060f063422e87dde4de1018e80a08cf98416c2f68b21a6054",
+  "bytes": 34736,
+  "note": "the same digest the mutant-tester and the critic bound (see adj/m4-kill-selfdev.json crossSeatDigestNote)"
+ }
+}

@@ -1,0 +1,36 @@
+{
+ "mutant": "c1",
+ "changed_lines": 2,
+ "diff": "--- pristine/chromium-receipt-r57.mjs\n+++ mutant/c1.mjs\n@@ -606,7 +606,7 @@\n         const ride = /[A-Z]/.test(ch);\n         // modifiers (S153 bit 8) \u2014 derived from the entry's own char so the\n         // check still runs when the nonce is unusable.\n-        if (e.modifiers !== (ride ? 8 : 0)) {\n+        if (!ride && e.modifiers !== 0) {\n           add(ride ? 'shift-modifiers-wrong' : 'shift-unshifted-char-wrong', 'i=' + i + ' char=' + ch + ' modifiers=' + JSON.stringify(e.modifiers));\n         }\n         // the shifted key/text (uppercase) or the unshifted key (digit/hyphen)\n",
+ "description": "drop the shift-modifiers-wrong push (the per-entry modifiers check now covers only unshifted chars)",
+ "target": "shift-modifiers-wrong (line ~609)",
+ "mutation": [
+  {
+   "old": "        if (e.modifiers !== (ride ? 8 : 0)) {\n          add(ride ? 'shift-modifiers-wrong' : 'shift-unshifted-char-wrong', 'i=' + i + ' char=' + ch + ' modifiers=' + JSON.stringify(e.modifiers));\n        }",
+   "new": "        if (!ride && e.modifiers !== 0) {\n          add(ride ? 'shift-modifiers-wrong' : 'shift-unshifted-char-wrong', 'i=' + i + ' char=' + ch + ' modifiers=' + JSON.stringify(e.modifiers));\n        }"
+  }
+ ],
+ "fixtures_manifest_sha256": "1b9144ebd247a648454d85a5b0feb4058c6fe7c62be3984cbb39fda6cb2de47d",
+ "fixtures_files": 153,
+ "pristine_sha256": "94757af9771bb61c4877519009ff4972e0d593527b2224e979ec1d748042327a",
+ "mutant_sha256": "b5182df040542b04dfe608a16634ab56924bc9a6527ca2ada4dc1439ae5a0447",
+ "restored_sha256": "94757af9771bb61c4877519009ff4972e0d593527b2224e979ec1d748042327a",
+ "restore_exact": true,
+ "baseline_allPass": true,
+ "mutant_selftest": {
+  "exit": 1,
+  "allPass": false,
+  "pass": 69,
+  "cases": 70,
+  "failing": [
+   "shift-modifiers-wrong"
+  ],
+  "idCoverageBroke": false
+ },
+ "restored_selftest": {
+  "exit": 0,
+  "allPass": true,
+  "pass": 70
+ },
+ "verdict": "KILLED"
+}

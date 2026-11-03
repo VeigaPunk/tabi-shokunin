@@ -1,0 +1,165 @@
+{
+  "schema": "tabi-cited-receipts-v2-cases",
+  "declared": "hand-declared round 57 (seat R57Gate); every expectation below is written by hand from the frozen rule, never derived from the tool under test",
+  "cases": [
+    {
+      "name": "relative-invisible",
+      "tree": "relative-invisible",
+      "round": 55,
+      "doc": "case (1): the two historically-invisible relative citations are detected",
+      "docs": ["corpus/lessons/round-55.md", "SCORECARD.md"],
+      "expect": {
+        "exit": 1,
+        "findings": [
+          {"id": "relative-citation-missing", "path": "measure/d54-1-landing-note-r55.txt", "line": 3},
+          {"id": "relative-citation-missing", "path": "measure/c1-meter-green-at-correction1.json", "line": 3}
+        ],
+        "checked": 0,
+        "relativeChecked": 2,
+        "otherRoundTokens": 0,
+        "missing": [],
+        "missingRelative": [
+          ".ufo/waves/round-55/measure/c1-meter-green-at-correction1.json",
+          ".ufo/waves/round-55/measure/d54-1-landing-note-r55.txt"
+        ],
+        "traversal": []
+      },
+      "v1": {
+        "exit": 0,
+        "findings": [],
+        "checked": 0,
+        "otherRoundTokens": 0,
+        "missing": []
+      }
+    },
+    {
+      "name": "full-prefix-differential",
+      "tree": "full-prefix-differential",
+      "round": 57,
+      "doc": "case (2): the full-prefix half is identical to v1 on the same fixture",
+      "docs": ["corpus/lessons/round-57.md"],
+      "expect": {
+        "exit": 1,
+        "findings": [
+          {"id": "full-prefix-citation-missing", "path": ".ufo/waves/round-57/measure/missing.txt", "line": 4},
+          {"id": "full-prefix-citation-missing", "path": ".ufo/waves/round-57/measure/missing.txt", "line": 5}
+        ],
+        "checked": 4,
+        "relativeChecked": 0,
+        "otherRoundTokens": 1,
+        "missing": [".ufo/waves/round-57/measure/missing.txt"],
+        "missingRelative": [],
+        "traversal": []
+      },
+      "v1": {
+        "exit": 1,
+        "findings": [
+          {"id": "full-prefix-citation-missing", "path": ".ufo/waves/round-57/measure/missing.txt", "line": 4},
+          {"id": "full-prefix-citation-missing", "path": ".ufo/waves/round-57/measure/missing.txt", "line": 5}
+        ],
+        "checked": 4,
+        "otherRoundTokens": 1,
+        "missing": [".ufo/waves/round-57/measure/missing.txt"]
+      }
+    },
+    {
+      "name": "prose-negatives",
+      "tree": "prose-negatives",
+      "round": 57,
+      "doc": "case (3): prose negatives never match - 'measure the count', 'see controls below', 'in mutant/'",
+      "docs": ["corpus/lessons/round-57.md"],
+      "expect": {
+        "exit": 0,
+        "findings": [],
+        "checked": 0,
+        "relativeChecked": 0,
+        "otherRoundTokens": 0,
+        "missing": [],
+        "missingRelative": [],
+        "traversal": []
+      },
+      "v1": {
+        "exit": 0,
+        "findings": [],
+        "checked": 0,
+        "otherRoundTokens": 0,
+        "missing": []
+      }
+    },
+    {
+      "name": "cross-round-prefix",
+      "tree": "cross-round-prefix",
+      "round": 57,
+      "doc": "case (4): cross-round full-prefix tokens are not touched by the relative rule",
+      "docs": ["corpus/lessons/round-57.md"],
+      "expect": {
+        "exit": 0,
+        "findings": [],
+        "checked": 0,
+        "relativeChecked": 0,
+        "otherRoundTokens": 2,
+        "missing": [],
+        "missingRelative": [],
+        "traversal": []
+      },
+      "v1": {
+        "exit": 0,
+        "findings": [],
+        "checked": 0,
+        "otherRoundTokens": 2,
+        "missing": []
+      }
+    },
+    {
+      "name": "traversal",
+      "tree": "traversal",
+      "round": 57,
+      "doc": "case (5): '../' traversal is refused outright, never resolved (even when the normalized path exists)",
+      "docs": ["corpus/lessons/round-57.md"],
+      "expect": {
+        "exit": 1,
+        "findings": [
+          {"id": "relative-citation-traversal", "path": "measure/../outside.txt", "line": 3},
+          {"id": "relative-citation-traversal", "path": "controls/../../etc/passwd", "line": 4}
+        ],
+        "checked": 0,
+        "relativeChecked": 2,
+        "otherRoundTokens": 0,
+        "missing": [],
+        "missingRelative": [],
+        "traversal": ["controls/../../etc/passwd", "measure/../outside.txt"]
+      },
+      "v1": {
+        "exit": 0,
+        "findings": [],
+        "checked": 0,
+        "otherRoundTokens": 0,
+        "missing": []
+      }
+    },
+    {
+      "name": "relative-present",
+      "tree": "relative-present",
+      "round": 57,
+      "doc": "present relative citation (file, control file, directory) -> no finding",
+      "docs": ["corpus/lessons/round-57.md"],
+      "expect": {
+        "exit": 0,
+        "findings": [],
+        "checked": 0,
+        "relativeChecked": 3,
+        "otherRoundTokens": 0,
+        "missing": [],
+        "missingRelative": [],
+        "traversal": []
+      },
+      "v1": {
+        "exit": 0,
+        "findings": [],
+        "checked": 0,
+        "otherRoundTokens": 0,
+        "missing": []
+      }
+    }
+  ]
+}

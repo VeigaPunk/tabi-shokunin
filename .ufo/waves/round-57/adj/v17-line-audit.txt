@@ -1,0 +1,113 @@
+tabi-shokunin round 57 / claim C1 / v17 line audit
+authored by seat R57Adj; generated against the committed v16 bytes and the candidate v17 bytes
+
+definition: a logic line is a non-blank line whose first non-space characters are not "//"
+           (the shebang and every string/import/declaration line counts; pure comment and blank lines do not).
+
+v16 .ufo/waves/round-56/counters/c1-adjacency-host-v16.mjs: total 457 / blank 20 / comment 160 / logic 277
+v17 .ufo/waves/round-57/counters/c1-adjacency-host-v17.mjs: total 500 / blank 21 / comment 195 / logic 284
+v17 file sha256 7305b6726ff5da8060f063422e87dde4de1018e80a08cf98416c2f68b21a6054 (34736 bytes)
+
+LOGIC-ONLY UNIFIED DIFF (context 1; every changed logic line carries a <a>/<b>/<UNCLASSIFIED> tag):
+--- v16 logic lines
++++ v17 logic lines
+@@ -7,4 +7,4 @@
+ const MAP_REL = 'corpus/adjacency.tsv';
+-const AUDIT_REL = 'corpus/adjacency-host-audit-r56.tsv';  <a>
+-const DELTA_REL = 'corpus/adjacency-host-delta-r56.tsv';  <a>
++const AUDIT_REL = 'corpus/adjacency-host-audit-r57.tsv';  <a>
++const DELTA_REL = 'corpus/adjacency-host-delta-r57.tsv';  <a>
+ const SELF_LANE = 'tabi-shokunin';
+@@ -13,4 +13,5 @@
+ const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
++export const predicateFrom = (findings) => findings.length === 0;  <b>
+ function die(msg) {
+-  console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v16', error: msg }));  <a>
++  console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v17', error: msg }));  <a>
+   process.exit(2);
+@@ -232,2 +233,4 @@
+     { name: 'lane-screen-head-mismatch', expect: 1, ids: ['lane-screen-head-mismatch'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows({ head: 'b'.repeat(40) }), roster, sibRef, headOf }) },
++    { name: 'predicate-assert-green', expect: 0, assertPredicate: true, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', 'probed absent 2026-10-31']], deltaRows: deltaRows(), roster, sibRef, headOf }) },  <b>
++    { name: 'predicate-assert-partial', expect: 1, ids: ['delta-quote-not-whole-line'], assertPredicate: false, assertFindingCount: 1, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows().map((r) => (r[0] === 'line' ? ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'drive the browser', 'overlap-declared'] : r)), roster, sibRef, headOf }) },  <b>
+   ];
+@@ -236,7 +239,11 @@
+     const { findings } = c.run();
+-    const ok = c.expect === 0  <b>
++    const emitted = predicateFrom(findings);  <b>
++    const okFindings = c.expect === 0  <b>
+       ? findings.length === 0
+       : (c.ids || []).every((id) => findings.some((f) => f.id === id));
++    const okPredicate = c.assertPredicate === undefined ? true : emitted === c.assertPredicate;  <b>
++    const okCount = c.assertFindingCount === undefined ? true : findings.length === c.assertFindingCount;  <b>
++    const ok = okFindings && okPredicate && okCount;  <b>
+     if (ok) pass++;
+-    return { name: c.name, ok, findings: findings.map((f) => `${f.id}: ${f.detail}`) };  <b>
++    return { name: c.name, ok, predicate: emitted, findingCount: findings.length, findings: findings.map((f) => `${f.id}: ${f.detail}`) };  <b>
+   });
+@@ -250,3 +257,3 @@
+   const st = selftest();
+-  console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v16-selftest', ...st }, null, 1));  <a>
++  console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v17-selftest', ...st }, null, 1));  <a>
+   process.exit(st.allPass ? 0 : 1);
+@@ -266,9 +273,9 @@
+ }
+-if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v16.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');  <a>
++if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v17.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');  <a>
+ const { findings, counts, headSnapshot } = runAt(repo, rev, fleet);
+ const out = {
+-  schema: 'tabi-adjacency-host-v16',  <a>
+-  predicateSentence: 'c1-adjacency-host-v16 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r56.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r56.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',  <a>
++  schema: 'tabi-adjacency-host-v17',  <a>
++  predicateSentence: 'c1-adjacency-host-v17 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r57.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r57.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',  <a>
+   rev, repo: path.resolve(repo), fleet: path.resolve(fleet), counts, headSnapshot,
+-  predicate: findings.length === 0, findingCount: findings.length, findings,  <b>
++  predicate: predicateFrom(findings), findingCount: findings.length, findings,  <b>
+ };
+
+CLASSIFICATION of every changed logic line:
+  (a) the generation relabel ............ 14 lines
+  (b) the routed predicate-emission fix . 13 lines
+  UNCLASSIFIED .......................... 0 lines
+
+Per-line detail (line text truncated at 200 chars for the audit only):
+  [a] c
+  [a] c
+  [a] c
+  [a] c
+  [b] e
+  [a]  
+  [a]  
+  [b]  
+  [b]  
+  [b]  
+  [b]  
+  [b]  
+  [b]  
+  [b]  
+  [b]  
+  [b]  
+  [b]  
+  [a]  
+  [a]  
+  [a] i
+  [a] i
+  [a]  
+  [a]  
+  [a]  
+  [a]  
+  [b]  
+  [b]  
+
+ASSERTION: every differing logic line belongs to declared set (a) or (b); 27 changed logic lines, 0 unclassified.
+Declared set (frozen in .ufo/waves/round-57/claims.json C1): (a) the r56->r57 relabel - AUDIT_REL/DELTA_REL,
+the schema strings, the predicate sentence file names, the usage lines, the header; (b) the ROUTED R56Mutant-m4
+fix - predicateFrom shared by the run output and the selftest, plus the two asserting cases
+(predicate-assert-green, predicate-assert-partial) and the harness terms that bind them. verify() carries ZERO
+changed logic lines.
+
+verify() BYTE-IDENTITY (the frozen claim's "the verify() pure core is otherwise byte-identical"):
+  extraction: the text from "export function verify(inputs) {" up to the host-layer banner
+  v16 sha256 1b47e7249a4ae5ae32ade28bf3a85b8545adfa2bb05167e725dd7a8c75297e74 (4182 bytes)
+  v17 sha256 1b47e7249a4ae5ae32ade28bf3a85b8545adfa2bb05167e725dd7a8c75297e74 (4182 bytes)
+  identical: True
+  parse helpers also byte-identical: tsvParse, parseRef, observedStatus (same extraction method).

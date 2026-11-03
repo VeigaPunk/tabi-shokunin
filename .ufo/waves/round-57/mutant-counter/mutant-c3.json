@@ -1,0 +1,36 @@
+{
+ "mutant": "c3",
+ "changed_lines": 2,
+ "diff": "--- pristine/chromium-receipt-r57.mjs\n+++ mutant/c3.mjs\n@@ -212,7 +212,7 @@\n import { fileURLToPath } from 'node:url';\n \n const SCHEMA = 'tabi-chrome-cdp-r57';\n-const NONCE_RE = /^tabi-r57-[0-9a-f]{12}$/;\n+const NONCE_RE = /^tabi-r57-.*$/;\n const STEP_NAMES = ['a-start', 'b-typed', 'c-end-witness', 'd-backspace', 'e-tab', 'f-enter-echo'];\n const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);\n const TOKEN_RE = /^[A-Za-z0-9._-]{4,}$/;\n",
+ "description": "weaken the nonce binding: NONCE_RE accepts any tabi-r57-* string, so the derived trace plan is rebuilt from an unvalidated nonce",
+ "target": "nonce-shape / nonce-derived plan (line 215)",
+ "mutation": [
+  {
+   "old": "const NONCE_RE = /^tabi-r57-[0-9a-f]{12}$/;",
+   "new": "const NONCE_RE = /^tabi-r57-.*$/;"
+  }
+ ],
+ "fixtures_manifest_sha256": "1b9144ebd247a648454d85a5b0feb4058c6fe7c62be3984cbb39fda6cb2de47d",
+ "fixtures_files": 153,
+ "pristine_sha256": "94757af9771bb61c4877519009ff4972e0d593527b2224e979ec1d748042327a",
+ "mutant_sha256": "2f8dddab718ad8fd903cfcca914c47db543d8d8aa81d6a02eeb2f080f64625aa",
+ "restored_sha256": "94757af9771bb61c4877519009ff4972e0d593527b2224e979ec1d748042327a",
+ "restore_exact": true,
+ "baseline_allPass": true,
+ "mutant_selftest": {
+  "exit": 1,
+  "allPass": false,
+  "pass": 69,
+  "cases": 70,
+  "failing": [
+   "nonce-shape"
+  ],
+  "idCoverageBroke": false
+ },
+ "restored_selftest": {
+  "exit": 0,
+  "allPass": true,
+  "pass": 70
+ },
+ "verdict": "KILLED"
+}

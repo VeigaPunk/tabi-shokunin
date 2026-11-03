@@ -1,0 +1,162 @@
+{
+ "S102": {
+  "row": [
+   "S102",
+   "Chrome DevTools Protocol contribution guidelines — https://chromium.googlesource.com/chromium/src/+/refs/heads/main/third_party/blink/public/devtools_protocol/README.md",
+   "code",
+   "A",
+   "CDP support posture **beyond** what S002 holds: the supported-products list, the `chrome.debugger` best-effort clause, API-stability conventions, and the trusted-client security assumption",
+   "§\"Scope and contributions\", §\"API stability\", §\"Security considerations\"; `refs/heads/main` @ 2026-10-23",
+   "Only listed official products are supported for direct CDP use, `chrome.debugger` is best-effort for developer-facing extensions, and protocol clients are assumed trusted",
+   "mined",
+   "2026-10-23",
+   "on-release",
+   "corpus/knowledge/cdp-third-party-support-boundary.md, corpus/knowledge/debugger-infobar-approval-surface.md"
+  ],
+  "header": null
+ },
+ "S106": {
+  "row": [
+   "S106",
+   "Robots Exclusion Protocol — RFC 9309 — https://www.rfc-editor.org/rfc/rfc9309.txt",
+   "spec",
+   "A",
+   "The normative semantics of robots.txt: what a robots rule does and does not authorize, 4xx/5xx handling, the 24-hour cache floor and the 500 KiB parsing floor",
+   "§1 (Introduction), §2.3.1.3 (\"Unavailable\" Status), §2.3.1.4 (\"Unreachable\" Status), §2.4 (Caching), §2.5 (Limits); RFC 9309, September 2022",
+   "robots.txt is **not** access authorization: a 4xx robots response permits access, a 5xx means complete disallow",
+   "mined",
+   "2026-10-23",
+   "730d",
+   "corpus/knowledge/rate-and-tos-signal-vocabulary.md"
+  ],
+  "header": null
+ },
+ "S109": {
+  "row": [
+   "S109",
+   "Chrome DevTools MCP Tool Reference — https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/main/docs/tool-reference.md",
+   "docs",
+   "A",
+   "The agent-facing tool surface as shipped: the tool inventory per category, the per-category activation flags, and the journey-relevant semantics of `navigate_page`, `fill_form`, `wait_for`, `new_page` and `take_snapshot`",
+   "`main` `docs/tool-reference.md`, §WebMCP, §Extensions, §Input automation, §Navigation automation; read 2026-10-23",
+   "Every non-default category is flag-gated, and the shipped journey tools define their own semantics (e.g. `fill_form` is preferred over repeated `fill`)",
+   "mined",
+   "2026-10-23",
+   "on-release",
+   "corpus/knowledge/agent-surface-category-gating.md, corpus/knowledge/webmcp-agent-side-consumption.md, corpus/knowledge/web-agent-element-identification.md"
+  ],
+  "header": null
+ },
+ "S110": {
+  "row": [
+   "S110",
+   "Additional HTTP Status Codes — RFC 6585 — https://www.rfc-editor.org/rfc/rfc6585.txt",
+   "spec",
+   "A",
+   "The normative meaning of the rate-limit signal the lane records as a shape: status 429 and the `Retry-After` header",
+   "§4 \"429 Too Many Requests\" (and §7.2 security considerations); RFC 6585, April 2012",
+   "429 means \"too many requests in a given amount of time\"; `Retry-After` may state how long to wait, and a 429 response must not be cached",
+   "mined",
+   "2026-10-23",
+   "730d",
+   "corpus/knowledge/rate-and-tos-signal-vocabulary.md"
+  ],
+  "header": null
+ },
+ "S111": {
+  "row": [
+   "S111",
+   "WebMCP tool security — Chrome for Developers — https://developer.chrome.com/docs/ai/webmcp/secure-tools (zh-CN mirror: https://developer.chrome.google.cn/docs/ai/webmcp/secure-tools?hl=zh-cn)",
+   "docs",
+   "A",
+   "The tool-level approval vocabulary Chrome documents for page-exposed tools: `consequentialHint`, `readOnlyHint`, `untrustedContentHint`, `exposedTo`, and the default cross-origin invisibility of `registerTool`",
+   "§\"Add hints to your tools\" (untrustedContentHint / consequentialHint / readOnlyHint bullets); §\"Expose your tools carefully\"; page footer \"Last updated 2026-09-01 UTC\"; both the canonical page and the zh-CN mirror opened 2026-10-23",
+   "A page signals to the agent/browser whether a tool is consequential, read-only, or carries untrusted content — the approval class expressed at tool level",
+   "mined",
+   "2026-10-23",
+   "on-release",
+   "corpus/knowledge/webmcp-tool-approval-hints.md"
+  ],
+  "header": null
+ },
+ "S114": {
+  "row": [
+   "S114",
+   "自然言語のテストシナリオから保守性の高いテストスクリプトを自動生成する手法 ～Web エージェント技術を活用したアプローチ～ — ソフトウェア品質シンポジウム 2025 (JUSE SQIP), B1-2 — https://www.juse.jp/sqip/symposium/2025/timetable/files/B1-2_ronbun.pdf",
+   "paper",
+   "B",
+   "What a Japanese symposium proceedings reports about web agents' element-identification accuracy and generated-step reuse (8-page PDF, NTT コンピュータ＆データサイエンス研究所)",
+   "PDF §Abstract and §(2) 結果と考察; symposium 2025; opened and text-extracted 2026-10-23",
+   "Element identification — not the ability to click — is the reported accuracy bottleneck for web agents, with set-of-marks prompting as the measured baseline",
+   "mined",
+   "2026-10-23",
+   "730d",
+   "corpus/knowledge/web-agent-element-identification.md"
+  ],
+  "header": null
+ },
+ "S117": {
+  "row": [
+   "S117",
+   "WebMCP — Draft Community Group Report — https://webmachinelearning.github.io/webmcp/",
+   "spec",
+   "A",
+   "The protocol's own text for the model-context surface: `document.modelContext` (`registerTool` / `getTools` / `executeTool`), the `toolchange` event, the `annotations` struct (read-only / untrusted-content / consequential hints) and the exposed-origins list — scoped to the draft's own text (a Community Group draft, not a W3C Recommendation; flip to B if the curator rules in-progress drafts non-authoritative)",
+   "§IDL (`ModelContext`, `ModelContextTool`, `annotations`), §tool registration; draft dated 20 October 2026",
+   "The approval hints Chrome documents are part of the draft's own `annotations` struct, not a Chrome-only extension",
+   "mined",
+   "2026-10-23",
+   "on-change (the draft carries its own date)",
+   "corpus/knowledge/webmcp-tool-approval-hints.md"
+  ],
+  "header": null
+ },
+ "S118": {
+  "row": [
+   "S118",
+   "Chrowned by an Extension: Abusing the Chrome DevTools Protocol through the Debugger API — Moreno, Vallina-Rodriguez & Tapiador — https://arxiv.org/abs/2305.11506",
+   "paper",
+   "A",
+   "The original paper's own findings on the Debugger API as an extension capability: the user-visible infobar raised on attach, the cancel button's effect, and the absence of rate-limit protection against immediate re-attach (arXiv preprint; no venue version opened)",
+   "§2.3 \"User awareness\" and §4 (attacks); arXiv:2305.11506, PDF v1 dated 2023-05-31; opened 2026-10-23",
+   "Chromium tells the user when a debugging extension attaches, but an extension can re-attach immediately, so the browser's notice is not a durable approval gate",
+   "mined",
+   "2026-10-23",
+   "730d (preprint; re-check for a published version)",
+   "corpus/knowledge/debugger-infobar-approval-surface.md"
+  ],
+  "header": null
+ },
+ "S124": {
+  "row": [
+   "S124",
+   "HTTP Semantics — RFC 9110 — https://www.rfc-editor.org/rfc/rfc9110.txt",
+   "spec",
+   "A",
+   "The normative redirect semantics a journey driver observes (301/302/303/307/308, method rewriting) and the `Retry-After` header",
+   "§15.4 (Redirection 3xx), §15.4.4 (303 See Other), §15.4.7 (307), §10.2.3 (Retry-After); RFC 9110, June 2022",
+   "301/302 MAY rewrite a POST to GET; 307/308 MUST NOT change the method; 303 redirects with GET or HEAD; `Retry-After` may accompany 3xx and 503",
+   "mined",
+   "2026-10-23",
+   "730d (errata only)",
+   "corpus/knowledge/redirect-and-retry-after-semantics.md"
+  ],
+  "header": null
+ },
+ "S125": {
+  "row": [
+   "S125",
+   "SameSite Cookie Attributes — draft-ietf-httpbis-rfc6265bis-13 — https://www.ietf.org/archive/id/draft-ietf-httpbis-rfc6265bis-13.txt",
+   "spec",
+   "A",
+   "The normative cookie SameSite semantics that decide whether a cross-site submit carries the session cookie",
+   "§5.5.7 (The SameSite Attribute), §5.5.7.1 (\"Strict\" and \"Lax\" enforcement), §8.8 (SameSite Cookies); draft-13",
+   "Default enforcement is \"Default\"; Strict cookies are not sent on cross-site top-level navigations, and Lax is the CSRF-mitigating drop-in",
+   "mined",
+   "2026-10-23",
+   "180d (draft; re-read for a new revision)",
+   "corpus/knowledge/cookie-samesite-semantics.md"
+  ],
+  "header": null
+ }
+}

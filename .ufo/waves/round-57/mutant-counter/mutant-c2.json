@@ -1,0 +1,36 @@
+{
+ "mutant": "c2",
+ "changed_lines": 2,
+ "diff": "--- pristine/chromium-receipt-r57.mjs\n+++ mutant/c2.mjs\n@@ -504,7 +504,7 @@\n   }\n \n   // ---- #field3 (r56 control-leg witness) --------------------------------\n-  if (rec.field3Value !== '') add('field3-not-empty', JSON.stringify(rec.field3Value));\n+  if (rec.field3Value == null) add('field3-not-empty', JSON.stringify(rec.field3Value));\n \n   // ---- page keylog (control-domain slice, r56 semantics) ----------------\n   const kl = rec.keylog;\n",
+ "description": "field3-not-empty accepts any non-null value (!== \"\" weakened to == null)",
+ "target": "field3-not-empty (line ~507)",
+ "mutation": [
+  {
+   "old": "  if (rec.field3Value !== '') add('field3-not-empty', JSON.stringify(rec.field3Value));",
+   "new": "  if (rec.field3Value == null) add('field3-not-empty', JSON.stringify(rec.field3Value));"
+  }
+ ],
+ "fixtures_manifest_sha256": "1b9144ebd247a648454d85a5b0feb4058c6fe7c62be3984cbb39fda6cb2de47d",
+ "fixtures_files": 153,
+ "pristine_sha256": "94757af9771bb61c4877519009ff4972e0d593527b2224e979ec1d748042327a",
+ "mutant_sha256": "6f50259126a1d8461e31f7b43302152da447a7c0258a74bc35a27d5c52a08a64",
+ "restored_sha256": "94757af9771bb61c4877519009ff4972e0d593527b2224e979ec1d748042327a",
+ "restore_exact": true,
+ "baseline_allPass": true,
+ "mutant_selftest": {
+  "exit": 1,
+  "allPass": false,
+  "pass": 69,
+  "cases": 70,
+  "failing": [
+   "field3-not-empty-control"
+  ],
+  "idCoverageBroke": false
+ },
+ "restored_selftest": {
+  "exit": 0,
+  "allPass": true,
+  "pass": 70
+ },
+ "verdict": "KILLED"
+}

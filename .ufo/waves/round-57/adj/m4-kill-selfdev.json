@@ -1,0 +1,66 @@
+{
+ "schema": "tabi-adjacency-r57-m4-kill",
+ "claim": "C1 declared change (b) — the routed R56Mutant-m4 survivor (AND->OR mutation of the predicate emission)",
+ "instrument": ".ufo/waves/round-57/counters/c1-adjacency-host-v17.mjs",
+ "instrumentSha256": "7305b6726ff5da8060f063422e87dde4de1018e80a08cf98416c2f68b21a6054",
+ "instrumentBytes": 34736,
+ "crossSeatDigestNote": "this digest is the ONE the wave's independent seats also bound: the mutant-tester seat R57MutMeter recorded the identical pristine sha256 (mutant/m4-kill.json target_bytes) and its m4-prime mutant copy hashes to the same a6f87595… as this receipt's mutant, and the critic's observed v16->v17 diff was taken against these bytes. The instrument was not edited after that convergence.",
+ "method": "the single emission line was inverted in a SCRATCH copy only: \"export const predicateFrom = (findings) => findings.length === 0;\" -> \"... !== 0\"; the copy was then run with --selftest. The committed instrument was never modified.",
+ "mutant": {
+  "scratchPath": "/fast/scratch/hyaku/tabi-r57/R57Adj/m4-mutant.mjs",
+  "mutantSha256": "a6f8759511a9fcd771c6dcd584a2cd4c35ab22124f224bc644968570e71e11bb",
+  "hunk": "-export const predicateFrom = (findings) => findings.length === 0; / +export const predicateFrom = (findings) => findings.length !== 0; (one line, nothing else)",
+  "command": "node /fast/scratch/hyaku/tabi-r57/R57Adj/m4-mutant.mjs --selftest",
+  "exit": 1,
+  "allPass": false,
+  "cases": 18,
+  "pass": 16,
+  "failing": [
+   {
+    "name": "predicate-assert-green",
+    "ok": false,
+    "predicate": false,
+    "findingCount": 0
+   },
+   {
+    "name": "predicate-assert-partial",
+    "ok": false,
+    "predicate": true,
+    "findingCount": 1
+   }
+  ],
+  "allFailing": [
+   "predicate-assert-green",
+   "predicate-assert-partial"
+  ]
+ },
+ "baseline": {
+  "command": "node .ufo/waves/round-57/counters/c1-adjacency-host-v17.mjs --selftest",
+  "exit": 0,
+  "allPass": true,
+  "cases": 18,
+  "pass": 18,
+  "predicateCases": [
+   {
+    "name": "predicate-assert-green",
+    "ok": true,
+    "predicate": true,
+    "findingCount": 0
+   },
+   {
+    "name": "predicate-assert-partial",
+    "ok": true,
+    "predicate": false,
+    "findingCount": 1
+   }
+  ]
+ },
+ "revert": {
+  "note": "the committed instrument is unmodified (sha256 above unchanged); its selftest re-run is green",
+  "exit": 0,
+  "allPass": true,
+  "cases": 18,
+  "pass": 18
+ },
+ "verdict": "KILLED — the OR-class mutant fails BOTH predicate-assert cases (predicate-assert-green: emitted false vs frozen true; predicate-assert-partial: emitted true vs frozen false) and allPass goes false (16/18); the unmutated instrument is 18/18 green."
+}

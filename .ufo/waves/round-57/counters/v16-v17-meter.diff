@@ -1,0 +1,134 @@
+--- .ufo/waves/round-56/counters/c1-adjacency-host-v16.mjs	2026-11-03 15:05:57.465507653 -0300
++++ .ufo/waves/round-57/counters/c1-adjacency-host-v17.mjs	2026-11-03 16:06:51.624398137 -0300
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env node
+-// c1-adjacency-host-v16.mjs — tabi round 56, claim C1 (adjacency — the lowest
++// c1-adjacency-host-v17.mjs — tabi round 57, claim C1 (adjacency — the lowest
+ // owned axis, 8). The regression-gate re-run of the adjacency ledgers, on the
+ // v6 design unchanged: every sibling working tree on this host is DIRTY and
+ // sibling heads move mid-round, so v7 reads every sibling byte through git at
+@@ -130,12 +130,36 @@
+ // core (verify + selftest cases + parse helpers) is byte-identical to v15;
+ // the committed diff names every changed line and `git grep`-cheap proof that
+ // no logic line moved is in counters/v15-v16-meter.diff.
++// Round 57 delta (C1's FROZEN declared change set — verify() is byte-identical
++// to v16; TWO declared hunks only): at round open the committed r56 generation
++// measured RED against the live fleet (1 finding,
++// controls/c1-meter-v16-red-at-round-open.json: lane-screen-head-mismatch
++// kengaku-shokunin — the kengaku head moved after the r56 snapshot).
++//   (a) the generation relabel: AUDIT_REL/DELTA_REL point at
++//       corpus/adjacency-host-{audit,delta}-r57.tsv, every schema string is
++//       tabi-adjacency-host-v17 (die, selftest, run output), the predicate
++//       sentence names the r57 ledgers, and the usage lines and this header
++//       name round 57.
++//   (b) the ROUTED r56-closure fix for the R56Mutant-m4 survivor: the emitted
++//       predicate is a named predicateFrom(findings) helper used by the run
++//       output AND asserted by two new selftest cases — predicate-assert-green
++//       (the honest-green fixture; asserts predicateFrom === true) and
++//       predicate-assert-partial (the delta-quote-spliced fixture, exactly one
++//       failing clause — its single finding is delta-quote-not-whole-line;
++//       asserts predicateFrom === false) — so an AND->OR mutation of the
++//       emission (`findings.length !== 0`) fails BOTH cases and allPass.
++//       Mutation receipt: adj/m4-kill-selfdev.json. The selftest harness gains
++//       the optional assertPredicate/assertFindingCount terms and reports each
++//       case's emitted predicate in its receipt; no check is dropped or
++//       weakened and every other selftest case is untouched.
++// The committed diff (counters/v16-v17-meter.diff) names every differing line
++// and adj/v17-line-audit.txt accounts for each one against (a) or (b).
+ //
+-//   PREDICATE-SENTENCE: c1-adjacency-host-v16 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r56.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r56.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.
++//   PREDICATE-SENTENCE: c1-adjacency-host-v17 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r57.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r57.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.
+ // Usage:
+-//   node c1-adjacency-host-v16.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
+-//   node c1-adjacency-host-v16.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses at the current heads)
+-//   node c1-adjacency-host-v16.mjs --selftest
++//   node c1-adjacency-host-v17.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
++//   node c1-adjacency-host-v17.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses at the current heads)
++//   node c1-adjacency-host-v17.mjs --selftest
+ // Exit: 0 predicate met; 1 evaluated, predicate not met; 2 could not evaluate.
+ import { spawnSync } from 'node:child_process';
+ import { pathToFileURL } from 'node:url';
+@@ -144,16 +168,22 @@
+ import crypto from 'node:crypto';
+ 
+ const MAP_REL = 'corpus/adjacency.tsv';
+-const AUDIT_REL = 'corpus/adjacency-host-audit-r56.tsv';
+-const DELTA_REL = 'corpus/adjacency-host-delta-r56.tsv';
++const AUDIT_REL = 'corpus/adjacency-host-audit-r57.tsv';
++const DELTA_REL = 'corpus/adjacency-host-delta-r57.tsv';
+ const SELF_LANE = 'tabi-shokunin';
+ const BG_WORDS = ['cdp', 'devtools', 'remote-debugging', 'headless', 'webdriver', 'geckodriver', 'selenium', 'playwright', 'bidi', 'crawl', 'screenshot', 'recordhar', 'record-har'];
+ const DISPOSITIONS = ['no-tabi-ground', 'overlap-declared', 'contested-open'];
+ 
+ const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
+ 
++// The ONE predicate emission (r57 declared change (b), the routed R56Mutant-m4
++// fix): the run output and the selftest's predicate-assert cases both read this
++// helper, so an AND->OR mutation of the emission (`findings.length !== 0`) is
++// observable — both predicate-assert cases fail and allPass goes false.
++export const predicateFrom = (findings) => findings.length === 0;
++
+ function die(msg) {
+-  console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v16', error: msg }));
++  console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v17', error: msg }));
+   process.exit(2);
+ }
+ 
+@@ -407,15 +437,28 @@
+     { name: 'delta-line-invented', expect: 1, ids: ['delta-line-invented'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: [...deltaRows(), ['line', 'mado-shokunin', 'PROVINCE.md:3', '-', '-', '-', 'Nothing else.', 'no-tabi-ground']], roster, sibRef, headOf }) },
+     { name: 'audit-duplicate', expect: 1, ids: ['audit-duplicate'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
+     { name: 'lane-screen-head-mismatch', expect: 1, ids: ['lane-screen-head-mismatch'], run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows({ head: 'b'.repeat(40) }), roster, sibRef, headOf }) },
++    // r57 declared change (b): the two predicate-assert cases. They assert the
++    // EMITTED predicate from the shared helper — not the finding count — so an
++    // AND->OR mutation of `predicateFrom` is caught here (this is the
++    // R56Mutant-m4 survivor the r56 closure routed into this generation).
++    { name: 'predicate-assert-green', expect: 0, assertPredicate: true, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', 'probed absent 2026-10-31']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
++    { name: 'predicate-assert-partial', expect: 1, ids: ['delta-quote-not-whole-line'], assertPredicate: false, assertFindingCount: 1, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows().map((r) => (r[0] === 'line' ? ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'drive the browser', 'overlap-declared'] : r)), roster, sibRef, headOf }) },
+   ];
+   let pass = 0;
+   const results = cases.map((c) => {
+     const { findings } = c.run();
+-    const ok = c.expect === 0
++    const emitted = predicateFrom(findings);
++    const okFindings = c.expect === 0
+       ? findings.length === 0
+       : (c.ids || []).every((id) => findings.some((f) => f.id === id));
++    // an asserting case binds the emitted predicate to the frozen expectation;
++    // the partial case's ONE failing clause must be the only finding, so
++    // "exactly one clause failed" is measured, not assumed.
++    const okPredicate = c.assertPredicate === undefined ? true : emitted === c.assertPredicate;
++    const okCount = c.assertFindingCount === undefined ? true : findings.length === c.assertFindingCount;
++    const ok = okFindings && okPredicate && okCount;
+     if (ok) pass++;
+-    return { name: c.name, ok, findings: findings.map((f) => `${f.id}: ${f.detail}`) };
++    return { name: c.name, ok, predicate: emitted, findingCount: findings.length, findings: findings.map((f) => `${f.id}: ${f.detail}`) };
+   });
+   return { allPass: pass === cases.length, cases: cases.length, pass, results };
+ }
+@@ -428,7 +471,7 @@
+ } else {
+ if (args[0] === '--selftest') {
+   const st = selftest();
+-  console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v16-selftest', ...st }, null, 1));
++  console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v17-selftest', ...st }, null, 1));
+   process.exit(st.allPass ? 0 : 1);
+ }
+ if (args[0] === '--list-observed') {
+@@ -444,13 +487,13 @@
+   else if (args[i] === '--fleet') fleet = args[++i];
+   else if (args[i] === '--json') json = true;
+ }
+-if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v16.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
++if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v17.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
+ const { findings, counts, headSnapshot } = runAt(repo, rev, fleet);
+ const out = {
+-  schema: 'tabi-adjacency-host-v16',
+-  predicateSentence: 'c1-adjacency-host-v16 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r56.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r56.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',
++  schema: 'tabi-adjacency-host-v17',
++  predicateSentence: 'c1-adjacency-host-v17 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r57.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r57.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',
+   rev, repo: path.resolve(repo), fleet: path.resolve(fleet), counts, headSnapshot,
+-  predicate: findings.length === 0, findingCount: findings.length, findings,
++  predicate: predicateFrom(findings), findingCount: findings.length, findings,
+ };
+ console.log(JSON.stringify(out, null, 1));
+ process.exit(out.predicate ? 0 : 1);

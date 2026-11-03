@@ -1,0 +1,24 @@
+$ find /home/vgpnk/Projects/shokuknow/merge/tabi -maxdepth 2 | sort | sed "s#^/home/vgpnk/Projects/shokuknow/merge/tabi#merge/tabi#"
+merge/tabi
+merge/tabi/knowledge
+merge/tabi/knowledge/corpus
+merge/tabi/MERGE-REPORT.json
+merge/tabi/MERGE-REPORT.md
+merge/tabi/SOURCES.append.md
+
+$ find /home/vgpnk/Projects/shokuknow/merge/tabi/knowledge -type f | wc -l
+86
+
+$ python3 -c "...MERGE-REPORT.json keys..."
+lane tabi accepted 148 refused 0 entries 86 existing_rows 101 renumbered 0 first_id S102
+
+$ grep -cE "^ {0,3}\|[[:space:]]*S[0-9]{3,}" SOURCES.append.md
+148
+
+$ staged id range (min/max/count)
+count=148 first=S102 last=S249
+
+$ doctrine subdir present?
+ls: cannot access '/home/vgpnk/Projects/shokuknow/merge/tabi/doctrine': No such file or directory
+$ grep -ni doctrine MERGE-REPORT.md
+(no line matches)

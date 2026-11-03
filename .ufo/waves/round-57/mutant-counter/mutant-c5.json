@@ -1,0 +1,38 @@
+{
+ "mutant": "c5",
+ "changed_lines": 2,
+ "diff": "--- pristine/chromium-receipt-r57.mjs\n+++ mutant/c5.mjs\n@@ -402,7 +402,7 @@\n   }\n \n   // ---- receipt identity -------------------------------------------------\n-  if (rec.schema !== SCHEMA) add('schema-wrong', String(rec.schema));\n+  if (rec.schema !== SCHEMA) void 0;\n \n   const nonce = rec.nonce;\n   const nonceStr = typeof nonce === 'string' ? nonce : null;\n",
+ "description": "drop the schema-wrong push",
+ "target": "schema-wrong (line ~405)",
+ "mutation": [
+  {
+   "old": "  if (rec.schema !== SCHEMA) add('schema-wrong', String(rec.schema));",
+   "new": "  if (rec.schema !== SCHEMA) void 0;"
+  }
+ ],
+ "fixtures_manifest_sha256": "1b9144ebd247a648454d85a5b0feb4058c6fe7c62be3984cbb39fda6cb2de47d",
+ "fixtures_files": 153,
+ "pristine_sha256": "94757af9771bb61c4877519009ff4972e0d593527b2224e979ec1d748042327a",
+ "mutant_sha256": "2afed59f005b50c672ed64340711ef30b71a5ebdf04d3d86ce2d3c1df3b42889",
+ "restored_sha256": "94757af9771bb61c4877519009ff4972e0d593527b2224e979ec1d748042327a",
+ "restore_exact": true,
+ "baseline_allPass": true,
+ "mutant_selftest": {
+  "exit": 1,
+  "allPass": false,
+  "pass": 67,
+  "cases": 70,
+  "failing": [
+   "crossgen-r56-receipt",
+   "do-nothing-empty-object",
+   "schema-wrong"
+  ],
+  "idCoverageBroke": false
+ },
+ "restored_selftest": {
+  "exit": 0,
+  "allPass": true,
+  "pass": 70
+ },
+ "verdict": "KILLED"
+}

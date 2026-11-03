@@ -1,0 +1,59 @@
+--- pristine/chromium-receipt-r57.mjs
++++ mutant/c1.mjs
+@@ -606,7 +606,7 @@
+         const ride = /[A-Z]/.test(ch);
+         // modifiers (S153 bit 8) — derived from the entry's own char so the
+         // check still runs when the nonce is unusable.
+-        if (e.modifiers !== (ride ? 8 : 0)) {
++        if (!ride && e.modifiers !== 0) {
+           add(ride ? 'shift-modifiers-wrong' : 'shift-unshifted-char-wrong', 'i=' + i + ' char=' + ch + ' modifiers=' + JSON.stringify(e.modifiers));
+         }
+         // the shifted key/text (uppercase) or the unshifted key (digit/hyphen)
+
+--- pristine/chromium-receipt-r57.mjs
++++ mutant/c2.mjs
+@@ -504,7 +504,7 @@
+   }
+ 
+   // ---- #field3 (r56 control-leg witness) --------------------------------
+-  if (rec.field3Value !== '') add('field3-not-empty', JSON.stringify(rec.field3Value));
++  if (rec.field3Value == null) add('field3-not-empty', JSON.stringify(rec.field3Value));
+ 
+   // ---- page keylog (control-domain slice, r56 semantics) ----------------
+   const kl = rec.keylog;
+
+--- pristine/chromium-receipt-r57.mjs
++++ mutant/c3.mjs
+@@ -212,7 +212,7 @@
+ import { fileURLToPath } from 'node:url';
+ 
+ const SCHEMA = 'tabi-chrome-cdp-r57';
+-const NONCE_RE = /^tabi-r57-[0-9a-f]{12}$/;
++const NONCE_RE = /^tabi-r57-.*$/;
+ const STEP_NAMES = ['a-start', 'b-typed', 'c-end-witness', 'd-backspace', 'e-tab', 'f-enter-echo'];
+ const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+ const TOKEN_RE = /^[A-Za-z0-9._-]{4,}$/;
+
+--- pristine/chromium-receipt-r57.mjs
++++ mutant/c4.mjs
+@@ -527,7 +527,7 @@
+   if (!log || !logText.includes('/echo')) add('server-log-missing', log ? 'no /echo entry' : 'serverLog absent');
+   if (log) {
+     const echoCount = log.filter((e) => (typeof e === 'string' ? e : JSON.stringify(e)).includes('/echo')).length;
+-    if (echoCount !== 1) add('server-log-echo-count', 'echoCount=' + echoCount);
++    if (echoCount === 1) add('server-log-echo-count', 'echoCount=' + echoCount);
+   }
+ 
+   // ---- invocation binding ----------------------------------------------
+
+--- pristine/chromium-receipt-r57.mjs
++++ mutant/c5.mjs
+@@ -402,7 +402,7 @@
+   }
+ 
+   // ---- receipt identity -------------------------------------------------
+-  if (rec.schema !== SCHEMA) add('schema-wrong', String(rec.schema));
++  if (rec.schema !== SCHEMA) void 0;
+ 
+   const nonce = rec.nonce;
+   const nonceStr = typeof nonce === 'string' ? nonce : null;

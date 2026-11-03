@@ -1,0 +1,17 @@
+$ grep -n "| \`tabi\`" register sections
+39
+Rows-section=37
+By-lane-row=1
+Never-checked=1
+
+$ awk Rows-section: tabi row (round,id) pairs
+round1/S102 round1/S106 round1/S109 round1/S110 round1/S111 round1/S114 round1/S117 round1/S118 round2/S124 round2/S125 round2/S126 round2/S130 round2/S131 round2/S133 round2/S134 round2/S135 round2/S137 round2/S138 round2/S140 round3/S142 round3/S143 round3/S144 round3/S145 round3/S147 round3/S148 round3/S149 round3/S153 round3/S154 round4/S158 round4/S163 round4/S164 round4/S165 round4/S166 round4/S167 round5/S174 round5/S175 round5/S176 
+
+$ awk Never-checked section: tabi rows (raw line, showing the stray backtick in the id cell)
+| `tabi` | round5 | S171` | the cited source could not be fetched, so no quote was checked | https://chromestatus.com/features/5117755740913664 |$
+
+$ census v5 tabi verdicts and distinct rows
+tabi findings 131 by verdict {'folded': 50, 'ABSENT': 65, 'sweep-found': 10, 'no-gate-block': 1, 'no-quote-span': 4, 'fetch-failed': 1}
+ABSENT distinct rows 37 quotes 65
+never-checked distinct rows 1 [('round5', 'S171')]
+union distinct rows 38

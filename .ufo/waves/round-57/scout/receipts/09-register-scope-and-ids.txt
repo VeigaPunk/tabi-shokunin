@@ -1,0 +1,58 @@
+$ grep -n "add_argument" absent-defect-register.py   # the generator the register header names
+42:    ap.add_argument("--census", default=str(HERE / "quote-lint-full-v3.json"))
+43:    ap.add_argument("--out", default=str(HERE / "absent-defect-register.md"))
+$ python3 -c "quote-lint-full-v3.json exists?"
+quote-lint-full-v3.json exists: False
+$ ls -l quote-lint-full-v5.json
+-rw-r--r-- 1 vgpnk vgpnk 863811 Oct 24 08:05 /home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/quote-lint-full-v5.json
+
+# verdict vocabulary in the census and which of it reaches the register
+$ grep -n "\"verdict\": \"" quote-lint.py
+769:                                     "verdict": "no-gate-block", "detail": "row has no gate block"})
+787:                                         "verdict": "no-locator", "detail": head[:80]})
+802:                                     "verdict": "fetch-failed", "detail": url[:120]})
+822:                                     "verdict": "no-quote-span",
+871:                                                 "id": r["id"], "verdict": "ABSENT",
+901:                                                 "id": r["id"], "verdict": "sweep-found",
+912:                                             "id": r["id"], "verdict": "folded",
+919:                                             "id": r["id"], "verdict": "ABSENT",
+
+# tabi rows carrying census verdicts the register never shows
+sweep-found    rows=10 [('round1', 'S104'), ('round2', 'S119'), ('round2', 'S120'), ('round2', 'S121'), ('round2', 'S136'), ('round2', 'S137'), ('round2', 'S139'), ('round3', 'S155'), ('round4', 'S160'), ('round4', 'S163')]
+no-quote-span  rows=4 [('round2', 'S123'), ('round2', 'S129'), ('round4', 'S161'), ('round5', 'S169')]
+no-gate-block  rows=1 [('round1', 'S113')]
+fetch-failed   rows=1 [('round5', 'S171')]
+no-locator     rows=0 []
+
+register sections: only verdict==ABSENT -> Rows table; fetch-failed/no-locator -> NEVER CHECKED table
+
+# the never-checked table: 109 rows, every id cell carries a stray trailing backtick
+$ awk never-checked section | grep -cE "\| S[0-9]+\` \|"
+109
+$ the one tabi row in that table (raw bytes)
+| `tabi` | round5 | S171` | the cited source could not be fetched, so no quote was checked | https://chromestatus.com/features/5117755740913664 |$
+
+# register totals
+
+- rows with at least one ABSENT quote: **194**
+- ABSENT quotes: **324**
+
+| class | rows |
+|---|---|
+| `payload-absent` | 194 |
+
+
+# S161 (round4) gate block: backticked, not double-quoted -> no quote span for the census to check
+## Gate — S161
+- URL: https://raw.githubusercontent.com/ChromeDevTools/chrome-devtools-mcp/main/src/version.ts
+- accessed: 2026-10-23
+- quote (line 11): `export const VERSION = '1.12.0';`
+
+
+# id-space disambiguation: register row ids are the campaign staging ids, lane registry ids are the adopted ids
+$ staged S153 (round3) vs lane S153
+| S153 | WebMCP agentic JavaScript tools guide — Modern Web Guidance (GoogleChrome) — https://github.com/GoogleChrom
+| S153 | Chrome DevTools Protocol browser_protocol.json — https://raw.githubusercontent.com/ChromeDevTools/devtools-pr
+$ staged S161 (round4) vs lane S161
+| S161 | Client version constant — chrome-devtools-mcp — https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/
+| S161 | W3C UI Events specification — KeyboardEvent modifier attributes — https://www.w3.org/TR/uievents/ | spec | 

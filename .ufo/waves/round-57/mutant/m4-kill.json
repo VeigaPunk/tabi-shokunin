@@ -1,0 +1,60 @@
+{
+ "schema": "tabi-r57-mutant-m4-kill-v1",
+ "seat": "R57MutMeter",
+ "claim": "C1 (routed r56-closure defect 1: R56Mutant-m4 survivor)",
+ "probe": "m4-prime — AND->OR inversion of the shared predicate emission",
+ "target_bytes": {
+  "path": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-57/counters/c1-adjacency-host-v17.mjs",
+  "sha256": "7305b6726ff5da8060f063422e87dde4de1018e80a08cf98416c2f68b21a6054",
+  "bytes": 34736
+ },
+ "mutant": {
+  "id": "m4-prime",
+  "change": "predicateFrom: `findings.length === 0` -> `findings.length !== 0` (AND->OR emission inversion; the routed r56-closure defect)",
+  "file": "scratch:/fast/scratch/hyaku/tabi-r57/R57MutMeter/m4-prime/c1-adjacency-host-v17-m4-prime.mjs",
+  "sha256": "a6f8759511a9fcd771c6dcd584a2cd4c35ab22124f224bc644968570e71e11bb",
+  "diff": [
+   "-export const predicateFrom = (findings) => findings.length === 0;",
+   "+export const predicateFrom = (findings) => findings.length !== 0;"
+  ]
+ },
+ "expectedDetector": "node <mutant> --selftest -> exit 1, allPass false, with predicate-assert-green AND predicate-assert-partial failing (the two new r57 cases)",
+ "actual": {
+  "selftestExit": 1,
+  "allPass": false,
+  "pass": 16,
+  "cases": 18,
+  "failedCases": [
+   {
+    "name": "predicate-assert-green",
+    "predicate": false,
+    "findingCount": 0,
+    "findings": []
+   },
+   {
+    "name": "predicate-assert-partial",
+    "predicate": true,
+    "findingCount": 1,
+    "findings": [
+     "delta-quote-not-whole-line: mado-shokunin:PROVINCE.md:2"
+    ]
+   }
+  ],
+  "live": {
+   "command": "node <mutant> --rev ef43ececde883cc0368c6c7cfbabe30ef937b717 --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --fleet /home/vgpnk/Projects/shokunin --json",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 30
+  }
+ },
+ "verdict": "KILLED-BY-SELFTEST",
+ "killedBy": [
+  "predicate-assert-green",
+  "predicate-assert-partial"
+ ],
+ "restoration": {
+  "repoBytesNeverEdited": true,
+  "repoV17Sha256AfterProbe": "7305b6726ff5da8060f063422e87dde4de1018e80a08cf98416c2f68b21a6054",
+  "scratchCopies": "discarded with the scratch root"
+ }
+}

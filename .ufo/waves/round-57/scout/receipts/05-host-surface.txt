@@ -1,0 +1,95 @@
+$ /usr/bin/chromium --version
+Chromium 155.0.8059.84 Arch Linux
+$ /usr/lib/chromium/chromium --version
+Chromium 155.0.8059.84 
+$ node --version
+v24.21.0
+$ python3 --version
+Python 3.14.8
+$ pacman -Qo /usr/bin/chromium
+/usr/bin/chromium is owned by chromium 155.0.8059.84-1
+
+$ file -L /usr/bin/chromium /usr/lib/chromium/chromium
+/usr/bin/chromium:          ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=b60b9805a567483207ed7c08dc10d69a2b00aee4, for GNU/Linux 4.4.0, stripped
+/usr/lib/chromium/chromium: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 4.4.0, BuildID[sha1]=5d5548cb28306d7315041c787c89e78b73f3ea2b, stripped
+
+$ strings -a /usr/bin/chromium | grep -E "chromium-flags|XDG_CONFIG_HOME|/usr/lib/chromium"
+chromium-flags.conf
+XDG_CONFIG_HOME
+/usr/lib/chromium/chromium
+
+$ cat ~/.config/chromium-flags.conf
+--ozone-platform=wayland
+--ozone-platform-hint=wayland
+--enable-features=TouchpadOverscrollHistoryNavigation
+--load-extension=~/.local/share/omarchy/default/chromium/extensions/copy-url
+--disable-features=Vulkan
+
+# strace proof that the launcher resolves flags.conf through XDG_CONFIG_HOME (scratch HOME)
+$ XDG_CONFIG_HOME=<scratch>/.config HOME=<scratch> strace -f -e trace=openat -o trace.log /usr/bin/chromium --version
+6:1975927 openat(AT_FDCWD, "/fast/scratch/hyaku/tabi-r57/R57Scout/wrap/home/.config/chromium-flags.conf", O_RDONLY) = -1 ENOENT (No such file or directory)
+7:1975927 openat(AT_FDCWD, "/etc/chromium-flags.conf", O_RDONLY) = -1 ENOENT (No such file or directory)
+$ (HOME redirected, XDG_CONFIG_HOME unset)
+5:1980114 openat(AT_FDCWD, "/fast/scratch/hyaku/tabi-r57/R57Scout/wrap/home/.config/chromium-flags.conf", O_RDONLY) = -1 ENOENT (No such file or directory)
+6:1980114 openat(AT_FDCWD, "/etc/chromium-flags.conf", O_RDONLY) = -1 ENOENT (No such file or directory)
+$ (HOME redirected, XDG_CONFIG_HOME=operator ~/.config)
+5:1980118 openat(AT_FDCWD, "/home/vgpnk/.config/chromium-flags.conf", O_RDONLY) = 3
+6:1980118 openat(AT_FDCWD, "/etc/chromium-flags.conf", O_RDONLY) = -1 ENOENT (No such file or directory)
+
+$ grep -n "HOME: runHome|XDG_CONFIG_HOME|--disable-extensions|TMPDIR" scripts/chrome-cdp-loopback-round56.mjs
+266:// Throwaway HOME/XDG_CONFIG_HOME under the scratch (sentinel RISK 1/RISK 3):
+418:  '--disable-extensions',
+428:  env: { ...process.env, HOME: runHome, XDG_CONFIG_HOME: runXdgConfig, TMPDIR: scratchDir },
+
+$ runner port logic: grep -n "listen(0|remote-debugging-port" scripts/chrome-cdp-loopback-round56.mjs
+374:await new Promise((resolve) => fixtureServer.listen(0, '127.0.0.1', resolve));
+408:  '--remote-debugging-port=0',
+438:const portFile = path.join(profileDir, 'DevToolsActivePort');
+447:if (!devPort) fail('no-devtools-active-port', 'no DevToolsActivePort inside ' + profileDir + '; stderr tail: ' + stderrTail.slice(-300));
+
+$ ss -ltn  (all listeners, port-sorted)
+[::1]:631
+[::]:5355
+127.0.0.53%lo:53
+127.0.0.54:53
+172.17.0.1:53
+127.0.0.1:631
+127.0.0.1:1234
+0.0.0.0:5355
+127.0.0.1:7456
+127.0.0.1:8188
+127.0.0.1:8788
+127.0.0.1:8789
+127.0.0.1:8790
+127.0.0.1:8791
+127.0.0.1:8793
+127.0.0.1:8795
+127.0.0.1:10086
+127.0.0.1:23001
+127.0.0.1:34827
+127.0.0.1:35125
+127.0.0.1:35417
+127.0.0.1:36031
+127.0.0.1:36509
+127.0.0.1:38121
+127.0.0.1:39101
+127.0.0.1:39102
+127.0.0.1:39551
+127.0.0.1:40921
+127.0.0.1:42033
+127.0.0.1:42035
+127.0.0.1:42061
+127.0.0.1:43561
+127.0.0.1:43887
+127.0.0.1:45207
+127.0.0.1:45257
+127.0.0.1:45501
+127.0.0.1:45989
+$ ss -ltnp | grep -i chrom
+(no chromium listener)
+$ ss -ltn | grep -E ":(9222|9223|9229|9333)"
+(none)
+$ /proc/sys/net/ipv4/ip_local_port_range
+32768	60999
+$ ps ... | grep -c remote-debugging-port
+0
