@@ -137,6 +137,17 @@ This province was written for the previous Linux host. Probed on the current hos
   End negative-edit witness, Backspace residue + exact restore, Tab activeElement witness,
   ONE Enter keyDown with `text: "\r"` driving the implicit submission — S083 §4.10.22.2 +
   S153 modifiers + S161 §3.5.1; `corpus/evidence/round56/chromium-control-keys/`).
+- Round 57 (2026-11-03, Linux host): the chromium surface now carries the modifier-chord
+  domain — `scripts/chrome-cdp-loopback-round57.mjs --form` extends the r56 control-keys
+  leg with the Shift-chord trace (the nonce UPPERCASED into field2, every uppercase letter
+  riding a real Shift keyDown/keyUp with modifiers 8 + the shifted key/text, per-keystroke
+  DOM read-backs on BOTH fields) and the chord-domain leg (Control/Alt/Meta chords, bits
+  2/1/4 per S153, on the nonce-derived letter into the never-submitted field3, the page's
+  own __keylogFull recording every keydown/keyup with its booleans, field3 staying EMPTY),
+  with Enter LAST making the submit carry field=nonce AND field2=nonce.toUpperCase()
+  (R57Critic's declared strengthening); the r57 counter re-derives both traces and the
+  keylog plan from the receipt's own nonce (`corpus/evidence/round57/chromium-modifier-chords/`;
+  S153 ninth open + S161 byte-identical re-open).
 - Standing disposition — the L2-floor L0 (`tabi | round-44`, open since round 44, routed around every round since):
   this host has no AgentSwarm/Kimi L2 dispatch surface, so the >=8-L2-subagents floor is not satisfiable here; tabi
   rounds run L1-inline, disclose that in every predicate and claims.json, and route around the open question without

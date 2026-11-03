@@ -3249,3 +3249,66 @@ verdict=clean rows=161 findings=0 (`.ufo/waves/round-56/measure/check-sources-at
   (verdict per row) BEFORE any package adoption; adoption stays closed until then.
 - saturation 8 / window 3 retained; the r56 capability row keeps the window RESTARTED
   (round 57 = position 1). No axis retired; no score moved (no rubric authorizes one).
+
+## Round 57 - declared claims (frozen before data at 6f00780c's claims.json, written pre-wave) and executed disposition (both verified)
+
+Round 57 on the Linux host. Baseline `ef43ecec`; freeze `6f00780c` (claims.json + four
+instruments + round-open controls + wave evidence, no data); C1 data `646c1859` (ledgers
+re-bound at one fresh snapshot; GREEN at correction cycle 0 — the first round since 54 with
+none); C2 data `c5ac279a` (the live Chromium 155 modifier-chords receipt + 8 per-step PNGs)
+→ work commit (this block). Axes at round start: adjacency 8, coverage 9, depth 9,
+operability 9, freshness 9, calibration 9; saturation 8 / window 3; the r56 capability row
+keeps the window RESTARTED (round 57 = position 1) — the nudge is inactive, the lowest-axis
+obligation applies, and C1 works adjacency. Fresh-start ruling: rounds 53–56 all ADMITTED,
+none owed; the r42/r43/r47 refused claim classes remain ruled out by construction. Carry-in
+from the r56 non-author closure (all seven routed; 1+2 closed this round as C1's declared
+change set and the gate v2 instrument, 3 executed as the round's quarantine duty, 4-7
+applied as standing discipline — see the lesson's Corrections of record).
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis; the v17 meter generation = v16 + the declared relabel + the ROUTED predicate-emission fix: shared `predicateFrom` + the two asserting selftest cases that kill the R56Mutant-m4 OR-class survivor; diff committed and line-audited before any run) - VERIFIED (correction cycle 0 of 2 consumed) | `node .ufo/waves/round-56/counters/c1-adjacency-host-v16.mjs --rev ef43ecec… --repo <lane> --fleet <fleet> --json` (red control, round open); `node .ufo/waves/round-57/counters/c1-adjacency-host-v17.mjs --rev 646c1859… --repo <lane> --fleet <fleet> --json`; `--selftest`; m4' kill `mutant/m4-kill.json` | before: at round open the committed v16 meter generation measures RED - exit 1, predicate false, **1 finding** (lane-screen-head-mismatch: kengaku-shokunin; the do-nothing state; receipt `controls/c1-meter-v16-red-at-round-open.json`); after: exit 0, predicate true, **0 findings**, counts {roster 20, mapRows 16, auditRows 16, deltaLanes 16} at `646c1859` (receipt `measure/c1-meter-green-at-data.json`); selftest 18/18; the ONE new kengaku BG line adjudicated no-tabi-ground (`measure/c1-adjudications.json`) | **met** under the frozen rule; adjacency held 8 -> 8 (no rubric authorizes a move; the axis's obligation is the rebind work itself) |
+| C2 coverage (capability acquisition `chromium-keyevent-modifier-chords-linux` - the r56 planned residual: the modifier-chord leg on the Linux chromium surface; S153 re-opened a NINTH time byte-identical to the r56 anchor for the modifiers bit field, S161 re-opened byte-identical for the DOM booleans) - VERIFIED | `git ls-tree -r --name-only ef43ecec… -- corpus/evidence/round57 | wc -l` (0 -> 9); `node .ufo/waves/round-57/counters/chromium-receipt-r57.mjs corpus/evidence/round57/chromium-modifier-chords/receipt.json --driver scripts/chrome-cdp-loopback-round57.mjs --expect-driver-sha256 e0b1f3f5… --shot corpus/evidence/round57/chromium-modifier-chords --json`; cross-refusals both directions | before: evidence tree **0** files; the counter on an absent receipt exits 1 with `receipt-missing` (the do-nothing control); the Linux surface's key-event model ended at the r56 control keys (the modifier domain was Windows-bound); after: the live receipt (nonce `tabi-r57-6b714a3a7080`, Chromium 155.0.8059.84, teardown 0 survivors) + 8 per-step PNGs; counter green exit 0, 0 findings, couldNotEvaluate []; cross-refusals symmetric (r56-on-r57: 3 findings schema-wrong first; r57-on-r56: 7 findings schema-wrong first); selftests 70/70 + 13/13 | **met** under the frozen rule; coverage held 9 -> 9; the capability row enters the table below (first-working 57) |
+
+### Capabilities - round 57
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| chromium-keyevent-modifier-chords-linux | Drive the Linux host's Chromium 155 headless surface (loopback CDP, throwaway profile, throwaway HOME/XDG so the Arch wrapper cannot inject the user's flags.conf or write the user's crash DB) through the form fixture's modifier-chord domain with page-side DOM witnesses: the Shift-chord trace (the invocation-bound nonce UPPERCASED typed into field2 where every uppercase letter rides a real Shift keyDown/keyUp around its pair, the letter's event carrying modifiers 8 + the shifted key/text, digits/hyphen unshifted, the DOM value read back after EVERY keystroke on BOTH fields), the chord-domain leg (three real Control/Alt/Meta chords, bits 2/1/4 per S153, on the nonce-derived letter into the never-submitted field3, the page's own __keylogFull recording every keydown/keyup with its booleans, the bit<->boolean correspondence measured live 2<->ctrlKey / 1<->altKey / 4<->metaKey with shiftKey false, field3 staying EMPTY as the negative witness), with the r56 plain trace + control legs carried unchanged and Enter LAST making the submit carry field=nonce AND field2=nonce.toUpperCase() (the Shift leg's server-side echo witness); the counter re-derives both traces and the keylog plan from the receipt's own nonce (`corpus/evidence/round57/chromium-modifier-chords/receipt.json`; `.ufo/waves/round-57/counters/chromium-receipt-r57.mjs` green with the driver digest pinned) | 57 |
+
+### Round 57 - sources, frontier, trend verdicts
+
+Registry 161 -> **161** rows (no new row: two RE-OPENS carried - S153 ninth open with
+`@master` UNMOVED (1,423,170 B, sha `d6737c31…` == the r56 re-open digest) and the
+modifiers description re-verified verbatim (1 hit scoped to the command block, 5 file-wide,
+one per Input command); S161 byte-identical (920,762 B, sha `8ded5eaf…`) with the four
+boolean definitions re-located at lines 3264/3273/3282/3291 byte-exact including the keycap
+markup; used-by extended in place old->new, logged in the lesson). Knowledge notes 72 ->
+**73** (the modifier-chords note). Census start AND end exit 0 (22 pre-existing W04).
+`node scripts/check-sources.mjs` -> SOURCES_GATE verdict=clean rows=161 findings=0
+(`.ufo/waves/round-57/measure/check-sources-at-work.txt`).
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | The measured surface grew again: the key-event model's modifier-chord domain now holds on the Linux Chromium 155 surface (0 -> 9 evidence files; the webview2 rows stay Windows-bound), and the capability row `chromium-keyevent-modifier-chords-linux` enters the table; two registered rows re-opened with located ground re-verified verbatim in fresh bytes (S153 ninth, S161 byte-identical); notes 72 -> 73. |
+| quality | improved | The routed m4 survivor is CLOSED with mutation evidence (the OR-class inversion killed by the two new asserting cases, triple-corroborated); the cited-receipts gate v2 widening landed with a red-before proof (83/72 vs v1's 6/5 at the r55 close revision) and an explicit round-scoped usage contract; the C1 rebind ran GREEN at correction cycle 0 (the first since 54) absorbing four sibling-head movements; the new counter ships 43 frozen ids with 70/70 exact-findings fixtures and symmetric cross-refusals; the sentinel's high guard gap (final-host re-guard) was closed for the round's remaining fetches and pinned as a rule; no witness was weakened anywhere. |
+| discernment | improved | Every after-state is an instrument output at a named revision (the green names `646c1859`/`c5ac279a`, the receipts name their nonces); the quarantine's 38-row hand-check refused the fabrication reading with a structural mechanism proof (the one-row quote-column shift named at quote-lint.py:159-166/:376-424) instead of logging ~32 nonexistent fabrications; the vocabulary gap (QuarD's mispaired usage) was adjudicated with a unified rule and recorded as a next-contract refinement; the two mutation survivors (m4b, mG) are disclosed as next-generation instrument work, not smoothed; the lane did not self-check its SHONEN boxes (the operator-owned gate routed around per the standing routing). |
+
+### Planned / saturation / retired - round 57
+
+- planned: coverage - the chromium surface's next residuals: accelerator-swallowing
+  variants (a page-level preventDefault on modifier chords), CapsLock as a toggle modifier,
+  and pointer-domain keys only if a fixture demands them; the C1 pattern continues: re-run
+  the current meter generation as the regression gate after any sibling roster change.
+- planned: calibration/operability - the meter generation that follows v17 ships (a) the
+  `map-ref-unparseable` selftest case (the m4b survivor: a bad-suffix ref must produce that
+  id) and (b) the named-line protection for the predicate-assert harness (the mG survivor);
+  the quarantine fetch guard's final-host rule (sentinel R57-S3) is pinned for every future
+  register fetch.
+- planned: assimilation - adoption stays CLOSED until the campaign corrects the register's
+  one-row quote-column shift (mechanism named at quote-lint.py:159-166/:376-424; the
+  structural proof is committed this round); when adoption opens, the id-collision flow
+  binds: 60/148 staged ids collide (S102..S161 occupied), only S162..S249 are free, and the
+  S124 staged entry's fabrication-class quote must be refused or re-anchored.
+- saturation 8 / window 3 retained; the r57 capability row keeps the window RESTARTED
+  (round 58 = position 1). No axis retired; no score moved (no rubric authorizes one).
