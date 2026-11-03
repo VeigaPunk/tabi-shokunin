@@ -127,6 +127,16 @@ This province was written for the previous Linux host. Probed on the current hos
   document; disclosed) (`corpus/evidence/round55/webview2-control-keys/`;
   `corpus/knowledge/webview2-control-keys-round-55.md`; the r55 counter ships 103 fixtures
   incl. seven new control-domain refusal cases).
+- Round 56 (2026-11-03, Linux host): the webview2 surface cannot run here (no Windows host);
+  the Linux host offers `/usr/bin/chromium` = Chromium 155.0.8059.84 (Arch) — and it is a
+  WRAPPER that prepends the user's `~/.config/chromium-flags.conf` and would load the user's
+  own extension into a fixture browser, with the crashpad handler writing into the user's
+  default profile (sentinel-measured). The surface's control-domain key leg therefore runs
+  with `HOME`/`XDG_CONFIG_HOME` redirected to a throwaway dir under the scratch plus
+  `--disable-extensions` (`scripts/chrome-cdp-loopback-round56.mjs --form`-equivalent leg:
+  End negative-edit witness, Backspace residue + exact restore, Tab activeElement witness,
+  ONE Enter keyDown with `text: "\r"` driving the implicit submission — S083 §4.10.22.2 +
+  S153 modifiers + S161 §3.5.1; `corpus/evidence/round56/chromium-control-keys/`).
 - Standing disposition — the L2-floor L0 (`tabi | round-44`, open since round 44, routed around every round since):
   this host has no AgentSwarm/Kimi L2 dispatch surface, so the >=8-L2-subagents floor is not satisfiable here; tabi
   rounds run L1-inline, disclose that in every predicate and claims.json, and route around the open question without

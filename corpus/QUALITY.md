@@ -795,3 +795,19 @@
     landing-checked with diff-tree before use — the same check that caught the CRLF
     empty-commit class the same round. (source: `corpus/lessons/round-55.md`
     Corrections item 1 + Mistakes 2)
+
+## Round 56 additions (append-only; never edit above)
+
+110. The full-prefix citation rule: every evidence path a committed text (lesson, report,
+    SCORECARD cell, claims.json) cites MUST carry the full `.ufo/waves/round-<N>/` prefix —
+    a relative form (`measure/foo.json`) is not machine-checkable and is the gap that left
+    the r55 lost green receipt invisible to the r56 gate's frozen extraction rule
+    (R56Gate-F1: `measure/c1-meter-green-at-correction1.json` at SCORECARD:3145 and
+    `measure/d54-1-landing-note-r55.txt` at lesson:67 are relative-form citations of paths
+    absent at r55). New citations use the full prefix; the gate
+    (`scripts/check-cited-receipts.mjs`) runs on the round's citing docs at the round's
+    close revision before the report is filed. Red state: the gate at the r55 close
+    revision `545b251d` exits 1 with 6 findings / 5 distinct missing paths
+    (`.ufo/waves/round-56/gate/red-at-545b251d.txt`), including the whole
+    `sources/` byte store the r55 docs cite. (source: `corpus/lessons/round-56.md`
+    Corrections item 1 + Mistakes 3)

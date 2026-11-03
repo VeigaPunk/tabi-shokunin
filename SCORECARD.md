@@ -3189,3 +3189,63 @@ rows=161 findings=0 (`.ufo/waves/round-55/measure/check-sources-at-work.txt`).
   (the supersede-with-citation pattern); no gate generation change is planned.
 - saturation 8 / window 3 retained; the r55 capability row keeps the window RESTARTED
   (round 56 = position 1). No axis retired; no score moved (no rubric authorizes one).
+
+## Round 56 - declared claims (frozen before data at ad3e2afd's claims.json, written pre-wave) and executed disposition (both verified)
+
+Round 56 on the Linux host (the webview2 surface cannot run here; the host offers Chromium
+155). Baseline `faee4cb2`; freeze `ad3e2afd` (instruments + claims + round-open controls +
+wave evidence, no data); C1 data `3b3c5d77` (ledgers re-bound at one fresh snapshot) →
+correction 1 `909b3892` (the frozen correction flow, cycle 1 of 2: the rebind tool's trimEnd
+sha bug, caught by the meter's own sha check; red receipt kept) → C2 data `c2aa8447` (the live
+Chromium 155 control-keys receipt + six per-step PNGs) → work commit (this block). Axes at
+round start: adjacency 8, coverage 9, depth 9, operability 9, freshness 9, calibration 9;
+saturation 8 / window 3; the r55 capability row keeps the window RESTARTED (round 56 =
+position 1) - the nudge is inactive, the lowest-axis obligation applies, and C1 works
+adjacency. Fresh-start ruling: rounds 53-55 were all ADMITTED (no three-rejected streak), so
+no fresh-start round is owed; the refused claim classes (r42 counter-greens-synthetic,
+r43 in-model do-nothing seats, r47 reasoned-not-measured) remain ruled out by construction:
+both after-states are committed instrument outputs at named revisions, and both claims carry
+explicit do-nothing controls.
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned axis; the v16 meter generation = v15 relabelled r55->r56, 277 logic lines byte-equal, diff committed; the rebind screens all 20 roster lanes and carries every hit-line adjudication by exact whole-line quote match) - VERIFIED (one correction cycle consumed: the rebind tool's trimEnd sha bug, caught by the meter's own sha check; red receipt kept) | `node .ufo/waves/round-55/counters/c1-adjacency-host-v15.mjs --rev faee4cb2… --repo <lane> --fleet <fleet> --json` (red control, round open); `node .ufo/waves/round-56/counters/c1-adjacency-host-v16.mjs --rev 909b3892… --repo <lane> --fleet <fleet> --json`; `--selftest`; `diff` v15 v16 (`counters/v15-v16-meter.diff`) | before: at round open the committed v15 meter generation measures RED at the baseline - exit 1, **19 findings** (6 audit-status-mismatch, 5 roster-lane-uncovered, 3 delta-lane-not-on-roster, 1 sha + 1 lines mismatch on kengaku, 3 lane-screen-head-mismatch; receipt `controls/c1-meter-v15-red-at-round-open.json`); after: exit 0, predicate true, **0 findings**, counts {roster:20, mapRows:16, auditRows:16, deltaLanes:16} at `909b3892` | **met** under the frozen rule; adjacency held 8 -> 8 (no rubric authorizes a move); the r55 off-roster alias rows dropped with sha-proven byte identity to revenger/souji/kaidoku, keeping all 10 of their adjudicated hit lines under the meter's P3 check |
+| C2 coverage (capability acquisition `chromium-keyevent-control-keys-linux` - the Linux host's Chromium 155 surface carries the control-domain key leg with page-side DOM witnesses; S083 + S153 re-opened this round for the Enter-leg and transport contracts, S161 re-opened byte-identical; the r55 webview2 row stays as it stands) - VERIFIED | `git ls-tree -r --name-only faee4cb2… -- corpus/evidence/round56 | wc -l` (0 -> 7); `node .ufo/waves/round-56/counters/chromium-receipt-r56.mjs corpus/evidence/round56/chromium-control-keys/receipt.json --driver scripts/chrome-cdp-loopback-round56.mjs --expect-driver-sha256 26da87bb… --json`; `--selftest`; cross-refusals both directions | before: evidence tree **0** files; the counter on an absent receipt exits 1 with `receipt-missing` (the do-nothing control); after: evidence tree **7** files; counter green exit 0, predicate true, findings [], couldNotEvaluate [] at `c2aa8447`; cross-refusals symmetric (r55 counter on the r56 receipt: exit 1, 18 findings; r56 counter on the committed r55 receipt: exit 1, 13 findings); counter selftest **39/39** at the frozen bytes (35 refusal + 3 pass + 1 new home-leak case); `--path-selftest` 6/6 | **met** under the frozen rule; coverage held 9 -> 9; the capability row enters the table below (first-working 56) |
+
+### Capabilities - round 56
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| chromium-keyevent-control-keys-linux | Drive the Linux host's Chromium 155 headless surface (loopback CDP, throwaway profile, throwaway HOME/XDG so the Arch wrapper cannot inject the user's flags.conf or write the user's crash DB) through the form fixture's control-domain key leg, each key witnessed by the page's own DOM state: End re-anchors the caret with the NEGATIVE EDIT WITNESS (the field value read back UNCHANGED), Backspace deletes exactly the last character (the residue re-derived by the counter from the receipt's own nonce) and the removed character is re-typed to an exact restore, Tab moves focus field -> field2 witnessed by document.activeElement, and ONE Enter keyDown with `text: "\r"` from the tabbed-to field submits the form via the implicit submission - witnessed server-side (exactly one /echo with the nonce) and client-side; the counter refuses a receipt whose host.argv carries a user-home path or whose browser is not 155.x | `corpus/evidence/round56/chromium-control-keys/receipt.json` (predicate true; counter green `measure/c2-counter-green-at-data.json`; runner `scripts/chrome-cdp-loopback-round56.mjs` sha `26da87bb…`; spec ground S083 §4.10.22.2 + S153 modifiers + S161 §3.5.1) | 56 |
+
+### Round 56 - sources, frontier, trend verdicts
+
+Registry 161 -> **161** rows (no new row: three RE-OPENS carried - S083 eighth open with the
+r56 raw digest appended to the anchor cell [same byte count, different bytes - drift
+disclosed], S153 eighth open with @master moved 1,421,620 -> 1,423,170 B and the modifiers
+quote re-verified verbatim, S161 byte-identical; used-by extended in place old->new, logged in
+the lesson). Knowledge notes 71 -> **72** (the chromium control-keys note). Census start AND
+end exit 0 (22 pre-existing W04). `node scripts/check-sources.mjs` -> SOURCES_GATE
+verdict=clean rows=161 findings=0 (`.ufo/waves/round-56/measure/check-sources-at-work.txt`).
+
+| Trend | Verdict | Evidence |
+|---|---|---|
+| expansion | improved | The measured surface grew again: the key-event model now holds on a SECOND host class (the Linux Chromium 155 surface, 0 -> 7 evidence files; the webview2 row stays Windows-bound), and the capability row `chromium-keyevent-control-keys-linux` enters the table; three registered rows re-opened with located ground re-verified verbatim in fresh bytes; notes 71 -> 72. |
+| quality | improved | The regression gate absorbed a full host change AND 16 sibling-head movements at ONE correction cycle (the rebind tool's trimEnd sha bug caught by the meter's own sha check - the frozen instrument working as designed; the red receipt kept); the v16 generation bump is logic-line byte-identical (277/277, diff committed and reviewed); the pre-freeze amendments (sentinel RISK 1/3/4: throwaway HOME/XDG, --disable-extensions, profile+crash-path closure keys, shape-only argv) landed BEFORE the freeze with the smoke re-run green; the new counter ships 39 exact-findings fixtures; the N1 class fix is an instrument proven RED at the r55 close revision; the r55 D54-1 landing claim corrected of record (seven lost files, two of the three "landed" receipts absent). |
+| discernment | improved | Every after-state is an instrument output at a named revision (the green names `909b3892`/`c2aa8447`, the receipts name their nonces); the r55-closure carry-ins were corrected of record with measured oracles (N1's absence sweep at two revisions; N2's empty-tree check; N3's two-mover disclosure); the frozen cross-refusal expectation was corrected pre-data by walking the counter's check flow; the meter's OR-mutant survivor and the gate's relative-form gap are disclosed as next-round instrument work, not smoothed; the lane did not self-check its SHONEN boxes (the operator-owned gate routed around per the standing routing). |
+
+### Planned / saturation / retired - round 56
+
+- planned: coverage - the chromium surface's next residuals: the modifier-chord leg (Shift/
+  Control/Alt/Meta) on the Linux chromium surface only if a round shows the demand; the C1
+  pattern continues: re-run the current meter generation as the regression gate after any
+  sibling roster change.
+- planned: calibration/operability - the meter generation that follows v16 ships a
+  green/partial-green selftest case asserting the emitted `predicate` (the R56Mutant m4
+  survivor); the cited-receipt gate's relative-form widening is an explicit instrument
+  decision (R56Gate-F1), not a silent edit.
+- planned: assimilation - the wave-4 quarantine-first duty is OWED: hand-check the 39-row
+  tabi register slice in `/home/vgpnk/Projects/shokuknow/.ufo/waves/corpus-expansion-1/absent-defect-register.md`
+  (verdict per row) BEFORE any package adoption; adoption stays closed until then.
+- saturation 8 / window 3 retained; the r56 capability row keeps the window RESTARTED
+  (round 57 = position 1). No axis retired; no score moved (no rubric authorizes one).
