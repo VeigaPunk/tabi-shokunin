@@ -3608,3 +3608,12 @@ revision. Full detail: SCORECARD round-53 block, `corpus/lessons/round-53.md`.
 - Knowledge: unchanged (74); the scribe's knowledge draft is held as wave evidence (round not admitted).
 - Wave shape: ONE v1 wave w1 of 12 seats (scout 2, executor 3, scribe 1, connector 1, reviewer 1, critic 1, mutation-tester 2, sentinel 1; attack seats 4/12 = 33%). Dispatched via the inline spawn handoff; all 12 settled (0 dead). Residual call: none.
 - Open L0 questions: `tabi | round-59` (new-claim routing; answer not received) and a new round-60 question on the keyup cancelable value (see report).
+
+## Round 61 (2026-11-03) — C1 adjacency KILLED; C2 coverage UNPROVABLE; honest non-admission
+
+- Baseline 6c5c2a2e → claims freeze 7032914c → integrated instruments and settled wave bcbf6be9 → live pointer run and this lesson/scorecard/source integration. Evidence: .ufo/waves/round-61/claims.json and DATA-PASS-RUNBOOK.md.
+- ONE v1 w1: 11 seats (scout, executor×3, scribe, connector, reviewer, critic, mutation-tester×2, sentinel); planner held by L1; no residual call. WAVE-DONE received, results at .ufo/waves/round-61/w1-results.json.
+- C1 frozen snapshot header rejected by its unchanged wide counter, exit 2 (K4). Original bytes restored; corrected header retained as candidate only. v20 selftest 42/42; list-observed bug repaired. Rebind's 110 dispositions remain candidate evidence, not production ledgers.
+- C2 integrated page-side pointer journey genuinely runs (bcbf6be9 instruments): live runner/counter exit 0, three evidence files, shared pointer/mouse seq 1–6, no survivors, closed ports, curl 7/7. Final local selftest/path-selftest 129/129, 68/68 ids. However interface/nonce changes after seats scored invalidate transfer of earlier mutant evidence: UNPROVABLE, no capability admitted.
+- S164 opened and mined into corpus/lessons/round-61.md (Pointer Events Level 4 Working Draft, scoped interface ground). S153/S161 re-open byte-identical; existing registry rows unchanged, honoring r60 R1. Registry 163 → 164; knowledge 74 unchanged.
+- Mistakes and red-before/green-after retained in corpus/lessons/round-61.md. QUALITY 113 records frozen-input validation and forbids post-score repairs being promoted to frozen passes. No tool installs. Assimilation none; considerthese absent; existing L0s stay open, planner mapping routed as round-61 L0.

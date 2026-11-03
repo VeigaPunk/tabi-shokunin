@@ -3395,3 +3395,22 @@ Round 60 executed disposition: C1 killed by K7; C2 verified. The round is not ad
 - planned (r61, calibration): the keyup `cancelable` value rule is a predicate change, not an instrument fix; raise it as a new claim only if the operator rules it in scope (L0 question, round 60).
 - saturation 8 / window 3: no capability entered in r58-r60 besides the r58 row, so the window is at position 3 of 3; the stagnation nudge applies from round 61 unless a capability enters that round.
 - retired: none. D10 (capability-only claims hold the axis score) still applies.
+
+## Round 61 — frozen claims and honest disposition
+
+Baseline `6c5c2a2e`; freeze `7032914c`; integrated instruments `bcbf6be9`.
+Axes remain adjacency 8, coverage 9, depth 9, operability 9, freshness 9,
+calibration 9. C1 works the lowest owned axis; stagnation nudge remains active.
+
+| Claim / axis | Counting command and evidence | Before → after | Verdict |
+|---|---|---|---|
+| C1 adjacency: snapshot-bound v20 plus wide-screen clause | `node .ufo/waves/round-60/counters/c1-wide-screen-r60.mjs --scope wide --snapshot .ufo/waves/round-61/c1/snapshot-r61.tsv --json`; Reviewer A5-HEADER and Sentinel command 12 | v19 baseline red, 18 findings → frozen wide clause exit 2 (bad header); 42/42 v20 selftest is not the claim's full predicate | KILLED by K4; score held |
+| C2 coverage capability chromium-pointer-event-domain-linux | `node .ufo/waves/round-61/counters/chromium-receipt-r61.mjs corpus/evidence/round61/chromium-pointer-domain/receipt.json --driver scripts/chrome-cdp-loopback-round61.mjs --expect-driver-sha256 f33f0ab72eec4f13519cd67a0768c5f743a7b14248c68bdc1bc9f639352a4e76 --shot corpus/evidence/round61/chromium-pointer-domain --json`; instruments `bcbf6be9`, measure/c2-live.json | evidence files 0 → 3; final live counter green; 129/129 local selftest; earlier mutation pins do not certify final integrated instrument | UNPROVABLE as frozen claim (post-score interface/nonce changes); no capability row |
+
+No capability admitted; no numeric score changes. Knowledge notes 74 unchanged.
+Registry 163 → 164 (S164, cited by lesson); no existing anchor edits.
+Expansion/quality/discernment unchanged; non-author gate sample pending.
+Planned: a new, pre-scored runner/counter contract with a header-validating
+control and final-byte mutation evidence; no re-declaration of these failed
+predicates. Wide-hit adjudication, keyup-value L0 and kaidoku L0 remain open.
+Saturation 8 / window 3 retained; no axis retired.

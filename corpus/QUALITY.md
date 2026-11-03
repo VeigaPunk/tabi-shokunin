@@ -845,3 +845,15 @@
     passed, because the selftest drove leaf functions only (`corpus/lessons/round-59.md`
     Mistakes 3). Green state: round 60 kills C6–C9 and greens probes A, B, D, E in
     `corpus/lessons/round-60.md` Measurements, with 110/110 selftest cases.
+
+## Round 61 additions
+
+113. Validate frozen input grammar with the exact downstream command before
+    freezing it; preserve original bytes when an attack finds a defect. A
+    repaired input or changed receipt grammar after scoring is candidate work,
+    not evidence that the original predicate passed. Red state: r61 snapshot
+    header `lane<TAB>` gives exit 2 in the unchanged r60 wide counter; repaired
+    `lane<TAB>head` gives exit 0 with the same heads. Both measured by Reviewer
+    and Sentinel; original restored, repair separately named. See
+    `corpus/lessons/round-61.md` Mistakes and the non-admitting integration
+    disposition `.ufo/waves/round-61/DATA-PASS-RUNBOOK.md`.
