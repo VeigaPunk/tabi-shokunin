@@ -1,0 +1,88 @@
+{
+ "round": 60,
+ "lane": "tabi-shokunin",
+ "attempt": 1,
+ "host": "linux 7.2.11-arch1-1 x64 (node v24.21.0; /usr/bin/chromium 155.0.8059.84; python3; jj-lane on)",
+ "baseline": "8a3f6f89eecc28328522ab3ce34d3619199e3350",
+ "frozenAt": "2026-11-03, before wave w1 dispatch and before any seat data",
+ "freezeRule": "Predicates, counters' expected findings, kill rules, mutant lists and do-nothing controls below are frozen HERE, in text, before any seat runs. Counter code is authored in wave w1 and committed at an instrument FREEZE commit (code only, no data) BEFORE the live data pass. A post-data change to any predicate or kill rule is a new claim, not an amendment. Instrument pins that cannot exist until the code exists (counter sha256, selftest case counts) are marked <pinned at instrument freeze> and recorded in the round report from the freeze commit.",
+ "axesAtStart": {
+  "adjacency": 8,
+  "coverage": 9,
+  "depth": 9,
+  "operability": 9,
+  "freshness": 9,
+  "calibration": 9,
+  "saturation": 8,
+  "stagnationWindow": 3,
+  "note": "adjacency is the lowest owned non-retired axis (8); the lowest-axis obligation applies, so C1 works adjacency. The stagnation window is at position 2 of 3 (r58 capability row restarted the window; r59 entered no capability), so the nudge is inactive. C2 is the second claim and works calibration (overreach of the lane's own chromium receipt counter, the forged-receipt false-green class). Distinct axes; causally separable (C1 reads sibling repos; C2 reads committed r59 receipts and probes)."
+ },
+ "routing": "Round 59's C2 was KILLED under frozen kill rule f6 and the L0 question tabi|round-59 asked whether the next counter generation may run as a NEW claim. No operator answer is recorded; this round routes around it (the L0 question stays open and is named in the report). C2 below is a NEW claim with its own axis, predicate and controls; it does not re-declare the r59 capability row (no capability enters this round).",
+ "claims": [
+  {
+   "id": "C1",
+   "type": "measured",
+   "axis": "adjacency (lowest owned, score 8)",
+   "remedies": "lesson round-59 Mistakes 12 (screen scope limited to PROVINCE.md plus map-referenced files; 18,869 browser-ground-word lines in sibling .md files outside that screen, R59Reviewer A6)",
+   "statement": "The wide adjacency screen generation c1-wide-screen-r60 (counter sha256 <pinned at instrument freeze>; selftest allPass with at least the declared mutant-killing cases) run at scope=wide over the frozen snapshot .ufo/waves/round-60/c1/snapshot-r60.tsv (20 roster sibling lanes at the heads recorded there) exits 0 with predicate true, where: counts.enumeratedMd is the number of blobs whose path ends in .md in git ls-tree -r of each lane's snapshot head; counts.screenedMd == counts.enumeratedMd; counts.unscreenedMd == 0; counts.rowMismatch == 0 (every per-file row's blob sha256, line count and browser-ground-word hit count re-derive from the blob bytes at the recorded head); counts.unresolvableHead == 0; counts.roster == 20. The browser-ground-word hit lines in the wide set are reported as a path:line inventory (counts.wideHitLines, counts.wideHitFiles). They are NOT adjudicated by this claim; the adjudication of wide hits is a named residual for a later round. The v19 map-scope meter (c1-adjacency-host-v19.mjs at the same rev) stays exit 0, predicate true, findingCount 0 (no regression).",
+   "before": {
+    "command": "node .ufo/waves/round-60/counters/c1-wide-screen-r60.mjs --scope map --snapshot .ufo/waves/round-60/c1/snapshot-r60.tsv --json",
+    "expected": "exit 1, predicate false: at scope=map (the v19 screen: PROVINCE.md plus map-referenced files only) counts.screenedMd < counts.enumeratedMd, so counts.unscreenedMd > 0. This is the do-nothing control: it is the existing screen, measured on the same snapshot.",
+    "receipt": ".ufo/waves/round-60/controls/c1-scope-map-at-freeze.json"
+   },
+   "after": {
+    "command": "node .ufo/waves/round-60/counters/c1-wide-screen-r60.mjs --scope wide --snapshot .ufo/waves/round-60/c1/snapshot-r60.tsv --json > .ufo/waves/round-60/c1/wide-screen-data-r60.json; node .ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs --rev <DATA-REV> --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --fleet /home/vgpnk/Projects/shokunin --json",
+    "expected": "wide: exit 0, predicate true, counts as above. v19 map-scope meter: exit 0, predicate true, findingCount 0 at the DATA-REV the L1 records in the report."
+   },
+   "kill": "C1 dies if: (K1) the wide counter's selftest is not allPass; (K2) any mutant in the C1 mutant list survives (see mutantsC1); (K3) any enumerated .md blob is absent from the screened set on a fixture or on the data run; (K4) a per-file row whose recomputed sha256, line count or hit count differs is not refused (rowMismatch 0 on a forged-row fixture); (K5) a head that does not resolve in its sibling repo is not refused (unresolvableHead); (K6) the wide counter's scope=wide run reports screenedMd below enumeratedMd on the data run; (K7) the v19 map meter goes red at the data rev.",
+   "mutantsC1": {
+    "M1": "enumerate only top-level .md files (drop nested directories) - must be KILLED by a nested-md fixture",
+    "M2": "skip the per-file hit recount (trust a stale hit count) - must be KILLED by a forged-row fixture",
+    "M3": "read the working tree instead of the recorded head blob - must be KILLED by a fixture whose worktree differs from its head",
+    "M4": "treat an unresolvable head as zero files instead of refusing - must be KILLED by a head-unresolvable fixture",
+    "M5": "default the scope to map (v19 scope) - must be KILLED by the data-run command, which passes --scope wide explicitly, and by a default-scope selftest"
+   },
+   "dataPass": "the L1 runs the after-command at the DATA-REV (the freeze commit, which pins the snapshot). The snapshot is a fixed file; sibling heads moving later does not change the frozen snapshot, and the counter reads blobs at the recorded heads only."
+  },
+  {
+   "id": "C2",
+   "type": "measured",
+   "axis": "calibration (score 9; overreach caught - the lane's own chromium receipt gate must not green forged receipts)",
+   "remedies": "lesson round-59 Mistakes 1 (the frozen f6 kill rule: a CapsLock keydown with cancelable:false, or with cancelable deleted, goes GREEN on the canonical r59 counter; probes A and B; mutant C6 SURVIVED)",
+   "statement": "The r60 chromium receipt counter generation chromium-receipt-r60 (counter sha256 <pinned at instrument freeze>; selftest allPass with the 91 r59 cases carried unchanged plus the declared cancelable and trace-vs-keylog cases) returns exit 1 with a finding of the cancelable or trace-shape class on EACH forged probe in the frozen probe set F = {A, B, D, E}: A = the r59 probe A (first CapsLock keydownEntry cancelable:false); B = the r59 probe B (cancelable key deleted); D = a CapsLock trace entry whose cancelable disagrees with the page keylog entry it cites (trace-vs-keylog mismatch); E = a CapsLock trace entry with the type key deleted. The probes D and E are generated deterministically by .ufo/waves/round-60/measure/f-probes-r60.py from the committed live r59 receipt. The counter returns exit 0, predicate true, findings [], couldNotEvaluate [] on the committed live receipt corpus/evidence/round59/chromium-capslock-boundary/receipt.json with --driver scripts/chrome-cdp-loopback-round59.mjs --expect-driver-sha256 b16ddb443d5bd1b101cfcdb55cbf2d5ffcb3f39d38064a661ab82bb9a152ff86 --shot corpus/evidence/round59/chromium-capslock-boundary. Count: forgedGreen = number of probes in F for which the counter exits 0. After: forgedGreen == 0 and liveGreen == 1.",
+   "before": {
+    "command": "node .ufo/waves/round-59/counters/chromium-receipt-r59.mjs <probe receipt> --driver scripts/chrome-cdp-loopback-round59.mjs --expect-driver-sha256 b16ddb443d5bd1b101cfcdb55cbf2d5ffcb3f39d38064a661ab82bb9a152ff86 --shot corpus/evidence/round59/chromium-capslock-boundary --json, run over each probe in F",
+    "expected": "A and B: exit 0, findings [] (committed at .ufo/waves/round-59/measure/f6-probe/RESULT.txt, re-measured at the freeze). D and E: measured at the freeze into .ufo/waves/round-60/controls/c2-r59-counter-on-probes.json. The do-nothing control meets the target only if forgedGreen == 0 on the r59 counter; the protocol requires that to be false (A and B green), else the counter is wrong and the claim is fixed before data."
+   },
+   "after": {
+    "command": "node .ufo/waves/round-60/counters/chromium-receipt-r60.mjs <probe receipt> --driver scripts/chrome-cdp-loopback-round59.mjs --expect-driver-sha256 b16ddb443d5bd1b101cfcdb55cbf2d5ffcb3f39d38064a661ab82bb9a152ff86 --shot corpus/evidence/round59/chromium-capslock-boundary --json, over each probe in F and then over the live receipt",
+    "expected": "forgedGreen 0 (each of A, B, D, E exit 1, findings in the cancelable/trace class); live receipt exit 0, predicate true, findings [], couldNotEvaluate []. Receipts: .ufo/waves/round-60/measure/c2-after/*.json."
+   },
+   "kill": "C2 dies if: (K1) any probe in F is green (exit 0) under the r60 counter; (K2) the live receipt is red under the r60 counter; (K3) mutant C6 (remove the cancelable presence and value checks) survives the r60 selftest; (K4) selftest is not allPass or carries fewer than the 91 carried r59 cases; (K5) a forged probe generated by the L1 or a seat that the r60 counter greens after the freeze is recorded as a new finding and kills C2 unless it is a byte-perfect replica of the live receipt (the disclosed residual).",
+   "mutantsC2": {
+    "C6": "remove the cancelable presence and value requirement on CapsLock and letter events - must be KILLED by probe A and probe B fixtures",
+    "C7": "remove the trace-vs-keylog cancelable cross-check - must be KILLED by probe D",
+    "C8": "read cancelable only from the first keydownEntry instead of every CapsLock event - must be KILLED by a second-event fixture",
+    "C9": "accept a cancelable string 'true' or truthy non-boolean - must be KILLED by a string-typed fixture"
+   },
+   "dataPass": "the L1 runs the after-commands at the freeze commit; probes D and E are generated by f-probes-r60.py before the r60 counter sees them."
+  }
+ ],
+ "doNothingControls": {
+  "C1": "the v19 map scope at the frozen snapshot (controls/c1-scope-map-at-freeze.json): red, unscreenedMd > 0",
+  "C2": "the r59 counter over probes A, B, D, E (controls/c2-r59-counter-on-probes.json and round-59 RESULT.txt): forgedGreen >= 2"
+ },
+ "frontierStep": {
+  "censusStart": "scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi -> exit 0, tabi ok, 162 rows (controls/census-start.txt)",
+  "censusEnd": "recorded in the round report at round end, exit 0 required",
+  "sourcedClaim": "C2 rests on S163 (NEW this round: the DOM Standard Event cancelable attribute and its getter) and on S161 re-opened this round for the keydown cancelable row of the UI Events event table, each opened with the R57-S3 guard (final host equals cited host, num_redirects 0, sha256, located quote <= 25 words, raw line recorded).",
+  "mistakeMining": "lesson round-59 Mistakes 1 (cancelable gap, captured-by none - the selftest exercised leaf functions only) and Mistakes 12 (screen scope); each fix counts only when shown able to fail (C1 mutants M1-M5; C2 mutants C6-C9 and probes A, B, D, E).",
+  "assimilation": "Assimilation: none. adoption stays CLOSED (L0 tabi|round-57: the register's one-row quote-column shift awaits campaign regeneration); corpus-expansion package merge/tabi is not appended this round; the lane has no considerthese/ directory."
+ },
+ "outOfScope": [
+  "adjudicating the wide browser-ground hit lines (C1 reports them as a residual)",
+  "the 37 kaidoku overlap-declared rulings (L0 tabi|round-59 open)",
+  "any capability row (no capability enters this round)",
+  "any sibling repo write (read-only; siblings are read at their recorded heads)"
+ ]
+}
