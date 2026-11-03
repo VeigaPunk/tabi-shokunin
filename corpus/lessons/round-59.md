@@ -37,7 +37,7 @@ Spot-check (non-author discernment, LEARNING.md): **owed** — the outside closu
 - Probe: `runner/probe-capslock.json` (corroborating pre-data evidence for the caps-bit boundary; the probe script and its S162 source bytes are staged beside it).
 - D9 probes: `probes/d9-red-before-defaultprevented.txt` (RED: only cross-reference anchors), `probes/d9-green-capslock.txt` (getModifierState dfn found; CapsLock prose-only; S162 zero CapsLock occurrences).
 - D3 / D6 grounds: `probes/d3-absent-receipt-shape.json`, `probes/d6-six-entries.json`.
-- Attacks: R59Reviewer (`reviewer/R59Reviewer.md`: A3 M1 gap fixed pre-freeze; A6 screen-scope and A9 hardening depth named as survivors; A7 URL-toggle residual carried), R59Critic (`critic/R59Critic.md`: pins P1–P3, R1–R4 applied; restated C2 SOUND), R59MutMeter (M1–M6 all KILLED, `mutant-meter/`), R59MutCounter (C1–C5, C7 KILLED; **C6 SURVIVED** — Mistakes 1), R59Sentinel (guard audit: S161/S153 MATCH, S162 guard record remediated, 0 secret hits in r59 bytes, pacman log unchanged), R59Connector (overlap scan: no sibling holds CapsLock ground; CDP overlap pre-ruled).
+- Attacks: R59Reviewer (`.ufo/waves/round-59/reviewer/R59Reviewer.md`: A3 M1 gap fixed pre-freeze; A6 screen-scope and A9 hardening depth named as survivors; A7 URL-toggle residual carried), R59Critic (`critic/R59Critic.md`: pins P1–P3, R1–R4 applied; restated C2 SOUND), R59MutMeter (M1–M6 all KILLED, `mutant-meter/`), R59MutCounter (C1–C5, C7 KILLED; **C6 SURVIVED** — Mistakes 1), R59Sentinel (guard audit: S161/S153 MATCH, S162 guard record remediated, 0 secret hits in r59 bytes, pacman log unchanged), R59Connector (overlap scan: no sibling holds CapsLock ground; CDP overlap pre-ruled).
 
 ## Measurements (counting commands, paste-able)
 
