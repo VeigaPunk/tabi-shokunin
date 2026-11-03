@@ -1,0 +1,87 @@
+{
+ "schema": "tabi-r59-probe-d3-absent-receipt-shape-v1",
+ "seat": "R59Probes",
+ "round": 59,
+ "authoredAt": "2026-11-03",
+ "purpose": "D3 correction ground: re-run the r58 counter on a DIFFERENT absent receipt path (R59Probes scratch, not the round-open control path) and record the exact emitted shape, findings and couldNotEvaluate arrays verbatim.",
+ "command": "node .ufo/waves/round-58/counters/chromium-receipt-r58.mjs /fast/scratch/hyaku/tabi-r59/R59Probes/absent-d3/subdir/receipt.json --driver scripts/chrome-cdp-loopback-round58.mjs --json",
+ "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+ "exit": 1,
+ "exitMeaning": "1 = any finding (the counter's own exit contract: 0 predicate met, 1 any finding, 2 usage)",
+ "stderr": "",
+ "absentPath": "/fast/scratch/hyaku/tabi-r59/R59Probes/absent-d3/subdir/receipt.json",
+ "absentPathConfirmedAbsentBeforeRun": true,
+ "rawStdoutPathInScratch": "/fast/scratch/hyaku/tabi-r59/R59Probes/d3-raw.json",
+ "rawStdoutBytes": 861,
+ "rawStdoutSha256": "dc3a177f62ed5bd0f382deface8fe968619f732ba2428146db33d91a30fdc1fa",
+ "emitted": {
+  "schema": "tabi-chromium-receipt-r58",
+  "receipt": "/fast/scratch/hyaku/tabi-r59/R59Probes/absent-d3/subdir/receipt.json",
+  "driver": "/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round58.mjs",
+  "shotDir": "/fast/scratch/hyaku/tabi-r59/R59Probes/absent-d3/subdir",
+  "nonce": null,
+  "predicate": false,
+  "findingCount": 1,
+  "findings": [
+   {
+    "id": "receipt-missing",
+    "detail": "/fast/scratch/hyaku/tabi-r59/R59Probes/absent-d3/subdir/receipt.json",
+    "occurrences": 1
+   }
+  ],
+  "couldNotEvaluate": [
+   {
+    "check": "receipt-load",
+    "code": "receipt-absent",
+    "detail": "no receipt bytes at /fast/scratch/hyaku/tabi-r59/R59Probes/absent-d3/subdir/receipt.json"
+   }
+  ]
+ },
+ "shape": {
+  "keySetMatchesRoundOpenControl": true,
+  "maybeKeySet": [
+   "schema",
+   "receipt",
+   "driver",
+   "shotDir",
+   "nonce",
+   "predicate",
+   "findingCount",
+   "findings",
+   "couldNotEvaluate"
+  ],
+  "findingIds": [
+   "receipt-missing"
+  ],
+  "couldNotEvaluatePairs": [
+   {
+    "check": "receipt-load",
+    "code": "receipt-absent"
+   }
+  ],
+  "predicate": false,
+  "nonce": null,
+  "findingCount": 1
+ },
+ "roundOpenControlComparison": {
+  "path": ".ufo/waves/round-59/controls/c2-counter-absent-receipt.json",
+  "sha256": "9d1548969324d2101c9ea75ff875e77751f8245277775c8606b6fd53407a11ac",
+  "absentPathThere": "/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round59/nonexistent/receipt.json",
+  "controlFindingIds": [
+   "receipt-missing"
+  ],
+  "controlCouldNotEvaluatePairs": [
+   {
+    "check": "receipt-load",
+    "code": "receipt-absent"
+   }
+  ],
+  "shapeIdenticalApartFromPaths": true
+ },
+ "whatD3Records": "The r58 counter emits a NON-EMPTY couldNotEvaluate array on an absent receipt: one entry {check: receipt-load, code: receipt-absent} plus a single receipt-missing finding, predicate false, exit 1. The r58 spotcheck receipt showed couldNotEvaluate [] for the same class of refusal; the emitted shape at the r59 round open --- and re-derived here on an independent absent path --- carries the couldNotEvaluate entry. That divergence is the D3 correction of record.",
+ "notes": [
+  "Different path on purpose: the round-open control used corpus/evidence/round59/nonexistent/receipt.json; this re-run uses a scratch path that never existed, so the refusal is not a corpus artefact.",
+  "The counter was invoked with the r58 driver (scripts/chrome-cdp-loopback-round58.mjs) and no --expect-driver-sha256; the refusal short-circuits before any driver read, which is why the absent receipt dominates the output.",
+  "No browser was launched and no network was touched by this probe."
+ ]
+}

@@ -1,0 +1,312 @@
+D9 GREEN — definition-site sweep for the round-59 terms
+======================================================
+
+round 59, wave w1, lane tabi-shokunin
+seat R59Probes
+authored 2026-11-03
+cwd /home/vgpnk/Projects/shokunin/tabi-shokunin
+
+CRITERION (the same one the red-before probe exercises; L1 lands it as QUALITY.md criterion 111):
+  "a claim citing a source for a named term runs a grep for that term's definition site in the
+   staged bytes before freeze"
+
+TERMS AND SOURCES UNDER TEST (this round's claim terms):
+  getModifierState      S161  .ufo/waves/round-59/sources/uievents.html
+  CapsLock              S161  .ufo/waves/round-59/sources/uievents.html
+  key                   S153  .ufo/waves/round-59/sources/browser_protocol.json  (dispatchKeyEvent parameter)
+  windowsVirtualKeyCode S153  .ufo/waves/round-59/sources/browser_protocol.json  (dispatchKeyEvent parameter)
+  (supplementary)       S162  .ufo/waves/round-59/sources/input_handler.cc (Chromium input handler, opened r59)
+
+INPUT IDENTITY AND DRIFT (measured, not assumed)
+------------------------------------------------
+uievents.html         920762 B  sha256 8ded5eaf4f190b13c59582d5e92b81d3585112dde963d71d65d8e5991212b918
+browser_protocol.json 1423170 B sha256 d6737c31f268ed74e65dde393006dd9c590a713febd2361d734722eb059f31e7
+input_handler.cc       89463 B  sha256 72cf0d1d913302551731310cf76e03a259e8ccbfa7c8db14a185d9ae817324f4
+
+  cmp .ufo/waves/round-59/sources/uievents.html        .ufo/waves/round-58/sources/uievents.html         -> exit 0 (byte-identical)
+  cmp .ufo/waves/round-59/sources/browser_protocol.json .ufo/waves/round-58/sources/browser_protocol.json -> exit 0 (byte-identical)
+  both equal the registered anchors the round-open controls cite
+    (S161 8ded5eaf…, S153 d6737c31…): no drift this round.
+
+PROVENANCE / FETCH GUARD
+------------------------
+  I performed NO network fetch. The r59 sources were staged by R59Scout (S161/S153) and, for S162, by
+  the L1 (attribution recorded in sources/README-S162.md; the S162 guard record is
+  sources/s162-fetch-receipt.json: final host chromium.googlesource.com, num_redirects 0, http 200,
+  staged 89463 B / 72cf0d1d…). The poll ran bounded (~20 min: first check 20:56:31Z, files present
+  21:09:38Z, sha-stable across checks 60 s apart) before any sweep was run, so no scratch fetch was
+  needed and the R57-S3 guard fields above are inherited from the staging receipts, not re-measured here.
+
+SWEEPS (the harness runs real grep over the staged bytes; every command below is verbatim and
+exit codes are the grep exit codes: 0 = match, 1 = no match)
+
+sweep executed: 2026-11-03T21:17:02Z (node v24.21.0, grep from the host PATH; the harness lived in the
+seat's scratch tree and was deleted after the write — every command below is independently runnable)
+
+TERM 1 — getModifierState in S161 staged bytes
+==============================================
+
+$ grep -n -E '<dfn[^>]*data-dfn[^>]*(getmodifierstate)|<dfn[^>]*id="dom-keyboardevent-getmodifierstate"' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  3160:  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean①⓪"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="method" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①"><c- g>get…
+  3327:     <dt><dfn class="dfn-paneled idl-code" data-dfn-for="KeyboardEvent" data-dfn-type="method" data-export id="dom-keyboardevent-getmodifierstate"><code>getModifierState(keyArg)</code></dfn>
+
+$ grep -n 'id="dom-keyboardevent-getmodifierstate"' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  3327:     <dt><dfn class="dfn-paneled idl-code" data-dfn-for="KeyboardEvent" data-dfn-type="method" data-export id="dom-keyboardevent-getmodifierstate"><code>getModifierState(keyArg)</code></dfn>
+
+$ grep -n -E "getModifierState\(" -i /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  3133:		method <code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate">getModifierState()</a></code> with <code class="keycap">Control</code>,
+  3160:  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean①⓪"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="method" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①"><c- g>get…
+  3327:     <dt><dfn class="dfn-paneled idl-code" data-dfn-for="KeyboardEvent" data-dfn-type="method" data-export id="dom-keyboardevent-getmodifierstate"><code>getModifierState(keyArg)</code></dfn>
+  3477:		queried via <code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate②">getModifierState()</a></code>. The steps for
+  3511:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate">getModifierState()</a></code> or
+  3512:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate③">getModifierState()</a></code>
+  3526:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate①">getModifierState()</a></code> or
+  3527:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate④">getModifierState()</a></code>
+  3542:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate②">getModifierState()</a></code> or
+  3543:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate⑤">getModifierState()</a></code>
+  3557:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate③">getModifierState()</a></code> or
+  3558:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate⑥">getModifierState()</a></code>
+  3564:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate④">getModifierState()</a></code> or
+  3565:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate⑦">getModifierState()</a></code>
+  3572:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate⑤">getModifierState()</a></code> or
+  3573:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate⑧">getModifierState()</a></code>
+  3580:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate⑥">getModifierState()</a></code> or
+  3581:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate⑨">getModifierState()</a></code>
+  3588:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate⑦">getModifierState()</a></code> or
+  3589:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①⓪">getModifierState()</a></code>
+  3596:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate⑧">getModifierState()</a></code> or
+  3597:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①①">getModifierState()</a></code>
+  3604:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate⑨">getModifierState()</a></code> or
+  3605:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①②">getModifierState()</a></code>
+  3612:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate①⓪">getModifierState()</a></code> or
+  3613:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①③">getModifierState()</a></code>
+  3620:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate①①">getModifierState()</a></code> or
+  3621:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①④">getModifierState()</a></code>
+  3628:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate①②">getModifierState()</a></code> or
+  3629:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①⑤">getModifierState()</a></code>
+  3636:				<code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate" id="ref-for-dom-mouseevent-getmodifierstate①③">getModifierState()</a></code> or
+  3637:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①⑥">getModifierState()</a></code>
+  7749:   <li><a href="#dom-keyboardevent-getmodifierstate">getModifierState(keyArg)</a><span>, in § 3.5.1.1</span>
+  7969:     <li><span class="dfn-paneled" id="3b1d6b73">getModifierState()</span>
+  8663:    <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/getModifierState" title="The KeyboardEvent.getModifierState() method returns the current state of the specified modifier key: true if the modifier is active (that is the modifier key is pressed or locked), otherwise,…
+  9085:"3b1d6b73": {"dfnID":"3b1d6b73","dfnText":"getModifierState()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-mouseevent-getmodifierstate"},{"id":"ref-for-dom-mouseevent-getmodifierstate\u2460"},{"id":"ref-for-dom-mouseevent-getmodifierstate\u2461"},{"id":"ref-for-dom-mouseevent-get…
+  9195:"dom-keyboardevent-getmodifierstate": {"dfnID":"dom-keyboardevent-getmodifierstate","dfnText":"getModifierState(keyArg)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-keyboardevent-getmodifierstate"}],"title":"3.5.1. Interface KeyboardEvent"},{"refs":[{"id":"ref-for-dom-keyboardev…
+  9799:"#dom-keyboardevent-getmodifierstate": {"displayText":"getModifierState(keyArg)","export":true,"for_":["KeyboardEvent"],"level":"","normative":true,"shortname":"uievents","spec":"uievents","status":"local","text":"getModifierState(keyArg)","type":"method","url":"#dom-keyboardevent-getmodifierst…
+  9914:"https://www.w3.org/TR/pointerevents4/#dom-mouseevent-getmodifierstate": {"displayText":"getModifierState()","export":true,"for_":["MouseEvent"],"level":"4","normative":true,"shortname":"pointerevents","spec":"pointerevents4","status":"snapshot","text":"getModifierState()","type":"method","url"…
+
+$ grep -n ref-for-dom-keyboardevent-getmodifierstate /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  3133:		method <code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate">getModifierState()</a></code> with <code class="keycap">Control</code>,
+  3160:  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean①⓪"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="method" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①"><c- g>get…
+  3477:		queried via <code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate②">getModifierState()</a></code>. The steps for
+  3512:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate③">getModifierState()</a></code>
+  3527:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate④">getModifierState()</a></code>
+  3543:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate⑤">getModifierState()</a></code>
+  3558:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate⑥">getModifierState()</a></code>
+  3565:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate⑦">getModifierState()</a></code>
+  3573:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate⑧">getModifierState()</a></code>
+  3581:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate⑨">getModifierState()</a></code>
+  3589:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①⓪">getModifierState()</a></code>
+  3597:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①①">getModifierState()</a></code>
+  3605:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①②">getModifierState()</a></code>
+  3613:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①③">getModifierState()</a></code>
+  3621:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①④">getModifierState()</a></code>
+  3629:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①⑤">getModifierState()</a></code>
+  3637:				<code class="idl"><a data-link-type="idl" href="#dom-keyboardevent-getmodifierstate" id="ref-for-dom-keyboardevent-getmodifierstate①⑥">getModifierState()</a></code>
+  9195:"dom-keyboardevent-getmodifierstate": {"dfnID":"dom-keyboardevent-getmodifierstate","dfnText":"getModifierState(keyArg)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-keyboardevent-getmodifierstate"}],"title":"3.5.1. Interface KeyboardEvent"},{"refs":[{"id":"ref-for-dom-keyboardev…
+
+TERM 2 — CapsLock in S161 staged bytes
+======================================
+
+$ grep -n -E "<dfn[^>]*>CapsLock<" /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=1   (no output)
+
+$ grep -n -E 'id="[^"]*capslock"' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  3487:  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean②⑥"><c- b>boolean</c-></a> <a class="idl-code" data-default="false" data-link-type="dict-member" data-type="boolean" href="#dom-eventmodifierinit-modifiercapslock" id="ref-…
+  3569:     <dt><dfn class="dfn-paneled idl-code" data-dfn-for="EventModifierInit" data-dfn-type="dict-member" data-export id="dom-eventmodifierinit-modifiercapslock"><code>modifierCapsLock</code></dfn>, <span> of type <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#idl-boolean" id=…
+
+$ grep -n -E 'class="keycap">CapsLock<' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  3574:				when provided with the parameter <code class="keycap">CapsLock</code> must
+  4791:		such as <code class="keycap">CapsLock</code>, <code class="keycap">NumLock</code>, or <code class="keycap">ScrollLock</code>. Change
+
+$ grep -n modifierCapsLock /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  3487:  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean②⑥"><c- b>boolean</c-></a> <a class="idl-code" data-default="false" data-link-type="dict-member" data-type="boolean" href="#dom-eventmodifierinit-modifiercapslock" id="ref-…
+  3569:     <dt><dfn class="dfn-paneled idl-code" data-dfn-for="EventModifierInit" data-dfn-type="dict-member" data-export id="dom-eventmodifierinit-modifiercapslock"><code>modifierCapsLock</code></dfn>, <span> of type <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#idl-boolean" id=…
+  7836:   <li><a href="#dom-eventmodifierinit-modifiercapslock">modifierCapsLock</a><span>, in § 3.5.3</span>
+  8130:  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a> <a class="idl-code" data-default="false" data-link-type="dict-member" data-type="boolean" href="#dom-eventmodifierinit-modifiercapslock"><c- g>modifierCapsLock</c-></a> = <…
+  9163:"dom-eventmodifierinit-modifiercapslock": {"dfnID":"dom-eventmodifierinit-modifiercapslock","dfnText":"modifierCapsLock","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-eventmodifierinit-modifiercapslock"}],"title":"3.5.3. Event Modifier Initializers"}],"url":"#dom-eventmodifierinit…
+  9773:"#dom-eventmodifierinit-modifiercapslock": {"displayText":"modifierCapsLock","export":true,"for_":["EventModifierInit"],"level":"","normative":true,"shortname":"uievents","spec":"uievents","status":"local","text":"modifierCapsLock","type":"dict-member","url":"#dom-eventmodifierinit-modifiercaps…
+
+$ grep -n -A2 "<td>CapsLock" /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  6370:       <td>CapsLock
+  6371-       <td style="text-align:center">20
+  6372-       <td style="text-align:center">
+
+$ grep -n 'such as <code class="keycap">CapsLock</code>, <code class="keycap">NumLock</code>' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  4791:		such as <code class="keycap">CapsLock</code>, <code class="keycap">NumLock</code>, or <code class="keycap">ScrollLock</code>. Change
+
+$ grep -n 'parameter <code class="keycap">CapsLock' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  3574:				when provided with the parameter <code class="keycap">CapsLock</code> must
+
+$ grep -n 'id="dom-eventmodifierinit-modifiercapslock"' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  3569:     <dt><dfn class="dfn-paneled idl-code" data-dfn-for="EventModifierInit" data-dfn-type="dict-member" data-export id="dom-eventmodifierinit-modifiercapslock"><code>modifierCapsLock</code></dfn>, <span> of type <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#idl-boolean" id=…
+
+ANCHOR-TABLE DIFFERENTIAL — local definitions vs the r58 red comparator
+=======================================================================
+
+$ grep -n '"#dom-keyboardevent-getmodifierstate":' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  9799:"#dom-keyboardevent-getmodifierstate": {"displayText":"getModifierState(keyArg)","export":true,"for_":["KeyboardEvent"],"level":"","normative":true,"shortname":"uievents","spec":"uievents","status":"local","text":"getModifierState(keyArg)","type":"method","url":"#dom-keyboardevent-getmodifierst…
+
+$ grep -n '"#dom-eventmodifierinit-modifiercapslock":' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  9773:"#dom-eventmodifierinit-modifiercapslock": {"displayText":"modifierCapsLock","export":true,"for_":["EventModifierInit"],"level":"","normative":true,"shortname":"uievents","spec":"uievents","status":"local","text":"modifierCapsLock","type":"dict-member","url":"#dom-eventmodifierinit-modifiercaps…
+
+$ grep -n '#dom-event-defaultprevented":' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/uievents.html
+exit=0
+  9878:"https://dom.spec.whatwg.org/#dom-event-defaultprevented": {"displayText":"defaultPrevented","export":true,"for_":["Event"],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"defaultPrevented","type":"attribute","url":"https://dom.spec.whatwg.org/#dom-event-d…
+
+TERM 3+4 — key / windowsVirtualKeyCode in S153 staged bytes
+===========================================================
+
+$ grep -n '"name": "key"' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/browser_protocol.json
+exit=0
+  3053:                            "name": "key",
+  3245:                            "name": "key",
+  7282:                            "name": "key",
+  10633:                            "name": "key",
+  10646:                            "name": "key",
+  10665:                            "name": "key",
+  10682:                            "name": "key",
+  10695:                            "name": "key",
+  13760:                            "name": "key",
+  14358:                            "name": "key",
+  18219:                            "name": "key",
+  19268:                            "name": "key",
+  26040:                            "name": "key",
+  26286:                            "name": "key",
+  26321:                            "name": "key",
+
+$ grep -n '"name": "windowsVirtualKeyCode"' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/browser_protocol.json
+exit=0
+  14364:                            "name": "windowsVirtualKeyCode",
+
+$ grep -n '"name": "dispatchKeyEvent"' /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/browser_protocol.json
+exit=0
+  14307:                    "name": "dispatchKeyEvent",
+
+STRUCTURAL CONFIRMATION (JSON parse of the same bytes)
+  $.domains[Input].commands[dispatchKeyEvent]: present
+  parameter count: 15
+  parameters: type, modifiers, timestamp, text, unmodifiedText, keyIdentifier, code, key, windowsVirtualKeyCode, nativeVirtualKeyCode, autoRepeat, isKeypad, isSystemKey, location, commands
+  key: {"name":"key","type":"string","optional":true,"descriptionHead":"Unique DOM defined string value describing the meaning of the key in the context of active modifiers, keyboard layout, etc (e.g., 'AltGr') (default: \"\")."}
+  windowsVirtualKeyCode: {"name":"windowsVirtualKeyCode","type":"integer","optional":true,"descriptionHead":"Windows virtual key code (default: 0)."}
+  code: {"name":"code","type":"string","optional":true,"descriptionHead":"Unique DOM defined string value for each physical key (e.g., 'KeyA') (default: \"\")."}
+  text: {"name":"text","type":"string","optional":true,"descriptionHead":"Text as generated by processing a virtual key code with a keyboard layout. Not needed for for `keyUp` and `rawKeyDown` events (default: \"\")"}
+  modifiers: {"name":"modifiers","type":"integer","optional":true,"descriptionHead":"Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8 (default: 0)."}
+  raw line of '"name": "dispatchKeyEvent"': 14307   (command entry; the command block spans raw 14307..14457)
+  dispatchKeyEvent-SCOPED parameter raw lines (searched INSIDE the command block, not the first file-wide hit):
+    modifiers              14322  (description 14323)
+    text                   14334  (description 14335)
+    code                   14352  (description 14353)
+    key                    14358  (description 14359)
+    windowsVirtualKeyCode  14364  (description 14365)
+
+  CORRECTION OF RECORD (2026-11-03, after R59Scribe's independent byte sweep and the L1's defect report):
+  the first write of this block printed the FIRST FILE-WIDE hit for two terms - '"name": "key"' at raw
+  3053 (EventMetadata.properties) and '"name": "code"' at raw 2702 (InspectorIssue.properties) - because
+  the harness's line lookup was unscoped. Both are unrelated domain types, not dispatchKeyEvent
+  parameters. The scoped lines above are authoritative; they were re-verified by a bounded line scan:
+    awk 'NR>=14307 && NR<=14460 && /"name":/ {print NR": "$0}' <browser_protocol.json>
+  which yields the 15 parameters in order: type 14311, modifiers 14322, timestamp 14328, text 14334,
+  unmodifiedText 14340, keyIdentifier 14346, code 14352, key 14358, windowsVirtualKeyCode 14364,
+  nativeVirtualKeyCode 14370, autoRepeat 14376, isKeypad 14382, isSystemKey 14388, location 14394,
+  commands 14400 (the next command, dispatchMouseEvent, starts at 14458). The STRUCTURAL JSON parse
+  above was always correct - the 15 parameter names, types and descriptionHeads match the scoped scan;
+  only these four summary lines were mis-attributed.
+
+SUPPLEMENTARY — CapsLock ground in S162 (Chromium input_handler.cc, opened round 59)
+====================================================================================
+
+bytes: 89463  sha256: 72cf0d1d913302551731310cf76e03a259e8ccbfa7c8db14a185d9ae817324f4
+
+$ grep -n -E "^int GetEventModifiers|GetEventModifiers\(" /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/input_handler.cc
+exit=0
+  92:int GetEventModifiers(int modifiers,
+  459:      GetEventModifiers(modifiers.value_or(blink::WebInputEvent::kNoModifiers),
+  526:      GetEventModifiers(modifiers.value_or(blink::WebInputEvent::kNoModifiers),
+  1221:      GetEventModifiers(modifiers.value_or(blink::WebInputEvent::kNoModifiers),
+  1489:      GetEventModifiers(modifiers.value_or(blink::WebInputEvent::kNoModifiers),
+  1800:      GetEventModifiers(modifiers.value_or(blink::WebInputEvent::kNoModifiers),
+  2006:        GetEventModifiers(
+  2019:        GetEventModifiers(
+
+$ grep -n -i capslock /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/input_handler.cc
+exit=1   (no output)
+
+$ grep -n -i "kCapsLock|IsCapsLock|ModifierCapsLock" /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/sources/input_handler.cc
+exit=1   (no output)
+
+CLASSIFICATION
+==============
+
+getModifierState: DEFINITION SITE FOUND (local dfn, data-dfn-for KeyboardEvent, id dom-keyboardevent-getmodifierstate)
+CapsLock:         NO dfn FOR THE STRING CapsLock (finding, not failure). Four LOCAL definition-adjacent loci exist in the same bytes:
+                    raw 4791  latch prose ("Other modifiers are activated depending on their state such as CapsLock")
+                    raw 6370-6371  legacy key-code table row: <td>CapsLock followed by <td>20 (the Windows virtual key code 20 the claim names)
+                    raw 3574  getModifierState(keyArg) parameter prose naming CapsLock as the parameter value
+                    raw 3569  </dfn> of modifierCapsLock (EventModifierInit dict member, id dom-eventmodifierinit-modifiercapslock) — a DIFFERENT TERM: the author-supplied initializer flag, not the latch itself; S161 does not define the CapsLock latch as a dfn, it defines getModifierState's contract for the key
+key:              DEFINITION SITE FOUND in $.domains[Input].commands[dispatchKeyEvent].parameters (type string)
+windowsVirtualKeyCode: DEFINITION SITE FOUND in $.domains[Input].commands[dispatchKeyEvent].parameters (type integer)
+
+VERDICT: GREEN (3 of 4 terms carry a dfn definition site; CapsLock carries no dfn but four local loci)
+  (green requires every term of the round's claim to be locatable in its cited source: getModifierState + key + windowsVirtualKeyCode all present as definitions; CapsLock is carried as the disclosed finding above — S161 defines the MODIFIER as modifierCapsLock, carries the latch semantics as prose and the 20 code as a table row, and uses CapsLock as the getModifierState parameter value. Contrast the r58 red case: defaultPrevented had NO local locus of any kind, only DOM cross-references.)
+
+WHAT THIS RECEIPT RECORDS
+-------------------------
+1. getModifierState — DEFINITION SITE FOUND at raw 3327: a local dfn with
+   data-dfn-for="KeyboardEvent" data-dfn-type="method" id="dom-keyboardevent-getmodifierstate", and the
+   anchor table at raw 9799 marks it "shortname":"uievents","status":"local". The method's IDL entry is at
+   raw 3160 inside the KeyboardEvent interface block. This is a genuine local definition, unlike the r58
+   red case.
+2. CapsLock — NO dfn FOR THE STRING, and that is the finding, not a failure. The staged S161 bytes carry
+   four local loci, each at a named raw line: the latch prose at raw 4791 ("Other modifiers are activated
+   depending on their state such as CapsLock"), the legacy key-code table row at raw 6370-6371 mapping
+   CapsLock to 20 (the windowsVirtualKeyCode the claim names), the getModifierState parameter prose at raw
+   3574, and the modifierCapsLock dict-member dfn at raw 3569 (anchor raw 9773, "spec":"uievents",
+   "status":"local"). Note the scope: the dfn at 3569 defines modifierCapsLock, the EventModifierInit
+   initializer flag — a different term from the latch; S161 defines the latch's *contract* through
+   getModifierState, not as a dfn. The criterion's red-before counterpart
+   (probes/d9-red-before-defaultprevented.txt) found NOTHING local for defaultPrevented; CapsLock is the
+   opposite shape.
+3. key — DEFINITION SITE FOUND: $.domains[Input].commands[dispatchKeyEvent].parameters, "name": "key",
+   type string, optional, raw 14358 inside the dispatchKeyEvent block that starts at raw 14307.
+4. windowsVirtualKeyCode — DEFINITION SITE FOUND: same parameters list, "name": "windowsVirtualKeyCode",
+   type integer, optional, raw 14364. File-wide the entry occurs once, so there is no ambiguity about
+   which command defines it.
+5. Supplementary S162 — Chromium's DevTools input_handler.cc, opened this round, defines
+   GetEventModifiers at raw 92 but contains ZERO occurrences of CapsLock in any case (grep -i exit 1).
+   Recorded so no one reads S162 as CapsLock ground: it grounds the Alt/Ctrl/Meta/Shift bit field only;
+   the CapsLock latch remains a page-side (S161 getModifierState) + platform property.
+
+HONEST LIMITS
+-------------
+- The sweeps are case-sensitive except where the command line shows -i; the CapsLock keycode table row
+  (<td>CapsLock) would be missed by a lowercase-only search, which is why both forms are run.
+- The anchor-table differential reads the spec's own generated data (the "status"/"spec" fields). It is
+  the strongest single discriminator between a local definition and an external cross-reference, and it
+  is what separates this GREEN from the r58 RED.
+- The S162 supplementary sweep is outside my assigned term list; it is included because the round staged
+  S162 for the CapsLock ground and a receipt that omitted it would invite a wrong inference.
+- A definition site existing does not make the claim's USE of it correct; this receipt answers only the
+  criterion's question (does the cited source define the term it is cited for).

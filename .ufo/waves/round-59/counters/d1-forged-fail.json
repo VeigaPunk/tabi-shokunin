@@ -1,0 +1,74 @@
+{
+ "schema": "tabi-r59-d1-forged-fail",
+ "corpus_receipt": "corpus/evidence/round58/chromium-preventdefault-swallow/receipt.json",
+ "corpus_receipt_sha256": "1d0c1389bb0589e76ad9edb08d28d6dd02c559f3d8b74b0af62e1e456ba0b691",
+ "corpus_bytes_copied": false,
+ "counter": ".ufo/waves/round-59/counters/chromium-receipt-r59.mjs",
+ "counter_sha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+ "driver": "scripts/chrome-cdp-loopback-round58.mjs",
+ "flip_shape": {
+  "where": "journey.form.pageKeylog",
+  "what": "one page-side defaultPrevented flipped; the swallowLeg block record is untouched",
+  "why_it_must_fail": "D1 pairs each block entry with the page occurrence at the POSITIONAL swallow run; a flip there cannot hide behind an equal-valued twin in the carried legs (the R59Probes d6 maskability class)"
+ },
+ "findings_unflipped": [
+  "schema-wrong",
+  "nonce-shape",
+  "step-plan-mismatch",
+  "field3-not-empty",
+  "caps-flag-true",
+  "missing-getModifierState-record",
+  "shift-detector-negative",
+  "missing-delivered-shape-field",
+  "form2-missing",
+  "echo2-count-wrong"
+ ],
+ "runs": [
+  {
+   "page_occurrence": "swallowed Backspace (unique)",
+   "forged_copy_sha256": "32b3a4d01110647956a52a0553409a4dd3842b83775160e728b9663707ac1659",
+   "added": [
+    "keylog-flag-mismatch"
+   ],
+   "removed": [],
+   "finding_detail": [
+    "the swallow run occurrence key \"Backspace\" flags (cancelable=true, defaultPrevented=false) != the block record for that step (cancelable=true, defaultPrevented=true)"
+   ]
+  },
+  {
+   "page_occurrence": "control digit 7 (masked, run position 0)",
+   "forged_copy_sha256": "5ab9e8a59239e575bd5b5aceeb3e1fb9861717cb0f21be5b5f09b417b1599f53",
+   "added": [
+    "keylog-flag-mismatch"
+   ],
+   "removed": [],
+   "finding_detail": [
+    "the swallow run occurrence key \"7\" flags (cancelable=true, defaultPrevented=true) != the block record for that step (cancelable=true, defaultPrevented=false)"
+   ]
+  },
+  {
+   "page_occurrence": "control digit 5 (masked, run position 1)",
+   "forged_copy_sha256": "9ae2b250e57d3ee03b9bd23c79f9baa062df7d3abd3cbd5540394cbcc690032d",
+   "added": [
+    "keylog-flag-mismatch"
+   ],
+   "removed": [],
+   "finding_detail": [
+    "the swallow run occurrence key \"5\" flags (cancelable=true, defaultPrevented=true) != the block record for that step (cancelable=true, defaultPrevented=false)"
+   ]
+  },
+  {
+   "page_occurrence": "chord Control (masked, run position 5)",
+   "forged_copy_sha256": "09c545c07f9e694334669b4c4699ebd38b9c7df0341434ff03224fe841ade1ec",
+   "added": [
+    "keylog-flag-mismatch"
+   ],
+   "removed": [],
+   "finding_detail": [
+    "the swallow run occurrence key \"Control\" flags (cancelable=true, defaultPrevented=true) != the block record for that step (cancelable=true, defaultPrevented=false)"
+   ]
+  }
+ ],
+ "finding": "keylog-flag-mismatch",
+ "observed": "all four single-flag page-side forgeries add exactly keylog-flag-mismatch and remove none; the two unique entries (Backspace, Enter) and the masked control digit/letter and chord-Control occurrences are all refused"
+}

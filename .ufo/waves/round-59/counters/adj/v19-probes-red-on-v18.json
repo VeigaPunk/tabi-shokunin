@@ -1,0 +1,264 @@
+{
+ "schema": "tabi-adjacency-v19-probes-red-on-v18",
+ "round": 59,
+ "claim": "C1",
+ "generatedAt": "2026-11-03T21:18:31.881050+00:00",
+ "method": "Each fixture is a real git repo holding corpus/adjacency.tsv + corpus/adjacency-host-{audit,delta}-{r58,r59}.tsv with identical rows (v18 reads the r58 names, v19 the r59 names) and a real fleet of sibling git repos; byte reads are git-at-snapshot-head. The v18 meter was copied unmodified to scratch; both CLIs ran with the same --rev/--repo/--fleet.",
+ "v18Source": {
+  "path": ".ufo/waves/round-58/counters/c1-adjacency-host-v18.mjs",
+  "sha256": "3afade4ea188d5b8420ff7494a8bdb70724dab2aa6cf56e13a885cc9d27c45b2"
+ },
+ "v19SourceAtRun": {
+  "path": ".ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs",
+  "sha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c"
+ },
+ "fixtures": {
+  "h1": {
+   "description": "R58Reviewer A4/H1: map-only lane (mado-shokunin) with a browser-ground hit line (line 2, 'CDP') in PROVINCE.md, no delta lane row, no adjudicating line row. v18 P3 screens only delta-named lanes -> green.",
+   "fixture": {
+    "repo": "/fast/scratch/hyaku/tabi-r59/R59Meter/probes/h1/repo",
+    "fleet": "/fast/scratch/hyaku/tabi-r59/R59Meter/probes/h1/fleet",
+    "rev": "c610dc4229fe34c1f9d07630e98a3cd6d1b4d0d1",
+    "laneHeads": {
+     "mado-shokunin": "47c12fe7ebe357953066c1c54b57fe4a35e92c7b",
+     "quiet-lane": "6d84c569fdc3bba0e15cbe33ec98203e4d7348a9"
+    },
+    "fileSha256": {
+     "fleet/mado-shokunin/PROVINCE.md": "816a642d7341e23eee6d08831a819e11d56e0964bb83c20dabcfa879caf647d6",
+     "fleet/quiet-lane/PROVINCE.md": "32ebbd030259a40e2521bfb41560d8afbce5b271da453b05e82e435aa00e4f6c",
+     "repo/corpus/adjacency.tsv": "0e0a1c505f49219e759945568ac4a4abab1bdf19ac6a66611699ced479fbad74",
+     "repo/corpus/adjacency-host-audit-r58.tsv": "26be23d4d234847324d9e46a8dab052418545fc2e4607de7ac23b879b5735cba",
+     "repo/corpus/adjacency-host-delta-r58.tsv": "4e6bad931dea22e97fca0b8ecc3707956a9eda608ffff60f521ddf49a8d2e2c6",
+     "repo/corpus/adjacency-host-audit-r59.tsv": "26be23d4d234847324d9e46a8dab052418545fc2e4607de7ac23b879b5735cba",
+     "repo/corpus/adjacency-host-delta-r59.tsv": "4e6bad931dea22e97fca0b8ecc3707956a9eda608ffff60f521ddf49a8d2e2c6"
+    }
+   },
+   "v18": {
+    "meter": "c1-adjacency-host-v18.mjs",
+    "command": "node /fast/scratch/hyaku/tabi-r59/R59Meter/c1-adjacency-host-v18.mjs --rev c610dc4229fe34c1f9d07630e98a3cd6d1b4d0d1 --repo /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h1/repo --fleet /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h1/fleet --json",
+    "exit": 0,
+    "predicate": true,
+    "findingCount": 0,
+    "findings": [],
+    "counts": {
+     "roster": 2,
+     "mapRows": 1,
+     "auditRows": 1,
+     "deltaLanes": 1
+    },
+    "stderr": ""
+   },
+   "v19": {
+    "meter": "c1-adjacency-host-v19.mjs",
+    "command": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs --rev c610dc4229fe34c1f9d07630e98a3cd6d1b4d0d1 --repo /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h1/repo --fleet /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h1/fleet --json",
+    "exit": 1,
+    "predicate": false,
+    "findingCount": 2,
+    "findings": [
+     {
+      "id": "bg-screen-missing",
+      "detail": "mado-shokunin:PROVINCE.md"
+     },
+     {
+      "id": "bg-hit-unadjudicated",
+      "detail": "mado-shokunin:PROVINCE.md:2"
+     }
+    ],
+    "counts": {
+     "roster": 2,
+     "mapRows": 1,
+     "auditRows": 1,
+     "deltaLanes": 1,
+     "bgScreenSiblings": 2
+    },
+    "stderr": ""
+   }
+  },
+  "h2": {
+   "description": "R58Reviewer A5/H2: a line row for lane ghost-lane, which has no lane row at all; v18 never examines it. Both real lanes carry valid zero-hit lane rows.",
+   "fixture": {
+    "repo": "/fast/scratch/hyaku/tabi-r59/R59Meter/probes/h2/repo",
+    "fleet": "/fast/scratch/hyaku/tabi-r59/R59Meter/probes/h2/fleet",
+    "rev": "3c85b0707e6e41fbef2035f223e2d696b96e6bdd",
+    "laneHeads": {
+     "mado-shokunin": "0759c480386d3461a07dcd924e3d2c0567790a12",
+     "quiet-lane": "6d84c569fdc3bba0e15cbe33ec98203e4d7348a9"
+    },
+    "fileSha256": {
+     "fleet/mado-shokunin/PROVINCE.md": "77cd096309e96d1f7f1277fb34c9366cbe6c2fb27a685a2276ad9f89e24f641d",
+     "fleet/quiet-lane/PROVINCE.md": "32ebbd030259a40e2521bfb41560d8afbce5b271da453b05e82e435aa00e4f6c",
+     "repo/corpus/adjacency.tsv": "af0db22fc68fb8e17dce7a01d07b07a1a62ca171c00cb78a1373d9600725d550",
+     "repo/corpus/adjacency-host-audit-r58.tsv": "c9a97940fb99c3b82fb58ecdb5b6b0ec33dc0901b60653b11c220d5d5fa6745b",
+     "repo/corpus/adjacency-host-delta-r58.tsv": "e54a0407d7657fccb824a99791a8885ffc14bf735b64b48756525b0c964f8711",
+     "repo/corpus/adjacency-host-audit-r59.tsv": "c9a97940fb99c3b82fb58ecdb5b6b0ec33dc0901b60653b11c220d5d5fa6745b",
+     "repo/corpus/adjacency-host-delta-r59.tsv": "e54a0407d7657fccb824a99791a8885ffc14bf735b64b48756525b0c964f8711"
+    }
+   },
+   "v18": {
+    "meter": "c1-adjacency-host-v18.mjs",
+    "command": "node /fast/scratch/hyaku/tabi-r59/R59Meter/c1-adjacency-host-v18.mjs --rev 3c85b0707e6e41fbef2035f223e2d696b96e6bdd --repo /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h2/repo --fleet /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h2/fleet --json",
+    "exit": 0,
+    "predicate": true,
+    "findingCount": 0,
+    "findings": [],
+    "counts": {
+     "roster": 2,
+     "mapRows": 1,
+     "auditRows": 1,
+     "deltaLanes": 2
+    },
+    "stderr": ""
+   },
+   "v19": {
+    "meter": "c1-adjacency-host-v19.mjs",
+    "command": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs --rev 3c85b0707e6e41fbef2035f223e2d696b96e6bdd --repo /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h2/repo --fleet /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h2/fleet --json",
+    "exit": 1,
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     {
+      "id": "orphan-line-row",
+      "detail": "ghost-lane:PROVINCE.md:2"
+     }
+    ],
+    "counts": {
+     "roster": 2,
+     "mapRows": 1,
+     "auditRows": 1,
+     "deltaLanes": 2,
+     "bgScreenSiblings": 2
+    },
+    "stderr": ""
+   }
+  },
+  "h3b": {
+   "description": "R58Reviewer A5/H3b: cross-file line row kake-shokunin OTHER-UNSCREENED.md:2 whose number (2) equals a real hit in the screened PROVINCE.md; v18's invented check keys by number only -> green.",
+   "fixture": {
+    "repo": "/fast/scratch/hyaku/tabi-r59/R59Meter/probes/h3b/repo",
+    "fleet": "/fast/scratch/hyaku/tabi-r59/R59Meter/probes/h3b/fleet",
+    "rev": "0ec084bf9b6a931d07a14aa1ee4b74402d4787f9",
+    "laneHeads": {
+     "kake-shokunin": "5670bc3d6294710a4344aa77e1e9e7a08efaaadb",
+     "quiet-lane": "6d84c569fdc3bba0e15cbe33ec98203e4d7348a9"
+    },
+    "fileSha256": {
+     "fleet/kake-shokunin/PROVINCE.md": "4276acddfc3a6e4f0dece03d8d690158ae262feb490e438974b7580d788ff3ec",
+     "fleet/quiet-lane/PROVINCE.md": "32ebbd030259a40e2521bfb41560d8afbce5b271da453b05e82e435aa00e4f6c",
+     "repo/corpus/adjacency.tsv": "036d44c46bba4a81b100d9b87becb6841cbbafa63c31efe81143fcaec63d4a78",
+     "repo/corpus/adjacency-host-audit-r58.tsv": "2dbdb9ae6e231e90de52213ebda5e252f6d5ab17ea24c2417db8b31f3338c86c",
+     "repo/corpus/adjacency-host-delta-r58.tsv": "328fd947e90494138bbb4bc3b5bc41e486eb24936c158b8fe1a97a981bfb994a",
+     "repo/corpus/adjacency-host-audit-r59.tsv": "2dbdb9ae6e231e90de52213ebda5e252f6d5ab17ea24c2417db8b31f3338c86c",
+     "repo/corpus/adjacency-host-delta-r59.tsv": "328fd947e90494138bbb4bc3b5bc41e486eb24936c158b8fe1a97a981bfb994a"
+    }
+   },
+   "v18": {
+    "meter": "c1-adjacency-host-v18.mjs",
+    "command": "node /fast/scratch/hyaku/tabi-r59/R59Meter/c1-adjacency-host-v18.mjs --rev 0ec084bf9b6a931d07a14aa1ee4b74402d4787f9 --repo /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h3b/repo --fleet /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h3b/fleet --json",
+    "exit": 0,
+    "predicate": true,
+    "findingCount": 0,
+    "findings": [],
+    "counts": {
+     "roster": 2,
+     "mapRows": 1,
+     "auditRows": 1,
+     "deltaLanes": 2
+    },
+    "stderr": ""
+   },
+   "v19": {
+    "meter": "c1-adjacency-host-v19.mjs",
+    "command": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs --rev 0ec084bf9b6a931d07a14aa1ee4b74402d4787f9 --repo /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h3b/repo --fleet /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h3b/fleet --json",
+    "exit": 1,
+    "predicate": false,
+    "findingCount": 1,
+    "findings": [
+     {
+      "id": "line-row-unscreened-file",
+      "detail": "kake-shokunin:OTHER-UNSCREENED.md:2"
+     }
+    ],
+    "counts": {
+     "roster": 2,
+     "mapRows": 1,
+     "auditRows": 1,
+     "deltaLanes": 2,
+     "bgScreenSiblings": 2
+    },
+    "stderr": ""
+   }
+  },
+  "h4-multi-file-keying": {
+   "description": "R59Connector multi-file keying pin: ONE lane, THREE relPaths (PROVINCE.md + two queue-ops files), each with a real BG hit (2/3/4) and its own correct whole-line row. v18's lane-only invented check compares each file's line rows against the other files' hit lists -> spurious delta-line-invented; v19's (lane, relPath) keying is green.",
+   "fixture": {
+    "repo": "/fast/scratch/hyaku/tabi-r59/R59Meter/probes/h4/repo",
+    "fleet": "/fast/scratch/hyaku/tabi-r59/R59Meter/probes/h4/fleet",
+    "rev": "551e38bad47aa0a0845072ac4e5d7380069d1943",
+    "laneHeads": {
+     "kaidoku-shokunin": "277152dcdc7a5b081be3a5cce6c686f110d8151c"
+    },
+    "fileSha256": {
+     "PROVINCE.md": "d0d39d1ed89755ae4837c91e435a74d8101416bbea5d530a301977b338220e9f",
+     "corpus/knowledge/2026-10-14-r10-01-queue-ops.md": "ba9f42880381851a6060adb68597e96ae8659d5f54029619d0b48164648c9634",
+     "corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md": "27ba1e688c096bd199f3575c4f98f53249f82f4ca3a5008a2eada74b08a24b6f"
+    }
+   },
+   "v18": {
+    "meter": "c1-adjacency-host-v18.mjs",
+    "command": "node /fast/scratch/hyaku/tabi-r59/R59Meter/c1-adjacency-host-v18.mjs --rev 551e38bad47aa0a0845072ac4e5d7380069d1943 --repo /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h4/repo --fleet /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h4/fleet --json",
+    "exit": 1,
+    "predicate": false,
+    "findingCount": 6,
+    "findings": [
+     {
+      "id": "delta-line-invented",
+      "detail": "kaidoku-shokunin:corpus/knowledge/2026-10-14-r10-01-queue-ops.md:3"
+     },
+     {
+      "id": "delta-line-invented",
+      "detail": "kaidoku-shokunin:corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md:4"
+     },
+     {
+      "id": "delta-line-invented",
+      "detail": "kaidoku-shokunin:PROVINCE.md:2"
+     },
+     {
+      "id": "delta-line-invented",
+      "detail": "kaidoku-shokunin:corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md:4"
+     },
+     {
+      "id": "delta-line-invented",
+      "detail": "kaidoku-shokunin:PROVINCE.md:2"
+     },
+     {
+      "id": "delta-line-invented",
+      "detail": "kaidoku-shokunin:corpus/knowledge/2026-10-14-r10-01-queue-ops.md:3"
+     }
+    ],
+    "counts": {
+     "roster": 1,
+     "mapRows": 3,
+     "auditRows": 3,
+     "deltaLanes": 1
+    },
+    "stderr": ""
+   },
+   "v19": {
+    "meter": "c1-adjacency-host-v19.mjs",
+    "command": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs --rev 551e38bad47aa0a0845072ac4e5d7380069d1943 --repo /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h4/repo --fleet /fast/scratch/hyaku/tabi-r59/R59Meter/probes/h4/fleet --json",
+    "exit": 0,
+    "predicate": true,
+    "findingCount": 0,
+    "findings": [],
+    "counts": {
+     "roster": 1,
+     "mapRows": 3,
+     "auditRows": 3,
+     "deltaLanes": 1,
+     "bgScreenSiblings": 1
+    },
+    "stderr": ""
+   }
+  }
+ }
+}

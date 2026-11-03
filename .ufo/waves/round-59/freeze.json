@@ -1,0 +1,45 @@
+{
+ "round": 59,
+ "lane": "tabi-shokunin",
+ "freezeKind": "instrument freeze (code only, NO data). The live data pass runs after this commit.",
+ "claimsFrozenAt": "dd337bb3 (+ pre-data corrections 44752c57, 8e740a08, a40822d9, 03f64a39, e7cc1331 - all disclosed in claims.json preDataCorrection / c2Restatement / criticPins*)",
+ "pins": {
+  "driverSha256": {
+   "file": "scripts/chrome-cdp-loopback-round59.mjs",
+   "sha256": "b16ddb443d5bd1b101cfcdb55cbf2d5ffcb3f39d38064a661ab82bb9a152ff86",
+   "use": "--expect-driver-sha256 for the C2 after-command"
+  },
+  "counterSha256": {
+   "file": ".ufo/waves/round-59/counters/chromium-receipt-r59.mjs",
+   "sha256": "b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136",
+   "selftestCases": 91,
+   "selftestAllPass": true,
+   "note": "supersedes the earlier 35461bbe build (superseded pre-freeze by the D1 positional strengthening; R59MutCounter and the L1 cite b287cfa2)"
+  },
+  "meterSha256": {
+   "file": ".ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs",
+   "sha256": "0f956f869be4bfe573d2e3e863879b76ac42c1361c030eb0895662e0d703391c",
+   "selftestCases": 38,
+   "selftestAllPass": true
+  },
+  "rebindSha256": {
+   "file": ".ufo/waves/round-59/adj/rebind-r59.mjs",
+   "sha256": "577fef0019362ed102e1b839c77f403ea6fd51dc81dc730311232c03367c3645"
+  },
+  "runnerPathSelftest": {
+   "file": "scripts/chrome-cdp-loopback-round59.mjs --path-selftest",
+   "result": "24/24 allPass"
+  }
+ },
+ "stabilityCheck": "all four digests re-hashed 60 s apart: identical",
+ "roundOpenControls": {
+  "c1V18AtBaseline": ".ufo/waves/round-59/controls/c1-meter-v18-at-round-open.json (exit 1, predicate false, 4 findings)",
+  "c2AbsentReceiptRefusal": ".ufo/waves/round-59/controls/c2-counter-absent-receipt.json (exit 1, receipt-missing + receipt-absent)",
+  "censusStart": ".ufo/waves/round-59/controls/census-start.txt (exit 0)"
+ },
+ "dataPassTo": "the L1 runs: (1) rebind-r59 at one fresh snapshot (adj/data-pass-runbook.md) -> corpus/adjacency-host-{audit,delta}-r59.tsv; (2) v19 meter green at the data revision; (3) the C2 live receipt to corpus/evidence/round59/chromium-capslock-boundary/receipt.json with --expect-driver-sha256 b16ddb44...; (4) the r59 counter at the data revision.",
+ "knownOpenBeforeData": [
+  "37 kaidoku queue-ops hit lines (r10-01/r10-02 knowledge files) are unadjudicated; rebind aborts exit 3 until the L1 adjudicates them at data time (adj/screen-set-r59-inventory.json)",
+  "the meter's frozen BG_WORDS list does not cover kake PROVINCE.md:45 / SKILL.md:159-160 contested-lease lines (R59Connector routing note 2; disclosed, not a meter defect)"
+ ]
+}

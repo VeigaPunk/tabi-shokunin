@@ -1,0 +1,112 @@
+D9 RED-BEFORE — definition-site sweep on the r58 staged bytes
+=============================================================
+
+round 59, wave w1, lane tabi-shokunin
+seat R59Probes
+authored 2026-11-03
+cwd /home/vgpnk/Projects/shokunin/tabi-shokunin
+
+CRITERION UNDER TEST (lands as QUALITY.md criterion 111, L1-authored text quoted):
+  "a claim citing a source for a named term runs a grep for that term's definition
+   site in the staged bytes before freeze"
+
+SUBJECT (the r58 state the criterion is applied to):
+  claim: the round-58 C2 claim, which cited S161 for "defaultPrevented"
+         VERBATIM from .ufo/waves/round-58/claims.json, C2.statement, offset 1846:
+           "S161 (W3C UI Events - the cancelable/defaultPrevented/default-action ground, re-opened this
+            round) and S153 (CDP Input.dispatchKeyEvent modifiers, re-opened this round)."
+         (S161 = W3C UI Events specification, https://www.w3.org/TR/uievents/)
+  staged bytes: .ufo/waves/round-58/sources/uievents.html
+  bytes:        920762
+  sha256:       8ded5eaf4f190b13c59582d5e92b81d3585112dde963d71d65d8e5991212b918
+
+COMMANDS RUN (verbatim) AND OUTPUT
+----------------------------------
+
+[1] the claim-frozen combined sweep
+$ grep -n 'id="dom-defaultprevented"\|data-dfn.*defaultprevented\|dom-event-defaultprevented' .ufo/waves/round-58/sources/uievents.html
+2064:        <p><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-event-defaultprevented" id="ref-for-dom-event-defaultprevented">defaultPrevented</a></code> attribute</p>
+9079:"1777dcd2": {"dfnID":"1777dcd2","dfnText":"defaultPrevented","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-event-defaultprevented"}],"title":"3. Basic Event Interfaces"}],"url":"https://dom.spec.whatwg.org/#dom-event-defaultprevented"},
+9878:"https://dom.spec.whatwg.org/#dom-event-defaultprevented": {"displayText":"defaultPrevented","export":true,"for_":["Event"],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"defaultPrevented","type":"attribute","url":"https://dom.spec.whatwg.org/#dom-event-defaultprevented"},
+exit=0
+(three hit lines, all of them the dom-event-defaultprevented cross-reference form)
+
+[2] constituent pattern: local definition id
+$ grep -n 'id="dom-defaultprevented"' .ufo/waves/round-58/sources/uievents.html
+exit=1   (no output: no local definition id)
+
+[3] constituent pattern: data-dfn markup
+$ grep -n -i 'data-dfn.*defaultprevented' .ufo/waves/round-58/sources/uievents.html
+exit=1   (no output: no data-dfn declaration for this term)
+
+[4] interface-member forms
+$ grep -n -E "(readonly )?attribute [A-Za-z]+ defaultPrevented" .ufo/waves/round-58/sources/uievents.html
+exit=1   (no output: no IDL attribute declaration of the term in the staged bytes)
+$ grep -n '<dfn[^>]*>defaultPrevented<' .ufo/waves/round-58/sources/uievents.html
+exit=1   (no output: no dfn element wrapping the term)
+$ grep -n -E "<dfn[^>]*>defaultPrevented<|idl-def[^>]*>defaultPrevented" .ufo/waves/round-58/sources/uievents.html
+exit=1   (no output)
+
+[5] any id attribute naming the term (to catch a differently-prefixed definition id)
+$ grep -n -E 'id="[^"]*defaultprevented"' .ufo/waves/round-58/sources/uievents.html
+2064:        <p><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-event-defaultprevented" id="ref-for-dom-event-defaultprevented">defaultPrevented</a></code> attribute</p>
+exit=0
+(the single id is ref-for-dom-event-defaultprevented — a cross-reference id, not a definition id)
+
+[6] exhaustive occurrence sweep, case-insensitive, whole file
+$ grep -n -i 'defaultprevented' .ufo/waves/round-58/sources/uievents.html
+2064:        <p><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-event-defaultprevented" id="ref-for-dom-event-defaultprevented">defaultPrevented</a></code> attribute</p>
+7924:     <li><span class="dfn-paneled" id="1777dcd2">defaultPrevented</span>
+9079:"1777dcd2": {"dfnID":"1777dcd2","dfnText":"defaultPrevented","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-event-defaultprevented"}],"title":"3. Basic Event Interfaces"}],"url":"https://dom.spec.whatwg.org/#dom-event-defaultprevented"},
+9878:"https://dom.spec.whatwg.org/#dom-event-defaultprevented": {"displayText":"defaultPrevented","export":true,"for_":["Event"],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"defaultPrevented","type":"attribute","url":"https://dom.spec.whatwg.org/#dom-event-defaultprevented"},
+exit=0
+(4 occurrences in the whole 920762-byte document)
+
+CLASSIFICATION OF EVERY OCCURRENCE
+----------------------------------
+raw line 2064  cross-reference anchor   <a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-event-defaultprevented"
+                                        id="ref-for-dom-event-defaultprevented"> — a link OUT to the DOM Standard.
+raw line 7924  dfn PANEL entry          <span class="dfn-paneled" id="1777dcd2">defaultPrevented</span> — the panel is the
+                                        generated popup for a dfn, and dfn 1777dcd2 is declared external by raw 9079.
+raw line 9079  external dfn record      "dfnID":"1777dcd2","dfnText":"defaultPrevented","external":true,
+                                        "url":"https://dom.spec.whatwg.org/#dom-event-defaultprevented" — the spec's own
+                                        data marks the term EXTERNAL, defined in the DOM Standard.
+raw line 9878  anchor table entry       "export":true,"for_":["Event"],"shortname":"dom","spec":"dom",
+                                        "status":"current","type":"attribute" — the term is exported by spec "dom",
+                                        not by this document (shortname for UI Events is "uievents").
+
+Definition site found: NONE. Zero local dfn, zero data-dfn, zero IDL member declaration.
+Every occurrence in S161 resolves to the DOM Standard by reference.
+
+CROSS-EVIDENCE THAT THIS RED IS NOT AN ARTEFACT OF MY SWEEP
+-----------------------------------------------------------
+The r58 knowledge note already discloses the same fact (a claim-level confession, not my reconstruction):
+  corpus/knowledge/chromium-preventdefault-swallow-round-58.md, "What S161 does NOT define.":
+    "defaultPrevented and preventDefault() are *not* defined in UI Events. They appear there as
+     cross-references to the DOM Standard (dom.spec.whatwg.org). ... The frozen round-58 claim wording
+     ('S161 ... the cancelable/defaultPrevented ground') overstated this; the lesson's ## Gate records
+     the correction."
+
+VERDICT: RED
+------------
+The criterion CAN fail and DOES fail on the r58 claim. A definition-site sweep over the cited source's
+staged bytes finds no definition site for "defaultPrevented" — three of the four occurrence lines are
+DOM-Standard cross-references and the fourth is the dfn panel of that external reference. Applying the
+criterion before the r58 freeze would have rejected the citation ("S161 ... the cancelable/
+defaultPrevented ground") and forced the corrected wording the r58 note eventually recorded after the
+fact. Red-before for QUALITY.md criterion 111 is therefore established by command, not by assertion.
+
+SCOPE NOTE (honest): the criterion does not say the term must be defined in the cited source; it says a
+definition-site sweep must be RUN. The r58 claim passed freeze without one — the sweep here shows what
+such a run would have found, and the finding is an absent definition site. The green side of the
+criterion (a term that IS defined in its cited source) is probed separately in probes/d9-green-capslock.txt.
+
+REPRODUCTION (all commands are read-only greps over committed bytes):
+  cd /home/vgpnk/Projects/shokunin/tabi-shokunin
+  F=.ufo/waves/round-58/sources/uievents.html
+  sha256sum "$F"   # 8ded5eaf4f190b13c59582d5e92b81d3585112dde963d71d65d8e5991212b918
+  grep -n 'id="dom-defaultprevented"' "$F"; echo $?
+  grep -n -i 'data-dfn.*defaultprevented' "$F"; echo $?
+  grep -n 'dom-event-defaultprevented' "$F"
+  grep -n -E "(readonly )?attribute [A-Za-z]+ defaultPrevented" "$F"; echo $?
+  grep -n -i 'defaultprevented' "$F"
