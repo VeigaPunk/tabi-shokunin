@@ -1,0 +1,147 @@
+# round 58 / C1 — v18 line audit (v17 -> v18)
+
+Authority: .ufo/waves/round-58/claims.json C1, declared change set (a)/(b)/(c).
+This file accounts for EVERY differing line in counters/v17-v18-meter.diff.
+
+Compared bytes:
+  v17  .ufo/waves/round-57/counters/c1-adjacency-host-v17.mjs
+       sha256 7305b6726ff5da8060f063422e87dde4de1018e80a08cf98416c2f68b21a6054  bytes 34736
+  v18  .ufo/waves/round-58/counters/c1-adjacency-host-v18.mjs
+       sha256 3afade4ea188d5b8420ff7494a8bdb70724dab2aa6cf56e13a885cc9d27c45b2  bytes 39250
+  diff .ufo/waves/round-58/counters/v17-v18-meter.diff
+       sha256 d077912a18e056a70125da8eab020a3ece55ef3e5c4a369b22032a2570a5bdc9
+
+Pure-core byte identity (the measurement logic did not move):
+  verify()             sha256 0e4fd63396b536d036d67d176fa97324b2955d5374dd1bf5bfce4d7b17946ae7  bytes 4181  identical true
+  parseRef()           sha256 d27a905815d709649f16b7bcb1b9af85a5c5b8d888c8b47b95e1ffdfaa281e8f  bytes 427  identical true
+  observedStatus()     sha256 c3d1a0e05d15a2aa90a70360f994e06f2896e5faa7a6abb7b917e4ee9d3952b3  bytes 446  identical true
+  tsvParse()           sha256 031b829c5fa4dd4ec543633e044292280f22b78e6f4a32d2cf6e595e1b24857f  bytes 274  identical true
+  predicateFrom()      sha256 b12e832e2aec55c1fb43fd6181d4f7bc1ea1dbcd2f689d23ec8bade9d90ab314  bytes 64  identical true
+
+Differing lines: 104 (40 code, 63 comment, 1 blank).
+Every differing line is listed below with its class; unaccounted = 0.
+
+  old   new   cls  kind     line
+     2     -  (a)  comment  // c1-adjacency-host-v17.mjs — tabi round 57, claim C1 (adjacency — the lowest
+     -     2  (a)  comment  // c1-adjacency-host-v18.mjs — tabi round 58, claim C1 (adjacency — the lowest
+     -   157  (a)  comment  // Round 58 delta (C1's FROZEN declared change set — verify() is byte-identical
+     -   158  (a)  comment  // to v17; THREE declared hunks (a)/(b)/(c)): at round open the committed r57
+     -   159  (a)  comment  // generation measured RED against the live fleet (1 finding,
+     -   160  (a)  comment  // controls/c1-meter-v17-at-round-open.json: lane-screen-head-mismatch
+     -   161  (a)  comment  // kengaku-shokunin — the kengaku head moved after the r57 rebind snapshot).
+     -   162  (a)  comment  //   (a) the generation relabel: AUDIT_REL/DELTA_REL point at
+     -   163  (a)  comment  //       corpus/adjacency-host-{audit,delta}-r58.tsv, every schema string is
+     -   164  (a)  comment  //       tabi-adjacency-host-v18 (die, selftest, run output), the predicate
+     -   165  (a)  comment  //       sentence names the r58 ledgers, and the usage lines and this header
+     -   166  (a)  comment  //       name round 58.
+     -   167  (a)  comment  //   (b) the ROUTED r57-closure fix for the R57MutMeter m4b survivor: the new
+     -   168  (a)  comment  //       selftest case map-ref-unparseable feeds verify() a map/audit ref whose
+     -   169  (a)  comment  //       line-number suffix is malformed (…:PROVINCE.md:12x) and asserts the
+     -   170  (a)  comment  //       emitted finding set is EXACTLY the single id map-ref-unparseable
+     -   171  (a)  comment  //       (ids + assertFindingCount 1). Under the parseRef /^\d+$/ -> /^\d+/
+     -   172  (a)  comment  //       weakening the ref parses (Number('12x') is NaN), the id disappears and
+     -   173  (a)  comment  //       the case (plus allPass) fails: adj/m4b-kill.json.
+     -   174  (a)  comment  //   (c) the ROUTED r57-closure fix for the R57Reviewer mG survivor: the
+     -   175  (a)  comment  //       per-case verdict lines (okFindings/okPredicate/okCount) are extracted
+     -   176  (a)  comment  //       into the ONE named function caseOk(c, findings, emitted) used by the
+     -   177  (a)  comment  //       run loop, plus the new selftest case harness-guard which asserts that
+     -   178  (a)  comment  //       function's OWN truth table (findings-match + predicate-mismatch ->
+     -   179  (a)  comment  //       false; findings-match + count-mismatch -> false; all-match -> true).
+     -   180  (a)  comment  //       A harness-level mutant that drops the predicate/count terms returns
+     -   181  (a)  comment  //       true on a mismatched row, harness-guard fails and allPass goes false:
+     -   182  (a)  comment  //       adj/mG-kill.json. No check is dropped or weakened; every v17 selftest
+     -   183  (a)  comment  //       case is carried unchanged.
+     -   184  (a)  comment  // The committed diff (counters/v17-v18-meter.diff) names every differing line
+     -   185  (a)  comment  // and adj/v18-line-audit.txt accounts for each one against (a), (b) or (c).
+   158     -  (a)  comment  //   PREDICATE-SENTENCE: c1-adjacency-host-v17 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r57.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r57.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.
+     -   187  (a)  comment  //   PREDICATE-SENTENCE: c1-adjacency-host-v18 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r58.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r58.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.
+   160     -  (a)  comment  //   node c1-adjacency-host-v17.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
+   161     -  (a)  comment  //   node c1-adjacency-host-v17.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses at the current heads)
+   162     -  (a)  comment  //   node c1-adjacency-host-v17.mjs --selftest
+     -   189  (a)  comment  //   node c1-adjacency-host-v18.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
+     -   190  (a)  comment  //   node c1-adjacency-host-v18.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses at the current heads)
+     -   191  (a)  comment  //   node c1-adjacency-host-v18.mjs --selftest
+   171     -  (a)  code     const AUDIT_REL = 'corpus/adjacency-host-audit-r57.tsv';
+   172     -  (a)  code     const DELTA_REL = 'corpus/adjacency-host-delta-r57.tsv';
+     -   200  (a)  code     const AUDIT_REL = 'corpus/adjacency-host-audit-r58.tsv';
+     -   201  (a)  code     const DELTA_REL = 'corpus/adjacency-host-delta-r58.tsv';
+   186     -  (a)  code       console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v17', error: msg }));
+     -   215  (a)  code       console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v18', error: msg }));
+     -   423  (c)  comment  // ONE named per-case verdict (r58 declared change (c), the routed R57Reviewer
+     -   424  (c)  comment  // mG fix): the run loop below and the harness-guard selftest case both read
+     -   425  (c)  comment  // this function, so a harness-level mutant that drops the predicate/count
+     -   426  (c)  comment  // terms is observable — harness-guard fails and allPass goes false.
+     -   427  (c)  code     function caseOk(c, findings, emitted) {
+     -   428  (c)  code       const okFindings = c.expect === 0
+     -   429  (c)  code         ? findings.length === 0
+     -   430  (c)  code         : (c.ids || []).every((id) => findings.some((f) => f.id === id));
+     -   431  (c)  comment    // an asserting case binds the emitted predicate to the frozen expectation;
+     -   432  (c)  comment    // the partial case's ONE failing clause must be the only finding, so
+     -   433  (c)  comment    // "exactly one clause failed" is measured, not assumed.
+     -   434  (c)  code       const okPredicate = c.assertPredicate === undefined ? true : emitted === c.assertPredicate;
+     -   435  (c)  code       const okCount = c.assertFindingCount === undefined ? true : findings.length === c.assertFindingCount;
+     -   436  (c)  code       return okFindings && okPredicate && okCount;
+     -   437  (c)  code     }
+     -   438  (c)  blank    
+     -   446  (b)  code       const refMalformed = 'mado-shokunin@1111111111111111111111111111111111111111:PROVINCE.md:12x';
+     -   492  (b)  comment      // r58 declared change (b): the ROUTED r57-closure fix for the R57MutMeter
+     -   493  (b)  comment      // m4b survivor. A map ref whose line-number suffix is malformed (audited
+     -   494  (b)  comment      // under that same key) must be rejected by parseRef and produce EXACTLY
+     -   495  (b)  comment      // the single id map-ref-unparseable (the count term pins "exactly": every
+     -   496  (b)  comment      // listed id is present and the finding set has one member). Under the
+     -   497  (b)  comment      // `/^\d+$/` -> `/^\d+/` weakening the ref parses (line NaN), the id
+     -   498  (b)  comment      // disappears and this case fails.
+     -   499  (b)  code         { name: 'map-ref-unparseable', expect: 1, ids: ['map-ref-unparseable'], assertFindingCount: 1, run: () => verify({ mapRows: mapRows([['bogus-ground', 'mado-shokunin', refMalformed, 'We drive it over CDP for tests.', '-', '-', 'split-declared', '-', '-']]), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-'], [refMalformed, 'unchanged', '-']], deltaRows: deltaRows(), roster, sibRef, headOf }) },
+     -   500  (c)  comment      // r58 declared change (c): the ROUTED r57-closure fix for the R57Reviewer
+     -   501  (c)  comment      // mG survivor. This case asserts caseOk's OWN truth table: a matching
+     -   502  (c)  comment      // finding set with a mismatched predicate assertion is false, a matching
+     -   503  (c)  comment      // finding set with a mismatched count assertion is false, and the
+     -   504  (c)  comment      // all-match row is true. run() emits one synthetic finding iff any row is
+     -   505  (c)  comment      // wrong, so a verdict function that drops the predicate or count terms
+     -   506  (c)  comment      // fails the case (and allPass).
+     -   507  (c)  code         { name: 'harness-guard', expect: 0, run: () => {
+     -   508  (c)  code           const rows = [
+     -   509  (c)  code             caseOk({ expect: 0, assertPredicate: false }, [], true),
+     -   510  (c)  code             caseOk({ expect: 0, assertFindingCount: 1 }, [], true),
+     -   511  (c)  code             caseOk({ expect: 0, assertPredicate: true, assertFindingCount: 0 }, [], true),
+     -   512  (c)  code           ];
+     -   513  (c)  code           const want = [false, false, true];
+     -   514  (c)  code           return { findings: rows.every((v, i) => v === want[i]) ? [] : [{ id: 'harness-guard', detail: `caseOk truth table ${JSON.stringify(rows)} != ${JSON.stringify(want)}` }] };
+     -   515  (c)  code         } },
+   451     -  (c)  code         const okFindings = c.expect === 0
+   452     -  (c)  code           ? findings.length === 0
+   453     -  (c)  code           : (c.ids || []).every((id) => findings.some((f) => f.id === id));
+   454     -  (c)  comment      // an asserting case binds the emitted predicate to the frozen expectation;
+   455     -  (c)  comment      // the partial case's ONE failing clause must be the only finding, so
+   456     -  (c)  comment      // "exactly one clause failed" is measured, not assumed.
+   457     -  (c)  code         const okPredicate = c.assertPredicate === undefined ? true : emitted === c.assertPredicate;
+   458     -  (c)  code         const okCount = c.assertFindingCount === undefined ? true : findings.length === c.assertFindingCount;
+   459     -  (c)  code         const ok = okFindings && okPredicate && okCount;
+     -   521  (c)  code         const ok = caseOk(c, findings, emitted);
+   474     -  (a)  code       console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v17-selftest', ...st }, null, 1));
+     -   536  (a)  code       console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v18-selftest', ...st }, null, 1));
+   490     -  (a)  code     if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v17.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
+     -   552  (a)  code     if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v18.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
+   493     -  (a)  code       schema: 'tabi-adjacency-host-v17',
+   494     -  (a)  code       predicateSentence: 'c1-adjacency-host-v17 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r57.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r57.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',
+     -   555  (a)  code       schema: 'tabi-adjacency-host-v18',
+     -   556  (a)  code       predicateSentence: 'c1-adjacency-host-v18 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r58.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r58.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',
+
+Class totals:
+  (a) 53 differing lines  -- relabel
+  (b)  9 differing lines  -- m4b kill case
+  (c) 42 differing lines  -- mG verdict extraction + guard
+
+(a) the generation relabel: AUDIT_REL/DELTA_REL -> corpus/adjacency-host-{audit,delta}-r58.tsv;
+    every schema string -> tabi-adjacency-host-v18 (die, selftest, run output); predicate
+    sentence names the r58 ledgers; usage lines + header name round 58; header gains the
+    round-58 delta paragraph.
+(b) the ROUTED r57-closure fix for the R57MutMeter m4b survivor: the new selftest case
+    map-ref-unparseable (fixture ref suffix 12x, audited under the same key; expect 1,
+    ids [map-ref-unparseable], count 1).
+(c) the ROUTED r57-closure fix for the R57Reviewer mG survivor: the verdict lines moved
+    verbatim into caseOk(c, findings, emitted), the run loop now calls it, and the new
+    harness-guard case asserts the function's own truth table.
+
+No differing logic line falls outside (a)/(b)/(c): verify(), parseRef(), observedStatus(),
+tsvParse() and predicateFrom() are byte-identical to v17 (hashes above).

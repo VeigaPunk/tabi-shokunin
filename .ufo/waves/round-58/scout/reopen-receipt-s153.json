@@ -1,0 +1,88 @@
+{
+  "schema": "tabi-source-reopen-v1",
+  "round": 58,
+  "created": "2026-11-03",
+  "seat": "R58Scout",
+  "source_id": "S153",
+  "quoteSource": "corpus/SOURCES.md registry row S153, re-fetched live 2026-11-03 by the tabi round-58 wave-w1 scout seat",
+  "fetch_guard": {
+    "url": "https://raw.githubusercontent.com/ChromeDevTools/devtools-protocol/master/json/browser_protocol.json",
+    "cited_host": "raw.githubusercontent.com",
+    "final_host": "raw.githubusercontent.com",
+    "host_match": true,
+    "http_code": 200,
+    "num_redirects": 0,
+    "url_effective": "https://raw.githubusercontent.com/ChromeDevTools/devtools-protocol/master/json/browser_protocol.json",
+    "content_type": "text/plain; charset=utf-8",
+    "size_download": 1423170,
+    "fetched_at": "2026-11-03T20:06:03Z",
+    "refused": false
+  },
+  "note": "Receipt shape follows scripts/check-source-reopen-receipt.mjs (header): schema tabi-source-reopen-v1, rows[] carrying id/url/fetched_at/verdict/held_quote/located_quote/bytes/sha256/bytes_path, and a summary with the reopened/resolved/unresolved/quotes_holding counters. That gate is round-25-scoped (RECEIPT_PATH corpus/evidence/round-25/freshness/reopened.json, EXPECTED_IDS S013/S015/S016/S020/S023/S024), so it refuses a round-58 receipt by design; no round-58 gate variant is authored here. The verification of record is the frozen gate's own row predicates (f3 fetched-date, f4 fetch-digest incl. byte count, f5 unresolved incl. held==located and located-in-bytes, f6 count-mismatch) re-applied by scout/verify-receipts.py to the staged copies, plus the R57-S3 fetch guard fields recorded above (num_redirects, url_effective, content type, size; final host == cited host). Read-only recon: nothing under corpus/ is touched.",
+  "rows": [
+    {
+      "id": "S153",
+      "url": "https://raw.githubusercontent.com/ChromeDevTools/devtools-protocol/master/json/browser_protocol.json",
+      "fetched_at": "2026-11-03T20:06:03Z",
+      "verdict": "holds",
+      "held_quote": "\"description\": \"Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8\\n(default: 0).\",",
+      "located_quote": "\"description\": \"Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8\\n(default: 0).\",",
+      "bytes": 1423170,
+      "sha256": "d6737c31f268ed74e65dde393006dd9c590a713febd2361d734722eb059f31e7",
+      "bytes_path": ".ufo/waves/round-58/sources/browser_protocol.json",
+      "anchor_sha256_registry": "d6737c31f268ed74e65dde393006dd9c590a713febd2361d734722eb059f31e7",
+      "anchor_sha256_registry_original_open": "f60f0c0263c6f8801c1a3058a88aad0aef2c8f78242c3cfb4e8c6f5e915eb3f2",
+      "anchor_status": "same",
+      "anchor_drift_detail": "The registry anchor cell carries two digests (the 2026-10-31 original open f60f0c02... at 1,421,620 B and the 2026-11-03 round-56 RE-OPEN d6737c31... at 1,423,170 B). The round-58 fresh fetch is 1,423,170 B, sha256 d6737c31f268ed74e65dde393006dd9c590a713febd2361d734722eb059f31e7 -- IDENTICAL to the r57 re-open anchor and to the r57 staged copy (.ufo/waves/round-57/sources/browser_protocol.json, cmp: no difference). @master UNMOVED this round; no new drift relative to the round-57 re-open. The modifiers ground is unchanged: 5 file-wide occurrences, 1 inside the dispatchKeyEvent command block (raw line 14323).",
+      "comparison": {
+        "against": ".ufo/waves/round-57/sources/browser_protocol.json",
+        "cmp": "identical",
+        "r57_staged_bytes": 1423170,
+        "r57_staged_sha256": "d6737c31f268ed74e65dde393006dd9c590a713febd2361d734722eb059f31e7",
+        "verdict": "@master UNMOVED"
+      },
+      "located_ground": {
+        "json_path": "$.domains[?(@.domain=='Input')].commands[?(@.name=='dispatchKeyEvent')].parameters[?(@.name=='modifiers')].description",
+        "raw_line_of_modifiers_description": 14323,
+        "raw_description_literal": "\"description\": \"Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8\\n(default: 0).\",",
+        "raw_description_literal_note": "byte-exact from the raw bytes: the \\n between Shift=8 and (default: 0). is the two-character JSON escape backslash+n as it appears in the file, not a line break.",
+        "parameter_type": "integer",
+        "parameter_optional": true,
+        "command_block_raw_line_range": [
+          14307,
+          14457
+        ],
+        "modifiers_hits_inside_command_block": 1,
+        "modifiers_hits_file_wide": 5,
+        "modifiers_hit_lines_file_wide": [
+          14300,
+          14323,
+          14484,
+          14594,
+          14661
+        ],
+        "modifiers_hit_owners": [
+          "dispatchDragEvent",
+          "dispatchKeyEvent",
+          "dispatchMouseEvent",
+          "dispatchTouchEvent",
+          "emulateTouchFromMouseEvent"
+        ],
+        "bits_named": {
+          "Alt": 1,
+          "Ctrl": 2,
+          "Meta/Command": 4,
+          "Shift": 8
+        }
+      }
+    }
+  ],
+  "summary": {
+    "reopened": 1,
+    "resolved": 1,
+    "unresolved": 0,
+    "anchor_same_vs_r57_anchor": 1,
+    "anchor_changed_vs_r57_anchor": 0,
+    "quotes_holding": 1
+  }
+}

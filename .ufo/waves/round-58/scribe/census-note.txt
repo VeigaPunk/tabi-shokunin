@@ -1,0 +1,69 @@
+tabi-shokunin round 58 — scribe (R58Scribe) census receipt prep
+prepared 2026-11-03 by seat R58Scribe (scratch: /fast/scratch/hyaku/tabi-r58/R58Scribe/)
+
+NOTHING WAS RUN HERE. The census start/end passes are the L1's (TabiR58) to run and
+their receipts are .ufo/waves/round-58/controls/census-start.txt and the matching
+end receipt. This note only records the registry's CURRENT row count, read with the
+FROZEN MANUAL CENSUS GREP named in the seat spec.
+
+COMMAND (run read-only from the lane root; no writes, no mutating git/jj):
+
+  cd /home/vgpnk/Projects/shokunin/tabi-shokunin
+  grep -cE '^\|[[:space:]]*S[0-9]{3,}[[:space:]]*\|' corpus/SOURCES.md
+
+OUTPUT:
+
+  161
+
+REGISTRY ROW COUNT AT THIS POINT IN ROUND 58: 161
+
+CROSS-CHECKS I RAN (read-only, same file, same revision as the grep above):
+
+  * The 161 matched lines are the registry rows: every matched line lies inside the
+    `## Registry` section (the file's `## Registry` heading is at line 11, the last
+    matched row is S161 at line 175, and the next section `## Paths` starts at line
+    176). Count of matched rows INSIDE `## Registry` = 161; count OUTSIDE = 0.
+    This mirrors the census script's E12 predicate ("row outside Registry section"),
+    which would report 0 here.
+  * Every matched row splits into exactly 13 pipe-separated fields (the census
+    script's E01 predicate `NF != 13`): 0 rows violate it. Row count and shape
+    agree with the census script's own parser contract
+    (`scripts/sources-census.sh`, the `row_pass` gawk program: `id=trim($2)`,
+    `usedby=trim($12)`, `rows++`).
+  * The grep's `S[0-9]{3,}` pattern is the same id shape the census script enforces
+    (E02: `id !~ /^S[0-9]{3,}$/`), so the two row-count definitions coincide.
+
+ROW COUNT DELTA FOR THE L1 TO APPLY:
+
+  The registry is at 161 rows NOW, before any round-58 registry edit. The two
+  re-opens (S153, S161) extend EXISTING rows — they add no rows (S161's own r55
+  lesson records the same rule for the S083/S162 case: "the first S162 draft row
+  was DROPPED because its URL duplicates S083's ... the contract routed the ground
+  to a re-open + used-by extension instead of a duplicate row"). So if the L1
+  applies only used-by extensions, the census END count is expected to stay 161.
+
+  I am NOT asserting that end count: it is the L1's live pass. The number the L1
+  should see at census start is 161; any other number means the registry moved
+  between the L1's census-start and this seat's grep.
+
+WHAT THIS NUMBER IS NOT:
+
+  * It is not the census script's own output (the script was NOT run here — that
+    is the L1's, per the seat spec: "CENSUS receipt prep: nothing to run").
+  * It does not assert W04 (duplicate-URL-across-scopes) counts. The frozen
+    claim's frontierStep mentions "22 pre-existing W04" for the census start;
+    that count belongs to the L1's census-start receipt, not to this note. I did
+    not run the script, so I neither confirm nor contradict "22".
+  * It does not assert any used-by / E11 finding. The used-by drafts this seat
+    produces are TEXT ONLY; the L1 applies them. Note for the L1: E11 checks that
+    every used-by path exists on disk, so the r58 knowledge note
+    `corpus/knowledge/chromium-preventdefault-swallow-round-58.md` and the r58
+    lesson `corpus/lessons/round-58.md` must EXIST ON DISK before the used-by
+    extension lands, or the census will emit E11 for the extended rows. Neither
+    file exists in the lane as of this note (verified: no `round-58` path exists
+    under corpus/knowledge/, and corpus/lessons/ has no round-58.md).
+
+RECEIPT PATHS THIS SEAT WROTE (both parse as JSON):
+
+  .ufo/waves/round-58/scribe/gate-quote-verification.json
+  .ufo/waves/round-58/scribe/census-note.txt   (this file)

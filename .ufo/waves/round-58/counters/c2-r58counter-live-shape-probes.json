@@ -1,0 +1,112 @@
+{
+ "schema": "tabi-r58-counter-live-shape-probes",
+ "generatedAt": "2026-11-03T20:24:52.238Z",
+ "baseReceipt": ".ufo/waves/round-58/runner/smoke1/receipt.json",
+ "baseNonce": "tabi-r58-7313c79d53a3",
+ "note": "each mutant is the runner's own live receipt with ONE mutation (scratch copies, removed at yield); the unmutated control carries only png-missing because the runner did not retain the 18 PNGs beside smoke1/receipt.json. The delta ids prove each swallow check fires on the runner's real shape.",
+ "cases": [
+  {
+   "name": "control-none",
+   "mutation": "unmutated control (PNGs absent beside smoke1/receipt.json)",
+   "exit": 1,
+   "findingIds": [
+    "png-missing"
+   ],
+   "details": [
+    "/fast/scratch/hyaku/tabi-r58/R58Counter/probe/a-start.png"
+   ]
+  },
+  {
+   "name": "mut-dp",
+   "mutation": "backspaceSwallow.defaultPrevented=false",
+   "exit": 1,
+   "findingIds": [
+    "png-missing",
+    "swallow-defaultprevented-missing"
+   ],
+   "details": [
+    "/fast/scratch/hyaku/tabi-r58/R58Counter/probe/a-start.png",
+    "backspaceSwallow.defaultPrevented=false != true"
+   ]
+  },
+  {
+   "name": "mut-plan",
+   "mutation": "enterChordSwallow.enterKeylogEntry.modifiers=0",
+   "exit": 1,
+   "findingIds": [
+    "png-missing",
+    "swallow-plan-mismatch"
+   ],
+   "details": [
+    "/fast/scratch/hyaku/tabi-r58/R58Counter/probe/a-start.png",
+    "enterChordSwallow key Enter modifiers 0 != 2"
+   ]
+  },
+  {
+   "name": "mut-leak",
+   "mutation": "second /echo row",
+   "exit": 1,
+   "findingIds": [
+    "png-missing",
+    "swallow-enter-chord-leak"
+   ],
+   "details": [
+    "/fast/scratch/hyaku/tabi-r58/R58Counter/probe/a-start.png",
+    "serverRequests /echo 2 (field+field2 submissions 2) != exactly one (the chord submitted, or the one submit is missing)"
+   ]
+  },
+  {
+   "name": "mut-value",
+   "mutation": "digitSwallow.valueAfter=pre+1",
+   "exit": 1,
+   "findingIds": [
+    "png-missing",
+    "swallow-value-changed"
+   ],
+   "details": [
+    "/fast/scratch/hyaku/tabi-r58/R58Counter/probe/a-start.png",
+    "digitSwallow.valueAfter \"73X\" != pre-step \"73\""
+   ]
+  },
+  {
+   "name": "mut-fields",
+   "mutation": "control keylog[0].cancelable removed",
+   "exit": 1,
+   "findingIds": [
+    "png-missing",
+    "swallow-recorder-fields-missing"
+   ],
+   "details": [
+    "/fast/scratch/hyaku/tabi-r58/R58Counter/probe/a-start.png",
+    "swallow-leg entry \"7\" lacks cancelable/defaultPrevented booleans"
+   ]
+  },
+  {
+   "name": "mut-continuation",
+   "mutation": "pageKeylog swallow insertion key 1 -> 2",
+   "exit": 1,
+   "findingIds": [
+    "png-missing",
+    "swallow-plan-mismatch"
+   ],
+   "details": [
+    "/fast/scratch/hyaku/tabi-r58/R58Counter/probe/a-start.png",
+    "pageKeylog continuation i=126 got {\"key\":\"2\",\"code\":\"Digit2\",\"keyCode\":50} want {\"key\":\"1\",\"code\":\"Digit1\",\"keyCode\":49}"
+   ]
+  },
+  {
+   "name": "mut-no-leg",
+   "mutation": "swallowLeg and fixtureDelta removed",
+   "exit": 1,
+   "findingIds": [
+    "png-missing",
+    "swallow-recorder-fields-missing",
+    "swallow-plan-mismatch"
+   ],
+   "details": [
+    "/fast/scratch/hyaku/tabi-r58/R58Counter/probe/a-start.png",
+    "fixtureDelta absent (the fixture delta is not disclosed)"
+   ]
+  }
+ ]
+}
