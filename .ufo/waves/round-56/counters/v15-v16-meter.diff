@@ -1,0 +1,87 @@
+--- .ufo/waves/round-55/counters/c1-adjacency-host-v15.mjs	2026-11-03 14:51:38.832588847 -0300
++++ .ufo/waves/round-56/counters/c1-adjacency-host-v16.mjs	2026-11-03 15:05:57.465507653 -0300
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env node
+-// c1-adjacency-host-v15.mjs — tabi round 55, claim C1 (adjacency — the lowest
++// c1-adjacency-host-v16.mjs — tabi round 56, claim C1 (adjacency — the lowest
+ // owned axis, 8). The regression-gate re-run of the adjacency ledgers, on the
+ // v6 design unchanged: every sibling working tree on this host is DIRTY and
+ // sibling heads move mid-round, so v7 reads every sibling byte through git at
+@@ -113,12 +113,29 @@
+ // header names round 55. Pure core (verify + selftest cases + parse
+ // helpers) is byte-identical to v14; the committed diff names every changed
+ // line.
++// Round 56 delta (the generation rebind, the r46-r55 pattern — pure core
++// byte-identical to v15): the ledgers this meter reads are the round-56
++// generation (audit-r56 / delta-r56); at round open the committed r55
++// generation measured RED against the live fleet (19 findings,
++// controls/c1-meter-v15-red-at-round-open.json) — six audit rows claimed
++// sibling-absent where the lane now resolves at its head, five roster lanes
++// carried no coverage at all (audio, game-dev-2d, game-dev-3d, lore, souji),
++// three delta lanes named lanes that are not on the roster
++// (shokunin-binary-forensics, shokunin-repo-hygiene,
++// shokunin-reverse-engineering — separate repos outside --fleet), and three
++// screened provinces changed bytes or heads (kengaku sha+lines+head; mori and
++// tameshi heads). This round's rebind re-screens every delta lane at ONE
++// snapshot, adjudicates every browser-ground hit line in the frozen
++// vocabulary, and adds lane rows for the five uncovered roster lanes. Pure
++// core (verify + selftest cases + parse helpers) is byte-identical to v15;
++// the committed diff names every changed line and `git grep`-cheap proof that
++// no logic line moved is in counters/v15-v16-meter.diff.
+ //
+-//   PREDICATE-SENTENCE: c1-adjacency-host-v15 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r55.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r55.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.
++//   PREDICATE-SENTENCE: c1-adjacency-host-v16 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r56.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r56.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.
+ // Usage:
+-//   node c1-adjacency-host-v15.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
+-//   node c1-adjacency-host-v15.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses at the current heads)
+-//   node c1-adjacency-host-v15.mjs --selftest
++//   node c1-adjacency-host-v16.mjs --rev <REV> --repo <lane> --fleet <dir> [--json]
++//   node c1-adjacency-host-v16.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses at the current heads)
++//   node c1-adjacency-host-v16.mjs --selftest
+ // Exit: 0 predicate met; 1 evaluated, predicate not met; 2 could not evaluate.
+ import { spawnSync } from 'node:child_process';
+ import { pathToFileURL } from 'node:url';
+@@ -127,8 +144,8 @@
+ import crypto from 'node:crypto';
+ 
+ const MAP_REL = 'corpus/adjacency.tsv';
+-const AUDIT_REL = 'corpus/adjacency-host-audit-r55.tsv';
+-const DELTA_REL = 'corpus/adjacency-host-delta-r55.tsv';
++const AUDIT_REL = 'corpus/adjacency-host-audit-r56.tsv';
++const DELTA_REL = 'corpus/adjacency-host-delta-r56.tsv';
+ const SELF_LANE = 'tabi-shokunin';
+ const BG_WORDS = ['cdp', 'devtools', 'remote-debugging', 'headless', 'webdriver', 'geckodriver', 'selenium', 'playwright', 'bidi', 'crawl', 'screenshot', 'recordhar', 'record-har'];
+ const DISPOSITIONS = ['no-tabi-ground', 'overlap-declared', 'contested-open'];
+@@ -136,7 +153,7 @@
+ const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
+ 
+ function die(msg) {
+-  console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v15', error: msg }));
++  console.error(JSON.stringify({ schema: 'tabi-adjacency-host-v16', error: msg }));
+   process.exit(2);
+ }
+ 
+@@ -411,7 +428,7 @@
+ } else {
+ if (args[0] === '--selftest') {
+   const st = selftest();
+-  console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v15-selftest', ...st }, null, 1));
++  console.log(JSON.stringify({ schema: 'tabi-adjacency-host-v16-selftest', ...st }, null, 1));
+   process.exit(st.allPass ? 0 : 1);
+ }
+ if (args[0] === '--list-observed') {
+@@ -427,11 +444,11 @@
+   else if (args[i] === '--fleet') fleet = args[++i];
+   else if (args[i] === '--json') json = true;
+ }
+-if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v15.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
++if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v16.mjs --rev <REV> --repo <lane> --fleet <dir> [--json] | --selftest | --list-observed --fleet <dir>');
+ const { findings, counts, headSnapshot } = runAt(repo, rev, fleet);
+ const out = {
+-  schema: 'tabi-adjacency-host-v15',
+-  predicateSentence: 'c1-adjacency-host-v15 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r55.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r55.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',
++  schema: 'tabi-adjacency-host-v16',
++  predicateSentence: 'c1-adjacency-host-v16 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r56.tsv row keyed by its sibling_ref whose claimed status equals the meter\'s re-derivation from the sibling\'s bytes at the per-run snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r56.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter\'s own re-derivation from the same snapshot-head bytes AND every browser-ground hit line in a screened province carries a line row whose quote is that complete line and whose disposition is in the frozen vocabulary, with no uncovered lane and no duplicate keys.',
+   rev, repo: path.resolve(repo), fleet: path.resolve(fleet), counts, headSnapshot,
+   predicate: findings.length === 0, findingCount: findings.length, findings,
+ };

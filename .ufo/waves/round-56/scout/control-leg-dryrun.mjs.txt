@@ -1,0 +1,214 @@
+#!/usr/bin/env node
+// R56Scout control-leg dry run on Chromium 155 Linux — READ-ONLY recon for C2.
+// Reproduces the r55 --form control-domain leg (End negative witness, Backspace
+// residue + restore, Tab focus, Enter implicit submission) against a local
+// loopback fixture so recon.md states MEASURED Chromium behaviour, not guesses.
+// Writes nothing outside its scratch dir.
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import http from 'node:http';
+import { spawn, spawnSync } from 'node:child_process';
+
+const SCRATCH = process.argv[2];
+const OUT = process.argv[3] || null;
+if (!SCRATCH) { console.error('usage: control-leg-dryrun.mjs <scratchDir> [out.json]'); process.exit(2); }
+const CHROMIUM = '/usr/bin/chromium';
+const token = 'tabi-r56-dry-' + crypto.randomBytes(6).toString('hex');
+const profileDir = path.join(SCRATCH, token);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function census(tok) {
+  const r = spawnSync('ps', ['-eo', 'pid=,ppid=,args='], { encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+  if (r.status !== 0) return { error: `ps exit ${r.status}` };
+  const rows = [];
+  for (const line of (r.stdout || '').split('\n')) {
+    if (!line.includes(tok)) continue;
+    const m = line.match(/^\s*(\d+)\s+(\d+)\s+(.*)$/);
+    if (!m || Number(m[1]) === process.pid) continue;
+    rows.push({ pid: Number(m[1]), ppid: Number(m[2]) });
+  }
+  return { count: rows.length, rows };
+}
+const kill = (pid) => { try { process.kill(pid, 'SIGKILL'); return { pid, ok: true }; } catch (e) { return { pid, ok: false, error: String(e.code || e) }; } };
+
+const nonce = 'tabi-r56-' + crypto.randomBytes(8).toString('hex');
+const mixed = nonce.toUpperCase();
+
+const FORM = `<!doctype html><html><head><title>tabi-r56 form fixture</title>` +
+  `<script>window.__keylog=[];document.addEventListener('keydown',function(e){window.__keylog.push({key:e.key,code:e.code,ctrlKey:e.ctrlKey===true,altKey:e.altKey===true,metaKey:e.metaKey===true,shiftKey:e.shiftKey===true,keyCode:e.keyCode});});</script>` +
+  `</head><body><h1 id="pg">fixture-page-F</h1><p id="nonce">${nonce}</p>` +
+  `<form id="f" method="GET" action="/echo">` +
+  `<input id="field" name="field" value="" size="40">` +
+  `<input id="field2" name="mixed" value="" size="40">` +
+  `<input id="field3" value="" size="40">` +
+  `<button id="go" type="submit">go</button></form></body></html>`;
+
+const served = [];
+const server = http.createServer((req, res) => {
+  const u = new URL(req.url, 'http://127.0.0.1');
+  served.push(req.url);
+  if (u.pathname === '/echo') {
+    const field = u.searchParams.get('field') || '';
+    const mx = u.searchParams.get('mixed') || '';
+    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+    res.end(`<!doctype html><html><head><title>tabi-r56 echo</title></head><body><h1 id="pg">echo</h1><p id="echoed">${field}</p><p id="mixed-echoed">${mx}</p></body></html>`);
+    return;
+  }
+  res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+  res.end(FORM);
+});
+await new Promise((r) => server.listen(0, '127.0.0.1', r));
+const port0 = server.address().port;
+
+const pre = census(token);
+fs.rmSync(profileDir, { recursive: true, force: true });
+fs.mkdirSync(profileDir, { recursive: true });
+const flags = ['--headless=new', '--remote-debugging-port=0', '--remote-debugging-address=127.0.0.1',
+  `--user-data-dir=${profileDir}`, '--no-first-run', '--no-default-browser-check', '--disable-gpu', 'about:blank'];
+const child = spawn(CHROMIUM, flags, { stdio: ['ignore', 'ignore', 'pipe'] });
+let exited = null; child.on('exit', (c, s) => { exited = { code: c, sig: s }; });
+let stderrTail = ''; child.stderr.on('data', (d) => { stderrTail = (stderrTail + d.toString()).slice(-3000); });
+
+let dport = null;
+for (let i = 0; i < 120 && dport === null; i++) {
+  try { const l = fs.readFileSync(path.join(profileDir, 'DevToolsActivePort'), 'utf8').split('\n'); if (/^\d+$/.test((l[0] || '').trim())) dport = Number(l[0].trim()); } catch { }
+  if (dport === null) await sleep(100);
+}
+if (dport === null) { kill(child.pid); server.close(); console.error('no devtools port'); process.exit(2); }
+
+const version = await (await fetch(`http://127.0.0.1:${dport}/json/version`)).json();
+const list = await (await fetch(`http://127.0.0.1:${dport}/json/list`)).json();
+const page = list.find((t) => t.type === 'page');
+const ws = new WebSocket(page.webSocketDebuggerUrl);
+await new Promise((res, rej) => { ws.onopen = res; ws.onerror = () => rej(new Error('ws')); setTimeout(() => rej(new Error('ws timeout')), 15000); });
+let idc = 0; const pending = new Map(); const events = [];
+ws.onmessage = (m) => { const d = JSON.parse(m.data); if (d.id && pending.has(d.id)) { const { res, rej } = pending.get(d.id); pending.delete(d.id); d.error ? rej(new Error(JSON.stringify(d.error))) : res(d.result); } else if (d.method) events.push(d.method); };
+const send = (method, params = {}) => new Promise((res, rej) => { const id = ++idc; pending.set(id, { res, rej }); ws.send(JSON.stringify({ id, method, params })); });
+const evalStr = async (expr) => {
+  const r = await send('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true });
+  return r.result ? r.result.value : null;
+};
+const waitFor = async (expr, ms = 5000) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { const v = await evalStr(expr).catch(() => null); if (v) return v; await sleep(100); } return null; };
+
+await send('Page.enable');
+await send('Runtime.enable');
+
+// r55's mappings verbatim (the '-' branch is LOAD-BEARING: the nonce shape
+// tabi-r56-<hex> carries dashes and CDP rejects code:null with -32602)
+const codeFor = (ch) => (/[0-9]/.test(ch) ? 'Digit' + ch : /[a-z]/.test(ch) ? 'Key' + ch.toUpperCase() : ch === '-' ? 'Minus' : null);
+const vkFor = (ch) => (/[0-9]/.test(ch) ? 48 + Number(ch) : /[a-z]/.test(ch) ? 65 + (ch.charCodeAt(0) - 97) : ch === '-' ? 189 : null);
+
+const r = { schema: 'tabi-r56-control-leg-dryrun', host: process.platform, chromium: version.Browser, fixturePort: port0, nonce, keylog: [] };
+await send('Page.navigate', { url: `http://127.0.0.1:${port0}/form.html` });
+await waitFor(`document.readyState==='complete' && document.getElementById('field')`);
+r.ready = true;
+
+// --- click into the NON-empty field, then the caret anchor ---
+const box = await evalStr(`(function(){const b=document.getElementById('field').getBoundingClientRect();return JSON.stringify({x:b.left+8,y:b.top+b.height/2});})()`);
+const bx = JSON.parse(box);
+for (const type of ['mousePressed', 'mouseReleased']) {
+  await send('Input.dispatchMouseEvent', { type, x: bx.x, y: bx.y, button: 'left', clickCount: 1 });
+}
+r.focusAfterClick = await evalStr(`document.activeElement.id || document.activeElement.tagName`);
+r.caretAfterClick = await evalStr(`(function(){const f=document.getElementById('field');return JSON.stringify([f.selectionStart,f.selectionEnd]);})()`);
+// --- the r52 plain trace: keyDown WITH text, keyUp without ---
+for (const ch of nonce) {
+  const code = codeFor(ch), vk = vkFor(ch);
+  await send('Input.dispatchKeyEvent', { type: 'keyDown', modifiers: 0, key: ch, text: ch, unmodifiedText: ch, code, windowsVirtualKeyCode: vk, nativeVirtualKeyCode: vk });
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', modifiers: 0, key: ch, code, windowsVirtualKeyCode: vk, nativeVirtualKeyCode: vk });
+}
+r.valueAfterPlainTyping = await evalStr(`document.getElementById('field').value`);
+r.plainTypingInsertsText = r.valueAfterPlainTyping === nonce;
+
+// --- the r53 Shift-chord leg on #field2 (supplies the `mixed` param) ---
+const box2 = await evalStr(`(function(){const b=document.getElementById('field2').getBoundingClientRect();return JSON.stringify({x:b.left+8,y:b.top+b.height/2});})()`);
+const b2 = JSON.parse(box2);
+for (const type of ['mousePressed', 'mouseReleased']) {
+  await send('Input.dispatchMouseEvent', { type, x: b2.x, y: b2.y, button: 'left', clickCount: 1 });
+}
+const codeForChord = (ch) => (/[0-9]/.test(ch) ? 'Digit' + ch : /[A-Z]/.test(ch) ? 'Key' + ch : ch === '-' ? 'Minus' : null);
+const vkForChord = (ch) => (/[0-9]/.test(ch) ? 48 + Number(ch) : /[A-Z]/.test(ch) ? 65 + (ch.charCodeAt(0) - 65) : ch === '-' ? 189 : null);
+for (const ch of mixed) {
+  const ride = /[A-Z]/.test(ch);
+  const code = codeForChord(ch), vk = vkForChord(ch);
+  if (ride) await send('Input.dispatchKeyEvent', { type: 'keyDown', modifiers: 8, key: 'Shift', code: 'ShiftLeft', windowsVirtualKeyCode: 16, nativeVirtualKeyCode: 16 });
+  await send('Input.dispatchKeyEvent', { type: 'keyDown', modifiers: ride ? 8 : 0, key: ch, text: ch, unmodifiedText: ride ? ch.toLowerCase() : ch, code, windowsVirtualKeyCode: vk, nativeVirtualKeyCode: vk });
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', modifiers: ride ? 8 : 0, key: ch, code, windowsVirtualKeyCode: vk, nativeVirtualKeyCode: vk });
+  if (ride) await send('Input.dispatchKeyEvent', { type: 'keyUp', modifiers: 8, key: 'Shift', code: 'ShiftLeft', windowsVirtualKeyCode: 16, nativeVirtualKeyCode: 16 });
+}
+r.valueAfterShiftChords = await evalStr(`document.getElementById('field2').value`);
+r.shiftChordField2Exact = r.valueAfterShiftChords === mixed;
+// re-anchor on #field (r55 order: the control leg clicks #field again)
+for (const type of ['mousePressed', 'mouseReleased']) {
+  await send('Input.dispatchMouseEvent', { type, x: bx.x, y: bx.y, button: 'left', clickCount: 1 });
+}
+r.focusBeforeControlLeg = await evalStr(`document.activeElement.id || document.activeElement.tagName`);
+
+r.keylogLengthBefore = await evalStr(`window.__keylog.length`);
+await send('Input.dispatchKeyEvent', { type: 'keyDown', modifiers: 0, key: 'End', code: 'End', windowsVirtualKeyCode: 35, nativeVirtualKeyCode: 35 });
+await send('Input.dispatchKeyEvent', { type: 'keyUp', modifiers: 0, key: 'End', code: 'End', windowsVirtualKeyCode: 35, nativeVirtualKeyCode: 35 });
+r.valueAfterEnd = await evalStr(`document.getElementById('field').value`);
+r.caretAfterEnd = await evalStr(`(function(){const f=document.getElementById('field');return JSON.stringify([f.selectionStart,f.selectionEnd]);})()`);
+r.endNegativeWitness = r.valueAfterEnd === nonce;
+r.endAnchoredCaretAtEnd = JSON.parse(r.caretAfterEnd)[0] === nonce.length;
+
+await send('Input.dispatchKeyEvent', { type: 'keyDown', modifiers: 0, key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8, nativeVirtualKeyCode: 8 });
+await send('Input.dispatchKeyEvent', { type: 'keyUp', modifiers: 0, key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8, nativeVirtualKeyCode: 8 });
+r.valueAfterBackspace = await evalStr(`document.getElementById('field').value`);
+r.backspaceResidueExact = r.valueAfterBackspace === nonce.slice(0, -1);
+
+const lastCh = nonce[nonce.length - 1];
+await send('Input.dispatchKeyEvent', { type: 'keyDown', modifiers: 0, key: lastCh, text: lastCh, unmodifiedText: lastCh, code: codeFor(lastCh), windowsVirtualKeyCode: vkFor(lastCh), nativeVirtualKeyCode: vkFor(lastCh) });
+await send('Input.dispatchKeyEvent', { type: 'keyUp', modifiers: 0, key: lastCh, code: codeFor(lastCh), windowsVirtualKeyCode: vkFor(lastCh), nativeVirtualKeyCode: vkFor(lastCh) });
+r.valueAfterRestore = await evalStr(`document.getElementById('field').value`);
+r.restoreExact = r.valueAfterRestore === nonce;
+
+await send('Input.dispatchKeyEvent', { type: 'keyDown', modifiers: 0, key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9 });
+await send('Input.dispatchKeyEvent', { type: 'keyUp', modifiers: 0, key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9 });
+r.activeElementAfterTab = await evalStr(`document.activeElement.id || document.activeElement.tagName`);
+r.tabMovedFocus = r.activeElementAfterTab === 'field2';
+r.keylogLengthAfterTab = await evalStr(`window.__keylog.length`);
+r.keylogWindowDelta = r.keylogLengthAfterTab - r.keylogLengthBefore;
+r.keylog = JSON.parse(await evalStr(`JSON.stringify(window.__keylog)`) || '[]');
+r.activeElementAtEnter = await evalStr(`document.activeElement.id || document.activeElement.tagName`);
+
+// --- the Enter keyboard submit from the TABBED-TO field ---
+const echoBefore = served.length;
+const tEnter = Date.now();
+await send('Input.dispatchKeyEvent', { type: 'keyDown', modifiers: 0, key: 'Enter', code: 'Enter', text: '\r', unmodifiedText: '\r', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13 });
+let submitSeen = null;
+for (let i = 0; i < 50 && !submitSeen; i++) { await sleep(100); submitSeen = served.find((u) => String(u).startsWith('/echo?')) || null; }
+r.enterToSubmitMs = submitSeen ? Date.now() - tEnter : null;
+r.servedAfterEnter = served.slice(echoBefore);
+r.serverSawSubmit = !!submitSeen;
+const wantedQuery = '/echo?field=' + encodeURIComponent(nonce) + '&mixed=' + encodeURIComponent(mixed);
+r.wantedQuery = wantedQuery;
+r.serverSawExactQuery = served.includes(wantedQuery);
+r.expectedByEchoPage = await waitFor(`(document.getElementById('echoed')||{}).textContent`, 3000);
+r.locationAfterEnter = await evalStr(`location.pathname + location.search`);
+
+// --- teardown ---
+const mid = census(token);
+const pids = mid.error ? [child.pid] : mid.rows.map((x) => x.pid);
+r.teardown = { midRunSweepCount: mid.error ? -1 : mid.count, killed: pids.map(kill), rounds: [] };
+let post = -1;
+for (let i = 1; i <= 15; i++) {
+  const s = census(token);
+  r.teardown.rounds.push({ round: i, count: s.count });
+  if (s.count === 0) { post = 0; break; }
+  s.rows.forEach((x) => kill(x.pid));
+  post = s.count;
+  await sleep(200);
+}
+r.teardown.postKillSweepCount = post;
+r.teardown.survivors = post;
+try { ws.close(); } catch { }
+server.close();
+for (let i = 0; i < 40 && exited === null; i++) await sleep(50);
+r.childExit = exited;
+r.stderrTail = stderrTail.slice(-600);
+const text = JSON.stringify(r, null, 1);
+if (OUT) fs.writeFileSync(OUT, text + '\n');
+console.log(text);
+process.exit(post === 0 ? 0 : 1);

@@ -1,0 +1,123 @@
+#!/usr/bin/env node
+// R56Scout history-shape probe — READ-ONLY recon for C2.
+// The r55 counter pins journey.history entriesLength 4 / currentIndex 3 with
+// data: at index 0 (the WebView2 host's initial data: page occupies slot 0).
+// On Chromium the target strategy decides that shape: reusing the about:blank
+// page target vs PUT /json/new. Measure both, plus Page.captureScreenshot.
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import http from 'node:http';
+import { spawn, spawnSync } from 'node:child_process';
+
+const SCRATCH = process.argv[2];
+const OUT = process.argv[3] || null;
+const CHROMIUM = '/usr/lib/chromium/chromium';
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const token = 'tabi-r56-histd-' + crypto.randomBytes(6).toString('hex');
+const profileDir = path.join(SCRATCH, token);
+
+const census = (tok) => {
+  const r = spawnSync('ps', ['-eo', 'pid=,ppid=,args='], { encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+  const rows = [];
+  for (const line of (r.stdout || '').split('\n')) {
+    if (!line.includes(tok)) continue;
+    const m = line.match(/^\s*(\d+)\s+(\d+)\s+(.*)$/);
+    if (!m || Number(m[1]) === process.pid) continue;
+    rows.push({ pid: Number(m[1]) });
+  }
+  return { count: rows.length, rows };
+};
+const kill = (pid) => { try { process.kill(pid, 'SIGKILL'); return true; } catch { return false; } };
+
+const page = (letter, anchors) => `<!doctype html><html><head><title>r56 hist ${letter}</title></head><body><h1>${letter}</h1><p id="nonce">nonce</p>${anchors}</body></html>`;
+const PAGES = {
+  '/a.html': page('A', '<a id="next" href="/b.html">next</a>'),
+  '/b.html': page('B', '<a id="next" href="/c.html">next</a>'),
+  '/c.html': page('C', ''),
+};
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+  res.end(PAGES[new URL(req.url, 'http://127.0.0.1').pathname] || PAGES['/a.html']);
+});
+await new Promise((r) => server.listen(0, '127.0.0.1', r));
+const base = `http://127.0.0.1:${server.address().port}`;
+
+fs.rmSync(profileDir, { recursive: true, force: true });
+fs.mkdirSync(profileDir, { recursive: true });
+const child = spawn(CHROMIUM, ['--headless=new', '--remote-debugging-port=0', '--remote-debugging-address=127.0.0.1',
+  `--user-data-dir=${profileDir}`, '--no-first-run', '--no-default-browser-check', '--disable-gpu',
+  '--window-size=800,600', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+let exited = null; child.on('exit', (c, s) => { exited = { code: c, sig: s }; });
+let port = null;
+for (let i = 0; i < 120 && port === null; i++) {
+  try { const l = fs.readFileSync(path.join(profileDir, 'DevToolsActivePort'), 'utf8').split('\n'); if (/^\d+$/.test((l[0] || '').trim())) port = Number(l[0].trim()); } catch { }
+  if (port === null) await sleep(100);
+}
+
+function connect(wsUrl) {
+  return new Promise(async (res, rej) => {
+    const ws = new WebSocket(wsUrl);
+    let idc = 0; const pending = new Map();
+    ws.onmessage = (m) => { const d = JSON.parse(m.data); if (d.id && pending.has(d.id)) { const { r, j } = pending.get(d.id); pending.delete(d.id); d.error ? j(new Error(JSON.stringify(d.error).slice(0, 160))) : r(d.result); } };
+    ws.onerror = () => rej(new Error('ws error'));
+    await new Promise((r2) => { ws.onopen = r2; });
+    const send = (method, params = {}) => new Promise((r2, j) => { const id = ++idc; pending.set(id, { r: r2, j }); ws.send(JSON.stringify({ id, method, params })); setTimeout(() => { if (pending.has(id)) { pending.delete(id); j(new Error('timeout ' + method)); } }, 20000); });
+    const evalStr = async (expr) => { const r = await send('Runtime.evaluate', { expression: expr, returnByValue: true }); return r.result ? r.result.value : undefined; };
+    res({ ws, send, evalStr });
+  });
+}
+const waitPath = async (evalStr, suffix) => { for (let i = 0; i < 40; i++) { const h = String(await evalStr('location.href') || ''); const rdy = await evalStr('document.readyState'); if (h.endsWith(suffix) && rdy === 'complete') return true; await sleep(150); } return false; };
+
+async function walk(label, wsUrl, preData) {
+  const { ws, send, evalStr } = await connect(wsUrl);
+  await send('Page.enable'); await send('Runtime.enable');
+  const out = { label };
+  if (preData) {
+    await send('Page.navigate', { url: 'data:text/html;charset=utf-8,' + encodeURIComponent('<!doctype html><html><head><title>r56 boot</title></head><body>boot</body></html>') });
+    for (let i = 0; i < 40; i++) { if (String(await evalStr('location.href') || '').startsWith('data:') && (await evalStr('document.readyState')) === 'complete') break; await sleep(150); }
+    const hb = await send('Page.getNavigationHistory');
+    out.historyAfterPreData = { entriesLength: (hb.entries || []).length, currentIndex: hb.currentIndex, urls: (hb.entries || []).map((e) => String(e.url).slice(0, 40)) };
+  }
+  await send('Page.navigate', { url: `${base}/a.html` });
+  out.aReady = await waitPath(evalStr, '/a.html');
+  await evalStr(`document.getElementById('next').click()`);
+  out.bReady = await waitPath(evalStr, '/b.html');
+  await evalStr(`document.getElementById('next').click()`);
+  out.cReady = await waitPath(evalStr, '/c.html');
+  const h = await send('Page.getNavigationHistory');
+  out.history = { entriesLength: (h.entries || []).length, currentIndex: h.currentIndex, urls: (h.entries || []).map((e) => e.url) };
+  const png = await send('Page.captureScreenshot', { format: 'png' });
+  const buf = Buffer.from(png.data, 'base64');
+  out.screenshot = { bytes: buf.length, magic: buf.slice(0, 4).toString('hex'), sha256: crypto.createHash('sha256').update(buf).digest('hex') };
+  ws.close();
+  return out;
+}
+
+const out = { schema: 'tabi-r56-history-shape', chromium: (spawnSync(CHROMIUM, ['--version'], { encoding: 'utf8' }).stdout || '').trim(), port, fixture: base };
+const list0 = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+out.defaultPages = (list0 || []).filter((t) => t.type === 'page').map((t) => ({ url: t.url, hasWs: !!t.webSocketDebuggerUrl }));
+
+// A: reuse the pre-existing about:blank page target
+out.reuseAboutBlank = await walk('reuse-about-blank', (list0.find((t) => t.type === 'page' && t.url === 'about:blank') || {}).webSocketDebuggerUrl);
+
+// B: a fresh target via PUT /json/new
+const created = await (await fetch(`http://127.0.0.1:${port}/json/new?${encodeURIComponent('about:blank')}`, { method: 'PUT' })).json();
+out.jsonNewTargetUrl = created.url;
+out.jsonNew = await walk('json-new-target', created.webSocketDebuggerUrl);
+
+// C: reuse about:blank but FIRST navigate to a data: page (r55 slot-0 rule)
+const list1 = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+out.reuseWithPreData = await walk('reuse-about-blank-pre-data', (list1.find((t) => t.type === 'page' && t.url === 'about:blank') || created).webSocketDebuggerUrl, true);
+
+const mid = census(token);
+for (const r of mid.rows) kill(r.pid);
+let post = -1;
+for (let i = 1; i <= 15; i++) { const s = census(token); if (s.count === 0) { post = 0; break; } s.rows.forEach((r) => kill(r.pid)); post = s.count; await sleep(200); }
+out.postKillSweepCount = post; out.survivors = post;
+server.close();
+for (let i = 0; i < 40 && exited === null; i++) await sleep(50);
+const text = JSON.stringify(out, null, 1);
+if (OUT) fs.writeFileSync(OUT, text + '\n');
+console.log(text);
+process.exit(post === 0 ? 0 : 1);

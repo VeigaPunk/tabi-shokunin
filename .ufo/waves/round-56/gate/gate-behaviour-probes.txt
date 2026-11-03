@@ -1,0 +1,37 @@
+# gate-behaviour-probes.txt — R56Gate, probes outside the fixture suite
+# gate sha256: 0457f35468db9efdf8e9291f684dd90defa2016157b45e78887987b023550c7a
+
+== P1 short-hash rev form (545b251d:corpus/lessons/round-55.md, --round 55)
+repo: /home/vgpnk/Projects/shokunin/tabi-shokunin
+round: 55
+doc: 545b251d:corpus/lessons/round-55.md -> 545b251d0c370fa1b75f312a4b3feb5c902d0ac6 (7 round-55 token(s), 1 other-round)
+checked: 7 token(s); other-round tokens skipped: 1
+MISSING path=.ufo/waves/round-55/sources/html-form-control-infrastructure.html citingDoc=545b251d:corpus/lessons/round-55.md line=16
+MISSING path=.ufo/waves/round-55/sources/browser_protocol.json citingDoc=545b251d:corpus/lessons/round-55.md line=17
+MISSING path=.ufo/waves/round-55/measure/census-end.txt citingDoc=545b251d:corpus/lessons/round-55.md line=131
+MISSING path=.ufo/waves/round-55/measure/check-sources-at-work.txt citingDoc=545b251d:corpus/lessons/round-55.md line=134
+missing(distinct)=4 findings=4
+verdict: RED
+exit=1
+
+== P2 --repo that is not a git work tree
+{"schema":"tabi-cited-receipts-v1","error":"repo is not a readable git work tree","detail":"/fast/scratch/hyaku/tabi-r56/R56Gate"}
+check-cited-receipts: repo is not a readable git work tree (/fast/scratch/hyaku/tabi-r56/R56Gate)
+exit=2
+
+== P3 green control: a committed doc whose r55 citations all resolve
+repo: /home/vgpnk/Projects/shokunin/tabi-shokunin
+round: 55
+doc: 545b251d:.ufo/waves/round-55/claims.json -> 545b251d0c370fa1b75f312a4b3feb5c902d0ac6 (14 round-55 token(s), 5 other-round)
+checked: 14 token(s); other-round tokens skipped: 5
+missing(distinct)=0 findings=0
+verdict: GREEN
+exit=0
+
+== P4 cat-file trailing-slash semantics on a tree entry (545b251d:.ufo/waves/round-55/measure/)
+exit=0
+== P5 same path WITHOUT trailing slash
+exit=0
+== P6 a file path with a trailing slash (must NOT resolve)
+fatal: path 'SCORECARD.md/' does not exist in '545b251d'
+exit=128

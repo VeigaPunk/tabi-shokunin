@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+// Does a target CREATED at a data: URL carry data: in history slot 0 on
+// Chromium 155? (the r55 journey-history predicate requires urls[0] startWith data:)
+import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto';
+import http from 'node:http'; import { spawn, spawnSync } from 'node:child_process';
+const SCRATCH = process.argv[2]; const OUT = process.argv[3] || null;
+const CHROMIUM = '/usr/lib/chromium/chromium';
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const token = 'tabi-r56-dt-' + crypto.randomBytes(6).toString('hex');
+const profileDir = path.join(SCRATCH, token);
+const census = (tok) => { const r = spawnSync('ps', ['-eo', 'pid=,ppid=,args='], { encoding: 'utf8', maxBuffer: 8e6 }); const rows = []; for (const l of (r.stdout || '').split('\n')) { if (!l.includes(tok)) continue; const m = l.match(/^\s*(\d+)\s+(\d+)\s+(.*)$/); if (m && Number(m[1]) !== process.pid) rows.push(Number(m[1])); } return rows; };
+const kill = (pid) => { try { process.kill(pid, 'SIGKILL'); return true; } catch { return false; } };
+const page = (l, a) => `<!doctype html><html><head><title>dt ${l}</title></head><body>${l}${a}</body></html>`;
+const PAGES = { '/a.html': page('A', '<a id="next" href="/b.html">n</a>'), '/b.html': page('B', '<a id="next" href="/c.html">n</a>'), '/c.html': page('C', '') };
+const server = http.createServer((q, s) => { s.writeHead(200, { 'content-type': 'text/html' }); s.end(PAGES[new URL(q.url, 'http://127.0.0.1').pathname] || PAGES['/a.html']); });
+await new Promise((r) => server.listen(0, '127.0.0.1', r));
+const base = `http://127.0.0.1:${server.address().port}`;
+fs.rmSync(profileDir, { recursive: true, force: true }); fs.mkdirSync(profileDir, { recursive: true });
+const child = spawn(CHROMIUM, ['--headless=new', '--remote-debugging-port=0', '--remote-debugging-address=127.0.0.1', `--user-data-dir=${profileDir}`, '--no-first-run', '--no-default-browser-check', '--disable-gpu', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+let exited = null; child.on('exit', (c, g) => { exited = { code: c, sig: g }; });
+let port = null;
+for (let i = 0; i < 120 && port === null; i++) { try { const l = fs.readFileSync(path.join(profileDir, 'DevToolsActivePort'), 'utf8').split('\n'); if (/^\d+$/.test((l[0] || '').trim())) port = Number(l[0].trim()); } catch { } if (port === null) await sleep(100); }
+const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent('<!doctype html><html><head><title>r56 boot</title></head><body><h1 id="n">boot</h1></body></html>');
+const mk = await (await fetch(`http://127.0.0.1:${port}/json/new?${encodeURIComponent(dataUrl)}`, { method: 'PUT' })).json();
+const ws = new WebSocket(mk.webSocketDebuggerUrl);
+let idc = 0; const pend = new Map();
+ws.onmessage = (m) => { const d = JSON.parse(m.data); if (d.id && pend.has(d.id)) { const { r, j } = pend.get(d.id); pend.delete(d.id); d.error ? j(new Error(JSON.stringify(d.error))) : r(d.result); } };
+await new Promise((r) => { ws.onopen = r; });
+const send = (method, params = {}) => new Promise((r, j) => { const id = ++idc; pend.set(id, { r, j }); ws.send(JSON.stringify({ id, method, params })); setTimeout(() => { if (pend.has(id)) { pend.delete(id); j(new Error('to ' + method)); } }, 20000); });
+const evalStr = async (e) => { const r = await send('Runtime.evaluate', { expression: e, returnByValue: true }); return r.result ? r.result.value : undefined; };
+const waitPath = async (s) => { for (let i = 0; i < 40; i++) { const h = String(await evalStr('location.href') || ''); if (h.endsWith(s) && (await evalStr('document.readyState')) === 'complete') return true; await sleep(150); } return false; };
+await send('Page.enable'); await send('Runtime.enable');
+const out = { schema: 'tabi-r56-data-target', createdTargetUrl: String(mk.url).slice(0, 40), titleAtCreate: await evalStr('document.title') };
+const h0 = await send('Page.getNavigationHistory');
+out.historyAtCreate = { entriesLength: (h0.entries || []).length, currentIndex: h0.currentIndex, urls: (h0.entries || []).map((e) => String(e.url).slice(0, 42)) };
+await send('Page.navigate', { url: `${base}/a.html` }); out.aReady = await waitPath('/a.html');
+await evalStr(`document.getElementById('next').click()`); out.bReady = await waitPath('/b.html');
+await evalStr(`document.getElementById('next').click()`); out.cReady = await waitPath('/c.html');
+const h = await send('Page.getNavigationHistory');
+out.historyAtC = { entriesLength: (h.entries || []).length, currentIndex: h.currentIndex, urls: (h.entries || []).map((e) => String(e.url).slice(0, 60)) };
+out.slot0IsData = String((h.entries || [])[0] && (h.entries || [])[0].url || '').startsWith('data:');
+ws.close(); server.close();
+for (const pid of census(token)) kill(pid);
+let post = -1; for (let i = 1; i <= 15; i++) { const p = census(token); if (p.length === 0) { post = 0; break; } p.forEach(kill); post = p.length; await sleep(200); }
+out.postKillSweepCount = post; out.survivors = post;
+for (let i = 0; i < 40 && exited === null; i++) await sleep(50);
+const text = JSON.stringify(out, null, 1); if (OUT) fs.writeFileSync(OUT, text + '\n'); console.log(text);
+process.exit(post === 0 ? 0 : 1);

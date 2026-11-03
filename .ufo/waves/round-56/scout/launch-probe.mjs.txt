@@ -1,0 +1,163 @@
+#!/usr/bin/env node
+// R56Scout launch probe — READ-ONLY recon for C2 (chromium-keyevent-control-keys-linux).
+// Launches /usr/bin/chromium headless=new with an ephemeral loopback DevTools port,
+// discovers the port via the throwaway profile's DevToolsActivePort, reads
+// /json/version over 127.0.0.1, records the effective process argv via ps
+// (main + one child, showing injected flags), kills by explicit PID, and proves
+// zero survivors with an exact-token ps grep.
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { spawn, spawnSync } from 'node:child_process';
+
+const SCRATCH = process.argv[2];
+if (!SCRATCH) { console.error('usage: launch-probe.mjs <scratchDir>'); process.exit(2); }
+const OUT = process.argv[3] || null;
+const CHROMIUM = '/usr/bin/chromium';
+
+const token = 'tabi-r56-probe-' + crypto.randomBytes(6).toString('hex');
+const profileDir = path.join(SCRATCH, token);
+
+// exact-token census: ps rows whose argv carries the token, minus this process.
+// The grep is a token match on the full argv, never an image name.
+function census() {
+  const r = spawnSync('ps', ['-eo', 'pid=,ppid=,args='], { encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+  if (r.status !== 0) return { error: `ps exit ${r.status} stderr=${(r.stderr || '').slice(-200)}` };
+  const rows = [];
+  for (const line of (r.stdout || '').split('\n')) {
+    if (!line.includes(token)) continue;
+    const m = line.match(/^\s*(\d+)\s+(\d+)\s+(.*)$/);
+    if (!m) continue;
+    if (Number(m[1]) === process.pid) continue;
+    rows.push({ pid: Number(m[1]), ppid: Number(m[2]), args: m[3] });
+  }
+  return { count: rows.length, rows };
+}
+
+function killByPid(pid) {
+  try { process.kill(pid, 'SIGKILL'); return { pid, ok: true }; }
+  catch (e) { return { pid, ok: false, error: String(e.code || e) }; }
+}
+
+const preLaunch = census();
+if (preLaunch.error || preLaunch.count !== 0) {
+  console.error(JSON.stringify({ error: 'launch token not fresh', preLaunch }));
+  process.exit(2);
+}
+
+fs.rmSync(profileDir, { recursive: true, force: true });
+fs.mkdirSync(profileDir, { recursive: true });
+
+const flags = [
+  '--headless=new',
+  '--remote-debugging-port=0',
+  '--remote-debugging-address=127.0.0.1',
+  `--user-data-dir=${profileDir}`,
+  '--no-first-run',
+  '--no-default-browser-check',
+  '--disable-gpu',
+  'about:blank',
+];
+const t0 = Date.now();
+const child = spawn(CHROMIUM, flags, { stdio: ['ignore', 'ignore', 'pipe'] });
+let exited = null;
+child.on('exit', (code, sig) => { exited = { code, sig, atMs: Date.now() - t0 }; });
+let stderrTail = '';
+child.stderr.on('data', (d) => { stderrTail = (stderrTail + d.toString()).slice(-4000); });
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// discovery via the throwaway profile's DevToolsActivePort
+let portFile = null, portLine = null, wsPathLine = null, discoveryMs = null;
+for (let i = 0; i < 100 && portLine === null; i++) {
+  const f = path.join(profileDir, 'DevToolsActivePort');
+  if (fs.existsSync(f)) {
+    const raw = fs.readFileSync(f, 'utf8');
+    const lines = raw.split(/\r?\n/);
+    portFile = f;
+    portLine = (lines[0] || '').trim();
+    wsPathLine = (lines[1] || '').trim();
+    discoveryMs = Date.now() - t0;
+    break;
+  }
+  await sleep(100);
+}
+
+const stderrDiscovery = /DevTools listening on (ws:\/\/\S+)/.exec(stderrTail);
+let jsonVersion = null, jsonVersionRaw = null;
+if (portLine && /^\d+$/.test(portLine)) {
+  try {
+    const res = await fetch(`http://127.0.0.1:${portLine}/json/version`);
+    jsonVersionRaw = await res.text();
+    jsonVersion = { status: res.status, body: JSON.parse(jsonVersionRaw) };
+  } catch (e) { jsonVersion = { error: String(e).slice(-200) }; }
+}
+
+// mid-run census: the token binds the live tree
+const midRun = census();
+const midRunPids = midRun.error ? [] : midRun.rows.map((r) => r.pid);
+const mainRow = midRun.error ? null : (midRun.rows.find((r) => r.pid === child.pid) || null);
+const childRows = midRun.error ? [] : midRun.rows.filter((r) => r.pid !== child.pid)
+  .map((r) => ({ pid: r.pid, ppid: r.ppid, argvHead: r.args.slice(0, 400) }));
+
+// own /proc argv for the main process (full, untruncated) as the ps cross-check
+let procCmdline = null;
+try {
+  procCmdline = fs.readFileSync(`/proc/${child.pid}/cmdline`, 'utf8').split('\0').filter(Boolean);
+} catch (e) { procCmdline = { error: String(e.code || e) }; }
+
+// kill by explicit PID — the recorded tree, children first is not required with SIGKILL to the root
+const killed = [];
+if (midRunPids.length === 0) killed.push(killByPid(child.pid));
+else for (const pid of midRunPids) killed.push(killByPid(pid));
+
+// kill-until-zero sweep (the r46 sweepToZero shape, token-keyed)
+const rounds = [];
+let postKill = -1;
+for (let i = 1; i <= 15; i++) {
+  const s = census();
+  if (s.error) { rounds.push({ round: i, error: s.error }); postKill = -1; break; }
+  const entry = { round: i, count: s.count, pids: s.rows.map((r) => r.pid) };
+  if (s.count > 0) { entry.killed = s.rows.map((r) => killByPid(r.pid)); await sleep(200); }
+  rounds.push(entry);
+  if (s.count === 0) { postKill = 0; break; }
+  postKill = s.count;
+}
+
+for (let i = 0; i < 40 && exited === null; i++) await sleep(50);
+
+const probe = {
+  schema: 'tabi-r56-launch-probe',
+  generatedAt: new Date().toISOString(),
+  host: { platform: process.platform, arch: process.arch, kernel: (spawnSync('uname', ['-r'], { encoding: 'utf8' }).stdout || '').trim() },
+  chromium: { path: CHROMIUM, version: (spawnSync(CHROMIUM, ['--version'], { encoding: 'utf8' }).stdout || '').trim() },
+  launchToken: token,
+  profileDir,
+  preLaunchSweepCount: 0,
+  spawnedPid: child.pid,
+  flagsAsSpawned: flags,
+  discovery: {
+    via: portLine !== null ? 'devtools-active-port-profile-root' : (stderrDiscovery ? 'stderr' : 'none'),
+    portFile,
+    port: portLine && /^\d+$/.test(portLine) ? Number(portLine) : null,
+    wsPathLine,
+    discoveryMs,
+    stderrDevToolsLine: stderrDiscovery ? stderrDiscovery[1] : null,
+  },
+  jsonVersion: jsonVersionRaw ? jsonVersion : jsonVersion,
+  psMainArgv: mainRow ? mainRow.args : null,
+  psChildCount: childRows.length,
+  psChildArgvSample: childRows.slice(0, 6),
+  procCmdlineMain: procCmdline,
+  midRunSweepCount: midRun.error ? -1 : midRun.count,
+  killed,
+  killRounds: rounds,
+  postKillSweepCount: postKill,
+  survivors: postKill,
+  childExit: exited,
+  stderrTail: stderrTail.slice(-1500),
+};
+const text = JSON.stringify(probe, null, 1);
+if (OUT) fs.writeFileSync(OUT, text + '\n');
+console.log(text);
+process.exit(probe.survivors === 0 ? 0 : 1);

@@ -1,0 +1,18 @@
+// crash victim: launches Chromium, records the mid-run census, then dies the way
+// the first dry run died (uncaught error inside an async handler).
+import fs from 'node:fs'; import path from 'node:path'; import crypto from 'node:crypto';
+import { spawn, spawnSync } from 'node:child_process';
+const [SCRATCH, MODE, TAG] = process.argv.slice(2);
+const token = `tabi-r56-${MODE}-${TAG}`;
+const profileDir = path.join(SCRATCH, token);
+const census = () => { const r = spawnSync('ps', ['-eo', 'pid=,args='], { encoding: 'utf8', maxBuffer: 8e6 }); const p = []; for (const l of (r.stdout || '').split('\n')) { if (!l.includes(token)) continue; const m = l.match(/^\s*(\d+)\s+(.*)$/); if (m && Number(m[1]) !== process.pid) p.push(Number(m[1])); } return p; };
+const teardown = () => { for (const p of census()) { try { process.kill(p, 'SIGKILL'); } catch {} } };
+if (MODE === 'guarded') { process.on('exit', teardown); process.on('uncaughtException', () => { teardown(); process.exit(1); }); }
+fs.rmSync(profileDir, { recursive: true, force: true }); fs.mkdirSync(profileDir, { recursive: true });
+spawn('/usr/lib/chromium/chromium', ['--headless=new', '--remote-debugging-port=0', '--remote-debugging-address=127.0.0.1', `--user-data-dir=${profileDir}`, '--no-first-run', '--no-default-browser-check', '--disable-gpu', 'about:blank'], { stdio: 'ignore' });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+for (let i = 0; i < 120; i++) { if (fs.existsSync(path.join(profileDir, 'DevToolsActivePort'))) break; await sleep(50); }
+await sleep(300);
+fs.writeFileSync(path.join(SCRATCH, `victim-${MODE}.mid.json`), JSON.stringify({ token, midRunCount: census().length }));
+setTimeout(() => { throw new Error('uncaught error after launch (the first dry run\'s failure mode)'); }, 30);
+await sleep(1200);

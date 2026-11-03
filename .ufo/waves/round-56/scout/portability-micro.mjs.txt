@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+// R56Scout portability micro-probe — READ-ONLY recon for C2.
+// (1) does PUT /json/new exist on this Chromium 155 headless build?
+// (2) what does --disable-extensions do to the wrapper-injected
+//     --load-extension=~/.local/share/omarchy/... (a literal-tilde path from
+//     ~/.config/chromium-flags.conf that the Arch launcher adds before our argv)?
+// (3) does the page target list carry a usable webSocketDebuggerUrl pre-navigation?
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { spawn, spawnSync } from 'node:child_process';
+
+const SCRATCH = process.argv[2];
+const OUT = process.argv[3] || null;
+const CHROMIUM = '/usr/bin/chromium';
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const token = 'tabi-r56-micro-' + crypto.randomBytes(6).toString('hex');
+const profileDir = path.join(SCRATCH, token);
+
+const census = (tok) => {
+  const r = spawnSync('ps', ['-eo', 'pid=,ppid=,args='], { encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+  const rows = [];
+  for (const line of (r.stdout || '').split('\n')) {
+    if (!line.includes(tok)) continue;
+    const m = line.match(/^\s*(\d+)\s+(\d+)\s+(.*)$/);
+    if (!m || Number(m[1]) === process.pid) continue;
+    rows.push({ pid: Number(m[1]), args: m[3] });
+  }
+  return { count: rows.length, rows };
+};
+const kill = (pid) => { try { process.kill(pid, 'SIGKILL'); return true; } catch { return false; } };
+
+fs.rmSync(profileDir, { recursive: true, force: true });
+fs.mkdirSync(profileDir, { recursive: true });
+
+const flags = ['--headless=new', '--remote-debugging-port=0', '--remote-debugging-address=127.0.0.1',
+  `--user-data-dir=${profileDir}`, '--no-first-run', '--no-default-browser-check', '--disable-gpu',
+  '--disable-extensions', 'about:blank'];
+const child = spawn(CHROMIUM, flags, { stdio: ['ignore', 'ignore', 'pipe'] });
+let exited = null; child.on('exit', (c, s) => { exited = { code: c, sig: s }; });
+let stderrTail = ''; child.stderr.on('data', (d) => { stderrTail = (stderrTail + d.toString()).slice(-2000); });
+
+let port = null;
+for (let i = 0; i < 120 && port === null; i++) {
+  try { const l = fs.readFileSync(path.join(profileDir, 'DevToolsActivePort'), 'utf8').split('\n'); if (/^\d+$/.test((l[0] || '').trim())) port = Number(l[0].trim()); } catch { }
+  if (port === null) await sleep(100);
+}
+
+const out = { schema: 'tabi-r56-portability-micro', chromium: (spawnSync(CHROMIUM, ['--version'], { encoding: 'utf8' }).stdout || '').trim(), port, token };
+
+// (3) default target list, pre-navigation
+try {
+  const list = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
+  out.targetsBefore = (list || []).map((t) => ({ type: t.type, url: String(t.url).slice(0, 60), hasWs: typeof t.webSocketDebuggerUrl === 'string' }));
+} catch (e) { out.targetsBeforeError = String(e).slice(-120); }
+
+// (1) PUT /json/new
+for (const method of ['PUT', 'GET']) {
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/json/new?${encodeURIComponent('about:blank')}`, { method });
+    const txt = await res.text();
+    out[`jsonNew${method}`] = { status: res.status, head: txt.slice(0, 220) };
+  } catch (e) { out[`jsonNew${method}`] = { error: String(e).slice(-120) }; }
+}
+
+// (2) effective argv with --disable-extensions present
+const mid = census(token);
+out.effectiveArgv = (mid.rows.find((r) => r.args.includes(profileDir)) || {}).args || null;
+out.containsLoadExtension = /--load-extension=/.test(out.effectiveArgv || '');
+out.childCount = mid.count;
+
+for (const r of mid.rows) kill(r.pid);
+let post = -1;
+for (let i = 1; i <= 15; i++) { const s = census(token); if (s.count === 0) { post = 0; break; } s.rows.forEach((r) => kill(r.pid)); post = s.count; await sleep(200); }
+out.postKillSweepCount = post;
+out.survivors = post;
+for (let i = 0; i < 40 && exited === null; i++) await sleep(50);
+out.childExit = exited;
+out.stderrTail = stderrTail.slice(-400);
+const text = JSON.stringify(out, null, 1);
+if (OUT) fs.writeFileSync(OUT, text + '\n');
+console.log(text);
+process.exit(post === 0 ? 0 : 1);

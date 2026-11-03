@@ -1,0 +1,71 @@
+{
+ "round": 56,
+ "lane": "tabi-shokunin",
+ "host": "linux 7.2.11-arch1-1 x64 (node v24.21.0; /usr/bin/chromium 155.0.8059.84; python3; jj-lane on)",
+ "baseline": "faee4cb27982388b18e9a45f292cdfb9dfd1ebc8",
+ "frozenAt": "2026-11-03 (before wave w1 dispatch; before any seat data)",
+ "freezeRule": "predicates, counters' expected findings, kill rules and do-nothing controls below are frozen HERE, in text, before any seat runs. Counter/meter/runner code is authored in wave w1 and committed at a FREEZE commit (code only, no data) BEFORE the L1 runs the live data pass. Any post-data change to a predicate or kill rule is a new claim, not an amendment.",
+ "axesAtStart": {
+  "adjacency": 8,
+  "coverage": 9,
+  "depth": 9,
+  "operability": 9,
+  "freshness": 9,
+  "calibration": 9,
+  "note": "adjacency is the lowest owned non-retired axis (r55 closure: adjacency improved, score held at 8). saturation 8 / window 3. The r55 capability row webview2-keyevent-control-keys-windows (first-working 55) keeps the window at position 1 for round 56, so the stagnation nudge is INACTIVE and the lowest-axis obligation applies: C1 works adjacency."
+ },
+ "hostDelta": "round 55 ran on the Windows host (webview2 runtime). Round 56 runs on this Linux host, where the webview2 surface cannot run. The chromium-class surface (/usr/bin/chromium 155) is the one the host now offers for the key-domain control leg; that is the demand C2 answers (PROVINCE.md host-surfaces line, round-44 correction).",
+ "claims": [
+  {
+   "id": "C1",
+   "type": "measured",
+   "axis": "adjacency (lowest owned, score 8)",
+   "statement": "The v16 adjacency meter (v15 predicate relabelled r55 -> r56; code core byte-identical to v15, diff committed) admits the lane state at the data revision: predicate true, findingCount 0, with the audit and delta ledgers rebound at ONE fresh sibling-head snapshot and every new browser-ground line in a screened province carrying a line row in the frozen vocabulary.",
+   "before": {
+    "command": "node .ufo/waves/round-55/counters/c1-adjacency-host-v15.mjs --rev faee4cb27982388b18e9a45f292cdfb9dfd1ebc8 --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --fleet /home/vgpnk/Projects/shokunin --json",
+    "receipt": ".ufo/waves/round-56/controls/c1-meter-v15-red-at-round-open.json",
+    "expected": "exit 1, predicate false, findingCount 19 (audit-status-mismatch 6, roster-lane-uncovered 5, delta-lane-not-on-roster 3, lane-screen-sha-mismatch 1, lane-screen-lines-mismatch 1, lane-screen-head-mismatch 3)"
+   },
+   "after": {
+    "command": "node .ufo/waves/round-56/counters/c1-adjacency-host-v16.mjs --rev <DATA-REV> --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --fleet /home/vgpnk/Projects/shokunin --json",
+    "expected": "exit 0, predicate true, findingCount 0, counts roster=20 mapRows=N auditRows=N deltaLanes=N with the full roster covered"
+   },
+   "doNothingControl": "the round-open v15 run at faee4cb2 is the do-nothing state: it reaches RED (19 findings). Green requires the rebind and adjudication work; a no-op cannot reach it.",
+   "killRule": "after at most TWO correction cycles (fresh snapshot -> rebind -> commit -> re-run, the r52/r55 flow), if the v16 meter still reports any finding, C1 is UNVERIFIED and reported as such. The v16 core is never edited to pass. Adjudications may not be changed to match a sibling head that moved after the snapshot.",
+   "frozenMeterCore": "meter v16 is generated from v15 by relabelling and comments only; the frozen diff is committed before the ledger data commit"
+  },
+  {
+   "id": "C2",
+   "type": "measured-capability",
+   "axis": "coverage (capability acquisition: chromium-keyevent-control-keys-linux)",
+   "statement": "On the Linux host's Chromium 155 headless surface (loopback CDP, throwaway profile) the form fixture's control-domain key leg runs with page-side DOM witnesses: End re-anchors the caret with the NEGATIVE EDIT WITNESS (field value unchanged), Backspace deletes exactly the last character with exact restore, Tab moves focus field->field2 witnessed by document.activeElement, and one Enter keyDown from the tabbed-to field drives the implicit submission witnessed server-side and client-side. The frozen counter scores the committed receipt green with 0 findings.",
+   "before": {
+    "command": "git ls-tree -r --name-only faee4cb2 -- corpus/evidence/round56 | wc -l ; node .ufo/waves/round-56/counters/chromium-receipt-r56.mjs <absent-receipt-path> --json",
+    "expected": "evidence tree 0 files; the counter on the absent receipt exits 1 with receipt-missing (the do-nothing control)"
+   },
+   "after": {
+    "command": "node .ufo/waves/round-56/counters/chromium-receipt-r56.mjs corpus/evidence/round56/chromium-control-keys/receipt.json --driver scripts/chrome-cdp-loopback-round56.mjs --shot <six per-step PNGs under corpus/evidence/round56/chromium-control-keys/>  --json ; git ls-tree -r --name-only <DATA-REV> -- corpus/evidence/round56 | wc -l",
+    "expected": "counter exit 0, predicate true, findings [], couldNotEvaluate []; evidence tree >= 7 files; counter selftest N/N at the freeze commit; cross-refusals: the r55 webview2 counter on the r56 receipt refuses (schema mismatch) and the r56 counter on the r55 webview2 receipt refuses"
+   },
+   "doNothingControl": "the baseline evidence tree is EMPTY and the counter refuses an absent receipt; a canned or relabelled receipt is refused by the counter's pinned driver digest, invocation-bound nonce on the data page, server log and every typed value (the r42/r55 defence carried over).",
+   "killRule": "if the live Chromium 155 run does not produce the Enter implicit submission (server log has no submit request within 5 s) or any other leg fails its witness, C2 is NOT verified; the receipt of the failing run is committed as the red state and no witness is weakened. A failed data run is reported, never re-run until green with a changed predicate."
+  }
+ ],
+ "exploratory": "none this round (no taste-bound claim)",
+ "retirements": "none",
+ "frontierStep": {
+  "sourcesReopened": ["S083 (form submission / implicit submission default-button ground)", "S153 (dispatchKeyEvent contract, bit field)", "S161 (KeyboardEvent boolean attributes)"],
+  "sourcedClaim": "C2 rests on S083 + S153 opened this round; the knowledge note cites those S### rows",
+  "mistakeMined": "N1 (round-55 orphaned evidence: the report, lesson and SCORECARD cited six receipts that were never committed and whose scratch was cleaned; present in no commit at 545b251d). Captured-by: criterion 109 existed but its landing check was not run at round-55 close. Fix: scripts/check-cited-receipts.mjs, shown RED at 545b251d and GREEN at the round-56 head."
+ },
+ "carryIn": {
+  "items": [
+   "N1 (r55 closure): the six receipts never landed. They are NOT recoverable (scratch cleaned; the meter's green at correction 1 cannot be re-derived because the sibling heads have moved). Disclosed LOST; the mined mistake above is the class fix. No claim cites them.",
+   "N2: the r55 freeze took five commits; 5fd39bfc has an empty tree and a false message. Disclosed in the r56 report; not amended (history is append-only).",
+   "N3: the r55 correction-1 race had two movers (tameshi and shokunin-binary-forensics). Recorded in the r56 report; the r56 correction-cycle disclosures must name every moved head.",
+   "N4: SOURCES.md in-place cell edits outside the strict v1 columns. Operator/aggregator ruling pending (superseding rows, S156 pattern). This round adds in-place re-open logs only, and only where the contract's rule 2 allows; no anchor cell is edited.",
+   "N5: no scratch/tabi-r55 exists at round-56 open (checked). Nothing to delete; recorded."
+  ]
+ },
+ "l2FloorStanding": "PROVINCE.md standing disposition: this host has no AgentSwarm surface for the L2-floor batch; round 56 uses the swarm-wave path (one v1 wave of 12 seats). The standing L0 (tabi | round-44) stays open; referred to, not treated as answered."
+}

@@ -1,0 +1,663 @@
+{
+ "seat": "R56LabProbe",
+ "round": 56,
+ "wave": "w1",
+ "lane": "tabi-shokunin",
+ "baseline": "faee4cb27982388b18e9a45f292cdfb9dfd1ebc8",
+ "readOnlySeat": true,
+ "repoFilesWritten": [],
+ "generatedAt": "2026-11-03",
+ "host": {
+  "os": "linux 7.2.11-arch1-1 x64",
+  "node": "v24.21.0",
+  "python": "Python 3.14.8",
+  "chromium": "Chromium 155.0.8059.84 Arch Linux",
+  "surface": "--headless=new, loopback CDP (--remote-debugging-port=0, --remote-debugging-address=127.0.0.1), throwaway --user-data-dir per run",
+  "driver": "node built-in WebSocket + fetch, zero npm deps"
+ },
+ "method": {
+  "fixture": "GET form, one text input (id/name q, autocomplete off) plus one submit button; served by python3 -m http.server bound 127.0.0.1 on a port proven free with ss -ltn",
+  "isolation": "one fresh chromium profile and one fresh server per run",
+  "teardown": "explicit kill -TERM by captured PID plus wait; survivors proven by pgrep on the profile path and the server command line, and by ss on the port",
+  "runsPerHypothesis": 3,
+  "fixtureFile": "fixture/form.html (H1, H2); fixture/form2.html (HTab two-field fixture)",
+  "driverFile": "driver.mjs",
+  "runnerFile": "runner.sh"
+ },
+ "hypotheses": [
+  {
+   "id": "H1",
+   "claim": "Input.dispatchKeyEvent keyDown then keyUp, key Enter, code Enter, windowsVirtualKeyCode 13, text carriage-return, dispatched while a text input inside a GET form (one submit button, one name-carrying field) has focus, causes the form to submit: the loopback server logs ONE GET whose query carries the field value. FALSIFIED if no request arrives within 5 s.",
+   "verdict": "supported",
+   "perRunVerdicts": [
+    "supported",
+    "supported",
+    "supported"
+   ],
+   "runs": 3,
+   "observed": {
+    "submitRequestsPerRun": [
+     1,
+     1,
+     1
+    ],
+    "requestLine": "GET /submit?q=probe HTTP/1.1",
+    "elapsedMsPerRun": [
+     352,
+     353,
+     352
+    ],
+    "focusedFieldPerRun": [
+     "q",
+     "q",
+     "q"
+    ],
+    "valueBeforePerRun": [
+     "probe",
+     "probe",
+     "probe"
+    ],
+    "exactlyOneSubmit": true,
+    "queryCarriesFieldValue": true
+   }
+  },
+  {
+   "id": "H2",
+   "claim": "After a real mouse click at the centre of a NON-EMPTY input, a keyDown/keyUp pair with windowsVirtualKeyCode 35 (End) leaves input.value UNCHANGED; then Backspace (VK 8) removes exactly the last character. FALSIFIED if the value changes on End or Backspace removes a different character.",
+   "verdict": "supported",
+   "perRunVerdicts": [
+    "supported",
+    "supported",
+    "supported"
+   ],
+   "runs": 3,
+   "observed": {
+    "seed": "abcdefghijklmnopqrstuvwxyz0123456789 (36 chars)",
+    "caretAfterClickPerRun": [
+     {
+      "selStart": 20,
+      "selEnd": 20
+     },
+     {
+      "selStart": 20,
+      "selEnd": 20
+     },
+     {
+      "selStart": 20,
+      "selEnd": 20
+     }
+    ],
+    "afterEndPerRun": [
+     {
+      "value": "abcdefghijklmnopqrstuvwxyz0123456789",
+      "selStart": 36,
+      "selEnd": 36
+     },
+     {
+      "value": "abcdefghijklmnopqrstuvwxyz0123456789",
+      "selStart": 36,
+      "selEnd": 36
+     },
+     {
+      "value": "abcdefghijklmnopqrstuvwxyz0123456789",
+      "selStart": 36,
+      "selEnd": 36
+     }
+    ],
+    "afterBackspacePerRun": [
+     {
+      "value": "abcdefghijklmnopqrstuvwxyz012345678",
+      "selStart": 35,
+      "selEnd": 35
+     },
+     {
+      "value": "abcdefghijklmnopqrstuvwxyz012345678",
+      "selStart": 35,
+      "selEnd": 35
+     },
+     {
+      "value": "abcdefghijklmnopqrstuvwxyz012345678",
+      "selStart": 35,
+      "selEnd": 35
+     }
+    ],
+    "endLeftValueUnchangedPerRun": [
+     true,
+     true,
+     true
+    ],
+    "backspaceRemovedExactlyLastCharPerRun": [
+     true,
+     true,
+     true
+    ],
+    "caretWasNotAlreadyAtEndBeforeEnd": [
+     true,
+     true,
+     true
+    ],
+    "note": "The click landed at caret 20 of 36, so End was a REAL movement (not vacuous) and the negative edit witness is falsifiable; Home control confirmed caret sensitivity."
+   }
+  }
+ ],
+ "runs": [
+  {
+   "hypothesis": "H1",
+   "run": 1,
+   "variant": "default",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H1-run1-default",
+   "submitted": true,
+   "serverLogLines": [
+    "127.0.0.1 - - [03/Nov/2026 15:06:34] \"GET /time/1/current?cup2key=10:WUBoXmUSHZ8QafCXzII805-XT3WOFMITuj6xOGVJ7BI&cup2hreq=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 HTTP/1.1\" 404 -",
+    "127.0.0.1 - - [03/Nov/2026 15:06:34] \"GET /form.html HTTP/1.1\" 200 -",
+    "127.0.0.1 - - [03/Nov/2026 15:06:34] \"GET /favicon.ico HTTP/1.1\" 404 -",
+    "127.0.0.1 - - [03/Nov/2026 15:06:34] \"GET /submit?q=probe HTTP/1.1\" 404 -"
+   ],
+   "valueBefore": "probe",
+   "valueAfter": null,
+   "verdict": "supported",
+   "driver_exit": 0,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "witness": {
+    "submitRequests": 1,
+    "queryCarriesValue": true,
+    "elapsedMs": 352,
+    "focusedField": "q"
+   }
+  },
+  {
+   "hypothesis": "H1",
+   "run": 2,
+   "variant": "default",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H1-run2-default",
+   "submitted": true,
+   "serverLogLines": [
+    "127.0.0.1 - - [03/Nov/2026 15:06:55] \"GET /time/1/current?cup2key=10:sdSBSutiLI2AsqBekjH-IiVxsXucr3eWHLHlh0jBY1k&cup2hreq=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 HTTP/1.1\" 404 -",
+    "127.0.0.1 - - [03/Nov/2026 15:06:55] \"GET /form.html HTTP/1.1\" 200 -",
+    "127.0.0.1 - - [03/Nov/2026 15:06:55] \"GET /favicon.ico HTTP/1.1\" 404 -",
+    "127.0.0.1 - - [03/Nov/2026 15:06:55] \"GET /submit?q=probe HTTP/1.1\" 404 -"
+   ],
+   "valueBefore": "probe",
+   "valueAfter": null,
+   "verdict": "supported",
+   "driver_exit": 0,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "witness": {
+    "submitRequests": 1,
+    "queryCarriesValue": true,
+    "elapsedMs": 353,
+    "focusedField": "q"
+   }
+  },
+  {
+   "hypothesis": "H1",
+   "run": 3,
+   "variant": "default",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H1-run3-default",
+   "submitted": true,
+   "serverLogLines": [
+    "127.0.0.1 - - [03/Nov/2026 15:07:16] \"GET /time/1/current?cup2key=10:e8cjdUeJT2pgmJ5L1so17ZoubLbEbN6khvlnXPt0-Iw&cup2hreq=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 HTTP/1.1\" 404 -",
+    "127.0.0.1 - - [03/Nov/2026 15:07:16] \"GET /form.html HTTP/1.1\" 200 -",
+    "127.0.0.1 - - [03/Nov/2026 15:07:16] \"GET /favicon.ico HTTP/1.1\" 404 -",
+    "127.0.0.1 - - [03/Nov/2026 15:07:16] \"GET /submit?q=probe HTTP/1.1\" 404 -"
+   ],
+   "valueBefore": "probe",
+   "valueAfter": null,
+   "verdict": "supported",
+   "driver_exit": 0,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "witness": {
+    "submitRequests": 1,
+    "queryCarriesValue": true,
+    "elapsedMs": 352,
+    "focusedField": "q"
+   }
+  },
+  {
+   "hypothesis": "H2",
+   "run": 1,
+   "variant": "default",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H2-run1-default",
+   "submitted": false,
+   "serverLogLines": [
+    "127.0.0.1 - - [03/Nov/2026 15:08:50] \"GET /time/1/current?cup2key=10:8ZpoNYGv_Ji74e1d_4DUr03ydLYIm_5hMRPFBlYM7KM&cup2hreq=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 HTTP/1.1\" 404 -",
+    "127.0.0.1 - - [03/Nov/2026 15:08:50] \"GET /form.html HTTP/1.1\" 200 -",
+    "127.0.0.1 - - [03/Nov/2026 15:08:50] \"GET /favicon.ico HTTP/1.1\" 404 -"
+   ],
+   "valueBefore": "abcdefghijklmnopqrstuvwxyz0123456789",
+   "valueAfter": "abcdefghijklmnopqrstuvwxyz012345678",
+   "verdict": "supported",
+   "driver_exit": 0,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "witness": {
+    "submitRequests": 0,
+    "focusedField": "q",
+    "afterEnd": {
+     "value": "abcdefghijklmnopqrstuvwxyz0123456789",
+     "selStart": 36,
+     "selEnd": 36
+    },
+    "afterBackspace": {
+     "value": "abcdefghijklmnopqrstuvwxyz012345678",
+     "selStart": 35,
+     "selEnd": 35
+    },
+    "endLeftValueUnchanged": true,
+    "caretAtEndAfterEnd": true,
+    "caretWasNotAlreadyAtEndBeforeEnd": true,
+    "backspaceRemovedExactlyLastChar": true,
+    "expectedAfterBackspace": "abcdefghijklmnopqrstuvwxyz012345678",
+    "seededValue": "abcdefghijklmnopqrstuvwxyz0123456789",
+    "caretAfterClick": {
+     "selStart": 20,
+     "selEnd": 20
+    }
+   }
+  },
+  {
+   "hypothesis": "H2",
+   "run": 2,
+   "variant": "default",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H2-run2-default",
+   "submitted": false,
+   "serverLogLines": [
+    "127.0.0.1 - - [03/Nov/2026 15:09:12] \"GET /time/1/current?cup2key=10:1lU3dwRccOlfVzRSPH-Y53PFZORdjthn2ftLzzYnQjg&cup2hreq=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 HTTP/1.1\" 404 -",
+    "127.0.0.1 - - [03/Nov/2026 15:09:12] \"GET /form.html HTTP/1.1\" 200 -",
+    "127.0.0.1 - - [03/Nov/2026 15:09:12] \"GET /favicon.ico HTTP/1.1\" 404 -"
+   ],
+   "valueBefore": "abcdefghijklmnopqrstuvwxyz0123456789",
+   "valueAfter": "abcdefghijklmnopqrstuvwxyz012345678",
+   "verdict": "supported",
+   "driver_exit": 0,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "witness": {
+    "submitRequests": 0,
+    "focusedField": "q",
+    "afterEnd": {
+     "value": "abcdefghijklmnopqrstuvwxyz0123456789",
+     "selStart": 36,
+     "selEnd": 36
+    },
+    "afterBackspace": {
+     "value": "abcdefghijklmnopqrstuvwxyz012345678",
+     "selStart": 35,
+     "selEnd": 35
+    },
+    "endLeftValueUnchanged": true,
+    "caretAtEndAfterEnd": true,
+    "caretWasNotAlreadyAtEndBeforeEnd": true,
+    "backspaceRemovedExactlyLastChar": true,
+    "expectedAfterBackspace": "abcdefghijklmnopqrstuvwxyz012345678",
+    "seededValue": "abcdefghijklmnopqrstuvwxyz0123456789",
+    "caretAfterClick": {
+     "selStart": 20,
+     "selEnd": 20
+    }
+   }
+  },
+  {
+   "hypothesis": "H2",
+   "run": 3,
+   "variant": "default",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H2-run3-default",
+   "submitted": false,
+   "serverLogLines": [
+    "127.0.0.1 - - [03/Nov/2026 15:09:33] \"GET /time/1/current?cup2key=10:veZx70O1HLuo3EhkC0ZlUq6uaUpLMrn8gKIeKsPfS44&cup2hreq=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 HTTP/1.1\" 404 -",
+    "127.0.0.1 - - [03/Nov/2026 15:09:33] \"GET /form.html HTTP/1.1\" 200 -",
+    "127.0.0.1 - - [03/Nov/2026 15:09:33] \"GET /favicon.ico HTTP/1.1\" 404 -"
+   ],
+   "valueBefore": "abcdefghijklmnopqrstuvwxyz0123456789",
+   "valueAfter": "abcdefghijklmnopqrstuvwxyz012345678",
+   "verdict": "supported",
+   "driver_exit": 0,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "witness": {
+    "submitRequests": 0,
+    "focusedField": "q",
+    "afterEnd": {
+     "value": "abcdefghijklmnopqrstuvwxyz0123456789",
+     "selStart": 36,
+     "selEnd": 36
+    },
+    "afterBackspace": {
+     "value": "abcdefghijklmnopqrstuvwxyz012345678",
+     "selStart": 35,
+     "selEnd": 35
+    },
+    "endLeftValueUnchanged": true,
+    "caretAtEndAfterEnd": true,
+    "caretWasNotAlreadyAtEndBeforeEnd": true,
+    "backspaceRemovedExactlyLastChar": true,
+    "expectedAfterBackspace": "abcdefghijklmnopqrstuvwxyz012345678",
+    "seededValue": "abcdefghijklmnopqrstuvwxyz0123456789",
+    "caretAfterClick": {
+     "selStart": 20,
+     "selEnd": 20
+    }
+   }
+  }
+ ],
+ "exploratory": [
+  {
+   "label": "H1-negative-control-nofocus",
+   "note": "Enter with no field focused: no submit expected",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H1-run1-control-nofocus",
+   "run": "H1-run1-control-nofocus",
+   "verdict": "control-as-expected",
+   "submitted": false,
+   "submitRequests": 0,
+   "valueBefore": "",
+   "valueAfter": null,
+   "activeElementBefore": null,
+   "activeElementAfterTab": null,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  },
+  {
+   "label": "H1-negative-control-nofocus",
+   "note": "repeat",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H1-run2-control-nofocus",
+   "run": "H1-run2-control-nofocus",
+   "verdict": "control-as-expected",
+   "submitted": false,
+   "submitRequests": 0,
+   "valueBefore": "",
+   "valueAfter": null,
+   "activeElementBefore": null,
+   "activeElementAfterTab": null,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  },
+  {
+   "label": "H2-negative-control-home",
+   "note": "Home instead of End: Backspace at offset 0 deletes nothing",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H2-run1-control-home",
+   "run": "H2-run1-control-home",
+   "verdict": "control-as-expected",
+   "submitted": false,
+   "submitRequests": 0,
+   "valueBefore": "abcde",
+   "valueAfter": "abcde",
+   "activeElementBefore": null,
+   "activeElementAfterTab": null,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  },
+  {
+   "label": "H1-keydown-only",
+   "note": "LONE keyDown, no keyUp, text CR",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H1-run1-keydown-only",
+   "run": "H1-run1-keydown-only",
+   "verdict": "supported-keydown-only",
+   "submitted": true,
+   "submitRequests": 1,
+   "valueBefore": "probe",
+   "valueAfter": null,
+   "activeElementBefore": null,
+   "activeElementAfterTab": null,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  },
+  {
+   "label": "H1-keydown-only",
+   "note": "repeat",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H1-run2-keydown-only",
+   "run": "H1-run2-keydown-only",
+   "verdict": "supported-keydown-only",
+   "submitted": true,
+   "submitRequests": 1,
+   "valueBefore": "probe",
+   "valueAfter": null,
+   "activeElementBefore": null,
+   "activeElementAfterTab": null,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  },
+  {
+   "label": "H1-keydown-only",
+   "note": "repeat",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H1-run3-keydown-only",
+   "run": "H1-run3-keydown-only",
+   "verdict": "supported-keydown-only",
+   "submitted": true,
+   "submitRequests": 1,
+   "valueBefore": "probe",
+   "valueAfter": null,
+   "activeElementBefore": null,
+   "activeElementAfterTab": null,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  },
+  {
+   "label": "H1-no-text-payload",
+   "note": "keyDown+keyUp with NO text: submit expected to FAIL",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H1-run1-notext",
+   "run": "H1-run1-notext",
+   "verdict": "falsified",
+   "submitted": false,
+   "submitRequests": 0,
+   "valueBefore": "probe",
+   "valueAfter": null,
+   "activeElementBefore": null,
+   "activeElementAfterTab": null,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  },
+  {
+   "label": "H1-no-text-payload",
+   "note": "repeat",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H1-run2-notext",
+   "run": "H1-run2-notext",
+   "verdict": "falsified",
+   "submitted": false,
+   "submitRequests": 0,
+   "valueBefore": "probe",
+   "valueAfter": null,
+   "activeElementBefore": null,
+   "activeElementAfterTab": null,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  },
+  {
+   "label": "H1-no-text-payload",
+   "note": "repeat",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/H1-run3-notext",
+   "run": "H1-run3-notext",
+   "verdict": "falsified",
+   "submitted": false,
+   "submitRequests": 0,
+   "valueBefore": "probe",
+   "valueAfter": null,
+   "activeElementBefore": null,
+   "activeElementAfterTab": null,
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  },
+  {
+   "label": "HTab-focus-traversal",
+   "note": "Tab moves activeElement q->q2 on a two-field fixture",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/HTab-run1-default",
+   "run": "HTab-run1-default",
+   "verdict": "supported-exploratory",
+   "submitted": false,
+   "submitRequests": 0,
+   "valueBefore": "",
+   "valueAfter": "",
+   "activeElementBefore": "q",
+   "activeElementAfterTab": "q2",
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  },
+  {
+   "label": "HTab-focus-traversal",
+   "note": "repeat",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/HTab-run2-default",
+   "run": "HTab-run2-default",
+   "verdict": "supported-exploratory",
+   "submitted": false,
+   "submitRequests": 0,
+   "valueBefore": "",
+   "valueAfter": "",
+   "activeElementBefore": "q",
+   "activeElementAfterTab": "q2",
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  },
+  {
+   "label": "HTab-focus-traversal",
+   "note": "repeat",
+   "runDir": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runs/HTab-run3-default",
+   "run": "HTab-run3-default",
+   "verdict": "supported-exploratory",
+   "submitted": false,
+   "submitRequests": 0,
+   "valueBefore": "",
+   "valueAfter": "",
+   "activeElementBefore": "q",
+   "activeElementAfterTab": "q2",
+   "survivors_chromium": 0,
+   "survivors_server": 0,
+   "survivors_port_listen": 0,
+   "error": null
+  }
+ ],
+ "survivors": {
+  "total": 0,
+  "perRunAllZero": true,
+  "checks": [
+   "survivors_chromium",
+   "survivors_server",
+   "survivors_port_listen"
+  ],
+  "globalSweep": "pgrep -af chromium | grep tabi-r56/R56LabProbe -> 0 ; pgrep -af http.server -> 0 ; ss -ltn port range -> no listener from any probe run"
+ },
+ "commands": [
+  {
+   "command": "/usr/bin/chromium --version",
+   "exit": 0
+  },
+  {
+   "command": "node -v",
+   "exit": 0
+  },
+  {
+   "command": "/usr/bin/python3 -V",
+   "exit": 0
+  },
+  {
+   "command": "ss -ltn \"sport = :<port>\" (port-free check, per run)",
+   "exit": 0
+  },
+  {
+   "command": "bash -n /fast/scratch/hyaku/tabi-r56/R56LabProbe/runner.sh",
+   "exit": 0
+  },
+  {
+   "command": "node --check /fast/scratch/hyaku/tabi-r56/R56LabProbe/driver.mjs",
+   "exit": 0
+  },
+  {
+   "command": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runner.sh H1 <1..3> default",
+   "exit": 0
+  },
+  {
+   "command": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runner.sh H2 <1..3> default",
+   "exit": 0
+  },
+  {
+   "command": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runner.sh H1 <1..2> control-nofocus",
+   "exit": 0
+  },
+  {
+   "command": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runner.sh H2 1 control-home",
+   "exit": 0
+  },
+  {
+   "command": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runner.sh H1 <1..3> keydown-only",
+   "exit": 0
+  },
+  {
+   "command": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runner.sh H1 <1..3> notext",
+   "exit": 0
+  },
+  {
+   "command": "/fast/scratch/hyaku/tabi-r56/R56LabProbe/runner.sh HTab <1..3> default",
+   "exit": 0
+  },
+  {
+   "command": "pgrep -af chromium | grep tabi-r56/R56LabProbe | wc -l  -> 0",
+   "exit": 0
+  },
+  {
+   "command": "pgrep -af \"http.server\" | wc -l  -> 0",
+   "exit": 0
+  }
+ ],
+ "notes": [
+  "H1 and H2 both supported 3/3 in fresh profiles; zero survivors on every run.",
+  "RUNNER GROUND (for the C2 runner, not a claim change): the Enter keyDown MUST carry text \"\\r\". Three runs with keyDown+keyUp and NO text payload produced ZERO submit requests (server log has only /form.html and /favicon.ico). Carrying text is what makes implicit submission fire.",
+  "RUNNER GROUND (for the C2 runner): a LONE Enter keyDown with text \"\\r\" and no keyUp DOES submit (3/3, 352 ms). This is compatible with the frozen C2 predicate requiring keyEventsDispatched === 1 for the Enter leg.",
+  "RUNNER GROUND: Tab on a two-field fixture moved document.activeElement q -> q2 on 3/3 runs (exploratory; C2 needs this leg).",
+  "Chromium logs one /time/1/current request to the fixture origin before /form.html (component/network probe under the host-resolver MAP). It is not a submit and is filtered out of submit counting.",
+  "Negative controls behaved as expected: no-focus Enter produced no submit; Home instead of End left the caret at 0 so Backspace deleted nothing (value unchanged abcde).",
+  "No repo file was written. Artifacts live under .ufo/waves/round-56/labrat/ and /fast/scratch/hyaku/tabi-r56/R56LabProbe/.",
+  "RECEIPT LOCATION: scratch /fast/scratch/hyaku/tabi-r56/R56LabProbe was removed after the copy; every per-run receipt cited here is preserved verbatim under .ufo/waves/round-56/labrat/runs/<runDir basename>/{result.json,survivors.json,port.txt,server.log} and the harness under .ufo/waves/round-56/labrat/receipts/."
+ ],
+ "acceptance": {
+  "probeJsonNamesBothHypotheses": true,
+  "verdictEach": {
+   "H1": "supported",
+   "H2": "supported"
+  },
+  "survivors": 0
+ },
+ "harnessDefects": [
+  {
+   "what": "First H2 attempt (3 runs) aborted with a driver bug: the return object used `expectedAfterBackspace` as shorthand for a local named `expectAfterBackspace`.",
+   "verbatimErrorObserved": "ReferenceError: expectedAfterBackspace is not defined\n    at runH2 (file:///fast/scratch/hyaku/tabi-r56/R56LabProbe/driver.mjs:227:5)",
+   "falsificationOfHypothesis": false,
+   "fix": "renamed the property assignment to `expectedAfterBackspace: expectAfterBackspace`; node --check passed; the three runs were then re-executed from scratch",
+   "disclosure": "the failed attempts wrote into the same run dirs (runs/H2-run{1,2,3}-default) and were replaced by the corrected runs, so no receipt of the failed attempt survives. The failure was a harness defect, not an H2 falsification, and the corrected runs are the ones recorded above."
+  },
+  {
+   "what": "The first H1 run 1 attempt exited the runner with `SROVPID: unbound variable` from the EXIT trap before teardown.",
+   "verbatimErrorObserved": "./runner.sh: line 23: SROVPID: unbound variable",
+   "falsificationOfHypothesis": false,
+   "fix": "trap body guarded with ${SROVPID:-}/${CHPID:-}; bash -n passed; run 1 was then re-executed and its survivors re-proved 0"
+  }
+ ]
+}

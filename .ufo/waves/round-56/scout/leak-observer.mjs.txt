@@ -1,0 +1,12 @@
+// observer: runs the victim, then counts survivors by exact token from OUTSIDE.
+import fs from 'node:fs'; import { spawnSync } from 'node:child_process';
+const [SCRATCH, MODE, TAG, OUT] = process.argv.slice(2);
+const token = `tabi-r56-${MODE}-${TAG}`;
+const r = spawnSync(process.execPath, [new URL('./victim.mjs', import.meta.url).pathname, SCRATCH, MODE, TAG], { encoding: 'utf8' });
+const census = () => { const q = spawnSync('ps', ['-eo', 'pid=,args='], { encoding: 'utf8', maxBuffer: 8e6 }); const p = []; for (const l of (q.stdout || '').split('\n')) { if (!l.includes(token)) continue; const m = l.match(/^\s*(\d+)\s+/); if (m) p.push(Number(m[1])); } return p; };
+const mid = (() => { try { return JSON.parse(fs.readFileSync(`${SCRATCH}/victim-${MODE}.mid.json`, 'utf8')).midRunCount; } catch { return null; } })();
+const survivors = census();
+const out = { schema: 'tabi-r56-leak-observer', mode: MODE, token, victimExit: r.status, victimSignal: r.signal, victimStderrTail: String(r.stderr || '').trim().split('\n').slice(-3).join(' | ').slice(0, 260), midRunCount: mid, survivorsAfterVictimExit: survivors.length };
+for (const p of survivors) { try { process.kill(p, 'SIGKILL'); } catch {} }
+out.cleanedToZero = census().length;
+const text = JSON.stringify(out, null, 1); if (OUT) fs.writeFileSync(OUT, text + '\n'); console.log(text);

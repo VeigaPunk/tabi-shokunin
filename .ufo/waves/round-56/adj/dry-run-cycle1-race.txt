@@ -1,0 +1,45 @@
+C1 dry-run correction cycle 1 — the RACED state (kept, not re-run to green)
+==========================================================================
+Scratch fixture commit: 0815c154690b53b125673236aade6939acd656b9
+  (lane clone of tabi-shokunin at faee4cb2 + v16 meter + the r56 ledgers rebind
+   at the cycle-1 snapshot; the commit is scratch only, NOT the lane)
+Command (cwd = the scratch clone):
+  node .ufo/waves/round-56/counters/c1-adjacency-host-v16.mjs \
+    --rev $(git rev-parse HEAD) --repo <scratch>/lane-clone \
+    --fleet /home/vgpnk/Projects/shokunin --json
+Exit: 1
+
+Verbatim meter output tail (schema..findings, headSnapshot elided):
+
+  "counts": {
+   "roster": 20,
+   "mapRows": 16,
+   "auditRows": 16,
+   "deltaLanes": 16
+  },
+  "predicate": false,
+  "findingCount": 1,
+  "findings": [
+   {
+    "id": "lane-screen-head-mismatch",
+    "detail": "souji-shokunin"
+   }
+  ]
+
+Cause: souji-shokunin's head advanced between the cycle-1 snapshot
+(f778b9d131574d3ff09c0cc8a077643c0fc84bb4) and this run
+(df7d1300cbc5443b748682598e35b29347bfa930). Its PROVINCE.md bytes did NOT
+change (sha256 c60046df0ee067cded491caf99e013adaf0f0986238e1ec36df9b17838271d76,
+323 lines, 0 BG hits before and after), so only the head cell was re-bound.
+
+Cycle 0 (preceding) also raced: the dry run at fixture commit
+18bd3189b19991ba626e7bd955e3fe1429a77631 returned exit 0 / predicate true /
+findingCount 0, and kake-shokunin had moved between the cycle-0 snapshot
+(4d188f9477b4301a2c93c8ef5c13bc6c6f4bb6e4) and that run
+(dbcfef0b80868dc3f677ccf2caa51110094e6d26). kake is map-covered, not a delta
+lane, so the meter does not compare its head; it is named anyway per the
+contract.
+
+This file is a transcription of the observed run output. The run is not
+repeatable at this exact fixture commit now (the fleet heads moved on), so it
+is preserved as observed rather than re-executed.
