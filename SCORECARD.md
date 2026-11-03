@@ -3377,3 +3377,21 @@ lowest-axis obligation applies to C1). Round 59 enters NO capability row (C2 was
 - planned: adjacency — the 37 kaidoku `overlap-declared` rulings await a non-author check (L0 `tabi | round-59`).
 - saturation 8 / window 3: round 59 entered no capability; the stagnation window moves to position 2 of 3 (rounds 58 and 59 carry none, the r58 row's window restarted at 58). No axis retired; no score moved.
 - D10 (capability-only claims hold the axis score): a capability entering the table does not move a scored axis; AXES.md keeps capabilities separate from the six scored axes.
+
+## Round 60 — declared claims (frozen at 67d6f70e, before any seat data) and executed disposition
+
+Round 60 (attempt 1) on the Linux host. Baseline `8a3f6f89`; claims freeze `67d6f70e` (claims.json, sibling snapshot `c1/snapshot-r60.tsv`, census start 162 rows). Axes at round start: adjacency 8 (lowest owned), coverage 9, depth 9, operability 9, freshness 9, calibration 9; saturation 8 / window 3, position 2 (no capability entered in r59; the nudge is inactive; the lowest-axis obligation applies to C1). Round 60 enters NO capability row (C2 of r59 stays killed; the new C2 is a counter generation on calibration, not a re-declared capability).
+
+| Claim / axis | Counting command | Before -> after | Verdict / score |
+|---|---|---|---|
+| C1 adjacency (lowest owned, 8): the wide adjacency screen `c1-wide-screen-r60` over every tracked `.md` blob of the 20 roster siblings at the frozen heads | `node .ufo/waves/round-60/counters/c1-wide-screen-r60.mjs --scope wide --snapshot .ufo/waves/round-60/c1/snapshot-r60.tsv --json` (predicate: screenedMd == enumeratedMd, unscreenedMd == 0, rowMismatch == 0, unresolvableHead == 0, roster == 20) plus the v19 map-scope meter at `bc373ade` | before: `--scope map` red (unscreenedMd 85,573 of 85,598); after: wide green (85,598 == 85,598, unscreened 0, rowMismatch 0), BUT the v19 no-regression clause red at the data rev (12 findings: sibling drift since the round-59 rebind) | **KILLED by its own K7** (v19 red at the data rev); not admitted; score held at 8 |
+| C2 calibration (overreach caught; score 9): the r60 chromium receipt gate refuses forged CapsLock probes A, B, D, E and keeps the live receipt green | `node .ufo/waves/round-60/counters/chromium-receipt-r60.mjs <probe> --driver scripts/chrome-cdp-loopback-round59.mjs --expect-driver-sha256 b16ddb44… --shot corpus/evidence/round59/chromium-capslock-boundary --json` over A, B, D, E and the live receipt | before: the r59 counter greens A, B, D, E (forgedGreen 4); after: forgedGreen 0 (exit 1 each), live green (exit 0, findings []) | **VERIFIED on its frozen predicate**; the round is not admitted, so score held at 9; named residuals: keyup cancelable value by design, byte-perfect replica |
+
+Round 60 executed disposition: C1 killed by K7; C2 verified. The round is not admitted (one claim unverified: honest stop; the operator rules). Axes: adjacency 8 (held), calibration 9 (held), others unchanged. No capability row enters (C2 is a counter generation on calibration, not a capability).
+
+### Planned / saturation / retired — round 60
+
+- planned (r61, adjacency): rebind the v19 meter's ledger inputs at one sibling snapshot (or move the no-regression clause onto the snapshot), so a wide-screen claim can clear K7 on a moving fleet; the wide adjacency adjudication of the 19,049 hit lines is the residual after that.
+- planned (r61, calibration): the keyup `cancelable` value rule is a predicate change, not an instrument fix; raise it as a new claim only if the operator rules it in scope (L0 question, round 60).
+- saturation 8 / window 3: no capability entered in r58-r60 besides the r58 row, so the window is at position 3 of 3; the stagnation nudge applies from round 61 unless a capability enters that round.
+- retired: none. D10 (capability-only claims hold the axis score) still applies.

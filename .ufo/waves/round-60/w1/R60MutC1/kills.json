@@ -1,0 +1,302 @@
+{
+ "schema": "tabi-r60-c1-mutants-v1",
+ "seat": "R60MutC1",
+ "round": 60,
+ "claim": "C1 (adjacency, wide screen)",
+ "authority": ".ufo/waves/round-60/claims.json mutantsC1 M1-M5",
+ "counter": {
+  "path": ".ufo/waves/round-60/counters/c1-wide-screen-r60.mjs",
+  "sha256": "ba7ebc9ab65661523db30fa06f889dd393efc99627ace0382369decaabd85920"
+ },
+ "snapshot": {
+  "path": ".ufo/waves/round-60/c1/snapshot-r60.tsv",
+  "sha256": "9480fb74465beda3c88d0914591156e82a9d063f98d93ef80616f58bf8046420"
+ },
+ "killRule": "KILLED iff the mutant selftest fails (exit != control exit, allPass false, or any failing case) OR its wide-run exit/predicate/counts differ from the control wide run.",
+ "harness": {
+  "scratch": "/fast/scratch/hyaku/tabi-r60/R60MutC1",
+  "mutantCopies": "exact string replacement, one occurrence each, copies only; the original was never edited",
+  "mutantRunLocation": "copies at <scratch>/lane/.ufo/waves/round-60/counters/ so laneRoot() has the same depth; <scratch>/lane is a fixture repo whose corpus/adjacency.tsv at tag 67d6f70e is byte-identical to the lane map (needed only for M5 defaulted-scope runs)",
+  "mapIdentity": {
+   "laneRoot": "/fast/scratch/hyaku/tabi-r60/R60MutC1/lane",
+   "tag": "67d6f70e",
+   "sha256": "39a04a3c516ffefb296ac64665f481f240d95ae024394dfe631a4a754c35b309",
+   "identicalToLane": true
+  },
+  "tmpdir": "explicit per-run TMPDIR under the scratch root",
+  "restoration": "the original counter was never modified (sha256 re-checked after the pass)"
+ },
+ "control": {
+  "path": ".ufo/waves/round-60/counters/c1-wide-screen-r60.mjs",
+  "sha256": "ba7ebc9ab65661523db30fa06f889dd393efc99627ace0382369decaabd85920",
+  "selftest": {
+   "exit": 0,
+   "allPass": true,
+   "cases": 17,
+   "failing": []
+  },
+  "wide": {
+   "exit": 0,
+   "predicate": true,
+   "counts": {
+    "roster": 20,
+    "enumeratedMd": 85598,
+    "screenedMd": 85598,
+    "unscreenedMd": 0,
+    "rowMismatch": 0,
+    "unresolvableHead": 0,
+    "wideHitLines": 19049,
+    "wideHitFiles": 6129,
+    "blobReadErrors": 0,
+    "rowsChecked": 0,
+    "rowsMissing": 0,
+    "rowsDuplicate": 0,
+    "rowsUnknownLane": 0
+   }
+  },
+  "defaultScopeProbe": {
+   "exit": 2,
+   "stderr": "c1-wide-screen-r60: missing --scope (wide|map); there is no default scope"
+  }
+ },
+ "mutants": {
+  "M1": {
+   "defect": "enumerate only top-level .md files (drop nested directories)",
+   "replacement": {
+    "target": "    const isMd = pathBuf.length >= 3\n      && pathBuf[pathBuf.length - 3] === 0x2e\n      && pathBuf[pathBuf.length - 2] === 0x6d\n      && pathBuf[pathBuf.length - 1] === 0x64;",
+    "replacement": "    const isMd = pathBuf.length >= 3\n      && pathBuf[pathBuf.length - 3] === 0x2e\n      && pathBuf[pathBuf.length - 2] === 0x6d\n      && pathBuf[pathBuf.length - 1] === 0x64\n      && !pathBuf.includes(0x2f);",
+    "anchorOccurrences": 1
+   },
+   "mutantSha256": "44385e32274a6c7f81276808fa85cd5c67a1054e9e17b2b164670d25155757ba",
+   "selftest": {
+    "exit": 1,
+    "allPass": false,
+    "cases": 17,
+    "failing": [
+     "wide-green-25",
+     "nested-md-screened",
+     "space-and-nonascii-path",
+     "newline-path-roundtrip",
+     "wide-hit-counts",
+     "map-red-on-unreferenced-nested-md",
+     "verify-rows-genuine",
+     "unresolvable-head-refused"
+    ],
+    "stderrHead": ""
+   },
+   "wide": {
+    "exit": 0,
+    "predicate": true,
+    "counts": {
+     "roster": 20,
+     "enumeratedMd": 144,
+     "screenedMd": 144,
+     "unscreenedMd": 0,
+     "rowMismatch": 0,
+     "unresolvableHead": 0,
+     "wideHitLines": 478,
+     "wideHitFiles": 58,
+     "blobReadErrors": 0,
+     "rowsChecked": 0,
+     "rowsMissing": 0,
+     "rowsDuplicate": 0,
+     "rowsUnknownLane": 0
+    },
+    "stderrHead": ""
+   },
+   "defaultScopeProbe": {
+    "exit": 2,
+    "stderr": "c1-wide-screen-r60: missing --scope (wide|map); there is no default scope"
+   },
+   "differsFromControl": {
+    "selftest": true,
+    "wide": true
+   },
+   "verdict": "KILLED"
+  },
+  "M2": {
+   "defect": "skip the per-file hit recount (trust a stale/claimed hit count)",
+   "replacement": {
+    "target": "      if (m.bgHits !== row.bgHits) { mismatch(`bgHits ${row.bgHits} != ${m.bgHits}`, row); continue; }",
+    "replacement": "      const bgHitsRecounted = row.bgHits; // M2: trust the row's claimed count, skip the per-file recount\n      if (bgHitsRecounted !== row.bgHits) { mismatch(`bgHits ${row.bgHits} != ${bgHitsRecounted}`, row); continue; }",
+    "anchorOccurrences": 1
+   },
+   "mutantSha256": "5baadc1d137e41ea9f9576bc712d8fb071b3340434d720bed4736d27b081d934",
+   "selftest": {
+    "exit": 1,
+    "allPass": false,
+    "cases": 17,
+    "failing": [
+     "forged-row-hits"
+    ],
+    "stderrHead": ""
+   },
+   "wide": {
+    "exit": 0,
+    "predicate": true,
+    "counts": {
+     "roster": 20,
+     "enumeratedMd": 85598,
+     "screenedMd": 85598,
+     "unscreenedMd": 0,
+     "rowMismatch": 0,
+     "unresolvableHead": 0,
+     "wideHitLines": 19049,
+     "wideHitFiles": 6129,
+     "blobReadErrors": 0,
+     "rowsChecked": 0,
+     "rowsMissing": 0,
+     "rowsDuplicate": 0,
+     "rowsUnknownLane": 0
+    },
+    "stderrHead": ""
+   },
+   "defaultScopeProbe": {
+    "exit": 2,
+    "stderr": "c1-wide-screen-r60: missing --scope (wide|map); there is no default scope"
+   },
+   "differsFromControl": {
+    "selftest": true,
+    "wide": false
+   },
+   "verdict": "KILLED"
+  },
+  "M3": {
+   "defect": "read the working tree file instead of the recorded head blob",
+   "replacement": {
+    "target": "      out.set(e.path, lineMetrics(buf.subarray(start, end)));",
+    "replacement": "      out.set(e.path, lineMetrics(fs.readFileSync(path.join(repo, e.path))));",
+    "anchorOccurrences": 1
+   },
+   "mutantSha256": "a39c3d14c1a0c5e5e206f7ca7765eea6e753d2a44863a8bb29a9adeb33650d9f",
+   "selftest": {
+    "exit": 1,
+    "allPass": false,
+    "cases": 17,
+    "failing": [
+     "symlink-md-screened-as-blob",
+     "worktree-differs-from-head"
+    ],
+    "stderrHead": ""
+   },
+   "wide": {
+    "exit": 1,
+    "predicate": null,
+    "counts": null,
+    "stderrHead": "node:fs:621\n  return binding.open(\n                 ^\n\nError: ENOENT: no such file or directory, open '/home/vgpnk/Projects/shokunin/mado-shokunin/.ufo/waves/round-34/scratch/RevengerC1/a2-entry-symlink/corpus/knowledge/waybar-module-text-route-r25.md'\n    at Object.openSync (node:fs:621:18)\n    at Object.readFileSync (node:fs:487:35)\n    at flush (file:///fast/scratch/hyaku/tabi-r60/R60MutC1/lane"
+   },
+   "defaultScopeProbe": {
+    "exit": 2,
+    "stderr": "c1-wide-screen-r60: missing --scope (wide|map); there is no default scope"
+   },
+   "differsFromControl": {
+    "selftest": true,
+    "wide": true
+   },
+   "verdict": "KILLED"
+  },
+  "M4": {
+   "defect": "treat an unresolvable head as zero files instead of refusing",
+   "replacement": {
+    "target": "    if (!headIsCommit(repo, head)) {\n      counts.unresolvableHead++;\n      continue;\n    }",
+    "replacement": "    if (!headIsCommit(repo, head)) {\n      row.headResolvable = false;\n      continue;\n    }",
+    "anchorOccurrences": 1
+   },
+   "mutantSha256": "b634cf34896f3798f0d869e37ccd2dc5009ddb743b740a4c7f4e603c05a99e8c",
+   "selftest": {
+    "exit": 1,
+    "allPass": false,
+    "cases": 17,
+    "failing": [
+     "unresolvable-head-refused"
+    ],
+    "stderrHead": ""
+   },
+   "wide": {
+    "exit": 0,
+    "predicate": true,
+    "counts": {
+     "roster": 20,
+     "enumeratedMd": 85598,
+     "screenedMd": 85598,
+     "unscreenedMd": 0,
+     "rowMismatch": 0,
+     "unresolvableHead": 0,
+     "wideHitLines": 19049,
+     "wideHitFiles": 6129,
+     "blobReadErrors": 0,
+     "rowsChecked": 0,
+     "rowsMissing": 0,
+     "rowsDuplicate": 0,
+     "rowsUnknownLane": 0
+    },
+    "stderrHead": ""
+   },
+   "defaultScopeProbe": {
+    "exit": 2,
+    "stderr": "c1-wide-screen-r60: missing --scope (wide|map); there is no default scope"
+   },
+   "differsFromControl": {
+    "selftest": true,
+    "wide": false
+   },
+   "verdict": "KILLED"
+  },
+  "M5": {
+   "defect": "default --scope to map when --scope is missing",
+   "replacement": {
+    "target": "  if (!opts.scope) die('missing --scope (wide|map); there is no default scope');",
+    "replacement": "  if (!opts.scope) opts.scope = 'map';",
+    "anchorOccurrences": 1
+   },
+   "mutantSha256": "108d0762098edb6d2b8902fbbc6e474a3326fc1ad599c3148414b3e56aa41921",
+   "selftest": {
+    "exit": 1,
+    "allPass": false,
+    "cases": 17,
+    "failing": [
+     "missing-scope-exits-2"
+    ],
+    "stderrHead": ""
+   },
+   "wide": {
+    "exit": 0,
+    "predicate": true,
+    "counts": {
+     "roster": 20,
+     "enumeratedMd": 85598,
+     "screenedMd": 85598,
+     "unscreenedMd": 0,
+     "rowMismatch": 0,
+     "unresolvableHead": 0,
+     "wideHitLines": 19049,
+     "wideHitFiles": 6129,
+     "blobReadErrors": 0,
+     "rowsChecked": 0,
+     "rowsMissing": 0,
+     "rowsDuplicate": 0,
+     "rowsUnknownLane": 0
+    },
+    "stderrHead": ""
+   },
+   "defaultScopeProbe": {
+    "exit": 1,
+    "stderr": ""
+   },
+   "differsFromControl": {
+    "selftest": true,
+    "wide": false
+   },
+   "verdict": "KILLED"
+  }
+ },
+ "summary": {
+  "M1": "KILLED",
+  "M2": "KILLED",
+  "M3": "KILLED",
+  "M4": "KILLED",
+  "M5": "KILLED"
+ },
+ "restoredSha256": "ba7ebc9ab65661523db30fa06f889dd393efc99627ace0382369decaabd85920",
+ "originalUnchanged": true
+}

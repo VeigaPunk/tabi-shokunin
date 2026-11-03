@@ -1,0 +1,60 @@
+{
+ "mutants": [
+  {
+   "id": "C6",
+   "description": "remove the cancelable presence and value requirement on CapsLock and letter events (SHAPE_KEYS loses cancelable; deliveredShapeProblem drops the boolean-type and keydown-true rules; the leg trace's present-cancelable rules drop)",
+   "replacements": [
+    [
+     "const SHAPE_KEYS = ['key', 'code', 'cancelable'];",
+     "const SHAPE_KEYS = ['key', 'code'];"
+    ],
+    [
+     "  if (typeof e.cancelable !== 'boolean') return 'cancelable ' + JSON.stringify(e.cancelable) + ' is not a JSON boolean';\n  if (want.type !== 'keyup' && e.cancelable !== true) return 'cancelable ' + JSON.stringify(e.cancelable) + ' != true';\n",
+     ""
+    ],
+    [
+     "    // (a)/(d): a present cancelable is a JSON boolean, TRUE on a keydown\n    if (has(e, 'cancelable')) {\n      if (typeof e.cancelable !== 'boolean') {\n        add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + ']: cancelable ' + JSON.stringify(e.cancelable) + ' is not a JSON boolean');\n      } else if (wantType !== 'keyUp' && e.cancelable !== true) {\n        add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + ']: cancelable ' + JSON.stringify(e.cancelable) + ' != true on a ' + wantType);\n      }\n    }\n",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "C7",
+   "description": "remove the trace-vs-keylog cancelable cross-check (both checkCapsTraceFlags call sites and the leg-trace (b) block)",
+   "replacements": [
+    [
+     "    checkCapsTraceFlags(leg, 'journey.form.capsLockLeg', letters, pageEntries, add);\n",
+     ""
+    ],
+    [
+     "      checkCapsTraceFlags(trace, 'capslockTrace', letters, pageEntries, add);\n",
+     ""
+    ],
+    [
+     "    // (b): cross-check the flags the entry claims against the cited occurrence\n    if (start === null || !isObj(pageAll[start + k])) return;\n    const p = pageAll[start + k];\n    for (const field of ['cancelable', 'defaultPrevented']) {\n      if (!has(e, field) || typeof e[field] !== 'boolean') continue;\n      if (typeof p[field] !== 'boolean') {\n        add('keylog-flag-mismatch', 'capsLockLeg.trace[' + k + '] ' + field + ' ' + JSON.stringify(e[field])\n          + ': the page keylog occurrence it cites (' + (start + k) + ') carries no boolean ' + field);\n        continue;\n      }\n      if (p[field] !== e[field]) {\n        add('keylog-flag-mismatch', 'capsLockLeg.trace[' + k + '] ' + field + ' ' + JSON.stringify(e[field])\n          + ' != the page keylog occurrence it cites (' + (start + k) + ') ' + field + ' ' + JSON.stringify(p[field]));\n      }\n    }\n",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "C8",
+   "description": "read cancelable only from the first keydownEntry (capsMirrorSlots keeps press1 and drops press2)",
+   "replacements": [
+    [
+     "  for (const [k, i] of [['press1', 0], ['press2', 1]]) {\n    if (isObj(m[k])) presses.push([k, m[k], i]);\n    else if (has(m, k)) slots.push({ where: k, ev: m[k], type: 'keyDown', key: 'CapsLock', runIndex: i === 0 ? 0 : 6, bad: true, press: true });\n  }\n",
+     "  if (isObj(m.press1)) presses.push(['press1', m.press1, 0]);\n"
+    ]
+   ]
+  },
+  {
+   "id": "C9",
+   "description": "accept a cancelable string 'true' or truthy non-boolean (deliveredShapeProblem's boolean-type and keydown-true rules become a truthiness rule)",
+   "replacements": [
+    [
+     "  if (typeof e.cancelable !== 'boolean') return 'cancelable ' + JSON.stringify(e.cancelable) + ' is not a JSON boolean';\n  if (want.type !== 'keyup' && e.cancelable !== true) return 'cancelable ' + JSON.stringify(e.cancelable) + ' != true';\n",
+     "  // C9: a string \"true\" or any truthy non-boolean satisfies the cancelable rule.\n  if (want.type !== 'keyup') {\n    if (!e.cancelable) return 'cancelable ' + JSON.stringify(e.cancelable) + ' is not truthy';\n  } else if (!has(e, 'cancelable')) {\n    return 'no cancelable';\n  }\n"
+    ]
+   ]
+  }
+ ]
+}

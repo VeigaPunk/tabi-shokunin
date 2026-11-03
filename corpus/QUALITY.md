@@ -829,3 +829,19 @@
     raw 6370-6371, and the `modifierCapsLock` initializer dfn raw 3569, a different
     term); the S162 staged bytes carry no CapsLock occurrence. (source:
     `corpus/lessons/round-59.md` Gate + Corrections D9)
+
+## Round 60 additions (append-only; never edit above)
+
+112. The forgery-probe and mutant coverage rule: a counter that enforces a frozen kill rule
+    carries (a) one selftest case per enumerated forgery probe named in the frozen rule, and
+    (b) one kill per named mutant in the frozen mutant list; and its selftest drives the
+    PRODUCTION call path (the entry point the live gate invokes on a receipt), not only the
+    leaf functions the rule's clauses are built from. A frozen probe with no selftest case,
+    or a named mutant with no killing case, is a coverage gap; the counter is not green until
+    the gap is closed or the rule's wording is changed as a new claim. Red state: the
+    round-59 chromium receipt counter's 91-case selftest had no `cancelable` case; probes A
+    and B exited 0 with `findings []` and mutant C6 SURVIVED (`corpus/lessons/round-59.md`
+    Mistakes 1). Second red state: the counter crashed on every receipt while its selftest
+    passed, because the selftest drove leaf functions only (`corpus/lessons/round-59.md`
+    Mistakes 3). Green state: round 60 kills C6–C9 and greens probes A, B, D, E in
+    `corpus/lessons/round-60.md` Measurements, with 110/110 selftest cases.

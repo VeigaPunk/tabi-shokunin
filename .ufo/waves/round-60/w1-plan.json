@@ -1,0 +1,189 @@
+{
+  "schema": "ufo-swarm-wave-v1",
+  "wave": "w1",
+  "context": "# Target\ntabi-shokunin round 60, wave w1 = the ONLY wave of round 60 (12 seats; attack seats = reviewer, critic, mutation-tester x2 = 4 of 12). Lane root (absolute): /home/vgpnk/Projects/shokunin/tabi-shokunin. Fleet root (absolute, READ-ONLY for you): /home/vgpnk/Projects/shokunin. Integration owner = TabiR60 (the L1; it holds the planner seat, which the validator rejects as a swarm role). Lane base revision 8a3f6f89eecc28328522ab3ce34d3619199e3350; claims frozen at commit 67d6f70e.\n\n# Goal\nTwo FROZEN claims. The authority for every predicate, before/after command, kill rule, mutant list and do-nothing control is /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/claims.json - read it FIRST and in full. You never amend it and never change a predicate after data. C1 (adjacency): a wide screen counter that enumerates every tracked .md blob of the 20 roster sibling lanes at the heads in .ufo/waves/round-60/c1/snapshot-r60.tsv. C2 (calibration): a new generation of the round-59 chromium receipt counter that refuses the forged CapsLock probes A, B, D, E. Both claims are measured; neither claims a capability.\n\n# Paths and write scope\n- Every path in your item is ABSOLUTE under /home/vgpnk/Projects/shokunin/tabi-shokunin unless stated. Seat tools start at the fleet root: a relative path lands in the FLEET repo, which is forbidden. Every `Report:` trailer path is relative to /home/vgpnk/Projects/shokunin/tabi-shokunin - write it at /home/vgpnk/Projects/shokunin/tabi-shokunin/<that path>.\n- Write ONLY inside your own item's paths. Never edit corpus/ (the L1 integrates), claims.json, MANIFEST.json, templates/ or scripts/ at the fleet root, .ufo/state/, .ufo/watchdog.log, or any sibling lane repo. Never touch /home/vgpnk/Projects/shokuknow (read-only source repo; run no campaign tool there).\n- Read-only git only, always with -C: git -C <repo> log/show/ls-tree/ls-files/cat-file/rev-parse/diff/status/grep. Never git add, commit, stash, checkout, switch, reset, pull, push, and never any mutating jj command. Seats never commit or push anything.\n- Sibling lanes are read-only at their recorded heads: use git cat-file / git ls-tree, never a worktree read or checkout, when a claim names a head.\n\n# Scratch (operator directive 2026-10-25)\n- Your scratch root is S=/fast/scratch/hyaku/tabi-r60/<your seat name>/ (mkdir -p). Every temporary clone, fixture, mutant copy and work tree lives there, never in /tmp beyond 50 MB. Pass TMPDIR explicitly. Your shell MUST run `trap 'rm -rf -- \"$S\"' EXIT` before its first write; copy receipts into your wave dir first. A fixture repo is created as D=$(mktemp -d -p \"$S\") && git -C \"$D\" init -q; every later git call names -C \"$D\"; verify git -C \"$D\" rev-parse --show-toplevel equals $D before the first commit; use git -c user.name=tabi-selftest -c user.email=selftest@invalid inside fixtures only.\n- Check disk with disk-guard.sh status before a heavy pass; if ENOSPC, report the free space you saw and do not re-run until status is green.\n\n# Coordination\n- Your seat agent id equals your item name. Message only named peers with write agent://<NAME> (never agent://all). Use the wait tool to receive peer READY messages; wait at most three cycles for any message, then proceed on what exists on disk and say so in your yield. Never poll files in a loop.\n- READY message format: READY <path relative to the lane root> sha256=<digest or -> selftest=<passed>/<total>.\n\n# Tooling and guards\n- Tooling authorization (operator, 2026-10-19): you and every seat may install or upgrade tools that help the task. First read /home/vgpnk/.omp/agent/RULES.md. Record each tool, version, channel and reason in your yield. Official channels only; never pipe an unverified remote script into a shell.\n- pacman is PAUSED host-wide (orchestrator ruling 2026-10-20): no pacman transaction, no pacman -Sy/-Syu/-U/-R. Install via uv tool, npx, or an official release binary in ~/.local/bin only.\n- Host: node v24.21.0 (built-in fetch, WebSocket, test runner); python3; /usr/bin/chromium 155.0.8059.84; git; jj 0.45.1 exists but is not for you to mutate.\n- Run your own artifact's selftest and your own item's commands. Do NOT run lane-wide build, lint, test suites or formatters.\n- No lane-owned files in your yield beyond the paths your item names.\n\n# Honesty\nAn unrun check has not passed. Report every SURVIVED, FLAW, NOT-RUN and dead seat. Do not fabricate evidence. Do not extend a claim's scope. Do not reuse a round-59 result as a round-60 result unless the item says so.\n\n# Yield\nWhen your item is done, yield a concise result (at most 12 lines): files written (repo-relative paths), the key counts or verdicts, the tools touched with version and channel, and anything not run.",
+  "policy": {
+    "source": "config",
+    "maxLanes": 256,
+    "minLanes": 8,
+    "waveMinLanes": 8,
+    "waveMaxLanes": 16,
+    "declaredMaxLanes": null,
+    "hardCeiling": 256,
+    "rampBatchSize": 5,
+    "rampIntervalMs": 700,
+    "globalRunnerCeiling": 1056
+  },
+  "counts": {
+    "spawn": 12,
+    "resume": 0,
+    "total": 12
+  },
+  "compaction": {
+    "applied": false,
+    "mechanism": null,
+    "reason": null,
+    "savedBytes": 0,
+    "payloadBytesBefore": 0,
+    "payloadBytesAfter": 0
+  },
+  "dispatch": {
+    "calls": 1,
+    "kind": "task",
+    "note": "Issue exactly one batched task call carrying every spawn lane, plus one hub send per resume lane. Never split a wave into multiple task calls (one-swarm-per-wave)."
+  },
+  "registry": {
+    "schema": "ufo-swarm-registry-v1",
+    "path": ".ufo/waves/round-60/w1/swarm-registry.json",
+    "reportDir": ".ufo/waves/round-60/w1",
+    "members": {
+      "R60Scout": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "scout",
+        "item": null,
+        "milestone": "S163 and S161 source opens"
+      },
+      "R60Scout2": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "scout",
+        "item": null,
+        "milestone": "C1 population and snapshot audit"
+      },
+      "R60Exec1": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "milestone": "C1 wide screen counter"
+      },
+      "R60Exec2": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "milestone": "C2 cancelable chromium counter"
+      },
+      "R60Exec3": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "milestone": "C2 forged probes and r59 control"
+      },
+      "R60Scribe": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "scribe",
+        "item": null,
+        "milestone": "round-60 drafts"
+      },
+      "R60Connector": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "connector",
+        "item": null,
+        "milestone": "sibling overlap scan"
+      },
+      "R60Reviewer": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "reviewer",
+        "item": null,
+        "milestone": "reviewer attacks"
+      },
+      "R60Critic": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "critic",
+        "item": null,
+        "milestone": "critic falsification"
+      },
+      "R60MutC1": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "mutation-tester",
+        "item": null,
+        "milestone": "C1 mutants"
+      },
+      "R60MutC2": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "mutation-tester",
+        "item": null,
+        "milestone": "C2 mutants"
+      },
+      "R60Sentinel": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "sentinel",
+        "item": null,
+        "milestone": "guard audit"
+      }
+    }
+  },
+  "priorRegistries": [],
+  "tasks": [
+    {
+      "name": "R60Scout",
+      "agent": "scout",
+      "task": "/skill:godspeed\n\nSOURCE RE-OPENS for tabi round 60 (C2's sourced ground). Own: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/sources/ and /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/w1/R60Scout/. Do NOT write corpus/SOURCES.md.\n\n1. Fetch https://www.w3.org/TR/uievents/ with curl -sSL (guard: record final URL, number of redirects, HTTP status, byte count, sha256). Registered S161 anchor: 920,762 B, sha256 8ded5eaf4f190b13c59582d5e92b81d3585112dde963d71d65d8e5991212b918. Report byte-identical or moved. Stage the bytes at .../sources/uievents.html.\n2. In the staged bytes locate the keydown row of the UI Events event-type table (search keydown, cancelable). Record the RAW line numbers and a tag-stripped byte-exact quote of at most 25 words. If the table row states cancelable for keydown, that is the quote; if it does not, say exactly that.\n3. Fetch https://dom.spec.whatwg.org/ (the DOM Standard, single page) with the same guard. Stage at .../sources/dom.html. Locate the cancelable attribute of Event: the dfn for cancelable (its id, e.g. dom-event-cancelable) and its getter steps. Record raw line, byte-exact quote of at most 25 words, and classify each hit as definition site, prose, or cross-reference. Record the access date 2026-11-03.\n4. Write .../sources/s163-fetch-receipt.json and .../sources/s161-reopen-receipt.json with fields: url, finalUrl, numRedirects, httpStatus, bytes, sha256, accessDate, quotes[{rawLine, quote, classification}].\n5. Fetch nothing else. When both receipts land, message R60Scribe: write agent://R60Scribe with READY sources/s163-fetch-receipt.json sources/s161-reopen-receipt.json.\n\nAcceptance: two receipts with sha256 and located quotes; the yield states byte-identical or moved for S161 and the classification of each DOM hit.\n\nLane bounds: leaf member — no subagent dispatch.\nMilestone: S163 and S161 source opens\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60Scout.md"
+    },
+    {
+      "name": "R60Scout2",
+      "agent": "scout",
+      "task": "/skill:godspeed\n\nC1 POPULATION AND SNAPSHOT AUDIT for tabi round 60. Own: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/w1/R60Scout2/. Read-only everywhere else. Do not run any counter; do not write counters.\n\n1. Read claims.json C1 and the snapshot /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/c1/snapshot-r60.tsv (header plus 20 roster lanes). For each lane: git -C /home/vgpnk/Projects/shokunin/<lane> cat-file -t <head> must print commit (record unresolvable heads). Moved current HEADs are NOT a failure; the counter reads recorded heads. Record current HEAD equal or moved.\n2. For each lane count the tracked .md blobs at the recorded head: git -C <lane> ls-tree -r --name-only <head> then keep paths ending .md (case-sensitive). Record the enumerated count per lane.\n3. Derive the v19 map-scope file set per lane: PROVINCE.md if present plus the paths the tabi map references for that lane. The map is git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 67d6f70e:corpus/adjacency.tsv. Read the v19 meter at /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs to confirm which files it screens (read only). Count, per lane, how many enumerated .md are in that v19 set.\n4. Write .../w1/R60Scout2/population.tsv with columns lane, head, headResolves, enumeratedMd, v19ScopeMd, unscreenedAtV19. Print totals.\n5. Report: any .md path that contains a space, a non-ASCII character, a leading dot, or that is a symlink (git ls-tree -r prints mode 120000 for symlinks: report the count of symlinked .md paths); any submodule (mode 160000) named .md; the difference between git ls-tree and git ls-files counts at HEAD for the lanes whose HEAD equals the snapshot head (the enumeration method check).\n6. When done, message R60Exec1: write agent://R60Exec1 with READY w1/R60Scout2/population.tsv sha256=- selftest=-.\n\nAcceptance: population.tsv with 20 lane rows, totals, and the symlink/space/non-ASCII counts stated.\n\nLane bounds: leaf member — no subagent dispatch.\nMilestone: C1 population and snapshot audit\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60Scout2.md"
+    },
+    {
+      "name": "R60Exec1",
+      "agent": "executor",
+      "task": "/skill:godspeed\n\nAUTHOR the C1 wide adjacency screen counter for tabi round 60. Owns (write ONLY these): /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/counters/c1-wide-screen-r60.mjs, /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/controls/c1-scope-map-at-freeze.json, /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/c1/wide-screen-prefreeze-r60.json. Spec = claims.json C1 (statement, before, after, kill, mutantsC1 M1-M5). Authority is claims.json; read it first.\n\nCLI (node ESM, no npm deps): node c1-wide-screen-r60.mjs --scope wide|map --snapshot <tsv> [--fleet <root>] [--verify-rows <tsv>] [--rows-out <tsv>] [--json] [--selftest]. --scope is REQUIRED: missing scope exits 2 (this kills mutant M5).\n\nBehaviour:\n- Read the snapshot TSV (header lane, head). Refuse with exit 2 on a bad header. Snapshot sha256 goes into the output.\n- Per lane: git -C <fleet>/<lane> cat-file -t <head> must print commit; otherwise counts.unresolvableHead++ and the predicate is false.\n- Enumerate: git -C <repo> ls-tree -r -z --name-only <head>; keep paths ending .md. Count into enumeratedMd. Handle spaces and non-ASCII by reading -z output.\n- scope=wide: screen every enumerated path. scope=map: screen only PROVINCE.md plus the paths the map references for that lane. Derive the map file set by mirroring the v19 meter's derivation (read .ufo/waves/round-59/counters/c1-adjacency-host-v19.mjs; the map is git -C /home/vgpnk/Projects/shokunin/tabi-shokunin show 67d6f70e:corpus/adjacency.tsv). State the derivation in a code comment.\n- Per screened file: bytes via git -C <repo> cat-file blob <head>:<path> (NEVER a worktree read, NEVER checkout). sha256 of the bytes. Line count: count of newline characters, plus 1 if the final line is unterminated; state the convention. BG_WORDS: copy the v19 list verbatim (the array in c1-adjacency-host-v19.mjs). A line is a hit when its lowercase text contains any BG word. bgHits = number of hit lines.\n- Output JSON: schema tabi-r60-c1-wide-screen-v1; scope; snapshotSha256; counts {roster, enumeratedMd, screenedMd, unscreenedMd, rowMismatch, unresolvableHead, wideHitLines, wideHitFiles}; perLane; predicate (for scope=wide: screenedMd == enumeratedMd AND unscreenedMd == 0 AND unresolvableHead == 0 AND roster == 20; for scope=map the same expression, expected false). Exit 0 iff predicate true.\n- --rows-out <tsv>: write one row per screened file: lane, path, sha256, lines, bgHits.\n- --verify-rows <tsv>: re-derive every supplied row from the blob at the snapshot head; counts.rowMismatch counts rows whose sha256, lines or bgHits differ, or whose path is not in the enumeration. This is the K4 check.\n- Selftest (--selftest): builds fixtures ONLY in D=$(mktemp -d -p \"$S\") with git -C \"$D\" init -q, names -C \"$D\" in every call, and checks rev-parse --show-toplevel. Required cases: nested .md blob (kills M1); forged row sha, lines or hits via --verify-rows (kills M2); a worktree file that differs from the head blob (kills M3: the counter must report the head bytes); an unresolvable head (kills M4); missing --scope exits 2 (kills M5); scope=map red on a fixture with an unreferenced nested .md; scope=wide green on the same fixture; a path with a space and a non-ASCII filename; a symlink named .md (count it as enumerated only if git lists it, and screen its target blob text as the content). Selftest prints JSON {allPass, cases:[{name,pass}]} and exits 0 iff allPass.\n- Scratch: S=/fast/scratch/hyaku/tabi-r60/R60Exec1/ with the trap from the context. No hardcoded /tmp in the counter (the counter honours TMPDIR and writes nothing outside its --out).\n\nRun, in order: (1) --selftest; (2) --scope map --snapshot .ufo/waves/round-60/c1/snapshot-r60.tsv --json > controls/c1-scope-map-at-freeze.json (this is the frozen do-nothing control; label the file prefreeze); (3) --scope wide ... --json > c1/wide-screen-prefreeze-r60.json. These are PRE-DATA counter runs; the L1 re-runs the data pass after the freeze commit. Report the counter sha256, the selftest counts, the exit codes, and enumeratedMd, screenedMd, unscreenedMd for both scopes.\n\nWhen the selftest is all-pass, message R60MutC1, R60Reviewer and R60Critic: write agent://<NAME> with READY counters/c1-wide-screen-r60.mjs sha256=<sha> selftest=<passed>/<total>. Do not commit. Do not edit v19 or any other counter.\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nMilestone: C1 wide screen counter\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60Exec1.md"
+    },
+    {
+      "name": "R60Exec2",
+      "agent": "executor",
+      "task": "/skill:godspeed\n\nAUTHOR the C2 chromium receipt counter generation for tabi round 60. Owns (write ONLY these): /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/counters/chromium-receipt-r60.mjs and /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/counters/chromium-receipt-r60-fixtures/. Spec = claims.json C2 (statement, kill rule K1-K5, mutantsC2 C6-C9, probes A, B, D, E). Authority is claims.json; read it first.\n\nMethod: COPY the round-59 counter (/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59.mjs, 2193 lines, sha256 b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136, selftest 91/91) to the round-60 path, then change ONLY what claim C2 needs. Do not edit the r59 file.\n\nChanges (the declared change set (a)-(e)):\n(a) cancelable on every CapsLock and letter delivered-shape event: for keydown events cancelable must be the JSON boolean true. The round-59 f6 gap is the first keydownEntry path; find the exact code that accepts cancelable false or a deleted key (probes A and B: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/measure/f6-probe/A-cancelable-false.receipt.json and B-cancelable-missing.receipt.json; their RESULT.txt). Keyup: presence and boolean type of cancelable (state the rule in a code comment).\n(b) trace-vs-keylog cancelable and defaultPrevented: a CapsLock trace entry's cancelable and defaultPrevented must equal the keylog entry it cites (same positional rule as r59 D1). Probe D.\n(c) presence of the type key on CapsLock trace entries (probe E).\n(d) cancelable must be a JSON boolean, not a string (mutant C9).\n(e) read cancelable on EACH CapsLock event, not only the first keydownEntry (mutant C8).\n\nSelftest: keep the 91 r59 cases unchanged and passing; add cases that go RED on A, B, D and E, a string-typed cancelable case, a second-event cancelable-false case, and a case that the live receipt is GREEN. Build D and E fixtures inside the selftest from the live receipt bytes (copy, then edit one key): D = first CapsLock trace entry cancelable set to the opposite of the keylog entry it cites; E = first CapsLock trace entry with the type key deleted. Exit code and findings must follow the r59 convention (exit 1 on any finding). Selftest prints JSON {allPass, cases} and exits 0 iff allPass. Every case must exercise the production call path (the r59 Mistake 3 lesson: a selftest must exercise the production call path, not only leaf functions).\n\nFixtures: copy the A, B and live-receipt fixtures from the round-59 counters' fixture directory (check .ufo/waves/round-59/counters/chromium-receipt-r59-fixtures/) into your fixtures dir with sha256 manifest. Do not write under round-59.\n\nRun: (1) node chromium-receipt-r60.mjs --selftest; (2) the live receipt: node chromium-receipt-r60.mjs /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round59/chromium-capslock-boundary/receipt.json --driver scripts/chrome-cdp-loopback-round59.mjs --expect-driver-sha256 b16ddb443d5bd1b101cfcdb55cbf2d5ffcb3f39d38064a661ab82bb9a152ff86 --shot corpus/evidence/round59/chromium-capslock-boundary --json, run with cwd = the lane root (expect exit 0). Report the counter sha256, the selftest counts, the live-run verdict.\n\nSCRATCH: S=/fast/scratch/hyaku/tabi-r60/R60Exec2/ with the trap from the context; pass TMPDIR; no hardcoded /tmp in the counter.\n\nWhen the selftest is all-pass and the live receipt is green, message R60Exec3, R60MutC2, R60Reviewer and R60Critic: write agent://<NAME> with READY counters/chromium-receipt-r60.mjs sha256=<sha> selftest=<passed>/<total>. Do not commit.\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nMilestone: C2 cancelable chromium counter\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60Exec2.md"
+    },
+    {
+      "name": "R60Exec3",
+      "agent": "executor",
+      "task": "/skill:godspeed\n\nBUILD the C2 forged probe set and the do-nothing control for tabi round 60. Owns (write ONLY these): /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/measure/f-probes-r60.py, /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/measure/f-probes/, /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/measure/c2-after/, and /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/controls/c2-r59-counter-on-probes.json. Spec = claims.json C2 (probe set F = A, B, D, E; the control). Authority is claims.json; read it first.\n\n1. Write f-probes-r60.py (python3 stdlib only). It reads the committed live receipt /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round59/chromium-capslock-boundary/receipt.json (read only) and writes into .ufo/waves/round-60/measure/f-probes/: probe-A.receipt.json and probe-B.receipt.json as byte copies of the round-59 probes .ufo/waves/round-59/measure/f6-probe/A-cancelable-false.receipt.json and B-cancelable-missing.receipt.json (verify their sha256 against the r59 bytes); probe-D.receipt.json = the live receipt with the first CapsLock trace entry's cancelable set to the opposite of the keylog entry it cites (all other bytes identical; re-serialize with the same indent and key order as the live file); probe-E.receipt.json = the live receipt with the type key deleted from the first CapsLock trace entry. Write manifest.json with the sha256 of each probe, of the live receipt, and of the generator. Determinism: run the generator twice into two temp dirs under TMPDIR and compare bytes; record the result in the manifest. Do not touch the live receipt.\n\n2. Run the UNMODIFIED round-59 counter over A, B, D and E (cwd = lane root): node .ufo/waves/round-59/counters/chromium-receipt-r59.mjs <probe> --driver scripts/chrome-cdp-loopback-round59.mjs --expect-driver-sha256 b16ddb443d5bd1b101cfcdb55cbf2d5ffcb3f39d38064a661ab82bb9a152ff86 --shot corpus/evidence/round59/chromium-capslock-boundary --json. Write controls/c2-r59-counter-on-probes.json: per probe exit code, findings, couldNotEvaluate, exact argv. Note: forgedGreen (count of probes with exit 0) must be recorded; the claim requires the do-nothing control to be green on at least A and B. If it is not, say so loudly in your yield.\n\n3. Wait (the wait tool) for READY from R60Exec2 (at most three wait cycles). If READY arrives, run the round-60 counter .ufo/waves/round-60/counters/chromium-receipt-r60.mjs over A, B, D, E and the live receipt, with the same argv shape, writing measure/c2-after/<name>.json (exit code, findings, couldNotEvaluate). Compare the D and E sha256 against the bytes Exec2 built in its selftest if Exec2 reports them; report match or mismatch. If no READY arrives, yield with the pre-data results only and say so.\n\n4. Message R60Reviewer and R60MutC2: write agent://<NAME> with READY measure/f-probes/manifest.json sha256=<generator-sha> selftest=-.\n\nSCRATCH: S=/fast/scratch/hyaku/tabi-r60/R60Exec3/ with the trap from the context; pass TMPDIR; probes are deterministic and small.\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nMilestone: C2 forged probes and r59 control\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60Exec3.md"
+    },
+    {
+      "name": "R60Scribe",
+      "agent": "scribe",
+      "task": "/skill:godspeed\n\nDRAFT the round-60 prose from pre-data ground. Owns ONLY /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/w1/R60Scribe/. Do not write corpus/ (the L1 integrates your drafts). Read claims.json first.\n\nWait (wait tool, at most three cycles) for READY from R60Scout (receipts). Then write three drafts. Results are NOT yours to write: state only pre-data facts and the predicates as frozen.\n\n1. knowledge-draft.md: the draft of corpus/knowledge/keyevent-cancelable-forgery-round-60.md (at most 150 lines). Cover: what cancelable means for a keydown (DOM Standard S163 and UI Events S161, each with the located quote, raw line and sha256 from the Scout receipts); what the round-59 committed live receipt records for CapsLock and letters; the four forged probe classes A, B, D, E and why each is a forgery class a receipt gate must refuse; the byte-perfect-replica residual, stated as the claim's disclosed limit. Every factual sentence cites an S### id or a committed path.\n2. sources-rows.md: the SOURCES registry rows for S163 (new) and the S161 re-open update, in the exact 11-column layout that corpus/SOURCES.md uses (read the last 20 registry rows, read-only, to copy the column layout). Rules: no escaped pipe anywhere in a cell; recheck is an ISO date, NNd, or a symbolic cadence; used-by lists the knowledge note and lesson round-60; status mined; the located quote is at most 25 words. Give the old and new used-by for S161.\n3. quality-draft.md: the draft of corpus/QUALITY.md criterion 112, to be appended after criterion 111 (append-only). Subject: a counter that enforces a frozen kill rule carries one selftest case per enumerated forgery probe and one kill per named mutant, and its selftest exercises the production call path. Evidence pointer: corpus/lessons/round-59.md Mistakes 1 and 3.\n\nYield with the three file paths and a line count for each.\n\nLane bounds: leaf member — no subagent dispatch.\nMilestone: round-60 drafts\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60Scribe.md"
+    },
+    {
+      "name": "R60Connector",
+      "agent": "connector",
+      "task": "/skill:godspeed\n\nSIBLING-OVERLAP SCAN for tabi round 60 (connector). Owns ONLY /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/w1/R60Connector/. Read-only everywhere else. Read claims.json first.\n\n(a) For each of the 20 roster sibling lanes at the heads in .ufo/waves/round-60/c1/snapshot-r60.tsv, search the recorded head blobs (git -C <lane> grep -n -i -E 'cancelable|CapsLock|getModifierState|dispatchKeyEvent|receipt counter|BG_WORDS' <head>, read-only) and list every overlap with path:line and owning lane. Explicitly say 'no overlap' for a lane with none.\n(b) Does any sibling carry its own copy of a browser-ground word screen, or its own chromium receipt counter, that could collide with the round-60 counters' names or paths? List them.\n(c) The kaidoku 37 overlap-declared rulings are OUT of scope; say so in one line.\n\nOutput: connector/overlap-scan.md, at most 80 lines, with path:line evidence for every hit. Do not message anyone; deliver via yield.\n\nLane bounds: leaf member — no subagent dispatch.\nMilestone: sibling overlap scan\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60Connector.md"
+    },
+    {
+      "name": "R60Reviewer",
+      "agent": "reviewer",
+      "task": "/skill:godspeed\n\nATTACK SEAT (reviewer) for tabi round 60. Owns ONLY /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/w1/R60Reviewer/. Do not edit counters, claims or corpus. Read claims.json FIRST (the authority) and the freeze commit 67d6f70e.\n\nPre-data: review the C1 and C2 predicate sentences for universal clauses without an enumerating counter, undefined terms, and do-nothing reach (could a control that does nothing meet the target?). Record each finding.\n\nThen wait (wait tool, at most three cycles) for READY from R60Exec1 and R60Exec2. After READY, attack:\nA1: independently re-derive counts.enumeratedMd for the frozen snapshot with your own pipeline (git -C <lane> ls-tree -r --name-only <head> | grep -c '\\.md$' summed over the 20 lanes) and compare to the counter output for scope=wide; they must match exactly.\nA2: grep the wide counter for any worktree read, checkout, or readFile of a repository path (not a git cat-file), and for hardcoded /tmp; record line numbers.\nA3: diff -u the r59 counter against the r60 counter; list each changed logic line; every change must lie inside the declared change set (a)-(e) of claims.json C2; report any out-of-scope change as a FLAW.\nA4: enumerate the CapsLock and letter event field paths in the r60 counter and name any delivered-shape path on which the cancelable or defaultPrevented check does not run.\nA5: build one forged receipt the critic does not have (the first CapsLock keydown with cancelable true, but the caps flag reading true) and run the r60 counter: report whether the caps-flag check catches it.\n\nWrite .../w1/R60Reviewer/attacks.md: one row per attack (id, target, method, result KILLED|SURVIVED|FLAW|NOT-RUN, evidence path:line). Count distinct attack items and state the count. Deliver via yield.\n\nLane bounds: leaf member — no subagent dispatch.\nMilestone: reviewer attacks\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60Reviewer.md"
+    },
+    {
+      "name": "R60Critic",
+      "agent": "critic",
+      "task": "/skill:godspeed\n\nFALSIFICATION SEAT (critic) for tabi round 60. Owns ONLY /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/w1/R60Critic/. Do not edit counters, claims or corpus. Read claims.json FIRST (the authority).\n\nPre-data: check that each predicate is the same sentence in claims.json and in the planned counter (the counter code will follow); check that each do-nothing control meets its stated expected value (C1: map scope red; C2: r59 counter green on A and B); check that no target is reachable by a do-nothing control.\n\nThen wait (wait tool, at most three cycles) for READY from R60Exec1 and R60Exec2. After READY, attack:\nCR1: find a forged C2 probe OUTSIDE F = {A, B, D, E} that the round-60 counter greens. Build it from the live receipt (document the transformation with a sha256), run the r60 counter, record the result. A green result is a FLAW and kills C2 under K1 unless it is a byte-perfect replica of the live receipt (the disclosed residual).\nCR2: find a C1 scope blind spot: a class of tracked .md that the enumeration could miss (symlinks, submodules, uppercase .MD, paths with newlines, LFS pointers). Check the counter's handling with a fixture or a real sibling path; record the result.\nCR3: check that the knowledge draft (R60Scribe's knowledge-draft.md, if present) states the byte-perfect-replica residual as a limit and not as a pass.\n\nWrite .../w1/R60Critic/critique.md: one row per item (id, target, method, verdict SOUND|FLAW|NOT-RUN, evidence path:line). Count distinct items. Deliver via yield.\n\nLane bounds: leaf member — no subagent dispatch.\nMilestone: critic falsification\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60Critic.md"
+    },
+    {
+      "name": "R60MutC1",
+      "agent": "mutation-tester",
+      "task": "/skill:godspeed\n\nMUTATION SEAT for C1 (tabi round 60). Owns ONLY /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/w1/R60MutC1/. Read claims.json C1 (mutantsC1 M1-M5) FIRST.\n\nWait (wait tool, at most three cycles) for READY from R60Exec1. Then, in scratch S=/fast/scratch/hyaku/tabi-r60/R60MutC1/ (trap from the context), copy .ufo/waves/round-60/counters/c1-wide-screen-r60.mjs and create mutants M1-M5 BY EXACT STRING REPLACEMENT in copies only (never edit the original): M1 enumerate only top-level .md (drop nested paths); M2 skip the per-file hit recount (use a constant or a stale count); M3 read the working tree file instead of the head blob; M4 treat an unresolvable head as zero files instead of refusing; M5 default --scope to map when --scope is missing. For each mutant run its own --selftest and the wide run against .ufo/waves/round-60/c1/snapshot-r60.tsv. KILLED iff the mutant selftest fails OR its wide-run counts or predicate differ from the original's. Run the ORIGINAL selftest and wide run as the control and record it.\n\nWrite .../w1/R60MutC1/kills.json: for each mutant id, the exact replacement, mutant sha256, selftest result, wide-run counts, verdict KILLED|SURVIVED. Report every SURVIVED mutant with the case that would kill it. Deliver via yield.\n\nLane bounds: leaf member — no subagent dispatch.\nMilestone: C1 mutants\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60MutC1.md"
+    },
+    {
+      "name": "R60MutC2",
+      "agent": "mutation-tester",
+      "task": "/skill:godspeed\n\nMUTATION SEAT for C2 (tabi round 60). Owns ONLY /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/w1/R60MutC2/. Read claims.json C2 (mutantsC2 C6-C9) FIRST.\n\nWait (wait tool, at most three cycles) for READY from R60Exec2. Then in scratch S=/fast/scratch/hyaku/tabi-r60/R60MutC2/ (trap from the context), copy .ufo/waves/round-60/counters/chromium-receipt-r60.mjs and create mutants C6, C7, C8, C9 BY EXACT STRING REPLACEMENT in copies only: C6 remove the cancelable presence and value requirement on CapsLock and letter events; C7 remove the trace-vs-keylog cancelable cross-check; C8 read cancelable only from the first keydownEntry; C9 accept a string or truthy non-boolean cancelable. For each mutant: run its selftest; and run it over the frozen probe set F = probe A and B (.ufo/waves/round-59/measure/f6-probe/A-cancelable-false.receipt.json, B-cancelable-missing.receipt.json), probe D and E (.ufo/waves/round-60/measure/f-probes/probe-D.receipt.json and probe-E.receipt.json if present, otherwise build the same two from the live receipt inline and say so), and the live receipt with the same argv shape the claim uses. KILLED iff a probe in F exits 0 OR the live receipt exits non-zero OR the selftest fails. Run the ORIGINAL as control.\n\nWrite .../w1/R60MutC2/kills.json: per mutant id, the exact replacement, mutant sha256, selftest result, per-probe exit codes, live exit, verdict. Report every SURVIVED mutant with the case that would kill it. Deliver via yield.\n\nLane bounds: leaf member — no subagent dispatch.\nMilestone: C2 mutants\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60MutC2.md"
+    },
+    {
+      "name": "R60Sentinel",
+      "agent": "sentinel",
+      "task": "/skill:godspeed\n\nGUARD AUDIT (sentinel) for tabi round 60. Owns ONLY /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/w1/R60Sentinel/. Everything else is read-only. Do not run the counters. Read claims.json first.\n\nChecks, each with a PASS or FLAG line and evidence:\n(1) write scope: git -C /home/vgpnk/Projects/shokunin status --porcelain. List untracked or modified paths that do NOT mention round-60 or tabi. Report only; never delete, move or stage.\n(2) sibling repos: for each of the 20 roster lanes run git -C <lane> status --porcelain and report any change (they are not ours; report only).\n(3) secret-shape scan over files under .ufo/waves/round-60/ and the lane's corpus/evidence/round59/: grep -l for private-key headers, AKIA[0-9A-Z]{16}, ghp_[A-Za-z0-9]{20,}, 'password=' and 'token='. Report counts and paths only, never the matched values.\n(4) hardcoded /tmp in the new round-60 .mjs and .py files: grep -n '/tmp' and record lines. Wait (wait tool, at most three cycles) for READY from R60Exec1 and R60Exec2 before this check if they have not yet landed.\n(5) the S161 and S163 receipts under .ufo/waves/round-60/sources/: final host equals the cited host, numRedirects 0, a sha256 present.\n(6) pacman: no pacman log lines were added during the round (read /var/log/pacman.log tail; report the last line timestamp only).\n\nWrite .../w1/R60Sentinel/guard.md. Deliver via yield.\n\nLane bounds: leaf member — no subagent dispatch.\nMilestone: guard audit\n\nReport: write your scoped findings to .ufo/waves/round-60/w1/R60Sentinel.md"
+    }
+  ]
+}

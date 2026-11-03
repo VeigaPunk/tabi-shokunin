@@ -1,0 +1,469 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-59/counters/chromium-receipt-r59.mjs	2026-11-03 18:24:40.755499627 -0300
++++ /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-60/counters/chromium-receipt-r60.mjs	2026-11-03 19:10:21.008046030 -0300
+@@ -1,4 +1,45 @@
+ #!/usr/bin/env node
++// chromium-receipt-r60.mjs — tabi round 60 counter, claim C2 (calibration:
++// the lane's own chromium receipt gate must not green forged receipts).
++//
++// BASE: .ufo/waves/round-59/counters/chromium-receipt-r59.mjs (2193 lines,
++// sha256 b287cfa21bfb9193a445c293d52aceebae99412191fd588c184c82078bee5136,
++// selftest 91/91), copied. The r59 file is never edited. This generation
++// implements the DECLARED change set (a)-(e) of .ufo/waves/round-60/claims.json
++// C2 and nothing else. It scores the r59 RECEIPT SHAPE (schema
++// tabi-chrome-cdp-r59, nonce ^tabi-r59-[0-9a-f]{12}$) because the live
++// receipt it must keep green is an r59 receipt: the schema and nonce are
++// CARRIED, never renamed (kill rule K2).
++//
++// DECLARED CHANGE SET (a)-(e):
++//   (a) cancelable on EVERY CapsLock and letter delivered-shape event, in
++//       BOTH leg recordings (journey.form.capsLockLeg AND the top-level
++//       capslockTrace mirror) and in the leg's chronological `trace` array.
++//       KEYDOWN: cancelable must be the JSON boolean true. KEYUP: the
++//       presence and boolean type of cancelable are required (the claim binds
++//       the keydown value; a keyup may record either boolean). The r59 f6 gap:
++//       r59 shape-checked `leg` only, and `leg` prefers the form leg, so
++//       capslockTrace.press1.keydownEntry with cancelable:false (probe A) or
++//       with cancelable deleted (probe B) went GREEN.
++//   (b) trace-vs-keylog: a CapsLock leg event's cancelable/defaultPrevented
++//       must EQUAL the page keylog entry it cites, positionally — the r59 D1
++//       positional rule (the contiguous derived run, never an equal-valued
++//       twin), extended to the keydown+keyup pairs and to the leg's `trace`
++//       array. Probe D.
++//   (c) the `type` key must be present on every CapsLock leg event and every
++//       journey.form.capsLockLeg.trace entry. Probe E.
++//   (d) cancelable must be a JSON boolean — the string "true"/"false" or any
++//       other non-boolean is refused. Mutant C9.
++//   (e) cancelable is read on EACH CapsLock event, never only on the first
++//       keydownEntry. Mutant C8.
++// The finding ids are the CARRIED r59 ids (missing-delivered-shape-field for
++// the cancelable/shape class, keylog-flag-mismatch for the trace-vs-keylog
++// class): the frozen id list and its fixture coverage are unchanged, and the
++// 91 r59 selftest cases are carried byte-for-byte.
++//
++// ---------------------------------------------------------------------------
++// CARRIED r59 HEADER (the r59 generation's; this file implements the same
++// receipt contract and every r59 finding id with the same semantics):
+ // chromium-receipt-r59.mjs — tabi round 59 counter for claim C2 (coverage:
+ // capability chromium-keyevent-capslock-toggle-linux — the CapsLock TOGGLE
+ // modifier domain on the Linux host's Chromium 155 headless surface,
+@@ -553,33 +594,34 @@
+ // driver sha.
+ //
+ // Usage:
+-//   node chromium-receipt-r59.mjs <receipt.json> --driver <driver.mjs>
++//   node chromium-receipt-r60.mjs <receipt.json> --driver <driver.mjs>
+ //        [--expect-driver-sha256 <hex>] [--shot <dir|png...>] [--json]
+-//   node chromium-receipt-r59.mjs --selftest      (path-based fixtures)
+-//   node chromium-receipt-r59.mjs --path-selftest (alias: asserts every case
++//   node chromium-receipt-r60.mjs --selftest      (path-based fixtures)
++//   node chromium-receipt-r60.mjs --path-selftest (alias: asserts every case
+ //                                                  is path-backed, then runs)
+-//   node chromium-receipt-r59.mjs --self-check
++//   node chromium-receipt-r60.mjs --self-check
+ // Exit: 0 predicate met (no finding); 1 any finding; 2 usage.
+ // Writes nothing but stdout. Paths are resolved against cwd.
+ //
+-// FIXTURES (chromium-receipt-r59-fixtures/): 91 cases. Every r58 case is
+-// carried with its case id (its base receipt relabelled to the r59
+-// schema/nonce — including the generation digit in the keystroke identities —
+-// and given the valid r59 domains: the 18-step plan + declaredStepNames, the
+-// capsLock/shift recorder fields on every page entry, the caps-leg tail and
+-// blocks, the form2 leg and the /echo2 request), so the carry isolates the one
+-// check the case names. Declared-set moves, disclosed in the wave report:
+-// green-extra-step -> step-plan-extra-step (r58 admitted extra steps; the
+-// declared D2 change refuses them); the three crossgen fixtures and
+-// do-nothing-empty-object gain the r59 refusals their foreign/empty shape
+-// necessarily trips; nonce-not-invocation-bound gains echo2-count-wrong (an
+-// unbound nonce cannot bind /echo2); swallow-pagekeylog-continuation gains
+-// keylog-flag-mismatch (D1 catches the same page-side tamper). One case per
+-// new r59 id (the f1-f9 probe shapes among them) is seeded from the green
+-// receipt, plus keylog-flag-mismatch-masked-control (the d6 maskability class:
+-// a forged flag on the swallow control digit whose equal-valued twins sit in
+-// the carried legs). --selftest asserts the EXACT finding set of every case and
+-// the full id coverage; see the fixture spec shape below.
++// FIXTURES (chromium-receipt-r60-fixtures/): the 91 r59 cases carried
++// byte-for-byte plus the r60 cases (probes A, B, D, E, the string-typed
++// cancelable, the second-event cancelable:false and the live-receipt green
++// case). The r59 fixtures dir is never written.
++// The 91 carried r59 cases keep their case ids and exact finding sets: each
++// r59 case is carried with its base receipt unchanged (the r59 derivation
++// domains — the 18-step plan + declaredStepNames, the capsLock/shift recorder
++// fields, the caps-leg tail and blocks, the form2 leg and the /echo2
++// request), so the carry isolates the one check the case names. The r60
++// additions are: probe A (capslockTrace.press1.keydownEntry cancelable:false),
++// probe B (the same key deleted), probe D (the leg's trace[0] gains
++// cancelable:false, disagreeing with the page keylog entry it cites), probe E
++// (trace[0].type deleted), a string-typed cancelable ("true"), a
++// second-event cancelable:false (capslockTrace.press2.keydownEntry), and the
++// live r59 receipt as a GREEN case. D and E are DERIVED by the selftest from
++// the live receipt bytes with one declared key edit each (see `derive`
++// below); A and B are byte copies of the frozen r59 f6 probes. --selftest
++// asserts the EXACT finding set of every case and the full id coverage; see
++// the fixture spec shape below.
+ import fs from 'node:fs';
+ import path from 'node:path';
+ import crypto from 'node:crypto';
+@@ -662,11 +704,11 @@
+ ];
+ 
+ const SELF = fileURLToPath(import.meta.url);
+-const FIXTURES_DIR = path.join(path.dirname(SELF), 'chromium-receipt-r59-fixtures');
++const FIXTURES_DIR = path.join(path.dirname(SELF), 'chromium-receipt-r60-fixtures');
+ const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
+ 
+ function die(msg) {
+-  console.error(JSON.stringify({ schema: 'tabi-chromium-receipt-r59', error: msg }));
++  console.error(JSON.stringify({ schema: 'tabi-chromium-receipt-r60', error: msg }));
+   process.exit(2);
+ }
+ 
+@@ -1053,7 +1095,20 @@
+   const vk = has(e, 'keyCode') ? e.keyCode : (has(e, 'windowsVirtualKeyCode') ? e.windowsVirtualKeyCode : undefined);
+   if (vk === undefined) return 'no keyCode/windowsVirtualKeyCode';
+   if (vk !== want.keyCode) return 'VK ' + JSON.stringify(vk) + ' != ' + want.keyCode;
+-  if (e.cancelable !== true) return 'cancelable ' + JSON.stringify(e.cancelable) + ' != true';
++  // r60 (a)/(d): cancelable must be a JSON boolean — a string "true", a
++  // string "false" or any other truthy non-boolean is refused (mutant C9).
++  // On a KEYDOWN the boolean must be TRUE (the r59 f6 gap: the delivered
++  // shape's cancelable value was never enforced on the top-level
++  // capslockTrace mirror, so cancelable:false / a deleted cancelable there
++  // went green — probes A and B).
++  // On a KEYUP the r60 rule is the PRESENCE and BOOLEAN TYPE of cancelable
++  // only: the claim binds the keydown value (a keyup's default action is not
++  // what the boundary measures), so a recorded keyup cancelable may be true
++  // or false but must be a boolean field, never absent and never a string.
++  // (want.type is undefined for the letter events, which are keydowns; they
++  // therefore fall under the keydown rule.)
++  if (typeof e.cancelable !== 'boolean') return 'cancelable ' + JSON.stringify(e.cancelable) + ' is not a JSON boolean';
++  if (want.type !== 'keyup' && e.cancelable !== true) return 'cancelable ' + JSON.stringify(e.cancelable) + ' != true';
+   if (has(e, 'defaultPrevented') && e.defaultPrevented !== false) {
+     return 'defaultPrevented ' + JSON.stringify(e.defaultPrevented) + ' != false';
+   }
+@@ -1199,6 +1254,199 @@
+   }
+ }
+ 
++// ===========================================================================
++// r60 (a)-(e): the cancelable and trace-shape checks on the CapsLock leg.
++//
++// The r59 generation shape-checked ONE of the leg's two recordings: `leg`
++// prefers journey.form.capsLockLeg, so the top-level capslockTrace mirror was
++// never read at all — capslockTrace.press1.keydownEntry with cancelable:false
++// (probe A), with cancelable deleted (probe B), with `type` deleted (probe E)
++// or with a string cancelable all went GREEN (measured: the frozen r59
++// counter exits 0 on each). r60 reads EVERY recorded event of BOTH mirrors,
++// requires cancelable to be a JSON boolean (TRUE on keydown, presence+type on
++// keyup), and cross-checks each event's cancelable/defaultPrevented against
++// the page keylog occurrence it cites.
++// ===========================================================================
++
++// The derived 12-event caps run the page record must carry: the r59 keydown
++// tail [CapsLock, l0, l1, CapsLock, l2, l3] interleaved with its keyups, which
++// is the order the page recorder writes (the delivered pair per key).
++function capsRunPlan(letters) {
++  const ev = (type, key) => ({ type, key, code: key === 'CapsLock' ? 'CapsLock' : codeFor(key), keyCode: key === 'CapsLock' ? 20 : vkFor(key) });
++  return [
++    ev('keyDown', 'CapsLock'), ev('keyUp', 'CapsLock'),
++    ev('keyDown', letters[0]), ev('keyUp', letters[0]),
++    ev('keyDown', letters[1]), ev('keyUp', letters[1]),
++    ev('keyDown', 'CapsLock'), ev('keyUp', 'CapsLock'),
++    ev('keyDown', letters[2]), ev('keyUp', letters[2]),
++    ev('keyDown', letters[3]), ev('keyUp', letters[3]),
++  ];
++}
++
++// The LAST contiguous run of page entries whose (type, key, code) triple
++// equals the derived run (the caps leg is the tail of the form-1 record; the
++// last match is the leg's). -1 when the record carries no such run.
++function locateCapsRun(pageAll, run) {
++  for (let start = pageAll.length - run.length; start >= 0; start -= 1) {
++    let ok = true;
++    for (let j = 0; j < run.length; j += 1) {
++      const p = pageAll[start + j];
++      if (!isObj(p) || p.type !== run[j].type || p.key !== run[j].key || p.code !== run[j].code) { ok = false; break; }
++    }
++    if (ok) return start;
++  }
++  return -1;
++}
++
++// One mirror's recorded events, each with the run index it cites. The slots
++// are those of the leg contract: the two press pairs (keydown/keyup) and the
++// four letters (keydown; the letter keyups have no trace counterpart).
++function capsMirrorSlots(m, letters) {
++  const slots = [];
++  const lettersOf = [];
++  for (const k of ['letters1', 'letters2']) if (Array.isArray(m[k])) lettersOf.push(...m[k]);
++  if (lettersOf.length === 0 && Array.isArray(m.letters)) lettersOf.push(...m.letters);
++  lettersOf.forEach((e, i) => {
++    if (!isObj(e)) return;
++    const ch = letters && i < letters.length ? letters[i] : (typeof e.char === 'string' ? e.char : (typeof e.key === 'string' ? e.key : null));
++    if (ch === null) return;
++    slots.push({ where: 'letter i=' + i, ev: e, type: 'keyDown', key: ch, runIndex: i < 2 ? 2 + 2 * i : 8 + 2 * (i - 2) });
++  });
++  const presses = [];
++  for (const [k, i] of [['press1', 0], ['press2', 1]]) if (isObj(m[k])) presses.push([k, m[k], i]);
++  if (Array.isArray(m.presses)) m.presses.forEach((p, i) => { if (isObj(p)) presses.push(['presses[' + i + ']', p, i]); });
++  for (const [name, p, idx] of presses) {
++    const kd = isObj(p.keydownEntry) ? p.keydownEntry : (isObj(p.keydown) ? p.keydown : null);
++    const ku = isObj(p.keyupEntry) ? p.keyupEntry : (isObj(p.keyup) ? p.keyup : null);
++    const base = idx === 0 ? 0 : 6;
++    if (isObj(kd)) slots.push({ where: name + ' keydown', ev: kd, type: 'keyDown', key: 'CapsLock', runIndex: base, press: true });
++    if (isObj(ku)) slots.push({ where: name + ' keyup', ev: ku, type: 'keyUp', key: 'CapsLock', runIndex: base + 1, press: true });
++  }
++  return slots;
++}
++
++// r60 (a)/(c)/(d)/(e): the delivered shape of EVERY recorded event of a caps
++// mirror. Press slots are judged as CapsLock keydown/keyup (type present, key
++// and code 'CapsLock', VK 20, no text); letter slots as their derived key.
++// An absent slot is not judged here: the leg's own r59 checks require both
++// press slots on the leg copy, and the mirror is a second recording, not the
++// witness the contract names. DOM read-backs (valueAfter) stay the leg's.
++function checkCapsMirrorShape(m, where, letters, add) {
++  const slots = capsMirrorSlots(m, letters);
++  for (const slot of slots) {
++    const e = slot.ev;
++    if (slot.press) {
++      const bad = deliveredShapeProblem(e, { type: slot.type === 'keyDown' ? 'keydown' : 'keyup', key: 'CapsLock', code: 'CapsLock', keyCode: 20 });
++      if (bad) add('missing-delivered-shape-field', where + ' ' + slot.where + ': ' + bad);
++      if (typeof e.text === 'string' && e.text !== '') {
++        add('missing-delivered-shape-field', where + ' ' + slot.where + ' carries text ' + JSON.stringify(e.text) + ' (the claim: no text)');
++      }
++      if (e.capsLock === true) add('caps-flag-true', where + ' ' + slot.where + ' records capsLock=true');
++      continue;
++    }
++    const ch = slot.key;
++    const bad = deliveredShapeProblem(e, { key: ch, code: codeFor(ch), keyCode: vkFor(ch) });
++    if (bad) add('missing-delivered-shape-field', where + ' ' + slot.where + ': ' + bad);
++    if (typeof e.text === 'string' && e.text !== ch) {
++      add('missing-delivered-shape-field', where + ' ' + slot.where + ' text ' + JSON.stringify(e.text) + ' != the sent char ' + JSON.stringify(ch));
++    }
++    if (e.capsLock === true) add('caps-flag-true', where + ' ' + slot.where + ' records capsLock=true');
++  }
++}
++
++// r60 (b): trace-vs-keylog. Each recorded caps event CITES the page keylog
++// occurrence at its position in the derived run (the r59 D1 positional rule:
++// the contiguous run, never an equal-valued twin elsewhere); the event's
++// cancelable and defaultPrevented must EQUAL that occurrence's. A broken run
++// falls back to DISTINCT occurrence matching by (type, key) — still stronger
++// than existence. An event whose own flags are not both booleans is skipped:
++// the delivered-shape checks own that defect, and this check never invents a
++// position it cannot ground.
++function checkCapsTraceFlags(m, where, letters, pageAll, add) {
++  const run = capsRunPlan(letters);
++  const start = locateCapsRun(pageAll, run);
++  const used = new Set();
++  for (const slot of capsMirrorSlots(m, letters)) {
++    const ev = slot.ev;
++    if (typeof ev.cancelable !== 'boolean' || typeof ev.defaultPrevented !== 'boolean') continue;
++    let p = null;
++    if (start >= 0) {
++      p = pageAll[start + slot.runIndex];
++      if (!isObj(p)) continue;
++    } else {
++      for (let k = 0; k < pageAll.length; k += 1) {
++        if (used.has(k)) continue;
++        const q = pageAll[k];
++        if (isObj(q) && q.type === slot.type && q.key === slot.key) { used.add(k); p = q; break; }
++      }
++      if (!p) continue; // no page occurrence: keylog-entry-mismatch's subject
++    }
++    if (typeof p.cancelable !== 'boolean' || typeof p.defaultPrevented !== 'boolean') {
++      add('keylog-flag-mismatch', where + ' ' + slot.where + ' key ' + JSON.stringify(slot.key)
++        + ' records flags the page keylog occurrence it cites does not carry as booleans');
++      continue;
++    }
++    if (p.cancelable !== ev.cancelable || p.defaultPrevented !== ev.defaultPrevented) {
++      add('keylog-flag-mismatch', where + ' ' + slot.where + ' key ' + JSON.stringify(slot.key)
++        + ' flags (cancelable=' + JSON.stringify(ev.cancelable) + ', defaultPrevented=' + JSON.stringify(ev.defaultPrevented)
++        + ') != the page keylog occurrence it cites (cancelable=' + JSON.stringify(p.cancelable)
++        + ', defaultPrevented=' + JSON.stringify(p.defaultPrevented) + ')');
++    }
++  }
++}
++
++// r60 (b)/(c): the form leg's chronological `trace` array — the 12-entry
++// record {phase,type,key,code,keyCode,capsLock,valueAfter} the contract
++// documents at journey.form.capsLockLeg.trace. r59 never read it, so the
++// frozen probes D (trace[0] gains cancelable:false, the opposite of the page
++// keylog entry it cites) and E (trace[0].type deleted) both went GREEN.
++// Rules: (c) every entry carries an event `type` (keyDown|keyUp); (a)/(d) an
++// entry that carries cancelable carries a JSON boolean and, on a keydown,
++// TRUE — the recorder does not write cancelable here, so a present value is a
++// claim; (b) a present cancelable/defaultPrevented must equal the page
++// keylog occurrence at the entry's position — its index in the array is its
++// index in the derived 12-event run (the leg's keylogWindow.start is the
++// run's first page index; the located run wins when the record carries one).
++function checkCapsLegTrace(leg, letters, pageAll, add) {
++  const arr = Array.isArray(leg.trace) ? leg.trace : null;
++  if (!arr) return;
++  const run = Array.isArray(letters) ? capsRunPlan(letters) : null;
++  const located = run ? locateCapsRun(pageAll, run) : -1;
++  const win = isObj(leg.keylogWindow) && typeof leg.keylogWindow.start === 'number' ? leg.keylogWindow.start : null;
++  const start = located >= 0 ? located : win;
++  arr.forEach((e, k) => {
++    if (!isObj(e)) { add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + '] is not an object'); return; }
++    const want = run && k < run.length ? run[k] : null;
++    const wantType = want ? want.type : (e.type === 'keyUp' ? 'keyUp' : 'keyDown');
++    // (c): the event type is present and names an event
++    if (!has(e, 'type')) add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + ']: no type (keyDown|keyUp)');
++    else if (e.type !== 'keyDown' && e.type !== 'keyUp') add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + ']: type ' + JSON.stringify(e.type) + ' is not keyDown/keyUp');
++    // (a)/(d): a present cancelable is a JSON boolean, TRUE on a keydown
++    if (has(e, 'cancelable')) {
++      if (typeof e.cancelable !== 'boolean') {
++        add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + ']: cancelable ' + JSON.stringify(e.cancelable) + ' is not a JSON boolean');
++      } else if (wantType !== 'keyUp' && e.cancelable !== true) {
++        add('missing-delivered-shape-field', 'capsLockLeg.trace[' + k + ']: cancelable ' + JSON.stringify(e.cancelable) + ' != true on a ' + wantType);
++      }
++    }
++    // (b): cross-check the flags the entry claims against the cited occurrence
++    if (start === null || !isObj(pageAll[start + k])) return;
++    const p = pageAll[start + k];
++    for (const field of ['cancelable', 'defaultPrevented']) {
++      if (!has(e, field) || typeof e[field] !== 'boolean') continue;
++      if (typeof p[field] !== 'boolean') {
++        add('keylog-flag-mismatch', 'capsLockLeg.trace[' + k + '] ' + field + ' ' + JSON.stringify(e[field])
++          + ': the page keylog occurrence it cites (' + (start + k) + ') carries no boolean ' + field);
++        continue;
++      }
++      if (p[field] !== e[field]) {
++        add('keylog-flag-mismatch', 'capsLockLeg.trace[' + k + '] ' + field + ' ' + JSON.stringify(e[field])
++          + ' != the page keylog occurrence it cites (' + (start + k) + ') ' + field + ' ' + JSON.stringify(p[field]));
++      }
++    }
++  });
++}
++
+ // The CapsLock delivery boundary: the absence witness (getModifierState false
+ // everywhere), the named expectation, the delivered shape on every CapsLock
+ // and letter event, and the DOM read-back after every keystroke.
+@@ -1308,6 +1556,23 @@
+       add('capslock-readback-missing', name + ' has no valueAfter DOM read-back');
+     }
+   }
++  // r60 (a)/(c)/(d)/(e): the top-level capslockTrace is the SAME leg recorded
++  // a second time. The r59 generation read only `leg` (the form leg when it
++  // exists), which is exactly the f6 gap probes A, B and E exploit; every
++  // press and letter event of the mirror is now shape-checked under the same
++  // rules (keyup: cancelable present and boolean; keydown: the boolean TRUE).
++  if (trace && trace !== leg) checkCapsMirrorShape(trace, 'capslockTrace', letters, add);
++  // r60 (b): each recorded event of BOTH mirrors must agree with the page
++  // keylog occurrence it cites, on cancelable AND defaultPrevented; the
++  // form-leg `trace` array is checked the same way (probe D cites there).
++  if (nonceOk && letters) {
++    checkCapsTraceFlags(leg, 'journey.form.capsLockLeg', letters, pageEntries, add);
++    checkCapsLegTrace(leg, letters, pageEntries, add);
++    if (trace && trace !== leg) {
++      checkCapsTraceFlags(trace, 'capslockTrace', letters, pageEntries, add);
++      checkCapsLegTrace(trace, letters, pageEntries, add);
++    }
++  }
+   // The page record of the leg: the keydown tail after the swallow chord is
+   // exactly [CapsLock, l0, l1, CapsLock, l2, l3]; its delivered shape is the
+   // page-side half of the boundary. (The false flag is covered globally.)
+@@ -1983,15 +2248,35 @@
+ }
+ 
+ // ---------------------------------------------------------------------------
+-// selftest: every fixture in chromium-receipt-r59-fixtures/ that carries an
++// selftest: every fixture in chromium-receipt-r60-fixtures/ that carries an
+ // expectFindings key. Fixture shape:
+ //   { name, note?, receiptPath? | receipt?, expectFindings: [ids] | "GREEN",
+ //     driver?, expectDriverSha256?, shotFiles?,
++//     derive?: [{ path, set? | delete?: true }],
+ //     expectOrder?: [ids]            — optional exact emission order
+ //     expectCouldNotEvaluate?: [codes] — optional exact unevaluable codes }
+ // receiptPath/driver/shotFiles are relative to the fixtures dir (absolute
+ // accepted). expectFindings is the EXACT set; "GREEN" means the empty set.
++// r60 `derive`: READ receiptPath from disk, apply the declared one-key edits,
++// and score the result through the SAME checkReceipt/evaluate path with the
++// receipt file's own directory as baseDir (so the copied commit PNGs resolve
++// exactly as they do for a plain path-backed case). The probes are therefore
++// built from the live receipt BYTES, not from a second free-hand copy.
+ // ---------------------------------------------------------------------------
++function applyDerive(root, ed, name) {
++  if (!isObj(ed) || typeof ed.path !== 'string' || ed.path === '') die('selftest: ' + name + ' derive entry needs a path');
++  const keys = String(ed.path).split('.');
++  let o = root;
++  for (let i = 0; i + 1 < keys.length; i += 1) {
++    const k = keys[i];
++    o = Array.isArray(o) ? o[Number(k)] : isObj(o) ? o[k] : null;
++    if (!isObj(o) && !Array.isArray(o)) die('selftest: ' + name + ' derive path ' + ed.path + ' does not resolve at ' + k);
++  }
++  const last = keys[keys.length - 1];
++  if (ed.delete === true) delete (Array.isArray(o) ? o[Number(last)] : o[last]);
++  else (Array.isArray(o) ? (o[Number(last)] = ed.set) : (o[last] = ed.set));
++}
++
+ function runSelftest() {
+   if (!fs.existsSync(FIXTURES_DIR)) die('selftest: fixtures dir absent at ' + FIXTURES_DIR);
+   const files = fs.readdirSync(FIXTURES_DIR).filter((f) => f.endsWith('.json')).sort();
+@@ -2019,8 +2304,19 @@
+     };
+     let input;
+     if (Object.prototype.hasOwnProperty.call(spec, 'receipt')) input = { inline: spec.receipt, baseDir: FIXTURES_DIR };
+-    else if (typeof spec.receiptPath === 'string') input = { receiptPath: path.resolve(FIXTURES_DIR, spec.receiptPath) };
+-    else input = { receiptPath: path.resolve(FIXTURES_DIR, 'absent-by-construction.json') };
++    else if (typeof spec.receiptPath === 'string') {
++      const rp = path.resolve(FIXTURES_DIR, spec.receiptPath);
++      if (Array.isArray(spec.derive) && spec.derive.length > 0) {
++        let obj;
++        try { obj = JSON.parse(fs.readFileSync(rp, 'utf8')); } catch (e) {
++          die('selftest: ' + name + ' cannot read its derive base ' + rp + ': ' + String((e && e.message) || e));
++        }
++        for (const ed of spec.derive) applyDerive(obj, ed, name);
++        input = { inline: obj, baseDir: path.dirname(rp) };
++      } else {
++        input = { receiptPath: rp };
++      }
++    } else input = { receiptPath: path.resolve(FIXTURES_DIR, 'absent-by-construction.json') };
+ 
+     const out = checkReceipt(input, opts);
+     const got = out.findings.map((f) => f.id).sort();
+@@ -2051,7 +2347,7 @@
+     results.push({ name: 'fixture-id-coverage', ok: false, uncovered, stray });
+   }
+   const out = {
+-    schema: 'tabi-chromium-receipt-r59-selftest',
++    schema: 'tabi-chromium-receipt-r60-selftest',
+     fixturesDir: FIXTURES_DIR,
+     cases: results.length,
+     pass,
+@@ -2097,7 +2393,7 @@
+     } catch { /* not a case */ }
+   }
+   console.log(JSON.stringify({
+-    schema: 'tabi-chromium-receipt-r59-selfcheck',
++    schema: 'tabi-chromium-receipt-r60-selfcheck',
+     counter: SELF,
+     sha256: sha256(bytes),
+     bytes: bytes.length,
+@@ -2110,7 +2406,7 @@
+ 
+ // ---------------------------------------------------------------------------
+ const argv = process.argv.slice(2);
+-if (argv.length === 0) die('usage: chromium-receipt-r59.mjs <receipt.json> --driver <driver.mjs> [--expect-driver-sha256 <hex>] [--json] | --selftest | --self-check');
++if (argv.length === 0) die('usage: chromium-receipt-r60.mjs <receipt.json> --driver <driver.mjs> [--expect-driver-sha256 <hex>] [--json] | --selftest | --self-check');
+ if (argv.includes('--selftest')) {
+   if (argv.length !== 1) die('--selftest takes no other argument');
+   runSelftest();
+@@ -2163,14 +2459,14 @@
+   if (!shotGiven) die('more than one receipt path given');
+   shotFiles = extraPos.map((x) => path.resolve(x));
+ }
+-if (!receiptArg) die('usage: chromium-receipt-r59.mjs <receipt.json> --driver <driver.mjs> [--expect-driver-sha256 <hex>] [--shot <dir>] [--json]');
+-if (!driverArg) die('usage: chromium-receipt-r59.mjs <receipt.json> --driver <driver.mjs> [--expect-driver-sha256 <hex>] [--shot <dir>] [--json]');
++if (!receiptArg) die('usage: chromium-receipt-r60.mjs <receipt.json> --driver <driver.mjs> [--expect-driver-sha256 <hex>] [--shot <dir>] [--json]');
++if (!driverArg) die('usage: chromium-receipt-r60.mjs <receipt.json> --driver <driver.mjs> [--expect-driver-sha256 <hex>] [--shot <dir>] [--json]');
+ 
+ const receiptPath = path.resolve(receiptArg);
+ const driverPath = path.resolve(driverArg);
+ const out = checkReceipt({ receiptPath }, { driverPath, expectSha, shotDir, shotFiles });
+ const result = {
+-  schema: 'tabi-chromium-receipt-r59',
++  schema: 'tabi-chromium-receipt-r60',
+   receipt: receiptPath,
+   driver: driverPath,
+   shotDir: shotDir || path.dirname(receiptPath),

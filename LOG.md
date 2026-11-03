@@ -3595,3 +3595,16 @@ revision. Full detail: SCORECARD round-53 block, `corpus/lessons/round-53.md`.
 - SOURCES: 161 -> 162 (S162 new: Chromium GetEventModifiers, tier A scoped to the four-bit mapping); S153 and S161 used-by extended old -> new.
 - QUALITY criterion 111 landed (the definition-site sweep, red-before receipt `probes/d9-red-before-defaultprevented.txt`).
 - Wave shape: ONE v1 wave w1 of 13 seats (scout 1, executor 5, scribe 1, connector 1, reviewer 1, critic 1, mutation-tester 2, sentinel 1; attack seats 5/13 = 38%); dispatched via the inline spawn handoff; all 13 settled (0 dead). Residual: none.
+
+## Round 60 (2026-11-03, Linux host, attempt 1) — claim C1 adjacency (wide screen) KILLED by its K7 (v19 no-regression red at the data rev from sibling drift); claim C2 calibration (forged CapsLock receipts refused) VERIFIED on its frozen predicate; round NOT admitted
+
+- Baseline `8a3f6f89` -> claims freeze `67d6f70e` (sibling snapshot, census start 162) -> wave w1 (12 seats, all settled, 0 dead) -> instrument freeze `bc373ade` (C1 counter ba7ebc9a; C2 counter b0d03fe0, F probes, pre-data controls, claims preDataCorrections) -> data pass at `bc373ade` -> work commit (this entry's block).
+- C1: wide screen over 85,598 tracked `.md` blobs of 20 roster siblings: screened 85,598, unscreened 0, rowMismatch 0 (rows verified), 19,049 browser-ground hit lines in 6,129 files reported (not adjudicated). The v19 map-scope meter at the same rev is exit 1 with 12 findings (7 head moves, 4 screened-file sha/line moves since the round-59 rebind): the frozen K7 kill. The do-nothing control (map scope) is red (85,573 unscreened), as frozen.
+- C2: frozen probes A, B, D, E refused (exit 1 each; forgedGreen 0); live receipt green (exit 0, findings []); the unmodified r59 counter greens all four (forgedGreen 4). Mutants C6–C9 KILLED. Selftest 110/110, idCoverage 58/58. Named residuals: keyup cancelable VALUE unbound by design (L1 ruling, option a); byte-perfect replica.
+- Pre-freeze strengthenings of the C2 instrument (disclosed in claims.json preDataCorrections): `99844dd9` -> `1408dd90` (P2 family, found by R60Critic); `1408dd90` -> `0ed93c7a` (P3/P3b top-level keylog, L1 ruling); `0ed93c7a` -> `b0d03fe0` (page-record keyup checks, L1 accepted). No predicate text changed.
+- Mined: instrument false greens at intermediate bytes (lesson Mistakes 1); change set outside the frozen text (2); v19 live-state dependence (3); hit classification by prose vs id (4); stale seat pin (5).
+- SOURCES: 162 -> 163 (S163 new: DOM Standard `dom-event-cancelable`, tier A); S161 re-open (byte-identical) and used-by extended old -> new.
+- QUALITY criterion 112 landed (forgery-probe and mutant coverage rule; red states cited from round-59 Mistakes 1 and 3).
+- Knowledge: unchanged (74); the scribe's knowledge draft is held as wave evidence (round not admitted).
+- Wave shape: ONE v1 wave w1 of 12 seats (scout 2, executor 3, scribe 1, connector 1, reviewer 1, critic 1, mutation-tester 2, sentinel 1; attack seats 4/12 = 33%). Dispatched via the inline spawn handoff; all 12 settled (0 dead). Residual call: none.
+- Open L0 questions: `tabi | round-59` (new-claim routing; answer not received) and a new round-60 question on the keyup cancelable value (see report).

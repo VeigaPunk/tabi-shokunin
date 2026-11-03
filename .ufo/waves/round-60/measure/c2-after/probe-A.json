@@ -1,0 +1,49 @@
+{
+ "schema": "tabi-r60-c2-after",
+ "name": "probe-A",
+ "claim": "C2 after: chromium-receipt-r60 (FINAL frozen bytes) over probe set F and the live receipt",
+ "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+ "counter": {
+  "path": ".ufo/waves/round-60/counters/chromium-receipt-r60.mjs",
+  "sha256": "0ed93c7a775036330ac08d30d83651eab4cfc12da120c07da6a34c6f6efe78be"
+ },
+ "counterNote": "final frozen generation (sha 0ed93c7a775036330ac08d30d83651eab4cfc12da120c07da6a34c6f6efe78be); superseded generations 5465be1fd5f8291108d76ef69923dc7221d8d7fedcc229e9c5d199333f503e8f, 99844dd960b59723ebc9f6032d2c3206b73fc138eab4c768b1e1421bb82596e8, 1408dd90c0b07a5ed76e9b48749eab09a4db6199f6161ccc6f9dffc29538707c were measured before being superseded and are not the pin of this receipt",
+ "driver": {
+  "path": "scripts/chrome-cdp-loopback-round59.mjs",
+  "sha256": "b16ddb443d5bd1b101cfcdb55cbf2d5ffcb3f39d38064a661ab82bb9a152ff86"
+ },
+ "expectDriverSha256": "b16ddb443d5bd1b101cfcdb55cbf2d5ffcb3f39d38064a661ab82bb9a152ff86",
+ "shotDir": "corpus/evidence/round59/chromium-capslock-boundary",
+ "receipt": ".ufo/waves/round-60/measure/f-probes/probe-A.receipt.json",
+ "receiptSha256": "bdd3c0ea27ec9656a6ba4e39d33a08553d419832f91ead86077ab2c2e447d8a0",
+ "argv": [
+  "node",
+  ".ufo/waves/round-60/counters/chromium-receipt-r60.mjs",
+  ".ufo/waves/round-60/measure/f-probes/probe-A.receipt.json",
+  "--driver",
+  "scripts/chrome-cdp-loopback-round59.mjs",
+  "--expect-driver-sha256",
+  "b16ddb443d5bd1b101cfcdb55cbf2d5ffcb3f39d38064a661ab82bb9a152ff86",
+  "--shot",
+  "corpus/evidence/round59/chromium-capslock-boundary",
+  "--json"
+ ],
+ "exitCode": 1,
+ "predicate": false,
+ "findingCount": 2,
+ "findings": [
+  {
+   "id": "missing-delivered-shape-field",
+   "detail": "capslockTrace press1 keydown: cancelable false != true",
+   "occurrences": 1
+  },
+  {
+   "id": "keylog-flag-mismatch",
+   "detail": "capslockTrace press1 keydown key \"CapsLock\" flags (cancelable=false, defaultPrevented=false) != the page keylog occurrence it cites (cancelable=true, defaultPrevented=false)",
+   "occurrences": 1
+  }
+ ],
+ "couldNotEvaluate": [],
+ "green": false,
+ "probe": "A"
+}
