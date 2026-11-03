@@ -1,0 +1,119 @@
+{
+ "schema": "tabi-r60-c2-f-probes",
+ "claim": "C2 forged probe set F = {A, B, D, E}; frozen at .ufo/waves/round-60/claims.json",
+ "generator": {
+  "path": ".ufo/waves/round-60/measure/f-probes-r60.py",
+  "sha256": "2e29acd0bbd753cd5fc35e6dbf7d64986b5803e0debfd6ea0dad7217c2ae34e3",
+  "bytes": 18169
+ },
+ "liveReceipt": {
+  "path": "corpus/evidence/round59/chromium-capslock-boundary/receipt.json",
+  "sha256": "72514ff700cab2211b6507f8e423716ffe60e02affd5161f7d704486b483a083",
+  "bytes": 102225,
+  "mutated": false
+ },
+ "serialization": {
+  "form": "json.dumps(indent=1, ensure_ascii=False)",
+  "liveReceiptRoundTripByteIdentical": true,
+  "note": "D and E differ from the live receipt only at the single path named in diff"
+ },
+ "probes": {
+  "A": {
+   "path": ".ufo/waves/round-60/measure/f-probes/probe-A.receipt.json",
+   "sha256": "bdd3c0ea27ec9656a6ba4e39d33a08553d419832f91ead86077ab2c2e447d8a0",
+   "bytes": 102229,
+   "derivation": "byte copy of .ufo/waves/round-59/measure/f6-probe/A-cancelable-false.receipt.json",
+   "diff": [
+    {
+     "path": "/capslockTrace/press1/keydownEntry/cancelable",
+     "from": true,
+     "to": false,
+     "op": "changed"
+    }
+   ],
+   "source": {
+    "path": ".ufo/waves/round-59/measure/f6-probe/A-cancelable-false.receipt.json",
+    "sha256": "bdd3c0ea27ec9656a6ba4e39d33a08553d419832f91ead86077ab2c2e447d8a0"
+   }
+  },
+  "B": {
+   "path": ".ufo/waves/round-60/measure/f-probes/probe-B.receipt.json",
+   "sha256": "7793e4f852477ad9a6c2c0169ca420aac3dbce5b682faf768199dce1a5566fbb",
+   "bytes": 102204,
+   "derivation": "byte copy of .ufo/waves/round-59/measure/f6-probe/B-cancelable-missing.receipt.json",
+   "diff": [
+    {
+     "path": "/capslockTrace/press1/keydownEntry/cancelable",
+     "from": true,
+     "to": null,
+     "op": "deleted"
+    }
+   ],
+   "source": {
+    "path": ".ufo/waves/round-59/measure/f6-probe/B-cancelable-missing.receipt.json",
+    "sha256": "7793e4f852477ad9a6c2c0169ca420aac3dbce5b682faf768199dce1a5566fbb"
+   }
+  },
+  "D": {
+   "path": ".ufo/waves/round-60/measure/f-probes/probe-D.receipt.json",
+   "sha256": "0feeb2ae6cd0a1e099320df2e6d0bfb1e78f8877baff719c774bb553dcfdc445",
+   "bytes": 102252,
+   "derivation": "live receipt with journey.form.capsLockLeg.trace[0].cancelable set to false, the opposite of the page keylog entry it cites (journey.form.pageKeylog[136].cancelable=true); json.dumps(indent=1, ensure_ascii=False)",
+   "diff": [
+    {
+     "path": "/journey/form/capsLockLeg/trace/0/cancelable",
+     "from": null,
+     "to": false,
+     "op": "added"
+    }
+   ],
+   "citedKeylogIndex": 136,
+   "citedKeylogCancelable": true
+  },
+  "E": {
+   "path": ".ufo/waves/round-60/measure/f-probes/probe-E.receipt.json",
+   "sha256": "5b5ebd124dd2f805827f27458f537a6f6a452723ecb140a98c4e8dc56c53736c",
+   "bytes": 102200,
+   "derivation": "live receipt with journey.form.capsLockLeg.trace[0].type deleted; json.dumps(indent=1, ensure_ascii=False)",
+   "diff": [
+    {
+     "path": "/journey/form/capsLockLeg/trace/0/type",
+     "from": "keyDown",
+     "to": null,
+     "op": "deleted"
+    }
+   ]
+  }
+ },
+ "determinism": {
+  "runs": 2,
+  "tmpdirBase": "/fast/scratch/hyaku/tabi-r60/R60Exec3/tmp",
+  "allProbesByteIdentical": true,
+  "perProbe": {
+   "A": {
+    "run1Sha256": "bdd3c0ea27ec9656a6ba4e39d33a08553d419832f91ead86077ab2c2e447d8a0",
+    "run2Sha256": "bdd3c0ea27ec9656a6ba4e39d33a08553d419832f91ead86077ab2c2e447d8a0",
+    "byteIdentical": true,
+    "equalsFinalOutDir": true
+   },
+   "B": {
+    "run1Sha256": "7793e4f852477ad9a6c2c0169ca420aac3dbce5b682faf768199dce1a5566fbb",
+    "run2Sha256": "7793e4f852477ad9a6c2c0169ca420aac3dbce5b682faf768199dce1a5566fbb",
+    "byteIdentical": true,
+    "equalsFinalOutDir": true
+   },
+   "D": {
+    "run1Sha256": "0feeb2ae6cd0a1e099320df2e6d0bfb1e78f8877baff719c774bb553dcfdc445",
+    "run2Sha256": "0feeb2ae6cd0a1e099320df2e6d0bfb1e78f8877baff719c774bb553dcfdc445",
+    "byteIdentical": true,
+    "equalsFinalOutDir": true
+   },
+   "E": {
+    "run1Sha256": "5b5ebd124dd2f805827f27458f537a6f6a452723ecb140a98c4e8dc56c53736c",
+    "run2Sha256": "5b5ebd124dd2f805827f27458f537a6f6a452723ecb140a98c4e8dc56c53736c",
+    "byteIdentical": true,
+    "equalsFinalOutDir": true
+   }
+  }
+ }
+}
