@@ -1,0 +1,11 @@
+--- frozen-v21.mjs
++++ M1.mjs
+@@ -300,7 +300,7 @@
+     const head = heads.get(lane);
+     if (head === undefined) return null;      // lane probed, not on the roster snapshot
+     if (head === null) return null;           // lane dir absent or head unresolved
+-    const r = spawnSync('git', ['-C', path.join(fleet, lane), 'cat-file', '-p', `${head}:${p}`], { maxBuffer: 64 * 1024 * 1024 });
++    const r = spawnSync('git', ['-C', path.join(fleet, lane), 'cat-file', '-p', `HEAD:${p}`], { maxBuffer: 64 * 1024 * 1024 });
+     return r.status === 0 ? r.stdout.toString('utf8') : undefined; // undefined = no such file at head
+   };
+ }

@@ -3009,3 +3009,31 @@ row. w2 CritRowKagiB judged the row to hold; the integrator sided with CritRowKa
   (`.ufo/waves/round-52/measure/adjacency-selftest-at-work.txt`); 64 is the
   oracle-correct figure at this round's tip. Registry rows keep their landed bytes; the
   entry commands and write scopes are unchanged.
+
+## Round 62 — secondary-button and exact-byte evidence
+
+The secondary-button experiment is Linux/Chromium scoped. S165's
+`Determining button states` table maps right mouse to DOM `button:2`,
+`buttons:2`; that mapping does not prove when a context menu fires. In the
+round-62 candidate, the page observes `pointerdown → mousedown → contextmenu`
+while buttons remain 2, then `pointerup → mouseup` with buttons 0. Read the
+committed receipt, not a cross-browser timing inference.
+
+| Evidence problem | Action | Refuse |
+|---|---|---|
+| contextmenu timing differs from expectation | Capture page-side shared sequence and pressed/released bitfields; scope the result to the tested build | Treating MDN's button table as a timing guarantee |
+| mutation receipt names an earlier counter digest | Replay against final frozen bytes and preserve argv, probe digest, exit and finding | Transferring an old kill or an invocation error as semantic refusal |
+| sibling commits while screening | Read sibling blobs at the committed snapshot heads; disclose live drift separately | Replacing frozen heads with live rev-parse during scoring |
+
+### Round 62 instrument registry
+
+Owner of every row: tabi. Pins for frozen instruments and sibling snapshot:
+`.ufo/waves/round-62/instrument-pins.json`; run commands from lane root.
+
+| Name / kind | Entry command | Verdict map | Self-test | Write scope |
+|---|---|---|---|---|
+| snapshot-bound adjacency v21 / gate | `node .ufo/waves/round-62/counters/c1-adjacency-host-v21.mjs --repo <lane> --rev <REV> --fleet <fleet> --snapshot .ufo/waves/round-62/c1/snapshot-r62.tsv --json` | 0 clean; 1 failed; 2 could-not-evaluate | same script `--selftest` (44 cases at freeze) | stdout; isolated guarded Git fixtures under r62 scratch during selftest |
+| r62 ledger rebind / probe | `node .ufo/waves/round-62/counters/rebind-r62.mjs --repo <lane> --rev <REV> --fleet <fleet> --snapshot <snapshot> --out <candidates> --adjudications <json> --scratch <scratch> --json` | 0 candidate generated; 3 unresolved/failed; 2,4,5 could-not-evaluate | v21 selftest exercises its shared core; full replay recorded separately | named candidate output only; production corpus writes refused |
+| secondary-button receipt / gate | `node .ufo/waves/round-62/counters/chromium-receipt-r62.mjs <receipt> --driver scripts/chrome-cdp-loopback-round62.mjs --expect-driver-sha256 <pinned-sha> --shot <PNG-dir> --json` | 0 clean; 1 failed; 2 could-not-evaluate | same script `--selftest` (16 core cases); production CLI via next row | stdout only |
+| secondary-button command-path replay / gate | `node scripts/check-secondary-round62.mjs --self-test --scratch <ABS-scratch>` | 0 clean; 1 failed; other exits could-not-evaluate | same command, 9 CLI cases (live plus eight forgeries), each negative asserts exit and finding-id | scratch temporary probes, removed in finally; stdout |
+| secondary-button live driver / probe | `node scripts/chrome-cdp-loopback-round62.mjs --scratch <ABS> --out <ABS-receipt.json> --nonce <tabi-r62-token> --http-port <free-port> --cdp-port <free-port>` | 0 completed; 1 failed; 2 could-not-evaluate | run on isolated loopback fixture, not a network-free gate | declared scratch/profile/HOME plus output receipt and PNGs |

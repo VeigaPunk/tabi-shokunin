@@ -1016,3 +1016,19 @@ W04).
 | `knowledge/chromium-preventdefault-swallow-round-58.md` | The Linux host's Chromium 155 surface carries the accelerator-swallowing class: a page keydown swallower (capture phase, registered before the recorders) cancels a declared key set; the cancelled Backspace and digit are delivered to the page (cancelable true, defaultPrevented true) and leave the field unchanged; a Control+Enter chord is delivered and does not submit; the carried Enter with the swallow off remains the only submission (one `/echo`). Grounded in S161 §4.3.4 (default-action cancelation) and §3.5.6.1 (Cancelable/Yes) and S153 (modifier bits). Records that S161 does NOT define `defaultPrevented`/`preventDefault()` (DOM-Standard cross-references). Limits named: no positive control for the Ctrl+Enter leg; the frozen counter does not compare page-keylog cancelable/defaultPrevented values (R58-S1). | S161, S153, S083 |
 
 Registry UNCHANGED 161 -> 161 (S153 and S161 used-by extended old→new, see the round-58 lesson). Census start AND end exit 0 (22 pre-existing W04).
+
+## Round 62 — experimental secondary-button evidence, not coverage admission
+
+Knowledge remains 74 notes; no new coverage-map knowledge row or capability
+enters. A real two-cycle secondary-button run lives at
+`evidence/round62/chromium-secondary-button/receipt.json` with three PNGs
+(data commit `a2f27065a32eb059716634d6337e8bab30e06b4f`). The frozen counter
+accepts it and refuses eight declared forgeries, but M5 survives its negative
+selftests: see `lessons/round-62.md`. The scribe knowledge draft stays under
+`.ufo/waves/round-62/w1/R62Scribe/`, outside admitted `knowledge/`.
+
+S165 (MDN Pointer events, B/docs) supports the button2/buttons2 mapping in
+the lesson; it does not support cross-browser contextmenu timing. Registry
+164→165. The mapped-surface adjacency rebind is verifier state, not newly held
+domain ground; kaidoku overlap rulings and full wide-hit adjudication remain
+open. Historical frontier rows retain their original scope.

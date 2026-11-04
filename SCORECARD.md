@@ -3414,3 +3414,32 @@ Planned: a new, pre-scored runner/counter contract with a header-validating
 control and final-byte mutation evidence; no re-declaration of these failed
 predicates. Wide-hit adjudication, keyup-value L0 and kaidoku L0 remain open.
 Saturation 8 / window 3 retained; no axis retired.
+
+## Round 62 — exact-byte fresh start and honest stop
+
+Read the rejected r59/r60/r61 spot-checks before declaration. Baseline
+`57b29bade4b05b03cdb8fa151daec90ac9b1a29c`; exact instrument/snapshot freeze
+`1ec5eb3fc8cd17f696a7b7f03617bf69a6a5c2a4`; measured data revision
+`a2f27065a32eb059716634d6337e8bab30e06b4f`. Two causally separable claims:
+
+| Claim / axis | Frozen counting command / evidence | Before → after | Verdict / delta |
+|---|---|---|---|
+| C1 adjacency, lowest owned (8): mapped-surface snapshot rebind, not a wide scan | `node .ufo/waves/round-62/counters/c1-adjacency-host-v21.mjs --repo /home/vgpnk/Projects/shokunin/tabi-shokunin --rev a2f27065a32eb059716634d6337e8bab30e06b4f --fleet /home/vgpnk/Projects/shokunin --snapshot .ufo/waves/round-62/c1/snapshot-r62.tsv --json`; rebind argv in `controls/c1-data-rebind.command.json` | no-work exit 3 / 119 unresolved → full rebind exit 0 / unresolved 0; data meter true / findings 0 / heads readable 20; 44/44 cases and five mutants killed | VERIFIED on declared predicate; score held 8, delta 0 because round not admitted |
+| C2 coverage capability chromium-secondary-button-domain-linux (9) | `node scripts/check-secondary-round62.mjs --self-test --scratch /fast/scratch/hyaku/tabi-r62/recheck`; exact live-counter argv in `controls/c2-at-data-revision.command.json`; `w1/R62MutC2/kills.json` | baseline no r62 evidence; old r61 receipt rejected → new live green, 4 evidence files, eight F refusals / forgedGreen 0, 16/16 core and 9/9 CLI checks; BUT M5 survives16/16 | KILLED by frozen mutant-survival rule; no capability row, score held 9, delta 0 |
+
+All six frozen pins unchanged, nine scored-file comparisons match committed
+data. Actual production ledger has 149/149 distinct line keys; v21's
+contradictory-duplicate false green remains an openly routed defect, not a
+universal duplicate-free certification. Kaidoku overlap remains contested-open.
+Other axes remain depth/operability/freshness/calibration 9. No axis harmed.
+
+Capabilities: no new row. Knowledge: 74 unchanged. Registry 164 → 165 (S165
+B/docs/mined, used by round-62 lesson); no existing row changes. Expansion,
+quality, discernment unchanged pending outside gate sample. ONE v1 wave,
+11 seats, five attack seats; L1 planner; no replacement or residual wave.
+
+Planned: a new declared generation with explicit producer-verdict polarity
+selftests and source-location-specific mutants; duplicate-delta key refusal
+and evidence-backed disposition checking. No frozen r62 predicate repair.
+Assimilation remains closed under round-57 L0. Unanswered keyup/overlap/topology
+rulings stay open. Saturation 8 / window 3 retained; no axis retired.

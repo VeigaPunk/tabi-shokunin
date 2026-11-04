@@ -153,3 +153,17 @@ This province was written for the previous Linux host. Probed on the current hos
   rounds run L1-inline, disclose that in every predicate and claims.json, and route around the open question without
   treating it as answered. This standing line replaces the per-round re-statements (the r50 closure's consolidation
   routing); later rounds refer here instead of restating it. The question stays open for the operator.
+
+## Round 62 — Linux observed surfaces (2026-11-04)
+
+The historical Windows-host disposition above does not describe this round's
+observed transport: the inline ready handoff returned WAVE-DONE for 11 seats,
+recorded in `.ufo/waves/round-62/w1-results.json`. This observation does not
+answer the operator-owned round-44/61 planner/topology questions.
+
+The existing Linux Chromium loopback surface produced a secondary-button
+receipt at `corpus/evidence/round62/chromium-secondary-button/receipt.json`.
+It is experimental evidence, not a newly admitted capability: the frozen
+counter's declared M5 mutation survived its selftest (round-62 lesson). No
+real-site interaction, keyup-value ruling or sibling-overlap ownership is
+added to the core province.

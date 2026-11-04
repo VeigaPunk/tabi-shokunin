@@ -1,0 +1,3194 @@
+{
+ "seat": "R62MutC2",
+ "round": 62,
+ "wave": "w1",
+ "claim": "C2",
+ "instrument": {
+  "path": ".ufo/waves/round-62/counters/chromium-receipt-r62.mjs",
+  "sha256Original": "971c84f602f6d79b9aa12f9872eba57463a938b425546f793c4b5df72bd5a006",
+  "sha256FinalFrozen": "971c84f602f6d79b9aa12f9872eba57463a938b425546f793c4b5df72bd5a006"
+ },
+ "baseline": {
+  "selftestExit": 0,
+  "selftest": {
+   "schema": "tabi-r62-counter-selftest",
+   "allPass": true,
+   "cases": 16,
+   "results": [
+    {
+     "name": "valid",
+     "ok": true
+    },
+    {
+     "name": "f1",
+     "ok": true,
+     "findings": [
+      "pointer-buttons-0"
+     ]
+    },
+    {
+     "name": "f2",
+     "ok": true,
+     "findings": [
+      "pointer-types",
+      "pointer-identity",
+      "trusted-fields",
+      "shared-sequence",
+      "pointer-buttons-0",
+      "target-binding-0",
+      "cycle-order-0",
+      "cycle-time-0",
+      "pointer-buttons-1",
+      "target-binding-1",
+      "cycle-order-1",
+      "cycle-time-1"
+     ]
+    },
+    {
+     "name": "f3",
+     "ok": true,
+     "findings": [
+      "trusted-fields"
+     ]
+    },
+    {
+     "name": "f4",
+     "ok": true,
+     "findings": [
+      "mouse-types",
+      "trusted-fields",
+      "shared-sequence",
+      "mouse-buttons-0",
+      "menu-cancelation-0",
+      "target-binding-0",
+      "cycle-order-0",
+      "cycle-time-0",
+      "mouse-buttons-1",
+      "menu-cancelation-1",
+      "target-binding-1",
+      "cycle-order-1",
+      "cycle-time-1"
+     ]
+    },
+    {
+     "name": "f5",
+     "ok": true,
+     "findings": [
+      "pointer-buttons-1"
+     ]
+    },
+    {
+     "name": "f6",
+     "ok": true,
+     "findings": [
+      "pointer-identity"
+     ]
+    },
+    {
+     "name": "f7",
+     "ok": true,
+     "findings": [
+      "menu-cancelation-1"
+     ]
+    },
+    {
+     "name": "f8",
+     "ok": true,
+     "findings": [
+      "survivors"
+     ]
+    },
+    {
+     "name": "nonce",
+     "ok": true
+    },
+    {
+     "name": "driver",
+     "ok": true
+    },
+    {
+     "name": "sequence",
+     "ok": true
+    },
+    {
+     "name": "menuButtons",
+     "ok": true
+    },
+    {
+     "name": "secondTarget",
+     "ok": true
+    },
+    {
+     "name": "click",
+     "ok": true
+    },
+    {
+     "name": "ports",
+     "ok": true
+    }
+   ]
+  }
+ },
+ "mutantDefinitions": {
+  "M1": {
+   "name": "M1-drop-right-button-check",
+   "desc": "drop the right-button check that refuses f1 (first pointerdown button 2->0)",
+   "probe": "f1",
+   "expectedSelftestCase": "f1",
+   "secondary": false,
+   "sha256": "83ed02851b01631cff8d6a0078eccb61922a9aaa01807985ce3cf183b75700af",
+   "bytes": 8304,
+   "transformation": [
+    {
+     "line": 30,
+     "before": "    check(d?.button===2 && d?.buttons===2 && u?.button===2 && u?.buttons===0, 'pointer-buttons-'+i);",
+     "after": "    check(md?.button===2 && md?.buttons===2 && menu?.button===2 && menu?.buttons===2 && mu?.button===2 && mu?.buttons===0, 'mouse-buttons-'+i);"
+    },
+    {
+     "line": 31,
+     "before": "    check(md?.button===2 && md?.buttons===2 && menu?.button===2 && menu?.buttons===2 && mu?.button===2 && mu?.buttons===0, 'mouse-buttons-'+i);",
+     "after": "    check(menu?.defaultPrevented===true && md?.defaultPrevented===false && mu?.defaultPrevented===false, 'menu-cancelation-'+i);"
+    },
+    {
+     "line": 32,
+     "before": "    check(menu?.defaultPrevented===true && md?.defaultPrevented===false && mu?.defaultPrevented===false, 'menu-cancelation-'+i);",
+     "after": "    check([d,u,md,menu,mu].every(e => e?.targetId===target), 'target-binding-'+i);"
+    },
+    {
+     "line": 33,
+     "before": "    check([d,u,md,menu,mu].every(e => e?.targetId===target), 'target-binding-'+i);",
+     "after": "    check(d?.seq<md?.seq && md?.seq<menu?.seq && menu?.seq<u?.seq && u?.seq<mu?.seq, 'cycle-order-'+i);"
+    },
+    {
+     "line": 34,
+     "before": "    check(d?.seq<md?.seq && md?.seq<menu?.seq && menu?.seq<u?.seq && u?.seq<mu?.seq, 'cycle-order-'+i);",
+     "after": "    check(d?.ts<=md?.ts && md?.ts<=menu?.ts && menu?.ts<=u?.ts && u?.ts<=mu?.ts, 'cycle-time-'+i);"
+    },
+    {
+     "line": 35,
+     "before": "    check(d?.ts<=md?.ts && md?.ts<=menu?.ts && menu?.ts<=u?.ts && u?.ts<=mu?.ts, 'cycle-time-'+i);",
+     "after": "  }"
+    },
+    {
+     "line": 36,
+     "before": "  }",
+     "after": "  check(Array.isArray(r?.clicklog) && r.clicklog.length===0, 'no-click');"
+    },
+    {
+     "line": 37,
+     "before": "  check(Array.isArray(r?.clicklog) && r.clicklog.length===0, 'no-click');",
+     "after": "  check(r?.teardown?.postKillSweepCount===0 && Array.isArray(r.teardown.survivors) && r.teardown.survivors.length===0, 'survivors');"
+    },
+    {
+     "line": 38,
+     "before": "  check(r?.teardown?.postKillSweepCount===0 && Array.isArray(r.teardown.survivors) && r.teardown.survivors.length===0, 'survivors');",
+     "after": "  check(r?.teardown?.portProbes?.fixture==='closed' && r.teardown.portProbes.devtools==='closed' && r.teardown.postKillCurl?.fixture===7 && r.teardown.postKillCurl.devtools===7, 'closed-ports');"
+    },
+    {
+     "line": 39,
+     "before": "  check(r?.teardown?.portProbes?.fixture==='closed' && r.teardown.portProbes.devtools==='closed' && r.teardown.postKillCurl?.fixture===7 && r.teardown.postKillCurl.devtools===7, 'closed-ports');",
+     "after": "  check(r?.sweeps?.preLaunch===0 && r.sweeps.midRun>0 && r.sweeps.postKill===0, 'launch-witness');"
+    },
+    {
+     "line": 40,
+     "before": "  check(r?.sweeps?.preLaunch===0 && r.sweeps.midRun>0 && r.sweeps.postKill===0, 'launch-witness');",
+     "after": "  check(Array.isArray(r?.failures) && r.failures.length===0, 'failures');"
+    },
+    {
+     "line": 41,
+     "before": "  check(Array.isArray(r?.failures) && r.failures.length===0, 'failures');",
+     "after": "  const names=['a-right-press','b-contextmenu','c-second-press'];"
+    },
+    {
+     "line": 42,
+     "before": "  const names=['a-right-press','b-contextmenu','c-second-press'];",
+     "after": "  check(Array.isArray(r?.steps) && r.steps.length===3 && r.steps.every((e,i)=>e.name===names[i] && e.png===names[i]+'.png' && /^[a-f0-9]{64}$/.test(e.sha256) && e.bytes>0), 'shot-records');"
+    },
+    {
+     "line": 43,
+     "before": "  check(Array.isArray(r?.steps) && r.steps.length===3 && r.steps.every((e,i)=>e.name===names[i] && e.png===names[i]+'.png' && /^[a-f0-9]{64}$/.test(e.sha256) && e.bytes>0), 'shot-records');",
+     "after": "  check(external.shotsValid===true, 'shot-bytes');"
+    },
+    {
+     "line": 44,
+     "before": "  check(external.shotsValid===true, 'shot-bytes');",
+     "after": "  check(r?.predicate===true && r.buttonHypothesis==='CONFIRMED', 'producer-verdict');"
+    },
+    {
+     "line": 45,
+     "before": "  check(r?.predicate===true && r.buttonHypothesis==='CONFIRMED', 'producer-verdict');",
+     "after": "  check(Array.isArray(r?.serverLog) && r.serverLog.some(e=>e.path==='/button') && r.serverLog.every(e=>['/button','/favicon.ico'].includes(e.path)), 'server-witness');"
+    },
+    {
+     "line": 46,
+     "before": "  check(Array.isArray(r?.serverLog) && r.serverLog.some(e=>e.path==='/button') && r.serverLog.every(e=>['/button','/favicon.ico'].includes(e.path)), 'server-witness');",
+     "after": "  return {schema:'tabi-r62-secondary-counter',predicate:findings.length===0,findingCount:findings.length,findings};"
+    },
+    {
+     "line": 47,
+     "before": "  return {schema:'tabi-r62-secondary-counter',predicate:findings.length===0,findingCount:findings.length,findings};",
+     "after": "}"
+    },
+    {
+     "line": 48,
+     "before": "}",
+     "after": "function synthetic() {"
+    },
+    {
+     "line": 49,
+     "before": "function synthetic() {",
+     "after": "  const b=[['pointermove',1,-1,0,'target'],['pointerdown',2,2,2,'target'],['pointerup',5,2,0,'target'],['pointerdown',7,2,2,'target2'],['pointerup',10,2,0,'target2']].map(([type,seq,button,buttons,targetId])=>({type,seq,button,buttons,targetId,ts:seq,pointerId:1,pointerType:'mouse',isTrusted:true}));"
+    },
+    {
+     "line": 50,
+     "before": "  const b=[['pointermove',1,-1,0,'target'],['pointerdown',2,2,2,'target'],['pointerup',5,2,0,'target'],['pointerdown',7,2,2,'target2'],['pointerup',10,2,0,'target2']].map(([type,seq,button,buttons,targetId])=>({type,seq,button,buttons,targetId,ts:seq,pointerId:1,pointerType:'mouse',isTrusted:true}));",
+     "after": "  const m=[['mousedown',3,2,'target'],['contextmenu',4,2,'target'],['mouseup',6,0,'target'],['mousedown',8,2,'target2'],['contextmenu',9,2,'target2'],['mouseup',11,0,'target2']].map(([type,seq,buttons,targetId])=>({type,seq,button:2,buttons,targetId,ts:seq,isTrusted:true,defaultPrevented:type==='contextmenu'}));"
+    },
+    {
+     "line": 51,
+     "before": "  const m=[['mousedown',3,2,'target'],['contextmenu',4,2,'target'],['mouseup',6,0,'target'],['mousedown',8,2,'target2'],['contextmenu',9,2,'target2'],['mouseup',11,0,'target2']].map(([type,seq,buttons,targetId])=>({type,seq,button:2,buttons,targetId,ts:seq,isTrusted:true,defaultPrevented:type==='contextmenu'}));",
+     "after": "  return {schema:'tabi-chrome-cdp-r62',nonce:'tabi-r62-test',nonceOnPage:'tabi-r62-test',driverSha256:'a'.repeat(64),fixture:{origin:'http://127.0.0.1:19471',sha256:'b'.repeat(64)},host:{argv:['--disable-extensions','--headless=new','--remote-debugging-address=127.0.0.1']},btnlog:b,mouselog:m,clicklog:[],teardown:{postKillSweepCount:0,survivors:[],portProbes:{fixture:'closed',devtools:'closed'},postKillCurl:{fixture:7,devtools:7}},sweeps:{preLaunch:0,midRun:1,postKill:0},failures:[],steps:['a-right-press','b-contextmenu','c-second-press'].map(name=>({name,png:name+'.png',sha256:'c'.repeat(64),bytes:10})),predicate:true,buttonHypothesis:'CONFIRMED',serverLog:[{path:'/button'}]};"
+    },
+    {
+     "line": 52,
+     "before": "  return {schema:'tabi-chrome-cdp-r62',nonce:'tabi-r62-test',nonceOnPage:'tabi-r62-test',driverSha256:'a'.repeat(64),fixture:{origin:'http://127.0.0.1:19471',sha256:'b'.repeat(64)},host:{argv:['--disable-extensions','--headless=new','--remote-debugging-address=127.0.0.1']},btnlog:b,mouselog:m,clicklog:[],teardown:{postKillSweepCount:0,survivors:[],portProbes:{fixture:'closed',devtools:'closed'},postKillCurl:{fixture:7,devtools:7}},sweeps:{preLaunch:0,midRun:1,postKill:0},failures:[],steps:['a-right-press','b-contextmenu','c-second-press'].map(name=>({name,png:name+'.png',sha256:'c'.repeat(64),bytes:10})),predicate:true,buttonHypothesis:'CONFIRMED',serverLog:[{path:'/button'}]};",
+     "after": "}"
+    },
+    {
+     "line": 53,
+     "before": "}",
+     "after": "const ext={driverSha256:'a'.repeat(64),fixtureSha256:'b'.repeat(64),shotsValid:true};"
+    },
+    {
+     "line": 54,
+     "before": "const ext={driverSha256:'a'.repeat(64),fixtureSha256:'b'.repeat(64),shotsValid:true};",
+     "after": "export const forgeries = {"
+    },
+    {
+     "line": 55,
+     "before": "export const forgeries = {",
+     "after": "  f1:r=>{r.btnlog[1].button=0;},"
+    },
+    {
+     "line": 56,
+     "before": "  f1:r=>{r.btnlog[1].button=0;},",
+     "after": "  f2:r=>{r.btnlog.splice(2,1);},"
+    },
+    {
+     "line": 57,
+     "before": "  f2:r=>{r.btnlog.splice(2,1);},",
+     "after": "  f3:r=>{r.mouselog[1].isTrusted=false;},"
+    },
+    {
+     "line": 58,
+     "before": "  f3:r=>{r.mouselog[1].isTrusted=false;},",
+     "after": "  f4:r=>{r.mouselog.splice(1,1);},"
+    },
+    {
+     "line": 59,
+     "before": "  f4:r=>{r.mouselog.splice(1,1);},",
+     "after": "  f5:r=>{r.btnlog[3].buttons=1;},"
+    },
+    {
+     "line": 60,
+     "before": "  f5:r=>{r.btnlog[3].buttons=1;},",
+     "after": "  f6:r=>{r.btnlog[3].pointerId=2;},"
+    },
+    {
+     "line": 61,
+     "before": "  f6:r=>{r.btnlog[3].pointerId=2;},",
+     "after": "  f7:r=>{r.mouselog[4].defaultPrevented=false;},"
+    },
+    {
+     "line": 62,
+     "before": "  f7:r=>{r.mouselog[4].defaultPrevented=false;},",
+     "after": "  f8:r=>{r.teardown.survivors=[99999];},"
+    },
+    {
+     "line": 63,
+     "before": "  f8:r=>{r.teardown.survivors=[99999];},",
+     "after": "};"
+    },
+    {
+     "line": 64,
+     "before": "};",
+     "after": "function selftest() {"
+    },
+    {
+     "line": 65,
+     "before": "function selftest() {",
+     "after": "  const results=[{name:'valid',ok:verify(synthetic(),ext).predicate}];"
+    },
+    {
+     "line": 66,
+     "before": "  const results=[{name:'valid',ok:verify(synthetic(),ext).predicate}];",
+     "after": "  for(const [id,mutate] of Object.entries(forgeries)){const r=synthetic();mutate(r);results.push({name:id,ok:!verify(r,ext).predicate,findings:verify(r,ext).findings});}"
+    },
+    {
+     "line": 67,
+     "before": "  for(const [id,mutate] of Object.entries(forgeries)){const r=synthetic();mutate(r);results.push({name:id,ok:!verify(r,ext).predicate,findings:verify(r,ext).findings});}",
+     "after": "  for(const [name,mutate] of Object.entries({nonce:r=>{r.nonceOnPage='wrong';},driver:r=>{r.driverSha256='d'.repeat(64);},sequence:r=>{r.mouselog[1].seq=30;},menuButtons:r=>{r.mouselog[1].buttons=0;},secondTarget:r=>{r.btnlog[3].targetId='target';},click:r=>{r.clicklog=[{}];},ports:r=>{r.teardown.postKillCurl.devtools=0;}})){const r=synthetic();mutate(r);results.push({name,ok:!verify(r,ext).predicate});}"
+    },
+    {
+     "line": 68,
+     "before": "  for(const [name,mutate] of Object.entries({nonce:r=>{r.nonceOnPage='wrong';},driver:r=>{r.driverSha256='d'.repeat(64);},sequence:r=>{r.mouselog[1].seq=30;},menuButtons:r=>{r.mouselog[1].buttons=0;},secondTarget:r=>{r.btnlog[3].targetId='target';},click:r=>{r.clicklog=[{}];},ports:r=>{r.teardown.postKillCurl.devtools=0;}})){const r=synthetic();mutate(r);results.push({name,ok:!verify(r,ext).predicate});}",
+     "after": "  const allPass=results.every(e=>e.ok);console.log(JSON.stringify({schema:'tabi-r62-counter-selftest',allPass,cases:results.length,results},null,1));process.exitCode=allPass?0:1;"
+    },
+    {
+     "line": 69,
+     "before": "  const allPass=results.every(e=>e.ok);console.log(JSON.stringify({schema:'tabi-r62-counter-selftest',allPass,cases:results.length,results},null,1));process.exitCode=allPass?0:1;",
+     "after": "}"
+    },
+    {
+     "line": 70,
+     "before": "}",
+     "after": "const main=process.argv[1] && import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href;"
+    },
+    {
+     "line": 71,
+     "before": "const main=process.argv[1] && import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href;",
+     "after": "if(main){"
+    },
+    {
+     "line": 72,
+     "before": "if(main){",
+     "after": "  const args=process.argv.slice(2), option=n=>args[args.indexOf(n)+1];"
+    },
+    {
+     "line": 73,
+     "before": "  const args=process.argv.slice(2), option=n=>args[args.indexOf(n)+1];",
+     "after": "  if(args[0]==='--selftest') selftest();"
+    },
+    {
+     "line": 74,
+     "before": "  if(args[0]==='--selftest') selftest();",
+     "after": "  else {"
+    },
+    {
+     "line": 75,
+     "before": "  else {",
+     "after": "    try {"
+    },
+    {
+     "line": 76,
+     "before": "    try {",
+     "after": "      if(!args[0] || !args.includes('--driver') || !args.includes('--expect-driver-sha256') || !args.includes('--shot')) throw new Error('usage: counter receipt --driver file --expect-driver-sha256 sha --shot dir --json');"
+    },
+    {
+     "line": 77,
+     "before": "      if(!args[0] || !args.includes('--driver') || !args.includes('--expect-driver-sha256') || !args.includes('--shot')) throw new Error('usage: counter receipt --driver file --expect-driver-sha256 sha --shot dir --json');",
+     "after": "      const r=JSON.parse(fs.readFileSync(args[0],'utf8'));"
+    },
+    {
+     "line": 78,
+     "before": "      const r=JSON.parse(fs.readFileSync(args[0],'utf8'));",
+     "after": "      const src=fs.readFileSync(option('--driver'),'utf8'), driverSha=sha(src);"
+    },
+    {
+     "line": 79,
+     "before": "      const src=fs.readFileSync(option('--driver'),'utf8'), driverSha=sha(src);",
+     "after": "      if(driverSha!==option('--expect-driver-sha256')) throw new Error('counter invocation driver pin mismatch');"
+    },
+    {
+     "line": 80,
+     "before": "      if(driverSha!==option('--expect-driver-sha256')) throw new Error('counter invocation driver pin mismatch');",
+     "after": "      const match=/const BUTTON_HTML = `([\\s\\S]*?)`;\\n\\/\\*FIXTURE-END\\*\\//.exec(src);"
+    },
+    {
+     "line": 81,
+     "before": "      const match=/const BUTTON_HTML = `([\\s\\S]*?)`;\\n\\/\\*FIXTURE-END\\*\\//.exec(src);",
+     "after": "      if(!match)throw new Error('fixture template absent');"
+    },
+    {
+     "line": 82,
+     "before": "      if(!match)throw new Error('fixture template absent');",
+     "after": "      const fixture=match[1].replace('${nonce}',r.nonce);"
+    },
+    {
+     "line": 83,
+     "before": "      const fixture=match[1].replace('${nonce}',r.nonce);",
+     "after": "      let shotsValid=true;"
+    },
+    {
+     "line": 84,
+     "before": "      let shotsValid=true;",
+     "after": "      for(const s of r.steps||[]){"
+    },
+    {
+     "line": 85,
+     "before": "      for(const s of r.steps||[]){",
+     "after": "        if(!/^[a-z-]+\\.png$/.test(s.png||'')){shotsValid=false;continue;}"
+    },
+    {
+     "line": 86,
+     "before": "        if(!/^[a-z-]+\\.png$/.test(s.png||'')){shotsValid=false;continue;}",
+     "after": "        try {const bytes=fs.readFileSync(path.join(option('--shot'),s.png));shotsValid=shotsValid && sha(bytes)===s.sha256 && bytes.length===s.bytes && bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) && bytes.readUInt32BE(16)>0 && bytes.readUInt32BE(20)>0;}catch{shotsValid=false;}"
+    },
+    {
+     "line": 87,
+     "before": "        try {const bytes=fs.readFileSync(path.join(option('--shot'),s.png));shotsValid=shotsValid && sha(bytes)===s.sha256 && bytes.length===s.bytes && bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) && bytes.readUInt32BE(16)>0 && bytes.readUInt32BE(20)>0;}catch{shotsValid=false;}",
+     "after": "      }"
+    },
+    {
+     "line": 88,
+     "before": "      }",
+     "after": "      const result=verify(r,{driverSha256:driverSha,fixtureSha256:sha(fixture),shotsValid});"
+    },
+    {
+     "line": 89,
+     "before": "      const result=verify(r,{driverSha256:driverSha,fixtureSha256:sha(fixture),shotsValid});",
+     "after": "      console.log(JSON.stringify(result,null,1));process.exitCode=result.predicate?0:1;"
+    },
+    {
+     "line": 90,
+     "before": "      console.log(JSON.stringify(result,null,1));process.exitCode=result.predicate?0:1;",
+     "after": "    }catch(e){console.error(JSON.stringify({schema:'tabi-r62-secondary-counter',error:e.message}));process.exitCode=2;}"
+    },
+    {
+     "line": 91,
+     "before": "    }catch(e){console.error(JSON.stringify({schema:'tabi-r62-secondary-counter',error:e.message}));process.exitCode=2;}",
+     "after": "  }"
+    },
+    {
+     "line": 92,
+     "before": "  }",
+     "after": "}"
+    },
+    {
+     "line": 93,
+     "before": "}",
+     "after": ""
+    },
+    {
+     "line": 94,
+     "before": "",
+     "after": null
+    }
+   ]
+  },
+  "M2": {
+   "name": "M2-drop-pointer-identity",
+   "desc": "drop the pointer-identity check that refuses f6 (second pointerdown pointerId changed)",
+   "probe": "f6",
+   "expectedSelftestCase": "f6",
+   "secondary": false,
+   "sha256": "90e91e3b931c3750ba8ad0ec10262d98e423d2597aea2734400fd2b75cd43fcb",
+   "bytes": 8231,
+   "transformation": [
+    {
+     "line": 22,
+     "before": "  check(b.length === 5 && b.every(e => e.pointerType === 'mouse' && Number.isInteger(e.pointerId) && e.pointerId > 0 && e.pointerId === b[0].pointerId), 'pointer-identity');",
+     "after": "  check([...b,...m].length === 11 && [...b,...m].every(e => e.isTrusted === true && Number.isFinite(e.ts) && e.ts >= 0), 'trusted-fields');"
+    },
+    {
+     "line": 23,
+     "before": "  check([...b,...m].length === 11 && [...b,...m].every(e => e.isTrusted === true && Number.isFinite(e.ts) && e.ts >= 0), 'trusted-fields');",
+     "after": "  const ordered = [...b,...m].sort((a,c) => a.seq-c.seq);"
+    },
+    {
+     "line": 24,
+     "before": "  const ordered = [...b,...m].sort((a,c) => a.seq-c.seq);",
+     "after": "  check(ordered.length === 11 && ordered.every((e,i) => e.seq === i+1), 'shared-sequence');"
+    },
+    {
+     "line": 25,
+     "before": "  check(ordered.length === 11 && ordered.every((e,i) => e.seq === i+1), 'shared-sequence');",
+     "after": "  check(b[0]?.button === -1 && b[0]?.buttons === 0, 'move-buttons');"
+    },
+    {
+     "line": 26,
+     "before": "  check(b[0]?.button === -1 && b[0]?.buttons === 0, 'move-buttons');",
+     "after": "  for (let i=0;i<2;i++) {"
+    },
+    {
+     "line": 27,
+     "before": "  for (let i=0;i<2;i++) {",
+     "after": "    const d=b[1+i*2], u=b[2+i*2], md=m[i*3], menu=m[i*3+1], mu=m[i*3+2];"
+    },
+    {
+     "line": 28,
+     "before": "    const d=b[1+i*2], u=b[2+i*2], md=m[i*3], menu=m[i*3+1], mu=m[i*3+2];",
+     "after": "    const target=i===0?'target':'target2';"
+    },
+    {
+     "line": 29,
+     "before": "    const target=i===0?'target':'target2';",
+     "after": "    check(d?.button===2 && d?.buttons===2 && u?.button===2 && u?.buttons===0, 'pointer-buttons-'+i);"
+    },
+    {
+     "line": 30,
+     "before": "    check(d?.button===2 && d?.buttons===2 && u?.button===2 && u?.buttons===0, 'pointer-buttons-'+i);",
+     "after": "    check(md?.button===2 && md?.buttons===2 && menu?.button===2 && menu?.buttons===2 && mu?.button===2 && mu?.buttons===0, 'mouse-buttons-'+i);"
+    },
+    {
+     "line": 31,
+     "before": "    check(md?.button===2 && md?.buttons===2 && menu?.button===2 && menu?.buttons===2 && mu?.button===2 && mu?.buttons===0, 'mouse-buttons-'+i);",
+     "after": "    check(menu?.defaultPrevented===true && md?.defaultPrevented===false && mu?.defaultPrevented===false, 'menu-cancelation-'+i);"
+    },
+    {
+     "line": 32,
+     "before": "    check(menu?.defaultPrevented===true && md?.defaultPrevented===false && mu?.defaultPrevented===false, 'menu-cancelation-'+i);",
+     "after": "    check([d,u,md,menu,mu].every(e => e?.targetId===target), 'target-binding-'+i);"
+    },
+    {
+     "line": 33,
+     "before": "    check([d,u,md,menu,mu].every(e => e?.targetId===target), 'target-binding-'+i);",
+     "after": "    check(d?.seq<md?.seq && md?.seq<menu?.seq && menu?.seq<u?.seq && u?.seq<mu?.seq, 'cycle-order-'+i);"
+    },
+    {
+     "line": 34,
+     "before": "    check(d?.seq<md?.seq && md?.seq<menu?.seq && menu?.seq<u?.seq && u?.seq<mu?.seq, 'cycle-order-'+i);",
+     "after": "    check(d?.ts<=md?.ts && md?.ts<=menu?.ts && menu?.ts<=u?.ts && u?.ts<=mu?.ts, 'cycle-time-'+i);"
+    },
+    {
+     "line": 35,
+     "before": "    check(d?.ts<=md?.ts && md?.ts<=menu?.ts && menu?.ts<=u?.ts && u?.ts<=mu?.ts, 'cycle-time-'+i);",
+     "after": "  }"
+    },
+    {
+     "line": 36,
+     "before": "  }",
+     "after": "  check(Array.isArray(r?.clicklog) && r.clicklog.length===0, 'no-click');"
+    },
+    {
+     "line": 37,
+     "before": "  check(Array.isArray(r?.clicklog) && r.clicklog.length===0, 'no-click');",
+     "after": "  check(r?.teardown?.postKillSweepCount===0 && Array.isArray(r.teardown.survivors) && r.teardown.survivors.length===0, 'survivors');"
+    },
+    {
+     "line": 38,
+     "before": "  check(r?.teardown?.postKillSweepCount===0 && Array.isArray(r.teardown.survivors) && r.teardown.survivors.length===0, 'survivors');",
+     "after": "  check(r?.teardown?.portProbes?.fixture==='closed' && r.teardown.portProbes.devtools==='closed' && r.teardown.postKillCurl?.fixture===7 && r.teardown.postKillCurl.devtools===7, 'closed-ports');"
+    },
+    {
+     "line": 39,
+     "before": "  check(r?.teardown?.portProbes?.fixture==='closed' && r.teardown.portProbes.devtools==='closed' && r.teardown.postKillCurl?.fixture===7 && r.teardown.postKillCurl.devtools===7, 'closed-ports');",
+     "after": "  check(r?.sweeps?.preLaunch===0 && r.sweeps.midRun>0 && r.sweeps.postKill===0, 'launch-witness');"
+    },
+    {
+     "line": 40,
+     "before": "  check(r?.sweeps?.preLaunch===0 && r.sweeps.midRun>0 && r.sweeps.postKill===0, 'launch-witness');",
+     "after": "  check(Array.isArray(r?.failures) && r.failures.length===0, 'failures');"
+    },
+    {
+     "line": 41,
+     "before": "  check(Array.isArray(r?.failures) && r.failures.length===0, 'failures');",
+     "after": "  const names=['a-right-press','b-contextmenu','c-second-press'];"
+    },
+    {
+     "line": 42,
+     "before": "  const names=['a-right-press','b-contextmenu','c-second-press'];",
+     "after": "  check(Array.isArray(r?.steps) && r.steps.length===3 && r.steps.every((e,i)=>e.name===names[i] && e.png===names[i]+'.png' && /^[a-f0-9]{64}$/.test(e.sha256) && e.bytes>0), 'shot-records');"
+    },
+    {
+     "line": 43,
+     "before": "  check(Array.isArray(r?.steps) && r.steps.length===3 && r.steps.every((e,i)=>e.name===names[i] && e.png===names[i]+'.png' && /^[a-f0-9]{64}$/.test(e.sha256) && e.bytes>0), 'shot-records');",
+     "after": "  check(external.shotsValid===true, 'shot-bytes');"
+    },
+    {
+     "line": 44,
+     "before": "  check(external.shotsValid===true, 'shot-bytes');",
+     "after": "  check(r?.predicate===true && r.buttonHypothesis==='CONFIRMED', 'producer-verdict');"
+    },
+    {
+     "line": 45,
+     "before": "  check(r?.predicate===true && r.buttonHypothesis==='CONFIRMED', 'producer-verdict');",
+     "after": "  check(Array.isArray(r?.serverLog) && r.serverLog.some(e=>e.path==='/button') && r.serverLog.every(e=>['/button','/favicon.ico'].includes(e.path)), 'server-witness');"
+    },
+    {
+     "line": 46,
+     "before": "  check(Array.isArray(r?.serverLog) && r.serverLog.some(e=>e.path==='/button') && r.serverLog.every(e=>['/button','/favicon.ico'].includes(e.path)), 'server-witness');",
+     "after": "  return {schema:'tabi-r62-secondary-counter',predicate:findings.length===0,findingCount:findings.length,findings};"
+    },
+    {
+     "line": 47,
+     "before": "  return {schema:'tabi-r62-secondary-counter',predicate:findings.length===0,findingCount:findings.length,findings};",
+     "after": "}"
+    },
+    {
+     "line": 48,
+     "before": "}",
+     "after": "function synthetic() {"
+    },
+    {
+     "line": 49,
+     "before": "function synthetic() {",
+     "after": "  const b=[['pointermove',1,-1,0,'target'],['pointerdown',2,2,2,'target'],['pointerup',5,2,0,'target'],['pointerdown',7,2,2,'target2'],['pointerup',10,2,0,'target2']].map(([type,seq,button,buttons,targetId])=>({type,seq,button,buttons,targetId,ts:seq,pointerId:1,pointerType:'mouse',isTrusted:true}));"
+    },
+    {
+     "line": 50,
+     "before": "  const b=[['pointermove',1,-1,0,'target'],['pointerdown',2,2,2,'target'],['pointerup',5,2,0,'target'],['pointerdown',7,2,2,'target2'],['pointerup',10,2,0,'target2']].map(([type,seq,button,buttons,targetId])=>({type,seq,button,buttons,targetId,ts:seq,pointerId:1,pointerType:'mouse',isTrusted:true}));",
+     "after": "  const m=[['mousedown',3,2,'target'],['contextmenu',4,2,'target'],['mouseup',6,0,'target'],['mousedown',8,2,'target2'],['contextmenu',9,2,'target2'],['mouseup',11,0,'target2']].map(([type,seq,buttons,targetId])=>({type,seq,button:2,buttons,targetId,ts:seq,isTrusted:true,defaultPrevented:type==='contextmenu'}));"
+    },
+    {
+     "line": 51,
+     "before": "  const m=[['mousedown',3,2,'target'],['contextmenu',4,2,'target'],['mouseup',6,0,'target'],['mousedown',8,2,'target2'],['contextmenu',9,2,'target2'],['mouseup',11,0,'target2']].map(([type,seq,buttons,targetId])=>({type,seq,button:2,buttons,targetId,ts:seq,isTrusted:true,defaultPrevented:type==='contextmenu'}));",
+     "after": "  return {schema:'tabi-chrome-cdp-r62',nonce:'tabi-r62-test',nonceOnPage:'tabi-r62-test',driverSha256:'a'.repeat(64),fixture:{origin:'http://127.0.0.1:19471',sha256:'b'.repeat(64)},host:{argv:['--disable-extensions','--headless=new','--remote-debugging-address=127.0.0.1']},btnlog:b,mouselog:m,clicklog:[],teardown:{postKillSweepCount:0,survivors:[],portProbes:{fixture:'closed',devtools:'closed'},postKillCurl:{fixture:7,devtools:7}},sweeps:{preLaunch:0,midRun:1,postKill:0},failures:[],steps:['a-right-press','b-contextmenu','c-second-press'].map(name=>({name,png:name+'.png',sha256:'c'.repeat(64),bytes:10})),predicate:true,buttonHypothesis:'CONFIRMED',serverLog:[{path:'/button'}]};"
+    },
+    {
+     "line": 52,
+     "before": "  return {schema:'tabi-chrome-cdp-r62',nonce:'tabi-r62-test',nonceOnPage:'tabi-r62-test',driverSha256:'a'.repeat(64),fixture:{origin:'http://127.0.0.1:19471',sha256:'b'.repeat(64)},host:{argv:['--disable-extensions','--headless=new','--remote-debugging-address=127.0.0.1']},btnlog:b,mouselog:m,clicklog:[],teardown:{postKillSweepCount:0,survivors:[],portProbes:{fixture:'closed',devtools:'closed'},postKillCurl:{fixture:7,devtools:7}},sweeps:{preLaunch:0,midRun:1,postKill:0},failures:[],steps:['a-right-press','b-contextmenu','c-second-press'].map(name=>({name,png:name+'.png',sha256:'c'.repeat(64),bytes:10})),predicate:true,buttonHypothesis:'CONFIRMED',serverLog:[{path:'/button'}]};",
+     "after": "}"
+    },
+    {
+     "line": 53,
+     "before": "}",
+     "after": "const ext={driverSha256:'a'.repeat(64),fixtureSha256:'b'.repeat(64),shotsValid:true};"
+    },
+    {
+     "line": 54,
+     "before": "const ext={driverSha256:'a'.repeat(64),fixtureSha256:'b'.repeat(64),shotsValid:true};",
+     "after": "export const forgeries = {"
+    },
+    {
+     "line": 55,
+     "before": "export const forgeries = {",
+     "after": "  f1:r=>{r.btnlog[1].button=0;},"
+    },
+    {
+     "line": 56,
+     "before": "  f1:r=>{r.btnlog[1].button=0;},",
+     "after": "  f2:r=>{r.btnlog.splice(2,1);},"
+    },
+    {
+     "line": 57,
+     "before": "  f2:r=>{r.btnlog.splice(2,1);},",
+     "after": "  f3:r=>{r.mouselog[1].isTrusted=false;},"
+    },
+    {
+     "line": 58,
+     "before": "  f3:r=>{r.mouselog[1].isTrusted=false;},",
+     "after": "  f4:r=>{r.mouselog.splice(1,1);},"
+    },
+    {
+     "line": 59,
+     "before": "  f4:r=>{r.mouselog.splice(1,1);},",
+     "after": "  f5:r=>{r.btnlog[3].buttons=1;},"
+    },
+    {
+     "line": 60,
+     "before": "  f5:r=>{r.btnlog[3].buttons=1;},",
+     "after": "  f6:r=>{r.btnlog[3].pointerId=2;},"
+    },
+    {
+     "line": 61,
+     "before": "  f6:r=>{r.btnlog[3].pointerId=2;},",
+     "after": "  f7:r=>{r.mouselog[4].defaultPrevented=false;},"
+    },
+    {
+     "line": 62,
+     "before": "  f7:r=>{r.mouselog[4].defaultPrevented=false;},",
+     "after": "  f8:r=>{r.teardown.survivors=[99999];},"
+    },
+    {
+     "line": 63,
+     "before": "  f8:r=>{r.teardown.survivors=[99999];},",
+     "after": "};"
+    },
+    {
+     "line": 64,
+     "before": "};",
+     "after": "function selftest() {"
+    },
+    {
+     "line": 65,
+     "before": "function selftest() {",
+     "after": "  const results=[{name:'valid',ok:verify(synthetic(),ext).predicate}];"
+    },
+    {
+     "line": 66,
+     "before": "  const results=[{name:'valid',ok:verify(synthetic(),ext).predicate}];",
+     "after": "  for(const [id,mutate] of Object.entries(forgeries)){const r=synthetic();mutate(r);results.push({name:id,ok:!verify(r,ext).predicate,findings:verify(r,ext).findings});}"
+    },
+    {
+     "line": 67,
+     "before": "  for(const [id,mutate] of Object.entries(forgeries)){const r=synthetic();mutate(r);results.push({name:id,ok:!verify(r,ext).predicate,findings:verify(r,ext).findings});}",
+     "after": "  for(const [name,mutate] of Object.entries({nonce:r=>{r.nonceOnPage='wrong';},driver:r=>{r.driverSha256='d'.repeat(64);},sequence:r=>{r.mouselog[1].seq=30;},menuButtons:r=>{r.mouselog[1].buttons=0;},secondTarget:r=>{r.btnlog[3].targetId='target';},click:r=>{r.clicklog=[{}];},ports:r=>{r.teardown.postKillCurl.devtools=0;}})){const r=synthetic();mutate(r);results.push({name,ok:!verify(r,ext).predicate});}"
+    },
+    {
+     "line": 68,
+     "before": "  for(const [name,mutate] of Object.entries({nonce:r=>{r.nonceOnPage='wrong';},driver:r=>{r.driverSha256='d'.repeat(64);},sequence:r=>{r.mouselog[1].seq=30;},menuButtons:r=>{r.mouselog[1].buttons=0;},secondTarget:r=>{r.btnlog[3].targetId='target';},click:r=>{r.clicklog=[{}];},ports:r=>{r.teardown.postKillCurl.devtools=0;}})){const r=synthetic();mutate(r);results.push({name,ok:!verify(r,ext).predicate});}",
+     "after": "  const allPass=results.every(e=>e.ok);console.log(JSON.stringify({schema:'tabi-r62-counter-selftest',allPass,cases:results.length,results},null,1));process.exitCode=allPass?0:1;"
+    },
+    {
+     "line": 69,
+     "before": "  const allPass=results.every(e=>e.ok);console.log(JSON.stringify({schema:'tabi-r62-counter-selftest',allPass,cases:results.length,results},null,1));process.exitCode=allPass?0:1;",
+     "after": "}"
+    },
+    {
+     "line": 70,
+     "before": "}",
+     "after": "const main=process.argv[1] && import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href;"
+    },
+    {
+     "line": 71,
+     "before": "const main=process.argv[1] && import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href;",
+     "after": "if(main){"
+    },
+    {
+     "line": 72,
+     "before": "if(main){",
+     "after": "  const args=process.argv.slice(2), option=n=>args[args.indexOf(n)+1];"
+    },
+    {
+     "line": 73,
+     "before": "  const args=process.argv.slice(2), option=n=>args[args.indexOf(n)+1];",
+     "after": "  if(args[0]==='--selftest') selftest();"
+    },
+    {
+     "line": 74,
+     "before": "  if(args[0]==='--selftest') selftest();",
+     "after": "  else {"
+    },
+    {
+     "line": 75,
+     "before": "  else {",
+     "after": "    try {"
+    },
+    {
+     "line": 76,
+     "before": "    try {",
+     "after": "      if(!args[0] || !args.includes('--driver') || !args.includes('--expect-driver-sha256') || !args.includes('--shot')) throw new Error('usage: counter receipt --driver file --expect-driver-sha256 sha --shot dir --json');"
+    },
+    {
+     "line": 77,
+     "before": "      if(!args[0] || !args.includes('--driver') || !args.includes('--expect-driver-sha256') || !args.includes('--shot')) throw new Error('usage: counter receipt --driver file --expect-driver-sha256 sha --shot dir --json');",
+     "after": "      const r=JSON.parse(fs.readFileSync(args[0],'utf8'));"
+    },
+    {
+     "line": 78,
+     "before": "      const r=JSON.parse(fs.readFileSync(args[0],'utf8'));",
+     "after": "      const src=fs.readFileSync(option('--driver'),'utf8'), driverSha=sha(src);"
+    },
+    {
+     "line": 79,
+     "before": "      const src=fs.readFileSync(option('--driver'),'utf8'), driverSha=sha(src);",
+     "after": "      if(driverSha!==option('--expect-driver-sha256')) throw new Error('counter invocation driver pin mismatch');"
+    },
+    {
+     "line": 80,
+     "before": "      if(driverSha!==option('--expect-driver-sha256')) throw new Error('counter invocation driver pin mismatch');",
+     "after": "      const match=/const BUTTON_HTML = `([\\s\\S]*?)`;\\n\\/\\*FIXTURE-END\\*\\//.exec(src);"
+    },
+    {
+     "line": 81,
+     "before": "      const match=/const BUTTON_HTML = `([\\s\\S]*?)`;\\n\\/\\*FIXTURE-END\\*\\//.exec(src);",
+     "after": "      if(!match)throw new Error('fixture template absent');"
+    },
+    {
+     "line": 82,
+     "before": "      if(!match)throw new Error('fixture template absent');",
+     "after": "      const fixture=match[1].replace('${nonce}',r.nonce);"
+    },
+    {
+     "line": 83,
+     "before": "      const fixture=match[1].replace('${nonce}',r.nonce);",
+     "after": "      let shotsValid=true;"
+    },
+    {
+     "line": 84,
+     "before": "      let shotsValid=true;",
+     "after": "      for(const s of r.steps||[]){"
+    },
+    {
+     "line": 85,
+     "before": "      for(const s of r.steps||[]){",
+     "after": "        if(!/^[a-z-]+\\.png$/.test(s.png||'')){shotsValid=false;continue;}"
+    },
+    {
+     "line": 86,
+     "before": "        if(!/^[a-z-]+\\.png$/.test(s.png||'')){shotsValid=false;continue;}",
+     "after": "        try {const bytes=fs.readFileSync(path.join(option('--shot'),s.png));shotsValid=shotsValid && sha(bytes)===s.sha256 && bytes.length===s.bytes && bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) && bytes.readUInt32BE(16)>0 && bytes.readUInt32BE(20)>0;}catch{shotsValid=false;}"
+    },
+    {
+     "line": 87,
+     "before": "        try {const bytes=fs.readFileSync(path.join(option('--shot'),s.png));shotsValid=shotsValid && sha(bytes)===s.sha256 && bytes.length===s.bytes && bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) && bytes.readUInt32BE(16)>0 && bytes.readUInt32BE(20)>0;}catch{shotsValid=false;}",
+     "after": "      }"
+    },
+    {
+     "line": 88,
+     "before": "      }",
+     "after": "      const result=verify(r,{driverSha256:driverSha,fixtureSha256:sha(fixture),shotsValid});"
+    },
+    {
+     "line": 89,
+     "before": "      const result=verify(r,{driverSha256:driverSha,fixtureSha256:sha(fixture),shotsValid});",
+     "after": "      console.log(JSON.stringify(result,null,1));process.exitCode=result.predicate?0:1;"
+    },
+    {
+     "line": 90,
+     "before": "      console.log(JSON.stringify(result,null,1));process.exitCode=result.predicate?0:1;",
+     "after": "    }catch(e){console.error(JSON.stringify({schema:'tabi-r62-secondary-counter',error:e.message}));process.exitCode=2;}"
+    },
+    {
+     "line": 91,
+     "before": "    }catch(e){console.error(JSON.stringify({schema:'tabi-r62-secondary-counter',error:e.message}));process.exitCode=2;}",
+     "after": "  }"
+    },
+    {
+     "line": 92,
+     "before": "  }",
+     "after": "}"
+    },
+    {
+     "line": 93,
+     "before": "}",
+     "after": ""
+    },
+    {
+     "line": 94,
+     "before": "",
+     "after": null
+    }
+   ]
+  },
+  "M3": {
+   "name": "M3-drop-menu-cancellation",
+   "desc": "drop the menu-cancelation check that refuses f7 (second contextmenu defaultPrevented false)",
+   "probe": "f7",
+   "expectedSelftestCase": "f7",
+   "secondary": false,
+   "sha256": "1d58f70fd6301f0fd60641ed4b5310d27c225a530f7cee15f2f106aaf5119792",
+   "bytes": 8276,
+   "transformation": [
+    {
+     "line": 32,
+     "before": "    check(menu?.defaultPrevented===true && md?.defaultPrevented===false && mu?.defaultPrevented===false, 'menu-cancelation-'+i);",
+     "after": "    check([d,u,md,menu,mu].every(e => e?.targetId===target), 'target-binding-'+i);"
+    },
+    {
+     "line": 33,
+     "before": "    check([d,u,md,menu,mu].every(e => e?.targetId===target), 'target-binding-'+i);",
+     "after": "    check(d?.seq<md?.seq && md?.seq<menu?.seq && menu?.seq<u?.seq && u?.seq<mu?.seq, 'cycle-order-'+i);"
+    },
+    {
+     "line": 34,
+     "before": "    check(d?.seq<md?.seq && md?.seq<menu?.seq && menu?.seq<u?.seq && u?.seq<mu?.seq, 'cycle-order-'+i);",
+     "after": "    check(d?.ts<=md?.ts && md?.ts<=menu?.ts && menu?.ts<=u?.ts && u?.ts<=mu?.ts, 'cycle-time-'+i);"
+    },
+    {
+     "line": 35,
+     "before": "    check(d?.ts<=md?.ts && md?.ts<=menu?.ts && menu?.ts<=u?.ts && u?.ts<=mu?.ts, 'cycle-time-'+i);",
+     "after": "  }"
+    },
+    {
+     "line": 36,
+     "before": "  }",
+     "after": "  check(Array.isArray(r?.clicklog) && r.clicklog.length===0, 'no-click');"
+    },
+    {
+     "line": 37,
+     "before": "  check(Array.isArray(r?.clicklog) && r.clicklog.length===0, 'no-click');",
+     "after": "  check(r?.teardown?.postKillSweepCount===0 && Array.isArray(r.teardown.survivors) && r.teardown.survivors.length===0, 'survivors');"
+    },
+    {
+     "line": 38,
+     "before": "  check(r?.teardown?.postKillSweepCount===0 && Array.isArray(r.teardown.survivors) && r.teardown.survivors.length===0, 'survivors');",
+     "after": "  check(r?.teardown?.portProbes?.fixture==='closed' && r.teardown.portProbes.devtools==='closed' && r.teardown.postKillCurl?.fixture===7 && r.teardown.postKillCurl.devtools===7, 'closed-ports');"
+    },
+    {
+     "line": 39,
+     "before": "  check(r?.teardown?.portProbes?.fixture==='closed' && r.teardown.portProbes.devtools==='closed' && r.teardown.postKillCurl?.fixture===7 && r.teardown.postKillCurl.devtools===7, 'closed-ports');",
+     "after": "  check(r?.sweeps?.preLaunch===0 && r.sweeps.midRun>0 && r.sweeps.postKill===0, 'launch-witness');"
+    },
+    {
+     "line": 40,
+     "before": "  check(r?.sweeps?.preLaunch===0 && r.sweeps.midRun>0 && r.sweeps.postKill===0, 'launch-witness');",
+     "after": "  check(Array.isArray(r?.failures) && r.failures.length===0, 'failures');"
+    },
+    {
+     "line": 41,
+     "before": "  check(Array.isArray(r?.failures) && r.failures.length===0, 'failures');",
+     "after": "  const names=['a-right-press','b-contextmenu','c-second-press'];"
+    },
+    {
+     "line": 42,
+     "before": "  const names=['a-right-press','b-contextmenu','c-second-press'];",
+     "after": "  check(Array.isArray(r?.steps) && r.steps.length===3 && r.steps.every((e,i)=>e.name===names[i] && e.png===names[i]+'.png' && /^[a-f0-9]{64}$/.test(e.sha256) && e.bytes>0), 'shot-records');"
+    },
+    {
+     "line": 43,
+     "before": "  check(Array.isArray(r?.steps) && r.steps.length===3 && r.steps.every((e,i)=>e.name===names[i] && e.png===names[i]+'.png' && /^[a-f0-9]{64}$/.test(e.sha256) && e.bytes>0), 'shot-records');",
+     "after": "  check(external.shotsValid===true, 'shot-bytes');"
+    },
+    {
+     "line": 44,
+     "before": "  check(external.shotsValid===true, 'shot-bytes');",
+     "after": "  check(r?.predicate===true && r.buttonHypothesis==='CONFIRMED', 'producer-verdict');"
+    },
+    {
+     "line": 45,
+     "before": "  check(r?.predicate===true && r.buttonHypothesis==='CONFIRMED', 'producer-verdict');",
+     "after": "  check(Array.isArray(r?.serverLog) && r.serverLog.some(e=>e.path==='/button') && r.serverLog.every(e=>['/button','/favicon.ico'].includes(e.path)), 'server-witness');"
+    },
+    {
+     "line": 46,
+     "before": "  check(Array.isArray(r?.serverLog) && r.serverLog.some(e=>e.path==='/button') && r.serverLog.every(e=>['/button','/favicon.ico'].includes(e.path)), 'server-witness');",
+     "after": "  return {schema:'tabi-r62-secondary-counter',predicate:findings.length===0,findingCount:findings.length,findings};"
+    },
+    {
+     "line": 47,
+     "before": "  return {schema:'tabi-r62-secondary-counter',predicate:findings.length===0,findingCount:findings.length,findings};",
+     "after": "}"
+    },
+    {
+     "line": 48,
+     "before": "}",
+     "after": "function synthetic() {"
+    },
+    {
+     "line": 49,
+     "before": "function synthetic() {",
+     "after": "  const b=[['pointermove',1,-1,0,'target'],['pointerdown',2,2,2,'target'],['pointerup',5,2,0,'target'],['pointerdown',7,2,2,'target2'],['pointerup',10,2,0,'target2']].map(([type,seq,button,buttons,targetId])=>({type,seq,button,buttons,targetId,ts:seq,pointerId:1,pointerType:'mouse',isTrusted:true}));"
+    },
+    {
+     "line": 50,
+     "before": "  const b=[['pointermove',1,-1,0,'target'],['pointerdown',2,2,2,'target'],['pointerup',5,2,0,'target'],['pointerdown',7,2,2,'target2'],['pointerup',10,2,0,'target2']].map(([type,seq,button,buttons,targetId])=>({type,seq,button,buttons,targetId,ts:seq,pointerId:1,pointerType:'mouse',isTrusted:true}));",
+     "after": "  const m=[['mousedown',3,2,'target'],['contextmenu',4,2,'target'],['mouseup',6,0,'target'],['mousedown',8,2,'target2'],['contextmenu',9,2,'target2'],['mouseup',11,0,'target2']].map(([type,seq,buttons,targetId])=>({type,seq,button:2,buttons,targetId,ts:seq,isTrusted:true,defaultPrevented:type==='contextmenu'}));"
+    },
+    {
+     "line": 51,
+     "before": "  const m=[['mousedown',3,2,'target'],['contextmenu',4,2,'target'],['mouseup',6,0,'target'],['mousedown',8,2,'target2'],['contextmenu',9,2,'target2'],['mouseup',11,0,'target2']].map(([type,seq,buttons,targetId])=>({type,seq,button:2,buttons,targetId,ts:seq,isTrusted:true,defaultPrevented:type==='contextmenu'}));",
+     "after": "  return {schema:'tabi-chrome-cdp-r62',nonce:'tabi-r62-test',nonceOnPage:'tabi-r62-test',driverSha256:'a'.repeat(64),fixture:{origin:'http://127.0.0.1:19471',sha256:'b'.repeat(64)},host:{argv:['--disable-extensions','--headless=new','--remote-debugging-address=127.0.0.1']},btnlog:b,mouselog:m,clicklog:[],teardown:{postKillSweepCount:0,survivors:[],portProbes:{fixture:'closed',devtools:'closed'},postKillCurl:{fixture:7,devtools:7}},sweeps:{preLaunch:0,midRun:1,postKill:0},failures:[],steps:['a-right-press','b-contextmenu','c-second-press'].map(name=>({name,png:name+'.png',sha256:'c'.repeat(64),bytes:10})),predicate:true,buttonHypothesis:'CONFIRMED',serverLog:[{path:'/button'}]};"
+    },
+    {
+     "line": 52,
+     "before": "  return {schema:'tabi-chrome-cdp-r62',nonce:'tabi-r62-test',nonceOnPage:'tabi-r62-test',driverSha256:'a'.repeat(64),fixture:{origin:'http://127.0.0.1:19471',sha256:'b'.repeat(64)},host:{argv:['--disable-extensions','--headless=new','--remote-debugging-address=127.0.0.1']},btnlog:b,mouselog:m,clicklog:[],teardown:{postKillSweepCount:0,survivors:[],portProbes:{fixture:'closed',devtools:'closed'},postKillCurl:{fixture:7,devtools:7}},sweeps:{preLaunch:0,midRun:1,postKill:0},failures:[],steps:['a-right-press','b-contextmenu','c-second-press'].map(name=>({name,png:name+'.png',sha256:'c'.repeat(64),bytes:10})),predicate:true,buttonHypothesis:'CONFIRMED',serverLog:[{path:'/button'}]};",
+     "after": "}"
+    },
+    {
+     "line": 53,
+     "before": "}",
+     "after": "const ext={driverSha256:'a'.repeat(64),fixtureSha256:'b'.repeat(64),shotsValid:true};"
+    },
+    {
+     "line": 54,
+     "before": "const ext={driverSha256:'a'.repeat(64),fixtureSha256:'b'.repeat(64),shotsValid:true};",
+     "after": "export const forgeries = {"
+    },
+    {
+     "line": 55,
+     "before": "export const forgeries = {",
+     "after": "  f1:r=>{r.btnlog[1].button=0;},"
+    },
+    {
+     "line": 56,
+     "before": "  f1:r=>{r.btnlog[1].button=0;},",
+     "after": "  f2:r=>{r.btnlog.splice(2,1);},"
+    },
+    {
+     "line": 57,
+     "before": "  f2:r=>{r.btnlog.splice(2,1);},",
+     "after": "  f3:r=>{r.mouselog[1].isTrusted=false;},"
+    },
+    {
+     "line": 58,
+     "before": "  f3:r=>{r.mouselog[1].isTrusted=false;},",
+     "after": "  f4:r=>{r.mouselog.splice(1,1);},"
+    },
+    {
+     "line": 59,
+     "before": "  f4:r=>{r.mouselog.splice(1,1);},",
+     "after": "  f5:r=>{r.btnlog[3].buttons=1;},"
+    },
+    {
+     "line": 60,
+     "before": "  f5:r=>{r.btnlog[3].buttons=1;},",
+     "after": "  f6:r=>{r.btnlog[3].pointerId=2;},"
+    },
+    {
+     "line": 61,
+     "before": "  f6:r=>{r.btnlog[3].pointerId=2;},",
+     "after": "  f7:r=>{r.mouselog[4].defaultPrevented=false;},"
+    },
+    {
+     "line": 62,
+     "before": "  f7:r=>{r.mouselog[4].defaultPrevented=false;},",
+     "after": "  f8:r=>{r.teardown.survivors=[99999];},"
+    },
+    {
+     "line": 63,
+     "before": "  f8:r=>{r.teardown.survivors=[99999];},",
+     "after": "};"
+    },
+    {
+     "line": 64,
+     "before": "};",
+     "after": "function selftest() {"
+    },
+    {
+     "line": 65,
+     "before": "function selftest() {",
+     "after": "  const results=[{name:'valid',ok:verify(synthetic(),ext).predicate}];"
+    },
+    {
+     "line": 66,
+     "before": "  const results=[{name:'valid',ok:verify(synthetic(),ext).predicate}];",
+     "after": "  for(const [id,mutate] of Object.entries(forgeries)){const r=synthetic();mutate(r);results.push({name:id,ok:!verify(r,ext).predicate,findings:verify(r,ext).findings});}"
+    },
+    {
+     "line": 67,
+     "before": "  for(const [id,mutate] of Object.entries(forgeries)){const r=synthetic();mutate(r);results.push({name:id,ok:!verify(r,ext).predicate,findings:verify(r,ext).findings});}",
+     "after": "  for(const [name,mutate] of Object.entries({nonce:r=>{r.nonceOnPage='wrong';},driver:r=>{r.driverSha256='d'.repeat(64);},sequence:r=>{r.mouselog[1].seq=30;},menuButtons:r=>{r.mouselog[1].buttons=0;},secondTarget:r=>{r.btnlog[3].targetId='target';},click:r=>{r.clicklog=[{}];},ports:r=>{r.teardown.postKillCurl.devtools=0;}})){const r=synthetic();mutate(r);results.push({name,ok:!verify(r,ext).predicate});}"
+    },
+    {
+     "line": 68,
+     "before": "  for(const [name,mutate] of Object.entries({nonce:r=>{r.nonceOnPage='wrong';},driver:r=>{r.driverSha256='d'.repeat(64);},sequence:r=>{r.mouselog[1].seq=30;},menuButtons:r=>{r.mouselog[1].buttons=0;},secondTarget:r=>{r.btnlog[3].targetId='target';},click:r=>{r.clicklog=[{}];},ports:r=>{r.teardown.postKillCurl.devtools=0;}})){const r=synthetic();mutate(r);results.push({name,ok:!verify(r,ext).predicate});}",
+     "after": "  const allPass=results.every(e=>e.ok);console.log(JSON.stringify({schema:'tabi-r62-counter-selftest',allPass,cases:results.length,results},null,1));process.exitCode=allPass?0:1;"
+    },
+    {
+     "line": 69,
+     "before": "  const allPass=results.every(e=>e.ok);console.log(JSON.stringify({schema:'tabi-r62-counter-selftest',allPass,cases:results.length,results},null,1));process.exitCode=allPass?0:1;",
+     "after": "}"
+    },
+    {
+     "line": 70,
+     "before": "}",
+     "after": "const main=process.argv[1] && import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href;"
+    },
+    {
+     "line": 71,
+     "before": "const main=process.argv[1] && import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href;",
+     "after": "if(main){"
+    },
+    {
+     "line": 72,
+     "before": "if(main){",
+     "after": "  const args=process.argv.slice(2), option=n=>args[args.indexOf(n)+1];"
+    },
+    {
+     "line": 73,
+     "before": "  const args=process.argv.slice(2), option=n=>args[args.indexOf(n)+1];",
+     "after": "  if(args[0]==='--selftest') selftest();"
+    },
+    {
+     "line": 74,
+     "before": "  if(args[0]==='--selftest') selftest();",
+     "after": "  else {"
+    },
+    {
+     "line": 75,
+     "before": "  else {",
+     "after": "    try {"
+    },
+    {
+     "line": 76,
+     "before": "    try {",
+     "after": "      if(!args[0] || !args.includes('--driver') || !args.includes('--expect-driver-sha256') || !args.includes('--shot')) throw new Error('usage: counter receipt --driver file --expect-driver-sha256 sha --shot dir --json');"
+    },
+    {
+     "line": 77,
+     "before": "      if(!args[0] || !args.includes('--driver') || !args.includes('--expect-driver-sha256') || !args.includes('--shot')) throw new Error('usage: counter receipt --driver file --expect-driver-sha256 sha --shot dir --json');",
+     "after": "      const r=JSON.parse(fs.readFileSync(args[0],'utf8'));"
+    },
+    {
+     "line": 78,
+     "before": "      const r=JSON.parse(fs.readFileSync(args[0],'utf8'));",
+     "after": "      const src=fs.readFileSync(option('--driver'),'utf8'), driverSha=sha(src);"
+    },
+    {
+     "line": 79,
+     "before": "      const src=fs.readFileSync(option('--driver'),'utf8'), driverSha=sha(src);",
+     "after": "      if(driverSha!==option('--expect-driver-sha256')) throw new Error('counter invocation driver pin mismatch');"
+    },
+    {
+     "line": 80,
+     "before": "      if(driverSha!==option('--expect-driver-sha256')) throw new Error('counter invocation driver pin mismatch');",
+     "after": "      const match=/const BUTTON_HTML = `([\\s\\S]*?)`;\\n\\/\\*FIXTURE-END\\*\\//.exec(src);"
+    },
+    {
+     "line": 81,
+     "before": "      const match=/const BUTTON_HTML = `([\\s\\S]*?)`;\\n\\/\\*FIXTURE-END\\*\\//.exec(src);",
+     "after": "      if(!match)throw new Error('fixture template absent');"
+    },
+    {
+     "line": 82,
+     "before": "      if(!match)throw new Error('fixture template absent');",
+     "after": "      const fixture=match[1].replace('${nonce}',r.nonce);"
+    },
+    {
+     "line": 83,
+     "before": "      const fixture=match[1].replace('${nonce}',r.nonce);",
+     "after": "      let shotsValid=true;"
+    },
+    {
+     "line": 84,
+     "before": "      let shotsValid=true;",
+     "after": "      for(const s of r.steps||[]){"
+    },
+    {
+     "line": 85,
+     "before": "      for(const s of r.steps||[]){",
+     "after": "        if(!/^[a-z-]+\\.png$/.test(s.png||'')){shotsValid=false;continue;}"
+    },
+    {
+     "line": 86,
+     "before": "        if(!/^[a-z-]+\\.png$/.test(s.png||'')){shotsValid=false;continue;}",
+     "after": "        try {const bytes=fs.readFileSync(path.join(option('--shot'),s.png));shotsValid=shotsValid && sha(bytes)===s.sha256 && bytes.length===s.bytes && bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) && bytes.readUInt32BE(16)>0 && bytes.readUInt32BE(20)>0;}catch{shotsValid=false;}"
+    },
+    {
+     "line": 87,
+     "before": "        try {const bytes=fs.readFileSync(path.join(option('--shot'),s.png));shotsValid=shotsValid && sha(bytes)===s.sha256 && bytes.length===s.bytes && bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) && bytes.readUInt32BE(16)>0 && bytes.readUInt32BE(20)>0;}catch{shotsValid=false;}",
+     "after": "      }"
+    },
+    {
+     "line": 88,
+     "before": "      }",
+     "after": "      const result=verify(r,{driverSha256:driverSha,fixtureSha256:sha(fixture),shotsValid});"
+    },
+    {
+     "line": 89,
+     "before": "      const result=verify(r,{driverSha256:driverSha,fixtureSha256:sha(fixture),shotsValid});",
+     "after": "      console.log(JSON.stringify(result,null,1));process.exitCode=result.predicate?0:1;"
+    },
+    {
+     "line": 90,
+     "before": "      console.log(JSON.stringify(result,null,1));process.exitCode=result.predicate?0:1;",
+     "after": "    }catch(e){console.error(JSON.stringify({schema:'tabi-r62-secondary-counter',error:e.message}));process.exitCode=2;}"
+    },
+    {
+     "line": 91,
+     "before": "    }catch(e){console.error(JSON.stringify({schema:'tabi-r62-secondary-counter',error:e.message}));process.exitCode=2;}",
+     "after": "  }"
+    },
+    {
+     "line": 92,
+     "before": "  }",
+     "after": "}"
+    },
+    {
+     "line": 93,
+     "before": "}",
+     "after": ""
+    },
+    {
+     "line": 94,
+     "before": "",
+     "after": null
+    }
+   ]
+  },
+  "M4": {
+   "name": "M4-drop-closure",
+   "desc": "drop the closure/survivors check that refuses f8 (nonempty teardown survivors)",
+   "probe": "f8",
+   "expectedSelftestCase": "f8",
+   "secondary": false,
+   "sha256": "ad4c628e88514a710a3f3f2f8bcd11ccfa5cbc7a2f724e0786ebe42c45128aff",
+   "bytes": 8272,
+   "transformation": [
+    {
+     "line": 38,
+     "before": "  check(r?.teardown?.postKillSweepCount===0 && Array.isArray(r.teardown.survivors) && r.teardown.survivors.length===0, 'survivors');",
+     "after": "  check(r?.teardown?.portProbes?.fixture==='closed' && r.teardown.portProbes.devtools==='closed' && r.teardown.postKillCurl?.fixture===7 && r.teardown.postKillCurl.devtools===7, 'closed-ports');"
+    },
+    {
+     "line": 39,
+     "before": "  check(r?.teardown?.portProbes?.fixture==='closed' && r.teardown.portProbes.devtools==='closed' && r.teardown.postKillCurl?.fixture===7 && r.teardown.postKillCurl.devtools===7, 'closed-ports');",
+     "after": "  check(r?.sweeps?.preLaunch===0 && r.sweeps.midRun>0 && r.sweeps.postKill===0, 'launch-witness');"
+    },
+    {
+     "line": 40,
+     "before": "  check(r?.sweeps?.preLaunch===0 && r.sweeps.midRun>0 && r.sweeps.postKill===0, 'launch-witness');",
+     "after": "  check(Array.isArray(r?.failures) && r.failures.length===0, 'failures');"
+    },
+    {
+     "line": 41,
+     "before": "  check(Array.isArray(r?.failures) && r.failures.length===0, 'failures');",
+     "after": "  const names=['a-right-press','b-contextmenu','c-second-press'];"
+    },
+    {
+     "line": 42,
+     "before": "  const names=['a-right-press','b-contextmenu','c-second-press'];",
+     "after": "  check(Array.isArray(r?.steps) && r.steps.length===3 && r.steps.every((e,i)=>e.name===names[i] && e.png===names[i]+'.png' && /^[a-f0-9]{64}$/.test(e.sha256) && e.bytes>0), 'shot-records');"
+    },
+    {
+     "line": 43,
+     "before": "  check(Array.isArray(r?.steps) && r.steps.length===3 && r.steps.every((e,i)=>e.name===names[i] && e.png===names[i]+'.png' && /^[a-f0-9]{64}$/.test(e.sha256) && e.bytes>0), 'shot-records');",
+     "after": "  check(external.shotsValid===true, 'shot-bytes');"
+    },
+    {
+     "line": 44,
+     "before": "  check(external.shotsValid===true, 'shot-bytes');",
+     "after": "  check(r?.predicate===true && r.buttonHypothesis==='CONFIRMED', 'producer-verdict');"
+    },
+    {
+     "line": 45,
+     "before": "  check(r?.predicate===true && r.buttonHypothesis==='CONFIRMED', 'producer-verdict');",
+     "after": "  check(Array.isArray(r?.serverLog) && r.serverLog.some(e=>e.path==='/button') && r.serverLog.every(e=>['/button','/favicon.ico'].includes(e.path)), 'server-witness');"
+    },
+    {
+     "line": 46,
+     "before": "  check(Array.isArray(r?.serverLog) && r.serverLog.some(e=>e.path==='/button') && r.serverLog.every(e=>['/button','/favicon.ico'].includes(e.path)), 'server-witness');",
+     "after": "  return {schema:'tabi-r62-secondary-counter',predicate:findings.length===0,findingCount:findings.length,findings};"
+    },
+    {
+     "line": 47,
+     "before": "  return {schema:'tabi-r62-secondary-counter',predicate:findings.length===0,findingCount:findings.length,findings};",
+     "after": "}"
+    },
+    {
+     "line": 48,
+     "before": "}",
+     "after": "function synthetic() {"
+    },
+    {
+     "line": 49,
+     "before": "function synthetic() {",
+     "after": "  const b=[['pointermove',1,-1,0,'target'],['pointerdown',2,2,2,'target'],['pointerup',5,2,0,'target'],['pointerdown',7,2,2,'target2'],['pointerup',10,2,0,'target2']].map(([type,seq,button,buttons,targetId])=>({type,seq,button,buttons,targetId,ts:seq,pointerId:1,pointerType:'mouse',isTrusted:true}));"
+    },
+    {
+     "line": 50,
+     "before": "  const b=[['pointermove',1,-1,0,'target'],['pointerdown',2,2,2,'target'],['pointerup',5,2,0,'target'],['pointerdown',7,2,2,'target2'],['pointerup',10,2,0,'target2']].map(([type,seq,button,buttons,targetId])=>({type,seq,button,buttons,targetId,ts:seq,pointerId:1,pointerType:'mouse',isTrusted:true}));",
+     "after": "  const m=[['mousedown',3,2,'target'],['contextmenu',4,2,'target'],['mouseup',6,0,'target'],['mousedown',8,2,'target2'],['contextmenu',9,2,'target2'],['mouseup',11,0,'target2']].map(([type,seq,buttons,targetId])=>({type,seq,button:2,buttons,targetId,ts:seq,isTrusted:true,defaultPrevented:type==='contextmenu'}));"
+    },
+    {
+     "line": 51,
+     "before": "  const m=[['mousedown',3,2,'target'],['contextmenu',4,2,'target'],['mouseup',6,0,'target'],['mousedown',8,2,'target2'],['contextmenu',9,2,'target2'],['mouseup',11,0,'target2']].map(([type,seq,buttons,targetId])=>({type,seq,button:2,buttons,targetId,ts:seq,isTrusted:true,defaultPrevented:type==='contextmenu'}));",
+     "after": "  return {schema:'tabi-chrome-cdp-r62',nonce:'tabi-r62-test',nonceOnPage:'tabi-r62-test',driverSha256:'a'.repeat(64),fixture:{origin:'http://127.0.0.1:19471',sha256:'b'.repeat(64)},host:{argv:['--disable-extensions','--headless=new','--remote-debugging-address=127.0.0.1']},btnlog:b,mouselog:m,clicklog:[],teardown:{postKillSweepCount:0,survivors:[],portProbes:{fixture:'closed',devtools:'closed'},postKillCurl:{fixture:7,devtools:7}},sweeps:{preLaunch:0,midRun:1,postKill:0},failures:[],steps:['a-right-press','b-contextmenu','c-second-press'].map(name=>({name,png:name+'.png',sha256:'c'.repeat(64),bytes:10})),predicate:true,buttonHypothesis:'CONFIRMED',serverLog:[{path:'/button'}]};"
+    },
+    {
+     "line": 52,
+     "before": "  return {schema:'tabi-chrome-cdp-r62',nonce:'tabi-r62-test',nonceOnPage:'tabi-r62-test',driverSha256:'a'.repeat(64),fixture:{origin:'http://127.0.0.1:19471',sha256:'b'.repeat(64)},host:{argv:['--disable-extensions','--headless=new','--remote-debugging-address=127.0.0.1']},btnlog:b,mouselog:m,clicklog:[],teardown:{postKillSweepCount:0,survivors:[],portProbes:{fixture:'closed',devtools:'closed'},postKillCurl:{fixture:7,devtools:7}},sweeps:{preLaunch:0,midRun:1,postKill:0},failures:[],steps:['a-right-press','b-contextmenu','c-second-press'].map(name=>({name,png:name+'.png',sha256:'c'.repeat(64),bytes:10})),predicate:true,buttonHypothesis:'CONFIRMED',serverLog:[{path:'/button'}]};",
+     "after": "}"
+    },
+    {
+     "line": 53,
+     "before": "}",
+     "after": "const ext={driverSha256:'a'.repeat(64),fixtureSha256:'b'.repeat(64),shotsValid:true};"
+    },
+    {
+     "line": 54,
+     "before": "const ext={driverSha256:'a'.repeat(64),fixtureSha256:'b'.repeat(64),shotsValid:true};",
+     "after": "export const forgeries = {"
+    },
+    {
+     "line": 55,
+     "before": "export const forgeries = {",
+     "after": "  f1:r=>{r.btnlog[1].button=0;},"
+    },
+    {
+     "line": 56,
+     "before": "  f1:r=>{r.btnlog[1].button=0;},",
+     "after": "  f2:r=>{r.btnlog.splice(2,1);},"
+    },
+    {
+     "line": 57,
+     "before": "  f2:r=>{r.btnlog.splice(2,1);},",
+     "after": "  f3:r=>{r.mouselog[1].isTrusted=false;},"
+    },
+    {
+     "line": 58,
+     "before": "  f3:r=>{r.mouselog[1].isTrusted=false;},",
+     "after": "  f4:r=>{r.mouselog.splice(1,1);},"
+    },
+    {
+     "line": 59,
+     "before": "  f4:r=>{r.mouselog.splice(1,1);},",
+     "after": "  f5:r=>{r.btnlog[3].buttons=1;},"
+    },
+    {
+     "line": 60,
+     "before": "  f5:r=>{r.btnlog[3].buttons=1;},",
+     "after": "  f6:r=>{r.btnlog[3].pointerId=2;},"
+    },
+    {
+     "line": 61,
+     "before": "  f6:r=>{r.btnlog[3].pointerId=2;},",
+     "after": "  f7:r=>{r.mouselog[4].defaultPrevented=false;},"
+    },
+    {
+     "line": 62,
+     "before": "  f7:r=>{r.mouselog[4].defaultPrevented=false;},",
+     "after": "  f8:r=>{r.teardown.survivors=[99999];},"
+    },
+    {
+     "line": 63,
+     "before": "  f8:r=>{r.teardown.survivors=[99999];},",
+     "after": "};"
+    },
+    {
+     "line": 64,
+     "before": "};",
+     "after": "function selftest() {"
+    },
+    {
+     "line": 65,
+     "before": "function selftest() {",
+     "after": "  const results=[{name:'valid',ok:verify(synthetic(),ext).predicate}];"
+    },
+    {
+     "line": 66,
+     "before": "  const results=[{name:'valid',ok:verify(synthetic(),ext).predicate}];",
+     "after": "  for(const [id,mutate] of Object.entries(forgeries)){const r=synthetic();mutate(r);results.push({name:id,ok:!verify(r,ext).predicate,findings:verify(r,ext).findings});}"
+    },
+    {
+     "line": 67,
+     "before": "  for(const [id,mutate] of Object.entries(forgeries)){const r=synthetic();mutate(r);results.push({name:id,ok:!verify(r,ext).predicate,findings:verify(r,ext).findings});}",
+     "after": "  for(const [name,mutate] of Object.entries({nonce:r=>{r.nonceOnPage='wrong';},driver:r=>{r.driverSha256='d'.repeat(64);},sequence:r=>{r.mouselog[1].seq=30;},menuButtons:r=>{r.mouselog[1].buttons=0;},secondTarget:r=>{r.btnlog[3].targetId='target';},click:r=>{r.clicklog=[{}];},ports:r=>{r.teardown.postKillCurl.devtools=0;}})){const r=synthetic();mutate(r);results.push({name,ok:!verify(r,ext).predicate});}"
+    },
+    {
+     "line": 68,
+     "before": "  for(const [name,mutate] of Object.entries({nonce:r=>{r.nonceOnPage='wrong';},driver:r=>{r.driverSha256='d'.repeat(64);},sequence:r=>{r.mouselog[1].seq=30;},menuButtons:r=>{r.mouselog[1].buttons=0;},secondTarget:r=>{r.btnlog[3].targetId='target';},click:r=>{r.clicklog=[{}];},ports:r=>{r.teardown.postKillCurl.devtools=0;}})){const r=synthetic();mutate(r);results.push({name,ok:!verify(r,ext).predicate});}",
+     "after": "  const allPass=results.every(e=>e.ok);console.log(JSON.stringify({schema:'tabi-r62-counter-selftest',allPass,cases:results.length,results},null,1));process.exitCode=allPass?0:1;"
+    },
+    {
+     "line": 69,
+     "before": "  const allPass=results.every(e=>e.ok);console.log(JSON.stringify({schema:'tabi-r62-counter-selftest',allPass,cases:results.length,results},null,1));process.exitCode=allPass?0:1;",
+     "after": "}"
+    },
+    {
+     "line": 70,
+     "before": "}",
+     "after": "const main=process.argv[1] && import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href;"
+    },
+    {
+     "line": 71,
+     "before": "const main=process.argv[1] && import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href;",
+     "after": "if(main){"
+    },
+    {
+     "line": 72,
+     "before": "if(main){",
+     "after": "  const args=process.argv.slice(2), option=n=>args[args.indexOf(n)+1];"
+    },
+    {
+     "line": 73,
+     "before": "  const args=process.argv.slice(2), option=n=>args[args.indexOf(n)+1];",
+     "after": "  if(args[0]==='--selftest') selftest();"
+    },
+    {
+     "line": 74,
+     "before": "  if(args[0]==='--selftest') selftest();",
+     "after": "  else {"
+    },
+    {
+     "line": 75,
+     "before": "  else {",
+     "after": "    try {"
+    },
+    {
+     "line": 76,
+     "before": "    try {",
+     "after": "      if(!args[0] || !args.includes('--driver') || !args.includes('--expect-driver-sha256') || !args.includes('--shot')) throw new Error('usage: counter receipt --driver file --expect-driver-sha256 sha --shot dir --json');"
+    },
+    {
+     "line": 77,
+     "before": "      if(!args[0] || !args.includes('--driver') || !args.includes('--expect-driver-sha256') || !args.includes('--shot')) throw new Error('usage: counter receipt --driver file --expect-driver-sha256 sha --shot dir --json');",
+     "after": "      const r=JSON.parse(fs.readFileSync(args[0],'utf8'));"
+    },
+    {
+     "line": 78,
+     "before": "      const r=JSON.parse(fs.readFileSync(args[0],'utf8'));",
+     "after": "      const src=fs.readFileSync(option('--driver'),'utf8'), driverSha=sha(src);"
+    },
+    {
+     "line": 79,
+     "before": "      const src=fs.readFileSync(option('--driver'),'utf8'), driverSha=sha(src);",
+     "after": "      if(driverSha!==option('--expect-driver-sha256')) throw new Error('counter invocation driver pin mismatch');"
+    },
+    {
+     "line": 80,
+     "before": "      if(driverSha!==option('--expect-driver-sha256')) throw new Error('counter invocation driver pin mismatch');",
+     "after": "      const match=/const BUTTON_HTML = `([\\s\\S]*?)`;\\n\\/\\*FIXTURE-END\\*\\//.exec(src);"
+    },
+    {
+     "line": 81,
+     "before": "      const match=/const BUTTON_HTML = `([\\s\\S]*?)`;\\n\\/\\*FIXTURE-END\\*\\//.exec(src);",
+     "after": "      if(!match)throw new Error('fixture template absent');"
+    },
+    {
+     "line": 82,
+     "before": "      if(!match)throw new Error('fixture template absent');",
+     "after": "      const fixture=match[1].replace('${nonce}',r.nonce);"
+    },
+    {
+     "line": 83,
+     "before": "      const fixture=match[1].replace('${nonce}',r.nonce);",
+     "after": "      let shotsValid=true;"
+    },
+    {
+     "line": 84,
+     "before": "      let shotsValid=true;",
+     "after": "      for(const s of r.steps||[]){"
+    },
+    {
+     "line": 85,
+     "before": "      for(const s of r.steps||[]){",
+     "after": "        if(!/^[a-z-]+\\.png$/.test(s.png||'')){shotsValid=false;continue;}"
+    },
+    {
+     "line": 86,
+     "before": "        if(!/^[a-z-]+\\.png$/.test(s.png||'')){shotsValid=false;continue;}",
+     "after": "        try {const bytes=fs.readFileSync(path.join(option('--shot'),s.png));shotsValid=shotsValid && sha(bytes)===s.sha256 && bytes.length===s.bytes && bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) && bytes.readUInt32BE(16)>0 && bytes.readUInt32BE(20)>0;}catch{shotsValid=false;}"
+    },
+    {
+     "line": 87,
+     "before": "        try {const bytes=fs.readFileSync(path.join(option('--shot'),s.png));shotsValid=shotsValid && sha(bytes)===s.sha256 && bytes.length===s.bytes && bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) && bytes.readUInt32BE(16)>0 && bytes.readUInt32BE(20)>0;}catch{shotsValid=false;}",
+     "after": "      }"
+    },
+    {
+     "line": 88,
+     "before": "      }",
+     "after": "      const result=verify(r,{driverSha256:driverSha,fixtureSha256:sha(fixture),shotsValid});"
+    },
+    {
+     "line": 89,
+     "before": "      const result=verify(r,{driverSha256:driverSha,fixtureSha256:sha(fixture),shotsValid});",
+     "after": "      console.log(JSON.stringify(result,null,1));process.exitCode=result.predicate?0:1;"
+    },
+    {
+     "line": 90,
+     "before": "      console.log(JSON.stringify(result,null,1));process.exitCode=result.predicate?0:1;",
+     "after": "    }catch(e){console.error(JSON.stringify({schema:'tabi-r62-secondary-counter',error:e.message}));process.exitCode=2;}"
+    },
+    {
+     "line": 91,
+     "before": "    }catch(e){console.error(JSON.stringify({schema:'tabi-r62-secondary-counter',error:e.message}));process.exitCode=2;}",
+     "after": "  }"
+    },
+    {
+     "line": 92,
+     "before": "  }",
+     "after": "}"
+    },
+    {
+     "line": 93,
+     "before": "}",
+     "after": ""
+    },
+    {
+     "line": 94,
+     "before": "",
+     "after": null
+    }
+   ]
+  },
+  "M5": {
+   "name": "M5-predicate-AND-to-OR",
+   "desc": "predicate AND->OR: producer-verdict passes on buttonHypothesis alone (declared detector: negative selftests)",
+   "probe": "m5-predicate-false",
+   "expectedSelftestCase": null,
+   "secondary": false,
+   "sha256": "be137441bb6f0cc1d80d6a21e4dc522e2a73c03ad61b2793c80398235d4ec3f1",
+   "bytes": 8405,
+   "transformation": [
+    {
+     "line": 45,
+     "before": "  check(r?.predicate===true && r.buttonHypothesis==='CONFIRMED', 'producer-verdict');",
+     "after": "  check(r?.predicate===true || r.buttonHypothesis==='CONFIRMED', 'producer-verdict');"
+    }
+   ]
+  }
+ },
+ "verdicts": {
+  "M1": {
+   "selftestExit": 1,
+   "selftestAllPass": false,
+   "selftestCases": 16,
+   "selftestFailingCases": [
+    "f1",
+    "f5"
+   ],
+   "matchedProbe": "f1",
+   "matchedProbeControlExit": 1,
+   "matchedProbeMutantExit": 0,
+   "validReceiptExit": 0,
+   "blind": true,
+   "killedBySelftest": true,
+   "verdict": "KILLED (semantic: matched forgery greens under mutant, refused by control; selftest case fails)"
+  },
+  "M2": {
+   "selftestExit": 1,
+   "selftestAllPass": false,
+   "selftestCases": 16,
+   "selftestFailingCases": [
+    "f6"
+   ],
+   "matchedProbe": "f6",
+   "matchedProbeControlExit": 1,
+   "matchedProbeMutantExit": 0,
+   "validReceiptExit": 0,
+   "blind": true,
+   "killedBySelftest": true,
+   "verdict": "KILLED (semantic: matched forgery greens under mutant, refused by control; selftest case fails)"
+  },
+  "M3": {
+   "selftestExit": 1,
+   "selftestAllPass": false,
+   "selftestCases": 16,
+   "selftestFailingCases": [
+    "f7"
+   ],
+   "matchedProbe": "f7",
+   "matchedProbeControlExit": 1,
+   "matchedProbeMutantExit": 0,
+   "validReceiptExit": 0,
+   "blind": true,
+   "killedBySelftest": true,
+   "verdict": "KILLED (semantic: matched forgery greens under mutant, refused by control; selftest case fails)"
+  },
+  "M4": {
+   "selftestExit": 1,
+   "selftestAllPass": false,
+   "selftestCases": 16,
+   "selftestFailingCases": [
+    "f8"
+   ],
+   "matchedProbe": "f8",
+   "matchedProbeControlExit": 1,
+   "matchedProbeMutantExit": 0,
+   "validReceiptExit": 0,
+   "blind": true,
+   "killedBySelftest": true,
+   "verdict": "KILLED (semantic: matched forgery greens under mutant, refused by control; selftest case fails)"
+  },
+  "M5": {
+   "selftestExit": 0,
+   "selftestAllPass": true,
+   "selftestCases": 16,
+   "selftestFailingCases": [],
+   "matchedProbe": "m5-predicate-false",
+   "matchedProbeControlExit": 1,
+   "matchedProbeMutantExit": 0,
+   "validReceiptExit": 0,
+   "blind": true,
+   "killedBySelftest": false,
+   "verdict": "SURVIVED-declared-detector (negative selftests still 16/16); semantic blind spot proven by out-of-battery producer-lying receipt (control exit 1 -> mutant exit 0)"
+  }
+ },
+ "runsIndex": {
+  "control-selftest": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "--selftest"
+   ],
+   "stdoutSha256": "ec93d96d5a8fe422ea596924ee964302a05414eec9cdd445045d0f3d71a2291c",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-driver-pin-mismatch": {
+   "exit": 2,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/valid.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "stderrSha256": "392886ecfb70e9fdce8ea0259106f0c4d668e96652932c203a4a69239647a767"
+  },
+  "control-no-args": {
+   "exit": 2,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs"
+   ],
+   "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "stderrSha256": "c107f771a87bc6b8fbd4811d312c74160d6611eb7228a1007f4ffd25dd9c139c"
+  },
+  "control-valid": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/valid.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-f1": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f1.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "99434c147aaf95d48524f02aeb5429b95b71e2d8c1e99bdf8b50e57f7b037a0b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-f2": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f2.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "d11aa011df40d02ec8de346780d64f77e2c37cc47bc109ea9240eaafbf88f1a9",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-f3": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f3.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "1625f43aa8434f31c07fc09bcff67b11ec7b3a8069050c5afe08dcbcce699417",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-f4": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f4.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "f869a0411c684341591e5b48483079895a985988b0ffe552cc931105586ee197",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-f5": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f5.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "09f69f013fccae7c51fa0ef6e93062b78cb966705e3d391e9b778be109783633",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-f6": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f6.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "9d82ea1328825ea97f56e61c5ff36f24648dbc6b82cdd73472ec36856b44a42b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-f7": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f7.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "00640bc6f8ff2fe118a77978b66602dfaadf3d259a3ca2d144284290dcb65510",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-f8": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f8.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "84a4044fbbbb7fffa1b5a937e3bc355f4da48a1f137a49193ebff25b683aed7a",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-neg-nonce": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-nonce.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "34d55168e7719c624c0d1318954d71017db2605880137a03db5e897f966af828",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-neg-driver": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-driver.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "3c15c8a5232c2270d26ddd9df1896634c9fc89b53b74f4f0bbc834e62b6c12a5",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-neg-sequence": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-sequence.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "9dd38e4117c16813a377ad95c5d5fce65266f904ee33820cfa9ade316acf0df0",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-neg-menubuttons": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-menubuttons.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "6a8c180231447d7531a4a91e239103a64fe9b248034d24e58703c5584cee5a68",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-neg-secondtarget": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-secondtarget.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "e56bf558c05f4295d3dac327b072abbda77210009dc2facf592f20448d1011e0",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-neg-click": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-click.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "2b82d771c908687d42da1af195495a99df37f6e04af8f172707b1dde2e885a3c",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-neg-ports": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-ports.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "2da392dd17766be2393437e12b77003f26f52f9e41c89ac0e8cda1f08ed8eeaf",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-m5-predicate-false": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-predicate-false.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "4d427087893b079f43711fd8802211d824338f60be7e9f416df98139f68511de",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control-m5-hypothesis-wrong": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/control.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-hypothesis-wrong.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "4d427087893b079f43711fd8802211d824338f60be7e9f416df98139f68511de",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-selftest": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "--selftest"
+   ],
+   "stdoutSha256": "3c89c3730a19132d99e581bd01c01ffed36452ee2d44391512f387823a36f99f",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-valid": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/valid.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-f1": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f1.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-f2": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f2.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "0005e981c762cd74385a6bf2311c720f69e099059f6dc4e661baccc3c4141316",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-f3": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f3.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "1625f43aa8434f31c07fc09bcff67b11ec7b3a8069050c5afe08dcbcce699417",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-f4": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f4.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "f869a0411c684341591e5b48483079895a985988b0ffe552cc931105586ee197",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-f5": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f5.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-f6": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f6.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "9d82ea1328825ea97f56e61c5ff36f24648dbc6b82cdd73472ec36856b44a42b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-f7": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f7.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "00640bc6f8ff2fe118a77978b66602dfaadf3d259a3ca2d144284290dcb65510",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-f8": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f8.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "84a4044fbbbb7fffa1b5a937e3bc355f4da48a1f137a49193ebff25b683aed7a",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-neg-nonce": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-nonce.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "34d55168e7719c624c0d1318954d71017db2605880137a03db5e897f966af828",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-neg-ports": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-ports.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "2da392dd17766be2393437e12b77003f26f52f9e41c89ac0e8cda1f08ed8eeaf",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-m5-predicate-false": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-predicate-false.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "4d427087893b079f43711fd8802211d824338f60be7e9f416df98139f68511de",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-m5-hypothesis-wrong": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-hypothesis-wrong.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "4d427087893b079f43711fd8802211d824338f60be7e9f416df98139f68511de",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-selftest": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "--selftest"
+   ],
+   "stdoutSha256": "1cce2935797ab33abd9d47a9715142cdd5dad206e26caf1ac6f07733afa46ca9",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-valid": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/valid.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-f1": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f1.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "99434c147aaf95d48524f02aeb5429b95b71e2d8c1e99bdf8b50e57f7b037a0b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-f2": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f2.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "27ab52c7a6fe774a85001df9a3eb104ad9cb931de83ad3f11d21dc534cc32b71",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-f3": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f3.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "1625f43aa8434f31c07fc09bcff67b11ec7b3a8069050c5afe08dcbcce699417",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-f4": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f4.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "f869a0411c684341591e5b48483079895a985988b0ffe552cc931105586ee197",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-f5": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f5.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "09f69f013fccae7c51fa0ef6e93062b78cb966705e3d391e9b778be109783633",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-f6": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f6.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-f7": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f7.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "00640bc6f8ff2fe118a77978b66602dfaadf3d259a3ca2d144284290dcb65510",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-f8": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f8.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "84a4044fbbbb7fffa1b5a937e3bc355f4da48a1f137a49193ebff25b683aed7a",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-neg-nonce": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-nonce.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "34d55168e7719c624c0d1318954d71017db2605880137a03db5e897f966af828",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-neg-ports": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-ports.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "2da392dd17766be2393437e12b77003f26f52f9e41c89ac0e8cda1f08ed8eeaf",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-m5-predicate-false": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-predicate-false.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "4d427087893b079f43711fd8802211d824338f60be7e9f416df98139f68511de",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-m5-hypothesis-wrong": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-hypothesis-wrong.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "4d427087893b079f43711fd8802211d824338f60be7e9f416df98139f68511de",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-selftest": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "--selftest"
+   ],
+   "stdoutSha256": "9d4d3ad85a9fc0ee6299cc17970a04882fcd4ba6e0fdb6663055ea8657f4eaf3",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-valid": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/valid.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-f1": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f1.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "99434c147aaf95d48524f02aeb5429b95b71e2d8c1e99bdf8b50e57f7b037a0b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-f2": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f2.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "d11aa011df40d02ec8de346780d64f77e2c37cc47bc109ea9240eaafbf88f1a9",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-f3": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f3.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "1625f43aa8434f31c07fc09bcff67b11ec7b3a8069050c5afe08dcbcce699417",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-f4": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f4.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "fe3a0a41d4bd0f4789eb614a8a42f99b2338525f368faae288a7fb9e8e7bc445",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-f5": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f5.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "09f69f013fccae7c51fa0ef6e93062b78cb966705e3d391e9b778be109783633",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-f6": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f6.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "9d82ea1328825ea97f56e61c5ff36f24648dbc6b82cdd73472ec36856b44a42b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-f7": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f7.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-f8": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f8.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "84a4044fbbbb7fffa1b5a937e3bc355f4da48a1f137a49193ebff25b683aed7a",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-neg-nonce": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-nonce.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "34d55168e7719c624c0d1318954d71017db2605880137a03db5e897f966af828",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-neg-ports": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-ports.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "2da392dd17766be2393437e12b77003f26f52f9e41c89ac0e8cda1f08ed8eeaf",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-m5-predicate-false": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-predicate-false.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "4d427087893b079f43711fd8802211d824338f60be7e9f416df98139f68511de",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-m5-hypothesis-wrong": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-hypothesis-wrong.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "4d427087893b079f43711fd8802211d824338f60be7e9f416df98139f68511de",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-selftest": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "--selftest"
+   ],
+   "stdoutSha256": "e23d3eac9b59f53ed918b30ed2a4b974f20d5d2f3066bbd9e82b2dc6b903a90b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-valid": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/valid.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-f1": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f1.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "99434c147aaf95d48524f02aeb5429b95b71e2d8c1e99bdf8b50e57f7b037a0b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-f2": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f2.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "d11aa011df40d02ec8de346780d64f77e2c37cc47bc109ea9240eaafbf88f1a9",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-f3": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f3.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "1625f43aa8434f31c07fc09bcff67b11ec7b3a8069050c5afe08dcbcce699417",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-f4": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f4.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "f869a0411c684341591e5b48483079895a985988b0ffe552cc931105586ee197",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-f5": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f5.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "09f69f013fccae7c51fa0ef6e93062b78cb966705e3d391e9b778be109783633",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-f6": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f6.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "9d82ea1328825ea97f56e61c5ff36f24648dbc6b82cdd73472ec36856b44a42b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-f7": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f7.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "00640bc6f8ff2fe118a77978b66602dfaadf3d259a3ca2d144284290dcb65510",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-f8": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f8.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-neg-nonce": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-nonce.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "34d55168e7719c624c0d1318954d71017db2605880137a03db5e897f966af828",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-neg-ports": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-ports.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "2da392dd17766be2393437e12b77003f26f52f9e41c89ac0e8cda1f08ed8eeaf",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-m5-predicate-false": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-predicate-false.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "4d427087893b079f43711fd8802211d824338f60be7e9f416df98139f68511de",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-m5-hypothesis-wrong": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-hypothesis-wrong.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "4d427087893b079f43711fd8802211d824338f60be7e9f416df98139f68511de",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-selftest": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "--selftest"
+   ],
+   "stdoutSha256": "ec93d96d5a8fe422ea596924ee964302a05414eec9cdd445045d0f3d71a2291c",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-valid": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/valid.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-f1": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f1.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "99434c147aaf95d48524f02aeb5429b95b71e2d8c1e99bdf8b50e57f7b037a0b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-f2": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f2.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "d11aa011df40d02ec8de346780d64f77e2c37cc47bc109ea9240eaafbf88f1a9",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-f3": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f3.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "1625f43aa8434f31c07fc09bcff67b11ec7b3a8069050c5afe08dcbcce699417",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-f4": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f4.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "f869a0411c684341591e5b48483079895a985988b0ffe552cc931105586ee197",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-f5": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f5.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "09f69f013fccae7c51fa0ef6e93062b78cb966705e3d391e9b778be109783633",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-f6": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f6.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "9d82ea1328825ea97f56e61c5ff36f24648dbc6b82cdd73472ec36856b44a42b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-f7": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f7.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "00640bc6f8ff2fe118a77978b66602dfaadf3d259a3ca2d144284290dcb65510",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-f8": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f8.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "84a4044fbbbb7fffa1b5a937e3bc355f4da48a1f137a49193ebff25b683aed7a",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-neg-nonce": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-nonce.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "34d55168e7719c624c0d1318954d71017db2605880137a03db5e897f966af828",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-neg-ports": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/neg-ports.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "2da392dd17766be2393437e12b77003f26f52f9e41c89ac0e8cda1f08ed8eeaf",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-m5-predicate-false": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-predicate-false.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-m5-hypothesis-wrong": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-hypothesis-wrong.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "eb7f32cddf67bb622c511e6575446e4824ad5f74f0860b17678ab26b3bef68bc",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-restored-selftest": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "--selftest"
+   ],
+   "stdoutSha256": "ec93d96d5a8fe422ea596924ee964302a05414eec9cdd445045d0f3d71a2291c",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M1-restored-f1": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M1.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f1.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "99434c147aaf95d48524f02aeb5429b95b71e2d8c1e99bdf8b50e57f7b037a0b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-restored-selftest": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "--selftest"
+   ],
+   "stdoutSha256": "ec93d96d5a8fe422ea596924ee964302a05414eec9cdd445045d0f3d71a2291c",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M2-restored-f6": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M2.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f6.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "9d82ea1328825ea97f56e61c5ff36f24648dbc6b82cdd73472ec36856b44a42b",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-restored-selftest": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "--selftest"
+   ],
+   "stdoutSha256": "ec93d96d5a8fe422ea596924ee964302a05414eec9cdd445045d0f3d71a2291c",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M3-restored-f7": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M3.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f7.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "00640bc6f8ff2fe118a77978b66602dfaadf3d259a3ca2d144284290dcb65510",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-restored-selftest": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "--selftest"
+   ],
+   "stdoutSha256": "ec93d96d5a8fe422ea596924ee964302a05414eec9cdd445045d0f3d71a2291c",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M4-restored-f8": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M4.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/f8.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "84a4044fbbbb7fffa1b5a937e3bc355f4da48a1f137a49193ebff25b683aed7a",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-restored-selftest": {
+   "exit": 0,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "--selftest"
+   ],
+   "stdoutSha256": "ec93d96d5a8fe422ea596924ee964302a05414eec9cdd445045d0f3d71a2291c",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "M5-restored-m5-predicate-false": {
+   "exit": 1,
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/mutants/M5.mjs",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/receipts/m5-predicate-false.json",
+    "--driver",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/driver-stub.mjs",
+    "--expect-driver-sha256",
+    "5ed11f522daae7cc17fd36abc9a87b6caf3a54eb392ff86bf46083db242ac272",
+    "--shot",
+    "/fast/scratch/hyaku/tabi-r62/R62MutC2/shots",
+    "--json"
+   ],
+   "stdoutSha256": "4d427087893b079f43711fd8802211d824338f60be7e9f416df98139f68511de",
+   "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+ }
+}

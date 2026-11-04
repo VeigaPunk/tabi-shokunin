@@ -857,3 +857,15 @@
     and Sentinel; original restored, repair separately named. See
     `corpus/lessons/round-61.md` Mistakes and the non-admitting integration
     disposition `.ufo/waves/round-61/DATA-PASS-RUNBOOK.md`.
+
+## Round 62 additions
+
+114. Pin existing instrument bytes before seats score them, not a future
+    generation description. Mutation evidence names the exact counter digest,
+    probe digest, argv and observed exit; invocation failure is not semantic
+    refusal. Never transfer an earlier generation's kills to final bytes.
+    Red state: round 61's earlier `f615a2f9` mutation pin differed from final
+    `97f10e67`; `corpus/lessons/round-61-verifier-spotcheck.md` R2 routes the
+    inconsistent final-byte wording. Round 62 freezes all instrument digests
+    in `.ufo/waves/round-62/instrument-pins.json` before its wave; see
+    `corpus/lessons/round-62.md` Mistakes for evidence and limits.

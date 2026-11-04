@@ -1,0 +1,12 @@
+--- frozen-v21.mjs
++++ M5.mjs
+@@ -101,8 +101,7 @@
+   // P1 — one audit row per map row, status honestly claimed
+   const auditByKey = new Map();
+   for (const r of inputs.auditRows) {
+-    if (auditByKey.has(r[0])) add('audit-duplicate', r[0]);
+-    else auditByKey.set(r[0], { status: r[1], note: r[2] });
++    if (!auditByKey.has(r[0])) auditByKey.set(r[0], { status: r[1], note: r[2] });
+   }
+   for (const row of inputs.mapRows) {
+     const ref = row[2];

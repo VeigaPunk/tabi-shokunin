@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><title>tabi-r62 button fixture</title>
+<style>
+  #target, #target2 { width: 240px; height: 80px; margin: 16px; background: #eef; border: 1px solid #88f; }
+</style>
+<script>
+window.__seq = 0;
+window.__btnlog = []; window.__mouselog = []; window.__clicklog = [];
+const __push = (arr, e, extra) => { const o = {type:e.type, seq:++window.__seq, ts:e.timeStamp, button:e.button, buttons:e.buttons}; if (extra) Object.assign(o, extra); arr.push(o); };
+for (const type of ['pointermove','pointerdown','pointerup']) {
+  document.addEventListener(type, function(e) {
+    __push(window.__btnlog, e, {pointerType:e.pointerType, pointerId:e.pointerId, isTrusted:e.isTrusted, targetId:e.target.id || e.target.tagName});
+  }, true);
+}
+for (const type of ['mousedown','mouseup','contextmenu']) {
+  document.addEventListener(type, function(e) {
+    if (type === 'contextmenu') e.preventDefault();
+    __push(window.__mouselog, e, {isTrusted:e.isTrusted, defaultPrevented:e.defaultPrevented, targetId:e.target.id || e.target.tagName});
+  }, true);
+}
+document.addEventListener('click', function(e) {
+  __push(window.__clicklog, e, {isTrusted:e.isTrusted});
+}, true);
+window.__nonceOnPage = null;
+document.addEventListener('DOMContentLoaded', function() {
+  window.__nonceOnPage = document.getElementById('nonce').textContent;
+});
+</script></head><body><h1>Button domain</h1><p id="nonce">tabi-r62-exec2-97f4ac9f129428dd6091</p>
+<div id="target">right-click me</div>
+<div id="target2">right-click me again</div></body></html>

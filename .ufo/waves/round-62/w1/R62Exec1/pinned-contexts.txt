@@ -1,0 +1,670 @@
+
+## kagi-shokunin 063c407494276d0c616e6c712a2e5d7aeb7e3768 PROVINCE.md
+37: (CLEAN30) and, after round 29, the release-clock selftest (116 cases) and
+38: feed-token-agree gate.
+39: 
+40: Handler:
+41: - `~/.local/bin/the-janitor` (755, 333 lines) — the CLI: `status`/`start`/`stop`/`request`/`run`/`refs`/`whoami`/`cdp-bridge`/`tac-check`/`tac-register`/`_serve` (hidden)
+42: - `~/.config/the-janitor/client.py` (755, 117 lines) — HTTP client: session-id, `THE_JANITOR_REQUEST_TIMEOUT` (the `client.lock` flock lives in the CLI, not here — measured round 15: `grep -nic lock client.py` ⇒ 0; `the-janitor` holds `LOCK_FILE` at L12, `exec 9>"$LOCK_FILE"` at L130/139/175 and `flock 9` at L131/140/176)
+43: - `~/.config/the-janitor/opencode.json` (644) — model overlay (`enabled_providers`, `share: disabled`, `baseURL`)
+44: - `~/.config/the-janitor/op.env` (600) — env-ref file; values never read into an artifact
+45: - `~/.config/the-janitor/config.json` (600) — **inert** decoy (not an opencode-discovered filename; round 6)
+60: 
+61: Network surfaces:
+62: - control plane `127.0.0.1:40961` (unauthenticated OpenCode server, round 7)
+63: - configured model endpoint `127.0.0.1:8080` (dead: Jitsi) vs live llama-server on `34113`
+64: - CDP `9222` + `~/.local/share/the-musketeer/chrome-profile` — **contested with kake** (lease/profile ownership unresolved; kagi pins only the 1Password native-messaging manifest — the profile dir itself is presence-only, mode unchecked). Declared as a partition row in `corpus/adjacency.tsv` (`kake` / `contested` / `presence-only`), so drifting the profile dir to an exact mode pin is `OVERCLAIM`, exit 1 (round 16)
+65: 
+66: Gates and supporting helpers in this repo:
+67: - `corpus/surface-census.sh` — the declaration gate over the surface list above. `verify` (default): kind/exact mode per declared path, `UNLISTED` children of the 4 enumerable dirs, and the runtime shape pins; `--verbs` exercises the local write-side verbs on scratch overrides (no `op` exec); `--verbs --deep` adds the three probes with a real-world effect (`op run` plain / ref, `tac-register` no-replace) and is operator-present; `--selftest` proves 16 cases on a scratch tree. Exit 0/1/2; `UNVERIFIED` (a shape class that cannot be read) fails the run, `SKIP` (DB locked by a live serve) does not. Data: `corpus/surface-census.tsv` (35 rows, pinned by ledger row `R11-11`), `corpus/state-shape.tsv` (22 rows, pinned by `R11-10`; this said 21 until round 11). Round 10: `CLEAN (assets=20 runtime=15 scanned=4 ok=34 absent=2 skipped=0)`.
+68: - `corpus/drift-pins.sh` + `corpus/drift-baseline.tsv` (15 files) + `corpus/drift-symbols.tsv` (20 claims — 20 since round 12 added the `cmd_run` L248 `exec op run` row, the masking premise) — byte/line/symbol drift; modes cross-checked against the census
+79: - Helpers, not gates: `corpus/rendered-text-v1.py` — the one quote/page normalizer declaration (`digest`, `locate`, `--selftest` 22 cases, including two malformed-tag regex bounds); `corpus/row-identity.sh` — count plus digest over declared membership projections, not complete row semantics or assertion bodies.
+80: - `corpus/closure-dispositions.py` — gate for typed outside-closure obligations and in-tree pointer resolution (R23-02); `--selftest` declares 14 isolated cases, pinned by R24-02. It checks obligation/pointer structure, not the substantive correctness of fixes or an independent verdict.
+81: - **Core, round 34 — cloud-IAM credential custody:** Alibaba Cloud RAM-user AccessKey overlap rotation, idle-key retirement and recovery, and KMS-managed credential lifecycle are held as documentation evidence only; no account operations were performed. `corpus/knowledge/aliyun-accesskey-credential-custody.md` cites S083–S087.
+82: 
+83: **Deliberate refusals:** vault-side structure (which vaults/items/fields exist) stays unmapped — mapping it would put ref paths in a durable artifact; `op` item-level reads stay unexercised; the CDP lease/profile ownership question is reported to the integrator, never adjudicated here.
+84: 
+85: ## Core / Frontier / Adjacent (round 21)
+86: 
+87: Appended to the declaration above (`LEARNING.md` §Province is a frontier); the surfaces list stays the record of the host substrate.
+88: 
+89: - **Core — documented knowledge, not host surfaces:** 1Password machine-credential custody boundaries (`knowledge/onepassword-machine-credentials.md`), SOPS/age recipient vs data-key vs value rotation (`knowledge/sops-age-key-rotation.md`), Vault/OpenBao token, lease and KV clocks (`knowledge/vault-openbao-token-lease-lifecycle.md`). Each is vendor documentation opened 2026-10-19 (`corpus/SOURCES.md`); none is deployed or probed on this host.
+90: - **Core, round 30 — secret scanning, detection versus verification:** the Gitleaks, TruffleHog and Betterleaks tool documentation and the TruffleHog verification-lifecycle vendor pages (`knowledge/secret-scanning-detection-vs-validation.md`, `knowledge/betterleaks-detection-vs-validation.md`, `knowledge/trufflehog-verification-lifecycle.md`; rows S053–S060 in `corpus/SOURCES.md`, every source re-opened 2026-11-03). Moved from the frontier list in round 30 by the §10 assimilation; no sibling claims this ground (round-30 connector sweep). The frontier bullet below keeps its history.
+91: - **Core, round 31 — OIDC workload-federation trust policy:** the provider/protocol layer (AWS IAM registration + condition keys, AWS STS response echo, GCP attribute conditions en/ja, Alibaba RAM, OIDC Core `aud`, RFC 9700) and the 1Password Credential Broker custom-OIDC consuming side (`knowledge/oidc-federation-trust-policy.md`, `knowledge/cdp-bridge-1password-oidc-workflow.md`; rows S061–S071 in `corpus/SOURCES.md`, every source re-opened 2026-11-03). No sibling claims workload-identity ground (round-31 connector sweep over all 20 lanes: 0 registry rows, 0 citations). The round-21 frontier lead is discharged; the NIST leads were still leads at round 31 and moved to core in round 33 (below).
+92: - **Core, round 33 — NIST key-management guidance status:** the publication status and currency signals of the key-management family — SP 800-57 Part 1 Rev. 5 final against the Rev. 6 IPD the lane already held as S049, and SP 800-133 Rev. 2 final against the Rev. 3 IPD — plus the Part 2/Part 3 withdrawal-and-successor record (the 2005 Part 2 and the 2009 Part 3 withdrawn; Part 2 Rev. 1 and Part 3 Rev. 1 current, both carrying the 07/01/2025 planning note "This publication is currently being reviewed."; SP 800-131A Rev. 2 the transition reference) — `knowledge/nist-key-management-guidance-status.md` and `knowledge/nist-key-management-parts-withdrawal.md`; rows S073–S082 in `corpus/SOURCES.md`, every source re-opened 2026-11-04. Moved from the frontier list in round 33 by the §10 assimilation; the round-21 frontier lead is discharged and the Frontier bullet is removed, not kept as history (QM33). Sole ground: the round-33 connector sweep is the check (receipt `.ufo/waves/round-33/build/ConnOverlap.md`); nothing else in this file claims it.
+93: - **Adjacent — report, don't absorb:** chousa owns the research method (`SOURCES.md` restates neither method nor admission bar); chousa, kasegi and kumitate run their own secret-shaped tripwires over their outputs (hygiene filters, not vault ops); kama refuses to hold credentials for authenticated health checks and would route that need here through L0; kaidoku reads 1Password binaries statically and tsukuroi tracks the 1Password packages — kagi owns runtime auth and credential custody; kake holds the musketeer profile lease (contested, above). Sweep: round-21 connector over every `*-shokunin` `PROVINCE.md`/`SKILL.md`/corpus — no sibling claims SOPS, OpenBao/Vault, Credential Broker or workload-identity ground.
+94: 
+95: ## Round-22 correction — active documented scope
+
+## kaidoku-shokunin 9cc8fbbc893d4f76ced1ac8cf66a6239cde91770 corpus/knowledge/2026-10-14-r10-01-queue-ops.md
+20: `863cade6…91b40`), and the round-1 compare output `/tmp/r4-cmm.json`
+21: `ev_f5e2dbc1e383ae72bd19dfb189a154f36f4c2fd88c8599985dd91cb9e57e5724`
+22: (1,094,540 B, sha `53f8da46…78fb`) — all four file digests match the r9-02
+23: records. Provisioned this lane (row 16): `/tmp/r10-01-capture.har` 9,942 B
+24: sha256 `79fdb5c3…bb1e4` (Playwright 1.64.0 `recordHar`, HAR 1.2, 5 entries of
+25: real self-launched chromium 152 traffic against a localhost fixture) and
+26: `/tmp/r10-01-netlog.json` 314,987 B (`chromium --headless=new
+27: --log-net-log`, `constants`/`events`/`polledData`, 1,310 events). All 6
+28: pre-existing inputs byte-identical before/after
+29: (`/tmp/r10-01-inputs.sha256.{before,after}` diff clean); all 7 provisions
+30: byte-identical across every subsequent REA probe
+127:   192 MiB Node old-generation heap; native decoding uses a 768 MiB Linux
+128:   address-space limit. Each owned command has a 30-second deadline with
+129:   independent cleanup."). A genuine chromium netlog (314,987 B,
+130:   `constants`/`events`/`polledData`, 1,310 events, captured via
+131:   `chromium --headless=new --log-net-log` against the same localhost
+132:   fixture) probed as `format har` refuses exit 1 in <1 s:
+133:   `{code:"invalid_request", category:"invalid_input", retryable:true,
+134:   details.issues[0]: {path:["capture_path",""], reason:"invalid_format",
+135:   message:"HAR schema validation failed: required."}}` — the decoder
+147:   d['details']['issues'][0]['message'])"` → `invalid_request invalid_input
+148:   True HAR schema validation failed: required.`
+149: - verified-at: 2026-10-14T04:50Z
+150: - suggested: admit — refusal-as-finding per house rules; the gate refines to
+151:   "any har-schema-valid capture", which playwright's recordHar satisfies.
+152: 
+153: ## Candidate: row 16 success path — a real self-launched-chromium HAR decodes losslessly (5/5 records), labeled `historical-reference`/`observed`; record anatomy preserves producer bytes (a 70-byte PNG as `har-base64-content`) and verbatim float literals (`1.1520000000000001`); re-run byte-identical
+154: 
+155: - claim: **OBSERVATION** provisioning that works: playwright 1.64.0 (npm -g)
+156:   driving `/usr/bin/chromium` 152 with `recordHar {mode:"full"}` over a
+157:   localhost fixture (index.html + css + js + png + a `fetch()` of
+158:   `data.json?token=…`) → HAR 1.2, creator "Playwright", 9,942 B, all 5
+159:   entries GET→200 (real transport bytes, 1.4 s wall). The verb admits it:
+160:   `ev_be4c0e79f54d54247d638419ffafd904ed021f9378d038edd7c5d23a6a413594`
+161:   (22,223 B envelope, 0.86 s), `format:"har"`, `total_records: 5`,
+162:   decoder `{id:"har-schema/lossless-json", name:"REA HAR capture adapter",
+232: - claim: both rows ran with zero operator env on the warm cache; every REA
+233:   probe exited 0 except the one *intentional* refusal (netlog, exit 1); all
+234:   probes 0.85–1.1 s (envelopes 22 KB–5.3 MB) — the census's cost model holds
+235:   and the row-16 gate was provisionable in-lane in 1.4 s of chromium wall
+236:   time once the playwright path was chosen (chromium 152 + playwright 1.64.0
+237:   both preinstalled; mitmproxy absent). Immutability: 6 pre-existing inputs
+238:   (both Pinta DLLs + four r4 evidence files) byte-identical before/after;
+239:   all 7 provisions (HAR, netlog, 5 fixture files) byte-identical across
+240:   every subsequent probe. Remaining still-unexercised Queue A rows start at
+241:   table line 181 (`capture-electron-scenario`, CDP self-launch family).
+242: - source: run log below; `/tmp/r10-01-inputs.sha256.{before,after}`,
+243:   `/tmp/r10-01-provisions.sha256.pin{1,2}`.
+244: - verify: `diff /tmp/r10-01-inputs.sha256.before
+245:   /tmp/r10-01-inputs.sha256.after` → empty;
+259: | 3 | `inspect-managed-members /usr/lib/pinta/Pinta.dll` (re-run) | exit 0, 0.88 s — **byte-identical to r4's held `ev_f382333b…`** (`cmp` clean) — evidence id re-verified by re-running |
+260: | 4 | `compare-managed-members Pinta.dll Pinta.Effects.dll` | exit 0, 1.07 s — `ev_cbf4acfb…` / `mmc_0d5f6e8b…`: `{unchanged 2, changed 14, added 1241, removed 1047, unknown 588}`, coverage partial/partial |
+261: | 5 | `compare-managed-members Pinta.Effects.dll Pinta.dll` (reversed) | exit 0, 1.07 s — `ev_eea2312b…` / `mmc_7765bc45…`: added/removed swapped exactly, distinct ids |
+262: | 6 | re-run of #4 | exit 0 — stdout byte-identical (`cmp` clean, same ids) |
+263: | 7 | `chromium --headless=new --log-net-log=… --virtual-time-budget=4000 --dump-dom http://127.0.0.1:8813/` | exit 0, 0.19 s — `/tmp/r10-01-netlog.json` 314,987 B, 1,310 events |
+264: | 8 | playwright `recordHar` capture of the same fixture via `/usr/bin/chromium` | exit 0, 1.4 s — `/tmp/r10-01-capture.har` 9,942 B, HAR 1.2, 5 entries, all 200s |
+265: | 9 | `inspect-web-network-capture /tmp/r10-01-netlog.json har` | exit 1, <1 s — typed refusal `invalid_request`/`invalid_format` "HAR schema validation failed: required." |
+266: | 10 | `inspect-web-network-capture /tmp/r10-01-capture.har har` | exit 0, 0.86 s — `ev_be4c0e79…`: 5/5 records, `historical-reference`/`observed`, decoder `har-schema/lossless-json` |
+267: | 11 | `… /tmp/r10-01-capture.har har --record 4` | exit 0 — `ev_9282326c…`: total_records 5 (all decoded), returned ordinal [4] |
+268: | 12 | `… --sensitive-value r10x-sec-8817` | exit 0 — `ev_b9729481…`: 3 redactions on record 4, token absent from envelope, artifact sha intact, `sensitive_value_count: 1` |
+297: CLI-minted ids for identical bytes and mvids — extend-to-consumers rule:
+298: never substitute evidence ids across invocation shapes. Row 16:
+299: `inspect-web-network-capture` accepts only har-schema-valid `har` (or
+300: `mitmproxy`) captures — the census's `chromium --log-net-log` hint refuses
+301: typed against a real 1,310-event netlog — while a playwright-recorded,
+302: self-launched-chromium HAR decodes losslessly (5/5 records at
+303: `historical-reference`/`observed`, producer float literals and the PNG body
+304: preserved byte-exact, `runtime_attribution` honestly `"unknown"`,
+305: "Recorded URLs are never fetched"), with `--record` selection decoding
+
+## kaidoku-shokunin 9cc8fbbc893d4f76ced1ac8cf66a6239cde91770 corpus/knowledge/2026-10-14-r10-02-queue-ops-2.md
+1: <!-- corpus entry — kaidoku-shokunin round 10 goal-mode expand lane (Queue-A drain, EXPAND Q2), finished 2026-10-14T05:05Z. Spec/authority: corpus/knowledge/2026-10-13-r4-16-frontier-rescan.md Queue A — the 4th and 5th still-unexercised rows, table lines 182–183 (`reconcile-javascript-runtime`, `observe-web-session`/`observe-web-execution`; goal-mode round, no staged wave file). Sibling r10-01 had NOT landed at lane start (git clean) nor at the 05:05Z pre-write check → per the assignment's fallback the 4th+5th still-unexercised rows were taken (ordering at take: lines 179 compare-managed-members round-2, 180 inspect-web-network-capture, 181 capture-electron-scenario, 182, 183). FINDING: lines 182+183 are a census defect of the same class r8-01 closed for row 7 — r4-08 already held both rows end-to-end on 2026-10-13 (the r4-16 census ran concurrently with r4-08 and missed its verbs; lines 181 and 187 carry the same defect). This lane closes the defects on fresh re-runs and keeps the queue draining by discharging the next genuinely-unexercised self-provisionable rows, lines 184–185, live. Zero row overlap by construction (the sibling's 1st+2nd can only be lines 179–180); line 176 untouched per the r8-02 owner convention. All live runs: `timeout 90–180 npx -y rea-agents@6.4.0 …` (longest verb 3.2 s wall) on the warm r2/r4 npx cache dea9475797100b20, zero operator env, loopback-only self-launched endpoints. -->
+2: 
+3: # r10-02 — Queue-A lines 182–183 closed as census defects (r4-08 already held them); lines 184–185 discharged live: the screenshot/capture-compare and bundle/listener/webmcp verbs on self-launched loopback chromium
+4: 
+5: Axes: **census-truth** (do the queued "still-unexercised" rows survive contact with the
+6: corpus?) / **input-contract** (what each of the six row-184/185 verbs actually accepts —
+7: the help text and the schema undersell it) / **status-honesty** (compare dimensions that
+13: `app.js` sha256 `455ab16f…f7ba`, a `#go` button with one `addEventListener`), page B
+14: `/tmp/r10-02-www/second.html` sha256 `cb37aa6c…bdfe8` (different content, same origin),
+15: node target `/tmp/r10-02-app/main.js` sha256 `c99adc7f…386f` (real file, per the
+16: r4-08 file://-must-stat rule). Endpoints self-launched and loopback: chromium 152
+17: headless `--remote-debugging-port=9222` (user-data-dir `/tmp/r10-02-chrome`), page
+18: targets `82EE61146546F99AF3755A86BD35DBE1` (A) / `A0A066A95C73D71A3B42E80D2DD99AFC`
+19: (B); `python3 -m http.server 8878 --bind 127.0.0.1`; `node --inspect=127.0.0.1:9229`
+20: (pid 1906067) and a `-e` control on :9230. Browser stack versions match r4-08 exactly
+21: (Chrome/152.0.7977.82 headless, node.js/v24.21.0). All four fixture digests
+22: byte-identical before/after (`diff /tmp/r10-02-scratch/r10-02-inputs.sha256.{before,after}`
+23: → empty).
+24: 
+25: ## Candidate: lines 182–183 are census defects — r4-08 held both rows end-to-end the same day the census queued them; this lane reproduces every recorded behavior on fresh evidence and re-runs the deterministic legs byte-exact
+26: 
+27: - claim: **OBSERVATION** the r4-16 census's exercised-set union was written concurrently
+28:   with the r4-08 lane and lists only the r3 CDP verbs, so Queue-A lines 181–183 (and
+29:   187) stayed queued although `2026-10-13-r4-08-observe-verbs.md` already held
+30:   `reconcile-javascript-runtime` (its `ev_032f373f…`), `observe-web-session`
+31:   (`ev_ac51acb0…`), `observe-web-execution` (`ev_990bff76…`),
+32:   `observe-javascript-runtime` (`ev_9d0db442…`), `list-javascript-runtime-targets`
+41:   `matched:1/unmatched:1/unknown:81` with `runtime_scripts:82` — r4-08's exact
+42:   numbers. Deterministic legs re-run byte-identical: `analyze-javascript-application`
+43:   ×2 → identical output, same id `ev_f867295d…`; `reconcile-javascript-runtime` on the
+44:   fixed input ×2 → identical output, same id `ev_7943e598…`. **HONEST LIMIT**: r4-08's
+45:   recorded ids are NOT re-derived byte-exact — their CDP envelopes embed window
+46:   timestamps and session target ids, and their app tree was deleted by r4-08's own
+47:   cleanup, so the close rests on full behavioral reproduction + fresh evidence (the r5
+48:   audit's verbatim-envelope re-check on that entry corroborates).
+49: - source: `2026-10-13-r4-08-observe-verbs.md` (candidates 1–6, run log, r5 erratum);
+94:   `location:{kind:"file",file_path:"/tmp/r10-02-app/main.js"}`, excluded all-zero.
+95:   (b) `observe-javascript-runtime` (500 ms, `--runtime-kind node`) → `ev_bee56f0e…`:
+96:   `runtime_kind_authority:"caller-declared-unverified"`, capture 83/83 events
+97:   retained, 0 dropped, 82 scripts = 81 `builtin` + 1 `file` — r4-08's exact split —
+98:   and the file script's `cdp_hash` `c99adc7f25c6a…` EQUALS the sha256 of `main.js`
+99:   pinned before the run: the CDP hash is the file digest, a free integrity anchor.
+100:   (c) static layer `analyze-javascript-application /tmp/r10-02-app --artifact-format
+101:   directory` → `ev_f867295d…` (3 `JavaScriptApplicationGraph` nodes, root
+102:   `29631572…9664`); `reconcile-javascript-runtime` over the inline pair →
+103:   `ev_7943e598…`, summary `{runtime_targets:1, runtime_scripts:82, matched:1,
+107:   (`no-authorized-location-mapping`), `static_load_states` showing the module
+108:   `resident-in-loaded-asset` (`containing-asset-was-loaded`), coverage `partial`,
+109:   zero omitted items.
+110: - source: `/tmp/r10-02-scratch/r10-02-{ljrt-e,ljrt,objrt,aja,reconcile}.out.json`.
+111: - verify: `python3 -c "import json; r=json.load(open('/tmp/r10-02-scratch/r10-02-objrt.out.json'))['normalized_result']; f=[i for i in r['scripts']['items'] if i['location']['kind']=='file'][0]; print(f['cdp_hash'][:16])"`
+112:   → `c99adc7f25c6ae37` (== the pinned main.js digest prefix).
+113: - verified-at: 2026-10-14T05:05Z
+114: - suggested: admit — discharge detail for line 182; the cdp_hash==sha256 identity is
+115:   the new reusable bit.
+116: 
+117: ## Candidate: line 184 discharged — screenshots are self-verifying artifacts and the pair-compare splits into an artifact differ (typed, byte-precise) and a capture differ (honest `unknown` on incomplete dimensions)
+118: 
+119: - claim: **OBSERVATION** (a) `capture-web-screenshot` → `ev_469b8340…` (A),
+120:   `ev_1bf3535e…` (B): the evidence's `normalized_result.artifact` is a self-verifying
+121:   PNG block `{sha256, bytes, media_type:"image/png", data_base64}` (A's artifact sha256
+122:   `6746f742…62aa8`, 7,648 B, 780×493). (b) `compare-web-screenshots` refuses the whole
+123:   evidence envelope — typed `invalid_request`/`invalid_input` with per-path zod
+124:   issues[] naming `before.sha256`/`bytes`/`media_type`/`data_base64` (`missing_argument`)
+125:   — and accepts exactly the artifact block (schema "two self-verifying PNG artifact
+126:   JSON values"). A vs B → `ev_f77738ef…`, status `different`:
+127:   `compared_pixels:384540, changed_pixels:384540, changed_ratio:1,
+128:   maximum_channel_delta:246, mean_absolute_channel_delta:23.97` at threshold 0.
+129:   A vs A2 (same page, second capture) → `ev_11191731…`, status `identical`, 0 changed
+130:   — and the two captures' PNG bytes are IDENTICAL (same artifact sha256 `6746f742…`):
+131:   the headless screenshot pipeline is deterministic for a static page. **Id nuance**:
+132:   shotA and shotA2 carry DIFFERENT evidence ids (`ev_469b8340…` vs `ev_fb99d599…`)
+133:   because the envelope embeds `captured_at` — capture ids are time-sensitive, artifact
+134:   bytes are not; consumers must compare artifacts, not ids, for visual equality.
+135:   (c) `compare-web-captures` — input contract pinned from cache source
+151: - source: `/tmp/r10-02-scratch/r10-02-{shotA,shotA2,shotB,artA,artB,cmpAB,cmpAA2,pageA,pageB,snapA,snapB,cmpcap-self,cmpcap-AB}.json`
+152:   (+ `.out.json`); npx cache
+153:   `~/.npm/_npx/dea9475797100b20/node_modules/rea-agents/dist/domain/{webCaptureDiffSchemas.js,webCaptureDiff.js,browserCaptureComparison.js}`,
+154:   `dist/cli/browserAdvancedCommands.js`.
+155: - verify: `npx -y rea-agents@6.4.0 compare-web-screenshots /tmp/r10-02-scratch/r10-02-artA.json /tmp/r10-02-scratch/r10-02-artB.json --format json | python3 -c "import json,sys; r=json.load(sys.stdin)['normalized_result']; print(r['status'], r['changed_pixels'], r['maximum_channel_delta'])"`
+156:   → `different 384540 246`; and
+157:   `python3 -c "import json; r=json.load(open('/tmp/r10-02-scratch/r10-02-cmpcap-self.out.json'))['normalized_result']; print(r['overall_status'], {k: v['status'] for k,v in r['dimensions'].items()})"`
+158:   → `unknown {'dom_structure': 'unchanged', …, 'network': 'unknown', …}`.
+159: - verified-at: 2026-10-14T05:05Z
+160: - suggested: admit — line 184 moves queued → exercised; the snapshot wrapper and the
+161:   artifact-block requirement are the two input contracts the census gate ("CDP + prior
+162:   captures") did not name.
+163: 
+164: ## Candidate: line 185 discharged — bundle analysis self-verifies its chunk digest against the page source, listeners locate the inline callback to line:column, webmcp discovery returns an honest zero
+165: 
+166: - claim: **OBSERVATION** (a) `analyze-web-bundle` (1500 ms window) → `ev_0b903a99…`:
+167:   one chunk node for the inline script of `index.html` — `artifact_sha256`
+168:   `75e1da85…36bb`, 146 B — and recomputing sha256 over the extracted `<script>` text
+169:   yields EXACTLY that digest (self-verifying, like the screenshots); completeness
+170:   `complete`, `parsed_scripts:1`, `parse_failures:0`, `visited_ast_nodes:27`;
+171:   `routes`/`endpoints`/`webmcp_declarations` empty; `source_maps` `not_requested`.
+172:   External `app.js` (already loaded before the window armed) is NOT re-captured — the
+173:   verb sees what parses during its window. (b) `inspect-web-event-listeners … "#go"` →
+183: - verify: `python3 -c "import json,re,hashlib; h=open('/tmp/r10-02-www/index.html','rb').read(); t=re.search(rb'<script>(.*?)</script>', h, re.S).group(1); print(len(t), hashlib.sha256(t).hexdigest()[:16])"`
+184:   → `146 75e1da852058557a` (== the bundle's chunk digest).
+185: - verified-at: 2026-10-14T05:05Z
+186: - suggested: admit — line 185 moves queued → exercised; all three verbs are
+187:   cheap (~1–3 s) and need only a loopback CDP target.
+188: 
+189: ## Candidate: cross-verb coherence and the Queue-A premise verdict — one script identity spans two verbs; both rows self-provisionable exactly as queued; substrates immutable, cleanup complete
+190: 
+191: - claim: **OBSERVATION** the inline script's graph identity `scr_5469de866d53bd74…`
+192:   appears in BOTH the `compare-web-captures` A→B diff (as the removed script) and the
+193:   `analyze-web-bundle` chunk node — stable content-addressed script keys across verbs,
+194:   usable as join keys. **Premise verdict**: lines 184–185 run with zero operator env
+195:   on the warm cache, every verb ≤3.2 s wall (windows 0.1–2.5 s), loopback-only
+196:   self-launches (r3/r4-08 pattern); the census's cheap-first-target "chromium headless"
+197:   holds as written. **Immutability**: all four fixture digests byte-identical
+198:   before/after. **Cleanup**: chromium tree, both node inspectors, and the http.server
+199:   killed; ports 9222/9229/9230/8878 verified closed; `/tmp/r10-02-chrome` removed; no
+200:   stray processes (`ps`/`ss` checked). **Process note recorded for lanes**: a
+216: 
+217: | # | command | result |
+218: |---|---|---|
+219: | 1 | `--schema` ×7 (six row-184/185 verbs + reconcile) | all exit 0; arg shapes captured in scratch |
+220: | 2 | launch http.server :8878 + chromium headless :9222 + node --inspect :9229 (+ `-e` control :9230); `PUT /json/new` ×2 | Chrome/152.0.7977.82, node.js/v24.21.0; targets A `82EE6114…`, B `A0A066A9…` |
+221: | 3 | `observe-web-session … A --observation-ms 2500` | exit 0, 3.2 s — `ev_375855d9…`, auto-scoped origin, attach_limited timeline |
+222: | 4 | `observe-web-execution … A --observation-ms 2500` | exit 0, 3.2 s — `ev_38a61fd8…`, `allowed_origins:[]`, instrumentation verbatim, 2 scripts inventoried / 0 covered |
+223: | 5 | `list-javascript-runtime-targets http://127.0.0.1:9230` / `:9229` | `ev_a4d15055…` targets:[] unsupported_location:1; `ev_a7961441…` file target listed |
+224: | 6 | `observe-javascript-runtime … 0050400f… --runtime-kind node --observation-ms 500` | exit 0 — `ev_bee56f0e…`, 83/83 events, 82 scripts (81 builtin + 1 file, cdp_hash==main.js sha256) |
+225: | 7 | `analyze-javascript-application /tmp/r10-02-app --artifact-format directory` ×2 | exit 0 — `ev_f867295d…` BOTH runs, `cmp` clean (byte-identical) |
+226: | 8 | `reconcile-javascript-runtime r10-02-reconcile.in.json` ×2 | exit 0, 0.75 s — `ev_7943e598…` BOTH runs, `cmp` clean; matched:1/unmatched:1/unknown:81 |
+227: | 9 | `capture-web-screenshot … A` ×2, `… B` | `ev_469b8340…`, `ev_fb99d599…`, `ev_1bf3535e…`; A/A2 PNG sha256 identical `6746f742…` |
+228: | 10 | `compare-web-screenshots <envelopes>` (×2) | rc 1 — typed invalid_request, per-path issues[] (artifact contract) |
+229: | 11 | `compare-web-screenshots r10-02-art{A,B}.json` / `art{A,A2}.json` | `ev_f77738ef…` different 384540/384540 maxΔ246; `ev_11191731…` identical 0 |
+230: | 12 | `compare-web-captures <session/page envelopes>` (×3) | rc 1 — opaque invalid_input (snapshot contract) |
+231: | 13 | `compare-web-captures snapA snapA` / `snapA snapB` | `ev_e465f5d4…` overall unknown (5 dims unchanged, 5 unknown); `ev_fdfc038c…` overall changed |
+232: | 14 | `discover-webmcp-tools … A` / `inspect-web-event-listeners … A "#go"` / `analyze-web-bundle … A --observation-ms 1500` | `ev_82dbdf0e…` tools total 0; `ev_42b8fd4f…` 1 click listener @7:74; `ev_0b903a99…` 1 chunk, digest self-verified |
+233: | 15 | `observe-web-session … B --observation-ms 2500` / `inspect-web-page … A` / `… B` | `ev_5110be8c…`; `ev_18d3c689…`; `ev_86d30a66…` (snapshot inputs for #13) |
+252: runtime kind, reconcile buckets `matched:1/unmatched:1/unknown:81` — r4-08's exact
+253: numbers), and the deterministic legs re-ran byte-identically (`ev_f867295d…`,
+254: `ev_7943e598…` — same ids on re-run; r4-08's own session-scoped ids are honestly not
+255: byte-re-derivable). To keep the drain moving, the next genuinely-unexercised rows —
+256: lines 184–185 — were discharged live: three self-launched-loopback screenshot
+257: captures (PNG artifacts deterministic byte-for-byte across captures of a static
+258: page), `compare-web-screenshots` (artifact-block input contract; different 384540 px
+259: vs identical 0), `compare-web-captures` (snapshot `{inspection, webmcp}` wrapper;
+260: overall `unknown` on self-compare because incomplete dimensions refuse to prove
+261: absence, `changed` across five dimensions on the real diff), `analyze-web-bundle`
+262: (chunk digest self-verifies against the page's inline script text),
+
+## kake-shokunin 376ac5dcdf86457ef1f8dd490dada735dad81f68 PROVINCE.md
+18:   Publishing itself stays operator-gated: kake prepares, verifies and hands off.
+19: 
+20: ## Frontier
+21: 
+22: - Crawl hygiene per host (robots.txt, sitemap scope, canonical signals) — first
+23:   entry `corpus/knowledge/crawl-scope-per-host.md`; canonical/JS rendering open.
+24: - Field performance (Core Web Vitals, CrUX eligibility) — first entry
+25:   `corpus/knowledge/field-performance-cwv.md` (round 28; knowledge only, no
+26:   gate, no property measured); Jekyll/base-path build tooling — first entry
+27:   `corpus/knowledge/pages-base-path.md` plus offline gate
+36:   clean or that the declared expectations are universal policy.
+37: 
+38: ## Adjacent
+39: 
+40: - `tabi` drives browsers and owns client-side crawler discipline; kake owns
+41:   publisher-side placement (robots/sitemap at the host it serves).
+42: - `chousa` owns research method and source hierarchy; kake keeps only
+43:   domain findings and its own `corpus/SOURCES.md` rows.
+44: - `kagi` owns secrets and credential custody; kake records no secret values.
+62: `corpus/knowledge/static-canonical-preflight.md` covers the previously open
+63: static canonical-signal ground: preferred relation semantics, explicit local
+64: publisher policy and offline parser limits. The lane's local validator and
+65: frozen fixtures are its operability artifact, not a claim that a live website
+66: was repaired or a Google-selected canonical observed. The broader crawl and
+67: JS-rendered-canonical frontier above remains open; browser execution stays tabi's
+68: adjacent province and publication/account operations stay operator-owned.
+69: 
+70: 
+304: 
+305: Round 37's declared frontier move is an offline robots.txt expectation audit (`scripts/robots_audit.py`): each manifest check compares an expected allow/disallow result against its supplied status and, for 2xx, its named local robots file (S011; S095; Round-37 C1 contract).
+306: The command reads only the manifest and named robots files, writes nothing, and uses no network (C1 contract, Usage).
+307: It reports `blocked`/`exposed` for policy mismatches; its verdict is `could-not-evaluate` if input/check faults exist, `failed-policy` for findings otherwise, and `clean` when there are none (C1 contract, Findings/Verdict).
+308: Unknown records, including `Sitemap` and `crawl-delay`, are ignored; sitemap parsing/scope and crawler-specific extension behavior remain open (C1 contract, Lines; S012–S013).
+309: This contract does not observe live fetches, redirects, caching, or crawler behavior (C1 contract, Limits).
+310: Boundary: kake owns publisher-side robots/sitemap placement at the host it serves, while browser-driving and client-side crawler discipline belong to tabi (PROVINCE.md, Adjacent); this audit does not probe or publish an owned property.
+311: Knowledge entry: `corpus/knowledge/robots-txt-rules.md` (S011, S095, S096; lane readings marked).
+312: 
+313: ## Round-38 robots audit repair step
+314: 
+324: escapes leave it to the rules (S099; Google differs, S096).
+325: Counter v3 (20 of 20) separates the tool from stdlib-delegating readers. Before the build it scored
+326: 13 for the stdlib reader patched for (h), (i) and (k), and 7 for the round-37 shortcut. Measured: 8 → 20
+327: at `3ed8e15c`.
+328: Still open: live fetch, redirects, caching, crawler extensions, sitemaps, the symlinked manifest
+329: directory and U+FFFD per byte. Client-side crawler discipline stays with tabi; kake keeps
+330: publisher-side placement.
+331: 
+332: ## Round-39 sitemap file audit step
+333: 
+340: gunzip, follow robots `Sitemap:` lines or judge any engine's acceptance (S109 shows one engine
+341: reading `loc` limits differently). The claim (C1) is exploratory: its sealed 24-case counter could not
+342: separate the contract from a regex reader or from 15 single-sentence breaks. Still open: gzip, live
+343: fetch, text/RSS sitemaps, robots cross-submission, and a key that kills those 15 breaks.
+344: Boundary unchanged: publisher-side placement is kake's; client-side crawling stays with tabi.
+345: 
+346: ## Round-49 crawl-budget frontier step
+347: 
+348: Round 49 adds publisher-side crawl-budget consequence knowledge
+349: (`corpus/knowledge/crawl-budget-consequences.md`, S273, S274), re-opened this
+350: round. It is knowledge only, with no gate and no property measured. The
+351: checked sentences are: Google will not shift newly available crawl budget to
+352: other pages unless the capacity limit is already hit (S273), and the emergency
+353: backoff reduces the crawl rate across the whole hostname (S274). Publishing
+354: stays operator-owned. The Jekyll url/baseurl staged row was refused because
+355: its URL is already S080. The Ollama OpenAPI staged row was refused as kama's
+356: province.
+357: 
+358: ## Round-51 canonical-selection and crawler-identity frontier step
+359: 
+360: Round 51 adds two source-backed entries and narrows Frontier line 23: `canonical/JS rendering
+361: open` is now partly held. `corpus/knowledge/canonical-selection.md` (S262) holds the selection
+362: half of the canonical signal — what a declared canonical is worth, which signals Google weighs,
+363: and which variant classes create duplicates; the lane's held `static-canonical-preflight.md`
+364: covers only the declaration side and explicitly disclaims selection. `corpus/knowledge/crawler-identity.md`
+365: (S263) holds the identity half of the crawl signal — "Googlebot" names two crawlers, the subtype
+366: is read from the HTTP user-agent request header, and both obey the same robots product token.
+367: Both are Frontier knowledge: no gate, no owned property audited, no publish action. JS rendering
+368: stays open and stays tabi's adjacent province for anything that executes a browser. Held entries
+369: that still speak of a bare "Googlebot" (js-rendering-queue, dynamic-rendering-workaround-limits,
+370: crawl-error-status-table) stay true as vendor sentences but inherit subtype ambiguity; a round
+371: that closes that must cross-reference the new entry, not re-derive it.
+372: 
+373: ## Round-52 per-engine crawl hygiene (and a correction to the round-51 wording)
+374: 
+375: Round 51's block above says it "narrows Frontier line 23". The bytes of line 23 are identical
+376: before and after round 51; what changed is this document's reading of it, added as that block.
+377: Read the sentence that way (round-51 closure routed defect 6).
+378: 
+379: Round 52 adds three entries on per-engine crawl hygiene beyond Google, on rows opened this round.
+380: `corpus/knowledge/yahoo-japan-rel-nofollow-semantics.md` (S374): a link attribute states
+381: non-endorsement and is not weighed when results are ordered — it is not a crawl refusal, and the
+382: tagged URL is still used to find new pages. `corpus/knowledge/baidu-friendly-crawl-guidance.md`
+383: (S329): one `User-agent: Baiduspider` block binds the PC and mobile crawlers together, the crawler
+384: honours the `*` and `$` wildcards, and the spider trap is the site's own low-cost generation of
+385: near-identical parameter URLs that the refusal file is to cover.
+386: `corpus/knowledge/baidu-mobile-matching-error-causes.md` (S312): the five causes of a failed
+387: PC↔mobile correspondence, including a mobile main body loaded by ajax and a robots block on
+396: `Disallow:`, the meta-tag fallback), `corpus/knowledge/yahoo-japan-robots-pattern-syntax.md` (S373:
+397: the wildcard, the end marker, and the prefix rule that makes a line without the end marker match
+398: every URL containing its string) and `corpus/knowledge/yahoo-japan-robots-txt-basics.md` (S418, a new
+399: row: robots.txt as a request channel for the refused pages and the sitemap location, read from the
+400: site root). They extend the per-engine crawl-hygiene ground of round 52 from link attributes
+401: (S374) to the refusal file itself. They state what the operator's documentation says (the pages print
+402: 更新日 2010年11月24日); no robots.txt was served and no crawl was observed, so no crawler behaviour is
+403: claimed. Frontier knowledge: no gate, no owned property audited, no publish action; publishing stays
+404: operator-owned. Yahoo! JAPAN crawler-address, user-agent-list and deleted-URL pages in the staging
+405: package are not adopted this round.
+406: 
+407: `corpus/README.md` §Coverage map now carries a running table of this section's frontier items against
+408: the rounds and entries that entered them (`considerthese/2026-10-25.md` proposal 4), and a row for
+410: entries (24 rows added). The table's `Untouched ground` list is the
+411: reading of the Frontier that this round could evidence; it is not a statement that the ground stays
+412: untouched.
+413: 
+414: ## Round-56 Yahoo! JAPAN crawl handling: link-target restriction, deleted URL, non-existent URL
+415: 
+416: Round 56 adds three entries on what one operator's pages say a server's answer does to the crawl, each
+417: re-grounded against a fresh retained body fetched 2026-10-25: `corpus/knowledge/yahoo-japan-link-target-crawl-restriction.md`
+418: (S367, a held row re-opened: a page refuses the crawl of the link targets it contains from its own head
+419: with `index,nofollow` or `noindex,nofollow`, or from the server with `X-Robots-Tag: NOFOLLOW`; the first value
+420: leaves the page's own registration permitted), `corpus/knowledge/yahoo-japan-deleted-url-recrawl.md` (S419,
+421: a new row: a deleted URL that answers `HTTP 200 OK` may keep being crawled; the page asks the publisher to confirm
+422: that the server returns `HTTP 404 Not Found`, with an index-refusal meta tag in the error page's head where that
+423: cannot be set) and `corpus/knowledge/yahoo-japan-nonexistent-url-recrawl.md` (S420, a new row: an error page served
+424: under `HTTP 200 OK` is not read as an error page and the crawl continues; this page asks that the server be
+425: set to return 404, with the same fallback).
+426: They continue the per-engine crawl-hygiene ground of rounds 52 and 55 from link attributes (S374) and the
+427: refusal file (S372, S373, S418) to the server's own status answer. They state what the operator's
+428: documentation says (the pages print 更新日 2010年11月24日); no URL was served under test and no crawl was
+429: observed. Frontier knowledge: no gate, no owned property audited, no publish action; publishing stays
+430: operator-owned. The round-55 sentence that the deleted-URL page "is not adopted this round" is superseded
+431: for that page by this round. Not adopted from the same staging package: the canonical-notification (S388),
+432: redirect-and-indexed-URL (S389) and dynamic-page-indexing (S387) candidates — rejected as staged, reasons
+433: and flip conditions in `corpus/lessons/round-56.md` § Gate.
+434: 
+435: ## Round-57 Baidu dead-link handling: dead-link types, Spider 3.0 recognition model
+436: 
+437: Round 57 adds two entries on what one operator's own pages say a dead link is and how its crawler treats one, each re-grounded against a
+438: fresh retained body fetched 2026-10-25: `corpus/knowledge/baidu-dead-link-types.md` (S421, a new row: Baidu's college page divides dead links
+439: into protocol dead links, shown by the page's TCP/HTTP status, and content dead links, where the server answers normally but the content has
+440: become nonexistent, deleted or permission-gated; it states the content kind answers HTTP 200 and cannot be set to 404, that handled pages
+441: should be set to 404, and that its submission tool recognises 404 only) and `corpus/knowledge/baidu-spider3-dead-link-model.md` (S422, a new
+442: row: the 2016 Spider 3.0 announcement says a new dead-link recognition model recognises protocol dead links and most content dead links and
+443: redirect dead links, states a few-days handling time after the update and calls a protocol dead link the best choice; its 10-day and 40–80%
+444: figure belongs to index display, not to dead-link handling). They continue the per-engine crawl-hygiene ground of rounds 52, 55 and 56
+445: from Yahoo! JAPAN's server-status answers to the same class on Baidu's side (a gone page that still answers success). They state what the
+446: operator's pages say (the pages print 发布日期 2022-09-09 and 2016-06-30); no URL was served under test and no crawl was observed.
+447: Frontier knowledge: no gate, no owned property audited, no publish action; publishing stays operator-owned. Not adopted from the same
+448: staging package this round: the other Baidu candidates (render-agent announcements S390, S409/S410, and entries citing campaign-internal
+449: evidence paths) — reasons and flip conditions in `corpus/lessons/round-57.md` § Gate.
+450: 
+451: `corpus/README.md` §Coverage map gains two rows and a round-57 row in its frontier ground map; the sibling-registry resolver
+452: `scripts/id_resolver.py` (round-57 capability, `considerthese/2026-10-25.md` proposal 2) reads this lane's knowledge entries and the
+453: other lanes' registries and changes no owned ground.
+454: 
+455: ## Round-58 crawler identity: Baidu identification and unblocking
+456: 
+457: Round 58 adds two entries on the `Crawler identity` ground (round-51 Googlebot subtypes row; `PROVINCE.md:22-23` unchanged), each re-grounded
+458: against a retained body fetched 2026-10-26: `corpus/knowledge/baidu-spider-identification.md` (S423, a new row; staged S395 renumbered by
+459: document: the operator's Q&A page names three UA channels — mobile, PC, mini-program, with `Baiduspider/2.0`, `Baiduspider-render/2.0` and
+460: `Smartapp` tokens — and a two-step check, reverse DNS to a `*.baidu.com` / `*.baidu.jp` hostname then forward DNS back to the logged IP, any
+461: other hostname being an impersonation) and `corpus/knowledge/baidu-spider-unblocking.md` (S424, a new lane-found row: the operator's
+462: unblocking article names robots, Baidu-UA and Baidu-IP blocks and orders the self-check robots.txt, then a Baiduspider-UA request whose 200
+463: is normal, then the firewall). The publisher-side scope is the lane's own: verifying who fetches a property and removing blocks a property
+464: sets. Refused on scope: staged `yahoo-japan-crawler-address-change-notice.md` (S378) — an ads-API notice for the Display Ads product-list FTP
+465: crawler, ad-delivery infrastructure, not a search crawler (`corpus/lessons/round-58.md` § Gate). Adjacency (reported, not absorbed;
+466: `.ufo/waves/round-58/w1/ConnSiblingOverlap.md`): no sibling lane owns crawler DNS verification.
+467: 
+468: ## Round-65 host-migration surfaces correction (2026-11-01)
+469: 
+470: The round-65 continuation runs on a fresh Windows host; the prior Linux
+578: combined specification.
+579: 
+580: **What it refuses.** `X-Robots-Tag` response headers (the lane's `scripts/response_snapshot.py` /
+581: `scripts/header_audit.py` instruments own that channel), rendering or rendered-DOM observation,
+582: crawler behaviour, and whether any live property carries a correct declaration. It also does not
+583: judge ranking or indexing outcomes: an effective `noindex` is a declaration the tool reads, not an
+584: observed crawler response.
+585: 
+586: **Final state.** Carrier `82c3d02c39d16ae99c6cd34238fa3ec6ea089fb9` holds the
+587: tool, knowledge, oracle-free matrix and cases. The committed-blob matrix receipt
+588: is `.ufo/waves/round-78/controls/after-c3-matrix.txt`; real input is the eight
+589: previously retained served pages, not a fresh live fetch. Publishing stays
+590: operator-owned. No live crawler or deployment outcome is inferred.
+591: 
+592: [r79-correction 2026-11-04] The "What it refuses" paragraph above assigns the `X-Robots-Tag`
+593: response-header channel to `scripts/response_snapshot.py` / `scripts/header_audit.py`. Those
+594: instruments parse no robots directive. Round 79 lands `scripts/x_robots_tag_audit.py`, an offline
+595: audit of recorded response header fields (contract `.ufo/waves/round-79/contract.md` §C2 and
+596: `.ufo/waves/round-79/contract-amendment-1.md`; knowledge `corpus/knowledge/x-robots-tag-header.md`),
+597: so the header channel now has its own instrument. The round-78 audit still does not read the channel,
+598: and no crawler behaviour is judged.
+599: 
+600: [r80-correction 2026-11-04] The `X-Robots-Tag` paragraph above is historical for its date. Round 80 widens
+601: that channel's instrument: `scripts/x_robots_tag_audit.py` now reads the `unavailable_after` date value
+602: under the three RFC 9110 `HTTP-date` formats (IMF-fixdate, the obsolete RFC 850 shape and asctime) as well
+604: directive segment — the round-79 grammar split every field value on commas first, which made S452's own
+605: example undecidable. Terms: `.ufo/waves/round-80/amendments/amendment-1.md`; ground:
+606: `corpus/knowledge/http-date-grammar.md` (S453, S452); case set `.ufo/waves/round-80/cases` with the
+607: frozen round-79 matrix unchanged. Calendar validity, the RFC 850 50-year window, per-bot effective
+608: resolution and header inheritance across redirect hops remain out of scope, and no crawler behaviour or
+609: live property state is claimed.
+610: 
+611: ## Round 81 capture-once front step
+612: 
+
+## kake-shokunin 376ac5dcdf86457ef1f8dd490dada735dad81f68 SKILL.md
+157:      `~/Projects/webzites/docs/SPEEDRUN-PROTOCOL.md`; decoded: <!-- r18 re-census 2026-10-14: ~/Projects/webzites/docs/SPEEDRUN-PROTOCOL.md absent — gone in the 2026-10-12 ~/Projects prune/migration; cite retained as historical record. -->
+158:      `corpus/knowledge/speedrun-pipeline.md`.
+159: 5. **Lease before browser.** `webzites lease acquire --owner <name>
+160:    --ttl-ms 900000`; release in `finally`. The shared burner chrome
+161:    (`the-musketeer` profile, CDP `127.0.0.1:9222`) serializes the whole
+162:    kimi fleet — one op at a time, machine-wide.
+163: 6. **Re-pin markers after republish.** `expect.marker` literals are
+164:    deployment-scoped: canary/website-id pins churn per publish; beat-dated
+165:    charter markers (`2026-09-26 scribe beat`, `On 2026-09-18 the grok-web
+693: |---|---|
+694: | Page-level CrUX record exists | Report p75 per metric and form factor with the window end date. |
+695: | Only origin-level record exists | Report it as origin data; never present it as the page's result. |
+696: | No CrUX record | Check the S038 exclusions (final status other than 200, `noindex` or equivalent, root page not discoverable); a raw 200 is not proof. Otherwise too few eligible Chrome visitors is likely but unconfirmed (low traffic, or iOS, WebView or other Chromium audiences send no data). Report "no field data", not pass or fail. |
+697: | Only a lab score (Lighthouse, DevTools) | Use it to guide a fix; give no Core Web Vitals verdict (S036). Running the tool is tabi's work. |
+698: | A CrUX API query is needed | Needs an operator-provisioned Google Cloud key (S039); kake holds none and asks the operator. |
+699: 
+700: ## Project-site base-path triage — round 29
+701: 
+1010: | Exit 1, `og_url_not_canonical` | Compare `og:url` with the first `<link rel=canonical href>`, resolved against the page `url`; exact string match after stripping ASCII whitespace, so a scheme-only difference still fails, while a relative canonical that resolves equal passes | re-run the audit (D8 and D12 fail; K3 relative canonical resolved equal exit 0; K4 no canonical link exit 0) | interface `first canonical link wins; exact string comparison after stripping ASCII whitespace`; S068.txt@2626 `og:url The canonical URL for your page. This should be the undecorated URL` |
+1011: | Exit 2, `could-not-evaluate` | Fix the input, never the page: `input_invalid` (bad JSON, version other than 1, empty pages, non-http page url, `file` escaping the manifest directory) or `page_unreadable` (not UTF-8). Exit 2 reports input findings only | re-run the audit (I1–I7: 6 `input_invalid`, 1 `page_unreadable`) | interface `exit 2 verdict could-not-evaluate (any input finding; then only input findings are reported, reasons input_invalid or page_unreadable)` |
+1012: | Exit 64 | Fix the argv (missing `--manifest`, unknown argument); no JSON is produced, so nothing is known about any page | re-run the audit (U1, U2) | interface `exit 64 usage (missing --manifest, unknown argument)` |
+1013: | Reading the census line | Read `ds4cc-7fc6aa2f-og-census: pages=102 og:title=87 og:type=87 og:image=1 og:url=87 all-four=1 og-url-equals-canonical=87` as a recount of retained HTML at `7fc6aa2f`; `og:X` counts pages with a `<meta property="og:X">` whose stripped content is non-empty; the canonical side is resolved against `https://ds4cc.com/<path>` with a trailing `index.html` removed, which is the census's own base, not the manifest's page URL | `python3 -B .ufo/waves/round-34/c2_source_census.py --root <repo> --revision <commit>` (met 0/5 at `d08d8de`, census block still derived: `verification/c2-at-d08d8de.json` `census.derived`) | c2_source_census.py docstring condition (e): `og:X = pages with a <meta property="og:X"> whose content is non-empty after stripping ASCII whitespace` |
+1014: | Quoting those numbers as a preview verdict | Do not: the census says what the retained bytes contain, not what any crawler fetches or renders, and it covers only the four properties, only `.html`, only that commit | restate the commit and the dated-measurement status beside the number | S069.txt@685 `we are looking for oEmbed and Twitter Card / Open Graph tags`; S070.txt@3020 `Represents a rich preview card that is generated using OpenGraph tags from a URL` |
+1015: | A card looked wrong live, or a fixed page still previews the old title/image | Prepare the source change and the exact URL, then ask the operator: a re-scrape is a live request to an owned property, and image caches key on the image URL, not the page | operator action (Sharing Debugger); do not fire from a seat | S068.txt@4546 `The debugger also triggers a scrape of your page`; S069.txt@974 `Responses to these requests are cached globally across the service for around 30 minutes` |
+1016: | Someone wants to widen the source set to X or GitHub card docs | Do not: S071 is a generic developer-docs index with no card markup URL, and S072 documents a repository Settings image upload, not page-level Open Graph tags. Keep S067–S070 | read the retained text, not the intended target | S071.txt@0 `X Developer Platform - X Documentation Index`; S072.txt@0 `Customizing your repository's social media preview` |
+1017: 
+1018: ## Per-row grounding, condensed
+1085: matcher made linear after measurement at `b99b6679`). The contract is SCORECARD "Round 37 —
+1086: declared claims" (RFC 9309, S011, with lane readings marked in
+1087: `corpus/knowledge/robots-txt-rules.md`). A `clean` report means every check's decision under the
+1088: contract equals its declared expectation; it says nothing about a fetch, a redirect, a cache or
+1089: what any particular crawler does.
+1090: 
+1091: | Name | Kind | Entry command | Verdict map | Self-test | Pinned values / frozen proof | Write scope | Owner |
+1092: |---|---|---|---|---|---|---|---|
+1093: | robots-expectation-audit | gate (offline; no network) | `python3 -B scripts/robots_audit.py --manifest PATH` | `0=clean`; `1=failed-policy` (`blocked`, `exposed`); `2=could-not-evaluate` (`input_invalid`, `check_invalid`); `64=usage` | `python3 -B scripts/robots_audit_selftest.py [--tool PATH]` (204 fixtures) | `python3 -B .ufo/waves/round-37/sealed_count.py --root . --revision <rev> --key-revision 424aa248`; predicate `met: passed >= 25 of 28 sealed cases` (does not separate the contract from the stock Python parser; the selftest does) | none (reads the manifest and its named robots files) | kake |
+1096: 1. Record the served `/robots.txt` (status and body) of the host; for an operator-owned host only
+1097:    with an operator-authorized read (`.ufo/waves/round-37/realrun/fetch_robots.py` shows the shape).
+1098: 2. Write one check per (product token, URL, intended decision); quote the robots line that should
+1099:    decide it, and say so when the decision is "no rule matches".
+1100: 3. `blocked`: the publisher's file disallows a URL it wants crawled; `exposed`: it allows a URL it
+1101:    wants kept out — fix the file, never the expectation, unless the intent changed.
+1102: 4. 3xx statuses are check faults: record the final status after redirects yourself.
+1103: 5. Exit 2 or 64 is never clean: fix the input and run again.
+1104: 
+1117: declared sentences and the six MutBuildTool survivors; the tool bytes are unchanged (`f4d057c4…`).
+1118: 
+1119: ### Sitemap file audit — round 39 (exploratory capability)
+1120: 
+1121: Use it before publishing a sitemap or sitemap index, or when a crawl report says a sitemap was
+1122: rejected. Contract: `.ufo/waves/round-39/c1-contract.md` (sentences 1–34, rules (a)–(k); sources
+1123: S102–S108, lane readings marked). Tool `scripts/sitemap_audit.py` at `565ef4c9` (sha256
+1124: `6d86c8ce…a240ec`).
+1125: 
+1229: and read committed bytes only. Receipts: `.ufo/waves/round-55/controls/`.
+1230: 
+1231: | Name | Kind | Entry command | Verdict map | Self-test | Pinned values / frozen proof | Write scope | Owner |
+1232: |---|---|---|---|---|---|---|---|
+1233: | readme-index-counter | gate (historical from round 59: green at its round-55 measured revision `64c0ce12ffe3ca4d6d1891a3e3e33933a95380f6` and on the round-58 tree; red from round 59 on by design — its `head_changed` term requires every round-55-base knowledge file to survive as a byte prefix, and the round-59 append-only correction inserts lines inside `corpus/knowledge/crawler-identity.md` where the stale bullet ends (`.ufo/waves/round-59/a2r1/ReviewerNoHarm.md`); the other six terms still read 0 there; offline, committed bytes only; no network) | `python3 -B .ufo/waves/round-55/c55_readme_index.py --root . --revision <commit>` | `0=met` (`index_mismatches == 0 AND knowledge_files >= 46`); `1=not met` (any unindexed, multi, thin, duplicate, head_changed, deleted or dangling item, or fewer than 46 knowledge files); `2=could-not-evaluate` (tree or `corpus/README.md` unreadable, no or more than one `## Coverage map` section, no table); usage errors also exit 2 (`ap.error`) | `python3 -B .ufo/waves/round-55/c55_readme_index.py --selftest` (44 fixtures, generated sandbox repos; receipt `.ufo/waves/round-55/controls/c1-selftest-v2.txt`) | `contract.json` `claims.C1.predicate`; base control `.ufo/waves/round-55/controls/base-c1-readme-index-v2.txt` (`index_mismatches=21`, exit 1 at `fcaf4b85`); version-1 control kept as history | none (reads `git show` / `git ls-tree` only; selftest writes only `mktemp -d` sandboxes) | kake |
+1234: | yahoo-robots-quote-truth-counter | gate (historical: green at its round-55 measured revision `64c0ce12ffe3ca4d6d1891a3e3e33933a95380f6` only; red on later trees by design — mirror pins 156 rows; offline, committed bytes only) | `python3 -B .ufo/waves/round-55/c55_quote_truth.py --root . --revision <commit>` | `0=met` (`conditions_passed == 8 of 8`); `1=not met` (any C1–C8 sub-condition fails); `2=could-not-evaluate` (malformed receipt or mirror-pin JSON, an exception); usage errors also exit 2 (`ap.error`) | `KAKE_R55_SELFTEST_REV=64c0ce12ffe3ca4d6d1891a3e3e33933a95380f6 python3 -B .ufo/waves/round-55/c55_quote_truth.py --selftest` (54 sandbox-repo fixtures built from the committed round-55 evidence at the pinned revision, including 3 unit-rule checks; receipt `.ufo/waves/round-55/controls/c2-selftest.txt`) | `contract.json` `claims.C2`; base control `.ufo/waves/round-55/controls/base-c2-quote-truth-v2.txt` (`0/8`, exit 1); retained-body receipts `.ufo/waves/round-55/sources/receipts.json`; pre-append mirror pin `.ufo/waves/round-55/assimilation/mirror-pin.json` | none (reads `git show` / `git log` only; selftest writes only `mktemp -d` sandboxes) | kake |
+1235: 
+1236: C7 is a receipt check: it certifies that the committed census receipt, the validated scratch registry
+1237: and the landed registry agree, not that the census ran. `.ufo/waves/round-55/validate_append.sh`
+1244: 
+1245: Round 56 ships two counters whose predicates are frozen in `.ufo/waves/round-56/contract.json` before any data (version 2 of
+1246: each, after the wave-1 attacks; version-1 receipts stay as history); both are offline and read committed bytes only. C1 calibrates
+1247: the ten self-test tallies in the registry above (the round-55 routed defect) and C2 is the freshness claim for three Yahoo! JAPAN
+1248: crawl-handling entries. Receipts: `.ufo/waves/round-56/controls/`. `scripts/landed_check.py` is a tool, not a gate: it compares the commit
+1249: hashes a report cites with branch ancestry (considerthese proposal 1).
+1250: 
+1251: | Name | Kind | Entry command | Verdict map | Self-test | Pinned values / frozen proof | Write scope | Owner |
+1252: |---|---|---|---|---|---|---|---|
+1253: | selftest-tally-counter | gate (historical from round 72: green at its round-56 measured revision `4cb225fb032b04166fb0232bc98a7bcce72675ec` (pin run receipt `.ufo/waves/round-72/controls/c56-pin-linux.txt`); red on this Linux host at the lane tip only because the counter's audited `scripts/fixtures` tree gained four `quote-class` fixture files after the pin (round-63 commit `6d8c52a6`); no audited script changed, and with the fixture tree restored the ten selftests pass (`tally_mismatches=6` at the tip, all `tool_changed`, each observed equal to its claim; receipt `.ufo/waves/round-72/controls/c56-tip-linux.txt`); offline, committed bytes only; runs the ten documented selftests in a clone of the revision) | `python3 -B .ufo/waves/round-56/c56_selftally.py --root . --revision <commit>` | `0=met` (`tally_mismatches == 0 AND rows_checked == 10`); `1=not met` (any row_missing, duplicate_row, command_missing, command_invalid, command_ambiguous, claim_missing, claim_ambiguous, tool_changed, selftest_failed, claim_ne_observed or command_unrunnable); `2=could-not-evaluate` (revision unresolved, clone failure, unparsable tally, timeout); `64=usage` (an argparse error exits 2) | `python3 -B .ufo/waves/round-56/c56_selftally.py --selftest` (59 checks, generated sandbox repos) | `contract.json` `claims.C1`; base control `.ufo/waves/round-56/controls/base-c1-selftally-v2.txt` (`tally_mismatches=7 rows_checked=10`, exit 1 at `e48354b7c26b`); population is ten named rows (link-preview-audit excluded: its row counts fixture directories, not cases) | none (clones the revision under `mktemp -d`) | kake |
+1254: | yahoo-crawl-handling-quote-truth-counter | gate (historical: green at its round-56 measured revision `4cb225fb032b04166fb0232bc98a7bcce72675ec` only; red on later trees by design — mirror pins 158 rows; offline, committed bytes only) | `python3 -B .ufo/waves/round-56/c56_quote_truth.py --root . --revision <commit>` | `0=met` (`conditions_passed == 8 of 8`); `1=not met` (any C1-C8 sub-condition fails); `2=could-not-evaluate` (malformed receipt or mirror-pin JSON, an exception); usage errors also exit 2 (`ap.error`) | `KAKE_R56_SELFTEST_REV=f8438a282d5946b386812d784cc617edcbc9201d python3 -B .ufo/waves/round-56/c56_quote_truth.py --selftest` (86 checks: 83 sandbox-repo fixtures built from the committed round-56 evidence at the pinned revision, plus 3 unit-rule checks) | `contract.json` `claims.C2`; base control `.ufo/waves/round-56/controls/base-c2-quote-truth.txt` (`0/8`, exit 1); retained bodies `.ufo/waves/round-56/sources/` with `receipts.json`; held-row body pin `HELD_BODY_SHA256` (S367); pre-append mirror pin `.ufo/waves/round-56/assimilation/mirror-pin.json` | none (reads `git show` / `git log` only; selftest writes only `mktemp -d` sandboxes) | kake |
+1255: 
+1256: The C1 counter runs each row's documented self-test command from the row's `Self-test` cell (a leading `KAKE_R5N_SELFTEST_REV=<hex>`
+1257: word is part of the command; the environment is otherwise fixed) in a `git clone` of the measured revision and compares the claim in that
+1258: cell with the printed tally. A rewritten selftest is a different claim: the pinned script and every `*.py` beside it must be byte-equal
+1291: | Name | Kind | Entry command | Verdict map | Self-test | Pinned values / frozen proof | Write scope | Owner |
+1292: |---|---|---|---|---|---|---|---|
+1293: | receipt-rewrite-counter | gate (offline; first-parent history walk over every file at any depth under every round's `control(s)/`, against the round-58 ledger) | `python3 -B .ufo/waves/round-58/c58_receipt_rewrites.py --root . --revision <tip>` (`--json`, `--list`; the tip holds the C2 and C3 after-receipts) | `0=met` (`undisclosed == 0 AND phantom == 0 AND malformed == 0 AND wrong_kind == 0 AND unpointed == 0 AND symlinks == 0 AND new_rewritten == 0 AND new_receipts == 2`); `1=not met`; `2=could-not-evaluate` (tip unresolved, ledger not JSON); `64=usage` | `TMPDIR=<scratch> python3 -B .ufo/waves/round-58/c58_receipt_rewrites.py --selftest` (45 checks; `controls/c1-selftest-v2.txt`) | ledger `.ufo/waves/round-58/receipt-rewrites.json` (19 events at base `0440485`); kinds are byte-level (`pin-only`, `content`, `pending-fill`, `append`, `format`, `delete`, `readd`) | none (reads git) | kake |
+1294: | resolver-cases-counter | gate (the tool at the revision against gate-built fixture lanes with per-run fixture ids; every fixture repo is `git init` in its own dir) | `python3 -B .ufo/waves/round-58/c58_resolver_cases.py --root . --revision <rev> [--work <scratch>] [--seed N]` | `0=met` (`cases_passed == 14 of 14`: K1-K7 fenced heading/rows, non-ASCII, quote-character and newline paths at a revision, low fenced id vs registered high id; P1-P7 3-space row, row after a closed fence, 4-space code line, committed sibling owner with url-match, absent `--fleet` exit 2, tool selftest >= 55, real lane green); `1=not met`; `2=could-not-evaluate`; `64=usage` | `TMPDIR=<scratch> python3 -B .ufo/waves/round-58/c58_resolver_cases.py --selftest` (7 scored control tools; `controls/c2-selftest-v2.txt`) | base `0440485` 6/14 | scratch only (`--work`) | kake |
+1295: | baidu-crawler-identification-quote-truth-counter | gate (historical from round 59: green at its round-58 measured revision `8d340c15200959190ba3e894399cdc931976331f`; red on later trees by design — C7 pins the round-58 validate scratch and C8 the 160-row mirror, and round 59 grows the registry to 164; offline, committed bytes only) | `python3 -B .ufo/waves/round-58/c58_quote_truth.py --root . --revision <commit>` | `0=met` (`conditions_passed == 8 of 8`); `1=not met`; `2=could-not-evaluate`; `64=usage` | `KAKE_R58_SELFTEST_REV=fff3eea6aa349c8635fd84a791cc32de350ee1c2 python3 -B .ufo/waves/round-58/c58_quote_truth.py --selftest` (120 checks; `controls/c3-selftest-v2.txt`) | bodies pinned by sha256 (S423 `8b8aef60…`, S424 `3ef1275b…`); mirror pins the 160-row base registry (historical once a later round appends a row) | none | kake |
+1296: 
+1297: ### Round 59 gate registry additions
+1298: 
+1299: Round 59 ships three counters whose predicates are frozen in `.ufo/waves/round-59/contract.json` (version 2, `contract.md` § Counter versions)
+1305: | Name | Kind | Entry command | Verdict map | Self-test | Pinned values / frozen proof | Write scope | Owner |
+1306: |---|---|---|---|---|---|---|---|
+1307: | axis-evidence-counter | gate (offline; calibration: the SCORECARD axis-table evidence cells against committed blobs at the measured revision; base pinned at `fd6303ce`) | `python3 -B .ufo/waves/round-59/c59_axis_evidence.py --root . --revision <rev> [--base <rev>] [--json]` | `0=met` (version 2: `mismatches == 0 AND tables == 1 AND rows == 3 AND axes_ordered == 1 AND scores_held == 2 AND superseded_kept == 3`); `1=not met`; `2=could-not-evaluate` (`SCORECARD.md` unreadable at the measured or base revision, `--root` not a repository toplevel, revision or base unresolved, exception); `64=usage` | `python3 -B .ufo/waves/round-59/c59_axis_evidence.py --selftest` (24 checks; `controls/c1-selftest-v2.txt`) | base control `.ufo/waves/round-59/controls/base-c1-axis-evidence-v2.txt` (`mismatches=24`, exit 1; version 1 `base-c1-axis-evidence.txt` 16); contract `.ufo/waves/round-59/contract.json` `counterSha256v2 6df31e5f…`; atom rules frozen in the counter docstring | none | kake |
+1308: | disclosed-route-resolver-cases-counter | gate (the tool at the revision against gate-built fixture lanes with per-run fixture ids; every fixture repo is `git init` in its own dir; `--root` must be a repository toplevel) | `TMPDIR=<scratch> python3 -B .ufo/waves/round-59/c59_resolver_cases.py --root . --revision <rev> [--work <scratch>] [--seed N]` | `0=met` (`cases_passed == 21 of 21`: K1-K7, P1-P5, P7 as round 58; K8 a multi-line HTML-comment row registers nothing; K9 a setext heading ends `## Registry`; K10 an in-lane symlinked knowledge dir is read; K11 at a revision a committed symlink resolves inside the tree, never parsed as its target string; K12 a registry symlinked out of the lane is unevaluable; K13 a non-UTF-8 knowledge file name at a revision is read, not fatal; K14 a `--root` below the repository toplevel is unevaluable; P6 tool selftest >= 66); `1=not met`; `2=could-not-evaluate` (`--root` not a toplevel, revision unresolved, tool absent at the revision); `64=usage` | `TMPDIR=<scratch> python3 -B .ufo/waves/round-59/c59_resolver_cases.py --selftest` (13 scored control tools over the 21 cases; `controls/c2-selftest-v2.txt`) | base control `.ufo/waves/round-59/controls/base-c2-resolver-cases-v2.txt` (`13/21` at seed 59, exit 1: K8-K14 and P6 fail); contract `counterSha256v2 0dad783f…`; P6 trusts a printed tally (disclosed); case list frozen in the counter docstring | none | kake |
+1309: | crawler-identity-quote-truth-counter | gate (historical from round 60: green at its round-59 measured revision `b322ccabe1628fc0cfe80c2dddca03ed154d1349`; red from round 60 on by design — C8 requires the registry minus S425/S426 to equal the 162-row pre-append mirror, and round 60 appends S427-S429 (`.ufo/waves/round-60/w1/CriticD1Collision.md`); C5 and C7 also fail at round 60 on the same correction, not only the mirror: the S426 entry's `[r60-correction]` block quotes S428's wording, which the round-59 C5 tests against S426's own retained body, and the round-59 C7 scratch-entry receipt predates the append — disclosed complete after w2/ConnW2Cross and w2/ReviewerC1Relabels F1; offline, committed bytes only; quote truth plus the append-only stale-claim correction) | `python3 -B .ufo/waves/round-59/c59_quote_truth.py --root . --revision <commit> [--base <rev>] [--json]` | `0=met` (`conditions_passed == 9 of 9`: C1-C8 as round 58 on S425/S426, C9 the append-only `[r59-correction 2026-10-27]` tail on `corpus/knowledge/crawler-identity.md`); `1=not met`; `2=could-not-evaluate` (`--root` not a toplevel, revision or base unresolved, unreadable retained body or receipt); `64=usage` | `KAKE_R59_SELFTEST_ROOT=<lane> TMPDIR=<scratch> python3 -B .ufo/waves/round-59/c59_quote_truth.py --selftest` (121 checks; `controls/c3-selftest-v2.txt`) | bodies pinned by sha256 (S425 `ff2b9fd7…` 74477 B, S426 `8df9d4ad…` 69789 B, `.ufo/waves/round-59/sources/receipts.json`); mirror pin `.ufo/waves/round-59/assimilation/mirror-pin.json` = 162 rows at `fd6303ce`; base control `controls/base-c3-quote-truth-v2.txt` (`0/9`, exit 1); contract `counterSha256v2 808c72c3…`; mirror pins the 162-row base registry (historical once a later round appends a row) | none | kake |
+1310: 
+1311: ### Round 60 gate-status ledger and registry additions
+1312: 
+1313: Round 60 claim C1 (`.ufo/waves/round-60/contract.md` § Claim C1 and amendments A2–A7, A3a) reads every registry row's `Kind` cell as a
+1321:   which the command already exited 1; it exits 1 at the measured revision too. It records a registered command that was never green.
+1322: 
+1323: Relabel duty (routed defect R59-D1): a live row that a round's own change turns red is relabelled, with its pin, in the same build that
+1324: turns it red and before the after-state is measured — the contract names it before data (round 60: the round-59
+1325: `crawler-identity-quote-truth-counter`, reddened by rows S427–S429, and `ops-debt-counter`, reddened by the honest relabel of the
+1326: round-53 row). A pin is a revision the command was run at, never a remembered one: round 60 found the `receipt-pin-counter` pin pointing
+1327: at a revision where its own command exits 1 (`.ufo/waves/round-60/w1/ExecC1Registered.md`) and moved it.
+1328: 
+1329: Historical-gate list (`considerthese/2026-10-26.md` proposal 5; a view over the rows' `Kind` cells, which stay the authority; names,
+1330: not paths, so no second table row repeats a member path):
+1331: 
+1332: - historical: `quote-truth-counter` (round 52), `gate-registry-completeness-counter` (52), `readme-index-counter` (55),
+1333:   `yahoo-robots-quote-truth-counter` (55), `yahoo-crawl-handling-quote-truth-counter` (56), `receipt-pin-counter` (57),
+1334:   `baidu-dead-link-quote-truth-counter` (57), `baidu-crawler-identification-quote-truth` (58), `ops-debt-counter` (54, from round 60),
+1335:   `crawler-identity-quote-truth-counter` (59, from round 60).
+1336: - never met: `c53_gate_truth.py` (53).
+1337: - live: every other member row; `id-resolver-gate` is live only with `--fleet` (it reads sibling lanes' registries, so it is not
+1338:   hermetic).
+1339: - outside the population: the round 40–47 counters (17 files) carry no label here and are not claimed.
+1342: |---|---|---|---|---|---|---|---|
+1343: | citation-lint-existence-counter | gate (live; operability: the round-48 citation-lint repair — a token resolves by object existence, not `git rev-parse --verify`; green at round-60 base `97cdc122`) | `python3 -B .ufo/waves/round-48/c48_lint_count.py --root . --revision <commit> [--json <path>] [--tool-file <path>]` | `0=met` (`dead_full_40 == 1 and dead_short == 1 and live_full_40 == 0 and live_short == 0 and exclusions_clean == 1`); `1=not met`; `2=could-not-evaluate` (`scripts/citation_lint.py` absent at the revision, or the tool run errors); `64=usage` | none (no selftest mode) | measured `af7b217c9b0837428e50c944adfab9f5c692a50f` exit 0; green again at `97cdc122` (exit 0, `met:true`); counter blob `10200e918900229291ae41384523796606d1e49e`; receipts `.ufo/waves/round-48/verification/c2-after-af7b217.json`; scratch repo planted tokens `deadbeef…40`, `e5455253` | none (builds a scratch repo under TMPDIR) | kake |
+1344: | client-rendering-quote-truth-counter | gate (live; freshness: round-48 S137/S138/S139/S249 row-entry-quote-receipt truth, R4 matched per id against the retained text beside the receipt; the pre-fix counter blob exits 1 at its own measured revision — fixed in `fd917a42`; green at round-60 base `97cdc122`) | `python3 -B .ufo/waves/round-48/c48_quote_truth.py --root . --revision <commit> [--json <path>]` | `0=met` (`passed >= 4 of 4 declared ids`); `1=not met`; `2=could-not-evaluate` (exception while reading the tree or worktree); `64=usage` | none (`--selftest` is accepted but crashes NameError — `selftest()` was never defined; verified exit 1 traceback at `97cdc122`) | measured `af7b217c9b0837428e50c944adfab9f5c692a50f` exit 1 with pre-fix blob `cd48f7ba…`; post-fix blob `c4d3c66cf7165d73cff80e1dbec0ecb8f0ae9838` green at `fd917a42567ff3642c0f7930659681141200b419` and `97cdc122` (exit 0, `passed 4/4`); retained texts `.ufo/waves/round-48/sources/S137.txt` `S138.txt` `S139.txt` `S249.txt` sha256-pinned by `sources/receipts.json`; receipts `.ufo/waves/round-48/verification/c1-after-af7b217.json`; note: R4 reads the worktree, not `git show` | none | kake |
+1345: | pre-append-order-counter | gate (live; operability: round-49 order proof — `pre_rev` strict ancestor, adopted ids absent before and present after, `--file`-only census exit 0, sibling counter reads committed bytes; green at round-60 base `97cdc122`) | `python3 -B .ufo/waves/round-49/c49_order.py --root . --revision <commit> [--json <path>]` | `0=met` (`order == 1 of 1`); `1=not met`; `2=could-not-evaluate` (exception while reading the tree); `64=usage` | none (no selftest mode) | measured `1c846ed2d67b1692ea966be064f0fc04542763c6` exit 0; green again at `97cdc122` (exit 0, `order 1/1`); counter blob `7ca940160ed4b0729e5cf110ca00b5acd807ab58` identical `99fa9d3f..b3ae50ef`; proof `.ufo/waves/round-49/assimilation/order-proof.json` (`pre_rev 99fa9d3f…`); receipts `.ufo/waves/round-49/verification/c1-before-090ce8f1.json` `c1-after-1c846ed2.json` | none | kake |
+1346: | crawl-budget-quote-truth-counter | gate (live; freshness: round-49 S273/S274 row-entry-quote-receipt truth over committed bytes only — R4 is `git show <rev>:.ufo/waves/round-49/sources/<textPath>`; green at round-60 base `97cdc122`) | `python3 -B .ufo/waves/round-49/c49_quote_truth.py --root . --revision <commit> [--json <path>]` | `0=met` (`passed >= 2 of 2 declared ids`); `1=not met`; `2=could-not-evaluate` (exception while reading the tree); `64=usage` | none (no selftest mode) | measured `1c846ed2d67b1692ea966be064f0fc04542763c6` exit 0; green again at `97cdc122` (exit 0, `passed 2/2`); counter blob `0808c865234a4a2bc95905622871807c5c77ee1d` identical `99fa9d3f..b3ae50ef`; retained texts sha256-pinned by `.ufo/waves/round-49/sources/receipts.json`; receipts `.ufo/waves/round-49/verification/c2-before-090ce8f1.json` `c2-after-1c846ed2.json` | none | kake |
+1347: | wave-grant-durability-counter | gate (live; offline, committed bytes only, `git show` and `git merge-base --is-ancestor` only) | `python3 -B .ufo/waves/round-50/c50_durable.py --root . --revision <commit>` | `0=met` (`durable == 1 of 1`); `1=not met` (any of the 11 order/grant/settlement conditions fails, missing proof included); `2=could-not-evaluate` (an exception while running); `64=usage` (missing or unknown argument) | none (no selftest mode) | `contract.json` round-50 `claims.C2`; frozen ids `S286`, proofs `assimilation/order-proof.json`, `wave-cite-proof.json`, `wave-grant.txt`, `dispatch-command.txt`, `settlement.json`; measured green at `ff3f6ecff5caf579fdc76216aa9cb82fa146a30e` | none (reads git) | kake |
+1348: | quote-class-counter | gate (live; offline, committed bytes only, `git show` only) | `python3 -B .ufo/waves/round-50/c50_quote_class.py --root . --revision <commit>` | `0=met` (`classed == 3 of 3 declared ids`); `1=not met` (any of R1-R4 fails for S273, S274 or S286); `2=could-not-evaluate` (an exception while running); `64=usage` (missing or unknown argument) | none (no selftest mode) | `contract.json` round-50 `claims.C1`; ledger `.ufo/waves/round-50/quote-classes.json` pins the frozen quotes, derived classes and both blob sha256s per id; measured green at `ff3f6ecff5caf579fdc76216aa9cb82fa146a30e` | none (reads git) | kake |
+1349: | wave-evidence-ledger-v1 | gate (live; offline, committed bytes only, `git show` and `git ls-tree` only; v1 of the round-52 `wave-evidence-ledger` gate) | `python3 -B .ufo/waves/round-51/c51_wave_ledger.py --root . --revision <commit>` | `0=met` (`ledger_checks_passed == 3 of 3`); `1=not met` (any L1/L2/L3 sub-condition fails; an uncaught exception also exits 1 with a traceback); `2=usage` (argparse error; the docstring's `2=could-not-evaluate` and `64=usage` labels do not match the code — nothing in it returns 2 or 64) | none (no selftest mode) | `contract.json` round-51 `claims.C1`; reads the round-51 settlement, taskcall payload, route map, probe receipts, timing pair, time accounting and LOG.md; measured green at `842c1b44a590104cff4c06ef84726cac19475d0a` | none (reads git) | kake |
+1350: | canonical-crawler-identity-quote-truth-counter | gate (live; offline, committed bytes only, `git show`, `git log` and `git ls-tree` only) | `python3 -B .ufo/waves/round-51/c51_quote_truth.py --root . --revision <commit>` | `0=met` (`conditions_passed == 8 of 8`); `1=not met` (any C1-C8 sub-condition fails; an uncaught exception also exits 1 with a traceback); `2=usage` (argparse error; the docstring's `2=could-not-evaluate` and `64=usage` labels do not match the code — nothing in it returns 2 or 64) | none (no selftest mode) | `contract.json` round-51 `claims.C2`; adopted ids S262 and S263 with retained bodies and `sources/receipts.json` under `.ufo/waves/round-51/`; pre-append mirror at `assimilation/pre-append/corpus/SOURCES.md`; measured green at `842c1b44a590104cff4c06ef84726cac19475d0a` | none (reads git) | kake |
+1351: | ledger-mutation-ladder | gate (live; differential red-before ladder — runs the round-51 and hardened round-52 ledger scripts over the selftest fixture family harvested from committed round-51 evidence; green at `97cdc122379711c2b02a8970752c8782da3ac81d`) | `python3 -B .ufo/waves/round-52/c52_mutation_ladder.py` (no arguments: it reads its own checkout, so the revision reaches it through the checkout it runs in) | `0=met` (`families_with_old_pass_and_new_reject >= 10 and pass_fixture_agrees`); `1=not met`, also `SystemExit` from missing round-51 evidence; `2=ladder could not run` (uncaught exception); no other codes | none (no selftest mode) | receipt `.ufo/waves/round-52/control/c1-mutation-ladder.json` (18 families, 13 caught, `pass_fixture_agrees` true; the JSON embeds throwaway fixture commit hashes and is not byte-reproducible — round-52 spot-check routed defect 8) | writes sandbox fixture repos under `.ufo/waves/round-52/selftest/ladder/` (removed on exit) and rewrites `control/c1-mutation-ladder.json`; reads `git show`/`git ls-tree` | kake |
+1352: | gate-registry-completeness-counter | gate (historical: green at its round-52 measured revision `1ae8de5d4dee8300624b0db2a94497ff905942c5` (also green at `a4a890c` and tip `a1d83ec`); red on later trees by design — `frozen_baselines` hashes `LOG.md` and the round-51 input blobs to their round-52 pins, so a later `LOG.md` append fails `frozen_baselines` (exit 1 at `97cdc122379711c2b02a8970752c8782da3ac81d`); offline, committed bytes only) | `python3 -B .ufo/waves/round-52/c52_gate_registry.py --root . --revision <commit>` | `0=met` (`registry_rows == 2 AND selftest_receipts == 2`); `1=not met` (any registry_rows/frozen_baselines/selftest_receipts sub-condition fails); `2=could-not-evaluate` (`SKILL.md` unreadable, `baselines.json` absent or not JSON, exception; `argparse` usage errors also exit 2 — no separate 64 path) | `KAKE_R52_SELFTEST_REV=1ae8de5d4dee python3 -B .ufo/waves/round-52/c52_gate_registry.py --selftest` (10 checks over sandbox fixture clones built from the pinned baselines and SKILL.md; without the env pin the fixtures rebuild from `HEAD`; receipt `.ufo/waves/round-52/control/c1-registry-selftest.txt` `10/10`) | `.ufo/waves/round-52/baselines.json` `counters` map — one entry per registered counter (script sha256, input-blob sha256s, selftest-receipt path + sha256 + `EXIT=0` line); the counter itself is not in the map and is not pinned | read-only `git show`/`git ls-tree`; selftest writes only sandbox fixture repos under `.ufo/waves/round-52/selftest/registry/` and removes them | kake |
+1353: | ops-debt-counter | gate (historical from round 60: green at its round-54 measured revision `a631cc0246b97f2a949d61186c7466468faf94d6` and on every tree up to the round-60 base; red from round 60 on by design — its registry check requires the round-53 row's Kind cell to read exactly `gate`, and round 60 relabels that row from observed exits (`.ufo/waves/round-60/w1/ExecC1Data53.md`); reads committed bytes) | `python3 -B .ufo/waves/round-54/c54_ops_debt.py --root . --revision <commit>` (`--revision` required) | `0=met` (registry row present, settlement manifest committed and consistent, uncovered=0); `1=not met` (registry absent, manifest absent or incomplete, or uncovered > 0); `2=could-not-evaluate` (SKILL.md, round-53 lesson/spotcheck or w53-spec.json unreadable at the revision); `64=usage` | none (no selftest mode) | `.ufo/waves/round-54/controls/base-c2-ops-debt.txt` (registry=absent manifest=absent uncovered=7, exit 1); `after-c2-ops-debt.txt` (registry=present manifest=present uncovered=0, exit 0); contract `.ufo/waves/round-54/contract.md` | none (reads git) | kake |
+1354: | s374-calibration-counter | gate (live; green at the round-60 base 97cdc122 and at its round-54 measured revision a631cc0246b97f2a949d61186c7466468faf94d6; red 1 at the round-54 base 68228b2d, mismatches=1; the bound `[r54-correction 2026-10-25]` block in `corpus/knowledge/yahoo-japan-rel-nofollow-semantics.md` is append-only; reads committed bytes) | `python3 -B .ufo/waves/round-54/c54_s374_calib.py --root . --revision <commit>` (`--selftest`, `--predicate`) | `0=met` (mismatches=0 and a valid anchored correction block exists); `1=not met`; `2=could-not-evaluate` (S374 retained body or entry absent at the revision, or the exact quote absent from the body); `64=usage` | `python3 -B .ufo/waves/round-54/c54_s374_calib.py --selftest` (9 in-memory fixtures through the same parser; `controls/c1-selftest.txt`) | `.ufo/waves/round-54/controls/base-c1-s374.txt` (mismatches=1, exit 1); `after-c1-s374.txt` (mismatches=0, exit 0); frozen predicate printed by `--predicate` and in the counter docstring | none (reads git) | kake |
+1355: | append-guard | tool (read-only; stdlib python; committed bytes only — `git cat-file` / `git ls-tree`, never the worktree, inherited `GIT_*` scrubbed; `--root` must be a repository toplevel; default scope `corpus/knowledge/**/*.md`, recursive; an end-of-file append is allowed, every other inserted run must begin with a line holding a visible `[rNN-correction YYYY-MM-DD]` tag matched outside an HTML comment and outside a backtick code span, so a tagged in-file correction passes where a byte-prefix rule fails and a rewrite still fails; a changed, reordered or deleted base line and a path deleted, symlinked away or made a tree/submodule are findings) | `python3 -B scripts/append_guard.py --root . --base <rev> --revision <rev> [--scope <glob> ...] [--json]` (`--selftest`; scope arguments replace the default) | `0=clean` (no finding, summary line `files=<n> findings=0`); `1=findings` (one `<kind> <path>[:<line>]` line each — `deleted`, `changed`, `untagged_insertion` — then `files=<n> findings=<k>`); `2=could-not-evaluate` (revision unresolved, base not an ancestor of revision, `--root` not a repository toplevel); `64=usage` | `TMPDIR=<scratch> python3 -B scripts/append_guard.py --selftest` (`38` checks; the gated run is `guard-cases-counter` below, which extracts the tool with `git show <rev>:scripts/append_guard.py`) | red-before: no tool at base `97cdc122` (the C2 base control scores `0/24`, declared in the contract); rule, tag regex and the 24-case table frozen in `.ufo/waves/round-60/contract.md` § Claim C2; case R1 base `fd6303ce5c14b3f892dec586297a942ab6e4193b` | none (reads git) | kake |
+1356: | gate-status-counter | gate (offline; calibration: the `SKILL.md` gate-registry status labels of the 28 frozen round 48–59 counters against their observed exits; each member command runs without a shell, cwd = a fresh `git clone --shared` detached at the revision under test, env fixed to PATH/HOME/TMPDIR/LANG, timeout 1800 s (timeout → 124); contract amendments A2–A7 and A3a; the counter's own file is not a member; also holds the three SCORECARD axis scores) | `python3 -B .ufo/waves/round-60/c60_gate_status.py --root . --revision <rev> [--work <scratch>] [--jobs N] [--json]` | `0=met` (`members == 28 AND mismatches == 0 AND scores_held == 3`, the scores being operability 10, freshness 10, calibration 2); `1=not met` (any of `live_not_green`, `historical_but_green`, `historical_not_green_at_pin`, `never_met_but_green`, `unregistered`, `duplicate_row`, `row_incomplete`, `unpinned`, `pin_not_ancestor`, `command_unparsable`); `2=could-not-evaluate` (revision unresolved, `SKILL.md` or `SCORECARD.md` unreadable at the measured revision, clone failure, `--root` not a repository toplevel); `64=usage` | `TMPDIR=<scratch> python3 -B .ufo/waves/round-60/c60_gate_status.py --selftest` (`76` checks; `controls/c1-selftest.txt`) | population `^\.ufo/waves/round-(N)/(?:[a-z0-9-]+/)?c(N)_[a-z0-9_]+\.py$` with the same N twice and 48 <= N <= 59 = 28 members at base (c48 ×2, c49 ×2, c50 ×2, c51 ×2, c52 ×4, c53 ×1 under `exec-quality-gate/`, c54 ×2, c55 ×2, c56 ×2, c57 ×3, c58 ×3, c59 ×3); before, as declared in the contract and to be re-derived as the base receipt: 12 members unregistered (c48 ×2, c49 ×2, c50 ×2, c51 ×2, `c52_gate_registry`, `c52_mutation_ladder`, c54 ×2), `c53_gate_truth.py` labelled live and exiting 1, `c57_idresolver_gate.py` labelled live and exiting 2 without `--fleet`; base control `controls/base-c1-gate-status.txt` (>= 13 mismatches, exit 1); contract `.ufo/waves/round-60/contract.json` | none | kake |
+1357: | guard-cases-counter | gate (the tool as committed at the measured revision against gate-built fixture repositories, one `git init` per case under `--work`, file names, ids and line contents drawn from `--seed` so a fixture-keyed tool cannot recognise them; the tool is extracted with `git show <rev>:scripts/append_guard.py` and a missing tool fails every case; per-case timeout, a hang fails) | `python3 -B .ufo/waves/round-60/c60_guard_cases.py --root . --revision <rev> [--work <scratch>] [--seed N]` | `0=met` (`cases_passed == 24 of 24`: K1–K22 — tagged and untagged mid-file runs, a tag on the second line, a tag inside an HTML comment and inside a backtick span, a byte change, a deletion, a rename, a symlink, CRLF, two base lines swapped, a trailing space, an untagged duplicate, a clean alignment with a tag, an out-of-scope rewrite, a subdirectory rewrite, a new file, binary bytes at EOF, `--base` not an ancestor, `--base` missing — plus R1 the real lane over `--base fd6303ce` holding the round-59 tagged in-file correction and R2 one byte of a base line of `corpus/knowledge/crawler-identity.md` changed in a scratch clone); `1=not met`; `2=could-not-evaluate` (`--root` not a repository toplevel, revision unresolved, work directory unusable); `64=usage` | `TMPDIR=<scratch> python3 -B .ufo/waves/round-60/c60_guard_cases.py --selftest` (`6` scored controls; `controls/c2-selftest.txt`) | controls scored before data: no tool (`0/24`), always-exit-0, always-exit-1, the c55 byte-prefix port (must fail K2, K15, R1), a reference implementation (`24/24`); base control `controls/base-c2-guard-cases.txt` (`0/24`, exit 1); case table frozen in `.ufo/waves/round-60/contract.md` § Claim C2; contract `.ufo/waves/round-60/contract.json` | none | kake |
+1358: | user-triggered-quote-truth-counter | gate (offline, committed bytes only; no network; quote truth on rows S427–S429 and the two entries opened this round, plus the append-only `[r60-correction 2026-10-27]` correction of `corpus/knowledge/googlebot-verification.md`; round-60 version 1, derived from the round-59 quote-truth counter at version 2 by `derive_c60_quote_truth.py`) | `python3 -B .ufo/waves/round-60/c60_quote_truth.py --root . --revision <rev> [--json]` | `0=met` (`conditions_passed == 9 of 9`: C1 both entries exist and the staged `corpus/knowledge/google-robots-txt-limits.md` does not, C2 the provenance trio and the row id cited again below the header, C3 rows S427–S429 well formed with S427 opening `supersedes S425 —` and its scope carrying `common crawlers` and `special-case crawlers` but not `their robots.txt posture`, C4 the used-by sets, C5 quote truth including `Last updated <date> UTC` read inside `<devsite-content-footer`, C6 receipts, C7 the `controls/validate-append.txt` census, C8 the 164-row mirror pin, C9 the correction after the base line holding `these fetchers ignore robots.txt rules.`); `1=not met`; `2=could-not-evaluate` (`--root` not a repository toplevel, revision unresolved, unreadable retained body or receipt); `64=usage` | `KAKE_R60_SELFTEST_ROOT=<lane> TMPDIR=<scratch> python3 -B .ufo/waves/round-60/c60_quote_truth.py --selftest` (`140` checks; `controls/c3-selftest.txt`) | bodies pinned by sha256 (S427 `d70ce6f5…` 74477 B, S428 `0f296b86…` 76197 B, S429 `423d99c5…` 178797 B, `.ufo/waves/round-60/sources/receipts.json`, fetched 2026-10-27T04:03Z); mirror pin `.ufo/waves/round-60/assimilation/mirror-pin.json` = 164 rows at `97cdc122` (sha256 `bc054d10…`, 152817 B); base control `controls/base-c3-quote-truth.txt` (`0/9`, exit 1); contract `.ufo/waves/round-60/contract.json`; the mirror pins the 164-row base registry (stale once a later round appends a row) | none | kake |
+1359: | response-snapshot | evidence tool (network GET; capture only, not an audit verdict) | `python3 -B scripts/response_snapshot.py` | Writes per-surface status, final URL, duplicate-preserving response headers, body sha256/bytes, fetchedAt and userAgent; exits 0 when capture completes, nonzero on input/transport failure | none (no selftest mode); 12 real GET receipts under `.ufo/waves/round-61/capture/` are re-readable | `.ufo/waves/round-61/capture/manifest.json` binds 12 receipt paths; 12 real receipts were made by pre-hardening bytes sha256 `eac57099a6e097a28638bc2b7e29ddd3dfd301b34c0caa255d8d708bcb039643`; final hardened lane tool bytes sha256 `b81be1afe3eb72f874849a9d90f06a99aefa2984ffa8f8fbef4fe46b19aac246`; local probes `controls/capture-hardening.txt`, `controls/capture-hardening-https.txt` | GET only; disables env proxies, blocks non-global peers before HTTP request, 5 redirects / 20s per surface, 2 MiB body, output files created exclusively | kake |
+1360: | response-header-audit | tool (offline; reads recorded response receipts only; no network) | `python3 -B scripts/header_audit.py --manifest <path> [--root <dir>]` | `0=clean`; `1=findings` (policy or per-check `could_not_evaluate`); `2=manifest fault`; `64=usage` | `python3 -B scripts/header_audit.py --selftest` (`64/64` black-box checks) | C2 measured counter `c61_header_cases.py` scores H1–H18; R3 shape gate binds 12 capture receipts; real capture audit recorded 12 checks / 13 findings, not a clean-site claim | read-only manifest + named receipt paths; no network, writes, env reads or audit-mode subprocess | kake |
+1361: | response-header-cases-counter | gate (round-61 offline black-box matrix; extracts the tool from committed Git bytes) | `python3 -B .ufo/waves/round-61/c61_header_cases.py --root . --revision <rev> [--work <scratch>] [--seed N] [--json]` | `0=met` (`cases_passed == 18 of 18`, H1–H18, with R3 shape gate and R4 do-nothing control); `1=not met`; `2=could-not-evaluate`; `64=usage` | `python3 -B .ufo/waves/round-61/c61_header_cases.py --selftest` (`7` scored controls; control receipt `.ufo/waves/round-61/w1/ExecC2Counter.files/selftest.txt`) | contract `.ufo/waves/round-61/contract.md` §Claim C2; base do-nothing `0/18`; mutant probe `13/13` killed per `w1/ExecC2Counter.md` | disposable fixtures only under `--work`; never writes lane Git/jj | kake |
+1362: | recheck-pins-counter | gate (offline; committed bytes only; source rows and retained-body receipts) | `python3 -B .ufo/waves/round-61/c61_recheck_pins.py --root . --revision <rev> [--base <rev>] [--json]` | `0=met` (`conditions_passed == 6 of 6`); `1=not met`; `2=could-not-evaluate`; `64=usage` | `python3 -B .ufo/waves/round-61/c61_recheck_pins.py --selftest` (`56/56`; `w1/ExecC3Counter.files/selftest.txt`) | contract `.ufo/waves/round-61/contract.md` §Claim C3; due set S001–S010; base control `4/6`, exit 1 (0 pins); after measured at round-61 final lane tip | reads Git blobs and committed retained evidence only; no network or writes | kake |
+1469: **How to verify.** `python3 -B scripts/doc_quote_truth.py --root . --revision <rev> --base a0491fcd041cbc3fff2c964ecf6268557e45a5c1 --rounds 75,76` must exit 0 with `findings=0 append_only=true met=true`; `python3 -B scripts/hreflang_audit.py --manifest .ufo/waves/round-76/w1/ExecAuditRealRun/real-manifest.json --root . --json` must exit 0 over the eight retained pages; and `python3 -B .ufo/waves/round-76/w1/ExecAuditMatrix/c76_hreflang_matrix.py --root . --tool scripts/hreflang_audit.py --revision <rev> --cases .ufo/waves/round-76/w1/ExecAuditMatrix/cases --consts .ufo/waves/round-76/w1/ExecAuditMatrix/consts --work <scratch>` must print `correct=69 wrong=0 constants_failed=4/4 met=true`.
+1470: 
+1471: ### Round 78 — population, offline freshness, and meta-directive instruments
+1472: 
+1473: The meta-directive tool is a bounded declaration audit, not crawler simulation.
+1474: Its explicit finite case table and its generic nosnippet/video prose disagree on
+1475: g26; that contract inconsistency stays open (round-78 lesson), so a green matrix
+1476: is table-specific evidence, not proof of the complete combined specification.
+1477: 
+
+## kama-shokunin 723253c3882105a56585f84085ddeef0e57f3d57 corpus/knowledge/listener-census.md
+52: | 4 | `127.0.0.1:8790` | stable | `omp` pid **1297**, `omp auth-broker serve --bind=127.0.0.1:8790`, unit `omp-auth-broker.service` | `401` `application/json` `{"error":"unauthorized"}` | *(none)* | `401` JSON | `UNAUTHORIZED_SERVICE` | HTTP 401 | C1,C5,C9 |
+53: | 5 | `127.0.0.1:8791` | stable | `omp` pid **2997**, `omp auth-gateway serve --bind=127.0.0.1:8791`, unit `omp-auth-gateway.service` | `401` `application/json` `{"error":"unauthorized"}` | *(none)* | `401` JSON | `UNAUTHORIZED_SERVICE` | HTTP 401 | C1,C5,C10 |
+54: | 6 | `127.0.0.1:4226` | session | `sccache` pid **836055** (`RUSTC_WRAPPER=sccache`, `SCCACHE_IDLE_TIMEOUT=0`) | TCP accept → **0 bytes**, server closes (`curl (52)`) | *(none)* | *(none)* | `NOT_HTTP` | non-HTTP protocol (sccache server RPC) | C1,C6 |
+55: | 7 | `127.0.0.1:43999` | stable | `containerd` pid **1228**, `/usr/bin/containerd`, `v2.3.4` (sudo `ss -ltnp`) | `404` `text/plain` `404: Page Not Found` | *(none)* | `404` text/plain | `FOREIGN_SERVICE` | HTTP responder, not the model API | C1,C11 |
+56: | 8 | `127.0.0.1:9222` | session | `chrome` pid **3080080**, `--remote-debugging-address=127.0.0.1 --remote-debugging-port=9222` | `200` `text/html; charset=UTF-8` (**empty body**) | *(none)* | `404` text/html | `FOREIGN_SERVICE` | 2xx `text/html` (**verbatim rule**) | C1,C12 |
+57: | 9 | `127.0.0.1:631` | stable | `cupsd` pid **1207**, `/usr/bin/cupsd -l` | `200` `text/html; charset=utf-8` | `CUPS/2.4 IPP/2.1` | `404` text/html | `FOREIGN_SERVICE` | 2xx `text/html` (**verbatim rule**) | C1 |
+58: | 10 | `[::1]:631` | stable | `cupsd` pid **1207** (dual-stack sibling of #9) | `200` `text/html; charset=utf-8` (same CUPS page via `::1`) | `CUPS/2.4 IPP/2.1` | `404` text/html | `FOREIGN_SERVICE` | 2xx `text/html` (**verbatim rule**) | C1,C16 |
+59: | 11 | `0.0.0.0:40993` | session | `python3` pid **2360094**, `python3 -m http.server --bind 0.0.0.0 40993`, cwd `/tmp` | `200` `text/html; charset=utf-8` — **directory listing of `/tmp`** | `SimpleHTTP/0.6 Python/3.14.7` | `404` text/html | `FOREIGN_SERVICE` | 2xx `text/html` (**verbatim rule**) | C1,C13 |
+60: | 12 | `127.0.0.1:45507` | churn | `omp` pid **801987**, `omp --model @m_qwen … kasegi-round-16.md` | `404` `text/plain;charset=utf-8` `Not Found` | *(none)* | `404` text/plain | `FOREIGN_SERVICE` | HTTP responder, not the model API | C1,C14 |
+237: containerd config default | grep -nE -A3 '^\[debug\]|address = '   # no TCP debug address; address = '/run/containerd/containerd.sock'
+238: curl -sS -m 2 http://127.0.0.1:43999/debug/pprof/             # 404 text/plain '404: Page Not Found'
+239:                                                               # (also /, /metrics, /healthz, /v2/ → same 404)
+240: 
+241: # C12 — chrome devtools
+242: curl -sS http://127.0.0.1:9222/json/version                   # Browser Chrome/152.0.7977.64; ws://127.0.0.1:9222/devtools/browser/…
+243: tr '\0' '\n' < /proc/3080080/cmdline | grep remote-debugging  # --remote-debugging-port=9222 --remote-allow-origins=…
+244: 
+245: # C13 — python wildcard server serving /tmp
+246: readlink -f /proc/2360094/cwd                                 # /tmp
+247: tr '\0' ' ' < /proc/2360094/cmdline                           # python3 -m http.server --bind 0.0.0.0 40993
+351: 1. `0.0.0.0:40993` — `python3 -m http.server` exposing a **browsable directory listing of `/tmp`**
+352:    on the LAN (`192.168.0.253/24`) and tailscale (`100.96.18.49`), process-owned by a tmux session.
+353:    Includes `1Password-1000/` and `*lock` entries in the listing. Owner lane: kagi (credential
+354:    hygiene) / kasegi (host security) — kama only records the listener.
+355: 2. `127.0.0.1:9222` — Chrome DevTools protocol, 21 live targets including `https://chatgpt.com/`,
+356:    `gemini.google.com` (`the-musketeer` profile). Any local process can drive a logged-in browser.
+357:    Report-only.
+358: 3. `127.0.0.1:8888` accepts TCP then resets: not a health-checkable HTTP endpoint, so a naive
+359:    "TCP connect = alive" check would mark a dead service healthy. Relevant to probe design (this lane).
+
+## kengaku-shokunin 614f00559c75155ec100e945b3e8257b14fb7496 PROVINCE.md
+986: **Operability addition:** the depth gate prices receipt-pointer paths inside the lane root only (`plans/round63_gate_checks.py`,
+987: R64-C2). **Freshness addition:** the 29 trio-red knowledge entries carry dated round-64 addenda whose re-verification commands
+988: and observed results are priced by `plans/round64_trio_sweep.py` (R64-C3); the openings stay as written.
+989: 
+990: **Reported out:** `headless-terminal` (the other network-service member) is blocked on this host by absent `vim` and the
+991: tmux-based terminal harness; that work stays kengaku ground if the binaries land. `nginx-request-logging` is no longer blocked:
+992: round 69 replayed it under a lane-written nginx shim (R69-C1 MISS on leg coverage) and round 70's re-frozen table passed
+993: (R70-C1, `LEG-COVERAGE seen_p=8 seen_f=8`). The gRPC-inside-sandbox pattern does not overlap kama's serving plane
+994: (`.ufo/waves/round-64/w1/SiblingOverlap/sibling-overlap.md`).
+1081: `sqlite-with-gcov` R65-C1, `torch-tensor-parallelism` R66-C1, `torch-pipeline-parallelism` R67-C1,
+1082: `pypi-server` R68-C1, `nginx-request-logging` R70-C1, `hf-model-inference` R71-C1) and five
+1083: `unexecuted` rows name a typed reason whose frozen detector fires on that task's stored grader bytes
+1084: (`filter-js-from-html` browser-required, `git-multibranch` network-install-required,
+1085: `headless-terminal` candidate-library-required, `install-windows-3.11` vm-required,
+1086: `query-optimize` external-db-required). Gate `plans/round78_c1_class_member_ledger.py`; receipts
+1087: `corpus/evidence/round78/c1-before.txt` / `c1-after.txt`; lesson `corpus/lessons/round-78.md`.
+1088: 
+1089: **Also admitted (calibration).** Every verdict-bearing receipt under `corpus/evidence/round77|78/` is
+
+## mado-shokunin 1a7e2ca4e0234e8cfec2aafa7f0c1ec6f11d3c49 PROVINCE.md
+478: scratch only and emits output-size metadata instead of live stdout. Its fifteen pipeline guards
+479: propagate nonzero status; a successful tail never proves live tray health.
+480: The earlier source-only/no-live examples do not grant general execution authority: the round's
+481: explicitly assigned frozen read verbs and contained fixtures are its bounded execution surface.
+482: No config edit, reload, dispatcher, input capture, package transaction, screenshot, service
+483: mutation or sibling-method ownership follows. Unit health remains tsukuroi's, mutation craft
+484: tameshi's, and cross-lane orchestration/record tooling kumitate's; this lane owns only these
+485: applications and evidence. See round84 connector report and the runbook interpretation caption.

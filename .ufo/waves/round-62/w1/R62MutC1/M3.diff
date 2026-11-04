@@ -1,0 +1,19 @@
+--- frozen-v21.mjs
++++ M3.mjs
+@@ -335,7 +335,7 @@
+   const auditRaw = audit ? fs.readFileSync(audit, 'utf8') : laneBytes(repo, rev, AUDIT_REL);
+   const deltaRaw = delta ? fs.readFileSync(delta, 'utf8') : laneBytes(repo, rev, DELTA_REL);
+   const roster = rosterScan(fleet);
+-  const heads = readSnapshot(snapshot);
++  const heads = snapshot ? readSnapshot(snapshot) : new Map(roster.map((lane) => [lane, spawnSync('git', ['-C', path.join(fleet, lane), 'rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim()]));
+   const sibRef = makeSibRefGit(fleet, heads);
+   const res = verify({
+     mapRows: tsvParse(mapRaw, 9),
+@@ -790,7 +790,6 @@
+   else if (args[i] === '--delta') delta = args[++i];
+   else if (args[i] === '--json') json = true;
+ }
+-if (!snapshot) die('--snapshot <tsv> is required');
+ if (!repo || !rev || !fleet) die('usage: node c1-adjacency-host-v21.mjs --rev <REV> --repo <lane> --fleet <dir> --snapshot <tsv> [--audit <path>] [--delta <path>] [--json] | --selftest | --list-observed --fleet <dir>');
+ let result;
+ try { result = runAt(repo, rev, fleet, snapshot, audit, delta); } catch (e) { die(e.message); }
