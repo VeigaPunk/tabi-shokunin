@@ -1,0 +1,80 @@
+{
+ "schema": "tabi-r63-mutants-v1",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/counters/chromium-wheel-r63.mjs",
+ "counterSha256": "084705695a394256198b45c15fb7568b629e3bc750bbd46cfcb81cdb312d7178",
+ "counterLines": 136,
+ "mutants": [
+  {
+   "id": "M1-producer-and-to-or",
+   "check": "producer-verdict",
+   "pre": "r?.predicate === true && r?.wheelHypothesis === 'CONFIRMED'",
+   "post": "r?.predicate === true || r?.wheelHypothesis === 'CONFIRMED'",
+   "line": 54,
+   "col": 9,
+   "shape": "line-col-pre-post"
+  },
+  {
+   "id": "M2-drop-scroll-arithmetic",
+   "check": "scroll-arithmetic",
+   "pre": "legMap[k]?.scrollY === EXPECTED_SCROLL[k]",
+   "post": "Number.isFinite(legMap[k]?.scrollY)",
+   "line": 37,
+   "col": 32,
+   "shape": "line-col-pre-post"
+  },
+  {
+   "id": "M3-drop-sequence-uniqueness",
+   "check": "wheellog-sequence",
+   "pre": "wl.length === 5 && wl.every((e, i) => e.seq === i + 1) && new Set(wl.map((e) => e.seq)).size === 5",
+   "post": "wl.length === 5",
+   "line": 40,
+   "col": 9,
+   "shape": "line-col-pre-post"
+  },
+  {
+   "id": "M4-drop-delta-y",
+   "check": "delta-y-passthrough",
+   "pre": "wl.every((e, i) => e.deltaY === EXPECTED_DELTA_Y[i])",
+   "post": "wl.every((e) => Number.isFinite(e.deltaY))",
+   "line": 41,
+   "col": 28,
+   "shape": "line-col-pre-post"
+  },
+  {
+   "id": "M5-drop-cancelation",
+   "check": "cancelation",
+   "pre": "wl.every((e, i) => e.defaultPrevented === (i === 3))",
+   "post": "wl.every((e) => typeof e.defaultPrevented === \"boolean\")",
+   "line": 44,
+   "col": 28,
+   "shape": "line-col-pre-post"
+  },
+  {
+   "id": "M6-drop-shot-bytes",
+   "check": "shot-bytes",
+   "pre": "check(external.shotsValid === true, 'shot-bytes');",
+   "post": "check(true, 'shot-bytes');",
+   "line": 48,
+   "col": 3,
+   "shape": "line-col-pre-post"
+  },
+  {
+   "id": "M7-drop-teardown-survivors",
+   "check": "survivors",
+   "pre": "r?.teardown?.postKillSweepCount === 0 && Array.isArray(r.teardown.survivors) && r.teardown.survivors.length === 0",
+   "post": "Array.isArray(r?.teardown?.survivors)",
+   "line": 50,
+   "col": 9,
+   "shape": "line-col-pre-post"
+  },
+  {
+   "id": "M8-drop-launch-guards",
+   "check": "launch-guards",
+   "pre": "['--headless=new', '--disable-extensions', '--remote-debugging-address=127.0.0.1', '--disable-smooth-scrolling'].every((a) => r.host.argv.includes(a))",
+   "post": "Array.isArray(r?.host?.argv)",
+   "line": 33,
+   "col": 41,
+   "shape": "line-col-pre-post"
+  }
+ ]
+}

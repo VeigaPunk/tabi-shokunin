@@ -1,0 +1,90 @@
+{
+ "lane": "tabi",
+ "round": 63,
+ "attempt": 1,
+ "baseline": "f098bcf8843c8a5a723a83995352180f897a6ff9",
+ "ordering": "Read the r59, r60, r61 and r62 rejected verifier spot-checks before declaration. The failing-before controls below were executed and committed BEFORE this freeze: the no-work refusals, the ten negative controls, the eight exact-line mutants through the production CLI, and the r62 red-before survivor. Candidate smoke runs 1-2 are pre-freeze design data, not the scored after-pass. The scored after-pass is a post-freeze, post-wave live run at the committed data revision.",
+ "axesAtStart": {
+  "adjacency": 8,
+  "coverage": 9,
+  "depth": 9,
+  "operability": 9,
+  "freshness": 9,
+  "calibration": 9
+ },
+ "stagnation": "Saturation 8; every owned axis is at or above it and no capability row has entered since r58 (window 3), so the stagnation nudge is ACTIVE: the lowest-axis obligation is waived and this round is a frontier/capability move (C1) plus a calibration repair (C2).",
+ "freezeRule": "The exact instruments and the staged source bytes in pins are immutable after this freeze. A changed byte invalidates its claim; no post-seat repair rescues it. Scored evidence (the live receipt, its shot bytes, the stability comparison and the mutation matrix over the scored receipt) may be produced after this freeze by these instruments. Every scored command names committed revisions.",
+ "pins": {
+  "scripts/chrome-cdp-loopback-round63.mjs": "b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040",
+  ".ufo/waves/round-63/counters/chromium-wheel-r63.mjs": "084705695a394256198b45c15fb7568b629e3bc750bbd46cfcb81cdb312d7178",
+  ".ufo/waves/round-63/counters/mutate-r63.mjs": "4bf6e61404c1733778f32f14a18d807cdeff7aa5cc051bab54a074bab65571fb",
+  ".ufo/waves/round-63/counters/make-negatives-r63.mjs": "598a19da3a5d214de82f15789c2616b753e34ee16d9fea83d134e36749add2eb",
+  ".ufo/waves/round-63/counters/old-generation-r63.mjs": "1ee9cda2661b178c233b292c02fe3320cfe6a1b23c0a3bbb060400ed5d7674c8",
+  ".ufo/waves/round-63/counters/mutants-r63.json": "5f0efd8fddc499acc7ebec8d2101aa0bfc2c46fac281c9193177861dd8731c8c",
+  ".ufo/waves/round-63/sources/s166b-mdn-wheelevent.html": "78bd40dc50dc71b9cb395dd9d7f4f58edb20cf3b77b6e24dd5832b79f476c2d1",
+  ".ufo/waves/round-63/sources/s167-cssom-view.html": "51a7efdb30a9aa946e50b395dafb417d0305e54bd71e1b23faa6ce0af05abb99"
+ },
+ "controlsCommittedBeforeFreeze": {
+  "noWork": ".ufo/waves/round-63/controls/no-work/{no-args,missing-receipt,r62-receipt-through-r63,driver-pin-mismatch}.command.json + .stdout/.stderr; exits 2,2,1,2; positives smoke-live-green exit 0 and r62-live-green exit 0",
+  "negatives": ".ufo/waves/round-63/controls/negatives/index.json (10 controls; every one exit 1 with its expected finding)",
+  "mutants": ".ufo/waves/round-63/controls/mutation/matrix.json (8 exact-line mutants; pristine accepts the live smoke receipt and refuses all 10 negatives; 8/8 distinguished, 0 survived)",
+  "redBefore": ".ufo/waves/round-63/controls/old-generation/result.json (frozen r62 generation: pristine exit 1 on a lying receipt, exact-line producer mutant exit 0 = the class this round closes)"
+ },
+ "claims": [
+  {
+   "id": "C1",
+   "axis": "coverage",
+   "type": "capability",
+   "capability": "chromium-wheel-scroll-domain-linux",
+   "statement": "A post-freeze run of the frozen r63 driver on Chromium/Linux produces a receipt the frozen r63 counter accepts (predicate true, zero findings): five page-side wheel events, exact scroll arithmetic 0 -> 120 -> 240 -> 120 -> 120 (page-swallowed leg) -> 240 (released positive control), deltaY passthrough with deltaMode 0, strictly increasing unique sequence, and closure. Two independent cold runs carry identical leg/wheellog-minus-timestamp/pageState shapes and identical PNG sha256 bytes. The counter refuses all ten declared negatives and its eight exact-line source mutants are each distinguished (a mutant false-greens at least one declared negative it refuses on the pristine bytes), including the producer-verdict AND-to-OR polarity flip the frozen r62 generation cannot distinguish.",
+   "before": "No round-63 driver, counter or evidence exists at baseline; the frozen r62 generation's exact-line producer-verdict mutant accepts its lying receipt (controls/old-generation/result.json: pristine exit 1, mutant exit 0).",
+   "afterCommand": "node .ufo/waves/round-63/counters/chromium-wheel-r63.mjs corpus/evidence/round63/chromium-wheel-scroll/receipt.json --driver scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040 --shot corpus/evidence/round63/chromium-wheel-scroll --json",
+   "target": {
+    "livePredicate": true,
+    "findingCount": 0,
+    "selftestCases": 22,
+    "negatives": 10,
+    "forgedGreen": 0,
+    "mutants": 8,
+    "mutantsDistinguished": 8,
+    "mutantsSurviving": 0,
+    "coldRunStableFields": ["legs", "wheellog-minus-ts", "pageState"],
+    "coldRunIdenticalPngs": 4
+   },
+   "killRules": [
+    "Any frozen pin changes after freeze.",
+    "The counter exits nonzero or predicate false on the scored data receipt at the data revision.",
+    "Any of the ten declared negatives exits 0, or exits other than 1.",
+    "Any of the eight exact-line mutants is not distinguished by at least one declared negative, or a mutant refuses the live receipt (blanket refusal is never a kill).",
+    "The two cold data runs differ in legs, wheellog-minus-ts or pageState, or any of the four PNG sha256 values differ between them.",
+    "The counter selftest is not clean, or its case count is not 22.",
+    "The r62 red-before control fails to demonstrate (pristine refusal plus exact-line mutant acceptance)."
+   ],
+   "limits": "Loopback fixture only, one browser (Chromium 155.0.8059.84) on one host, with --disable-smooth-scrolling; no cross-browser, trackpad momentum, horizontal scroll, ctrl+wheel zoom, scrollend, or third-party site. The counter validates internal consistency against the invocation-supplied driver pin; it does not authenticate the receipt (a caller that changes the driver and passes the new pin is outside this claim's boundary)."
+  },
+  {
+   "id": "C2",
+   "axis": "calibration",
+   "statement": "The lane's own frozen self-assessment gate reports mismatches 2 -> 0 (clean true, exit 1 -> exit 0) at the landing revision with a clean worktree: (a) the stale `44/44 cases` tally attributed to scripts/check-secondary-round62.mjs in SCORECARD.md is corrected append-only to the oracle-correct 9 cases with the v21 meter's own tally named, and (b) the untracked round-62 R62Scout commands artifact is committed with a MANIFEST so no real unlanded path remains. The gate's bytes and its 45/45 selftest are unchanged.",
+   "before": "A sandbox clone at baseline f098bcf8 with the one round-62 artifact restored runs node scripts/check-selfassessment.mjs --rev f098bcf8... --json -> exit 1, mismatches 2 (m1-selftest-tally SCORECARD.md:3427 claimed 44 observed 9; m3-unlanded-paths round 62 claimed landed observed 1), clean false. Receipt .ufo/waves/round-63/controls/selfassessment-before.json, command .command.json.",
+   "afterCommand": "node scripts/check-selfassessment.mjs --rev <LANDED_REV> --json",
+   "target": {
+    "mismatches": 0,
+    "clean": true,
+    "exit": 0,
+    "selftestCases": 45,
+    "gateBytesUnchanged": true
+   },
+   "killRules": [
+    "scripts/check-selfassessment.mjs bytes differ from the frozen pin.",
+    "Its --selftest is not clean or its case count is not 45.",
+    "The after-run reports mismatches other than 0 or clean other than true.",
+    "The after-run was taken with a dirty worktree (the m3 clause would be meaningless); such a run is could-not-evaluate, never a pass.",
+    "Any correction rewrites an existing SCORECARD.md or LOG.md line instead of appending."
+   ],
+   "limits": "The gate enumerates its own closed classes (m1-m4) over SCORECARD.md/LOG.md and git status; 142 could-not-evaluate and 58 superseded findings remain and are disclosed, not counted. Zero mismatches means the enumerated self-assessment classes agree with observed repo state, not that every statement in the lane is verified."
+  }
+ ],
+ "frontier": "S166 MDN WheelEvent (deltaX/deltaY/deltaZ/deltaMode semantics, tier B/docs) and S167 CSSOM View (scrollTop getter, tier A/spec) are opened this round and cited by the C1 knowledge entry and lesson. Assimilation: none - the round-57 quarantine register shift still blocks package adoption; the 38 hand-checks already stand committed (round-62 lesson). considerthese/: absent for this lane.",
+ "verification": "L1 holds the canonical planner seat (validator topology). ONE v1 wave of 12 seats, attack roles reviewer + critic + 2 mutation-testers + sentinel + revenger (6/12 = 50%). Seats advise; the L1 integrates and scores."
+}
