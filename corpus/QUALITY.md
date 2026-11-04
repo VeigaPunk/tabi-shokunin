@@ -869,3 +869,18 @@
     inconsistent final-byte wording. Round 62 freezes all instrument digests
     in `.ufo/waves/round-62/instrument-pins.json` before its wave; see
     `corpus/lessons/round-62.md` Mistakes for evidence and limits.
+
+## Round 63 additions
+
+115. A counter that reads a producer's own verdict must carry BOTH polarity
+    negatives — producer-true/derivation-false and producer-false/derivation-true
+    — and the exact source line that combines them must be mutated and run
+    through the production CLI. A selftest that never makes the two disagree
+    cannot kill an `&&`→`||` weakening.
+    Red state: round 62's frozen counter greenlit a lying producer after its
+    exact-line producer conjunct was weakened (survives 16/16); demonstrated
+    again on this host at `.ufo/waves/round-63/controls/old-generation/result.json`.
+    Green state: round 63's generation refuses both polarities
+    (`controls/negatives-data/n1-…`, `n2-…`) and its M1 mutant false-greens
+    exactly those two (`controls/mutation/matrix-data.json`). See
+    `corpus/lessons/round-63.md` Mistakes row 1.

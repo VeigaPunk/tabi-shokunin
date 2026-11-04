@@ -1,0 +1,597 @@
+{
+ "schema": "tabi-r63-execneg-differences-v1",
+ "baseSha256": "844f9facd15de4bd6ceb83ef5ae22765486062e66f1ffa241197ab8d2defd48f",
+ "mandatoryAllSingleField": true,
+ "mandatory": [
+  {
+   "id": "n01-producer-true-hypothesis-refuted",
+   "mandatory": "i",
+   "changedCount": 1,
+   "changed": [
+    "wheelHypothesis \"CONFIRMED\" -> \"REFUTED\""
+   ]
+  },
+  {
+   "id": "n02-producer-false-hypothesis-confirmed",
+   "mandatory": "ii",
+   "changedCount": 1,
+   "changed": [
+    "predicate true -> false"
+   ]
+  },
+  {
+   "id": "n03-duplicate-seq-contradictory",
+   "mandatory": "iii",
+   "changedCount": 1,
+   "changed": [
+    "wheellog[4].seq 5 -> 4"
+   ]
+  },
+  {
+   "id": "n04-fabricated-step-sha",
+   "mandatory": "iv",
+   "changedCount": 1,
+   "changed": [
+    "steps[1].sha256 \"c8de49678abad8433a822370a92ab3b2b35ac53603d5122193f21d66fdd95b9a\" -> \"db8e35c26e382b456827a8e581dcb0132324d7104f7d2e863f874d01734eb56e\""
+   ]
+  },
+  {
+   "id": "n05-scroll-arithmetic-down2",
+   "mandatory": "v",
+   "changedCount": 1,
+   "changed": [
+    "legs[2].scrollY 240 -> 239"
+   ]
+  },
+  {
+   "id": "n06-swallowed-leg-moved",
+   "mandatory": "vi",
+   "changedCount": 1,
+   "changed": [
+    "legs[4].scrollY 120 -> 240"
+   ]
+  },
+  {
+   "id": "n07-delta-y-mutated",
+   "mandatory": "vii",
+   "changedCount": 1,
+   "changed": [
+    "wheellog[0].deltaY 120 -> 121"
+   ]
+  },
+  {
+   "id": "n08-teardown-survivor",
+   "mandatory": "viii",
+   "changedCount": 1,
+   "changed": [
+    "teardown.survivors element [0] added: 4242"
+   ]
+  },
+  {
+   "id": "n09-nonce-page-mismatch",
+   "mandatory": "ix",
+   "changedCount": 1,
+   "changed": [
+    "nonceOnPage \"tabi-r63-smoke-one\" -> \"tabi-r63-smoke-two\""
+   ]
+  },
+  {
+   "id": "n10-launch-guard-removed",
+   "mandatory": "x",
+   "changedCount": 1,
+   "changed": [
+    "host.argv element [13] removed: \"--disable-smooth-scrolling\""
+   ]
+  }
+ ],
+ "all": [
+  {
+   "id": "n01-producer-true-hypothesis-refuted",
+   "cls": "negative",
+   "mandatory": "i",
+   "declared": "predicate stays true while wheelHypothesis is flipped to REFUTED",
+   "changed": [
+    "wheelHypothesis \"CONFIRMED\" -> \"REFUTED\""
+   ]
+  },
+  {
+   "id": "n02-producer-false-hypothesis-confirmed",
+   "cls": "negative",
+   "mandatory": "ii",
+   "declared": "wheelHypothesis stays CONFIRMED while predicate is flipped to false",
+   "changed": [
+    "predicate true -> false"
+   ]
+  },
+  {
+   "id": "n03-duplicate-seq-contradictory",
+   "cls": "negative",
+   "mandatory": "iii",
+   "declared": "wheellog[5].seq set to 4: two entries share key 4 with different ts/defaultPrevented",
+   "changed": [
+    "wheellog[4].seq 5 -> 4"
+   ]
+  },
+  {
+   "id": "n04-fabricated-step-sha",
+   "cls": "negative",
+   "mandatory": "iv",
+   "declared": "steps[1].sha256 replaced by the sha256 of bytes that exist in no shot file",
+   "changed": [
+    "steps[1].sha256 \"c8de49678abad8433a822370a92ab3b2b35ac53603d5122193f21d66fdd95b9a\" -> \"db8e35c26e382b456827a8e581dcb0132324d7104f7d2e863f874d01734eb56e\""
+   ]
+  },
+  {
+   "id": "n05-scroll-arithmetic-down2",
+   "cls": "negative",
+   "mandatory": "v",
+   "declared": "legs[2].scrollY 240 -> 239 (exact arithmetic off by one)",
+   "changed": [
+    "legs[2].scrollY 240 -> 239"
+   ]
+  },
+  {
+   "id": "n06-swallowed-leg-moved",
+   "cls": "negative",
+   "mandatory": "vi",
+   "declared": "legs[4].scrollY 120 -> 240: the swallowed leg is allowed to move",
+   "changed": [
+    "legs[4].scrollY 120 -> 240"
+   ]
+  },
+  {
+   "id": "n07-delta-y-mutated",
+   "cls": "negative",
+   "mandatory": "vii",
+   "declared": "wheellog[0].deltaY 120 -> 121",
+   "changed": [
+    "wheellog[0].deltaY 120 -> 121"
+   ]
+  },
+  {
+   "id": "n08-teardown-survivor",
+   "cls": "negative",
+   "mandatory": "viii",
+   "declared": "teardown.survivors [] -> [4242] while postKillSweepCount stays 0",
+   "changed": [
+    "teardown.survivors element [0] added: 4242"
+   ]
+  },
+  {
+   "id": "n09-nonce-page-mismatch",
+   "cls": "negative",
+   "mandatory": "ix",
+   "declared": "nonceOnPage changed to a different well-formed nonce (nonce untouched)",
+   "changed": [
+    "nonceOnPage \"tabi-r63-smoke-one\" -> \"tabi-r63-smoke-two\""
+   ]
+  },
+  {
+   "id": "n10-launch-guard-removed",
+   "cls": "negative",
+   "mandatory": "x",
+   "declared": "--disable-smooth-scrolling removed from host.argv",
+   "changed": [
+    "host.argv element [13] removed: \"--disable-smooth-scrolling\""
+   ]
+  },
+  {
+   "id": "n11-schema",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "schema -> tabi-chrome-cdp-r62",
+   "changed": [
+    "schema \"tabi-chrome-cdp-r63\" -> \"tabi-chrome-cdp-r62\""
+   ]
+  },
+  {
+   "id": "n12-driver-binding",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "driverSha256 -> 64 hex chars that are not the driver",
+   "changed": [
+    "driverSha256 \"b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040\" -> \"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\""
+   ]
+  },
+  {
+   "id": "n13-fixture-binding",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "fixture.sha256 -> 64 hex chars that are not the fixture",
+   "changed": [
+    "fixture.sha256 \"6756804f72c7de95cb9a64e57c8121f59e3c0cf089b5c92803c1d09cbb53d88f\" -> \"eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\""
+   ]
+  },
+  {
+   "id": "n14-loopback-origin",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "fixture.origin host 127.0.0.1 -> localhost",
+   "changed": [
+    "fixture.origin \"http://127.0.0.1:19481\" -> \"http://localhost:19481\""
+   ]
+  },
+  {
+   "id": "n15-legs-reordered",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "legs[4] and legs[5] swapped (names/values travel with them)",
+   "changed": [
+    "legs[4].name \"swallowed\" -> \"released\"",
+    "legs[4].scrollY 120 -> 240",
+    "legs[4].wheellogLen 4 -> 5",
+    "legs[5].name \"released\" -> \"swallowed\"",
+    "legs[5].scrollY 240 -> 120",
+    "legs[5].wheellogLen 5 -> 4"
+   ]
+  },
+  {
+   "id": "n16-leg-wheellog-count",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "legs[4].wheellogLen 4 -> 3",
+   "changed": [
+    "legs[4].wheellogLen 4 -> 3"
+   ]
+  },
+  {
+   "id": "n17-delta-mode",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "wheellog[2].deltaMode 0 -> 1",
+   "changed": [
+    "wheellog[2].deltaMode 0 -> 1"
+   ]
+  },
+  {
+   "id": "n18-trusted",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "wheellog[0].isTrusted true -> false",
+   "changed": [
+    "wheellog[0].isTrusted true -> false"
+   ]
+  },
+  {
+   "id": "n19-cancelation-released",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "wheellog[3].defaultPrevented true -> false (the swallowed leg is released)",
+   "changed": [
+    "wheellog[3].defaultPrevented true -> false"
+   ]
+  },
+  {
+   "id": "n20-target-binding-dispatch-y",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "wheellog[2].scrollYAtDispatch 240 -> 239",
+   "changed": [
+    "wheellog[2].scrollYAtDispatch 240 -> 239"
+   ]
+  },
+  {
+   "id": "n21-scroll-event-witness",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "pageState.scrollEvents 4 -> 0",
+   "changed": [
+    "pageState.scrollEvents 4 -> 0"
+   ]
+  },
+  {
+   "id": "n22-step-label-fabricated",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "steps[1].name -> b-fabricated (png/sha/bytes untouched)",
+   "changed": [
+    "steps[1].name \"b-wheel-up\" -> \"b-fabricated\""
+   ]
+  },
+  {
+   "id": "n23-server-witness-foreign-path",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "serverLog -> [{path:/index.html}]: no / and a foreign path",
+   "changed": [
+    "serverLog.length 2 -> 1",
+    "serverLog[0].path \"/\" -> \"/index.html\""
+   ]
+  },
+  {
+   "id": "n24-closed-ports-devtools",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "teardown.portProbes.devtools closed -> open",
+   "changed": [
+    "teardown.portProbes.devtools \"closed\" -> \"open\""
+   ]
+  },
+  {
+   "id": "n25-launch-witness-midrun",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "sweeps.midRun 13 -> 0 (no child observed mid-run)",
+   "changed": [
+    "sweeps.midRun 13 -> 0"
+   ]
+  },
+  {
+   "id": "n26-failures-recorded",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "failures [] -> [{id:wheel-dispatch}]",
+   "changed": [
+    "failures element [0] added: {\"id\":\"wheel-dispatch\"}"
+   ]
+  },
+  {
+   "id": "n27-page-final-state",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "pageState.scrollY 240 -> 239",
+   "changed": [
+    "pageState.scrollY 240 -> 239"
+   ]
+  },
+  {
+   "id": "n28-shot-length-lie",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "steps[0].bytes 14275 -> 14276 with a correct sha256",
+   "changed": [
+    "steps[0].bytes 14275 -> 14276"
+   ]
+  },
+  {
+   "id": "n29-step-sha-borrowed-real-file",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "steps[3].sha256 set to the a-wheel-down hash (a real shot, not its own)",
+   "changed": [
+    "steps[3].sha256 \"1bc648c80b682620cf2eef31942be3e90ad1b928a2d09580bcf48ea7b7605ce0\" -> \"c8de49678abad8433a822370a92ab3b2b35ac53603d5122193f21d66fdd95b9a\""
+   ]
+  },
+  {
+   "id": "n30-launch-guards-all-removed",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "host.argv -> [--headless=new]",
+   "changed": [
+    "host.argv.length 16 -> 1",
+    "host.argv[0] \"/usr/bin/chromium\" -> \"--headless=new\""
+   ]
+  },
+  {
+   "id": "n31-sequence-gap",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "wheellog[2].seq 3 -> 4 (gap + collision)",
+   "changed": [
+    "wheellog[2].seq 3 -> 4"
+   ]
+  },
+  {
+   "id": "n32-sequence-swap",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "seq of wheellog[0] and wheellog[1] swapped (unique set intact, order broken)",
+   "changed": [
+    "wheellog[0].seq 1 -> 2",
+    "wheellog[1].seq 2 -> 1"
+   ]
+  },
+  {
+   "id": "n33-nonce-format",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "nonce and nonceOnPage -> tabi-r63-BAD_NONCE (regex + fixture binding)",
+   "changed": [
+    "nonce \"tabi-r63-smoke-one\" -> \"tabi-r63-BAD_NONCE\"",
+    "nonceOnPage \"tabi-r63-smoke-one\" -> \"tabi-r63-BAD_NONCE\""
+   ]
+  },
+  {
+   "id": "n34-nonce-page-empty",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "nonceOnPage -> empty string",
+   "changed": [
+    "nonceOnPage \"tabi-r63-smoke-one\" -> \"\""
+   ]
+  },
+  {
+   "id": "n35-postkill-sweep-count",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "teardown.postKillSweepCount 0 -> 1 (survivors list untouched)",
+   "changed": [
+    "teardown.postKillSweepCount 0 -> 1"
+   ]
+  },
+  {
+   "id": "n36-postkill-curl",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "teardown.postKillCurl.fixture 7 -> 0",
+   "changed": [
+    "teardown.postKillCurl.fixture 7 -> 0"
+   ]
+  },
+  {
+   "id": "n37-delta-x",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "wheellog[1].deltaX 0 -> 1",
+   "changed": [
+    "wheellog[1].deltaX 0 -> 1"
+   ]
+  },
+  {
+   "id": "n38-type-scroll",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "wheellog[0].type wheel -> scroll",
+   "changed": [
+    "wheellog[0].type \"wheel\" -> \"scroll\""
+   ]
+  },
+  {
+   "id": "n39-ts-negative",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "wheellog[0].ts 15 -> -1",
+   "changed": [
+    "wheellog[0].ts 15 -> -1"
+   ]
+  },
+  {
+   "id": "n40-server-witness-empty",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "serverLog -> [] (no request witnessed)",
+   "changed": [
+    "serverLog.length 2 -> 0"
+   ]
+  },
+  {
+   "id": "n41-duplicate-seq-appended",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "append a contradictory duplicate of wheellog[3] (seq 4, different ts) so the array is 6 long",
+   "changed": [
+    "wheellog element [5] added: {\"type\":\"wheel\",\"seq\":4,\"ts\":900,\"deltaX\":0,\"deltaY\":120,\"deltaZ\":0,\"deltaMode\":0,\"ctrlKey\":false,\"shiftKey\":false,\"altKey\":false,\"metaKey\":false,\"isTrusted\":true,\"cancelable\":true,\"defaultPrevented\":true,\"targetId\":\"tall\",\"scrollYAtDispatch\":120}"
+   ]
+  },
+  {
+   "id": "n42-extra-wheellog-event",
+   "cls": "negative",
+   "mandatory": null,
+   "declared": "append a sixth event seq 6 (length-guarded checks all trip)",
+   "changed": [
+    "wheellog element [5] added: {\"type\":\"wheel\",\"seq\":6,\"ts\":1000,\"deltaX\":0,\"deltaY\":120,\"deltaZ\":0,\"deltaMode\":0,\"ctrlKey\":false,\"shiftKey\":false,\"altKey\":false,\"metaKey\":false,\"isTrusted\":true,\"cancelable\":true,\"defaultPrevented\":false,\"targetId\":\"tall\",\"scrollYAtDispatch\":120}"
+   ]
+  },
+  {
+   "id": "p01-ts-not-monotonic",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "ts of wheellog[0] and wheellog[2] swapped: 427, 255.2, 15, 605.4, 755.2",
+   "changed": [
+    "wheellog[0].ts 15 -> 427",
+    "wheellog[2].ts 427 -> 15"
+   ]
+  },
+  {
+   "id": "p02-declaredStepNames-foreign",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "declaredStepNames -> ['x','y','z','w']",
+   "changed": [
+    "declaredStepNames[0] \"a-wheel-down\" -> \"x\"",
+    "declaredStepNames[1] \"b-wheel-up\" -> \"y\"",
+    "declaredStepNames[2] \"c-swallow\" -> \"z\"",
+    "declaredStepNames[3] \"d-release\" -> \"w\""
+   ]
+  },
+  {
+   "id": "p03-viewport-lie",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "fixture.viewport -> {width:1,height:1}",
+   "changed": [
+    "fixture.viewport.width 1280 -> 1",
+    "fixture.viewport.height 900 -> 1"
+   ]
+  },
+  {
+   "id": "p04-host-chromium-lie",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "host.chromium -> \"Firefox 128.0\"",
+   "changed": [
+    "host.chromium \"Chromium 155.0.8059.84 Arch Linux\" -> \"Firefox 128.0\""
+   ]
+  },
+  {
+   "id": "p05-unknown-field",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "extra top-level field forged:true",
+   "changed": [
+    "forged <added>"
+   ]
+  },
+  {
+   "id": "p06-origin-port-zero",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "fixture.origin -> http://127.0.0.1:0",
+   "changed": [
+    "fixture.origin \"http://127.0.0.1:19481\" -> \"http://127.0.0.1:0\""
+   ]
+  },
+  {
+   "id": "p07-ctrl-modified-wheels",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "all five events ctrlKey true (zoom-gesture shape, accepted as plain scroll)",
+   "changed": [
+    "wheellog[0].ctrlKey false -> true",
+    "wheellog[1].ctrlKey false -> true",
+    "wheellog[2].ctrlKey false -> true",
+    "wheellog[3].ctrlKey false -> true",
+    "wheellog[4].ctrlKey false -> true"
+   ]
+  },
+  {
+   "id": "p08-uniform-step-bytes",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "all four steps claim one PNG hash and the shot dir holds four copies of it",
+   "changed": [
+    "steps[3].sha256 \"1bc648c80b682620cf2eef31942be3e90ad1b928a2d09580bcf48ea7b7605ce0\" -> \"c8de49678abad8433a822370a92ab3b2b35ac53603d5122193f21d66fdd95b9a\"",
+    "steps[3].bytes 14359 -> 14275"
+   ]
+  },
+  {
+   "id": "p09-ts-duplicate",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "all five ts set to 15: five distinct seq keys, one timestamp",
+   "changed": [
+    "wheellog[1].ts 255.19999998807907 -> 15",
+    "wheellog[2].ts 427 -> 15",
+    "wheellog[3].ts 605.3999999761581 -> 15",
+    "wheellog[4].ts 755.1999999880791 -> 15"
+   ]
+  },
+  {
+   "id": "p10-nonce-rebound",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "nonce -> tabi-r63-forged-one with fixture.sha256 recomputed from the frozen driver bytes",
+   "changed": [
+    "nonce \"tabi-r63-smoke-one\" -> \"tabi-r63-forged-one\"",
+    "fixture.sha256 \"6756804f72c7de95cb9a64e57c8121f59e3c0cf089b5c92803c1d09cbb53d88f\" -> \"efdb675ccf9884bd60e0db36317f91322c8ce1068e288e6f57140a38681af48f\"",
+    "nonceOnPage \"tabi-r63-smoke-one\" -> \"tabi-r63-forged-one\""
+   ]
+  },
+  {
+   "id": "p12-scroll-events-in-range",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "pageState.scrollEvents 4 -> 3 (still inside the accepted 1..5 band)",
+   "changed": [
+    "pageState.scrollEvents 4 -> 3"
+   ]
+  },
+  {
+   "id": "p11-duplicate-json-key",
+   "cls": "probe",
+   "mandatory": null,
+   "declared": "raw text gains an earlier \"predicate\": false before the real \"predicate\": true; parsed value unchanged",
+   "changed": []
+  }
+ ]
+}

@@ -1,0 +1,169 @@
+{
+ "schema": "tabi-r63-scribe-commands-v1",
+ "seat": "R63Scribe",
+ "cwd_default": "/fast/scratch/hyaku/tabi-r63/R63Scribe",
+ "note": "argv shown with frozen-path abbreviations; exact absolute paths were used on the command line",
+ "commands": [
+  {
+   "n": 1,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "sha256sum scripts/chrome-cdp-loopback-round63.mjs .ufo/waves/round-63/counters/chromium-wheel-r63.mjs .ufo/waves/round-63/counters/{mutate-r63.mjs,make-negatives-r63.mjs,old-generation-r63.mjs,mutants-r63.json} .ufo/waves/round-63/sources/*",
+   "exit": 0,
+   "result": "driver b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040 (== C1 driver pin); counter 084705695a394256198b45c15fb7568b629e3bc750bbd46cfcb81cdb312d7178; mutate 4bf6e61404c1733778f32f14a18d807cdeff7aa5cc051bab54a074bab65571fb; make-negatives 598a19da3a5d214de82f15789c2616b753e34ee16d9fea83d134e36749add2eb; old-generation 1ee9cda2661b178c233b292c02fe3320cfe6a1b23c0a3bbb060400ed5d7674c8; mutants 5f0efd8fddc499acc7ebec8d2101aa0bfc2c46fac281c9193177861dd8731c8c; sources s166 6ec7ec375ada09642a7ee76e63bb57eee1cf1e8e86e1b06f401bb8ecbacc7e4c, s166b 78bd40dc50dc71b9cb395dd9d7f4f58edb20cf3b77b6e24dd5832b79f476c2d1, s167 51a7efdb30a9aa946e50b395dafb417d0305e54bd71e1b23faa6ce0af05abb99"
+  },
+  {
+   "n": 2,
+   "cwd": "/fast/scratch/hyaku/tabi-r63/R63Scribe",
+   "argv": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/counters/chromium-wheel-r63.mjs --selftest",
+   "exit": 0,
+   "result": "TABI_R63_COUNTER_SELFTEST verdict=clean cases=22 passed=22 (receipts/scribe-counter-selftest.json)"
+  },
+  {
+   "n": 3,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "node .ufo/waves/round-63/counters/chromium-wheel-r63.mjs .ufo/waves/round-63/controls/smoke/receipt-run1.json --driver scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040 --shot .ufo/waves/round-63/controls/smoke --json",
+   "exit": 0,
+   "result": "predicate true findingCount 0 findings []"
+  },
+  {
+   "n": 4,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "same counter invocation with .ufo/waves/round-63/controls/smoke/receipt-run2.json",
+   "exit": 0,
+   "result": "predicate true findingCount 0 findings []"
+  },
+  {
+   "n": 5,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "node .ufo/waves/round-63/counters/chromium-wheel-r63.mjs corpus/evidence/round63/chromium-wheel-scroll/receipt.json --driver scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040 --shot corpus/evidence/round63/chromium-wheel-scroll --json",
+   "exit": 0,
+   "result": "predicate true findingCount 0 findings []; receipt sha256 3aa3ce40b49eb2e3516cfb82923eae8761f3a9ba052a3da4cc58764164ad28a1"
+  },
+  {
+   "n": 6,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "for n in .ufo/waves/round-63/controls/negatives/n*.json: node .ufo/waves/round-63/counters/chromium-wheel-r63.mjs <n> --driver scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 b00efd59... --shot .ufo/waves/round-63/controls/smoke --json",
+   "exit": 1,
+   "result": "all ten exit 1, one finding each: n1 producer-verdict, n2 producer-verdict, n3 scroll-arithmetic, n4 wheellog-sequence, n5 delta-y-passthrough, n6 cancelation, n7 shot-bytes, n8 survivors, n9 nonce-binding, n10 launch-guards"
+  },
+  {
+   "n": 7,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "for n in .ufo/waves/round-63/controls/negatives-data/n*.json: node .ufo/waves/round-63/counters/chromium-wheel-r63.mjs <n> --driver scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 b00efd59... --shot corpus/evidence/round63/chromium-wheel-scroll --json",
+   "exit": 1,
+   "result": "all ten exit 1 with the same one finding each (scored-receipt variants of the same ten controls)"
+  },
+  {
+   "n": 8,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "node .ufo/waves/round-63/counters/chromium-wheel-r63.mjs   # no args",
+   "exit": 2,
+   "result": "usage refusal before any receipt read"
+  },
+  {
+   "n": 9,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "node .ufo/waves/round-63/counters/chromium-wheel-r63.mjs /fast/scratch/hyaku/tabi-r63/does-not-exist.json --driver scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 b00efd59... --shot .ufo/waves/round-63/controls/smoke --json",
+   "exit": 2,
+   "result": "missing receipt refused with exit 2"
+  },
+  {
+   "n": 10,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "node .ufo/waves/round-63/counters/chromium-wheel-r63.mjs .ufo/waves/round-63/controls/smoke/receipt-run1.json --driver scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 0000000000000000000000000000000000000000000000000000000000000000 --shot .ufo/waves/round-63/controls/smoke --json",
+   "exit": 2,
+   "result": "driver-pin mismatch refused with exit 2"
+  },
+  {
+   "n": 11,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "node .ufo/waves/round-63/counters/chromium-wheel-r63.mjs corpus/evidence/round62/chromium-secondary-button/receipt.json --driver scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 b00efd59... --shot .ufo/waves/round-63/controls/smoke --json",
+   "exit": 1,
+   "result": "r62 receipt refused through the r63 counter: 21 findings (schema, nonce-binding, driver-binding, fixture-binding, loopback-origin, launch-guards, legs-shape, scroll-arithmetic, wheellog-count, wheellog-sequence, delta-y-passthrough, delta-mode-pixels, trusted-fields, cancelation, target-binding, scroll-event-witness, shot-records, shot-bytes, server-witness, producer-verdict, page-final-state)"
+  },
+  {
+   "n": 12,
+   "cwd": "/fast/scratch/hyaku/tabi-r63/R63Scribe",
+   "argv": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round63.mjs --scratch /fast/scratch/hyaku/tabi-r63/R63Scribe/run1 --out /fast/scratch/hyaku/tabi-r63/R63Scribe/run1/receipt.json --nonce tabi-r63-scribe-one --http-port 19731 --cdp-port 19732",
+   "exit": 0,
+   "result": "cold run 1, predicate true CONFIRMED; receipt sha256 1253be160587114ec58d648735ef22090ca5abd4ca51b73efbaaa8ad4b7a4a43"
+  },
+  {
+   "n": 13,
+   "cwd": "/fast/scratch/hyaku/tabi-r63/R63Scribe",
+   "argv": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round63.mjs --scratch /fast/scratch/hyaku/tabi-r63/R63Scribe/run2 --out /fast/scratch/hyaku/tabi-r63/R63Scribe/run2/receipt.json --nonce tabi-r63-scribe-two --http-port 19841 --cdp-port 19842",
+   "exit": 0,
+   "result": "cold run 2, predicate true CONFIRMED; receipt sha256 9a3ba3d3f940646a4bd9572c056e41fef63c819e7f3a0c14b453c0756875dae4"
+  },
+  {
+   "n": 14,
+   "cwd": "/fast/scratch/hyaku/tabi-r63/R63Scribe",
+   "argv": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/counters/mutate-r63.mjs run --counter .../counters/chromium-wheel-r63.mjs --mutants .../counters/mutants-r63.json --driver .../scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 b00efd59... --live .../controls/smoke/receipt-run1.json --shot .../controls/smoke --negatives .../controls/negatives --work /fast/scratch/hyaku/tabi-r63/R63Scribe/mut --out /fast/scratch/hyaku/tabi-r63/R63Scribe/matrix-rerun.json",
+   "exit": 0,
+   "result": "pristineAcceptsLive true pristineRefusesAll true mutantCount 8 survived [] allKilled true; per-mutant falseGreens identical to the freeze-commit matrix (receipts/scribe-matrix-rerun.json sha256 7e5b4691a9c3188614ed49e320c1291af8ac103ce6ced465fd6f1e88ccd432d0)"
+  },
+  {
+   "n": 15,
+   "cwd": "/fast/scratch/hyaku/tabi-r63/R63Scribe",
+   "argv": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/counters/old-generation-r63.mjs --counter .../round-62/counters/chromium-receipt-r62.mjs --receipt .../controls/old-generation/r62-lying-receipt.json --driver .../scripts/chrome-cdp-loopback-round62.mjs --expect-driver-sha256 8dae248a7b3cb01c866a6fff80de82cfc821f6aeca4ed08114fe42c8305c82e0 --shot /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round62/chromium-secondary-button --work /fast/scratch/hyaku/tabi-r63/R63Scribe/oldgen3",
+   "exit": 0,
+   "result": "demonstrated true: pristine exit 1 findings ['producer-verdict'], exact-line mutant exit 0 findings [] (receipts/scribe-oldgen-redbefore.json sha256 8774dfa25d47d1af76f9c27018a0f6d2a97a5cb109944a4158a337abf49fc2f5)"
+  },
+  {
+   "n": 16,
+   "cwd": "/fast/scratch/hyaku/tabi-r63/R63Scribe",
+   "argv": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/counters/old-generation-r63.mjs ... --shot /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-62/controls/smoke",
+   "exit": 1,
+   "result": "NOT demonstrated with this shot dir: pristine exit 1 findings ['shot-bytes','producer-verdict'], mutant exit 1 findings ['shot-bytes'] \u2014 the committed red-before only reproduces against the PNG bytes the r62 lying receipt declares"
+  },
+  {
+   "n": 17,
+   "cwd": "/fast/scratch/hyaku/tabi-r63/R63Scribe",
+   "argv": "16 single-field forged receipts under probes/ (p-ctrlkey, p-ctrl, p-se5, p-scrollevents5, p-build, p-vp, p-viewport, p-declared, p-label, p-ts, p-negts, p-tsmono, p-shuffle, p-extra-arg, p-serverlog) fed to the frozen counter CLI",
+   "exit": 0,
+   "result": "see receipts/scribe-counter-probes.json: 9 forged receipts ACCEPTED (exit 0, predicate true): modifier keys, scrollEvents=5, build string, viewport, declaredStepNames, shot-digest permutation, extra argv flag, ts monotonicity; 5 refused (exit 1): fabricated step label ['shot-records','shot-bytes'], non-finite ts ['trusted-fields'], negative ts ['trusted-fields'], extra server path ['server-witness']"
+  },
+  {
+   "n": 18,
+   "cwd": "/fast/scratch/hyaku/tabi-r63/R63Scribe",
+   "argv": "git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin clone ; git -C clone rev-parse --show-toplevel ; git -C clone rev-parse HEAD",
+   "exit": 0,
+   "result": "clone at /fast/scratch/hyaku/tabi-r63/R63Scribe/clone (toplevel verified equal to the clone dir), HEAD e5325ad8805df86cb0109373d2ac695f558c2a1f; no commit made in the clone"
+  },
+  {
+   "n": 19,
+   "cwd": "/fast/scratch/hyaku/tabi-r63/R63Scribe/clone",
+   "argv": "node scripts/check-sources.mjs",
+   "exit": 0,
+   "result": "SOURCES_GATE verdict=clean rows=167 tiers=A:149,B:9,C:9 status=queued:15,mined:142,rejected:10 findings=0 (with this seat's two SOURCES rows substituted and both used-by files present)"
+  },
+  {
+   "n": 20,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "node scripts/check-sources.mjs",
+   "exit": 0,
+   "result": "SOURCES_GATE verdict=clean rows=167 ... findings=0 on the lane working tree (which already carries S166/S167)"
+  },
+  {
+   "n": 21,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "git -C /home/vgpnk/Projects/shokunin/tabi-shokunin cat-file -p 816592612dd2a8073437c595d3fe3c477125cf3c:<path> | sha256sum   (9 paths: smoke receipts, 2 PNGs, negatives/index.json, mutation/matrix.json, old-generation/result.json)",
+   "exit": 0,
+   "result": "every freeze-commit blob digest equals the working-tree digest of the same path (no post-freeze byte change in the cited controls)"
+  },
+  {
+   "n": 22,
+   "cwd": "/fast/scratch/hyaku/tabi-r63/R63Scribe/run1",
+   "argv": "python3 (PIL) diff of the four step PNGs",
+   "exit": 0,
+   "result": "a vs b: 0 differing pixels of 1040640; a vs c: 0 differing pixels; a vs d: 1029035 differing pixels, bbox (0,0,1277,813). The three shots a/b/c are byte-identical because all three are captured at scrollY 120 (driver lines 262-274); d is captured at 240."
+  },
+  {
+   "n": 23,
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "argv": "git -C /home/vgpnk/Projects/shokunin/tabi-shokunin status --porcelain ; git -C /home/vgpnk/Projects/shokunin/tabi-shokunin log --oneline -6",
+   "exit": 0,
+   "result": "no lane file modified by this seat; the working tree already carried modifications to SCORECARD.md, corpus/SOURCES.md and corpus/README.md plus untracked corpus/knowledge/chromium-wheel-scroll-round-63.md, corpus/lessons/round-63.md and corpus/evidence/round63/ when this seat read them at 16:04-16:09 (not this seat's writes)"
+  }
+ ]
+}

@@ -1,0 +1,1 @@
+receipts for R63Reviewer (round 63 w1). All counter runs used the frozen counter 084705695a394256198b45c15fb7568b629e3bc750bbd46cfcb81cdb312d7178 and frozen driver b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040; cwd=/home/vgpnk/Projects/shokunin/tabi-shokunin.

@@ -1032,3 +1032,13 @@ the lesson; it does not support cross-browser contextmenu timing. Registry
 164→165. The mapped-surface adjacency rebind is verifier state, not newly held
 domain ground; kaidoku overlap rulings and full wide-hit adjudication remain
 open. Historical frontier rows retain their original scope.
+
+## Round 63 coverage addition — the Chromium wheel/scroll domain (2026-11-04, Linux host)
+
+Append-only. One new knowledge note on ground the map did not hold; the row is
+written because the file exists, and the capability enters only with the
+round's frozen predicate.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/chromium-wheel-scroll-round-63.md` | The Linux Chromium wheel/scroll domain: `Input.dispatchMouseEvent` `mouseWheel` deltas reach the page as trusted `wheel` events (deltaY passthrough, deltaX 0, deltaMode 0) and move `window.scrollY` by exactly the dispatched pixel delta under `--disable-smooth-scrolling` (0 → 120 → 240 → 120); a capture-phase `preventDefault` leg delivers the event (`cancelable` true, `defaultPrevented` true) while the scroll position does not move, with a released leg restoring movement as the positive control; two cold runs carry identical legs / wheellog-minus-ts / pageState and 4/4 identical PNG sha256; the frozen counter refuses ten declared negatives and kills eight exact-line source mutants through the production CLI. | S166 (deltas as event properties), S167 (scrollTop attribute class); measured receipt `corpus/evidence/round63/chromium-wheel-scroll/receipt.json` plus `stability/receipt-run2.json`; counter `.ufo/waves/round-63/counters/chromium-wheel-r63.mjs` |

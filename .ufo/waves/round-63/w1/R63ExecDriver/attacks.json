@@ -1,0 +1,121 @@
+{
+ "schema": "tabi-r63-w1-r63execdriver-attacks",
+ "note": "all receipts/shots/pngs are copies in seat scratch; no frozen byte was edited; scratch deleted before yield",
+ "cwd": "/fast/scratch/hyaku/tabi-r63/R63ExecDriver/attack",
+ "scratchDeleted": true,
+ "templateArgv": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/counters/chromium-wheel-r63.mjs <receipt> --driver /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 <pin|other> --shot <dir> --json",
+ "runs": [
+  {
+   "id": "t1-deltaY-120-to-60",
+   "receipt": "t1/receipt.json",
+   "shot": "t1",
+   "exit": 1,
+   "findings": [
+    "delta-y-passthrough"
+   ]
+  },
+  {
+   "id": "t2-png-byte-flip-receipt-untouched",
+   "receipt": "t2/receipt.json",
+   "shot": "t2",
+   "exit": 1,
+   "findings": [
+    "shot-bytes"
+   ]
+  },
+  {
+   "id": "t2b-png-swapped-for-d-release-and-receipt-rehashed",
+   "receipt": "t2b/receipt.json",
+   "shot": "t2b",
+   "exit": 0,
+   "findings": []
+  },
+  {
+   "id": "t3-runA-receipt-with-runB-shots",
+   "receipt": "runA/receipt.json",
+   "shot": "runB",
+   "exit": 0,
+   "findings": []
+  },
+  {
+   "id": "t4a-driver-byteflip-with-canonical-pin",
+   "receipt": "runA/receipt.json",
+   "driver": "driver-flip.mjs",
+   "expect": "b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040",
+   "exit": 2,
+   "error": "counter invocation driver pin mismatch"
+  },
+  {
+   "id": "t4b-driver-byteflip-with-its-own-sha-as-pin",
+   "receipt": "runA/receipt.json",
+   "driver": "driver-flip.mjs",
+   "expect": "sha256(driver-flip.mjs)",
+   "exit": 1,
+   "findings": [
+    "driver-binding"
+   ]
+  },
+  {
+   "id": "t5-pageState-scrollY-239",
+   "receipt": "t5/receipt.json",
+   "shot": "t5",
+   "exit": 1,
+   "findings": [
+    "page-final-state"
+   ]
+  },
+  {
+   "id": "t6-duplicate-seq",
+   "receipt": "t6/receipt.json",
+   "shot": "t6",
+   "exit": 1,
+   "findings": [
+    "wheellog-sequence"
+   ]
+  },
+  {
+   "id": "t7-never-run-nonce-stale-fixture-sha",
+   "receipt": "t7/receipt.json",
+   "shot": "t7",
+   "exit": 1,
+   "findings": [
+    "fixture-binding"
+   ]
+  },
+  {
+   "id": "t7b-never-run-nonce-recomputed-fixture-sha",
+   "receipt": "t7b/receipt.json",
+   "shot": "t7b",
+   "fixtureShaRecomputed": "7263e411f13363fdc19d38359a2b90f09e81dca5e4aa04d1b472bd6b860a53cd",
+   "exit": 0,
+   "findings": []
+  },
+  {
+   "id": "t8-missing-png",
+   "receipt": "t8/receipt.json",
+   "shot": "t8",
+   "exit": 1,
+   "findings": [
+    "shot-bytes"
+   ]
+  },
+  {
+   "id": "t9-extra-server-path",
+   "receipt": "t9/receipt.json",
+   "shot": "t9",
+   "exit": 1,
+   "findings": [
+    "server-witness"
+   ]
+  },
+  {
+   "id": "t10-negative-ts",
+   "receipt": "t10/receipt.json",
+   "shot": "t10",
+   "exit": 1,
+   "findings": [
+    "trusted-fields"
+   ]
+  }
+ ]
+}

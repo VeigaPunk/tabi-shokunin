@@ -1,0 +1,883 @@
+{
+ "schema": "tabi-r63-execneg-manifest-v1",
+ "base": {
+  "path": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/controls/smoke/receipt-run1.json",
+  "sha256": "844f9facd15de4bd6ceb83ef5ae22765486062e66f1ffa241197ab8d2defd48f",
+  "nonce": "tabi-r63-smoke-one"
+ },
+ "counterSha256": "084705695a394256198b45c15fb7568b629e3bc750bbd46cfcb81cdb312d7178",
+ "driverSha256": "b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040",
+ "pin": "b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040",
+ "cases": [
+  {
+   "id": "n01-producer-true-hypothesis-refuted",
+   "cls": "negative",
+   "mandatory": "i",
+   "targets": {
+    "check": "producer-verdict",
+    "counterLine": 54
+   },
+   "mutation": "predicate stays true while wheelHypothesis is flipped to REFUTED",
+   "expectedFindings": [
+    "producer-verdict"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n01-producer-true-hypothesis-refuted.json",
+   "receiptSha256": "e01dfaf9a7520cf7486258786316d0e8b1c46381fe79e698fd16116ea3c5d970"
+  },
+  {
+   "id": "n02-producer-false-hypothesis-confirmed",
+   "cls": "negative",
+   "mandatory": "ii",
+   "targets": {
+    "check": "producer-verdict",
+    "counterLine": 54
+   },
+   "mutation": "wheelHypothesis stays CONFIRMED while predicate is flipped to false",
+   "expectedFindings": [
+    "producer-verdict"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n02-producer-false-hypothesis-confirmed.json",
+   "receiptSha256": "76f9ed2a090523b2882ba54fc0e41a081a1af9d2b9915b2de42627a15feec5fb"
+  },
+  {
+   "id": "n03-duplicate-seq-contradictory",
+   "cls": "negative",
+   "mandatory": "iii",
+   "targets": {
+    "check": "wheellog-sequence",
+    "counterLine": 40
+   },
+   "mutation": "wheellog[5].seq set to 4: two entries share key 4 with different ts/defaultPrevented",
+   "expectedFindings": [
+    "wheellog-sequence"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n03-duplicate-seq-contradictory.json",
+   "receiptSha256": "fe51fdfe35291a333727621c349f3783c8e96a59fb083ebfaf24357fb8d457bb"
+  },
+  {
+   "id": "n04-fabricated-step-sha",
+   "cls": "negative",
+   "mandatory": "iv",
+   "targets": {
+    "check": "shot-bytes",
+    "counterLine": 48
+   },
+   "mutation": "steps[1].sha256 replaced by the sha256 of bytes that exist in no shot file",
+   "expectedFindings": [
+    "shot-bytes"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n04-fabricated-step-sha.json",
+   "receiptSha256": "a046fd6c41012b9e797a8dc3144228c8cc6accd487bef8797a65ccc3d7870bd4"
+  },
+  {
+   "id": "n05-scroll-arithmetic-down2",
+   "cls": "negative",
+   "mandatory": "v",
+   "targets": {
+    "check": "scroll-arithmetic",
+    "counterLine": 37
+   },
+   "mutation": "legs[2].scrollY 240 -> 239 (exact arithmetic off by one)",
+   "expectedFindings": [
+    "scroll-arithmetic"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n05-scroll-arithmetic-down2.json",
+   "receiptSha256": "63a331374602d56c6804235a76a8e032ded1e9615dd82462c8dd5b34d0464071"
+  },
+  {
+   "id": "n06-swallowed-leg-moved",
+   "cls": "negative",
+   "mandatory": "vi",
+   "targets": {
+    "check": "scroll-arithmetic",
+    "counterLine": 37
+   },
+   "mutation": "legs[4].scrollY 120 -> 240: the swallowed leg is allowed to move",
+   "expectedFindings": [
+    "scroll-arithmetic"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n06-swallowed-leg-moved.json",
+   "receiptSha256": "fbad60c9dd46fc034298736f39bf1a5f21cbf1e5ea6dd831204df7bf5a1fbd26"
+  },
+  {
+   "id": "n07-delta-y-mutated",
+   "cls": "negative",
+   "mandatory": "vii",
+   "targets": {
+    "check": "delta-y-passthrough",
+    "counterLine": 41
+   },
+   "mutation": "wheellog[0].deltaY 120 -> 121",
+   "expectedFindings": [
+    "delta-y-passthrough"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n07-delta-y-mutated.json",
+   "receiptSha256": "27d52f8ea5d6798f2ff61856eb20367830a8f499bd299b430396bf1147d3d377"
+  },
+  {
+   "id": "n08-teardown-survivor",
+   "cls": "negative",
+   "mandatory": "viii",
+   "targets": {
+    "check": "survivors",
+    "counterLine": 50
+   },
+   "mutation": "teardown.survivors [] -> [4242] while postKillSweepCount stays 0",
+   "expectedFindings": [
+    "survivors"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n08-teardown-survivor.json",
+   "receiptSha256": "5ec1b4823082b57a83f89cc85cc47979f0a2b983569aea64c9a1c7f35fee92d2"
+  },
+  {
+   "id": "n09-nonce-page-mismatch",
+   "cls": "negative",
+   "mandatory": "ix",
+   "targets": {
+    "check": "nonce-binding",
+    "counterLine": 29
+   },
+   "mutation": "nonceOnPage changed to a different well-formed nonce (nonce untouched)",
+   "expectedFindings": [
+    "nonce-binding"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n09-nonce-page-mismatch.json",
+   "receiptSha256": "0a9464bcfaa6d9f02c424b6031a85a8bc5f27b846bc417e88741bfa4e8ea1fe6"
+  },
+  {
+   "id": "n10-launch-guard-removed",
+   "cls": "negative",
+   "mandatory": "x",
+   "targets": {
+    "check": "launch-guards",
+    "counterLine": 33
+   },
+   "mutation": "--disable-smooth-scrolling removed from host.argv",
+   "expectedFindings": [
+    "launch-guards"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n10-launch-guard-removed.json",
+   "receiptSha256": "116605b359c784751f05b75b5b3ebd23a4a9ade9ebf80568ac7603c88d05fbb9"
+  },
+  {
+   "id": "n11-schema",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "schema",
+    "counterLine": 28
+   },
+   "mutation": "schema -> tabi-chrome-cdp-r62",
+   "expectedFindings": [
+    "schema"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n11-schema.json",
+   "receiptSha256": "4c593a2c85bb8be1dae6f27fc50c237bd8c1486dba74d55c532729efd635d7b4"
+  },
+  {
+   "id": "n12-driver-binding",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "driver-binding",
+    "counterLine": 30
+   },
+   "mutation": "driverSha256 -> 64 hex chars that are not the driver",
+   "expectedFindings": [
+    "driver-binding"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n12-driver-binding.json",
+   "receiptSha256": "0ff27eacbca1df489bd8286ece70018499b71e4772816978a5e886464380de9b"
+  },
+  {
+   "id": "n13-fixture-binding",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "fixture-binding",
+    "counterLine": 31
+   },
+   "mutation": "fixture.sha256 -> 64 hex chars that are not the fixture",
+   "expectedFindings": [
+    "fixture-binding"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n13-fixture-binding.json",
+   "receiptSha256": "207f33fb285e50a084ad891b2caa6a22dd269558cf379ec566282253682f4aec"
+  },
+  {
+   "id": "n14-loopback-origin",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "loopback-origin",
+    "counterLine": 32
+   },
+   "mutation": "fixture.origin host 127.0.0.1 -> localhost",
+   "expectedFindings": [
+    "loopback-origin"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n14-loopback-origin.json",
+   "receiptSha256": "8613bb84683bab7ec2c302b1867e2c5dd6e9606c1f7874cf17a3316672930264"
+  },
+  {
+   "id": "n15-legs-reordered",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "legs-shape",
+    "counterLine": 36
+   },
+   "mutation": "legs[4] and legs[5] swapped (names/values travel with them)",
+   "expectedFindings": [
+    "legs-shape"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n15-legs-reordered.json",
+   "receiptSha256": "be64583c3be3f028dfc8f4cd0664d73b1be099484ec2e1a07528aac5b9b3c4e3"
+  },
+  {
+   "id": "n16-leg-wheellog-count",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "wheellog-count",
+    "counterLine": 38
+   },
+   "mutation": "legs[4].wheellogLen 4 -> 3",
+   "expectedFindings": [
+    "wheellog-count"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n16-leg-wheellog-count.json",
+   "receiptSha256": "425ee34078f0d03808860dd076309a15df365837b9a7b56ae6ec553a587f39a5"
+  },
+  {
+   "id": "n17-delta-mode",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "delta-mode-pixels",
+    "counterLine": 42
+   },
+   "mutation": "wheellog[2].deltaMode 0 -> 1",
+   "expectedFindings": [
+    "delta-mode-pixels"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n17-delta-mode.json",
+   "receiptSha256": "6002662547907ac4806349650b8659b497f38b3a1909eb1d8a70fe4449157888"
+  },
+  {
+   "id": "n18-trusted",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "trusted-fields",
+    "counterLine": 43
+   },
+   "mutation": "wheellog[0].isTrusted true -> false",
+   "expectedFindings": [
+    "trusted-fields"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n18-trusted.json",
+   "receiptSha256": "e3c6f0a4cadd78c810ef7ce626bbc84c211892ccd03a0f9692266969c79f00dc"
+  },
+  {
+   "id": "n19-cancelation-released",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "cancelation",
+    "counterLine": 44
+   },
+   "mutation": "wheellog[3].defaultPrevented true -> false (the swallowed leg is released)",
+   "expectedFindings": [
+    "cancelation"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n19-cancelation-released.json",
+   "receiptSha256": "e4243d94f088fa9e4e8e5c1aa54b2165ffef3c2dc130927b7f1270423c3abfd5"
+  },
+  {
+   "id": "n20-target-binding-dispatch-y",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "target-binding",
+    "counterLine": 45
+   },
+   "mutation": "wheellog[2].scrollYAtDispatch 240 -> 239",
+   "expectedFindings": [
+    "target-binding"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n20-target-binding-dispatch-y.json",
+   "receiptSha256": "489721703f4c4c735053eb41d006148e1c26ee8c98d161b250a9cb48ee0ab3a3"
+  },
+  {
+   "id": "n21-scroll-event-witness",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "scroll-event-witness",
+    "counterLine": 46
+   },
+   "mutation": "pageState.scrollEvents 4 -> 0",
+   "expectedFindings": [
+    "scroll-event-witness"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n21-scroll-event-witness.json",
+   "receiptSha256": "c54f03326ebb9b6bfcb87de7cf658a239c3796898523c14c0d68510fef3dfa20"
+  },
+  {
+   "id": "n22-step-label-fabricated",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "shot-records",
+    "counterLine": 47
+   },
+   "mutation": "steps[1].name -> b-fabricated (png/sha/bytes untouched)",
+   "expectedFindings": [
+    "shot-records"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n22-step-label-fabricated.json",
+   "receiptSha256": "cbf53660f1c71c7f2a796ee347f3abffc5017df6d5b18fb32bcec3fa838db002"
+  },
+  {
+   "id": "n23-server-witness-foreign-path",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "server-witness",
+    "counterLine": 49
+   },
+   "mutation": "serverLog -> [{path:/index.html}]: no / and a foreign path",
+   "expectedFindings": [
+    "server-witness"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n23-server-witness-foreign-path.json",
+   "receiptSha256": "4bcf98373ba0f996038257e542eedf64d703d7962ec4d68756bf7d56c00a22b9"
+  },
+  {
+   "id": "n24-closed-ports-devtools",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "closed-ports",
+    "counterLine": 51
+   },
+   "mutation": "teardown.portProbes.devtools closed -> open",
+   "expectedFindings": [
+    "closed-ports"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n24-closed-ports-devtools.json",
+   "receiptSha256": "064a56c53555e68b57ed84dd5f9e3e33287811af65c6c623e047994b71840281"
+  },
+  {
+   "id": "n25-launch-witness-midrun",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "launch-witness",
+    "counterLine": 52
+   },
+   "mutation": "sweeps.midRun 13 -> 0 (no child observed mid-run)",
+   "expectedFindings": [
+    "launch-witness"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n25-launch-witness-midrun.json",
+   "receiptSha256": "a852d8a4eb5270ee7c8e9fc9889e8bead8270706712a1d69486b82e86e159b4f"
+  },
+  {
+   "id": "n26-failures-recorded",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "failures",
+    "counterLine": 53
+   },
+   "mutation": "failures [] -> [{id:wheel-dispatch}]",
+   "expectedFindings": [
+    "failures"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n26-failures-recorded.json",
+   "receiptSha256": "e783123edfbb22e36bf78f87f1a2f724781de81a2ee56aadead61e5caba911c8"
+  },
+  {
+   "id": "n27-page-final-state",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "page-final-state",
+    "counterLine": 55
+   },
+   "mutation": "pageState.scrollY 240 -> 239",
+   "expectedFindings": [
+    "page-final-state"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n27-page-final-state.json",
+   "receiptSha256": "7ca30ebb2d0541e86075e2ff7641ede93001a85b02a9eb50d810cd17f532e9ad"
+  },
+  {
+   "id": "n28-shot-length-lie",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "shot-bytes",
+    "counterLine": 48
+   },
+   "mutation": "steps[0].bytes 14275 -> 14276 with a correct sha256",
+   "expectedFindings": [
+    "shot-bytes"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n28-shot-length-lie.json",
+   "receiptSha256": "16c8c8286e3f132f989d7d7a509a358c1902340c6535325ede320b966db9fc0d"
+  },
+  {
+   "id": "n29-step-sha-borrowed-real-file",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "shot-bytes",
+    "counterLine": 48
+   },
+   "mutation": "steps[3].sha256 set to the a-wheel-down hash (a real shot, not its own)",
+   "expectedFindings": [
+    "shot-bytes"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n29-step-sha-borrowed-real-file.json",
+   "receiptSha256": "895e54405d56c5d09dd9fc7ac87a0371762d97df3bb91517592f485cc12d840b"
+  },
+  {
+   "id": "n30-launch-guards-all-removed",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "launch-guards",
+    "counterLine": 33
+   },
+   "mutation": "host.argv -> [--headless=new]",
+   "expectedFindings": [
+    "launch-guards"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n30-launch-guards-all-removed.json",
+   "receiptSha256": "0135a6986d4e361943b42952457646e117557964714a2d8aa3cd4f1f1777d098"
+  },
+  {
+   "id": "n31-sequence-gap",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "wheellog-sequence",
+    "counterLine": 40
+   },
+   "mutation": "wheellog[2].seq 3 -> 4 (gap + collision)",
+   "expectedFindings": [
+    "wheellog-sequence"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n31-sequence-gap.json",
+   "receiptSha256": "24f81db19497407f4edd1d85f1ec6effa1662123f97b35e7ff36bb00b7ba0053"
+  },
+  {
+   "id": "n32-sequence-swap",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "wheellog-sequence",
+    "counterLine": 40
+   },
+   "mutation": "seq of wheellog[0] and wheellog[1] swapped (unique set intact, order broken)",
+   "expectedFindings": [
+    "wheellog-sequence"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n32-sequence-swap.json",
+   "receiptSha256": "47bba04dbf8bc8d03e6e27b52ee6ee74bb63bf8dcdb0ec4c4738636ce5453a6a"
+  },
+  {
+   "id": "n33-nonce-format",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "nonce-binding",
+    "counterLine": 29
+   },
+   "mutation": "nonce and nonceOnPage -> tabi-r63-BAD_NONCE (regex + fixture binding)",
+   "expectedFindings": [
+    "nonce-binding",
+    "fixture-binding"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n33-nonce-format.json",
+   "receiptSha256": "ac031764093a7f6c6b89c90bbd0f28c575ee3edbe887e3f0f125c0bdbc26036b"
+  },
+  {
+   "id": "n34-nonce-page-empty",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "nonce-binding",
+    "counterLine": 29
+   },
+   "mutation": "nonceOnPage -> empty string",
+   "expectedFindings": [
+    "nonce-binding"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n34-nonce-page-empty.json",
+   "receiptSha256": "37a26a92f89160cee298c0229c043c42d9680e88381e2a55193f0e87a7c1e28f"
+  },
+  {
+   "id": "n35-postkill-sweep-count",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "survivors",
+    "counterLine": 50
+   },
+   "mutation": "teardown.postKillSweepCount 0 -> 1 (survivors list untouched)",
+   "expectedFindings": [
+    "survivors"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n35-postkill-sweep-count.json",
+   "receiptSha256": "1c1964901778fa283ade4a4c2f5f27551ce17f09f5896356b3a91b1ce021ec45"
+  },
+  {
+   "id": "n36-postkill-curl",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "closed-ports",
+    "counterLine": 51
+   },
+   "mutation": "teardown.postKillCurl.fixture 7 -> 0",
+   "expectedFindings": [
+    "closed-ports"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n36-postkill-curl.json",
+   "receiptSha256": "43daac192d2e0065b37aca98a54433e2c35009deac61148acdaf538e39967bba"
+  },
+  {
+   "id": "n37-delta-x",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "delta-mode-pixels",
+    "counterLine": 42
+   },
+   "mutation": "wheellog[1].deltaX 0 -> 1",
+   "expectedFindings": [
+    "delta-mode-pixels"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n37-delta-x.json",
+   "receiptSha256": "6d5779b05072c06746255f1542243538f20c2feb44b7a9c826ae489a094f9c24"
+  },
+  {
+   "id": "n38-type-scroll",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "trusted-fields",
+    "counterLine": 43
+   },
+   "mutation": "wheellog[0].type wheel -> scroll",
+   "expectedFindings": [
+    "trusted-fields"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n38-type-scroll.json",
+   "receiptSha256": "db47e2dac59b09ce51c74b75e643e4ac5a2641d28dbf90b03462d17e75b1259a"
+  },
+  {
+   "id": "n39-ts-negative",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "trusted-fields",
+    "counterLine": 43
+   },
+   "mutation": "wheellog[0].ts 15 -> -1",
+   "expectedFindings": [
+    "trusted-fields"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n39-ts-negative.json",
+   "receiptSha256": "cf7bb08792b44b96901490bbd8802ca417fc405d1c80b4b74bc310343e63fc0d"
+  },
+  {
+   "id": "n40-server-witness-empty",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "server-witness",
+    "counterLine": 49
+   },
+   "mutation": "serverLog -> [] (no request witnessed)",
+   "expectedFindings": [
+    "server-witness"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n40-server-witness-empty.json",
+   "receiptSha256": "a62d35ef827e37c73ee6fe67601f2ea4a28d2309e932c06d0b3ff575710499cf"
+  },
+  {
+   "id": "n41-duplicate-seq-appended",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "wheellog-sequence",
+    "counterLine": 40
+   },
+   "mutation": "append a contradictory duplicate of wheellog[3] (seq 4, different ts) so the array is 6 long",
+   "expectedFindings": [
+    "wheellog-sequence",
+    "delta-y-passthrough",
+    "delta-mode-pixels",
+    "trusted-fields",
+    "cancelation",
+    "target-binding"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n41-duplicate-seq-appended.json",
+   "receiptSha256": "fa262dc445d6753520fcbbced59b854d8383a47c95abeb4c83a05ec2e2c59271"
+  },
+  {
+   "id": "n42-extra-wheellog-event",
+   "cls": "negative",
+   "mandatory": null,
+   "targets": {
+    "check": "wheellog-sequence",
+    "counterLine": 40
+   },
+   "mutation": "append a sixth event seq 6 (length-guarded checks all trip)",
+   "expectedFindings": [
+    "wheellog-sequence",
+    "delta-y-passthrough",
+    "delta-mode-pixels",
+    "trusted-fields",
+    "cancelation",
+    "target-binding"
+   ],
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/negatives/n42-extra-wheellog-event.json",
+   "receiptSha256": "33cbad72dcac247dac2ec8b8f5e99bdabc8c6dbf1865074fe32ad6475b9868a8"
+  },
+  {
+   "id": "p01-ts-not-monotonic",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "trusted-fields (ts ordering: not claimed)",
+    "counterLine": 43
+   },
+   "mutation": "ts of wheellog[0] and wheellog[2] swapped: 427, 255.2, 15, 605.4, 755.2",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p01-ts-not-monotonic.json",
+   "receiptSha256": "114f8aed4a94fb8bde695d24e78d42cfa6f71135a99309483dbcaf116b7082c2"
+  },
+  {
+   "id": "p02-declaredStepNames-foreign",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "declaredStepNames (not read by the counter)",
+    "counterLine": 47
+   },
+   "mutation": "declaredStepNames -> ['x','y','z','w']",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p02-declaredStepNames-foreign.json",
+   "receiptSha256": "9945adf203deb973601cf4e5cee97a885d27bce84a300dd25b72aeae8238f8a7"
+  },
+  {
+   "id": "p03-viewport-lie",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "fixture.viewport (not read)",
+    "counterLine": 31
+   },
+   "mutation": "fixture.viewport -> {width:1,height:1}",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p03-viewport-lie.json",
+   "receiptSha256": "2a563eb1a13b2aadec9a47fe38a3d35d1f90200e9951e6e1fc849daac886b577"
+  },
+  {
+   "id": "p04-host-chromium-lie",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "host.chromium (not read)",
+    "counterLine": 33
+   },
+   "mutation": "host.chromium -> \"Firefox 128.0\"",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p04-host-chromium-lie.json",
+   "receiptSha256": "cd1066ada9abc7223c865c87b7ec01bb94c21639d2580715c58fb2d527a0103c"
+  },
+  {
+   "id": "p05-unknown-field",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "unknown top-level field (not read)",
+    "counterLine": 28
+   },
+   "mutation": "extra top-level field forged:true",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p05-unknown-field.json",
+   "receiptSha256": "ae628c3e2d59cb61db06615085743168a81faa6eb6578366abba1f883373b230"
+  },
+  {
+   "id": "p06-origin-port-zero",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "loopback-origin port range (regex accepts 0)",
+    "counterLine": 32
+   },
+   "mutation": "fixture.origin -> http://127.0.0.1:0",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p06-origin-port-zero.json",
+   "receiptSha256": "62f89b93b5c19f1c4de6a964c82d1d5fbdd0b855630acdcd2ff2114f7f885552"
+  },
+  {
+   "id": "p07-ctrl-modified-wheels",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "modifier flags (schema fields never asserted)",
+    "counterLine": 43
+   },
+   "mutation": "all five events ctrlKey true (zoom-gesture shape, accepted as plain scroll)",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p07-ctrl-modified-wheels.json",
+   "receiptSha256": "acfd604f744a3b5a593ab0507bb1ec419f2e7de4676754d418492bf16f1350aa"
+  },
+  {
+   "id": "p08-uniform-step-bytes",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "shot-bytes distinctness (never claimed)",
+    "counterLine": 48
+   },
+   "mutation": "all four steps claim one PNG hash and the shot dir holds four copies of it",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p08-uniform-step-bytes.json",
+   "receiptSha256": "7a2d1ba5a558992324871a4d74838706e4639b5ca27993ce92db3b919e7deca3"
+  },
+  {
+   "id": "p09-ts-duplicate",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "ts uniqueness (only seq is keyed)",
+    "counterLine": 43
+   },
+   "mutation": "all five ts set to 15: five distinct seq keys, one timestamp",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p09-ts-duplicate.json",
+   "receiptSha256": "05d6ae1847a1342116692b02b7ff24b01ee8f50e2aaf25eb95cb3f282bda2e7b"
+  },
+  {
+   "id": "p10-nonce-rebound",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "nonce/fixture binding is self-consistent only",
+    "counterLine": 29
+   },
+   "mutation": "nonce -> tabi-r63-forged-one with fixture.sha256 recomputed from the frozen driver bytes",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p10-nonce-rebound.json",
+   "receiptSha256": "8dcafc125284b8ecb13b9206e15a4428228d35158676023d396463f1c95dc168"
+  },
+  {
+   "id": "p12-scroll-events-in-range",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "scroll-event-witness bounds 1..5 (line 46)",
+    "counterLine": 46
+   },
+   "mutation": "pageState.scrollEvents 4 -> 3 (still inside the accepted 1..5 band)",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p12-scroll-events-in-range.json",
+   "receiptSha256": "83a4928529a9018c22495175b28ccb157f449e1d3db41bcf5bbec9f01d1a4612"
+  },
+  {
+   "id": "p11-duplicate-json-key",
+   "cls": "probe",
+   "mandatory": null,
+   "targets": {
+    "check": "JSON duplicate keys (JSON.parse last-wins at line 114)",
+    "counterLine": 114
+   },
+   "mutation": "raw text gains an earlier \"predicate\": false before the real \"predicate\": true; parsed value unchanged",
+   "expectedFindings": null,
+   "receipt": ".ufo/waves/round-63/w1/R63ExecNeg/probes/p11-duplicate-json-key.json",
+   "receiptSha256": "cf8daa37681d5a4bf543623c31956e232ff595632ef0514cde2d7a101a8bb389"
+  }
+ ],
+ "invocation": [
+  {
+   "id": "i01-shot-dir-swapped-bytes",
+   "mutation": "--shot points at a copy dir whose four PNGs are byte-swapped between steps",
+   "shotDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/w1/R63ExecNeg/shot-swapped",
+   "driver": "/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round63.mjs",
+   "pin": "b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040",
+   "expectedExit": 1,
+   "expectedFindings": [
+    "shot-bytes"
+   ]
+  },
+  {
+   "id": "i02-shot-dir-missing-file",
+   "mutation": "--shot points at a copy dir missing d-release.png",
+   "shotDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/w1/R63ExecNeg/shot-missing",
+   "driver": "/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round63.mjs",
+   "pin": "b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040",
+   "expectedExit": 1,
+   "expectedFindings": [
+    "shot-bytes"
+   ]
+  },
+  {
+   "id": "i03-shot-dir-absent",
+   "mutation": "--shot points at a nonexistent path",
+   "shotDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/w1/R63ExecNeg/shot-absent-does-not-exist",
+   "driver": "/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round63.mjs",
+   "pin": "b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040",
+   "expectedExit": 1,
+   "expectedFindings": [
+    "shot-bytes"
+   ]
+  },
+  {
+   "id": "i04-driver-pin-wrong",
+   "mutation": "--expect-driver-sha256 is 64 f characters",
+   "shotDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/controls/smoke",
+   "driver": "/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round63.mjs",
+   "pin": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+   "expectedExit": 2,
+   "expectedFindings": []
+  },
+  {
+   "id": "i05-driver-file-missing",
+   "mutation": "--driver points at a nonexistent file",
+   "shotDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/controls/smoke",
+   "driver": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/w1/R63ExecNeg/driver-absent-does-not-exist.mjs",
+   "pin": "b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040",
+   "expectedExit": 2,
+   "expectedFindings": []
+  }
+ ],
+ "positives": [
+  {
+   "id": "P0-smoke-run1",
+   "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/controls/smoke/receipt-run1.json",
+   "shotDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/controls/smoke",
+   "receiptSha256": "844f9facd15de4bd6ceb83ef5ae22765486062e66f1ffa241197ab8d2defd48f"
+  },
+  {
+   "id": "P1-smoke-run2",
+   "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/controls/smoke/receipt-run2.json",
+   "shotDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/controls/smoke",
+   "receiptSha256": "954cee8a2acaf191c328058ccc60674d300b10e217b1e9c149bf8bd7711b6250"
+  },
+  {
+   "id": "P2-data-live",
+   "receipt": "/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round63/chromium-wheel-scroll/receipt.json",
+   "shotDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round63/chromium-wheel-scroll",
+   "receiptSha256": "3aa3ce40b49eb2e3516cfb82923eae8761f3a9ba052a3da4cc58764164ad28a1"
+  }
+ ]
+}

@@ -1,0 +1,156 @@
+{
+ "schema": "tabi-r63-scribe-probes-v1",
+ "counter": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/counters/chromium-wheel-r63.mjs",
+ "counterSha256": "084705695a394256198b45c15fb7568b629e3bc750bbd46cfcb81cdb312d7178",
+ "driver": "/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round63.mjs",
+ "driverSha256": "b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040",
+ "shotDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-63/controls/smoke",
+ "note": "each probe is a single-field edit of the FREEZE-COMMIT smoke receipt .ufo/waves/round-63/controls/smoke/receipt-run1.json (sha256 844f9facd15de4bd6ceb83ef5ae22765486062e66f1ffa241197ab8d2defd48f); the frozen counter and driver were not modified",
+ "probes": [
+  {
+   "probe": "p-build.json",
+   "description": "forged host.chromium=\"Chromium 999.0.0.0 Fake/Build\" (build string unchecked)",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  },
+  {
+   "probe": "p-ctrl.json",
+   "description": "duplicate of p-ctrlkey (same edit)",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  },
+  {
+   "probe": "p-ctrlkey.json",
+   "description": "forged wheellog[0].ctrlKey=true (modifier keys unchecked by the counter)",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  },
+  {
+   "probe": "p-declared.json",
+   "description": "forged declaredStepNames=[\"x\"] (driver writes it, counter never reads it)",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  },
+  {
+   "probe": "p-extra-arg.json",
+   "description": "added --enable-automation to host.argv (argv is inclusion-checked, not exact)",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  },
+  {
+   "probe": "p-label.json",
+   "description": "forged steps[1].name=\"z\" (label binding)",
+   "exit": 1,
+   "predicate": false,
+   "findingCount": 2,
+   "findings": [
+    "shot-records",
+    "shot-bytes"
+   ]
+  },
+  {
+   "probe": "p-negts.json",
+   "description": "forged wheellog[0].ts=-5 (negative ts, refused)",
+   "exit": 1,
+   "predicate": false,
+   "findingCount": 1,
+   "findings": [
+    "trusted-fields"
+   ]
+  },
+  {
+   "probe": "p-scrollevents5.json",
+   "description": "duplicate of p-se5 (same edit)",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  },
+  {
+   "probe": "p-se5.json",
+   "description": "forged pageState.scrollEvents=5 (measured value is 4)",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  },
+  {
+   "probe": "p-serverlog.json",
+   "description": "added /evil.js to serverLog (server witness)",
+   "exit": 1,
+   "predicate": false,
+   "findingCount": 1,
+   "findings": [
+    "server-witness"
+   ]
+  },
+  {
+   "probe": "p-shuffle.json",
+   "description": "DEGENERATE probe: the three a/b/c shot digests are already equal on disk, so permuting them changes nothing; the honest consequence is that the shot-bytes witness binds only TWO distinct images, not four (see the note draft \u00a75/\u00a76)",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  },
+  {
+   "probe": "p-ts.json",
+   "description": "forged wheellog[0].ts=\"x\" (non-finite ts, refused)",
+   "exit": 1,
+   "predicate": false,
+   "findingCount": 1,
+   "findings": [
+    "trusted-fields"
+   ]
+  },
+  {
+   "probe": "p-tsmono.json",
+   "description": "forged ts descending 1000..996 (monotonicity unchecked)",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  },
+  {
+   "probe": "p-viewport.json",
+   "description": "forged fixture.viewport={width:0,height:0} (viewport unchecked; duplicate of p-vp)",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  },
+  {
+   "probe": "p-vp.json",
+   "description": "forged fixture.viewport={width:0,height:0} (viewport unchecked)",
+   "exit": 0,
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  }
+ ],
+ "summary": {
+  "probeCount": 15,
+  "acceptedByCounter": 11,
+  "refusedByCounter": 4,
+  "distinctGaps": [
+   "modifier booleans ctrlKey/shiftKey/altKey/metaKey unchecked (counter:43 vs driver:161,294)",
+   "pageState.scrollEvents accepted as 1..5 range not the measured 4 (counter:46)",
+   "host.chromium build string unchecked (counter:28-55 never reads it)",
+   "fixture.viewport unchecked (counter:31-32)",
+   "receipt.declaredStepNames written by driver:183 never read by the counter",
+   "the three step digests a/b/c are equal, so the shot-bytes witness binds only two distinct images",
+   "host.argv checked by inclusion not equality (counter:33) so extra flags pass",
+   "wheellog ts monotonicity unchecked (counter:43)"
+  ],
+  "note": "9 of the 11 accepted probes are single-field edits of a FREEZE-COMMIT receipt; 2 are duplicates of another probe (p-ctrl, p-scrollevents5), and p-shuffle is degenerate because the three a/b/c digests are already equal on disk. The 8 distinct gaps are listed in distinctGaps."
+ }
+}

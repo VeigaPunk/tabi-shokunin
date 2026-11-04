@@ -1,0 +1,71 @@
+{
+ "seat": "R63Scout",
+ "registry_check": {
+  "target": "corpus/SOURCES.md (lane registry)",
+  "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+  "method": "grep -n -E '<exact URL>' corpus/SOURCES.md ; plus a full-row parse for duplicate ids and duplicate URLs",
+  "row_for_U1": {
+   "id": "S166",
+   "line": 180,
+   "url": "https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent",
+   "kind": "docs",
+   "tier": "B",
+   "status": "mined",
+   "opened": "2026-11-04",
+   "recheck": "90d",
+   "anchor": "Instance properties list, the deltaY and deltaMode descriptions, fetched 2026-11-04 into .ufo/waves/round-63/sources/s166b-mdn-wheelevent.html (sha256 78bd40dc...)",
+   "used_by": "corpus/knowledge/chromium-wheel-scroll-round-63.md, corpus/lessons/round-63.md"
+  },
+  "row_for_U2": {
+   "id": "S167",
+   "line": 181,
+   "url": "https://drafts.csswg.org/cssom-view/",
+   "kind": "spec",
+   "tier": "A",
+   "status": "mined",
+   "opened": "2026-11-04",
+   "recheck": "90d",
+   "anchor": "Extensions to the Element interface, the scrollTop getter steps, living CSSWG draft fetched 2026-11-04 into .ufo/waves/round-63/sources/s167-cssom-view.html (sha256 51a7efdb...)",
+   "used_by": "corpus/knowledge/chromium-wheel-scroll-round-63.md, corpus/lessons/round-63.md"
+  },
+  "duplicate_rows_for_either_url": 0,
+  "duplicate_ids_in_registry": [],
+  "duplicate_urls_for_either_of_the_two_urls": 0,
+  "registry_state_note": "Both rows are UNCOMMITTED working-tree edits at the time of this seat's first read (git status showed ' M corpus/SOURCES.md'). They were absent from the freeze commit 816592612dd2a8073437c595d3fe3c477125cf3c (grep count 0 for both S166 and S167 at that commit) and absent from all 40+ historical revisions of corpus/SOURCES.md (max historical id S165). The rows were landed during round 63 wave w1 by another seat.",
+  "gate_at_first_read": {
+   "argv": "node scripts/check-sources.mjs",
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "exit": 1,
+   "stdout": "FINDING id=used_by_missing fleet=E11 row=S166 detail=path_missing\nFINDING id=used_by_missing fleet=E11 row=S167 detail=path_missing\nSOURCES_GATE verdict=failed rows=167 tiers=A:149,B:9,C:9 status=queued:15,mined:142,rejected:10 findings=2 file=corpus/SOURCES.md",
+   "cause": "the two new rows cite corpus/lessons/round-63.md in used-by; that file did not exist yet at the time of the first gate run (only corpus/knowledge/chromium-wheel-scroll-round-63.md existed)."
+  },
+  "gate_after_lesson_landed": {
+   "argv": "node scripts/check-sources.mjs",
+   "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+   "exit": 0,
+   "stdout": "SOURCES_GATE verdict=clean rows=167 tiers=A:149,B:9,C:9 status=queued:15,mined:142,rejected:10 findings=0 file=corpus/SOURCES.md",
+   "note": "corpus/lessons/round-63.md appeared during this seat's run; re-running the same command then exited 0 with findings=0. Both used-by paths now exist.",
+   "second_run_argv": "node scripts/check-sources.mjs --json",
+   "second_run_stdout": "FINDING id=could_not_evaluate fleet=- row=- detail=bad_arguments",
+   "second_run_note": "--json is not an accepted argument of this gate; it reports could_not_evaluate/bad_arguments with exit 0. Reported as skipped-not-applicable, not as a passing structured run."
+  },
+  "id_collision_note": "The lane registry's S-id space is tabi-local (contract: 'S + 3 or more digits, the next unused'). Tabi's registry never used S166/S167 before this round (max historical id S165 across all revisions). A separate, non-registry id space exists in .ufo/waves/round-22/assimilation/quarantine-rows-full (lines 33-34) and .ufo/waves/round-24/assimilation/{staged,union}-ids.txt (S166 at staged-ids line 65, union-ids line 166) and .ufo/waves/round-25/assimilation/quarantine-ids.txt (line 33), where S166/S167 denote quarantined kaika webmcp rows (weel.co.jp, cla.com marketplace). 34 of the 37 ids in that quarantine space already collide with different URLs in the tabi registry (e.g. S163 = agent-browser.dev there vs dom.spec.whatwg.org in the registry; S164 = chrome webmcp compare vs pointerevents). So the new S166/S167 are consistent with the lane's established practice and are NOT a duplicate-row finding under the lane's own gate.",
+  "cross_lane_duplicate_check": {
+   "scope": "all */corpus/SOURCES.md in the fleet root plus .ufo/reports/round-12/SOURCES.md",
+   "argv": "grep -rn -E 'developer\\.mozilla\\.org/en-US/docs/Web/API/WheelEvent|drafts\\.csswg\\.org/cssom-view' --include='SOURCES.md' .",
+   "result": "only tabi-shokunin/corpus/SOURCES.md lines 180 and 181 - no other lane registers either URL",
+   "fleet_aggregate": ".ufo/reports/round-12/SOURCES.md carries no S-id registry rows (0 rows matching ^| S### |), so it cannot duplicate"
+  }
+ },
+ "third_staged_source": {
+  "path": ".ufo/waves/round-63/sources/s166-mdn-wheel.html",
+  "bytes": 181303,
+  "sha256": "6ec7ec375ada09642a7ee76e63bb57eee1cf1e8e86e1b06f401bb8ecbacc7e4c",
+  "canonical": "https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event",
+  "in_claims_pins": false,
+  "registry_row": null,
+  "cited_in_corpus": false,
+  "content_of_interest": "line 1596: 'The wheel event is cancelable. In some browsers, only the first wheel event in a sequence is cancelable, and later events are non-cancelable. If the event is canceled, no scrolling or zooming is performed.'",
+  "assessment": "This is the page that would ground cancelable/defaultPrevented semantics. It is staged and committed at the freeze commit but is NOT pinned in claims.json, has no registry row, and is cited nowhere in corpus/. The lane therefore leaves cancelable semantics un-sourced - which the knowledge entry and lesson already declare honestly as measured."
+ }
+}

@@ -1,0 +1,69 @@
+{
+ "seat": "R63Scout",
+ "source_of_receipt": ".ufo/waves/round-63/controls/smoke/receipt-run1.json",
+ "receipt_sha256": "844f9facd15de4bd6ceb83ef5ae22765486062e66f1ffa241197ab8d2defd48f",
+ "receipt_bytes": 4475,
+ "counter_that_accepts_it": ".ufo/waves/round-63/counters/chromium-wheel-r63.mjs",
+ "counter_result": {
+  "argv": "node .ufo/waves/round-63/counters/chromium-wheel-r63.mjs .ufo/waves/round-63/controls/smoke/receipt-run1.json --driver scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040 --shot .ufo/waves/round-63/controls/smoke --json",
+  "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+  "exit": 0,
+  "stdout_json": {
+   "schema": "tabi-r63-wheel-counter",
+   "predicate": true,
+   "findingCount": 0,
+   "findings": []
+  }
+ },
+ "field_grounding_matrix": [
+  {
+   "receipt_field": "wheellog[].deltaY (120,120,-120,120,120)",
+   "grounded_by_sources": "PARTIAL",
+   "s166_evidence": "s166b line 1681 'Returns a double representing the vertical scroll amount.' grounds the MEANING of deltaY (vertical scroll amount).",
+   "not_grounded": "the numeric values 120/-120, the deltaY==dispatched-deltaY passthrough, and any pixel identity are NOT in either source.",
+   "declared_as": "measured (driver passthrough); 'deltaY is the vertical scroll amount' is sourced."
+  },
+  {
+   "receipt_field": "wheellog[].deltaMode (0)",
+   "grounded_by_sources": "NO",
+   "s166_evidence": "s166b line 1689 'Returns an unsigned long representing the unit of the delta* values' scroll amount.' grounds only that deltaMode names a UNIT.",
+   "not_grounded": "deltaMode==0 means pixels: neither source states the DOM_DELTA_* enumeration (grep DOM_DELTA = 0 occurrences in both files). The numeric-to-unit mapping lives on the separate MDN sub-page /Web/API/WheelEvent/deltaMode, which is linked at s166b line 1687 but was NOT fetched or staged.",
+   "declared_as": "measured (observed, not proven stable across builds) - knowledge entry \u00a78 and lesson Gate row 21 both say so explicitly."
+  },
+  {
+   "receipt_field": "wheellog[].isTrusted (true)",
+   "grounded_by_sources": "NO",
+   "s166_evidence": "s166b: 0 occurrences of 'isTrusted'. The only isTrusted text in either source is CSSOM View line 2539 (MediaQueryList), an external DOM reference, not a wheel-event rule.",
+   "not_grounded": "the true value and its meaning for a wheel event.",
+   "declared_as": "measured - knowledge entry \u00a72 says 'It does not ground ... isTrusted ... those are measured'; lesson Gate row 21 rejects S166 for it."
+  },
+  {
+   "receipt_field": "wheellog[].cancelable (true)",
+   "grounded_by_sources": "NO",
+   "s166_evidence": "s166b: 0 occurrences of 'cancelable'. CSSOM: 0 occurrences. The staged-but-unregistered s166-mdn-wheel.html (Element: wheel event) line 1596 says 'The wheel event is cancelable.' but that file is NOT pinned in claims.json and has NO registry row.",
+   "not_grounded": "cancelable=true, and the 'only the first wheel event in a sequence is cancelable' caveat.",
+   "declared_as": "measured - knowledge entry \u00a72 and lesson Gate row 21."
+  },
+  {
+   "receipt_field": "wheellog[].defaultPrevented (true only on leg 4)",
+   "grounded_by_sources": "NO",
+   "s166_evidence": "0 occurrences of 'defaultPrevented' in s166b, s166 and s167.",
+   "not_grounded": "the whole field, including that preventDefault() on a wheel event suppresses the scroll and still delivers the event.",
+   "declared_as": "measured (knowledge entry \u00a72, \u00a73, \u00a74 all mark it measured)."
+  },
+  {
+   "receipt_field": "legs[].scrollY (0,120,240,120,120,240) and pageState.scrollY (240)",
+   "grounded_by_sources": "PARTIAL",
+   "s167_evidence": "s167 line 2248-2251 defines Window.scrollY: 'must return the y-coordinate, relative to the initial containing block origin, of the top of the viewport, or zero if there is no viewport.' And line 3370: for the root element, Element.scrollTop getter 'return the value of scrollY on window'.",
+   "not_grounded": "the exact arithmetic 0->120->240->120->120->240, the 120px unit, and the claim that window.scrollY is the same scroll position as the document scrolling element's scrollTop.",
+   "declared_as": "the attribute CLASS (scroll-position witness) is sourced; the accessor used (window.scrollY) and all arithmetic are measured - knowledge entry \u00a72 and lesson Gate row 22."
+  },
+  {
+   "receipt_field": "wheellog[].deltaX (0), deltaZ (0)",
+   "grounded_by_sources": "PARTIAL",
+   "s166_evidence": "s166b line 1677 'Returns a double representing the horizontal scroll amount.'; line 1685 'Returns a double representing the scroll amount for the z-axis.'",
+   "not_grounded": "that they are 0 here, or that they must be 0.",
+   "declared_as": "measured values; semantics sourced."
+  }
+ ]
+}

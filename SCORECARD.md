@@ -3443,3 +3443,68 @@ selftests and source-location-specific mutants; duplicate-delta key refusal
 and evidence-backed disposition checking. No frozen r62 predicate repair.
 Assimilation remains closed under round-57 L0. Unanswered keyup/overlap/topology
 rulings stay open. Saturation 8 / window 3 retained; no axis retired.
+
+## Round 63 — declared claims (frozen at 81659261, before the wave and before any scored data) and executed disposition
+
+Round 63 (attempt 1) on the Linux host, the operator's renewed pause lift
+("Resume all four once", tabi next r63). The last four rejected closures were
+read before declaration (r59 forged field, r60 live-head drift, r61 malformed
+header plus post-score pin transfer, r62 producer-verdict survivor). Baseline
+`f098bcf8843c8a5a723a83995352180f897a6ff9`; instrument/controls freeze
+`816592612dd2a8073437c595d3fe3c477125cf3c`; wave spec/dispatch `e5325ad8`.
+Axes at round start: adjacency 8, coverage 9, depth 9, operability 9,
+freshness 9, calibration 9. Saturation 8 / window 3; no capability has entered
+since r58, so the stagnation nudge is ACTIVE: the lowest-axis obligation is
+waived and the round is a frontier/capability move (C1) plus a calibration
+repair (C2). Every failing-before control below was executed and committed
+BEFORE the freeze, per the run15 tabi-r63 prerequisite.
+
+| Claim / axis | Counting command and evidence | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage, capability `chromium-wheel-scroll-domain-linux`: the Linux Chromium wheel/scroll domain on a loopback fixture | `node .ufo/waves/round-63/counters/chromium-wheel-r63.mjs corpus/evidence/round63/chromium-wheel-scroll/receipt.json --driver scripts/chrome-cdp-loopback-round63.mjs --expect-driver-sha256 b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040 --shot corpus/evidence/round63/chromium-wheel-scroll --json`; `counters/compare-stability-r63.mjs`; `counters/mutate-r63.mjs run` over `controls/negatives-data/` | before: no r63 driver, counter or evidence exists; the frozen r62 generation's exact-line producer mutant ACCEPTS its lying receipt (pristine exit 1, mutant exit 0) at `controls/old-generation/result.json`. after: counter exit 0, predicate true, 0 findings; selftest 22/22; ten declared negatives each exit 1 (forgedGreen 0); eight exact-line mutants each accept the live receipt and false-green exactly their declared negative (matrix-data.json, 0 survived); two cold runs carry identical legs / wheellog-minus-ts / pageState and 4/4 identical PNG sha256 | **UNPROVABLE** — the frozen predicate is met, but the round's do-nothing standard is not: a hand-written receipt with four 1×1 PNGs and a coherent driver-side fabrication both exit 0 (lesson W1). No capability row, score held 9, delta 0 |
+| C2 calibration: the lane's own frozen self-assessment gate counts its self-assessment against observed repo state | `node scripts/check-selfassessment.mjs --rev <LANDED_REV> --json` (clean worktree) | before (sandbox clone at baseline with the one round-62 artifact restored): exit 1, mismatches 2 — m1 `SCORECARD.md:3427` claimed 44 observed 9, m3 round-62 claimed landed observed 1; after: exit 0, mismatches 0, clean true, 194 could-not-evaluate and 58 superseded disclosed; gate bytes and its 45/45 selftest unchanged | VERIFIED on its frozen predicate |
+
+### Capabilities - round 63
+
+No capability row enters. C1's frozen predicate is met (counter green, ten
+negatives refused, eight exact-line mutants killed, cold runs stable), but the
+round's do-nothing standard is not: a hand-written receipt with four 1×1 PNGs
+(`w1/R63Reviewer`) and a coherent driver-side fabrication (`w1/R63MutDriver` A6)
+both exit 0, so the counter's green does not demonstrate that the surface ran.
+The wheel/scroll surface is recorded as the next round's planned capability with
+the repair conditions in `corpus/lessons/round-63.md` W1–W7.
+
+| Capability (planned, not entered) | What it must do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-wheel-scroll-domain-linux` | Drive `mouseWheel` deltas over raw CDP into a page-side recorder with exact scroll arithmetic and a cancelation negative plus its released positive control, on a receipt bound to the run (nonce in page pixels), with a negative for every named check | evidence of the real runs: `corpus/evidence/round63/chromium-wheel-scroll/` (15 files); instrument: `.ufo/waves/round-63/counters/chromium-wheel-r63.mjs` | — |
+- Capability limit (round 63, disclosed): the surface's evidence is a consistency-verified
+  receipt plus the real-run artifacts; the counter is not an execution oracle (a
+  hand-written receipt with four 1×1 PNGs and a coherent driver-side fabrication
+  both exit 0), and the run is not egress-isolated (Chromium's own background
+  traffic reached non-loopback peers; the fixture origin stayed loopback). Both
+  are declared limits, not revoked evidence; see `corpus/lessons/round-63.md`
+  W1/W5/W12.
+- Correction: `SCORECARD.md:3427` states `44/44` for the v21 adjacency meter (`node .ufo/waves/round-62/counters/c1-adjacency-host-v21.mjs --selftest`), not for `scripts/check-secondary-round62.mjs`, whose `--self-test` oracle tally is 9 cases and is unchanged (superseded pointer, no instrument edit; the round-62 C1 verdict stands as filed).
+- Round 63 artifact durability: the round-62 `R62Scout/commands.json`
+  (1,388,366 B, sha256 `e9b673d7…`) that the r62 spot-check routed as untracked
+  work is committed with a `MANIFEST.txt` beside its seven siblings; the m3
+  clause of the gate reads zero real unlanded paths at the landing revision.
+- Knowledge notes 74 → 75 (`chromium-wheel-scroll-round-63.md`); registry
+  165 → 167 (S166 MDN WheelEvent tier B, S167 CSSOM View tier A; both opened
+  and quoted this round, used-by the new note and the round lesson).
+
+Round 63 executed disposition: C1 **UNPROVABLE** (frozen predicate met, do-nothing
+standard failed); C2 **VERIFIED**; the round is **rejected-honest-stop** (honest
+stop, operator rules). No capability row enters; no axis is harmed; every score
+held (coverage 9, calibration 9, others 9; adjacency 8).
+
+### Planned / saturation / retired — round 63
+
+- planned (r64): re-run the C2 gate as a freshness check (it must stay at
+  mismatches 0); a new claim only as a separately declared generation, never a
+  re-declaration of a r59–r62 predicate. Candidate frontier ground: pointer
+  capture / drag-over-loopback, and the wheel domain's declared residuals
+  (horizontal scroll, `scrollend`, trackpad phases) as its own claim.
+- saturation 8 / window 3 retained; no capability entered in round 63, so
+  round 64 is at position 1 of the window (rounds 60–63 carry none).
+- retired: none. D10 (capability-only claims hold the axis score) still applies.

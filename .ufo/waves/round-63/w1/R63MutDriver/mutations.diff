@@ -1,0 +1,122 @@
+### A1
+--- frozen/scripts/chrome-cdp-loopback-round63.mjs
++++ w1/R63MutDriver/mutants/A1.mjs
+@@ -295,7 +295,7 @@
+   && e.deltaY === [120, 120, -120, 120, 120][i]
+   && e.defaultPrevented === (i === 3)
+   && e.scrollYAtDispatch === [0, 120, 240, 120, 120][i]);
+-receipt.wheelHypothesis = (shapeOk && entriesOk && receipt.nonceOnPage === nonce && receipt.pageState.scrollEvents > 0) ? 'CONFIRMED' : 'REFUTED';
++receipt.wheelHypothesis = 'CONFIRMED';
+ receipt.predicate = receipt.wheelHypothesis === 'CONFIRMED' && receipt.failures.length === 0 && !interrupted;
+ fs.writeFileSync(path.join(scratchDir, 'server-log.json'), JSON.stringify(serverLog, null, 1));
+ fs.writeFileSync(outReceipt, JSON.stringify(receipt, null, 1));
+### A2
+--- frozen/scripts/chrome-cdp-loopback-round63.mjs
++++ w1/R63MutDriver/mutants/A2.mjs
+@@ -251,7 +251,7 @@
+   const wheel = async (deltaY) => { await send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: 200, y: 300, deltaX: 0, deltaY, button: 'none', buttons: 0 }); return settle(); };
+   const recordLeg = async (name, scrollY) => {
+     const len = await evalValue('window.__wheellog.length');
+-    receipt.legs.push({ name, scrollY, wheellogLen: len });
++    receipt.legs.push({ name, scrollY: name === 'down1' ? 240 : scrollY, wheellogLen: len });
+   };
+   await send('Page.enable'); await send('Runtime.enable');
+   await send('Page.navigate', { url: origin + '/' });
+@@ -295,7 +295,7 @@
+   && e.deltaY === [120, 120, -120, 120, 120][i]
+   && e.defaultPrevented === (i === 3)
+   && e.scrollYAtDispatch === [0, 120, 240, 120, 120][i]);
+-receipt.wheelHypothesis = (shapeOk && entriesOk && receipt.nonceOnPage === nonce && receipt.pageState.scrollEvents > 0) ? 'CONFIRMED' : 'REFUTED';
++receipt.wheelHypothesis = 'CONFIRMED';
+ receipt.predicate = receipt.wheelHypothesis === 'CONFIRMED' && receipt.failures.length === 0 && !interrupted;
+ fs.writeFileSync(path.join(scratchDir, 'server-log.json'), JSON.stringify(serverLog, null, 1));
+ fs.writeFileSync(outReceipt, JSON.stringify(receipt, null, 1));
+### A3
+--- frozen/scripts/chrome-cdp-loopback-round63.mjs
++++ w1/R63MutDriver/mutants/A3.mjs
+@@ -251,7 +251,7 @@
+   const wheel = async (deltaY) => { await send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: 200, y: 300, deltaX: 0, deltaY, button: 'none', buttons: 0 }); return settle(); };
+   const recordLeg = async (name, scrollY) => {
+     const len = await evalValue('window.__wheellog.length');
+-    receipt.legs.push({ name, scrollY, wheellogLen: len });
++    receipt.legs.push({ name, scrollY: name === 'down1' ? 240 : scrollY, wheellogLen: len });
+   };
+   await send('Page.enable'); await send('Runtime.enable');
+   await send('Page.navigate', { url: origin + '/' });
+### A4
+--- frozen/scripts/chrome-cdp-loopback-round63.mjs
++++ w1/R63MutDriver/mutants/A4.mjs
+@@ -236,7 +236,7 @@
+   ws.addEventListener('message', (ev) => { const msg = JSON.parse(ev.data); const p = pending.get(msg.id); if (p) { pending.delete(msg.id); clearTimeout(p.timer); msg.error ? p.reject(new Error(JSON.stringify(msg.error))) : p.resolve(msg); } });
+   const send = (method, params = {}) => new Promise((resolve, reject) => { const id = ++msgId; const timer = setTimeout(() => { pending.delete(id); reject(new Error('CDP timeout ' + method)); }, 20000); pending.set(id, { resolve, reject, timer }); ws.send(JSON.stringify({ id, method, params })); });
+   const evalValue = async (expression) => { const r = await send('Runtime.evaluate', { expression, returnByValue: true }); if (r.result.exceptionDetails) throw new Error(JSON.stringify(r.result.exceptionDetails)); return r.result.result.value; };
+-  const capture = async (name) => { const shot = await send('Page.captureScreenshot', { format: 'png' }); const buf = Buffer.from(shot.result.data, 'base64'); const rec = { name, png: name + '.png', sha256: sha256(buf), bytes: buf.length }; fs.writeFileSync(path.join(outDir, rec.png), buf); receipt.steps.push(rec); return rec; };
++  const capture = async (name) => { const shot = await send('Page.captureScreenshot', { format: 'png' }); const buf = Buffer.from(shot.result.data, 'base64'); const rec = { name, png: name + '.png', sha256: sha256(Buffer.from('not-the-captured-png')), bytes: buf.length }; fs.writeFileSync(path.join(outDir, rec.png), buf); receipt.steps.push(rec); return rec; };
+   const settle = async () => {
+     let prev = -1, stable = 0;
+     for (let i = 0; i < 80; i++) {
+### A4b
+--- frozen/scripts/chrome-cdp-loopback-round63.mjs
++++ w1/R63MutDriver/mutants/A4b.mjs
+@@ -236,7 +236,7 @@
+   ws.addEventListener('message', (ev) => { const msg = JSON.parse(ev.data); const p = pending.get(msg.id); if (p) { pending.delete(msg.id); clearTimeout(p.timer); msg.error ? p.reject(new Error(JSON.stringify(msg.error))) : p.resolve(msg); } });
+   const send = (method, params = {}) => new Promise((resolve, reject) => { const id = ++msgId; const timer = setTimeout(() => { pending.delete(id); reject(new Error('CDP timeout ' + method)); }, 20000); pending.set(id, { resolve, reject, timer }); ws.send(JSON.stringify({ id, method, params })); });
+   const evalValue = async (expression) => { const r = await send('Runtime.evaluate', { expression, returnByValue: true }); if (r.result.exceptionDetails) throw new Error(JSON.stringify(r.result.exceptionDetails)); return r.result.result.value; };
+-  const capture = async (name) => { const shot = await send('Page.captureScreenshot', { format: 'png' }); const buf = Buffer.from(shot.result.data, 'base64'); const rec = { name, png: name + '.png', sha256: sha256(buf), bytes: buf.length }; fs.writeFileSync(path.join(outDir, rec.png), buf); receipt.steps.push(rec); return rec; };
++  const capture = async (name) => { const shot = await send('Page.captureScreenshot', { format: 'png' }); const buf = Buffer.from(shot.result.data, 'base64'); const first = globalThis.__shot0 || (globalThis.__shot0 = buf); const rec = { name, png: name + '.png', sha256: sha256(first), bytes: first.length }; fs.writeFileSync(path.join(outDir, rec.png), first); receipt.steps.push(rec); return rec; };
+   const settle = async () => {
+     let prev = -1, stable = 0;
+     for (let i = 0; i < 80; i++) {
+### A5
+--- frozen/scripts/chrome-cdp-loopback-round63.mjs
++++ w1/R63MutDriver/mutants/A5.mjs
+@@ -145,7 +145,7 @@
+ const WHEEL_HTML = `<!doctype html><html><head><meta charset="utf-8"><title>tabi-r63 wheel fixture</title>
+ <style>
+   html, body { margin: 0; padding: 0; }
+-  #tall { height: 3000px; background: linear-gradient(#fff, #ddf); }
++  #tall { height: 6000px; background: linear-gradient(#fff, #ddf); }
+   #marker { position: absolute; top: 1200px; left: 0; width: 120px; height: 24px; background: #8f8; }
+ </style>
+ <script>
+### A6
+--- frozen/scripts/chrome-cdp-loopback-round63.mjs
++++ w1/R63MutDriver/mutants/A6.mjs
+@@ -144,7 +144,7 @@
+ /*WHEEL-FIXTURE-BEGIN*/
+ const WHEEL_HTML = `<!doctype html><html><head><meta charset="utf-8"><title>tabi-r63 wheel fixture</title>
+ <style>
+-  html, body { margin: 0; padding: 0; }
++  html, body { margin: 0; padding: 0; } html { overflow: hidden; }
+   #tall { height: 3000px; background: linear-gradient(#fff, #ddf); }
+   #marker { position: absolute; top: 1200px; left: 0; width: 120px; height: 24px; background: #8f8; }
+ </style>
+@@ -154,6 +154,8 @@
+ window.__scrollEvents = 0;
+ window.__swallow = false;
+ window.__nonceOnPage = null;
++window.__fakeY = 0;
++Object.defineProperty(window, 'scrollY', { configurable: true, get: function () { return window.__fakeY; } });
+ document.addEventListener('wheel', function (e) {
+   if (window.__swallow) e.preventDefault();
+   window.__wheellog.push({ type: e.type, seq: ++window.__seq, ts: e.timeStamp,
+@@ -161,6 +163,7 @@
+     ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey, metaKey: e.metaKey,
+     isTrusted: e.isTrusted, cancelable: e.cancelable, defaultPrevented: e.defaultPrevented,
+     targetId: e.target.id || e.target.tagName, scrollYAtDispatch: window.scrollY });
++  if (!window.__swallow) { window.__fakeY += e.deltaY; window.__scrollEvents += 1; }
+ }, { capture: true, passive: false });
+ window.addEventListener('scroll', function () { window.__scrollEvents += 1; });
+ document.addEventListener('DOMContentLoaded', function () {
+### A7
+--- frozen/scripts/chrome-cdp-loopback-round63.mjs
++++ w1/R63MutDriver/mutants/A7.mjs
+@@ -144,7 +144,7 @@
+ /*WHEEL-FIXTURE-BEGIN*/
+ const WHEEL_HTML = `<!doctype html><html><head><meta charset="utf-8"><title>tabi-r63 wheel fixture</title>
+ <style>
+-  html, body { margin: 0; padding: 0; }
++  html, body { margin: 0; padding: 0; } html { overflow: hidden; }
+   #tall { height: 3000px; background: linear-gradient(#fff, #ddf); }
+   #marker { position: absolute; top: 1200px; left: 0; width: 120px; height: 24px; background: #8f8; }
+ </style>

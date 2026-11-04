@@ -3037,3 +3037,30 @@ Owner of every row: tabi. Pins for frozen instruments and sibling snapshot:
 | secondary-button receipt / gate | `node .ufo/waves/round-62/counters/chromium-receipt-r62.mjs <receipt> --driver scripts/chrome-cdp-loopback-round62.mjs --expect-driver-sha256 <pinned-sha> --shot <PNG-dir> --json` | 0 clean; 1 failed; 2 could-not-evaluate | same script `--selftest` (16 core cases); production CLI via next row | stdout only |
 | secondary-button command-path replay / gate | `node scripts/check-secondary-round62.mjs --self-test --scratch <ABS-scratch>` | 0 clean; 1 failed; other exits could-not-evaluate | same command, 9 CLI cases (live plus eight forgeries), each negative asserts exit and finding-id | scratch temporary probes, removed in finally; stdout |
 | secondary-button live driver / probe | `node scripts/chrome-cdp-loopback-round62.mjs --scratch <ABS> --out <ABS-receipt.json> --nonce <tabi-r62-token> --http-port <free-port> --cdp-port <free-port>` | 0 completed; 1 failed; 2 could-not-evaluate | run on isolated loopback fixture, not a network-free gate | declared scratch/profile/HOME plus output receipt and PNGs |
+
+## Wheel/scroll domain — round 63 (measured, Linux Chromium)
+
+The `§Pins` block above is the historical round-4 block; this section pins its
+own source: `corpus/knowledge/chromium-wheel-scroll-round-63.md` sha256
+`4c54e0c91de1` (re-derive with `sha256sum` before reuse).
+
+Measured model on Chromium 155.0.8059.84 (this host): one raw-CDP
+`Input.dispatchMouseEvent` of type `mouseWheel` with `deltaY: 120` moves
+`window.scrollY` by exactly +120 when the launch carries
+`--disable-smooth-scrolling`; the page's capture-phase `wheel` recorder sees
+`deltaY` as dispatched, `deltaX 0`, `deltaMode 0`, `isTrusted true`,
+`cancelable true`. A page that calls `preventDefault()` still receives the
+event (`defaultPrevented true`) and the scroll position does not move.
+
+| Question | Rule |
+|---|---|
+| Did the wheel reach the page? | read the page-side recorder: `isTrusted`, `deltaY`, `deltaMode`, shared sequence |
+| Did it scroll? | `window.scrollY` before/after with smooth scrolling disabled; exact arithmetic is the witness |
+| Did the page cancel it? | swallowed leg: event delivered + position unchanged; ALWAYS pair with a released leg (same delta, flag cleared) that moves — "no movement" alone cannot separate a working swallow from a dead listener |
+| Is the receipt re-derivable? | counter `.ufo/waves/round-63/counters/chromium-wheel-r63.mjs` (22 selftest cases, ten negatives, eight exact-line mutants) |
+| Is the evidence reproducible? | two cold runs: `counters/compare-stability-r63.mjs` (shape + PNG byte equality) |
+
+Do not infer horizontal scroll, `scrollend`, trackpad phases, ctrl+wheel zoom
+or cross-browser deltas from this domain; each is its own claim. The receipt is
+not authenticated — the counter checks internal consistency against the
+invocation-supplied driver digest.

@@ -1,0 +1,129 @@
+{
+  "schema": "tabi-r63-w1-R63ExecGate-runs-v1",
+  "seat": "R63ExecGate",
+  "round": 63,
+  "wave": "w1",
+  "claim": "C2",
+  "date_utc": "2026-11-04",
+  "host": { "node": "v24.21.0", "git": "2.56.0" },
+  "freeze": {
+    "baseline": "f098bcf8843c8a5a723a83995352180f897a6ff9",
+    "instrument_controls_freeze": "816592612dd2a8073437c595d3fe3c477125cf3c",
+    "lane_head_at_start": "e5325ad8805df86cb0109373d2ac695f558c2a1f"
+  },
+  "sandbox": {
+    "root": "/fast/scratch/hyaku/tabi-r63/R63ExecGate",
+    "clone": "/fast/scratch/hyaku/tabi-r63/R63ExecGate/sandbox/lane",
+    "clone_method": "git clone --shared /home/vgpnk/Projects/shokunin/tabi-shokunin <dir>",
+    "rev_parse_show_toplevel": "/fast/scratch/hyaku/tabi-r63/R63ExecGate/sandbox/lane",
+    "restored_artifact": ".ufo/waves/round-62/w1/R62Scout/commands.json",
+    "restored_artifact_sha256": "e9b673d70685b317f33f12bb91556e62f27f27aa62185121670ce8e56a2e34d7",
+    "restored_artifact_bytes": 1388366,
+    "status_rows_after_restore": 1,
+    "status_line": "?? .ufo/waves/round-62/w1/R62Scout/commands.json"
+  },
+  "runs": [
+    {
+      "id": "R1-before",
+      "argv": ["node", "scripts/check-selfassessment.mjs", "--rev", "f098bcf8843c8a5a723a83995352180f897a6ff9", "--json"],
+      "cwd": "/fast/scratch/hyaku/tabi-r63/R63ExecGate/sandbox/lane",
+      "exit": 1,
+      "receipt": "receipts/selfassessment-before.json",
+      "receipt_sha256": "91f4e174bd06b2326dac2beabcb24adc4acc3cf1b1446c5e32942d7840613ee7",
+      "mismatches": 2,
+      "clean": false,
+      "counted": [
+        { "class": "m1-selftest-tally", "doc": "SCORECARD.md", "line": 3427, "claimed": 44, "observed": 9 },
+        { "class": "m3-unlanded-paths", "doc": "SCORECARD.md", "line": null, "claimed": "landed", "observed": 1 }
+      ],
+      "couldNotEvaluate": 142,
+      "superseded": 58,
+      "stderr_bytes": 0
+    },
+    {
+      "id": "R2-after",
+      "argv": ["node", "scripts/check-selfassessment.mjs", "--rev", "24c966dada206571a096c5c8f70b4ffe21c9523c", "--json"],
+      "cwd": "/fast/scratch/hyaku/tabi-r63/R63ExecGate/sandbox/lane",
+      "exit": 0,
+      "receipt": "receipts/selfassessment-after.json",
+      "receipt_sha256": "d7ffc2e7fc837c51e2635c18ba7c56a92ff3e6beda1239ff1d8f77d77a9ecc46",
+      "mismatches": 0,
+      "clean": true,
+      "counted": [],
+      "couldNotEvaluate": 142,
+      "superseded": 59,
+      "status_rows_before_run": 0,
+      "appended_line": "Correction (supersedes SCORECARD.md:3427): the `44/44` figure on that line is the v21 meter own selftest tally (`.ufo/waves/round-62/counters/c1-adjacency-host-v21.mjs`, cases 44, allPass true), not a tally of `scripts/check-secondary-round62.mjs`, whose `--self-test` measures 9 cases.",
+      "commit_diff_numstat": { "SCORECARD.md": "2 0", ".ufo/waves/round-62/w1/R62Scout/commands.json": "133 0", ".ufo/waves/round-62/w1/R62Scout/MANIFEST.json": "7 0" }
+    },
+    {
+      "id": "R3-residual-m3",
+      "argv": ["node", "scripts/check-selfassessment.mjs", "--rev", "24c966dada206571a096c5c8f70b4ffe21c9523c", "--json"],
+      "cwd": "/fast/scratch/hyaku/tabi-r63/R63ExecGate/sandbox/lane",
+      "exit": 1,
+      "receipt": "receipts/selfassessment-residual-m3.json",
+      "receipt_sha256": "31f4a2b40f369dbdf25df4c7bbc8d2eb6ce5213851f8c3421ad8ee1238102ae5",
+      "precondition": "60 untracked round-63 paths copied from the live lane into the clean after-state clone",
+      "mismatches": 1,
+      "clean": false,
+      "counted": [{ "class": "m3-unlanded-paths", "doc": "SCORECARD.md", "line": null, "claimed": "landed", "observed": 60 }],
+      "m3_finding_round_field": 43,
+      "couldNotEvaluate": 142,
+      "superseded": 59
+    },
+    {
+      "id": "R4-secondary-oracle",
+      "argv": ["node", "scripts/check-secondary-round62.mjs", "--self-test"],
+      "cwd": "/fast/scratch/hyaku/tabi-r63/R63ExecGate/sandbox/lane",
+      "exit": 0,
+      "receipt": "receipts/check-secondary-selftest.json",
+      "receipt_sha256": "de3be3bbd3d40c35c3cd4dfb54af54b7f76820a08c0235e6e08b04c9eae97b4a",
+      "tally": { "schema": "tabi-r62-production-path-selftest", "cases": 9, "allPass": true, "results": 9 }
+    },
+    {
+      "id": "R5-v21-oracle",
+      "argv": ["node", ".ufo/waves/round-62/counters/c1-adjacency-host-v21.mjs", "--selftest"],
+      "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+      "exit": 0,
+      "receipt": "receipts/c1-adjacency-host-v21-selftest.json",
+      "receipt_sha256": "80023511e0e92b8ae373004c21794c1d6b5aa36654a6f054a857cfa701dfbc1a",
+      "tally": { "schema": "tabi-adjacency-host-v21-selftest", "cases": 44, "pass": 44, "allPass": true, "results": 44 }
+    },
+    {
+      "id": "R6-gate-selftest",
+      "argv": ["node", "scripts/check-selfassessment.mjs", "--selftest"],
+      "cwd": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+      "exit": 0,
+      "receipt": "receipts/check-selfassessment-selftest.out",
+      "summary_line": "SELFASSESSMENT_SELFTEST verdict=clean cases=45 passed=45"
+    },
+    {
+      "id": "R7-live-status",
+      "argv": ["git", "-C", "/home/vgpnk/Projects/shokunin/tabi-shokunin", "status", "--porcelain", "--untracked-files=all"],
+      "cwd": "/home/vgpnk/Projects/shokunin",
+      "exit": 0,
+      "snapshot_utc": "2026-11-04T19:07:04Z",
+      "rows": 63,
+      "receipt": "receipts/live-status-snapshot-190704Z.txt",
+      "receipt_sha256": "1ca6b6161790f1880f524fdd8912f153766926443ccec45df321e13f57160659",
+      "class_counts": { "round-63-in-flight": 62, "round-62-artifact": 1 },
+      "tracked_modified": ["SCORECARD.md", "corpus/SOURCES.md"],
+      "earlier_observation_same_session": { "rows": 38, "all_untracked": true }
+    }
+  ],
+  "frozen_bytes_verified": {
+    "scripts/check-selfassessment.mjs": "005bd45ac44aa8fc0d81c453b38e0bd7aacee1527432da50eb5fd9d7aee8a48d",
+    "scripts/check-secondary-round62.mjs": "25bff62a0476e8bc8606a8a59e3a4ae4184526937274366c7e5958e7e6ab062a",
+    "scripts/chrome-cdp-loopback-round63.mjs": "b00efd59ac10fd047014b76b2a5d16cc8b0acaab0730e8c6029a0b53a0d6c040",
+    ".ufo/waves/round-62/counters/c1-adjacency-host-v21.mjs": "b845973c0f16433b05080829cf66641df303cffa09a9dc291d1773b9b9c8afa6",
+    "SCORECARD.md_blob_at_baseline": "08d5f49718ba86cd01f2c820069bbedce8aeddad",
+    "SCORECARD.md_live_sha_at_snapshot": "89318d592b01225f1385027586d1f80e38e5b061c64ea4d784cc2b5f1c3870f3"
+  },
+  "gate_byte_identity": {
+    "005bd45ac44a at f098bcf8843c": true,
+    "005bd45ac44a at 816592612dd2": true,
+    "005bd45ac44a at e5325ad8805d": true,
+    "005bd45ac44a in worktree and after-state clone": true
+  },
+  "scratch_deleted_before_yield": true
+}
