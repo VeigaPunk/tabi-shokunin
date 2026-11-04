@@ -1,0 +1,99 @@
+#!/usr/bin/env node
+// Writes the round-64 claims freeze with exact instrument pins.
+// Usage: node freeze-r64.mjs --baseline <hex> [--out <path>]
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+const sha = (p) => crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const argv = process.argv.slice(2);
+const opt = (n) => { const i = argv.indexOf('--' + n); return i >= 0 ? argv[i + 1] : null; };
+const baseline = opt('baseline');
+if (!/^[a-f0-9]{40}$/.test(baseline || '')) { console.error('need --baseline <40-hex>'); process.exit(2); }
+const out = opt('out') || '.ufo/waves/round-64/claims.json';
+
+const PIN_FILES = [
+  'scripts/chrome-cdp-loopback-round64.mjs',
+  '.ufo/waves/round-64/counters/chromium-wheel-r64.mjs',
+  '.ufo/waves/round-64/counters/png-r64.mjs',
+  '.ufo/waves/round-64/counters/make-negatives-r64.mjs',
+  '.ufo/waves/round-64/counters/mutate-r64.mjs',
+  'scripts/verify-live-r64.mjs',
+  'scripts/check-receipt-provenance.mjs',
+  '.ufo/waves/round-64/controls/run-controls-r64.mjs',
+  '.ufo/waves/round-64/controls/smoke/receipt.json',
+  '.ufo/waves/round-64/controls/summary.json',
+];
+const pins = {};
+for (const f of PIN_FILES) pins[f] = sha(f);
+
+const claims = {
+  lane: 'tabi',
+  round: 64,
+  attempt: 1,
+  baseline,
+  ordering: 'Read the r61, r62 and r63 rejected verifier spot-checks and the r63 lesson before declaration (fresh-start rule under the operator pause lift "Resume all eight once"). The failing-before controls in .ufo/waves/round-64/controls/ were EXECUTED AND COMMITTED BEFORE this freeze: the red-before classes (1x1 PNGs, borrowed shots, no shots, r63 receipt, synthesized rendering), the live verifier no-run control, the 29 declared negatives, the 16 exact-line mutants and the C2 gate before-state. The pre-freeze live smoke run is design data, not the scored after-pass. The scored after-pass is a post-freeze, post-wave live pass whose receipts name committed revisions.',
+  axesAtStart: { adjacency: 8, coverage: 9, depth: 9, operability: 9, freshness: 9, calibration: 9 },
+  stagnation: 'Saturation 8; every owned axis is at or above it and no capability row has entered since r58 (window 3, round 64 at position 1). The stagnation nudge is ACTIVE: the lowest-axis obligation is waived and this round is a frontier/capability move (C1) plus a calibration repair (C2).',
+  freezeRule: 'The instruments and the design controls pinned in `pins` are immutable after this freeze. A changed byte invalidates its claim; no post-seat repair rescues it. Scored evidence (the live receipts, their shot bytes, the live verifier output, the negatives/mutants matrices over the scored receipt and the scored control receipts) may be produced after this freeze by these instruments. Every scored command names a committed revision.',
+  pins,
+  controlsCommittedBeforeFreeze: {
+    summary: '.ufo/waves/round-64/controls/summary.json (14 controls; each with argv/exit/stdout digest/inputs)',
+    redBefore: '.ufo/waves/round-64/controls/red-before/* — one-by-one (exit 1), borrowed-shots (exit 1), no-shots (exit 1), r63-receipt (exit 1), synthetic-rendering (exit 0, DISCLOSED LIMIT)',
+    noWork: '.ufo/waves/round-64/controls/live-no-run.command.json (exit 1, finding live-run-required)',
+    negatives: '.ufo/waves/round-64/controls/negatives/matrix.json (one per named check)',
+    mutants: '.ufo/waves/round-64/controls/mutants/matrix.json (exact-line, pinned to the counter pin)',
+    gateBefore: '.ufo/waves/round-64/controls/gate-before.command.json (exit 1, 11 receipts / 34 failures on the r63 controls at baseline)',
+  },
+  claims: [
+    {
+      id: 'C1',
+      axis: 'coverage',
+      type: 'capability',
+      capability: 'chromium-wheel-scroll-domain-linux',
+      statement: 'The lane can demonstrate the wheel/scroll domain on Chromium/Linux by re-running it, not by agreeing with a receipt. `scripts/verify-live-r64.mjs` runs the frozen r64 driver twice cold in its own scratch (nonces tabi-r64-live-a/-b), requires both receipts to pass the frozen counter (29 named checks, predicate true, zero findings), requires the two runs to agree on legs / wheellog-minus-ts / pageState, and requires the committed evidence receipt to agree with its own live run on those fields. The frozen counter refuses the r63 failure class — a hand-written receipt with six 1x1 PNGs, six shots borrowed from one leg, a receipt with no shot bytes, and the r63 schema all exit 1 — and every one of its 29 checks has a declared negative; the 16 exact-line mutants are all distinguished.',
+      before: 'At baseline no r64 driver, counter, verifier or evidence exists (`git cat-file -e <baseline>:scripts/chrome-cdp-loopback-round64.mjs` -> absent; `git ls-tree -r --name-only <baseline> -- corpus/evidence/round64/` -> 0 lines). The r63 generation accepted a hand-written receipt with four 1x1 PNGs (r63 spot-check §2 C1 no-work row); re-derived this round: the committed r63 receipt through the r64 counter exits 1 (controls/red-r63-receipt.command.json) while the live smoke run exits 0.',
+      afterCommand: 'node scripts/verify-live-r64.mjs --scratch <ABS> --driver scripts/chrome-cdp-loopback-round64.mjs --counter .ufo/waves/round-64/counters/chromium-wheel-r64.mjs --evidence corpus/evidence/round64/chromium-wheel-scroll/receipt.json --evidence-shots corpus/evidence/round64/chromium-wheel-scroll --json',
+      target: {
+        livePredicate: true, findings: 0, liveRuns: 2, counterExitPerRun: 0,
+        crossRunAgreement: true, evidenceAgreement: true,
+        counterChecks: 29, counterSelftestCases: 31,
+        negatives: 29, forgedGreen: 0,
+        mutants: 16, mutantsDistinguished: 16, mutantsSurviving: 0,
+        redBeforeRefused: 4, disclosedLimitAccepted: 1,
+      },
+      killRules: [
+        'Any frozen pin changes after freeze.',
+        'The live verifier exits nonzero, reports any finding, or runs fewer than two live runs.',
+        'Either live run exits nonzero or its counter run exits nonzero.',
+        'The two live runs disagree on legs, wheellog-minus-ts or pageState, or the evidence receipt disagrees with the live run.',
+        'Any of the 29 declared negatives exits 0 or exits other than 1, or the negatives matrix reports forgedGreen > 0.',
+        'Any of the 16 exact-line mutants survives (accepts no negative while accepting the live receipt), or a mutant refuses the live receipt (blanket refusal is never a kill).',
+        'Any of the four red-before classes exits 0 (a forged receipt reaching the counter target), or the synthesized-rendering control stops exiting 0 (that would mean the disclosed limit changed silently).',
+        'The counter selftest is not clean or its case count is not 31.',
+      ],
+      limits: 'Loopback fixture only, one browser (Chromium 155.0.8059.84) on one Linux host, with --disable-smooth-scrolling; no cross-browser, trackpad momentum, horizontal scroll, ctrl+wheel zoom, scrollend, or third-party site. The counter is NOT an execution oracle: a synthesized 1280x900 rendering of the fixture passes it (committed control red-synthetic-rendering, exit 0), so the demonstration is the live verifier, not the receipt acceptance. The verifier proves the surface behaves as measured on this host for these instruments; it does not authenticate the committed evidence bytes, and its own runs are the same driver it verifies.',
+    },
+    {
+      id: 'C2',
+      axis: 'calibration',
+      statement: 'The lane\'s control receipts are re-derivable from committed bytes. `scripts/check-receipt-provenance.mjs` counts failures between the receipt record and observed repo state — real argv (not prose), integer exit, a committed stdout file whose digest matches its bytes, inputs bound to bytes at the revision the receipt names, and a matrix file naming its input and its producing command. Before: 11 r63 receipts / 34 failures at baseline. After: 0 failures over the scored round-64 receipts, every one naming a committed revision.',
+      before: 'controls/gate-before.command.json: `node scripts/check-receipt-provenance.mjs --dir .ufo/waves/round-63/controls --repo . --rev <baseline> --json` -> exit 1, checked 11, failures 34 (schema 11, stdout-bound 11, inputs-bound 11, argv-real 1).',
+      afterCommand: 'node scripts/check-receipt-provenance.mjs --dir .ufo/waves/round-64/controls/scored --repo . --rev <DATA_REV> --require-committed --min-receipts 12 --json',
+      target: { failures: 0, checked: '>=12', requireCommitted: true, gateSelftestCases: 9 },
+      killRules: [
+        'The gate script bytes differ from the frozen pin.',
+        'Its selftest is not clean or its case count is not 9.',
+        'The after-run reports any failure, or checks fewer than 12 receipts.',
+        'Any scored receipt names `worktree` instead of a committed revision.',
+        'The after-population is reduced to reach 0 failures (e.g. by deleting failing receipts instead of producing re-derivable ones); the report names every receipt it counts.',
+      ],
+      limits: 'The gate enumerates its own closed classes; it does not verify that a receipt describes work that actually happened (a fabricated but well-formed receipt passes — demonstrated by the wave). Zero failures means the record is re-derivable, not that every claim in it is true.',
+    },
+  ],
+  frontier: 'Sources opened this round: MDN WheelEvent, the Chrome DevTools Protocol Input domain (dispatchMouseEvent), CSSOM View scrolling, and the CDP Page.captureScreenshot section; the new rows are cited by the generation-2 knowledge entry and the round lesson. Assimilation: none — the round-57 quarantine register shift still blocks package adoption and the 38 hand-checks already stand committed (round-62 lesson); `considerthese/` is absent for this lane.',
+  verification: 'L1 holds the canonical planner seat (the validator forbids planner). ONE v1 wave of 12 seats: scout 1, executor 3, scribe 1, connector 1, reviewer 1, critic 1, mutation-tester 2, sentinel 1, revenger 1; attack seats 6/12 (50%). Seats advise; the L1 integrates and scores.',
+};
+fs.mkdirSync(path.dirname(out), { recursive: true });
+fs.writeFileSync(out, JSON.stringify(claims, null, 1));
+console.log(JSON.stringify({ out, pins: Object.keys(pins).length, pinSet: pins }, null, 1));
