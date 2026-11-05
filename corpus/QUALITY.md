@@ -916,3 +916,22 @@
     `surviving: []` with all sixteen mutants killed; the 1x1-PNG class stays
     covered by the committed `red-one-by-one` control instead of by the
     negative. See `corpus/lessons/round-64.md` Mistakes.
+118. A demonstration must verify the executable it runs against the claim's
+    pinned digest; it may never derive its own "expected" digest from the file
+    the caller handed it. When the demonstration's premise lives in one argv
+    token, a control that changes that token must be refused, or the green
+    proves only that some program ran.
+    Red state: round 64's `scripts/verify-live-r64.mjs` hashes whatever
+    `--driver` it is given and passes that hash to the counter as
+    `--expect-driver-sha256`, so a 40-line substitute driver that never launches
+    Chromium makes it exit 0 with predicate true, two "live" runs and full
+    agreement in 561 ms (`.ufo/waves/round-64/w1/R64Reviewer/E3a.json`,
+    `fake-driver.mjs`). The frozen claims name the pinned driver path in their
+    after-command, so the scored run itself is not attacked, but no instrument
+    re-checks the pin.
+    Green state (next round's repair): the verifier compares `sha256(--driver)`
+    with the claim's pin and refuses a mismatch with a named finding, and a
+    committed control proves the refusal. Until then the round reports the
+    scored green with `driverSha256 == 1ff560cc…b92db5` printed in the verifier
+    output and discloses the gap as a limit. See `corpus/lessons/round-64.md`
+    Mistakes.
