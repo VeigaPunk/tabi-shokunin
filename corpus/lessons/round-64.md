@@ -25,7 +25,7 @@ Opened 2026-11-04 (all quotes located in the staged bytes named below):
 | The moving `@master` `browser_protocol.json` (S153) as the authority for a build-scoped claim | Reject | The row's anchor cell records the file MOVING three times across re-opens (1,421,620 → 1,423,170 → 1,423,215 B), so a claim about what build 155.0.8059.84 specifies cannot rest on it; the build tag's own PDL is the source and S153 keeps the moving-artifact role. Flip: if a claim is explicitly about `@master`, cite the digest it was read at. |
 | S168/S169 as support for scroll distance, cancelation, rendering determinism or browser behaviour | Reject | The PDLs define parameter units and response fields only; how far a delta scrolls, whether a page can cancel it and whether two captures are byte-identical stay measured here, never sourced. |
 | S153 as support for scroll arithmetic, cancelation, rendering determinism or delivery | Reject | The JSON defines parameter units and the capture default; it says nothing about how far a delta scrolls, whether a page listener may cancel it, or whether two captures are byte-identical. Flip: a normative scroll-behaviour rule plus a measured second build would ground those. |
-| S169 CSSOM View re-fetch as a *new* row | Reject as a row (duplicate URL of S167) | The re-fetch is byte-different from r63's staged copy — sha256 `51a7efdb…` → `e8f4fbda…`, same 1,084,848 B — and the only diff is the `<meta name="revision">` line (`a3e7fce3…` → `909869d6…`). The quoted getter text is unchanged, so the existing S167 row stays true; the drift is recorded here and in the report as a freshness datum, not as a new row (a second row for one URL is the E03/E04 duplicate the census refuses). |
+| A CSSOM View re-fetch as a *new* row (the id is not S169: that id is now the Browser PDL) | Reject as a row (duplicate URL of S167) | The re-fetch is byte-different from r63's staged copy — sha256 `51a7efdb…` → `e8f4fbda…`, same 1,084,848 B — and the only diff is the `<meta name="revision">` line (`a3e7fce3…` → `909869d6…`). The quoted getter text is unchanged, so the existing S167 row stays true; the drift is recorded here and in the report as a freshness datum, not as a new row (a second row for one URL is the E03/E04 duplicate the census refuses). |
 | The r63 wheel/scroll capability re-declared as a repair of its frozen predicate | Reject | Frozen predicates are never narrowed after scoring (`claims.json` `freezeRule`); this round declares a new generation with new instruments and a new target, and keeps r63's unprovable verdict on the record. |
 | A synthesized rendering as evidence that the surface ran | Reject | The committed control `red-synthetic-rendering` exits 0: a 1280×900 rendering drawn from the fixture geometry satisfies every pixel check. Synthesis is as cheap as rendering for a flat-colour fixture, so the counter cannot be the capability's demonstration; the live verifier is. |
 
@@ -38,6 +38,10 @@ captureBeyondViewport viewport default (round-64 scope extension)”; `anchor`
 gained the 2026-11-04 re-open with the fresh 1,423,215 B / sha256 `cb4b0a40…`
 fetch and both located quotes; `used-by` gained
 `corpus/knowledge/chromium-wheel-scroll-round-64.md, corpus/lessons/round-64.md`.
+Rows S166 and S167 changed old→new later in the round: `used-by` gained
+`corpus/knowledge/chromium-wheel-scroll-round-64.md` (reciprocity for the note's
+`source:` line, `QUALITY.md` 75); `scope`, `status`, `opened` and `recheck` are
+unchanged.
 `status` (mined), `opened` (2026-10-31) and `recheck` are unchanged. Census before (baseline revision):
 `scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi` at
 round start → see `.ufo/waves/round-64/controls/census-start.txt`; census after →
