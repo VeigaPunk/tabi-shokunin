@@ -1,0 +1,144 @@
+{
+ "schema": "tabi-round-claims-v1",
+ "lane": "tabi",
+ "round": 67,
+ "frozenAt": "pending-commit",
+ "base": "5400136b233579f7b716ab83a70b8be24ed88b26",
+ "preFreezeControls": "019efae0d84fd4cb19ac4230b02d2bc9dd190b57",
+ "freezeRule": "Predicates, counters, kill rules and pins below are frozen at this commit. A later change is a new generation, never an amendment.",
+ "withdrawn": {
+  "C1": {
+   "axisDeclared": "adjacency",
+   "score": 8,
+   "status": "WITHDRAWN before freeze, not scored",
+   "design": "v23 = v22 plus delta-disposition-evidence: overlap-declared requires >=1 BG word in the quote; no-tabi-ground requires 0.",
+   "refutedBy": [
+    ".ufo/waves/round-67/w1/R67Executor1/report.md (unmutated v23 on r66 adjudicated ledger: exit 1, predicate false, findingCount 95, all delta-disposition-evidence)",
+    ".ufo/waves/round-67/w1/R67Connector/report.md (95/95 no-tabi-ground rows refused; zeroHit 0 for every disposition)",
+    ".ufo/waves/round-67/w1/R67MutTester2/report.md (independent v22 flip sweep: 298/298 flips accepted; all 149 base quotes contain a BG word)",
+    ".ufo/waves/round-67/w1/R67Reviewer1/report.md (verdict: rule unsound as proposed)"
+   ],
+   "reason": "BG words are lexical; the meter admits only line rows that already contain a BG word, so a no-tabi-ground row can never satisfy the rule. Disposition is semantic adjudication, not a counting predicate."
+  }
+ },
+ "C2": {
+  "axisDeclared": "calibration",
+  "score": 9,
+  "surface": "receipt-provenance gate v4: refuse a relative matrix input that resolves outside --repo (critic F7 / reviewer-2 vectors a-d)",
+  "before": {
+   "argv": "node .ufo/waves/round-66/counters/check-receipt-provenance-v3.mjs --dir .ufo/waves/round-67/c2/fixture/X/repo/controls --repo .ufo/waves/round-67/c2/fixture/X/repo --json",
+   "expect": "exit 0, failures 0, ok true (v3 accepts the escape)",
+   "evidence": ".ufo/waves/round-67/c2/controls/red-v3-escape.txt; .ufo/waves/round-67/controls/c2/fixture-v3-red.json"
+  },
+  "after": {
+   "argv": "node .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs --dir .ufo/waves/round-67/c2/fixture/X/repo/controls --repo .ufo/waves/round-67/c2/fixture/X/repo --json",
+   "expect": "exit 1; byCheck {matrix-input: 1}; finding detail exactly 'input escapes repo: ../outside.mjs'",
+   "selftest": "node .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs --selftest --scratch <ABS> --json",
+   "selftestExpect": "verdict clean, cases 17, passed 17, exit 0",
+   "mutants": [
+    ".ufo/waves/round-67/c2/mutants/M-E1-guard-removed.mjs",
+    ".ufo/waves/round-67/c2/mutants/M-E2-startswith-only.mjs",
+    ".ufo/waves/round-67/c2/mutants/M-E3-absolute-only.mjs"
+   ],
+   "mutantExpect": "each mutant --selftest is non-clean (exit 1)"
+  },
+  "admission": [
+   "v3 before exit 0 with failures 0 (red-before)",
+   "v4 after exit 1 with exactly the matrix-input escape detail",
+   "v4 selftest clean 17/17",
+   "each of M-E1, M-E2, M-E3 non-clean"
+  ],
+  "killRule": [
+   "v4 accepts the escape fixture (exit 0)",
+   "v4 selftest not clean",
+   "any mutant selftest clean",
+   "legit vectors (inside-repo relative input) refused by v4"
+  ],
+  "disclosedChange": "The v3 selftest case matrix-input-relative-dir-base moved its synthetic controls dir inside the synthetic repo (its expectation is unchanged). Spec-literal escape refusal of the dir-base candidate outside the repo fails that case; the setup move is disclosed here, not hidden.",
+  "pins": {
+   "gateV4": {
+    "path": ".ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+    "sha256": "a71b1cf162f60cba72489fd326721967b7180b7534b403db5de1ba30a0e1a56b"
+   },
+   "gateV3": {
+    "path": ".ufo/waves/round-66/counters/check-receipt-provenance-v3.mjs",
+    "sha256": "b683039e5eb373ffc0fecbfca7888c05dd6ebe32203e332382f3777b49f0ca30"
+   }
+  }
+ },
+ "C3": {
+  "axisDeclared": "coverage",
+  "score": 9,
+  "capability": "chromium-hscroll-domain-linux",
+  "surface": "Linux Chromium horizontal wheel + scrollend domain on a loopback fixture with run-bound pixel evidence; live re-run as the demonstration",
+  "before": {
+   "noWork": "git ls-tree -r --name-only 5400136b233579f7b716ab83a70b8be24ed88b26 -- corpus/evidence/round67/ | wc -l  -> expect 0 (no r67 evidence at base)",
+   "degenerateDrivers": [
+    ".ufo/waves/round-67/controls/c3/degenerate/M-A-no-wheel/counter.stdout (counter exit 1 predicate false)",
+    ".ufo/waves/round-67/controls/c3/degenerate/M-B-no-scrollend/counter.stdout (exit 1)",
+    ".ufo/waves/round-67/controls/c3/degenerate/M-C3-no-overflow/counter.stdout (exit 1)"
+   ],
+   "expect": "each degenerate driver's receipt is refused by the frozen counter (exit 1)"
+  },
+  "after": {
+   "liveVerifier": "node scripts/verify-live-r67.mjs --scratch <ABS> --driver scripts/chrome-cdp-loopback-round67.mjs --expect-driver-sha256 b7cd3b1d6cb3a51dfcfcaa683ec08818b894038da1ab5b6ab65d8df760306d22 --counter .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs --evidence corpus/evidence/round67/chromium-hscroll-scrollend/receipt.json --evidence-shots corpus/evidence/round67/chromium-hscroll-scrollend --json",
+   "liveExpect": "exit 0, predicate true, findings []",
+   "counterOnEvidence": "node .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs corpus/evidence/round67/chromium-hscroll-scrollend/receipt.json --driver scripts/chrome-cdp-loopback-round67.mjs --expect-driver-sha256 b7cd3b1d6cb3a51dfcfcaa683ec08818b894038da1ab5b6ab65d8df760306d22 --shot corpus/evidence/round67/chromium-hscroll-scrollend --json",
+   "counterExpect": "exit 0, predicate true, findings []",
+   "selftest": "node .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs --selftest --scratch <ABS> --json",
+   "selftestExpect": "verdict clean, cases 37, passed 37",
+   "negatives": "node .ufo/waves/round-67/counters/make-negatives-r67.mjs --receipt corpus/evidence/round67/chromium-hscroll-scrollend/receipt.json --shot corpus/evidence/round67/chromium-hscroll-scrollend --driver scripts/chrome-cdp-loopback-round67.mjs --counter .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs --out <ABS> --json",
+   "negativesExpect": "negatives 35, refused 35, forgedGreen 0",
+   "mutants": "node .ufo/waves/round-67/counters/mutate-r67.mjs run --counter .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs --negatives <ABS negatives> --receipt corpus/evidence/round67/chromium-hscroll-scrollend/receipt.json --shot corpus/evidence/round67/chromium-hscroll-scrollend --driver scripts/chrome-cdp-loopback-round67.mjs --out <ABS> --json",
+   "mutantsExpect": "applied 13, liveAccepted 13, surviving [] (killed 13)",
+   "degenerateCounter": "the three degenerate receipts above re-run through the frozen counter (exit 1 each)"
+  },
+  "admission": [
+   "live verifier exit 0 predicate true over two cold runs",
+   "counter exit 0 on the committed evidence receipt",
+   "selftest 37/37",
+   "negatives 35/35 refused and forgedGreen 0",
+   "mutants 13/13 killed and none survive",
+   "every degenerate driver refused"
+  ],
+  "killRule": [
+   "any live-verifier or counter non-zero exit on the committed evidence",
+   "forgedGreen > 0",
+   "any surviving mutant",
+   "any degenerate driver receipt accepted (exit 0)",
+   "selftest not 37/37"
+  ],
+  "limits": [
+   "M-C2 clipped-overflow is an equivalent mutant (window still scrolls; driver and counter both green; recorded, not counted as a survivor)",
+   "driver pin is caller-supplied: the frozen value lives in the after-argv (QUALITY 118 limit)",
+   "long --scratch paths can make Chromium refuse the socket (drive-error exit 1, not a usage refusal)",
+   "Linux only; one Chromium build; driver env is not sanitised (receipts do not persist env)"
+  ],
+  "pins": {
+   "driver": {
+    "path": "scripts/chrome-cdp-loopback-round67.mjs",
+    "sha256": "b7cd3b1d6cb3a51dfcfcaa683ec08818b894038da1ab5b6ab65d8df760306d22"
+   },
+   "liveVerifier": {
+    "path": "scripts/verify-live-r67.mjs",
+    "sha256": "bc35944061c2cb500c4e802c0761a5b084902cc7c57ecec5074bf250ff2eea07"
+   },
+   "counter": {
+    "path": ".ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+    "sha256": "cf97a68d9ac480dad20c0eb09f3498b4b58c3f6f86f7ce184fdf56e81e49bde2"
+   },
+   "png": {
+    "path": ".ufo/waves/round-67/counters/png-r67.mjs",
+    "sha256": "072813f7d3a78cd072c5fbbdd65c7b352d9393e6528c7f4181fd2cf4ddcd2292"
+   },
+   "negativesGen": {
+    "path": ".ufo/waves/round-67/counters/make-negatives-r67.mjs",
+    "sha256": "ebbaeed4100bf6260787125b405c109cf516cb29dcd09838925345f715e5659b"
+   },
+   "mutateGen": {
+    "path": ".ufo/waves/round-67/counters/mutate-r67.mjs",
+    "sha256": "2acc4b1f06a34ba92834b04be6612960e963082a58ba5d0c9afb263d39da1412"
+   }
+  }
+ }
+}
