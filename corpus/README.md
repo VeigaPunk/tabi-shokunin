@@ -1068,3 +1068,8 @@ the report, under the frozen predicates in `.ufo/waves/round-65/claims.json`.
 | Note | Holds | Sources |
 |---|---|---|
 | `knowledge/digest-binding-round-65.md` | What a sha256 equality proves about a matrix's named input (byte identity) and what it does not prove (authorship, execution, the producer's pin); the v2 gate reads that digest and nothing more. | S170 (NIST FIPS 180-4, SHA-256 digest semantics, tier A) |
+
+## Round 66 coverage (2026-11-05)
+
+- Sibling-overlap ledger current at live sibling heads (`corpus/knowledge/adjacency-ledger-live-heads-round-66.md`; axis contested, see lesson).
+- Relative matrix-input binding of the receipt gate, killed by v3 (`corpus/knowledge/relative-input-binding-round-66.md`; cites S171).

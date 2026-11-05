@@ -3583,3 +3583,16 @@ Capabilities: no new row (both claims are gate instruments, not capabilities; th
 
 The round's operator-facing summary is in `LOG.md` (round 65 entry) and the fleet report `.ufo/reports/round-65/tabi.md`.
 
+
+## Round 66 (2026-11-05, Linux host) — C1 adjacency ledger rebind verified on its frozen predicate, axis contested; C2 calibration gate kill verified; not admitted pending operator ruling
+
+Attempt 1. Base `2816adb359a50c2fd83fa975e39f0650aa189984`; pre-freeze controls `4bea87d5`; freeze and wave evidence `b1ecd665508b85b9f94ab155c4cd04bce3e51fee`; scored receipts at `b1ecd665` (`.ufo/waves/round-66/scored/`). Lesson: `corpus/lessons/round-66.md`. Axes at round start: adjacency 8 (lowest), coverage 9, depth 9, operability 9, freshness 9, calibration 9. Saturation 8 / window 3; no capability has entered since round 64, so the stagnation nudge is not active and the lowest-axis claim is required.
+
+| Claim / axis | Counting command (frozen argv in `.ufo/waves/round-66/claims.json`) | Before → after | Verdict |
+|---|---|---|---|
+| C1 adjacency (lowest, 8): sibling-overlap ledger rebound to live sibling heads | `node .ufo/waves/round-65/counters/c1-adjacency-host-v22.mjs --repo . --rev b1ecd665 --fleet /home/vgpnk/Projects/shokunin --snapshot .ufo/waves/round-66/measure/snapshot-live-r66.tsv --audit .ufo/waves/round-66/c1/adjudicated/adjacency-host-audit-r66.tsv --delta .ufo/waves/round-66/c1/adjudicated/adjacency-host-delta-r66.tsv --json` | predicate false / 40 findings → predicate true / 0 findings; mechanical-only control false / 1; disposition changes 0 | VERIFIED on frozen predicate; axis contested (two critics read freshness; meter disposition check vocabulary-only). Score held at 8; not admitted pending ruling. |
+| C2 calibration (9): v2 receipt gate relative matrix-input binding killed by a v3 generation (predicate unchanged) | `node .ufo/waves/round-66/counters/check-receipt-provenance-v3.mjs --selftest --scratch <abs>` and per mutant `node .ufo/waves/round-66/c2/final/mutants/<id>.mjs --selftest --scratch <abs>` | M5a/M5b survive v2 (12/12 clean) → v3 unmutated 14/14 clean; M5a/M5b/M5c/M5d red 13/14, 13/14, 13/14, 12/14 | VERIFIED on frozen predicate. Score held at 9; not admitted pending ruling. |
+
+No capability row enters (neither claim demonstrates a new capability). Knowledge: 77 → 79 (`relative-input-binding-round-66.md`, `adjacency-ledger-live-heads-round-66.md`). Registry 170 → 171 (S171 Node path API `path.join`, tier A, mined, used by the C2 note and the round lesson). Expansion, quality and discernment verdicts are in the report. Known open defect, routed: the v2/v3 gate binds a `../` relative input that escapes `--repo` (critic F7). Errata for round 65 (selftest 46 committed vs 47 claimed) is in `corpus/lessons/round-66.md`.
+
+Planned (r67): a disposition-aware adjacency check (round-66 QUALITY 122) only if the operator rules adjacency; a repo-escape refusal with its control for the gate. Saturation 8 / window 3 carried: no capability entered in round 66. Retired: none.
