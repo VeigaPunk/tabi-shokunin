@@ -3596,3 +3596,25 @@ Attempt 1. Base `2816adb359a50c2fd83fa975e39f0650aa189984`; pre-freeze controls 
 No capability row enters (neither claim demonstrates a new capability). Knowledge: 77 → 79 (`relative-input-binding-round-66.md`, `adjacency-ledger-live-heads-round-66.md`). Registry 170 → 171 (S171 Node path API `path.join`, tier A, mined, used by the C2 note and the round lesson). Expansion, quality and discernment verdicts are in the report. Known open defect, routed: the v2/v3 gate binds a `../` relative input that escapes `--repo` (critic F7). Errata for round 65 (selftest 46 committed vs 47 claimed) is in `corpus/lessons/round-66.md`.
 
 Planned (r67): a disposition-aware adjacency check (round-66 QUALITY 122) only if the operator rules adjacency; a repo-escape refusal with its control for the gate. Saturation 8 / window 3 carried: no capability entered in round 66. Retired: none.
+
+## Round 67 (2026-11-05, Linux host) — C2 repo-escape gate repair VERIFIED; C3 capability `chromium-hscroll-domain-linux` VERIFIED; C1 adjacency WITHDRAWN before freeze (lowest-axis obligation unmet); not admitted
+
+Attempt 1. Base `5400136b233579f7b716ab83a70b8be24ed88b26`; pre-freeze instruments and controls `019efae0`; claim freeze `e0fc04c2` (`.ufo/waves/round-67/claims.json`); scored receipts `.ufo/waves/round-67/scored/` at `e0fc04c2`. Lesson `corpus/lessons/round-67.md`. Axes at round start: adjacency 8 (lowest), coverage 9, depth 9, operability 9, freshness 9, calibration 9. Saturation 8 / window 3: no capability had entered in rounds 65–66, so the window stood at 2 of 3; the stagnation nudge was not in force, and the lowest-axis obligation applied.
+
+| Claim / axis | Counting command (frozen in `claims.json`) | Before → after | Verdict |
+|---|---|---|---|
+| C1 adjacency (lowest, 8): disposition-evidence meter v23 | `.ufo/waves/round-67/counters/c1-adjacency-host-v23.mjs` on the r66 adjudicated ledger (`w1/R67Executor1`) | unmutated v23 on the r66 ledger exit 1, 95 findings (`no-tabi-ground` rows quote BG words); v22 flip baseline 298 of 298 accepted (`w1/R67MutTester2`) | WITHDRAWN before freeze; not scored; score held 8; the lowest-axis obligation is unmet, so the round is not admitted |
+| C2 calibration (9): receipt-provenance gate v4, relative matrix input outside `--repo` refused | before `node .ufo/waves/round-66/counters/check-receipt-provenance-v3.mjs --dir c2/fixture/X/repo/controls --repo c2/fixture/X/repo --json`; after the same argv with `.ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs` | before exit 0, failures 0 (`scored/c2-before-v3.json`); after exit 1, byCheck `matrix-input 1`, detail `input escapes repo: ../outside.mjs` (`scored/c2-after-v4.json`); v4 selftest 17/17 exit 0 (`scored/c2-v4-selftest.json`); mutants M-E1 15/17, M-E2 16/17, M-E3 15/17 all exit 1 | VERIFIED on frozen predicate; score held 9 |
+| C3 coverage (9), capability `chromium-hscroll-domain-linux` | live verifier `scripts/verify-live-r67.mjs` (two cold runs) plus the frozen counter on `corpus/evidence/round67/chromium-hscroll-scrollend/`; selftest 37; 35 negatives; 13 mutants; degenerate drivers M-A, M-B, M-C3 | no-work base 0 r67 evidence files → live verifier exit 0 (`scored/c3-live-verifier.json`); counter exit 0; selftest 37/37; negatives 35 refused, forgedGreen 0; mutants 13 applied, 13 killed, 0 surviving; degenerate counter exit 1 each (13, 23, 6 findings) | VERIFIED on frozen predicate; capability row enters; score held 9 (D10) |
+
+Capabilities — round 67:
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-hscroll-domain-linux` | Drive raw-CDP `mouseWheel` deltaX over a 2280 px loopback fixture on Chromium/Linux and demonstrate it by re-running the frozen driver: six legs with scrollX 0, 120, 240, 120, 1000 (clamped), 1000 (no move); scrollY 0 on every leg; one scrollend per moving leg and none for the boundary witness; run-bound nonce grid and band colours in the PNGs; a live verifier that re-runs cold twice | `scripts/verify-live-r67.mjs`; `.ufo/waves/round-67/counters/chromium-hscroll-r67.mjs`; `corpus/evidence/round67/chromium-hscroll-scrollend/receipt.json` | round 67 |
+
+Knowledge: 79 → 80 (`knowledge/chromium-hscroll-scrollend-round-67.md`, S172 and own-work). Registry 171 → 172 (S172, CSSOM View section 3.1 and 13.3, tier A, `spec`, mined). Census start `.ufo/waves/round-67/census-start.txt` exit 0 (171 rows); end `.ufo/waves/round-67/census-end.txt` exit 0 (172 rows). QUALITY 123–125 added.
+
+Saturation 8 / window 3: the window resets (capability entered in round 67; position 0 of 3). Retired: none.
+
+Planned (r68): an adjacency move that a counting predicate can decide. The disposition meaning is a human adjudication, so the candidate is a per-row non-author adjudication record, or an operator ruling to retire or split the adjacency axis (L0 `tabi | round-67`). The horizontal domain's residuals (smooth scrolling, trackpad phases) are a separate claim, not a re-declaration of C3.
