@@ -3042,7 +3042,10 @@ Owner of every row: tabi. Pins for frozen instruments and sibling snapshot:
 
 The `§Pins` block above is the historical round-4 block; this section pins its
 own source: `corpus/knowledge/chromium-wheel-scroll-round-63.md` sha256
-`4c54e0c91de1` (re-derive with `sha256sum` before reuse).
+`d376dc707747eab67bc5c32238094fb31d21f59fca3f4d11f4c4be54f2c05cfb` (re-derive
+with `sha256sum` before reuse). **Superseded pin:** the round-63 filing printed
+`4c54e0c91de1`, which resolves to no file in the round tree (r63 spot-check D1);
+corrected in round 64.
 
 Measured model on Chromium 155.0.8059.84 (this host): one raw-CDP
 `Input.dispatchMouseEvent` of type `mouseWheel` with `deltaY: 120` moves
@@ -3064,3 +3067,34 @@ Do not infer horizontal scroll, `scrollend`, trackpad phases, ctrl+wheel zoom
 or cross-browser deltas from this domain; each is its own claim. The receipt is
 not authenticated — the counter checks internal consistency against the
 invocation-supplied driver digest.
+
+## Wheel/scroll domain, generation 2 — round 64 (measured + re-runnable)
+
+Generation 1 measured the domain but could not demonstrate it: a hand-written
+receipt with four 1x1 PNGs satisfied its counter, so the capability stayed
+unprovable (r63 closure). Generation 2 binds the receipt to a rendering of the
+run and moves the demonstration to a live re-run. Source note
+`corpus/knowledge/chromium-wheel-scroll-round-64.md` sha256
+`__NOTE_SHA__` (re-derive with `sha256sum` before reuse).
+
+| Instrument | Command | Exit | What it proves |
+|---|---|---|---|
+| driver | `node scripts/chrome-cdp-loopback-round64.mjs --scratch <ABS> --out <ABS>/receipt.json --nonce tabi-r64-<token> --http-port <free> --cdp-port <free>` | 0 full run; 1 retained red receipt; 2 usage/precondition | the wheel legs and the shot bytes of one run |
+| counter | `node .ufo/waves/round-64/counters/chromium-wheel-r64.mjs <receipt> --driver scripts/chrome-cdp-loopback-round64.mjs --expect-driver-sha256 <pin> --shot <dir> --json` | 0 predicate true; 1 findings; 2 usage | the receipt is internally consistent AND the shot bytes decode to this fixture at this leg |
+| live verifier | `node scripts/verify-live-r64.mjs --scratch <ABS> --driver … --counter … --evidence <receipt> --evidence-shots <dir> --json` | 0 both cold runs clean and agreeing; 1 any finding; `--no-run` always 1 | the surface behaves as measured when re-run (the actual demonstration) |
+| provenance gate | `node scripts/check-receipt-provenance.mjs --dir <controls> --repo <lane> --rev <hex> --require-committed --json` | 0 every receipt re-derivable; 1 failures | the evidence record can be re-derived from committed bytes |
+
+Decision rows:
+
+- A counter exit 0 is **evidence quality**, never proof the surface ran: a
+  synthesized rendering of a flat-colour fixture passes every pixel check
+  (`controls/red-synthetic-rendering`, exit 0). Claim a capability on the live
+  verifier, not on the counter.
+- The counter's pixel checks read the committed PNG bytes: 32x8 nonce grid
+  (SHA-256(nonce) bits), 120 px band colours at four sample rows (scroll
+  position), per-leg witness strip. A shot dir whose files are 1x1, borrowed
+  from another leg, or missing exits 1.
+- `pageState.scrollEvents` must equal the number of non-prevised wheel entries
+  (r63 accepted 1..5 and could not see a page-side contradiction).
+- Every named check has exactly one declared negative, and that negative must
+  isolate it; otherwise a mutant survives the whole suite (QUALITY 117).

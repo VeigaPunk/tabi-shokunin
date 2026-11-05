@@ -1,0 +1,92 @@
+# R64MutCounter evidence — every command below was executed in this seat's scratch
+# date: 2026-11-04T22:07:32-03:00   host: Linux 7.2.11-arch1-1
+
+## 0. frozen pin (sha256 of the counter under test)
+$ sha256sum /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-64/counters/chromium-wheel-r64.mjs
+5cc3c8dd871d8ba38b0bd87b8142c879abf2c3a790392fb7df21c7534c5f01b7  /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-64/counters/chromium-wheel-r64.mjs
+# claims.json pins 5cc3c8dd871d8ba38b0bd87b8142c879abf2c3a790392fb7df21c7534c5f01b7 -> match
+
+## 1. pristine baseline on the live smoke receipt
+$ node pristine/chromium-wheel-r64.mjs <smoke>/receipt.json --driver <driver> --expect-driver-sha256 1ff560cc7f34c709a6ec8847fec9b4b6a1b55bb4818b550ae41d1dcee2b92db5 --shot <smoke> --json
+{
+ "schema": "tabi-r64-wheel-counter",
+ "predicate": true,
+ "findingCount": 0,
+ "findings": [],
+ "checks": 29,
+ "driverSha256": "1ff560cc7f34c709a6ec8847fec9b4b6a1b55bb4818b550ae41d1dcee2b92db5",
+ "fixtureSha256": "7386fc4ec5abd333a2d9d5363dae7310e9559ef91cdd4383019ce9a87d07e96b"
+}
+# exit=0
+
+## 2. pristine selftest
+$ node pristine/chromium-wheel-r64.mjs --selftest --scratch <abs> --json
+{"verdict": "clean", "cases": 31, "passed": 31}
+
+## 3. pristine vs mutant on each forgery (targeted, one conjunct violated)
+### X26-nonce-binding-drop-format-regex
+$ node pristine/counter.mjs mutants/X26-nonce-binding-drop-format-regex/forge/receipt.json --driver <driver> --shot mutants/X26-nonce-binding-drop-format-regex/forge --json
+pristine predicate=False findings=['nonce-binding']
+mutant   predicate=True findings=[]
+### X28-shot-bytes-drop-digest
+$ node pristine/counter.mjs mutants/X28-shot-bytes-drop-digest/forge/receipt.json --driver <driver> --shot mutants/X28-shot-bytes-drop-digest/forge --json
+pristine predicate=False findings=['shot-bytes']
+mutant   predicate=True findings=[]
+### X21-shot-bytes-drop-dimensions
+$ node pristine/counter.mjs mutants/X21-shot-bytes-drop-dimensions/forge/receipt.json --driver <driver> --shot mutants/X21-shot-bytes-drop-dimensions/forge --json
+pristine predicate=False findings=['shot-bytes', 'nonce-pixels', 'scroll-pixels', 'leg-witness']
+mutant   predicate=False findings=['nonce-pixels', 'scroll-pixels', 'leg-witness']
+### X12-closed-ports-drop-portprobes
+$ node pristine/counter.mjs mutants/X12-closed-ports-drop-portprobes/forge/receipt.json --driver <driver> --shot mutants/X12-closed-ports-drop-portprobes/forge --json
+pristine predicate=False findings=['closed-ports']
+mutant   predicate=True findings=[]
+### X24-scroll-arithmetic-widen-60px
+$ node pristine/counter.mjs mutants/X24-scroll-arithmetic-widen-60px/forge/receipt.json --driver <driver> --shot mutants/X24-scroll-arithmetic-widen-60px/forge --json
+pristine predicate=False findings=['scroll-arithmetic']
+mutant   predicate=True findings=[]
+### X17-nonce-pixels-drop-blue
+$ node pristine/counter.mjs mutants/X17-nonce-pixels-drop-blue/forge/receipt.json --driver <driver> --shot mutants/X17-nonce-pixels-drop-blue/forge --json
+pristine predicate=False findings=['nonce-pixels']
+mutant   predicate=True findings=[]
+### X18-scroll-pixels-first-sample-only
+$ node pristine/counter.mjs mutants/X18-scroll-pixels-first-sample-only/forge/receipt.json --driver <driver> --shot mutants/X18-scroll-pixels-first-sample-only/forge --json
+pristine predicate=False findings=['scroll-pixels']
+mutant   predicate=True findings=[]
+### X10-server-witness-drop-path-allowlist
+$ node pristine/counter.mjs mutants/X10-server-witness-drop-path-allowlist/forge/receipt.json --driver <driver> --shot mutants/X10-server-witness-drop-path-allowlist/forge --json
+pristine predicate=False findings=['server-witness']
+mutant   predicate=True findings=[]
+
+## 4. scroll-pixels sampling aliasing (expectedBandColor at the four BAND_SAMPLE_Y points)
+scrollY 0: [255,0,0] [0,128,0] [0,0,255] [255,255,0]
+scrollY 120: [0,128,0] [0,0,255] [255,255,0] [255,0,255]
+scrollY 180: [0,0,255] [255,255,0] [255,0,255] [0,255,255]
+scrollY 240: [0,0,255] [255,255,0] [255,0,255] [0,255,255]
+scrollY 300: [255,255,0] [255,0,255] [0,255,255] [255,0,0]
+# scrollY 180 and 240 give identical colours at all four samples: the pixel check cannot see a 60 px shift
+
+## 5. independence from the frozen harness (counters/mutate-r64.mjs)
+my mutant files: 30 frozen mutant files: 16 byte-identical overlap: 0
+frozen matrix: mutants=16 killed=16 surviving=[]
+
+## 6. why the declared shot-bytes negative cannot isolate the digest conjunct
+$ python3 - (walk smoke/receipt.json vs negatives/shot-bytes/receipt.json, print changed leaves)
+CHG .legs[0].shotSha256 '327236cb1e76a41a0d2 -> 'fffffffffffffffffff
+CHG .legs[1].shotSha256 '9306a25be929ca517e1 -> '3dcbe712b56468890af
+CHG .legs[1].shotBytes 6300 -> 7059
+CHG .legs[2].shotSha256 'ac3ed4da4fcf914fb35 -> '64be9febd316f03187c
+CHG .legs[2].shotBytes 6310 -> 7055
+CHG .legs[3].shotSha256 '8de483b6069452bf698 -> '699d1641d64364782a0
+CHG .legs[3].shotBytes 6305 -> 7058
+CHG .legs[4].shotSha256 '682f34316cb14c039c4 -> '98358fb1a0ff7f4368a
+CHG .legs[4].shotBytes 6305 -> 7056
+CHG .legs[5].shotSha256 '49bffc630d0a3f5e92c -> '6b41f93d1608dfee56a
+CHG .legs[5].shotBytes 6313 -> 7052
+# -> the negative changes legs[0].shotSha256 AND legs[1..5].shotBytes/shotSha256; the shipped
+#    PNG set is a different rendering (7059 B vs 6300 B), so legs[0].shotBytes (6332) no longer
+#    matches the shipped start.png (7061 B). Dropping only the digest comparison (X28) therefore
+#    still refuses the declared negative via the bytes conjunct, yet accepts a digest-only lie.
+
+## 7. red-before classes under every mutant (no mutant reopens the r63 failure class)
+pristine red-before exits: {'borrowed-shots': 1, 'no-shots': 1, 'one-by-one': 1, 'synthetic-rendering': 0}
+mutants accepting any red-before class: []

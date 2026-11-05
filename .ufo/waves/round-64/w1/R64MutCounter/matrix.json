@@ -1,0 +1,942 @@
+{
+ "schema": "tabi-r64-mutants-independent-v1",
+ "seat": "R64MutCounter",
+ "counter": {
+  "path": "/fast/scratch/hyaku/tabi-r64/R64MutCounter/pristine/counter.mjs",
+  "sha256": "5cc3c8dd871d8ba38b0bd87b8142c879abf2c3a790392fb7df21c7534c5f01b7",
+  "pinned": "5cc3c8dd871d8ba38b0bd87b8142c879abf2c3a790392fb7df21c7534c5f01b7"
+ },
+ "input": {
+  "path": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-64/controls/smoke/receipt.json",
+  "sha256": "7dc5a2476f6536d9c312b70c55c2b492eabc303109d6eb2692fb1db29641d148"
+ },
+ "shotDir": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-64/controls/smoke",
+ "driverSha256": "1ff560cc7f34c709a6ec8847fec9b4b6a1b55bb4818b550ae41d1dcee2b92db5",
+ "pristine": {
+  "liveExit": 0,
+  "negativesRefused": 29,
+  "negativeCount": 29,
+  "redBefore": {
+   "borrowed-shots": 1,
+   "no-shots": 1,
+   "one-by-one": 1,
+   "synthetic-rendering": 0
+  }
+ },
+ "mutants": 30,
+ "applied": 30,
+ "liveAccepted": 30,
+ "killedByDeclaredNegative": 4,
+ "survivedDeclaredNegatives": 26,
+ "survivedButForgeryKills": [
+  "X05-delta-mode-drop-deltaz",
+  "X06-trusted-drop-cancelable",
+  "X07-trusted-drop-type",
+  "X08-loopback-drop-dsf",
+  "X09-loopback-drop-bandheight",
+  "X10-server-witness-drop-path-allowlist",
+  "X11-survivors-drop-list",
+  "X12-closed-ports-drop-portprobes",
+  "X13-launch-witness-drop-postkill",
+  "X14-page-final-state-drop-wheelloglen",
+  "X15-producer-verdict-drop-hypothesis",
+  "X16-host-identity-drop-version-agreement",
+  "X17-nonce-pixels-drop-blue",
+  "X18-scroll-pixels-first-sample-only",
+  "X19-leg-witness-drop-name",
+  "X20-shot-bytes-drop-bytes",
+  "X26-nonce-binding-drop-format-regex",
+  "X28-shot-bytes-drop-digest"
+ ],
+ "survivorsNoForgery": [
+  "X01-legs-shape-drop-length",
+  "X02-wheellog-seq-drop-set-uniqueness",
+  "X04-delta-y-drop-length",
+  "X21-shot-bytes-drop-dimensions",
+  "X23-shot-records-drop-positive-bytes",
+  "X29-shot-records-drop-digest-format",
+  "X30-scroll-event-witness-hardcode-4",
+  "X27-fixture-binding-drop-format-regex"
+ ],
+ "redBeforeAccepted": [],
+ "rows": [
+  {
+   "id": "X01-legs-shape-drop-length",
+   "check": "legs-shape",
+   "line": 101,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "d4b4298783cb65a578775040baf466bc29add69e4e3d4a74b1e6cd70fa7a8921",
+   "mutatedLine": "check(LEG_NAMES.every((n, i) => legs[i]?.name === n), 'legs-shape');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "legs-shape",
+    "scroll-arithmetic",
+    "wheellog-count",
+    "shot-records",
+    "leg-witness"
+   ],
+   "mutantOwnNegativeFindings": [
+    "legs-shape",
+    "scroll-arithmetic",
+    "wheellog-count",
+    "shot-records",
+    "leg-witness"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "legs-shape",
+     "shot-records",
+     "shot-bytes",
+     "nonce-pixels",
+     "scroll-pixels",
+     "leg-witness"
+    ],
+    "mutantExit": 1,
+    "mutantFindings": [
+     "shot-records",
+     "shot-bytes",
+     "nonce-pixels",
+     "scroll-pixels",
+     "leg-witness"
+    ],
+    "acceptedByMutant": false
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X02-wheellog-seq-drop-set-uniqueness",
+   "check": "wheellog-sequence",
+   "line": 104,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "23361820f30178b6f09286be6cee8de102d640b3b023195c02adb868a9a47ad4",
+   "mutatedLine": "check(wl.length === 5 && wl.every((e, i) => e.seq === i + 1), 'wheellog-sequence');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "wheellog-sequence"
+   ],
+   "mutantOwnNegativeFindings": [
+    "wheellog-sequence"
+   ],
+   "forge": null,
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X03-wheellog-count-widen-ge",
+   "check": "wheellog-count",
+   "line": 103,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "0713a7a53983b50064744501c2339366fca8e26856273b372d48d978a80385eb",
+   "mutatedLine": "check(LEG_NAMES.every((k) => legMap[k]?.wheellogLen >= EXPECTED_LEN[k]), 'wheellog-count');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [
+    "wheellog-count"
+   ],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": false,
+   "pristineOwnNegativeFindings": [
+    "wheellog-count"
+   ],
+   "mutantOwnNegativeFindings": [],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "wheellog-count"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": false
+  },
+  {
+   "id": "X04-delta-y-drop-length",
+   "check": "delta-y-passthrough",
+   "line": 105,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "fdfe4aee979b25efe7cee18bea5c6586957b548a985a393b074a0e0db311fb45",
+   "mutatedLine": "check(wl.every((e, i) => e.deltaY === EXPECTED_DELTA_Y[i]), 'delta-y-passthrough');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "delta-y-passthrough"
+   ],
+   "mutantOwnNegativeFindings": [
+    "delta-y-passthrough"
+   ],
+   "forge": null,
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X05-delta-mode-drop-deltaz",
+   "check": "delta-mode-pixels",
+   "line": 106,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "859fb9f5667f3954fb10a41762f29911056b48df3352f20ead334070ed893789",
+   "mutatedLine": "check(wl.length === 5 && wl.every((e) => e.deltaX === 0 && e.deltaMode === 0), 'delta-mode-pixels');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "delta-mode-pixels"
+   ],
+   "mutantOwnNegativeFindings": [
+    "delta-mode-pixels"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "delta-mode-pixels"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X06-trusted-drop-cancelable",
+   "check": "trusted-fields",
+   "line": 107,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "1c6597d5071f58752ca9af183c17ce7069b45639e77108b5045ca2c2863798d4",
+   "mutatedLine": "check(wl.length === 5 && wl.every((e) => e.type === 'wheel' && e.isTrusted === true && Number.isFinite(e.ts) && e.ts >= 0",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "trusted-fields"
+   ],
+   "mutantOwnNegativeFindings": [
+    "trusted-fields"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "trusted-fields"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X07-trusted-drop-type",
+   "check": "trusted-fields",
+   "line": 107,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "b24558be1903a975549e97ffcac5c584b3d4944377615965b0f66861444ea885",
+   "mutatedLine": "check(wl.length === 5 && wl.every((e) => e.isTrusted === true && Number.isFinite(e.ts) && e.ts >= 0 && e.cancelable === true",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "trusted-fields"
+   ],
+   "mutantOwnNegativeFindings": [
+    "trusted-fields"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "trusted-fields"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X08-loopback-drop-dsf",
+   "check": "loopback-origin",
+   "line": 99,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "a382c979779e5915499110bf770d3f960d7347dc1bb9899bc601ff32a4cb9e47",
+   "mutatedLine": "&& r?.fixture?.bandHeight === BAND_HEIGHT, 'loopback-origin');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "loopback-origin"
+   ],
+   "mutantOwnNegativeFindings": [
+    "loopback-origin"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "loopback-origin"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X09-loopback-drop-bandheight",
+   "check": "loopback-origin",
+   "line": 99,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "98234ca020d2f8bdb5b1ec5bc5f3894c6f6efdd1bf683948fddf1c16fddada0d",
+   "mutatedLine": "&& r?.fixture?.deviceScaleFactor === 1, 'loopback-origin');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "loopback-origin"
+   ],
+   "mutantOwnNegativeFindings": [
+    "loopback-origin"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "loopback-origin"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X10-server-witness-drop-path-allowlist",
+   "check": "server-witness",
+   "line": 143,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "b8b9eaab1a4066cd4d91497a99bc7276e3613986a88ac7f436e90e5b125f8b85",
+   "mutatedLine": ", 'server-witness');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "server-witness"
+   ],
+   "mutantOwnNegativeFindings": [
+    "server-witness"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "server-witness"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X11-survivors-drop-list",
+   "check": "survivors",
+   "line": 146,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "1a2774df8a4f8d2a069f319d0be9117a8998cc31a8fc0a041abfb25da7dfc7b9",
+   "mutatedLine": "check(r?.teardown?.postKillSweepCount === 0 && Array.isArray(r.teardown.survivors) && r.teardown.sweepError === null, 'survivors');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "survivors"
+   ],
+   "mutantOwnNegativeFindings": [
+    "survivors"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "survivors"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X12-closed-ports-drop-portprobes",
+   "check": "closed-ports",
+   "line": 147,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "31be01ed61bfec8893077256dabda15b9a3a9ad75a26d57bae52417b0a190dcf",
+   "mutatedLine": "check(true",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "closed-ports"
+   ],
+   "mutantOwnNegativeFindings": [
+    "closed-ports"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "closed-ports"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X13-launch-witness-drop-postkill",
+   "check": "launch-witness",
+   "line": 149,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "80179594e4fe4b706e8381cd8676e4c29d5cc44994e6d3145e011e04fd7d8951",
+   "mutatedLine": "check(r?.sweeps?.preLaunch === 0 && r.sweeps.midRun > 0, 'launch-witness');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "launch-witness"
+   ],
+   "mutantOwnNegativeFindings": [
+    "launch-witness"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "launch-witness"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X14-page-final-state-drop-wheelloglen",
+   "check": "page-final-state",
+   "line": 152,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "5ca1cce5fcbb066d0830b398c8f83c3a585bdc56ad9b9cf27fda1d5874f47f4d",
+   "mutatedLine": "check(r?.pageState?.scrollY === 240, 'page-final-state');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "page-final-state"
+   ],
+   "mutantOwnNegativeFindings": [
+    "page-final-state"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "page-final-state"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X15-producer-verdict-drop-hypothesis",
+   "check": "producer-verdict",
+   "line": 151,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "6e37fbb396c5ccf5de29004f602b1b1139c3ab478d7767979f03852f710d81fb",
+   "mutatedLine": "check(r?.predicate === true, 'producer-verdict');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "producer-verdict"
+   ],
+   "mutantOwnNegativeFindings": [
+    "producer-verdict"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "producer-verdict"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X16-host-identity-drop-version-agreement",
+   "check": "host-identity",
+   "line": 145,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "c8a6b4ca5049c714b856f12b6fb1f840202b2175973eacee00169294060033d7",
+   "mutatedLine": "&& true, 'host-identity');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "host-identity"
+   ],
+   "mutantOwnNegativeFindings": [
+    "host-identity"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "host-identity"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X17-nonce-pixels-drop-blue",
+   "check": "nonce-pixels",
+   "line": 127,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "e217b0f79fb2f2ebfa6a0c6835a0f67586f05cee0a7899669b6c6a42ac96e2a9",
+   "mutatedLine": "if (!p || p[0] !== want || p[1] !== want) return false;",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "nonce-pixels"
+   ],
+   "mutantOwnNegativeFindings": [
+    "nonce-pixels"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "nonce-pixels"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X18-scroll-pixels-first-sample-only",
+   "check": "scroll-pixels",
+   "line": 135,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "5ecb98ab9ed24a7adcf5c789f4b19aacbfdb7a0681310136018c5c421d5e78d6",
+   "mutatedLine": "return BAND_SAMPLE_Y.slice(0, 1).every((y, k) => rgbEq(at(s, BAND_SAMPLE_X, y), expectedBandColor(l.scrollY, k)));",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "scroll-pixels"
+   ],
+   "mutantOwnNegativeFindings": [
+    "scroll-pixels"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "scroll-pixels"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X19-leg-witness-drop-name",
+   "check": "leg-witness",
+   "line": 140,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "d4e03d968a37ff3552ed9042f84bc2fa6e288181f5572d6376b147fb70e2927f",
+   "mutatedLine": "return want && rgbEq(l.witnessRgb, want) && rgbEq(at(s, WITNESS_POINT.x, WITNESS_POINT.y), want);",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "leg-witness"
+   ],
+   "mutantOwnNegativeFindings": [
+    "leg-witness"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "leg-witness"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X20-shot-bytes-drop-bytes",
+   "check": "shot-bytes",
+   "line": 117,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "13cb850da617fb65cfe337bae832007b130060e2446a55e854c8ebf391a76294",
+   "mutatedLine": "return s && s.width === VIEWPORT.width && s.height === VIEWPORT.height && s.sha256 === l.shotSha256;",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "shot-bytes"
+   ],
+   "mutantOwnNegativeFindings": [
+    "shot-bytes"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "shot-bytes"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X21-shot-bytes-drop-dimensions",
+   "check": "shot-bytes",
+   "line": 117,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "ab9d6532ceaef124a4d83c5dcb924e0dca983840fff7a73412770d9f209f3fa1",
+   "mutatedLine": "return s && s.sha256 === l.shotSha256 && s.bytes === l.shotBytes;",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "shot-bytes"
+   ],
+   "mutantOwnNegativeFindings": [
+    "shot-bytes"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "shot-bytes",
+     "nonce-pixels",
+     "scroll-pixels",
+     "leg-witness"
+    ],
+    "mutantExit": 1,
+    "mutantFindings": [
+     "nonce-pixels",
+     "scroll-pixels",
+     "leg-witness"
+    ],
+    "acceptedByMutant": false
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X22-shot-records-drop-name",
+   "check": "shot-records",
+   "line": 114,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "6045ddf4fa82f5b657522e2f5fd363359c31d1eb7c69ab81de3f80b8d25f9c41",
+   "mutatedLine": "check(legs.length === 6 && legs.every((l) => /^[a-f0-9]{64}$/.test(l.shotSha256 || '') && Number.isInteger(l.shotBytes) && l.shotBytes > 0), 'shot-records');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [
+    "shot-records"
+   ],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": false,
+   "pristineOwnNegativeFindings": [
+    "shot-records"
+   ],
+   "mutantOwnNegativeFindings": [],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "shot-records"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": false
+  },
+  {
+   "id": "X23-shot-records-drop-positive-bytes",
+   "check": "shot-records",
+   "line": 114,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "ce5b1135827706a521ff6895318b524bc5e44fe04d57d0d7fddc514fdca3d252",
+   "mutatedLine": "check(legs.length === 6 && legs.every((l) => l.shot === l.name + '.png' && /^[a-f0-9]{64}$/.test(l.shotSha256 || '') && Number.isInteger(l.shotBytes)), 'shot-records');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "shot-records"
+   ],
+   "mutantOwnNegativeFindings": [
+    "shot-records"
+   ],
+   "forge": null,
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X24-scroll-arithmetic-widen-60px",
+   "check": "scroll-arithmetic",
+   "line": 102,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "cf7e2c1bb53f280e320a0b1f01c52cf33f930320a51e951ff66df46d0bf55bc9",
+   "mutatedLine": "check(LEG_NAMES.every((k) => Math.abs(legMap[k]?.scrollY - EXPECTED_SCROLL[k]) <= 60), 'scroll-arithmetic');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [
+    "scroll-arithmetic"
+   ],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": false,
+   "pristineOwnNegativeFindings": [
+    "scroll-arithmetic"
+   ],
+   "mutantOwnNegativeFindings": [],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "scroll-arithmetic"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": false
+  },
+  {
+   "id": "X25-failures-widen-le-one",
+   "check": "failures",
+   "line": 150,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "1af75925a3f2ed044c61a320955c6fc68dd65e955911b8938483505d08163f4b",
+   "mutatedLine": "check(Array.isArray(r?.failures) && r.failures.length <= 1, 'failures');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [
+    "failures"
+   ],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": false,
+   "pristineOwnNegativeFindings": [
+    "failures"
+   ],
+   "mutantOwnNegativeFindings": [],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "failures"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": false
+  },
+  {
+   "id": "X26-nonce-binding-drop-format-regex",
+   "check": "nonce-binding",
+   "line": 94,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "a32ef0699c2552400ff5b12fe6e2025a70797d4477bbbbb6fb772272a46228de",
+   "mutatedLine": "check(r.nonceOnPage === r.nonce, 'nonce-binding');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "nonce-binding"
+   ],
+   "mutantOwnNegativeFindings": [
+    "nonce-binding"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "nonce-binding"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X28-shot-bytes-drop-digest",
+   "check": "shot-bytes",
+   "line": 117,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "eef5daec05dbe9deea93202249b70945a8b5881e8e16a1379f9407cbd2c6f00f",
+   "mutatedLine": "return s && s.width === VIEWPORT.width && s.height === VIEWPORT.height && s.bytes === l.shotBytes;",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "shot-bytes"
+   ],
+   "mutantOwnNegativeFindings": [
+    "shot-bytes"
+   ],
+   "forge": {
+    "pristineExit": 1,
+    "pristineFindings": [
+     "shot-bytes"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "acceptedByMutant": true
+   },
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X29-shot-records-drop-digest-format",
+   "check": "shot-records",
+   "line": 114,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "483f3294067ac6aefe5a84fe504f2139c069cc212b25868b16bd2517a1705e3b",
+   "mutatedLine": "check(legs.length === 6 && legs.every((l) => l.shot === l.name + '.png' && Number.isInteger(l.shotBytes) && l.shotBytes > 0), 'shot-records');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "shot-records"
+   ],
+   "mutantOwnNegativeFindings": [
+    "shot-records"
+   ],
+   "forge": null,
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X30-scroll-event-witness-hardcode-4",
+   "check": "scroll-event-witness",
+   "line": 113,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "ccb7f298c5d3c4eeb887fddb5487e643b9ad58ebc5df4e4e7526878d82d61e51",
+   "mutatedLine": "check(wl.length === 5 && r?.pageState?.scrollEvents === 4, 'scroll-event-witness');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "scroll-event-witness"
+   ],
+   "mutantOwnNegativeFindings": [
+    "scroll-event-witness"
+   ],
+   "forge": null,
+   "survivedDeclaredNegatives": true
+  },
+  {
+   "id": "X27-fixture-binding-drop-format-regex",
+   "check": "fixture-binding",
+   "line": 96,
+   "lineCount": 1,
+   "applied": true,
+   "mutantSha256": "f0b4d371335baf5c0a7558215d6d16cd899feed3f73f371212eeb60bfa3eb7e9",
+   "mutatedLine": "check(r.fixture.sha256 === external.fixtureSha256, 'fixture-binding');",
+   "liveExit": 0,
+   "liveFindings": [],
+   "negativesAccepted": [],
+   "redBeforeAccepted": [],
+   "checkStillReportedOnOwnNegative": true,
+   "pristineOwnNegativeFindings": [
+    "fixture-binding"
+   ],
+   "mutantOwnNegativeFindings": [
+    "fixture-binding"
+   ],
+   "forge": null,
+   "survivedDeclaredNegatives": true
+  }
+ ]
+}

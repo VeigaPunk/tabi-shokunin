@@ -884,3 +884,35 @@
     (`controls/negatives-data/n1-…`, `n2-…`) and its M1 mutant false-greens
     exactly those two (`controls/mutation/matrix-data.json`). See
     `corpus/lessons/round-63.md` Mistakes row 1.
+
+## Round 64 additions
+
+116. A receipt the counter accepts is not evidence that the surface ran. Every
+    capability whose target is "the counter exits 0" must also declare the
+    cheapest no-work control that reaches the same target; if a synthesized
+    artifact passes the checks, the demonstration must move to a live re-run
+    (an instrument that executes the frozen driver itself) and the counter is
+    evidence quality only.
+    Red state: round 63's C1 was unprovable because a hand-written receipt with
+    four 1x1 PNGs satisfied its counter
+    (`corpus/lessons/round-63-verifier-spotcheck.md` §2).
+    Green state: round 64 commits the synthesized-rendering control at exit 0
+    (`.ufo/waves/round-64/controls/red-synthetic-rendering.command.json`) and
+    the `--no-run` control at exit 1 with `live-run-required`
+    (`.ufo/waves/round-64/controls/live-no-run.command.json`), and its C1 target
+    is `scripts/verify-live-r64.mjs`, not the counter. See
+    `corpus/lessons/round-64.md` Mistakes.
+
+117. A declared negative must isolate the check it names: it mutates only the
+    field that check reads, and the matching exact-line mutant must accept it.
+    A negative refused by a second check silently hides a dead or redundant
+    check, and the mutation matrix reports survivors that are not real.
+    Red state: round 64's first negative set left five of sixteen mutants
+    surviving (`cancelation` also tripped `scroll-event-witness`, `shot-bytes`
+    also tripped every pixel check, `target-binding` also tripped the target id,
+    `survivors` also tripped the sweep count) —
+    `.ufo/waves/round-64/controls/mutants/matrix.json` before the fix.
+    Green state: after isolating each negative the matrix reports
+    `surviving: []` with all sixteen mutants killed; the 1x1-PNG class stays
+    covered by the committed `red-one-by-one` control instead of by the
+    negative. See `corpus/lessons/round-64.md` Mistakes.

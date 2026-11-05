@@ -1,0 +1,80 @@
+== A. LANE REGISTRY CENSUS (gate-exact parse of corpus/SOURCES.md) ==
+rows parsed: 167   ids: S001 .. S167   (contiguous: False)
+
+== B. URL NORMALIZATION (scripts/check-sources.mjs normalizeUrl, lines 180-187) ==
+rule: first https?:// match in cell 2; strip fragment, strip ONE trailing slash, strip scheme, strip leading www.; lowercase host only
+
+== C. COLLISION CHECK (registry-normalized URL) ==
+C1  HELD      by S166  :: https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent
+     verdict  E04 duplicate_url unless teaches begins "supersedes S166"
+C2  FREE      :: https://chromedevtools.github.io/devtools-protocol/tot/Input/
+     host-prefix sibling: S002   note: NEW URL — the tot/Input/ viewer page the r64 frontier names
+C3  FREE      :: https://chromedevtools.github.io/devtools-protocol/tot/Page/
+     host-prefix sibling: S002   note: NEW URL — the tot/Page/ viewer page the r64 frontier names
+C4  HELD      by S167  :: https://drafts.csswg.org/cssom-view/
+     verdict  E04 duplicate_url unless teaches begins "supersedes S167"
+C5  HELD      by S153  :: https://raw.githubusercontent.com/ChromeDevTools/devtools-protocol/master/json/browser_protocol.json
+     verdict  E04 duplicate_url unless teaches begins "supersedes S153"
+C6  FREE      :: https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/public/devtools_protocol/domains/Input.pdl
+     host-prefix sibling: (none)   note: NEW URL — build-scoped domain file at the measured tag
+C7  FREE      :: https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/public/devtools_protocol/domains/Page.pdl
+     host-prefix sibling: (none)   note: NEW URL (different tag) but SAME CONTENT as held S105
+C8  FREE      :: https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/public/devtools_protocol/domains/Browser.pdl
+     host-prefix sibling: (none)   note: NEW URL — build-scoped Browser.getVersion contract
+C9  FREE      :: https://chromedevtools.github.io/devtools-protocol/data/tot.json
+     host-prefix sibling: S002   note: NEW URL — the JSON the viewer SPA actually renders
+
+== D. EMPIRICAL GATE RUN (scripts/check-sources.mjs, in a scratch copy of the lane corpus) ==
+$ node scripts/check-sources.mjs --root . --file corpus/SOURCES.md   # unmodified lane copy
+   SOURCES_GATE verdict=clean rows=167 tiers=A:149,B:9,C:9 status=queued:15,mined:142,rejected:10 findings=0 file=corpus/SOURCES.md
+
+$ ... append C1 as a NEW row (S168) ->
+   FINDING id=duplicate_url fleet=E04 row=S168 detail=duplicate_url
+   FINDING id=used_by_uncited fleet=- row=S168 detail=row_id_absent
+   SOURCES_GATE verdict=failed rows=168 tiers=A:150,B:9,C:9 status=queued:15,mined:143,rejected:10 findings=2 
+$ ... append C1 as a SUPERSEDES row (S168) ->
+   FINDING id=used_by_uncited fleet=- row=S168 detail=row_id_absent
+   SOURCES_GATE verdict=failed rows=168 tiers=A:150,B:9,C:9 status=queued:15,mined:143,rejected:10 findings=1 
+$ ... append C4 as a NEW row (S171) ->
+   FINDING id=duplicate_url fleet=E04 row=S171 detail=duplicate_url
+   FINDING id=used_by_uncited fleet=- row=S171 detail=row_id_absent
+   SOURCES_GATE verdict=failed rows=168 tiers=A:150,B:9,C:9 status=queued:15,mined:143,rejected:10 findings=2 
+$ ... append C4 as a SUPERSEDES row (S171) ->
+   FINDING id=used_by_uncited fleet=- row=S171 detail=row_id_absent
+   SOURCES_GATE verdict=failed rows=168 tiers=A:150,B:9,C:9 status=queued:15,mined:143,rejected:10 findings=1 
+$ ... append C5 as a NEW row (S168) ->
+   FINDING id=duplicate_url fleet=E04 row=S168 detail=duplicate_url
+   FINDING id=used_by_uncited fleet=- row=S168 detail=row_id_absent
+   SOURCES_GATE verdict=failed rows=168 tiers=A:150,B:9,C:9 status=queued:15,mined:143,rejected:10 findings=2 
+$ ... append C2 as a NEW row (S169) ->
+   FINDING id=used_by_uncited fleet=- row=S169 detail=row_id_absent
+   SOURCES_GATE verdict=failed rows=168 tiers=A:149,B:10,C:9 status=queued:15,mined:143,rejected:10 findings=1 
+$ ... append C3 as a NEW row (S170) ->
+   FINDING id=used_by_uncited fleet=- row=S170 detail=row_id_absent
+   SOURCES_GATE verdict=failed rows=168 tiers=A:149,B:10,C:9 status=queued:15,mined:143,rejected:10 findings=1 
+$ ... append C6 as a NEW row (S172) ->
+   FINDING id=used_by_uncited fleet=- row=S172 detail=row_id_absent
+   SOURCES_GATE verdict=failed rows=168 tiers=A:150,B:9,C:9 status=queued:15,mined:143,rejected:10 findings=1 
+$ ... append C8 as a NEW row (S173) ->
+   FINDING id=used_by_uncited fleet=- row=S173 detail=row_id_absent
+   SOURCES_GATE verdict=failed rows=168 tiers=A:150,B:9,C:9 status=queued:15,mined:143,rejected:10 findings=1 
+
+== E. BYTE-IDENTITY CHECK AGAINST ALREADY-HELD ROWS ==
+S105 Page.pdl @154.0.8037.97 (recorded sha256): e944a3b19fa2c87b4ed0a84cca85b16b127618725394496ba046a2dfdf9405be
+Page.pdl @155.0.8059.84 decoded (this session):    e944a3b19fa2c87b4ed0a84cca85b16b127618725394496ba046a2dfdf9405be
+  -> IDENTICAL bytes: the 155 Page.pdl is the SAME content as held S105 under a different tag URL (same-content duplicate, W04 not E04).
+Input.pdl @154.0.8037.97 decoded (this session):   5bbc6e23eb17a009da540792bd5f647567e9c81f919081059dff5274a1c66e3d
+Input.pdl @155.0.8059.84 decoded (this session):    5bbc6e23eb17a009da540792bd5f647567e9c81f919081059dff5274a1c66e3d
+  -> IDENTICAL bytes: the Input domain file did not change between the two tags.
+S166 MDN WheelEvent staged (recorded sha256):      78bd40dc50dc71b9cb395dd9d7f4f58edb20cf3b77b6e24dd5832b79f476c2d1
+MDN WheelEvent fetched this session:              78bd40dc50dc71b9cb395dd9d7f4f58edb20cf3b77b6e24dd5832b79f476c2d1
+  -> IDENTICAL bytes: S166 needs no content re-open; only a scope extension, if any.
+S167 CSSOM View staged (recorded sha256):          51a7efdb30a9aa946e50b395dafb417d0305e54bd71e1b23faa6ce0af05abb99
+CSSOM View fetched this session:                  e8f4fbda9555bea51b7e161b3195fec033430e6118f669d3091681b35a71f4a6
+  -> DIFFERENT bytes, same length (1084848). The only diff is the <meta name="revision"> value: a3e7fce3510dbffd4cc39c8358597824c4de5e09 -> 909869d6b501d19e4bf632e458848f3c81af425f.
+     `diff` on the two files: 4 lines (one changed line, two context markers). The quoted §3.1/§6.1/§13.2 text is unchanged.
+S153 browser_protocol.json @master (recorded sha256, round-57 re-open): d6737c31f268ed74e65dde393006dd9c590a713febd2361d734722eb059f31e7 (1423170 B)
+browser_protocol.json @master fetched this session: cb4b0a40e03fddfdc4191f832259b9fed6684c303842c55d8c6fe1702f9a5efb (1423215 B)
+  -> DIFFERENT bytes: the master URL MOVED again since the round-57 re-open (+45 B). Within this session two fetches were byte-identical (cb4b0a40…).
+CDP viewer data/tot.json fetched this session:      d06f159258c83f7c9ffcb5f925bcd4ef6e6dc262c4f2a405931d5ceb90420498 (1606347 B)
+  -> NOT held by any row. It is the JSON the viewer SPA renders (main.js fetches ./data/tot.json), and it carries the same dispatchMouseEvent/captureScreenshot strings as the master JSON.
