@@ -3508,3 +3508,53 @@ held (coverage 9, calibration 9, others 9; adjacency 8).
 - saturation 8 / window 3 retained; no capability entered in round 63, so
   round 64 is at position 1 of the window (rounds 60–63 carry none).
 - retired: none. D10 (capability-only claims hold the axis score) still applies.
+
+## Round 64 (2026-11-04, Linux host) — C1 coverage capability VERIFIED; C2 calibration target measured, not admitted
+
+Fresh start under the operator pause lift ("Resume all eight once", tabi r64).
+The last three rejected closures were read before declaration (r61 malformed
+frozen header plus post-score pin transfer; r62 producer-verdict survivor and
+contradictory duplicate/fabricated-label false greens; r63 hand-written receipt
+with four 1x1 PNGs reaching the target). Baseline `6c19979fe63f3b9ec35179ca57bb91c6356bff25`;
+instrument/controls freeze `0fc68043f5b5e4e9fc0a69c5924e78f2cb0e6741`; scored
+data revision `e3f5215615f68490230bd0c6db94f7d84f0fc084`. Axes at round start:
+adjacency 8, coverage 9, depth 9, operability 9, freshness 9, calibration 9.
+Saturation 8 / window 3; the stagnation nudge is ACTIVE (no capability row since
+r58), so this round is a frontier/capability move (C1) plus a calibration repair
+(C2). Every failing-before control was executed and committed before the freeze
+(`controls/summary.json` 14 controls; `controls/scored/summary.json` re-runs them
+at the data revision).
+
+| Claim / axis | Counting command and evidence | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage, capability `chromium-wheel-scroll-domain-linux`: the Linux Chromium wheel/scroll domain, generation 2 — a run-bound receipt plus a live re-run as the demonstration | `node scripts/verify-live-r64.mjs --scratch <ABS> --driver scripts/chrome-cdp-loopback-round64.mjs --counter .ufo/waves/round-64/counters/chromium-wheel-r64.mjs --evidence corpus/evidence/round64/chromium-wheel-scroll/receipt.json --evidence-shots corpus/evidence/round64/chromium-wheel-scroll --json`; `node .ufo/waves/round-64/counters/chromium-wheel-r64.mjs corpus/evidence/round64/chromium-wheel-scroll/receipt.json --driver scripts/chrome-cdp-loopback-round64.mjs --expect-driver-sha256 1ff560cc7f34c709a6ec8847fec9b4b6a1b55bb4818b550ae41d1dcee2b92db5 --shot corpus/evidence/round64/chromium-wheel-scroll --json`; `controls/scored/{negatives,mutants}/matrix.json` | before: no r64 driver, counter, verifier or evidence (`git cat-file -e 6c19979f:scripts/chrome-cdp-loopback-round64.mjs` -> absent); the committed r63 receipt through the r64 counter exits 1 with 14 findings. after (at `e3f52156`): verifier `predicate true, findings [], runs a/b exit 0 with counterExit 0/0, crossRun true, evidence true, driverSha256 == 1ff560cc…b92db5`; counter `predicate true, findings 0, checks 29`; negatives `29 refused / 29, forgedGreen 0`; mutants `16 applied, 16 killed, 0 surviving, 0 redundant`; selftest `clean 31/31`; red-before `r63-receipt 1, one-by-one 1, borrowed-shots 1, no-shots 1` with the disclosed `synthetic-rendering 0` limit unchanged | VERIFIED on its frozen predicate, with two limits disclosed (the counter is not an execution oracle; the verifier does not pin the driver it runs — QUALITY 118) |
+| C2 calibration: the lane's control receipts are re-derivable from committed bytes (receipt-provenance gate) | `node scripts/check-receipt-provenance.mjs --dir .ufo/waves/round-64/controls/scored --repo . --rev e3f5215615f68490230bd0c6db94f7d84f0fc084 --require-committed --min-receipts 12 --json` | before: `controls/gate-before.command.json` on the r63 controls at `6c19979f` -> exit 1, checked 11, failures 34 (schema 11, stdout-bound 11, inputs-bound 11, argv-real 1). after: exit 0, `checked 15, matrices 0, failures 0, byCheck {}, ok true` at the scored revision. **Not admitted**: a fabricated but well-formed population of 12 never-executed receipts reaches the same 0 failures (w1 `R64Reviewer` H5), and the round froze no pre-freeze no-work control for it; the gate's matrix checks also score `matrices 0` because the battery's alias names do not match the gate's `^matrix` pattern | MEASURED, NOT ADMITTED (do-nothing control reaches the target); routed to r65 |
+
+### Capabilities — round 64
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-wheel-scroll-domain-linux` | Drive raw-CDP `mouseWheel` deltas over a loopback fixture on Chromium/Linux and demonstrate the result by RE-RUNNING it: six legs with exact scroll arithmetic (0 → 120 → 240 → 120 → 120 swallowed → 240 released), a receipt bound to the run's own rendering (nonce grid in page pixels, 120 px band colours encoding scroll position, per-leg witness strip, fixture re-rendered from the pinned driver, server-log `?run=<nonce>`, CDP `Browser.getVersion` identity), a counter with 29 named checks each carrying a declared negative, 16 exact-line mutants all killed, four committed red-before classes refused, and a live verifier that runs the frozen driver twice cold and requires agreement | `node scripts/verify-live-r64.mjs … --json` (scored output `controls/scored/live-verify.stdout`, `driverSha256 1ff560cc…`); evidence `corpus/evidence/round64/chromium-wheel-scroll/` (receipt `sha256 4e3a95c1…`, six PNGs, MANIFEST); instruments `.ufo/waves/round-64/counters/chromium-wheel-r64.mjs`, `scripts/verify-live-r64.mjs` | 64 |
+
+### Round 64 corrections and routed defects
+
+- Correction to `SCORECARD.md:3465` (r63 spot-check D2, routed and unfixed until now): the r63 C2
+  after-state is **142 could-not-evaluate and 59 superseded** per the committed r63 receipts, not
+  the `194 … 58` printed in the r63 row. The r63 verdict (C2 verified on its frozen predicate,
+  C1 unprovable, no capability row) is unchanged.
+- r63 spot-check D1 (SKILL.md digest pin) is closed: `SKILL.md` now prints the true
+  `d376dc70…` for `chromium-wheel-scroll-round-63.md` and records the superseded `4c54e0c9…`.
+- Routed to r65: (a) the live verifier must refuse a `--driver` whose sha256 is not the claim's pin
+  (`R64Reviewer` H1, QUALITY 118); (b) C2 needs a frozen no-work control and the matrix aliases must
+  match the gate's `^matrix` pattern; (c) 18 of 30 independent counter loosenings survive the
+  declared negatives (`R64MutCounter`), so selected production uniqueness is still not semantic
+  protection; (d) the recorder's 600 s cap can truncate the verifier's own 960 s retry budget under
+  fleet load.
+
+### Planned / saturation / retired — round 64
+
+- planned (r65): a pin-enforcing verifier with its refusal control (fresh claim, new bytes); a C2
+  claim with the fabricated-population control frozen BEFORE data; one counter-coverage claim from
+  the independent survivor list.
+- saturation 8 / window 3 retained; a capability row entered this round, so the window resets.
+- retired: none.

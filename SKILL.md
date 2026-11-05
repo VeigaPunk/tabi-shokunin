@@ -3098,3 +3098,11 @@ Decision rows:
   (r63 accepted 1..5 and could not see a page-side contradiction).
 - Every named check has exactly one declared negative, and that negative must
   isolate it; otherwise a mutant survives the whole suite (QUALITY 117).
+- The live verifier does **not** pin the driver it runs: it hashes whatever
+  `--driver` it is handed (`verify-live-r64.mjs:40`) and passes that hash to the
+  counter, so a substitute driver exits 0 with zero browser executions
+  (`.ufo/waves/round-64/w1/R64Reviewer/fake-driver.mjs`). Read `driverSha256` in
+  the verifier output and compare it with the claim's pin before crediting a
+  green; the pin is enforced by the frozen argv, not by the instrument
+  (`corpus/QUALITY.md` 118). Repair next round: refuse a `--driver` whose sha256
+  is not the pin.

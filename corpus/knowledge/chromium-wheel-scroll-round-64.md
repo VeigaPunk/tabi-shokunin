@@ -1,6 +1,6 @@
 ---
-source: S153, S167, S166
-verified-at: 0fc68043f5b5e4e9fc0a69c5924e78f2cb0e6741
+source: S153, S166, S167, S168, S169
+verified-at: e3f5215615f68490230bd0c6db94f7d84f0fc084
 recheck: node scripts/verify-live-r64.mjs --scratch <ABS> --driver scripts/chrome-cdp-loopback-round64.mjs --counter .ufo/waves/round-64/counters/chromium-wheel-r64.mjs --evidence corpus/evidence/round64/chromium-wheel-scroll/receipt.json --evidence-shots corpus/evidence/round64/chromium-wheel-scroll --json
 ---
 
@@ -30,8 +30,9 @@ from a receipt, `[sourced]` a value grounded in a registry row.
 | viewport | 1280×900 at device scale 1, screenshots 1280×900 `[measured]` | `receipt.json` `fixture.viewport`; decoded PNG dimensions |
 | scroll legs | 6 (`start`, `down1`, `down2`, `up1`, `swallowed`, `released`), one screenshot each | `receipt.json` `legs` |
 | wheel events | 5, shared page sequence 1–5, `deltaMode 0` `[measured]` | `receipt.json` `wheellog` |
-| delta unit | CSS pixels `[sourced S153]` | CDP `Input.dispatchMouseEvent.deltaY` |
+| delta unit | CSS pixels `[sourced S168]` | CDP `Input.dispatchMouseEvent.deltaY` at build tag 155.0.8059.84 |
 | screenshot bound | viewport only unless `captureBeyondViewport` `[sourced S153]` | CDP `Page.captureScreenshot` |
+| identity fields | `protocolVersion`, `product`, `revision`, `userAgent`, `jsVersion` `[sourced S169]` | CDP `Browser.getVersion` at build tag 155.0.8059.84 |
 | counter verdict | predicate true, 0 findings, 29 named checks | `node .ufo/waves/round-64/counters/chromium-wheel-r64.mjs … --json` |
 | live verdict | two cold runs, both counter-clean, mutually agreeing and agreeing with the evidence receipt | `node scripts/verify-live-r64.mjs … --json` |
 
@@ -82,7 +83,7 @@ origin to a listening fixture server for that run.
 
 ## §3 What the counter refuses `[measured]`
 
-Against the committed smoke receipt, the declared negatives (one per named
+Against the scored evidence receipt (nonce `tabi-r64-scored-20261104`) and the byte-identical control base `.ufo/waves/round-64/controls/scored/smoke/`, the declared negatives (one per named
 check) are all refused, and four r63-class forgeries exit 1: a hand-written
 receipt with six 1×1 PNGs (`red-one-by-one`), six shots borrowed from one leg
 (`red-borrowed-shots`), a receipt with no shot bytes (`red-no-shots`), and the
@@ -96,6 +97,14 @@ killed by their matching negative.
   `red-synthetic-rendering`, exit 0). Synthesis is as cheap as rendering for a
   flat-colour fixture, so receipt acceptance is evidence quality, never proof
   that the surface ran.
+- **The verifier does not pin the driver it runs.** It hashes whatever
+  `--driver` it is handed and passes that hash to the counter, so a substitute
+  driver exits 0 with zero browser executions (w1 `R64Reviewer` H1,
+  `driverSha256` in the verifier output is the only witness). The scored run
+  below is the pinned driver — `driverSha256` in its output equals
+  `1ff560cc7f34c709a6ec8847fec9b4b6a1b55bb4818b550ae41d1dcee2b92db5` — but the
+  pin is enforced by the claim's frozen argv, not by the instrument
+  (`corpus/QUALITY.md` 118).
 - **The demonstration is the live verifier.** `scripts/verify-live-r64.mjs` runs
   the frozen driver twice cold in its own scratch, requires both receipts to pass
   the counter, requires the two runs to agree on legs / wheellog-minus-timestamp /

@@ -1042,4 +1042,18 @@ round's frozen predicate.
 | Note | Holds | Sources |
 |---|---|---|
 | `knowledge/chromium-wheel-scroll-round-63.md` | The Linux Chromium wheel/scroll domain: `Input.dispatchMouseEvent` `mouseWheel` deltas reach the page as trusted `wheel` events (deltaY passthrough, deltaX 0, deltaMode 0) and move `window.scrollY` by exactly the dispatched pixel delta under `--disable-smooth-scrolling` (0 → 120 → 240 → 120); a capture-phase `preventDefault` leg delivers the event (`cancelable` true, `defaultPrevented` true) while the scroll position does not move, with a released leg restoring movement as the positive control; two cold runs carry identical legs / wheellog-minus-ts / pageState and 4/4 identical PNG sha256; the frozen counter refuses ten declared negatives and kills eight exact-line source mutants through the production CLI. | S166 (deltas as event properties), S167 (scrollTop attribute class); measured receipt `corpus/evidence/round63/chromium-wheel-scroll/receipt.json` plus `stability/receipt-run2.json`; counter `.ufo/waves/round-63/counters/chromium-wheel-r63.mjs` |
+
+## Round 64 coverage addition — the wheel/scroll domain, generation 2 (2026-11-04, Linux host)
+
+Append-only. One new knowledge note on ground the map did not hold; the row is
+written because the file exists, and the capability enters only with the round's
+frozen predicate and the scored after-pass receipt, which this row does not assert.
+
+| Note | Holds | Sources |
+|---|---|---|
 | `knowledge/chromium-wheel-scroll-round-64.md` | The wheel/scroll domain, generation 2 (r64 capability `chromium-wheel-scroll-domain-linux`): the same six-leg arithmetic as r63, but the receipt is bound to a rendering of the run — a 32x8 nonce grid in page pixels whose bits are SHA-256(nonce), 120 px bands whose exact RGB at four sample rows encodes the leg's scroll position, a per-leg witness strip, a fixture digest the counter re-renders from the pinned driver, a server-log entry carrying `?run=<nonce>` with status 200, and the browser identity from CDP `Browser.getVersion`; six shots, one per leg, decoded from committed PNG bytes; the counter names 29 checks with one declared negative each and 16 exact-line mutants all killed; the demonstration is `scripts/verify-live-r64.mjs`, which runs the frozen driver twice cold and requires cross-run and evidence agreement. Limits declared: the counter is not an execution oracle (a synthesized rendering passes it), loopback only, one build. Grounded in S153 (delta units in CSS pixels; screenshot viewport-bounded), S167, S166. | S153, S167, S166 |
+
+Sources: S153 (CDP `browser_protocol.json`, re-opened in place), S166 (MDN WheelEvent),
+S167 (CSSOM View), S168 (CDP Input PDL at tag 155.0.8059.84), S169 (CDP Browser PDL at
+the same tag); the two build-scoped rows are new this round, the other three are
+re-opened rows whose scope cells carry the round-64 extension.
