@@ -1,0 +1,73 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-65/counters/c1-adjacency-host-v22.mjs	2026-11-05 05:17:06.211168019 -0300
++++ /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-67/counters/c1-adjacency-host-v23.mjs	2026-11-05 07:12:20.250010205 -0300
+@@ -14,7 +14,10 @@
+ // P1/P2/P3 and all carried truth-table cases are unchanged.
+ // --audit/--delta read explicit candidate files; defaults read r62 ledgers at --rev.
+ // Live HEAD is read once per sibling AFTER audit, solely for drift disclosure.
+-//   PREDICATE-SENTENCE: c1-adjacency-host-v22 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r62.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the frozen snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is browser-ground-screened at that same snapshot over its PROVINCE.md and every file its map rows reference, so that every present screened file carries a corpus/adjacency-host-delta-r62.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation and every browser-ground hit line carries a line row keyed by (lane, relPath:line) whose quote is that complete line and whose disposition is in the frozen vocabulary, with no unadjudicated hit line, no orphan line row, no line row on an unscreened file and no invented row AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r62.tsv lane row, with no uncovered lane and no duplicate keys AND no two delta line rows share a (lane, relPath, line) key with differing dispositions.
++// v23 (r67 C1, seat R67Executor1): byte copy of the v22 meter plus ONE new
++// check id delta-disposition-evidence (the disposition-evidence conjunct,
++// delta line rows only). Every v22 check, exit code and CLI flag is unchanged.
++//   PREDICATE-SENTENCE: c1-adjacency-host-v23 admits the lane state at REV where every corpus/adjacency.tsv data row has exactly one corpus/adjacency-host-audit-r62.tsv row keyed by its sibling_ref whose claimed status equals the meter's re-derivation from the sibling's bytes at the frozen snapshot head (sibling-absent, unchanged, moved with a note naming a verbatim line, stale, or file-absent) AND every sibling lane directory at --fleet other than tabi-shokunin is browser-ground-screened at that same snapshot over its PROVINCE.md and every file its map rows reference, so that every present screened file carries a corpus/adjacency-host-delta-r62.tsv lane row whose provinceSha256, lines, bgHits and head equal the meter's own re-derivation and every browser-ground hit line carries a line row keyed by (lane, relPath:line) whose quote is that complete line and whose disposition is in the frozen vocabulary, with no unadjudicated hit line, no orphan line row, no line row on an unscreened file and no invented row AND every sibling lane directory at --fleet other than tabi-shokunin is covered by the ruled map or by at least one corpus/adjacency-host-delta-r62.tsv lane row, with no uncovered lane and no duplicate keys AND no two delta line rows share a (lane, relPath, line) key with differing dispositions AND every delta line row carries disposition evidence in its quote (a row adjudicated overlap-declared quotes at least one browser-ground word, a row adjudicated no-tabi-ground quotes none, contested-open unconstrained).
+ // Usage:
+ //   node c1-adjacency-host-v22.mjs --rev <REV> --repo <lane> --fleet <dir> --snapshot <tsv> [--audit <path>] [--delta <path>] [--json]
+ //   node c1-adjacency-host-v22.mjs --list-observed --fleet <dir>   (authoring aid; prints derived statuses at the supplied snapshot heads)
+@@ -185,6 +188,21 @@
+     if (first !== r[7]) add('delta-disposition-conflict', `${r[1]}:${r[2]}: ${first} vs ${r[7]}`);
+   }
+ 
++  // (g) v23 (r67 C1) disposition-evidence on delta line rows. v22 accepted any
++  // in-vocabulary disposition on any hit-line row; the evidence conjunct ties
++  // the claim to the quote: overlap-declared requires at least one BG word in
++  // the quote, no-tabi-ground requires zero BG words, contested-open is
++  // unconstrained. BG_WORDS and the lowercase-substring matching rule are this
++  // meter's own (never retyped). Unlike the (f) conflict index, this loop
++  // reads EVERY line row, not only the first per (lane, relPath, line) key.
++  const bgWordIn = (s) => BG_WORDS.some((w) => (s || '').toLowerCase().includes(w));
++  for (const r of inputs.deltaRows) {
++    if (r[0] !== 'line') continue;
++    const hasBg = bgWordIn(r[6]);
++    if (r[7] === 'overlap-declared' && !hasBg) add('delta-disposition-evidence', `${r[1]}:${r[2]}: ${r[7]}`);
++    else if (r[7] === 'no-tabi-ground' && hasBg) add('delta-disposition-evidence', `${r[1]}:${r[2]}: ${r[7]}`);
++  }
++
+   // P3 — delta screen honesty per lane row (v18 checks, keyed by relPath)
+   for (const r of inputs.deltaRows) {
+     const [type, lane, relPath, provSha, lines, bgHits, quote, disposition, head] = r;
+@@ -768,6 +786,36 @@
+     // in forward order) two further contested-open rows each differ from the first recorded
+     // disposition, so the count is exactly 2. A reversed iteration emits 1 and is refused here.
+     { name: 'three-row-conflict-count', expect: 1, ids: ['delta-disposition-conflict'], assertPredicate: false, assertFindingCount: 2, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: [...deltaRows(), ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'We drive it over CDP for tests.', 'contested-open', '-'], ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'We drive it over CDP for tests.', 'contested-open', '-']], roster, sibRef, headOf }) },
++    // v23 (r67 C1) disposition-evidence cases. The conjunct: on delta line rows,
++    // overlap-declared requires >=1 BG word in the quote, no-tabi-ground requires
++    // zero, contested-open is unconstrained. BG_WORDS and the lowercase-substring
++    // rule are the meter's own (never retyped).
++    // An overlap-declared row whose quote carries no BG word is refused. Every
++    // hit line contains a BG word by construction, so a no-BG quote is
++    // necessarily non-whole: the v22 splice check co-fires and the case pins
++    // BOTH ids with count 2.
++    { name: 'evidence-overlap-no-bg-word-refused', expect: 1, ids: ['delta-disposition-evidence', 'delta-quote-not-whole-line'], assertPredicate: false, assertFindingCount: 2, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows().map((r) => (r[0] === 'line' ? ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'drive the browser tests', 'overlap-declared', '-'] : r)), roster, sibRef, headOf }) },
++    // The same no-BG overlap quote arrives as a same-disposition DUPLICATE row:
++    // v22 validates only the first row per (lane, relPath, line) key and never
++    // reads the duplicate; the v23 evidence loop reads EVERY line row and
++    // refuses it with exactly one finding.
++    { name: 'evidence-overlap-duplicate-row-refused', expect: 1, ids: ['delta-disposition-evidence'], assertPredicate: false, assertFindingCount: 1, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: [...deltaRows(), ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'drive the browser tests', 'overlap-declared', '-']], roster, sibRef, headOf }) },
++    // A no-tabi-ground row whose whole-line quote carries a BG word is refused
++    // with exactly one finding: the quote stays honest and the disposition
++    // stays in vocabulary, so nothing else fires.
++    { name: 'evidence-notabi-with-bg-word-refused', expect: 1, ids: ['delta-disposition-evidence'], assertPredicate: false, assertFindingCount: 1, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: deltaRows().map((r) => (r[0] === 'line' ? ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'We drive it over CDP for tests.', 'no-tabi-ground', '-'] : r)), roster, sibRef, headOf }) },
++    // contested-open is unconstrained: a contested-open row quoting a line WITH
++    // a BG word stays green, and a same-disposition duplicate carrying a no-BG
++    // spliced quote (invisible to every v22 check) stays green too.
++    { name: 'evidence-contested-open-either-quote-green', expect: 0, assertPredicate: true, assertFindingCount: 0, run: () => verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', '-']], deltaRows: [...deltaRows().map((r) => (r[0] === 'line' ? ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'We drive it over CDP for tests.', 'contested-open', '-'] : r)), ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'drive the browser tests', 'contested-open', '-']], roster, sibRef, headOf }) },
++    // Committed-style clean fixture: a province with TWO hit lines, one
++    // adjudicated overlap-declared (whole-line quote names CDP) and one
++    // contested-open (whole-line quote names screenshot), plus a quiet lane —
++    // stays green under v23.
++    { name: 'evidence-committed-style-clean-green', expect: 0, assertPredicate: true, assertFindingCount: 0, run: () => {
++      const provTwo = '# mado province\nWe drive it over CDP for tests.\nWe also keep screenshots of every run.\n';
++      return verify({ mapRows: mapRows(), auditRows: [[refA, 'unchanged', '-'], [refAbsent, 'sibling-absent', 'probed absent 2026-10-31']], deltaRows: [['lane', 'mado-shokunin', 'PROVINCE.md', sha256(Buffer.from(provTwo, 'utf8')), 3, 2, '-', '-', HEAD], ['line', 'mado-shokunin', 'PROVINCE.md:2', '-', '-', '-', 'We drive it over CDP for tests.', 'overlap-declared', '-'], ['line', 'mado-shokunin', 'PROVINCE.md:3', '-', '-', '-', 'We also keep screenshots of every run.', 'contested-open', '-'], ['lane', 'quiet-lane', 'PROVINCE.md', sha256(Buffer.from(provB, 'utf8')), 2, 0, '-', '-', HEAD]], roster, sibRef: (l, p) => (l === 'mado-shokunin' && p === 'PROVINCE.md' ? provTwo : sibRef(l, p)), headOf });
++    } },
+   ];
+   let pass = 0;
+   const results = cases.map((c) => {

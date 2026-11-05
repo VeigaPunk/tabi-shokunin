@@ -1,0 +1,13 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-loopback-round67.mjs	2026-11-05 06:51:39.091313466 -0300
++++ /fast/scratch/hyaku/tabi-r67/R67MutTester1/m-b-no-scrollend/driver.mjs	2026-11-05 06:57:44.109457604 -0300
+@@ -203,10 +203,6 @@
+     targetId: e.target.id || e.target.tagName, scrollLeftAtDispatch: window.scrollX, scrollYAtDispatch: window.scrollY });
+ }, { capture: true, passive: false });
+ window.addEventListener('scroll', function () { window.__scrollEvents += 1; });
+-window.addEventListener('scrollend', function () {
+-  window.__scrollendlog.push({ type: 'scrollend', seq: ++window.__scrollendSeq, ts: performance.now(),
+-    scrollLeft: window.scrollX, scrollY: window.scrollY });
+-});
+ const WITNESS = { start: [12,24,36], right1: [48,60,72], right2: [84,96,108], left1: [120,132,144], overscroll: [156,168,180], boundary: [192,204,216] };
+ window.__setWitness = function (name) {
+   const c = WITNESS[name];

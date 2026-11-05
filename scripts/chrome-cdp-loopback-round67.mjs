@@ -185,6 +185,7 @@ const HSCROLL_TEMPLATE = `<!doctype html><html><head><meta charset="utf-8"><titl
   #wide { position: relative; left: 0; top: 0; width: 2280px; height: 860px; }
   .band { position: absolute; top: 0; height: 860px; width: 120px; pointer-events: none; }
   #noncegrid { position: fixed; z-index: 10; left: 8px; top: 8px; width: 128px; height: 32px; background: #000000; pointer-events: none; }
+  #noncegrid i { position: absolute; width: 4px; height: 4px; background: #ffffff; }
   #witness { position: fixed; z-index: 10; left: 900px; top: 600px; width: 200px; height: 50px; background: rgb(12,24,36); pointer-events: none; }
 </style>
 <script>
