@@ -1,0 +1,36 @@
+# mutants under v3 cases (R66Executor2)
+# A. direct run of mutant files with their OWN embedded selftest (as specified)
+== M5a-drop-repo-base.mjs --selftest
+exit=0
+TABI_R64_PROVENANCE_SELFTEST verdict=clean cases=12 passed=12
+
+== M5b-drop-matrix-dir-base.mjs --selftest
+exit=0
+TABI_R64_PROVENANCE_SELFTEST verdict=clean cases=12 passed=12
+
+# B. v3 selftest (new cases) with mutant predicate line spliced into scratch copy (line 90 only)
+# v2 candidates line found in v3 source: 1
+== v3 + M5a predicate line (scratch copy)
+exit=1
+FAIL matrix-input-relative-repo-base ["matrix-input"]
+TABI_R64_PROVENANCE_SELFTEST verdict=red cases=14 passed=13
+
+== v3 + M5b predicate line (scratch copy)
+exit=1
+FAIL matrix-input-relative-dir-base ["matrix-input"]
+TABI_R64_PROVENANCE_SELFTEST verdict=red cases=14 passed=13
+
+# mutant diffs vs v2 (M5a):
+90c90
+<     const candidates = path.isAbsolute(rel) ? [rel] : [path.join(repo, rel), path.join(path.dirname(file), rel)];
+---
+>     const candidates = path.isAbsolute(rel) ? [rel] : [path.join(path.dirname(file), rel)];
+
+# exit=1
+# mutant diffs vs v2 (M5b):
+90c90
+<     const candidates = path.isAbsolute(rel) ? [rel] : [path.join(repo, rel), path.join(path.dirname(file), rel)];
+---
+>     const candidates = path.isAbsolute(rel) ? [rel] : [path.join(repo, rel)];
+
+# exit=1

@@ -1,0 +1,103 @@
+{
+ "schema": "tabi-round-claims-v1",
+ "lane": "tabi",
+ "round": 66,
+ "frozenAt": "pending-commit",
+ "base": "2816adb359a50c2fd83fa975e39f0650aa189984",
+ "preFreezeControls": "4bea87d50950e5030124b14302c53124c4308fc9",
+ "C1": {
+  "axisDeclared": "adjacency",
+  "score": 8,
+  "surface": "sibling-overlap ledger (r62) rebound to live-head snapshot",
+  "predicate": "frozen v22 meter exits 0 with predicate true and findingCount 0 on the adjudicated ledger at the live-head snapshot",
+  "argvAfter": "node .ufo/waves/round-65/counters/c1-adjacency-host-v22.mjs --repo . --rev <LANE_HEAD> --fleet /home/vgpnk/Projects/shokunin --snapshot .ufo/waves/round-66/measure/snapshot-live-r66.tsv --audit .ufo/waves/round-66/c1/adjudicated/adjacency-host-audit-r66.tsv --delta .ufo/waves/round-66/c1/adjudicated/adjacency-host-delta-r66.tsv --json",
+  "argvBefore": "same argv with --audit/--delta omitted (r62 ledger at the rev): predicate false, findingCount 40",
+  "argvMechanical": "same argv with .ufo/waves/round-66/c1/mechanical/ inputs: predicate false, findingCount 1",
+  "admission": [
+   "after predicate true and findingCount 0",
+   "zero disposition-column changes r62->adjudicated",
+   "mechanical-only control stays predicate false"
+  ],
+  "killRule": [
+   "any after finding",
+   "any disposition change not justified in c1/adjudication.md",
+   "mechanical-only control predicate true"
+  ]
+ },
+ "C2": {
+  "axisDeclared": "calibration",
+  "score": 9,
+  "surface": "v2 receipt-provenance gate matrix-input binding for relative inputs",
+  "predicate": "v3 selftest exits 0 clean 14/14 unmutated; each single-line predicate mutant M5a-M5d gives a non-clean selftest",
+  "argvAfter": "node .ufo/waves/round-66/counters/check-receipt-provenance-v3.mjs --selftest --scratch <abs>; and per mutant node .ufo/waves/round-66/c2/final/mutants/<id>.mjs --selftest --scratch <abs>",
+  "argvBefore": "v2 with the same mutant predicate (controls/mutants/M5a,M5b): selftest clean 12/12 exit 0",
+  "admission": [
+   "v2->v3 diff confined to selftest function",
+   "M5a and M5b each killed by one of the two new cases",
+   "unmutated v3 clean"
+  ],
+  "killRule": [
+   "any mutant survives",
+   "any predicate-code hunk in v2->v3 diff"
+  ]
+ },
+ "pins": {
+  "c1Meter": {
+   "path": ".ufo/waves/round-65/counters/c1-adjacency-host-v22.mjs",
+   "sha256": "4d3a6b589d1c3a795314cc93b2cd481071c70309a957cb54031a6971002d50d5"
+  },
+  "c2GateV2Frozen": {
+   "path": ".ufo/waves/round-65/counters/check-receipt-provenance-v2.mjs",
+   "sha256": "81c8a5ecc87b1f03510a2ca2cd316113ff30c23534a0319c6489e11fdc84aea4"
+  },
+  "c2GateV3": {
+   "path": ".ufo/waves/round-66/counters/check-receipt-provenance-v3.mjs",
+   "sha256": "b683039e5eb373ffc0fecbfca7888c05dd6ebe32203e332382f3777b49f0ca30"
+  },
+  "c1Rebind": {
+   "path": ".ufo/waves/round-66/counters/rebind-ledger-r66.mjs",
+   "sha256": "7bfe2148add88329f77089f01cdd950056c798b3e015bc06a848989e5ae79ad6"
+  },
+  "c1SnapshotLive": {
+   "path": ".ufo/waves/round-66/measure/snapshot-live-r66.tsv",
+   "sha256": "a5fccf44aad0e4e67dc4592a18e15c3f7c6c88adebd236c4da723ad9d9370a74"
+  },
+  "c1AdjudicatedDelta": {
+   "path": ".ufo/waves/round-66/c1/adjudicated/adjacency-host-delta-r66.tsv",
+   "sha256": "3739288392ad7083c819637347bed14348a6e350b121492fc2653bf3e57b1105"
+  },
+  "c1AdjudicatedAudit": {
+   "path": ".ufo/waves/round-66/c1/adjudicated/adjacency-host-audit-r66.tsv",
+   "sha256": "0a5f3aa87df229efa7128735d0a11825fb91fce55338fd617f99d39a87e427bd"
+  },
+  "c1MechanicalDelta": {
+   "path": ".ufo/waves/round-66/c1/mechanical/adjacency-host-delta-r66.tsv",
+   "sha256": "1acbc93c43190fcfee3caa02a9bc40046f90606d8fc162949dffefbcfd067b77"
+  },
+  "c1MechanicalAudit": {
+   "path": ".ufo/waves/round-66/c1/mechanical/adjacency-host-audit-r66.tsv",
+   "sha256": "0a5f3aa87df229efa7128735d0a11825fb91fce55338fd617f99d39a87e427bd"
+  },
+  "c1AdjudicationDecisions": {
+   "path": ".ufo/waves/round-66/c1/adjudication-decisions.tsv",
+   "sha256": "0e3bea1e3f74623843f30e8880ee9039657fe67280791b5dae0d0b53d3b0d7e9"
+  },
+  "c2Mutant_M5a-drop-repo-base": {
+   "path": ".ufo/waves/round-66/c2/final/mutants/M5a-drop-repo-base.mjs",
+   "sha256": "a7af66c725a39157f5668b8e4190a4e4638c41b67b2ef0e788144ae25c54143d"
+  },
+  "c2Mutant_M5b-drop-matrix-dir-base": {
+   "path": ".ufo/waves/round-66/c2/final/mutants/M5b-drop-matrix-dir-base.mjs",
+   "sha256": "c8bc31837f3f8722925534aac86b4f2b920f034717ed3558d82315bf2e512aba"
+  },
+  "c2Mutant_M5c-cwd-not-repo": {
+   "path": ".ufo/waves/round-66/c2/final/mutants/M5c-cwd-not-repo.mjs",
+   "sha256": "6c10c8612e3693e407ff3af0d88a205c5c9776fb1df973394ab130b237aa785a"
+  },
+  "c2Mutant_M5d-absolute-only": {
+   "path": ".ufo/waves/round-66/c2/final/mutants/M5d-absolute-only.mjs",
+   "sha256": "61e9213a4405370ebf79c38169216630c8aff5650f1dd09d1792846aed245b0d"
+  }
+ },
+ "selftestFreezeNote": "v3 gate is a frozen generation; v2 bytes pinned for predicate identity"
+}
