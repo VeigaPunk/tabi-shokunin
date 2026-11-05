@@ -1,0 +1,594 @@
+{
+ "schema": "tabi-r65-mutants-v1",
+ "seat": "R65MutTester2",
+ "target": "w1/R65Executor2/check-receipt-provenance-v2.mjs",
+ "targetSha256": "49a7ec8a63f573aa0acf7b39852e22c8d346d6dad5bdc5a1bb7566802a3905ae",
+ "baseRev": "58ed8c7a21b9dcb403e46fc1d4e2d8bb68511162",
+ "scoredRev": "e3f5215615f68490230bd0c6db94f7d84f0fc084",
+ "procedure": "Exact-line mutants of checkMatrix lines 82,86,89,91,92,94 applied to scratch copies only; each mutant one line replaced (asserted by unified diff). KILLED if (a) selftest not clean, or (b) forgery matrix-input count != 2, or (c) honest exit != 0, or (d) scored exit != 0.",
+ "baseline": {
+  "a_selftest": {
+   "exit": 0,
+   "verdict": "clean",
+   "passed": 12,
+   "cases": 12,
+   "red_cases": []
+  },
+  "b_forgery": {
+   "exit": 1,
+   "matrices": 2,
+   "checked": 14,
+   "byCheck": {
+    "matrix-input": 2
+   },
+   "matrix_input_count": 2,
+   "details": [
+    "input absent: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-65/controls/c1-fab/nonexistent-receipt.command.json",
+    "input digest mismatch"
+   ]
+  },
+  "c_honest": {
+   "exit": 0,
+   "matrices": 1,
+   "checked": 2,
+   "failures": 0,
+   "byCheck": {}
+  },
+  "d_scored": {
+   "exit": 0,
+   "matrices": 0,
+   "checked": 15,
+   "failures": 0,
+   "byCheck": {}
+  },
+  "killed_by": [],
+  "verdict": "SURVIVED"
+ },
+ "restored": {
+  "a_selftest": {
+   "exit": 0,
+   "verdict": "clean",
+   "passed": 12,
+   "cases": 12,
+   "red_cases": []
+  },
+  "b_forgery": {
+   "exit": 1,
+   "matrices": 2,
+   "checked": 14,
+   "byCheck": {
+    "matrix-input": 2
+   },
+   "matrix_input_count": 2,
+   "details": [
+    "input absent: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-65/controls/c1-fab/nonexistent-receipt.command.json",
+    "input digest mismatch"
+   ]
+  },
+  "c_honest": {
+   "exit": 0,
+   "matrices": 1,
+   "checked": 2,
+   "failures": 0,
+   "byCheck": {}
+  },
+  "d_scored": {
+   "exit": 0,
+   "matrices": 0,
+   "checked": 15,
+   "failures": 0,
+   "byCheck": {}
+  },
+  "killed_by": [],
+  "verdict": "SURVIVED"
+ },
+ "pristineSha256Before": "49a7ec8a63f573aa0acf7b39852e22c8d346d6dad5bdc5a1bb7566802a3905ae",
+ "pristineSha256After": "49a7ec8a63f573aa0acf7b39852e22c8d346d6dad5bdc5a1bb7566802a3905ae",
+ "mutants": [
+  {
+   "a_selftest": {
+    "exit": 1,
+    "verdict": "red",
+    "passed": 11,
+    "cases": 12,
+    "red_cases": [
+     "matrix-input-absent"
+    ]
+   },
+   "b_forgery": {
+    "exit": 1,
+    "matrices": 2,
+    "checked": 14,
+    "byCheck": {
+     "matrix-input": 1
+    },
+    "matrix_input_count": 1,
+    "details": [
+     "input digest mismatch"
+    ]
+   },
+   "c_honest": {
+    "exit": 0,
+    "matrices": 1,
+    "checked": 2,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "d_scored": {
+    "exit": 0,
+    "matrices": 0,
+    "checked": 15,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "killed_by": [
+    "a",
+    "b"
+   ],
+   "verdict": "KILLED",
+   "mutant": "M1",
+   "line": 91,
+   "description": "drop absent-input push",
+   "changed_line_before": "    if (!hit) push('matrix-input', 'input absent: ' + rel);",
+   "changed_line_after": "    if (!hit) { /* M1: absent-input push dropped */ }",
+   "mutant_sha256": "a10222657253aadfd5ad59366d3e88b66352899d03fd34df5bb4730bec4ed8b6"
+  },
+  {
+   "a_selftest": {
+    "exit": 1,
+    "verdict": "red",
+    "passed": 11,
+    "cases": 12,
+    "red_cases": [
+     "matrix-input-digest"
+    ]
+   },
+   "b_forgery": {
+    "exit": 1,
+    "matrices": 2,
+    "checked": 14,
+    "byCheck": {
+     "matrix-input": 1
+    },
+    "matrix_input_count": 1,
+    "details": [
+     "input absent: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-65/controls/c1-fab/nonexistent-receipt.command.json"
+    ]
+   },
+   "c_honest": {
+    "exit": 0,
+    "matrices": 1,
+    "checked": 2,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "d_scored": {
+    "exit": 0,
+    "matrices": 0,
+    "checked": 15,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "killed_by": [
+    "a",
+    "b"
+   ],
+   "verdict": "KILLED",
+   "mutant": "M2",
+   "line": 92,
+   "description": "drop digest-mismatch push",
+   "changed_line_before": "    else if (sha(fs.readFileSync(hit)) !== inp.sha256) push('matrix-input', 'input digest mismatch');",
+   "changed_line_after": "    else if (sha(fs.readFileSync(hit)) !== inp.sha256) { /* M2: digest-mismatch push dropped */ }",
+   "mutant_sha256": "613fc3d41ab5b0a9d6282b4ac456cd77d8f4b1453dabb73539c9e7caccb3507f"
+  },
+  {
+   "a_selftest": {
+    "exit": 1,
+    "verdict": "red",
+    "passed": 10,
+    "cases": 12,
+    "red_cases": [
+     "clean",
+     "matrix-input-bound"
+    ]
+   },
+   "b_forgery": {
+    "exit": 1,
+    "matrices": 2,
+    "checked": 14,
+    "byCheck": {
+     "matrix-input": 2
+    },
+    "matrix_input_count": 2,
+    "details": [
+     "input absent: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-65/controls/c1-fab/nonexistent-receipt.command.json",
+     "input digest mismatch"
+    ]
+   },
+   "c_honest": {
+    "exit": 1,
+    "matrices": 1,
+    "checked": 2,
+    "failures": 1,
+    "byCheck": {
+     "matrix-input": 1
+    }
+   },
+   "d_scored": {
+    "exit": 0,
+    "matrices": 0,
+    "checked": 15,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "killed_by": [
+    "a",
+    "c"
+   ],
+   "verdict": "KILLED",
+   "mutant": "M3",
+   "line": 92,
+   "description": "hash path string instead of bytes",
+   "changed_line_before": "    else if (sha(fs.readFileSync(hit)) !== inp.sha256) push('matrix-input', 'input digest mismatch');",
+   "changed_line_after": "    else if (sha(Buffer.from(inp.path)) !== inp.sha256) push('matrix-input', 'input digest mismatch');",
+   "mutant_sha256": "d11129e118b92b47bc546f7f8a4715bee9c3381c22f61ef477bae21423fc9aee"
+  },
+  {
+   "a_selftest": {
+    "exit": 0,
+    "verdict": "clean",
+    "passed": 12,
+    "cases": 12,
+    "red_cases": []
+   },
+   "b_forgery": {
+    "exit": 1,
+    "matrices": 2,
+    "checked": 14,
+    "byCheck": {
+     "matrix-input": 2
+    },
+    "matrix_input_count": 2,
+    "details": [
+     "input absent: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-65/controls/c1-fab/nonexistent-receipt.command.json",
+     "input digest mismatch"
+    ]
+   },
+   "c_honest": {
+    "exit": 0,
+    "matrices": 1,
+    "checked": 2,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "d_scored": {
+    "exit": 0,
+    "matrices": 0,
+    "checked": 15,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "killed_by": [],
+   "verdict": "SURVIVED",
+   "mutant": "M4",
+   "line": 82,
+   "description": "format accepts uppercase or empty sha",
+   "changed_line_before": "  const fmtOk = typeof inp?.path === 'string' && HEX64.test(inp?.sha256 || '');",
+   "changed_line_after": "  const fmtOk = typeof inp?.path === 'string' && /^(?:[a-fA-F0-9]{64}|)$/.test(inp?.sha256 ?? '');",
+   "mutant_sha256": "43b772fc8610e461ead08f2a191b4971f3be6734901494ac2a131e494e852e86"
+  },
+  {
+   "a_selftest": {
+    "exit": 0,
+    "verdict": "clean",
+    "passed": 12,
+    "cases": 12,
+    "red_cases": []
+   },
+   "b_forgery": {
+    "exit": 1,
+    "matrices": 2,
+    "checked": 14,
+    "byCheck": {
+     "matrix-input": 2
+    },
+    "matrix_input_count": 2,
+    "details": [
+     "input absent: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-65/controls/c1-fab/nonexistent-receipt.command.json",
+     "input digest mismatch"
+    ]
+   },
+   "c_honest": {
+    "exit": 0,
+    "matrices": 1,
+    "checked": 2,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "d_scored": {
+    "exit": 0,
+    "matrices": 0,
+    "checked": 15,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "killed_by": [],
+   "verdict": "SURVIVED",
+   "mutant": "M5",
+   "line": 89,
+   "description": "relative path resolves against matrix dir only",
+   "changed_line_before": "    const candidates = path.isAbsolute(rel) ? [rel] : [path.join(repo, rel), path.join(path.dirname(file), rel)];",
+   "changed_line_after": "    const candidates = path.isAbsolute(rel) ? [rel] : [path.join(path.dirname(file), rel)];",
+   "mutant_sha256": "f0c5fbe2c2b4b1046921300bc0c5078dbe1fa21a4b1271053334d10a016bca90"
+  },
+  {
+   "a_selftest": {
+    "exit": 1,
+    "verdict": "red",
+    "passed": 11,
+    "cases": 12,
+    "red_cases": [
+     "matrix-input-digest"
+    ]
+   },
+   "b_forgery": {
+    "exit": 0,
+    "matrices": 2,
+    "checked": 14,
+    "byCheck": {},
+    "matrix_input_count": 0,
+    "details": []
+   },
+   "c_honest": {
+    "exit": 0,
+    "matrices": 1,
+    "checked": 2,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "d_scored": {
+    "exit": 0,
+    "matrices": 0,
+    "checked": 15,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "killed_by": [
+    "a",
+    "b"
+   ],
+   "verdict": "KILLED",
+   "mutant": "M6",
+   "line": 86,
+   "description": "skip binding for absolute input path",
+   "changed_line_before": "  if (fmtOk) {",
+   "changed_line_after": "  if (fmtOk && !path.isAbsolute(inp.path)) {",
+   "mutant_sha256": "722b6bc8e1db521acf0497e36de52af156109cbb58d4c30da8f83be8a97c1f83"
+  },
+  {
+   "a_selftest": {
+    "exit": 0,
+    "verdict": "clean",
+    "passed": 12,
+    "cases": 12,
+    "red_cases": []
+   },
+   "b_forgery": {
+    "exit": 1,
+    "matrices": 2,
+    "checked": 14,
+    "byCheck": {
+     "matrix-input": 2
+    },
+    "matrix_input_count": 2,
+    "details": [
+     "input absent: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-65/controls/c1-fab/nonexistent-receipt.command.json (roots checked: 1)",
+     "input digest mismatch"
+    ]
+   },
+   "c_honest": {
+    "exit": 0,
+    "matrices": 1,
+    "checked": 2,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "d_scored": {
+    "exit": 0,
+    "matrices": 0,
+    "checked": 15,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "killed_by": [],
+   "verdict": "SURVIVED",
+   "mutant": "M7",
+   "line": 91,
+   "description": "different absent detail suffix",
+   "changed_line_before": "    if (!hit) push('matrix-input', 'input absent: ' + rel);",
+   "changed_line_after": "    if (!hit) push('matrix-input', 'input absent: ' + rel + ' (roots checked: ' + candidates.length + ')');",
+   "mutant_sha256": "d99ee70e77de22ad7486fdbe69328f8026637f963764a462493ee85a7a902212"
+  },
+  {
+   "a_selftest": {
+    "exit": 1,
+    "verdict": "red",
+    "passed": 8,
+    "cases": 12,
+    "red_cases": [
+     "matrix-input",
+     "matrix-command",
+     "matrix-input-absent",
+     "matrix-input-digest"
+    ]
+   },
+   "b_forgery": {
+    "exit": 0,
+    "matrices": 2,
+    "checked": 14,
+    "byCheck": {},
+    "matrix_input_count": 0,
+    "details": []
+   },
+   "c_honest": {
+    "exit": 0,
+    "matrices": 1,
+    "checked": 2,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "d_scored": {
+    "exit": 0,
+    "matrices": 0,
+    "checked": 15,
+    "failures": 0,
+    "byCheck": {}
+   },
+   "killed_by": [
+    "a",
+    "b"
+   ],
+   "verdict": "KILLED",
+   "mutant": "M8",
+   "line": 94,
+   "description": "matrix result always clean",
+   "changed_line_before": "  return failures;",
+   "changed_line_after": "  return [];",
+   "mutant_sha256": "a4f15eceb0811a3c04dc20e382053e74b97efa4cc25a069bc0a4ec558c279aa8"
+  }
+ ],
+ "killed": [
+  "M1",
+  "M2",
+  "M3",
+  "M6",
+  "M8"
+ ],
+ "survived": [
+  "M4",
+  "M5",
+  "M7"
+ ],
+ "survivors": [
+  {
+   "id": "M4",
+   "line": 82,
+   "change": "format regex accepts uppercase or empty sha256",
+   "why_survived": "Accept/reject unchanged: uppercase or empty pinned digest is still rejected (detail changes from 'no input path+sha256' to 'input digest mismatch'). Selftest matrix-input negatives check only the check id, not the detail.",
+   "missing_case": "Selftest negative: matrix with uppercase-hex pinned digest and matrix with empty sha256 must yield matrix-input detail exactly 'no input path+sha256' (format class pinned, not only check id).",
+   "probe": {
+    "pristine": [
+     [
+      "matrix-empty-sha.json",
+      "matrix-command",
+      "missing matrix-empty-sha.command.json"
+     ],
+     [
+      "matrix-empty-sha.json",
+      "matrix-input",
+      "no input path+sha256"
+     ],
+     [
+      "matrix-up-correct.json",
+      "matrix-command",
+      "missing matrix-up-correct.command.json"
+     ],
+     [
+      "matrix-up-correct.json",
+      "matrix-input",
+      "no input path+sha256"
+     ]
+    ],
+    "M4": [
+     [
+      "matrix-empty-sha.json",
+      "matrix-command",
+      "missing matrix-empty-sha.command.json"
+     ],
+     [
+      "matrix-empty-sha.json",
+      "matrix-input",
+      "input digest mismatch"
+     ],
+     [
+      "matrix-up-correct.json",
+      "matrix-command",
+      "missing matrix-up-correct.command.json"
+     ],
+     [
+      "matrix-up-correct.json",
+      "matrix-input",
+      "input digest mismatch"
+     ]
+    ]
+   },
+   "severity": "low (detail only; no accept path)"
+  },
+  {
+   "id": "M5",
+   "line": 89,
+   "change": "relative input path resolved against matrix directory only (ignores --repo)",
+   "why_survived": "Selftest has no relative-path positive case, and controls (b),(c),(d) use absolute paths or zero matrices. So a correctly pinned matrix whose relative input exists only under --repo is falsely rejected and no gate notices.",
+   "missing_case": "Selftest positive: matrix with relative input path resolving only under --repo with correct sha256 must produce zero matrix-input findings; plus a negative with the same relative path absent from both roots.",
+   "probe": {
+    "pristine": [],
+    "M5": [
+     [
+      "matrix-rel-repo-only.json",
+      "matrix-input",
+      "input absent: instruments/a.mjs"
+     ]
+    ]
+   },
+   "severity": "high (false reject of a valid honest matrix)"
+  },
+  {
+   "id": "M7",
+   "line": 91,
+   "change": "absent-input detail gains suffix '(roots checked: N)'",
+   "why_survived": "Selftest matches the absent case with f.detail.startsWith('input absent'), so any suffix passes; forgery count and exit are unchanged.",
+   "missing_case": "Selftest golden: absent-input matrix detail must equal exactly 'input absent: <rel>' (pins the detail string, not just its prefix).",
+   "probe": {
+    "pristine": [
+     [
+      "matrix-absent-rel.json",
+      "matrix-input",
+      "input absent: instruments/missing.mjs"
+     ]
+    ],
+    "M7": [
+     [
+      "matrix-absent-rel.json",
+      "matrix-input",
+      "input absent: instruments/missing.mjs (roots checked: 2)"
+     ]
+    ]
+   },
+   "severity": "low (detail only)"
+  }
+ ],
+ "calibration_defect": {
+  "id": "CALIB-VACUOUS-D",
+  "what": "Check (d), the scored r64 population, exercises zero matrices: the inherited v1/v2 evaluate regex /^matrix.*\\.json$/ does not match the population's mutants-matrix.json and negatives-matrix.json. Every mutant passed (d) with matrices=0, so (d) can kill none of the binding mutants.",
+  "evidence": "baseline and all 8 mutants: d_scored.matrices = 0, checked = 15, exit 0.",
+  "scored_matrix_bind_under_pristine": {
+   "mutants-matrix.json": {
+    "input": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-64/controls/scored/smoke/receipt.json",
+    "exists": true,
+    "pinned": "4e3a95c1834fbaf19ccbb58267d413a81d1d947df90c0bfcea48041d0af0a86f",
+    "actual": "4e3a95c1834fbaf19ccbb58267d413a81d1d947df90c0bfcea48041d0af0a86f",
+    "binds": true
+   },
+   "negatives-matrix.json": {
+    "input": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-64/controls/scored/smoke/receipt.json",
+    "exists": true,
+    "pinned": "4e3a95c1834fbaf19ccbb58267d413a81d1d947df90c0bfcea48041d0af0a86f",
+    "actual": "4e3a95c1834fbaf19ccbb58267d413a81d1d947df90c0bfcea48041d0af0a86f",
+    "binds": true
+   }
+  },
+  "missing_case": "Widen the matrix selector (or pin the named matrix files) so the scored population feeds real matrices through checkMatrix; re-check that both bind under pristine before freeze."
+ },
+ "tools_installed": [],
+ "scratch": "/fast/scratch/hyaku/tabi-r65/R65MutTester2"
+}

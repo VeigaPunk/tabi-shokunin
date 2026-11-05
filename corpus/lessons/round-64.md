@@ -118,3 +118,13 @@ advisory findings are integrated in the report. Clarity: the red-before class,
 the declared limit and the live demonstration are separated. Foresight: the
 receipt is not authenticated and the build/host scope is declared rather than
 generalized.
+
+## Errata — round 65 (append-only; the superseded text is kept above)
+
+Non-author spot-check `corpus/lessons/round-64-verifier-spotcheck.md` §5 routed these; each is re-verified by a command in round 65 (`.ufo/waves/round-65/w1/R65Scribe2/erratum-commands.txt`).
+
+- D1 (`## Wave and measured disposition`, lines 95–96, "closed with a residual wave w2 of 4 seats"): superseded. No w2 bytes exist. `git ls-tree -r --name-only 40095308 -- .ufo/waves/round-64/` lists only `w1` entries. The round had no residual wave.
+- D2 (the same paragraph, "eleven of twelve seats left a report and receipts"): superseded. `ls .ufo/waves/round-64/w1/*.md | wc -l` → 10. Ten seats left a report plus receipts; `R64MutDriver` and `R64Sentinel` left none.
+- D3 (report and lesson, "seven rows in `## Mistakes`"): superseded. The table holds 11 data rows (`awk` over the section → 12 `| ` lines: header + 11). The blank line between the fifth and sixth rows splits the table; it is recorded here and not repaired in this block.
+- D4 (`SCORECARD.md` routed defect (c), "18 of 30 independent counter loosenings survive"): superseded. The independent matrix (`.ufo/waves/round-64/w1/R64MutCounter/matrix.json`): 26 of 30 survive the declared negatives, and 18 of those 26 accept their targeted forgery.
+- D5 (S169 Gate quote): acknowledged, not re-verified in round 65. The quote is a field list assembled across the PDL lines; the substance is verified by the non-author reviewer. A contiguous quote or an explicit field-list label is owed.

@@ -3558,3 +3558,28 @@ at the data revision).
   the independent survivor list.
 - saturation 8 / window 3 retained; a capability row entered this round, so the window resets.
 - retired: none.
+
+## Round 65 (2026-11-05, Linux host) — C1 adjacency conflict refusal and C2 calibration matrix binding: both VERIFIED on their frozen predicates; axis dissent on C1 open; not admitted pending operator ruling
+
+Attempt 1, fresh start under the operator's blanket fresh-start authorization ("Authorize all", 2026-11-05). The last rejected closures were read first (r62 producer-verdict survivor and v21 contradictory-duplicate false green; r63 hand-written 1x1-PNG receipt; r64 vacuous C2 population, `corpus/lessons/round-64-verifier-spotcheck.md`). Baseline `58ed8c7a21b9dcb403e46fc1d4e2d8bb68511162`; fixtures and do-nothing controls `ac0285ce` (fixtures) and `39782a84` (do-nothing receipts); freeze `03f35fe7` (pins in `.ufo/waves/round-65/claims.json`); scored revision `4a3481048cb3afd0d6068fdbc1421dfec4f06084`. Axes at round start: adjacency 8, coverage 9, depth 9, operability 9, freshness 9, calibration 9. Saturation 8, window 3; round 64 entered a capability, so the window reset and the stagnation nudge is inactive: C1 works the lowest owned axis (adjacency 8). C2 works calibration.
+
+| Claim / axis | Counting command and evidence (committed argv in `.ufo/waves/round-65/scored-rev2/`) | Before → after | Verdict |
+|---|---|---|---|
+| C1 adjacency (lowest owned, 8): a contested sibling overlap is not shadowed by a later row | `node .ufo/waves/round-65/counters/c1-adjacency-host-v22.mjs --repo . --rev 4a348104 --fleet /home/vgpnk/Projects/shokunin --snapshot .ufo/waves/round-62/c1/snapshot-r62.tsv --audit corpus/adjacency-host-audit-r62.tsv --delta <DELTA> --json` over A (`delta-dup-contradiction.tsv`), B (round-62 `real-conflicting-delta.tsv`), C (`corpus/adjacency-host-delta-r62.tsv`); do-nothing = frozen v21 on A and B (`.ufo/waves/round-62/counters/c1-adjacency-host-v21.mjs`) | A: v21 exit 0 predicate true (false green) → v22 exit 1, `delta-disposition-conflict` ×1. B: v21 exit 0 predicate true → v22 exit 1, `delta-disposition-conflict` ×1 (kaidoku PROVINCE.md:55 contested-open vs overlap-declared). C: v22 exit 0 findings [] predicate true (positive control holds) | VERIFIED on its frozen predicate. Score held at 8 (round not admitted; D10). Axis disputed by the Critic (`.ufo/waves/round-65/w1/R65Critic.md`: "refuse: axis mis-assigned"); the lesson's reading is adjacency-reporting. Operator rules (L0 line filed). |
+| C2 calibration (score 9): a matrix that names its input binds that input by digest | `node .ufo/waves/round-65/counters/check-receipt-provenance-v2.mjs --dir <DIR> --repo . --rev 4a348104 --require-committed --min-receipts <N> --json` over the forgery dir `controls/c1-fab/` (A), the round-64 scored population (B), the honest fixture (C); do-nothing = frozen v1 on A | A: v1 exit 0 failures 0 (matrices 2 counted; the `-matrix.json` forgery invisible) → v2 exit 1, `matrix-input` ×3 (absent path, wrong pin, wrong `-matrix.json` pin). B: v1 matrices 0 on the population (selector miss) → v2 exit 0, failures 0, matrices 2. C: v2 exit 0 failures 0 | VERIFIED on its frozen predicate. Score held at 9. The gate cannot tell executed from invented receipts (declared residual, QUALITY 116). |
+
+Mutation evidence (committed in `.ufo/waves/round-65/w1/R65MutTester1/`, `R65MutTester2/`): C1 — 8 exact-line mutants of the conflict pass, 6 killed, 1 equivalent (M7), 1 survivor killed by the case added this round (M8 reversal → `three-row-conflict-count` 46/47). C2 — 8 mutants of the matrix binding, 5 killed; survivors M4 (inherited format gate), M5 (relative-only resolution: a real false rejection no fixture covers), M7 (detail text). Surviving M5 is reported, not fixed.
+
+Capabilities: no new row (both claims are gate instruments, not capabilities; the round does not demonstrate a new capability). Knowledge: 76 → 77 (`knowledge/digest-binding-round-65.md`, tier A source S170). Registry: 169 → 170 (S170 tier A, `mined`, used by the knowledge note and this round's lesson). Expansion, quality and discernment verdicts are in the report.
+
+### Planned / saturation / retired — round 65
+
+- C1's axis is the open question. If the operator rules calibration, C1 is not on the lowest axis and the lowest-axis obligation is unmet this round; the lesson records that either ruling is consistent with the evidence.
+- planned (r66): the surviving C2 mutant M5 (relative-path resolution) gets a relative-path fixture before it is claimed; a C2 claim on the sha pin's provenance (QUALITY 118) needs an independent pin source, not a producer-declared one.
+- saturation 8 / window 3: a capability has not entered in r65, so round 66 is at position 1 of the window.
+- retired: none. D10 (capability-only claims hold the axis score) still applies.
+
+## Round 65 — LOG-side pointer
+
+The round's operator-facing summary is in `LOG.md` (round 65 entry) and the fleet report `.ufo/reports/round-65/tabi.md`.
+

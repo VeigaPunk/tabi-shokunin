@@ -1057,3 +1057,14 @@ Sources: S153 (CDP `browser_protocol.json`, re-opened in place), S166 (MDN Wheel
 S167 (CSSOM View), S168 (CDP Input PDL at tag 155.0.8059.84), S169 (CDP Browser PDL at
 the same tag); the two build-scoped rows are new this round, the other three are
 re-opened rows whose scope cells carry the round-64 extension.
+
+## Round 65 coverage addition — digest binding of matrix inputs (2026-11-05, Linux host)
+
+Append-only. One new knowledge note on ground the map did not hold (the digest reach of a
+receipt gate's matrix input); the row is written because the file exists. The gate's
+capability and score effects are not asserted here: they are in `SCORECARD.md` round 65 and
+the report, under the frozen predicates in `.ufo/waves/round-65/claims.json`.
+
+| Note | Holds | Sources |
+|---|---|---|
+| `knowledge/digest-binding-round-65.md` | What a sha256 equality proves about a matrix's named input (byte identity) and what it does not prove (authorship, execution, the producer's pin); the v2 gate reads that digest and nothing more. | S170 (NIST FIPS 180-4, SHA-256 digest semantics, tier A) |

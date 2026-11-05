@@ -1,0 +1,165 @@
+S170 SOURCE EVIDENCE — NIST FIPS 180-4 (Secure Hash Standard, SHS), SHA-256 digest semantics
+Seat: R65Scout (wave w1, round 65). Base revision 58ed8c7a21b9dcb403e46fc1d4e2d8bb68511162.
+Read-only seat: SOURCES.md was NOT edited. This file is the evidence the S170 row cites.
+
+--------------------------------------------------------------------------------
+1. ACCESS DATE
+--------------------------------------------------------------------------------
+access-date (local, `date -I`): 2026-11-05
+Note: 2026-11-05 is also the date the registry rows S168/S169 carry (`opened` 2026-11-04;
+this row's `opened` should be 2026-11-05, the date the document was actually fetched).
+
+--------------------------------------------------------------------------------
+2. URLS ACTUALLY SERVED THE TEXT
+--------------------------------------------------------------------------------
+URL A — landing page (metadata only; served the abstract/date/document history):
+  https://csrc.nist.gov/pubs/fips/180-4/upd1/final
+  HTTP 200, 40,642 B, sha256 6325f3140bb46fe66cdfa89cf4dc6ef4eb4659edc0d521adc8afa5a31d6652e0
+  staged: .ufo/waves/round-65/w1/R65Scout/sources/csrc-180-4-upd1-final.html
+  This page did NOT contain the normative SHA-256 definition; it carries the download link.
+
+URL B — the URL that actually served the quoted normative text (the PDF):
+  https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf
+  HTTP 200, 833,315 B, sha256 0455b406d89648d20cbde375561e19c245b9815e894164c2670772e3d54deb82
+  staged: .ufo/waves/round-65/w1/R65Scout/sources/fips180-4.pdf
+  Re-fetched a second time during this seat's run: byte-identical, same sha256.
+
+Both URLs were reachable; the PDF was the source of every quoted line below.
+The landing page's own "Download URL" field points at URL B, so the landing page is the
+citation of record and the PDF is the served-from text.
+
+--------------------------------------------------------------------------------
+3. PUBLICATION / UPDATE DATE PRINTED IN THE DOCUMENT
+--------------------------------------------------------------------------------
+Printed in the PDF itself:
+  - Cover page (PDF page 1): "August 2015"
+  - Front matter, page iv (PDF page 4): "Federal Information Processing Standards
+    Publication 180-4" / "August 2015"
+  - Front matter, page iv, item 3: "This Standard supersedes FIPS 180-3 [FIPS 180-3]."
+  - ERRATUM (printed page 31, PDF page 36): "The following change has been incorporated
+    into FIPS 180-4, as of the date indicated in the table." / "5/9/2014 Editorial Change
+    't < 79' to 't <= 79' Page 10, Section 4.1.1, Line 1"
+Printed on the landing page (URL A):
+  - "Date Published: August 2015"
+  - "Document History: 08/04/15: FIPS 180-4 (Final)"
+  - "Supersedes: FIPS 180-4 (03/06/2012)"
+  - "Planning Note (03/07/2023): After two rounds of public comment, NIST has decided to
+    revise FIPS 180-4"
+
+=> document date to record in the S170 anchor: "FIPS PUB 180-4, August 2015 (upd1, Final
+08/04/2015; supersedes FIPS 180-4 03/06/2012; erratum 5/9/2014 incorporated)".
+Freshness caveat for the row's `recheck` cell: NIST has an OPEN plan to revise FIPS 180-4
+(Planning Note 03/07/2023), so this is not a frozen standard — `recheck: on-release` (or a
+short interval) is the honest value, not a long `180d`.
+
+--------------------------------------------------------------------------------
+4. THE QUOTE (verbatim, from the fetched PDF)
+--------------------------------------------------------------------------------
+PRIMARY QUOTE — 25 words, one sentence.
+Section 6.2.2 "SHA-256 Hash Computation", printed page 23 (PDF page 28).
+
+  "After repeating steps one through four a total of N times (i.e., after processing
+   M(N)), the resulting 256-bit message digest of the message, M, is"
+
+Fetched-line anchors (whitespace-normalised join of the two printed lines; the sentence is
+line-wrapped across the page):
+  - pdftotext extraction, .ufo/waves/round-65/w1/R65Scout/sources/fips180-4.pdftotext.txt
+    lines 1095-1096:
+      1095: After repeating steps one through four a total of N times (i.e., after processing M(N)), the resulting
+      1096: 256-bit message digest of the message, M, is
+  - independent second extraction of the same PDF bytes (markit reader), artifact line 835:
+      "After repeating steps one through four a total of *N* times (i.e., after processing
+       *M<sup>(N)</sup>*), the resulting 256-bit message digest of the message, *M*, is"
+  The two independent extractions agree word for word. The sentence is continued on
+  printed page 23 by the formula "H0(N) H1(N) ... H7(N)"; the words quoted above are the
+  complete sentence text preceding that formula.
+
+Why this sentence carries the predicate (message -> fixed-length digest):
+  - input: "the message, M"
+  - output: "the resulting 256-bit message digest" — fixed length, 256 bits
+  - it is the SHA-256 hash computation (section 6.2.2), i.e. it is about SHA-256 itself.
+
+SUPPORTING QUOTE (domain of the input, 21 words, one sentence) — same standard, immediately
+preceding section, needed to show the input is a bit string:
+Section 6.2 "SHA-256", printed page 21 (PDF page 26):
+
+  "SHA-256 may be used to hash a message, M, having a length of l bits, where 0 <= l < 2^64."
+
+Fetched-line anchors:
+  - pdftotext extraction lines 1014-1015:
+      1014: SHA-256 may be used to hash a message, M, having a length of l bits, where 0 <= l < 2^64 . The
+      1015: algorithm uses 1) a message schedule of sixty-four 32-bit words, 2) eight working variables of 32
+    (the "<=", "<" and "l" are the PDF's Symbol-font glyphs U+F0A3/U+F03C/U+F06C, rendered
+     here as ASCII for the record; the markit extraction of the same line, artifact line 800,
+     reads "SHA-256 may be used to hash a message, M, having a length of l bits, where
+     2^64 > l." with 2^64 set as a superscript — the two extractors agree on the wording
+     and differ only in glyph encoding and line-wrap placement.)
+  - PDF page 26 footer prints "21"; PDF page 28 footer prints "23" — the printed-page numbers
+    used above are the document's own, not the PDF's sequential index.
+
+Two further facts, quoted exactly where they are used to defend "fixed length":
+  - printed page iv (PDF page 4), Federal Information item 3: "The message digests range in
+    length from 160 to 512 bits, depending on the algorithm." (SHA-256 is the 256-bit entry:
+    "Figure 1: Secure Hash Algorithm Properties", printed page 3 / PDF page 8, row SHA-256:
+    Message Size (bits) < 2^64, Block Size 512, Word Size 32, Message Digest Size 256.)
+  - printed page 4 (PDF page 9), section 2.2.1 Parameters: "M  Message to be hashed." and
+    "l  Length of the message, M, in bits."
+
+--------------------------------------------------------------------------------
+5. HOW TO CITE THIS ROW
+--------------------------------------------------------------------------------
+Proposed S170 row fields (for the scribe to write; NOT written here):
+  id          S170
+  source      NIST FIPS 180-4 Secure Hash Standard (SHS) — SHA-256 digest semantics —
+              https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf
+              (landing page of record: https://csrc.nist.gov/pubs/fips/180-4/upd1/final)
+  kind        spec
+  tier        A
+  scope       the SHA-256 message -> fixed-length 256-bit message digest mapping and the
+              digest's fixed length only, at FIPS 180-4 (August 2015) as published; not
+              SHA-1/SHA-384/SHA-512 semantics, not truncated digests (Sec. 7), not SHA-256/224
+              (Sec. 6.6), not any revision NIST has yet issued for FIPS 180-4
+  anchor      FIPS PUB 180-4, August 2015, Sec. 6.2.2 SHA-256 Hash Computation, printed p. 23
+              (PDF p. 28) + Sec. 6.2 SHA-256, printed p. 21 (PDF p. 26); PDF fetched 2026-11-05
+              (833,315 B, sha256 0455b406d89648d20cbde375561e19c245b9815e894164c2670772e3d54deb82),
+              staged .ufo/waves/round-65/w1/R65Scout/sources/fips180-4.pdf
+  teaches     the 25-word Sec. 6.2.2 quote above, with its Sec. 6.2 bit-length domain quote
+              and the "256-bit" length, so a receipt's pinned sha256 is a 64-hex fixed-length
+              digest of a bit string, not a variable-length or truncated value
+  status      mined
+  opened      2026-11-05
+  recheck     on-release   (NIST has an open plan to revise FIPS 180-4, Planning Note 2023-03-07)
+  used-by     must be a path that exists AND literally contains the token "S170"
+              (check-sources.mjs inspectUsedBy: /(?<![A-Za-z0-9])S170(?![0-9])/), else the row
+              fails used_by_uncited. No such file exists yet at base — it must be created by
+              the scribe/knowledge seat before the row is committed.
+
+--------------------------------------------------------------------------------
+6. TOOLING RECORD (operator directive 2026-10-19)
+--------------------------------------------------------------------------------
+No tool was installed, upgraded, or modified by this seat. Tools used, all pre-existing:
+  - curl (pre-existing) for the two fetches
+  - pdftotext 26.10.0 (poppler, pre-existing, /usr/bin/pdftotext) for the line-anchored
+    text extraction of the fetched PDF
+  - git (read-only: rev-parse / show / ls-files / status) and node (pre-existing) for the
+    base-revision and registry checks
+No pacman, uv, cargo, npm, or ~/.local/bin operation was performed; the pacman guard
+(orchestrator ruling 2026-10-20) was not exercised.
+
+--------------------------------------------------------------------------------
+7. DEFECTS FOUND (see next-id.txt for the registry check)
+--------------------------------------------------------------------------------
+D1. SOURCES.md contains one lowercase "s170" occurrence, inside row S168's anchor cell:
+    ".ufo/waves/round-64/w1/R64Scribe/sources/s170-chromium155-Input.pdl". That staged file
+    is S168's evidence (sha256 5bbc6e23...e3d, verified), and "s171-chromium155-Browser.pdl"
+    is S169's (sha256 5e1faf7d...0da, verified). The round-64 scribe numbered its staged
+    FILENAMES two ahead of its registry ids. A new S170 row that stages its PDF as
+    "s170-*.pdf" would therefore produce two different "s170" artefacts meaning S168 and
+    S170 respectively. Recommend the S170 staged file be named "s170-fips180-4.pdf" only if
+    the s170-chromium155 file name is not reused, and that any future lookup of "s170" in the
+    corpus be id-aware, not filename-aware.
+D2. The registry's next-id probe (grep -oE '^ {0,3}\|[[:space:]]*S[0-9]{3,}' ...) matches
+    only UPPERCASE S-ids at line start, so the lowercase "s170" of D1 does not create a
+    phantom row and check-sources.mjs rowPattern
+    (/^\|[ \t\v\f\r]*S[0-9]{3,}[ \t\v\f\r]*\|/) agrees: base gate verdict=clean, rows=169.
+    The id S170 itself is genuinely free (grep -c 'S170' = 0).

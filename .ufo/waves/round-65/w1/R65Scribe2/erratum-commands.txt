@@ -1,0 +1,128 @@
+# Round-64 erratum re-run commands (R65Scribe2). Read-only; run from the lane unless the path is absolute.
+
+$ ls /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-64/w1/*.md | wc -l
+10
+[exit 0]
+
+$ git ls-tree -r --name-only 58ed8c7a21b9dcb403e46fc1d4e2d8bb68511162 -- .ufo/waves/round-64/w1 | grep -c '\.md$'
+13
+[exit 0]
+
+$ for s in R64Connector R64Critic R64ExecDriver R64ExecGate R64ExecNeg R64MutCounter R64Revenger R64Reviewer R64Scout R64Scribe R64MutDriver; do printf '%s files=%s\n' $s $(find .ufo/waves/round-64/w1/$s -type f | wc -l); done
+R64Connector files=4
+R64Critic files=30
+R64ExecDriver files=34
+R64ExecGate files=43
+R64ExecNeg files=410
+R64MutCounter files=204
+R64Revenger files=21
+R64Reviewer files=48
+R64Scout files=12
+R64Scribe files=13
+R64MutDriver files=17
+[exit 0]
+
+$ ls -d .ufo/waves/round-64/w1/R64Sentinel 2>&1; echo exit=$?
+ls: cannot access '.ufo/waves/round-64/w1/R64Sentinel': No such file or directory
+exit=2
+[exit 0]
+
+$ awk 'NR>=93 && NR<=94 {print NR": "$0}' corpus/lessons/round-64.md
+93: from `w1/swarm-registry.json` plus the seat files: eleven of twelve seats left a
+94: report and receipts (R64Sentinel left nothing; R64MutDriver stopped after
+[exit 0]
+
+$ awk 'NR>=223 && NR<=225 {print "report " NR": "$0}' .ufo/reports/round-64/tabi.md
+report 223: - Dead seats: **R64Sentinel** (left no report and no receipts) and
+report 224:   **R64MutDriver** (stopped after `instruments/`, no report). Ten seats left a
+report 225:   report plus receipts; no seat was replaced and nothing was resent.
+[exit 0]
+
+$ awk 'NR>=51 && NR<=67 {print NR": "$0}' corpus/lessons/round-64.md | cut -c1-90
+51: ## Mistakes
+52: 
+53: | Class · evidence | Captured-by | Fix / failability |
+54: |---|---|---|
+55: | duplicate-url append: a new registry row was written for a URL the lane already held
+56: | environment-as-verdict: the driver waited 15 s (later 60 s) for the CDP page target,
+57: | non-isolating negative: four of the declared negatives were refused by a *second* ch
+58: | frozen-check over-claim: `host-identity` was written as three conjuncts on one line,
+59: | claim-target drift: the r63 C1 target was "the counter exits 0", which a hand-writte
+60: 
+61: | instrument-relative pin: the live verifier hashed whatever `--driver` it was handed 
+62: | scored evidence copied from the design pass: the committed `corpus/evidence/round64/
+63: | target reachable without work: C2's frozen target (0 failures, >=12 receipts, every 
+64: | gate/battery naming mismatch: the gate counts matrices only for files matching `^mat
+65: | recorder timeout under fleet load: the control battery caps each command at 600 s wh
+66: | wave settlement lost to an L1 death: the 12-seat w1 wave was spawned at 21:53 and it
+67: 
+[exit 0]
+
+$ awk '/^## Mistakes/{f=1;next} /^## /{if(f)exit} f && /^\|/ && !/^\|---/{n++} END{print "table lines incl. header:", n, "data rows:", n-1}' corpus/lessons/round-64.md
+table lines incl. header: 12 data rows: 11
+[exit 0]
+
+$ awk 'NR==67 {print "report " NR": "$0}' .ufo/reports/round-64/tabi.md
+report 67:   mined per class (seven rows in `corpus/lessons/round-64.md` ## Mistakes); the
+[exit 0]
+
+$ awk 'NR>=3548 && NR<=3550 {print NR": "$0}' SCORECARD.md
+3548:   (`R64Reviewer` H1, QUALITY 118); (b) C2 needs a frozen no-work control and the matrix aliases must
+3549:   match the gate's `^matrix` pattern; (c) 18 of 30 independent counter loosenings survive the
+3550:   declared negatives (`R64MutCounter`), so selected production uniqueness is still not semantic
+[exit 0]
+
+$ python3 -c 'import json
+m=json.load(open(".ufo/waves/round-64/w1/R64MutCounter/matrix.json"))
+rows=m["rows"]
+acc=lambda r: bool((r.get("forge") or {}).get("acceptedByMutant"))
+print("mutants", len(rows))
+print("survivedDeclaredNegatives", m["survivedDeclaredNegatives"], "rows-true", sum(1 for r in rows if r["survivedDeclaredNegatives"]))
+print("survivedButForgeryKills", len(m["survivedButForgeryKills"]), "rows-survived-and-forgery-accepted", sum(1 for r in rows if r["survivedDeclaredNegatives"] and acc(r)))
+print("survivorsNoForgery", len(m["survivorsNoForgery"]))
+print("killedByDeclaredNegative", m["killedByDeclaredNegative"])'
+mutants 30
+survivedDeclaredNegatives 26 rows-true 26
+survivedButForgeryKills 18 rows-survived-and-forgery-accepted 18
+survivorsNoForgery 8
+killedByDeclaredNegative 4
+[exit 0]
+
+$ awk 'NR>=208 && NR<=219 {print NR": "$0}' .ufo/waves/round-64/w1/R64Scribe/sources/s171-chromium155-Browser.pdl
+208:   command getVersion
+209:     returns
+210:       # Protocol version.
+211:       string protocolVersion
+212:       # Product name.
+213:       string product
+214:       # Product revision.
+215:       string revision
+216:       # User-Agent.
+217:       string userAgent
+218:       # V8 version.
+219:       string jsVersion
+[exit 0]
+
+$ sha256sum .ufo/waves/round-64/w1/R64Scribe/sources/s171-chromium155-Browser.pdl
+5e1faf7dbe56cce01447ea627ca6cc023418cafe7528bede3e5f2571363170da  .ufo/waves/round-64/w1/R64Scribe/sources/s171-chromium155-Browser.pdl
+[exit 0]
+
+$ awk 'NR==24' corpus/lessons/round-64.md | grep -o 'Quote (lines[^"]*"[^"]*"'
+Quote (lines 208-219, read as one response shape): "command getVersion returns … string protocolVersion … string product … string revision … string userAgent … string jsVersion"
+[exit 0]
+
+# Added: committed-seat-report check (the first grep above also counts nested draft .md files)
+
+$ git ls-tree -r --name-only 58ed8c7a21b9dcb403e46fc1d4e2d8bb68511162 -- .ufo/waves/round-64/w1 | grep -c '\.md$'
+13
+[exit 0]
+
+$ git ls-tree -r --name-only 58ed8c7a21b9dcb403e46fc1d4e2d8bb68511162 -- .ufo/waves/round-64/w1 | grep -c '^\.ufo/waves/round-64/w1/[^/]*\.md$'
+10
+[exit 0]
+
+$ git ls-tree -r --name-only 58ed8c7a21b9dcb403e46fc1d4e2d8bb68511162 -- .ufo/waves/round-64/w1 | grep '\.md$' | grep -v '^\.ufo/waves/round-64/w1/[^/]*\.md$'
+.ufo/waves/round-64/w1/R64Scribe/draft/README-row.md
+.ufo/waves/round-64/w1/R64Scribe/draft/SOURCES-rows.md
+.ufo/waves/round-64/w1/R64Scribe/draft/chromium-wheel-scroll-round-64.md
+[exit 0]

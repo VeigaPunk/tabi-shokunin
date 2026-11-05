@@ -935,3 +935,9 @@
     scored green with `driverSha256 == 1ff560cc…b92db5` printed in the verifier
     output and discloses the gap as a limit. See `corpus/lessons/round-64.md`
     Mistakes.
+
+## Round 65 additions
+
+119. A gate's population selector must match the naming scheme of every committed producer population it claims to check. A green over a population the selector misses is vacuous: the count it reports is zero or partial, and it cannot demonstrate the claim. Red state: round 64's v1 matrix selector `^matrix.*\.json$` missed the scored population's `mutants-matrix.json` and `negatives-matrix.json`, so the positive control matrix-checked nothing. Green state: v2 selects `*-matrix.json` too and reports `matrices 2` on that population. The positive control must report a non-zero count of the thing it claims to check. (lesson: corpus/lessons/round-65.md#mistakes; scope row; MutTester2 calibration defect; Critic finding 4)
+
+120. A ledger keyed by (lane, path, line) must refuse two different dispositions on one key rather than keep the first and ignore the rest. A later row that contradicts an earlier one is a finding of its own, not a duplicate to skip. Red state: round-62 v21 keeps the first row per key, so `overlap-declared` followed by `contested-open` on one hit line passes (`corpus/lessons/round-65.md` C1 forgeries; v21 predicate true 2 of 2). Green state: v22 refuses both forgeries with `delta-disposition-conflict` and accepts the real ledger. Limits: the refusal is order-insensitive (verified), but a conflict re-keyed to a trailing `:0` suffix is refused under another id (reviewer K1), so the conflict id is not the only guard. (lesson: corpus/lessons/round-65.md#mistakes; C1; reviewer attacks K1, O1)

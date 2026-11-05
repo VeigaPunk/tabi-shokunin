@@ -1,0 +1,52 @@
+# S170 registry next-id check — Tabi round 65 w1, seat R65Scout
+# base revision: 58ed8c7a21b9dcb403e46fc1d4e2d8bb68511162
+# access date: 2026-11-05
+# repo: /home/vgpnk/Projects/shokunin/tabi-shokunin
+# NOTE: SOURCES.md is read-only for this seat; it was NOT modified.
+
+$ grep -oE '^ {0,3}\|[[:space:]]*S[0-9]{3,}' corpus/SOURCES.md | grep -oE 'S[0-9]+' | sort -u | tail -3
+S167
+S168
+S169
+
+$ grep -c 'S170' corpus/SOURCES.md
+0
+(grep exit status 1 — 1 means no match, i.e. S170 is absent)
+
+--- same two probes against the BASE REVISION blob (git show 58ed8c7...:corpus/SOURCES.md) ---
+$ git show 58ed8c7a21b9dcb403e46fc1d4e2d8bb68511162:corpus/SOURCES.md | grep -oE '^ {0,3}\|[[:space:]]*S[0-9]{3,}' | grep -oE 'S[0-9]+' | sort -u | tail -3
+S167
+S168
+S169
+
+$ git show 58ed8c7a21b9dcb403e46fc1d4e2d8bb68511162:corpus/SOURCES.md | grep -c 'S170'
+0
+
+RESULT: highest registry id in use = S169. Next free id = S170. 'grep -c S170' = 0 at base => S170 is unused and is the correct next id.
+
+--- corroborating gate run (scratch clone at base, read-only) ---
+$ node scripts/check-sources.mjs
+SOURCES_GATE verdict=clean rows=169 tiers=A:151,B:9,C:9 status=queued:15,mined:144,rejected:10 findings=0 file=corpus/SOURCES.md
+
+$ node scripts/check-sources.mjs --self-test
+SOURCES_SELFTEST verdict=clean cases=26
+
+--- collision hazard for the next id ---
+lowercase 's170' occurrences in corpus/SOURCES.md (filename-shaped, NOT a registry id):
+182:| S168 | Chromium 155.0.8059.84 — CDP Input domain PDL, mouseWheel delta units — https://chromium.googlesource.c
+
+count(uppercase S170) = 0   count(lowercase s170) = 1
+
+The lowercase 's170' is a STAGED FILENAME inside row S168's anchor cell:
+  .ufo/waves/round-64/w1/R64Scribe/sources/s170-chromium155-Input.pdl
+and row S169's anchor names s171-chromium155-Browser.pdl. The round-64 scribe numbered staged
+filenames two AHEAD of the registry ids. A new S170 row staging 's170-<something>.pdf' would
+make the token 's170' denote two different artefacts (S168's Input PDL and S170's FIPS PDF).
+check-sources.mjs rowPattern is case-sensitive uppercase (/^\|[ \t\v\f\r]*S[0-9]{3,}[ \t\v\f\r]*\|/)
+and the next-id probe is likewise uppercase-anchored, so neither creates a phantom row.
+
+--- used-by obligation for the new row ---
+check-sources.mjs inspectUsedBy() requires the used-by file to exist AND to literally
+contain the token S170: /(?<![A-Za-z0-9])S170(?![0-9])/  -> else finding used_by_uncited.
+No file in corpus/ at base contains 'S170' yet:
+  grep -rl 'S170' corpus/  ->  (no matches)
