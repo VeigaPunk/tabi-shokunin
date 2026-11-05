@@ -1,0 +1,937 @@
+{
+  "attack": "instrument-registry-r68",
+  "producer": "R68Review2 attack-driver.mjs",
+  "gatescript": "scripts/check-instrument-registry-r68.mjs",
+  "cases": 41,
+  "defectCount": 11,
+  "greenFired": [
+    "A00-single-green-row",
+    "A02-two-distinct-green-rows",
+    "D04-sha-with-valid-match-and-strap",
+    "F05-verdicts-ok-absent-but-maps-agree-token",
+    "G01-selftest-unhyphenated-omits-selftest",
+    "G03-selftest-claim-without-command",
+    "G04-selftest-stdio-note",
+    "H02-section-header-first-line-fenced",
+    "H03-section-header-differs-by-space",
+    "I03-all-seven-no-queries",
+    "J01-r64-rows-only"
+  ],
+  "redMissed": [],
+  "results": [
+    {
+      "name": "A00-single-green-row",
+      "expectGreen": true,
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "A02-two-distinct-green-rows",
+      "expectGreen": true,
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 5
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "B01-8-cells-extra-cell",
+      "expectGreen": false,
+      "note": "extra cell silently skips row; no finding names it",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 7
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "B02-6-cells-one-missing",
+      "expectGreen": false,
+      "note": "missing scope → 6 cells, row skipped",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 7
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "B03-no-leading-pipe-hyphen-middle",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 7
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "B03-no-leading-pipe",
+      "expectGreen": false,
+      "note": "no leading pipe → skipped",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 7
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "B04-12-cells-two-rows-merged",
+      "expectGreen": false,
+      "note": "two merged rows = 14 cells, skipped — could hide two real rows",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 7
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "B05-row-with-inner-pipe-in-cell",
+      "expectGreen": false,
+      "note": "sharp-cell extra pipe cell misshapen",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 7
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "C01-exact-duplicate-row",
+      "expectGreen": false,
+      "note": "exact duplicate fires duplicate-row",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "duplicate-row: 2",
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "duplicate-row": 1,
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "C02-duplicate-different-case-path",
+      "expectGreen": false,
+      "note": "case-variant duplicate ALSO fires duplicate-row? probe",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "C03-duplicate-path-trailing-slash",
+      "expectGreen": false,
+      "note": "trailing-slash variant same path prefix",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "C04-duplicate-12-and-7-malformed-first",
+      "expectGreen": false,
+      "note": "malformed 14-cell row first then valid: duplicate-row silent + skipped",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "D01-sha-substring-64-in-longer-hex",
+      "expectGreen": false,
+      "note": "two 64-hex substrings inside one long hex; regex finds FIRST (its own wrong juxtaposition? ) — probe",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "sha-mismatch: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "sha-mismatch": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "D02-sha-wrong-value",
+      "expectGreen": false,
+      "note": "plain wrong sha",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "sha-mismatch: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "sha-mismatch": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "D03-sha-prefix-40hex-only",
+      "expectGreen": false,
+      "note": "40-hex prefix only — deterministic regex {64} rejects; probe",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "sha-unstated: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "sha-unstated": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "D04-sha-with-valid-match-and-strap",
+      "expectGreen": true,
+      "note": "extra context words allowed — is that over-strict?",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "D05-sha-tampered-char",
+      "expectGreen": false,
+      "note": "one hex char tampered — sha-mismatch",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "sha-mismatch: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "sha-mismatch": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "D06-sha-in-wrong-cell",
+      "expectGreen": false,
+      "note": "sha in verdicts cell, verdict text in pinned cell — sha regex only scans pinned → sha-unstated?",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "sha-unstated: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "sha-unstated": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "D07-sha-uppercase",
+      "expectGreen": false,
+      "note": "uppercase hex",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "sha-unstated: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "sha-unstated": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "E01-entry-substring-exploit-XXpathYY",
+      "expectGreen": false,
+      "note": "substring with injected neighbors: still contains path — is containment all that is required?",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "E02-entry-shows-other-path",
+      "expectGreen": false,
+      "note": "entry names different path",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "entry-unbound: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "entry-unbound": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "E03-entry-empty",
+      "expectGreen": false,
+      "note": "empty entry",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "entry-unbound: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "entry-unbound": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "E04-entry-dashonly",
+      "expectGreen": false,
+      "note": "— entry",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "entry-unbound: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "entry-unbound": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "F01-verdicts-dash",
+      "expectGreen": false,
+      "note": "em-dash verdicts",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "field-missing: .ufo/waves/round-67/counters/png-r67.mjs:verdicts"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "field-missing": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "F02-scope-dash",
+      "expectGreen": false,
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "field-missing: .ufo/waves/round-67/counters/png-r67.mjs:scope"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "field-missing": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "F03-owner-dash",
+      "expectGreen": false,
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "field-missing: .ufo/waves/round-67/counters/png-r67.mjs:owner"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "field-missing": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "F04-owner-empty",
+      "expectGreen": false,
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "field-missing: .ufo/waves/round-67/counters/png-r67.mjs:owner"
+        ],
+        "byCheck": {
+          "row-missing": 6,
+          "field-missing": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "F05-verdicts-ok-absent-but-maps-agree-token",
+      "expectGreen": true,
+      "note": "weak \"ok\" verdict map accepted — gate only checks non-empty",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "G01-selftest-unhyphenated-omits-selftest",
+      "expectGreen": true,
+      "note": "word-only string accepted as \"stated\"",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "G02-selftest-hyphen-instead-of-unhyphen",
+      "expectGreen": false,
+      "note": "--self-test (hyphenated) not accepted",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "G03-selftest-claim-without-command",
+      "expectGreen": true,
+      "note": "token only, no command path",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "G04-selftest-stdio-note",
+      "expectGreen": true,
+      "note": "memory-only pointer",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "H01-section-absent",
+      "expectGreen": false,
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "H02-section-header-first-line-fenced",
+      "expectGreen": true,
+      "note": "section header inside code fence still found?",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "H03-section-header-differs-by-space",
+      "expectGreen": true,
+      "note": "trailing whitespace line still matches?",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "H04-section-header-emdash-vs-hyphen",
+      "expectGreen": false,
+      "note": "hyphen instead of em-dash: header not found",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "I01-only-png-row",
+      "expectGreen": false,
+      "note": "one row of seven — six row-missing",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "I02-all-seven-green",
+      "expectGreen": true,
+      "note": "all seven rows green",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "I03-all-seven-no-queries",
+      "expectGreen": true,
+      "note": "non-instrument cells string-matched by path still accepted?",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 7
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "I04-six-green-one-entry-unbound",
+      "expectGreen": false,
+      "note": "one mismatched entry — one entry-unbound plus six green",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "entry-unbound: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs"
+        ],
+        "byCheck": {
+          "entry-unbound": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "J01-r64-rows-only",
+      "expectGreen": true,
+      "note": "r64 stale rows retained in a DIFFERENT section and no supersede: gate green — is that a calibration count?",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 6
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    }
+  ]
+}

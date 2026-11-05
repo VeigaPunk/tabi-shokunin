@@ -1,0 +1,24 @@
+{
+  "probe": "per-row quote resolution at pinned r66 snapshot heads vs current live sibling HEADs",
+  "date": "2026-11-05",
+  "seat": "R68Connector",
+  "method": "python3 over the r66 ledger + snapshot; per contested row two read-only git calls per sibling repo: git show <head>:<file>, substring test of the ledger quote column (r[6]); git rev-parse HEAD per lane. No git mutation anywhere.",
+  "inputs": {
+    "ledger": ".ufo/waves/round-66/c1/adjudicated/adjacency-host-delta-r66.tsv",
+    "ledgerSha256": "3739288392ad7083c819637347bed14348a6e350b121492fc2653bf3e57b1105",
+    "snapshot": ".ufo/waves/round-66/measure/snapshot-live-r66.tsv",
+    "snapshotSha256": "a5fccf44aad0e4e67dc4592a18e15c3f7c6c88adebd236c4da723ad9d9370a74"
+  },
+  "ledgerDispositions": { "no-tabi-ground": 95, "contested-open": 49, "overlap-declared": 5, "lineRows": 149 },
+  "contestedPerLane": { "kagi-shokunin": 2, "kaidoku-shokunin": 39, "kake-shokunin": 1, "kama-shokunin": 5, "revenger-shokunin": 2 },
+  "ledgerLaneHeadsMatchSnapshot": "20/20",
+  "pinnedVsLiveHead": {
+    "kagi-shokunin":   { "pinned": "a916f4a56a08a6dea9a1a2318bbe6406fd0ac97c", "live": "6742fdef0e261dd06a38a0fb0b66b1bc027d1bee", "moved": true },
+    "kaidoku-shokunin":{ "pinned": "fe1913d90a3774020bab129f4c8cc5bc10daa523", "live": "73a882712907606eba074377b536c6dd82517e25", "moved": true },
+    "kake-shokunin":   { "pinned": "d838e744462c68f57232d8a61eba631c495940a1", "live": "d838e744462c68f57232d8a61eba631c495940a1", "moved": false },
+    "kama-shokunin":   { "pinned": "24d1895d8aae24c741baba2a57c809a35f84cdab", "live": "9b4c7af16fdd4bba9e4815f4615f4b003f340747", "moved": true },
+    "revenger-shokunin":{ "pinned": "dcb10b964e908d2d4872488dde8fd4437c518dcb", "live": "dcb10b964e908d2d4872488dde8fd4437c518dcb", "moved": false }
+  },
+  "quoteResolution": { "atPinnedHead": 49, "atLiveHead": 49, "staleAtLiveHead": 0 },
+  "conclusion": "All 49 contested-open quotes still resolve byte-exact at the current live sibling HEADs; no contest is dissolvable by staleness. 3 of 5 contested lanes moved heads since r66 without touching any contested sentence."
+}

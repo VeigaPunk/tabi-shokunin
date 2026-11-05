@@ -1,0 +1,528 @@
+{
+ "producer_pristine_sha256": "e7f042916833828096c9550b299085934ad195aa318b864cfd7f68cc86963c1e",
+ "mutants": [
+  {
+   "id": "M1-dupkey-off",
+   "axis": "duplicate-key detection (seen.has)",
+   "mutated_line_count": 1,
+   "diff_vs_pristine": [
+    {
+     "line": 187,
+     "pristine": "    if (seen.has(key)) { findings.push(['duplicate-key', line]); continue; }",
+     "mutant": "    if (seen.has(key) && false) { findings.push(['duplicate-key', line]); continue; }"
+    }
+   ],
+   "mutant_sha256": "17f9ca3ac5258172af6b3a73be2c344a4962037e244fb8e5a8e2fc8aec308333",
+   "pristine_sha256": "e7f042916833828096c9550b299085934ad195aa318b864cfd7f68cc86963c1e",
+   "rc": 1,
+   "verdict": "KILLED",
+   "expected_verdict": "killed",
+   "failed_cases": [
+    {
+     "case": "duplicate-key",
+     "why": [
+      "rc 0!=1",
+      "token duplicate-key missing"
+     ]
+    }
+   ],
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/M1-dupkey-off.mjs",
+    "--selftest",
+    "--scratch",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/fix-M1-dupkey-off"
+   ],
+   "fixture_sha256": {
+    "ledger-b.tsv": "3dba3a83e666cd5ab8309bfb7590f7428f6c201460a82ab8d7407483b7fd187a",
+    "ledger.tsv": "5725cc17df7ff426cdac1a02a75ad175b24efb3252b3f23a889045cca15f71a2",
+    "snapshot.tsv": "eea3bb4278837d989a14095d309491e6e04c8bc0f3c5857c89134e638dd04b90",
+    "ws-aa.tsv": "af44320edacf714e03af886b2ed62ac705c8a0f0c7f1e7fbaa64372e08d03984",
+    "ws-am.tsv": "5667f35fdfcd4611b435824cfd93c098b53dedf6cb312fb2bd5734b0c15051eb",
+    "ws-ao.tsv": "62d84a4bccea356aef7190ca7fd1812380d59d6ad55c0f9144d0a93f884b29af",
+    "ws-dup.tsv": "cf47053e68bf7bff95b794156b78a80e4bce979398e06a8811688cbabce84b6c",
+    "ws-green.tsv": "f16d6e2075ab2311bfaf8b6f31ce9711acd2e4fb9ce843cb9cce2281e8b0e3f9",
+    "ws-hm.tsv": "7ba06da807f84262e6feeebf5a4de7bfb8f7df3959cf8cb5f42577dbe863a141",
+    "ws-lp.tsv": "f16d6e2075ab2311bfaf8b6f31ce9711acd2e4fb9ce843cb9cce2281e8b0e3f9",
+    "ws-missing.tsv": "7ceced9357008d1a28b22ad6d9a5c37efa07a41170fb857a045b0c9eda514d07",
+    "ws-pd.tsv": "3c40efc6c2378af9af327803b73fe76daaa47991c776e295cf61b1d609f1acb3",
+    "ws-qm.tsv": "4da58d11bfa32960b3c51e3d9f2a59db571a3343737ea55b1d3f77be1964cc7d",
+    "ws-qu.tsv": "b0d56471627a0109d7482ea2dadad501cd92bc5efff794c798e9708544571acc",
+    "ws-rm.tsv": "8f2456a1fc1c1ad249d63d8232e00173d73209f4567391bfc64907f5ffa0b9fc",
+    "ws-sv.tsv": "b2a826108d754f6ed94a7052ab6735be57c139488c9bb14d2184eccf8e564c93",
+    "ws-unk.tsv": "9c07400151c95b7016d12cbc04f488e10ff5c930aeae719234f5356d51c9725d"
+   },
+   "mutant_persisted": ".ufo/waves/round-68/w1/R68Mut1/mutants/M1-dupkey-off.mjs"
+  },
+  {
+   "id": "M2-missingkey-off",
+   "axis": "missing-key sweep",
+   "mutated_line_count": 1,
+   "diff_vs_pristine": [
+    {
+     "line": 212,
+     "pristine": "    if (!seen.has(key)) findings.push(['missing-key', key.replace('\\t', ':')]);",
+     "mutant": "    if (false && !seen.has(key)) findings.push(['missing-key', key.replace('\\t', ':')]);"
+    }
+   ],
+   "mutant_sha256": "8529da48be8638148e878a869d9b552a8643bb0c8e7ecfb16f1fc31950830f2f",
+   "pristine_sha256": "e7f042916833828096c9550b299085934ad195aa318b864cfd7f68cc86963c1e",
+   "rc": 1,
+   "verdict": "KILLED",
+   "expected_verdict": "killed",
+   "failed_cases": [
+    {
+     "case": "missing-row",
+     "why": [
+      "rc 0!=1",
+      "token missing-key missing"
+     ]
+    }
+   ],
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/M2-missingkey-off.mjs",
+    "--selftest",
+    "--scratch",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/fix-M2-missingkey-off"
+   ],
+   "fixture_sha256": {
+    "ledger-b.tsv": "68eca5787b106436641bfb335bb7625fb6261716819d4bc361fbdec9a5a432c7",
+    "ledger.tsv": "0258282ebbc1257e2747c8292da8bc538018f02d38db6b67902c1e298b1fc84a",
+    "snapshot.tsv": "6ea2dd4fa1c2e68c3c2ecb5b59bd336dab7e5e602aac20ca5b3e27f1eb1b167b",
+    "ws-aa.tsv": "97bb4eb950c8efae63899e711df6e1d7646f1095d66007ef9f0e916db4c8d072",
+    "ws-am.tsv": "85c3f71f5fedd19c7a3890673849546d508c3a04cefacd8ada8eed64016eb1fc",
+    "ws-ao.tsv": "43cf02b1f752d5d00b1e6499ad68b5cf4fad43bf666654438098cc518c51904d",
+    "ws-dup.tsv": "e5799a81e84643abf16943fe2625dd9c2ac8253297536ef62a07d9fd89feaa05",
+    "ws-green.tsv": "f87fd88dc9b057ee9ce59c1be0e1d5dad4871f571d458193512e37c9781eaf35",
+    "ws-hm.tsv": "19921e7a43a168f3d59d64ff3d3389bfc48e50902c9ec45bc55a88db4fff929f",
+    "ws-lp.tsv": "f87fd88dc9b057ee9ce59c1be0e1d5dad4871f571d458193512e37c9781eaf35",
+    "ws-missing.tsv": "2a69f2a369406281f5149c95f3a5fb702cf5b74d22248ee387540c26493fe240",
+    "ws-pd.tsv": "523977f95ad8748c2b8284963346e05217655535ffa9257adfc23fb19f7c9960",
+    "ws-qm.tsv": "88d723f8d6014688a6c3938cc9a8e9a8000109ed4640941e65a667f27f50ca06",
+    "ws-qu.tsv": "e801250d1965cbc0ecbbb9bf4131834b72fcf5867738a1cd7808ee847188612e",
+    "ws-rm.tsv": "7b85cd135963111eadda9dff93d28301c68f62932ee6498c571bbb2a786568cb",
+    "ws-sv.tsv": "452113058dc7453b8153dd749b2bccb8e07adb33de2306a64cfb9b53c9cbcf2d",
+    "ws-unk.tsv": "66f5e1d8038a1b52c168703b6fb2b724ae40f11dc95edaf967856a3b279419ac"
+   },
+   "mutant_persisted": ".ufo/waves/round-68/w1/R68Mut1/mutants/M2-missingkey-off.mjs"
+  },
+  {
+   "id": "M3-quoteeq-off",
+   "axis": "quote equality vs ledger",
+   "mutated_line_count": 1,
+   "diff_vs_pristine": [
+    {
+     "line": 193,
+     "pristine": "    if (quote !== expected.quote) findings.push(['quote-mismatch', line]);",
+     "mutant": "    if (false && quote !== expected.quote) findings.push(['quote-mismatch', line]);"
+    }
+   ],
+   "mutant_sha256": "11d6a6895c83604200c832cc7f4e102468b71442cc170c3c2446cd6a949f0214",
+   "pristine_sha256": "e7f042916833828096c9550b299085934ad195aa318b864cfd7f68cc86963c1e",
+   "rc": 1,
+   "verdict": "KILLED",
+   "expected_verdict": "killed",
+   "failed_cases": [
+    {
+     "case": "quote-mismatch",
+     "why": [
+      "token quote-mismatch missing"
+     ]
+    }
+   ],
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/M3-quoteeq-off.mjs",
+    "--selftest",
+    "--scratch",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/fix-M3-quoteeq-off"
+   ],
+   "fixture_sha256": {
+    "ledger-b.tsv": "68eca5787b106436641bfb335bb7625fb6261716819d4bc361fbdec9a5a432c7",
+    "ledger.tsv": "0258282ebbc1257e2747c8292da8bc538018f02d38db6b67902c1e298b1fc84a",
+    "snapshot.tsv": "6ea2dd4fa1c2e68c3c2ecb5b59bd336dab7e5e602aac20ca5b3e27f1eb1b167b",
+    "ws-aa.tsv": "97bb4eb950c8efae63899e711df6e1d7646f1095d66007ef9f0e916db4c8d072",
+    "ws-am.tsv": "85c3f71f5fedd19c7a3890673849546d508c3a04cefacd8ada8eed64016eb1fc",
+    "ws-ao.tsv": "43cf02b1f752d5d00b1e6499ad68b5cf4fad43bf666654438098cc518c51904d",
+    "ws-dup.tsv": "e5799a81e84643abf16943fe2625dd9c2ac8253297536ef62a07d9fd89feaa05",
+    "ws-green.tsv": "f87fd88dc9b057ee9ce59c1be0e1d5dad4871f571d458193512e37c9781eaf35",
+    "ws-hm.tsv": "19921e7a43a168f3d59d64ff3d3389bfc48e50902c9ec45bc55a88db4fff929f",
+    "ws-lp.tsv": "f87fd88dc9b057ee9ce59c1be0e1d5dad4871f571d458193512e37c9781eaf35",
+    "ws-missing.tsv": "2a69f2a369406281f5149c95f3a5fb702cf5b74d22248ee387540c26493fe240",
+    "ws-pd.tsv": "523977f95ad8748c2b8284963346e05217655535ffa9257adfc23fb19f7c9960",
+    "ws-qm.tsv": "88d723f8d6014688a6c3938cc9a8e9a8000109ed4640941e65a667f27f50ca06",
+    "ws-qu.tsv": "e801250d1965cbc0ecbbb9bf4131834b72fcf5867738a1cd7808ee847188612e",
+    "ws-rm.tsv": "7b85cd135963111eadda9dff93d28301c68f62932ee6498c571bbb2a786568cb",
+    "ws-sv.tsv": "452113058dc7453b8153dd749b2bccb8e07adb33de2306a64cfb9b53c9cbcf2d",
+    "ws-unk.tsv": "66f5e1d8038a1b52c168703b6fb2b724ae40f11dc95edaf967856a3b279419ac"
+   },
+   "mutant_persisted": ".ufo/waves/round-68/w1/R68Mut1/mutants/M3-quoteeq-off.mjs"
+  },
+  {
+   "id": "M4-headeq-off",
+   "axis": "head equality vs snapshot head",
+   "mutated_line_count": 1,
+   "diff_vs_pristine": [
+    {
+     "line": 194,
+     "pristine": "    if (head !== expected.laneHead) findings.push(['head-mismatch', line]);",
+     "mutant": "    if (false && head !== expected.laneHead) findings.push(['head-mismatch', line]);"
+    }
+   ],
+   "mutant_sha256": "058969b0d5335e178673609cb6511066fc79e18f948447a093500f2d4bb55ab3",
+   "pristine_sha256": "e7f042916833828096c9550b299085934ad195aa318b864cfd7f68cc86963c1e",
+   "rc": 1,
+   "verdict": "KILLED",
+   "expected_verdict": "killed",
+   "failed_cases": [
+    {
+     "case": "head-mismatch",
+     "why": [
+      "token head-mismatch missing"
+     ]
+    }
+   ],
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/M4-headeq-off.mjs",
+    "--selftest",
+    "--scratch",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/fix-M4-headeq-off"
+   ],
+   "fixture_sha256": {
+    "ledger-b.tsv": "68eca5787b106436641bfb335bb7625fb6261716819d4bc361fbdec9a5a432c7",
+    "ledger.tsv": "0258282ebbc1257e2747c8292da8bc538018f02d38db6b67902c1e298b1fc84a",
+    "snapshot.tsv": "6ea2dd4fa1c2e68c3c2ecb5b59bd336dab7e5e602aac20ca5b3e27f1eb1b167b",
+    "ws-aa.tsv": "97bb4eb950c8efae63899e711df6e1d7646f1095d66007ef9f0e916db4c8d072",
+    "ws-am.tsv": "85c3f71f5fedd19c7a3890673849546d508c3a04cefacd8ada8eed64016eb1fc",
+    "ws-ao.tsv": "43cf02b1f752d5d00b1e6499ad68b5cf4fad43bf666654438098cc518c51904d",
+    "ws-dup.tsv": "e5799a81e84643abf16943fe2625dd9c2ac8253297536ef62a07d9fd89feaa05",
+    "ws-green.tsv": "f87fd88dc9b057ee9ce59c1be0e1d5dad4871f571d458193512e37c9781eaf35",
+    "ws-hm.tsv": "19921e7a43a168f3d59d64ff3d3389bfc48e50902c9ec45bc55a88db4fff929f",
+    "ws-lp.tsv": "f87fd88dc9b057ee9ce59c1be0e1d5dad4871f571d458193512e37c9781eaf35",
+    "ws-missing.tsv": "2a69f2a369406281f5149c95f3a5fb702cf5b74d22248ee387540c26493fe240",
+    "ws-pd.tsv": "523977f95ad8748c2b8284963346e05217655535ffa9257adfc23fb19f7c9960",
+    "ws-qm.tsv": "88d723f8d6014688a6c3938cc9a8e9a8000109ed4640941e65a667f27f50ca06",
+    "ws-qu.tsv": "e801250d1965cbc0ecbbb9bf4131834b72fcf5867738a1cd7808ee847188612e",
+    "ws-rm.tsv": "7b85cd135963111eadda9dff93d28301c68f62932ee6498c571bbb2a786568cb",
+    "ws-sv.tsv": "452113058dc7453b8153dd749b2bccb8e07adb33de2306a64cfb9b53c9cbcf2d",
+    "ws-unk.tsv": "66f5e1d8038a1b52c168703b6fb2b724ae40f11dc95edaf967856a3b279419ac"
+   },
+   "mutant_persisted": ".ufo/waves/round-68/w1/R68Mut1/mutants/M4-headeq-off.mjs"
+  },
+  {
+   "id": "M5-author-tabi-off",
+   "axis": "author adjudicator literal tabi",
+   "mutated_line_count": 1,
+   "diff_vs_pristine": [
+    {
+     "line": 204,
+     "pristine": "      else if (adjudicator === 'tabi' || adjudicator.endsWith('-shokunin\\ttabi')) findings.push(['adjudicator-author', line]);",
+     "mutant": "      else if (false || adjudicator.endsWith('-shokunin\\ttabi')) findings.push(['adjudicator-author', line]);"
+    }
+   ],
+   "mutant_sha256": "5fa4e50ce64c67dfa2c865a9fd3a5bcad2efe267c8a988ebf4f816089bb45849",
+   "pristine_sha256": "e7f042916833828096c9550b299085934ad195aa318b864cfd7f68cc86963c1e",
+   "rc": 1,
+   "verdict": "KILLED",
+   "expected_verdict": "killed",
+   "failed_cases": [
+    {
+     "case": "adjudicator-author",
+     "why": [
+      "rc 0!=1",
+      "token adjudicator-author missing"
+     ]
+    }
+   ],
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/M5-author-tabi-off.mjs",
+    "--selftest",
+    "--scratch",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/fix-M5-author-tabi-off"
+   ],
+   "fixture_sha256": {
+    "ledger-b.tsv": "58582a43c5408db2208792589e6fcc77025e1f01e33d8a0153babcacca7f3499",
+    "ledger.tsv": "5520b85b38220793dd26ef8a9a8f1d7d0ad5b87c69dabb24ac5061fd54afb094",
+    "snapshot.tsv": "f4df95108616ebfe000572b1ca481cab4873c15eb4d25fe84d9220b504a0ee08",
+    "ws-aa.tsv": "125c52683d48da5ff80682a96f5cb83aae2b2c5b205475d2a5a476830a8282bc",
+    "ws-am.tsv": "dd4fdda21d8909a370559b5ce82e0dca82948d7ba758b67a2a18d549e4b7082d",
+    "ws-ao.tsv": "504fe7eb87e378c4ada539d042a9681187be1c4962e598533fa0afc8e8687097",
+    "ws-dup.tsv": "30a9295085cded1454e566180da18aa4fbc8a9c56d662c2c2f80e92116807758",
+    "ws-green.tsv": "047b6ad9f383d42d7a697ece323caa9a630e03a05bb4e82383381814cc4a68a5",
+    "ws-hm.tsv": "32399da2988cb61ff12e21e78137f51dd4e80adb1e25198ceae11cade7063d8e",
+    "ws-lp.tsv": "047b6ad9f383d42d7a697ece323caa9a630e03a05bb4e82383381814cc4a68a5",
+    "ws-missing.tsv": "2a5e13e49d77bcdaaebfc13cff0ecc04786404187718f314ae189b4ec1ba429d",
+    "ws-pd.tsv": "0c678d371d84243477889b234e80c2e9173ed146a8082f8cb181c62d4eb431c5",
+    "ws-qm.tsv": "e20746a200c136603361cee5d88bbaa5746a57892d3d05110e459ca4c3115dac",
+    "ws-qu.tsv": "e896e74dee2b9f5560ed14a35a99e09d7f5773e965f72d5875e00d501fabac59",
+    "ws-rm.tsv": "7e8981e4570c4f7572754242b8a9a1218d78f41c4304d11c7b2b077e39616613",
+    "ws-sv.tsv": "fad8855ab1c94e8a6e5cec49eb08e0aa5756d5a8b1d9a4d1fe2000c7d8310900",
+    "ws-unk.tsv": "d06140234f44edff24befaf68cecbf09ae3f5d6fa87bdf3736125c299418e9be"
+   },
+   "mutant_persisted": ".ufo/waves/round-68/w1/R68Mut1/mutants/M5-author-tabi-off.mjs"
+  },
+  {
+   "id": "M5b-author-endsWith-off",
+   "axis": "author endsWith clause (dead-code candidate)",
+   "mutated_line_count": 1,
+   "diff_vs_pristine": [
+    {
+     "line": 204,
+     "pristine": "      else if (adjudicator === 'tabi' || adjudicator.endsWith('-shokunin\\ttabi')) findings.push(['adjudicator-author', line]);",
+     "mutant": "      else if (adjudicator === 'tabi' || false) findings.push(['adjudicator-author', line]);"
+    }
+   ],
+   "mutant_sha256": "885eaad9c08b19367c36872012f4b498433cdb6e0a1d437725204da8ee230a7a",
+   "pristine_sha256": "e7f042916833828096c9550b299085934ad195aa318b864cfd7f68cc86963c1e",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "expected_verdict": "survived",
+   "failed_cases": [],
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/M5b-author-endsWith-off.mjs",
+    "--selftest",
+    "--scratch",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/fix-M5b-author-endsWith-off"
+   ],
+   "fixture_sha256": {
+    "ledger-b.tsv": "58582a43c5408db2208792589e6fcc77025e1f01e33d8a0153babcacca7f3499",
+    "ledger.tsv": "5520b85b38220793dd26ef8a9a8f1d7d0ad5b87c69dabb24ac5061fd54afb094",
+    "snapshot.tsv": "f4df95108616ebfe000572b1ca481cab4873c15eb4d25fe84d9220b504a0ee08",
+    "ws-aa.tsv": "125c52683d48da5ff80682a96f5cb83aae2b2c5b205475d2a5a476830a8282bc",
+    "ws-am.tsv": "dd4fdda21d8909a370559b5ce82e0dca82948d7ba758b67a2a18d549e4b7082d",
+    "ws-ao.tsv": "504fe7eb87e378c4ada539d042a9681187be1c4962e598533fa0afc8e8687097",
+    "ws-dup.tsv": "30a9295085cded1454e566180da18aa4fbc8a9c56d662c2c2f80e92116807758",
+    "ws-green.tsv": "047b6ad9f383d42d7a697ece323caa9a630e03a05bb4e82383381814cc4a68a5",
+    "ws-hm.tsv": "32399da2988cb61ff12e21e78137f51dd4e80adb1e25198ceae11cade7063d8e",
+    "ws-lp.tsv": "047b6ad9f383d42d7a697ece323caa9a630e03a05bb4e82383381814cc4a68a5",
+    "ws-missing.tsv": "2a5e13e49d77bcdaaebfc13cff0ecc04786404187718f314ae189b4ec1ba429d",
+    "ws-pd.tsv": "0c678d371d84243477889b234e80c2e9173ed146a8082f8cb181c62d4eb431c5",
+    "ws-qm.tsv": "e20746a200c136603361cee5d88bbaa5746a57892d3d05110e459ca4c3115dac",
+    "ws-qu.tsv": "e896e74dee2b9f5560ed14a35a99e09d7f5773e965f72d5875e00d501fabac59",
+    "ws-rm.tsv": "7e8981e4570c4f7572754242b8a9a1218d78f41c4304d11c7b2b077e39616613",
+    "ws-sv.tsv": "fad8855ab1c94e8a6e5cec49eb08e0aa5756d5a8b1d9a4d1fe2000c7d8310900",
+    "ws-unk.tsv": "d06140234f44edff24befaf68cecbf09ae3f5d6fa87bdf3736125c299418e9be"
+   },
+   "mutant_persisted": ".ufo/waves/round-68/w1/R68Mut1/mutants/M5b-author-endsWith-off.mjs"
+  },
+  {
+   "id": "M6-pendingpolarity-off",
+   "axis": "pending-non-author polarity flip",
+   "mutated_line_count": 1,
+   "diff_vs_pristine": [
+    {
+     "line": 196,
+     "pristine": "    if (status === 'pending-non-author') {",
+     "mutant": "    if (status !== 'pending-non-author') {"
+    }
+   ],
+   "mutant_sha256": "b807808bf3f832c81b24f5460b435279b0fbacc014e1e2045b7fc2d14c01ea93",
+   "pristine_sha256": "e7f042916833828096c9550b299085934ad195aa318b864cfd7f68cc86963c1e",
+   "rc": 1,
+   "verdict": "KILLED",
+   "expected_verdict": "killed",
+   "failed_cases": [
+    {
+     "case": "green",
+     "why": [
+      "rc 1!=0"
+     ]
+    },
+    {
+     "case": "pending-fields-dirty",
+     "why": [
+      "token pending-fields-dirty missing"
+     ]
+    },
+    {
+     "case": "adjudicator-author",
+     "why": [
+      "token adjudicator-author missing"
+     ]
+    }
+   ],
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/M6-pendingpolarity-off.mjs",
+    "--selftest",
+    "--scratch",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/fix-M6-pendingpolarity-off"
+   ],
+   "fixture_sha256": {
+    "ledger-b.tsv": "a4454d98ead8ee1bf691d847bc6f150cc177432acc40019318bd8343b7ee492e",
+    "ledger.tsv": "96658451175b99b3315c49191ddd8ffea42486116744bcb7977bca1825a6d025",
+    "snapshot.tsv": "7b75086ea803d84caee9a1b1b3085a6ded13b886430e9f158e8066569e3e3f92",
+    "ws-aa.tsv": "af655d35c160b280db752622532db9a568259a08d015f50c113370efcfd0096c",
+    "ws-am.tsv": "1a62c1b9d24b12bb19d3b82e763ed64eb3ee067795d7de5f9552880e95c82cd0",
+    "ws-ao.tsv": "12ea4bcdb14a03f52e30964570c8fb9987a12b0dea0705f8ba8fad8c44339ad0",
+    "ws-dup.tsv": "7d8f977dbb89f76b5460f2c97795836bfddcb985b2f7575ee3a4f39c1860fd32",
+    "ws-green.tsv": "78d997321bcfc472f743182dedccc468a636fb34f5fc0f32140f68c58adb694c",
+    "ws-hm.tsv": "b57e5165007394c26a434e9a1ed2d9547c423247643ab296d92fa96bdb889b7a",
+    "ws-lp.tsv": "78d997321bcfc472f743182dedccc468a636fb34f5fc0f32140f68c58adb694c",
+    "ws-missing.tsv": "23dbe78275904769107baa90aeb4b5f7349d2e7e846cb6776d30ddb315263dea",
+    "ws-pd.tsv": "8f47a1b1e8263dd43cd31131e641995a277ed39befc72937d81b2740711bc357",
+    "ws-qm.tsv": "95ceaa887e0b8603e214ff4a49cfce0319483ec360d35e13a32367a8faa07d7f",
+    "ws-qu.tsv": "1e5658564ebed568c9ec47b707899b0b33300750d7af19e2810c898df17fa950",
+    "ws-rm.tsv": "f8bdee8150b15cc489ad7418975db395cdb08c58fe2821e24bb3a500e12702dc",
+    "ws-sv.tsv": "7112a12ea7919a7b6173062503ebd70765ac19a156ae2db5fc2e3e5c172e958f",
+    "ws-unk.tsv": "338cbde57a79ba6be8824d7786aec59a4fcbcac4caf853e53ccb1abed7b4dd4a"
+   },
+   "mutant_persisted": ".ufo/waves/round-68/w1/R68Mut1/mutants/M6-pendingpolarity-off.mjs"
+  },
+  {
+   "id": "M7-pendingdirty-off",
+   "axis": "pending cells must be em-dash",
+   "mutated_line_count": 1,
+   "diff_vs_pristine": [
+    {
+     "line": 199,
+     "pristine": "        if (cell !== '\u2014') findings.push(['pending-fields-dirty', line + ':' + cellName]);",
+     "mutant": "        if (false && cell !== '\u2014') findings.push(['pending-fields-dirty', line + ':' + cellName]);"
+    }
+   ],
+   "mutant_sha256": "bea4331d76ecedd6fb7e5e80a924f0067d391a96cd1d7fa2ba8273d1a7860681",
+   "pristine_sha256": "e7f042916833828096c9550b299085934ad195aa318b864cfd7f68cc86963c1e",
+   "rc": 1,
+   "verdict": "KILLED",
+   "expected_verdict": "killed",
+   "failed_cases": [
+    {
+     "case": "pending-fields-dirty",
+     "why": [
+      "rc 0!=1",
+      "token pending-fields-dirty missing"
+     ]
+    }
+   ],
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/M7-pendingdirty-off.mjs",
+    "--selftest",
+    "--scratch",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/fix-M7-pendingdirty-off"
+   ],
+   "fixture_sha256": {
+    "ledger-b.tsv": "a4454d98ead8ee1bf691d847bc6f150cc177432acc40019318bd8343b7ee492e",
+    "ledger.tsv": "96658451175b99b3315c49191ddd8ffea42486116744bcb7977bca1825a6d025",
+    "snapshot.tsv": "7b75086ea803d84caee9a1b1b3085a6ded13b886430e9f158e8066569e3e3f92",
+    "ws-aa.tsv": "af655d35c160b280db752622532db9a568259a08d015f50c113370efcfd0096c",
+    "ws-am.tsv": "1a62c1b9d24b12bb19d3b82e763ed64eb3ee067795d7de5f9552880e95c82cd0",
+    "ws-ao.tsv": "12ea4bcdb14a03f52e30964570c8fb9987a12b0dea0705f8ba8fad8c44339ad0",
+    "ws-dup.tsv": "7d8f977dbb89f76b5460f2c97795836bfddcb985b2f7575ee3a4f39c1860fd32",
+    "ws-green.tsv": "78d997321bcfc472f743182dedccc468a636fb34f5fc0f32140f68c58adb694c",
+    "ws-hm.tsv": "b57e5165007394c26a434e9a1ed2d9547c423247643ab296d92fa96bdb889b7a",
+    "ws-lp.tsv": "78d997321bcfc472f743182dedccc468a636fb34f5fc0f32140f68c58adb694c",
+    "ws-missing.tsv": "23dbe78275904769107baa90aeb4b5f7349d2e7e846cb6776d30ddb315263dea",
+    "ws-pd.tsv": "8f47a1b1e8263dd43cd31131e641995a277ed39befc72937d81b2740711bc357",
+    "ws-qm.tsv": "95ceaa887e0b8603e214ff4a49cfce0319483ec360d35e13a32367a8faa07d7f",
+    "ws-qu.tsv": "1e5658564ebed568c9ec47b707899b0b33300750d7af19e2810c898df17fa950",
+    "ws-rm.tsv": "f8bdee8150b15cc489ad7418975db395cdb08c58fe2821e24bb3a500e12702dc",
+    "ws-sv.tsv": "7112a12ea7919a7b6173062503ebd70765ac19a156ae2db5fc2e3e5c172e958f",
+    "ws-unk.tsv": "338cbde57a79ba6be8824d7786aec59a4fcbcac4caf853e53ccb1abed7b4dd4a"
+   },
+   "mutant_persisted": ".ufo/waves/round-68/w1/R68Mut1/mutants/M7-pendingdirty-off.mjs"
+  },
+  {
+   "id": "M8-expectpending-off",
+   "axis": "expect-pending count check",
+   "mutated_line_count": 1,
+   "diff_vs_pristine": [
+    {
+     "line": 214,
+     "pristine": "  if (args['expect-pending'] !== undefined && pending !== Number(args['expect-pending'])) {",
+     "mutant": "  if (args['expect-pending'] !== undefined && false) {"
+    }
+   ],
+   "mutant_sha256": "66bbba31f409c23b9cb3909bbd8f929277b019b007535f6afbac8c90538935e5",
+   "pristine_sha256": "e7f042916833828096c9550b299085934ad195aa318b864cfd7f68cc86963c1e",
+   "rc": 0,
+   "verdict": "SURVIVED",
+   "expected_verdict": "survived",
+   "failed_cases": [],
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/M8-expectpending-off.mjs",
+    "--selftest",
+    "--scratch",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/fix-M8-expectpending-off"
+   ],
+   "fixture_sha256": {
+    "ledger-b.tsv": "65b547f364c96a4be9c47dd75016ac1e58672263b655f8d8ad255c16409a5856",
+    "ledger.tsv": "39d8798f008980f169f24fea2019dcdd11acb14ae20b9d17cee0a2ac754095a6",
+    "snapshot.tsv": "511455bfa2fa4f0b61e9e28920573013c5304c9c8880c8c848e5bacdbc61bc5b",
+    "ws-aa.tsv": "d391edb9e6886eeef1a6fb55caa45c50f9d8b8e064aac259d28a6bf94aa41a8f",
+    "ws-am.tsv": "22510463e85217ffe9ea902321a6d8f52d2215451b046079e26d3c6a270e3338",
+    "ws-ao.tsv": "dc1e11a6b1d755bfb5b03fcb9fba2c1ef9e555f7c3abc82b1aa70ecbe7792037",
+    "ws-dup.tsv": "0f7e642cefceb4fd03f0f10e9b024d1aa9f8fbf0a645adbd1775fc74250d4af0",
+    "ws-green.tsv": "f9fbecdf8772b310b95ed22ed4c3e855b537c3ff0c7efdbc99a7381a3739bda0",
+    "ws-hm.tsv": "0dfd9e59aa5606a0427ce2d2e2827b91a34d21cfdc6acd7f56b333bea6564c8f",
+    "ws-lp.tsv": "f9fbecdf8772b310b95ed22ed4c3e855b537c3ff0c7efdbc99a7381a3739bda0",
+    "ws-missing.tsv": "e43fac2504fa79c73fffe9f146f4110a1e15ac62d34ff44b67f624400241e4dd",
+    "ws-pd.tsv": "c46d91e6f27f9098027a200b1adb63a53da231078448c11b6a88668066b731e7",
+    "ws-qm.tsv": "e11bf31064e51ef861b24cfcac7f40fe0faad5e36ea492a8a36ed21bf9be2077",
+    "ws-qu.tsv": "17ccbcbefa2cb16fda94011412425714fb5afd683b55c42ef8756decc32893ba",
+    "ws-rm.tsv": "009d16c91086458b18fee138536e2a212a11c25c8eaa5a1604cb24917ab778d0",
+    "ws-sv.tsv": "3cb3e6d9304237befc6ff41c3d7e34c7d0f7c311944a1dcc91df6a39a304e43d",
+    "ws-unk.tsv": "00418c104ed79af11c9e98ae1c24a1e8c25d84477609f9cfd864f98db3756044"
+   },
+   "mutant_persisted": ".ufo/waves/round-68/w1/R68Mut1/mutants/M8-expectpending-off.mjs"
+  },
+  {
+   "id": "M9-quoteunresolved-off",
+   "axis": "quote present in file at head",
+   "mutated_line_count": 1,
+   "diff_vs_pristine": [
+    {
+     "line": 225,
+     "pristine": "      else if (!out.content.includes(res.quote)) findings.push(['quote-unresolved', res.line]);",
+     "mutant": "      else if (false && !out.content.includes(res.quote)) findings.push(['quote-unresolved', res.line]);"
+    }
+   ],
+   "mutant_sha256": "83ab7108940e38e566cda6ed2da1bcd40bd7e69d0a411e3b20b23fd1999f9642",
+   "pristine_sha256": "e7f042916833828096c9550b299085934ad195aa318b864cfd7f68cc86963c1e",
+   "rc": 1,
+   "verdict": "KILLED",
+   "expected_verdict": "killed",
+   "failed_cases": [
+    {
+     "case": "quote-unresolved",
+     "why": [
+      "rc 0!=1",
+      "token quote-unresolved missing"
+     ]
+    }
+   ],
+   "argv": [
+    "node",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/M9-quoteunresolved-off.mjs",
+    "--selftest",
+    "--scratch",
+    "/fast/scratch/hyaku/tabi-r68/R68Mut1/fix-M9-quoteunresolved-off"
+   ],
+   "fixture_sha256": {
+    "ledger-b.tsv": "65b547f364c96a4be9c47dd75016ac1e58672263b655f8d8ad255c16409a5856",
+    "ledger.tsv": "39d8798f008980f169f24fea2019dcdd11acb14ae20b9d17cee0a2ac754095a6",
+    "snapshot.tsv": "511455bfa2fa4f0b61e9e28920573013c5304c9c8880c8c848e5bacdbc61bc5b",
+    "ws-aa.tsv": "d391edb9e6886eeef1a6fb55caa45c50f9d8b8e064aac259d28a6bf94aa41a8f",
+    "ws-am.tsv": "22510463e85217ffe9ea902321a6d8f52d2215451b046079e26d3c6a270e3338",
+    "ws-ao.tsv": "dc1e11a6b1d755bfb5b03fcb9fba2c1ef9e555f7c3abc82b1aa70ecbe7792037",
+    "ws-dup.tsv": "0f7e642cefceb4fd03f0f10e9b024d1aa9f8fbf0a645adbd1775fc74250d4af0",
+    "ws-green.tsv": "f9fbecdf8772b310b95ed22ed4c3e855b537c3ff0c7efdbc99a7381a3739bda0",
+    "ws-hm.tsv": "0dfd9e59aa5606a0427ce2d2e2827b91a34d21cfdc6acd7f56b333bea6564c8f",
+    "ws-lp.tsv": "f9fbecdf8772b310b95ed22ed4c3e855b537c3ff0c7efdbc99a7381a3739bda0",
+    "ws-missing.tsv": "e43fac2504fa79c73fffe9f146f4110a1e15ac62d34ff44b67f624400241e4dd",
+    "ws-pd.tsv": "c46d91e6f27f9098027a200b1adb63a53da231078448c11b6a88668066b731e7",
+    "ws-qm.tsv": "e11bf31064e51ef861b24cfcac7f40fe0faad5e36ea492a8a36ed21bf9be2077",
+    "ws-qu.tsv": "17ccbcbefa2cb16fda94011412425714fb5afd683b55c42ef8756decc32893ba",
+    "ws-rm.tsv": "009d16c91086458b18fee138536e2a212a11c25c8eaa5a1604cb24917ab778d0",
+    "ws-sv.tsv": "3cb3e6d9304237befc6ff41c3d7e34c7d0f7c311944a1dcc91df6a39a304e43d",
+    "ws-unk.tsv": "00418c104ed79af11c9e98ae1c24a1e8c25d84477609f9cfd864f98db3756044"
+   },
+   "mutant_persisted": ".ufo/waves/round-68/w1/R68Mut1/mutants/M9-quoteunresolved-off.mjs"
+  }
+ ]
+}

@@ -1079,3 +1079,9 @@ the report, under the frozen predicates in `.ufo/waves/round-65/claims.json`.
 - Horizontal wheel and scrollend on Chromium/Linux, one loopback fixture and one build (`corpus/knowledge/chromium-hscroll-scrollend-round-67.md`; capability `chromium-hscroll-domain-linux`; cites S172 and own-work `corpus/evidence/round67/`). Scroll and scrollend ground moved from frontier to core for this build only; smooth scrolling and trackpad phases remain frontier.
 - Receipt-provenance gate repair: v4 refuses relative matrix inputs resolving outside `--repo` (lesson: `corpus/lessons/round-67.md`; QUALITY 124 governs its controls).
 - Adjacency ledger disposition meaning: no counting rule decides it (round-67 C1 withdrawn; lesson `## Gate`); the axis is open to an operator ruling.
+
+## Round 68 coverage (2026-11-05)
+
+- Input-domain synthetic scroll gesture (`Input.synthesizeScrollGesture`) at Chromium 155.0.8059.84, documentation-held and runtime-unmeasured: `corpus/knowledge/chromium-scroll-gesture-protocol-round-68.md` (cites S173; counter `.ufo/waves/round-68/w1/R68Exec3/check-c3-synthscroll-r68.mjs`). Moved from frontier to source-held; runtime delivery stays frontier.
+- SKILL.md instrument registry for the round-67 generation (seven instruments; `## Instrument registry — round 68`) and canonical gate rows for the round-68 gates (`## Round 68 gate registry`).
+- Adjudication gate for the round-66 sibling-overlap worksheet, hardened against lane self-adjudication, off-line quotes and degenerate quotes (lesson: `corpus/lessons/round-68.md`); the 49 contested rows remain pending non-author adjudication, and the operator ruling on the adjacency axis is still open.

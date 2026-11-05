@@ -1,0 +1,11 @@
+## Instrument registry — round 68
+
+| Instrument | Entry | Verdicts | Selftest | Pinned | Scope | Owner |
+|---|---|---|---|---|---|---|
+| `scripts/chrome-cdp-loopback-round67.mjs` | node scripts/chrome-cdp-loopback-round67.mjs --run | 0 ok; 1 findings | node scripts/chrome-cdp-loopback-round67.mjs --selftest | sha256 a0327716e3169d6ab926d437d515e95e1b6f4ed01cdf497aab3807bc5033903c; evidence/x | scratch | tabi |
+| `scripts/verify-live-r67.mjs` | echo scripts/verify-live-r67.mjs | 0 ok; 1 findings | node scripts/verify-live-r67.mjs --selftest | sha256 c4de0ab31ffa0f91953cbcd0bc7445a9bb384d0db7805cb7d2afbdb1702a8014; evidence/x | scratch | tabi |
+| `.ufo/waves/round-67/counters/chromium-hscroll-r67.mjs` | node .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs --run | 0 ok; 1 findings | node .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs --selftest | sha256 1c23ab42b94d8e69a795364f8ac6a2765a6c704d4744e558a211b176163a90f3; evidence/x | scratch | tabi |
+| `.ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs` | node .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs --run | 0 ok; 1 findings | node .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs --selftest | sha256 5be8e22bb1badefb9c6a334e196685a04b32bfd356034199bc1c16ac3e2f3581; evidence/x | scratch | tabi |
+| `.ufo/waves/round-67/counters/make-negatives-r67.mjs` | node .ufo/waves/round-67/counters/make-negatives-r67.mjs --run | 0 ok; 1 findings | node .ufo/waves/round-67/counters/make-negatives-r67.mjs --selftest | sha256 bb11c99fa1d3249decccdeb1a503fdc2a20d0bfe86f1038a80969440ed25a438; evidence/x | scratch | tabi |
+| `.ufo/waves/round-67/counters/mutate-r67.mjs` | node .ufo/waves/round-67/counters/mutate-r67.mjs --run | 0 ok; 1 findings | node .ufo/waves/round-67/counters/mutate-r67.mjs --selftest | sha256 3c10a21a1e39c5bd5d2db58c632519d874cf12157de03cb5645658ff993de4f3; evidence/x | scratch | tabi |
+| `.ufo/waves/round-67/counters/png-r67.mjs` | node .ufo/waves/round-67/counters/png-r67.mjs --run | 0 ok; 1 findings | node .ufo/waves/round-67/counters/png-r67.mjs --selftest | sha256 92a214fa61579091222f97eaf8e9bf11c1a728af5a077a3b5568231b6dc5be43; evidence/x | scratch | tabi |

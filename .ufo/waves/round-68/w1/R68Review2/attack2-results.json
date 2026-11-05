@@ -1,0 +1,353 @@
+{
+  "attack": "instrument-registry-r68/battery-v2",
+  "producer": "R68Review2 attack-driver2.mjs",
+  "cases": 22,
+  "defectCount": 2,
+  "greenFired": [
+    {
+      "name": "K08-duplicate-nested-table-stale-copy",
+      "rc": 1,
+      "findings": [
+        "duplicate-row: 8"
+      ]
+    },
+    {
+      "name": "K19-section-header-lowercase",
+      "rc": 1,
+      "findings": [
+        "registry-section-missing: ## Instrument registry — round 68"
+      ]
+    }
+  ],
+  "redMissed": [],
+  "results": [
+    {
+      "name": "K00-baseline-all-green",
+      "expectGreen": true,
+      "why": "reference",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K01-8-cells-extra",
+      "expectGreen": false,
+      "why": "png row 8 cells → skipped silently; row-missing fires but no malformed-cell finding",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K02-6-cells",
+      "expectGreen": false,
+      "why": "png row 6 cells → skipped",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K03-row-data-word-instrument-first-cell",
+      "expectGreen": false,
+      "why": "first cell contains the word instrument → row skipped as header regex",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K04-exact-duplicate",
+      "expectGreen": false,
+      "why": "exact duplicate → duplicate-row fires",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "duplicate-row: 8"
+        ],
+        "byCheck": {
+          "duplicate-row": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K05-duplicate-trailing-slash",
+      "expectGreen": true,
+      "why": "trailing-slash variant of duplicate evades duplicate-row detection",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K06-duplicate-case-variant",
+      "expectGreen": true,
+      "why": "case-variant duplicate evades duplicate-row detection",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K07-duplicate-inline-comment",
+      "expectGreen": true,
+      "why": "inline-comment duplicate evades duplicate-row detection",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K08-duplicate-nested-table-stale-copy",
+      "expectGreen": true,
+      "why": "duplicate as bare row after ### heading still inside the ## scan window: check",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "duplicate-row: 8"
+        ],
+        "byCheck": {
+          "duplicate-row": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K09-sha-hash-stick",
+      "expectGreen": true,
+      "why": "pin = true sha followed by 64 more hex: FIRST regex match equals true sha → gate accepts ambiguous doubled hash",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K10-sha-match-but-file-swapped",
+      "expectGreen": false,
+      "why": "png pinned with chromium-hscroll sha → sha-mismatch",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "sha-mismatch: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "sha-mismatch": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K11-sha-in-entry-cell",
+      "expectGreen": false,
+      "why": "sha moved to entry cell → sha-unstated? (regex scans pinned only)",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "sha-unstated: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "sha-unstated": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K12-sha-nbsp-following",
+      "expectGreen": true,
+      "why": "NBSP between sha256 and digest: hex run still detectable, and gate accepts",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K13-entry-contains-path-as-substring",
+      "expectGreen": true,
+      "why": "substring containment is the spec binding (\"entry command names the path\") — accepted;锚 looseness noted",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K14-entry-other-tool-path",
+      "expectGreen": true,
+      "why": "entry command invokes OTHER tool with path only as argument; containment satisfies gate",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K15-verdicts-single-word-ok",
+      "expectGreen": true,
+      "why": "verdict map = bare \"ok\" accepted (spec: verdicts cell must state verdict map incl exit-code map)",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K16-selftest-word-only",
+      "expectGreen": true,
+      "why": "selftest cell: token only, no command or explicit \"no selftest\" statement — accepted",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K17-selftest-hyphenated",
+      "expectGreen": true,
+      "why": "--self-test (hyphenated) IS accepted by /--self-?test/? probe",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K18-section-header-fenced",
+      "expectGreen": true,
+      "why": "section header inside code fence still found",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K19-section-header-lowercase",
+      "expectGreen": true,
+      "why": "??? trailing probe — case-sensitive match expected → row-missing everything?",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "registry-section-missing: ## Instrument registry — round 68"
+        ],
+        "byCheck": {
+          "registry-section-missing": 1
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K20-empty-registry-section",
+      "expectGreen": false,
+      "why": "empty section → seven row-missing",
+      "rc": 1,
+      "parsed": {
+        "ok": false,
+        "findings": [
+          "row-missing: scripts/chrome-cdp-loopback-round67.mjs",
+          "row-missing: scripts/verify-live-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/chromium-hscroll-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/check-receipt-provenance-v4.mjs",
+          "row-missing: .ufo/waves/round-67/counters/make-negatives-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/mutate-r67.mjs",
+          "row-missing: .ufo/waves/round-67/counters/png-r67.mjs"
+        ],
+        "byCheck": {
+          "row-missing": 7
+        },
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    },
+    {
+      "name": "K21-r64-rows-coexist",
+      "expectGreen": true,
+      "why": "r64 stale rows retained in a legacy section; gate has no supersede check — routed defect wording allows either",
+      "rc": 0,
+      "parsed": {
+        "ok": true,
+        "findings": [],
+        "byCheck": {},
+        "expected": 7,
+        "gate": "check-instrument-registry-r68"
+      }
+    }
+  ]
+}
