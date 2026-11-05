@@ -32,6 +32,7 @@ Read ${LANE}/.ufo/waves/round-64/claims.json FIRST, then the frozen bytes it pin
 - Honesty: an unrun check has not passed. Report every defect you find with its exact command and observed output; never fabricate a verdict. Your findings are advisory — the L1 integrates and scores.
 - Deliverable shape: write your seat report (${WAVE_DIR}/<YourName>.md) with \`## Findings\` (numbered, each with severity, evidence pointer and exact command) and \`## Verdict\`; return a short JSON summary (seat, findings count, key evidence paths, verdict) as your final message.`;
 
+const GODSPEED = fs.readFileSync('/home/vgpnk/.agents/skills/godspeed/directive.md', 'utf8').trimEnd();
 const tasks = [
   {
     name: 'R64Scout', agent: 'scout', axes: ['coverage'],
@@ -222,8 +223,13 @@ const spec = {
   milestone: 'Round64 second-generation wheel/scroll capability plus receipt-provenance calibration, attacked by 12 seats',
   reportDir: '.ufo/waves/round-64/w1',
   context,
-  maxLanes: 16,
-  items: tasks,
+  items: tasks.map((t) => ({
+    name: t.name,
+    role: t.agent,
+    axes: t.axes,
+    milestone: t.milestone,
+    prompt: '/skill:godspeed\n' + GODSPEED + '\n\n# Assignment\n' + t.task,
+  })),
 };
 fs.mkdirSync(path.dirname(out), { recursive: true });
 fs.writeFileSync(out, JSON.stringify(spec, null, 1));
