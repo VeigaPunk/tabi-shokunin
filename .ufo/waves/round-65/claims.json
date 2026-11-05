@@ -1,0 +1,141 @@
+{
+ "lane": "tabi",
+ "round": 65,
+ "attempt": 1,
+ "baseline": "58ed8c7a21b9dcb403e46fc1d4e2d8bb68511162",
+ "doNothingFixturesCommit": "ac0285ce011cd4a63bd9c9f1841792dfea292817",
+ "doNothingReceiptsCommit": "39782a841315e1141089ad4f582fda029c7dd4f1",
+ "freezeRule": "pins are immutable after this commit; a changed byte invalidates its claim. Scored evidence is produced after the freeze at the freeze revision (<REV>).",
+ "axesAtStart": {
+  "adjacency": 8,
+  "coverage": 9,
+  "depth": 9,
+  "operability": 9,
+  "freshness": 9,
+  "calibration": 9
+ },
+ "stagnation": "Saturation 8 window 3; round 64 entered a capability, so the window reset and the nudge is inactive. C1 is the lowest-axis claim (adjacency 8).",
+ "claims": {
+  "C1": {
+   "axis": "adjacency",
+   "criticDissent": "refuse: axis mis-assigned (round-65 critique, R65Critic); operator to rule; L0 question filed",
+   "predicate": "v22 admits the lane state at REV iff the v21 predicate holds AND no two delta line rows share a (lane, relPath, line) key with differing dispositions.",
+   "instrument": {
+    "path": ".ufo/waves/round-65/counters/c1-adjacency-host-v22.mjs",
+    "sha256": "4d3a6b589d1c3a795314cc93b2cd481071c70309a957cb54031a6971002d50d5"
+   },
+   "baselineInstrument": {
+    "path": ".ufo/waves/round-62/counters/c1-adjacency-host-v21.mjs",
+    "sha256": "b845973c0f16433b05080829cf66641df303cffa09a9dc291d1773b9b9c8afa6"
+   },
+   "commands": {
+    "A_forgery": "node .ufo/waves/round-65/counters/c1-adjacency-host-v22.mjs --repo . --rev <REV> --fleet /home/vgpnk/Projects/shokunin --snapshot .ufo/waves/round-62/c1/snapshot-r62.tsv --audit corpus/adjacency-host-audit-r62.tsv --delta .ufo/waves/round-65/controls/c2-fixtures/delta-dup-contradiction.tsv --json",
+    "B_forgery": "same argv with --delta .ufo/waves/round-62/w1/R62Reviewer/real-conflicting-delta.tsv",
+    "C_positive": "same argv with --delta corpus/adjacency-host-delta-r62.tsv",
+    "DN_baseline": "node .ufo/waves/round-62/counters/c1-adjacency-host-v21.mjs (same argv as A) \u2014 committed at ac0285ce/39782a84"
+   },
+   "targets": {
+    "A": "exit 1, finding delta-disposition-conflict",
+    "B": "exit 1, finding delta-disposition-conflict",
+    "C": "exit 0, findings [], predicate true",
+    "DN": "exit 0, predicate true on A and B (both accepted)"
+   },
+   "killRule": "A or B accepted; C refused; any v21 selftest case lost in v22; any byte of the v22 file changed after freeze",
+   "residuals": [
+    "same-disposition duplicates with spliced quotes accepted",
+    "consistent labels with no sibling ruling unjudged",
+    "host-dependent sibling snapshot and roster inputs"
+   ]
+  },
+  "C2": {
+   "axis": "calibration",
+   "predicate": "v2 admits a receipt directory at REV iff every receipt passes the v1 checks AND every matrix file (matrix*.json or *-matrix.json, not *.command.json) names an input that resolves in the --repo working tree to a file whose sha256 equals the matrix's pinned sha256.",
+   "instrument": {
+    "path": ".ufo/waves/round-65/counters/check-receipt-provenance-v2.mjs",
+    "sha256": "81c8a5ecc87b1f03510a2ca2cd316113ff30c23534a0319c6489e11fdc84aea4"
+   },
+   "baselineInstrument": {
+    "path": "scripts/check-receipt-provenance.mjs",
+    "sha256": "947a595d65f6ad3f5259f5421d897d42720dc3dc05d039da8ec3619d00e49246"
+   },
+   "commands": {
+    "A_forgery": "node .ufo/waves/round-65/counters/check-receipt-provenance-v2.mjs --dir .ufo/waves/round-65/controls/c1-fab --repo . --rev <REV> --require-committed --min-receipts 12 --json",
+    "B_positive": "same argv with --dir .ufo/waves/round-64/controls/scored --rev e3f5215615f68490230bd0c6db94f7d84f0fc084 --min-receipts 12",
+    "C_positive": "same argv with --dir .ufo/waves/round-65/w1/R65Executor2/c1-honest --min-receipts 1",
+    "DN_baseline": "node scripts/check-receipt-provenance.mjs --dir .ufo/waves/round-65/controls/c1-fab --repo . --rev <REV> --require-committed --min-receipts 12 --json \u2014 committed at ac0285ce/39782a84"
+   },
+   "targets": {
+    "A": "exit 1, byCheck matrix-input = 3",
+    "B": "exit 0, failures 0, matrices 2",
+    "C": "exit 0, failures 0",
+    "DN": "exit 0, failures 0 on A"
+   },
+   "killRule": "A not exit 1 with exactly three matrix-input findings; B or C not exit 0; any byte of the v2 file changed after freeze",
+   "residuals": [
+    "12 invented receipts in c1-fab self-consistent (QUALITY 116)",
+    "pinned digest is producer-declared (QUALITY 118)",
+    "honest fixture matrix names its receipt by an absolute machine-specific path"
+   ]
+  }
+ },
+ "pins": {
+  "v22": {
+   "path": ".ufo/waves/round-65/counters/c1-adjacency-host-v22.mjs",
+   "sha256": "4d3a6b589d1c3a795314cc93b2cd481071c70309a957cb54031a6971002d50d5"
+  },
+  "v21": {
+   "path": ".ufo/waves/round-62/counters/c1-adjacency-host-v21.mjs",
+   "sha256": "b845973c0f16433b05080829cf66641df303cffa09a9dc291d1773b9b9c8afa6"
+  },
+  "v2": {
+   "path": ".ufo/waves/round-65/counters/check-receipt-provenance-v2.mjs",
+   "sha256": "81c8a5ecc87b1f03510a2ca2cd316113ff30c23534a0319c6489e11fdc84aea4"
+  },
+  "v1": {
+   "path": "scripts/check-receipt-provenance.mjs",
+   "sha256": "947a595d65f6ad3f5259f5421d897d42720dc3dc05d039da8ec3619d00e49246"
+  },
+  "runner": {
+   "path": ".ufo/waves/round-65/counters/run-controls-r65.sh",
+   "sha256": "6e7f1510fb08a93f97623360c5a150989bad9ceaa698be8d8cf20fa0490ced79"
+  },
+  "dnProducer": {
+   "path": ".ufo/waves/round-65/controls/dn-controls-r65.py",
+   "sha256": "d6631aef105433585f6649d503bf903b0d21219dd125c8493a118154b2ac3a22"
+  },
+  "fabDirManifest": {
+   "path": ".ufo/waves/round-65/controls/c1-fab/",
+   "files": 30,
+   "sha256": "6cfc87af122c69403796b55611749f93354fb6e3cb64886104346d976761163b"
+  },
+  "deltaDupForgery": {
+   "path": ".ufo/waves/round-65/controls/c2-fixtures/delta-dup-contradiction.tsv",
+   "sha256": "b982117bead4ea0c62a39f637811817df6208207a7096d1b1e397a2c112c6cec"
+  },
+  "deltaFabLabel": {
+   "path": ".ufo/waves/round-65/controls/c2-fixtures/delta-fab-label.tsv",
+   "sha256": "8bc576d14ac4773b90f7185d209bcb077bdefa475f9bd1a2f7a1eca7a4d74481"
+  },
+  "deltaR62Conflict": {
+   "path": ".ufo/waves/round-62/w1/R62Reviewer/real-conflicting-delta.tsv",
+   "sha256": "ead9f6afde3c52af35a6a15a466b9870617db0a44d3a46902fd1423e4c94adbf"
+  },
+  "snapshotR62": {
+   "path": ".ufo/waves/round-62/c1/snapshot-r62.tsv",
+   "sha256": "1e47eb02b0387393f87c501d16a196a2802ed6d75d8906d23b36970f23dedae4"
+  },
+  "auditR62": {
+   "path": "corpus/adjacency-host-audit-r62.tsv",
+   "sha256": "329c2edb735de9409817c8bfad284ca66f44048d3d0a170bea6e0fb53d17251e"
+  },
+  "deltaR62": {
+   "path": "corpus/adjacency-host-delta-r62.tsv",
+   "sha256": "370978095bfd61a5be06143a6ecaea9830ef8331b0ec84af725039189cd298e0"
+  },
+  "honestC1Dir": {
+   "path": ".ufo/waves/round-65/w1/R65Executor2/c1-honest/",
+   "sha256_matrix": "5495b8bcf60396c4f10bf02da5ef4855c72ad3d713d824ae8f547c0b40715bc9"
+  }
+ },
+ "dnProducer": "dn-controls-r65.py committed at ac0285ce; receipts committed at 39782a84"
+}
