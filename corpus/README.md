@@ -1090,3 +1090,8 @@ the report, under the frozen predicates in `.ufo/waves/round-65/claims.json`.
 
 - `Input.synthesizeScrollGesture` runtime delivery on Chromium 155/Linux headless (frontier → core, capability `chromium-synth-scroll-gesture-linux`): `corpus/knowledge/chromium-synth-scroll-gesture-runtime-round-69.md` (S174, S173); evidence `corpus/evidence/round69/chromium-synth-scroll-gesture/`. Touch-source scrolling stays frontier (measured non-scroll on desktop metrics, cause unexplained).
 - Sibling boundary matrix in `PROVINCE.md` (`## Adjacent — sibling matrix (round 69)`), 20 lanes at a frozen snapshot; contested scope named, not absorbed.
+
+## Round 70 coverage (2026-11-06)
+
+- `Input.synthesizeTapGesture` runtime delivery on Chromium 155/Linux headless (new ground; capability `chromium-synth-tap-gesture-linux`): `corpus/knowledge/chromium-synth-tap-gesture-runtime-round-70.md` (S175 new, S174, S173); evidence `corpus/evidence/round70/chromium-synth-tap-gesture/`. Measured: mouse taps click with `detail:1` and a real 50 ms default hold; `tapCount:2` is two single clicks (no `dblclick`); an omitted source is a touch tap; a synthetic touch tap delivers no `click` on this host (cause stays frontier).
+- Live re-derivation command for the round-69 capability: `scripts/verify-live-r70.mjs --profile synthscroll-r69` (runs the pinned driver twice on verifier-drawn nonces and ports; refuses replayed and rewritten receipts the round-69 counter accepts).
