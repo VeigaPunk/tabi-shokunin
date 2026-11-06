@@ -64,10 +64,18 @@ and the scored run gave the same counts and spans to within 1 ms.
    zoom this desktop page.** Both pointers share the anchor's x (533 CSS px at scale 1.5) and
    the span grows monotonically from 87.3 to 206.7 CSS px (S178:117-133, 153-167). The page
    scale did not change on either touch leg (mobile:false, no touch emulation); whether mobile
-   emulation makes touch pinches zoom is not established here (R71Exec3 probes it).
+   emulation makes touch pinches zoom was probed by R71Exec3: it does not (below).
 8. **Validation errors are synchronous** (S174:2111-2114, 2119-2125): out-of-bounds and an
    unknown source answer `-32602` at once with no input, even while an earlier gesture is
    still running.
+9. **The zero-scale gesture outlives the call that started it.** Its wheels keep arriving after
+   the driver has moved on: in R71Exec1's independent run one zero-delta ctrl wheel (seq 575)
+   landed after the driver had relabelled the page's leg to `end`, between the label change and
+   the event read (`.ufo/waves/round-71/w1/R71Exec1/receipt.json`). The scored run and the smoke
+   run had none. Anything a driver does after a zero-scale pinch in the same tab can be
+   interleaved with that stream until the browser is killed. The frozen counter refuses such a
+   receipt (`event-leg-domain`), so round-71 claim C1 failed its independent-run leg; see the
+   round-71 lesson.
 
 ## How to tell the gesture from a look-alike
 
@@ -80,8 +88,34 @@ calls, and re-derives every leg from the page's raw events. The degenerate contr
 `dispatch-wheel` does not reach scale 2 in 12 events and has no touch legs; `set-scale` has
 no wheel events at all; `skip-touch` lacks the two touch legs.
 
+## Probe measurements beyond the frozen legs (R71Exec3, wave w1; seat receipts, not the scored run)
+
+Measured by a lane-dispatched seat with its own probe driver on the same host
+(`.ufo/waves/round-71/w1/R71Exec3/report.md`, receipts beside it). They extend the items above;
+none contradicts a frozen leg.
+
+- **Scale range.** A 3× mouse pinch from 1 lands at 3; a second 3× from 3 stops at exactly **4**
+  while its wheels keep firing. The floor is the page's **initial** scale, not the constant 1:
+  1 on this desktop page, 0.4217 under `mobile:true` on the 3000 px-wide fixture. Item 4's
+  "floor of 1" is the desktop case of this rule.
+- **Negative scale.** `scaleFactor:-1` answers success, delivers exactly one trusted ctrl wheel
+  with `deltaY` NaN, and leaves the scale unchanged (no range check in S174:2109; the release
+  build skips S177:29 and :173; a negative duration finishes at the first tick, S177:140-148).
+- **The zero-scale hang blocks every later synthetic gesture.** After a zero-scale pinch, a valid
+  2× pinch and an `Input.synthesizeScrollGesture` both get no response and deliver no event of
+  their own, while `Runtime.evaluate` still answers. One zero-scale call wedges the gesture queue
+  until the browser is killed.
+- **Touch pinches do not zoom under mobile or touch emulation either** (`mobile:true`, touch
+  emulation on); the default source stays the mouse path there too.
+- **Duration law** `(s − 1) × 200 / speed` (inverse below 1) holds at speeds 100, 800 and 1600
+  px/s and scales 0.25, 2 and 3.
+- **Wheel-delta law per event:** `deltaY = −100 × ln(step) / pageScale`; summed over a leg,
+  `Σ(−deltaY × scale) / 100 = ln(factor)` in all seven wheel legs it measured. The page-side
+  scale read can lag by one event.
+- **Anchor bounds scale with zoom:** the anchor is multiplied by the page scale before the
+  bounds check, so at scale 3, (426,300) is accepted and (427,299) is refused.
+
 ## Not established
 
-- Mobile emulation, touch emulation, `deviceScaleFactor ≠ 1` and headed Chromium.
-- Whether a stuck zero-scale gesture blocks later gestures in the same tab (R71Exec3 probe).
-- Maximum page scale (no leg went above 2).
+- `deviceScaleFactor ≠ 1` and headed Chromium.
+- How long the gesture queue stays wedged without a browser kill (the probes killed it).

@@ -78,6 +78,7 @@ Assimilation: none (`merge/tabi/` adoption stays closed pending the register cor
 |---|---|---|---|
 | a control labelled degenerate ran the honest producer | the first C1 control loop omitted the `--degenerate <kind>` argument: three "degenerate" runs were honest runs (driver exit 0, counter clean). Caught by the L1 reading the printed exits before commit; the receipts were discarded. Re-staged as a proof: an honest receipt filed as `degenerate-dispatch-wheel` (`.ufo/waves/round-71/lesson-proof/mislabeled/`) | QUALITY 131 would have refused it on exit and finding ids, but no evaluator was run before the receipts were read | `controls/c1/evaluate-c1-controls.mjs` also refuses a control whose receipt does not carry its own degenerate label (`label-mismatch`). Shown able to fail: on the mislabeled proof it exits 1, `failing: degenerate-dispatch-wheel`, `label-mismatch: receipt.degenerate=null` (`.ufo/waves/round-71/lesson-proof/mislabeled-summary.json`); on the real controls 4/4 hold. QUALITY 133. |
 | an attack that did not land almost read as a defence | the first pre-freeze harness run triggered the post-pin swap (B) by polling `ps` for the evidence-counter process; on verify-live-r70 the counter finished between polls and the swap never happened (`B-swap-tap … class=NOT-LANDED`), so the r70 baseline showed 3 false passes, not 4. The first run's output files were deleted before the rerun; only the job transcript recorded it | the harness's own `NOT-LANDED` class (a swap that never happened is never scored as a refusal) | trigger on `<scratch>/run-a` appearing, polled every 1 ms, which both verifier generations create after the pin read and before the spawn (`attack-harness.mjs` B watcher); rerun: B landed on both (r70 FALSE-PASS, r71 HONEST-PASS). The evaluator fails any summary with `notLanded > 0`: `blanket-accept.eval.json` holds=false with `attacks not landed 2`. QUALITY 134. The deletion of a red pre-freeze run is itself recorded here: red runs are kept, not replaced. |
+| a frozen counter assumed every event ends inside its leg, for a gesture that never ends | R71Exec1's independent cold run of the pinned driver (nonce `tabi-r71-exec1-7f6bc402`): driver exit 0, producer CONFIRMED, counter exit 1 with the single finding `event-leg-domain` — one zero-delta wheel (seq 575) of the runaway `scaleFactor:0` gesture landed after the driver set the page leg to `end` (`.ufo/waves/round-71/w1/R71Exec1/{receipt,counter}.json`). The L1's smoke and scored runs had no such event, so two clean runs were read as a stable shape | none: the pre-freeze controls ran the driver twice and both happened to be clean; no control repeated the live run enough times to see a race | routed to round 72, not amended (the counter is frozen; C1 is an honest stop on leg (b)): the next pinch generation either reads the events before relabelling (one `Runtime.evaluate` that swaps the leg and returns the log) or kills the gesture's tab before reading, and its pre-freeze controls repeat the live run N≥5 times and report the per-check red rate. It counts as a fix only once a receipt carrying a trailing runaway event is shown refused by the old counter and accepted by the new one for the right reason. |
 
 ## Round-70 routed defects (R1–R6)
 
@@ -99,3 +100,55 @@ Assimilation: none (`merge/tabi/` adoption stays closed pending the register cor
 - R5 (adjacency carry-overs): R71Connector re-checks kama; not absorbed this round.
 - R6 (5 missing registry rows; `w1-results.json` per-seat status): unchanged; the round-71 gates
   get their rows.
+
+## Attack findings (wave w1) — routed, not amended
+
+One v1 wave of 12 seats (`.ufo/waves/round-71/w1/`). Instruments stay as frozen.
+
+- **R71Exec1** — DIVERGENT. Leg (b): its cold run of the pinned driver is CONFIRMED by the producer
+  but the pinned counter exits 1 with the single finding `event-leg-domain` (a trailing
+  zero-scale wheel labelled `end`; Mistakes row 3). Leg (c) re-run independently on the scored
+  receipt: battery 107/107 (98 isolated), kill power 87/87.
+- **R71Critic** — C1 FALSIFIED on leg (b) (the kill rule fires; nothing amended). Also: a
+  three-field rebrand of the scored receipt passes counter, battery and kill power (the declared
+  "not an execution oracle" limit; leg (b) was the only execution evidence);
+  `Input.setIgnoreInputEvents` and three unread fields stay clean (r70 FG3 carry-over); the
+  battery's `--laundered` takes one path per flag. C2 HOLDS-WITH-LIMIT: receipt hand-off between
+  the verifier's load and the counter spawn landed on a lane copy and was refused only by the
+  stdout binding; children run a same-user-writable node (`process.execPath`). Both are added to
+  the C2 limit by a named correction (SCORECARD `## Round 71`). Axis fit: operability.
+- **R71Review1** — CONDEMNED (counter, not battery): 15 receipt-level false greens — look-alike
+  regex evadable (bracket `__events` push, CSS zoom, `setDeviceMetricsOverride` scale, lowercase
+  method), absolute page scale unanchored to per-event `scale`, wheel-delta law enforced only at
+  clamp, string/negative numerics coerced, event→leg binding producer-attested. Battery sound:
+  every `alsoAllowed` is mechanically necessary; no isolated case passes for the wrong reason.
+- **R71Mut1** — 47 semantic counter mutants: 18 killed, 29 survived (24 real acceptance gaps, each
+  with an executed killing case; 3 equivalent; 2 stricter-only, which no finding-case can kill
+  because the battery has no must-accept class). The pre-freeze kill-power control (87/87) tests
+  check-disabling only; it is not a semantic kill-power measure.
+- **R71Mut2** — 11 single-line mutants of the verifier hardening through the frozen harness:
+  2 killed (env refusal dropped; lane driver executed instead of the snapshot), 9 survived, 0
+  false passes under any mutant. The layers back each other up on the four attacks (C is refused
+  by snapshot re-hash, wall floor and stdout binding together), so the harness proves the
+  combination, not each layer; execArgv refusal, the allow-listed child env, snapshot mode and
+  `wx` have no attack that needs them alone.
+- **R71Review2** — SOUND: every r70 check survived; classification and pre-freeze controls refuse
+  for the right reason. N1 `NODE_COMPILE_CACHE` is node-honoured and not on the env list (inside
+  the declared in-process limit); F2 the evaluator trusts the summary file — a hand-written
+  summary scores holds, so the summary is not bound to the verifier digest.
+- **R71Exec2** — PASS: independent cold harness, evaluator holds; both live profiles exit 0.
+- **R71Exec3** — HOLDS: no frozen leg contradicted; seven boundaries measured and integrated into
+  the note (scale 1..4 with an initial-scale floor, negative scale → one NaN wheel, the zero-scale
+  hang wedges every later synthetic gesture, no touch zoom under mobile/touch emulation, duration
+  and per-event wheel-delta laws, anchor bounds × scale). The third Gate reject ("a touch pinch
+  zooms") is confirmed under emulation as well.
+- **R71Exec4** — HOLDS: the pinch driver's socket guard refuses at exactly 63 realpath bytes
+  (Chromium aborts at the same byte) and follows symlinks; the child-exit listener ends a failed
+  launch in 0.87 s where the r70 tap driver takes 242.1 s (r70 R4 closed for the new driver).
+- **R71Connector** — no sibling holds the pinch surface (bounded absence with a positive control);
+  C2's components exist fleet-wide (kumitate snapshot + allow-listed env, chousa/kama/mado env
+  scrubbing and re-hash), so C2 is a re-derivation for tabi's own verifier, not a new fleet
+  method; kama still holds no browser-input surface, with a second adjacency ground reported
+  (replay counters). Reported, not absorbed.
+- **R71Scribe** — drafted registry and capability rows; its S-1 (no r71 self-test) predates
+  `scripts/selftest-r71-gates.mjs` (landed `64e389f2`, 8/8); the capability row is withheld.
