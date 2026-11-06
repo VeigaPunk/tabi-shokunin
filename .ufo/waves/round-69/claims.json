@@ -1,0 +1,49 @@
+{
+ "lane": "tabi",
+ "round": 69,
+ "attempt": 1,
+ "freshStart": "Amendment 46 fresh start; read r66/r67/r68 rejected closures and spotchecks (MANIFEST 1325, 1336, 1341) before declaring",
+ "base": "58d84eda992ffc11d77d76a2c1019bfe061f9241",
+ "preFreezeControlsCommit": "a70c231d484ece2031d26e6c44104419cc8705d7",
+ "frozenAt": "the lane commit that adds this file; its parent is preFreezeControlsCommit. The freeze hash is recorded in .ufo/waves/round-69/freeze.txt by the next commit, before any scored run",
+ "axesAtStart": {"adjacency": 8, "coverage": 9, "depth": 9, "operability": 9, "freshness": 9, "calibration": 9},
+ "lowestAxis": "adjacency (8)",
+ "stagnationNudge": "not applicable: capability chromium-hscroll-domain-linux entered at r67, inside the window of 3",
+ "pins": {
+  "scripts/check-sibling-matrix-r69.mjs": "b62f9c7daebfbd0a1494e9a60a9ee06665574f1f98969ba1c08da0d698c58b20",
+  "scripts/negatives-sibling-matrix-r69.mjs": "dac61e1b829003da4ef2b1b1de64ba014f194721d20d7a0597ecb6857394ba92",
+  "scripts/chrome-cdp-synthscroll-round69.mjs": "13ea3f8ae67fb7761a94c4763e575c9ee487905dd9b405d916d55fca562abce3",
+  "scripts/check-synthscroll-r69.mjs": "c1b3763c9781ad4cebd26d5298de46529258c4fe40b54cd2c6c62080492da795",
+  "scripts/negatives-synthscroll-r69.mjs": "37e8f9627d12a229d0a24a6bcabf5fcf07d6f82caaf27d61e15d87b5b20c7f97",
+  ".ufo/waves/round-69/c1/sibling-heads-r69.tsv": "see freeze.txt (sha256 recorded with the freeze hash)"
+ },
+ "claims": {
+  "C1": {
+   "axis": "adjacency",
+   "surface": "PROVINCE.md: new `## Adjacent — sibling matrix` (tabi had no Adjacent section; kake PROVINCE.md:40-46 declares a tabi split and a contested scope naming tabi that tabi never answered)",
+   "statement": "PROVINCE.md carries one bound boundary row per sibling lane of the frozen snapshot (20 lanes): relation in {none, adjacent, contested}, the snapshot head, a sibling path:line whose bytes at that head contain the row's 3-25-word quote, and tabi's side of the boundary; every sibling whose PROVINCE.md names tabi is answered by citing one of those lines (contested where the sibling says contested); every lane tabi's Refuses paragraph routes to is not `none`.",
+   "countingCommand": "node scripts/check-sibling-matrix-r69.mjs --province PROVINCE.md --snapshot .ufo/waves/round-69/c1/sibling-heads-r69.tsv --fleet /home/vgpnk/Projects/shokunin --json",
+   "before": {"rev": "58d84eda992ffc11d77d76a2c1019bfe061f9241", "exit": 1, "rows": 0, "bound": 0, "siblings": 20, "findings": ["matrix-missing"], "receipt": ".ufo/waves/round-69/controls/c1/donothing-head.out"},
+   "predicate": "C1-MATRIX-BOUND: counting command exits 0 with rows == 20, bound == 20, findings == [] on the lane branch tip PROVINCE.md, AND `node scripts/negatives-sibling-matrix-r69.mjs --province PROVINCE.md --snapshot .ufo/waves/round-69/c1/sibling-heads-r69.tsv --fleet /home/vgpnk/Projects/shokunin --work <scratch> --out <json>` exits 0 (positive ok, 19/19 forgeries refused for their expected finding id)",
+   "doNothingControl": "HEAD PROVINCE.md at base: exit 1 matrix-missing, bound 0/20 (committed)",
+   "forgeryControls": "fixture battery 19/19 refused for expected ids, positive fixture clean (controls/c1/fixture-battery.json): contradictory duplicate row, fabricated lane, missing lane, off-line and fabricated quotes, non-snapshot head, inbound contested labelled adjacent, inbound labelled none, outbound labelled none, inbound answered elsewhere",
+   "kill": ["any pinned instrument byte or the snapshot changes after freeze (killed, never amended)", "any forgery greens or is refused for a different reason in the real-mode battery", "predicate false at the scored tip"],
+   "limit": "relation labels are lane judgment; the counter binds citations, reciprocity and routing, not the meaning of each label. A non-author-of-the-row independent relation draft (wave connector) is compared and its disagreement count reported; it is not part of the predicate.",
+   "scoreIfVerified": "adjacency 8 -> 9 (re-derivable: bound 20/20 at the snapshot, inbound 3/3 answered, outbound 4/4 routed)"
+  },
+  "C2": {
+   "axis": "coverage",
+   "type": "capability acquisition: chromium-synth-scroll-gesture-linux",
+   "surface": "Input.synthesizeScrollGesture runtime delivery on Linux Chromium 155 (r68 Gate reject 'runtime capability claim' flip condition: a live run with a measured receipt)",
+   "sourced": "S174 (new this round: Chromium 155.0.8059.84 content/browser/devtools/protocol/input_handler.cc, staged .ufo/waves/round-69/sources/input_handler.cc sha256 72cf0d1d...4f4) + S173",
+   "countingCommand": "node scripts/check-synthscroll-r69.mjs --receipt corpus/evidence/round69/chromium-synth-scroll-gesture/receipt.json --expect-driver-sha256 13ea3f8ae67fb7761a94c4763e575c9ee487905dd9b405d916d55fca562abce3 --json",
+   "before": {"rev": "58d84eda992ffc11d77d76a2c1019bfe061f9241", "exit": 2, "finding": "receipt-unreadable (no committed runtime evidence)", "receipt": ".ufo/waves/round-69/controls/c2/donothing-no-receipt.out"},
+   "predicate": "C2-SYNTHSCROLL-LIVE: (a) the counting command exits 0 (verdict clean) on the committed scored receipt produced after the freeze by the pinned driver; (b) one independent cold run by a wave executor seat with its own nonce and ports, receipt committed under .ufo/waves/round-69/w1/<seat>/, exits 0 on the same counter with the same pin; (c) `node scripts/negatives-synthscroll-r69.mjs --real <scored receipt> --laundered <the three committed degenerate receipts> ...` exits 0 (44/44 refused for expected ids, positive ok); (d) SCORECARD capabilities table carries the row and a knowledge note cites S174.",
+   "doNothingControl": "no receipt: exit 2; degenerate drivers js-scroll / dispatch-wheel / skip-touch: exit 1 (controls/c2/degenerate-*); laundered degenerates refused in the battery",
+   "kill": ["any pinned instrument byte changes after freeze", "scored run (a) or seat run (b) red -- no further scored runs to fish for green", "battery fails"],
+   "scoreIfVerified": "coverage held at 9 (10 means every PROVINCE surface explored; real-site ground stays operator-gated); the capability row is the measured movement"
+  }
+ },
+ "exploratory": "none",
+ "frontier": "S174 opened this round (sourced claim C2); mined mistake into corpus/lessons/round-69.md; census start exit 0 (173 rows)"
+}
