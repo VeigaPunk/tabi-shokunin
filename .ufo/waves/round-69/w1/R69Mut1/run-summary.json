@@ -1,0 +1,422 @@
+{
+ "task": "tabi r69 C1 frozen counter mutation probe",
+ "frozenCounter": {
+  "path": "scripts/check-sibling-matrix-r69.mjs",
+  "sha256": "b62f9c7daebfbd0a1494e9a60a9ee06665574f1f98969ba1c08da0d698c58b20",
+  "sourceVerified": true
+ },
+ "frozenBattery": {
+  "path": "scripts/negatives-sibling-matrix-r69.mjs",
+  "sha256": "dac61e1b829003da4ef2b1b1de64ba014f194721d20d7a0597ecb6857394ba92"
+ },
+ "baseline": {
+  "file": "m0-baseline.json",
+  "exit": 0,
+  "counterSha256": "b62f9c7daebfbd0a1494e9a60a9ee06665574f1f98969ba1c08da0d698c58b20",
+  "negatives": 19,
+  "refusedForExpectedReason": 19,
+  "positiveOk": true,
+  "failed": []
+ },
+ "restoration": {
+  "file": "restore-check.json",
+  "sha256": "b62f9c7daebfbd0a1494e9a60a9ee06665574f1f98969ba1c08da0d698c58b20",
+  "exit": 0,
+  "distilled": "restored bytes re-run: 19/19, positive ok, failed []"
+ },
+ "mutants": [
+  {
+   "id": "m01",
+   "desc": "drop duplicate-lane detection",
+   "sha256": "2a3d483118d722fca6add9af22c10ad01c04410114ad0d7b984b02daf4b4657b",
+   "manifestSha256": "2a3d483118d722fca6add9af22c10ad01c04410114ad0d7b984b02daf4b4657b",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "lane-duplicated-contradictory"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "lane-duplicated-contradictory"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m02",
+   "desc": "drop relation vocabulary check",
+   "sha256": "cd10c49960099506e8d1fa90770d67e8e0462047e7011e5c115ec8bb8ade6105",
+   "manifestSha256": "cd10c49960099506e8d1fa90770d67e8e0462047e7011e5c115ec8bb8ade6105",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "relation-out-of-vocab"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "relation-out-of-vocab"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m03",
+   "desc": "accept any head (drop snapshot-head equality)",
+   "sha256": "98048b47dfda65e2cd8fa5564355e8e6f3c37e5ac91a8dc02bb5a27ea1bb9439",
+   "manifestSha256": "98048b47dfda65e2cd8fa5564355e8e6f3c37e5ac91a8dc02bb5a27ea1bb9439",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "head-not-snapshot"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "head-not-snapshot"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m04",
+   "desc": "quote checked against whole file, not the cited line",
+   "sha256": "2aa0069385391e2fa9295269a1bec90eac6e72573744fdcbf381c829524f4a92",
+   "manifestSha256": "2aa0069385391e2fa9295269a1bec90eac6e72573744fdcbf381c829524f4a92",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 17,
+   "positiveOk": true,
+   "failed": [
+    "cite-line-absent",
+    "quote-off-line"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "cite-line-absent",
+    "quote-off-line"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m05",
+   "desc": "off-by-one line index (1-based read of 0-based array)",
+   "sha256": "19f6167e8960d0be0dbca0d7d6ec5f528f79fe5197bdfbd90b8da09a0ddac121",
+   "manifestSha256": "19f6167e8960d0be0dbca0d7d6ec5f528f79fe5197bdfbd90b8da09a0ddac121",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 19,
+   "positiveOk": false,
+   "failed": [
+    "positive"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "positive-control"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m06",
+   "desc": "quote lower length bound 3 -> 1 word",
+   "sha256": "b737b7f8c296caa8e999fad029f70c98c34e29dcfa068f5a2fab47426c85ac89",
+   "manifestSha256": "b737b7f8c296caa8e999fad029f70c98c34e29dcfa068f5a2fab47426c85ac89",
+   "shaMatch": true,
+   "batteryExit": 0,
+   "negatives": 19,
+   "refusedForExpectedReason": 19,
+   "positiveOk": true,
+   "failed": [],
+   "verdict": "survived",
+   "expectation": "survived",
+   "killBasis": [],
+   "witness": {
+    "name": "w1-two-word-quote",
+    "expectId": "quote-length",
+    "pristineExit": 1,
+    "pristineIds": [
+     "quote-length"
+    ],
+    "mutantExit": 0,
+    "mutantIds": [],
+    "ok": true
+   }
+  },
+  {
+   "id": "m07",
+   "desc": "quote upper length bound 25 -> 250 words",
+   "sha256": "ab9212d3d9fa66d23c6e6f95e326ab2022d6f8e977dfc9c9d6dc17e59949d503",
+   "manifestSha256": "ab9212d3d9fa66d23c6e6f95e326ab2022d6f8e977dfc9c9d6dc17e59949d503",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "quote-too-long"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "quote-too-long"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m08",
+   "desc": "drop inbound citation-line reciprocity (inbound-unanswered)",
+   "sha256": "63454a1fc602cf004beb22b5a31cd222f66198b813d54a55d76778a1a93aa276",
+   "manifestSha256": "63454a1fc602cf004beb22b5a31cd222f66198b813d54a55d76778a1a93aa276",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "inbound-cite-elsewhere"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "inbound-cite-elsewhere"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m09",
+   "desc": "drop contested rule for inbound contested siblings",
+   "sha256": "e84fa2ab674fadfb2ff184647cc25a15f2ee9e52a5ecea4c4f895bd9c88ebf36",
+   "manifestSha256": "e84fa2ab674fadfb2ff184647cc25a15f2ee9e52a5ecea4c4f895bd9c88ebf36",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "inbound-contested-as-adjacent"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "inbound-contested-as-adjacent"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m10",
+   "desc": "drop inbound-relation-none rule",
+   "sha256": "1faa7ad4f63703582e58ef014b48a39a9b2bff1c1c084f591e80891ff51febd8",
+   "manifestSha256": "1faa7ad4f63703582e58ef014b48a39a9b2bff1c1c084f591e80891ff51febd8",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "inbound-relation-none"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "inbound-relation-none"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m11",
+   "desc": "drop outbound Refuses routing check",
+   "sha256": "c8335ab6b22efd13aba2609c7022eb9e1b5809eb27e76bd2d29c4a15ccba9dc6",
+   "manifestSha256": "c8335ab6b22efd13aba2609c7022eb9e1b5809eb27e76bd2d29c4a15ccba9dc6",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "outbound-relation-none"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "outbound-relation-none"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m12",
+   "desc": "drop lane-missing loop over snapshot lanes",
+   "sha256": "99a57b936ca64e0a728f678ea05ab3f0d9ef201b382fd3969b48e0056a6a727f",
+   "manifestSha256": "99a57b936ca64e0a728f678ea05ab3f0d9ef201b382fd3969b48e0056a6a727f",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "lane-row-dropped"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "lane-row-dropped"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m13",
+   "desc": "drop mandatory **Refuses:** paragraph",
+   "sha256": "cd11e97f58a6fe9a0d37f596200b259a84b04ac828854837d2506dbb3f2006a6",
+   "manifestSha256": "cd11e97f58a6fe9a0d37f596200b259a84b04ac828854837d2506dbb3f2006a6",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "refuses-removed"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "refuses-removed"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m14",
+   "desc": "tabi-side minimum 4 -> 2 words",
+   "sha256": "853a2ce459a39fd87caae505106c67efbd90be30f3f9e34f091948001627fde9",
+   "manifestSha256": "853a2ce459a39fd87caae505106c67efbd90be30f3f9e34f091948001627fde9",
+   "shaMatch": true,
+   "batteryExit": 0,
+   "negatives": 19,
+   "refusedForExpectedReason": 19,
+   "positiveOk": true,
+   "failed": [],
+   "verdict": "survived",
+   "expectation": "survived",
+   "killBasis": [],
+   "witness": {
+    "name": "w2-two-word-side",
+    "expectId": "tabi-side-empty",
+    "pristineExit": 1,
+    "pristineIds": [
+     "tabi-side-empty"
+    ],
+    "mutantExit": 0,
+    "mutantIds": [],
+    "ok": true
+   }
+  },
+  {
+   "id": "m15",
+   "desc": "tolerate cite file absent at head",
+   "sha256": "9d22200fdd1819a04cc0be83a618a67b38e08017cd5e9fc5aeb7cd272dcf7442",
+   "manifestSha256": "9d22200fdd1819a04cc0be83a618a67b38e08017cd5e9fc5aeb7cd272dcf7442",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "cite-file-absent"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "cite-file-absent"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m16",
+   "desc": "drop matrix header shape check",
+   "sha256": "465b2534f0f9f1ac1cb4b8ae35b889fa8f9ff426c6617ecb2748c1c581060936",
+   "manifestSha256": "465b2534f0f9f1ac1cb4b8ae35b889fa8f9ff426c6617ecb2748c1c581060936",
+   "shaMatch": true,
+   "batteryExit": 1,
+   "negatives": 19,
+   "refusedForExpectedReason": 18,
+   "positiveOk": true,
+   "failed": [
+    "header-renamed"
+   ],
+   "verdict": "killed",
+   "expectation": "killed",
+   "killBasis": [
+    "header-renamed"
+   ],
+   "witness": null
+  },
+  {
+   "id": "m17",
+   "desc": "duplicate detection only when relations disagree",
+   "sha256": "4ad14677de96e8667493a3d46bd1d83a7c396ade1b90403ec68bc1588d4e6f0c",
+   "manifestSha256": "4ad14677de96e8667493a3d46bd1d83a7c396ade1b90403ec68bc1588d4e6f0c",
+   "shaMatch": true,
+   "batteryExit": 0,
+   "negatives": 19,
+   "refusedForExpectedReason": 19,
+   "positiveOk": true,
+   "failed": [],
+   "verdict": "survived",
+   "expectation": "survived",
+   "killBasis": [],
+   "witness": {
+    "name": "w3-exact-duplicate-row",
+    "expectId": "duplicate-lane",
+    "pristineExit": 1,
+    "pristineIds": [
+     "duplicate-lane"
+    ],
+    "mutantExit": 0,
+    "mutantIds": [],
+    "ok": true
+   }
+  },
+  {
+   "id": "m18",
+   "desc": "inbound tabi mention matched case-sensitively",
+   "sha256": "3b93a62a0b0bf7ae8596cb61e943b93cc0949d97b52dbc88c397b791ae4bb4e8",
+   "manifestSha256": "3b93a62a0b0bf7ae8596cb61e943b93cc0949d97b52dbc88c397b791ae4bb4e8",
+   "shaMatch": true,
+   "batteryExit": 0,
+   "negatives": 19,
+   "refusedForExpectedReason": 19,
+   "positiveOk": true,
+   "failed": [],
+   "verdict": "survived",
+   "expectation": "survived",
+   "killBasis": [],
+   "witness": {
+    "name": "w4-capitalised-tabi-mention",
+    "expectId": "inbound-relation-none",
+    "pristineExit": 1,
+    "pristineIds": [
+     "inbound-relation-none"
+    ],
+    "mutantExit": 0,
+    "mutantIds": [],
+    "controlExit": 0,
+    "ok": true
+   }
+  }
+ ],
+ "observed": {
+  "killed": 14,
+  "survived": 4,
+  "inconclusive": 0
+ },
+ "expectationDisagreements": []
+}

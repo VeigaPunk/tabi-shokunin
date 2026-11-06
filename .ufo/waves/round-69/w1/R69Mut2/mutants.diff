@@ -1,0 +1,287 @@
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m01_predicate_or_hypothesis.mjs
+@@ -43,7 +43,7 @@
+ check('chromium-identity', typeof r.host?.chromium === 'string' && /^Chromium \d+\./.test(r.host.chromium) && typeof r.host?.cdpProduct === 'string' && r.host.cdpProduct.length > 0, 'host ' + JSON.stringify(r.host?.chromium));
+ 
+ // 2. producer verdict polarity: both fields must say green, and failures must be empty
+-check('producer-predicate-true', r.predicate === true, 'predicate ' + r.predicate);
++check('producer-predicate-true', r.predicate === true || r.synthScrollHypothesis === 'CONFIRMED', 'predicate ' + r.predicate);
+ check('producer-hypothesis-confirmed', r.synthScrollHypothesis === 'CONFIRMED', 'hypothesis ' + r.synthScrollHypothesis);
+ check('producer-failures-empty', Array.isArray(r.failures) && r.failures.length === 0, 'failures ' + JSON.stringify(r.failures));
+ 
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m02_drop_gesture_params.mjs
+@@ -52,7 +52,7 @@
+ const log = arr(r.cdpSendLog);
+ const gestures = log.filter((c) => c.method === 'Input.synthesizeScrollGesture');
+ check('gesture-call-count', gestures.length === 4, 'Input.synthesizeScrollGesture calls ' + gestures.length);
+-check('gesture-params', gestures.length === 4 && gestures.every((g, i) => canon(g.params) === canon(FROZEN[i + 1].params)), 'gesture params differ from frozen legs, in order');
++check('gesture-params', true, 'gesture params differ from frozen legs, in order');
+ const otherInput = log.filter((c) => typeof c.method === 'string' && c.method.startsWith('Input.') && c.method !== 'Input.synthesizeScrollGesture');
+ check('no-other-input-producer', otherInput.length === 0, 'other Input.* calls: ' + otherInput.map((c) => c.method).join(','));
+ const scriptScroll = log.filter((c) => c.method === 'Runtime.evaluate' && /scroll(To|By|IntoView)\s*\(|scrollTop\s*=|scrollY\s*=|scrollingElement/.test(String(c.params?.expression)));
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m03_drop_no_other_input_producer.mjs
+@@ -54,7 +54,7 @@
+ check('gesture-call-count', gestures.length === 4, 'Input.synthesizeScrollGesture calls ' + gestures.length);
+ check('gesture-params', gestures.length === 4 && gestures.every((g, i) => canon(g.params) === canon(FROZEN[i + 1].params)), 'gesture params differ from frozen legs, in order');
+ const otherInput = log.filter((c) => typeof c.method === 'string' && c.method.startsWith('Input.') && c.method !== 'Input.synthesizeScrollGesture');
+-check('no-other-input-producer', otherInput.length === 0, 'other Input.* calls: ' + otherInput.map((c) => c.method).join(','));
++check('no-other-input-producer', true, 'other Input.* calls: ' + otherInput.map((c) => c.method).join(','));
+ const scriptScroll = log.filter((c) => c.method === 'Runtime.evaluate' && /scroll(To|By|IntoView)\s*\(|scrollTop\s*=|scrollY\s*=|scrollingElement/.test(String(c.params?.expression)));
+ check('no-script-scroll', scriptScroll.length === 0, 'script scroll expressions: ' + scriptScroll.length);
+ const ids = log.map((c) => c.id);
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m04_drop_no_script_scroll.mjs
+@@ -56,7 +56,7 @@
+ const otherInput = log.filter((c) => typeof c.method === 'string' && c.method.startsWith('Input.') && c.method !== 'Input.synthesizeScrollGesture');
+ check('no-other-input-producer', otherInput.length === 0, 'other Input.* calls: ' + otherInput.map((c) => c.method).join(','));
+ const scriptScroll = log.filter((c) => c.method === 'Runtime.evaluate' && /scroll(To|By|IntoView)\s*\(|scrollTop\s*=|scrollY\s*=|scrollingElement/.test(String(c.params?.expression)));
+-check('no-script-scroll', scriptScroll.length === 0, 'script scroll expressions: ' + scriptScroll.length);
++check('no-script-scroll', true, 'script scroll expressions: ' + scriptScroll.length);
+ const ids = log.map((c) => c.id);
+ check('send-log-ordered', ids.length > 0 && ids.every((id, i) => id === i + 1), 'cdpSendLog ids not 1..n');
+ 
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m05_wheelsum_tolerance_huge.mjs
+@@ -91,7 +91,7 @@
+     const sum = wheels.reduce((a, e) => a + e.deltaY, 0);
+     check('leg-' + plan.name + '-wheel-present', wheels.length >= 1, 'wheel ' + wheels.length);
+     check('leg-' + plan.name + '-only-wheel-scrollend', evs.every((e) => e.type === 'wheel' || e.type === 'scrollend'), 'non-wheel events in mouse-class leg');
+-    check('leg-' + plan.name + '-wheel-sum', Math.abs(sum - (l.scrollY - l.scrollYBefore)) < 1e-6, `deltaY sum ${sum} != scroll delta ${l.scrollY - l.scrollYBefore}`);
++    check('leg-' + plan.name + '-wheel-sum', Math.abs(sum - (l.scrollY - l.scrollYBefore)) < 1e9, `deltaY sum ${sum} != scroll delta ${l.scrollY - l.scrollYBefore}`);
+     check('leg-' + plan.name + '-wheel-axis', wheels.every((e) => e.deltaX === 0 && e.deltaMode === 0), 'wheel deltaX/deltaMode');
+     const dir = Math.sign(-plan.params.yDistance);
+     check('leg-' + plan.name + '-wheel-direction', wheels.every((e) => Math.sign(e.deltaY) === dir || e.deltaY === 0), 'wheel deltaY sign against yDistance');
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m06_drop_touch_no_scroll.mjs
+@@ -79,7 +79,7 @@
+   if (plan.name === 'start') { check('leg-start-no-events', evs.length === 0, 'start events ' + evs.length); prevY = l.scrollY; continue; }
+   if (plan.name === 'touch') {
+     check('leg-touch-no-wheel', n('wheel') === 0, 'wheel ' + n('wheel'));
+-    check('leg-touch-no-scroll', l.scrollY === l.scrollYBefore, 'touch leg moved scrollY');
++    check('leg-touch-no-scroll', true, 'touch leg moved scrollY');
+     check('leg-touch-pointerdown', n('pointerdown', 'touch') === 1, 'pointerdown(touch) ' + n('pointerdown', 'touch'));
+     check('leg-touch-pointerup', n('pointerup', 'touch') === 1, 'pointerup(touch) ' + n('pointerup', 'touch'));
+     check('leg-touch-touchstart', n('touchstart') === 1, 'touchstart ' + n('touchstart'));
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m07_scrollend_min_one_always.mjs
+@@ -97,7 +97,7 @@
+     check('leg-' + plan.name + '-wheel-direction', wheels.every((e) => Math.sign(e.deltaY) === dir || e.deltaY === 0), 'wheel deltaY sign against yDistance');
+     const lo = Math.min(l.scrollYBefore, l.scrollY), hi = Math.max(l.scrollYBefore, l.scrollY);
+     check('leg-' + plan.name + '-dispatch-range', wheels.every((e) => e.scrollYAtDispatch >= lo && e.scrollYAtDispatch <= hi), 'wheel scrollYAtDispatch outside leg range');
+-    const minEnds = plan.params.repeatCount ? plan.params.repeatCount + 1 : 1;
++    const minEnds = 1;
+     check('leg-' + plan.name + '-scrollend', n('scrollend') >= minEnds, `scrollend ${n('scrollend')} < ${minEnds}`);
+   }
+   prevY = l.scrollY;
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m08_drop_teardown_closure.mjs
+@@ -107,8 +107,6 @@
+ 
+ // 5. teardown closure
+ const td = r.teardown || {};
+-check('teardown-closure', td.postKillSweepCount === 0 && arr(td.survivors).length === 0 && td.sweepError === null
+-  && td.portProbes && Object.values(td.portProbes).every((v) => v === 'closed')
+-  && td.postKillCurl && Object.values(td.postKillCurl).every((v) => v === 7), 'teardown ' + JSON.stringify(td));
++check('teardown-closure', true, 'teardown ' + JSON.stringify(td));
+ 
+ out({ verdict: findings.length ? 'red' : 'clean', receipt: rp, nonce: r.nonce, checkCount: Object.keys(checks).length, findings }, findings.length ? 1 : 0);
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m09_drop_event_seq.mjs
+@@ -64,7 +64,7 @@
+ const legs = arr(r.legs);
+ check('legs-order', canon(legs.map((l) => l.name)) === canon(LEG_ORDER), 'legs ' + legs.map((l) => l.name).join(','));
+ const events = arr(r.events);
+-check('event-seq', events.length > 0 && events.every((e, i) => e.seq === i + 1), 'event seq not 1..n');
++check('event-seq', true, 'event seq not 1..n');
+ const legIdx = (name) => LEG_ORDER.indexOf(name);
+ check('event-legs-known-monotone', events.every((e, i) => legIdx(e.leg) >= 0 && (i === 0 || legIdx(e.leg) >= legIdx(events[i - 1].leg))), 'event leg labels unknown or out of order');
+ check('all-events-trusted', events.every((e) => e.isTrusted === true), 'untrusted events ' + events.filter((e) => e.isTrusted !== true).length);
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m10_drop_legs_order.mjs
+@@ -62,7 +62,7 @@
+ 
+ // 4. legs: recorded in frozen order, scroll positions exact
+ const legs = arr(r.legs);
+-check('legs-order', canon(legs.map((l) => l.name)) === canon(LEG_ORDER), 'legs ' + legs.map((l) => l.name).join(','));
++check('legs-order', true, 'legs ' + legs.map((l) => l.name).join(','));
+ const events = arr(r.events);
+ check('event-seq', events.length > 0 && events.every((e, i) => e.seq === i + 1), 'event seq not 1..n');
+ const legIdx = (name) => LEG_ORDER.indexOf(name);
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m11_predicate_any_boolean.mjs
+@@ -43,7 +43,7 @@
+ check('chromium-identity', typeof r.host?.chromium === 'string' && /^Chromium \d+\./.test(r.host.chromium) && typeof r.host?.cdpProduct === 'string' && r.host.cdpProduct.length > 0, 'host ' + JSON.stringify(r.host?.chromium));
+ 
+ // 2. producer verdict polarity: both fields must say green, and failures must be empty
+-check('producer-predicate-true', r.predicate === true, 'predicate ' + r.predicate);
++check('producer-predicate-true', typeof r.predicate === 'boolean', 'predicate ' + r.predicate);
+ check('producer-hypothesis-confirmed', r.synthScrollHypothesis === 'CONFIRMED', 'hypothesis ' + r.synthScrollHypothesis);
+ check('producer-failures-empty', Array.isArray(r.failures) && r.failures.length === 0, 'failures ' + JSON.stringify(r.failures));
+ 
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m12_other_input_excludes_mouse.mjs
+@@ -53,7 +53,7 @@
+ const gestures = log.filter((c) => c.method === 'Input.synthesizeScrollGesture');
+ check('gesture-call-count', gestures.length === 4, 'Input.synthesizeScrollGesture calls ' + gestures.length);
+ check('gesture-params', gestures.length === 4 && gestures.every((g, i) => canon(g.params) === canon(FROZEN[i + 1].params)), 'gesture params differ from frozen legs, in order');
+-const otherInput = log.filter((c) => typeof c.method === 'string' && c.method.startsWith('Input.') && c.method !== 'Input.synthesizeScrollGesture');
++const otherInput = log.filter((c) => typeof c.method === 'string' && c.method.startsWith('Input.') && c.method !== 'Input.synthesizeScrollGesture' && c.method !== 'Input.dispatchMouseEvent');
+ check('no-other-input-producer', otherInput.length === 0, 'other Input.* calls: ' + otherInput.map((c) => c.method).join(','));
+ const scriptScroll = log.filter((c) => c.method === 'Runtime.evaluate' && /scroll(To|By|IntoView)\s*\(|scrollTop\s*=|scrollY\s*=|scrollingElement/.test(String(c.params?.expression)));
+ check('no-script-scroll', scriptScroll.length === 0, 'script scroll expressions: ' + scriptScroll.length);
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m13_sendlog_length_only.mjs
+@@ -58,7 +58,7 @@
+ const scriptScroll = log.filter((c) => c.method === 'Runtime.evaluate' && /scroll(To|By|IntoView)\s*\(|scrollTop\s*=|scrollY\s*=|scrollingElement/.test(String(c.params?.expression)));
+ check('no-script-scroll', scriptScroll.length === 0, 'script scroll expressions: ' + scriptScroll.length);
+ const ids = log.map((c) => c.id);
+-check('send-log-ordered', ids.length > 0 && ids.every((id, i) => id === i + 1), 'cdpSendLog ids not 1..n');
++check('send-log-ordered', ids.length > 0, 'cdpSendLog ids not 1..n');
+ 
+ // 4. legs: recorded in frozen order, scroll positions exact
+ const legs = arr(r.legs);
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m14_final_scrolly_ge_zero.mjs
+@@ -102,7 +102,7 @@
+   }
+   prevY = l.scrollY;
+ }
+-check('page-final-scrollY', r.pageState?.scrollY === 900, 'final scrollY ' + r.pageState?.scrollY);
++check('page-final-scrollY', r.pageState?.scrollY >= 0, 'final scrollY ' + r.pageState?.scrollY);
+ check('page-event-count', r.pageState?.eventCount === events.length, 'eventCount mismatch');
+ 
+ // 5. teardown closure
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m15_gesture_count_ge_one.mjs
+@@ -51,7 +51,7 @@
+ check('plan-frozen', canon(r.plan) === canon(FROZEN), 'plan differs from frozen legs');
+ const log = arr(r.cdpSendLog);
+ const gestures = log.filter((c) => c.method === 'Input.synthesizeScrollGesture');
+-check('gesture-call-count', gestures.length === 4, 'Input.synthesizeScrollGesture calls ' + gestures.length);
++check('gesture-call-count', gestures.length >= 1, 'Input.synthesizeScrollGesture calls ' + gestures.length);
+ check('gesture-params', gestures.length === 4 && gestures.every((g, i) => canon(g.params) === canon(FROZEN[i + 1].params)), 'gesture params differ from frozen legs, in order');
+ const otherInput = log.filter((c) => typeof c.method === 'string' && c.method.startsWith('Input.') && c.method !== 'Input.synthesizeScrollGesture');
+ check('no-other-input-producer', otherInput.length === 0, 'other Input.* calls: ' + otherInput.map((c) => c.method).join(','));
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m16_pin_check_disabled.mjs
+@@ -39,7 +39,7 @@
+ const served = arr(r.serverLog).filter((s) => s.path === '/' && s.status === 200);
+ check('server-log-binding', served.length >= 1 && served.every((s) => s.run === r.nonce), 'served / rows ' + served.length + ' runs ' + served.map((s) => s.run).join(','));
+ const expSha = opt('expect-driver-sha256');
+-if (expSha) check('driver-sha256-pin', r.driverSha256 === expSha, 'driverSha256 ' + r.driverSha256);
++if (false && expSha) check('driver-sha256-pin', r.driverSha256 === expSha, 'driverSha256 ' + r.driverSha256);
+ check('chromium-identity', typeof r.host?.chromium === 'string' && /^Chromium \d+\./.test(r.host.chromium) && typeof r.host?.cdpProduct === 'string' && r.host.cdpProduct.length > 0, 'host ' + JSON.stringify(r.host?.chromium));
+ 
+ // 2. producer verdict polarity: both fields must say green, and failures must be empty
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m17_trusted_some.mjs
+@@ -67,7 +67,7 @@
+ check('event-seq', events.length > 0 && events.every((e, i) => e.seq === i + 1), 'event seq not 1..n');
+ const legIdx = (name) => LEG_ORDER.indexOf(name);
+ check('event-legs-known-monotone', events.every((e, i) => legIdx(e.leg) >= 0 && (i === 0 || legIdx(e.leg) >= legIdx(events[i - 1].leg))), 'event leg labels unknown or out of order');
+-check('all-events-trusted', events.every((e) => e.isTrusted === true), 'untrusted events ' + events.filter((e) => e.isTrusted !== true).length);
++check('all-events-trusted', events.some((e) => e.isTrusted === true), 'untrusted events ' + events.filter((e) => e.isTrusted !== true).length);
+ let prevY = 0;
+ for (const plan of FROZEN) {
+   const l = legs.find((x) => x.name === plan.name);
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m18_onlywheel_allows_pointer.mjs
+@@ -90,7 +90,7 @@
+     const wheels = evs.filter((e) => e.type === 'wheel');
+     const sum = wheels.reduce((a, e) => a + e.deltaY, 0);
+     check('leg-' + plan.name + '-wheel-present', wheels.length >= 1, 'wheel ' + wheels.length);
+-    check('leg-' + plan.name + '-only-wheel-scrollend', evs.every((e) => e.type === 'wheel' || e.type === 'scrollend'), 'non-wheel events in mouse-class leg');
++    check('leg-' + plan.name + '-only-wheel-scrollend', evs.every((e) => e.type === 'wheel' || e.type === 'scrollend' || e.type === 'pointermove'), 'non-wheel events in mouse-class leg');
+     check('leg-' + plan.name + '-wheel-sum', Math.abs(sum - (l.scrollY - l.scrollYBefore)) < 1e-6, `deltaY sum ${sum} != scroll delta ${l.scrollY - l.scrollYBefore}`);
+     check('leg-' + plan.name + '-wheel-axis', wheels.every((e) => e.deltaX === 0 && e.deltaMode === 0), 'wheel deltaX/deltaMode');
+     const dir = Math.sign(-plan.params.yDistance);
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m19_degenerate_always_ok.mjs
+@@ -35,7 +35,7 @@
+ check('schema', r.schema === 'tabi-chrome-cdp-synthscroll-r69', 'schema ' + r.schema);
+ check('nonce-shape', typeof r.nonce === 'string' && /^tabi-r69-[a-z0-9-]+$/.test(r.nonce), 'nonce ' + r.nonce);
+ check('nonce-on-page', r.nonceOnPage === r.nonce, 'page nonce ' + r.nonceOnPage);
+-check('scored-run-not-degenerate', r.degenerate === null, 'degenerate=' + r.degenerate);
++check('scored-run-not-degenerate', true, 'degenerate=' + r.degenerate);
+ const served = arr(r.serverLog).filter((s) => s.path === '/' && s.status === 200);
+ check('server-log-binding', served.length >= 1 && served.every((s) => s.run === r.nonce), 'served / rows ' + served.length + ' runs ' + served.map((s) => s.run).join(','));
+ const expSha = opt('expect-driver-sha256');
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m20_dispatch_range_upper_dropped.mjs
+@@ -96,7 +96,7 @@
+     const dir = Math.sign(-plan.params.yDistance);
+     check('leg-' + plan.name + '-wheel-direction', wheels.every((e) => Math.sign(e.deltaY) === dir || e.deltaY === 0), 'wheel deltaY sign against yDistance');
+     const lo = Math.min(l.scrollYBefore, l.scrollY), hi = Math.max(l.scrollYBefore, l.scrollY);
+-    check('leg-' + plan.name + '-dispatch-range', wheels.every((e) => e.scrollYAtDispatch >= lo && e.scrollYAtDispatch <= hi), 'wheel scrollYAtDispatch outside leg range');
++    check('leg-' + plan.name + '-dispatch-range', wheels.every((e) => e.scrollYAtDispatch >= lo), 'wheel scrollYAtDispatch outside leg range');
+     const minEnds = plan.params.repeatCount ? plan.params.repeatCount + 1 : 1;
+     check('leg-' + plan.name + '-scrollend', n('scrollend') >= minEnds, `scrollend ${n('scrollend')} < ${minEnds}`);
+   }
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m21_scrollybefore_only_default.mjs
+@@ -74,7 +74,7 @@
+   const evs = events.filter((e) => e.leg === plan.name);
+   const n = (type, pt) => evs.filter((e) => e.type === type && (pt === undefined || e.pointerType === pt)).length;
+   if (!l) { fail('leg-missing-' + plan.name, 'no leg record'); continue; }
+-  check('leg-' + plan.name + '-scrollY-before', l.scrollYBefore === prevY, `scrollYBefore ${l.scrollYBefore} != ${prevY}`);
++  check('leg-' + plan.name + '-scrollY-before', plan.name === 'default' ? l.scrollYBefore === prevY : true, `scrollYBefore ${l.scrollYBefore} != ${prevY}`);
+   check('leg-' + plan.name + '-scrollY', l.scrollY === plan.expectScrollY, `scrollY ${l.scrollY} != ${plan.expectScrollY}`);
+   if (plan.name === 'start') { check('leg-start-no-events', evs.length === 0, 'start events ' + evs.length); prevY = l.scrollY; continue; }
+   if (plan.name === 'touch') {
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m22_abs_scrolly_only_mouse.mjs
+@@ -75,7 +75,7 @@
+   const n = (type, pt) => evs.filter((e) => e.type === type && (pt === undefined || e.pointerType === pt)).length;
+   if (!l) { fail('leg-missing-' + plan.name, 'no leg record'); continue; }
+   check('leg-' + plan.name + '-scrollY-before', l.scrollYBefore === prevY, `scrollYBefore ${l.scrollYBefore} != ${prevY}`);
+-  check('leg-' + plan.name + '-scrollY', l.scrollY === plan.expectScrollY, `scrollY ${l.scrollY} != ${plan.expectScrollY}`);
++  check('leg-' + plan.name + '-scrollY', plan.name === 'mouse' ? l.scrollY === plan.expectScrollY : true, `scrollY ${l.scrollY} != ${plan.expectScrollY}`);
+   if (plan.name === 'start') { check('leg-start-no-events', evs.length === 0, 'start events ' + evs.length); prevY = l.scrollY; continue; }
+   if (plan.name === 'touch') {
+     check('leg-touch-no-wheel', n('wheel') === 0, 'wheel ' + n('wheel'));
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m23_wheel_present_only_mouse.mjs
+@@ -89,7 +89,7 @@
+   } else {
+     const wheels = evs.filter((e) => e.type === 'wheel');
+     const sum = wheels.reduce((a, e) => a + e.deltaY, 0);
+-    check('leg-' + plan.name + '-wheel-present', wheels.length >= 1, 'wheel ' + wheels.length);
++    check('leg-' + plan.name + '-wheel-present', plan.name === 'mouse' ? wheels.length >= 1 : true, 'wheel ' + wheels.length);
+     check('leg-' + plan.name + '-only-wheel-scrollend', evs.every((e) => e.type === 'wheel' || e.type === 'scrollend'), 'non-wheel events in mouse-class leg');
+     check('leg-' + plan.name + '-wheel-sum', Math.abs(sum - (l.scrollY - l.scrollYBefore)) < 1e-6, `deltaY sum ${sum} != scroll delta ${l.scrollY - l.scrollYBefore}`);
+     check('leg-' + plan.name + '-wheel-axis', wheels.every((e) => e.deltaX === 0 && e.deltaMode === 0), 'wheel deltaX/deltaMode');
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m24_wheel_direction_only_default.mjs
+@@ -94,7 +94,7 @@
+     check('leg-' + plan.name + '-wheel-sum', Math.abs(sum - (l.scrollY - l.scrollYBefore)) < 1e-6, `deltaY sum ${sum} != scroll delta ${l.scrollY - l.scrollYBefore}`);
+     check('leg-' + plan.name + '-wheel-axis', wheels.every((e) => e.deltaX === 0 && e.deltaMode === 0), 'wheel deltaX/deltaMode');
+     const dir = Math.sign(-plan.params.yDistance);
+-    check('leg-' + plan.name + '-wheel-direction', wheels.every((e) => Math.sign(e.deltaY) === dir || e.deltaY === 0), 'wheel deltaY sign against yDistance');
++    check('leg-' + plan.name + '-wheel-direction', plan.name === 'default' ? wheels.every((e) => Math.sign(e.deltaY) === dir || e.deltaY === 0) : true, 'wheel deltaY sign against yDistance');
+     const lo = Math.min(l.scrollYBefore, l.scrollY), hi = Math.max(l.scrollYBefore, l.scrollY);
+     check('leg-' + plan.name + '-dispatch-range', wheels.every((e) => e.scrollYAtDispatch >= lo && e.scrollYAtDispatch <= hi), 'wheel scrollYAtDispatch outside leg range');
+     const minEnds = plan.params.repeatCount ? plan.params.repeatCount + 1 : 1;
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m25_drop_nonce_shape.mjs
+@@ -33,7 +33,7 @@
+ 
+ // 1. identity and binding
+ check('schema', r.schema === 'tabi-chrome-cdp-synthscroll-r69', 'schema ' + r.schema);
+-check('nonce-shape', typeof r.nonce === 'string' && /^tabi-r69-[a-z0-9-]+$/.test(r.nonce), 'nonce ' + r.nonce);
++check('nonce-shape', true, 'nonce ' + r.nonce);
+ check('nonce-on-page', r.nonceOnPage === r.nonce, 'page nonce ' + r.nonceOnPage);
+ check('scored-run-not-degenerate', r.degenerate === null, 'degenerate=' + r.degenerate);
+ const served = arr(r.serverLog).filter((s) => s.path === '/' && s.status === 200);
+--- a/check-synthscroll-r69.mjs
++++ b/mutants/m26_event_legs_known_only.mjs
+@@ -66,7 +66,7 @@
+ const events = arr(r.events);
+ check('event-seq', events.length > 0 && events.every((e, i) => e.seq === i + 1), 'event seq not 1..n');
+ const legIdx = (name) => LEG_ORDER.indexOf(name);
+-check('event-legs-known-monotone', events.every((e, i) => legIdx(e.leg) >= 0 && (i === 0 || legIdx(e.leg) >= legIdx(events[i - 1].leg))), 'event leg labels unknown or out of order');
++check('event-legs-known-monotone', events.every((e) => legIdx(e.leg) >= 0), 'event leg labels unknown or out of order');
+ check('all-events-trusted', events.every((e) => e.isTrusted === true), 'untrusted events ' + events.filter((e) => e.isTrusted !== true).length);
+ let prevY = 0;
+ for (const plan of FROZEN) {

@@ -1,0 +1,11 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-sibling-matrix-r69.mjs	2026-11-06 15:48:02.504169857 -0300
++++ m18.mjs	2026-11-06 15:54:56.009415676 -0300
+@@ -96,7 +96,7 @@
+   // inbound reciprocity
+   const sp = showFile(r.lane, snap.get(r.lane).head, 'PROVINCE.md');
+   if (sp !== null) {
+-    const named = sp.split('\n').map((t, i) => ({ n: i + 1, t })).filter((x) => /\btabi\b/i.test(x.t));
++    const named = sp.split('\n').map((t, i) => ({ n: i + 1, t })).filter((x) => /\btabi\b/.test(x.t));
+     if (named.length) {
+       inbound.push(r.lane);
+       if (!(m && m[1] === 'PROVINCE.md' && named.some((x) => x.n === Number(m[2])))) bad('inbound-unanswered', 'sibling PROVINCE names tabi at lines ' + named.map((x) => x.n).join(',') + '; row cites ' + r.cite);

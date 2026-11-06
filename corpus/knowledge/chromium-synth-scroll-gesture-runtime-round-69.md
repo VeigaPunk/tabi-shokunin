@@ -40,8 +40,13 @@ positions and event classes.
    (S174 input_handler.cc:2167-2170).
 6. **Touch-source gestures did not scroll the document here.** The page got a full pointer(touch)
    sequence plus `touchstart`/`touchend`, but no `touchmove` and no scroll, on desktop (non-mobile)
-   device metrics. This is measured on one host and build, not explained. The probes that try to
-   make touch scroll are in the round-69 wave evidence (`.ufo/waves/round-69/w1/`).
+   device metrics. R69Exec4 tried 13 variants to make it scroll (touch emulation, mobile metrics,
+   viewport meta, `setEmitTouchEventsForMouse`, a scrollable div, slower/larger gestures,
+   `preventFling:false`, `--touch-events=enabled`, non-passive listeners): none scrolled and none
+   delivered a `touchmove`. On the same page a raw `Input.dispatchTouchEvent` swipe scrolled
+   +525 px with 24 `touchmove` events, so headless touch scrolling works; the non-scroll is
+   specific to the synthesizeScrollGesture touch path on this host and build
+   (`.ufo/waves/round-69/w1/R69Exec4/report.md`). Why is not explained by S174.
 
 ## Producer discrimination
 

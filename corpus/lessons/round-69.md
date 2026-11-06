@@ -120,6 +120,15 @@ later generation, with the seat report that reproduces it.
   receipt (forged host, zeroed timestamps, empty stderr, rewritten nonce) passes the counter and the
   battery; the driver pin is self-attested; (b) has no cross-run check. The live run is shown by
   manual provenance: runs (a) and (b) differ in 387 leaf paths.
+- **C2 producer attribution is self-attested** (R69Review2 F1–F5, `.ufo/waves/round-69/w1/R69Review2/`):
+  a rogue driver that scrolls with unlogged `Input.dispatchMouseEvent` and writes fabricated
+  gesture log rows produces a counter-clean receipt; the `--expect-driver-sha256` pin is opt-in
+  and compares a field the driver writes about itself. Review2 reads the scored receipt as real
+  (its send rhythm and wheel cadence are Chromium-shaped), with counter-clean meaning internal
+  consistency plus the invocation-time pin, nothing more.
+- **Touch-path finding** (R69Exec4): 13 variants, none scrolled with a touch-source gesture; a raw
+  `Input.dispatchTouchEvent` swipe on the same page scrolled +525 px — the rejected "touch
+  scrolling" item stays rejected with a narrower statement in the knowledge note.
 - **C2 battery gaps** (R69Mut2, 21/26 killed, 1 equivalent): per-leg scrollYBefore, absolute
   scrollY, wheel direction off their one tested leg, and nonce shape.
 

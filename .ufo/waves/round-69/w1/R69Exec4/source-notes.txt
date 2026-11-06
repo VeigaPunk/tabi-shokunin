@@ -1,0 +1,59 @@
+# R69Exec4 — source notes for the kFromDebugger attribution
+
+All files fetched 2026-11-06 from the GitHub mirror of Chromium tag `155.0.8059.84`
+(the tag matching `/usr/bin/chromium --version` = `Chromium 155.0.8059.84 Arch Linux`):
+
+    https://raw.githubusercontent.com/chromium/chromium/155.0.8059.84/<path>
+
+They are read-only reference bytes, not staged into the lane.
+
+## Anchor check (S174 pin)
+
+| file | sha256 |
+|---|---|
+| `content/browser/devtools/protocol/input_handler.cc` (fetched at tag) | `72cf0d1d913302551731310cf76e03a259e8ccbfa7c8db14a185d9ae817324f4` |
+| `.ufo/waves/round-69/sources/input_handler.cc` (staged S174) | `72cf0d1d913302551731310cf76e03a259e8ccbfa7c8db14a185d9ae817324f4` |
+
+Byte-identical: the tag's handler matches the round's pinned S174 bytes, so the tag is a
+valid reference for the source tree the binary reports. The other files below were fetched
+from the same tag; their bytes were not independently pinned to the Arch package build, so
+the attribution is source-tree-level, not a disassembly of the installed binary.
+
+## Fetched files and hashes
+
+| file | sha256 |
+|---|---|
+| `content/browser/renderer_host/input/synthetic_gesture_target_aura.cc` | `6adcbbcbddcf981621654184a44d3eb885e21594ce8b7bd17b33d6d7634e59c6` |
+| `content/common/input/synthetic_touch_driver.cc` | `40f494d3571cb8b0f470cbb5d7e7dfa2e4f72440716e2e20c9741c54f7582c43` |
+| `content/common/input/synthetic_smooth_scroll_gesture.cc` | `0b70db42c9f49c1c7001e4c4e682a2e338aa5cd52b31736de5a8ddf31e4fb777` |
+| `content/common/input/synthetic_smooth_move_gesture.cc` | `d66990da05ebd98642ec506c31745000f4fbbb6f503c9d3801d18c89adf687ec` |
+| `third_party/blink/renderer/core/inspector/dev_tools_emulator.cc` | `04b915b721aef13d076cae01328841a8f6ff3b574be0862f46504fca1b522ec5` |
+| `third_party/blink/renderer/core/inspector/inspector_emulation_agent.cc` | `4d01c60b9fbde5c91834decf1ec775872a40f2129423f4b4af6fd25d6fd713ea` |
+
+## Line references
+
+- `content/browser/devtools/protocol/input_handler.cc:2108` —
+  `gesture_params.from_devtools_debugger = true;` (SynthesizeScrollGesture). The value is
+  hardcoded; no protocol parameter sets it.
+- `content/browser/devtools/protocol/input_handler.cc:800-819` —
+  `InputInjector::InjectTouchEvents` enables
+  `input::TouchEmulator::Mode::kInjectingTouchEvents` and calls `InjectTouchEvent` for
+  `Input.dispatchTouchEvent` (the attribution-control path that scrolls).
+- `content/common/input/synthetic_smooth_scroll_gesture.cc:51-56` — `GetInputSourceType`
+  maps every non-mouse source to `SyntheticSmoothMoveGestureParams::TOUCH_INPUT`.
+- `content/common/input/synthetic_smooth_move_gesture.cc:83-89` — TOUCH_INPUT creates a
+  `SyntheticPointerDriver` and calls `ForwardTouchInputEvents`.
+- `content/common/input/synthetic_touch_driver.cc:57,79,90,102` — Press/Move/Release/Cancel
+  OR `blink::WebInputEvent::kFromDebugger` into the event modifiers when
+  `from_devtools_debugger_` is set.
+- `content/browser/renderer_host/input/synthetic_gesture_target_aura.cc:167-176` —
+  touch events carrying `kFromDebugger` are dispatched with
+  `window->delegate()->OnEvent(event)`; only the non-debugger branch runs
+  `event->ConvertLocationToTarget(...)` and `event_injector_.Inject(host, event)`.
+- `third_party/blink/renderer/core/inspector/inspector_emulation_agent.cc:437-453` —
+  `Emulation.setTouchEmulationEnabled` only reaches
+  `DevToolsEmulator::SetTouchEventEmulationEnabled`.
+- `third_party/blink/renderer/core/inspector/dev_tools_emulator.cc:603-626` — that call only
+  changes Blink page settings (force touch feature detection, max touch points, pointer and
+  hover types). It does not enable a browser-side touch device or change the synthetic
+  gesture dispatch branch.

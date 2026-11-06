@@ -1,0 +1,11 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-sibling-matrix-r69.mjs	2026-11-06 15:48:02.504169857 -0300
++++ m16.mjs	2026-11-06 15:54:56.008415673 -0300
+@@ -58,7 +58,7 @@
+   const end = rest.findIndex((l) => /^## /.test(l));
+   const body = end < 0 ? rest : rest.slice(0, end);
+   const table = body.filter((l) => /^\|/.test(l));
+-  if (table.length < 2 || !/^\|\s*lane\s*\|\s*relation\s*\|\s*head\s*\|\s*cite\s*\|\s*quote\s*\|\s*tabi side\s*\|\s*$/.test(table[0]) || !/^\|[\s|:-]+\|\s*$/.test(table[1])) fail('matrix-header', 'table header must be | lane | relation | head | cite | quote | tabi side | plus a separator row');
++  if (table.length < 2 || false || !/^\|[\s|:-]+\|\s*$/.test(table[1])) fail('matrix-header', 'table header must be | lane | relation | head | cite | quote | tabi side | plus a separator row');
+   for (const line of table.slice(2)) {
+     const cells = line.replace(/^\|/, '').replace(/\|\s*$/, '').split(/(?<!\\)\|/).map((c) => c.trim());
+     if (cells.length !== 6) { fail('row-shape', 'expected 6 cells: ' + line.slice(0, 120)); continue; }

@@ -1,0 +1,38 @@
+# receipt-03 — CDP Input-domain / CDP-surface overlap scan at snapshot heads (read-only)
+# exclusion ':!*.ufo*' keeps live (committed, non-wave-evidence) paths only
+
+## A. Input-domain commands (live paths)
+### pattern Input\.dispatch
+### pattern Input\.synthesize
+### pattern Input\.insertText
+### pattern dispatchTouchEvent
+A_RESULT: 0 of 20 lanes hold any Input.* CDP command on a live path
+
+## B. --remote-debugging-port (live paths)
+-- kagi
+f5977284a8ce5bab09252be8196ee5dc18489926:corpus/knowledge/cdp-bridge-1password.md:70:| `cdp … down` | burner Chrome not running with `--remote-debugging-port=9222` | start/inspect via the browser lane; do not re-`ensure` blindly |
+-- kaidoku
+0b518f568da7b40a4ab026508d63c942faa7badf:PROVINCE.md:55:| Runtime observation (CDP) | self-launched targets: `chromium --headless --remote-debugging-port=9222`, `xvfb-run electron --remote-debugging-port=9223`; `list_browser_targets`, `inspect-web-page`, `list_electron_targets`, `inspect-electron-page`, `capture-browser-scenario` | `list-browser-targets http://127.0.0.1:9222` on own instance | both legs held r3 (05): CDP enumerate+inspect verified, connect-mode scenario capture ran |
+0b518f568da7b40a4ab026508d63c942faa7badf:SKILL.md:57:| Runtime targets | self-launch `chromium --remote-debugging-port=9222` / `xvfb-run electron …:9223` → `list-*-targets` → `inspect-*-page` | held |
+0b518f568da7b40a4ab026508d63c942faa7badf:corpus/evidence/round-44/controls/pos/tree/PROVINCE.md:53:| Runtime observation (CDP) | self-launched targets: `chromium --headless --remote-debugging-port=9222`, `xvfb-run electron --remote-debugging-port=9223`; `list_browser_targets`, `inspect-web-page`, `list_electron_targets`, `inspect-electron-page`, `capture-browser-scenario` | `list-browser-targets http://127.0.0.1:9222` on own instance | both legs held r3 (05): CDP enumerate+inspect verified, connect-mode scenario capture ran |
+0b518f568da7b40a4ab026508d63c942faa7badf:corpus/knowledge/2026-10-13-r2-frontier-prereqs.md:41:  carrying `--remote-debugging-port`. The *substrate* to self-provision a
+-- kama
+9b4c7af16fdd4bba9e4815f4615f4b003f340747:corpus/knowledge/listener-census.md:56:| 8 | `127.0.0.1:9222` | session | `chrome` pid **3080080**, `--remote-debugging-address=127.0.0.1 --remote-debugging-port=9222` | `200` `text/html; charset=UTF-8` (**empty body**) | *(none)* | `404` text/html | `FOREIGN_SERVICE` | 2xx `text/html` (**verbatim rule**) | C1,C12 |
+9b4c7af16fdd4bba9e4815f4615f4b003f340747:corpus/knowledge/listener-census.md:243:tr '\0' '\n' < /proc/3080080/cmdline | grep remote-debugging  # --remote-debugging-port=9222 --remote-allow-origins=…
+-- revenger
+654d09298960d0886274d37a0492b8e6d98b2c96:corpus/fixtures/browser-r77/truth.json:25:    "browser": "Chrome/156.0.8078.74 headless (--headless=new --remote-debugging-port=9333), loopback CDP only",
+654d09298960d0886274d37a0492b8e6d98b2c96:corpus/live/runs/round-77/LEDGER.md:15:  headless, loopback CDP (`--remote-debugging-port=9333`, scratch profile).
+654d09298960d0886274d37a0492b8e6d98b2c96:corpus/live/runs/round-77/receipt.json:7:  "browser_command": "\"C:/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --remote-debugging-port=9333 --user-data-dir <scratch>/chrome-profile-r77 --no-first-run --no-default-browser-check --disable-gpu http://127.0.0.1:8477/index.html",
+654d09298960d0886274d37a0492b8e6d98b2c96:reports/round-93/quote-receipts/raw/S496.body:364:          When Chrome runs with <code>--remote-debugging-port=9222</code>, the protocol schema for
+
+## C. CDP claims in PROVINCE.md at head
+-- kagi
+f5977284a8ce5bab09252be8196ee5dc18489926:PROVINCE.md:41:- `~/.local/bin/the-janitor` (755, 333 lines) — the CLI: `status`/`start`/`stop`/`request`/`run`/`refs`/`whoami`/`cdp-bridge`/`tac-check`/`tac-register`/`_serve` (hidden)
+f5977284a8ce5bab09252be8196ee5dc18489926:PROVINCE.md:64:- CDP `9222` + `~/.local/share/the-musketeer/chrome-profile` — **contested with kake** (lease/profile ownership unresolved; kagi pins only the 1Password native-messaging manifest —
+f5977284a8ce5bab09252be8196ee5dc18489926:PROVINCE.md:83:**Deliberate refusals:** vault-side structure (which vaults/items/fields exist) stays unmapped — mapping it would put ref paths in a durable artifact; `op` item-level reads stay unex
+-- kaidoku
+0b518f568da7b40a4ab026508d63c942faa7badf:PROVINCE.md:55:| Runtime observation (CDP) | self-launched targets: `chromium --headless --remote-debugging-port=9222`, `xvfb-run electron --remote-debugging-port=9223`; `list_browser_targets`, `insp
+0b518f568da7b40a4ab026508d63c942faa7badf:PROVINCE.md:139:| Runtime observation verbs | self-launched CDP/V8-inspector targets (r3 recipe); `node --inspect` needs a real file target (bare `file://` → `unsupported_location`) | `observe-web-
+-- revenger
+654d09298960d0886274d37a0492b8e6d98b2c96:PROVINCE.md:30:  [present on this host, 2026-11-01: CDP browser surface — the host's own
+654d09298960d0886274d37a0492b8e6d98b2c96:PROVINCE.md:33:  loopback CDP endpoint for REA's `rea-cdp-browser` provider (`rea list-browser-targets`,

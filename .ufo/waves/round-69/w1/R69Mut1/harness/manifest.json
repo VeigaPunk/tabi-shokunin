@@ -1,0 +1,169 @@
+{
+ "pin": "b62f9c7daebfbd0a1494e9a60a9ee06665574f1f98969ba1c08da0d698c58b20",
+ "source": "/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-sibling-matrix-r69.mjs",
+ "sourceSha256": "b62f9c7daebfbd0a1494e9a60a9ee06665574f1f98969ba1c08da0d698c58b20",
+ "mutants": [
+  {
+   "id": "m01",
+   "expected": "killed",
+   "desc": "drop duplicate-lane detection",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m01.mjs",
+   "before": "if (seen.has(r.lane)) {",
+   "after": "if (false) {",
+   "sha256": "2a3d483118d722fca6add9af22c10ad01c04410114ad0d7b984b02daf4b4657b"
+  },
+  {
+   "id": "m02",
+   "expected": "killed",
+   "desc": "drop relation vocabulary check",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m02.mjs",
+   "before": "if (!['none', 'adjacent', 'contested'].includes(r.relation)) bad('relation-vocab', r.relation);",
+   "after": "if (false) bad('relation-vocab', r.relation);",
+   "sha256": "cd10c49960099506e8d1fa90770d67e8e0462047e7011e5c115ec8bb8ade6105"
+  },
+  {
+   "id": "m03",
+   "expected": "killed",
+   "desc": "accept any head (drop snapshot-head equality)",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m03.mjs",
+   "before": "if (r.head !== snap.get(r.lane).head) bad('head-not-snapshot'",
+   "after": "if (false) bad('head-not-snapshot'",
+   "sha256": "98048b47dfda65e2cd8fa5564355e8e6f3c37e5ac91a8dc02bb5a27ea1bb9439"
+  },
+  {
+   "id": "m04",
+   "expected": "killed",
+   "desc": "quote checked against whole file, not the cited line",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m04.mjs",
+   "before": "lineText = file.split('\\n')[Number(m[2]) - 1];",
+   "after": "lineText = file;",
+   "sha256": "2aa0069385391e2fa9295269a1bec90eac6e72573744fdcbf381c829524f4a92"
+  },
+  {
+   "id": "m05",
+   "expected": "killed",
+   "desc": "off-by-one line index (1-based read of 0-based array)",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m05.mjs",
+   "before": "lineText = file.split('\\n')[Number(m[2]) - 1];",
+   "after": "lineText = file.split('\\n')[Number(m[2])];",
+   "sha256": "19f6167e8960d0be0dbca0d7d6ec5f528f79fe5197bdfbd90b8da09a0ddac121"
+  },
+  {
+   "id": "m06",
+   "expected": "survived",
+   "desc": "quote lower length bound 3 -> 1 word",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m06.mjs",
+   "before": "if (qw < 3 || qw > 25)",
+   "after": "if (qw < 1 || qw > 25)",
+   "sha256": "b737b7f8c296caa8e999fad029f70c98c34e29dcfa068f5a2fab47426c85ac89"
+  },
+  {
+   "id": "m07",
+   "expected": "killed",
+   "desc": "quote upper length bound 25 -> 250 words",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m07.mjs",
+   "before": "if (qw < 3 || qw > 25)",
+   "after": "if (qw < 3 || qw > 250)",
+   "sha256": "ab9212d3d9fa66d23c6e6f95e326ab2022d6f8e977dfc9c9d6dc17e59949d503"
+  },
+  {
+   "id": "m08",
+   "expected": "killed",
+   "desc": "drop inbound citation-line reciprocity (inbound-unanswered)",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m08.mjs",
+   "before": "if (!(m && m[1] === 'PROVINCE.md' && named.some((x) => x.n === Number(m[2]))))",
+   "after": "if (!(true))",
+   "sha256": "63454a1fc602cf004beb22b5a31cd222f66198b813d54a55d76778a1a93aa276"
+  },
+  {
+   "id": "m09",
+   "expected": "killed",
+   "desc": "drop contested rule for inbound contested siblings",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m09.mjs",
+   "before": "if (named.some((x) => /contested/i.test(x.t)) && r.relation !== 'contested')",
+   "after": "if (false && named.some((x) => /contested/i.test(x.t)) && r.relation !== 'contested')",
+   "sha256": "e84fa2ab674fadfb2ff184647cc25a15f2ee9e52a5ecea4c4f895bd9c88ebf36"
+  },
+  {
+   "id": "m10",
+   "expected": "killed",
+   "desc": "drop inbound-relation-none rule",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m10.mjs",
+   "before": "if (r.relation === 'none') bad('inbound-relation-none'",
+   "after": "if (false) bad('inbound-relation-none'",
+   "sha256": "1faa7ad4f63703582e58ef014b48a39a9b2bff1c1c084f591e80891ff51febd8"
+  },
+  {
+   "id": "m11",
+   "expected": "killed",
+   "desc": "drop outbound Refuses routing check",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m11.mjs",
+   "before": "if (outbound.includes(r.lane) && r.relation === 'none')",
+   "after": "if (false && outbound.includes(r.lane) && r.relation === 'none')",
+   "sha256": "c8335ab6b22efd13aba2609c7022eb9e1b5809eb27e76bd2d29c4a15ccba9dc6"
+  },
+  {
+   "id": "m12",
+   "expected": "killed",
+   "desc": "drop lane-missing loop over snapshot lanes",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m12.mjs",
+   "before": "if (!seen.has(lane) && secStart >= 0)",
+   "after": "if (false && secStart >= 0)",
+   "sha256": "99a57b936ca64e0a728f678ea05ab3f0d9ef201b382fd3969b48e0056a6a727f"
+  },
+  {
+   "id": "m13",
+   "expected": "killed",
+   "desc": "drop mandatory **Refuses:** paragraph",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m13.mjs",
+   "before": "if (!refusesMatch) fail('refuses-paragraph-missing'",
+   "after": "if (false) fail('refuses-paragraph-missing'",
+   "sha256": "cd11e97f58a6fe9a0d37f596200b259a84b04ac828854837d2506dbb3f2006a6"
+  },
+  {
+   "id": "m14",
+   "expected": "survived",
+   "desc": "tabi-side minimum 4 -> 2 words",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m14.mjs",
+   "before": "if (words(r.side) < 4)",
+   "after": "if (words(r.side) < 2)",
+   "sha256": "853a2ce459a39fd87caae505106c67efbd90be30f3f9e34f091948001627fde9"
+  },
+  {
+   "id": "m15",
+   "expected": "killed",
+   "desc": "tolerate cite file absent at head",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m15.mjs",
+   "before": "if (file === null) bad('cite-file-absent'",
+   "after": "if (false) bad('cite-file-absent'",
+   "sha256": "9d22200fdd1819a04cc0be83a618a67b38e08017cd5e9fc5aeb7cd272dcf7442"
+  },
+  {
+   "id": "m16",
+   "expected": "killed",
+   "desc": "drop matrix header shape check",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m16.mjs",
+   "before": "!/^\\|\\s*lane\\s*\\|\\s*relation\\s*\\|\\s*head\\s*\\|\\s*cite\\s*\\|\\s*quote\\s*\\|\\s*tabi side\\s*\\|\\s*$/.test(table[0])",
+   "after": "false",
+   "sha256": "465b2534f0f9f1ac1cb4b8ae35b889fa8f9ff426c6617ecb2748c1c581060936"
+  },
+  {
+   "id": "m17",
+   "expected": "survived",
+   "desc": "duplicate detection only when relations disagree",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m17.mjs",
+   "before": "if (seen.has(r.lane)) {",
+   "after": "if (seen.has(r.lane) && seen.get(r.lane) !== r.relation) {",
+   "sha256": "4ad14677de96e8667493a3d46bd1d83a7c396ade1b90403ec68bc1588d4e6f0c"
+  },
+  {
+   "id": "m18",
+   "expected": "survived",
+   "desc": "inbound tabi mention matched case-sensitively",
+   "file": "/fast/scratch/hyaku/tabi-r69/R69Mut1/m18.mjs",
+   "before": "filter((x) => /\\btabi\\b/i.test(x.t))",
+   "after": "filter((x) => /\\btabi\\b/.test(x.t))",
+   "sha256": "3b93a62a0b0bf7ae8596cb61e943b93cc0949d97b52dbc88c397b791ae4bb4e8"
+  }
+ ]
+}

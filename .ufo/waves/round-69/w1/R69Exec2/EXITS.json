@@ -1,0 +1,25 @@
+{
+ "seat": "R69Exec2",
+ "role": "calibration: re-derive every pre-freeze control and pin from committed bytes at the freeze; independent re-run of both batteries",
+ "lane": "tabi", "round": 69, "wave": "w1",
+ "runAt": "2026-11-06T15:56:00-03:00",
+ "laneTip": "d65546b30332d41b51b074b1944a8a3ded47a79f",
+ "freezeCommit": "a033979c55c92dca2913a8f94ac9f1cb6c4b38da",
+ "preFreezeControls": "a70c231d484ece2031d26e6c44104419cc8705d7",
+ "base": "58d84eda992ffc11d77d76a2c1019bfe061f9241",
+ "probes": [
+  {"n": 0, "name": "freeze digests from a033979c", "cmd": "git -C <lane> show a033979c:<path> | sha256sum (6 pinned paths incl. snapshot tsv)", "expect": "every digest equals freeze.txt", "got": "6/6 OK", "agrees": true},
+  {"n": 1, "name": "C1 do-nothing on base PROVINCE", "cmd": "node scripts/check-sibling-matrix-r69.mjs --province <scratch>/base-PROVINCE.md --snapshot .ufo/waves/round-69/c1/sibling-heads-r69.tsv --fleet /home/vgpnk/Projects/shokunin --json", "expect_exit": 1, "got_exit": 1, "finding": "matrix-missing", "rows": 0, "bound": 0, "siblings": 20, "agrees_committed": "controls/c1/donothing-head.out (byte-identical JSON)"},
+  {"n": 2, "name": "C1 fixture battery", "cmd": "node scripts/negatives-sibling-matrix-r69.mjs --fixture --work <scratch>/fx --out <this>/c1-fixture.json", "expect_exit": 0, "got_exit": 0, "negatives": 19, "refusedForExpectedReason": 19, "positiveOk": true, "failed": [], "agrees_committed": "controls/c1/fixture-battery.json (results array identical; counterSha256 b62f9c7d... match)"},
+  {"n": 3, "name": "C1 real-mode battery on base PROVINCE (extra control)", "cmd": "node scripts/negatives-sibling-matrix-r69.mjs --province <scratch>/base-PROVINCE.md --snapshot ... --fleet ... --work <scratch>/realwork --out <this>/c1-real-baseline.json", "expect_exit": "1 (positive cannot bind)", "got_exit": 1, "note": "exit 1 reached by an uncaught TypeError, not a graded verdict; no --out written. See finding F1.", "agrees_committed": "no committed control exists for real mode on the pre-implementation tree"},
+  {"n": 4, "name": "C2 no-receipt control", "cmd": "node scripts/check-synthscroll-r69.mjs --receipt <scratch>/does-not-exist.json --json", "expect_exit": 2, "got_exit": 2, "verdict": "unreadable", "finding": "receipt-unreadable", "agrees_committed": "controls/c2/donothing-no-receipt.out (same verdict+id; detail differs only by path)"},
+  {"n": 5, "name": "C2 degenerate js-scroll", "cmd": "node scripts/check-synthscroll-r69.mjs --receipt .ufo/waves/round-69/controls/c2-degenerate/js-scroll-receipt.json --json", "expect_exit": 1, "got_exit": 1, "verdict": "red", "checkCount": 62, "findings": 18, "agrees_committed": "IDENTICAL (verdict, checkCount, nonce, findings array) to controls/c2/degenerate-js-scroll-counter.out"},
+  {"n": 6, "name": "C2 degenerate dispatch-wheel", "cmd": "node scripts/check-synthscroll-r69.mjs --receipt .ufo/waves/round-69/controls/c2-degenerate/dispatch-wheel-receipt.json --json", "expect_exit": 1, "got_exit": 1, "verdict": "red", "checkCount": 62, "findings": 6, "agrees_committed": "IDENTICAL to controls/c2/degenerate-dispatch-wheel-counter.out"},
+  {"n": 7, "name": "C2 degenerate skip-touch", "cmd": "node scripts/check-synthscroll-r69.mjs --receipt .ufo/waves/round-69/controls/c2-degenerate/skip-touch-receipt.json --json", "expect_exit": 1, "got_exit": 1, "verdict": "red", "checkCount": 62, "findings": 10, "agrees_committed": "IDENTICAL to controls/c2/degenerate-skip-touch-counter.out"},
+  {"n": 8, "name": "C2 battery on the SCORED receipt with 3 laundered degenerates", "cmd": "node scripts/negatives-synthscroll-r69.mjs --real corpus/evidence/round69/chromium-synth-scroll-gesture/receipt.json --work <scratch>/negwork --laundered <c2-degenerate/js-scroll-receipt.json> --laundered <dispatch-wheel-receipt.json> --laundered <skip-touch-receipt.json> --out <this>/c2-negatives.json", "expect_exit": 0, "got_exit": 0, "negatives": 44, "refusedForExpectedReason": 44, "positiveOk": true, "failed": [], "agrees_committed": "scored/c2-negatives-a.json (results identical; counterSha256 c1b3763c... match). Committed control used controls/c2-smoke/smoke1-receipt.json as --real; both give 44/44."},
+  {"n": 9, "name": "C2 counter on the scored receipt with the driver pin (extra, predicate clause (a))", "cmd": "node scripts/check-synthscroll-r69.mjs --receipt corpus/evidence/round69/chromium-synth-scroll-gesture/receipt.json --expect-driver-sha256 13ea3f8ae67fb7761a94c4763e575c9ee487905dd9b405d916d55fca562abce3 --json", "expect_exit": 0, "got_exit": 0, "verdict": "clean", "checkCount": 63, "nonce": "tabi-r69-scored-81ac744e", "findings": [], "agrees_committed": "scored/c2-counter-a.json identical modulo the receipt path string"},
+  {"n": 10, "name": "snapshot ancestry of all 20 sibling lanes", "cmd": "git -C <fleet>/<lane>-shokunin merge-base --is-ancestor <snapshot head> <current branch tip>", "expect": "20/20 yes", "got": "20/20 yes", "movedSinceCapture": ["chousa","kagi","kama","kasegi","kumitate","souji","tsukuroi"], "receipt": "ancestry-r69.tsv"}
+ ],
+ "disagreements": [],
+ "findings": ["F1"]
+}
