@@ -1,0 +1,158 @@
+{
+ "schema": "tabi-r71-attack-harness",
+ "verifier": "verify-live-r71.mjs",
+ "rows": [
+  {
+   "attack": "P-tap",
+   "kind": "positive",
+   "profile": "synthtap-r70",
+   "verifier": "verify-live-r71.mjs",
+   "exit": 0,
+   "class": "HONEST-PASS",
+   "findings": [],
+   "runs": [
+    {
+     "name": "a",
+     "exit": 0,
+     "wallMs": 13281
+    },
+    {
+     "name": "b",
+     "exit": 0,
+     "wallMs": 13376
+    }
+   ],
+   "markerLines": [],
+   "swap": null,
+   "wallMs": 26766,
+   "stderrHead": ""
+  },
+  {
+   "attack": "P-scroll",
+   "kind": "positive",
+   "profile": "synthscroll-r69",
+   "verifier": "verify-live-r71.mjs",
+   "exit": 0,
+   "class": "HONEST-PASS",
+   "findings": [],
+   "runs": [
+    {
+     "name": "a",
+     "exit": 0,
+     "wallMs": 11051
+    },
+    {
+     "name": "b",
+     "exit": 0,
+     "wallMs": 11142
+    }
+   ],
+   "markerLines": [],
+   "swap": null,
+   "wallMs": 22305,
+   "stderrHead": ""
+  },
+  {
+   "attack": "A-env-tap",
+   "kind": "env",
+   "profile": "synthtap-r70",
+   "verifier": "verify-live-r71.mjs",
+   "exit": 2,
+   "class": "REFUSED",
+   "findings": [
+    "env-injection"
+   ],
+   "runs": [],
+   "markerLines": [],
+   "swap": null,
+   "wallMs": 27,
+   "stderrHead": "refused: loader-injection variables in the environment: NODE_OPTIONS\n"
+  },
+  {
+   "attack": "A-env-scroll",
+   "kind": "env",
+   "profile": "synthscroll-r69",
+   "verifier": "verify-live-r71.mjs",
+   "exit": 2,
+   "class": "REFUSED",
+   "findings": [
+    "env-injection"
+   ],
+   "runs": [],
+   "markerLines": [],
+   "swap": null,
+   "wallMs": 28,
+   "stderrHead": "refused: loader-injection variables in the environment: NODE_OPTIONS\n"
+  },
+  {
+   "attack": "B-swap-tap",
+   "kind": "swap-after-pin",
+   "profile": "synthtap-r70",
+   "verifier": "verify-live-r71.mjs",
+   "exit": 0,
+   "class": "HONEST-PASS",
+   "findings": [],
+   "runs": [
+    {
+     "name": "a",
+     "exit": 0,
+     "wallMs": 12433
+    },
+    {
+     "name": "b",
+     "exit": 0,
+     "wallMs": 13059
+    }
+   ],
+   "markerLines": [],
+   "swap": {
+    "swappedAt": "2026-11-06T21:38:57.106Z",
+    "targets": [
+     "scripts/chrome-cdp-synthtap-round70.mjs"
+    ]
+   },
+   "wallMs": 25594,
+   "stderrHead": ""
+  },
+  {
+   "attack": "C-swap-run-b-tap",
+   "kind": "swap-before-run-b",
+   "profile": "synthtap-r70",
+   "verifier": "verify-live-r71.mjs",
+   "exit": 1,
+   "class": "REFUSED",
+   "findings": [
+    "snapshot-mutated",
+    "run-b-wall-floor",
+    "run-b-stdout-mismatch"
+   ],
+   "runs": [
+    {
+     "name": "a",
+     "exit": 0,
+     "wallMs": 13519
+    },
+    {
+     "name": "b",
+     "exit": 0,
+     "wallMs": 18
+    }
+   ],
+   "markerLines": [
+    "do-nothing /fast/scratch/hyaku/tabi-r71/R71Mut2/hm00/v5/snap-Q7E9kK/chrome-cdp-synthtap-round70.mjs"
+   ],
+   "swap": {
+    "swappedAt": "2026-11-06T21:39:34.318Z",
+    "targets": [
+     "lane5/scripts/chrome-cdp-synthtap-round70.mjs",
+     "v5/snap-Q7E9kK/chrome-cdp-synthtap-round70.mjs"
+    ]
+   },
+   "wallMs": 13643,
+   "stderrHead": ""
+  }
+ ],
+ "falsePass": 0,
+ "notLanded": 0,
+ "positivesOk": true
+}

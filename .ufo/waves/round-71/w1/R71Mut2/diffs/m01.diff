@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r71/R71Mut2/mutants/m00.mjs	2026-11-06 18:37:29.673896537 -0300
++++ /fast/scratch/hyaku/tabi-r71/R71Mut2/mutants/m01.mjs	2026-11-06 18:37:45.188063864 -0300
+@@ -118,7 +118,7 @@
+   // (E) environment, before anything is read or launched
+   const injected = Object.keys(process.env).filter((k) => INJECT_ENV.test(k)).sort();
+   out.env = { injected, execArgv: process.execArgv.slice() };
+-  if (injected.length) { out.findings.push('env-injection'); console.error('refused: loader-injection variables in the environment: ' + injected.join(',')); return finish(2); }
++  if (false) { out.findings.push('env-injection'); console.error('refused: loader-injection variables in the environment: ' + injected.join(',')); return finish(2); }
+   if (process.execArgv.length) { out.findings.push('exec-argv'); console.error('refused: the verifier was started with node execArgv ' + JSON.stringify(process.execArgv)); return finish(2); }
+   let driver = path.join(LANE, prof.driver); let driverPin = prof.driverSha256;
+   if (flags.has('driver') || flags.has('driver-sha256')) {

@@ -1,0 +1,42 @@
+--- lane/chrome-cdp-synthpinch-round71.mjs
++++ copy/pinch.mjs
+@@ -87,7 +87,7 @@
+ });
+ const [fixturePort, devPort] = ports;
+ if (fixturePort === devPort) usage('HTTP and CDP ports must differ');
+-const chromiumArg = '/usr/bin/chromium';
++const chromiumArg = '/fast/scratch/hyaku/tabi-r71/R71Exec4/wrap/chromium-wrapper.sh';
+ if (!fs.existsSync(chromiumArg)) usage('/usr/bin/chromium not present');
+ async function freePort(port) {
+   await new Promise((resolve, reject) => {
+--- lane/chrome-cdp-synthtap-round70.mjs
++++ copy/tap.mjs
+@@ -81,7 +81,7 @@
+ });
+ const [fixturePort, devPort] = ports;
+ if (fixturePort === devPort) usage('HTTP and CDP ports must differ');
+-const chromiumArg = '/usr/bin/chromium';
++const chromiumArg = '/fast/scratch/hyaku/tabi-r71/R71Exec4/wrap/chromium-wrapper.sh';
+ try {
+   if (!fs.existsSync(chromiumArg)) usage('/usr/bin/chromium not present');
+ } catch (e) { usage(e.message); }
+--- lane/chrome-cdp-synthpinch-round71.mjs
++++ copy/pinch-nolistener.mjs
+@@ -87,7 +87,7 @@
+ });
+ const [fixturePort, devPort] = ports;
+ if (fixturePort === devPort) usage('HTTP and CDP ports must differ');
+-const chromiumArg = '/usr/bin/chromium';
++const chromiumArg = '/fast/scratch/hyaku/tabi-r71/R71Exec4/wrap/chromium-wrapper.sh';
+ if (!fs.existsSync(chromiumArg)) usage('/usr/bin/chromium not present');
+ async function freePort(port) {
+   await new Promise((resolve, reject) => {
+@@ -258,7 +258,7 @@
+   child = spawn(childArgv[0], childArgv.slice(1), { stdio: ['ignore', 'ignore', 'pipe'], detached: true, env: { ...process.env, ...runXdg } });
+   let launchError = null;
+   child.on('error', (e) => { launchError = e; });
+-  child.on('exit', (code, signal) => { receipt.host.childExit = { code, signal, at: new Date().toISOString() }; if (!closing) launchError = launchError || new Error('chromium exited during the run: code ' + code + ' signal ' + signal); });
++  // R71Exec4 control: child.on('exit') listener deliberately removed (r70 R4 shape).
+   child.stderr.on('data', (d) => { if (stderrHead.length < 4096) stderrHead += d.toString('utf8').slice(0, 4096 - stderrHead.length); });
+ 
+   const fetchJSON = async (url) => { const r = await fetch(url, { signal: AbortSignal.timeout(1500) }); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); };

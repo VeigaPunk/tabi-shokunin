@@ -1,0 +1,137 @@
+{
+ "schema": "r71exec4-launchfail-summary",
+ "fault": "driver copy with chromiumArg -> wrapper: --version prints Chromium 155.0.8059.84 and exits 0; every real launch prints FATAL:simulated_launch_failure to stderr and exits 1",
+ "wrapper": {
+  "path": "/fast/scratch/hyaku/tabi-r71/R71Exec4/wrap/chromium-wrapper.sh",
+  "sha256": "ff7bf7aece129b9329b2eb2ed853860d1f7ac5ab13b6d187d6ba38a73182f49f"
+ },
+ "copies": {
+  "pinch": {
+   "path": "/fast/scratch/hyaku/tabi-r71/R71Exec4/copy/pinch.mjs",
+   "sha256": "c52c3133f6760d6f89a94e534dc600d9f56523c5942355ee9709648adcfc7762",
+   "lane": "scripts/chrome-cdp-synthpinch-round71.mjs",
+   "laneSha256": "5318780cc13664f36a41d33024a500b5a5b2a8a3737d39489990fd98084922af",
+   "diff": "chromiumArg constant only"
+  },
+  "pinchNolistener": {
+   "path": "/fast/scratch/hyaku/tabi-r71/R71Exec4/copy/pinch-nolistener.mjs",
+   "sha256": "48ea87f904b6afffe18ec3269db7aa21993b728afea9ea331bd645315fbc69eb",
+   "lane": "scripts/chrome-cdp-synthpinch-round71.mjs",
+   "diff": "chromiumArg constant + child.on(\"exit\") listener removed (line 261)"
+  },
+  "tap": {
+   "path": "/fast/scratch/hyaku/tabi-r71/R71Exec4/copy/tap.mjs",
+   "sha256": "20873738cb04d1b6b2f519edfcb40da63c461d692a15fbaa33caa6a3d0f445f8",
+   "lane": "scripts/chrome-cdp-synthtap-round70.mjs",
+   "laneSha256": "704efab816e9bd9cc38cb31dd219aa776f7be52815a17cf1ea68924b6dff9577",
+   "diff": "chromiumArg constant only"
+  }
+ },
+ "cases": [
+  {
+   "name": "pinch-copy (listener present)",
+   "driverSha256": "c52c3133f6760d6f89a94e534dc600d9f56523c5942355ee9709648adcfc7762",
+   "scratch": "/fast/scratch/hyaku/tabi-r71/R71Exec4/bisect/b62/ddddddddddddd",
+   "scratchRealpathBytes": 62,
+   "modeledSockBytes": 107,
+   "wallMs": 3001,
+   "receiptElapsedS": 0.867,
+   "exitCode": 1,
+   "childExit": {
+    "code": 1,
+    "signal": null,
+    "at": "2026-11-06T21:42:33.386Z"
+   },
+   "childExitLatencyMs": 13,
+   "failures": [
+    {
+     "id": "drive-error",
+     "detail": "chromium exited during the run: code 1 signal null"
+    }
+   ],
+   "stderrHead": "FATAL:simulated_launch_failure: wrapper refuses to start the browser\n",
+   "teardown": {
+    "postKillSweepCount": 0,
+    "survivors": [],
+    "sweepError": null,
+    "portProbes": {
+     "fixture": "closed",
+     "devtools": "closed"
+    },
+    "postKillCurl": {
+     "fixture": 7,
+     "devtools": 7
+    }
+   },
+   "receipt": "lf-pinch-copy.json"
+  },
+  {
+   "name": "pinch-nolistener-control",
+   "driverSha256": "48ea87f904b6afffe18ec3269db7aa21993b728afea9ea331bd645315fbc69eb",
+   "scratch": "/fast/scratch/hyaku/tabi-r71/R71Exec4/lf/nolistener",
+   "wallMs": 63210,
+   "receiptElapsedS": 61.094,
+   "exitCode": 1,
+   "childExit": null,
+   "childExitLatencyMs": null,
+   "failures": [
+    {
+     "id": "drive-error",
+     "detail": "no loopback page target"
+    }
+   ],
+   "stderrHead": "FATAL:simulated_launch_failure: wrapper refuses to start the browser\n",
+   "teardown": {
+    "postKillSweepCount": 0,
+    "survivors": [],
+    "sweepError": null,
+    "portProbes": {
+     "fixture": "closed",
+     "devtools": "closed"
+    },
+    "postKillCurl": {
+     "fixture": 7,
+     "devtools": 7
+    }
+   },
+   "receipt": "lf-pinch-nolistener-control.json"
+  },
+  {
+   "name": "tap-r70-copy",
+   "driverSha256": "20873738cb04d1b6b2f519edfcb40da63c461d692a15fbaa33caa6a3d0f445f8",
+   "scratch": "/fast/scratch/hyaku/tabi-r71/R71Exec4/lf/tap",
+   "wallMs": 244313,
+   "receiptElapsedS": 242.148,
+   "exitCode": 1,
+   "childExit": "absent (no listener, no field)",
+   "childExitLatencyMs": null,
+   "failures": [
+    {
+     "id": "drive-error",
+     "detail": "no loopback page target"
+    }
+   ],
+   "stderrHead": "FATAL:simulated_launch_failure: wrapper refuses to start the browser\n",
+   "teardown": {
+    "postKillSweepCount": 0,
+    "survivors": [],
+    "sweepError": null,
+    "portProbes": {
+     "fixture": "closed",
+     "devtools": "closed"
+    },
+    "postKillCurl": {
+     "fixture": 7,
+     "devtools": 7
+    }
+   },
+   "receipt": "lf-tap-r70-copy.json"
+  }
+ ],
+ "firstAttempt": {
+  "note": "the probe first pointed the pinch case at a 74-byte scratch (24 d chars) instead of the 62-byte boundary dir; the guard refused with exit 2 in 46 ms and wrote no receipt. Corrected run is the pinch-copy case above.",
+  "wallMs": 46,
+  "exitCode": 2,
+  "detail": "--scratch too long for Chromium singleton socket (119 > 107 bytes)"
+ }
+}

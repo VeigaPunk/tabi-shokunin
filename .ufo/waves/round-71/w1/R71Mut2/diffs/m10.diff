@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r71/R71Mut2/mutants/m00.mjs	2026-11-06 18:37:29.673896537 -0300
++++ /fast/scratch/hyaku/tabi-r71/R71Mut2/mutants/m10.mjs	2026-11-06 18:37:45.275064238 -0300
+@@ -152,7 +152,7 @@
+   out.snapshot = { dir: snapDir, driver: snapDriver, counter: snapCounter, reads: [] };
+   const snapCheck = (when) => {
+     const d = snapHash(snapDriver), c = snapHash(snapCounter);
+-    const ok = d === driverPin && c === prof.counterSha256;
++    const ok = d === out.driverSha256 && c === out.counterSha256;
+     out.snapshot.reads.push({ when, driver: d, counter: c, ok });
+     if (!ok && !out.findings.includes('snapshot-mutated')) out.findings.push('snapshot-mutated');
+     return ok;

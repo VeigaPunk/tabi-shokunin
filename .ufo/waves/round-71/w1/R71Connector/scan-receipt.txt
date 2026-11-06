@@ -1,0 +1,126 @@
+R71Connector — scan receipt
+===========================
+Seat R71Connector, tabi-shokunin round 71 w1. Read-only. Date 2026-11-06.
+Tool: the session `grep` tool (Rust/PCRE2), `gitignore:false` so `.ufo/` evidence counts.
+No shell grep/rg used for discovery; `git -C <lane> show` used only to re-read a cited line.
+
+S1. C1 token scan — siblings only
+---------------------------------
+path:   /home/vgpnk/Projects/shokunin
+exclude !**/tabi-shokunin/**  !**/node_modules/**  !**/.git/**  !**/.jj/**
+pattern: synthesizePinchGesture|synthesizeScrollGesture|synthesizeTapGesture|setPageScaleFactor|GestureSourceType|visualViewport
+gitignore: false
+result: 4 files, all `visualViewport`, all bytes/page-script:
+  kasegi-shokunin/.ufo/waves/round-28/wave1/ScribeLessonGate/S068.body:198
+  kasegi-shokunin/.ufo/waves/round-28/wave1/ScribeLessonGate/S068.norm
+  kasegi-shokunin/.ufo/waves/round-30/wave1/fetch/s068.html:198
+  kotoba-shokunin/.ufo/waves/round-82/build/Kb82E12Loader-omp-18.14.0-strings.txt:673221
+  (the same kotoba file also carries visualViewport at :172235 and :179940; the r44 dump at
+   .ufo/round-44/evidence/omp-live-18.12.2-strings.txt:581553,581608,1273408)
+=> synthesizePinchGesture 0, synthesizeScrollGesture 0, synthesizeTapGesture 0,
+   setPageScaleFactor 0, GestureSourceType 0 in every sibling lane.
+
+S1-control. Same pattern, tabi only
+-----------------------------------
+path: /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts
+result: scripts/check-synthpinch-r71.mjs (10 frozen legs, :20-29; :103 the call filter)
+        scripts/chrome-cdp-synthpinch-round71.mjs (:322 the call, :319 setPageScaleFactor,
+        :391-392 the count and look-alike refusal)
+`grep -c synthesizePinchGesture scripts/chrome-cdp-synthpinch-round71.mjs` -> 5
+
+S2. `pinch` word scan — siblings, vendor excluded
+-------------------------------------------------
+path:   /home/vgpnk/Projects/shokunin
+exclude !**/tabi-shokunin/** !**/node_modules/** !**/r94vendor/** !**/vendor/**
+        !**/corpus/captures/** !**/.jj/** !**/.git/**
+result: 255 files. Classes:
+  kake corpus/knowledge/accessibility-review-cards.json:416,418 (WCAG 2.5.1 multipoint gesture;
+       "tabi owns authorized browser/assistive-technology execution") + frozen copies
+  kaidoku .ufo/waves/round-41/w1/R41RevBudget.md:193 ("--fsize pinch", word sense)
+  mori .ufo/reports/round-63/mori.md:42 ("selftests-pincheck", substring)
+  game-dev-3d reports/round-104/math-audit.md:12 ("pin-check", substring)
+  game-dev-3d corpus/fixtures/r94vendor/three.core.js (WebXR hand pinch, vendored)
+=> one semantic mention (kake, deferential); no implementation, no claim.
+
+S3. wheel/mouse dispatch scan — siblings
+----------------------------------------
+pattern: dispatchMouseEvent|mouseWheel|deltaY|setTouchEmulationEnabled
+result: no sibling instrument. Hits are:
+  fleet-root .ufo/reports/round-51/tabi.md:15 and round-52/63/64/68/69 tabi.md (tabi's own reports)
+  kotodama .ufo/waves/round-90/w2/stage/ConnectorSiblings/ownership.txt:107 (a copy of tabi's PROVINCE)
+  kumitate .ufo/waves/round-90/K90Connector/hits-C-cf.txt (a connector hit list quoting tabi)
+  kotoba strings dumps: .ufo/round-44/evidence/omp-live-18.12.2-strings.txt:6636 Input.dispatchMouseEvent,
+        :23338 deltaY, :30273 "mouseWheel"; r82 build :7403, :24635, :31822
+=> the omp bundle (which the fleet ships) has a CDP client; no sibling drives it.
+
+S4. C2 pattern scans
+--------------------
+pattern: NODE_OPTIONS|LD_PRELOAD|execArgv
+  kumitate scripts/gate-mutants.mjs:108-114 sandboxEnv allowlist
+  kumitate scripts/cap-run.mjs:189 --clearenv
+  kumitate SKILL.md:617 claim row (no inherited KUMITATE_*, GIT_*, NODE_OPTIONS)
+  kumitate .ufo/waves/round-42/build/CritManifestDesign.md:7 allowlist-over-denylist
+  kumitate .ufo/waves/round-51/w2/RevA51Rerun.md:132 NODE_OPTIONS preload forges the verdict
+  chousa tools/research-gate.sh:4271 -u LD_PRELOAD -u LD_LIBRARY_PATH
+  kama tools/round64-c1-counter.py:16-17 env holds only PATH/HOME/LANG/LC_ALL
+  mado .ufo/waves/round-47/w2/SentC1Tripwire.md:167 env exactly HOME,LANG,PATH,PWD,TMPDIR
+  mado .ufo/waves/round-76/w1/R76Sentinel.md:11-15 git_env retains LD_PRELOAD; remedy = allowlist
+pattern: TOCTOU
+  souji SCORECARD.md:1579 link(2) publish vs os.replace
+  kengaku .ufo/waves/round-63/w1/attack/security.md:120 port-check TOCTOU
+  kumitate .ufo/waves/round-90/K90Connector (A6/A7/A8 rows), kaidoku round-92 F-A-TOCTOU,
+  kama round-88 SN01 digest->rename TOCTOU, kengaku r19 BR-1 freeze TOCTOU (sibling reports)
+pattern: snapshot / re-hash
+  kumitate scripts/gate-mutants.mjs:743 git ls-tree pinned rev; :737 write 'wx'; :59-60 owner/mode/realpath
+  kama tools/round54-replay-code-audit.py:64-69 two-pass byte-identical + post-exit re-stat/re-hash
+  kasegi .ufo/waves/round-67/w1/ExecMultiHeadDriver.md:13-15 driver-pins.json + pins_sha256
+  mori .ufo/waves/round-23/falsify/RerunPinnedDriver.md:25 sealed-copy driver check
+
+S5. Province / claim rows
+-------------------------
+tameshi PROVINCE.md:3-5  "verification-fixture craft — the reusable method of honest checks:
+                          hermetic suites, mutation testing, fail-closed arms"
+kake    PROVINCE.md:40    "tabi drives browsers and owns client-side crawler discipline"
+kake    PROVINCE.md:67    "browser execution stays tabi's adjacent province"
+kake    PROVINCE.md:368   "stays open and stays tabi's adjacent province for anything that executes a browser"
+kama    PROVINCE.md       (441 lines read) no browser-input surface; SKILL.md:274 only
+                          "9222 is Chrome" inside a listener fingerprint example.
+
+S6. Heads at scan (one `git -C <lane> rev-parse HEAD` per lane, single pass)
+---------------------------------------------------------------------------
+audio f9da7ee97e0ba95da1803c2afe9c616c519bae18
+chousa 408ae68f9e445fc911f713d5bbb3a64dda1ab9fe
+game-dev-2d 1e033ef053beedf9a201daa21fbeb9c8b2f72dc3
+game-dev-3d 39ca3973c7865456d97fae18033f3f460c6cf8c1
+kagi a74ae538d3426ec04c045200e18e0e3cb2540035
+kaidoku 0b518f568da7b40a4ab026508d63c942faa7badf
+kake dd7a146df338ec3de07a88f08f36c8278760afec
+kama 8f8211a2d9218115af82488e7e9ee7aeadddc08e
+kasegi b9589300810a477f4d6794bfabc24b22fb50b846
+kengaku 34b28c47bc38b4e0aa11f44f2dfe7c9470d551ac
+kotoba 0344ddaea831b92546360a55ae02db2654fbccf8
+kotodama 5fa04a9bbda25aa31c8270265fd9997eb97d9ebb
+kumitate 2f8475cdeca3aab569234537cd75d9f332aac6bc
+lore 0f044aa7c7e4e17cfd5b6278179709b60db45d61
+mado 5041acf99e27263872bf0441ad5f9d4316152605
+mori 7765969c79e6f3df44cce2e303e6a0cf2b054d8b
+revenger 654d09298960d0886274d37a0492b8e6d98b2c96
+souji 2ec8b63dfda8fdf88cd240487c5d1325de13b501
+tameshi 0e5a39ed3014cd0d8159ec9dcf238a2b907b08cf
+tsukuroi b96dc4beb8b826dab80ff07411b07c549c7a1b17
+tabi 244505a0b4dfe0f32db3349cdd173caa60a0e97b
+
+S7. Measurements behind the §9 proposal
+---------------------------------------
+$ stat -c '%n mode=%a uid=%u' /fast/scratch /fast/scratch/hyaku
+/fast/scratch mode=755 uid=1000
+/fast/scratch/hyaku mode=755 uid=1000
+$ grep -n 'mkdirSync(scratch' tabi-shokunin/scripts/verify-live-r71.mjs
+144:  fs.mkdirSync(scratch, { recursive: true });
+=> kumitate's parent predicate `(mode & 0o077) !== 0` (gate-mutants.mjs:78) would refuse
+   0755; a caller-supplied scratch needs `(mode & 0o022) === 0` instead.
+
+S8. Scratch
+-----------
+No scratch directory created by this seat. /fast/scratch/hyaku/tabi-r71/ belongs to other
+seats; not created, not deleted here. No tool installed or upgraded.

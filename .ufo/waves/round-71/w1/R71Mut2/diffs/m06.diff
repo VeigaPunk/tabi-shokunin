@@ -1,0 +1,11 @@
+--- /fast/scratch/hyaku/tabi-r71/R71Mut2/mutants/m00.mjs	2026-11-06 18:37:29.673896537 -0300
++++ /fast/scratch/hyaku/tabi-r71/R71Mut2/mutants/m06.mjs	2026-11-06 18:37:45.230064044 -0300
+@@ -183,7 +183,7 @@
+     const run = spawnSync(process.execPath, [snapDriver, '--scratch', work, '--out', receipt, '--nonce', nonce, '--http-port', String(httpPort), '--cdp-port', String(cdpPort)], { encoding: 'utf8', timeout: RUN_TIMEOUT_MS, env: childEnv({ TMPDIR: work }) });
+     const e = { name, nonce, httpPort, cdpPort, exit: run.status, signal: run.signal, wallMs: Date.now() - spawnedAt, snapshotOkBefore: snapOk, counterExit: null, counterFindings: null, binding: {}, receiptSha256: null, stdout: null };
+     out.runs.push(e);
+-    if (e.wallMs < prof.wallFloorMs) out.findings.push('run-' + name + '-wall-floor');
++    if (false) out.findings.push('run-' + name + '-wall-floor');
+     if (run.status !== 0) { out.findings.push('run-' + name + '-failed'); continue; }
+     const st = (() => { try { return fs.statSync(receipt); } catch { return null; } })();
+     const r = load(receipt);

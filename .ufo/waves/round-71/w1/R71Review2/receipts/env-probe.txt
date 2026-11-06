@@ -1,0 +1,10 @@
+# N1: env-vector probes on frozen verify-live-r71.mjs (61f43596), --no-run --json
+# all six non-refused vars: exit 1, findings ["no-run"], env.injected []
+NODE_COMPILE_CACHE  -> not refused; node v24.21.0 wrote cache dir v24.21.0-x64-964aae3f-1000/
+NODE_V8_COVERAGE    -> not refused (inert)
+NODE_EXTRA_CA_CERTS -> not refused (inert: no TLS in chain)
+UV_THREADPOOL_SIZE  -> not refused (inert)
+BASH_ENV            -> not refused (unreachable: no shell in any spawn chain)
+LD_BIND_NOW         -> not refused (inert)
+NODE_OPTIONS=--require /etc/hosts -> node exits 126 before main (preload honored, bad target);
+  valid preload refused exit 2 env-injection per pre-r71/summary.json rows A-env-*

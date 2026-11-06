@@ -152,3 +152,10 @@ One v1 wave of 12 seats (`.ufo/waves/round-71/w1/`). Instruments stay as frozen.
   (replay counters). Reported, not absorbed.
 - **R71Scribe** — drafted registry and capability rows; its S-1 (no r71 self-test) predates
   `scripts/selftest-r71-gates.mjs` (landed `64e389f2`, 8/8); the capability row is withheld.
+- **R71Scout** — PARTIAL: all five documents re-fetched independently and byte-identical to the
+  staged copies (decoded and base64 transport; `w1/R71Scout/receipts/fetch-ledger.json`). The
+  source predicts the gesture-layer legs exactly but not the page-visible half (ctrl+wheel
+  delivery, scale changes and floor, no touch zoom), which is Blink/zoom policy the round did not
+  stage — the note marks those as measured, not sourced. Scope gap: S173/S174 rows are scoped to
+  the scroll command, yet this round (like r70 for tap) cites them for pinch lines; routed to r72
+  as a row-scope revision or new rows, not changed here.

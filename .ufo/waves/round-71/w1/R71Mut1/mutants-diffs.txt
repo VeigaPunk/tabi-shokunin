@@ -1,0 +1,235 @@
+--- s/check-synthpinch-r71.mjs
++++ m/m01/check-synthpinch-r71.mjs
+@@ -35 +35 @@
+-  in: { seq: [], wheels: [5, 'in'], scale: 2, span: [150, 450], tm: null, error: null },
++  in: { seq: [], wheels: [5, 'in'], scale: 2, span: [150, 2000], tm: null, error: null },
+--- s/check-synthpinch-r71.mjs
++++ m/m02/check-synthpinch-r71.mjs
+@@ -39 +39 @@
+-  default: { seq: [], wheels: [3, 'in'], scale: 1.5, span: [60, 300], tm: null, error: null },
++  default: { seq: [], wheels: [3, 'in'], scale: 1.5, span: [60, 2000], tm: null, error: null },
+--- s/check-synthpinch-r71.mjs
++++ m/m03/check-synthpinch-r71.mjs
+@@ -44 +44 @@
+-  zero: { seq: [], wheels: [20, 'zero'], scale: 1.5, span: [3000, 6000], tm: null, error: 'no-response-4000ms' },
++  zero: { seq: [], wheels: [20, 'zero'], scale: 1.5, span: [0, 6000], tm: null, error: 'no-response-4000ms' },
+--- s/check-synthpinch-r71.mjs
++++ m/m04/check-synthpinch-r71.mjs
+@@ -96 +96 @@
+-check('run-window', Number.isFinite(t0) && Number.isFinite(t1) && t1 - t0 >= 8000 && t1 - t0 < 600000, 'startedAt ' + r.startedAt + ' finishedAt ' + r.finishedAt + ' (a full run takes >= 8 s: settle waits and the 4 s zero leg)');
++check('run-window', Number.isFinite(t0) && Number.isFinite(t1) && t1 - t0 >= 1 && t1 - t0 < 600000, 'startedAt ' + r.startedAt + ' finishedAt ' + r.finishedAt + ' (a full run takes >= 8 s: settle waits and the 4 s zero leg)');
+--- s/check-synthpinch-r71.mjs
++++ m/m05/check-synthpinch-r71.mjs
+@@ -96 +96 @@
+-check('run-window', Number.isFinite(t0) && Number.isFinite(t1) && t1 - t0 >= 8000 && t1 - t0 < 600000, 'startedAt ' + r.startedAt + ' finishedAt ' + r.finishedAt + ' (a full run takes >= 8 s: settle waits and the 4 s zero leg)');
++check('run-window', Number.isFinite(t0) && Number.isFinite(t1) && t1 - t0 >= 8000 && t1 - t0 < 6000000, 'startedAt ' + r.startedAt + ' finishedAt ' + r.finishedAt + ' (a full run takes >= 8 s: settle waits and the 4 s zero leg)');
+--- s/check-synthpinch-r71.mjs
++++ m/m06/check-synthpinch-r71.mjs
+@@ -98 +98 @@
+-check('leg-order', canon(legs.map((l) => l && l.name)) === canon(LEG_ORDER), 'legs ' + legs.map((l) => l && l.name).join(','));
++check('leg-order', canon([...legs.map((l) => l && l.name)].sort()) === canon([...LEG_ORDER].sort()), 'legs ' + legs.map((l) => l && l.name).join(','));
+--- s/check-synthpinch-r71.mjs
++++ m/m07/check-synthpinch-r71.mjs
+@@ -104 +104 @@
+-check('pinch-call-count', pinches.length === 10, 'Input.synthesizePinchGesture calls ' + pinches.length);
++check('pinch-call-count', pinches.length >= 10, 'Input.synthesizePinchGesture calls ' + pinches.length);
+--- s/check-synthpinch-r71.mjs
++++ m/m08/check-synthpinch-r71.mjs
+@@ -105 +105 @@
+-check('pinch-call-params', canon(pinches.map((c) => c.params)) === canon(FROZEN.filter((l) => l.params).map((l) => l.params)), 'pinch params differ from the frozen plan');
++check('pinch-call-params', canon(pinches.slice(-1).map((c) => c.params)) === canon(FROZEN.filter((l) => l.params).slice(-1).map((l) => l.params)), 'pinch params differ from the frozen plan');
+--- s/check-synthpinch-r71.mjs
++++ m/m09/check-synthpinch-r71.mjs
+@@ -106 +106 @@
+-const look = sendLog.filter((c) => c && (/^Input\.(dispatch|insertText|ime|emulateTouch|synthesize(Scroll|Tap))/.test(String(c.method))
++const look = sendLog.filter((c) => c && (/^Input\.(dispatch|insertText|ime|synthesize(Scroll|Tap))/.test(String(c.method))
+--- s/check-synthpinch-r71.mjs
++++ m/m10/check-synthpinch-r71.mjs
+@@ -107 +107 @@
+-  || /^Emulation\.(setPageScaleFactor|setTouchEmulationEnabled|setEmitTouchEventsForMouse|setScrollbarsHidden)$/.test(String(c.method))
++  || /^Emulation\.(setPageScaleFactor|setTouchEmulationEnabled|setScrollbarsHidden)$/.test(String(c.method))
+--- s/check-synthpinch-r71.mjs
++++ m/m11/check-synthpinch-r71.mjs
+@@ -107 +107 @@
+-  || /^Emulation\.(setPageScaleFactor|setTouchEmulationEnabled|setEmitTouchEventsForMouse|setScrollbarsHidden)$/.test(String(c.method))
++  || /^Emulation\.(setPageScaleFactor|setTouchEmulationEnabled|setEmitTouchEventsForMouse)$/.test(String(c.method))
+--- s/check-synthpinch-r71.mjs
++++ m/m12/check-synthpinch-r71.mjs
+@@ -108 +108 @@
+-  || (/^Runtime\.(evaluate|callFunctionOn)$/.test(String(c.method)) && /dispatchEvent|new\s+(Wheel|Mouse|Pointer|Touch)Event|__events\s*\.\s*push|__events\s*=|visualViewport\s*=/.test(JSON.stringify(c.params || {})))));
++  || (/^Runtime\.(evaluate|callFunctionOn)$/.test(String(c.method)) && /dispatchEvent|new\s+(Wheel|Mouse|Pointer|Touch)Event|__events\s*\.\s*push|visualViewport\s*=/.test(JSON.stringify(c.params || {})))));
+--- s/check-synthpinch-r71.mjs
++++ m/m13/check-synthpinch-r71.mjs
+@@ -108 +108 @@
+-  || (/^Runtime\.(evaluate|callFunctionOn)$/.test(String(c.method)) && /dispatchEvent|new\s+(Wheel|Mouse|Pointer|Touch)Event|__events\s*\.\s*push|__events\s*=|visualViewport\s*=/.test(JSON.stringify(c.params || {})))));
++  || (/^Runtime\.(evaluate|callFunctionOn)$/.test(String(c.method)) && /dispatchEvent|new\s+(Wheel|Mouse|Pointer|Touch)Event|__events\s*\.\s*push|__events\s*=/.test(JSON.stringify(c.params || {})))));
+--- s/check-synthpinch-r71.mjs
++++ m/m14/check-synthpinch-r71.mjs
+@@ -108 +108 @@
+-  || (/^Runtime\.(evaluate|callFunctionOn)$/.test(String(c.method)) && /dispatchEvent|new\s+(Wheel|Mouse|Pointer|Touch)Event|__events\s*\.\s*push|__events\s*=|visualViewport\s*=/.test(JSON.stringify(c.params || {})))));
++  || (/^Runtime\.(evaluate)$/.test(String(c.method)) && /dispatchEvent|new\s+(Wheel|Mouse|Pointer|Touch)Event|__events\s*\.\s*push|__events\s*=|visualViewport\s*=/.test(JSON.stringify(c.params || {})))));
+--- s/check-synthpinch-r71.mjs
++++ m/m15/check-synthpinch-r71.mjs
+@@ -119 +119 @@
+-  const wheelSign = wheels.length === 0 ? null : wheels.every((e) => e.deltaY < 0) ? 'in' : wheels.every((e) => e.deltaY > 0) ? 'out' : wheels.every((e) => e.deltaY === 0) ? 'zero' : 'mixed';
++  const wheelSign = wheels.length === 0 ? null : wheels.every((e) => e.deltaY < 0) ? 'out' : wheels.every((e) => e.deltaY > 0) ? 'in' : wheels.every((e) => e.deltaY === 0) ? 'zero' : 'mixed';
+--- s/check-synthpinch-r71.mjs
++++ m/m16/check-synthpinch-r71.mjs
+@@ -134 +134 @@
+-    : (wheels.length >= want.wheels[0] && wheelSign === want.wheels[1] && wheels.every((e) => e.ctrlKey === true && e.deltaMode === 0)),
++    : (wheels.length >= want.wheels[0] && wheelSign === want.wheels[1] && wheels.every((e) => e.ctrlKey === true)),
+--- s/check-synthpinch-r71.mjs
++++ m/m17/check-synthpinch-r71.mjs
+@@ -134 +134 @@
+-    : (wheels.length >= want.wheels[0] && wheelSign === want.wheels[1] && wheels.every((e) => e.ctrlKey === true && e.deltaMode === 0)),
++    : (wheels.length > 0 && wheelSign === want.wheels[1] && wheels.every((e) => e.ctrlKey === true && e.deltaMode === 0)),
+--- s/check-synthpinch-r71.mjs
++++ m/m18/check-synthpinch-r71.mjs
+@@ -75 +75 @@
+-const near = (a, b, tol = 0.01) => num(a) && Math.abs(a - b) <= tol;
++const near = (a, b, tol = 0.1) => num(a) && Math.abs(a - b) <= tol;
+--- s/check-synthpinch-r71.mjs
++++ m/m19/check-synthpinch-r71.mjs
+@@ -113 +113 @@
+-const span = (list) => (list.length >= 2 ? +(list[list.length - 1].ts - list[0].ts).toFixed(1) : null);
++const span = (list) => (list.length >= 1 ? +(list[list.length - 1].ts - list[0].ts).toFixed(1) : null);
+--- s/check-synthpinch-r71.mjs
++++ m/m20/check-synthpinch-r71.mjs
+@@ -129 +129 @@
+-  const moveTypesOk = want.tm === null ? evs.every((e) => !MOVES.has(e.type)) : evs.filter((e) => e.type === 'pointermove').every((e) => e.pointerType === 'touch');
++  const moveTypesOk = want.tm === null ? evs.every((e) => !MOVES.has(e.type)) : evs.filter((e) => e.type === 'pointermove').every((e) => e.pointerType !== 'mouse');
+--- s/check-synthpinch-r71.mjs
++++ m/m21/check-synthpinch-r71.mjs
+@@ -141 +141 @@
+-  check(`leg-${name}-error`, want.error === null ? (leg.cdpError === null && leg.skipped === false) : (typeof leg.cdpError === 'string' && leg.cdpError.includes(want.error) && leg.skipped === false), name + ' cdpError ' + leg.cdpError + ' skipped ' + leg.skipped);
++  check(`leg-${name}-error`, want.error === null ? (leg.cdpError === null && leg.skipped === false) : (typeof leg.cdpError === 'string' && leg.cdpError.includes(want.error)), name + ' cdpError ' + leg.cdpError + ' skipped ' + leg.skipped);
+--- s/check-synthpinch-r71.mjs
++++ m/m22/check-synthpinch-r71.mjs
+@@ -145 +145 @@
+-check('scale-agreement', LEG_ORDER.every((n) => { const l = legOf(n); return num(l.scaleBefore?.page) && near(l.scaleBefore.page, l.scaleBefore.cdp) && num(l.scaleAfter?.page) && near(l.scaleAfter.page, l.scaleAfter.cdp); })
++check('scale-agreement', LEG_ORDER.every((n) => { const l = legOf(n); return num(l.scaleBefore?.page) && num(l.scaleAfter?.page) && near(l.scaleAfter.page, l.scaleAfter.cdp); })
+--- s/check-synthpinch-r71.mjs
++++ m/m23/check-synthpinch-r71.mjs
+@@ -146 +146 @@
+-  && LEG_ORDER.slice(1).every((n, i) => near(legOf(n).scaleBefore?.page, legOf(LEG_ORDER[i]).scaleAfter?.page)),
++  && LEG_ORDER.slice(1, 2).every((n, i) => near(legOf(n).scaleBefore?.page, legOf(LEG_ORDER[i]).scaleAfter?.page)),
+--- s/check-synthpinch-r71.mjs
++++ m/m24/check-synthpinch-r71.mjs
+@@ -149 +149 @@
+-check('wheel-anchor', anchorWheels.length > 0 && anchorWheels.every((e) => Math.abs(e.clientX - AT.x) <= 1 && Math.abs(e.clientY - AT.y) <= 1)
++check('wheel-anchor', anchorWheels.length > 0 && anchorWheels.every((e) => Math.abs(e.clientX - AT.x) <= 2 && Math.abs(e.clientY - AT.y) <= 2)
+--- s/check-synthpinch-r71.mjs
++++ m/m25/check-synthpinch-r71.mjs
+@@ -150 +150 @@
+-  && events.filter((e) => e && e.leg === 'clamp' && e.type === 'wheel').every((e) => e.clientX === AT.x && e.clientY === AT.y),
++  && events.filter((e) => e && e.leg === 'clamp' && e.type === 'wheel').every((e) => e.clientX === AT.x),
+--- s/check-synthpinch-r71.mjs
++++ m/m26/check-synthpinch-r71.mjs
+@@ -154 +154 @@
+-check('wheel-delta-law', near(clampSum, 100 * Math.log(2), 0.5) && events.filter((e) => e && e.leg === 'zero' && e.type === 'wheel').every((e) => e.deltaY === 0), 'clamp deltaY sum ' + clampSum + ' want 100*ln2');
++check('wheel-delta-law', near(clampSum, 100 * Math.log(2), 0.5), 'clamp deltaY sum ' + clampSum + ' want 100*ln2');
+--- s/check-synthpinch-r71.mjs
++++ m/m27/check-synthpinch-r71.mjs
+@@ -154 +154 @@
+-check('wheel-delta-law', near(clampSum, 100 * Math.log(2), 0.5) && events.filter((e) => e && e.leg === 'zero' && e.type === 'wheel').every((e) => e.deltaY === 0), 'clamp deltaY sum ' + clampSum + ' want 100*ln2');
++check('wheel-delta-law', near(clampSum, 100 * Math.log(3), 0.5) && events.filter((e) => e && e.leg === 'zero' && e.type === 'wheel').every((e) => e.deltaY === 0), 'clamp deltaY sum ' + clampSum + ' want 100*ln2');
+--- s/check-synthpinch-r71.mjs
++++ m/m28/check-synthpinch-r71.mjs
+@@ -154 +154 @@
+-check('wheel-delta-law', near(clampSum, 100 * Math.log(2), 0.5) && events.filter((e) => e && e.leg === 'zero' && e.type === 'wheel').every((e) => e.deltaY === 0), 'clamp deltaY sum ' + clampSum + ' want 100*ln2');
++check('wheel-delta-law', near(clampSum, 100 * Math.log(2), 1.0) && events.filter((e) => e && e.leg === 'zero' && e.type === 'wheel').every((e) => e.deltaY === 0), 'clamp deltaY sum ' + clampSum + ' want 100*ln2');
+--- s/check-synthpinch-r71.mjs
++++ m/m29/check-synthpinch-r71.mjs
+@@ -157 +157 @@
+-  if (tms.length < 2 || !tms.every((e) => Array.isArray(e.touches) && e.touches.length === 2)) return false;
++  if (tms.length < 2 || !tms.every((e) => Array.isArray(e.touches) && e.touches.length >= 1)) return false;
+--- s/check-synthpinch-r71.mjs
++++ m/m30/check-synthpinch-r71.mjs
+@@ -161 +161 @@
+-  return xs.size === 1 && grows && spans[spans.length - 1] / spans[0] >= 2;
++  return xs.size >= 1 && grows && spans[spans.length - 1] / spans[0] >= 2;
+--- s/check-synthpinch-r71.mjs
++++ m/m31/check-synthpinch-r71.mjs
+@@ -161 +161 @@
+-  return xs.size === 1 && grows && spans[spans.length - 1] / spans[0] >= 2;
++  return xs.size === 1 && grows && spans[spans.length - 1] / spans[0] >= 3;
+--- s/check-synthpinch-r71.mjs
++++ m/m32/check-synthpinch-r71.mjs
+@@ -161 +161 @@
+-  return xs.size === 1 && grows && spans[spans.length - 1] / spans[0] >= 2;
++  return xs.size === 1 && spans[spans.length - 1] / spans[0] >= 2;
+--- s/check-synthpinch-r71.mjs
++++ m/m33/check-synthpinch-r71.mjs
+@@ -163 +163 @@
+-check('touch-geometry', geom('touch') && geom('slow'), 'touch pointers are not two points on one vertical line moving apart to >= 2x span');
++check('touch-geometry', geom('touch'), 'touch pointers are not two points on one vertical line moving apart to >= 2x span');
+--- s/check-synthpinch-r71.mjs
++++ m/m34/check-synthpinch-r71.mjs
+@@ -165 +165 @@
+-check('slow-ratio', ratio !== null && ratio >= 3 && ratio <= 5, 'slow/touch span ratio ' + ratio + ' (relativeSpeed 800 vs 200)');
++check('slow-ratio', ratio !== null && ratio <= 5, 'slow/touch span ratio ' + ratio + ' (relativeSpeed 800 vs 200)');
+--- s/check-synthpinch-r71.mjs
++++ m/m35/check-synthpinch-r71.mjs
+@@ -165 +165 @@
+-check('slow-ratio', ratio !== null && ratio >= 3 && ratio <= 5, 'slow/touch span ratio ' + ratio + ' (relativeSpeed 800 vs 200)');
++check('slow-ratio', ratio !== null && ratio >= 3 && ratio <= 50, 'slow/touch span ratio ' + ratio + ' (relativeSpeed 800 vs 200)');
+--- s/check-synthpinch-r71.mjs
++++ m/m36/check-synthpinch-r71.mjs
+@@ -171 +171 @@
+-check('producer-verdict', r.predicate === true && r.synthPinchHypothesis === 'CONFIRMED', 'producer predicate ' + r.predicate + ' hypothesis ' + r.synthPinchHypothesis);
++check('producer-verdict', r.predicate === true && r.synthPinchHypothesis !== 'REFUTED', 'producer predicate ' + r.predicate + ' hypothesis ' + r.synthPinchHypothesis);
+--- s/check-synthpinch-r71.mjs
++++ m/m37/check-synthpinch-r71.mjs
+@@ -171 +171 @@
+-check('producer-verdict', r.predicate === true && r.synthPinchHypothesis === 'CONFIRMED', 'producer predicate ' + r.predicate + ' hypothesis ' + r.synthPinchHypothesis);
++check('producer-verdict', r.predicate !== false && r.synthPinchHypothesis === 'CONFIRMED', 'producer predicate ' + r.predicate + ' hypothesis ' + r.synthPinchHypothesis);
+--- s/check-synthpinch-r71.mjs
++++ m/m38/check-synthpinch-r71.mjs
+@@ -134 +134 @@
+-    : (wheels.length >= want.wheels[0] && wheelSign === want.wheels[1] && wheels.every((e) => e.ctrlKey === true && e.deltaMode === 0)),
++    : (wheels.length >= want.wheels[0] - 2 && wheelSign === want.wheels[1] && wheels.every((e) => e.ctrlKey === true && e.deltaMode === 0)),
+--- s/check-synthpinch-r71.mjs
++++ m/m39/check-synthpinch-r71.mjs
+@@ -44 +44 @@
+-  zero: { seq: [], wheels: [20, 'zero'], scale: 1.5, span: [3000, 6000], tm: null, error: 'no-response-4000ms' },
++  zero: { seq: [], wheels: [1, 'zero'], scale: 1.5, span: [3000, 6000], tm: null, error: 'no-response-4000ms' },
+--- s/check-synthpinch-r71.mjs
++++ m/m40/check-synthpinch-r71.mjs
+@@ -39 +39 @@
+-  default: { seq: [], wheels: [3, 'in'], scale: 1.5, span: [60, 300], tm: null, error: null },
++  default: { seq: [], wheels: [1, 'in'], scale: 1.5, span: [60, 300], tm: null, error: null },
+--- s/check-synthpinch-r71.mjs
++++ m/m41/check-synthpinch-r71.mjs
+@@ -145 +145 @@
+-check('scale-agreement', LEG_ORDER.every((n) => { const l = legOf(n); return num(l.scaleBefore?.page) && near(l.scaleBefore.page, l.scaleBefore.cdp) && num(l.scaleAfter?.page) && near(l.scaleAfter.page, l.scaleAfter.cdp); })
++check('scale-agreement', LEG_ORDER.slice(0, 5).every((n) => { const l = legOf(n); return num(l.scaleBefore?.page) && near(l.scaleBefore.page, l.scaleBefore.cdp) && num(l.scaleAfter?.page) && near(l.scaleAfter.page, l.scaleAfter.cdp); })
+--- s/check-synthpinch-r71.mjs
++++ m/m42/check-synthpinch-r71.mjs
+@@ -103 +103 @@
+-const pinches = sendLog.filter((c) => c && c.method === 'Input.synthesizePinchGesture');
++const pinches = sendLog.filter((c) => c && String(c.method).startsWith('Input.synthesizePinchGesture'));
+--- s/check-synthpinch-r71.mjs
++++ m/m43/check-synthpinch-r71.mjs
+@@ -136 +136 @@
+-  check(`leg-${name}-scale`, near(leg.scaleAfter?.page, want.scale) && near(leg.scaleAfter?.cdp, want.scale), name + ' scaleAfter ' + JSON.stringify(leg.scaleAfter) + ' want ' + want.scale);
++  check(`leg-${name}-scale`, near(leg.scaleAfter?.page, want.scale) || near(leg.scaleAfter?.cdp, want.scale), name + ' scaleAfter ' + JSON.stringify(leg.scaleAfter) + ' want ' + want.scale);
+--- s/check-synthpinch-r71.mjs
++++ m/m44/check-synthpinch-r71.mjs
+@@ -160 +160 @@
+-  const grows = spans.every((s, i) => i === 0 || s >= spans[i - 1]);
++  const grows = spans.every((s, i) => i === 0 || s > spans[i - 1]);
+--- s/check-synthpinch-r71.mjs
++++ m/m45/check-synthpinch-r71.mjs
+@@ -161 +161 @@
+-  return xs.size === 1 && grows && spans[spans.length - 1] / spans[0] >= 2;
++  return xs.size === 1 && grows && spans[spans.length - 1] / spans[0] > 2;
+--- s/check-synthpinch-r71.mjs
++++ m/m46/check-synthpinch-r71.mjs
+@@ -124 +124 @@
+-    total: evs.length, allTrusted: evs.every((e) => e.isTrusted === true),
++    total: evs.length, allTrusted: evs.some((e) => e.isTrusted === true),
+--- s/check-synthpinch-r71.mjs
++++ m/m47/check-synthpinch-r71.mjs
+@@ -125 +125 @@
+-    wheels: wheels.length, wheelCtrlAll: wheels.every((e) => e.ctrlKey === true), wheelSign, wheelSpanMs: span(wheels),
++    wheels: wheels.length, wheelCtrlAll: wheels.some((e) => e.ctrlKey === true), wheelSign, wheelSpanMs: span(wheels),
