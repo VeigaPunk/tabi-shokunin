@@ -1085,3 +1085,8 @@ the report, under the frozen predicates in `.ufo/waves/round-65/claims.json`.
 - Input-domain synthetic scroll gesture (`Input.synthesizeScrollGesture`) at Chromium 155.0.8059.84, documentation-held and runtime-unmeasured: `corpus/knowledge/chromium-scroll-gesture-protocol-round-68.md` (cites S173; counter `.ufo/waves/round-68/w1/R68Exec3/check-c3-synthscroll-r68.mjs`). Moved from frontier to source-held; runtime delivery stays frontier.
 - SKILL.md instrument registry for the round-67 generation (seven instruments; `## Instrument registry — round 68`) and canonical gate rows for the round-68 gates (`## Round 68 gate registry`).
 - Adjudication gate for the round-66 sibling-overlap worksheet, hardened against lane self-adjudication, off-line quotes and degenerate quotes (lesson: `corpus/lessons/round-68.md`); the 49 contested rows remain pending non-author adjudication, and the operator ruling on the adjacency axis is still open.
+
+## Round 69 coverage (2026-11-06)
+
+- `Input.synthesizeScrollGesture` runtime delivery on Chromium 155/Linux headless (frontier → core, capability `chromium-synth-scroll-gesture-linux`): `corpus/knowledge/chromium-synth-scroll-gesture-runtime-round-69.md` (S174, S173); evidence `corpus/evidence/round69/chromium-synth-scroll-gesture/`. Touch-source scrolling stays frontier (measured non-scroll on desktop metrics, cause unexplained).
+- Sibling boundary matrix in `PROVINCE.md` (`## Adjacent — sibling matrix (round 69)`), 20 lanes at a frozen snapshot; contested scope named, not absorbed.

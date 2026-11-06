@@ -167,3 +167,38 @@ It is experimental evidence, not a newly admitted capability: the frozen
 counter's declared M5 mutation survived its selftest (round-62 lesson). No
 real-site interaction, keyup-value ruling or sibling-overlap ownership is
 added to the core province.
+
+## Adjacent — sibling matrix (round 69)
+
+One row per sibling lane, pinned to the frozen snapshot
+`.ufo/waves/round-69/c1/sibling-heads-r69.tsv` (captured 2026-11-06T15:46 -03:00).
+Each row names the relation tabi holds with that lane, a sibling `path:line` at the
+pinned head whose text carries the quote, and tabi's side of the boundary. Contested
+rows are reported for the integrator to arbitrate; tabi absorbs nothing from them.
+Gate: `node scripts/check-sibling-matrix-r69.mjs --province PROVINCE.md --snapshot
+.ufo/waves/round-69/c1/sibling-heads-r69.tsv --fleet <fleet root> --json` (binds the
+citations, inbound reciprocity and outbound routing; the relation label itself is
+tabi's judgment).
+
+| lane | relation | head | cite | quote | tabi side |
+|---|---|---|---|---|---|
+| audio | none | f9da7ee97e0ba95da1803c2afe9c616c519bae18 | PROVINCE.md:3 | game audio production — SFX (UI, impacts, movement, ambience) and | tabi holds no audio production ground; no shared surface. |
+| chousa | adjacent | 378fda82dc2cbcc555a0565052cc408121813cef | PROVINCE.md:5 | question framing; source hierarchy (primary / secondary / aggregator / | tabi opens web sources under chousa's research method and keeps only its own SOURCES rows and browser findings. |
+| game-dev-2d | none | 1e033ef053beedf9a201daa21fbeb9c8b2f72dc3 | PROVINCE.md:3 | 2D game production verified by executable headless fixtures | Its headless fixtures are Godot runs, not browsers; no shared surface. |
+| game-dev-3d | none | 39ca3973c7865456d97fae18033f3f460c6cf8c1 | PROVINCE.md:3 | 3D game production verified by executable headless fixtures — 3D | Its headless fixtures are Godot runs, not browsers; no shared surface. |
+| kagi | contested | f5977284a8ce5bab09252be8196ee5dc18489926 | PROVINCE.md:64 | CDP 9222 + ~/.local/share/the-musketeer/chrome-profile — **contested with kake** | tabi's CDP session discipline touches the musketeer 9222 lease; tabi never reads that profile's session material and leaves the lease with the integrator. |
+| kaidoku | contested | 0b518f568da7b40a4ab026508d63c942faa7badf | PROVINCE.md:55 | self-launched targets: chromium --headless --remote-debugging-port=9222 | Both lanes self-launch Chromium over loopback CDP and inspect pages: kaidoku for reverse engineering, tabi for interaction evidence; tabi refuses forensics to kaidoku and reports the shared CDP ground (raised by the round-69 connector seat). |
+| kake | contested | dd7a146df338ec3de07a88f08f36c8278760afec | PROVINCE.md:45 | The the-musketeer Chrome profile lease is contested scope (kagi/tabi/kake) | tabi drives browsers and owns client-side crawler discipline (kake PROVINCE.md:40); publishing and publisher-side placement stay kake's; the lease stays with the integrator. |
+| kama | none | 9b4c7af16fdd4bba9e4815f4615f4b003f340747 | PROVINCE.md:3 | local model serving & endpoint health — local LLM endpoints, baseURL | tabi drives browsers, never model endpoints; no shared surface. |
+| kasegi | none | d16d2124fd5262f5a8088aa598f1e628f897d3ab | PROVINCE.md:52 | Live-target testing is refused; this corpus is documentation only. | kasegi refuses live-target testing and tabi never drives a browser against a bounty target; no shared surface. |
+| kengaku | adjacent | 34b28c47bc38b4e0aa11f44f2dfe7c9470d551ac | PROVINCE.md:103 | **tabi** scripts/check-measurement-binding.mjs:575-613 and **kama** | kengaku cites tabi's measurement-binding ancestor check as a shared primitive; nothing is absorbed either way and the instrument stays tabi's. |
+| kotoba | adjacent | 0344ddaea831b92546360a55ae02db2654fbccf8 | PROVINCE.md:76 | tabi owns browser-session and web-interaction evidence (PROVINCE.md:6-13) | kotoba owns SKILL.md wording craft fleet-wide; the browser content of tabi's SKILL.md stays tabi's. |
+| kotodama | none | 5fa04a9bbda25aa31c8270265fd9997eb97d9ebb | PROVINCE.md:3 | linguistic-cultural worldbuilding (言霊, kotodama — the coupling | tabi holds no worldbuilding ground; no shared surface. |
+| kumitate | contested | 814068f08c523f57055840b694a53f875a753cbf | PROVINCE.md:14 | Kimi Code substrate ~/.kimi-code/ — rows K1–K5, gated by scripts/kimi-census.mjs | tabi's primary substrate, the kimi-webbridge plugin under ~/.kimi-code/plugins/managed/, sits inside kumitate's censused path; reported for the integrator, not resolved here. |
+| lore | none | 0f044aa7c7e4e17cfd5b6278179709b60db45d61 | PROVINCE.md:3 | fictional-world records — entities (characters, places, factions, items), relations, timeline events | tabi holds no fictional-world ground; no shared surface. |
+| mado | none | 24ba2a9ddac21c1211579231e6ee1d98963f9988 | PROVINCE.md:3 | desktop & compositor craft — the Hyprland/waybar/walker | tabi runs headless throwaway-profile browsers, never the desktop or compositor; no shared surface. |
+| mori | none | 7765969c79e6f3df44cce2e303e6a0cf2b054d8b | PROVINCE.md:3 | fleet & host observability (森) — whether the fleet, its waves and | tabi observes pages, not fleet liveness; no shared surface. |
+| revenger | contested | 654d09298960d0886274d37a0492b8e6d98b2c96 | PROVINCE.md:33 | loopback CDP endpoint for REA's rea-cdp-browser provider (rea list-browser-targets, | Both lanes drive loopback CDP browser targets: revenger for REA forensic inspection, tabi for interaction evidence; tabi refuses forensics and reports the overlap. |
+| souji | none | e063a2fcb3f5f3fb8fb19d2ae1592b1f22e6a333 | PROVINCE.md:3 | fleet repository & workspace hygiene (掃除) — receipt-gated | tabi cleans only its own scratch; no shared surface. |
+| tameshi | adjacent | f256302b394ae3253df014fe1131e2c20e2c16b6 | PROVINCE.md:14 | product domains — every lane's gate remains its own; tameshi | tabi's counters and forgery batteries are its own gates; the reusable fixture and mutation method is tameshi's. |
+| tsukuroi | none | 64f45b790f2dbbf63b9b343c47810118a79f7a35 | PROVINCE.md:3 | host operability & system repair (繕, mending) — the OS | tabi uses the installed /usr/bin/chromium and never repairs packages or host state; no shared surface. |
