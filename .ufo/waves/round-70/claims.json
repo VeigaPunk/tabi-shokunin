@@ -1,0 +1,75 @@
+{
+ "lane": "tabi",
+ "round": 70,
+ "attempt": 1,
+ "base": "90b9ff045542651fb59814fe32f73fee0d1d8243",
+ "preFreezeControlsCommit": "b5d77c4ca628c08954c6ffea0e82dcaf06e54de9",
+ "frozenAt": "the lane commit that adds this file; its parent is preFreezeControlsCommit. The freeze hash and instrument digests are recorded in .ufo/waves/round-70/freeze.txt by the next commit, before any scored run",
+ "priorRound": "r69 admitted (MANIFEST rounds[1423]); its spotcheck corpus/lessons/round-69-verifier-spotcheck.md routes R1 (both r69 counters prove form only; a fabricated-but-consistent receipt greens C2) and R2-R6. No fresh-start obligation this round.",
+ "axesAtStart": {
+  "adjacency": 9,
+  "coverage": 9,
+  "depth": 9,
+  "operability": 9,
+  "freshness": 9,
+  "calibration": 9
+ },
+ "lowestAxis": "all six tie at 9; C1 (coverage) and C2 (operability) each work a lowest axis",
+ "stagnationNudge": "not applicable: capability chromium-synth-scroll-gesture-linux entered at r69, inside the window of 3",
+ "pins": {
+  "scripts/chrome-cdp-synthtap-round70.mjs": "704efab816e9bd9cc38cb31dd219aa776f7be52815a17cf1ea68924b6dff9577",
+  "scripts/check-synthtap-r70.mjs": "a2ed7619ca6ea165a3877308c3d87c41a27f6b2a7f24a7fca4f879073a39756e",
+  "scripts/negatives-synthtap-r70.mjs": "see freeze.txt",
+  "scripts/verify-live-r70.mjs": "see freeze.txt",
+  "scripts/chrome-cdp-synthscroll-round69.mjs": "13ea3f8ae67fb7761a94c4763e575c9ee487905dd9b405d916d55fca562abce3",
+  "scripts/check-synthscroll-r69.mjs": "c1b3763c9781ad4cebd26d5298de46529258c4fe40b54cd2c6c62080492da795"
+ },
+ "claims": {
+  "C1": {
+   "axis": "coverage",
+   "type": "capability acquisition: chromium-synth-tap-gesture-linux",
+   "surface": "Input.synthesizeTapGesture runtime delivery on Linux Chromium 155 (no prior tabi note, receipt or capability row covers the tap command; the lane held only the scroll/wheel input surfaces)",
+   "sourced": "S175 (new this round: Chromium 155.0.8059.84 content/common/input/synthetic_tap_gesture.cc, staged .ufo/waves/round-70/sources/synthetic_tap_gesture.cc sha256 ac27658fe7199e01f210bbfb29613ab99a7720fe8e2ecdb100b1a2d3672bd331) + S173 Input.pdl:318-330 + S174 input_handler.cc:2252-2304",
+   "countingCommand": "node scripts/check-synthtap-r70.mjs --receipt corpus/evidence/round70/chromium-synth-tap-gesture/receipt.json --expect-driver-sha256 704efab816e9bd9cc38cb31dd219aa776f7be52815a17cf1ea68924b6dff9577 --json",
+   "before": {
+    "rev": "90b9ff045542651fb59814fe32f73fee0d1d8243",
+    "exit": 2,
+    "finding": "receipt-unreadable (no committed tap runtime evidence)",
+    "receipt": ".ufo/waves/round-70/controls/c1/donothing-no-receipt.out",
+    "liveReceipt": ".ufo/waves/round-70/controls/c1/donothing-live-no-evidence.out (verify-live-r70 --profile synthtap-r70 exit 1, evidence-counter)"
+   },
+   "predicate": "C1-SYNTHTAP-LIVE: (a) the counting command exits 0 (verdict clean) on the committed scored receipt produced after the freeze by the pinned driver; (b) `node scripts/verify-live-r70.mjs --profile synthtap-r70 --scratch <ABS> --json` exits 0 (predicate true, pinSource frozen: two cold live runs on verifier-drawn nonces and ports, both counter-clean, cross-run and evidence fingerprints agree) once by the L1 after the scored receipt is committed and once by an independent wave seat; (c) `node scripts/negatives-synthtap-r70.mjs --real <scored receipt> --expect-driver-sha256 704efab8... --work <ABS> --laundered <the three committed degenerate receipts> --json` exits 0 (every case refused for its expected id, positive clean, coverageGap empty); (d) the SCORECARD capabilities table carries the row and a knowledge note cites S175.",
+   "doNothingControl": "no receipt: counter exit 2; live verifier with no committed evidence: exit 1 evidence-counter; degenerate drivers js-click / dispatch-mouse / skip-touch: driver exit 1 and counter exit 1 (controls/c1/)",
+   "forgeryControls": "negatives battery on the smoke1 receipt (controls/c1/negatives-battery.out): one negative per declared counter check id, plus three laundered degenerate receipts (degenerate flag cleared, producer verdict forged CONFIRMED, legShape recomputed by the counter itself); forger-rewrite through the live verifier refused (run-binding findings) while the receipt counter alone accepts the same forged receipt (controls/c1/counter-accepts-rewrite: the counter's declared limit)",
+   "kill": [
+    "any pinned instrument byte (freeze.txt) changes after the freeze: killed, never amended",
+    "the scored run is red: no further scored runs to fish for green",
+    "any predicate leg (a)-(d) false at the lane tip"
+   ],
+   "limit": "the receipt counter is not an execution oracle (controls/c1/counter-accepts-rewrite exits 0 on a rewritten replay); live re-derivation is leg (b), where a receipt passes only if it names the executed binary and that binary is the frozen driver (controls/c2/forger-rewrite-full-lying and -honest both refused; an override run is never a pass, controls/c2/override-copy-of-frozen exit 4). The verifier re-derives on this host's Chromium only.",
+   "scoreIfVerified": "coverage held at 9 (10 means every PROVINCE surface explored; real-site ground stays operator-gated); the capability row is the measured movement"
+  },
+  "C2": {
+   "axis": "operability",
+   "surface": "a runnable live re-derivation command for the held r69 capability chromium-synth-scroll-gesture-linux, whose only evidence today is a committed receipt read by a form-only counter (r69 closure routed defect R1); the r64/r67 capabilities already have verify-live-r64/r67, r69 has none",
+   "countingCommand": "node scripts/verify-live-r70.mjs --profile synthscroll-r69 --scratch <ABS dir> --json",
+   "before": {
+    "rev": "90b9ff045542651fb59814fe32f73fee0d1d8243",
+    "exit": 1,
+    "finding": "MODULE_NOT_FOUND (no live verifier for the r69 capability at base)",
+    "receipt": ".ufo/waves/round-70/controls/c2/donothing-base.err"
+   },
+   "predicate": "C2-LIVE-R69: (a) the counting command exits 0 with predicate true and pinSource frozen on the lane tip, run by the L1 after the freeze; (b) the same command exits 0 for one independent wave seat on its own scratch; (c) the committed pre-freeze controls hold at the frozen verifier bytes (`node .ufo/waves/round-70/controls/evaluate-controls.mjs` exit 0, every c2 row holding): base exit 1 MODULE_NOT_FOUND; --no-run exit 1; tampered driver exit 2 driver-pin; forger-replay / forger-rewrite exit 1 with run-binding findings; forger-rewrite-full-lying exit 1 run-a/b-driverDigest; forger-rewrite-full-honest exit 1 counter-a/b; override-copy-of-frozen exit 4 (an override run is never a pass); degenerate js-scroll/dispatch-wheel/skip-touch wrappers exit 1 counter-a/b; scratch-too-long exit 2; positive exit 0 -- while the r69 counter alone exits 0 on the forger-rewrite receipt (controls/c2/r69-counter-accepts-rewrite).",
+   "doNothingControl": "base: verifier absent, exit 1 MODULE_NOT_FOUND; --no-run: exit 1 no-run; the existing r69 counter accepts a rewritten replay (exit 0), so the capability's evidence cannot reject it without this command",
+   "kill": [
+    "any pinned instrument byte changes after the freeze",
+    "scored verifier run (a) not exit 0: no re-runs to fish",
+    "any committed forgery control's observed exit differs from its expected exit"
+   ],
+   "limit": "the verifier re-derives on this host's Chromium only; it trusts the frozen driver's own receipt fields (nonce, ports, events) once the executed binary is the frozen driver -- the pin is the root of trust, as in r64/r67",
+   "scoreIfVerified": "operability held at 9 with the measured movement recorded (0 -> 1 runnable live verifier for the r69 capability; forgery discrimination: r69 counter accepts the rewrite forgery, verifier refuses it)"
+  }
+ },
+ "exploratory": "none",
+ "frontier": "S175 opened this round (sourced claim C1); one mistake mined into corpus/lessons/round-70.md; census start exit 0 (174 rows, .ufo/waves/round-70/census/start.txt)"
+}
