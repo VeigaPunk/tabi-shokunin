@@ -1,0 +1,74 @@
+{
+ "lane": "tabi",
+ "round": 71,
+ "attempt": 1,
+ "base": "11b00f644f5af1a4f7827da6956732e0b91023a5",
+ "preFreezeControlsCommit": "711a38c24d9220fa93599b72d901bc1846a3087a",
+ "frozenAt": "the lane commit that adds this file; the freeze hash and instrument digests are recorded in .ufo/waves/round-71/freeze.txt by the next commit, before any scored run",
+ "priorRound": "r70 admitted (MANIFEST rounds[1439]); its spotcheck corpus/lessons/round-70-verifier-spotcheck.md routes R1 (verify-live-r70 is not an execution oracle: inherited NODE_OPTIONS, pin-read/spawn TOCTOU, wallMs unchecked), R2 (falsified C1 limit sentence needs a named correction entry), R3 (form-only counter; battery proves id coverage not kill power), R4 (drivers lack a child-exit listener), R5 adjacency carry-overs, R6 registry rows / results status. No fresh-start obligation this round.",
+ "axesAtStart": { "adjacency": 9, "coverage": 9, "depth": 9, "operability": 9, "freshness": 9, "calibration": 9 },
+ "lowestAxis": "all six tie at 9; C1 (coverage) and C2 (operability) each work a lowest axis",
+ "stagnationNudge": "not applicable: capability chromium-synth-tap-gesture-linux entered at r70, inside the window of 3",
+ "pins": {
+  "scripts/chrome-cdp-synthpinch-round71.mjs": "5318780cc13664f36a41d33024a500b5a5b2a8a3737d39489990fd98084922af",
+  "scripts/check-synthpinch-r71.mjs": "310fac05b3cb50ee97eff92197467d0f650fb9c17f898c3267c8054b7eef176c",
+  "scripts/negatives-synthpinch-r71.mjs": "830bbb0d33f8286dca94e0dc8003e5a8184a3ca59cf949200be0d0579fe3d14a",
+  "scripts/verify-live-r71.mjs": "61f43596e28fdec78b275de495f252f7881ce9882b9079d7191d84413c73f333",
+  "scripts/verify-live-r70.mjs": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  ".ufo/waves/round-71/controls/c2/attack-harness.mjs": "33e1bd1b98cfcb2748bf0e521a26f9df4d29c63173f348aa8ebe08392d224512",
+  ".ufo/waves/round-71/controls/c2/evaluate-c2.mjs": "3c3a83dcb37e2fbe048e9206b92567ae7d1e54c73095c1a8fcd82afd1c778716",
+  ".ufo/waves/round-71/controls/c1/kill-power.mjs": "b86fc3d79f9f974e065238cd56d2ae6427aa4359f864b0f1ecd233e22a557b1e",
+  ".ufo/waves/round-71/controls/c1/evaluate-c1-controls.mjs": "e34cbf2bd33ec3a275c5360d6cd3ee03d53db40434c4d136ecc243b5e4a749ef"
+ },
+ "claims": {
+  "C1": {
+   "axis": "coverage",
+   "type": "capability acquisition: chromium-synth-pinch-gesture-linux",
+   "surface": "Input.synthesizePinchGesture runtime delivery on Linux Chromium 155 headless (no prior tabi note, receipt or capability row covers the pinch command; the lane holds the scroll (r69) and tap (r70) synthetic gestures only): mouse/default pinches become trusted ctrl+wheel events that change the visual-viewport page scale, touch pinches become two-finger touch sequences, scaleFactor 1 is a no-op, scaleFactor 0 never finishes",
+   "sourced": "S176 (new: synthetic_pinch_gesture.cc, default source dispatch), S177 (new: synthetic_touchpad_pinch_gesture.cc, duration and early finish), S178 (new: synthetic_touchscreen_pinch_gesture.cc, two-pointer geometry) -- all Chromium 155.0.8059.84, staged .ufo/waves/round-71/sources/ -- plus S173 Input.pdl:272-284 and S174 input_handler.cc:2093-2136, 295-305 (re-opened this round, digests unchanged)",
+   "countingCommand": "node scripts/check-synthpinch-r71.mjs --receipt corpus/evidence/round71/chromium-synth-pinch-gesture/receipt.json --expect-driver-sha256 5318780cc13664f36a41d33024a500b5a5b2a8a3737d39489990fd98084922af --json",
+   "before": {
+    "rev": "11b00f644f5af1a4f7827da6956732e0b91023a5",
+    "exit": 2,
+    "finding": "receipt-unreadable (no committed pinch runtime evidence)",
+    "receipt": ".ufo/waves/round-71/controls/c1/donothing-no-receipt.out"
+   },
+   "predicate": "C1-SYNTHPINCH: (a) the counting command exits 0 (verdict clean, 87 checks) on the committed scored receipt produced after the freeze by the pinned driver; (b) an independent wave seat runs the pinned driver once cold with its own nonce and ports and the pinned counter exits 0 on that receipt against the frozen driver digest; (c) `node scripts/negatives-synthpinch-r71.mjs --real <scored receipt> --expect-driver-sha256 5318780c... --work <ABS> --laundered <the three committed degenerate receipts> --json` exits 0 (positive clean, every case refused for its expected id with no undeclared co-firing id, coverageGap empty) AND `node .ufo/waves/round-71/controls/c1/kill-power.mjs --real <scored receipt> ...` exits 0 (every one of the 87 single-check mutants killed); (d) the SCORECARD capabilities row chromium-synth-pinch-gesture-linux and a knowledge note citing S176-S178 are committed. All four at the lane tip.",
+   "doNothingControl": "no receipt: counter exit 2 receipt-unreadable (controls/c1/donothing-no-receipt.*); degenerate drivers dispatch-wheel / set-scale / skip-touch: driver exit 1, counter exit 1 with their expected ids, receipts labelled with their own degenerate kind (controls/c1/degenerate-*; evaluator controls/c1/evaluate-c1-controls.mjs 4/4 hold)",
+   "forgeryControls": "battery on the pre-freeze smoke receipt (controls/c1/negatives-battery-smoke1.json): 107/107, 98 isolated, the three laundered degenerate receipts refused; kill power on the same receipt: 87/87 single-check mutants killed (controls/c1/kill-power-smoke1.json)",
+   "kill": [
+    "any pinned instrument byte (freeze.txt) changes after the freeze: killed, never amended",
+    "the scored run is red: no further scored runs to fish for green",
+    "any predicate leg (a)-(d) false at the lane tip"
+   ],
+   "limit": "the counter reads a receipt; it is not an execution oracle. The capability is demonstrated on this host's Chromium 155 headless with a desktop (mobile:false) viewport; touch pinches are measured to deliver touch sequences without changing page scale on this configuration, which is a host observation, not a claim about mobile emulation.",
+   "scoreIfVerified": "coverage held at 9 (10 means every PROVINCE surface explored); the capability row is the measured movement"
+  },
+  "C2": {
+   "axis": "operability",
+   "surface": "the execution path of the lane's live re-derivation command: verify-live-r70 (r70 C2) executes whatever file sits at the lane path after its pin read and hands its inherited environment to every child, so a same-user attacker greens it without re-deriving anything (r70 closure R1, R70Critic attacks A and B). verify-live-r71 is a new generation for the same two profiles that executes a private snapshot of the hashed bytes under an allow-listed environment, refuses loader-injection variables, re-hashes the snapshot, and checks a wall floor and the driver's stdout against its receipt",
+   "countingCommand": "node .ufo/waves/round-71/controls/c2/attack-harness.mjs --lane <ABS lane> --verifier verify-live-r71.mjs --work <ABS short scratch> --out <ABS dir>; then node .ufo/waves/round-71/controls/c2/evaluate-c2.mjs --summary <dir>/summary.json --json",
+   "before": {
+    "rev": "11b00f644f5af1a4f7827da6956732e0b91023a5",
+    "falsePass": 4,
+    "evaluatorExit": 1,
+    "receipt": ".ufo/waves/round-71/controls/c2/pre-r70/summary.json (verify-live-r70: A-env-tap, A-env-scroll, B-swap-tap, C-swap-run-b-tap all FALSE-PASS; positives exit 0) and .ufo/waves/round-71/controls/c2/donothing-r70-bytes/ (the r70 bytes installed under the r71 name: falsePass 4, evaluator exit 1)"
+   },
+   "predicate": "C2-EXEC-BOUND: (a) evaluate-c2.mjs exits 0 (holds) on a harness summary produced after the freeze by the L1 against verify-live-r71.mjs: falsePass 0, notLanded 0, P-tap and P-scroll exit 0, A-env-tap and A-env-scroll REFUSED with env-injection, B-swap-tap HONEST-PASS, C-swap-run-b-tap REFUSED with snapshot-mutated; (b) the same holds on a harness summary produced by an independent wave seat; (c) `node scripts/verify-live-r71.mjs --profile synthscroll-r69` and `--profile synthtap-r70` each exit 0 (predicate true, pinSource frozen) in a clean environment by the L1 after the freeze; (d) the pre-freeze controls hold: the r70 bytes score falsePass 4 (evaluator exit 1), blanket-refuse and blanket-accept verifiers both evaluate false, --no-run exits 1.",
+   "doNothingControl": "the r70 verifier bytes installed as verify-live-r71.mjs (no work): falsePass 4, evaluator exit 1 (controls/c2/donothing-r70-bytes.eval.json)",
+   "forgeryControls": "blanket-refuse verifier: positives REFUSED, evaluator exit 1 (controls/c2/blanket-refuse.eval.json); blanket-accept verifier: env attacks HONEST-PASS, swap attacks NOT-LANDED, evaluator exit 1 (controls/c2/blanket-accept.eval.json); pre-freeze r71 run: evaluator exit 0 (controls/c2/pre-r71.eval.json)",
+   "kill": [
+    "any pinned instrument byte (freeze.txt) changes after the freeze: killed, never amended",
+    "a scored harness run that does not hold: reported, no re-run to fish for green",
+    "any predicate leg (a)-(d) false at the lane tip"
+   ],
+   "limit": "same-user tampering is narrowed, not excluded: a process that rewrites the snapshot and restores it between two hash reads, patches the verifier file itself, or runs inside the verifier process is out of this predicate's reach; the harness measures exactly the four named attacks.",
+   "scoreIfVerified": "operability held at 9; the measured movement is false passes 4 -> 0 on the named attacks with both positives intact"
+  }
+ },
+ "exploratory": "none",
+ "frontier": {
+  "sourcedClaim": "C1 rests on S176-S178, opened this round",
+  "mistakeMined": "corpus/lessons/round-71.md ## Mistakes"
+ }
+}
