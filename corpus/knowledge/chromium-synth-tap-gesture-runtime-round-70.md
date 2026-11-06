@@ -33,7 +33,7 @@ pre-freeze smoke runs and two cold verifier runs (`.ufo/waves/round-70/controls/
    `duration:400` gives 400 ms. S175 holds the release in `WAITING_TO_RELEASE` until
    `timestamp - start_time_ >= GetDuration()` (lines 112-116); `duration:0` releases in the same
    step (lines 99-106).
-2. **`tapCount:2` is not a double-click.** The PDL comment says "e.g. 2 for double tap"
+2. **`tapCount:2` is not a double-click (plain mouse source, no touch emulation).** The PDL comment says "e.g. 2 for double tap"
    (S173 Input.pdl:326), but the page gets two separate clicks, each `detail:1`, and no
    `dblclick`. The handler queues one new `SyntheticTapGesture` per tap (S174 lines 2297-2304),
    and each gesture creates its own pointer driver on first use (S175 lines 51-53).
@@ -42,6 +42,10 @@ pre-freeze smoke runs and two cold verifier runs (`.ufo/waves/round-70/controls/
    that explanation. To get a real double-click, use `Input.dispatchMouseEvent` with
    `clickCount:2` on the second press: the round-70 control run with that producer produced
    `detail:2` and a `dblclick` (`.ufo/waves/round-70/controls/c1-receipts/degenerate-dispatch-mouse.json`).
+   Scope limit (wave probe R70Exec3, `.ufo/waves/round-70/w1/R70Exec3/report.md`, 24 variants × 2
+   passes): `tapCount:3` gives `[1,1,1]`; but with `Emulation.setEmitTouchEventsForMouse({enabled:true,
+   configuration:'mobile'})` a mouse-source `tapCount:2` arrives as converted touch taps 116.7 ms
+   apart and yields click details `[1,2]` and a `dblclick` — there the count follows tap timing.
 3. **No `gestureSourceType` means touch, not "the platform default".** The PDL says the default
    "queries the platform for the preferred input type" (S173 Input.pdl:328-329). The tap
    gesture's constructor rewrites `kDefaultInput` to `kTouchInput` before that query runs
@@ -51,11 +55,17 @@ pre-freeze smoke runs and two cold verifier runs (`.ufo/waves/round-70/controls/
 4. **A synthetic touch tap does not click on this host.** Pointer and touch events arrive,
    `click` does not. A raw `Input.dispatchTouchEvent` start/end pair does produce a `click`
    (`degenerate-dispatch-mouse.json`, touch legs). So a test that needs a click must use the
-   mouse source. Why the synthetic touch path produces no click is not established here.
-5. **`tapCount:0` succeeds with no input** (S174 lines 2285-2289: `if (!count)` sends success
+   mouse source. R70Exec3 measured the same no-click result with touch emulation on, with
+   `mobile:true` metrics, with both, with `duration:0` and with `tapCount` 1-3; a click came only
+   from `Input.dispatchTouchEvent` or from a mouse-source tap converted by
+   `setEmitTouchEventsForMouse`. Why the synthetic touch path produces no click is not
+   established from source here.
+5. **`gestureSourceType:'pen'` is refused**: CDP `-32602 "Unknown gestureSourceType"`, no page
+   events (R70Exec3; S174 lines 2277-2282 send that error when the string does not map).
+6. **`tapCount:0` succeeds with no input** (S174 lines 2285-2289: `if (!count)` sends success
    at once). A driver that checks only the CDP response cannot tell a zero-tap call from a real
    tap.
-6. **Out-of-view coordinates fail loudly.** `x:5000` in a 1280-wide view returns
+7. **Out-of-view coordinates fail loudly.** `x:5000` in a 1280-wide view returns
    `-32602 Position out of bounds` (S174 lines 2270-2273) and no event reaches the page.
 
 ## How to tell the gesture from a look-alike
@@ -75,13 +85,14 @@ the pinned driver twice and refuses that replay.
 Chromium makes its singleton Unix socket at `$TMPDIR/org.chromium.Chromium.XXXXXX/SingletonSocket`.
 The lane's drivers set `TMPDIR` to their scratch directory. When that path is longer than the
 107-byte socket-path limit, Chromium stops with `FATAL … process_singleton_posix.cc:313] Socket
-path too long` on stderr. The round-69 driver then waits about 240 s for a page target before
-failing (`no loopback page target`), observed in the round-70 control run before the verifier
-gained its scratch-length guard (lesson `corpus/lessons/round-70.md`, Mistakes). Keep scratch
+path too long` on stderr. Both the round-69 and the round-70 drivers then wait about 240 s for a
+page target (a 1600 × 150 ms poll with no child-exit listener) before failing (`no loopback page
+target`), observed in the round-70 control run before the verifier gained its scratch-length
+guard. R70Exec4 measured the boundary: `TMPDIR` of 62 bytes works (socket 107 bytes), 63 bytes
+fails in about 150 ms with SIGABRT (`.ufo/waves/round-70/w1/R70Exec4/report.md`) (lesson `corpus/lessons/round-70.md`, Mistakes). Keep scratch
 paths short.
 
 ## Not established
 
-- Behaviour with touch emulation or mobile metrics enabled (a wave probe, R70Exec3, reports
-  variants; see the round lesson).
+- Why the synthetic touch path never clicks (measured, not explained from source).
 - Any other Chromium version, headful mode, or a platform where the default source is mouse.

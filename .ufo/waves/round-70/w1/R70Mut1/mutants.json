@@ -1,0 +1,219 @@
+[
+ {
+  "id": "M01",
+  "line": 129,
+  "desc": "exit-code polarity inverted (clean->1, findings->0)",
+  "find": "findings.length === 0 ? 0 : 1",
+  "repl": "findings.length === 0 ? 1 : 0"
+ },
+ {
+  "id": "M02",
+  "line": 88,
+  "desc": "seq-monotonic relaxed == to >= (duplicate/gapped seq accepted)",
+  "find": "e.seq === i + 1",
+  "repl": "e.seq >= i + 1"
+ },
+ {
+  "id": "M03",
+  "line": 93,
+  "desc": "tap-call-count widened 7 to >=1",
+  "find": "taps.length === 7",
+  "repl": "taps.length >= 1"
+ },
+ {
+  "id": "M04",
+  "line": 123,
+  "desc": "producer-verdict conjunction && -> || (either half alone passes)",
+  "find": "r.predicate === true && r.synthTapHypothesis === 'CONFIRMED'",
+  "repl": "r.predicate === true || r.synthTapHypothesis === 'CONFIRMED'"
+ },
+ {
+  "id": "M05",
+  "line": 124,
+  "desc": "legshape-consistency polarity inverted",
+  "find": "canon(r.legShape) === canon(derived)",
+  "repl": "canon(r.legShape) !== canon(derived)"
+ },
+ {
+  "id": "M06",
+  "line": 124,
+  "desc": "legshape-consistency compares only the double leg",
+  "find": "canon(r.legShape) === canon(derived)",
+  "repl": "canon({ double: r.legShape && r.legShape.double }) === canon({ double: derived.double })"
+ },
+ {
+  "id": "M07",
+  "line": 116,
+  "desc": "no-dblclick drops contextmenu branch",
+  "find": "e.type !== 'dblclick' && e.type !== 'contextmenu' && e.type !== 'auxclick'",
+  "repl": "e.type !== 'dblclick' && e.type !== 'auxclick'"
+ },
+ {
+  "id": "M08",
+  "line": 114,
+  "desc": "coords drops the clientY half",
+  "find": "e.clientX === BTN.x && e.clientY === BTN.y",
+  "repl": "e.clientX === BTN.x"
+ },
+ {
+  "id": "M09",
+  "line": 77,
+  "desc": "server-log-binding widens served rows >=1 to >=0",
+  "find": "served.length >= 1",
+  "repl": "served.length >= 0"
+ },
+ {
+  "id": "M10",
+  "line": 95,
+  "desc": "lookalike regex drops Input.emulateTouch",
+  "find": "^Input\\.(dispatch|insertText|ime|emulateTouch)",
+  "repl": "^Input\\.(dispatch|insertText|ime)"
+ },
+ {
+  "id": "M11",
+  "line": 95,
+  "desc": "lookalike regex drops Input.insertText and Input.ime",
+  "find": "^Input\\.(dispatch|insertText|ime|emulateTouch)",
+  "repl": "^Input\\.(dispatch|emulateTouch)"
+ },
+ {
+  "id": "M12",
+  "line": 121,
+  "desc": "teardown drops sweepError === null conjunct",
+  "find": "td.postKillSweepCount === 0 && arr(td.survivors).length === 0 && td.sweepError === null",
+  "repl": "td.postKillSweepCount === 0 && arr(td.survivors).length === 0"
+ },
+ {
+  "id": "M13",
+  "line": 121,
+  "desc": "teardown drops postKillCurl.devtools === 7 conjunct",
+  "find": "&& td.postKillCurl.fixture === 7 && td.postKillCurl.devtools === 7",
+  "repl": "&& td.postKillCurl.fixture === 7"
+ },
+ {
+  "id": "M14",
+  "line": 121,
+  "desc": "teardown drops portProbes.devtools === 'closed' conjunct",
+  "find": "&& td.portProbes.fixture === 'closed' && td.portProbes.devtools === 'closed'",
+  "repl": "&& td.portProbes.fixture === 'closed'"
+ },
+ {
+  "id": "M15",
+  "line": 122,
+  "desc": "failures-empty tolerates an absent failures field",
+  "find": "Array.isArray(r.failures) && r.failures.length === 0",
+  "repl": "(!r.failures || r.failures.length === 0)"
+ },
+ {
+  "id": "M16",
+  "line": 75,
+  "desc": "scored-run-not-degenerate loose equality === null -> == null",
+  "find": "r.degenerate === null",
+  "repl": "r.degenerate == null"
+ },
+ {
+  "id": "M17",
+  "line": 94,
+  "desc": "tap-call-params compares only the first frozen params",
+  "find": "canon(taps.map((c) => c.params)) === canon(FROZEN.filter((l) => l.params).map((l) => l.params))",
+  "repl": "canon(taps.map((c) => c.params).slice(0, 1)) === canon(FROZEN.filter((l) => l.params).map((l) => l.params).slice(0, 1))"
+ },
+ {
+  "id": "M18",
+  "line": 80,
+  "desc": "host-chromium drops the cdpProduct regex (any product string passes)",
+  "find": "&& typeof host.cdpProduct === 'string' && /^HeadlessChrome\\/|^Chrome\\//.test(host.cdpProduct)",
+  "repl": "&& typeof host.cdpProduct === 'string'"
+ },
+ {
+  "id": "M19",
+  "line": 83,
+  "desc": "devtools-port-binding drops loopback+port binding of dl.url",
+  "find": "dl.url.startsWith('ws://127.0.0.1:' + argvPort + '/devtools/browser/')",
+  "repl": "dl.url.includes('/devtools/browser/')"
+ },
+ {
+  "id": "M20",
+  "line": 85,
+  "desc": "run-window upper bound widened 600000 -> 31536000000",
+  "find": "t1 - t0 < 600000",
+  "repl": "t1 - t0 < 31536000000"
+ },
+ {
+  "id": "M21",
+  "line": 127,
+  "desc": "unevaluated-check guard disabled (if (missing.length) -> if (false))",
+  "find": "if (missing.length)",
+  "repl": "if (false)"
+ },
+ {
+  "id": "M22",
+  "line": 46,
+  "desc": "CHECK_IDS drops no-lookalike-producer from the declared list",
+  "find": "'no-lookalike-producer', 'teardown-closure'",
+  "repl": "'teardown-closure'"
+ },
+ {
+  "id": "M23",
+  "line": 110,
+  "desc": "trusted missing-field tolerance (every ===true -> !some ===false)",
+  "find": "check(`leg-${name}-trusted`, evs.every((e) => e.isTrusted === true)",
+  "repl": "check(`leg-${name}-trusted`, !evs.some((e) => e.isTrusted === false)"
+ },
+ {
+  "id": "M24",
+  "line": 66,
+  "desc": "MOVES set drops touchmove",
+  "find": "['pointermove', 'mousemove', 'touchmove']",
+  "repl": "['pointermove', 'mousemove']"
+ },
+ {
+  "id": "M25",
+  "line": 34,
+  "desc": "hold timing band lower bound widened 395 -> 0",
+  "find": "timing: [395, 600]",
+  "repl": "timing: [0, 600]"
+ },
+ {
+  "id": "M26",
+  "line": 61,
+  "desc": "canon drops key sorting (order-sensitive comparison)",
+  "find": "Object.keys(x).sort()",
+  "repl": "Object.keys(x)"
+ },
+ {
+  "id": "M27",
+  "line": 64,
+  "desc": "check() bookkeeping poisoned: checks[id] = true",
+  "find": "checks[id] = !!ok;",
+  "repl": "checks[id] = true;"
+ },
+ {
+  "id": "M28",
+  "line": 89,
+  "desc": "event-leg-domain examines only the first event",
+  "find": "events.every((e) => e && LEG_ORDER.includes(e.leg))",
+  "repl": "events.slice(0, 1).every((e) => e && LEG_ORDER.includes(e.leg))"
+ },
+ {
+  "id": "M29",
+  "line": 111,
+  "desc": "leg-detail drops the button===0 conjunct",
+  "find": " && evs.filter((e) => e.type === 'mousedown' || e.type === 'mouseup').every((e) => e.button === 0)",
+  "repl": ""
+ },
+ {
+  "id": "M30",
+  "line": 113,
+  "desc": "leg-error accepts any error string (includes -> typeof string)",
+  "find": "(typeof leg.cdpError === 'string' && leg.cdpError.includes(want.error) && leg.skipped === false)",
+  "repl": "(typeof leg.cdpError === 'string' && leg.skipped === false)"
+ },
+ {
+  "id": "M31",
+  "line": 124,
+  "desc": "drop a check: legshape-consistency id renamed so the declared id is never evaluated",
+  "find": "check('legshape-consistency',",
+  "repl": "check('legshape-consistency-v2',"
+ }
+]

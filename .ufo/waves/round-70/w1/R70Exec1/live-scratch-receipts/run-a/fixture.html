@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><title>tabi-r70 synthtap fixture</title>
+<style>html, body { margin: 0; padding: 0; background: #fff; overflow: hidden; } #btn { position: absolute; left: 100px; top: 100px; width: 200px; height: 100px; margin: 0; padding: 0; border: 0; background: #08f; touch-action: manipulation; }</style>
+<script>
+window.__seq = 0; window.__leg = 'start'; window.__events = []; window.__nonceOnPage = null;
+const rec = function (e) {
+  window.__events.push({ type: e.type, seq: ++window.__seq, leg: window.__leg, ts: e.timeStamp,
+    pointerType: e.pointerType || null, isTrusted: e.isTrusted,
+    detail: typeof e.detail === 'number' ? e.detail : null, button: typeof e.button === 'number' ? e.button : null,
+    buttons: typeof e.buttons === 'number' ? e.buttons : null,
+    clientX: typeof e.clientX === 'number' ? e.clientX : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : null),
+    clientY: typeof e.clientY === 'number' ? e.clientY : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : null),
+    target: e.target && e.target.id ? e.target.id : (e.target && e.target.nodeName ? e.target.nodeName : null) });
+};
+for (const t of ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'mousedown', 'mousemove', 'mouseup', 'click', 'dblclick', 'auxclick', 'contextmenu', 'touchstart', 'touchmove', 'touchend', 'touchcancel'])
+  document.addEventListener(t, rec, { capture: true, passive: true });
+window.__setLeg = function (name) { window.__leg = name; return name; };
+document.addEventListener('DOMContentLoaded', function () { window.__nonceOnPage = document.getElementById('nonce').textContent; });
+</script></head><body><p id="nonce" style="position:fixed;left:0;top:0;margin:0;font:0/0 monospace">tabi-r70-live-c0940d9c31-a</p><button id="btn" type="button">tap</button></body></html>

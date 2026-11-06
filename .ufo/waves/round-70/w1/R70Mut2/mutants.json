@@ -1,0 +1,189 @@
+[
+ {
+  "name": "M01-digest-frozen-pin",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M01-digest-frozen-pin.mjs",
+  "sha256": "524eb3ece8ad412e5085416128c6838b7a9736f12214dc01a1de09e482346098",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-      driverDigest: !!r && r.driverSha256 === driverPin,",
+   "+      driverDigest: !!r && r.driverSha256 === prof.driverSha256,"
+  ]
+ },
+ {
+  "name": "M02-digest-drop",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M02-digest-drop.mjs",
+  "sha256": "b5dd7cada99f0ee3149dd8c877fb5a12a9edb7f7f9e3046ad34cbda9b1cf8722",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-      driverDigest: !!r && r.driverSha256 === driverPin,",
+   "+      driverDigest: true,"
+  ]
+ },
+ {
+  "name": "M03-counter-override-pin",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M03-counter-override-pin.mjs",
+  "sha256": "91b82ca0abaa2e5998ed6efe282c1c9d9d367f1c88266700662d4385f6cd979d",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-  const runCounter = (receipt, expectSha = prof.driverSha256) => {",
+   "+  const runCounter = (receipt, expectSha = driverPin) => {"
+  ]
+ },
+ {
+  "name": "M04-counter-drop",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M04-counter-drop.mjs",
+  "sha256": "85126cb8388c83d187ba0db332f4c48bf565fdde258a72caffc32249dd08e466",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-    if (c.exit !== 0) out.findings.push('counter-' + name);",
+   "+    if (false) out.findings.push('counter-' + name);"
+  ]
+ },
+ {
+  "name": "M05-evidence-counter-drop",
+  "tree": "e",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/e/scripts/mut-M05-evidence-counter-drop.mjs",
+  "sha256": "1ffa51d5f26c131b7c5c873e8ff2868ba09a3224ec421847d66ab9a7d47f7e1d",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-  if (ev.exit !== 0) out.findings.push('evidence-counter');",
+   "+  if (false) out.findings.push('evidence-counter');"
+  ]
+ },
+ {
+  "name": "M06-nonce-drop",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M06-nonce-drop.mjs",
+  "sha256": "70355caa4cca0d15320fa4aab338adb20067f90f1b5d1f98b50d717b3eb2120a",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-      nonce: !!r && r.nonce === nonce && r.nonceOnPage === nonce,",
+   "+      nonce: true,"
+  ]
+ },
+ {
+  "name": "M07-cdp-port-drop",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M07-cdp-port-drop.mjs",
+  "sha256": "0aa0ee54257287cce29b6aaf926929433c2bfc4216b25894512dbcb168adc2ad",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-      cdpPort: argvList.includes('--remote-debugging-port=' + cdpPort),",
+   "+      cdpPort: true,"
+  ]
+ },
+ {
+  "name": "M08-http-port-drop",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M08-http-port-drop.mjs",
+  "sha256": "0a0d0dfd80feb64fda238c2faba23cfd300c5bb56a55cdf555b743ac61060f39",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-      httpPort: !!r && typeof r.fixture?.origin === 'string' && r.fixture.origin === 'http://127.0.0.1:' + httpPort,",
+   "+      httpPort: true,"
+  ]
+ },
+ {
+  "name": "M09-cross-run-drop",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M09-cross-run-drop.mjs",
+  "sha256": "0de5405455e1aa01cea4427c19123b50128591a58eda57e2b24e4ac21399689a",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-    if (!(ra.host?.launchToken && rb.host?.launchToken && ra.host.launchToken !== rb.host.launchToken && ra.nonce !== rb.nonce)) out.findings.push('cross-run-identity');",
+   "+    if (false) out.findings.push('cross-run-identity');"
+  ]
+ },
+ {
+  "name": "M10-driver-pin-weaken",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M10-driver-pin-weaken.mjs",
+  "sha256": "9e442e8fdf1b59db00ee60a331632c8e5b9c971d22f773a6a6c5886ffeed24a6",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-  if (!/^[0-9a-f]{64}$/.test(driverPin) || out.driverSha256 !== driverPin) { out.findings.push('driver-pin'); return finish(2); }",
+   "+  if (!/^[0-9a-f]{64}$/.test(driverPin) || out.driverSha256 === null) { out.findings.push('driver-pin'); return finish(2); }"
+  ]
+ },
+ {
+  "name": "M11-counter-pin-drop",
+  "tree": "d",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/d/scripts/mut-M11-counter-pin-drop.mjs",
+  "sha256": "6628ea1a788984c6c26e19931995e01185ea747b27f15fd5e09e77e29732747f",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-  if (!/^[0-9a-f]{64}$/.test(prof.counterSha256) || out.counterSha256 !== prof.counterSha256) { out.findings.push('counter-pin'); return finish(2); }",
+   "+  if (!/^[0-9a-f]{64}$/.test(prof.counterSha256) || out.counterSha256 === null) { out.findings.push('counter-pin'); return finish(2); }"
+  ]
+ },
+ {
+  "name": "M12-scratch-guard-weaken",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M12-scratch-guard-weaken.mjs",
+  "sha256": "e7091ee956bf13fdc37b95e4417bf16008fe50ee2bef8025a0367434a47df0d8",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-  if (sockLen > 107) { out.findings.push('scratch-path-too-long'); console.error('usage: --scratch too long for Chromium\\'s singleton socket (' + sockLen + ' > 107 bytes)'); return finish(2); }",
+   "+  if (sockLen > 9999) { out.findings.push('scratch-path-too-long'); console.error('usage: --scratch too long for Chromium\\'s singleton socket (' + sockLen + ' > 107 bytes)'); return finish(2); }"
+  ]
+ },
+ {
+  "name": "M13-no-run-pass",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M13-no-run-pass.mjs",
+  "sha256": "72c5722fdd409feb82b8229bea3b4d98a97e3b92063f51dbfc785c6fe27536c5",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-  if (flags.has('no-run')) { out.findings.push('no-run'); out.note = 'no-run control: the target is unreachable without executing the pinned driver'; return finish(1); }",
+   "+  if (flags.has('no-run')) { out.findings.push('no-run'); out.note = 'no-run control: the target is unreachable without executing the pinned driver'; return finish(0); }"
+  ]
+ },
+ {
+  "name": "M14-override-is-pass",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M14-override-is-pass.mjs",
+  "sha256": "ab189c4bdae0636d6517a06cf453ce53b5147ed8465ba7b7fce26a023835b18e",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-  out.predicate = clean && out.pinSource === 'frozen';",
+   "+  out.predicate = clean;"
+  ]
+ },
+ {
+  "name": "M15-exit4-collapse",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M15-exit4-collapse.mjs",
+  "sha256": "7e8f3a421b9026c7d19d2ad7a5ad8f574d708ca77185dd3151ff46d34136f5f5",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-  return finish(out.predicate ? 0 : clean ? 4 : 1);",
+   "+  return finish(out.predicate ? 0 : clean ? 0 : 1);"
+  ]
+ },
+ {
+  "name": "M16-tap-fingerprint-weaken",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M16-tap-fingerprint-weaken.mjs",
+  "sha256": "1a2c3fdf47f6ef97ee1aad69ea8f89644f3bf653f28d7ec953ad2759e956f23e",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-          evs.filter((e) => e.type === 'click').map((e) => e.detail).join(','), l.cdpError === null ? null : String(l.cdpError).includes('Position out of bounds')];",
+   "+          l.cdpError === null ? null : String(l.cdpError).includes('Position out of bounds')];"
+  ]
+ },
+ {
+  "name": "M17-evidence-agreement-drop",
+  "tree": "s",
+  "file": "/fast/scratch/hyaku/tabi-r70/R70Mut2/s/scripts/mut-M17-evidence-agreement-drop.mjs",
+  "sha256": "1c209567ef36e242f6a05a0b55e1724dfdad7f2c4fbdcf95d2dae5e25392325e",
+  "pristine_sha256": "99442a2c385387148d12167072cafb764590def99ef0172e41c0f90ed75376b8",
+  "diff": [
+   "-  if (fa && fe) { out.agreement.evidence = JSON.stringify(fa) === JSON.stringify(fe); if (!out.agreement.evidence) out.findings.push('evidence-mismatch'); } else out.findings.push('evidence-unmeasurable');",
+   "+  if (fa && fe) { out.agreement.evidence = true; if (!out.agreement.evidence) out.findings.push('evidence-mismatch'); } else out.findings.push('evidence-unmeasurable');"
+  ]
+ }
+]

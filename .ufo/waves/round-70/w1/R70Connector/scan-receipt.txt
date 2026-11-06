@@ -1,0 +1,84 @@
+# R70Connector — sibling overlap scan receipt
+# generated: 2026-11-06T17:45:00  host: 7.2.11-arch1-1
+# cwd: /home/vgpnk/Projects/shokunin (read-only scan; only this wave dir written)
+# scanner B: rg -l --hidden --no-ignore -g '!.git' -g '!.jj' -g '!node_modules' -F -e <pat> <root>
+#            (gitignored evidence such as .ufo/ IS counted; this seat's own wave dir is excluded)
+# scanner A: grep -rIl --exclude-dir=.git --exclude-dir=.jj --exclude-dir=node_modules -e <pat> <root>
+
+## 1. Pattern x lane matrix, scanner B (file counts; tabi counts exclude this seat's own wave dir)
+pattern                     tabi  siblings  lanes
+synthesizeTapGesture         142         0  {}
+synthetic_tap                 15         0  {}
+dispatchTouchEvent            89         2  {'kotoba-shokunin': 2}
+tap gesture                   26         0  {}
+SingletonSocket               85        23  {'kagi-shokunin': 20, 'mado-shokunin': 2, 'souji-shokunin': 1}
+verify-live                  183        80  {'audio-shokunin': 1, 'kagi-shokunin': 1, 'kaidoku-shokunin': 63, 'kotoba-shokunin': 1, 'kotodama-shokunin': 1, 'kumitate-shokunin': 1, 'mado-shokunin': 5, 'souji-shokunin': 7}
+
+## 2. Controls for the C1 absence claim (scanner A, fleet-wide, one pass per pattern)
+pattern                         tabi  siblings
+synthesizeTapGesture             143         0
+synthetic_tap                     14         0
+tapCount                         167         0
+
+## 3. Pinned-head citation verification (git -C <lane> show <r69 head>:<path> | sed -n <n>p)
+--- kotoba @ 0344ddaea8 : .ufo/round-44/evidence/omp-live-18.12.2-strings.txt:1280609
+        await this.#i.send("Input.dispatchTouchEvent", {
+--- revenger @ 654d092989 : corpus/SOURCES.md:314
+    | S299 | Chrome DevTools Protocol (index / scope statement) — https://chromedevtools.github.io/devtools-protocol/ | spec | A | protocol framing (JSON commands/events, domains), support policy, snapshots (tip-of-tree, v8-inspector, stable @ Chrome 64). | sections "Scope and suppor
+--- game-dev-2d @ 1e033ef053 : corpus/fixtures/run_battery.py:1574
+        #     (coalesce); the engine never computes double_click for synthetic
+--- kagi @ f5977284a8 : corpus/knowledge/adjacency-breadth.md:128
+       Chrome `SingletonSocket` may point outside HOME without exposing its target;
+--- mado @ 24ba2a9dda : .ufo/waves/round-38/receipts/eventq-live-ss.txt:655
+    u_str LISTEN 0      5                                                    /tmp/org.chromium.Chromium.hWtu2i/SingletonSocket 189441249            * 0         users:(("chromium",pid=3173339,fd=14))
+--- kama @ 9b4c7af16f : corpus/knowledge/listener-census.md:56
+    | 8 | `127.0.0.1:9222` | session | `chrome` pid **3080080**, `--remote-debugging-address=127.0.0.1 --remote-debugging-port=9222` | `200` `text/html; charset=UTF-8` (**empty body**) | *(none)* | `404` text/html | `FOREIGN_SERVICE` | 2xx `text/html` (**verbatim rule**) | C1,C12 |
+--- kama @ 9b4c7af16f : corpus/knowledge/listener-census.md:100
+    | **omp session/agent ephemeral** | `45507, 46631, 43775, 44689, 41453, 41819, 34955` | `FOREIGN_SERVICE` ×7 | 7 `omp` pids, each a fleet/`ufo-fsd` L1–L2 session (see §1 rows 12–18) |
+--- kasegi @ d16d2124fd : .ufo/waves/round-67/w1/ExecMultiHeadDriver.md:13
+    - Pin manifest (authored): `.ufo/waves/round-67/controls/driver-pins.json` — file sha256
+--- mori @ 7765969c79 : .ufo/waves/round-23/falsify/RerunPinnedDriver.md:25
+    * driver sha256 `5c12fdc056309966d3e716d25e3427a7908056595383f0353655b42282fdfbcd`, identical to the
+--- kaidoku @ 0b518f568d : PROVINCE.md:55
+    | Runtime observation (CDP) | self-launched targets: `chromium --headless --remote-debugging-port=9222`, `xvfb-run electron --remote-debugging-port=9223`; `list_browser_targets`, `inspect-web-page`, `list_electron_targets`, `inspect-electron-page`, `capture-browser-scenario` | `l
+--- kotoba @ 0344ddaea8 : PROVINCE.md:76
+    | tabi | none | 856fa9e1202179f5cfbd28c1f0efdd4eb1f426bb | tabi owns browser-session and web-interaction evidence (PROVINCE.md:6-13) and refuses forensics, publishing and secrets to revenger, kaidoku, kake and kagi (PROVINCE.md:15-17); it states no split with kotoba on its scope 
+
+## 4. Head drift vs the r69 snapshot (.ufo/waves/round-69/c1/sibling-heads-r69.tsv)
+lane        snapshot                                  current                                   moved
+audio       f9da7ee97e0ba95da1803c2afe9c616c519bae18  f9da7ee97e0ba95da1803c2afe9c616c519bae18  
+chousa      378fda82dc2cbcc555a0565052cc408121813cef  03b586d1b8dc493623a2b758170307444bfc42be  YES
+game-dev-2d 1e033ef053beedf9a201daa21fbeb9c8b2f72dc3  1e033ef053beedf9a201daa21fbeb9c8b2f72dc3  
+game-dev-3d 39ca3973c7865456d97fae18033f3f460c6cf8c1  39ca3973c7865456d97fae18033f3f460c6cf8c1  
+kagi        f5977284a8ce5bab09252be8196ee5dc18489926  f01b729d00fe04e5d9530f802f44c812f873de9c  YES
+kaidoku     0b518f568da7b40a4ab026508d63c942faa7badf  0b518f568da7b40a4ab026508d63c942faa7badf  
+kake        dd7a146df338ec3de07a88f08f36c8278760afec  dd7a146df338ec3de07a88f08f36c8278760afec  
+kama        9b4c7af16fdd4bba9e4815f4615f4b003f340747  99cdb4d6270455494dd27901efe84a0f3b342062  YES
+kasegi      d16d2124fd5262f5a8088aa598f1e628f897d3ab  7ad3118c86ee14fde433d73671cc407668533cec  YES
+kengaku     34b28c47bc38b4e0aa11f44f2dfe7c9470d551ac  34b28c47bc38b4e0aa11f44f2dfe7c9470d551ac  
+kotoba      0344ddaea831b92546360a55ae02db2654fbccf8  0344ddaea831b92546360a55ae02db2654fbccf8  
+kotodama    5fa04a9bbda25aa31c8270265fd9997eb97d9ebb  5fa04a9bbda25aa31c8270265fd9997eb97d9ebb  
+kumitate    814068f08c523f57055840b694a53f875a753cbf  36277d499388c68ef2645d92f44e722d454c9820  YES
+lore        0f044aa7c7e4e17cfd5b6278179709b60db45d61  0f044aa7c7e4e17cfd5b6278179709b60db45d61  
+mado        24ba2a9ddac21c1211579231e6ee1d98963f9988  af998dcc41d48618ffe7afe0efc9354755a9244e  YES
+mori        7765969c79e6f3df44cce2e303e6a0cf2b054d8b  7765969c79e6f3df44cce2e303e6a0cf2b054d8b  
+revenger    654d09298960d0886274d37a0492b8e6d98b2c96  654d09298960d0886274d37a0492b8e6d98b2c96  
+souji       e063a2fcb3f5f3fb8fb19d2ae1592b1f22e6a333  0bf098dde7e6eafb62a9ce62b7c16a6291ee1e8e  YES
+tameshi     f256302b394ae3253df014fe1131e2c20e2c16b6  ff7a4b06c054bc3ef9cf52612e876629e83a6a14  YES
+tsukuroi    64f45b790f2dbbf63b9b343c47810118a79f7a35  3f56789829b84a97b2a8aa786618022195ef53cb  YES
+
+## 5. False-positive probes (each term, what it actually is)
+gesture          kotodama corpus/knowledge/linguistics/gesture-co-speech-pointing.md — linguistic co-speech gesture
+synthetic        fixture JSON in chousa/souji/mado — test-fixture sense
+isTrusted        game-dev-3d reports/round-102/sentinel-mcp.md:153 — VS Code workspace trust API
+dblclick         game-dev-2d corpus/fixtures/run_battery.py:1574-1575 — Godot arm name, comment is the analogue
+touch            kake source-wcag22.html (WCAG target size); kagi navigator.maxTouchPoints fixtures
+cdp-bridge       kagi corpus/knowledge/cdp-bridge-1password.md — 1Password broker, term collision
+Chrome           kake reports/round-70 "Chrome for Developers: CrUX" — docs source row
+verify-live      mado .ufo/waves/round-46/w1/ExecXkbCompile/verify-live.py — hyprctl live read, not a browser
+verify-live      souji census/operator-sweep-20261019/quarantine-mtimes-t0.tsv:3642 — /tmp file name
+107              kagi r16 / kama r26 reports — source id S107 and a sed range
+
+## 6. Unpinnable evidence
+souji census/operator-sweep-20261019/.staged.json is UNTRACKED at e063a2fc (git cat-file -e -> absent);
+its .org.chromium.Chromium.* rows are worktree evidence only and cannot enter a snapshot-bound matrix.

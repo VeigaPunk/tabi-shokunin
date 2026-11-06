@@ -1,0 +1,183 @@
+{
+  "schema": "tabi-r70-scout-quotes-v1",
+  "seat": "R70Scout",
+  "sources": [
+    {
+      "id": "S175",
+      "file": ".ufo/waves/round-70/sources/synthetic_tap_gesture.cc",
+      "sha256": "ac27658fe7199e01f210bbfb29613ab99a7720fe8e2ecdb100b1a2d3672bd331",
+      "lines": 134,
+      "quotes": [
+        {
+          "loc": "L22-L25",
+          "words": 5,
+          "text": "params().gesture_source_type = content::mojom::GestureSourceType::kTouchInput;",
+          "claim": "constructor rewrites kDefaultInput to kTouchInput before the platform query at L41-L43"
+        },
+        {
+          "loc": "L100",
+          "words": 5,
+          "text": "if (params().duration_ms == 0) {",
+          "claim": "duration 0 releases in the same PRESS step"
+        },
+        {
+          "loc": "L106",
+          "words": 3,
+          "text": "state_ = DONE;",
+          "claim": "duration-0 path finishes immediately"
+        },
+        {
+          "loc": "L109",
+          "words": 3,
+          "text": "state_ = WAITING_TO_RELEASE;",
+          "claim": "non-zero duration latches start_time_ and waits"
+        },
+        {
+          "loc": "L112",
+          "words": 3,
+          "text": "case WAITING_TO_RELEASE:",
+          "claim": "delayed release branch"
+        },
+        {
+          "loc": "L113",
+          "words": 7,
+          "text": "if (timestamp - start_time_ >= GetDuration()) {",
+          "claim": "release fires once elapsed >= duration_ms"
+        },
+        {
+          "loc": "L51-L53",
+          "words": 3,
+          "text": "synthetic_pointer_driver_ = SyntheticPointerDriver::Create(",
+          "claim": "one pointer driver per gesture instance"
+        }
+      ]
+    },
+    {
+      "id": "S173",
+      "file": ".ufo/waves/round-68/sources/Input.pdl",
+      "sha256": "5bbc6e23eb17a009da540792bd5f647567e9c81f919081059dff5274a1c66e3d",
+      "lines": 336,
+      "quotes": [
+        {
+          "loc": "L318",
+          "words": 5,
+          "text": "experimental command synthesizeTapGesture",
+          "claim": "the tap command exists in the Input domain PDL"
+        },
+        {
+          "loc": "L326",
+          "words": 15,
+          "text": "# Number of times to perform the tap (e.g. 2 for double tap, default: 1).",
+          "claim": "PDL comment claims 2 = double tap (rejected for taps by the round-70 lesson)"
+        },
+        {
+          "loc": "L328-L329",
+          "words": 15,
+          "text": "# Which type of input events to be generated (default: 'default', which queries the platform",
+          "claim": "PDL says default queries the platform (bypassed for taps by S175 L22-26)"
+        }
+      ]
+    },
+    {
+      "id": "S174",
+      "file": ".ufo/waves/round-69/sources/input_handler.cc",
+      "sha256": "72cf0d1d913302551731310cf76e03a259e8ccbfa7c8db14a185d9ae817324f4",
+      "lines": 2343,
+      "quotes": [
+        {
+          "loc": "L2265",
+          "words": 5,
+          "text": "const int kDefaultDuration = 50;",
+          "claim": "default tap duration 50 ms"
+        },
+        {
+          "loc": "L2266",
+          "words": 5,
+          "text": "const int kDefaultTapCount = 1;",
+          "claim": "default tap count 1"
+        },
+        {
+          "loc": "L2271",
+          "words": 4,
+          "text": "callback->sendFailure(Response::InvalidParams(\"Position out of bounds\"));",
+          "claim": "out-of-view coordinates fail with -32602 Position out of bounds"
+        },
+        {
+          "loc": "L2275",
+          "words": 3,
+          "text": "gesture_params.duration_ms = duration.value_or(kDefaultDuration);",
+          "claim": "duration parameter defaults to 50"
+        },
+        {
+          "loc": "L2285",
+          "words": 3,
+          "text": "int count = tap_count.value_or(kDefaultTapCount);",
+          "claim": "tapCount defaults to 1"
+        },
+        {
+          "loc": "L2286",
+          "words": 3,
+          "text": "if (!count) {",
+          "claim": "tapCount 0 returns early with success and no gesture"
+        },
+        {
+          "loc": "L2287",
+          "words": 3,
+          "text": "callback->sendSuccess();",
+          "claim": "tapCount 0 answers success"
+        },
+        {
+          "loc": "L2299",
+          "words": 10,
+          "text": "for (int i = 0; i < count; i++) {",
+          "claim": "one SyntheticTapGesture queued per tap"
+        },
+        {
+          "loc": "L2301",
+          "words": 3,
+          "text": "std::make_unique<SyntheticTapGesture>(gesture_params),",
+          "claim": "each tap is a separate gesture instance -> independent detail:1 clicks, no dblclick"
+        }
+      ]
+    }
+  ],
+  "duplicate_check": {
+    "grep_synthetic_tap_gesture_in_base_registry": 0,
+    "base_commit": "90b9ff045542651fb59814fe32f73fee0d1d8243",
+    "base_grep_command": "git -C <lane> show 90b9ff04:corpus/SOURCES.md | grep -c synthetic_tap_gesture",
+    "conclusion": "S175 registers a document no existing row covered; it is not a duplicate scope of S162/S174 (input_handler.cc) or S168/S173 (Input.pdl)"
+  },
+  "gate_comparison": {
+    "command": "node scripts/check-sources.mjs",
+    "base_90b9ff04": {
+      "findings": 3,
+      "rows": 174,
+      "rows_listing": [
+        "S171 duplicate_url",
+        "S172 duplicate_url",
+        "S173 duplicate_url"
+      ]
+    },
+    "head_bbdbf62f": {
+      "findings": 3,
+      "rows": 175,
+      "rows_listing": [
+        "S171 duplicate_url",
+        "S172 duplicate_url",
+        "S173 duplicate_url"
+      ]
+    },
+    "candidate_draft_in_scratch": {
+      "findings": 5,
+      "new_findings_from_draft": 0,
+      "extra_are_scratch_root_artifacts": [
+        "S143 used_by_missing",
+        "S160 used_by_missing"
+      ]
+    },
+    "conclusion": "round-70 registry edit is finding-neutral; S175 adds no duplicate id, duplicate URL, malformed row, tier inflation or bare anchor",
+    "fleet_census": "bash /home/vgpnk/Projects/shokunin/scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin tabi -> exit 0, 'tabi ok .../corpus/SOURCES.md', S175 not in any warning list"
+  },
+  "drafted_s175_row_11_columns": "see report.md section (5); no cell contains a pipe; 13 pipe-split fields",
+  "committed_s175_row_state": "already present at corpus/SOURCES.md L189 (commit 63dcf7c2); field count 13; no pipe inside any cell; used-by paths both exist and both cite S175"
+}
