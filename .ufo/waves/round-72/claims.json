@@ -1,0 +1,38 @@
+{
+ "lane": "tabi",
+ "round": 72,
+ "attempt": 2,
+ "base": "4e4ac0800abf5ad19d2a12caf46f80a873ebba8d",
+ "preFreezeControlsCommit": "0217f780719d8f83bfcdaf374253422784f86b74",
+ "frozenAt": "the lane commit that adds this file; instrument digests are recorded in .ufo/waves/round-72/freeze.txt by the next commit, before any scored run",
+ "inherited": "attempt 1 (watchdog line 3076, lane-dead-no-report 20:22:49) left uncommitted: scripts/chrome-cdp-synthpinch-round72.mjs, scripts/check-synthpinch-r72.mjs, scripts/negatives-synthpinch-r72.mjs, .ufo/waves/round-72/census/start.txt, .ufo/waves/round-72/controls/c1/{smoke1-6,degenerate-*}. Attempt 2 re-verified them: driver sha256 unchanged since the smokes (each smoke receipt's driverSha256 equals the file), counter re-run on the 5 completed smokes 5/5 clean, battery and kill power re-run. Reused; smoke4 (driver exit 2, port precheck: busy port) kept as a disclosed usage refusal, not a red run.",
+ "priorRound": "r71 rejected-honest-stop (MANIFEST): C1 pinch leg (b) red, one trailing zero-scale wheel labelled `end` (spotcheck R1). r69 and r70 admitted. Fresh-start obligation (Amendment 46/47): r66-r68 rejected closures were read at r69; this round reads the r71 spotcheck (corpus/lessons/round-71-verifier-spotcheck.md) and r62 M5 (producer-verdict AND->OR) and carries both as executed controls.",
+ "axesAtStart": { "adjacency": 9, "coverage": 9, "depth": 9, "operability": 9, "freshness": 9, "calibration": 9 },
+ "lowestAxis": "all six tie at 9; C1 (coverage) works a lowest axis",
+ "stagnationNudge": "not applicable: capability chromium-synth-tap-gesture-linux entered at r70, inside the window of 3",
+ "pins": "freeze.txt (sha256 of every instrument below, recorded before the scored run)",
+ "claims": {
+  "C1": {
+   "axis": "coverage",
+   "type": "capability acquisition: chromium-synth-pinch-gesture-linux (re-claim on a new generation r72; the r71 generation stays withheld)",
+   "surface": "Input.synthesizePinchGesture runtime delivery on Linux Chromium 155 headless: mouse/default pinches become trusted ctrl+wheel events whose per-event deltaY*pageScale sums to -100 ln(scaleFactor) and change the visual-viewport page scale; touch pinches become two-finger touch sequences with no page-scale change on a desktop viewport; scaleFactor 1 is a no-op; pen and an out-of-viewport anchor are refused; scaleFactor 0 never finishes. No tabi capability row covers the pinch command (r71 withheld it).",
+   "sourced": "S179 (NEW this round: components/input/touchpad_pinch_event_queue.cc at Chromium 155.0.8059.84, the pinch->ctrl+wheel conversion delta_y = 100 log(scale) and its sign inversion, staged .ufo/waves/round-72/sources/) grounds the counter's wheel-delta-law; S176-S178 (r71) for dispatch, touchpad and touchscreen paths; S173/S174 for the command.",
+   "countingCommand": "node scripts/check-synthpinch-r72.mjs --receipt corpus/evidence/round72/chromium-synth-pinch-gesture/receipt.json --expect-driver-sha256 <freeze.txt driver digest> --json",
+   "before": {
+    "rev": "4e4ac0800abf5ad19d2a12caf46f80a873ebba8d",
+    "counter": "no r72 receipt: exit 2 receipt-unreadable (controls/c1/donothing-no-receipt.*); the committed r71 scored receipt under the r72 counter: exit 1 (controls/c1/donothing-r71-receipt.*)",
+    "capabilityRow": "grep -c '^| `chromium-synth-pinch-gesture-linux` |' SCORECARD.md = 0"
+   },
+   "predicate": "C1-SYNTHPINCH-R72: (a) after the freeze the L1 runs the pinned driver once and the counting command exits 0 (verdict clean, 94 checks) on that committed receipt with the frozen driver digest; (b) wave seat R72Exec1 runs the pinned driver once cold with its own nonce (tabi-r72-exec1-*) and its own ports, and the pinned counter exits 0 clean on that receipt against the frozen driver digest; if R72Exec1's driver run ends exit 2 before launch (usage refusal: busy port or path guard, no receipt written) it may re-run with new ports, any receipt it writes is final; (c) on the (a) receipt, `node scripts/negatives-synthpinch-r72.mjs --real <receipt> --expect-driver-sha256 <pin> --work <ABS> --laundered <the three committed degenerate receipts> --json` exits 0 (allOk true, coverageGap empty) AND `node .ufo/waves/round-72/controls/c1/kill-power-r72.mjs --lane <ABS lane> --real <receipt> ...` exits 0 (holds true: unmutated battery exit 0, all 94 force-true mutants and all 12 semantic mutants including M5 producer-verdict AND->OR killed); (d) SCORECARD.md carries one capabilities row `| \\`chromium-synth-pinch-gesture-linux\\` |` (count 0 -> 1) and corpus/knowledge/chromium-synth-pinch-gesture-runtime-round-72.md exists and cites S179.",
+   "doNothingControl": "no receipt: counter exit 2; r71 receipt: counter exit 1 (schema, nonce-shape, event-types, leg-marks, event-leg-window, send-log-allowlist); capability row count 0. Degenerate drivers dispatch-wheel / set-scale / skip-touch: driver exit 1 and counter exit 1 with their expected ids (controls/c1/degenerate-*).",
+   "forgeryControls": "battery on pre-freeze smoke1: 218/218 cases, 163 isolated, three laundered degenerate receipts refused (controls/c1/negatives-battery-smoke1.json); kill power on smoke1 before the two added battery cases: 94/94 force-true killed, semantic 10/12 (survivors M-teardown-sweep-dropped, M-degenerate-loose-null: controls/c1/kill-power-smoke1-before-cases.json) -> after adding cases degenerate-field-absent and teardown-sweep-count: controls/c1/kill-power-smoke1.json. Pre-freeze repetition: 5 completed smoke runs, counter 5/5 clean (controls/c1/smoke-counter-summary.json).",
+   "kill": [
+    "any pinned instrument byte (freeze.txt) changes after the freeze: killed, never amended",
+    "the (a) scored run is red: no further scored runs to fish for green",
+    "R72Exec1's receipt is red (counter exit != 0): leg (b) false, honest stop",
+    "any predicate leg (a)-(d) false at the lane tip"
+   ],
+   "limit": "the counter reads a receipt; it is not an execution oracle (r71 R2 verifier hardening is not part of this claim). Demonstrated on this host's Chromium 155 headless, desktop mobile:false viewport. The deltaY*pageScale form of the wheel law is a host measurement; S179 sources only delta_y = 100 log(scale) per gesture-pinch update before Blink's page-scale handling."
+  }
+ }
+}
