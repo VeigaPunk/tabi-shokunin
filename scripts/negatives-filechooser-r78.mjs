@@ -452,8 +452,18 @@ const JOBS = Math.max(1, Number(opt('jobs') || 8));
 const psLines = fs.readFileSync(priorSet, 'utf8').split('\n').filter((l) => l.trim() && !l.trim().startsWith('#'));
 // a scratch mirror of the lane: scripts and every top-level entry of the two walked trees are
 // symlinks to the real lane; the case adds its own files to the mirror's round-78 directory
+// a case locks a mirror directory (chmod 000) to prove the walk refuses an unreadable dir; the next
+// run of that case must restore the mode before removing the old mirror (EACCES otherwise: round 78,
+// R78Review3 measured the battery's own setup failing on its leftover locked dir)
+const forceRm = (dir) => {
+  const walk = (d) => { let st; try { st = fs.lstatSync(d); } catch { return; } if (!st.isDirectory()) return;
+    try { fs.chmodSync(d, 0o700); } catch {}
+    let es = []; try { es = fs.readdirSync(d); } catch {}
+    for (const e of es) walk(path.join(d, e)); };
+  walk(dir); try { fs.rmSync(dir, { recursive: true, force: true }); } catch {}
+};
 const mkMirror = (name, fn) => {
-  const m = path.join(work, 'mirror-' + name); fs.rmSync(m, { recursive: true, force: true });
+  const m = path.join(work, 'mirror-' + name); forceRm(m);
   fs.mkdirSync(path.join(m, '.ufo/waves/round-78'), { recursive: true }); fs.mkdirSync(path.join(m, 'corpus/evidence'), { recursive: true });
   fs.symlinkSync(path.join(lane, 'scripts'), path.join(m, 'scripts'));
   for (const e of fs.readdirSync(path.join(lane, '.ufo/waves/round-78'))) fs.symlinkSync(path.join(lane, '.ufo/waves/round-78', e), path.join(m, '.ufo/waves/round-78', e));
