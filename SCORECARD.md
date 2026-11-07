@@ -3986,3 +3986,42 @@ answer, a real click on an input whose picker is already open, and the wave's mu
 battery cases. Retired: none.
 
 Scored (r80): battery 102/102, kill power 80/80, 57 checks.
+
+## Round 81 (2026-11-07, Linux host) — C1 capability `chromium-showpicker-linux` generation r81; C2 calibration, the ten r80 routed defects + the self-drift identity leg
+
+Base `c27e8406e6a2dc3cafcff030c9224cf8a14e3464`; digests commit **D = `a2183a93362259cb574ef3d03b565ee6d2c26599`**
+(`.ufo/waves/round-81/freeze.txt`; nonce `tabi-r81-l1-a2183a933622`). Axes at start: all six at 9; C1 works
+a lowest axis and is a capability move (generation r81 of the r79 capability).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r81 (sourced: S222–S223 new; S219–S220 carried) | `node scripts/check-showpicker-r81.mjs --lane <ABS lane> --receipt corpus/evidence/round81/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r81-l1-a2183a933622 --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-81/controls/c1/prior-set.txt --json`; leg (b) cold runs; leg (c) battery + kill power; leg (d) row, note, registry, selftest (predicate `C1-SHOWPICKER-R81`) | base: no r81 receipt → exit 2 `receipt-unreadable`; the r80 receipt under the r81 counter → exit 1, 30 findings (`schema`, `nonce-shape`, `driver-pin`, `plan-frozen`, …); after: the scored receipt → exit 0 `clean`, 56 checks, 0 findings; battery 62/62; kill power 46/46; selftest 9/9 | VERIFIED |
+| C2 calibration (9), record drift (the ten r80 routed defects) + the self-drift identity leg | `node scripts/check-record-drift-r81.mjs --lane <ABS lane> --json` (exit 1 on a mismatch; 12 record claims: the r80 end census, the D9 sweep, the two dead pointers, the Gate quote counts, the frozen-claim annotation, the capability typo, the control count, D10, the battery binding, the r81 identity and numbers) | before: exit 1, **12** mismatches (`lesson-proof/c2-before.json`); after: exit 0, mismatches **0**; `node scripts/check-capability-status.mjs --json` exit 0, `mismatches 0`, `provisional 1` | VERIFIED |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-linux` (generation r81) | As r80, and now: a cross-origin NON-file (`type=date`) input's own script throws SecurityError "showPicker() called from cross-origin iframe." and opens nothing; the SAME call on a DISABLED `type=date` input is InvalidStateError same-origin and SecurityError cross-origin (Chromium checks the origin before mutability, the spec the reverse); transient activation is per-frame-tree (a child-frame click makes the parent `isActive` true); a DIRECTORY answered through `DOM.setFileInputFiles` expands into the input's files with `webkitRelativePath` set and trusted input+change; a `.txt` answered into `accept=".png"` is ACCEPTED (accept is a dialog hint, not a validator); a real click on an input whose picker is already open opens a SECOND chooser | `corpus/evidence/round81/chromium-showpicker/receipt.json` (6 legs, 56-check counter, 62-case battery, 46-mutant kill power, 9/9 selftest) | 79 |
+
+Knowledge 93 → 94 (`corpus/knowledge/chromium-showpicker-runtime-round-81.md`). Registry 221 → 223
+(S222 CDP `DOM.setFileInputFiles`, S223 WHATWG `accept` attribute, both opened 2026-11-07, both
+`mined`; S219/S220 `used-by` gain the r81 note). QUALITY 159 added. SKILL.md
+`## Round 81 gate registry` registers `check-showpicker-r81` with `scripts/selftest-r81-gates.mjs`
+(9/9). README `## Round 81 coverage`.
+
+Corrections — the ten r80 routed defects are corrected of record in
+`corpus/lessons/round-81.md` `## Corrections` (append-only; the r80 records are not rewritten):
+the committed end census was red (green re-run at `.ufo/waves/round-80/census/end-green.txt`), the
+D9 nonce/D sweep (final D10 `93172ba9`), the dead `c1-nowork.json` and `cold-runs.txt` pointers
+(both committed), the Gate quote counts (S220 14 words at 2654-2655, S221 7), the frozen-claim
+annotation (battery 102/102, kill power 80/80), the `DOM.setFileInputFiles` typo, the six-delta
+control count, D10 in the landed ledger, and the battery bound to the final receipt
+(`.ufo/waves/round-80/scored/battery-bound-a.json`).
+
+Planned (r82): answering the SECOND chooser of the click-while-open leg and its `backendNodeId`
+relation to the first; `type=color`/`type=month` cross-origin security legs; nested `webkitdirectory`
+answers; the `accept` token grammar against a programmatic answer; the wave's mutation survivors as
+battery cases. Retired: none.
+
+Scored (r81): battery 62/62, kill power 46/46, 56 checks.

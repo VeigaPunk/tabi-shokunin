@@ -3875,3 +3875,38 @@ C2 calibration — record drift (r79 routed defects 1–4) plus the self-drift l
    `considerthese/`: no such directory in this lane.
 
 Scored (r80): battery 102/102, kill power 80/80, 57 checks.
+
+## Round 81 — 2026-11-07 (Linux host) — `chromium-showpicker-linux` generation r81 + the ten r80 routed defects
+
+L1 `TabiR81`. Base `c27e8406e6a2dc3cafcff030c9224cf8a14e3464`; digests commit D = `a2183a93362259cb574ef3d03b565ee6d2c26599`,
+nonce `tabi-r81-l1-a2183a933622`. Claims: C1 coverage — capability generation r81 (the r80 frontier
+legs); C2 calibration — the ten r80 routed defects plus the self-drift identity leg.
+
+1. **C1 — generation r81.** `scripts/chrome-cdp-showpicker-round81.mjs` (6 legs, one fresh browser
+   per leg): a cross-origin `type=date` child script throws SecurityError and opens nothing; the same
+   call on a DISABLED `type=date` input is InvalidStateError same-origin and SecurityError
+   cross-origin (the order discriminator); a directory answered through `DOM.setFileInputFiles`
+   expands with `webkitRelativePath`; a `.txt` into `accept=".png"` is accepted; a real click on an
+   input whose picker is open opens a second chooser. Counter `scripts/check-showpicker-r81.mjs`
+   (56 checks), battery `scripts/negatives-showpicker-r81.mjs` (62 cases), kill power
+   `scripts/kill-power-r81.mjs` (46 mutants), selftest `scripts/selftest-r81-gates.mjs` (9/9).
+   Scored receipt `corpus/evidence/round81/chromium-showpicker/receipt.json`; battery 62/62, kill
+   power 46/46, 56 checks.
+2. **C2 — record drift.** `scripts/check-record-drift-r81.mjs` counts 12 claims: the ten r80 routed
+   defects (end census, D9 sweep, two dead pointers, Gate quote counts, frozen-claim annotation,
+   capability typo, control count, D10, battery binding) plus the r81 identity and numbers legs.
+   Before 12 mismatches (`lesson-proof/c2-before.json`), after 0.
+3. **Sources.** S222 (CDP `DOM.setFileInputFiles` parameters, 6-word quote at line 684) and S223
+   (WHATWG `accept` is a hint, 23-word quote) opened this round; S219/S220 re-opened and their
+   `used-by` gains the r81 note. Registry 221 → 223; census exit 0.
+4. **Wave w1.** One v1 wave, 11 seats (4 executor incl. the C2-controls seat, 2 reviewer, 1 critic,
+   1 mutation-tester, 1 scout, 1 scribe, 1 connector); attack roles 3/11 = 27 %; spec/dispatch/ready/
+   results under `.ufo/waves/round-81/`.
+5. **Instrument repairs before the final scored run** (each named, none silently): the prior set was
+   extended to both pre-freeze probes (the scored receipt's walk found probe2 outside the set), and
+   the battery's mirror cases pass an absolute receipt path (the mirror does not copy
+   `corpus/evidence/`). `freeze.txt` carries the repaired prior-set pin.
+6. **Assimilation: none** (`merge/tabi/` adoption stays closed pending the open L0 `tabi | round-57`);
+   `considerthese/`: no such directory in this lane.
+
+Scored (r81): battery 62/62, kill power 46/46, 56 checks.

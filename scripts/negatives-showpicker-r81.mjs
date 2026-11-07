@@ -232,13 +232,13 @@ for (const c of cases) {
       laneArg = mirrorLane;
       const p = path.join(mirrorLane, '.ufo/waves/round-81/stray-receipt.json');
       fs.writeFileSync(p, JSON.stringify(real));
-      receiptPath = realPath;
+      receiptPath = path.resolve(realPath);
     } else if (c.name === 'prior-set-unparsable') {
       if (!mirrorBuilt) { buildMirror(); mirrorBuilt = true; }
       laneArg = mirrorLane;
       fs.rmSync(path.join(mirrorLane, '.ufo/waves/round-81/stray-receipt.json'), { force: true });
       fs.writeFileSync(path.join(mirrorLane, '.ufo/waves/round-81/stray-unparsable.json'), '{"schema": "tabi-chrome-cdp-showpicker-r81", broken');
-      receiptPath = realPath;
+      receiptPath = path.resolve(realPath);
     } else {
       c.mutate(r, ctx);
       receiptPath = writeCase(c.name, r);

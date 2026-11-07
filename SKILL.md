@@ -3256,3 +3256,20 @@ a cross-origin iframe on a second loopback port), `scripts/negatives-showpicker-
 claims, mismatches 0). Scored: battery 102/102, kill power 80/80, 57 checks. The replay rule is
 pair-based; the gap side is reported, not a refusal (this driver's fixed waits reproduce gap
 durations across honest runs).
+
+## Round 81 gate registry
+
+| Gate | Entry command | Verdict map | Self-test | Pinned path |
+|---|---|---|---|---|
+| `check-showpicker-r81` | `node scripts/check-showpicker-r81.mjs --lane <ABS lane> --receipt corpus/evidence/round81/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r81-l1-a2183a933622 --expect-fixture-sha256 <fixture sha> --prior-set .ufo/waves/round-81/controls/c1/prior-set.txt --json` | exit 0 clean = 56 checks; exit 1 = findings (each names a leg or a law); exit 2 = usage/unreadable | `node scripts/selftest-r81-gates.mjs --lane <ABS lane> --work <ABS scratch> --json` (9/9) | `.ufo/waves/round-81/freeze.txt` |
+
+Instruments: `scripts/chrome-cdp-showpicker-round81.mjs` (driver, 6 legs, one fresh browser per leg,
+a cross-origin iframe on a second loopback port carrying `type=date` inputs), 
+`scripts/negatives-showpicker-r81.mjs` (battery, 62 cases, coverage asserted against the counter's
+own check ids), `scripts/kill-power-r81.mjs` (46 semantic mutants; 46 killed, 0 survivors),
+`scripts/check-record-drift-r81.mjs` (C2: 12 record claims, mismatches 0). Scored: battery 62/62,
+kill power 46/46, 56 checks. The r81 laws: a cross-origin NON-file input throws SecurityError; a
+disabled non-file input is InvalidStateError same-origin but SecurityError cross-origin (Chromium
+checks the origin before mutability); activation is per-frame-tree; a directory answer expands with
+`webkitRelativePath`; `accept` is a hint, so a programmatic answer is not filtered; a click while a
+picker is open opens a second chooser.

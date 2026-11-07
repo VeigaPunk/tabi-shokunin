@@ -229,3 +229,15 @@ SecurityError, and Chromium's cross-origin-before-mutability order) is measured 
 (R80Scout), not yet a capability leg; the same holds for the `webkitdirectory` answer, the
 `accept`-filtered answer, and a real click while a picker is open. Refusal routes unchanged: no
 external-site interaction, no credential content, loopback only.
+
+## Round 81 — the non-file security branch and the answer laws (core)
+
+The r80 frontier is core: a cross-origin NON-file (`type=date`) input throws the SecurityError and
+opens nothing; the same call on a disabled `type=date` input is `InvalidStateError` same-origin and
+`SecurityError` cross-origin (the order discriminator); activation is per-frame-tree; a directory
+answer through `DOM.setFileInputFiles` expands with `webkitRelativePath`; `accept` is a hint, so a
+programmatic answer is not filtered; a click while a picker is open opens a second chooser. Gated by
+`scripts/check-showpicker-r81.mjs` (56 checks) with the note
+`corpus/knowledge/chromium-showpicker-runtime-round-81.md`. Frontier: answering the second chooser,
+`type=color`/`type=month` cross-origin legs, nested `webkitdirectory` answers, the `accept` token
+grammar. Refusal routes unchanged: no external-site interaction, no credential content, loopback only.

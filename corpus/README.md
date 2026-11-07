@@ -1132,3 +1132,18 @@ the report, under the frozen predicates in `.ufo/waves/round-65/claims.json`.
   `InvalidStateError` per spec) is frontier evidence from R80Scout, not a capability leg. Frontier: a
   non-file cross-origin leg (the SecurityError inside the receipt), a `webkitdirectory` answer leg, an
   `accept`-filtered answer, and a real click while a picker is open.
+
+## Round 81 coverage
+
+The r80 frontier is now core: a cross-origin `type=date` input's own script throws SecurityError
+"showPicker() called from cross-origin iframe." and opens nothing; the same call on a DISABLED
+`type=date` input is `InvalidStateError` same-origin and `SecurityError` cross-origin (Chromium
+checks the origin before mutability, the spec the reverse — the order discriminator); transient
+activation is per-frame-tree (a child-frame click makes the parent `isActive` true); a DIRECTORY
+answered through `DOM.setFileInputFiles` expands into the input's files with `webkitRelativePath`
+set and trusted input+change; a `.txt` answered into `accept=".png"` is ACCEPTED (accept is a dialog
+hint, S223); a real click on an input whose picker is already open opens a SECOND chooser. Gated by
+`scripts/check-showpicker-r81.mjs` (56 checks) with the note
+`corpus/knowledge/chromium-showpicker-runtime-round-81.md`. Frontier: answering the second chooser,
+`type=color`/`type=month` cross-origin legs, nested `webkitdirectory` answers, and the `accept` token
+grammar. Refusal routes unchanged: no external-site interaction, no credential content, loopback only.
