@@ -1,0 +1,11 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-dialog-r76.mjs	2026-11-07 04:35:43.189628057 -0300
++++ /fast/scratch/hyaku/tabi-r76/R76Revenger/mut-m5or/check-dialog-r76.mjs	2026-11-07 05:01:23.178828945 -0300
+@@ -401,7 +401,7 @@
+ const td = isObj(r.teardown) ? r.teardown : {};
+ check('teardown-closure', td.postKillSweepCount === 0 && arr(td.survivors).length === 0 && td.sweepError === null && isObj(td.portProbes) && td.portProbes.fixture === 'closed' && td.portProbes.devtools === 'closed' && isObj(td.postKillCurl) && td.postKillCurl.fixture === 7 && td.postKillCurl.devtools === 7, 'teardown ' + JSON.stringify(td));
+ check('failures-empty', Array.isArray(r.failures) && r.failures.length === 0, 'failures ' + JSON.stringify(r.failures));
+-check('producer-verdict', r.predicate === true && r.dialogHypothesis === 'CONFIRMED', 'producer predicate ' + JSON.stringify(r.predicate) + ' hypothesis ' + JSON.stringify(r.dialogHypothesis));
++check('producer-verdict', r.predicate === true || r.dialogHypothesis === 'CONFIRMED', 'producer predicate ' + JSON.stringify(r.predicate) + ' hypothesis ' + JSON.stringify(r.dialogHypothesis));
+ check('legshape-consistency', canon(r.legShape) === canon(derived), 'producer legShape differs from the re-derivation');
+ 
+ const missing = CHECK_IDS.filter((id) => !(id in checks));

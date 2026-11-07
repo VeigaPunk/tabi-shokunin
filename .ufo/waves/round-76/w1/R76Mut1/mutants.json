@@ -1,0 +1,1580 @@
+{
+ "schema": "tabi-r76-r76mut1-semantic-mutants",
+ "seat": "R76Mut1",
+ "round": 76,
+ "capability": "chromium-js-dialog-linux",
+ "lane": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+ "real": "/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round76/chromium-js-dialog/receipt.json",
+ "expectNonce": "tabi-r76-l1-97bf5d560d03",
+ "expectDriverSha256": "152ffc116b0b15968eb18ab8682b9de3ac49a2f9f3f81ff22e77153526fbdd51",
+ "priorSet": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-76/controls/c1/prior-set.txt",
+ "frozenCounter": {
+  "path": "/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-dialog-r76.mjs",
+  "sha256": "505055381ee4d4697a0f2c4fad69f661b64a0adabd44ab451a97b3cd30dddcf4"
+ },
+ "frozenSemanticSet": {
+  "path": "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-76/controls/c1/kill-power-r76.mjs",
+  "entriesExcluded": 56,
+  "note": "no edit string below equals or is a subset edit of a kill-power SEMANTIC entry; 5 edits touch the same source sites with a different operator"
+ },
+ "method": {
+  "batteryCopyBesideEachMutant": true,
+  "firstFailure": true,
+  "jobsPerBattery": 4,
+  "mutantConcurrency": 6,
+  "runs": 2,
+  "runsIdentical": true
+ },
+ "baseline": {
+  "first": {
+   "outcome": "survived",
+   "passed": 251,
+   "cases": 251
+  },
+  "last": {
+   "outcome": "survived",
+   "note": "the runner repeats the unmutated battery once per batch; both batches identical (see runs)"
+  }
+ },
+ "counts": {
+  "mutants": 60,
+  "killed": 16,
+  "killedPositive": 21,
+  "survived": 23,
+  "crashed": 0,
+  "witnesses": 7,
+  "refusalWitnesses": 3
+ },
+ "discardedMutant": {
+  "id": "X34a-window-at-monotonic-dropped",
+  "editFrom": "&& (i === 0 || (num(events[i - 1].at) && e.at >= events[i - 1].at))",
+  "editTo": ")",
+  "reason": "the edit leaves `&& )` (syntax error); the battery exited 1 with an unparsable summary, classified crashed. Replaced by X34-window-prev-ts-compared."
+ },
+ "mutants": [
+  {
+   "id": "X01-typed-ts-nonneg",
+   "line": 259,
+   "editFrom": "num(e.ts) && e.ts > 0 && num(e.at) && e.at > 0",
+   "editTo": "num(e.ts) && e.ts >= 0 && num(e.at) && e.at > 0",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "e60e322d85f22e1408b7749e08c81ccfb88c15377fe594fe1a9e0dcc92fc85c2",
+   "evidence": {
+    "kind": "witness",
+    "note": "acceptance witness: an event with ts=0 is accepted by the mutant and refused by the frozen counter (event-types).",
+    "probe": {
+     "id": "W-X01-ts-zero",
+     "observed": "witness",
+     "mutant": {
+      "exit": 0,
+      "verdict": "clean",
+      "findingIds": []
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "event-types"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X02-typed-eventtype-set-dropped",
+   "line": 259,
+   "editFrom": "EVENT_TYPES.has(e.type) && ",
+   "editTo": "",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "event-types-unknown-type"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 51,
+   "cases": 52,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "9a6006bd903cf6e28c78a3d20b41ce776d94f93004ce0f329cd79ddf188ca23c",
+   "evidence": null
+  },
+  {
+   "id": "X03-typed-ret-string-dropped",
+   "line": 262,
+   "editFrom": "&& typeof e.ret === 'string' && e.x === null",
+   "editTo": "&& e.x === null",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "f86359185d9afee71c624e321a8502154c7e206a67d8706e460e38e6662245d9",
+   "evidence": {
+    "kind": "equivalence",
+    "note": "typed() is the only reader of raw ret; derived.ret is compared canonically to SHAPE[leg].ret in leg-<leg>-ret, and every SHAPE ret is a string, so any receipt the mutant accepts has a string ret anyway. Parity probe: both counters refuse a numeric ret.",
+    "probe": {
+     "id": "E-X03-ret-number",
+     "observed": "parity",
+     "mutant": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "leg-alert-accept-ret",
+       "return-value-law",
+       "legshape-consistency"
+      ]
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "event-types",
+       "leg-alert-accept-ret",
+       "return-value-law",
+       "legshape-consistency"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X04-typed-nonreturn-ret-dropped",
+   "line": 262,
+   "editFrom": ": e.kind === null && e.ret === null)",
+   "editTo": ": e.kind === null)",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "event-types-ret-on-pointer"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 51,
+   "cases": 52,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "a4810e0e1efecbdbf2269b3874c09a093355fb6bae31cb526ecf47c10c4bf463",
+   "evidence": null
+  },
+  {
+   "id": "X05-typed-beforeunload-xy-dropped",
+   "line": 263,
+   "editFrom": "(e.type === 'beforeunload' ? e.x === null : e.type === 'dialog-return' || Number.isInteger(e.x))",
+   "editTo": "(e.type === 'dialog-return' || Number.isInteger(e.x))",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "event-types"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "fae47045976516efe68d537f7030ffa21c87afdfde659d0a14a3e7e8d6d17b53",
+   "evidence": null
+  },
+  {
+   "id": "X06-typed-buttons-null-pair-dropped",
+   "line": 261,
+   "editFrom": "&& (e.x === null) === (e.buttons === null)",
+   "editTo": "",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "event-types-half-null-xy"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 59,
+   "cases": 60,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "65682b7910669951f0b5e2c80316b6af2a2ea1cfce9f8854bcf5d0680cbb67d1",
+   "evidence": null
+  },
+  {
+   "id": "X07-typed-trusted-type-relaxed",
+   "line": 260,
+   "editFrom": "typeof e.isTrusted === 'boolean'",
+   "editTo": "e.isTrusted !== undefined",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "event-types-trusted-string"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 50,
+   "cases": 51,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "912a14f922e9065d8a687f853e1337b663dcaab281a5f1447cf02c681a25b4c8",
+   "evidence": null
+  },
+  {
+   "id": "X08-errok-code-int-dropped",
+   "line": 228,
+   "editFrom": "Number.isInteger(e.code) && typeof e.message === 'string'",
+   "editTo": "typeof e.message === 'string'",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "e87f434dc30c54a2f151e6f5cb4feef66558e43c3d1e35a66012fcccf0f3feee",
+   "evidence": {
+    "kind": "equivalence",
+    "note": "errOk admits only null or a {code,message}-keyed object, and leg-<leg>-error compares the same object canonically to SHAPE errors; the only non-null SHAPE error is NO_DIALOG (integer code), so any accepted receipt has an integer code. Parity probe: both counters refuse code -32602.5.",
+    "probe": {
+     "id": "E-X08-code-float",
+     "observed": "parity",
+     "mutant": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "leg-no-dialog-error",
+       "no-dialog-law",
+       "legshape-consistency"
+      ]
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "leg-records",
+       "leg-no-dialog-error",
+       "no-dialog-law",
+       "legshape-consistency"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X09-errok-message-string-dropped",
+   "line": 228,
+   "editFrom": "Number.isInteger(e.code) && typeof e.message === 'string'",
+   "editTo": "Number.isInteger(e.code)",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "7cffceaad4756b614167a79c82ba27c4a2cdd742cac2cbd23f9378ebdb9bb06f",
+   "evidence": {
+    "kind": "equivalence",
+    "note": "same argument as X08 via the canonical leg-<leg>-error comparison to NO_DIALOG.message. Parity probe: both counters refuse a numeric message.",
+    "probe": {
+     "id": "E-X09-message-number",
+     "observed": "parity",
+     "mutant": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "leg-no-dialog-error",
+       "no-dialog-law",
+       "legshape-consistency"
+      ]
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "leg-records",
+       "leg-no-dialog-error",
+       "no-dialog-law",
+       "legshape-consistency"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X10-evshape-aftersend-int-dropped",
+   "line": 291,
+   "editFrom": "&& Number.isInteger(e.afterSendId) && EV_KEYS[e.method] !== undefined",
+   "editTo": "&& EV_KEYS[e.method] !== undefined",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "44877c48d9cbcf653aa4779b93e1b70725d807076fbb09bcbf4b20898736801e",
+   "evidence": {
+    "kind": "witness",
+    "note": "acceptance witness: the first Page.frameNavigated afterSendId as the string \"7\" is accepted by the mutant (navs[0].afterSendId > firstNav.id coerces) and refused by the frozen counter (cdp-event-log-closed).",
+    "probe": {
+     "id": "W-X10-aftersend-string",
+     "observed": "witness",
+     "mutant": {
+      "exit": 0,
+      "verdict": "clean",
+      "findingIds": []
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "cdp-event-log-closed"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X11-evshape-method-known-dropped",
+   "line": 291,
+   "editFrom": "&& EV_KEYS[e.method] !== undefined",
+   "editTo": "",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "73d6bdad71f622bdcb8d6bc239720c53cb7be6608442b863110af3bd1e6e0cbc",
+   "evidence": {
+    "kind": "equivalence",
+    "note": "evShapeOk keeps `canon(Object.keys(e.params).sort()) === canon(EV_KEYS[e.method])`; for an unknown method EV_KEYS[method] is undefined and an array never canon-equals undefined, so the dropped guard is implied. Parity probe: both counters refuse an unknown-method entry.",
+    "probe": {
+     "id": "E-X11-unknown-method",
+     "observed": "parity",
+     "mutant": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "cdp-event-log-closed",
+       "dialog-event-binding"
+      ]
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "cdp-event-log-closed",
+       "dialog-event-binding"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X12-match-strict-to-nonstrict",
+   "line": 203,
+   "editFrom": "if (Math.abs(d) < TOL) { n++; i++; j++; }",
+   "editTo": "if (Math.abs(d) <= TOL) { n++; i++; j++; }",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "4975a0b466f3faa1302e3e5b34888a2bcc10db6449556e9f6abad7cfe5bb7fcc",
+   "evidence": {
+    "kind": "direction",
+    "note": "`<=` only widens the greedy matcher accepted-pair set, so matchCount is non-decreasing and the gap fraction can only rise: the mutant refuses a superset, i.e. its accepted set is a subset of the frozen counter's, so no acceptance witness can exist. The battery brackets 0.049 ms (refuse) and 0.051 ms (accept) and both pass; the only boundary 0.05 ms is unreachable for on-grid receipt times (0.1 ms grid) against on-grid priors.",
+    "probe": null
+   }
+  },
+  {
+   "id": "X13-match-advance-swapped",
+   "line": 203,
+   "editFrom": "else if (d < 0) i++; else j++;",
+   "editTo": "else if (d > 0) i++; else j++;",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "replay-timeline-gap-at-threshold"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 126,
+   "cases": 127,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "19608da17a7953ee791185b3f6483c88b328efec2225dd67f572de94907b9fe2",
+   "evidence": null
+  },
+  {
+   "id": "X14-pairmatch-at-dropped",
+   "line": 205,
+   "editFrom": "Math.abs(v[0] - e.ts) < TOL && Math.abs(v[1] - e.at) < TOL",
+   "editTo": "Math.abs(v[0] - e.ts) < TOL",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "228242dab2f209b9c2d6ee8510e038a98a59b683393e324e86a4e12687899adc",
+   "evidence": {
+    "kind": "direction",
+    "note": "dropping the `at` conjunct in pairMatch only widens matching, so the abs fraction is non-decreasing and the mutant refuses a superset (accepted set subset). Refusal witness R-X14: a prior whose ts equal the receipt's while its at are re-spaced is refused by the mutant (replay-event-timeline) and accepted by the frozen counter.",
+    "probe": {
+     "id": "R-X14-prior-ts-only",
+     "observed": "refusal",
+     "mutant": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "replay-event-timeline"
+      ]
+     },
+     "frozen": {
+      "exit": 0,
+      "verdict": "clean",
+      "findingIds": []
+     }
+    }
+   }
+  },
+  {
+   "id": "X15-gaps-gte-to-strict",
+   "line": 206,
+   "editFrom": "if (at[i] - at[i - 1] >= GAP_MIN) g.push(at[i] - at[i - 1]);",
+   "editTo": "if (at[i] - at[i - 1] > GAP_MIN) g.push(at[i] - at[i - 1]);",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "d15bad11150e922e3711bb483c540273da0adc7e207a3663c574d3edbc164e5b",
+   "evidence": {
+    "kind": "direction",
+    "note": "gaps() drops exactly-50.0 ms gaps. Receipts without a 50.0 gap produce identical gap lists; with one, the receipt's own gap count falls (stricter, ownGaps >= 6) and the only prior gap that can be lost is itself exactly 50.0 (which could only match a receipt gap already in the stricter case). So the accepted set is a subset of the frozen counter's; no acceptance witness can exist.",
+    "probe": null
+   }
+  },
+  {
+   "id": "X16-prior-walk-nested-skip",
+   "line": 217,
+   "editFrom": "if (e.isDirectory()) walk(p); ",
+   "editTo": "if (e.isDirectory()) continue; ",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "prior-set-complete-omitted"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 128,
+   "cases": 129,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "f72201cfe4f0cf94ae84409dcb1aeb668220598f977b3d6ffa7195ad4ab12665",
+   "evidence": null
+  },
+  {
+   "id": "X17-prior-walk-realpath-dropped",
+   "line": 217,
+   "editFrom": "!priorReal.has(real(p))",
+   "editTo": "!priorPaths.includes(p)",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "23874bc8aa9c799770ae01bdd80dc8552a6489064a000302aa961994387fba92",
+   "evidence": {
+    "kind": "direction",
+    "note": "replacing the realpath set with a raw-path set can only shrink the recognised prior set, so more receipts become `outside` (stricter). Refusal witness R-X17: a prior supplied through a symlink is accepted by the frozen counter (realpath match) and refused by the mutant (prior-set-complete).",
+    "probe": {
+     "id": "R-X17-prior-symlink",
+     "observed": "refusal",
+     "mutant": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "prior-set-complete"
+      ]
+     },
+     "frozen": {
+      "exit": 0,
+      "verdict": "clean",
+      "findingIds": []
+     }
+    }
+   }
+  },
+  {
+   "id": "X18-prior-walk-needle-unquoted",
+   "line": 215,
+   "editFrom": "Buffer.from('\"' + SCHEMA + '\"')",
+   "editTo": "Buffer.from(SCHEMA)",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "a9d85cfc020c30d94f40c6880bceb82acd0eba85ee3eb3b72fc3ea2c60656ff4",
+   "evidence": {
+    "kind": "equivalence",
+    "note": "for any file whose parsed top-level schema is SCHEMA the schema string appears quoted in the bytes, so the quoted needle is present exactly when the unquoted token is; the wider prefilter cannot change which files reach the `j.schema === SCHEMA` predicate.",
+    "probe": null
+   }
+  },
+  {
+   "id": "X19-plan-root-slash-dropped",
+   "line": 281,
+   "editFrom": "origin + '/?run='",
+   "editTo": "origin + '?run='",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "dialog-call-params"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "4eb4d22d7b2fe6aed6f1c4b9531e7f0e50204f76c6b8364ff69fc202fc2f04df",
+   "evidence": null
+  },
+  {
+   "id": "X20-plan-pressed-buttons",
+   "line": 283,
+   "editFrom": "{ type: 'mousePressed', x: p.at[0], y: p.at[1], button: 'left', buttons: 1, clickCount: 1 }",
+   "editTo": "{ type: 'mousePressed', x: p.at[0], y: p.at[1], button: 'left', buttons: 0, clickCount: 1 }",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "dialog-call-params"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "bfa7fa657a90e37791520cd8aaad0bb1f9b349ca78edc20e40131deca7a44a8d",
+   "evidence": null
+  },
+  {
+   "id": "X21-plan-handle-only-dropped",
+   "line": 285,
+   "editFrom": "if (p.kind !== null) planCalls.push(['Page.handleJavaScriptDialog', p.handle]);",
+   "editTo": "if (p.kind !== 'handle-only') planCalls.push(['Page.handleJavaScriptDialog', p.handle]);",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "dialog-call-params"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "0010eeb618ceff755ad7583e8c13ac107d6f53d4f76e6fdfbcf8df41a9792000",
+   "evidence": null
+  },
+  {
+   "id": "X22-button-table-p-to-a",
+   "line": 71,
+   "editFrom": "const BUTTON = { 150: 'a', 300: 'c', 450: 'p' };",
+   "editTo": "const BUTTON = { 150: 'a', 300: 'c', 450: 'a' };",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "return-value-law",
+    "closed-echo-law",
+    "coordinate-law"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "1393a2a6663dfa71040d05662854da7f70ed1152c596628bd3b5e63e265e076f",
+   "evidence": null
+  },
+  {
+   "id": "X23-kindof-prompt-to-confirm",
+   "line": 72,
+   "editFrom": "const KIND_OF = { a: 'alert', c: 'confirm', p: 'prompt' };",
+   "editTo": "const KIND_OF = { a: 'alert', c: 'confirm', p: 'confirm' };",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "return-value-law",
+    "closed-echo-law"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "0faae0604d80d3658cb8c1f7b3a59aa0eb8dde5cc9d813fd8242c7f2714e1ecc",
+   "evidence": null
+  },
+  {
+   "id": "X24-message-alert-suffixed",
+   "line": 73,
+   "editFrom": "MESSAGE = { alert: 'tabi-alert', confirm: 'tabi-confirm', prompt: 'tabi-prompt', beforeunload: '' };",
+   "editTo": "MESSAGE = { alert: 'tabi-alert!', confirm: 'tabi-confirm', prompt: 'tabi-prompt', beforeunload: '' };",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "closed-echo-law"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "965889a005ccc1373c920fdd86a2427951c6f5c40432f241710c5ec60c4cca42",
+   "evidence": null
+  },
+  {
+   "id": "X25-defaultprompt-confirm-nonempty",
+   "line": 74,
+   "editFrom": "DEFAULT_PROMPT = { alert: '', confirm: '', prompt: 'tabi-default', beforeunload: '' };",
+   "editTo": "DEFAULT_PROMPT = { alert: '', confirm: 'tabi-default', prompt: 'tabi-default', beforeunload: '' };",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "closed-echo-law"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "9a2b5fa4f2b674a5344d1a626d877c5ffa33b42f3016136dbd2f4129f68e3b7b",
+   "evidence": null
+  },
+  {
+   "id": "X26-nodialog-code",
+   "line": 75,
+   "editFrom": "const NO_DIALOG = { code: -32602, message: 'No dialog is showing' };",
+   "editTo": "const NO_DIALOG = { code: -32601, message: 'No dialog is showing' };",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "leg-no-dialog-error",
+    "no-dialog-law"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "0316072cd750087954e2c4252ee6c0da068145f29be43f7d2a507ff84aa244b6",
+   "evidence": null
+  },
+  {
+   "id": "X27-wantret-alert-null",
+   "line": 365,
+   "editFrom": "kind === 'alert' ? 'undefined'",
+   "editTo": "kind === 'alert' ? 'null'",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "return-value-law"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "e41f3e2021fbaab65597ae528c027ea9b10f406b84520cfd697bf4b8915bd402",
+   "evidence": null
+  },
+  {
+   "id": "X28-wantret-prompt-prefix-dropped",
+   "line": 365,
+   "editFrom": "h.accept ? 'string:' + (h.promptText ?? '') : 'null'",
+   "editTo": "h.accept ? String(h.promptText ?? '') : 'null'",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "return-value-law"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "6963a8f8d47fab8cbcd79de9e9b02ba5a46d46e008c99c9b137538ff9cfec014",
+   "evidence": null
+  },
+  {
+   "id": "X29-block-return-index",
+   "line": 384,
+   "editFrom": "return k !== 4 || es.length !== 6",
+   "editTo": "return k !== 3 || es.length !== 6",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "blocking-law"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "e7832481de6ee584caecece9bb4ab0612373558cb2b43b9abf103375aade79e7",
+   "evidence": null
+  },
+  {
+   "id": "X30-block-target-coupling-dropped",
+   "line": 384,
+   "editFrom": "|| es[4].target !== es[5].target;",
+   "editTo": ";",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "2a2b4ede7dcbb2ff86aacc4204030a00a69e5e7a831b78c23a2d0a8744a1764c",
+   "evidence": {
+    "kind": "equivalence",
+    "note": "leg-<leg>-seq compares the dialog-return target to SHAPE (same button as the click), so for any accepted receipt the two targets are already equal. Parity probe: both counters refuse a dialog-return on another button.",
+    "probe": {
+     "id": "E-X30-ret-target",
+     "observed": "parity",
+     "mutant": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "leg-alert-accept-seq",
+       "legshape-consistency"
+      ]
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "leg-alert-accept-seq",
+       "blocking-law",
+       "legshape-consistency"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X31-seq-index-base",
+   "line": 256,
+   "editFrom": "events.every((e, i) => isObj(e) && e.seq === i + 1)",
+   "editTo": "events.every((e, i) => isObj(e) && e.seq === i)",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "seq-monotonic"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "fa915972750932fcec10f641f23b19e8ea0bc48c3a24309b20fcd2c749a814df",
+   "evidence": null
+  },
+  {
+   "id": "X32-window-index-offbyone",
+   "line": 271,
+   "editFrom": "const i = RECORDED.indexOf(name) + 1;",
+   "editTo": "const i = RECORDED.indexOf(name);",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "event-leg-window"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "cd67b8590f62a88e51d8534fbb23e3bc7b28e9e7ca87ca1db52f12e1a8a00911",
+   "evidence": null
+  },
+  {
+   "id": "X33-window-end-always-closed",
+   "line": 271,
+   "editFrom": "i + 1 < marks.length ? marks[i + 1].at : r.closedAt",
+   "editTo": "r.closedAt",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "event-leg-window-late-label"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 62,
+   "cases": 63,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "9710509c350b10aa27d4f1e74a00d6243e7f89c45b6552e0a70a4d1a62501664",
+   "evidence": null
+  },
+  {
+   "id": "X34-window-prev-ts-compared",
+   "line": 272,
+   "editFrom": "num(events[i - 1].at) && e.at >= events[i - 1].at",
+   "editTo": "num(events[i - 1].at) && e.at >= events[i - 1].ts",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "event-leg-window-order"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 63,
+   "cases": 64,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "e13149c42330503ed3a69a71fdb42511b2cc6a7ee88d0ee4d3d34fd876b07e16",
+   "evidence": null
+  },
+  {
+   "id": "X35-marks-monotonic-dropped",
+   "line": 268,
+   "editFrom": "marks.every((m, i) => isObj(m) && num(m.at) && m.at > 0 && (i === 0 || m.at >= marks[i - 1].at))",
+   "editTo": "marks.every((m, i) => isObj(m) && num(m.at) && m.at > 0)",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "53886074446f746cba7b6ea424b1dbb03aa81737d8c00eb72fd709f96e86703c",
+   "evidence": {
+    "kind": "witness",
+    "note": "acceptance witness: legMarks[0].at moved past legMarks[1].at is accepted by the mutant and refused by the frozen counter (leg-marks; the frozen counter also reports event-leg-window).",
+    "probe": {
+     "id": "W-X35-marks-order",
+     "observed": "witness",
+     "mutant": {
+      "exit": 0,
+      "verdict": "clean",
+      "findingIds": []
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "leg-marks",
+       "event-leg-window"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X36-legcount-conjunct-dropped",
+   "line": 225,
+   "editFrom": "check('leg-order', legs.length === LEG_ORDER.length && ",
+   "editTo": "check('leg-order', ",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "4ccae5eb3cd1e1cb5bb532a16463187402f39829511b52ec41abb21d1c9a253f",
+   "evidence": {
+    "kind": "equivalence",
+    "note": "canon(legs.map(name)) === canon(LEG_ORDER) forces the same length, so removing the explicit length conjunct cannot change the outcome.",
+    "probe": null
+   }
+  },
+  {
+   "id": "X37-legrec-keys-dropped",
+   "line": 234,
+   "editFrom": "if (canon(Object.keys(l).sort()) !== canon(['elapsedMs', 'handleError', 'handleParams', 'handleResult', 'handleSendId', 'kind', 'name', 'opened', 'stateAfter', 'triggerError', 'triggerResult', 'triggerSendId'].sort())) bad('keys');",
+   "editTo": "",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "leg-records-extra-key"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 46,
+   "cases": 47,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "e4c5e577daba65a07fa0f20be54ad86a5ce6ab98780df9fae3b06e16b4d27b99",
+   "evidence": null
+  },
+  {
+   "id": "X38-legrec-kind-dropped",
+   "line": 235,
+   "editFrom": "if (l.kind !== p.kind) bad('kind');",
+   "editTo": "",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "91dda5dfd664e525dba2aa5e8eb4233a8c102313ea738adc1224f386b863c36d",
+   "evidence": {
+    "kind": "witness",
+    "note": "acceptance witness: the alert-accept leg record with kind \"handle-only\" is accepted by the mutant and refused by the frozen counter (leg-records); every other leg-record check keys off the plan, not the record.",
+    "probe": {
+     "id": "W-X38-leg-kind-handle-only",
+     "observed": "witness",
+     "mutant": {
+      "exit": 0,
+      "verdict": "clean",
+      "findingIds": []
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "leg-records"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X39-legrec-elapsed-floor-dropped",
+   "line": 238,
+   "editFrom": "if (!num(l.elapsedMs) || l.elapsedMs < 290) bad('elapsedMs');",
+   "editTo": "if (!num(l.elapsedMs)) bad('elapsedMs');",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "leg-records-elapsed-short"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 46,
+   "cases": 47,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "9bac46fb3f4dbb8e961b174dec8a4e884ff89791c0f3c90144adaf1f9d47187e",
+   "evidence": null
+  },
+  {
+   "id": "X40-legrec-sendid-plus2",
+   "line": 249,
+   "editFrom": "l.handleSendId !== l.triggerSendId + 1",
+   "editTo": "l.handleSendId !== l.triggerSendId + 2",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "leg-records"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "c75dd53e5957c923694c7fabd3680432003d5d45981f721408e5a54a39fba01e",
+   "evidence": null
+  },
+  {
+   "id": "X41-legrec-navkeys-dropped",
+   "line": 253,
+   "editFrom": "|| canon(Object.keys(l.triggerResult).sort()) !== canon(p.name === 'unload-dismiss' ? ['errorText', 'frameId', 'isDownload'] : ['frameId', 'isDownload', 'loaderId']))",
+   "editTo": "|| false)",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "leg-records-nav-result-missing-loader"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 39,
+   "cases": 40,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "9ac7e722031275f565106f6e832796cf6abbb29cf1c0084bf8d47469c504fbef",
+   "evidence": null
+  },
+  {
+   "id": "X42-legrec-handle-method-dropped",
+   "line": 243,
+   "editFrom": "if (!h || h.method !== 'Page.handleJavaScriptDialog' || canon(h.params) !== canon(l.handleParams)) bad('handle send');",
+   "editTo": "if (!h || canon(h.params) !== canon(l.handleParams)) bad('handle send');",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "1e5cee45b8c9488e92ceb65acb5c9918ba2a7534d0ab3514815efea6f4356cdd",
+   "evidence": {
+    "kind": "equivalence",
+    "note": "a handle send carrying another method changes the filtered gotCalls list in dialog-call-params and the method counts in dialog-call-count, so the dropped method conjunct is implied. Parity probe: both counters refuse a renamed handle send.",
+    "probe": {
+     "id": "E-X42-handle-method",
+     "observed": "parity",
+     "mutant": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "dialog-call-count",
+       "dialog-call-params"
+      ]
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "leg-records",
+       "dialog-call-count",
+       "dialog-call-params"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X43-server-root-count-ge",
+   "line": 170,
+   "editFrom": "servedRoot.length === 1 && servedNext.length === 1",
+   "editTo": "servedRoot.length >= 1 && servedNext.length >= 1",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "server-log-next-twice"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 8,
+   "cases": 9,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "7742e61956ea89fa67fac285f148dd3c307f1d502165314e28d8c9d11fe34cf8",
+   "evidence": null
+  },
+  {
+   "id": "X44-server-query-conjunct-dropped",
+   "line": 170,
+   "editFrom": " && s.query === 'run=' + encodeURIComponent(String(r.nonce))",
+   "editTo": "",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "3f3f26e6513eecc0330c06452f91b6fae14d82f629a2c530cddfd58ffcf15487",
+   "evidence": {
+    "kind": "witness",
+    "note": "acceptance witness: the \"/\" server row with query \"run=other\" (run still the nonce) is accepted by the mutant and refused by the frozen counter (server-log-binding).",
+    "probe": {
+     "id": "W-X44-server-query",
+     "observed": "witness",
+     "mutant": {
+      "exit": 0,
+      "verdict": "clean",
+      "findingIds": []
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "server-log-binding"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X45-count-dispatch-eleven",
+   "line": 278,
+   "editFrom": "n('Input.dispatchMouseEvent') === 12",
+   "editTo": "n('Input.dispatchMouseEvent') === 11",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "dialog-call-count"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "b785869ee1cc291de9bc9c1049d8652420f2aba6138ab03d319a6680737280c5",
+   "evidence": null
+  },
+  {
+   "id": "X46-count-navigate-ge",
+   "line": 278,
+   "editFrom": "n('Page.navigate') === 3",
+   "editTo": "n('Page.navigate') >= 3",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "dialog-call-count-third-navigate"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 69,
+   "cases": 70,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "83b2bf2b20137a7a38eb5ba19abc177cd7e71c817c29356d6d9f60fe4335bfcb",
+   "evidence": null
+  },
+  {
+   "id": "X47-exprs-drop-late",
+   "line": 315,
+   "editFrom": "'window.__late', ",
+   "editTo": "",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "send-log-allowlist"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "0cc8c5b991c315e1e84b60811ca08dd07723e38a1fd986bf9d1974d8c6ab89f7",
+   "evidence": null
+  },
+  {
+   "id": "X48-exprs-recorded-slice",
+   "line": 316,
+   "editFrom": "...RECORDED.map((nm) => 'window.__setLeg(' + JSON.stringify(nm) + ')')",
+   "editTo": "...RECORDED.slice(0, -1).map((nm) => 'window.__setLeg(' + JSON.stringify(nm) + ')')",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "send-log-allowlist"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "1d2bc2465df65c3cdc4e83d74b2eeea9353913ea882b14109265cec14ab50391",
+   "evidence": null
+  },
+  {
+   "id": "X49-empty-set-frame-tree-dropped",
+   "line": 317,
+   "editFrom": "const EMPTY = new Set(['Browser.getVersion', 'Page.enable', 'Runtime.enable', 'Page.getFrameTree']);",
+   "editTo": "const EMPTY = new Set(['Browser.getVersion', 'Page.enable', 'Runtime.enable']);",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "send-log-allowlist"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "068e3b5ca5ea41c7a1e3f79c3782bc00292f37e1ae819bc21c60f7ef66530999",
+   "evidence": null
+  },
+  {
+   "id": "X50-allowlist-every-to-some",
+   "line": 327,
+   "editFrom": "sendLog.every(allowed)",
+   "editTo": "sendLog.some(allowed)",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "lookalike-stub-confirm",
+    "lookalike-script-click",
+    "lookalike-events-push",
+    "lookalike-call-function-on",
+    "lookalike-file-chooser",
+    "lookalike-add-script",
+    "lookalike-bypass-csp"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 75,
+   "cases": 82,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "c7ba78480287fd2bd2e09a39e64187381e451d770bdbe897322a167965234cd0",
+   "evidence": null
+  },
+  {
+   "id": "X51-allowlist-id-base",
+   "line": 327,
+   "editFrom": "sendLog.every((c, i) => isObj(c) && c.id === i + 1)",
+   "editTo": "sendLog.every((c, i) => isObj(c) && c.id === i)",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "send-log-allowlist"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "167c83738ef32227391aca2c667d0f23233536f202f95177195a30126176622c",
+   "evidence": null
+  },
+  {
+   "id": "X52-runwindow-upper",
+   "line": 223,
+   "editFrom": "t1 - t0 < 600000",
+   "editTo": "t1 - t0 < 6000000",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "run-window-long"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 30,
+   "cases": 31,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "793585576e2dd93fb5721b9c28a7f93aa6c85b93372b942b6339d7d4236d81b4",
+   "evidence": null
+  },
+  {
+   "id": "X53-quantum-every-to-some",
+   "line": 221,
+   "editFrom": "events.every((e) => isObj(e) && onGrid(e.ts) && onGrid(e.at))",
+   "editTo": "events.some((e) => isObj(e) && onGrid(e.ts) && onGrid(e.at))",
+   "outcome": "killed",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [
+    "event-time-quantum",
+    "event-time-quantum-at",
+    "event-time-quantum-bracket-2e-5"
+   ],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 55,
+   "cases": 58,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "86486bfc19a9436696e2cf14a4e8b7f2f95c68037e5770806e8eae5337ea5fc2",
+   "evidence": null
+  },
+  {
+   "id": "X54-legshape-json-stringify",
+   "line": 405,
+   "editFrom": "check('legshape-consistency', canon(r.legShape) === canon(derived)",
+   "editTo": "check('legshape-consistency', JSON.stringify(r.legShape) === JSON.stringify(derived)",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "5e2b494d9cf55483e12755d02fb9750ac07eb5761f688747a24d55795eb46864",
+   "evidence": {
+    "kind": "direction",
+    "note": "canon sorts keys at every depth while JSON.stringify keeps insertion order, so the mutant refuses a superset (accepted set subset); no acceptance witness can exist. Refusal witness R-X54: legShape with one leg record's keys reversed is accepted by the frozen counter and refused by the mutant (legshape-consistency).",
+    "probe": {
+     "id": "R-X54-legshape-key-order",
+     "observed": "refusal",
+     "mutant": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "legshape-consistency"
+      ]
+     },
+     "frozen": {
+      "exit": 0,
+      "verdict": "clean",
+      "findingIds": []
+     }
+    }
+   }
+  },
+  {
+   "id": "X55-cdpview-nav-path",
+   "line": 333,
+   "editFrom": ": ['navigated', pathOf(e.params.url)]",
+   "editTo": ": ['navigated', e.params.url]",
+   "outcome": "killed-positive",
+   "batteryExit": 1,
+   "killed": true,
+   "failedCases": [],
+   "positiveFindings": [
+    "leg-unload-accept-dialog",
+    "legshape-consistency"
+   ],
+   "positiveExit": 1,
+   "passed": 0,
+   "cases": 0,
+   "stoppedEarly": true,
+   "mutantCounterSha256": "c0b6825dd54943a385be41126abb1b9a5d6fa5969d9a74f69d5fd69451435fcc",
+   "evidence": null
+  },
+  {
+   "id": "X56-cdpview-defaultprompt-nullish-dropped",
+   "line": 332,
+   "editFrom": "e.params.defaultPrompt ?? null",
+   "editTo": "e.params.defaultPrompt",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "9c272dc79b9c559f0a555b20a43040d627e33a0ad8752d12a7692fd9b50ff11d",
+   "evidence": {
+    "kind": "equivalence",
+    "note": "in arrays canon(undefined) and canon(null) both serialise to null (JSON.stringify([undefined]) === \"[null]\"), so the two forms are indistinguishable wherever cdpView output is compared.",
+    "probe": null
+   }
+  },
+  {
+   "id": "X57-eventlegdomain-all-legs",
+   "line": 257,
+   "editFrom": "events.every((e) => isObj(e) && RECORDED.includes(e.leg))",
+   "editTo": "events.every((e) => isObj(e) && LEG_ORDER.includes(e.leg))",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "e3c4756a05f41c7a7bafee35e743f8e09c1e66fecf5015a5097901dd49858502",
+   "evidence": {
+    "kind": "equivalence",
+    "note": "LEG_ORDER minus RECORDED is exactly [unload-accept], whose SHAPE event list is empty; any event labelled unload-accept fails leg-unload-accept-seq and event-leg-window (RECORDED.includes is false). Parity probe: both counters refuse an unload-accept event.",
+    "probe": {
+     "id": "E-X57-unload-event",
+     "observed": "parity",
+     "mutant": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "event-leg-window",
+       "leg-unload-accept-seq",
+       "leg-unload-accept-trusted",
+       "leg-unload-accept-prevented",
+       "leg-unload-accept-xy",
+       "coordinate-law",
+       "legshape-consistency"
+      ]
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "event-leg-domain",
+       "event-leg-window",
+       "leg-unload-accept-seq",
+       "leg-unload-accept-trusted",
+       "leg-unload-accept-prevented",
+       "leg-unload-accept-xy",
+       "coordinate-law",
+       "legshape-consistency"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X58-devtools-url-prefix-loose",
+   "line": 196,
+   "editFrom": "dl.url.startsWith('ws://127.0.0.1:' + argvPort + '/devtools/browser/')",
+   "editTo": "dl.url.startsWith('ws://127.0.0.1:' + argvPort)",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "96e83973d7e68a8feeb5dc33a094a9fd324771f24f6de56ce8a190a321099ade",
+   "evidence": {
+    "kind": "equivalence",
+    "note": "browserId() requires /devtools/browser/<uuid> at the end of the same URL and replay-devtools-url demands a non-null id, so every URL the loose prefix admits but the strict prefix rejects is also refused by replay-devtools-url. Parity probe: both counters refuse a mistyped /devtools/browsr/ path.",
+    "probe": {
+     "id": "E-X58-devtools-url-path",
+     "observed": "parity",
+     "mutant": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "devtools-port-binding",
+       "replay-devtools-url"
+      ]
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "devtools-port-binding",
+       "replay-devtools-url"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X59-argv-length-ge",
+   "line": 189,
+   "editFrom": "hargv.length === 17",
+   "editTo": "hargv.length >= 17",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "6a94edef994e0848e6c346d6c9c6dd494caf46e7c6ce9cb959e8c0e586401c43",
+   "evidence": {
+    "kind": "witness",
+    "note": "acceptance witness: an 18-element argv (extra benign flag appended after about:blank, argv[16] still about:blank) is accepted by the mutant and refused by the frozen counter (host-argv).",
+    "probe": {
+     "id": "W-X59-argv-18",
+     "observed": "witness",
+     "mutant": {
+      "exit": 0,
+      "verdict": "clean",
+      "findingIds": []
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "host-argv"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "X60-fixture-viewport-dropped",
+   "line": 182,
+   "editFrom": " && canon(r.fixture.viewport) === canon(VIEWPORT)",
+   "editTo": "",
+   "outcome": "survived",
+   "batteryExit": 0,
+   "killed": false,
+   "failedCases": [],
+   "positiveFindings": [],
+   "positiveExit": 0,
+   "passed": 251,
+   "cases": 251,
+   "stoppedEarly": false,
+   "mutantCounterSha256": "39b54d456a49486afd0974e75818fa485dd18421bb79ccacd628981cc0c99860",
+   "evidence": {
+    "kind": "witness",
+    "note": "acceptance witness: fixture.viewport.width 1279 is accepted by the mutant and refused by the frozen counter (fixture-hash).",
+    "probe": {
+     "id": "W-X60-viewport",
+     "observed": "witness",
+     "mutant": {
+      "exit": 0,
+      "verdict": "clean",
+      "findingIds": []
+     },
+     "frozen": {
+      "exit": 1,
+      "verdict": "findings",
+      "findingIds": [
+       "fixture-hash"
+      ]
+     }
+    }
+   }
+  }
+ ]
+}

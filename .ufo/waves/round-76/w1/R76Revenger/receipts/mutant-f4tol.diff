@@ -1,0 +1,11 @@
+--- /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-dialog-r76.mjs	2026-11-07 04:35:43.189628057 -0300
++++ /fast/scratch/hyaku/tabi-r76/R76Revenger/mut-f4tol/check-dialog-r76.mjs	2026-11-07 05:01:23.175146271 -0300
+@@ -199,7 +199,7 @@
+ const bid = browserId(host);
+ check('replay-devtools-url', bid !== null && priors.every((p) => browserId(p.host) !== bid), 'devtools browser id ' + bid + ' (uuid shape, and not the browser id of any prior receipt)');
+ // Multiset near-match (order- and count-free), carried from r75 unchanged in rule; thresholds re-measured.
+-const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;
++const TOL = 0.045, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;
+ const matchCount = (a, b) => { const x = [...a].sort((p, q) => p - q), y = [...b].sort((p, q) => p - q); let i = 0, j = 0, n = 0; while (i < x.length && j < y.length) { const d = x[i] - y[j]; if (Math.abs(d) < TOL) { n++; i++; j++; } else if (d < 0) i++; else j++; } return n; };
+ const pairs = (x) => arr(x.events).filter((e) => isObj(e) && num(e.ts) && num(e.at));
+ const pairMatch = (a, b) => { const y = pairs(b).map((e) => [e.ts, e.at]); const used = new Array(y.length).fill(false); let n = 0; for (const e of pairs(a)) { const k = y.findIndex((v, i) => !used[i] && Math.abs(v[0] - e.ts) < TOL && Math.abs(v[1] - e.at) < TOL); if (k >= 0) { used[k] = true; n++; } } return n; };

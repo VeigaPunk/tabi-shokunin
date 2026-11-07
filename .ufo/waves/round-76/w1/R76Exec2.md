@@ -1,0 +1,9 @@
+# R76Exec2 — post-freeze repetition red rate and honest-pair replay margin
+
+HOLDS. Three cold driver runs (nonces tabi-r76-exec2-1-33772d28 / -2-f45f6eb3 / -3-ffb2ad67, own free ports, scratch /fast/scratch/hyaku/tabi-r76/R76Exec2/d<n>) — driver exit 0 ×3 (~6.8 s each); counter exit 0 clean 131/131 ×3 (prior-set.txt sha256 30f7418a…, 17 lines, + L1 receipt, both sibling d*.receipt.txt, and R76Exec1/receipt.txt as priors = 21); battery exit 0 allOk 251/251 ×3 (--jobs 6, three laundered degenerates). Receipts: .ufo/waves/round-76/w1/R76Exec2/d{1,2,3}.receipt.txt (sha256 a2bbadb0…, 2a840b42…, f1b0faa9…).
+
+- Red rate: 0/12 runs red on every one of the 131 checks (my 3 counters + 9 pf-smoke counters; tabulation.json `redNonzero: []`).
+- Battery failure rate: 0/12 runs failed on every one of the 251 cases (3 batteries + 9 pf-smoke batteries; tabulation.json `failNonzero: []`).
+- Honest-pair margin: 17 receipts (13 pre-freeze + L1 + my 3), 272 ordered pairs — maxAbsMatched 0 of 19, maxGapMatched 2 of 5 (maxGapFrac 1/3 vs 3/4), refusedHonestPairs 0; NO honest pair within one event or one gap of refusal (nearest: 19 events / 3 gaps away). Matches the committed 13-receipt pre-freeze measurement (0 / 2 / 0). Evidence: honest-pairs-exec2.json, script copy timeline-honest-pairs-exec2.mjs (committed controls/c1/timeline-honest-pairs.mjs untouched).
+- Blocking law: dialog-return (at − ts) over all 17 receipts, per leg: alert-accept 19.7–21.3, confirm-accept 19.7–21.2, confirm-dismiss 19.8–22.3, prompt-text 19.5–21.5, prompt-noparam 19.4–24.8, prompt-dismiss 18.6–21.0 ms; 0/102 samples below the 1 ms floor (≥ 18× floor everywhere).
+- No tool installs. No git mutations. Writes confined to w1/R76Exec2/ + scratch (scratch removed after artifact copy). Full detail: .ufo/waves/round-76/w1/R76Exec2/report.md.
