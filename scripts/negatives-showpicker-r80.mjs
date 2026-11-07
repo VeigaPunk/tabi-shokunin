@@ -53,6 +53,18 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const arr = (v) => (Array.isArray(v) ? v : []);
 const LEG_NAMES = arr(real.legs).map((l) => l.name);
+const priorSetPriors = (() => {
+  const out = [];
+  try {
+    for (const line of fs.readFileSync(path.resolve(priorSet), 'utf8').split('\n')) {
+      const t = line.trim();
+      if (!t || t.startsWith('#')) continue;
+      const p = path.isAbsolute(t) ? t : path.join(lane, t);
+      try { out.push(JSON.parse(fs.readFileSync(p, 'utf8'))); } catch {}
+    }
+  } catch {}
+  return out;
+})();
 const legOf = (r, n) => arr(r.legs).find((l) => l.name === n);
 const evOf = (r, leg, pred = () => true) => arr(legOf(r, leg).pageEvents).filter(pred);
 const openOf = (r, leg) => arr(legOf(r, leg).cdpEventLog).find((e) => e.method === 'Page.fileChooserOpened');
@@ -189,7 +201,7 @@ const freshPrior = (ctx, delta) => {
 };
 add('replay-event-timeline', 'replay-event-timeline', (r, ctx) => ({ args: ['--prior', freshPrior(ctx, 0)] }), []);
 add('replay-launch-token', 'replay-launch-token', (r, ctx) => {
-  const prior = ctx.priors[0];
+  const prior = priorSetPriors[0] || ctx.priors[0];
   const tok = arr(prior.legs).find((l) => typeof l.launchToken === 'string').launchToken;
   const l = legOf(r, 'sp80-accept-png');
   l.launchToken = tok;
@@ -197,7 +209,7 @@ add('replay-launch-token', 'replay-launch-token', (r, ctx) => {
   l.argv[i] = '--user-data-dir=' + path.join(path.dirname(l.argv[i].slice('--user-data-dir='.length)), 'profile-' + tok);
 }, ['host-argv']);
 add('replay-devtools-url', 'replay-devtools-url', (r, ctx) => {
-  const prior = ctx.priors[0];
+  const prior = priorSetPriors[0] || ctx.priors[0];
   const bid = arr(prior.legs).find((l) => isObj(l.devtoolsListening)).devtoolsListening.browserId;
   const l = legOf(r, 'sp80-accept-png');
   l.devtoolsListening = { url: 'ws://127.0.0.1:' + r.ports.cdp + '/devtools/browser/' + bid, port: r.ports.cdp, browserId: bid };
@@ -243,6 +255,54 @@ add('replay-gap-only-refuse', 'replay-event-timeline', (r, ctx) => {
   // the prior's every event shifted by +1 ms: no pair matches, the gap DURATIONS are preserved
   return { args: ['--prior', freshPrior(ctx, 1)] };
 }, []);
+
+
+// ---- isolating cases for the kill-power survivors (round-80 repair) ----
+add('fixture-child-origin', 'ports-declared', (r) => { r.fixture.child.origin = 'http://127.0.0.1:1'; });
+add('fixture-child-keys', 'fixture-hash', (r) => { r.fixture.child.extra = 1; });
+add('ports-collide', 'ports-declared', (r) => { r.ports.child = r.ports.http; r.fixture.child.origin = 'http://127.0.0.1:' + r.ports.http; }, ['host-argv', 'devtools-port-binding', 'send-log-allowlist', 'cdp-event-log-closed', 'context-binding']);
+add('leg-errors', 'leg-records', (r) => { legOf(r, 'sp80-accept-png').errors = ['x']; });
+add('context-duplicate', 'context-binding', (r) => { const l = legOf(r, 'sp80-cross-origin'); l.contexts.push({ ...l.contexts.find((c) => c.origin === 'http://127.0.0.1:' + r.ports.child) }); }, ['send-log-allowlist', 'cdp-event-log-closed']);
+add('context-id-wrong', 'context-binding', (r) => { legOf(r, 'sp80-cross-origin').childContextId = 99; }, ['send-log-allowlist']);
+add('send-context-dropped', 'send-log-allowlist', (r) => { const l = legOf(r, 'sp80-cross-origin'); const c = l.cdpSendLog.find((x) => x.params.contextId === l.childContextId); delete c.params.contextId; });
+add('send-context-in-parent-leg', 'send-log-allowlist', (r) => { const l = legOf(r, 'sp80-accept-png'); l.cdpSendLog.push({ id: l.cdpSendLog.length + 1, method: 'Runtime.evaluate', params: { expression: 'window.__act()', returnByValue: true, contextId: 3 } }); });
+add('send-id-gap', 'send-log-allowlist', (r) => { legOf(r, 'sp80-accept-png').cdpSendLog[3].id = 99; });
+add('send-expression', 'send-log-allowlist', (r) => { const l = legOf(r, 'sp80-accept-png'); l.cdpSendLog.push({ id: l.cdpSendLog.length + 1, method: 'Runtime.evaluate', params: { expression: 'alert(1)', returnByValue: true } }); });
+add('plan-answer-send-id', 'plan-calls', (r) => { legOf(r, 'sp80-trigger-then-answer').answer.setSendId = 999; });
+add('cdp-open-id-zero', 'cdp-event-log-closed', (r) => { openOf(r, 'sp80-accept-png').params.backendNodeId = 0; }, ['answer-law']);
+add('event-before-pre', 'event-leg-window', (r) => { const l = legOf(r, 'sp80-accept-png'); const e = l.pageEvents[0]; e.at = 0.1; }, ['leg-sp80-accept-png']);
+add('cdp-event-method', 'cdp-event-log-closed', (r) => { const l = legOf(r, 'sp80-accept-png'); l.cdpEventLog.push({ method: 'Page.loadEventFired', params: { timestamp: 1 }, afterSendId: l.triggerSendId }); });
+add('frame-id-shape', 'frame-binding', (r) => { legOf(r, 'sp80-accept-png').frameTree.mainFrameId = 'X'; }, ['cdp-event-log-closed']);
+add('cdp-open-frame', 'cdp-event-log-closed', (r) => { openOf(r, 'sp80-accept-png').params.frameId = 'A'.repeat(32); });
+add('cross-child-ret', 'cross-origin-law', (r) => { legOf(r, 'sp80-cross-origin').childResult = { ok: true, ret: 'x' }; });
+add('cod-child-act', 'cross-origin-disabled-law', (r) => { legOf(r, 'sp80-cross-origin-disabled').childActivationAfter = { isActive: false, hasBeenActive: true }; });
+add('answer-state', 'answer-law', (r) => { legOf(r, 'sp80-trigger-then-answer').stateAfter.s = []; }, ['leg-sp80-trigger-then-answer']);
+add('teardown-child-port', 'teardown-closure', (r) => { delete legOf(r, 'sp80-accept-png').teardown.portProbes.child; }, ['host-argv']);
+
+// exact-threshold bracket: the replay rule's abs side is bracketed on BOTH sides with the gap side
+// broken (the gap's upper event moved by +3 ms), so only the pair threshold decides
+const bracketPrior = (ctx, shifted) => {
+  const c = clone(ctx.real);
+  for (const l of arr(c.legs)) {
+    const tok = crypto.randomBytes(6).toString('hex');
+    l.launchToken = tok;
+    const i = arr(l.argv).findIndex((a) => typeof a === 'string' && a.startsWith('--user-data-dir='));
+    if (i >= 0) l.argv[i] = '--user-data-dir=' + path.join(path.dirname(l.argv[i].slice('--user-data-dir='.length)), 'profile-' + tok);
+    const bid = crypto.randomUUID();
+    if (isObj(l.devtoolsListening)) { l.devtoolsListening = { url: 'ws://127.0.0.1:' + c.ports.cdp + '/devtools/browser/' + bid, port: c.ports.cdp, browserId: bid }; l.stderrHead = 'DevTools listening on ' + l.devtoolsListening.url; }
+  }
+  const flat = arr(c.legs).flatMap((l) => arr(l.pageEvents).map((e) => ({ l, e }))).sort((a, b) => a.e.at - b.e.at);
+  let upper = null;
+  for (let i = 1; i < flat.length; i++) if (flat[i].e.at - flat[i - 1].e.at >= 50) { upper = flat[i]; break; }
+  if (upper) { upper.e.ts = Math.round((upper.e.ts + 3) * 10) / 10; upper.e.at = Math.round((upper.e.at + 3) * 10) / 10; }
+  const rest = flat.filter((x) => x !== upper);
+  for (const x of rest.slice(0, shifted)) { x.e.ts = Math.round((x.e.ts + 1) * 10) / 10; x.e.at = Math.round((x.e.at + 1) * 10) / 10; }
+  const p = path.join(work, 'prior-bracket-' + shifted + '.json');
+  fs.writeFileSync(p, JSON.stringify(c));
+  return p;
+};
+add('replay-at-threshold-refuse', 'replay-event-timeline', (r, ctx) => ({ args: ['--prior', bracketPrior(ctx, 10)] }), []);
+accept('replay-below-threshold-accept', (r, ctx) => ({ args: ['--prior', bracketPrior(ctx, 11)] }));
 
 // must-accept
 accept('honest', () => {});

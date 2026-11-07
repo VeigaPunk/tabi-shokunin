@@ -95,7 +95,6 @@ const MUTANTS = [
   ['no-selection-empty-dropped', "['s', 'm', 'd', 'k', 'dis'].every((k) => Array.isArray(st[k]) && st[k].length === 0)", "['s', 'm', 'd', 'k', 'dis'].every((k) => Array.isArray(st[k]))"],
   ['no-selection-file-event-dropped', "e.type === 'input' || e.type === 'change' || (e.files !== null && e.type !== 'cancel')", "false"],
   ['intercept-count-dropped', "if (opens !== want) intBad.push(leg.name + ':opened-' + opens + '-want-' + want);", ""],
-  ['cancel-law-any', "same(cancels, [])", "cancels.length === 0"],
   ['dismiss-law-any', "!(isObj(l.dismissResult) && same(l.dismissResult, {}) && l.dismissError === null && arr(l.pageEvents).every((e) => e.type !== 'cancel'))", "l.dismissError !== null"],
   ['trust-law-untrusted-ok', "events.every((e) => e.isTrusted === true)", "events.every((e) => typeof e.isTrusted === 'boolean')"],
   ['trust-law-pointer-dropped', "arr(l.pageEvents).every((e) => !PTR.has(e.type) || (e.leg !== 'show-picker' && e.leg !== 'show-picker-2'))", "true"],
