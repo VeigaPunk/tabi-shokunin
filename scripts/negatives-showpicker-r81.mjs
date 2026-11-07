@@ -259,11 +259,11 @@ for (const c of cases) {
     ok = res.status === 1 && ids.includes(c.expect) && extra.length === 0;
     detail = 'exit ' + res.status + ' expected ' + c.expect + ' got ' + JSON.stringify(ids.slice(0, 10)) + (extra.length ? ' extra ' + JSON.stringify(extra) : '');
   }
-  results.push({ case: c.name, accept: c.accept, ok, detail });
+  results.push({ case: c.name, accept: c.accept, expect: c.expect, ok, detail });
   if (!ok && firstFailure) break;
 }
 const failed = results.filter((x) => !x.ok);
-const covered = new Set(results.filter((x) => x.ok && !x.accept).map((x) => x.case));
+const covered = new Set(results.filter((x) => x.ok && !x.accept).map((x) => x.expect));
 const declared = (() => { const res = runCounter(realPath, lane); return res.json && res.json.checks ? Object.keys(res.json.checks) : []; })();
 const uncovered = declared.filter((id) => !covered.has(id));
 const out = { schema: 'tabi-r81-battery', cases: results.length, failed: failed.length, coverage: { declared: declared.length, covered: covered.size, uncovered, unknown: [...covered].filter((c) => !declared.includes(c)) }, results: results.filter((x) => !x.ok) };

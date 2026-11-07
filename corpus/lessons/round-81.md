@@ -106,8 +106,29 @@ never silently replaced:
    `f7c423c1`) passes `path.resolve(realPath)` for those two cases. The scored battery is the
    repaired instrument's; the frozen `claims.json` pin `6964de6f` is superseded by this line.
 
+2b. **The battery's coverage bookkeeping (repair 2).** The battery counted `coverage.unknown` by case
+NAME, so the four extra discriminating cases (`order-law-message`, `activation-before`,
+`cross-nonfile-chooser`, `cross-nonfile-result`) appeared as unknown ids and the frozen leg (c)'s
+`coverage.unknown []` was false. The repaired battery counts check ids; the scored run now reports
+`coverage {declared 56, covered 56, uncovered [], unknown []}`. The pin chain is
+`6964de6f4a4a` -> `f7c423c183c1` -> `0f75e767e696`; `scripts/run-scored-r81.sh` now carries the
+frozen scored arguments and is declared OUT of the pin set (a convenience runner, not a gate).
+
 The driver, counter, kill-power and selftest bytes are unchanged from D; `freeze.txt` re-pins the
-repaired battery and prior set and carries the repair note.
+repaired battery and prior set and carries both repair notes.
+
+**Correction — the frozen limit sentence's first clause is off by one.** The sentence says a forger
+who moves at least `absNeed` event times escapes; the measured boundary is that moving exactly
+`absNeed` is REFUSED (`absMatched 16 >= absNeed 16`, exit 1) and `absNeed + 1` escapes (the printed
+`escapeEvents` 17 is right). The frozen text is not edited; the corrected sentence is: "refuse when
+absMatched >= absNeed; the escape minimum is absNeed + 1 moved events (priorEvents - absNeed + 1)."
+
+**Limit — the C2 counter's four presence-bound claims.** `gate-quote-counts`, `capability-typo`,
+`control-count` and `landed-d10` pass on the presence of the stale string and the correction string;
+a reversed correction still passes (R81Critic's finding 2). `stale-removed` is caught, and the three
+controls isolate `claims-annotation`, `capability-typo` and `r81-identity`. The four presence-bound
+claims are a discrimination limit routed to r82 (bind direction per claim); the C2 verdict is
+reported with that limit.
 
 ## Wave w1 findings (integrated)
 
