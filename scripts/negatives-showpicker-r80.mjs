@@ -281,7 +281,7 @@ add('teardown-child-port', 'teardown-closure', (r) => { delete legOf(r, 'sp80-ac
 
 // exact-threshold bracket: the replay rule's abs side is bracketed on BOTH sides with the gap side
 // broken (the gap's upper event moved by +3 ms), so only the pair threshold decides
-const bracketPrior = (ctx, shifted) => {
+const bracketPrior = (ctx, targetMatched) => {
   const c = clone(ctx.real);
   for (const l of arr(c.legs)) {
     const tok = crypto.randomBytes(6).toString('hex');
@@ -292,17 +292,21 @@ const bracketPrior = (ctx, shifted) => {
     if (isObj(l.devtoolsListening)) { l.devtoolsListening = { url: 'ws://127.0.0.1:' + c.ports.cdp + '/devtools/browser/' + bid, port: c.ports.cdp, browserId: bid }; l.stderrHead = 'DevTools listening on ' + l.devtoolsListening.url; }
   }
   const flat = arr(c.legs).flatMap((l) => arr(l.pageEvents).map((e) => ({ l, e }))).sort((a, b) => a.e.at - b.e.at);
-  let upper = null;
-  for (let i = 1; i < flat.length; i++) if (flat[i].e.at - flat[i - 1].e.at >= 50) { upper = flat[i]; break; }
-  if (upper) { upper.e.ts = Math.round((upper.e.ts + 3) * 10) / 10; upper.e.at = Math.round((upper.e.at + 3) * 10) / 10; }
-  const rest = flat.filter((x) => x !== upper);
-  for (const x of rest.slice(0, shifted)) { x.e.ts = Math.round((x.e.ts + 1) * 10) / 10; x.e.at = Math.round((x.e.at + 1) * 10) / 10; }
-  const p = path.join(work, 'prior-bracket-' + shifted + '.json');
+  // break EVERY gap (the receipt's gap count varies with run timing): shift each gap's upper event
+  const uppers = new Set();
+  for (let i = 1; i < flat.length; i++) if (flat[i].e.at - flat[i - 1].e.at >= 50) uppers.add(flat[i]);
+  for (const u of uppers) { u.e.ts = Math.round((u.e.ts + 3) * 10) / 10; u.e.at = Math.round((u.e.at + 3) * 10) / 10; }
+  const rest = flat.filter((x) => !uppers.has(x));
+  // exactly `targetMatched` events must still match: shift the rest beyond that count
+  const shiftCount = Math.max(0, rest.length - targetMatched);
+  for (const x of rest.slice(0, shiftCount)) { x.e.ts = Math.round((x.e.ts + 1) * 10) / 10; x.e.at = Math.round((x.e.at + 1) * 10) / 10; }
+  const p = path.join(work, 'prior-bracket-' + targetMatched + '.json');
   fs.writeFileSync(p, JSON.stringify(c));
   return p;
 };
-add('replay-at-threshold-refuse', 'replay-event-timeline', (r, ctx) => ({ args: ['--prior', bracketPrior(ctx, 10)] }), []);
-accept('replay-below-threshold-accept', (r, ctx) => ({ args: ['--prior', bracketPrior(ctx, 11)] }));
+const bracketNeed = (r) => Math.ceil(0.5 * arr(r.legs).reduce((n, l) => n + arr(l.pageEvents).length, 0));
+add('replay-at-threshold-refuse', 'replay-event-timeline', (r, ctx) => ({ args: ['--prior', bracketPrior(ctx, bracketNeed(r))] }), []);
+accept('replay-below-threshold-accept', (r, ctx) => ({ args: ['--prior', bracketPrior(ctx, bracketNeed(r) - 1)] }));
 
 // must-accept
 accept('honest', () => {});
