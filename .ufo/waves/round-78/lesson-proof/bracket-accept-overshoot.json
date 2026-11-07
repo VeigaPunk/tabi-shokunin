@@ -1,0 +1,9 @@
+{
+ "observed": "round 78 pre-freeze pass, third byte set (battery 398 cases)",
+ "receipts": ["probe/p3", "smoke/s2"],
+ "case": "accept-prior-abs-below-threshold",
+ "error": "bracket misplaced: abs 40 (need 40) gap 4 (need 9) want 39 / <9",
+ "cause": "the prior was derived by moving non-kept events 0.3-1.5 ms, and on the 0.1 ms grid a moved event landed within TOL of another event of the receipt under test, so absMatched over-counted by one",
+ "second": {"case": "witness-accept-own-gap-50.0", "receipts": ["probe/p2", "probe/p3", "probe/p4"], "finding": "replay-event-timeline (own gaps fell to 10 < 11)", "cause": "a 50.0 ms own gap on the 0.1 ms grid can compute below the 50 ms floor by float subtraction; the case duplicated the existing accept-own-gap-50.1"},
+ "fix": "keepExactFar (non-kept events move >= 1000 ms, no coincidence) and placed(p, 'need', ...) for the floor side; the duplicate witness merged into accept-own-gap-50.1 (QUALITY 149/155)"
+}

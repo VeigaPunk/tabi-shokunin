@@ -1,0 +1,10 @@
+round 78, first battery run after importing the 34 R77Mut1 witnesses (observed trace, verbatim head)
+file:///home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-filechooser-r78.mjs:52
+const lineOf = (id) => { const i = counterSrc.findIndex((l) => l.includes(`check('${id}'`) || (id.startsWith('leg-') && l.includes('check(`leg-${name}-' + id.split('-').slice(-1)[0] + '`'))); return i >= 0 ? i + 1 : null; };
+                                                                                                  ^
+TypeError: Cannot read properties of null (reading 'startsWith')
+    at file:///home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-filechooser-r78.mjs:52:99
+    at Array.findIndex (<anonymous>)
+    at lineOf (file:///home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-filechooser-r78.mjs:52:47)
+cause: three R77Mut1 witnesses of kind "must-accept" were generated as refusal cases with expect null
+fix: them classified as accepting cases; refusal cases without an expected id are refused at build time (QUALITY 154)

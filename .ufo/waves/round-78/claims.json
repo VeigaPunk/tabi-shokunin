@@ -1,0 +1,48 @@
+{
+ "lane": "tabi",
+ "round": 78,
+ "base": "ae2dc25fe8b4db70d2ef8a83804bc5545fbc35ff",
+ "frozenAt": "2026-11-07, before any post-D (scored) run; pre-freeze gates green: counter 7/7 clean, battery 7/7 allOk, kill power holds 4/4 (controls/c1/pf/out/prefreeze-summary.json)",
+ "claims": {
+  "C1": {
+   "axis": "coverage",
+   "type": "capability generation (re-claim of chromium-file-chooser-linux, generation r78; round-77 C1 was NOT VERIFIED)",
+   "predicate": "C1-FILECHOOSER-R78",
+   "legs": {
+    "a": "the L1 post-D scored run: receipt corpus/evidence/round78/chromium-file-chooser/receipt.json, nonce tabi-r78-l1-<first 12 of D>, driver pin 9df02b02cd38440f6289d66b6a5231dabe5ac03ccb67107ba4a3d12a6c8b998d, prior set .ufo/waves/round-78/controls/c1/prior-set.txt; the counter exits 0, verdict clean, checkCount 186; the receipt carries frameTree (mainFrameParentId null, mainFrameUrl about:blank) and fixtureInputs (5 page-measured descriptors)",
+    "b": "cold-run acceptance: every cold run committed under .ufo/waves/round-78/scored/ and listed in cold-runs.txt (at least 4: cold1 plus the wave's R78Exec1 and R78Exec2 receipts) exits 0 clean under the counter with that receipt's own nonce, the committed prior set and --prior for the scored receipt; ZERO honest refusals (round 77 refused 2 of 25 observed runs on a pinned literal id)",
+    "c": "on the (a) receipt the battery exits 0 allOk and kill power holds=true, run with the frozen arguments of run-scored.sh",
+    "d": "the capability row names first-working round 78 and carries the round-77 provisional note; corpus/knowledge/chromium-file-chooser-runtime-round-78.md cites S208-S215; SKILL.md `## Round 78 gate registry` registers check-filechooser-r78; `node scripts/selftest-r78-gates.mjs --selftest` exits 0"
+   },
+   "countingCommand": "node scripts/check-filechooser-r78.mjs --lane <ABS lane> --receipt corpus/evidence/round78/chromium-file-chooser/receipt.json --expect-driver-sha256 9df02b02cd38440f6289d66b6a5231dabe5ac03ccb67107ba4a3d12a6c8b998d --expect-nonce tabi-r78-l1-<D12> --prior-set .ufo/waves/round-78/controls/c1/prior-set.txt --json",
+   "pins": {
+    "scripts/chrome-cdp-filechooser-round78.mjs": "9df02b02cd38440f6289d66b6a5231dabe5ac03ccb67107ba4a3d12a6c8b998d",
+    "scripts/check-filechooser-r78.mjs": "d3a8fd8714ca3448070dfe4a4355e0725ac97527b070952cc9ae89a5f9e0fe09",
+    "scripts/negatives-filechooser-r78.mjs": "b82bc6c0afd95bd44f9be679e299634356f41fc3cacd31cb73134b269d3f95f3",
+    "scripts/selftest-r78-gates.mjs": "7ff8fb7d8a5ad98203d6f8aee28378a7ac81914cc1639272be71d3c1dec70fd7",
+    ".ufo/waves/round-78/controls/c1/kill-power-r78.mjs": "60460ed137ed252d3e450608d4387564f536b8f691cb783c9ab967a941b45726",
+    ".ufo/waves/round-78/controls/c1/prefreeze-summary.mjs": "a74708915e24b8f99afe4fb25a25c6663b7fa3f3d528cbb98dbf18b0fcb2d53c",
+    ".ufo/waves/round-78/controls/c1/run-prefreeze-gates.sh": "f45d8e10a099457c96771c490b4bd2aa0ec893a476f0727f70bea2aabcd4a3b6"
+   },
+   "priorSet": ".ufo/waves/round-78/controls/c1/prior-set.txt (10 receipts of schema tabi-chrome-cdp-filechooser-r78: probes p1-p4, smokes s1-s3, degenerates page-stub/eval-trigger/swap-files; plus the r77 scored receipt as the cross-generation prior, QUALITY 138/140)",
+   "killRule": "any of (a)-(d) false as frozen, or any axis harmed -> C1 NOT verified (honest stop); no leg is re-scoped after a scored run",
+   "limit": "the counter reads a receipt: a forger who rewrites the identity fields and at least absNeed(prior) = ceil(0.5 * prior events) event times AND gapNeed(prior) = ceil(0.75 * prior >= 50 ms gaps) gaps of a prior escapes (the printed per-prior `limit` block is the sentence); a browser-assigned backendNodeId relabelled consistently at every occurrence is INSIDE the limit by design (QUALITY 150) and the receipt still proves the page element through fixtureInputs/node-binding-law; a receipt outside the two walked trees (.ufo/waves/round-78, corpus/evidence/round78) and outside --prior is outside the walk; an own gap of exactly 50.0 ms may compute below the 50 ms floor at the 0.1 ms grid (float subtraction), so the battery brackets 50.1/49.9"
+  },
+  "C2": {
+   "axis": "calibration",
+   "type": "self-assessment reconciliation",
+   "predicate": "C2-CAPSTATUS-R78",
+   "legs": {
+    "a": "`node scripts/check-capability-status.mjs --json` exits 0 with mismatches 0 (before: exit 1, 1 mismatch, lesson-proof/c2-before.json)",
+    "b": "every capability row names a round whose SCORECARD section does not carry NOT VERIFIED/honest stop, or carries `provisional` together with the failed round; no row keeps a `provisional` label without a round",
+    "c": "the repair is honest about C1: if C1 verifies the row's first-working round is 78 with the r77 provisional note; if C1 does not verify the row reads `provisional r77` and the checker still exits 0 with provisional 1"
+   },
+   "countingCommand": "node scripts/check-capability-status.mjs --json",
+   "pins": {
+    "scripts/check-capability-status.mjs": "7424c865d040a6436541dc1fa5c70378ef001da61981eada0440e33e6ab423cc"
+   },
+   "killRule": "mismatches != 0, or a provisional row naming no round, or a row on a NOT VERIFIED round without provisional -> C2 NOT verified",
+   "controls": "lesson-proof/c2-controls.json (base exits 1 with the r77 row; a `provisional` cell without a round exits 1; `provisional r77` exits 0, the accepted alternative disclosed in leg c)"
+  }
+ }
+}

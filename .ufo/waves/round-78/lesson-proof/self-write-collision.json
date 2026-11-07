@@ -1,0 +1,8 @@
+{
+ "observed": "round 78, pre-freeze counter pass, first run",
+ "command": "node scripts/check-filechooser-r78.mjs --lane <lane> --receipt .ufo/waves/round-78/controls/c1/probe/p1.receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r78-p1 --prior-set .ufo/waves/round-78/controls/c1/pf/ps-p1.txt --json > .ufo/waves/round-78/controls/c1/probe/p1.counter.json",
+ "exit": 1,
+ "findings": [{"id": "prior-set-unparsable", "detail": "files in the round-78 wave/evidence trees that look like JSON but do not parse (refused, not skipped): .ufo/waves/round-78/controls/c1/probe/p1.counter.json"}],
+ "cause": "the counter walks .ufo/waves/round-78 while its own stdout redirection was still writing the summary into that tree",
+ "fix": "write instrument outputs under $HYAKU_SCRATCH and copy them into the evidence tree after the run (controls/c1/run-prefreeze-gates.sh)"
+}
