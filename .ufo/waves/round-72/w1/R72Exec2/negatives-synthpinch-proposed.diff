@@ -1,0 +1,15 @@
+--- scripts/negatives-synthpinch-r72.mjs	2026-11-06 20:30:04.506540751 -0300
++++ /fast/scratch/hyaku/tabi-r72/R72Exec2/copies/frozen/negatives-synthpinch-proposed.mjs	2026-11-06 20:41:11.880213763 -0300
+@@ -156,7 +156,11 @@
+ add('event-scale-touch', 'event-scale', (r) => { evsOf(r, 'touch', (e) => e.type === 'touchmove')[2].scale = 1.7; });
+ add('event-scale-zero', 'event-scale', (r) => { evsOf(r, 'zero', (e) => e.type === 'wheel')[0].scale = 1.6; });
+ add('wheel-anchor', 'wheel-anchor', (r) => { evsOf(r, 'in', (e) => e.type === 'wheel')[0].clientX += 5; });
+-add('in-wheel-anchor-2px', 'wheel-anchor', (r) => { evsOf(r, 'in', (e) => e.type === 'wheel')[0].clientX += 2; });
++// Receipt-independent (r73 proposal): the counter's frozen anchor is AT.x = 400, and the in-leg's
++// first wheel lands on 399 or 400 depending on the run. `+= 2` therefore produced 401 (1 px off,
++// inside the counter's +-1 tolerance -> accepted -> case failed) on any 399 receipt. Pin the
++// mutant at AT.x + 2 = 402 so it is 2 px off the anchor on every receipt.
++add('in-wheel-anchor-2px', 'wheel-anchor', (r) => { evsOf(r, 'in', (e) => e.type === 'wheel')[0].clientX = 400 + 2; });
+ add('wheel-anchor-clamp-exact', 'wheel-anchor', (r) => { evsOf(r, 'clamp', (e) => e.type === 'wheel')[2].clientY += 1; });
+ add('zero-delta-nonzero', 'wheel-delta-law', (r) => { evsOf(r, 'zero', (e) => e.type === 'wheel')[3].deltaY = 5; }, ['leg-zero-wheels']);
+ add('clamp-delta-off-0.8', 'wheel-delta-law', (r) => { const w = evsOf(r, 'clamp', (e) => e.type === 'wheel'); w[w.length - 1].deltaY += 0.8; });

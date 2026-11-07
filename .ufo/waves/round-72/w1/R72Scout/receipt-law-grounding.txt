@@ -1,0 +1,51 @@
+# receipt: what S179 does and does not ground in the r72 counter's wheel-delta-law
+# seat R72Scout, 2026-11-07T00:10:04Z
+
+## counter law as implemented (scripts/check-synthpinch-r72.mjs:207-211)
+// Each ctrl-wheel carries deltaY = -100 ln(step) / pageScale, so sum(deltaY * scale) = -100 ln(factor).
+const lawSum = (n) => events.filter((e) => isObj(e) && e.leg === n && e.type === 'wheel').reduce((a, e) => a + (num(e.deltaY) && num(e.scale) ? e.deltaY * e.scale : NaN), 0);
+const lawOk = (n) => near(lawSum(n), -100 * Math.log(FROZEN.find((l) => l.name === n).params.scaleFactor), 0.5);
+check('wheel-delta-law', LAW_LEGS.every(lawOk) && events.filter((e) => isObj(e) && e.leg === 'zero' && e.type === 'wheel').every((e) => e.deltaY === 0),
+  'sum(deltaY*scale) per leg ' + LAW_LEGS.map((n) => n + '=' + lawSum(n)).join(' ') + ' want -100*ln(scaleFactor)');
+
+## S179 lines 31-44 (design notes + formula), 45, 53-60
+  // The function to convert scales to deltaY values is designed to be
+  // compatible with websites existing use of wheel events, and with existing
+  // Windows trackpad behavior.  In particular, we want:
+  //  - deltas should accumulate via addition: f(s1*s2)==f(s1)+f(s2)
+  //  - deltas should invert via negation: f(1/s) == -f(s)
+  //  - zoom in should be positive: f(s) > 0 iff s > 1
+  //  - magnitude roughly matches wheels: f(2) > 25 && f(2) < 100
+  //  - a formula that's relatively easy to use from JavaScript
+  // Note that 'wheel' event deltaY values have their sign inverted.  So to
+  // convert a wheel deltaY back to a scale use Math.exp(-deltaY/100).
+  if (pinch_event.GetType() ==
+      blink::WebInputEvent::Type::kGesturePinchUpdate) {
+    DCHECK_GT(pinch_event.data.pinch_update.scale, 0);
+    delta_y = 100.0f * log(pinch_event.data.pinch_update.scale);
+    wheel_ticks_y = pinch_event.data.pinch_update.scale > 1 ? 1 : -1;
+      blink::WebInputEvent::Type::kMouseWheel,
+      pinch_event.GetModifiers() | blink::WebInputEvent::kControlKey,
+      pinch_event.TimeStamp());
+  wheel_event.SetPositionInWidget(pinch_event.PositionInWidget());
+  wheel_event.SetPositionInScreen(pinch_event.PositionInScreen());
+  wheel_event.delta_units = ui::ScrollGranularity::kScrollByPrecisePixel;
+  wheel_event.delta_x = 0;
+  wheel_event.delta_y = delta_y;
+
+## measured per-leg sums on the scored r72 receipt (corpus/evidence/round72/chromium-synth-pinch-gesture/receipt.json)
+leg=in scaleFactor=2 wheels=17 SUM(deltaY)=-48.99226 SUM(deltaY*scale)=-69.31471 target -100*ln(sf)=-69.31472 |d(SUM*scale)|=7.40e-06 |d(SUM raw)|=20.3225
+leg=out scaleFactor=0.5 wheels=17 SUM(deltaY)=51.31607 SUM(deltaY*scale)=69.31471 target -100*ln(sf)=69.31472 |d(SUM*scale)|=9.93e-06 |d(SUM raw)|=17.9987
+leg=clamp scaleFactor=0.5 wheels=16 SUM(deltaY)=69.31472 SUM(deltaY*scale)=69.31472 target -100*ln(sf)=69.31472 |d(SUM*scale)|=1.14e-06 |d(SUM raw)|=0.0000
+leg=default scaleFactor=1.5 wheels=9 SUM(deltaY)=-32.57153 SUM(deltaY*scale)=-40.54652 target -100*ln(sf)=-40.54651 |d(SUM*scale)|=4.30e-06 |d(SUM raw)|=7.9750
+
+## per-event check: does deltaY_i * scale_i equal -100*ln(scale_i/scale_{i-1})? (i.e. is the page-scale factor the RIGHT one?)
+in: pairs=16 agree_with_scale_i=11 agree_with_scale_prev=0 degenerate_equal_scale_pairs=2
+out: pairs=16 agree_with_scale_i=15 agree_with_scale_prev=0 degenerate_equal_scale_pairs=1
+default: pairs=8 agree_with_scale_i=7 agree_with_scale_prev=0 degenerate_equal_scale_pairs=1
+
+## per-event product test: product of exp(-deltaY_i*scale_i/100) over the leg
+leg=in product=2.000000 requested scaleFactor=2 match=True
+leg=out product=0.500000 requested scaleFactor=0.5 match=True
+leg=default product=1.500000 requested scaleFactor=1.5 match=True
+leg=clamp product=0.500000 requested scaleFactor=0.5 match=True

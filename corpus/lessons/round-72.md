@@ -29,7 +29,7 @@ r72 (sourced: S179, new this round). One claim only.
 
 Outcome: **honest stop on leg (c).** (a) clean; (b) clean (R72Exec1); (c) battery exit 1 on the
 scored receipt, case `in-wheel-anchor-2px`; kill power `holds:false` because the unmutated
-battery already exits 1 (all 94 force-true and 12 semantic mutants killed). The capability stays
+battery already exits 1 (so its per-mutant kill counts are vacuous on this receipt). The capability stays
 withheld; the frozen instruments are not amended.
 
 ## Gate
@@ -81,6 +81,7 @@ Assimilation: none (`merge/tabi/` adoption stays closed pending the register cor
 |---|---|---|---|
 | a repetition control covered the counter but not the battery, and a battery case's mutation was relative to an honest value that jitters | pre-freeze: counter run on 5 smoke receipts (5/5 clean) but the battery on smoke1 only (218/218). Post-freeze the battery fails `in-wheel-anchor-2px` on the scored receipt (`scored/c1-negatives-a.json`), on R72Exec1's receipt (`w1/R72Exec1/negatives-b.json`), and — measured after the fact — on pre-freeze smoke3 and smoke6 (`lesson-proof/battery-smoke3.json`, `battery-smoke6.json`; smoke2 and smoke5 pass). The case adds +2 px to the first `in` wheel; at 399 it lands at 401, inside the counter's ±1 tolerance, so the honest counter accepts it | none at the time: the r71 Mistakes row 3 fix ("repeat the live run") was applied to the counter leg only; no rule named the battery or kill-power legs | QUALITY 135: every receipt-reading predicate leg runs over every pre-freeze repetition receipt, and a relative battery mutation must cross its tolerance on each. Shown able to fail: applied to the r72 pre-freeze state it fails (battery exit 1 on smoke3 and smoke6). Next-generation case proposal: R72Exec2 (below) |
 | the same honest-stop class as round 71 recurred one layer down | r71 stopped on leg (b) (counter vs one run); r72 on leg (c) (battery vs the scored run). Both are "one clean pre-freeze sample read as a stable shape" | the r71 lesson named the class for the producer only | QUALITY 135 states the class over every receipt-reading leg, not per instrument |
+| a do-nothing control set that omitted the cheapest look-alike: a replay of a same-generation pre-freeze receipt | the frozen `doNothingControl` covers "no receipt" and "the r71 receipt" only. R72Critic: an unedited copy of pre-freeze smoke1 scores counter exit 0 clean; smoke1 with its nonce and two wall-clock stamps rewritten passes counter, battery (218/218) and kill power (`holds: true`) (`w1/R72Critic/receipts/zeroedit.counter.json`, `forged-a.counter.json`, `battery-forged-a.json`, `killpower-forged-a.summary.json`); R72Review1 FG1 replays the scored receipt under a new nonce, exit 0 (`w1/R72Review1/fg05-nonce-replay.json`). So legs (a) "the L1 runs the driver" and (b) "with its own nonce" are assertions the counter cannot measure; the frozen `limit` names only the general "not an execution oracle" gap. No replay happened here: the scored receipt's `startedAt` is 9 s after the freeze commit and its nonce, startedAt and event bytes match no smoke receipt (sha256 `ac2245cf…60b9`, unequal to all five) | none: §9's "cheapest control that skips the claimed work" was built as "no receipt", not "an old receipt" | QUALITY 136: the replay pair is a required pre-freeze control and a receipt-only leg counts as independent only if the counter refuses both. Shown able to fail: the r72 counter accepts both replays (red state above) |
 
 ## Round-71 routed defects (R1–R5)
 
@@ -92,6 +93,57 @@ Assimilation: none (`merge/tabi/` adoption stays closed pending the register cor
   R71Mut1 killing cases are covered was not measured this round.
 - R2 (verifier hand-off, execPath, NODE_COMPILE_CACHE, harness summary binding): not claimed this
   round; routed on.
-- R3 (S173/S174 scope vs pinch lines): see R72Scout below.
+- R3 (S173/S174 scope vs pinch lines): R72Scout proposes four new rows for the pinch (and tap)
+  lines of `input_handler.cc` / `Input.pdl` rather than a scope edit
+  (`.ufo/waves/round-72/w1/R72Scout/proposal-R3-scope-fix.md`, `proposal-R3-scope-fix-tap.md`);
+  not adopted this round — each row needs its own Gate quote; routed to r73.
 - R4 (5 missing gate-registry rows; results status): routed on.
 - R5 (evidence leg binds bytes not provenance; R70Review1 FG1–FG16): routed on.
+
+## Attack findings (wave w1) — routed to round 73, not amended
+
+One v1 wave of 10 seats (`.ufo/waves/round-72/w1/`). Instruments stay as frozen.
+
+- **R72Exec1 (CONFIRMED):** pinned digests equal `freeze.txt`; leg (b) cold run (nonce
+  `tabi-r72-exec1-3f9a1c7b`) driver exit 0, counter exit 0 clean, 94 checks; leg (c) battery
+  217/218 on both the scored receipt and its own (`in-wheel-anchor-2px`); kill power `holds:false`.
+- **R72Exec2 (FINDINGS):** three more cold runs, counter clean 3/3; over 9 receipts the counter has
+  0 red checks of 94 and the battery one receipt-dependent case of 215, red on 3/9 — exactly the
+  receipts whose first `in` wheel is at x 399. Proposed fix `AT.x + 2` passes 9/9 and keeps kill
+  power (red 9/9 against a tolerance-3 counter copy). `relative-mutation-scan.txt` lists the other
+  relative cases and finds none that crosses a tolerance on these receipts.
+- **R72Review1 (FINDINGS):** 17 crafted false greens in four classes: nonce replay (FG1); send-log
+  order unbound (FG2); four clocks unbound from each other and per-event `ts` unbounded (FG3–FG4);
+  driver identity unbound without `--expect-driver-sha256` (FG5); host version and fixture digest
+  unread (FG6–FG7); law-consistent fabricated content (FG9–FG11); per-event scale re-forgery that
+  keeps the sum law (S4). The r71 R1 leak is refused (d11 `event-leg-window`; d12 the exact r71
+  `end` label shape, `event-leg-domain`).
+- **R72Review2 (FINDINGS):** the anchor case is the battery's only receipt-dependent case on the
+  six committed receipts; honest x jitter is {399, 400, 401}, so ±3 px or the clamp leg's exact
+  equality are robust; 84/94 ids have an isolated case (10 only through co-firing); the 12
+  semantic mutants are all meaningful and the force-true class covers 94/94 ids; the empty-params
+  allow-set admits unlimited repeats of four methods (F3).
+- **R72Mut1 (FINDINGS):** 54 further semantic mutants, 41 killed / 13 survivors, each survivor
+  shown distinguishable by a receipt the pristine counter refuses: in-span lower bound, zero-span
+  upper bound, non-first pinch params, anchor tolerance 2, empty-params allow-set, leg-mark
+  monotonicity, `once` for Browser.getVersion and setDeviceMetricsOverride, loose error message,
+  `some` server-log binding, seq start, deltaMode type, CDP initial scale. Three kills
+  (wheel-sign flip, law constant, log10) only break the positive and prove nothing.
+- **R72Critic (FINDINGS):** the honest stop holds as written (no legitimate reading passes leg
+  (c)); the predicate's legs (a)–(c) can be met by replaying a pre-freeze receipt (Mistakes row 3);
+  "new ground" is false — r72 re-derives ground worked at r71 and withheld, so an admitted row
+  would be a re-claim, not expansion; on the scored receipt "106/106 mutants killed" is vacuous
+  (the unmutated battery already exits 1), so only `holds:false` may be cited.
+- **R72Revenger (CONFIRMED):** hypothesis H survives — no wheel at page scale 1.000 is off-anchor
+  (99/99 over six receipts); the off-anchor rate depends on scale. The leg (c) stop is the
+  battery's arithmetic, not the jitter itself.
+- **R72Connector (FINDINGS, verdict adjacent):** no sibling lane claims CDP synthetic pinch,
+  page-scale or ctrl+wheel zoom measurement; adjacency only at the CDP-transport and
+  zoom-evidence layers, uncontested. No sibling cites `touchpad_pinch_event_queue.cc`.
+- **R72Scribe (DONE):** independent note draft and an S179 row variant with extra anchors
+  (coalescing, dispatch phase). The committed row is kept; the draft's numbers agree with the
+  committed note.
+- **R72Scout (FINDINGS):** S179 re-fetched independently (2026-11-06T23:47:38Z, HTTP 200, 239
+  lines, sha256 `4930d517…8f73`, `cmp` equal to the L1's staged copy); the law's shape is sourced,
+  its page-scale factor is not; at this tag the file exists only under `components/input/`;
+  S176–S178 re-opened byte-identical to the r71 staged copies; R3 proposal above.

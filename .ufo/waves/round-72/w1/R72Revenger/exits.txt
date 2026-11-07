@@ -1,0 +1,36 @@
+# R72Revenger experiment log (all commands run from the lane root; exit codes are shell $?)
+# No browser run. Receipts under this dir were copied from /fast/scratch/hyaku/tabi-r72/R72Revenger/d before scratch removal.
+
+# E1 extraction over the committed receipts (six + degenerate control)
+#   python3 <inline>  -> wheel-table.csv (2087 data rows), wheel-table.json, analysis.json
+exit 0
+
+# E2 counter on a scratch copy of the frozen (a) receipt, first `in` wheel clientX 399 -> 401 (= 399+2, the battery's own mutation)
+#   node scripts/check-synthpinch-r72.mjs --receipt <copy>/mut-plus2.json --expect-driver-sha256 d007adec... --json
+exit 0   # verdict clean, 94/94 checks, findings []            -> exp-counter-a-plus2-401.json
+
+# E3 counter on the same copy with the anchor-relative mutation (clientX = 402)
+#   node scripts/check-synthpinch-r72.mjs --receipt <copy>/mut-anchor2.json --expect-driver-sha256 d007adec... --json
+exit 1   # verdict findings, findings ["wheel-anchor"], 94 checks -> exp-counter-a-anchor402.json
+
+# E4 unmodified battery on smoke6 (never battery-run before this seat)
+#   node scripts/negatives-synthpinch-r72.mjs --real .ufo/waves/round-72/controls/c1/smoke6.receipt.json --expect-driver-sha256 d007adec... --work <ABS> --json
+exit 1   # 214/215, failed ["in-wheel-anchor-2px"]                -> exp-unmodified-battery-smoke6-215.json
+
+# E5 fixed battery (scratch copy, line 159 -> clientX = 402) on the frozen (a) receipt, predicate command incl. 3 laundered receipts
+#   node negatives-fixed.mjs --real corpus/evidence/round72/chromium-synth-pinch-gesture/receipt.json --expect-driver-sha256 d007adec... --work <ABS> --laundered <deg-dispatch> --laundered <deg-set-scale> --laundered <deg-skip-touch> --json
+exit 0   # 218/218, allOk true, coverageGap []                    -> exp-fixed-battery-a-218.json
+
+# E6 fixed battery on (a) without laundered (215 cases) and on smoke6
+exit 0   # 215/215 each                                           -> exp-fixed-battery-a-215.json / exp-fixed-battery-smoke6-215.json
+
+# E7 source-diff proof for E5/E6
+#   sha256sum scratch check-synthpinch-r72.mjs = 142062ef166f4436b015fd93d08d80d9ec7a4f0a3f3d1a0d0bcfebc64d593e4b (frozen counter)
+#   sha256sum scratch negatives-fixed.mjs      = 17c2403d55fbaae7f14e4a232d3eda6ed8e92f6b32f55702674115c34d911483
+#   diff frozen negatives-synthpinch-r72.mjs (414e04a6...) vs negatives-fixed.mjs: exactly line 159
+exit 0
+
+# E8 committed controls cited (read-only, not rerun)
+#   .ufo/waves/round-72/scored/c1-counter-a.json     verdict clean, checkCount 94
+#   .ufo/waves/round-72/scored/c1-negatives-a.exit   1 (218 cases, 217 passed, failed ["in-wheel-anchor-2px"], counterLine 204)
+#   .ufo/waves/round-72/scored/c1-kill-power-a.json  unmutatedExit 1, forceTrue killed 94/94, semantic killed 12/12, survivors [], holds false

@@ -1,0 +1,26 @@
+# receipt: independent fetch of S179 (Chromium 155.0.8059.84 touchpad pinch event queue)
+# seat R72Scout, round 72 attempt 2, 2026-11-07T00:09:46Z
+
+$ curl -sS -o s179b.b64 -w 'http_code=%{http_code} size=%{size_download} time_total=%{time_total}' 'https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/components/input/touchpad_pinch_event_queue.cc?format=TEXT'
+fetch_start=2026-11-06T23:47:38Z
+http_code=200
+size=12188
+time_total=1.125660
+url=https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/components/input/touchpad_pinch_event_queue.cc?format=TEXT
+fetch_end=2026-11-06T23:47:39Z
+4930d51770c81cf1b6195f111f67cd65b6f46efc59328d276aed973c7ff38f73  s179b.cc
+239 s179b.cc
+1d3c5e8023083222b819edd528f59cf76edb36d19a3e44a4fd413e92d44752d3  s179b.b64
+
+$ base64 -d s179b.b64 > s179b.cc ; sha256sum s179b.cc ; wc -l s179b.cc
+4930d51770c81cf1b6195f111f67cd65b6f46efc59328d276aed973c7ff38f73  s179b.cc
+239 s179b.cc
+
+$ sha256sum /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-72/sources/touchpad_pinch_event_queue.cc
+4930d51770c81cf1b6195f111f67cd65b6f46efc59328d276aed973c7ff38f73  /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-72/sources/touchpad_pinch_event_queue.cc
+
+$ cmp s179b.cc <L1-staged copy>  # exit 0 = byte-identical
+cmp_exit=0 (identical)
+
+$ cat /home/.../.ufo/waves/round-72/sources/FETCH.txt (L1 record)
+fetched 2026-11-06T20:27:07-03:00 https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/components/input/touchpad_pinch_event_queue.cc?format=TEXT HTTP 200; decoded sha256 4930d51770c81cf1b6195f111f67cd65b6f46efc59328d276aed973c7ff38f73 lines 239

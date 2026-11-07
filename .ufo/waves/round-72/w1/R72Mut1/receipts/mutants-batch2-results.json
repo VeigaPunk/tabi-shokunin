@@ -1,0 +1,283 @@
+{
+ "schema": "tabi-r72-r72mut1-semantic-batch2",
+ "baseline": {
+  "failed": [
+   "in-wheel-anchor-2px"
+  ],
+  "passed": 214,
+  "cases": 215,
+  "exit": 1
+ },
+ "counter": {
+  "path": "/fast/scratch/hyaku/tabi-r72/R72Mut1/s/check-synthpinch-r72.mjs",
+  "sha256": "142062ef166f4436b015fd93d08d80d9ec7a4f0a3f3d1a0d0bcfebc64d593e4b"
+ },
+ "battery": {
+  "path": "/fast/scratch/hyaku/tabi-r72/R72Mut1/s/negatives-synthpinch-r72.mjs",
+  "sha256": "414e04a6fb8459ece7f22b633bf4c0d4caad65bede0a9c9bf0b035e6a5825602"
+ },
+ "mutants": 11,
+ "killed": 6,
+ "survivors": [
+  "zero-span-upper-100000",
+  "server-log-binding-some",
+  "seq-first-free",
+  "event-types-deltamode-dropped",
+  "initial-scale-cdp-dropped"
+ ],
+ "results": [
+  {
+   "idx": 0,
+   "mutant": "zero-span-upper-100000",
+   "from": "zero: { seq: [], wheels: [20, 'zero'], scale: 1.5, span: [3000, 6000], tm: null, error: 'no-response-4000ms' },",
+   "to": "zero: { seq: [], wheels: [20, 'zero'], scale: 1.5, span: [3000, 100000], tm: null, error: 'no-response-4000ms' },",
+   "counterLine": 62,
+   "targetCase": "leg-zero-timing",
+   "fromCount": 1,
+   "mutatedSha256": "fb1cd9ee50f9c86fab86a7e832ccff3197bdd804a884044434adf04542531994",
+   "batteryExit": 1,
+   "positiveOk": true,
+   "passed": 214,
+   "cases": 215,
+   "failedCases": [
+    "in-wheel-anchor-2px"
+   ],
+   "addedFailed": [],
+   "removedBaselineFailed": [],
+   "killed": false,
+   "stderr": null
+  },
+  {
+   "idx": 1,
+   "mutant": "server-log-binding-some",
+   "from": "served.length >= 1 && served.every((s) => s.run === r.nonce)",
+   "to": "served.length >= 1 && served.some((s) => s.run === r.nonce)",
+   "counterLine": 110,
+   "targetCase": "server-log-binding",
+   "fromCount": 1,
+   "mutatedSha256": "3b7931e8bb534619a3d1093e2833eba44a9f6cca88f45e0d6b44eba6d8ccf1e0",
+   "batteryExit": 1,
+   "positiveOk": true,
+   "passed": 214,
+   "cases": 215,
+   "failedCases": [
+    "in-wheel-anchor-2px"
+   ],
+   "addedFailed": [],
+   "removedBaselineFailed": [],
+   "killed": false,
+   "stderr": null
+  },
+  {
+   "idx": 2,
+   "mutant": "seq-first-free",
+   "from": "events.every((e, i) => isObj(e) && e.seq === i + 1)",
+   "to": "events.every((e, i) => isObj(e) && (i === 0 || e.seq === i + 1))",
+   "counterLine": 124,
+   "targetCase": "seq-monotonic",
+   "fromCount": 1,
+   "mutatedSha256": "032c2b8431a5d1647a3b588b9bede1681ecb5a1d4dc6b0a888594f001bbc418d",
+   "batteryExit": 1,
+   "positiveOk": true,
+   "passed": 214,
+   "cases": 215,
+   "failedCases": [
+    "in-wheel-anchor-2px"
+   ],
+   "addedFailed": [],
+   "removedBaselineFailed": [],
+   "killed": false,
+   "stderr": null
+  },
+  {
+   "idx": 3,
+   "mutant": "event-leg-domain-string",
+   "from": "events.every((e) => isObj(e) && LEG_ORDER.includes(e.leg))",
+   "to": "events.every((e) => isObj(e) && typeof e.leg === 'string')",
+   "counterLine": 125,
+   "targetCase": "event-leg-domain",
+   "fromCount": 1,
+   "mutatedSha256": "22c61e5ca97238297193c8c5cc9c7bd2524c9bb10be9576f4f0d8391e0c1067d",
+   "batteryExit": 1,
+   "positiveOk": true,
+   "passed": 212,
+   "cases": 215,
+   "failedCases": [
+    "event-leg-domain",
+    "event-leg-fabricated-label",
+    "in-wheel-anchor-2px"
+   ],
+   "addedFailed": [
+    "event-leg-domain",
+    "event-leg-fabricated-label"
+   ],
+   "removedBaselineFailed": [],
+   "killed": true,
+   "stderr": null
+  },
+  {
+   "idx": 4,
+   "mutant": "pinch-call-count-at-least",
+   "from": "check('pinch-call-count', pinches.length === 10,",
+   "to": "check('pinch-call-count', pinches.length >= 10,",
+   "counterLine": 144,
+   "targetCase": "pinch-call-count",
+   "fromCount": 1,
+   "mutatedSha256": "291aae52eb295f9e6d089e6c8d2bf68ebbd642a6c5c07d0025b8f807ff7c36b1",
+   "batteryExit": 1,
+   "positiveOk": true,
+   "passed": 213,
+   "cases": 215,
+   "failedCases": [
+    "pinch-call-duplicate",
+    "in-wheel-anchor-2px"
+   ],
+   "addedFailed": [
+    "pinch-call-duplicate"
+   ],
+   "removedBaselineFailed": [],
+   "killed": true,
+   "stderr": null
+  },
+  {
+   "idx": 5,
+   "mutant": "marks-name-sequence-dropped",
+   "from": "canon(markNames) === canon(['start', ...LEG_ORDER])",
+   "to": "markNames[0] === 'start' && marks.length === LEG_ORDER.length + 1",
+   "counterLine": 135,
+   "targetCase": "leg-marks-fabricated-name",
+   "fromCount": 1,
+   "mutatedSha256": "352af137af16229c9f2d2e60216586d599f2b926b9aaba00d4745bf3fe9cf316",
+   "batteryExit": 1,
+   "positiveOk": true,
+   "passed": 213,
+   "cases": 215,
+   "failedCases": [
+    "leg-marks-fabricated-name",
+    "in-wheel-anchor-2px"
+   ],
+   "addedFailed": [
+    "leg-marks-fabricated-name"
+   ],
+   "removedBaselineFailed": [],
+   "killed": true,
+   "stderr": null
+  },
+  {
+   "idx": 6,
+   "mutant": "allowlist-eval-extra-keys",
+   "from": "if (c.method === 'Runtime.evaluate') return canon(c.params) === canon({ expression: c.params.expression, returnByValue: true }) && EXPRS.has(c.params.expression);",
+   "to": "if (c.method === 'Runtime.evaluate') return c.params.returnByValue === true && EXPRS.has(c.params.expression);",
+   "counterLine": 154,
+   "targetCase": "allowlist-eval-extra-param",
+   "fromCount": 1,
+   "mutatedSha256": "a9763aee9e154f3f0562829013f3d120c26d28ff5ca325e5eed0c85c4a630754",
+   "batteryExit": 1,
+   "positiveOk": true,
+   "passed": 213,
+   "cases": 215,
+   "failedCases": [
+    "allowlist-eval-extra-param",
+    "in-wheel-anchor-2px"
+   ],
+   "addedFailed": [
+    "allowlist-eval-extra-param"
+   ],
+   "removedBaselineFailed": [],
+   "killed": true,
+   "stderr": null
+  },
+  {
+   "idx": 7,
+   "mutant": "allowlist-dmo-extra-keys",
+   "from": "if (c.method === 'Emulation.setDeviceMetricsOverride') return canon(c.params) === canon({ width: VIEWPORT.width, height: VIEWPORT.height, deviceScaleFactor: 1, mobile: false });",
+   "to": "if (c.method === 'Emulation.setDeviceMetricsOverride') return c.params.width === VIEWPORT.width && c.params.height === VIEWPORT.height && c.params.deviceScaleFactor === 1 && c.params.mobile === false;",
+   "counterLine": 155,
+   "targetCase": "allowlist-dmo-scale-param",
+   "fromCount": 1,
+   "mutatedSha256": "75635425da0781055ea45eb2b07836ba2af2546d1465549b4e99a9bda5b52ba0",
+   "batteryExit": 1,
+   "positiveOk": true,
+   "passed": 213,
+   "cases": 215,
+   "failedCases": [
+    "allowlist-dmo-scale-param",
+    "in-wheel-anchor-2px"
+   ],
+   "addedFailed": [
+    "allowlist-dmo-scale-param"
+   ],
+   "removedBaselineFailed": [],
+   "killed": true,
+   "stderr": null
+  },
+  {
+   "idx": 8,
+   "mutant": "nonce-page-prefix",
+   "from": "typeof r.nonce === 'string' && r.nonceOnPage === r.nonce",
+   "to": "typeof r.nonce === 'string' && typeof r.nonceOnPage === 'string' && r.nonceOnPage.startsWith('tabi-r72-')",
+   "counterLine": 107,
+   "targetCase": "nonce-on-page",
+   "fromCount": 1,
+   "mutatedSha256": "2f575d5ce019de2f28eb825bc8d72e99f78aad63df46abaeb8fc5079ca18ff8c",
+   "batteryExit": 1,
+   "positiveOk": true,
+   "passed": 212,
+   "cases": 215,
+   "failedCases": [
+    "nonce-shape",
+    "nonce-on-page",
+    "in-wheel-anchor-2px"
+   ],
+   "addedFailed": [
+    "nonce-shape",
+    "nonce-on-page"
+   ],
+   "removedBaselineFailed": [],
+   "killed": true,
+   "stderr": null
+  },
+  {
+   "idx": 9,
+   "mutant": "event-types-deltamode-dropped",
+   "from": "(e.type === 'wheel' ? num(e.deltaY) && num(e.deltaMode) && num(e.clientX) && num(e.clientY) : true)",
+   "to": "(e.type === 'wheel' ? num(e.deltaY) && num(e.clientX) && num(e.clientY) : true)",
+   "counterLine": 129,
+   "targetCase": "(none: no wheel with a string deltaMode)",
+   "fromCount": 1,
+   "mutatedSha256": "90fc26b66ffe39b47fddfaf3dcfa85ba0aecf6c52c2a7824a8c8cf22435ad016",
+   "batteryExit": 1,
+   "positiveOk": true,
+   "passed": 214,
+   "cases": 215,
+   "failedCases": [
+    "in-wheel-anchor-2px"
+   ],
+   "addedFailed": [],
+   "removedBaselineFailed": [],
+   "killed": false,
+   "stderr": null
+  },
+  {
+   "idx": 10,
+   "mutant": "initial-scale-cdp-dropped",
+   "from": "near(legs[0]?.scaleBefore?.page, 1) && near(legs[0]?.scaleBefore?.cdp, 1)",
+   "to": "near(legs[0]?.scaleBefore?.page, 1)",
+   "counterLine": 197,
+   "targetCase": "initial-scale",
+   "fromCount": 1,
+   "mutatedSha256": "3d8274187d9164c293789efd03610810dc19480d05a2c4e32cf4f7695a6dac1a",
+   "batteryExit": 1,
+   "positiveOk": true,
+   "passed": 214,
+   "cases": 215,
+   "failedCases": [
+    "in-wheel-anchor-2px"
+   ],
+   "addedFailed": [],
+   "removedBaselineFailed": [],
+   "killed": false,
+   "stderr": null
+  }
+ ]
+}

@@ -1,0 +1,60 @@
+# receipt: R3 proposal — exact scope-cell wording and/or a new row for the pinch lines of input_handler.cc
+# seat R72Scout, 2026-11-07T00:12:26Z
+# all gate runs below are on SCRATCH MIRRORS of corpus/SOURCES.md (never the lane file)
+
+## baseline (live registry copied verbatim, no edits)
+$ node scripts/check-sources.mjs --root <mirror> --file corpus/SOURCES.md --since 2026-06-08
+FINDING id=duplicate_url fleet=E04 row=S171 detail=duplicate_url
+FINDING id=duplicate_url fleet=E04 row=S172 detail=duplicate_url
+FINDING id=duplicate_url fleet=E04 row=S173 detail=duplicate_url
+SOURCES_GATE verdict=failed rows=179 tiers=A:161,B:9,C:9 status=queued:15,mined:154,rejected:10 findings=3 file=corpus/SOURCES.md
+lane_gate_exit=1 (pre-existing E04 duplicate_url on S171/S172/S173, unchanged by any variant below)
+
+$ ./scripts/sources-census.sh validate --root /home/vgpnk/Projects/shokunin --today 2026-11-06 <mirror>
+mirror3	W04	S171 duplicate url nodejs.org/docs/latest-v24.x/api/path.html across scopes
+mirror3	W04	S172 duplicate url drafts.csswg.org/cssom-view across scopes
+mirror3	W04	S173 duplicate url chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/public/devtools_protocol/domains/Input.pdl?format=TEXT across scopes
+mirror3	ok	/fast/scratch/hyaku/tabi-r72/R72Scout/mirror3/corpus/SOURCES.md
+
+## VARIANT A — widen S173/S174 scope+anchor cells in place (no new row, no new id)
+$ node scripts/check-sources.mjs --root <mirrorA> --file corpus/SOURCES.md --since 2026-06-08
+FINDING id=duplicate_url fleet=E04 row=S171 detail=duplicate_url
+FINDING id=duplicate_url fleet=E04 row=S172 detail=duplicate_url
+FINDING id=duplicate_url fleet=E04 row=S173 detail=duplicate_url
+SOURCES_GATE verdict=failed rows=179 tiers=A:161,B:9,C:9 status=queued:15,mined:154,rejected:10 findings=3 file=corpus/SOURCES.md
+$ fleet census on the same mirror
+1,2c1
+< 	E11	S143 missing used-by .ufo/waves/round-37/counters/c2-firefox-bidi-v3.mjs
+< 	E11	S160 missing used-by .ufo/waves/round-49/claims.json
+---
+> 	ok	/fast/scratch/hyaku/tabi-r72/R72Scout/mirror2/corpus/SOURCES.md
+census_diff_exit=1 (0 = census output identical to baseline)
+
+## VARIANT B4 — two NEW rows (S180 input_handler.cc pinch scope, S181 Input.pdl pinch scope),
+##   teaches opening 'supersedes S174/S173', pinch citations re-pointed in the two pinch notes,
+##   S173/S174 used-by trimmed of the pinch notes
+$ node scripts/check-sources.mjs --root <mirrorB4> --file corpus/SOURCES.md --since 2026-06-08
+FINDING id=duplicate_url fleet=E04 row=S171 detail=duplicate_url
+FINDING id=duplicate_url fleet=E04 row=S172 detail=duplicate_url
+FINDING id=duplicate_url fleet=E04 row=S173 detail=duplicate_url
+SOURCES_GATE verdict=failed rows=181 tiers=A:163,B:9,C:9 status=queued:15,mined:156,rejected:10 findings=3 file=corpus/SOURCES.md
+$ fleet census on the same mirror
+1,2c1
+< 	E11	S143 missing used-by .ufo/waves/round-37/counters/c2-firefox-bidi-v3.mjs
+< 	E11	S160 missing used-by .ufo/waves/round-49/claims.json
+---
+> 	ok	/fast/scratch/hyaku/tabi-r72/R72Scout/mirrorB4/corpus/SOURCES.md
+27a27,28
+> 	W04	S180 duplicate url chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/content/browser/devtools/protocol/input_handler.cc?format=TEXT across scopes
+> 	W04	S181 duplicate url chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/public/devtools_protocol/domains/Input.pdl?format=TEXT across scopes
+census_diff_exit=1 (2 = only two NEW W04 cross-scope warnings, no new E-code)
+
+## VARIANT B2/B3 (same new rows but WITHOUT the 'supersedes S###' prefix in teaches) — rejected
+FINDING id=duplicate_url fleet=E04 row=S171 detail=duplicate_url
+FINDING id=duplicate_url fleet=E04 row=S172 detail=duplicate_url
+FINDING id=duplicate_url fleet=E04 row=S173 detail=duplicate_url
+FINDING id=used_by_uncited fleet=- row=S173 detail=row_id_absent
+FINDING id=used_by_uncited fleet=- row=S174 detail=row_id_absent
+FINDING id=duplicate_url fleet=E04 row=S180 detail=duplicate_url
+FINDING id=duplicate_url fleet=E04 row=S181 detail=duplicate_url
+SOURCES_GATE verdict=failed rows=181 tiers=A:163,B:9,C:9 status=queued:15,mined:156,rejected:10 findings=7 file=corpus/SOURCES.md
