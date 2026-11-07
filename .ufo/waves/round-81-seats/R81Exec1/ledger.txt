@@ -1,0 +1,165 @@
+# R81Exec1 ledger — round 81, leg (b): two independent cold runs of the frozen driver
+# Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin
+# Base c27e8406e6a2dc3cafcff030c9224cf8a14e3464, digests commit D = a2183a93362259cb574ef3d03b565ee6d2c26599
+# Host: Chromium 155.0.8059.84 Arch Linux (/usr/bin/chromium), node v24.21.0, CDP 1.3
+# Every command below was run with cwd = /fast/scratch/hyaku/tabi-r81/R81Exec1 (never the fleet root).
+# No tool installs; no pacman; no git/jj mutation (git used read-only: rev-parse/cat-file/diff/log/status).
+
+== 0. Instrument digest check against .ufo/waves/round-81/freeze.txt ==
+sha256sum over every path in freeze.txt:
+  OK        scripts/chrome-cdp-showpicker-round81.mjs        e35e63c1...c97c669
+  OK        scripts/check-showpicker-r81.mjs                  0d69659c...746a0c0
+  MISMATCH  scripts/negatives-showpicker-r81.mjs              freeze=6964de6f...a69f6d2 actual=f7c423c1...3c8e542
+  OK        scripts/kill-power-r81.mjs                         e381162d...d9b215c
+  OK        scripts/check-record-drift-r81.mjs                 76bdb5ae...ee4954
+  OK        .ufo/waves/round-81/controls/c1/probes/tabi-r81-probe1.json  bac3c6ab...14cfe9
+  OK        .ufo/waves/round-81/controls/c1/probes/tabi-r81-probe2.json  70d12135...beae54
+  MISMATCH  .ufo/waves/round-81/controls/c1/prior-set.txt     freeze=1275fa1f...6456a793 actual=5f8becd3...a78307d1
+  OK        scripts/selftest-r81-gates.mjs                     85f6bfed...dad4f68
+  OK        .ufo/waves/round-81/controls/c1/nowork.json        9831cd30...dd1ef75
+  OK        .ufo/waves/round-81/controls/c1/forgery.json       93c747da...443c382c
+  MISMATCH  .ufo/waves/round-81/claims.json                  freeze=49c8c96e...f5ecc3ba actual=0b850d15...f63b6c03
+(The prior-set line was OK on a first pass at ~20:15 and MISMATCH on the recheck; the file changed under the wave.
+ See F2/F3 below. The driver and counter — the only instruments the two cold runs use — match their pins.)
+
+== 1. cold1: driver run ==
+node scripts/chrome-cdp-showpicker-round81.mjs --lane <lane> --nonce tabi-r81-cold1-a2183a933622 \
+  --scratch /fast/scratch/hyaku/tabi-r81/R81Exec1 \
+  --out <lane>/.ufo/waves/round-81-seats/R81Exec1/cold1.json --http-port 19260 --cdp-port 19261 --child-port 19262
+EXIT=0
+legs=6 failures=[] host.chromium="Chromium 155.0.8059.84 Arch Linux" cdpProduct=Chrome/155.0.8059.84
+driverSha256=e35e63c11052a7b48efd765541618495d8a2301dbfb36f3250b763dc3c97c669
+fixture.sha256=8b8764440efbda5efe217a30c7ac688fdf203f508afd815aed06c6b6acfd52da
+fixture.child.sha256=d88d414233ab7fb83a9fc7e87687a1e84e2ff39874ea3652d56b8cd3a5dd06c3
+per-leg (cold1):
+  sp81-cross-origin-nonfile           choosers=[]  child=SecurityError "showPicker() called from cross-origin iframe."
+  sp81-cross-origin-nonfile-disabled  choosers=[]  child=SecurityError "showPicker() called from cross-origin iframe."
+  sp81-same-origin-nonfile-disabled   choosers=[]  showPicker=InvalidStateError "cannot be used on immutable controls."
+  sp81-webkitdirectory-answer         choosers=[selectSingle,node10] answer.files=["tabi-r81-dir"] setError=null
+                                      d=[["inner-a.txt",19,"text/plain","tabi-r81-dir/inner-a.txt"],
+                                         ["inner-b.png",18,"image/png","tabi-r81-dir/inner-b.png"]]
+                                      input@d trusted, change@d trusted
+  sp81-accept-answer                  choosers=[selectSingle,node10] answer.files=["tabi-r81-a.txt"] setError=null
+                                      k=[["tabi-r81-a.txt",22,"text/plain",""]] input@k trusted, change@k trusted
+  sp81-click-while-open               choosers=[selectSingle,selectSingle] clickWhileOpen 1 -> 2
+
+== 2. cold1: counter score ==
+The scored receipt corpus/evidence/round81/chromium-showpicker/receipt.json did NOT exist at this moment, so the
+assignment's fallback prior was used: --prior .../controls/c1/probes/tabi-r81-probe2.json.
+The live prior-set.txt was still the committed 1-line file (sha 1275fa1f...) at this moment.
+node scripts/check-showpicker-r81.mjs --lane <lane> --receipt <seat>/cold1.json \
+  --expect-driver-sha256 e35e63c1...c97c669 --expect-nonce tabi-r81-cold1-a2183a933622 \
+  --expect-fixture-sha256 8b876444...fd52da \
+  --prior-set <lane>/.ufo/waves/round-81/controls/c1/prior-set.txt \
+  --prior <lane>/.ufo/waves/round-81/controls/c1/probes/tabi-r81-probe2.json --json
+EXIT=0  verdict="clean"  checkCount=56  findings=[]  priorSet=1  priorSetFile.sha256=1275fa1f...6456a793
+  (all 56 checks true, including prior-set-complete, prior-set-unparsable, replay-event-timeline, teardown-closure)
+
+== 3. cold2: driver run ==
+node scripts/chrome-cdp-showpicker-round81.mjs --lane <lane> --nonce tabi-r81-cold2-a2183a933622 \
+  --scratch /fast/scratch/hyaku/tabi-r81/R81Exec1 \
+  --out <lane>/.ufo/waves/round-81-seats/R81Exec1/cold2.json --http-port 19263 --cdp-port 19264 --child-port 19265
+EXIT=0
+legs=6 failures=[] driverSha256=e35e63c1...c97c669
+fixture.sha256=0becfd0a04410a89aac5a3f76113be89d7193ae54f26999d41b9fbfbc650111b
+fixture.child.sha256=844c2372a08ba4b412e135fbd20fbd73181bc54f735ddd2db3db1c957c1f5f51
+per-leg outcomes identical to cold1 except browser-assigned values (see §6).
+
+== 4. cold2: counter score (as instructed: prior = the scored receipt, which now exists) ==
+node scripts/check-showpicker-r81.mjs --lane <lane> --receipt <seat>/cold2.json \
+  --expect-driver-sha256 e35e63c1...c97c669 --expect-nonce tabi-r81-cold2-a2183a933622 \
+  --expect-fixture-sha256 0becfd0a...50111b \
+  --prior-set <lane>/.ufo/waves/round-81/controls/c1/prior-set.txt \
+  --prior <lane>/corpus/evidence/round81/chromium-showpicker/receipt.json --json
+EXIT=0  verdict="clean"  checkCount=56  findings=[]  priorSet=2  priorSetFile.sha256=5f8becd3...a78307d1
+  NOTE: by this moment prior-set.txt had been amended in the worktree to 2 lines (probe1+probe2), sha 5f8becd3.
+  This score therefore used the AMENDED set, not the committed one. See §7 for the committed-set score.
+
+== 5. scored receipt (predicate (a) receipt) re-scored ==
+identity: nonce=tabi-r81-l1-a2183a933622 driver=e35e63c1...c97c669
+          fixture=d9129edd5b5485169d8a523f76c6bcf7055202668824a38d3b4e654b092a1703
+          child=3b6bb3dc346fd1bbbaf128ad67ccd262fe56a54c552f0e0c56b0656dab6b6e2a
+          chromium="Chromium 155.0.8059.84 Arch Linux" legs=6 failures=[]
+          startedAt 2026-11-07T23:14:22.364Z finishedAt 2026-11-07T23:14:54.313Z
+5a. --prior-set <live 2-line set> --prior <seat>/cold1.json
+    EXIT=0  verdict="clean"  checkCount=56  findings=[]  priorSet=2
+5b. --prior-set <live 2-line set> (no extra prior)
+    EXIT=0  verdict="clean"  checkCount=56  findings=[]  priorSet=2
+5c. --prior-set <committed 1-line copy> --prior <seat>/cold1.json
+    EXIT=1  verdict="findings"  checkCount=56  priorSet=1
+    finding id: prior-set-complete
+    detail field: receipts of schema ... in the round-81 wave/evidence trees, not the receipt under test
+      (path corpus/evidence/round81/chromium-showpicker/receipt.json), not exempted by sha256 and not among
+      the priors: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-81/controls/c1/probes/tabi-r81-probe2.json
+    (only check false: prior-set-complete. The scored receipt is clean on all 55 other checks.)
+
+== 6. cold1 vs cold2 determinism ==
+Semantic projection (showPicker, showPicker2, childResult, stateAfter, answer{files,setError,setResult},
+chooser modes, clickWhileOpen counts, pageEvents[type,target,isTrusted], childEvents[type,target,isTrusted],
+activationBefore/After, childActivationBefore/After, interceptResult, priorClickElement,
+clickWhileOpenElement, uploadDir, errors): EQUAL across the two runs.
+Differences, all browser-assigned or wall-clock:
+  - frameTree.mainFrameId: 7AB23F9D85142FE1502281174CB74D1B (cold1) vs 590710E7BF47ED4CA8E21B6E82B3F80A (cold2)
+  - Page.fileChooserOpened backendNodeId in sp81-accept-answer: 10 (cold1) vs 9 (cold2)
+  - marks[].at wall-clock ms
+Both scored clean, so the counter does not pin these (consistent with the QUALITY 150 note in claims.json).
+
+== 7. Acceptance matrix under the counter (all 56 checks) ==
+M1  scored receipt + committed set(1275fa1f) + --prior probe2
+    EXIT=0 clean 56 priorSet=1 findings=[]
+M2  cold2 + committed set + --prior probe2 + --prior scored receipt
+    EXIT=0 clean 56 priorSet=1 findings=[]
+M3  cold1 + live 2-line set(5f8becd3) + --prior probe2 + --prior scored receipt
+    EXIT=0 clean 56 priorSet=2 findings=[]
+M4  cold1 + committed set(1275fa1f) + --prior probe2 + --prior scored receipt
+    EXIT=0 clean 56 priorSet=1 findings=[]
+M5  cold2 + committed set, NO extra prior
+    EXIT=1 finding id: prior-set-complete
+    detail: not among the priors: probes/tabi-r81-probe2.json, corpus/evidence/round81/chromium-showpicker/receipt.json
+M6  scored receipt + committed set, NO extra prior
+    EXIT=1 finding id: prior-set-complete (names probe2 only; the scored receipt is the receipt under test)
+
+== 8. Findings (control/instrument integrity; reported, not repaired) ==
+F1 scripts/negatives-showpicker-r81.mjs drifted from its frozen digest.
+   freeze=6964de6f...a69f6d2  D blob=6964de6f...a69f6d2  HEAD blob=6964de6f...a69f6d2  worktree=f7c423c1...3c8e542
+   git status: " M scripts/negatives-showpicker-r81.mjs"; mtime 2026-11-07 20:15:25 -0300
+   diff (2 lines): receiptPath = realPath  ->  receiptPath = path.resolve(realPath)
+     in cases 'prior-set-unparsable' and the stray-receipt case.
+   Consequence: predicate (c) battery evidence produced from the worktree is not the frozen instrument's evidence.
+F2 .ufo/waves/round-81/controls/c1/prior-set.txt amended in the worktree.
+   D blob = HEAD blob = 1 line (probes/tabi-r81-probe1.json) sha 1275fa1f...6456a793
+   worktree = 2 lines (probe1 + probe2) sha 5f8becd3...a78307d1; git status " M"; mtime 20:15:06 -0300
+   The frozen prior set is a control the task forbids amending; the amendment is live in the worktree.
+F3 .ufo/waves/round-81/freeze.txt modified in the worktree (git status " M").
+   Its prior-set line was re-pinned to 5f8becd3 (the amended file) while its claims.json line still pins
+   49c8c96e (D's blob) although the tree holds 0b850d15 (HEAD's blob). Mixed vintage in one manifest.
+F4 .ufo/waves/round-81/claims.json: tree == HEAD (0b850d15) != freeze pin 49c8c96e (D's blob).
+   diff D..HEAD is only: digestsCommit null -> "a2183a93...", nonce null -> "tabi-r81-l1-a2183a933622",
+   plus \u2014 escapes for the em-dashes. Contract body unchanged.
+F5 Structural: prior-set-complete walks .ufo/waves/round-81 and corpus/evidence/round81 and requires every
+   schema receipt there to be a prior or the receipt under test. With the committed 1-line set, both cold runs
+   and the scored receipt FAIL that check once probe2 and the scored receipt exist in those trees (§7 M5/M6).
+   The predicate's own command grammar allows [--prior ...], and M1/M2/M4 pass that way; but the phrase
+   "with the committed prior set" is satisfiable only with extra --prior entries or an amended set.
+   Reported for L1 decision; no amendment proposed.
+
+== 9. Cleanup ==
+/fast/scratch/hyaku/tabi-r81/R81Exec1 deleted after the score JSONs were copied into the seat dir.
+
+== 10. Post-ruling check (L1 ruling: repaired prior-set sha 5f8becd3 is the frozen state going forward;
+       "your cold receipts will be re-scored by me under the repaired set (no --prior extras needed)") ==
+Live prior-set.txt at check time: sha 5f8becd3892b9c7c093cfe07791ddab79e55f630377d46fe88867275a78307d1 (2 lines, probe1+probe2).
+R1  cold1 + repaired set, NO extra prior
+    EXIT=1  verdict="findings"  checkCount=56  priorSet=2
+    finding id: prior-set-complete
+    detail names: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round81/chromium-showpicker/receipt.json
+R2  cold2 + repaired set, NO extra prior
+    EXIT=1  verdict="findings"  checkCount=56  priorSet=2
+    finding id: prior-set-complete
+    detail names: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round81/chromium-showpicker/receipt.json
+R3  cold1 + repaired set + --prior <scored receipt>
+    EXIT=0  verdict="clean"  checkCount=56  priorSet=2  findings=[]
+Conclusion: the repaired set removes the probe2 objection, but a COLD run still needs the scored receipt as a
+prior (or --tree-exempt-sha256), because prior-set-complete walks corpus/evidence/round81 and the scored receipt
+lives there. The scored receipt itself needs no extras (scored-priori-only.json: clean, priorSet 2).
+Nothing in the lane was edited; these three runs are read-only counter invocations.
