@@ -310,6 +310,7 @@ const ownGapsOf = (r) => { const at = r.events.map((e) => e.at).sort((a, b) => a
 // the counter refuses an own-gap count below MIN_OWN_GAPS (11); these two constructions must reach
 // that state on whatever receipt they are given (a receipt with 12 own gaps survived a single shrink:
 // round 78, the re-frozen scored receipt)
+const shrinkToGapCount = (r, want) => { for (const leg of LEGS.slice(3)) { if (ownGapsOf(r) === want) break; if (ownGapsOf(r) < want) throw new Error('shrinkToGapCount: overshot ' + want); try { shrinkGapBefore(r, leg, 49.9); } catch {} } if (ownGapsOf(r) !== want) throw new Error('shrinkToGapCount: could not reach ' + want); return r; };
 const shrinkUntilFewGaps = (r, target) => { for (const leg of LEGS.slice(3)) { if (ownGapsOf(r) < target) break; try { shrinkGapBefore(r, leg, 49.9); } catch {} } if (ownGapsOf(r) >= target) throw new Error('shrinkUntilFewGaps: could not reach ' + target); return r; };
 const collapseUntilFewGaps = (r, target) => { for (const leg of LEGS.slice(3)) { if (ownGapsOf(r) < target) break; const k = r.events.findIndex((e) => e.leg === leg); if (k <= 0) continue; const d = q(r.events[k].at - r.events[k - 1].at - 10); for (let i = k; i < r.events.length; i++) { r.events[i].at = q(r.events[i].at - d); r.events[i].ts = q(r.events[i].ts - d); } } if (ownGapsOf(r) >= target) throw new Error('collapseUntilFewGaps: could not reach ' + target); return r; };
 const GAP_LEG = (() => { let best = null, bd = Infinity; for (const l of LEGS.slice(3)) { const e = evsOf(real, l)[0]; if (!e) continue; const d = e.at - markAt(real, l); if (d < bd) { bd = d; best = l; } } return best; })();
@@ -337,6 +338,9 @@ add('replay-timeline-gaps-added-own-denominator', 'replay-event-timeline', (r) =
   { prior: (p) => { priorIds(p); const under = addTwoGaps(clone(real)); return placed(breakGaps(p, nGap - gapNeed, gapNeed, under), null, gapNeed, under); } });
 // GAP_MIN brackets (R76Review2 F1): 49.9 ms is no gap (own gaps 10 < 11: refused)
 add('replay-timeline-own-gap-49.9', 'replay-event-timeline', (r) => { shrinkUntilFewGaps(r, 11); });
+// the floor's accepting side: exactly MIN_OWN_GAPS gaps must still pass, so a mutant that raises the
+// floor to 12 is killed by this case (M-timeline-min-own-gaps-12; round 78, the 12-gap scored receipt)
+accept('accept-own-gaps-at-floor', (r) => { shrinkToGapCount(r, 11); });
 add('replay-timeline-too-few-gaps', 'replay-event-timeline', (r) => { collapseUntilFewGaps(r, 11); }, ['event-leg-window']);
 add('replay-launch-token-shape', 'replay-launch-token', (r) => { const o = r.host.launchToken; r.host.launchToken = 'x'; r.host.argv = r.host.argv.map((a) => a.split(o).join('x')); r.upload.dir = r.upload.dir.split(o).join('x'); setFilesSwap(r, (p) => p.split(o).join('x')); }, ['host-argv']);
 // prior-set completeness and the walk (round-76 routed defect 2), on a scratch mirror lane

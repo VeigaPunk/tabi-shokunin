@@ -35,6 +35,15 @@ const expectNonce = opt('expect-nonce');
 const priors = multi('prior');
 const laundered = multi('laundered');
 if (!lane || !real || !pin || !expectNonce || !priorSet || laundered.length !== 3 || !work || !outFile || !path.isAbsolute(work) || !path.isAbsolute(lane)) { console.error('usage: absolute --lane/--work, --real, --expect-driver-sha256, --expect-nonce, --prior-set, 3 --laundered, --out'); process.exit(2); }
+// a battery case locks a mirror directory (chmod 000) to prove the walk refuses an unreadable dir;
+// rmSync then needs the mode restored first, or the cleanup dies EACCES and every mutant is `crashed`
+const forceRm = (dir) => {
+  const walk = (d) => { let st; try { st = fs.lstatSync(d); } catch { return; } if (!st.isDirectory()) return;
+    try { fs.chmodSync(d, 0o700); } catch {}
+    let es = []; try { es = fs.readdirSync(d); } catch {}
+    for (const e of es) walk(path.join(d, e)); };
+  walk(dir); try { fs.rmSync(dir, { recursive: true, force: true }); } catch {}
+};
 const COUNTER = 'check-filechooser-r78.mjs', BATTERY = 'negatives-filechooser-r78.mjs', DRIVER = 'chrome-cdp-filechooser-round78.mjs';
 const driverBytes = fs.readFileSync(path.join(lane, 'scripts', DRIVER));
 const counterSrc = fs.readFileSync(path.join(lane, 'scripts', COUNTER), 'utf8');
@@ -126,7 +135,7 @@ for (const m of SEMANTIC) {
   if (k !== 1) { console.error(`semantic mutant ${m.id}: edit string occurs ${k} times (must be 1)`); process.exit(2); }
 }
 const mk = (name, src) => {
-  const d = path.join(work, name); fs.rmSync(d, { recursive: true, force: true }); fs.mkdirSync(path.join(d, 'w'), { recursive: true });
+  const d = path.join(work, name); forceRm(d); fs.mkdirSync(path.join(d, 'w'), { recursive: true });
   fs.writeFileSync(path.join(d, COUNTER), src);
   fs.writeFileSync(path.join(d, BATTERY), batterySrc);
   fs.writeFileSync(path.join(d, DRIVER), driverBytes);
@@ -167,13 +176,13 @@ await Promise.all(Array.from({ length: jobs }, async () => {
     const { code, j } = await run(d, t.cls !== 'unmutated');
     const c = classify(code, j);
     results[i] = { cls: t.cls, mutant: t.id, batteryExit: code, ...c, killed: t.cls === 'unmutated' ? null : (c.outcome === 'killed' || c.outcome === 'killed-positive') };
-    fs.rmSync(d, { recursive: true, force: true });
+    forceRm(d);
   }
 }));
 // flake guard: the unmutated battery again, in full, after every mutant
 const dLast = mk('m-last', counterSrc);
 const last = await run(dLast, false);
-fs.rmSync(dLast, { recursive: true, force: true });
+forceRm(dLast);
 const lastC = classify(last.code, last.j);
 const base = results[0];
 const muts = results.slice(1);
