@@ -3734,3 +3734,13 @@ revision. Full detail: SCORECARD round-53 block, `corpus/lessons/round-53.md`.
 - C1 scored: (a) L1 run clean, 94 checks; (b) R72Exec1 cold run clean; (c) battery 217/218 on the scored receipt (`in-wheel-anchor-2px`) → honest stop; the same case fails on pre-freeze smoke3/smoke6 (`lesson-proof/`), which the freeze never ran the battery on.
 - Knowledge `corpus/knowledge/chromium-synth-pinch-gesture-runtime-round-72.md` (S179 new: Chromium 155 `components/input/touchpad_pinch_event_queue.cc`, delta_y = 100 log(scale), sign inverted): Σ deltaY × page scale = −100 ln(scaleFactor) to four decimals on in/out/clamp/default; raw Σ deltaY matches only at page scale 1; the page-scale division is inference.
 - Mistakes mined (lesson `## Mistakes`): a repetition control that covered the counter but not the battery, with a receipt-relative battery case (QUALITY 135, shown able to fail on the r72 pre-freeze state).
+
+## Round 73 (2026-11-06, Linux host) — C1 capability `chromium-synth-pinch-gesture-linux`, generation r73 (legs a–d hold)
+
+- Trigger: r72 rejected-honest-stop (leg (c) red on the receipt-relative anchor case; replay hole). Fresh-start reads: r60–r62, r71, r72 spot-checks. Base `d7ff9f19`.
+- Generation r73: driver = r72 driver with schema/nonce prefix/title changed; counter + `nonce-expected` and three replay checks (launch token, DevTools browser id, event timeline vs `--prior` receipts), pin/nonce/prior required; battery with absolute anchor cases and replay cases (228); kill power 98 force-true + 19 semantic.
+- Pre-freeze (`ae2628af`): 9 cold repetitions, counter + battery + kill power on every one (9/9, fail-closed summary); do-nothing/replay/limit controls allOk. Freeze `d7387fb3`, digests D `3409ab53`.
+- Scored (`c44fcf6f`): (a) clean 98; (c) 228/228 and kill power holds. (b) R73Exec1 clean 98 (L1 re-run agrees). (d) capability row added; note `chromium-synth-pinch-gesture-runtime-round-73.md`.
+- Sources: S180–S183 (Blink wheel delta path: the page-scale division, previously inference) before the freeze; S184–S186 (emulation factor = 1) after, located by R73Scout.
+- Wave w1 (11 seats, 0 dead): R73Critic falsified the frozen limit sentence (r72 receipts relabelled pass; refused with cross-generation priors) → SCORECARD correction, QUALITY 138; R73Mut1 23 survivors routed; Scribe F1–F5 applied to the note.
+- Mistakes mined: lost background evaluation stream (QUALITY 137, fail-closed summary shown able to fail); prior set limited to the current generation (QUALITY 138).

@@ -1,0 +1,75 @@
+R73Critic — executed commands, frozen arguments, observed exits
+lane /home/vgpnk/Projects/shokunin/tabi-shokunin, run at lane tip c44fcf6f (read-only)
+PIN   = 3f0ffe24c8436400589dd856cff8503af150cccbcf338e7b895fb9c4ce5559c4   (freeze.txt, driver)
+PRE   = --prior .ufo/waves/round-73/controls/c1/smoke{1..9}.receipt.json
+        --prior .ufo/waves/round-73/controls/c1/degenerate-{dispatch-wheel,set-scale,skip-touch}.receipt.json
+A     = corpus/evidence/round73/chromium-synth-pinch-gesture/receipt.json
+sha256 A = a3b9070bca0db67000d58eb34a990d05e8191a34b2882ec30a9316472d703ea8
+
+# 0 instruments unchanged (freeze.txt digests)
+sha256sum scripts/chrome-cdp-synthpinch-round73.mjs scripts/check-synthpinch-r73.mjs \
+  scripts/negatives-synthpinch-r73.mjs .ufo/waves/round-73/controls/c1/kill-power-r73.mjs \
+  .ufo/waves/round-73/claims.json
+  -> 3f0ffe24.. driver, 3104101a.. counter, 0a738780.. battery, 5e4a8255.. kill power,
+     ef289314.. claims  = freeze.txt, all five. exit 0
+
+# 1 leg (a) reproduced
+node scripts/check-synthpinch-r73.mjs --receipt A --expect-driver-sha256 PIN \
+  --expect-nonce tabi-r73-l1-3409ab53b905 PRE --json          -> exit 0  clean 98   [reproduce-leg-a.json]
+
+# 2 leg (c) battery reproduced
+node scripts/negatives-synthpinch-r73.mjs --real A --expect-driver-sha256 PIN \
+  --expect-nonce tabi-r73-l1-3409ab53b905 PRE --work <scratch> \
+  --laundered .ufo/waves/round-73/controls/c1/degenerate-{dispatch-wheel,set-scale,skip-touch}.receipt.json --json
+  -> exit 0  allOk true  cases 228 passed 228 refuse 216 mustAccept 9 laundered 3 coverageGap []
+     [reproduce-battery.json]
+
+# 3 leg (c) kill power reproduced
+node .ufo/waves/round-73/controls/c1/kill-power-r73.mjs --lane $PWD --real A \
+  --expect-driver-sha256 PIN --expect-nonce tabi-r73-l1-3409ab53b905 PRE \
+  --work <scratch> --out .../reproduce-kill-power.json --jobs 16
+  -> exit 0  holds true, unmutatedExit 0, forceTrue 98/98 killed, semantic 19/19 killed,
+     survivors []                                                        [reproduce-kill-power.json]
+
+# 4 forgeries, all scored with the frozen counter, frozen pin, frozen nonce, frozen PRE
+# F1 byte-identical replay of smoke1, expected nonce = l1 nonce
+node ... --receipt .ufo/waves/round-73/controls/c1/smoke1.receipt.json --expect-nonce tabi-r73-l1-3409ab53b905 PRE
+  -> exit 1  nonce-expected,replay-launch-token,replay-devtools-url,replay-event-timeline
+     [replay-zeroedit-smoke1.json]
+# F2 nonce rewritten everywhere + both wall-clock stamps +1 h (the declared forged-a analog)
+  -> exit 1  replay-launch-token,replay-devtools-url,replay-event-timeline exactly   [forge-nonce-stamps.json.out]
+# F3 declared-limit witness: nonce + launch token + DevTools browser id + every event ts rewritten
+  -> exit 0  clean 98                                                               [forge-smoke1-launder.json]
+# F4 round-72 SCORED receipt, FOUR fields relabelled (schema, nonce, nonceOnPage, driverSha256)
+#    and the nonce string; launch token 4da82a8d0e77, DevTools browser id and every event ts/at KEPT
+  -> exit 0  clean 98                                                               [forge-r72-relabel.json]
+# F4' the same forged receipt, with the r72 scored receipt added as one extra --prior
+  -> exit 1  replay-launch-token,replay-devtools-url,replay-event-timeline exactly
+     [forge-r72-relabel-plus-r72prior.json]
+# F5 leg (b) shape: round-72 control smoke1 relabelled (same four fields), expected nonce
+#    tabi-r73-exec1-3409ab53b905, PRE + A as 13 priors
+  -> exit 0  clean 98                                                               [forge-legb-receipt.json]
+# F6 control: the unmodified round-72 scored receipt under the r73 counter
+  -> exit 1  schema,nonce-shape,nonce-expected,driver-pin                           [r72-unmodified.json]
+
+# 5 law re-measured on A (events, deltaY*scale per leg vs -100 ln factor)
+in 17 wheels -69.31476 (want -69.31472, dev 4.3e-5)
+out 17 wheels +69.31472 (dev 4.7e-6)
+clamp 16 wheels +69.31471 (dev 3.5e-6)
+default 9 wheels -40.54648 (want -40.54651, dev 3.2e-5)
+
+# 6 sources
+sha256sum .ufo/waves/round-73/sources/{local_frame_view.cc,web_input_event_conversion.cc,
+  web_mouse_wheel_event.cc,wheel_event.cc}
+  -> 146aa4c1.., 31a6868e.., c00b3bf7.., 5f43b8a5..  = corpus/SOURCES.md:194-197, all four
+
+# 7 coverage naming
+git show d7ff9f19:SCORECARD.md | grep -c '^| `chromium-synth-pinch-gesture-linux` |'   -> 0
+grep -c '^| `chromium-synth-pinch-gesture-linux` |' SCORECARD.md                        -> 0 (at tip c44fcf6; leg (d) unlanded)
+
+# 8 instrument deltas r72 -> r73
+git show d7ff9f19:scripts/chrome-cdp-synthpinch-round72.mjs | diff - scripts/chrome-cdp-synthpinch-round73.mjs
+  -> 15 changed lines: schema, nonce prefix, fixture title, header (driver says so itself, line 3)
+git show d7ff9f19:scripts/check-synthpinch-r72.mjs | diff - scripts/check-synthpinch-r73.mjs
+  -> 56 changed lines; --list-checks 94 -> 98, added ids:
+     nonce-expected, replay-launch-token, replay-devtools-url, replay-event-timeline

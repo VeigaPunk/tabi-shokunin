@@ -1,0 +1,290 @@
+{
+ "pristine": "/fast/scratch/hyaku/tabi-r73/R73Mut1/s/check-synthpinch-r73.mjs",
+ "pristineSha256": "3104101a9ac8b0cd09337a870139653f7a64cfb7eb65067daf389119ce20d4d1",
+ "battery": "/fast/scratch/hyaku/tabi-r73/R73Mut1/s/negatives-synthpinch-r73.mjs",
+ "real": "/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round73/chromium-synth-pinch-gesture/receipt.json",
+ "pin": "3f0ffe24c8436400589dd856cff8503af150cccbcf338e7b895fb9c4ce5559c4",
+ "nonce": "tabi-r73-l1-3409ab53b905",
+ "priors": [
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/smoke1.receipt.json",
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/smoke2.receipt.json",
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/smoke3.receipt.json",
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/smoke4.receipt.json",
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/smoke5.receipt.json",
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/smoke6.receipt.json",
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/smoke7.receipt.json",
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/smoke8.receipt.json",
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/smoke9.receipt.json",
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/degenerate-dispatch-wheel.receipt.json",
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/degenerate-set-scale.receipt.json",
+  "/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-73/controls/c1/degenerate-skip-touch.receipt.json"
+ ],
+ "mutants": [
+  {
+   "id": "r72-in-span-lower-1",
+   "line": 69,
+   "from": "in: { seq: [], wheels: [5, 'in'], scale: 2, span: [150, 450]",
+   "to": "in: { seq: [], wheels: [5, 'in'], scale: 2, span: [1, 450]",
+   "mutatedSha256": "1b502531e46d657186f18ec21b6ad6d0aa145a9f470e90bc874b613e0acc3ad1"
+  },
+  {
+   "id": "r72-zero-span-upper-100000",
+   "line": 78,
+   "from": "zero: { seq: [], wheels: [20, 'zero'], scale: 1.5, span: [3000, 6000]",
+   "to": "zero: { seq: [], wheels: [20, 'zero'], scale: 1.5, span: [3000, 100000]",
+   "mutatedSha256": "13a962f0f368d5567e422cc8d9d9ffd3d7397410dc84ca9ae757e8337f3f1e3f"
+  },
+  {
+   "id": "r72-pinch-params-first-only",
+   "line": 181,
+   "from": "canon(pinches.map((c) => c.params)) === canon(FROZEN.filter((l) => l.params).map((l) => l.params))",
+   "to": "canon(pinches.slice(0, 1).map((c) => c.params)) === canon(FROZEN.filter((l) => l.params).map((l) => l.params).slice(0, 1))",
+   "mutatedSha256": "44c99535af0b8f1ea587a2910804d0bae2992a6d3401af0100466f1c2a494f3f"
+  },
+  {
+   "id": "r72-empty-params-open",
+   "line": 188,
+   "from": "if (EMPTY.has(c.method)) return canon(c.params) === '{}';",
+   "to": "if (EMPTY.has(c.method)) return true;",
+   "mutatedSha256": "57afbfb2afb636b18629e1b04af274b2e45b202fe600eb09386dfb7976280082"
+  },
+  {
+   "id": "r72-leg-mark-monotonic-dropped",
+   "line": 171,
+   "from": "(i === 0 || m.at >= marks[i - 1].at)",
+   "to": "(i === 0 || true)",
+   "mutatedSha256": "17cd4cca99a6b16c51d8068b952b0d456849790738632000599bd24c070e7c2f"
+  },
+  {
+   "id": "r72-browser-getversion-once-dropped",
+   "line": 196,
+   "from": " && once('Browser.getVersion')",
+   "to": "",
+   "mutatedSha256": "c20c69892b293c93f2b0cd6cdaab75d6122f91235404b0f47e0d3e6a66d74bef"
+  },
+  {
+   "id": "r72-dmo-once-dropped",
+   "line": 196,
+   "from": " && once('Emulation.setDeviceMetricsOverride')",
+   "to": "",
+   "mutatedSha256": "1c13a558c828624d33dc0db251167e2cfd04ebdd2ba10eec4989861e455820a1"
+  },
+  {
+   "id": "r72-leg-error-message-loose",
+   "line": 229,
+   "from": "leg.cdpError.includes(want.error)",
+   "to": "typeof leg.cdpError === 'string'",
+   "mutatedSha256": "4d7d4414caff09eaee42ab427a6fd646fe40313910492e184134d1eed44d97a2"
+  },
+  {
+   "id": "r72-server-log-binding-some",
+   "line": 137,
+   "from": "served.every((s) => s.run === r.nonce)",
+   "to": "served.some((s) => s.run === r.nonce)",
+   "mutatedSha256": "eab1db4197be8ede1e2db3d80a9ec17de3d8c893da3e013e300e08a53307a8c4"
+  },
+  {
+   "id": "r72-seq-first-free",
+   "line": 160,
+   "from": "events.every((e, i) => isObj(e) && e.seq === i + 1)",
+   "to": "events.every((e, i) => isObj(e) && (i === 0 || e.seq === i + 1))",
+   "mutatedSha256": "5f426d4f4aedd29383533c1f097d05f160eb0907e21fecdb6b5a6763c5f4228e"
+  },
+  {
+   "id": "r72-event-types-deltamode-dropped",
+   "line": 165,
+   "from": "num(e.deltaY) && num(e.deltaMode) && num(e.clientX) && num(e.clientY)",
+   "to": "num(e.deltaY) && num(e.clientX) && num(e.clientY)",
+   "mutatedSha256": "efd81fa27eee15f48be4828bbeb2177b1d9b9bc154b4ef7bde0d65092b855e35"
+  },
+  {
+   "id": "r72-initial-scale-cdp-dropped",
+   "line": 233,
+   "from": "near(legs[0]?.scaleBefore?.page, 1) && near(legs[0]?.scaleBefore?.cdp, 1)",
+   "to": "near(legs[0]?.scaleBefore?.page, 1)",
+   "mutatedSha256": "40c2c08f5460bdf9adf67c64dd508a8a3bd0a2add2e9113001eab42f0c4a0f65"
+  },
+  {
+   "id": "r73-replay-timeline-type-included",
+   "line": 146,
+   "from": "[e.ts, e.at]",
+   "to": "[e.ts, e.at, e.type]",
+   "mutatedSha256": "7d28d55a4d05e196beb89be08800d826f35143497be66ce3c27a5215f1a90f84"
+  },
+  {
+   "id": "r73-replay-browserid-length-loose",
+   "line": 145,
+   "from": "/\\/devtools\\/browser\\/([0-9a-f-]{36})$/",
+   "to": "/\\/devtools\\/browser\\/([0-9a-f-]+)$/",
+   "mutatedSha256": "4ffa4004dc7aa0e775c05fde04dbb63d9c33ca66fbb287dd9e4e00f7aff9fa29"
+  },
+  {
+   "id": "r73-replay-token-priors-last-only",
+   "line": 148,
+   "from": "priors.every((p) => !isObj(p.host) || p.host.launchToken !== tok)",
+   "to": "priors.slice(-1).every((p) => !isObj(p.host) || p.host.launchToken !== tok)",
+   "mutatedSha256": "2cb71a0e1150f42c65cf3438fd5c8533c46d9ef96d77b904f4fbe69ed38c3dc2"
+  },
+  {
+   "id": "r73-replay-token-priors-first-only",
+   "line": 148,
+   "from": "priors.every((p) => !isObj(p.host) || p.host.launchToken !== tok)",
+   "to": "priors.slice(0, 1).every((p) => !isObj(p.host) || p.host.launchToken !== tok)",
+   "mutatedSha256": "b750dc38056017310aadd469f1f121fa7dcc2c643532bb4d6e134d345309c793"
+  },
+  {
+   "id": "r73-replay-token-shape-12-or-more",
+   "line": 148,
+   "from": "/^[0-9a-f]{12}$/.test(tok)",
+   "to": "/^[0-9a-f]{12,}$/.test(tok)",
+   "mutatedSha256": "dfbab7ef6f69816b1b9b32307ea4822dd92ef2d651746e9068849720567bc228"
+  },
+  {
+   "id": "r73-leg-marks-at-zero",
+   "line": 171,
+   "from": "num(m.at) && m.at > 0",
+   "to": "num(m.at) && m.at >= 0",
+   "mutatedSha256": "4fa102c69d35ce683e8f7c9432d1a75d6c0c04bd46696b2ef6a1b7ccb34dd7ff"
+  },
+  {
+   "id": "r73-closedat-floor-start-mark",
+   "line": 172,
+   "from": "r.closedAt >= marks[marks.length - 1].at",
+   "to": "r.closedAt >= marks[0].at",
+   "mutatedSha256": "be97b3eb4c37c673c54445363c51a0e7223da9060c6acbd433b3b2290ff2377f"
+  },
+  {
+   "id": "r73-marks-name-length-only",
+   "line": 171,
+   "from": "canon(markNames) === canon(['start', ...LEG_ORDER])",
+   "to": "markNames.length === LEG_ORDER.length + 1",
+   "mutatedSha256": "322644555654cca6d1f104c42ff2a403311b3ed6e1c1a912e1542b4ac2c1b2fe"
+  },
+  {
+   "id": "r73-late-after-close-sign-dropped",
+   "line": 172,
+   "from": "Number.isInteger(r.lateAfterClose) && r.lateAfterClose >= 0",
+   "to": "Number.isInteger(r.lateAfterClose)",
+   "mutatedSha256": "243aab3db20d7a831936548ee6abf0b02bb0d1151cc1887c6de909eab238a60e"
+  },
+  {
+   "id": "r73-run-window-floor-800",
+   "line": 154,
+   "from": "t1 - t0 >= 8000",
+   "to": "t1 - t0 >= 800",
+   "mutatedSha256": "eab9f895d2c1e857f9a9a2190323adc679c6220bf4b529e303386d5246fe38d5"
+  },
+  {
+   "id": "r73-host-chromium-any-version",
+   "line": 140,
+   "from": "/^Chromium \\d+\\.\\d+\\.\\d+\\.\\d+/",
+   "to": "/Chromium \\d+/",
+   "mutatedSha256": "cd9cf5b36610d759e747b45ac9ea6509f3e923afc7c28888e663d82955271499"
+  },
+  {
+   "id": "r73-devtools-stderr-dropped",
+   "line": 143,
+   "from": "typeof host.stderrHead === 'string' && host.stderrHead.includes(dl.url)",
+   "to": "true",
+   "mutatedSha256": "4bf3ad8c4030191aec6f4b74e4ea45b5828dcbca25bdeaac35561913bb79e044"
+  },
+  {
+   "id": "r73-devtools-port-string-coercion",
+   "line": 143,
+   "from": "dl.port === argvPort",
+   "to": "Number(dl.port) === argvPort",
+   "mutatedSha256": "8ad99ba1ddd9c21b5208943cc138afb325dce7259fd702b5d8ed97a5e923e3f6"
+  },
+  {
+   "id": "r73-scale-chain-dropped",
+   "line": 235,
+   "from": " && LEG_ORDER.slice(1).every((n, i) => near(legOf(n).scaleBefore?.page, legOf(LEG_ORDER[i]).scaleAfter?.page))",
+   "to": "",
+   "mutatedSha256": "19d949428ce84690b010924921cbfbf1639c54830616ba4fd2311aef75f90d0d"
+  },
+  {
+   "id": "r73-event-window-strict-lower",
+   "line": 175,
+   "from": "return e.at >= w[0] && e.at <= w[1]",
+   "to": "return e.at > w[0] && e.at <= w[1]",
+   "mutatedSha256": "16f4b2c79769125d7faa3bc2c90498506ab18111387ea07e5c19b66111575610"
+  },
+  {
+   "id": "r73-wheels-deltamode-number-only",
+   "line": 222,
+   "from": "wheels.every((e) => e.ctrlKey === true && e.deltaMode === 0)",
+   "to": "wheels.every((e) => e.ctrlKey === true && num(e.deltaMode))",
+   "mutatedSha256": "853ee81e4e24ba9fd58ae036c6823b9fa13b02895359f631fd9527b8e1afacfe"
+  },
+  {
+   "id": "r73-touch-seq-length-only",
+   "line": 218,
+   "from": "canon(nonMove) === canon(want.seq) && moveTypesOk",
+   "to": "nonMove.length === want.seq.length && moveTypesOk",
+   "mutatedSha256": "573c09b704490aa71ddb35aaec3d7be8fc6b7cae5858d71d2bb435ecc5e55a8b"
+  },
+  {
+   "id": "r73-teardown-curl-fixture-number",
+   "line": 262,
+   "from": "td.postKillCurl.fixture === 7",
+   "to": "typeof td.postKillCurl.fixture === 'number'",
+   "mutatedSha256": "a4a9e6e31fd087f1658500148305baa7262c8c09404db012d679f8609d4131f7"
+  },
+  {
+   "id": "r73-pinch-count-at-least-9",
+   "line": 180,
+   "from": "pinches.length === 10",
+   "to": "pinches.length >= 9",
+   "mutatedSha256": "150085d8b783d1fd088c76c7dedcff37efc08a3c25a76c4a548943fc169e2002"
+  },
+  {
+   "id": "r73-producer-predicate-truthy",
+   "line": 264,
+   "from": "r.predicate === true && r.synthPinchHypothesis === 'CONFIRMED'",
+   "to": "r.predicate && r.synthPinchHypothesis === 'CONFIRMED'",
+   "mutatedSha256": "dc4f311e244b36640fbcef5226a20399df270d3cb6d360ed9e2e6a2a5ba56767"
+  },
+  {
+   "id": "r73-layoutmetrics-params-open",
+   "line": 188,
+   "from": "if (EMPTY.has(c.method)) return canon(c.params) === '{}';",
+   "to": "if (EMPTY.has(c.method)) return c.method === 'Page.getLayoutMetrics' ? true : canon(c.params) === '{}';",
+   "mutatedSha256": "997fe1b8836e885bdc1c67b6b64cfa1094496c16ecace56e96be52e8907fe098"
+  },
+  {
+   "id": "r73-origin-port-optional",
+   "line": 182,
+   "from": "/^http:\\/\\/127\\.0\\.0\\.1:\\d+$/",
+   "to": "/^http:\\/\\/127\\.0\\.0\\.1(:\\d+)?$/",
+   "mutatedSha256": "81a4abbd342b099eb94fd9745aa231c23900d4132dd19218b9877eefdcf8566e"
+  },
+  {
+   "id": "r73-schema-prefix-r7",
+   "line": 131,
+   "from": "r.schema === 'tabi-chrome-cdp-synthpinch-r73'",
+   "to": "typeof r.schema === 'string' && r.schema.startsWith('tabi-chrome-cdp-synthpinch-r7')",
+   "mutatedSha256": "226660af68b1e89f336f25b140a3b683cd0fe7601b3e441a7eae946988ea922d"
+  },
+  {
+   "id": "r73-leg-order-length-only",
+   "line": 156,
+   "from": "canon(legs.map((l) => l && l.name)) === canon(LEG_ORDER)",
+   "to": "legs.map((l) => l && l.name).length === LEG_ORDER.length",
+   "mutatedSha256": "3aa5c13a3b9b0f3b34eac3e97de7aedfceb0c4e05f8f66f5caef8dc0e2ad9996"
+  },
+  {
+   "id": "r73-leg-params-elapsed-nullable",
+   "line": 157,
+   "from": "num(l.elapsedMs) && l.elapsedMs >= 0",
+   "to": "l.elapsedMs != null",
+   "mutatedSha256": "c1ae665599b0dac02d35c368970f78d7305cea9bd0ff71a8d0a89d11a471ee26"
+  },
+  {
+   "id": "r73-wheel-law-relative-tolerance",
+   "line": 245,
+   "from": "-100 * Math.log(FROZEN.find((l) => l.name === n).params.scaleFactor), 0.5)",
+   "to": "-100 * Math.log(FROZEN.find((l) => l.name === n).params.scaleFactor), Math.abs(lawSum(n)) * 0.02)",
+   "mutatedSha256": "81f1698c3b88ec89148b5d091be14f64d3a0834f7ef83fd547d3916006f4fdd4"
+  }
+ ]
+}
