@@ -58,3 +58,15 @@ classes and the transient-activation requirement (S217).
   `InvalidStateError`).
 - A picker answered after `showPicker` (the answer path is the r78 capability; the combination —
   programmatic trigger then `DOM.setFileInputFiles` — is not measured here).
+
+## Correction — wave w1 (2026-11-07)
+
+The sentence above, "The source agrees on the order and the messages", is **false as written for the
+first two steps**: the spec's order is mutability → cross-origin → gesture (S216, `input.html` steps
+at 5828 / 5832 / 5841), while Chromium's is cross-origin → mutability → gesture (S218,
+`html_input_element.cc` 2657-2664 / 2666-2671 / 2673-2677). The last two steps agree, and on the
+gesture-vs-mutability question the two agree (both check mutability first) — which is what the
+round's `sp-disabled` leg measures. The observable consequence of the transposition: a disabled,
+non-file, non-color input in a cross-origin iframe throws `InvalidStateError` per spec but
+`SecurityError` per Chromium. Found by the wave's `R79Scout` (claims_not_supported item 1); the
+SOURCES rows S216/S218 each state their own order correctly — only this note's synthesis was wrong.

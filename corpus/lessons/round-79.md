@@ -113,3 +113,39 @@ correction; `scripts/check-record-drift-r79.mjs` counts the mismatches (before: 
   `check-showpicker-r79.mjs` refuses a path-shaped `--tree-exempt` (exit 2,
   `tree-exempt-path-refused`) and resolves `--tree-exempt-sha256` inside the walked trees. The r78
   counter's own path flag is frozen bytes and is not edited.
+
+## Wave w1 findings (integrated)
+
+The wave's 12 seats settled; the ones that changed the record:
+
+- **R79Critic H1 (HIGH, fixed).** The C2 counter counted substrings, so a *reversed* correction
+  passed (control: exit 0 with the SCORECARD pair reversed). Fixed: every correction claim now
+  requires the directional pair `<stale> → <truth>`; the reversed control exits 1 with 2 mismatches
+  (`lesson-proof/c2-controls.json`).
+- **R79Critic H2–H5 (fixed).** The battery count drifted in this round's own records (87/88/90);
+  `claims.json` and `SKILL.md` now state 90; `coverageGap` is corrected to the battery's actual
+  `coverage.uncovered`/`coverage.unknown`; the claims' S216-S219 is corrected to S216-S218 (no S219
+  row exists — the CDN Runtime.pdl the brief assumed is absent at the tag, per R79Scout); the two
+  cited-but-absent control files now exist (`controls/c1/prefreeze-summary.json`,
+  `lesson-proof/c2-controls.json`); `scored/c1-killpower-a.json` is produced by the scored pipeline.
+- **R79Critic M1 (statement corrected).** The counter's header sentence said a forger who moves
+  `absNeed` events escapes; the escape condition is `absMatched < absNeed`, i.e. `N_p - absNeed + 1`
+  moved events. The printed `escapeEvents`/`escapeGaps` were already correct; the prose is corrected
+  in the round report and this lesson.
+- **R79Probe (hypothesis REFUTED).** `showPicker()` checks mutability before the gesture: a disabled
+  input with no activation throws `InvalidStateError`, not `NotAllowedError` — matching S218's order.
+- **R79Scout (2 claims flagged).** The note's "the source agrees on the order" was false for the
+  first two steps (spec mutability→cross-origin, Chromium cross-origin→mutability); corrected in the
+  note. The second flag (the `userGesture`-is-not-`isActive` sentence) is kept as measured: the
+  receipt shows `isActive` false before and after the `userGesture` evaluation.
+- **R79Mut1 (routed to r80, not closed).** An independent conjunct-level mutant set (76 mutants)
+  found 56 weakenings the frozen battery does not kill: the battery has one isolating case per
+  *check*, and a check with several conjuncts is only bracketed on one of them. The counter holds the
+  rule; the battery is blind to the other conjuncts. This is QUALITY 155's limit stated from
+  outside — the frozen kill-power set (64 mutants, 0 survivors) is complete for the rules it names,
+  not for every conjunct.
+- **R79Exec4 (routed defect 3a, landed as wave work).** `scripts/negatives-filechooser-r79.mjs`: a
+  self-contained battery for the frozen r78 counter with one witness per R78Mut1 survivor (19 refuse
+  + 2 must-accept), the r78 bytes untouched.
+- **R79Connector.** 20 sibling lanes scanned, 0 contested rows; the showPicker surface appears in no
+  sibling's capability table or knowledge corpus.
