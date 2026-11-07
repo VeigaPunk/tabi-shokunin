@@ -29,6 +29,9 @@ const readJson = (p) => { try { return JSON.parse(fs.readFileSync(path.join(lane
 const claims = [];
 const add = (id, fn) => claims.push({ id, fn });
 const has = (text, needle) => typeof text === 'string' && text.includes(needle);
+// a correction is DIRECTIONAL: it states "<stale> → <corrected>" as one pair. A reversed or
+// reordered statement does not satisfy it (round-79 wave, R79Critic H1).
+const pair = (text, stale, truth) => has(text, stale + ' → ' + truth);
 
 // ---- committed truth (re-derived from the bytes) ----
 const r78receipt = readJson('corpus/evidence/round78/chromium-file-chooser/receipt.json');
@@ -58,32 +61,32 @@ const CLAIMS78 = read('.ufo/waves/round-78/claims.json') || '';
 // ---- claims ----
 // 1. SCORECARD r78 C1 row: the counting command cites a superseded nonce.
 add('sc-78-nonce-stale-present', () => ({ ok: has(SCORECARD, 'tabi-r78-l1-d59ca0270c2a'), detail: 'the stale nonce is no longer in SCORECARD.md (records are append-only)' }));
-add('sc-78-nonce-corrected', () => ({ ok: has(SCORECARD, 'tabi-r78-l1-d59ca0270c2a') && has(SCORECARD, 'tabi-r78-l1-bf94adaab578') && has(SCORECARD, 'Correction — round 78 record drift'), detail: 'no SCORECARD correction names the stale nonce and the scored nonce' }));
+add('sc-78-nonce-corrected', () => ({ ok: has(SCORECARD, 'Correction — round 78 record drift') && pair(SCORECARD, 'tabi-r78-l1-d59ca0270c2a', 'tabi-r78-l1-bf94adaab578'), detail: 'no SCORECARD correction states the pair tabi-r78-l1-d59ca0270c2a → tabi-r78-l1-bf94adaab578' }));
 add('sc-78-nonce-truth', () => ({ ok: truth.scoredNonce === 'tabi-r78-l1-bf94adaab578', detail: 'the scored receipt nonce is ' + truth.scoredNonce }));
 // 2. SCORECARD r78 C1 row: 398/398 vs the final 400-case battery.
 add('sc-78-battery-stale-present', () => ({ ok: has(SCORECARD, '398/398'), detail: 'the stale 398/398 is no longer in SCORECARD.md' }));
-add('sc-78-battery-corrected', () => ({ ok: has(SCORECARD, 'Correction — round 78 record drift') && has(SCORECARD, '398/398') && has(SCORECARD, '400/400'), detail: 'no SCORECARD correction states 398/398 -> 400/400' }));
+add('sc-78-battery-corrected', () => ({ ok: has(SCORECARD, 'Correction — round 78 record drift') && pair(SCORECARD, '398/398', '400/400'), detail: 'no SCORECARD correction states the pair 398/398 → 400/400' }));
 add('sc-78-battery-truth', () => ({ ok: truth.batteryCases === 400, detail: 'the scored battery ran ' + truth.batteryCases + ' cases' }));
 // 3. SKILL.md r78 gate registry: 398 cases / 32 witnesses.
 add('skill-78-stale-present', () => ({ ok: has(SKILL, '398 cases') && has(SKILL, '32 carried R77Mut1 witnesses'), detail: 'the stale registry numbers are no longer in SKILL.md' }));
-add('skill-78-corrected', () => ({ ok: has(SKILL, 'Correction — round 78 registry') && has(SKILL, '398 cases') && has(SKILL, '400 cases') && has(SKILL, '32 carried R77Mut1 witnesses') && has(SKILL, '31 carried R77Mut1 witnesses'), detail: 'no SKILL correction states 398 cases -> 400 and 32 witnesses -> 31' }));
+add('skill-78-corrected', () => ({ ok: has(SKILL, 'Correction — round 78 registry') && pair(SKILL, '398 cases', '400 cases') && pair(SKILL, '32 carried R77Mut1 witnesses', '31 carried R77Mut1 witnesses'), detail: 'no SKILL correction states the pairs 398 cases → 400 cases and 32 witnesses → 31 witnesses' }));
 add('skill-78-truth', () => ({ ok: truth.batteryCases === 400 && truth.witnessCases === 31, detail: 'battery ' + truth.batteryCases + ' cases, witness cases ' + truth.witnessCases }));
 // 4. LOG.md round-78 entry: 398/398 and the superseded nonce, with no correction entry.
 add('log-78-stale-present', () => ({ ok: has(LOG, '398/398') && has(LOG, 'tabi-r78-l1-d59ca0270c2a'), detail: 'the stale LOG numbers are no longer in LOG.md' }));
-add('log-78-corrected', () => ({ ok: has(LOG, 'Correction — round 78 record drift') && has(LOG, 'tabi-r78-l1-d59ca0270c2a') && has(LOG, 'tabi-r78-l1-bf94adaab578') && has(LOG, '400/400'), detail: 'no LOG correction entry names the stale nonce and 398/398 -> 400/400' }));
+add('log-78-corrected', () => ({ ok: has(LOG, 'Correction — round 78 record drift') && pair(LOG, 'tabi-r78-l1-d59ca0270c2a', 'tabi-r78-l1-bf94adaab578') && pair(LOG, '398/398', '400/400'), detail: 'no LOG correction entry states the pairs nonce → nonce and 398/398 → 400/400' }));
 // 5. The filed r78 report: 32 witnesses, 9 Mistakes rows, the nodeReport drift sentence. A filed
 // report is never rewritten, so the correction lands in the round-79 lesson (and the r79 report).
 add('report-78-stale-present', () => ({ ok: has(REPORT78, '32 carried R77Mut1 witnesses') && has(REPORT78, '9 Mistakes rows'), detail: 'the stale report sentences are no longer in the filed r78 report (' + fleetReport + ')' }));
-add('report-78-corrected', () => ({ ok: has(LESSON79, 'Correction — round 78 record drift') && has(LESSON79, '32 carried R77Mut1 witnesses') && has(LESSON79, '31') && has(LESSON79, '9 Mistakes rows') && has(LESSON79, '8'), detail: 'the round-79 lesson carries no correction naming the report\'s 32 witnesses -> 31 and 9 Mistakes rows -> 8' }));
+add('report-78-corrected', () => ({ ok: has(LESSON79, 'Correction — round 78 record drift') && pair(LESSON79, '32 carried R77Mut1 witnesses', '31 carried R77Mut1 witnesses') && pair(LESSON79, '9 Mistakes rows', '8 Mistakes rows'), detail: 'the round-79 lesson carries no directional correction for the report\'s witness and Mistakes rows' }));
 add('report-78-truth', () => ({ ok: truth.witnessCases === 31 && truth.mistakesRows === 8, detail: 'witness cases ' + truth.witnessCases + ', Mistakes rows ' + truth.mistakesRows }));
 // 6. The r78 claims.json leg (b) path: `scored/` vs the actual `round-78-seats/` receipts.
 add('claims-78-path-stale-present', () => ({ ok: has(CLAIMS78, '.ufo/waves/round-78/scored/') && has(CLAIMS78, 'cold-run acceptance'), detail: 'the stale claims.json leg (b) path is no longer present' }));
-add('claims-78-path-corrected', () => ({ ok: has(LESSON79, 'Correction — round 78 record drift') && has(LESSON79, '.ufo/waves/round-78/scored/') && has(LESSON79, '.ufo/waves/round-78-seats/'), detail: 'the round-79 lesson does not name the claims.json leg (b) path correction' }));
+add('claims-78-path-corrected', () => ({ ok: has(LESSON79, 'Correction — round 78 record drift') && pair(LESSON79, '.ufo/waves/round-78/scored/', '.ufo/waves/round-78-seats/'), detail: 'the round-79 lesson does not state the path pair .ufo/waves/round-78/scored/ → .ufo/waves/round-78-seats/' }));
 add('claims-78-path-truth', () => ({ ok: truth.coldPathsInSeats && truth.coldLines >= 4, detail: 'cold-runs.txt lines ' + truth.coldLines + ' all under round-78-seats: ' + truth.coldPathsInSeats }));
 // 7. The nodeReport sentence: the scored receipt's pick-multiple id is 7; the 7->10 drift belongs
 // to the pre-repair L1-cold1 run.
 add('report-78-node-truth', () => ({ ok: truth.scoredNode === 7 && truth.cold1Node === 10, detail: 'scored pick-multiple node ' + truth.scoredNode + ', L1-cold1 node ' + truth.cold1Node }));
-add('report-78-node-corrected', () => ({ ok: has(LESSON79, 'Correction — round 78 record drift') && has(LESSON79, 'pick-multiple') && has(LESSON79, 'L1-cold1'), detail: 'the round-79 lesson does not name the nodeReport correction' }));
+add('report-78-node-corrected', () => ({ ok: has(LESSON79, 'Correction — round 78 record drift') && pair(LESSON79, 'pick-multiple 10', 'pick-multiple 7'), detail: 'the round-79 lesson does not state the pair pick-multiple 10 → pick-multiple 7' }));
 // 8. The capability-status command states its provisional count (round-78 Correction 7 / spot-check §6 item 6).
 add('capability-status-count', () => {
   const r = spawnSync(process.execPath, [path.join(lane, 'scripts/check-capability-status.mjs'), '--json'], { encoding: 'utf8', timeout: 60000 });

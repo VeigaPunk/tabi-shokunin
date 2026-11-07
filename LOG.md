@@ -3819,7 +3819,7 @@ Planned (r78): a file-chooser counter generation that binds the chooser event to
 
 Planned (r79): a `--tree-exempt` bound by sha256 rather than path; a `showPicker()` leg from the R78Exec3 probe; the wave's false-green findings and mutation survivors as battery cases. Retired: none.
 
-**Correction — round 78 record drift.** The round-78 entry above states "Battery 398/398 allOk" and the nonce `tabi-r78-l1-d59ca0270c2a`. The committed final battery is **400/400** and the final scored receipt's nonce is `tabi-r78-l1-bf94adaab578` (D `bf94adaa`; the 398 figure and the `d59ca027` nonce belong to the superseded digests commit). The entry is not rewritten (append-only); this correction is the record and `scripts/check-record-drift-r79.mjs` counts it. (Lesson `corpus/lessons/round-79.md`, Corrections item 3.)
+**Correction — round 78 record drift.** The round-78 entry above states "Battery 398/398 allOk" and the nonce `tabi-r78-l1-d59ca0270c2a`. Correction: `tabi-r78-l1-d59ca0270c2a → tabi-r78-l1-bf94adaab578` (D `bf94adaa`) and `398/398 → 400/400`; the 398 figure and the `d59ca027` nonce belong to the superseded digests commit. The entry is not rewritten (append-only); this correction is the record and `scripts/check-record-drift-r79.mjs` counts it. (Lesson `corpus/lessons/round-79.md`, Corrections item 3.)
 
 ## Round 79 — 2026-11-07 (Linux host): C1 `chromium-showpicker-linux` (new capability) and C2 record drift
 

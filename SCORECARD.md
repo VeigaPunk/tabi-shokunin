@@ -3896,7 +3896,7 @@ names the source by sha256, not by path); a `showPicker()` leg from R78Exec3's p
 false-green findings (R78Review1) and survivors (R78Mut1) as battery cases; carried: the r77 survivors
 now covered, the pinch/IME/drag/dialog witness sets. Retired: none.
 
-Correction — round 78 record drift. The round-78 C1 row above cites the superseded nonce `tabi-r78-l1-d59ca0270c2a` and "(c) battery 398/398". The final scored receipt is `tabi-r78-l1-bf94adaab578` (digests commit D `bf94adaa`) and the final battery is **400/400**. The row is not rewritten (records are append-only); this entry and `corpus/lessons/round-79.md` Corrections item 1 are the record, and `scripts/check-record-drift-r79.mjs` counts it.
+Correction — round 78 record drift. The round-78 C1 row above cites the superseded nonce `tabi-r78-l1-d59ca0270c2a` and "(c) battery 398/398". Correction: `tabi-r78-l1-d59ca0270c2a → tabi-r78-l1-bf94adaab578` (digests commit D `bf94adaa`) and `398/398 → 400/400`. The row is not rewritten (records are append-only); this entry and `corpus/lessons/round-79.md` Corrections item 1 are the record, and `scripts/check-record-drift-r79.mjs` counts it.
 
 ## Round 79 (2026-11-07, Linux host) — C1 capability `chromium-showpicker-linux` (new); C2 record drift
 

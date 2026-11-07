@@ -93,13 +93,13 @@ correction; `scripts/check-record-drift-r79.mjs` counts the mismatches (before: 
    `tabi-r78-l1-bf94adaab578`.
 4. **The filed r78 report.** It states "400 cases incl. **32 carried R77Mut1 witnesses**",
    "**9 Mistakes rows**" and "the scored receipt's `nodeReport` carries a drifted id
-   (**pick-multiple 10**)". The committed truth: **31** witness cases, **8** Mistakes rows, and the
-   scored receipt's `pick-multiple` node is **7** — the 7→10 drift belongs to the pre-repair
-   `L1-cold1` run (`lesson-proof/driver-shape-id-pin.json`). A filed report is never rewritten; this
-   entry and the round-79 report carry the correction.
+   (**pick-multiple 10**)". Correction: `32 carried R77Mut1 witnesses → 31 carried R77Mut1 witnesses`,
+   `9 Mistakes rows → 8 Mistakes rows`, `pick-multiple 10 → pick-multiple 7` — the 7→10 drift belongs
+   to the pre-repair `L1-cold1` run (`lesson-proof/driver-shape-id-pin.json`). A filed report is never
+   rewritten; this entry and the round-79 report carry the correction.
 5. **The r78 `claims.json` leg (b) path.** It said the cold runs are "committed under
-   `.ufo/waves/round-78/scored/`"; the receipts are under **`.ufo/waves/round-78-seats/`** (the
-   ledger is in `scored/`). Recorded here; the frozen claims file is not edited.
+   `.ufo/waves/round-78/scored/`"; correction: `.ufo/waves/round-78/scored/ → .ufo/waves/round-78-seats/`
+   (the ledger is in `scored/`). Recorded here; the frozen claims file is not edited.
 6. **C2 command limit (round-78 Correction 7).** The capability-status command alone is satisfiable
    by labelling every row `provisional`. C2's claim states the count in the predicate
    (`provisional 1`, `mismatches 0`) and the counter's `capability-status-count` claim checks it.

@@ -1,0 +1,33 @@
+{
+ "schema": "tabi-r79-c2-controls",
+ "reversedCorrection": {
+  "lane": "scratch copy with the SCORECARD/LOG pairs reversed",
+  "exit": 1,
+  "mismatches": 2,
+  "failed": [
+   "sc-78-nonce-corrected",
+   "log-78-corrected"
+  ],
+  "command": "node scripts/check-record-drift-r79.mjs --lane <scratch reversed copy> --fleet-report /home/vgpnk/Projects/shokunin/.ufo/reports/round-78/tabi.md --json"
+ },
+ "staleRemoved": {
+  "lane": "scratch copy with every occurrence of the stale SCORECARD nonce replaced",
+  "exit": 1,
+  "mismatches": 2,
+  "failed": [
+   "sc-78-nonce-stale-present",
+   "sc-78-nonce-corrected"
+  ],
+  "command": "node scripts/check-record-drift-r79.mjs --lane <scratch stale-removed copy> --fleet-report /home/vgpnk/Projects/shokunin/.ufo/reports/round-78/tabi.md --json"
+ },
+ "truthMoved": {
+  "lane": "scratch copy with the r78 receipt nonce rewritten to the stale value",
+  "exit": 1,
+  "mismatches": 1,
+  "failed": [
+   "sc-78-nonce-truth"
+  ],
+  "command": "node scripts/check-record-drift-r79.mjs --lane <scratch truth-moved copy> --json"
+ },
+ "note": "the three controls are the wave critic's (R79Critic H1); the reversed-correction control is what the directional binding (stale \u2192 truth) now refuses"
+}

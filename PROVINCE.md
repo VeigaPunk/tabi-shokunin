@@ -202,3 +202,14 @@ tabi's judgment).
 | souji | none | e063a2fcb3f5f3fb8fb19d2ae1592b1f22e6a333 | PROVINCE.md:3 | fleet repository & workspace hygiene (掃除) — receipt-gated | tabi cleans only its own scratch; no shared surface. |
 | tameshi | adjacent | f256302b394ae3253df014fe1131e2c20e2c16b6 | PROVINCE.md:14 | product domains — every lane's gate remains its own; tameshi | tabi's counters and forgery batteries are its own gates; the reusable fixture and mutation method is tameshi's. |
 | tsukuroi | none | 64f45b790f2dbbf63b9b343c47810118a79f7a35 | PROVINCE.md:3 | host operability & system repair (繕, mending) — the OS | tabi uses the installed /usr/bin/chromium and never repairs packages or host state; no shared surface. |
+
+## Round 79 — the programmatic picker trigger (core)
+
+`HTMLInputElement.showPicker()` under `Page.setInterceptFileChooserDialog` is now a held surface:
+the trigger law (transient activation required, one activation per picker, `Runtime.evaluate`
+`userGesture` as a substitute, the disabled-input `InvalidStateError`, the interception-on/off
+chooser event and auto-cancel, the armed-cancel page event, no file selection) is measured and
+gated by `scripts/check-showpicker-r79.mjs` (56 checks) with the note
+`corpus/knowledge/chromium-showpicker-runtime-round-79.md`. The answer law stays the r77/r78
+file-chooser capability. Frontier: `showPicker()` on `webkitdirectory`/`accept` inputs, the
+cross-origin `SecurityError`, and the trigger-then-answer combination.

@@ -2,7 +2,7 @@
  "lane": "tabi",
  "round": 79,
  "base": "24c821895f31f9dcb66ac2f357bc947818b0408c",
- "frozenAt": "2026-11-07, before any post-D (scored) run; pre-freeze gates green: counter clean on every pre-freeze receipt, battery 87/87 allOk with coverageGap [], kill power 0 survivors (controls/c1/prefreeze-summary.json)",
+ "frozenAt": "2026-11-07, before any post-D (scored) run; pre-freeze gates green: counter clean on every pre-freeze receipt, battery 90/90 allOk with coverage.uncovered [] and coverage.unknown [], kill power 0 survivors (controls/c1/prefreeze-summary.json (written after the pre-freeze pass; see the round report))",
  "claims": {
   "C1": {
    "axis": "coverage",
@@ -11,8 +11,8 @@
    "legs": {
     "a": "the L1 post-D scored run: receipt corpus/evidence/round79/chromium-showpicker/receipt.json, nonce tabi-r79-l1-<first 12 of D>, driver pin <driver sha256 from freeze.txt>, prior set .ufo/waves/round-79/controls/c1/prior-set.txt; the counter exits 0, verdict clean, checkCount 56",
     "b": "cold-run acceptance: every cold run committed under .ufo/waves/round-79-seats/ and listed in scored/cold-runs.txt (at least 4: cold1-cold2 from R79Exec1, cold3-cold4 from R79Exec2) exits 0 clean under the counter with that receipt's own nonce, its own fixture sha256 and the committed prior set plus --prior for the scored receipt; ZERO honest refusals",
-    "c": "on the (a) receipt the battery exits 0 allOk (87 cases, coverageGap []) and kill power holds (0 survivors, 0 crashed), run with the frozen arguments of run-scored-r79.sh",
-    "d": "the capability row names first-working round 79; corpus/knowledge/chromium-showpicker-runtime-round-79.md cites S216-S219; SKILL.md `## Round 79 gate registry` registers check-showpicker-r79; `node scripts/selftest-r79-gates.mjs --lane <ABS lane> --work <ABS scratch> --json` exits 0"
+    "c": "on the (a) receipt the battery exits 0 allOk (90 cases, coverage.uncovered [] and coverage.unknown []) and kill power holds (0 survivors, 0 crashed), run with the frozen arguments of run-scored-r79.sh",
+    "d": "the capability row names first-working round 79; corpus/knowledge/chromium-showpicker-runtime-round-79.md cites S216-S218; SKILL.md `## Round 79 gate registry` registers check-showpicker-r79; `node scripts/selftest-r79-gates.mjs --lane <ABS lane> --work <ABS scratch> --json` exits 0"
    },
    "countingCommand": "node scripts/check-showpicker-r79.mjs --lane <ABS lane> --receipt corpus/evidence/round79/chromium-showpicker/receipt.json --expect-driver-sha256 <driver sha256> --expect-nonce tabi-r79-l1-<D12> --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-79/controls/c1/prior-set.txt --json",
    "pins": {
@@ -21,7 +21,7 @@
     "scripts/negatives-showpicker-r79.mjs": "8c64f8e04b4afeba56ceebc30f3987c3ce6b20f07c4c65d7515a496a927f5662",
     "scripts/kill-power-r79.mjs": "483712858e8ae53013ca4f46a58cf626ab1ef58bd9bcf21a5be17bd19f93c80e",
     "scripts/selftest-r79-gates.mjs": "81cf6bf4929ad1710e9de9bacdc7a49b8f628f9e35ba408dd3c90bd76d42b441",
-    "scripts/check-record-drift-r79.mjs": "11c7f59c378f2425a5979f19b77b8fe6225ce1fbfbb3ea224e50e9d7635e7f35"
+    "scripts/check-record-drift-r79.mjs": "a30dfef576e9b7df1260af56231a78186fc15d6e94c0ef49fa276f81fd4cd0e3"
    },
    "priorSet": ".ufo/waves/round-79/controls/c1/prior-set.txt (the pre-freeze honest receipts of schema tabi-chrome-cdp-showpicker-r79: probes p1-p2 and smokes s1-s2, all committed under .ufo/waves/round-79/controls/c1/probes/)",
    "killRule": "any of (a)-(d) false as frozen, or any axis harmed -> C1 NOT verified (honest stop); no leg is re-scoped after a scored run",
@@ -38,10 +38,10 @@
    },
    "countingCommand": "node scripts/check-record-drift-r79.mjs --lane <ABS lane> --json",
    "pins": {
-    "scripts/check-record-drift-r79.mjs": "11c7f59c378f2425a5979f19b77b8fe6225ce1fbfbb3ea224e50e9d7635e7f35"
+    "scripts/check-record-drift-r79.mjs": "a30dfef576e9b7df1260af56231a78186fc15d6e94c0ef49fa276f81fd4cd0e3"
    },
    "killRule": "mismatches != 0, or a correction present while the truth it names is wrong -> C2 NOT verified",
-   "controls": "lesson-proof/c2-before.json (base: exit 1, 7 mismatches \u2014 every stale statement present, no correction); lesson-proof/c2-controls.json (a correction string present with a wrong truth value -> mismatch; the stale statement removed -> mismatch)"
+   "controls": "lesson-proof/c2-before.json (base: exit 1, 7 mismatches \u2014 every stale statement present, no correction); lesson-proof/c2-controls.json (the reversed-correction and stale-removed controls, run at the wave) (a correction string present with a wrong truth value -> mismatch; the stale statement removed -> mismatch)"
   }
  }
 }
