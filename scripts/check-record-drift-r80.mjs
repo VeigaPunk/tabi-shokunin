@@ -21,9 +21,12 @@ const opt = (n) => { const i = argv.indexOf('--' + n); return i >= 0 ? argv[i + 
 const asJson = argv.includes('--json');
 const lane = opt('lane');
 if (!lane || !path.isAbsolute(lane)) { console.error(JSON.stringify({ error: 'usage', detail: '--lane must be an absolute path' })); process.exit(2); }
+const FLEET = path.dirname(lane);   // the filed reports live on the fleet repo, not in the lane
 const read = (rel) => { try { return fs.readFileSync(path.join(lane, rel), 'utf8'); } catch { return null; } };
+const readFleet = (rel) => { try { return fs.readFileSync(path.join(FLEET, rel), 'utf8'); } catch { return null; } };
 const json = (rel) => { try { return JSON.parse(read(rel)); } catch { return null; } };
 const has = (rel, s) => { const t = read(rel); return t !== null && t.includes(s); };
+const hasFleet = (rel, s) => { const t = readFleet(rel); return t !== null && t.includes(s); };
 const exists = (rel) => fs.existsSync(path.join(lane, rel));
 
 const counter = json('.ufo/waves/round-80/scored/counter-a.json');
@@ -97,15 +100,15 @@ claim('lesson-79-kpptr', () => {
 claim('report-79-kpfile', () => {
   const stale = 'c1-killpower-a.json';
   const truth = 'selftest-r79-gates.out';
-  const ok = has('.ufo/reports/round-79/tabi.md', stale) && has('SCORECARD.md', stale + ' → ' + truth) && !exists('.ufo/waves/round-79/scored/c1-killpower-a.json') && exists('.ufo/waves/round-79/scored/selftest-r79-gates.out');
-  return { ok, detail: 'stale ' + has('.ufo/reports/round-79/tabi.md', stale) + ' correction ' + has('SCORECARD.md', stale + ' → ' + truth) + ' carrier ' + exists('.ufo/waves/round-79/scored/selftest-r79-gates.out') };
+  const ok = hasFleet('.ufo/reports/round-79/tabi.md', stale) && has('SCORECARD.md', stale + ' → ' + truth) && !exists('.ufo/waves/round-79/scored/c1-killpower-a.json') && exists('.ufo/waves/round-79/scored/selftest-r79-gates.out');
+  return { ok, detail: 'stale ' + hasFleet('.ufo/reports/round-79/tabi.md', stale) + ' correction ' + has('SCORECARD.md', stale + ' → ' + truth) + ' carrier ' + exists('.ufo/waves/round-79/scored/selftest-r79-gates.out') };
 });
 claim('report-79-shorthash', () => {
   const stale = 'f154beee';
   const truth = 'f154beeff14e349b84fa0d236461132295b7c017';
   const resolves = spawnSync('git', ['-C', lane, 'cat-file', '-e', truth], { encoding: 'utf8' }).status === 0;
-  const ok = has('.ufo/reports/round-79/tabi.md', stale) && has('SCORECARD.md', stale + ' → ' + truth) && resolves;
-  return { ok, detail: 'stale ' + has('.ufo/reports/round-79/tabi.md', stale) + ' correction ' + has('SCORECARD.md', stale + ' → ' + truth) + ' resolves ' + resolves };
+  const ok = hasFleet('.ufo/reports/round-79/tabi.md', stale) && has('SCORECARD.md', stale + ' → ' + truth) && resolves;
+  return { ok, detail: 'stale ' + hasFleet('.ufo/reports/round-79/tabi.md', stale) + ' correction ' + has('SCORECARD.md', stale + ' → ' + truth) + ' resolves ' + resolves };
 });
 claim('lesson-79-quotecounts', () => {
   const pairs = [['(12 words)', '(10 words)'], ['(19 words)', '(15 words)'], ['(23 words)', '(11 words)']];
@@ -122,13 +125,21 @@ const numberTriples = (rel) => {
   const missing = want.filter((s) => !t.includes(s));
   return { ok: missing.length === 0, detail: rel + ' missing ' + JSON.stringify(missing) };
 };
-for (const [id, rel] of [['sc-80-numbers', 'SCORECARD.md'], ['log-80-numbers', 'LOG.md'], ['skill-80-numbers', 'SKILL.md'], ['lesson-80-numbers', 'corpus/lessons/round-80.md'], ['report-80-numbers', '.ufo/reports/round-80/tabi.md']]) {
+for (const [id, rel] of [['sc-80-numbers', 'SCORECARD.md'], ['log-80-numbers', 'LOG.md'], ['skill-80-numbers', 'SKILL.md'], ['lesson-80-numbers', 'corpus/lessons/round-80.md']]) {
   claim(id, () => numberTriples(rel));
 }
+claim('report-80-numbers', () => {
+  const t = readFleet('.ufo/reports/round-80/tabi.md');
+  if (t === null) return { ok: false, detail: 'the filed report is unreadable' };
+  const want = ['battery ' + numbers.cases + '/' + numbers.cases, 'kill power ' + numbers.mutants + '/' + numbers.killed, numbers.checks + ' checks'];
+  const missing = want.filter((s) => !t.includes(s));
+  return { ok: missing.length === 0, detail: 'the filed report is missing ' + JSON.stringify(missing) };
+});
 claim('claims-80-numbers', () => {
+  // claims.json is frozen before the scored run: it states the counts in its own frozen phrasing
   const c = json('.ufo/waves/round-80/claims.json');
   const t = c ? JSON.stringify(c) : '';
-  const want = ['battery ' + numbers.cases + '/' + numbers.cases, 'kill power ' + numbers.mutants + '/' + numbers.killed, numbers.checks + ' checks'];
+  const want = [numbers.cases + ' cases', numbers.mutants + ' mutants, ' + numbers.killed + ' killed', 'checkCount ' + numbers.checks];
   const missing = want.filter((s) => !t.includes(s));
   return { ok: missing.length === 0, detail: 'claims.json missing ' + JSON.stringify(missing) };
 });
