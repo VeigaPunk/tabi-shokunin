@@ -149,3 +149,13 @@ The wave's 12 seats settled; the ones that changed the record:
   + 2 must-accept), the r78 bytes untouched.
 - **R79Connector.** 20 sibling lanes scanned, 0 contested rows; the showPicker surface appears in no
   sibling's capability table or knowledge corpus.
+
+## Corrections — round 80 (append-only; counted by scripts/check-record-drift-r80.mjs)
+
+1. **Battery count.** 88 cases → 90 cases (the committed battery is 90 cases,
+   `.ufo/waves/round-79/scored/c1-negatives-a.json`).
+2. **Dead red-state pointer.** lesson-proof/kp-run1.json → withdrawn (the file was never committed;
+   the run-1 survivor count is prose only and the final kill power is 64/64, 0 survivors).
+3. **Gate quote counts.** The three S216/S218 parenthetical word counts were wrong:
+   (12 words) → (10 words), (19 words) → (15 words), (23 words) → (11 words). The quotes are
+   verbatim and ≤25 words; the counts are re-measured by the r79 non-author spot-check.
