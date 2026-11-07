@@ -1,0 +1,54 @@
+$ grep -v "^freeze\|^recorded" .ufo/waves/round-74/freeze.txt   # recorded rows (at D and tip identical; sha256 check below)
+afacee1b193ea2ba7ccab945956cee912eeed18cc5aa2fcacf5d65dc261dc2dc  scripts/chrome-cdp-imecompose-round74.mjs
+5901d895ced1305f27935b93b409363c5822c7a730a6d2c7d00446ed7d33d251  scripts/check-imecompose-r74.mjs
+8c0dd93a61177eb02691bee7f3a6d3762eb51cdf9d51599e7e23867ffe91fb26  scripts/negatives-imecompose-r74.mjs
+dcc8308bea91639daf9cd412ec01d5b7acc72754eb48be68c03e4ca5c4967c69  .ufo/waves/round-74/controls/c1/kill-power-r74.mjs
+423ae94f3fd4b946647e1cd79526bcc5c52e40d0ba0dbc5b6327b006b3c2f6d6  .ufo/waves/round-74/claims.json
+c6527ccfcd95d718897c5ca96c8f98b7d1e2472ad6066de5221691ba93fa9c3c  .ufo/waves/round-74/run-scored.sh
+
+$ for f in <the six files named in freeze.txt>; do git show ca30e1a3:$f | sha256sum; done   # at D
+scripts/chrome-cdp-imecompose-round74.mjs
+afacee1b193ea2ba7ccab945956cee912eeed18cc5aa2fcacf5d65dc261dc2dc  -
+scripts/check-imecompose-r74.mjs
+5901d895ced1305f27935b93b409363c5822c7a730a6d2c7d00446ed7d33d251  -
+scripts/negatives-imecompose-r74.mjs
+8c0dd93a61177eb02691bee7f3a6d3762eb51cdf9d51599e7e23867ffe91fb26  -
+.ufo/waves/round-74/controls/c1/kill-power-r74.mjs
+dcc8308bea91639daf9cd412ec01d5b7acc72754eb48be68c03e4ca5c4967c69  -
+.ufo/waves/round-74/claims.json
+423ae94f3fd4b946647e1cd79526bcc5c52e40d0ba0dbc5b6327b006b3c2f6d6  -
+.ufo/waves/round-74/run-scored.sh
+c6527ccfcd95d718897c5ca96c8f98b7d1e2472ad6066de5221691ba93fa9c3c  -
+
+$ for f in <same six>; do sha256sum $f; done   # at working tree = tip db59ed42 (git status: no tracked modification)
+afacee1b193ea2ba7ccab945956cee912eeed18cc5aa2fcacf5d65dc261dc2dc  scripts/chrome-cdp-imecompose-round74.mjs
+5901d895ced1305f27935b93b409363c5822c7a730a6d2c7d00446ed7d33d251  scripts/check-imecompose-r74.mjs
+8c0dd93a61177eb02691bee7f3a6d3762eb51cdf9d51599e7e23867ffe91fb26  scripts/negatives-imecompose-r74.mjs
+dcc8308bea91639daf9cd412ec01d5b7acc72754eb48be68c03e4ca5c4967c69  .ufo/waves/round-74/controls/c1/kill-power-r74.mjs
+423ae94f3fd4b946647e1cd79526bcc5c52e40d0ba0dbc5b6327b006b3c2f6d6  .ufo/waves/round-74/claims.json
+c6527ccfcd95d718897c5ca96c8f98b7d1e2472ad6066de5221691ba93fa9c3c  .ufo/waves/round-74/run-scored.sh
+
+$ git status --porcelain
+ M corpus/README.md
+?? .ufo/waves/round-74/w1.ready
+?? .ufo/waves/round-74/w1.ready.dispatched
+?? .ufo/waves/round-74/w1/
+?? scripts/selftest-r74-gates.mjs
+
+$ git diff --stat ca30e1a3..master -- <the six files> ; echo exit
+diff-exit=0 (0 = no difference)
+
+$ for f in <the five instrument files present at b70e0a27>; do git show b70e0a27:$f | sha256sum; done   # pre-freeze
+scripts/chrome-cdp-imecompose-round74.mjs
+afacee1b193ea2ba7ccab945956cee912eeed18cc5aa2fcacf5d65dc261dc2dc  -
+scripts/check-imecompose-r74.mjs
+5901d895ced1305f27935b93b409363c5822c7a730a6d2c7d00446ed7d33d251  -
+scripts/negatives-imecompose-r74.mjs
+8c0dd93a61177eb02691bee7f3a6d3762eb51cdf9d51599e7e23867ffe91fb26  -
+.ufo/waves/round-74/controls/c1/kill-power-r74.mjs
+dcc8308bea91639daf9cd412ec01d5b7acc72754eb48be68c03e4ca5c4967c69  -
+.ufo/waves/round-74/run-scored.sh
+c6527ccfcd95d718897c5ca96c8f98b7d1e2472ad6066de5221691ba93fa9c3c  -
+
+$ git show 8faa903a:.ufo/waves/round-74/claims.json | sha256sum   # claims at its own commit
+423ae94f3fd4b946647e1cd79526bcc5c52e40d0ba0dbc5b6327b006b3c2f6d6  -

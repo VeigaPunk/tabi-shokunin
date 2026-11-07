@@ -1,0 +1,31 @@
+R74Scout — staged-vs-fetched comparison (round 74, S187–S193)
+Base URL: https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84
+Transport: curl -sS "<url>?format=TEXT" | base64 -d
+Staged:    /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-74/sources/
+Fetched:   /fast/scratch/hyaku/tabi-r74/R74Scout/raw/
+
+$ for f in Input.pdl input_handler.cc input_method_controller.cc event_target.cc \
+           event_dispatcher.cc scoped_event_queue.cc editing_utilities.cc; do
+    cmp -s "$S/$f" "$R/$f"; echo "$f cmp_exit=$?"; done
+
+Input.pdl                  cmp_exit=0   IDENTICAL  staged_sha256=5bbc6e23eb17a009da540792bd5f647567e9c81f919081059dff5274a1c66e3d  fetched_sha256=5bbc6e23eb17a009da540792bd5f647567e9c81f919081059dff5274a1c66e3d  staged_lines=336  fetched_lines=336
+input_handler.cc           cmp_exit=0   IDENTICAL  staged_sha256=72cf0d1d913302551731310cf76e03a259e8ccbfa7c8db14a185d9ae817324f4  fetched_sha256=72cf0d1d913302551731310cf76e03a259e8ccbfa7c8db14a185d9ae817324f4  staged_lines=2343 fetched_lines=2343
+input_method_controller.cc cmp_exit=0   IDENTICAL  staged_sha256=7c72e618ec14e4c3b26f9ef471ea2132581cf6b7682a26a314a9f1c77c6bbde4  fetched_sha256=7c72e618ec14e4c3b26f9ef471ea2132581cf6b7682a26a314a9f1c77c6bbde4  staged_lines=2163 fetched_lines=2163
+event_target.cc            cmp_exit=0   IDENTICAL  staged_sha256=46bfd353675ec1a3a72825ee2940869ee9d1a644b64796d1da554670a20092d0  fetched_sha256=46bfd353675ec1a3a72825ee2940869ee9d1a644b64796d1da554670a20092d0  staged_lines=1175 fetched_lines=1175
+event_dispatcher.cc        cmp_exit=0   IDENTICAL  staged_sha256=8456e1ee3a3452d11ae30d056c07c98ec84545dc44f78f75ef0a4517cfeaf06b  fetched_sha256=8456e1ee3a3452d11ae30d056c07c98ec84545dc44f78f75ef0a4517cfeaf06b  staged_lines=496  fetched_lines=496
+scoped_event_queue.cc      cmp_exit=0   IDENTICAL  staged_sha256=85f4e467bd3450223cba20d4c27d32e808ef29c1086cdba392a69336a17471ee  fetched_sha256=85f4e467bd3450223cba20d4c27d32e808ef29c1086cdba392a69336a17471ee  staged_lines=99   fetched_lines=99
+editing_utilities.cc       cmp_exit=0   IDENTICAL  staged_sha256=dda549bb5a5c97d3455c648f7a211daac858b037453deeddf52a017a8dc8b1a0  fetched_sha256=dda549bb5a5c97d3455c648f7a211daac858b037453deeddf52a017a8dc8b1a0  staged_lines=1999 fetched_lines=1999
+
+Result: 7/7 byte-identical, cmp exit 0 on every file.
+The staged digests also equal those recorded in .ufo/waves/round-74/sources/FETCH.txt and in the
+corpus/SOURCES.md rows S187-S193.
+
+Cross-check of a row-level claim: S188 says "bytes identical to S174 (same sha256)". S174's recorded
+digest for content/browser/devtools/protocol/input_handler.cc is 72cf0d1d913302551731310cf76e03a259e8ccbfa7c8db14a185d9ae817324f4 —
+equal to both the staged and the freshly fetched digest. Holds.
+
+Extra file used for the mechanism work, obtained twice by different transports and compared:
+third_party/blink/renderer/core/dom/node.cc
+  gitiles +archive tarball copy : sha256 1fa7935829ce6d568b26d8a5148899396af1119c96a5809bbecef48b5ce1cfd3
+  ?format=TEXT fetch            : sha256 1fa7935829ce6d568b26d8a5148899396af1119c96a5809bbecef48b5ce1cfd3
+  cmp exit 0 (IDENTICAL)

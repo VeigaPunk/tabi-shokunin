@@ -1,0 +1,32 @@
+$ python3 - <<PY  # scored receipt nonce and driver pin
+receipt.nonce      = tabi-r74-l1-ca30e1a3b7b2
+receipt.nonceOnPage= tabi-r74-l1-ca30e1a3b7b2
+receipt.driverSha256= afacee1b193ea2ba7ccab945956cee912eeed18cc5aa2fcacf5d65dc261dc2dc
+receipt.predicate  = True | hypothesis = CONFIRMED
+host.chromium      = Chromium 155.0.8059.84 Arch Linux | product = Chrome/155.0.8059.84
+
+$ git rev-parse ca30e1a3 | cut -c1-12   # D prefix used by the nonce
+ca30e1a3b7b2
+
+$ cat .ufo/waves/round-74/scored/c1-a.args.txt   # nonce, http port, cdp port, driver pin
+tabi-r74-l1-ca30e1a3b7b2 34129 46743 afacee1b193ea2ba7ccab945956cee912eeed18cc5aa2fcacf5d65dc261dc2dc
+
+$ git grep -n "tabi-r74-l1-ca30e1a3b7b2" ca30e1a3 -- . ; echo exit   # 1 = nonce absent from the D tree
+grep-exit=1
+
+$ git log ca30e1a3 -S"tabi-r74-l1-ca30e1a3b7b2" --format="%H %s" --   # commits in D ancestry introducing the nonce
+(empty above = no commit at or before D contains the nonce string)
+
+$ git grep -c "ca30e1a3b7b2" ca30e1a3 -- . ; echo exit   # D-hash prefix also absent from the D tree
+grep-exit=1
+
+$ git grep -c "tabi-r74-l1" ca30e1a3 -- .   # only template/prefix references (claims predicate, runner, control placeholder)
+ca30e1a3b7b23d56260196ef7af19929f544b80b:.ufo/waves/round-74/claims.json:2
+ca30e1a3b7b23d56260196ef7af19929f544b80b:.ufo/waves/round-74/controls/c1/controls-c1.mjs:1
+ca30e1a3b7b23d56260196ef7af19929f544b80b:.ufo/waves/round-74/run-scored.sh:1
+
+$ git log --all -S"tabi-r74-l1-ca30e1a3b7b2" --format="%H %ci %s" --   # all refs: first introduction is the scored commit 19c301da
+db59ed42bc974554d9f40fae4eefddf3357dce49 2026-11-07 00:30:00 -0300 round-74: wave w1 spec and validated dispatch (11 seats)
+41e542aee1a1937313444faaf4bc361ab77ed566 2026-11-07 00:30:00 -0300 
+19c301da7e2f901b6defe94267c6f8cc6b7e2bf5 2026-11-07 00:29:48 -0300 round-74: C1 scored run (leg a clean 148; leg c battery 239/239, kill power 148/148 + 26/26)
+e98c59f896f140d518179e535979f9742dc15707 2026-11-07 00:29:47 -0300 

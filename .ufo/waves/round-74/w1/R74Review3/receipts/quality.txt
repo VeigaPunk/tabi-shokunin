@@ -1,0 +1,76 @@
+### QUALITY 130 - exit status recorded on the line after the command and agreeing with its own verdict
+
+Capture sites (read): run-prefreeze.sh:19 `local rc=$?` -> :20 writes $n.driver.exit; prefreeze-eval.sh:19,22,25,31 `echo $? > *.exit` immediately after the node line; controls-c1.mjs:76-78 records spawnSync status into each result.
+
+$ python3 (matrix: driver/counter/battery/killpower exit vs JSON verdict over smoke1..9)
+smoke1: driver=0 counter=0/clean/148 battery=0/239of239 killpower=0/holds=True -> AGREE
+smoke2: driver=0 counter=0/clean/148 battery=0/239of239 killpower=0/holds=True -> AGREE
+smoke3: driver=0 counter=0/clean/148 battery=0/239of239 killpower=0/holds=True -> AGREE
+smoke4: driver=0 counter=0/clean/148 battery=0/239of239 killpower=0/holds=True -> AGREE
+smoke5: driver=0 counter=0/clean/148 battery=0/239of239 killpower=0/holds=True -> AGREE
+smoke6: driver=0 counter=0/clean/148 battery=0/239of239 killpower=0/holds=True -> AGREE
+smoke7: driver=0 counter=0/clean/148 battery=0/239of239 killpower=0/holds=True -> AGREE
+smoke8: driver=0 counter=0/clean/148 battery=0/239of239 killpower=0/holds=True -> AGREE
+smoke9: driver=0 counter=0/clean/148 battery=0/239of239 killpower=0/holds=True -> AGREE
+all 9 grid rows agree: True
+
+### QUALITY 131 - expected exit AND expected finding ids, evaluated mechanically
+
+$ python3 (recompute each ok from the committed controls-summary.json bytes)
+ok   donothing-no-receipt                     expectExit=2 expectIds=['receipt-unreadable'] got exit=2 nIds=1 exact=True
+ok   donothing-r73-pinch-receipt              expectExit=1 expectIds=['schema', 'nonce-shape', 'nonce-expected', 'driver-pin', 'ime-call-count'] got exit=1 nIds=98 exact=False
+ok   donothing-no-flags                       expectExit=2 expectIds=['usage'] got exit=2 nIds=1 exact=True
+ok   replay-zeroedit-smoke1                   expectExit=1 expectIds=['nonce-expected', 'replay-launch-token', 'replay-devtools-url', 'replay-event-timeline'] got exit=1 nIds=4 exact=True
+ok   replay-zeroedit-smoke1-own-nonce         expectExit=1 expectIds=['replay-launch-token', 'replay-devtools-url', 'replay-event-timeline'] got exit=1 nIds=3 exact=True
+ok   replay-forged-nonce-stamps               expectExit=1 expectIds=['replay-launch-token', 'replay-devtools-url', 'replay-event-timeline', 'fixture-hash'] got exit=1 nIds=4 exact=True
+ok   replay-forged-nonce-stamps-fixture       expectExit=1 expectIds=['replay-launch-token', 'replay-devtools-url', 'replay-event-timeline'] got exit=1 nIds=3 exact=True
+ok   replay-forged-1e-12                      expectExit=1 expectIds=['replay-event-timeline'] got exit=1 nIds=1 exact=True
+ok   limit-full-identifier-rewrite            expectExit=0 expectIds=[] got exit=0 nIds=0 exact=True
+recompute mismatches: []
+allOk: True | capabilityRowCount: 0 | priors: 12 | counterSha256: 5901d895ced1 | driverSha256: afacee1b193e
+
+Evaluator: controls-c1.mjs:77 (ok = exit==expectExit && every expectId present && (!exact || same count)), :88 allOk, :91 exit 0 iff allOk.
+
+### QUALITY 133 - a look-alike receipt carries its own label; a label mismatch is refused
+
+$ python3 (receipt.degenerate of each committed degenerate receipt vs its control name)
+degenerate-dispatch-key.receipt.json degenerate= dispatch-key hypothesis= REFUTED predicate= False driver.exit= 1
+degenerate-exec-command.receipt.json degenerate= exec-command hypothesis= REFUTED predicate= False driver.exit= 1
+degenerate-script-events.receipt.json degenerate= script-events hypothesis= REFUTED predicate= False driver.exit= 1
+check: controls-c1.mjs:83 requires driver.exit=='1' AND receipt.degenerate===name AND hypothesis REFUTED AND predicate false
+
+### QUALITY 137 - pre-freeze repetition result joined by a fail-closed summary over the enumerated set
+
+$ python3 (committed prefreeze-summary.json)
+schema: tabi-r74-prefreeze-summary checkCount: 148 receipts: 9 ok: 9 allOk: True
+exit file: 0
+row ok: [True, True, True, True, True, True, True, True, True]
+summary enumerator: prefreeze-summary.mjs:12 CHECKS from --list-checks, :15 readJ (unparsable -> null), :16 readX (missing -> null), :26-27 row.ok fails on any null/mismatch, :35 exit 1 unless allOk.
+
+$ node <scratch>/fakeA/lane/.ufo/waves/round-74/controls/c1/prefreeze-summary.mjs --out <scratch>/fake/prefreeze-missing.json   # clean copy of the committed evaluator; only smoke1 outputs present
+ok   smoke1 driver=0 counter=0/clean/148 battery=0 239/239 killpower=0 holds=true
+RED  smoke2 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke3 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke4 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke5 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke6 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke7 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke8 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke9 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+allOk=false 1/9
+exit=1
+
+$ node <scratch>/fakeB/lane/.ufo/waves/round-74/controls/c1/prefreeze-summary.mjs --out <scratch>/fake/prefreeze-unparsable.json   # smoke1 honest + smoke2 battery JSON truncated
+ok   smoke1 driver=0 counter=0/clean/148 battery=0 239/239 killpower=0 holds=true
+RED  smoke2 driver=0 counter=0/clean/148 battery=0 null/null killpower=0 holds=true
+RED  smoke3 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke4 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke5 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke6 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke7 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke8 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+RED  smoke9 driver=null counter=null/null/null battery=null null/null killpower=null holds=null
+allOk=false 1/9
+exit=1
+
+demo note: fakeA/fakeB are copies of the committed evaluator plus copied pf-smoke1 (and pf-smoke2) outputs under <scratch>/fake*/lane; no production file was written. Receipts: prefreeze-missing.json, prefreeze-unparsable.json.

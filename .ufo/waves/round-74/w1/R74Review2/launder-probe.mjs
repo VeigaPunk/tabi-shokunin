@@ -1,0 +1,20 @@
+import fs from 'node:fs'; import path from 'node:path'; import { spawnSync } from 'node:child_process';
+const L='/home/vgpnk/Projects/shokunin/tabi-shokunin';
+const C1=path.join(L,'.ufo/waves/round-74/controls/c1');
+const PIN='afacee1b193ea2ba7ccab945956cee912eeed18cc5aa2fcacf5d65dc261dc2dc';
+const CTR=path.join(L,'scripts/check-imecompose-r74.mjs');
+const W=process.argv[2];
+const kind=process.argv[3]||'exec-command';
+const d=JSON.parse(fs.readFileSync(path.join(C1,`degenerate-${kind}.receipt.json`),'utf8'));
+d.degenerate=null; d.predicate=true; d.imeComposeHypothesis='CONFIRMED'; d.failures=[]; d.driverSha256=PIN;
+const f=path.join(W,`laundered-${kind}.json`); fs.writeFileSync(f,JSON.stringify(d));
+const others=[];
+for(let i=1;i<=9;i++) others.push(path.join(C1,`smoke${i}.receipt.json`));
+for(const k of ['dispatch-key','exec-command','script-events']) if(k!==kind) others.push(path.join(C1,`degenerate-${k}.receipt.json`));
+const run=(priors)=>{const p=spawnSync(process.execPath,[CTR,'--receipt',f,'--expect-driver-sha256',PIN,'--expect-nonce',d.nonce,...priors.flatMap(x=>['--prior',x]),'--json'],{encoding:'utf8'});
+  let j=null; try{j=JSON.parse(p.stdout);}catch{}; return {exit:p.status,ids:j?j.findings.map(x=>x.id):null,derived:j?j.derived:null};};
+const pre=run(others); if(pre.derived){d.legShape=pre.derived; fs.writeFileSync(f,JSON.stringify(d));}
+const A=run(others);
+const B=run([...others,path.join(C1,`degenerate-${kind}.receipt.json`)]);
+const pick=(ids)=>ids?ids.filter(x=>/replay|send-log|ime-call|nonce|fixture|degenerate|legshape|producer/.test(x)):null;
+console.log(JSON.stringify({kind,launderedNonce:d.nonce,A_excludingSelf:{exit:A.exit,n:A.ids&&A.ids.length,relevant:pick(A.ids)},B_includingSelf:{exit:B.exit,n:B.ids&&B.ids.length,relevant:pick(B.ids)}},null,1));

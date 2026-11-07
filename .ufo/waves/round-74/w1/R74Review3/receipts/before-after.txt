@@ -1,0 +1,50 @@
+### BEFORE (base c72235d6aebca89269809050e983d53df36273f5)
+
+$ git show c72235d6:SCORECARD.md | grep -c "^| \`chromium-ime-composition-linux\` |" ; echo exit
+0
+exit=1
+
+$ git grep -l imeSetComposition c72235d6 -- corpus/knowledge | wc -l
+0
+
+$ git cat-file -e c72235d6:corpus/evidence/round74/chromium-ime-composition/receipt.json ; echo exit   # no r74 receipt at base
+fatal: path 'corpus/evidence/round74/chromium-ime-composition/receipt.json' exists on disk, but not in 'c72235d6aebca89269809050e983d53df36273f5'
+exit=128
+
+$ git cat-file -e c72235d6:corpus/evidence/round73/chromium-synth-pinch-gesture/receipt.json ; echo exit   # r73 receipt present at base
+exit=0
+
+$ git show c72235d6:corpus/evidence/round73/chromium-synth-pinch-gesture/receipt.json > <scratch>/r73-at-base.receipt.json
+extract-exit=0
+
+$ node scripts/check-imecompose-r74.mjs --receipt <scratch>/absent.json --expect-driver-sha256 <PIN> --expect-nonce <POST> --prior <smoke1> --json   # before: no r74 receipt
+exit=2
+{
+ "verdict": "unreadable",
+ "findings": [
+  {
+   "id": "receipt-unreadable",
+   "detail": "ENOENT: no such file or directory, open '/fast/scratch/hyaku/tabi-r74/R74Review3/absent.json'"
+  }
+ ]
+}
+
+$ node scripts/check-imecompose-r74.mjs --receipt <scratch>/r73-at-base.receipt.json --expect-driver-sha256 <PIN> --expect-nonce <POST> <12 PRE priors> --json   # before: r73 receipt under the r74 counter
+exit=1
+verdict: findings checkCount: 148 finding ids: 98
+declared before ids present: {'schema': True, 'nonce-shape': True, 'nonce-expected': True, 'driver-pin': True, 'ime-call-count': True}
+
+### AFTER (lane tip db59ed42bc974554d9f40fae4eefddf3357dce49)
+
+$ node scripts/check-imecompose-r74.mjs --receipt corpus/evidence/round74/chromium-ime-composition/receipt.json --expect-driver-sha256 <PIN> --expect-nonce tabi-r74-l1-ca30e1a3b7b2 <12 PRE priors> --json
+exit=0
+verdict: clean checkCount: 148 findings: 0 nonce: tabi-r74-l1-ca30e1a3b7b2 allChecks: True
+re-run sha256: 796df7f844fb12ed3aaf3fda0dea7e6e6424601e391d8560f63fcca309d286e7
+committed sha256: 796df7f844fb12ed3aaf3fda0dea7e6e6424601e391d8560f63fcca309d286e7
+identical: True
+
+$ cat .ufo/waves/round-74/scored/c1-counter-a.exit .ufo/waves/round-74/scored/c1-negatives-a.exit .ufo/waves/round-74/scored/c1-kill-power-a.exit .ufo/waves/round-74/scored/c1-driver-a.exit
+0
+0
+0
+0

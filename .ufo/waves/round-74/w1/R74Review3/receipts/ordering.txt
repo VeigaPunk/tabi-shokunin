@@ -1,0 +1,43 @@
+$ git log --format="%H %ci %s" c72235d6aebca89269809050e983d53df36273f5..master -- .ufo/waves/round-74 scripts corpus SCORECARD.md
+db59ed42bc974554d9f40fae4eefddf3357dce49 2026-11-07 00:30:00 -0300 round-74: wave w1 spec and validated dispatch (11 seats)
+19c301da7e2f901b6defe94267c6f8cc6b7e2bf5 2026-11-07 00:29:48 -0300 round-74: C1 scored run (leg a clean 148; leg c battery 239/239, kill power 148/148 + 26/26)
+ca30e1a3b7b23d56260196ef7af19929f544b80b 2026-11-07 00:23:10 -0300 round-74: instrument digests (commit D) before the scored run
+8faa903af7fbde22c76b65ef6a71a118b4440202 2026-11-07 00:23:04 -0300 round-74: freeze C1 claim (C1-IMECOMPOSE-R74) before any scored run
+b70e0a27f45d1fe32248e5b14535c2aacfff9ada 2026-11-07 00:22:57 -0300 round-74: C1 pre-freeze instruments, sources S187-S193, controls and 9/9 pre-freeze repetitions (counter, battery, kill power)
+
+$ git rev-list --parents -n 1 <each round-74 commit>
+b70e0a27f45d1fe32248e5b14535c2aacfff9ada c72235d6aebca89269809050e983d53df36273f5
+8faa903af7fbde22c76b65ef6a71a118b4440202 b70e0a27f45d1fe32248e5b14535c2aacfff9ada
+ca30e1a3b7b23d56260196ef7af19929f544b80b 8faa903af7fbde22c76b65ef6a71a118b4440202
+19c301da7e2f901b6defe94267c6f8cc6b7e2bf5 ca30e1a3b7b23d56260196ef7af19929f544b80b
+db59ed42bc974554d9f40fae4eefddf3357dce49 19c301da7e2f901b6defe94267c6f8cc6b7e2bf5
+
+$ git merge-base --is-ancestor c72235d6 master; echo exit
+exit=0
+
+$ git show --name-only --format="" b70e0a27 | grep -E "scored/|corpus/evidence"; echo grep-exit=$?   (1 = none: no scored evidence in the pre-freeze commit)
+grep-exit=1
+
+$ git diff --stat b70e0a27..ca30e1a3   # D adds only claims.json + freeze.txt over the pre-freeze commit
+ .ufo/waves/round-74/claims.json | 45 +++++++++++++++++++++++++++++++++++++++++
+ .ufo/waves/round-74/freeze.txt  |  8 ++++++++
+ 2 files changed, 53 insertions(+)
+
+$ git log ca30e1a3..19c301da -- scripts .ufo/waves/round-74/controls .ufo/waves/round-74/claims.json .ufo/waves/round-74/freeze.txt
+(empty above = no instrument commit between D and the scored commit)
+
+$ git show --stat --format="Parents: %P%nDate: %ci" 19c301da | head -4
+Parents: ca30e1a3b7b23d56260196ef7af19929f544b80b
+Date: 2026-11-07 00:29:48 -0300
+
+ .ufo/waves/round-74/scored/c1-a.args.txt           |    1 +
+
+$ git show --stat --format="Parents: %P%nDate: %ci" db59ed42 | head -8
+Parents: 19c301da7e2f901b6defe94267c6f8cc6b7e2bf5
+Date: 2026-11-07 00:30:00 -0300
+
+ .ufo/waves/round-74/build-spec.py    |  73 ++++++++++++
+ .ufo/waves/round-74/w1-dispatch.json | 211 +++++++++++++++++++++++++++++++++++
+ .ufo/waves/round-74/w1-run.stderr    |   0
+ .ufo/waves/round-74/w1-spec.json     | 110 ++++++++++++++++++
+ 4 files changed, 394 insertions(+)

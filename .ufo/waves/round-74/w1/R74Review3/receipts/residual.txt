@@ -1,0 +1,59 @@
+### R1 - the (a) prior set is not bound by any scored artifact
+
+$ node scripts/check-imecompose-r74.mjs --receipt corpus/evidence/round74/chromium-ime-composition/receipt.json --expect-driver-sha256 <PIN> --expect-nonce <POST> --prior <smoke1 only> --json | sha256sum
+exit=0
+796df7f844fb12ed3aaf3fda0dea7e6e6424601e391d8560f63fcca309d286e7  /fast/scratch/hyaku/tabi-r74/R74Review3/after-a-oneprior.counter.json
+796df7f844fb12ed3aaf3fda0dea7e6e6424601e391d8560f63fcca309d286e7  /fast/scratch/hyaku/tabi-r74/R74Review3/after-a.counter.json
+796df7f844fb12ed3aaf3fda0dea7e6e6424601e391d8560f63fcca309d286e7  .ufo/waves/round-74/scored/c1-counter-a.json
+=> one prior, twelve priors, and the committed scored artifact are byte-identical (796df7f8...); the counter JSON has no prior field:
+top-level keys: ['schema', 'verdict', 'receipt', 'nonce', 'checkCount', 'checks', 'findings', 'derived']
+Attestation of the 12-prior set: .ufo/waves/round-74/run-scored.sh (pinned c6527ccf...) lines 13-15 construct and pass it; scored/c1-a.args.txt (nonce, ports, driver pin) does not record priors.
+
+### R2 - predicate (d) capability row at the measured tip
+
+$ git rev-parse HEAD; git rev-parse master
+db59ed42bc974554d9f40fae4eefddf3357dce49
+db59ed42bc974554d9f40fae4eefddf3357dce49
+
+$ grep -c "^| \`chromium-ime-composition-linux\` |" SCORECARD.md ; echo exit
+0
+exit=1
+
+$ git log -1 --format="%H %ci %s" -- corpus/knowledge/chromium-ime-composition-runtime-round-74.md
+b70e0a27f45d1fe32248e5b14535c2aacfff9ada 2026-11-07 00:22:57 -0300 round-74: C1 pre-freeze instruments, sources S187-S193, controls and 9/9 pre-freeze repetitions (counter, battery, kill power)
+
+$ head -1 corpus/knowledge/chromium-ime-composition-runtime-round-74.md
+source: S187, S188, S189, S190, S191, S192, S193 (Chromium 155.0.8059.84 Input.pdl, input_handler.cc, input_method_controller.cc, event_target.cc, event_dispatcher.cc, scoped_event_queue.cc, editing_utilities.cc; opened 2026-11-06, round 74); pre-freeze repetition receipts .ufo/waves/round-74/controls/c1/smoke1..9.receipt.json
+
+$ git cat-file -e c72235d6:corpus/knowledge/chromium-ime-composition-runtime-round-74.md ; echo exit   # note absent at base
+fatal: path 'corpus/knowledge/chromium-ime-composition-runtime-round-74.md' exists on disk, but not in 'c72235d6aebca89269809050e983d53df36273f5'
+exit=128
+
+### R3 - runtime identity recorded by the receipt
+
+$ node --version ; command -v node
+v24.21.0
+/run/user/1000/fnm_multishells/1589455_1794007303555/bin/node
+$ python3 (host keys of the scored receipt)
+host keys: ['chromium', 'cdpProduct', 'cdpProtocolVersion', 'argv', 'launchToken', 'devtoolsListening', 'childExit', 'stderrHead']
+node/engine recorded: []
+
+### R4 - freeze coverage and lane state
+
+$ grep -vc "^freeze\|^recorded" .ufo/waves/round-74/freeze.txt   # number of pinned file rows
+6
+
+$ git diff --stat b70e0a27..HEAD -- .ufo/waves/round-74/controls/c1/controls-c1.mjs .ufo/waves/round-74/controls/c1/prefreeze-summary.mjs .ufo/waves/round-74/controls/c1/prefreeze-eval.sh .ufo/waves/round-74/controls/c1/run-prefreeze.sh   # unpinned control-side files, unmodified after the pre-freeze commit
+(empty = unmodified)
+
+$ git worktree list; git status --porcelain
+/home/vgpnk/Projects/shokunin/tabi-shokunin db59ed42 (detached HEAD)
+ M corpus/README.md
+?? .ufo/waves/round-74/w1.ready
+?? .ufo/waves/round-74/w1.ready.dispatched
+?? .ufo/waves/round-74/w1/
+?? scripts/selftest-r74-gates.mjs
+
+$ git for-each-ref --contains=e98c59f8/41e542ae   # jj keep refs of the same working copy, parents D and 19c301da
+refs/jj/keep/e98c59f896f140d518179e535979f9742dc15707 e98c59f8
+refs/jj/keep/41e542aee1a1937313444faaf4bc361ab77ed566 41e542ae

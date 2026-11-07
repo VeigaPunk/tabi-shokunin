@@ -1,0 +1,822 @@
+R74Scout — anchor verification transcript (round 74, S187–S193)
+All lines read from this session's own fetched bytes (cmp-identical to the L1-staged copies).
+Format: <file>:<line>[-<line>] — quoted text. [OK] = quote found verbatim inside that range.
+
+=== PART A — corpus/SOURCES.md rows S187-S193 (46 checks) ===
+
+[OK ] S187 Input.pdl:141-142 — This method emulates inserting text that doesn't come from a key press,
+       141:   # This method emulates inserting text that doesn't come from a key press,
+142:   # for example an emoji keyboard or an IME.
+[OK ] S187 Input.pdl:143 — experimental command insertText
+       143:   experimental command insertText
+[OK ] S187 Input.pdl:146 — string text
+       146:       string text
+[OK ] S187 Input.pdl:149 — Use imeCommitComposition to commit the final text.
+       149:   # Use imeCommitComposition to commit the final text.
+[OK ] S187 Input.pdl:150 — Use imeSetComposition with empty string as text to cancel composition.
+       150:   # Use imeSetComposition with empty string as text to cancel composition.
+[OK ] S187 Input.pdl:151 — experimental command imeSetComposition
+       151:   experimental command imeSetComposition
+[OK ] S187 Input.pdl:152-162 — parameters
+       152:     parameters
+153:       # The text to insert
+154:       string text
+155:       # selection start
+156:       integer selectionStart
+157:       # selection end
+158:       integer selectionEnd
+159:       # replacement start
+160:       optional integer replacementStart
+161:       # replacement end
+162:       optional integer replacementEnd
+[OK ] S187 Input.pdl:160 — optional integer replacementStart
+       160:       optional integer replacementStart
+[OK ] S187 Input.pdl:162 — optional integer replacementEnd
+       162:       optional integer replacementEnd
+[OK ] S188 input_handler.cc:1281-1282 — void InputHandler::InsertText(const std::string& text,
+       1281: void InputHandler::InsertText(const std::string& text,
+1282:                               std::unique_ptr<InsertTextCallback> callback) {
+[OK ] S188 input_handler.cc:1289 — RenderWidgetHostImpl* widget_host = host_->GetRenderWidgetHost();
+       1289:   RenderWidgetHostImpl* widget_host = host_->GetRenderWidgetHost();
+[OK ] S188 input_handler.cc:1290-1295 — GetFocusedRenderWidgetHost(widget_host);
+       1290:   if (!host_->GetParent() && widget_host->delegate()) {
+1291:     RenderWidgetHostImpl* target_host =
+1292:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+1293:     if (target_host)
+1294:       widget_host = target_host;
+1295:   }
+[OK ] S188 input_handler.cc:1300 — widget_host->Focus();
+       1300:   widget_host->Focus();
+[OK ] S188 input_handler.cc:1301-1303 — widget_host->GetWidgetInputHandler()->ImeCommitText(
+       1301:   widget_host->GetWidgetInputHandler()->ImeCommitText(
+1302:       text16, std::vector<ui::ImeTextSpan>(), gfx::Range::InvalidRange(), 0,
+1303:       /*target_dom_node_id=*/blink::DOMNodeIdType(), std::move(closure));
+[OK ] S188 input_handler.cc:1306 — void InputHandler::ImeSetComposition(
+       1306: void InputHandler::ImeSetComposition(
+[OK ] S188 input_handler.cc:1327-1332 — GetFocusedRenderWidgetHost(widget_host);
+       1327:   if (widget_host->delegate()) {
+1328:     RenderWidgetHostImpl* target_host =
+1329:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+1330:     if (target_host)
+1331:       widget_host = target_host;
+1332:   }
+[OK ] S188 input_handler.cc:1339-1348 — if (replacement_start.has_value()) {
+       1339:   if (replacement_start.has_value()) {
+1340:     replacement_range.set_start(replacement_start.value());
+1341:     if (replacement_end.has_value()) {
+1342:       replacement_range.set_end(replacement_end.value());
+1343:     } else {
+1344:       callback->sendFailure(Response::InvalidParams(
+1345:           "Either both replacement start/end are specified or neither."));
+1346:       return;
+1347:     }
+1348:   }
+[OK ] S188 input_handler.cc:1344-1345 — Either both replacement start/end are specified or neither.
+       1344:       callback->sendFailure(Response::InvalidParams(
+1345:           "Either both replacement start/end are specified or neither."));
+[OK ] S188 input_handler.cc:1353 — widget_host->Focus();
+       1353:   widget_host->Focus();
+[OK ] S188 input_handler.cc:1355-1358 — widget_host->GetWidgetInputHandler()->ImeSetComposition(
+       1355:   widget_host->GetWidgetInputHandler()->ImeSetComposition(
+1356:       text16, std::vector<ui::ImeTextSpan>(), replacement_range,
+1357:       selection_start, selection_end, blink::mojom::ImeState::kNone,
+1358:       /*target_dom_node_id=*/blink::DOMNodeIdType(), std::move(closure));
+[OK ] S189 input_method_controller.cc:385-394 — void InputMethodController::DispatchCompositionUpdateEvent(LocalFrame& frame,
+       385: void InputMethodController::DispatchCompositionUpdateEvent(LocalFrame& frame,
+386:                                                            const String& text) {
+387:   Element* target = frame.GetDocument()->FocusedElement();
+388:   if (!target)
+389:     return;
+390: 
+391:   auto* event = MakeGarbageCollected<CompositionEvent>(
+392:       event_type_names::kCompositionupdate, frame.DomWindow(), text);
+393:   target->DispatchEvent(*event);
+394: }
+[OK ] S189 input_method_controller.cc:393 — target->DispatchEvent(*event);
+       393:   target->DispatchEvent(*event);
+[OK ] S189 input_method_controller.cc:396-410 — void InputMethodController::DispatchCompositionEndEvent(LocalFrame& frame,
+       396: void InputMethodController::DispatchCompositionEndEvent(LocalFrame& frame,
+397:                                                         const String& text) {
+398:   // Verify that the caller is using an EventQueueScope to suppress the input
+399:   // event from being fired until the proper time (e.g. after applying an IME
+400:   // selection update, if necessary).
+401:   DCHECK(ScopedEventQueue::Instance()->ShouldQueueEvents());
+402: 
+403:   Element* target = frame.GetDocument()->FocusedElement();
+404:   if (!target)
+405:     return;
+406: 
+407:   auto* event = MakeGarbageCollected<CompositionEvent>(
+408:       event_type_names::kCompositionend, frame.DomWindow(), text);
+409:   EventDispatcher::DispatchScopedEvent(*target, *event);
+410: }
+[OK ] S189 input_method_controller.cc:409 — EventDispatcher::DispatchScopedEvent(*target, *event);
+       409:   EventDispatcher::DispatchScopedEvent(*target, *event);
+[OK ] S189 input_method_controller.cc:694-705 — bool InputMethodController::CommitText(
+       694: bool InputMethodController::CommitText(
+695:     const String& text,
+696:     const Vector<ImeTextSpan>& ime_text_spans,
+697:     int relative_caret_position) {
+698:   bool result;
+699:   if (HasComposition()) {
+700:     result = ReplaceCompositionAndMoveCaret(text, relative_caret_position,
+701:                                             ime_text_spans);
+702:   } else {
+703:     result =
+704:         InsertTextAndMoveCaret(text, relative_caret_position, ime_text_spans);
+705:   }
+[OK ] S189 input_method_controller.cc:700 — ReplaceCompositionAndMoveCaret
+       700:     result = ReplaceCompositionAndMoveCaret(text, relative_caret_position,
+[OK ] S189 input_method_controller.cc:704 — InsertTextAndMoveCaret
+       704:         InsertTextAndMoveCaret(text, relative_caret_position, ime_text_spans);
+[OK ] S189 input_method_controller.cc:924-932 — bool InputMethodController::InsertText(const String& text) {
+       924: bool InputMethodController::InsertText(const String& text) {
+925:   if (DispatchBeforeInputInsertText(GetDocument().FocusedElement(), text) !=
+926:       DispatchEventResult::kNotCanceled)
+927:     return false;
+928:   if (!IsAvailable())
+929:     return false;
+930:   GetEditor().InsertText(text, nullptr);
+931:   return true;
+932: }
+[OK ] S189 input_method_controller.cc:925 — DispatchBeforeInputInsertText(GetDocument().FocusedElement(), text)
+       925:   if (DispatchBeforeInputInsertText(GetDocument().FocusedElement(), text) !=
+[OK ] S189 input_method_controller.cc:997-1007 — bool InputMethodController::DispatchCompositionStartEvent(const String& text) {
+       997: bool InputMethodController::DispatchCompositionStartEvent(const String& text) {
+998:   Element* target = GetDocument().FocusedElement();
+999:   if (!target)
+1000:     return IsAvailable();
+1001: 
+1002:   auto* event = MakeGarbageCollected<CompositionEvent>(
+1003:       event_type_names::kCompositionstart, GetFrame().DomWindow(), text);
+1004:   target->DispatchEvent(*event);
+1005: 
+1006:   return IsAvailable();
+1007: }
+[OK ] S189 input_method_controller.cc:1004 — target->DispatchEvent(*event);
+       1004:   target->DispatchEvent(*event);
+[OK ] S189 input_method_controller.cc:1009-1014 — void InputMethodController::SetComposition(
+       1009: void InputMethodController::SetComposition(
+1010:     const String& text,
+1011:     const Vector<ImeTextSpan>& ime_text_spans,
+1012:     int selection_start,
+1013:     int selection_end,
+1014:     mojom::blink::ImeState ime_state) {
+[OK ] S189 input_method_controller.cc:1032-1034 — if (!target)
+       1032:   Element* target = GetDocument().FocusedElement();
+1033:   if (!target)
+1034:     return;
+[OK ] S189 input_method_controller.cc:1039-1053 — // Dispatch an appropriate composition event to the focused node.
+       1039:   // Dispatch an appropriate composition event to the focused node.
+1040:   // We check the composition status and choose an appropriate composition event
+1041:   // since this function is used for three purposes:
+1042:   // 1. Starting a new composition.
+1043:   //    Send a compositionstart and a compositionupdate event when this function
+1044:   //    creates a new composition node, i.e. !hasComposition() &&
+1045:   //    !text.isEmpty().
+1046:   //    Sending a compositionupdate event at this time ensures that at least one
+1047:   //    compositionupdate event is dispatched.
+1048:   // 2. Updating the existing composition node.
+1049:   //    Send a compositionupdate event when this function updates the existing
+1050:   //    composition node, i.e. hasComposition() && !text.isEmpty().
+1051:   // 3. Canceling the ongoing composition.
+1052:   //    Send a compositionend event when function deletes the existing
+1053:   //    composition node, i.e. !hasComposition() && test.isEmpty().
+[OK ] S189 input_method_controller.cc:1083-1086 — if (!HasComposition() &&
+       1083:   if (!HasComposition() &&
+1084:       !DispatchCompositionStartEvent(GetFrame().SelectedText())) {
+1085:     return;
+1086:   }
+[OK ] S189 input_method_controller.cc:1084 — !DispatchCompositionStartEvent(GetFrame().SelectedText())) {
+       1084:       !DispatchCompositionStartEvent(GetFrame().SelectedText())) {
+[OK ] S190 event_target.cc:856 — event->SetTrusted(false);
+       856:   event->SetTrusted(false);
+[OK ] S190 event_target.cc:865-870 — DispatchEventResult EventTarget::DispatchEvent(Event& event) {
+       865: DispatchEventResult EventTarget::DispatchEvent(Event& event) {
+866:   if (!GetExecutionContext())
+867:     return DispatchEventResult::kCanceledBeforeDispatch;
+868:   event.SetTrusted(true);
+869:   return DispatchEventInternal(event);
+870: }
+[OK ] S190 event_target.cc:868 — event.SetTrusted(true);
+       868:   event.SetTrusted(true);
+[OK ] S191 event_dispatcher.cc:88-93 — void EventDispatcher::DispatchScopedEvent(Node& node, Event& event) {
+       88: void EventDispatcher::DispatchScopedEvent(Node& node, Event& event) {
+89:   // We need to set the target here because it can go away by the time we
+90:   // actually fire the event.
+91:   event.SetTarget(&EventPath::EventTargetRespectingTargetRules(node));
+92:   ScopedEventQueue::Instance()->EnqueueEvent(event);
+93: }
+[OK ] S191 event_dispatcher.cc:91 — event.SetTarget(&EventPath::EventTargetRespectingTargetRules(node));
+       91:   event.SetTarget(&EventPath::EventTargetRespectingTargetRules(node));
+[OK ] S191 event_dispatcher.cc:92 — ScopedEventQueue::Instance()->EnqueueEvent(event);
+       92:   ScopedEventQueue::Instance()->EnqueueEvent(event);
+[OK ] S191 event_dispatcher.cc:173-176 — event->SetTrusted(true);
+       173:     KeyboardEvent* event =
+174:         blink::KeyboardEvent::Create(enter, local_dom_window, true);
+175:     event->SetTrusted(true);
+176:     DispatchScopedEvent(input_element, *event);
+[OK ] S191 event_dispatcher.cc:176 — DispatchScopedEvent(input_element, *event);
+       176:     DispatchScopedEvent(input_element, *event);
+[OK ] S192 scoped_event_queue.cc:60-65 — void ScopedEventQueue::EnqueueEvent(Event& event) {
+       60: void ScopedEventQueue::EnqueueEvent(Event& event) {
+61:   if (ShouldQueueEvents())
+62:     queued_events_->push_back(event);
+63:   else
+64:     DispatchEvent(event);
+65: }
+[OK ] S192 scoped_event_queue.cc:67-73 — void ScopedEventQueue::DispatchAllEvents() {
+       67: void ScopedEventQueue::DispatchAllEvents() {
+68:   HeapVector<Member<Event>> queued_events;
+69:   queued_events.swap(*queued_events_);
+70: 
+71:   for (auto& event : queued_events)
+72:     DispatchEvent(*event);
+73: }
+[OK ] S192 scoped_event_queue.cc:75-79 — void ScopedEventQueue::DispatchEvent(Event& event) const {
+       75: void ScopedEventQueue::DispatchEvent(Event& event) const {
+76:   DCHECK(event.RawTarget());
+77:   Node* node = event.RawTarget()->ToNode();
+78:   EventDispatcher::DispatchEvent(*node, event);
+79: }
+[OK ] S192 scoped_event_queue.cc:78 — EventDispatcher::DispatchEvent(*node, event);
+       78:   EventDispatcher::DispatchEvent(*node, event);
+[OK ] S193 editing_utilities.cc:1767-1780 — DispatchEventResult DispatchBeforeInputInsertText(
+       1767: DispatchEventResult DispatchBeforeInputInsertText(
+1768:     Node* target,
+1769:     const String& data,
+1770:     InputEvent::InputType input_type,
+1771:     const GCedStaticRangeVector* ranges) {
+1772:   if (!target)
+1773:     return DispatchEventResult::kNotCanceled;
+1774:   // TODO(editing-dev): Pass appropriate |ranges| after it's defined on spec.
+1775:   // http://w3c.github.io/editing/input-events.html#dom-inputevent-inputtype
+1776:   InputEvent* before_input_event = InputEvent::CreateBeforeInput(
+1777:       input_type, data, InputEvent::EventIsComposing::kNotComposing,
+1778:       ranges ? ranges : TargetRangesForInputEvent(*target));
+1779:   return target->DispatchEvent(*before_input_event);
+1780: }
+[OK ] S193 editing_utilities.cc:1772-1773 — if (!target)
+       1772:   if (!target)
+1773:     return DispatchEventResult::kNotCanceled;
+[OK ] S193 editing_utilities.cc:1773 — return DispatchEventResult::kNotCanceled;
+       1773:     return DispatchEventResult::kNotCanceled;
+
+PART A result: 51 OK, 0 MISS
+
+=== PART B — note corpus/knowledge/chromium-ime-composition-runtime-round-74.md (19 checks) ===
+
+[OK ] note:15 — S187 Input.pdl:141-162 insertText comment + imeSetComposition params
+       141:   # This method emulates inserting text that doesn't come from a key press,
+142:   # for example an emoji keyboard or an IME.
+143:   experimental command insertText
+144:     parameters
+145:       # The text to insert.
+146:       string text
+147: 
+148:   # This method sets the current candidate text for IME.
+149:   # Use imeCommitComposition to commit the final text.
+150:   # Use imeSetComposition with empty string as text to cancel composition.
+151:   experimental command imeSetComposition
+152:     parameters
+153:       # The text to insert
+154:       string text
+155:       # selection start
+156:       integer selectionStart
+157:       # selection end
+158:       integer selectionEnd
+159:       # replacement start
+160:       optional integer replacementStart
+161:       # replacement end
+162:       optional integer replacementEnd
+[OK ] note:15 — S187 Input.pdl:141-162 declares imeSetComposition with params
+       141:   # This method emulates inserting text that doesn't come from a key press,
+142:   # for example an emoji keyboard or an IME.
+143:   experimental command insertText
+144:     parameters
+145:       # The text to insert.
+146:       string text
+147: 
+148:   # This method sets the current candidate text for IME.
+149:   # Use imeCommitComposition to commit the final text.
+150:   # Use imeSetComposition with empty string as text to cancel composition.
+151:   experimental command imeSetComposition
+152:     parameters
+153:       # The text to insert
+154:       string text
+155:       # selection start
+156:       integer selectionStart
+157:       # selection end
+158:       integer selectionEnd
+159:       # replacement start
+160:       optional integer replacementStart
+161:       # replacement end
+162:       optional integer replacementEnd
+[OK ] note:15 — S187 line 149 imeCommitComposition
+       149:   # Use imeCommitComposition to commit the final text.
+[OK ] note:15 — S187 line 150 empty-string cancel
+       150:   # Use imeSetComposition with empty string as text to cancel composition.
+[OK ] note:19 — S188 input_handler.cc:1281-1359 both IME handlers
+       1281: void InputHandler::InsertText(const std::string& text,
+1282:                               std::unique_ptr<InsertTextCallback> callback) {
+1283:   std::u16string text16 = base::UTF8ToUTF16(text);
+1284:   if (!host_ || !host_->GetRenderWidgetHost()) {
+1285:     callback->sendFailure(Response::InternalError());
+1286:     return;
+1287:   }
+1288: 
+1289:   RenderWidgetHostImpl* widget_host = host_->GetRenderWidgetHost();
+1290:   if (!host_->GetParent() && widget_host->delegate()) {
+1291:     RenderWidgetHostImpl* target_host =
+1292:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+1293:     if (target_host)
+1294:       widget_host = target_host;
+1295:   }
+1296: 
+1297:   base::OnceClosure closure =
+1298:       base::BindOnce(&InsertTextCallback::sendSuccess, std::move(callback));
+1299: 
+1300:   widget_host->Focus();
+1301:   widget_host->GetWidgetInputHandler()->ImeCommitText(
+1302:       text16, std::vector<ui::ImeTextSpan>(), gfx::Range::InvalidRange(), 0,
+1303:       /*target_dom_node_id=*/blink::DOMNodeIdType(), std::move(closure));
+1304: }
+1305: 
+1306: void InputHandler::ImeSetComposition(
+1307:     const std::string& text,
+1308:     int selection_start,
+1309:     int selection_end,
+1310:     std::optional<int> replacement_start,
+1311:     std::optional<int> replacement_end,
+1312:     std::unique_ptr<ImeSetCompositionCallback> callback) {
+1313:   std::u16string text16 = base::UTF8ToUTF16(text);
+1314:   if (!host_ || !host_->GetRenderWidgetHost() || !web_contents_) {
+1315:     callback->sendFailure(Response::InternalError());
+1316:     return;
+1317:   }
+1318:   // Currently no DevTools target for Prerender.
+1319:   if (host_->GetLifecycleState() ==
+1320:       RenderFrameHost::LifecycleState::kPrerendering) {
+1321:     NOTREACHED();
+1322:   }
+1323: 
+1324:   // |RenderFrameHostImpl::GetRenderWidgetHost| returns the RWHImpl of the
+1325:   // nearest local root of |host_|.
+1326:   RenderWidgetHostImpl* widget_host = host_->GetRenderWidgetHost();
+1327:   if (widget_host->delegate()) {
+1328:     RenderWidgetHostImpl* target_host =
+1329:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+1330:     if (target_host)
+1331:       widget_host = target_host;
+1332:   }
+1333: 
+1334:   // If replacement start and end are not specified, then the range is invalid,
+1335:   // so no replacing will be done.
+1336:   gfx::Range replacement_range = gfx::Range::InvalidRange();
+1337: 
+1338:   // Check if replacement_start and end parameters were passed in
+1339:   if (replacement_start.has_value()) {
+1340:     replacement_range.set_start(replacement_start.value());
+1341:     if (replacement_end.has_value()) {
+1342:       replacement_range.set_end(replacement_end.value());
+1343:     } else {
+1344:       callback->sendFailure(Response::InvalidParams(
+1345:           "Either both replacement start/end are specified or neither."));
+1346:       return;
+1347:     }
+1348:   }
+1349: 
+1350:   base::OnceClosure closure = base::BindOnce(
+1351:       &ImeSetCompositionCallback::sendSuccess, std::move(callback));
+1352: 
+1353:   widget_host->Focus();
+1354: 
+1355:   widget_host->GetWidgetInputHandler()->ImeSetComposition(
+1356:       text16, std::vector<ui::ImeTextSpan>(), replacement_range,
+1357:       selection_start, selection_end, blink::mojom::ImeState::kNone,
+1358:       /*target_dom_node_id=*/blink::DOMNodeIdType(), std::move(closure));
+1359: }
+[OK ] note:19 — S188 input_handler.cc:1281-1359 focused-widget routing
+       1281: void InputHandler::InsertText(const std::string& text,
+1282:                               std::unique_ptr<InsertTextCallback> callback) {
+1283:   std::u16string text16 = base::UTF8ToUTF16(text);
+1284:   if (!host_ || !host_->GetRenderWidgetHost()) {
+1285:     callback->sendFailure(Response::InternalError());
+1286:     return;
+1287:   }
+1288: 
+1289:   RenderWidgetHostImpl* widget_host = host_->GetRenderWidgetHost();
+1290:   if (!host_->GetParent() && widget_host->delegate()) {
+1291:     RenderWidgetHostImpl* target_host =
+1292:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+1293:     if (target_host)
+1294:       widget_host = target_host;
+1295:   }
+1296: 
+1297:   base::OnceClosure closure =
+1298:       base::BindOnce(&InsertTextCallback::sendSuccess, std::move(callback));
+1299: 
+1300:   widget_host->Focus();
+1301:   widget_host->GetWidgetInputHandler()->ImeCommitText(
+1302:       text16, std::vector<ui::ImeTextSpan>(), gfx::Range::InvalidRange(), 0,
+1303:       /*target_dom_node_id=*/blink::DOMNodeIdType(), std::move(closure));
+1304: }
+1305: 
+1306: void InputHandler::ImeSetComposition(
+1307:     const std::string& text,
+1308:     int selection_start,
+1309:     int selection_end,
+1310:     std::optional<int> replacement_start,
+1311:     std::optional<int> replacement_end,
+1312:     std::unique_ptr<ImeSetCompositionCallback> callback) {
+1313:   std::u16string text16 = base::UTF8ToUTF16(text);
+1314:   if (!host_ || !host_->GetRenderWidgetHost() || !web_contents_) {
+1315:     callback->sendFailure(Response::InternalError());
+1316:     return;
+1317:   }
+1318:   // Currently no DevTools target for Prerender.
+1319:   if (host_->GetLifecycleState() ==
+1320:       RenderFrameHost::LifecycleState::kPrerendering) {
+1321:     NOTREACHED();
+1322:   }
+1323: 
+1324:   // |RenderFrameHostImpl::GetRenderWidgetHost| returns the RWHImpl of the
+1325:   // nearest local root of |host_|.
+1326:   RenderWidgetHostImpl* widget_host = host_->GetRenderWidgetHost();
+1327:   if (widget_host->delegate()) {
+1328:     RenderWidgetHostImpl* target_host =
+1329:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+1330:     if (target_host)
+1331:       widget_host = target_host;
+1332:   }
+1333: 
+1334:   // If replacement start and end are not specified, then the range is invalid,
+1335:   // so no replacing will be done.
+1336:   gfx::Range replacement_range = gfx::Range::InvalidRange();
+1337: 
+1338:   // Check if replacement_start and end parameters were passed in
+1339:   if (replacement_start.has_value()) {
+1340:     replacement_range.set_start(replacement_start.value());
+1341:     if (replacement_end.has_value()) {
+1342:       replacement_range.set_end(replacement_end.value());
+1343:     } else {
+1344:       callback->sendFailure(Response::InvalidParams(
+1345:           "Either both replacement start/end are specified or neither."));
+1346:       return;
+1347:     }
+1348:   }
+1349: 
+1350:   base::OnceClosure closure = base::BindOnce(
+1351:       &ImeSetCompositionCallback::sendSuccess, std::move(callback));
+1352: 
+1353:   widget_host->Focus();
+1354: 
+1355:   widget_host->GetWidgetInputHandler()->ImeSetComposition(
+1356:       text16, std::vector<ui::ImeTextSpan>(), replacement_range,
+1357:       selection_start, selection_end, blink::mojom::ImeState::kNone,
+1358:       /*target_dom_node_id=*/blink::DOMNodeIdType(), std::move(closure));
+1359: }
+[OK ] note:19 — S188 input_handler.cc:1281-1359 calls widget_host->Focus()
+       1281: void InputHandler::InsertText(const std::string& text,
+1282:                               std::unique_ptr<InsertTextCallback> callback) {
+1283:   std::u16string text16 = base::UTF8ToUTF16(text);
+1284:   if (!host_ || !host_->GetRenderWidgetHost()) {
+1285:     callback->sendFailure(Response::InternalError());
+1286:     return;
+1287:   }
+1288: 
+1289:   RenderWidgetHostImpl* widget_host = host_->GetRenderWidgetHost();
+1290:   if (!host_->GetParent() && widget_host->delegate()) {
+1291:     RenderWidgetHostImpl* target_host =
+1292:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+1293:     if (target_host)
+1294:       widget_host = target_host;
+1295:   }
+1296: 
+1297:   base::OnceClosure closure =
+1298:       base::BindOnce(&InsertTextCallback::sendSuccess, std::move(callback));
+1299: 
+1300:   widget_host->Focus();
+1301:   widget_host->GetWidgetInputHandler()->ImeCommitText(
+1302:       text16, std::vector<ui::ImeTextSpan>(), gfx::Range::InvalidRange(), 0,
+1303:       /*target_dom_node_id=*/blink::DOMNodeIdType(), std::move(closure));
+1304: }
+1305: 
+1306: void InputHandler::ImeSetComposition(
+1307:     const std::string& text,
+1308:     int selection_start,
+1309:     int selection_end,
+1310:     std::optional<int> replacement_start,
+1311:     std::optional<int> replacement_end,
+1312:     std::unique_ptr<ImeSetCompositionCallback> callback) {
+1313:   std::u16string text16 = base::UTF8ToUTF16(text);
+1314:   if (!host_ || !host_->GetRenderWidgetHost() || !web_contents_) {
+1315:     callback->sendFailure(Response::InternalError());
+1316:     return;
+1317:   }
+1318:   // Currently no DevTools target for Prerender.
+1319:   if (host_->GetLifecycleState() ==
+1320:       RenderFrameHost::LifecycleState::kPrerendering) {
+1321:     NOTREACHED();
+1322:   }
+1323: 
+1324:   // |RenderFrameHostImpl::GetRenderWidgetHost| returns the RWHImpl of the
+1325:   // nearest local root of |host_|.
+1326:   RenderWidgetHostImpl* widget_host = host_->GetRenderWidgetHost();
+1327:   if (widget_host->delegate()) {
+1328:     RenderWidgetHostImpl* target_host =
+1329:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+1330:     if (target_host)
+1331:       widget_host = target_host;
+1332:   }
+1333: 
+1334:   // If replacement start and end are not specified, then the range is invalid,
+1335:   // so no replacing will be done.
+1336:   gfx::Range replacement_range = gfx::Range::InvalidRange();
+1337: 
+1338:   // Check if replacement_start and end parameters were passed in
+1339:   if (replacement_start.has_value()) {
+1340:     replacement_range.set_start(replacement_start.value());
+1341:     if (replacement_end.has_value()) {
+1342:       replacement_range.set_end(replacement_end.value());
+1343:     } else {
+1344:       callback->sendFailure(Response::InvalidParams(
+1345:           "Either both replacement start/end are specified or neither."));
+1346:       return;
+1347:     }
+1348:   }
+1349: 
+1350:   base::OnceClosure closure = base::BindOnce(
+1351:       &ImeSetCompositionCallback::sendSuccess, std::move(callback));
+1352: 
+1353:   widget_host->Focus();
+1354: 
+1355:   widget_host->GetWidgetInputHandler()->ImeSetComposition(
+1356:       text16, std::vector<ui::ImeTextSpan>(), replacement_range,
+1357:       selection_start, selection_end, blink::mojom::ImeState::kNone,
+1358:       /*target_dom_node_id=*/blink::DOMNodeIdType(), std::move(closure));
+1359: }
+[OK ] note:19 — S188 input_handler.cc:1281-1359 calls ImeSetComposition
+       1281: void InputHandler::InsertText(const std::string& text,
+1282:                               std::unique_ptr<InsertTextCallback> callback) {
+1283:   std::u16string text16 = base::UTF8ToUTF16(text);
+1284:   if (!host_ || !host_->GetRenderWidgetHost()) {
+1285:     callback->sendFailure(Response::InternalError());
+1286:     return;
+1287:   }
+1288: 
+1289:   RenderWidgetHostImpl* widget_host = host_->GetRenderWidgetHost();
+1290:   if (!host_->GetParent() && widget_host->delegate()) {
+1291:     RenderWidgetHostImpl* target_host =
+1292:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+1293:     if (target_host)
+1294:       widget_host = target_host;
+1295:   }
+1296: 
+1297:   base::OnceClosure closure =
+1298:       base::BindOnce(&InsertTextCallback::sendSuccess, std::move(callback));
+1299: 
+1300:   widget_host->Focus();
+1301:   widget_host->GetWidgetInputHandler()->ImeCommitText(
+1302:       text16, std::vector<ui::ImeTextSpan>(), gfx::Range::InvalidRange(), 0,
+1303:       /*target_dom_node_id=*/blink::DOMNodeIdType(), std::move(closure));
+1304: }
+1305: 
+1306: void InputHandler::ImeSetComposition(
+1307:     const std::string& text,
+1308:     int selection_start,
+1309:     int selection_end,
+1310:     std::optional<int> replacement_start,
+1311:     std::optional<int> replacement_end,
+1312:     std::unique_ptr<ImeSetCompositionCallback> callback) {
+1313:   std::u16string text16 = base::UTF8ToUTF16(text);
+1314:   if (!host_ || !host_->GetRenderWidgetHost() || !web_contents_) {
+1315:     callback->sendFailure(Response::InternalError());
+1316:     return;
+1317:   }
+1318:   // Currently no DevTools target for Prerender.
+1319:   if (host_->GetLifecycleState() ==
+1320:       RenderFrameHost::LifecycleState::kPrerendering) {
+1321:     NOTREACHED();
+1322:   }
+1323: 
+1324:   // |RenderFrameHostImpl::GetRenderWidgetHost| returns the RWHImpl of the
+1325:   // nearest local root of |host_|.
+1326:   RenderWidgetHostImpl* widget_host = host_->GetRenderWidgetHost();
+1327:   if (widget_host->delegate()) {
+1328:     RenderWidgetHostImpl* target_host =
+1329:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+1330:     if (target_host)
+1331:       widget_host = target_host;
+1332:   }
+1333: 
+1334:   // If replacement start and end are not specified, then the range is invalid,
+1335:   // so no replacing will be done.
+1336:   gfx::Range replacement_range = gfx::Range::InvalidRange();
+1337: 
+1338:   // Check if replacement_start and end parameters were passed in
+1339:   if (replacement_start.has_value()) {
+1340:     replacement_range.set_start(replacement_start.value());
+1341:     if (replacement_end.has_value()) {
+1342:       replacement_range.set_end(replacement_end.value());
+1343:     } else {
+1344:       callback->sendFailure(Response::InvalidParams(
+1345:           "Either both replacement start/end are specified or neither."));
+1346:       return;
+1347:     }
+1348:   }
+1349: 
+1350:   base::OnceClosure closure = base::BindOnce(
+1351:       &ImeSetCompositionCallback::sendSuccess, std::move(callback));
+1352: 
+1353:   widget_host->Focus();
+1354: 
+1355:   widget_host->GetWidgetInputHandler()->ImeSetComposition(
+1356:       text16, std::vector<ui::ImeTextSpan>(), replacement_range,
+1357:       selection_start, selection_end, blink::mojom::ImeState::kNone,
+1358:       /*target_dom_node_id=*/blink::DOMNodeIdType(), std::move(closure));
+1359: }
+[OK ] note:20 — S188 line 1345 InvalidParams text
+       1344:       callback->sendFailure(Response::InvalidParams(
+1345:           "Either both replacement start/end are specified or neither."));
+[OK ] note:22 — S189 SetComposition lines 1009-1095
+       1009: void InputMethodController::SetComposition(
+1010:     const String& text,
+1011:     const Vector<ImeTextSpan>& ime_text_spans,
+1012:     int selection_start,
+1013:     int selection_end,
+1014:     mojom::blink::ImeState ime_state) {
+1015:   RevealSelectionScope reveal_selection_scope(GetFrame());
+1016: 
+1017:   // Updates styles before setting selection for composition to prevent
+1018:   // inserting the previous composition text into text nodes oddly.
+1019:   // See https://bugs.webkit.org/show_bug.cgi?id=46868
+1020:   GetDocument().UpdateStyleAndLayoutTree();
+1021: 
+1022:   SelectComposition();
+1023: 
+1024:   // TODO(editing-dev): The use of UpdateStyleAndLayout
+1025:   // needs to be audited. see http://crbug.com/590369 for more details.
+1026:   GetDocument().UpdateStyleAndLayout(DocumentUpdateReason::kEditing);
+1027: 
+1028:   if (Selection().ComputeVisibleSelectionInDomTree().IsNone()) {
+1029:     return;
+1030:   }
+1031: 
+1032:   Element* target = GetDocument().FocusedElement();
+1033:   if (!target)
+1034:     return;
+1035: 
+1036:   PlainTextRange selected_range = CreateSelectionRangeForSetComposition(
+1037:       selection_start, selection_end, text.length());
+1038: 
+1039:   // Dispatch an appropriate composition event to the focused node.
+1040:   // We check the composition status and choose an appropriate composition event
+1041:   // since this function is used for three purposes:
+1042:   // 1. Starting a new composition.
+1043:   //    Send a compositionstart and a compositionupdate event when this function
+1044:   //    creates a new composition node, i.e. !hasComposition() &&
+1045:   //    !text.isEmpty().
+1046:   //    Sending a compositionupdate event at this time ensures that at least one
+1047:   //    compositionupdate event is dispatched.
+1048:   // 2. Updating the existing composition node.
+1049:   //    Send a compositionupdate event when this function updates the existing
+1050:   //    composition node, i.e. hasComposition() && !text.isEmpty().
+1051:   // 3. Canceling the ongoing composition.
+1052:   //    Send a compositionend event when function deletes the existing
+1053:   //    composition node, i.e. !hasComposition() && test.isEmpty().
+1054:   if (text.empty()) {
+1055:     // Suppress input and compositionend events until after we move the caret
+1056:     // to the new position.
+1057:     EventQueueScope scope;
+1058:     if (HasComposition()) {
+1059:       RevealSelectionScope inner_reveal_selection_scope(GetFrame());
+1060:       // Do not attempt to apply IME selection offsets if ReplaceComposition()
+1061:       // fails (we compute the new range assuming the replacement will succeed).
+1062:       if (!ReplaceComposition(g_empty_string))
+1063:         return;
+1064:     } else {
+1065:       // It's weird to call |setComposition()| with empty text outside
+1066:       // composition, however some IME (e.g. Japanese IBus-Anthy) did this, so
+1067:       // we simply delete selection without sending extra events.
+1068:       if (!DeleteSelection())
+1069:         return;
+1070:     }
+1071: 
+1072:     // TODO(editing-dev): Use of UpdateStyleAndLayout
+1073:     // needs to be audited. see http://crbug.com/590369 for more details.
+1074:     GetDocument().UpdateStyleAndLayout(DocumentUpdateReason::kEditing);
+1075: 
+1076:     SetEditableSelectionOffsets(selected_range);
+1077:     return;
+1078:   }
+1079: 
+1080:   // We should send a 'compositionstart' event only when the given text is not
+1081:   // empty because this function doesn't create a composition node when the text
+1082:   // is empty.
+1083:   if (!HasComposition() &&
+1084:       !DispatchCompositionStartEvent(GetFrame().SelectedText())) {
+1085:     return;
+1086:   }
+1087: 
+1088:   DCHECK(!text.empty());
+1089: 
+1090:   Clear();
+1091: 
+1092:   // Suppress input event until after we move the caret to the new position.
+1093:   EventQueueScope scope;
+1094:   InsertTextDuringCompositionWithEvents(GetFrame(), text,
+1095:                                         TypingCommand::kSelectInsertedText,
+[OK ] note:23 — S189 no-focus return lines 1032-1034
+       1032:   Element* target = GetDocument().FocusedElement();
+1033:   if (!target)
+1034:     return;
+[OK ] note:25 — S189 comment block lines 1039-1053
+       1039:   // Dispatch an appropriate composition event to the focused node.
+1040:   // We check the composition status and choose an appropriate composition event
+1041:   // since this function is used for three purposes:
+1042:   // 1. Starting a new composition.
+1043:   //    Send a compositionstart and a compositionupdate event when this function
+1044:   //    creates a new composition node, i.e. !hasComposition() &&
+1045:   //    !text.isEmpty().
+1046:   //    Sending a compositionupdate event at this time ensures that at least one
+1047:   //    compositionupdate event is dispatched.
+1048:   // 2. Updating the existing composition node.
+1049:   //    Send a compositionupdate event when this function updates the existing
+1050:   //    composition node, i.e. hasComposition() && !text.isEmpty().
+1051:   // 3. Canceling the ongoing composition.
+1052:   //    Send a compositionend event when function deletes the existing
+1053:   //    composition node, i.e. !hasComposition() && test.isEmpty().
+[OK ] note:26 — S189 line 1084 DispatchCompositionStartEvent(GetFrame().SelectedText())
+       1084:       !DispatchCompositionStartEvent(GetFrame().SelectedText())) {
+[OK ] note:28 — S189 CommitText lines 694-705
+       694: bool InputMethodController::CommitText(
+695:     const String& text,
+696:     const Vector<ImeTextSpan>& ime_text_spans,
+697:     int relative_caret_position) {
+698:   bool result;
+699:   if (HasComposition()) {
+700:     result = ReplaceCompositionAndMoveCaret(text, relative_caret_position,
+701:                                             ime_text_spans);
+702:   } else {
+703:     result =
+704:         InsertTextAndMoveCaret(text, relative_caret_position, ime_text_spans);
+705:   }
+[OK ] note:29 — S189 line 700 ReplaceCompositionAndMoveCaret
+       700:     result = ReplaceCompositionAndMoveCaret(text, relative_caret_position,
+[OK ] note:29 — S189 line 704 InsertTextAndMoveCaret
+       704:         InsertTextAndMoveCaret(text, relative_caret_position, ime_text_spans);
+[OK ] note:31 — S189 InsertText lines 924-932 DispatchBeforeInputInsertText(GetDocument().FocusedElement(), ...)
+       924: bool InputMethodController::InsertText(const String& text) {
+925:   if (DispatchBeforeInputInsertText(GetDocument().FocusedElement(), text) !=
+926:       DispatchEventResult::kNotCanceled)
+927:     return false;
+928:   if (!IsAvailable())
+929:     return false;
+930:   GetEditor().InsertText(text, nullptr);
+931:   return true;
+932: }
+[OK ] note:36 — S189 lines 393 and 1004 target->DispatchEvent(*event)
+       393:   target->DispatchEvent(*event);
+[OK ] note:36 — S189 line 1004 target->DispatchEvent(*event)
+       1004:   target->DispatchEvent(*event);
+[OK ] note:37 — S189 line 409 EventDispatcher::DispatchScopedEvent(*target, *event)
+       409:   EventDispatcher::DispatchScopedEvent(*target, *event);
+[OK ] note:40 — S193 editing_utilities.cc:1772-1773 null-target return
+       1772:   if (!target)
+1773:     return DispatchEventResult::kNotCanceled;
+[OK ] note:47 — S190 event_target.cc:868 event.SetTrusted(true);
+       868:   event.SetTrusted(true);
+[OK ] note:48 — S191 event_dispatcher.cc:88-93 sets target and enqueues
+       88: void EventDispatcher::DispatchScopedEvent(Node& node, Event& event) {
+89:   // We need to set the target here because it can go away by the time we
+90:   // actually fire the event.
+91:   event.SetTarget(&EventPath::EventTargetRespectingTargetRules(node));
+92:   ScopedEventQueue::Instance()->EnqueueEvent(event);
+93: }
+[OK ] note:49 — S192 scoped_event_queue.cc:76-79 hands to EventDispatcher::DispatchEvent(*node, event)
+       76:   DCHECK(event.RawTarget());
+77:   Node* node = event.RawTarget()->ToNode();
+78:   EventDispatcher::DispatchEvent(*node, event);
+79: }
+
+PART B result: 24 OK, 0 MISS
+
+=== PART C — declaration check (S187 row) ===
+$ grep -n 'imeCommitComposition\|imeSetComposition\|command ime' Input.pdl
+149:   # Use imeCommitComposition to commit the final text.
+150:   # Use imeSetComposition with empty string as text to cancel composition.
+151:   experimental command imeSetComposition
+-> line 149 is a comment; line 151 is the only `command ime*` declaration.
+   The PDL declares NO imeCommitComposition command at this tag. The S187 row's claim holds.
+
+=== PART D — the two earlier false MISSes, corrected ===
+My first check sliced input_handler.cc:1290-1295 and :1327-1332 for the quote
+'GetFocusedRenderWidgetHost(widget_host);'. The statement is split across two lines:
+  1291:     RenderWidgetHostImpl* target_host =
+  1292:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+  1328:     RenderWidgetHostImpl* target_host =
+  1329:         widget_host->delegate()->GetFocusedRenderWidgetHost(widget_host);
+Both quotes are present; the anchors are correct. Corrected spans are used in Part A.
+
+VERDICT: 0 anchors off. Every S187-S193 row anchor and every note anchor lands on the cited code.

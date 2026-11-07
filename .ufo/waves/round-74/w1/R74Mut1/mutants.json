@@ -1,0 +1,1309 @@
+{
+ "schema": "tabi-mutants-r74-c1-r74mut1",
+ "generatedAt": "2026-11-07T03:41:34.008Z",
+ "target": {
+  "counter": "scripts/check-imecompose-r74.mjs",
+  "counterSha256": "5901d895ced1305f27935b93b409363c5822c7a730a6d2c7d00446ed7d33d251",
+  "battery": "scripts/negatives-imecompose-r74.mjs",
+  "batterySha256": "8c0dd93a61177eb02691bee7f3a6d3762eb51cdf9d51599e7e23867ffe91fb26",
+  "driver": "scripts/chrome-cdp-imecompose-round74.mjs",
+  "driverSha256": "afacee1b193ea2ba7ccab945956cee912eeed18cc5aa2fcacf5d65dc261dc2dc"
+ },
+ "real": "/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round74/chromium-ime-composition/receipt.json",
+ "priors": 12,
+ "laundered": 3,
+ "baseline": {
+  "batteryExit": 0,
+  "passed": 239,
+  "cases": 239,
+  "allOk": true,
+  "positiveOk": true
+ },
+ "restored": {
+  "batteryExit": 0,
+  "passed": 239,
+  "cases": 239,
+  "allOk": true,
+  "positiveOk": true
+ },
+ "totals": {
+  "mutants": 54,
+  "killed": 26,
+  "survived": 28,
+  "acceptanceWitnesses": 19,
+  "overRefusalWitnesses": 2,
+  "equivalenceProbes": 4,
+  "equivalenceProofs": 3
+ },
+ "mutants": [
+  {
+   "id": "schema-any-string",
+   "edit": {
+    "from": "r.schema === 'tabi-chrome-cdp-imecompose-r74'",
+    "to": "typeof r.schema === 'string'"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "771244a7b93f3191c225e93590234d5be09b3f669f765a120bb657909b52d713",
+   "failedCases": [
+    "schema"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "nonce-shape-length-only",
+   "edit": {
+    "from": "typeof r.nonce === 'string' && /^tabi-r74-[a-z0-9-]+$/.test(r.nonce)",
+    "to": "typeof r.nonce === 'string' && r.nonce.length > 0"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "9fb4ac2dd112ace9161858c33c360eb33d2a5809fbc74ec571824c5d870b3429",
+   "failedCases": [
+    "nonce-shape"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "nonce-expected-prefix-only",
+   "edit": {
+    "from": "check('nonce-expected', r.nonce === expectNonce",
+    "to": "check('nonce-expected', typeof r.nonce === 'string' && r.nonce.startsWith('tabi-r74-')"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "f9a3fbedb3e6ed42c5965fdcd7cb77dc15ca68b6585f15fb7cec7adf79262bc3",
+   "failedCases": [
+    "nonce-expected"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "server-log-run-any-string",
+   "edit": {
+    "from": "served.every((s) => s.run === r.nonce)",
+    "to": "served.every((s) => typeof s.run === 'string')"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "63c679900af8b4126ade64fcbcc9e376a70d038f65c6e139d3402bfd4aee6bca",
+   "failedCases": [
+    "server-log-binding"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "driver-pin-hex-shape-only",
+   "edit": {
+    "from": "check('driver-pin', r.driverSha256 === pin",
+    "to": "check('driver-pin', /^[0-9a-f]{64}$/.test(r.driverSha256)"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "5172b094c12afdd6d35575d3547a5ab4c8830ee9a85a8b7a863f170254e2b61e",
+   "failedCases": [
+    "driver-pin"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "host-chromium-version-dropped",
+   "edit": {
+    "from": "/^Chromium \\d+\\.\\d+\\.\\d+\\.\\d+/.test(host.chromium)",
+    "to": "/^Chromium/.test(host.chromium)"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "f81ea2d5ca666d683013a24db43f5f7bc66eca1996a525e50091520d2f667b43",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/host-chromium-version-dropped.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "host-chromium"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "devtools-stderr-head-dropped",
+   "edit": {
+    "from": "typeof host.stderrHead === 'string' && host.stderrHead.includes(dl.url)",
+    "to": "typeof host.stderrHead === 'string'"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "f1eb3adbbc6f0511763ec1aff324252355cad44f658b57a8117fb8c2dedddcd1",
+   "failedCases": [
+    "devtools-stderr-absent"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "devtools-url-prefix-any",
+   "edit": {
+    "from": "dl.url.startsWith('ws://127.0.0.1:' + argvPort + '/devtools/browser/')",
+    "to": "dl.url.startsWith('ws://')"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "765c2bf45ff315db72aa3fe84da39bd421554bcc3855b883a8965bab5b44b66b",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/devtools-url-prefix-any.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "devtools-port-binding"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "run-window-ceiling-dropped",
+   "edit": {
+    "from": "t1 - t0 >= 4000 && t1 - t0 < 600000",
+    "to": "t1 - t0 >= 4000"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "b3fc9caa77e52b2e2de24ccf53fd9a83b0b12f50fea5ecf7a1e9090f3e1326e5",
+   "failedCases": [
+    "run-window-long"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "plan-frozen-length-only",
+   "edit": {
+    "from": "check('plan-frozen', canon(r.plan) === canon(FROZEN)",
+    "to": "check('plan-frozen', arr(r.plan).length === FROZEN.length"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "78d720efa4ba8ec6b5f5b59fdf0d7e6db3d96cf884d86f356be41c637be801c8",
+   "failedCases": [
+    "plan-frozen"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "leg-order-length-ge",
+   "edit": {
+    "from": "legs.length === LEG_ORDER.length &&",
+    "to": "legs.length >= LEG_ORDER.length - 1 &&"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "2956dc660113caa2fd2345082f8e6a83dc654b8fa4e191eab3b24af6e3e24d7c",
+   "failedCases": [],
+   "witness": null,
+   "equivalence": {
+    "kind": "proof",
+    "reason": "canon(legs.map(name)) === canon(LEG_ORDER) already implies legs.length === LEG_ORDER.length; the dropped length conjunct is redundant for every receipt, JSON or not."
+   }
+  },
+  {
+   "id": "leg-params-cmd-dropped",
+   "edit": {
+    "from": "canon(l.params) === canon(FROZEN[i].params) && l.cmd === FROZEN[i].cmd",
+    "to": "canon(l.params) === canon(FROZEN[i].params)"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "6bcb9a05834546c24d34a5f1d75a644c0f72021035ea426ac6c26f13cafb5f06",
+   "failedCases": [
+    "leg-params-cmd"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "leg-params-elapsed-optional",
+   "edit": {
+    "from": "num(l.elapsedMs) && l.elapsedMs >= 0",
+    "to": "(l.elapsedMs === undefined || (num(l.elapsedMs) && l.elapsedMs >= 0))"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "2b1a805feb4afd40593f9a6ea41a96f5a9928e51ac5fef5fedce21837cb74c86",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/leg-params-elapsed-optional.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "leg-params"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "leg-params-keys-only",
+   "edit": {
+    "from": "canon(l.params) === canon(FROZEN[i].params) && l.cmd",
+    "to": "canon(Object.keys(l.params || {})) === canon(Object.keys(FROZEN[i].params || {})) && l.cmd"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "30ac707c51cc1a40733996fe0e8c98379bd256a2b9cad68ad86509d1f798432b",
+   "failedCases": [
+    "leg-params"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "seq-ge-not-eq",
+   "edit": {
+    "from": "e.seq === i + 1",
+    "to": "e.seq >= i + 1"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "43dd2f070499ecf0fcb2c93afd00f2f7bb066196b8559e39768c875c5230ff47",
+   "failedCases": [
+    "seq-monotonic"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "event-leg-domain-some",
+   "edit": {
+    "from": "events.every((e) => isObj(e) && LEG_ORDER.includes(e.leg))",
+    "to": "events.some((e) => isObj(e) && LEG_ORDER.includes(e.leg))"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "5986ddbdc6f3dc62abe498ca5470090a2df24b056553d3c7939730555fe8d6c9",
+   "failedCases": [
+    "event-leg-domain",
+    "event-leg-fabricated-label"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "typed-key-dropped",
+   "edit": {
+    "from": " && strOrNull(e.key)",
+    "to": ""
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "44fa29db67dd63a893ba5e962b5214725ae7fb1e44a9ee3d3a35480fbc7ee781",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/typed-key-dropped.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "event-types"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "typed-value-dropped",
+   "edit": {
+    "from": " && strOrNull(e.value)",
+    "to": ""
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "5d259131a16017a892b0b2d0cfd9ba2194578b48e3ef51211c0f445206f75bdc",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/typed-value-dropped.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "event-types"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "typed-selend-dropped",
+   "edit": {
+    "from": " && intOrNull(e.selStart) && intOrNull(e.selEnd)",
+    "to": " && intOrNull(e.selStart)"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "1ffe9ce2cf40523588680444ff464eca43a95cadfde7680f755c8058a46526b3",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/typed-selend-dropped.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "event-types"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "typed-inputtype-number-allowed",
+   "edit": {
+    "from": "strOrNull(e.inputType)",
+    "to": "(e.inputType === null || typeof e.inputType === 'string' || typeof e.inputType === 'number')"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "c63cbfcc557c2babd0d7f804245aa6e0f182fe60bf91c6a597b50b9de3e39ea8",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/typed-inputtype-number-allowed.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "event-types"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "typed-time-positive-dropped",
+   "edit": {
+    "from": "num(e.ts) && e.ts > 0 && num(e.at) && e.at > 0",
+    "to": "num(e.ts) && num(e.at)"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "56724549df5165ae4950661fe387b6f48f14197fd01ba6844ae39e8e3ffcf1f0",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/typed-time-positive-dropped.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "event-types"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "typed-composing-undefined-allowed",
+   "edit": {
+    "from": "(e.isComposing === null || typeof e.isComposing === 'boolean')",
+    "to": "(e.isComposing === undefined || e.isComposing === null || typeof e.isComposing === 'boolean')"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "c45af3d9ccab9391a5a579a60fa0e68cd53036f504eac6751b9784f1d08952d3",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/typed-composing-undefined-allowed.receipt.json",
+    "kind": "equivalence",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "event-types",
+     "leg-compose-b-composing"
+    ],
+    "mutantExit": 1,
+    "mutantFindings": [
+     "leg-compose-b-composing"
+    ],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": {
+    "kind": "probe",
+    "probePath": ".ufo/waves/round-74/w1/R74Mut1/witnesses/typed-composing-undefined-allowed.receipt.json",
+    "pinnedExit": 1,
+    "mutantExit": 1,
+    "note": "both counters refuse the probe; the added acceptance is shadowed by unchanged checks"
+   }
+  },
+  {
+   "id": "typed-data-undefined-allowed",
+   "edit": {
+    "from": "(!('data' in e) || strOrNull(e.data))",
+    "to": "(e.data === undefined || strOrNull(e.data))"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "20fb6f86445ea7c431b24dde04185812fc85ddb1197006a4d5bb84275e998056",
+   "failedCases": [],
+   "witness": null,
+   "equivalence": {
+    "kind": "proof",
+    "reason": "JSON.parse never yields an own property with value undefined, and the mutation replaces only the `'data' in e` test with `e.data === undefined`; for every receipt reachable from JSON both forms are true iff data is absent or null/string."
+   }
+  },
+  {
+   "id": "typed-events-empty-allowed",
+   "edit": {
+    "from": "check('event-types', events.length > 0 &&",
+    "to": "check('event-types',"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "f17bea75c493870be9752b9a921f99e9369e6ed308822d866795feac9b2c3a98",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/typed-events-empty-allowed.receipt.json",
+    "kind": "equivalence",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "replay-event-timeline",
+     "event-time-quantum",
+     "seq-monotonic",
+     "event-types",
+     "leg-compose-a-seq",
+     "leg-compose-a-trusted",
+     "leg-compose-a-data",
+     "leg-compose-a-composing",
+     "leg-compose-a-target",
+     "leg-compose-b-seq",
+     "leg-compose-b-trusted",
+     "leg-compose-b-data",
+     "leg-compose-b-composing",
+     "leg-compose-b-target",
+     "leg-commit-seq",
+     "leg-commit-trusted",
+     "leg-commit-data",
+     "leg-commit-composing",
+     "leg-commit-target",
+     "leg-plain-seq",
+     "leg-plain-trusted",
+     "leg-plain-data",
+     "leg-plain-composing",
+     "leg-plain-target",
+     "leg-compose-c-seq",
+     "leg-compose-c-trusted",
+     "leg-compose-c-data",
+     "leg-compose-c-composing",
+     "leg-compose-c-target",
+     "leg-cancel-seq",
+     "leg-cancel-trusted",
+     "leg-cancel-data",
+     "leg-cancel-composing",
+     "leg-cancel-target",
+     "leg-ce-compose-seq",
+     "leg-ce-compose-trusted",
+     "leg-ce-compose-data",
+     "leg-ce-compose-composing",
+     "leg-ce-compose-target",
+     "leg-ce-commit-seq",
+     "leg-ce-commit-trusted",
+     "leg-ce-commit-data",
+     "leg-ce-commit-composing",
+     "leg-ce-commit-target",
+     "leg-nofocus-insert-seq",
+     "leg-nofocus-insert-trusted",
+     "leg-nofocus-insert-data",
+     "leg-nofocus-insert-composing",
+     "leg-nofocus-insert-target",
+     "composition-data-chain",
+     "composing-by-input-type",
+     "trust-law",
+     "compositionstart-selected-text",
+     "no-keyboard-events",
+     "focus-events-bound",
+     "legshape-consistency"
+    ],
+    "mutantExit": 1,
+    "mutantFindings": [
+     "replay-event-timeline",
+     "event-time-quantum",
+     "seq-monotonic",
+     "leg-compose-a-seq",
+     "leg-compose-a-trusted",
+     "leg-compose-a-data",
+     "leg-compose-a-composing",
+     "leg-compose-a-target",
+     "leg-compose-b-seq",
+     "leg-compose-b-trusted",
+     "leg-compose-b-data",
+     "leg-compose-b-composing",
+     "leg-compose-b-target",
+     "leg-commit-seq",
+     "leg-commit-trusted",
+     "leg-commit-data",
+     "leg-commit-composing",
+     "leg-commit-target",
+     "leg-plain-seq",
+     "leg-plain-trusted",
+     "leg-plain-data",
+     "leg-plain-composing",
+     "leg-plain-target",
+     "leg-compose-c-seq",
+     "leg-compose-c-trusted",
+     "leg-compose-c-data",
+     "leg-compose-c-composing",
+     "leg-compose-c-target",
+     "leg-cancel-seq",
+     "leg-cancel-trusted",
+     "leg-cancel-data",
+     "leg-cancel-composing",
+     "leg-cancel-target",
+     "leg-ce-compose-seq",
+     "leg-ce-compose-trusted",
+     "leg-ce-compose-data",
+     "leg-ce-compose-composing",
+     "leg-ce-compose-target",
+     "leg-ce-commit-seq",
+     "leg-ce-commit-trusted",
+     "leg-ce-commit-data",
+     "leg-ce-commit-composing",
+     "leg-ce-commit-target",
+     "leg-nofocus-insert-seq",
+     "leg-nofocus-insert-trusted",
+     "leg-nofocus-insert-data",
+     "leg-nofocus-insert-composing",
+     "leg-nofocus-insert-target",
+     "composition-data-chain",
+     "composing-by-input-type",
+     "trust-law",
+     "compositionstart-selected-text",
+     "no-keyboard-events",
+     "focus-events-bound",
+     "legshape-consistency"
+    ],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": {
+    "kind": "probe",
+    "probePath": ".ufo/waves/round-74/w1/R74Mut1/witnesses/typed-events-empty-allowed.receipt.json",
+    "pinnedExit": 1,
+    "mutantExit": 1,
+    "note": "both counters refuse the probe; the added acceptance is shadowed by unchanged checks"
+   }
+  },
+  {
+   "id": "timeline-tolerance-0.01",
+   "edit": {
+    "from": "&& Math.abs(e.ts - y[i].ts) < 0.05 && Math.abs(e.at - y[i].at) < 0.05",
+    "to": "&& Math.abs(e.ts - y[i].ts) < 0.01 && Math.abs(e.at - y[i].at) < 0.01"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "6408b90dbb2f64db7c698f5d361ff359700b12afdfae3c4c967b46430a99bfd8",
+   "failedCases": [
+    "replay-timeline-sub-quantum"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "timeline-at-field-dropped",
+   "edit": {
+    "from": "&& Math.abs(e.ts - y[i].ts) < 0.05 && Math.abs(e.at - y[i].at) < 0.05",
+    "to": "&& Math.abs(e.ts - y[i].ts) < 0.05"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "d84bc82101021dcff3406dc5b9bc6d79811a35eadcf19545dde7db0182495c9e",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/timeline-at-field-dropped.receipt.json",
+    "kind": "over-refusal",
+    "pinnedExit": 0,
+    "pinnedFindings": [],
+    "mutantExit": 1,
+    "mutantFindings": [
+     "replay-event-timeline"
+    ],
+    "prior": ".ufo/waves/round-74/w1/R74Mut1/witnesses/timeline-at-field-dropped.prior.json",
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "timeline-at-lte-boundary",
+   "edit": {
+    "from": "&& Math.abs(e.ts - y[i].ts) < 0.05 && Math.abs(e.at - y[i].at) < 0.05",
+    "to": "&& Math.abs(e.ts - y[i].ts) <= 0.05 && Math.abs(e.at - y[i].at) <= 0.05"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "5a55b545c7aab56a11f38b59c7469293c79e317222b75fa7c8285077ca2f07cd",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/timeline-at-lte-boundary.receipt.json",
+    "kind": "over-refusal",
+    "pinnedExit": 0,
+    "pinnedFindings": [],
+    "mutantExit": 1,
+    "mutantFindings": [
+     "replay-event-timeline"
+    ],
+    "prior": ".ufo/waves/round-74/w1/R74Mut1/witnesses/timeline-at-lte-boundary.prior.json",
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "quantum-tolerance-1e-2",
+   "edit": {
+    "from": "Math.abs(v * 10 - Math.round(v * 10)) <= 1e-4",
+    "to": "Math.abs(v * 10 - Math.round(v * 10)) <= 1e-2"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "7aa8e84a5ea78d706f251ae89485189c6414d341d27a7613119bc1e35951c8cc",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/quantum-tolerance-1e-2.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "event-time-quantum"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "quantum-at-unchecked",
+   "edit": {
+    "from": "events.every((e) => isObj(e) && onGrid(e.ts) && onGrid(e.at))",
+    "to": "events.every((e) => isObj(e) && onGrid(e.ts))"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "e0003b80838f22c9672ed9ced79ee6bb7959f988f28c191b00e01ba8ba9bfac5",
+   "failedCases": [
+    "event-time-quantum-at"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "marks-monotonic-slack",
+   "edit": {
+    "from": "(i === 0 || m.at >= marks[i - 1].at)",
+    "to": "(i === 0 || m.at >= marks[i - 1].at - 0.1)"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "584dffc611e7304630c26710e8f6541f1a515696654959b45004431a70331a0e",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/marks-monotonic-slack.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "leg-marks",
+     "event-leg-window"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "marks-closed-at-first-mark",
+   "edit": {
+    "from": "r.closedAt >= marks[marks.length - 1].at",
+    "to": "r.closedAt >= marks[0].at"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "00b3a00f99fbfb5d1a9c71387904746d7a08736e2315af5c94d7045963251b71",
+   "failedCases": [
+    "leg-marks-closed-early"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "late-after-close-sub-one",
+   "edit": {
+    "from": "Number.isInteger(r.lateAfterClose) && r.lateAfterClose === 0",
+    "to": "num(r.lateAfterClose) && r.lateAfterClose < 1"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "46ef3701c88492f10bcf034b6858c74442ae94991476f0327d01a746e1624ded",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/late-after-close-sub-one.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "leg-marks",
+     "event-leg-window"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "window-lower-dropped",
+   "edit": {
+    "from": "const w = windowOf(e.leg); return e.at >= w[0] && e.at <= w[1] &&",
+    "to": "const w = windowOf(e.leg); return e.at <= w[1] &&"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "0889f88a928c8735a252332228453dd5b5f71d07dab86e9209d79ff4835c9017",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/window-lower-dropped.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "event-leg-window"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "window-order-one-quantum",
+   "edit": {
+    "from": "(i === 0 || (num(events[i - 1].at) && e.at >= events[i - 1].at))",
+    "to": "(i === 0 || (num(events[i - 1].at) && e.at >= events[i - 1].at - 0.1))"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "15f65723d601d79ba241a4d1cb2d34f5f925eaac933e56b9f97ce9b2a27dbb61",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/window-order-one-quantum.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "event-leg-window"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "once-getversion-dropped",
+   "edit": {
+    "from": " && once('Page.navigate') && once('Browser.getVersion')",
+    "to": " && once('Page.navigate')"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "dce4aaec5f9b08304cd7e6724ea2852e1e490534777dbfb2b4071d9a4fd8cd70",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/once-getversion-dropped.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "send-log-allowlist"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "once-metrics-dropped",
+   "edit": {
+    "from": "once('Emulation.setDeviceMetricsOverride') && ",
+    "to": ""
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "3ae6364f9209ca596c89be1c6f1d951c771021eb7757aed4b39fb2bb9f7342fa",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/once-metrics-dropped.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "send-log-allowlist"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "allowlist-expr-any-string",
+   "edit": {
+    "from": "EXPRS.has(c.params.expression)",
+    "to": "typeof c.params.expression === 'string'"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "68e22f82ecc3ef9662ec67f0f261989768647d6960e8035d001d6a82022cc56d",
+   "failedCases": [
+    "lookalike-exec-command",
+    "lookalike-script-composition",
+    "lookalike-value-assign",
+    "lookalike-events-push",
+    "lookalike-select-other",
+    "laundered-exec-command"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "allowlist-navigate-url-string",
+   "edit": {
+    "from": "canon(c.params) === canon({ url: origin + '/?run=' + encodeURIComponent(String(r.nonce)) })",
+    "to": "typeof c.params.url === 'string'"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "3047fee3cefbfd5003366ac91aea3907e662b74ceba88860261ad5bc6a177200",
+   "failedCases": [
+    "allowlist-navigate-other-run"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "allowlist-id-monotonic-only",
+   "edit": {
+    "from": "sendLog.every((c, i) => c.id === i + 1)",
+    "to": "sendLog.every((c) => Number.isInteger(c.id) && c.id >= 1)"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "4f1606e06b3a1217d947a4c117d9c2131f4a77170059e56b82c6f9f878d6513a",
+   "failedCases": [
+    "allowlist-id-gap"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "metrics-width-height-only",
+   "edit": {
+    "from": "canon(c.params) === canon({ width: VIEWPORT.width, height: VIEWPORT.height, deviceScaleFactor: 1, mobile: false })",
+    "to": "c.params.width === VIEWPORT.width && c.params.height === VIEWPORT.height"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "27e43a3d354c89073365c875478a5431eb7ab27a6072c500a6b130716a11332a",
+   "failedCases": [
+    "allowlist-dmo-scale-param"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "ime-call-params-first-two",
+   "edit": {
+    "from": "canon(imeCalls.map((c) => [c.method, c.params])) === canon(planned.map((l) => [l.cmd, l.params]))",
+    "to": "canon(imeCalls.slice(0, 2).map((c) => [c.method, c.params])) === canon(planned.slice(0, 2).map((l) => [l.cmd, l.params]))"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "61ea1edbc6a9277f32f75387649489b9714f74899c4897321a768de2c59268b9",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/ime-call-params-first-two.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "ime-call-params"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "teardown-curl-devtools-dropped",
+   "edit": {
+    "from": "td.postKillCurl.fixture === 7 && td.postKillCurl.devtools === 7",
+    "to": "td.postKillCurl.fixture === 7"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "3cdef55d1351f55d02055000000e9d8aff3df83cfabc4d15a217760bee681727",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/teardown-curl-devtools-dropped.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "teardown-closure"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "teardown-fixture-probe-dropped",
+   "edit": {
+    "from": "td.portProbes.fixture === 'closed' && ",
+    "to": ""
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "15153b896efb99a2905e83d9a955a5488f2d89e1b7b6f9ddc62383967f4d5c0d",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/teardown-fixture-probe-dropped.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "teardown-closure"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "teardown-sweep-count-sub-one",
+   "edit": {
+    "from": "check('teardown-closure', td.postKillSweepCount === 0 &&",
+    "to": "check('teardown-closure', td.postKillSweepCount <= 1 &&"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "0edae57018ebad2b794cf0423b80ef4741ae754378f92928368f672f01fd6392",
+   "failedCases": [
+    "teardown-sweep-count"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "failures-nonarray-dropped",
+   "edit": {
+    "from": "Array.isArray(r.failures) && r.failures.length === 0",
+    "to": "(r.failures === undefined || r.failures.length === 0)"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "159242b8af1ac6683b9538b43cf33e65e6a17f5963fad9a2e18bbbd113de9ff7",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/failures-nonarray-dropped.receipt.json",
+    "kind": "accept",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "failures-empty"
+    ],
+    "mutantExit": 0,
+    "mutantFindings": [],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": null
+  },
+  {
+   "id": "starts-every-to-some",
+   "edit": {
+    "from": "starts.length === 3 && starts.every((e) =>",
+    "to": "starts.length === 3 && starts.some((e) =>"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "8d4983d1eb2ffad8dad89b74ad0158e86d29c4a03fd76544a25a2ebdbcc56402",
+   "failedCases": [
+    "compositionstart-selected-text",
+    "compositionstart-data"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "trust-end-not-true",
+   "edit": {
+    "from": "isObj(e) && (e.type === CE ? e.isTrusted === false",
+    "to": "isObj(e) && (e.type === CE ? e.isTrusted !== true"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "0b95b5395f3d5c8c3374a916c08bec02a9ae3d9f3f080aed211790a511e64c1f",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/trust-end-not-true.receipt.json",
+    "kind": "equivalence",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "event-types",
+     "leg-commit-trusted",
+     "trust-law",
+     "legshape-consistency"
+    ],
+    "mutantExit": 1,
+    "mutantFindings": [
+     "event-types",
+     "leg-commit-trusted",
+     "legshape-consistency"
+    ],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": {
+    "kind": "probe",
+    "probePath": ".ufo/waves/round-74/w1/R74Mut1/witnesses/trust-end-not-true.receipt.json",
+    "pinnedExit": 1,
+    "mutantExit": 1,
+    "note": "both counters refuse the probe; the added acceptance is shadowed by unchanged checks"
+   }
+  },
+  {
+   "id": "no-keyboard-keydown-keypress-only",
+   "edit": {
+    "from": "isObj(e) && !/^key/.test(e.type))",
+    "to": "isObj(e) && !['keydown', 'keypress'].includes(e.type))"
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "202451561460bf93869a4cde41e3a35a03192992821e0589a20f2e8507e6155f",
+   "failedCases": [],
+   "witness": {
+    "path": ".ufo/waves/round-74/w1/R74Mut1/witnesses/no-keyboard-keydown-keypress-only.receipt.json",
+    "kind": "equivalence",
+    "pinnedExit": 1,
+    "pinnedFindings": [
+     "leg-start-seq",
+     "leg-start-trusted",
+     "leg-start-data",
+     "leg-start-composing",
+     "leg-start-target",
+     "no-keyboard-events",
+     "legshape-consistency"
+    ],
+    "mutantExit": 1,
+    "mutantFindings": [
+     "leg-start-seq",
+     "leg-start-trusted",
+     "leg-start-data",
+     "leg-start-composing",
+     "leg-start-target",
+     "legshape-consistency"
+    ],
+    "prior": null,
+    "scoredOk": true
+   },
+   "equivalence": {
+    "kind": "probe",
+    "probePath": ".ufo/waves/round-74/w1/R74Mut1/witnesses/no-keyboard-keydown-keypress-only.receipt.json",
+    "pinnedExit": 1,
+    "mutantExit": 1,
+    "note": "both counters refuse the probe; the added acceptance is shadowed by unchanged checks"
+   }
+  },
+  {
+   "id": "sessions-at-least-one",
+   "edit": {
+    "from": "chainOk && !open && sessions === 3",
+    "to": "chainOk && !open && sessions >= 1"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "813bf29b8a91b77eb7db0b6368f2bb818d3cf95835282d4370f2a3cf6f3129f9",
+   "failedCases": [
+    "chain-session-dropped"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "focus-target-any-string",
+   "edit": {
+    "from": "fo.every((e) => ['f', 'ce'].includes(e.target))",
+    "to": "fo.every((e) => typeof e.target === 'string')"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "884d293f19406a62c674a58773e4f78d5ae325ca7098100335f4bf5128c60e67",
+   "failedCases": [
+    "focus-events-bound"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "focusout-leg-any",
+   "edit": {
+    "from": "fo.filter((e) => e.type === 'focusout').map((e) => e.leg).join(',') === 'focus-ce,blur'",
+    "to": "fo.filter((e) => e.type === 'focusout').length >= 1"
+   },
+   "killed": true,
+   "killClass": "targeted-negative-case",
+   "batteryExit": 1,
+   "mutantSha256": "4b54fbae34634d9400a17700e59a7c815c4e894382911331a826d2585460c14f",
+   "failedCases": [
+    "focus-events-leg"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "leg-trusted-length-dropped",
+   "edit": {
+    "from": "d.trusted.length === want.trusted.length && ",
+    "to": ""
+   },
+   "killed": false,
+   "killClass": null,
+   "batteryExit": 0,
+   "mutantSha256": "d1c5963b4044fd95696d2046bd11245eba95a86aa7d14427cee71e9d13c4aba4",
+   "failedCases": [],
+   "witness": null,
+   "equivalence": {
+    "kind": "proof",
+    "reason": "d.trusted, d.data and d.composing are all derived from the same evs array as d.seq; canon(d.seq) === canon(want.seq) implies evs.length === want.seq.length, and SHAPE gives seq/trusted/data/composing the same length, so the dropped length conjunct is redundant."
+   }
+  },
+  {
+   "id": "shape-ce-compose-active-f",
+   "edit": {
+    "from": "state: st(KAMEI, 2, 2, ED, 'ce')",
+    "to": "state: st(KAMEI, 2, 2, ED, 'f')"
+   },
+   "killed": true,
+   "killClass": "honest-receipt-break",
+   "batteryExit": 1,
+   "mutantSha256": "3c1f4c9b125e68d656c103865fbda79f05632735e16242d06541aa9c7ce3116a",
+   "failedCases": [
+    "schema",
+    "nonce-shape",
+    "nonce-on-page",
+    "scored-run-not-degenerate",
+    "degenerate-field-absent",
+    "server-log-binding"
+   ],
+   "witness": null,
+   "equivalence": null
+  },
+  {
+   "id": "shape-commit-last-data-x",
+   "edit": {
+    "from": "data: [KAMEI, KAMEI, KAMEI, KAMEI, KAMEI], composing: [null, true, null, true, null]",
+    "to": "data: [KAMEI, KAMEI, KAMEI, KAMEI, 'x'], composing: [null, true, null, true, null]"
+   },
+   "killed": true,
+   "killClass": "honest-receipt-break",
+   "batteryExit": 1,
+   "mutantSha256": "33cb7cad665336fe5c89b2646e07b43d4a2127e501285b5093a933bf8815e810",
+   "failedCases": [
+    "schema",
+    "nonce-shape",
+    "nonce-on-page",
+    "scored-run-not-degenerate",
+    "degenerate-field-absent",
+    "server-log-binding"
+   ],
+   "witness": null,
+   "equivalence": null
+  }
+ ]
+}

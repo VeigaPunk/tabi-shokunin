@@ -1,4 +1,4 @@
-source: S187, S188, S189, S190, S191, S192, S193 (Chromium 155.0.8059.84 Input.pdl, input_handler.cc, input_method_controller.cc, event_target.cc, event_dispatcher.cc, scoped_event_queue.cc, editing_utilities.cc; opened 2026-11-06, round 74); pre-freeze repetition receipts .ufo/waves/round-74/controls/c1/smoke1..9.receipt.json
+source: S187, S188, S189, S190, S191, S192, S193 (Chromium 155.0.8059.84 Input.pdl, input_handler.cc, input_method_controller.cc, event_target.cc, event_dispatcher.cc, scoped_event_queue.cc, editing_utilities.cc; opened 2026-11-06, round 74, before the freeze); S194, S195 (document.cc, frame_selection.cc; opened 2026-11-07 after the freeze, located by R74Scout); pre-freeze repetition receipts .ufo/waves/round-74/controls/c1/smoke1..9.receipt.json
 verified-at: 2026-11-06, lane round 74, /usr/bin/chromium 155.0.8059.84 (Arch Linux), --headless=new, loopback fixture with one <input> and one contenteditable <div>, viewport 1280x900, deviceScaleFactor 1, mobile false
 recheck: S=<short ABS dir>; node scripts/chrome-cdp-imecompose-round74.mjs --scratch $S/d --out $S/receipt.json --nonce tabi-r74-recheck-<hex> --http-port <p1> --cdp-port <p2> && node scripts/check-imecompose-r74.mjs --receipt $S/receipt.json --expect-driver-sha256 <freeze.txt driver digest> --expect-nonce tabi-r74-recheck-<hex> --prior .ufo/waves/round-74/controls/c1/smoke1.receipt.json (exit 0 = still true on this host)
 
@@ -71,16 +71,38 @@ Leg by leg on `<input id=f>` then `<div id=ce contenteditable>` (focusin/focusou
 Also measured: no `keydown`/`keypress`/`keyup` in any leg (the IME path sends no key events,
 consistent with S188); the first `focusin` lands in the first IME leg, not the script-focus leg
 (the handler's `widget_host->Focus()` is the first time the headless page gets focus —
-mechanism **inference**: the Focus() call is sourced, the deferral of focus events until the
-page is focused is not).
+mechanism inference at the freeze: the Focus() call was sourced, the deferral of focus events until
+the page is focused was not; sourced after the freeze, below).
+
+## Sourced after the freeze (S194, S195; frontier rows, not the claim's grounding)
+
+Located by wave seat R74Scout (`.ufo/waves/round-74/w1/R74Scout/report.md` §3), re-opened by the
+L1 on 2026-11-07 01:12 -03:00 (same URL form, HTTP 200; `sources/FETCH.txt`). They are not in the
+frozen claim's `sourced` field.
+
+- Focus-event deferral: `Document::SetFocusedElement` sets the focused element, then dispatches
+  focus/focusin only "if (GetPage() && (GetPage()->GetFocusController().IsFocused())) {"
+  (S194 `document.cc:6090`; comment line 6088: "If page lost focus, event will be dispatched on
+  page focus"). The script `focus()` in `focus-f` runs on an unfocused headless page, so its event
+  waits; S188's `widget_host->Focus()` in the first IME command focuses the page and the pending
+  `focusin` fires there.
+- No-focus insert target: the text event goes to `EventTargetNodeForDocument`, which is the
+  focused element or else `doc->body()` (S194 `document.cc:8945-8958`) — the measured `textInput`
+  target BODY. The edit lands at the DOM selection left inside `#ce`, and the new selection
+  focuses its root editable element: `if (!new_selection.IsNone() && !options.DoNotSetFocus()) {
+  SetFocusedNodeIfNeeded();` (S195 `frame_selection.cc:390-391`, `SetFocusedElement` at 1301) —
+  the measured `active = ce` and the trailing `focusin` on `ce`. R74Scout's intermediate links
+  (`editor.cc`, `event_handler.cc`, `editing_commands_utilities.cc`) were not re-opened by the L1.
 
 ## Limits
 
 - The no-focus `insertText` edit is sourced up to "no beforeinput, insert at the selection"
-  (S189, S193). Which node receives it (here the contenteditable the selection was left in) and
-  why it then becomes the active element are measured, not sourced.
+  (S189, S193) before the freeze, and its target node and focus change after it (S194, S195);
+  the editor-command links between them rest on R74Scout's reading only.
 - One build, one host, headless, desktop metrics; `replacementStart`+`replacementEnd` together
   and IME text spans are frontier. The PDL comment says "Use imeCommitComposition to commit the
   final text." (S187 line 149) but the file declares no such command at this tag; this lane
   commits with `insertText`, which S189 routes to `ReplaceCompositionAndMoveCaret`.
-- The counter reads receipts; it is not an execution oracle (see its declared limit).
+- The counter reads receipts; it is not an execution oracle (see its declared limit, and the
+  SCORECARD round-74 correction: its prior set omits the committed probe receipts, and its
+  near-match timeline compares only receipts with equal event counts).
