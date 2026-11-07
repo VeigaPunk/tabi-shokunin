@@ -1,18 +1,25 @@
 {
  "schema": "tabi-c2-controls-r78",
+ "rules": "verdict test reads only claim-table Verdict cells; the named round must list the capability; a provisional row must name its round",
  "controls": [
   {
-   "name": "base (no work)",
-   "scorecard": "SCORECARD.md at base ae2dc25f",
+   "name": "base at HEAD (no work)",
    "exit": 1,
    "mismatches": 1,
    "why": [
-    "round 77 carries NOT VERIFIED/honest stop and the row is not provisional"
+    "round 77 carries NOT VERIFIED/honest stop in its claim verdict and the row is not provisional"
+   ]
+  },
+  {
+   "name": "relabel the verified row to round 75",
+   "exit": 1,
+   "mismatches": 1,
+   "why": [
+    "round 75 does not list capability chromium-file-chooser-linux"
    ]
   },
   {
    "name": "provisional without a round",
-   "scorecard": "scratch copy, row cell = provisional",
    "exit": 1,
    "mismatches": 1,
    "why": [
@@ -20,10 +27,10 @@
    ]
   },
   {
-   "name": "provisional naming r77 (the accepted alternative)",
-   "scorecard": "scratch copy, row cell = provisional r77",
+   "name": "current tree (the repair)",
    "exit": 0,
-   "mismatches": 0
+   "mismatches": 0,
+   "provisional": 1
   }
  ]
 }

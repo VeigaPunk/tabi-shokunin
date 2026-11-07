@@ -456,8 +456,10 @@ const mkMirror = (name, fn) => {
 // failing exactly this case). Carried unchanged into this generation.
 add("witness-event-types-file-quad", "event-types", (r) => { const e = evType(r, 'pick-same', 'cancel'); e.files[0].push('x'); }, ["leg-pick-same-files","cancel-law"]);
 add("witness-event-types-file-size-negative", "event-types", (r) => { const e = evType(r, 'pick-same', 'cancel'); e.files[0][1] = -1; }, ["leg-pick-same-files","cancel-law"]);
+// (the second, byte-identical copy of this witness was removed: two cases with one name wrote the
+//  same work file concurrently and raced — R78Review2 measured one flake in 35 battery runs)
 add("witness-leg-records-error-code-float", "leg-records", (r) => { legOf(r, 'not-file-input').setError.code = -32000.5; }, ["not-file-input-law","leg-not-file-input-error"]);
-add("witness-leg-records-error-code-float", "leg-records", (r) => { legOf(r, 'not-file-input').setError.code = -32000.5; }, ["not-file-input-law","leg-not-file-input-error"]);
+// (the second, byte-identical copy of this witness was removed: two cases with one name wrote the same work file concurrently and raced — R78Review2 measured one flake in 35 battery runs)
 add("witness-cdp-event-log-aftersend-float", "cdp-event-log-closed", (r) => { opens(r)[0].afterSendId += 0.5; }, ["chooser-event-binding","leg-pick-single-opened-mode","activation-law"]);
 add("witness-event-types-ts-negative", "event-types", (r) => { evsOf(r, 'pick-same')[0].ts = 0; }, []);
 add("witness-event-types-y-null-buttons-set", "event-types", (r) => { evsOf(r, 'pick-same')[0].y = null; }, ["leg-pick-same-xy","coordinate-law"]);

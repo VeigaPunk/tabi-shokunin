@@ -3811,7 +3811,7 @@ Capabilities (this round):
 
 | Capability | What it can now do | Evidence pointer | First-working round |
 |---|---|---|---|
-| `chromium-file-chooser-linux` | Intercept and answer `<input type=file>` choosers over raw CDP on Chromium 155/Linux `--headless=new`: `Page.setInterceptFileChooserDialog` (experimental `cancel` included) suppresses the native dialog and emits `Page.fileChooserOpened` (mode `selectMultiple` iff the input has `multiple` — a `webkitdirectory` input reports `selectSingle`), the chooser opens only from a click carrying transient user activation (a forwarded click from a trusted button is untrusted but activated and opens; a script click without a gesture opens nothing), `DOM.setFileInputFiles` on the event's `backendNodeId` delivers trusted `input`+`change` with exact bytes, an unchanged selection fires `cancel` instead, `[]` fires nothing and keeps the selection, a missing path yields a 0-byte `File` whose read fails `NotFoundError`, `accept` is not enforced on this path, a non-file node is refused `-32000 "Node is not a file input element"`; sourced through S208–S212; measured 15 legs (note `chromium-file-chooser-runtime-round-77.md`) | `.ufo/waves/round-77/scored/c1-counter-a.json` (clean 183), `c1-negatives-a.json` (336/336), `c1-kill-power-a.json` (holds), `corpus/evidence/round77/chromium-file-chooser/receipt.json` | 77 |
+| `chromium-file-chooser-linux` | Intercept and answer `<input type=file>` choosers over raw CDP on Chromium 155/Linux `--headless=new`: `Page.setInterceptFileChooserDialog` (experimental `cancel` included) suppresses the native dialog and emits `Page.fileChooserOpened` (mode `selectMultiple` iff the input has `multiple` — a `webkitdirectory` input reports `selectSingle`), the chooser opens only from a click carrying transient user activation (a forwarded click from a trusted button is untrusted but activated and opens; a script click without a gesture opens nothing), `DOM.setFileInputFiles` on the event's `backendNodeId` delivers trusted `input`+`change` with exact bytes, an unchanged selection fires `cancel` instead, `[]` fires nothing and keeps the selection, a missing path yields a 0-byte `File` whose read fails `NotFoundError`, `accept` is not enforced on this path, a non-file node is refused `-32000 "Node is not a file input element"`; sourced through S208–S212; measured 15 legs (note `chromium-file-chooser-runtime-round-77.md`) | `.ufo/waves/round-77/scored/c1-counter-a.json` (clean 183), `c1-negatives-a.json` (336/336), `c1-kill-power-a.json` (holds), `corpus/evidence/round77/chromium-file-chooser/receipt.json` | provisional r77 |
 
 Knowledge 89 → 90 (`corpus/knowledge/chromium-file-chooser-runtime-round-77.md`). Registry 207 → 212
 (S208–S212 tier A `code`, mined, before the freeze). QUALITY 145–149 added. SKILL.md
@@ -3831,3 +3831,51 @@ Correction — round 77 wave w1 and the frozen claim's own falsifier (same day; 
 10. **The before-state quoted with a dummy nonce**: the r76 dialog receipt yields 123 findings under `--expect-nonce tabi-r77-x-0000` and 122 under the scored nonce (`scored/before/r76receipt{,-realnonce}.json`); both are kept.
 
 Planned (r78): a file-chooser counter generation that binds the chooser event's node to the page-side leg record rather than to a browser-assigned `backendNodeId` (QUALITY 150), whose prior-set walk parses every in-tree file that parses and whose run-under-test exemption is path- and byte-bound (Review1 F1/F2), whose `host-argv` pins every slot or derives from the decoded argv (F3), whose `mainFrameId` is bound to `Page.getFrameTree` (F4) and whose bookkeeping fields are either read or dropped (F5–F9), whose battery carries R77Mut1's 34 witnesses and whose selftest derives per-prior needs from the counter's own output; the `webkitdirectory` directory path becomes a measured leg (R77Exec3). Carried: R76Mut1's 7 dialog acceptance witnesses (no dialog generation this round), R75Mut1 (drag), R74Mut1 (IME), R73Mut1 (pinch). Retired: none.
+
+## Round 78 (2026-11-07, Linux host) — C1 capability `chromium-file-chooser-linux`, generation r78 (round-77 routed defects closed); C2 capability-row calibration
+
+Base `ae2dc25fe8b4db70d2ef8a83804bc5545fbc35ff`; pre-freeze instruments, executed controls and 10 honest
+pre-freeze receipts (probes p1-p4, smokes s1-s3, three degenerate producers) `e866ca7c`; a pre-freeze
+repair `3289c1d0` (the driver's own LEG-SHAPE block still pinned the assigned `backendNodeId`, and the
+cold-run leg caught it: `pick-multiple` 7→10, `producer-verdict` only); digests commit D `d59ca027`
+(`.ufo/waves/round-78/freeze.txt`); scored run and gates `b1f33724`. Axes at start: all six at 9; C1
+works a lowest axis and is a capability move (last capability r76).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-file-chooser-linux`, generation r78 (sourced: S214–S215 new; S208–S213 carried) | `node scripts/check-filechooser-r78.mjs --lane <lane> --receipt corpus/evidence/round78/chromium-file-chooser/receipt.json --expect-driver-sha256 0ae89d923f0b166bdb67562ab45d1457b6e5f76043e89c8ffc8e7c53b69f523f --expect-nonce tabi-r78-l1-d59ca0270c2a --prior-set .ufo/waves/round-78/controls/c1/prior-set.txt --json`; leg (b) cold runs; leg (c) battery + kill power; leg (d) row, note, registry, selftest (predicate `C1-FILECHOOSER-R78`) | base: the r77 scored receipt under the r78 counter exits 1 with 9 findings (schema, nonce-shape, nonce-expected, receipt-fields, driver-pin, fixture-hash, frame-tree, fixture-descriptors, mode-law; `lesson-proof/c1-nowork.json`); capability rows on a NOT VERIFIED round 1 → (a) exit 0 clean, 186 checks, 11 priors (`scored/c1-counter-a.json`); (b) cold1 and the wave's cold runs clean (0 refusals, nodeReport shows the drifted id 10 accepted); (c) battery 398/398 allOk and kill power holds (force-true 186/186, semantic 76/76, 0 survivors); (d) selftest 15/15 exit 0, row moved to round 78 with the r77 provisional note | VERIFIED |
+| C2 calibration (9), capability-row status | `node scripts/check-capability-status.mjs --json` (exit 1 on a mismatch; the verdict test reads only claim-table Verdict cells; the named round must list the capability; a `provisional` cell must name its round) | before: exit 1, mismatches 1 (`chromium-file-chooser-linux` named round 77, whose C1 is NOT VERIFIED; `lesson-proof/c2-before.json`); controls: a `provisional` cell with no round exits 1, `provisional r77` exits 0 (`lesson-proof/c2-controls.json`) → after: exit 0, mismatches 0, rows 11 / claimed 10, provisional 1 (the historical r77 row, honestly labelled; `scored/c2-after.json`) | VERIFIED |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-file-chooser-linux` (generation r78) | As round 77, and now bound to the page instead of to a browser-assigned id: the chooser event's mode is checked against the page-measured descriptor of the leg's target (`fixtureInputs`: tag, type, multiple, webkitdirectory, accept, rect containing the commanded point), the assigned `backendNodeId` is reported (`nodeReport`) and bound structurally (set targets the opened id; one id per input; distinct), a consistent relabel is inside the declared limit; the main frame is anchored in the driver's `Page.getFrameTree` result (no parent, `about:blank`); `host-argv` is exact equality on all 17 slots; `receipt-fields` closes the top-level key set; the prior-set walk parses every regular file (no schema-byte gate) and exempts by PATH only, with an explicit `--tree-exempt` for the pre-freeze harness | `scripts/chrome-cdp-filechooser-round78.mjs`; `scripts/check-filechooser-r78.mjs`; `corpus/evidence/round78/chromium-file-chooser/receipt.json`; `.ufo/waves/round-78/scored/c1-{counter,negatives,killpower}-a.json`; `.ufo/waves/round-78-seats/L1-cold1/receipt.json` | round 78 |
+
+Knowledge 90 → 91 (`corpus/knowledge/chromium-file-chooser-runtime-round-78.md`). Registry 213 → 215
+(S214–S215 tier A `docs`, mined, opened this round). QUALITY 151–154 added. SKILL.md
+`## Round 78 gate registry` registers `check-filechooser-r78` with `scripts/selftest-r78-gates.mjs`
+(`.ufo/waves/round-78-seats/L1-selftest/selftest-r78-gates.out`, 15/15, exit 0).
+
+Correction — round 78's own instrument history (same day; the frozen predicate and kill rule unchanged):
+1. **The producer's self-check still pinned the id.** The first post-D cold run scored `producer-verdict`
+   only, with `pick-multiple` `opened` 7→10 and every other field identical
+   (`lesson-proof/driver-shape-id-pin.json`). The driver's LEG_SHAPE now holds modes only and its
+   predicate compares a mode projection; all pre-freeze receipts were re-produced and the gates re-run
+   before the scored run.
+2. **Battery placement semantics.** Two carried brackets demanded exact counts; on the scored receipt the
+   gap side matched fully, so the cases would have tested the wrong rule. They now state the decisive
+   property (`abs >= need` with an unconstrained gap side; a scattered accept prior below both needs),
+   and a TOL witness (`accept-prior-retimed-0.051-scattered`) restores the `M-timeline-tol-0.06` kill
+   (`lesson-proof/bracket-accept-overshoot.json`, `lesson-proof/tol-witness-loss.txt`).
+3. **A post-D harness path fix.** `scripts/selftest-r78-gates.mjs`'s cold-run path was corrected from a
+   copy inside the walked trees to `.ufo/waves/round-78-seats/L1-cold1/receipt.json` before the selftest
+   was ever run; the change and its old/new digests are in `scored/post-d-changes.txt`.
+4. **The scored harness wrote a duplicate receipt into the walked tree** on its first attempt and the
+   counter refused it (`prior-set-complete`); the duplicate was removed (byte-identical to the canonical
+   receipt) and the harness now writes only the canonical path (`lesson-proof/scored-harness-duplicate.json`).
+
+Planned (r79): a counter generation whose `--tree-exempt` interface is itself receipt-bound (the caller
+names the source by sha256, not by path); a `showPicker()` leg from R78Exec3's probe; the wave's
+false-green findings (R78Review1) and survivors (R78Mut1) as battery cases; carried: the r77 survivors
+now covered, the pinch/IME/drag/dialog witness sets. Retired: none.

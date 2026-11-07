@@ -35,7 +35,7 @@ lines.forEach((l) => {
   if (/^\|\s*-{2,}/.test(l)) return;
   const cells = l.split('|').slice(1, -1).map((c) => c.trim());
   if (cells.length < 4) return;
-  const name = /^`([^`]+)`$/.exec(cells[0]);
+  const name = /^`([^`]+)`(?:\s*\([^)]*\))?$/.exec(cells[0]);
   if (!name) return;
   const last = cells[cells.length - 1];
   const roundCell = /(?:round\s*|r)?(\d+)/i.exec(last);
@@ -47,7 +47,15 @@ lines.forEach((l) => {
   if (row.round === null) { mismatches.push({ ...row, why: 'provisional row names no failed round' }); return; }
   const sec = sectionOfRound.get(row.round);
   if (!sec) { mismatches.push({ ...row, why: 'no SCORECARD section for round ' + row.round }); return; }
-  if (NEG.test(sec.body) && !row.provisional) mismatches.push({ ...row, why: 'round ' + row.round + ' carries NOT VERIFIED/honest stop and the row is not provisional' });
+  // structural rule (r78 wave, R78Review3): the named round must itself list this capability in a
+  // capability table row, so relabelling a row to any verified round cannot reach zero mismatches.
+  const listed = new RegExp('^\\|\\s*`' + row.capability.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '`', 'm').test(sec.body);
+  if (!listed) { mismatches.push({ ...row, why: 'round ' + row.round + ' does not list capability ' + row.capability }); return; }
+  // the verdict test is STRUCTURAL: only the Verdict cell of a claim row in that round's claim table
+  // counts (a section's prose may quote another round's NOT VERIFIED without making this round fail)
+  const verdicts = sec.body.split('\n').filter((l) => /^\|\s*C\d/.test(l)).map((l) => l.split('|').slice(1, -1).map((c) => c.trim()).slice(-1)[0] || '');
+  const neg = verdicts.length ? verdicts.some((v) => NEG.test(v)) : NEG.test(sec.body);
+  if (neg && !row.provisional) mismatches.push({ ...row, why: 'round ' + row.round + ' carries NOT VERIFIED/honest stop in its claim verdict and the row is not provisional' });
 });
 const out = { schema: 'tabi-check-capability-status-r78', scorecard: file, rows: rows.length, claimed: rows.filter((r) => r.round !== null).length, provisional: rows.filter((r) => r.provisional).length, mismatches: mismatches.length, detail: mismatches };
 const emit = (s) => { const b = Buffer.from(s); let off = 0; while (off < b.length) { try { off += fs.writeSync(1, b, off); } catch (e) { if (e.code !== 'EAGAIN') throw e; } } };

@@ -1,0 +1,8 @@
+round 78, kill power on the scored receipt, run 2 (after the placement repairs)
+{"unmutatedExit":0,"unmutatedLastExit":0,"forceTrue":{"mutants":186,"killed":186},
+ "semantic":{"mutants":76,"killed":75,"killedPositive":4},"survivors":["M-timeline-tol-0.06"],"holds":false}
+cause: replacing accept-prior-tol-out-0.051 (which failed its placement guard on two receipts) with
+accept-prior-scattered-below-threshold removed the only case that dies when TOL widens 0.05 -> 0.06.
+fix: accept-prior-retimed-0.051-scattered — absNeed scattered prior events sit exactly 0.051 ms out,
+unrounded (q() would have rounded 0.051 to 0.1 and the witness would die at neither tolerance), so the
+case must accept at 0.05 and is refused at 0.06. Re-run: holds true.

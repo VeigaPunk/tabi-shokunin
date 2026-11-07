@@ -18,9 +18,9 @@
    "pins": {
     "scripts/chrome-cdp-filechooser-round78.mjs": "0ae89d923f0b166bdb67562ab45d1457b6e5f76043e89c8ffc8e7c53b69f523f",
     "scripts/check-filechooser-r78.mjs": "d3a8fd8714ca3448070dfe4a4355e0725ac97527b070952cc9ae89a5f9e0fe09",
-    "scripts/negatives-filechooser-r78.mjs": "724887280cfc11e0c0bd05d6cd07b80c899d7546953465d2cda836d6f7a3ab1a",
+    "scripts/negatives-filechooser-r78.mjs": "74102f20e621db13aec3eac4f1025b1e95a965d268f86734714348b96f769b73",
     "scripts/selftest-r78-gates.mjs": "647239d3fbdf997a4112b17094750dc7d9d6f3ae7d3fa3c6108697c5c7e4d103",
-    ".ufo/waves/round-78/controls/c1/kill-power-r78.mjs": "60460ed137ed252d3e450608d4387564f536b8f691cb783c9ab967a941b45726",
+    ".ufo/waves/round-78/controls/c1/kill-power-r78.mjs": "494002e5ad5e4b85c51b185b7ad8734bbf61ca9fe3ef957856786838d2c3e7f4",
     ".ufo/waves/round-78/controls/c1/prefreeze-summary.mjs": "a74708915e24b8f99afe4fb25a25c6663b7fa3f3d528cbb98dbf18b0fcb2d53c",
     ".ufo/waves/round-78/controls/c1/run-prefreeze-gates.sh": "f45d8e10a099457c96771c490b4bd2aa0ec893a476f0727f70bea2aabcd4a3b6"
    },
@@ -34,15 +34,15 @@
    "predicate": "C2-CAPSTATUS-R78",
    "legs": {
     "a": "`node scripts/check-capability-status.mjs --json` exits 0 with mismatches 0 (before: exit 1, 1 mismatch, lesson-proof/c2-before.json)",
-    "b": "every capability row names a round whose SCORECARD section does not carry NOT VERIFIED/honest stop, or carries `provisional` together with the failed round; no row keeps a `provisional` label without a round",
-    "c": "the repair is honest about C1: if C1 verifies the row's first-working round is 78 with the r77 provisional note; if C1 does not verify the row reads `provisional r77` and the checker still exits 0 with provisional 1"
+    "b": "every capability row names a round whose CLAIM-TABLE verdict cell does not carry NOT VERIFIED/honest stop, or carries `provisional` together with the failed round; the named round's section must itself list that capability (a relabel to an unrelated verified round fails)",
+    "c": "the repair is honest about C1: the verified row names round 78 and the historical r77 row carries `provisional r77` (provisional count 1, mismatches 0); if C1 had not verified, the row would read `provisional r77` and the checker would still exit 0"
    },
    "countingCommand": "node scripts/check-capability-status.mjs --json",
    "pins": {
-    "scripts/check-capability-status.mjs": "7424c865d040a6436541dc1fa5c70378ef001da61981eada0440e33e6ab423cc"
+    "scripts/check-capability-status.mjs": "a4f89829e551751adc50aa8beda876571b5ccfc22e50754d161c25bfabd98f7b"
    },
    "killRule": "mismatches != 0, or a provisional row naming no round, or a row on a NOT VERIFIED round without provisional -> C2 NOT verified",
-   "controls": "lesson-proof/c2-controls.json (base exits 1 with the r77 row; a `provisional` cell without a round exits 1; `provisional r77` exits 0, the accepted alternative disclosed in leg c)"
+   "controls": "lesson-proof/c2-controls.json: base exits 1 (r77 row on a NOT VERIFIED verdict); a relabel of the verified row to round 75 exits 1 (that round does not list the capability); a `provisional` cell without a round exits 1; the current tree exits 0 with provisional 1"
   }
  }
 }

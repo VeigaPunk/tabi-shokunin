@@ -77,7 +77,7 @@ const SEMANTIC = [
   {"id": "M-quantum-tolerance-1e-5", "from": "Math.round(v * 10)) <= 1e-4", "to": "Math.round(v * 10)) <= 1e-5", "dup": true},
   {"id": "M-prior-set-complete-dropped", "from": "check('prior-set-complete', outside.length === 0", "to": "check('prior-set-complete', true"},
   {"id": "M-walk-evidence-only", "from": "for (const t of ['.ufo/waves/round-78', 'corpus/evidence/round78'])", "to": "for (const t of ['corpus/evidence/round78'])"},
-  {"id": "M-walk-nonce-exemption-reintroduced", "from": " && rf !== selfReal && !priorReal.has(rf) && !exemptReal.has(rf)", "to": " && (j.nonce !== expectNonce || (rf !== selfReal && !priorReal.has(rf) && !exemptReal.has(rf)))"},
+  {"id": "M-walk-nonce-exemption-reintroduced", "from": " && rf !== selfReal && !priorReal.has(rf) && !exemptReal.has(rf)", "to": " && j.nonce !== expectNonce && rf !== selfReal && !priorReal.has(rf) && !exemptReal.has(rf)"},
   {"id": "M-walk-exempt-all", "from": " && !exemptReal.has(rf))", "to": " && true)"},
   {"id": "M-walk-no-symlink-follow", "from": "let stt; try { stt = fs.statSync(p); }", "to": "let stt; try { stt = fs.lstatSync(p); }"},
   {"id": "M-walk-json-ext-only", "from": "if (!stt.isFile()) continue;", "to": "if (!stt.isFile() || !name.endsWith('.json')) continue;"},
