@@ -1,0 +1,31 @@
+{
+  "seat": "R80Drift",
+  "kind": "tabi-r80-c2-control-receipt",
+  "round": 80,
+  "counter": "scripts/check-record-drift-r80.mjs",
+  "control": "remove one stale statement: LOG.md line '- 88 cases → 90 cases (the committed r79 battery is 90 cases).' deleted",
+  "runs": [
+    {
+      "mirror": "raw in-flight snapshot",
+      "baseline": { "exitCode": 1, "mismatches": 5, "failed": ["sc-80-numbers", "log-80-numbers", "skill-80-numbers", "lesson-80-numbers", "report-80-numbers"] },
+      "exitCode": 1,
+      "mismatches": 6,
+      "failed": ["log-79-cases", "sc-80-numbers", "log-80-numbers", "skill-80-numbers", "lesson-80-numbers", "report-80-numbers"],
+      "delta": ["log-79-cases"],
+      "log-79-cases-detail": "stale true correction false truth 90"
+    },
+    {
+      "mirror": "mirror-complete (disclosed synthetic completion of in-flight records)",
+      "baseline": { "exitCode": 0, "mismatches": 0, "failed": [], "claims": 17 },
+      "exitCode": 1,
+      "mismatches": 1,
+      "failed": ["log-79-cases"],
+      "delta": ["log-79-cases"],
+      "log-79-cases-detail": "stale true correction false truth 90"
+    }
+  ],
+  "command": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-record-drift-r80.mjs --lane <mirror>/tabi-shokunin --json",
+  "verdict": "proves the counter binds PRESENCE (append-only)",
+  "rationale": "Deleting the preserved stale statement fails log-79-cases even though the bare stale string '88 cases' still occurs elsewhere in LOG.md (the r79 pre-freeze instrument list) — detail 'stale true'. The counter requires the stale→truth correction statement itself to remain present: rewriting or deleting history is caught, silent history edits cannot hide behind a leftover occurrence of the stale value elsewhere.",
+  "mirrorEditRevertedAfterRun": true
+}

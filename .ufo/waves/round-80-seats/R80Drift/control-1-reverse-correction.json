@@ -1,0 +1,31 @@
+{
+  "seat": "R80Drift",
+  "kind": "tabi-r80-c2-control-receipt",
+  "round": 80,
+  "counter": "scripts/check-record-drift-r80.mjs",
+  "control": "reverse one correction pair: SCORECARD 'battery 88/88 → battery 90/90' rewritten to 'battery 90/90 → battery 88/88'",
+  "runs": [
+    {
+      "mirror": "raw in-flight snapshot",
+      "baseline": { "exitCode": 1, "mismatches": 5, "failed": ["sc-80-numbers", "log-80-numbers", "skill-80-numbers", "lesson-80-numbers", "report-80-numbers"] },
+      "exitCode": 1,
+      "mismatches": 6,
+      "failed": ["sc-79-battery", "sc-80-numbers", "log-80-numbers", "skill-80-numbers", "lesson-80-numbers", "report-80-numbers"],
+      "delta": ["sc-79-battery"],
+      "sc-79-battery-detail": "stale true correction false truth 90"
+    },
+    {
+      "mirror": "mirror-complete (records completed with a disclosed synthetic 'battery 103/103, kill power 81/81, 57 checks' fixture line + placeholder lesson/report files so the baseline is clean)",
+      "baseline": { "exitCode": 0, "mismatches": 0, "failed": [], "claims": 17 },
+      "exitCode": 1,
+      "mismatches": 1,
+      "failed": ["sc-79-battery"],
+      "delta": ["sc-79-battery"],
+      "sc-79-battery-detail": "stale true correction false truth 90"
+    }
+  ],
+  "command": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-record-drift-r80.mjs --lane <mirror>/tabi-shokunin --json",
+  "verdict": "proves the counter binds DIRECTION",
+  "rationale": "After reversal both numbers remain present in the record — stale 'battery 88/88' is still found (detail 'stale true') and 'battery 90/90' is present inside the flipped statement — yet sc-79-battery fails because the ordered pair 'battery 88/88 → battery 90/90' no longer occurs. A presence-only counter would pass; this counter fails on every baseline. The truth leg ('truth 90', re-derived from .ufo/waves/round-79/scored/c1-negatives-a.json) is unchanged and green in both states, so this control isolates direction, not truth.",
+  "mirrorEditRevertedAfterRun": true
+}

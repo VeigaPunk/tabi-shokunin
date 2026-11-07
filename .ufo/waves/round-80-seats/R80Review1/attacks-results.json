@@ -1,0 +1,154 @@
+[
+ {
+  "name": "A-nonce-relabel",
+  "exit": 1,
+  "verdict": "findings",
+  "checkCount": 57,
+  "ids": [
+   "send-log-allowlist"
+  ],
+  "detail": [
+   "send-log-allowlist: send logs outside the allowlist: sp80-webkitdirectory:expression,sp80-accept-png:expression,sp80-twice-gesture:expression,sp80-deferred-timer:expression,sp80-cross-origin:expression,sp80-cross-origin-disabled:expression,sp80-trigger-then-answer:expression"
+  ]
+ },
+ {
+  "name": "B-answer-nonexistent-path",
+  "exit": 1,
+  "verdict": "findings",
+  "checkCount": 57,
+  "ids": [
+   "plan-calls"
+  ],
+  "detail": [
+   "plan-calls: plan calls differ from the frozen plan: sp80-trigger-then-answer:sequence [\"Page.setInterceptFileChooserDialog\",\"Input.dispatchMouseEvent\",\"Input.dispatchMouseEvent\",\"Runtime.evaluate\",\"DOM.setFileInputFiles\",\"Page.setInterceptFileChooserDialog\"] want [\"Page.setInterceptFileChooserDialog\",\"Input.dispatchMouseEvent\",\"Input.dispatchMouseEvent\",\"Runtime.evaluate\",\"DOM.setFileInputFiles\",\"Page.setInterceptFileChooserDialog\"]"
+  ]
+ },
+ {
+  "name": "B2-upload-sha-wrong",
+  "exit": 1,
+  "verdict": "findings",
+  "checkCount": 57,
+  "ids": [
+   "answer-law"
+  ],
+  "detail": [
+   "answer-law: the programmatic trigger answered with DOM.setFileInputFiles must deliver the exact bytes and fire trusted input+change: answer {\"files\":[\"tabi-r80-a.txt\"],\"setParams\":{\"files\":[\"/fast/scratch/hyaku/tabi-r80/L1scored4/upload-69e12ef30b07/tabi-r80-a.txt\"],\"backendNodeId\":6},\"setSendId\":20,\"setResult\":{},\"setError\":null} read [\"hex:746162692d7238302d616e737765722d616c7068610a\"]"
+  ]
+ },
+ {
+  "name": "C-twice-duplicate-verbatim",
+  "exit": 1,
+  "verdict": "findings",
+  "checkCount": 57,
+  "ids": [
+   "cdp-event-log-closed",
+   "leg-sp80-twice-gesture",
+   "twice-gesture-law",
+   "intercept-law"
+  ],
+  "detail": [
+   "cdp-event-log-closed: CDP event logs: sp80-twice-gesture:multi-open,sp80-twice-gesture:open-binding",
+   "leg-sp80-twice-gesture: sp80-twice-gesture: opened [\"selectSingle\",\"selectSingle\",\"selectSingle\"]",
+   "twice-gesture-law: two userGesture calls must BOTH succeed and open two pickers (no already-open guard): first {\"ok\":true,\"ret\":\"undefined\"} second {\"ok\":true,\"ret\":\"undefined\"} events 3"
+  ]
+ },
+ {
+  "name": "C2-twice-duplicate-relabelled",
+  "exit": 1,
+  "verdict": "findings",
+  "checkCount": 57,
+  "ids": [
+   "cdp-event-log-closed",
+   "leg-sp80-twice-gesture",
+   "twice-gesture-law",
+   "intercept-law"
+  ],
+  "detail": [
+   "cdp-event-log-closed: CDP event logs: sp80-twice-gesture:multi-open",
+   "leg-sp80-twice-gesture: sp80-twice-gesture: opened [\"selectSingle\",\"selectSingle\",\"selectSingle\"]",
+   "twice-gesture-law: two userGesture calls must BOTH succeed and open two pickers (no already-open guard): first {\"ok\":true,\"ret\":\"undefined\"} second {\"ok\":true,\"ret\":\"undefined\"} events 3"
+  ]
+ },
+ {
+  "name": "D-cross-frame-main",
+  "exit": 1,
+  "verdict": "findings",
+  "checkCount": 57,
+  "ids": [
+   "cdp-event-log-closed"
+  ],
+  "detail": [
+   "cdp-event-log-closed: CDP event logs: sp80-cross-origin:open-frame"
+  ]
+ },
+ {
+  "name": "D2-cross-no-child-read",
+  "exit": 0,
+  "verdict": "clean",
+  "checkCount": 57,
+  "ids": [],
+  "detail": []
+ },
+ {
+  "name": "E-deferred-before-click",
+  "exit": 1,
+  "verdict": "findings",
+  "checkCount": 57,
+  "ids": [
+   "cdp-event-log-closed"
+  ],
+  "detail": [
+   "cdp-event-log-closed: CDP event logs: sp80-deferred-timer:open-binding"
+  ]
+ },
+ {
+  "name": "E2-deferred-result-false",
+  "exit": 1,
+  "verdict": "findings",
+  "checkCount": 57,
+  "ids": [
+   "deferred-law",
+   "intercept-law"
+  ],
+  "detail": [
+   "deferred-law: a setTimeout(0) call scheduled from a trusted click handler must succeed while the activation is live (deferred {\"ok\":false,\"name\":\"NotAllowedError\",\"message\":\"x\"}, choosers 1), and the direct trigger on the disabled input must refuse: {\"ok\":false,\"name\":\"InvalidStateError\",\"message\":\"Failed to execute 'showPicker' on 'HTMLInputElement': HTMLInputElement::showPicker() cannot be used on immutable controls.\"}",
+   "intercept-law: interception must gate the CDP event, never the trigger's own success: sp80-deferred-timer:opened-1-want-0"
+  ]
+ },
+ {
+  "name": "F-fixture-echo",
+  "exit": 0,
+  "verdict": "clean",
+  "checkCount": 57,
+  "ids": [],
+  "detail": []
+ },
+ {
+  "name": "I-twice-one-call",
+  "exit": 1,
+  "verdict": "findings",
+  "checkCount": 57,
+  "ids": [
+   "leg-sp80-twice-gesture",
+   "twice-gesture-law",
+   "intercept-law"
+  ],
+  "detail": [
+   "leg-sp80-twice-gesture: sp80-twice-gesture: opened [\"selectSingle\"]",
+   "twice-gesture-law: two userGesture calls must BOTH succeed and open two pickers (no already-open guard): first {\"ok\":true,\"ret\":\"undefined\"} second null events 1",
+   "intercept-law: interception must gate the CDP event, never the trigger's own success: sp80-twice-gesture:opened-1-want-2"
+  ]
+ },
+ {
+  "name": "J-read-hex-wrong",
+  "exit": 1,
+  "verdict": "findings",
+  "checkCount": 57,
+  "ids": [
+   "answer-law"
+  ],
+  "detail": [
+   "answer-law: the programmatic trigger answered with DOM.setFileInputFiles must deliver the exact bytes and fire trusted input+change: answer {\"files\":[\"tabi-r80-a.txt\"],\"setParams\":{\"files\":[\"/fast/scratch/hyaku/tabi-r80/L1scored4/upload-69e12ef30b07/tabi-r80-a.txt\"],\"backendNodeId\":6},\"setSendId\":20,\"setResult\":{},\"setError\":null} read [\"hex:00\"]"
+  ]
+ }
+]

@@ -3236,3 +3236,23 @@ Instruments without a gate verdict (round 78): `scripts/chrome-cdp-filechooser-r
 Instruments without a gate verdict (round 79): `scripts/chrome-cdp-showpicker-round79.mjs` (driver, 10 legs, one fresh browser per leg; `--lane`, `--nonce`, `--scratch`, `--out`, `--http-port`, `--cdp-port`; records per leg `showPicker`/`showPicker2`, `activationBefore/After`, `pageEvents`, `chooserEvents`, `stateAfter`, `dismiss`, `argv`, `frameTree`, `teardown`), `scripts/negatives-showpicker-r79.mjs` (battery, 90 cases, one isolating case per rule clause, coverage asserted against the counter's own check ids), `scripts/kill-power-r79.mjs` (66 semantic mutants of the counter; a survivor is a routed defect), `scripts/check-record-drift-r79.mjs` (C2: 20 record claims, mismatches 0).
 
 The capability row is `chromium-showpicker-linux` in `SCORECARD.md` (round 79). The exemption interface is content-bound: `--tree-exempt-sha256` names a file by sha256 and a path-shaped `--tree-exempt` is refused with exit 2 (`tree-exempt-path-refused`) — the round-77 routed defect 3b closed in the new instrument.
+
+## Correction — round 79 gate registry (round 80, append-only)
+
+Counted by `scripts/check-record-drift-r80.mjs`: the round-79 registry's 66 semantic mutants → 64 semantic mutants (the committed `scripts/kill-power-r79.mjs` battery kills 64 of 64 mutants,
+0 survivors; `.ufo/waves/round-79/scored/selftest-r79-gates.out`). The r79 battery count is
+88 cases → 90 cases.
+
+## Round 80 gate registry
+
+| Gate | Entry command | Verdict map | Self-test | Pinned path |
+|---|---|---|---|---|
+| `check-showpicker-r80` | `node scripts/check-showpicker-r80.mjs --lane <ABS lane> --receipt corpus/evidence/round80/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r80-l1-211962dccb61 --expect-fixture-sha256 <fixture sha> --prior-set .ufo/waves/round-80/controls/c1/prior-set.txt --json` | exit 0 clean = 57 checks; exit 1 = findings (each names a leg or a law); exit 2 = usage/unreadable | `node scripts/selftest-r80-gates.mjs --lane <ABS lane> --work <ABS scratch> --json` (9/9) | `.ufo/waves/round-80/freeze.txt` |
+
+Instruments: `scripts/chrome-cdp-showpicker-round80.mjs` (driver, 7 legs, one fresh browser per leg,
+a cross-origin iframe on a second loopback port), `scripts/negatives-showpicker-r80.mjs` (battery,
+102 cases, coverage asserted against the counter's own check ids), `scripts/kill-power-r80.mjs`
+(80 semantic mutants; 80 killed, 0 survivors), `scripts/check-record-drift-r80.mjs` (C2: 19 record
+claims, mismatches 0). Scored: battery 102/102, kill power 80/80, 57 checks. The replay rule is
+pair-based; the gap side is reported, not a refusal (this driver's fixed waits reproduce gap
+durations across honest runs).

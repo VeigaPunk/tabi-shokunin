@@ -1,0 +1,37 @@
+# R80Exec1 ledger — Leg (b): two cold runs of the frozen driver, scored by the frozen counter
+Seat: R80Exec1 · lane /home/vgpnk/Projects/shokunin/tabi-shokunin · base e2e12ca58fe2cdbed4aa97af47793b6cfb5a9350
+All times local -0300 unless suffixed Z. Counter versions: FROZEN = sha256 f22db0ac025eac823473eb543c08c83a91c02ad7a611fecdf5c410c48566c9af (freeze.txt pin, commit D f9ece6562c9448c30f0aabd0726d2ffd5aeeb3d3); CURRENT-ON-DISK = sha256 8db6a43a0e3cfa52058aed187dda25d623e8cbeef924cae8c97b1732fff41a15 (mtime 2026-11-07 19:29:21 — changed mid-wave, see finding F1). Driver sha256 cb93935c017daf1ca5ae654f0992e63ad0785042ee2566619623ae8bab4b19cc matches the freeze pin in every run.
+
+## Runs
+1. 19:26:28–19:27:05  driver cold1  nonce tabi-r80-cold1-f9ece6562c94, ports 18960/18961/18962, out .ufo/waves/round-80-seats/R80Exec1/cold1.json
+   EXIT 0 · 7 legs · failures [] · fixture.sha256 fbf256945882b4d737c7d0d83bd917850207ec5c38f59f3b69a0d56e296750c7 · driverSha256 cb93935c… (pin ok)
+2. 19:27:20  counter cold1 (FROZEN counter) — prior-set (3 probes) + --prior corpus/evidence/round80/chromium-showpicker/receipt.json
+   EXIT 0 · verdict clean · checkCount 57 · findings []
+3. 19:27:24–19:28:00  driver cold2  nonce tabi-r80-cold2-f9ece6562c94, ports 18963/18964/18965, out .ufo/waves/round-80-seats/R80Exec1/cold2.json
+   EXIT 0 · 7 legs · failures [] · fixture.sha256 d35c8ae289676128c5889d429c20cb81e45935b99590372265ba4ae764701ce8 · driverSha256 cb93935c… (pin ok)
+4. 19:28:17  counter cold2 (FROZEN counter) — same prior composition
+   EXIT 0 · verdict clean · checkCount 57 · findings []
+5. 19:28:48  counter L1 receipt as assigned: --expect-nonce tabi-r80-l1-f9ece6562c94, --prior <cold1> (FROZEN counter)
+   EXIT 1 · verdict findings · checkCount 57 · FINDINGS:
+   - nonce-expected: "nonce tabi-r80-l1-53ecca8411dc expected tabi-r80-l1-f9ece6562c94" (field: nonce)
+   - replay-event-timeline: prior #1 (= tabi-r80-probe2) {"priorEvents":23,"priorGaps":1,"absMatched":0,"gapMatched":1,"absNeed":12,"gapNeed":1,"escapeEvents":12,"escapeGaps":1,"refused":true} (refuse when absMatched >= ceil(0.5 * prior events) or gapMatched >= ceil(0.75 * prior gaps); own events 23)
+   → finding F1 (counter changed at 19:29:21) and F2 (nonce) below.
+6. 19:29:30  counter L1 receipt, own nonce tabi-r80-l1-53ecca8411dc, prior-set ONLY (CURRENT-ON-DISK counter)
+   EXIT 0 · verdict clean · checkCount 57 · findings [] · perPrior gapMatched [0,1,0], all refused:false (gapRule guard disables single-gap evidence)
+7. 19:29:30  counter L1 receipt, own nonce, prior-set + --prior <cold1> (CURRENT-ON-DISK counter)
+   EXIT 0 · verdict clean · checkCount 57 · findings [] · cold1 as prior: gapMatched 0, priorGaps 2
+8. 19:30:14  counter cold1 re-score (CURRENT-ON-DISK counter) — prior-set + --prior committed L1 receipt
+   EXIT 0 · verdict clean · checkCount 57 · findings []  (→ cold1.rescore.json)
+9. 19:30:14  counter cold2 re-score (CURRENT-ON-DISK counter) — prior-set + --prior committed L1 receipt
+   EXIT 0 · verdict clean · checkCount 57 · findings []  (→ cold2.rescore.json)
+10. 19:3x  counter L1 receipt, assigned command verbatim (predicate nonce tabi-r80-l1-f9ece6562c94, --prior <cold1>, CURRENT-ON-DISK counter)
+   EXIT 1 · verdict findings · checkCount 57 · FINDINGS: nonce-expected ONLY ("nonce tabi-r80-l1-53ecca8411dc expected tabi-r80-l1-f9ece6562c94"). With its own nonce the receipt is clean 57/57 including cold1 as extra prior.
+
+## Findings
+- F1 COUNTER-DRIFT-POST-FREEZE: scripts/check-showpicker-r80.mjs on disk hashes 8db6a43a0e3cfa52058aed187dda25d623e8cbeef924cae8c97b1732fff41a15 but freeze.txt (commit D) pins f22db0ac025eac823473eb543c08c83a91c02ad7a611fecdf5c410c48566c9af; file mtime 2026-11-07 19:29:21 sits between my run 5 (19:28:48, refused) and run 6 (19:29:30, clean) on identical receipt+prior inputs. The edit adds the gapRule guard: "the gap side is evidence only when BOTH receipts carry at least two gaps: this driver's waits (MIN_OBSERVE_MS / SETTLE_MS) make a single gap's duration a driver artifact, not a fingerprint". Under the FROZEN counter the committed L1 receipt + cold1-as-prior combination is REFUSED (replay-event-timeline vs prior #1 probe2 on a single 1/1 gap match); under the edited counter it passes. Driver sha still matches its freeze pin. Reported to L1; counter/freeze reconciliation is the integration owner's call — not amended by this seat.
+- F2 PREDICATE-A-NONCE-MISMATCH: the receipt at the predicate-(a) path corpus/evidence/round80/chromium-showpicker/receipt.json carries nonce tabi-r80-l1-53ecca8411dc (run 2026-11-07T22:28:04Z → 22:28:39Z), not the claimed tabi-r80-l1-f9ece6562c94; finding id nonce-expected, field nonce. Fixture sha256 ed350e1e85f52d18d211ba2ca5e6187278f05eb34f4b2a3ac3b62f655622ceda; 7 legs, failures []; scores clean 57/57 under the CURRENT-ON-DISK counter with prior-set only and with cold1 as extra prior. The (a) receipt named by the predicate (nonce tabi-r80-l1-f9ece6562c94) was not on disk at any point during this seat's window (19:26–19:35).
+- F3 (positive) COLD-RUN-ACCEPTANCE: both fresh cold runs exited 0, 7/7 legs, zero failures, zero honest refusals, and scored EXIT 0 clean 57/57 under BOTH counter versions with the committed prior set. Receipts: .ufo/waves/round-80-seats/R80Exec1/cold1.json, cold2.json; scores: cold1.score.json, cold2.score.json (frozen counter), cold1.rescore.json, cold2.rescore.json (current counter).
+- F4 (conditional) PRIOR-SET-STILL-ACCEPTS-L1: yes, under the CURRENT-ON-DISK counter (run 7, exit 0 clean 57/57 with cold1 added as prior). Under the FROZEN counter the same combination refuses (run 5). Prior-set acceptance is therefore conditional on the post-freeze counter edit — tie-break with F1.
+
+No tool installs or upgrades were performed (node v24.21.0 and /usr/bin/chromium Chromium 155.0.8059.84 already present and pinned).
+Scratch /fast/scratch/hyaku/tabi-r80/R80Exec1 deleted after copying artifacts into this seat dir.

@@ -1,0 +1,175 @@
+{
+ "schema": "tabi-chrome-cdp-showpicker-r80-counter",
+ "verdict": "findings",
+ "checkCount": 57,
+ "checks": {
+  "schema": true,
+  "lane": true,
+  "nonce-shape": true,
+  "nonce-expected": true,
+  "receipt-fields": true,
+  "driver-pin": true,
+  "fixture-hash": true,
+  "host-chromium": true,
+  "host-node": true,
+  "ports-declared": true,
+  "frame-tree": true,
+  "plan-frozen": true,
+  "leg-order": true,
+  "leg-records": false,
+  "leg-marks": true,
+  "context-binding": true,
+  "send-log-allowlist": true,
+  "plan-calls": false,
+  "cdp-event-log-closed": true,
+  "frame-binding": true,
+  "event-types": true,
+  "event-time-quantum": true,
+  "event-leg-window": true,
+  "seq-monotonic": true,
+  "leg-sp80-webkitdirectory": true,
+  "leg-sp80-accept-png": true,
+  "leg-sp80-twice-gesture": true,
+  "leg-sp80-deferred-timer": false,
+  "leg-sp80-cross-origin": true,
+  "leg-sp80-cross-origin-disabled": true,
+  "leg-sp80-trigger-then-answer": true,
+  "gesture-law": true,
+  "activation-law": false,
+  "twice-gesture-law": true,
+  "deferred-law": false,
+  "mode-law": true,
+  "cross-origin-law": false,
+  "cross-origin-disabled-law": true,
+  "answer-law": true,
+  "no-selection-law": true,
+  "intercept-law": true,
+  "cancel-law": true,
+  "dismiss-law": true,
+  "trust-law": true,
+  "host-argv": true,
+  "devtools-port-binding": true,
+  "teardown-closure": true,
+  "fixture-descriptors": true,
+  "server-log-binding": true,
+  "child-server-log-binding": true,
+  "run-window": true,
+  "replay-event-timeline": false,
+  "replay-launch-token": false,
+  "replay-devtools-url": false,
+  "prior-set-unmatched-exempt": true,
+  "prior-set-complete": false,
+  "prior-set-unparsable": true
+ },
+ "findings": [
+  {
+   "id": "leg-records",
+   "detail": "leg records: sp80-webkitdirectory:keys ,sp80-accept-png:keys ,sp80-twice-gesture:keys ,sp80-deferred-timer:keys ,sp80-cross-origin:keys ,sp80-cross-origin-disabled:keys ,sp80-trigger-then-answer:keys "
+  },
+  {
+   "id": "plan-calls",
+   "detail": "plan calls differ from the frozen plan: sp80-deferred-timer:sequence [\"Page.setInterceptFileChooserDialog\",\"Input.dispatchMouseEvent\",\"Input.dispatchMouseEvent\",\"Runtime.evaluate\",\"Runtime.evaluate\"] want [\"Page.setInterceptFileChooserDialog\",\"Runtime.evaluate\",\"Input.dispatchMouseEvent\",\"Input.dispatchMouseEvent\",\"Runtime.evaluate\"]"
+  },
+  {
+   "id": "leg-sp80-deferred-timer",
+   "detail": "sp80-deferred-timer: opened []"
+  },
+  {
+   "id": "activation-law",
+   "detail": "legs whose parent transient-activation transition is not the frozen one: sp80-deferred-timer: [{\"isActive\":true,\"hasBeenActive\":true},{\"isActive\":true,\"hasBeenActive\":true}]"
+  },
+  {
+   "id": "deferred-law",
+   "detail": "a setTimeout(0) call scheduled from a trusted click handler must succeed while the activation is live (deferred null, choosers 0), and the direct trigger on the disabled input must refuse: {\"ok\":false,\"name\":\"InvalidStateError\",\"message\":\"Failed to execute 'showPicker' on 'HTMLInputElement': HTMLInputElement::showPicker() cannot be used on immutable controls.\"}"
+  },
+  {
+   "id": "cross-origin-law",
+   "detail": "a cross-origin child's own script must open its own picker (no SecurityError) while the parent cannot reach the child document: child {\"ok\":true,\"ret\":\"undefined\"} cross undefined events [\"pointerdown@go\",\"mousedown@go\",\"pointerup@go\",\"mouseup@go\",\"click@go\"]"
+  },
+  {
+   "id": "replay-event-timeline",
+   "detail": "pair/gap near-match within 0.05 ms of prior #0 {\"priorEvents\":23,\"priorGaps\":1,\"absMatched\":23,\"gapMatched\":1,\"absNeed\":12,\"gapNeed\":1,\"escapeEvents\":12,\"escapeGaps\":1,\"refused\":true} (refuse when absMatched >= ceil(0.5 * prior events) or gapMatched >= ceil(0.75 * prior gaps); own events 23)"
+  },
+  {
+   "id": "replay-launch-token",
+   "detail": "a launch token repeats a prior receipt's or another leg's"
+  },
+  {
+   "id": "replay-devtools-url",
+   "detail": "a devtools browser id repeats a prior receipt's or another leg's"
+  },
+  {
+   "id": "prior-set-complete",
+   "detail": "receipts of schema tabi-chrome-cdp-showpicker-r80 in the round-80 wave/evidence trees, not the receipt under test (path .ufo/waves/round-80/controls/c1/probes/tabi-r80-probe1.json), not exempted by sha256 and not among the priors: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round80/chromium-showpicker/receipt.json"
+  }
+ ],
+ "priorSet": 3,
+ "priorSetFile": {
+  "path": ".ufo/waves/round-80/controls/c1/prior-set.txt",
+  "sha256": "ecd70ecc7c303898b817771a8b3cc473fbb1697253a277bdeb3ad49d2d4f28a6"
+ },
+ "treeExemptSha256": [],
+ "treeExemptResolved": [],
+ "nodeReport": {
+  "sp80-webkitdirectory": [
+   6
+  ],
+  "sp80-accept-png": [
+   6
+  ],
+  "sp80-twice-gesture": [
+   5,
+   5
+  ],
+  "sp80-deferred-timer": [],
+  "sp80-cross-origin": [
+   7
+  ],
+  "sp80-cross-origin-disabled": [],
+  "sp80-trigger-then-answer": [
+   6
+  ]
+ },
+ "limit": {
+  "sentence": "refuse when absMatched >= ceil(0.5 * prior events) or gapMatched >= ceil(0.75 * prior gaps); escape minimum = priorEvents - absNeed + 1 events and priorGaps - gapNeed + 1 gaps",
+  "tolerance": 0.05,
+  "gapMin": 50,
+  "ownEvents": 23,
+  "ownGaps": 1,
+  "perPrior": [
+   {
+    "priorEvents": 23,
+    "priorGaps": 1,
+    "absMatched": 23,
+    "gapMatched": 1,
+    "absNeed": 12,
+    "gapNeed": 1,
+    "escapeEvents": 12,
+    "escapeGaps": 1,
+    "refused": true
+   },
+   {
+    "priorEvents": 23,
+    "priorGaps": 1,
+    "absMatched": 0,
+    "gapMatched": 0,
+    "absNeed": 12,
+    "gapNeed": 1,
+    "escapeEvents": 12,
+    "escapeGaps": 1,
+    "refused": false
+   },
+   {
+    "priorEvents": 23,
+    "priorGaps": 1,
+    "absMatched": 0,
+    "gapMatched": 0,
+    "absNeed": 12,
+    "gapNeed": 1,
+    "escapeEvents": 12,
+    "escapeGaps": 1,
+    "refused": false
+   }
+  ]
+ }
+}

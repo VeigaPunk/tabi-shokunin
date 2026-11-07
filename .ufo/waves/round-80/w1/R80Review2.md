@@ -9,23 +9,30 @@ Legend: `$B=/fast/scratch/hyaku/tabi-r80/R80Review2`, `$L=/home/vgpnk/Projects/s
 `$M2=$B/lane2/tabi-shokunin` (D4 receipt mirror), `$M4=$B/lane4/tabi-shokunin` (D8 receipt mirror),
 `$P=$L/.ufo/waves/round-80/controls/c1/prior-set.txt`.
 
-## Pinned state — the lane moved three times during the review
+The `tools-*` directories under `$B` were byte-identical snapshots of the committed blobs at the
+digests in the table (`git show <commit>:scripts/<file>`); the scratch tree is deleted at yield, so
+reproduce a run by checking out the cited digest beside the counter and re-issuing the command.
 
-| instrument | D3/D4 (frozen) | D5 | D6 | D8 (HEAD `a1b14284`) |
-|---|---|---|---|---|
-| `check-showpicker-r80.mjs` | `f22db0ac` | `f22db0ac` | `387ec615` | `90118040` |
-| `negatives-showpicker-r80.mjs` | `fe91f6be` (103 cases) | `87bb405d` (103) | `7371dffa` (102) | `7371dffa` (102) |
-| `kill-power-r80.mjs` | `45d71e59` (81 mutants) | `45d71e59` (81) | `9aef5c16` (80) | `9aef5c16` (80) |
+## Pinned state — the lane moved four times during the review (D3/D4 → D5 → D6 → D8 → D9)
+
+| instrument | D3/D4 (frozen) | D5 | D6 | D8 | D9 (HEAD `211962dc`) |
+|---|---|---|---|---|---|
+| `check-showpicker-r80.mjs` | `f22db0ac` | `f22db0ac` | `387ec615` | `90118040` | `90118040` |
+| `negatives-showpicker-r80.mjs` | `fe91f6be` (103 cases) | `87bb405d` (103) | `7371dffa` (102) | `7371dffa` (102) | `7371dffa` (102) |
+| `kill-power-r80.mjs` | `45d71e59` (81 mutants) | `45d71e59` (81) | `9aef5c16` (80) | `9aef5c16` (80) | `9aef5c16` (80) |
+| prior set | 3 probes | 3 | 3 | 3 | 4 (probe4 added) |
 
 Receipts snapshotted (in the seat dir): D4 `tabi-r80-l1-b25608296008` fixture `43490c81` (23 paired
 events, 2 gaps); D5 `tabi-r80-l1-53ecca8411dc` fixture `ed350e1e` (23, 4 gaps); D6
 `tabi-r80-l1-045fccc58817` fixture `2be976df` (23, 3 gaps); D8 `tabi-r80-l1-a1b142849e91` fixture
-`171c94c2` (23, 1 gap).
+`171c94c2` (23, 1 gap); D9 `tabi-r80-l1-211962dccb61` fixture `97374b43` (23, 1 gap).
 
-Final state measured on D8: counter exit 0 clean 57 checks (mirror lane **and** real lane), battery
-102 cases 0 failed, kill power 80 mutants 80 killed 0 survivors 0 crashed 0 unapplied, bracket
-exact. The findings below are the history that produced that state plus what the final state still
-does not hold.
+Final state measured on D9 (instruments unchanged from D8, prior set 4): counter exit 0 clean 57
+checks (`priorSet 4`, every prior `absMatched 0, gapMatched 0`), battery 102 cases 0 failed, kill
+power 80 mutants 80 killed 0 survivors 0 crashed 0 unapplied (0 killed by the clean run), bracket
+exact (`absMatched 12 / absNeed 12` refuses; `11 / 12` accepts; `gapMatched 1 = gapNeed 1` is
+reported and does not refuse — direct proof the gap side is inert). The findings below are the
+history that produced that state plus what the final state still does not hold.
 
 ## F1 (high) — the frozen bracket did not bracket; the at-threshold case passed for the wrong reason
 
@@ -105,7 +112,7 @@ D5 counter f22db0ac: verdict findings, [replay-event-timeline],
   {"priorEvents":23,"priorGaps":2,"absMatched":0,"gapMatched":2,"absNeed":12,"gapNeed":2,"refused":true}
 D6 counter 387ec615: verdict clean, checkCount 57, findings []
   {"priorEvents":23,"priorGaps":2,"absMatched":0,"gapMatched":2,"absNeed":12,"gapNeed":2,"refused":false}
-D8 counter 90118040: verdict clean, checkCount 57, findings []
+D8/D9 counter 90118040: verdict clean, checkCount 57, findings []
   {"priorEvents":23,"priorGaps":1,"absMatched":0,"gapMatched":1,"absNeed":12,"gapNeed":1,"refused":false}
 ```
 
@@ -219,11 +226,15 @@ pre-D8 counter.
    case is refused by the gap side and the at-threshold case's green is gap-driven (F1).
 3. **Are any kill-power mutants semantic no-ops?** None. All 80 (and all 81 before D6) are
    weakenings/inversions of live checks; `unapplied []` proves each `from` occurred exactly once, and
-   every mutant is killed by a case whose name matches the mutated rule (D8 attribution: 80/80, e.g.
-   `fixture-child-dropped <- fixture-child-keys`, `ports-distinct-dropped <- ports-collide`,
-   `replay-token-any <- replay-launch-token`, `prior-set-schema-any <- foreign-schema-in-walk-ignored`).
-   The one receipt-dependent survivor (F5) was observable, not a no-op, and was deleted rather than
-   fixed.
+   every mutant is killed by a case whose name matches the mutated rule (D8 attribution: 80/80, 0
+   killed by the clean run, e.g. `fixture-child-dropped <- fixture-child-keys`,
+   `ports-distinct-dropped <- ports-collide`, `replay-token-any <- replay-launch-token`,
+   `replay-threshold-loose <- replay-at-threshold-refuse`). One attribution is order-dependent:
+   `prior-set-schema-any` is first killed by the `schema` case (the mirror lane carries
+   `controls/c1/prefreeze-summary.json`, which the mutant turns into an unlisted receipt); the
+   intended isolating case still catches it — mutant counter + `foreign-schema-in-walk-ignored` case
+   → `prior-set-complete`, measured. The one receipt-dependent survivor (F5) was observable, not a
+   no-op, and was deleted rather than fixed.
 4. **Are the `alsoAllowed` lists hiding a real finding?** Not in the measured run: no unlisted
    collateral id appeared, and every listed collateral id is coherent with its mutation (e.g.
    `ports-declared` also fires `context-binding` and `cdp-event-log-closed` because the cross-origin

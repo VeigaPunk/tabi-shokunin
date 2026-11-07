@@ -1,0 +1,31 @@
+{
+  "seat": "R80Drift",
+  "kind": "tabi-r80-c2-control-receipt",
+  "round": 80,
+  "counter": "scripts/check-record-drift-r80.mjs",
+  "control": "move one truth value: .ufo/waves/round-80/scored/battery-a.json top-level cases 103 → 104",
+  "runs": [
+    {
+      "mirror": "raw in-flight snapshot",
+      "baseline": { "exitCode": 1, "mismatches": 5, "failed": ["sc-80-numbers", "log-80-numbers", "skill-80-numbers", "lesson-80-numbers", "report-80-numbers"] },
+      "exitCode": 1,
+      "mismatches": 6,
+      "failed": ["sc-80-numbers", "log-80-numbers", "skill-80-numbers", "lesson-80-numbers", "report-80-numbers", "claims-80-numbers"],
+      "delta": ["claims-80-numbers"],
+      "claims-80-numbers-detail": "claims.json missing [\"104 cases\"]"
+    },
+    {
+      "mirror": "mirror-complete (disclosed synthetic completion of in-flight records)",
+      "baseline": { "exitCode": 0, "mismatches": 0, "failed": [], "claims": 17 },
+      "exitCode": 1,
+      "mismatches": 6,
+      "failed": ["sc-80-numbers", "log-80-numbers", "skill-80-numbers", "lesson-80-numbers", "report-80-numbers", "claims-80-numbers"],
+      "delta": ["sc-80-numbers", "log-80-numbers", "skill-80-numbers", "lesson-80-numbers", "report-80-numbers", "claims-80-numbers"],
+      "scored-80-present": "still ok — the scored output itself stays internally consistent (checks 57, cases 104, mutants 81, killed 81, mutants===killed); the drift is records vs bytes"
+    }
+  ],
+  "command": "node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-record-drift-r80.mjs --lane <mirror>/tabi-shokunin --json",
+  "verdict": "proves the counter binds TRUTH",
+  "rationale": "One field flip in a committed scored output re-derives a new truth (r80.cases 104) and every record that cites the number fails with it — SCORECARD, LOG, SKILL, the lesson, the filed report, and the frozen claims.json — exactly the truth-citation graph; nothing else fails (all leg-1 r79 claims stay green, scored-80-present stays green). Records cannot state a number the committed bytes do not carry; conversely the counter demands records follow a changed byte, so neither side can drift alone.",
+  "mirrorEditRevertedAfterRun": true
+}

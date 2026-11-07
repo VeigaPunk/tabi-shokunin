@@ -1,0 +1,543 @@
+#!/usr/bin/env node
+// Chromium runner: tabi round 80, C1 (coverage capability `chromium-showpicker-linux`,
+// generation r80). Domain: programmatic file-picker invocation — `HTMLInputElement.showPicker()`
+// — under `Page.setInterceptFileChooserDialog`, on Chromium 155/Linux `--headless=new`.
+//
+// Generation r80 adds the frontier legs round 79 named and did not hold:
+//   * `showPicker()` on a `webkitdirectory` input and on an `accept`-constrained input;
+//   * two calls each carrying `Runtime.evaluate {userGesture:true}` (no page click) — the
+//     "already open" boundary, measured instead of assumed;
+//   * a call deferred through `setTimeout(…, 0)` scheduled from a trusted click's handler;
+//   * the cross-origin `SecurityError` path (parent on 127.0.0.1:<http>, child on
+//     127.0.0.1:<child> — a different origin), including a disabled child input, which
+//     discriminates Chromium's cross-origin-before-mutability order from the spec's;
+//   * the programmatic trigger ANSWERED: `Page.fileChooserOpened` -> `DOM.setFileInputFiles`
+//     on the event's `backendNodeId`, i.e. the r79 trigger path combined with the r78 answer.
+//
+// The page fixture is the round-78 driver's /*CHOOSER-FIXTURE-BEGIN*/ template, extracted
+// byte-identical at runtime and patched with exactly three additions, each asserted present:
+//   * a neutral `<div id="pad">` (no default action) used to grant transient user activation
+//     with a real trusted CDP click, and a `<input type="file" id="dis" disabled>`;
+//   * `__inputs()` also describes `dis`; `__state()` also reports `dis`'s file list.
+// The fixture's own event recorder already captures pointer/mouse/click/input/change/cancel
+// events with isTrusted, the transient-activation state, coordinates and file lists.
+//
+// One fresh browser per leg (the launch token, profile, HOME/XDG and crash-db dirs are per leg):
+// `navigator.userActivation.hasBeenActive` is per-window state, so a shared browser would let an
+// earlier leg's activation leak into a later "no activation" leg. Every leg records its own
+// cdpSendLog/cdpEventLog, argv, frame tree and teardown proof.
+//
+// Usage:
+//   node chrome-cdp-showpicker-round80.mjs --lane <ABS lane> --nonce <tabi-r80-...>
+//     --scratch <ABS dir> --out <ABS receipt.json> --http-port <1024..65535>
+//     --cdp-port <1024..65535> --child-port <1024..65535>   (child origin for the cross-origin legs)
+// Exit 0: every leg completed with no error and the receipt was written; 1: a leg failed (the
+// receipt is still written, with the failure recorded); 2: usage refusal. The driver records; it
+// does not judge the law — the counter does (round-78 lesson: a producer self-check that pins a
+// browser-assigned id refused honest runs).
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import http from 'node:http';
+import net from 'node:net';
+import { spawn, spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+const SCHEMA = 'tabi-chrome-cdp-showpicker-r80';
+const SELF = fileURLToPath(import.meta.url);
+const CHROMIUM = '/usr/bin/chromium';
+// R80Probe copy of the frozen r80 driver: the byte-identical fixture template is still read
+// from the lane's frozen round-78 driver (read-only); resolved below once --lane is validated.
+let FIXTURE_SOURCE = null;
+const VIEWPORT = { width: 1280, height: 900 };
+const OPEN_WAIT_MS = 2000;
+const MIN_OBSERVE_MS = 2000;
+const SETTLE_MS = 500;
+const SWEEP_MAX_ROUNDS = 20;
+const SWEEP_WAIT_MS = 250;
+const PORT_PROBE_TIMEOUT_MS = 1500;
+const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const argv = process.argv.slice(2);
+const opt = (n) => { const i = argv.indexOf('--' + n); return i >= 0 ? argv[i + 1] : null; };
+const usage = (d) => { console.error(JSON.stringify({ error: 'usage', detail: d })); process.exit(2); };
+const lane = opt('lane');
+const nonce = opt('nonce');
+const scratchDir = opt('scratch');
+const outReceipt = opt('out');
+if (!lane || !path.isAbsolute(lane)) usage('--lane must be an absolute path');
+if (!nonce || !/^tabi-r80-[a-z0-9-]{4,48}$/.test(nonce)) usage('--nonce must match tabi-r80-[a-z0-9-]{4,48}');
+if (!scratchDir || !path.isAbsolute(scratchDir)) usage('--scratch must be an absolute path');
+if (!outReceipt || !path.isAbsolute(outReceipt) || !outReceipt.endsWith('.json')) usage('--out must be an absolute .json path');
+FIXTURE_SOURCE = path.join(lane, 'scripts', 'chrome-cdp-filechooser-round78.mjs');
+const ports = ['http-port', 'cdp-port', 'child-port'].map((key) => {
+  const v = opt(key);
+  if (!/^[0-9]+$/.test(v || '')) usage('--' + key + ' must be an integer');
+  const n = Number(v);
+  if (n < 1024 || n > 65535) usage('--' + key + ' out of range');
+  return n;
+});
+const [fixturePort, devPort, childPort] = ports;
+if (new Set(ports).size !== 3) usage('HTTP, CDP and child ports must all differ');
+fs.mkdirSync(scratchDir, { recursive: true });
+fs.mkdirSync(path.dirname(outReceipt), { recursive: true });
+function freePort(port) {
+  return new Promise((resolve, reject) => {
+    const srv = net.createServer();
+    srv.once('error', (e) => { srv.close(); reject(new Error('port ' + port + ' busy')); });
+    srv.once('listening', () => srv.close(resolve));
+    srv.listen(port, '127.0.0.1');
+  });
+}
+try { for (const p of ports) await freePort(p); } catch (e) { usage('free-port precheck: ' + e.message); }
+{
+  const sock = Buffer.byteLength(path.join(fs.realpathSync(scratchDir), 'org.chromium.Chromium.XXXXXX', 'SingletonSocket'));
+  if (sock > 107) usage('scratch too long for the Chromium singleton socket: ' + sock);
+}
+
+// ---- fixture: the round-78 template, byte-identical, plus the three asserted patches ----
+const driverSrc = fs.readFileSync(FIXTURE_SOURCE, 'utf8');
+const fm = /\/\*CHOOSER-FIXTURE-BEGIN\*\/\r?\nconst FIXTURE_TEMPLATE = (`[\s\S]*?`);?\r?\n\/\*CHOOSER-FIXTURE-END\*\//.exec(driverSrc);
+if (!fm || !fm[1].startsWith('`') || !fm[1].endsWith('`') || fm[1].includes('${')) usage('could not extract the fixture template from ' + FIXTURE_SOURCE);
+const TEMPLATE = (0, eval)('(' + fm[1] + ')');
+const PATCH_STYLE = ' #pad { position: absolute; width: 120px; height: 40px; background: #eef; left: 300px; top: 300px; } #dis { left: 100px; top: 500px; } #xo { position: absolute; left: 40px; top: 400px; width: 600px; height: 300px; border: 0; }';
+const PATCH_BODY = '<div id="pad"></div><input type="file" id="dis" disabled><iframe id="xo" src="__CHILD_ORIGIN__/child.html?run=__NONCE__"></iframe>';
+const CHILD_TEMPLATE = `<!doctype html><html><head><meta charset="utf-8"><title>tabi-r80 child origin</title>
+<style>html, body { margin: 0; padding: 0; background: #fef; } #s, #dis, #go, #go2 { position: absolute; width: 120px; height: 40px; margin: 0; padding: 0; border: 0; } #s { left: 20px; top: 20px; } #dis { left: 20px; top: 80px; } #go { left: 160px; top: 20px; } #go2 { left: 160px; top: 80px; }</style>
+<script>
+window.__r = null; window.__r2 = null; window.__events = []; window.__closed = false; window.__late = 0; window.__leg = 'start'; window.__mark = null; window.__gate = 0;
+const push = function (o) { if (window.__closed) { window.__late++; return; } o.at = performance.now(); window.__events.push(o); };
+for (const t of ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click', 'input', 'change', 'cancel'])
+  window.addEventListener(t, function (e) { push({ type: e.type, isTrusted: e.isTrusted, target: e.target && e.target.id ? e.target.id : null, act: navigator.userActivation.isActive }); }, true);
+window.__setLeg = function (n) { window.__leg = n; return n; };
+window.__act = function () { return JSON.stringify({ isActive: navigator.userActivation.isActive, hasBeenActive: navigator.userActivation.hasBeenActive }); };
+window.__state = function () { return JSON.stringify({ s: Array.from(document.getElementById('s').files, function (f) { return [f.name, f.size, f.type]; }), dis: Array.from(document.getElementById('dis').files, function (f) { return [f.name, f.size, f.type]; }) }); };
+window.__closeRecord = function () { window.__closed = true; return JSON.stringify({ events: window.__events, closedAt: performance.now() }); };
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('go').addEventListener('click', function () { window.__mark = { clicked: true, at: performance.now() }; setTimeout(function waitGate() { if (!window.__gate) { setTimeout(waitGate, 5); return; } try { var r = document.getElementById('s').showPicker(); window.__r = { ok: true, ret: String(r) }; } catch (e) { window.__r = { ok: false, name: e.name, message: e.message }; } window.__mark.showPickerAt = performance.now(); }, 0); });
+  document.getElementById('go2').addEventListener('click', function () { try { var r = document.getElementById('dis').showPicker(); window.__r2 = { ok: true, ret: String(r) }; } catch (e) { window.__r2 = { ok: false, name: e.name, message: e.message }; } });
+});
+</script></head><body><p id="nonce" style="position:absolute;left:0;top:0;margin:0;font:0/0 monospace">__NONCE__</p><input type="file" id="s"><input type="file" id="dis" disabled><button id="go">go</button><button id="go2">go2</button></body></html>`;
+const PATCH_INPUTS_FROM = "['s', 'm', 'd', 'k', 'f'].map";
+const PATCH_INPUTS_TO = "['s', 'm', 'd', 'k', 'f', 'dis'].map";
+const PATCH_STATE_FROM = "s: fl(g('s')), m: fl(g('m')), d: fl(g('d')), k: fl(g('k')), sValue: g('s').value";
+const PATCH_STATE_TO = "s: fl(g('s')), m: fl(g('m')), d: fl(g('d')), k: fl(g('k')), dis: fl(g('dis')), sValue: g('s').value";
+for (const [from, to] of [[PATCH_INPUTS_FROM, PATCH_INPUTS_TO], [PATCH_STATE_FROM, PATCH_STATE_TO]]) {
+  const n = TEMPLATE.split(from).length - 1;
+  if (n !== 1) usage('fixture patch anchor not unique: ' + from.slice(0, 40) + ' (' + n + ')');
+}
+const PATCHED = TEMPLATE
+  .replace('</style>', PATCH_STYLE + '</style>')
+  .replace('</body>', PATCH_BODY + '</body>')
+  .replace(PATCH_INPUTS_FROM, PATCH_INPUTS_TO)
+  .replace(PATCH_STATE_FROM, PATCH_STATE_TO);
+for (const needle of [PATCH_STYLE, PATCH_BODY, PATCH_INPUTS_TO, PATCH_STATE_TO]) {
+  if (!PATCHED.includes(needle)) usage('fixture patch did not apply: ' + needle.slice(0, 40));
+}
+const CHILD_ORIGIN = 'http://127.0.0.1:' + childPort;
+const FIXTURE_HTML = PATCHED.replaceAll('__CHILD_ORIGIN__', CHILD_ORIGIN).replaceAll('__NONCE__', nonce);
+const CHILD_HTML = CHILD_TEMPLATE.replaceAll('__NONCE__', nonce);
+
+// The page-side expression the driver sends to invoke showPicker(). One exact template per
+// target so the counter can reconstruct every allowed expression from the leg plan.
+const wrapperFor = (target) => '(function(){ try { var r = document.getElementById(' + JSON.stringify(target) + ').showPicker(); return {ok: true, ret: String(r)}; } catch (e) { return {ok: false, name: e.name, message: e.message}; } })()';
+const ACT_EXPR = 'JSON.stringify({isActive: navigator.userActivation.isActive, hasBeenActive: navigator.userActivation.hasBeenActive})';
+const READY_EXPR = (n) => 'document.readyState === "complete" && location.pathname === "/" && Array.isArray(window.__events) && document.getElementById("nonce").textContent === ' + JSON.stringify(n);
+
+// Legs. `kind: 'showpicker'` invokes showPicker() on `target`; `kind: 'showpicker-twice-gesture'`
+// sends two calls each carrying Runtime.evaluate {userGesture:true}; `showpicker-deferred` arms a
+// setTimeout(0) from a trusted click's handler and aims the mandatory direct trigger at the
+// disabled input; `showpicker-cross-origin[-disabled]` clicks a button inside the cross-origin
+// iframe; `showpicker-answer` answers the chooser event with DOM.setFileInputFiles.
+const ARM_EXPR = '(function(){ window.__r = null; document.getElementById("pad").addEventListener("click", function(){ setTimeout(function(){ try { var r = document.getElementById("d").showPicker(); window.__r = {ok: true, ret: String(r)}; } catch (e) { window.__r = {ok: false, name: e.name, message: e.message}; } }, 0); }, {capture: true, once: true}); return 1; })()';
+const LEGS = [
+  { name: 'sp80r-activation-tree-probe', kind: 'activation-tree-probe', target: 's', childButton: 'go', intercept: { enabled: true }, priorClick: null, gesture: false },
+];
+
+let launchSeq = 0;
+const receipt = {
+  schema: SCHEMA, lane: path.basename(lane), nonce, driverSha256: sha256(fs.readFileSync(SELF)),
+  startedAt: new Date().toISOString(), finishedAt: null,
+  host: { chromium: '', cdpProduct: '', cdpProtocolVersion: '', node: process.version },
+  fixture: { sha256: sha256(FIXTURE_HTML), origin: 'http://127.0.0.1:' + fixturePort, viewport: VIEWPORT, patch: { style: PATCH_STYLE, body: PATCH_BODY, inputs: PATCH_INPUTS_TO, state: PATCH_STATE_TO }, child: { sha256: sha256(CHILD_HTML), origin: CHILD_ORIGIN } },
+  ports: { http: fixturePort, cdp: devPort, child: childPort },
+  frameTree: null, fixtureInputs: null, legs: [], failures: [],
+};
+{
+  const v = spawnSync(CHROMIUM, ['--version'], { encoding: 'utf8', timeout: 15000 });
+  receipt.host.chromium = v.status === 0 ? v.stdout.trim() : 'failed status ' + v.status;
+}
+
+const needlePids = (needles) => {
+  const out = [];
+  try {
+    const r = spawnSync('ps', ['-eo', 'pid,args'], { encoding: 'utf8', timeout: 15000 });
+    if (r.status !== 0) return { error: 'ps exited ' + r.status, pids: out };
+    for (const line of (r.stdout || '').split('\n')) {
+      if (needles.some((n) => line.includes(n))) {
+        const pid = Number(line.trim().split(/\s+/)[0]);
+        if (Number.isInteger(pid) && pid > 1) out.push(pid);
+      }
+    }
+  } catch (e) { return { error: e.message, pids: out }; }
+  return { error: null, pids: out };
+};
+async function sweepToZero(needles) {
+  let rounds = 0; let last = null;
+  while (rounds < SWEEP_MAX_ROUNDS) {
+    last = needlePids(needles);
+    if (last.error || last.pids.length === 0) break;
+    for (const pid of last.pids) { try { process.kill(pid, 'SIGKILL'); } catch {} }
+    await sleep(SWEEP_WAIT_MS);
+    rounds++;
+  }
+  return { rounds, survivors: last && !last.error ? last.pids : [], error: last ? last.error : 'never-ran' };
+}
+function probePort(port) {
+  return new Promise((resolve) => {
+    const s = net.connect({ port, host: '127.0.0.1' });
+    let done = false;
+    const fin = (v) => { if (!done) { done = true; try { s.destroy(); } catch {} resolve(v); } };
+    s.setTimeout(PORT_PROBE_TIMEOUT_MS, () => fin('timeout'));
+    s.on('connect', () => fin('open'));
+    s.on('error', () => fin('closed'));
+  });
+}
+
+class CdpError extends Error { constructor(obj) { super(JSON.stringify(obj)); this.cdp = obj; } }
+const errObj = (e) => (e instanceof CdpError ? { code: e.cdp.code ?? null, message: e.cdp.message ?? null } : { code: null, message: String(e && e.message) });
+
+async function runLeg(leg) {
+  const idx = LEGS.indexOf(leg);
+  const rec = {
+    name: leg.name, kind: leg.kind, target: leg.target, intercept: leg.intercept, priorClick: leg.priorClick ?? null, gesture: leg.gesture ?? null,
+    interceptSendId: null, interceptResult: null, interceptError: null,
+    priorPressId: null, priorReleaseId: null, priorClickElement: null, priorClickError: null,
+    triggerSendId: null, triggerResult: null, triggerError: null, showPicker: null,
+    trigger2SendId: null, trigger2Result: null, trigger2Error: null, showPicker2: null,
+    chooserWaitMs: null, activationBefore: null, activationAfter: null, stateAfter: null,
+    dismissSendId: null, dismissResult: null, dismissError: null, stateAfterDismiss: null,
+    armSendId: null, armResult: null, armError: null, deferredResult: null,
+    childContextId: null, childActivationBefore: null, childActivationAfter: null, childState: null,
+    childMark: null, markWaitMs: null, parentActivationMid: null, childActivationMid: null, midAtMs: null, parentActivationAfter: null,
+    childResult: null, childResult2: null, childEvents: [], childClosedAt: null, childLate: null, parentCrossAccess: null,
+    answer: null, upload: null, contexts: [],
+    pageEvents: [], marks: [], closedAt: null, lateAfterClose: null,
+    argv: [], cdpSendLog: [], cdpEventLog: [], teardown: null, devtoolsListening: null, errors: [],
+  };
+  const cdpSendLog = rec.cdpSendLog; const cdpEventLog = rec.cdpEventLog;
+  const launchToken = crypto.randomBytes(6).toString('hex');
+  const profileDir = path.join(scratchDir, 'profile-' + launchToken);
+  const runHome = path.join(scratchDir, 'home-' + launchToken);
+  const runXdgConfig = path.join(runHome, '.config');
+  const runXdg = {
+    HOME: runHome, XDG_CONFIG_HOME: runXdgConfig, XDG_CACHE_HOME: path.join(runHome, '.cache'),
+    XDG_DATA_HOME: path.join(runHome, '.local', 'share'), XDG_STATE_HOME: path.join(runHome, '.local', 'state'),
+    XDG_RUNTIME_DIR: path.join(runHome, 'run'), TMPDIR: scratchDir,
+  };
+  const runCrashDb = path.join(runXdgConfig, 'chromium', 'Crash Reports');
+  for (const d of [runCrashDb, runXdg.XDG_CACHE_HOME, runXdg.XDG_DATA_HOME, runXdg.XDG_STATE_HOME, runXdg.XDG_RUNTIME_DIR, profileDir]) fs.mkdirSync(d, { recursive: true });
+  const uploadDir = path.join(scratchDir, 'upload-' + launchToken);
+  fs.mkdirSync(uploadDir, { recursive: true });
+  const uploadBytes = Buffer.from('tabi-r80-answer-alpha\n');
+  fs.writeFileSync(path.join(uploadDir, 'tabi-r80-a.txt'), uploadBytes);
+  rec.upload = { name: 'tabi-r80-a.txt', size: uploadBytes.length, sha256: sha256(uploadBytes) };
+  const needles = [launchToken, profileDir, runCrashDb];
+  const pre = needlePids(needles);
+  if (pre.error || pre.pids.length !== 0) { rec.errors.push('launch token not fresh: ' + JSON.stringify(pre)); return rec; }
+  const serverLog = [];
+  const childServerLog = [];
+  const fixtureServer = http.createServer((req, res) => {
+    const u = new URL(req.url, 'http://127.0.0.1');
+    serverLog.push({ path: u.pathname, run: u.searchParams.get('run') || '', status: u.pathname === '/' ? 200 : 404 });
+    res.writeHead(u.pathname === '/' ? 200 : 404, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+    res.end(u.pathname === '/' ? FIXTURE_HTML : 'not found');
+  });
+  const childServer = http.createServer((req, res) => {
+    const u = new URL(req.url, 'http://127.0.0.1');
+    childServerLog.push({ path: u.pathname, run: u.searchParams.get('run') || '', status: u.pathname === '/child.html' ? 200 : 404 });
+    res.writeHead(u.pathname === '/child.html' ? 200 : 404, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+    res.end(u.pathname === '/child.html' ? CHILD_HTML : 'not found');
+  });
+  const origin = 'http://127.0.0.1:' + fixturePort;
+  const childArgv = [CHROMIUM, '--headless=new', '--remote-debugging-port=' + devPort,
+    '--remote-debugging-address=127.0.0.1', '--user-data-dir=' + profileDir,
+    '--no-first-run', '--no-default-browser-check', '--disable-background-networking',
+    '--disable-component-update', '--disable-sync', '--disable-search-engine-choice-screen',
+    '--disable-dev-shm-usage', '--disable-extensions', '--disable-smooth-scrolling',
+    '--force-device-scale-factor=1', '--window-size=' + VIEWPORT.width + ',' + VIEWPORT.height, 'about:blank'];
+  rec.argv = childArgv;
+  rec.launchToken = launchToken;
+  let child = null; let ws = null; let stderrHead = ''; let closing = null;
+  const teardown = async () => {
+    if (closing) return closing;
+    closing = (async () => {
+      try { if (ws) ws.close(); } catch {}
+      if (child && child.pid) { try { process.kill(-child.pid, 'SIGKILL'); } catch {} }
+      await sleep(600);
+      const swept = await sweepToZero(needles);
+      fixtureServer.closeAllConnections();
+      childServer.closeAllConnections();
+      await Promise.race([new Promise((resolve) => fixtureServer.close(resolve)), sleep(2000)]);
+      await Promise.race([new Promise((resolve) => childServer.close(resolve)), sleep(2000)]);
+      const portProbes = { fixture: await probePort(fixturePort), devtools: await probePort(devPort), child: await probePort(childPort) };
+      const curlExit = (p) => spawnSync('/usr/bin/curl', ['--noproxy', '*', '--silent', '--show-error', '--max-time', '2', 'http://127.0.0.1:' + p + '/'], { encoding: 'utf8', timeout: 4000 }).status;
+      rec.teardown = {
+        sweepRounds: swept.rounds, survivors: swept.survivors, sweepError: swept.error,
+        portProbes, postKillCurl: { fixture: curlExit(fixturePort), devtools: curlExit(devPort), child: curlExit(childPort) },
+      };
+      if (swept.error || swept.survivors.length) rec.errors.push('teardown sweep: ' + JSON.stringify(swept));
+      if (Object.values(portProbes).some((v) => v !== 'closed')) rec.errors.push('teardown ports: ' + JSON.stringify(portProbes));
+      if (Object.values(rec.teardown.postKillCurl).some((v) => v !== 7)) rec.errors.push('teardown curl: ' + JSON.stringify(rec.teardown.postKillCurl));
+    })();
+    return closing;
+  };
+  for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => { teardown(); });
+  try {
+    await new Promise((resolve, reject) => { fixtureServer.once('error', reject); fixtureServer.listen(fixturePort, '127.0.0.1', resolve); });
+    await new Promise((resolve, reject) => { childServer.once('error', reject); childServer.listen(childPort, '127.0.0.1', resolve); });
+    child = spawn(childArgv[0], childArgv.slice(1), { stdio: ['ignore', 'ignore', 'pipe'], detached: true, env: { ...process.env, ...runXdg } });
+    let launchError = null;
+    child.on('error', (e) => { launchError = e; });
+    child.stderr.on('data', (d) => { if (stderrHead.length < 4096) stderrHead += d.toString('utf8').slice(0, 4096 - stderrHead.length); });
+    const fetchJSON = async (url) => { const r = await fetch(url, { signal: AbortSignal.timeout(1500) }); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); };
+    let page = null;
+    for (let k = 0; k < 400 && !page; k++) {
+      if (launchError) throw launchError;
+      try { page = (await fetchJSON('http://127.0.0.1:' + devPort + '/json/list')).find((t) => t.type === 'page'); } catch {}
+      if (!page) await sleep(150);
+    }
+    if (!page || !new RegExp('^ws://127\\.0\\.0\\.1:' + devPort + '/').test(page.webSocketDebuggerUrl)) throw new Error('no loopback page target');
+    ws = new WebSocket(page.webSocketDebuggerUrl);
+    await new Promise((resolve, reject) => {
+      const t = setTimeout(() => reject(new Error('ws open timeout')), 20000);
+      ws.addEventListener('open', () => { clearTimeout(t); resolve(); }, { once: true });
+      ws.addEventListener('error', () => { clearTimeout(t); reject(new Error('ws error')); }, { once: true });
+    });
+    let msgId = 0; const pending = new Map();
+    const LOGGED_EVENTS = new Set(['Page.fileChooserOpened', 'Page.frameNavigated', 'Runtime.executionContextCreated']);
+    ws.addEventListener('message', (ev) => {
+      let msg; try { msg = JSON.parse(ev.data); } catch { return; }
+      if (typeof msg.method === 'string' && msg.id === undefined) {
+        if (!LOGGED_EVENTS.has(msg.method)) return;
+        if (msg.method === 'Runtime.executionContextCreated') {
+          const c = msg.params && msg.params.context;
+          if (!c || !c.auxData) return;
+          rec.contexts.push({ id: c.id, origin: c.origin, name: c.name, type: c.type, frameId: c.auxData.frameId ?? null, isDefault: c.auxData.isDefault === true });
+          return;
+        }
+        if (msg.method === 'Page.frameNavigated') {
+          const f = msg.params && msg.params.frame;
+          if (!f || f.parentId !== undefined) return;
+          cdpEventLog.push({ method: msg.method, params: { frameId: f.id, url: f.url }, afterSendId: msgId });
+          return;
+        }
+        cdpEventLog.push({ method: msg.method, params: msg.params, afterSendId: msgId });
+        return;
+      }
+      const p = pending.get(msg.id);
+      if (p) { pending.delete(msg.id); clearTimeout(p.timer); msg.error ? p.reject(new CdpError(msg.error)) : p.resolve(msg); }
+    });
+    const send = (method, params = {}, timeoutMs = 30000) => new Promise((resolve, reject) => {
+      const id = ++msgId; cdpSendLog.push({ id, method, params });
+      const timer = setTimeout(() => { pending.delete(id); reject(new Error('no-response-' + timeoutMs + 'ms ' + method)); }, timeoutMs);
+      pending.set(id, { resolve, reject, timer }); ws.send(JSON.stringify({ id, method, params }));
+    });
+    const evalValue = async (expression, extra = {}) => {
+      const r = await send('Runtime.evaluate', { expression, returnByValue: true, ...extra });
+      if (r.result.exceptionDetails) throw new Error('eval-exception: ' + JSON.stringify(r.result.exceptionDetails).slice(0, 500));
+      return r.result.result.value;
+    };
+    const evalInContext = async (contextId, expression) => {
+      const r = await send('Runtime.evaluate', { expression, returnByValue: true, contextId });
+      if (r.result.exceptionDetails) throw new Error('eval-exception: ' + JSON.stringify(r.result.exceptionDetails).slice(0, 500));
+      return r.result.result.value;
+    };
+    const ver = await send('Browser.getVersion');
+    rec.cdpProduct = ver.result.product;
+    rec.cdpProtocolVersion = ver.result.protocolVersion;
+    await send('Page.enable'); await send('Runtime.enable');
+    const ft = (await send('Page.getFrameTree')).result.frameTree;
+    rec.frameTree = { mainFrameId: ft.frame.id, mainFrameParentId: ft.frame.parentId ?? null, mainFrameUrl: ft.frame.url };
+    await send('Emulation.setDeviceMetricsOverride', { width: VIEWPORT.width, height: VIEWPORT.height, deviceScaleFactor: 1, mobile: false });
+    await send('Page.navigate', { url: origin + '/?run=' + encodeURIComponent(nonce) });
+    let ready = false;
+    for (let k = 0; k < 100 && !ready; k++) {
+      try { ready = await evalValue(READY_EXPR(nonce)); } catch {}
+      if (!ready) await sleep(100);
+    }
+    if (!ready) throw new Error('fixture not ready');
+    rec.fixtureInputs = JSON.parse(await evalValue('window.__inputs()'));
+    rec.serverLog = serverLog;
+    rec.childServerLog = childServerLog;
+    const chooserCount = () => cdpEventLog.filter((e) => e.method === 'Page.fileChooserOpened').length;
+    const setLeg = async (name) => { await evalValue('window.__setLeg(' + JSON.stringify(name) + ')'); };
+    await setLeg('pre');
+    rec.activationBefore = JSON.parse(await evalValue(ACT_EXPR));
+    const before = chooserCount();
+    if (leg.intercept) {
+      const p = send('Page.setInterceptFileChooserDialog', leg.intercept); rec.interceptSendId = msgId;
+      try { rec.interceptResult = (await p).result; } catch (e) { rec.interceptError = errObj(e); }
+    }
+    if (leg.armExpr) {
+      const p = send('Runtime.evaluate', { expression: leg.armExpr, returnByValue: true }); rec.armSendId = msgId;
+      try { const r = await p; rec.armResult = r.result.result ? r.result.result.value : null; } catch (e) { rec.armError = errObj(e); }
+    }
+    if (leg.priorClick) {
+      await setLeg('prior-click');
+      rec.priorClickElement = await evalValue('document.elementFromPoint(' + leg.priorClick.at[0] + ',' + leg.priorClick.at[1] + ').id');
+      const press = send('Input.dispatchMouseEvent', { type: 'mousePressed', x: leg.priorClick.at[0], y: leg.priorClick.at[1], button: 'left', buttons: 1, clickCount: 1 });
+      rec.priorPressId = msgId;
+      try { await press; } catch (e) { rec.priorClickError = errObj(e); }
+      const release = send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: leg.priorClick.at[0], y: leg.priorClick.at[1], button: 'left', buttons: 0, clickCount: 1 });
+      rec.priorReleaseId = msgId;
+      try { await release; } catch (e) { rec.priorClickError = errObj(e); }
+      await sleep(150);
+      rec.activationBefore = JSON.parse(await evalValue(ACT_EXPR));
+    }
+    const crossOrigin = leg.kind === 'showpicker-cross-origin' || leg.kind === 'showpicker-cross-origin-disabled' || leg.kind === 'activation-tree-probe';
+    if (crossOrigin) {
+      let childCtx = null;
+      for (let k = 0; k < 120 && !childCtx; k++) {
+        const c = rec.contexts.find((x) => x.origin === CHILD_ORIGIN && x.isDefault === true && x.frameId);
+        if (c) {
+          try { if (await evalInContext(c.id, 'document.readyState === "complete" && !!document.getElementById("go")')) childCtx = c; } catch {}
+        }
+        if (!childCtx) await sleep(100);
+      }
+      if (!childCtx) throw new Error('child context not ready');
+      rec.childContextId = childCtx.id;
+      rec.childActivationBefore = JSON.parse(await evalInContext(childCtx.id, 'window.__act()'));
+      const rect = JSON.parse(await evalValue('JSON.stringify(document.getElementById("xo").getBoundingClientRect())'));
+      const bx = rect.left + 220;
+      const by = rect.top + (leg.childButton === 'go' ? 40 : 100);
+      await evalInContext(childCtx.id, 'window.__setLeg("child-click")');
+      const press = send('Input.dispatchMouseEvent', { type: 'mousePressed', x: bx, y: by, button: 'left', buttons: 1, clickCount: 1 }); rec.priorPressId = msgId;
+      try { await press; } catch (e) { rec.priorClickError = errObj(e); }
+      const release = send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: bx, y: by, button: 'left', buttons: 0, clickCount: 1 }); rec.priorReleaseId = msgId;
+      try { await release; } catch (e) { rec.priorClickError = errObj(e); }
+      const field = leg.childButton === 'go' ? 'window.__r' : 'window.__r2';
+      const t0 = Date.now();
+      if (leg.kind === 'activation-tree-probe') {
+        // 1) wait for the child's page-side click mark (handler ran, showPicker gated off);
+        while (Date.now() - t0 < OPEN_WAIT_MS) {
+          let m = null;
+          try { m = await evalInContext(childCtx.id, 'window.__mark'); } catch {}
+          if (m && m.clicked === true) { rec.childMark = m; break; }
+          await sleep(10);
+        }
+        rec.markWaitMs = Date.now() - t0;
+        // 2) read the PARENT's activation while the child's showPicker has NOT run yet;
+        rec.parentActivationMid = JSON.parse(await evalValue(ACT_EXPR));
+        rec.childActivationMid = JSON.parse(await evalInContext(childCtx.id, 'window.__act()'));
+        rec.midAtMs = Date.now() - t0;
+        // 3) release the gate -> the child's deferred showPicker() runs and consumes;
+        await evalInContext(childCtx.id, 'window.__gate = 1');
+        const t1 = Date.now();
+        while (Date.now() - t1 < OPEN_WAIT_MS) {
+          try { const v = await evalInContext(childCtx.id, field); if (v) { rec.childResult = v; break; } } catch {}
+          await sleep(20);
+        }
+        rec.chooserWaitMs = Date.now() - t1;
+        // 4) read the PARENT's activation after the child's successful showPicker;
+        rec.parentActivationAfter = JSON.parse(await evalValue(ACT_EXPR));
+      } else {
+        while (Date.now() - t0 < OPEN_WAIT_MS) {
+          try { const v = await evalInContext(childCtx.id, field); if (v) { rec.childResult = v; break; } } catch {}
+          await sleep(20);
+        }
+        rec.chooserWaitMs = Date.now() - t0;
+      }
+      while (Date.now() - t0 < MIN_OBSERVE_MS) await sleep(50);
+      rec.childActivationAfter = JSON.parse(await evalInContext(childCtx.id, 'window.__act()'));
+      rec.childState = JSON.parse(await evalInContext(childCtx.id, 'window.__state()'));
+      const crec = JSON.parse(await evalInContext(childCtx.id, 'window.__closeRecord()'));
+      rec.childEvents = crec.events; rec.childClosedAt = crec.closedAt;
+      await sleep(SETTLE_MS);
+      rec.childLate = await evalInContext(childCtx.id, 'window.__late');
+      rec.parentCrossAccess = JSON.parse(await evalValue('JSON.stringify((function(){ var f = document.getElementById("xo"); var out = { contentDocument: f.contentDocument === null ? null : "object" }; try { var d = f.contentWindow.document; out.windowDocument = d ? "object" : null; } catch (e) { out.windowDocument = e.name; } return out; })())'));
+    } else {
+      await setLeg('show-picker');
+      const triggerAt = Date.now();
+      const params = { expression: wrapperFor(leg.target), returnByValue: true };
+      if (leg.gesture) params.userGesture = true;
+      const p = send('Runtime.evaluate', params); rec.triggerSendId = msgId;
+      let r = null;
+      try { r = await p; } catch (e) { rec.triggerError = errObj(e); }
+      if (r) {
+        const v = r.result.result ? r.result.result.value : undefined;
+        rec.showPicker = v === undefined ? null : v;
+        rec.triggerResult = r.result.exceptionDetails ? { exceptionDetails: r.result.exceptionDetails } : { value: v === undefined ? null : v };
+      }
+      const t0 = Date.now();
+      while (chooserCount() === before && Date.now() - t0 < OPEN_WAIT_MS) await sleep(20);
+      rec.chooserWaitMs = Date.now() - triggerAt;
+      if (leg.kind === 'showpicker-twice-gesture') {
+        await setLeg('show-picker-2');
+        const p2 = send('Runtime.evaluate', { expression: wrapperFor(leg.target), returnByValue: true, userGesture: true }); rec.trigger2SendId = msgId;
+        let r2 = null;
+        try { r2 = await p2; } catch (e) { rec.trigger2Error = errObj(e); }
+        if (r2) {
+          const v2 = r2.result.result ? r2.result.result.value : undefined;
+          rec.showPicker2 = v2 === undefined ? null : v2;
+          rec.trigger2Result = r2.result.exceptionDetails ? { exceptionDetails: r2.result.exceptionDetails } : { value: v2 === undefined ? null : v2 };
+        }
+      }
+      if (leg.kind === 'showpicker-deferred') {
+        rec.deferredResult = JSON.parse(await evalValue('JSON.stringify(window.__r)'));
+      }
+      if (leg.kind === 'showpicker-answer' && chooserCount() > before) {
+        const ev = cdpEventLog.filter((e) => e.method === 'Page.fileChooserOpened').slice(-1)[0];
+        const files = leg.files.map((n) => path.join(uploadDir, n));
+        rec.answer = { files: leg.files, setParams: { files, backendNodeId: ev.params.backendNodeId }, setSendId: null, setResult: null, setError: null };
+        const sp = send('DOM.setFileInputFiles', rec.answer.setParams); rec.answer.setSendId = msgId;
+        try { rec.answer.setResult = (await sp).result; } catch (e) { rec.answer.setError = errObj(e); }
+        await sleep(600);
+      }
+      while (Date.now() - triggerAt < MIN_OBSERVE_MS) await sleep(50);
+    }
+    await setLeg('settle');
+    await sleep(SETTLE_MS);
+    rec.activationAfter = JSON.parse(await evalValue(ACT_EXPR));
+    rec.stateAfter = JSON.parse(await evalValue('window.__state()'));
+    if (chooserCount() > before && leg.intercept && !leg.intercept.cancel) {
+      const p = send('Page.setInterceptFileChooserDialog', { enabled: true, cancel: true }); rec.dismissSendId = msgId;
+      try { rec.dismissResult = (await p).result; } catch (e) { rec.dismissError = errObj(e); }
+      await sleep(SETTLE_MS);
+      rec.stateAfterDismiss = JSON.parse(await evalValue('window.__state()'));
+    }
+    const record = JSON.parse(await evalValue('window.__closeRecord()'));
+    rec.pageEvents = record.events;
+    rec.marks = record.marks;
+    rec.closedAt = record.closedAt;
+    await sleep(SETTLE_MS);
+    rec.lateAfterClose = await evalValue('window.__late');
+    rec.stderrHead = stderrHead.slice(0, 2000);
+    const dl = /DevTools listening on (ws:\/\/127\.0\.0\.1:(\d+)\/devtools\/browser\/([0-9a-f-]{36}))/.exec(stderrHead);
+    rec.devtoolsListening = dl ? { url: dl[1], port: Number(dl[2]), browserId: dl[3] } : null;
+  } catch (e) {
+    rec.errors.push('drive-error: ' + (e && e.message ? e.message : String(e)));
+  } finally { await teardown(); }
+  launchSeq++;
+  return rec;
+}
+
+for (const leg of LEGS) {
+  const rec = await runLeg(leg);
+  if (!receipt.frameTree && rec.frameTree) receipt.frameTree = rec.frameTree;
+  if (!receipt.host.cdpProduct && rec.cdpProduct) receipt.host.cdpProduct = rec.cdpProduct;
+  if (!receipt.host.cdpProtocolVersion && rec.cdpProtocolVersion) receipt.host.cdpProtocolVersion = rec.cdpProtocolVersion;
+  if (!receipt.fixtureInputs && rec.fixtureInputs) receipt.fixtureInputs = rec.fixtureInputs;
+  if (rec.errors.length) receipt.failures.push({ leg: leg.name, errors: rec.errors });
+  receipt.legs.push(rec);
+  fs.writeFileSync(outReceipt, JSON.stringify(receipt, null, 1));
+  console.error('leg ' + leg.name + ' done, errors=' + rec.errors.length + ' showPicker=' + JSON.stringify(rec.showPicker) + ' choosers=' + rec.cdpEventLog.filter((e) => e.method === 'Page.fileChooserOpened').length);
+}
+receipt.finishedAt = new Date().toISOString();
+fs.writeFileSync(outReceipt, JSON.stringify(receipt, null, 1));
+console.log(JSON.stringify({
+  schema: SCHEMA, legs: receipt.legs.length, failures: receipt.failures,
+  summary: receipt.legs.map((l) => ({ name: l.name, showPicker: l.showPicker, showPicker2: l.showPicker2, deferred: l.deferredResult, choosers: l.cdpEventLog.filter((e) => e.method === 'Page.fileChooserOpened').map((e) => [e.params.mode, e.params.backendNodeId]), act: [l.activationBefore, l.activationAfter], state: l.stateAfter, child: l.childResult, childAct: [l.childActivationBefore, l.childActivationAfter], childState: l.childState, answer: l.answer })),
+}, null, 1));
+process.exitCode = receipt.failures.length === 0 ? 0 : 1;

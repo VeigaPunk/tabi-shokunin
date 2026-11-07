@@ -1115,3 +1115,20 @@ the report, under the frozen predicates in `.ufo/waves/round-65/claims.json`.
 ## Round 79 coverage (2026-11-07)
 
 - Programmatic picker invocation, `HTMLInputElement.showPicker()`, under `Page.setInterceptFileChooserDialog` on Chromium 155/Linux `--headless=new` (new ground; capability `chromium-showpicker-linux`): `corpus/knowledge/chromium-showpicker-runtime-round-79.md` (S216–S218 new); evidence `corpus/evidence/round79/chromium-showpicker/` and the four pre-freeze receipts under `.ufo/waves/round-79/controls/c1/probes/`. Measured: the `NotAllowedError` gesture refusal with its exact message and no chooser event (interception on and off); one activation buys exactly one picker (the second call refuses, `isActive` consumed); `Runtime.evaluate {userGesture:true}` satisfies the check without `isActive`; a disabled input refuses `InvalidStateError` and does NOT consume the activation; the chooser mode follows the page-measured input; interception off auto-cancels the native dialog (page `cancel`); an armed `cancel:true` fires the chooser event and the page `cancel`; `showPicker()` never selects files and fires no pointer event. The exemption interface is content-bound (`--tree-exempt-sha256`; a path is refused). Frontier: `showPicker()` on `webkitdirectory`/`accept` inputs, the cross-origin `SecurityError`, the programmatic-trigger-then-answer combination, and whether the mutability check precedes the gesture check when both fail.
+
+## Round 80 coverage (2026-11-07)
+
+- Programmatic picker invocation, generation r80 — the r79 frontier legs moved into core (capability
+  `chromium-showpicker-linux`, first-working round 79): `corpus/knowledge/chromium-showpicker-runtime-round-80.md`
+  (S219–S221 new; S216–S218 carried); evidence `corpus/evidence/round80/chromium-showpicker/` and the
+  four pre-freeze receipts under `.ufo/waves/round-80/controls/c1/probes/`. Measured: a `webkitdirectory`
+  input and an `accept`-constrained input both open `selectSingle`; two `userGesture` calls both succeed
+  and open two pickers (no already-open guard); a `setTimeout(0)` call from a trusted click's handler
+  keeps the activation; a cross-origin iframe's FILE input is exempt from the SecurityError (S219/S220)
+  and opens while the parent cannot reach the child document; a disabled cross-origin file input throws
+  `InvalidStateError` without consuming activation; the trigger ANSWERED with `DOM.setFileInputFiles`
+  on the event's `backendNodeId` delivers the exact bytes and fires trusted `input`+`change`. The
+  measured order disagreement (cross-origin disabled `type=text` → `SecurityError` in Chromium vs
+  `InvalidStateError` per spec) is frontier evidence from R80Scout, not a capability leg. Frontier: a
+  non-file cross-origin leg (the SecurityError inside the receipt), a `webkitdirectory` answer leg, an
+  `accept`-filtered answer, and a real click while a picker is open.

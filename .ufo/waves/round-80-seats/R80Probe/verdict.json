@@ -1,0 +1,60 @@
+{
+  "seat": "R80Probe",
+  "wave": "round-80/w1",
+  "hypothesis": "H: user activation is per-frame-tree, so a trusted click inside the cross-origin iframe makes the PARENT window's navigator.userActivation.isActive true, and the child's successful showPicker() consumes it tree-wide (the parent's isActive returns false).",
+  "verdict": "CONFIRMED",
+  "conjuncts": {
+    "childClickMakesParentActive": {
+      "expected": "parent isActive true while child's showPicker has not yet run",
+      "measured": { "isActive": true, "hasBeenActive": true },
+      "holds": true,
+      "ordering": "parent read at midAtMs=1 after the child's page-side click mark (window.__mark.clicked=true), with the child's showPicker still gated behind window.__gate=0; chooserWaitMs=21 after gate release"
+    },
+    "childShowPickerConsumesTreeWide": {
+      "expected": "parent isActive false after the child's successful showPicker()",
+      "measured": { "isActive": false, "hasBeenActive": true },
+      "holds": true,
+      "evidenceOfSuccess": "child showPicker returned ok:true and exactly one Page.fileChooserOpened (mode selectSingle, backendNodeId 7) fired; child isActive also false after"
+    }
+  },
+  "timeline": [
+    { "point": "before trusted child click", "parent_127.0.0.1:19280": { "isActive": false, "hasBeenActive": false }, "child_127.0.0.1:19282": { "isActive": false, "hasBeenActive": false } },
+    { "point": "after trusted child #go click, BEFORE child showPicker (gate held)", "parent_127.0.0.1:19280": { "isActive": true, "hasBeenActive": true }, "child_127.0.0.1:19282": { "isActive": true, "hasBeenActive": true } },
+    { "point": "after child showPicker ok:true, chooser open", "parent_127.0.0.1:19280": { "isActive": false, "hasBeenActive": true }, "child_127.0.0.1:19282": { "isActive": false, "hasBeenActive": true } },
+    { "point": "settle (parent read)", "parent_127.0.0.1:19280": { "isActive": false, "hasBeenActive": true } }
+  ],
+  "clickTrust": { "events": ["pointerdown", "mousedown", "pointerup", "mouseup", "click"], "isTrusted": true, "target": "go", "childActAtPointerdown": true },
+  "run": {
+    "nonce": "tabi-r80-r80probe-act1",
+    "exit": 0,
+    "legErrors": [],
+    "chooserCount": 1,
+    "chooserMode": "selectSingle",
+    "childContextId": 3,
+    "parentFrameId": "44DE633627AC65669E1CACB47665A995",
+    "childFrameId": "33036095E5B3B2F34C93758FCF7BF122",
+    "markWaitMs": 1,
+    "midAtMs": 1,
+    "chooserWaitMs": 21,
+    "childLate": 0,
+    "lateAfterClose": 0,
+    "teardown": { "sweepRounds": 0, "survivors": [], "portProbes": "all closed", "postKillCurl": "all 7" },
+    "startedAt": "2026-11-07T22:27:53.236Z",
+    "finishedAt": "2026-11-07T22:27:59.181Z"
+  },
+  "host": { "chromium": "Chromium 155.0.8059.84 Arch Linux", "cdpProduct": "Chrome/155.0.8059.84", "node": "v24.21.0" },
+  "method": "Frozen scripts/chrome-cdp-showpicker-round80.mjs copied to probe-activation.mjs (seat dir). Changes: LEGS replaced by one activation-tree-probe leg; child #go handler marks window.__mark then defers showPicker() behind window.__gate; probe reads parent context (Runtime.evaluate, default context) before releasing the gate and after the chooser opens; fixture template still extracted byte-identical from the lane's frozen round-78 driver at runtime; Page.setInterceptFileChooserDialog enabled; one fresh browser, per-leg HOME/profile.",
+  "provenance": {
+    "probeDriverSha256": "9b81edaabfdecf3702b360870b3765dcea8a7ec303bdc5116a0ace7fef4d5a62",
+    "fixtureSha256": "08ff913420a6aa54187eb6b861e502b82092ae4f96182a87845af19809040067",
+    "childHtmlSha256": "8b908a15f2fbeeddf52a9b04c359f414f136941a8d005fe2219d71a215e7021d",
+    "frozenSourceDriverSha256": "cb93935c017daf1ca5ae654f0992e63ad0785042ee2566619623ae8bab4b19cc"
+  },
+  "corroborationFromFrozenReceipt": "Frozen leg sp80-cross-origin-disabled: parent settle read {isActive: true, hasBeenActive: true} after the child's NON-consuming InvalidStateError call - independently shows a child-frame click does activate the parent; my mid-read confirms it for transient activation before consumption.",
+  "artifacts": {
+    "rawReceipt": ".ufo/waves/round-80-seats/R80Probe/probe-activation.json",
+    "probeDriver": ".ufo/waves/round-80-seats/R80Probe/probe-activation.mjs",
+    "reports": [".ufo/waves/round-80/w1/R80Probe.md", ".ufo/waves/round-80/w1/R80Probe/report.md"]
+  },
+  "scope": "Frontier probe evidence for r81 planning; NOT a capability leg, NOT counter-scored, no claim amended."
+}

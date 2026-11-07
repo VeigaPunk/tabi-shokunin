@@ -3830,3 +3830,48 @@ Planned (r79): a `--tree-exempt` bound by sha256 rather than path; a `showPicker
 - Carried: round-78 routed defect 3a (the 21 R78Mut1 survivors as r78-counter battery cases) is the wave's `R79Exec4` seat, reported as wave evidence, never as a C1 leg. Defect 6 (the capability-status command limit) is answered by C2's `provisional 1` predicate.
 
 Planned (r80): the `showPicker` frontier legs the wave probes (webkitdirectory/accept inputs, the cross-origin `SecurityError`, the programmatic-trigger-then-answer combination), the r78 survivors' battery as a frozen instrument, and the wave's mutation survivors. Retired: none.
+
+## Correction — round 79 record drift (round 80, append-only)
+
+Counted by `scripts/check-record-drift-r80.mjs` (before 17 mismatches, after 0). The round-79 entry
+above is not rewritten:
+- 88 cases → 90 cases (the committed r79 battery is 90 cases).
+- 66 semantic mutants → 64 semantic mutants (the committed r79 kill power is 64 mutants, 0 survivors).
+- the r79 lesson's dead red-state pointer lesson-proof/kp-run1.json → withdrawn (never committed).
+- the r79 report's dead scored pointer c1-killpower-a.json → selftest-r79-gates.out.
+- the r79 report's dead short hash f154beee → f154beeff14e349b84fa0d236461132295b7c017.
+
+## Round 80 — 2026-11-07 (Linux host)
+
+Claims: C1 coverage — capability `chromium-showpicker-linux` generation r80 (the r79 frontier legs);
+C2 calibration — record drift (r79 routed defects 1–4) plus the self-drift leg (defect 8).
+
+1. **C1.** Driver `scripts/chrome-cdp-showpicker-round80.mjs` (7 legs), counter
+   `scripts/check-showpicker-r80.mjs` (57 checks), battery `scripts/negatives-showpicker-r80.mjs`
+   (102 cases), kill power `scripts/kill-power-r80.mjs` (80 mutants), selftest
+   `scripts/selftest-r80-gates.mjs`. Scored receipt
+   `corpus/evidence/round80/chromium-showpicker/receipt.json` (nonce `tabi-r80-l1-211962dccb61`,
+   digests commit D `211962dccb618982638a74865ea616c6ca33e986`): counter clean 57 checks, battery
+   102/102, kill power 80/80 with 0 survivors, selftest 9/9. The measured laws (webkitdirectory and
+   accept both `selectSingle`; two gesture calls open two pickers; the deferred timer keeps the
+   activation; the cross-origin file input is exempt from the SecurityError; the disabled
+   cross-origin input throws `InvalidStateError` without consuming activation; the trigger answered
+   by `DOM.setFileInputFiles` delivers the exact bytes) are in
+   `corpus/knowledge/chromium-showpicker-runtime-round-80.md`.
+2. **C2.** `scripts/check-record-drift-r80.mjs` (19 claims): before 17 mismatches
+   (`lesson-proof/c2-before.json`), after 0. The r79 corrections are append-only directional pairs
+   and every pair of the same shape must name the true value (a second wrong correction is a
+   mismatch); the self-drift leg reads the scored VERDICTS (clean, 0 failed, 0 survivors) and the
+   numbers from the committed scored outputs. Controls: reverse-correction → `sc-79-battery`,
+   stale-removed → `log-79-cases`, truth-moved → the five self claims (`lesson-proof/c2-controls.json`).
+3. **Frontier step.** `corpus/SOURCES.md` 218 → 221 rows (S219 WHATWG showPicker exemption, S220
+   Chromium 155 `html_input_element.cc`, S221 CDP Page.pdl), all opened this round with located
+   quotes in the lesson's Gate; census start exit 0 (218), end exit 0 (221). Mistakes mined: 5 rows
+   in `corpus/lessons/round-80.md` `## Mistakes`.
+4. **Wave w1.** One v1 wave, 12 seats (5 executor incl. the labrat probe and the C2-controls seat,
+   2 reviewer, 1 critic, 1 mutation-tester, 1 scout, 1 scribe, 1 connector); attack roles 4/12 = 33 %;
+   spec/dispatch/ready/results under `.ufo/waves/round-80/`.
+5. **Assimilation: none** (`merge/tabi/` adoption stays closed pending the open L0 `tabi | round-57`);
+   `considerthese/`: no such directory in this lane.
+
+Scored (r80): battery 102/102, kill power 80/80, 57 checks.

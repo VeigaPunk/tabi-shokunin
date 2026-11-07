@@ -20,12 +20,12 @@ the scored receipt with `prior-set-unparsable` (finding B3).
 | predicate's D (assignment) | `f9ece6562c94` (D3) |
 | predicate nonce | `tabi-r80-l1-f9ece6562c94` |
 | scored receipt at the third read | sha256 `29f376f1b041aa98c45f7326eab8ba52797ed9e4547b31ab42e6ad4d03225955`, nonce `tabi-r80-l1-045fccc58817`, fixture `2be976df70d04ee1a655308ecc16921310bd4617ce613e7fb88bc997cbcb706e`, 7 legs, 22:33:30Z-22:34:06Z |
-| scored receipt at the final read | **in flight**: nonce `tabi-r80-l1-a1b142849e91`, 3 of 7 legs, `finishedAt: null`, 22:35:45Z- |
+| scored receipt at the final read | sha256 `6a15ebaa5f4ee5508984946f5c4eff51a32738fa69432a388a6294e74a63e024`, nonce `tabi-r80-l1-a1b142849e91`, fixture `171c94c2…`, 7 legs, 22:35:45Z-22:36:18Z |
 | receipt earlier in the review | `f3a8cdf4…`, nonce `tabi-r80-l1-53ecca8411dc` (D5), fixture `ed350e1e…` |
 | receipt before that | `75b47db3…`, nonce `tabi-r80-l1-b25608296008` (D4), fixture `43490c81…` |
 
-The scored receipt was rewritten four times during the review (D4, D5, D6 runs, and a D8 run still in
-flight at 22:36Z), each with a new nonce derived from the new commit. The D3 receipt — the one the
+The scored receipt was rewritten four times during the review (D4, D5, D6 and D8 runs), each with a
+new nonce derived from the new commit. The D3 receipt — the one the
 frozen predicate names — was overwritten and no longer exists anywhere in the lane
 (`grep -rl 'tabi-r80-l1-f9ece6562c94' --include='*.json'` finds only seat-side copies made by other
 seats, never a receipt at the predicate path).
@@ -34,9 +34,9 @@ seats, never a receipt at the predicate path).
 
 | leg | verdict | evidence |
 |---|---|---|
-| (a) scored run, frozen nonce, clean 57 | **FALSE** | (1) no artifact carries the frozen nonce; the path held `045fccc58817` at the third read and is mid-write with `a1b142849e91` at the final read. Counter with the frozen nonce: exit 1, 57 checks, finding `nonce-expected` only (seat `cur-frozennonce-newcounter.json`). (2) The D5 receipt was refused by the frozen counter on `replay-event-timeline`. (3) The D6 receipt passes the D8 counter clean 57 (`d8-on-d6.json`, preserved copy) — but with the D6 nonce, not the frozen one. |
+| (a) scored run, frozen nonce, clean 57 | **FALSE** | (1) no artifact carries the frozen nonce; the path held `045fccc58817` at the third read and `a1b142849e91` at the final read. Counter with the frozen nonce: exit 1, 57 checks, finding `nonce-expected` only (seat `cur-frozennonce-newcounter.json`). (2) The D5 receipt was refused by the frozen counter on `replay-event-timeline`. (3) The D6 receipt passes the D8 counter clean 57 (`d8-on-d6.json`, preserved copy) — but with the D6 nonce, not the frozen one. (4) The final D8 receipt (`a1b142849e91`, sha256 `6a15ebaa…`) is refused with `prior-set-complete` because a new probe4 sits in the walked controls dir (B4). |
 | (b) >=4 cold runs, zero honest refusals | **FALSE / unevidenced** | `scored/cold-runs.txt` does not exist. Two cold receipts exist (`R80Exec1/cold1.json`, `R80Exec2/receipt-cold3.json`), nonces `tabi-r80-cold1-f9ece6562c94` / `tabi-r80-cold3-f9ece6562c94`; both exit 0 clean (57) under the frozen counter and under the current counter. Neither is listed; there are not 4. |
-| (c) battery 103/103 + kill power 81/81 on the (a) receipt | **FALSE as frozen** | Frozen battery on the D6 receipt: exit 1, **103/103 cases fail** (the honest case is refused by `replay-event-timeline`). The committed `scored/battery-a.json` itself records `failed: 1` (`replay-below-threshold-accept`). At D8 the battery declares **102** cases (the gap-only case was removed with the gap side) and passes 102/102, coverage 57/57, on the D6 receipt (`bat-d8` run); kill power at D8 is **80** mutants, 80 killed, 0 survived, 0 crashed (`killpower-d8.json`). Both counts are below the predicate's 103/81, and both were measured on the D6 receipt, not the frozen-nonce one. |
+| (c) battery 103/103 + kill power 81/81 on the (a) receipt | **FALSE as frozen** | Frozen battery on the D6 receipt: exit 1, **103/103 cases fail** (the honest case is refused by `replay-event-timeline`). The committed `scored/battery-a.json` itself records `failed: 1` (`replay-below-threshold-accept`). At D8 the battery declares **102** cases (the gap-only case was removed with the gap side) and passes 102/102, coverage 57/57, on the D6 receipt (my D8 rerun); kill power at D8 is **80** mutants, 80 killed, 0 survived, 0 crashed (`killpower-d8.json`). Both counts are below the predicate's 103/81, and both were measured on the D6 receipt, not the frozen-nonce one. |
 | (d) row + note + registry + selftest | **FALSE** | `corpus/knowledge/chromium-showpicker-runtime-round-80.md` absent; no `## Round 80 gate registry` in `SKILL.md`; `selftest-r80-gates.mjs` exit 1, failed `pins-match-freeze`, `kill-power`, `record-drift`. |
 | C2 (a) drift 0 | **FALSE** | `check-record-drift-r80.mjs` exit 1, **7 mismatches**: `sc-80-numbers`, `log-80-numbers`, `skill-80-numbers`, `lesson-80-numbers`, `report-80-numbers`, `claims-80-numbers`, `scored-80-present`. |
 | C2 (d) capability status | **TRUE** | `check-capability-status.mjs` exit 0, mismatches 0, provisional 1. |
@@ -80,6 +80,15 @@ so the verdict depended on other seats' prose. D8 (commit `a1b14284`) narrowed t
 files or files whose first non-space byte is `{`, and the real-lane run became clean again. The fix
 is correct in direction, but it is a fifth post-freeze counter amendment (B2), and the underlying
 hazard remains for any `.json` or `{`-prefixed file a seat writes into the walked trees.
+
+### B4 — BLOCKER (final state): a probe added to the walked tree after the freeze refuses the scored receipt
+At 22:39:22Z `.ufo/waves/round-80/controls/c1/probes/tabi-r80-probe4.json` (nonce `tabi-r80-probe4`,
+7 legs) appeared in the walked controls directory. The frozen prior set (`prior-set.txt`, sha256
+`ecd70ecc…`, three probes) does not list it, and it is neither the receipt under test nor exempted,
+so the counter refuses the scored receipt with `prior-set-complete` (seat `final-d8-real.json`). The
+scored receipt cannot be clean while probe4 sits in the walked tree: adding it to the prior set would
+amend the frozen prior set, and removing it would delete a run artifact. Same class as B3 — the
+walked tree is part of the input, and any unlisted schema receipt in it is a refusal.
 
 ### H1 — HIGH: the fixture is unpinned; a receipt from a different page passes
 `fixture-hash` compares `r.fixture.sha256` with `--expect-fixture-sha256`, and the predicate derives

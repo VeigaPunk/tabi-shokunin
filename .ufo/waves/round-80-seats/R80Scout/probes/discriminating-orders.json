@@ -1,0 +1,42 @@
+{
+  "measuredAt": "2026-11-07T22:44:54.996Z",
+  "chromium": "Chrome/155.0.8059.84",
+  "chromiumPath": "/usr/bin/chromium",
+  "driver": "R80Scout discriminating probe (read-only seat)",
+  "parentOrigin": "http://127.0.0.1:18761",
+  "childOrigin": "http://127.0.0.1:18762",
+  "crossOriginBy": "different port => different origin",
+  "sourceOrderChromium": "html_input_element.cc:2652-2682 -> 2657 cross-origin(SecurityError, skipped for kInputFile/kInputColor), 2666 mutability(InvalidStateError), 2673 gesture(NotAllowedError)",
+  "sourceOrderSpec": "WHATWG #dom-input-showpicker -> step 1 mutability(InvalidStateError), step 2 cross-origin(SecurityError), step 3 gesture(NotAllowedError)",
+  "cases": {
+    "A_childOrigin_text": {
+      "expected": "SecurityError",
+      "observed": "{\"id\":\"text\",\"ok\":false,\"name\":\"SecurityError\",\"message\":\"Failed to execute 'showPicker' on 'HTMLInputElement': showPicker() called from cross-origin iframe.\"}"
+    },
+    "B_childOrigin_textDisabled": {
+      "expected": "SecurityError (mutability NOT reached)",
+      "observed": "{\"id\":\"text_disabled\",\"ok\":false,\"name\":\"SecurityError\",\"message\":\"Failed to execute 'showPicker' on 'HTMLInputElement': showPicker() called from cross-origin iframe.\"}"
+    },
+    "D_childOrigin_file": {
+      "expected": "NotAllowedError (File Upload exemption skips SecurityError)",
+      "observed": "{\"id\":\"file\",\"ok\":false,\"name\":\"NotAllowedError\",\"message\":\"Failed to execute 'showPicker' on 'HTMLInputElement': HTMLInputElement::showPicker() requires a user gesture.\"}"
+    },
+    "E_childOrigin_fileDisabled": {
+      "expected": "InvalidStateError (File Upload exemption skips SecurityError)",
+      "observed": "{\"id\":\"file_disabled\",\"ok\":false,\"name\":\"InvalidStateError\",\"message\":\"Failed to execute 'showPicker' on 'HTMLInputElement': HTMLInputElement::showPicker() cannot be used on immutable controls.\"}"
+    },
+    "C_sameOrigin_textDisabled": {
+      "expected": "InvalidStateError",
+      "observed": "{\"id\":\"text_disabled\",\"ok\":false,\"name\":\"InvalidStateError\",\"message\":\"Failed to execute 'showPicker' on 'HTMLInputElement': HTMLInputElement::showPicker() cannot be used on immutable controls.\"}"
+    }
+  },
+  "childFrameFacts": {
+    "childOrigin": "http://127.0.0.1:18762",
+    "childIsTopLevel": false,
+    "parentContentDocumentNull": true,
+    "parentWindowDocumentThrows": "SecurityError",
+    "childContextId": 3,
+    "parentContextId": 1
+  },
+  "conclusion": "Case B is the discriminator: Chromium reports SecurityError for a cross-origin DISABLED non-file input, i.e. its cross-origin check precedes its mutability check. The spec orders mutability first, so the spec would report InvalidStateError for the same call. Cases D/E show the file/color exemption removes the cross-origin branch, making the two orders indistinguishable for file inputs (hence the r80 cross-origin legs cannot discriminate, and cannot reach the SecurityError branch at all)."
+}

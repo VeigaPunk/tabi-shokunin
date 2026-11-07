@@ -213,3 +213,19 @@ gated by `scripts/check-showpicker-r79.mjs` (56 checks) with the note
 `corpus/knowledge/chromium-showpicker-runtime-round-79.md`. The answer law stays the r77/r78
 file-chooser capability. Frontier: `showPicker()` on `webkitdirectory`/`accept` inputs, the
 cross-origin `SecurityError`, and the trigger-then-answer combination.
+
+## Round 80 — generation r80 of the programmatic picker (core)
+
+The r79 frontier is now core: a `webkitdirectory` input and an `accept`-constrained input both open
+`selectSingle`; two `userGesture` calls both succeed and open two pickers (no already-open guard); a
+`setTimeout(0)` call from a trusted click's handler keeps the activation; a cross-origin iframe's FILE
+input is exempt from the SecurityError (S219/S220) and opens while the parent cannot reach the child
+document (`contentDocument === null`, `contentWindow.document` throws); a disabled cross-origin file
+input throws `InvalidStateError` without consuming activation; the trigger ANSWERED with
+`DOM.setFileInputFiles` on the event's `backendNodeId` delivers the exact bytes and fires trusted
+`input`+`change`. Gated by `scripts/check-showpicker-r80.mjs` (57 checks) with the note
+`corpus/knowledge/chromium-showpicker-runtime-round-80.md`. The cross-origin NON-file branch (the
+SecurityError, and Chromium's cross-origin-before-mutability order) is measured frontier evidence
+(R80Scout), not yet a capability leg; the same holds for the `webkitdirectory` answer, the
+`accept`-filtered answer, and a real click while a picker is open. Refusal routes unchanged: no
+external-site interaction, no credential content, loopback only.

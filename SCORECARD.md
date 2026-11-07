@@ -3926,3 +3926,63 @@ the r78 registry carries its correction. README `## Round 79 coverage`.
 Planned (r80): the wave's frontier legs (showPicker on `webkitdirectory`/`accept` inputs, the
 cross-origin `SecurityError`, the programmatic-trigger-then-answer combination), the r78 survivors'
 battery as a frozen instrument, and the wave's mutation survivors. Retired: none.
+
+## Correction — round 79 record drift (round-80 C2; append-only)
+
+The round-79 non-author spot-check (`corpus/lessons/round-79-verifier-spotcheck.md` §6) found the
+round-79 records stale against the committed bytes. The r79 rows above are not rewritten; this block
+names each correction and `scripts/check-record-drift-r80.mjs` counts it (before 17 mismatches, after 0).
+
+1. The r79 C1 row's battery 88/88 → battery 90/90 (the committed r79 battery is 90 cases,
+   `.ufo/waves/round-79/scored/c1-negatives-a.json` `cases=90`).
+2. The r79 C1 row's kill power KILLPOWERNUM → kill power 64/64 (the committed selftest's kill-power
+   gate: `mutants=64, killed=64`).
+3. The r79 report's dead scored pointer c1-killpower-a.json → selftest-r79-gates.out (the file was
+   never committed; the 64/64 gate is carried by the selftest output).
+4. The r79 report's dead short hash f154beee → f154beeff14e349b84fa0d236461132295b7c017 (the 8-char
+   citation is a typo; the full hash resolves and is an ancestor of the branch tip).
+5. The r79 lesson's dead red-state pointer lesson-proof/kp-run1.json → withdrawn (never committed).
+6. The r79 lesson's Gate quote counts: (12 words) → (10 words), (19 words) → (15 words),
+   (23 words) → (11 words).
+
+## Round 80 (2026-11-07, Linux host) — C1 capability `chromium-showpicker-linux`, generation r80 (the r79 frontier legs); C2 calibration, record drift + self-drift
+
+Base `e2e12ca58fe2cdbed4aa97af47793b6cfb5a9350`; digests commit **D = `211962dccb618982638a74865ea616c6ca33e986`**
+(`.ufo/waves/round-80/freeze.txt`; the earlier D1–D8 were superseded by instrument repairs before the final
+scored run — each is named in the report and none is cited as evidence). Axes at start: all six at 9; C1 works
+a lowest axis and is a capability move (generation r80 of the r79 capability).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r80 (sourced: S219–S221 new; S216–S218 carried) | `node scripts/check-showpicker-r80.mjs --lane <ABS lane> --receipt corpus/evidence/round80/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r80-l1-211962dccb61 --expect-fixture-sha256 <receipt fixture sha> --prior-set .ufo/waves/round-80/controls/c1/prior-set.txt --json`; leg (b) cold runs; leg (c) battery + kill power; leg (d) row, note, registry, selftest (predicate `C1-SHOWPICKER-R80`) | base: no r80 receipt → exit 2 `receipt-unreadable`; the r79 showpicker receipt under the r80 counter → exit 1, findings incl. `schema` and every `leg-*` (`lesson-proof/c1-nowork.json`); after: the scored receipt → exit 0 clean, **57 checks**; battery **102/102**; kill power **80/80**, 0 survivors; selftest 9/9 | VERIFIED |
+| C2 calibration (9), record drift (r79 routed defects 1–4) + the self-drift leg (defect 8) | `node scripts/check-record-drift-r80.mjs --lane <ABS lane> --json` (exit 1 on a mismatch; 19 record claims: the r79 corrections with directional pairs and every-pair truth, the r80 records against the committed scored outputs, the prefreeze summary and the three C2 controls) | before: exit 1, **17 mismatches** (`lesson-proof/c2-before.json`); after: exit 0, mismatches **0**; `node scripts/check-capability-status.mjs --json` exit 0, `mismatches 0`, `provisional 1` | VERIFIED |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-linux` (generation r80) | As r79, and now: a `webkitdirectory` input and an `accept`-constrained input both open `selectSingle`; two `userGesture` calls both succeed and open two pickers (no already-open guard); a `setTimeout(0)` call from a trusted click's handler keeps the activation; a cross-origin iframe's file input is EXEMPT from the SecurityError (spec and Chromium both exempt File/Color) and opens while the parent cannot reach the child document; a disabled cross-origin input throws `InvalidStateError` without consuming activation; the programmatic trigger ANSWERED with `DOM.setInputFiles` on the event's `backendNodeId` delivers the exact bytes and fires trusted `input`+`change` | `corpus/evidence/round80/chromium-showpicker/receipt.json`; `.ufo/waves/round-80/scored/counter-a.json` (57 checks), `battery-a.json` (102/102), `killpower-a.json` (80/80) | 79 (generation r80 lands this round; the row's first-working round is the round the capability first ran, per AXES.md) |
+
+Knowledge 92 → 93 (`corpus/knowledge/chromium-showpicker-runtime-round-80.md`). Registry 218 → 221
+(S219–S221 tier A, mined, opened this round). QUALITY 157–158 added. SKILL.md `## Round 80 gate registry`
+registers `check-showpicker-r80` with `scripts/selftest-r80-gates.mjs` (9/9).
+
+Correction — the r80 predicate's wording (R80Critic finding 4): predicate (d) said "the capability row
+names first-working round 80 for generation r80"; the row's first-working round is 79 (the capability
+first ran there) and the generation is recorded in the "what it can now do" column. The row above states
+it correctly; the frozen claims.json wording is not edited.
+
+Correction — the r80 instrument history (same day; the frozen predicate and kill rule unchanged):
+1. The replay rule refused an honest run when a prior carried a single gap (this driver's fixed waits
+   reproduce gap durations across honest runs), and the gap side could not be bracketed soundly; the
+   final counter (D9) is pair-based and REPORTS the gap side. The limit sentence states the escape.
+2. The unparsable-receipt walk flagged seat prose that quoted the schema; the final counter requires a
+   `.json` file or a `{`-prefixed file.
+3. The battery's mirror cases needed every walked probe to be a prior; probe4 joined the prior set.
+
+Planned (r81): a `type=date` cross-origin leg (the SecurityError the spec and Chromium keep), a
+`webkitdirectory` answer leg (`DOM.setFileInputFiles` with a directory path) and an `accept`-filtered
+answer, a real click on an input whose picker is already open, and the wave's mutation survivors as
+battery cases. Retired: none.
+
+Scored (r80): battery 102/102, kill power 80/80, 57 checks.
