@@ -1,0 +1,9 @@
+{
+ "observed": "round 78, first post-D cold run (L1-cold1, nonce tabi-r78-cold1-5e78b9f133d8)",
+ "driver_exit": 1,
+ "counter": {"verdict": "findings", "findings": [{"id": "producer-verdict", "detail": "producer predicate false hypothesis \"REFUTED\""}]},
+ "per_leg_diff": {"leg": "pick-multiple", "field": "opened", "want": [["selectMultiple", 7]], "got": [["selectMultiple", 10]]},
+ "cause": "the r78 driver fork still carried r77's LEG-SHAPE block with literal backendNodeIds, and its own predicate compared them, so the producer refused an honest run on an assigned id while the counter's new mode-only leg check accepted every one of its 186 checks",
+ "class": "the r77 defect (QUALITY 150) survived one layer down, in the producer's self-check",
+ "fix": "LEG_SHAPE `opened` entries hold the mode only; the predicate compares a mode projection (modeShape) of the reported legShape. Applied BEFORE any scored verdict: driver re-pinned to 0ae89d92..., all 10 pre-freeze receipts re-produced, the pre-freeze gate pass re-run, then a new digests commit D."
+}
