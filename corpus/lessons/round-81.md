@@ -23,7 +23,7 @@ Census start: `scripts/sources-census.sh validate --root /home/vgpnk/Projects/sh
   `https://html.spec.whatwg.org/multipage/input.html`. Opened 2026-11-07, http 200, 687,515 B,
   sha256 `b0202de1c0b4…`. Located quote (§4.10.5.1.17 File Upload state, the accept paragraph):
   "The accept attribute may be specified to provide user agents with a hint of what file types will
-  be accepted." (23 words, `wc -w`). Tier A for the hint-not-validation law.
+  be accepted." (20 words, `wc -w`). Tier A for the hint-not-validation law.
 
 Admitted: `corpus/knowledge/chromium-showpicker-runtime-round-81.md` (cites S219, S220, S222, S223;
 states the six measured laws with their receipt field paths and what a receipt of this shape cannot
