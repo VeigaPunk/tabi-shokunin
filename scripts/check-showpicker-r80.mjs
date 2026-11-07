@@ -554,7 +554,11 @@ for (const w of walked) {
   if (exemptHashes.includes(h)) exemptReal.add(w.path);
   let j = null; try { j = JSON.parse(bytes.toString('utf8')); } catch { j = null; }
   if (j === null) {
-    if (/tabi-chrome-cdp-showpicker-r80/.test(bytes.toString('utf8'))) unparsable.push(w.path);
+    // a prose report that QUOTES the schema is not a receipt: only a .json file, or a file whose
+    // first non-space byte is '{', can be an unparsable receipt (round-80 wave finding: seat reports
+    // in the walked tree quote the schema)
+    const txt = bytes.toString('utf8');
+    if ((/\.json$/i.test(w.path) || txt.trimStart().startsWith('{')) && /tabi-chrome-cdp-showpicker-r80/.test(txt)) unparsable.push(w.path);
     continue;
   }
   if (isObj(j) && j.schema === SCHEMA && !priorReal.has(w.path) && w.path !== selfReal && !exemptReal.has(w.path)) outside.push(w.path);
