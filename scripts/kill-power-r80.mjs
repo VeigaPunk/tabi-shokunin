@@ -109,7 +109,6 @@ const MUTANTS = [
   ['run-window-lower-dropped', "t1 - t0 >= 15000", "t1 - t0 >= 1"],
   ['run-window-upper-dropped', "t1 - t0 < 600000", "true"],
   ['replay-threshold-loose', "absMatched >= absNeed", "absMatched >= absNeed + 5"],
-  ['replay-gap-threshold-loose', "gapMatched >= gapNeed", "gapMatched >= gapNeed + 1"],
   ['replay-token-any', "priors.every((p) => arr(p.legs).every((q) => !isObj(q) || q.launchToken !== l.launchToken))", "true"],
   ['replay-token-duplicate-ok', "new Set(legs.map((l) => l.launchToken)).size === legs.length", "true"],
   ['replay-browser-any', "priors.every((p) => arr(p.legs).every((q) => !isObj(q) || !isObj(q.devtoolsListening) || q.devtoolsListening.browserId !== l.devtoolsListening.browserId))", "true"],

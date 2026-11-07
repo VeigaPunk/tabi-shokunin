@@ -512,10 +512,14 @@ const sims = priors.map((p) => {
   const np = pairs(p).length, gp = gapsOf(pairs(p)).length;
   const absMatched = pairMatch(own, pairs(p)), gapMatched = matchCount(ownGaps, gapsOf(pairs(p)));
   const absNeed = np > 0 ? Math.ceil(FRAC * np - 1e-9) : 0, gapNeed = gp > 0 ? Math.ceil(GAP_FRAC * gp - 1e-9) : 0;
-  return { priorEvents: np, priorGaps: gp, absMatched, gapMatched, absNeed, gapNeed, escapeEvents: np > 0 ? np - absNeed + 1 : 0, escapeGaps: gp > 0 ? gp - gapNeed + 1 : 0, refused: (np > 0 && absMatched >= absNeed) || (gp > 0 && gapMatched >= gapNeed) };
+  // The gap side is REPORTED, never a refusal: this driver's fixed waits (MIN_OBSERVE_MS,
+  // SETTLE_MS) reproduce the same gap durations across honest runs (measured: an honest receipt
+  // matches a prior's single gap within 0.05 ms), so a gap match is a driver artifact, not a
+  // fingerprint. The replay rule is pair-based; the limit sentence states the escape it leaves.
+  return { priorEvents: np, priorGaps: gp, absMatched, gapMatched, absNeed, gapNeed, escapeEvents: np > 0 ? np - absNeed + 1 : 0, refused: np > 0 && absMatched >= absNeed };
 });
 const replayIdx = sims.findIndex((s) => s.refused);
-check('replay-event-timeline', replayIdx === -1, 'pair/gap near-match within ' + TOL + ' ms of prior #' + replayIdx + ' ' + JSON.stringify(sims[replayIdx] || null) + ' (refuse when absMatched >= ceil(' + FRAC + ' * prior events) or gapMatched >= ceil(' + GAP_FRAC + ' * prior gaps); own events ' + own.length + ')');
+check('replay-event-timeline', replayIdx === -1, 'pair near-match within ' + TOL + ' ms of prior #' + replayIdx + ' ' + JSON.stringify(sims[replayIdx] || null) + ' (refuse when absMatched >= ceil(' + FRAC + ' * prior events); own events ' + own.length + ')');
 check('replay-launch-token', legs.every((l) => isObj(l) && typeof l.launchToken === 'string' && /^[0-9a-f]{12}$/.test(l.launchToken) && priors.every((p) => arr(p.legs).every((q) => !isObj(q) || q.launchToken !== l.launchToken))) && new Set(legs.map((l) => l.launchToken)).size === legs.length,
   'a launch token repeats a prior receipt\'s or another leg\'s');
 check('replay-devtools-url', legs.every((l) => isObj(l) && isObj(l.devtoolsListening) && priors.every((p) => arr(p.legs).every((q) => !isObj(q) || !isObj(q.devtoolsListening) || q.devtoolsListening.browserId !== l.devtoolsListening.browserId))) && new Set(legs.map((l) => l.devtoolsListening && l.devtoolsListening.browserId)).size === legs.length,
@@ -570,7 +574,7 @@ out({
   treeExemptSha256: exemptHashes, treeExemptResolved: [...exemptReal],
   nodeReport,
   limit: {
-    sentence: 'refuse when absMatched >= ceil(' + FRAC + ' * prior events) or gapMatched >= ceil(' + GAP_FRAC + ' * prior gaps); escape minimum = priorEvents - absNeed + 1 events and priorGaps - gapNeed + 1 gaps',
+    sentence: 'refuse when absMatched >= ceil(' + FRAC + ' * prior events); the escape minimum is priorEvents - absNeed + 1 moved events. The gap side is reported, not a refusal: this driver\'s fixed waits reproduce gap durations across honest runs, so a gap match is a driver artifact. A forger who moves fewer events but shifts EVERY event by a constant offset escapes this rule — that is the limit.',
     tolerance: TOL, gapMin: GAP_MIN, ownEvents: own.length, ownGaps: ownGaps.length, perPrior: sims,
   },
 }, verdict === 'clean' ? 0 : 1);

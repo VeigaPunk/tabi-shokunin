@@ -251,10 +251,8 @@ add('argv-profile-name', 'host-argv', (r) => { const l = legOf(r, 'sp80-accept-p
 add('devtools-url-prefix', 'host-argv', (r) => { const l = legOf(r, 'sp80-accept-png'); l.devtoolsListening.url = 'ws://127.0.0.1:1/devtools/browser/' + l.devtoolsListening.browserId; l.stderrHead = 'DevTools listening on ' + l.devtoolsListening.url; });
 add('run-window-upper', 'run-window', (r) => { r.finishedAt = new Date(Date.parse(r.startedAt) + 700000).toISOString(); });
 add('replay-token-duplicate', 'replay-launch-token', (r) => { legOf(r, 'sp80-accept-png').launchToken = legOf(r, 'sp80-twice-gesture').launchToken; }, ['host-argv']);
-add('replay-gap-only-refuse', 'replay-event-timeline', (r, ctx) => {
-  // the prior's every event shifted by +1 ms: no pair matches, the gap DURATIONS are preserved
-  return { args: ['--prior', freshPrior(ctx, 1)] };
-}, []);
+// (the gap side is reported, not a refusal: this driver's fixed waits reproduce gap durations
+// across honest runs, so a gap-only case would be a false-green — see the counter's limit block)
 
 
 // ---- isolating cases for the kill-power survivors (round-80 repair) ----
