@@ -423,8 +423,12 @@ accept('accept-grid-5e-6', (r) => { const e = evsOf(r, 'pick-same'); e[e.length 
 // The accepting side is therefore built so BOTH sides are below need: `keep` scattered events stay on
 // the receipt's times (they match) and every other event moves 10 s away (it cannot, and the prior's
 // gaps become long jumps that do not match the receipt's).
-const keepScattered = (p, keep) => { const even = p.events.map((_, i) => i).filter((i) => i % 2 === 0); const kept = new Set(even.slice(0, keep)); p.events.forEach((e, i) => { if (!kept.has(i)) { const d = 10000 + 7 * i; e.ts = q(e.ts + d); e.at = q(e.at + d); } }); return p; };
+const keepScattered = (p, keep, shift = 0) => { const even = p.events.map((_, i) => i).filter((i) => i % 2 === 0); const kept = new Set(even.slice(0, keep)); p.events.forEach((e, i) => { if (kept.has(i)) { e.ts += shift; e.at += shift; } else { const d = 10000 + 7 * i; e.ts = q(e.ts + d); e.at = q(e.at + d); } }); return p; };
 accept('accept-prior-scattered-below-threshold', () => {}, { prior: (p) => { priorIds(p); keepScattered(p, absNeed - 1); return placed(p, absNeed - 1, null); } });
+// TOL witness (QUALITY 143: every tolerance is bracketed on both sides): a prior whose events sit
+// 0.051 ms out — beyond 0.05, inside 0.06 — on `absNeed` scattered events, so it must ACCEPT at the
+// frozen tolerance and is refused as soon as the tolerance widens to 0.06 (kill power M-timeline-tol-0.06).
+accept('accept-prior-retimed-0.051-scattered', () => {}, { prior: (p) => { priorIds(p); keepScattered(p, absNeed, 0.051); return placed(p, null, null); } });
 accept('accept-prior-abs-below-threshold', () => {}, { prior: (p) => { priorIds(p); keepExactFar(p, absNeed - 1); return placed(p, absNeed - 1, null); } });
 accept('accept-prior-gap-below-threshold', () => {}, { prior: (p) => { priorIds(p); return placed(breakGaps(p, nGap - gapNeed + 1, gapNeed - 1), null, gapNeed - 1); } });
 accept('accept-own-gap-50.1', (r) => { shrinkGapBefore(r, GAP_LEG, 50.1); });
