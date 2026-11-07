@@ -1,0 +1,815 @@
+{
+ "schema": "tabi-r79-mut-r79mut1-summary",
+ "seat": "R79Mut1",
+ "counter": {
+  "path": "scripts/check-showpicker-r79.mjs",
+  "sha256": "0dc76277a870f71d21e0bc4e840246b85831b2dbed6e659ad270df3043cd3f76"
+ },
+ "battery": {
+  "path": "scripts/negatives-showpicker-r79.mjs",
+  "sha256": "8c64f8e04b4afeba56ceebc30f3987c3ce6b20f07c4c65d7515a496a927f5662"
+ },
+ "receipt": {
+  "pinnedCopy": "receipt-sweep.json (object copy preserved by the battery's honest case at sweep time)",
+  "nonce": "tabi-r79-l1-80830674d421",
+  "legs": 10,
+  "pageEvents": 37,
+  "fixtureSha256": "2e80efa0c96d4c3ccc952d9b54353d8c079e6c9156abbc3d78dfd38d0bc5c5c8",
+  "note": "the live corpus/evidence/round79/chromium-showpicker/receipt.json was being rewritten by another seat's scored run during this probe; every result here is bound to the pinned copy (nonce tabi-r79-l1-80830674d421, 10 legs, 37 events)"
+ },
+ "baseline": {
+  "schema": "tabi-r79-negatives-showpicker",
+  "cases": 90,
+  "passed": 90,
+  "failed": 0,
+  "coverage": {
+   "declared": 56,
+   "covered": 56,
+   "uncovered": [],
+   "unknown": []
+  },
+  "brackets": {
+   "replay": {
+    "priorEvents": 37,
+    "absNeed": 19,
+    "pairSide": "unshifted copy refuses; all-shifted copy accepts; the k-sweep crosses once and the verdict tracks the printed absMatched/gapMatched at every k",
+    "gapSide": "gap-intact refuses on gapMatched >= gapNeed; gap-upper shifted accepts"
+   },
+   "runWindow": {
+    "acceptAt": 20000,
+    "refuseAt": 10000
+   },
+   "chooserWaitMs": {
+    "acceptAt": [
+     0,
+     3000
+    ],
+    "refuseAt": "not bracketed (3001 not exercised)"
+   }
+  },
+  "unbracketed": [
+   "chooserWaitMs upper bound 3001",
+   "MIN_OWN_EVENTS 20 (a 19-event receipt is not constructible without breaking the leg shapes)",
+   "GAP_MIN 50 (the honest timeline carries 1-2 own gaps; no fixture leg produces a >= 50 ms inter-event gap to bracket)",
+   "the gap rule's INDEPENDENT kill (pair count below threshold while the gap count is at threshold): an event shift moves both sides at once, and the fixture's single gap cannot be retimed without moving one of its pair events, so the gap side is bracketed only by the unshifted copy (refused) and the all-shifted copy (accepted)"
+  ],
+  "results": [
+   {
+    "case": "schema",
+    "expect": "schema",
+    "ok": true,
+    "detail": "exit 1 ids [\"schema\"]"
+   },
+   {
+    "case": "lane",
+    "expect": "lane",
+    "ok": true,
+    "detail": "exit 1 ids [\"lane\"]"
+   },
+   {
+    "case": "nonce-shape",
+    "expect": "nonce-shape",
+    "ok": true,
+    "detail": "exit 1 ids [\"nonce-shape\",\"nonce-expected\"]"
+   },
+   {
+    "case": "nonce-expected",
+    "expect": "nonce-expected",
+    "ok": true,
+    "detail": "exit 1 ids [\"nonce-expected\"]"
+   },
+   {
+    "case": "receipt-fields",
+    "expect": "receipt-fields",
+    "ok": true,
+    "detail": "exit 1 ids [\"receipt-fields\"]"
+   },
+   {
+    "case": "driver-pin",
+    "expect": "driver-pin",
+    "ok": true,
+    "detail": "exit 1 ids [\"driver-pin\"]"
+   },
+   {
+    "case": "fixture-hash",
+    "expect": "fixture-hash",
+    "ok": true,
+    "detail": "exit 1 ids [\"fixture-hash\"]"
+   },
+   {
+    "case": "host-chromium",
+    "expect": "host-chromium",
+    "ok": true,
+    "detail": "exit 1 ids [\"host-chromium\"]"
+   },
+   {
+    "case": "host-node",
+    "expect": "host-node",
+    "ok": true,
+    "detail": "exit 1 ids [\"host-node\"]"
+   },
+   {
+    "case": "ports-declared",
+    "expect": "ports-declared",
+    "ok": true,
+    "detail": "exit 1 ids [\"ports-declared\",\"host-argv\",\"devtools-port-binding\"]"
+   },
+   {
+    "case": "frame-tree",
+    "expect": "frame-tree",
+    "ok": true,
+    "detail": "exit 1 ids [\"frame-tree\"]"
+   },
+   {
+    "case": "plan-frozen",
+    "expect": "plan-frozen",
+    "ok": true,
+    "detail": "exit 1 ids [\"plan-frozen\"]"
+   },
+   {
+    "case": "leg-order",
+    "expect": "leg-order",
+    "ok": true,
+    "detail": "exit 1 ids [\"plan-frozen\",\"leg-order\",\"leg-records\",\"cancel-law\"]"
+   },
+   {
+    "case": "leg-records",
+    "expect": "leg-records",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-records\",\"host-argv\"]"
+   },
+   {
+    "case": "leg-marks",
+    "expect": "leg-marks",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-marks\"]"
+   },
+   {
+    "case": "send-log-allowlist",
+    "expect": "send-log-allowlist",
+    "ok": true,
+    "detail": "exit 1 ids [\"send-log-allowlist\"]"
+   },
+   {
+    "case": "plan-calls",
+    "expect": "plan-calls",
+    "ok": true,
+    "detail": "exit 1 ids [\"plan-calls\"]"
+   },
+   {
+    "case": "cdp-event-log-closed",
+    "expect": "cdp-event-log-closed",
+    "ok": true,
+    "detail": "exit 1 ids [\"cdp-event-log-closed\",\"leg-sp-click-then-show\",\"intercept-law\"]"
+   },
+   {
+    "case": "frame-binding",
+    "expect": "frame-binding",
+    "ok": true,
+    "detail": "exit 1 ids [\"cdp-event-log-closed\",\"frame-binding\"]"
+   },
+   {
+    "case": "event-types",
+    "expect": "event-types",
+    "ok": true,
+    "detail": "exit 1 ids [\"event-types\"]"
+   },
+   {
+    "case": "event-time-quantum",
+    "expect": "event-time-quantum",
+    "ok": true,
+    "detail": "exit 1 ids [\"event-time-quantum\"]"
+   },
+   {
+    "case": "event-leg-window",
+    "expect": "event-leg-window",
+    "ok": true,
+    "detail": "exit 1 ids [\"event-leg-window\"]"
+   },
+   {
+    "case": "seq-monotonic",
+    "expect": "seq-monotonic",
+    "ok": true,
+    "detail": "exit 1 ids [\"seq-monotonic\"]"
+   },
+   {
+    "case": "leg-sp-nogesture-intercept-on",
+    "expect": "leg-sp-nogesture-intercept-on",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-nogesture-intercept-on\",\"no-selection-law\"]"
+   },
+   {
+    "case": "leg-sp-nogesture-intercept-off",
+    "expect": "leg-sp-nogesture-intercept-off",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-nogesture-intercept-off\",\"no-selection-law\"]"
+   },
+   {
+    "case": "leg-sp-click-then-show",
+    "expect": "leg-sp-click-then-show",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-click-then-show\"]"
+   },
+   {
+    "case": "leg-sp-cdp-gesture",
+    "expect": "leg-sp-cdp-gesture",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-cdp-gesture\",\"no-selection-law\"]"
+   },
+   {
+    "case": "leg-sp-intercept-off-click-then-show",
+    "expect": "leg-sp-intercept-off-click-then-show",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-intercept-off-click-then-show\"]"
+   },
+   {
+    "case": "leg-sp-multiple-show",
+    "expect": "leg-sp-multiple-show",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-multiple-show\"]"
+   },
+   {
+    "case": "leg-sp-disabled",
+    "expect": "leg-sp-disabled",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-disabled\",\"trust-law\"]"
+   },
+   {
+    "case": "leg-sp-cancel-armed",
+    "expect": "leg-sp-cancel-armed",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-cancel-armed\",\"cancel-law\"]"
+   },
+   {
+    "case": "leg-sp-show-twice",
+    "expect": "leg-sp-show-twice",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-show-twice\"]"
+   },
+   {
+    "case": "leg-sp-click-control",
+    "expect": "leg-sp-click-control",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-click-control\"]"
+   },
+   {
+    "case": "gesture-law",
+    "expect": "gesture-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"gesture-law\"]"
+   },
+   {
+    "case": "activation-law",
+    "expect": "activation-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"activation-law\",\"immutable-law\"]"
+   },
+   {
+    "case": "consumption-law",
+    "expect": "consumption-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"consumption-law\"]"
+   },
+   {
+    "case": "immutable-law",
+    "expect": "immutable-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"gesture-law\",\"immutable-law\"]"
+   },
+   {
+    "case": "mode-law",
+    "expect": "mode-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"mode-law\",\"fixture-descriptors\"]"
+   },
+   {
+    "case": "node-binding-law",
+    "expect": "node-binding-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"cdp-event-log-closed\",\"node-binding-law\"]"
+   },
+   {
+    "case": "no-selection-law",
+    "expect": "no-selection-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-click-then-show\",\"no-selection-law\"]"
+   },
+   {
+    "case": "intercept-law",
+    "expect": "intercept-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-intercept-off-click-then-show\",\"intercept-law\"]"
+   },
+   {
+    "case": "cancel-law",
+    "expect": "cancel-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-cancel-armed\",\"cancel-law\"]"
+   },
+   {
+    "case": "dismiss-law",
+    "expect": "dismiss-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"dismiss-law\"]"
+   },
+   {
+    "case": "trust-law",
+    "expect": "trust-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-click-then-show\",\"trust-law\"]"
+   },
+   {
+    "case": "host-argv",
+    "expect": "host-argv",
+    "ok": true,
+    "detail": "exit 1 ids [\"host-argv\"]"
+   },
+   {
+    "case": "devtools-port-binding",
+    "expect": "devtools-port-binding",
+    "ok": true,
+    "detail": "exit 1 ids [\"devtools-port-binding\"]"
+   },
+   {
+    "case": "teardown-closure",
+    "expect": "teardown-closure",
+    "ok": true,
+    "detail": "exit 1 ids [\"teardown-closure\"]"
+   },
+   {
+    "case": "fixture-descriptors",
+    "expect": "fixture-descriptors",
+    "ok": true,
+    "detail": "exit 1 ids [\"fixture-descriptors\"]"
+   },
+   {
+    "case": "server-log-binding",
+    "expect": "server-log-binding",
+    "ok": true,
+    "detail": "exit 1 ids [\"server-log-binding\"]"
+   },
+   {
+    "case": "run-window",
+    "expect": "run-window",
+    "ok": true,
+    "detail": "exit 1 ids [\"run-window\"]"
+   },
+   {
+    "case": "replay-launch-token",
+    "expect": "replay-launch-token",
+    "ok": true,
+    "detail": "exit 1 ids [\"replay-launch-token\"]"
+   },
+   {
+    "case": "replay-devtools-url",
+    "expect": "replay-devtools-url",
+    "ok": true,
+    "detail": "exit 1 ids [\"replay-devtools-url\"]"
+   },
+   {
+    "case": "prior-set-complete",
+    "expect": "prior-set-complete",
+    "ok": true,
+    "detail": "exit 1 ids [\"prior-set-complete\"]"
+   },
+   {
+    "case": "prior-set-unparsable",
+    "expect": "prior-set-unparsable",
+    "ok": true,
+    "detail": "exit 1 ids [\"prior-set-unparsable\"]"
+   },
+   {
+    "case": "prior-set-unmatched-exempt",
+    "expect": "prior-set-unmatched-exempt",
+    "ok": true,
+    "detail": "exit 1 ids [\"prior-set-unmatched-exempt\"]"
+   },
+   {
+    "case": "leg-records-errors",
+    "expect": "leg-records",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-records\"]"
+   },
+   {
+    "case": "send-expression",
+    "expect": "send-log-allowlist",
+    "ok": true,
+    "detail": "exit 1 ids [\"send-log-allowlist\"]"
+   },
+   {
+    "case": "send-id-gap",
+    "expect": "send-log-allowlist",
+    "ok": true,
+    "detail": "exit 1 ids [\"send-log-allowlist\"]"
+   },
+   {
+    "case": "plan-trigger-at-intercept",
+    "expect": "plan-calls",
+    "ok": true,
+    "detail": "exit 1 ids [\"plan-calls\",\"cdp-event-log-closed\"]"
+   },
+   {
+    "case": "cdp-event-method",
+    "expect": "cdp-event-log-closed",
+    "ok": true,
+    "detail": "exit 1 ids [\"cdp-event-log-closed\"]"
+   },
+   {
+    "case": "cdp-open-binding",
+    "expect": "cdp-event-log-closed",
+    "ok": true,
+    "detail": "exit 1 ids [\"cdp-event-log-closed\"]"
+   },
+   {
+    "case": "cdp-open-id-zero",
+    "expect": "cdp-event-log-closed",
+    "ok": true,
+    "detail": "exit 1 ids [\"cdp-event-log-closed\",\"node-binding-law\"]"
+   },
+   {
+    "case": "event-after-settle",
+    "expect": "event-leg-window",
+    "ok": true,
+    "detail": "exit 1 ids [\"event-leg-window\"]"
+   },
+   {
+    "case": "gesture-name-only",
+    "expect": "gesture-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"gesture-law\"]"
+   },
+   {
+    "case": "gesture-message-only",
+    "expect": "gesture-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"gesture-law\"]"
+   },
+   {
+    "case": "activation-before-only",
+    "expect": "activation-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"activation-law\"]"
+   },
+   {
+    "case": "consumption-second-name",
+    "expect": "consumption-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"consumption-law\"]"
+   },
+   {
+    "case": "consumption-second-contradictory-ok",
+    "expect": "consumption-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"consumption-law\"]"
+   },
+   {
+    "case": "consumption-chooser-count",
+    "expect": "consumption-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"cdp-event-log-closed\",\"leg-sp-show-twice\",\"consumption-law\",\"intercept-law\"]"
+   },
+   {
+    "case": "immutable-activation-only",
+    "expect": "immutable-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"activation-law\",\"immutable-law\"]"
+   },
+   {
+    "case": "mode-event",
+    "expect": "mode-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-multiple-show\",\"mode-law\"]"
+   },
+   {
+    "case": "no-selection-input-event",
+    "expect": "no-selection-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-click-then-show\",\"no-selection-law\"]"
+   },
+   {
+    "case": "intercept-refused-opened",
+    "expect": "intercept-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-nogesture-intercept-on\",\"intercept-law\"]"
+   },
+   {
+    "case": "cancel-target",
+    "expect": "cancel-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"leg-sp-cancel-armed\",\"cancel-law\"]"
+   },
+   {
+    "case": "trust-pointer-in-showpicker",
+    "expect": "trust-law",
+    "ok": true,
+    "detail": "exit 1 ids [\"trust-law\"]"
+   },
+   {
+    "case": "argv-profile-name",
+    "expect": "host-argv",
+    "ok": true,
+    "detail": "exit 1 ids [\"host-argv\"]"
+   },
+   {
+    "case": "devtools-url-prefix",
+    "expect": "host-argv",
+    "ok": true,
+    "detail": "exit 1 ids [\"host-argv\"]"
+   },
+   {
+    "case": "run-window-upper",
+    "expect": "run-window",
+    "ok": true,
+    "detail": "exit 1 ids [\"run-window\"]"
+   },
+   {
+    "case": "replay-token-duplicate",
+    "expect": "replay-launch-token",
+    "ok": true,
+    "detail": "exit 1 ids [\"host-argv\",\"replay-launch-token\"]"
+   },
+   {
+    "case": "replay-gap-only-refuse",
+    "expect": "replay-event-timeline",
+    "ok": true,
+    "detail": "exit 1 ids [\"replay-event-timeline\"]"
+   },
+   {
+    "case": "foreign-schema-in-walk-ignored",
+    "expect": null,
+    "ok": true,
+    "detail": "exit 0 verdict clean findings []"
+   },
+   {
+    "case": "replay-at-threshold-refuse",
+    "expect": "replay-event-timeline",
+    "ok": true,
+    "detail": "exit 1 ids [\"replay-event-timeline\"]"
+   },
+   {
+    "case": "replay-below-threshold-accept",
+    "expect": null,
+    "ok": true,
+    "detail": "exit 0 verdict clean findings []"
+   },
+   {
+    "case": "honest",
+    "expect": null,
+    "ok": true,
+    "detail": "exit 0 verdict clean findings []"
+   },
+   {
+    "case": "honest-tree-exempt-sha256",
+    "expect": null,
+    "ok": true,
+    "detail": "exit 0 verdict clean findings []"
+   },
+   {
+    "case": "honest-run-window-at-bound",
+    "expect": null,
+    "ok": true,
+    "detail": "exit 0 verdict clean findings []"
+   },
+   {
+    "case": "honest-chooser-wait-at-bounds",
+    "expect": null,
+    "ok": true,
+    "detail": "exit 0 verdict clean findings []"
+   },
+   {
+    "case": "replay-copy-unshifted",
+    "expect": "replay-event-timeline",
+    "ok": true,
+    "detail": "exit 1 ids [\"replay-event-timeline\"]"
+   },
+   {
+    "case": "replay-copy-all-shifted",
+    "expect": null,
+    "ok": true,
+    "detail": "exit 0 verdict clean findings []"
+   },
+   {
+    "case": "replay-threshold-sweep",
+    "expect": "verdict tracks the printed counts, one refused->accepted crossing at the arithmetic threshold",
+    "ok": true,
+    "detail": "inconsistent [] transitions 1 first true last false firstAccepted 22 firstBelow 22"
+   }
+  ]
+ },
+ "counts": {
+  "mutants": 76,
+  "applied": 76,
+  "killed": 0,
+  "survived": 76,
+  "crashed": 0,
+  "witnessKilled": 56,
+  "subsumed": 17,
+  "unreachable": 1,
+  "inertPriorSet": 2
+ },
+ "routedDefects": [
+  {
+   "id": "plan-trigger2-order-dropped",
+   "rule": "plan-calls",
+   "classification": "unreachable",
+   "mutation": {
+    "from": "leg.trigger2SendId !== t2.id || leg.trigger2SendId <= leg.triggerSendId",
+    "to": "leg.trigger2SendId !== t2.id"
+   },
+   "note": "t2 is the SECOND wrapper occurrence in a 1..N-id log, so t2.id > triggerSendId always; the <= conjunct can never be the sole cause"
+  },
+  {
+   "id": "replay-frac-loosened",
+   "rule": "replay-event-timeline",
+   "classification": "inert-prior-set",
+   "mutation": {
+    "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+    "to": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.49, GAP_FRAC = 0.75;"
+   },
+   "note": "all four frozen priors carry 37 events: ceil(0.49*37)=19=ceil(0.5*37); the fraction is unbracketable until a prior has >= 100 events"
+  },
+  {
+   "id": "replay-gapfrac-loosened",
+   "rule": "replay-event-timeline",
+   "classification": "inert-prior-set",
+   "mutation": {
+    "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+    "to": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.7;"
+   },
+   "note": "all four frozen priors carry 1 gap: ceil(0.7*1)=1=ceil(0.75*1); the fraction is unbracketable until a prior has >= 7 gaps"
+  }
+ ],
+ "batteryBlindSpotsWithWitness": [
+  "ports-http-floor-dropped",
+  "ports-cdp-floor-dropped",
+  "host-cdp-product-dropped",
+  "host-protocol-dropped",
+  "fixture-viewport-dropped",
+  "fixture-keyset-dropped",
+  "fixture-origin-dropped",
+  "frame-tree-parent-dropped",
+  "frame-tree-id-regex-loose",
+  "nonce-suffix-min-dropped",
+  "nonce-suffix-max-dropped",
+  "chooser-wait-upper-widened",
+  "chooser-wait-lower-dropped",
+  "marks-start-name-dropped",
+  "marks-pre-name-dropped",
+  "marks-settle-name-dropped",
+  "marks-monotonic-dropped",
+  "marks-grid-dropped",
+  "closedAt-num-dropped",
+  "err-intercept-dropped",
+  "err-prior-click-dropped",
+  "err-trigger-dropped",
+  "err-trigger2-dropped",
+  "err-dismiss-dropped",
+  "err-code-integer-dropped",
+  "err-keyset-dropped",
+  "send-prologue-order-dropped",
+  "send-navigate-count-widened",
+  "send-getframetree-count-widened",
+  "send-navigate-url-dropped",
+  "send-min-length-widened",
+  "send-params-object-dropped",
+  "eval-wrapper-target-agnostic",
+  "plan-prior-order-dropped",
+  "plan-trigger2-unexpected-dropped",
+  "plan-dismiss-unexpected-dropped",
+  "plan-intercept-id-dropped",
+  "cdp-open-keyset-dropped",
+  "cdp-nav-url-dropped",
+  "cdp-nav-count-widened",
+  "cdp-aftersend-integer-dropped",
+  "typed-ret-dropped",
+  "event-window-startleg-dropped",
+  "event-quantum-tolerance-widened",
+  "leg-shape-act-dropped",
+  "gesture-ret-dropped",
+  "no-selection-dismiss-state-dropped",
+  "argv-stderr-link-dropped",
+  "argv-browserid-regex-loosened",
+  "teardown-portprobes-dropped",
+  "teardown-curl-dropped",
+  "server-log-count-widened",
+  "server-log-404-dropped",
+  "run-window-lower-widened",
+  "run-window-upper-inclusive",
+  "walk-unreadable-dir-skipped"
+ ],
+ "redundantConjuncts": [
+  {
+   "id": "marks-min-count-widened",
+   "subsumedBy": [
+    "leg-marks"
+   ]
+  },
+  {
+   "id": "plan-click-release-dropped",
+   "subsumedBy": [
+    "plan-calls"
+   ]
+  },
+  {
+   "id": "plan-unknown-leg-skipped",
+   "subsumedBy": [
+    "plan-frozen",
+    "leg-order",
+    "leg-records"
+   ]
+  },
+  {
+   "id": "cdp-mode-enum-dropped",
+   "subsumedBy": [
+    "mode-law",
+    "leg-sp-<name>"
+   ]
+  },
+  {
+   "id": "typed-seq-loosened",
+   "subsumedBy": [
+    "seq-monotonic"
+   ]
+  },
+  {
+   "id": "typed-act-dropped",
+   "subsumedBy": [
+    "leg-sp-<name>"
+   ]
+  },
+  {
+   "id": "typed-files-dropped",
+   "subsumedBy": [
+    "leg-sp-<name>",
+    "no-selection-law"
+   ]
+  },
+  {
+   "id": "typed-istrusted-dropped",
+   "subsumedBy": [
+    "leg-sp-<name>",
+    "trust-law"
+   ]
+  },
+  {
+   "id": "gesture-unknown-leg-skipped",
+   "subsumedBy": [
+    "plan-frozen",
+    "leg-order",
+    "leg-records"
+   ]
+  },
+  {
+   "id": "consumption-first-ok-dropped",
+   "subsumedBy": [
+    "gesture-law"
+   ]
+  },
+  {
+   "id": "immutable-open-count-dropped",
+   "subsumedBy": [
+    "leg-sp-disabled",
+    "intercept-law"
+   ]
+  },
+  {
+   "id": "mode-law-missing-descriptor-ok",
+   "subsumedBy": [
+    "fixture-descriptors"
+   ]
+  },
+  {
+   "id": "no-selection-svalue-dropped",
+   "subsumedBy": [
+    "leg-sp-<name>"
+   ]
+  },
+  {
+   "id": "intercept-open-count-loosened",
+   "subsumedBy": [
+    "leg-sp-<name>",
+    "cdp-event-log-closed"
+   ]
+  },
+  {
+   "id": "dismiss-cancel-events-dropped",
+   "subsumedBy": [
+    "cancel-law",
+    "leg-sp-<name>"
+   ]
+  },
+  {
+   "id": "trust-nonempty-dropped",
+   "subsumedBy": [
+    "leg-sp-<name>",
+    "event-types"
+   ]
+  },
+  {
+   "id": "argv-token-regex-loosened",
+   "subsumedBy": [
+    "replay-launch-token"
+   ]
+  }
+ ]
+}

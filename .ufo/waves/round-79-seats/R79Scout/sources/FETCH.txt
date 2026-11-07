@@ -1,0 +1,190 @@
+Round 79 — R79Scout source opens. Independent re-fetch by the scout seat on 2026-11-07 (host local
+-03:00). All four assignment targets opened; each was fetched twice (independent HTTP GET) and the
+two fetches were byte-identical (sha256 match = YES on every row below).
+
+Chromium sources are base64 (`?format=TEXT`) and were decoded before hashing; the sha256 column is
+the sha256 of the DECODED file. Raw base64 byte counts are given too. Chromium tree paths use the
+r76/r77 pattern: https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/<path>?format=TEXT
+Local binary: Chromium 155.0.8059.84 (Arch Linux, /usr/bin/chromium) — the pinned tag.
+
+================================================================================
+S216 — WHATWG HTML, the input element's `showPicker()` steps
+================================================================================
+url:        https://html.spec.whatwg.org/multipage/input.html
+status:     http 200
+bytes:      687515
+sha256:     b0202de1c0b422d94d7aa23b4f1b0e3126d9d044bf7076394b6e00451f0fcd16
+refetch:    identical (sha256 match YES)
+saved as:   whatwg-input.html (687515 bytes, 6012 lines)
+
+locator 1 — §4.10.5.4 "The input element" → IDL for `showPicker()` (Exceptions prose), line 5602:
+  quote:    "Throws an InvalidStateError DOMException if input is not mutable."
+locator 2 — §4.10.5.4, line 5605:
+  quote:    "Throws a NotAllowedError DOMException if called without transient user activation."
+locator 3 — §4.10.5.4, line 5608:
+  quote:    "Throws a SecurityError DOMException if input is inside a cross-origin iframe, unless input is in the File Upload or Color states."
+locator 4 — §4.10.5.4 "The HTMLInputElement showPicker() and HTMLSelectElement showPicker() method
+             steps are:", lines 5828-5829 (the ordered algorithm):
+  quote:    "If this is not mutable, then throw an InvalidStateError DOMException."
+locator 5 — same ordered list, cross-origin step, lines 5832-5836:
+  quote:    "then throw a SecurityError DOMException."
+locator 6 — same ordered list, transient-activation step, lines 5841-5843:
+  quote:    "If this's relevant global object does not have transient activation, then throw a NotAllowedError DOMException."
+locator 7 — same ordered list, fourth refusal, lines 5844-5845:
+  quote:    "If this is a select element, and this is not being rendered, then throw a NotSupportedError DOMException."
+locator 8 — "To show the picker, if applicable" sub-algorithm, lines 5848-5853:
+  quote:    "Consume user activation given element's relevant global object."
+locator 9 — same sub-algorithm, lines 5854-5855:
+  quote:    "If element does not support a picker, then return."
+
+WHATWG also carries a normative note on the cross-origin exemption, lines 5838-5839:
+  quote:    "File and Color inputs are exempted from this check for historical reason"
+
+================================================================================
+S217 — MDN, HTMLInputElement.showPicker()
+================================================================================
+url:        https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/showPicker
+status:     http 200
+bytes:      171971
+sha256:     db037377f1fbc1ba8b83ff8226d58a663589d2040b6d1f334c870c8945b966ed
+refetch:    identical (sha256 match YES)
+saved as:   mdn-showpicker.html (171971 bytes, 2326 lines)
+
+locator 1 — Exceptions → NotAllowedError DOMException, line 1650:
+  quote:    "Thrown if not explicitly triggered by a user action such as a touch gesture or mouse click (the picker requires Transient activation)."
+locator 2 — Exceptions → InvalidStateError DOMException:
+  quote:    "Thrown if the element is not mutable, meaning that the user cannot modify it and/or that it cannot be automatically prefilled."
+locator 3 — Exceptions → SecurityError DOMException:
+  quote:    "Thrown if called in a cross-origin iframe, except for file and color pickers (exempt for historical reasons)."
+locator 4 — Security section:
+  quote:    "Transient user activation is required. The user has to interact with the page or a UI element in order for this feature to work."
+
+================================================================================
+S218 — Chromium 155.0.8059.84, blink HTMLInputElement::showPicker
+================================================================================
+url:        https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/renderer/core/html/forms/html_input_element.cc?format=TEXT
+status:     http 200
+bytes:      135428 (base64 wire bytes) -> 101570 decoded, 2818 lines
+sha256:     405b52c70185820ead77b2338f054eb8220fdc7ef176de671db63c349282e96d   (decoded file)
+refetch:    identical (sha256 match YES)
+saved as:   html_input_element.cc (101570 bytes, 2818 lines) + html_input_element.cc.b64 (wire copy)
+
+NOTE (path correction): the implementation is at third_party/blink/renderer/core/html/forms/, NOT
+third_party/blink/renderer/modules/html/ (404 at this tag) and NOT third_party/blink/renderer/core/html/
+(404 at this tag). This matches the path the lane's r79 Scribe row records for S218.
+
+locator 1 — function head, lines 2652-2653:
+  quote:    "void HTMLInputElement::showPicker(ExceptionState& exception_state) {"
+locator 2 — cross-origin step, lines 2657-2664 (the file/color exemption is in the `if`):
+  quote:    "if (FormControlType() != FormControlType::kInputFile && FormControlType() != FormControlType::kInputColor && frame) {"
+locator 3 — cross-origin throw, lines 2660-2661:
+  quote:    "exception_state.ThrowSecurityError( "showPicker() called from cross-origin iframe.");"
+locator 4 — mutability step, lines 2666-2671:
+  quote:    "if (!isMutable()) { exception_state.ThrowDOMException( DOMExceptionCode::kInvalidStateError, "HTMLInputElement::showPicker() cannot be used on immutable controls.");"
+locator 5 — transient-activation step, lines 2673-2678:
+  quote:    "if (!LocalFrame::HasTransientUserActivation(frame)) { exception_state.ThrowDOMException( DOMExceptionCode::kNotAllowedError, "HTMLInputElement::showPicker() requires a user gesture.");"
+locator 6 — the consume, line 2679:
+  quote:    "LocalFrame::ConsumeTransientUserActivation(frame);"
+locator 7 — the open, line 2681:
+  quote:    "input_type_view_->OpenPopupView();"
+locator 8 — isMutable() definition, lines 2643-2650:
+  quote:    "return !IsDisabledFormControl() && !(input_type_->SupportsReadOnly() && IsReadOnly());"
+
+================================================================================
+S219 — CDP Runtime.evaluate `userGesture` at the revision Chromium 155.0.8059.84 pins
+================================================================================
+url:        https://chromium.googlesource.com/v8/v8/+/712e1808de2d7416f1276d0deb1ee4ac978132b8/include/js_protocol.pdl?format=TEXT
+status:     http 200
+bytes:      94320 (base64 wire bytes) -> 70738 decoded, 1848 lines
+sha256:     678fd97bf64779f0a82dba9e02cc00ab21b18eaec6570b10f7bbd63512cc84f0   (decoded file)
+refetch:    identical (sha256 match YES)
+saved as:   v8_js_protocol.pdl (70738 bytes, 1848 lines) + v8_js_protocol.pdl.b64 (wire copy)
+
+PATH CORRECTION (independently re-derived, agrees with the lane's r79 Scribe row):
+The brief says "Runtime.pdl". There is NO `Runtime.pdl` in the Chromium tree at this tag. Verified by
+listing third_party/blink/public/devtools_protocol/domains/ at tag 155.0.8059.84: 52 `.pdl` files,
+none named Runtime.pdl (also checked at refs/heads/main: 53 files, still no Runtime.pdl). The Runtime
+domain is a V8 domain; the file is `include/js_protocol.pdl` in the V8 repo at the revision
+Chromium 155.0.8059.84 pins via DEPS. DEPS (tag 155.0.8059.84) line 348: `'v8_revision': '712e1808de2d7416f1276d0deb1ee4ac978132b8'`; DEPS line 3345 fetches `src/v8` from chromium_git + '/v8/v8.git' at that revision;
+third_party/inspector_protocol/inspector_protocol.gni line 387: `v8_inspector_js_protocol = v8_path_prefix + "/include/js_protocol.pdl"`.
+`domain Runtime` is declared at js_protocol.pdl line 1041; `command evaluate` at line 1520.
+
+locator 1 — Runtime.evaluate parameters, lines 1541-1542:
+  quote:    "# Whether execution should be treated as initiated by user in the UI."
+  quote:    "optional boolean userGesture"
+locator 2 — the same parameter on Runtime.callFunctionOn, lines 1460-1461:
+  quote:    "# Whether execution should be treated as initiated by user in the UI."
+locator 3 — the domain declaration, line 1041:
+  quote:    "domain Runtime"
+
+================================================================================
+SUPPORTING SOURCES (fetched to locate/verify the four above; same fetch pattern, tag 155.0.8059.84)
+================================================================================
+Page.pdl — https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/blink/public/devtools_protocol/domains/Page.pdl?format=TEXT
+  http 200; 82548 wire bytes -> 61911 decoded, 1795 lines; sha256 e944a3b19fa2c87b4ed0a84cca85b16b127618725394496ba046a2dfdf9405be
+  locator: `event fileChooserOpened`, lines 1294-1304:
+    quote:  "enum mode selectSingle selectMultiple"
+    quote:  "experimental optional DOM.BackendNodeId backendNodeId"
+  locator: `command setInterceptFileChooserDialog`, lines 1279-1288:
+    quote:  "Intercept file chooser requests and transfer control to protocol clients."
+    quote:  "experimental optional boolean cancel"
+
+inspector_page_agent.cc — .../third_party/blink/renderer/core/inspector/inspector_page_agent.cc?format=TEXT
+  http 200; 105740 wire bytes -> 79304 decoded, 2003 lines; sha256 1dd744b58227f8bfac00afdb153a9b71a451494178713a3ba8f14956af49a8cf
+  locator: InspectorPageAgent::FileChooserOpened, lines 1899-1913:
+    quote:  "multiple ? protocol::Page::FileChooserOpened::ModeEnum::SelectMultiple : protocol::Page::FileChooserOpened::ModeEnum::SelectSingle,"
+    quote:  "element ? std::optional<int>(element->GetDomNodeId()) : std::nullopt);"
+  locator: InspectorPageAgent::setInterceptFileChooserDialog, lines 1949-1956:
+    quote:  "cancel_file_chooser_.Set(enabled && cancel.value_or(false));"
+
+local_frame.cc — .../third_party/blink/renderer/core/frame/local_frame.cc?format=TEXT
+  decoded 180028 bytes, 4599 lines; sha256 f314885f156e923a88eed7087b00c99aa0f55d13787aebb15398fc88fa5a9d7f
+  locator: lines 3068-3077:
+    quote:  "return frame && frame->Frame::HasTransientUserActivation();"
+    quote:  "return frame && frame->ConsumeTransientUserActivation(update_source);"
+
+user_activation.cc / user_activation.h — .../third_party/blink/renderer/core/frame/user_activation.cc (+.h)?format=TEXT
+  decoded 1426 bytes / 1139 bytes; sha256 041ed2de17b1b120447bd4256b8044225615a6521451b8abd01656459f85d198 / 11fe1512b4679b18e99fa1d7c20b63f657188048792e7660cb700d8078a10a58
+  locator: UserActivation::isActive, user_activation.cc lines 41-45:
+    quote:  "return LocalFrame::HasTransientUserActivation(frame);"
+  locator: UserActivation::hasBeenActive, user_activation.cc lines 35-40:
+    quote:  "return frame->HasStickyUserActivation();"
+
+v8-runtime-agent-impl.cc — https://chromium.googlesource.com/v8/v8/+/712e1808de2d7416f1276d0deb1ee4ac978132b8/src/inspector/v8-runtime-agent-impl.cc?format=TEXT
+  http 200; 65664 wire bytes -> 49248 decoded, 1241 lines; sha256 b8bc6ab5f32b1f71c9e70238a8cf03984ea16439f896cc3fe26cdd19dfeaac92
+  locator: V8RuntimeAgentImpl::evaluate, lines 386-387:
+    quote:  "if (userGesture.value_or(false)) scope.pretendUserGesture();"
+
+injected-script.cc (V8) — .../src/inspector/injected-script.cc?format=TEXT
+  http 200; 71556 wire bytes -> 53665 decoded, 1296 lines; sha256 eca7c80ba4f554f8201e9c511d7f9c289a37478b4f19568d63731041ea7cbeb4
+  locator: InjectedScript::Scope::pretendUserGesture, lines 1079-1083:
+    quote:  "m_inspector->client()->beginUserGesture();"
+
+file_input_type.cc — .../third_party/blink/renderer/core/html/forms/file_input_type.cc?format=TEXT
+  decoded 23415 bytes; sha256 f96265db986a6119ef805a2d74ccd505ad6eade08b6fccf5e110685f8ee9f705
+  (CROSS-CHECK: byte-identical to round 77's independent fetch of the same path —
+   .ufo/waves/round-77/sources/FETCH.txt records sha256 f96265db986a6119ef805a2d74ccd505ad6eade08b6fccf5e110685f8ee9f705)
+  locator: line 203:
+    quote:  "probe::FileChooserOpened(document.GetFrame(), &input, input.Multiple(),"
+  locator: lines 218-219:
+    quote:  "else if (input.FastHasAttribute(html_names::kMultipleAttr)) params.mode = FileChooserParams::Mode::kOpenMultiple;"
+
+node.cc / dom_node_ids.cc / dom_node.h / identifiers_factory.cc — the DOMNodeId allocation path
+  node.cc decoded 144114 bytes, sha256 1fa7935829ce6d568b26d8a5148899396af1119c96a5809bbecef48b5ce1cfd3
+  dom_node_ids.cc decoded 2081 bytes, sha256 33f40333b67fb9a00071dcd69131671ac007da23c3755f0c2777bcbdb4d40e3b
+  identifiers_factory.cc decoded 5551 bytes, sha256 8d8ee04ee5253f701bdd0d642ab1e7abade7a645c72f19d31203466ca79ed3bb
+  locator: IdentifiersFactory::IntIdForNode, identifiers_factory.cc lines 119-121:
+    quote:  "return node->GetDomNodeId();"
+  locator: DOMNodeIds::IdForNode, dom_node_ids.cc lines 48-61:
+    quote:  "if (id == kInvalidDOMNodeId) { id = NextId();"
+  locator: DOMNodeIds::NextId, dom_node_ids.cc lines 21-26:
+    quote:  "return ++g_last_id;"
+
+================================================================================
+TOOLING
+================================================================================
+No tool was installed, upgraded or removed this round. Fetching used only `curl` (system, present) and
+`base64`/`sha256sum` (coreutils). Chromium was launched once, read-only, against
+/usr/bin/chromium 155.0.8059.84, on --remote-debugging-port=9224 with a scratch --user-data-dir, only
+to read the browser's own /json/protocol (Runtime.evaluate parameter list) as a cross-check on S219;
+it wrote nothing into the lane and its scratch profile is deleted at yield.

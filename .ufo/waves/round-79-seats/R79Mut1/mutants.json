@@ -1,0 +1,623 @@
+{
+ "schema": "tabi-r79-mut-r79mut1-list",
+ "seat": "R79Mut1",
+ "counter": {
+  "path": "scripts/check-showpicker-r79.mjs",
+  "sha256": "0dc76277a870f71d21e0bc4e840246b85831b2dbed6e659ad270df3043cd3f76"
+ },
+ "battery": {
+  "path": "scripts/negatives-showpicker-r79.mjs",
+  "sha256": "8c64f8e04b4afeba56ceebc30f3987c3ce6b20f07c4c65d7515a496a927f5662"
+ },
+ "count": 76,
+ "mutants": [
+  {
+   "id": "ports-http-floor-dropped",
+   "rule": "ports-declared",
+   "weakening": "accepts a privileged fixture port (<1024) instead of requiring an unprivileged one",
+   "from": "ports.http >= 1024 && ports.cdp >= 1024",
+   "to": "ports.http >= 0 && ports.cdp >= 1024",
+   "mutantSha256": "77f7a708bea538779f06b2f460f14abc8e12baf8835083e6eb40a0ab54b9df88"
+  },
+  {
+   "id": "ports-cdp-floor-dropped",
+   "rule": "ports-declared",
+   "weakening": "accepts a privileged CDP port (<1024)",
+   "from": "ports.http >= 1024 && ports.cdp >= 1024",
+   "to": "ports.http >= 1024 && ports.cdp >= 0",
+   "mutantSha256": "08679a038821a81eb14886ae99406932670cbd27e0108a87ab1934da514f60fc"
+  },
+  {
+   "id": "host-cdp-product-dropped",
+   "rule": "host-chromium",
+   "weakening": "drops the cdpProduct binding: a different browser build passes if the chromium string matches",
+   "from": "host.chromium === HOST.chromium && host.cdpProduct === HOST.cdpProduct && host.cdpProtocolVersion === HOST.cdpProtocolVersion",
+   "to": "host.chromium === HOST.chromium && host.cdpProtocolVersion === HOST.cdpProtocolVersion",
+   "mutantSha256": "f7f0689705d59f6ab193c331842de3fc56e59f2eecec83697811f6fc54a4f2bc"
+  },
+  {
+   "id": "host-protocol-dropped",
+   "rule": "host-chromium",
+   "weakening": "drops the CDP protocol-version binding",
+   "from": "host.chromium === HOST.chromium && host.cdpProduct === HOST.cdpProduct && host.cdpProtocolVersion === HOST.cdpProtocolVersion",
+   "to": "host.chromium === HOST.chromium && host.cdpProduct === HOST.cdpProduct",
+   "mutantSha256": "3814c4551b33f298bfc98816560546ba5822f1a9a58c7f897ce30d9a76423731"
+  },
+  {
+   "id": "fixture-viewport-dropped",
+   "rule": "fixture-hash",
+   "weakening": "drops the frozen viewport from the fixture binding",
+   "from": "same(r.fixture.viewport, VIEWPORT)",
+   "to": "true",
+   "mutantSha256": "4192f4314636f01a66f840216980d5aaa7af793bc5e2b215774044bf8db03f39"
+  },
+  {
+   "id": "fixture-keyset-dropped",
+   "rule": "fixture-hash",
+   "weakening": "accepts extra fixture fields (an unbound patch/state channel)",
+   "from": "same(Object.keys(r.fixture).sort(), ['origin', 'patch', 'sha256', 'viewport'])",
+   "to": "true",
+   "mutantSha256": "8cc8ca18af8b0aae70a1101eb525ce6d25bdba1781fe8d395ffc3ea1835fca1f"
+  },
+  {
+   "id": "fixture-origin-dropped",
+   "rule": "ports-declared",
+   "weakening": "drops the binding between the declared HTTP port and the fixture origin",
+   "from": "isObj(r.fixture) && r.fixture.origin === 'http://127.0.0.1:' + ports.http",
+   "to": "isObj(r.fixture)",
+   "mutantSha256": "dee598e1f84c434e99a1666ed1b40ca3efe92352fcbf00bc7d2b01db3b281068"
+  },
+  {
+   "id": "frame-tree-parent-dropped",
+   "rule": "frame-tree",
+   "weakening": "accepts a main frame that is not a root frame",
+   "from": "ftree.mainFrameParentId === null",
+   "to": "ftree.mainFrameParentId !== undefined",
+   "mutantSha256": "d9f8c55c25c520fc420f2980d72591e994c3794093f2bf91ee2bf6ec6a8118fc"
+  },
+  {
+   "id": "frame-tree-id-regex-loose",
+   "rule": "frame-tree",
+   "weakening": "accepts any-length frame id instead of the 32-hex CDP shape",
+   "from": "/^[0-9A-F]{32}$/.test(ftree.mainFrameId)",
+   "to": "/^[0-9A-F]{1,}$/.test(ftree.mainFrameId)",
+   "mutantSha256": "105e6d51e52ffb8a191f7ba51c013c4d0951ed28fdb6e5ef6d9f99d218c5b534"
+  },
+  {
+   "id": "nonce-suffix-min-dropped",
+   "rule": "nonce-shape",
+   "weakening": "accepts a 1-3 character nonce suffix (guessable run nonce)",
+   "from": "/^tabi-r79-[a-z0-9-]{4,48}$/.test(r.nonce)",
+   "to": "/^tabi-r79-[a-z0-9-]{1,48}$/.test(r.nonce)",
+   "mutantSha256": "be06875477e593d5d87e2ee03691c0f328ad1ce2f5dc41f4f74ad8725be5f147"
+  },
+  {
+   "id": "nonce-suffix-max-dropped",
+   "rule": "nonce-shape",
+   "weakening": "drops the nonce upper bound",
+   "from": "/^tabi-r79-[a-z0-9-]{4,48}$/.test(r.nonce)",
+   "to": "/^tabi-r79-[a-z0-9-]{4,}$/.test(r.nonce)",
+   "mutantSha256": "01c565c672ac460a1114789b9ce9aa3b7bbd7fc482d5eec0b82105bc771acafc"
+  },
+  {
+   "id": "chooser-wait-upper-widened",
+   "rule": "leg-records",
+   "weakening": "widens the chooser-wait upper bound by 1 ms",
+   "from": "l.chooserWaitMs <= 3000",
+   "to": "l.chooserWaitMs <= 3001",
+   "mutantSha256": "30bee5bf6e032beed298b666e128f2353a9e6e95a8bb3a2a5eb090e79866554b"
+  },
+  {
+   "id": "chooser-wait-lower-dropped",
+   "rule": "leg-records",
+   "weakening": "accepts a negative chooser wait",
+   "from": "l.chooserWaitMs >= 0 && l.chooserWaitMs <= 3000",
+   "to": "l.chooserWaitMs <= 3000",
+   "mutantSha256": "b0a1ea96f003be00bf1976f748b324b477210b8af5bd5b5c5f6e72dbd45fc092"
+  },
+  {
+   "id": "marks-min-count-widened",
+   "rule": "leg-marks",
+   "weakening": "accepts a leg with only start+settle marks (no pre-observation window)",
+   "from": "arr(l.marks).length >= 3",
+   "to": "arr(l.marks).length >= 2",
+   "mutantSha256": "d7acffe9d4186bfe2d4bc388e3f5e5a60276808715dfe2de73c5117e9a583a80"
+  },
+  {
+   "id": "marks-start-name-dropped",
+   "rule": "leg-marks",
+   "weakening": "drops the required first mark name",
+   "from": "arr(l.marks)[0].name === 'start'",
+   "to": "true",
+   "mutantSha256": "1c27651b4618d29be2105e25b629e7b87d561ac625997e2b867fd8784186991c"
+  },
+  {
+   "id": "marks-pre-name-dropped",
+   "rule": "leg-marks",
+   "weakening": "drops the required pre-observation mark name",
+   "from": "arr(l.marks)[1].name === 'pre'",
+   "to": "true",
+   "mutantSha256": "229bcee36c0371e846c9dabc23447c6e033017a247dee6482a2ac2505bac0530"
+  },
+  {
+   "id": "marks-settle-name-dropped",
+   "rule": "leg-marks",
+   "weakening": "drops the required settle mark name",
+   "from": "arr(l.marks).slice(-1)[0].name === 'settle'",
+   "to": "true",
+   "mutantSha256": "faddc3c98ce737bd8569fb96d8965ed056fb105342d101cbd15315005d2592e9"
+  },
+  {
+   "id": "marks-monotonic-dropped",
+   "rule": "leg-marks",
+   "weakening": "accepts marks out of time order",
+   "from": "(i === 0 || m.at >= a[i - 1].at)",
+   "to": "true",
+   "mutantSha256": "247b1f369c2e291b10de621a6550db7b4c8ee40ac4db7de601f7834bcdf415a2"
+  },
+  {
+   "id": "marks-grid-dropped",
+   "rule": "leg-marks",
+   "weakening": "accepts marks off the 0.1 ms grid",
+   "from": "num(m.at) && onGrid(m.at)",
+   "to": "num(m.at)",
+   "mutantSha256": "12ea96fc556b09be72366f3984b93cc1b35671f9fe342cc2c55daa0038069770"
+  },
+  {
+   "id": "closedAt-num-dropped",
+   "rule": "leg-marks",
+   "weakening": "drops the numeric closedAt binding",
+   "from": "num(l.closedAt) && ",
+   "to": "",
+   "mutantSha256": "25c43fdb6bcc1511150e8909850b792d906281721672e0f182f341b99c53d2a9"
+  },
+  {
+   "id": "err-intercept-dropped",
+   "rule": "leg-records",
+   "weakening": "stops validating the intercept error shape",
+   "from": "errOk(l.interceptError) && ",
+   "to": "",
+   "mutantSha256": "596d99c2227a3d8b798be881d2454086f1df5a5fc33a87300d1c38d7f3e34020"
+  },
+  {
+   "id": "err-prior-click-dropped",
+   "rule": "leg-records",
+   "weakening": "stops validating the prior-click error shape",
+   "from": "errOk(l.priorClickError) && ",
+   "to": "",
+   "mutantSha256": "6072cc098d442c1d4205ded02d6bf9553cc6508a23c9d64d24893d2e13d0b5ca"
+  },
+  {
+   "id": "err-trigger-dropped",
+   "rule": "leg-records",
+   "weakening": "stops validating the trigger error shape",
+   "from": "errOk(l.triggerError) && ",
+   "to": "",
+   "mutantSha256": "1ebf5ee74625e59e3b93b5dac43b1eb74551ba11d29afebd5e4a821f1cc02552"
+  },
+  {
+   "id": "err-trigger2-dropped",
+   "rule": "leg-records",
+   "weakening": "stops validating the second-trigger error shape",
+   "from": "errOk(l.trigger2Error) && ",
+   "to": "",
+   "mutantSha256": "8fa3141e069e2721b7d4f4f6d361505631fcb9b67b3fb371182119be244b30cf"
+  },
+  {
+   "id": "err-dismiss-dropped",
+   "rule": "leg-records",
+   "weakening": "stops validating the dismiss error shape",
+   "from": "errOk(l.dismissError) && ",
+   "to": "",
+   "mutantSha256": "cf1a0e73a9f7810309faa9c16a6b1f416541086dbeb3e297baade6391c300cea"
+  },
+  {
+   "id": "err-code-integer-dropped",
+   "rule": "leg-records",
+   "weakening": "accepts a non-integer CDP error code",
+   "from": "(e.code === null || Number.isInteger(e.code))",
+   "to": "true",
+   "mutantSha256": "07143cc9461207438ebd9a3c2cbe836f4832cc212972fa1a7961469d2f5ec120"
+  },
+  {
+   "id": "err-keyset-dropped",
+   "rule": "leg-records",
+   "weakening": "accepts extra fields on a CDP error object",
+   "from": "same(Object.keys(e).sort(), ['code', 'message'])",
+   "to": "isObj(e)",
+   "mutantSha256": "58b6351d345e69576ddacb77f5e127c72fd1f0e170ff84532010a760585cfefd"
+  },
+  {
+   "id": "send-prologue-order-dropped",
+   "rule": "send-log-allowlist",
+   "weakening": "drops the frozen prologue method order",
+   "from": "same(log.slice(0, 6).map((c) => c.method), ['Browser.getVersion', 'Page.enable', 'Runtime.enable', 'Page.getFrameTree', 'Emulation.setDeviceMetricsOverride', 'Page.navigate'])",
+   "to": "true",
+   "mutantSha256": "c0bd8e527beb78eece33635120bc49d96c6293947c57e2a96f857452f50c0c02"
+  },
+  {
+   "id": "send-navigate-count-widened",
+   "rule": "send-log-allowlist",
+   "weakening": "accepts two or more navigations in one leg",
+   "from": "log.filter((c) => c.method === 'Page.navigate').length !== 1",
+   "to": "log.filter((c) => c.method === 'Page.navigate').length < 1",
+   "mutantSha256": "dd189da3d18239df6c259a6e72f16256543cabab5c8389c8ac106b2ffb4f6b7a"
+  },
+  {
+   "id": "send-getframetree-count-widened",
+   "rule": "send-log-allowlist",
+   "weakening": "accepts two or more getFrameTree calls in one leg",
+   "from": "log.filter((c) => c.method === 'Page.getFrameTree').length !== 1",
+   "to": "log.filter((c) => c.method === 'Page.getFrameTree').length < 1",
+   "mutantSha256": "57f660e531d723b2002a168181e809d2d79eb43d4ad7e4a35689e59bf437e79f"
+  },
+  {
+   "id": "send-navigate-url-dropped",
+   "rule": "send-log-allowlist",
+   "weakening": "drops the navigate URL/run-nonce binding",
+   "from": "!same(log.find((c) => c.method === 'Page.navigate').params, { url: 'http://127.0.0.1:' + ports.http + '/?run=' + encodeURIComponent(r.nonce) })",
+   "to": "false",
+   "mutantSha256": "2774b26b052e451d41f2d1d3bc8e51d74518340e2192c23ccc13a84a2ab399b7"
+  },
+  {
+   "id": "send-min-length-widened",
+   "rule": "send-log-allowlist",
+   "weakening": "accepts a leg with as few as 5 CDP calls",
+   "from": "log.length < 10",
+   "to": "log.length < 5",
+   "mutantSha256": "afff87aed61b4cc7ca863ae04c161b9ab9f9e492a5e62dbed71575510baa9948"
+  },
+  {
+   "id": "send-params-object-dropped",
+   "rule": "send-log-allowlist",
+   "weakening": "accepts a non-object params on a logged CDP call",
+   "from": "isObj(c.params)",
+   "to": "true",
+   "mutantSha256": "e36e93006873de314e148c784adcb40456532c6402fcea9d151bd8c9e2400676"
+  },
+  {
+   "id": "eval-wrapper-target-agnostic",
+   "rule": "send-log-allowlist",
+   "weakening": "allows the showPicker wrapper on any element in any leg, not just the plan target",
+   "from": "if (p.kind === 'click' || p.kind === 'showpicker' || p.kind === 'showpicker-twice') allowed.push(wrapperFor(p.target));",
+   "to": "allowed.push(wrapperFor('s'), wrapperFor('m'), wrapperFor('d'), wrapperFor('k'), wrapperFor('dis'));",
+   "mutantSha256": "20a866a337734745f4f370c1a5074997ab4ba858ccbeec816201bbf80f0de916"
+  },
+  {
+   "id": "plan-prior-order-dropped",
+   "rule": "plan-calls",
+   "weakening": "accepts a mouse release that precedes its press",
+   "from": "leg.priorReleaseId <= leg.priorPressId",
+   "to": "false",
+   "mutantSha256": "bd45ea01353db6ac74e8ae97fcab73ec3723c63dc875ed80ee34c5e24c65a9b6"
+  },
+  {
+   "id": "plan-click-release-dropped",
+   "rule": "plan-calls",
+   "weakening": "accepts a release id on a click leg that must have none",
+   "from": "if (leg.priorPressId === null || leg.priorReleaseId !== null) planBad.push(leg.name + ':click-ids');",
+   "to": "if (leg.priorPressId === null) planBad.push(leg.name + ':click-ids');",
+   "mutantSha256": "d74d82d081fe5a0fdff93a1bba92ea07bcdf92c5441779cd264667b23592b9e5"
+  },
+  {
+   "id": "plan-trigger2-unexpected-dropped",
+   "rule": "plan-calls",
+   "weakening": "accepts a second-trigger send id on a single-trigger leg",
+   "from": "} else if (leg.trigger2SendId !== null) planBad.push(leg.name + ':trigger2-unexpected');",
+   "to": "}",
+   "mutantSha256": "bf723fa69257ecbcdaac3a5c28ceb8546ba443a951cea3645a7aa91ee5fa9a0f"
+  },
+  {
+   "id": "plan-trigger2-order-dropped",
+   "rule": "plan-calls",
+   "weakening": "drops the ordering requirement between the two triggers",
+   "from": "leg.trigger2SendId !== t2.id || leg.trigger2SendId <= leg.triggerSendId",
+   "to": "leg.trigger2SendId !== t2.id",
+   "mutantSha256": "bc947d5cbf0a2b8eeecade2c410cdcaca97bfa6a5e76e7c41cc5226a44ba1e6d"
+  },
+  {
+   "id": "plan-dismiss-unexpected-dropped",
+   "rule": "plan-calls",
+   "weakening": "accepts a dismiss send id on a leg that sent no dismiss",
+   "from": "else if (leg.dismissSendId !== null) planBad.push(leg.name + ':dismiss-unexpected');",
+   "to": "",
+   "mutantSha256": "aeed917b0593f0a3e3050f000cf4558548cac482d6fb058b70d7a660bbcaa758"
+  },
+  {
+   "id": "plan-intercept-id-dropped",
+   "rule": "plan-calls",
+   "weakening": "drops the intercept send-id coherence binding",
+   "from": "if (p.intercept && leg.interceptSendId !== log.find((c) => c.method === 'Page.setInterceptFileChooserDialog').id) planBad.push(leg.name + ':intercept-id');",
+   "to": "if (false) planBad.push(leg.name + ':intercept-id');",
+   "mutantSha256": "1a40da1843cece70ca8cd63120976cd1577fb66f8d4f56534383a8cf91ef5965"
+  },
+  {
+   "id": "plan-unknown-leg-skipped",
+   "rule": "plan-calls",
+   "weakening": "silently skips a leg that is not in the frozen plan",
+   "from": "if (!p) { planBad.push('unknown-leg'); continue; }",
+   "to": "if (!p) { continue; }",
+   "mutantSha256": "a8063941e35bf4ac6a2733c4ca905b5499f50f0fd3b173eaced69069b5fff63f"
+  },
+  {
+   "id": "cdp-open-keyset-dropped",
+   "rule": "cdp-event-log-closed",
+   "weakening": "accepts extra fields on a fileChooserOpened event",
+   "from": "!same(Object.keys(o.params).sort(), ['backendNodeId', 'frameId', 'mode'])",
+   "to": "false",
+   "mutantSha256": "94b1bc4ec94b8acf67dd2dedbddb3cddeacab6cdb07673d18e8955889127b712"
+  },
+  {
+   "id": "cdp-mode-enum-dropped",
+   "rule": "cdp-event-log-closed",
+   "weakening": "accepts any string as the chooser mode",
+   "from": "!['selectSingle', 'selectMultiple'].includes(o.params.mode)",
+   "to": "typeof o.params.mode !== 'string'",
+   "mutantSha256": "7dc3aed0de5a514543e3ffa529e79067e82bcf8c2e9b3ecaa238dac8d6954061"
+  },
+  {
+   "id": "cdp-nav-url-dropped",
+   "rule": "cdp-event-log-closed",
+   "weakening": "drops the frameNavigated URL/run-nonce binding",
+   "from": "nav[0].params.url === 'http://127.0.0.1:' + ports.http + '/?run=' + encodeURIComponent(r.nonce)",
+   "to": "typeof nav[0].params.url === 'string'",
+   "mutantSha256": "ad0ec21d1349c81c411f86e1f703782218da4ff567762f20ada9da0e2f3140c3"
+  },
+  {
+   "id": "cdp-nav-count-widened",
+   "rule": "cdp-event-log-closed",
+   "weakening": "accepts two or more frameNavigated events (a mid-leg reload)",
+   "from": "if (nav.length !== 1 || ",
+   "to": "if (nav.length < 1 || ",
+   "mutantSha256": "9434b63b1e11f1fc3a6c0650d9b489ebdb4be1331e8cb9508719c38704fe9a13"
+  },
+  {
+   "id": "cdp-aftersend-integer-dropped",
+   "rule": "cdp-event-log-closed",
+   "weakening": "accepts a non-integer afterSendId on a CDP event",
+   "from": "isObj(e) && isObj(e.params) && Number.isInteger(e.afterSendId)",
+   "to": "isObj(e) && isObj(e.params)",
+   "mutantSha256": "ffd5c1df778613f299a78037d7c417a5eb485b340ce38c5caf50f03e6bb7fff4"
+  },
+  {
+   "id": "typed-ret-dropped",
+   "rule": "event-types",
+   "weakening": "accepts any type for the page event ret field",
+   "from": "(e.ret === null || typeof e.ret === 'string')",
+   "to": "true",
+   "mutantSha256": "4cb2fb2dd9dfebca5a4aece0cf5e47460b74c1a2f723ee2c15bf800407955aa4"
+  },
+  {
+   "id": "typed-seq-loosened",
+   "rule": "event-types",
+   "weakening": "accepts a fractional page-event seq",
+   "from": "Number.isInteger(e.seq)",
+   "to": "num(e.seq)",
+   "mutantSha256": "3990247796a8b391245534298f2ecb978914e81357aa5f04754c17338a7559ba"
+  },
+  {
+   "id": "typed-act-dropped",
+   "rule": "event-types",
+   "weakening": "accepts any type for the activation flag",
+   "from": "(e.act === null || typeof e.act === 'boolean')",
+   "to": "true",
+   "mutantSha256": "e46616c1ab74993c4d6deec2fcc3b9ee45b867ab7c8e0e21224972f8b736a8be"
+  },
+  {
+   "id": "typed-files-dropped",
+   "rule": "event-types",
+   "weakening": "accepts any type for the files field",
+   "from": "(e.files === null || Array.isArray(e.files))",
+   "to": "true",
+   "mutantSha256": "2e97ad3a5378aa200f9ad56d11dddf10c8709b4e5245e29248ec1fed9c789f3e"
+  },
+  {
+   "id": "typed-istrusted-dropped",
+   "rule": "event-types",
+   "weakening": "accepts any type for isTrusted",
+   "from": "typeof e.isTrusted === 'boolean'",
+   "to": "true",
+   "mutantSha256": "f4a3b71369ecae70504d5927d49b7c135bbc6d7dec9946b7227c65e743d5487d"
+  },
+  {
+   "id": "event-window-startleg-dropped",
+   "rule": "event-leg-window",
+   "weakening": "accepts a page event attributed to the pre-start window",
+   "from": "e.leg !== 'start'",
+   "to": "true",
+   "mutantSha256": "404d5fb52284256362c94cfd8f2d2a2a56ebf70c80ef1fcff8953e92d23ac61e"
+  },
+  {
+   "id": "event-quantum-tolerance-widened",
+   "rule": "event-time-quantum",
+   "weakening": "widens the 0.1 ms grid tolerance tenfold",
+   "from": "Math.abs(v * 10 - Math.round(v * 10)) <= 1e-4",
+   "to": "Math.abs(v * 10 - Math.round(v * 10)) <= 1e-3",
+   "mutantSha256": "98a38056de5631b4ddb56975617afed529fe1ef213c3e189527b52b07efd3c84"
+  },
+  {
+   "id": "leg-shape-act-dropped",
+   "rule": "leg-sp-click-then-show",
+   "weakening": "drops the per-event activation column from the frozen leg shape",
+   "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+   "to": "for (const k of ['seq', 'trusted', 'xy', 'files', 'opened', 'state'])",
+   "mutantSha256": "378b26d15d9e42077f447a0568ebb0d979ffde6e39880b277ce341051bce6b34"
+  },
+  {
+   "id": "gesture-ret-dropped",
+   "rule": "gesture-law",
+   "weakening": "drops the return-value binding on a successful showPicker",
+   "from": "(want.ok ? got.ret !== want.ret : (got.name !== want.name || got.message !== want.message))",
+   "to": "(want.ok ? false : (got.name !== want.name || got.message !== want.message))",
+   "mutantSha256": "bd9e71c4bfdd0bd1d007a3d0c2c5b0c9ca2232a39e150df5ee4d05a7c7942aa1"
+  },
+  {
+   "id": "gesture-unknown-leg-skipped",
+   "rule": "gesture-law",
+   "weakening": "silently skips a leg with no frozen showPicker law",
+   "from": "if (want === undefined) { spBad.push(leg.name + ':unknown-leg'); continue; }",
+   "to": "if (want === undefined) continue;",
+   "mutantSha256": "b1b24b77dfda6a379f733c2c4ea9750d0fa63797ecc8bf84f73969d7681f195c"
+  },
+  {
+   "id": "consumption-first-ok-dropped",
+   "rule": "consumption-law",
+   "weakening": "drops the requirement that the first call in the twice leg succeeded",
+   "from": "isObj(twice.showPicker) && twice.showPicker.ok === true && ",
+   "to": "isObj(twice.showPicker) && ",
+   "mutantSha256": "ecc6dc167e7db24f97a2015ef08a02ce3c752dbd2e51d9d145c433f8cb97b33f"
+  },
+  {
+   "id": "immutable-open-count-dropped",
+   "rule": "immutable-law",
+   "weakening": "drops the \"opens nothing\" half of the immutable-control law",
+   "from": "arr(dis.cdpEventLog).filter((e) => e.method === 'Page.fileChooserOpened').length === 0 && ",
+   "to": "",
+   "mutantSha256": "53164ab63087dd998399ebccf0d1c2f071e84fc798c7e6217cc19ec2fe445646"
+  },
+  {
+   "id": "mode-law-missing-descriptor-ok",
+   "rule": "mode-law",
+   "weakening": "accepts a chooser on an element with no page-measured descriptor",
+   "from": "if (!d || opens.some((e) => e.params.mode !== wantMode))",
+   "to": "if (opens.some((e) => e.params.mode !== wantMode))",
+   "mutantSha256": "264b996667040b5152d027dcaaff422b0cda0fb567aa8a2f6cb2cfb9d9a39ad3"
+  },
+  {
+   "id": "no-selection-svalue-dropped",
+   "rule": "no-selection-law",
+   "weakening": "drops the input-value half of the no-selection law",
+   "from": "&& st.sValue === ''",
+   "to": "",
+   "mutantSha256": "5101eb3d3fd5081b94c6b5a1cb3e1b459421a941d985a4f980dbc224a10d54e2"
+  },
+  {
+   "id": "no-selection-dismiss-state-dropped",
+   "rule": "no-selection-law",
+   "weakening": "stops checking that the post-dismiss state is still empty",
+   "from": "if (leg.stateAfterDismiss !== null && !(isObj(leg.stateAfterDismiss) && ['s', 'm', 'd', 'k', 'dis'].every((k) => Array.isArray(leg.stateAfterDismiss[k]) && leg.stateAfterDismiss[k].length === 0))) stateBad.push(leg.name + ':dismiss-state');",
+   "to": "",
+   "mutantSha256": "6dd23aa2061af39b999df3ff4082ba013c07a7efed8bf7a3e5383420e9402b81"
+  },
+  {
+   "id": "intercept-open-count-loosened",
+   "rule": "intercept-law",
+   "weakening": "accepts two or more chooser events on an intercepting leg",
+   "from": "opens !== 1) intBad.push(leg.name + ':intercept-but-' + opens)",
+   "to": "opens < 1) intBad.push(leg.name + ':intercept-but-' + opens)",
+   "mutantSha256": "a8f517e616bf87a35e74e128c3e4a887091d1a4bae657dcc4c958cbd676adba3"
+  },
+  {
+   "id": "dismiss-cancel-events-dropped",
+   "rule": "dismiss-law",
+   "weakening": "accepts a page cancel alongside a post-hoc dismiss",
+   "from": "&& arr(l.pageEvents).every((e) => e.type !== 'cancel')",
+   "to": "",
+   "mutantSha256": "3f7369628b9fe106b0a7da5a64721a185fd9cf28d1f1cfbeff9bf91e9deafaa7"
+  },
+  {
+   "id": "trust-nonempty-dropped",
+   "rule": "trust-law",
+   "weakening": "makes the trusted-event rule vacuous on an empty event log",
+   "from": "events.length > 0 && events.every((e) => e.isTrusted === true)",
+   "to": "events.every((e) => e.isTrusted === true)",
+   "mutantSha256": "946ed72d8006c316bddb63dbd7a3656b0f55c776b109e9a5a244284f604475d4"
+  },
+  {
+   "id": "argv-stderr-link-dropped",
+   "rule": "host-argv",
+   "weakening": "drops the binding between the devtools URL and the stderr head",
+   "from": "typeof leg.stderrHead !== 'string' || !leg.stderrHead.includes(dl.url)",
+   "to": "typeof leg.stderrHead !== 'string'",
+   "mutantSha256": "54a346091068adcdf63eb0121ff28cfe1163e866835ea5243fab3e59307400c4"
+  },
+  {
+   "id": "argv-token-regex-loosened",
+   "rule": "host-argv",
+   "weakening": "accepts any string as the launch token",
+   "from": "/^[0-9a-f]{12}$/.test(tok)",
+   "to": "typeof tok === 'string'",
+   "mutantSha256": "dfc1b83557fbbb543ab2054b7eb48b4687e27a12725de2551fdf73010a8a05ef"
+  },
+  {
+   "id": "argv-browserid-regex-loosened",
+   "rule": "host-argv",
+   "weakening": "accepts any string as the devtools browser id",
+   "from": "/^[0-9a-f-]{36}$/.test(dl.browserId)",
+   "to": "typeof dl.browserId === 'string'",
+   "mutantSha256": "d4e82065c9477da2eb83f1fafea26d5cf49df552c2fcea86c916b7c92dc36a55"
+  },
+  {
+   "id": "teardown-portprobes-dropped",
+   "rule": "teardown-closure",
+   "weakening": "drops the per-port teardown proof",
+   "from": "Object.values(l.teardown.portProbes).every((v) => v === 'closed')",
+   "to": "true",
+   "mutantSha256": "50f907eaa5e9b46a413b1e362e443c2a7826cda8f8a46bde5f7ce484404f2c8b"
+  },
+  {
+   "id": "teardown-curl-dropped",
+   "rule": "teardown-closure",
+   "weakening": "drops the post-kill connection-refused proof",
+   "from": "Object.values(l.teardown.postKillCurl).every((v) => v === 7)",
+   "to": "true",
+   "mutantSha256": "78cf62a0d6ab768628a42a5facae29cf23098b055ea6e5e6a7228e660b8ebc5d"
+  },
+  {
+   "id": "server-log-count-widened",
+   "rule": "server-log-binding",
+   "weakening": "accepts duplicate fixture-root requests",
+   "from": "arr(l.serverLog).filter((s) => isObj(s) && s.path === '/').length === 1",
+   "to": "arr(l.serverLog).filter((s) => isObj(s) && s.path === '/').length >= 1",
+   "mutantSha256": "8204c073e87785a6c75a0b0fbde657e3cebebbdf64ae79e1ac2a07e68c5ebe8a"
+  },
+  {
+   "id": "server-log-404-dropped",
+   "rule": "server-log-binding",
+   "weakening": "accepts a non-404 response on a non-root path",
+   "from": "arr(l.serverLog).filter((s) => isObj(s) && s.path !== '/').every((s) => s.status === 404)",
+   "to": "true",
+   "mutantSha256": "75ab60e3d370162e6f406aa68d017c2e7f6c099e767bab8bffa6ad495616c940"
+  },
+  {
+   "id": "run-window-lower-widened",
+   "rule": "run-window",
+   "weakening": "widens the run-window floor by 1 ms",
+   "from": "t1 - t0 >= 20000",
+   "to": "t1 - t0 >= 19999",
+   "mutantSha256": "c4a77306ee3c74e023c43d82048abbaffb8bbe2f51ceb12ed6f5d029d0169bcb"
+  },
+  {
+   "id": "run-window-upper-inclusive",
+   "rule": "run-window",
+   "weakening": "accepts exactly the 600 s ceiling",
+   "from": "t1 - t0 < 600000",
+   "to": "t1 - t0 <= 600000",
+   "mutantSha256": "1b2270a452c20371d17106452e4366c777447d377c7d3c06b7c0631d0af00957"
+  },
+  {
+   "id": "replay-frac-loosened",
+   "rule": "replay-event-timeline",
+   "weakening": "lowers the pair-match refusal fraction from 0.5 to 0.49",
+   "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+   "to": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.49, GAP_FRAC = 0.75;",
+   "mutantSha256": "c94b7ab113c67dc128c5bc8ae3dcd4319b9b9eda424a2bcecdae30dff95a16df"
+  },
+  {
+   "id": "replay-gapfrac-loosened",
+   "rule": "replay-event-timeline",
+   "weakening": "lowers the gap-match refusal fraction from 0.75 to 0.7",
+   "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+   "to": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.7;",
+   "mutantSha256": "e6eaacb0406b2c34aab9acffc2339caad53b346f8e626fd6e9ff51b84da36814"
+  },
+  {
+   "id": "walk-unreadable-dir-skipped",
+   "rule": "prior-set-complete",
+   "weakening": "skips an unreadable walked directory instead of refusing",
+   "from": "if (w.error) { outside.push('unreadable-dir:' + w.dir); continue; }",
+   "to": "if (w.error) { continue; }",
+   "mutantSha256": "38688fa8277d8efa5974a5404422e2ca3122231f3115c4e5aeeeb42cc931857d"
+  }
+ ]
+}

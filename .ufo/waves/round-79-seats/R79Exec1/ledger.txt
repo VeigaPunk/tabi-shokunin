@@ -1,0 +1,75 @@
+# R79Exec1 ledger — Tabi round 79 w1, leg (b): two cold runs of the frozen driver, scored by the frozen counter
+Seat: R79Exec1 (leaf executor). Date: 2026-11-07. Digests commit D = 80830674d421e97bb1c01c836bfbb3dc49687dbc.
+Driver pin: e9c87159e5d5212237437eb7a80a2d26fcd8086603dae1e37db64ce1aaf94933
+Prior set: .ufo/waves/round-79/controls/c1/prior-set.txt (sha256 644a4274158f47b8c691759a7c93810da093142984e2552573e83a0b12143738, 4 probe/smoke entries)
+Walked trees per counter: .ufo/waves/round-79 and corpus/evidence/round79 (seat tree .ufo/waves/round-79-seats is NOT walked).
+
+## 1. Driver run cold1 — EXIT 0
+cmd: node scripts/chrome-cdp-showpicker-round79.mjs --lane <lane> --nonce tabi-r79-cold1-80830674d421 --scratch /fast/scratch/hyaku/tabi-r79/R79Exec1 --out .ufo/waves/round-79-seats/R79Exec1/cold1.json --http-port 18950 --cdp-port 18951
+result: 10/10 legs, failures []; cdpProduct Chrome/155.0.8059.84
+receipt: .ufo/waves/round-79-seats/R79Exec1/cold1.json sha256 e1ae059a961dff7925451c5ff329e71bf82e60ff4a6472b217f583a798d00ff9, nonce tabi-r79-cold1-80830674d421, fixture.sha256 7388d6c67675594f661306dc133a53c4ead7ca5a4818790dd2c4fa7c46b3c176
+
+## 2. Driver run cold2 — EXIT 0
+cmd: same with --nonce tabi-r79-cold2-80830674d421 --out .ufo/waves/round-79-seats/R79Exec1/cold2.json --http-port 18952 --cdp-port 18953
+result: 10/10 legs, failures []; cdpProduct Chrome/155.0.8059.84
+receipt: .ufo/waves/round-79-seats/R79Exec1/cold2.json sha256 f9ba7da5829974e83c1cef0cc7f01b64d757f609d62d1f82427e7039de40ffb6, nonce tabi-r79-cold2-80830674d421, fixture.sha256 a68e65584b7cf0de32d9ab816ae82d7aba38df4e2d30359d7115fa66e20f3414
+
+## 3. Counter on cold1, assigned command (no --tree-exempt-sha256) — EXIT 1
+verdict: findings; checkCount 56; 55/56 checks true
+FINDING ID: prior-set-complete
+  names: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round79/chromium-showpicker/receipt.json
+  mechanism: tree completeness — the (a) receipt is in a walked tree, is not the receipt under test, is not exempted by sha256, and is not among the 4 committed priors
+evidence: score-cold1-assigned-cmd.json (assigned command re-run into seat dir; EXIT 1 reproduced identically)
+
+## 4. Counter on cold2, assigned command — EXIT 1
+FINDING ID: prior-set-complete (sole finding, same named path)
+evidence: score-cold2-assigned-cmd.json
+
+## 5. Counter on cold1 + --tree-exempt-sha256 6d243c775fe1f95ca75ee6001e584873e3dac3c9f897924a2da674b83a821535 — EXIT 0
+verdict: clean; 56/56 checks true; 0 findings. Exemption is content-bound (sha256 of the (a) receipt file); an unmatched hash would have been refused via prior-set-unmatched-exempt.
+evidence: score-cold1-exempt.json
+
+## 6. Counter on cold2 + same exemption — EXIT 0
+verdict: clean; 56/56; 0 findings
+evidence: score-cold2-exempt.json
+
+## 7. Counter on the (a) receipt with --prior <seat cold1> — EXIT 0
+cmd: node scripts/check-showpicker-r79.mjs --lane <lane> --receipt corpus/evidence/round79/chromium-showpicker/receipt.json --expect-driver-sha256 e9c8...933 --expect-nonce tabi-r79-l1-80830674d421 --expect-fixture-sha256 2e80efa0c96d4c3ccc952d9b54353d8c079e6c9156abbc3d78dfd38d0bc5c5c8 --prior-set <committed> --prior .ufo/waves/round-79-seats/R79Exec1/cold1.json --json
+verdict: clean; 56/56; 0 findings; priorSet 4 — the committed prior set still accepts the (a) receipt with my cold1 added as a prior.
+evidence: score-a-receipt-prior-cold1.json
+
+## Refusals
+NONE. limit.refused = false for every prior in every scoring; verdict was never "refused"; zero honest refusals across both cold runs (target for my legs met).
+
+## Notes
+- nodeReport backendNodeIds are non-literals and vary per run (cold1 chooser legs: 3,3,3,3,3,4; cold2: 3,4,3,3,3,5); node-binding-law passed in all five scorings — consistent with the QUALITY 150 rule.
+- All measured laws reproduced identically in both cold runs: NotAllowedError "requires a user gesture" without transient activation (interception on and off, choosers 0); one activation buys exactly one picker (sp-show-twice second call NotAllowedError); Runtime.evaluate {userGesture:true} satisfies it with isActive staying false and hasBeenActive becoming true; successful call consumes isActive; disabled input InvalidStateError "cannot be used on immutable controls" without consuming; chooser mode selectSingle/selectMultiple matches the page-measured input; interception off -> no CDP chooser event + page cancel; armed cancel:true -> chooser event AND page cancel; no file selection, no pointer/input/change events.
+- Chromium GCM/MCS stderr noise (DEPRECATED_ENDPOINT, 401 wrong_secret, PHONE_REGISTRATION_ERROR) present in every leg of all three runs including the (a) receipt; errors[] empty everywhere — environmental, not a leg failure.
+- No tool installs performed; pacman untouched; no git/jj commands run; no writes into walked trees except the two sanctioned prose files under .ufo/waves/round-79/w1/ (which deliberately omit the r79 receipt schema literal so they cannot trip prior-set-unparsable for other seats).
+
+## Addendum — counter fixed at the instrument (D re-frozen as 3a1209c0d624), assigned command re-run
+
+L1 root-caused F1: the counter's walk excluded prior-SET entries but not --prior receipts, so a --prior receipt sitting in a walked tree was reported prior-set-complete. Counter updated to exclude every loaded prior (priorReal = prior-set entries + --prior paths); re-frozen as D 3a1209c0d624; (a) receipt re-produced under nonce tabi-r79-l1-3a1209c0d624.
+
+## 8. Counter on cold1, assigned command, post-fix counter — EXIT 0
+verdict: clean; 56/56 checks true; 0 findings; priorSet 4; no exemption flag passed
+evidence: score-cold1-postD3a12-assigned-cmd.json
+
+## 9. Counter on cold2, assigned command, post-fix counter — EXIT 0
+verdict: clean; 56/56; 0 findings; priorSet 4; no exemption flag passed
+evidence: score-cold2-postD3a12-assigned-cmd.json
+
+Sections 3-5 stand as the historical record under the pre-fix counter; the canonical leg (b) reading is now sections 8-9: both seat cold receipts exit 0 clean under the assigned command with no exemption flag.
+
+## Addendum 2 — re-verified against the CURRENT (a) receipt bytes (it is a moving file)
+
+The (a) receipt at corpus/evidence/round79/chromium-showpicker/receipt.json was rewritten again after the D-3a1209c0d624 re-freeze (observed sha256 708bc934e9d110a20f5957bdeeda7e36c2235008986e8854da00f71255d1f00d, size 110208, nonce tabi-r79-l1-f154beeff14e, fixture.sha256 69de1a78dc3ad40f7ce6e04896e22fe1729c0a789f01276f8f53e9e55b6393df, driverSha256 e9c87159...933; mtime/size are pinned by L1 and do NOT identify the file — only content hashes do). All decisive scorings were re-run against these current bytes:
+
+## 10. Counter on cold1, assigned command, prior = current (a) receipt bytes — EXIT 0
+verdict: clean; 56/56; 0 findings; priorSet 4. Evidence: score-cold1-f154beef-assigned-cmd.json
+## 11. Counter on cold2, assigned command, prior = current (a) receipt bytes — EXIT 0
+verdict: clean; 56/56; 0 findings; priorSet 4. Evidence: score-cold2-f154beef-assigned-cmd.json
+## 12. Counter on the current (a) receipt (nonce tabi-r79-l1-f154beeff14e) with --prior = seat cold1 — EXIT 0
+verdict: clean; 56/56; 0 findings; priorSet 4. Evidence: score-a-f154beef-prior-cold1.json
+
+Standing result: both seat cold receipts are clean under the assigned command and the committed prior set still accepts the (a) receipt, against every (a)-receipt byte state observed (6d243c77…, post-3a12 state, 708bc934…). Any future re-verification should re-hash the (a) receipt first.

@@ -1,0 +1,39 @@
+{
+ "schema": "tabi-r79-mut-r79mut1-controls",
+ "seat": "R79Mut1",
+ "note": "positive controls: four mutants from the frozen kill-power list, applied to the same counter bytes and run through the same battery invocation as the mutant sweep; all four are killed, so the harness detects targeted mutations",
+ "counterSha256": "0dc76277a870f71d21e0bc4e840246b85831b2dbed6e659ad270df3043cd3f76",
+ "batterySha256": "8c64f8e04b4afeba56ceebc30f3987c3ce6b20f07c4c65d7515a496a927f5662",
+ "receipt": "receipt-sweep.json",
+ "lane": "runs/baseline-lane/tabi-shokunin (mirror with an exempted copy of the pinned receipt)",
+ "results": [
+  {
+   "id": "schema-accepts-any",
+   "from": "r.schema === SCHEMA",
+   "to": "typeof r.schema === 'string'",
+   "batteryExit": 1,
+   "failedCases": 1
+  },
+  {
+   "id": "leg-marks-late-ignored",
+   "from": "l.lateAfterClose === 0",
+   "to": "num(l.lateAfterClose)",
+   "batteryExit": 1,
+   "failedCases": 1
+  },
+  {
+   "id": "event-window-dropped",
+   "from": "e.at >= (pre ?? 0) && e.at <= (settle ?? l.closedAt)",
+   "to": "num(e.at)",
+   "batteryExit": 1,
+   "failedCases": 1
+  },
+  {
+   "id": "cancel-law-any",
+   "from": "same(cancels, [['sp-intercept-off-click-then-show', 's'], ['sp-cancel-armed', 's']])",
+   "to": "cancels.length >= 1",
+   "batteryExit": 1,
+   "failedCases": 2
+  }
+ ]
+}
