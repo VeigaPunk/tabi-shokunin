@@ -43,7 +43,7 @@ const PS = path.join(C1D, 'prior-set.txt');
 const PRE = fs.readFileSync(PS, 'utf8').split('\n').filter((l) => l.trim() && !l.startsWith('#')).map((l) => path.join(LANE, l.trim()));
 const BASE = ['--lane', LANE, '--prior-set', PS];
 const scored = path.join(LANE, 'corpus/evidence/round78/chromium-file-chooser/receipt.json');
-const cold1 = path.join(W, 'scored/cold1.receipt.json');
+const cold1 = path.join(LANE, '.ufo/waves/round-78-seats/L1-cold1/receipt.json');
 const run = (args) => { const r = spawnSync(process.execPath, [C, ...args, '--json'], { encoding: 'utf8', timeout: 60000, maxBuffer: 1 << 26 }); let j = null; try { j = JSON.parse(r.stdout); } catch {} return { exit: r.status, ids: j && Array.isArray(j.findings) ? j.findings.map((f) => f.id) : null, j }; };
 const results = [];
 const expect = (name, got, exit, ids, exact = false, extra = true) => results.push({ name, exit: got.exit, expectedExit: exit, expectedIds: ids, found: got.ids, ok: extra && got.exit === exit && Array.isArray(got.ids) && ids.every((i) => got.ids.includes(i)) && (!exact || got.ids.length === ids.length) });

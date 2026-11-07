@@ -262,7 +262,7 @@ const placed = (p, wantAbs, wantGap, under = real) => {
   // 'need' = the refusal case's decisive property: abs at or above the prior's own need, gap below its
   // need (refusal comes from the abs floor alone). An exact count is not required there: event spacing
   // can let one extra pair match, which is still a refusal (measured on p3/s2 of this round).
-  const absOk = wantAbs === 'need' ? an >= aN : wantAbs === null ? an < aN : an === wantAbs, gapOk = wantGap === null ? gn < gN : gn === wantGap;
+  const absOk = wantAbs === 'need' ? an >= aN : wantAbs === null ? an < aN : an === wantAbs, gapOk = wantGap === 'any' ? true : wantGap === null ? gn < gN : gn === wantGap;
   if (!absOk || !gapOk) throw new Error('bracket misplaced: abs ' + an + ' (need ' + aN + ') gap ' + gn + ' (need ' + gN + ') want ' + (wantAbs === 'need' ? '>=' + aN : wantAbs ?? '<' + aN) + ' / ' + (wantGap ?? '<' + gN));
   return p;
 };
@@ -322,7 +322,7 @@ add('replay-timeline-whole-shift-100ms', 'replay-event-timeline', () => {}, [], 
 add('replay-timeline-prior-has-extra-event', 'replay-event-timeline', () => {}, [], true, { prior: (p) => { priorIds(p); p.events.splice(4, 0, clone(p.events[4])); renumber(p); return p; } });
 add('replay-timeline-prior-missing-event', 'replay-event-timeline', () => {}, [], true, { prior: (p) => { priorIds(p); p.events.splice(4, 1); renumber(p); return p; } });
 // BRACKETS: each side of every carried tolerance/threshold, needs from the prior's own counts
-add('replay-timeline-tol-in-0.049', 'replay-event-timeline', () => {}, [], true, { prior: (p) => { priorIds(p); p.events.forEach((e, i) => { const d = i % 2 ? 0.049 : -0.049; e.ts += d; e.at += d; }); return placed(p, nEv, null); } });
+add('replay-timeline-tol-in-0.049', 'replay-event-timeline', () => {}, [], true, { prior: (p) => { priorIds(p); p.events.forEach((e, i) => { const d = i % 2 ? 0.049 : -0.049; e.ts += d; e.at += d; }); return placed(p, 'need', 'any'); } });
 add('replay-timeline-abs-at-threshold', 'replay-event-timeline', () => {}, [], true, { prior: (p) => { priorIds(p); keepExact(p, absNeed); return placed(p, 'need', null); } });
 add('replay-timeline-gap-at-threshold', 'replay-event-timeline', () => {}, [], true, { prior: (p) => { priorIds(p); return placed(breakGaps(p, nGap - gapNeed, gapNeed), null, gapNeed); } });
 // R76Critic A2 (round-76 routed defect 1): the receipt under test ADDS two gaps; the prior keeps
@@ -418,16 +418,13 @@ accept('accept-grid-5e-6', (r) => { const e = evsOf(r, 'pick-same'); e[e.length 
 // The guard constrains only that (and the prior's needs): a shifted event can still land within TOL
 // of a NEIGHBOUR on the receipt's 0.1 ms grid, so demanding exactly 0 matches failed honest fresh
 // receipts (pre-freeze: an L1 verification receipt had 2 such neighbours, abs 2 of need 40).
-accept('accept-prior-tol-out-0.051', () => {}, { prior: (p) => {
-  priorIds(p);
-  const orig = real.events;
-  p.events.forEach((e, i) => {
-    const o = orig[i], d = i % 2 ? 0.051 : -0.051; e.ts += d; e.at += d;
-    const dts = e.ts - o.ts, dat = e.at - o.at;
-    if (!(Math.abs(dts) > TOL && Math.abs(dat) > TOL && Math.abs(dts - dat) < 1e-9)) throw new Error('tol bracket: event ' + i + ' not retimed beyond TOL by one amount');
-  });
-  return placed(p, null, null);
-} });
+// A prior retimed beyond TOL is NOT automatically an escape: refusal needs abs >= need OR gap >= need,
+// and on the scored receipt a ±0.051 retiming leaves 9 of 9 gaps matched (refused by the gap rule).
+// The accepting side is therefore built so BOTH sides are below need: `keep` scattered events stay on
+// the receipt's times (they match) and every other event moves 10 s away (it cannot, and the prior's
+// gaps become long jumps that do not match the receipt's).
+const keepScattered = (p, keep) => { const even = p.events.map((_, i) => i).filter((i) => i % 2 === 0); const kept = new Set(even.slice(0, keep)); p.events.forEach((e, i) => { if (!kept.has(i)) { const d = 10000 + 7 * i; e.ts = q(e.ts + d); e.at = q(e.at + d); } }); return p; };
+accept('accept-prior-scattered-below-threshold', () => {}, { prior: (p) => { priorIds(p); keepScattered(p, absNeed - 1); return placed(p, absNeed - 1, null); } });
 accept('accept-prior-abs-below-threshold', () => {}, { prior: (p) => { priorIds(p); keepExactFar(p, absNeed - 1); return placed(p, absNeed - 1, null); } });
 accept('accept-prior-gap-below-threshold', () => {}, { prior: (p) => { priorIds(p); return placed(breakGaps(p, nGap - gapNeed + 1, gapNeed - 1), null, gapNeed - 1); } });
 accept('accept-own-gap-50.1', (r) => { shrinkGapBefore(r, GAP_LEG, 50.1); });
