@@ -1,0 +1,45 @@
+{
+ "lane": "tabi",
+ "round": 74,
+ "attempt": 1,
+ "base": "c72235d6aebca89269809050e983d53df36273f5",
+ "preFreezeControlsCommit": "b70e0a27f45d1fe32248e5b14535c2aacfff9ada",
+ "frozenAt": "the lane commit that adds this file; instrument digests are recorded in .ufo/waves/round-74/freeze.txt by the next commit (the DIGESTS COMMIT, D), before any scored run",
+ "priorRound": "r73 admitted (MANIFEST index 1469; spot-check corpus/lessons/round-73-verifier-spotcheck.md). r72 and r71 rejected-honest-stop. Last three closures read before this freeze: r71 (leg b red), r72 (leg c red on a receipt-relative battery case; replay hole), r73 (admitted; limit sentence falsified by a cross-generation relabel, QUALITY 138). Routed defect 3 of the r73 closure (a 1e-12 ts perturbation defeats the timeline hash) is closed for this generation by the near-match timeline + 0.1 ms quantum checks; routed defects 1-2 concern the pinch counter and battery and are carried, not claimed. Carried as executed controls: M5 (kill-power semantic mutant + 10 producer-verdict polarity cases), duplicate and fabricated-label battery cases (leg-order duplicate entry, fabricated leg label, fabricated legShape leg), QUALITY 133 degenerate labels, QUALITY 135 every-repetition legs, QUALITY 137 fail-closed summary.",
+ "axesAtStart": {
+  "adjacency": 9,
+  "coverage": 9,
+  "depth": 9,
+  "operability": 9,
+  "freshness": 9,
+  "calibration": 9
+ },
+ "lowestAxis": "all six tie at 9; C1 (coverage) works a lowest axis",
+ "stagnationNudge": "last capability entered r73; C1 is a capability move on a lowest axis, so it satisfies either reading",
+ "pins": "freeze.txt (sha256 of every instrument below, recorded before the scored run)",
+ "priorSet": "PRE = the 12 committed pre-freeze receipts: .ufo/waves/round-74/controls/c1/smoke1..9.receipt.json and degenerate-{dispatch-key,exec-command,script-events}.receipt.json, passed as 12 --prior arguments in that order. QUALITY 138 boundary: no earlier generation of this capability exists (no committed receipt with schema tabi-chrome-cdp-imecompose-*), so PRE is every committed receipt of the surface.",
+ "claims": {
+  "C1": {
+   "axis": "coverage",
+   "type": "capability acquisition: chromium-ime-composition-linux (generation r74)",
+   "surface": "Input.imeSetComposition and Input.insertText runtime delivery on Linux Chromium 155 headless into an <input> and a contenteditable: composition start/update/end event shapes and data, beforeinput/input insertCompositionText with isComposing true vs insertText with isComposing false, compositionend isTrusted false, compositionstart data = selected text, empty-text cancel, the half-replacement -32602 refusal, no-focus composition inert, no-focus insertText editing at the surviving selection without beforeinput, no keyboard events. No tabi capability row or knowledge note covers IME composition: grep -c '^| `chromium-ime-composition-linux` |' SCORECARD.md = 0 and grep -rlc 'imeSetComposition' corpus/knowledge = 0 at base.",
+   "sourced": "S187-S193 (NEW this round, opened 2026-11-06 23:13-23:30 -03:00, staged .ufo/waves/round-74/sources/ with FETCH.txt): Input.pdl IME declarations, input_handler.cc InsertText/ImeSetComposition, input_method_controller.cc SetComposition/CommitText/composition dispatch, event_target.cc / event_dispatcher.cc / scoped_event_queue.cc (why compositionend is untrusted), editing_utilities.cc DispatchBeforeInputInsertText (no beforeinput without a focused target).",
+   "countingCommand": "node scripts/check-imecompose-r74.mjs --receipt corpus/evidence/round74/chromium-ime-composition/receipt.json --expect-driver-sha256 <freeze.txt driver digest> --expect-nonce tabi-r74-l1-<first 12 hex of D> <PRE as --prior args> --json",
+   "before": {
+    "rev": "c72235d6aebca89269809050e983d53df36273f5",
+    "counter": "no r74 receipt: exit 2 receipt-unreadable; the committed r73 pinch receipt under the r74 counter: exit 1 (schema, nonce-shape, nonce-expected, driver-pin, ime-call-count, ...); controls/c1/controls-summary.json",
+    "capabilityRow": "grep -c '^| `chromium-ime-composition-linux` |' SCORECARD.md = 0"
+   },
+   "predicate": "C1-IMECOMPOSE-R74: (a) after D, the L1 runs the pinned driver once with nonce tabi-r74-l1-<first 12 hex of D> and its own free ports, writing corpus/evidence/round74/chromium-ime-composition/receipt.json, and the counting command exits 0 (verdict clean, 148 checks) on that committed receipt with the frozen driver digest, that expected nonce and the 12 PRE priors; (b) wave seat R74Exec1 runs the pinned driver once cold with nonce tabi-r74-exec1-<first 12 hex of D> and its own ports, and the pinned counter exits 0 clean (148 checks) on that receipt with the frozen driver digest, that expected nonce, the 12 PRE priors and the (a) receipt as a 13th --prior; if R74Exec1's driver run ends exit 2 before launch (usage refusal: busy port or path guard, no receipt written) it may re-run with new ports, any receipt written is final; (c) on the (a) receipt with the frozen pin, nonce and PRE priors, the pinned battery scripts/negatives-imecompose-r74.mjs exits 0 (every case as expected, coverageGap empty, the three degenerate receipts laundered and refused) AND the pinned kill-power control .ufo/waves/round-74/controls/c1/kill-power-r74.mjs holds (unmutated battery exit 0, every force-true and every semantic mutant killed); (d) SCORECARD.md carries exactly one capability row `chromium-ime-composition-linux` (0 -> 1) and corpus/knowledge/chromium-ime-composition-runtime-round-74.md exists with a `source:` line citing at least one of S187-S193.",
+   "doNothingControl": "executed pre-freeze, expected verdicts declared in the script before running (controls/c1/controls-c1.mjs -> controls-summary.json, allOk true): no receipt -> exit 2 receipt-unreadable; the r73 pinch scored receipt -> exit 1 incl. schema/nonce-shape/nonce-expected/driver-pin/ime-call-count; call with no pin/nonce/priors -> exit 2 usage; capability row count 0.",
+   "forgeryControls": "executed pre-freeze (controls-summary.json): byte-identical replay of smoke1 -> exit 1 nonce-expected + the three replay ids (the three replay ids alone with smoke1's own nonce); smoke1 with its nonce rewritten and stamps +1 h -> exit 1 three replay ids + fixture-hash, and with the fixture hash recomputed -> exactly the three replay ids; all identifiers rewritten and one ts moved by 1e-12 -> exactly replay-event-timeline. Degenerate drivers dispatch-key / exec-command / script-events: driver exit 1, labelled, REFUTED, and laundered into the battery. Battery replay cases (byte-identical, nonce+stamps, each identifier shared alone, 1e-12, sub-quantum 0.04 ms) and must-accept priors one quantum and 0.06 ms away. Pre-freeze repetition (QUALITY 135/137): counter, battery AND kill power over all 9 smoke receipts, read by the fail-closed controls/c1/prefreeze-summary.mjs (prefreeze-summary.json).",
+   "kill": [
+    "any pinned instrument byte (freeze.txt) changes after the freeze: killed, never amended",
+    "the (a) scored run is red: no further scored runs to fish for green",
+    "R74Exec1's receipt is red (counter exit != 0): leg (b) false, honest stop",
+    "any predicate leg (a)-(d) false at the lane tip"
+   ],
+   "limit": "the counter reads a receipt; it is not an execution oracle. Its replay checks refuse a receipt that shares its launch token or DevTools browser id with a --prior receipt, or whose every event time lies within 0.05 ms of a --prior receipt's; a same-user forger who rewrites the nonce (and the fixture hash), the launch token, the browser id, and moves at least one event time by a whole 0.1 ms quantum is NOT refused — executed witness controls/c1/controls-summary.json `limit-full-identifier-rewrite` exit 0. The prior set is PRE only (no earlier generation of this surface exists). Demonstrated on this host's Chromium 155 headless, desktop mobile:false viewport, deviceScaleFactor 1; the no-focus insertText target choice is measured, not sourced."
+  }
+ }
+}
