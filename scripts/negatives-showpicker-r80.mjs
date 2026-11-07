@@ -61,6 +61,9 @@ const openOf = (r, leg) => arr(legOf(r, leg).cdpEventLog).find((e) => e.method =
 const runCounter = (receiptPath, laneArg, extraArgs = []) => {
   const args = [COUNTER, '--lane', laneArg, '--receipt', receiptPath, '--expect-driver-sha256', pin, '--expect-nonce', expectNonce,
     '--expect-fixture-sha256', expectFixture, '--prior-set', path.resolve(priorSet),
+    // the receipt under test lives in the walked trees once it is committed, so every run exempts it
+    // by CONTENT (the content-bound interface the counter carries); the exemption is not a path
+    ...(laneArg === lane ? ['--tree-exempt-sha256', realSha] : []),
     ...extraPriors.flatMap((p) => ['--prior', path.resolve(p)]), '--json', ...extraArgs];
   const r = spawnSync(process.execPath, args, { encoding: 'utf8', timeout: 20000 });
   let j = null;
