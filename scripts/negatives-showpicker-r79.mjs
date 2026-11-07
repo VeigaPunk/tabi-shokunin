@@ -55,6 +55,7 @@ try { real = JSON.parse(fs.readFileSync(realPath, 'utf8')); } catch (e) { usage(
 const counterSrc = fs.readFileSync(COUNTER, 'utf8').split('\n');
 const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
 const clone = (v) => JSON.parse(JSON.stringify(v));
+const realSha = sha256(fs.readFileSync(realPath));
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const arr = (v) => (Array.isArray(v) ? v : []);
@@ -74,8 +75,11 @@ const lineOf = (id) => {
 const runCounter = (receiptPath, laneArg, extraArgs = []) => {
   // the prior set is named ABSOLUTELY: the mirror-lane cases change --lane and the counter resolves a
   // relative prior-set against it
+  // the receipt under test lives in the walked trees once it is committed, so every run exempts it by
+  // CONTENT (the content-bound interface the r79 counter carries); the exemption is not a path
   const args = [COUNTER, '--lane', laneArg, '--receipt', receiptPath, '--expect-driver-sha256', pin, '--expect-nonce', expectNonce,
-    '--expect-fixture-sha256', expectFixture, '--prior-set', path.resolve(priorSet), ...extraPriors.flatMap((p) => ['--prior', path.resolve(p)]), '--json', ...extraArgs];
+    '--expect-fixture-sha256', expectFixture, '--prior-set', path.resolve(priorSet), ...(laneArg === lane ? ['--tree-exempt-sha256', realSha] : []),
+    ...extraPriors.flatMap((p) => ['--prior', path.resolve(p)]), '--json', ...extraArgs];
   const r = spawnSync(process.execPath, args, { encoding: 'utf8', timeout: 120000 });
   let j = null;
   try { j = JSON.parse(r.stdout); } catch { j = null; }

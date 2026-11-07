@@ -40,5 +40,4 @@ node "$L/scripts/selftest-r79-gates.mjs" --lane "$L" --work "$S/selftest" --json
 node -e "const j=require('$S/selftest-r79-gates.out');console.log('selftest',j.clean,j.cases,JSON.stringify(j.failed))"
 
 cp "$S/c1-counter-a.json" "$S/c1-negatives-a.json" "$S/c1-killpower-a.json" "$S/c2-after.json" "$S/selftest-r79-gates.out" "$R/scored/"
-cp "$S/driver.out" "$R/scored/driver.out"
 echo "scored evidence copied to $R/scored"
