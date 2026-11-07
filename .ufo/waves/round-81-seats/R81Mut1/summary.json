@@ -1,0 +1,349 @@
+{
+ "schema": "tabi-r81-r81mut1-mutants",
+ "seat": "R81Mut1",
+ "totals": {
+  "mutants": 125,
+  "killed": 8,
+  "survived": 117,
+  "crashed": 0,
+  "unapplied": 0,
+  "survivorsWithWitness": 86,
+  "routedDefects": 31
+ },
+ "routedDefects": [
+  {
+   "id": "m28-send-min-length",
+   "rule": "a send log must have at least 10 calls",
+   "from": "if (log.length < 10 ||",
+   "to": "if (log.length < 1 ||",
+   "reason": "redundant: plan-calls refuses any send log short enough to trip the length rule (the intercept/mouse/trigger sequence cannot fit in <10 calls), so no receipt escapes on length alone"
+  },
+  {
+   "id": "m42-plan-answer-files",
+   "rule": "the answer must name exactly the planned file",
+   "from": "if (!set || path.basename(set.params.files[0]) !== wantBase || set.params.files.length !== 1) planBad.push(leg.name + ':answer-files');",
+   "to": "if (!set) planBad.push(leg.name + ':answer-files');",
+   "reason": "redundant: accept-answer-law / webkitdirectory-answer-law pin answer.setParams.files[0] to the planned basename, so plan-calls answer-files cannot be the only detector"
+  },
+  {
+   "id": "m46-cdp-open-mode",
+   "rule": "chooser mode must be selectSingle or selectMultiple",
+   "from": "!['selectSingle', 'selectMultiple'].includes(o.params.mode)",
+   "to": "typeof o.params.mode !== 'string'",
+   "reason": "redundant: the per-leg frozen shape compares `opened` (the mode array) and mode-law compares the same value, so any mode change fires leg-<name> first"
+  },
+  {
+   "id": "m49-cdp-cross-open-binding",
+   "rule": "a cross-origin chooser must follow the prior click within 3 sends",
+   "from": "if (!(Number.isInteger(leg.priorReleaseId) && o.afterSendId >= leg.priorReleaseId && o.afterSendId <= leg.priorReleaseId + 3)) evBad.push(leg.name + ':open-binding');",
+   "to": "if (!Number.isInteger(leg.priorReleaseId)) evBad.push(leg.name + ':open-binding');",
+   "reason": "vacuous: no honest cross-origin leg opens a chooser (both throw SecurityError), and any added open is refused by intercept-law and the per-leg shape before the afterSendId window matters"
+  },
+  {
+   "id": "m51-cdp-multi-open",
+   "rule": "at most two chooser opens per leg",
+   "from": "if (opens.length > 2) evBad.push(leg.name + ':multi-open');",
+   "to": "if (opens.length > 3) evBad.push(leg.name + ':multi-open');",
+   "reason": "redundant: a third chooser open changes the per-leg `opened` array (leg-<name>) and click-while-open-law, both of which fire"
+  },
+  {
+   "id": "m57-event-types-target",
+   "rule": "event.target must be null or a string",
+   "from": "(e.target === null || typeof e.target === 'string')",
+   "to": "true",
+   "reason": "redundant: the per-leg frozen shape seq is type@target, so any target change fires leg-<name>"
+  },
+  {
+   "id": "m58-event-types-files",
+   "rule": "event.files must be null or an array",
+   "from": "(e.files === null || Array.isArray(e.files))",
+   "to": "true",
+   "reason": "redundant: the per-leg frozen shape `files` column lists every event whose files is non-null, so any files change fires leg-<name>"
+  },
+  {
+   "id": "m59-event-types-seq",
+   "rule": "event.seq must be an integer",
+   "from": "Number.isInteger(e.seq) && typeof e.leg === 'string'",
+   "to": "num(e.seq) && typeof e.leg === 'string'",
+   "reason": "redundant: seq-monotonic requires seq === i+1 exactly, so a non-integer seq fires seq-monotonic"
+  },
+  {
+   "id": "m61-sp-law-message",
+   "rule": "a throwing showPicker must carry the frozen message",
+   "from": "(got.name !== want.name || got.message !== want.message)",
+   "to": "got.name !== want.name",
+   "reason": "redundant: the only throwing parent showPicker law is sp81-same-origin-nonfile-disabled, whose message order-law pins separately"
+  },
+  {
+   "id": "m63-sp-law-unknown",
+   "rule": "a leg without a frozen showPicker law is refused",
+   "from": "if (want === undefined) { spBad.push(leg.name + ':unknown-leg'); continue; }",
+   "to": "if (want === undefined) { continue; }",
+   "reason": "vacuous: all six planned legs have a frozen SP_LAW entry; a leg without one cannot pass plan-frozen/leg-order/leg-records"
+  },
+  {
+   "id": "m64-mode-law-multiple",
+   "rule": "a multiple input must open selectMultiple",
+   "from": "const wantMode = d && d.multiple === true ? 'selectMultiple' : 'selectSingle';",
+   "to": "const wantMode = 'selectSingle';",
+   "reason": "redundant: fixture-descriptors pins fixtureInputs to FIXTURE_INPUTS, so the multiple flag cannot be flipped to create a selectMultiple witness"
+  },
+  {
+   "id": "m65-mode-law-missing-input",
+   "rule": "a chooser whose input descriptor is missing is refused",
+   "from": "if (!d || opens.some((e) => e.params.mode !== wantMode)) modeBad.push(",
+   "to": "if (opens.some((e) => e.params.mode !== wantMode)) modeBad.push(",
+   "reason": "redundant: fixture-descriptors refuses any fixtureInputs array that loses a descriptor"
+  },
+  {
+   "id": "m67-co-child-events-count",
+   "rule": "the child click must fire exactly five events",
+   "from": "arr(co.childEvents).length === 5",
+   "to": "arr(co.childEvents).length >= 1",
+   "reason": "redundant: the child event shape check compares the full type@target sequence, so a 5->4 or 5->6 change fires the same cross-origin-nonfile-law id"
+  },
+  {
+   "id": "m72-order-cross-nochooser",
+   "rule": "the cross-origin disabled call must open nothing",
+   "from": "arr(cod.cdpEventLog).filter((e) => e.method === 'Page.fileChooserOpened').length === 0",
+   "to": "true",
+   "reason": "redundant: an added chooser on the cross-origin disabled leg fires intercept-law and the per-leg `opened` shape as well"
+  },
+  {
+   "id": "m73-order-same-nochooser",
+   "rule": "the same-origin disabled call must open nothing",
+   "from": "arr(sod.cdpEventLog).filter((e) => e.method === 'Page.fileChooserOpened').length === 0",
+   "to": "true",
+   "reason": "redundant: an added chooser on the same-origin disabled leg fires intercept-law and the per-leg `opened` shape as well"
+  },
+  {
+   "id": "m74-order-same-ok",
+   "rule": "the same-origin disabled call must fail (ok === false)",
+   "from": "sod.showPicker.ok === false",
+   "to": "typeof sod.showPicker.ok === 'boolean'",
+   "reason": "redundant: flipping sod.showPicker.ok to true also fires gesture-law and intercept-law"
+  },
+  {
+   "id": "m76-dir-answer-setfiles",
+   "rule": "setParams.files must be exactly the directory basename",
+   "from": "arr(wa.answer.setParams.files).length === 1 && path.basename(wa.answer.setParams.files[0]) === DIR.name",
+   "to": "arr(wa.answer.setParams.files).length >= 1",
+   "reason": "redundant: changing answer.setParams.files makes plan-calls want differ from the send log, so plan-calls fires"
+  },
+  {
+   "id": "m78-dir-answer-state",
+   "rule": "the directory answer must populate the input with webkitRelativePath",
+   "from": "same(waState, DIR_FILES)",
+   "to": "Array.isArray(waState)",
+   "reason": "redundant: the per-leg frozen shape state column compares stateAfter.d, so any change fires leg-sp81-webkitdirectory-answer"
+  },
+  {
+   "id": "m79-dir-answer-readcount",
+   "rule": "both directory files must be read",
+   "from": "arr(wa.pageEvents).filter((e) => e.type === 'read').length === 2",
+   "to": "arr(wa.pageEvents).filter((e) => e.type === 'read').length >= 1",
+   "reason": "redundant: removing a read event changes the per-leg seq, so leg-sp81-webkitdirectory-answer fires"
+  },
+  {
+   "id": "m83-accept-answer-state",
+   "rule": "the accept answer must populate the input with the .txt",
+   "from": "same(isObj(aa.stateAfter) ? aa.stateAfter.k : null, [[ANSWER.name, ANSWER.size, ANSWER.type, '']])",
+   "to": "Array.isArray(isObj(aa.stateAfter) ? aa.stateAfter.k : null)",
+   "reason": "redundant: the per-leg frozen shape state column compares stateAfter.k"
+  },
+  {
+   "id": "m84-accept-answer-readcount",
+   "rule": "the accepted file must be read exactly once",
+   "from": "arr(aa.pageEvents).filter((e) => e.type === 'read').length === 1",
+   "to": "arr(aa.pageEvents).filter((e) => e.type === 'read').length >= 1",
+   "reason": "redundant: removing the read event changes the per-leg seq"
+  },
+  {
+   "id": "m87-click-page-clicks",
+   "rule": "exactly one trusted click on s",
+   "from": "arr(cw.pageEvents).filter((e) => e.type === 'click' && e.target === 's').length === 1",
+   "to": "arr(cw.pageEvents).filter((e) => e.type === 'click' && e.target === 's').length >= 1",
+   "reason": "redundant: a second click@s changes the per-leg seq, so leg-sp81-click-while-open fires"
+  },
+  {
+   "id": "m88-click-trusted",
+   "rule": "the click on s must be trusted and active",
+   "from": "arr(cw.pageEvents).filter((e) => e.type === 'click' && e.target === 's').every((e) => e.isTrusted === true && e.act === true)",
+   "to": "true",
+   "reason": "redundant: trust-law requires every page event to be trusted, so an untrusted click fires trust-law"
+  },
+  {
+   "id": "m90-noselect-file-event",
+   "rule": "no non-cancel event may carry files outside the answer legs",
+   "from": "(e.files !== null && e.type !== 'cancel')",
+   "to": "false",
+   "reason": "redundant: adding an input/change event changes the per-leg seq; setting files on an existing event changes the per-leg files column"
+  },
+  {
+   "id": "m91-noselect-state-keys",
+   "rule": "the state object must have exactly the seven frozen keys",
+   "from": "same(Object.keys(st).sort(), ['d', 'dis', 'disd', 'k', 'm', 's', 'sValue'])",
+   "to": "isObj(st)",
+   "reason": "redundant: the per-leg frozen shape state column compares the whole state object, so an extra or missing key fires leg-<name>"
+  },
+  {
+   "id": "m92-intercept-fewer-opens",
+   "rule": "a leg that opens fewer choosers than its trigger implies is refused",
+   "from": "if (opens !== want) intBad.push(leg.name + ':opened-' + opens + '-want-' + want);",
+   "to": "if (opens > want) intBad.push(leg.name + ':opened-' + opens + '-want-' + want);",
+   "reason": "redundant: a missing chooser open changes the per-leg `opened` array, so leg-<name> fires"
+  },
+  {
+   "id": "m93-intercept-cross-ok",
+   "rule": "a cross leg opens a chooser only when the child call succeeded",
+   "from": "CROSS.has(leg.name) ? isObj(leg.childResult) && leg.childResult.ok === true : isObj(leg.showPicker) && leg.showPicker.ok === true",
+   "to": "CROSS.has(leg.name) ? isObj(leg.childResult) && leg.childResult.ok !== false : isObj(leg.showPicker) && leg.showPicker.ok === true",
+   "reason": "redundant: cross-origin-nonfile-law / order-law pin childResult exactly, so a childResult without ok fires there"
+  },
+  {
+   "id": "m96-dismiss-cancel-events",
+   "rule": "a post-hoc cancel must not fire a page cancel",
+   "from": "arr(l.pageEvents).every((e) => e.type !== 'cancel')",
+   "to": "true",
+   "reason": "redundant: cancel-law refuses any page cancel event in this generation"
+  },
+  {
+   "id": "m113-run-window-finite",
+   "rule": "startedAt/finishedAt must parse",
+   "from": "Number.isFinite(t0) && Number.isFinite(t1) && ",
+   "to": "",
+   "reason": "redundant: an unparseable startedAt/finishedAt yields NaN, which fails both t1 - t0 >= 12000 and t1 - t0 < 600000"
+  },
+  {
+   "id": "m115-replay-tol",
+   "rule": "a pair match is within 0.05 ms",
+   "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+   "to": "const TOL = 0.0001, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+   "reason": "vacuous: every page-event ts/at is on the 0.1 ms grid (event-time-quantum), so a pair either matches exactly or differs by >= 0.1 ms > TOL; any TOL in (1e-4, 0.05] is behaviourally identical and no receipt can distinguish it"
+  },
+  {
+   "id": "m124-leg-shape-trusted",
+   "rule": "the per-leg trusted column is compared",
+   "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+   "to": "for (const k of ['seq', 'act', 'xy', 'files', 'opened', 'state'])",
+   "reason": "redundant: trust-law requires every page event to be trusted, so dropping the per-leg trusted column cannot be the only detector"
+  }
+ ],
+ "killed": [
+  {
+   "id": "m52-frame-binding-parent",
+   "rule": "every leg must carry a fresh main frame tree (parent null)",
+   "killedBy": {
+    "case": "frame-binding",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected frame-binding got []"
+   }
+  },
+  {
+   "id": "m86-click-open-count",
+   "rule": "the click must leave exactly two choosers open",
+   "killedBy": {
+    "case": "click-while-open-law",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected click-while-open-law got []"
+   }
+  },
+  {
+   "id": "m94-cancel-law",
+   "rule": "no page cancel event may fire in this generation",
+   "killedBy": {
+    "case": "cancel-law",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 1 expected cancel-law got [\"event-leg-window\",\"leg-sp81-accept-answer\",\"dismiss-law\"]"
+   }
+  },
+  {
+   "id": "m95-dismiss-result",
+   "rule": "a post-hoc cancel must be accepted with {}",
+   "killedBy": {
+    "case": "dismiss-law",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected dismiss-law got []"
+   }
+  },
+  {
+   "id": "m103-devtools-port",
+   "rule": "the devtools port must be the argv CDP port",
+   "killedBy": {
+    "case": "devtools-port-binding",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected devtools-port-binding got []"
+   }
+  },
+  {
+   "id": "m120-walk-unparsable-schema",
+   "rule": "the unparsable scan keys on the r81 schema string",
+   "killedBy": {
+    "case": "prior-set-unparsable",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected prior-set-unparsable got []"
+   }
+  },
+  {
+   "id": "m123-leg-shape-xy",
+   "rule": "the per-leg xy/buttons column is compared",
+   "killedBy": {
+    "case": "leg-sp81-click-while-open",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected leg-sp81-click-while-open got []"
+   }
+  },
+  {
+   "id": "m126-leg-shape-files",
+   "rule": "the per-leg files column is compared",
+   "killedBy": {
+    "case": "leg-sp81-accept-answer",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected leg-sp81-accept-answer got []"
+   }
+  }
+ ],
+ "instruments": {
+  "counter": {
+   "path": "scripts/check-showpicker-r81.mjs",
+   "sha256": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "freezeSha256": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0"
+  },
+  "battery": {
+   "frozenSha256": "6964de6f4a4a02ea225a2d3959277f7d0b9a5553812f3918bcbde51a8a69f6d2",
+   "worktreeSha256AtEnd": "0f75e767e6967280cd6296c675a30015902c21aa5c91f324c78c73e915d18e95",
+   "used": "frozen bytes from commit a2183a93 (battery-frozen-D.mjs)",
+   "driftNote": "the lane worktree battery was edited by another seat at 20:22 local (receiptPath path.resolve + coverage keyed on c.expect); the frozen bytes were used for every verdict and the sweep was re-run against the worktree bytes with identical verdicts"
+  },
+  "killPower": {
+   "path": "scripts/kill-power-r81.mjs",
+   "sha256": "e381162d49771b3dba077db559d3a43d98037144ec930f4bb8c0311f9d9b215c",
+   "reused": false
+  }
+ },
+ "harness": {
+  "baseline": {
+   "dir": "/fast/scratch/hyaku/tabi-r81/R81Mut1/mut-000-baseline",
+   "exit": 0,
+   "cases": 62,
+   "failed": 0,
+   "uncovered": [],
+   "counterSha256": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "laneCounterSha256": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0"
+  }
+ },
+ "restoration": {
+  "laneCounterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+  "laneCounterSha256After": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+  "laneBatterySha256After": "0f75e767e6967280cd6296c675a30015902c21aa5c91f324c78c73e915d18e95",
+  "note": "no lane file was written by this seat; every mutant lived in its own scratch dir and was removed after its run"
+ }
+}

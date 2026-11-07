@@ -1,0 +1,48 @@
+{
+ "lane": "tabi",
+ "round": 82,
+ "base": "b401027f",
+ "digestsCommit": "PENDING-D",
+ "nonce": "tabi-r82-scored1",
+ "frozenAt": "2026-11-08, before any post-freeze scored run; pre-freeze gates green: counter clean 64/64 on the scored receipt, battery 70/70 with coverage 64/64, kill power 46/46, no-work control (r81 receipt under r82 counter) exit 1 with schema, forgery control exit 1",
+ "claims": {
+  "C1": {
+   "axis": "coverage",
+   "type": "capability generation r82 \u2014 chromium-showpicker-linux (type=color cross-origin exempt branch; type=month/week/time cross-origin SecurityError legs; r81 six laws carried)",
+   "predicate": "C1-SHOWPICKER-R82",
+   "legs": {
+    "a": "scored run: corpus/evidence/round82/chromium-showpicker/receipt.json, counter exits 0 clean 64 checks",
+    "b": "battery 70/70, coverage 64/64; kill power 46/46",
+    "c": "capability row, knowledge note, SKILL registry, selftest green"
+   },
+   "countingCommand": "node scripts/check-showpicker-r82.mjs --lane <ABS lane> --receipt corpus/evidence/round82/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce <nonce> --expect-fixture-sha256 <fixture> --prior-set .ufo/waves/round-82/controls/c1/prior-set.txt --json",
+   "pins": {
+    "scripts/chrome-cdp-showpicker-round82.mjs": "2085c2a78a2bc87208404ca6d477964ed8aa29eea52cd31b92a94fe88cc373f1",
+    "scripts/check-showpicker-r82.mjs": "d0d26fe59b6f5067b6a8021d6e7e039466e6ded46bb4cd4f5eda6f07b444d62e",
+    "scripts/negatives-showpicker-r82.mjs": "e2d554e6ffd4e3b35d7b00f9301e3d1d0c59f28876a3f830aa229b455a0f32ff",
+    "scripts/kill-power-r82.mjs": "f0d2b8667817fc7b676277499010b5156a801b203629cfb3abe1ac296a1b4db1",
+    "scripts/selftest-r82-gates.mjs": "64888b15d5beecd93d425364419087073396732d2f0cb75a497ceeea8e866db7",
+    "scripts/check-record-drift-r82.mjs": "d145d9ff448c3ce9c5180d477e604dde69795ad091e92a2528667dca33c7e5c9"
+   },
+   "priorSet": ".ufo/waves/round-82/controls/c1/prior-set.txt (prior-a.json)",
+   "killRule": "any leg false or any axis harmed -> NOT verified",
+   "limit": "counter reads a receipt; absNeed rule as in r81; backendNodeId relabel inside limit by design"
+  },
+  "C2": {
+   "axis": "calibration",
+   "type": "self-assessment reconciliation (r81 spotcheck defects 6-9 + presence-bound direction + r82 identity/numbers)",
+   "predicate": "C2-RECORDDRIFT-R82",
+   "legs": {
+    "a": "node scripts/check-record-drift-r82.mjs --lane <ABS lane> --json exits 0, 0 mismatches",
+    "b": "quote-count propagation 23\u219220 directional; wave files committed; dead seats named; report lands-last",
+    "c": "r82 identity/numbers legs bound to scored outputs"
+   },
+   "countingCommand": "node scripts/check-record-drift-r82.mjs --lane <ABS lane> --json",
+   "pins": {
+    "scripts/check-record-drift-r82.mjs": "d145d9ff448c3ce9c5180d477e604dde69795ad091e92a2528667dca33c7e5c9"
+   },
+   "killRule": "mismatches != 0 -> NOT verified",
+   "controls": ".ufo/waves/round-82/lesson-proof/c2-controls.json"
+  }
+ }
+}

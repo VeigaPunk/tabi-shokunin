@@ -3273,3 +3273,17 @@ disabled non-file input is InvalidStateError same-origin but SecurityError cross
 checks the origin before mutability); activation is per-frame-tree; a directory answer expands with
 `webkitRelativePath`; `accept` is a hint, so a programmatic answer is not filtered; a click while a
 picker is open opens a second chooser.
+
+## Round 82 gate registry
+
+| Gate | Entry command | Verdict map | Self-test | Pinned path |
+|---|---|---|---|---|
+| `check-showpicker-r82` | `node scripts/check-showpicker-r82.mjs --lane <ABS lane> --receipt corpus/evidence/round82/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r82-scored1 --expect-fixture-sha256 <fixture sha> --prior-set .ufo/waves/round-82/controls/c1/prior-set.txt --json` | exit 0 clean = 64 checks; exit 1 = findings; exit 2 = usage/unreadable | `node scripts/selftest-r82-gates.mjs --lane <ABS lane> --work <ABS scratch> --json` (9/9) | `.ufo/waves/round-82/freeze.txt` |
+
+Instruments: `scripts/chrome-cdp-showpicker-round82.mjs` (driver, 10 legs, one fresh browser per leg,
+a cross-origin iframe on a second loopback port carrying `type=date`/`type=color`/`type=month`/
+`type=week`/`type=time` inputs), `scripts/negatives-showpicker-r82.mjs` (battery, 70 cases,
+coverage 64/64), `scripts/kill-power-r82.mjs` (46 mutants; 46 killed), `scripts/check-record-drift-r82.mjs`
+(C2: 8 record claims). Scored: 64 checks, battery 70/70, kill power 46/46. The r82 laws: a
+cross-origin `type=color` input is EXEMPT (`showPicker()` returns undefined, no chooser); cross-origin
+`type=month`/`week`/`time` inputs throw SecurityError; the r81 six laws are carried forward.

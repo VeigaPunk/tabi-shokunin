@@ -1,0 +1,4359 @@
+{
+ "schema": "tabi-r81-r81mut1-mutants",
+ "seat": "R81Mut1",
+ "lane": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+ "base": "c27e8406e6a2dc3cafcff030c9224cf8a14e3464",
+ "digestsCommit": "a2183a93362259cb574ef3d03b565ee6d2c26599",
+ "instruments": {
+  "counter": {
+   "path": "scripts/check-showpicker-r81.mjs",
+   "sha256": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "freezeSha256": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0"
+  },
+  "battery": {
+   "frozenSha256": "6964de6f4a4a02ea225a2d3959277f7d0b9a5553812f3918bcbde51a8a69f6d2",
+   "worktreeSha256AtEnd": "0f75e767e6967280cd6296c675a30015902c21aa5c91f324c78c73e915d18e95",
+   "used": "frozen bytes from commit a2183a93 (battery-frozen-D.mjs)",
+   "driftNote": "the lane worktree battery was edited by another seat at 20:22 local (receiptPath path.resolve + coverage keyed on c.expect); the frozen bytes were used for every verdict and the sweep was re-run against the worktree bytes with identical verdicts"
+  },
+  "killPower": {
+   "path": "scripts/kill-power-r81.mjs",
+   "sha256": "e381162d49771b3dba077db559d3a43d98037144ec930f4bb8c0311f9d9b215c",
+   "reused": false
+  }
+ },
+ "harness": {
+  "laneMirror": "/fast/scratch/hyaku/tabi-r81/R81Mut1/lane/tabi-shokunin (deleted after the run)",
+  "receiptUnderTest": "probe2 (copy), prior = probe1 (committed prior set)",
+  "note": "the lane is read-only: every mutant runs in its own mut-<id>/ copy of the counter and the battery; the battery walks a scratch mirror lane whose only walked receipts are the committed prior and the content-exempted receipt under test",
+  "baseline": {
+   "dir": "/fast/scratch/hyaku/tabi-r81/R81Mut1/mut-000-baseline",
+   "exit": 0,
+   "cases": 62,
+   "failed": 0,
+   "uncovered": [],
+   "counterSha256": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "laneCounterSha256": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0"
+  }
+ },
+ "totals": {
+  "mutants": 125,
+  "killed": 8,
+  "survived": 117,
+  "crashed": 0,
+  "unapplied": 0,
+  "survivorsWithWitness": 86,
+  "routedDefects": 31
+ },
+ "routedDefects": [
+  {
+   "id": "m28-send-min-length",
+   "rule": "a send log must have at least 10 calls",
+   "from": "if (log.length < 10 ||",
+   "to": "if (log.length < 1 ||",
+   "reason": "redundant: plan-calls refuses any send log short enough to trip the length rule (the intercept/mouse/trigger sequence cannot fit in <10 calls), so no receipt escapes on length alone"
+  },
+  {
+   "id": "m42-plan-answer-files",
+   "rule": "the answer must name exactly the planned file",
+   "from": "if (!set || path.basename(set.params.files[0]) !== wantBase || set.params.files.length !== 1) planBad.push(leg.name + ':answer-files');",
+   "to": "if (!set) planBad.push(leg.name + ':answer-files');",
+   "reason": "redundant: accept-answer-law / webkitdirectory-answer-law pin answer.setParams.files[0] to the planned basename, so plan-calls answer-files cannot be the only detector"
+  },
+  {
+   "id": "m46-cdp-open-mode",
+   "rule": "chooser mode must be selectSingle or selectMultiple",
+   "from": "!['selectSingle', 'selectMultiple'].includes(o.params.mode)",
+   "to": "typeof o.params.mode !== 'string'",
+   "reason": "redundant: the per-leg frozen shape compares `opened` (the mode array) and mode-law compares the same value, so any mode change fires leg-<name> first"
+  },
+  {
+   "id": "m49-cdp-cross-open-binding",
+   "rule": "a cross-origin chooser must follow the prior click within 3 sends",
+   "from": "if (!(Number.isInteger(leg.priorReleaseId) && o.afterSendId >= leg.priorReleaseId && o.afterSendId <= leg.priorReleaseId + 3)) evBad.push(leg.name + ':open-binding');",
+   "to": "if (!Number.isInteger(leg.priorReleaseId)) evBad.push(leg.name + ':open-binding');",
+   "reason": "vacuous: no honest cross-origin leg opens a chooser (both throw SecurityError), and any added open is refused by intercept-law and the per-leg shape before the afterSendId window matters"
+  },
+  {
+   "id": "m51-cdp-multi-open",
+   "rule": "at most two chooser opens per leg",
+   "from": "if (opens.length > 2) evBad.push(leg.name + ':multi-open');",
+   "to": "if (opens.length > 3) evBad.push(leg.name + ':multi-open');",
+   "reason": "redundant: a third chooser open changes the per-leg `opened` array (leg-<name>) and click-while-open-law, both of which fire"
+  },
+  {
+   "id": "m57-event-types-target",
+   "rule": "event.target must be null or a string",
+   "from": "(e.target === null || typeof e.target === 'string')",
+   "to": "true",
+   "reason": "redundant: the per-leg frozen shape seq is type@target, so any target change fires leg-<name>"
+  },
+  {
+   "id": "m58-event-types-files",
+   "rule": "event.files must be null or an array",
+   "from": "(e.files === null || Array.isArray(e.files))",
+   "to": "true",
+   "reason": "redundant: the per-leg frozen shape `files` column lists every event whose files is non-null, so any files change fires leg-<name>"
+  },
+  {
+   "id": "m59-event-types-seq",
+   "rule": "event.seq must be an integer",
+   "from": "Number.isInteger(e.seq) && typeof e.leg === 'string'",
+   "to": "num(e.seq) && typeof e.leg === 'string'",
+   "reason": "redundant: seq-monotonic requires seq === i+1 exactly, so a non-integer seq fires seq-monotonic"
+  },
+  {
+   "id": "m61-sp-law-message",
+   "rule": "a throwing showPicker must carry the frozen message",
+   "from": "(got.name !== want.name || got.message !== want.message)",
+   "to": "got.name !== want.name",
+   "reason": "redundant: the only throwing parent showPicker law is sp81-same-origin-nonfile-disabled, whose message order-law pins separately"
+  },
+  {
+   "id": "m63-sp-law-unknown",
+   "rule": "a leg without a frozen showPicker law is refused",
+   "from": "if (want === undefined) { spBad.push(leg.name + ':unknown-leg'); continue; }",
+   "to": "if (want === undefined) { continue; }",
+   "reason": "vacuous: all six planned legs have a frozen SP_LAW entry; a leg without one cannot pass plan-frozen/leg-order/leg-records"
+  },
+  {
+   "id": "m64-mode-law-multiple",
+   "rule": "a multiple input must open selectMultiple",
+   "from": "const wantMode = d && d.multiple === true ? 'selectMultiple' : 'selectSingle';",
+   "to": "const wantMode = 'selectSingle';",
+   "reason": "redundant: fixture-descriptors pins fixtureInputs to FIXTURE_INPUTS, so the multiple flag cannot be flipped to create a selectMultiple witness"
+  },
+  {
+   "id": "m65-mode-law-missing-input",
+   "rule": "a chooser whose input descriptor is missing is refused",
+   "from": "if (!d || opens.some((e) => e.params.mode !== wantMode)) modeBad.push(",
+   "to": "if (opens.some((e) => e.params.mode !== wantMode)) modeBad.push(",
+   "reason": "redundant: fixture-descriptors refuses any fixtureInputs array that loses a descriptor"
+  },
+  {
+   "id": "m67-co-child-events-count",
+   "rule": "the child click must fire exactly five events",
+   "from": "arr(co.childEvents).length === 5",
+   "to": "arr(co.childEvents).length >= 1",
+   "reason": "redundant: the child event shape check compares the full type@target sequence, so a 5->4 or 5->6 change fires the same cross-origin-nonfile-law id"
+  },
+  {
+   "id": "m72-order-cross-nochooser",
+   "rule": "the cross-origin disabled call must open nothing",
+   "from": "arr(cod.cdpEventLog).filter((e) => e.method === 'Page.fileChooserOpened').length === 0",
+   "to": "true",
+   "reason": "redundant: an added chooser on the cross-origin disabled leg fires intercept-law and the per-leg `opened` shape as well"
+  },
+  {
+   "id": "m73-order-same-nochooser",
+   "rule": "the same-origin disabled call must open nothing",
+   "from": "arr(sod.cdpEventLog).filter((e) => e.method === 'Page.fileChooserOpened').length === 0",
+   "to": "true",
+   "reason": "redundant: an added chooser on the same-origin disabled leg fires intercept-law and the per-leg `opened` shape as well"
+  },
+  {
+   "id": "m74-order-same-ok",
+   "rule": "the same-origin disabled call must fail (ok === false)",
+   "from": "sod.showPicker.ok === false",
+   "to": "typeof sod.showPicker.ok === 'boolean'",
+   "reason": "redundant: flipping sod.showPicker.ok to true also fires gesture-law and intercept-law"
+  },
+  {
+   "id": "m76-dir-answer-setfiles",
+   "rule": "setParams.files must be exactly the directory basename",
+   "from": "arr(wa.answer.setParams.files).length === 1 && path.basename(wa.answer.setParams.files[0]) === DIR.name",
+   "to": "arr(wa.answer.setParams.files).length >= 1",
+   "reason": "redundant: changing answer.setParams.files makes plan-calls want differ from the send log, so plan-calls fires"
+  },
+  {
+   "id": "m78-dir-answer-state",
+   "rule": "the directory answer must populate the input with webkitRelativePath",
+   "from": "same(waState, DIR_FILES)",
+   "to": "Array.isArray(waState)",
+   "reason": "redundant: the per-leg frozen shape state column compares stateAfter.d, so any change fires leg-sp81-webkitdirectory-answer"
+  },
+  {
+   "id": "m79-dir-answer-readcount",
+   "rule": "both directory files must be read",
+   "from": "arr(wa.pageEvents).filter((e) => e.type === 'read').length === 2",
+   "to": "arr(wa.pageEvents).filter((e) => e.type === 'read').length >= 1",
+   "reason": "redundant: removing a read event changes the per-leg seq, so leg-sp81-webkitdirectory-answer fires"
+  },
+  {
+   "id": "m83-accept-answer-state",
+   "rule": "the accept answer must populate the input with the .txt",
+   "from": "same(isObj(aa.stateAfter) ? aa.stateAfter.k : null, [[ANSWER.name, ANSWER.size, ANSWER.type, '']])",
+   "to": "Array.isArray(isObj(aa.stateAfter) ? aa.stateAfter.k : null)",
+   "reason": "redundant: the per-leg frozen shape state column compares stateAfter.k"
+  },
+  {
+   "id": "m84-accept-answer-readcount",
+   "rule": "the accepted file must be read exactly once",
+   "from": "arr(aa.pageEvents).filter((e) => e.type === 'read').length === 1",
+   "to": "arr(aa.pageEvents).filter((e) => e.type === 'read').length >= 1",
+   "reason": "redundant: removing the read event changes the per-leg seq"
+  },
+  {
+   "id": "m87-click-page-clicks",
+   "rule": "exactly one trusted click on s",
+   "from": "arr(cw.pageEvents).filter((e) => e.type === 'click' && e.target === 's').length === 1",
+   "to": "arr(cw.pageEvents).filter((e) => e.type === 'click' && e.target === 's').length >= 1",
+   "reason": "redundant: a second click@s changes the per-leg seq, so leg-sp81-click-while-open fires"
+  },
+  {
+   "id": "m88-click-trusted",
+   "rule": "the click on s must be trusted and active",
+   "from": "arr(cw.pageEvents).filter((e) => e.type === 'click' && e.target === 's').every((e) => e.isTrusted === true && e.act === true)",
+   "to": "true",
+   "reason": "redundant: trust-law requires every page event to be trusted, so an untrusted click fires trust-law"
+  },
+  {
+   "id": "m90-noselect-file-event",
+   "rule": "no non-cancel event may carry files outside the answer legs",
+   "from": "(e.files !== null && e.type !== 'cancel')",
+   "to": "false",
+   "reason": "redundant: adding an input/change event changes the per-leg seq; setting files on an existing event changes the per-leg files column"
+  },
+  {
+   "id": "m91-noselect-state-keys",
+   "rule": "the state object must have exactly the seven frozen keys",
+   "from": "same(Object.keys(st).sort(), ['d', 'dis', 'disd', 'k', 'm', 's', 'sValue'])",
+   "to": "isObj(st)",
+   "reason": "redundant: the per-leg frozen shape state column compares the whole state object, so an extra or missing key fires leg-<name>"
+  },
+  {
+   "id": "m92-intercept-fewer-opens",
+   "rule": "a leg that opens fewer choosers than its trigger implies is refused",
+   "from": "if (opens !== want) intBad.push(leg.name + ':opened-' + opens + '-want-' + want);",
+   "to": "if (opens > want) intBad.push(leg.name + ':opened-' + opens + '-want-' + want);",
+   "reason": "redundant: a missing chooser open changes the per-leg `opened` array, so leg-<name> fires"
+  },
+  {
+   "id": "m93-intercept-cross-ok",
+   "rule": "a cross leg opens a chooser only when the child call succeeded",
+   "from": "CROSS.has(leg.name) ? isObj(leg.childResult) && leg.childResult.ok === true : isObj(leg.showPicker) && leg.showPicker.ok === true",
+   "to": "CROSS.has(leg.name) ? isObj(leg.childResult) && leg.childResult.ok !== false : isObj(leg.showPicker) && leg.showPicker.ok === true",
+   "reason": "redundant: cross-origin-nonfile-law / order-law pin childResult exactly, so a childResult without ok fires there"
+  },
+  {
+   "id": "m96-dismiss-cancel-events",
+   "rule": "a post-hoc cancel must not fire a page cancel",
+   "from": "arr(l.pageEvents).every((e) => e.type !== 'cancel')",
+   "to": "true",
+   "reason": "redundant: cancel-law refuses any page cancel event in this generation"
+  },
+  {
+   "id": "m113-run-window-finite",
+   "rule": "startedAt/finishedAt must parse",
+   "from": "Number.isFinite(t0) && Number.isFinite(t1) && ",
+   "to": "",
+   "reason": "redundant: an unparseable startedAt/finishedAt yields NaN, which fails both t1 - t0 >= 12000 and t1 - t0 < 600000"
+  },
+  {
+   "id": "m115-replay-tol",
+   "rule": "a pair match is within 0.05 ms",
+   "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+   "to": "const TOL = 0.0001, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+   "reason": "vacuous: every page-event ts/at is on the 0.1 ms grid (event-time-quantum), so a pair either matches exactly or differs by >= 0.1 ms > TOL; any TOL in (1e-4, 0.05] is behaviourally identical and no receipt can distinguish it"
+  },
+  {
+   "id": "m124-leg-shape-trusted",
+   "rule": "the per-leg trusted column is compared",
+   "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+   "to": "for (const k of ['seq', 'act', 'xy', 'files', 'opened', 'state'])",
+   "reason": "redundant: trust-law requires every page event to be trusted, so dropping the per-leg trusted column cannot be the only detector"
+  }
+ ],
+ "witnessedSurvivors": [
+  {
+   "id": "m01-usage-lane-relative",
+   "rule": "usage: --lane must be absolute",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "usage"
+    ]
+   },
+   "mutant": {
+    "status": 2,
+    "ids": [
+     "prior-unreadable"
+    ]
+   }
+  },
+  {
+   "id": "m02-usage-pin-format",
+   "rule": "usage: --expect-driver-sha256 must be 64 hex",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "usage"
+    ]
+   },
+   "mutant": {
+    "status": 1,
+    "ids": [
+     "driver-pin"
+    ]
+   }
+  },
+  {
+   "id": "m03-usage-fixture-format",
+   "rule": "usage: --expect-fixture-sha256 must be 64 hex",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "usage"
+    ]
+   },
+   "mutant": {
+    "status": 1,
+    "ids": [
+     "fixture-hash"
+    ]
+   }
+  },
+  {
+   "id": "m04-exempt-hash-format",
+   "rule": "usage: --tree-exempt-sha256 must be 64 hex",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "usage"
+    ]
+   },
+   "mutant": {
+    "status": 1,
+    "ids": [
+     "prior-set-unmatched-exempt"
+    ]
+   }
+  },
+  {
+   "id": "m05-tree-exempt-path-refused",
+   "rule": "usage: path-shaped --tree-exempt is refused (content-bound exemption)",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "usage"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m06-prior-set-empty",
+   "rule": "prior set must not be empty",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "prior-unreadable"
+    ]
+   },
+   "mutant": {
+    "status": 1,
+    "ids": [
+     "prior-set-complete"
+    ]
+   }
+  },
+  {
+   "id": "m07-prior-unparsable-skip",
+   "rule": "an unreadable prior is fatal, never skipped",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "prior-unreadable"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m08-host-cdp-fields",
+   "rule": "host cdpProduct + cdpProtocolVersion must match the pin",
+   "expect": "host-chromium",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-chromium"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m09-fixture-child-sha-shape",
+   "rule": "fixture.child.sha256 must be 64 hex",
+   "expect": "fixture-hash",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "fixture-hash"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m10-fixture-viewport",
+   "rule": "fixture.viewport must equal the frozen viewport",
+   "expect": "fixture-hash",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "fixture-hash"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m11-fixture-keys",
+   "rule": "fixture field set is exactly {child,origin,patch,sha256,viewport}",
+   "expect": "fixture-hash",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "fixture-hash"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m12-ports-distinct",
+   "rule": "http/cdp/child ports must be three distinct values",
+   "expect": "ports-declared",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "ports-declared"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m13-ports-floor",
+   "rule": "every port must be >= 1024",
+   "expect": "ports-declared",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "ports-declared"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m14-ports-origin",
+   "rule": "fixture origin must name the http port",
+   "expect": "ports-declared",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "ports-declared"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m15-ftree-parent",
+   "rule": "frameTree.mainFrameParentId must be null (a main frame)",
+   "expect": "frame-tree",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "frame-tree"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m16-ftree-id-shape",
+   "rule": "frameTree.mainFrameId must be 32 uppercase hex",
+   "expect": "frame-tree",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "frame-tree"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m17-leg-records-wait",
+   "rule": "chooserWaitMs must be <= 3000",
+   "expect": "leg-records",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-records"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m18-leg-records-errors",
+   "rule": "a leg must record zero errors",
+   "expect": "leg-records",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-records"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m19-leg-records-intercepterr",
+   "rule": "interceptError must be null or {code,message}",
+   "expect": "leg-records",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-records"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m20-leg-marks-order",
+   "rule": "leg marks must be non-decreasing in time",
+   "expect": "leg-marks",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-marks"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m21-leg-marks-pre-name",
+   "rule": "the second mark must be named 'pre'",
+   "expect": "leg-marks",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-marks"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m22-leg-marks-settle",
+   "rule": "the last mark must be named 'settle'",
+   "expect": "leg-marks",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-marks"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m23-leg-marks-closedat",
+   "rule": "closedAt must be a number",
+   "expect": "leg-marks",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-marks"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m24-ctx-child-count",
+   "rule": "exactly one default child-origin context per leg",
+   "expect": "context-binding",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "context-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m25-ctx-child-frame",
+   "rule": "the child context must not be the main frame",
+   "expect": "context-binding",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "context-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m26-ctx-childid-binding",
+   "rule": "childContextId must be the child context id",
+   "expect": "context-binding",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "context-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m27-ctx-noncross-null",
+   "rule": "a non-cross leg must have childContextId null",
+   "expect": "context-binding",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "context-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m29-send-id-seq",
+   "rule": "send ids must be 1..N in order",
+   "expect": "send-log-allowlist",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m30-send-params-obj",
+   "rule": "every send call must carry an object params",
+   "expect": "send-log-allowlist",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m31-send-prologue",
+   "rule": "the first six calls must be the frozen prologue",
+   "expect": "send-log-allowlist",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m32-send-once",
+   "rule": "getFrameTree and getVersion must each be called exactly once",
+   "expect": "send-log-allowlist",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m33-send-navigate-url",
+   "rule": "Page.navigate must target the nonce-bound fixture URL",
+   "expect": "send-log-allowlist",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m34-eval-parent-any",
+   "rule": "parent-context Runtime.evaluate expressions must be allowlisted",
+   "expect": "send-log-allowlist",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m35-eval-child-any",
+   "rule": "child-context expressions must be in the child allowlist",
+   "expect": "send-log-allowlist",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m36-plan-intercept-id",
+   "rule": "interceptSendId must name the intercept call",
+   "expect": "plan-calls",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m37-plan-prior-ids",
+   "rule": "prior press/release ids must be present and ordered",
+   "expect": "plan-calls",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m38-plan-trigger-id",
+   "rule": "triggerSendId must name the trigger evaluate",
+   "expect": "plan-calls",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m39-plan-trigger2",
+   "rule": "no second trigger call may exist",
+   "expect": "plan-calls",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m40-plan-click-ids",
+   "rule": "click press/release ids must name calls 3 and 4 and be ordered",
+   "expect": "plan-calls",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m41-plan-dismiss-id",
+   "rule": "dismissSendId must name the post-hoc cancel call",
+   "expect": "plan-calls",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m43-plan-answer-id",
+   "rule": "answer.setSendId must name the setFileInputFiles call",
+   "expect": "plan-calls",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m44-cdp-method-set",
+   "rule": "the CDP event log may carry only fileChooserOpened/frameNavigated",
+   "expect": "cdp-event-log-closed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cdp-event-log-closed"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m45-cdp-nav-binding",
+   "rule": "frameNavigated must name the main frame and the nonce URL",
+   "expect": "cdp-event-log-closed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cdp-event-log-closed"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m47-cdp-open-backend",
+   "rule": "backendNodeId must be a positive integer",
+   "expect": "cdp-event-log-closed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cdp-event-log-closed"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m48-cdp-open-frame",
+   "rule": "a chooser event must name the expected frame",
+   "expect": "cdp-event-log-closed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cdp-event-log-closed"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m50-cdp-click-open-binding",
+   "rule": "the second chooser must follow the click release within 3 sends",
+   "expect": "cdp-event-log-closed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cdp-event-log-closed"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m53-event-window-lower",
+   "rule": "page events must fall at or after the pre mark",
+   "expect": "event-leg-window",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "event-leg-window"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m54-event-window-upper",
+   "rule": "page events must fall at or before the settle mark",
+   "expect": "event-leg-window",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "event-leg-window"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m55-event-window-order",
+   "rule": "page events must be non-decreasing in at",
+   "expect": "event-leg-window",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "event-leg-window"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m56-event-window-start",
+   "rule": "no page event may carry leg 'start'",
+   "expect": "event-leg-window",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "event-leg-window"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m60-sp-law-ret",
+   "rule": "a successful showPicker must return undefined",
+   "expect": "gesture-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "gesture-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m62-sp-law-null-ok",
+   "rule": "a leg with no parent showPicker must record null",
+   "expect": "gesture-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "gesture-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m66-co-child-activation",
+   "rule": "cross-origin child activation transition is frozen",
+   "expect": "cross-origin-nonfile-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cross-origin-nonfile-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m68-co-child-trusted",
+   "rule": "every child event must be trusted and active",
+   "expect": "cross-origin-nonfile-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cross-origin-nonfile-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m69-co-child-shape",
+   "rule": "the child event sequence must be the frozen one",
+   "expect": "cross-origin-nonfile-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cross-origin-nonfile-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m70-co-childlate",
+   "rule": "no child event may arrive after close",
+   "expect": "cross-origin-nonfile-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cross-origin-nonfile-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m71-order-cross-result",
+   "rule": "the cross-origin disabled call must throw the frozen SecurityError",
+   "expect": "order-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "order-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m75-dir-answer-files",
+   "rule": "the directory answer must name exactly the planned directory",
+   "expect": "webkitdirectory-answer-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "webkitdirectory-answer-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m77-dir-answer-backend",
+   "rule": "the answer must target the chooser event backendNodeId",
+   "expect": "webkitdirectory-answer-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "webkitdirectory-answer-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m80-dir-answer-readbytes",
+   "rule": "the directory reads must return the frozen bytes",
+   "expect": "webkitdirectory-answer-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "webkitdirectory-answer-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m81-accept-answer-files",
+   "rule": "the accept answer must name exactly the planned file",
+   "expect": "accept-answer-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "accept-answer-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m82-accept-answer-upload",
+   "rule": "the accepted upload must carry the frozen name/size/sha256",
+   "expect": "accept-answer-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "accept-answer-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m85-click-element",
+   "rule": "the click-while-open element must be the input s",
+   "expect": "click-while-open-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "click-while-open-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m89-noselect-dismiss-state",
+   "rule": "an answer leg's dismiss state must equal its post-answer state",
+   "expect": "no-selection-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "no-selection-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m97-trust-pointer-legs",
+   "rule": "a showPicker call must fire no pointer event",
+   "expect": "trust-law",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "trust-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m98-argv-profile-token",
+   "rule": "the profile dir must be profile-<launchToken>",
+   "expect": "host-argv",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-argv"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m99-argv-exact",
+   "rule": "the argv must equal the frozen list exactly",
+   "expect": "host-argv",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-argv"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m100-devtools-url-prefix",
+   "rule": "the devtools url must be ws://127.0.0.1:<cdp>/devtools/browser/",
+   "expect": "host-argv",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-argv"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m101-devtools-browserid",
+   "rule": "the browser id must be a 36-char uuid",
+   "expect": "host-argv",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-argv"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m102-devtools-stderr",
+   "rule": "the stderr head must contain the devtools url",
+   "expect": "host-argv",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-argv"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m104-teardown-portprobes-keys",
+   "rule": "port probes must cover child/devtools/fixture",
+   "expect": "teardown-closure",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "teardown-closure"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m105-teardown-portprobes-values",
+   "rule": "every port probe must read closed",
+   "expect": "teardown-closure",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "teardown-closure"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m106-teardown-postkill",
+   "rule": "every post-kill curl must exit 7",
+   "expect": "teardown-closure",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "teardown-closure"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m107-server-root-count",
+   "rule": "exactly one fixture request for /",
+   "expect": "server-log-binding",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "server-log-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m108-server-status",
+   "rule": "every / request must be 200",
+   "expect": "server-log-binding",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "server-log-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m109-server-404",
+   "rule": "every non-/ request must be 404",
+   "expect": "server-log-binding",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "server-log-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m110-child-server-404",
+   "rule": "every non-child.html child request must be 404",
+   "expect": "child-server-log-binding",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "child-server-log-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m111-child-server-status",
+   "rule": "every child.html request must be 200",
+   "expect": "child-server-log-binding",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "child-server-log-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m112-run-window-upper",
+   "rule": "a run must finish inside 600 s",
+   "expect": "run-window",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "run-window"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m114-replay-frac",
+   "rule": "refuse at ceil(0.5 * prior events) matched",
+   "expect": "replay-event-timeline",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "replay-event-timeline"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m116-replay-off-by-one",
+   "rule": "refuse when absMatched >= absNeed",
+   "expect": "replay-event-timeline",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "replay-event-timeline"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m117-replay-token-unique",
+   "rule": "launch tokens must be unique across legs",
+   "expect": "replay-launch-token",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "replay-launch-token"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m118-replay-browser-unique",
+   "rule": "devtools browser ids must be unique across legs",
+   "expect": "replay-devtools-url",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "replay-devtools-url"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m119-walk-unreadable-dir",
+   "rule": "an unreadable walked dir is a refusal",
+   "expect": "prior-set-complete",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "prior-set-complete"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m121-walk-unparsable-json-gate",
+   "rule": "any .json or brace-leading file is scanned for the schema",
+   "expect": "prior-set-unparsable",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "prior-set-unparsable"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  },
+  {
+   "id": "m125-leg-shape-act",
+   "rule": "the per-leg activation column is compared",
+   "expect": "leg-sp81-accept-answer",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-sp81-accept-answer"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   }
+  }
+ ],
+ "killed": [
+  {
+   "id": "m52-frame-binding-parent",
+   "rule": "every leg must carry a fresh main frame tree (parent null)",
+   "killedBy": {
+    "case": "frame-binding",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected frame-binding got []"
+   }
+  },
+  {
+   "id": "m86-click-open-count",
+   "rule": "the click must leave exactly two choosers open",
+   "killedBy": {
+    "case": "click-while-open-law",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected click-while-open-law got []"
+   }
+  },
+  {
+   "id": "m94-cancel-law",
+   "rule": "no page cancel event may fire in this generation",
+   "killedBy": {
+    "case": "cancel-law",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 1 expected cancel-law got [\"event-leg-window\",\"leg-sp81-accept-answer\",\"dismiss-law\"]"
+   }
+  },
+  {
+   "id": "m95-dismiss-result",
+   "rule": "a post-hoc cancel must be accepted with {}",
+   "killedBy": {
+    "case": "dismiss-law",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected dismiss-law got []"
+   }
+  },
+  {
+   "id": "m103-devtools-port",
+   "rule": "the devtools port must be the argv CDP port",
+   "killedBy": {
+    "case": "devtools-port-binding",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected devtools-port-binding got []"
+   }
+  },
+  {
+   "id": "m120-walk-unparsable-schema",
+   "rule": "the unparsable scan keys on the r81 schema string",
+   "killedBy": {
+    "case": "prior-set-unparsable",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected prior-set-unparsable got []"
+   }
+  },
+  {
+   "id": "m123-leg-shape-xy",
+   "rule": "the per-leg xy/buttons column is compared",
+   "killedBy": {
+    "case": "leg-sp81-click-while-open",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected leg-sp81-click-while-open got []"
+   }
+  },
+  {
+   "id": "m126-leg-shape-files",
+   "rule": "the per-leg files column is compared",
+   "killedBy": {
+    "case": "leg-sp81-accept-answer",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected leg-sp81-accept-answer got []"
+   }
+  }
+ ],
+ "mutants": [
+  {
+   "id": "m01-usage-lane-relative",
+   "rule": "usage: --lane must be absolute",
+   "from": "if (!lane || !path.isAbsolute(lane)) usage('--lane must be an absolute path');",
+   "to": "if (!lane) usage('--lane must be an absolute path');",
+   "outcome": "survived",
+   "mutantSha256": "56030ee517de9cf449f0fd13ce99013ad6b7abd2d8d280c33203a645a9acc7c7",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 2,
+     "ids": [
+      "usage"
+     ]
+    },
+    "mutant": {
+     "status": 2,
+     "ids": [
+      "prior-unreadable"
+     ]
+    },
+    "note": "relative --lane"
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m02-usage-pin-format",
+   "rule": "usage: --expect-driver-sha256 must be 64 hex",
+   "from": "if (!pin || !/^[0-9a-f]{64}$/.test(pin)) usage('--expect-driver-sha256 must be 64 hex');",
+   "to": "if (!pin) usage('--expect-driver-sha256 must be 64 hex');",
+   "outcome": "survived",
+   "mutantSha256": "856a3642c91fd477fac29bc78fef9da9bb278c4c988cdf9dbfa8f15eded203c9",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 2,
+     "ids": [
+      "usage"
+     ]
+    },
+    "mutant": {
+     "status": 1,
+     "ids": [
+      "driver-pin"
+     ]
+    },
+    "note": "--expect-driver-sha256 is not 64 hex"
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m03-usage-fixture-format",
+   "rule": "usage: --expect-fixture-sha256 must be 64 hex",
+   "from": "if (!expectFixture || !/^[0-9a-f]{64}$/.test(expectFixture)) usage('--expect-fixture-sha256 must be 64 hex');",
+   "to": "if (!expectFixture) usage('--expect-fixture-sha256 must be 64 hex');",
+   "outcome": "survived",
+   "mutantSha256": "fd3d40607a8d96277cd3136ea55c9f8ba4a20d81c3c4f659a7793f1d4ec2fcfe",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 2,
+     "ids": [
+      "usage"
+     ]
+    },
+    "mutant": {
+     "status": 1,
+     "ids": [
+      "fixture-hash"
+     ]
+    },
+    "note": "--expect-fixture-sha256 is not 64 hex"
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m04-exempt-hash-format",
+   "rule": "usage: --tree-exempt-sha256 must be 64 hex",
+   "from": "for (const h of exemptHashes) if (!/^[0-9a-f]{64}$/.test(h)) usage('--tree-exempt-sha256 must be 64 hex: ' + h);",
+   "to": "for (const h of exemptHashes) if (typeof h !== 'string') usage('--tree-exempt-sha256 must be 64 hex: ' + h);",
+   "outcome": "survived",
+   "mutantSha256": "9edc025b41e8f1f34c4d1decdbb29acaa0d7e2341908ca4ba459ce569c20f153",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 2,
+     "ids": [
+      "usage"
+     ]
+    },
+    "mutant": {
+     "status": 1,
+     "ids": [
+      "prior-set-unmatched-exempt"
+     ]
+    },
+    "note": "--tree-exempt-sha256 is not 64 hex"
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m05-tree-exempt-path-refused",
+   "rule": "usage: path-shaped --tree-exempt is refused (content-bound exemption)",
+   "from": "if (argv.includes('--tree-exempt')) usage('tree-exempt-path-refused: the exemption interface is content-bound; pass --tree-exempt-sha256 <hex>');",
+   "to": "if (false) usage('tree-exempt-path-refused: the exemption interface is content-bound; pass --tree-exempt-sha256 <hex>');",
+   "outcome": "survived",
+   "mutantSha256": "2a32b1c5c9e48db0a477ea74559604fedc0f3e0a33db19152b5d75b353c0a779",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 2,
+     "ids": [
+      "usage"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "note": "path-shaped --tree-exempt"
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m06-prior-set-empty",
+   "rule": "prior set must not be empty",
+   "from": "if (priorPaths.length === 0) fatal({ verdict: 'unreadable', findings: [{ id: 'prior-unreadable', detail: 'prior set is empty' }] }, 2);",
+   "to": "if (false) fatal({ verdict: 'unreadable', findings: [{ id: 'prior-unreadable', detail: 'prior set is empty' }] }, 2);",
+   "outcome": "survived",
+   "mutantSha256": "4e0769221d40008331f199a16f37141fae5c6cb459a5c39ca806c2c53862ce7d",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 2,
+     "ids": [
+      "prior-unreadable"
+     ]
+    },
+    "mutant": {
+     "status": 1,
+     "ids": [
+      "prior-set-complete"
+     ]
+    },
+    "note": "empty prior set"
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m07-prior-unparsable-skip",
+   "rule": "an unreadable prior is fatal, never skipped",
+   "from": "let j; try { j = JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { fatal({ verdict: 'unreadable', findings: [{ id: 'prior-unreadable', detail: p + ': ' + e.message }] }, 2); }",
+   "to": "let j; try { j = JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { continue; }",
+   "outcome": "survived",
+   "mutantSha256": "dc0d6d7734aef19f2ebb920735f09ce9a09b8769e94f57b33efd066fe2abd923",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 2,
+     "ids": [
+      "prior-unreadable"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "note": "unparsable --prior"
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m08-host-cdp-fields",
+   "rule": "host cdpProduct + cdpProtocolVersion must match the pin",
+   "from": "host.chromium === HOST.chromium && host.cdpProduct === HOST.cdpProduct && host.cdpProtocolVersion === HOST.cdpProtocolVersion",
+   "to": "host.chromium === HOST.chromium",
+   "outcome": "survived",
+   "mutantSha256": "df29045048119425a199f04037f311bbc3101199c9e31c92e9a3beabb33ae099",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "host-chromium"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "host-chromium",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m09-fixture-child-sha-shape",
+   "rule": "fixture.child.sha256 must be 64 hex",
+   "from": "&& /^[0-9a-f]{64}$/.test(r.fixture.child.sha256)",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "616146549a5d689aad752daa1d2793b6995a551714e8f7dcb14046f05393a0ad",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "fixture-hash"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "fixture-hash",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m10-fixture-viewport",
+   "rule": "fixture.viewport must equal the frozen viewport",
+   "from": "same(r.fixture.viewport, VIEWPORT)",
+   "to": "isObj(r.fixture.viewport)",
+   "outcome": "survived",
+   "mutantSha256": "6f0cabd64bad0bccc8aff1725952f3f25d25a73526eb7840da68bfc1060f40fc",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "fixture-hash"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "fixture-hash",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m11-fixture-keys",
+   "rule": "fixture field set is exactly {child,origin,patch,sha256,viewport}",
+   "from": "same(Object.keys(r.fixture).sort(), ['child', 'origin', 'patch', 'sha256', 'viewport'])",
+   "to": "Object.keys(r.fixture).length >= 5",
+   "outcome": "survived",
+   "mutantSha256": "3c8f0d807db6569d43e0c0c5b07b82e898fe1297c301a4901631f747809fe8af",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "fixture-hash"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "fixture-hash",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m12-ports-distinct",
+   "rule": "http/cdp/child ports must be three distinct values",
+   "from": "new Set([ports.http, ports.cdp, ports.child]).size === 3",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "c21f0f7d5a8a50d71eb17e7c5a1798c1d2a7d164aee7515f9fb273b40e0004b2",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "ports-declared"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "ports-declared",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m13-ports-floor",
+   "rule": "every port must be >= 1024",
+   "from": "[ports.http, ports.cdp, ports.child].every((p) => p >= 1024)",
+   "to": "[ports.http, ports.cdp, ports.child].every((p) => Number.isInteger(p))",
+   "outcome": "survived",
+   "mutantSha256": "5d43c4895bf2e5cf253facff5b395badad8fdf8053f46318ea06045b6270ecff",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "ports-declared"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "ports-declared",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m14-ports-origin",
+   "rule": "fixture origin must name the http port",
+   "from": "r.fixture.origin === 'http://127.0.0.1:' + ports.http",
+   "to": "typeof r.fixture.origin === 'string'",
+   "outcome": "survived",
+   "mutantSha256": "a366bbdae66d39638b97eb4c3edf4e6dafc7c4e057b018920509354dc3dd662f",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "ports-declared"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "ports-declared",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m15-ftree-parent",
+   "rule": "frameTree.mainFrameParentId must be null (a main frame)",
+   "from": "ftree.mainFrameParentId === null && ftree.mainFrameUrl === 'about:blank'",
+   "to": "ftree.mainFrameUrl === 'about:blank'",
+   "outcome": "survived",
+   "mutantSha256": "2448b11b1f0fdc906dd1d5fdd352f982fcbb14132cf4a4ed419849fa0619d554",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "frame-tree"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "frame-tree",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m16-ftree-id-shape",
+   "rule": "frameTree.mainFrameId must be 32 uppercase hex",
+   "from": "/^[0-9A-F]{32}$/.test(ftree.mainFrameId)",
+   "to": "typeof ftree.mainFrameId === 'string'",
+   "outcome": "survived",
+   "mutantSha256": "97af1423598f6018bec93a6623ac283e54cc1adfb85cde556e151ab9474814b7",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "frame-tree"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "frame-tree",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m17-leg-records-wait",
+   "rule": "chooserWaitMs must be <= 3000",
+   "from": "num(l.chooserWaitMs) && l.chooserWaitMs >= 0 && l.chooserWaitMs <= 3000",
+   "to": "num(l.chooserWaitMs) && l.chooserWaitMs >= 0",
+   "outcome": "survived",
+   "mutantSha256": "058277462391f40d69205aaad7101f21bccdaa933ae6529cff1a6eee6191972e",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "leg-records"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "leg-records",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m18-leg-records-errors",
+   "rule": "a leg must record zero errors",
+   "from": "&& arr(l.errors).length === 0)",
+   "to": ")",
+   "outcome": "survived",
+   "mutantSha256": "6ecb53cecf051862cb656d95cba67bd5b9a7cd86e971564ec7925f93055f2519",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "leg-records"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "leg-records",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m19-leg-records-intercepterr",
+   "rule": "interceptError must be null or {code,message}",
+   "from": "errOk(l.interceptError) && errOk(l.priorClickError)",
+   "to": "errOk(l.priorClickError)",
+   "outcome": "survived",
+   "mutantSha256": "46aa06e02fa040316681ec9b43a72c8304b00ded90ef183f759b8edd9836b609",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "leg-records"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "leg-records",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m20-leg-marks-order",
+   "rule": "leg marks must be non-decreasing in time",
+   "from": "(i === 0 || m.at >= a[i - 1].at)",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "0dcb39175fde75530ab2750dada8b52c7bfa525e96de2827f905dc7b570ad379",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "leg-marks"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "leg-marks",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m21-leg-marks-pre-name",
+   "rule": "the second mark must be named 'pre'",
+   "from": "arr(l.marks)[1].name === 'pre' && ",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "c579552eabf91f0f63e210d8d87cc2f849ceb8713074fbe661b3450de7b72646",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "leg-marks"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "leg-marks",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m22-leg-marks-settle",
+   "rule": "the last mark must be named 'settle'",
+   "from": "arr(l.marks).slice(-1)[0].name === 'settle' && ",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "398acd9dbb866e55e3b0233a04cb7029cec6cd85a652bd8ec3e24e9c4fbcd34f",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "leg-marks"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "leg-marks",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m23-leg-marks-closedat",
+   "rule": "closedAt must be a number",
+   "from": "num(l.closedAt) && l.lateAfterClose === 0",
+   "to": "l.lateAfterClose === 0",
+   "outcome": "survived",
+   "mutantSha256": "298ec91f33b8b6b29b693539792da931ae031c6745f56e032a4e62860d6cbeca",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "leg-marks"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "leg-marks",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m24-ctx-child-count",
+   "rule": "exactly one default child-origin context per leg",
+   "from": "if (child.length !== 1)",
+   "to": "if (child.length < 1)",
+   "outcome": "survived",
+   "mutantSha256": "3d37d75c9a349e30787ecb92d129e9631fb17538cd4fa06b43a25e7121af5755",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "context-binding"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "context-binding",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m25-ctx-child-frame",
+   "rule": "the child context must not be the main frame",
+   "from": "typeof c.frameId === 'string' && c.frameId !== leg.frameTree.mainFrameId",
+   "to": "typeof c.frameId === 'string'",
+   "outcome": "survived",
+   "mutantSha256": "148d0e555a120f8f217dc731ed5b3c416b39e38dff4152893abd268e0ad8438b",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "context-binding"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "context-binding",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m26-ctx-childid-binding",
+   "rule": "childContextId must be the child context id",
+   "from": "if (CROSS.has(leg.name) && leg.childContextId !== child[0].id)",
+   "to": "if (CROSS.has(leg.name) && !leg.childContextId)",
+   "outcome": "survived",
+   "mutantSha256": "cff69bde51d9cd3c19a53f2a28b66cb987aad48eaaa3ffd94317a47994b42db8",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "context-binding"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "context-binding",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m27-ctx-noncross-null",
+   "rule": "a non-cross leg must have childContextId null",
+   "from": "if (!CROSS.has(leg.name) && leg.childContextId !== null) ctxBad.push(leg.name + ':childContextId-unexpected');",
+   "to": "if (false) ctxBad.push(leg.name + ':childContextId-unexpected');",
+   "outcome": "survived",
+   "mutantSha256": "45413b8b32ab3eee17dd0b4d3b24119d22347716e5225c9ccdc4946bb55418f0",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "context-binding"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "context-binding",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m28-send-min-length",
+   "rule": "a send log must have at least 10 calls",
+   "from": "if (log.length < 10 ||",
+   "to": "if (log.length < 1 ||",
+   "outcome": "survived",
+   "mutantSha256": "04434975b3b6e40451d926c3978af988a01e424f0671dd737ac3947c6fd54fcc",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: plan-calls refuses any send log short enough to trip the length rule (the intercept/mouse/trigger sequence cannot fit in <10 calls), so no receipt escapes on length alone"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m29-send-id-seq",
+   "rule": "send ids must be 1..N in order",
+   "from": "c.id === i + 1",
+   "to": "Number.isInteger(c.id)",
+   "outcome": "survived",
+   "mutantSha256": "97151d325c6a16c968b22da1f27e1acf06295d4572ff049e94818f57c8a0392d",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "send-log-allowlist"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "send-log-allowlist",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m30-send-params-obj",
+   "rule": "every send call must carry an object params",
+   "from": "ALLOWED_METHODS.has(c.method) && isObj(c.params)",
+   "to": "ALLOWED_METHODS.has(c.method)",
+   "outcome": "survived",
+   "mutantSha256": "919d3e92f1ce93379789675716300fa51178c96463b09f5f6b3717fdbe471d8d",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "send-log-allowlist"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "send-log-allowlist",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m31-send-prologue",
+   "rule": "the first six calls must be the frozen prologue",
+   "from": "else if (!same(log.slice(0, 6).map((c) => c.method), ['Browser.getVersion', 'Page.enable', 'Runtime.enable', 'Page.getFrameTree', 'Emulation.setDeviceMetricsOverride', 'Page.navigate'])) sendBad.push(leg.name + ':prologue');",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "100fa7eb7361bfcdae4c9d7eb70e73837ac58fcdd7c530fcdcc07847d8b13ba8",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "send-log-allowlist"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "send-log-allowlist",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m32-send-once",
+   "rule": "getFrameTree and getVersion must each be called exactly once",
+   "from": "log.filter((c) => c.method === 'Page.getFrameTree').length !== 1 || log.filter((c) => c.method === 'Browser.getVersion').length !== 1",
+   "to": "false",
+   "outcome": "survived",
+   "mutantSha256": "b0c7172201c34c7e7ecce3df609fefd15d507ee8faa4d21145b1c3826087872a",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "send-log-allowlist"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "send-log-allowlist",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m33-send-navigate-url",
+   "rule": "Page.navigate must target the nonce-bound fixture URL",
+   "from": "else if (!same(log.find((c) => c.method === 'Page.navigate').params, { url: 'http://127.0.0.1:' + ports.http + '/?run=' + encodeURIComponent(r.nonce) })) sendBad.push(leg.name + ':navigate');",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "cdec35da51ac8915ef10d2e0b26ce94c3c240f4cdf56ba266860b24f69585c48",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "send-log-allowlist"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "send-log-allowlist",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m34-eval-parent-any",
+   "rule": "parent-context Runtime.evaluate expressions must be allowlisted",
+   "from": "return parent.includes(params.expression);",
+   "to": "return true;",
+   "outcome": "survived",
+   "mutantSha256": "1a0b5467a2bca0ca8d099414076dbc28f9a9c6a0bae610f897bc53dd6a9c89f2",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "send-log-allowlist"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "send-log-allowlist",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m35-eval-child-any",
+   "rule": "child-context expressions must be in the child allowlist",
+   "from": "return CROSS.has(leg.name) && params.contextId === leg.childContextId && childExprs.has(params.expression);",
+   "to": "return CROSS.has(leg.name);",
+   "outcome": "survived",
+   "mutantSha256": "24654b060f875af0a60a67fd6bd023fc3348184271cae4a8e85ad735042101fc",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "send-log-allowlist"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "send-log-allowlist",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m36-plan-intercept-id",
+   "rule": "interceptSendId must name the intercept call",
+   "from": "if (p.intercept && leg.interceptSendId !== log.find((c) => c.method === 'Page.setInterceptFileChooserDialog').id) planBad.push(leg.name + ':intercept-id');",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "fbeae78d5205a201622914a99c6558a8b75ef921344071c55097b4baf9e3ab5d",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "plan-calls"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "plan-calls",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m37-plan-prior-ids",
+   "rule": "prior press/release ids must be present and ordered",
+   "from": "if (leg.priorPressId === null || leg.priorReleaseId === null || leg.priorReleaseId <= leg.priorPressId) planBad.push(leg.name + ':prior-ids');",
+   "to": "if (leg.priorPressId === null) planBad.push(leg.name + ':prior-ids');",
+   "outcome": "survived",
+   "mutantSha256": "77aae8cebd07333d2c92f912185eb98cebd75e70a6becbcddadb145acbf5b989",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "plan-calls"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "plan-calls",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m38-plan-trigger-id",
+   "rule": "triggerSendId must name the trigger evaluate",
+   "from": "if (!trig || leg.triggerSendId !== trig.id) planBad.push(leg.name + ':trigger-id');",
+   "to": "if (!trig) planBad.push(leg.name + ':trigger-id');",
+   "outcome": "survived",
+   "mutantSha256": "017ee6c45519d27b17c390b6c2b0a6e21ff68976c82388886dd92012f6a288ab",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "plan-calls"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "plan-calls",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m39-plan-trigger2",
+   "rule": "no second trigger call may exist",
+   "from": "if (leg.trigger2SendId !== null) planBad.push(leg.name + ':trigger2-unexpected');",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "2fccf38452b05f3b1018f6b8ab5b9bbc6f76f3ba202c26a56e7f1d682fe2e9e9",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "plan-calls"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "plan-calls",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m40-plan-click-ids",
+   "rule": "click press/release ids must name calls 3 and 4 and be ordered",
+   "from": "if (clicks.length !== 4 || leg.clickPressId !== clicks[2].id || leg.clickReleaseId !== clicks[3].id || leg.clickReleaseId <= leg.clickPressId) planBad.push(leg.name + ':click-ids');",
+   "to": "if (clicks.length !== 4) planBad.push(leg.name + ':click-ids');",
+   "outcome": "survived",
+   "mutantSha256": "fbe3482ca044dbd05d2db9cfd85df4b08164926ed09c971b0efedcf68f4d088d",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "plan-calls"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "plan-calls",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m41-plan-dismiss-id",
+   "rule": "dismissSendId must name the post-hoc cancel call",
+   "from": "if (leg.dismissSendId !== dis.id) planBad.push(leg.name + ':dismiss-id');",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "89b2280546d5541936cdd47f07cd54606e1c2b6da8b01dee95097b9c7f28a1ea",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "plan-calls"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "plan-calls",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m42-plan-answer-files",
+   "rule": "the answer must name exactly the planned file",
+   "from": "if (!set || path.basename(set.params.files[0]) !== wantBase || set.params.files.length !== 1) planBad.push(leg.name + ':answer-files');",
+   "to": "if (!set) planBad.push(leg.name + ':answer-files');",
+   "outcome": "survived",
+   "mutantSha256": "1fd1580761010c1b43277864db1aa357da3b47e3f6a922c14737925ab4f71337",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: accept-answer-law / webkitdirectory-answer-law pin answer.setParams.files[0] to the planned basename, so plan-calls answer-files cannot be the only detector"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m43-plan-answer-id",
+   "rule": "answer.setSendId must name the setFileInputFiles call",
+   "from": "if (!set || !isObj(leg.answer) || leg.answer.setSendId !== set.id) planBad.push(leg.name + ':answer-id');",
+   "to": "if (!set || !isObj(leg.answer)) planBad.push(leg.name + ':answer-id');",
+   "outcome": "survived",
+   "mutantSha256": "34b8d94c53e50ace126df27dc3e9e099f16e8f0d7d5dfd44f051f22ca65b21e6",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "plan-calls"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "plan-calls",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m44-cdp-method-set",
+   "rule": "the CDP event log may carry only fileChooserOpened/frameNavigated",
+   "from": "el.some((e) => !['Page.fileChooserOpened', 'Page.frameNavigated'].includes(e.method))",
+   "to": "false",
+   "outcome": "survived",
+   "mutantSha256": "6e4b34f98b5ca2ff1330e5fa8a9ae680201aa0b45c78557869240fbbd56ef439",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "cdp-event-log-closed"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "cdp-event-log-closed",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m45-cdp-nav-binding",
+   "rule": "frameNavigated must name the main frame and the nonce URL",
+   "from": "if (nav.length === 1 && !(nav[0].params.frameId === lft.mainFrameId && nav[0].params.url === 'http://127.0.0.1:' + ports.http + '/?run=' + encodeURIComponent(r.nonce))) evBad.push(leg.name + ':nav');",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "66acc4199aee33990d08823510604783badf8c40b21c3f8d13077c90d4b8fd72",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "cdp-event-log-closed"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "cdp-event-log-closed",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m46-cdp-open-mode",
+   "rule": "chooser mode must be selectSingle or selectMultiple",
+   "from": "!['selectSingle', 'selectMultiple'].includes(o.params.mode)",
+   "to": "typeof o.params.mode !== 'string'",
+   "outcome": "survived",
+   "mutantSha256": "5fa0688413ce384faec55e0ac21d381089fb54ced58c1d8a2baca272b4f18a92",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: the per-leg frozen shape compares `opened` (the mode array) and mode-law compares the same value, so any mode change fires leg-<name> first"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m47-cdp-open-backend",
+   "rule": "backendNodeId must be a positive integer",
+   "from": "!Number.isInteger(o.params.backendNodeId) || o.params.backendNodeId <= 0",
+   "to": "!Number.isInteger(o.params.backendNodeId)",
+   "outcome": "survived",
+   "mutantSha256": "9485680661f17fb580396e9df488c9ec55916e356a09a5140d032dc548376825",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "cdp-event-log-closed"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "cdp-event-log-closed",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m48-cdp-open-frame",
+   "rule": "a chooser event must name the expected frame",
+   "from": "if (!wantFrame || o.params.frameId !== wantFrame.frameId) evBad.push(leg.name + ':open-frame');",
+   "to": "if (!wantFrame) evBad.push(leg.name + ':open-frame');",
+   "outcome": "survived",
+   "mutantSha256": "cdd52860900eccc90df4cb2cf9ed0b7eae454d68b7511f775335788a1afa1358",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "cdp-event-log-closed"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "cdp-event-log-closed",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m49-cdp-cross-open-binding",
+   "rule": "a cross-origin chooser must follow the prior click within 3 sends",
+   "from": "if (!(Number.isInteger(leg.priorReleaseId) && o.afterSendId >= leg.priorReleaseId && o.afterSendId <= leg.priorReleaseId + 3)) evBad.push(leg.name + ':open-binding');",
+   "to": "if (!Number.isInteger(leg.priorReleaseId)) evBad.push(leg.name + ':open-binding');",
+   "outcome": "survived",
+   "mutantSha256": "6ee6765fcd54e3e92cea374df379fa3b1cfd03e1e95d642bf4fa82e15b44d770",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "vacuous: no honest cross-origin leg opens a chooser (both throw SecurityError), and any added open is refused by intercept-law and the per-leg shape before the afterSendId window matters"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m50-cdp-click-open-binding",
+   "rule": "the second chooser must follow the click release within 3 sends",
+   "from": "const bound = i === 0 ? o.afterSendId === leg.triggerSendId : (Number.isInteger(leg.clickReleaseId) && o.afterSendId >= leg.clickReleaseId && o.afterSendId <= leg.clickReleaseId + 3);",
+   "to": "const bound = true;",
+   "outcome": "survived",
+   "mutantSha256": "9791029791f13bb703df3d2563316b106d97f1f8b6280c70cac941a7ed2de686",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "cdp-event-log-closed"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "cdp-event-log-closed",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m51-cdp-multi-open",
+   "rule": "at most two chooser opens per leg",
+   "from": "if (opens.length > 2) evBad.push(leg.name + ':multi-open');",
+   "to": "if (opens.length > 3) evBad.push(leg.name + ':multi-open');",
+   "outcome": "survived",
+   "mutantSha256": "6a2b0804975cb08f006ca1fa6d8d61312ebbafab0def013ccde0bfa93272419c",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: a third chooser open changes the per-leg `opened` array (leg-<name>) and click-while-open-law, both of which fire"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m52-frame-binding-parent",
+   "rule": "every leg must carry a fresh main frame tree (parent null)",
+   "from": "l.frameTree.mainFrameParentId === null && l.frameTree.mainFrameUrl === 'about:blank'",
+   "to": "l.frameTree.mainFrameUrl === 'about:blank'",
+   "outcome": "killed",
+   "mutantSha256": "8a9551c696416d286df50fcf8c94b34c078e23f9650e85718c7a2628cfaa334e",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "killedBy": {
+    "case": "frame-binding",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected frame-binding got []"
+   }
+  },
+  {
+   "id": "m53-event-window-lower",
+   "rule": "page events must fall at or after the pre mark",
+   "from": "e.at >= (pre ?? 0)",
+   "to": "e.at >= 0",
+   "outcome": "survived",
+   "mutantSha256": "ef45e8be2baea61e4d5848ef76c6098be7db905efc1efb29d344c2e24ea38644",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "event-leg-window"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "event-leg-window",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m54-event-window-upper",
+   "rule": "page events must fall at or before the settle mark",
+   "from": "e.at <= (settle ?? l.closedAt)",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "fdd703dfaa6b2eb1a6adb8669cded23e8a9364c3e9f353dd49d6f3e902669675",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "event-leg-window"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "event-leg-window",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m55-event-window-order",
+   "rule": "page events must be non-decreasing in at",
+   "from": "(i === 0 || (num(a[i - 1].at) && e.at >= a[i - 1].at))",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "4cc2f6fc3bd315600a08f71c65cbbd55c5fd96d60fadf87ef9d701a7598170dc",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "event-leg-window"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "event-leg-window",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m56-event-window-start",
+   "rule": "no page event may carry leg 'start'",
+   "from": "e.leg !== 'start' && ",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "82ce71c68ee2514bb46d02c2534b698c52cb05b76ffec62b6b2a656015b844e9",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "event-leg-window"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "event-leg-window",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m57-event-types-target",
+   "rule": "event.target must be null or a string",
+   "from": "(e.target === null || typeof e.target === 'string')",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "a4438a2a32ad289bfd9867b64d0a3f0f6c2ddcea6c7e76905fd6ae1fe6c2a522",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: the per-leg frozen shape seq is type@target, so any target change fires leg-<name>"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m58-event-types-files",
+   "rule": "event.files must be null or an array",
+   "from": "(e.files === null || Array.isArray(e.files))",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "b230aa16de0c6544ebd59eef328b05fcadba6fe805f2755db7385076e0eadc62",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: the per-leg frozen shape `files` column lists every event whose files is non-null, so any files change fires leg-<name>"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m59-event-types-seq",
+   "rule": "event.seq must be an integer",
+   "from": "Number.isInteger(e.seq) && typeof e.leg === 'string'",
+   "to": "num(e.seq) && typeof e.leg === 'string'",
+   "outcome": "survived",
+   "mutantSha256": "df71d64edd979aaad4b3d745beb8e194be1545b291a6be9b5541f72212b59c65",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: seq-monotonic requires seq === i+1 exactly, so a non-integer seq fires seq-monotonic"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m60-sp-law-ret",
+   "rule": "a successful showPicker must return undefined",
+   "from": "(want.ok ? got.ret !== want.ret : (got.name !== want.name || got.message !== want.message))",
+   "to": "(want.ok ? false : (got.name !== want.name || got.message !== want.message))",
+   "outcome": "survived",
+   "mutantSha256": "f3373ef779872250207a2c818a336452e79fa2e0799afd25a9df941b80529cf5",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "gesture-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "gesture-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m61-sp-law-message",
+   "rule": "a throwing showPicker must carry the frozen message",
+   "from": "(got.name !== want.name || got.message !== want.message)",
+   "to": "got.name !== want.name",
+   "outcome": "survived",
+   "mutantSha256": "db877d3a34b7f933a249c02a31499ea2eda8c2fafa3936a75f374f99e688f035",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: the only throwing parent showPicker law is sp81-same-origin-nonfile-disabled, whose message order-law pins separately"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m62-sp-law-null-ok",
+   "rule": "a leg with no parent showPicker must record null",
+   "from": "if (want === null) { if (got !== null) spBad.push(leg.name + ':unexpected'); continue; }",
+   "to": "if (want === null) { continue; }",
+   "outcome": "survived",
+   "mutantSha256": "819e4287152c40c73d477df4e850f6981879280919a6d55c9534cc077653c2f8",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "gesture-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "gesture-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m63-sp-law-unknown",
+   "rule": "a leg without a frozen showPicker law is refused",
+   "from": "if (want === undefined) { spBad.push(leg.name + ':unknown-leg'); continue; }",
+   "to": "if (want === undefined) { continue; }",
+   "outcome": "survived",
+   "mutantSha256": "f2989868f8fbc8176b20ec038a009ddab710c6ad95989112cf1510dca1b161ef",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "vacuous: all six planned legs have a frozen SP_LAW entry; a leg without one cannot pass plan-frozen/leg-order/leg-records"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m64-mode-law-multiple",
+   "rule": "a multiple input must open selectMultiple",
+   "from": "const wantMode = d && d.multiple === true ? 'selectMultiple' : 'selectSingle';",
+   "to": "const wantMode = 'selectSingle';",
+   "outcome": "survived",
+   "mutantSha256": "dbd7395d8bf8cf958018147277bc75a212b4111972e7988962efed5c20eab6c7",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: fixture-descriptors pins fixtureInputs to FIXTURE_INPUTS, so the multiple flag cannot be flipped to create a selectMultiple witness"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m65-mode-law-missing-input",
+   "rule": "a chooser whose input descriptor is missing is refused",
+   "from": "if (!d || opens.some((e) => e.params.mode !== wantMode)) modeBad.push(",
+   "to": "if (opens.some((e) => e.params.mode !== wantMode)) modeBad.push(",
+   "outcome": "survived",
+   "mutantSha256": "c16a6c578db8004a0b77d40b430c6b0c8e2f2b331d5c595aab1ced00f742dda1",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: fixture-descriptors refuses any fixtureInputs array that loses a descriptor"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m66-co-child-activation",
+   "rule": "cross-origin child activation transition is frozen",
+   "from": "same(co.childActivationBefore, CHILD_ACT_LAW['sp81-cross-origin-nonfile'][0]) && same(co.childActivationAfter, CHILD_ACT_LAW['sp81-cross-origin-nonfile'][1])",
+   "to": "isObj(co.childActivationBefore) && isObj(co.childActivationAfter)",
+   "outcome": "survived",
+   "mutantSha256": "efdc52fbc4e5d328e01f43bba480a59f328a84dcaf86859ffd48e702cd4e2cb8",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "cross-origin-nonfile-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "cross-origin-nonfile-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m67-co-child-events-count",
+   "rule": "the child click must fire exactly five events",
+   "from": "arr(co.childEvents).length === 5",
+   "to": "arr(co.childEvents).length >= 1",
+   "outcome": "survived",
+   "mutantSha256": "a23915af3eec7d1e3efe57bf7f31032f7edf7441a3e781605db43a3ec3512c0b",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: the child event shape check compares the full type@target sequence, so a 5->4 or 5->6 change fires the same cross-origin-nonfile-law id"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m68-co-child-trusted",
+   "rule": "every child event must be trusted and active",
+   "from": "arr(co.childEvents).every((e) => e.isTrusted === true && e.act === true)",
+   "to": "arr(co.childEvents).every((e) => typeof e.isTrusted === 'boolean')",
+   "outcome": "survived",
+   "mutantSha256": "766e439a3467ffcfbb06e577da4b560cb542b60c480d2ba731820c30986ef997",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "cross-origin-nonfile-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "cross-origin-nonfile-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m69-co-child-shape",
+   "rule": "the child event sequence must be the frozen one",
+   "from": "same(arr(co.childEvents).map((e) => e.type + '@' + e.target), CHILD_EVENT_SHAPE['sp81-cross-origin-nonfile'].seq)",
+   "to": "arr(co.childEvents).length > 0",
+   "outcome": "survived",
+   "mutantSha256": "d83f95faea0e11b826b83d15d49524bcdf35b0a6186ac200c83d907959ac46e0",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "cross-origin-nonfile-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "cross-origin-nonfile-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m70-co-childlate",
+   "rule": "no child event may arrive after close",
+   "from": "&& co.childLate === 0",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "02c4bf59720b0f1023b34a7e2b811e739de29b59dda088baee58efaff55a5dd1",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "cross-origin-nonfile-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "cross-origin-nonfile-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m71-order-cross-result",
+   "rule": "the cross-origin disabled call must throw the frozen SecurityError",
+   "from": "isObj(cod.childResult) && same(cod.childResult, CHILD_RESULT_LAW['sp81-cross-origin-nonfile-disabled'])",
+   "to": "isObj(cod.childResult)",
+   "outcome": "survived",
+   "mutantSha256": "95d5ee11a6bd8b133a5cfe43e24de6fb12631ebacb4cc1173fe60d1759b3b620",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "order-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "order-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m72-order-cross-nochooser",
+   "rule": "the cross-origin disabled call must open nothing",
+   "from": "arr(cod.cdpEventLog).filter((e) => e.method === 'Page.fileChooserOpened').length === 0",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "398df4bd601e5d251c5dbd23c9745ac0b75d6d45ffe1a10305daff4181a82a68",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: an added chooser on the cross-origin disabled leg fires intercept-law and the per-leg `opened` shape as well"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m73-order-same-nochooser",
+   "rule": "the same-origin disabled call must open nothing",
+   "from": "arr(sod.cdpEventLog).filter((e) => e.method === 'Page.fileChooserOpened').length === 0",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "dc0fc5af62096f9653dd8d9ea1ad021014e47ebff8097e7a493176bbe5114ab3",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: an added chooser on the same-origin disabled leg fires intercept-law and the per-leg `opened` shape as well"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m74-order-same-ok",
+   "rule": "the same-origin disabled call must fail (ok === false)",
+   "from": "sod.showPicker.ok === false",
+   "to": "typeof sod.showPicker.ok === 'boolean'",
+   "outcome": "survived",
+   "mutantSha256": "f99d770d35cfb8e85b5c573b7c8dc0565cdcc0e284f05fed068608bff25e873c",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: flipping sod.showPicker.ok to true also fires gesture-law and intercept-law"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m75-dir-answer-files",
+   "rule": "the directory answer must name exactly the planned directory",
+   "from": "same(wa.answer.files, [DIR.name])",
+   "to": "arr(wa.answer.files).length === 1",
+   "outcome": "survived",
+   "mutantSha256": "ed1e1f8a6259af2d98d1244f013de8c8ab1f6230359e570ad9d4d0c4becdc7b9",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "webkitdirectory-answer-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "webkitdirectory-answer-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m76-dir-answer-setfiles",
+   "rule": "setParams.files must be exactly the directory basename",
+   "from": "arr(wa.answer.setParams.files).length === 1 && path.basename(wa.answer.setParams.files[0]) === DIR.name",
+   "to": "arr(wa.answer.setParams.files).length >= 1",
+   "outcome": "survived",
+   "mutantSha256": "3ca9e9a7b67facc483fd761e3310763bffd10d38447af94c8bf86026023a351b",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: changing answer.setParams.files makes plan-calls want differ from the send log, so plan-calls fires"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m77-dir-answer-backend",
+   "rule": "the answer must target the chooser event backendNodeId",
+   "from": "wa.answer.setParams.backendNodeId === nodeReport['sp81-webkitdirectory-answer'][0]",
+   "to": "Number.isInteger(wa.answer.setParams.backendNodeId)",
+   "outcome": "survived",
+   "mutantSha256": "a56ae5285a8aeea4221bdbad106a669c886273613ce9b8434319e097c5473c7a",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "webkitdirectory-answer-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "webkitdirectory-answer-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m78-dir-answer-state",
+   "rule": "the directory answer must populate the input with webkitRelativePath",
+   "from": "same(waState, DIR_FILES)",
+   "to": "Array.isArray(waState)",
+   "outcome": "survived",
+   "mutantSha256": "3abf0ddca02cfeff5b12de04c6623fe2b7f613b26415b55b7c429681002b708c",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: the per-leg frozen shape state column compares stateAfter.d, so any change fires leg-sp81-webkitdirectory-answer"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m79-dir-answer-readcount",
+   "rule": "both directory files must be read",
+   "from": "arr(wa.pageEvents).filter((e) => e.type === 'read').length === 2",
+   "to": "arr(wa.pageEvents).filter((e) => e.type === 'read').length >= 1",
+   "outcome": "survived",
+   "mutantSha256": "418c045d156d2bbba6aa8ca1f4af466d9258ba0b19bdc2b4a3b82762be2087a1",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: removing a read event changes the per-leg seq, so leg-sp81-webkitdirectory-answer fires"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m80-dir-answer-readbytes",
+   "rule": "the directory reads must return the frozen bytes",
+   "from": "same(arr(wa.pageEvents).filter((e) => e.type === 'read').map((e) => e.ret), DIR.files.map((f) => 'hex:' + f.hex))",
+   "to": "arr(wa.pageEvents).filter((e) => e.type === 'read').every((e) => typeof e.ret === 'string')",
+   "outcome": "survived",
+   "mutantSha256": "f012b37c2852d2bf55136676f7814dd21231aecf4755e66be8b7aab817a8b99a",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "webkitdirectory-answer-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "webkitdirectory-answer-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m81-accept-answer-files",
+   "rule": "the accept answer must name exactly the planned file",
+   "from": "same(aa.answer.files, [ANSWER.name])",
+   "to": "arr(aa.answer.files).length === 1",
+   "outcome": "survived",
+   "mutantSha256": "55a298137e44aa579239c1eda23780c6c0b2a0c43cd7285e5eeadb715b47de02",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "accept-answer-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "accept-answer-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m82-accept-answer-upload",
+   "rule": "the accepted upload must carry the frozen name/size/sha256",
+   "from": "same(aa.upload, { name: ANSWER.name, size: ANSWER.size, sha256: ANSWER.sha256 })",
+   "to": "isObj(aa.upload)",
+   "outcome": "survived",
+   "mutantSha256": "0d984c9c884d769440c98cdb3c3841ff8786ebdc5de4cefdfcb36bf1db3f1b98",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "accept-answer-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "accept-answer-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m83-accept-answer-state",
+   "rule": "the accept answer must populate the input with the .txt",
+   "from": "same(isObj(aa.stateAfter) ? aa.stateAfter.k : null, [[ANSWER.name, ANSWER.size, ANSWER.type, '']])",
+   "to": "Array.isArray(isObj(aa.stateAfter) ? aa.stateAfter.k : null)",
+   "outcome": "survived",
+   "mutantSha256": "febcd233947962970c5cfda3879d6c6eb9063d29f05a6d9a2951143a197cd15d",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: the per-leg frozen shape state column compares stateAfter.k"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m84-accept-answer-readcount",
+   "rule": "the accepted file must be read exactly once",
+   "from": "arr(aa.pageEvents).filter((e) => e.type === 'read').length === 1",
+   "to": "arr(aa.pageEvents).filter((e) => e.type === 'read').length >= 1",
+   "outcome": "survived",
+   "mutantSha256": "146383df78bd529e30f58745ad3a88f053e24221700a41373c013346dd78ebb5",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: removing the read event changes the per-leg seq"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m85-click-element",
+   "rule": "the click-while-open element must be the input s",
+   "from": "cw.clickWhileOpenElement === 's'",
+   "to": "typeof cw.clickWhileOpenElement === 'string'",
+   "outcome": "survived",
+   "mutantSha256": "9d749a83c7ff276fb3475fba6229eab1a7b68e585f6d4775cb73d15b6dc78dc8",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "click-while-open-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "click-while-open-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m86-click-open-count",
+   "rule": "the click must leave exactly two choosers open",
+   "from": "cw.clickWhileOpenChoosersAfter === 2",
+   "to": "cw.clickWhileOpenChoosersAfter >= 1",
+   "outcome": "killed",
+   "mutantSha256": "a75b24fa849b7a0ca99d48bf2d876930e73f2332e93a2a6cc8134083768c5ad6",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "killedBy": {
+    "case": "click-while-open-law",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected click-while-open-law got []"
+   }
+  },
+  {
+   "id": "m87-click-page-clicks",
+   "rule": "exactly one trusted click on s",
+   "from": "arr(cw.pageEvents).filter((e) => e.type === 'click' && e.target === 's').length === 1",
+   "to": "arr(cw.pageEvents).filter((e) => e.type === 'click' && e.target === 's').length >= 1",
+   "outcome": "survived",
+   "mutantSha256": "e296a50fa838f20f20cf5a7eb87dacc4c578cb2f4fd93435bbb4dc12c85931de",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: a second click@s changes the per-leg seq, so leg-sp81-click-while-open fires"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m88-click-trusted",
+   "rule": "the click on s must be trusted and active",
+   "from": "arr(cw.pageEvents).filter((e) => e.type === 'click' && e.target === 's').every((e) => e.isTrusted === true && e.act === true)",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "97dedca2ac025469d7a04336a0eedbb78f866c48903349bcc559cd51f9d0475b",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: trust-law requires every page event to be trusted, so an untrusted click fires trust-law"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m89-noselect-dismiss-state",
+   "rule": "an answer leg's dismiss state must equal its post-answer state",
+   "from": "if (!isObj(leg.stateAfterDismiss) || !same(leg.stateAfterDismiss, leg.stateAfter)) stateBad.push(leg.name + ':dismiss-state');",
+   "to": "if (!isObj(leg.stateAfterDismiss)) stateBad.push(leg.name + ':dismiss-state');",
+   "outcome": "survived",
+   "mutantSha256": "d9575661339ce4b74a5413ba597afd84bb8a6a8abebc00c6f727559058dc8aa2",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "no-selection-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "no-selection-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m90-noselect-file-event",
+   "rule": "no non-cancel event may carry files outside the answer legs",
+   "from": "(e.files !== null && e.type !== 'cancel')",
+   "to": "false",
+   "outcome": "survived",
+   "mutantSha256": "7cd1caeff89c40ed916d18751b8c8be5f1170b35e7347d431b9282f92e3a8267",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: adding an input/change event changes the per-leg seq; setting files on an existing event changes the per-leg files column"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m91-noselect-state-keys",
+   "rule": "the state object must have exactly the seven frozen keys",
+   "from": "same(Object.keys(st).sort(), ['d', 'dis', 'disd', 'k', 'm', 's', 'sValue'])",
+   "to": "isObj(st)",
+   "outcome": "survived",
+   "mutantSha256": "11ac26dde4ff6d438dcd30a8374cd5fd1da878baf42abab5f01ae26d9d89cdb5",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: the per-leg frozen shape state column compares the whole state object, so an extra or missing key fires leg-<name>"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m92-intercept-fewer-opens",
+   "rule": "a leg that opens fewer choosers than its trigger implies is refused",
+   "from": "if (opens !== want) intBad.push(leg.name + ':opened-' + opens + '-want-' + want);",
+   "to": "if (opens > want) intBad.push(leg.name + ':opened-' + opens + '-want-' + want);",
+   "outcome": "survived",
+   "mutantSha256": "ae7be282012787e3926abd81dd734bed1f9204ebe017f5d74e01651cc79a81e6",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: a missing chooser open changes the per-leg `opened` array, so leg-<name> fires"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m93-intercept-cross-ok",
+   "rule": "a cross leg opens a chooser only when the child call succeeded",
+   "from": "CROSS.has(leg.name) ? isObj(leg.childResult) && leg.childResult.ok === true : isObj(leg.showPicker) && leg.showPicker.ok === true",
+   "to": "CROSS.has(leg.name) ? isObj(leg.childResult) && leg.childResult.ok !== false : isObj(leg.showPicker) && leg.showPicker.ok === true",
+   "outcome": "survived",
+   "mutantSha256": "7d7e05dacc410b927542bf5824a444e84ab40b42dee7e65332476ef4fd53c38d",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: cross-origin-nonfile-law / order-law pin childResult exactly, so a childResult without ok fires there"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m94-cancel-law",
+   "rule": "no page cancel event may fire in this generation",
+   "from": "check('cancel-law', same(cancels, []),",
+   "to": "check('cancel-law', true,",
+   "outcome": "killed",
+   "mutantSha256": "e1a378590bd7ce89ee3ddef327a3e4c6c4adddde83373ccfc81da2594191e5f9",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "killedBy": {
+    "case": "cancel-law",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 1 expected cancel-law got [\"event-leg-window\",\"leg-sp81-accept-answer\",\"dismiss-law\"]"
+   }
+  },
+  {
+   "id": "m95-dismiss-result",
+   "rule": "a post-hoc cancel must be accepted with {}",
+   "from": "same(l.dismissResult, {})",
+   "to": "isObj(l.dismissResult)",
+   "outcome": "killed",
+   "mutantSha256": "e7bd22a8086a439677ffcaeb4fa3f4e08cc023885be03ac348e3948267633f3d",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "killedBy": {
+    "case": "dismiss-law",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected dismiss-law got []"
+   }
+  },
+  {
+   "id": "m96-dismiss-cancel-events",
+   "rule": "a post-hoc cancel must not fire a page cancel",
+   "from": "arr(l.pageEvents).every((e) => e.type !== 'cancel')",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "176c87b017355ccf1961278c85f5aaf198a524830895854e30bcc087eb1a318c",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: cancel-law refuses any page cancel event in this generation"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m97-trust-pointer-legs",
+   "rule": "a showPicker call must fire no pointer event",
+   "from": "arr(l.pageEvents).every((e) => !PTR.has(e.type) || (e.leg !== 'show-picker' && e.leg !== 'show-picker-2'))",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "165de5f1a42a3b48fd3538d1cc0652c6d8d9d526dafba3bd5b8b08bbf3933ccc",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "trust-law"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "trust-law",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m98-argv-profile-token",
+   "rule": "the profile dir must be profile-<launchToken>",
+   "from": "typeof tok !== 'string' || !/^[0-9a-f]{12}$/.test(tok) || typeof profile !== 'string' || path.basename(profile) !== 'profile-' + tok",
+   "to": "typeof tok !== 'string' || typeof profile !== 'string'",
+   "outcome": "survived",
+   "mutantSha256": "e98cac501896ae28db117d3ad703934460c23f3a7eb85e81605911286f2fbd77",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "host-argv"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "host-argv",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m99-argv-exact",
+   "rule": "the argv must equal the frozen list exactly",
+   "from": "if (!same(a, want) || typeof tok !== 'string'",
+   "to": "if (!(Array.isArray(a) && want.every((w) => a.includes(w))) || typeof tok !== 'string'",
+   "outcome": "survived",
+   "mutantSha256": "808df533bb32fa4cea15676b14c7c3e9023da2ccbb7f728f5e4143f6ea945552",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "host-argv"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "host-argv",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m100-devtools-url-prefix",
+   "rule": "the devtools url must be ws://127.0.0.1:<cdp>/devtools/browser/",
+   "from": "!dl.url.startsWith('ws://127.0.0.1:' + ports.cdp + '/devtools/browser/') || ",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "7888427a2047f90795cd53ae295840108fb861695ec1ba8ac3c26cb70c6d8409",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "host-argv"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "host-argv",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m101-devtools-browserid",
+   "rule": "the browser id must be a 36-char uuid",
+   "from": "!/^[0-9a-f-]{36}$/.test(dl.browserId)",
+   "to": "false",
+   "outcome": "survived",
+   "mutantSha256": "3a7b9c9be5b6532e9011d71ea8ecabbb7c2fec584c6cb72267faac1adbda0786",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "host-argv"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "host-argv",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m102-devtools-stderr",
+   "rule": "the stderr head must contain the devtools url",
+   "from": "|| typeof leg.stderrHead !== 'string' || !leg.stderrHead.includes(dl.url)",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "11547fde1e67eb8af9d604e8e4deef13b70a822842260d37e90129002342937b",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "host-argv"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "host-argv",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m103-devtools-port",
+   "rule": "the devtools port must be the argv CDP port",
+   "from": "l.devtoolsListening.port === ports.cdp",
+   "to": "Number.isInteger(l.devtoolsListening.port)",
+   "outcome": "killed",
+   "mutantSha256": "dd4be25aa7be35cdeaf76398c3faf94f758be6ffff51c8f6575203b637b94858",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "killedBy": {
+    "case": "devtools-port-binding",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected devtools-port-binding got []"
+   }
+  },
+  {
+   "id": "m104-teardown-portprobes-keys",
+   "rule": "port probes must cover child/devtools/fixture",
+   "from": "same(Object.keys(l.teardown.portProbes).sort(), ['child', 'devtools', 'fixture'])",
+   "to": "isObj(l.teardown.portProbes)",
+   "outcome": "survived",
+   "mutantSha256": "8655af6193ae4d2f07bfedcd452011cf6e1f4e71aad7fa03e8503e7f02641a07",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "teardown-closure"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "teardown-closure",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m105-teardown-portprobes-values",
+   "rule": "every port probe must read closed",
+   "from": "Object.values(l.teardown.portProbes).every((v) => v === 'closed')",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "20270302c29a0613bc366e041608e7cd1a0bb8b9699b73cdf16ce033668488ef",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "teardown-closure"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "teardown-closure",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m106-teardown-postkill",
+   "rule": "every post-kill curl must exit 7",
+   "from": "Object.values(l.teardown.postKillCurl).every((v) => v === 7)",
+   "to": "isObj(l.teardown.postKillCurl)",
+   "outcome": "survived",
+   "mutantSha256": "ae4deb5224130582c7a965b4709f6d85dbf6e1506f68f762475710740c49ff08",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "teardown-closure"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "teardown-closure",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m107-server-root-count",
+   "rule": "exactly one fixture request for /",
+   "from": "arr(l.serverLog).filter((s) => isObj(s) && s.path === '/').length === 1",
+   "to": "arr(l.serverLog).filter((s) => isObj(s) && s.path === '/').length >= 1",
+   "outcome": "survived",
+   "mutantSha256": "3f09d1b4893a255c78bac47e634eb082326315434b8a453f6358f2753678991c",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "server-log-binding"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "server-log-binding",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m108-server-status",
+   "rule": "every / request must be 200",
+   "from": "arr(l.serverLog).filter((s) => isObj(s) && s.path === '/').every((s) => s.run === r.nonce && s.status === 200)",
+   "to": "arr(l.serverLog).filter((s) => isObj(s) && s.path === '/').every((s) => s.run === r.nonce)",
+   "outcome": "survived",
+   "mutantSha256": "d326822950290b089363814e09990dfd35e5ef148c00b4e1df2651c002805f4b",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "server-log-binding"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "server-log-binding",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m109-server-404",
+   "rule": "every non-/ request must be 404",
+   "from": "arr(l.serverLog).filter((s) => isObj(s) && s.path !== '/').every((s) => s.status === 404)",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "8fe299418db13407471ccfab7c6ff163a083cf7d9437fae7ae4df0a6f15d51ad",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "server-log-binding"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "server-log-binding",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m110-child-server-404",
+   "rule": "every non-child.html child request must be 404",
+   "from": "arr(l.childServerLog).filter((s) => isObj(s) && s.path !== '/child.html').every((s) => s.status === 404)",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "d8e0d476ab705778c9b87b2ae5ac972dcbc02cec6afdc6d56c792b11e8c1b86d",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "child-server-log-binding"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "child-server-log-binding",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m111-child-server-status",
+   "rule": "every child.html request must be 200",
+   "from": "arr(l.childServerLog).filter((s) => isObj(s) && s.path === '/child.html').every((s) => s.run === r.nonce && s.status === 200)",
+   "to": "arr(l.childServerLog).filter((s) => isObj(s) && s.path === '/child.html').every((s) => s.run === r.nonce)",
+   "outcome": "survived",
+   "mutantSha256": "93056b3c5e241a2ae36a31f68ce9eaa5276919b79e384715fb0b033f9c7e71ec",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "child-server-log-binding"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "child-server-log-binding",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m112-run-window-upper",
+   "rule": "a run must finish inside 600 s",
+   "from": "t1 - t0 < 600000",
+   "to": "true",
+   "outcome": "survived",
+   "mutantSha256": "1099731492314725ebff56bcf7247c20560890338c057ef593f586132a913332",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "run-window"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "run-window",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m113-run-window-finite",
+   "rule": "startedAt/finishedAt must parse",
+   "from": "Number.isFinite(t0) && Number.isFinite(t1) && ",
+   "to": "",
+   "outcome": "survived",
+   "mutantSha256": "ed7f1e0e4c4838133924316c3179d8b3df83e99f416d55d116c1e5f8e9c9a80f",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: an unparseable startedAt/finishedAt yields NaN, which fails both t1 - t0 >= 12000 and t1 - t0 < 600000"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m114-replay-frac",
+   "rule": "refuse at ceil(0.5 * prior events) matched",
+   "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+   "to": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.9, GAP_FRAC = 0.75;",
+   "outcome": "survived",
+   "mutantSha256": "df69c5d521e60faab164ad9e5d81852c6aa77ba3f41844b0db5d04cf738e7a58",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "replay-event-timeline"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "replay-event-timeline",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m115-replay-tol",
+   "rule": "a pair match is within 0.05 ms",
+   "from": "const TOL = 0.05, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+   "to": "const TOL = 0.0001, GAP_MIN = 50, FRAC = 0.5, GAP_FRAC = 0.75;",
+   "outcome": "survived",
+   "mutantSha256": "1ac2eb72359d4e2f5cc57bf55ed466c9d40426e5e766d120f51a51e89f61cb1a",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "vacuous: every page-event ts/at is on the 0.1 ms grid (event-time-quantum), so a pair either matches exactly or differs by >= 0.1 ms > TOL; any TOL in (1e-4, 0.05] is behaviourally identical and no receipt can distinguish it"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m116-replay-off-by-one",
+   "rule": "refuse when absMatched >= absNeed",
+   "from": "refused: np > 0 && absMatched >= absNeed",
+   "to": "refused: np > 0 && absMatched > absNeed",
+   "outcome": "survived",
+   "mutantSha256": "33099a77228fdfbfb2a2882fb15b26fc14939ecf403053c2a6ebe5ad41562e1b",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "replay-event-timeline"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "replay-event-timeline",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m117-replay-token-unique",
+   "rule": "launch tokens must be unique across legs",
+   "from": "&& new Set(legs.map((l) => l.launchToken)).size === legs.length,",
+   "to": ",",
+   "outcome": "survived",
+   "mutantSha256": "953f99cfb716d3bc86786eacc8ab6da2e88029a0205be383e06fb856a27342f0",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "replay-launch-token"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "replay-launch-token",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m118-replay-browser-unique",
+   "rule": "devtools browser ids must be unique across legs",
+   "from": "&& new Set(legs.map((l) => l.devtoolsListening && l.devtoolsListening.browserId)).size === legs.length,",
+   "to": ",",
+   "outcome": "survived",
+   "mutantSha256": "4a640248442497d7a789f746af28640730372ee556802cb04c48c353d9d82c8d",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "replay-devtools-url"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "replay-devtools-url",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m119-walk-unreadable-dir",
+   "rule": "an unreadable walked dir is a refusal",
+   "from": "if (w.error) { outside.push('unreadable-dir:' + w.dir); continue; }",
+   "to": "if (w.error) continue;",
+   "outcome": "survived",
+   "mutantSha256": "013f08f62e1c4020f9162d94b7d68b669eb5d33fadc8d779be48cd575b3183e4",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "prior-set-complete"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "prior-set-complete",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m120-walk-unparsable-schema",
+   "rule": "the unparsable scan keys on the r81 schema string",
+   "from": "/tabi-chrome-cdp-showpicker-r81/.test(txt)",
+   "to": "/tabi-chrome-cdp-showpicker-r80/.test(txt)",
+   "outcome": "killed",
+   "mutantSha256": "e698de5b1a1e3516aae2308b22a6f98568e87c9df2e03ca6a2d3a32442154eba",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "killedBy": {
+    "case": "prior-set-unparsable",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected prior-set-unparsable got []"
+   }
+  },
+  {
+   "id": "m121-walk-unparsable-json-gate",
+   "rule": "any .json or brace-leading file is scanned for the schema",
+   "from": "if ((/\\.json$/i.test(w.path) || txt.trimStart().startsWith('{')) && ",
+   "to": "if ((/\\.json$/i.test(w.path)) && ",
+   "outcome": "survived",
+   "mutantSha256": "641050ebd77ecf47326fb46fa017deec07aa8af496871fe0f337fe17f4922c05",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "prior-set-unparsable"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "prior-set-unparsable",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m123-leg-shape-xy",
+   "rule": "the per-leg xy/buttons column is compared",
+   "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+   "to": "for (const k of ['seq', 'trusted', 'act', 'files', 'opened', 'state'])",
+   "outcome": "killed",
+   "mutantSha256": "3e09d82efed8488a9bd1cf209d160384d98b8b86dc5614f812605760800abb2d",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "killedBy": {
+    "case": "leg-sp81-click-while-open",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected leg-sp81-click-while-open got []"
+   }
+  },
+  {
+   "id": "m124-leg-shape-trusted",
+   "rule": "the per-leg trusted column is compared",
+   "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+   "to": "for (const k of ['seq', 'act', 'xy', 'files', 'opened', 'state'])",
+   "outcome": "survived",
+   "mutantSha256": "4420784086f68c4a13fb33dc273044253669ee1fd52e961bde90696664b42786",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "none",
+    "reason": "redundant: trust-law requires every page event to be trusted, so dropping the per-leg trusted column cannot be the only detector"
+   },
+   "routedDefect": true
+  },
+  {
+   "id": "m125-leg-shape-act",
+   "rule": "the per-leg activation column is compared",
+   "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+   "to": "for (const k of ['seq', 'trusted', 'xy', 'files', 'opened', 'state'])",
+   "outcome": "survived",
+   "mutantSha256": "f7abd734f9d4b624221eb3587d50f0c95ca208e7ba86954a30e59e843bedb24a",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "witness": {
+    "verdict": "witnessed",
+    "pristine": {
+     "status": 1,
+     "ids": [
+      "leg-sp81-accept-answer"
+     ]
+    },
+    "mutant": {
+     "status": 0,
+     "ids": []
+    },
+    "expect": "leg-sp81-accept-answer",
+    "note": null
+   },
+   "routedDefect": false
+  },
+  {
+   "id": "m126-leg-shape-files",
+   "rule": "the per-leg files column is compared",
+   "from": "for (const k of ['seq', 'trusted', 'act', 'xy', 'files', 'opened', 'state'])",
+   "to": "for (const k of ['seq', 'trusted', 'act', 'xy', 'opened', 'state'])",
+   "outcome": "killed",
+   "mutantSha256": "a11567d4d6ded617cd31763b95f91d4bd4c25d2a1e71435666151f7fb3477abc",
+   "counterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+   "killedBy": {
+    "case": "leg-sp81-accept-answer",
+    "accept": false,
+    "ok": false,
+    "detail": "exit 0 expected leg-sp81-accept-answer got []"
+   }
+  }
+ ],
+ "restoration": {
+  "laneCounterSha256Before": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+  "laneCounterSha256After": "0d69659cd28f96f4c0e37daf8920493e24f869158f84be45d11daf545746a0c0",
+  "laneBatterySha256After": "0f75e767e6967280cd6296c675a30015902c21aa5c91f324c78c73e915d18e95",
+  "note": "no lane file was written by this seat; every mutant lived in its own scratch dir and was removed after its run"
+ }
+}

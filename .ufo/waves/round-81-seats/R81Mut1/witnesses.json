@@ -1,0 +1,1718 @@
+{
+ "schema": "tabi-r81-r81mut1-witnesses",
+ "seat": "R81Mut1",
+ "tally": {
+  "witnessed": 87,
+  "no-witness": 38
+ },
+ "results": [
+  {
+   "id": "m01-usage-lane-relative",
+   "rule": "usage: --lane must be absolute",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "usage"
+    ]
+   },
+   "mutant": {
+    "status": 2,
+    "ids": [
+     "prior-unreadable"
+    ]
+   },
+   "note": "relative --lane"
+  },
+  {
+   "id": "m02-usage-pin-format",
+   "rule": "usage: --expect-driver-sha256 must be 64 hex",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "usage"
+    ]
+   },
+   "mutant": {
+    "status": 1,
+    "ids": [
+     "driver-pin"
+    ]
+   },
+   "note": "--expect-driver-sha256 is not 64 hex"
+  },
+  {
+   "id": "m03-usage-fixture-format",
+   "rule": "usage: --expect-fixture-sha256 must be 64 hex",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "usage"
+    ]
+   },
+   "mutant": {
+    "status": 1,
+    "ids": [
+     "fixture-hash"
+    ]
+   },
+   "note": "--expect-fixture-sha256 is not 64 hex"
+  },
+  {
+   "id": "m04-exempt-hash-format",
+   "rule": "usage: --tree-exempt-sha256 must be 64 hex",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "usage"
+    ]
+   },
+   "mutant": {
+    "status": 1,
+    "ids": [
+     "prior-set-unmatched-exempt"
+    ]
+   },
+   "note": "--tree-exempt-sha256 is not 64 hex"
+  },
+  {
+   "id": "m05-tree-exempt-path-refused",
+   "rule": "usage: path-shaped --tree-exempt is refused (content-bound exemption)",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "usage"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "note": "path-shaped --tree-exempt"
+  },
+  {
+   "id": "m06-prior-set-empty",
+   "rule": "prior set must not be empty",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "prior-unreadable"
+    ]
+   },
+   "mutant": {
+    "status": 1,
+    "ids": [
+     "prior-set-complete"
+    ]
+   },
+   "note": "empty prior set"
+  },
+  {
+   "id": "m07-prior-unparsable-skip",
+   "rule": "an unreadable prior is fatal, never skipped",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 2,
+    "ids": [
+     "prior-unreadable"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "note": "unparsable --prior"
+  },
+  {
+   "id": "m08-host-cdp-fields",
+   "rule": "host cdpProduct + cdpProtocolVersion must match the pin",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-chromium"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m08-host-cdp-fields.json",
+   "expect": "host-chromium"
+  },
+  {
+   "id": "m09-fixture-child-sha-shape",
+   "rule": "fixture.child.sha256 must be 64 hex",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "fixture-hash"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m09-fixture-child-sha-shape.json",
+   "expect": "fixture-hash"
+  },
+  {
+   "id": "m10-fixture-viewport",
+   "rule": "fixture.viewport must equal the frozen viewport",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "fixture-hash"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m10-fixture-viewport.json",
+   "expect": "fixture-hash"
+  },
+  {
+   "id": "m11-fixture-keys",
+   "rule": "fixture field set is exactly {child,origin,patch,sha256,viewport}",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "fixture-hash"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m11-fixture-keys.json",
+   "expect": "fixture-hash"
+  },
+  {
+   "id": "m12-ports-distinct",
+   "rule": "http/cdp/child ports must be three distinct values",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "ports-declared"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m12-ports-distinct.json",
+   "expect": "ports-declared"
+  },
+  {
+   "id": "m13-ports-floor",
+   "rule": "every port must be >= 1024",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "ports-declared"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m13-ports-floor.json",
+   "expect": "ports-declared"
+  },
+  {
+   "id": "m14-ports-origin",
+   "rule": "fixture origin must name the http port",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "ports-declared"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m14-ports-origin.json",
+   "expect": "ports-declared"
+  },
+  {
+   "id": "m15-ftree-parent",
+   "rule": "frameTree.mainFrameParentId must be null (a main frame)",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "frame-tree"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m15-ftree-parent.json",
+   "expect": "frame-tree"
+  },
+  {
+   "id": "m16-ftree-id-shape",
+   "rule": "frameTree.mainFrameId must be 32 uppercase hex",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "frame-tree"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m16-ftree-id-shape.json",
+   "expect": "frame-tree"
+  },
+  {
+   "id": "m17-leg-records-wait",
+   "rule": "chooserWaitMs must be <= 3000",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-records"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m17-leg-records-wait.json",
+   "expect": "leg-records"
+  },
+  {
+   "id": "m18-leg-records-errors",
+   "rule": "a leg must record zero errors",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-records"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m18-leg-records-errors.json",
+   "expect": "leg-records"
+  },
+  {
+   "id": "m19-leg-records-intercepterr",
+   "rule": "interceptError must be null or {code,message}",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-records"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m19-leg-records-intercepterr.json",
+   "expect": "leg-records"
+  },
+  {
+   "id": "m20-leg-marks-order",
+   "rule": "leg marks must be non-decreasing in time",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-marks"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m20-leg-marks-order.json",
+   "expect": "leg-marks"
+  },
+  {
+   "id": "m21-leg-marks-pre-name",
+   "rule": "the second mark must be named 'pre'",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-marks"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m21-leg-marks-pre-name.json",
+   "expect": "leg-marks"
+  },
+  {
+   "id": "m22-leg-marks-settle",
+   "rule": "the last mark must be named 'settle'",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-marks"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m22-leg-marks-settle.json",
+   "expect": "leg-marks"
+  },
+  {
+   "id": "m23-leg-marks-closedat",
+   "rule": "closedAt must be a number",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-marks"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m23-leg-marks-closedat.json",
+   "expect": "leg-marks"
+  },
+  {
+   "id": "m24-ctx-child-count",
+   "rule": "exactly one default child-origin context per leg",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "context-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m24-ctx-child-count.json",
+   "expect": "context-binding"
+  },
+  {
+   "id": "m25-ctx-child-frame",
+   "rule": "the child context must not be the main frame",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "context-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m25-ctx-child-frame.json",
+   "expect": "context-binding"
+  },
+  {
+   "id": "m26-ctx-childid-binding",
+   "rule": "childContextId must be the child context id",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "context-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m26-ctx-childid-binding.json",
+   "expect": "context-binding"
+  },
+  {
+   "id": "m27-ctx-noncross-null",
+   "rule": "a non-cross leg must have childContextId null",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "context-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m27-ctx-noncross-null.json",
+   "expect": "context-binding"
+  },
+  {
+   "id": "m28-send-min-length",
+   "rule": "a send log must have at least 10 calls",
+   "verdict": "no-witness",
+   "reason": "redundant: plan-calls refuses any send log short enough to trip the length rule (the intercept/mouse/trigger sequence cannot fit in <10 calls), so no receipt escapes on length alone"
+  },
+  {
+   "id": "m29-send-id-seq",
+   "rule": "send ids must be 1..N in order",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m29-send-id-seq.json",
+   "expect": "send-log-allowlist"
+  },
+  {
+   "id": "m30-send-params-obj",
+   "rule": "every send call must carry an object params",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m30-send-params-obj.json",
+   "expect": "send-log-allowlist"
+  },
+  {
+   "id": "m31-send-prologue",
+   "rule": "the first six calls must be the frozen prologue",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m31-send-prologue.json",
+   "expect": "send-log-allowlist"
+  },
+  {
+   "id": "m32-send-once",
+   "rule": "getFrameTree and getVersion must each be called exactly once",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m32-send-once.json",
+   "expect": "send-log-allowlist"
+  },
+  {
+   "id": "m33-send-navigate-url",
+   "rule": "Page.navigate must target the nonce-bound fixture URL",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m33-send-navigate-url.json",
+   "expect": "send-log-allowlist"
+  },
+  {
+   "id": "m34-eval-parent-any",
+   "rule": "parent-context Runtime.evaluate expressions must be allowlisted",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m34-eval-parent-any.json",
+   "expect": "send-log-allowlist"
+  },
+  {
+   "id": "m35-eval-child-any",
+   "rule": "child-context expressions must be in the child allowlist",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "send-log-allowlist"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m35-eval-child-any.json",
+   "expect": "send-log-allowlist"
+  },
+  {
+   "id": "m36-plan-intercept-id",
+   "rule": "interceptSendId must name the intercept call",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m36-plan-intercept-id.json",
+   "expect": "plan-calls"
+  },
+  {
+   "id": "m37-plan-prior-ids",
+   "rule": "prior press/release ids must be present and ordered",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m37-plan-prior-ids.json",
+   "expect": "plan-calls"
+  },
+  {
+   "id": "m38-plan-trigger-id",
+   "rule": "triggerSendId must name the trigger evaluate",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m38-plan-trigger-id.json",
+   "expect": "plan-calls"
+  },
+  {
+   "id": "m39-plan-trigger2",
+   "rule": "no second trigger call may exist",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m39-plan-trigger2.json",
+   "expect": "plan-calls"
+  },
+  {
+   "id": "m40-plan-click-ids",
+   "rule": "click press/release ids must name calls 3 and 4 and be ordered",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m40-plan-click-ids.json",
+   "expect": "plan-calls"
+  },
+  {
+   "id": "m41-plan-dismiss-id",
+   "rule": "dismissSendId must name the post-hoc cancel call",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m41-plan-dismiss-id.json",
+   "expect": "plan-calls"
+  },
+  {
+   "id": "m42-plan-answer-files",
+   "rule": "the answer must name exactly the planned file",
+   "verdict": "no-witness",
+   "reason": "redundant: accept-answer-law / webkitdirectory-answer-law pin answer.setParams.files[0] to the planned basename, so plan-calls answer-files cannot be the only detector"
+  },
+  {
+   "id": "m43-plan-answer-id",
+   "rule": "answer.setSendId must name the setFileInputFiles call",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "plan-calls"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m43-plan-answer-id.json",
+   "expect": "plan-calls"
+  },
+  {
+   "id": "m44-cdp-method-set",
+   "rule": "the CDP event log may carry only fileChooserOpened/frameNavigated",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cdp-event-log-closed"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m44-cdp-method-set.json",
+   "expect": "cdp-event-log-closed"
+  },
+  {
+   "id": "m45-cdp-nav-binding",
+   "rule": "frameNavigated must name the main frame and the nonce URL",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cdp-event-log-closed"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m45-cdp-nav-binding.json",
+   "expect": "cdp-event-log-closed"
+  },
+  {
+   "id": "m46-cdp-open-mode",
+   "rule": "chooser mode must be selectSingle or selectMultiple",
+   "verdict": "no-witness",
+   "reason": "redundant: the per-leg frozen shape compares `opened` (the mode array) and mode-law compares the same value, so any mode change fires leg-<name> first"
+  },
+  {
+   "id": "m47-cdp-open-backend",
+   "rule": "backendNodeId must be a positive integer",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cdp-event-log-closed"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m47-cdp-open-backend.json",
+   "expect": "cdp-event-log-closed"
+  },
+  {
+   "id": "m48-cdp-open-frame",
+   "rule": "a chooser event must name the expected frame",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cdp-event-log-closed"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m48-cdp-open-frame.json",
+   "expect": "cdp-event-log-closed"
+  },
+  {
+   "id": "m49-cdp-cross-open-binding",
+   "rule": "a cross-origin chooser must follow the prior click within 3 sends",
+   "verdict": "no-witness",
+   "reason": "vacuous: no honest cross-origin leg opens a chooser (both throw SecurityError), and any added open is refused by intercept-law and the per-leg shape before the afterSendId window matters"
+  },
+  {
+   "id": "m50-cdp-click-open-binding",
+   "rule": "the second chooser must follow the click release within 3 sends",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cdp-event-log-closed"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m50-cdp-click-open-binding.json",
+   "expect": "cdp-event-log-closed"
+  },
+  {
+   "id": "m51-cdp-multi-open",
+   "rule": "at most two chooser opens per leg",
+   "verdict": "no-witness",
+   "reason": "redundant: a third chooser open changes the per-leg `opened` array (leg-<name>) and click-while-open-law, both of which fire"
+  },
+  {
+   "id": "m52-frame-binding-parent",
+   "rule": "every leg must carry a fresh main frame tree (parent null)",
+   "verdict": "no-witness",
+   "reason": "unclassified"
+  },
+  {
+   "id": "m53-event-window-lower",
+   "rule": "page events must fall at or after the pre mark",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "event-leg-window"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m53-event-window-lower.json",
+   "expect": "event-leg-window"
+  },
+  {
+   "id": "m54-event-window-upper",
+   "rule": "page events must fall at or before the settle mark",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "event-leg-window"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m54-event-window-upper.json",
+   "expect": "event-leg-window"
+  },
+  {
+   "id": "m55-event-window-order",
+   "rule": "page events must be non-decreasing in at",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "event-leg-window"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m55-event-window-order.json",
+   "expect": "event-leg-window"
+  },
+  {
+   "id": "m56-event-window-start",
+   "rule": "no page event may carry leg 'start'",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "event-leg-window"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m56-event-window-start.json",
+   "expect": "event-leg-window"
+  },
+  {
+   "id": "m57-event-types-target",
+   "rule": "event.target must be null or a string",
+   "verdict": "no-witness",
+   "reason": "redundant: the per-leg frozen shape seq is type@target, so any target change fires leg-<name>"
+  },
+  {
+   "id": "m58-event-types-files",
+   "rule": "event.files must be null or an array",
+   "verdict": "no-witness",
+   "reason": "redundant: the per-leg frozen shape `files` column lists every event whose files is non-null, so any files change fires leg-<name>"
+  },
+  {
+   "id": "m59-event-types-seq",
+   "rule": "event.seq must be an integer",
+   "verdict": "no-witness",
+   "reason": "redundant: seq-monotonic requires seq === i+1 exactly, so a non-integer seq fires seq-monotonic"
+  },
+  {
+   "id": "m60-sp-law-ret",
+   "rule": "a successful showPicker must return undefined",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "gesture-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m60-sp-law-ret.json",
+   "expect": "gesture-law"
+  },
+  {
+   "id": "m61-sp-law-message",
+   "rule": "a throwing showPicker must carry the frozen message",
+   "verdict": "no-witness",
+   "reason": "redundant: the only throwing parent showPicker law is sp81-same-origin-nonfile-disabled, whose message order-law pins separately"
+  },
+  {
+   "id": "m62-sp-law-null-ok",
+   "rule": "a leg with no parent showPicker must record null",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "gesture-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m62-sp-law-null-ok.json",
+   "expect": "gesture-law"
+  },
+  {
+   "id": "m63-sp-law-unknown",
+   "rule": "a leg without a frozen showPicker law is refused",
+   "verdict": "no-witness",
+   "reason": "vacuous: all six planned legs have a frozen SP_LAW entry; a leg without one cannot pass plan-frozen/leg-order/leg-records"
+  },
+  {
+   "id": "m64-mode-law-multiple",
+   "rule": "a multiple input must open selectMultiple",
+   "verdict": "no-witness",
+   "reason": "redundant: fixture-descriptors pins fixtureInputs to FIXTURE_INPUTS, so the multiple flag cannot be flipped to create a selectMultiple witness"
+  },
+  {
+   "id": "m65-mode-law-missing-input",
+   "rule": "a chooser whose input descriptor is missing is refused",
+   "verdict": "no-witness",
+   "reason": "redundant: fixture-descriptors refuses any fixtureInputs array that loses a descriptor"
+  },
+  {
+   "id": "m66-co-child-activation",
+   "rule": "cross-origin child activation transition is frozen",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cross-origin-nonfile-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m66-co-child-activation.json",
+   "expect": "cross-origin-nonfile-law"
+  },
+  {
+   "id": "m67-co-child-events-count",
+   "rule": "the child click must fire exactly five events",
+   "verdict": "no-witness",
+   "reason": "redundant: the child event shape check compares the full type@target sequence, so a 5->4 or 5->6 change fires the same cross-origin-nonfile-law id"
+  },
+  {
+   "id": "m68-co-child-trusted",
+   "rule": "every child event must be trusted and active",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cross-origin-nonfile-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m68-co-child-trusted.json",
+   "expect": "cross-origin-nonfile-law"
+  },
+  {
+   "id": "m69-co-child-shape",
+   "rule": "the child event sequence must be the frozen one",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cross-origin-nonfile-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m69-co-child-shape.json",
+   "expect": "cross-origin-nonfile-law"
+  },
+  {
+   "id": "m70-co-childlate",
+   "rule": "no child event may arrive after close",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "cross-origin-nonfile-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m70-co-childlate.json",
+   "expect": "cross-origin-nonfile-law"
+  },
+  {
+   "id": "m71-order-cross-result",
+   "rule": "the cross-origin disabled call must throw the frozen SecurityError",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "order-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m71-order-cross-result.json",
+   "expect": "order-law"
+  },
+  {
+   "id": "m72-order-cross-nochooser",
+   "rule": "the cross-origin disabled call must open nothing",
+   "verdict": "no-witness",
+   "reason": "redundant: an added chooser on the cross-origin disabled leg fires intercept-law and the per-leg `opened` shape as well"
+  },
+  {
+   "id": "m73-order-same-nochooser",
+   "rule": "the same-origin disabled call must open nothing",
+   "verdict": "no-witness",
+   "reason": "redundant: an added chooser on the same-origin disabled leg fires intercept-law and the per-leg `opened` shape as well"
+  },
+  {
+   "id": "m74-order-same-ok",
+   "rule": "the same-origin disabled call must fail (ok === false)",
+   "verdict": "no-witness",
+   "reason": "redundant: flipping sod.showPicker.ok to true also fires gesture-law and intercept-law"
+  },
+  {
+   "id": "m75-dir-answer-files",
+   "rule": "the directory answer must name exactly the planned directory",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "webkitdirectory-answer-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m75-dir-answer-files.json",
+   "expect": "webkitdirectory-answer-law"
+  },
+  {
+   "id": "m76-dir-answer-setfiles",
+   "rule": "setParams.files must be exactly the directory basename",
+   "verdict": "no-witness",
+   "reason": "redundant: changing answer.setParams.files makes plan-calls want differ from the send log, so plan-calls fires"
+  },
+  {
+   "id": "m77-dir-answer-backend",
+   "rule": "the answer must target the chooser event backendNodeId",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "webkitdirectory-answer-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m77-dir-answer-backend.json",
+   "expect": "webkitdirectory-answer-law"
+  },
+  {
+   "id": "m78-dir-answer-state",
+   "rule": "the directory answer must populate the input with webkitRelativePath",
+   "verdict": "no-witness",
+   "reason": "redundant: the per-leg frozen shape state column compares stateAfter.d, so any change fires leg-sp81-webkitdirectory-answer"
+  },
+  {
+   "id": "m79-dir-answer-readcount",
+   "rule": "both directory files must be read",
+   "verdict": "no-witness",
+   "reason": "redundant: removing a read event changes the per-leg seq, so leg-sp81-webkitdirectory-answer fires"
+  },
+  {
+   "id": "m80-dir-answer-readbytes",
+   "rule": "the directory reads must return the frozen bytes",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "webkitdirectory-answer-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m80-dir-answer-readbytes.json",
+   "expect": "webkitdirectory-answer-law"
+  },
+  {
+   "id": "m81-accept-answer-files",
+   "rule": "the accept answer must name exactly the planned file",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "accept-answer-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m81-accept-answer-files.json",
+   "expect": "accept-answer-law"
+  },
+  {
+   "id": "m82-accept-answer-upload",
+   "rule": "the accepted upload must carry the frozen name/size/sha256",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "accept-answer-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m82-accept-answer-upload.json",
+   "expect": "accept-answer-law"
+  },
+  {
+   "id": "m83-accept-answer-state",
+   "rule": "the accept answer must populate the input with the .txt",
+   "verdict": "no-witness",
+   "reason": "redundant: the per-leg frozen shape state column compares stateAfter.k"
+  },
+  {
+   "id": "m84-accept-answer-readcount",
+   "rule": "the accepted file must be read exactly once",
+   "verdict": "no-witness",
+   "reason": "redundant: removing the read event changes the per-leg seq"
+  },
+  {
+   "id": "m85-click-element",
+   "rule": "the click-while-open element must be the input s",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "click-while-open-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m85-click-element.json",
+   "expect": "click-while-open-law"
+  },
+  {
+   "id": "m86-click-open-count",
+   "rule": "the click must leave exactly two choosers open",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "click-while-open-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m86-click-open-count.json",
+   "expect": "click-while-open-law"
+  },
+  {
+   "id": "m87-click-page-clicks",
+   "rule": "exactly one trusted click on s",
+   "verdict": "no-witness",
+   "reason": "redundant: a second click@s changes the per-leg seq, so leg-sp81-click-while-open fires"
+  },
+  {
+   "id": "m88-click-trusted",
+   "rule": "the click on s must be trusted and active",
+   "verdict": "no-witness",
+   "reason": "redundant: trust-law requires every page event to be trusted, so an untrusted click fires trust-law"
+  },
+  {
+   "id": "m89-noselect-dismiss-state",
+   "rule": "an answer leg's dismiss state must equal its post-answer state",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "no-selection-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m89-noselect-dismiss-state.json",
+   "expect": "no-selection-law"
+  },
+  {
+   "id": "m90-noselect-file-event",
+   "rule": "no non-cancel event may carry files outside the answer legs",
+   "verdict": "no-witness",
+   "reason": "redundant: adding an input/change event changes the per-leg seq; setting files on an existing event changes the per-leg files column"
+  },
+  {
+   "id": "m91-noselect-state-keys",
+   "rule": "the state object must have exactly the seven frozen keys",
+   "verdict": "no-witness",
+   "reason": "redundant: the per-leg frozen shape state column compares the whole state object, so an extra or missing key fires leg-<name>"
+  },
+  {
+   "id": "m92-intercept-fewer-opens",
+   "rule": "a leg that opens fewer choosers than its trigger implies is refused",
+   "verdict": "no-witness",
+   "reason": "redundant: a missing chooser open changes the per-leg `opened` array, so leg-<name> fires"
+  },
+  {
+   "id": "m93-intercept-cross-ok",
+   "rule": "a cross leg opens a chooser only when the child call succeeded",
+   "verdict": "no-witness",
+   "reason": "redundant: cross-origin-nonfile-law / order-law pin childResult exactly, so a childResult without ok fires there"
+  },
+  {
+   "id": "m94-cancel-law",
+   "rule": "no page cancel event may fire in this generation",
+   "verdict": "no-witness",
+   "reason": "unclassified"
+  },
+  {
+   "id": "m95-dismiss-result",
+   "rule": "a post-hoc cancel must be accepted with {}",
+   "verdict": "no-witness",
+   "reason": "unclassified"
+  },
+  {
+   "id": "m96-dismiss-cancel-events",
+   "rule": "a post-hoc cancel must not fire a page cancel",
+   "verdict": "no-witness",
+   "reason": "redundant: cancel-law refuses any page cancel event in this generation"
+  },
+  {
+   "id": "m97-trust-pointer-legs",
+   "rule": "a showPicker call must fire no pointer event",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "trust-law"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m97-trust-pointer-legs.json",
+   "expect": "trust-law"
+  },
+  {
+   "id": "m98-argv-profile-token",
+   "rule": "the profile dir must be profile-<launchToken>",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-argv"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m98-argv-profile-token.json",
+   "expect": "host-argv"
+  },
+  {
+   "id": "m99-argv-exact",
+   "rule": "the argv must equal the frozen list exactly",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-argv"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m99-argv-exact.json",
+   "expect": "host-argv"
+  },
+  {
+   "id": "m100-devtools-url-prefix",
+   "rule": "the devtools url must be ws://127.0.0.1:<cdp>/devtools/browser/",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-argv"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m100-devtools-url-prefix.json",
+   "expect": "host-argv"
+  },
+  {
+   "id": "m101-devtools-browserid",
+   "rule": "the browser id must be a 36-char uuid",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-argv"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m101-devtools-browserid.json",
+   "expect": "host-argv"
+  },
+  {
+   "id": "m102-devtools-stderr",
+   "rule": "the stderr head must contain the devtools url",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "host-argv"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m102-devtools-stderr.json",
+   "expect": "host-argv"
+  },
+  {
+   "id": "m103-devtools-port",
+   "rule": "the devtools port must be the argv CDP port",
+   "verdict": "no-witness",
+   "reason": "unclassified"
+  },
+  {
+   "id": "m104-teardown-portprobes-keys",
+   "rule": "port probes must cover child/devtools/fixture",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "teardown-closure"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m104-teardown-portprobes-keys.json",
+   "expect": "teardown-closure"
+  },
+  {
+   "id": "m105-teardown-portprobes-values",
+   "rule": "every port probe must read closed",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "teardown-closure"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m105-teardown-portprobes-values.json",
+   "expect": "teardown-closure"
+  },
+  {
+   "id": "m106-teardown-postkill",
+   "rule": "every post-kill curl must exit 7",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "teardown-closure"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m106-teardown-postkill.json",
+   "expect": "teardown-closure"
+  },
+  {
+   "id": "m107-server-root-count",
+   "rule": "exactly one fixture request for /",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "server-log-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m107-server-root-count.json",
+   "expect": "server-log-binding"
+  },
+  {
+   "id": "m108-server-status",
+   "rule": "every / request must be 200",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "server-log-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m108-server-status.json",
+   "expect": "server-log-binding"
+  },
+  {
+   "id": "m109-server-404",
+   "rule": "every non-/ request must be 404",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "server-log-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m109-server-404.json",
+   "expect": "server-log-binding"
+  },
+  {
+   "id": "m110-child-server-404",
+   "rule": "every non-child.html child request must be 404",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "child-server-log-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m110-child-server-404.json",
+   "expect": "child-server-log-binding"
+  },
+  {
+   "id": "m111-child-server-status",
+   "rule": "every child.html request must be 200",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "child-server-log-binding"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m111-child-server-status.json",
+   "expect": "child-server-log-binding"
+  },
+  {
+   "id": "m112-run-window-upper",
+   "rule": "a run must finish inside 600 s",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "run-window"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m112-run-window-upper.json",
+   "expect": "run-window"
+  },
+  {
+   "id": "m113-run-window-finite",
+   "rule": "startedAt/finishedAt must parse",
+   "verdict": "no-witness",
+   "reason": "redundant: an unparseable startedAt/finishedAt yields NaN, which fails both t1 - t0 >= 12000 and t1 - t0 < 600000"
+  },
+  {
+   "id": "m114-replay-frac",
+   "rule": "refuse at ceil(0.5 * prior events) matched",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "replay-event-timeline"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m114-replay-frac.json",
+   "expect": "replay-event-timeline"
+  },
+  {
+   "id": "m115-replay-tol",
+   "rule": "a pair match is within 0.05 ms",
+   "verdict": "no-witness",
+   "reason": "vacuous: every page-event ts/at is on the 0.1 ms grid (event-time-quantum), so a pair either matches exactly or differs by >= 0.1 ms > TOL; any TOL in (1e-4, 0.05] is behaviourally identical and no receipt can distinguish it"
+  },
+  {
+   "id": "m116-replay-off-by-one",
+   "rule": "refuse when absMatched >= absNeed",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "replay-event-timeline"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m116-replay-off-by-one.json",
+   "expect": "replay-event-timeline"
+  },
+  {
+   "id": "m117-replay-token-unique",
+   "rule": "launch tokens must be unique across legs",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "replay-launch-token"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m117-replay-token-unique.json",
+   "expect": "replay-launch-token"
+  },
+  {
+   "id": "m118-replay-browser-unique",
+   "rule": "devtools browser ids must be unique across legs",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "replay-devtools-url"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m118-replay-browser-unique.json",
+   "expect": "replay-devtools-url"
+  },
+  {
+   "id": "m119-walk-unreadable-dir",
+   "rule": "an unreadable walked dir is a refusal",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "prior-set-complete"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "expect": "prior-set-complete"
+  },
+  {
+   "id": "m120-walk-unparsable-schema",
+   "rule": "the unparsable scan keys on the r81 schema string",
+   "verdict": "no-witness",
+   "reason": "unclassified"
+  },
+  {
+   "id": "m121-walk-unparsable-json-gate",
+   "rule": "any .json or brace-leading file is scanned for the schema",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "prior-set-unparsable"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "expect": "prior-set-unparsable"
+  },
+  {
+   "id": "m123-leg-shape-xy",
+   "rule": "the per-leg xy/buttons column is compared",
+   "verdict": "no-witness",
+   "reason": "unclassified"
+  },
+  {
+   "id": "m124-leg-shape-trusted",
+   "rule": "the per-leg trusted column is compared",
+   "verdict": "no-witness",
+   "reason": "redundant: trust-law requires every page event to be trusted, so dropping the per-leg trusted column cannot be the only detector"
+  },
+  {
+   "id": "m125-leg-shape-act",
+   "rule": "the per-leg activation column is compared",
+   "verdict": "witnessed",
+   "pristine": {
+    "status": 1,
+    "ids": [
+     "leg-sp81-accept-answer"
+    ]
+   },
+   "mutant": {
+    "status": 0,
+    "ids": []
+   },
+   "witness": "/fast/scratch/hyaku/tabi-r81/R81Mut1/witnesses/m125-leg-shape-act.json",
+   "expect": "leg-sp81-accept-answer"
+  },
+  {
+   "id": "m126-leg-shape-files",
+   "rule": "the per-leg files column is compared",
+   "verdict": "no-witness",
+   "reason": "unclassified"
+  }
+ ]
+}

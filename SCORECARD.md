@@ -4025,3 +4025,28 @@ answers; the `accept` token grammar against a programmatic answer; the wave's mu
 battery cases. Retired: none.
 
 Scored (r81): battery 62/62, kill power 46/46, 56 checks.
+
+## Round 82 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r82; C2 calibration, the r81 spotcheck defects 6–9 + direction-bound counter
+
+Base `b401027f`; nonce `tabi-r82-scored1`. Axes at start: all six at 9; C1 works
+a lowest axis and is a capability move (generation r82 of the r79 capability).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r82 (sourced: S219–S220 carried) | `node scripts/check-showpicker-r82.mjs --lane <ABS lane> --receipt corpus/evidence/round82/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r82-scored1 --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-82/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R82`) | base: no r82 receipt → exit 2 `receipt-unreadable`; the r81 receipt under the r82 counter → exit 1, 33 findings (`schema`, …); after: the scored receipt → exit 0, 64 checks clean | VERIFIED |
+| C2 calibration (9), record drift (the r81 spotcheck defects 6–9) + the direction-bound counter + the r82 self-drift identity/numbers legs | `node scripts/check-record-drift-r82.mjs --lane <ABS lane> --json` (exit 1 on a mismatch; 8 record claims) | before: exit 1, **4** mismatches (`lesson-proof/c2-before.json`); after: exit 0, mismatches **0** (`lesson-proof/c2-after.json`) | VERIFIED |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-linux` (generation r82) | As r81, and now: a cross-origin `type=color` input's own script is EXEMPT (`showPicker()` returns undefined, no chooser); cross-origin `type=month`/`week`/`time` inputs throw SecurityError; a real click while a picker is open opens a second chooser sharing the first's `backendNodeId` (the measured limit). | `corpus/evidence/round82/chromium-showpicker/receipt.json`; note `corpus/knowledge/chromium-showpicker-runtime-round-82.md` | 79 |
+
+Knowledge 93 → 94 (`corpus/knowledge/chromium-showpicker-runtime-round-82.md`). Registry 223
+(no new rows; S219/S220 re-opened). SKILL.md `## Round 82 gate registry` registers
+`check-showpicker-r82` (64 checks) with `scripts/selftest-r82-gates.mjs` (9/9).
+
+Planned (r83): `type=number`/`range` cross-origin legs; answer attribution for the second chooser;
+the `accept` token grammar. Retired: none.
+
+Scored (r82): 64 checks, battery 70/70, kill power 46/46.
