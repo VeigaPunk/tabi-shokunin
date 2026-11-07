@@ -306,6 +306,12 @@ const shrinkGapBefore = (r, leg, to) => {
   if (markAt(r, leg) < prev.at || Math.abs((first.at - prev.at) - to) > 1e-6) throw new Error('shrinkGapBefore: misplaced');
   return r;
 };
+const ownGapsOf = (r) => { const at = r.events.map((e) => e.at).sort((a, b) => a - b); let n = 0; for (let i = 1; i < at.length; i++) if (at[i] - at[i - 1] >= 50) n++; return n; };
+// the counter refuses an own-gap count below MIN_OWN_GAPS (11); these two constructions must reach
+// that state on whatever receipt they are given (a receipt with 12 own gaps survived a single shrink:
+// round 78, the re-frozen scored receipt)
+const shrinkUntilFewGaps = (r, target) => { for (const leg of LEGS.slice(3)) { if (ownGapsOf(r) < target) break; try { shrinkGapBefore(r, leg, 49.9); } catch {} } if (ownGapsOf(r) >= target) throw new Error('shrinkUntilFewGaps: could not reach ' + target); return r; };
+const collapseUntilFewGaps = (r, target) => { for (const leg of LEGS.slice(3)) { if (ownGapsOf(r) < target) break; const k = r.events.findIndex((e) => e.leg === leg); if (k <= 0) continue; const d = q(r.events[k].at - r.events[k - 1].at - 10); for (let i = k; i < r.events.length; i++) { r.events[i].at = q(r.events[i].at - d); r.events[i].ts = q(r.events[i].ts - d); } } if (ownGapsOf(r) >= target) throw new Error('collapseUntilFewGaps: could not reach ' + target); return r; };
 const GAP_LEG = (() => { let best = null, bd = Infinity; for (const l of LEGS.slice(3)) { const e = evsOf(real, l)[0]; if (!e) continue; const d = e.at - markAt(real, l); if (d < bd) { bd = d; best = l; } } return best; })();
 add('nonce-expected', 'nonce-expected', () => {}, ['prior-set-complete'], true, { nonce: 'tabi-r78-other' });
 add('replay-byte-identical', 'replay-launch-token', () => {}, REPLAY, true, { priorReal: true });
@@ -330,8 +336,8 @@ add('replay-timeline-gap-at-threshold', 'replay-event-timeline', () => {}, [], t
 add('replay-timeline-gaps-added-own-denominator', 'replay-event-timeline', (r) => { addTwoGaps(r); }, [], true,
   { prior: (p) => { priorIds(p); const under = addTwoGaps(clone(real)); return placed(breakGaps(p, nGap - gapNeed, gapNeed, under), null, gapNeed, under); } });
 // GAP_MIN brackets (R76Review2 F1): 49.9 ms is no gap (own gaps 10 < 11: refused)
-add('replay-timeline-own-gap-49.9', 'replay-event-timeline', (r) => { shrinkGapBefore(r, GAP_LEG, 49.9); });
-add('replay-timeline-too-few-gaps', 'replay-event-timeline', (r) => { const k = r.events.findIndex((e) => e.leg === 'intercept-off'); const d = q(r.events[k].at - r.events[k - 1].at - 10); for (let i = k; i < r.events.length; i++) { r.events[i].at = q(r.events[i].at - d); r.events[i].ts = q(r.events[i].ts - d); } }, ['event-leg-window']);
+add('replay-timeline-own-gap-49.9', 'replay-event-timeline', (r) => { shrinkUntilFewGaps(r, 11); });
+add('replay-timeline-too-few-gaps', 'replay-event-timeline', (r) => { collapseUntilFewGaps(r, 11); }, ['event-leg-window']);
 add('replay-launch-token-shape', 'replay-launch-token', (r) => { const o = r.host.launchToken; r.host.launchToken = 'x'; r.host.argv = r.host.argv.map((a) => a.split(o).join('x')); r.upload.dir = r.upload.dir.split(o).join('x'); setFilesSwap(r, (p) => p.split(o).join('x')); }, ['host-argv']);
 // prior-set completeness and the walk (round-76 routed defect 2), on a scratch mirror lane
 add('prior-set-complete-omitted', 'prior-set-complete', () => {}, [], true, { dropFirstPrior: true });
@@ -341,6 +347,10 @@ add('prior-set-complete-txt-ext', 'prior-set-complete', () => {}, [], true, { mi
 add('prior-set-complete-nonce-stripped', 'prior-set-complete', () => {}, [], true, { mirror: (m) => { const c = clone(real); delete c.nonce; fs.writeFileSync(path.join(m, '.ufo/waves/round-78/stripped.json'), JSON.stringify(c)); } });
 add('prior-set-unparsable-truncated', 'prior-set-unparsable', () => {}, [], true, { mirror: (m) => { fs.writeFileSync(path.join(m, '.ufo/waves/round-78/cut.json'), JSON.stringify({ ...clone(real), nonce: 'tabi-r78-unlisted' }).slice(0, 4000)); } });
 add('prior-set-unparsable-brace-txt', 'prior-set-unparsable', () => {}, [], true, { mirror: (m) => { fs.writeFileSync(path.join(m, '.ufo/waves/round-78/cut.txt'), '{"schema": "tabi-chrome-cdp-filechooser-r78", "nonce": '); } });
+// R78Review1: an unreadable directory inside a walked tree must be REFUSED, not skipped (a chmod-000
+// subdir hid a copy of the scored receipt and the walk reported outside=[])
+add('prior-set-unparsable-unreadable-dir', 'prior-set-unparsable', () => {}, [], true, { mirror: (m) => { const d = path.join(m, '.ufo/waves/round-78/hidden'); fs.mkdirSync(d, { recursive: true }); fs.writeFileSync(path.join(d, 'copy.json'), JSON.stringify({ ...clone(real), nonce: 'tabi-r78-hidden' })); fs.chmodSync(d, 0o000); } });
+add('receipt-fields-sweeps-shape', 'receipt-fields', (r) => { r.sweeps = []; });
 
 // ---- cross-leg laws ----
 add('trust-law', 'trust-law', (r) => { evType(r, 'pick-single', 'change').isTrusted = false; }, ['leg-pick-single-trusted']);

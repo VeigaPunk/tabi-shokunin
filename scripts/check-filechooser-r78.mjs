@@ -219,7 +219,7 @@ check('nonce-on-page', typeof r.nonce === 'string' && r.nonceOnPage === r.nonce,
 // E3: the top-level key set is closed; every key below is read somewhere in this counter, so no
 // bookkeeping field is carried unread and an added field cannot ride along unreviewed.
 const RECEIPT_KEYS = ['cdpEventLog', 'cdpSendLog', 'chooserHypothesis', 'closedAt', 'degenerate', 'driverSha256', 'events', 'failures', 'finishedAt', 'fixture', 'fixtureInputs', 'frameTree', 'host', 'lateAfterClose', 'legMarks', 'legShape', 'legs', 'mainFrameId', 'nonce', 'nonceOnPage', 'plan', 'predicate', 'schema', 'serverLog', 'startedAt', 'sweeps', 'teardown', 'upload'];
-check('receipt-fields', same(Object.keys(r).sort(), RECEIPT_KEYS), 'top-level receipt fields ' + JSON.stringify(Object.keys(r).sort()) + ' (want exactly ' + JSON.stringify(RECEIPT_KEYS) + ')');
+check('receipt-fields', same(Object.keys(r).sort(), RECEIPT_KEYS) && isObj(r.sweeps), 'top-level receipt fields ' + JSON.stringify(Object.keys(r).sort()) + ' (want exactly ' + JSON.stringify(RECEIPT_KEYS) + ')');
 check('scored-run-not-degenerate', r.degenerate === null, 'degenerate=' + r.degenerate);
 const slog = arr(r.serverLog);
 const servedRoot = slog.filter((s) => isObj(s) && s.path === '/' && s.status === 200);
@@ -296,7 +296,9 @@ const outside = [], unparsable = [];
 const seen = new Set();
 const walk = (d) => {
   const rd = real(d); if (seen.has(rd)) return; seen.add(rd);
-  let ents; try { ents = fs.readdirSync(d); } catch { return; }
+  // an unreadable directory is REFUSED, not skipped: a chmod-000 subdir inside a walked tree hid a
+  // copy of the scored receipt and the walk reported outside=[] (R78Review1, round 78 wave)
+  let ents; try { ents = fs.readdirSync(d); } catch (e) { unparsable.push(path.relative(lane, d) + ' (unreadable directory)'); return; }
   for (const name of ents) {
     const p = path.join(d, name);
     let stt; try { stt = fs.statSync(p); } catch { continue; }
@@ -601,6 +603,7 @@ out({ schema: 'tabi-check-filechooser-r78', verdict, receipt: rp, nonce: r.nonce
   priorSetFile: { path: psFile, sha256: sha256(psBytes), lines: psLines.length }, priorSet,
   timeline: { absThreshold: FRAC, gapThreshold: GAP_FRAC, tolerance: TOL, gapMin: GAP_MIN, minOwnGaps: MIN_OWN_GAPS, ownGaps, ownEvents: pairs(r).length },
   limit: sims.map((s, i) => ({ prior: priorSet[i].path, ...s })),
+  treeExempt: [...exemptReal],
   nodeReport: LEG_ORDER.filter((nm) => isObj(derived[nm]) && derived[nm].opened.length > 0).map((nm) => ({ leg: nm, ids: derived[nm].opened.map((x) => x[1]) })),
   walk: { trees: ['.ufo/waves/round-78', 'corpus/evidence/round78'], outside, unparsable },
   checks, findings, derived }, findings.length === 0 ? 0 : 1);
