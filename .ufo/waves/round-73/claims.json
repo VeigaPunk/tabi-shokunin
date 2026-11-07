@@ -1,0 +1,45 @@
+{
+ "lane": "tabi",
+ "round": 73,
+ "attempt": 1,
+ "base": "d7ff9f190260d91a1e675f474b7abf79960cdfd4",
+ "preFreezeControlsCommit": "ae2628afdfb2d8bfcffa9dd0c247f3868d67d757",
+ "frozenAt": "the lane commit that adds this file; instrument digests are recorded in .ufo/waves/round-73/freeze.txt by the next commit (the DIGESTS COMMIT, D), before any scored run",
+ "priorRound": "r72 rejected-honest-stop (MANIFEST): C1 pinch leg (c) red, battery case in-wheel-anchor-2px receipt-relative (closure routed defect 1, QUALITY 135); replay hole (routed defect 2, QUALITY 136). r71 rejected-honest-stop (leg b). r70 admitted. Fresh-start reads (prompt 'Run15 renewed current-pause authorization', tabi r63 line): r60/r61/r62 spotchecks' root failures (K7 no-regression conjunct; post-scoring instrument changes; M5 AND->OR survivor, contradictory duplicate/fabricated dispositions) and the r71/r72 spotchecks were read before this freeze. Carried as executed controls: M5 (kill-power semantic mutant + 10 producer-verdict polarity cases), contradictory duplicate and fabricated-label battery cases (leg-order-duplicate-entry, seq-duplicate-event, event-leg-fabricated-label, leg-marks-fabricated-name, legshape-fabricated-leg), final instrument bytes frozen and digested before any scored run.",
+ "axesAtStart": {
+  "adjacency": 9,
+  "coverage": 9,
+  "depth": 9,
+  "operability": 9,
+  "freshness": 9,
+  "calibration": 9
+ },
+ "lowestAxis": "all six tie at 9; C1 (coverage) works a lowest axis",
+ "stagnationNudge": "last capability entered r70; whether or not the window-3 nudge applies at r73, C1 is a capability move on a lowest axis, so it satisfies either reading",
+ "pins": "freeze.txt (sha256 of every instrument below, recorded before the scored run)",
+ "priorSet": "PRE = the 12 committed pre-freeze receipts: .ufo/waves/round-73/controls/c1/smoke1..9.receipt.json and degenerate-{dispatch-wheel,set-scale,skip-touch}.receipt.json, passed as 12 --prior arguments in that order",
+ "claims": {
+  "C1": {
+   "axis": "coverage",
+   "type": "capability acquisition: chromium-synth-pinch-gesture-linux (re-claim on generation r73; the r71 and r72 generations stay withheld)",
+   "surface": "Input.synthesizePinchGesture runtime delivery on Linux Chromium 155 headless: mouse/default pinches become trusted ctrl+wheel events whose per-event deltaY*pageScale sums to -100 ln(scaleFactor) and change the visual-viewport page scale; touch pinches become two-finger touch sequences with no page-scale change on a desktop viewport; scaleFactor 1 is a no-op; pen and an out-of-viewport anchor are refused; scaleFactor 0 never finishes. No tabi capability row covers the pinch command (r71, r72 withheld it): grep -c '^| `chromium-synth-pinch-gesture-linux` |' SCORECARD.md = 0 at base.",
+   "sourced": "S180-S183 (NEW this round, opened 2026-11-06 21:23 -03:00, staged .ufo/waves/round-73/sources/): the Blink path from native wheel to DOM deltaY divides by the visual-viewport page scale (web_input_event_conversion.cc FrameScale -> local_frame_view.cc InputEventsScaleFactor = page scale x emulation scale -> web_mouse_wheel_event.cc delta_y / frame_scale_ -> wheel_event.cc -DeltaYInRootFrame()/devicePixelRatio). With S179 (delta_y = 100 log(update scale)) this sources the counter's wheel-delta-law sum(deltaY*scale) = -100 ln(scaleFactor), which r72 had marked inference. S176-S178, S174, S173 for the command and gesture paths.",
+   "countingCommand": "node scripts/check-synthpinch-r73.mjs --receipt corpus/evidence/round73/chromium-synth-pinch-gesture/receipt.json --expect-driver-sha256 <freeze.txt driver digest> --expect-nonce tabi-r73-l1-<first 12 hex of D> <PRE as --prior args> --json",
+   "before": {
+    "rev": "d7ff9f190260d91a1e675f474b7abf79960cdfd4",
+    "counter": "no r73 receipt: exit 2 receipt-unreadable; the committed r72 scored receipt under the r73 counter: exit 1 (schema, nonce-shape, nonce-expected, driver-pin); controls/c1/controls-summary.json",
+    "capabilityRow": "grep -c '^| `chromium-synth-pinch-gesture-linux` |' SCORECARD.md = 0"
+   },
+   "predicate": "C1-SYNTHPINCH-R73: (a) after D, the L1 runs the pinned driver once with nonce tabi-r73-l1-<first 12 hex of D> and its own free ports, writing corpus/evidence/round73/chromium-synth-pinch-gesture/receipt.json, and the counting command exits 0 (verdict clean, 98 checks) on that committed receipt with the frozen driver digest, that expected nonce and the 12 PRE priors; (b) wave seat R73Exec1 runs the pinned driver once cold with nonce tabi-r73-exec1-<first 12 hex of D> and its own ports, and the pinned counter exits 0 clean (98 checks) on that receipt with the frozen driver digest, that expected nonce, the 12 PRE priors and the (a) receipt as a 13th --prior; if R73Exec1's driver run ends exit 2 before launch (usage refusal: busy port or path guard, no receipt written) it may re-run with new ports, any receipt it writes is final; (c) on the (a) receipt, `node scripts/negatives-synthpinch-r73.mjs --real <(a) receipt> --expect-driver-sha256 <pin> --expect-nonce <(a) nonce> <PRE priors> --work <ABS> --laundered <the three PRE degenerate receipts> --json` exits 0 (allOk: positive clean, every case as expected, coverage gap empty) AND `node .ufo/waves/round-73/controls/c1/kill-power-r73.mjs --lane <ABS lane> --real <(a) receipt> --expect-driver-sha256 <pin> --expect-nonce <(a) nonce> <PRE priors> --work <ABS> --out .ufo/waves/round-73/scored/c1-kill-power-a.json` reports holds:true (unmutated battery exit 0, all 98 force-true and all 19 semantic mutants killed); (d) after (a)-(c) hold, SCORECARD.md gains exactly one capability row whose first cell is `chromium-synth-pinch-gesture-linux` (grep count 0 -> 1) and corpus/knowledge/chromium-synth-pinch-gesture-runtime-round-73.md exists with a source: line citing S180-S183.",
+   "doNothingControl": "executed pre-freeze, expected verdicts declared in the script before running (controls/c1/controls-c1.mjs -> controls-summary.json, allOk true): no receipt -> exit 2 receipt-unreadable; r72 scored receipt -> exit 1 schema/nonce-shape/nonce-expected/driver-pin; r72-style call with no pin/nonce/priors -> exit 2 usage; capability row count 0.",
+   "forgeryControls": "executed pre-freeze (controls-summary.json): byte-identical replay of pre-freeze smoke1 -> exit 1 nonce-expected + the three replay ids (and the three replay ids alone when the expected nonce is smoke1's own); smoke1 with its nonce rewritten everywhere to the expected one and both wall-clock stamps +1 h (R72Critic forged-a analog) -> exit 1 the three replay ids exactly. Battery replay cases (byte-identical, nonce+stamps, each identifier shared alone, launch-token shape) and a must-accept prior whose three identifiers all differ. Degenerate drivers dispatch-wheel / set-scale / skip-touch: driver exit 1, laundered into the battery. Pre-freeze repetition (QUALITY 135): counter, battery AND kill power over every pre-freeze repetition receipt smoke1..9, each with priors = the other 11 PRE receipts (controls/c1/pf-smoke<n>.*, prefreeze-summary.json).",
+   "kill": [
+    "any pinned instrument byte (freeze.txt) changes after the freeze: killed, never amended",
+    "the (a) scored run is red: no further scored runs to fish for green",
+    "R73Exec1's receipt is red (counter exit != 0): leg (b) false, honest stop",
+    "any predicate leg (a)-(d) false at the lane tip"
+   ],
+   "limit": "the counter reads a receipt; it is not an execution oracle. Its replay checks refuse a receipt that shares its launch token, DevTools browser id or event timeline with a --prior receipt; a same-user forger who rewrites all three (and the nonce) is NOT refused — executed witness controls/c1/controls-summary.json `limit-full-identifier-rewrite` exit 0. The r71 R2 verifier hardening is not part of this claim. Demonstrated on this host's Chromium 155 headless, desktop mobile:false viewport, deviceScaleFactor 1; the emulation input scale is measured as 1, not sourced."
+  }
+ }
+}
