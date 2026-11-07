@@ -3774,3 +3774,36 @@ revision. Full detail: SCORECARD round-53 block, `corpus/lessons/round-53.md`.
 - Scored (`2d3628fe`): (a) clean 131; (c) 251/251 and kill power holds. (b) R76Exec1 clean 131. (d) capability row added; note `chromium-js-dialog-runtime-round-76.md`.
 - Sources: S202–S206 before the freeze (Page.pdl, page_handler.cc, web_contents_impl.cc, local_dom_window.cc, chrome_client_impl.cc); S207 after (browser_web_contents_delegate.cc: the TabModalDialogManager), located by R76Scout.
 - Wave w1 (12 seats, 0 dead): R76Critic showed the limit minimum is 19 events and 1 gap (own-gap denominator); R76Scribe showed the novelty sentence overstated (r32/r35 BiDi alert) and the 20 ms is the driver's poll; R76Review1 found walk evasions and unbound event-log order/frame ids/urls; R76Review2 found `GAP_MIN` unbracketed; R76Review3 found the probe batteries unrun (QUALITY 144); R76Exec3 measured the Page-disabled dialog (blocked, not suppressed); R76Mut1 7 acceptance witnesses routed. Two seats saved crafted receipts as `.json` in the walked tree and briefly turned the counting command red; renamed at integration. SCORECARD correction, QUALITY 143–144 (144 corrected).
+## Round 77 — `chromium-file-chooser-linux` (attempt 2; file choosers over CDP)
+
+- Trigger: r76 admitted, its closure routed five defects (limit denominators, walk robustness and event-log
+  binding, `GAP_MIN` bracket, `captured-by: none` rows, an unenforced seat-output rule). Base
+  `1320d428f0c0957b46d6969b59c122fd69199331`. New surface chosen: CDP file-chooser interception — no
+  capability row and no note held `setFileInputFiles`/`fileChooserOpened` (wide grep at base, 0).
+- Attempt 1 died `lane-dead-no-report`; attempt 2 inherited its uncommitted instruments, re-verified them
+  with a fresh run and committed them under this entry (see the lesson header).
+- End-to-end domain task: a loopback page with four file inputs and a forwarding button, driven by real
+  `Input.dispatchMouseEvent` clicks; 15 legs (interception, single/multiple/missing/empty selections,
+  webkitdirectory mode, accept, forwarded and script clicks, non-file node, cancel flag, interception off);
+  3 shape probes fixed the leg shape; 4 probes and 9 cold smokes gave the 13 pre-freeze receipts, plus three
+  degenerate producers (page stub, eval trigger, swapped files) as refusals.
+- Generation r77: driver `scripts/chrome-cdp-filechooser-round77.mjs`; counter `scripts/check-filechooser-r77.mjs`
+  (183 checks: replay by prior denominators, walk of both trees, frame/url/afterSendId binding, exact host and
+  argv pins, structural comparisons, the ten sourced laws); battery `scripts/negatives-filechooser-r77.mjs`
+  (336 cases, both-sided brackets); kill power `controls/c1/kill-power-r77.mjs` (183 force-true + 70 semantic,
+  crash ≠ kill).
+- Pre-freeze (`cf0804f4`): counter 13/13, battery 13/13, kill power 9/9 (fail-closed summary allOk; honest
+  pairs 156, refused 0, max abs 1/40, max gap 2/9); controls allOk (do-nothing/forgery/positive/limit); one
+  battery guard repaired after an honest fresh receipt falsified it (QUALITY 149). Freeze `b51afa7f`,
+  digests D `dcdf582a`.
+- Scored (`ec89a40e`): (a) clean 183; (c) battery 336/336, kill power holds. **(b) FALSE as frozen**: R77Exec1's cold run wrote a receipt whose seven `#s` chooser events carry `backendNodeId` 4 (every other per-leg field identical), so the counter exits 1 with 8 findings; reproduced independently (1 of 4 L1 diagnostic runs gave `#m` = 10). The id is Blink's serialization artifact, not a fixture property — QUALITY 150.
+- Sources: S208–S212 before the freeze (DOM.pdl, inspector_dom_agent.cc, file_input_type.cc,
+  inspector_page_agent.cc, Page.pdl second scope) with located quotes; S213 (Puppeteer v25.16.0 `cdp/ElementHandle.ts`
++ `revisions.ts`, client-side, opened after the freeze by R77Scout and re-opened by the L1) added by the wave's
+frontier step; citation corrections S210 (scope 174-224, 525-556) and S212 (1294-1304) from R77Scout/R77Scribe;
+`SOURCES` 207 → 213.
+- Wave w1 (12 seats, 0 dead; 5 attack seats = 3 reviewer + critic + mutation-tester): R77Exec1 FALSIFIED leg (b) (above); R77Exec2 HOLDS (3 fresh runs clean; honest-pair margins 39/40 and 6/9); R77Exec3 HOLDS the directory frontier (0-4 ms, 3 files with `webkitRelativePath`); R77Exec4 FINDINGS (walk boundary mechanical; the run-under-test exemption is the receipt's self-claimed nonce, R10); R77Review1 FINDINGS (walk gated on literal schema bytes so an escaped schema hides a receipt; duplicate nonce invisible; `host-argv` pins 6 of 17 slots and a decoy wins, measured; `mainFrameId` self-referential); R77Review2 HOLDS (brackets, D1 denominator, full-pipe run); R77Review3 FINDINGS (F1: the claim cites an absent enumeration file; conformance substance PASS); R77Critic FINDINGS (do-nothing reach declared; prior-integrity premise unstated; S213 uncommitted at review time); R77Mut1 FINDINGS (69 mutants: 27 killed, 42 survive, 34 witnessed, 2 unwitnessed); R77Scout FINDINGS (six citation-precision defects, S208-S212 bytes identical, S213 frontier source); R77Connector FINDINGS (20/20 sibling lanes, 0 contested ground); R77Scribe FINDINGS (13 corrections applied).
+- Knowledge 89 → 90; QUALITY 145–150; SKILL.md `## Round 77 gate registry`; selftest 11/13 (both reds named and routed).
+
+Planned (r78): a file-chooser counter generation that binds the chooser event to the page-side leg record instead of a browser-assigned id (QUALITY 150), a parsing walk and a byte-bound run-under-test exemption, a fully pinned argv, a `Page.getFrameTree`-bound main frame, R77Mut1's 34 witness cases, a selftest that derives per-prior needs, and the webkitdirectory directory leg. Carried: R76Mut1's 7 dialog witnesses, R75Mut1 (drag), R74Mut1 (IME), R73Mut1
+(pinch). Retired: none.

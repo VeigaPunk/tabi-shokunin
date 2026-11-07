@@ -1,0 +1,1755 @@
+{
+ "schema": "tabi-r77-mutation-probe-r77mut1",
+ "seat": "R77Mut1",
+ "round": "round-77",
+ "wave": "w1",
+ "capability": "chromium-file-chooser-linux",
+ "lane": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+ "base": "1320d428f0c0957b46d6969b59c122fd69199331",
+ "digestsCommit": "dcdf582add5871535dee5ebc07560b020017cf2d",
+ "counter": "scripts/check-filechooser-r77.mjs",
+ "counterSha256": "ac17ff8dda4661e2e6217831158de5e1e19a584f3f7dad918b77faee6bab4aeb",
+ "battery": "scripts/negatives-filechooser-r77.mjs",
+ "driver": "scripts/chrome-cdp-filechooser-round77.mjs",
+ "driverPin": "9954db0703e03aed157c4be9b13f678b1bc1a6240b4bf88491d0e1f5286558a6",
+ "receipt": "corpus/evidence/round77/chromium-file-chooser/receipt.json",
+ "expectNonce": "tabi-r77-l1-dcdf582add58",
+ "probeInvocation": "node <copy>/negatives-filechooser-r77.mjs --lane <lane> --real <receipt> --expect-driver-sha256 9954db07... --expect-nonce tabi-r77-l1-dcdf582add58 --prior-set <.ufo/waves/round-77/controls/c1/prior-set.txt> --laundered <page-stub|eval-trigger|swap-files> --work <scratch>/w<k> --first-failure --jobs 4 --json",
+ "witnessInvocation": "the claimed case is appended to a copy of the battery (inserted before the JOBS line) and the copy is run twice on the same receipt: once with the pristine counter (must be allOk) and once with the mutated counter (must fail exactly that case)",
+ "baseline": {
+  "unmutatedBattery": {
+   "exit": 0,
+   "allOk": true,
+   "cases": 336,
+   "note": "measured before the mutant batches on the same receipt"
+  }
+ },
+ "frozenSemanticMutants": 70,
+ "totals": {
+  "mutants": 69,
+  "newMutants": 68,
+  "killed": 20,
+  "killedPositive": 7,
+  "survived": 42,
+  "crashed": 0,
+  "killedByVerifiedWitness": 34,
+  "equivalent": 6,
+  "duplicateOfFrozen": 1,
+  "unwitnessedHoles": 2,
+  "sameEditSiteAsFrozenButDifferentEdit": [
+   "CO1-x-dropped",
+   "TM3-gapneed-floor",
+   "TM4-abs-strict",
+   "B5-favicon-query-dropped",
+   "B9-predicate-dropped"
+  ]
+ },
+ "mutants": [
+  {
+   "id": "T1-filetriple-length-ge",
+   "edit": {
+    "from": "f.length === 3 && typeof f[0] === 'string'",
+    "to": "f.length >= 3 && typeof f[0] === 'string'"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "event-types-file-quad",
+    "kind": "refuse",
+    "expect": "event-types",
+    "alsoAllowed": [
+     "leg-pick-same-files",
+     "cancel-law"
+    ],
+    "caseBody": "const e = evType(r, 'pick-same', 'cancel'); e.files[0].push('x');",
+    "verified": true,
+    "controlFindingIds": [
+     "event-types",
+     "leg-pick-same-files",
+     "cancel-law"
+    ],
+    "probeFindingIds": [
+     "leg-pick-same-files",
+     "cancel-law"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "T2-filetriple-size-nonneg-drop",
+   "edit": {
+    "from": "f[1] >= 0 && typeof f[2] === 'string'",
+    "to": "typeof f[2] === 'string'"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "event-types-file-size-negative",
+    "kind": "refuse",
+    "expect": "event-types",
+    "alsoAllowed": [
+     "leg-pick-same-files",
+     "cancel-law"
+    ],
+    "caseBody": "const e = evType(r, 'pick-same', 'cancel'); e.files[0][1] = -1;",
+    "verified": true,
+    "controlFindingIds": [
+     "event-types",
+     "leg-pick-same-files",
+     "cancel-law"
+    ],
+    "probeFindingIds": [
+     "leg-pick-same-files",
+     "cancel-law"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "T3-errOk-and-to-or",
+   "edit": {
+    "from": "e === null || (isObj(e) && same(Object.keys(e).sort(), ['code', 'message'])",
+    "to": "e === null || (isObj(e) || same(Object.keys(e).sort(), ['code', 'message'])"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "leg-records-error-code-float",
+    "kind": "refuse",
+    "expect": "leg-records",
+    "alsoAllowed": [
+     "not-file-input-law",
+     "leg-not-file-input-error"
+    ],
+    "caseBody": "legOf(r, 'not-file-input').setError.code = -32000.5;",
+    "verified": true,
+    "controlFindingIds": [
+     "leg-records",
+     "leg-not-file-input-error",
+     "not-file-input-law"
+    ],
+    "probeFindingIds": [
+     "leg-not-file-input-error",
+     "not-file-input-law"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "T4-errOk-code-number",
+   "edit": {
+    "from": "Number.isInteger(e.code) && typeof e.message === 'string')",
+    "to": "num(e.code) && typeof e.message === 'string')"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "leg-records-error-code-float",
+    "kind": "refuse",
+    "expect": "leg-records",
+    "alsoAllowed": [
+     "not-file-input-law",
+     "leg-not-file-input-error"
+    ],
+    "caseBody": "legOf(r, 'not-file-input').setError.code = -32000.5;",
+    "verified": true,
+    "controlFindingIds": [
+     "leg-records",
+     "leg-not-file-input-error",
+     "not-file-input-law"
+    ],
+    "probeFindingIds": [
+     "leg-not-file-input-error",
+     "not-file-input-law"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "T5-evshape-aftersend-num",
+   "edit": {
+    "from": "Number.isInteger(e.afterSendId) && EVK[e.method] !== undefined",
+    "to": "num(e.afterSendId) && EVK[e.method] !== undefined"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "cdp-event-log-aftersend-float",
+    "kind": "refuse",
+    "expect": "cdp-event-log-closed",
+    "alsoAllowed": [
+     "chooser-event-binding",
+     "leg-pick-single-opened",
+     "activation-law"
+    ],
+    "caseBody": "opens(r)[0].afterSendId += 0.5;",
+    "verified": true,
+    "controlFindingIds": [
+     "cdp-event-log-closed",
+     "chooser-event-binding",
+     "leg-pick-single-opened",
+     "activation-law"
+    ],
+    "probeFindingIds": [
+     "chooser-event-binding",
+     "leg-pick-single-opened",
+     "activation-law"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "T6-event-type-set-dropped",
+   "edit": {
+    "from": "typeof e.type === 'string' && EVENT_TYPES.has(e.type) && num(e.ts) && e.ts > 0",
+    "to": "typeof e.type === 'string' && num(e.ts) && e.ts > 0"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "event-types-unknown-type"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "T7-ts-nonneg",
+   "edit": {
+    "from": "num(e.ts) && e.ts > 0 && num(e.at) && e.at > 0",
+    "to": "num(e.ts) && e.ts >= 0 && num(e.at) && e.at > 0"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "event-types-ts-negative",
+    "kind": "refuse",
+    "expect": "event-types",
+    "alsoAllowed": [],
+    "caseBody": "evsOf(r, 'pick-same')[0].ts = 0;",
+    "verified": true,
+    "controlFindingIds": [
+     "event-types"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "T8-half-null-xy-dropped",
+   "edit": {
+    "from": " && (e.x === null) === (e.y === null)",
+    "to": ""
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "event-types-y-null-buttons-set",
+    "kind": "refuse",
+    "expect": "event-types",
+    "alsoAllowed": [
+     "leg-pick-same-xy",
+     "coordinate-law"
+    ],
+    "caseBody": "evsOf(r, 'pick-same')[0].y = null;",
+    "verified": true,
+    "controlFindingIds": [
+     "event-types",
+     "leg-pick-same-xy",
+     "coordinate-law"
+    ],
+    "probeFindingIds": [
+     "leg-pick-same-xy",
+     "coordinate-law"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "T9-read-ts-order-dropped",
+   "edit": {
+    "from": " && typeof e.ret === 'string' && e.ts <= e.at",
+    "to": " && typeof e.ret === 'string'"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "event-types-read-ts-after-at"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "T10-read-files-one-to-ge",
+   "edit": {
+    "from": "Array.isArray(e.files) && e.files.length === 1 && fileTriple(e.files[0])",
+    "to": "Array.isArray(e.files) && e.files.length >= 1 && fileTriple(e.files[0])"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "event-types-read-two-files",
+    "kind": "refuse",
+    "expect": "event-types",
+    "alsoAllowed": [],
+    "caseBody": "const e = evsOf(r, 'pick-single').find((x) => x.type === 'read'); e.files.push(['tabi-b.bin', 5, 'application/octet-stream']);",
+    "verified": true,
+    "controlFindingIds": [
+     "event-types"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "L1-legkeys-subset",
+   "edit": {
+    "from": "if (!same(Object.keys(l).sort(), LEG_KEYS)) bad('keys');",
+    "to": "if (Object.keys(l).length < LEG_KEYS.length) bad('keys');"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "leg-records-extra-key"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "L2-elapsed-number-dropped",
+   "edit": {
+    "from": "if (!num(l.elapsedMs) || l.elapsedMs < 290) bad('elapsedMs');",
+    "to": "if (l.elapsedMs < 290) bad('elapsedMs');"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "leg-records-elapsed-string"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "L3-object-subtype-dropped",
+   "edit": {
+    "from": " || tr.subtype !== 'node'",
+    "to": ""
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "leg-records-object-subtype",
+    "kind": "refuse",
+    "expect": "leg-records",
+    "alsoAllowed": [],
+    "caseBody": "legOf(r, 'not-file-input').triggerResult.subtype = 'object';",
+    "verified": true,
+    "controlFindingIds": [
+     "leg-records"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "L4-object-id-empty-dropped",
+   "edit": {
+    "from": " || tr.objectId === ''",
+    "to": ""
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "leg-records-object-id-empty",
+    "kind": "refuse",
+    "expect": "leg-records",
+    "alsoAllowed": [],
+    "caseBody": "const l = legOf(r, 'not-file-input'); l.triggerResult.objectId = ''; l.setParams.objectId = ''; sendOf(r, l.setSendId).params.objectId = '';",
+    "verified": true,
+    "controlFindingIds": [
+     "leg-records"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "L5-set-adjacency-dropped",
+   "edit": {
+    "from": "if (p.kind === 'set-object' && l.setSendId !== l.triggerSendId + 1) bad('set not right after the object lookup');",
+    "to": ""
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "leg-records-set-not-adjacent",
+    "kind": "refuse",
+    "expect": "leg-records",
+    "alsoAllowed": [],
+    "caseBody": "const l = legOf(r, 'not-file-input');\n  const at = l.setSendId; r.cdpSendLog.splice(at - 1, 0, { id: 0, method: \"Page.enable\", params: {} });\n  r.cdpSendLog.forEach((c, i) => { c.id = i + 1; });\n  for (const lg of r.legs) for (const k of ['interceptSendId', 'triggerSendId', 'setSendId']) if (lg[k] !== null && lg[k] >= at) lg[k] += 1;\n  for (const e of r.cdpEventLog) if (e.afterSendId >= at) e.afterSendId += 1;",
+    "verified": true,
+    "controlFindingIds": [
+     "leg-records"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "L6-set-before-trigger-strict",
+   "edit": {
+    "from": "l.setSendId <= l.triggerSendId",
+    "to": "l.setSendId < l.triggerSendId"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": "setSendId === triggerSendId would require one send to be both Runtime.evaluate (the trigger) and DOM.setFileInputFiles (the set); both method tests are unconditional, so `<=` and `<` accept exactly the same receipts.",
+   "witness": null,
+   "status": "equivalent"
+  },
+  {
+   "id": "L7-setresult-shape-loose",
+   "edit": {
+    "from": "if (l.setError === null ? !same(l.setResult, {}) : l.setResult !== null)",
+    "to": "if (l.setError === null ? !isObj(l.setResult) : l.setResult !== null)"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "leg-records-set-result"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "L8-intercept-params-loose",
+   "edit": {
+    "from": "!same(c.params, p.intercept)",
+    "to": "!isObj(c.params)"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "leg-records-intercept-send-params"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "F1-navs-count-ge",
+   "edit": {
+    "from": "navs.length === 1 && isObj(navs[0].params)",
+    "to": "navs.length >= 1 && isObj(navs[0].params)"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "frame-binding-second-nav",
+    "kind": "refuse",
+    "expect": "frame-binding",
+    "alsoAllowed": [
+     "cdp-event-log-closed",
+     "chooser-event-binding"
+    ],
+    "caseBody": "r.cdpEventLog.push(clone(r.cdpEventLog[0]));",
+    "verified": true,
+    "controlFindingIds": [
+     "cdp-event-log-closed",
+     "chooser-event-binding",
+     "frame-binding"
+    ],
+    "probeFindingIds": [
+     "cdp-event-log-closed",
+     "chooser-event-binding"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "F2-nav-after-navigate-strict",
+   "edit": {
+    "from": "navs[0].afterSendId >= firstNav.id",
+    "to": "navs[0].afterSendId > firstNav.id"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "accept-nav-after-navigate-send",
+    "kind": "must-accept",
+    "expect": null,
+    "alsoAllowed": [],
+    "caseBody": "r.cdpEventLog[0].afterSendId = r.cdpSendLog.find((c) => c.method === 'Page.navigate').id;",
+    "verified": true,
+    "controlFindingIds": [],
+    "probeFindingIds": [
+     "frame-binding"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "W1-unparsable-ext-case-sensitive",
+   "edit": {
+    "from": "if (/\\.json$/i.test(name)",
+    "to": "if (/\\.json$/.test(name)"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "prior-set-unparsable-uppercase-ext",
+    "kind": "refuse",
+    "expect": "prior-set-unparsable",
+    "alsoAllowed": [],
+    "verified": true,
+    "controlFindingIds": [
+     "prior-set-unparsable"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "W2-realpath-to-resolve",
+   "edit": {
+    "from": "const real = (p) => { try { return fs.realpathSync(p); } catch { return path.resolve(p); } };",
+    "to": "const real = (p) => path.resolve(p);"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "unwitnessed-hole"
+  },
+  {
+   "id": "W3-schema-string-not-exact",
+   "edit": {
+    "from": "if (isObj(j) && j.schema === SCHEMA &&",
+    "to": "if (isObj(j) && typeof j.schema === 'string' &&"
+   },
+   "batteryExit": 1,
+   "outcome": "killed-positive",
+   "failedCases": [],
+   "positiveFindings": [
+    "prior-set-complete"
+   ],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed-positive"
+  },
+  {
+   "id": "W4-file-dedup-dropped",
+   "edit": {
+    "from": "const rf = real(p); if (seen.has(rf)) continue; seen.add(rf);",
+    "to": "const rf = real(p);"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": "The file-level `seen` entry only suppresses a second visit; both consumers (`outside`, `unparsable`) are tested for emptiness, so a duplicate visit changes finding text only, never the exit code.",
+   "witness": null,
+   "status": "equivalent"
+  },
+  {
+   "id": "A1-once-browser-dropped",
+   "edit": {
+    "from": "once('Emulation.setDeviceMetricsOverride') && once('Browser.getVersion') && once('Page.getFrameTree')",
+    "to": "once('Emulation.setDeviceMetricsOverride') && once('Page.getFrameTree')"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "allowlist-browser-getversion-twice",
+    "kind": "refuse",
+    "expect": "send-log-allowlist",
+    "alsoAllowed": [],
+    "caseBody": "pushSend(r, 'Browser.getVersion', {});",
+    "verified": true,
+    "controlFindingIds": [
+     "send-log-allowlist"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "A2-exprs-add-events",
+   "edit": {
+    "from": "'window.__state()', readyExpr,",
+    "to": "'window.__state()', readyExpr, 'window.__events',"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "allowlist-eval-window-events",
+    "kind": "refuse",
+    "expect": "send-log-allowlist",
+    "alsoAllowed": [],
+    "caseBody": "pushSend(r, 'Runtime.evaluate', { expression: 'window.__events', returnByValue: true });",
+    "verified": true,
+    "controlFindingIds": [
+     "send-log-allowlist"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "A3-eval-params-shape-loose",
+   "edit": {
+    "from": "same(c.params, { expression: c.params.expression, returnByValue: true })",
+    "to": "isObj(c.params) && typeof c.params.expression === 'string'"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "allowlist-eval-extra-param"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "AT1-at-target-f-to-s",
+   "edit": {
+    "from": "'160,320': 'f'",
+    "to": "'160,320': 's'"
+   },
+   "batteryExit": 1,
+   "outcome": "killed-positive",
+   "failedCases": [],
+   "positiveFindings": [
+    "coordinate-law"
+   ],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed-positive"
+  },
+  {
+   "id": "OP1-opens-f-to-f",
+   "edit": {
+    "from": "f: 's' };",
+    "to": "f: 'f' };"
+   },
+   "batteryExit": 1,
+   "outcome": "killed-positive",
+   "failedCases": [],
+   "positiveFindings": [
+    "node-binding-law",
+    "selection-law",
+    "cancel-law",
+    "read-law"
+   ],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed-positive"
+  },
+  {
+   "id": "MU1-multiple-d-true",
+   "edit": {
+    "from": "d: false, k: false };",
+    "to": "d: true, k: false };"
+   },
+   "batteryExit": 1,
+   "outcome": "killed-positive",
+   "failedCases": [],
+   "positiveFindings": [
+    "mode-law"
+   ],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed-positive"
+  },
+  {
+   "id": "TR1-trust-leg-set-widened",
+   "edit": {
+    "from": "(e.leg === 'script-click' || e.leg === 'forward-click')",
+    "to": "['script-click', 'forward-click', 'pick-single'].includes(e.leg)"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "trust-law-trust-leg-pick-single",
+    "kind": "refuse",
+    "expect": "trust-law",
+    "alsoAllowed": [
+     "event-leg-window",
+     "leg-pick-single-seq",
+     "leg-pick-single-trusted",
+     "leg-pick-single-act",
+     "leg-pick-single-xy",
+     "leg-forward-click-seq",
+     "leg-forward-click-trusted",
+     "leg-forward-click-act",
+     "leg-forward-click-xy",
+     "activation-law"
+    ],
+    "caseBody": "evsOf(r, 'forward-click').find((x) => x.type === 'click' && x.target === 's' && x.isTrusted === false).leg = 'pick-single';",
+    "verified": true,
+    "controlFindingIds": [
+     "event-leg-window",
+     "leg-pick-single-seq",
+     "leg-pick-single-trusted",
+     "leg-pick-single-act",
+     "leg-pick-single-xy",
+     "leg-forward-click-seq",
+     "leg-forward-click-trusted",
+     "leg-forward-click-act",
+     "leg-forward-click-xy",
+     "trust-law",
+     "activation-law"
+    ],
+    "probeFindingIds": [
+     "event-leg-window",
+     "leg-pick-single-seq",
+     "leg-pick-single-trusted",
+     "leg-pick-single-act",
+     "leg-pick-single-xy",
+     "leg-forward-click-seq",
+     "leg-forward-click-trusted",
+     "leg-forward-click-act",
+     "leg-forward-click-xy",
+     "activation-law"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "TR2-trust-distinct-legs-dropped",
+   "edit": {
+    "from": " && new Set(untrusted.map((e) => e.leg)).size === 2",
+    "to": ""
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "trust-law-same-leg-twice",
+    "kind": "refuse",
+    "expect": "trust-law",
+    "alsoAllowed": [
+     "event-leg-window",
+     "leg-forward-click-seq",
+     "leg-forward-click-trusted",
+     "leg-forward-click-act",
+     "leg-forward-click-xy",
+     "leg-script-click-seq",
+     "leg-script-click-trusted",
+     "leg-script-click-act",
+     "leg-script-click-xy",
+     "activation-law"
+    ],
+    "caseBody": "evsOf(r, 'forward-click').find((x) => x.type === 'click' && x.target === 's' && x.isTrusted === false).leg = 'script-click';",
+    "verified": true,
+    "controlFindingIds": [
+     "event-leg-window",
+     "leg-forward-click-seq",
+     "leg-forward-click-trusted",
+     "leg-forward-click-act",
+     "leg-forward-click-xy",
+     "leg-script-click-seq",
+     "leg-script-click-trusted",
+     "leg-script-click-act",
+     "leg-script-click-xy",
+     "trust-law",
+     "activation-law"
+    ],
+    "probeFindingIds": [
+     "event-leg-window",
+     "leg-forward-click-seq",
+     "leg-forward-click-trusted",
+     "leg-forward-click-act",
+     "leg-forward-click-xy",
+     "leg-script-click-seq",
+     "leg-script-click-trusted",
+     "leg-script-click-act",
+     "leg-script-click-xy",
+     "activation-law"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "AC1-bound-check-dropped",
+   "edit": {
+    "from": "if (clicks.length !== 1 || bound !== (want ? 1 : 0)) actBad.push(p.name);",
+    "to": "if (clicks.length !== 1) actBad.push(p.name);"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "activation-law",
+    "activation-law-script-activated",
+    "activation-law-off-opened"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "NB1-four-inputs-dropped",
+   "edit": {
+    "from": "nodeBad.length === 0 && Object.keys(nodeOf).length === 4 && ",
+    "to": "nodeBad.length === 0 && "
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "node-binding-law-three-inputs",
+    "kind": "refuse",
+    "expect": "node-binding-law",
+    "alsoAllowed": [
+     "leg-dir-mode-opened",
+     "activation-law",
+     "cdp-event-log-closed",
+     "chooser-event-binding"
+    ],
+    "caseBody": "const l = legOf(r, 'dir-mode'); r.cdpEventLog = r.cdpEventLog.filter((e) => !(e.method === 'Page.fileChooserOpened' && e.afterSendId === l.triggerSendId)); l.opened = false; l.openedNode = null;",
+    "verified": true,
+    "controlFindingIds": [
+     "cdp-event-log-closed",
+     "chooser-event-binding",
+     "leg-dir-mode-opened",
+     "activation-law",
+     "node-binding-law"
+    ],
+    "probeFindingIds": [
+     "cdp-event-log-closed",
+     "chooser-event-binding",
+     "leg-dir-mode-opened",
+     "activation-law"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "NF1-result-null-loose",
+   "edit": {
+    "from": "nf.setResult === null",
+    "to": "!isObj(nf.setResult)"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "not-file-input-law-array-result",
+    "kind": "refuse",
+    "expect": "not-file-input-law",
+    "alsoAllowed": [
+     "leg-records"
+    ],
+    "caseBody": "legOf(r, 'not-file-input').setResult = [];",
+    "verified": true,
+    "controlFindingIds": [
+     "leg-records",
+     "not-file-input-law"
+    ],
+    "probeFindingIds": [
+     "leg-records"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "EL1-setresult-obj-loose",
+   "edit": {
+    "from": "pe.setError === null && same(pe.setResult, {})",
+    "to": "pe.setError === null && isObj(pe.setResult)"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "empty-list-law-setresult-extra",
+    "kind": "refuse",
+    "expect": "empty-list-law",
+    "alsoAllowed": [
+     "leg-records"
+    ],
+    "caseBody": "legOf(r, 'pick-empty').setResult = { files: 0 };",
+    "verified": true,
+    "controlFindingIds": [
+     "leg-records",
+     "empty-list-law"
+    ],
+    "probeFindingIds": [
+     "leg-records"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "IL1-cancel-set-id-dropped",
+   "edit": {
+    "from": "ic.opened === true && ic.setSendId === null && ",
+    "to": "ic.opened === true && "
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "intercept-law-cancel-sets-files",
+    "kind": "refuse",
+    "expect": "intercept-law",
+    "alsoAllowed": [
+     "leg-records",
+     "chooser-call-params",
+     "chooser-call-count"
+    ],
+    "caseBody": "const l = legOf(r, 'intercept-cancel');\n  const at = l.triggerSendId + 1; r.cdpSendLog.splice(at - 1, 0, { id: 0, method: \"DOM.setFileInputFiles\", params: { files: [], backendNodeId: l.openedNode } });\n  r.cdpSendLog.forEach((c, i) => { c.id = i + 1; });\n  for (const lg of r.legs) for (const k of ['interceptSendId', 'triggerSendId', 'setSendId']) if (lg[k] !== null && lg[k] >= at) lg[k] += 1;\n  for (const e of r.cdpEventLog) if (e.afterSendId >= at) e.afterSendId += 1;\n  l.setSendId = l.triggerSendId + 1; l.setParams = { files: [], backendNodeId: l.openedNode }; l.setResult = {};",
+    "verified": true,
+    "controlFindingIds": [
+     "leg-records",
+     "chooser-call-count",
+     "chooser-call-params",
+     "intercept-law"
+    ],
+    "probeFindingIds": [
+     "leg-records",
+     "chooser-call-count",
+     "chooser-call-params"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "NF2-button-class-dropped",
+   "edit": {
+    "from": "nf.triggerResult.className === 'HTMLButtonElement' && ",
+    "to": "isObj(nf.triggerResult) && "
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "not-file-input-law-class",
+    "kind": "refuse",
+    "expect": "not-file-input-law",
+    "alsoAllowed": [
+     "leg-records"
+    ],
+    "caseBody": "legOf(r, 'not-file-input').triggerResult.className = 'HTMLDivElement';",
+    "verified": true,
+    "controlFindingIds": [
+     "leg-records",
+     "not-file-input-law"
+    ],
+    "probeFindingIds": [
+     "leg-records"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "RL1-reads-count-ge",
+   "edit": {
+    "from": "same(reads.map((e) => [e.leg, e.target,",
+    "to": "reads.length >= wantReads.length && same(reads.map((e) => [e.leg, e.target,"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": "The mutant keeps `same(reads.map(...), wantReads)`, and canonical equality already implies equal length; the added length guard admits nothing `same` rejects.",
+   "witness": null,
+   "status": "equivalent"
+  },
+  {
+   "id": "CO1-x-dropped",
+   "edit": {
+    "from": "e.x !== p.at[0] || e.y !== p.at[1]",
+    "to": "e.y !== p.at[1]"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "coordinate-law"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": true,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "MD1-missing-open-skipped-as-bad",
+   "edit": {
+    "from": "if (!o) return false;",
+    "to": "if (!o) return o === undefined;"
+   },
+   "batteryExit": 1,
+   "outcome": "killed-positive",
+   "failedCases": [],
+   "positiveFindings": [
+    "mode-law"
+   ],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed-positive"
+  },
+  {
+   "id": "MK1-mark-strict-increase",
+   "edit": {
+    "from": "(i === 0 || m.at >= marks[i - 1].at)",
+    "to": "(i === 0 || m.at > marks[i - 1].at)"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "accept-marks-equal-start",
+    "kind": "must-accept",
+    "expect": null,
+    "alsoAllowed": [],
+    "caseBody": "r.legMarks[2].at = r.legMarks[1].at;",
+    "verified": true,
+    "controlFindingIds": [],
+    "probeFindingIds": [
+     "leg-marks",
+     "event-leg-window"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "SEQ1-seq-off-by-one-tolerated",
+   "edit": {
+    "from": "events.every((e, i) => isObj(e) && e.seq === i + 1)",
+    "to": "events.every((e, i) => isObj(e) && (e.seq === i + 1 || e.seq === i))"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "seq-monotonic-zero-based",
+    "kind": "refuse",
+    "expect": "seq-monotonic",
+    "alsoAllowed": [],
+    "caseBody": "r.events.forEach((e) => { e.seq -= 1; });",
+    "verified": true,
+    "controlFindingIds": [
+     "seq-monotonic"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "TM1-gapmin-strict",
+   "edit": {
+    "from": "if (at[i] - at[i - 1] >= GAP_MIN) g.push",
+    "to": "if (at[i] - at[i - 1] > GAP_MIN) g.push"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "accept-own-gap-50.0",
+    "kind": "must-accept",
+    "expect": null,
+    "alsoAllowed": [],
+    "caseBody": "shrinkGapBefore(r, GAP_LEG, 50.0);",
+    "verified": true,
+    "controlFindingIds": [],
+    "probeFindingIds": [
+     "replay-event-timeline"
+    ]
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "TM2-absneed-floor",
+   "edit": {
+    "from": "absNeed = Math.ceil(FRAC * np - 1e-9)",
+    "to": "absNeed = Math.floor(FRAC * np)"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "accept-prior-abs-below-threshold"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "TM3-gapneed-floor",
+   "edit": {
+    "from": "gapNeed = Math.ceil(GAP_FRAC * gp - 1e-9)",
+    "to": "gapNeed = Math.floor(GAP_FRAC * gp)"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "accept-prior-tol-out-0.051",
+    "accept-prior-gap-below-threshold"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": true,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "TM4-abs-strict",
+   "edit": {
+    "from": "(np > 0 && absMatched >= absNeed) || ",
+    "to": "(np > 0 && absMatched > absNeed) || "
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "replay-timeline-abs-at-threshold"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": true,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "TM5-owngaps-floor-minus-one",
+   "edit": {
+    "from": "ownGaps >= MIN_OWN_GAPS",
+    "to": "ownGaps >= MIN_OWN_GAPS - 1"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "replay-timeline-own-gap-49.9",
+    "replay-timeline-too-few-gaps"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": "M-timeline-min-own-gaps-10",
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "duplicate-of-frozen-mutant"
+  },
+  {
+   "id": "B1-headless-dup-dropped",
+   "edit": {
+    "from": " && hargv.filter((a) => a === '--headless=new').length === 1",
+    "to": ""
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "host-argv-duplicate-headless-new",
+    "kind": "refuse",
+    "expect": "host-argv",
+    "alsoAllowed": [],
+    "caseBody": "r.host.argv[13] = '--headless=new';",
+    "verified": true,
+    "controlFindingIds": [
+     "host-argv"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "B2-viewport-dropped",
+   "edit": {
+    "from": " && same(r.fixture.viewport, VIEWPORT)",
+    "to": ""
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "fixture-viewport",
+    "kind": "refuse",
+    "expect": "fixture-hash",
+    "alsoAllowed": [],
+    "caseBody": "r.fixture.viewport = { width: 800, height: 600 };",
+    "verified": true,
+    "controlFindingIds": [
+     "fixture-hash"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "B3-upload-missing-dropped",
+   "edit": {
+    "from": "up.dir === upDir && up.missing === MISSING && ",
+    "to": "up.dir === upDir && "
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "upload-missing-name"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "B4-stderr-shape-only",
+   "edit": {
+    "from": "typeof host.stderrHead === 'string' && host.stderrHead.includes(dl.url)",
+    "to": "typeof host.stderrHead === 'string'"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "devtools-stderr-absent"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "B5-favicon-query-dropped",
+   "edit": {
+    "from": "(s.path === '/favicon.ico' && s.status === 404 && s.run === '' && s.query === '')",
+    "to": "(s.path === '/favicon.ico' && s.status === 404 && s.run === '')"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "server-log-favicon-query"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": true,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "B6-curl-devtools-dropped",
+   "edit": {
+    "from": " && td.postKillCurl.devtools === 7",
+    "to": ""
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "teardown-devtools-curl",
+    "kind": "refuse",
+    "expect": "teardown-closure",
+    "alsoAllowed": [],
+    "caseBody": "r.teardown.postKillCurl.devtools = 0;",
+    "verified": true,
+    "controlFindingIds": [
+     "teardown-closure"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "B7-proto-version-dropped",
+   "edit": {
+    "from": " && td.portProbes.devtools === 'closed'",
+    "to": ""
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "teardown-port-open"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "B8-legshape-obj-only",
+   "edit": {
+    "from": "check('legshape-consistency', same(r.legShape, derived)",
+    "to": "check('legshape-consistency', isObj(r.legShape)"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "legshape-consistency",
+    "legshape-fabricated-leg"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "B9-predicate-dropped",
+   "edit": {
+    "from": "r.predicate === true && r.chooserHypothesis === 'CONFIRMED'",
+    "to": "r.chooserHypothesis === 'CONFIRMED'"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "producer-verdict-false-CONFIRMED",
+    "producer-verdict-null-CONFIRMED",
+    "producer-verdict-string-true"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": true,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "WIN1-event-order-strict",
+   "edit": {
+    "from": "(num(events[i - 1].at) && e.at >= events[i - 1].at)",
+    "to": "(num(events[i - 1].at) && e.at > events[i - 1].at)"
+   },
+   "batteryExit": 1,
+   "outcome": "killed-positive",
+   "failedCases": [],
+   "positiveFindings": [
+    "event-leg-window"
+   ],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed-positive"
+  },
+  {
+   "id": "P3-plan-content-dropped",
+   "edit": {
+    "from": "check('plan-frozen', same(r.plan, FROZEN)",
+    "to": "check('plan-frozen', arr(r.plan).length === FROZEN.length"
+   },
+   "batteryExit": 1,
+   "outcome": "killed",
+   "failedCases": [
+    "plan-frozen",
+    "plan-frozen-intercept"
+   ],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed"
+  },
+  {
+   "id": "E1-leg-domain-exempt-last",
+   "edit": {
+    "from": "events.every((e) => isObj(e) && LEG_ORDER.includes(e.leg))",
+    "to": "events.filter((e) => e.leg !== 'intercept-off').every((e) => isObj(e) && LEG_ORDER.includes(e.leg))"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": "The exempted set is events labelled `intercept-off`, a member of LEG_ORDER, so every exempted event satisfies the predicate the mutant skips (the battery's `event-leg-domain` case relabels the last event's leg to `end`, which the filter does not exempt).",
+   "witness": null,
+   "status": "equivalent"
+  },
+  {
+   "id": "A4-once-emulation-dropped",
+   "edit": {
+    "from": "once('Emulation.setDeviceMetricsOverride') && once('Browser.getVersion')",
+    "to": "once('Browser.getVersion')"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "allowlist-emulation-twice",
+    "kind": "refuse",
+    "expect": "send-log-allowlist",
+    "alsoAllowed": [],
+    "caseBody": "pushSend(r, 'Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });",
+    "verified": true,
+    "controlFindingIds": [
+     "send-log-allowlist"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "B10-argv-length-ge",
+   "edit": {
+    "from": "hargv.length === 17",
+    "to": "hargv.length >= 17"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "host-argv-extra-flag",
+    "kind": "refuse",
+    "expect": "host-argv",
+    "alsoAllowed": [],
+    "caseBody": "r.host.argv.push('--disable-gpu');",
+    "verified": true,
+    "controlFindingIds": [
+     "host-argv"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "B11-argv-about-blank-dropped",
+   "edit": {
+    "from": " && hargv[16] === 'about:blank'",
+    "to": ""
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "host-argv-no-about-blank",
+    "kind": "refuse",
+    "expect": "host-argv",
+    "alsoAllowed": [],
+    "caseBody": "r.host.argv[16] = 'data:text/html,x';",
+    "verified": true,
+    "controlFindingIds": [
+     "host-argv"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "B12-window-size-dropped",
+   "edit": {
+    "from": "hargv[15] === '--window-size=' + VIEWPORT.width + ',' + VIEWPORT.height && ",
+    "to": ""
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "host-argv-window-size",
+    "kind": "refuse",
+    "expect": "host-argv",
+    "alsoAllowed": [],
+    "caseBody": "r.host.argv[15] = '--window-size=800,600';",
+    "verified": true,
+    "controlFindingIds": [
+     "host-argv"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "S1-selection-input-only",
+   "edit": {
+    "from": "e.fileEvents.push(['input', inp, chosen], ['change', inp, chosen]);",
+    "to": "e.fileEvents.push(['input', inp, chosen]);"
+   },
+   "batteryExit": 1,
+   "outcome": "killed-positive",
+   "failedCases": [],
+   "positiveFindings": [
+    "selection-law"
+   ],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "killed-positive"
+  },
+  {
+   "id": "CB1-binding-set-adjacency-dropped",
+   "edit": {
+    "from": "(l.setSendId !== null && l.setSendId !== e.afterSendId + 1)",
+    "to": "(l.setSendId !== null && false)"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": {
+    "case": "chooser-event-binding-set-gap",
+    "kind": "refuse",
+    "expect": "chooser-event-binding",
+    "alsoAllowed": [],
+    "caseBody": "const l = legOf(r, 'pick-single');\n  const at = l.setSendId; r.cdpSendLog.splice(at - 1, 0, { id: 0, method: \"Page.enable\", params: {} });\n  r.cdpSendLog.forEach((c, i) => { c.id = i + 1; });\n  for (const lg of r.legs) for (const k of ['interceptSendId', 'triggerSendId', 'setSendId']) if (lg[k] !== null && lg[k] >= at) lg[k] += 1;\n  for (const e of r.cdpEventLog) if (e.afterSendId >= at) e.afterSendId += 1;",
+    "verified": true,
+    "controlFindingIds": [
+     "chooser-event-binding"
+    ],
+    "probeFindingIds": []
+   },
+   "status": "killed-by-witness"
+  },
+  {
+   "id": "TM6-pair-tolerance-le",
+   "edit": {
+    "from": "Math.abs(v[0] - e.ts) < TOL && Math.abs(v[1] - e.at) < TOL",
+    "to": "Math.abs(v[0] - e.ts) <= TOL && Math.abs(v[1] - e.at) < TOL"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": null,
+   "witness": null,
+   "status": "unwitnessed-hole"
+  },
+  {
+   "id": "SRV1-status-ge-200",
+   "edit": {
+    "from": "slog.filter((s) => isObj(s) && s.path === '/' && s.status === 200)",
+    "to": "slog.filter((s) => isObj(s) && s.path === '/' && s.status >= 200)"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": "A `/` row with status 201 joins servedRoot under the mutant but is also classed into `otherRows` (status !== 200), so server-log-binding still refuses.",
+   "witness": null,
+   "status": "equivalent"
+  },
+  {
+   "id": "NF3-no-page-event-loose",
+   "edit": {
+    "from": "ev.filter((e) => e.leg === 'not-file-input').length === 0",
+    "to": "ev.filter((e) => e.leg === 'not-file-input').length <= 0"
+   },
+   "batteryExit": 0,
+   "outcome": "survived",
+   "failedCases": [],
+   "positiveFindings": [],
+   "inFrozenSemanticList": false,
+   "semanticallyIdenticalToFrozen": null,
+   "equivalenceArgument": "A length is never negative, so `<= 0` and `=== 0` accept exactly the same arrays.",
+   "witness": null,
+   "status": "equivalent"
+  }
+ ]
+}
