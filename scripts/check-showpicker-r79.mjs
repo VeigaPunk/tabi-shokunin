@@ -455,7 +455,9 @@ check('replay-devtools-url', legs.every((l) => isObj(l) && isObj(l.devtoolsListe
   'a devtools browser id repeats a prior receipt\'s or another leg\'s');
 
 // ---- prior-set completeness over the walked trees (content-bound exemption) ----
-const priorReal = new Set(priorPaths.map(real));
+// every prior the counter loads is excluded from the walk: the prior-set entries AND the --prior
+// receipts (a --prior receipt that sits in a walked tree is a prior, not an unlisted receipt)
+const priorReal = new Set([...priorPaths, ...extraPriors.map(abs)].map(real));
 const selfReal = real(abs(rp));
 const exemptReal = new Set();
 const walked = [];
