@@ -65,10 +65,10 @@ expect('scored-clean', sc, 0, [], true, needsOk);
 expect('cold-clean', run([...BASE, '--receipt', cold1, '--expect-driver-sha256', PIN, '--expect-nonce', NB, '--prior', scored]), 0, [], true);
 expect('pin-mismatch', run([...BASE, '--receipt', scored, '--expect-driver-sha256', '0'.repeat(64), '--expect-nonce', NA]), 1, ['driver-pin', 'fixture-hash'], true);
 expect('nonce-mismatch', run([...BASE, '--receipt', scored, '--expect-driver-sha256', PIN, '--expect-nonce', 'tabi-r78-other']), 1, ['nonce-expected'], true);
-expect('nonce-expected-uppercase', run([...BASE, '--receipt', scored, '--expect-driver-sha256', PIN, '--expect-nonce', 'TABI-R78-X']), 1, ['nonce-expected'], true);
+expect('nonce-expected-uppercase', run([...BASE, '--receipt', scored, '--expect-driver-sha256', PIN, '--expect-nonce', 'TABI-R78-X']), 2, ['usage'], true);
 expect('replay-of-scored', run([...BASE, '--receipt', scored, '--expect-driver-sha256', PIN, '--expect-nonce', NA, '--prior', scored]), 1, REPLAY, true);
 const smoke1 = PRE.find((p) => p.endsWith('/smoke/s1.receipt.json'));
-expect('replay-of-smoke', run([...BASE, '--receipt', smoke1, '--expect-driver-sha256', PIN, '--expect-nonce', NA]), 1, ['nonce-expected', ...REPLAY], true);
+expect('replay-of-smoke', run([...BASE, '--receipt', smoke1, '--expect-driver-sha256', PIN, '--expect-nonce', NA, '--prior', scored]), 1, ['nonce-expected', ...REPLAY], true);
 // E2: the exemption is a path. This pre-freeze receipt is excluded from the given set and NOT passed
 // as --tree-exempt, so the walk must refuse it as an unlisted schema receipt.
 const psExemptAbsent = path.join(C1D, 'pf/ps-tree-exempt-absent.txt');
