@@ -74,3 +74,23 @@ counter, pins and kill rule). C2 admitted as the calibration move (instrument
 Sweep for further mistakes: `ls .ufo/waves/round-78/lesson-proof/` (every red state above);
 `node .ufo/waves/round-78/controls/c1/prefreeze-summary.mjs` re-reads every gate output and fails
 closed.
+
+## Corrections (round-78 wave, after D `bf94adaa`)
+
+1. **The limit sentence states the refusal threshold, not the escape minimum.** The counter refuses when
+   `absMatched >= absNeed` OR `gapMatched >= gapNeed`; a forgery therefore escapes when
+   `absMatched < absNeed` AND `gapMatched < gapNeed`, i.e. after editing `N_p - absNeed + 1` events and
+   `G_p - gapNeed + 1` gaps — for the 79-event / 11-gap priors **40 events and 3 gaps**, not 40 and 9.
+   R78Critic's F3 (identity relabel + 40 events + 3 gaps) scores clean 186 and is outside the sentence as
+   frozen (`.ufo/waves/round-78-seats/R78Critic/counter-f3.json`). The frozen text is not edited; the
+   correct sentence is this one, and r79 prints the escape minimum beside the threshold.
+2. **The node-id relabel limit is confirmed:** a consistent relabel at every occurrence is clean
+   (F5, `counter-f5.json`), and the receipt still proves the page element through `fixture-descriptors`,
+   `mode-law` and `node-binding-law`.
+3. **The scored state the critic measured was superseded.** Their §1 (leg (c) false) measured the
+   D `d986c273` battery (397 cases, two gap cases failing on a 12-gap receipt); under the final
+   D `bf94adaa` the battery is 400/400 `allOk` and kill power holds (186/186 force-true, 76/76 semantic,
+   no survivors) — `scored/c1-negatives-a.json`, `scored/c1-killpower-a.json`. The gap cases are now
+   count-aware and the floor has an accepting side (`accept-own-gaps-at-floor`).
+4. **Cold-run ledger.** `scored/cold-runs.txt` lists the five committed cold runs (cold1, R78Exec1,
+   R78Exec2 d1–d3), each counter exit 0 clean 186 — leg (b) as frozen.

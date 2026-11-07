@@ -75,3 +75,18 @@ only when interception was enabled at that leg.
 Evidence: `corpus/evidence/round78/chromium-file-chooser/receipt.json` (scored run),
 `.ufo/waves/round-78/controls/c1/probe/p1-p4.receipt.json`, `.ufo/waves/round-78/controls/c1/smoke/s1-s3.receipt.json`,
 `.ufo/waves/round-78/controls/c1/pf/out/pf-*.{counter,battery,killpower}.json`.
+
+## Corrections (round-78 wave)
+
+- §2's locator: the `input.Multiple()` probe call is `file_input_type.cc:203` (S210), not
+  `inspector_page_agent.cc:1899-1913` (S211); S211 is the interception side.
+- §1's count: `#s` reported id 5 in 24 of 25 honest runs observed across rounds 77–78 (not 23).
+- §3's "removes the self-reference" is too strong: a self-consistent frame-id rewrite in a forged
+  receipt is clean; the anchor makes the id *derived from the driver's own frame-tree call*, which a
+  self-consistent forgery can still mirror. Recorded as inside the declared limit.
+- §5 says the pre-freeze harness passes `--tree-exempt`; only the battery and the pre-freeze gates do,
+  and the counter's output records the exempt real paths (`treeExempt`).
+- §5 omits the walk's refusal of a JSON-looking file that does not parse — the rule that refused the
+  scored receipt when a selftest log was written into the walked trees.
+- §1's "a cross-input swap is refused" holds for a single-leg swap (`node-binding-law`); a *consistent*
+  swap of two inputs' ids at every occurrence is clean, like any consistent relabel.

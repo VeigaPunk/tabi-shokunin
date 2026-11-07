@@ -3875,6 +3875,22 @@ Correction — round 78's own instrument history (same day; the frozen predicate
    counter refused it (`prior-set-complete`); the duplicate was removed (byte-identical to the canonical
    receipt) and the harness now writes only the canonical path (`lesson-proof/scored-harness-duplicate.json`).
 
+5. **Limit sentence (R78Critic F3).** The frozen sentence names the refusal threshold (`absNeed` events,
+   `gapNeed` gaps), not the escape minimum: a forgery escapes with `absMatched < absNeed` AND
+   `gapMatched < gapNeed`, i.e. `N_p - absNeed + 1` events and `G_p - gapNeed + 1` gaps (40 events and
+   3 gaps for the 79/11 priors). F3 (40 events, 3 gaps) scores clean 186; the frozen text is not edited,
+   the corrected sentence is in `corpus/lessons/round-78.md` Corrections 1, and r79 prints the escape
+   minimum beside the threshold.
+6. **Re-freeze history.** D `d59ca027` did not satisfy its own `freeze.txt` (the battery bytes were
+   uncommitted at that commit); `d986c273` superseded it, and the final D is `bf94adaa` (battery
+   `3387e5f4`, 400 cases; kill power `9fdd4ea7`; counter `4ae29412`), where all 14 pins match. The scored
+   receipt is post-D (`tabi-r78-l1-bf94adaab578`); the earlier scored receipts are superseded, never
+   edited.
+
+7. **C2 limit (R78Critic).** The counting command alone is satisfiable by labelling every row
+   `provisional` (9 rows reach exit 0); leg (c) fixes the count at 1 and the row's round at 78, so the
+   command is not the claim by itself. r79 states the count in the command (`--expect-provisional 1`).
+
 Planned (r79): a counter generation whose `--tree-exempt` interface is itself receipt-bound (the caller
 names the source by sha256, not by path); a `showPicker()` leg from R78Exec3's probe; the wave's
 false-green findings (R78Review1) and survivors (R78Mut1) as battery cases; carried: the r77 survivors

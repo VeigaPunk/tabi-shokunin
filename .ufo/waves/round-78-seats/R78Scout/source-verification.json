@@ -1,0 +1,140 @@
+{
+  "seat": "R78Scout",
+  "round": 78,
+  "lane": "/home/vgpnk/Projects/shokunin/tabi-shokunin",
+  "role": "independent re-fetch and quote location for S214/S215; next-frontier source location",
+  "note_under_test": "corpus/knowledge/chromium-file-chooser-runtime-round-78.md",
+  "fetch_log": [
+    {
+      "id": "S214",
+      "url": "https://playwright.dev/docs/api/class-filechooser",
+      "method": "curl -sS -L --max-time 90",
+      "http_status": 200,
+      "bytes": 50956,
+      "sha256": "3dc2d551d6bf8799d16df72790cb979b0c28688fa907af5c8e99d5300171b948",
+      "accessed_at": "2026-11-07T15:15:21-03:00",
+      "last_modified_header": "Thu, 05 Nov 2026 18:50:07 GMT",
+      "etag_header": "\"6aeccfdf-c70c\"",
+      "cmp_vs_staged": {
+        "staged_path": ".ufo/waves/round-78/sources/playwright-filechooser.html",
+        "exit_code": 0,
+        "identical": true
+      },
+      "matches_fetch_txt_claim": {
+        "fetch_txt_bytes": 50956,
+        "fetch_txt_sha256": "3dc2d551d6bf8799d16df72790cb979b0c28688fa907af5c8e99d5300171b948",
+        "identical": true
+      }
+    },
+    {
+      "id": "S215",
+      "url": "https://pptr.dev/api/puppeteer.page.waitforfilechooser",
+      "method": "curl -sS -L --max-time 90",
+      "http_status": 200,
+      "bytes": 54126,
+      "sha256": "9aa1a06eabe1508887a8291e67fbb5ca3eff49234de6466f6cb6bee5ceacc6fa",
+      "accessed_at": "2026-11-07T15:15:21-03:00",
+      "last_modified_header": "Fri, 06 Nov 2026 15:05:22 GMT",
+      "etag_header": "\"6aedecb2-d36e\"",
+      "cmp_vs_staged": {
+        "staged_path": ".ufo/waves/round-78/sources/puppeteer-waitforfilechooser.html",
+        "exit_code": 0,
+        "identical": true
+      },
+      "matches_fetch_txt_claim": {
+        "fetch_txt_bytes": 54126,
+        "fetch_txt_sha256": "9aa1a06eabe1508887a8291e67fbb5ca3eff49234de6466f6cb6bee5ceacc6fa",
+        "identical": true
+      }
+    }
+  ],
+  "quote_verification": [
+    {
+      "id": "S214",
+      "cited_by": "corpus/knowledge/chromium-file-chooser-runtime-round-78.md section 1 (client-side corroboration)",
+      "quote": "Returns input element associated with this file chooser.",
+      "words": 8,
+      "locator": "class FileChooser -> Methods -> element (Added before v1.9); page byte offset 33823; property doc line 11 of the fetched HTML",
+      "found_verbatim": true,
+      "supports_statement": true,
+      "assessment": "The page states FileChooser.element returns the input element associated with the chooser, so a client addresses the chooser through its input element rather than a browser-assigned id. The note's inference is client-side only and the note scopes it that way."
+    },
+    {
+      "id": "S214",
+      "cited_by": "corpus/knowledge/chromium-file-chooser-runtime-round-78.md section 1 (client-side corroboration)",
+      "quote": "Returns whether this file chooser accepts multiple files.",
+      "words": 8,
+      "locator": "class FileChooser -> Methods -> isMultiple (Added before v1.9); page byte offset 35397; property doc line 22 of the fetched HTML",
+      "found_verbatim": true,
+      "supports_statement": true,
+      "assessment": "The page states isMultiple reports whether the chooser accepts multiple files, corroborating that the chooser's multiplicity is a property of the input it belongs to, matching the page-measured multiple flag the r78 counter binds to."
+    },
+    {
+      "id": "S215",
+      "cited_by": "corpus/knowledge/chromium-file-chooser-runtime-round-78.md section 4 (arming is before the click)",
+      "quote": "This must be called before the file chooser is launched. It will not return a currently active file chooser.",
+      "words": 19,
+      "locator": "Page.waitForFileChooser() method page -> caution admonition; page byte offset 43496; the caution block immediately following 'This method is typically coupled with an action that triggers file choosing.'",
+      "found_verbatim": true,
+      "supports_statement": true,
+      "assessment": "The caution states the wait must be armed before the chooser launches and will not return an already-active chooser, which supports the note's claim that interception must be armed before the click. It is a client-API contract, not Chromium behaviour, and the note scopes it as such."
+    }
+  ],
+  "candidate_row": {
+    "id": "S216 (proposed, not registered by this seat)",
+    "source": "Chromium 155.0.8059.84 WebDriver BiDi file-dialog surface - the chromium-bidi mapper bundled in the Chromium source tree - https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/chromium-bidi/src/bidiMapper/modules/context/BrowsingContextImpl.ts",
+    "kind": "code",
+    "tier": "A",
+    "scope": "How Chromium's own production BiDi client answers the file-chooser surface that CDP exposes: the CDP Page.fileChooserOpened event converted into the BiDi input.fileDialogOpened event, the mode->multiple mapping, the element binding through the shared id, and the input.setFiles command that delivers files to the opened input",
+    "anchor": "tag 155.0.8059.84, third_party/chromium-bidi/src/bidiMapper/modules/context/BrowsingContextImpl.ts:432-467 (CDP Page.fileChooserOpened handler; element bound at 445-453 by getSharedId(this.id, this.#loaderId, params.backendNodeId); multiple at 461 = params.mode === 'selectMultiple'); src/bidiMapper/modules/script/SharedId.ts:20-26 (shared id shape f.<frameId>.d.<documentId>.e.<backendNodeId>); src/bidiMapper/modules/input/InputProcessor.ts:76-254 (input.setFiles; multiple guard at 104; DOM.setFileInputFiles at 230; zero-length fallback at 152-157 and untrusted-event note at 235); src/bidiMapper/modules/cdp/CdpTarget.ts:213-222 (Page.enable enableFileChooserOpenedEvent and Page.setInterceptFileChooserDialog enabled=true cancel=true at arming); src/bidiMapper/CommandProcessor.ts:424-425 (input.setFiles route)",
+    "teaches": "Chromium's own BiDi layer answers a file chooser through the element, not through the browser-assigned id: it converts the CDP backendNodeId into a shared id qualified by frame id AND document id, so the same backendNodeId in another document is a different element. It maps the CDP mode to a boolean multiple exactly as the input's multiple attribute dictates, and it refuses more than one file on a non-multiple input. It also shows that the zero-length array is special (DOM.setFileInputFiles does not update the files), and that the resulting events are not trusted. This is the strongest next-frontier source because it is a pinned-revision primary source in the lane's own Chromium that exercises the exact same CDP surface the r78 driver measures, and it names the drift that r78 observed: the id is only meaningful once qualified by the document it was issued in.",
+    "supporting_quote": {
+      "text": "multiple: params.mode === 'selectMultiple',",
+      "words": 6,
+      "locator": "BrowsingContextImpl.ts:461, inside the Page.fileChooserOpened handler registered at :432",
+      "second_quote": {
+        "text": "sharedId: getSharedId(this.id, this.#loaderId, params.backendNodeId),",
+        "words": 9,
+        "locator": "BrowsingContextImpl.ts:449-452; getSharedId shape at SharedId.ts:20-26"
+      }
+    },
+    "spec_companion": {
+      "text": "The input.fileDialogOpened Event",
+      "locator": "W3C WebDriver BiDi spec, index.bs at commit ec17888e902359ce7fc5278dc4655b83ec3089a0 (2026-11-06), section 15355 (#event-input-fileDialogOpened); the command at 15265 (#command-input-setFiles); multiple derived from the element's input/multiple attribute at 15395-15396"
+    }
+  },
+  "rejected_candidates": [
+    {
+      "candidate": "Blink's <input type=file> HTML spec section",
+      "source": "https://html.spec.whatwg.org/multipage/input.html (fetched http 200, 687515 bytes, sha256 b0202de1c0b422d94d7aa23b4f1b0e3126d9d044bf7076394b6e00451f0fcd16)",
+      "reject_reason": "It is a living, unpinned standard: the page carries no revision marker and changes under the lane's feet, so it cannot be cited at the lane's Chromium 155.0.8059.84. Its file-upload-state section states the platform semantics of the input element, not the automation surface the r78 note measures - it says nothing about interception, the chooser event, or how a client answers a chooser, so it adds no line the open question needs. The lane already holds the Blink implementation of that state as S210 (file_input_type.cc at the same tag), so a spec-level second copy of the same semantics is redundant. Flip: a dated WHATWG snapshot pinned to a commit, cited only for the file-upload-state normative steps Blink does not implement in file_input_type.cc."
+    },
+    {
+      "candidate": "DevTools frontend's file-chooser panel code",
+      "source": "devtools-frontend at revision a7b389bcb341f6e5e1bfa107992d3c327db75736 (the revision third_party/devtools-frontend/src points at in tag 155.0.8059.84), cloned read-only to scratch",
+      "reject_reason": "There is no file-chooser panel to read. The only two frontend handlers of the chooser event are empty no-ops: front_end/core/sdk/ResourceTreeModel.ts:1203-1204 and front_end/core/sdk/ScreenCaptureModel.ts:236-237, both with an empty body; and no non-generated frontend code calls Page.setInterceptFileChooserDialog (the only matches are the generated protocol bindings and the vendored puppeteer copy under front_end/third_party/puppeteer, which is Puppeteer, not a DevTools panel). The nearest UI string is a back/forward-cache eligibility message (front_end/panels/application/components/BackForwardCacheStrings.ts:395, contentFileChooser), which is about the FileChooser API and not about interception. A panel that does not exist cannot teach the binding question, and the vendored puppeteer copy is already the client-side contract the note cites as S215. Flip: a future frontend revision that adds a visible chooser panel or a real handler body."
+    }
+  ],
+  "commands_run": [
+    "curl -sS -L https://playwright.dev/docs/api/class-filechooser -o s214.html (http 200)",
+    "curl -sS -L https://pptr.dev/api/puppeteer.page.waitforfilechooser -o s215.html (http 200)",
+    "cmp s214.html .ufo/waves/round-78/sources/playwright-filechooser.html (exit 0)",
+    "cmp s215.html .ufo/waves/round-78/sources/puppeteer-waitforfilechooser.html (exit 0)",
+    "sha256sum s214.html s215.html",
+    "grep -no 'Returns input element associated with this file chooser.|Returns whether this file chooser accepts multiple files.' s214.html (lines 11, 22)",
+    "grep -no 'This must be called before the file chooser is launched. It will not return a currently active file chooser.' s215.html (line 6)",
+    "git clone --depth 1 https://chromium.googlesource.com/devtools/devtools-frontend dtfe; git checkout a7b389bcb341f6e5e1bfa107992d3c327db75736",
+    "grep -rn 'fileChooserOpened' dtfe/front_end --include=*.ts (only ResourceTreeModel.ts:1203, ScreenCaptureModel.ts:236, and generated/)",
+    "grep -rn 'setInterceptFileChooserDialog' dtfe/front_end --include=*.ts (only generated/ and third_party/puppeteer)",
+    "curl -sS https://chromium.googlesource.com/chromium/src/+/refs/tags/155.0.8059.84/third_party/chromium-bidi/src/bidiMapper/modules/context/BrowsingContextImpl.ts?format=TEXT (base64 decode)",
+    "curl -sS https://raw.githubusercontent.com/w3c/webdriver-bidi/ec17888e902359ce7fc5278dc4655b83ec3089a0/index.bs (http 200, 555211 bytes)",
+    "curl -sS https://html.spec.whatwg.org/multipage/input.html (http 200, 687515 bytes)"
+  ],
+  "notes": [
+    "No counter, battery, kill-power or selftest run by this seat; no receipt read, written or modified.",
+    "No file written under .ufo/waves/round-78/ except this seat's prose report at .ufo/waves/round-78/w1/R78Scout/report.md, and no JSON written under .ufo/waves/round-78/ or corpus/evidence/round78/.",
+    "Scratch at /fast/scratch/hyaku/tabi-r78/R78Scout, removed on exit.",
+    "No tool installed or upgraded this session.",
+    "The note's section 5 limit about a browser-assigned id relabelled consistently everywhere remaining undetectable is CONSISTENT with what the new source shows: Chromium's own BiDi layer makes the id meaningful only by qualifying it with the document id, so a bare id carries no cross-document identity."
+  ]
+}

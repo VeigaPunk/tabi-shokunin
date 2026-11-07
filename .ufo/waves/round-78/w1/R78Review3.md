@@ -1,183 +1,148 @@
-FALSIFIED
+FINDINGS
 
-# R78Review3 — conformance review of round 78 C1 (read-only)
+# R78Review3 — conformance review, re-frozen D `4920e079`
 
-Verdict per assignment item: (1) ordering HOLDS for the committed chain, with one caveat;
-(2) pins **FAIL at D** (`d59ca027`), match at the later tip `8384256d` only because of a
-post-D instrument commit; (3) nonce HOLDS; (4) prior-set enumeration HOLDS exactly;
-(5) `--tree-exempt` is not reachable in the frozen leg and is not needed by it (path-only
-residual risk); (6) the C2 checker implements QUALITY 152's letter but not its intent, and
-a do-nothing edit reaches `mismatches=0`.
+The six conformance items **hold at the re-frozen D `4920e0790fa94e10e3d2c47b10f0e021d51f3481`**:
+all 14 freeze pins match at D and in the worktree, the scored nonce is post-D and absent at D,
+the prior set is exactly the walked-tree enumeration plus the r77 cross-generation receipt, the
+commit order is monotone, `--tree-exempt` is not reachable in the frozen leg and is not needed,
+and the C2 checker now has the structural rules. But the round's own **leg (c) is red as
+measured**: the scored battery is 399/400 (`prior-set-unparsable-unreadable-dir`, a harness
+cleanup EACCES) and the kill power reports `holds=false` with survivor
+`M-timeline-min-own-gaps-12` on an output that predates the final D. The pre-freeze gate evidence
+is stale against the final instruments, and the SCORECARD round-78 narrative still names the
+superseded D `d59ca027`. The first freeze (`d59ca027`) genuinely failed its own pins and the
+committed tip `b1f33724` failed the counter; the re-freeze fixed both. History is in §7.
 
-The tip moved during the review (the L1 committed `8384256d` at 15:17:08 and deleted the
-offending `.out` in the worktree without committing it). Every measurement below is pinned
-to a commit and a timestamp; the L1 has announced a re-freeze (new D, new scored run) and a
-C2 structural fix, neither of which had landed when this report was written.
+All JSON artifacts are under `.ufo/waves/round-78-seats/R78Review3/`; no lane file was written,
+no git mutation was made, no tool was installed.
 
-All JSON artifacts are under `.ufo/waves/round-78-seats/R78Review3/`; no lane file was
-written, no git mutation was made, no tool was installed.
-
-## F1 (decisive) — the freeze pin does not bind the committed battery at D
-
-`freeze.txt:3` records `724887280cfc11e0c0bd05d6cd07b80c899d7546953465d2cda836d6f7a3ab1a`
-for `scripts/negatives-filechooser-r78.mjs`. The blob at D is
-`71bce77db9c2384e3f54fd798be2bd6d0782c54ca790e89aa4eed8aa3088441f`.
-
-```
-git show d59ca027:scripts/negatives-filechooser-r78.mjs | sha256sum  # 71bce77d…  (exit 0)
-sha256sum scripts/negatives-filechooser-r78.mjs                      # 724887…  (worktree, mtime 14:59:29)
-git show --stat d59ca027                                             # claims.json, freeze.txt, selftest only
-git diff d59ca027 -- scripts/negatives-filechooser-r78.mjs           # worktree ADDS the TOL witness
-```
-
-The 724887 bytes existed only as an uncommitted working-tree edit (14:59:29, between
-`8da28287` at 14:43:58 and D at 15:06:46). The diff adds `keepScattered(p, keep, shift)`
-and `accept('accept-prior-retimed-0.051-scattered', …)` — the TOL 0.06 witness. The
-committed battery has 10 `accept(`/`refuse(` registrations, the worktree 11; the scored
-battery output says `cases: 398` (`.ufo/waves/round-78/scored/c1-negatives-a.json`, mtime
-15:07:22), which only the uncommitted bytes produce (the committed version is the 397-case
-battery pinned as `71bce77d` at `8da28287`).
-
-At the later tip `8384256d` (15:17:08, "battery bytes of D … and the final pre-freeze
-battery outputs") the battery blob is `724887…` and **all 14 pins match** (loop over
-`freeze.txt` at `8384256d`: 14 OK). So the freeze was satisfied only by a post-D commit;
-the D commit message and `SCORECARD.md` claim "battery 398 cases incl. the TOL 0.06
-witness" describe bytes that were not in D.
-
-## F2 (decisive at the committed tip) — the frozen counting command exits 1
-
-`.ufo/waves/round-78/scored/selftest-r78-gates.out` is a JSON object followed by the
-selftest's summary line (`clean=true cases=15 failed=none`, starting at byte 7628), and it
-was committed inside the walked tree `.ufo/waves/round-78` by `b1f33724`. The counter
-refuses it as `prior-set-unparsable` (`scripts/check-filechooser-r78.mjs:307`).
-
-Measured on the worktree at `b1f33724` (before the L1's deletion):
-
-```
-node scripts/check-filechooser-r78.mjs --lane <lane> --receipt corpus/evidence/round78/…/receipt.json \
-  --expect-driver-sha256 0ae89d92… --expect-nonce tabi-r78-l1-d59ca0270c2a \
-  --prior-set .ufo/waves/round-78/controls/c1/prior-set.txt --json
-# exit 1, checkCount 186, findings: [prior-set-unparsable: …/scored/selftest-r78-gates.out]
-```
-
-Same on cold1 with `--prior corpus/evidence/round78/…/receipt.json` (exit 1, same finding).
-`--tree-exempt .ufo/waves/round-78/scored/selftest-r78-gates.out` does **not** suppress it
-(still exit 1): the exemption is consulted only in the `outside` condition at line 308, not
-in the `unparsable` push at line 307. The frozen selftest exits 1 with 7 of 15 cases red,
-every one carrying `prior-set-unparsable` (`selftest-now.json`: `scored-clean`,
-`cold-clean`, `pin-mismatch`, `nonce-mismatch`, `replay-of-scored`, `replay-of-smoke`,
-`tree-exempt-absent`).
-
-Measured on a scratch extraction of the committed tip `8384256d`
-(`git archive 8384256d scripts .ufo/waves corpus/evidence/round78 corpus/evidence/round77`):
-counter exit 1, 186 checks, same finding (`counter-tip-8384256d.json`); selftest exit 1,
-same 7 cases (`selftest-tip-8384256d.out`). So the committed tip is not re-verifiable.
-
-The current worktree is clean only because the `.out` was deleted without a commit
-(`git status` = ` D`; `git cat-file -e HEAD:.ufo/waves/round-78/scored/selftest-r78-gates.out`
-exit 0; the copy now lives at `.ufo/waves/round-78-seats/L1-selftest/`). Re-running on the
-worktree now gives exit 0, 186, clean (`counter-scored-now.json`). The scored counter output
-(15:07:22) predates the `.out` (15:14:07), so the scored measurement was clean but the
-committed tree was not; this is the defect class QUALITY 151 was added to prevent (lesson
-`scope` row, `corpus/lessons/round-78.md:65`).
-
-## F3 — C2: do-nothing edits reach `mismatches=0`
-
-QUALITY 152 (`corpus/QUALITY.md:1026`): "A capability row's first-working round must be a
-round whose recorded verdict is not `NOT VERIFIED`/`honest stop`, unless the row says
-`provisional`; the count is a committed instrument … not a reading."
-
-The instrument (`scripts/check-capability-status.mjs`) takes the **first** number in the
-last cell (line 41), tests the named round's whole section body for the literal words
-(lines 28/50), and suppresses on `provisional` (line 50). Reproduced:
-
-| edit (on base `ae2dc25f` SCORECARD) | exit | mismatches |
-|---|---|---|
-| none (before state) | 1 | 1 (`c2/base-run.json`) |
-| last cell `77` → `provisional r77` (no repair, no evidence) | 0 | 0 (`c2/donothing-provisional.json`) |
-| last cell `77` → `round 75` (a different capability's passing round) | 0 | 0 (`c2/donothing-otherround.json`) |
-
-Three further defects, reproduced or code-read:
-
-1. The r78 capability row at `SCORECARD.md:3853` is **invisible** to the checker: its first
-   cell is `` `chromium-file-chooser-linux` (generation r78) ``, which fails the
-   `^`([^`]+)`$` name regex (line 38). `rows=10`; the only chooser row seen is line 3814.
-2. Round 78's section contains `NOT VERIFIED` at `SCORECARD.md:3847` (the C2 row quoting
-   round 77's verdict). Making the r78 row visible with last cell `78` therefore mismatches
-   (reproduced: exit 1, "round 78 carries NOT VERIFIED/honest stop"). The green depends on
-   the `provisional` label, not on round 78's verdict.
-3. The checker never verifies that the provisional round is the failed round (C2 leg b's
-   "provisional together with the failed round" is unimplemented); `round 78 (provisional
-   r77: …)` binds to 78 and the `r77` is never examined.
-
-Also: `SCORECARD.md:3847` states "after: exit 0, mismatches 0, provisional 0
-(`scored/c2-after.json`)" but that file records `"provisional": 1`, and it is untracked at
-HEAD. The before state is reproduced exactly (base SCORECARD → exit 1, 1 mismatch).
-
-For the L1's announced fix: the substring test at line 28 still matches the round-78
-section's own C2 row (line 3847), so a row naming round 78 without `provisional` fails until
-either the quoting leaves that section or the verdict test becomes structural; and the
-"section must list the capability" rule conflicts with "one row only" if the single row
-lives in the round-77 section.
-
-## F4 — ordering: the committed chain holds; the instrument edit does not
+## 1. Ordering — holds
 
 Committer dates (`git log -1 --format='%ci'`): `e866ca7c` 13:58:29 (instruments, controls,
 claims.json, sources, note, QUALITY), `5e78b9f1` 13:58:36 (first D), `3289c1d0` 14:36:27
 (pre-freeze repair), `3a9caf6a` 14:43:48, `8da28287` 14:43:58 (D, battery pin 71bce77d),
-`d59ca027` 15:06:46 (final D), `b1f33724` 15:14:40 (scored run + gates + cold1 + wave),
-`8384256d` 15:17:08 (post-D battery commit). No instrument or control edit is committed
-between D and the scored run; the only post-scored commit is `8384256d`, an instrument
-change. Caveats: (a) claims.json is introduced in the *same* commit as the instruments, not
-a separate earlier commit; (b) the battery edit at 14:59:29 sits between `8da28287` and D
-and was never committed at D (F1), so the "final instruments" at D include a file whose
-bytes are older than its recorded digest. Minor: the D commit message asserts "selftest
-15/15" at 15:06:46, but the cold1 receipt the selftest reads was created at 15:07:16 and
-the selftest output at 15:14:07.
+`d59ca027` 15:06:46 (superseded D), `b1f33724` 15:14:40 (first scored run), `8384256d` 15:17:08
+(battery bytes), `d986c273` 15:24:59 (re-freeze D), `a4d628c8` 15:33:03 (re-freeze D),
+`4920e079` 15:48:51 (final D). The scored receipt's `startedAt` is 2026-11-07T18:49:02.743Z
+(15:49:02 local), after D; cold1 starts 15:49:14. Every instrument/claims edit is in or before D;
+the scored run is after D. Caveat: the re-freeze is a post-first-scored-run instrument change; it
+is disclosed in the commit messages but not yet in the SCORECARD (§4).
 
-## F5 — nonce: holds
+## 2. Pins — hold at D and at the tip
 
-Scored receipt `corpus/evidence/round78/chromium-file-chooser/receipt.json:3` nonce =
-`tabi-r78-l1-d59ca0270c2a`; `driverSha256` = `0ae89d92…`; `frameTree.mainFrameParentId` =
-null, `mainFrameUrl` = `about:blank`; `fixtureInputs` = 5 (`s,m,d,k,f`); `mainFrameId`
-matches `frameTree.mainFrameId`. `git grep 'tabi-r78-l1-d59ca0270c2a' d59ca027 -- .` →
-exit 1 (no match); `git log -S'tabi-r78-l1-d59ca0270c2a' d59ca027` → no commit in D's
-ancestry; the receipt is not in D's tree (`git cat-file -e` exit 128). D12 =
-`d59ca0270c2a` = first 12 of D; `scored/digests-commit.txt` = D.
+```
+D=4920e079…; while read h p; do git show "$D:$p" | sha256sum; sha256sum "$p"; done < freeze.txt
+# 14/14 atD=OK wt=OK
+```
 
-## F6 — prior-set enumeration at the freeze parent: holds exactly
+`claims.json` pins (8 files) all equal `freeze.txt`; the other six freeze files
+(`run-scored.sh`, `run-scored-gates.sh`, `claims.json`, `prior-set.txt`, `census/start.txt`,
+`sources/FETCH.txt`) are not claim pins. The superseded D `d59ca027` failed the battery pin
+(`71bce77d` at D vs `724887` recorded) — kept as history in §7.
 
-Whole-lane `git grep -l 'tabi-chrome-cdp-filechooser-r78' 8da28287` → 45 candidate files,
-each parsed: exactly **10** objects with that top-level schema carrying `nonce` or `events`
-(3 degenerates + 4 probes + 3 smokes). `prior-set.txt` has those 10 plus the r77 scored
-receipt (schema `tabi-chrome-cdp-filechooser-r77`) = 11 lines; set diff: no omissions, no
-extras, no duplicates (`enumerated-whole-lane.txt`, `priorset-all.txt`). All 11 paths exist
-at D. The `*.driver.out.json` files are schema-r78 but carry neither `nonce` nor `events`,
-so they are not receipts by QUALITY 140; the counter agrees.
+## 3. Nonce — holds
 
-## F7 — `--tree-exempt` (QUALITY 153): not reachable in the frozen leg, not needed
+Scored receipt `corpus/evidence/round78/chromium-file-chooser/receipt.json` nonce =
+`tabi-r78-l1-4920e0790fa9`, `driverSha256` = `0ae89d92…`, `frameTree.mainFrameParentId` = null,
+`mainFrameUrl` = `about:blank`, `fixtureInputs` = 5, `startedAt` 15:49:02 > D 15:48:51.
+`git grep 'tabi-r78-l1-4920e0790fa9' 4920e079 -- .` → exit 1; `git log -S… 4920e079` → empty.
+The D tree's file at the same path is the superseded receipt (nonce `tabi-r78-l1-d59ca0270c2a`);
+the new receipt is post-D and the path is the receipt under test, exempt by identity.
 
-The frozen counting command (`claims.json` countingCommand, `SCORECARD.md:3846`) omits
-`--tree-exempt`; the scored receipt is exempt by identity (`selfReal`, line 308) and the
-walk finds no other schema receipt, so the command does not need it. The interface is
-caller-chosen and path-only (lines 181-184, 294): it suppresses `prior-set-complete` but
-not `prior-set-unparsable` (verified). It is used only by the battery
-(`scripts/negatives-filechooser-r78.mjs:531`); the pre-freeze and scored harnesses do not
-use it. A forger does not choose the verifier's arguments, so the frozen leg is not
-reachable; any ad-hoc invocation can hide a well-formed same-schema receipt by path, which
-the SCORECARD's own r79 plan already says should be receipt-bound.
+## 4. Prior-set enumeration — holds for the walked trees
 
-## Residual risk and verification gaps
+At the freeze parent `a4d628c8`, whole-lane `git grep -l 'tabi-chrome-cdp-filechooser-r78'` → 55
+candidates, each parsed: the 10 pre-freeze receipts (3 degenerates + 4 probes + 3 smokes) carry
+`nonce`/`events`; `prior-set.txt` = those 10 + the r77 receipt (schema
+`tabi-chrome-cdp-filechooser-r77`) = 11 lines, exact set match (`enumerated-refreeze-parent.txt`).
+The whole-lane enumeration adds two expected exceptions: the receipt-under-test path (the
+superseded scored receipt) and `.ufo/waves/round-78-seats/L1-cold1/receipt.json` (a cold-run
+artifact outside both walked trees). The counter's walk is clean, so `prior-set-complete` holds.
 
-- I did not run the battery (397/398) or the kill power. The battery case-count comparison
-  is by registration count plus the committed/scored outputs; because of F1 the
-  "398/398 incl. the TOL 0.06 witness" claim is not reproducible from D.
-- The "hide a well-formed receipt by path" behaviour of `--tree-exempt` is code-read
-  (lines 294/308), not run: writing a receipt into the walked tree is forbidden by the
-  seat-output rule.
-- F2 means every counter invocation at the committed tips `b1f33724` and `8384256d` fails,
-  including the wave's cold-run acceptance (leg b) and the selftest (leg d), until the
-  deletion of `.out` is committed or the walk is fixed.
-- The L1 announced a re-freeze (new D, new nonce, new scored run) and a C2 structural fix;
-  neither had landed at the time of writing, so this report measures `d59ca027`/`b1f33724`/
-  `8384256d` only.
+## 5. `--tree-exempt` — not reachable in the frozen leg, not needed
+
+The frozen command omits it; the scored receipt is exempt by identity (`selfReal`), and the
+counter output records `treeExempt: []`. The interface is caller-chosen and path-only (lines
+181-184, 294); it suppresses `prior-set-complete`, not `prior-set-unparsable` (verified on the
+old failure). Used only by the battery (`negatives-filechooser-r78.mjs:531`). A forger does not
+choose the verifier's arguments, so the frozen leg is not reachable; any ad-hoc invocation can
+hide a well-formed same-schema receipt by path. The r79 plan already says it should be
+receipt-bound. Residual, not a failure of the frozen command.
+
+## 6. C2 — holds, with the `provisional` residual
+
+`node scripts/check-capability-status.mjs --json` → exit 0, `rows 11, claimed 10, provisional 1,
+mismatches 0` (`capstatus-refreeze.json`), equal to the committed `scored/c2-after.json`
+(provisional 1 — the earlier "provisional 0" misstatement is fixed). The new structural rules
+work: the named round's section must list the capability, and the verdict test reads only the
+claim-table Verdict cells. Reproduced on the base `ae2dc25f` SCORECARD:
+
+| edit | exit | result |
+|---|---|---|
+| none (before state) | 1 | 1 mismatch (`c2/base-run.json`) |
+| last cell `77` → `round 75` | 1 | "round 75 does not list capability chromium-file-chooser-linux" |
+| last cell `77` → `provisional r77` | 0 | 0 mismatches (`c2/donothing2-provisional.json`) |
+
+The last row is the QUALITY 152 allowed alternative: a `provisional` label naming the failed
+round is accepted without any repair, so the instrument still cannot distinguish an honest
+provisional from a relabel. That is the rule's letter, disclosed in C2 leg (c); residual.
+
+## 7. Cross-check findings (outside the six items)
+
+**F1 (high) — the scored battery is red.** `scored/c1-negatives-a.json` (mtime 15:49:38, after
+the final D) reads `cases 400, passed 399, allOk false`; the failing case is
+`prior-set-unparsable-unreadable-dir` with `error: "mirror: EACCES, Permission denied:
+/fast/scratch/hyaku/tabi-r78/L1-scored/n/mirror-prior-set-unparsable-unreadable-dir"`. The
+failure is the battery's own mirror setup/cleanup on the `chmod 000` `hidden` directory it
+creates, not the counter's unreadable-dir check. The same class is what the final commit's
+"kill-power cleanup tolerates the locked-dir case" addresses for the kill power; the battery did
+not get the same cleanup tolerance.
+
+**F2 (high) — the kill power is red and stale.** `scored/c1-killpower-a.json` (mtime 15:34:52,
+before the final D 15:48:51 and before the final kill-power script `9fdd4ea7`) reads
+`holds: false`, `semantic: 75/76`, `survivors: ["M-timeline-min-own-gaps-12"]`. The survivor is
+the mutant for the new `MIN_OWN_GAPS` accepting side; the final battery's accepting case does not
+kill it on the real receipt. The output must be re-run on the final bytes before leg (c) can be
+called green.
+
+**F3 (high) — the pre-freeze gate evidence is stale.** `controls/c1/pf/out/prefreeze-summary.json`
+(mtime 14:43:48) reports `batteryCases 397` for all seven receipts; the `pf-*.battery.json`
+outputs are 15:01-15:04 and 398 cases; the final battery is `377e9568` (400 cases); the final
+counter `4ae29412` and kill-power `9fdd4ea7` postdate every `pf/out` counter and killpower file
+(14:11-14:36). `claims.json`'s `frozenAt` still cites the summary for "counter 7/7, battery 7/7,
+kill power 4/4", which is not supported for the final bytes. The pre-freeze gates were not
+re-run on the re-frozen instruments (no `*.battery.json` newer than 15:20 exists).
+
+**F4 (medium) — the SCORECARD narrative is stale.** The round-78 section still names D
+`d59ca027` and its correction block has four items, none of which mentions the re-freeze; grep
+for `4920e079`/`8384256d`/`re-freeze` in the section is empty. The operative D is recorded only
+in `scored/digests-commit.txt` and the commit messages. The L1 said the re-freeze is being
+documented; it had not landed at measurement.
+
+## 8. History (superseded states, kept as evidence)
+
+- **D `d59ca027` failed its own freeze.** `freeze.txt:3` recorded `724887` for the battery, but
+  the blob at D was `71bce77d`; the 724887 bytes existed only as an uncommitted worktree edit
+  (mtime 14:59:29). The D commit touched only claims/freeze/selftest. The scored battery output
+  at the time (398 cases) matched the 11-registration worktree battery, not the 10-registration
+  committed one.
+- **Committed tip `b1f33724` failed the frozen command.** `scored/selftest-r78-gates.out`
+  (JSON + the summary line `clean=true cases=15 failed=none` at byte 7628) was committed inside
+  the walked tree; the counter refused it as `prior-set-unparsable` (exit 1, 186 checks) and the
+  selftest was 7/15 red. Reproduced on a scratch extraction of `8384256d`
+  (`counter-tip-8384256d.json`, `selftest-tip-8384256d.out`). The re-freeze `d986c273` moved the
+  file to `.ufo/waves/round-78-seats/L1-selftest/`; at D `4920e079` it is absent from the walked
+  tree (`git cat-file -e` exit 128) and the selftest is 15/15 exit 0 (`selftest-refreeze.out`).
+- **`8384256d`** committed the battery bytes; all 14 pins matched there, but it was a post-D
+  instrument commit, which is why the L1 re-cut D rather than silently keeping it.
+
+## 9. Verification gaps
+
+- I did not run the battery or the kill power; F1/F2 are the round's own outputs (timestamps
+  above), not my runs. The counter and selftest are my runs: counter exit 0 clean 186 on the
+  scored receipt and on cold1 (`counter-refreeze.json`, `counter-cold1-refreeze.json`); selftest
+  exit 0 15/15.
+- I did not re-run the pre-freeze gates (F3 is a timestamp/digest comparison).
+- The `--tree-exempt` "hide a well-formed receipt by path" behaviour is code-read, not run:
+  writing a receipt into the walked tree is forbidden by the seat-output rule.
