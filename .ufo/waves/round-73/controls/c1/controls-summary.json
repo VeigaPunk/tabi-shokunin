@@ -1,0 +1,137 @@
+{
+ "schema": "tabi-r73-c1-controls",
+ "counterSha256": "3104101a9ac8b0cd09337a870139653f7a64cfb7eb65067daf389119ce20d4d1",
+ "driverSha256": "3f0ffe24c8436400589dd856cff8503af150cccbcf338e7b895fb9c4ce5559c4",
+ "priors": [
+  ".ufo/waves/round-73/controls/c1/smoke1.receipt.json",
+  ".ufo/waves/round-73/controls/c1/smoke2.receipt.json",
+  ".ufo/waves/round-73/controls/c1/smoke3.receipt.json",
+  ".ufo/waves/round-73/controls/c1/smoke4.receipt.json",
+  ".ufo/waves/round-73/controls/c1/smoke5.receipt.json",
+  ".ufo/waves/round-73/controls/c1/smoke6.receipt.json",
+  ".ufo/waves/round-73/controls/c1/smoke7.receipt.json",
+  ".ufo/waves/round-73/controls/c1/smoke8.receipt.json",
+  ".ufo/waves/round-73/controls/c1/smoke9.receipt.json",
+  ".ufo/waves/round-73/controls/c1/degenerate-dispatch-wheel.receipt.json",
+  ".ufo/waves/round-73/controls/c1/degenerate-set-scale.receipt.json",
+  ".ufo/waves/round-73/controls/c1/degenerate-skip-touch.receipt.json"
+ ],
+ "capabilityRowCount": 0,
+ "allOk": true,
+ "results": [
+  {
+   "name": "donothing-no-receipt",
+   "why": "no work: no r73 receipt exists",
+   "expectExit": 2,
+   "expectIds": [
+    "receipt-unreadable"
+   ],
+   "exact": true,
+   "exit": 2,
+   "ids": [
+    "receipt-unreadable"
+   ],
+   "ok": true
+  },
+  {
+   "name": "donothing-r72-scored-receipt",
+   "why": "no work: re-present the committed round-72 scored receipt",
+   "expectExit": 1,
+   "expectIds": [
+    "schema",
+    "nonce-shape",
+    "nonce-expected",
+    "driver-pin"
+   ],
+   "exact": false,
+   "exit": 1,
+   "ids": [
+    "schema",
+    "nonce-shape",
+    "nonce-expected",
+    "driver-pin"
+   ],
+   "ok": true
+  },
+  {
+   "name": "donothing-no-flags",
+   "why": "r72-style call without pin, nonce or priors (R72Review1 FG5): refused as usage",
+   "expectExit": 2,
+   "expectIds": [
+    "usage"
+   ],
+   "exact": true,
+   "exit": 2,
+   "ids": [
+    "usage"
+   ],
+   "ok": true
+  },
+  {
+   "name": "replay-zeroedit-smoke1",
+   "why": "QUALITY 136 replay 1: byte-identical pre-freeze receipt presented as the post-freeze run",
+   "expectExit": 1,
+   "expectIds": [
+    "nonce-expected",
+    "replay-launch-token",
+    "replay-devtools-url",
+    "replay-event-timeline"
+   ],
+   "exact": true,
+   "exit": 1,
+   "ids": [
+    "nonce-expected",
+    "replay-launch-token",
+    "replay-devtools-url",
+    "replay-event-timeline"
+   ],
+   "ok": true
+  },
+  {
+   "name": "replay-zeroedit-smoke1-own-nonce",
+   "why": "same, even when the expected nonce is the replayed one: the replay checks alone refuse it",
+   "expectExit": 1,
+   "expectIds": [
+    "replay-launch-token",
+    "replay-devtools-url",
+    "replay-event-timeline"
+   ],
+   "exact": true,
+   "exit": 1,
+   "ids": [
+    "replay-launch-token",
+    "replay-devtools-url",
+    "replay-event-timeline"
+   ],
+   "ok": true
+  },
+  {
+   "name": "replay-forged-nonce-stamps",
+   "why": "QUALITY 136 replay 2 (R72Critic forged-a analog): nonce rewritten everywhere to the expected one, wall-clock stamps +1 h",
+   "expectExit": 1,
+   "expectIds": [
+    "replay-launch-token",
+    "replay-devtools-url",
+    "replay-event-timeline"
+   ],
+   "exact": true,
+   "exit": 1,
+   "ids": [
+    "replay-launch-token",
+    "replay-devtools-url",
+    "replay-event-timeline"
+   ],
+   "ok": true
+  },
+  {
+   "name": "limit-full-identifier-rewrite",
+   "why": "DECLARED LIMIT witness, not a pass: a forger who also rewrites the launch token, the DevTools browser id and every event ts is not refused (the counter is not an execution oracle)",
+   "expectExit": 0,
+   "expectIds": [],
+   "exact": true,
+   "exit": 0,
+   "ids": [],
+   "ok": true
+  }
+ ]
+}
