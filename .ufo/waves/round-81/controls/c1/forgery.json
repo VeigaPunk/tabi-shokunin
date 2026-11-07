@@ -1,0 +1,130 @@
+{
+ "schema": "tabi-chrome-cdp-showpicker-r81-counter",
+ "verdict": "findings",
+ "checkCount": 56,
+ "checks": {
+  "schema": true,
+  "lane": true,
+  "nonce-shape": true,
+  "nonce-expected": true,
+  "receipt-fields": true,
+  "driver-pin": true,
+  "fixture-hash": true,
+  "host-chromium": true,
+  "host-node": true,
+  "ports-declared": true,
+  "frame-tree": true,
+  "plan-frozen": true,
+  "leg-order": true,
+  "leg-records": true,
+  "leg-marks": true,
+  "context-binding": true,
+  "send-log-allowlist": false,
+  "plan-calls": true,
+  "cdp-event-log-closed": false,
+  "frame-binding": true,
+  "event-types": true,
+  "event-time-quantum": true,
+  "event-leg-window": true,
+  "seq-monotonic": true,
+  "leg-sp81-cross-origin-nonfile": true,
+  "leg-sp81-cross-origin-nonfile-disabled": true,
+  "leg-sp81-same-origin-nonfile-disabled": true,
+  "leg-sp81-webkitdirectory-answer": true,
+  "leg-sp81-accept-answer": true,
+  "leg-sp81-click-while-open": true,
+  "gesture-law": true,
+  "activation-law": true,
+  "mode-law": true,
+  "cross-origin-nonfile-law": true,
+  "order-law": true,
+  "webkitdirectory-answer-law": true,
+  "accept-answer-law": true,
+  "click-while-open-law": true,
+  "no-selection-law": true,
+  "intercept-law": true,
+  "cancel-law": true,
+  "dismiss-law": true,
+  "trust-law": true,
+  "host-argv": true,
+  "devtools-port-binding": true,
+  "teardown-closure": true,
+  "fixture-descriptors": true,
+  "server-log-binding": true,
+  "child-server-log-binding": true,
+  "run-window": true,
+  "replay-event-timeline": false,
+  "replay-launch-token": false,
+  "replay-devtools-url": false,
+  "prior-set-unmatched-exempt": true,
+  "prior-set-complete": false,
+  "prior-set-unparsable": true
+ },
+ "findings": [
+  {
+   "id": "send-log-allowlist",
+   "detail": "send logs outside the allowlist: sp81-cross-origin-nonfile:expression,sp81-cross-origin-nonfile-disabled:expression,sp81-same-origin-nonfile-disabled:expression,sp81-webkitdirectory-answer:expression,sp81-accept-answer:expression,sp81-click-while-open:expression"
+  },
+  {
+   "id": "cdp-event-log-closed",
+   "detail": "CDP event logs: sp81-cross-origin-nonfile:nav,sp81-cross-origin-nonfile-disabled:nav,sp81-same-origin-nonfile-disabled:nav,sp81-webkitdirectory-answer:nav,sp81-accept-answer:nav,sp81-click-while-open:nav"
+  },
+  {
+   "id": "replay-event-timeline",
+   "detail": "pair near-match within 0.05 ms of prior #0 {\"priorEvents\":32,\"priorGaps\":1,\"absMatched\":32,\"gapMatched\":1,\"absNeed\":16,\"gapNeed\":1,\"escapeEvents\":17,\"refused\":true} (refuse when absMatched >= ceil(0.5 * prior events); own events 32)"
+  },
+  {
+   "id": "replay-launch-token",
+   "detail": "a launch token repeats a prior receipt's or another leg's"
+  },
+  {
+   "id": "replay-devtools-url",
+   "detail": "a devtools browser id repeats a prior receipt's or another leg's"
+  },
+  {
+   "id": "prior-set-complete",
+   "detail": "receipts of schema tabi-chrome-cdp-showpicker-r81 in the round-81 wave/evidence trees, not the receipt under test (path ../../../../../fast/scratch/hyaku/tabi-r81/forged.json), not exempted by sha256 and not among the priors: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-81/controls/c1/probes/tabi-r81-probe2.json"
+  }
+ ],
+ "priorSet": 1,
+ "priorSetFile": {
+  "path": ".ufo/waves/round-81/controls/c1/prior-set.txt",
+  "sha256": "1275fa1f5f5f22f1580dff7b50391bceeb38ba6a90822021a1b9602c6456a793"
+ },
+ "treeExemptSha256": [],
+ "treeExemptResolved": [],
+ "nodeReport": {
+  "sp81-cross-origin-nonfile": [],
+  "sp81-cross-origin-nonfile-disabled": [],
+  "sp81-same-origin-nonfile-disabled": [],
+  "sp81-webkitdirectory-answer": [
+   9
+  ],
+  "sp81-accept-answer": [
+   9
+  ],
+  "sp81-click-while-open": [
+   9,
+   9
+  ]
+ },
+ "limit": {
+  "sentence": "refuse when absMatched >= ceil(0.5 * prior events); the escape minimum is priorEvents - absNeed + 1 moved events. The gap side is reported, not a refusal: this driver's fixed waits reproduce gap durations across honest runs, so a gap match is a driver artifact. A forger who moves fewer events but shifts EVERY event by a constant offset escapes this rule — that is the limit.",
+  "tolerance": 0.05,
+  "gapMin": 50,
+  "ownEvents": 32,
+  "ownGaps": 1,
+  "perPrior": [
+   {
+    "priorEvents": 32,
+    "priorGaps": 1,
+    "absMatched": 32,
+    "gapMatched": 1,
+    "absNeed": 16,
+    "gapNeed": 1,
+    "escapeEvents": 17,
+    "refused": true
+   }
+  ]
+ }
+}
