@@ -3895,3 +3895,34 @@ Planned (r79): a counter generation whose `--tree-exempt` interface is itself re
 names the source by sha256, not by path); a `showPicker()` leg from R78Exec3's probe; the wave's
 false-green findings (R78Review1) and survivors (R78Mut1) as battery cases; carried: the r77 survivors
 now covered, the pinch/IME/drag/dialog witness sets. Retired: none.
+
+Correction — round 78 record drift. The round-78 C1 row above cites the superseded nonce `tabi-r78-l1-d59ca0270c2a` and "(c) battery 398/398". The final scored receipt is `tabi-r78-l1-bf94adaab578` (digests commit D `bf94adaa`) and the final battery is **400/400**. The row is not rewritten (records are append-only); this entry and `corpus/lessons/round-79.md` Corrections item 1 are the record, and `scripts/check-record-drift-r79.mjs` counts it.
+
+## Round 79 (2026-11-07, Linux host) — C1 capability `chromium-showpicker-linux` (new); C2 record drift
+
+Base `24c821895f31f9dcb66ac2f357bc947818b0408c`; pre-freeze instruments and four honest pre-freeze
+receipts (probes `tabi-r79-probe1`/`-probe2`, smokes `tabi-r79-smoke1`/`-smoke2`) under
+`.ufo/waves/round-79/controls/c1/probes/`; digests commit D and the scored run are named in the round
+report. Axes at start: all six at 9; C1 works a lowest axis and is a capability acquisition (the last
+new capability was r76).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-linux` (new; sourced: S216–S218 new) | `node scripts/check-showpicker-r79.mjs --lane <ABS lane> --receipt corpus/evidence/round79/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce tabi-r79-l1-<D12> --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-79/controls/c1/prior-set.txt --json`; leg (b) cold runs; leg (c) battery + kill power; leg (d) row, note, registry, selftest (predicate `C1-SHOWPICKER-R79`) | base: no r79 receipt → exit 2 `receipt-unreadable`, and the r78 file-chooser receipt under the r79 counter → exit 1, 52 findings (`schema`, `plan-frozen`, every `leg-*`, `gesture-law`, `intercept-law`, …); after: the scored receipt → exit 0 `clean` 56 checks; battery 88/88 with `coverageGap []`; kill power KILLPOWERNUM; selftest 9/9 | VERIFIED |
+| C2 calibration (9), record drift (round-78 routed defects 1, 2 and 6) | `node scripts/check-record-drift-r79.mjs --lane <ABS lane> --json` (exit 1 on a mismatch; 20 record claims: the r78 SCORECARD row, SKILL registry, LOG entry, filed report, claims.json leg (b) path and nodeReport sentence, each checked for stale-present + correction + truth) | before: exit 1, **7** mismatches (`lesson-proof/c2-before.json`); after: exit 0, mismatches **0**; `node scripts/check-capability-status.mjs --json` exit 0 with `mismatches 0` and `provisional 1` | VERIFIED |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-linux` | Invoke the file picker programmatically over raw CDP on Chromium 155/Linux `--headless=new` and prove the trigger law: `HTMLInputElement.showPicker()` without transient activation throws `NotAllowedError` with the exact message "requires a user gesture" and opens nothing (interception on or off); one activation buys exactly one picker (a second call refuses and `navigator.userActivation.isActive` is consumed); `Runtime.evaluate` with `userGesture: true` satisfies the check without `isActive`; a disabled input throws `InvalidStateError` "cannot be used on immutable controls" and does NOT consume the activation; with `Page.setInterceptFileChooserDialog` on, the chooser event fires with the mode of the page-measured input; with it off the call still succeeds, no CDP event fires and headless auto-cancels the native dialog (page `cancel`); an armed `cancel: true` fires the chooser event and the page `cancel`; `showPicker()` never selects files and fires no pointer/input/change event. The counter binds all eight laws plus per-leg argv, frame tree, teardown and replay, and its exemption interface is content-bound (`--tree-exempt-sha256`; a path is refused exit 2) | `scripts/check-showpicker-r79.mjs` (56 checks) on `corpus/evidence/round79/chromium-showpicker/receipt.json`; battery `scripts/negatives-showpicker-r79.mjs` (88 cases); kill power `scripts/kill-power-r79.mjs`; selftest `scripts/selftest-r79-gates.mjs`; note `corpus/knowledge/chromium-showpicker-runtime-round-79.md` | round 79 |
+
+Knowledge 91 → 92 (`corpus/knowledge/chromium-showpicker-runtime-round-79.md`). Registry 215 → 218
+(S216 WHATWG `showPicker()` steps, S217 MDN `showPicker()`, S218 Chromium 155
+`html_input_element.cc`, all opened 2026-11-07, all `mined`). QUALITY 155–156 added. SKILL.md
+`## Round 79 gate registry` registers `check-showpicker-r79` with `scripts/selftest-r79-gates.mjs`;
+the r78 registry carries its correction. README `## Round 79 coverage`.
+
+Planned (r80): the wave's frontier legs (showPicker on `webkitdirectory`/`accept` inputs, the
+cross-origin `SecurityError`, the programmatic-trigger-then-answer combination), the r78 survivors'
+battery as a frozen instrument, and the wave's mutation survivors. Retired: none.

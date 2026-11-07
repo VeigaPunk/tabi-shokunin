@@ -1,0 +1,47 @@
+{
+ "lane": "tabi",
+ "round": 79,
+ "base": "24c821895f31f9dcb66ac2f357bc947818b0408c",
+ "frozenAt": "2026-11-07, before any post-D (scored) run; pre-freeze gates green: counter clean on every pre-freeze receipt, battery 87/87 allOk with coverageGap [], kill power 0 survivors (controls/c1/prefreeze-summary.json)",
+ "claims": {
+  "C1": {
+   "axis": "coverage",
+   "type": "capability acquisition \u2014 `chromium-showpicker-linux` (new row; the programmatic picker trigger path and its gesture law)",
+   "predicate": "C1-SHOWPICKER-R79",
+   "legs": {
+    "a": "the L1 post-D scored run: receipt corpus/evidence/round79/chromium-showpicker/receipt.json, nonce tabi-r79-l1-<first 12 of D>, driver pin <driver sha256 from freeze.txt>, prior set .ufo/waves/round-79/controls/c1/prior-set.txt; the counter exits 0, verdict clean, checkCount 56",
+    "b": "cold-run acceptance: every cold run committed under .ufo/waves/round-79-seats/ and listed in scored/cold-runs.txt (at least 4: cold1-cold2 from R79Exec1, cold3-cold4 from R79Exec2) exits 0 clean under the counter with that receipt's own nonce, its own fixture sha256 and the committed prior set plus --prior for the scored receipt; ZERO honest refusals",
+    "c": "on the (a) receipt the battery exits 0 allOk (87 cases, coverageGap []) and kill power holds (0 survivors, 0 crashed), run with the frozen arguments of run-scored-r79.sh",
+    "d": "the capability row names first-working round 79; corpus/knowledge/chromium-showpicker-runtime-round-79.md cites S216-S219; SKILL.md `## Round 79 gate registry` registers check-showpicker-r79; `node scripts/selftest-r79-gates.mjs --lane <ABS lane> --work <ABS scratch> --json` exits 0"
+   },
+   "countingCommand": "node scripts/check-showpicker-r79.mjs --lane <ABS lane> --receipt corpus/evidence/round79/chromium-showpicker/receipt.json --expect-driver-sha256 <driver sha256> --expect-nonce tabi-r79-l1-<D12> --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-79/controls/c1/prior-set.txt --json",
+   "pins": {
+    "scripts/chrome-cdp-showpicker-round79.mjs": "e9c87159e5d5212237437eb7a80a2d26fcd8086603dae1e37db64ce1aaf94933",
+    "scripts/check-showpicker-r79.mjs": "4072031ba8723183f5755e7cfe1b7032160681c0a330c137da9e7a6c537e7815",
+    "scripts/negatives-showpicker-r79.mjs": "9980e98b72fcce16c1f1b157ec5ddc517171e1661cc60e386b1c4ca44365a2bf",
+    "scripts/kill-power-r79.mjs": "483712858e8ae53013ca4f46a58cf626ab1ef58bd9bcf21a5be17bd19f93c80e",
+    "scripts/selftest-r79-gates.mjs": "81cf6bf4929ad1710e9de9bacdc7a49b8f628f9e35ba408dd3c90bd76d42b441",
+    "scripts/check-record-drift-r79.mjs": "11c7f59c378f2425a5979f19b77b8fe6225ce1fbfbb3ea224e50e9d7635e7f35"
+   },
+   "priorSet": ".ufo/waves/round-79/controls/c1/prior-set.txt (the pre-freeze honest receipts of schema tabi-chrome-cdp-showpicker-r79: probes p1-p2 and smokes s1-s2, all committed under .ufo/waves/round-79/controls/c1/probes/)",
+   "killRule": "any of (a)-(d) false as frozen, or any axis harmed -> C1 NOT verified (honest stop); no leg is re-scoped after a scored run",
+   "limit": "the counter reads a receipt: a forger who rewrites the identity fields and moves at least absNeed(prior) = ceil(0.5 * the prior's own page-event count) event times AND gapNeed(prior) = ceil(0.75 * the prior's own >= 50 ms gaps) gaps of a prior escapes the replay rule; the escape minimum is printed per prior as priorEvents - absNeed + 1 events and priorGaps - gapNeed + 1 gaps in the counter's `limit` block, beside the threshold. A browser-assigned backendNodeId relabelled consistently inside one leg is INSIDE the limit by design (QUALITY 150) and the receipt still proves the page element through fixtureInputs and the mode law. A receipt outside the two walked trees (.ufo/waves/round-79, corpus/evidence/round79) and outside --prior is outside the walk. The exemption interface is content-bound: --tree-exempt-sha256 names a file by sha256 and a path-shaped --tree-exempt is refused (exit 2)."
+  },
+  "C2": {
+   "axis": "calibration",
+   "type": "self-assessment reconciliation (record drift, round-78 routed defect 1 and 6)",
+   "predicate": "C2-RECORDDRIFT-R79",
+   "legs": {
+    "a": "`node scripts/check-record-drift-r79.mjs --lane <ABS lane> --json` exits 0 with mismatches 0 (before: exit 1, 7 mismatches, lesson-proof/c2-before.json)",
+    "b": "every stale statement is still present (records are append-only) and a correction names it with the corrected value; the corrected value equals the committed truth re-derived by the counter (the scored nonce, the 400-case battery, the 31 witness cases, the 8 Mistakes rows, the cold-run paths under round-78-seats, the scored pick-multiple node 7 vs the L1-cold1 10)",
+    "c": "`node scripts/check-capability-status.mjs --json` exits 0 with mismatches 0 and provisional 1 \u2014 the round-78 Correction 7 limit (the command alone is satisfiable by labelling every row provisional) is answered by stating the count in the claim"
+   },
+   "countingCommand": "node scripts/check-record-drift-r79.mjs --lane <ABS lane> --json",
+   "pins": {
+    "scripts/check-record-drift-r79.mjs": "11c7f59c378f2425a5979f19b77b8fe6225ce1fbfbb3ea224e50e9d7635e7f35"
+   },
+   "killRule": "mismatches != 0, or a correction present while the truth it names is wrong -> C2 NOT verified",
+   "controls": "lesson-proof/c2-before.json (base: exit 1, 7 mismatches \u2014 every stale statement present, no correction); lesson-proof/c2-controls.json (a correction string present with a wrong truth value -> mismatch; the stale statement removed -> mismatch)"
+  }
+ }
+}
