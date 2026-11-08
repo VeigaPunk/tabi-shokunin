@@ -95,3 +95,18 @@ section and the S229 mechanism correction, the inference marked).
 | 6 r89 item 6 wording | appended correction | `corpus/lessons/round-89.md` §Corrections carried by round 92 |
 | 7 gate-run revision null | the r92 counter records `revision` (`git rev-parse master`) in every output | `.ufo/waves/round-92/scored/c1-live.json` |
 | 8 post-data claim edits | claim text, instruments and controls landed in the freeze commit `2bac1048` before the scored run `a87c7176`; post-wave notes are clarifications in `plans/round-92.md` §Wave clarifications, no predicate edit | `plans/round-92.md` |
+
+## Gate runs at the round tip (`63f5d1dc`)
+
+- Append-only, this round's range: `node scripts/check-append-only-round92.mjs --lane <ABS lane>
+  --base bdf403ff --tip master -- LOG.md corpus/QUALITY.md SCORECARD.md corpus/lessons/round-89.md`
+  → exit 0, 4/4 `ok` (`.ufo/waves/round-92/scored/append-only-r92.json`); the r91 range
+  `b1d8f07b..878bc912 -- LOG.md corpus/QUALITY.md` → exit 1, `rewritten` at LOG.md:4079 and
+  QUALITY.md:1060 (`append-only-r91.json`); selftest exit 0 (`append-only-selftest.json`).
+- C1 counting command re-run at the tip: exit 0, `clean`, 93 checks, revision `63f5d1dc`, nonce
+  `tabi-r92-live-d3c847ba156c` (`.ufo/waves/round-92/scored/c1-live-final.json`); instrument
+  sha256 3/3 OK against `controls/instrument-sha256.txt`.
+- Census end: `scripts/sources-census.sh validate --root <fleet> tabi` → exit 0, `tabi ok`, 230 rows
+  (`.ufo/waves/round-92/census-end.txt`; W04 cross-scope duplicate-URL warnings only).
+- Pre-file ledger: `prefile-falsification.py --lane tabi --round 92` → `pass claims=1 rows=13
+  attack_seats=6 findings=0`, exit 0.
