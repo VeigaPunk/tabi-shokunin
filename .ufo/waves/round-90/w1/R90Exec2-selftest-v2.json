@@ -1,0 +1,69 @@
+{
+ "schema": "tabi-r90-selftest",
+ "clean": false,
+ "cases": 11,
+ "failed": [
+  "kill-power",
+  "nowork-control",
+  "noreceipt-control",
+  "tree-exempt-unmatched-refused",
+  "gate-selftest"
+ ],
+ "results": [
+  {
+   "gate": "pins-match-freeze",
+   "ok": true,
+   "detail": "files whose sha256 differs from freeze.txt: []"
+  },
+  {
+   "gate": "counter-clean",
+   "ok": true,
+   "detail": "exit 0 {\"verdict\":\"clean\",\"checks\":107,\"findings\":[]}"
+  },
+  {
+   "gate": "battery",
+   "ok": true,
+   "detail": "exit 0 {\"cases\":226,\"failed\":0,\"coverage\":{\"declared\":107,\"covered\":107,\"uncovered\":[],\"unknown\":[]}}"
+  },
+  {
+   "gate": "kill-power",
+   "ok": false,
+   "detail": "exit 1 {\"mutants\":76,\"killed\":32,\"survived\":0,\"crashed\":44,\"survivors\":[]}"
+  },
+  {
+   "gate": "nowork-control",
+   "ok": false,
+   "detail": "exit 2 findings [\"prior-unreadable\"]"
+  },
+  {
+   "gate": "noreceipt-control",
+   "ok": false,
+   "detail": "exit 2 findings [\"prior-unreadable\"]"
+  },
+  {
+   "gate": "tree-exempt-path-refused",
+   "ok": true,
+   "detail": "exit 2 {\"schema\":\"tabi-chrome-cdp-showpicker-r90-counter\",\"verdict\":\"usage\",\"findings\":[{\"id\":\"usage\",\"detail\":\"tree-exempt-path-refused: the exemption interface is content-bound; pass --tree-exempt-sha256 <hex>\"}]}"
+  },
+  {
+   "gate": "tree-exempt-unmatched-refused",
+   "ok": false,
+   "detail": "exit 2 findings [\"prior-unreadable\"]"
+  },
+  {
+   "gate": "gate-selftest",
+   "ok": false,
+   "detail": "isolated --selftest modes: [{\"script\":\"check-showpicker-round90.mjs\",\"exit\":0,\"ok\":true,\"detail\":\"\"},{\"script\":\"negatives-showpicker-round90.mjs\",\"exit\":1,\"ok\":false,\"detail\":\"\"},{\"script\":\"kill-power-round90.mjs\",\"exit\":1,\"ok\":false,\"detail\":\"\"},{\"script\":\"check-record-drift-round90.mjs\",\"exit\":0,\"ok\":true,\"detail\":\"\"}]"
+  },
+  {
+   "gate": "record-drift",
+   "ok": true,
+   "detail": "exit 0 {\"claims\":8,\"mismatches\":0,\"failed\":[]}"
+  },
+  {
+   "gate": "capability-status",
+   "ok": true,
+   "detail": "exit 0 {\"rows\":25,\"claimed\":24,\"provisional\":1,\"mismatches\":0}"
+  }
+ ]
+}

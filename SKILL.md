@@ -3352,3 +3352,12 @@ cross-origin `type=color` input is EXEMPT (`showPicker()` returns undefined, no 
 - Kill power: `node scripts/kill-power-round89.mjs ... --work <scratch> --json` (72 mutants, 72 killed, 0 survivors, 0 crashed).
 - Record drift: `node scripts/check-record-drift-r89.mjs --lane <ABS lane> --json` (4 statements: the seven r88-swept SCORECARD tallies restored to 9/9, the D7 wording corrected to D6, every gate's isolated `--selftest`, QUALITY 161's SCORECARD scope; 3 → 0 mismatches).
 - Self-test: `node scripts/selftest-r89-gates.mjs --lane <ABS lane> --work <scratch> --json` (11 gates).
+
+## Round 90 gate registry
+
+- `check-showpicker-round90` (107 checks): `node scripts/check-showpicker-round90.mjs --lane <ABS lane> --receipt <receipt.json> --expect-driver-sha256 <hex> --expect-nonce <tabi-r90-...> --expect-fixture-sha256 <hex> --prior-set <file> --json`; exit 0 = clean, 1 = findings, 2 = usage/unreadable. The four domread legs must each carry a `Runtime.evaluate` of `window.__inputs(true)` immediately after the settle `window.__state()` evaluate (`plan-calls`), and no other leg may carry it; the `domRead` data binding, the accept laws and the 37 carried legs are unchanged.
+- Driver: `scripts/chrome-cdp-showpicker-round90.mjs` (41 legs; each domread leg re-reads `window.__inputs(true)` at settle).
+- Battery: `node scripts/negatives-showpicker-round90.mjs ... --work <scratch> --json` (cases add `plan-calls-settle-call` and `plan-calls-settle-order`; coverage 107/107).
+- Kill power: `node scripts/kill-power-round90.mjs ... --work <scratch> --json` (adds `domread-settle-call-dropped` and `domread-settle-order-any`).
+- Record drift: `node scripts/check-record-drift-round90.mjs --lane <ABS lane> --json` (8 statements: the six r89 spot-check routed defects, the gate-selftest set, QUALITY 161's cite, and the SCORECARD tally set).
+- Self-test: `node scripts/selftest-r90-gates.mjs --lane <ABS lane> --work <scratch> --json` (12 gates; the identity comes from `.ufo/waves/round-90/expectations.json`, never from the receipt under test).

@@ -1,0 +1,43 @@
+R90Mut1 byte-set pins and restoration record
+============================================
+
+Scored receipt under test
+  corpus/evidence/round90/chromium-showpicker/receipt.json
+  sha256 be8a5c38a8f3a6d9edb469f8867b1448a6f120654337a4b31bffa5dfb7d1f4f9
+  nonce  tabi-r90-l1-e573334c78fa
+  driver ac5a7a5e56537acc8f61058059294c5f343b236de9b52b8d691995f1e6c49c8d
+  fixture 5fb1f0f7806c8f099976078f3f03c9e08d6814346cc29fdccd022f4037bd7ac8
+  priors cb4d260e062e3b7fd8e25ab9b6d5df54065a7979c9ccbb99e2a0b6f0554ca44a
+         ed44bd6fa1c6eb2eee8587f437119b5000ec705c9017ffb77ac8dd5d290bbb55
+
+Sweep A (seat-start freeze; baseline and 38 mutants)
+  scripts/check-showpicker-round90.mjs        1d3dfb0b3330f7334b9ea84df9cf7463fa28d61f411c65f9c03c9968d4b7be37
+  scripts/check-record-drift-round90.mjs      32a3595d7626dd1bba8133e587335ad8bd890b9421d3b2364900eedc786165b6
+  scripts/negatives-showpicker-round90.mjs    6dc63dafdcc79e05df07add2fedb48b90ba2e17852aadc07e8233a3cfbc96f28  (on-disk bytes at 11:10:51)
+  freeze.txt battery pin at seat start        06c67275d7bbc44736c989afb93aa07db4bef1d803ae2a4bddcfc0b07304e2d8  (did NOT match disk; pinned bytes not found)
+  scripts/kill-power-round90.mjs              686cb6652d30262f1acd94788deb0679f569d20a9943af9ca2f7cce86890218a
+  scripts/selftest-r90-gates.mjs              0da4d405bbb97cf5c6650b2898cb123e29de5b1fd8b7a478348289e3d1c6be67
+
+Mid-seat re-issue (freeze.txt rewritten 11:36:19)
+  counter   6f65a0d420adea5947eb6a218ca46b354a966e8f695bde28d2df422f7074f735
+  battery   2f11fffc3b03a48a30460277b79f1dde9e759f56a328a3a02e6324e7bff39960
+  drift     bd33d158f3ae198d5587bf8469cb15460692100662277e940a871f94ca732ee2
+  kill      05bbe353419c1463b3b7ff1a7c6f4e8de611d077c1d4c51b84f3b1ab3c19c3e3
+  selftest  0da4d405bbb97cf5c6650b2898cb123e29de5b1fd8b7a478348289e3d1c6be67
+
+Sweep B (current freeze; re-issued 11:40:10; 31 mutants re-scored)
+  scripts/check-showpicker-round90.mjs        b54cba19c0dfc8640ce4c60b88ba9df3713effcfac40a4fbaf6b57b2b1ef6e3b
+  scripts/negatives-showpicker-round90.mjs    2f11fffc3b03a48a30460277b79f1dde9e759f56a328a3a02e6324e7bff39960
+  scripts/check-record-drift-round90.mjs      bd33d158f3ae198d5587bf8469cb15460692100662277e940a871f94ca732ee2
+  scripts/kill-power-round90.mjs              17175f0ba2f23d8cdd68432c2c78930ea03ea6b37017d3c92644c9ddb6a25347
+  scripts/selftest-r90-gates.mjs              19122bee4292974e7d339c33bc918594a324dd31353c5dc588d518f0d29f586d
+  scripts/chrome-cdp-showpicker-round90.mjs   ac5a7a5e56537acc8f61058059294c5f343b236de9b52b8d691995f1e6c49c8d
+
+Restoration statement
+  This seat modified no lane instrument. All mutants were written under
+  /fast/scratch/hyaku/tabi-r90/R90Mut1 (copies + scratch-only edits) and the scratch tree was
+  deleted at the end of the seat. The lane files above changed during the seat only because other
+  seats re-issued the freeze; this seat's writes in the lane are exactly:
+    .ufo/waves/round-90/w1/R90Mut1.md            (report)
+    .ufo/waves/round-90/w1/R90Mut1/              (these receipts)
+  No git/jj mutation was issued; no kill-power list was used; no tool was installed.

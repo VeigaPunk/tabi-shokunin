@@ -4289,7 +4289,7 @@ SKILL.md `## Round 89 gate registry` registers the six r89 instruments; `scripts
 runs them in order (11 gates: the ten r88 gates plus `gate-selftest`, which executes the four
 isolated `--selftest` modes).
 
-Narrowings (`plans/round-89.md` §Narrowings, as forced by the wave): (1) acceptance is not
+Narrowings (`plans/round-89.md` §Narrowings — that section does not exist; the text lives here and in `plans/round-89.md` §Re-freeze history, as corrected in `corpus/lessons/round-89.md` §Corrections item 2, as forced by the wave): (1) acceptance is not
 filtering — the dialog is unmeasured; (2) the token list is the fixture's normalization (comma-split,
 ASCII-trimmed, ASCII-lowercased), not Chromium's internal tokenization; (3) the settle re-read is
 driver-observed, not counter-enforced — the counter binds the `domRead` data, not the evaluate that
@@ -4305,3 +4305,43 @@ same-element origin comparison; a UI-side colour popup probe. Retired: none.
 
 Scored (r89): 107 checks, battery 223/223, kill power 72/72, selftest 11/11, record drift 3 → 0.
 - Digests: D 061dec8a, nonce tabi-r89-l1-7bde5e6c2f2d. 107 checks, battery 223 cases, kill power 72 mutants.
+
+## Round 90 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r90 (the settle-call binding); C2 calibration, the six r89 spot-check routed defects
+
+Base `a9f1da08`; instrument freeze D6 `de591e7a416b`, nonce `tabi-r90-l1-e573334c78fa` (the scored receipt's own nonce).
+C1's declared axis is judged **NOT MOVED** by two non-author seats (R90Critic F1.3, R90Review2 §6) and the
+claim is therefore an honest **NOT VERIFIED** on `coverage`; C2 verifies on its predicate.
+Axes at start: all six at 9; C1 works a lowest axis and is a capability move (generation r90 of
+the r79 capability); C2 works calibration (record-vs-state mismatches).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r90 (sourced: S224/S223/S219 carried and re-opened) | `node scripts/check-showpicker-round90.mjs --lane <ABS lane> --receipt corpus/evidence/round90/chromium-showpicker/receipt.json --expect-driver-sha256 <pin> --expect-nonce <scored nonce> --expect-fixture-sha256 <receipt fixture sha256> --prior-set .ufo/waves/round-90/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R90`) | base: no r90 receipt → exit 2 `receipt-unreadable`; the r89 scored receipt under the r90 counter → exit 1 with `schema` and `plan-calls`; the isolating control (a probe clone with the four settle calls stripped) → exit 1, `plan-calls` on all four domread legs; after: the scored receipt → exit 0 `clean`, 107 checks | **NOT VERIFIED — axis miss.** Legs (a)–(c) hold, but the surface C1 moves is a checker obligation, not a domain surface: the driver's only substantive change is one argument the fixture's `__inputs` discards, with identical payload, legs, check set and `checkCount` (107 both generations). Reported, not repaired; the operator rules. |
+| C2 calibration (9), the six r89 spot-check routed defects (`scripts/check-record-drift-round90.mjs`, predicate `C2-RECORDDRIFT-R90`) | `node scripts/check-record-drift-round90.mjs --lane <ABS lane> --json` (exit 0 iff 8 claims, 0 mismatches) | before (base `a9f1da08` worktree): **7 mismatches** (`scored/drift-before.json`); after: **0** of 8 (`scored/drift-a.json`); `--selftest` exit 0 with all 8 red on the fixture; the leak statement is the dead-branch witness (`scored/leak-witness.json`) | **VERIFIED** on the predicate; the frozen `type` sentence is narrowed on record: §7 defect 6 (report author date) is not lane-measurable, and three self-checks (`gate-selftest`, `quality161-sweep`, `scorecard-tallies`) stand in the counted set |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-linux` (generation r90) | As r89, and now: each of the four DOM-read legs' send log carries a `Runtime.evaluate` of `window.__inputs(true)` immediately after the settle `window.__state()` evaluate; `plan-calls` requires it in the ordered plan sequence, and `send-log-allowlist` refuses it on every non-domread leg (the frozen C1 sentence attributes both limbs to `plan-calls`; R90Review1 item 5 routes the wording). The fixture's `__inputs` takes no parameter, so the binding is a call-spelling/ordering constraint, not a new browser observation | `corpus/evidence/round90/chromium-showpicker/receipt.json`; `corpus/knowledge/chromium-showpicker-runtime-round-90.md` | 79 |
+
+Knowledge 102 → 103 (`corpus/knowledge/chromium-showpicker-runtime-round-90.md`). Registry 224
+(no new rows; S224/S223/S219 carried and re-opened). SKILL.md `## Round 90 gate registry`
+registers the six r90 instruments; `scripts/selftest-r90-gates.mjs` runs them in order (12 gates at D6).
+
+Narrowings (`plans/round-90.md` §Declared limits + §Wave corrections): (1) the distinct
+expression is a lane convention that binds the fixture's own call, not Chromium's parsing, and the
+argument is discarded by `__inputs` (R90Critic F1.3); (2) acceptance is not filtering — the dialog
+is unmeasured; (3) the colour arm is a file-chooser metric; (4) the counter reads a receipt, with
+the constant-offset escape printed in the limit block; (5) C2 counts eight record statements, five
+of them the routed defects and three self-checks, so §7 defect 6 is not counted; (6) the settle
+call's attribution is syntactic: a forged `domRead` plus a copied call record, another leg's
+`domRead`, an extra plain `__inputs()` call before the anchor, and a reshaped state anchor all
+score clean (R90Review2 F1/F2/F4c/F7, re-run on the D3 bytes and recorded in `w1/`).
+
+Planned (r91): a same-element origin comparison if the fixture can carry a `postMessage` proxy; a
+UI-side colour popup probe; the independent sweep's survivors as battery cases. Retired: none.
+
+Scored (r90): 107 checks, battery 226/226, kill power 76/76, selftest 12/12 (D6), record drift 7 → 0,
+leak witness dead-branch red. C1 verdict **NOT VERIFIED** (axis miss, reported); C2 **VERIFIED**.
+- Digests: D4 85c4191706b3, nonce tabi-r90-l1-e573334c78fa. 107 checks, battery 226 cases, kill power 76 mutants.

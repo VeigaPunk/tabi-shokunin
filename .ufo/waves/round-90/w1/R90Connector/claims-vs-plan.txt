@@ -1,0 +1,64 @@
+C2 statement count — record vs gate (snapshot 2026-11-08T11:28:24-03:00, mid-w1)
+
+FALSE OF THE GATE (the two plan sentences):
+  plans/round-90.md:66-67  "C2's counted work is the six statements."
+  plans/round-90.md:77  "- **The drift gate counts six statements, not every sentence.** A green gate means
+                         those six match observed state."
+
+STATE THE GATE MEASURES:
+  scripts/check-record-drift-round90.mjs:44-165  statements() yields eight claim() results:
+      :73  r89-claim-sweep
+      :89  r89-narrowing-pointers
+      :102 r89-census-attribution
+      :110 r89-leak-enforcement
+      :115 r89-revision-naming
+      :124 gate-selftest
+      :131 quality161-sweep
+      :161 scorecard-tallies
+  scripts/check-record-drift-round90.mjs:224  out = { ..., claims: results.length, ... }
+  scripts/check-record-drift-round90.mjs:59   const plan89 = rd('plans/round-89.md') || '';
+      -> the gate reads plans/round-89.md only; it never reads plans/round-90.md.
+      -> statement 2 scans a fixed list (SCORECARD.md, SKILL.md, LOG.md, corpus/QUALITY.md,
+         corpus/lessons/round-89.md) for the nonexistent plans/round-89.md §Narrowings citation;
+         none of the eight statements reads plans/round-90.md.
+
+FROZEN CLAIM (claims.json, C2):
+  :30  leg a: "exits 0 with claims 8, mismatches 0"
+  :37  limit: "eight record statements, not every sentence in the lane; ... a green gate means those
+               eight match observed state, nothing more."
+
+OTHER RECORDS (all say eight):
+  SKILL.md:3362                 "(8 statements: the six r89 spot-check routed defects, the gate-selftest
+                                 set, QUALITY 161's cite, and the SCORECARD tally set)"
+  corpus/lessons/round-90.md:52 "record drift 7 -> 0 over 8 statements"
+  SCORECARD.md:4334             "(5) C2 counts eight record statements, not every sentence."
+  README.md:27                  "(8 statements, 7 -> 0)"
+  LOG.md:4082                   "over 8 statements, 7 -> 0"
+  LOG.md:4087                   "check-record-drift-round90.mjs (8 statements)"
+
+COMPOSITION NOTE (wording, not count): the gate implements five of the six r89 routed defects
+(claim-sweep, narrowing-pointers, census-attribution, leak-enforcement, revision-naming) plus three
+statements that are not routed defects (gate-selftest, QUALITY 161's cite, SCORECARD tallies) = 8.
+The sixth routed defect (report author date) is not a repo-state statement and is absent from the
+gate. SKILL.md:3362 and the gate's own header phrase the composition as "the six routed defects"
++ the three sets, which read literally sums to 9; the measured count is 8 (five + three). The
+frozen limit's numeral (eight) is the unambiguous one.
+
+WHY C2 STILL VERIFIES: the plan sentence is outside the counted eight, and the frozen limit says
+"not every sentence in the lane". A green C2 (claims 8, mismatches 0) can coexist with this false
+sentence. This is a blind spot in the axis's own class (record vs state), not a falsification of
+C2's legs.
+
+R89 PRECEDENT (same class): corpus/lessons/round-89-verifier-spotcheck.md §7 item 1 routes
+plans/round-89.md §C2 item 3 as false of the final instruments (claim sweep). Item 2 routes dangling
+plan/section pointers. The r90 lesson's Mistake table already discloses a comparable
+`stale-record-pointer` (SCORECARD -> README section absent) and fixes the README while naming the
+historical rows as missing. The r90 plan sentence is not named there.
+
+CHECKED AND NOT A DEFECT: claims.json:21 names `.ufo/waves/round-90/controls/c1/noreceipt.txt` as the
+exit-2 control; no such file exists in the round-90 controls (rounds 85-89 committed a
+`noreceipt.txt` holding the counter's no-receipt output). The R90Exec3 seat ran the named path as an
+absent receipt and recorded exit 2 (`w1/R90Exec3-noreceipt.json`, sha256
+3bfeb3f4d33ab495565875ef3916bdc6e7f209f40593e5ed3476990f5badfd12; report `w1/R90Exec3.md:137-138`
+says "it is absent by design"). The behavior reproduces; only the artifact convention changed
+(output kept as a seat receipt, not a committed control file). Not proposed for change here.

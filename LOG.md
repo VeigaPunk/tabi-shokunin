@@ -4070,3 +4070,45 @@ Records: `corpus/knowledge/chromium-showpicker-runtime-round-89.md` (knowledge 1
 `corpus/lessons/round-89.md`; `plans/round-89.md`; SCORECARD round-89 section + capability row;
 SKILL.md `## Round 89 gate registry`; QUALITY 162 (a selftest fixture is causal and self-cleaning);
 SOURCES §Search log round-89 entry (S224 added, registry 223 → 224).
+
+## Round 90 — 2026-11-08 (attempt 1, Linux host)
+
+L1 `TabiR90`. Base `a9f1da08` (the round-89 verifier spot-check commit). Claims: C1 coverage —
+capability `chromium-showpicker-linux` generation r90, the settle-call binding (the four domread
+legs' send logs carry a distinct `Runtime.evaluate` of `window.__inputs(true)` immediately after
+the settle `window.__state()` evaluate; `plan-calls` requires it there, forbids it elsewhere and
+compares it in the ordered plan sequence) — 41 legs / 107 checks; C2 calibration — the six routed
+defects of the round-89 non-author spot-check (`corpus/lessons/round-89-verifier-spotcheck.md` §7),
+counted by `scripts/check-record-drift-round90.mjs` over 8 statements, 7 → 0.
+
+Instruments (pins in `.ufo/waves/round-90/freeze.txt`): `chrome-cdp-showpicker-round90.mjs`
+(41 legs), `check-showpicker-round90.mjs` (107 checks), `negatives-showpicker-round90.mjs`
+(225 cases, coverage 107/107), `kill-power-round90.mjs` (settle-call and settle-order mutants
+added), `selftest-r90-gates.mjs` (11 gates), `check-record-drift-round90.mjs` (8 statements).
+Two 41-leg probes are the prior set (`.ufo/waves/round-90/controls/c1/probes/`); each scores clean
+(107 checks, exit 0) against the other's prior-set. Scored receipt
+`corpus/evidence/round90/chromium-showpicker/receipt.json`. Controls:
+`.ufo/waves/round-90-controls/c1/nowork-settle-stripped.json` (a probe clone with the four settle
+calls stripped → exit 1, `plan-calls` on all four domread legs) and
+`.ufo/waves/round-90/controls/c1/nowork-r89-under-r90.json` (the r89 receipt under the r90 counter
+→ exit 1, `schema` first); the C2 before control is the same drift gate on a base `a9f1da08`
+worktree (8 claims, 7 mismatches, `scored/drift-before.json`).
+
+Record repairs (the six r89 spot-check routed defects): the r89 `claims.json` carries a
+`frozenAmendments` entry naming the two clauses false of the final instruments; two corrected
+ledger rows point at sections that exist; the r89 lesson's appended `## Corrections carried by
+round 90` block states the 224-row end census, the round-88 re-open attribution, the 17-word S224
+quote, the leak narrowing, the 10:13 drift-after revision and the report author-date rule.
+
+Records: `corpus/knowledge/chromium-showpicker-runtime-round-90.md` (knowledge 102 → 103);
+`corpus/lessons/round-90.md`; `plans/round-90.md`; SCORECARD round-90 section + capability row;
+SKILL.md `## Round 90 gate registry`; QUALITY 163; README `## Round 90 coverage`; SOURCES §Search
+log round-90 entry (S224/S223/S219 re-opened; registry 224, no new rows).
+Round shape: ONE v1 wave `w1`, 13 seats (4 executor, 2 reviewer, 1 critic, 1 mutation-tester,
+1 scout, 1 scribe, 1 connector, 1 sentinel, 1 simplifier; 5 attack seats = 38 %); all 13 filed
+(`.ufo/waves/round-90/w1-results.json`); pre-file ledger
+`scripts/hyaku/prefile-falsification.py --lane tabi --round 90` → pass claims=2 rows=14
+attack_seats=6 findings=0. Freeze D1→D6 (six re-freezes, three of them C1 instruments), each with
+its trigger in `plans/round-90.md` §Re-freeze history; verdicts: C1 **NOT VERIFIED** (axis miss —
+the moved surface is a checker obligation), C2 **VERIFIED** on its predicate with the counted set
+narrowed on record.

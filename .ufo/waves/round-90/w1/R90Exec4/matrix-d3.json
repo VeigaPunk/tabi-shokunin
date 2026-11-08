@@ -1,0 +1,578 @@
+[
+ {
+  "id": "m00-identity",
+  "what": "control: unmodified scored-receipt clone (same exemption)",
+  "d3exit": 0,
+  "d3failed": [],
+  "d3tok": [],
+  "d1exit": 0,
+  "d1failed": [],
+  "d1tok": []
+ },
+ {
+  "id": "m01-remove-settle",
+  "what": "delete the settle `Runtime.evaluate` from `sp89-accept-domread-text`; renumber ids",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "settle-order",
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-eval",
+   "settle-order",
+   "sequence"
+  ]
+ },
+ {
+  "id": "m02-rename-plain-inputs",
+  "what": "rename the settle expression to plain `window.__inputs()` (allowlisted)",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "settle-order",
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-eval",
+   "settle-order",
+   "sequence"
+  ]
+ },
+ {
+  "id": "m03-duplicate-settle",
+  "what": "duplicate the settle `Runtime.evaluate` immediately after itself; renumber",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-eval",
+   "sequence"
+  ]
+ },
+ {
+  "id": "m04-move-settle-after-dismiss",
+  "what": "move the settle `Runtime.evaluate` after the dismiss `{cancel:true}`; renumber",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "settle-order",
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-order",
+   "sequence"
+  ]
+ },
+ {
+  "id": "m05-add-settle-to-non-domread",
+  "what": "insert the settle `Runtime.evaluate` after the first `window.__state()` of `sp84-accept-answer` (kind showpicker-answer)",
+  "d3exit": 1,
+  "d3failed": [
+   "send-log-allowlist"
+  ],
+  "d3tok": [
+   "send-log-allowlist"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-eval-unexpected",
+   "settle-eval"
+  ]
+ },
+ {
+  "id": "m06-settle-returnbyvalue-false",
+  "what": "settle `returnByValue:false`",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "sequence"
+  ]
+ },
+ {
+  "id": "m07-extra-eval-between-state-settle",
+  "what": "insert allowlisted `window.__late` between the settle `window.__state()` and the settle call",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "settle-order"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-order"
+  ]
+ },
+ {
+  "id": "m08-swap-domread-logs",
+  "what": "swap the whole send logs of `sp89-accept-domread-text` and `sp89-accept-domread-png`; rebind ids",
+  "d3exit": 1,
+  "d3failed": [
+   "send-log-allowlist",
+   "plan-calls"
+  ],
+  "d3tok": [
+   "send-log-allowlist",
+   "sequence",
+   "answer-files",
+   "trigger-id"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "send-log-allowlist",
+   "plan-calls"
+  ],
+  "d1tok": [
+   "send-log-allowlist",
+   "sequence",
+   "answer-files",
+   "trigger-id"
+  ]
+ },
+ {
+  "id": "m09-swap-domread-with-same-target-answer",
+  "what": "swap send logs of `sp89-accept-domread-text` and `sp86-accept-wildcard-text` (same target `aw`/answer `a.txt`); event logs untouched",
+  "d3exit": 1,
+  "d3failed": [
+   "send-log-allowlist",
+   "plan-calls",
+   "cdp-event-log-closed"
+  ],
+  "d3tok": [
+   "send-log-allowlist",
+   "settle-order",
+   "sequence",
+   "cdp-event-log-closed"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls",
+   "cdp-event-log-closed"
+  ],
+  "d1tok": [
+   "settle-eval-unexpected",
+   "settle-eval",
+   "settle-order",
+   "sequence",
+   "cdp-event-log-closed"
+  ]
+ },
+ {
+  "id": "m10-swap-same-target-answer-logs",
+  "what": "swap send logs of `sp84-accept-answer` and `sp84-accept-mime-answer` (same target `k`); mirror the answer record",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls",
+   "accept-answer-law",
+   "accept-mime-answer-law"
+  ],
+  "d3tok": [
+   "sequence",
+   "answer-files",
+   "accept-answer-law",
+   "accept-mime-answer-law"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls",
+   "accept-answer-law",
+   "accept-mime-answer-law"
+  ],
+  "d1tok": [
+   "sequence",
+   "answer-files",
+   "accept-answer-law",
+   "accept-mime-answer-law"
+  ]
+ },
+ {
+  "id": "m11-extra-late-after-settle",
+  "what": "insert `window.__late` between the settle call and the dismiss",
+  "d3exit": 0,
+  "d3failed": [],
+  "d3tok": [],
+  "d1exit": 0,
+  "d1failed": [],
+  "d1tok": []
+ },
+ {
+  "id": "m12-extra-plain-inputs-after-settle",
+  "what": "insert plain `window.__inputs()` between the settle call and the dismiss",
+  "d3exit": 0,
+  "d3failed": [],
+  "d3tok": [],
+  "d1exit": 0,
+  "d1failed": [],
+  "d1tok": []
+ },
+ {
+  "id": "m13-plain-preread-returnbyvalue-false",
+  "what": "set the pre-read plain `window.__inputs()` (id 9) `returnByValue:false`",
+  "d3exit": 0,
+  "d3failed": [],
+  "d3tok": [],
+  "d1exit": 0,
+  "d1failed": [],
+  "d1tok": []
+ },
+ {
+  "id": "m14-rebind-settle-to-post-dismiss-state",
+  "what": "remove settle-state + settle; reinsert both after the surviving post-dismiss state",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "settle-order",
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-order",
+   "sequence"
+  ]
+ },
+ {
+  "id": "m15-move-state-settle-pair-after-dismiss",
+  "what": "move the (`window.__state()`, settle) pair after the dismiss",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "sequence"
+  ]
+ },
+ {
+  "id": "m16-nonallowlisted-eval-after-settle",
+  "what": "insert non-allowlisted `window.__inputs(true)||0` between settle and dismiss",
+  "d3exit": 1,
+  "d3failed": [
+   "send-log-allowlist"
+  ],
+  "d3tok": [
+   "send-log-allowlist"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "send-log-allowlist"
+  ],
+  "d1tok": [
+   "send-log-allowlist"
+  ]
+ },
+ {
+  "id": "m17-non-domread-preread-becomes-settle",
+  "what": "change `sp84-accept-answer`'s pre-read plain `window.__inputs()` to the settle expression",
+  "d3exit": 1,
+  "d3failed": [
+   "send-log-allowlist"
+  ],
+  "d3tok": [
+   "send-log-allowlist"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-eval-unexpected",
+   "settle-eval"
+  ]
+ },
+ {
+  "id": "m18-post-dismiss-state-returnbyvalue-false",
+  "what": "set the post-dismiss `window.__state()` `returnByValue:false`",
+  "d3exit": 0,
+  "d3failed": [],
+  "d3tok": [],
+  "d1exit": 0,
+  "d1failed": [],
+  "d1tok": []
+ },
+ {
+  "id": "m19-extra-state-after-settle",
+  "what": "insert an extra `window.__state()` between the settle call and the dismiss",
+  "d3exit": 0,
+  "d3failed": [],
+  "d3tok": [],
+  "d1exit": 0,
+  "d1failed": [],
+  "d1tok": []
+ },
+ {
+  "id": "m20-swap-answer-logs-pure",
+  "what": "swap send logs of `sp84-accept-answer` and `sp84-accept-mime-answer`; answer record untouched",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "sequence",
+   "answer-files"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "sequence",
+   "answer-files"
+  ]
+ },
+ {
+  "id": "m21-remove-post-dismiss-state",
+  "what": "delete the post-dismiss `window.__state()`",
+  "d3exit": 0,
+  "d3failed": [],
+  "d3tok": [],
+  "d1exit": 0,
+  "d1failed": [],
+  "d1tok": []
+ },
+ {
+  "id": "m22-remove-plain-preread",
+  "what": "delete the pre-read plain `window.__inputs()`; event `afterSendId` untouched",
+  "d3exit": 1,
+  "d3failed": [
+   "cdp-event-log-closed"
+  ],
+  "d3tok": [
+   "cdp-event-log-closed"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "cdp-event-log-closed"
+  ],
+  "d1tok": [
+   "cdp-event-log-closed"
+  ]
+ },
+ {
+  "id": "m23-settle-params-key-order",
+  "what": "reorder the settle params keys (`returnByValue` first; semantically identical)",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "sequence"
+  ]
+ },
+ {
+  "id": "m24-add-settle-to-cross-leg",
+  "what": "insert the settle `Runtime.evaluate` into cross-origin `sp84-cross-origin-nonfile` (parent context)",
+  "d3exit": 1,
+  "d3failed": [
+   "send-log-allowlist"
+  ],
+  "d3tok": [
+   "send-log-allowlist"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-eval-unexpected",
+   "settle-eval"
+  ]
+ },
+ {
+  "id": "m25-swap-same-target-coherent",
+  "what": "m09 made coherent: rebind ids, mirror the answer record, set each open event `afterSendId` to its trigger id",
+  "d3exit": 1,
+  "d3failed": [
+   "send-log-allowlist",
+   "plan-calls"
+  ],
+  "d3tok": [
+   "send-log-allowlist",
+   "settle-order",
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-eval-unexpected",
+   "settle-eval",
+   "settle-order",
+   "sequence"
+  ]
+ },
+ {
+  "id": "m26-remove-plain-preread-coherent",
+  "what": "delete the pre-read plain `window.__inputs()` and shift event `afterSendId` > 9 down by one",
+  "d3exit": 0,
+  "d3failed": [],
+  "d3tok": [],
+  "d1exit": 0,
+  "d1failed": [],
+  "d1tok": []
+ },
+ {
+  "id": "m27-plain-inputs-before-state-anchor",
+  "what": "insert a plain `window.__inputs()` immediately before the settle state anchor",
+  "d3exit": 0,
+  "d3failed": [],
+  "d3tok": [],
+  "d1exit": 0,
+  "d1failed": [],
+  "d1tok": []
+ },
+ {
+  "id": "m28-settle-contextid",
+  "what": "set the settle `params.contextId` to the page main default context id",
+  "d3exit": 1,
+  "d3failed": [
+   "send-log-allowlist",
+   "plan-calls"
+  ],
+  "d3tok": [
+   "send-log-allowlist",
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "send-log-allowlist",
+   "plan-calls"
+  ],
+  "d1tok": [
+   "send-log-allowlist",
+   "sequence"
+  ]
+ },
+ {
+  "id": "m29-settle-extra-param-usergesture",
+  "what": "add `userGesture:true` to the settle params",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "sequence"
+  ]
+ },
+ {
+  "id": "m30-extra-state-between-state-settle",
+  "what": "insert an extra `window.__state()` between the settle state and the settle call",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "settle-order"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-order"
+  ]
+ },
+ {
+  "id": "m31-extra-state-before-anchor",
+  "what": "insert an extra `window.__state()` immediately before the settle state anchor",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "settle-order"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "settle-order"
+  ]
+ },
+ {
+  "id": "m32-settle-bare-params",
+  "what": "strip `returnByValue` from the settle params (bare `{expression}`)",
+  "d3exit": 1,
+  "d3failed": [
+   "plan-calls"
+  ],
+  "d3tok": [
+   "sequence"
+  ],
+  "d1exit": 1,
+  "d1failed": [
+   "plan-calls"
+  ],
+  "d1tok": [
+   "sequence"
+  ]
+ }
+]

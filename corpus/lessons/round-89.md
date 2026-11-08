@@ -72,5 +72,46 @@ battery **223** cases / 0 failed / coverage 107/107; kill power **72** mutants /
 |---|---|---|---|
 | `stale-seed-count` — the selftest runner's `counter-clean` gate carried the round-88 literal `checkCount === 102` (copied with the file) and never went green at any r89 freeze (108 at D1, 107 at D3+) | `scripts/selftest-r89-gates.mjs:55`; `w1/R89Critic.md` F9; `w1/R89Scribe.md` F1; `w1/R89Simplifier.md` §1 | the r88 lesson's own rule (freeze only after a full selftest run on the exact bytes) was not applied to the runner, only to the receipt instruments | the literal is set to the counter's measured 107 and re-run green at the final freeze; the r90 rule: the runner's expected count is derived from one scored run in the same commit, never copied |
 | `mid-wave-re-freeze-churn` — five instrument edits (D2–D5) after the wave spawned, each triggered by a defect a seat then measured: the battery LEG_ALSO gap, the replay-limit check that no receipt mutation can trip, three kill-power from-strings, the survivor raw case | `plans/round-89.md` §Re-freeze history; `w1/R89Exec2.md` (kill power 3 unapplied), `w1/R89Simplifier.md` (F4/F5), `w1/R89Sentinel.md` S1/S9 | none — the freeze committed before the full battery + kill-power + selftest batch had executed green once on the exact bytes | all repairs batched per trigger and disclosed with digests; r90 rule: freeze only after the three-way scorer (counter + battery + kill power + selftest) runs green on the exact bytes, and let one post-wave repair batch be the maximum |
-| `frozen-control-numeral` — C2's before-value was declared as 2 mismatches; the base-worktree measurement gives 3 (`gate-selftest` joins because the r89 scripts are absent at base) | `w1/R89Exec3.md` (base `5a901163`: exit 1, 3 mismatches); `scored/drift-before.json` | the freeze checked the predicate but not that the before-value came from an executed control | numeral corrected post-scoring to the measured 3 and disclosed in `claims.json` `frozenAmendments` + `plans/round-89.md` §Frozen-amendment note |
+| `frozen-control-numeral` — C2's before-value was declared as 2 mismatches; the base-worktree measurement gives 3 (`gate-selftest` joins because the r89 scripts are absent at base) | `w1/R89Exec3.md` (base `5a901163`: exit 1, 3 mismatches); `scored/drift-before.json` | the freeze checked the predicate but not that the before-value came from an executed control | numeral corrected post-scoring to the measured 3 and disclosed in `claims.json` `frozenAmendments` + `plans/round-89.md` §Frozen-amendment note (that section does not exist; the disclosure is the `frozenAmendments` entry, as corrected in §Corrections item 2) |
 | `selftest-witness-vacuity` — the drift `--selftest` fixture was red for absent records rather than the injected defect, and the two vacuity spots in `negatives` (no sp89 `LEG_ALSO`) and `kill-power` (three unapplied from-strings) let the family report green on a red battery | `w1/R89Simplifier.md` F4/F5 (measured tables); `w1/R89Mut1.md` §1 (the original battery is red at baseline: 4 failed, 5 uncovered) | the `gate-selftest` gate only required exit 0 | rebuilt as real witnesses at D2–D5 (the four domread `LEG_ALSO` entries, the three unique from-strings, the `accept-domread-law-raw` case); the drift fixture now carries all seven swept sections and asserts the causal `bad` list |
+
+## Corrections carried by round 90 (append-only; the round-89 records above are not rewritten)
+
+The round-89 non-author spot-check (`corpus/lessons/round-89-verifier-spotcheck.md` §7) routed six
+defects; round 90 repairs the record here, and `scripts/check-record-drift-round90.mjs` counts the
+statements. Nothing below alters a frozen predicate, counter, pin, prior, threshold or kill rule.
+
+1. **Claim sweep (D1).** `claims.json` C2 `type` item (3) and leg (c)'s fixture-leak clause are
+   false of the final instruments: the replay-limit invariant is `limit.replayConsistency`, a
+   computed boolean in the `limit` block (D3 removed the numbered check; `scripts/check-showpicker-round89.mjs:943`
+   records why), and the fixture-tree removal was verified by a manual `ls`, not a scripted check
+   (the prefix is `tabi-`, not `tapi-`). A `frozenAmendments` entry now names both.
+   `plans/round-89.md` §C2 item 3 keeps its frozen text (the amendment's `field` now names it); this
+   correction is the live statement.
+2. **Narrowing pointers (D2).** The two C1 `falsifies-wording` rows in
+   `.ufo/waves/round-89/claim-falsification.tsv` point at `plans/round-89.md §Narrowings`, which
+   does not exist. The real amendment locations are the `## Round 89` narrowing block in
+   `SCORECARD.md`, the §Re-freeze history D3/D4 entries in `plans/round-89.md`, and the knowledge
+   note's `## Limits the wave established (r89)`. Corrected rows are appended to the ledger with
+   the `C1/R89*-corrected` prefix; the original rows stay.
+3. **Census and source attribution (D3).** Round 89's end census is 224 rows, exit 0
+   (`.ufo/waves/round-89/census/end.txt`); the "223 rows" figure was the pre-S224 count. The
+   "S223/S219 re-opened in place" attribution describes the **round-88** re-opening
+   (`corpus/lessons/round-88.md` §Gate), not a round-89 one; round 89 opened S224 only. The S224
+   Gate quote below is the ≤25-word located quote, and the search-log quote is verbatim.
+   - S224 (WHATWG HTML §2.3.8, `dfn id=set-of-comma-separated-tokens`, fetched 2026-11-08,
+     121,595 B, sha256 `2e9e2cbbe1ed`): "tokens consist of any string of zero or more characters,
+     neither beginning nor ending with ASCII whitespace" (17 words).
+4. **Leak enforcement (D4).** The round-89 claim that the drift `--selftest` removes its fixture
+   tree is narrowed: the round-89 gate removed the tree it created in the same process, but no
+   check could fail on a leaked tree. Round 90's witness is
+   `.ufo/waves/round-90/scored/leak-witness.json`: the gate's `--selftest` run on the committed
+   bytes exits 0 with `fixtureAbsent: true`, and a copy whose removal call is dead-branched exits 1
+   with `fixtureAbsent: false`. The r90 drift statement reads that artifact against the frozen pin;
+   there is no battery case for this class (the battery mutates receipts, not subprocesses).
+5. **Revision naming (D5).** `scored/drift-a.json` was written at 10:13 -03:00, before the last
+   `SCORECARD.md` (10:19:34) and `SKILL.md` (10:19:40) writes; the "measured at `b7513f81`" line
+   names a revision later than the run. The four predicates were re-derived at `57783d47` by the
+   spot-check and hold; the after-run revision is the 10:13 worktree, not the branch tip.
+6. **Report author date (D6).** The round-89 report commit's author date (09:46:35) predates the
+   lane work it cites. Round 90's report commit uses a clean author date (the committer time).

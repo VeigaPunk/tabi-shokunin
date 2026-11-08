@@ -1,0 +1,71 @@
+R90Connector — scope, commands, snapshot (tabi round 90, w1)
+snapshot: 2026-11-08T11:28:24-03:00 (mid-w1; scored/ and w1/ reports were live during the scan)
+lane root: /home/vgpnk/Projects/shokunin/tabi-shokunin
+base: a9f1da08
+freeze: .ufo/waves/round-90/freeze.txt sha256 18d06a3f3895086a92f09868f5a0f5c1c3b4e880851377de2ea4fb070dde0ddf
+        (D2; D1 e573334c78fa, the scored nonce stem, per SCORECARD.md §Round 90 and corpus/lessons/round-90.md)
+nonce: tabi-r90-l1-e573334c78fa
+receipt: corpus/evidence/round90/chromium-showpicker/receipt.json
+driver pin: ac5a7a5e56537acc8f61058059294c5f343b236de9b52b8d691995f1e6c49c8d
+fixture pin: 5fb1f0f7806c8f099976078f3f03c9e08d6814346cc29fdccd022f4037bd7ac8
+mode: read-only scan. No instrument, gate, counter, battery or selftest was executed. No git/jj
+      mutation. No subagent dispatch. No tool installed or upgraded. Scratch under
+      /fast/scratch/hyaku/tabi-r90/R90Connector/ was used for intermediate matrices and deleted
+      before yield; the files here are the retained copies.
+
+Sweep A — the seven tokens (run from /home/vgpnk/Projects/shokunin):
+  rg -c -i --no-ignore --glob '!node_modules' --glob '!.git' -e '<pat>' -- \
+     *-shokunin/corpus/knowledge *-shokunin/scripts SCORECARD.md
+  patterns:
+     __inputs\(true\)
+     settle[-_ ]?eval
+     plan[-_ ]?calls
+     record[-_ ]?drift
+     dom[-_ ]?read
+     setFileInputFiles
+     showPicker
+  output: raw-seven-counts.txt (raw rg format) and hits-seven.tsv (token, lane, path, lines).
+
+Sweep B — same-class ground (same fleet root):
+  rg -c -i --no-ignore --glob '!node_modules' --glob '!.git' -e '<pat>' -- \
+     *-shokunin/corpus/knowledge *-shokunin/corpus/lessons *-shokunin/SCORECARD.md \
+     *-shokunin/PROVINCE.md SCORECARD.md
+  patterns:
+     file.?picker|file chooser|filechooser|showPicker
+     cdpSendLog|send log|cdp send|ordered plan|plan-calls
+     settle
+     Runtime\.evaluate
+     transient activation|user activation
+  output: raw-class-counts.txt and hits-class.tsv (class, lane, lines, files).
+
+Sweep C — the seven tokens inside every lane's current round-90 wave:
+  rg -n -i -e 'showpicker|plan[-_ ]?calls|record[-_ ]?drift|dom[-_ ]?read|setFileInputFiles|__inputs\(true\)|settle[-_ ]?eval' -- \
+     *-shokunin/.ufo/waves/round-90
+  output: hits-round90-waves.txt (non-tabi rows only; 11 rows, all homonyms/references).
+
+Sweep D — label-collision census:
+  lanes naming C1 in their round-90 wave: 16 (all that have a round-90 wave).
+  lanes using "settle" in knowledge/lessons/SCORECARD/PROVINCE: 20.
+  keyset of claims.json C1/C2/C3: chousa, kasegi, tabi (the other lanes use other claim shapes;
+  the C1/C2 labels still recur in their wave files).
+
+Reads (no execution): .ufo/waves/round-90/claims.json; .ufo/waves/round-90/freeze.txt;
+plans/round-90.md; plans/round-89.md; SCORECARD.md §Round 90; SKILL.md §Round 90 gate registry;
+corpus/lessons/round-90.md; corpus/lessons/round-89-verifier-spotcheck.md §7;
+scripts/check-record-drift-round90.mjs; scripts/check-showpicker-round90.mjs (plan-calls region);
+corpus/knowledge/chromium-showpicker-runtime-round-90.md; PROVINCE.md adjacency table;
+mado-shokunin/corpus/knowledge/xdg-portal-routing-resolver-r90.md;
+revenger-shokunin/corpus/knowledge/round-93-browser-cdp-runtime-evidence.md;
+chousa chain-resolution-r3.md and exempt-hop-audit-r32.md; lore r93-r8-worked-example.md;
+sibling connector reports chousa R90ConnectorSiblings.md and kumitate K90Connector.md.
+
+Count conventions: `rg -c` counts matching lines per file, case-insensitive; `files` is the number
+of files with at least one matching line per token/class; `lines` is the sum of per-file counts.
+`--no-ignore` includes files a .gitignore would hide; node_modules and .git are excluded. Scope is
+the named roots only, not every file in every lane.
+
+Tool note: the session `grep` tool returned "No matches found" for multi-lane wildcard directory
+paths (e.g. /home/vgpnk/Projects/shokunin/*/corpus/knowledge/*.md), while the same pattern matched
+under /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/*.md. Multi-lane counts were
+therefore taken with rg and are reproducible by the commands above; the inconsistency was reported
+to xd://report_issue.
