@@ -1,0 +1,27 @@
+{
+  "lane": "tabi",
+  "round": 92,
+  "base": "bdf403ff40d9a9a59a2730636f9626e1195b06e2",
+  "frozenAt": "2026-11-08T20:05:00-03:00",
+  "frozenIn": "plans/round-92.md §Claim, §Declared limits, §Controls, §Counting command (same commit as this file)",
+  "instruments": {
+    "scripts/chrome-cdp-iframe-chooser-round92.mjs": "0feca90ba0272d92d3444d1b23bf0e85a089946408fe52e383e8ddf740321688",
+    "scripts/check-iframe-chooser-round92.mjs": "d4d84f92be292911aef9591da8888f7a59aa07384c32f755961046a5a410efc5",
+    "scripts/negatives-iframe-chooser-round92.mjs": "1cecfea1d7fbb15724a3a6a380626f5f000dbbd7274dfdb813b8a66c3534889f"
+  },
+  "claims": {
+    "C1": {
+      "axis": "coverage",
+      "capability": "chromium-crosssite-iframe-chooser-linux",
+      "predicate": "C1-IFRAME-CHOOSER-R92",
+      "sourced": ["S227", "S228"],
+      "statement": "On this host's Chromium 155.0.8059.84 (--headless=new, Linux), `scripts/check-iframe-chooser-round92.mjs --live` runs the pinned driver for 3 repetitions of two arms (fresh browser per leg; parent http://127.0.0.1:<http>/parent.html with one iframe whose child holds file input #s) and exits 0 iff in all 6 legs: X (child host localhost) - exactly one attached `iframe` target via the page session's flatten auto-attach, exactly one `iframe` target in Target.getTargets with the same targetId and URL equal to the child URL, targetId equal to the child frame id; S (child host 127.0.0.1, other port) - zero attached and zero listed `iframe` targets; both - after a left click sent on the PAGE session at #s's centre, exactly one Page.fileChooserOpened within 1500 ms across all sessions, frameId equal to the child frame id, arriving on the iframe session in X and on the page session in S; DOM.setFileInputFiles with its backendNodeId on that same session returns no error; the child input then reads exactly [[\"tabi-r92-answer.txt\",22]]; the child recorded exactly one trusted click targeting #s.",
+      "limits": "plans/round-92.md §Declared limits 1-6",
+      "countingCommand": "node scripts/check-iframe-chooser-round92.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --expect-driver-sha256 0feca90ba0272d92d3444d1b23bf0e85a089946408fe52e383e8ddf740321688 --live --scratch <ABS> --ports <http,child,cdp> --json",
+      "before": "counting command absent at base bdf403ff (rc 128); r91 receipt under the frozen counter -> rc 1, 21 finding ids",
+      "after": "--live exit 0, verdict clean, 0 findings over 6 legs",
+      "killRule": "fails if the scored --live run exits non-zero, a frozen control misses its expected verdict, or a wave artifact shows a leg-level statement false on a run of the pinned driver on this host (not a named setup/port/resource failure)"
+    }
+  },
+  "frozenAmendments": []
+}
