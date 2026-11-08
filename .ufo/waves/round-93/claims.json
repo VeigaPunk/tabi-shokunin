@@ -1,0 +1,30 @@
+{
+  "lane": "tabi",
+  "round": 93,
+  "base": "192535d7ea519439ce42ec09b45038ed6756c709",
+  "frozenAt": "2026-11-08T20:47:56-03:00",
+  "frozenIn": "plans/round-93.md §Claim, §Declared limits, §Controls, §Counting command (same commit as this file); frozenAt stamped before the freeze commit was created",
+  "instruments": {
+    "scripts/chrome-cdp-cross-session-answer-round93.mjs": "a0deddda855a3eb48f9dd02f6d01eee0f607e9ab319dd74c6182c1d9ecc9a4a0",
+    "scripts/check-cross-session-answer-round93.mjs": "3c721b668e553050ed6450d7b2e1881a864d191ef243ce410c37d5f04e36f1e3",
+    "scripts/negatives-cross-session-answer-round93.mjs": "c8c15cc7368025201c949af2defd23fb048a8d17c4ba20a49659d46f3d88f6f5"
+  },
+  "claims": {
+    "C1": {
+      "axis": "coverage",
+      "capability": "chromium-oopif-backendnode-scope-linux",
+      "predicate": "C1-CROSS-SESSION-ANSWER-R93",
+      "sourced": [
+        "S231",
+        "S232"
+      ],
+      "statement": "plans/round-93.md §Claim C1 predicate C1-CROSS-SESSION-ANSWER-R93, verbatim: on this host Chromium 155.0.8059.84 (--headless=new, Linux), the --live counter runs the pinned driver for legs X-1,S-1,X-2,S-2,X-3,S-3 (fresh browser per leg) and exits 0 iff in every leg: X (child localhost) one iframe target = child frame, chooser on the iframe session with B>0, describeNode(B) on the iframe session = INPUT type=file id=s, describeNode(B) on the PAGE session = no error and nodeName #document, page pierced getDocument has 0 INPUT#s, page-session setFileInputFiles(B) errors exactly \"Node is not a file input element\" with child files [] after, then iframe-session answer no error; S (child 127.0.0.1) zero iframe targets, chooser on the page session with B>0, describeNode(B) on the page session = INPUT type=file id=s, pierced getDocument has exactly 1 INPUT#s, no cross answer, page-session answer no error; both: child files exactly [[tabi-r93-answer.txt,22]], exactly one trusted click on #s, browserVersion Chrome/155.0.8059.84, 6 distinct DevTools browser ids; plus the receipt-identity checks listed in the plan",
+      "limits": "plans/round-93.md §Declared limits 1-6",
+      "countingCommand": "node scripts/check-cross-session-answer-round93.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --expect-driver-sha256 a0deddda855a3eb48f9dd02f6d01eee0f607e9ab319dd74c6182c1d9ecc9a4a0 --live --scratch <ABS> --ports <http,child,cdp> --json",
+      "before": "counting command absent at base 192535d7 (rc 128); r92 receipt under the frozen counter -> rc 1",
+      "after": "--live exit 0, verdict clean, 0 findings over 6 legs (101 checks)",
+      "killRule": "fails if the scored --live run exits non-zero, a frozen control misses its expected verdict, or a wave artifact shows a leg-level statement false on a --live run of the pinned driver on this host (not a named setup/port/resource failure)"
+    }
+  },
+  "frozenAmendments": []
+}
