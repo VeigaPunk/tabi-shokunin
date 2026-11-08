@@ -4114,3 +4114,37 @@ counter generation whose limit sentence prints the constant-offset escape. Retir
 
 Scored (r84): 80 checks, battery 162/162, kill power 50/50, selftest 9/9.
 - Digests: D 31fc14c29f84, nonce tabi-r84-l1-31fc14c29f84. 80 checks, battery 162/162, kill power 50/50.
+
+## Round 85 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r85 (the same-origin arms); C2 operability, the six r84 survivor-family witnesses
+
+Base `c574d593`; freeze commit `5c19615`; D **`620623a43f74`**, nonce **`tabi-r85-l1-620623a43f74`**.
+Axes at start: all six at 9; C1 works a lowest axis and is a capability move (generation r85 of the
+r79 capability); C2 works operability (a frozen battery's refusal reach).
+
+| Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
+|---|---|---|---|
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r85 (sourced: S219/S220/S218 carried and re-opened) | `node scripts/check-showpicker-r85.mjs --lane <ABS lane> --receipt corpus/evidence/round85/chromium-showpicker/receipt.json --expect-driver-sha256 1690c63d14447a08ea9fe915a49d317e2953c5fb08e064e8f160a100089ab8ee --expect-nonce tabi-r85-l1-620623a43f74 --expect-fixture-sha256 0b0129377711954ddae722a7ad6db8f00f5eb94759ef45786f21b6eede3d252a --prior-set .ufo/waves/round-85/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R85`) | base `c574d593`: no r85 receipt → exit 2 `receipt-unreadable`; the r84 scored receipt under the r85 counter → exit 1, 81 checks, 22 findings; after: the scored receipt → exit 0 clean, **87 checks**, battery 175 cases / 0 failed / coverage 87/87, kill power 58 mutants / 58 killed / 0 survivors | VERIFIED |
+| C2 operability (9), the six R84Mut1 survivor-family witnesses (`scripts/witness-families-r85.mjs`, predicate `C2-FAMILYWITNESS-R85`) | `node scripts/witness-families-r85.mjs --lane <ABS lane> --work <ABS scratch> --json` (exit 0 iff after 0 survivors and before ≥ 1) | before (frozen r84 D battery): **3 of 6 families survive** (`cross-access-dropped`, `cross-childseq-dropped`, `cross-childact-before-dropped`); after (frozen r85 battery): **0 of 6 survive**, 6 killed, 0 crashed, 0 unapplied (`scored/witness-a.json`) | VERIFIED |
+
+Capabilities (this round):
+
+| Capability | What it can now do | Evidence pointer | First-working round |
+|---|---|---|---|
+| `chromium-showpicker-linux` (generation r85) | As r84, and now: the same input type measured across origin AND activation — same-origin without transient activation throws `NotAllowedError`, same-origin with a trusted click returns `undefined` and opens **no** chooser (no picker exists for tel/search/text on this platform), cross-origin throws `SecurityError`; the error is origin-determined with activation held constant (24 legs, 87 checks) | `corpus/evidence/round85/chromium-showpicker/receipt.json`; note `corpus/knowledge/chromium-showpicker-runtime-round-85.md` | 79 |
+| `battery-survivor-witnesses` | Six single-conjunct weakenings from R84Mut1's routed survivors are refused by a named battery case; the frozen r85 battery kills all six (the r84 D battery killed three) | `scripts/witness-families-r85.mjs`; `scored/witness-a.json`; `scored/battery-a.json` | 85 |
+
+Knowledge 97 → 98 (`corpus/knowledge/chromium-showpicker-runtime-round-85.md`). Registry 223 (no new
+rows; S219/S220/S218 re-opened). SKILL.md `## Round 85 gate registry` registers the seven r85
+instruments; `scripts/selftest-r85-gates.mjs` runs them in order.
+
+Narrowings (recorded in `plans/round-85.md`): (1) the origin/activation comparison varies the ELEMENT
+across frames, not one element's origin (the type attribute is what is held constant); (2) the
+no-picker mechanism (early return vs no popup view) is not recorded; (3) C2's six families are not the
+full 51-family census, and the r84 D battery already killed three of the six because R84Mut1 ran the
+freeze-commit battery, not the D bytes — the honest before-value is 3, not 6.
+
+Planned (r86): the `accept` token grammar matrix (`image/png` MIME token, `image/*`, mixed list);
+a same-element origin comparison; a `type=color` same-origin activated arm. Retired: none.
+
+Scored (r85): 87 checks, battery 175/175, kill power 58/58, selftest 9/9, family witnesses 3 → 0.
+- Digests: D 620623a43f74, nonce tabi-r85-l1-620623a43f74. 87 checks, battery 175 cases, kill power 58 mutants.

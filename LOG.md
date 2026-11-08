@@ -3945,3 +3945,24 @@ R84Scribe (note + erratum drafts), R84Exec1 (two cold runs clean at 80/80), R84E
 before/after/control), R84Exec3 (D1 battery/killpower/selftest run, pre-repair — superseded).
 
 - Round 84 digests: D 31fc14c29f84, nonce tabi-r84-l1-31fc14c29f84. 80 checks, battery 162/162, kill power 50/50.
+
+## Round 85 (2026-11-08)
+
+Lane TabiR85. One v1 wave, 10 seats (4 attack roles: R85Review1, R85Review2, R85Critic, R85Mut1).
+C1 capability generation r85: the r84 note's named frontier (a same-origin `type=tel`/`search`/`text`
+trigger for contrast) is measured twice — without transient activation (NotAllowedError) and after a
+real trusted click (returns `undefined`, zero choosers — no picker exists for these types) — so the
+SecurityError is origin-determined with activation held constant. 24 legs; scored receipt clean at
+87 checks; battery 175 cases / 0 failed / coverage 87/87; kill power 58 mutants / 58 killed /
+0 survivors / 0 crashed; selftest 9 gates. C2 operability: the six R84Mut1 survivor families now
+have battery cases; the frozen r84 D battery left 3 of 6 alive and the frozen r85 battery kills all
+six (`scripts/witness-families-r85.mjs`, `scored/witness-a.json`). Freeze `5c19615`, D
+`620623a43f74`, nonce `tabi-r85-l1-620623a43f74`. Knowledge 97 → 98. Registry 223 unchanged (S219,
+S220, S218 re-opened; the L1 re-opened S219 itself on 2026-11-08, 687,515 bytes, sha256
+`b0202de1c0b4…`). Census start/end exit 0, 223 rows.
+Wave findings reconciled: R85Review1/R85Review2 (false-green and case-level attacks), R85Critic
+(origin/activation confound narrowed in `plans/round-85.md`), R85Mut1 (independent mutants),
+R85Exec1 (two cold runs), R85Exec2 (battery/kill power/selftest), R85Exec3 (family witnesses and the
+constant-offset forgery), R85Scout (sources), R85Scribe (note drafts), R85Connector (sibling heads).
+
+- Round 85 digests: D 620623a43f74, nonce tabi-r85-l1-620623a43f74. 87 checks, battery 175 cases, kill power 58 mutants.

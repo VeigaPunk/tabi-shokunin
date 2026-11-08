@@ -55,10 +55,19 @@ const results = [];
 const claim = (id, ok, detail) => results.push({ id, ok: !!ok, detail: String(detail) });
 
 const FAMILIES = ['cross-message-unpinned', 'cross-childlate-dropped', 'cross-access-dropped', 'cross-childseq-dropped', 'cross-childact-after-dropped', 'cross-childact-before-dropped'];
+// family -> the battery case that must refuse that weakening
+const FAMILY_CASES = {
+  'cross-message-unpinned': 'cross-tel-message-unpinned',
+  'cross-childlate-dropped': 'cross-tel-childlate',
+  'cross-access-dropped': 'cross-tel-crossaccess',
+  'cross-childseq-dropped': 'cross-tel-childseq',
+  'cross-childact-after-dropped': 'cross-tel-childact-after',
+  'cross-childact-before-dropped': 'cross-tel-childact-before',
+};
 
 // 1. family witness cases in the battery
 {
-  const missing = FAMILIES.filter((f) => !battery.includes("'" + f + "'"));
+  const missing = Object.values(FAMILY_CASES).filter((c) => !battery.includes("'" + c + "'"));
   claim('family-witnesses', missing.length === 0, 'battery cases missing: ' + JSON.stringify(missing));
 }
 // 2. accept grammar recorded as frontier
@@ -85,7 +94,7 @@ const FAMILIES = ['cross-message-unpinned', 'cross-childlate-dropped', 'cross-ac
   const c = scored.counter, b = scored.battery, k = scored.killpower;
   const nums = c && c.checkCount === 87 && b && b.failed === 0 && k && k.survived === 0 && k.crashed === 0 && k.mutants === 58;
   const cases = b && b.cases;
-  const stated = /87 checks/.test(lesson + plan) && (/175 cases/.test(lesson + plan + scorecard) || (b && /175/.test(String(b.cases)))) && /58 (mutants|semantic)/.test(lesson + plan + scorecard + skill);
+  const stated = /87 checks/.test(lesson + plan + scorecard + log) && /175 cases/.test(lesson + plan + scorecard + log) && /58 (mutants|semantic)/.test(lesson + plan + scorecard + log + skill);
   claim('r85-numbers', !!(nums && stated), 'checks=' + (c && c.checkCount) + ' battery=' + cases + '/' + (b && b.failed) + ' kp=' + (k && (k.killed + '/' + k.mutants)) + ' stated=' + stated);
 }
 // 6. census artifacts

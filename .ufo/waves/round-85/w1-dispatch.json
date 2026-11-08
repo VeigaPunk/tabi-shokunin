@@ -1,0 +1,194 @@
+{
+  "schema": "ufo-swarm-wave-dispatch-v1",
+  "wave": "w1",
+  "policy": {
+    "source": "config",
+    "maxLanes": 256,
+    "minLanes": 8,
+    "waveMinLanes": 8,
+    "waveMaxLanes": 16,
+    "declaredMaxLanes": null,
+    "hardCeiling": 256,
+    "rampBatchSize": 5,
+    "rampIntervalMs": 700,
+    "globalRunnerCeiling": 1056
+  },
+  "counts": {
+    "spawn": 10,
+    "resume": 0,
+    "total": 10
+  },
+  "registry": {
+    "schema": "ufo-swarm-registry-v1",
+    "path": ".ufo/waves/round-85/w1/swarm-registry.json",
+    "reportDir": ".ufo/waves/round-85/w1",
+    "members": {
+      "R85Exec1": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "axes": [
+          "coverage"
+        ],
+        "milestone": "leg (a): two independent cold runs of the frozen r85 driver, scored by the frozen counter"
+      },
+      "R85Exec2": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "axes": [
+          "operability"
+        ],
+        "milestone": "leg (b): battery, kill power and selftest against the committed scored receipt"
+      },
+      "R85Exec3": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "executor",
+        "item": null,
+        "axes": [
+          "operability",
+          "calibration"
+        ],
+        "milestone": "C2 numbers and the forgery controls: witness families before/after, retimed forgery at the escape minimum"
+      },
+      "R85Review1": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "reviewer",
+        "item": null,
+        "axes": [
+          "coverage"
+        ],
+        "milestone": "attack C1: re-run the counter and hunt false greens in the six new same-origin legs"
+      },
+      "R85Review2": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "reviewer",
+        "item": null,
+        "axes": [
+          "operability"
+        ],
+        "milestone": "attack C2 battery: family cases fail for the named id, or by collateral?"
+      },
+      "R85Critic": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "critic",
+        "item": null,
+        "axes": [
+          "calibration"
+        ],
+        "milestone": "falsify the claims: origin-determination wording, the no-picker law mechanism, and the limit"
+      },
+      "R85Mut1": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "mutation-tester",
+        "item": null,
+        "axes": [
+          "coverage"
+        ],
+        "milestone": "independent conjunct-level mutants of the r85 counter beyond the frozen kill list"
+      },
+      "R85Scout": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "scout",
+        "item": null,
+        "axes": [
+          "coverage"
+        ],
+        "milestone": "open the sources for the same-origin / no-picker / activation-order laws"
+      },
+      "R85Scribe": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "scribe",
+        "item": null,
+        "axes": [
+          "depth"
+        ],
+        "milestone": "draft the r85 knowledge note, lesson sections, SKILL registry row"
+      },
+      "R85Connector": {
+        "kind": "spawn",
+        "agentId": null,
+        "role": "connector",
+        "item": null,
+        "axes": [
+          "adjacency"
+        ],
+        "milestone": "sibling-overlap scan: user activation, showPicker, same-origin gating"
+      }
+    }
+  },
+  "compaction": {
+    "applied": false,
+    "mechanism": null,
+    "reason": null,
+    "savedBytes": 0,
+    "payloadBytesBefore": 0,
+    "payloadBytesAfter": 0
+  },
+  "taskCall": {
+    "context": "# Target\nTabi round 85, one v1 wave `w1`. L1 `TabiR85` holds the planner seat and is the sole integration owner. Lane /home/vgpnk/Projects/shokunin/tabi-shokunin; base c574d593; freeze commit 5c1961525e83efe2682cab389b8995d67c0ab4f0; D dbecb1a18905; nonce tabi-r85-l1-dbecb1a18905.\nClaims FROZEN in /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-85/claims.json; instrument pins in .ufo/waves/round-85/freeze.txt. Never propose amending a predicate, counter, pin, prior, threshold or kill rule; attack them.\n\nC1 coverage, capability generation r85 `chromium-showpicker-linux`: the six new same-origin legs (`sp85-same-origin-{tel,search,text}` and their `-activated` forms) are measured. Frozen laws: same-origin WITHOUT transient activation -> NotAllowedError; same-origin WITH activation -> `showPicker()` returns undefined and ZERO choosers open; cross-origin -> SecurityError. Predicate: scored receipt clean at checkCount 87 (frozen counter, every pin), battery exit 0 / 175 cases / 0 failed / coverage 87/87, kill power 58 mutants / 0 survivors / 0 crashed, selftest 9 gates.\n\nC2 operability, survivor-family witnesses: `scripts/witness-families-r85.mjs` re-applies six single-conjunct weakenings from R84Mut1's routed survivors to the r84 and r85 counters. Measured before: 3 of 6 families survive the frozen r84 battery; target after: 0 of 6 survive the frozen r85 battery.\n\n# Absolute paths (every seat)\n- Lane: /home/vgpnk/Projects/shokunin/tabi-shokunin\n- Scored receipt: /home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round85/chromium-showpicker/receipt.json\n- Prior set: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-85/controls/c1/prior-set.txt\n- Scored outputs: /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-85/scored/\n- Scratch root: /fast/scratch/hyaku/tabi-r85/<your-seat-name>/ (create with mkdir -p, remove it before you yield; /tmp is for files under 50 MB only)\nEvery `Report:` trailer path in your prompt is relative to /home/vgpnk/Projects/shokunin/tabi-shokunin — write it at /home/vgpnk/Projects/shokunin/tabi-shokunin/<that path>.\n\n# Bounds\nRead-only seats return findings only. Every seat: never commit, never push, never run a mutating git or jj command anywhere (no add/commit/checkout/reset/push, no `jj` mutations); never write outside the lane tree, your scratch dir and your own report path; never touch the fleet repo, sibling lanes, .ufo/state, or .scratch/. Fixture git repos, if any, are created with `D=$(mktemp -d)` under your scratch and every git call names `-C \"$D\"` after `git -C \"$D\" rev-parse --show-toplevel` prints $D. Do not mutate host sysctls or restart host services.\nA seat may spawn at most one read-only `labrat` probe; every other role is a leaf; no seat runs its own swarm.\nNever message another lane's seats. Report numbers you measured; an unrun check has not passed.\n\n# Tooling\nYou may install or upgrade tools that help this task: read /home/vgpnk/.omp/agent/RULES.md first (official channels; full-system upgrades go through tsukuroi's update-safety gate). **All pacman transactions are PAUSED host-wide** — install via `uv tool`/`npx`/an official binary in ~/.local/bin, or file no request and continue. Never `-Sy`, `-Syu`, `-U`, `-R`, downgrade, or restart a host service. Record any install (tool, version, channel, reason) in your report.\n",
+    "tasks": [
+      {
+        "name": "R85Exec1",
+        "agent": "executor",
+        "task": "/skill:godspeed\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim — let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nRun `node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-showpicker-round85.mjs` twice with fresh nonces (`tabi-r85-cold1-dbecb1a18905`, `tabi-r85-cold2-dbecb1a18905`), distinct ports per run (cold1 19600/19601/19602, cold2 19610/19611/19612), `--lane /home/vgpnk/Projects/shokunin/tabi-shokunin`, `--scratch /fast/scratch/hyaku/tabi-r85/R85Exec1/run1` (and run2), `--out` into your scratch. Then score each receipt with the frozen counter:\n`node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-r85.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --receipt <receipt> --expect-driver-sha256 <sha256 of /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/chrome-cdp-showpicker-round85.mjs> --expect-nonce <that run nonce> --expect-fixture-sha256 <that receipt fixture.sha256> --prior-set /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-85/controls/c1/prior-set.txt --json`.\nReport each run exit code, verdict, checkCount, the six new legs' `showPicker` value, `activationBefore/After`, chooser count, whether the two runs agree on those six records, and the driver sha256 you measured. Record `df -h /fast` before and after and delete your scratch.\n\nReport: `.ufo/waves/round-85/w1/R85Exec1.md`\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: coverage\nMilestone: leg (a): two independent cold runs of the frozen r85 driver, scored by the frozen counter\n\nReport: write your scoped findings to .ufo/waves/round-85/w1/R85Exec1.md"
+      },
+      {
+        "name": "R85Exec2",
+        "agent": "executor",
+        "task": "/skill:godspeed\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim — let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nRun against the committed scored receipt `/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/evidence/round85/chromium-showpicker/receipt.json` (read its `nonce` and `fixture.sha256` from the file; pins from `.ufo/waves/round-85/freeze.txt`):\n1. `node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-showpicker-r85.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --real <receipt> --expect-driver-sha256 <pin> --expect-nonce <receipt nonce> --expect-fixture-sha256 <receipt fixture> --prior-set /home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-85/controls/c1/prior-set.txt --work /fast/scratch/hyaku/tabi-r85/R85Exec2/b --json`\n2. `node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/kill-power-r85.mjs` with the same flags and `--work .../k --json`\n3. `node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/selftest-r85-gates.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --work .../s --json`\nReport each exit code and the numbers: battery cases/failed/coverage, kill power mutants/killed/survived/crashed + `unapplied`, selftest gates ok/failed. If a gate is red, name the gate and the exact finding — do not weaken or edit any instrument. Delete your scratch before yielding.\n\nReport: `.ufo/waves/round-85/w1/R85Exec2.md`\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: operability\nMilestone: leg (b): battery, kill power and selftest against the committed scored receipt\n\nReport: write your scoped findings to .ufo/waves/round-85/w1/R85Exec2.md"
+      },
+      {
+        "name": "R85Exec3",
+        "agent": "executor",
+        "task": "/skill:godspeed\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim — let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\n1. Run `node /home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/witness-families-r85.mjs --lane /home/vgpnk/Projects/shokunin/tabi-shokunin --work /fast/scratch/hyaku/tabi-r85/R85Exec3/w --json`; report before/after survivor lists and each family outcome.\n2. Reproduce the C2 before-state independently: apply each of the six family edits by hand to a COPY of `/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-r84.mjs` in your scratch, run the frozen r84 battery beside it, and say which families the r84 battery notices (never write a copy into the lane).\n3. Forgery control for C1: copy the scored receipt in scratch, shift EVERY page event `ts`/`at` by a constant +2.0 ms and score it with the frozen counter. Print the counter `limit` block verbatim and state whether the shifted receipt is accepted, refused, and which ids fire. Then rewrite the PRIOR receipt nonce to the scored nonce, score it, and report whether the replay ids fire.\nReport every measured exit code and finding-id list. Delete your scratch.\n\nReport: `.ufo/waves/round-85/w1/R85Exec3.md`\n\nLane bounds: leaf member — no subagent dispatch except your single labrat.\nJudged on: operability, calibration\nMilestone: C2 numbers and the forgery controls: witness families before/after, retimed forgery at the escape minimum\n\nReport: write your scoped findings to .ufo/waves/round-85/w1/R85Exec3.md"
+      },
+      {
+        "name": "R85Review1",
+        "agent": "reviewer",
+        "task": "/skill:godspeed\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim — let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nIndependently re-run the counting command on the committed scored receipt (pins in `.ufo/waves/round-85/freeze.txt`; prior set `.ufo/waves/round-85/controls/c1/prior-set.txt`) and confirm or refute `verdict clean, checkCount 87`.\nThen attack the six new legs and their laws:\n(a) Are the two activation arms distinct measurements, or does the counter accept a receipt where the `-activated` legs carry the non-activated law and vice versa? Build both swapped receipts in scratch and score them.\n(b) Does `same-origin-no-picker-law` fire when a `-activated` leg carries one chooser, and does `intercept-law` double-refuse? Report the full finding-id list for each forgery.\n(c) Is the NotAllowedError message pin distinct from the InvalidStateError and SecurityError pins, and can a receipt swap them undetected?\n(d) Read `fixtureInputs` for `tes`/`ses`/`txs` and the driver patch strings; is the claim that these inputs have no picker supported by a recorded field, or is it an inference? Say which.\nReport finding ids per forgery, what the counter does NOT enforce about the new legs, and whether C1 wording overstates. Delete your scratch.\n\nReport: `.ufo/waves/round-85/w1/R85Review1.md`\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage\nMilestone: attack C1: re-run the counter and hunt false greens in the six new same-origin legs\n\nReport: write your scoped findings to .ufo/waves/round-85/w1/R85Review1.md"
+      },
+      {
+        "name": "R85Review2",
+        "agent": "reviewer",
+        "task": "/skill:godspeed\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim — let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nRead `/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/negatives-showpicker-r85.mjs` and measure, for each of the six family cases (`cross-tel-message-unpinned`, `cross-tel-childlate`, `cross-tel-crossaccess`, `cross-tel-childseq`, `cross-tel-childact-after`, `cross-tel-childact-before`):\n(1) the exact counter finding-id list the case produces (run the counter on the mutated receipt yourself) and whether the case `alsoAllowed` hides an id that could pass alone;\n(2) whether any case passes because a COLLATERAL check fires rather than the law it names — show one case with its full id list and say which id is load-bearing;\n(3) whether a case is a no-op.\nThen the causal test: take the committed r85 counter, delete the six new cases from a scratch copy of the battery, and re-run the family set against it — report how many families survive without those cases.\nReport ids, causal counts, and any case that cannot fail for its stated reason. Delete your scratch.\n\nReport: `.ufo/waves/round-85/w1/R85Review2.md`\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: operability\nMilestone: attack C2 battery: family cases fail for the named id, or by collateral?\n\nReport: write your scoped findings to .ufo/waves/round-85/w1/R85Review2.md"
+      },
+      {
+        "name": "R85Critic",
+        "agent": "critic",
+        "task": "/skill:godspeed\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim — let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nFalsify, do not summarize.\n(1) C1 says the SecurityError is origin-determined. Consider the confound: the cross-origin legs carry a trusted click while the non-activated same-origin legs do not. From the committed receipt alone, is any field ruling out activation as the cause? The `-activated` arms exist for tel/search/text — check whether the SAME input is compared across origins WITH activation held constant anywhere; if not, name the gap precisely.\n(2) Print the counter `limit` block and test the constant-offset escape it names: shift every page event by exactly the printed escape minimum or more in a copy of the scored receipt, and show whether the counter refuses.\n(3) Attack C2 wording: re-derive `3 of the 6 families alive under the frozen r84 battery` and state whether that number is a property of the r84 D battery or of the r84 counter bytes; if the D battery already carries three of the six cases, say what that implies about r84 routed-defect accounting.\n(4) Does any axis get harmed by these landing? Name the axis and the evidence.\nReport measured ids and numbers; state any wording that must be narrowed. Delete your scratch.\n\nReport: `.ufo/waves/round-85/w1/R85Critic.md`\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: calibration\nMilestone: falsify the claims: origin-determination wording, the no-picker law mechanism, and the limit\n\nReport: write your scoped findings to .ufo/waves/round-85/w1/R85Critic.md"
+      },
+      {
+        "name": "R85Mut1",
+        "agent": "mutation-tester",
+        "task": "/skill:godspeed\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim — let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nWrite your own mutant set (do not reuse `/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/kill-power-r85.mjs`): at least 40 semantic edits of `/home/vgpnk/Projects/shokunin/tabi-shokunin/scripts/check-showpicker-r85.mjs`, each a real weakening — drop a conjunct, invert a comparison, narrow a pin, accept a superset, or delete a check — at least 12 aimed at the six r85 same-origin legs and `same-origin-no-picker-law`, at least 6 at the cross-origin family witnesses.\nRun the frozen battery against each mutant in scratch and classify case-level: KILLED, SURVIVED (battery exits 0 on the honest receipt), CRASHED. Use the frozen battery bytes from the freeze commit if the working-tree bytes differ; state the sha256 you ran. For every survivor build the smallest receipt that exercises the dropped rule and show pristine vs mutant on the same bytes.\nReport the full mutant table with verdicts, survivor families by class, and the survivor count. Delete your scratch.\n\nReport: `.ufo/waves/round-85/w1/R85Mut1.md`\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage\nMilestone: independent conjunct-level mutants of the r85 counter beyond the frozen kill list\n\nReport: write your scoped findings to .ufo/waves/round-85/w1/R85Mut1.md"
+      },
+      {
+        "name": "R85Scout",
+        "agent": "scout",
+        "task": "/skill:godspeed\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim — let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nOpen and quote, with the exact locator, a <=25-word verbatim quote each (count words with `wc -w` and state the count), recording URL, fetch status, byte count and sha256 for:\n(1) WHATWG HTML `showPicker()` steps — the SecurityError step, the File/Color exemption, the transient-activation step and their ORDER (https://html.spec.whatwg.org/multipage/input.html);\n(2) Chromium 155.0.8059.84 `third_party/blink/renderer/core/html/forms/html_input_element.cc` `HTMLInputElement::showPicker` — origin check, mutability check, activation check, and what happens for input types with no picker (chromium.googlesource.com with `?format=TEXT`, base64-decode);\n(3) the exact NotAllowedError message string in that source.\nState explicitly whether the chain makes the same-origin/activated tel/search/text case a silent no-op by TYPE (no popup view) or by an explicit early return, and cite the lines. Do not propose new registry rows; report located quotes and whether the r85 laws match them. Delete any scratch copies; keep quotes in your report.\n\nReport: `.ufo/waves/round-85/w1/R85Scout.md`\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: coverage\nMilestone: open the sources for the same-origin / no-picker / activation-order laws\n\nReport: write your scoped findings to .ufo/waves/round-85/w1/R85Scout.md"
+      },
+      {
+        "name": "R85Scribe",
+        "agent": "scribe",
+        "task": "/skill:godspeed\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim — let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nDraft (do NOT commit) under `/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-85/w1/R85Scribe/`:\n(1) `knowledge-note.md` — `corpus/knowledge/chromium-showpicker-runtime-round-85.md` in the lane house style (read `/home/vgpnk/Projects/shokunin/tabi-shokunin/corpus/knowledge/chromium-showpicker-runtime-round-84.md` first): frontmatter `source:`/`verified-at:`/`recheck:`, then measured laws with receipt field paths for the six new legs (nonce tabi-r85-l1-dbecb1a18905), which r84 laws are carried unchanged, what a receipt of this shape cannot prove, and the named frontier (accept MIME-token / `image/*` grammar; a cross-origin vs same-origin comparison holding activation constant).\n(2) `lesson.md` — round-85 lesson skeleton: identity block, `## Gate` (sources opened, admitted/rejected with reasons), `## Mistakes` table using the class vocabulary, and the C2 before/after numbers (3 of 6 families survive the r84 battery, 0 of 6 the r85 battery).\n(3) `skill-row.md` — a `## Round 85 gate registry` block in the style of the r84 entry, naming the seven r85 instruments with entry commands and verdict maps.\nUse only values measured in `.ufo/waves/round-85/scored/`; if a file is missing write `PENDING` and say so.\n\nReport: `.ufo/waves/round-85/w1/R85Scribe.md` plus the three drafts\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: depth\nMilestone: draft the r85 knowledge note, lesson sections, SKILL registry row\n\nReport: write your scoped findings to .ufo/waves/round-85/w1/R85Scribe.md"
+      },
+      {
+        "name": "R85Connector",
+        "agent": "connector",
+        "task": "/skill:godspeed\n\n1. **Name the axes.**\n2. **Iterate cheap, in parallel.**\n3. **Keep moves that improve any axis and harm none.**\n4. **Don't aim — let the frontier walk itself.**\n\n## IMMEDIATELY STOP ASKING CLARIFYING QUESTIONS. Execute tool calls concurrently in large batches. Do not serialize what can run in parallel. Do not output philosophical reasoning or verbose plans. Act directly via tool calls.\n\n# Assignment\nScan every sibling `PROVINCE.md` under /home/vgpnk/Projects/shokunin/*-shokunin/ (pin each head with `git -C <repo> rev-parse HEAD` at scan time) for ground overlapping: transient/sticky user activation, `showPicker`, input types and picker availability, same-origin/cross-origin gating, and CDP interception of pickers. For each hit record sibling, head, PROVINCE line, and whether tabi r85 findings are absorbed, contested or disjoint. Write the table to `/home/vgpnk/Projects/shokunin/tabi-shokunin/.ufo/waves/round-85/w1/sibling-heads-r85.tsv` and report contested rows with the integrator question each raises. Delete your scratch.\n\nReport: `.ufo/waves/round-85/w1/R85Connector.md`\n\nLane bounds: leaf member — no subagent dispatch.\nJudged on: adjacency\nMilestone: sibling-overlap scan: user activation, showPicker, same-origin gating\n\nReport: write your scoped findings to .ufo/waves/round-85/w1/R85Connector.md"
+      }
+    ]
+  },
+  "resumeSends": [],
+  "note": "Issue exactly one batched task call with taskCall ({context, tasks}); never split a wave into multiple task calls (one-swarm-per-wave). Then one hub send per resumeSends entry: hub send --to <entry.resume> --message <entry.message> (entry.name is bookkeeping, not a hub field)."
+}

@@ -3305,3 +3305,13 @@ cross-origin `type=color` input is EXEMPT (`showPicker()` returns undefined, no 
 - Kill power: `node scripts/kill-power-r84.mjs ... --work <scratch> --json` (50 mutants, 50 killed, 0 survivors)
 - Self-test: `node scripts/selftest-r84-gates.mjs --lane <ABS lane> --work <scratch> --json` (9 gates)
 - Record drift: `node scripts/check-record-drift-r84.mjs --lane <ABS lane> --json` (10 claims, 0 mismatches)
+
+## Round 85 gate registry
+
+- `check-showpicker-r85` (87 checks): `node scripts/check-showpicker-r85.mjs --lane <ABS lane> --receipt <receipt.json> --expect-driver-sha256 <hex> --expect-nonce <tabi-r85-...> --expect-fixture-sha256 <hex> --prior-set <file> --json`; exit 0 = clean, 1 = findings, 2 = usage/unreadable. Six new legs `sp85-same-origin-{tel,search,text}[-activated]`; new law `same-origin-no-picker-law`.
+- Driver: `scripts/chrome-cdp-showpicker-round85.mjs` (24 legs: the r84 generation plus the six same-origin arms on parent inputs `#tes`/`#ses`/`#txs`).
+- Battery: `node scripts/negatives-showpicker-r85.mjs ... --work <scratch> --json` (175 cases, coverage 87/87; the six survivor-family cases `cross-tel-*`).
+- Kill power: `node scripts/kill-power-r85.mjs ... --work <scratch> --json` (58 mutants, 58 killed, 0 survivors, 0 crashed).
+- Family witnesses: `node scripts/witness-families-r85.mjs --lane <ABS lane> --work <scratch> --json` (before 3/6 survivors on the r84 D battery, after 0/6 on the r85 battery).
+- Self-test: `node scripts/selftest-r85-gates.mjs --lane <ABS lane> --work <scratch> --json` (9 gates).
+- Record drift: `node scripts/check-record-drift-r85.mjs --lane <ABS lane> --json` (8 claims, 0 mismatches).
