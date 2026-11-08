@@ -4146,11 +4146,12 @@ sweep; QUALITY 164; the r89/r90 append-only correction blocks; the r90 note/LOG/
 attribution and count repairs.
 Round shape: ONE v1 wave `w1`, 13 seats (4 executor, 2 reviewer, 1 critic, 1 mutation-tester,
 1 scout, 1 scribe, 1 connector, 1 sentinel, 1 simplifier; 5 protocol attack seats = 38 %; the L1
-holds the planner seat). Eight seats filed an artifact under `.ufo/waves/round-91/w1/` (Exec1,
-Exec3, Exec4, Review1 [result JSONs only], Review2, Scout, Sentinel, Simplifier); five seats
-(Exec2, Critic, Mut1, Scribe, Connector) left no artifact after the attempt-2 L1 died at 13:23 and
-their results were never handed off — no results JSON exists, and no seat was replaced. Attempt 3
-re-verified every filed artifact against the frozen command and landed the round.
+holds the planner seat). Nine seats filed an artifact under `.ufo/waves/round-91/w1/` (Exec1,
+Exec2 [late, before the evidence commit], Exec3, Exec4, Review1 [result JSONs only], Review2, Scout,
+Sentinel, Simplifier); four seats (Critic, Mut1, Scribe, Connector) left no artifact after the
+attempt-2 L1 died at 13:23 and no handoff was written — no seat was replaced (Mut1 was still running
+at the evidence commit and was asked to file). Attempt 3 re-verified every filed artifact against the
+frozen command and landed the round.
 
 Wave outcome (record-only; no predicate, counter, battery, kill rule, prior or receipt amended):
 the attack seats reproduced C1 leg (a) clean at 30 checks and C2 at 8/8, and filed reach and record

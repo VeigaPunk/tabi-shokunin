@@ -167,3 +167,18 @@ D1-derived nonce; every later freeze touches only non-receipt instruments and is
   any case rather than its own `expectCase`; the battery accepts "at least" one expected finding;
   `reproduced` cannot decide the counter's verdict; the drift gate's `note-plan-calls-claim` arm
   pins a phrase that does not occur. All are r92 instrument work; nothing was changed after scoring.
+- **Prior-set guard is count-level (R91Review1 F4):** `prior-set` requires `priors.length >= 2` and
+  compares each prior's law projection, but it does not dedupe: the same probe listed twice scores
+  clean at 30/30, and prior-vs-prior distinctness (nonce/ports/launch tokens) is unchecked. A
+  single-other-probe set fails only `prior-set`. r92 battery case.
+- **Pins are declaration-level in the counter (R91Review1 F3/F4):** a receipt carrying fabricated
+  driver+fixture hashes passes clean at 30/30, because the counter compares the receipt's declared
+  values to the `--expect-*` pins and never recomputes a fixture; the fixture hashes ARE recomputable
+  from the committed driver + nonce (Review1 recomputed all three: `a6ecf367…`, `01380a98…`). The
+  recomputation is a seat-side control, not a counter statement — r92 work to make it a check.
+- **Proxy execution is not proven by `law`/`proxy-law` (R91Review1):** a no-op expression and a wrong
+  `targetOrigin` both surface only through `send-log-allowlist`/`plan-calls`; the law and proxy-law
+  statements stay green, so a receipt can carry the recorded proxy call without its execution.
+  Recorded, not amended.
+- **Activation law reads only `isActive`:** `hasBeenActive` is unread (R91Review1 F5, R91Exec4 M16);
+  the claim's "stays inactive" wording is bound by one field. r92.
