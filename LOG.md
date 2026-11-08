@@ -4021,10 +4021,11 @@ records; SOURCES §Search log round-86 entry; `.ufo/waves/round-86/lesson-proof/
 
 ## Round 88 — 2026-11-08 (attempt 1, Linux host)
 
-L1 `TabiR88`. Base `f16f992d` (the round-87 verifier spot-check commit); instrument freeze D6
-`4daf8817` (D1 `86f1dcec` first freeze, D2 the selftest re-pin + genuine 37-leg priors, D3 the
+L1 `TabiR88`. Base `f16f992d` (the round-87 verifier spot-check commit); instrument freeze D7
+`abfd00a2` (D1 `86f1dcec` first freeze, D2 the selftest re-pin + genuine 37-leg priors, D3 the
 `gate-selftest` gate, D4 the kill-power mutant from-string, D5 the runner gate's own read bug, D6
-the critic-driven tally/selftest strengthening; `plans/round-88.md` §Re-freeze history); the scored receipt was produced once at the D1-derived nonce
+the critic-driven tally/selftest strengthening, D7 the counter dereference guards + real selftest
+witnesses; `plans/round-88.md` §Re-freeze history); the scored receipt was produced once at the D1-derived nonce
 `tabi-r88-l1-86f1dcec`, and every later freeze touched only non-receipt instruments. Claims: C1 coverage — capability `chromium-showpicker-linux`
 generation r88, the three remaining `accept` token forms (`IMAGE/PNG`, `audio/*,video/*`,
 `image/png;q=0.9`), 37 legs / 102 checks; C2 calibration — the round-87 non-author spot-check

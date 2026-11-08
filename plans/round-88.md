@@ -144,11 +144,41 @@ cause so the churn is auditable rather than an unexplained digest change.
   runner gate `gate-selftest` as the execution control (R88Critic C2-B). No predicate, threshold,
   prior or kill rule changed; the receipt is untouched.
 
+- **D7 `abfd00a2`** (post-wave, simplifier-driven, one batch): the counter gained the two
+  dereference guards R88Simplifier H2 measured (a missing intercept send and an empty
+  `setParams.files` aborted the counter with empty stdout); the battery and kill-power
+  `--selftest` modes were rebuilt as real witnesses on the scored receipt (a mutated
+  `fixtureInputs.ac` accept string: the battery requires `accept-grammar-law`, and kill power
+  requires a stock-vs-mutant DIFFERENCE on `fixture-descriptors` rather than merely "battery
+  exited 1"); the drift `--selftest` now asserts the fixture's failure DETAILS and wires its
+  previously dead `okC`. Re-run at D7: counter clean 102, battery 215/0/102, kill power 69/69,
+  selftest 11/11. No predicate, threshold, prior or kill rule changed.
+
 Seats spawned at 11:50:56Z cite the freeze they read; where a report cites D1/D2/D3 bytes for a
 re-freezed runner, this section is the reconciliation and the report names it. The churn itself
 (D2–D5 after the wave) is mined as a `mid-wave-re-freeze-churn` mistake in
 `corpus/lessons/round-88.md` §Mistakes with the missing rule: freeze the runner only after its
 gates have all executed green once, and batch every repair.
+4. **The drift selftest's swept-tally witness is overdetermined.** R88Mut1
+   (`drift-selftest-fixture-swept-tally-removed`) showed the fixture carries only Round 44 and
+   Round 87, so six of the seven checked sections are absent and `scorecard-tallies` is red for
+   more than the injected 10/10; removing the injected defect leaves the fixture red. The witness
+   is literally what the statement claims (a fixture carrying a swept tally is red) but not
+   causal, and a mutant that weakens only that clause survives. Routed to r89: build the fixture
+   with all seven sections present and assert the exact `bad` list.
+5. **The drift selftest's assertion strength is itself unwitnessed.** R88Mut1 survived
+   `drift-selftest-wantred-dropped`, `-any`, `-claims-loose`, `-always-zero` and
+   `-status-loose`: the only detector for the selftest is "exits 0", so a permanently-green or
+   weakened selftest is unfalsified. D7 tightened the fixture to assert statement details, which
+   narrows but does not close this class. Routed to r89.
+6. **Battery witness holes on carried legs.** R88Mut1's survivors include `multiple-mode` and
+   `webkitdirectory` page-read hex, `answer.files`, `answer.setParams.backendNodeId` and read
+   multiplicity: the frozen counter enforces each clause, but no battery case witnesses some of
+   them, so a counter weakening can pass. Routed to r89 as battery cases.
+7. **The counter's replay limit block can be made self-contradictory without a red.** R88Mut1's
+   `show-replay-refused-strict` moves the escape minimum to 88 events while the emitted sentence
+   still says 89; the frozen battery stays green because the limit sentence is prose. Routed to
+   r89: bind the limit sentence to the computed `absNeed` (the r87 rule class).
 
 ## Frozen-amendment note (disclosed)
 
@@ -161,3 +191,20 @@ gates have all executed green once, and batch every repair.
   report rather than hidden. `claims.json` `frozenAmendments` carries the same record.
 
 ## Narrowings (post-wave, pre-report — every one reconciled before filing)
+
+1. **Attribution rides on the top-level fixture snapshot, not on the per-leg mirrors.**
+   R88Review2 (P3/Q7/P15/Q9/Q10/P11–P13/Q14/R7–R9) showed every per-leg `fixtureInputs` mirror is
+   unread by the counter: per-leg accept strings, rects, `multiple`/`type` and whole arrays can be
+   forged with no finding. The exact raw `accept` string is bound once, globally, by
+   `fixture-descriptors` plus the GRAMMAR loop's `desc.accept === accept` against
+   `r.fixtureInputs` (the `window.__inputs()` snapshot); a leg is attributable by its TARGET ID
+   through that snapshot and by `stateAfter[target]`/`answer`/`read.ret`, never by its own accept
+   copy. Claim C1's sentence is narrowed accordingly.
+2. **`upload*` fields are unchecked on the twelve grammar legs.** R88Review2 (P6/P10/Q11/R1/R2):
+   `upload`/`uploadPng` hash/size corruption passes clean for every grammar row; the delivered
+   bytes are bound through `answer.files`, `stateAfter[target]` and `read.ret`, not through the
+   upload-side record (which is bound only on the r84 legs).
+3. **The receipt's embedded `fixture.patch.body` is not parsed.** R88Review2 (P7/Q4): changing an
+   accept string inside the embedded patch passes clean while the top snapshot is intact; the
+   driver-built fixture is covered by the fixture sha256 pin, not by the receipt's copy of it.
+

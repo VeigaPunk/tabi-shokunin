@@ -4225,17 +4225,17 @@ Scored (r87): 99 checks, battery 209/209, kill power 66/66, selftest 10/10 at D6
 
 ## Round 88 (2026-11-08, Linux host) — C1 capability `chromium-showpicker-linux` generation r88 (MIME parameters, case variants, combined lists); C2 calibration, the r87 spot-check routed defects D1-D4
 
-Base `f16f992d`; instrument freeze D6 **`4daf8817`** (D1 `86f1dcec`, D2 the selftest re-pin and the genuine
+Base `f16f992d`; instrument freeze D7 **`abfd00a2`** (D1 `86f1dcec`, D2 the selftest re-pin and the genuine
 37-leg priors, D3 the `gate-selftest` gate, D4 the kill-power mutant from-string, D5 the runner
-gate's own read bug, D6 the critic-driven tally/selftest strengthening; `plans/round-88.md`
-§Re-freeze history). The scored receipt was produced once at the D1-derived
+gate's own read bug, D6 the critic-driven tally/selftest strengthening, D7 the counter
+dereference guards + real selftest witnesses; `plans/round-88.md` §Re-freeze history). The scored receipt was produced once at the D1-derived
 nonce **`tabi-r88-l1-86f1dcec`**; every later freeze touched only non-receipt instruments. Axes at start: all six at 9; C1 works a lowest axis and is a capability
 move (generation r88 of the r79 capability); C2 works calibration (record-vs-state mismatches).
 
 | Claim / axis | Counting command (frozen predicate) | Before → after | Verdict |
 |---|---|---|---|
-| C1 coverage (9), capability `chromium-showpicker-linux` generation r88 (sourced: S223/S219 re-opened) | `node scripts/check-showpicker-round88.mjs --lane <ABS lane> --receipt corpus/evidence/round88/chromium-showpicker/receipt.json --expect-driver-sha256 8c015fa4ea541c25cf1e0c5ba35b28ee94c11dcb4aaa8bf1baf191ecbe49b9b4 --expect-nonce tabi-r88-l1-86f1dcec --expect-fixture-sha256 <the scored receipt fixture sha256> --prior-set .ufo/waves/round-88/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R88`) | base `f16f992d`: no r88 receipt → exit 2 `receipt-unreadable`; the r87 scored receipt under the r88 counter → exit 1; after: the scored receipt → exit 0, `verdict clean`, **102 checks**, 0 findings; battery 212/0/coverage 102/102; kill power 69/69/0/0/0; selftest 10/10 | VERIFIED |
-| C2 calibration (9), the r87 spot-check routed defects D1-D4 (`scripts/check-record-drift-r88.mjs`, predicate `C2-RECORDDRIFT-R88`) | `node scripts/check-record-drift-r88.mjs --lane <ABS lane> --json` (exit 0 iff 4 claims, 0 mismatches) | before (base `f16f992d` worktree): **4 mismatches** (`scorecard-tallies`, `selftest-wording`, `quality161-sweep` — `scored/drift-before.json`); after: **0** of 4 (`scored/drift-a.json`); the drift gate's own `--selftest` runs isolated and exits 0 | VERIFIED |
+| C1 coverage (9), capability `chromium-showpicker-linux` generation r88 (sourced: S223/S219 re-opened) | `node scripts/check-showpicker-round88.mjs --lane <ABS lane> --receipt corpus/evidence/round88/chromium-showpicker/receipt.json --expect-driver-sha256 8c015fa4ea541c25cf1e0c5ba35b28ee94c11dcb4aaa8bf1baf191ecbe49b9b4 --expect-nonce tabi-r88-l1-86f1dcec --expect-fixture-sha256 <the scored receipt fixture sha256> --prior-set .ufo/waves/round-88/controls/c1/prior-set.txt --json`; leg (b) battery + kill power; leg (c) row, note, registry, selftest (predicate `C1-SHOWPICKER-R88`) | base `f16f992d`: no r88 receipt → exit 2 `receipt-unreadable`; the r87 scored receipt under the r88 counter → exit 1; after: the scored receipt → exit 0, `verdict clean`, **102 checks**, 0 findings; battery 215/0/coverage 102/102; kill power 69/69/0/0/0; selftest 10/10 | VERIFIED |
+| C2 calibration (9), the r87 spot-check routed defects D1-D4 (`scripts/check-record-drift-r88.mjs`, predicate `C2-RECORDDRIFT-R88`) | `node scripts/check-record-drift-r88.mjs --lane <ABS lane> --json` (exit 0 iff 4 claims, 0 mismatches) | before (base `f16f992d` worktree): **4 mismatches** (`scorecard-tallies`, `selftest-wording`, `gate-selftest`, `quality161-sweep` — `scored/drift-before.json`); after: **0** of 4 (`scored/drift-a.json`); the drift gate's own `--selftest` runs isolated and exits 0 | VERIFIED |
 
 Capabilities (this round):
 
@@ -4261,4 +4261,4 @@ string; a same-element origin comparison if the fixture can carry a `postMessage
 colour popup probe. Retired: none.
 
 Scored (r88): 102 checks, battery 215/215, kill power 69/69, selftest 11/11, record drift 4 → 0.
-- Digests: D 4daf8817, nonce tabi-r88-l1-86f1dcec. 102 checks, battery 215 cases, kill power 69 mutants.
+- Digests: D abfd00a2, nonce tabi-r88-l1-86f1dcec. 102 checks, battery 215 cases, kill power 69 mutants.

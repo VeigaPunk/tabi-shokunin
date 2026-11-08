@@ -1,7 +1,7 @@
 ---
 source: S223 (WHATWG HTML — the file-upload state's `accept` attribute as a hint), S219 (WHATWG HTML `showPicker()` steps — the SecurityError and its File/Color exemption), S216 (the normative algorithm), S221/S222 (CDP Page/DOM domain, carried); receipt `corpus/evidence/round88/chromium-showpicker/receipt.json` (driver `scripts/chrome-cdp-showpicker-round88.mjs`, pin in `.ufo/waves/round-88/freeze.txt`)
 verified-at: 2026-11-08 (round 88, Linux host, Chromium 155.0.8059.84 `--headless=new`)
-recheck: `node scripts/check-showpicker-r87.mjs --lane <ABS lane> --receipt corpus/evidence/round88/chromium-showpicker/receipt.json --expect-driver-sha256 7c54e786d78d455b955e822deb4bf0419b85c4859c5287c27380d6b568389e5f --expect-nonce tabi-r87-l1-3dd4b0802d67 --expect-fixture-sha256 10e444f7fb840b6e132b4570794d3a0ed6f5db0781ca490a986685505e8d94c4 --prior-set .ufo/waves/round-87/controls/c1/prior-set.txt --json` → exit 0, 99 checks
+recheck: `node scripts/check-showpicker-round88.mjs --lane <ABS lane> --receipt corpus/evidence/round88/chromium-showpicker/receipt.json --expect-driver-sha256 8c015fa4ea541c25cf1e0c5ba35b28ee94c11dcb4aaa8bf1baf191ecbe49b9b4 --expect-nonce tabi-r88-l1-86f1dcec --expect-fixture-sha256 8f93405128f1b0286549c470ff2e849e861af2a79b3d3cccea32dd9f27231a35 --prior-set .ufo/waves/round-88/controls/c1/prior-set.txt --json` → exit 0, 102 checks
 ---
 
 # Programmatic picker generation r88 — MIME parameters, case variants, combined lists
@@ -40,7 +40,7 @@ frontier: `IMAGE/PNG` (case variant), `image/png;q=0.9` (MIME parameter) and `au
    origin-before-mutability order discriminator, the directory answer with `webkitRelativePath`,
    `multiple` → `selectMultiple`, the second-chooser payload answer, and the same-origin
    `type=color` activated arm (`undefined`, activation consumed, no input/change, zero file
-   choosers). The r88 counter re-derives all of them (99 checks).
+   choosers). The r88 counter re-derives all of them (102 checks).
 
 ## What a receipt of this shape cannot prove
 
@@ -66,10 +66,10 @@ frontier: `IMAGE/PNG` (case variant), `image/png;q=0.9` (MIME parameter) and `au
 
 - **The pins are declaration-level in the counter.** `driver-pin` and `fixture-hash` compare receipt
   fields to the CLI pins; the counter never opens the instrument bytes. R87Sentinel re-derived the
-  fixture (`10e444f7…`) and child (`bbb22189…`) hashes from the pinned driver + the r78 template +
+  fixture (`8f93405128f1…`) and child (`2ac1101032b4…`) hashes from the pinned driver + the r78 template +
   this receipt's nonce/child port, so the fixture is verifiable out-of-band, not by the counter.
 - **Per-leg attribute copies are not separately witnessed.** The accept fact binds through the
-  top-level `fixtureInputs` snapshot (copied from the first leg's read); the honest receipt has 0/34
+  top-level `fixtureInputs` snapshot (copied from the first leg's read); the honest receipt has 0/37
   divergent per-leg copies, but a per-leg copy can disagree with no finding.
 - **The comma/whitespace normalization rules are not on the staged page.** They live on the two
   linked pages the Scout opened; the whitespace leg measures the raw attribute string and nothing

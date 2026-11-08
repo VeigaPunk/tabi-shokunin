@@ -561,7 +561,7 @@ for (const leg of legs) {
   const got = log.filter((c) => c.method === 'Page.setInterceptFileChooserDialog' || c.method === 'Input.dispatchMouseEvent' || c.method === 'DOM.setFileInputFiles' || (c.method === 'Runtime.evaluate' && c.params.expression === wrapperFor(p.target)));
   if (!same(got.map((c) => ({ method: c.method, params: c.params })), want)) planBad.push(leg.name + ':sequence ' + JSON.stringify(got.map((c) => c.method)) + ' want ' + JSON.stringify(want.map((c) => c.method)));
   // send-id coherence
-  if (p.intercept && leg.interceptSendId !== log.find((c) => c.method === 'Page.setInterceptFileChooserDialog').id) planBad.push(leg.name + ':intercept-id');
+  if (p.intercept) { const arm = log.find((c) => c.method === 'Page.setInterceptFileChooserDialog'); if (!arm || leg.interceptSendId !== arm.id) planBad.push(leg.name + ':intercept-id'); }
   if (p.priorClick || CROSS.has(p.name)) { if (leg.priorPressId === null || leg.priorReleaseId === null || leg.priorReleaseId <= leg.priorPressId) planBad.push(leg.name + ':prior-ids'); }
   else if (leg.priorPressId !== null || leg.priorReleaseId !== null) planBad.push(leg.name + ':prior-ids-without-click');
   if (!CROSS.has(p.name)) {
@@ -580,7 +580,8 @@ for (const leg of legs) {
     const set = log.find((c) => c.method === 'DOM.setFileInputFiles');
     if (!set || !isObj(leg.answer) || leg.answer.setSendId !== set.id) planBad.push(leg.name + ':answer-id');
     const wantBase = p.files[0];
-    if (!set || path.basename(set.params.files[0]) !== wantBase || set.params.files.length !== 1) planBad.push(leg.name + ':answer-files');
+    const setFiles = set && isObj(set.params) && Array.isArray(set.params.files) ? set.params.files : [];
+    if (!set || setFiles.length !== 1 || typeof setFiles[0] !== 'string' || path.basename(setFiles[0]) !== wantBase) planBad.push(leg.name + ':answer-files');
   }
 }
 check('plan-calls', planBad.length === 0, 'plan calls differ from the frozen plan: ' + planBad.join(','));

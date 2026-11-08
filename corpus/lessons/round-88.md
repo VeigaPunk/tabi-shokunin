@@ -9,10 +9,10 @@ parameters, case variants, combined lists); C2 calibration — the r87 spot-chec
 D1–D4 (the seven tallies, D2 wording, D3 gate self-tests, D4 freeze batching, and the
 QUALITY 161 sweep extended to the SCORECARD set).
 
-D **`4daf8817`** (D6; D1 `86f1dcec` first freeze, D2 `138bb883` the selftest re-pin and the genuine
+D **`abfd00a2`** (D7; D1 `86f1dcec` first freeze, D2 `138bb883` the selftest re-pin and the genuine
 37-leg priors, D3 `93500a4e` the `gate-selftest` gate, D4 the kill-power mutant from-string, D5 the
-runner gate's own read bug, D6 the critic-driven tally/selftest strengthening — `plans/round-88.md`
-§Re-freeze history). The scored receipt was produced once, at the nonce
+runner gate's own read bug, D6 the critic-driven tally/selftest strengthening, D7 the counter guard/real-witness
+batch — `plans/round-88.md` §Re-freeze history). The scored receipt was produced once, at the nonce
 `tabi-r88-l1-86f1dcec`; every later freeze touched only non-receipt instruments, so the receipt is
 the same receipt under test throughout. A pre-freeze probe run at `tabi-r88-probe1-probe0001`
 (37 legs, 0 failures) confirmed the driver before the freeze, and the two 37-leg probes are the
@@ -29,7 +29,8 @@ The L1 re-opened the living WHATWG input page on 2026-11-08 (HTTP 200, 687,515 b
 
 - **S223** — the `accept` attribute's own sentence. Located quote: "attribute may be specified to
   provide user agents with a hint of what file types will be accepted." This is the normative
-  ground for the ten-form acceptance law (a hint, not a validator on a programmatic answer).
+  ground for the acceptance law over ten attribute-string values, nine of them in-grammar (a
+  hint, not a validator on a programmatic answer).
 - **S219** — the `showPicker()` colour exemption, re-opened this round as the ground of the
   colour arm. Located quote (21 words, `printf '%s' … | wc -w`): "Throws a 'SecurityError'
   DOMException if input is inside a cross-origin iframe, unless input is in the File Upload or

@@ -14,39 +14,42 @@ if (selftestArgv.includes('--selftest')) {
   const { spawnSync } = await import('node:child_process');
   const { fileURLToPath } = await import('node:url');
   const self = fileURLToPath(import.meta.url);
+  const HERE2 = path.dirname(self);
+  const COUNTER2 = path.join(HERE2, 'check-showpicker-round88.mjs');
+  const laneArg = selftestArgv.includes('--lane') ? selftestArgv[selftestArgv.indexOf('--lane') + 1] : null;
+  const lane = laneArg && path.isAbsolute(laneArg) ? laneArg : '/home/vgpnk/Projects/shokunin/tabi-shokunin';
   const base = process.env.HYAKU_SCRATCH || '/fast/scratch/hyaku';
   const scratch = base + '/tabi-r88-battery-selftest-' + process.pid;
   fs.mkdirSync(scratch, { recursive: true });
-  const copy = path.join(scratch, 'negatives-showpicker-round88.mjs');
-  fs.copyFileSync(self, copy);
-  const counterCopy = path.join(scratch, 'check-showpicker-round88.mjs');
-  fs.copyFileSync(path.join(path.dirname(self), 'check-showpicker-round88.mjs'), counterCopy);
-  // a receipt whose `ac` descriptor accepts 'IMAGE/PNG' (the honest value); the named
-  // case mutates it to 'image/png' and must be refused with `accept-grammar-law`
-  const hx = 'b'.repeat(64);
-  const mkLeg = () => ({ name: 'sp88-accept-case-png', kind: 'showpicker-answer', target: 'ac', intercept: { enabled: true }, priorClick: { at: [360, 40], wantTarget: 'pad' }, gesture: false, files: ['tabi-r88-b.png'] });
-  const receipt = { schema: 'tabi-chrome-cdp-showpicker-r88', lane: 'tabi', nonce: 'tabi-r88-selftest-0001', driverSha256: hx, fixture: { sha256: hx }, legs: [mkLeg()], failures: [] };
-  const receiptPath = path.join(scratch, 'receipt.json');
-  fs.writeFileSync(receiptPath, JSON.stringify(receipt));
-  const laneDir = path.join(scratch, 'lane');
-  fs.mkdirSync(laneDir, { recursive: true });
-  const psDir = path.join(scratch, 'ps');
-  fs.mkdirSync(psDir, { recursive: true });
-  const ps = path.join(psDir, 'prior-set.txt');
-  const prior = path.join(scratch, 'prior.json');
-  fs.writeFileSync(prior, JSON.stringify({ schema: 'tabi-chrome-cdp-showpicker-r88', lane: 'tabi', nonce: 'tabi-r88-prior-0001', driverSha256: hx, fixture: { sha256: hx }, legs: [], failures: [] }));
-  fs.writeFileSync(ps, prior + '\n');
-  const work = path.join(scratch, 'work');
-  const r = spawnSync(process.execPath, [copy, '--lane', laneDir, '--real', receiptPath,
-    '--expect-driver-sha256', hx, '--expect-nonce', 'tabi-r88-selftest-0001', '--expect-fixture-sha256', hx,
-    '--prior-set', ps, '--work', work, '--json'], { encoding: 'utf8', timeout: 120000 });
-  let j = null; try { j = JSON.parse(r.stdout); } catch {}
-  const ids = j && j.results ? j.results.map((x) => x.case || x.name || x.id) : [];
-  const red = ids.includes('accept-grammar-law-r88-case') || (j && (j.failures || []).some((x) => x.case === 'accept-grammar-law-r88-case'));
-  const ok = r.status === 1 && red;
-  const out = { schema: 'tabi-r88-battery-selftest', ok, exit: r.status, red };
-  if (selftestAsJson) process.stdout.write(JSON.stringify(out, null, 1) + '\n');
-  else process.stdout.write(JSON.stringify(out) + '\n');
+  const receiptRel = 'corpus/evidence/round88/chromium-showpicker/receipt.json';
+  let real;
+  try { real = JSON.parse(fs.readFileSync(path.join(lane, receiptRel), 'utf8')); } catch (e) {
+    const out = { schema: 'tabi-r88-battery-selftest', ok: false, reason: 'receipt-unreadable ' + e.message };
+    process.stdout.write(JSON.stringify(out) + '\n'); process.exit(1);
+  }
+  const fixtureSha = real.fixture && real.fixture.sha256;
+  const mutated = JSON.parse(JSON.stringify(real));
+  const desc = (mutated.fixtureInputs || []).find((x) => x && x.id === 'ac');
+  if (!desc) { process.stdout.write(JSON.stringify({ ok: false, reason: 'no-ac-descriptor' }) + '\n'); process.exit(1); }
+  desc.accept = 'image/png'; // honest value is IMAGE/PNG: the grammar row must refuse
+  const mutatedPath = path.join(scratch, 'mutated.json');
+  fs.writeFileSync(mutatedPath, JSON.stringify(mutated));
+  const ps = path.join(lane, '.ufo/waves/round-88/controls/c1/prior-set.txt');
+  const realSha = (await import('node:crypto')).createHash('sha256').update(fs.readFileSync(path.join(lane, receiptRel))).digest('hex');
+  const score = (receipt) => {
+    const r = spawnSync(process.execPath, [COUNTER2, '--lane', lane, '--receipt', receipt,
+      '--expect-driver-sha256', real.driverSha256, '--expect-nonce', real.nonce,
+      '--expect-fixture-sha256', fixtureSha, '--prior-set', ps,
+      '--tree-exempt-sha256', realSha, '--json'], { encoding: 'utf8', timeout: 300000 });
+    let j = null; try { j = JSON.parse(r.stdout); } catch {}
+    return { status: r.status, json: j, stderr: (r.stderr || '').slice(0, 200) };
+  };
+  const clean = score(path.join(lane, receiptRel));
+  const bad = score(mutatedPath);
+  const badIds = bad.json ? bad.json.findings.map((f) => f.id) : [];
+  const ok = clean.status === 0 && bad.status === 1 && badIds.includes('accept-grammar-law');
+  const out = { schema: 'tabi-r88-battery-selftest', ok, cleanExit: clean.status, mutatedExit: bad.status, mutatedIds: badIds.slice(0, 8) };
+  process.stdout.write(JSON.stringify(out) + '\n');
   try { fs.rmSync(scratch, { recursive: true, force: true }); } catch {}
   process.exit(ok ? 0 : 1);
 }

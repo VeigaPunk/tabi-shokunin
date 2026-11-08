@@ -13,37 +13,51 @@ if (selftestArgv.includes('--selftest')) {
   const path = (await import('node:path')).default;
   const { spawnSync } = await import('node:child_process');
   const { fileURLToPath } = await import('node:url');
+  const { createHash } = await import('node:crypto');
   const self = fileURLToPath(import.meta.url);
+  const HERE2 = path.dirname(self);
+  const laneArg = selftestArgv.includes('--lane') ? selftestArgv[selftestArgv.indexOf('--lane') + 1] : null;
+  const lane = laneArg && path.isAbsolute(laneArg) ? laneArg : '/home/vgpnk/Projects/shokunin/tabi-shokunin';
   const base = process.env.HYAKU_SCRATCH || '/fast/scratch/hyaku';
   const scratch = base + '/tabi-r88-kill-selftest-' + process.pid;
   fs.mkdirSync(scratch, { recursive: true });
-  const copy = path.join(scratch, 'kill-power-round88.mjs');
-  const counterCopy = path.join(scratch, 'check-showpicker-round88.mjs');
-  const batteryCopy = path.join(scratch, 'negatives-showpicker-round88.mjs');
-  fs.copyFileSync(self, copy);
-  fs.copyFileSync(path.join(path.dirname(self), 'check-showpicker-round88.mjs'), counterCopy);
-  fs.copyFileSync(path.join(path.dirname(self), 'negatives-showpicker-round88.mjs'), batteryCopy);
-  const hx = 'c'.repeat(64);
-  const mkLeg = () => ({ name: 'sp88-accept-case-png', kind: 'showpicker-answer', target: 'ac', intercept: { enabled: true }, priorClick: { at: [360, 40], wantTarget: 'pad' }, gesture: false, files: ['tabi-r88-b.png'] });
-  const receipt = { schema: 'tabi-chrome-cdp-showpicker-r88', lane: 'tabi', nonce: 'tabi-r88-selftest-0002', driverSha256: hx, fixture: { sha256: hx }, legs: [mkLeg()], failures: [] };
-  const receiptPath = path.join(scratch, 'receipt.json');
-  fs.writeFileSync(receiptPath, JSON.stringify(receipt));
-  const laneDir = path.join(scratch, 'lane');
-  fs.mkdirSync(laneDir, { recursive: true });
-  const ps = path.join(scratch, 'prior-set.txt');
-  const prior = path.join(scratch, 'prior.json');
-  fs.writeFileSync(prior, JSON.stringify({ schema: 'tabi-chrome-cdp-showpicker-r88', lane: 'tabi', nonce: 'tabi-r88-prior-0002', driverSha256: hx, fixture: { sha256: hx }, legs: [], failures: [] }));
-  fs.writeFileSync(ps, prior + '\n');
-  const work = path.join(scratch, 'work');
-  const r = spawnSync(process.execPath, [copy, '--lane', laneDir, '--real', receiptPath,
-    '--expect-driver-sha256', hx, '--expect-nonce', 'tabi-r88-selftest-0002', '--expect-fixture-sha256', hx,
-    '--prior-set', ps, '--work', work, '--only', 'accept-grammar-r88-case-dropped', '--json'], { encoding: 'utf8', timeout: 600000 });
-  let j = null; try { j = JSON.parse(r.stdout); } catch {}
-  const res = j && j.results ? j.results.find((x) => x.mutant === 'accept-grammar-r88-case-dropped') : null;
-  const ok = !!res && res.outcome === 'killed';
-  const out = { schema: 'tabi-r88-killpower-selftest', ok, exit: r.status, outcome: res ? res.outcome : null };
-  if (selftestAsJson) process.stdout.write(JSON.stringify(out, null, 1) + '\n');
-  else process.stdout.write(JSON.stringify(out) + '\n');
+  const receiptRel = 'corpus/evidence/round88/chromium-showpicker/receipt.json';
+  let real;
+  try { real = JSON.parse(fs.readFileSync(path.join(lane, receiptRel), 'utf8')); } catch (e) {
+    process.stdout.write(JSON.stringify({ ok: false, reason: 'receipt-unreadable ' + e.message }) + '\n'); process.exit(1);
+  }
+  const fixtureSha = real.fixture && real.fixture.sha256;
+  const mutated = JSON.parse(JSON.stringify(real));
+  const desc = (mutated.fixtureInputs || []).find((x) => x && x.id === 'ac');
+  const realSha = createHash('sha256').update(fs.readFileSync(path.join(lane, receiptRel))).digest('hex');
+  if (!desc) { process.stdout.write(JSON.stringify({ ok: false, reason: 'no-ac-descriptor' }) + '\n'); process.exit(1); }
+  desc.accept = 'image/png'; // honest value IMAGE/PNG: only the strict compare refuses this
+  const mutatedPath = path.join(scratch, 'mutated.json');
+  fs.writeFileSync(mutatedPath, JSON.stringify(mutated));
+  const stock = path.join(scratch, 'stock-counter.mjs');
+  const mutant = path.join(scratch, 'mutant-counter.mjs');
+  const src = fs.readFileSync(path.join(HERE2, 'check-showpicker-round88.mjs'), 'utf8');
+  const from = "same(arr(r.fixtureInputs), FIXTURE_INPUTS)";
+  const to = "arr(r.fixtureInputs).length === FIXTURE_INPUTS.length";
+  if (src.split(from).length - 1 !== 1) { process.stdout.write(JSON.stringify({ ok: false, reason: 'mutant-unapplied' }) + '\n'); process.exit(1); }
+  fs.writeFileSync(stock, src);
+  fs.writeFileSync(mutant, src.replace(from, to));
+  const ps = path.join(lane, '.ufo/waves/round-88/controls/c1/prior-set.txt');
+  const score = (counter, receipt) => {
+    const r = spawnSync(process.execPath, [counter, '--lane', lane, '--receipt', receipt,
+      '--expect-driver-sha256', real.driverSha256, '--expect-nonce', real.nonce,
+      '--expect-fixture-sha256', fixtureSha, '--prior-set', ps,
+      '--tree-exempt-sha256', realSha, '--json'], { encoding: 'utf8', timeout: 300000 });
+    let j = null; try { j = JSON.parse(r.stdout); } catch {}
+    return { status: r.status, ids: j ? j.findings.map((f) => f.id) : [], stderr: (r.stderr || '').slice(0, 200) };
+  };
+  const s1 = score(stock, mutatedPath);
+  const s2 = score(mutant, mutatedPath);
+  // A kill witness is a DIFFERENCE: the stock counter refuses the fixture-descriptor mutation and
+  // the mutant (weakened compare) does not — same receipt, same invocation, only the rule differs.
+  const ok = s1.status === 1 && s1.ids.includes('fixture-descriptors') && s2.ids.includes('accept-grammar-law') && !s2.ids.includes('fixture-descriptors');
+  const out = { schema: 'tabi-r88-killpower-selftest', ok, stockExit: s1.status, stockIds: s1.ids.slice(0, 6), mutantExit: s2.status, mutantIds: s2.ids.slice(0, 6) };
+  process.stdout.write(JSON.stringify(out) + '\n');
   try { fs.rmSync(scratch, { recursive: true, force: true }); } catch {}
   process.exit(ok ? 0 : 1);
 }

@@ -71,11 +71,13 @@ if (selftestMode) {
   const r = spawnSync(process.execPath, [path.join(fx, 'scripts', 'check-record-drift-r88.mjs'), '--lane', fx, '--json'], { encoding: 'utf8', timeout: 60000 });
   let j = null; try { j = JSON.parse(r.stdout); } catch {}
   const ids = j && j.results ? j.results.map((x) => x.id) : [];
-  const wantRed = ['scorecard-tallies', 'selftest-wording', 'gate-selftest'];
-  const okC = !j || !j.failed || j.failed.includes('quality161-sweep');
+  const detail = (id) => (j && j.results ? (j.results.find((x) => x.id === id) || {}).detail || '' : '');
+  const wantRed = ['scorecard-tallies', 'selftest-wording', 'gate-selftest', 'quality161-sweep'];
   const okA = r.status === 1 && j && wantRed.every((id) => j.failed.includes(id));
   const okB = j && j.claims === 4 && ids.length === 4;
-  const out = { schema: 'tabi-r88-record-drift-selftest', exit: r.status, failed: j ? j.failed : null, ok: !!(okA && okB) };
+  // the fixture must be red for the INTENDED reasons, not because a record file is absent:
+  const okC = /round-44-has-10/.test(detail('scorecard-tallies')) && /staleHolds=true/.test(detail('selftest-wording'));
+  const out = { schema: 'tabi-r88-record-drift-selftest', exit: r.status, failed: j ? j.failed : null, ok: !!(okA && okB && okC), details: { tallies: detail('scorecard-tallies'), wording: detail('selftest-wording') } };
   if (asJson) process.stdout.write(JSON.stringify(out, null, 1) + '\n');
   else process.stdout.write(JSON.stringify(out) + '\n');
   process.exit(out.ok ? 0 : 1);
